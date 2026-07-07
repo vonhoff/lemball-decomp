@@ -115,16 +115,9 @@ def build_report() -> dict[str, object]:
     compare_by_address = load_compare_by_address(TARGET_NAME)
 
     units: dict[str, list[dict[str, object]]] = {}
-    excluded = {
-        "runtime": 0,
-        "import": 0,
-        "external": 0,
-    }
-
     for function in inventory["functions"]:
         category = function["category"]
         if category not in INCLUDED_CATEGORIES:
-            excluded[category] = excluded.get(category, 0) + 1
             continue
 
         address = int(function["address"], 16)
@@ -187,6 +180,10 @@ def build_report() -> dict[str, object]:
             "complete_units": 1 if complete else 0,
         }
 
+        unit_metadata = {"complete": complete}
+        if functions[0]["source_path"] is not None:
+            unit_metadata["source_path"] = functions[0]["source_path"]
+
         report_units.append(
             {
                 "name": unit_name,
@@ -196,7 +193,6 @@ def build_report() -> dict[str, object]:
                         "name": ".text",
                         "size": unit_code,
                         "fuzzy_match_percent": fuzzy_match,
-                        "metadata": {},
                     }
                 ],
                 "functions": [
@@ -210,10 +206,7 @@ def build_report() -> dict[str, object]:
                     }
                     for function in functions
                 ],
-                "metadata": {
-                    "complete": complete,
-                    "source_path": functions[0]["source_path"],
-                },
+                "metadata": unit_metadata,
             }
         )
 
@@ -226,18 +219,7 @@ def build_report() -> dict[str, object]:
     )
     calc_percents(total_measures, len(report_units))
 
-    return {
-        "version": 2,
-        "measures": total_measures,
-        "units": report_units,
-        "categories": [],
-        "metadata": {
-            "target": TARGET_NAME,
-            "inventory_version": TARGET_NAME,
-            "included_categories": sorted(INCLUDED_CATEGORIES),
-            "excluded_counts": excluded,
-        },
-    }
+    return {"version": 2, "measures": total_measures, "units": report_units, "categories": []}
 
 
 def main() -> int:
