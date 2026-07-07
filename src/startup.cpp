@@ -14,12 +14,10 @@ static const char g_STARTUP_SwitchStatusDebug[] = "/STATDEBUG";
 static const char g_STARTUP_SwitchMemoryDebug[] = "/MEMDEBUG";
 static const char g_STARTUP_SwitchNoAnim[] = "/NOANIM";
 static const char g_STARTUP_SwitchNoZoom[] = "/NOZOOM";
-static const char g_STARTUP_SwitchCompact[] = "/COMPACT";
+static const char g_STARTUP_SwitchCompact[] = "/320";
 static const char g_STARTUP_SwitchTestAllLevels[] = "/TESTALLLEVELS";
 static const char g_STARTUP_SwitchHelp0[] = "/?";
 static const char g_STARTUP_SwitchHelp1[] = "?";
-static const char g_STARTUP_SwitchEditPrefix[] = "/EDIT:";
-static const char g_STARTUP_SwitchPlayPrefix[] = "/PLAY:";
 static const char g_STARTUP_SwitchGraphics[] = "/GRAPHICS";
 
 int g_fStartupAnimationsEnabled = 0;
@@ -136,37 +134,47 @@ void InitializeStartupSwitchDefaults(void) {
 int CompareSwitchNameCaseInsensitive(const char *pszLeft, const char *pszRight, int cchMax) {
     int cchLeft;
     int cchRight;
-
-    if (pszLeft == 0 || pszRight == 0) {
-        return -1;
-    }
+    char chLeft;
+    char chRight;
 
     cchLeft = (int)strlen(pszLeft);
-    if (cchLeft > cchMax) {
+    cchRight = (int)strlen(pszRight);
+
+    if (cchMax < cchLeft) {
         cchLeft = cchMax;
     }
-
-    cchRight = (int)strlen(pszRight);
-    if (cchRight > cchMax) {
+    if (cchMax < cchRight) {
         cchRight = cchMax;
     }
-
-    if (cchLeft != cchRight) {
+    if (cchRight != cchLeft) {
         return -1;
     }
 
-    while (cchMax > 0) {
-        int chLeft;
-        int chRight;
+    if (cchLeft < cchMax) {
+        cchMax = cchLeft;
+    }
+    if (cchRight < cchMax) {
+        cchMax = cchRight;
+    }
 
-        if (*pszLeft == '\0' || *pszRight == '\0') {
-            break;
+    while (1) {
+        if (cchMax == 0) {
+            return 0;
+        }
+        if (isalpha((int)*pszLeft)) {
+            chLeft = (char)toupper((int)*pszLeft);
+        } else {
+            chLeft = *pszLeft;
         }
 
-        chLeft = isalpha((unsigned char)*pszLeft) ? toupper((unsigned char)*pszLeft) : (unsigned char)*pszLeft;
-        chRight = isalpha((unsigned char)*pszRight) ? toupper((unsigned char)*pszRight) : (unsigned char)*pszRight;
-        if (chLeft != chRight) {
-            return chLeft - chRight;
+        if (isalpha((int)*pszRight)) {
+            chRight = (char)toupper((int)*pszRight);
+        } else {
+            chRight = *pszRight;
+        }
+
+        if ((int)chLeft - (int)chRight != 0) {
+            break;
         }
 
         ++pszLeft;
@@ -174,15 +182,7 @@ int CompareSwitchNameCaseInsensitive(const char *pszLeft, const char *pszRight, 
         --cchMax;
     }
 
-    return 0;
-}
-
-static void ApplyOverrideLevelPath(const char *pszArg, const char *pszPrefix, int *pfEnabled) {
-    size_t cchPrefix;
-
-    cchPrefix = strlen(pszPrefix);
-    *pfEnabled = pszArg[cchPrefix] != '\0';
-    CopyCString((char *)g_abOverrideLevelFilePathBuffer, sizeof(g_abOverrideLevelFilePathBuffer), pszArg + cchPrefix);
+    return (int)chLeft - (int)chRight;
 }
 
 // FUNCTION: LEMBALL 0x00406460
@@ -190,56 +190,58 @@ int ApplyStartupCommandLineSwitches(int cArgs, const char *const *ppszArgs) {
     int fContinue;
 
     fContinue = 1;
-    while (cArgs > 0) {
-        const char *pszArg;
+    if (0 < cArgs) {
+        do {
+            const char *pszArg;
 
-        pszArg = *ppszArgs;
-        if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchNoMusic, 99) == 0) {
-            g_fMusicOptionAvailable = 0;
-        }
-        if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchNoEffects, 99) == 0) {
-            g_fEffectsOptionAvailable = 0;
-        }
-        if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchSoundDebug, 99) == 0) {
-            g_fSoundDebugRequested = 1;
-        }
-        if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchStatusDebug, 99) == 0) {
-            g_fStatusDebugRequested = 1;
-        }
-        if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchMemoryDebug, 99) == 0) {
-            g_fMemoryDebugRequested = 1;
-        }
-        if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchNoAnim, 99) == 0) {
-            g_fStartupAnimationsEnabled = 0;
-        }
-        if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchNoZoom, 99) == 0) {
-            g_fZoomOptionAvailable = 0;
-        }
-        if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchCompact, 99) == 0) {
-            g_fCompactPrimaryContextLayout = 1;
-        }
-        if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchTestAllLevels, 99) == 0) {
-            g_fStartupTestAllLevels = 1;
-        }
-        if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchHelp0, 99) == 0 ||
-            CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchHelp1, 99) == 0) {
-            NoopHelpSwitchCallback();
-            fContinue = 0;
-        }
-        if (CompareSwitchNameCaseInsensitive(
-                pszArg, g_STARTUP_SwitchEditPrefix, (int)strlen(g_STARTUP_SwitchEditPrefix)) == 0) {
-            ApplyOverrideLevelPath(pszArg, g_STARTUP_SwitchEditPrefix, &g_fStartupEditLevelOverride);
-        }
-        if (CompareSwitchNameCaseInsensitive(
-                pszArg, g_STARTUP_SwitchPlayPrefix, (int)strlen(g_STARTUP_SwitchPlayPrefix)) == 0) {
-            ApplyOverrideLevelPath(pszArg, g_STARTUP_SwitchPlayPrefix, &g_fStartupPlayLevelOverride);
-        }
-        if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchGraphics, 99) == 0) {
-            g_fStartupGraphicsDialogRequested = 1;
-        }
+            pszArg = *ppszArgs;
+            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchNoMusic, 99) == 0) {
+                g_fMusicOptionAvailable = 0;
+            }
+            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchNoEffects, 99) == 0) {
+                g_fEffectsOptionAvailable = 0;
+            }
+            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchSoundDebug, 99) == 0) {
+                g_fSoundDebugRequested = 1;
+            }
+            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchStatusDebug, 99) == 0) {
+                g_fStatusDebugRequested = 1;
+            }
+            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchMemoryDebug, 99) == 0) {
+                g_fMemoryDebugRequested = 1;
+            }
+            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchNoAnim, 99) == 0) {
+                g_fStartupAnimationsEnabled = 0;
+            }
+            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchNoZoom, 99) == 0) {
+                g_fZoomOptionAvailable = 0;
+            }
+            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchCompact, 99) == 0) {
+                g_fCompactPrimaryContextLayout = 1;
+            }
+            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchTestAllLevels, 99) == 0) {
+                g_fStartupTestAllLevels = 1;
+            }
+            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchHelp0, 99) == 0 ||
+                CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchHelp1, 99) == 0) {
+                NoopHelpSwitchCallback();
+                fContinue = 0;
+            }
+            if (CompareSwitchNameCaseInsensitive(pszArg, "/EDIT@", (int)strlen("/EDIT@")) == 0) {
+                g_fStartupEditLevelOverride = strlen(pszArg + strlen("/EDIT@")) != 0;
+                strcpy((char *)g_abOverrideLevelFilePathBuffer, pszArg + strlen("/EDIT@"));
+            }
+            if (CompareSwitchNameCaseInsensitive(pszArg, "/PLAY@", (int)strlen("/PLAY@")) == 0) {
+                g_fStartupPlayLevelOverride = strlen(pszArg + strlen("/PLAY@")) != 0;
+                strcpy((char *)g_abOverrideLevelFilePathBuffer, pszArg + strlen("/PLAY@"));
+            }
+            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchGraphics, 99) == 0) {
+                g_fStartupGraphicsDialogRequested = 1;
+            }
 
-        ++ppszArgs;
-        --cArgs;
+            ++ppszArgs;
+            --cArgs;
+        } while (cArgs != 0);
     }
 
     if (!g_fMusicOptionAvailable) {
