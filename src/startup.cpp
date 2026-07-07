@@ -134,8 +134,7 @@ void InitializeStartupSwitchDefaults(void) {
 int CompareSwitchNameCaseInsensitive(const char *pszLeft, const char *pszRight, int cchMax) {
     int cchLeft;
     int cchRight;
-    char chLeft;
-    char chRight;
+    int nDifference;
 
     cchLeft = (int)strlen(pszLeft);
     cchRight = (int)strlen(pszRight);
@@ -158,22 +157,26 @@ int CompareSwitchNameCaseInsensitive(const char *pszLeft, const char *pszRight, 
     }
 
     while (1) {
+        char chLeft;
+        char chRight;
+
         if (cchMax == 0) {
             return 0;
         }
-        if (isalpha((int)*pszLeft)) {
-            chLeft = (char)toupper((int)*pszLeft);
+        if (isalpha(*pszLeft)) {
+            chLeft = (char)toupper(*pszLeft);
         } else {
             chLeft = *pszLeft;
         }
 
-        if (isalpha((int)*pszRight)) {
-            chRight = (char)toupper((int)*pszRight);
+        if (isalpha(*pszRight)) {
+            chRight = (char)toupper(*pszRight);
         } else {
             chRight = *pszRight;
         }
 
-        if ((int)chLeft - (int)chRight != 0) {
+        nDifference = (int)chLeft - (int)chRight;
+        if (nDifference != 0) {
             break;
         }
 
@@ -182,7 +185,7 @@ int CompareSwitchNameCaseInsensitive(const char *pszLeft, const char *pszRight, 
         --cchMax;
     }
 
-    return (int)chLeft - (int)chRight;
+    return nDifference;
 }
 
 // FUNCTION: LEMBALL 0x00406460
