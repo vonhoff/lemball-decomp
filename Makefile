@@ -28,7 +28,7 @@ status:
 	@python3 tools/generate_status_report.py --output build/status.json
 
 report:
-	@python3 tools/write_progress_report.py -o build/report.json
+	@python3 tools/generate_reccmp_report.py -o build/report.json
 
 validate-target:
 	@python3 tools/validate_target_binary.py

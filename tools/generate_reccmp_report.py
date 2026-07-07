@@ -3,21 +3,21 @@
 # requires-python = ">=3.11"
 # dependencies = ["reccmp"]
 # ///
-"""Generate a decomp.dev-compatible progress report from reccmp plus the Ghidra function inventory."""
+"""Generate an objdiff-format progress report from reccmp results."""
 
 from __future__ import annotations
 
 import argparse
 import json
-import re
 from pathlib import Path
 
 from reccmp.compare.core import Compare
+from reccmp.parser.marker import MarkerType, match_marker
 from reccmp.project.detect import RecCmpProject
 
-MARKER_RE = re.compile(r"^\s*//\s*FUNCTION:\s*(\w+)\s+(0x[0-9A-Fa-f]+)\s*$")
-INCLUDED_CATEGORIES = {"internal", "thunk"}
+
 TARGET_NAME = "LEMBALL"
+INCLUDED_CATEGORIES = {"internal", "thunk"}
 MANIFEST_PATH = Path("data/manifest.json")
 
 
@@ -27,17 +27,14 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def parse_markers(source_root: Path, target: str) -> dict[int, str]:
+def parse_annotations(source_root: Path) -> dict[int, str]:
     addr_to_source: dict[int, str] = {}
-    for path in sorted(source_root.rglob("*.CPP")):
-        for line in path.read_text().splitlines():
-            match = MARKER_RE.match(line)
-            if match is None:
-                continue
-            module, address = match.groups()
-            if module != target:
-                continue
-            addr_to_source[int(address, 16)] = str(path).replace("\\", "/")
+    for path in sorted(source_root.rglob("*.cpp")):
+        with open(path) as f:
+            for line in f:
+                marker = match_marker(line)
+                if marker and marker.module == TARGET_NAME and marker.type == MarkerType.FUNCTION:
+                    addr_to_source[marker.offset] = path.as_posix()
     return addr_to_source
 
 
@@ -93,12 +90,9 @@ def unmapped_unit_name(function: dict[str, object]) -> str:
 
 
 def load_compare_by_address(target_name: str) -> dict[int, dict[str, object]]:
-    try:
-        project = RecCmpProject.from_directory(Path("."))
-        target = project.get(target_name)
-        compare = Compare.from_target(target)
-    except Exception:
-        return {}
+    project = RecCmpProject.from_directory(Path("."))
+    target = project.get(target_name)
+    compare = Compare.from_target(target)
 
     by_address: dict[int, dict[str, object]] = {}
     for diff in compare.compare_all():
@@ -115,8 +109,9 @@ def load_compare_by_address(target_name: str) -> dict[int, dict[str, object]]:
 def build_report() -> dict[str, object]:
     if not MANIFEST_PATH.exists():
         raise SystemExit("data/manifest.json is missing. Run make ghidra-functions first.")
+
     inventory = json.loads(MANIFEST_PATH.read_text())
-    addr_to_source = parse_markers(Path("src"), TARGET_NAME)
+    addr_to_source = parse_annotations(Path("src"))
     compare_by_address = load_compare_by_address(TARGET_NAME)
 
     units: dict[str, list[dict[str, object]]] = {}
@@ -211,8 +206,6 @@ def build_report() -> dict[str, object]:
                         "fuzzy_match_percent": float(function["ratio"]) * 100.0,
                         "metadata": {
                             "virtual_address": int(function["address"]),
-                            "source_path": function["source_path"],
-                            "category": function["category"],
                         },
                     }
                     for function in functions
@@ -253,6 +246,15 @@ def main() -> int:
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(report, indent=2) + "\n")
+    measures = report["measures"]
+    print(
+        f"{measures['total_functions']} functions, "
+        f"{measures['matched_functions']} matched "
+        f"({measures['matched_functions_percent']:.1f}%), "
+        f"fuzzy {measures['fuzzy_match_percent']:.1f}%, "
+        f"{measures['total_units']} units "
+        f"({measures['complete_units']} complete)"
+    )
     return 0
 
 

@@ -145,12 +145,12 @@ def build_status() -> dict[str, object]:
             "function_report_publishable": function_manifest is not None,
             "object_report_publishable": False,
             "blocking_reason": (
-                "The repository reports progress from the Ghidra-backed function inventory "
-                "and the reccmp lane."
+                "The repository publishes an objdiff-format report from the Ghidra-backed "
+                "function inventory and the reccmp lane rather than from split target objects."
             ),
             "next_requirement": (
-                "Keep adding verified source markers, rebuild with the MSVC lane, and "
-                "publish reccmp-backed report.json artifacts."
+                "Keep adding verified source markers, rebuild with the MSVC lane, and publish "
+                "the reccmp-backed report artifact."
             ),
         },
     }
