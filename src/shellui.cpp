@@ -197,6 +197,7 @@ void InitializePrimaryContextShell(SHELLUI_PrimaryContextShell *pShell) {
     *pShell = SHELLUI_PrimaryContextShell();
 }
 
+// FUNCTION: LEMBALL 0x00455FF0
 char *BuildSystemInformationReportString(void) {
     MEMORYSTATUS MemoryStatus;
     DWORD dwVersion;

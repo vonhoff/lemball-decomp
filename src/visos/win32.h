@@ -21,6 +21,7 @@ typedef unsigned long DWORD;
 typedef unsigned long DWORD_PTR;
 typedef long LONG;
 typedef unsigned char BYTE;
+typedef void *LPVOID;
 typedef unsigned long WPARAM;
 typedef long LPARAM;
 typedef long LRESULT;
@@ -31,6 +32,8 @@ typedef int INT;
 typedef unsigned long REGSAM;
 typedef void *FARPROC;
 typedef DWORD *LPDWORD;
+typedef void *HGLOBAL;
+typedef void *LPSECURITY_ATTRIBUTES;
 
 #ifndef PASCAL
 #if defined(_MSC_VER) || defined(__WATCOMC__)
@@ -52,6 +55,7 @@ typedef DWORD *LPDWORD;
 #define CALLBACK WINAPI
 #endif
 
+typedef DWORD(WINAPI *LPTHREAD_START_ROUTINE)(LPVOID);
 typedef int(CALLBACK *DLGPROC)(HWND, UINT, WPARAM, LPARAM);
 
 enum {

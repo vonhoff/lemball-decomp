@@ -203,6 +203,7 @@ unsigned int VSWIN_DebugTextWindow::GetBufferSize(void) const {
     return m_cchBuffer;
 }
 
+// FUNCTION: LEMBALL 0x0047C050
 int ConstructInvisibleMessageWindow(VSWIN_InvisibleMessageWindow *pWindow,
                                     LPCSTR pszClassName,
                                     int *pfClassRegistered) {

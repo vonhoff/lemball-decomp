@@ -296,6 +296,7 @@ FILE *mogload_get_resource_archive_file(void) {
     return g_pResourceArchiveFile;
 }
 
+// FUNCTION: LEMBALL 0x0045BAF0
 void *allocate_resource_archive_memory(unsigned int cbBytes) {
     return malloc(cbBytes);
 }

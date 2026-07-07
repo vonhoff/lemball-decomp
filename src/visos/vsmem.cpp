@@ -10,23 +10,7 @@ static long g_cbMainArenaCapacity = 0;
 static long g_cbMainArenaInUse = 0;
 static int g_fMainArenaReady = 0;
 
-// FUNCTION: LEMBALL 0x0046F060
-int InitializeMasterMainRamArena(void) {
-    g_cbMainArenaCapacity = 2L * 1024L * 1024L;
-    g_cbMainArenaInUse = 0;
-    g_fMainArenaReady = 1;
-    return 1;
-}
-
-// FUNCTION: LEMBALL 0x0046F120
-void ShutdownMasterMainRamArena(void) {
-    g_cbMainArenaCapacity = 0;
-    g_cbMainArenaInUse = 0;
-    g_fMainArenaReady = 0;
-}
-
-// FUNCTION: LEMBALL 0x0045A780
-void *AllocateVSMemBlock(unsigned int cbBlock) {
+static void *AllocateVSMemBlockImpl(unsigned int cbBlock) {
     VSMEM_BlockHeader *pHeader;
 
     if (!g_fMainArenaReady || cbBlock == 0) {
@@ -47,8 +31,7 @@ void *AllocateVSMemBlock(unsigned int cbBlock) {
     return pHeader + 1;
 }
 
-// FUNCTION: LEMBALL 0x0045A790
-void FreeVSMemBlock(void *pvBlock) {
+static void FreeVSMemBlockImpl(void *pvBlock) {
     VSMEM_BlockHeader *pHeader;
 
     if (pvBlock == 0) {
@@ -58,6 +41,31 @@ void FreeVSMemBlock(void *pvBlock) {
     pHeader = ((VSMEM_BlockHeader *)pvBlock) - 1;
     g_cbMainArenaInUse -= (long)pHeader->m_cbPayload;
     free(pHeader);
+}
+
+// FUNCTION: LEMBALL 0x0046F060
+int InitializeMasterMainRamArena(void) {
+    g_cbMainArenaCapacity = 2L * 1024L * 1024L;
+    g_cbMainArenaInUse = 0;
+    g_fMainArenaReady = 1;
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0046F120
+void ShutdownMasterMainRamArena(void) {
+    g_cbMainArenaCapacity = 0;
+    g_cbMainArenaInUse = 0;
+    g_fMainArenaReady = 0;
+}
+
+// FUNCTION: LEMBALL 0x0045A780
+void *AllocateVSMemBlock(unsigned int cbBlock) {
+    return AllocateVSMemBlockImpl(cbBlock);
+}
+
+// FUNCTION: LEMBALL 0x0045A790
+void FreeVSMemBlock(void *pvBlock) {
+    FreeVSMemBlockImpl(pvBlock);
 }
 
 // FUNCTION: LEMBALL 0x0045A350

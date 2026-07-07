@@ -101,6 +101,7 @@ static int SetVisualSciencesRegistryRunningState(const char *pszProductName, int
     return 1;
 }
 
+// FUNCTION: LEMBALL 0x0046DCD0
 static char *GetSrcDiskRegistryValueBuffer(char *pszBuffer, unsigned int cchBuffer) {
     HKEY hRegistryKey;
     DWORD cbValue;

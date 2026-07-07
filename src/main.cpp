@@ -4,16 +4,17 @@
 HINSTANCE g_hApplicationInstance = 0;
 
 // FUNCTION: LEMBALL 0x004564E0
-static int PASCAL StoreHInstanceAndRunGameStartup(HINSTANCE hInstance,
-                                                  HINSTANCE hPrevInstance,
-                                                  LPSTR lpCmdLine,
-                                                  int nCmdShow) {
+static void PASCAL StoreHInstanceAndRunGameStartup(HINSTANCE hInstance,
+                                                   HINSTANCE hPrevInstance,
+                                                   LPSTR lpCmdLine,
+                                                   int nCmdShow) {
     (void)hPrevInstance;
     (void)nCmdShow;
     g_hApplicationInstance = hInstance;
-    return RunGameStartupSequence(lpCmdLine);
+    RunGameStartupSequence(lpCmdLine);
 }
 
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-    return StoreHInstanceAndRunGameStartup(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+    StoreHInstanceAndRunGameStartup(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+    return 0;
 }

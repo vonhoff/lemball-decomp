@@ -75,18 +75,13 @@ static void CopyCString(char *pszTarget, unsigned int cchTarget, const char *psz
 // FUNCTION: LEMBALL 0x00406160
 STARTUP_GraphicsWindowConfig *BuildStartupGraphicsWindowConfig(const STARTUP_GraphicsWindowConfig *pSeedConfig) {
     int i;
+    const u32 *pSeedWords;
+    u32 *pConfigWords;
 
-    if (pSeedConfig != 0) {
-        const u32 *pSeedWords;
-        u32 *pConfigWords;
-
-        pSeedWords = (const u32 *)pSeedConfig;
-        pConfigWords = (u32 *)&g_StartupGraphicsWindowConfig;
-        for (i = 0; i < 7; ++i) {
-            pConfigWords[i] = pSeedWords[i];
-        }
-    } else {
-        memset(&g_StartupGraphicsWindowConfig, 0, sizeof(g_StartupGraphicsWindowConfig));
+    pSeedWords = (const u32 *)pSeedConfig;
+    pConfigWords = (u32 *)&g_StartupGraphicsWindowConfig;
+    for (i = 0; i < 7; ++i) {
+        pConfigWords[i] = pSeedWords[i];
     }
 
     g_StartupGraphicsWindowConfig.m_cbSize = 0x50;
@@ -263,6 +258,7 @@ int ApplyStartupCommandLineSwitches(int cArgs, const char *const *ppszArgs) {
     return fContinue;
 }
 
+// FUNCTION: LEMBALL 0x004727B0
 void FinalizeStartupGraphicsDriverConfig(void) {
     STARTUP_GraphicsWindowConfig Config;
 

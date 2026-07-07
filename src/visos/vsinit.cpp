@@ -68,6 +68,7 @@ private:
     size_t m_cchBuffer;
 };
 
+// FUNCTION: LEMBALL 0x004585B0
 static VSINIT_TextStream *AppendCStringToStream(VSINIT_TextStream *pStream, const char *pszText) {
     if (pStream != 0) {
         pStream->Append(pszText);
@@ -75,6 +76,7 @@ static VSINIT_TextStream *AppendCStringToStream(VSINIT_TextStream *pStream, cons
     return pStream;
 }
 
+// FUNCTION: LEMBALL 0x00458630
 static VSINIT_TextStream *AppendIntToStream(VSINIT_TextStream *pStream, unsigned int uValue) {
     if (pStream != 0) {
         pStream->AppendInt(uValue);
@@ -90,6 +92,7 @@ struct VSINIT_SubsystemPhase {
 
 static const char g_VSINIT_SyncDebugName[] = "Sync_Debug";
 static const char g_VSINIT_DebugOutPath[] = "debug.out";
+static const char g_VSINIT_ErrorTitle[] = "ERROR";
 static const char g_VSINIT_DebugStartError[] = "Unable to start 'Debug Message loop' thread";
 static const char g_VSINIT_BaseWindowClass[] = "VS_Base_Window_Class";
 static const char g_VSINIT_VersionPrefix[] = "ViSOS v";
@@ -136,14 +139,78 @@ static char g_aszParsedArgs[16][64];
 static const char *g_apszParsedArgs[16];
 static unsigned int g_cParsedArgs = 0;
 static int g_fSubsystemsReady = 0;
-static int g_fDebugMessageThreadRunning = 0;
+static int g_fDebugMessageThreadRunning = 1;
 static int g_fDebugFileEnabled = 1;
+static const char *g_pszDebugOutPath = g_VSINIT_DebugOutPath;
+static FILE *g_pDebugOutFile = 0;
+static HANDLE g_hDebugSyncEvent = 0;
+static HANDLE g_hDebugMessageThread = 0;
+static DWORD g_dwDebugMessageThreadId = 0;
 static VSWIN_InvisibleMessageWindow g_InvisibleMessageWindow;
 static long g_cbMainArenaAvailableAfterInit = 0;
 static unsigned int g_cbResourceGeometryHelperState = 0;
 static unsigned int g_uViSOSMajorVersion = 1;
 static unsigned int g_uViSOSMinorVersion = 0;
 static unsigned int g_uViSOSBuildNumber = 201;
+
+static HANDLE HostCreateEventA(LPSECURITY_ATTRIBUTES pEventAttributes,
+                               BOOL fManualReset,
+                               BOOL fInitialState,
+                               LPCSTR pszName) {
+    (void)pEventAttributes;
+    (void)fManualReset;
+    (void)fInitialState;
+    (void)pszName;
+    return (HANDLE)1;
+}
+
+static HANDLE HostCreateThread(LPSECURITY_ATTRIBUTES pThreadAttributes,
+                               DWORD cbStackSize,
+                               LPTHREAD_START_ROUTINE pfnThreadStart,
+                               LPVOID pvThreadParam,
+                               DWORD dwCreationFlags,
+                               LPDWORD pdwThreadId) {
+    (void)pThreadAttributes;
+    (void)cbStackSize;
+    (void)dwCreationFlags;
+
+    if (pdwThreadId != 0) {
+        *pdwThreadId = 1;
+    }
+
+    if (pfnThreadStart != 0) {
+        (void)pfnThreadStart(pvThreadParam);
+    }
+
+    return (HANDLE)1;
+}
+
+static BOOL HostSetThreadPriority(HANDLE hThread, int nPriority) {
+    (void)hThread;
+    (void)nPriority;
+    return 1;
+}
+
+static DWORD HostWaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds) {
+    (void)hHandle;
+    (void)dwMilliseconds;
+    return WAIT_OBJECT_0;
+}
+
+static BOOL HostTerminateThread(HANDLE hThread, DWORD dwExitCode) {
+    (void)hThread;
+    (void)dwExitCode;
+    return 1;
+}
+
+static void HostExitProcess(UINT uExitCode) {
+    (void)uExitCode;
+}
+
+static DWORD CALLBACK HostDebugMessageThreadMain(LPVOID pvThreadParam) {
+    (void)pvThreadParam;
+    return (DWORD)DebugMessageThreadMain();
+}
 
 void AppendStartupCString(const char *pszText) {
     AppendCStringToStream(g_pStartupOutputStream, pszText);
@@ -167,22 +234,29 @@ void AppendErrorUInt(unsigned int uValue) {
 
 // FUNCTION: LEMBALL 0x004728B0
 static void AppendStringToDebugOutFile(const char *pszText) {
-    FILE *pDebugFile;
+    size_t cchText;
 
-    if (!g_fDebugFileEnabled || pszText == 0 || *pszText == '\0') {
+    if (g_pszDebugOutPath == 0 || pszText == 0 || *pszText == '\0') {
         return;
     }
 
-    pDebugFile = fopen(g_VSINIT_DebugOutPath, "a");
-    if (pDebugFile == 0) {
+    cchText = strlen(pszText);
+    if (cchText == 0) {
         return;
     }
 
-    fputs(pszText, pDebugFile);
-    fflush(pDebugFile);
-    fclose(pDebugFile);
+    g_pDebugOutFile = fopen(g_pszDebugOutPath, "a");
+    if (g_pDebugOutFile == 0) {
+        return;
+    }
+
+    fwrite(pszText, 1, cchText, g_pDebugOutFile);
+    fflush(g_pDebugOutFile);
+    fclose(g_pDebugOutFile);
+    g_pDebugOutFile = 0;
 }
 
+// FUNCTION: LEMBALL 0x00458F10
 static const char *SelectSuccessOrFailedString(int fSuccess) {
     if (fSuccess == 0) {
         return g_VSINIT_Failed;
@@ -209,28 +283,43 @@ static int ParseDecimalInt(const char *pszText) {
 
 // FUNCTION: LEMBALL 0x00472BE0
 static int InitializeDebugMessageThread(void) {
-    AppendStringToDebugOutFile(g_VSINIT_SyncDebugName);
-    AppendStringToDebugOutFile(g_VSINIT_LineBreak);
+    (void)g_VSINIT_BaseWindowClass;
 
-    if (!ConstructInvisibleMessageWindow(
-            &g_InvisibleMessageWindow, g_VSINIT_BaseWindowClass, &g_fDebugMessageThreadRunning)) {
-        return 0;
+    if (g_fDebugMessageThreadRunning == 1) {
+        g_hDebugSyncEvent = HostCreateEventA(0, 0, 0, g_VSINIT_SyncDebugName);
+        g_hDebugMessageThread =
+            HostCreateThread(0, 0, HostDebugMessageThreadMain, 0, 0, &g_dwDebugMessageThreadId);
+        if (g_hDebugMessageThread == 0) {
+            lemball_platform_show_error(g_VSINIT_ErrorTitle, g_VSINIT_DebugStartError);
+            HostExitProcess(0xbbbb);
+            return 0;
+        }
+
+        HostSetThreadPriority(g_hDebugMessageThread, 1);
+        HostWaitForSingleObject(g_hDebugSyncEvent, INFINITE);
     }
 
-    if (!DebugMessageThreadMain()) {
-        AppendErrorCString(g_VSINIT_DebugStartError);
-        AppendErrorCString(g_VSINIT_LineBreak);
-        return 0;
-    }
-
-    g_fDebugMessageThreadRunning = 1;
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x00472C70
-static void ShutdownDebugMessageThread(int fForceTerminate) {
-    (void)fForceTerminate;
-    g_fDebugMessageThreadRunning = 0;
+static int ShutdownDebugMessageThread(int fForceTerminate) {
+    if (g_fDebugMessageThreadRunning == 1) {
+        if (fForceTerminate == 0) {
+            HostWaitForSingleObject(g_hDebugSyncEvent, INFINITE);
+        } else {
+            HostTerminateThread(g_hDebugMessageThread, 0xaaaa);
+        }
+        g_fDebugMessageThreadRunning = 0;
+        return 1;
+    }
+
+    if (g_pDebugOutFile != 0) {
+        fclose(g_pDebugOutFile);
+        g_pDebugOutFile = 0;
+    }
+
+    return 1;
 }
 
 static int InitialiseStreams(void) {
@@ -254,6 +343,36 @@ static int InitialiseStatus(void) {
 }
 
 static int InitialiseResources(void) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0045BA50
+static int ShutdownResourceTypeTables(void) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0045AAB0
+static int ShutdownStatusEntryRegistry(void) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x00462E70
+static int ShutdownTimingSubsystemStub(void) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x004591F0
+static int ShutdownSharedEventQueueRuntime(void) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x004566F0
+static int ShutdownProcessCurrentDirectoryState(void) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x004590B0
+static int ShutdownStreamChannels(void) {
     return 1;
 }
 
@@ -385,22 +504,24 @@ int InitializeCoreSubsystems(void) {
 void ShutdownCoreSubsystems(void) {
     long cbAvailableNow;
 
-    if (!g_fSubsystemsReady) {
-        return;
-    }
-
     AppendStartupCString(g_VSINIT_LineBreak);
     AppendStatusCString(g_VSINIT_LineBreak);
     AppendErrorCString(g_VSINIT_LineBreak);
+
+    ShutdownResourceTypeTables();
+    ShutdownStatusEntryRegistry();
+    ShutdownTimingSubsystemStub();
+    ShutdownResourceGeometryHelperRuntime();
+    ShutdownSharedEventQueueRuntime();
 
     cbAvailableNow = CalculateMemoryArenaAvailableBytes();
     if (cbAvailableNow != g_cbMainArenaAvailableAfterInit) {
         AppendErrorCString(g_VSINIT_MemoryLeakMessage);
     }
 
-    ShutdownResourceGeometryHelperRuntime();
-    g_fSubsystemsReady = 0;
-    ShutdownDebugMessageThread(0);
+    ShutdownProcessCurrentDirectoryState();
+    ShutdownDebugMessageThread(g_fDebugFileEnabled);
+    ShutdownStreamChannels();
     ShutdownMasterMainRamArena();
 }
 
@@ -436,8 +557,10 @@ int ParseCommandLineOptionToken(const char *pszToken) {
             g_aCommandLineOptions[i].m_fSpecified = 1;
             if (strcmp(g_aCommandLineOptions[i].m_pszName, "nodebug") == 0) {
                 g_fDebugFileEnabled = 0;
+                g_pszDebugOutPath = 0;
             } else if (strcmp(g_aCommandLineOptions[i].m_pszName, "debugfile") == 0) {
                 g_fDebugFileEnabled = 1;
+                g_pszDebugOutPath = g_VSINIT_DebugOutPath;
             }
             return 1;
         }

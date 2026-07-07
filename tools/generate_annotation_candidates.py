@@ -7,7 +7,7 @@ import json
 import re
 from pathlib import Path
 
-FUNCTION_RE = re.compile(r"^(?:[A-Za-z_][\w:\s\*&<>]*\s+)+([A-Za-z_][\w:]*)\s*\([^;]*\)\s*\{")
+FUNCTION_RE = re.compile(r"^(?:[A-Za-z_~][\w:\s\*&<>]*\s+)?(?:[\*&]\s*)*([A-Za-z_~][\w:]*)\s*\([^;{}]*\)\s*$")
 MARKER_RE = re.compile(r"^\s*//\s*FUNCTION:\s*(\w+)\s+(0x[0-9A-Fa-f]+)\s*$")
 MANIFEST_PATH = Path("data/manifest.json")
 
@@ -41,8 +41,20 @@ def source_functions(source_root: Path) -> list[dict[str, object]]:
     for path in sorted(path for path in source_root.rglob("*") if path.suffix.lower() == ".cpp"):
         lines = path.read_text().splitlines()
         for idx, line in enumerate(lines, 1):
+            if line[:1].isspace():
+                continue
             marker = lines[idx - 2] if idx > 1 else ""
-            match = FUNCTION_RE.match(line.strip())
+            signature = line.strip()
+            if "(" not in signature:
+                continue
+            scan_idx = idx
+            while "{" not in signature and ";" not in signature and scan_idx < len(lines):
+                scan_idx += 1
+                signature += " " + lines[scan_idx - 1].strip()
+            if "{" not in signature:
+                continue
+            signature = signature.split("{", 1)[0].strip()
+            match = FUNCTION_RE.match(signature)
             if not match:
                 continue
             full_name = match.group(1)
