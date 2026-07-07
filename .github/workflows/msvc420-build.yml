@@ -1,0 +1,98 @@
+name: msvc420 build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-msvc420:
+    runs-on: windows-2022
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Check out portable MSVC 4.20
+        uses: actions/checkout@v4
+        with:
+          repository: itsmattkc/msvc420
+          path: msvc420
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: "3.15.x"
+
+      - name: Patch VC 4.20 optimizer
+        run: python tools/patch_c2.py msvc420/bin/C2.EXE
+
+      - name: Decrypt original binary
+        shell: bash
+        env:
+          LEMBALL_GPG_PASSPHRASE: ${{ secrets.LEMBALL_GPG_PASSPHRASE }}
+        run: |
+          mkdir -p orig/LEMBALL
+          gpg --quiet --batch --yes \
+            --decrypt \
+            --passphrase "$LEMBALL_GPG_PASSPHRASE" \
+            --output orig/LEMBALL/LEMBALL.EXE \
+            orig/LEMBALL/LEMBALL.EXE.gpg
+
+      - name: Validate original binary
+        shell: bash
+        run: make validate-target VERSION=LEMBALL
+
+      - name: Configure and build
+        shell: cmd
+        run: |
+          call .\msvc420\bin\VCVARS32.BAT x86
+          cmake -S . -B build-msvc420 -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DLEMBALL_ENABLE_WIN32=ON
+          cmake --build build-msvc420 > build-msvc420\build.log 2>&1
+          if errorlevel 1 (
+            type build-msvc420\build.log
+            exit /b 1
+          )
+          cmake --build build-msvc420 >> build-msvc420\build.log 2>&1
+          if errorlevel 1 (
+            type build-msvc420\build.log
+            exit /b 1
+          )
+
+      - name: Generate reccmp build metadata
+        shell: pwsh
+        run: |
+          if (Test-Path build-msvc420/LEMBALL.EXE) {
+            $pdbPath = "build-msvc420/LEMBALL.PDB"
+            if (-not (Test-Path $pdbPath)) {
+              $pdbPath = "build-msvc420/LEMBALL.pdb"
+            }
+            if (Test-Path $pdbPath) {
+              python tools/generate_reccmp_build.py --target LEMBALL --binary build-msvc420/LEMBALL.EXE --pdb $pdbPath
+            }
+          }
+
+      - name: Install reccmp
+        run: python -m pip install git+https://github.com/isledecomp/reccmp.git
+
+      - name: Verify against original
+        shell: bash
+        run: tools/verify --silent
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: LEMBALL_msvc420
+          if-no-files-found: ignore
+          path: |
+            build-msvc420/LEMBALL.EXE
+            build-msvc420/LEMBALL.PDB
+            build-msvc420/build.log
+            reccmp-build.yml
+            reccmp-user.yml

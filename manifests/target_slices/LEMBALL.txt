@@ -1,0 +1,8 @@
+# unit      start VA     end VA       evidence
+# The end address is exclusive.
+#
+# These slices are taken from contiguous, verified functions in LEMBALL.EXE.
+# They are used to assemble target-side object material from verified executable bytes.
+
+VSINIT 0x00459250 0x00459520 initialize_core_subsystems
+VSMEM  0x0045A6B0 0x0045A78E allocate_vsmem_block_impl_through_allocate_vsmem_block

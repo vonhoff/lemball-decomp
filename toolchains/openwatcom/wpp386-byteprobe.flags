@@ -1,0 +1,6 @@
+# Exploratory profile only.
+# This is intentionally conservative and favors preserving structure over "nice" codegen.
+-bt=nt
+-3
+-d1
+-od

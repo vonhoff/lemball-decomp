@@ -48,7 +48,6 @@ build-*/
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
-Makefile
 install_manifest.txt
 compile_commands.json
 
@@ -67,3 +66,17 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+tools/bin/
+cmake-build-*/
+objdiff.json
+reccmp-build.yml
+reccmp-user.yml
+.idea/
+orig/*
+!orig/LEMBALL/
+orig/LEMBALL/*
+!orig/LEMBALL/LEMBALL.EXE.gpg
+.gnupg-local/
+__pycache__/
+.DS_Store
+*.iml

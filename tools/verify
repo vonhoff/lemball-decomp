@@ -1,0 +1,37 @@
+#!/bin/sh
+# Verify the recompiled binary against the original, per function (reccmp).
+# This mirrors the legoland/isledecomp style, but only works once an MSVC-era
+# build lane and debug info are available.
+set -e
+
+cd "$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+
+if [ ! -f reccmp-user.yml ]; then
+    python3 tools/generate_reccmp_user.py --version LEMBALL >/dev/null
+fi
+
+if [ ! -f reccmp-build.yml ]; then
+    for build_dir in build-msvc420 build; do
+        if [ -f "${build_dir}/LEMBALL.EXE" ] && [ -f "${build_dir}/LEMBALL.PDB" ]; then
+            python3 tools/generate_reccmp_build.py \
+                --target LEMBALL \
+                --binary "${build_dir}/LEMBALL.EXE" \
+                --pdb "${build_dir}/LEMBALL.PDB" \
+                >/dev/null
+            break
+        fi
+    done
+fi
+
+if command -v reccmp-reccmp >/dev/null 2>&1; then
+    exec reccmp-reccmp --target LEMBALL "$@"
+fi
+
+if python3 -c "import importlib.util,sys; sys.exit(0 if importlib.util.find_spec('reccmp') else 1)" >/dev/null 2>&1; then
+    exec python3 -m reccmp.reccmp --target LEMBALL "$@"
+fi
+
+echo "reccmp is not installed." >&2
+echo "This project's byte-accurate verify step needs an MSVC-era build lane plus reccmp." >&2
+echo "See docs/pipeline.md and docs/toolchain.md." >&2
+exit 1

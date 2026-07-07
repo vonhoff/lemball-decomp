@@ -1,0 +1,26 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 15,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "msvc420-nmake",
+      "displayName": "MSVC 4.20 (NMake)",
+      "generator": "NMake Makefiles",
+      "binaryDir": "${sourceDir}/build-msvc420",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "LEMBALL_ENABLE_WIN32": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "msvc420-nmake",
+      "configurePreset": "msvc420-nmake"
+    }
+  ]
+}

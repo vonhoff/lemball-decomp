@@ -1,0 +1,7 @@
+# file         string_va    anchor_function                               status
+# MAIN.CPP is currently inferred from the CRT-to-game handoff and period Win32 project style.
+GAME.CPP       0x0049CCC8   initialize_main_game_context                  present
+VSINIT.CPP     0x004A0FC8   initialize_core_subsystems                    present
+VSMEM.CPP      0x004A1388   allocate_vsmem_block_impl                     present
+VSGDI.CPP      0x004A20A4   update_helper_working_rect_and_backing        present
+MOGLOAD.CPP    0x004A1D84   construct_resource_archive_directory_node     present
