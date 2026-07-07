@@ -29,11 +29,6 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: true
-
       - name: Install Python tools
         shell: pwsh
         run: |
@@ -72,7 +67,7 @@ jobs:
 
       - name: Generate progress report
         if: always()
-        run: uv run tools/generate_reccmp_report.py -o report.json
+        run: python tools/generate_reccmp_report.py -o report.json
 
       - name: Upload progress report
         if: always()
