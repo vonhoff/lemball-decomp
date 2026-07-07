@@ -178,11 +178,7 @@ void MOGLOAD_DirectoryNode::ReadEntryRecord(MOGLOAD_EntryRecord *pEntry) {
         return;
     }
 
-    fseek(
-        g_pResourceArchiveFile,
-        ((m_iCursorIndex * 4L) + 4L) * 9L + m_lRecordTableOffset,
-        SEEK_SET
-    );
+    fseek(g_pResourceArchiveFile, ((m_iCursorIndex * 4L) + 4L) * 9L + m_lRecordTableOffset, SEEK_SET);
 
     lNameOffset = (long)MOGLOAD_ReadU32();
     if (m_pNameData != 0) {

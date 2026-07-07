@@ -6,6 +6,7 @@ static int g_fResourceGeometryHelperReady = 0;
 static int g_fStartupFullscreen = 0;
 static int g_fStartupGraphicsDriverGdk = 0;
 static int g_fGraphicsFallbackWarningShown = 0;
+static int g_nSelectedGraphicsDriver = VSGDI_DRIVER_AUTO;
 static unsigned int g_cbResourceGeometryHelperState = 0x20;
 static VSGDI_DisplayState *g_pDisplayState = 0;
 
@@ -222,11 +223,17 @@ int InitializeSelectedGraphicsDriver(int nRequestedDriver) {
     }
 
     if (nRequestedDriver != nSelectedDriver && g_apszGraphicsDriverNames[nSelectedDriver] != 0) {
-        VSGDI_AppendStatusLine(g_VSGDI_AutoSelectedPrefix, g_apszGraphicsDriverNames[nSelectedDriver], g_VSGDI_AutoSelectedSuffix);
+        VSGDI_AppendStatusLine(
+            g_VSGDI_AutoSelectedPrefix, g_apszGraphicsDriverNames[nSelectedDriver], g_VSGDI_AutoSelectedSuffix);
     }
 
+    g_nSelectedGraphicsDriver = nSelectedDriver;
     g_cbResourceGeometryHelperState = 0x20;
     return 1;
+}
+
+int GetSelectedGraphicsDriverId(void) {
+    return g_nSelectedGraphicsDriver;
 }
 
 VSGDI_DisplayState *GetDisplayState(void) {

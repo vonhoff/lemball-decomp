@@ -1,0 +1,13 @@
+Checks: >-
+  clang-diagnostic-*,
+  clang-analyzer-*,
+  bugprone-suspicious-memset-usage,
+  bugprone-sizeof-expression,
+  bugprone-string-constructor,
+  bugprone-use-after-move
+WarningsAsErrors: ''
+HeaderFilterRegex: '^(src|tools)/'
+FormatStyle: none
+CheckOptions:
+  - key: bugprone-sizeof-expression.WarnOnSizeOfThis
+    value: 'false'

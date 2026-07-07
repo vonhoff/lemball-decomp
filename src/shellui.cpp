@@ -1,6 +1,7 @@
 #include "shellui.h"
 
 #include "main.h"
+#include "vsgdi.h"
 #include "vsinit.h"
 
 #include <stdio.h>
@@ -14,7 +15,8 @@ static const char g_SHELLUI_WindowsNtFormat[] = "WindowsNT %u.%u (Build: %u)";
 static const char g_SHELLUI_Win32sFormat[] = "Win32s %u.%u (Build: %u)";
 static const char g_SHELLUI_Windows95Format[] = "Windows95 %u.%u";
 static const char g_SHELLUI_SystemInfoFormat[] =
-    "Operating System : %s\nBuild Number : %d\nViSOS Build Number : %d\nPhysical Memory Size : %lu bytes\nPercent Used : %lu%%\nAvail Memory Free : %lu bytes\n";
+    "Operating System : %s\nBuild Number : %d\nViSOS Build Number : %d\nPhysical Memory Size : %lu bytes\nPercent Used "
+    ": %lu%%\nAvail Memory Free : %lu bytes\n";
 static const char g_SHELLUI_ModulePath[] = "LEMBALL.EXE";
 static const char g_SHELLUI_SystemInfoBuffer[] = "System Information";
 
@@ -159,10 +161,31 @@ static int HostEndDialog(HWND hDlg, int nResult) {
     return 1;
 }
 
+SHELLUI_PrimaryContextShell::SHELLUI_PrimaryContextShell(void) {
+    m_hMainWindow = 0;
+    m_fQuitRequested = 0;
+    m_fWideDisplay = 0;
+}
+
+void SHELLUI_PrimaryContextShell::ToggleDisplayMode(void) {
+    m_fWideDisplay ^= 1;
+}
+
+void SHELLUI_PrimaryContextShell::RequestQuit(void) {
+    m_fQuitRequested = 1;
+}
+
 // FUNCTION: LEMBALL 0x00431C90
 static void TogglePrimaryContextDisplayMode(SHELLUI_PrimaryContextShell *pShell) {
-    if (pShell != 0) {
-        pShell->m_fWideDisplay ^= 1;
+    int nDriver;
+
+    (void)pShell;
+
+    nDriver = GetSelectedGraphicsDriverId();
+    if (nDriver == VSGDI_DRIVER_METRICS) {
+        InitializeSelectedGraphicsDriver(VSGDI_DRIVER_DIB_640_480);
+    } else if (nDriver == VSGDI_DRIVER_DIB_640_480) {
+        InitializeSelectedGraphicsDriver(VSGDI_DRIVER_METRICS);
     }
 }
 
@@ -171,9 +194,7 @@ void InitializePrimaryContextShell(SHELLUI_PrimaryContextShell *pShell) {
         return;
     }
 
-    pShell->m_hMainWindow = 0;
-    pShell->m_fQuitRequested = 0;
-    pShell->m_fWideDisplay = 0;
+    *pShell = SHELLUI_PrimaryContextShell();
 }
 
 char *BuildSystemInformationReportString(void) {
@@ -194,24 +215,33 @@ char *BuildSystemInformationReportString(void) {
     uBuildVersion = (unsigned int)((dwVersion >> 16) & 0x7fff);
 
     if ((dwVersion & 0x80000000u) == 0) {
-        FormatCString(szOperatingSystem, sizeof(szOperatingSystem), g_SHELLUI_WindowsNtFormat, uMajorVersion, uMinorVersion, uBuildVersion);
+        FormatCString(szOperatingSystem,
+                      sizeof(szOperatingSystem),
+                      g_SHELLUI_WindowsNtFormat,
+                      uMajorVersion,
+                      uMinorVersion,
+                      uBuildVersion);
     } else if (uMajorVersion < 4) {
-        FormatCString(szOperatingSystem, sizeof(szOperatingSystem), g_SHELLUI_Win32sFormat, uMajorVersion, uMinorVersion, uBuildVersion);
+        FormatCString(szOperatingSystem,
+                      sizeof(szOperatingSystem),
+                      g_SHELLUI_Win32sFormat,
+                      uMajorVersion,
+                      uMinorVersion,
+                      uBuildVersion);
     } else {
-        FormatCString(szOperatingSystem, sizeof(szOperatingSystem), g_SHELLUI_Windows95Format, uMajorVersion, uMinorVersion);
+        FormatCString(
+            szOperatingSystem, sizeof(szOperatingSystem), g_SHELLUI_Windows95Format, uMajorVersion, uMinorVersion);
     }
 
-    FormatCString(
-        g_AboutSystemInfoBuffer,
-        sizeof(g_AboutSystemInfoBuffer),
-        g_SHELLUI_SystemInfoFormat,
-        szOperatingSystem,
-        SHELLUI_PRODUCT_BUILD_NUMBER,
-        SHELLUI_VISOS_BUILD_NUMBER,
-        MemoryStatus.dwTotalPhys,
-        MemoryStatus.dwMemoryLoad,
-        MemoryStatus.dwAvailPhys
-    );
+    FormatCString(g_AboutSystemInfoBuffer,
+                  sizeof(g_AboutSystemInfoBuffer),
+                  g_SHELLUI_SystemInfoFormat,
+                  szOperatingSystem,
+                  SHELLUI_PRODUCT_BUILD_NUMBER,
+                  SHELLUI_VISOS_BUILD_NUMBER,
+                  MemoryStatus.dwTotalPhys,
+                  MemoryStatus.dwMemoryLoad,
+                  MemoryStatus.dwAvailPhys);
 
     if (GetModuleFileNameA(g_hApplicationInstance, szModulePath, sizeof(szModulePath)) == 0) {
         CopyCString(szModulePath, sizeof(szModulePath), g_SHELLUI_ModulePath);
@@ -270,7 +300,7 @@ int HandlePrimaryContextMenuCommand(SHELLUI_PrimaryContextShell *pShell, const S
 
     switch (pMessage->m_nCommand) {
     case SHELLUI_MENU_COMMAND_EXIT:
-        pShell->m_fQuitRequested = 1;
+        pShell->RequestQuit();
         return 0;
     case SHELLUI_MENU_COMMAND_HELP_INDEX:
         szHelpPath[0] = '\0';

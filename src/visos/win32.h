@@ -33,7 +33,7 @@ typedef void *FARPROC;
 typedef DWORD *LPDWORD;
 
 #ifndef PASCAL
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__WATCOMC__)
 #define PASCAL __stdcall
 #else
 #define PASCAL
@@ -41,7 +41,7 @@ typedef DWORD *LPDWORD;
 #endif
 
 #ifndef WINAPI
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__WATCOMC__)
 #define WINAPI __stdcall
 #else
 #define WINAPI
@@ -52,7 +52,7 @@ typedef DWORD *LPDWORD;
 #define CALLBACK WINAPI
 #endif
 
-typedef int (CALLBACK *DLGPROC)(HWND, UINT, WPARAM, LPARAM);
+typedef int(CALLBACK *DLGPROC)(HWND, UINT, WPARAM, LPARAM);
 
 enum {
     MB_OK = 0x00000000u,
@@ -84,7 +84,7 @@ struct tagMSG {
 
 typedef tagMSG MSG;
 
-typedef LRESULT (WINAPI *WNDPROC)(HWND, UINT, WPARAM, LPARAM);
+typedef LRESULT(WINAPI *WNDPROC)(HWND, UINT, WPARAM, LPARAM);
 
 struct tagWNDCLASSA {
     UINT style;
@@ -127,14 +127,18 @@ int lemball_platform_show_error(const char *title, const char *message);
 
 extern "C" {
 LSTATUS WINAPI RegOpenKeyExA(HKEY hKey, LPCSTR lpSubKey, DWORD ulOptions, REGSAM samDesired, HKEY *phkResult);
-LSTATUS WINAPI RegSetValueExA(HKEY hKey, LPCSTR lpValueName, DWORD Reserved, DWORD dwType, const BYTE *lpData, DWORD cbData);
-LSTATUS WINAPI RegQueryValueExA(HKEY hKey, LPCSTR lpValueName, LPDWORD lpReserved, LPDWORD lpType, BYTE *lpData, LPDWORD lpcbData);
+LSTATUS WINAPI
+RegSetValueExA(HKEY hKey, LPCSTR lpValueName, DWORD Reserved, DWORD dwType, const BYTE *lpData, DWORD cbData);
+LSTATUS WINAPI
+RegQueryValueExA(HKEY hKey, LPCSTR lpValueName, LPDWORD lpReserved, LPDWORD lpType, BYTE *lpData, LPDWORD lpcbData);
 LSTATUS WINAPI RegCloseKey(HKEY hKey);
 DWORD WINAPI GetLogicalDrives(void);
 UINT WINAPI GetDriveTypeA(LPCSTR lpRootPathName);
 UINT WINAPI GetModuleFileNameA(HINSTANCE hModule, LPSTR lpFilename, UINT nSize);
+HICON WINAPI LoadIconA(HINSTANCE hInstance, LPCSTR lpIconName);
 BOOL WINAPI WinHelpA(HWND hWndMain, LPCSTR lpszHelp, UINT uCommand, DWORD_PTR dwData);
-int WINAPI DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam);
+int WINAPI
+DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam);
 }
 
 #endif

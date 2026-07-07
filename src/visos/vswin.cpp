@@ -151,20 +151,18 @@ int VSWIN_InvisibleMessageWindow::Construct(LPCSTR pszClassName, int *pfClassReg
         *pfClassRegistered = 1;
     }
 
-    m_hWnd = HostCreateWindowExA(
-        0,
-        pszClassName,
-        g_VSWIN_InvisibleWindowTitle,
-        0,
-        (INT) CW_USEDEFAULT,
-        (INT) CW_USEDEFAULT,
-        (INT) CW_USEDEFAULT,
-        (INT) CW_USEDEFAULT,
-        0,
-        0,
-        g_hApplicationInstance,
-        this
-    );
+    m_hWnd = HostCreateWindowExA(0,
+                                 pszClassName,
+                                 g_VSWIN_InvisibleWindowTitle,
+                                 0,
+                                 (INT)CW_USEDEFAULT,
+                                 (INT)CW_USEDEFAULT,
+                                 (INT)CW_USEDEFAULT,
+                                 (INT)CW_USEDEFAULT,
+                                 0,
+                                 0,
+                                 g_hApplicationInstance,
+                                 this);
 
     if (m_hWnd == 0) {
         AppendErrorCString(g_VSWIN_InvisibleWindowCreateError);
@@ -205,7 +203,9 @@ unsigned int VSWIN_DebugTextWindow::GetBufferSize(void) const {
     return m_cchBuffer;
 }
 
-int ConstructInvisibleMessageWindow(VSWIN_InvisibleMessageWindow *pWindow, LPCSTR pszClassName, int *pfClassRegistered) {
+int ConstructInvisibleMessageWindow(VSWIN_InvisibleMessageWindow *pWindow,
+                                    LPCSTR pszClassName,
+                                    int *pfClassRegistered) {
     if (pWindow == 0) {
         return 0;
     }
@@ -223,8 +223,7 @@ int DebugMessageThreadMain(void) {
     if (pvTextWindow == 0) {
         g_pDebugTextWindow = 0;
     } else {
-        g_pDebugTextWindow =
-            (new (pvTextWindow) VSWIN_DebugTextWindow)->Construct(g_VSWIN_DebugWindowTitle, 0x2800);
+        g_pDebugTextWindow = (new (pvTextWindow) VSWIN_DebugTextWindow)->Construct(g_VSWIN_DebugWindowTitle, 0x2800);
     }
 
     HostSetEvent((HANDLE)1);

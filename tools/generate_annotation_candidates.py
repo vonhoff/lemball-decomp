@@ -38,7 +38,7 @@ def build_inventory_index() -> dict[str, list[dict[str, object]]]:
 
 def source_functions(source_root: Path) -> list[dict[str, object]]:
     out: list[dict[str, object]] = []
-    for path in sorted(source_root.rglob("*.CPP")):
+    for path in sorted(path for path in source_root.rglob("*") if path.suffix.lower() == ".cpp"):
         lines = path.read_text().splitlines()
         for idx, line in enumerate(lines, 1):
             marker = lines[idx - 2] if idx > 1 else ""

@@ -15,12 +15,27 @@
       "cacheVariables": {
         "LEMBALL_ENABLE_WIN32": "ON"
       }
+    },
+    {
+      "name": "openwatcom-win32",
+      "displayName": "Open Watcom 2.x Win32",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build-openwatcom",
+      "toolchainFile": "${sourceDir}/cmake/openwatcom-toolchain.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "LEMBALL_ENABLE_WIN32": "ON"
+      }
     }
   ],
   "buildPresets": [
     {
       "name": "msvc420",
       "configurePreset": "msvc420"
+    },
+    {
+      "name": "openwatcom-win32",
+      "configurePreset": "openwatcom-win32"
     }
   ]
 }

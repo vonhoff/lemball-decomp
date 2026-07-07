@@ -7,3 +7,17 @@ The goal of this project is to create a fully functional decompilation of Lemmin
 
 > Note: This repository is for decompilation only and its code is true to the original release.
 > The reconstructed game target will not compile for targets other than 32-bit Windows.
+
+## Build lanes
+
+- `msvc420` is the byte-matching verification lane. This is the one CI should trust for rebuilt-binary comparison.
+- `openwatcom-win32` is an optional local compile-check lane for non-Windows hosts. It targets 32-bit Win32 through Open Watcom 2.x and is only meant to catch portability and syntax issues earlier. It is not expected to produce byte-matching output.
+
+Example:
+
+```sh
+cmake --preset openwatcom-win32
+cmake --build --preset openwatcom-win32
+```
+
+This preset expects `wcl386` to be available on `PATH`.

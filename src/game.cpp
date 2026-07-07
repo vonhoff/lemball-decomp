@@ -1,9 +1,15 @@
 #include "game.h"
 
 #include "shellui.h"
+#include "startup.h"
 #include "vsmem.h"
 #include "vsinit.h"
 
+#if defined(_MSC_VER) && (_MSC_VER < 1100)
+#include <new.h>
+#else
+#include <new>
+#endif
 #include <stdio.h>
 
 static const char g_GAME_RegistryRoot[] = "SOFTWARE\\Visual Sciences\\";
@@ -111,14 +117,7 @@ static char *GetSrcDiskRegistryValueBuffer(char *pszBuffer, unsigned int cchBuff
 
     cbValue = cchBuffer;
     dwType = 0xffffffffu;
-    if (RegQueryValueExA(
-            hRegistryKey,
-            g_GAME_SrcDiskValueName,
-            0,
-            &dwType,
-            (BYTE *)pszBuffer,
-            &cbValue
-        ) != 0) {
+    if (RegQueryValueExA(hRegistryKey, g_GAME_SrcDiskValueName, 0, &dwType, (BYTE *)pszBuffer, &cbValue) != 0) {
         pszBuffer[0] = '\0';
     }
 
@@ -168,18 +167,36 @@ static void ShowStartupMessage(const char *pszTitle, const char *pszText) {
     lemball_platform_show_error(pszTitle, pszText);
 }
 
+GAME_StatusEntry::GAME_StatusEntry(const char *pszName) {
+    m_pszName = pszName;
+    m_nReserved0 = 0;
+    m_nReserved1 = 0;
+    m_fActive = 0;
+}
+
+GAME_MainContext::GAME_MainContext(void) {
+    m_fRegistryRunning = 0;
+    m_fMusicEnabled = 1;
+    m_fEffectsEnabled = 1;
+    m_fSessionReady = 0;
+    m_fInstalled = 0;
+    m_pszRegistryKey = g_GAME_RegistryKey;
+    m_pszWindowTitle = g_GAME_WindowTitle;
+    m_pszResourceArchiveName = g_GAME_MainArchiveName;
+    m_pszStartupMusicName = g_GAME_StartupMusicName;
+    m_szSrcDisk[0] = '\0';
+    m_szDisplayCaption[0] = '\0';
+    m_pProcessingStatus = 0;
+    m_pRefreshingStatus = 0;
+}
+
 static GAME_StatusEntry *AllocateNamedStatusEntry(const char *pszName) {
     GAME_StatusEntry *pEntry;
 
-    pEntry = (GAME_StatusEntry *)AllocateVSMemBlock(sizeof(GAME_StatusEntry));
+    pEntry = new (AllocateVSMemBlock(sizeof(GAME_StatusEntry))) GAME_StatusEntry(pszName);
     if (pEntry == 0) {
         return 0;
     }
-
-    pEntry->m_pszName = pszName;
-    pEntry->m_nReserved0 = 0;
-    pEntry->m_nReserved1 = 0;
-    pEntry->m_fActive = 0;
     return pEntry;
 }
 
@@ -191,19 +208,7 @@ GAME_MainContext *InitializeMainGameContext(GAME_MainContext *pMainContext, cons
         return 0;
     }
 
-    pMainContext->m_fRegistryRunning = 0;
-    pMainContext->m_fMusicEnabled = 1;
-    pMainContext->m_fEffectsEnabled = 1;
-    pMainContext->m_fSessionReady = 0;
-    pMainContext->m_fInstalled = 0;
-    pMainContext->m_pszRegistryKey = g_GAME_RegistryKey;
-    pMainContext->m_pszWindowTitle = g_GAME_WindowTitle;
-    pMainContext->m_pszResourceArchiveName = g_GAME_MainArchiveName;
-    pMainContext->m_pszStartupMusicName = g_GAME_StartupMusicName;
-    pMainContext->m_pProcessingStatus = 0;
-    pMainContext->m_pRefreshingStatus = 0;
-    pMainContext->m_szSrcDisk[0] = '\0';
-    pMainContext->m_szDisplayCaption[0] = '\0';
+    *pMainContext = GAME_MainContext();
 
     pMainContext->m_fRegistryRunning = SetVisualSciencesRegistryRunningState(g_GAME_WindowTitle, 1);
     if (FindCdromFilePathBySuffix(g_GAME_VsmemDllName) == 0) {
@@ -256,10 +261,22 @@ void ShutdownMainGameContext(GAME_MainContext *pMainContext) {
 }
 
 // FUNCTION: LEMBALL 0x00406310
-int RunMainGameSession(GAME_MainContext *pMainContext) {
-    SHELLUI_PrimaryContextShell Shell;
+int RunMainGameSession(int cArgs, const char *const *ppszArgs) {
+    GAME_MainContext *pMainContext;
 
+    InitializeStartupSwitchDefaults();
+    if (!ApplyStartupCommandLineSwitches(cArgs, ppszArgs)) {
+        return 0;
+    }
+
+    pMainContext = (GAME_MainContext *)AllocateVSMemBlock(sizeof(GAME_MainContext));
     if (pMainContext == 0) {
+        return 1;
+    }
+
+    pMainContext = InitializeMainGameContext(pMainContext, 0);
+    if (pMainContext == 0) {
+        FreeVSMemBlock(pMainContext);
         return 1;
     }
 
@@ -267,34 +284,31 @@ int RunMainGameSession(GAME_MainContext *pMainContext) {
         ShowStartupMessage(g_GAME_NotInstalledTitle, g_GAME_InstallPrompt);
         AppendErrorCString(g_GAME_InstallPrompt);
         AppendErrorCString("\n");
+        ShutdownMainGameContext(pMainContext);
+        FreeVSMemBlock(pMainContext);
         return 1;
     }
 
-    InitializePrimaryContextShell(&Shell);
     BuildSystemInformationReportString();
+    ShutdownMainGameContext(pMainContext);
+    FreeVSMemBlock(pMainContext);
     return 0;
 }
 
 // FUNCTION: LEMBALL 0x00459860
 int RunGameStartupSequence(char *pszCmdLine) {
-    GAME_MainContext MainContext;
     int nResult;
 
     TokenizeAndFilterCommandLineArgs(pszCmdLine);
+    FinalizeStartupGraphicsDriverConfig();
 
     if (!InitializeCoreSubsystems()) {
         ShutdownCoreSubsystems();
         return 1;
     }
 
-    if (InitializeMainGameContext(&MainContext, pszCmdLine) == 0) {
-        ShutdownCoreSubsystems();
-        return 1;
-    }
-
     LogParsedCommandLineOptions();
-    nResult = RunMainGameSession(&MainContext);
-    ShutdownMainGameContext(&MainContext);
+    nResult = RunMainGameSession((int)GetParsedCommandLineArgumentCount(), GetParsedCommandLineArgs());
     ShutdownCoreSubsystems();
     return nResult;
 }

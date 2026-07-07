@@ -14,6 +14,7 @@ void ShutdownCoreSubsystems(void);
 int ParseCommandLineOptionToken(const char *pszToken);
 void TokenizeAndFilterCommandLineArgs(const char *pszCmdLine);
 unsigned int GetParsedCommandLineArgumentCount(void);
+const char *const *GetParsedCommandLineArgs(void);
 const VSINIT_CommandLineOption *GetCommandLineOptions(size_t *pcOptions);
 void LogParsedCommandLineOptions(void);
 void AppendStartupCString(const char *pszText);

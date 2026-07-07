@@ -7,6 +7,7 @@ set(LEMBALL_SOURCES
     src/game.cpp
     src/main.cpp
     src/shellui.cpp
+    src/startup.cpp
     src/visos/mogload.cpp
     src/visos/vsgdi.cpp
     src/visos/vsinit.cpp
@@ -14,7 +15,7 @@ set(LEMBALL_SOURCES
     src/visos/vswin.cpp
 )
 
-if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "11.0" OR NOT MSVC)
+if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "OpenWatcom" AND (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "11.0" OR NOT MSVC))
     set(CMAKE_CXX_STANDARD 98)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
     set(CMAKE_CXX_EXTENSIONS OFF)
@@ -32,6 +33,14 @@ if(LEMBALL_ENABLE_WIN32)
         SUFFIX ".EXE"
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
         PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-        LINK_FLAGS "user32.lib advapi32.lib"
     )
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "OpenWatcom")
+        set_target_properties(LEMBALL PROPERTIES
+            LINK_FLAGS "system nt_win library kernel32.lib,user32.lib,advapi32.lib"
+        )
+    else()
+        set_target_properties(LEMBALL PROPERTIES
+            LINK_FLAGS "user32.lib advapi32.lib"
+        )
+    endif()
 endif()

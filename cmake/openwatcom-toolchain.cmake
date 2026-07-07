@@ -1,0 +1,65 @@
+# Open Watcom 2.x Win32 toolchain for local compile verification on non-Windows hosts.
+# This is intentionally separate from the MSVC 4.20 byte-matching lane.
+
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_PROCESSOR x86)
+
+get_filename_component(_tc_dir "${CMAKE_CURRENT_LIST_DIR}" ABSOLUTE)
+get_filename_component(_root_dir "${_tc_dir}/.." ABSOLUTE)
+
+find_program(OPENWATCOM_WCL386 NAMES wcl386 DOC "Open Watcom 32-bit compiler driver")
+if(NOT OPENWATCOM_WCL386)
+    message(FATAL_ERROR
+        "Open Watcom wcl386 was not found in PATH.\n"
+        "Install Open Watcom 2.x and ensure its bin directory is on PATH.\n"
+        "This lane is only for local Win32 compile verification.")
+endif()
+
+set(CMAKE_C_COMPILER "${OPENWATCOM_WCL386}")
+set(CMAKE_CXX_COMPILER "${OPENWATCOM_WCL386}")
+set(CMAKE_C_COMPILER_ID "OpenWatcom")
+set(CMAKE_CXX_COMPILER_ID "OpenWatcom")
+set(CMAKE_C_COMPILER_VERSION "2.0")
+set(CMAKE_CXX_COMPILER_VERSION "2.0")
+set(CMAKE_C_COMPILER_ID_RUN TRUE)
+set(CMAKE_CXX_COMPILER_ID_RUN TRUE)
+set(CMAKE_C_COMPILER_FORCED TRUE)
+set(CMAKE_CXX_COMPILER_FORCED TRUE)
+set(CMAKE_C_COMPILER_WORKS TRUE)
+set(CMAKE_CXX_COMPILER_WORKS TRUE)
+
+set(CMAKE_C_OUTPUT_EXTENSION ".obj")
+set(CMAKE_CXX_OUTPUT_EXTENSION ".obj")
+set(CMAKE_EXECUTABLE_SUFFIX ".exe")
+set(CMAKE_STATIC_LIBRARY_PREFIX "")
+set(CMAKE_STATIC_LIBRARY_SUFFIX ".lib")
+set(CMAKE_IMPORT_LIBRARY_PREFIX "")
+set(CMAKE_IMPORT_LIBRARY_SUFFIX ".lib")
+
+set(CMAKE_INCLUDE_FLAG_C "-i=")
+set(CMAKE_INCLUDE_FLAG_CXX "-i=")
+set(CMAKE_C_DEFINE_FLAG "-d")
+set(CMAKE_CXX_DEFINE_FLAG "-d")
+set(CMAKE_DEPFILE_FLAGS_C "")
+set(CMAKE_DEPFILE_FLAGS_CXX "")
+set(CMAKE_LINK_LIBRARY_FLAG "")
+set(CMAKE_LINK_LIBRARY_SUFFIX ".lib")
+
+set(CMAKE_C_FLAGS_INIT "-zq -bt=nt")
+set(CMAKE_CXX_FLAGS_INIT "-zq -bt=nt -xs -xr")
+set(CMAKE_C_FLAGS_DEBUG_INIT "-d2")
+set(CMAKE_CXX_FLAGS_DEBUG_INIT "-d2")
+set(CMAKE_C_FLAGS_RELEASE_INIT "-ot -ox")
+set(CMAKE_CXX_FLAGS_RELEASE_INIT "-ot -ox")
+set(CMAKE_C_FLAGS_RELWITHDEBINFO_INIT "-ot -d2")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT "-ot -d2")
+
+set(CMAKE_C_COMPILE_OBJECT
+    "<CMAKE_C_COMPILER> <DEFINES> <INCLUDES> <FLAGS> -fo=<OBJECT> -c <SOURCE>")
+set(CMAKE_CXX_COMPILE_OBJECT
+    "<CMAKE_CXX_COMPILER> <DEFINES> <INCLUDES> <FLAGS> -fo=<OBJECT> -c <SOURCE>")
+
+set(CMAKE_C_LINK_EXECUTABLE
+    "<CMAKE_C_COMPILER> -l=win32 -fe=<TARGET> <FLAGS> <CMAKE_C_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> <LINK_LIBRARIES>")
+set(CMAKE_CXX_LINK_EXECUTABLE
+    "<CMAKE_CXX_COMPILER> -l=win32 -fe=<TARGET> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> <LINK_LIBRARIES>")

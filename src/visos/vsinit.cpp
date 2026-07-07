@@ -120,20 +120,10 @@ static const char g_VSINIT_MainMemoryArenaName[] = "Main memory arena";
 static const char g_VSINIT_MemoryLeakMessage[] = "**** MEMORY LEAK, dumping memory contents ****\n";
 
 static VSINIT_CommandLineOption g_aCommandLineOptions[] = {
-    { "paranoid", 0, 0 },
-    { "nowait", 0, 0 },
-    { "nosmallmemory", 0, 0 },
-    { "wing", 0, 0 },
-    { "full", 0, 0 },
-    { "showunloading", 0, 0 },
-    { "showloading", 0, 0 },
-    { "surfaces:", 0, 0 },
-    { "memorysize:", 0, 0 },
-    { "nodebug", 0, 0 },
-    { "debugfile", 0, 0 },
-    { "SNDDEBUG", 0, 0 },
-    { "STATDEBUG", 0, 0 },
-    { "MEMDEBUG", 0, 0 },
+    { "paranoid", 0, 0 },    { "nowait", 0, 0 },        { "nosmallmemory", 0, 0 }, { "wing", 0, 0 },
+    { "full", 0, 0 },        { "showunloading", 0, 0 }, { "showloading", 0, 0 },   { "surfaces:", 0, 0 },
+    { "memorysize:", 0, 0 }, { "nodebug", 0, 0 },       { "debugfile", 0, 0 },     { "SNDDEBUG", 0, 0 },
+    { "STATDEBUG", 0, 0 },   { "MEMDEBUG", 0, 0 },
 };
 
 static VSINIT_TextStream g_StartupOutputStream;
@@ -222,7 +212,8 @@ static int InitializeDebugMessageThread(void) {
     AppendStringToDebugOutFile(g_VSINIT_SyncDebugName);
     AppendStringToDebugOutFile(g_VSINIT_LineBreak);
 
-    if (!ConstructInvisibleMessageWindow(&g_InvisibleMessageWindow, g_VSINIT_BaseWindowClass, &g_fDebugMessageThreadRunning)) {
+    if (!ConstructInvisibleMessageWindow(
+            &g_InvisibleMessageWindow, g_VSINIT_BaseWindowClass, &g_fDebugMessageThreadRunning)) {
         return 0;
     }
 
@@ -433,9 +424,8 @@ int ParseCommandLineOptionToken(const char *pszToken) {
 
             cchToken = strlen(pszToken);
             pszColon = strchr(g_aCommandLineOptions[i].m_pszName, ':');
-            cchOption = pszColon == 0
-                ? strlen(g_aCommandLineOptions[i].m_pszName)
-                : (size_t)(pszColon - g_aCommandLineOptions[i].m_pszName);
+            cchOption = pszColon == 0 ? strlen(g_aCommandLineOptions[i].m_pszName)
+                                      : (size_t)(pszColon - g_aCommandLineOptions[i].m_pszName);
 
             if (cchToken == cchOption) {
                 g_aCommandLineOptions[i].m_nValue ^= 1;
@@ -517,6 +507,10 @@ void TokenizeAndFilterCommandLineArgs(const char *pszCmdLine) {
 
 unsigned int GetParsedCommandLineArgumentCount(void) {
     return g_cParsedArgs;
+}
+
+const char *const *GetParsedCommandLineArgs(void) {
+    return g_apszParsedArgs;
 }
 
 const VSINIT_CommandLineOption *GetCommandLineOptions(size_t *pcOptions) {

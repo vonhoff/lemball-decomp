@@ -4,8 +4,12 @@ GHIDRA_PROJECT_DIR ?= ../LemBall_Decompilation
 GHIDRA_PROJECT_NAME ?= LEMBALL_DECOMP
 GHIDRA_PROGRAM ?= LEMBALL.EXE
 GHIDRA_HOME ?= $(HOME)/Applications/Ghidra
+CLANG_FORMAT ?= clang-format
+CLANG_TIDY ?= clang-tidy
+FORMAT_SOURCES := $(shell rg --files src -g '*.cpp' -g '*.h')
+TIDY_SOURCES := $(shell rg --files src -g '*.cpp')
 
-.PHONY: pipeline status verify validate-target ghidra-functions report annotation-candidates
+.PHONY: pipeline status verify validate-target ghidra-functions report annotation-candidates format tidy
 
 pipeline: validate-target status
 
@@ -31,3 +35,9 @@ validate-target:
 
 verify:
 	@python3 tools/compare_rebuilt_functions.py
+
+format:
+	@$(CLANG_FORMAT) -i $(FORMAT_SOURCES)
+
+tidy:
+	@$(CLANG_TIDY) $(TIDY_SOURCES) -- -x c++ -std=c++98 -DLEMBALL_1996_CXX=1 -Isrc -Isrc/visos

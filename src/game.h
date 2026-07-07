@@ -3,14 +3,22 @@
 
 #include "win32.h"
 
-struct GAME_StatusEntry {
+class GAME_StatusEntry {
+public:
+    GAME_StatusEntry(const char *pszName);
+
+public:
     const char *m_pszName;
     int m_nReserved0;
     int m_nReserved1;
     int m_fActive;
 };
 
-struct GAME_MainContext {
+class GAME_MainContext {
+public:
+    GAME_MainContext(void);
+
+public:
     int m_fRegistryRunning;
     int m_fMusicEnabled;
     int m_fEffectsEnabled;
@@ -28,7 +36,7 @@ struct GAME_MainContext {
 
 GAME_MainContext *InitializeMainGameContext(GAME_MainContext *pMainContext, const char *pszCmdLine);
 void ShutdownMainGameContext(GAME_MainContext *pMainContext);
-int RunMainGameSession(GAME_MainContext *pMainContext);
+int RunMainGameSession(int cArgs, const char *const *ppszArgs);
 int RunGameStartupSequence(char *pszCmdLine);
 char *FindCdromFilePathBySuffix(const char *pszSuffix);
 

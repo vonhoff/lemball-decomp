@@ -22,7 +22,8 @@ struct VSGDI_Rect {
 class VSGDI_DisplayState {
 public:
     VSGDI_DisplayState(void);
-    virtual ~VSGDI_DisplayState(void) {}
+    virtual ~VSGDI_DisplayState(void) {
+    }
 
     virtual int Create(HWND hWnd) = 0;
 
@@ -74,6 +75,7 @@ private:
 int InitializeResourceGeometryHelperRuntime(void);
 void ShutdownResourceGeometryHelperRuntime(void);
 int InitializeSelectedGraphicsDriver(int nRequestedDriver);
+int GetSelectedGraphicsDriverId(void);
 VSGDI_DisplayState *GetDisplayState(void);
 
 #endif

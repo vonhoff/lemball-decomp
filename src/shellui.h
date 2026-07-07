@@ -3,7 +3,14 @@
 
 #include "game.h"
 
-struct SHELLUI_PrimaryContextShell {
+class SHELLUI_PrimaryContextShell {
+public:
+    SHELLUI_PrimaryContextShell(void);
+
+    void ToggleDisplayMode(void);
+    void RequestQuit(void);
+
+public:
     HWND m_hMainWindow;
     int m_fQuitRequested;
     int m_fWideDisplay;
