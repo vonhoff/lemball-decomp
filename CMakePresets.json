@@ -7,20 +7,20 @@
   },
   "configurePresets": [
     {
-      "name": "msvc420-nmake",
-      "displayName": "MSVC 4.20 (NMake)",
+      "name": "msvc420",
+      "displayName": "MSVC 4.20",
       "generator": "NMake Makefiles",
       "binaryDir": "${sourceDir}/build-msvc420",
+      "toolchainFile": "${sourceDir}/cmake/msvc420-toolchain.cmake",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "LEMBALL_ENABLE_WIN32": "ON"
       }
     }
   ],
   "buildPresets": [
     {
-      "name": "msvc420-nmake",
-      "configurePreset": "msvc420-nmake"
+      "name": "msvc420",
+      "configurePreset": "msvc420"
     }
   ]
 }

@@ -1,45 +1,33 @@
-VERSION ?= LEMBALL
 HOST_CXX ?= c++
-HOST_CXXFLAGS ?= -std=c++98 -Wall -Wextra -Werror -ILEMBALL -ILEMBALL/VISOS
+HOST_CXXFLAGS ?= -std=c++98 -Wall -Wextra -Werror -Isrc -Isrc/visos
+GHIDRA_PROJECT_DIR ?= ../LemBall_Decompilation
+GHIDRA_PROJECT_NAME ?= LEMBALL_DECOMP
+GHIDRA_PROGRAM ?= LEMBALL.EXE
+GHIDRA_HOME ?= $(HOME)/Applications/Ghidra
 
-.PHONY: build-target build-base objdiff-config pipeline status host-check watcom-check verify validate-target
+.PHONY: pipeline status verify validate-target ghidra-functions report annotation-candidates
 
-build-target:
-	@mkdir -p build/target/$(VERSION)
-	@if [ -x scripts/build_target_objects.sh ]; then \
-		VERSION="$(VERSION)" scripts/build_target_objects.sh; \
-	fi
+pipeline: validate-target status
 
-build/target/$(VERSION)/%.obj:
-	@mkdir -p build/target/$(VERSION)
-	@VERSION="$(VERSION)" OBJECT="$*" scripts/build_target_objects.sh
+ghidra-functions:
+	@mkdir -p build/ghidra-project build/ghidra data
+	@rm -rf build/ghidra-project/$(GHIDRA_PROJECT_NAME).gpr build/ghidra-project/$(GHIDRA_PROJECT_NAME).rep
+	@rsync -a --exclude '$(GHIDRA_PROJECT_NAME).lock' --exclude '$(GHIDRA_PROJECT_NAME).lock~' "$(GHIDRA_PROJECT_DIR)/$(GHIDRA_PROJECT_NAME).gpr" "$(GHIDRA_PROJECT_DIR)/$(GHIDRA_PROJECT_NAME).rep" build/ghidra-project/
+	@"$(GHIDRA_HOME)/support/analyzeHeadless" "$(CURDIR)/build/ghidra-project" "$(GHIDRA_PROJECT_NAME)" -process "$(GHIDRA_PROGRAM)" -scriptPath "$(CURDIR)/tools" -postScript WriteFunctionExport.java "$(CURDIR)/build/ghidra/LEMBALL.functions.raw.json" -noanalysis
+	@python3 tools/generate_function_manifest.py --input build/ghidra/LEMBALL.functions.raw.json --output data/manifest.json
 
-build-base:
-	@mkdir -p build/base/$(VERSION)
-	@VERSION="$(VERSION)" scripts/check_watcom_profile.sh
-
-build/base/$(VERSION)/%.obj:
-	@mkdir -p build/base/$(VERSION)
-	@VERSION="$(VERSION)" OBJECT="$*" scripts/check_watcom_profile.sh
-
-objdiff-config:
-	@python3 tools/generate_objdiff.py --version "$(VERSION)" --output objdiff.json
-
-pipeline: validate-target build-base build-target objdiff-config status
+annotation-candidates:
+	@python3 tools/generate_annotation_candidates.py --source-root src --output build/annotation-candidates.json
 
 status:
 	@mkdir -p build
-	@python3 tools/generate_objdiff.py --version "$(VERSION)" --output objdiff.json
-	@python3 tools/generate_status_report.py --version "$(VERSION)" --output build/status.json
+	@python3 tools/generate_status_report.py --output build/status.json
 
-host-check:
-	@scripts/check_host_sources.sh "$(HOST_CXX)" "$(HOST_CXXFLAGS)"
-
-watcom-check:
-	@scripts/check_watcom_profile.sh
+report:
+	@python3 tools/write_progress_report.py -o build/report.json
 
 validate-target:
-	@python3 tools/validate_target_binary.py --version "$(VERSION)"
+	@python3 tools/validate_target_binary.py
 
 verify:
-	@tools/verify
+	@python3 tools/compare_rebuilt_functions.py

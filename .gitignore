@@ -72,10 +72,9 @@ objdiff.json
 reccmp-build.yml
 reccmp-user.yml
 .idea/
-orig/*
-!orig/LEMBALL/
-orig/LEMBALL/*
-!orig/LEMBALL/LEMBALL.EXE.gpg
+data/*
+!data/LEMBALL.EXE.gpg
+!data/README.md
 .gnupg-local/
 __pycache__/
 .DS_Store

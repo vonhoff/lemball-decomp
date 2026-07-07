@@ -1,0 +1,73 @@
+name: build-and-compare
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-compare:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Check out portable MSVC 4.20
+        uses: actions/checkout@v4
+        with:
+          repository: itsmattkc/msvc420
+          path: msvc420
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install Python tools
+        shell: pwsh
+        run: |
+          python -m pip install cmake reccmp
+          $cmakeBin = python -c "import cmake; print(cmake.CMAKE_BIN_DIR)"
+          "CMAKE_BIN=$cmakeBin" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          python -c "from reccmp.compare.core import Compare"
+
+      - name: Prepare target binary
+        shell: bash
+        env:
+          LEMBALL_GPG_PASSPHRASE: ${{ secrets.LEMBALL_GPG_PASSPHRASE }}
+        run: |
+          python tools/silence_c4786_in_c2.py msvc420/bin/C2.EXE
+          mkdir -p data
+          gpg --quiet --batch --yes \
+            --decrypt \
+            --passphrase "$LEMBALL_GPG_PASSPHRASE" \
+            --output data/LEMBALL.EXE \
+            data/LEMBALL.EXE.gpg
+          make validate-target
+
+      - name: Configure and build
+        shell: cmd
+        run: |
+          call .\msvc420\bin\VCVARS32.BAT x86
+          "%CMAKE_BIN%\cmake.exe" -S . -B build-msvc420 -G "NMake Makefiles" -DLEMBALL_ENABLE_WIN32=ON -DCMAKE_TOOLCHAIN_FILE=cmake/msvc420-toolchain.cmake
+          "%CMAKE_BIN%\cmake.exe" --build build-msvc420 --target LEMBALL --verbose > build-msvc420\build.log 2>&1
+          if errorlevel 1 (
+            type build-msvc420\build.log
+            exit /b 1
+          )
+
+      - name: Verify against original
+        run: python tools/compare_rebuilt_functions.py --silent
+
+      - name: Generate progress report
+        if: always()
+        run: python tools/write_progress_report.py -o build/report.json
+
+      - name: Upload progress report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: LEMBALL_report
+          if-no-files-found: error
+          path: build/report.json

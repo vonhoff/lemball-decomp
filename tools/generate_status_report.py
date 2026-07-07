@@ -5,17 +5,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 
-from project_manifest import (
-    find_original_binary,
-    list_cpp_sources,
-    load_lines,
-    load_source_inventory,
-    load_target_slice_units,
-    unit_name_from_source,
-)
-
+ORIGINAL_BINARY_PATH = Path("data/LEMBALL.EXE")
+FUNCTION_MANIFEST_PATH = Path("data/manifest.json")
 ENTRYPOINT_VA = "0x0047FE20"
 ENTRY_FUNCTION = "entry"
 MAIN_CONTEXT_FUNCTION = "initialize_main_game_context"
@@ -35,13 +29,13 @@ KNOWN_LOG_LINES = [
     "_RES_Init",
     "debug.out",
 ]
+FUNCTION_MARKER_RE = re.compile(r"^\s*//\s*FUNCTION:\s*(\w+)\s+(0x[0-9A-Fa-f]+)\s*$")
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Generate a realistic pipeline status report for LEMBALL."
+        description="Generate a local pipeline snapshot for LEMBALL."
     )
-    parser.add_argument("--version", required=True, help="Version identifier, e.g. LEMBALL")
     parser.add_argument("--output", required=True, help="Path to write status.json")
     return parser.parse_args()
 
@@ -52,30 +46,45 @@ def digest_of(path: Path, algorithm: str) -> str:
     return digest.hexdigest()
 
 
-def list_objects(root: Path, pattern: str = "*.obj") -> list[str]:
-    if not root.exists():
-        return []
-    return sorted(path.name for path in root.glob(pattern) if path.is_file())
+def gather_source_markers(source_root: Path, target_name: str) -> list[int]:
+    markers: list[int] = []
+    for path in sorted(source_root.rglob("*.CPP")):
+        for line in path.read_text().splitlines():
+            match = FUNCTION_MARKER_RE.match(line)
+            if match is None:
+                continue
+            module, address = match.groups()
+            if module != target_name:
+                continue
+            markers.append(int(address, 16))
+    return markers
 
 
-def build_status(version: str) -> dict[str, object]:
-    source_inventory_path = Path("manifests") / "source_files" / f"{version}.txt"
-    slice_manifest_path = Path("manifests") / "target_slices" / f"{version}.txt"
-    base_dir = Path("build") / "base" / version
-    target_dir = Path("build") / "target" / version
-    original_binary = find_original_binary(version)
-
-    source_inventory = load_source_inventory(source_inventory_path)
-    slices = load_lines(slice_manifest_path)
-    base_objects = list_objects(base_dir)
-    target_objects = list_objects(target_dir)
-    current_sources = list_cpp_sources(Path("LEMBALL"))
-    current_source_units = [unit_name_from_source(path) for path in current_sources]
-    target_slice_units = load_target_slice_units(slice_manifest_path)
-    report_units = sorted(set(current_source_units) | set(target_slice_units))
+def build_status() -> dict[str, object]:
+    original_binary = ORIGINAL_BINARY_PATH if ORIGINAL_BINARY_PATH.exists() else None
+    function_manifest = (
+        json.loads(FUNCTION_MANIFEST_PATH.read_text()) if FUNCTION_MANIFEST_PATH.exists() else None
+    )
+    source_markers = gather_source_markers(Path("src"), "LEMBALL")
+    marked_code_bytes = 0
+    total_reportable_code_bytes = 0
+    if function_manifest is not None:
+        functions_by_address = {
+            int(function["address"], 16): function for function in function_manifest["functions"]
+        }
+        marked_code_bytes = sum(
+            int(functions_by_address[address]["size"])
+            for address in source_markers
+            if address in functions_by_address
+        )
+        total_reportable_code_bytes = sum(
+            int(function["size"])
+            for function in function_manifest["functions"]
+            if function["category"] in {"internal", "thunk"}
+        )
 
     return {
-        "version": version,
+        "version": "LEMBALL",
         "original_binary": {
             "found": original_binary is not None,
             "path": str(original_binary) if original_binary is not None else None,
@@ -85,18 +94,8 @@ def build_status(version: str) -> dict[str, object]:
         "source_layout": {
             "source_root": ".",
             "include_root": ".",
-            "module_roots": ["LEMBALL", "LEMBALL/VISOS"],
-            "style": "single game package with game modules under LEMBALL and framework modules under LEMBALL/VISOS",
-            "source_inventory": [
-                {
-                    "file": row.file,
-                    "anchor_address": row.anchor_address,
-                    "anchor_function": row.anchor_function,
-                    "status": row.status,
-                }
-                for row in source_inventory
-            ],
-            "current_sources": [str(path.relative_to(Path.cwd())) for path in current_sources],
+            "module_roots": ["src", "src/visos"],
+            "style": "single game package with game modules under src and framework modules under src/visos",
         },
         "startup_path": {
             "entrypoint_va": ENTRYPOINT_VA,
@@ -109,30 +108,50 @@ def build_status(version: str) -> dict[str, object]:
             "known_log_lines": KNOWN_LOG_LINES,
         },
         "artifacts": {
-            "target_slice_manifest": slices,
-            "report_units": report_units,
-            "base_objects": base_objects,
-            "target_objects": target_objects,
-            "base_object_disasm": list_objects(base_dir / "disasm", "*.lst"),
+            "function_inventory_path": (
+                str(FUNCTION_MANIFEST_PATH) if function_manifest is not None else None
+            ),
+        },
+        "function_inventory": (
+            None
+            if function_manifest is None
+            else {
+                "program": str(function_manifest["program"]),
+                "function_count": int(function_manifest["function_count"]),
+                "summary": {
+                    key: int(value) for key, value in dict(function_manifest["summary"]).items()
+                },
+            }
+        ),
+        "annotation_progress": {
+            "marked_functions": len(source_markers),
+            "marked_code_bytes": marked_code_bytes,
+            "total_reportable_code_bytes": total_reportable_code_bytes,
+            "marked_code_percent": (
+                marked_code_bytes / total_reportable_code_bytes * 100.0
+                if total_reportable_code_bytes
+                else 0.0
+            ),
         },
         "compiler_strategy": {
             "primary_family": "Microsoft Visual C++ (inferred)",
-            "probe_family": "Open Watcom",
             "evidence": [
                 "Microsoft Visual C++ Runtime Library",
                 "Visual C++ assertion text",
                 "statically linked CRT-style startup region",
             ],
-            "probe_profile": "toolchains/openwatcom/wpp386-byteprobe.flags",
         },
         "comparison": {
-            "decomp_dev_report_ready": False,
+            "function_report_publishable": function_manifest is not None,
+            "object_report_publishable": False,
             "blocking_reason": (
-                "The repository can emit exploratory Watcom objects and target-side byte "
-                "wrappers, but real function-level verification still needs a supported "
-                "MSVC-era COFF/PDB or equivalent comparison backend."
+                "The repository reports progress from the Ghidra-backed function inventory "
+                "and the reccmp lane."
             ),
-            "next_requirement": "Recover a matching Microsoft compiler path before claiming function-level matches."
+            "next_requirement": (
+                "Keep adding verified source markers, rebuild with the MSVC lane, and "
+                "publish reccmp-backed report.json artifacts."
+            ),
         },
     }
 
@@ -141,7 +160,7 @@ def main() -> int:
     args = parse_args()
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    status = build_status(args.version)
+    status = build_status()
     output_path.write_text(json.dumps(status, indent=2) + "\n")
     return 0
 
