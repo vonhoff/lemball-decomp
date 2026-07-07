@@ -1,4 +1,3 @@
-#include "base_window.h"
 #include "vsgdi.h"
 #include "vsinit.h"
 
@@ -11,6 +10,7 @@ static unsigned int g_cbResourceGeometryHelperState = 0x20;
 static VSGDI_DisplayState *g_pDisplayState = 0;
 
 static const char g_VSGDI_DdrawDll[] = "DDRAW.DLL";
+static const char *g_VSGDI_BaseWindowClass = "VS_Base_Window_Class";
 static const char g_VSGDI_DirectDrawCreate[] = "DirectDrawCreate";
 static const char g_VSGDI_DirectDrawWindowClass[] = "DirectDrawClass";
 static const char g_VSGDI_DirectDrawWindowTitle[] = "DirectDraw";
@@ -150,7 +150,7 @@ int VSGDI_DirectDrawDisplayState::Create(HWND hWnd) {
 
 // FUNCTION: LEMBALL 0x0046BA80
 int InitializeResourceGeometryHelperRuntime(void) {
-    if (VS_Base_Window::ClassName() == 0) {
+    if (g_VSGDI_BaseWindowClass == 0) {
         g_fResourceGeometryHelperReady = 0;
         return 0;
     }

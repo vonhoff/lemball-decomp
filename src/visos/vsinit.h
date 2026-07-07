@@ -11,8 +11,9 @@ struct VSINIT_CommandLineOption {
 
 int InitializeCoreSubsystems(void);
 void ShutdownCoreSubsystems(void);
+int ShutdownDebugMessageThreadFromStartup(int fForceTerminate);
 int ParseCommandLineOptionToken(const char *pszToken);
-void TokenizeAndFilterCommandLineArgs(const char *pszCmdLine);
+void TokenizeAndFilterCommandLineArgs(char *pszCmdLine);
 unsigned int GetParsedCommandLineArgumentCount(void);
 const char *const *GetParsedCommandLineArgs(void);
 const VSINIT_CommandLineOption *GetCommandLineOptions(size_t *pcOptions);

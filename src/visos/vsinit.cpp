@@ -3,6 +3,7 @@
 #include "vsinit.h"
 #include "vswin.h"
 
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -135,8 +136,7 @@ static VSINIT_TextStream g_ErrorOutputStream;
 static VSINIT_TextStream *g_pStartupOutputStream = &g_StartupOutputStream;
 static VSINIT_TextStream *g_pStatusOutputStream = &g_StatusOutputStream;
 static VSINIT_TextStream *g_pErrorOutputStream = &g_ErrorOutputStream;
-static char g_aszParsedArgs[16][64];
-static const char *g_apszParsedArgs[16];
+static char *g_apszParsedArgs[16];
 static unsigned int g_cParsedArgs = 0;
 static int g_fSubsystemsReady = 0;
 static int g_fDebugMessageThreadRunning = 1;
@@ -322,6 +322,10 @@ static int ShutdownDebugMessageThread(int fForceTerminate) {
     return 1;
 }
 
+int ShutdownDebugMessageThreadFromStartup(int fForceTerminate) {
+    return ShutdownDebugMessageThread(fForceTerminate);
+}
+
 static int InitialiseStreams(void) {
     return 1;
 }
@@ -405,25 +409,6 @@ static int MatchOptionName(const char *pszToken, const char *pszOptionName) {
     }
 
     return strncmp(pszToken, pszOptionName, cchOption) == 0;
-}
-
-static void CopyToken(char *pszTarget, size_t cchTarget, const char *pszTokenStart, size_t cchToken) {
-    size_t cchCopy;
-
-    if (cchTarget == 0) {
-        return;
-    }
-
-    cchCopy = cchToken;
-    if (cchCopy >= cchTarget) {
-        cchCopy = cchTarget - 1;
-    }
-
-    if (cchCopy != 0) {
-        memcpy(pszTarget, pszTokenStart, cchCopy);
-    }
-
-    pszTarget[cchCopy] = '\0';
 }
 
 void LogParsedCommandLineOptions(void) {
@@ -570,60 +555,72 @@ int ParseCommandLineOptionToken(const char *pszToken) {
 }
 
 // FUNCTION: LEMBALL 0x004596B0
-void TokenizeAndFilterCommandLineArgs(const char *pszCmdLine) {
-    const char *pszCursor;
-    const char *pszTokenStart;
-    size_t cchToken;
+void TokenizeAndFilterCommandLineArgs(char *pszCmdLine) {
+    char *pszCursor;
+    unsigned int i;
 
     g_cParsedArgs = 0;
-    for (cchToken = 0; cchToken < LEMBALL_ARRAY_COUNT(g_aCommandLineOptions); ++cchToken) {
-        g_aCommandLineOptions[cchToken].m_nValue = 0;
-        g_aCommandLineOptions[cchToken].m_fSpecified = 0;
+    g_apszParsedArgs[0] = pszCmdLine;
+    for (i = 0; i < LEMBALL_ARRAY_COUNT(g_aCommandLineOptions); ++i) {
+        g_aCommandLineOptions[i].m_nValue = 0;
+        g_aCommandLineOptions[i].m_fSpecified = 0;
     }
 
     if (pszCmdLine == 0) {
         return;
     }
 
+    while (isspace((unsigned char)*pszCmdLine)) {
+        ++pszCmdLine;
+    }
+    if (*pszCmdLine == '\0') {
+        return;
+    }
+
+    g_cParsedArgs = 0;
     pszCursor = pszCmdLine;
     while (*pszCursor != '\0') {
-        while (*pszCursor == ' ' || *pszCursor == '\t') {
-            ++pszCursor;
+        if (isupper((unsigned char)*pszCursor)) {
+            *pszCursor = (char)tolower((unsigned char)*pszCursor);
         }
 
-        if (*pszCursor == '\0') {
-            break;
-        }
-
-        pszTokenStart = pszCursor;
-        cchToken = 0;
-
-        if (*pszCursor == '"') {
-            pszTokenStart = pszCursor + 1;
-            ++pszCursor;
-            while (pszCursor[cchToken] != '\0' && pszCursor[cchToken] != '"') {
-                ++cchToken;
-            }
-            pszCursor += cchToken;
-            if (*pszCursor == '"') {
+        if (isspace((unsigned char)*pszCursor)) {
+            do {
+                *pszCursor = '\0';
                 ++pszCursor;
+            } while (isspace((unsigned char)*pszCursor));
+
+            if (*pszCursor != '\0') {
+                ++g_cParsedArgs;
+                g_apszParsedArgs[g_cParsedArgs] = pszCursor;
             }
-        } else {
-            while (pszCursor[cchToken] != '\0' && pszCursor[cchToken] != ' ' && pszCursor[cchToken] != '\t') {
-                ++cchToken;
-            }
-            pszCursor += cchToken;
         }
 
-        if (g_cParsedArgs >= LEMBALL_ARRAY_COUNT(g_apszParsedArgs)) {
-            continue;
-        }
+        ++pszCursor;
+    }
 
-        CopyToken(g_aszParsedArgs[g_cParsedArgs], sizeof(g_aszParsedArgs[g_cParsedArgs]), pszTokenStart, cchToken);
+    ++g_cParsedArgs;
+    if (g_cParsedArgs != 0) {
+        unsigned int nRemaining;
 
-        if (!ParseCommandLineOptionToken(g_aszParsedArgs[g_cParsedArgs])) {
-            g_apszParsedArgs[g_cParsedArgs] = g_aszParsedArgs[g_cParsedArgs];
-            ++g_cParsedArgs;
+        i = 0;
+        nRemaining = g_cParsedArgs;
+        while (nRemaining != 0) {
+            if (!ParseCommandLineOptionToken(g_apszParsedArgs[i])) {
+                ++i;
+                --nRemaining;
+                continue;
+            }
+
+            --g_cParsedArgs;
+            --nRemaining;
+            if (i < g_cParsedArgs) {
+                unsigned int j;
+
+                for (j = i; j < g_cParsedArgs; ++j) {
+                    g_apszParsedArgs[j] = g_apszParsedArgs[j + 1];
+                }
+            }
         }
     }
 }
@@ -633,7 +630,7 @@ unsigned int GetParsedCommandLineArgumentCount(void) {
 }
 
 const char *const *GetParsedCommandLineArgs(void) {
-    return g_apszParsedArgs;
+    return (const char *const *)g_apszParsedArgs;
 }
 
 const VSINIT_CommandLineOption *GetCommandLineOptions(size_t *pcOptions) {

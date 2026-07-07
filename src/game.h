@@ -3,15 +3,24 @@
 
 #include "win32.h"
 
+struct GAME_DynamicCString {
+    char *m_pszText;
+    int m_cchText;
+    int m_cchCapacity;
+    int m_fExternalStorage;
+};
+
 class GAME_StatusEntry {
 public:
     GAME_StatusEntry(const char *pszName);
 
 public:
-    const char *m_pszName;
-    int m_nReserved0;
-    int m_nReserved1;
-    int m_fActive;
+    void *m_pVtable;
+    int m_nCurrentValue;
+    int m_nPeakValue;
+    int m_nMinimumValue;
+    int m_nMaximumValue;
+    GAME_DynamicCString m_Name;
 };
 
 class GAME_MainContext {
@@ -19,19 +28,15 @@ public:
     GAME_MainContext(void);
 
 public:
-    int m_fRegistryRunning;
-    int m_fMusicEnabled;
-    int m_fEffectsEnabled;
-    int m_fSessionReady;
-    int m_fInstalled;
-    const char *m_pszRegistryKey;
-    const char *m_pszWindowTitle;
-    const char *m_pszResourceArchiveName;
-    const char *m_pszStartupMusicName;
-    char m_szSrcDisk[256];
-    char m_szDisplayCaption[256];
+    char m_szCaption[0x50];
     GAME_StatusEntry *m_pProcessingStatus;
     GAME_StatusEntry *m_pRefreshingStatus;
+    int m_nModeTicks;
+    void *m_pActiveMode;
+    int m_fQuitRequested;
+    void *m_pPrimaryContext;
+    int m_nActiveMode;
+    void *m_pVariantMode;
 };
 
 GAME_MainContext *InitializeMainGameContext(GAME_MainContext *pMainContext, const char *pszCmdLine);
