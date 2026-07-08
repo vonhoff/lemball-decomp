@@ -381,7 +381,6 @@ void DestroyHelperGroup1RowBuffer(void *pvHelperGroup) {
     DestroyResourceGeometryRowBuffer(pRowBuffer);
 }
 
-// FUNCTION: LEMBALL 0x0046C7A0
 void DestroyResourceGeometryHelperTarget(void *pvTarget) {
     int iPreviousLink;
     int iNextLink;

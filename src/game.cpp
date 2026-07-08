@@ -895,7 +895,6 @@ void DestroyNamedStatusEntry(void *pEntry) {
     DestroyDynamicCString(&pStatusEntry->m_Name);
 }
 
-// FUNCTION: LEMBALL 0x0045AC60
 void UpdateNamedStatusEntry(void *pEntry, unsigned int nValue) {
     GAME_StatusEntry *pStatusEntry;
 
@@ -912,7 +911,6 @@ void UpdateNamedStatusEntry(void *pEntry, unsigned int nValue) {
     ++pStatusEntry->m_cSamples;
 }
 
-// FUNCTION: LEMBALL 0x0045AC90
 VSINIT_FormattedOutputStream *WriteNamedStatusEntry(void *pEntry, VSINIT_FormattedOutputStream *pStream) {
     GAME_StatusEntry *pStatusEntry;
     unsigned int nAverage;
@@ -961,7 +959,7 @@ static GAME_StatusEntry *AllocateNamedStatusEntry(const char *pszName) {
     return pEntry;
 }
 
-// FUNCTION: LEMBALL 0x00401875
+// FUNCTION: LEMBALL 0x00431F30
 void ComputePrimaryContextCenteredScreenRect(GAME_PrimaryContext *pPrimaryContext,
                                              short *paRect,
                                              int nLeftOverride,
@@ -1000,7 +998,7 @@ void ComputePrimaryContextCenteredScreenRect(GAME_PrimaryContext *pPrimaryContex
     paRect[3] = yTop;
 }
 
-// FUNCTION: LEMBALL 0x004010F0
+// FUNCTION: LEMBALL 0x00431590
 GAME_PrimaryContext *ConstructPrimaryContext(GAME_PrimaryContext *pPrimaryContext, GAME_MainContext *pMainContext) {
     ConstructWindowOwnerRenderContext(pPrimaryContext);
     InitializeRenderQueueNodeBase(&pPrimaryContext->m_pRenderQueueNodeVtable);
@@ -1038,7 +1036,7 @@ GAME_PrimaryContext *ConstructPrimaryContext(GAME_PrimaryContext *pPrimaryContex
     return pPrimaryContext;
 }
 
-// FUNCTION: LEMBALL 0x0040383C
+// FUNCTION: LEMBALL 0x00431950
 void DestroyPrimaryContextActiveScreen(void *pPrimaryContext) {
     GAME_PrimaryContext *pContext;
 
@@ -1053,7 +1051,7 @@ void DestroyPrimaryContextActiveScreen(void *pPrimaryContext) {
     }
 }
 
-// FUNCTION: LEMBALL 0x004024B9
+// FUNCTION: LEMBALL 0x00431990
 void SwitchPrimaryContextScreen(void *pPrimaryContext, int nMode) {
     GAME_PrimaryContext *pContext;
     void *pScreenObject;
@@ -1375,7 +1373,7 @@ void PresentMainGameFrame(void *pMainGameContext) {
     }
 }
 
-// FUNCTION: LEMBALL 0x004029E1
+// FUNCTION: LEMBALL 0x00407950
 void RunMainGameLoop(GAME_MainContext *pMainContext) {
     if (g_pLevelDemoPlaybackController != 0 && g_fLevelDemoModeEnabled == 0) {
         *(int *)((char *)g_pLevelDemoPlaybackController + 0x28) = 0x14;
@@ -1477,7 +1475,7 @@ GAME_MainContext *InitializeMainGameContext(GAME_MainContext *pMainContext, cons
     return pMainContext;
 }
 
-// FUNCTION: LEMBALL 0x004010FA
+// FUNCTION: LEMBALL 0x00407420
 void SwitchMainGameMode(GAME_MainContext *pMainContext, int nMode) {
     void *pModeObject;
 

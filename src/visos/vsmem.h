@@ -1,6 +1,8 @@
 #ifndef LEMBALL_VSMEM_H
 #define LEMBALL_VSMEM_H
 
+#include "win32.h"
+
 struct VSINIT_FormattedOutputStream;
 
 int InitializeMasterMainRamArena(void);
@@ -22,22 +24,13 @@ void *ConstructMemoryArenaBaseState(void *pArena,
                                    void *pReserved);
 void ReleaseMemoryArenaBlockLists(void *pArena);
 void DestroyMemoryArenaBaseState(void *pArena);
-int ConsumeTrailingMemoryBlockIfAdjacent(void *pArena, void *pBlock, void *pNextBlock);
-int AppendTailMemoryBlockAddressList(void *pArena, void *pBlock);
-int InsertMemoryBlockAfterFreeListNode(void *pArena, void *pBlock, void *pPreviousBlock);
-int InsertMemoryBlockSortedByAddress(void *pArena, void *pBlock);
-int UnlinkMemoryBlockFromAddressListLinks(void *pArena, void *pBlock);
-int UnlinkMemoryBlockFromFreeList(void *pArena, void *pBlock);
-int UnlinkMemoryBlockFromAddressList(void *pArena, void *pBlock);
-void *FindSmallestFreeMemoryBlockAtLeast(void *pArena, unsigned int cbPayload);
 int AllocateMemoryArenaBlock(void *pArena, void **ppvBlock, unsigned int cbBlock, const char *pszDescription);
 int FreeMemoryArenaBlock(void *pArena, void *pvBlock);
 int AllocateChildMemoryArena(void *pArena, void **ppChildArena, unsigned int cbChildArena);
 int ReleaseChildMemoryArena(void *pArena, void *pChildArena);
-int IsPointerInsideMemoryArenaStorage(void *pArena, void *pvPointer);
-int HasMemoryBlockMagic(void *pBlock);
-int IsUsedMemoryBlock(void *pBlock);
-int IsFreeMemoryBlock(void *pBlock);
+int PASCAL HasMemoryBlockMagic(void *pBlock);
+int PASCAL IsUsedMemoryBlock(void *pBlock);
+int PASCAL IsFreeMemoryBlock(void *pBlock);
 void *ConstructMemoryArena(void *pArena,
                            unsigned int cbStorage,
                            const char *pszName,

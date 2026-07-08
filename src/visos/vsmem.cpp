@@ -16,6 +16,47 @@ typedef void *(*VSMEM_ReportProc)(void *pObject, VSINIT_FormattedOutputStream *p
 typedef void *(*VSMEM_DeleteProc)(void *pObject, int fDelete);
 typedef void (*VSMEM_StatusUpdateProc)(void *pStatusEntry, unsigned int cbValue);
 
+struct CMemoryBlock {
+    void **m_pVtable;
+    int m_nMagic;
+    void *m_pPayload;
+    unsigned int m_cbPayload;
+    void *m_pArena;
+    CMemoryBlock *m_pNextFree;
+    CMemoryBlock *m_pPreviousFree;
+    CMemoryBlock *m_pNextAddress;
+    CMemoryBlock *m_pPreviousAddress;
+    unsigned int m_dwFlags;
+};
+
+struct CArena {
+    void **m_pVtable;
+    int m_nMagic;
+    void **m_pLockVtable;
+    unsigned char m_abReserved[0x18];
+    void *m_pStorage;
+    unsigned int m_cbStorage;
+    unsigned int m_cbFree;
+    void *m_pStatusEntry;
+    CMemoryBlock *m_pFirstFreeBlock;
+    CMemoryBlock *m_pLastFreeBlock;
+    CMemoryBlock *m_pFirstAddressBlock;
+    CMemoryBlock *m_pLastAddressBlock;
+    CArena *m_pParentArena;
+    const char *m_pszName;
+    CArena *m_pFirstChildArena;
+
+    int ConsumeTrailingMemoryBlockIfAdjacent(void *pBlock, void *pNextBlock);
+    int AppendTailMemoryBlockAddressList(void *pBlock);
+    int InsertMemoryBlockAfterFreeListNode(void *pBlock, void *pPreviousBlock);
+    int InsertMemoryBlockSortedByAddress(void *pBlock);
+    int UnlinkMemoryBlockFromAddressListLinks(void *pBlock);
+    int UnlinkMemoryBlockFromFreeList(void *pBlock);
+    int UnlinkMemoryBlockFromAddressList(void *pBlock);
+    void *FindSmallestFreeMemoryBlockAtLeast(unsigned int cbPayload);
+    int IsPointerInsideMemoryArenaStorage(void *pvPointer);
+};
+
 static unsigned char g_abMainMemoryArena[0x50];
 void *g_pMainMemoryArena = 0;
 static int g_cbMainArenaCapacity = 0;
@@ -202,154 +243,172 @@ void DestroyMemoryArenaBaseState(void *pArena) {
 }
 
 // FUNCTION: LEMBALL 0x00459B10
-int ConsumeTrailingMemoryBlockIfAdjacent(void *pArena, void *pBlock, void *pNextBlock) {
+int CArena::ConsumeTrailingMemoryBlockIfAdjacent(void *pBlock, void *pNextBlock) {
     VSMEM_SizeProc pfnGetBlockHeaderSize;
+    CMemoryBlock *pMemoryBlock;
+    CMemoryBlock *pNextMemoryBlock;
     unsigned int cbNextPayload;
 
-    if ((char *)*(void **)((char *)pBlock + 8) + *(unsigned int *)((char *)pBlock + 0xc) != pNextBlock) {
+    pMemoryBlock = (CMemoryBlock *)pBlock;
+    pNextMemoryBlock = (CMemoryBlock *)pNextBlock;
+    if ((char *)pMemoryBlock->m_pPayload + pMemoryBlock->m_cbPayload != (char *)pNextMemoryBlock) {
         return 0;
     }
-    cbNextPayload = *(unsigned int *)((char *)pNextBlock + 0xc);
-    pfnGetBlockHeaderSize = (VSMEM_SizeProc)(*(void ***)pArena)[7];
-    *(unsigned int *)((char *)pBlock + 0xc) += cbNextPayload + pfnGetBlockHeaderSize();
-    UnlinkMemoryBlockFromFreeList(pArena, pNextBlock);
-    UnlinkMemoryBlockFromAddressListLinks(pArena, pNextBlock);
-    if (pNextBlock != 0) {
-        ((VSMEM_DeleteProc)(*(void ***)pNextBlock)[1])(pNextBlock, 1);
+    cbNextPayload = pNextMemoryBlock->m_cbPayload;
+    pfnGetBlockHeaderSize = (VSMEM_SizeProc)m_pVtable[7];
+    pMemoryBlock->m_cbPayload += cbNextPayload + pfnGetBlockHeaderSize();
+    UnlinkMemoryBlockFromFreeList(pNextMemoryBlock);
+    UnlinkMemoryBlockFromAddressListLinks(pNextMemoryBlock);
+    if (pNextMemoryBlock != 0) {
+        ((VSMEM_DeleteProc)pNextMemoryBlock->m_pVtable[1])(pNextMemoryBlock, 1);
     }
-    *(unsigned int *)((char *)pArena + 0x2c) += pfnGetBlockHeaderSize();
+    m_cbFree += pfnGetBlockHeaderSize();
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x00459BD0
-int AppendTailMemoryBlockAddressList(void *pArena, void *pBlock) {
-    void *pTail;
+int CArena::AppendTailMemoryBlockAddressList(void *pBlock) {
+    CMemoryBlock *pMemoryBlock;
+    CMemoryBlock *pTail;
 
-    if (*(void **)((char *)pArena + 0x40) == 0) {
-        *(void **)((char *)pArena + 0x3c) = pBlock;
+    pMemoryBlock = (CMemoryBlock *)pBlock;
+    if (m_pLastAddressBlock == 0) {
+        m_pFirstAddressBlock = pMemoryBlock;
     } else {
-        *(void **)((char *)*(void **)((char *)pArena + 0x40) + 0x1c) = pBlock;
+        m_pLastAddressBlock->m_pNextAddress = pMemoryBlock;
     }
-    pTail = *(void **)((char *)pArena + 0x40);
-    *(void **)((char *)pBlock + 0x1c) = 0;
-    *(void **)((char *)pBlock + 0x20) = pTail;
-    *(void **)((char *)pArena + 0x40) = pBlock;
+    pTail = m_pLastAddressBlock;
+    pMemoryBlock->m_pNextAddress = 0;
+    pMemoryBlock->m_pPreviousAddress = pTail;
+    m_pLastAddressBlock = pMemoryBlock;
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x00459C00
-int InsertMemoryBlockAfterFreeListNode(void *pArena, void *pBlock, void *pPreviousBlock) {
-    void *pNextBlock;
+int CArena::InsertMemoryBlockAfterFreeListNode(void *pBlock, void *pPreviousBlock) {
+    CMemoryBlock *pMemoryBlock;
+    CMemoryBlock *pNextBlock;
+    CMemoryBlock *pPreviousMemoryBlock;
 
+    pMemoryBlock = (CMemoryBlock *)pBlock;
+    pPreviousMemoryBlock = (CMemoryBlock *)pPreviousBlock;
     pNextBlock = 0;
-    if (pPreviousBlock == 0) {
-        *(void **)((char *)pArena + 0x34) = pBlock;
+    if (pPreviousMemoryBlock == 0) {
+        m_pFirstFreeBlock = pMemoryBlock;
     } else {
-        pNextBlock = *(void **)((char *)pPreviousBlock + 0x14);
-        *(void **)((char *)pPreviousBlock + 0x14) = pBlock;
+        pNextBlock = pPreviousMemoryBlock->m_pNextFree;
+        pPreviousMemoryBlock->m_pNextFree = pMemoryBlock;
     }
-    *(void **)((char *)pBlock + 0x18) = pPreviousBlock;
-    *(void **)((char *)pBlock + 0x14) = pNextBlock;
+    pMemoryBlock->m_pPreviousFree = pPreviousMemoryBlock;
+    pMemoryBlock->m_pNextFree = pNextBlock;
     if (pNextBlock == 0) {
-        *(void **)((char *)pArena + 0x38) = pBlock;
+        m_pLastFreeBlock = pMemoryBlock;
         return 1;
     }
-    *(void **)((char *)pNextBlock + 0x18) = pBlock;
+    pNextBlock->m_pPreviousFree = pMemoryBlock;
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x00459C40
-int InsertMemoryBlockSortedByAddress(void *pArena, void *pBlock) {
-    void *pCurrentBlock;
-    void *pPreviousBlock;
+int CArena::InsertMemoryBlockSortedByAddress(void *pBlock) {
+    CMemoryBlock *pCurrentBlock;
+    CMemoryBlock *pMemoryBlock;
+    CMemoryBlock *pPreviousBlock;
 
-    pCurrentBlock = *(void **)((char *)pArena + 0x4c);
+    pMemoryBlock = (CMemoryBlock *)pBlock;
+    pCurrentBlock = (CMemoryBlock *)m_pFirstChildArena;
     pPreviousBlock = 0;
-    while (pCurrentBlock != 0 && pCurrentBlock <= pBlock) {
+    while (pCurrentBlock != 0 && pCurrentBlock <= pMemoryBlock) {
         pPreviousBlock = pCurrentBlock;
-        pCurrentBlock = *(void **)((char *)pCurrentBlock + 0x4c);
+        pCurrentBlock = (CMemoryBlock *)((CArena *)pCurrentBlock)->m_pFirstChildArena;
     }
     if (pPreviousBlock == 0) {
-        *(void **)((char *)pArena + 0x4c) = pBlock;
+        m_pFirstChildArena = (CArena *)pMemoryBlock;
     } else {
-        *(void **)((char *)pPreviousBlock + 0x4c) = pBlock;
+        ((CArena *)pPreviousBlock)->m_pFirstChildArena = (CArena *)pMemoryBlock;
     }
-    *(void **)((char *)pBlock + 0x4c) = pCurrentBlock;
+    ((CArena *)pMemoryBlock)->m_pFirstChildArena = (CArena *)pCurrentBlock;
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x00459C80
-int UnlinkMemoryBlockFromAddressListLinks(void *pArena, void *pBlock) {
-    void *pPreviousBlock;
-    void *pNextBlock;
+int CArena::UnlinkMemoryBlockFromAddressListLinks(void *pBlock) {
+    CMemoryBlock *pMemoryBlock;
+    CMemoryBlock *pPreviousBlock;
+    CMemoryBlock *pNextBlock;
 
-    pPreviousBlock = *(void **)((char *)pBlock + 0x20);
-    pNextBlock = *(void **)((char *)pBlock + 0x1c);
+    pMemoryBlock = (CMemoryBlock *)pBlock;
+    pPreviousBlock = pMemoryBlock->m_pPreviousAddress;
+    pNextBlock = pMemoryBlock->m_pNextAddress;
     if (pNextBlock == 0) {
-        *(void **)((char *)pArena + 0x40) = pPreviousBlock;
+        m_pLastAddressBlock = pPreviousBlock;
     } else {
-        *(void **)((char *)pNextBlock + 0x20) = pPreviousBlock;
+        pNextBlock->m_pPreviousAddress = pPreviousBlock;
     }
     if (pPreviousBlock != 0) {
-        *(void **)((char *)pPreviousBlock + 0x1c) = pNextBlock;
+        pPreviousBlock->m_pNextAddress = pNextBlock;
         return 1;
     }
-    *(void **)((char *)pArena + 0x3c) = pNextBlock;
+    m_pFirstAddressBlock = pNextBlock;
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x00459CB0
-int UnlinkMemoryBlockFromFreeList(void *pArena, void *pBlock) {
-    void *pPreviousBlock;
-    void *pNextBlock;
+int CArena::UnlinkMemoryBlockFromFreeList(void *pBlock) {
+    CMemoryBlock *pMemoryBlock;
+    CMemoryBlock *pPreviousBlock;
+    CMemoryBlock *pNextBlock;
 
-    pPreviousBlock = *(void **)((char *)pBlock + 0x18);
-    pNextBlock = *(void **)((char *)pBlock + 0x14);
+    pMemoryBlock = (CMemoryBlock *)pBlock;
+    pPreviousBlock = pMemoryBlock->m_pPreviousFree;
+    pNextBlock = pMemoryBlock->m_pNextFree;
     if (pNextBlock == 0) {
-        *(void **)((char *)pArena + 0x38) = pPreviousBlock;
+        m_pLastFreeBlock = pPreviousBlock;
     } else {
-        *(void **)((char *)pNextBlock + 0x18) = pPreviousBlock;
+        pNextBlock->m_pPreviousFree = pPreviousBlock;
     }
     if (pPreviousBlock != 0) {
-        *(void **)((char *)pPreviousBlock + 0x14) = pNextBlock;
+        pPreviousBlock->m_pNextFree = pNextBlock;
         return 1;
     }
-    *(void **)((char *)pArena + 0x34) = pNextBlock;
+    m_pFirstFreeBlock = pNextBlock;
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x00459CE0
-int UnlinkMemoryBlockFromAddressList(void *pArena, void *pBlock) {
-    void *pCurrentBlock;
-    void *pPreviousBlock;
+int CArena::UnlinkMemoryBlockFromAddressList(void *pBlock) {
+    CArena *pChildArena;
+    CArena *pCurrentBlock;
+    CArena *pPreviousBlock;
 
-    pCurrentBlock = *(void **)((char *)pArena + 0x4c);
+    pChildArena = (CArena *)pBlock;
+    pCurrentBlock = m_pFirstChildArena;
     pPreviousBlock = 0;
     while (pCurrentBlock != 0) {
-        if (pCurrentBlock == pBlock) {
+        if (pCurrentBlock == pChildArena) {
             if (pPreviousBlock != 0) {
-                *(void **)((char *)pPreviousBlock + 0x4c) = *(void **)((char *)pCurrentBlock + 0x4c);
+                pPreviousBlock->m_pFirstChildArena = pCurrentBlock->m_pFirstChildArena;
                 return 1;
             }
-            *(void **)((char *)pArena + 0x4c) = *(void **)((char *)pCurrentBlock + 0x4c);
+            m_pFirstChildArena = pCurrentBlock->m_pFirstChildArena;
             return 1;
         }
         pPreviousBlock = pCurrentBlock;
-        pCurrentBlock = *(void **)((char *)pCurrentBlock + 0x4c);
+        pCurrentBlock = pCurrentBlock->m_pFirstChildArena;
     }
     return 0;
 }
 
 // FUNCTION: LEMBALL 0x00459D20
-void *FindSmallestFreeMemoryBlockAtLeast(void *pArena, unsigned int cbPayload) {
-    void *pBestBlock;
-    void *pBlock;
+void *CArena::FindSmallestFreeMemoryBlockAtLeast(unsigned int cbPayload) {
+    CMemoryBlock *pBestBlock;
+    CMemoryBlock *pBlock;
 
     pBestBlock = 0;
-    for (pBlock = *(void **)((char *)pArena + 0x40); pBlock != 0; pBlock = *(void **)((char *)pBlock + 0x20)) {
-        if (IsFreeMemoryBlock(pBlock) != 0 && cbPayload <= *(unsigned int *)((char *)pBlock + 0xc) &&
+    for (pBlock = m_pLastAddressBlock; pBlock != 0; pBlock = pBlock->m_pPreviousAddress) {
+        if (IsFreeMemoryBlock(pBlock) != 0 && cbPayload <= pBlock->m_cbPayload &&
             (pBestBlock == 0 ||
-             *(unsigned int *)((char *)pBlock + 0xc) < *(unsigned int *)((char *)pBestBlock + 0xc))) {
+             pBlock->m_cbPayload < pBestBlock->m_cbPayload)) {
             pBestBlock = pBlock;
         }
     }
@@ -389,7 +448,7 @@ int AllocateMemoryArenaBlock(void *pArena, void **ppvBlock, unsigned int cbBlock
         return 0;
     }
 
-    pBlock = FindSmallestFreeMemoryBlockAtLeast(pArena, cbAligned + cbBlockHeader);
+    pBlock = ((CArena *)pArena)->FindSmallestFreeMemoryBlockAtLeast(cbAligned + cbBlockHeader);
     if (pBlock == 0) {
         AppendCStringToStream(g_pErrorOutputStream, g_VSMEM_AllocateFragmentedPrefix);
         AppendCStringToStream(g_pErrorOutputStream, pszDescription);
@@ -405,7 +464,7 @@ int AllocateMemoryArenaBlock(void *pArena, void **ppvBlock, unsigned int cbBlock
 
     if (*(unsigned int *)((char *)pBlock + 0xc) < pfnGetBlockHeaderSize() + cbAligned + cbBlockHeader + 4) {
         *(unsigned int *)((char *)pBlock + 0x24) &= 0xfffffffe;
-        UnlinkMemoryBlockFromAddressListLinks(pArena, pBlock);
+        ((CArena *)pArena)->UnlinkMemoryBlockFromAddressListLinks(pBlock);
         NoOpCallback0045A610();
         *(unsigned int *)((char *)pArena + 0x2c) -= *(unsigned int *)((char *)pBlock + 0xc);
     } else {
@@ -414,15 +473,15 @@ int AllocateMemoryArenaBlock(void *pArena, void **ppvBlock, unsigned int cbBlock
         NoOpCallback0045A610();
         *(unsigned int *)((char *)pBlock + 0x24) &= 0xfffffffe;
         cbRemainingBlock = cbOldBlockPayload - cbAligned;
-        UnlinkMemoryBlockFromAddressListLinks(pArena, pBlock);
+        ((CArena *)pArena)->UnlinkMemoryBlockFromAddressListLinks(pBlock);
         pSplitBlock = PlacementConstructMemoryArenaBlock((char *)*(void **)((char *)pBlock + 8) + cbAligned,
                                                          *(void **)((char *)pBlock + 0x10),
                                                          0,
                                                          g_VSMEM_FreeBlockName,
                                                          cbRemainingBlock);
         *(unsigned int *)((char *)pSplitBlock + 0x24) |= 1;
-        AppendTailMemoryBlockAddressList(pArena, pSplitBlock);
-        InsertMemoryBlockAfterFreeListNode(pArena, pSplitBlock, pBlock);
+        ((CArena *)pArena)->AppendTailMemoryBlockAddressList(pSplitBlock);
+        ((CArena *)pArena)->InsertMemoryBlockAfterFreeListNode(pSplitBlock, pBlock);
         *(unsigned int *)((char *)pArena + 0x2c) -= *(unsigned int *)((char *)pBlock + 0xc) + pfnGetBlockHeaderSize();
     }
 
@@ -445,7 +504,7 @@ int FreeMemoryArenaBlock(void *pArena, void *pvBlock) {
     void *pPreviousBlock;
     void *pNextBlock;
 
-    if (IsPointerInsideMemoryArenaStorage(pArena, pvBlock) == 0) {
+    if (((CArena *)pArena)->IsPointerInsideMemoryArenaStorage(pvBlock) == 0) {
         return 0;
     }
     pLockVtable = *(void ***)((char *)pArena + 8);
@@ -453,20 +512,20 @@ int FreeMemoryArenaBlock(void *pArena, void *pvBlock) {
     pfnGetBlockHeaderSize = (VSMEM_SizeProc)(*(void ***)pArena)[7];
     pBlock = (char *)pvBlock - pfnGetBlockHeaderSize();
     *(unsigned int *)((char *)pBlock + 0x24) |= 1;
-    AppendTailMemoryBlockAddressList(pArena, pBlock);
+    ((CArena *)pArena)->AppendTailMemoryBlockAddressList(pBlock);
     *(unsigned int *)((char *)pArena + 0x2c) += *(unsigned int *)((char *)pBlock + 0xc);
     pPreviousBlock = *(void **)((char *)pBlock + 0x18);
     pNextBlock = *(void **)((char *)pBlock + 0x14);
     if (pPreviousBlock != 0) {
         if (IsFreeMemoryBlock(pPreviousBlock) != 0) {
-            if (ConsumeTrailingMemoryBlockIfAdjacent(pArena, pPreviousBlock, pBlock) != 0) {
+            if (((CArena *)pArena)->ConsumeTrailingMemoryBlockIfAdjacent(pPreviousBlock, pBlock) != 0) {
                 pBlock = pPreviousBlock;
             }
         }
     }
     if (pNextBlock != 0) {
         if (IsFreeMemoryBlock(pNextBlock) != 0) {
-            ConsumeTrailingMemoryBlockIfAdjacent(pArena, pBlock, pNextBlock);
+            ((CArena *)pArena)->ConsumeTrailingMemoryBlockIfAdjacent(pBlock, pNextBlock);
         }
     }
     ((VSMEM_LockProc)pLockVtable[1])();
@@ -486,7 +545,7 @@ int AllocateChildMemoryArena(void *pArena, void **ppChildArena, unsigned int cbC
     pLockVtable = *(void ***)((char *)pArena + 8);
     ((VSMEM_LockProc)pLockVtable[0])();
     pChildArena = PlacementConstructMemoryArenaWithStorage(pvStorage, cbChildArena, g_VSMEM_ArenaContainerName, pArena, 0);
-    InsertMemoryBlockSortedByAddress(pArena, pChildArena);
+    ((CArena *)pArena)->InsertMemoryBlockSortedByAddress(pChildArena);
     *ppChildArena = pChildArena;
     ((VSMEM_LockProc)pLockVtable[1])();
     return 1;
@@ -498,7 +557,7 @@ int ReleaseChildMemoryArena(void *pArena, void *pChildArena) {
 
     pLockVtable = *(void ***)((char *)pArena + 8);
     ((VSMEM_LockProc)pLockVtable[0])();
-    if (UnlinkMemoryBlockFromAddressList(pArena, pChildArena) == 0) {
+    if (((CArena *)pArena)->UnlinkMemoryBlockFromAddressList(pChildArena) == 0) {
         return 0;
     }
     ((VSMEM_LockProc)pLockVtable[1])();
@@ -506,7 +565,7 @@ int ReleaseChildMemoryArena(void *pArena, void *pChildArena) {
 }
 
 // FUNCTION: LEMBALL 0x0045A0E0
-int IsPointerInsideMemoryArenaStorage(void *pArena, void *pvPointer) {
+int CArena::IsPointerInsideMemoryArenaStorage(void *pvPointer) {
     VSMEM_SizeProc pfnGetArenaHeaderSize;
     unsigned int cbArenaHeader;
     unsigned int cbArenaHeaderSecondRead;
@@ -514,23 +573,23 @@ int IsPointerInsideMemoryArenaStorage(void *pArena, void *pvPointer) {
     if (pvPointer == 0) {
         return 0;
     }
-    pfnGetArenaHeaderSize = (VSMEM_SizeProc)(*(void ***)pArena)[6];
+    pfnGetArenaHeaderSize = (VSMEM_SizeProc)m_pVtable[6];
     cbArenaHeader = pfnGetArenaHeaderSize();
     cbArenaHeaderSecondRead = pfnGetArenaHeaderSize();
-    if ((char *)pArena + cbArenaHeader <= pvPointer &&
-        pvPointer < (char *)pArena + cbArenaHeaderSecondRead + *(unsigned int *)((char *)pArena + 0x28)) {
+    if ((char *)this + cbArenaHeader <= pvPointer &&
+        pvPointer < (char *)this + cbArenaHeaderSecondRead + m_cbStorage) {
         return 1;
     }
     return 0;
 }
 
 // FUNCTION: LEMBALL 0x0045A1E0
-int HasMemoryBlockMagic(void *pBlock) {
+int PASCAL HasMemoryBlockMagic(void *pBlock) {
     return *(int *)((char *)pBlock + 4) == 0x524d424c;
 }
 
 // FUNCTION: LEMBALL 0x0045A200
-int IsUsedMemoryBlock(void *pBlock) {
+int PASCAL IsUsedMemoryBlock(void *pBlock) {
     if (HasMemoryBlockMagic(pBlock) != 0 && (*(unsigned char *)((char *)pBlock + 0x24) & 1) == 0) {
         return 1;
     }
@@ -538,7 +597,7 @@ int IsUsedMemoryBlock(void *pBlock) {
 }
 
 // FUNCTION: LEMBALL 0x0045A230
-int IsFreeMemoryBlock(void *pBlock) {
+int PASCAL IsFreeMemoryBlock(void *pBlock) {
     if (HasMemoryBlockMagic(pBlock) != 0 && (*(unsigned char *)((char *)pBlock + 0x24) & 1) != 0) {
         return 1;
     }
@@ -654,8 +713,8 @@ void *ConstructMemoryArena(void *pArena,
                                                 g_VSMEM_FreeBlockName,
                                                 *(unsigned int *)((char *)pArena + 0x28));
     *(unsigned int *)((char *)pBlock + 0x24) |= 1;
-    InsertMemoryBlockAfterFreeListNode(pArena, pBlock, 0);
-    AppendTailMemoryBlockAddressList(pArena, pBlock);
+    ((CArena *)pArena)->InsertMemoryBlockAfterFreeListNode(pBlock, 0);
+    ((CArena *)pArena)->AppendTailMemoryBlockAddressList(pBlock);
     return pArena;
 }
 
@@ -778,7 +837,8 @@ void *RestoreMemoryBlockBaseVtableReturnThis(void *pBlock) {
 
 // FUNCTION: LEMBALL 0x0045A800
 int IsPointerInsideManagedMemoryRegions(void *pvPointer) {
-    if (g_pMainMemoryArena != 0 && IsPointerInsideMemoryArenaStorage(g_pMainMemoryArena, pvPointer) != 0) {
+    if (g_pMainMemoryArena != 0 &&
+        ((CArena *)g_pMainMemoryArena)->IsPointerInsideMemoryArenaStorage(pvPointer) != 0) {
         return 1;
     }
     return 0;

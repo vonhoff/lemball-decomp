@@ -515,31 +515,26 @@ static DWORD CALLBACK HostDebugMessageThreadMain(LPVOID pvThreadParam) {
     return (DWORD)DebugMessageThreadMain();
 }
 
-// FUNCTION: LEMBALL 0x00459990
 void EnterObjectCriticalSection(void *pObject) {
     EnterCriticalSection((char *)pObject + 4);
 }
 
-// FUNCTION: LEMBALL 0x004599A0
 void LeaveObjectCriticalSection(void *pObject) {
     LeaveCriticalSection((char *)pObject + 4);
 }
 
-// FUNCTION: LEMBALL 0x00472910
 void FlushStatusFixedBufferStream(char *pszText) {
     if (g_fDebugFileEnabled != 0) {
         AppendStringToDebugOutFile(pszText);
     }
 }
 
-// FUNCTION: LEMBALL 0x004729F0
 void FlushStartupFixedBufferStream(char *pszText) {
     if (g_fDebugFileEnabled != 0) {
         AppendStringToDebugOutFile(pszText);
     }
 }
 
-// FUNCTION: LEMBALL 0x00472980
 void FlushErrorFixedBufferStream(char *pszText) {
     if (g_fDebugFileEnabled != 0) {
         AppendStringToDebugOutFile(pszText);
@@ -619,7 +614,6 @@ VSINIT_FixedBufferStream *ConstructFixedBufferStream(VSINIT_FixedBufferStream *p
     return pStream;
 }
 
-// FUNCTION: LEMBALL 0x0045ADD0
 void ResetFixedBufferStream(VSINIT_FixedBufferStream *pStream) {
     unsigned int i;
     char *pszBuffer;
@@ -656,7 +650,6 @@ static void DeleteFixedBufferStream(VSINIT_FixedBufferStream *pStream, int fFree
     }
 }
 
-// FUNCTION: LEMBALL 0x0045AF60
 void *DeleteFixedBufferStreamReturnThis(VSINIT_FixedBufferStream *pStream, unsigned char fFreeMemory) {
     DestroyFixedBufferStream(pStream);
     if ((fFreeMemory & 1) != 0) {
@@ -672,7 +665,6 @@ static void DestroyFormattedOutputStream(VSINIT_FormattedOutputStream *pStream, 
     }
 }
 
-// FUNCTION: LEMBALL 0x0045AE10
 void AppendCharToFixedBufferStream(VSINIT_FixedBufferStream *pStream, char ch) {
     char *pszCursor;
     int nRemainder;
@@ -728,7 +720,6 @@ void AppendCharToFixedBufferStream(VSINIT_FixedBufferStream *pStream, char ch) {
     }
 }
 
-// FUNCTION: LEMBALL 0x0045AF20
 void AppendCStringToFixedBufferStream(VSINIT_FixedBufferStream *pStream, const char *pszText) {
     while (*pszText != '\0') {
         AppendCharToFixedBufferStream(pStream, *pszText);
@@ -736,7 +727,6 @@ void AppendCStringToFixedBufferStream(VSINIT_FixedBufferStream *pStream, const c
     }
 }
 
-// FUNCTION: LEMBALL 0x0045B320
 void *ReturnStreamArgument(void *pStream, void *pArgument) {
     (void)pStream;
     return pArgument;
@@ -1068,7 +1058,6 @@ VSINIT_StatusEntryPointerArray *ConstructStatusEntryPointerArray(void *pRegistry
     return pPointerArray;
 }
 
-// FUNCTION: LEMBALL 0x0045ABB0
 VSINIT_FormattedOutputStream *WriteStatusEntryPointerArray(void *pRegistry, VSINIT_FormattedOutputStream *pStream) {
     VSINIT_StatusEntryPointerArray *pPointerArray;
     VSINIT_FormattedOutputStream *(*pfnWriteEntry)(void *, VSINIT_FormattedOutputStream *);
