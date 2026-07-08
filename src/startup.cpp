@@ -39,67 +39,51 @@ unsigned char g_abOverrideLevelFilePathBuffer[260];
 static int g_fSoundDebugRequested = 0;
 static int g_fStatusDebugRequested = 0;
 static int g_fMemoryDebugRequested = 0;
-static int g_fUnknownStartupFlag0 = 0;
-static int g_fUnknownStartupFlag1 = 0;
+static short g_fUnknownStartupFlag0 = 0;
+static short g_fUnknownStartupFlag1 = 0;
 static int g_fUnknownStartupFlag2 = 0;
 
 static STARTUP_GraphicsWindowConfig g_StartupGraphicsWindowConfig;
-static u32 g_aStartupGraphicsWindowItems[7];
+static int g_fSmallMemoryBucketTableEnabled = 1;
+static u32 g_adwStartupGraphicsBucketSizeTable[7];
+static STARTUP_GraphicsWindowConfig g_StartupGraphicsDriverConfig = {
+    0x40,
+    8,
+    0,
+    7,
+    g_adwStartupGraphicsBucketSizeTable,
+    3,
+    0,
+};
 
 // FUNCTION: LEMBALL 0x00406300
 static void NoopHelpSwitchCallback(void) {
 }
 
-static void CopyCString(char *pszTarget, unsigned int cchTarget, const char *pszSource) {
-    unsigned int i;
-
-    if (pszTarget == 0 || cchTarget == 0) {
-        return;
-    }
-
-    if (pszSource == 0) {
-        pszTarget[0] = '\0';
-        return;
-    }
-
-    i = 0;
-    while (pszSource[i] != '\0' && i + 1 < cchTarget) {
-        pszTarget[i] = pszSource[i];
-        ++i;
-    }
-    pszTarget[i] = '\0';
-}
-
 // FUNCTION: LEMBALL 0x00406160
 STARTUP_GraphicsWindowConfig *BuildStartupGraphicsWindowConfig(const STARTUP_GraphicsWindowConfig *pSeedConfig) {
-    int i;
-    const u32 *pSeedWords;
-    u32 *pConfigWords;
+    u32 *pItemDataEnd;
 
-    pSeedWords = (const u32 *)pSeedConfig;
-    pConfigWords = (u32 *)&g_StartupGraphicsWindowConfig;
-    for (i = 0; i < 7; ++i) {
-        pConfigWords[i] = pSeedWords[i];
-    }
+    memcpy(&g_StartupGraphicsWindowConfig, pSeedConfig, sizeof(g_StartupGraphicsWindowConfig));
 
     g_StartupGraphicsWindowConfig.m_cbSize = 0x50;
     g_StartupGraphicsWindowConfig.m_dwStyle = 0x300000;
     g_StartupGraphicsWindowConfig.m_hIcon = LoadIconA(g_hApplicationInstance, (LPCSTR)0x75);
-    g_StartupGraphicsWindowConfig.m_cItems = LEMBALL_ARRAY_COUNT(g_aStartupGraphicsWindowItems);
-    g_StartupGraphicsWindowConfig.m_pItemDataEnd =
-        g_aStartupGraphicsWindowItems + LEMBALL_ARRAY_COUNT(g_aStartupGraphicsWindowItems);
-    g_aStartupGraphicsWindowItems[0] = 100;
-    g_aStartupGraphicsWindowItems[1] = 0xc0;
-    g_aStartupGraphicsWindowItems[2] = 0x140;
-    g_aStartupGraphicsWindowItems[3] = 0x140;
-    g_aStartupGraphicsWindowItems[4] = 0x400;
-    g_aStartupGraphicsWindowItems[5] = 0x200;
-    g_aStartupGraphicsWindowItems[6] = 0x80;
+    pItemDataEnd = g_StartupGraphicsWindowConfig.m_pItemDataEnd;
+    *(pItemDataEnd - 1) = 0x80;
+    *(pItemDataEnd - 2) = 0x200;
+    *(pItemDataEnd - 3) = 0x400;
+    *(pItemDataEnd - 4) = 0x140;
+    *(pItemDataEnd - 5) = 0x140;
+    *(pItemDataEnd - 6) = 0xc0;
+    *(pItemDataEnd - 7) = 100;
     return &g_StartupGraphicsWindowConfig;
 }
 
 // FUNCTION: LEMBALL 0x00406230
 void InitializeStartupSwitchDefaults(void) {
+    int nSelectedDriver;
+
     g_fStartupAnimationsEnabled = 1;
     g_fSkipStartupSequence = 0;
     g_fMusicOptionAvailable = 1;
@@ -115,68 +99,63 @@ void InitializeStartupSwitchDefaults(void) {
     g_fUnknownStartupFlag2 = 0;
     g_fStartupEditLevelOverride = 0;
     g_fStartupPlayLevelOverride = 0;
-    if (GetSelectedGraphicsDriverId() < VSGDI_DRIVER_DIB_320_200 ||
-        GetSelectedGraphicsDriverId() > VSGDI_DRIVER_DIB_640_480) {
+    nSelectedDriver = GetSelectedGraphicsDriverId();
+    if (nSelectedDriver < VSGDI_DRIVER_DIB_320_200 || nSelectedDriver > VSGDI_DRIVER_DIB_640_480) {
         g_fCompactPrimaryContextLayout = 0;
     } else {
         g_fCompactPrimaryContextLayout = 1;
     }
     g_fUnknownStartupFlag1 = 0;
     g_fUnknownStartupFlag0 = 0;
-    g_fLevelDemoModeEnabled = 0;
     g_fStartupTestAllLevels = 0;
-    CopyCString((char *)g_abOverrideLevelFilePathBuffer,
-                sizeof(g_abOverrideLevelFilePathBuffer),
-                g_STARTUP_DefaultOverrideLevelPath);
+    g_fLevelDemoModeEnabled = 0;
+    strcpy((char *)g_abOverrideLevelFilePathBuffer, g_STARTUP_DefaultOverrideLevelPath);
 }
 
 // FUNCTION: LEMBALL 0x00406790
 int CompareSwitchNameCaseInsensitive(const char *pszLeft, const char *pszRight, int cchMax) {
-    int cchLeft;
-    int cchRight;
-    int nDifference;
+    unsigned int cchLeft;
+    unsigned int cchRight;
+    char chLeft;
+    char chRight;
 
-    cchLeft = (int)strlen(pszLeft);
-    cchRight = (int)strlen(pszRight);
+    cchLeft = (unsigned int)strlen(pszLeft);
+    cchRight = (unsigned int)strlen(pszRight);
 
-    if (cchMax < cchLeft) {
-        cchLeft = cchMax;
+    if ((unsigned int)cchMax < cchLeft) {
+        cchLeft = (unsigned int)cchMax;
     }
-    if (cchMax < cchRight) {
-        cchRight = cchMax;
+    if ((unsigned int)cchMax < cchRight) {
+        cchRight = (unsigned int)cchMax;
     }
     if (cchRight != cchLeft) {
         return -1;
     }
 
-    if (cchLeft < cchMax) {
-        cchMax = cchLeft;
+    if (cchLeft < (unsigned int)cchMax) {
+        cchMax = (int)cchLeft;
     }
-    if (cchRight < cchMax) {
-        cchMax = cchRight;
+    if (cchRight < (unsigned int)cchMax) {
+        cchMax = (int)cchRight;
     }
 
     while (1) {
-        char chLeft;
-        char chRight;
-
         if (cchMax == 0) {
             return 0;
         }
-        if (isalpha(*pszLeft)) {
-            chLeft = (char)toupper(*pszLeft);
+        if (isalpha((int)*pszLeft)) {
+            chLeft = (char)toupper((int)*pszLeft);
         } else {
             chLeft = *pszLeft;
         }
 
-        if (isalpha(*pszRight)) {
-            chRight = (char)toupper(*pszRight);
+        if (isalpha((int)*pszRight)) {
+            chRight = (char)toupper((int)*pszRight);
         } else {
             chRight = *pszRight;
         }
 
-        nDifference = (int)chLeft - (int)chRight;
-        if (nDifference != 0) {
+        if ((int)chLeft - (int)chRight != 0) {
             break;
         }
 
@@ -185,7 +164,7 @@ int CompareSwitchNameCaseInsensitive(const char *pszLeft, const char *pszRight, 
         --cchMax;
     }
 
-    return nDifference;
+    return (int)chLeft - (int)chRight;
 }
 
 // FUNCTION: LEMBALL 0x00406460
@@ -265,14 +244,47 @@ int ApplyStartupCommandLineSwitches(int cArgs, const char *const *ppszArgs) {
 
 // FUNCTION: LEMBALL 0x004727B0
 void FinalizeStartupGraphicsDriverConfig(void) {
-    STARTUP_GraphicsWindowConfig Config;
+    int i;
+    STARTUP_GraphicsWindowConfig *pBuiltConfig;
+    u32 *pBucketSize;
 
-    memset(&Config, 0, sizeof(Config));
-    BuildStartupGraphicsWindowConfig(&Config);
+    for (i = 0; i < 7; ++i) {
+        g_adwStartupGraphicsBucketSizeTable[i] = 0x100;
+    }
+    g_StartupGraphicsDriverConfig.m_dwStyle <<= 0x13;
+    pBuiltConfig = BuildStartupGraphicsWindowConfig(&g_StartupGraphicsDriverConfig);
+    if (pBuiltConfig != 0) {
+        memcpy(&g_StartupGraphicsDriverConfig, pBuiltConfig, sizeof(g_StartupGraphicsDriverConfig));
+    }
+    if (7 < (int)g_StartupGraphicsDriverConfig.m_cItems) {
+        g_StartupGraphicsDriverConfig.m_cItems = 7;
+    }
+    if ((int)g_StartupGraphicsDriverConfig.m_cItems < 1) {
+        g_fSmallMemoryBucketTableEnabled = 0;
+    }
+    pBucketSize = g_adwStartupGraphicsBucketSizeTable;
+    do {
+        if (((*pBucketSize % 0x20) + 0x20) % 0x20 != 0) {
+            *pBucketSize = ((*pBucketSize + 0x1f) / 0x20) * 0x20;
+        }
+        ++pBucketSize;
+    } while (pBucketSize < g_adwStartupGraphicsBucketSizeTable + LEMBALL_ARRAY_COUNT(g_adwStartupGraphicsBucketSizeTable));
 
-    if (g_fStartupGraphicsDialogRequested) {
-        InitializeSelectedGraphicsDriver(VSGDI_DRIVER_METRICS);
-    } else {
-        InitializeSelectedGraphicsDriver(VSGDI_DRIVER_AUTO);
+    if (g_StartupGraphicsDriverConfig.m_dwReserved1 == 0) {
+        g_fStartupGraphicsDriverCds = 0;
+        g_fStartupGraphicsDriverWing = 1;
+        g_fStartupGraphicsDriverGdk = 0;
+        return;
+    }
+    if (g_StartupGraphicsDriverConfig.m_dwReserved1 == 1) {
+        g_fStartupGraphicsDriverWing = 0;
+        g_fStartupGraphicsDriverCds = 1;
+        g_fStartupGraphicsDriverGdk = 0;
+        return;
+    }
+    if (g_StartupGraphicsDriverConfig.m_dwReserved1 == 2) {
+        g_fStartupGraphicsDriverWing = 0;
+        g_fStartupGraphicsDriverGdk = 1;
+        g_fStartupGraphicsDriverCds = 0;
     }
 }

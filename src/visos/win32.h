@@ -140,9 +140,18 @@ DWORD WINAPI GetLogicalDrives(void);
 UINT WINAPI GetDriveTypeA(LPCSTR lpRootPathName);
 UINT WINAPI GetModuleFileNameA(HINSTANCE hModule, LPSTR lpFilename, UINT nSize);
 HICON WINAPI LoadIconA(HINSTANCE hInstance, LPCSTR lpIconName);
+HCURSOR WINAPI LoadCursorA(HINSTANCE hInstance, LPCSTR lpCursorName);
+HMODULE WINAPI LoadLibraryA(LPCSTR lpLibFileName);
+FARPROC WINAPI GetProcAddress(HMODULE hModule, LPCSTR lpProcName);
+int WINAPI GetSystemMetrics(int nIndex);
+void WINAPI InitializeCriticalSection(LPVOID lpCriticalSection);
+void WINAPI DeleteCriticalSection(LPVOID lpCriticalSection);
+void WINAPI EnterCriticalSection(LPVOID lpCriticalSection);
+void WINAPI LeaveCriticalSection(LPVOID lpCriticalSection);
 BOOL WINAPI WinHelpA(HWND hWndMain, LPCSTR lpszHelp, UINT uCommand, DWORD_PTR dwData);
 int WINAPI
 DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam);
+int WINAPI MessageBoxA(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType);
 }
 
 #endif
