@@ -62,6 +62,9 @@ void *g_pMainMemoryArena = 0;
 static int g_cbMainArenaCapacity = 0;
 static int g_cbMainArenaInUse = 0;
 static int g_fMainArenaReady = 0;
+void *g_pSmallMemoryBucketTable = 0;
+unsigned int g_cbSmallMemoryBucketUpperBound = 0;
+const char *g_pszSmallMemoryBucketAllocTag = "Small memory bucket";
 static const char g_VSMEM_ReportSeparator[] = "************************************************\n";
 static const char g_VSMEM_ReportFreeSizePrefix[] = "Memory Block list free size = ";
 static const char g_VSMEM_ReportLineBreak[] = "\n";
@@ -104,6 +107,18 @@ static void *g_aMemoryArenaBlockVtable[2] = {
     (void *)VSMEM_ReportBlockStub,
     (void *)VSMEM_DeleteBlockStub,
 };
+
+int AllocateFromSmallMemoryBucketTable(void *pBucketTable, unsigned int cbBlock) {
+    (void)pBucketTable;
+    (void)cbBlock;
+    return 0;
+}
+
+int FreeToSmallMemoryBucketTable(void *pBucketTable, void *pBlock) {
+    (void)pBucketTable;
+    (void)pBlock;
+    return 0;
+}
 
 // FUNCTION: LEMBALL 0x0045A6B0
 void *AllocateVSMemBlockImpl(unsigned int cbBlock) {

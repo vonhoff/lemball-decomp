@@ -22,8 +22,6 @@ public:
     int m_nTotalValue;
     int m_cSamples;
     GAME_DynamicCString m_Name;
-    int m_nReserved20;
-    int m_nReserved24;
 };
 
 class GAME_MainContext {

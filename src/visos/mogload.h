@@ -89,6 +89,7 @@ struct MOGLOAD_StringResourceObject {
     int m_nReserved28;
     int m_nReserved2C;
     int m_nResourceId30;
+    int m_nReserved30;
     int m_nReserved34;
     char *m_pszText38;
     int m_nReserved3C;

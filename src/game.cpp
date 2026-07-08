@@ -1247,12 +1247,10 @@ GAME_MainContext::GAME_MainContext(void) {
 static GAME_StatusEntry *AllocateNamedStatusEntry(const char *pszName) {
     GAME_StatusEntry *pEntry;
 
-    pEntry = new (AllocateVSMemBlock(0x28)) GAME_StatusEntry(pszName);
+    pEntry = new (AllocateVSMemBlock(sizeof(GAME_StatusEntry))) GAME_StatusEntry(pszName);
     if (pEntry == 0) {
         return 0;
     }
-    pEntry->m_nReserved20 = 0;
-    pEntry->m_nReserved24 = 0;
     return pEntry;
 }
 
