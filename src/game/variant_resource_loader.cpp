@@ -68,7 +68,6 @@ void *ConstructIntZrleListResourceFromId(void *pObject, int nResourceId) {
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x0045CF20
 void *ConstructTwoArrayListResourceFromId(void *pObject, int nResourceId) {
     int *pListResource;
 

@@ -9,13 +9,13 @@ set(LEMBALL_SOURCES
     src/engine/render_dispatch.cpp
     src/engine/runtime_init.cpp
     src/game/game_app.cpp
-    src/game/geff.cpp
-    src/game/glevel.cpp
-    src/game/gmcb.cpp
-    src/game/gstatus.cpp
+    src/game/eff_streams.cpp
+    src/game/level_runtime.cpp
+    src/game/vtable_callbacks.cpp
+    src/game/status_entry.cpp
     src/game/level_status.cpp
-    src/game/gvload.cpp
-    src/game/gvariant.cpp
+    src/game/variant_resource_loader.cpp
+    src/game/variant_resource_manager.cpp
     src/network/nlobby.cpp
     src/network/nfile.cpp
     src/network/nsocket.cpp
