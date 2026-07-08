@@ -2,19 +2,15 @@ HOST_CXX ?= c++
 HOST_CXXFLAGS ?= -std=c++98 -Wall -Wextra -Werror -Isrc -Isrc/visos
 CLANG_FORMAT ?= clang-format
 CLANG_TIDY ?= clang-tidy
-FORMAT_SOURCES := $(shell rg --files src -g '*.cpp' -g '*.h')
-TIDY_SOURCES := $(shell rg --files src -g '*.cpp')
+FORMAT_SOURCES = $(shell rg --files src -g '*.cpp' -g '*.h')
+TIDY_SOURCES = $(shell rg --files src -g '*.cpp')
 
-.PHONY: pipeline status verify validate-target ghidra-functions report annotation-candidates format tidy
+.PHONY: pipeline verify validate-target ghidra-functions report annotation-candidates format tidy
 
-pipeline: validate-target status
-
-status:
-	@mkdir -p build
-	@python3 tools/generate_status_report.py --output build/status.json
+pipeline: validate-target
 
 report:
-	@python3 tools/generate_reccmp_report.py -o build/report.json
+	@python3 tools/generate_reccmp_report.py
 
 validate-target:
 	@python3 tools/validate_target_binary.py

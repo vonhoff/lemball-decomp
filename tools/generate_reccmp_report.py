@@ -3,39 +3,27 @@
 # requires-python = ">=3.11"
 # dependencies = ["reccmp"]
 # ///
-"""Generate an objdiff-format progress report from reccmp results."""
+"""Generate the strict objdiff-format codegen report for LEMBALL."""
 
 from __future__ import annotations
 
-import argparse
 import json
+import struct
 from pathlib import Path
 
 from reccmp.compare.core import Compare
-from reccmp.parser.marker import MarkerType, match_marker
+from reccmp.compare.report import ReccmpStatusReport
 from reccmp.project.detect import RecCmpProject
+from reccmp.types import EntityType
 
 
 TARGET_NAME = "LEMBALL"
 INCLUDED_CATEGORIES = {"internal", "thunk"}
 MANIFEST_PATH = Path("data/manifest.json")
-
-
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("-o", "--output", default="report.json")
-    return parser.parse_args()
-
-
-def parse_annotations(source_root: Path) -> dict[int, str]:
-    addr_to_source: dict[int, str] = {}
-    for path in sorted(source_root.rglob("*.cpp")):
-        with open(path) as f:
-            for line in f:
-                marker = match_marker(line)
-                if marker and marker.module == TARGET_NAME and marker.type == MarkerType.FUNCTION:
-                    addr_to_source[marker.offset] = path.as_posix()
-    return addr_to_source
+RECOMPILED_BINARY_PATH = Path("build-msvc420/LEMBALL.EXE")
+RECOMPILED_PDB_PATH = Path("build-msvc420/LEMBALL.pdb")
+CODEGEN_REPORT_PATH = Path("build/report.json")
+TEXT_VIRTUAL_ADDRESS = 0x401000
 
 
 def empty_measures() -> dict[str, float | int]:
@@ -49,6 +37,7 @@ def empty_measures() -> dict[str, float | int]:
         "matched_functions": 0,
         "complete_code": 0,
         "complete_data": 0,
+        "total_units": 0,
         "complete_units": 0,
     }
 
@@ -57,31 +46,99 @@ def add_measures(total: dict[str, float | int], unit: dict[str, float | int]) ->
     total["fuzzy_match_percent"] += unit["fuzzy_match_percent"] * unit["total_code"]
     total["total_code"] += unit["total_code"]
     total["matched_code"] += unit["matched_code"]
+    total["total_data"] += unit["total_data"]
+    total["matched_data"] += unit["matched_data"]
     total["total_functions"] += unit["total_functions"]
     total["matched_functions"] += unit["matched_functions"]
     total["complete_code"] += unit["complete_code"]
+    total["complete_data"] += unit["complete_data"]
+    total["total_units"] += unit["total_units"]
     total["complete_units"] += unit["complete_units"]
 
 
-def calc_percents(measures: dict[str, float | int], total_units: int) -> None:
+def calc_percents(measures: dict[str, float | int]) -> None:
     total_code = int(measures["total_code"])
+    total_data = int(measures["total_data"])
     total_functions = int(measures["total_functions"])
     measures["matched_code_percent"] = (
-        float(measures["matched_code"]) / total_code * 100.0 if total_code else 0.0
+        float(measures["matched_code"]) / total_code * 100.0 if total_code else 100.0
     )
-    measures["matched_data_percent"] = 100.0
+    measures["matched_data_percent"] = (
+        float(measures["matched_data"]) / total_data * 100.0 if total_data else 100.0
+    )
     measures["matched_functions_percent"] = (
         float(measures["matched_functions"]) / total_functions * 100.0
         if total_functions
-        else 0.0
+        else 100.0
     )
     measures["complete_code_percent"] = (
-        float(measures["complete_code"]) / total_code * 100.0 if total_code else 0.0
+        float(measures["complete_code"]) / total_code * 100.0 if total_code else 100.0
     )
-    measures["complete_data_percent"] = 100.0
-    measures["total_units"] = total_units
-    measures["total_data"] = 0
-    measures["matched_data"] = 0
+    measures["complete_data_percent"] = (
+        float(measures["complete_data"]) / total_data * 100.0 if total_data else 100.0
+    )
+
+
+def objdiff_u64(value: int | float) -> str:
+    return str(int(value))
+
+
+def objdiff_f32(value: int | float) -> float:
+    packed = struct.pack("<f", float(value))
+    rounded = struct.unpack("<f", packed)[0]
+    for precision in range(1, 10):
+        text = format(rounded, f".{precision}g")
+        if struct.pack("<f", float(text)) == packed:
+            return float(text)
+    return float(format(rounded, ".9g"))
+
+
+def objdiff_measures(measures: dict[str, float | int]) -> dict[str, object]:
+    result: dict[str, object] = {}
+    fields = (
+        ("fuzzy_match_percent", objdiff_f32),
+        ("total_code", objdiff_u64),
+        ("matched_code", objdiff_u64),
+        ("matched_code_percent", objdiff_f32),
+        ("total_data", objdiff_u64),
+        ("matched_data", objdiff_u64),
+        ("matched_data_percent", objdiff_f32),
+        ("total_functions", int),
+        ("matched_functions", int),
+        ("matched_functions_percent", objdiff_f32),
+        ("complete_code", objdiff_u64),
+        ("complete_code_percent", objdiff_f32),
+        ("complete_data", objdiff_u64),
+        ("complete_data_percent", objdiff_f32),
+        ("total_units", int),
+        ("complete_units", int),
+    )
+    for key, converter in fields:
+        value = measures[key]
+        if value != 0:
+            result[key] = converter(value)
+    return result
+
+
+def objdiff_item(
+    name: object,
+    size: int,
+    fuzzy_match_percent: float,
+    virtual_address: int | None = None,
+    address: int | None = None,
+) -> dict[str, object]:
+    item: dict[str, object] = {"name": str(name)}
+    if size != 0:
+        item["size"] = objdiff_u64(size)
+    if fuzzy_match_percent != 0.0:
+        item["fuzzy_match_percent"] = objdiff_f32(fuzzy_match_percent)
+    metadata: dict[str, object] = {}
+    if virtual_address is not None:
+        metadata["virtual_address"] = objdiff_u64(virtual_address)
+    item["metadata"] = metadata
+    if address is not None:
+        item["address"] = objdiff_u64(address)
+    return item
 
 
 def unmapped_unit_name(function: dict[str, object]) -> str:
@@ -90,17 +147,39 @@ def unmapped_unit_name(function: dict[str, object]) -> str:
 
 
 def load_compare_by_address(target_name: str) -> dict[int, dict[str, object]]:
+    if not RECOMPILED_BINARY_PATH.exists() or not RECOMPILED_PDB_PATH.exists():
+        raise SystemExit(
+            "strict codegen report requires the MSVC rebuilt executable and PDB.\n"
+            f"Expected {RECOMPILED_BINARY_PATH} and {RECOMPILED_PDB_PATH}.\n"
+            "No decomp.dev report is generated without strict codegen inputs."
+        )
+
     project = RecCmpProject.from_directory(Path("."))
     target = project.get(target_name)
     compare = Compare.from_target(target)
+    report = ReccmpStatusReport(filename=target.original_path.name)
 
     by_address: dict[int, dict[str, object]] = {}
     for diff in compare.compare_all():
+        if (
+            diff.match_type == EntityType.FUNCTION
+            and diff.name in target.report_config.ignore_functions
+        ):
+            continue
+
+        report.add_match(diff)
         match = compare._db.get_one_match(diff.orig_addr)
-        by_address[diff.orig_addr] = {
-            "name": diff.name,
-            "ratio": diff.effective_ratio,
-            "stub": diff.is_stub,
+
+    for entity in report.entities.values():
+        if entity.type != EntityType.FUNCTION:
+            continue
+
+        orig_addr = int(entity.orig_addr, 16)
+        match = compare._db.get_one_match(orig_addr)
+        by_address[orig_addr] = {
+            "name": entity.name,
+            "ratio": entity.effective_accuracy,
+            "stub": entity.is_stub,
             "size": 0 if match is None else match.any_size(),
         }
     return by_address
@@ -111,7 +190,6 @@ def build_report() -> dict[str, object]:
         raise SystemExit("data/manifest.json is missing. Run make ghidra-functions first.")
 
     inventory = json.loads(MANIFEST_PATH.read_text())
-    addr_to_source = parse_annotations(Path("src"))
     compare_by_address = load_compare_by_address(TARGET_NAME)
 
     units: dict[str, list[dict[str, object]]] = {}
@@ -121,8 +199,7 @@ def build_report() -> dict[str, object]:
             continue
 
         address = int(function["address"], 16)
-        source_path = addr_to_source.get(address)
-        unit_name = source_path if source_path is not None else unmapped_unit_name(function)
+        unit_name = unmapped_unit_name(function)
         diff = compare_by_address.get(address)
         ratio = 0.0 if diff is None else float(diff["ratio"])
         is_stub = False if diff is None else bool(diff["stub"])
@@ -137,7 +214,6 @@ def build_report() -> dict[str, object]:
                 "size": size,
                 "ratio": ratio,
                 "stub": is_stub,
-                "source_path": source_path,
                 "category": category,
             }
         )
@@ -152,14 +228,15 @@ def build_report() -> dict[str, object]:
 
         unit_code = sum(int(function["size"]) for function in functions)
         matched_code = sum(
-            int(function["size"]) for function in functions if float(function["ratio"]) == 1.0
+            int(function["size"])
+            for function in functions
+            if float(function["ratio"]) == 1.0
         )
         matched_functions = sum(1 for function in functions if float(function["ratio"]) == 1.0)
         fuzzy_weight = sum(
             float(function["ratio"]) * 100.0 * int(function["size"]) for function in functions
         )
         fuzzy_match = fuzzy_weight / unit_code if unit_code else 0.0
-        complete = bool(functions) and all(float(function["ratio"]) == 1.0 for function in functions)
 
         unit_measures = {
             "fuzzy_match_percent": fuzzy_match,
@@ -172,41 +249,37 @@ def build_report() -> dict[str, object]:
             "total_functions": len(functions),
             "matched_functions": matched_functions,
             "matched_functions_percent": matched_functions / len(functions) * 100.0,
-            "complete_code": unit_code if complete else 0,
-            "complete_code_percent": 100.0 if complete else 0.0,
+            "complete_code": 0,
+            "complete_code_percent": 0.0,
             "complete_data": 0,
             "complete_data_percent": 100.0,
             "total_units": 1,
-            "complete_units": 1 if complete else 0,
+            "complete_units": 0,
         }
-
-        unit_metadata = {"complete": complete}
-        if functions[0]["source_path"] is not None:
-            unit_metadata["source_path"] = functions[0]["source_path"]
 
         report_units.append(
             {
                 "name": unit_name,
-                "measures": unit_measures,
+                "measures": objdiff_measures(unit_measures),
                 "sections": [
-                    {
-                        "name": ".text",
-                        "size": unit_code,
-                        "fuzzy_match_percent": fuzzy_match,
-                    }
+                    objdiff_item(
+                        ".text",
+                        unit_code,
+                        fuzzy_match,
+                        virtual_address=TEXT_VIRTUAL_ADDRESS,
+                    )
                 ],
                 "functions": [
-                    {
-                        "name": function["name"],
-                        "size": int(function["size"]),
-                        "fuzzy_match_percent": float(function["ratio"]) * 100.0,
-                        "metadata": {
-                            "virtual_address": int(function["address"]),
-                        },
-                    }
+                    objdiff_item(
+                        function["name"],
+                        int(function["size"]),
+                        float(function["ratio"]) * 100.0,
+                        virtual_address=int(function["address"]),
+                        address=int(function["address"]) - TEXT_VIRTUAL_ADDRESS,
+                    )
                     for function in functions
                 ],
-                "metadata": unit_metadata,
+                "metadata": {},
             }
         )
 
@@ -215,27 +288,36 @@ def build_report() -> dict[str, object]:
     total_measures["fuzzy_match_percent"] = (
         total_measures["fuzzy_match_percent"] / total_measures["total_code"]
         if total_measures["total_code"]
-        else 0.0
+        else 100.0
     )
-    calc_percents(total_measures, len(report_units))
+    calc_percents(total_measures)
 
-    return {"version": 2, "measures": total_measures, "units": report_units, "categories": []}
+    report: dict[str, object] = {"measures": objdiff_measures(total_measures)}
+    if report_units:
+        report["units"] = report_units
+    report["version"] = 2
+    return report
 
 
 def main() -> int:
-    args = parse_args()
     report = build_report()
-    output_path = Path(args.output)
+    output_path = CODEGEN_REPORT_PATH
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(report, indent=2) + "\n")
     measures = report["measures"]
+    total_functions = int(measures.get("total_functions", 0))
+    matched_functions = int(measures.get("matched_functions", 0))
+    matched_functions_percent = float(measures.get("matched_functions_percent", 0.0))
+    fuzzy_match_percent = float(measures.get("fuzzy_match_percent", 0.0))
+    total_units = int(measures.get("total_units", 0))
+    complete_units = int(measures.get("complete_units", 0))
     print(
-        f"{measures['total_functions']} functions, "
-        f"{measures['matched_functions']} matched "
-        f"({measures['matched_functions_percent']:.1f}%), "
-        f"fuzzy {measures['fuzzy_match_percent']:.1f}%, "
-        f"{measures['total_units']} units "
-        f"({measures['complete_units']} complete)"
+        f"{total_functions} functions, "
+        f"{matched_functions} matched "
+        f"({matched_functions_percent:.1f}%), "
+        f"fuzzy {fuzzy_match_percent:.1f}%, "
+        f"{total_units} units "
+        f"({complete_units} complete)"
     )
     return 0
 

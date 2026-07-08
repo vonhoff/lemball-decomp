@@ -67,7 +67,7 @@ jobs:
 
       - name: Generate progress report
         if: always()
-        run: python tools/generate_reccmp_report.py -o report.json
+        run: make report
 
       - name: Upload progress report
         if: always()
@@ -75,4 +75,4 @@ jobs:
         with:
           name: LEMBALL_report
           if-no-files-found: error
-          path: report.json
+          path: build/report.json
