@@ -27,7 +27,7 @@ static void *g_LevelDemoPlaybackControllerVtable[2] = {
     (void *)RestoreLevelDemoPlaybackBaseVtable,
     (void *)DeleteLevelDemoPlaybackController,
 };
-static void *g_NonZrleVariantRenderEntryInitializeVtable[2] = { 0, 0 };
+void *g_pNonZrleVariantRenderEntryInitializeVtable[2] = { 0, 0 };
 
 void *g_pLevelDemoPlaybackController = 0;
 void *g_pLevelDemoPlaybackDescriptor = 0;
@@ -85,7 +85,7 @@ void DestroyLevelDemoPlaybackController(void *pPlaybackController) {
     *(void ***)pPlaybackController = g_LevelDemoPlaybackControllerVtable;
     ReleaseLevelDemoRecordBuffer(pPlaybackController);
     UnregisterOrderedRenderDispatchClient(g_pSharedRenderDispatchQueue, pPlaybackController, -100);
-    *(void ***)pPlaybackController = g_NonZrleVariantRenderEntryInitializeVtable;
+    *(void ***)pPlaybackController = g_pNonZrleVariantRenderEntryInitializeVtable;
 }
 
 // FUNCTION: LEMBALL 0x004095E0
@@ -197,7 +197,7 @@ void *DeleteLevelDemoPlaybackController(void *pPlaybackController, unsigned char
 
 // FUNCTION: LEMBALL 0x004098E0
 void *RestoreLevelDemoPlaybackBaseVtable(void *pPlaybackController, unsigned char fDelete) {
-    *(void ***)pPlaybackController = g_NonZrleVariantRenderEntryInitializeVtable;
+    *(void ***)pPlaybackController = g_pNonZrleVariantRenderEntryInitializeVtable;
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pPlaybackController);
     }

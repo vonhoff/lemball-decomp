@@ -194,14 +194,14 @@ extern "C" DWORD timeGetTime(void);
 
 extern int g_nSelectedNetworkLobbyPeerId;
 extern void *g_pActiveNetworkRuntimeWindow;
-extern void *g_pNonZrleVariantRenderEntryInitializeVtable;
+extern void *g_pNonZrleVariantRenderEntryInitializeVtable[2];
 extern void InitializeRenderQueueNodeBase(void *pRenderQueueNode);
 extern int StartFileBasedNetworkMessageThread(void);
 extern int StartTcpipNetworkMessageThread(void);
 extern void ConfigureFileBasedNetworkPathsWrapper(char *pszBasePath, char *pszNetworkPath);
 extern int StartEffTransportRuntimeAndWaitReady(void *pRuntimeWindow, int nRuntimeKey, int cbMaxPacket);
-extern void StopFileBasedNetworkMessageThread(void);
-extern void StopTcpipNetworkMessageThread(void);
+extern int StopFileBasedNetworkMessageThread(void);
+extern int StopTcpipNetworkMessageThread(void);
 void ResetEffStreamStateFields(void *pEffStreamSubobject);
 void *ConstructNetworkLobbyPeerClearCloseStream(void *pObject);
 
@@ -399,7 +399,7 @@ void DestroyNetworkLobbyVsnetRuntime(void *pObject) {
         ((GAME_EffStreamDeleteVtable *)*(void **)pOwnedObject)->m_pDelete(3);
     }
 
-    pRuntime->m_pVtable = &g_pNonZrleVariantRenderEntryInitializeVtable;
+    pRuntime->m_pVtable = g_pNonZrleVariantRenderEntryInitializeVtable;
 }
 
 // FUNCTION: LEMBALL 0x0045F1E0
@@ -423,6 +423,14 @@ void BeginEffStreamWriteSession(void *pObject) {
         pStream->m_pVtable->m_pBeginWriteHeader();
         pStream->m_pVtable->m_pBeginWriteBody();
     }
+}
+
+// FUNCTION: LEMBALL 0x0045F240
+void EndEffStreamWriteSession(int nObject) {
+    GAME_EffStream *pStream;
+
+    pStream = (GAME_EffStream *)(unsigned long)nObject;
+    --pStream->m_cWriteSessions;
 }
 
 // FUNCTION: LEMBALL 0x0045FC30

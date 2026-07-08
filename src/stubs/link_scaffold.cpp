@@ -1,0 +1,297 @@
+#include "../platform/win32.h"
+
+// Temporary link scaffold for report generation only.
+// These definitions are not binary-backed and must not carry reccmp markers.
+
+void BuildSpecialLevelTileGridStaticRenderEntriesThunk(void *pRenderList, void *pTileGrid) {
+    (void)pRenderList;
+    (void)pTileGrid;
+}
+
+void InitializeNetworkPlayerPlasChunkObjectPoolThunk(void *pPlasManager) {
+    (void)pPlasManager;
+}
+
+void LoadLevelChunksForSkillAndLevelThunk(void *pLoaderContext, unsigned int nSkill, unsigned int nLevel, int fReuseState) {
+    (void)pLoaderContext;
+    (void)nSkill;
+    (void)nLevel;
+    (void)fReuseState;
+}
+
+void *ConstructLevelChunkLoaderContextThunk(void *pObject, int nLevelMode) {
+    (void)nLevelMode;
+    return pObject;
+}
+
+void *ConstructInvsChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
+    (void)pLevelMode;
+    (void)nCapacity;
+    return pObject;
+}
+
+void ResetType35ChunkObjectsThunk(void *pObject) {
+    (void)pObject;
+}
+
+void *ConstructSlnkChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
+    (void)pLevelMode;
+    (void)nCapacity;
+    return pObject;
+}
+
+void *ConstructType18ChunkStreamThunk(void *pObject) {
+    return pObject;
+}
+
+void *ConstructIceChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
+    (void)pLevelMode;
+    (void)nCapacity;
+    return pObject;
+}
+
+void *ConstructPgunChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
+    (void)pLevelMode;
+    (void)nCapacity;
+    return pObject;
+}
+
+void *ConstructTramChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
+    (void)pLevelMode;
+    (void)nCapacity;
+    return pObject;
+}
+
+void *ConstructBoonChunkManagerThunk(void *pObject, void *pLevelMode, void *pTileGrid) {
+    (void)pLevelMode;
+    (void)pTileGrid;
+    return pObject;
+}
+
+void ResetLevelField194TimerBlockThunk(void *pObject) {
+    (void)pObject;
+}
+
+void *ConstructLasrChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
+    (void)pLevelMode;
+    (void)nCapacity;
+    return pObject;
+}
+
+void *ConstructCaptureTriggerChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
+    (void)pLevelMode;
+    (void)nCapacity;
+    return pObject;
+}
+
+void *ConstructRockChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
+    (void)pLevelMode;
+    (void)nCapacity;
+    return pObject;
+}
+
+void *ConstructDoorChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
+    (void)pLevelMode;
+    (void)nCapacity;
+    return pObject;
+}
+
+void *ConstructMineChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
+    (void)pLevelMode;
+    (void)nCapacity;
+    return pObject;
+}
+
+void *ConstructCollChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
+    (void)pLevelMode;
+    (void)nCapacity;
+    return pObject;
+}
+
+void *ConstructBallChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
+    (void)pLevelMode;
+    (void)nCapacity;
+    return pObject;
+}
+
+void ResetNodeChunkRecordsThunk(void *pNodeManager) {
+    (void)pNodeManager;
+}
+
+void *ConstructNodeChunkManagerThunk(void *pObject, int nCapacity) {
+    (void)nCapacity;
+    return pObject;
+}
+
+void ActivateNestedChildrenFromOwnerTableVariantThunk(void *pObject) {
+    (void)pObject;
+}
+
+void *ConstructEnmyChunkManagerThunk(void *pObject, void *pLevelMode, void *pGmobManager, void *pProjectileGeometryTable) {
+    (void)pLevelMode;
+    (void)pGmobManager;
+    (void)pProjectileGeometryTable;
+    return pObject;
+}
+
+void ActivateNestedChildrenFromOwnerTableA4Thunk(void *pObject) {
+    (void)pObject;
+}
+
+void *ConstructShpgChunkManagerThunk(void *pObject, void *pLevelMode, void *pGmobManager, void *pProjectileGeometryTable) {
+    (void)pLevelMode;
+    (void)pGmobManager;
+    (void)pProjectileGeometryTable;
+    return pObject;
+}
+
+void *ConstructManagedEntityQueueCursorThunk(void *pObject, int nLevelMode, int nPrimaryCapacity, int nSecondaryCapacity) {
+    (void)nLevelMode;
+    (void)nPrimaryCapacity;
+    (void)nSecondaryCapacity;
+    return pObject;
+}
+
+void *ConstructProjectilePoolThunk(void *pObject) {
+    return pObject;
+}
+
+void *ConstructPlasChunkManagerThunk(void *pObject, void *pLevelMode, void *pGmobManager, void *pProjectileGeometryTable) {
+    (void)pLevelMode;
+    (void)pGmobManager;
+    (void)pProjectileGeometryTable;
+    return pObject;
+}
+
+void ClearProjectileGeometryField100Thunk(void *pTable) {
+    (void)pTable;
+}
+
+int *InitializeProjectileGeometryPairTableThunk(int *pTable) {
+    return pTable;
+}
+
+void *ConstructGmobChunkManagerThunk(void *pObject, void *pLevelMode) {
+    (void)pLevelMode;
+    return pObject;
+}
+
+void *ConstructMoveChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
+    (void)pLevelMode;
+    (void)nCapacity;
+    return pObject;
+}
+
+void *ConstructLiftChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
+    (void)pLevelMode;
+    (void)nCapacity;
+    return pObject;
+}
+
+void *ConstructLevelChunkStreamDispatcherThunk(void *pObject, int nChunkTypeCount) {
+    (void)nChunkTypeCount;
+    return pObject;
+}
+
+void SetGeometryChildEnabled(void *pGeometryChild, int fEnabled) {
+    (void)pGeometryChild;
+    (void)fEnabled;
+}
+
+DWORD WriteEffStreamToLockedFile(void *pFile, int *pEffStream, int nOffset, int nLength) {
+    (void)pFile;
+    (void)pEffStream;
+    (void)nOffset;
+    return (DWORD)nLength;
+}
+
+int UnlockWin32FileRange(void *pFile, DWORD dwOffset, DWORD dwLength) {
+    (void)pFile;
+    (void)dwOffset;
+    (void)dwLength;
+    return 1;
+}
+
+int ReadWin32FileWrapper(void *pFile, void *pBuffer, DWORD cbBuffer) {
+    (void)pFile;
+    (void)pBuffer;
+    (void)cbBuffer;
+    return 1;
+}
+
+int LockWin32FileRange(void *pFile, DWORD dwOffset, DWORD dwLength) {
+    (void)pFile;
+    (void)dwOffset;
+    (void)dwLength;
+    return 1;
+}
+
+void ProcessEffTransportPacketHeader(int *pPacketHeader) {
+    (void)pPacketHeader;
+}
+
+void ScheduleNetworkRuntimeTimerEvent(void *pRuntimeWindow, int nTimerId) {
+    (void)pRuntimeWindow;
+    (void)nTimerId;
+}
+
+int WriteWin32FileWrapper(void *pFile, const void *pBuffer, DWORD cbBuffer) {
+    (void)pFile;
+    (void)pBuffer;
+    (void)cbBuffer;
+    return 1;
+}
+
+int SendEffStreamPayloadWithTransportHeader(void *pPayloadSender, int nStream) {
+    (void)pPayloadSender;
+    (void)nStream;
+    return 1;
+}
+
+void LoadEffStreamFromGlobalRange(void *pStream) {
+    (void)pStream;
+}
+
+void ConfigureTimedEffStreamSecondaryHandle(void *pTimedStream, int cbHandleData) {
+    (void)pTimedStream;
+    (void)cbHandleData;
+}
+
+void ConfigureEffStreamSecondaryHandleGroup(void *pStream, int cbHandleData, int nMode) {
+    (void)pStream;
+    (void)cbHandleData;
+    (void)nMode;
+}
+
+void ConfigureEffStreamPrimaryHandleGroup(void *pStream, int cHandles, int cbHandleData, int nMode) {
+    (void)pStream;
+    (void)cHandles;
+    (void)cbHandleData;
+    (void)nMode;
+}
+
+void UnlinkAndDeleteEffTransportPeer(void *pRuntimeState, int nPeer) {
+    (void)pRuntimeState;
+    (void)nPeer;
+}
+
+void SetEffTransportPeerNameAndPort(void *pPeer, char *pszName, void *pKey, short nPort) {
+    (void)pPeer;
+    (void)pszName;
+    (void)pKey;
+    (void)nPort;
+}
+
+int MarkExistingEffTransportPeerActive(void *pRuntimeState, int nPeer) {
+    (void)pRuntimeState;
+    (void)nPeer;
+    return 0;
+}
+
+void ReleaseGlobalEffTransportBuffer(void *pObject) {
+    (void)pObject;
+}
+
+void DestroyVSMemObjectPointerArray(void *pObjectArray) {
+    (void)pObjectArray;
+}

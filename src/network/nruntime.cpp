@@ -312,7 +312,7 @@ extern void CloseEffTransportPeer(int nPeer);
 extern void SetEffTransportPeerNameAndPort(void *pPeer, char *pszName, void *pKey, short nPort);
 extern void UnlinkAndDeleteEffTransportPeer(void *pRuntimeState, int nPeer);
 extern void ConfigureEffStreamPrimaryHandleGroup(void *pStream, int cHandles, int cbHandleData, int nMode);
-extern void ReleaseTimedEffStreamPrimaryHandleWrapper(int nTimedStream);
+extern void ReleaseTimedEffStreamPrimaryHandle(int nTimedStream);
 extern void ConfigureEffStreamSecondaryHandleGroup(void *pStream, int cbHandleData, int nMode);
 extern void ConfigureTimedEffStreamSecondaryHandle(void *pTimedStream, int cbHandleData);
 extern int MarkExistingEffTransportPeerActive(void *pRuntimeState, int nPeer);
@@ -444,7 +444,7 @@ int AllocateEffTransportPeerEntry(void *pRuntimeState) {
                                          pState->m_nPrimaryHandleGroupCount,
                                          pState->m_nPrimaryHandleGroupBytes,
                                          pState->m_nPrimaryHandleGroupMode);
-    ReleaseTimedEffStreamPrimaryHandleWrapper(
+    ReleaseTimedEffStreamPrimaryHandle(
         (int)(unsigned long)((char *)pAdjustor + pAdjustor->m_pOffsets->m_nTimedStreamOffset));
 
     nSecondaryHandleBytes = pState->m_nSecondaryHandleGroupBytes;

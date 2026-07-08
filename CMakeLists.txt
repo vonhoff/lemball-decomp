@@ -29,6 +29,7 @@ set(LEMBALL_SOURCES
     src/platform/startup_options.cpp
     src/resource/resource_archive.cpp
     src/game/demo_playback.cpp
+    src/stubs/link_scaffold.cpp
 )
 
 if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "OpenWatcom" AND (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "11.0" OR NOT MSVC))
@@ -54,11 +55,11 @@ if(LEMBALL_ENABLE_WIN32)
     )
     if(CMAKE_CXX_COMPILER_ID STREQUAL "OpenWatcom")
         set_target_properties(LEMBALL PROPERTIES
-            LINK_FLAGS "system nt_win library kernel32.lib,user32.lib,advapi32.lib"
+            LINK_FLAGS "system nt_win library kernel32.lib,user32.lib,advapi32.lib,winmm.lib"
         )
     else()
         set_target_properties(LEMBALL PROPERTIES
-            LINK_FLAGS "user32.lib advapi32.lib"
+            LINK_FLAGS "user32.lib advapi32.lib winmm.lib"
         )
     endif()
 endif()
