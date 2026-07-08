@@ -217,7 +217,7 @@ static VSINIT_FormattedOutputStream *AppendIntToStream(VSINIT_FormattedOutputStr
 }
 
 // FUNCTION: LEMBALL 0x004585D0
-static VSINIT_FormattedOutputStream *AppendCharToStreamVariant(VSINIT_FormattedOutputStream *pStream, char ch) {
+VSINIT_FormattedOutputStream *AppendCharToStreamVariant(VSINIT_FormattedOutputStream *pStream, char ch) {
     if (pStream != 0) {
         AppendCharToFixedBufferStream(pStream->m_TargetState.m_pDownstream, ch);
     }
@@ -225,7 +225,7 @@ static VSINIT_FormattedOutputStream *AppendCharToStreamVariant(VSINIT_FormattedO
 }
 
 // FUNCTION: LEMBALL 0x004585F0
-static void AppendSignedIntToStreamVariant(VSINIT_FormattedOutputStream *pStream, int nValue) {
+void AppendSignedIntToStreamVariant(VSINIT_FormattedOutputStream *pStream, int nValue) {
     if (pStream != 0) {
         FormatSignedIntToRadixString(nValue, pStream->m_szFormatBuffer, (unsigned int)pStream->m_TargetState.m_nRadix);
         ApplyStreamIntegerWidthPadding(pStream);
@@ -234,7 +234,7 @@ static void AppendSignedIntToStreamVariant(VSINIT_FormattedOutputStream *pStream
 }
 
 // FUNCTION: LEMBALL 0x00458670
-static void AppendPointerToStreamVariant(VSINIT_FormattedOutputStream *pStream, unsigned int uValue) {
+void AppendPointerToStreamVariant(VSINIT_FormattedOutputStream *pStream, unsigned int uValue) {
     if (pStream == 0) {
         return;
     }
@@ -248,12 +248,12 @@ static void AppendPointerToStreamVariant(VSINIT_FormattedOutputStream *pStream, 
 }
 
 // FUNCTION: LEMBALL 0x004586D0
-static void AppendCharToFormattedStream(VSINIT_FormattedOutputStream *pStream, char ch) {
+void AppendCharToFormattedStream(VSINIT_FormattedOutputStream *pStream, char ch) {
     AppendCharToStreamVariant(pStream, ch);
 }
 
 // FUNCTION: LEMBALL 0x004586E0
-static void AppendUIntToStream(VSINIT_FormattedOutputStream *pStream, unsigned int uValue) {
+void AppendUIntToStream(VSINIT_FormattedOutputStream *pStream, unsigned int uValue) {
     if (pStream != 0) {
         FormatUnsignedIntToRadixString(uValue, pStream->m_szFormatBuffer, (unsigned int)pStream->m_TargetState.m_nRadix);
         ApplyStreamIntegerWidthPadding(pStream);
