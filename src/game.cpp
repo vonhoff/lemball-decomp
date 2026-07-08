@@ -2,7 +2,10 @@
 
 #include "shellui.h"
 #include "startup.h"
+#include "visos/vsaudio.h"
+#include "visos/vsdemo.h"
 #include "visos/vsgdi.h"
+#include "visos/vsmath.h"
 #include "vsmem.h"
 #include "vsinit.h"
 
@@ -40,20 +43,24 @@ static const char g_GAME_IsValidResourceFileAssert[] = "IsValidResourceFile()";
 static const char g_GAME_SourceFileName[] = "GAME.CPP";
 static void *g_GAME_PrimaryContextMenuDefinitionTable = (void *)0x0049e718;
 
-extern void *InitializeSignedTrigTable(void *pTrigTableBuffer);
-extern void CreateFrameTimerController(unsigned int uFrameInterval);
-extern void DestroyFrameTimerController(void);
+static void *g_GAME_StatusEntryVtable[] = {
+    (void *)WriteNamedStatusEntry,
+    (void *)UpdateNamedStatusEntry,
+    (void *)DeleteFixedBufferStreamReturnThis,
+    (void *)ResetFixedBufferStream,
+    (void *)AppendCharToFixedBufferStream,
+    (void *)AppendCStringToFixedBufferStream,
+    (void *)ReturnStreamArgument,
+    0,
+};
+
 extern void ServiceNetworkLobbySelectedPeerUpdates(void *pVsnetRuntime);
 extern int PumpMessagesAndRunFrame(void);
-extern void ServiceLevelDemoPlaybackThunk(void *pPlaybackController);
 extern void *ClearLevelProgressPasswordState(void *pLevelProgressState);
 extern void *AllocateResourceArchiveMemory(unsigned int cbBytes);
 extern void *ConstructResourceArchive(void *pArchive, const char *pszArchiveName, unsigned int cbArenaSize);
 extern int ValidateResourceFileSignature(void);
 extern void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile, int nLine);
-extern int InitializeGlobalAudioManager(int fMusicEnabled, int fEffectsEnabled, int cEffects, void *pPrimaryContext);
-extern void SetAudioManagerMusicEnabledFlag(void *pAudioManager, int fEnabled);
-extern void SetAudioManagerStartupMusicName(void *pAudioManager, const char *pszMusicName);
 extern void *ConstructVariantResourceEntryManager(void *pManager);
 extern void ReleaseMainGameVariantResourceMode(GAME_MainContext *pMainContext);
 extern void EnsureMainGameVariantResourceMode(GAME_MainContext *pMainContext, int nVariantMode);
@@ -68,20 +75,15 @@ extern void DestroyMainGameVariantResourceMode(void *pVariantMode);
 extern void UnregisterNetworkLobbyVsnetRuntimeFromTransport(void *pVsnetRuntime);
 extern void ShutdownVariantResourceEntryManager(void *pManager);
 extern void DestroyResourceArchive(void *pArchive);
-extern void ShutdownGlobalAudioManager(void);
 extern void FreeResourceArchiveMemory(void *pArchiveMemoryBlock);
 extern int g_fMusicEnabled;
 extern int g_fEffectsEnabled;
-extern void *g_pAudioManager;
 extern void *g_pStatusEntryRegistry;
 extern void *g_pLevelProgressState;
 extern void *g_pMainResourceArchive;
 extern void *g_pVariantResourceEntryManager;
 extern void *g_pNetworkLobbyVsnetRuntime;
 extern void *g_pActiveNetworkRuntimeWindow;
-extern void *g_pLevelDemoPlaybackController;
-extern void *g_pLevelDemoPlaybackDescriptor;
-extern int g_nStoredLevelDemoModeEnabled;
 extern void *g_pStartupModeVtable;
 extern void *g_pStartupModeRenderThunk;
 extern void *g_pMainMenuModeVtable;
@@ -93,14 +95,11 @@ extern void *g_pSimpleModeVtable;
 extern void *g_pMode16Vtable;
 extern void *g_pMode16RenderThunk;
 extern void ConstructWindowOwnerRenderContext(void *pPrimaryContext);
-extern void InitializeRenderQueueNodeBase(void *pRenderQueueNode);
 extern void *LoadZrleResource(int nResourceId);
 extern void *LoadPalResource(int nResourceId);
 extern void SetLevelScreenStatusIndicatorMode(int nMode, int nValue);
-extern void RegisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder);
 extern void SetWindowOwnerScaleFactor(void *pPrimaryContext, int nScaleFactor);
 extern void InitializeHelperUploadStatePending(int nUploadState);
-extern void PromoteHelperUploadStateToActive(int nUploadState);
 extern void *ConstructIntroSequenceScreen(void *pScreenObject,
                                           void *pPrimaryContext,
                                           void *pWindowOwnerContext,
@@ -195,16 +194,12 @@ static void *g_GAME_RenderQueueNodeVtableSlots[2] = {0};
 static void *g_GAME_GenericModeVtableSlots[2] = {0};
 static void *g_GAME_GenericScreenVtableSlots[14] = {0};
 
-void *g_pAudioManager = 0;
 void *g_pStatusEntryRegistry = 0;
 void *g_pLevelProgressState = 0;
 void *g_pMainResourceArchive = 0;
 void *g_pVariantResourceEntryManager = 0;
 void *g_pNetworkLobbyVsnetRuntime = 0;
 void *g_pActiveNetworkRuntimeWindow = 0;
-void *g_pLevelDemoPlaybackController = 0;
-void *g_pLevelDemoPlaybackDescriptor = 0;
-int g_nStoredLevelDemoModeEnabled = 0;
 void *g_pStartupModeVtable = g_GAME_GenericModeVtableSlots;
 void *g_pStartupModeRenderThunk = 0;
 void *g_pMainMenuModeVtable = g_GAME_GenericModeVtableSlots;
@@ -247,27 +242,12 @@ static void InitializeGameStubVtables(void) {
     g_fInitialized = 1;
 }
 
-void *InitializeSignedTrigTable(void *pTrigTableBuffer) {
-    return pTrigTableBuffer;
-}
-
-void CreateFrameTimerController(unsigned int uFrameInterval) {
-    (void)uFrameInterval;
-}
-
-void DestroyFrameTimerController(void) {
-}
-
 void ServiceNetworkLobbySelectedPeerUpdates(void *pVsnetRuntime) {
     (void)pVsnetRuntime;
 }
 
 int PumpMessagesAndRunFrame(void) {
     return 1;
-}
-
-void ServiceLevelDemoPlaybackThunk(void *pPlaybackController) {
-    (void)pPlaybackController;
 }
 
 void *ClearLevelProgressPasswordState(void *pLevelProgressState) {
@@ -303,24 +283,6 @@ void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile,
     (void)pszExpression;
     (void)pszFile;
     (void)nLine;
-}
-
-int InitializeGlobalAudioManager(int fMusicEnabled, int fEffectsEnabled, int cEffects, void *pPrimaryContext) {
-    (void)fMusicEnabled;
-    (void)fEffectsEnabled;
-    (void)cEffects;
-    (void)pPrimaryContext;
-    return 1;
-}
-
-void SetAudioManagerMusicEnabledFlag(void *pAudioManager, int fEnabled) {
-    (void)pAudioManager;
-    (void)fEnabled;
-}
-
-void SetAudioManagerStartupMusicName(void *pAudioManager, const char *pszMusicName) {
-    (void)pAudioManager;
-    (void)pszMusicName;
 }
 
 void *ConstructVariantResourceEntryManager(void *pManager) {
@@ -388,9 +350,6 @@ void ShutdownVariantResourceEntryManager(void *pManager) {
 
 void DestroyResourceArchive(void *pArchive) {
     (void)pArchive;
-}
-
-void ShutdownGlobalAudioManager(void) {
 }
 
 void FreeResourceArchiveMemory(void *pArchiveMemoryBlock) {
@@ -508,10 +467,6 @@ void SetWindowOwnerScaleFactor(void *pPrimaryContext, int nScaleFactor) {
 }
 
 void InitializeHelperUploadStatePending(int nUploadState) {
-    (void)nUploadState;
-}
-
-void PromoteHelperUploadStateToActive(int nUploadState) {
     (void)nUploadState;
 }
 
@@ -756,7 +711,7 @@ static void AppendCString(char *pszTarget, unsigned int cchTarget, const char *p
 }
 
 // FUNCTION: LEMBALL 0x0045ECB0
-static int SetVisualSciencesRegistryRunningState(const char *pszProductName, int fRunning) {
+int SetVisualSciencesRegistryRunningState(const char *pszProductName, int fRunning) {
     char szKeyPath[256];
     HKEY hRegistryKey;
     const char *pszState;
@@ -856,7 +811,7 @@ static void ShowStartupMessage(const char *pszTitle, const char *pszText) {
 }
 
 // FUNCTION: LEMBALL 0x0046E410
-static GAME_DynamicCString *ConstructDynamicCString(GAME_DynamicCString *pString) {
+GAME_DynamicCString *ConstructDynamicCString(GAME_DynamicCString *pString) {
     pString->m_cchCapacity = 1;
     pString->m_pszText = (char *)AllocateVSMemBlock(1);
     pString->m_pszText[0] = '\0';
@@ -864,12 +819,12 @@ static GAME_DynamicCString *ConstructDynamicCString(GAME_DynamicCString *pString
 }
 
 // FUNCTION: LEMBALL 0x0046E500
-static void DestroyDynamicCString(GAME_DynamicCString *pString) {
+void DestroyDynamicCString(GAME_DynamicCString *pString) {
     FreeVSMemBlock(pString->m_pszText);
 }
 
 // FUNCTION: LEMBALL 0x0046E570
-static GAME_DynamicCString *AssignDynamicCString(GAME_DynamicCString *pString, const char *pszText) {
+GAME_DynamicCString *AssignDynamicCString(GAME_DynamicCString *pString, const char *pszText) {
     const char *pszScan;
     const char *pszSource;
     char *pszDest;
@@ -922,16 +877,14 @@ static GAME_DynamicCString *AssignDynamicCString(GAME_DynamicCString *pString, c
 
 // FUNCTION: LEMBALL 0x0045AC10
 GAME_StatusEntry::GAME_StatusEntry(const char *pszName) {
-    m_pVtable = 0;
+    m_pVtable = g_GAME_StatusEntryVtable;
     ConstructDynamicCString(&m_Name);
     m_nReserved04 = 0;
-    m_nPeakValue = -1;
-    m_nCurrentValue = 0;
-    m_nMinimumValue = 0;
-    m_nMaximumValue = 0;
     AssignDynamicCString(&m_Name, pszName);
-    m_nReserved20 = 0;
-    m_nReserved24 = 0;
+    m_nMinimumValue = -1;
+    m_nMaximumValue = 0;
+    m_nTotalValue = 0;
+    m_cSamples = 0;
 }
 
 // FUNCTION: LEMBALL 0x0045AC50
@@ -940,6 +893,50 @@ void DestroyNamedStatusEntry(void *pEntry) {
 
     pStatusEntry = (GAME_StatusEntry *)pEntry;
     DestroyDynamicCString(&pStatusEntry->m_Name);
+}
+
+// FUNCTION: LEMBALL 0x0045AC60
+void UpdateNamedStatusEntry(void *pEntry, unsigned int nValue) {
+    GAME_StatusEntry *pStatusEntry;
+
+    pStatusEntry = (GAME_StatusEntry *)pEntry;
+    if (pStatusEntry->m_cSamples != 0) {
+        pStatusEntry->m_nTotalValue += nValue;
+        if ((unsigned int)pStatusEntry->m_nMaximumValue <= nValue) {
+            pStatusEntry->m_nMaximumValue = (int)nValue;
+        }
+        if ((unsigned int)pStatusEntry->m_nMinimumValue >= nValue) {
+            pStatusEntry->m_nMinimumValue = (int)nValue;
+        }
+    }
+    ++pStatusEntry->m_cSamples;
+}
+
+// FUNCTION: LEMBALL 0x0045AC90
+VSINIT_FormattedOutputStream *WriteNamedStatusEntry(void *pEntry, VSINIT_FormattedOutputStream *pStream) {
+    GAME_StatusEntry *pStatusEntry;
+    unsigned int nAverage;
+
+    pStatusEntry = (GAME_StatusEntry *)pEntry;
+    if (pStatusEntry->m_cSamples == 0) {
+        AppendCStringToStream(pStream, "----\n");
+        return pStream;
+    }
+
+    nAverage = (unsigned int)pStatusEntry->m_nTotalValue / (unsigned int)pStatusEntry->m_cSamples;
+    AppendHexUIntToStream(pStream, nAverage);
+    AppendCStringToStream(pStream, " ");
+    AppendHexUIntToStream(pStream, (unsigned int)pStatusEntry->m_nTotalValue);
+    AppendCStringToStream(pStream, " ");
+    AppendHexUIntToStream(pStream, (unsigned int)pStatusEntry->m_nMaximumValue);
+    AppendCStringToStream(pStream, " ");
+    AppendHexUIntToStream(pStream, (unsigned int)pStatusEntry->m_nMinimumValue);
+    AppendCStringToStream(pStream, " ");
+    AppendHexUIntToStream(pStream, (unsigned int)pStatusEntry->m_cSamples);
+    AppendCStringToStream(pStream, " ");
+    AppendCStringToStream(pStream, pStatusEntry->m_Name.m_pszText);
+    AppendCStringToStream(pStream, "\n");
+    return pStream;
 }
 
 GAME_MainContext::GAME_MainContext(void) {
@@ -957,12 +954,10 @@ GAME_MainContext::GAME_MainContext(void) {
 static GAME_StatusEntry *AllocateNamedStatusEntry(const char *pszName) {
     GAME_StatusEntry *pEntry;
 
-    pEntry = new (AllocateVSMemBlock(0x28)) GAME_StatusEntry(pszName);
+    pEntry = new (AllocateVSMemBlock(0x20)) GAME_StatusEntry(pszName);
     if (pEntry == 0) {
         return 0;
     }
-    pEntry->m_nReserved20 = 0;
-    pEntry->m_nReserved24 = 0;
     return pEntry;
 }
 

@@ -98,6 +98,7 @@ int ShutdownResourceGeometryHelperRuntime(void);
 int InitializeSelectedGraphicsDriver(int nRequestedDriver);
 int GetSelectedGraphicsDriverId(void);
 VSGDI_DisplayState *GetDisplayState(void);
+void PromoteHelperUploadStateToActive(int nUploadState);
 
 extern int g_fStartupGraphicsDriverWing;
 extern int g_fStartupGraphicsDriverCds;

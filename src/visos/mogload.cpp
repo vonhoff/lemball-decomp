@@ -37,7 +37,7 @@ static void MOGLOAD_InitialiseEntryRecord(MOGLOAD_EntryRecord *pEntry) {
 }
 
 // FUNCTION: LEMBALL 0x0045BBE0
-static unsigned char MOGLOAD_ReadU8(void) {
+unsigned char MOGLOAD_ReadU8(void) {
     unsigned char bValue;
 
     bValue = 0;
@@ -46,7 +46,7 @@ static unsigned char MOGLOAD_ReadU8(void) {
 }
 
 // FUNCTION: LEMBALL 0x0045BC40
-static unsigned int MOGLOAD_ReadU32(void) {
+unsigned int MOGLOAD_ReadU32(void) {
     unsigned int dwValue;
 
     dwValue = 0;

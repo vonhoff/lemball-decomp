@@ -92,7 +92,7 @@ static void ResetHelperUploadStateMap(int) {
 }
 
 // FUNCTION: LEMBALL 0x004663D0
-static void *InitializeCompactResourceGeometryHelper(void *pvHelper) {
+void *InitializeCompactResourceGeometryHelper(void *pvHelper) {
     int *pHelper;
 
     pHelper = (int *)pvHelper;
@@ -121,7 +121,7 @@ static void *InitializeCompactResourceGeometryHelper(void *pvHelper) {
 }
 
 // FUNCTION: LEMBALL 0x00472290
-static void *InitializeResourceGeometryRowBuffer(void *pvRowBuffer) {
+void *InitializeResourceGeometryRowBuffer(void *pvRowBuffer) {
     int *pRowBuffer;
 
     pRowBuffer = (int *)pvRowBuffer;
@@ -141,7 +141,7 @@ static void *InitializeResourceGeometryRowBuffer(void *pvRowBuffer) {
 }
 
 // FUNCTION: LEMBALL 0x00466670
-static void *ConstructHelperGroup1RowBuffer(void *pvHelperGroup, int fConstructCompactHelper) {
+void *ConstructHelperGroup1RowBuffer(void *pvHelperGroup, int fConstructCompactHelper) {
     int iCompactDelta;
     int *pHelperGroup;
 
@@ -164,7 +164,7 @@ static void *ConstructHelperGroup1RowBuffer(void *pvHelperGroup, int fConstructC
 }
 
 // FUNCTION: LEMBALL 0x00466440
-static void *ConstructHelperGroup0RowBuffer(void *pvHelperGroup, int fConstructCompactHelper) {
+void *ConstructHelperGroup0RowBuffer(void *pvHelperGroup, int fConstructCompactHelper) {
     int iCompactDelta;
     int *pHelperGroup;
 
@@ -187,7 +187,7 @@ static void *ConstructHelperGroup0RowBuffer(void *pvHelperGroup, int fConstructC
 }
 
 // FUNCTION: LEMBALL 0x00466510
-static void ReleaseHelperGroup0BackingBuffer(int nHelperGroup) {
+void ReleaseHelperGroup0BackingBuffer(int nHelperGroup) {
     if (*(int *)(unsigned long)(nHelperGroup + 0x4c) != 0) {
         FreeVSMemBlock((void *)(unsigned long)*(int *)(unsigned long)(nHelperGroup + 0x4c));
         *(int *)(unsigned long)(nHelperGroup + 0x4c) = 0;
@@ -198,7 +198,7 @@ static void ReleaseHelperGroup0BackingBuffer(int nHelperGroup) {
 }
 
 // FUNCTION: LEMBALL 0x00466710
-static void ReleaseHelperGroup1BackingBuffer(int nHelperGroup) {
+void ReleaseHelperGroup1BackingBuffer(int nHelperGroup) {
     if (*(int *)(unsigned long)(nHelperGroup + 0x4c) != 0) {
         FreeVSMemBlock((void *)(unsigned long)*(int *)(unsigned long)(nHelperGroup + 0x4c));
         *(int *)(unsigned long)(nHelperGroup + 0x4c) = 0;
@@ -209,7 +209,7 @@ static void ReleaseHelperGroup1BackingBuffer(int nHelperGroup) {
 }
 
 // FUNCTION: LEMBALL 0x00466B90
-static void ResetHelperUploadRectListAndStateMap(int nUploadState) {
+void ResetHelperUploadRectListAndStateMap(int nUploadState) {
     if (*(int *)(unsigned long)(nUploadState + 0xc) != 0) {
         FreeVSMemBlock((void *)(unsigned long)*(int *)(unsigned long)(nUploadState + 0xc));
         *(int *)(unsigned long)(nUploadState + 0xc) = 0;
@@ -218,7 +218,7 @@ static void ResetHelperUploadRectListAndStateMap(int nUploadState) {
 }
 
 // FUNCTION: LEMBALL 0x0046BC00
-static void *InitializeResourceGeometryHelperSlotManager(void *pvSlotManager, int cSlots) {
+void *InitializeResourceGeometryHelperSlotManager(void *pvSlotManager, int cSlots) {
     int cbSlots;
     int iSlotOffset;
     int *pSlotManager;
@@ -253,7 +253,7 @@ static void *InitializeResourceGeometryHelperSlotManager(void *pvSlotManager, in
 }
 
 // FUNCTION: LEMBALL 0x0046BC90
-static void DestroyResourceGeometryHelperSlotManager(void *pvSlotManager) {
+void DestroyResourceGeometryHelperSlotManager(void *pvSlotManager) {
     int *pSlotManager;
     int i;
     int iSlotOffset;
@@ -296,7 +296,7 @@ int FindFirstFreeResourceGeometryHelperSlotIndex(void *pvSlotManager) {
 }
 
 // FUNCTION: LEMBALL 0x0046C5D0
-static void *ConstructResourceGeometryHelperTarget(void *pvTarget, int nWrappedParam, int fConstructCompactHelper) {
+void *ConstructResourceGeometryHelperTarget(void *pvTarget, int nWrappedParam, int fConstructCompactHelper) {
     int iCompactDelta;
     VSGDI_HelperTargetParamWrapper *pParamWrapper;
     int *pTarget;
@@ -346,13 +346,13 @@ static void *ConstructResourceGeometryHelperTarget(void *pvTarget, int nWrappedP
 }
 
 // FUNCTION: LEMBALL 0x004722D0
-static void DestroyResourceGeometryRowBuffer(void *pvRowBuffer) {
+void DestroyResourceGeometryRowBuffer(void *pvRowBuffer) {
     *(void **)pvRowBuffer = &g_VSGDI_ResourceGeometryRowBufferVtable;
     ReleaseResourceGeometryRowBufferStorage((int)(unsigned long)pvRowBuffer);
 }
 
 // FUNCTION: LEMBALL 0x004664B0
-static void DestroyHelperGroup0RowBuffer(void *pvHelperGroup) {
+void DestroyHelperGroup0RowBuffer(void *pvHelperGroup) {
     int *pHelperGroup;
     int *pRowBuffer;
 
@@ -367,7 +367,7 @@ static void DestroyHelperGroup0RowBuffer(void *pvHelperGroup) {
 }
 
 // FUNCTION: LEMBALL 0x004666E0
-static void DestroyHelperGroup1RowBuffer(void *pvHelperGroup) {
+void DestroyHelperGroup1RowBuffer(void *pvHelperGroup) {
     int *pHelperGroup;
     int *pRowBuffer;
 
@@ -382,7 +382,7 @@ static void DestroyHelperGroup1RowBuffer(void *pvHelperGroup) {
 }
 
 // FUNCTION: LEMBALL 0x0046C7A0
-static void DestroyResourceGeometryHelperTarget(void *pvTarget) {
+void DestroyResourceGeometryHelperTarget(void *pvTarget) {
     int iPreviousLink;
     int iNextLink;
     int iGlobalListHead;
@@ -521,7 +521,7 @@ static void RestoreCompactResourceGeometryHelperVtable(void *pvHelper) {
 }
 
 // FUNCTION: LEMBALL 0x0046AEC0
-static void ConstructStatusIndicatorRenderClientBase(int *pRenderClient) {
+void ConstructStatusIndicatorRenderClientBase(int *pRenderClient) {
     *(void **)((char *)pRenderClient + 0x40) = &g_VSGDI_StatusIndicatorRenderClientVtable;
     *(void **)((char *)pRenderClient + 0x44) = &g_VSGDI_StatusIndicatorPointSinkVtable;
     *(short *)((char *)pRenderClient + 0x12) = 0;
@@ -545,7 +545,7 @@ static void ConstructStatusIndicatorRenderClientBase(int *pRenderClient) {
 }
 
 // FUNCTION: LEMBALL 0x00474B50
-static void InitializeArrowCursorState(int *pRenderClient) {
+void InitializeArrowCursorState(int *pRenderClient) {
     void **pVtable;
 
     pRenderClient[0x27] = 0;
@@ -555,7 +555,7 @@ static void InitializeArrowCursorState(int *pRenderClient) {
 }
 
 // FUNCTION: LEMBALL 0x00472400
-static void RebuildResourceGeometryRowPointerTable(VSGDI_HelperSurface *pSurface) {
+void RebuildResourceGeometryRowPointerTable(VSGDI_HelperSurface *pSurface) {
     int nRowByteOffset;
     int iRowIndex;
     int iLogicalRow;
@@ -580,7 +580,7 @@ static void RebuildResourceGeometryRowPointerTable(VSGDI_HelperSurface *pSurface
 }
 
 // FUNCTION: LEMBALL 0x004723A0
-static void ClearHelperBackingBorderRows(VSGDI_HelperSurface *pSurface) {
+void ClearHelperBackingBorderRows(VSGDI_HelperSurface *pSurface) {
     unsigned int cbBorderRow;
     unsigned int cDwords;
     unsigned int cTailBytes;
@@ -629,7 +629,7 @@ static void ClearHelperBackingBorderRows(VSGDI_HelperSurface *pSurface) {
 }
 
 // FUNCTION: LEMBALL 0x00472340
-static void EnsureHelperBackingRowIndexCapacity(VSGDI_HelperSurface *pSurface) {
+void EnsureHelperBackingRowIndexCapacity(VSGDI_HelperSurface *pSurface) {
     int cRows;
     int cbRowIndexBytes;
 
@@ -651,7 +651,7 @@ static void EnsureHelperBackingRowIndexCapacity(VSGDI_HelperSurface *pSurface) {
 }
 
 // FUNCTION: LEMBALL 0x004725F0
-static void ComputeHelperBackingDimensions(VSGDI_HelperSurface *pSurface, short *paOut, short *paRect, int nWidth) {
+void ComputeHelperBackingDimensions(VSGDI_HelperSurface *pSurface, short *paOut, short *paRect, int nWidth) {
     short cxRect;
     short cyRect;
     int cBorderRows;
@@ -677,7 +677,7 @@ static void ComputeHelperBackingDimensions(VSGDI_HelperSurface *pSurface, short 
 }
 
 // FUNCTION: LEMBALL 0x00472670
-static void ConfigureHelperBackingStrideAndOrigin(VSGDI_HelperSurface *pSurface, int nStride, int nOrigin) {
+void ConfigureHelperBackingStrideAndOrigin(VSGDI_HelperSurface *pSurface, int nStride, int nOrigin) {
     int nRowBase;
 
     nRowBase = *(int *)((char *)pSurface + 0x20) + nStride;
@@ -692,7 +692,7 @@ static void ConfigureHelperBackingStrideAndOrigin(VSGDI_HelperSurface *pSurface,
 }
 
 // FUNCTION: LEMBALL 0x00466D10
-static void PromoteHelperUploadStateToActive(int nUploadState) {
+void PromoteHelperUploadStateToActive(int nUploadState) {
     if (*(char *)(unsigned long)(nUploadState + 0x48) == 'P') {
         *(char *)(unsigned long)(nUploadState + 0x48) = 'A';
         return;

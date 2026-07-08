@@ -59,7 +59,7 @@ STARTUP_GraphicsWindowConfig g_StartupGraphicsDriverConfig = {
 };
 
 // FUNCTION: LEMBALL 0x00406300
-static void NoopHelpSwitchCallback(void) {
+void NoopHelpSwitchCallback(void) {
 }
 
 // FUNCTION: LEMBALL 0x00406160

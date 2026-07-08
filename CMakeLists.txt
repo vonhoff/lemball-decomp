@@ -10,8 +10,11 @@ set(LEMBALL_SOURCES
     src/shellui.cpp
     src/startup.cpp
     src/visos/mogload.cpp
+    src/visos/vsaudio.cpp
+    src/visos/vsdemo.cpp
     src/visos/vsgdi.cpp
     src/visos/vsinit.cpp
+    src/visos/vsmath.cpp
     src/visos/vsmem.cpp
     src/visos/vswin.cpp
 )

@@ -20,7 +20,7 @@ static const char g_SHELLUI_SystemInfoFormat[] =
 static const char g_SHELLUI_ModulePath[] = "LEMBALL.EXE";
 static const char g_SHELLUI_SystemInfoBuffer[] = "System Information";
 
-static void TogglePrimaryContextDisplayMode(SHELLUI_PrimaryContextShell *pShell);
+void TogglePrimaryContextDisplayMode(SHELLUI_PrimaryContextShell *pShell);
 
 enum {
     SHELLUI_MENU_EVENT_DISPLAY = 4,
@@ -193,7 +193,7 @@ void SHELLUI_PrimaryContextShell::RequestQuit(void) {
 }
 
 // FUNCTION: LEMBALL 0x00431C90
-static void TogglePrimaryContextDisplayMode(SHELLUI_PrimaryContextShell *pShell) {
+void TogglePrimaryContextDisplayMode(SHELLUI_PrimaryContextShell *pShell) {
     char *pPrimaryContext;
     int nDriver;
 

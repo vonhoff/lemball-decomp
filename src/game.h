@@ -8,6 +8,8 @@ struct GAME_DynamicCString {
     int m_cchCapacity;
 };
 
+struct VSINIT_FormattedOutputStream;
+
 class GAME_StatusEntry {
 public:
     GAME_StatusEntry(const char *pszName);
@@ -15,13 +17,11 @@ public:
 public:
     void *m_pVtable;
     int m_nReserved04;
-    int m_nCurrentValue;
-    int m_nPeakValue;
-    int m_nMinimumValue;
     int m_nMaximumValue;
+    int m_nMinimumValue;
+    int m_nTotalValue;
+    int m_cSamples;
     GAME_DynamicCString m_Name;
-    int m_nReserved20;
-    int m_nReserved24;
 };
 
 class GAME_MainContext {
@@ -44,5 +44,14 @@ GAME_MainContext *InitializeMainGameContext(GAME_MainContext *pMainContext, cons
 void ShutdownMainGameContext(GAME_MainContext *pMainContext);
 int RunMainGameSession(int cArgs, const char *const *ppszArgs);
 char *FindCdromFilePathBySuffix(const char *pszSuffix);
+void DestroyNamedStatusEntry(void *pEntry);
+void UpdateNamedStatusEntry(void *pEntry, unsigned int nValue);
+VSINIT_FormattedOutputStream *WriteNamedStatusEntry(void *pEntry, VSINIT_FormattedOutputStream *pStream);
+void ReleaseTypedResourceObjectReference(void *pResourceObject);
+void InitializeRenderQueueNodeBase(void *pRenderQueueNode);
+void RegisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder);
+void UnregisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder);
+
+extern void *g_pSharedRenderDispatchQueue;
 
 #endif

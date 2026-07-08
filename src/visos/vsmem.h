@@ -32,6 +32,8 @@ int UnlinkMemoryBlockFromAddressList(void *pArena, void *pBlock);
 void *FindSmallestFreeMemoryBlockAtLeast(void *pArena, unsigned int cbPayload);
 int AllocateMemoryArenaBlock(void *pArena, void **ppvBlock, unsigned int cbBlock, const char *pszDescription);
 int FreeMemoryArenaBlock(void *pArena, void *pvBlock);
+int AllocateChildMemoryArena(void *pArena, void **ppChildArena, unsigned int cbChildArena);
+int ReleaseChildMemoryArena(void *pArena, void *pChildArena);
 int IsPointerInsideMemoryArenaStorage(void *pArena, void *pvPointer);
 int HasMemoryBlockMagic(void *pBlock);
 int IsUsedMemoryBlock(void *pBlock);
@@ -62,6 +64,7 @@ void *ConstructMemoryArenaBlock(void *pBlock,
                                 void *pPreviousBlock,
                                 const char *pszName,
                                 unsigned int cbBlock);
+void *DestroyMemoryArenaBaseStateReturnThis(void *pArena);
 void *DestroyMemoryArenaReturnThis(void *pArena);
 void *RestoreMemoryBlockBaseVtableReturnThis(void *pBlock);
 int IsPointerInsideManagedMemoryRegions(void *pvPointer);
