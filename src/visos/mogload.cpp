@@ -617,6 +617,27 @@ int OpenResourceArchiveFileHandle(const char *pszPath, const char *pszMode) {
     return g_pResourceArchiveFile != 0;
 }
 
+// FUNCTION: LEMBALL 0x0045CA30
+unsigned int AllocateResourceDataBufferWithEviction(void *pArchive, unsigned int cbBuffer) {
+    unsigned int pBuffer;
+
+    for (;;) {
+        pBuffer = (unsigned int)(unsigned long)AllocateResourceArchiveMemory(cbBuffer);
+        if (pBuffer != 0) {
+            return pBuffer;
+        }
+
+        PruneUnreferencedCachedResourceObjects(pArchive);
+
+        pBuffer = (unsigned int)(unsigned long)AllocateResourceArchiveMemory(cbBuffer);
+        if (pBuffer != 0) {
+            return pBuffer;
+        }
+
+        return 0;
+    }
+}
+
 // FUNCTION: LEMBALL 0x0045C9D0
 int FindReusableResourceCacheSlotIndex(MOGLOAD_ResourceArchive *pArchive) {
     int iSlot;
@@ -1118,6 +1139,17 @@ int LoadResourceObjectById(void *pArchive, int nResourceId, int pObject, int fCa
     return AttachResourceEntryToObject((MOGLOAD_StringResourceObject *)(unsigned long)pObject,
                                        (int)state.m_iIndex,
                                        state.m_pEntry);
+}
+
+// FUNCTION: LEMBALL 0x0045CE00
+int LoadResourceArchiveEntryDataIntoBuffer(void *pArchive, int *plFileOffset, unsigned int *pcbBuffer) {
+    unsigned int pBuffer;
+
+    pBuffer = AllocateResourceDataBufferWithEviction(pArchive, (unsigned int)plFileOffset[1]);
+    *pcbBuffer = pBuffer;
+    fseek(g_pResourceArchiveFile, (long)(plFileOffset[0] + 8), SEEK_SET);
+    fread((void *)(unsigned long)*pcbBuffer, 1, (unsigned int)plFileOffset[1], g_pResourceArchiveFile);
+    return 1;
 }
 
 // FUNCTION: LEMBALL 0x0045DE00

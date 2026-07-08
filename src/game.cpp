@@ -1163,11 +1163,6 @@ void *LoadZrleResource(int nResourceId) {
     return 0;
 }
 
-void *LoadPalResource(int nResourceId) {
-    (void)nResourceId;
-    return 0;
-}
-
 void SetLevelScreenStatusIndicatorMode(int nMode, int nValue) {
     (void)nMode;
     (void)nValue;
