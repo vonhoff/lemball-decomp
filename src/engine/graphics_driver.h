@@ -1,7 +1,7 @@
-#ifndef LEMBALL_VSGDI_H
-#define LEMBALL_VSGDI_H
+#ifndef LEMBALL_GRAPHICS_DRIVER_H
+#define LEMBALL_GRAPHICS_DRIVER_H
 
-#include "win32.h"
+#include "platform/win32.h"
 
 enum {
     VSGDI_DRIVER_METRICS = 1,
@@ -98,7 +98,9 @@ int ShutdownResourceGeometryHelperRuntime(void);
 int InitializeSelectedGraphicsDriver(int nRequestedDriver);
 int GetSelectedGraphicsDriverId(void);
 VSGDI_DisplayState *GetDisplayState(void);
+void InitializeHelperUploadStatePending(int nUploadState);
 void PromoteHelperUploadStateToActive(int nUploadState);
+void SampleRootHelperGeometryAndDispatchRenderGroups(void *pPrimaryContext, int nToken);
 
 extern int g_fStartupGraphicsDriverWing;
 extern int g_fStartupGraphicsDriverCds;

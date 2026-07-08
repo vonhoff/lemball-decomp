@@ -1,6 +1,6 @@
-#include "../game.h"
-#include "../visos/vsinit.h"
-#include "../visos/vsmem.h"
+#include "../game/game_app.h"
+#include "../engine/runtime_init.h"
+#include "../engine/memory_arena.h"
 
 static void *g_GAME_StatusEntryVtable[] = {
     (void *)WriteNamedStatusEntry,

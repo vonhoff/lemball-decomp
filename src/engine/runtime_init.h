@@ -1,7 +1,7 @@
-#ifndef LEMBALL_VSINIT_H
-#define LEMBALL_VSINIT_H
+#ifndef LEMBALL_RUNTIME_INIT_H
+#define LEMBALL_RUNTIME_INIT_H
 
-#include "common.h"
+#include "engine/common.h"
 
 struct VSINIT_CommandLineOption {
     const char *m_pszName;
@@ -40,9 +40,15 @@ VSINIT_FormattedOutputStream *AppendUIntHexToStream(VSINIT_FormattedOutputStream
 VSINIT_FormattedOutputStream *AppendHexUIntToStream(VSINIT_FormattedOutputStream *pStream, unsigned int uValue);
 VSINIT_FormattedOutputStream *WriteStatusEntryPointerArray(void *pRegistry, VSINIT_FormattedOutputStream *pStream);
 void AppendStatusEntryToRegistry(void *pRegistry, void *pEntry);
+void *ConstructRenderDispatchQueue(void *pQueue, int cEntries);
+void *ConstructRenderDispatchQueueVariant(void *pQueue, int cEntries);
+void DestroyRenderDispatchQueue(void *pQueue);
+void *DeleteRenderDispatchQueue(void *pQueue, unsigned char fFreeMemory);
 VSINIT_FormattedOutputStream *ConstructFormattedOutputStream(VSINIT_FormattedOutputStream *pStream,
                                                              VSINIT_FixedBufferStream *pDownstream,
                                                              int fConstructTargetState);
+VSINIT_StreamFormatTargetState *ConstructStreamFormatTargetState(VSINIT_StreamFormatTargetState *pState,
+                                                                 VSINIT_FixedBufferStream *pDownstream);
 void ConstructStreamFormatState(VSINIT_StreamFormatTargetState *pState);
 void RestoreStreamFormatSubobjectVtable(VSINIT_StreamFormatTargetState *pState);
 VSINIT_FixedBufferStream *ConstructFixedBufferStream(VSINIT_FixedBufferStream *pStream,
@@ -61,6 +67,11 @@ void LeaveObjectCriticalSection(void *pObject);
 extern int g_fStartupNoWait;
 extern VSINIT_FormattedOutputStream *g_pStatusOutputStream;
 extern VSINIT_FormattedOutputStream *g_pErrorOutputStream;
+extern char g_abProcessCurrentDirectoryBuffer[0x100];
+extern void *g_StreamBaseVtable[1];
+extern void *g_FormattedOutputStreamVtable[2];
+extern void *g_StreamFormatTargetStateVtable[1];
+extern void *g_StreamFormatSubobjectVtable[1];
 
 struct VSINIT_FixedBufferStream {
     void *m_pVtable;

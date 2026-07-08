@@ -1,5 +1,5 @@
-#ifndef LEMBALL_MOGLOAD_H
-#define LEMBALL_MOGLOAD_H
+#ifndef LEMBALL_RESOURCE_ARCHIVE_H
+#define LEMBALL_RESOURCE_ARCHIVE_H
 
 #include <stdio.h>
 
@@ -68,6 +68,7 @@ void RemoveCachedResourceObject(void *pArchive, void *pResourceObject);
 int AreAllCachedResourceObjectsUnreferenced(void *pArchive);
 void PruneUnreferencedCachedResourceObjects(void *pArchive);
 MOGLOAD_StringResourceObject *LoadStringResource(int nResourceId);
+void *LoadEffResource(int nResourceId);
 
 struct MOGLOAD_StringResourceObject {
     void **m_pVtable;

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_MAIN_H
 #define LEMBALL_MAIN_H
 
-#include "win32.h"
+#include "platform/win32.h"
 
 extern HINSTANCE g_hApplicationInstance;
 

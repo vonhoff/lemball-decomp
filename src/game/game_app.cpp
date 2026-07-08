@@ -1,14 +1,14 @@
-#include "game.h"
+#include "game/game_app.h"
 
-#include "shellui.h"
-#include "startup.h"
-#include "visos/vsaudio.h"
-#include "visos/vsdemo.h"
-#include "visos/vsgdi.h"
-#include "visos/mogload.h"
-#include "visos/vsmath.h"
-#include "vsmem.h"
-#include "vsinit.h"
+#include "platform/shell_ui.h"
+#include "platform/startup_options.h"
+#include "audio/audio_manager.h"
+#include "game/demo_playback.h"
+#include "engine/graphics_driver.h"
+#include "resource/resource_archive.h"
+#include "engine/fixed_math.h"
+#include "engine/memory_arena.h"
+#include "engine/runtime_init.h"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>
@@ -72,7 +72,6 @@ extern void *LoadZrleResource(int nResourceId);
 extern void *LoadPalResource(int nResourceId);
 extern void SetLevelScreenStatusIndicatorMode(int nMode, int nValue);
 extern void SetWindowOwnerScaleFactor(void *pPrimaryContext, int nScaleFactor);
-extern void InitializeHelperUploadStatePending(int nUploadState);
 extern void *ConstructIntroSequenceScreen(void *pScreenObject,
                                           void *pPrimaryContext,
                                           void *pWindowOwnerContext,
@@ -224,6 +223,39 @@ struct GAME_LevelGameMode {
     GAME_MainContext *m_pMainContext;
 };
 
+struct GAME_RenderQueueNode {
+    void **m_pVtable;
+    int m_uMagic;
+    void *m_pReserved08;
+    void *m_pReserved0C;
+};
+
+struct GAME_RenderDispatchClientNode {
+    void *m_pClient;
+    int m_nOrder;
+    GAME_RenderDispatchClientNode *m_pNext;
+};
+
+struct GAME_RenderDispatchQueue {
+    void *m_pVtable;
+    int m_nReserved04;
+    void *m_pLockVtable;
+    char m_abCriticalSection[0x18];
+    int m_cEntryCapacity;
+    int m_cQueuedEntries;
+    int m_cClients;
+    int m_nReserved30;
+    int m_nReserved34;
+    int m_nReserved38;
+    int m_nReserved3C;
+    int m_cEntriesDropped;
+    void *m_pEntryBuffer;
+    void *m_pEntryBufferEnd;
+    void *m_pHead;
+    void *m_pTail;
+    GAME_RenderDispatchClientNode *m_pClientList;
+};
+
 static void StubNoOpVoid(void) {
 }
 
@@ -241,9 +273,10 @@ static void *g_GAME_PrimaryContextVtableSlots[30] = {0};
 static void *g_GAME_RenderQueueNodeVtableSlots[2] = {0};
 static void *g_GAME_GenericModeVtableSlots[2] = {0};
 static void *g_GAME_GenericScreenVtableSlots[14] = {0};
-static int g_nSelectedNetworkLobbyPeerId = 0;
-static void *g_pActiveNetworkLobbyTransportController = 0;
-static void *g_pNetworkLobbyTransportController = 0;
+int g_nSelectedNetworkLobbyPeerId = 0;
+void *g_pActiveNetworkLobbyTransportController = 0;
+void *g_pNetworkLobbyTransportController = 0;
+void *g_pActiveNetworkLobbyScreen = 0;
 
 extern void *ConstructEffStreamPayloadSize8(void *pObject);
 extern void RegisterEffTransportEventClient(void *pRuntimeWindow, void *pClient);
@@ -365,10 +398,6 @@ static void InitializeGameStubVtables(void) {
     g_GAME_GenericScreenVtableSlots[0x34 / sizeof(void *)] = (void *)StubNoOpVoid;
 
     g_fInitialized = 1;
-}
-
-void ServiceNetworkLobbySelectedPeerUpdates(void *pVsnetRuntime) {
-    (void)pVsnetRuntime;
 }
 
 int PumpMessagesAndRunFrame(void) {
@@ -1134,14 +1163,6 @@ void InitializeLevelGameMode(void *pLevelGameMode) {
     *(int *)(pModeBytes + 0x4c) = 1;
 }
 
-void DestroyMainGameVariantResourceMode(void *pVariantMode) {
-    (void)pVariantMode;
-}
-
-void UnregisterNetworkLobbyVsnetRuntimeFromTransport(void *pVsnetRuntime) {
-    (void)pVsnetRuntime;
-}
-
 void ConstructWindowOwnerRenderContext(void *pPrimaryContext) {
     InitializeGameStubVtables();
     memset(pPrimaryContext, 0, 0xe4);
@@ -1149,106 +1170,103 @@ void ConstructWindowOwnerRenderContext(void *pPrimaryContext) {
 
 // FUNCTION: LEMBALL 0x00462EA0
 void InitializeRenderQueueNodeBase(void *pRenderQueueNode) {
-    int *pNode;
+    GAME_RenderQueueNode *pNode;
 
-    pNode = (int *)pRenderQueueNode;
-    pNode[0] = (int)(unsigned long)g_GAME_RenderQueueNodeVtableSlots;
-    pNode[2] = 0;
-    pNode[3] = 0;
-    pNode[1] = 0x51484452;
-}
-
-void *LoadZrleResource(int nResourceId) {
-    (void)nResourceId;
-    return 0;
-}
-
-void SetLevelScreenStatusIndicatorMode(int nMode, int nValue) {
-    (void)nMode;
-    (void)nValue;
+    pNode = (GAME_RenderQueueNode *)pRenderQueueNode;
+    pNode->m_pVtable = (void **)g_GAME_RenderQueueNodeVtableSlots;
+    pNode->m_pReserved08 = 0;
+    pNode->m_pReserved0C = 0;
+    pNode->m_uMagic = 0x51484452;
 }
 
 // FUNCTION: LEMBALL 0x004632A0
 void RegisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder) {
-    int *pQueue;
-    int *pNode;
-    int *pCurrent;
-    int *pPrevious;
+    GAME_RenderDispatchQueue *pQueue;
+    GAME_RenderDispatchClientNode *pNode;
+    GAME_RenderDispatchClientNode *pCurrent;
+    GAME_RenderDispatchClientNode *pPrevious;
     unsigned int i;
 
-    pQueue = (int *)pDispatchQueue;
-    pNode = (int *)AllocateVSMemBlock(0xc);
-    pNode[0] = (int)(unsigned long)pClient;
-    pNode[1] = nOrder;
-    pNode[2] = 0;
+    pQueue = (GAME_RenderDispatchQueue *)pDispatchQueue;
+    pNode = (GAME_RenderDispatchClientNode *)AllocateVSMemBlock(0xc);
+    pNode->m_pClient = pClient;
+    pNode->m_nOrder = nOrder;
+    pNode->m_pNext = 0;
 
-    pCurrent = *(int **)((char *)pQueue + 0x54);
-    if (pCurrent == 0 || pQueue[0x2c / 4] == 0) {
-        *(int **)((char *)pQueue + 0x54) = pNode;
-        pQueue[0x2c / 4] = 1;
+    pCurrent = pQueue->m_pClientList;
+    if (pCurrent == 0 || pQueue->m_cClients == 0) {
+        pQueue->m_pClientList = pNode;
+        pQueue->m_cClients = 1;
         return;
     }
 
     pPrevious = pCurrent;
     i = 0;
-    while (i < (unsigned int)pQueue[0x2c / 4]) {
-        if (nOrder < pCurrent[1]) {
+    while (i < (unsigned int)pQueue->m_cClients) {
+        if (nOrder < pCurrent->m_nOrder) {
             if (i == 0) {
-                pNode[2] = *(int *)((char *)pQueue + 0x54);
-                *(int **)((char *)pQueue + 0x54) = pNode;
+                pNode->m_pNext = pQueue->m_pClientList;
+                pQueue->m_pClientList = pNode;
             } else {
-                pNode[2] = pPrevious[2];
-                pPrevious[2] = (int)(unsigned long)pNode;
+                pNode->m_pNext = pPrevious->m_pNext;
+                pPrevious->m_pNext = pNode;
             }
-            ++pQueue[0x2c / 4];
+            ++pQueue->m_cClients;
             return;
         }
-        if (pCurrent[2] == 0) {
-            pCurrent[2] = (int)(unsigned long)pNode;
-            ++pQueue[0x2c / 4];
+        if (pCurrent->m_pNext == 0) {
+            pCurrent->m_pNext = pNode;
+            ++pQueue->m_cClients;
             return;
         }
         ++i;
         pPrevious = pCurrent;
-        pCurrent = (int *)(unsigned long)pCurrent[2];
+        pCurrent = pCurrent->m_pNext;
     }
 }
 
 // FUNCTION: LEMBALL 0x004633B0
 void UnregisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder) {
-    int *pQueue;
-    int *pCurrent;
-    int *pPrevious;
+    GAME_RenderDispatchQueue *pQueue;
+    GAME_RenderDispatchClientNode *pCurrent;
+    GAME_RenderDispatchClientNode *pPrevious;
     unsigned int i;
 
-    pQueue = (int *)pDispatchQueue;
-    pCurrent = *(int **)((char *)pQueue + 0x54);
+    pQueue = (GAME_RenderDispatchQueue *)pDispatchQueue;
+    pCurrent = pQueue->m_pClientList;
     pPrevious = pCurrent;
     i = 0;
-    while (i < (unsigned int)pQueue[0x2c / 4]) {
-        if (pCurrent[1] == nOrder && pCurrent[0] == (int)(unsigned long)pClient) {
+    while (i < (unsigned int)pQueue->m_cClients) {
+        if (pCurrent->m_nOrder == nOrder && pCurrent->m_pClient == pClient) {
             if (i != 0) {
-                pPrevious[2] = pCurrent[2];
+                pPrevious->m_pNext = pCurrent->m_pNext;
             } else {
-                *(int *)((char *)pQueue + 0x54) = pCurrent[2];
+                pQueue->m_pClientList = pCurrent->m_pNext;
             }
             FreeVSMemBlock(pCurrent);
-            --pQueue[0x2c / 4];
+            --pQueue->m_cClients;
             return;
         }
         ++i;
         pPrevious = pCurrent;
-        pCurrent = (int *)(unsigned long)pCurrent[2];
+        pCurrent = pCurrent->m_pNext;
     }
 }
 
+// FUNCTION: LEMBALL 0x004662B0
 void SetWindowOwnerScaleFactor(void *pPrimaryContext, int nScaleFactor) {
-    (void)pPrimaryContext;
-    (void)nScaleFactor;
-}
+    int nPreviousScaleFactor;
+    void **pVtable;
 
-void InitializeHelperUploadStatePending(int nUploadState) {
-    (void)nUploadState;
+    nPreviousScaleFactor = *(int *)((char *)pPrimaryContext + 0x38);
+    if (nScaleFactor != nPreviousScaleFactor) {
+        pVtable = *(void ***)pPrimaryContext;
+        *(int *)((char *)pPrimaryContext + 0x38) = nScaleFactor;
+        ((void (*)(int))pVtable[0x2c / sizeof(void *)])(nPreviousScaleFactor);
+        ((void (*)(int))pVtable[0x58 / sizeof(void *)])(nPreviousScaleFactor);
+        ((void (*)())pVtable[0x20 / sizeof(void *)])();
+        ((void (*)())pVtable[0x44 / sizeof(void *)])();
+    }
 }
 
 void *ConstructIntroSequenceScreen(void *pScreenObject,

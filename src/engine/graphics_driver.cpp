@@ -1,8 +1,8 @@
-#include "vsgdi.h"
+#include "graphics_driver.h"
 #include "../main.h"
-#include "../startup.h"
-#include "vsmem.h"
-#include "vsinit.h"
+#include "../platform/startup_options.h"
+#include "../engine/memory_arena.h"
+#include "../engine/runtime_init.h"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>
@@ -79,6 +79,8 @@ struct VSGDI_HelperTargetParamWrapper {
 };
 
 extern void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile, int nLine);
+extern int g_fRootHelperGeometryDispatchSuppressed;
+extern void *g_pQueuedRenderPointSinkFinalizeThunk;
 
 static void ReleaseResourceGeometryRowBufferStorage(int nRowBuffer) {
     if (*(int *)(unsigned long)(nRowBuffer + 4) != 0) {
@@ -700,6 +702,199 @@ void PromoteHelperUploadStateToActive(int nUploadState) {
         return;
     }
     *(char *)(unsigned long)(nUploadState + 0x48) = 'a';
+}
+
+// FUNCTION: LEMBALL 0x00466B60
+void InitializeHelperUploadStatePending(int nUploadState) {
+    *(unsigned short *)(unsigned long)(nUploadState + 0x30) = 0;
+    *(int *)(unsigned long)(nUploadState + 0x2c) = 0;
+    *(char *)(unsigned long)(nUploadState + 0x48) = 'P';
+    *(unsigned short *)(unsigned long)(nUploadState + 0x32) = 0;
+    *(unsigned short *)(unsigned long)(nUploadState + 0x34) = 0;
+    *(unsigned short *)(unsigned long)(nUploadState + 0x36) = 0;
+    *(int *)(unsigned long)(nUploadState + 4) = -1;
+    *(int *)(unsigned long)(nUploadState + 8) = -1;
+}
+
+// FUNCTION: LEMBALL 0x004670F0
+void AppendPointerQueueEntry(void *pQueue, void *pEntry) {
+    *(void **)(*(int *)pQueue + *(int *)((char *)pQueue + 4) * 4) = pEntry;
+    *(int *)((char *)pQueue + 4) = *(int *)((char *)pQueue + 4) + 1;
+}
+
+// FUNCTION: LEMBALL 0x0040381E
+void QueueQueuedRenderPointSink(void *pPointSink, void *pQueue) {
+    AppendPointerQueueEntry(pQueue, pPointSink);
+}
+
+// FUNCTION: LEMBALL 0x0046D9F0
+int RefreshHelperTargetBindingIfChanged(void *pTarget) {
+    int *pTargetWords;
+    int *pLinkedTarget;
+    int nVariableBlockOffset;
+    int nBindingValue;
+
+    pTargetWords = (int *)pTarget;
+    if (pTargetWords[1] == 0) {
+        return 0;
+    }
+
+    pLinkedTarget =
+        *(int **)(*(int *)(unsigned long)(pTargetWords[0x10] + 4) + 0x60 + (int)(unsigned long)pTargetWords);
+    if ((void *)pLinkedTarget == g_pResourceGeometryHelperTarget) {
+        if ((int *)pTargetWords[0x3c] == 0) {
+            return 0;
+        }
+        if (((int (*)())**(void ***)pTargetWords[0x3c])() == 0) {
+            return 0;
+        }
+        nBindingValue = ((int (*)(void))(*(void ***)pTargetWords[0x3c])[3])();
+        if (nBindingValue != 0 && pTargetWords[3] != nBindingValue) {
+            pTargetWords[3] = nBindingValue;
+            EnsureHelperBackingRowIndexCapacity((VSGDI_HelperSurface *)pTargetWords);
+            return 1;
+        }
+    } else {
+        if (pLinkedTarget == 0) {
+            return 0;
+        }
+        if (RefreshHelperTargetBindingIfChanged(pLinkedTarget) == 0) {
+            return 0;
+        }
+        nVariableBlockOffset = *(int *)(unsigned long)(pTargetWords[0x10] + 4);
+        if (*(int *)(*(int *)(*(int *)(nVariableBlockOffset + (int)(unsigned long)pTargetWords + 0x60) + 4) +
+                    *(short *)(nVariableBlockOffset + (int)(unsigned long)pTargetWords + 0x5a) * 4) +
+                (int)*(short *)(nVariableBlockOffset + (int)(unsigned long)pTargetWords + 0x58) !=
+            pTargetWords[3]) {
+            EnsureHelperBackingRowIndexCapacity((VSGDI_HelperSurface *)pTargetWords);
+            return 1;
+        }
+    }
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0046DAA0
+void InvokeRootHelperTargetPostQueueCallback(int nTarget) {
+    int nRootTarget;
+
+    do {
+        nRootTarget = nTarget;
+        nTarget = *(int *)(*(int *)(*(int *)(unsigned long)(nRootTarget + 0x40) + 4) + 0x60 + nRootTarget);
+    } while (g_pResourceGeometryHelperTarget != (void *)(unsigned long)nTarget);
+
+    ((void (*)())(*(void ***)*(int **)(unsigned long)(nRootTarget + 0xf0))[2])();
+}
+
+// FUNCTION: LEMBALL 0x00467110
+void DispatchAndClearPointerQueue(void *pQueue) {
+    int *pQueueWords;
+    int nByteOffset;
+    int i;
+
+    pQueueWords = (int *)pQueue;
+    if (RefreshHelperTargetBindingIfChanged((void *)(unsigned long)pQueueWords[3]) != 0) {
+        nByteOffset = 0;
+        i = 0;
+        if (0 < pQueueWords[1]) {
+            do {
+                if (IsPointerInsideManagedMemoryRegions(*(void **)(unsigned long)(pQueueWords[0] + nByteOffset)) != 0) {
+                    ((void (*)(void *))(*(void ***)*(int **)(unsigned long)(pQueueWords[0] + nByteOffset))[2])(pQueue);
+                }
+                nByteOffset += 4;
+                ++i;
+            } while (i < pQueueWords[1]);
+        }
+        InvokeRootHelperTargetPostQueueCallback(pQueueWords[3]);
+    }
+}
+
+// FUNCTION: LEMBALL 0x00465AA0
+void SampleRootHelperGeometryAndDispatchRenderGroups(void *pPrimaryContext, int nToken) {
+    int *pContext;
+    int nHelperTarget;
+    int *pQueuedPointSink;
+    int nUploadState;
+    int nResult;
+    short x0;
+    short y0;
+    short x1;
+    short y1;
+    short x2;
+    short y2;
+
+    pContext = (int *)pPrimaryContext;
+    if (g_fRootHelperGeometryDispatchSuppressed != 0 || pContext[1] != 1 || pContext[0x13] == 0) {
+        return;
+    }
+
+    if (nToken == -1) {
+        nToken = 0;
+    }
+
+    nHelperTarget = *(int *)(pContext[0x13] + 0xc);
+    ((void (*)())(*(void ***)*(int **)(*(int *)(*(int *)(unsigned long)(nHelperTarget + 0x40) + 4) + 0x40 + nHelperTarget))[0xe])();
+
+    nHelperTarget = *(int *)(pContext[0x13] + 0xc);
+    nHelperTarget = *(int *)(*(int *)(unsigned long)(nHelperTarget + 0x40) + 4) + 0x40 + nHelperTarget;
+    x1 = *(short *)(unsigned long)(nHelperTarget + 0x16);
+    y1 = *(short *)(unsigned long)(nHelperTarget + 0x14);
+
+    pQueuedPointSink = (int *)AllocateVSMemBlock(4);
+    if (pQueuedPointSink != 0) {
+        *pQueuedPointSink = (int)(unsigned long)&g_pQueuedRenderPointSinkFinalizeThunk;
+    }
+
+    nUploadState = ((int (*)(void))(*(void ***)*(int **)(unsigned long)(pContext[0x13] + 0xc))[2])();
+    InitializeHelperUploadStatePending(nUploadState);
+    ((void (*)(void *))(*(void ***)*(int **)pQueuedPointSink)[1])((void *)(unsigned long)pContext[0x13]);
+
+    x0 = *(short *)((char *)&nUploadState); /* intentional dead local shaping placeholder */
+    (void)x0;
+    x2 = (short)nUploadState; /* keep locals materialized in old-style layout */
+    (void)x2;
+
+    *(short *)((char *)pContext + 0x5c) = *(short *)&nUploadState;
+    *(short *)((char *)pContext + 0x5e) = *((short *)&nUploadState + 1);
+    *(short *)((char *)pContext + 0x60) = y1;
+    *(short *)((char *)pContext + 0x62) = x1;
+    pContext[0x19] = nToken;
+    ((void (*)(void *))(*(void ***)pContext[0x16])[1])((void *)(unsigned long)pContext[0x13]);
+
+    nHelperTarget = *(int *)(pContext[0x13] + 0xc);
+    nResult =
+        ((int (*)())(*(void ***)*(int **)(*(int *)(*(int *)(unsigned long)(nHelperTarget + 0x40) + 4) + 0x40 +
+                                          nHelperTarget))[0xf])();
+    y2 = *((short *)&nResult + 1);
+    if (nResult != 0) {
+        *(short *)((char *)pContext + 0x6c) = 0;
+        *(short *)((char *)pContext + 0x6e) = 0;
+        *(short *)((char *)pContext + 0x70) = (short)nResult;
+        *(short *)((char *)pContext + 0x72) = y2;
+        *(short *)((char *)pContext + 0x74) = *(short *)&nUploadState;
+        *(short *)((char *)pContext + 0x76) = *((short *)&nUploadState + 1);
+        ((void (*)(void *))(*(void ***)pContext[0x1a])[1])((void *)(unsigned long)pContext[0x13]);
+    }
+
+    nHelperTarget = *(int *)(pContext[0x13] + 0xc);
+    nResult =
+        ((int (*)())(*(void ***)*(int **)(*(int *)(*(int *)(unsigned long)(nHelperTarget + 0x40) + 4) + 0x40 +
+                                          nHelperTarget))[0x10])();
+    if (nResult != 0) {
+        *(short *)((char *)pContext + 0x80) = (short)nResult;
+        *(short *)((char *)pContext + 0x82) = *((short *)&nResult + 1);
+        *(short *)((char *)pContext + 0x84) = *(short *)&nUploadState;
+        *(short *)((char *)pContext + 0x86) = *((short *)&nUploadState + 1);
+        pContext[0x1f] = 0;
+        ((void (*)(void *))(*(void ***)pContext[0x1e])[1])((void *)(unsigned long)pContext[0x13]);
+    }
+
+    DispatchAndClearPointerQueue((void *)(unsigned long)pContext[0x13]);
+    *(int *)(pContext[0x13] + 4) = 0;
+    ((void (*)())(*(void ***)pContext)[0x2d])();
+
+    if (pQueuedPointSink != 0) {
+        ((void (*)(int))(*(void ***)*(int **)pQueuedPointSink)[0])(1);
+    }
 }
 
 static int GetHelperSurfaceVariableBlockOffset(const VSGDI_HelperSurface *pSurface) {

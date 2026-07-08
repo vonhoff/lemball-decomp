@@ -1,9 +1,9 @@
-#include "mogload.h"
+#include "resource_archive.h"
 
-#include "../game.h"
-#include "../startup.h"
-#include "vsinit.h"
-#include "vsmem.h"
+#include "../game/game_app.h"
+#include "../platform/startup_options.h"
+#include "../engine/runtime_init.h"
+#include "../engine/memory_arena.h"
 
 #include <ctype.h>
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
@@ -17,6 +17,7 @@
 static FILE *g_pResourceArchiveFile = 0;
 void *g_pResourceArchiveMemoryArena = 0;
 static const unsigned int g_MOGLOAD_StringResourceTypeTag = 0x53545247;
+static const unsigned int g_MOGLOAD_EffResourceTypeTag = 0x45464620;
 static const char g_MOGLOAD_OpenMode[] = "rb";
 static const char g_MOGLOAD_StatusName[] = "Mogload memory";
 static char g_MOGLOAD_RootPath[] = "/";
@@ -55,6 +56,7 @@ void NoopVfunc12(void);
 void ClearResourceTypeTag(void *pObject);
 int GetField28GetMemorySize(void *pObject);
 void *DeleteTypedResourceObject(void *pObject, int fDelete);
+void *DestroyEffResource(void *pObject, int fDelete);
 static void *g_MOGLOAD_MemoryArenaStatusEntryVtable[8] = {
     (void *)WriteNamedStatusEntry,
     (void *)UpdateNamedStatusEntry,
@@ -97,6 +99,22 @@ static void *g_MOGLOAD_TypedResourceObjectVtable[14] = {
     (void *)NoopVfunc12,
     (void *)ClearResourceTypeTag,
 };
+static void *g_MOGLOAD_EffResourceObjectVtable[14] = {
+    (void *)DestroyEffResource,
+    0,
+    0,
+    (void *)GetField14NeedsAgeIncrement,
+    (void *)GetField1CVfunc04,
+    (void *)GetField14Vfunc05,
+    (void *)ReturnZeroVfunc06,
+    (void *)EnsureTypedResourceObjectLoaded,
+    (void *)ReleaseTypedResourceObjectIfLoaded,
+    (void *)NoopVfunc09,
+    (void *)GetEffResourceDataPointer,
+    (void *)NoopOnLoadVfunc11,
+    (void *)NoopVfunc12,
+    (void *)ClearResourceTypeTag,
+};
 
 extern void *g_pMainResourceArchive;
 extern void *FinalizeLoadedResourceObjectResult(void *pObject);
@@ -115,6 +133,7 @@ extern void FreeResourceObjectDataBuffer(unsigned int pBuffer);
 
 void *g_pCachedResourceObjectBaseDeleteVtable = g_MOGLOAD_CachedResourceObjectBaseVtable;
 void *g_pDestroyGRTSResourceAndFreeThunk = g_MOGLOAD_TypedResourceObjectVtable;
+void *g_pDestroyEffResourceAndFreeThunk = g_MOGLOAD_EffResourceObjectVtable;
 
 void DestroyResourceArchiveDirectoryTree(int pDirectoryNode);
 
@@ -249,6 +268,15 @@ int GetField28GetMemorySize(void *pObject) {
 
 // FUNCTION: LEMBALL 0x0045E820
 void *DeleteTypedResourceObject(void *pObject, int fDelete) {
+    InitializeTypedResourceObjectBaseVtable(pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045EBB0
+void *DestroyEffResource(void *pObject, int fDelete) {
     InitializeTypedResourceObjectBaseVtable(pObject);
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
@@ -1175,6 +1203,31 @@ MOGLOAD_StringResourceObject *LoadStringResource(int nResourceId) {
     }
 
     return (MOGLOAD_StringResourceObject *)FinalizeLoadedResourceObjectResult(0);
+}
+
+// FUNCTION: LEMBALL 0x0045E380
+void *LoadEffResource(int nResourceId) {
+    MOGLOAD_StringResourceObject *pResourceObject;
+
+    pResourceObject = (MOGLOAD_StringResourceObject *)FindCachedResourceObjectById(g_pMainResourceArchive, nResourceId);
+    if (pResourceObject != 0) {
+        if (pResourceObject->m_uTypeTag != g_MOGLOAD_EffResourceTypeTag) {
+            ReleaseTypedResourceObjectReference(pResourceObject);
+            return 0;
+        }
+        return pResourceObject;
+    }
+
+    pResourceObject = (MOGLOAD_StringResourceObject *)AllocateVSMemBlock(0x48);
+    if (pResourceObject != 0) {
+        pResourceObject->m_pVtable = (void **)g_pCachedResourceObjectBaseDeleteVtable;
+        pResourceObject->m_nReserved18 = 0;
+        pResourceObject->m_pVtable = (void **)g_pDestroyEffResourceAndFreeThunk;
+        InitializeResourceObjectFromId(pResourceObject, nResourceId);
+        return FinalizeLoadedResourceObjectResult(pResourceObject);
+    }
+
+    return FinalizeLoadedResourceObjectResult(0);
 }
 
 // FUNCTION: LEMBALL 0x0045D180

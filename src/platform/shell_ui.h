@@ -1,7 +1,7 @@
-#ifndef LEMBALL_SHELLUI_H
-#define LEMBALL_SHELLUI_H
+#ifndef LEMBALL_SHELL_UI_H
+#define LEMBALL_SHELL_UI_H
 
-#include "game.h"
+#include "game/game_app.h"
 
 class SHELLUI_PrimaryContextShell {
 public:

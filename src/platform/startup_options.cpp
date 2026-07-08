@@ -1,7 +1,7 @@
-#include "startup.h"
+#include "platform/startup_options.h"
 
 #include "main.h"
-#include "visos/vsgdi.h"
+#include "engine/graphics_driver.h"
 
 #include <ctype.h>
 #include <string.h>

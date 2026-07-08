@@ -1,5 +1,5 @@
-#ifndef LEMBALL_COMMON_H
-#define LEMBALL_COMMON_H
+#ifndef LEMBALL_ENGINE_COMMON_H
+#define LEMBALL_ENGINE_COMMON_H
 
 #include <stddef.h>
 

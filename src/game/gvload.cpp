@@ -1,6 +1,6 @@
-#include "../game.h"
-#include "../visos/mogload.h"
-#include "../visos/vsmem.h"
+#include "../game/game_app.h"
+#include "../resource/resource_archive.h"
+#include "../engine/memory_arena.h"
 
 struct GAME_MainGameVariantResourceBundleLoader {
     void **m_pVtable;
@@ -27,11 +27,13 @@ struct GAME_MainGameVariantResourceBundleLoader {
 static const unsigned int g_GAME_ListResourceTypeTag = 0x4c495354;
 static const unsigned int g_GAME_BitmapResourceTypeTag = 0x42544d50;
 static const unsigned int g_GAME_PaletteResourceTypeTag = 0x50414c20;
+static const unsigned int g_GAME_ZrleResourceTypeTag = 0x5a524c45;
 
 static void *g_GAME_ListResourceBaseVtable = (void *)0x004989c0;
 static void *g_GAME_ZrleOnlyListResourceVtable = (void *)0x00498a18;
 static void *g_GAME_IntZrleListResourceVtable = (void *)0x00498af0;
 static void *g_GAME_TypedBitmapResourceDeleteVtable = (void *)0x00498ab0;
+static void *g_GAME_ZrleResourceVtable = (void *)0x00498a70;
 static void *g_GAME_BitmapResourceVtable = (void *)0x00498d20;
 static void *g_GAME_PaletteResourceVtable = (void *)0x00498c08;
 static void *g_GAME_TwoArrayListResourceVtable = (void *)0x00498c88;
@@ -180,6 +182,37 @@ void *LoadBitmapResource(int nResourceId) {
         *(unsigned short *)((char *)pResourceObject + 0x4a) = 0;
         *(unsigned short *)(pResourceObject + 0x12) = 0;
         *(void **)pResourceObject = g_GAME_BitmapResourceVtable;
+        InitializeResourceObjectFromId(pResourceObject, nResourceId);
+        return FinalizeLoadedResourceObjectResult(pResourceObject);
+    }
+    return FinalizeLoadedResourceObjectResult(0);
+}
+
+// FUNCTION: LEMBALL 0x0045E2B0
+void *LoadZrleResource(int nResourceId) {
+    int *pResourceObject;
+
+    pResourceObject = (int *)FindCachedResourceObjectById(g_pMainResourceArchive, nResourceId);
+    if (pResourceObject != 0) {
+        if ((unsigned int)pResourceObject[0x10] != g_GAME_ZrleResourceTypeTag) {
+            ReleaseTypedResourceObjectReference(pResourceObject);
+            pResourceObject = 0;
+        }
+        return pResourceObject;
+    }
+
+    pResourceObject = (int *)AllocateVSMemBlock(0x54);
+    if (pResourceObject != 0) {
+        *(void **)pResourceObject = &g_pCachedResourceObjectBaseDeleteVtable;
+        pResourceObject[6] = 0;
+        *(void **)pResourceObject = g_GAME_TypedBitmapResourceDeleteVtable;
+        *(unsigned short *)((char *)pResourceObject + 0x4a) = 0;
+        *(unsigned short *)(pResourceObject + 0x12) = 0;
+        *(unsigned short *)((char *)pResourceObject + 0x4e) = 0;
+        *(unsigned short *)(pResourceObject + 0x13) = 0;
+        *(unsigned short *)((char *)pResourceObject + 0x52) = 0;
+        *(unsigned short *)(pResourceObject + 0x14) = 0;
+        *(void **)pResourceObject = g_GAME_ZrleResourceVtable;
         InitializeResourceObjectFromId(pResourceObject, nResourceId);
         return FinalizeLoadedResourceObjectResult(pResourceObject);
     }

@@ -1,7 +1,7 @@
-#ifndef LEMBALL_STARTUP_H
-#define LEMBALL_STARTUP_H
+#ifndef LEMBALL_STARTUP_OPTIONS_H
+#define LEMBALL_STARTUP_OPTIONS_H
 
-#include "visos/common.h"
+#include "engine/common.h"
 
 struct STARTUP_GraphicsWindowConfig {
     u32 m_cbSize;

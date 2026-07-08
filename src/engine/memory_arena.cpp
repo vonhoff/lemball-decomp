@@ -1,7 +1,7 @@
-#include "vsmem.h"
+#include "memory_arena.h"
 
-#include "../startup.h"
-#include "vsinit.h"
+#include "../platform/startup_options.h"
+#include "../engine/runtime_init.h"
 
 #include <string.h>
 #include <stdlib.h>

@@ -1,4 +1,4 @@
-#include "vsmath.h"
+#include "fixed_math.h"
 
 static int g_anSignedTrigTable[512] = {
     0, 50, 100, 150, 200, 251, 301, 351,

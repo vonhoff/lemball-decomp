@@ -1,11 +1,13 @@
-#include "shellui.h"
+#include "platform/shell_ui.h"
 
+#include "audio/audio_manager.h"
 #include "main.h"
-#include "vsgdi.h"
-#include "vsinit.h"
+#include "engine/graphics_driver.h"
+#include "engine/runtime_init.h"
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
 
 static const char g_SHELLUI_RegistryKey[] = "SOFTWARE\\Visual Sciences\\Lemmings Paintball";
 static const char g_SHELLUI_AboutBoxName[] = "AboutBox";
@@ -17,7 +19,6 @@ static const char g_SHELLUI_Windows95Format[] = "Windows95 %u.%u";
 static const char g_SHELLUI_SystemInfoFormat[] =
     "Operating System : %s\nBuild Number : %d\nViSOS Build Number : %d\nPhysical Memory Size : %lu bytes\nPercent Used "
     ": %lu%%\nAvail Memory Free : %lu bytes\n";
-static const char g_SHELLUI_ModulePath[] = "LEMBALL.EXE";
 static const char g_SHELLUI_SystemInfoBuffer[] = "System Information";
 
 void TogglePrimaryContextDisplayMode(SHELLUI_PrimaryContextShell *pShell);
@@ -39,6 +40,9 @@ enum {
 };
 
 static char g_AboutSystemInfoBuffer[1024];
+static DWORD g_SHELLUI_PhysicalMemorySize = 16UL * 1024UL * 1024UL;
+static DWORD g_SHELLUI_MemoryUsagePercent = 30;
+static DWORD g_SHELLUI_AvailableMemorySize = 11UL * 1024UL * 1024UL;
 
 static void CallNoArgVirtual(void *pObject, unsigned int nByteOffset) {
     void **pVtable;
@@ -110,25 +114,6 @@ static void AppendCString(char *pszTarget, unsigned int cchTarget, const char *p
     if (cchCurrent < cchTarget) {
         CopyCString(pszTarget + cchCurrent, cchTarget - cchCurrent, pszSuffix);
     }
-}
-
-static DWORD HostGetVersion(void) {
-    return 0x80000004u;
-}
-
-static void HostGlobalMemoryStatus(MEMORYSTATUS *pStatus) {
-    if (pStatus == 0) {
-        return;
-    }
-
-    pStatus->dwLength = sizeof(*pStatus);
-    pStatus->dwMemoryLoad = 30;
-    pStatus->dwTotalPhys = 16UL * 1024UL * 1024UL;
-    pStatus->dwAvailPhys = 11UL * 1024UL * 1024UL;
-    pStatus->dwTotalPageFile = 0;
-    pStatus->dwAvailPageFile = 0;
-    pStatus->dwTotalVirtual = 0;
-    pStatus->dwAvailVirtual = 0;
 }
 
 static int HostGetDlgItemTextA(HWND hDlg, int nControlId, char *pszText, int cchText) {
@@ -223,58 +208,81 @@ void InitializePrimaryContextShell(SHELLUI_PrimaryContextShell *pShell) {
 
 // FUNCTION: LEMBALL 0x00455FF0
 char *BuildSystemInformationReportString(void) {
-    MEMORYSTATUS MemoryStatus;
+    char chTerminator;
     DWORD dwVersion;
-    unsigned int uMajorVersion;
-    unsigned int uMinorVersion;
-    unsigned int uBuildVersion;
+    unsigned char bMinorVersion;
+    unsigned int cchAudioDescription;
+    unsigned int cchCopyDwords;
+    char *pszAudioDescription;
+    char *pszAudioSource;
+    char *pszTarget;
     char szOperatingSystem[256];
-    char szModulePath[256];
 
-    MemoryStatus.dwLength = sizeof(MemoryStatus);
-    HostGlobalMemoryStatus(&MemoryStatus);
-
-    dwVersion = HostGetVersion();
-    uMajorVersion = (unsigned int)(dwVersion & 0xff);
-    uMinorVersion = (unsigned int)((dwVersion >> 8) & 0xff);
-    uBuildVersion = (unsigned int)((dwVersion >> 16) & 0x7fff);
+    dwVersion = GetVersion();
+    bMinorVersion = (unsigned char)((dwVersion & 0xffff) >> 8);
 
     if ((dwVersion & 0x80000000u) == 0) {
-        FormatCString(szOperatingSystem,
-                      sizeof(szOperatingSystem),
-                      g_SHELLUI_WindowsNtFormat,
-                      uMajorVersion,
-                      uMinorVersion,
-                      uBuildVersion);
-    } else if (uMajorVersion < 4) {
-        FormatCString(szOperatingSystem,
-                      sizeof(szOperatingSystem),
-                      g_SHELLUI_Win32sFormat,
-                      uMajorVersion,
-                      uMinorVersion,
-                      uBuildVersion);
+        wsprintfA(szOperatingSystem,
+                  g_SHELLUI_WindowsNtFormat,
+                  dwVersion & 0xff,
+                  (unsigned int)bMinorVersion,
+                  (unsigned int)(dwVersion >> 16));
+    } else if ((unsigned char)(dwVersion & 0xff) < 4) {
+        wsprintfA(szOperatingSystem,
+                  g_SHELLUI_Win32sFormat,
+                  dwVersion & 0xff,
+                  (unsigned int)bMinorVersion,
+                  (unsigned int)((dwVersion >> 16) & 0x7fff));
     } else {
-        FormatCString(
-            szOperatingSystem, sizeof(szOperatingSystem), g_SHELLUI_Windows95Format, uMajorVersion, uMinorVersion);
+        wsprintfA(szOperatingSystem, g_SHELLUI_Windows95Format, dwVersion & 0xff, (unsigned int)bMinorVersion);
     }
 
-    FormatCString(g_AboutSystemInfoBuffer,
-                  sizeof(g_AboutSystemInfoBuffer),
-                  g_SHELLUI_SystemInfoFormat,
-                  szOperatingSystem,
-                  SHELLUI_PRODUCT_BUILD_NUMBER,
-                  SHELLUI_VISOS_BUILD_NUMBER,
-                  MemoryStatus.dwTotalPhys,
-                  MemoryStatus.dwMemoryLoad,
-                  MemoryStatus.dwAvailPhys);
+    wsprintfA(g_AboutSystemInfoBuffer,
+              g_SHELLUI_SystemInfoFormat,
+              szOperatingSystem,
+              SHELLUI_PRODUCT_BUILD_NUMBER,
+              SHELLUI_VISOS_BUILD_NUMBER,
+              g_SHELLUI_PhysicalMemorySize,
+              g_SHELLUI_MemoryUsagePercent,
+              g_SHELLUI_AvailableMemorySize);
 
-    if (GetModuleFileNameA(g_hApplicationInstance, szModulePath, sizeof(szModulePath)) == 0) {
-        CopyCString(szModulePath, sizeof(szModulePath), g_SHELLUI_ModulePath);
+    pszAudioDescription = BuildAudioManagerDescriptionString(g_pAudioManager);
+    cchAudioDescription = 0xffffffffu;
+    do {
+        pszAudioSource = pszAudioDescription;
+        if (cchAudioDescription == 0) {
+            break;
+        }
+        --cchAudioDescription;
+        pszAudioSource = pszAudioDescription + 1;
+        chTerminator = *pszAudioDescription;
+        pszAudioDescription = pszAudioSource;
+    } while (chTerminator != '\0');
+
+    cchAudioDescription = ~cchAudioDescription;
+    pszTarget = g_AboutSystemInfoBuffer;
+    do {
+        pszAudioDescription = pszTarget;
+        pszTarget = pszTarget + 1;
+        chTerminator = *pszAudioDescription;
+    } while (chTerminator != '\0');
+    --pszTarget;
+
+    pszAudioSource = pszAudioSource - cchAudioDescription;
+    cchCopyDwords = cchAudioDescription >> 2;
+    while (cchCopyDwords != 0) {
+        *(u32 *)pszTarget = *(u32 *)pszAudioSource;
+        pszAudioSource += 4;
+        pszTarget += 4;
+        --cchCopyDwords;
     }
-    AppendCString(g_AboutSystemInfoBuffer, sizeof(g_AboutSystemInfoBuffer), szModulePath);
-    AppendCString(g_AboutSystemInfoBuffer, sizeof(g_AboutSystemInfoBuffer), "\n");
-    AppendCString(g_AboutSystemInfoBuffer, sizeof(g_AboutSystemInfoBuffer), g_SHELLUI_RegistryKey);
-    AppendCString(g_AboutSystemInfoBuffer, sizeof(g_AboutSystemInfoBuffer), "\n");
+    cchAudioDescription &= 3;
+    while (cchAudioDescription != 0) {
+        *pszTarget = *pszAudioSource;
+        ++pszAudioSource;
+        ++pszTarget;
+        --cchAudioDescription;
+    }
 
     return g_AboutSystemInfoBuffer;
 }

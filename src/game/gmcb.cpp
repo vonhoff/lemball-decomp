@@ -1,4 +1,4 @@
-#include "../visos/win32.h"
+#include "../platform/win32.h"
 
 // FUNCTION: LEMBALL 0x00407F20
 void noop_vtable_callback_00407f20(void) {

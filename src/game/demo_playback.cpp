@@ -1,15 +1,27 @@
-#include "vsdemo.h"
+#include "game/demo_playback.h"
 
-#include "../game.h"
-#include "vsmem.h"
-#include "vsinit.h"
-#include "win32.h"
+#include "../game/game_app.h"
+#include "../resource/resource_archive.h"
+#include "../engine/memory_arena.h"
+#include "../engine/runtime_init.h"
+#include "../platform/win32.h"
+
+#include <stdio.h>
 
 extern "C" DWORD timeGetTime(void);
 
-typedef void *(*VSDEMO_DeleteProc)(void *pObject, unsigned char fDelete);
+typedef void *(*DEMO_DeleteProc)(void *pObject, unsigned char fDelete);
 
 int DispatchLevelDemoEventsForFrameThunk(void *pPlaybackController, char nFrame);
+
+static const char g_DEMO_OpenReadMode[] = "rb";
+static const unsigned int g_DEMO_BinResourceTypeTag = 0x42494e20;
+static void *g_DEMO_BinResourceVtable = (void *)0x00498e60;
+
+extern void *g_pMainResourceArchive;
+extern void *g_pCachedResourceObjectBaseDeleteVtable;
+extern void InitializeResourceObjectFromId(void *pObject, int nResourceId);
+extern void *FinalizeLoadedResourceObjectResult(void *pObject);
 
 static void *g_LevelDemoPlaybackControllerVtable[2] = {
     (void *)RestoreLevelDemoPlaybackBaseVtable,
@@ -39,7 +51,7 @@ void DestroyFrameTimerController(void) {
 
     pPlaybackController = g_pLevelDemoPlaybackController;
     if (g_pLevelDemoPlaybackController != 0) {
-        ((VSDEMO_DeleteProc)(*(void ***)pPlaybackController)[1])(pPlaybackController, 1);
+        ((DEMO_DeleteProc)(*(void ***)pPlaybackController)[1])(pPlaybackController, 1);
         g_pLevelDemoPlaybackController = 0;
     }
 }
@@ -196,4 +208,147 @@ int DispatchLevelDemoEventsForFrameThunk(void *pPlaybackController, char nFrame)
     (void)pPlaybackController;
     (void)nFrame;
     return 0;
+}
+
+// FUNCTION: LEMBALL 0x00462EE0
+FILE *OpenFileWithMode(const char *pszPath, const char *pszMode) {
+    return fopen(pszPath, pszMode);
+}
+
+// FUNCTION: LEMBALL 0x00462F20
+void CloseCrtFilePointer(FILE *pFile) {
+    fclose(pFile);
+}
+
+// FUNCTION: LEMBALL 0x00462F30
+unsigned int ReadFileBytes(FILE *pFile, void *pBuffer, size_t cbBuffer) {
+    return (unsigned int)fread(pBuffer, 1, cbBuffer, pFile);
+}
+
+// FUNCTION: LEMBALL 0x00462FC0
+unsigned int GetFileLengthPreservingPosition(FILE *pFile) {
+    long lPosition;
+    unsigned int cbFile;
+
+    lPosition = ftell(pFile);
+    fseek(pFile, 0, SEEK_END);
+    cbFile = (unsigned int)ftell(pFile);
+    fseek(pFile, lPosition, SEEK_SET);
+    return cbFile;
+}
+
+// FUNCTION: LEMBALL 0x0045E540
+int *LoadBinResource(int nResourceId) {
+    int *pResourceObject;
+    int *pObjectWords;
+
+    pResourceObject = (int *)FindCachedResourceObjectById(g_pMainResourceArchive, nResourceId);
+    if (pResourceObject != 0) {
+        if ((unsigned int)pResourceObject[0x10] != g_DEMO_BinResourceTypeTag) {
+            ReleaseTypedResourceObjectReference(pResourceObject);
+            pResourceObject = 0;
+        }
+        return pResourceObject;
+    }
+
+    pObjectWords = (int *)AllocateVSMemBlock(0x48);
+    if (pObjectWords != 0) {
+        *(void **)pObjectWords = &g_pCachedResourceObjectBaseDeleteVtable;
+        pObjectWords[6] = 0;
+        *(void **)pObjectWords = g_DEMO_BinResourceVtable;
+        InitializeResourceObjectFromId(pObjectWords, nResourceId);
+        return (int *)FinalizeLoadedResourceObjectResult(pObjectWords);
+    }
+    return (int *)FinalizeLoadedResourceObjectResult(0);
+}
+
+// FUNCTION: LEMBALL 0x00409460
+int LoadNextLevelDemoRecordBuffer(void *pPlaybackController) {
+    unsigned char bValue;
+    unsigned char *pbCursor;
+    unsigned short wValue;
+    unsigned int cbLength;
+    FILE *pFile;
+    unsigned int cbFile;
+    void *pBuffer;
+    unsigned int cbRead;
+    int *pResourceObject;
+    unsigned int *pcbRemaining;
+    int nNextResourceId;
+
+    if (*(char **)((char *)pPlaybackController + 0x20) == 0) {
+        pResourceObject = LoadBinResource(*(int *)((char *)pPlaybackController + 0x28));
+        *(int **)((char *)pPlaybackController + 0x24) = pResourceObject;
+        if (pResourceObject[4] == 0) {
+            ((void (*)())*(void **)(*pResourceObject + 0x1c))();
+        } else {
+            pResourceObject[9] = 0;
+        }
+        ++pResourceObject[2];
+        *(void **)((char *)pPlaybackController + 0x10) =
+            ((void *(*)(void))*(void **)(**(int **)((char *)pPlaybackController + 0x24) + 0x28))();
+        nNextResourceId = *(int *)((char *)pPlaybackController + 0x28) + 1;
+        *(int *)((char *)pPlaybackController + 0x18) = *(int *)(*(int *)((char *)pPlaybackController + 0x24) + 0x28);
+        *(int *)((char *)pPlaybackController + 0x28) = nNextResourceId;
+        if (*(int *)((char *)pPlaybackController + 0x30) + *(int *)((char *)pPlaybackController + 0x2c) <=
+            nNextResourceId) {
+            *(int *)((char *)pPlaybackController + 0x28) = *(int *)((char *)pPlaybackController + 0x2c);
+        }
+    } else {
+        pFile = OpenFileWithMode(*(char **)((char *)pPlaybackController + 0x20), g_DEMO_OpenReadMode);
+        if (pFile == 0) {
+            return 0;
+        }
+        cbFile = GetFileLengthPreservingPosition(pFile);
+        pBuffer = AllocateVSMemBlock(cbFile);
+        *(void **)((char *)pPlaybackController + 0x10) = pBuffer;
+        cbRead = ReadFileBytes(pFile, pBuffer, cbFile);
+        CloseCrtFilePointer(pFile);
+        *(unsigned int *)((char *)pPlaybackController + 0x18) = cbRead;
+    }
+
+    pcbRemaining = (unsigned int *)((char *)pPlaybackController + 0x18);
+    pbCursor = *(unsigned char **)((char *)pPlaybackController + 0x10);
+    *(unsigned char **)((char *)pPlaybackController + 0x1c) = pbCursor;
+    bValue = *pbCursor;
+    *pcbRemaining = (unsigned int)bValue;
+    wValue = (unsigned short)(pbCursor[1] << 8) | bValue;
+    *pcbRemaining = (unsigned int)wValue;
+    cbLength = ((unsigned int)pbCursor[2] << 0x10) | wValue;
+    *pcbRemaining = cbLength;
+    bValue = pbCursor[3];
+    *(unsigned char **)((char *)pPlaybackController + 0x1c) = pbCursor + 4;
+    *pcbRemaining = ((unsigned int)bValue << 0x18) | cbLength;
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x00409560
+void ReadLevelDemoLengthPrefixedRecordThunk(void *pPlaybackController, void *pRecordBuffer, unsigned int *pcbRecord) {
+    unsigned char bValue;
+    unsigned short wValue;
+    unsigned int cbCopy;
+    unsigned int cbRemaining;
+    unsigned int *pdwCursor;
+
+    if (*(int *)((char *)pPlaybackController + 0x18) == -1) {
+        LoadNextLevelDemoRecordBuffer(pPlaybackController);
+    }
+
+    bValue = **(unsigned char **)((char *)pPlaybackController + 0x1c);
+    *pcbRecord = (unsigned int)bValue;
+    pdwCursor = (unsigned int *)*(int *)((char *)pPlaybackController + 0x1c);
+    wValue = (unsigned short)(*((unsigned char *)pdwCursor + 1) << 8) | bValue;
+    *pcbRecord = (unsigned int)wValue;
+    *pcbRecord = ((unsigned int)*((unsigned char *)pdwCursor + 2) << 0x10) | wValue;
+    *pcbRecord = ((unsigned int)*((unsigned char *)pdwCursor + 3) << 0x18) | *pcbRecord;
+
+    pdwCursor = (unsigned int *)(*(int *)((char *)pPlaybackController + 0x1c) + 4);
+    *(unsigned int **)((char *)pPlaybackController + 0x1c) = pdwCursor;
+    *(int *)((char *)pPlaybackController + 0x18) -= (*pcbRecord + 4);
+
+    cbRemaining = *pcbRecord;
+    CopyMemoryBytes(pRecordBuffer, pdwCursor, cbRemaining);
+    *(int *)((char *)pPlaybackController + 0x1c) += *pcbRecord;
+    cbCopy = cbRemaining;
+    (void)cbCopy;
 }

@@ -1,7 +1,7 @@
-#ifndef LEMBALL_VSMEM_H
-#define LEMBALL_VSMEM_H
+#ifndef LEMBALL_MEMORY_ARENA_H
+#define LEMBALL_MEMORY_ARENA_H
 
-#include "win32.h"
+#include "platform/win32.h"
 
 struct VSINIT_FormattedOutputStream;
 

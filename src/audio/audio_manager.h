@@ -1,5 +1,5 @@
-#ifndef LEMBALL_VSAUDIO_H
-#define LEMBALL_VSAUDIO_H
+#ifndef LEMBALL_AUDIO_MANAGER_H
+#define LEMBALL_AUDIO_MANAGER_H
 
 void *ConstructAudioManager(void *pAudioManager,
                             int nMusicResourceBase,

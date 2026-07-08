@@ -1,5 +1,5 @@
-#ifndef LEMBALL_VSDEMO_H
-#define LEMBALL_VSDEMO_H
+#ifndef LEMBALL_DEMO_PLAYBACK_H
+#define LEMBALL_DEMO_PLAYBACK_H
 
 void CreateFrameTimerController(unsigned int uFrameInterval);
 void DestroyFrameTimerController(void);

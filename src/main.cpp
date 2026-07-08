@@ -1,5 +1,5 @@
 #include "main.h"
-#include "visos/vsinit.h"
+#include "engine/runtime_init.h"
 
 HINSTANCE g_hApplicationInstance = 0;
 

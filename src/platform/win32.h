@@ -1,7 +1,7 @@
-#ifndef LEMBALL_WIN32_H
-#define LEMBALL_WIN32_H
+#ifndef LEMBALL_PLATFORM_WIN32_H
+#define LEMBALL_PLATFORM_WIN32_H
 
-#include "common.h"
+#include "engine/common.h"
 
 typedef void *HANDLE;
 typedef void *HINSTANCE;
@@ -21,7 +21,12 @@ typedef unsigned long DWORD;
 typedef unsigned long DWORD_PTR;
 typedef long LONG;
 typedef unsigned char BYTE;
+typedef unsigned int MCIDEVICEID;
+typedef unsigned int MCIERROR;
+typedef unsigned int MMRESULT;
 typedef void *LPVOID;
+typedef void *HWAVEOUT;
+typedef void *LPWAVEHDR;
 typedef unsigned long WPARAM;
 typedef long LPARAM;
 typedef long LRESULT;
@@ -63,6 +68,8 @@ enum {
     MB_ICONERROR = 0x00000010u,
     CS_DBLCLKS = 0x0008u,
     CW_USEDEFAULT = 0x80000000u,
+    GWL_USERDATA = -21,
+    WM_CREATE = 0x0001u,
     WM_INITDIALOG = 0x0110u,
     WM_COMMAND = 0x0111u,
     WM_QUIT = 0x0012u,
@@ -105,6 +112,23 @@ struct tagWNDCLASSA {
 
 typedef tagWNDCLASSA WNDCLASSA;
 
+struct tagCREATESTRUCTA {
+    LPVOID lpCreateParams;
+    HINSTANCE hInstance;
+    HMENU hMenu;
+    HWND hwndParent;
+    INT cy;
+    INT cx;
+    INT y;
+    INT x;
+    LONG style;
+    LPCSTR lpszName;
+    LPCSTR lpszClass;
+    DWORD dwExStyle;
+};
+
+typedef tagCREATESTRUCTA CREATESTRUCTA;
+
 struct tagMEMORYSTATUS {
     DWORD dwLength;
     DWORD dwMemoryLoad;
@@ -127,9 +151,8 @@ typedef struct LemballImportMap {
 BOOL lemball_imports_ready(void);
 void lemball_imports_reset(void);
 const LemballImportMap *lemball_get_import_map(size_t *count);
-int lemball_platform_show_error(const char *title, const char *message);
-
 extern "C" {
+DWORD WINAPI GetLastError(void);
 LSTATUS WINAPI RegOpenKeyExA(HKEY hKey, LPCSTR lpSubKey, DWORD ulOptions, REGSAM samDesired, HKEY *phkResult);
 LSTATUS WINAPI
 RegSetValueExA(HKEY hKey, LPCSTR lpValueName, DWORD Reserved, DWORD dwType, const BYTE *lpData, DWORD cbData);
@@ -140,9 +163,12 @@ DWORD WINAPI GetLogicalDrives(void);
 UINT WINAPI GetDriveTypeA(LPCSTR lpRootPathName);
 UINT WINAPI GetModuleFileNameA(HINSTANCE hModule, LPSTR lpFilename, UINT nSize);
 DWORD WINAPI GetCurrentDirectoryA(DWORD nBufferLength, LPSTR lpBuffer);
+DWORD WINAPI GetVersion(void);
+int WINAPI wsprintfA(LPSTR lpOut, LPCSTR lpFmt, ...);
 HICON WINAPI LoadIconA(HINSTANCE hInstance, LPCSTR lpIconName);
 HCURSOR WINAPI LoadCursorA(HINSTANCE hInstance, LPCSTR lpCursorName);
 HMODULE WINAPI LoadLibraryA(LPCSTR lpLibFileName);
+BOOL WINAPI FreeLibrary(HMODULE hLibModule);
 FARPROC WINAPI GetProcAddress(HMODULE hModule, LPCSTR lpProcName);
 int WINAPI GetSystemMetrics(int nIndex);
 void WINAPI InitializeCriticalSection(LPVOID lpCriticalSection);
@@ -153,10 +179,47 @@ BOOL WINAPI WinHelpA(HWND hWndMain, LPCSTR lpszHelp, UINT uCommand, DWORD_PTR dw
 int WINAPI
 DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam);
 int WINAPI MessageBoxA(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType);
+ATOM WINAPI RegisterClassA(const WNDCLASSA *lpWndClass);
+LONG WINAPI GetWindowLongA(HWND hWnd, int nIndex);
+LONG WINAPI SetWindowLongA(HWND hWnd, int nIndex, LONG dwNewLong);
+LRESULT WINAPI DefWindowProcA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+HWND WINAPI CreateWindowExA(DWORD dwExStyle,
+                            LPCSTR lpClassName,
+                            LPCSTR lpWindowName,
+                            DWORD dwStyle,
+                            INT X,
+                            INT Y,
+                            INT nWidth,
+                            INT nHeight,
+                            HWND hWndParent,
+                            HMENU hMenu,
+                            HINSTANCE hInstance,
+                            LPVOID lpParam);
 BOOL WINAPI PeekMessageA(MSG *lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg);
 BOOL WINAPI GetMessageA(MSG *lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax);
 BOOL WINAPI TranslateMessage(const MSG *lpMsg);
 LRESULT WINAPI DispatchMessageA(const MSG *lpMsg);
+BOOL WINAPI DestroyWindow(HWND hWnd);
+HANDLE WINAPI CreateEventA(LPSECURITY_ATTRIBUTES lpEventAttributes,
+                           BOOL bManualReset,
+                           BOOL bInitialState,
+                           LPCSTR lpName);
+BOOL WINAPI SetEvent(HANDLE hEvent);
+HANDLE WINAPI CreateThread(LPSECURITY_ATTRIBUTES lpThreadAttributes,
+                           DWORD dwStackSize,
+                           LPTHREAD_START_ROUTINE lpStartAddress,
+                           LPVOID lpParameter,
+                           DWORD dwCreationFlags,
+                           LPDWORD lpThreadId);
+BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority);
+DWORD WINAPI WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds);
+BOOL WINAPI TerminateThread(HANDLE hThread, DWORD dwExitCode);
+void WINAPI ExitProcess(UINT uExitCode);
+int WINAPI TranslateAcceleratorA(HWND hWnd, HACCEL hAccTable, MSG *lpMsg);
+MCIERROR WINAPI mciSendCommandA(MCIDEVICEID mciId, UINT uMsg, DWORD_PTR fdwCommand, DWORD_PTR dwParam);
+BOOL WINAPI mciGetErrorStringA(MCIERROR mcierr, LPSTR pszText, UINT cchText);
+MMRESULT WINAPI waveOutReset(HWAVEOUT hWaveOut);
+MMRESULT WINAPI waveOutWrite(HWAVEOUT hWaveOut, LPWAVEHDR pWaveOutHdr, UINT cbWaveOutHdr);
 }
 
 #endif

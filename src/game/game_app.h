@@ -1,7 +1,7 @@
-#ifndef LEMBALL_GAME_H
-#define LEMBALL_GAME_H
+#ifndef LEMBALL_GAME_APP_H
+#define LEMBALL_GAME_APP_H
 
-#include "win32.h"
+#include "platform/win32.h"
 
 struct GAME_DynamicCString {
     char *m_pszText;

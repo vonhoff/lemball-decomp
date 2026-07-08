@@ -4,24 +4,31 @@ project(lemball_decomp CXX)
 option(LEMBALL_ENABLE_WIN32 "Build the reconstructed Win32 executable" OFF)
 
 set(LEMBALL_SOURCES
+    src/engine/graphics_driver.cpp
+    src/engine/memory_arena.cpp
+    src/engine/render_dispatch.cpp
+    src/engine/runtime_init.cpp
+    src/game/game_app.cpp
     src/game/geff.cpp
     src/game/glevel.cpp
     src/game/gmcb.cpp
     src/game/gstatus.cpp
+    src/game/level_status.cpp
     src/game/gvload.cpp
     src/game/gvariant.cpp
-    src/game.cpp
+    src/network/nlobby.cpp
+    src/network/nfile.cpp
+    src/network/nsocket.cpp
+    src/network/nruntime.cpp
+    src/network/nstream.cpp
     src/main.cpp
-    src/shellui.cpp
-    src/startup.cpp
-    src/visos/mogload.cpp
-    src/visos/vsaudio.cpp
-    src/visos/vsdemo.cpp
-    src/visos/vsgdi.cpp
-    src/visos/vsinit.cpp
-    src/visos/vsmath.cpp
-    src/visos/vsmem.cpp
-    src/visos/vswin.cpp
+    src/audio/audio_manager.cpp
+    src/engine/fixed_math.cpp
+    src/platform/message_window.cpp
+    src/platform/shell_ui.cpp
+    src/platform/startup_options.cpp
+    src/resource/resource_archive.cpp
+    src/game/demo_playback.cpp
 )
 
 if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "OpenWatcom" AND (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "11.0" OR NOT MSVC))
@@ -30,13 +37,15 @@ if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "OpenWatcom" AND (CMAKE_CXX_COMPILER_VERSI
     set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
 
+add_library(LEMBALL_objects OBJECT ${LEMBALL_SOURCES})
+target_include_directories(LEMBALL_objects PRIVATE src)
+target_compile_definitions(LEMBALL_objects PRIVATE LEMBALL_1996_CXX=1)
+if(APPLE)
+    target_compile_definitions(LEMBALL_objects PRIVATE LEMBALL_HOST_MACOS=1)
+endif()
+
 if(LEMBALL_ENABLE_WIN32)
-    add_executable(LEMBALL WIN32 ${LEMBALL_SOURCES})
-    target_include_directories(LEMBALL PRIVATE src src/visos)
-    target_compile_definitions(LEMBALL PRIVATE LEMBALL_1996_CXX=1)
-    if(APPLE)
-        target_compile_definitions(LEMBALL PRIVATE LEMBALL_HOST_MACOS=1)
-    endif()
+    add_executable(LEMBALL WIN32 $<TARGET_OBJECTS:LEMBALL_objects>)
     set_target_properties(LEMBALL PROPERTIES
         OUTPUT_NAME "LEMBALL"
         SUFFIX ".EXE"
