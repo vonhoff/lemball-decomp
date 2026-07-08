@@ -22,6 +22,8 @@ public:
     int m_nTotalValue;
     int m_cSamples;
     GAME_DynamicCString m_Name;
+    int m_nReserved20;
+    int m_nReserved24;
 };
 
 class GAME_MainContext {
@@ -29,7 +31,7 @@ public:
     GAME_MainContext(void);
 
 public:
-    char m_szCaption[0x50];
+    char m_szLevelPath[0x50];
     GAME_StatusEntry *m_pProcessingStatus;
     GAME_StatusEntry *m_pRefreshingStatus;
     int m_nModeTicks;

@@ -95,6 +95,10 @@ STARTUP_GraphicsWindowConfig *BuildStartupGraphicsWindowConfig(const STARTUP_Gra
 
 // FUNCTION: LEMBALL 0x00406230
 void InitializeStartupSwitchDefaults(void) {
+    const unsigned char *pbSource;
+    unsigned char *pbTarget;
+    unsigned int cchSource;
+    unsigned int i;
     int nSelectedDriver;
 
     g_fStartupAnimationsEnabled = 1;
@@ -122,37 +126,49 @@ void InitializeStartupSwitchDefaults(void) {
     g_fUnknownStartupFlag0 = 0;
     g_fStartupTestAllLevels = 0;
     g_fLevelDemoModeEnabled = 0;
-    strcpy((char *)g_abOverrideLevelFilePathBuffer, g_STARTUP_DefaultOverrideLevelPath);
+
+    cchSource = (unsigned int)strlen(g_STARTUP_DefaultOverrideLevelPath) + 1;
+    pbSource = (const unsigned char *)g_STARTUP_DefaultOverrideLevelPath;
+    pbTarget = g_abOverrideLevelFilePathBuffer;
+    for (i = cchSource >> 2; i != 0; --i) {
+        *(u32 *)pbTarget = *(const u32 *)pbSource;
+        pbSource += 4;
+        pbTarget += 4;
+    }
+    for (i = cchSource & 3; i != 0; --i) {
+        *pbTarget++ = *pbSource++;
+    }
 }
 
 // FUNCTION: LEMBALL 0x00406790
 int CompareSwitchNameCaseInsensitive(const char *pszLeft, const char *pszRight, int cchMax) {
-    unsigned int cchLeft;
-    unsigned int cchRight;
+    int cchLeft;
+    int cchRight;
+    int nDifference;
     char chLeft;
     char chRight;
 
-    cchLeft = (unsigned int)strlen(pszLeft);
-    cchRight = (unsigned int)strlen(pszRight);
+    cchLeft = (int)strlen(pszLeft);
+    cchRight = (int)strlen(pszRight);
 
-    if ((unsigned int)cchMax < cchLeft) {
-        cchLeft = (unsigned int)cchMax;
+    if (cchMax < cchLeft) {
+        cchLeft = cchMax;
     }
-    if ((unsigned int)cchMax < cchRight) {
-        cchRight = (unsigned int)cchMax;
+    if (cchMax < cchRight) {
+        cchRight = cchMax;
     }
-    if (cchRight != cchLeft) {
+    if (cchLeft != cchRight) {
         return -1;
     }
 
-    if (cchLeft < (unsigned int)cchMax) {
-        cchMax = (int)cchLeft;
+    if (cchLeft < cchMax) {
+        cchMax = cchLeft;
     }
-    if (cchRight < (unsigned int)cchMax) {
-        cchMax = (int)cchRight;
+    if (cchRight < cchMax) {
+        cchMax = cchRight;
     }
 
-    while (1) {
+    for (;;) {
         if (cchMax == 0) {
             return 0;
         }
@@ -168,20 +184,24 @@ int CompareSwitchNameCaseInsensitive(const char *pszLeft, const char *pszRight, 
             chRight = *pszRight;
         }
 
-        if ((int)chLeft - (int)chRight != 0) {
-            break;
+        nDifference = (int)chLeft - (int)chRight;
+        if (nDifference != 0) {
+            return nDifference;
         }
 
         ++pszLeft;
         ++pszRight;
         --cchMax;
     }
-
-    return (int)chLeft - (int)chRight;
 }
 
 // FUNCTION: LEMBALL 0x00406460
 int ApplyStartupCommandLineSwitches(int cArgs, const char *const *ppszArgs) {
+    unsigned int cchPrefix;
+    unsigned int cchSource;
+    const unsigned char *pbSource;
+    unsigned char *pbTarget;
+    unsigned int i;
     int fContinue;
 
     fContinue = 1;
@@ -222,15 +242,37 @@ int ApplyStartupCommandLineSwitches(int cArgs, const char *const *ppszArgs) {
                 NoopHelpSwitchCallback();
                 fContinue = 0;
             }
-            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchEditPrefix,
-                                                 (int)strlen(g_STARTUP_SwitchEditPrefix)) == 0) {
-                g_fStartupEditLevelOverride = strlen(pszArg + strlen(g_STARTUP_SwitchEditPrefix)) != 0;
-                strcpy((char *)g_abOverrideLevelFilePathBuffer, pszArg + strlen(g_STARTUP_SwitchEditPrefix));
+            cchPrefix = (unsigned int)strlen(g_STARTUP_SwitchEditPrefix);
+            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchEditPrefix, (int)cchPrefix) == 0) {
+                pszArg += cchPrefix;
+                g_fStartupEditLevelOverride = *pszArg != '\0';
+                cchSource = (unsigned int)strlen(pszArg) + 1;
+                pbSource = (const unsigned char *)pszArg;
+                pbTarget = g_abOverrideLevelFilePathBuffer;
+                for (i = cchSource >> 2; i != 0; --i) {
+                    *(u32 *)pbTarget = *(const u32 *)pbSource;
+                    pbSource += 4;
+                    pbTarget += 4;
+                }
+                for (i = cchSource & 3; i != 0; --i) {
+                    *pbTarget++ = *pbSource++;
+                }
             }
-            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchPlayPrefix,
-                                                 (int)strlen(g_STARTUP_SwitchPlayPrefix)) == 0) {
-                g_fStartupPlayLevelOverride = strlen(pszArg + strlen(g_STARTUP_SwitchPlayPrefix)) != 0;
-                strcpy((char *)g_abOverrideLevelFilePathBuffer, pszArg + strlen(g_STARTUP_SwitchPlayPrefix));
+            cchPrefix = (unsigned int)strlen(g_STARTUP_SwitchPlayPrefix);
+            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchPlayPrefix, (int)cchPrefix) == 0) {
+                pszArg += cchPrefix;
+                g_fStartupPlayLevelOverride = *pszArg != '\0';
+                cchSource = (unsigned int)strlen(pszArg) + 1;
+                pbSource = (const unsigned char *)pszArg;
+                pbTarget = g_abOverrideLevelFilePathBuffer;
+                for (i = cchSource >> 2; i != 0; --i) {
+                    *(u32 *)pbTarget = *(const u32 *)pbSource;
+                    pbSource += 4;
+                    pbTarget += 4;
+                }
+                for (i = cchSource & 3; i != 0; --i) {
+                    *pbTarget++ = *pbSource++;
+                }
             }
             if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchGraphics, 99) == 0) {
                 g_fStartupGraphicsDialogRequested = 1;

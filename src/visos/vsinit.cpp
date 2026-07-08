@@ -26,35 +26,6 @@ extern void *g_pStatusEntryRegistry;
 extern void *g_pSharedRenderDispatchQueue;
 extern void *g_pSharedGeometryHelper;
 
-struct VSINIT_FixedBufferStream {
-    void *m_pVtable;
-    char *m_pszBuffer;
-    unsigned int m_cbBuffer;
-    char *m_pszCursor;
-    unsigned int m_cchWritten;
-    int m_nTabWidth;
-    void (*m_pfnFlush)(char *);
-};
-
-struct VSINIT_StreamFormatTargetState {
-    void *m_pVtable;
-    int m_nReserved04;
-    unsigned int m_dwFlags;
-    int m_nReserved0c;
-    char m_chFill;
-    char m_abReserved11[3];
-    int m_nWidth;
-    int m_nRadix;
-    VSINIT_FixedBufferStream *m_pDownstream;
-};
-
-struct VSINIT_FormattedOutputStream {
-    void *m_pVtable;
-    char m_szFormatBuffer[0x124];
-    char *m_pszFormattedText;
-    VSINIT_StreamFormatTargetState m_TargetState;
-};
-
 #define VSINIT_FORMAT_TARGET(pStream) \
     ((VSINIT_StreamFormatTargetState *)((char *)(pStream) + (unsigned long)((void **)((pStream)->m_pVtable))[1]))
 
@@ -416,7 +387,7 @@ static VSINIT_FixedBufferStream *g_pStartupFixedBufferStream = 0;
 static VSINIT_FixedBufferStream *g_pStatusFixedBufferStream = 0;
 static VSINIT_FixedBufferStream *g_pErrorFixedBufferStream = 0;
 static VSINIT_FormattedOutputStream *g_pStartupOutputStream = 0;
-static VSINIT_FormattedOutputStream *g_pStatusOutputStream = 0;
+VSINIT_FormattedOutputStream *g_pStatusOutputStream = 0;
 VSINIT_FormattedOutputStream *g_pErrorOutputStream = 0;
 static char *g_apszParsedArgs[16];
 static unsigned int g_cParsedArgs = 0;

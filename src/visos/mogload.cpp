@@ -1,9 +1,45 @@
 #include "mogload.h"
 
+#include "../game.h"
+#include "../startup.h"
+#include "vsinit.h"
+#include "vsmem.h"
+
+#include <ctype.h>
+#if defined(_MSC_VER) && (_MSC_VER < 1100)
+#include <new.h>
+#else
+#include <new>
+#endif
 #include <stdlib.h>
 #include <string.h>
 
 static FILE *g_pResourceArchiveFile = 0;
+void *g_pResourceArchiveMemoryArena = 0;
+static const unsigned int g_MOGLOAD_StringResourceTypeTag = 0x53545247;
+static const char g_MOGLOAD_OpenMode[] = "rb";
+static const char g_MOGLOAD_StatusName[] = "Mogload memory";
+static const char g_MOGLOAD_RootPath[] = "/";
+static const char g_MOGLOAD_SourceFileName[] = "MOGLOAD.CPP";
+static const char g_MOGLOAD_IsValidResourceFileAssert[] = "IsValidResourceFile()";
+
+extern void *g_pMainResourceArchive;
+extern void *FinalizeLoadedResourceObjectResult(void *pObject);
+extern void *g_pCachedResourceObjectBaseDeleteVtable;
+extern void *g_pDestroyGRTSResourceAndFreeThunk;
+extern void ResetTypedResourceObjectState(void *pObject);
+extern int LoadResourceObjectById(void *pArchive, int nResourceId, int pObject, int fCacheObject);
+extern void AdvanceCachedResourceObjectFrameCounters(void *pArchive);
+extern int AllocateFromSmallMemoryBucketTable(void *pBucketTable, unsigned int cbBlock);
+extern int FreeToSmallMemoryBucketTable(void *pBucketTable, void *pBlock);
+extern void *g_pSmallMemoryBucketTable;
+extern unsigned int g_cbSmallMemoryBucketUpperBound;
+extern const char *g_pszSmallMemoryBucketAllocTag;
+extern FILE *OpenFileWithMode(const char *pszPath, const char *pszMode);
+extern void *g_pStatusEntryRegistry;
+extern "C" DWORD timeGetTime(void);
+
+void DestroyResourceArchiveDirectoryTree(int pDirectoryNode);
 
 static void MOGLOAD_ReadBytes(void *pvBuffer, size_t cbBuffer) {
     if (pvBuffer == 0 || cbBuffer == 0) {
@@ -66,6 +102,7 @@ void MOGLOAD_DirectoryNode::ResetNodeState(void) {
     m_pNameData = 0;
 }
 
+// FUNCTION: LEMBALL 0x0045C2A0
 void MOGLOAD_DirectoryNode::ResetCursor(void) {
     m_iCursorIndex = m_iSavedIndex;
     m_pCursorEntry = m_pSavedEntry;
@@ -88,7 +125,7 @@ int MOGLOAD_DirectoryNode::AppendEntryAfterCursor(void) {
         return 0;
     }
 
-    pEntry = (MOGLOAD_EntryRecord *)allocate_resource_archive_memory(sizeof(MOGLOAD_EntryRecord));
+    pEntry = (MOGLOAD_EntryRecord *)AllocateResourceArchiveMemory(sizeof(MOGLOAD_EntryRecord));
     if (pEntry == 0) {
         return 0;
     }
@@ -101,6 +138,7 @@ int MOGLOAD_DirectoryNode::AppendEntryAfterCursor(void) {
     return 1;
 }
 
+// FUNCTION: LEMBALL 0x0045BDA0
 MOGLOAD_DirectoryNode *MOGLOAD_DirectoryNode::Construct(long lFileOffset) {
     long lNameDataSize;
     long lCurrentFileOffset;
@@ -135,14 +173,14 @@ MOGLOAD_DirectoryNode *MOGLOAD_DirectoryNode::Construct(long lFileOffset) {
     lNameDataSize = m_lRecordTableOffset - lCurrentFileOffset;
 
     if (lNameDataSize > 0) {
-        m_pNameData = (char *)allocate_resource_archive_memory((unsigned int)lNameDataSize);
+        m_pNameData = (char *)AllocateResourceArchiveMemory((unsigned int)lNameDataSize);
         if (m_pNameData != 0) {
             fread(m_pNameData, 1, (size_t)lNameDataSize, g_pResourceArchiveFile);
         }
     }
 
     if (m_cEntries != 0) {
-        pEntry = (MOGLOAD_EntryRecord *)allocate_resource_archive_memory(sizeof(MOGLOAD_EntryRecord));
+        pEntry = (MOGLOAD_EntryRecord *)AllocateResourceArchiveMemory(sizeof(MOGLOAD_EntryRecord));
         if (pEntry != 0) {
             MOGLOAD_InitialiseEntryRecord(pEntry);
             m_pSavedEntry = pEntry;
@@ -248,6 +286,7 @@ int MOGLOAD_DirectoryNode::FindNextEntry(long *piIndex, MOGLOAD_EntryRecord **pp
     return 0;
 }
 
+// FUNCTION: LEMBALL 0x0045C060
 MOGLOAD_DirectoryNode *MOGLOAD_DirectoryNode::AdvanceSubdirectory(void) {
     long iIndex;
     MOGLOAD_EntryRecord *pEntry;
@@ -278,7 +317,7 @@ MOGLOAD_DirectoryNode *MOGLOAD_DirectoryNode::AdvanceSubdirectory(void) {
 
     if (pEntry->m_pChildDirectory == 0) {
         pEntry->m_pChildDirectory =
-            (MOGLOAD_DirectoryNode *)allocate_resource_archive_memory(sizeof(MOGLOAD_DirectoryNode));
+            (MOGLOAD_DirectoryNode *)AllocateResourceArchiveMemory(sizeof(MOGLOAD_DirectoryNode));
         if (pEntry->m_pChildDirectory != 0) {
             pEntry->m_pChildDirectory->ResetNodeState();
             pEntry->m_pChildDirectory->Construct(pEntry->m_lFileOffset);
@@ -286,6 +325,37 @@ MOGLOAD_DirectoryNode *MOGLOAD_DirectoryNode::AdvanceSubdirectory(void) {
     }
 
     return pEntry->m_pChildDirectory;
+}
+
+// FUNCTION: LEMBALL 0x0045BF10
+void DestroyResourceArchiveDirectoryTree(int pDirectoryNode) {
+    MOGLOAD_DirectoryNode *pDirectory;
+    MOGLOAD_EntryRecord *pEntry;
+    MOGLOAD_EntryRecord *pNextEntry;
+
+    pDirectory = (MOGLOAD_DirectoryNode *)(unsigned long)pDirectoryNode;
+    pDirectory->m_iCursorIndex = pDirectory->m_iSavedIndex;
+    pDirectory->m_pCursorEntry = pDirectory->m_pSavedEntry;
+    pEntry = pDirectory->m_pSavedEntry;
+    while (pEntry != 0) {
+        pDirectory->m_iSavedIndex = pDirectory->m_iCursorIndex;
+        pDirectory->m_pSavedEntry = pDirectory->m_pCursorEntry;
+        pEntry = pDirectory->m_pSavedEntry;
+        pNextEntry = pDirectory->m_pCursorEntry;
+        pDirectory->m_iCursorIndex = pEntry->m_iSavedIndex;
+        pDirectory->m_pCursorEntry = pEntry->m_pSavedEntry;
+        if (pEntry->m_uTag == MOGLOAD_TAG_CRID && pEntry->m_pChildDirectory != 0) {
+            FreeResourceArchiveMemory(pEntry->m_pChildDirectory);
+            pEntry->m_pChildDirectory = 0;
+        }
+        FreeResourceArchiveMemory(pEntry);
+        pDirectory->m_pSavedEntry = 0;
+        pEntry = pNextEntry;
+    }
+    if (pDirectory->m_pNameData != 0) {
+        FreeResourceArchiveMemory(pDirectory->m_pNameData);
+        pDirectory->m_pNameData = 0;
+    }
 }
 
 void mogload_set_resource_archive_file(FILE *pFile) {
@@ -297,6 +367,390 @@ FILE *mogload_get_resource_archive_file(void) {
 }
 
 // FUNCTION: LEMBALL 0x0045BAF0
-void *allocate_resource_archive_memory(unsigned int cbBytes) {
-    return malloc(cbBytes);
+void *AllocateResourceArchiveMemory(unsigned int cbBytes) {
+    unsigned int pvBlock;
+
+    if (g_pResourceArchiveMemoryArena == 0) {
+        return AllocateVSMemBlock(cbBytes);
+    }
+
+    if (g_fSmallMemoryBucketTableEnabled != 0 && cbBytes < g_cbSmallMemoryBucketUpperBound) {
+        pvBlock = (unsigned int)AllocateFromSmallMemoryBucketTable(g_pSmallMemoryBucketTable, cbBytes);
+        if (pvBlock != 0) {
+            return (void *)(unsigned long)pvBlock;
+        }
+    }
+
+    pvBlock = 0;
+    if (((int (*)(unsigned int *, unsigned int, const char *))(*(void ***)g_pResourceArchiveMemoryArena)[2])(
+            &pvBlock, cbBytes, g_pszSmallMemoryBucketAllocTag) == 0) {
+        return 0;
+    }
+    return (void *)(unsigned long)cbBytes;
+}
+
+// FUNCTION: LEMBALL 0x0045BB70
+void FreeResourceArchiveMemory(void *pMemoryBlock) {
+    if (g_pResourceArchiveMemoryArena == 0) {
+        FreeVSMemBlock(pMemoryBlock);
+        return;
+    }
+
+    if (g_fSmallMemoryBucketTableEnabled != 0 &&
+        FreeToSmallMemoryBucketTable(g_pSmallMemoryBucketTable, pMemoryBlock) != 0) {
+        return;
+    }
+
+    ((void (*)(void *))(*(void ***)g_pResourceArchiveMemoryArena)[3])(pMemoryBlock);
+}
+
+// FUNCTION: LEMBALL 0x0045BBC0
+int OpenResourceArchiveFileHandle(const char *pszPath, const char *pszMode) {
+    g_pResourceArchiveFile = OpenFileWithMode(pszPath, pszMode);
+    return g_pResourceArchiveFile != 0;
+}
+
+// FUNCTION: LEMBALL 0x0045BD50
+int ResourceArchiveComponentEquals(char *pszEntryName, char *pszPathComponent) {
+    int fEqual;
+    char chEntry;
+
+    fEqual = 0;
+    do {
+        chEntry = (char)toupper((unsigned char)*pszEntryName);
+        if (chEntry == '/') {
+            chEntry = '\0';
+        }
+        if ((char)toupper((unsigned char)*pszPathComponent) != chEntry) {
+            return fEqual;
+        }
+        if (*pszEntryName == '\0') {
+            fEqual = 1;
+        }
+        ++pszEntryName;
+        ++pszPathComponent;
+    } while (fEqual == 0);
+    return fEqual;
+}
+
+// FUNCTION: LEMBALL 0x0045C810
+int SelectResourceArchiveDirectoryPath(void *pArchive, const char *pszPath) {
+    MOGLOAD_ResourceArchive *pResourceArchive;
+    MOGLOAD_DirectoryNode *pDirectory;
+    char *pszNewPath;
+    char *pszComponent;
+    char *pszOldPath;
+
+    pResourceArchive = (MOGLOAD_ResourceArchive *)pArchive;
+    if (*pszPath == '/') {
+        pResourceArchive->m_pCurrentDirectory = pResourceArchive->m_pRootDirectory;
+        pszNewPath = (char *)AllocateResourceArchiveMemory((unsigned int)strlen(pszPath) + 1);
+        strcpy(pszNewPath, pszPath);
+    } else {
+        pszNewPath = (char *)AllocateResourceArchiveMemory((unsigned int)strlen(pszPath) + 2);
+        pszNewPath[0] = '/';
+        strcpy(pszNewPath + 1, pszPath);
+    }
+
+    pDirectory = pResourceArchive->m_pCurrentDirectory;
+    pDirectory->m_iCursorIndex = pDirectory->m_iSavedIndex;
+    pDirectory->m_pCursorEntry = pDirectory->m_pSavedEntry;
+    pszComponent = pszNewPath;
+    for (;;) {
+        pszComponent = strchr(pszComponent, '/');
+        if (pszComponent == 0) {
+            break;
+        }
+        ++pszComponent;
+        if (*pszComponent != '\0') {
+            do {
+                pDirectory = pResourceArchive->m_pCurrentDirectory->AdvanceSubdirectory();
+                if (pDirectory == 0) {
+                    goto bad_path;
+                }
+            } while (!ResourceArchiveComponentEquals(pResourceArchive->m_pCurrentDirectory->m_pCursorEntry->m_pszName,
+                                                     pszComponent));
+            pResourceArchive->m_pCurrentDirectory = pDirectory;
+        }
+    }
+
+    pszOldPath = pResourceArchive->m_pszSelectedPath;
+    if (pszOldPath != 0) {
+        FreeResourceArchiveMemory(pszOldPath);
+    }
+    pResourceArchive->m_pszSelectedPath = pszNewPath;
+    return 1;
+
+bad_path:
+    pszOldPath = pResourceArchive->m_pszSelectedPath;
+    if (pszOldPath != 0) {
+        SelectResourceArchiveDirectoryPath(pResourceArchive, pszOldPath);
+    }
+    if (pszNewPath != 0) {
+        FreeResourceArchiveMemory(pszNewPath);
+    }
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0045C630
+void *ConstructResourceArchive(void *pArchive, const char *pszArchiveName, unsigned int cbArenaSize) {
+    MOGLOAD_ResourceArchive *pResourceArchive;
+    void *pChildArena;
+    GAME_StatusEntry *pStatusEntry;
+
+    pResourceArchive = (MOGLOAD_ResourceArchive *)pArchive;
+    g_pMainResourceArchive = pArchive;
+    pResourceArchive->m_nOpenFailed = 0;
+    pResourceArchive->m_ppCachedResourceObjects = 0;
+    pResourceArchive->m_pszSelectedPath = 0;
+    pResourceArchive->m_pRootDirectory = 0;
+    pResourceArchive->m_pCurrentDirectory = 0;
+    pResourceArchive->m_cCachedResourceObjects = 0;
+    pResourceArchive->m_fSkipPruneOnDestroy = 0;
+    pResourceArchive->m_cbArena = cbArenaSize;
+    pResourceArchive->m_pReserved20 = 0;
+    pResourceArchive->m_fExternalArena = 1;
+
+    pChildArena = 0;
+    if (AllocateChildMemoryArena(g_pMainMemoryArena, &pChildArena, cbArenaSize) == 1) {
+        pResourceArchive->m_fExternalArena = 0;
+    }
+    g_pResourceArchiveMemoryArena = pChildArena;
+
+    if (!OpenResourceArchiveFileHandle(pszArchiveName, g_MOGLOAD_OpenMode)) {
+        pResourceArchive->m_nOpenFailed = 1;
+        return pArchive;
+    }
+
+    timeGetTime();
+    pResourceArchive->m_pRootDirectory = (MOGLOAD_DirectoryNode *)AllocateResourceArchiveMemory(0x38);
+    if (pResourceArchive->m_pRootDirectory != 0) {
+        pResourceArchive->m_pRootDirectory->Construct(0);
+    }
+    timeGetTime();
+    pResourceArchive->m_pCurrentDirectory = pResourceArchive->m_pRootDirectory;
+    SelectResourceArchiveDirectoryPath(pResourceArchive, g_MOGLOAD_RootPath);
+
+    pResourceArchive->m_ppCachedResourceObjects =
+        (MOGLOAD_StringResourceObject **)AllocateResourceArchiveMemory(0x1000);
+    if (pResourceArchive->m_ppCachedResourceObjects != 0) {
+        memset(pResourceArchive->m_ppCachedResourceObjects, 0, 0x1000);
+    }
+
+    pStatusEntry = new (AllocateVSMemBlock(0x28)) GAME_StatusEntry(g_MOGLOAD_StatusName);
+    AppendStatusEntryToRegistry(g_pStatusEntryRegistry, pStatusEntry);
+    if (g_pResourceArchiveMemoryArena != 0) {
+        *(GAME_StatusEntry **)((char *)g_pResourceArchiveMemoryArena + 0x30) = pStatusEntry;
+    }
+
+    return pArchive;
+}
+
+// FUNCTION: LEMBALL 0x0045C770
+void DestroyResourceArchive(void *pArchive) {
+    MOGLOAD_ResourceArchive *pResourceArchive;
+
+    pResourceArchive = (MOGLOAD_ResourceArchive *)pArchive;
+    if (g_pResourceArchiveFile != 0) {
+        fclose(g_pResourceArchiveFile);
+        g_pResourceArchiveFile = 0;
+    }
+    AreAllCachedResourceObjectsUnreferenced(pResourceArchive);
+    if (pResourceArchive->m_fSkipPruneOnDestroy == 0) {
+        PruneUnreferencedCachedResourceObjects(pResourceArchive);
+    }
+    if (pResourceArchive->m_ppCachedResourceObjects != 0) {
+        FreeResourceArchiveMemory(pResourceArchive->m_ppCachedResourceObjects);
+        pResourceArchive->m_ppCachedResourceObjects = 0;
+    }
+    if (pResourceArchive->m_pRootDirectory != 0) {
+        DestroyResourceArchiveDirectoryTree((int)(unsigned long)pResourceArchive->m_pRootDirectory);
+        FreeResourceArchiveMemory(pResourceArchive->m_pRootDirectory);
+        pResourceArchive->m_pRootDirectory = 0;
+    }
+    if (pResourceArchive->m_pszSelectedPath != 0) {
+        FreeResourceArchiveMemory(pResourceArchive->m_pszSelectedPath);
+        pResourceArchive->m_pszSelectedPath = 0;
+    }
+    if (pResourceArchive->m_fExternalArena == 0) {
+        ReleaseChildMemoryArena(g_pMainMemoryArena, g_pResourceArchiveMemoryArena);
+    }
+    g_pResourceArchiveMemoryArena = 0;
+}
+
+// FUNCTION: LEMBALL 0x0045CAB0
+void *FindCachedResourceObjectById(void *pArchive, int nResourceId) {
+    MOGLOAD_ResourceArchive *pResourceArchive;
+    int iSlot;
+    int cRemaining;
+
+    pResourceArchive = (MOGLOAD_ResourceArchive *)pArchive;
+    iSlot = 0;
+    cRemaining = pResourceArchive->m_cCachedResourceObjects;
+    if (cRemaining > 0) {
+        do {
+            while (pResourceArchive->m_ppCachedResourceObjects[iSlot] == 0) {
+                ++iSlot;
+            }
+            if (pResourceArchive->m_ppCachedResourceObjects[iSlot]->m_nResourceId30 == nResourceId) {
+                break;
+            }
+            --cRemaining;
+            ++iSlot;
+        } while (cRemaining > 0);
+    }
+
+    if (pResourceArchive->m_cCachedResourceObjects != 0 && cRemaining > 0) {
+        AdvanceCachedResourceObjectFrameCounters(pResourceArchive);
+        ((void (*)())pResourceArchive->m_ppCachedResourceObjects[iSlot]->m_pVtable[7])();
+        ++pResourceArchive->m_ppCachedResourceObjects[iSlot]->m_cReferences;
+        return pResourceArchive->m_ppCachedResourceObjects[iSlot];
+    }
+
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0045CEB0
+void RemoveCachedResourceObject(void *pArchive, void *pResourceObject) {
+    MOGLOAD_ResourceArchive *pResourceArchive;
+    int iFound;
+    int iSlot;
+
+    pResourceArchive = (MOGLOAD_ResourceArchive *)pArchive;
+    iFound = 0;
+    iSlot = 0;
+    if (pResourceArchive->m_cCachedResourceObjects > 0) {
+        do {
+            if (pResourceArchive->m_ppCachedResourceObjects[iSlot] == 0) {
+                do {
+                    ++iSlot;
+                } while (pResourceArchive->m_ppCachedResourceObjects[iSlot] == 0);
+            }
+            if (pResourceArchive->m_ppCachedResourceObjects[iSlot] == pResourceObject) {
+                pResourceArchive->m_ppCachedResourceObjects[iSlot] = 0;
+                break;
+            }
+            ++iFound;
+            ++iSlot;
+        } while (iFound < pResourceArchive->m_cCachedResourceObjects);
+    }
+
+    if (iFound != pResourceArchive->m_cCachedResourceObjects) {
+        --pResourceArchive->m_cCachedResourceObjects;
+    }
+}
+
+// FUNCTION: LEMBALL 0x0045CD60
+int AreAllCachedResourceObjectsUnreferenced(void *pArchive) {
+    MOGLOAD_ResourceArchive *pResourceArchive;
+    int iSlot;
+    int cRemaining;
+
+    pResourceArchive = (MOGLOAD_ResourceArchive *)pArchive;
+    iSlot = 0;
+    cRemaining = pResourceArchive->m_cCachedResourceObjects;
+    while (cRemaining != 0) {
+        while (pResourceArchive->m_ppCachedResourceObjects[iSlot] == 0 && iSlot < 0x400) {
+            ++iSlot;
+        }
+        if (pResourceArchive->m_ppCachedResourceObjects[iSlot]->m_cReferences != 0) {
+            return 0;
+        }
+        ++iSlot;
+        --cRemaining;
+    }
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0045CE50
+void PruneUnreferencedCachedResourceObjects(void *pArchive) {
+    MOGLOAD_ResourceArchive *pResourceArchive;
+    MOGLOAD_StringResourceObject *pResourceObject;
+    int cRemaining;
+    int iCount;
+    int iSlot;
+
+    pResourceArchive = (MOGLOAD_ResourceArchive *)pArchive;
+    cRemaining = pResourceArchive->m_cCachedResourceObjects;
+    iCount = 0;
+    iSlot = 0;
+    if (cRemaining > 0) {
+        do {
+            if (pResourceArchive->m_ppCachedResourceObjects[iSlot] == 0) {
+                do {
+                    ++iSlot;
+                } while (pResourceArchive->m_ppCachedResourceObjects[iSlot] == 0);
+            }
+            if (iSlot == 0x400) {
+                return;
+            }
+            pResourceObject = pResourceArchive->m_ppCachedResourceObjects[iSlot];
+            if (pResourceObject->m_cReferences == 0) {
+                ((void (*)(void *, int))pResourceObject->m_pVtable[0])(pResourceObject, 1);
+                pResourceArchive->m_ppCachedResourceObjects[iSlot] = 0;
+                --pResourceArchive->m_cCachedResourceObjects;
+            }
+            ++iCount;
+            ++iSlot;
+        } while (iCount < cRemaining);
+    }
+}
+
+// FUNCTION: LEMBALL 0x0045CF20
+void InitializeResourceObjectFromId(void *pObject, int nResourceId) {
+    ResetTypedResourceObjectState(pObject);
+    if (LoadResourceObjectById(g_pMainResourceArchive, nResourceId, (int)(unsigned long)pObject, 1) != 0) {
+        ((MOGLOAD_StringResourceObject *)pObject)->m_nResourceId30 = nResourceId;
+        ((void (*)())(*(void ***)pObject)[2])();
+        ((void (*)())(*(void ***)pObject)[7])();
+        ++((MOGLOAD_StringResourceObject *)pObject)->m_cReferences;
+        return;
+    }
+    ((MOGLOAD_StringResourceObject *)pObject)->m_nResultCode44 = 1;
+}
+
+// FUNCTION: LEMBALL 0x0045DE00
+MOGLOAD_StringResourceObject *LoadStringResource(int nResourceId) {
+    MOGLOAD_StringResourceObject *pResourceObject;
+
+    pResourceObject = (MOGLOAD_StringResourceObject *)FindCachedResourceObjectById(g_pMainResourceArchive, nResourceId);
+    if (pResourceObject != 0) {
+        if (pResourceObject->m_uTypeTag != g_MOGLOAD_StringResourceTypeTag) {
+            ReleaseTypedResourceObjectReference(pResourceObject);
+            return 0;
+        }
+        return pResourceObject;
+    }
+
+    pResourceObject = (MOGLOAD_StringResourceObject *)AllocateVSMemBlock(0x48);
+    if (pResourceObject != 0) {
+        pResourceObject->m_pVtable = (void **)g_pCachedResourceObjectBaseDeleteVtable;
+        pResourceObject->m_nReserved18 = 0;
+        pResourceObject->m_pVtable = (void **)g_pDestroyGRTSResourceAndFreeThunk;
+        InitializeResourceObjectFromId(pResourceObject, nResourceId);
+        return (MOGLOAD_StringResourceObject *)FinalizeLoadedResourceObjectResult(pResourceObject);
+    }
+
+    return (MOGLOAD_StringResourceObject *)FinalizeLoadedResourceObjectResult(0);
+}
+
+// FUNCTION: LEMBALL 0x0045D180
+void ReleaseTypedResourceObjectReference(void *pResourceObject) {
+    MOGLOAD_StringResourceObject *pObject;
+
+    pObject = (MOGLOAD_StringResourceObject *)pResourceObject;
+    if (pObject == 0) {
+        return;
+    }
+
+    --pObject->m_cReferences;
+    if (pObject->m_cReferences == 0) {
+        ((void (*)(void *, int))pObject->m_pVtable[8])(pObject, 1);
+        if (*(int *)((char *)g_pMainResourceArchive + 0x1c) != 0) {
+            if (pObject->m_nResourceId30 != 0) {
+                RemoveCachedResourceObject(g_pMainResourceArchive, pObject);
+            }
+            ((void (*)(void *, int))pObject->m_pVtable[0])(pObject, 1);
+        }
+    }
 }

@@ -10,6 +10,7 @@ struct VSINIT_CommandLineOption {
 
 struct VSINIT_FixedBufferStream;
 struct VSINIT_FormattedOutputStream;
+struct VSINIT_StreamFormatTargetState;
 
 void InitializeCoreSubsystems(void);
 void ShutdownCoreSubsystems(void);
@@ -26,6 +27,7 @@ void AppendStartupUInt(unsigned int uValue);
 void AppendStatusCString(const char *pszText);
 void AppendErrorCString(const char *pszText);
 void AppendErrorUInt(unsigned int uValue);
+void FormatSignedIntToRadixString(int nValue, char *pszBuffer, unsigned int nRadix);
 VSINIT_FormattedOutputStream *AppendCStringToStream(VSINIT_FormattedOutputStream *pStream, const char *pszText);
 void AppendIntToStream(VSINIT_FormattedOutputStream *pStream, unsigned int uValue);
 VSINIT_FormattedOutputStream *AppendCharToStreamVariant(VSINIT_FormattedOutputStream *pStream, char ch);
@@ -38,6 +40,16 @@ VSINIT_FormattedOutputStream *AppendUIntHexToStream(VSINIT_FormattedOutputStream
 VSINIT_FormattedOutputStream *AppendHexUIntToStream(VSINIT_FormattedOutputStream *pStream, unsigned int uValue);
 VSINIT_FormattedOutputStream *WriteStatusEntryPointerArray(void *pRegistry, VSINIT_FormattedOutputStream *pStream);
 void AppendStatusEntryToRegistry(void *pRegistry, void *pEntry);
+VSINIT_FormattedOutputStream *ConstructFormattedOutputStream(VSINIT_FormattedOutputStream *pStream,
+                                                             VSINIT_FixedBufferStream *pDownstream,
+                                                             int fConstructTargetState);
+void ConstructStreamFormatState(VSINIT_StreamFormatTargetState *pState);
+void RestoreStreamFormatSubobjectVtable(VSINIT_StreamFormatTargetState *pState);
+VSINIT_FixedBufferStream *ConstructFixedBufferStream(VSINIT_FixedBufferStream *pStream,
+                                                     char *pszBuffer,
+                                                     unsigned int cbBuffer,
+                                                     void (*pfnFlush)(char *));
+void DestroyFixedBufferStream(VSINIT_FixedBufferStream *pStream);
 void *DeleteFixedBufferStreamReturnThis(VSINIT_FixedBufferStream *pStream, unsigned char fFreeMemory);
 void ResetFixedBufferStream(VSINIT_FixedBufferStream *pStream);
 void AppendCharToFixedBufferStream(VSINIT_FixedBufferStream *pStream, char ch);
@@ -47,6 +59,36 @@ void EnterObjectCriticalSection(void *pObject);
 void LeaveObjectCriticalSection(void *pObject);
 
 extern int g_fStartupNoWait;
+extern VSINIT_FormattedOutputStream *g_pStatusOutputStream;
 extern VSINIT_FormattedOutputStream *g_pErrorOutputStream;
+
+struct VSINIT_FixedBufferStream {
+    void *m_pVtable;
+    char *m_pszBuffer;
+    unsigned int m_cbBuffer;
+    char *m_pszCursor;
+    unsigned int m_cchWritten;
+    int m_nTabWidth;
+    void (*m_pfnFlush)(char *);
+};
+
+struct VSINIT_StreamFormatTargetState {
+    void *m_pVtable;
+    int m_nReserved04;
+    unsigned int m_dwFlags;
+    int m_nReserved0c;
+    char m_chFill;
+    char m_abReserved11[3];
+    int m_nWidth;
+    int m_nRadix;
+    VSINIT_FixedBufferStream *m_pDownstream;
+};
+
+struct VSINIT_FormattedOutputStream {
+    void *m_pVtable;
+    char m_szFormatBuffer[0x124];
+    char *m_pszFormattedText;
+    VSINIT_StreamFormatTargetState m_TargetState;
+};
 
 #endif
