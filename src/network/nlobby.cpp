@@ -100,7 +100,6 @@ struct NETWORK_NetworkLobbyOwnerTable {
     short m_nEntryStartY;
     char m_abUnknown74[0x18];
     int m_nEntryYStep;
-    char m_abUnknown90[0x00];
     unsigned short m_nSourceX;
     unsigned short m_nSourceY;
 };
