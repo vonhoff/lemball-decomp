@@ -102,5 +102,6 @@ VSGDI_DisplayState *GetDisplayState(void);
 extern int g_fStartupGraphicsDriverWing;
 extern int g_fStartupGraphicsDriverCds;
 extern int g_fStartupGraphicsDriverGdk;
+extern int g_fStartupFullscreen;
 
 #endif

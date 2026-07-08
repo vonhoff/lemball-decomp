@@ -46,9 +46,9 @@ static short g_fUnknownStartupFlag1 = 0;
 static int g_fUnknownStartupFlag2 = 0;
 
 static STARTUP_GraphicsWindowConfig g_StartupGraphicsWindowConfig;
-static int g_fSmallMemoryBucketTableEnabled = 1;
+int g_fSmallMemoryBucketTableEnabled = 1;
 static u32 g_adwStartupGraphicsBucketSizeTable[7];
-static STARTUP_GraphicsWindowConfig g_StartupGraphicsDriverConfig = {
+STARTUP_GraphicsWindowConfig g_StartupGraphicsDriverConfig = {
     0x40,
     8,
     0,

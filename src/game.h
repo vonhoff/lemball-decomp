@@ -43,7 +43,6 @@ public:
 GAME_MainContext *InitializeMainGameContext(GAME_MainContext *pMainContext, const char *pszCmdLine);
 void ShutdownMainGameContext(GAME_MainContext *pMainContext);
 int RunMainGameSession(int cArgs, const char *const *ppszArgs);
-int RunGameStartupSequence(char *pszCmdLine);
 char *FindCdromFilePathBySuffix(const char *pszSuffix);
 
 #endif

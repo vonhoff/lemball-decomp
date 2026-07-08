@@ -11,12 +11,8 @@
 #else
 #include <new>
 #endif
-#include <setjmp.h>
 #include <stdio.h>
 #include <string.h>
-
-static jmp_buf g_GameStartupJumpBuffer;
-static jmp_buf g_DebugThreadJumpBuffer;
 
 static void *g_pSignedTrigTable = 0;
 static void *g_pSessionRandomState = 0;
@@ -51,7 +47,6 @@ extern void ServiceNetworkLobbySelectedPeerUpdates(void *pVsnetRuntime);
 extern int PumpMessagesAndRunFrame(void);
 extern void ServiceLevelDemoPlaybackThunk(void *pPlaybackController);
 extern void *ClearLevelProgressPasswordState(void *pLevelProgressState);
-extern void AppendStatusEntryToRegistry(void *pRegistry, void *pEntry);
 extern void *AllocateResourceArchiveMemory(unsigned int cbBytes);
 extern void *ConstructResourceArchive(void *pArchive, const char *pszArchiveName, unsigned int cbArenaSize);
 extern int ValidateResourceFileSignature(void);
@@ -1715,31 +1710,26 @@ int RunMainGameSession(int cArgs, const char *const *ppszArgs) {
 
     CreateFrameTimerController(0x19000);
     InitializeStartupSwitchDefaults();
-    if (!ApplyStartupCommandLineSwitches(cArgs, ppszArgs)) {
-        DestroyFrameTimerController();
-        FreeVSMemBlock(g_pSessionRandomState);
-        FreeVSMemBlock(g_pSignedTrigTable);
-        return 0;
-    }
+    if (ApplyStartupCommandLineSwitches(cArgs, ppszArgs) == 1) {
+        pMainContext = (GAME_MainContext *)AllocateVSMemBlock(0x70);
+        if (pMainContext == 0) {
+            pMainContext = 0;
+        } else {
+            pMainContext = InitializeMainGameContext(pMainContext, 0);
+        }
 
-    pMainContext = (GAME_MainContext *)AllocateVSMemBlock(0x70);
-    if (pMainContext == 0) {
-        pMainContext = 0;
-    } else {
-        pMainContext = InitializeMainGameContext(pMainContext, 0);
-    }
+        if (g_fStartupEditLevelOverride != 0) {
+            CopyCStringUnchecked(pMainContext->m_szCaption, (const char *)g_abOverrideLevelFilePathBuffer);
+        }
+        if (g_fStartupPlayLevelOverride != 0) {
+            CopyCStringUnchecked(pMainContext->m_szCaption, (const char *)g_abOverrideLevelFilePathBuffer);
+        }
 
-    if (g_fStartupEditLevelOverride != 0) {
-        CopyCStringUnchecked(pMainContext->m_szCaption, (const char *)g_abOverrideLevelFilePathBuffer);
-    }
-    if (g_fStartupPlayLevelOverride != 0) {
-        CopyCStringUnchecked(pMainContext->m_szCaption, (const char *)g_abOverrideLevelFilePathBuffer);
-    }
-
-    RunMainGameLoop(pMainContext);
-    if (pMainContext != 0) {
-        ShutdownMainGameContext(pMainContext);
-        FreeVSMemBlock(pMainContext);
+        RunMainGameLoop(pMainContext);
+        if (pMainContext != 0) {
+            ShutdownMainGameContext(pMainContext);
+            FreeVSMemBlock(pMainContext);
+        }
     }
 
     DestroyFrameTimerController();
@@ -1747,31 +1737,4 @@ int RunMainGameSession(int cArgs, const char *const *ppszArgs) {
     FreeVSMemBlock(g_pSignedTrigTable);
     AppendStatusCString(g_GAME_ClosedDownText);
     return 0;
-}
-
-// FUNCTION: LEMBALL 0x00459860
-int RunGameStartupSequence(char *pszCmdLine) {
-    int nResult;
-    int nJumpResult;
-
-    TokenizeAndFilterCommandLineArgs(pszCmdLine);
-    FinalizeStartupGraphicsDriverConfig();
-    InitializeCoreSubsystems();
-    LogParsedCommandLineOptions();
-
-    nJumpResult = setjmp(g_GameStartupJumpBuffer);
-    if (nJumpResult != 0) {
-        ShutdownCoreSubsystems();
-        return nJumpResult;
-    }
-
-    nJumpResult = setjmp(g_DebugThreadJumpBuffer);
-    if (nJumpResult != 0) {
-        ShutdownDebugMessageThreadFromStartup(0);
-        return nJumpResult;
-    }
-
-    nResult = RunMainGameSession((int)GetParsedCommandLineArgumentCount(), GetParsedCommandLineArgs());
-    ShutdownCoreSubsystems();
-    return nResult;
 }

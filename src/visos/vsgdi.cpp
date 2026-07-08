@@ -1,5 +1,6 @@
 #include "vsgdi.h"
 #include "../main.h"
+#include "../startup.h"
 #include "vsmem.h"
 #include "vsinit.h"
 
@@ -10,9 +11,9 @@
 #endif
 #include <string.h>
 
-static int g_fStartupFullscreen = 0;
-int g_fStartupGraphicsDriverWing = 1;
-int g_fStartupGraphicsDriverCds = 0;
+int g_fStartupFullscreen = 0;
+int g_fStartupGraphicsDriverWing = 0;
+int g_fStartupGraphicsDriverCds = 1;
 int g_fStartupGraphicsDriverGdk = 0;
 static void *g_pSelectedGraphicsDriverRuntime = 0;
 static void *g_pResourceGeometryHelperSlotManager = 0;
@@ -1043,7 +1044,7 @@ int InitializeResourceGeometryHelperRuntime(void) {
         g_pResourceGeometryHelperSlotManager = 0;
     } else {
         g_pResourceGeometryHelperSlotManager =
-            InitializeResourceGeometryHelperSlotManager(pvSlotManager, g_nResourceGeometryHelperSlotCount);
+            InitializeResourceGeometryHelperSlotManager(pvSlotManager, (int)g_StartupGraphicsDriverConfig.m_cbSize);
     }
 
     pvTarget = AllocateVSMemBlock(0x5a0);

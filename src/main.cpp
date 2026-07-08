@@ -1,5 +1,5 @@
-#include "game.h"
 #include "main.h"
+#include "visos/vsinit.h"
 
 HINSTANCE g_hApplicationInstance = 0;
 
