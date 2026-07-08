@@ -8,6 +8,15 @@
 #include <string.h>
 
 static void AppendStringToDebugOutFile(const char *pszText);
+extern void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile, int nLine);
+extern void DestroyNamedStatusEntry(void *pEntry);
+extern void ReleaseTypedResourceObjectReference(void *pResourceObject);
+extern void InitializeRenderQueueNodeBase(void *pRenderQueueNode);
+extern void RegisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder);
+extern void UnregisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder);
+extern void *g_pStatusEntryRegistry;
+extern void *g_pSharedRenderDispatchQueue;
+extern void *g_pSharedGeometryHelper;
 
 class VSINIT_TextStream {
 public:
@@ -85,12 +94,6 @@ static VSINIT_TextStream *AppendIntToStream(VSINIT_TextStream *pStream, unsigned
     return pStream;
 }
 
-struct VSINIT_SubsystemPhase {
-    const char *m_pszLogPrefix;
-    int (*m_pfnInitialise)(void);
-    int m_fAppendByteCount;
-};
-
 static const char g_VSINIT_SyncDebugName[] = "Sync_Debug";
 static const char g_VSINIT_DebugOutPath[] = "debug.out";
 static const char g_VSINIT_ErrorTitle[] = "ERROR";
@@ -103,6 +106,8 @@ static const char g_VSINIT_VersionSuffix[] = ")\n";
 static const char g_VSINIT_CopyrightPrefix[] = "(c)  ";
 static const char g_VSINIT_CopyrightYears[] = "1994,1995";
 static const char g_VSINIT_CopyrightOwner[] = " Visual Sciences Ltd\n";
+static const char g_VSINIT_SourceFileName[] = "VSINIT.CPP";
+static const char g_VSINIT_EnoughMemoryAssert[] = "EnoughMemory";
 static const char g_VSINIT_Success[] = "Success";
 static const char g_VSINIT_Failed[] = "Failed";
 static const char g_VSINIT_MemInitPrefix[] = "_MEM_Init   : ";
@@ -123,11 +128,63 @@ static const char g_VSINIT_Selected[] = "selected\n";
 static const char g_VSINIT_MainMemoryArenaName[] = "Main memory arena";
 static const char g_VSINIT_MemoryLeakMessage[] = "**** MEMORY LEAK, dumping memory contents ****\n";
 
+static int g_anCommandLineOptionValues[14];
+static int g_afCommandLineOptionSpecified[14];
+
+struct VSINIT_StatusEntryPointerArray {
+    void *m_pVtable;
+    int m_nReserved;
+    void **m_ppEntries;
+    int m_cEntriesMax;
+    int m_cEntries;
+};
+
+struct VSINIT_ResourceTypeTable {
+    int m_nCursor;
+    int m_cTagsMax;
+    u32 *m_pTags;
+    int m_cTags;
+};
+
+struct VSINIT_VSMemPointerTable {
+    void **m_ppItems;
+    int m_cItems;
+    int m_nCursor;
+};
+
+struct VSINIT_PaletteRemapVariant {
+    void *m_pRemapTable;
+    void *m_pResourceObject;
+};
+
+struct VSINIT_RenderDispatchQueue {
+    char m_abReserved[0x58];
+};
+
+struct VSINIT_SharedGeometryHelper {
+    void *m_pVtable;
+    int m_nReserved04;
+    int m_nReserved08;
+    void *m_pRenderDispatchQueue;
+    int m_nReserved10;
+    int m_dwFlags;
+};
+
 static VSINIT_CommandLineOption g_aCommandLineOptions[] = {
-    { "paranoid", 0, 0 },    { "nowait", 0, 0 },        { "nosmallmemory", 0, 0 }, { "wing", 0, 0 },
-    { "full", 0, 0 },        { "showunloading", 0, 0 }, { "showloading", 0, 0 },   { "surfaces:", 0, 0 },
-    { "memorysize:", 0, 0 }, { "nodebug", 0, 0 },       { "debugfile", 0, 0 },     { "SNDDEBUG", 0, 0 },
-    { "STATDEBUG", 0, 0 },   { "MEMDEBUG", 0, 0 },
+    { "paranoid", &g_anCommandLineOptionValues[0] },
+    { "nowait", &g_anCommandLineOptionValues[1] },
+    { "nosmallmemory", &g_anCommandLineOptionValues[2] },
+    { "wing", &g_anCommandLineOptionValues[3] },
+    { "full", &g_anCommandLineOptionValues[4] },
+    { "showunloading", &g_anCommandLineOptionValues[5] },
+    { "showloading", &g_anCommandLineOptionValues[6] },
+    { "surfaces:", &g_anCommandLineOptionValues[7] },
+    { "memorysize:", &g_anCommandLineOptionValues[8] },
+    { "nodebug", &g_anCommandLineOptionValues[9] },
+    { "debugfile", &g_anCommandLineOptionValues[10] },
+    { "SNDDEBUG", &g_anCommandLineOptionValues[11] },
+    { "STATDEBUG", &g_anCommandLineOptionValues[12] },
+    { "MEMDEBUG", &g_anCommandLineOptionValues[13] },
 };
 
 static VSINIT_TextStream g_StartupOutputStream;
@@ -143,6 +200,8 @@ static int g_fDebugMessageThreadRunning = 1;
 static int g_fDebugFileEnabled = 1;
 static const char *g_pszDebugOutPath = g_VSINIT_DebugOutPath;
 static FILE *g_pDebugOutFile = 0;
+static void *g_pProcessCurrentDirectoryState = 0;
+static char g_abProcessCurrentDirectoryBuffer[0x100];
 static HANDLE g_hDebugSyncEvent = 0;
 static HANDLE g_hDebugMessageThread = 0;
 static DWORD g_dwDebugMessageThreadId = 0;
@@ -152,6 +211,16 @@ static unsigned int g_cbResourceGeometryHelperState = 0;
 static unsigned int g_uViSOSMajorVersion = 1;
 static unsigned int g_uViSOSMinorVersion = 0;
 static unsigned int g_uViSOSBuildNumber = 201;
+static void *g_StatusEntryPointerArrayVtable[1] = { 0 };
+static VSINIT_ResourceTypeTable *g_pPrimaryResourceTypeTable = 0;
+static VSINIT_ResourceTypeTable *g_pSecondaryResourceTypeTable = 0;
+static VSINIT_ResourceTypeTable *g_pTertiaryResourceTypeTable = 0;
+static VSINIT_VSMemPointerTable *g_pPaletteRemapPointerTable = 0;
+static void *g_pSharedRenderQueueNode = 0;
+static void *g_SharedRenderDispatchQueueVtable[1] = { 0 };
+static void *g_SharedRenderDispatchQueueVariantVtable[1] = { 0 };
+static void *g_SharedRenderQueueNodeVtable[2] = { 0 };
+static void *g_SharedGeometryHelperVtable[1] = { 0 };
 
 static HANDLE HostCreateEventA(LPSECURITY_ATTRIBUTES pEventAttributes,
                                BOOL fManualReset,
@@ -265,19 +334,22 @@ static const char *SelectSuccessOrFailedString(int fSuccess) {
     return g_VSINIT_Success;
 }
 
-static int ParseDecimalInt(const char *pszText) {
+// FUNCTION: LEMBALL 0x00458F30
+static int ParseDecimalIntAndAdvance(char *pszText, char **ppszEnd, int nRadix) {
     int nValue;
 
-    nValue = 0;
-    if (pszText == 0) {
+    if (nRadix != 10) {
+        *ppszEnd = pszText;
         return 0;
     }
 
+    nValue = 0;
     while (*pszText >= '0' && *pszText <= '9') {
         nValue = nValue * 10 + (*pszText - '0');
         ++pszText;
     }
 
+    *ppszEnd = pszText;
     return nValue;
 }
 
@@ -326,37 +398,318 @@ int ShutdownDebugMessageThreadFromStartup(int fForceTerminate) {
     return ShutdownDebugMessageThread(fForceTerminate);
 }
 
-static int InitialiseStreams(void) {
+// FUNCTION: LEMBALL 0x0045EC90
+static void *ConstructProcessCurrentDirectoryMarker(void *pMarker) {
+    return pMarker;
+}
+
+// FUNCTION: LEMBALL 0x0045ECA0
+static void DestroyProcessCurrentDirectoryMarker(void) {
+}
+
+// FUNCTION: LEMBALL 0x00458F70
+static int InitializeStreamChannels(void) {
     return 1;
 }
 
-static int InitialiseDebug(void) {
-    return InitializeDebugMessageThread();
-}
+// FUNCTION: LEMBALL 0x00456680
+static int InitializeProcessCurrentDirectoryState(void) {
+    void *pMarker;
+    size_t cchDirectory;
 
-static int InitialiseInput(void) {
+    pMarker = AllocateVSMemBlock(1);
+    if (pMarker == 0) {
+        g_pProcessCurrentDirectoryState = 0;
+    } else {
+        g_pProcessCurrentDirectoryState = ConstructProcessCurrentDirectoryMarker(pMarker);
+    }
+
+    GetCurrentDirectoryA(sizeof(g_abProcessCurrentDirectoryBuffer), g_abProcessCurrentDirectoryBuffer);
+    cchDirectory = strlen(g_abProcessCurrentDirectoryBuffer);
+    if (g_abProcessCurrentDirectoryBuffer[cchDirectory - 1] == '\\') {
+        g_abProcessCurrentDirectoryBuffer[cchDirectory - 1] = '\0';
+    }
+
     return 1;
 }
 
-static int InitialiseTime(void) {
+// FUNCTION: LEMBALL 0x004630A0
+static void *ConstructRenderDispatchQueueVariant(void *pQueue, int cEntries) {
+    int *pQueueWords;
+    void *pEntryBuffer;
+
+    pQueueWords = (int *)pQueue;
+    memset(pQueue, 0, sizeof(VSINIT_RenderDispatchQueue));
+    pQueueWords[0] = (int)(unsigned long)g_SharedRenderDispatchQueueVtable;
+    pQueueWords[2] = (int)(unsigned long)g_SharedRenderDispatchQueueVariantVtable;
+    pEntryBuffer = AllocateVSMemBlock((unsigned int)(cEntries * 0x14));
+    *(void **)((char *)pQueue + 0x44) = pEntryBuffer;
+    *(int *)((char *)pQueue + 0x24) = cEntries;
+    *(char **)((char *)pQueue + 0x48) = (char *)pEntryBuffer + cEntries * 0x14;
+    *(void **)((char *)pQueue + 0x50) = pEntryBuffer;
+    *(void **)((char *)pQueue + 0x4c) = pEntryBuffer;
+    return pQueue;
+}
+
+// FUNCTION: LEMBALL 0x00463120
+static void DestroyRenderDispatchQueue(void *pQueue) {
+    int cClients;
+    void *pClientNode;
+    void *pNextClientNode;
+
+    if (*(void **)((char *)pQueue + 0x44) != 0) {
+        FreeVSMemBlock(*(void **)((char *)pQueue + 0x44));
+    }
+    cClients = *(int *)((char *)pQueue + 0x2c);
+    pClientNode = *(void **)((char *)pQueue + 0x54);
+    while (cClients != 0) {
+        pNextClientNode = *(void **)((char *)pClientNode + 8);
+        FreeVSMemBlock(pClientNode);
+        pClientNode = pNextClientNode;
+        --cClients;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00472070
+static void *ConstructSharedGeometryHelper(void *pHelper, void *pRenderDispatchQueue) {
+    VSINIT_SharedGeometryHelper *pSharedHelper;
+
+    pSharedHelper = (VSINIT_SharedGeometryHelper *)pHelper;
+    pSharedHelper->m_pVtable = g_SharedGeometryHelperVtable;
+    pSharedHelper->m_nReserved08 = 0;
+    pSharedHelper->m_nReserved10 = 0;
+    pSharedHelper->m_pRenderDispatchQueue = pRenderDispatchQueue;
+    pSharedHelper->m_dwFlags = 0;
+    return pSharedHelper;
+}
+
+// FUNCTION: LEMBALL 0x00456660
+static int SetSharedGeometryHelperFlags03(void) {
+    ((VSINIT_SharedGeometryHelper *)g_pSharedGeometryHelper)->m_dwFlags |= 3;
     return 1;
 }
 
-static int InitialiseStatus(void) {
+// FUNCTION: LEMBALL 0x00456670
+static int ClearSharedGeometryHelperFlags03(void) {
+    ((VSINIT_SharedGeometryHelper *)g_pSharedGeometryHelper)->m_dwFlags &= ~3;
     return 1;
 }
 
-static int InitialiseResources(void) {
+// FUNCTION: LEMBALL 0x00459130
+static int InitializeSharedEventQueueRuntime(void) {
+    void *pQueue;
+    void *pHelper;
+    void *pRenderQueueNode;
+
+    pQueue = AllocateVSMemBlock(0x58);
+    if (pQueue == 0) {
+        g_pSharedRenderDispatchQueue = 0;
+    } else {
+        g_pSharedRenderDispatchQueue = ConstructRenderDispatchQueueVariant(pQueue, 10);
+        *(void **)g_pSharedRenderDispatchQueue = g_SharedRenderDispatchQueueVtable;
+        *(void **)((char *)g_pSharedRenderDispatchQueue + 8) = g_SharedRenderDispatchQueueVariantVtable;
+    }
+
+    pHelper = AllocateVSMemBlock(0x18);
+    if (pHelper == 0) {
+        g_pSharedGeometryHelper = 0;
+    } else {
+        g_pSharedGeometryHelper = ConstructSharedGeometryHelper(pHelper, g_pSharedRenderDispatchQueue);
+    }
+
+    pRenderQueueNode = AllocateVSMemBlock(0x10);
+    if (pRenderQueueNode == 0) {
+        g_pSharedRenderQueueNode = 0;
+    } else {
+        InitializeRenderQueueNodeBase(pRenderQueueNode);
+        *(void **)pRenderQueueNode = g_SharedRenderQueueNodeVtable;
+        g_pSharedRenderQueueNode = pRenderQueueNode;
+    }
+
+    RegisterOrderedRenderDispatchClient(g_pSharedRenderDispatchQueue, g_pSharedRenderQueueNode, -0x32);
+    SetSharedGeometryHelperFlags03();
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x00462E60
+static int InitializeTimingSubsystemStub(void) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0045AAF0
+static VSINIT_StatusEntryPointerArray *ConstructStatusEntryPointerArray(void *pRegistry, int cEntriesMax) {
+    VSINIT_StatusEntryPointerArray *pPointerArray;
+
+    pPointerArray = (VSINIT_StatusEntryPointerArray *)pRegistry;
+    pPointerArray->m_pVtable = g_StatusEntryPointerArrayVtable;
+    pPointerArray->m_nReserved = 0;
+    pPointerArray->m_ppEntries = (void **)AllocateVSMemBlock(cEntriesMax * sizeof(void *));
+    pPointerArray->m_cEntriesMax = cEntriesMax;
+    pPointerArray->m_cEntries = 0;
+    return pPointerArray;
+}
+
+// FUNCTION: LEMBALL 0x0045AB30
+static void DestroyStatusEntryPointerArray(void *pRegistry) {
+    VSINIT_StatusEntryPointerArray *pPointerArray;
+    int i;
+
+    pPointerArray = (VSINIT_StatusEntryPointerArray *)pRegistry;
+    pPointerArray->m_pVtable = g_StatusEntryPointerArrayVtable;
+    if (pPointerArray->m_ppEntries != 0) {
+        for (i = 0; i < pPointerArray->m_cEntries; ++i) {
+            if (pPointerArray->m_ppEntries[i] != 0) {
+                DestroyNamedStatusEntry(pPointerArray->m_ppEntries[i]);
+                FreeVSMemBlock(pPointerArray->m_ppEntries[i]);
+            }
+        }
+        FreeVSMemBlock(pPointerArray->m_ppEntries);
+        pPointerArray->m_ppEntries = 0;
+    }
+}
+
+// FUNCTION: LEMBALL 0x0045AA80
+static int InitializeStatusEntryRegistry(void) {
+    void *pRegistry;
+
+    pRegistry = AllocateVSMemBlock(0x14);
+    if (pRegistry == 0) {
+        g_pStatusEntryRegistry = 0;
+    } else {
+        g_pStatusEntryRegistry = ConstructStatusEntryPointerArray(pRegistry, 0x20);
+    }
+
+    return g_pStatusEntryRegistry != 0;
+}
+
+static VSINIT_ResourceTypeTable *ConstructResourceTypeTable(void *pTable, int cTagsMax) {
+    VSINIT_ResourceTypeTable *pResourceTypeTable;
+
+    pResourceTypeTable = (VSINIT_ResourceTypeTable *)pTable;
+    pResourceTypeTable->m_cTagsMax = cTagsMax;
+    pResourceTypeTable->m_nCursor = -1;
+    pResourceTypeTable->m_cTags = 0;
+    pResourceTypeTable->m_pTags = (u32 *)AllocateVSMemBlock((unsigned int)(pResourceTypeTable->m_cTagsMax << 2));
+    return pResourceTypeTable;
+}
+
+static void AppendResourceTypeTag(VSINIT_ResourceTypeTable *pTable, u32 uTag) {
+    pTable->m_pTags[pTable->m_cTags] = uTag;
+    ++pTable->m_cTags;
+}
+
+// FUNCTION: LEMBALL 0x0046ACD0
+static VSINIT_VSMemPointerTable *ConstructVSMemPointerTable(void *pTable, int cItems) {
+    VSINIT_VSMemPointerTable *pPointerTable;
+    int i;
+
+    pPointerTable = (VSINIT_VSMemPointerTable *)pTable;
+    pPointerTable->m_cItems = cItems;
+    pPointerTable->m_nCursor = 0;
+    pPointerTable->m_ppItems = (void **)AllocateVSMemBlock((unsigned int)(cItems << 2));
+    for (i = 0; i < pPointerTable->m_cItems; ++i) {
+        pPointerTable->m_ppItems[i] = 0;
+    }
+    return pPointerTable;
+}
+
+// FUNCTION: LEMBALL 0x00473630
+static void *ConstructVSMemPointerTableWrapper(void *pTable, int cItems) {
+    ConstructVSMemPointerTable(pTable, cItems);
+    return pTable;
+}
+
+// FUNCTION: LEMBALL 0x0046AAD0
+static void ReleasePaletteRemapVariantFields(VSINIT_PaletteRemapVariant *pVariant) {
+    if (pVariant->m_pRemapTable != 0) {
+        FreeVSMemBlock(pVariant->m_pRemapTable);
+    }
+    if (pVariant->m_pResourceObject != 0) {
+        ReleaseTypedResourceObjectReference(pVariant->m_pResourceObject);
+    }
+}
+
+// FUNCTION: LEMBALL 0x0046AD10
+static void DestroyPaletteRemapPointerTable(VSINIT_VSMemPointerTable *pPointerTable) {
+    int i;
+
+    if (pPointerTable->m_ppItems != 0 && 0 < pPointerTable->m_nCursor) {
+        for (i = 0; i < pPointerTable->m_nCursor; ++i) {
+            if (pPointerTable->m_ppItems[i] != 0) {
+                ReleasePaletteRemapVariantFields((VSINIT_PaletteRemapVariant *)pPointerTable->m_ppItems[i]);
+                FreeVSMemBlock(pPointerTable->m_ppItems[i]);
+            }
+            pPointerTable->m_ppItems[i] = 0;
+        }
+    }
+    if (pPointerTable->m_ppItems != 0) {
+        FreeVSMemBlock(pPointerTable->m_ppItems);
+    }
+}
+
+// FUNCTION: LEMBALL 0x0045B900
+static int InitializeResourceTypeTables(void) {
+    VSINIT_ResourceTypeTable *pResourceTypeTable;
+    void *pPointerTable;
+
+    pResourceTypeTable = ConstructResourceTypeTable(AllocateVSMemBlock(0x10), 2);
+    AppendResourceTypeTag(pResourceTypeTable, 0x494e5420);
+    AppendResourceTypeTag(pResourceTypeTable, 0x5a524c45);
+    g_pSecondaryResourceTypeTable = pResourceTypeTable;
+
+    pResourceTypeTable = ConstructResourceTypeTable(AllocateVSMemBlock(0x10), 1);
+    AppendResourceTypeTag(pResourceTypeTable, 0x5a524c45);
+    g_pPrimaryResourceTypeTable = pResourceTypeTable;
+
+    pResourceTypeTable = ConstructResourceTypeTable(AllocateVSMemBlock(0x10), 2);
+    AppendResourceTypeTag(pResourceTypeTable, 0x53545247);
+    AppendResourceTypeTag(pResourceTypeTable, 0x494e5420);
+    g_pTertiaryResourceTypeTable = pResourceTypeTable;
+
+    pPointerTable = AllocateVSMemBlock(0xc);
+    if (pPointerTable != 0) {
+        g_pPaletteRemapPointerTable = (VSINIT_VSMemPointerTable *)ConstructVSMemPointerTableWrapper(pPointerTable, 0x20);
+        return 1;
+    }
+    g_pPaletteRemapPointerTable = 0;
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x0045BA50
 static int ShutdownResourceTypeTables(void) {
+    if (g_pPaletteRemapPointerTable != 0) {
+        DestroyPaletteRemapPointerTable(g_pPaletteRemapPointerTable);
+        FreeVSMemBlock(g_pPaletteRemapPointerTable);
+        g_pPaletteRemapPointerTable = 0;
+    }
+    if (g_pTertiaryResourceTypeTable != 0) {
+        FreeVSMemBlock(g_pTertiaryResourceTypeTable->m_pTags);
+        FreeVSMemBlock(g_pTertiaryResourceTypeTable);
+        g_pTertiaryResourceTypeTable = 0;
+    }
+    if (g_pSecondaryResourceTypeTable != 0) {
+        FreeVSMemBlock(g_pSecondaryResourceTypeTable->m_pTags);
+        FreeVSMemBlock(g_pSecondaryResourceTypeTable);
+        g_pSecondaryResourceTypeTable = 0;
+    }
+    if (g_pPrimaryResourceTypeTable != 0) {
+        FreeVSMemBlock(g_pPrimaryResourceTypeTable->m_pTags);
+        FreeVSMemBlock(g_pPrimaryResourceTypeTable);
+        g_pPrimaryResourceTypeTable = 0;
+    }
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x0045AAB0
 static int ShutdownStatusEntryRegistry(void) {
+    void *pRegistry;
+
+    pRegistry = g_pStatusEntryRegistry;
+    if (g_pStatusEntryRegistry != 0) {
+        DestroyStatusEntryPointerArray(g_pStatusEntryRegistry);
+        FreeVSMemBlock(pRegistry);
+        g_pStatusEntryRegistry = 0;
+    }
     return 1;
 }
 
@@ -367,48 +720,40 @@ static int ShutdownTimingSubsystemStub(void) {
 
 // FUNCTION: LEMBALL 0x004591F0
 static int ShutdownSharedEventQueueRuntime(void) {
-    return 1;
+    int fResult;
+
+    fResult = ClearSharedGeometryHelperFlags03();
+    UnregisterOrderedRenderDispatchClient(g_pSharedRenderDispatchQueue, g_pSharedRenderQueueNode, -0x32);
+    if (g_pSharedRenderQueueNode != 0) {
+        FreeVSMemBlock(g_pSharedRenderQueueNode);
+        g_pSharedRenderQueueNode = 0;
+    }
+    if (g_pSharedGeometryHelper != 0) {
+        FreeVSMemBlock(g_pSharedGeometryHelper);
+        g_pSharedGeometryHelper = 0;
+    }
+    if (g_pSharedRenderDispatchQueue != 0) {
+        DestroyRenderDispatchQueue(g_pSharedRenderDispatchQueue);
+        FreeVSMemBlock(g_pSharedRenderDispatchQueue);
+        g_pSharedRenderDispatchQueue = 0;
+    }
+    return fResult;
 }
 
 // FUNCTION: LEMBALL 0x004566F0
 static int ShutdownProcessCurrentDirectoryState(void) {
+    if (g_pProcessCurrentDirectoryState != 0) {
+        DestroyProcessCurrentDirectoryMarker();
+        FreeVSMemBlock(g_pProcessCurrentDirectoryState);
+        g_pProcessCurrentDirectoryState = 0;
+    }
+
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x004590B0
 static int ShutdownStreamChannels(void) {
     return 1;
-}
-
-static int MatchOptionName(const char *pszToken, const char *pszOptionName) {
-    size_t cchToken;
-    size_t cchOption;
-    const char *pszColon;
-
-    if (pszToken == 0 || pszOptionName == 0) {
-        return 0;
-    }
-
-    if (*pszToken == '-' || *pszToken == '/') {
-        ++pszToken;
-    }
-
-    cchToken = 0;
-    while (pszToken[cchToken] != '\0') {
-        ++cchToken;
-    }
-
-    cchOption = 0;
-    pszColon = strchr(pszOptionName, ':');
-    while (pszOptionName[cchOption] != '\0' && pszOptionName + cchOption != pszColon) {
-        ++cchOption;
-    }
-
-    if (cchToken < cchOption) {
-        return 0;
-    }
-
-    return strncmp(pszToken, pszOptionName, cchOption) == 0;
 }
 
 void LogParsedCommandLineOptions(void) {
@@ -420,7 +765,7 @@ void LogParsedCommandLineOptions(void) {
         AppendStatusCString(g_VSINIT_CommandLineOptionPrefix);
         AppendStatusCString(g_aCommandLineOptions[i].m_pszName);
         AppendStatusCString(g_VSINIT_CommandLineOptionIs);
-        if (!g_aCommandLineOptions[i].m_fSpecified) {
+        if (!g_afCommandLineOptionSpecified[i]) {
             AppendStatusCString(g_VSINIT_NotSelected);
         }
         AppendStatusCString(g_VSINIT_Selected);
@@ -428,18 +773,25 @@ void LogParsedCommandLineOptions(void) {
 }
 
 // FUNCTION: LEMBALL 0x00459250
-int InitializeCoreSubsystems(void) {
-    static const VSINIT_SubsystemPhase aPhases[] = {
-        { g_VSINIT_MemInitPrefix, InitializeMasterMainRamArena, 1 },
-        { g_VSINIT_StreamInitPrefix, InitialiseStreams, 0 },
-        { g_VSINIT_DebugInitPrefix, InitialiseDebug, 0 },
-        { g_VSINIT_InputInitPrefix, InitialiseInput, 0 },
-        { g_VSINIT_TimeInitPrefix, InitialiseTime, 0 },
-        { g_VSINIT_GdiInitPrefix, InitializeResourceGeometryHelperRuntime, 1 },
-        { g_VSINIT_StatusInitPrefix, InitialiseStatus, 0 },
-        { g_VSINIT_ResInitPrefix, InitialiseResources, 0 },
-    };
-    size_t i;
+void InitializeCoreSubsystems(void) {
+    int fMemoryInitialized;
+    int fStreamsInitialized;
+    int fDebugInitialized;
+    int fInputInitialized;
+    int fTimeInitialized;
+    int fGdiInitialized;
+    int fStatusInitialized;
+    int fResourcesInitialized;
+
+    fMemoryInitialized = InitializeMasterMainRamArena();
+    if (fMemoryInitialized == 0) {
+        TriggerReleaseAssertFailure(g_VSINIT_EnoughMemoryAssert, g_VSINIT_SourceFileName, 0x19e);
+    }
+
+    fStreamsInitialized = InitializeStreamChannels();
+    fDebugInitialized = InitializeDebugMessageThread();
+    g_fSubsystemsReady = fDebugInitialized;
+    InitializeProcessCurrentDirectoryState();
 
     AppendStartupCString(g_VSINIT_VersionPrefix);
     AppendStartupUInt(g_uViSOSMajorVersion);
@@ -452,37 +804,51 @@ int InitializeCoreSubsystems(void) {
     AppendStartupCString(g_VSINIT_CopyrightYears);
     AppendStartupCString(g_VSINIT_CopyrightOwner);
 
-    for (i = 0; i < LEMBALL_ARRAY_COUNT(aPhases); ++i) {
-        int fPhaseSuccess;
+    AppendStartupCString(g_VSINIT_MemInitPrefix);
+    AppendStartupCString(SelectSuccessOrFailedString(fMemoryInitialized));
+    AppendStartupCString(" ");
+    AppendStartupUInt((unsigned int)CalculateMemoryArenaAvailableBytes());
+    AppendStartupCString(g_VSINIT_BytesSuffix);
 
-        fPhaseSuccess = aPhases[i].m_pfnInitialise();
-        AppendStartupCString(aPhases[i].m_pszLogPrefix);
-        AppendStartupCString(SelectSuccessOrFailedString(fPhaseSuccess));
+    AppendStartupCString(g_VSINIT_StreamInitPrefix);
+    AppendStartupCString(SelectSuccessOrFailedString(fStreamsInitialized));
+    AppendStartupCString(g_VSINIT_LineBreak);
 
-        if (aPhases[i].m_fAppendByteCount) {
-            AppendStartupCString(" ");
-            if (aPhases[i].m_pfnInitialise == InitializeMasterMainRamArena) {
-                AppendStartupUInt((unsigned int)CalculateMemoryArenaAvailableBytes());
-            } else {
-                AppendStartupUInt(g_cbResourceGeometryHelperState);
-            }
-            AppendStartupCString(g_VSINIT_BytesSuffix);
-        } else {
-            AppendStartupCString(g_VSINIT_LineBreak);
-        }
-
-        if (!fPhaseSuccess) {
-            g_fSubsystemsReady = 0;
-            return 0;
-        }
-    }
+    AppendStartupCString(g_VSINIT_DebugInitPrefix);
+    AppendStartupCString(SelectSuccessOrFailedString(fDebugInitialized));
+    AppendStartupCString(g_VSINIT_LineBreak);
 
     g_cbMainArenaAvailableAfterInit = CalculateMemoryArenaAvailableBytes();
+
+    fInputInitialized = InitializeSharedEventQueueRuntime();
+    AppendStartupCString(g_VSINIT_InputInitPrefix);
+    AppendStartupCString(SelectSuccessOrFailedString(fInputInitialized));
+    AppendStartupCString(g_VSINIT_LineBreak);
+
+    fTimeInitialized = InitializeTimingSubsystemStub();
+    AppendStartupCString(g_VSINIT_TimeInitPrefix);
+    AppendStartupCString(SelectSuccessOrFailedString(fTimeInitialized));
+    AppendStartupCString(g_VSINIT_LineBreak);
+
+    fGdiInitialized = InitializeResourceGeometryHelperRuntime();
+    AppendStartupCString(g_VSINIT_GdiInitPrefix);
+    AppendStartupCString(SelectSuccessOrFailedString(fGdiInitialized));
+    AppendStartupCString(" ");
+    AppendStartupUInt(g_cbResourceGeometryHelperState);
+    AppendStartupCString(g_VSINIT_BytesSuffix);
+
+    fStatusInitialized = InitializeStatusEntryRegistry();
+    AppendStartupCString(g_VSINIT_StatusInitPrefix);
+    AppendStartupCString(SelectSuccessOrFailedString(fStatusInitialized));
+    AppendStartupCString(g_VSINIT_LineBreak);
+
+    fResourcesInitialized = InitializeResourceTypeTables();
+    AppendStartupCString(g_VSINIT_ResInitPrefix);
+    AppendStartupCString(SelectSuccessOrFailedString(fResourcesInitialized));
+    AppendStartupCString(g_VSINIT_LineBreak);
+
     AppendStatusCString(g_VSINIT_MainMemoryArenaName);
     AppendStatusCString(g_VSINIT_LineBreak);
-
-    g_fSubsystemsReady = 1;
-    return 1;
 }
 
 // FUNCTION: LEMBALL 0x00459520
@@ -511,43 +877,33 @@ void ShutdownCoreSubsystems(void) {
 }
 
 // FUNCTION: LEMBALL 0x004595D0
-int ParseCommandLineOptionToken(const char *pszToken) {
-    size_t i;
+int ParseCommandLineOptionToken(char *pszToken) {
+    int i;
 
-    if (pszToken == 0) {
-        return 0;
-    }
-
-    for (i = 0; i < LEMBALL_ARRAY_COUNT(g_aCommandLineOptions); ++i) {
-        if (MatchOptionName(pszToken, g_aCommandLineOptions[i].m_pszName)) {
+    if (*pszToken == '-' || *pszToken == '/') {
+        for (i = 0; i < (int)LEMBALL_ARRAY_COUNT(g_aCommandLineOptions); ++i) {
             const char *pszColon;
             size_t cchOption;
-            size_t cchToken;
 
-            if (*pszToken == '-' || *pszToken == '/') {
-                ++pszToken;
-            }
-
-            cchToken = strlen(pszToken);
             pszColon = strchr(g_aCommandLineOptions[i].m_pszName, ':');
-            cchOption = pszColon == 0 ? strlen(g_aCommandLineOptions[i].m_pszName)
-                                      : (size_t)(pszColon - g_aCommandLineOptions[i].m_pszName);
-
-            if (cchToken == cchOption) {
-                g_aCommandLineOptions[i].m_nValue ^= 1;
-            } else if (pszColon != 0 && pszToken[cchOption] == ':') {
-                g_aCommandLineOptions[i].m_nValue = ParseDecimalInt(pszToken + cchOption + 1);
+            if (pszColon == 0) {
+                cchOption = strlen(g_aCommandLineOptions[i].m_pszName);
+            } else {
+                cchOption = (size_t)(pszColon - g_aCommandLineOptions[i].m_pszName);
             }
 
-            g_aCommandLineOptions[i].m_fSpecified = 1;
-            if (strcmp(g_aCommandLineOptions[i].m_pszName, "nodebug") == 0) {
-                g_fDebugFileEnabled = 0;
-                g_pszDebugOutPath = 0;
-            } else if (strcmp(g_aCommandLineOptions[i].m_pszName, "debugfile") == 0) {
-                g_fDebugFileEnabled = 1;
-                g_pszDebugOutPath = g_VSINIT_DebugOutPath;
+            if (strncmp(pszToken + 1, g_aCommandLineOptions[i].m_pszName, cchOption) == 0) {
+                if (strlen(g_aCommandLineOptions[i].m_pszName) == cchOption) {
+                    *g_aCommandLineOptions[i].m_pnValue ^= 1;
+                } else {
+                    char *pszEnd;
+
+                    *g_aCommandLineOptions[i].m_pnValue =
+                        ParseDecimalIntAndAdvance(pszToken + cchOption + 2, &pszEnd, 10);
+                }
+                g_afCommandLineOptionSpecified[i] = 1;
+                return 1;
             }
-            return 1;
         }
     }
 
@@ -561,9 +917,8 @@ void TokenizeAndFilterCommandLineArgs(char *pszCmdLine) {
 
     g_cParsedArgs = 0;
     g_apszParsedArgs[0] = pszCmdLine;
-    for (i = 0; i < LEMBALL_ARRAY_COUNT(g_aCommandLineOptions); ++i) {
-        g_aCommandLineOptions[i].m_nValue = 0;
-        g_aCommandLineOptions[i].m_fSpecified = 0;
+    for (i = 0; i < LEMBALL_ARRAY_COUNT(g_afCommandLineOptionSpecified); ++i) {
+        g_afCommandLineOptionSpecified[i] = 0;
     }
 
     if (pszCmdLine == 0) {

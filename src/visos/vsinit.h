@@ -5,14 +5,13 @@
 
 struct VSINIT_CommandLineOption {
     const char *m_pszName;
-    int m_nValue;
-    int m_fSpecified;
+    int *m_pnValue;
 };
 
-int InitializeCoreSubsystems(void);
+void InitializeCoreSubsystems(void);
 void ShutdownCoreSubsystems(void);
 int ShutdownDebugMessageThreadFromStartup(int fForceTerminate);
-int ParseCommandLineOptionToken(const char *pszToken);
+int ParseCommandLineOptionToken(char *pszToken);
 void TokenizeAndFilterCommandLineArgs(char *pszCmdLine);
 unsigned int GetParsedCommandLineArgumentCount(void);
 const char *const *GetParsedCommandLineArgs(void);

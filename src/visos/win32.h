@@ -139,6 +139,7 @@ LSTATUS WINAPI RegCloseKey(HKEY hKey);
 DWORD WINAPI GetLogicalDrives(void);
 UINT WINAPI GetDriveTypeA(LPCSTR lpRootPathName);
 UINT WINAPI GetModuleFileNameA(HINSTANCE hModule, LPSTR lpFilename, UINT nSize);
+DWORD WINAPI GetCurrentDirectoryA(DWORD nBufferLength, LPSTR lpBuffer);
 HICON WINAPI LoadIconA(HINSTANCE hInstance, LPCSTR lpIconName);
 HCURSOR WINAPI LoadCursorA(HINSTANCE hInstance, LPCSTR lpCursorName);
 HMODULE WINAPI LoadLibraryA(LPCSTR lpLibFileName);

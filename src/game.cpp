@@ -150,6 +150,7 @@ extern void *g_pPrimaryContextVtable;
 extern void *g_pPrimaryContextRenderQueueNodeVtable;
 extern void *g_pQueuedRenderPointSinkFinalizeThunk;
 extern void *g_pSharedRenderDispatchQueue;
+extern void *g_pSharedGeometryHelper;
 extern "C" DWORD timeGetTime(void);
 
 struct GAME_PrimaryContext {
@@ -223,6 +224,7 @@ void *g_pPrimaryContextVtable = g_GAME_PrimaryContextVtableSlots;
 void *g_pPrimaryContextRenderQueueNodeVtable = g_GAME_RenderQueueNodeVtableSlots;
 void *g_pQueuedRenderPointSinkFinalizeThunk = 0;
 void *g_pSharedRenderDispatchQueue = 0;
+void *g_pSharedGeometryHelper = 0;
 
 static void InitializeGameStubVtables(void) {
     static int g_fInitialized = 0;
@@ -280,9 +282,19 @@ void *ClearLevelProgressPasswordState(void *pLevelProgressState) {
     return pLevelProgressState;
 }
 
+// FUNCTION: LEMBALL 0x0045AB90
 void AppendStatusEntryToRegistry(void *pRegistry, void *pEntry) {
-    (void)pRegistry;
-    (void)pEntry;
+    int cEntries;
+    int cEntriesMax;
+    void **ppEntries;
+
+    cEntries = *(int *)((char *)pRegistry + 0x10);
+    cEntriesMax = *(int *)((char *)pRegistry + 0xc);
+    if (cEntries < cEntriesMax) {
+        ppEntries = *(void ***)((char *)pRegistry + 8);
+        ppEntries[cEntries] = pEntry;
+        *(int *)((char *)pRegistry + 0x10) = cEntries + 1;
+    }
 }
 
 void *AllocateResourceArchiveMemory(unsigned int cbBytes) {
@@ -293,6 +305,14 @@ void *ConstructResourceArchive(void *pArchive, const char *pszArchiveName, unsig
     (void)pszArchiveName;
     (void)cbArenaSize;
     return pArchive;
+}
+
+// FUNCTION: LEMBALL 0x0045D180
+void ReleaseTypedResourceObjectReference(void *pResourceObject) {
+    int *pObject;
+
+    pObject = (int *)pResourceObject;
+    --pObject[3];
 }
 
 int ValidateResourceFileSignature(void) {
@@ -402,8 +422,15 @@ void ConstructWindowOwnerRenderContext(void *pPrimaryContext) {
     memset(pPrimaryContext, 0, 0xe4);
 }
 
+// FUNCTION: LEMBALL 0x00462EA0
 void InitializeRenderQueueNodeBase(void *pRenderQueueNode) {
-    *(void **)pRenderQueueNode = g_GAME_RenderQueueNodeVtableSlots;
+    int *pNode;
+
+    pNode = (int *)pRenderQueueNode;
+    pNode[0] = (int)(unsigned long)g_GAME_RenderQueueNodeVtableSlots;
+    pNode[2] = 0;
+    pNode[3] = 0;
+    pNode[1] = 0x51484452;
 }
 
 void *LoadZrleResource(int nResourceId) {
@@ -421,10 +448,78 @@ void SetLevelScreenStatusIndicatorMode(int nMode, int nValue) {
     (void)nValue;
 }
 
+// FUNCTION: LEMBALL 0x004632A0
 void RegisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder) {
-    (void)pDispatchQueue;
-    (void)pClient;
-    (void)nOrder;
+    int *pQueue;
+    int *pNode;
+    int *pCurrent;
+    int *pPrevious;
+    unsigned int i;
+
+    pQueue = (int *)pDispatchQueue;
+    pNode = (int *)AllocateVSMemBlock(0xc);
+    pNode[0] = (int)(unsigned long)pClient;
+    pNode[1] = nOrder;
+    pNode[2] = 0;
+
+    pCurrent = *(int **)((char *)pQueue + 0x54);
+    if (pCurrent == 0 || pQueue[0x2c / 4] == 0) {
+        *(int **)((char *)pQueue + 0x54) = pNode;
+        pQueue[0x2c / 4] = 1;
+        return;
+    }
+
+    pPrevious = pCurrent;
+    i = 0;
+    while (i < (unsigned int)pQueue[0x2c / 4]) {
+        if (nOrder < pCurrent[1]) {
+            if (i == 0) {
+                pNode[2] = *(int *)((char *)pQueue + 0x54);
+                *(int **)((char *)pQueue + 0x54) = pNode;
+            } else {
+                pNode[2] = pPrevious[2];
+                pPrevious[2] = (int)(unsigned long)pNode;
+            }
+            ++pQueue[0x2c / 4];
+            return;
+        }
+        if (pCurrent[2] == 0) {
+            pCurrent[2] = (int)(unsigned long)pNode;
+            ++pQueue[0x2c / 4];
+            return;
+        }
+        ++i;
+        pPrevious = pCurrent;
+        pCurrent = (int *)(unsigned long)pCurrent[2];
+    }
+}
+
+// FUNCTION: LEMBALL 0x004633B0
+void UnregisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder) {
+    int *pQueue;
+    int *pCurrent;
+    int *pPrevious;
+    unsigned int i;
+
+    pQueue = (int *)pDispatchQueue;
+    pCurrent = *(int **)((char *)pQueue + 0x54);
+    pPrevious = pCurrent;
+    i = 0;
+    while (i < (unsigned int)pQueue[0x2c / 4]) {
+        if (pCurrent[1] == nOrder && pCurrent[0] == (int)(unsigned long)pClient) {
+            if (i != 0) {
+                pPrevious[2] = pCurrent[2];
+            } else {
+                *(int *)((char *)pQueue + 0x54) = pCurrent[2];
+            }
+            FreeVSMemBlock(pCurrent);
+            --pQueue[0x2c / 4];
+            return;
+        }
+        ++i;
+        pPrevious = pCurrent;
+        pCurrent = (int *)(unsigned long)pCurrent[2];
+    }
 }
 
 void SetWindowOwnerScaleFactor(void *pPrimaryContext, int nScaleFactor) {
@@ -780,16 +875,91 @@ static void ShowStartupMessage(const char *pszTitle, const char *pszText) {
     lemball_platform_show_error(pszTitle, pszText);
 }
 
+// FUNCTION: LEMBALL 0x0046E410
+static GAME_DynamicCString *ConstructDynamicCString(GAME_DynamicCString *pString) {
+    pString->m_cchCapacity = 1;
+    pString->m_pszText = (char *)AllocateVSMemBlock(1);
+    pString->m_pszText[0] = '\0';
+    return pString;
+}
+
+// FUNCTION: LEMBALL 0x0046E500
+static void DestroyDynamicCString(GAME_DynamicCString *pString) {
+    FreeVSMemBlock(pString->m_pszText);
+}
+
+// FUNCTION: LEMBALL 0x0046E570
+static GAME_DynamicCString *AssignDynamicCString(GAME_DynamicCString *pString, const char *pszText) {
+    const char *pszScan;
+    const char *pszSource;
+    char *pszDest;
+    unsigned int cchText;
+    unsigned int cDwords;
+    unsigned int cBytes;
+
+    cchText = 0xffffffff;
+    pszScan = pszText;
+    do {
+        if (cchText == 0) {
+            break;
+        }
+        --cchText;
+    } while (*pszScan++ != '\0');
+    cchText = ~cchText;
+    if (pString->m_cchCapacity < (int)cchText) {
+        FreeVSMemBlock(pString->m_pszText);
+        pString->m_pszText = (char *)AllocateVSMemBlock((unsigned int)cchText);
+        pString->m_cchCapacity = (int)cchText;
+    }
+
+    cchText = 0xffffffff;
+    pszScan = pszText;
+    do {
+        pszSource = pszScan;
+        if (cchText == 0) {
+            break;
+        }
+        --cchText;
+        pszSource = pszScan + 1;
+    } while (*pszScan++ != '\0');
+    cchText = ~cchText;
+    pszSource -= cchText;
+    pszDest = pString->m_pszText;
+    cDwords = cchText >> 2;
+    while (cDwords != 0) {
+        *(unsigned int *)pszDest = *(const unsigned int *)pszSource;
+        pszSource += 4;
+        pszDest += 4;
+        --cDwords;
+    }
+    cBytes = cchText & 3;
+    while (cBytes != 0) {
+        *pszDest++ = *pszSource++;
+        --cBytes;
+    }
+    return pString;
+}
+
+// FUNCTION: LEMBALL 0x0045AC10
 GAME_StatusEntry::GAME_StatusEntry(const char *pszName) {
     m_pVtable = 0;
-    m_nCurrentValue = 0;
+    ConstructDynamicCString(&m_Name);
+    m_nReserved04 = 0;
     m_nPeakValue = -1;
+    m_nCurrentValue = 0;
     m_nMinimumValue = 0;
     m_nMaximumValue = 0;
-    m_Name.m_pszText = (char *)pszName;
-    m_Name.m_cchText = 0;
-    m_Name.m_cchCapacity = 0;
-    m_Name.m_fExternalStorage = 0;
+    AssignDynamicCString(&m_Name, pszName);
+    m_nReserved20 = 0;
+    m_nReserved24 = 0;
+}
+
+// FUNCTION: LEMBALL 0x0045AC50
+void DestroyNamedStatusEntry(void *pEntry) {
+    GAME_StatusEntry *pStatusEntry;
+
+    pStatusEntry = (GAME_StatusEntry *)pEntry;
+    DestroyDynamicCString(&pStatusEntry->m_Name);
 }
 
 GAME_MainContext::GAME_MainContext(void) {
@@ -811,6 +981,8 @@ static GAME_StatusEntry *AllocateNamedStatusEntry(const char *pszName) {
     if (pEntry == 0) {
         return 0;
     }
+    pEntry->m_nReserved20 = 0;
+    pEntry->m_nReserved24 = 0;
     return pEntry;
 }
 

@@ -5,9 +5,7 @@
 
 struct GAME_DynamicCString {
     char *m_pszText;
-    int m_cchText;
     int m_cchCapacity;
-    int m_fExternalStorage;
 };
 
 class GAME_StatusEntry {
@@ -16,11 +14,14 @@ public:
 
 public:
     void *m_pVtable;
+    int m_nReserved04;
     int m_nCurrentValue;
     int m_nPeakValue;
     int m_nMinimumValue;
     int m_nMaximumValue;
     GAME_DynamicCString m_Name;
+    int m_nReserved20;
+    int m_nReserved24;
 };
 
 class GAME_MainContext {
