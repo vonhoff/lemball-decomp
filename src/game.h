@@ -44,6 +44,9 @@ GAME_MainContext *InitializeMainGameContext(GAME_MainContext *pMainContext, cons
 void ShutdownMainGameContext(GAME_MainContext *pMainContext);
 int RunMainGameSession(int cArgs, const char *const *ppszArgs);
 char *FindCdromFilePathBySuffix(const char *pszSuffix);
+GAME_DynamicCString *ConstructDynamicCString(GAME_DynamicCString *pString);
+void DestroyDynamicCString(GAME_DynamicCString *pString);
+GAME_DynamicCString *AssignDynamicCString(GAME_DynamicCString *pString, const char *pszText);
 void DestroyNamedStatusEntry(void *pEntry);
 void UpdateNamedStatusEntry(void *pEntry, unsigned int nValue);
 VSINIT_FormattedOutputStream *WriteNamedStatusEntry(void *pEntry, VSINIT_FormattedOutputStream *pStream);

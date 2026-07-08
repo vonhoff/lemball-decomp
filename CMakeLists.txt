@@ -6,6 +6,7 @@ option(LEMBALL_ENABLE_WIN32 "Build the reconstructed Win32 executable" OFF)
 set(LEMBALL_SOURCES
     src/game/geff.cpp
     src/game/gmcb.cpp
+    src/game/gstatus.cpp
     src/game/gvariant.cpp
     src/game.cpp
     src/main.cpp

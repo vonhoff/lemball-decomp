@@ -18,24 +18,20 @@ public:
     unsigned int m_uResourceId;
     long m_lFileOffset;
     long m_cbFileSize;
-    unsigned char m_abTrailing[16];
-    MOGLOAD_EntryRecord *m_pNext;
-    MOGLOAD_EntryRecord *m_pPrevious;
-    MOGLOAD_DirectoryNode *m_pChildDirectory;
+    int m_iNextIndex;
+    MOGLOAD_EntryRecord *m_pNextEntry;
     int m_iSavedIndex;
     MOGLOAD_EntryRecord *m_pSavedEntry;
+    MOGLOAD_DirectoryNode *m_pChildDirectory;
+    unsigned int m_adwDescriptor[4];
 };
 
 class MOGLOAD_DirectoryNode {
 public:
     MOGLOAD_DirectoryNode *Construct(long lFileOffset);
     void ReadEntryRecord(MOGLOAD_EntryRecord *pEntry);
-    int FindNextEntry(long *piIndex, MOGLOAD_EntryRecord **ppEntry, unsigned int uTagFilter);
     MOGLOAD_DirectoryNode *AdvanceSubdirectory(void);
-    void ResetCursor(void);
-    void ResetNodeState(void);
     int AppendEntryAfterCursor(void);
-    void SaveCursor(void);
 
 public:
     long m_iSavedIndex;
@@ -63,8 +59,6 @@ public:
     int m_fExternalArena;
 };
 
-void mogload_set_resource_archive_file(FILE *pFile);
-FILE *mogload_get_resource_archive_file(void);
 void *AllocateResourceArchiveMemory(unsigned int cbBytes);
 void FreeResourceArchiveMemory(void *pMemoryBlock);
 void *ConstructResourceArchive(void *pArchive, const char *pszArchiveName, unsigned int cbArenaSize);
@@ -86,11 +80,10 @@ struct MOGLOAD_StringResourceObject {
     int m_nReserved1C;
     int m_nReserved20;
     int m_nReserved24;
-    int m_nReserved28;
-    int m_nReserved2C;
+    int m_cbResourceData28;
+    int m_lResourceOffset2C;
     int m_nResourceId30;
-    int m_nReserved30;
-    int m_nReserved34;
+    unsigned int *m_padwResourceDescriptor34;
     char *m_pszText38;
     int m_nReserved3C;
     unsigned int m_uTypeTag;

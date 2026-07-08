@@ -18,7 +18,7 @@ int g_fStartupGraphicsDriverGdk = 0;
 static void *g_pSelectedGraphicsDriverRuntime = 0;
 static void *g_pResourceGeometryHelperSlotManager = 0;
 static void *g_pResourceGeometryHelperTarget = 0;
-static int *g_pArrowCursorStatusIndicatorRenderClient = 0;
+int *g_pArrowCursorStatusIndicatorRenderClient = 0;
 static VSGDI_DisplayState *g_pDisplayState = 0;
 
 static const char g_VSGDI_DdrawDll[] = "DDRAW.DLL";
