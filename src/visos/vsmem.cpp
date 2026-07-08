@@ -6,8 +6,10 @@ struct VSMEM_BlockHeader {
     unsigned int m_cbPayload;
 };
 
-static long g_cbMainArenaCapacity = 0;
-static long g_cbMainArenaInUse = 0;
+static unsigned char g_abMainMemoryArena[0x50];
+void *g_pMainMemoryArena = 0;
+static int g_cbMainArenaCapacity = 0;
+static int g_cbMainArenaInUse = 0;
 static int g_fMainArenaReady = 0;
 
 static void *AllocateVSMemBlockImpl(unsigned int cbBlock) {
@@ -48,11 +50,17 @@ int InitializeMasterMainRamArena(void) {
     g_cbMainArenaCapacity = 2L * 1024L * 1024L;
     g_cbMainArenaInUse = 0;
     g_fMainArenaReady = 1;
+    g_pMainMemoryArena = g_abMainMemoryArena;
+    *(int *)(g_abMainMemoryArena + 0x28) = g_cbMainArenaCapacity;
+    *(int *)(g_abMainMemoryArena + 0x2c) = g_cbMainArenaCapacity;
+    *(void **)(g_abMainMemoryArena + 0x30) = 0;
+    *(int *)(g_abMainMemoryArena + 0x34) = 0;
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x0046F120
 void ShutdownMasterMainRamArena(void) {
+    g_pMainMemoryArena = 0;
     g_cbMainArenaCapacity = 0;
     g_cbMainArenaInUse = 0;
     g_fMainArenaReady = 0;
@@ -70,9 +78,10 @@ void FreeVSMemBlock(void *pvBlock) {
 
 // FUNCTION: LEMBALL 0x0045A350
 long CalculateMemoryArenaAvailableBytes(void) {
-    if (!g_fMainArenaReady) {
+    if (g_pMainMemoryArena == 0) {
         return 0;
     }
 
-    return g_cbMainArenaCapacity - g_cbMainArenaInUse;
+    *(int *)((char *)g_pMainMemoryArena + 0x28) = g_cbMainArenaCapacity - g_cbMainArenaInUse;
+    return *(int *)((char *)g_pMainMemoryArena + 0x28);
 }

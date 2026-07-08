@@ -7,4 +7,6 @@ void *AllocateVSMemBlock(unsigned int cbBlock);
 void FreeVSMemBlock(void *pvBlock);
 long CalculateMemoryArenaAvailableBytes(void);
 
+extern void *g_pMainMemoryArena;
+
 #endif

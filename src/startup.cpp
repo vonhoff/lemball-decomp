@@ -18,6 +18,8 @@ static const char g_STARTUP_SwitchCompact[] = "/320";
 static const char g_STARTUP_SwitchTestAllLevels[] = "/TESTALLLEVELS";
 static const char g_STARTUP_SwitchHelp0[] = "/?";
 static const char g_STARTUP_SwitchHelp1[] = "?";
+static const char g_STARTUP_SwitchEditPrefix[] = "/EDIT@";
+static const char g_STARTUP_SwitchPlayPrefix[] = "/PLAY@";
 static const char g_STARTUP_SwitchGraphics[] = "/GRAPHICS";
 
 int g_fStartupAnimationsEnabled = 0;
@@ -62,14 +64,25 @@ static void NoopHelpSwitchCallback(void) {
 
 // FUNCTION: LEMBALL 0x00406160
 STARTUP_GraphicsWindowConfig *BuildStartupGraphicsWindowConfig(const STARTUP_GraphicsWindowConfig *pSeedConfig) {
+    const u32 *pSeed;
+    u32 *pTarget;
+    int cDwords;
     u32 *pItemDataEnd;
 
-    memcpy(&g_StartupGraphicsWindowConfig, pSeedConfig, sizeof(g_StartupGraphicsWindowConfig));
+    pSeed = (const u32 *)pSeedConfig;
+    pTarget = (u32 *)&g_StartupGraphicsWindowConfig;
+    cDwords = 7;
+    do {
+        *pTarget = *pSeed;
+        ++pSeed;
+        ++pTarget;
+        --cDwords;
+    } while (cDwords != 0);
 
     g_StartupGraphicsWindowConfig.m_cbSize = 0x50;
     g_StartupGraphicsWindowConfig.m_dwStyle = 0x300000;
     g_StartupGraphicsWindowConfig.m_hIcon = LoadIconA(g_hApplicationInstance, (LPCSTR)0x75);
-    pItemDataEnd = g_StartupGraphicsWindowConfig.m_pItemDataEnd;
+    pItemDataEnd = g_StartupGraphicsWindowConfig.m_pItemDataEnd + g_StartupGraphicsWindowConfig.m_cItems;
     *(pItemDataEnd - 1) = 0x80;
     *(pItemDataEnd - 2) = 0x200;
     *(pItemDataEnd - 3) = 0x400;
@@ -209,13 +222,15 @@ int ApplyStartupCommandLineSwitches(int cArgs, const char *const *ppszArgs) {
                 NoopHelpSwitchCallback();
                 fContinue = 0;
             }
-            if (CompareSwitchNameCaseInsensitive(pszArg, "/EDIT@", (int)strlen("/EDIT@")) == 0) {
-                g_fStartupEditLevelOverride = strlen(pszArg + strlen("/EDIT@")) != 0;
-                strcpy((char *)g_abOverrideLevelFilePathBuffer, pszArg + strlen("/EDIT@"));
+            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchEditPrefix,
+                                                 (int)strlen(g_STARTUP_SwitchEditPrefix)) == 0) {
+                g_fStartupEditLevelOverride = strlen(pszArg + strlen(g_STARTUP_SwitchEditPrefix)) != 0;
+                strcpy((char *)g_abOverrideLevelFilePathBuffer, pszArg + strlen(g_STARTUP_SwitchEditPrefix));
             }
-            if (CompareSwitchNameCaseInsensitive(pszArg, "/PLAY@", (int)strlen("/PLAY@")) == 0) {
-                g_fStartupPlayLevelOverride = strlen(pszArg + strlen("/PLAY@")) != 0;
-                strcpy((char *)g_abOverrideLevelFilePathBuffer, pszArg + strlen("/PLAY@"));
+            if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchPlayPrefix,
+                                                 (int)strlen(g_STARTUP_SwitchPlayPrefix)) == 0) {
+                g_fStartupPlayLevelOverride = strlen(pszArg + strlen(g_STARTUP_SwitchPlayPrefix)) != 0;
+                strcpy((char *)g_abOverrideLevelFilePathBuffer, pszArg + strlen(g_STARTUP_SwitchPlayPrefix));
             }
             if (CompareSwitchNameCaseInsensitive(pszArg, g_STARTUP_SwitchGraphics, 99) == 0) {
                 g_fStartupGraphicsDialogRequested = 1;
@@ -247,6 +262,8 @@ void FinalizeStartupGraphicsDriverConfig(void) {
     int i;
     STARTUP_GraphicsWindowConfig *pBuiltConfig;
     u32 *pBucketSize;
+    const u32 *pBuiltDword;
+    u32 *pConfigDword;
 
     for (i = 0; i < 7; ++i) {
         g_adwStartupGraphicsBucketSizeTable[i] = 0x100;
@@ -254,7 +271,15 @@ void FinalizeStartupGraphicsDriverConfig(void) {
     g_StartupGraphicsDriverConfig.m_dwStyle <<= 0x13;
     pBuiltConfig = BuildStartupGraphicsWindowConfig(&g_StartupGraphicsDriverConfig);
     if (pBuiltConfig != 0) {
-        memcpy(&g_StartupGraphicsDriverConfig, pBuiltConfig, sizeof(g_StartupGraphicsDriverConfig));
+        pBuiltDword = (const u32 *)pBuiltConfig;
+        pConfigDword = (u32 *)&g_StartupGraphicsDriverConfig;
+        i = 7;
+        do {
+            *pConfigDword = *pBuiltDword;
+            ++pBuiltDword;
+            ++pConfigDword;
+            --i;
+        } while (i != 0);
     }
     if (7 < (int)g_StartupGraphicsDriverConfig.m_cItems) {
         g_StartupGraphicsDriverConfig.m_cItems = 7;

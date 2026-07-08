@@ -1,9 +1,16 @@
+#include "../game.h"
+
 #include "vsgdi.h"
 #include "vsmem.h"
 #include "vsinit.h"
 #include "vswin.h"
 
 #include <ctype.h>
+#if defined(_MSC_VER) && (_MSC_VER < 1100)
+#include <new.h>
+#else
+#include <new>
+#endif
 #include <stdio.h>
 #include <string.h>
 
@@ -18,80 +25,240 @@ extern void *g_pStatusEntryRegistry;
 extern void *g_pSharedRenderDispatchQueue;
 extern void *g_pSharedGeometryHelper;
 
-class VSINIT_TextStream {
-public:
-    VSINIT_TextStream(void) : m_cchBuffer(0) {
-        m_szBuffer[0] = '\0';
-    }
-
-    void Append(const char *pszText) {
-        size_t cchText;
-        size_t cchCopy;
-
-        if (pszText == 0) {
-            return;
-        }
-
-        cchText = strlen(pszText);
-        cchCopy = cchText;
-        if (m_cchBuffer + cchCopy >= sizeof(m_szBuffer)) {
-            cchCopy = sizeof(m_szBuffer) - m_cchBuffer - 1;
-        }
-
-        if (cchCopy != 0) {
-            memcpy(m_szBuffer + m_cchBuffer, pszText, cchCopy);
-            m_cchBuffer += cchCopy;
-            m_szBuffer[m_cchBuffer] = '\0';
-        }
-
-        AppendStringToDebugOutFile(pszText);
-    }
-
-    void AppendInt(unsigned int uValue) {
-        char szValue[16];
-        char szReversed[16];
-        unsigned int cchValue;
-
-        cchValue = 0;
-        if (uValue == 0) {
-            szValue[0] = '0';
-            szValue[1] = '\0';
-            Append(szValue);
-            return;
-        }
-
-        while (uValue != 0 && cchValue < sizeof(szReversed)) {
-            szReversed[cchValue] = (char)('0' + (uValue % 10));
-            uValue /= 10;
-            ++cchValue;
-        }
-
-        for (unsigned int i = 0; i < cchValue; ++i) {
-            szValue[i] = szReversed[cchValue - i - 1];
-        }
-        szValue[cchValue] = '\0';
-        Append(szValue);
-    }
-
-private:
-    char m_szBuffer[8192];
-    size_t m_cchBuffer;
+struct VSINIT_FixedBufferStream {
+    void *m_pVtable;
+    char *m_pszBuffer;
+    unsigned int m_cbBuffer;
+    char *m_pszCursor;
+    unsigned int m_cchWritten;
+    unsigned int m_dwFlags;
+    void (*m_pfnFlush)(char *);
 };
 
+struct VSINIT_StreamFormatTargetState {
+    void *m_pVtable;
+    int m_nReserved04;
+    unsigned int m_dwFlags;
+    int m_nReserved0c;
+    char m_chFill;
+    char m_abReserved11[3];
+    int m_nWidth;
+    int m_nRadix;
+    VSINIT_FixedBufferStream *m_pDownstream;
+};
+
+struct VSINIT_FormattedOutputStream {
+    void *m_pVtable;
+    char m_szFormatBuffer[0x124];
+    char *m_pszFormattedText;
+    VSINIT_StreamFormatTargetState m_TargetState;
+};
+
+static void FlushStatusFixedBufferStream(char *pszText);
+static void FlushStartupFixedBufferStream(char *pszText);
+static void FlushErrorFixedBufferStream(char *pszText);
+static void DestroyFormattedOutputStream(VSINIT_FormattedOutputStream *pStream, int fFreeMemory);
+static void DeleteFixedBufferStream(VSINIT_FixedBufferStream *pStream, int fFreeMemory);
+static void AppendCStringToFixedBufferStream(VSINIT_FixedBufferStream *pStream, const char *pszText);
+static void AppendCharToFixedBufferStream(VSINIT_FixedBufferStream *pStream, char ch);
+static void FormatSignedIntToRadixString(int nValue, char *pszBuffer, unsigned int nRadix);
+static char *FormatUnsignedIntToRadixString(unsigned int uValue, char *pszBuffer, unsigned int nRadix);
+static void ApplyStreamIntegerWidthPadding(VSINIT_FormattedOutputStream *pStream);
+
+static void *g_StreamBaseVtable[1] = { 0 };
+static void *g_FormattedOutputStreamVtable[2] = { 0, (void *)0x12c };
+static void *g_StreamFormatTargetStateVtable[1] = { 0 };
+static void *g_StreamFormatSubobjectVtable[1] = { 0 };
+static void *g_FixedBufferStreamVtable[1] = { 0 };
+static const char g_VSINIT_RadixDigits[] = "0123456789abcdef";
+static const char g_VSINIT_NullPointerText[] = "(null)";
+static const char g_VSINIT_HexPointerPrefix[] = "0x";
+static int g_fRadixPowerTableInitialized = 0;
+static unsigned int g_adwRadixPowerTable[17];
+
+// FUNCTION: LEMBALL 0x004584C0
+static void ApplyStreamIntegerWidthPadding(VSINIT_FormattedOutputStream *pStream) {
+    int cchText;
+    unsigned int cchWidth;
+    unsigned int fNegative;
+    unsigned int cchSourceSkip;
+    unsigned int cchTargetSkip;
+    char *pszFill;
+    char *pszSource;
+    char *pszTarget;
+    unsigned int i;
+
+    cchWidth = (unsigned int)pStream->m_TargetState.m_nWidth;
+    if (cchWidth == 0) {
+        pStream->m_pszFormattedText = pStream->m_szFormatBuffer;
+        return;
+    }
+
+    fNegative = pStream->m_szFormatBuffer[0] == '-';
+    cchText = (int)strlen(pStream->m_szFormatBuffer);
+
+    pszFill = pStream->m_szFormatBuffer + 0x21;
+    for (i = cchWidth >> 2; i != 0; --i) {
+        *(u32 *)pszFill = (unsigned char)pStream->m_TargetState.m_chFill |
+                          ((u32)(unsigned char)pStream->m_TargetState.m_chFill << 8) |
+                          ((u32)(unsigned char)pStream->m_TargetState.m_chFill << 16) |
+                          ((u32)(unsigned char)pStream->m_TargetState.m_chFill << 24);
+        pszFill += 4;
+    }
+    for (i = cchWidth & 3; i != 0; --i) {
+        *pszFill = pStream->m_TargetState.m_chFill;
+        ++pszFill;
+    }
+    pStream->m_szFormatBuffer[0x21 + cchWidth] = '\0';
+    if (fNegative) {
+        pStream->m_szFormatBuffer[0x21] = '-';
+    }
+
+    cchSourceSkip = fNegative;
+    cchTargetSkip = fNegative;
+    if ((pStream->m_TargetState.m_dwFlags & 2) == 0) {
+        if (cchText < (int)cchWidth) {
+            cchTargetSkip = fNegative - (unsigned int)cchText + cchWidth;
+        } else {
+            cchSourceSkip = (unsigned int)cchText - cchWidth;
+        }
+    }
+
+    pszSource = pStream->m_szFormatBuffer + cchSourceSkip;
+    pszTarget = pStream->m_szFormatBuffer + 0x21 + cchTargetSkip;
+    for (i = (cchWidth - fNegative) >> 2; i != 0; --i) {
+        *(u32 *)pszTarget = *(u32 *)pszSource;
+        pszSource += 4;
+        pszTarget += 4;
+    }
+    for (i = (cchWidth - fNegative) & 3; i != 0; --i) {
+        *pszTarget = *pszSource;
+        ++pszSource;
+        ++pszTarget;
+    }
+    pStream->m_pszFormattedText = pStream->m_szFormatBuffer + 0x21;
+}
+
+// FUNCTION: LEMBALL 0x00458D80
+static void FormatSignedIntToRadixString(int nValue, char *pszBuffer, unsigned int nRadix) {
+    unsigned int uValue;
+
+    uValue = (unsigned int)nValue;
+    if (nValue < 0) {
+        *pszBuffer = '-';
+        ++pszBuffer;
+        uValue = (unsigned int)-nValue;
+    }
+    FormatUnsignedIntToRadixString(uValue, pszBuffer, nRadix);
+}
+
+// FUNCTION: LEMBALL 0x00458DB0
+static char *FormatUnsignedIntToRadixString(unsigned int uValue, char *pszBuffer, unsigned int nRadix) {
+    unsigned int nPower;
+    unsigned int nMaxPower;
+    unsigned int nLimit;
+    unsigned int nDigit;
+    int fEmitting;
+    int cchOutput;
+    int nLoopCount;
+
+    if (g_fRadixPowerTableInitialized == 0) {
+        nPower = 2;
+        do {
+            nLimit = 0xffffffffu / nPower;
+            nMaxPower = nPower;
+            if (nPower <= nLimit) {
+                do {
+                    nMaxPower *= nPower;
+                } while (nMaxPower <= nLimit);
+            }
+            g_adwRadixPowerTable[nPower] = nMaxPower;
+            ++nPower;
+        } while ((int)nPower < 0x11);
+        g_fRadixPowerTableInitialized = 1;
+    }
+
+    fEmitting = 0;
+    cchOutput = 0;
+    nLoopCount = 0;
+    nPower = g_adwRadixPowerTable[nRadix];
+    do {
+        nDigit = uValue / nPower;
+        if (nDigit != 0 || fEmitting) {
+            pszBuffer[cchOutput] = g_VSINIT_RadixDigits[nDigit];
+            ++cchOutput;
+            fEmitting = 1;
+        }
+        uValue -= nPower * nDigit;
+        nPower /= nRadix;
+    } while (nPower != 1 && (++nLoopCount < 0x21));
+
+    pszBuffer[cchOutput] = g_VSINIT_RadixDigits[uValue];
+    pszBuffer[cchOutput + 1] = '\0';
+    return pszBuffer;
+}
+
 // FUNCTION: LEMBALL 0x004585B0
-static VSINIT_TextStream *AppendCStringToStream(VSINIT_TextStream *pStream, const char *pszText) {
+static VSINIT_FormattedOutputStream *AppendCStringToStream(VSINIT_FormattedOutputStream *pStream, const char *pszText) {
     if (pStream != 0) {
-        pStream->Append(pszText);
+        AppendCStringToFixedBufferStream(pStream->m_TargetState.m_pDownstream, pszText);
     }
     return pStream;
 }
 
 // FUNCTION: LEMBALL 0x00458630
-static VSINIT_TextStream *AppendIntToStream(VSINIT_TextStream *pStream, unsigned int uValue) {
+static VSINIT_FormattedOutputStream *AppendIntToStream(VSINIT_FormattedOutputStream *pStream, unsigned int uValue) {
     if (pStream != 0) {
-        pStream->AppendInt(uValue);
+        FormatSignedIntToRadixString((int)uValue, pStream->m_szFormatBuffer, (unsigned int)pStream->m_TargetState.m_nRadix);
+        ApplyStreamIntegerWidthPadding(pStream);
+        AppendCStringToStream(pStream, pStream->m_pszFormattedText);
     }
     return pStream;
+}
+
+// FUNCTION: LEMBALL 0x004585D0
+static VSINIT_FormattedOutputStream *AppendCharToStreamVariant(VSINIT_FormattedOutputStream *pStream, char ch) {
+    if (pStream != 0) {
+        AppendCharToFixedBufferStream(pStream->m_TargetState.m_pDownstream, ch);
+    }
+    return pStream;
+}
+
+// FUNCTION: LEMBALL 0x004585F0
+static void AppendSignedIntToStreamVariant(VSINIT_FormattedOutputStream *pStream, int nValue) {
+    if (pStream != 0) {
+        FormatSignedIntToRadixString(nValue, pStream->m_szFormatBuffer, (unsigned int)pStream->m_TargetState.m_nRadix);
+        ApplyStreamIntegerWidthPadding(pStream);
+        AppendCStringToStream(pStream, pStream->m_pszFormattedText);
+    }
+}
+
+// FUNCTION: LEMBALL 0x00458670
+static void AppendPointerToStreamVariant(VSINIT_FormattedOutputStream *pStream, unsigned int uValue) {
+    if (pStream == 0) {
+        return;
+    }
+    if (uValue == 0) {
+        AppendCStringToStream(pStream, g_VSINIT_NullPointerText);
+        return;
+    }
+    FormatUnsignedIntToRadixString(uValue, pStream->m_szFormatBuffer, 0x10);
+    ApplyStreamIntegerWidthPadding(pStream);
+    AppendCStringToStream(AppendCStringToStream(pStream, g_VSINIT_HexPointerPrefix), pStream->m_pszFormattedText);
+}
+
+// FUNCTION: LEMBALL 0x004586D0
+static void AppendCharToFormattedStream(VSINIT_FormattedOutputStream *pStream, char ch) {
+    AppendCharToStreamVariant(pStream, ch);
+}
+
+// FUNCTION: LEMBALL 0x004586E0
+static void AppendUIntToStream(VSINIT_FormattedOutputStream *pStream, unsigned int uValue) {
+    if (pStream != 0) {
+        FormatUnsignedIntToRadixString(uValue, pStream->m_szFormatBuffer, (unsigned int)pStream->m_TargetState.m_nRadix);
+        ApplyStreamIntegerWidthPadding(pStream);
+        AppendCStringToStream(pStream, pStream->m_pszFormattedText);
+    }
 }
 
 static const char g_VSINIT_SyncDebugName[] = "Sync_Debug";
@@ -187,12 +354,13 @@ static VSINIT_CommandLineOption g_aCommandLineOptions[] = {
     { "MEMDEBUG", &g_anCommandLineOptionValues[13] },
 };
 
-static VSINIT_TextStream g_StartupOutputStream;
-static VSINIT_TextStream g_StatusOutputStream;
-static VSINIT_TextStream g_ErrorOutputStream;
-static VSINIT_TextStream *g_pStartupOutputStream = &g_StartupOutputStream;
-static VSINIT_TextStream *g_pStatusOutputStream = &g_StatusOutputStream;
-static VSINIT_TextStream *g_pErrorOutputStream = &g_ErrorOutputStream;
+static char g_abStreamFixedBuffer[0x400];
+static VSINIT_FixedBufferStream *g_pStartupFixedBufferStream = 0;
+static VSINIT_FixedBufferStream *g_pStatusFixedBufferStream = 0;
+static VSINIT_FixedBufferStream *g_pErrorFixedBufferStream = 0;
+static VSINIT_FormattedOutputStream *g_pStartupOutputStream = 0;
+static VSINIT_FormattedOutputStream *g_pStatusOutputStream = 0;
+static VSINIT_FormattedOutputStream *g_pErrorOutputStream = 0;
 static char *g_apszParsedArgs[16];
 static unsigned int g_cParsedArgs = 0;
 static int g_fSubsystemsReady = 0;
@@ -221,6 +389,7 @@ static void *g_SharedRenderDispatchQueueVtable[1] = { 0 };
 static void *g_SharedRenderDispatchQueueVariantVtable[1] = { 0 };
 static void *g_SharedRenderQueueNodeVtable[2] = { 0 };
 static void *g_SharedGeometryHelperVtable[1] = { 0 };
+static void *g_MainMemoryArenaStatusEntryVtable[1] = { 0 };
 
 static HANDLE HostCreateEventA(LPSECURITY_ATTRIBUTES pEventAttributes,
                                BOOL fManualReset,
@@ -279,6 +448,172 @@ static void HostExitProcess(UINT uExitCode) {
 static DWORD CALLBACK HostDebugMessageThreadMain(LPVOID pvThreadParam) {
     (void)pvThreadParam;
     return (DWORD)DebugMessageThreadMain();
+}
+
+// FUNCTION: LEMBALL 0x00472910
+static void FlushStatusFixedBufferStream(char *pszText) {
+    AppendStringToDebugOutFile(pszText);
+}
+
+// FUNCTION: LEMBALL 0x004729F0
+static void FlushStartupFixedBufferStream(char *pszText) {
+    AppendStringToDebugOutFile(pszText);
+}
+
+// FUNCTION: LEMBALL 0x00472980
+static void FlushErrorFixedBufferStream(char *pszText) {
+    AppendStringToDebugOutFile(pszText);
+}
+
+// FUNCTION: LEMBALL 0x004583E0
+static void *ConstructStreamBaseVtable(void *pStream) {
+    *(void **)pStream = g_StreamBaseVtable;
+    return pStream;
+}
+
+// FUNCTION: LEMBALL 0x00458400
+static void DestroyStreamBaseVtable(void *pStream) {
+    *(void **)pStream = g_StreamBaseVtable;
+}
+
+// FUNCTION: LEMBALL 0x00458410
+static VSINIT_StreamFormatTargetState *ConstructStreamFormatTargetState(VSINIT_StreamFormatTargetState *pState,
+                                                                        VSINIT_FixedBufferStream *pDownstream) {
+    pState->m_pVtable = g_StreamFormatTargetStateVtable;
+    pState->m_chFill = ' ';
+    pState->m_dwFlags = 0x14;
+    pState->m_nWidth = 0;
+    pState->m_nRadix = 10;
+    pState->m_pDownstream = pDownstream;
+    return pState;
+}
+
+// FUNCTION: LEMBALL 0x00458440
+static void ConstructStreamFormatState(VSINIT_StreamFormatTargetState *pState) {
+    pState->m_pVtable = g_StreamFormatTargetStateVtable;
+}
+
+// FUNCTION: LEMBALL 0x00458450
+static VSINIT_FormattedOutputStream *ConstructFormattedOutputStream(VSINIT_FormattedOutputStream *pStream,
+                                                                    VSINIT_FixedBufferStream *pDownstream,
+                                                                    int fConstructTargetState) {
+    if (fConstructTargetState != 0) {
+        pStream->m_pVtable = g_FormattedOutputStreamVtable;
+        ConstructStreamFormatTargetState(&pStream->m_TargetState, pDownstream);
+    }
+    pStream->m_TargetState.m_pVtable = g_StreamFormatSubobjectVtable;
+    pStream->m_pszFormattedText = pStream->m_szFormatBuffer;
+    pStream->m_szFormatBuffer[0] = '\0';
+    return pStream;
+}
+
+// FUNCTION: LEMBALL 0x004584A0
+static void RestoreStreamFormatSubobjectVtable(VSINIT_StreamFormatTargetState *pState) {
+    VSINIT_FormattedOutputStream *pStream;
+
+    pStream = (VSINIT_FormattedOutputStream *)((char *)pState - 0x12c);
+    pStream->m_TargetState.m_pVtable = g_StreamFormatSubobjectVtable;
+}
+
+// FUNCTION: LEMBALL 0x0045AD70
+static VSINIT_FixedBufferStream *ConstructFixedBufferStream(VSINIT_FixedBufferStream *pStream,
+                                                           char *pszBuffer,
+                                                           unsigned int cbBuffer,
+                                                           void (*pfnFlush)(char *)) {
+    unsigned int i;
+
+    ConstructStreamBaseVtable(pStream);
+    pStream->m_pVtable = g_FixedBufferStreamVtable;
+    pStream->m_pfnFlush = pfnFlush;
+    pStream->m_pszBuffer = pszBuffer;
+    pStream->m_pszCursor = pszBuffer;
+    pStream->m_cchWritten = 0;
+    pStream->m_cbBuffer = cbBuffer;
+    for (i = cbBuffer >> 2; i != 0; --i) {
+        *(u32 *)pszBuffer = 0;
+        pszBuffer += 4;
+    }
+    for (i = cbBuffer & 3; i != 0; --i) {
+        *pszBuffer = '\0';
+        ++pszBuffer;
+    }
+    return pStream;
+}
+
+static void ResetFixedBufferStream(VSINIT_FixedBufferStream *pStream) {
+    unsigned int i;
+    char *pszBuffer;
+
+    if (pStream->m_pfnFlush != 0) {
+        pStream->m_pfnFlush(pStream->m_pszBuffer);
+    }
+
+    pszBuffer = pStream->m_pszBuffer;
+    pStream->m_pszCursor = pszBuffer;
+    pStream->m_cchWritten = 0;
+    pStream->m_dwFlags = 8;
+    for (i = pStream->m_cbBuffer >> 2; i != 0; --i) {
+        *(u32 *)pszBuffer = 0;
+        pszBuffer += 4;
+    }
+    for (i = pStream->m_cbBuffer & 3; i != 0; --i) {
+        *pszBuffer = '\0';
+        ++pszBuffer;
+    }
+}
+
+// FUNCTION: LEMBALL 0x0045ADC0
+static void DestroyFixedBufferStream(VSINIT_FixedBufferStream *pStream) {
+    pStream->m_pVtable = g_FixedBufferStreamVtable;
+    DestroyStreamBaseVtable(pStream);
+}
+
+static void DeleteFixedBufferStream(VSINIT_FixedBufferStream *pStream, int fFreeMemory) {
+    ResetFixedBufferStream(pStream);
+    DestroyFixedBufferStream(pStream);
+    if (fFreeMemory != 0) {
+        FreeVSMemBlock(pStream);
+    }
+}
+
+static void DestroyFormattedOutputStream(VSINIT_FormattedOutputStream *pStream, int fFreeMemory) {
+    RestoreStreamFormatSubobjectVtable(&pStream->m_TargetState);
+    if (fFreeMemory != 0) {
+        FreeVSMemBlock(pStream);
+    }
+}
+
+static void AppendCharToFixedBufferStream(VSINIT_FixedBufferStream *pStream, char ch) {
+    char *pszCursor;
+
+    if (pStream == 0 || pStream->m_cbBuffer == 0) {
+        return;
+    }
+
+    if (ch == '\t') {
+        ch = ' ';
+    }
+    pszCursor = pStream->m_pszCursor;
+    *pszCursor = ch;
+    ++pszCursor;
+    pStream->m_pszCursor = pszCursor;
+    *pszCursor = '\0';
+    ++pStream->m_cchWritten;
+
+    if (pStream->m_cbBuffer - pStream->m_cchWritten == 1) {
+        ResetFixedBufferStream(pStream);
+    }
+}
+
+static void AppendCStringToFixedBufferStream(VSINIT_FixedBufferStream *pStream, const char *pszText) {
+    if (pszText == 0) {
+        return;
+    }
+
+    while (*pszText != '\0') {
+        AppendCharToFixedBufferStream(pStream, *pszText);
+        ++pszText;
+    }
 }
 
 void AppendStartupCString(const char *pszText) {
@@ -409,6 +744,59 @@ static void DestroyProcessCurrentDirectoryMarker(void) {
 
 // FUNCTION: LEMBALL 0x00458F70
 static int InitializeStreamChannels(void) {
+    void *pStream;
+
+    pStream = AllocateVSMemBlock(0x1c);
+    if (pStream == 0) {
+        g_pStatusFixedBufferStream = 0;
+    } else {
+        g_pStatusFixedBufferStream =
+            ConstructFixedBufferStream((VSINIT_FixedBufferStream *)pStream, g_abStreamFixedBuffer, 0x400,
+                                       FlushStatusFixedBufferStream);
+    }
+
+    pStream = AllocateVSMemBlock(0x1c);
+    if (pStream == 0) {
+        g_pStartupFixedBufferStream = 0;
+    } else {
+        g_pStartupFixedBufferStream =
+            ConstructFixedBufferStream((VSINIT_FixedBufferStream *)pStream, g_abStreamFixedBuffer, 0x400,
+                                       FlushStartupFixedBufferStream);
+    }
+
+    pStream = AllocateVSMemBlock(0x1c);
+    if (pStream == 0) {
+        g_pErrorFixedBufferStream = 0;
+    } else {
+        g_pErrorFixedBufferStream =
+            ConstructFixedBufferStream((VSINIT_FixedBufferStream *)pStream, g_abStreamFixedBuffer, 0x400,
+                                       FlushErrorFixedBufferStream);
+    }
+
+    pStream = AllocateVSMemBlock(0x14c);
+    if (pStream == 0) {
+        g_pStatusOutputStream = 0;
+    } else {
+        g_pStatusOutputStream =
+            ConstructFormattedOutputStream((VSINIT_FormattedOutputStream *)pStream, g_pStatusFixedBufferStream, 1);
+    }
+
+    pStream = AllocateVSMemBlock(0x14c);
+    if (pStream == 0) {
+        g_pStartupOutputStream = 0;
+    } else {
+        g_pStartupOutputStream =
+            ConstructFormattedOutputStream((VSINIT_FormattedOutputStream *)pStream, g_pStartupFixedBufferStream, 1);
+    }
+
+    pStream = AllocateVSMemBlock(0x14c);
+    if (pStream == 0) {
+        g_pErrorOutputStream = 0;
+    } else {
+        g_pErrorOutputStream =
+            ConstructFormattedOutputStream((VSINIT_FormattedOutputStream *)pStream, g_pErrorFixedBufferStream, 1);
+    }
+
     return 1;
 }
 
@@ -542,7 +930,6 @@ static VSINIT_StatusEntryPointerArray *ConstructStatusEntryPointerArray(void *pR
 
     pPointerArray = (VSINIT_StatusEntryPointerArray *)pRegistry;
     pPointerArray->m_pVtable = g_StatusEntryPointerArrayVtable;
-    pPointerArray->m_nReserved = 0;
     pPointerArray->m_ppEntries = (void **)AllocateVSMemBlock(cEntriesMax * sizeof(void *));
     pPointerArray->m_cEntriesMax = cEntriesMax;
     pPointerArray->m_cEntries = 0;
@@ -565,6 +952,17 @@ static void DestroyStatusEntryPointerArray(void *pRegistry) {
         }
         FreeVSMemBlock(pPointerArray->m_ppEntries);
         pPointerArray->m_ppEntries = 0;
+    }
+}
+
+// FUNCTION: LEMBALL 0x0045AB90
+void AppendStatusEntryToRegistry(void *pRegistry, void *pEntry) {
+    VSINIT_StatusEntryPointerArray *pPointerArray;
+
+    pPointerArray = (VSINIT_StatusEntryPointerArray *)pRegistry;
+    if (pPointerArray->m_cEntries < pPointerArray->m_cEntriesMax) {
+        pPointerArray->m_ppEntries[pPointerArray->m_cEntries] = pEntry;
+        ++pPointerArray->m_cEntries;
     }
 }
 
@@ -753,6 +1151,31 @@ static int ShutdownProcessCurrentDirectoryState(void) {
 
 // FUNCTION: LEMBALL 0x004590B0
 static int ShutdownStreamChannels(void) {
+    if (g_pErrorOutputStream != 0) {
+        DestroyFormattedOutputStream(g_pErrorOutputStream, 1);
+        g_pErrorOutputStream = 0;
+    }
+    if (g_pStartupOutputStream != 0) {
+        DestroyFormattedOutputStream(g_pStartupOutputStream, 1);
+        g_pStartupOutputStream = 0;
+    }
+    if (g_pStatusOutputStream != 0) {
+        DestroyFormattedOutputStream(g_pStatusOutputStream, 1);
+        g_pStatusOutputStream = 0;
+    }
+    if (g_pErrorFixedBufferStream != 0) {
+        DeleteFixedBufferStream(g_pErrorFixedBufferStream, 1);
+        g_pErrorFixedBufferStream = 0;
+    }
+    if (g_pStartupFixedBufferStream != 0) {
+        DeleteFixedBufferStream(g_pStartupFixedBufferStream, 1);
+        g_pStartupFixedBufferStream = 0;
+    }
+    if (g_pStatusFixedBufferStream != 0) {
+        DeleteFixedBufferStream(g_pStatusFixedBufferStream, 1);
+        g_pStatusFixedBufferStream = 0;
+    }
+
     return 1;
 }
 
@@ -782,6 +1205,7 @@ void InitializeCoreSubsystems(void) {
     int fGdiInitialized;
     int fStatusInitialized;
     int fResourcesInitialized;
+    GAME_StatusEntry *pMainMemoryArenaStatusEntry;
 
     fMemoryInitialized = InitializeMasterMainRamArena();
     if (fMemoryInitialized == 0) {
@@ -847,8 +1271,15 @@ void InitializeCoreSubsystems(void) {
     AppendStartupCString(SelectSuccessOrFailedString(fResourcesInitialized));
     AppendStartupCString(g_VSINIT_LineBreak);
 
-    AppendStatusCString(g_VSINIT_MainMemoryArenaName);
-    AppendStatusCString(g_VSINIT_LineBreak);
+    pMainMemoryArenaStatusEntry =
+        new (AllocateVSMemBlock(sizeof(GAME_StatusEntry))) GAME_StatusEntry(g_VSINIT_MainMemoryArenaName);
+    if (pMainMemoryArenaStatusEntry != 0) {
+        pMainMemoryArenaStatusEntry->m_pVtable = g_MainMemoryArenaStatusEntryVtable;
+    }
+    AppendStatusEntryToRegistry(g_pStatusEntryRegistry, pMainMemoryArenaStatusEntry);
+    if (g_pMainMemoryArena != 0) {
+        *(GAME_StatusEntry **)((char *)g_pMainMemoryArena + 0x30) = pMainMemoryArenaStatusEntry;
+    }
 }
 
 // FUNCTION: LEMBALL 0x00459520
@@ -868,6 +1299,7 @@ void ShutdownCoreSubsystems(void) {
     cbAvailableNow = CalculateMemoryArenaAvailableBytes();
     if (cbAvailableNow != g_cbMainArenaAvailableAfterInit) {
         AppendErrorCString(g_VSINIT_MemoryLeakMessage);
+        AppendErrorCString(g_VSINIT_LineBreak);
     }
 
     ShutdownProcessCurrentDirectoryState();
@@ -881,6 +1313,7 @@ int ParseCommandLineOptionToken(char *pszToken) {
     int i;
 
     if (*pszToken == '-' || *pszToken == '/') {
+        ++pszToken;
         for (i = 0; i < (int)LEMBALL_ARRAY_COUNT(g_aCommandLineOptions); ++i) {
             const char *pszColon;
             size_t cchOption;
@@ -892,14 +1325,14 @@ int ParseCommandLineOptionToken(char *pszToken) {
                 cchOption = (size_t)(pszColon - g_aCommandLineOptions[i].m_pszName);
             }
 
-            if (strncmp(pszToken + 1, g_aCommandLineOptions[i].m_pszName, cchOption) == 0) {
+            if (strncmp(pszToken, g_aCommandLineOptions[i].m_pszName, cchOption) == 0) {
                 if (strlen(g_aCommandLineOptions[i].m_pszName) == cchOption) {
                     *g_aCommandLineOptions[i].m_pnValue ^= 1;
                 } else {
                     char *pszEnd;
 
                     *g_aCommandLineOptions[i].m_pnValue =
-                        ParseDecimalIntAndAdvance(pszToken + cchOption + 2, &pszEnd, 10);
+                        ParseDecimalIntAndAdvance(pszToken + cchOption + 1, &pszEnd, 10);
                 }
                 g_afCommandLineOptionSpecified[i] = 1;
                 return 1;
@@ -913,6 +1346,7 @@ int ParseCommandLineOptionToken(char *pszToken) {
 // FUNCTION: LEMBALL 0x004596B0
 void TokenizeAndFilterCommandLineArgs(char *pszCmdLine) {
     char *pszCursor;
+    char *pszNext;
     unsigned int i;
 
     g_cParsedArgs = 0;
@@ -925,7 +1359,7 @@ void TokenizeAndFilterCommandLineArgs(char *pszCmdLine) {
         return;
     }
 
-    while (isspace((unsigned char)*pszCmdLine)) {
+    while (isspace((int)*pszCmdLine)) {
         ++pszCmdLine;
     }
     if (*pszCmdLine == '\0') {
@@ -935,19 +1369,21 @@ void TokenizeAndFilterCommandLineArgs(char *pszCmdLine) {
     g_cParsedArgs = 0;
     pszCursor = pszCmdLine;
     while (*pszCursor != '\0') {
-        if (isupper((unsigned char)*pszCursor)) {
-            *pszCursor = (char)tolower((unsigned char)*pszCursor);
+        if (isupper((int)*pszCursor)) {
+            *pszCursor = (char)tolower((int)*pszCursor);
         }
 
-        if (isspace((unsigned char)*pszCursor)) {
+        if (isspace((int)*pszCursor)) {
+            pszNext = pszCursor;
             do {
+                pszCursor = pszNext;
                 *pszCursor = '\0';
-                ++pszCursor;
-            } while (isspace((unsigned char)*pszCursor));
+                pszNext = pszCursor + 1;
+            } while (isspace((int)*pszNext));
 
-            if (*pszCursor != '\0') {
+            if (*pszNext != '\0') {
                 ++g_cParsedArgs;
-                g_apszParsedArgs[g_cParsedArgs] = pszCursor;
+                g_apszParsedArgs[g_cParsedArgs] = pszNext;
             }
         }
 

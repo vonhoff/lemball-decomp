@@ -282,21 +282,6 @@ void *ClearLevelProgressPasswordState(void *pLevelProgressState) {
     return pLevelProgressState;
 }
 
-// FUNCTION: LEMBALL 0x0045AB90
-void AppendStatusEntryToRegistry(void *pRegistry, void *pEntry) {
-    int cEntries;
-    int cEntriesMax;
-    void **ppEntries;
-
-    cEntries = *(int *)((char *)pRegistry + 0x10);
-    cEntriesMax = *(int *)((char *)pRegistry + 0xc);
-    if (cEntries < cEntriesMax) {
-        ppEntries = *(void ***)((char *)pRegistry + 8);
-        ppEntries[cEntries] = pEntry;
-        *(int *)((char *)pRegistry + 0x10) = cEntries + 1;
-    }
-}
-
 void *AllocateResourceArchiveMemory(unsigned int cbBytes) {
     return AllocateVSMemBlock(cbBytes);
 }
