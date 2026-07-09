@@ -214,16 +214,6 @@ void ScheduleNetworkRuntimeTimerEvent(void *pRuntimeWindow, int nTimerId) {
     (void)nTimerId;
 }
 
-int SendEffStreamPayloadWithTransportHeader(void *pPayloadSender, int nStream) {
-    (void)pPayloadSender;
-    (void)nStream;
-    return 1;
-}
-
-void LoadEffStreamFromGlobalRange(void *pStream) {
-    (void)pStream;
-}
-
 void ConfigureTimedEffStreamSecondaryHandle(void *pTimedStream, int cbHandleData) {
     (void)pTimedStream;
     (void)cbHandleData;
@@ -240,12 +230,4 @@ void ConfigureEffStreamPrimaryHandleGroup(void *pStream, int cHandles, int cbHan
     (void)cHandles;
     (void)cbHandleData;
     (void)nMode;
-}
-
-void ReleaseGlobalEffTransportBuffer(void *pObject) {
-    (void)pObject;
-}
-
-void DestroyVSMemObjectPointerArray(void *pObjectArray) {
-    (void)pObjectArray;
 }

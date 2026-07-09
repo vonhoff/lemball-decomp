@@ -150,16 +150,76 @@ struct NETWORK_HandleGroupAdjustorSlot {
 };
 
 struct NETWORK_EffTransportPeer;
+struct NETWORK_SimpleEffTransportRecordSlotTable;
 
 struct NETWORK_PeerPayloadSenderVtable {
     void *m_apReserved00[8];
     void (*m_pWritePeerKey)(void *);
-    void *m_pReserved24;
+    int (*m_pSendPayload)(void *pThis, void *pvBuffer, int cbBuffer);
     void (*m_pSetAssignedPort)(short);
 };
 
 struct NETWORK_PeerPayloadSender {
     NETWORK_PeerPayloadSenderVtable *m_pVtable;
+};
+
+struct NETWORK_PeerPayloadSenderStateOffsets {
+    void *m_pReserved00;
+    int m_nSendStateBaseOffset04;
+};
+
+struct NETWORK_PeerPayloadSenderState {
+    NETWORK_PeerPayloadSenderVtable *m_pVtable;
+    int m_nReserved04;
+    int m_pPayloadBuffer08;
+    int m_fOwnsPayload0c;
+    int m_nReserved10;
+    int m_nReserved14;
+    int m_nBufferEnd18;
+    int m_nReserved1c;
+    int m_nReserved20;
+    int m_fReliable24;
+    int m_fBusy28;
+    int m_pPacketHeader2c;
+    unsigned short m_wReliableSequence30;
+    unsigned short m_wUnreliableSequence32;
+    unsigned short m_wReserved34;
+    unsigned short m_wFragmentSequence36;
+    DWORD m_dwLastGlobalWriteTick38;
+    int m_nReserved3c;
+    int m_nReserved40;
+    NETWORK_PeerPayloadSenderStateOffsets *m_pOffsets44;
+    int m_nReserved48;
+    NETWORK_SimpleEffTransportRecordSlotTable *m_pRecordTable4c;
+    int m_nReserved50;
+    void *m_pPendingFragmentedStream54;
+    int m_nPendingFragmentSequence58;
+    int m_nPendingFragmentIndex5c;
+    unsigned int m_aFragmentPrefixWords60[4];
+};
+
+struct NETWORK_EffStreamPayloadState {
+    void **m_pVtable;
+    int m_nEventCode04;
+    int m_pPayloadBuffer08;
+    int m_fOwnsPayload0c;
+    int m_nWriteSessionCount10;
+    int m_nReserved14;
+    int m_nSerializedLength18;
+    int m_nWriteCursor1c;
+    int m_nReadCursor20;
+    int m_fReliable24;
+    int m_fBusy28;
+};
+
+struct NETWORK_EffTransportPacketHeader {
+    int m_nReserved00;
+    int m_cbPayload04;
+    unsigned short m_nStreamEvent08;
+    unsigned short m_wSequence0a;
+    unsigned short m_wFragmentIndex0c;
+    unsigned char m_fReliable0e;
+    unsigned char m_abReserved0f[3];
 };
 
 struct NETWORK_PeerPayloadSenderSlot {
@@ -245,6 +305,76 @@ struct NETWORK_EffDispatchEvent {
     void *m_pPeer;
 };
 
+struct NETWORK_RuntimeWindowSendGateState {
+    char m_abUnknown00[0x24];
+    int m_nChannelOwner24;
+    char m_abUnknown28[8];
+    int m_fSendGateActive30;
+};
+
+struct NETWORK_EffTransportGlobalReadStream {
+    void *m_pVtable;
+    int m_nEventCode;
+    char m_abUnknown08[0x24];
+    unsigned short m_wSequence2c;
+    unsigned short m_wPacketKind2e;
+};
+
+struct NETWORK_AckedEffTransportRecord {
+    int m_nReserved00;
+    int m_pSerializedStream04;
+    unsigned char m_fClaimed08;
+    char m_abUnknown09[3];
+    void *m_pPayload0c;
+};
+
+struct NETWORK_AckedEffTransportRecordTable {
+    int m_cRecords;
+    int m_nReserved04;
+    NETWORK_AckedEffTransportRecord **m_apRecords08;
+};
+
+struct NETWORK_AckedEffTransportRecordOwner {
+    char m_abUnknown00[0x4c];
+    NETWORK_AckedEffTransportRecordTable *m_pRecordTable4c;
+};
+
+struct NETWORK_SimpleEffTransportRecordSlot {
+    void **m_pVtable;
+    int m_pSerializedStream04;
+    unsigned char m_fAvailable08;
+    char m_abUnknown09[3];
+    void *m_pPayload0c;
+    DWORD m_dwLastRetryTick10;
+    unsigned char m_cRetryCount14;
+    char m_abReserved15[3];
+};
+
+struct NETWORK_SimpleEffTransportRecordSlotTable {
+    int m_cRecords;
+    int m_nReserved04;
+    NETWORK_SimpleEffTransportRecordSlot **m_apRecords08;
+};
+
+struct NETWORK_VSMemObjectPointerArray {
+    int m_cObjects;
+    int m_nReserved04;
+    int m_pObjectArray08;
+};
+
+struct NETWORK_EffTransportRecordBuffer {
+    void **m_pVtable;
+    int m_pSerializedBuffer04;
+    int m_cbPayload08;
+    int m_fAllocatePayload0c;
+    int m_nReserved10;
+    int m_nReserved14;
+};
+
+static void *g_NETWORK_EffTransportRecordBufferVtable = (void *)0x004991CC;
+static void *g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable = (void *)0x004991D0;
+static void *g_NETWORK_DeleteEffTransportRecordBufferVtable = (void *)0x004991D4;
+
 struct NETWORK_EffTransportPeer {
     void **m_pVtable;
     NETWORK_TransportEndpointOffsets *m_pOffsets;
@@ -313,7 +443,9 @@ struct NETWORK_FileBasedRuntimeWindow {
     int m_nReserved78;
 };
 
+char *g_pszEffTransportBroadcastStatusPayload = 0;
 char *g_pszFileBasedNetworkLocalHostName = 0;
+int g_cbEffTransportBroadcastStatusPayload = 0;
 char *g_pszFileBasedNetworkConfiguredPath = 0;
 int g_fFileBasedNetworkPathConfigured = 0;
 short g_nEffTransportServiceBasePort = 0;
@@ -358,12 +490,515 @@ extern void EndEffStreamWriteSession(int nStream);
 extern void LoadEffStreamFromGlobalRange(void *pStream);
 extern int SendEffStreamPayloadWithTransportHeader(void *pPayloadSender, int nStream);
 extern int LoadEffStreamFromMemory(void *pStream, int nSourceBuffer);
+extern void SaveEffStreamToMemoryRange(void *pStream, int nTargetBuffer, int cbRange);
 void UnlinkAndDeleteEffTransportPeer(void *pRuntimeState, int nPeer);
 void MarkEffTransportPeerActivityTime(int nPeer);
+int SendReliableEffTransportPayload(void *pPayloadSender, void *pStream);
+int SendFragmentedEffTransportPayload(void *pPayloadSender, void *pStream);
+
+// FUNCTION: LEMBALL 0x004601B0
+void WriteEffStreamWithGlobalSession(void *pStream) {
+    BeginEffStreamWriteSession(g_pEffTransportGlobalReadStream);
+    SendEffStreamPayloadWithTransportHeader(pStream, (int)(unsigned long)g_pEffTransportGlobalReadStream);
+    EndEffStreamWriteSession((int)(unsigned long)g_pEffTransportGlobalReadStream);
+}
+
+// FUNCTION: LEMBALL 0x004601E0
+void *ClaimAckedEffTransportRecordPayload(void *pObject) {
+    NETWORK_AckedEffTransportRecordOwner *pOwner;
+    NETWORK_AckedEffTransportRecordTable *pRecordTable;
+    NETWORK_AckedEffTransportRecord *pRecord;
+    NETWORK_EffTransportGlobalReadStream *pReadStream;
+    void *pPayload;
+    int nRecordIndex;
+
+    pPayload = 0;
+    pReadStream = (NETWORK_EffTransportGlobalReadStream *)g_pEffTransportGlobalReadStream;
+    LoadEffStreamFromMemory(pReadStream, (int)(unsigned long)((char *)g_pEffTransportPacketBuffer + 0x10));
+    if (pReadStream->m_wPacketKind2e != 0x100) {
+        return 0;
+    }
+
+    pOwner = (NETWORK_AckedEffTransportRecordOwner *)pObject;
+    pRecordTable = pOwner->m_pRecordTable4c;
+    nRecordIndex = pReadStream->m_wSequence2c % pRecordTable->m_cRecords;
+    pRecord = pRecordTable->m_apRecords08[nRecordIndex];
+
+    LoadEffStreamFromMemory(pObject, pRecord->m_pSerializedStream04);
+    if (*(unsigned short *)(pRecord->m_pSerializedStream04 + 10) == pReadStream->m_wSequence2c && pRecord->m_fClaimed08 == 0) {
+        pRecord->m_fClaimed08 = 1;
+        pPayload = pRecord->m_pPayload0c;
+    }
+    LoadEffStreamFromMemory(pObject, pRecord->m_pSerializedStream04);
+    return pPayload;
+}
+
+// FUNCTION: LEMBALL 0x004611E0
+void CopyIntoSimpleEffTransportRecordSlot(void *pObject, const void *pvSource, unsigned int cbSource, void *pPayload) {
+    unsigned int i;
+    const unsigned char *pbSource;
+    unsigned char *pbTarget;
+    NETWORK_SimpleEffTransportRecordSlot *pSlot;
+
+    pSlot = (NETWORK_SimpleEffTransportRecordSlot *)pObject;
+    pSlot->m_pPayload0c = pPayload;
+    pSlot->m_cRetryCount14 = 0;
+
+    pbSource = (const unsigned char *)pvSource;
+    pbTarget = (unsigned char *)(unsigned long)pSlot->m_pSerializedStream04;
+    cbSource &= 0xffff;
+
+    for (i = cbSource >> 2; i != 0; --i) {
+        *(unsigned int *)pbTarget = *(const unsigned int *)pbSource;
+        pbSource += 4;
+        pbTarget += 4;
+    }
+
+    for (i = cbSource & 3; i != 0; --i) {
+        *pbTarget++ = *pbSource++;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00461210
+void *ConstructEffTransportRecordSlotTable(void *pObject, int cRecords, unsigned int cbRecord) {
+    NETWORK_SimpleEffTransportRecordSlotTable *pTable;
+
+    pTable = (NETWORK_SimpleEffTransportRecordSlotTable *)pObject;
+    pTable->m_nReserved04 = cbRecord & 0xffff;
+    pTable->m_cRecords = cRecords;
+    if (cRecords > 0) {
+        pTable->m_apRecords08 = (NETWORK_SimpleEffTransportRecordSlot **)AllocateVSMemBlock((unsigned int)(cRecords << 2));
+    } else {
+        pTable->m_apRecords08 = 0;
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x00461190
+void *ConstructSimpleEffTransportRecordSlot(void *pObject, unsigned int cbRecord) {
+    NETWORK_SimpleEffTransportRecordSlot *pSlot;
+
+    pSlot = (NETWORK_SimpleEffTransportRecordSlot *)pObject;
+    pSlot->m_pVtable = (void **)g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable;
+    pSlot->m_pSerializedStream04 = (int)(unsigned long)AllocateVSMemBlock(cbRecord & 0xffff);
+    pSlot->m_fAvailable08 = 1;
+    pSlot->m_cRetryCount14 = 0;
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x004611C0
+void DestroySimpleEffTransportRecordSlot(void *pObject) {
+    NETWORK_SimpleEffTransportRecordSlot *pSlot;
+
+    pSlot = (NETWORK_SimpleEffTransportRecordSlot *)pObject;
+    pSlot->m_pVtable = (void **)g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable;
+    FreeVSMemBlock((void *)(unsigned long)pSlot->m_pSerializedStream04);
+    pSlot->m_pVtable = (void **)g_NETWORK_EffTransportRecordBufferVtable;
+}
+
+// FUNCTION: LEMBALL 0x00461250
+void DestroyVSMemObjectPointerArray(void *pObject) {
+    NETWORK_VSMemObjectPointerArray *pArray;
+    NETWORK_DeleteObject *pDeleteObject;
+    int i;
+    int nOffset;
+
+    pArray = (NETWORK_VSMemObjectPointerArray *)pObject;
+    if (pArray->m_pObjectArray08 != 0) {
+        nOffset = 0;
+        for (i = 0; i < pArray->m_cObjects; ++i) {
+            pDeleteObject = *(NETWORK_DeleteObject **)(unsigned long)(pArray->m_pObjectArray08 + nOffset);
+            if (pDeleteObject != 0) {
+                pDeleteObject->m_pVtable->m_pDelete(1);
+            }
+            nOffset += 4;
+        }
+        FreeVSMemBlock((void *)(unsigned long)pArray->m_pObjectArray08);
+    }
+}
+
+// FUNCTION: LEMBALL 0x00461340
+void *ConstructSimpleEffTransportRecordSlotTable(void *pObject, int cRecords, unsigned int cbRecord) {
+    NETWORK_SimpleEffTransportRecordSlotTable *pTable;
+    void *pSlotStorage;
+    int i;
+    int nOffset;
+
+    pTable = (NETWORK_SimpleEffTransportRecordSlotTable *)ConstructEffTransportRecordSlotTable(pObject, cRecords, cbRecord);
+    if (pTable->m_apRecords08 != 0) {
+        nOffset = 0;
+        for (i = 0; i < pTable->m_cRecords; ++i) {
+            pSlotStorage = AllocateVSMemBlock(0x18);
+            if (pSlotStorage == 0) {
+                *(void **)(unsigned long)((int)(unsigned long)pTable->m_apRecords08 + nOffset) = 0;
+            } else {
+                *(void **)(unsigned long)((int)(unsigned long)pTable->m_apRecords08 + nOffset) =
+                    ConstructSimpleEffTransportRecordSlot(pSlotStorage, (unsigned int)pTable->m_nReserved04);
+            }
+            nOffset += 4;
+        }
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x004613A0
+void CopyPayloadIntoSimpleRecordSlot(void *pObject, int nIndex, const void *pvSource, unsigned int cbSource, void *pPayload) {
+    NETWORK_SimpleEffTransportRecordSlotTable *pTable;
+
+    pTable = (NETWORK_SimpleEffTransportRecordSlotTable *)pObject;
+    CopyIntoSimpleEffTransportRecordSlot(pTable->m_apRecords08[nIndex], pvSource, cbSource, pPayload);
+}
+
+// FUNCTION: LEMBALL 0x00461990
+int ClaimSimpleRecordSlotForPacketId(void *pObject, unsigned int nPacketId, const void *pvSource, unsigned int cbSource,
+                                     void *pPayload) {
+    NETWORK_SimpleEffTransportRecordSlotTable *pTable;
+    NETWORK_SimpleEffTransportRecordSlot *pSlot;
+    int nIndex;
+
+    pTable = (NETWORK_SimpleEffTransportRecordSlotTable *)pObject;
+    nIndex = (int)((unsigned long)(nPacketId & 0xffff) % (unsigned long)pTable->m_cRecords);
+    pSlot = pTable->m_apRecords08[nIndex];
+    if (pSlot->m_fAvailable08 == 0) {
+        return 0;
+    }
+
+    CopyPayloadIntoSimpleRecordSlot(pTable, nIndex, pvSource, cbSource, pPayload);
+    return (int)(unsigned long)pSlot;
+}
+
+// FUNCTION: LEMBALL 0x004613D0
+void *ConstructEffTransportRecordBuffer(void *pObject, int fAllocatePayload, int cbPayload, unsigned int cbRecord) {
+    NETWORK_EffTransportRecordBuffer *pBuffer;
+    int cbSerialized;
+
+    pBuffer = (NETWORK_EffTransportRecordBuffer *)pObject;
+    pBuffer->m_pVtable = (void **)g_NETWORK_DeleteEffTransportRecordBufferVtable;
+    pBuffer->m_fAllocatePayload0c = fAllocatePayload;
+    pBuffer->m_nReserved14 = 0;
+    pBuffer->m_nReserved10 = 0;
+    cbSerialized = (cbRecord & 0xffff) - 0x10;
+    pBuffer->m_cbPayload08 = cbSerialized;
+    if (fAllocatePayload != 0 && cbSerialized != 0) {
+        pBuffer->m_pSerializedBuffer04 = (int)(unsigned long)AllocateVSMemBlock((unsigned int)(cbPayload + 0x10));
+        *(unsigned short *)(unsigned long)(pBuffer->m_pSerializedBuffer04 + 10) = 0;
+    } else {
+        pBuffer->m_pSerializedBuffer04 = 0;
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x00461440
+void DestroyEffTransportRecordBuffer(void *pObject) {
+    NETWORK_EffTransportRecordBuffer *pBuffer;
+
+    pBuffer = (NETWORK_EffTransportRecordBuffer *)pObject;
+    pBuffer->m_pVtable = (void **)g_NETWORK_DeleteEffTransportRecordBufferVtable;
+    if (pBuffer->m_pSerializedBuffer04 != 0) {
+        FreeVSMemBlock((void *)(unsigned long)pBuffer->m_pSerializedBuffer04);
+    }
+    pBuffer->m_pVtable = (void **)g_NETWORK_EffTransportRecordBufferVtable;
+}
+
+// FUNCTION: LEMBALL 0x00462A20
+void *DeleteSimpleEffTransportRecordSlotWrapper(void *pObject, BYTE fFreeMemory) {
+    DestroySimpleEffTransportRecordSlot(pObject);
+    if ((fFreeMemory & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x00462A40
+void *DeleteEffTransportRecordBufferWrapper(void *pObject, BYTE fFreeMemory) {
+    DestroyEffTransportRecordBuffer(pObject);
+    if ((fFreeMemory & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045FEA0
+int SendReliableEffTransportPayload(void *pPayloadSender, void *pStream) {
+    NETWORK_PeerPayloadSenderState *pSender;
+    NETWORK_EffTransportPacketHeader *pHeader;
+    NETWORK_EffStreamPayloadState *pPayload;
+    NETWORK_SimpleEffTransportRecordSlot *pRecord;
+    void *pvPayload;
+    int cbPayload;
+
+    pSender = (NETWORK_PeerPayloadSenderState *)pPayloadSender;
+    pPayload = (NETWORK_EffStreamPayloadState *)pStream;
+    pHeader = (NETWORK_EffTransportPacketHeader *)(unsigned long)pSender->m_pPacketHeader2c;
+    pvPayload = (void *)(unsigned long)pPayload->m_pPayloadBuffer08;
+    cbPayload = pPayload->m_nWriteCursor1c - pPayload->m_pPayloadBuffer08;
+
+    pHeader->m_fReliable0e = 1;
+    SaveEffStreamToMemoryRange(pPayloadSender, (int)(unsigned long)pvPayload, 0);
+    pRecord = (NETWORK_SimpleEffTransportRecordSlot *)(unsigned long)ClaimSimpleRecordSlotForPacketId(
+        pSender->m_pRecordTable4c, pHeader->m_wSequence0a, pvPayload, (unsigned int)cbPayload, pStream);
+    if (pRecord == 0) {
+        return 0;
+    }
+
+    if (pSender->m_pVtable->m_pSendPayload(pSender, pvPayload, cbPayload) != 0) {
+        pRecord->m_dwLastRetryTick10 = timeGetTime();
+        pRecord->m_fAvailable08 = 0;
+        ++pRecord->m_cRetryCount14;
+    } else {
+        pRecord->m_dwLastRetryTick10 = timeGetTime() - 1000;
+        pRecord->m_fAvailable08 = 0;
+    }
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0045FF20
+int RetryPendingEffTransportRecord(void *pObject, int nRecord) {
+    NETWORK_SimpleEffTransportRecordSlot *pRecord;
+    void *pvPayload;
+    int cbPayload;
+    int nSendResult;
+
+    pRecord = (NETWORK_SimpleEffTransportRecordSlot *)(unsigned long)nRecord;
+    LoadEffStreamFromMemory(pObject, pRecord->m_pSerializedStream04);
+    pvPayload = (void *)(unsigned long)pRecord->m_pSerializedStream04;
+    cbPayload = *(int *)(unsigned long)(pRecord->m_pSerializedStream04 + 4);
+    LoadEffStreamFromMemory(pObject, pRecord->m_pSerializedStream04);
+    nSendResult = ((NETWORK_PeerPayloadSenderState *)pObject)->m_pVtable->m_pSendPayload(pObject, pvPayload, cbPayload);
+    if (nSendResult != 0) {
+        pRecord->m_dwLastRetryTick10 = timeGetTime();
+        ++pRecord->m_cRetryCount14;
+        pRecord->m_fAvailable08 = 0;
+    }
+    return nSendResult;
+}
+
+// FUNCTION: LEMBALL 0x0045FF70
+int SendFragmentedEffTransportPayload(void *pPayloadSender, void *pStream) {
+    NETWORK_PeerPayloadSenderState *pSender;
+    NETWORK_EffTransportPacketHeader *pHeader;
+    NETWORK_EffStreamPayloadState *pPayload;
+    unsigned int cFragments;
+    unsigned int cbPayload;
+    unsigned int cbPacket;
+    unsigned int iFragmentsSent;
+    int cbFragmentStep;
+    unsigned char *pbPayload;
+    int nSendResult;
+
+    pSender = (NETWORK_PeerPayloadSenderState *)pPayloadSender;
+    pPayload = (NETWORK_EffStreamPayloadState *)pStream;
+    if (pSender->m_nPendingFragmentIndex5c == -1) {
+        pSender->m_nPendingFragmentIndex5c = 0;
+        ++pSender->m_wFragmentSequence36;
+        pSender->m_nPendingFragmentSequence58 = (short)pSender->m_wFragmentSequence36;
+        pSender->m_pPendingFragmentedStream54 = pStream;
+    }
+
+    pbPayload = (unsigned char *)(unsigned long)pPayload->m_pPayloadBuffer08;
+    cbPayload = (unsigned int)(pPayload->m_nWriteCursor1c - pPayload->m_pPayloadBuffer08);
+    cbFragmentStep = g_cbEffTransportMaxPacketBytes - 0x10;
+    cFragments = (cbPayload + cbFragmentStep - 1) / (unsigned int)cbFragmentStep;
+
+    if (pSender->m_nPendingFragmentIndex5c != 0) {
+        pbPayload += cbFragmentStep * pSender->m_nPendingFragmentIndex5c;
+        cbPayload -= cbFragmentStep * pSender->m_nPendingFragmentIndex5c;
+    }
+
+    pHeader = (NETWORK_EffTransportPacketHeader *)(unsigned long)pSender->m_pPacketHeader2c;
+    pHeader->m_wSequence0a = (unsigned short)pSender->m_nPendingFragmentSequence58;
+
+    iFragmentsSent = 0;
+    while ((unsigned int)pSender->m_nPendingFragmentIndex5c < cFragments && iFragmentsSent < 9) {
+        pHeader->m_wFragmentIndex0c = (unsigned short)pSender->m_nPendingFragmentIndex5c;
+        cbPacket = g_cbEffTransportMaxPacketBytes;
+        if (cbPayload < cbPacket) {
+            cbPacket = cbPayload;
+        }
+
+        if (pSender->m_nPendingFragmentIndex5c == 0) {
+            SaveEffStreamToMemoryRange(pPayloadSender, (int)(unsigned long)pbPayload, 0);
+            nSendResult = pSender->m_pVtable->m_pSendPayload(pSender, pbPayload, (int)cbPacket);
+        } else {
+            pSender->m_aFragmentPrefixWords60[0] = *(unsigned int *)(unsigned long)(pbPayload + 0);
+            pSender->m_aFragmentPrefixWords60[1] = *(unsigned int *)(unsigned long)(pbPayload + 4);
+            pSender->m_aFragmentPrefixWords60[2] = *(unsigned int *)(unsigned long)(pbPayload + 8);
+            pSender->m_aFragmentPrefixWords60[3] = *(unsigned int *)(unsigned long)(pbPayload + 12);
+            SaveEffStreamToMemoryRange(pPayloadSender, (int)(unsigned long)pbPayload, 0);
+            nSendResult = pSender->m_pVtable->m_pSendPayload(pSender, pbPayload, (int)cbPacket);
+            *(unsigned int *)(unsigned long)(pbPayload + 0) = pSender->m_aFragmentPrefixWords60[0];
+            *(unsigned int *)(unsigned long)(pbPayload + 4) = pSender->m_aFragmentPrefixWords60[1];
+            *(unsigned int *)(unsigned long)(pbPayload + 8) = pSender->m_aFragmentPrefixWords60[2];
+            *(unsigned int *)(unsigned long)(pbPayload + 12) = pSender->m_aFragmentPrefixWords60[3];
+        }
+
+        if (nSendResult == 0) {
+            break;
+        }
+
+        pbPayload += cbPacket - 0x10;
+        cbPayload = cbPayload - cbPacket + 0x10;
+        ++pSender->m_nPendingFragmentIndex5c;
+        ++iFragmentsSent;
+    }
+
+    if ((unsigned int)pSender->m_nPendingFragmentIndex5c == cFragments) {
+        pSender->m_nPendingFragmentIndex5c = -1;
+        return 1;
+    }
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x004600D0
+int SendEffStreamPayloadWithTransportHeader(void *pPayloadSender, int nStream) {
+    NETWORK_PeerPayloadSenderState *pSender;
+    NETWORK_PeerPayloadSenderStateOffsets *pOffsets;
+    NETWORK_EffTransportPacketHeader *pHeader;
+    NETWORK_EffStreamPayloadState *pPayload;
+    void *pvPayload;
+    int cbPayload;
+
+    pSender = (NETWORK_PeerPayloadSenderState *)pPayloadSender;
+    pOffsets = pSender->m_pOffsets44;
+    if (*(int *)((char *)pSender + pOffsets->m_nSendStateBaseOffset04 + 0x68) == 0) {
+        return 0;
+    }
+
+    pPayload = (NETWORK_EffStreamPayloadState *)(unsigned long)nStream;
+    if (pPayload->m_fBusy28 == 0) {
+        pPayload->m_fBusy28 = 1;
+    }
+
+    pHeader = (NETWORK_EffTransportPacketHeader *)(unsigned long)pSender->m_pPacketHeader2c;
+    pvPayload = (void *)(unsigned long)pPayload->m_pPayloadBuffer08;
+    cbPayload = pPayload->m_nWriteCursor1c - pPayload->m_pPayloadBuffer08;
+    pHeader->m_cbPayload04 = cbPayload;
+    pHeader->m_nStreamEvent08 = (unsigned short)pPayload->m_nEventCode04;
+
+    if ((unsigned int)cbPayload > (unsigned int)g_cbEffTransportMaxPacketBytes) {
+        if (pSender->m_nPendingFragmentIndex5c == -1) {
+            cbPayload = SendFragmentedEffTransportPayload(pSender, pPayload);
+        } else {
+            pPayload->m_fBusy28 = 0;
+            cbPayload = 0;
+        }
+    } else {
+        pHeader->m_wFragmentIndex0c = 0x100;
+        if (pPayload->m_fReliable24 == 0) {
+            ++pSender->m_wUnreliableSequence32;
+            pHeader->m_wSequence0a = pSender->m_wUnreliableSequence32;
+            pHeader->m_fReliable0e = 0;
+            SaveEffStreamToMemoryRange(pPayloadSender, (int)(unsigned long)pvPayload, 0);
+            cbPayload = pSender->m_pVtable->m_pSendPayload(pSender, pvPayload, pHeader->m_cbPayload04);
+        } else {
+            ++pSender->m_wReliableSequence30;
+            pHeader->m_wSequence0a = pSender->m_wReliableSequence30;
+            cbPayload = SendReliableEffTransportPayload(pSender, pPayload);
+        }
+    }
+
+    pPayload->m_fBusy28 = 0;
+    return cbPayload;
+}
 
 // FUNCTION: LEMBALL 0x00460A40
 void ClearEffTransportSendGate(int nOwner) {
     ((NETWORK_ChannelOwnerObject *)(unsigned long)nOwner)->m_nSendGate = 0;
+}
+
+// FUNCTION: LEMBALL 0x00460260
+void ClearEffTransportPendingWriteState(int nAdjustedObject) {
+    if (*(int *)(unsigned long)(nAdjustedObject - 0x1c) != -1) {
+        *(int *)(unsigned long)(nAdjustedObject - 0x1c) = -1;
+        *(int *)(*(int *)(unsigned long)(nAdjustedObject - 0x24) + 0x28) = 0;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00460280
+void ServiceEffTransportRetries(void *pObject) {
+    NETWORK_PeerPayloadSenderState *pSender;
+    NETWORK_SimpleEffTransportRecordSlotTable *pRecordTable;
+    NETWORK_SimpleEffTransportRecordSlot *pRecord;
+    DWORD dwNow;
+    int i;
+    int cRecords;
+    int nSendStateBase;
+
+    pSender = (NETWORK_PeerPayloadSenderState *)pObject;
+    nSendStateBase = pSender->m_pOffsets44->m_nSendStateBaseOffset04;
+    if (*(int *)((char *)pSender + nSendStateBase + 0x68) == 0 || *(int *)((char *)pSender + nSendStateBase + 0x50) == 0) {
+        return;
+    }
+
+    if (pSender->m_nPendingFragmentIndex5c != -1 && SendFragmentedEffTransportPayload(pSender, pSender->m_pPendingFragmentedStream54) != 0) {
+        ((NETWORK_EffStreamPayloadState *)pSender->m_pPendingFragmentedStream54)->m_fBusy28 = 0;
+    }
+
+    i = 0;
+    pRecordTable = pSender->m_pRecordTable4c;
+    cRecords = pRecordTable->m_cRecords;
+    while (1) {
+        if (cRecords <= i) {
+            if (*(int *)((char *)pSender + nSendStateBase + 0x5c) == 0) {
+                return;
+            }
+
+            dwNow = timeGetTime();
+            if (dwNow - pSender->m_dwLastGlobalWriteTick38 < 0x3e9) {
+                return;
+            }
+
+            SendEffStreamPayloadWithTransportHeader(pSender, (int)(unsigned long)g_pEffTransportGlobalWriteStream);
+            return;
+        }
+
+        pRecord = pRecordTable->m_apRecords08[i % cRecords];
+        if (pRecord->m_fAvailable08 == 0) {
+            dwNow = timeGetTime();
+            if (1000 < dwNow - pRecord->m_dwLastRetryTick10) {
+                if (*(unsigned int *)((char *)g_pActiveNetworkRuntimeWindow + 0x60) == 0 ||
+                    pRecord->m_cRetryCount14 != *(unsigned char *)((char *)g_pActiveNetworkRuntimeWindow + 0x60)) {
+                    RetryPendingEffTransportRecord(pSender, (int)(unsigned long)pRecord);
+                    ++i;
+                    continue;
+                }
+
+                pRecord->m_fAvailable08 = 1;
+                ((NETWORK_EffTransportHandleCallback *)
+                     (*(int *)((char *)pSender + nSendStateBase + 0x44)))->m_pVtable->m_pNotifyClosed(1);
+            }
+        }
+        ++i;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00460D70
+void QueueEffTransportConnectEvent(int nObjectBasePlus0xd8) {
+    NETWORK_EffDispatchEvent kEvent;
+    NETWORK_RuntimeWindowSendGateState *pWindowState;
+    DWORD dwNow;
+    int nOwnerBase;
+
+    kEvent.m_nType = 3;
+    kEvent.m_nCode = 0;
+    kEvent.m_pStream = 0;
+    *(int *)(unsigned long)(nObjectBasePlus0xd8 - 0xb4) = 1;
+    *(int *)(*(int *)(*(int *)(nObjectBasePlus0xd8 - 0xd4) + 4) + nObjectBasePlus0xd8 - 0xc0) = 0;
+    nOwnerBase = *(int *)(*(int *)(nObjectBasePlus0xd8 - 0xd4) + 4) + nObjectBasePlus0xd8;
+    *(int *)(unsigned long)(nOwnerBase - 0xb8) = *(int *)(unsigned long)(nOwnerBase - 0xc0);
+    *(int *)(*(int *)(*(int *)(nObjectBasePlus0xd8 - 0xd4) + 4) + nObjectBasePlus0xd8 - 0xc4) = 1;
+    if (*(int *)(unsigned long)(nObjectBasePlus0xd8 - 0xbc) != 0) {
+        *(int *)(*(int *)(*(int *)(nObjectBasePlus0xd8 - 0xd4) + 4) + nObjectBasePlus0xd8 - 0xbc) = 1;
+        dwNow = timeGetTime();
+        *(DWORD *)(*(int *)(*(int *)(nObjectBasePlus0xd8 - 0xd4) + 8) + nObjectBasePlus0xd8 - 0x98) = dwNow - 1000;
+        dwNow = timeGetTime();
+        *(DWORD *)(*(int *)(*(int *)(nObjectBasePlus0xd8 - 0xd4) + 0xc) + nObjectBasePlus0xd8 - 0x98) = dwNow;
+        pWindowState = (NETWORK_RuntimeWindowSendGateState *)g_pActiveNetworkRuntimeWindow;
+        if (pWindowState->m_fSendGateActive30 != 0) {
+            ClearEffTransportSendGate(pWindowState->m_nChannelOwner24);
+        }
+    }
+    ((void (*)(NETWORK_EffDispatchEvent *))(*(void ***)g_pEffTransportDispatchQueue)[2])(&kEvent);
 }
 
 // FUNCTION: LEMBALL 0x00460A50
@@ -939,6 +1574,34 @@ int SendEffStreamToActivePeer(void *pPeer, int *pStream) {
     return 0;
 }
 
+// FUNCTION: LEMBALL 0x00460F60
+void *DispatchAckedEffTransportPayloadEvent(int nObjectBasePlus0x60) {
+    NETWORK_EffDispatchEvent kEvent;
+    void *pPayload;
+
+    pPayload = ClaimAckedEffTransportRecordPayload((void *)(*(int *)(*(int *)(nObjectBasePlus0x60 - 0x5c) + 8) +
+                                                           nObjectBasePlus0x60 - 0x5c));
+    if (pPayload != 0) {
+        kEvent.m_nType = 6;
+        kEvent.m_nCode = 0;
+        kEvent.m_pStream = (int *)pPayload;
+        kEvent.m_pPeer = 0;
+        ((void (*)(NETWORK_EffDispatchEvent *))(*(void ***)g_pEffTransportSecondaryDispatchQueue)[2])(&kEvent);
+    }
+    return pPayload;
+}
+
+// FUNCTION: LEMBALL 0x00460FF0
+void QueueEffTransportPayloadEvent(void *pObject, unsigned short nType, void *pPayload) {
+    NETWORK_EffDispatchEvent kEvent;
+
+    kEvent.m_nType = nType;
+    kEvent.m_nCode = 0;
+    kEvent.m_pStream = (int *)pPayload;
+    kEvent.m_pPeer = 0;
+    ((void (*)(NETWORK_EffDispatchEvent *))(*(void ***)g_pEffTransportSecondaryDispatchQueue)[2])(&kEvent);
+}
+
 // FUNCTION: LEMBALL 0x00462460
 void ForwardEffTransportFailedConnect(void *pRuntimeState, void *pPeerKey) {
     NETWORK_EffTransportRuntimeState *pState;
@@ -979,6 +1642,108 @@ void DispatchEffTransportConnectControlStream(void *pRuntimeState, void *pPeerKe
     if (LoadEffStreamFromMemory(g_pEffTransportFailedConnectControlStream, nSourceBuffer) != 0) {
         ForwardEffTransportFailedConnect(pRuntimeState, pPeerKey);
     }
+}
+
+// FUNCTION: LEMBALL 0x00460610
+void ConfigureEffTransportConnectHostString(void *pObject, void *pHostName) {
+    void (**ppVtable)(void);
+
+    if (*(void **)((char *)pObject + 0x1c) != 0) {
+        FreeVSMemBlock(*(void **)((char *)pObject + 0x1c));
+        *(void **)((char *)pObject + 0x1c) = 0;
+    }
+
+    *(int *)((char *)pObject + 0xc) = 2;
+    ppVtable = *(void (***) (void))pObject;
+    ((void (*)(void *))ppVtable[2])(pHostName);
+}
+
+// FUNCTION: LEMBALL 0x00460650
+void PrepareEffTransportBroadcastStatusPayload(void *pObject, char *pszHostName) {
+    NETWORK_HandleGroupAdjustorSlot *pAdjustorSlot;
+    char szNumber[16];
+    char *pszTarget;
+    int cbText;
+
+    pAdjustorSlot =
+        (NETWORK_HandleGroupAdjustorSlot *)((char *)pObject + ((NETWORK_EffTransportPeer *)pObject)->m_pOffsets->m_nHandleGroupAdjustorSlotOffset);
+    ConfigureEffStreamPrimaryHandleGroup((char *)&pAdjustorSlot->m_Adjustor + pAdjustorSlot->m_Adjustor.m_pOffsets->m_nHandleStreamOffset,
+                                         3, 3, 0);
+    ReleaseTimedEffStreamPrimaryHandle((int)(unsigned long)((char *)&pAdjustorSlot->m_Adjustor +
+                                                            pAdjustorSlot->m_Adjustor.m_pOffsets->m_nTimedStreamOffset));
+
+    pAdjustorSlot =
+        (NETWORK_HandleGroupAdjustorSlot *)((char *)pObject + ((NETWORK_EffTransportPeer *)pObject)->m_pOffsets->m_nHandleGroupAdjustorSlotOffset);
+    ConfigureEffStreamSecondaryHandleGroup((char *)&pAdjustorSlot->m_Adjustor + pAdjustorSlot->m_Adjustor.m_pOffsets->m_nHandleStreamOffset,
+                                           1, 0);
+    ConfigureTimedEffStreamSecondaryHandle((char *)&pAdjustorSlot->m_Adjustor +
+                                               pAdjustorSlot->m_Adjustor.m_pOffsets->m_nTimedStreamOffset,
+                                           1);
+
+    if (g_pszEffTransportBroadcastStatusPayload == 0) {
+        g_pszEffTransportBroadcastStatusPayload = (char *)AllocateVSMemBlock(0x410);
+        pszTarget = g_pszEffTransportBroadcastStatusPayload + 0x10;
+
+        strcpy(pszTarget, "ViSOS VSNET v");
+        FormatSignedIntToRadixString(*(int *)0x004A1E08, szNumber, 10);
+        strcat(pszTarget, szNumber);
+        strcat(pszTarget, ".");
+        FormatSignedIntToRadixString(*(int *)0x004A1E0C, szNumber, 10);
+        strcat(pszTarget, szNumber);
+        strcat(pszTarget, " ");
+        strcat(pszTarget, pszHostName);
+        strcat(pszTarget, " is Broadcasting.");
+
+        cbText = (int)strlen(pszTarget);
+        g_cbEffTransportBroadcastStatusPayload = cbText;
+    }
+}
+
+// FUNCTION: LEMBALL 0x004607F0
+void ReleaseGlobalEffTransportBuffer(void *pObject) {
+    NETWORK_EndpointState *pEndpointState;
+
+    if (g_pszFileBasedNetworkLocalHostName != 0) {
+        FreeVSMemBlock(g_pszFileBasedNetworkLocalHostName);
+        g_pszFileBasedNetworkLocalHostName = 0;
+    }
+
+    pEndpointState =
+        (NETWORK_EndpointState *)((char *)pObject + *(int *)(*(int *)((char *)pObject + 4) + 4) + 4);
+    ResetEffTransportHandleGroup((int *)pEndpointState);
+}
+
+// FUNCTION: LEMBALL 0x00460830
+void DispatchPrefixedEffTransportControlStream(void *pObject, int nDispatchType, void *pEvent) {
+    int nIsLocalPeer;
+    int nPayloadBuffer;
+
+    ((void (*)(void))**(void ***)g_pEffTransportPeerAddressState)();
+    nIsLocalPeer =
+        ((NETWORK_RuntimeServiceObject *)g_pEffTransportPeerAddressState)->m_pVtable->m_pValidatePeerKey(g_pEffTransportRuntimeService);
+
+    nPayloadBuffer = *(int *)((char *)pEvent + 4);
+
+    if (nIsLocalPeer == 0 &&
+        ((*(int *)((char *)pObject - 0xc0) != 2 ||
+          (*(int *)((char *)pObject - 0xb0) != 0 &&
+           ((NETWORK_RuntimeServiceObject *)g_pEffTransportPeerAddressState)->m_pVtable->m_pValidatePeerKey(
+               *(void **)((char *)pObject - 0xb0)) != 0)) &&
+         strncmp((char *)(nPayloadBuffer + 0x10), g_pszEffTransportBroadcastStatusPayload + 0x10,
+                 g_cbEffTransportBroadcastStatusPayload + 1) == 0)) {
+        DispatchEffTransportConnectControlStream(g_pActiveNetworkRuntimeWindow, g_pEffTransportPeerAddressState,
+                                                 nPayloadBuffer + g_cbEffTransportBroadcastStatusPayload + 0x11);
+    }
+
+    if (nDispatchType == 7) {
+        *(void **)((char *)pEvent + 0x24) = 0;
+    }
+}
+
+// FUNCTION: LEMBALL 0x004608F0
+void LoadEffStreamFromGlobalRange(void *pStream) {
+    SaveEffStreamToMemoryRange(pStream, (int)(unsigned long)g_pszEffTransportBroadcastStatusPayload,
+                               g_cbEffTransportBroadcastStatusPayload + 0x11);
 }
 
 // FUNCTION: LEMBALL 0x00462730
@@ -1530,7 +2295,7 @@ void ConfigureFileBasedNetworkPaths(char *pszLocalHost, char *pszBasePath) {
 }
 
 // FUNCTION: LEMBALL 0x0046F7A0
-void ConfigureFileBasedNetworkPathsWrapper(char *pszLocalHost, char *pszBasePath) {
+void WINAPI ConfigureFileBasedNetworkPathsWrapper(char *pszLocalHost, char *pszBasePath) {
     ConfigureFileBasedNetworkPaths(pszLocalHost, pszBasePath);
 }
 

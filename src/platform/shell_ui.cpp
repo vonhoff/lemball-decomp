@@ -212,9 +212,12 @@ char *BuildSystemInformationReportString(void) {
     DWORD dwVersion;
     unsigned char bMinorVersion;
     unsigned int cchAudioDescription;
+    int cchBuffer;
     unsigned int cchCopyDwords;
     char *pszAudioDescription;
     char *pszAudioSource;
+    char *pszAudioTarget;
+    char *pszBuffer;
     char *pszTarget;
     char szOperatingSystem[256];
 
@@ -249,26 +252,32 @@ char *BuildSystemInformationReportString(void) {
     pszAudioDescription = BuildAudioManagerDescriptionString(g_pAudioManager);
     cchAudioDescription = 0xffffffffu;
     do {
-        pszAudioSource = pszAudioDescription;
+        pszAudioTarget = pszAudioDescription;
         if (cchAudioDescription == 0) {
             break;
         }
         --cchAudioDescription;
-        pszAudioSource = pszAudioDescription + 1;
+        pszAudioTarget = pszAudioDescription + 1;
         chTerminator = *pszAudioDescription;
-        pszAudioDescription = pszAudioSource;
+        pszAudioDescription = pszAudioTarget;
     } while (chTerminator != '\0');
 
     cchAudioDescription = ~cchAudioDescription;
-    pszTarget = g_AboutSystemInfoBuffer;
+    cchBuffer = -1;
+    pszBuffer = g_AboutSystemInfoBuffer;
     do {
-        pszAudioDescription = pszTarget;
-        pszTarget = pszTarget + 1;
-        chTerminator = *pszAudioDescription;
+        pszTarget = pszBuffer;
+        if (cchBuffer == 0) {
+            break;
+        }
+        cchBuffer = cchBuffer + -1;
+        pszTarget = pszBuffer + 1;
+        chTerminator = *pszBuffer;
+        pszBuffer = pszTarget;
     } while (chTerminator != '\0');
-    --pszTarget;
 
-    pszAudioSource = pszAudioSource - cchAudioDescription;
+    pszAudioSource = pszAudioTarget - cchAudioDescription;
+    pszTarget = pszTarget - 1;
     cchCopyDwords = cchAudioDescription >> 2;
     while (cchCopyDwords != 0) {
         *(u32 *)pszTarget = *(u32 *)pszAudioSource;

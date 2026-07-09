@@ -78,9 +78,92 @@ struct VSGDI_HelperTargetParamWrapper {
     int m_nReserved;
 };
 
+struct VSGDI_ResourceGeometryHelperSlot {
+    int m_nOwnerOrState0;
+    int m_nOwnerOrState4;
+    int m_nOwnerOrState8;
+    int m_nOwnerOrStateC;
+    int m_nOwnerOrState10;
+    int m_fAvailable;
+    int m_nOwnerOrState18;
+};
+
+struct VSGDI_ResourceGeometryHelperSlotManager {
+    void *m_pVtable;
+    VSGDI_ResourceGeometryHelperSlot *m_pSlots;
+    int m_nReserved08;
+    int m_nReserved0C;
+    int m_cSlots;
+};
+
+struct VSGDI_ResourceGeometryLinkNode {
+    void *m_pTarget;
+    VSGDI_ResourceGeometryLinkNode *m_pPrev;
+    VSGDI_ResourceGeometryLinkNode *m_pNext;
+};
+
+struct VSGDI_ResourceGeometryLinkList {
+    VSGDI_ResourceGeometryLinkNode *m_pTail;
+    VSGDI_ResourceGeometryLinkNode *m_pHead;
+    int m_cNodes;
+};
+
+struct VSGDI_CompactResourceGeometryHelperFields {
+    unsigned char m_abReserved00[0x3c];
+    int m_nThisAdjust;
+    void *m_pVtable;
+    unsigned char m_abReserved44[0x1c];
+    void *m_pLinkedTarget;
+    unsigned char m_abReserved64[0xc];
+    int m_nQueuedState;
+};
+
+struct VSGDI_ResourceGeometryHelperTargetView {
+    unsigned char m_abRowBuffer[0x44];
+    unsigned char m_abHelperGroup1[0x54];
+    unsigned char m_abHelperGroup0[0x54];
+    short m_nReservedEC;
+    short m_nReservedEE;
+    void *m_pBackingBitmap;
+    int m_nReservedF4;
+    void *m_pDisplayBinding;
+    unsigned char m_abReservedFC[0x42c];
+    VSGDI_ResourceGeometryLinkList m_ChildTargetLinks;
+    unsigned char m_abCriticalSection[0x18];
+    int m_fCriticalSectionReady;
+    int m_nActiveUploadState;
+    unsigned char m_abReserved554[8];
+};
+
+struct VSGDI_HelperSurfaceVariableBlock {
+    unsigned char m_abReserved00[0x4c];
+    short m_aRequestedRect[4];
+    short m_aWorkingRect[4];
+    int m_nReserved5C;
+    void *m_pLinkedTarget;
+    short m_aBackingRect[2];
+    unsigned char m_abReserved68[0x18];
+    int m_nBackingWidthHint;
+};
+
+struct VSGDI_HelperSurfaceBindingSurface {
+    void **m_pVtable;
+    unsigned char m_abReserved04[0x10];
+    short m_nOriginY;
+    short m_nOriginX;
+};
+
+struct VSGDI_HelperDispatchQueue {
+    void **m_ppEntries;
+    int m_cEntries;
+    int m_nReserved08;
+    VSGDI_HelperSurface *m_pHelperTarget;
+};
+
 extern void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile, int nLine);
 extern int g_fRootHelperGeometryDispatchSuppressed;
 extern void *g_pQueuedRenderPointSinkFinalizeThunk;
+static int GetHelperSurfaceVariableBlockOffset(const VSGDI_HelperSurface *pSurface);
 
 static void ReleaseResourceGeometryRowBufferStorage(int nRowBuffer) {
     if (*(int *)(unsigned long)(nRowBuffer + 4) != 0) {
@@ -96,29 +179,31 @@ static void ResetHelperUploadStateMap(int) {
 // FUNCTION: LEMBALL 0x004663D0
 void *InitializeCompactResourceGeometryHelper(void *pvHelper) {
     int *pHelper;
+    unsigned short wZero;
 
     pHelper = (int *)pvHelper;
-    *(short *)((char *)pHelper + 6) = 0;
-    *(short *)(pHelper + 1) = 0;
-    *(short *)((char *)pHelper + 10) = 0;
-    *(short *)(pHelper + 2) = 0;
-    *(short *)((char *)pHelper + 0xe) = 0;
-    *(short *)(pHelper + 3) = 0;
-    *(short *)((char *)pHelper + 0x12) = 0;
-    *(short *)(pHelper + 4) = 0;
-    *(short *)((char *)pHelper + 0x16) = 0;
-    *(short *)(pHelper + 5) = 0;
-    *(short *)((char *)pHelper + 0x1a) = 0;
-    *(short *)(pHelper + 6) = 0;
-    *(short *)((char *)pHelper + 0x1e) = 0;
-    *(short *)(pHelper + 7) = 0;
+    wZero = 0;
+    *(unsigned short *)((char *)pHelper + 6) = wZero;
+    *(unsigned short *)(pHelper + 1) = wZero;
+    *(unsigned short *)((char *)pHelper + 10) = wZero;
+    *(unsigned short *)(pHelper + 2) = wZero;
+    *(unsigned short *)((char *)pHelper + 0xe) = wZero;
+    *(unsigned short *)(pHelper + 3) = wZero;
+    *(unsigned short *)((char *)pHelper + 0x12) = wZero;
+    *(unsigned short *)(pHelper + 4) = wZero;
+    *(unsigned short *)((char *)pHelper + 0x16) = wZero;
+    *(unsigned short *)(pHelper + 5) = wZero;
+    *(unsigned short *)((char *)pHelper + 0x1a) = wZero;
+    *(unsigned short *)(pHelper + 6) = wZero;
+    *(unsigned short *)((char *)pHelper + 0x1e) = wZero;
+    *(unsigned short *)(pHelper + 7) = wZero;
     *pHelper = (int)(unsigned long)&g_VSGDI_CompactResourceGeometryHelperVtable;
     pHelper[0xf] = 1;
-    *(short *)((char *)pHelper + 0x26) = 0;
+    *(unsigned short *)((char *)pHelper + 0x26) = wZero;
     pHelper[0x10] = 0;
-    *(short *)(pHelper + 9) = 0;
-    *(short *)((char *)pHelper + 0x2a) = 0;
-    *(short *)(pHelper + 10) = 0;
+    *(unsigned short *)(pHelper + 9) = wZero;
+    *(unsigned short *)((char *)pHelper + 0x2a) = wZero;
+    *(unsigned short *)(pHelper + 10) = wZero;
     return pHelper;
 }
 
@@ -154,9 +239,9 @@ void *ConstructHelperGroup1RowBuffer(void *pvHelperGroup, int fConstructCompactH
     }
     InitializeResourceGeometryRowBuffer((char *)pHelperGroup + 8);
     *(void **)pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup1Vtable;
-    *(void ***)(unsigned long)(*(int *)((char *)(unsigned long)pHelperGroup[1] + 4) + 4 + (int)(unsigned long)pHelperGroup) =
-        (void **)&g_VSGDI_ResourceGeometryHelperGroup1CompactSubobjectVtable;
     iCompactDelta = *(int *)((char *)(unsigned long)pHelperGroup[1] + 4);
+    *(void **)((char *)pHelperGroup + 4 + iCompactDelta) =
+        (void *)&g_VSGDI_ResourceGeometryHelperGroup1CompactSubobjectVtable;
     *(int *)((char *)pHelperGroup + iCompactDelta) = iCompactDelta - 0x54;
     *(short *)((char *)pHelperGroup + 0x50) = 0;
     *(int *)((char *)pHelperGroup + 0x48) = 0;
@@ -177,9 +262,9 @@ void *ConstructHelperGroup0RowBuffer(void *pvHelperGroup, int fConstructCompactH
     }
     InitializeResourceGeometryRowBuffer((char *)pHelperGroup + 8);
     *(void **)pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup0Vtable;
-    *(void ***)(unsigned long)(*(int *)((char *)(unsigned long)pHelperGroup[1] + 4) + 4 + (int)(unsigned long)pHelperGroup) =
-        (void **)&g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable;
     iCompactDelta = *(int *)((char *)(unsigned long)pHelperGroup[1] + 4);
+    *(void **)((char *)pHelperGroup + 4 + iCompactDelta) =
+        (void *)&g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable;
     *(int *)((char *)pHelperGroup + iCompactDelta) = iCompactDelta - 0x54;
     *(short *)((char *)pHelperGroup + 0x50) = 0;
     *(int *)((char *)pHelperGroup + 0x4c) = 0;
@@ -221,34 +306,31 @@ void ResetHelperUploadRectListAndStateMap(int nUploadState) {
 
 // FUNCTION: LEMBALL 0x0046BC00
 void *InitializeResourceGeometryHelperSlotManager(void *pvSlotManager, int cSlots) {
-    int cbSlots;
-    int iSlotOffset;
-    int *pSlotManager;
-    int fEnabled;
-    int i;
+    VSGDI_ResourceGeometryHelperSlotManager *pSlotManager;
+    VSGDI_ResourceGeometryHelperSlot *pSlot;
+    int cRemaining;
 
-    pSlotManager = (int *)pvSlotManager;
-    *(void **)pSlotManager = &g_VSGDI_ResourceGeometryHelperSlotManagerVtable;
-    cbSlots = ((cSlots * 8) - cSlots) * 4;
-    pSlotManager[1] = (int)(unsigned long)AllocateVSMemBlock((unsigned int)cbSlots);
-    pSlotManager[4] = cSlots;
-    pSlotManager[2] = 0;
-    pSlotManager[3] = 0;
+    pSlotManager = (VSGDI_ResourceGeometryHelperSlotManager *)pvSlotManager;
+    pSlotManager->m_pVtable = &g_VSGDI_ResourceGeometryHelperSlotManagerVtable;
+    pSlotManager->m_pSlots =
+        (VSGDI_ResourceGeometryHelperSlot *)AllocateVSMemBlock((unsigned int)(cSlots * sizeof(*pSlotManager->m_pSlots)));
+    pSlotManager->m_cSlots = cSlots;
+    pSlotManager->m_nReserved08 = 0;
+    pSlotManager->m_nReserved0C = 0;
     if (0 < cSlots) {
-        iSlotOffset = 0;
-        fEnabled = 1;
-        i = cSlots;
+        pSlot = pSlotManager->m_pSlots;
+        cRemaining = cSlots;
         do {
-            iSlotOffset = iSlotOffset + 0x1c;
-            --i;
-            *(int *)((char *)(unsigned long)pSlotManager[1] + iSlotOffset - 0x1c) = 0;
-            *(int *)((char *)(unsigned long)pSlotManager[1] + iSlotOffset - 0x14) = 0;
-            *(int *)((char *)(unsigned long)pSlotManager[1] + iSlotOffset - 0x18) = 0;
-            *(int *)((char *)(unsigned long)pSlotManager[1] + iSlotOffset - 0xc) = 0;
-            *(int *)((char *)(unsigned long)pSlotManager[1] + iSlotOffset - 0x10) = 0;
-            *(int *)((char *)(unsigned long)pSlotManager[1] + iSlotOffset - 8) = fEnabled;
-            *(int *)((char *)(unsigned long)pSlotManager[1] + iSlotOffset - 4) = 0;
-        } while (i != 0);
+            pSlot->m_nOwnerOrState0 = 0;
+            pSlot->m_nOwnerOrState8 = 0;
+            pSlot->m_nOwnerOrState4 = 0;
+            pSlot->m_nOwnerOrState10 = 0;
+            pSlot->m_nOwnerOrStateC = 0;
+            pSlot->m_fAvailable = 1;
+            pSlot->m_nOwnerOrState18 = 0;
+            ++pSlot;
+            --cRemaining;
+        } while (cRemaining != 0);
     }
     g_pResourceGeometryHelperTarget = 0;
     return pSlotManager;
@@ -256,43 +338,43 @@ void *InitializeResourceGeometryHelperSlotManager(void *pvSlotManager, int cSlot
 
 // FUNCTION: LEMBALL 0x0046BC90
 void DestroyResourceGeometryHelperSlotManager(void *pvSlotManager) {
-    int *pSlotManager;
+    VSGDI_ResourceGeometryHelperSlotManager *pSlotManager;
+    VSGDI_ResourceGeometryHelperSlot *pSlot;
     int i;
-    int iSlotOffset;
 
-    pSlotManager = (int *)pvSlotManager;
-    *(void **)pSlotManager = &g_VSGDI_ResourceGeometryHelperSlotManagerVtable;
+    pSlotManager = (VSGDI_ResourceGeometryHelperSlotManager *)pvSlotManager;
+    pSlotManager->m_pVtable = &g_VSGDI_ResourceGeometryHelperSlotManagerVtable;
     i = 0;
-    if (0 < pSlotManager[4]) {
-        iSlotOffset = 0;
+    if (0 < pSlotManager->m_cSlots) {
+        pSlot = pSlotManager->m_pSlots;
         do {
-            if (*(int *)((char *)(unsigned long)pSlotManager[1] + iSlotOffset + 0x14) == 0) {
+            if (pSlot->m_fAvailable == 0) {
                 AppendErrorCString(g_VSGDI_UnallocatedHelperSlotMessage);
             }
-            iSlotOffset = iSlotOffset + 0x1c;
+            ++pSlot;
             ++i;
-        } while (i < pSlotManager[4]);
+        } while (i < pSlotManager->m_cSlots);
     }
-    FreeVSMemBlock((void *)(unsigned long)pSlotManager[1]);
+    FreeVSMemBlock(pSlotManager->m_pSlots);
 }
 
 // FUNCTION: LEMBALL 0x0046BCE0
 int FindFirstFreeResourceGeometryHelperSlotIndex(void *pvSlotManager) {
-    int *pSlotManager;
-    int *piSlotState;
+    VSGDI_ResourceGeometryHelperSlotManager *pSlotManager;
+    VSGDI_ResourceGeometryHelperSlot *pSlot;
     int i;
 
-    pSlotManager = (int *)pvSlotManager;
+    pSlotManager = (VSGDI_ResourceGeometryHelperSlotManager *)pvSlotManager;
     i = 0;
-    if (0 < pSlotManager[4]) {
-        piSlotState = (int *)((char *)(unsigned long)pSlotManager[1] + 0x14);
+    if (0 < pSlotManager->m_cSlots) {
+        pSlot = pSlotManager->m_pSlots;
         do {
-            if (*piSlotState != 0) {
+            if (pSlot->m_fAvailable != 0) {
                 return i;
             }
-            piSlotState = piSlotState + 7;
-            i = i + 1;
-        } while (i < pSlotManager[4]);
+            ++pSlot;
+            ++i;
+        } while (i < pSlotManager->m_cSlots);
     }
     return -1;
 }
@@ -300,10 +382,11 @@ int FindFirstFreeResourceGeometryHelperSlotIndex(void *pvSlotManager) {
 // FUNCTION: LEMBALL 0x0046C5D0
 void *ConstructResourceGeometryHelperTarget(void *pvTarget, int nWrappedParam, int fConstructCompactHelper) {
     int iCompactDelta;
+    VSGDI_CompactResourceGeometryHelperFields *pCompactHelper;
     VSGDI_HelperTargetParamWrapper *pParamWrapper;
-    int *pTarget;
+    VSGDI_ResourceGeometryHelperTargetView *pTarget;
 
-    pTarget = (int *)pvTarget;
+    pTarget = (VSGDI_ResourceGeometryHelperTargetView *)pvTarget;
     if (fConstructCompactHelper != 0) {
         *(void **)((char *)pTarget + 0x40) = (void *)0x499de8;
         *(void **)((char *)pTarget + 0x48) = (void *)0x499de0;
@@ -312,38 +395,37 @@ void *ConstructResourceGeometryHelperTarget(void *pvTarget, int nWrappedParam, i
     }
     InitializeResourceGeometryRowBuffer(pTarget);
     *(void **)pTarget = &g_VSGDI_ResourceGeometryHelperTargetConstructionVtable;
-    *(void ***)(unsigned long)(*(int *)((char *)(unsigned long)pTarget[0x10] + 4) + 0x40 + (int)(unsigned long)pTarget) =
-        (void **)&g_VSGDI_CompactResourceGeometryHelperConstructionVtable;
+    iCompactDelta = *(int *)((char *)(unsigned long)*(int *)((char *)pTarget + 0x40) + 4);
+    pCompactHelper = (VSGDI_CompactResourceGeometryHelperFields *)((char *)pTarget + iCompactDelta);
+    pCompactHelper->m_pVtable = &g_VSGDI_CompactResourceGeometryHelperConstructionVtable;
     ConstructHelperGroup1RowBuffer((char *)pTarget + 0x44, 0);
     ConstructHelperGroup0RowBuffer((char *)pTarget + 0x98, 0);
-    *(short *)((char *)pTarget + 0xee) = 0;
-    *(int *)((char *)pTarget + 0x528) = 0;
-    *(short *)((char *)pTarget + 0xec) = 0;
-    *(int *)((char *)pTarget + 0x52c) = 0;
-    *(int *)((char *)pTarget + 0x530) = 0;
+    pTarget->m_nReservedEE = 0;
+    pTarget->m_ChildTargetLinks.m_pTail = 0;
+    pTarget->m_nReservedEC = 0;
+    pTarget->m_ChildTargetLinks.m_pHead = 0;
+    pTarget->m_ChildTargetLinks.m_cNodes = 0;
     *(void **)pTarget = &g_VSGDI_ResourceGeometryHelperTargetVtable;
     *(void **)((char *)pTarget + 0x44) = &g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable;
     *(void **)((char *)pTarget + 0x98) = &g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable;
-    *(void ***)(unsigned long)(*(int *)((char *)(unsigned long)pTarget[0x10] + 4) + 0x40 + (int)(unsigned long)pTarget) =
-        (void **)&g_VSGDI_CompactResourceGeometryHelperSubobjectVtable;
-    iCompactDelta = *(int *)((char *)(unsigned long)pTarget[0x10] + 4);
-    *(int *)((char *)pTarget + iCompactDelta + 0x3c) = iCompactDelta - 0x51c;
+    pCompactHelper->m_pVtable = &g_VSGDI_CompactResourceGeometryHelperSubobjectVtable;
+    pCompactHelper->m_nThisAdjust = iCompactDelta - 0x51c;
 
     pParamWrapper = (VSGDI_HelperTargetParamWrapper *)AllocateVSMemBlock(0xc);
     if (pParamWrapper == 0) {
-        *(int *)((char *)pTarget + 0xf8) = 0;
+        pTarget->m_pDisplayBinding = 0;
     } else {
         pParamWrapper->m_pVtable = &g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable;
         pParamWrapper->m_nWrappedParam = nWrappedParam;
         pParamWrapper->m_nReserved = 0;
-        *(VSGDI_HelperTargetParamWrapper **)((char *)pTarget + 0xf8) = pParamWrapper;
+        pTarget->m_pDisplayBinding = pParamWrapper;
     }
-    *(int *)((char *)pTarget + 0xf0) = 0;
-    *(int *)((char *)pTarget + 0x550) = 0;
-    *(int *)(unsigned long)(*(int *)((char *)(unsigned long)pTarget[0x10] + 4) + 0x60 + (int)(unsigned long)pTarget) = 0;
-    InitializeCriticalSection((char *)pTarget + 0x534);
-    *(int *)((char *)pTarget + 0x54c) = 1;
-    *(int *)(unsigned long)(*(int *)((char *)(unsigned long)pTarget[0x10] + 4) + 0x70 + (int)(unsigned long)pTarget) = 0;
+    pTarget->m_pBackingBitmap = 0;
+    pTarget->m_nActiveUploadState = 0;
+    pCompactHelper->m_pLinkedTarget = 0;
+    InitializeCriticalSection(pTarget->m_abCriticalSection);
+    pTarget->m_fCriticalSectionReady = 1;
+    pCompactHelper->m_nQueuedState = 0;
     return pTarget;
 }
 
@@ -355,165 +437,161 @@ void DestroyResourceGeometryRowBuffer(void *pvRowBuffer) {
 
 // FUNCTION: LEMBALL 0x004664B0
 void DestroyHelperGroup0RowBuffer(void *pvHelperGroup) {
+    int iCompactDelta;
     int *pHelperGroup;
     int *pRowBuffer;
 
     pHelperGroup = (int *)pvHelperGroup;
     *(void **)pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup0Vtable;
     pRowBuffer = pHelperGroup + 2;
-    *(void ***)(unsigned long)(*(int *)((char *)(unsigned long)pHelperGroup[1] + 4) - 4 + (int)(unsigned long)pRowBuffer) =
-        (void **)&g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable;
-    *(int *)(unsigned long)(*(int *)((char *)(unsigned long)pHelperGroup[1] + 4) - 8 + (int)(unsigned long)pRowBuffer) =
-        *(int *)((char *)(unsigned long)pHelperGroup[1] + 4) - 0x54;
+    iCompactDelta = *(int *)((char *)(unsigned long)pHelperGroup[1] + 4);
+    *(void **)((char *)pRowBuffer + iCompactDelta - 4) = (void *)&g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable;
+    *(int *)((char *)pRowBuffer + iCompactDelta - 8) = iCompactDelta - 0x54;
     DestroyResourceGeometryRowBuffer(pRowBuffer);
 }
 
 // FUNCTION: LEMBALL 0x004666E0
 void DestroyHelperGroup1RowBuffer(void *pvHelperGroup) {
+    int iCompactDelta;
     int *pHelperGroup;
     int *pRowBuffer;
 
     pHelperGroup = (int *)pvHelperGroup;
     *(void **)pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup1Vtable;
     pRowBuffer = pHelperGroup + 2;
-    *(void ***)(unsigned long)(*(int *)((char *)(unsigned long)pHelperGroup[1] + 4) - 4 + (int)(unsigned long)pRowBuffer) =
-        (void **)&g_VSGDI_ResourceGeometryHelperGroup1CompactSubobjectVtable;
-    *(int *)(unsigned long)(*(int *)((char *)(unsigned long)pHelperGroup[1] + 4) - 8 + (int)(unsigned long)pRowBuffer) =
-        *(int *)((char *)(unsigned long)pHelperGroup[1] + 4) - 0x54;
+    iCompactDelta = *(int *)((char *)(unsigned long)pHelperGroup[1] + 4);
+    *(void **)((char *)pRowBuffer + iCompactDelta - 4) = (void *)&g_VSGDI_ResourceGeometryHelperGroup1CompactSubobjectVtable;
+    *(int *)((char *)pRowBuffer + iCompactDelta - 8) = iCompactDelta - 0x54;
     DestroyResourceGeometryRowBuffer(pRowBuffer);
 }
 
+// FUNCTION: LEMBALL 0x0046C710
 void DestroyResourceGeometryHelperTarget(void *pvTarget) {
-    int iPreviousLink;
-    int iNextLink;
-    int iGlobalListHead;
-    int iLinkedTarget;
+    int iCompactDelta;
     int iCriticalSectionReady;
-    int *pLink;
-    unsigned int pNextNode;
-    int *pTarget;
+    unsigned int pFollowingNode;
+    VSGDI_CompactResourceGeometryHelperFields *pCompactHelper;
+    VSGDI_ResourceGeometryLinkList *pGlobalList;
+    VSGDI_ResourceGeometryLinkList *pLinkedTargetList;
+    VSGDI_ResourceGeometryLinkNode *pLink;
+    VSGDI_ResourceGeometryLinkNode *pNextNode;
+    VSGDI_ResourceGeometryLinkNode *pPreviousLink;
+    VSGDI_ResourceGeometryHelperTargetView *pLinkedTarget;
+    VSGDI_ResourceGeometryHelperTargetView *pTarget;
 
-    pTarget = (int *)pvTarget;
+    pTarget = (VSGDI_ResourceGeometryHelperTargetView *)pvTarget;
     *(void **)pTarget = &g_VSGDI_ResourceGeometryHelperTargetVtable;
-    pTarget[0x11] = (int)(unsigned long)&g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable;
-    pTarget[0x26] = (int)(unsigned long)&g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable;
-    *(void ***)(unsigned long)(*(int *)((char *)(unsigned long)pTarget[0x10] + 4) + 0x40 + (int)(unsigned long)pTarget) =
-        (void **)&g_VSGDI_CompactResourceGeometryHelperSubobjectVtable;
-    *(int *)(unsigned long)(*(int *)((char *)(unsigned long)pTarget[0x10] + 4) + 0x3c + (int)(unsigned long)pTarget) =
-        *(int *)((char *)(unsigned long)pTarget[0x10] + 4) - 0x51c;
+    *(void **)((char *)pTarget + 0x44) = &g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable;
+    *(void **)((char *)pTarget + 0x98) = &g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable;
+    iCompactDelta = *(int *)((char *)(unsigned long)*(int *)((char *)pTarget + 0x40) + 4);
+    pCompactHelper = (VSGDI_CompactResourceGeometryHelperFields *)((char *)pTarget + iCompactDelta);
+    pCompactHelper->m_pVtable = &g_VSGDI_CompactResourceGeometryHelperSubobjectVtable;
+    pCompactHelper->m_nThisAdjust = iCompactDelta - 0x51c;
 
-    iCriticalSectionReady = pTarget[0x153];
+    iCriticalSectionReady = pTarget->m_fCriticalSectionReady;
     if (iCriticalSectionReady != 0) {
-        EnterCriticalSection(pTarget + 0x14d);
+        EnterCriticalSection(pTarget->m_abCriticalSection);
     }
-    if (pTarget[0x3c] != 0) {
+    if (pTarget->m_pBackingBitmap != 0) {
         ((void (*)(void *, int, int))(*(void ***)g_pDisplayState)[0x28 / sizeof(void *)])(
-            g_pDisplayState, pTarget[0x3e], pTarget[0x3c]);
-        ((void (*)(void *, int))(*(void ***)g_pDisplayState)[0x14 / sizeof(void *)])(g_pDisplayState, pTarget[0x3c]);
-        pTarget[0x3c] = 0;
+            g_pDisplayState, (int)(unsigned long)pTarget->m_pDisplayBinding, (int)(unsigned long)pTarget->m_pBackingBitmap);
+        ((void (*)(void *, int))(*(void ***)g_pDisplayState)[0x14 / sizeof(void *)])(
+            g_pDisplayState, (int)(unsigned long)pTarget->m_pBackingBitmap);
+        pTarget->m_pBackingBitmap = 0;
     }
-    if (*(int *)(unsigned long)(*(int *)((char *)(unsigned long)pTarget[0x10] + 4) + 0x60 + (int)(unsigned long)pTarget) ==
-        (int)(unsigned long)g_pResourceGeometryHelperTarget) {
-        ReleaseHelperGroup0BackingBuffer((int)(unsigned long)(pTarget + 0x26));
-        ReleaseHelperGroup1BackingBuffer((int)(unsigned long)(pTarget + 0x11));
+    if (pCompactHelper->m_pLinkedTarget == g_pResourceGeometryHelperTarget) {
+        ReleaseHelperGroup0BackingBuffer((int)(unsigned long)((char *)pTarget + 0x98));
+        ReleaseHelperGroup1BackingBuffer((int)(unsigned long)((char *)pTarget + 0x44));
     }
-    if (pTarget[0x3e] != 0) {
-        ((void (*)(void *, int))(*(void ***)g_pDisplayState)[8 / sizeof(void *)])(g_pDisplayState, pTarget[0x3e]);
-        pTarget[0x3e] = 0;
+    if (pTarget->m_pDisplayBinding != 0) {
+        ((void (*)(void *, int))(*(void ***)g_pDisplayState)[8 / sizeof(void *)])(
+            g_pDisplayState, (int)(unsigned long)pTarget->m_pDisplayBinding);
+        pTarget->m_pDisplayBinding = 0;
     }
-    pNextNode = (unsigned int)pTarget[0x154];
-    if (pNextNode != 0) {
-        ResetHelperUploadRectListAndStateMap((int)pNextNode);
-        FreeVSMemBlock((void *)(unsigned long)pNextNode);
-        pTarget[0x154] = 0;
+    if (pTarget->m_nActiveUploadState != 0) {
+        ResetHelperUploadRectListAndStateMap(pTarget->m_nActiveUploadState);
+        FreeVSMemBlock((void *)(unsigned long)pTarget->m_nActiveUploadState);
+        pTarget->m_nActiveUploadState = 0;
     }
-    iLinkedTarget = *(int *)(unsigned long)(*(int *)((char *)(unsigned long)pTarget[0x10] + 4) + 0x60 + (int)(unsigned long)pTarget);
-    if (iLinkedTarget != 0) {
-        pLink = *(int **)(unsigned long)(iLinkedTarget + 0x528);
+    pLinkedTarget = (VSGDI_ResourceGeometryHelperTargetView *)pCompactHelper->m_pLinkedTarget;
+    if (pLinkedTarget != 0) {
+        pLinkedTargetList = &pLinkedTarget->m_ChildTargetLinks;
+        pLink = pLinkedTargetList->m_pTail;
+        while (pLink != 0) {
+            if (pLink->m_pTarget == pvTarget) {
+                break;
+            }
+            pLink = pLink->m_pPrev;
+        }
         if (pLink != 0) {
-            do {
-                if ((void *)(unsigned long)*pLink == pvTarget) {
+            pPreviousLink = pLink->m_pPrev;
+            pNextNode = pLink->m_pNext;
+            FreeVSMemBlock(pLink);
+            if (pPreviousLink == 0) {
+                pLinkedTargetList->m_pHead = pNextNode;
+            } else {
+                pPreviousLink->m_pNext = pNextNode;
+            }
+            if (pNextNode == 0) {
+                pLinkedTargetList->m_pTail = pPreviousLink;
+            } else {
+                pNextNode->m_pPrev = pPreviousLink;
+            }
+            pLinkedTargetList->m_cNodes = pLinkedTargetList->m_cNodes - 1;
+        }
+        pCompactHelper->m_pLinkedTarget = 0;
+    }
+    if (iCriticalSectionReady != 0) {
+        LeaveCriticalSection(pTarget->m_abCriticalSection);
+        DeleteCriticalSection(pTarget->m_abCriticalSection);
+        pTarget->m_fCriticalSectionReady = 0;
+        pGlobalList = (VSGDI_ResourceGeometryLinkList *)g_pResourceGeometryListHead;
+        if (pGlobalList != 0) {
+            pLink = pGlobalList->m_pTail;
+            while (pLink != 0) {
+                if (pLink->m_pTarget == pvTarget) {
                     break;
                 }
-                pLink = (int *)(unsigned long)pLink[1];
-            } while (pLink != 0);
+                pLink = pLink->m_pPrev;
+            }
             if (pLink != 0) {
-                iPreviousLink = pLink[1];
-                iNextLink = pLink[2];
+                pPreviousLink = pLink->m_pPrev;
+                pNextNode = pLink->m_pNext;
                 FreeVSMemBlock(pLink);
-                if (iPreviousLink == 0) {
-                    *(int *)(unsigned long)(iLinkedTarget + 0x52c) = iNextLink;
+                if (pPreviousLink == 0) {
+                    pGlobalList->m_pHead = pNextNode;
                 } else {
-                    *(int *)(unsigned long)(iPreviousLink + 8) = iNextLink;
+                    pPreviousLink->m_pNext = pNextNode;
                 }
-                if (iNextLink == 0) {
-                    *(int *)(unsigned long)(iLinkedTarget + 0x528) = iPreviousLink;
+                if (pNextNode == 0) {
+                    pGlobalList->m_pTail = pPreviousLink;
                 } else {
-                    *(int *)(unsigned long)(iNextLink + 4) = iPreviousLink;
+                    pNextNode->m_pPrev = pPreviousLink;
                 }
-                *(int *)(unsigned long)(iLinkedTarget + 0x530) = *(int *)(unsigned long)(iLinkedTarget + 0x530) - 1;
+                pGlobalList->m_cNodes = pGlobalList->m_cNodes - 1;
             }
-        }
-        *(int *)(unsigned long)(*(int *)((char *)(unsigned long)pTarget[0x10] + 4) + 0x60 + (int)(unsigned long)pTarget) = 0;
-    }
-    if (iCriticalSectionReady != 0) {
-        LeaveCriticalSection(pTarget + 0x14d);
-        DeleteCriticalSection(pTarget + 0x14d);
-        pTarget[0x153] = 0;
-        iGlobalListHead = (int)(unsigned long)g_pResourceGeometryListHead;
-        if (g_pResourceGeometryListHead != 0) {
-            pLink = *(int **)g_pResourceGeometryListHead;
-            if (pLink != 0) {
-                do {
-                    if ((void *)(unsigned long)*pLink == pvTarget) {
-                        break;
-                    }
-                    pLink = (int *)(unsigned long)pLink[1];
-                } while (pLink != 0);
-                if (pLink != 0) {
-                    iCriticalSectionReady = pLink[1];
-                    iLinkedTarget = pLink[2];
-                    FreeVSMemBlock(pLink);
-                    if (iCriticalSectionReady == 0) {
-                        *(int *)(unsigned long)(iGlobalListHead + 4) = iLinkedTarget;
-                    } else {
-                        *(int *)(unsigned long)(iCriticalSectionReady + 8) = iLinkedTarget;
-                    }
-                    if (iLinkedTarget == 0) {
-                        *(int *)(unsigned long)iGlobalListHead = iCriticalSectionReady;
-                    } else {
-                        *(int *)(unsigned long)(iLinkedTarget + 4) = iCriticalSectionReady;
-                    }
-                    *(int *)(unsigned long)(iGlobalListHead + 8) = *(int *)(unsigned long)(iGlobalListHead + 8) - 1;
+            if (pGlobalList->m_cNodes == 0) {
+                pNextNode = pGlobalList->m_pTail;
+                while (pNextNode != 0) {
+                    pFollowingNode = (unsigned int)(unsigned long)pNextNode->m_pPrev;
+                    FreeVSMemBlock((void *)(unsigned long)pNextNode);
+                    pNextNode = (VSGDI_ResourceGeometryLinkNode *)(unsigned long)pFollowingNode;
                 }
-            }
-            iGlobalListHead = (int)(unsigned long)g_pResourceGeometryListHead;
-            if (*(int *)(unsigned long)((int)(unsigned long)g_pResourceGeometryListHead + 8) == 0) {
-                if (g_pResourceGeometryListHead != 0) {
-                    pNextNode = *(unsigned int *)g_pResourceGeometryListHead;
-                    while (pNextNode != 0) {
-                        unsigned int pFollowingNode;
-
-                        pFollowingNode = *(unsigned int *)(unsigned long)(pNextNode + 4);
-                        FreeVSMemBlock((void *)(unsigned long)pNextNode);
-                        pNextNode = pFollowingNode;
-                    }
-                    FreeVSMemBlock((void *)(unsigned long)iGlobalListHead);
-                }
+                FreeVSMemBlock(pGlobalList);
                 g_pResourceGeometryListHead = 0;
             }
         }
     }
-    pNextNode = (unsigned int)pTarget[0x14a];
-    while (pNextNode != 0) {
-        unsigned int pFollowingNode;
-
-        pFollowingNode = *(unsigned int *)(unsigned long)(pNextNode + 4);
-        FreeVSMemBlock((void *)(unsigned long)pNextNode);
-        pNextNode = pFollowingNode;
+    pNextNode = pTarget->m_ChildTargetLinks.m_pTail;
+    if (pNextNode != 0) {
+        do {
+            pFollowingNode = (unsigned int)(unsigned long)pNextNode->m_pPrev;
+            FreeVSMemBlock((void *)(unsigned long)pNextNode);
+            pNextNode = (VSGDI_ResourceGeometryLinkNode *)(unsigned long)pFollowingNode;
+        } while (pNextNode != 0);
     }
-    DestroyHelperGroup0RowBuffer(pvTarget == 0 ? 0 : (void *)(pTarget + 0x26));
-    DestroyHelperGroup1RowBuffer(pvTarget == 0 ? 0 : (void *)(pTarget + 0x11));
+    DestroyHelperGroup0RowBuffer((char *)pTarget + 0x98);
+    DestroyHelperGroup1RowBuffer((char *)pTarget + 0x44);
     DestroyResourceGeometryRowBuffer(pTarget);
 }
 
@@ -557,19 +635,22 @@ void InitializeArrowCursorState(int *pRenderClient) {
 
 // FUNCTION: LEMBALL 0x00472400
 void RebuildResourceGeometryRowPointerTable(VSGDI_HelperSurface *pSurface) {
+    int *pnRowTable;
+    int nRowBase;
     int nRowByteOffset;
     int iRowIndex;
     int iLogicalRow;
     int cRows;
 
+    pnRowTable = (int *)(unsigned long)*(int *)((char *)pSurface + 4);
+    nRowBase = *(int *)((char *)pSurface + 0x18);
     nRowByteOffset = *(int *)((char *)pSurface + 8);
     iLogicalRow = *(int *)((char *)pSurface + 0x14);
     iRowIndex = 0;
     cRows = (int)*(short *)((char *)pSurface + 0x2e);
     if (0 < cRows) {
         do {
-            *(int *)((char *)(unsigned long)*(int *)((char *)pSurface + 4) + iLogicalRow * 4) =
-                *(int *)((char *)pSurface + 0x18) + nRowByteOffset;
+            pnRowTable[iLogicalRow] = nRowBase + nRowByteOffset;
             ++iLogicalRow;
             nRowByteOffset = nRowByteOffset + *(int *)((char *)pSurface + 0x1c);
             if (cRows <= iLogicalRow) {
@@ -585,6 +666,7 @@ void ClearHelperBackingBorderRows(VSGDI_HelperSurface *pSurface) {
     unsigned int cbBorderRow;
     unsigned int cDwords;
     unsigned int cTailBytes;
+    char *pbBackingBase;
     char *pbTarget;
     int nAbsoluteStride;
     int nStrideSign;
@@ -595,7 +677,8 @@ void ClearHelperBackingBorderRows(VSGDI_HelperSurface *pSurface) {
 
     cbBorderRow = (unsigned int)*(int *)((char *)pSurface + 0x20);
     if (0 < (int)cbBorderRow) {
-        pbTarget = (char *)(unsigned long)*(int *)((char *)pSurface + 0xc);
+        pbBackingBase = (char *)(unsigned long)*(int *)((char *)pSurface + 0xc);
+        pbTarget = pbBackingBase;
         cDwords = cbBorderRow >> 2;
         while (cDwords != 0) {
             *(unsigned int *)pbTarget = 0;
@@ -612,8 +695,7 @@ void ClearHelperBackingBorderRows(VSGDI_HelperSurface *pSurface) {
         nAbsoluteStride = *(int *)((char *)pSurface + 0x1c);
         nStrideSign = nAbsoluteStride >> 0x1f;
         nAbsoluteStride = (nAbsoluteStride ^ nStrideSign) - nStrideSign;
-        pbTarget = (char *)(unsigned long)(nAbsoluteStride * (int)*(short *)((char *)pSurface + 0x2e) +
-                                           *(int *)((char *)pSurface + 0xc) + cbBorderRow);
+        pbTarget = pbBackingBase + nAbsoluteStride * (int)*(short *)((char *)pSurface + 0x2e) + cbBorderRow;
         cDwords = cbBorderRow >> 2;
         while (cDwords != 0) {
             *(unsigned int *)pbTarget = 0;
@@ -718,8 +800,11 @@ void InitializeHelperUploadStatePending(int nUploadState) {
 
 // FUNCTION: LEMBALL 0x004670F0
 void AppendPointerQueueEntry(void *pQueue, void *pEntry) {
-    *(void **)(*(int *)pQueue + *(int *)((char *)pQueue + 4) * 4) = pEntry;
-    *(int *)((char *)pQueue + 4) = *(int *)((char *)pQueue + 4) + 1;
+    VSGDI_HelperDispatchQueue *pDispatchQueue;
+
+    pDispatchQueue = (VSGDI_HelperDispatchQueue *)pQueue;
+    pDispatchQueue->m_ppEntries[pDispatchQueue->m_cEntries] = pEntry;
+    pDispatchQueue->m_cEntries = pDispatchQueue->m_cEntries + 1;
 }
 
 // FUNCTION: LEMBALL 0x0040381E
@@ -729,29 +814,33 @@ void QueueQueuedRenderPointSink(void *pPointSink, void *pQueue) {
 
 // FUNCTION: LEMBALL 0x0046D9F0
 int RefreshHelperTargetBindingIfChanged(void *pTarget) {
-    int *pTargetWords;
-    int *pLinkedTarget;
-    int nVariableBlockOffset;
+    int *pnCachedBindingValue;
+    VSGDI_HelperSurfaceVariableBlock *pVariableBlock;
+    void *pBindingSource;
+    VSGDI_HelperSurface *pLinkedTarget;
+    int *pBackingRow;
     int nBindingValue;
 
-    pTargetWords = (int *)pTarget;
-    if (pTargetWords[1] == 0) {
+    if (*(int *)((char *)pTarget + 4) == 0) {
         return 0;
     }
 
-    pLinkedTarget =
-        *(int **)(*(int *)(unsigned long)(pTargetWords[0x10] + 4) + 0x60 + (int)(unsigned long)pTargetWords);
+    pVariableBlock =
+        (VSGDI_HelperSurfaceVariableBlock *)((char *)pTarget + GetHelperSurfaceVariableBlockOffset((const VSGDI_HelperSurface *)pTarget));
+    pnCachedBindingValue = (int *)((char *)pTarget + 0xc);
+    pLinkedTarget = (VSGDI_HelperSurface *)pVariableBlock->m_pLinkedTarget;
     if ((void *)pLinkedTarget == g_pResourceGeometryHelperTarget) {
-        if ((int *)pTargetWords[0x3c] == 0) {
+        pBindingSource = *(void **)((char *)pTarget + 0xf0);
+        if (pBindingSource == 0) {
             return 0;
         }
-        if (((int (*)())**(void ***)pTargetWords[0x3c])() == 0) {
+        if (((int (*)())(*(void ***)pBindingSource)[1])() == 0) {
             return 0;
         }
-        nBindingValue = ((int (*)(void))(*(void ***)pTargetWords[0x3c])[3])();
-        if (nBindingValue != 0 && pTargetWords[3] != nBindingValue) {
-            pTargetWords[3] = nBindingValue;
-            EnsureHelperBackingRowIndexCapacity((VSGDI_HelperSurface *)pTargetWords);
+        nBindingValue = ((int (*)(void))(*(void ***)pBindingSource)[3])();
+        if (nBindingValue != 0 && *pnCachedBindingValue != nBindingValue) {
+            *pnCachedBindingValue = nBindingValue;
+            EnsureHelperBackingRowIndexCapacity((VSGDI_HelperSurface *)pTarget);
             return 1;
         }
     } else {
@@ -761,12 +850,10 @@ int RefreshHelperTargetBindingIfChanged(void *pTarget) {
         if (RefreshHelperTargetBindingIfChanged(pLinkedTarget) == 0) {
             return 0;
         }
-        nVariableBlockOffset = *(int *)(unsigned long)(pTargetWords[0x10] + 4);
-        if (*(int *)(*(int *)(*(int *)(nVariableBlockOffset + (int)(unsigned long)pTargetWords + 0x60) + 4) +
-                    *(short *)(nVariableBlockOffset + (int)(unsigned long)pTargetWords + 0x5a) * 4) +
-                (int)*(short *)(nVariableBlockOffset + (int)(unsigned long)pTargetWords + 0x58) !=
-            pTargetWords[3]) {
-            EnsureHelperBackingRowIndexCapacity((VSGDI_HelperSurface *)pTargetWords);
+        pBackingRow = *(int **)(unsigned long)(*(int *)((char *)pLinkedTarget + 4) + pVariableBlock->m_aWorkingRect[3] * 4);
+        nBindingValue = *(int *)((char *)pBackingRow + pVariableBlock->m_aWorkingRect[2]);
+        if (nBindingValue != *pnCachedBindingValue) {
+            EnsureHelperBackingRowIndexCapacity((VSGDI_HelperSurface *)pTarget);
             return 1;
         }
     }
@@ -775,48 +862,59 @@ int RefreshHelperTargetBindingIfChanged(void *pTarget) {
 
 // FUNCTION: LEMBALL 0x0046DAA0
 void InvokeRootHelperTargetPostQueueCallback(int nTarget) {
-    int nRootTarget;
+    void *pBindingSource;
+    VSGDI_HelperSurfaceVariableBlock *pVariableBlock;
+    VSGDI_HelperSurface *pRootTarget;
+    VSGDI_HelperSurface *pTarget;
 
+    pTarget = (VSGDI_HelperSurface *)(unsigned long)nTarget;
     do {
-        nRootTarget = nTarget;
-        nTarget = *(int *)(*(int *)(*(int *)(unsigned long)(nRootTarget + 0x40) + 4) + 0x60 + nRootTarget);
-    } while (g_pResourceGeometryHelperTarget != (void *)(unsigned long)nTarget);
+        pRootTarget = pTarget;
+        pVariableBlock =
+            (VSGDI_HelperSurfaceVariableBlock *)((char *)pRootTarget + GetHelperSurfaceVariableBlockOffset(pRootTarget));
+        pTarget = (VSGDI_HelperSurface *)pVariableBlock->m_pLinkedTarget;
+    } while (g_pResourceGeometryHelperTarget != (void *)pTarget);
 
-    ((void (*)())(*(void ***)*(int **)(unsigned long)(nRootTarget + 0xf0))[2])();
+    pBindingSource = *(void **)((char *)pRootTarget + 0xf0);
+    ((void (*)())(*(void ***)pBindingSource)[2])();
 }
 
 // FUNCTION: LEMBALL 0x00467110
 void DispatchAndClearPointerQueue(void *pQueue) {
-    int *pQueueWords;
+    void *pQueuedEntry;
+    VSGDI_HelperDispatchQueue *pDispatchQueue;
     int nByteOffset;
     int i;
 
-    pQueueWords = (int *)pQueue;
-    if (RefreshHelperTargetBindingIfChanged((void *)(unsigned long)pQueueWords[3]) != 0) {
+    pDispatchQueue = (VSGDI_HelperDispatchQueue *)pQueue;
+    if (RefreshHelperTargetBindingIfChanged(pDispatchQueue->m_pHelperTarget) != 0) {
         nByteOffset = 0;
         i = 0;
-        if (0 < pQueueWords[1]) {
+        if (0 < pDispatchQueue->m_cEntries) {
             do {
-                if (IsPointerInsideManagedMemoryRegions(*(void **)(unsigned long)(pQueueWords[0] + nByteOffset)) != 0) {
-                    ((void (*)(void *))(*(void ***)*(int **)(unsigned long)(pQueueWords[0] + nByteOffset))[2])(pQueue);
+                pQueuedEntry = *(void **)((char *)pDispatchQueue->m_ppEntries + nByteOffset);
+                if (IsPointerInsideManagedMemoryRegions(pQueuedEntry) != 0) {
+                    ((void (*)(void *))(*(void ***)pQueuedEntry)[2])(pDispatchQueue);
                 }
                 nByteOffset += 4;
                 ++i;
-            } while (i < pQueueWords[1]);
+            } while (i < pDispatchQueue->m_cEntries);
         }
-        InvokeRootHelperTargetPostQueueCallback(pQueueWords[3]);
+        InvokeRootHelperTargetPostQueueCallback((int)(unsigned long)pDispatchQueue->m_pHelperTarget);
     }
 }
 
 // FUNCTION: LEMBALL 0x00465AA0
 void SampleRootHelperGeometryAndDispatchRenderGroups(void *pPrimaryContext, int nToken) {
     int *pContext;
-    int nHelperTarget;
+    VSGDI_HelperDispatchQueue *pDispatchQueue;
+    VSGDI_HelperSurfaceBindingSurface *pBindingSurface;
+    VSGDI_HelperSurface *pHelperTarget;
     int *pQueuedPointSink;
+    void *pUploadCallbackTarget;
     int nUploadState;
     int nResult;
     short x0;
-    short y0;
     short x1;
     short y1;
     short x2;
@@ -831,22 +929,23 @@ void SampleRootHelperGeometryAndDispatchRenderGroups(void *pPrimaryContext, int 
         nToken = 0;
     }
 
-    nHelperTarget = *(int *)(pContext[0x13] + 0xc);
-    ((void (*)())(*(void ***)*(int **)(*(int *)(*(int *)(unsigned long)(nHelperTarget + 0x40) + 4) + 0x40 + nHelperTarget))[0xe])();
+    pDispatchQueue = (VSGDI_HelperDispatchQueue *)(unsigned long)pContext[0x13];
+    pHelperTarget = pDispatchQueue->m_pHelperTarget;
+    pBindingSurface =
+        (VSGDI_HelperSurfaceBindingSurface *)((char *)pHelperTarget + GetHelperSurfaceVariableBlockOffset(pHelperTarget) + 0x40);
+    ((void (*)())pBindingSurface->m_pVtable[0xe])();
 
-    nHelperTarget = *(int *)(pContext[0x13] + 0xc);
-    nHelperTarget = *(int *)(*(int *)(unsigned long)(nHelperTarget + 0x40) + 4) + 0x40 + nHelperTarget;
-    x1 = *(short *)(unsigned long)(nHelperTarget + 0x16);
-    y1 = *(short *)(unsigned long)(nHelperTarget + 0x14);
+    x1 = pBindingSurface->m_nOriginX;
+    y1 = pBindingSurface->m_nOriginY;
 
     pQueuedPointSink = (int *)AllocateVSMemBlock(4);
     if (pQueuedPointSink != 0) {
         *pQueuedPointSink = (int)(unsigned long)&g_pQueuedRenderPointSinkFinalizeThunk;
     }
 
-    nUploadState = ((int (*)(void))(*(void ***)*(int **)(unsigned long)(pContext[0x13] + 0xc))[2])();
+    nUploadState = ((int (*)(void))(*(void ***)pHelperTarget)[2])();
     InitializeHelperUploadStatePending(nUploadState);
-    ((void (*)(void *))(*(void ***)*(int **)pQueuedPointSink)[1])((void *)(unsigned long)pContext[0x13]);
+    ((void (*)(void *))(*(void ***)*(int **)pQueuedPointSink)[1])(pDispatchQueue);
 
     x0 = *(short *)((char *)&nUploadState); /* intentional dead local shaping placeholder */
     (void)x0;
@@ -858,12 +957,10 @@ void SampleRootHelperGeometryAndDispatchRenderGroups(void *pPrimaryContext, int 
     *(short *)((char *)pContext + 0x60) = y1;
     *(short *)((char *)pContext + 0x62) = x1;
     pContext[0x19] = nToken;
-    ((void (*)(void *))(*(void ***)pContext[0x16])[1])((void *)(unsigned long)pContext[0x13]);
+    pUploadCallbackTarget = (void *)(unsigned long)pContext[0x16];
+    ((void (*)(void *))(*(void ***)pUploadCallbackTarget)[1])(pDispatchQueue);
 
-    nHelperTarget = *(int *)(pContext[0x13] + 0xc);
-    nResult =
-        ((int (*)())(*(void ***)*(int **)(*(int *)(*(int *)(unsigned long)(nHelperTarget + 0x40) + 4) + 0x40 +
-                                          nHelperTarget))[0xf])();
+    nResult = ((int (*)())pBindingSurface->m_pVtable[0xf])();
     y2 = *((short *)&nResult + 1);
     if (nResult != 0) {
         *(short *)((char *)pContext + 0x6c) = 0;
@@ -872,24 +969,23 @@ void SampleRootHelperGeometryAndDispatchRenderGroups(void *pPrimaryContext, int 
         *(short *)((char *)pContext + 0x72) = y2;
         *(short *)((char *)pContext + 0x74) = *(short *)&nUploadState;
         *(short *)((char *)pContext + 0x76) = *((short *)&nUploadState + 1);
-        ((void (*)(void *))(*(void ***)pContext[0x1a])[1])((void *)(unsigned long)pContext[0x13]);
+        pUploadCallbackTarget = (void *)(unsigned long)pContext[0x1a];
+        ((void (*)(void *))(*(void ***)pUploadCallbackTarget)[1])(pDispatchQueue);
     }
 
-    nHelperTarget = *(int *)(pContext[0x13] + 0xc);
-    nResult =
-        ((int (*)())(*(void ***)*(int **)(*(int *)(*(int *)(unsigned long)(nHelperTarget + 0x40) + 4) + 0x40 +
-                                          nHelperTarget))[0x10])();
+    nResult = ((int (*)())pBindingSurface->m_pVtable[0x10])();
     if (nResult != 0) {
         *(short *)((char *)pContext + 0x80) = (short)nResult;
         *(short *)((char *)pContext + 0x82) = *((short *)&nResult + 1);
         *(short *)((char *)pContext + 0x84) = *(short *)&nUploadState;
         *(short *)((char *)pContext + 0x86) = *((short *)&nUploadState + 1);
         pContext[0x1f] = 0;
-        ((void (*)(void *))(*(void ***)pContext[0x1e])[1])((void *)(unsigned long)pContext[0x13]);
+        pUploadCallbackTarget = (void *)(unsigned long)pContext[0x1e];
+        ((void (*)(void *))(*(void ***)pUploadCallbackTarget)[1])(pDispatchQueue);
     }
 
-    DispatchAndClearPointerQueue((void *)(unsigned long)pContext[0x13]);
-    *(int *)(pContext[0x13] + 4) = 0;
+    DispatchAndClearPointerQueue(pDispatchQueue);
+    pDispatchQueue->m_cEntries = 0;
     ((void (*)())(*(void ***)pContext)[0x2d])();
 
     if (pQueuedPointSink != 0) {
@@ -962,17 +1058,18 @@ VSGDI_HelperSurface::VSGDI_HelperSurface(void) {
 // FUNCTION: LEMBALL 0x0046D090
 void VSGDI_HelperSurface::UpdateWorkingRectAndBacking(const VSGDI_Rect *pRect) {
     short aRectBuffer[4];
+    VSGDI_HelperSurfaceVariableBlock *pLinkedVariableBlock;
+    VSGDI_HelperSurfaceVariableBlock *pVariableBlock;
     short *paRequestedRect;
     short *paWorkingRect;
     short *paTargetWorkingRect;
     short *paBackingObject;
-    char *pLinkedTargetBytes;
+    void *pBackingBitmap;
+    void *pDisplayBitmapInfo;
+    VSGDI_HelperSurface *pLinkedTarget;
     short sWidth;
     short sHeight;
     int nVariableBlockOffset;
-    int nLinkedTargetVariableBlockOffset;
-    int pLinkedTarget;
-    int nBitmapHandle;
     int nBitmapStride;
     int nBitmapOrigin;
     void **pDisplayVtable;
@@ -982,11 +1079,11 @@ void VSGDI_HelperSurface::UpdateWorkingRectAndBacking(const VSGDI_Rect *pRect) {
 
     EnterCriticalSection((char *)this + 0x534);
 
-    nVariableBlockOffset = *(int *)((char *)this + 0x40);
-    nVariableBlockOffset = *(int *)((char *)(unsigned long)nVariableBlockOffset + 4);
+    nVariableBlockOffset = GetHelperSurfaceVariableBlockOffset(this);
+    pVariableBlock = (VSGDI_HelperSurfaceVariableBlock *)((char *)this + nVariableBlockOffset);
     paRectWords = (const short *)pRect;
 
-    paRequestedRect = (short *)((char *)this + nVariableBlockOffset + 0x4c);
+    paRequestedRect = pVariableBlock->m_aRequestedRect;
     paRequestedRect[0] = paRectWords[0];
     paRequestedRect[1] = paRectWords[1];
     paTailRect = paRectWords + 2;
@@ -996,7 +1093,7 @@ void VSGDI_HelperSurface::UpdateWorkingRectAndBacking(const VSGDI_Rect *pRect) {
     paRequestedRect[2] = paTailRect[0];
     paRequestedRect[3] = paTailRect[1];
 
-    paWorkingRect = (short *)((char *)this + nVariableBlockOffset + 0x54);
+    paWorkingRect = pVariableBlock->m_aWorkingRect;
     paWorkingRect[0] = paRectWords[0];
     paWorkingRect[1] = paRectWords[1];
     if (paRectWords != 0) {
@@ -1007,61 +1104,49 @@ void VSGDI_HelperSurface::UpdateWorkingRectAndBacking(const VSGDI_Rect *pRect) {
     paWorkingRect[2] = paTailRect[0];
     paWorkingRect[3] = paTailRect[1];
 
-    pLinkedTarget = *(int *)((char *)this + nVariableBlockOffset + 0x60);
-    if (g_pResourceGeometryHelperTarget != (void *)(unsigned long)pLinkedTarget) {
-        pLinkedTargetBytes = (char *)(unsigned long)pLinkedTarget;
-        nLinkedTargetVariableBlockOffset =
-            *(int *)((char *)(unsigned long)*(int *)(pLinkedTargetBytes + 0x40) + 4);
-        paTargetWorkingRect = (short *)(pLinkedTargetBytes + nLinkedTargetVariableBlockOffset + 0x54);
+    pLinkedTarget = (VSGDI_HelperSurface *)pVariableBlock->m_pLinkedTarget;
+    if (g_pResourceGeometryHelperTarget != (void *)pLinkedTarget) {
+        pLinkedVariableBlock = (VSGDI_HelperSurfaceVariableBlock *)((char *)pLinkedTarget + GetHelperSurfaceVariableBlockOffset(pLinkedTarget));
+        paTargetWorkingRect = pLinkedVariableBlock->m_aWorkingRect;
         sWidth = paTargetWorkingRect[0];
         sHeight = paTargetWorkingRect[1];
 
-        if (*(short *)((char *)this + nVariableBlockOffset + 0x58) < 0) {
-            *(short *)((char *)this + nVariableBlockOffset + 0x54) =
-                (short)(*(short *)((char *)this + nVariableBlockOffset + 0x54) +
-                        *(short *)((char *)this + nVariableBlockOffset + 0x58));
-            *(short *)((char *)this + nVariableBlockOffset + 0x58) = 0;
+        if (pVariableBlock->m_aWorkingRect[2] < 0) {
+            pVariableBlock->m_aWorkingRect[0] = (short)(pVariableBlock->m_aWorkingRect[0] + pVariableBlock->m_aWorkingRect[2]);
+            pVariableBlock->m_aWorkingRect[2] = 0;
         }
-        if (sWidth < (short)(*(short *)((char *)this + nVariableBlockOffset + 0x54) +
-                             *(short *)((char *)this + nVariableBlockOffset + 0x58))) {
-            *(short *)((char *)this + nVariableBlockOffset + 0x54) =
-                (short)(sWidth - *(short *)((char *)this + nVariableBlockOffset + 0x58));
+        if (sWidth < (short)(pVariableBlock->m_aWorkingRect[0] + pVariableBlock->m_aWorkingRect[2])) {
+            pVariableBlock->m_aWorkingRect[0] = (short)(sWidth - pVariableBlock->m_aWorkingRect[2]);
         }
-        if (*(short *)((char *)this + nVariableBlockOffset + 0x5a) < 0) {
-            *(short *)((char *)this + nVariableBlockOffset + 0x56) =
-                (short)(*(short *)((char *)this + nVariableBlockOffset + 0x56) +
-                        *(short *)((char *)this + nVariableBlockOffset + 0x5a));
-            *(short *)((char *)this + nVariableBlockOffset + 0x5a) = 0;
+        if (pVariableBlock->m_aWorkingRect[3] < 0) {
+            pVariableBlock->m_aWorkingRect[1] = (short)(pVariableBlock->m_aWorkingRect[1] + pVariableBlock->m_aWorkingRect[3]);
+            pVariableBlock->m_aWorkingRect[3] = 0;
         }
-        if (sHeight < (short)(*(short *)((char *)this + nVariableBlockOffset + 0x56) +
-                              *(short *)((char *)this + nVariableBlockOffset + 0x5a))) {
-            *(short *)((char *)this + nVariableBlockOffset + 0x56) =
-                (short)(sHeight - *(short *)((char *)this + nVariableBlockOffset + 0x5a));
+        if (sHeight < (short)(pVariableBlock->m_aWorkingRect[1] + pVariableBlock->m_aWorkingRect[3])) {
+            pVariableBlock->m_aWorkingRect[1] = (short)(sHeight - pVariableBlock->m_aWorkingRect[3]);
         }
-        if (*(short *)((char *)this + nVariableBlockOffset + 0x54) <= 0 ||
-            *(short *)((char *)this + nVariableBlockOffset + 0x56) <= 0) {
-            *(short *)((char *)this + nVariableBlockOffset + 0x56) = 0;
-            *(short *)((char *)this + nVariableBlockOffset + 0x54) = 0;
-            *(short *)((char *)this + nVariableBlockOffset + 0x5a) = 0;
-            *(short *)((char *)this + nVariableBlockOffset + 0x58) = 0;
+        if (pVariableBlock->m_aWorkingRect[0] <= 0 || pVariableBlock->m_aWorkingRect[1] <= 0) {
+            pVariableBlock->m_aWorkingRect[1] = 0;
+            pVariableBlock->m_aWorkingRect[0] = 0;
+            pVariableBlock->m_aWorkingRect[3] = 0;
+            pVariableBlock->m_aWorkingRect[2] = 0;
         }
 
-        paWorkingRect = (short *)((char *)this + nVariableBlockOffset + 0x54);
-        *(short *)((char *)this + nVariableBlockOffset + 0x64) = paWorkingRect[0];
-        *(short *)((char *)this + nVariableBlockOffset + 0x66) = paWorkingRect[1];
+        paWorkingRect = pVariableBlock->m_aWorkingRect;
+        pVariableBlock->m_aBackingRect[0] = paWorkingRect[0];
+        pVariableBlock->m_aBackingRect[1] = paWorkingRect[1];
         ComputeHelperBackingDimensions(this, aRectBuffer, paWorkingRect, (int)paWorkingRect[0]);
         *(int *)((char *)this + 0x524) = 0;
         EnsureHelperBackingRowIndexCapacity(this);
         return;
     }
 
-    *(unsigned short *)((char *)this + nVariableBlockOffset + 0x54) =
-        (unsigned short)(*(short *)((char *)this + nVariableBlockOffset + 0x54) + 3U) & 0xfffc;
-    *(short *)((char *)this + nVariableBlockOffset + 0x64) = *(short *)((char *)this + nVariableBlockOffset + 0x54);
-    *(short *)((char *)this + nVariableBlockOffset + 0x66) = *(short *)((char *)this + nVariableBlockOffset + 0x56);
+    *(unsigned short *)&pVariableBlock->m_aWorkingRect[0] = (unsigned short)(pVariableBlock->m_aWorkingRect[0] + 3U) & 0xfffc;
+    pVariableBlock->m_aBackingRect[0] = pVariableBlock->m_aWorkingRect[0];
+    pVariableBlock->m_aBackingRect[1] = pVariableBlock->m_aWorkingRect[1];
 
-    paWorkingRect = (short *)((char *)this + nVariableBlockOffset + 0x54);
-    ComputeHelperBackingDimensions(this, aRectBuffer, paWorkingRect, *(int *)((char *)this + nVariableBlockOffset + 0x80));
+    paWorkingRect = pVariableBlock->m_aWorkingRect;
+    ComputeHelperBackingDimensions(this, aRectBuffer, paWorkingRect, pVariableBlock->m_nBackingWidthHint);
     sWidth = aRectBuffer[0];
     sHeight = aRectBuffer[1];
 
@@ -1074,8 +1159,7 @@ void VSGDI_HelperSurface::UpdateWorkingRectAndBacking(const VSGDI_Rect *pRect) {
         *(int *)((char *)this + 0xf0) = 0;
     }
 
-    if (*(short *)((char *)this + nVariableBlockOffset + 0x54) == 0 ||
-        *(short *)((char *)this + nVariableBlockOffset + 0x56) == 0) {
+    if (pVariableBlock->m_aWorkingRect[0] == 0 || pVariableBlock->m_aWorkingRect[1] == 0) {
         *(int *)((char *)this + 0x524) = 0;
     } else {
         if (*(int *)((char *)this + 0xf0) == 0) {
@@ -1090,17 +1174,17 @@ void VSGDI_HelperSurface::UpdateWorkingRectAndBacking(const VSGDI_Rect *pRect) {
             *(int *)((char *)this + 0x118) = 0;
             *(int *)((char *)this + 0x11c) = 0;
             *(int *)((char *)this + 0x120) = 0;
-            *(int *)((char *)this + 0xfc) = 0x28;
+            pDisplayBitmapInfo = (char *)this + 0xfc;
+            *(int *)pDisplayBitmapInfo = 0x28;
             *(short *)((char *)this + 0x10a) = 8;
-            nBitmapHandle = ((int (*)(void *, int, void *))pDisplayVtable[0x10 / sizeof(void *)])(
-                g_pDisplayState, *(int *)((char *)this + 0xf8), (char *)this + 0xfc);
-            *(int *)((char *)this + 0xf0) = nBitmapHandle;
-            if (nBitmapHandle != 0) {
+            pBackingBitmap = (void *)(unsigned long)((int (*)(void *, int, void *))pDisplayVtable[0x10 / sizeof(void *)])(
+                g_pDisplayState, *(int *)((char *)this + 0xf8), pDisplayBitmapInfo);
+            *(void **)((char *)this + 0xf0) = pBackingBitmap;
+            if (pBackingBitmap != 0) {
                 ((void (*)(void *, int, int))pDisplayVtable[0x24 / sizeof(void *)])(
-                    g_pDisplayState, *(int *)((char *)this + 0xf8), nBitmapHandle);
+                    g_pDisplayState, *(int *)((char *)this + 0xf8), (int)(unsigned long)pBackingBitmap);
                 *(int *)((char *)this + 0x524) =
-                    (int)*(short *)((char *)this + nVariableBlockOffset + 0x54) *
-                    (int)*(short *)((char *)this + nVariableBlockOffset + 0x56);
+                    (int)pVariableBlock->m_aWorkingRect[0] * (int)pVariableBlock->m_aWorkingRect[1];
             }
         }
 
@@ -1119,8 +1203,8 @@ void VSGDI_HelperSurface::UpdateWorkingRectAndBacking(const VSGDI_Rect *pRect) {
         aRectBuffer[1] = 0;
         aRectBuffer[2] = 0;
         aRectBuffer[3] = 0;
-        aRectBuffer[0] = *(short *)((char *)this + nVariableBlockOffset + 0x4c);
-        aRectBuffer[1] = *(short *)((char *)this + nVariableBlockOffset + 0x4e);
+        aRectBuffer[0] = pVariableBlock->m_aRequestedRect[0];
+        aRectBuffer[1] = pVariableBlock->m_aRequestedRect[1];
         ((void (*)(void *, short *))(*(void ***)this)[4 / sizeof(void *)])(this, aRectBuffer);
     }
 
@@ -1218,7 +1302,7 @@ int VSGDI_DirectDrawDisplayState::Create(HWND hWnd) {
 
 // FUNCTION: LEMBALL 0x0046BA80
 int InitializeResourceGeometryHelperRuntime(void) {
-    void *pvSlotManager;
+    VSGDI_ResourceGeometryHelperSlotManager *pSlotManager;
     void *pvTarget;
     int *piArrowCursorClient;
 
@@ -1233,12 +1317,12 @@ int InitializeResourceGeometryHelperRuntime(void) {
     }
     InitializeSelectedGraphicsDriver(VSGDI_DRIVER_AUTO);
 
-    pvSlotManager = AllocateVSMemBlock(0x14);
-    if (pvSlotManager == 0) {
+    pSlotManager = (VSGDI_ResourceGeometryHelperSlotManager *)AllocateVSMemBlock(sizeof(VSGDI_ResourceGeometryHelperSlotManager));
+    if (pSlotManager == 0) {
         g_pResourceGeometryHelperSlotManager = 0;
     } else {
         g_pResourceGeometryHelperSlotManager =
-            InitializeResourceGeometryHelperSlotManager(pvSlotManager, (int)g_StartupGraphicsDriverConfig.m_cbSize);
+            InitializeResourceGeometryHelperSlotManager(pSlotManager, (int)g_StartupGraphicsDriverConfig.m_cbSize);
     }
 
     pvTarget = AllocateVSMemBlock(0x5a0);

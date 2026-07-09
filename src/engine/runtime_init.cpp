@@ -918,28 +918,32 @@ extern int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cE
 
 // FUNCTION: LEMBALL 0x00463020
 void *ConstructRenderDispatchQueue(void *pQueue, int cEntries) {
+    RDISPATCH_Queue *pDispatchQueue;
+    RDISPATCH_QueueEntry *pEntryBuffer;
     int nEntryBuffer;
 
-    *(void **)pQueue = g_RenderDispatchQueueDeleteThunkVtable;
-    *(void **)((char *)pQueue + 8) = g_RenderDispatchQueueCriticalSectionHelperVtable;
+    pDispatchQueue = (RDISPATCH_Queue *)pQueue;
+    pDispatchQueue->m_pVtable = g_RenderDispatchQueueDeleteThunkVtable;
+    pDispatchQueue->m_pLockVtable = g_RenderDispatchQueueCriticalSectionHelperVtable;
     InitializeCriticalSection((char *)pQueue + 0xc);
-    *(void **)pQueue = g_RenderDispatchQueueVtable;
-    *(void **)((char *)pQueue + 8) = g_DeleteRenderDispatchQueueCriticalSectionHelperThunk;
+    pDispatchQueue->m_pVtable = g_RenderDispatchQueueVtable;
+    pDispatchQueue->m_pLockVtable = g_DeleteRenderDispatchQueueCriticalSectionHelperThunk;
 
     nEntryBuffer = (int)(unsigned long)AllocateVSMemBlock((unsigned int)(cEntries * 0x14));
-    *(int *)((char *)pQueue + 0x44) = nEntryBuffer;
-    *(int *)((char *)pQueue + 0x24) = cEntries;
-    *(int *)((char *)pQueue + 0x48) = cEntries * 0x14 + nEntryBuffer;
-    *(int *)((char *)pQueue + 0x50) = nEntryBuffer;
-    *(int *)((char *)pQueue + 0x4c) = nEntryBuffer;
-    *(int *)((char *)pQueue + 0x28) = 0;
-    *(int *)((char *)pQueue + 0x2c) = 0;
-    *(int *)((char *)pQueue + 0x34) = 0;
-    *(int *)((char *)pQueue + 0x38) = 0;
-    *(int *)((char *)pQueue + 0x3c) = 0;
-    *(int *)((char *)pQueue + 0x40) = 0;
-    *(int *)((char *)pQueue + 0x30) = 0;
-    *(int *)((char *)pQueue + 0x54) = 0;
+    pEntryBuffer = (RDISPATCH_QueueEntry *)(unsigned long)nEntryBuffer;
+    pDispatchQueue->m_pEntryBuffer = pEntryBuffer;
+    pDispatchQueue->m_cEntryCapacity = cEntries;
+    pDispatchQueue->m_pEntryBufferEnd = (RDISPATCH_QueueEntry *)(unsigned long)(cEntries * 0x14 + nEntryBuffer);
+    pDispatchQueue->m_pTail = pEntryBuffer;
+    pDispatchQueue->m_pHead = pEntryBuffer;
+    pDispatchQueue->m_cQueuedEntries = 0;
+    pDispatchQueue->m_cClients = 0;
+    pDispatchQueue->m_nReserved34 = 0;
+    pDispatchQueue->m_nReserved38 = 0;
+    pDispatchQueue->m_nReserved3C = 0;
+    pDispatchQueue->m_cEntriesDropped = 0;
+    pDispatchQueue->m_nReserved30 = 0;
+    pDispatchQueue->m_pClientList = 0;
     return pQueue;
 }
 
@@ -981,6 +985,7 @@ void DestroyRenderDispatchQueue(void *pQueue) {
     unsigned int cClients;
     RDISPATCH_ClientNode *pClientNode;
     RDISPATCH_ClientNode *pNextClientNode;
+    void **ppLockThunk;
 
     pDispatchQueue = (RDISPATCH_Queue *)pQueue;
     pDispatchQueue->m_pVtable = g_RenderDispatchQueueVtable;
@@ -1002,8 +1007,9 @@ void DestroyRenderDispatchQueue(void *pQueue) {
         } while (cClientsReleased < cClients);
     }
 
-    pDispatchQueue->m_pLockVtable = g_RenderDispatchQueueCriticalSectionHelperVtable;
-    DeleteCriticalSection((char *)pQueue + 0xc);
+    ppLockThunk = &pDispatchQueue->m_pLockVtable;
+    *ppLockThunk = g_RenderDispatchQueueCriticalSectionHelperVtable;
+    DeleteCriticalSection((char *)ppLockThunk + 4);
 }
 
 // FUNCTION: LEMBALL 0x004599B0

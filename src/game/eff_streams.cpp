@@ -209,7 +209,7 @@ extern void *g_pNonZrleVariantRenderEntryInitializeVtable[2];
 extern void InitializeRenderQueueNodeBase(void *pRenderQueueNode);
 extern int StartFileBasedNetworkMessageThread(void);
 extern int StartTcpipNetworkMessageThread(void);
-extern void ConfigureFileBasedNetworkPathsWrapper(char *pszBasePath, char *pszNetworkPath);
+extern void WINAPI ConfigureFileBasedNetworkPathsWrapper(char *pszBasePath, char *pszNetworkPath);
 extern int StartEffTransportRuntimeAndWaitReady(void *pRuntimeWindow, int nRuntimeKey, int cbMaxPacket);
 extern int StopFileBasedNetworkMessageThread(void);
 extern int StopTcpipNetworkMessageThread(void);

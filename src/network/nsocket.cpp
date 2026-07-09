@@ -48,6 +48,114 @@ struct NETWORK_TimedSocketEffChannelBundleHeader {
     short m_nMode;
 };
 
+struct NETWORK_TimedSocketEffChannelBundleLayout {
+    void **m_pVtable00;
+    short m_nMode04;
+    unsigned char m_abReserved06[0x12];
+    unsigned char m_abChannelState18[0x30];
+    unsigned char m_abTimedStream48[0x44];
+    void **m_pTimedStreamVtable8c;
+    unsigned char m_abReserved90[0x40];
+    void **m_pSocketChannelVtabled0;
+    unsigned char m_abReservedd4[0x0c];
+    unsigned char m_abSocketWindowC0[0x20];
+};
+
+struct NETWORK_TcpipEffTransportCompositeLayout {
+    void **m_pVtable00;
+    NETWORK_ConstructionAdjustorVtable *m_pOuterOffsets04;
+    int m_nRuntimeField08;
+    int m_nRuntimeField0c;
+    int m_nRuntimeField10;
+    int m_nRuntimeField14;
+    int m_nRuntimeField18;
+    int m_nRuntimeField1c;
+    NETWORK_ConstructionAdjustorVtable *m_pTransportOffsets20;
+    int m_nSocketWindowHandle24;
+    int m_nLookupHandle28;
+    int m_nReserved2c;
+    unsigned char m_abChannelState30[0x30];
+    unsigned char m_abTimedStream60[0x44];
+    NETWORK_ConstructionAdjustorVtable *m_pDualStreamVtableA4;
+    unsigned char m_abTimedStreamA8[0x30];
+    unsigned char m_abDualStreamD8[0x44];
+    NETWORK_ConstructionAdjustorVtable *m_pDualThunkOffsets11c;
+    unsigned char m_abReserved120[0x10];
+    NETWORK_ConstructionAdjustorVtable *m_pSocketThunkOffsets130;
+    unsigned char m_abReserved134[0x04];
+    unsigned char m_abSocketWindow138[0x10];
+    NETWORK_ConstructionAdjustorVtable *m_pTimedSocketThunkOffsets148;
+    unsigned char m_abSocketWindow14c[0x08];
+    NETWORK_ConstructionAdjustorVtable *m_pTimedSocketBundleOffsets154;
+    void **m_pTimedSocketBundleDataVtable158;
+    unsigned char m_abTimedSocketBundle15c[0x14];
+};
+
+struct NETWORK_TcpipSocketChannelStackLayout {
+    NETWORK_ConstructionAdjustorVtable *m_pBaseOffsets00;
+    int m_nReserved04;
+    unsigned char m_abChannelState08[0x30];
+    unsigned char m_abTimedStream38[0x44];
+    NETWORK_ConstructionAdjustorVtable *m_pTimedStreamVtable7c;
+    unsigned char m_abTimedStream80[0x30];
+    unsigned char m_abDualStreamB0[0x44];
+    NETWORK_ConstructionAdjustorVtable *m_pDualStreamVtablef4;
+    unsigned char m_abReservedf8[0x10];
+    NETWORK_ConstructionAdjustorVtable *m_pDualThunkOffsets108;
+    unsigned char m_abReserved10c[0x04];
+    unsigned char m_abSocketWindow110[0x10];
+    NETWORK_ConstructionAdjustorVtable *m_pTimedSocketBundleVtable120;
+    unsigned char m_abSocketWindow124[0x08];
+    NETWORK_ConstructionAdjustorVtable *m_pSocketWindowVtable12c;
+    void **m_pTimedSocketBundleDataVtable130;
+    unsigned char m_abTimedSocketBundle134[0x14];
+};
+
+struct NETWORK_CompositeEffTransportStackLayout {
+    void **m_pVtable00;
+    NETWORK_ConstructionAdjustorVtable *m_pChannelStateOffsets04;
+    int m_nField08;
+    int m_nField0c;
+    int m_nField10;
+    int m_nField14;
+    int m_nField18;
+    int m_nField1c;
+    int m_nField20;
+    DWORD m_dwLastActivity24;
+    unsigned char m_abChannelState30[0x30];
+    unsigned char m_abTimedStream60[0x44];
+    NETWORK_ConstructionAdjustorVtable *m_pTimedStreamOffsetsA4;
+    unsigned char m_abReservedA8[0x74];
+    NETWORK_ConstructionAdjustorVtable *m_pDualThunkOffsets11c;
+    unsigned char m_abReserved120[0x14];
+};
+
+struct NETWORK_CompositeEffTransportStackWrapperView {
+    unsigned char m_abChannelState00[0x30];
+    unsigned char m_abTimedStream30[0x78];
+    unsigned char m_abDualStreamA8[0x44];
+};
+
+struct NETWORK_TcpipSocketChannelStackWrapperView {
+    unsigned char m_abChannelState00[0x30];
+    unsigned char m_abTimedStream30[0x78];
+    unsigned char m_abDualStreamA8[0x44];
+    unsigned char m_abReservedec[0x3c];
+    unsigned char m_abSocketWindow128[0x20];
+};
+
+struct NETWORK_DualSocketWindowChannelStackWrapperView {
+    unsigned char m_abChannelState00[0x2c];
+    unsigned char m_abDualStream2c[0x78];
+    unsigned char m_abSocketWindowA4[0x20];
+};
+
+struct NETWORK_TimedSocketWindowChannelStackWrapperView {
+    unsigned char m_abChannelState00[0x30];
+    unsigned char m_abTimedStream30[0x98];
+    unsigned char m_abSocketWindowC8[0x20];
+};
+
 static void *g_NETWORK_CompositeEffTransportChannelStateVtable = (void *)0x00499128;
 static void *g_NETWORK_CompositeEffTransportTimedStreamVtable = (void *)0x00499120;
 static void *g_NETWORK_CompositeEffTransportDualStreamVtable = (void *)0x00499118;
@@ -139,92 +247,93 @@ void *ConstructTcpipSocketChannelStack(void *pObject, int fConstructEmbeddedObje
 
 // FUNCTION: LEMBALL 0x00460A90
 void *ConstructCompositeEffTransportStack(void *pObject, int fConstructEmbeddedObjects) {
-    NETWORK_ThunkAdjustorGroup kEmbeddedThunkGroup;
-    NETWORK_ThunkAdjustorGroup kOuterThunkGroup;
+    NETWORK_CompositeEffTransportStackLayout *pComposite;
+    NETWORK_ConstructionAdjustorVtable *pOffsets;
+    NETWORK_AdjustorSubobject *pPrimaryThunk;
+    NETWORK_AdjustorSubobject *pSecondaryThunk;
+    NETWORK_AdjustorSubobject *pTertiaryThunk;
+    char *pbObjectBase;
+
+    pComposite = (NETWORK_CompositeEffTransportStackLayout *)pObject;
+    pbObjectBase = (char *)pObject;
 
     if (fConstructEmbeddedObjects != 0) {
-        *(void **)((char *)pObject + 4) = g_NETWORK_CompositeEffTransportChannelStateVtable;
-        *(void **)((char *)pObject + 0xa4) = g_NETWORK_CompositeEffTransportTimedStreamVtable;
-        *(void **)((char *)pObject + 0x11c) = g_NETWORK_CompositeEffTransportDualStreamVtable;
-        *(void **)((char *)pObject + 0x130) = g_NETWORK_CompositeEffTransportDualThunkVtable;
+        pComposite->m_pChannelStateOffsets04 =
+            (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_CompositeEffTransportChannelStateVtable;
+        pComposite->m_pTimedStreamOffsetsA4 =
+            (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_CompositeEffTransportTimedStreamVtable;
+        *(void **)(pbObjectBase + 0x11c) = g_NETWORK_CompositeEffTransportDualStreamVtable;
+        *(void **)(pbObjectBase + 0x130) = g_NETWORK_CompositeEffTransportDualThunkVtable;
 
-        ConstructEffStreamChannelState((char *)pObject + 0x30);
-        ConstructTimedEffStream((char *)pObject + 0x60, 0);
-        ConstructDualHandleEffStream((char *)pObject + 0xd8, 0);
+        ConstructEffStreamChannelState(pComposite->m_abChannelState30);
+        ConstructTimedEffStream(pComposite->m_abTimedStream60, 0);
+        ConstructDualHandleEffStream(pbObjectBase + 0xd8, 0);
 
-        kEmbeddedThunkGroup.m_pOffsets = *(NETWORK_ConstructionAdjustorVtable **)((char *)pObject + 0x130);
-        kEmbeddedThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)((char *)pObject + 0x130 +
-                                                                       kEmbeddedThunkGroup.m_pOffsets->m_nPrimaryOffset -
-                                                                       4);
-        kEmbeddedThunkGroup.m_pSecondary = (NETWORK_AdjustorSubobject *)((char *)pObject + 0x130 +
-                                                                         kEmbeddedThunkGroup.m_pOffsets->m_nSecondaryOffset -
-                                                                         4);
-        kEmbeddedThunkGroup.m_pTertiary = (NETWORK_AdjustorSubobject *)((char *)pObject + 0x130 +
-                                                                        kEmbeddedThunkGroup.m_pOffsets->m_nTertiaryOffset -
-                                                                        4);
-
-        kEmbeddedThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunk;
-        kEmbeddedThunkGroup.m_pSecondary->m_pVtable = g_NETWORK_ReturnTrueVtable;
-        kEmbeddedThunkGroup.m_pTertiary->m_pVtable = g_NETWORK_ReturnTrueVtable;
-
-        kEmbeddedThunkGroup.m_pPrimary->m_nThisDelta = kEmbeddedThunkGroup.m_pOffsets->m_nPrimaryOffset - 8;
-        kEmbeddedThunkGroup.m_pSecondary->m_nThisDelta = kEmbeddedThunkGroup.m_pOffsets->m_nSecondaryOffset - 0x38;
-        kEmbeddedThunkGroup.m_pTertiary->m_nThisDelta = kEmbeddedThunkGroup.m_pOffsets->m_nTertiaryOffset - 0xb0;
+        pOffsets = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_CompositeEffTransportDualThunkVtable;
+        pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x12c + pOffsets->m_nPrimaryOffset);
+        pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x12c + pOffsets->m_nSecondaryOffset);
+        pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x12c + pOffsets->m_nTertiaryOffset);
+        pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunk;
+        pSecondaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
+        pTertiaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
+        pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 8;
+        pSecondaryThunk->m_nThisDelta = pOffsets->m_nSecondaryOffset - 0x38;
+        pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 0xb0;
     }
 
-    *(void **)pObject = g_NETWORK_CompositeEffTransportVtable;
-    kOuterThunkGroup.m_pOffsets = *(NETWORK_ConstructionAdjustorVtable **)((char *)pObject + 4);
-    kOuterThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)((char *)pObject + 4 +
-                                                                kOuterThunkGroup.m_pOffsets->m_nPrimaryOffset - 4);
-    kOuterThunkGroup.m_pSecondary = (NETWORK_AdjustorSubobject *)((char *)pObject + 4 +
-                                                                  kOuterThunkGroup.m_pOffsets->m_nSecondaryOffset - 4);
-    kOuterThunkGroup.m_pTertiary = (NETWORK_AdjustorSubobject *)((char *)pObject + 4 +
-                                                                 kOuterThunkGroup.m_pOffsets->m_nTertiaryOffset - 4);
-    kOuterThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_CompositeEffTransportFatalThunkVtable;
-    kOuterThunkGroup.m_pSecondary->m_pVtable = g_NETWORK_CompositeEffTransportTimedThunkVtable;
-    kOuterThunkGroup.m_pTertiary->m_pVtable = g_NETWORK_CompositeEffTransportDualThunk;
-    kOuterThunkGroup.m_pPrimary->m_nThisDelta = kOuterThunkGroup.m_pOffsets->m_nPrimaryOffset - 0x2c;
-    kOuterThunkGroup.m_pSecondary->m_nThisDelta = kOuterThunkGroup.m_pOffsets->m_nSecondaryOffset - 0x5c;
-    kOuterThunkGroup.m_pTertiary->m_nThisDelta = kOuterThunkGroup.m_pOffsets->m_nTertiaryOffset - 0xd4;
+    pComposite->m_pVtable00 = (void **)g_NETWORK_CompositeEffTransportVtable;
+    pOffsets = pComposite->m_pChannelStateOffsets04;
+    pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nPrimaryOffset);
+    pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nSecondaryOffset);
+    pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nTertiaryOffset);
+    pPrimaryThunk->m_pVtable = g_NETWORK_CompositeEffTransportFatalThunkVtable;
+    pSecondaryThunk->m_pVtable = g_NETWORK_CompositeEffTransportTimedThunkVtable;
+    pTertiaryThunk->m_pVtable = g_NETWORK_CompositeEffTransportDualThunk;
+    pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 0x2c;
+    pSecondaryThunk->m_nThisDelta = pOffsets->m_nSecondaryOffset - 0x5c;
+    pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 0xd4;
 
-    *(int *)((char *)pObject + 0xc) = 0;
-    *(int *)((char *)pObject + 8) = 0;
-    *(int *)((char *)pObject + 0x14) = 0;
-    *(int *)((char *)pObject + 0x10) = 0;
-    *(int *)((char *)pObject + 0x1c) = 0;
-    *(int *)((char *)pObject + 0x20) = 0;
-    *(int *)((char *)pObject + 0x24) = 0;
-    *(int *)((char *)pObject + 0x18) = 0;
-    *(DWORD *)((char *)pObject + 0x28) = timeGetTime();
+    pComposite->m_nField0c = 0;
+    pComposite->m_nField08 = 0;
+    pComposite->m_nField14 = 0;
+    pComposite->m_nField10 = 0;
+    pComposite->m_nField1c = 0;
+    pComposite->m_nField20 = 0;
+    pComposite->m_dwLastActivity24 = 0;
+    pComposite->m_nField18 = 0;
+    *(DWORD *)(pbObjectBase + 0x28) = timeGetTime();
     return pObject;
 }
 
 // FUNCTION: LEMBALL 0x00460C00
 void RestoreCompositeEffTransportVtables(int nObjectBasePlus0x30) {
-    char *pObject;
-    NETWORK_ThunkAdjustorGroup kOuterThunkGroup;
+    NETWORK_CompositeEffTransportStackLayout *pComposite;
+    NETWORK_ConstructionAdjustorVtable *pOffsets;
+    NETWORK_AdjustorSubobject *pPrimaryThunk;
+    NETWORK_AdjustorSubobject *pSecondaryThunk;
+    NETWORK_AdjustorSubobject *pTertiaryThunk;
+    char *pbObjectBase;
 
-    pObject = (char *)(unsigned long)(nObjectBasePlus0x30 - 0x30);
-    *(void **)(pObject) = g_NETWORK_CompositeEffTransportVtable;
-    kOuterThunkGroup.m_pOffsets = *(NETWORK_ConstructionAdjustorVtable **)(pObject + 4);
-    kOuterThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)(pObject + 4 +
-                                                                kOuterThunkGroup.m_pOffsets->m_nPrimaryOffset - 4);
-    kOuterThunkGroup.m_pSecondary = (NETWORK_AdjustorSubobject *)(pObject + 4 +
-                                                                  kOuterThunkGroup.m_pOffsets->m_nSecondaryOffset - 4);
-    kOuterThunkGroup.m_pTertiary = (NETWORK_AdjustorSubobject *)(pObject + 4 +
-                                                                 kOuterThunkGroup.m_pOffsets->m_nTertiaryOffset - 4);
-    kOuterThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_CompositeEffTransportFatalThunkVtable;
-    kOuterThunkGroup.m_pSecondary->m_pVtable = g_NETWORK_CompositeEffTransportTimedThunkVtable;
-    kOuterThunkGroup.m_pTertiary->m_pVtable = g_NETWORK_CompositeEffTransportDualThunk;
-    kOuterThunkGroup.m_pPrimary->m_nThisDelta = kOuterThunkGroup.m_pOffsets->m_nPrimaryOffset - 0x2c;
-    kOuterThunkGroup.m_pSecondary->m_nThisDelta = kOuterThunkGroup.m_pOffsets->m_nSecondaryOffset - 0x5c;
-    kOuterThunkGroup.m_pTertiary->m_nThisDelta = kOuterThunkGroup.m_pOffsets->m_nTertiaryOffset - 0xd4;
+    pbObjectBase = (char *)(unsigned long)(nObjectBasePlus0x30 - 0x30);
+    pComposite = (NETWORK_CompositeEffTransportStackLayout *)pbObjectBase;
+    pComposite->m_pVtable00 = (void **)g_NETWORK_CompositeEffTransportVtable;
+    pOffsets = pComposite->m_pChannelStateOffsets04;
+    pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nPrimaryOffset);
+    pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nSecondaryOffset);
+    pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nTertiaryOffset);
+    pPrimaryThunk->m_pVtable = g_NETWORK_CompositeEffTransportFatalThunkVtable;
+    pSecondaryThunk->m_pVtable = g_NETWORK_CompositeEffTransportTimedThunkVtable;
+    pTertiaryThunk->m_pVtable = g_NETWORK_CompositeEffTransportDualThunk;
+    pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 0x2c;
+    pSecondaryThunk->m_nThisDelta = pOffsets->m_nSecondaryOffset - 0x5c;
+    pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 0xd4;
 }
 
 // FUNCTION: LEMBALL 0x0046FCF0
 void *ConstructSocketWindowEffChannel(void *pObject, int fConstructEmbeddedState) {
     NETWORK_SocketWindowEffChannel *pChannel;
-    NETWORK_ThunkAdjustorGroup kThunkGroup;
+    NETWORK_ConstructionAdjustorVtable *pOffsets;
+    NETWORK_AdjustorSubobject *pPrimaryThunk;
 
     pChannel = (NETWORK_SocketWindowEffChannel *)pObject;
 
@@ -236,11 +345,10 @@ void *ConstructSocketWindowEffChannel(void *pObject, int fConstructEmbeddedState
     ((PLATFORM_InvisibleMessageWindow *)pChannel)
         ->Construct(g_NETWORK_SocketWindowClassName, g_pfSocketWindowClassRegistered);
     pChannel->m_pVtable = (void **)g_NETWORK_SocketWindowEffChannelVtable;
-    kThunkGroup.m_pOffsets = (NETWORK_ConstructionAdjustorVtable *)pChannel->m_pEmbeddedStateVtable;
-    kThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)((char *)pChannel + 0x10 +
-                                                           kThunkGroup.m_pOffsets->m_nPrimaryOffset - 4);
-    kThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_SocketWindowEffChannelThunkVtable;
-    kThunkGroup.m_pPrimary->m_nThisDelta = kThunkGroup.m_pOffsets->m_nPrimaryOffset - 0x10;
+    pOffsets = (NETWORK_ConstructionAdjustorVtable *)pChannel->m_pEmbeddedStateVtable;
+    pPrimaryThunk = (NETWORK_AdjustorSubobject *)((char *)pChannel + 0x0c + pOffsets->m_nPrimaryOffset);
+    pPrimaryThunk->m_pVtable = g_NETWORK_SocketWindowEffChannelThunkVtable;
+    pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 0x10;
     pChannel->m_nSocketHandle = 0;
     pChannel->m_nLookupHandle = 0;
     pChannel->m_nMessageBase = 0x440;
@@ -251,15 +359,15 @@ void *ConstructSocketWindowEffChannel(void *pObject, int fConstructEmbeddedState
 // FUNCTION: LEMBALL 0x0046FD70
 void DestroySocketWindowEffChannel(int nChannelStateBase) {
     NETWORK_SocketWindowEffChannel *pChannel;
-    NETWORK_ThunkAdjustorGroup kThunkGroup;
+    NETWORK_ConstructionAdjustorVtable *pOffsets;
+    NETWORK_AdjustorSubobject *pPrimaryThunk;
 
     pChannel = (NETWORK_SocketWindowEffChannel *)(unsigned long)(nChannelStateBase - 0x20);
     pChannel->m_pVtable = (void **)g_NETWORK_SocketWindowEffChannelVtable;
-    kThunkGroup.m_pOffsets = (NETWORK_ConstructionAdjustorVtable *)pChannel->m_pEmbeddedStateVtable;
-    kThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)((char *)pChannel + 0x10 +
-                                                           kThunkGroup.m_pOffsets->m_nPrimaryOffset - 4);
-    kThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_SocketWindowEffChannelThunkVtable;
-    kThunkGroup.m_pPrimary->m_nThisDelta = kThunkGroup.m_pOffsets->m_nPrimaryOffset - 0x10;
+    pOffsets = (NETWORK_ConstructionAdjustorVtable *)pChannel->m_pEmbeddedStateVtable;
+    pPrimaryThunk = (NETWORK_AdjustorSubobject *)((char *)pChannel + 0x0c + pOffsets->m_nPrimaryOffset);
+    pPrimaryThunk->m_pVtable = g_NETWORK_SocketWindowEffChannelThunkVtable;
+    pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 0x10;
 
     if (pChannel->m_nLookupHandle != 0) {
         FreeVSMemBlock((void *)(unsigned long)pChannel->m_nLookupHandle);
@@ -270,162 +378,156 @@ void DestroySocketWindowEffChannel(int nChannelStateBase) {
 
 // FUNCTION: LEMBALL 0x00470030
 void *ConstructTimedSocketEffChannelBundle(void *pObject, int fConstructEmbeddedObjects) {
-    NETWORK_TimedSocketEffChannelBundleHeader *pBundle;
-    NETWORK_ThunkAdjustorGroup kThunkGroup;
+    NETWORK_TimedSocketEffChannelBundleLayout *pBundle;
+    NETWORK_ConstructionAdjustorVtable *pOffsets;
+    NETWORK_AdjustorSubobject *pPrimaryThunk;
+    NETWORK_AdjustorSubobject *pSecondaryThunk;
+    NETWORK_AdjustorSubobject *pTertiaryThunk;
+    char *pbObjectBase;
 
-    pBundle = (NETWORK_TimedSocketEffChannelBundleHeader *)pObject;
+    pBundle = (NETWORK_TimedSocketEffChannelBundleLayout *)pObject;
+    pbObjectBase = (char *)pObject;
 
     if (fConstructEmbeddedObjects != 0) {
-        pBundle->m_pVtable = (void **)g_NETWORK_TimedSocketBundleBaseVtable;
-        *(void **)((char *)pObject + 0x8c) = g_NETWORK_TimedSocketBundleTimedStreamVtable;
-        *(void **)((char *)pObject + 0xd0) = g_NETWORK_TimedSocketBundleSocketChannelVtable;
-        ConstructEffStreamChannelState((char *)pObject + 0x18);
-        ConstructTimedEffStream((char *)pObject + 0x48, 0);
-        ConstructSocketWindowEffChannel((char *)pObject + 0xc0, 0);
+        pBundle->m_pVtable00 = (void **)g_NETWORK_TimedSocketBundleBaseVtable;
+        pBundle->m_pTimedStreamVtable8c = (void **)g_NETWORK_TimedSocketBundleTimedStreamVtable;
+        pBundle->m_pSocketChannelVtabled0 = (void **)g_NETWORK_TimedSocketBundleSocketChannelVtable;
+        ConstructEffStreamChannelState(pBundle->m_abChannelState18);
+        ConstructTimedEffStream(pBundle->m_abTimedStream48, 0);
+        ConstructSocketWindowEffChannel(pBundle->m_abSocketWindowC0, 0);
     }
 
-    kThunkGroup.m_pOffsets = (NETWORK_ConstructionAdjustorVtable *)pBundle->m_pVtable;
-    kThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)((char *)pObject + kThunkGroup.m_pOffsets->m_nPrimaryOffset - 4);
-    kThunkGroup.m_pSecondary = (NETWORK_AdjustorSubobject *)((char *)pObject + kThunkGroup.m_pOffsets->m_nSecondaryOffset - 4);
-    kThunkGroup.m_pTertiary = (NETWORK_AdjustorSubobject *)((char *)pObject + kThunkGroup.m_pOffsets->m_nTertiaryOffset - 4);
-    kThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_TimedSocketBundleChannelThunkVtable;
-    kThunkGroup.m_pSecondary->m_pVtable = g_NETWORK_TimedSocketBundleTimedThunkVtable;
-    kThunkGroup.m_pTertiary->m_pVtable = g_NETWORK_TimedSocketBundleSocketThunkVtable;
-    kThunkGroup.m_pPrimary->m_nThisDelta = kThunkGroup.m_pOffsets->m_nPrimaryOffset - 0x18;
-    kThunkGroup.m_pSecondary->m_nThisDelta = kThunkGroup.m_pOffsets->m_nSecondaryOffset - 0x48;
-    kThunkGroup.m_pTertiary->m_nThisDelta = kThunkGroup.m_pOffsets->m_nTertiaryOffset - 0xc0;
-    pBundle->m_nMode = 2;
+    pOffsets = (NETWORK_ConstructionAdjustorVtable *)pBundle->m_pVtable00;
+    pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nPrimaryOffset - 4);
+    pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nSecondaryOffset - 4);
+    pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nTertiaryOffset - 4);
+    pPrimaryThunk->m_pVtable = g_NETWORK_TimedSocketBundleChannelThunkVtable;
+    pSecondaryThunk->m_pVtable = g_NETWORK_TimedSocketBundleTimedThunkVtable;
+    pTertiaryThunk->m_pVtable = g_NETWORK_TimedSocketBundleSocketThunkVtable;
+    pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 0x18;
+    pSecondaryThunk->m_nThisDelta = pOffsets->m_nSecondaryOffset - 0x48;
+    pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 0xc0;
+    pBundle->m_nMode04 = 2;
     return pObject;
 }
 
 // FUNCTION: LEMBALL 0x00470270
 void *ConstructTcpipEffTransportComposite(void *pObject, int fConstructEmbeddedObjects) {
-    NETWORK_ThunkAdjustorGroup kSocketWindowThunkGroup;
-    NETWORK_ThunkAdjustorGroup kTimedSocketThunkGroup;
-    NETWORK_QuadThunkAdjustorGroup kRuntimeThunkGroup;
-    NETWORK_QuadThunkAdjustorGroup kOuterThunkGroup;
+    NETWORK_TcpipEffTransportCompositeLayout *pComposite;
+    NETWORK_ConstructionAdjustorVtable *pOffsets;
+    NETWORK_AdjustorSubobject *pPrimaryThunk;
+    NETWORK_AdjustorSubobject *pSecondaryThunk;
+    NETWORK_AdjustorSubobject *pTertiaryThunk;
+    NETWORK_AdjustorSubobject *pQuaternaryThunk;
+
+    pComposite = (NETWORK_TcpipEffTransportCompositeLayout *)pObject;
     if (fConstructEmbeddedObjects != 0) {
-        *(void **)((char *)pObject + 4) = g_NETWORK_TcpipCompositeTimedStreamVtable;
-        *(void **)((char *)pObject + 0x20) = g_NETWORK_TcpipCompositeTransportStackVtable;
-        *(void **)((char *)pObject + 0xa4) = g_NETWORK_TcpipCompositeDualStreamVtable;
-        *(void **)((char *)pObject + 0x11c) = g_NETWORK_TcpipCompositeDualThunkVtable;
-        *(void **)((char *)pObject + 0x130) = g_NETWORK_TcpipCompositeSocketWindowVtable;
-        *(void **)((char *)pObject + 0x148) = g_NETWORK_TcpipCompositeTimedSocketThunkVtable;
-        *(void **)((char *)pObject + 0x154) = g_NETWORK_TcpipCompositeTimedSocketBundleVtable;
-        *(void **)((char *)pObject + 0x158) = g_NETWORK_TcpipCompositeTimedSocketBundleDataVtable;
+        pComposite->m_pOuterOffsets04 = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipCompositeTimedStreamVtable;
+        pComposite->m_pTransportOffsets20 =
+            (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipCompositeTransportStackVtable;
+        pComposite->m_pDualStreamVtableA4 = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipCompositeDualStreamVtable;
+        pComposite->m_pDualThunkOffsets11c = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipCompositeDualThunkVtable;
+        pComposite->m_pSocketThunkOffsets130 =
+            (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipCompositeSocketWindowVtable;
+        pComposite->m_pTimedSocketThunkOffsets148 =
+            (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipCompositeTimedSocketThunkVtable;
+        pComposite->m_pTimedSocketBundleOffsets154 =
+            (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipCompositeTimedSocketBundleVtable;
+        pComposite->m_pTimedSocketBundleDataVtable158 = (void **)g_NETWORK_TcpipCompositeTimedSocketBundleDataVtable;
 
-        ConstructEffStreamChannelState((char *)pObject + 0x30);
-        ConstructTimedEffStream((char *)pObject + 0x60, 0);
-        ConstructDualHandleEffStream((char *)pObject + 0xd8, 0);
+        ConstructEffStreamChannelState(pComposite->m_abChannelState30);
+        ConstructTimedEffStream(pComposite->m_abTimedStream60, 0);
+        ConstructDualHandleEffStream(pComposite->m_abDualStreamD8, 0);
 
-        kSocketWindowThunkGroup.m_pOffsets = *(NETWORK_ConstructionAdjustorVtable **)((char *)pObject + 0x130);
-        kSocketWindowThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)((char *)pObject + 0x130 +
-                                                                           kSocketWindowThunkGroup.m_pOffsets->m_nPrimaryOffset -
-                                                                           4);
-        kSocketWindowThunkGroup.m_pSecondary = (NETWORK_AdjustorSubobject *)((char *)pObject + 0x130 +
-                                                                             kSocketWindowThunkGroup.m_pOffsets->m_nSecondaryOffset -
-                                                                             4);
-        kSocketWindowThunkGroup.m_pTertiary = (NETWORK_AdjustorSubobject *)((char *)pObject + 0x130 +
-                                                                            kSocketWindowThunkGroup.m_pOffsets->m_nTertiaryOffset -
-                                                                            4);
+        pOffsets = pComposite->m_pSocketThunkOffsets130;
+        pPrimaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x12c + pOffsets->m_nPrimaryOffset);
+        pSecondaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x12c + pOffsets->m_nSecondaryOffset);
+        pTertiaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x12c + pOffsets->m_nTertiaryOffset);
+        pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunk;
+        pSecondaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
+        pTertiaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
+        pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 8;
+        pSecondaryThunk->m_nThisDelta = pOffsets->m_nSecondaryOffset - 0x38;
+        pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 0xb0;
 
-        kSocketWindowThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunk;
-        kSocketWindowThunkGroup.m_pSecondary->m_pVtable = g_NETWORK_ReturnTrueVtable;
-        kSocketWindowThunkGroup.m_pTertiary->m_pVtable = g_NETWORK_ReturnTrueVtable;
+        ConstructSocketWindowEffChannel(pComposite->m_abSocketWindow138, 0);
 
-        kSocketWindowThunkGroup.m_pPrimary->m_nThisDelta = kSocketWindowThunkGroup.m_pOffsets->m_nPrimaryOffset - 8;
-        kSocketWindowThunkGroup.m_pSecondary->m_nThisDelta = kSocketWindowThunkGroup.m_pOffsets->m_nSecondaryOffset - 0x38;
-        kSocketWindowThunkGroup.m_pTertiary->m_nThisDelta = kSocketWindowThunkGroup.m_pOffsets->m_nTertiaryOffset - 0xb0;
+        pOffsets = pComposite->m_pTimedSocketBundleOffsets154;
+        pPrimaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x150 + pOffsets->m_nPrimaryOffset);
+        pSecondaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x150 + pOffsets->m_nSecondaryOffset);
+        pTertiaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x150 + pOffsets->m_nTertiaryOffset);
+        pPrimaryThunk->m_pVtable = g_NETWORK_TimedSocketBundlePrimaryThunkVtable;
+        pSecondaryThunk->m_pVtable = g_NETWORK_TimedSocketBundleSecondaryThunkVtable;
+        pTertiaryThunk->m_pVtable = g_NETWORK_TimedSocketBundleTertiaryThunkVtable;
+        pPrimaryThunk->m_nThisDelta = 0;
 
-        ConstructSocketWindowEffChannel((char *)pObject + 0x138, 0);
-        kTimedSocketThunkGroup.m_pOffsets = *(NETWORK_ConstructionAdjustorVtable **)((char *)pObject + 0x154);
-        kTimedSocketThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)((char *)pObject + 0x154 +
-                                                                          kTimedSocketThunkGroup.m_pOffsets->m_nPrimaryOffset -
-                                                                          4);
-        kTimedSocketThunkGroup.m_pSecondary = (NETWORK_AdjustorSubobject *)((char *)pObject + 0x154 +
-                                                                            kTimedSocketThunkGroup.m_pOffsets->m_nSecondaryOffset -
-                                                                            4);
-        kTimedSocketThunkGroup.m_pTertiary = (NETWORK_AdjustorSubobject *)((char *)pObject + 0x154 +
-                                                                           kTimedSocketThunkGroup.m_pOffsets->m_nTertiaryOffset -
-                                                                           4);
-        kTimedSocketThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_TimedSocketBundlePrimaryThunkVtable;
-        kTimedSocketThunkGroup.m_pSecondary->m_pVtable = g_NETWORK_TimedSocketBundleSecondaryThunkVtable;
-        kTimedSocketThunkGroup.m_pTertiary->m_pVtable = g_NETWORK_TimedSocketBundleTertiaryThunkVtable;
-        kTimedSocketThunkGroup.m_pPrimary->m_nThisDelta = 0;
-        ConstructTimedSocketEffChannelBundle((char *)pObject + 0x158, 0);
+        ConstructTimedSocketEffChannelBundle(&pComposite->m_pTimedSocketBundleDataVtable158, 0);
     }
 
     ConstructEffTransportRuntimeChannelStack(pObject, 0);
-    kRuntimeThunkGroup.m_pOffsets = *(NETWORK_ConstructionAdjustorVtable **)((char *)pObject + 0x20);
-    kRuntimeThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)((char *)pObject + 0x20 +
-                                                                  kRuntimeThunkGroup.m_pOffsets->m_nPrimaryOffset - 4);
-    kRuntimeThunkGroup.m_pSecondary = (NETWORK_AdjustorSubobject *)((char *)pObject + 0x20 +
-                                                                    kRuntimeThunkGroup.m_pOffsets->m_nSecondaryOffset - 4);
-    kRuntimeThunkGroup.m_pTertiary = (NETWORK_AdjustorSubobject *)((char *)pObject + 0x20 +
-                                                                   kRuntimeThunkGroup.m_pOffsets->m_nTertiaryOffset - 4);
-    kRuntimeThunkGroup.m_pQuaternary = (NETWORK_AdjustorSubobject *)((char *)pObject + 0x20 +
-                                                                     kRuntimeThunkGroup.m_pOffsets->m_nQuaternaryOffset -
-                                                                     4);
-    kRuntimeThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_TcpipCompositeRuntimeThunkVtable;
-    kRuntimeThunkGroup.m_pSecondary->m_pVtable = g_NETWORK_TcpipCompositeTimedThunkVtable;
-    kRuntimeThunkGroup.m_pTertiary->m_pVtable = g_NETWORK_TcpipCompositeDualThunk;
-    kRuntimeThunkGroup.m_pQuaternary->m_pVtable = g_NETWORK_TcpipCompositeSocketThunkVtable;
-    kRuntimeThunkGroup.m_pPrimary->m_nThisDelta = 0;
-    kRuntimeThunkGroup.m_pSecondary->m_nThisDelta = 0;
-    kRuntimeThunkGroup.m_pTertiary->m_nThisDelta = 0;
-    kRuntimeThunkGroup.m_pQuaternary->m_nThisDelta = 0;
+    pOffsets = pComposite->m_pTransportOffsets20;
+    pPrimaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x1c + pOffsets->m_nPrimaryOffset);
+    pSecondaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x1c + pOffsets->m_nSecondaryOffset);
+    pTertiaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x1c + pOffsets->m_nTertiaryOffset);
+    pQuaternaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x1c + pOffsets->m_nQuaternaryOffset);
+    pPrimaryThunk->m_pVtable = g_NETWORK_TcpipCompositeRuntimeThunkVtable;
+    pSecondaryThunk->m_pVtable = g_NETWORK_TcpipCompositeTimedThunkVtable;
+    pTertiaryThunk->m_pVtable = g_NETWORK_TcpipCompositeDualThunk;
+    pQuaternaryThunk->m_pVtable = g_NETWORK_TcpipCompositeSocketThunkVtable;
+    pPrimaryThunk->m_nThisDelta = 0;
+    pSecondaryThunk->m_nThisDelta = 0;
+    pTertiaryThunk->m_nThisDelta = 0;
+    pQuaternaryThunk->m_nThisDelta = 0;
 
-    *(void **)pObject = g_NETWORK_TcpipCompositeVtable;
-    kOuterThunkGroup.m_pOffsets = *(NETWORK_ConstructionAdjustorVtable **)((char *)pObject + 4);
-    kOuterThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)((char *)pObject + 4 +
-                                                                kOuterThunkGroup.m_pOffsets->m_nPrimaryOffset - 4);
-    kOuterThunkGroup.m_pSecondary = (NETWORK_AdjustorSubobject *)((char *)pObject + 4 +
-                                                                  kOuterThunkGroup.m_pOffsets->m_nSecondaryOffset - 4);
-    kOuterThunkGroup.m_pTertiary = (NETWORK_AdjustorSubobject *)((char *)pObject + 4 +
-                                                                 kOuterThunkGroup.m_pOffsets->m_nTertiaryOffset - 4);
-    kOuterThunkGroup.m_pQuaternary = (NETWORK_AdjustorSubobject *)((char *)pObject + 4 +
-                                                                   kOuterThunkGroup.m_pOffsets->m_nQuaternaryOffset - 4);
-    kOuterThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_TcpipCompositeOuterFatalThunkVtable;
-    kOuterThunkGroup.m_pSecondary->m_pVtable = g_NETWORK_TcpipCompositeOuterTimedThunkVtable;
-    kOuterThunkGroup.m_pTertiary->m_pVtable = g_NETWORK_TcpipCompositeOuterDualThunkVtable;
-    kOuterThunkGroup.m_pQuaternary->m_pVtable = g_NETWORK_TcpipCompositeOuterSocketThunkVtable;
-    kOuterThunkGroup.m_pPrimary->m_nThisDelta = kOuterThunkGroup.m_pOffsets->m_nPrimaryOffset - 0x2c;
-    kOuterThunkGroup.m_pSecondary->m_nThisDelta = kOuterThunkGroup.m_pOffsets->m_nSecondaryOffset - 0x5c;
-    kOuterThunkGroup.m_pTertiary->m_nThisDelta = kOuterThunkGroup.m_pOffsets->m_nTertiaryOffset - 0xd4;
-    kOuterThunkGroup.m_pQuaternary->m_nThisDelta = kOuterThunkGroup.m_pOffsets->m_nQuaternaryOffset - 0x134;
+    pComposite->m_pVtable00 = (void **)g_NETWORK_TcpipCompositeVtable;
+    pOffsets = pComposite->m_pOuterOffsets04;
+    pPrimaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + pOffsets->m_nPrimaryOffset);
+    pSecondaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + pOffsets->m_nSecondaryOffset);
+    pTertiaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + pOffsets->m_nTertiaryOffset);
+    pQuaternaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + pOffsets->m_nQuaternaryOffset);
+    pPrimaryThunk->m_pVtable = g_NETWORK_TcpipCompositeOuterFatalThunkVtable;
+    pSecondaryThunk->m_pVtable = g_NETWORK_TcpipCompositeOuterTimedThunkVtable;
+    pTertiaryThunk->m_pVtable = g_NETWORK_TcpipCompositeOuterDualThunkVtable;
+    pQuaternaryThunk->m_pVtable = g_NETWORK_TcpipCompositeOuterSocketThunkVtable;
+    pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 0x2c;
+    pSecondaryThunk->m_nThisDelta = pOffsets->m_nSecondaryOffset - 0x5c;
+    pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 0xd4;
+    pQuaternaryThunk->m_nThisDelta = pOffsets->m_nQuaternaryOffset - 0x134;
 
-    *(int *)((char *)pObject + 0x24) = 0;
-    *(int *)((char *)pObject + 0x28) = 0;
+    pComposite->m_nSocketWindowHandle24 = 0;
+    pComposite->m_nLookupHandle28 = 0;
     return pObject;
 }
 
 // FUNCTION: LEMBALL 0x004704E0
 void DestroyTcpipEffTransportComposite(int nObjectBasePlus0x30) {
-    char *pObject;
-    NETWORK_QuadThunkAdjustorGroup kOuterThunkGroup;
+    NETWORK_TcpipEffTransportCompositeLayout *pComposite;
+    NETWORK_ConstructionAdjustorVtable *pOffsets;
+    NETWORK_AdjustorSubobject *pPrimaryThunk;
+    NETWORK_AdjustorSubobject *pSecondaryThunk;
+    NETWORK_AdjustorSubobject *pTertiaryThunk;
+    NETWORK_AdjustorSubobject *pQuaternaryThunk;
+    char *pbObjectBase;
 
-    pObject = (char *)(unsigned long)(nObjectBasePlus0x30 - 0x30);
-    *(void **)pObject = g_NETWORK_TcpipCompositeVtable;
-    kOuterThunkGroup.m_pOffsets = *(NETWORK_ConstructionAdjustorVtable **)(pObject + 4);
-    kOuterThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)(pObject + 4 +
-                                                                kOuterThunkGroup.m_pOffsets->m_nPrimaryOffset - 4);
-    kOuterThunkGroup.m_pSecondary = (NETWORK_AdjustorSubobject *)(pObject + 4 +
-                                                                  kOuterThunkGroup.m_pOffsets->m_nSecondaryOffset - 4);
-    kOuterThunkGroup.m_pTertiary = (NETWORK_AdjustorSubobject *)(pObject + 4 +
-                                                                 kOuterThunkGroup.m_pOffsets->m_nTertiaryOffset - 4);
-    kOuterThunkGroup.m_pQuaternary = (NETWORK_AdjustorSubobject *)(pObject + 4 +
-                                                                   kOuterThunkGroup.m_pOffsets->m_nQuaternaryOffset - 4);
-    kOuterThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_TcpipCompositeOuterFatalThunkVtable;
-    kOuterThunkGroup.m_pSecondary->m_pVtable = g_NETWORK_TcpipCompositeOuterTimedThunkVtable;
-    kOuterThunkGroup.m_pTertiary->m_pVtable = g_NETWORK_TcpipCompositeOuterDualThunkVtable;
-    kOuterThunkGroup.m_pQuaternary->m_pVtable = g_NETWORK_TcpipCompositeOuterSocketThunkVtable;
-    kOuterThunkGroup.m_pPrimary->m_nThisDelta = kOuterThunkGroup.m_pOffsets->m_nPrimaryOffset - 0x2c;
-    kOuterThunkGroup.m_pSecondary->m_nThisDelta = kOuterThunkGroup.m_pOffsets->m_nSecondaryOffset - 0x5c;
-    kOuterThunkGroup.m_pTertiary->m_nThisDelta = kOuterThunkGroup.m_pOffsets->m_nTertiaryOffset - 0xd4;
-    kOuterThunkGroup.m_pQuaternary->m_nThisDelta = kOuterThunkGroup.m_pOffsets->m_nQuaternaryOffset - 0x134;
+    pbObjectBase = (char *)(unsigned long)(nObjectBasePlus0x30 - 0x30);
+    pComposite = (NETWORK_TcpipEffTransportCompositeLayout *)pbObjectBase;
+    pComposite->m_pVtable00 = (void **)g_NETWORK_TcpipCompositeVtable;
+    pOffsets = pComposite->m_pOuterOffsets04;
+    pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nPrimaryOffset);
+    pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nSecondaryOffset);
+    pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nTertiaryOffset);
+    pQuaternaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nQuaternaryOffset);
+    pPrimaryThunk->m_pVtable = g_NETWORK_TcpipCompositeOuterFatalThunkVtable;
+    pSecondaryThunk->m_pVtable = g_NETWORK_TcpipCompositeOuterTimedThunkVtable;
+    pTertiaryThunk->m_pVtable = g_NETWORK_TcpipCompositeOuterDualThunkVtable;
+    pQuaternaryThunk->m_pVtable = g_NETWORK_TcpipCompositeOuterSocketThunkVtable;
+    pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 0x2c;
+    pSecondaryThunk->m_nThisDelta = pOffsets->m_nSecondaryOffset - 0x5c;
+    pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 0xd4;
+    pQuaternaryThunk->m_nThisDelta = pOffsets->m_nQuaternaryOffset - 0x134;
 
-    if (*(void **)(pObject + 0x24) != 0) {
-        FreeVSMemBlock(*(void **)(pObject + 0x24));
+    if ((void *)(unsigned long)pComposite->m_nSocketWindowHandle24 != 0) {
+        FreeVSMemBlock((void *)(unsigned long)pComposite->m_nSocketWindowHandle24);
     }
 
     ReleaseEffTransportRuntimeBuffers(nObjectBasePlus0x30 - 0xc);
@@ -433,227 +535,244 @@ void DestroyTcpipEffTransportComposite(int nObjectBasePlus0x30) {
 
 // FUNCTION: LEMBALL 0x00462DB0
 void *DeleteCompositeEffTransportStackWrapper(void *pObject, BYTE fFreeMemory) {
+    NETWORK_CompositeEffTransportStackWrapperView *pView;
+    char *pbAllocationBase;
+
+    pView = (NETWORK_CompositeEffTransportStackWrapperView *)pObject;
+    pbAllocationBase = (char *)pObject - 0x30;
     RestoreCompositeEffTransportVtables((int)(unsigned long)pObject);
-    DestroyDualHandleEffStream((char *)pObject + 0xa8);
-    DestroyTimedEffStream((char *)pObject + 0x30);
-    DestroyEffStreamChannelState(pObject);
+    DestroyDualHandleEffStream(pView->m_abDualStreamA8);
+    DestroyTimedEffStream(pView->m_abTimedStream30);
+    DestroyEffStreamChannelState(pView->m_abChannelState00);
     if ((fFreeMemory & 1) != 0) {
-        FreeVSMemBlock((char *)pObject - 0x30);
+        FreeVSMemBlock(pbAllocationBase);
     }
-    return (char *)pObject - 0x30;
+    return pbAllocationBase;
 }
 
 // FUNCTION: LEMBALL 0x00471B10
 void *DeleteCompositeTcpipSocketChannelStackWrapper(void *pObject, BYTE fFreeMemory) {
+    NETWORK_TcpipSocketChannelStackWrapperView *pView;
+    char *pbAllocationBase;
+
+    pView = (NETWORK_TcpipSocketChannelStackWrapperView *)pObject;
+    pbAllocationBase = (char *)pObject - 0x34;
     RestoreCompositeEffTransportVtables((int)(unsigned long)pObject - 4);
-    DestroySocketWindowEffChannel((int)(unsigned long)pObject + 0x128);
-    DestroyDualHandleEffStream((char *)pObject + 0xa8);
-    DestroyTimedEffStream((char *)pObject + 0x30);
-    DestroyEffStreamChannelState(pObject);
+    DestroySocketWindowEffChannel((int)(unsigned long)pView->m_abSocketWindow128 + 0x20);
+    DestroyDualHandleEffStream(pView->m_abDualStreamA8);
+    DestroyTimedEffStream(pView->m_abTimedStream30);
+    DestroyEffStreamChannelState(pView->m_abChannelState00);
     if ((fFreeMemory & 1) != 0) {
-        FreeVSMemBlock((char *)pObject - 0x34);
+        FreeVSMemBlock(pbAllocationBase);
     }
-    return (char *)pObject - 0x34;
+    return pbAllocationBase;
 }
 
 // FUNCTION: LEMBALL 0x00471CD0
 void *DeleteTcpipSocketChannelStackWrapper(void *pObject, BYTE fFreeMemory) {
-    DestroySocketWindowEffChannel((int)(unsigned long)pObject + 0x128);
-    DestroyDualHandleEffStream((char *)pObject + 0xa8);
-    DestroyTimedEffStream((char *)pObject + 0x30);
-    DestroyEffStreamChannelState(pObject);
+    NETWORK_TcpipSocketChannelStackWrapperView *pView;
+    char *pbAllocationBase;
+
+    pView = (NETWORK_TcpipSocketChannelStackWrapperView *)pObject;
+    pbAllocationBase = (char *)pObject - 8;
+    DestroySocketWindowEffChannel((int)(unsigned long)pView->m_abSocketWindow128 + 0x20);
+    DestroyDualHandleEffStream(pView->m_abDualStreamA8);
+    DestroyTimedEffStream(pView->m_abTimedStream30);
+    DestroyEffStreamChannelState(pView->m_abChannelState00);
     if ((fFreeMemory & 1) != 0) {
-        FreeVSMemBlock((char *)pObject - 8);
+        FreeVSMemBlock(pbAllocationBase);
     }
-    return (char *)pObject - 8;
+    return pbAllocationBase;
 }
 
 // FUNCTION: LEMBALL 0x00471DE0
 void *DeleteDualSocketWindowChannelStackWrapper(void *pObject, BYTE fFreeMemory) {
-    DestroySocketWindowEffChannel((int)(unsigned long)pObject + 0xa4);
-    DestroyDualHandleEffStream((char *)pObject + 0x2c);
-    DestroyEffStreamChannelState(pObject);
+    NETWORK_DualSocketWindowChannelStackWrapperView *pView;
+    char *pbAllocationBase;
+
+    pView = (NETWORK_DualSocketWindowChannelStackWrapperView *)pObject;
+    pbAllocationBase = (char *)pObject - 8;
+    DestroySocketWindowEffChannel((int)(unsigned long)pView->m_abSocketWindowA4 + 0x20);
+    DestroyDualHandleEffStream(pView->m_abDualStream2c);
+    DestroyEffStreamChannelState(pView->m_abChannelState00);
     if ((fFreeMemory & 1) != 0) {
-        FreeVSMemBlock((char *)pObject - 8);
+        FreeVSMemBlock(pbAllocationBase);
     }
-    return (char *)pObject - 8;
+    return pbAllocationBase;
 }
 
 // FUNCTION: LEMBALL 0x00471E80
 void *DeleteTimedSocketWindowChannelStackWrapper(void *pObject, BYTE fFreeMemory) {
-    DestroySocketWindowEffChannel((int)(unsigned long)pObject + 200);
-    DestroyTimedEffStream((char *)pObject + 0x30);
-    DestroyEffStreamChannelState(pObject);
+    NETWORK_TimedSocketWindowChannelStackWrapperView *pView;
+    char *pbAllocationBase;
+
+    pView = (NETWORK_TimedSocketWindowChannelStackWrapperView *)pObject;
+    pbAllocationBase = (char *)pObject - 0x18;
+    DestroySocketWindowEffChannel((int)(unsigned long)pView->m_abSocketWindowC8 + 0x20);
+    DestroyTimedEffStream(pView->m_abTimedStream30);
+    DestroyEffStreamChannelState(pView->m_abChannelState00);
     if ((fFreeMemory & 1) != 0) {
-        FreeVSMemBlock((char *)pObject - 0x18);
+        FreeVSMemBlock(pbAllocationBase);
     }
-    return (char *)pObject - 0x18;
+    return pbAllocationBase;
 }
 
 // FUNCTION: LEMBALL 0x00471F60
 void *DeleteTcpipEffTransportCompositeWrapper(void *pObject, BYTE fFreeMemory) {
+    NETWORK_TcpipSocketChannelStackWrapperView *pView;
+    char *pbAllocationBase;
+
+    pView = (NETWORK_TcpipSocketChannelStackWrapperView *)pObject;
+    pbAllocationBase = (char *)pObject - 0x30;
     DestroyTcpipEffTransportComposite((int)(unsigned long)pObject);
-    DestroySocketWindowEffChannel((int)(unsigned long)pObject + 0x128);
-    DestroyDualHandleEffStream((char *)pObject + 0xa8);
-    DestroyTimedEffStream((char *)pObject + 0x30);
-    DestroyEffStreamChannelState(pObject);
+    DestroySocketWindowEffChannel((int)(unsigned long)pView->m_abSocketWindow128 + 0x20);
+    DestroyDualHandleEffStream(pView->m_abDualStreamA8);
+    DestroyTimedEffStream(pView->m_abTimedStream30);
+    DestroyEffStreamChannelState(pView->m_abChannelState00);
     if ((fFreeMemory & 1) != 0) {
-        FreeVSMemBlock((char *)pObject - 0x30);
+        FreeVSMemBlock(pbAllocationBase);
     }
-    return (char *)pObject - 0x30;
+    return pbAllocationBase;
 }
 
 // FUNCTION: LEMBALL 0x004715E0
 void *AllocateTcpipEffTransportComposite(void) {
-    int *pObject;
-    char *pbObject;
-    NETWORK_ThunkAdjustorGroup kSocketWindowThunkGroup;
-    NETWORK_ThunkAdjustorGroup kTimedSocketThunkGroup;
-    NETWORK_QuadThunkAdjustorGroup kOuterThunkGroup;
+    NETWORK_TcpipEffTransportCompositeLayout *pComposite;
+    NETWORK_ConstructionAdjustorVtable *pOffsets;
+    NETWORK_AdjustorSubobject *pPrimaryThunk;
+    NETWORK_AdjustorSubobject *pSecondaryThunk;
+    NETWORK_AdjustorSubobject *pTertiaryThunk;
+    NETWORK_AdjustorSubobject *pQuaternaryThunk;
+    char *pbObjectBase;
 
-    pObject = (int *)AllocateVSMemBlock(0x170);
-    if (pObject == 0) {
+    pComposite = (NETWORK_TcpipEffTransportCompositeLayout *)AllocateVSMemBlock(0x170);
+    if (pComposite == 0) {
         return 0;
     }
-    pbObject = (char *)pObject;
 
-    pObject[1] = (int)(unsigned long)g_NETWORK_AllocatedTcpipCompositeTransportVtable;
-    pObject[0xb] = (int)(unsigned long)g_NETWORK_AllocatedTcpipCompositeSocketStackVtable;
-    pObject[0x2a] = (int)(unsigned long)g_NETWORK_AllocatedTcpipCompositeDualStreamVtable;
-    pObject[0x48] = (int)(unsigned long)g_NETWORK_AllocatedTcpipCompositeDualThunkVtable;
-    pObject[0x4d] = (int)(unsigned long)g_NETWORK_AllocatedTcpipCompositeSocketWindowVtable;
-    pObject[0x53] = (int)(unsigned long)g_NETWORK_AllocatedTcpipCompositeTimedSocketBundleVtable;
-    pObject[0x56] = (int)(unsigned long)g_NETWORK_AllocatedTcpipCompositeTimedSocketThunkVtable;
-    pObject[0x57] = (int)(unsigned long)g_NETWORK_AllocatedTcpipCompositeTimedSocketDataVtable;
+    pbObjectBase = (char *)pComposite;
+    pComposite->m_pOuterOffsets04 = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_AllocatedTcpipCompositeTransportVtable;
+    pComposite->m_pTransportOffsets20 = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_AllocatedTcpipCompositeSocketStackVtable;
+    pComposite->m_pDualStreamVtableA4 = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_AllocatedTcpipCompositeDualStreamVtable;
+    pComposite->m_pDualThunkOffsets11c = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_AllocatedTcpipCompositeDualThunkVtable;
+    pComposite->m_pSocketThunkOffsets130 = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_AllocatedTcpipCompositeSocketWindowVtable;
+    pComposite->m_pTimedSocketBundleOffsets154 =
+        (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_AllocatedTcpipCompositeTimedSocketBundleVtable;
+    pComposite->m_pTimedSocketThunkOffsets148 =
+        (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_AllocatedTcpipCompositeTimedSocketThunkVtable;
+    pComposite->m_pTimedSocketBundleDataVtable158 = (void **)g_NETWORK_AllocatedTcpipCompositeTimedSocketDataVtable;
 
-    ConstructEffStreamChannelState(pObject + 0xd);
-    ConstructTimedEffStream(pObject + 0x19, 0);
-    ConstructDualHandleEffStream(pObject + 0x37, 0);
+    ConstructEffStreamChannelState(pComposite->m_abChannelState30);
+    ConstructTimedEffStream(pComposite->m_abTimedStream60, 0);
+    ConstructDualHandleEffStream(pComposite->m_abDualStreamD8, 0);
 
-    kSocketWindowThunkGroup.m_pOffsets = *(NETWORK_ConstructionAdjustorVtable **)(pbObject + 0x134);
-    kSocketWindowThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)(pbObject + 0x134 +
-                                                                       kSocketWindowThunkGroup.m_pOffsets->m_nPrimaryOffset -
-                                                                       4);
-    kSocketWindowThunkGroup.m_pSecondary = (NETWORK_AdjustorSubobject *)(pbObject + 0x134 +
-                                                                         kSocketWindowThunkGroup.m_pOffsets->m_nSecondaryOffset -
-                                                                         4);
-    kSocketWindowThunkGroup.m_pTertiary = (NETWORK_AdjustorSubobject *)(pbObject + 0x134 +
-                                                                        kSocketWindowThunkGroup.m_pOffsets->m_nTertiaryOffset -
-                                                                        4);
-    kSocketWindowThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunk;
-    kSocketWindowThunkGroup.m_pSecondary->m_pVtable = g_NETWORK_ReturnTrueVtable;
-    kSocketWindowThunkGroup.m_pTertiary->m_pVtable = g_NETWORK_ReturnTrueVtable;
-    kSocketWindowThunkGroup.m_pPrimary->m_nThisDelta = kSocketWindowThunkGroup.m_pOffsets->m_nPrimaryOffset - 8;
-    kSocketWindowThunkGroup.m_pSecondary->m_nThisDelta = kSocketWindowThunkGroup.m_pOffsets->m_nSecondaryOffset - 0x38;
-    kSocketWindowThunkGroup.m_pTertiary->m_nThisDelta = kSocketWindowThunkGroup.m_pOffsets->m_nTertiaryOffset - 0xb0;
+    pOffsets = pComposite->m_pSocketThunkOffsets130;
+    pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x130 + pOffsets->m_nPrimaryOffset - 4);
+    pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x130 + pOffsets->m_nSecondaryOffset - 4);
+    pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x130 + pOffsets->m_nTertiaryOffset - 4);
+    pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunk;
+    pSecondaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
+    pTertiaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
+    pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 8;
+    pSecondaryThunk->m_nThisDelta = pOffsets->m_nSecondaryOffset - 0x38;
+    pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 0xb0;
 
-    ConstructSocketWindowEffChannel(pObject + 0x4f, 0);
-    kTimedSocketThunkGroup.m_pOffsets = *(NETWORK_ConstructionAdjustorVtable **)(pbObject + 0x158);
-    kTimedSocketThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)(pbObject + 0x158 +
-                                                                      kTimedSocketThunkGroup.m_pOffsets->m_nPrimaryOffset -
-                                                                      4);
-    kTimedSocketThunkGroup.m_pSecondary = (NETWORK_AdjustorSubobject *)(pbObject + 0x158 +
-                                                                        kTimedSocketThunkGroup.m_pOffsets->m_nSecondaryOffset -
-                                                                        4);
-    kTimedSocketThunkGroup.m_pTertiary = (NETWORK_AdjustorSubobject *)(pbObject + 0x158 +
-                                                                       kTimedSocketThunkGroup.m_pOffsets->m_nTertiaryOffset -
-                                                                       4);
-    kTimedSocketThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_TimedSocketBundlePrimaryThunkVtable;
-    kTimedSocketThunkGroup.m_pSecondary->m_pVtable = g_NETWORK_TimedSocketBundleSecondaryThunkVtable;
-    kTimedSocketThunkGroup.m_pTertiary->m_pVtable = g_NETWORK_TimedSocketBundleTertiaryThunkVtable;
-    kTimedSocketThunkGroup.m_pPrimary->m_nThisDelta = 0;
-    ConstructTimedSocketEffChannelBundle(pObject + 0x57, 0);
-    ConstructCompositeEffTransportStack(pObject, 0);
-    ConstructTcpipSocketChannelStack(pObject + 0xb, 0);
+    ConstructSocketWindowEffChannel(pComposite->m_abSocketWindow138, 0);
 
-    pObject[0] = (int)(unsigned long)g_NETWORK_AllocatedTcpipCompositeVtable;
-    kOuterThunkGroup.m_pOffsets = *(NETWORK_ConstructionAdjustorVtable **)(pbObject + 4);
-    kOuterThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)(pbObject + 4 +
-                                                                kOuterThunkGroup.m_pOffsets->m_nPrimaryOffset - 4);
-    kOuterThunkGroup.m_pSecondary = (NETWORK_AdjustorSubobject *)(pbObject + 4 +
-                                                                  kOuterThunkGroup.m_pOffsets->m_nSecondaryOffset - 4);
-    kOuterThunkGroup.m_pTertiary = (NETWORK_AdjustorSubobject *)(pbObject + 4 +
-                                                                 kOuterThunkGroup.m_pOffsets->m_nTertiaryOffset - 4);
-    kOuterThunkGroup.m_pQuaternary = (NETWORK_AdjustorSubobject *)(pbObject + 4 +
-                                                                   kOuterThunkGroup.m_pOffsets->m_nQuaternaryOffset - 4);
-    kOuterThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_AllocatedTcpipCompositeFatalThunkVtable;
-    kOuterThunkGroup.m_pSecondary->m_pVtable = g_NETWORK_AllocatedTcpipCompositeTimedThunkVtable;
-    kOuterThunkGroup.m_pTertiary->m_pVtable = g_NETWORK_AllocatedTcpipCompositeDualThunk;
-    kOuterThunkGroup.m_pQuaternary->m_pVtable = g_NETWORK_AllocatedTcpipCompositeSocketThunkVtable;
-    kOuterThunkGroup.m_pPrimary->m_nThisDelta = 0;
-    kOuterThunkGroup.m_pSecondary->m_nThisDelta = 0;
-    kOuterThunkGroup.m_pTertiary->m_nThisDelta = 0;
-    kOuterThunkGroup.m_pQuaternary->m_nThisDelta = 0;
-    return pObject;
+    pOffsets = pComposite->m_pTimedSocketThunkOffsets148;
+    pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x154 + pOffsets->m_nPrimaryOffset - 4);
+    pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x154 + pOffsets->m_nSecondaryOffset - 4);
+    pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x154 + pOffsets->m_nTertiaryOffset - 4);
+    pPrimaryThunk->m_pVtable = g_NETWORK_TimedSocketBundlePrimaryThunkVtable;
+    pSecondaryThunk->m_pVtable = g_NETWORK_TimedSocketBundleSecondaryThunkVtable;
+    pTertiaryThunk->m_pVtable = g_NETWORK_TimedSocketBundleTertiaryThunkVtable;
+    pPrimaryThunk->m_nThisDelta = 0;
+
+    ConstructTimedSocketEffChannelBundle(&pComposite->m_pTimedSocketBundleDataVtable158, 0);
+    ConstructCompositeEffTransportStack(pComposite, 0);
+    ConstructTcpipSocketChannelStack((char *)pComposite + 0x2c, 0);
+
+    pComposite->m_pVtable00 = (void **)g_NETWORK_AllocatedTcpipCompositeVtable;
+    pOffsets = pComposite->m_pOuterOffsets04;
+    pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nPrimaryOffset);
+    pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nSecondaryOffset);
+    pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nTertiaryOffset);
+    pQuaternaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nQuaternaryOffset);
+    pPrimaryThunk->m_pVtable = g_NETWORK_AllocatedTcpipCompositeFatalThunkVtable;
+    pSecondaryThunk->m_pVtable = g_NETWORK_AllocatedTcpipCompositeTimedThunkVtable;
+    pTertiaryThunk->m_pVtable = g_NETWORK_AllocatedTcpipCompositeDualThunk;
+    pQuaternaryThunk->m_pVtable = g_NETWORK_AllocatedTcpipCompositeSocketThunkVtable;
+    pPrimaryThunk->m_nThisDelta = 0;
+    pSecondaryThunk->m_nThisDelta = 0;
+    pTertiaryThunk->m_nThisDelta = 0;
+    pQuaternaryThunk->m_nThisDelta = 0;
+    return pComposite;
 }
 
 // FUNCTION: LEMBALL 0x00471830
 void *ConstructTcpipSocketChannelStack(void *pObject, int fConstructEmbeddedObjects) {
-    NETWORK_ThunkAdjustorGroup kDualThunkGroup;
-    NETWORK_ThunkAdjustorGroup kSocketWindowThunkGroup;
-    NETWORK_QuadThunkAdjustorGroup kRuntimeThunkGroup;
+    NETWORK_TcpipSocketChannelStackLayout *pStack;
+    NETWORK_ConstructionAdjustorVtable *pOffsets;
+    NETWORK_AdjustorSubobject *pPrimaryThunk;
+    NETWORK_AdjustorSubobject *pSecondaryThunk;
+    NETWORK_AdjustorSubobject *pTertiaryThunk;
+    NETWORK_AdjustorSubobject *pQuaternaryThunk;
+    char *pbObjectBase;
+
+    pStack = (NETWORK_TcpipSocketChannelStackLayout *)pObject;
+    pbObjectBase = (char *)pObject;
 
     if (fConstructEmbeddedObjects != 0) {
-        *(void **)((char *)pObject + 0x7c) = g_NETWORK_TcpipSocketStackTimedStreamVtable;
-        *(void **)((char *)pObject + 0xf4) = g_NETWORK_TcpipSocketStackDualStreamVtable;
-        *(void **)pObject = g_NETWORK_TcpipSocketStackBaseVtable;
-        *(void **)((char *)pObject + 0x108) = g_NETWORK_TcpipSocketStackDualThunkVtable;
-        *(void **)((char *)pObject + 0x130) = g_NETWORK_TcpipSocketStackTimedSocketDataVtable;
-        *(void **)((char *)pObject + 0x120) = g_NETWORK_TcpipSocketStackTimedSocketBundleVtable;
-        *(void **)((char *)pObject + 300) = g_NETWORK_TcpipSocketStackSocketWindowVtable;
+        pStack->m_pTimedStreamVtable7c = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipSocketStackTimedStreamVtable;
+        pStack->m_pDualStreamVtablef4 = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipSocketStackDualStreamVtable;
+        pStack->m_pBaseOffsets00 = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipSocketStackBaseVtable;
+        pStack->m_pDualThunkOffsets108 = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipSocketStackDualThunkVtable;
+        pStack->m_pTimedSocketBundleDataVtable130 = (void **)g_NETWORK_TcpipSocketStackTimedSocketDataVtable;
+        pStack->m_pTimedSocketBundleVtable120 =
+            (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipSocketStackTimedSocketBundleVtable;
+        pStack->m_pSocketWindowVtable12c = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipSocketStackSocketWindowVtable;
 
-        ConstructEffStreamChannelState((char *)pObject + 8);
-        ConstructTimedEffStream((char *)pObject + 0x38, 0);
-        ConstructDualHandleEffStream((char *)pObject + 0xb0, 0);
+        ConstructEffStreamChannelState(pStack->m_abChannelState08);
+        ConstructTimedEffStream(pStack->m_abTimedStream38, 0);
+        ConstructDualHandleEffStream(pStack->m_abDualStreamB0, 0);
 
-        kDualThunkGroup.m_pOffsets = *(NETWORK_ConstructionAdjustorVtable **)((char *)pObject + 0x108);
-        kDualThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)((char *)pObject + 0x108 +
-                                                                   kDualThunkGroup.m_pOffsets->m_nPrimaryOffset - 4);
-        kDualThunkGroup.m_pSecondary = (NETWORK_AdjustorSubobject *)((char *)pObject + 0x108 +
-                                                                     kDualThunkGroup.m_pOffsets->m_nSecondaryOffset - 4);
-        kDualThunkGroup.m_pTertiary = (NETWORK_AdjustorSubobject *)((char *)pObject + 0x108 +
-                                                                    kDualThunkGroup.m_pOffsets->m_nTertiaryOffset - 4);
-        kDualThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunk;
-        kDualThunkGroup.m_pSecondary->m_pVtable = g_NETWORK_ReturnTrueVtable;
-        kDualThunkGroup.m_pTertiary->m_pVtable = g_NETWORK_ReturnTrueVtable;
-        kDualThunkGroup.m_pPrimary->m_nThisDelta = kDualThunkGroup.m_pOffsets->m_nPrimaryOffset - 8;
-        kDualThunkGroup.m_pSecondary->m_nThisDelta = kDualThunkGroup.m_pOffsets->m_nSecondaryOffset - 0x38;
-        kDualThunkGroup.m_pTertiary->m_nThisDelta = kDualThunkGroup.m_pOffsets->m_nTertiaryOffset - 0xb0;
+        pOffsets = pStack->m_pDualThunkOffsets108;
+        pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x104 + pOffsets->m_nPrimaryOffset);
+        pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x104 + pOffsets->m_nSecondaryOffset);
+        pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x104 + pOffsets->m_nTertiaryOffset);
+        pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunk;
+        pSecondaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
+        pTertiaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
+        pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 8;
+        pSecondaryThunk->m_nThisDelta = pOffsets->m_nSecondaryOffset - 0x38;
+        pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 0xb0;
 
-        ConstructSocketWindowEffChannel((char *)pObject + 0x110, 0);
-        kSocketWindowThunkGroup.m_pOffsets = *(NETWORK_ConstructionAdjustorVtable **)((char *)pObject + 300);
-        kSocketWindowThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)((char *)pObject + 300 +
-                                                                           kSocketWindowThunkGroup.m_pOffsets->m_nPrimaryOffset -
-                                                                           4);
-        kSocketWindowThunkGroup.m_pSecondary = (NETWORK_AdjustorSubobject *)((char *)pObject + 300 +
-                                                                             kSocketWindowThunkGroup.m_pOffsets->m_nSecondaryOffset -
-                                                                             4);
-        kSocketWindowThunkGroup.m_pTertiary = (NETWORK_AdjustorSubobject *)((char *)pObject + 300 +
-                                                                            kSocketWindowThunkGroup.m_pOffsets->m_nTertiaryOffset -
-                                                                            4);
-        kSocketWindowThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_TimedSocketBundlePrimaryThunkVtable;
-        kSocketWindowThunkGroup.m_pSecondary->m_pVtable = g_NETWORK_TimedSocketBundleSecondaryThunkVtable;
-        kSocketWindowThunkGroup.m_pTertiary->m_pVtable = g_NETWORK_TimedSocketBundleTertiaryThunkVtable;
-        kSocketWindowThunkGroup.m_pPrimary->m_nThisDelta = 0;
-        ConstructTimedSocketEffChannelBundle((char *)pObject + 0x130, 0);
+        ConstructSocketWindowEffChannel(pStack->m_abSocketWindow110, 0);
+
+        pOffsets = pStack->m_pSocketWindowVtable12c;
+        pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x128 + pOffsets->m_nPrimaryOffset);
+        pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x128 + pOffsets->m_nSecondaryOffset);
+        pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x128 + pOffsets->m_nTertiaryOffset);
+        pPrimaryThunk->m_pVtable = g_NETWORK_TimedSocketBundlePrimaryThunkVtable;
+        pSecondaryThunk->m_pVtable = g_NETWORK_TimedSocketBundleSecondaryThunkVtable;
+        pTertiaryThunk->m_pVtable = g_NETWORK_TimedSocketBundleTertiaryThunkVtable;
+        pPrimaryThunk->m_nThisDelta = 0;
+
+        ConstructTimedSocketEffChannelBundle(&pStack->m_pTimedSocketBundleDataVtable130, 0);
     }
 
-    kRuntimeThunkGroup.m_pOffsets = *(NETWORK_ConstructionAdjustorVtable **)pObject;
-    kRuntimeThunkGroup.m_pPrimary = (NETWORK_AdjustorSubobject *)((char *)pObject +
-                                                                  kRuntimeThunkGroup.m_pOffsets->m_nPrimaryOffset - 4);
-    kRuntimeThunkGroup.m_pSecondary = (NETWORK_AdjustorSubobject *)((char *)pObject +
-                                                                    kRuntimeThunkGroup.m_pOffsets->m_nSecondaryOffset - 4);
-    kRuntimeThunkGroup.m_pTertiary = (NETWORK_AdjustorSubobject *)((char *)pObject +
-                                                                   kRuntimeThunkGroup.m_pOffsets->m_nTertiaryOffset - 4);
-    kRuntimeThunkGroup.m_pQuaternary = (NETWORK_AdjustorSubobject *)((char *)pObject +
-                                                                     kRuntimeThunkGroup.m_pOffsets->m_nQuaternaryOffset - 4);
-    kRuntimeThunkGroup.m_pPrimary->m_pVtable = g_NETWORK_TcpipSocketStackRuntimeThunkVtable;
-    kRuntimeThunkGroup.m_pSecondary->m_pVtable = g_NETWORK_TcpipSocketStackTimedThunkVtable;
-    kRuntimeThunkGroup.m_pTertiary->m_pVtable = g_NETWORK_TcpipSocketStackDualThunk;
-    kRuntimeThunkGroup.m_pQuaternary->m_pVtable = g_NETWORK_TcpipSocketStackSocketThunkVtable;
-    kRuntimeThunkGroup.m_pPrimary->m_nThisDelta = 0;
-    kRuntimeThunkGroup.m_pSecondary->m_nThisDelta = 0;
-    kRuntimeThunkGroup.m_pTertiary->m_nThisDelta = 0;
-    kRuntimeThunkGroup.m_pQuaternary->m_nThisDelta = 0;
+    pOffsets = pStack->m_pBaseOffsets00;
+    pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nPrimaryOffset - 4);
+    pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nSecondaryOffset - 4);
+    pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nTertiaryOffset - 4);
+    pQuaternaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nQuaternaryOffset - 4);
+    pPrimaryThunk->m_pVtable = g_NETWORK_TcpipSocketStackRuntimeThunkVtable;
+    pSecondaryThunk->m_pVtable = g_NETWORK_TcpipSocketStackTimedThunkVtable;
+    pTertiaryThunk->m_pVtable = g_NETWORK_TcpipSocketStackDualThunk;
+    pQuaternaryThunk->m_pVtable = g_NETWORK_TcpipSocketStackSocketThunkVtable;
+    pPrimaryThunk->m_nThisDelta = 0;
+    pSecondaryThunk->m_nThisDelta = 0;
+    pTertiaryThunk->m_nThisDelta = 0;
+    pQuaternaryThunk->m_nThisDelta = 0;
     return pObject;
 }

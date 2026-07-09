@@ -34,12 +34,16 @@ public:
     int AppendEntryAfterCursor(void);
 
 public:
+    long m_iSubdirectorySavedIndex;
+    MOGLOAD_EntryRecord *m_pSubdirectorySavedEntry;
+    long m_iSubdirectoryCursorIndex;
+    MOGLOAD_EntryRecord *m_pSubdirectoryCursorEntry;
+    long m_lRecordTableOffset;
+    long m_lNameDataOffset;
     long m_iSavedIndex;
     MOGLOAD_EntryRecord *m_pSavedEntry;
     long m_iCursorIndex;
     MOGLOAD_EntryRecord *m_pCursorEntry;
-    long m_lRecordTableOffset;
-    long m_lNameDataOffset;
     unsigned int m_cEntries;
     unsigned int m_cLoadedEntries;
     char *m_pNameData;

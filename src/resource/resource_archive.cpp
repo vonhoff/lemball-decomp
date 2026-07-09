@@ -140,7 +140,8 @@ extern void EnterObjectCriticalSection(void *pObject);
 extern void LeaveObjectCriticalSection(void *pObject);
 extern void CloseCrtFilePointer(FILE *pFile);
 extern FILE *OpenFileWithMode(const char *pszPath, const char *pszMode);
-extern void SeekFile(FILE *pFile, long lOffset, int nOrigin);
+extern unsigned int TellFile(FILE *pFile);
+extern unsigned int SeekFile(FILE *pFile, long lOffset, int nOrigin);
 extern unsigned int ReadFileBytes(FILE *pFile, void *pBuffer, size_t cbBuffer);
 extern "C" DWORD timeGetTime(void);
 extern int LoadResourceArchiveEntryDataIntoBuffer(void *pArchive, int *plFileOffset, unsigned int *pcbBuffer);
@@ -151,6 +152,7 @@ void *g_pCachedResourceObjectBaseDeleteVtable = g_MOGLOAD_CachedResourceObjectBa
 void *g_pDestroyGRTSResourceAndFreeThunk = g_MOGLOAD_TypedResourceObjectVtable;
 void *g_pDestroyEffResourceAndFreeThunk = g_MOGLOAD_EffResourceObjectVtable;
 
+extern void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile, int nLine);
 void DestroyResourceArchiveDirectoryTree(int pDirectoryNode);
 
 struct MOGLOAD_EntrySearchState {
@@ -327,14 +329,6 @@ unsigned int MOGLOAD_ReadU32(void) {
 int MOGLOAD_DirectoryNode::AppendEntryAfterCursor(void) {
     MOGLOAD_EntryRecord *pEntry;
 
-    if (m_cLoadedEntries >= m_cEntries) {
-        return 0;
-    }
-
-    if (m_pCursorEntry == 0) {
-        return 0;
-    }
-
     pEntry = (MOGLOAD_EntryRecord *)AllocateResourceArchiveMemory(sizeof(MOGLOAD_EntryRecord));
     if (pEntry == 0) {
         return 0;
@@ -352,9 +346,12 @@ MOGLOAD_DirectoryNode *MOGLOAD_DirectoryNode::Construct(long lFileOffset) {
     long lNameDataSize;
     long lCurrentFileOffset;
     unsigned int uFormatVersion;
-    long iIndex;
     MOGLOAD_EntryRecord *pEntry;
 
+    m_iSubdirectorySavedIndex = -1;
+    m_pSubdirectorySavedEntry = 0;
+    m_iSubdirectoryCursorIndex = -1;
+    m_pSubdirectoryCursorEntry = 0;
     m_iSavedIndex = -1;
     m_pSavedEntry = 0;
     m_iCursorIndex = -1;
@@ -370,10 +367,10 @@ MOGLOAD_DirectoryNode *MOGLOAD_DirectoryNode::Construct(long lFileOffset) {
         return this;
     }
 
-    fseek(g_pResourceArchiveFile, lFileOffset, SEEK_SET);
+    SeekFile(g_pResourceArchiveFile, lFileOffset, SEEK_SET);
     if (lFileOffset == 0) {
         (void)MOGLOAD_ReadU8();
-        fseek(g_pResourceArchiveFile, 0L, SEEK_SET);
+        SeekFile(g_pResourceArchiveFile, 0L, SEEK_SET);
     }
 
     (void)MOGLOAD_ReadU32();
@@ -381,19 +378,16 @@ MOGLOAD_DirectoryNode *MOGLOAD_DirectoryNode::Construct(long lFileOffset) {
     m_cEntries = MOGLOAD_ReadU32();
     uFormatVersion = MOGLOAD_ReadU32();
     if (uFormatVersion != 3) {
-        return this;
+        TriggerReleaseAssertFailure(g_MOGLOAD_IsValidResourceFileAssert, g_MOGLOAD_SourceFileName, 0x1a2);
     }
 
     m_lRecordTableOffset = (long)MOGLOAD_ReadU32();
-    lCurrentFileOffset = ftell(g_pResourceArchiveFile);
+    lCurrentFileOffset = (long)TellFile(g_pResourceArchiveFile);
     m_lNameDataOffset = lCurrentFileOffset;
     lNameDataSize = m_lRecordTableOffset - lCurrentFileOffset;
-
-    if (lNameDataSize > 0) {
-        m_pNameData = (char *)AllocateResourceArchiveMemory((unsigned int)lNameDataSize);
-        if (m_pNameData != 0) {
-            fread(m_pNameData, 1, (size_t)lNameDataSize, g_pResourceArchiveFile);
-        }
+    m_pNameData = (char *)AllocateResourceArchiveMemory((unsigned int)lNameDataSize);
+    if (m_pNameData != 0) {
+        ReadFileBytes(g_pResourceArchiveFile, m_pNameData, (size_t)lNameDataSize);
     }
 
     if (m_cEntries != 0) {
@@ -426,7 +420,6 @@ MOGLOAD_DirectoryNode *MOGLOAD_DirectoryNode::Construct(long lFileOffset) {
         state.m_iIndex = 0;
         state.m_pEntry = 0;
         FindNextResourceArchiveEntry(this, &state, (unsigned int)-1);
-        iIndex = state.m_iIndex;
         pEntry = state.m_pEntry;
         if (pEntry == 0) {
             break;
@@ -450,7 +443,7 @@ void MOGLOAD_DirectoryNode::ReadEntryRecord(MOGLOAD_EntryRecord *pEntry) {
         return;
     }
 
-    fseek(g_pResourceArchiveFile, ((m_iCursorIndex * 4L) + 4L) * 9L + m_lRecordTableOffset, SEEK_SET);
+    SeekFile(g_pResourceArchiveFile, ((m_iCursorIndex * 4L) + 4L) * 9L + m_lRecordTableOffset, SEEK_SET);
 
     lNameOffset = (long)MOGLOAD_ReadU32();
     if (m_pNameData != 0) {
@@ -463,10 +456,12 @@ void MOGLOAD_DirectoryNode::ReadEntryRecord(MOGLOAD_EntryRecord *pEntry) {
     pEntry->m_uTag = MOGLOAD_ReadU32();
     pEntry->m_lFileOffset = (long)MOGLOAD_ReadU32();
     pEntry->m_cbFileSize = (long)MOGLOAD_ReadU32();
+    pEntry->m_iNextIndex = 0;
     pEntry->m_pNextEntry = 0;
+    pEntry->m_iSavedIndex = 0;
     pEntry->m_pSavedEntry = 0;
     pEntry->m_pChildDirectory = 0;
-    fread(pEntry->m_adwDescriptor, 1, sizeof(pEntry->m_adwDescriptor), g_pResourceArchiveFile);
+    ReadFileBytes(g_pResourceArchiveFile, pEntry->m_adwDescriptor, sizeof(pEntry->m_adwDescriptor));
 }
 
 // FUNCTION: LEMBALL 0x0045C200
@@ -474,14 +469,14 @@ void FindNextResourceArchiveEntry(MOGLOAD_DirectoryNode *pDirectory,
                                   MOGLOAD_EntrySearchState *pState,
                                   unsigned int uTagFilter) {
     int fAtEnd;
-    MOGLOAD_EntryRecord *pStateSource;
+    MOGLOAD_EntryRecord *pCursorSource;
 
     fAtEnd = 0;
     do {
         if (pDirectory->m_iCursorIndex == -1) {
-            pStateSource = pDirectory->m_pSavedEntry;
+            pCursorSource = pDirectory->m_pSavedEntry;
             pDirectory->m_iCursorIndex = pDirectory->m_iSavedIndex;
-            pDirectory->m_pCursorEntry = pStateSource;
+            pDirectory->m_pCursorEntry = pCursorSource;
         } else {
             if ((long)pDirectory->m_cEntries - pDirectory->m_iCursorIndex == 1) {
                 fAtEnd = 1;
@@ -490,9 +485,9 @@ void FindNextResourceArchiveEntry(MOGLOAD_DirectoryNode *pDirectory,
             if (pDirectory->m_pCursorEntry->m_pNextEntry == 0) {
                 pDirectory->AppendEntryAfterCursor();
             }
-            pStateSource = pDirectory->m_pCursorEntry->m_pNextEntry;
+            pCursorSource = pDirectory->m_pCursorEntry->m_pNextEntry;
             pDirectory->m_iCursorIndex += 1;
-            pDirectory->m_pCursorEntry = pStateSource;
+            pDirectory->m_pCursorEntry = pCursorSource;
         }
     } while (uTagFilter != (unsigned int)-1 &&
              pDirectory->m_pCursorEntry->m_uTag != uTagFilter);
@@ -518,73 +513,76 @@ void ResetResourceArchiveEntryCursor(MOGLOAD_DirectoryNode *pDirectory,
 
 // FUNCTION: LEMBALL 0x0045C060
 MOGLOAD_DirectoryNode *MOGLOAD_DirectoryNode::AdvanceSubdirectory(void) {
-    long iIndex;
+    MOGLOAD_DirectoryNode *pChildDirectory;
     MOGLOAD_EntryRecord *pEntry;
+    MOGLOAD_EntrySearchState state;
 
-    pEntry = 0;
-    iIndex = -1;
-
-    if (m_pCursorEntry == 0) {
-        m_iCursorIndex = m_iSavedIndex;
-        m_pCursorEntry = m_pSavedEntry;
-        {
-            MOGLOAD_EntrySearchState state;
-
-            state.m_iIndex = 0;
-            state.m_pEntry = 0;
-            FindNextResourceArchiveEntry(this, &state, MOGLOAD_TAG_CRID);
-            iIndex = state.m_iIndex;
-            pEntry = state.m_pEntry;
-        }
+    state.m_iIndex = 0;
+    state.m_pEntry = 0;
+    if (m_pSubdirectorySavedEntry == 0) {
+        ResetResourceArchiveEntryCursor(this, &state, MOGLOAD_TAG_CRID);
+        pEntry = state.m_pEntry;
         if (pEntry == 0) {
-            m_iSavedIndex = m_iCursorIndex;
-            m_pSavedEntry = m_pCursorEntry;
+            m_iSubdirectoryCursorIndex = m_iSubdirectorySavedIndex;
+            m_pSubdirectoryCursorEntry = m_pSubdirectorySavedEntry;
             return 0;
         }
-        m_iSavedIndex = m_iCursorIndex;
-        m_pSavedEntry = m_pCursorEntry;
-        if (pEntry == 0) {
+        if (pEntry->m_uTag == MOGLOAD_TAG_CRID) {
+            pChildDirectory = (MOGLOAD_DirectoryNode *)AllocateResourceArchiveMemory(sizeof(MOGLOAD_DirectoryNode));
+            if (pChildDirectory == 0) {
+                pEntry->m_pChildDirectory = 0;
+            } else {
+                pEntry->m_pChildDirectory = pChildDirectory->Construct(pEntry->m_lFileOffset);
+            }
+            m_iSubdirectorySavedIndex = state.m_iIndex;
+            m_pSubdirectorySavedEntry = pEntry;
+        } else {
+            m_pSubdirectorySavedEntry = 0;
+        }
+        m_iSubdirectoryCursorIndex = m_iSubdirectorySavedIndex;
+        m_pSubdirectoryCursorEntry = m_pSubdirectorySavedEntry;
+        if (m_pSubdirectoryCursorEntry == 0) {
             return 0;
         }
-    } else {
-        m_iSavedIndex = m_iCursorIndex;
-        m_pSavedEntry = m_pCursorEntry;
-        {
-            MOGLOAD_EntrySearchState state;
-
-            state.m_iIndex = 0;
-            state.m_pEntry = 0;
-            FindNextResourceArchiveEntry(this, &state, MOGLOAD_TAG_CRID);
-            iIndex = state.m_iIndex;
-            pEntry = state.m_pEntry;
-        }
-        if (pEntry == 0) {
-            return 0;
-        }
+        return m_pSubdirectoryCursorEntry->m_pChildDirectory;
     }
 
-    if (pEntry == 0 || pEntry->m_uTag != MOGLOAD_TAG_CRID) {
+    if (m_iSubdirectoryCursorIndex == -1) {
+        m_iSubdirectoryCursorIndex = m_iSubdirectorySavedIndex;
+        m_pSubdirectoryCursorEntry = m_pSubdirectorySavedEntry;
+        return m_pSubdirectoryCursorEntry->m_pChildDirectory;
+    }
+
+    pEntry = m_pSubdirectoryCursorEntry;
+    if (pEntry->m_pSavedEntry != 0) {
+        m_iSubdirectoryCursorIndex = pEntry->m_iSavedIndex;
+        m_pSubdirectoryCursorEntry = pEntry->m_pSavedEntry;
+        return m_pSubdirectoryCursorEntry->m_pChildDirectory;
+    }
+
+    m_iCursorIndex = m_iSubdirectoryCursorIndex;
+    m_pCursorEntry = m_pSubdirectoryCursorEntry;
+    FindNextResourceArchiveEntry(this, &state, MOGLOAD_TAG_CRID);
+    pEntry = state.m_pEntry;
+    if (pEntry == 0) {
         return 0;
     }
-
-    if (pEntry->m_pChildDirectory == 0) {
-        pEntry->m_pChildDirectory =
-            (MOGLOAD_DirectoryNode *)AllocateResourceArchiveMemory(sizeof(MOGLOAD_DirectoryNode));
-        if (pEntry->m_pChildDirectory != 0) {
-            pEntry->m_pChildDirectory->m_iSavedIndex = -1;
-            pEntry->m_pChildDirectory->m_pSavedEntry = 0;
-            pEntry->m_pChildDirectory->m_iCursorIndex = -1;
-            pEntry->m_pChildDirectory->m_pCursorEntry = 0;
-            pEntry->m_pChildDirectory->m_lRecordTableOffset = 0;
-            pEntry->m_pChildDirectory->m_lNameDataOffset = 0;
-            pEntry->m_pChildDirectory->m_cEntries = 0;
-            pEntry->m_pChildDirectory->m_cLoadedEntries = 0;
-            pEntry->m_pChildDirectory->m_pNameData = 0;
-            pEntry->m_pChildDirectory->Construct(pEntry->m_lFileOffset);
+    if (pEntry->m_uTag == MOGLOAD_TAG_CRID) {
+        pChildDirectory = (MOGLOAD_DirectoryNode *)AllocateResourceArchiveMemory(sizeof(MOGLOAD_DirectoryNode));
+        if (pChildDirectory == 0) {
+            pEntry->m_pChildDirectory = 0;
+        } else {
+            pEntry->m_pChildDirectory = pChildDirectory->Construct(pEntry->m_lFileOffset);
         }
+        m_pSubdirectoryCursorEntry->m_iSavedIndex = state.m_iIndex;
+        m_pSubdirectoryCursorEntry->m_pSavedEntry = pEntry;
+        m_iSubdirectoryCursorIndex = state.m_iIndex;
+        m_pSubdirectoryCursorEntry = pEntry;
+        return m_pSubdirectoryCursorEntry->m_pChildDirectory;
     }
 
-    return pEntry->m_pChildDirectory;
+    m_pSubdirectoryCursorEntry->m_pSavedEntry = 0;
+    return m_pSubdirectoryCursorEntry->m_pChildDirectory;
 }
 
 // FUNCTION: LEMBALL 0x0045BF10
@@ -811,26 +809,21 @@ void FindResourceArchiveEntryByIdRecursive(MOGLOAD_DirectoryNode *pDirectory,
                                           int nResourceId,
                                           int fAllowRecursion) {
     MOGLOAD_DirectoryNode *pChildDirectory;
-    long iSavedCursorIndex;
-    MOGLOAD_EntryRecord *pSavedCursorEntry;
+    long iSavedSubdirectoryCursorIndex;
+    MOGLOAD_EntryRecord *pSavedSubdirectoryCursorEntry;
 
     (void)fAllowRecursion;
-    if (pDirectory == 0) {
-        pState->m_pEntry = 0;
-        return;
-    }
-
     ResetResourceArchiveEntryCursor(pDirectory, pState, (unsigned int)-1);
     while (pState->m_pEntry != 0 && (int)pState->m_pEntry->m_uResourceId != nResourceId) {
         FindNextResourceArchiveEntry(pDirectory, pState, (unsigned int)-1);
     }
 
     if (pState->m_pEntry == 0) {
-        iSavedCursorIndex = pDirectory->m_iCursorIndex;
-        pSavedCursorEntry = pDirectory->m_pCursorEntry;
-        pDirectory->m_iCursorIndex = pDirectory->m_iSavedIndex;
-        pDirectory->m_pCursorEntry = pDirectory->m_pSavedEntry;
-        pDirectory->m_iCursorIndex = -1;
+        iSavedSubdirectoryCursorIndex = pDirectory->m_iSubdirectoryCursorIndex;
+        pSavedSubdirectoryCursorEntry = pDirectory->m_pSubdirectoryCursorEntry;
+        pDirectory->m_iSubdirectoryCursorIndex = pDirectory->m_iSubdirectorySavedIndex;
+        pDirectory->m_pSubdirectoryCursorEntry = pDirectory->m_pSubdirectorySavedEntry;
+        pDirectory->m_iSubdirectoryCursorIndex = -1;
         while (pState->m_pEntry == 0) {
             pChildDirectory = pDirectory->AdvanceSubdirectory();
             if (pChildDirectory == 0) {
@@ -838,8 +831,8 @@ void FindResourceArchiveEntryByIdRecursive(MOGLOAD_DirectoryNode *pDirectory,
             }
             FindResourceArchiveEntryByIdRecursive(pChildDirectory, pState, nResourceId, fAllowRecursion);
         }
-        pDirectory->m_iCursorIndex = iSavedCursorIndex;
-        pDirectory->m_pCursorEntry = pSavedCursorEntry;
+        pDirectory->m_iSubdirectoryCursorIndex = iSavedSubdirectoryCursorIndex;
+        pDirectory->m_pSubdirectoryCursorEntry = pSavedSubdirectoryCursorEntry;
         return;
     }
 }
@@ -906,9 +899,9 @@ int SelectResourceArchiveDirectoryPath(void *pArchive, const char *pszPath) {
     }
 
     pCurrentDirectory = pResourceArchive->m_pCurrentDirectory;
-    pCurrentDirectory->m_iCursorIndex = pCurrentDirectory->m_iSavedIndex;
-    pCurrentDirectory->m_pCursorEntry = pCurrentDirectory->m_pSavedEntry;
-    pCurrentDirectory->m_iCursorIndex = -1;
+    pCurrentDirectory->m_iSubdirectoryCursorIndex = pCurrentDirectory->m_iSubdirectorySavedIndex;
+    pCurrentDirectory->m_pSubdirectoryCursorEntry = pCurrentDirectory->m_pSubdirectorySavedEntry;
+    pCurrentDirectory->m_iSubdirectoryCursorIndex = -1;
 
     pszFoundSlash = pszNewPath;
     for (;;) {
@@ -923,7 +916,8 @@ int SelectResourceArchiveDirectoryPath(void *pArchive, const char *pszPath) {
                 if (pDirectory == 0) {
                     goto bad_path;
                 }
-            } while (!ResourceArchiveComponentEquals(pResourceArchive->m_pCurrentDirectory->m_pCursorEntry->m_pszName,
+            } while (!ResourceArchiveComponentEquals(
+                pResourceArchive->m_pCurrentDirectory->m_pSubdirectoryCursorEntry->m_pszName,
                                                      pszFoundSlash));
             pMatchedDirectory = pDirectory;
             if (pMatchedDirectory == 0) {
@@ -936,15 +930,14 @@ int SelectResourceArchiveDirectoryPath(void *pArchive, const char *pszPath) {
     pszOldPath = pResourceArchive->m_pszSelectedPath;
     if (pszOldPath != 0) {
         FreeResourceArchiveMemory(pszOldPath);
+        pResourceArchive->m_pszSelectedPath = 0;
     }
     pResourceArchive->m_pszSelectedPath = pszNewPath;
     return 1;
 
 bad_path:
     pszOldPath = pResourceArchive->m_pszSelectedPath;
-    if (pszOldPath != 0) {
-        SelectResourceArchiveDirectoryPath(pResourceArchive, pszOldPath);
-    }
+    SelectResourceArchiveDirectoryPath(pResourceArchive, pszOldPath);
     if (pszNewPath != 0) {
         FreeResourceArchiveMemory(pszNewPath);
     }
