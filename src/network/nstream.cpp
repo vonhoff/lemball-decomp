@@ -172,6 +172,15 @@ static void PumpActiveNetworkRuntimeWindow(void) {
     ((NETWORK_RuntimeWindowVtable *)*(void **)g_pActiveNetworkRuntimeWindow)->m_pPumpMessages(g_pActiveNetworkRuntimeWindow);
 }
 
+// FUNCTION: LEMBALL 0x0040ABD0
+int ReturnTrueVtableCallback(void) {
+    return 1;
+}
+
+static void *g_NETWORK_ReturnTrueVtable[1] = {
+    (void *)ReturnTrueVtableCallback,
+};
+
 // FUNCTION: LEMBALL 0x0045F680
 void *ConstructEffStreamChannelState(void *pChannelState) {
     NETWORK_EffStreamChannelState *pState;
@@ -205,7 +214,7 @@ void *ConstructEffStreamBase(void *pStream) {
     NETWORK_EffStreamBase *pBase;
 
     pBase = (NETWORK_EffStreamBase *)pStream;
-    pBase->m_pVtable = (void **)0x004932c8;
+    pBase->m_pVtable = (void **)g_NETWORK_ReturnTrueVtable;
     pBase->m_nReserved04 = 0;
     ResetEffStreamStateFields(pStream);
     pBase->m_nWord34 = 0;
@@ -223,7 +232,7 @@ void DestroyEffStreamBase(void *pStream) {
     DWORD dwStartTime;
 
     pBase = (NETWORK_EffStreamBase *)pStream;
-    pBase->m_pVtable = (void **)0x004932c8;
+    pBase->m_pVtable = (void **)g_NETWORK_ReturnTrueVtable;
     if (pBase->m_fBusy28 != 0) {
         dwStartTime = timeGetTime();
         while (pBase->m_fBusy28 != 0 && timeGetTime() - dwStartTime < 2000) {
@@ -475,8 +484,8 @@ void *ConstructEffTransportRuntimeChannelStack(void *pChannelStack, int fConstru
         pSecondaryThunk = (NETWORK_AdjustorSubobject *)((char *)pStack + 0x124 + pEmbeddedOffsets->m_nSecondaryOffset - 4);
         pTertiaryThunk = (NETWORK_AdjustorSubobject *)((char *)pStack + 0x124 + pEmbeddedOffsets->m_nTertiaryOffset - 4);
         pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackChannelStateThunk;
-        pSecondaryThunk->m_pVtable = (void *)0x004932c8;
-        pTertiaryThunk->m_pVtable = (void *)0x004932c8;
+        pSecondaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
+        pTertiaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
         pPrimaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nPrimaryOffset - 8;
         pSecondaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nSecondaryOffset - 0x38;
         pTertiaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nTertiaryOffset - 0xb0;

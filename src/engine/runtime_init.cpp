@@ -1117,22 +1117,6 @@ int InitializeStatusEntryRegistry(void) {
     return g_pStatusEntryRegistry != 0;
 }
 
-static VSINIT_ResourceTypeTable *ConstructResourceTypeTable(void *pTable, int cTagsMax) {
-    VSINIT_ResourceTypeTable *pResourceTypeTable;
-
-    pResourceTypeTable = (VSINIT_ResourceTypeTable *)pTable;
-    pResourceTypeTable->m_cTagsMax = cTagsMax;
-    pResourceTypeTable->m_nCursor = -1;
-    pResourceTypeTable->m_cTags = 0;
-    pResourceTypeTable->m_pTags = (u32 *)AllocateVSMemBlock((unsigned int)(pResourceTypeTable->m_cTagsMax << 2));
-    return pResourceTypeTable;
-}
-
-static void AppendResourceTypeTag(VSINIT_ResourceTypeTable *pTable, u32 uTag) {
-    pTable->m_pTags[pTable->m_cTags] = uTag;
-    ++pTable->m_cTags;
-}
-
 // FUNCTION: LEMBALL 0x0046ACD0
 VSINIT_VSMemPointerTable *ConstructVSMemPointerTable(void *pTable, int cItems) {
     VSINIT_VSMemPointerTable *pPointerTable;
@@ -1185,20 +1169,49 @@ void DestroyPaletteRemapPointerTable(VSINIT_VSMemPointerTable *pPointerTable) {
 // FUNCTION: LEMBALL 0x0045B900
 int InitializeResourceTypeTables(void) {
     VSINIT_ResourceTypeTable *pResourceTypeTable;
+    int iTag;
+    u32 *pTags;
     void *pPointerTable;
 
-    pResourceTypeTable = ConstructResourceTypeTable(AllocateVSMemBlock(0x10), 2);
-    AppendResourceTypeTag(pResourceTypeTable, 0x494e5420);
-    AppendResourceTypeTag(pResourceTypeTable, 0x5a524c45);
+    pResourceTypeTable = (VSINIT_ResourceTypeTable *)AllocateVSMemBlock(0x10);
+    if (pResourceTypeTable != 0) {
+        pResourceTypeTable->m_cTagsMax = 2;
+        pResourceTypeTable->m_nCursor = -1;
+        pResourceTypeTable->m_cTags = 0;
+        pResourceTypeTable->m_pTags = (u32 *)AllocateVSMemBlock((unsigned int)(pResourceTypeTable->m_cTagsMax << 2));
+    }
+    pTags = pResourceTypeTable->m_pTags;
+    pTags[pResourceTypeTable->m_cTags] = 0x494e5420;
+    iTag = pResourceTypeTable->m_cTags;
+    pResourceTypeTable->m_cTags = iTag + 1;
+    pTags[iTag + 1] = 0x5a524c45;
+    ++pResourceTypeTable->m_cTags;
     g_pSecondaryResourceTypeTable = pResourceTypeTable;
 
-    pResourceTypeTable = ConstructResourceTypeTable(AllocateVSMemBlock(0x10), 1);
-    AppendResourceTypeTag(pResourceTypeTable, 0x5a524c45);
+    pResourceTypeTable = (VSINIT_ResourceTypeTable *)AllocateVSMemBlock(0x10);
+    if (pResourceTypeTable != 0) {
+        pResourceTypeTable->m_cTagsMax = 1;
+        pResourceTypeTable->m_nCursor = -1;
+        pResourceTypeTable->m_cTags = 0;
+        pResourceTypeTable->m_pTags = (u32 *)AllocateVSMemBlock((unsigned int)(pResourceTypeTable->m_cTagsMax << 2));
+    }
+    pResourceTypeTable->m_pTags[pResourceTypeTable->m_cTags] = 0x5a524c45;
+    ++pResourceTypeTable->m_cTags;
     g_pPrimaryResourceTypeTable = pResourceTypeTable;
 
-    pResourceTypeTable = ConstructResourceTypeTable(AllocateVSMemBlock(0x10), 2);
-    AppendResourceTypeTag(pResourceTypeTable, 0x53545247);
-    AppendResourceTypeTag(pResourceTypeTable, 0x494e5420);
+    pResourceTypeTable = (VSINIT_ResourceTypeTable *)AllocateVSMemBlock(0x10);
+    if (pResourceTypeTable != 0) {
+        pResourceTypeTable->m_cTagsMax = 2;
+        pResourceTypeTable->m_nCursor = -1;
+        pResourceTypeTable->m_cTags = 0;
+        pResourceTypeTable->m_pTags = (u32 *)AllocateVSMemBlock((unsigned int)(pResourceTypeTable->m_cTagsMax << 2));
+    }
+    pTags = pResourceTypeTable->m_pTags;
+    pTags[pResourceTypeTable->m_cTags] = 0x53545247;
+    iTag = pResourceTypeTable->m_cTags;
+    pResourceTypeTable->m_cTags = iTag + 1;
+    pTags[iTag + 1] = 0x494e5420;
+    ++pResourceTypeTable->m_cTags;
     g_pTertiaryResourceTypeTable = pResourceTypeTable;
 
     pPointerTable = AllocateVSMemBlock(0xc);

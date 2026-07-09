@@ -225,6 +225,12 @@ unsigned int ReadFileBytes(FILE *pFile, void *pBuffer, size_t cbBuffer) {
     return (unsigned int)fread(pBuffer, 1, cbBuffer, pFile);
 }
 
+// FUNCTION: LEMBALL 0x00462F80
+void SeekFile(FILE *pFile, long lOffset, int nOrigin) {
+    fseek(pFile, lOffset, nOrigin);
+    ftell(pFile);
+}
+
 // FUNCTION: LEMBALL 0x00462FC0
 unsigned int GetFileLengthPreservingPosition(FILE *pFile) {
     long lPosition;

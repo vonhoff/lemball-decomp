@@ -22,7 +22,11 @@ static int *g_GAME_SelectedNetworkLobbyPeerId = (int *)0x004a011c;
 void *g_pLiftTileGrid = 0;
 void *g_pAnimChunkTileGrid = 0;
 
-static void *g_pReturnTrueVtableCallback = (void *)0x004932c8;
+extern int ReturnTrueVtableCallback(void);
+
+static void *g_pReturnTrueVtableCallback[1] = {
+    (void *)ReturnTrueVtableCallback,
+};
 static void *g_pReturnTrueVtableCallbackThunk = (void *)0x00498610;
 static void *g_pLevelGameStateStreamVtable = (void *)0x00493a00;
 

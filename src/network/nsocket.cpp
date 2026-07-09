@@ -2,6 +2,8 @@
 #include "../engine/memory_arena.h"
 #include "../platform/message_window.h"
 
+extern int ReturnTrueVtableCallback(void);
+
 struct NETWORK_ConstructionAdjustorVtable {
     void *m_pReserved00;
     int m_nPrimaryOffset;
@@ -86,7 +88,9 @@ static void *g_NETWORK_TcpipCompositeOuterSocketThunkVtable = (void *)0x0049A158
 static void *g_NETWORK_TimedSocketBundlePrimaryThunkVtable = (void *)0x0049A210;
 static void *g_NETWORK_TimedSocketBundleSecondaryThunkVtable = (void *)0x0049A1E8;
 static void *g_NETWORK_TimedSocketBundleTertiaryThunkVtable = (void *)0x0049A1E4;
-static void *g_NETWORK_ReturnTrueVtable = (void *)0x004932C8;
+static void *g_NETWORK_ReturnTrueVtable[1] = {
+    (void *)ReturnTrueVtableCallback,
+};
 static void *g_NETWORK_RuntimeChannelStackFatalThunk = (void *)0x004990D8;
 
 static void *g_NETWORK_TcpipSocketStackTimedStreamVtable = (void *)0x0049A430;

@@ -5,6 +5,8 @@
 
 #include <string.h>
 
+extern int ReturnTrueVtableCallback(void);
+
 extern "C" BOOL WINAPI WaitMessage(void);
 extern "C" HANDLE WINAPI CreateThread(LPSECURITY_ATTRIBUTES pThreadAttributes,
                                       DWORD cbStack,
@@ -20,7 +22,9 @@ static void *g_NETWORK_FileBasedRuntimeTransportVtable = (void *)0x00499FF8;
 static void *g_NETWORK_TcpipRuntimeWindowVtable = (void *)0x0049A2DC;
 static void *g_NETWORK_TcpipRuntimeTransportVtable = (void *)0x0049A2A8;
 static void *g_NETWORK_EffTransportRuntimeStateVtable = (void *)0x004991E0;
-static void *g_NETWORK_ReturnTrueVtable = (void *)0x004932C8;
+static void *g_NETWORK_ReturnTrueVtable[1] = {
+    (void *)ReturnTrueVtableCallback,
+};
 static void *g_NETWORK_EffTransportGlobalWriteStreamVtable = (void *)0x00499218;
 static void *g_NETWORK_EffTransportGlobalReadStreamVtable = (void *)0x00499230;
 static void *g_NETWORK_RequestConnectControlStreamNameVtable = (void *)0x00498EA0;

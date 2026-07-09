@@ -2,7 +2,19 @@
 #include "../engine/runtime_init.h"
 #include "../engine/memory_arena.h"
 
-static void *g_GAME_StatusEntryVtable[] = {
+void DestroyNamedStatusEntry(void *pEntry);
+
+static void *g_GAME_StatusEntryDeleteVtable[8] = {
+    (void *)DestroyNamedStatusEntry,
+    (void *)UpdateNamedStatusEntry,
+    (void *)DeleteFixedBufferStreamReturnThis,
+    (void *)ResetFixedBufferStream,
+    (void *)AppendCharToFixedBufferStream,
+    (void *)AppendCStringToFixedBufferStream,
+    (void *)ReturnStreamArgument,
+    0,
+};
+static void *g_GAME_StatusEntryVtable[8] = {
     (void *)WriteNamedStatusEntry,
     (void *)UpdateNamedStatusEntry,
     (void *)DeleteFixedBufferStreamReturnThis,
@@ -15,9 +27,12 @@ static void *g_GAME_StatusEntryVtable[] = {
 
 // FUNCTION: LEMBALL 0x0046E410
 GAME_DynamicCString *ConstructDynamicCString(GAME_DynamicCString *pString) {
+    char *pszBuffer;
+
     pString->m_cchCapacity = 1;
-    pString->m_pszText = (char *)AllocateVSMemBlock(1);
-    pString->m_pszText[0] = '\0';
+    pszBuffer = (char *)AllocateVSMemBlock(1);
+    pString->m_pszText = pszBuffer;
+    *pszBuffer = '\0';
     return pString;
 }
 
@@ -28,38 +43,40 @@ void DestroyDynamicCString(GAME_DynamicCString *pString) {
 
 // FUNCTION: LEMBALL 0x0046E570
 GAME_DynamicCString *AssignDynamicCString(GAME_DynamicCString *pString, const char *pszText) {
-    const char *pszScan;
-    const char *pszSource;
-    char *pszDest;
+    char ch;
     unsigned int cchText;
     unsigned int cDwords;
-    unsigned int cBytes;
+    char *pszSource;
+    char *pszDest;
 
-    cchText = 0xffffffff;
-    pszScan = pszText;
+    cchText = 0xffffffffU;
+    pszSource = (char *)pszText;
     do {
         if (cchText == 0) {
             break;
         }
         --cchText;
-    } while (*pszScan++ != '\0');
+        ch = *pszSource;
+        ++pszSource;
+    } while (ch != '\0');
     cchText = ~cchText;
     if (pString->m_cchCapacity < (int)cchText) {
         FreeVSMemBlock(pString->m_pszText);
-        pString->m_pszText = (char *)AllocateVSMemBlock((unsigned int)cchText);
+        pString->m_pszText = (char *)AllocateVSMemBlock(cchText);
         pString->m_cchCapacity = (int)cchText;
     }
 
-    cchText = 0xffffffff;
-    pszScan = pszText;
+    cchText = 0xffffffffU;
     do {
-        pszSource = pszScan;
         if (cchText == 0) {
             break;
         }
+        pszSource = (char *)pszText;
         --cchText;
-        pszSource = pszScan + 1;
-    } while (*pszScan++ != '\0');
+        pszSource = (char *)pszText + 1;
+        ch = *pszText;
+        pszText = pszSource;
+    } while (ch != '\0');
     cchText = ~cchText;
     pszSource -= cchText;
     pszDest = pString->m_pszText;
@@ -70,19 +87,19 @@ GAME_DynamicCString *AssignDynamicCString(GAME_DynamicCString *pString, const ch
         pszDest += 4;
         --cDwords;
     }
-    cBytes = cchText & 3;
-    while (cBytes != 0) {
+    cchText &= 3;
+    while (cchText != 0) {
         *pszDest++ = *pszSource++;
-        --cBytes;
+        --cchText;
     }
     return pString;
 }
 
 // FUNCTION: LEMBALL 0x0045AC10
 GAME_StatusEntry::GAME_StatusEntry(const char *pszName) {
-    m_pVtable = g_GAME_StatusEntryVtable;
+    m_pVtable = g_GAME_StatusEntryDeleteVtable;
     ConstructDynamicCString(&m_Name);
-    m_nReserved04 = 0;
+    m_pVtable = g_GAME_StatusEntryVtable;
     AssignDynamicCString(&m_Name, pszName);
     m_nMinimumValue = -1;
     m_nMaximumValue = 0;
@@ -95,6 +112,7 @@ void DestroyNamedStatusEntry(void *pEntry) {
     GAME_StatusEntry *pStatusEntry;
 
     pStatusEntry = (GAME_StatusEntry *)pEntry;
+    pStatusEntry->m_pVtable = g_GAME_StatusEntryVtable;
     DestroyDynamicCString(&pStatusEntry->m_Name);
 }
 
