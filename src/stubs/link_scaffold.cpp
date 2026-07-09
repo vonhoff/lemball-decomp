@@ -205,27 +205,6 @@ DWORD WriteEffStreamToLockedFile(void *pFile, int *pEffStream, int nOffset, int 
     return (DWORD)nLength;
 }
 
-int UnlockWin32FileRange(void *pFile, DWORD dwOffset, DWORD dwLength) {
-    (void)pFile;
-    (void)dwOffset;
-    (void)dwLength;
-    return 1;
-}
-
-int ReadWin32FileWrapper(void *pFile, void *pBuffer, DWORD cbBuffer) {
-    (void)pFile;
-    (void)pBuffer;
-    (void)cbBuffer;
-    return 1;
-}
-
-int LockWin32FileRange(void *pFile, DWORD dwOffset, DWORD dwLength) {
-    (void)pFile;
-    (void)dwOffset;
-    (void)dwLength;
-    return 1;
-}
-
 void ProcessEffTransportPacketHeader(int *pPacketHeader) {
     (void)pPacketHeader;
 }
@@ -233,13 +212,6 @@ void ProcessEffTransportPacketHeader(int *pPacketHeader) {
 void ScheduleNetworkRuntimeTimerEvent(void *pRuntimeWindow, int nTimerId) {
     (void)pRuntimeWindow;
     (void)nTimerId;
-}
-
-int WriteWin32FileWrapper(void *pFile, const void *pBuffer, DWORD cbBuffer) {
-    (void)pFile;
-    (void)pBuffer;
-    (void)cbBuffer;
-    return 1;
 }
 
 int SendEffStreamPayloadWithTransportHeader(void *pPayloadSender, int nStream) {
