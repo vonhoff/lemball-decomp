@@ -1377,22 +1377,6 @@ int ShutdownStreamChannels(void) {
     return 1;
 }
 
-void LogParsedCommandLineOptions(void) {
-    size_t i;
-
-    AppendStatusCString(g_VSINIT_CommandLineOptionsHeader);
-
-    for (i = 0; i < LEMBALL_ARRAY_COUNT(g_aCommandLineOptions); ++i) {
-        AppendStatusCString(g_VSINIT_CommandLineOptionPrefix);
-        AppendStatusCString(g_aCommandLineOptions[i].m_pszName);
-        AppendStatusCString(g_VSINIT_CommandLineOptionIs);
-        if (!g_afCommandLineOptionSpecified[i]) {
-            AppendStatusCString(g_VSINIT_NotSelected);
-        }
-        AppendStatusCString(g_VSINIT_Selected);
-    }
-}
-
 // FUNCTION: LEMBALL 0x00459250
 void InitializeCoreSubsystems(void) {
     int fMemoryInitialized;
@@ -1475,9 +1459,7 @@ void InitializeCoreSubsystems(void) {
         pMainMemoryArenaStatusEntry->m_pVtable = g_MainMemoryArenaStatusEntryVtable;
     }
     AppendStatusEntryToRegistry(g_pStatusEntryRegistry, pMainMemoryArenaStatusEntry);
-    if (g_pMainMemoryArena != 0) {
-        *(GAME_StatusEntry **)((char *)g_pMainMemoryArena + 0x30) = pMainMemoryArenaStatusEntry;
-    }
+    *(GAME_StatusEntry **)((char *)g_pMainMemoryArena + 0x30) = pMainMemoryArenaStatusEntry;
 }
 
 // FUNCTION: LEMBALL 0x00459520
@@ -1632,13 +1614,24 @@ const VSINIT_CommandLineOption *GetCommandLineOptions(size_t *pcOptions) {
 
 // FUNCTION: LEMBALL 0x00459860
 int RunGameStartupSequence(char *pszCmdLine) {
+    size_t i;
     int nResult;
     int nJumpResult;
 
     TokenizeAndFilterCommandLineArgs(pszCmdLine);
     FinalizeStartupGraphicsDriverConfig();
     InitializeCoreSubsystems();
-    LogParsedCommandLineOptions();
+
+    AppendStatusCString(g_VSINIT_CommandLineOptionsHeader);
+    for (i = 0; i < LEMBALL_ARRAY_COUNT(g_aCommandLineOptions); ++i) {
+        AppendStatusCString(g_VSINIT_CommandLineOptionPrefix);
+        AppendStatusCString(g_aCommandLineOptions[i].m_pszName);
+        AppendStatusCString(g_VSINIT_CommandLineOptionIs);
+        if (!g_afCommandLineOptionSpecified[i]) {
+            AppendStatusCString(g_VSINIT_NotSelected);
+        }
+        AppendStatusCString(g_VSINIT_Selected);
+    }
 
     nJumpResult = setjmp(g_GameStartupJumpBuffer);
     if (nJumpResult != 0) {

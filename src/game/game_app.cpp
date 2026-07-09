@@ -2341,6 +2341,11 @@ void ShutdownMainGameContext(GAME_MainContext *pMainContext) {
     SetVisualSciencesRegistryRunningState(g_GAME_WindowTitle, 0);
 }
 
+// FUNCTION: LEMBALL 0x00401839
+int RunMainGameSessionThunk(int cArgs, const char *const *ppszArgs) {
+    return RunMainGameSession(cArgs, ppszArgs);
+}
+
 // FUNCTION: LEMBALL 0x00406310
 int RunMainGameSession(int cArgs, const char *const *ppszArgs) {
     GAME_MainContext *pMainContext;

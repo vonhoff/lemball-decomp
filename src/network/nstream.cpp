@@ -1,5 +1,6 @@
 #include "../game/game_app.h"
 #include "../engine/memory_arena.h"
+#include "network/nstream.h"
 
 struct NETWORK_ConstructionAdjustorVtable {
     void *m_pReserved00;
@@ -34,25 +35,6 @@ struct NETWORK_EffStreamChannelState {
     unsigned short m_nReserved22;
     int m_nReserved24;
     void *m_pSideBuffer28;
-};
-
-struct NETWORK_EffStreamBase {
-    void **m_pVtable;
-    int m_nReserved04;
-    int m_pPayloadBuffer08;
-    int m_fOwnsPayload0c;
-    int m_nReserved10;
-    int m_nReserved14;
-    int m_nBufferEnd18;
-    int m_nReserved1c;
-    int m_nReserved20;
-    int m_nReserved24;
-    int m_fBusy28;
-    int m_pTagBuffer2c;
-    unsigned short m_nWord30;
-    unsigned short m_nWord32;
-    unsigned short m_nWord34;
-    unsigned short m_nWord36;
 };
 
 struct NETWORK_EffStreamSerializeVtable {
@@ -383,24 +365,27 @@ void *ConstructEffStreamBase(void *pStream) {
 }
 
 // FUNCTION: LEMBALL 0x0045EEA0
-void DestroyEffStreamBase(void *pStream) {
-    NETWORK_EffStreamBase *pBase;
+void NETWORK_EffStreamBase::DestroyEffStreamBase(void) {
     DWORD dwStartTime;
 
-    pBase = (NETWORK_EffStreamBase *)pStream;
-    pBase->m_pVtable = (void **)g_NETWORK_ReturnTrueVtable;
-    if (pBase->m_fBusy28 != 0) {
+    m_pVtable = (void **)g_NETWORK_ReturnTrueVtable;
+    if (m_fBusy28 != 0) {
         dwStartTime = timeGetTime();
-        while (pBase->m_fBusy28 != 0 && timeGetTime() - dwStartTime < 2000) {
+        while (m_fBusy28 != 0 && timeGetTime() - dwStartTime < 2000) {
             if (g_pActiveNetworkRuntimeWindow != 0) {
                 PumpActiveNetworkRuntimeWindow();
             }
         }
     }
-    if (pBase->m_nReserved14 != 0) {
-        FreeVSMemBlock((void *)(unsigned long)pBase->m_pPayloadBuffer08);
-        pBase->m_pPayloadBuffer08 = 0;
+    if (m_nReserved14 != 0) {
+        FreeVSMemBlock((void *)(unsigned long)m_pPayloadBuffer08);
+        m_pPayloadBuffer08 = 0;
     }
+}
+
+// FUNCTION: LEMBALL 0x0047B860
+void NETWORK_EffStreamBase::DestroyEffStreamBaseThunk(void) {
+    DestroyEffStreamBase();
 }
 
 // FUNCTION: LEMBALL 0x0045F8D0
@@ -484,7 +469,7 @@ void DestroyDualHandleEffStream(void *pStream) {
     pPrimaryThunk->m_pVtable = g_NETWORK_DualHandleEffStreamPrimaryThunkVtable;
     ReleaseEffStreamPrimaryHandleGroup((int)(unsigned long)pStream);
     ReleaseEffStreamSecondaryHandleGroup((int)(unsigned long)pStream);
-    DestroyEffStreamBase(pStream);
+    ((NETWORK_EffStreamBase *)pStream)->DestroyEffStreamBase();
 }
 
 // FUNCTION: LEMBALL 0x0045FDF0
@@ -574,7 +559,7 @@ void DestroyTimedEffStream(void *pStream) {
     FreeVSMemBlock(pTimedStream->m_pTagBuffer2c);
     ReleaseTimedEffStreamPrimaryHandle((int)(unsigned long)pStream);
     ReleaseTimedEffStreamSecondaryHandles((int)(unsigned long)pStream);
-    DestroyEffStreamBase(pStream);
+    ((NETWORK_EffStreamBase *)pStream)->DestroyEffStreamBase();
 }
 
 // FUNCTION: LEMBALL 0x0045FDE0

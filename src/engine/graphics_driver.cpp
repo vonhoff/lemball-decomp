@@ -662,7 +662,7 @@ void RebuildResourceGeometryRowPointerTable(VSGDI_HelperSurface *pSurface) {
 }
 
 // FUNCTION: LEMBALL 0x004723A0
-void ClearHelperBackingBorderRows(VSGDI_HelperSurface *pSurface) {
+void VSGDI_HelperSurface::ClearBackingBorderRows(void) {
     unsigned int cbBorderRow;
     unsigned int cDwords;
     unsigned int cTailBytes;
@@ -671,13 +671,13 @@ void ClearHelperBackingBorderRows(VSGDI_HelperSurface *pSurface) {
     int nAbsoluteStride;
     int nStrideSign;
 
-    *(int *)((char *)pSurface + 0x18) = 0;
-    *(int *)((char *)pSurface + 0x14) = 0;
-    RebuildResourceGeometryRowPointerTable(pSurface);
+    *(int *)((char *)this + 0x18) = 0;
+    *(int *)((char *)this + 0x14) = 0;
+    RebuildResourceGeometryRowPointerTable(this);
 
-    cbBorderRow = (unsigned int)*(int *)((char *)pSurface + 0x20);
+    cbBorderRow = (unsigned int)*(int *)((char *)this + 0x20);
     if (0 < (int)cbBorderRow) {
-        pbBackingBase = (char *)(unsigned long)*(int *)((char *)pSurface + 0xc);
+        pbBackingBase = (char *)(unsigned long)*(int *)((char *)this + 0xc);
         pbTarget = pbBackingBase;
         cDwords = cbBorderRow >> 2;
         while (cDwords != 0) {
@@ -692,10 +692,10 @@ void ClearHelperBackingBorderRows(VSGDI_HelperSurface *pSurface) {
             --cTailBytes;
         }
 
-        nAbsoluteStride = *(int *)((char *)pSurface + 0x1c);
+        nAbsoluteStride = *(int *)((char *)this + 0x1c);
         nStrideSign = nAbsoluteStride >> 0x1f;
         nAbsoluteStride = (nAbsoluteStride ^ nStrideSign) - nStrideSign;
-        pbTarget = pbBackingBase + nAbsoluteStride * (int)*(short *)((char *)pSurface + 0x2e) + cbBorderRow;
+        pbTarget = pbBackingBase + nAbsoluteStride * (int)*(short *)((char *)this + 0x2e) + cbBorderRow;
         cDwords = cbBorderRow >> 2;
         while (cDwords != 0) {
             *(unsigned int *)pbTarget = 0;
@@ -709,6 +709,11 @@ void ClearHelperBackingBorderRows(VSGDI_HelperSurface *pSurface) {
             --cTailBytes;
         }
     }
+}
+
+// FUNCTION: LEMBALL 0x00472760
+void VSGDI_HelperSurface::ClearBackingBorderRowsThunk(void) {
+    ClearBackingBorderRows();
 }
 
 // FUNCTION: LEMBALL 0x00472340
@@ -725,12 +730,12 @@ void EnsureHelperBackingRowIndexCapacity(VSGDI_HelperSurface *pSurface) {
         if (0 < *(short *)((char *)pSurface + 0x2e)) {
             cbRowIndexBytes = cRows << 2;
             *(int *)((char *)pSurface + 4) = (int)(unsigned long)AllocateVSMemBlock((unsigned int)cbRowIndexBytes);
-            ClearHelperBackingBorderRows(pSurface);
+            pSurface->ClearBackingBorderRows();
         }
         *(int *)((char *)pSurface + 0x28) = cRows;
         return;
     }
-    ClearHelperBackingBorderRows(pSurface);
+    pSurface->ClearBackingBorderRows();
 }
 
 // FUNCTION: LEMBALL 0x004725F0

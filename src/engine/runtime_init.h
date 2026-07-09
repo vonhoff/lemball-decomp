@@ -21,7 +21,6 @@ void TokenizeAndFilterCommandLineArgs(char *pszCmdLine);
 unsigned int GetParsedCommandLineArgumentCount(void);
 const char *const *GetParsedCommandLineArgs(void);
 const VSINIT_CommandLineOption *GetCommandLineOptions(size_t *pcOptions);
-void LogParsedCommandLineOptions(void);
 void AppendStartupCString(const char *pszText);
 void AppendStartupUInt(unsigned int uValue);
 void AppendStatusCString(const char *pszText);

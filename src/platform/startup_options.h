@@ -8,7 +8,7 @@ struct STARTUP_GraphicsWindowConfig {
     u32 m_dwStyle;
     u32 m_dwReserved0;
     u32 m_cItems;
-    u32 *m_pItemDataEnd;
+    int *m_pItemDataEnd;
     u32 m_dwReserved1;
     void *m_hIcon;
 };

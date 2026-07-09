@@ -47,7 +47,7 @@ static int g_fUnknownStartupFlag2 = 0;
 
 static STARTUP_GraphicsWindowConfig g_StartupGraphicsWindowConfig;
 int g_fSmallMemoryBucketTableEnabled = 1;
-static u32 g_adwStartupGraphicsBucketSizeTable[7];
+static int g_adwStartupGraphicsBucketSizeTable[7];
 STARTUP_GraphicsWindowConfig g_StartupGraphicsDriverConfig = {
     0x40,
     8,
@@ -62,12 +62,17 @@ STARTUP_GraphicsWindowConfig g_StartupGraphicsDriverConfig = {
 void NoopHelpSwitchCallback(void) {
 }
 
+// FUNCTION: LEMBALL 0x004034C7
+STARTUP_GraphicsWindowConfig *BuildStartupGraphicsWindowConfigThunk(const STARTUP_GraphicsWindowConfig *pSeedConfig) {
+    return BuildStartupGraphicsWindowConfig(pSeedConfig);
+}
+
 // FUNCTION: LEMBALL 0x00406160
 STARTUP_GraphicsWindowConfig *BuildStartupGraphicsWindowConfig(const STARTUP_GraphicsWindowConfig *pSeedConfig) {
     const u32 *pSeed;
     u32 *pTarget;
     int cDwords;
-    u32 *pItemDataEnd;
+    int *pItemDataEnd;
 
     pSeed = (const u32 *)pSeedConfig;
     pTarget = (u32 *)&g_StartupGraphicsWindowConfig;
@@ -303,7 +308,7 @@ int ApplyStartupCommandLineSwitches(int cArgs, const char *const *ppszArgs) {
 void FinalizeStartupGraphicsDriverConfig(void) {
     int i;
     STARTUP_GraphicsWindowConfig *pBuiltConfig;
-    u32 *pBucketSize;
+    int *pBucketSize;
     const u32 *pBuiltDword;
     u32 *pConfigDword;
 
@@ -331,7 +336,7 @@ void FinalizeStartupGraphicsDriverConfig(void) {
     }
     pBucketSize = g_adwStartupGraphicsBucketSizeTable;
     do {
-        if (((*pBucketSize % 0x20) + 0x20) % 0x20 != 0) {
+        if (*pBucketSize % 0x20 != 0) {
             *pBucketSize = ((*pBucketSize + 0x1f) / 0x20) * 0x20;
         }
         ++pBucketSize;

@@ -437,10 +437,10 @@ void BeginEffStreamWriteSession(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x0045F240
-void EndEffStreamWriteSession(int nObject) {
+void EndEffStreamWriteSession(void *pObject) {
     GAME_EffStream *pStream;
 
-    pStream = (GAME_EffStream *)(unsigned long)nObject;
+    pStream = (GAME_EffStream *)pObject;
     --pStream->m_cWriteSessions;
 }
 

@@ -53,6 +53,8 @@ public:
     VSGDI_HelperSurface(void);
 
     void UpdateWorkingRectAndBacking(const VSGDI_Rect *pRect);
+    void ClearBackingBorderRows(void);
+    void ClearBackingBorderRowsThunk(void);
     int IsReady(void) const;
     short BackingWidth(void) const;
     short BackingHeight(void) const;

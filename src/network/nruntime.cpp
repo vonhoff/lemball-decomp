@@ -2,6 +2,7 @@
 #include "../engine/runtime_init.h"
 #include "../engine/memory_arena.h"
 #include "../platform/message_window.h"
+#include "network/nruntime.h"
 
 #include <string.h>
 
@@ -152,17 +153,6 @@ struct NETWORK_HandleGroupAdjustorSlot {
 struct NETWORK_EffTransportPeer;
 struct NETWORK_SimpleEffTransportRecordSlotTable;
 
-struct NETWORK_PeerPayloadSenderVtable {
-    void *m_apReserved00[8];
-    void (*m_pWritePeerKey)(void *);
-    int (*m_pSendPayload)(void *pThis, void *pvBuffer, int cbBuffer);
-    void (*m_pSetAssignedPort)(short);
-};
-
-struct NETWORK_PeerPayloadSender {
-    NETWORK_PeerPayloadSenderVtable *m_pVtable;
-};
-
 struct NETWORK_PeerPayloadSenderStateOffsets {
     void *m_pReserved00;
     int m_nSendStateBaseOffset04;
@@ -187,7 +177,7 @@ struct NETWORK_PeerPayloadSenderPendingWriteState {
 };
 
 struct NETWORK_PeerPayloadSenderState {
-    NETWORK_PeerPayloadSenderVtable *m_pVtable;
+    void *m_pVtable;
     int m_nReserved04;
     int m_pPayloadBuffer08;
     int m_fOwnsPayload0c;
@@ -242,7 +232,7 @@ struct NETWORK_EffTransportPacketHeader {
 
 struct NETWORK_PeerPayloadSenderSlot {
     char m_abUnknown00[4];
-    NETWORK_PeerPayloadSender m_Sender;
+    NETWORK_PeerPayloadSenderRaw m_Sender;
     char m_abUnknown08[0x6c];
     NETWORK_TransportPeerMatcher *m_pMatcher;
 };
@@ -558,9 +548,8 @@ extern void ConfigureTimedEffStreamSecondaryHandle(void *pTimedStream, int cbHan
 extern void *g_pEffTransportPeerAddressState;
 extern void *g_pEffTransportPacketBuffer;
 extern void ReleaseGlobalEffTransportBuffer(void *pObject);
-extern void EndEffStreamWriteSession(int nStream);
+extern void EndEffStreamWriteSession(void *pStream);
 extern void LoadEffStreamFromGlobalRange(void *pStream);
-extern int SendEffStreamPayloadWithTransportHeader(void *pPayloadSender, int nStream);
 extern int LoadEffStreamFromMemory(void *pStream, int nSourceBuffer);
 extern void SaveEffStreamToMemoryRange(void *pStream, int nTargetBuffer, int cbRange);
 void UnlinkAndDeleteEffTransportPeer(void *pRuntimeState, int nPeer);
@@ -569,10 +558,10 @@ int SendReliableEffTransportPayload(void *pPayloadSender, void *pStream);
 int SendFragmentedEffTransportPayload(void *pPayloadSender, void *pStream);
 
 // FUNCTION: LEMBALL 0x004601B0
-void WriteEffStreamWithGlobalSession(void *pStream) {
+void NETWORK_PeerPayloadSender::WriteEffStreamWithGlobalSession(void) {
     BeginEffStreamWriteSession(g_pEffTransportGlobalReadStream);
-    SendEffStreamPayloadWithTransportHeader(pStream, (int)(unsigned long)g_pEffTransportGlobalReadStream);
-    EndEffStreamWriteSession((int)(unsigned long)g_pEffTransportGlobalReadStream);
+    SendEffStreamPayloadWithTransportHeader((int)(unsigned long)g_pEffTransportGlobalReadStream);
+    EndEffStreamWriteSession(g_pEffTransportGlobalReadStream);
 }
 
 // FUNCTION: LEMBALL 0x004601E0
@@ -817,7 +806,7 @@ int SendReliableEffTransportPayload(void *pPayloadSender, void *pStream) {
         return 0;
     }
 
-    if (pSender->m_pVtable->m_pSendPayload(pSender, pvPayload, cbPayload) != 0) {
+    if (((NETWORK_PeerPayloadSender *)pSender)->SendPayload(pvPayload, cbPayload) != 0) {
         pRecord->m_dwLastRetryTick10 = timeGetTime();
         pRecord->m_fAvailable08 = 0;
         ++pRecord->m_cRetryCount14;
@@ -839,9 +828,8 @@ int RetryPendingEffTransportRecord(void *pObject, int nRecord) {
     LoadEffStreamFromMemory(pObject, pRecord->m_pSerializedStream04);
     LoadEffStreamFromMemory(pObject, pRecord->m_pSerializedStream04);
     nSendResult =
-        ((NETWORK_PeerPayloadSenderState *)pObject)
-            ->m_pVtable->m_pSendPayload(pObject, (void *)(unsigned long)pRecord->m_pSerializedStream04,
-                                        pSerializedHeader->m_cbPayload04);
+        ((NETWORK_PeerPayloadSender *)pObject)
+        ->SendPayload((void *)(unsigned long)pRecord->m_pSerializedStream04, pSerializedHeader->m_cbPayload04);
     if (nSendResult != 0) {
         pRecord->m_dwLastRetryTick10 = timeGetTime();
         ++pRecord->m_cRetryCount14;
@@ -894,14 +882,14 @@ int SendFragmentedEffTransportPayload(void *pPayloadSender, void *pStream) {
 
         if (pSender->m_nPendingFragmentIndex5c == 0) {
             SaveEffStreamToMemoryRange(pPayloadSender, (int)(unsigned long)pbPayload, 0);
-            nSendResult = pSender->m_pVtable->m_pSendPayload(pSender, pbPayload, (int)cbPacket);
+            nSendResult = ((NETWORK_PeerPayloadSender *)pSender)->SendPayload(pbPayload, (int)cbPacket);
         } else {
             pSender->m_aFragmentPrefixWords60[0] = *(unsigned int *)(unsigned long)(pbPayload + 0);
             pSender->m_aFragmentPrefixWords60[1] = *(unsigned int *)(unsigned long)(pbPayload + 4);
             pSender->m_aFragmentPrefixWords60[2] = *(unsigned int *)(unsigned long)(pbPayload + 8);
             pSender->m_aFragmentPrefixWords60[3] = *(unsigned int *)(unsigned long)(pbPayload + 12);
             SaveEffStreamToMemoryRange(pPayloadSender, (int)(unsigned long)pbPayload, 0);
-            nSendResult = pSender->m_pVtable->m_pSendPayload(pSender, pbPayload, (int)cbPacket);
+            nSendResult = ((NETWORK_PeerPayloadSender *)pSender)->SendPayload(pbPayload, (int)cbPacket);
             *(unsigned int *)(unsigned long)(pbPayload + 0) = pSender->m_aFragmentPrefixWords60[0];
             *(unsigned int *)(unsigned long)(pbPayload + 4) = pSender->m_aFragmentPrefixWords60[1];
             *(unsigned int *)(unsigned long)(pbPayload + 8) = pSender->m_aFragmentPrefixWords60[2];
@@ -926,7 +914,7 @@ int SendFragmentedEffTransportPayload(void *pPayloadSender, void *pStream) {
 }
 
 // FUNCTION: LEMBALL 0x004600D0
-int SendEffStreamPayloadWithTransportHeader(void *pPayloadSender, int nStream) {
+int NETWORK_PeerPayloadSender::SendEffStreamPayloadWithTransportHeader(int nStream) {
     NETWORK_PeerPayloadSenderState *pSender;
     NETWORK_PeerPayloadSenderStateOffsets *pOffsets;
     NETWORK_PeerPayloadSenderRuntimeStateView *pRuntimeState;
@@ -935,7 +923,7 @@ int SendEffStreamPayloadWithTransportHeader(void *pPayloadSender, int nStream) {
     void *pvPayload;
     int cbPayload;
 
-    pSender = (NETWORK_PeerPayloadSenderState *)pPayloadSender;
+    pSender = (NETWORK_PeerPayloadSenderState *)this;
     pOffsets = pSender->m_pOffsets44;
     pRuntimeState = (NETWORK_PeerPayloadSenderRuntimeStateView *)((char *)pSender + pOffsets->m_nSendStateBaseOffset04);
     if (pRuntimeState->m_fTransportActive68 == 0) {
@@ -966,8 +954,8 @@ int SendEffStreamPayloadWithTransportHeader(void *pPayloadSender, int nStream) {
             ++pSender->m_wUnreliableSequence32;
             pHeader->m_wSequence0a = pSender->m_wUnreliableSequence32;
             pHeader->m_fReliable0e = 0;
-            SaveEffStreamToMemoryRange(pPayloadSender, (int)(unsigned long)pvPayload, 0);
-            cbPayload = pSender->m_pVtable->m_pSendPayload(pSender, pvPayload, pHeader->m_cbPayload04);
+            SaveEffStreamToMemoryRange(this, (int)(unsigned long)pvPayload, 0);
+            cbPayload = ((NETWORK_PeerPayloadSender *)pSender)->SendPayload(pvPayload, pHeader->m_cbPayload04);
         } else {
             ++pSender->m_wReliableSequence30;
             pHeader->m_wSequence0a = pSender->m_wReliableSequence30;
@@ -1030,7 +1018,8 @@ void ServiceEffTransportRetries(void *pObject) {
                 return;
             }
 
-            SendEffStreamPayloadWithTransportHeader(pSender, (int)(unsigned long)g_pEffTransportGlobalWriteStream);
+            ((NETWORK_PeerPayloadSender *)pSender)
+                ->SendEffStreamPayloadWithTransportHeader((int)(unsigned long)g_pEffTransportGlobalWriteStream);
             return;
         }
 
@@ -1095,22 +1084,23 @@ void QueueEffTransportConnectEvent(void *pObject) {
 void SendLoadedEffEventToPeer(void *pOwner, void *pPeerKey, void *pStream) {
     NETWORK_ChannelOwnerObject *pChannelOwner;
     NETWORK_PeerPayloadSenderSlot *pPayloadSenderSlot;
-    NETWORK_PeerPayloadSender *pPayloadSender;
+    NETWORK_PeerPayloadSenderRaw *pPayloadSender;
 
     LoadEffStreamFromGlobalRange(pStream);
     pChannelOwner = (NETWORK_ChannelOwnerObject *)pOwner;
     pPayloadSenderSlot =
         (NETWORK_PeerPayloadSenderSlot *)((char *)pChannelOwner + pChannelOwner->m_pOffsets->m_nPayloadSenderSlotOffset);
     pPayloadSender = &pPayloadSenderSlot->m_Sender;
-    pPayloadSender->m_pVtable->m_pWritePeerKey(pPeerKey);
-    SendEffStreamPayloadWithTransportHeader(pPayloadSender, (int)(unsigned long)pStream);
+    ((NETWORK_PeerPayloadSender *)pPayloadSender)->WritePeerKey(pPeerKey);
+    ((NETWORK_PeerPayloadSender *)pPayloadSender)
+        ->SendEffStreamPayloadWithTransportHeader((int)(unsigned long)pStream);
 }
 
 // FUNCTION: LEMBALL 0x00460C60
 void SetEffTransportPeerNameAndPort(void *pPeer, char *pszName, void *pKey, short nPort) {
     NETWORK_EffTransportPeer *pTransportPeer;
     NETWORK_PeerPayloadSenderSlot *pPayloadSenderSlot;
-    NETWORK_PeerPayloadSender *pPayloadSender;
+    NETWORK_PeerPayloadSenderRaw *pPayloadSender;
     char chTerminator;
     unsigned int cchName;
     unsigned int cDwords;
@@ -1163,8 +1153,8 @@ void SetEffTransportPeerNameAndPort(void *pPeer, char *pszName, void *pKey, shor
     pPayloadSenderSlot =
         (NETWORK_PeerPayloadSenderSlot *)((char *)pTransportPeer + pTransportPeer->m_pOffsets->m_nPayloadSenderSlotOffset);
     pPayloadSender = &pPayloadSenderSlot->m_Sender;
-    pPayloadSender->m_pVtable->m_pSetAssignedPort(nPort);
-    pPayloadSender->m_pVtable->m_pWritePeerKey(pKey);
+    ((NETWORK_PeerPayloadSender *)pPayloadSender)->SetAssignedPort(nPort);
+    ((NETWORK_PeerPayloadSender *)pPayloadSender)->WritePeerKey(pKey);
 }
 
 // FUNCTION: LEMBALL 0x00460D60
@@ -1420,7 +1410,7 @@ void HandleEffTransportRequestNewPort(void *pRuntimeState, void *pPeerKey) {
     NETWORK_TransportEndpointSlot *pEndpointSlot;
     NETWORK_EndpointState *pPeerTransportState;
     NETWORK_PeerPayloadSenderSlot *pPayloadSenderSlot;
-    NETWORK_PeerPayloadSender *pPayloadSender;
+    NETWORK_PeerPayloadSenderRaw *pPayloadSender;
     NETWORK_RequestNewPortControlStream *pRequestNewPortStream;
     NETWORK_AuthoriseConnectControlStream *pAuthoriseConnectStream;
     NETWORK_FailedConnectControlStream *pFailedConnectStream;
@@ -1457,7 +1447,7 @@ void HandleEffTransportRequestNewPort(void *pRuntimeState, void *pPeerKey) {
         pPayloadSenderSlot =
             (NETWORK_PeerPayloadSenderSlot *)((char *)pPeer + pPeer->m_pOffsets->m_nPayloadSenderSlotOffset);
         pPayloadSender = &pPayloadSenderSlot->m_Sender;
-        pPayloadSender->m_pVtable->m_pSetAssignedPort(nAssignedPort);
+        ((NETWORK_PeerPayloadSender *)pPayloadSender)->SetAssignedPort(nAssignedPort);
         pAuthoriseConnectStream->m_nAssignedPort = pPeerTransportState->m_nAssignedPort;
         pAuthoriseConnectStream->m_pPeer = pPeer;
         SendLoadedEffEventToPeer(pState->m_pActiveChannelOwner, pPeerKey, pAuthoriseConnectStream);
@@ -1475,7 +1465,7 @@ void HandleEffTransportAuthoriseConnect(void *pRuntimeState, void *pPeerKey) {
     NETWORK_AuthoriseConnectControlStream *pAuthoriseConnectStream;
     NETWORK_AuthoriseConnectControlStream *pGoAheadConnectStream;
     NETWORK_PeerPayloadSenderSlot *pPayloadSenderSlot;
-    NETWORK_PeerPayloadSender *pPayloadSender;
+    NETWORK_PeerPayloadSenderRaw *pPayloadSender;
     unsigned char *pbAssignedPort;
     short nAssignedPort;
 
@@ -1515,7 +1505,7 @@ void HandleEffTransportAuthoriseConnect(void *pRuntimeState, void *pPeerKey) {
     pPayloadSenderSlot =
         (NETWORK_PeerPayloadSenderSlot *)((char *)pNewPeer + pNewPeer->m_pOffsets->m_nPayloadSenderSlotOffset);
     pPayloadSender = &pPayloadSenderSlot->m_Sender;
-    pPayloadSender->m_pVtable->m_pSetAssignedPort(nAssignedPort);
+    ((NETWORK_PeerPayloadSender *)pPayloadSender)->SetAssignedPort(nAssignedPort);
     ((NETWORK_EffTransportPeerVtable *)pNewPeer->m_pVtable)->m_pSetPeerKey(pPeerKey);
     pGoAheadConnectStream->m_nAssignedPort = nAssignedPort;
     pGoAheadConnectStream->m_pPeer = pAuthoriseConnectStream->m_pPeer;
@@ -1623,7 +1613,7 @@ int SendEffStreamToActivePeer(void *pPeer, int *pStream) {
     NETWORK_TransportEndpointSlot *pEndpointSlot;
     NETWORK_EndpointState *pPeerTransportState;
     NETWORK_PeerPayloadSenderSlot *pPayloadSenderSlot;
-    NETWORK_PeerPayloadSender *pPayloadSender;
+    NETWORK_PeerPayloadSenderRaw *pPayloadSender;
     NETWORK_EffDispatchEvent kFailureEvent;
     int fWriteSessionOpen;
     int nResult;
@@ -1642,7 +1632,8 @@ int SendEffStreamToActivePeer(void *pPeer, int *pStream) {
             (NETWORK_PeerPayloadSenderSlot *)((char *)pTransportPeer +
                                               pTransportPeer->m_pOffsets->m_nPayloadSenderSlotOffset);
         pPayloadSender = &pPayloadSenderSlot->m_Sender;
-        nResult = SendEffStreamPayloadWithTransportHeader(pPayloadSender, (int)(unsigned long)pStream);
+        nResult = ((NETWORK_PeerPayloadSender *)pPayloadSender)
+                      ->SendEffStreamPayloadWithTransportHeader((int)(unsigned long)pStream);
         if (nResult == 0) {
             kFailureEvent.m_nType = 1;
             kFailureEvent.m_nCode = 0xc;
@@ -1655,7 +1646,7 @@ int SendEffStreamToActivePeer(void *pPeer, int *pStream) {
         }
 
         if (fWriteSessionOpen < 1) {
-            EndEffStreamWriteSession((int)(unsigned long)pStream);
+            EndEffStreamWriteSession(pStream);
         }
         return nResult;
     }
