@@ -54,6 +54,36 @@ static const char g_VSINIT_HexPointerPrefix[] = "0x";
 static int g_fRadixPowerTableInitialized = 0;
 static unsigned int g_adwRadixPowerTable[17];
 
+struct RDISPATCH_QueueEntry {
+    unsigned int m_awords[5];
+};
+
+struct RDISPATCH_ClientNode {
+    void *m_pClient;
+    int m_nOrder;
+    RDISPATCH_ClientNode *m_pNext;
+};
+
+struct RDISPATCH_Queue {
+    void *m_pVtable;
+    int m_nReserved04;
+    void *m_pLockVtable;
+    char m_abCriticalSection[0x18];
+    int m_cEntryCapacity;
+    int m_cQueuedEntries;
+    int m_cClients;
+    int m_nReserved30;
+    int m_nReserved34;
+    int m_nReserved38;
+    int m_nReserved3C;
+    int m_cEntriesDropped;
+    RDISPATCH_QueueEntry *m_pEntryBuffer;
+    RDISPATCH_QueueEntry *m_pEntryBufferEnd;
+    RDISPATCH_QueueEntry *m_pHead;
+    RDISPATCH_QueueEntry *m_pTail;
+    RDISPATCH_ClientNode *m_pClientList;
+};
+
 // FUNCTION: LEMBALL 0x004584C0
 void ApplyStreamIntegerWidthPadding(VSINIT_FormattedOutputStream *pStream) {
     unsigned int dwFlags;
@@ -422,8 +452,10 @@ static VSINIT_ResourceTypeTable *g_pSecondaryResourceTypeTable = 0;
 static VSINIT_ResourceTypeTable *g_pTertiaryResourceTypeTable = 0;
 static VSINIT_VSMemPointerTable *g_pPaletteRemapPointerTable = 0;
 static void *g_pSharedRenderQueueNode = 0;
-static void *g_SharedRenderDispatchQueueVtable[1] = { 0 };
-static void *g_SharedRenderDispatchQueueVariantVtable[1] = { 0 };
+static void *g_RenderDispatchQueueDeleteThunkVtable[1] = { 0 };
+static void *g_RenderDispatchQueueCriticalSectionHelperVtable[1] = { 0 };
+static void *g_RenderDispatchQueueVtable[1] = { 0 };
+static void *g_DeleteRenderDispatchQueueCriticalSectionHelperThunk[1] = { 0 };
 static void *g_SharedRenderQueueNodeVtable[2] = { 0 };
 static void *g_SharedGeometryHelperVtable[1] = { 0 };
 static void *g_MainMemoryArenaStatusEntryVtable[8] = {
@@ -888,11 +920,11 @@ extern int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cE
 void *ConstructRenderDispatchQueue(void *pQueue, int cEntries) {
     int nEntryBuffer;
 
-    *(void **)pQueue = g_SharedRenderDispatchQueueVtable;
-    *(void **)((char *)pQueue + 8) = g_SharedRenderDispatchQueueVariantVtable;
+    *(void **)pQueue = g_RenderDispatchQueueDeleteThunkVtable;
+    *(void **)((char *)pQueue + 8) = g_RenderDispatchQueueCriticalSectionHelperVtable;
     InitializeCriticalSection((char *)pQueue + 0xc);
-    *(void **)pQueue = g_SharedRenderDispatchQueueVtable;
-    *(void **)((char *)pQueue + 8) = g_SharedRenderDispatchQueueVariantVtable;
+    *(void **)pQueue = g_RenderDispatchQueueVtable;
+    *(void **)((char *)pQueue + 8) = g_DeleteRenderDispatchQueueCriticalSectionHelperThunk;
 
     nEntryBuffer = (int)(unsigned long)AllocateVSMemBlock((unsigned int)(cEntries * 0x14));
     *(int *)((char *)pQueue + 0x44) = nEntryBuffer;
@@ -913,58 +945,64 @@ void *ConstructRenderDispatchQueue(void *pQueue, int cEntries) {
 
 // FUNCTION: LEMBALL 0x004630A0
 void *ConstructRenderDispatchQueueVariant(void *pQueue, int cEntries) {
+    RDISPATCH_Queue *pDispatchQueue;
+    RDISPATCH_QueueEntry *pEntryBuffer;
     int nEntryBuffer;
 
-    *(void **)pQueue = g_SharedRenderDispatchQueueVtable;
-    *(void **)((char *)pQueue + 8) = g_SharedRenderDispatchQueueVariantVtable;
+    pDispatchQueue = (RDISPATCH_Queue *)pQueue;
+    pDispatchQueue->m_pVtable = g_RenderDispatchQueueDeleteThunkVtable;
+    pDispatchQueue->m_pLockVtable = g_RenderDispatchQueueCriticalSectionHelperVtable;
     InitializeCriticalSection((char *)pQueue + 0xc);
-    *(void **)pQueue = g_SharedRenderDispatchQueueVtable;
-    *(void **)((char *)pQueue + 8) = g_SharedRenderDispatchQueueVariantVtable;
+    pDispatchQueue->m_pVtable = g_RenderDispatchQueueVtable;
+    pDispatchQueue->m_pLockVtable = g_DeleteRenderDispatchQueueCriticalSectionHelperThunk;
 
     nEntryBuffer = (int)(unsigned long)AllocateVSMemBlock((unsigned int)(cEntries * 0x14));
-    *(int *)((char *)pQueue + 0x44) = nEntryBuffer;
-    *(int *)((char *)pQueue + 0x24) = cEntries;
-    *(int *)((char *)pQueue + 0x48) = cEntries * 0x14 + nEntryBuffer;
-    *(int *)((char *)pQueue + 0x50) = nEntryBuffer;
-    *(int *)((char *)pQueue + 0x4c) = nEntryBuffer;
-    *(int *)((char *)pQueue + 0x28) = 0;
-    *(int *)((char *)pQueue + 0x2c) = 0;
-    *(int *)((char *)pQueue + 0x34) = 0;
-    *(int *)((char *)pQueue + 0x38) = 0;
-    *(int *)((char *)pQueue + 0x3c) = 0;
-    *(int *)((char *)pQueue + 0x40) = 0;
-    *(int *)((char *)pQueue + 0x30) = 0;
-    *(int *)((char *)pQueue + 0x54) = 0;
+    pEntryBuffer = (RDISPATCH_QueueEntry *)(unsigned long)nEntryBuffer;
+    pDispatchQueue->m_pEntryBuffer = pEntryBuffer;
+    pDispatchQueue->m_cEntryCapacity = cEntries;
+    pDispatchQueue->m_pEntryBufferEnd = (RDISPATCH_QueueEntry *)(unsigned long)(cEntries * 0x14 + nEntryBuffer);
+    pDispatchQueue->m_pTail = pEntryBuffer;
+    pDispatchQueue->m_pHead = pEntryBuffer;
+    pDispatchQueue->m_cQueuedEntries = 0;
+    pDispatchQueue->m_cClients = 0;
+    pDispatchQueue->m_nReserved34 = 0;
+    pDispatchQueue->m_nReserved38 = 0;
+    pDispatchQueue->m_nReserved3C = 0;
+    pDispatchQueue->m_cEntriesDropped = 0;
+    pDispatchQueue->m_nReserved30 = 0;
+    pDispatchQueue->m_pClientList = 0;
     return pQueue;
 }
 
 // FUNCTION: LEMBALL 0x00463120
 void DestroyRenderDispatchQueue(void *pQueue) {
+    RDISPATCH_Queue *pDispatchQueue;
     unsigned int cClientsReleased;
     unsigned int cClients;
-    int nClientNode;
-    int nNextClientNode;
+    RDISPATCH_ClientNode *pClientNode;
+    RDISPATCH_ClientNode *pNextClientNode;
 
-    *(void **)pQueue = g_SharedRenderDispatchQueueVtable;
-    *(void **)((char *)pQueue + 8) = g_SharedRenderDispatchQueueVariantVtable;
+    pDispatchQueue = (RDISPATCH_Queue *)pQueue;
+    pDispatchQueue->m_pVtable = g_RenderDispatchQueueVtable;
+    pDispatchQueue->m_pLockVtable = g_DeleteRenderDispatchQueueCriticalSectionHelperThunk;
 
-    nClientNode = *(int *)((char *)pQueue + 0x54);
-    if (DrainRenderDispatchQueueEntries(pQueue, *(int *)((char *)pQueue + 0x28)) == 1) {
-        FreeVSMemBlock(*(void **)((char *)pQueue + 0x44));
+    pClientNode = pDispatchQueue->m_pClientList;
+    if (DrainRenderDispatchQueueEntries(pQueue, pDispatchQueue->m_cQueuedEntries) == 1) {
+        FreeVSMemBlock(pDispatchQueue->m_pEntryBuffer);
     }
 
     cClientsReleased = 0;
-    cClients = *(unsigned int *)((char *)pQueue + 0x2c);
+    cClients = (unsigned int)pDispatchQueue->m_cClients;
     if (cClients != 0) {
         do {
-            nNextClientNode = *(int *)(nClientNode + 8);
-            FreeVSMemBlock((void *)(unsigned long)nClientNode);
+            pNextClientNode = pClientNode->m_pNext;
+            FreeVSMemBlock(pClientNode);
             ++cClientsReleased;
-            nClientNode = nNextClientNode;
+            pClientNode = pNextClientNode;
         } while (cClientsReleased < cClients);
     }
 
-    *(void **)((char *)pQueue + 8) = g_SharedRenderDispatchQueueVariantVtable;
+    pDispatchQueue->m_pLockVtable = g_RenderDispatchQueueCriticalSectionHelperVtable;
     DeleteCriticalSection((char *)pQueue + 0xc);
 }
 
@@ -1013,8 +1051,9 @@ int InitializeSharedEventQueueRuntime(void) {
         g_pSharedRenderDispatchQueue = 0;
     } else {
         g_pSharedRenderDispatchQueue = ConstructRenderDispatchQueueVariant(pQueue, 10);
-        *(void **)g_pSharedRenderDispatchQueue = g_SharedRenderDispatchQueueVtable;
-        *(void **)((char *)g_pSharedRenderDispatchQueue + 8) = g_SharedRenderDispatchQueueVariantVtable;
+        *(void **)g_pSharedRenderDispatchQueue = g_RenderDispatchQueueVtable;
+        *(void **)((char *)g_pSharedRenderDispatchQueue + 8) =
+            g_DeleteRenderDispatchQueueCriticalSectionHelperThunk;
     }
 
     pHelper = AllocateVSMemBlock(0x18);

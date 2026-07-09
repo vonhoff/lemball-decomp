@@ -55,9 +55,10 @@ struct GAME_RecordSlotTable {
 
 struct GAME_EffTransportPeerDescriptor {
     void *m_pReserved00;
-    int m_nTransportStateOffset;
-    int m_nPayloadSenderOffset;
-    int m_nHandleGroupOffset;
+    int m_nEndpointStateSlotOffset;
+    int m_nPayloadSenderSlotOffset;
+    int m_nReserved0C;
+    int m_nHandleGroupAdjustorSlotOffset;
 };
 
 struct GAME_EffTransportHandleCallbackVtable {
@@ -79,7 +80,7 @@ struct GAME_EffTransportHandleGroup {
     int m_fSecondaryActive;
 };
 
-struct GAME_EffTransportState {
+struct GAME_EffTransportEndpointState {
     int m_nReserved00;
     GAME_EffTransportHandleGroup m_HandleGroup;
     int m_fPrimaryHandlePresent;
@@ -88,9 +89,19 @@ struct GAME_EffTransportState {
     short m_nAssignedPort;
 };
 
+struct GAME_EffTransportEndpointSlot {
+    char m_abUnknown00[4];
+    GAME_EffTransportEndpointState m_State;
+};
+
 struct GAME_EffTransportHandleOwner {
     char m_abUnknown00[0x48];
     void *m_pShiftedRecordSlotTable;
+};
+
+struct GAME_EffTransportHandleOwnerSlot {
+    char m_abUnknown00[4];
+    GAME_EffTransportHandleOwner m_HandleOwner;
 };
 
 struct GAME_EffTransportPeer {
@@ -495,10 +506,13 @@ void QueueEffStreamWriteEvent(void *pObject, int nPayload) {
 // FUNCTION: LEMBALL 0x00460FB0
 void CloseEffTransportPeer(int nPeer) {
     GAME_EffTransportPeer *pPeer;
-    GAME_EffTransportState *pState;
+    GAME_EffTransportEndpointSlot *pEndpointSlot;
+    GAME_EffTransportEndpointState *pState;
 
     pPeer = (GAME_EffTransportPeer *)(unsigned long)nPeer;
-    pState = (GAME_EffTransportState *)((char *)pPeer + pPeer->m_pDescriptor->m_nTransportStateOffset);
+    pEndpointSlot =
+        (GAME_EffTransportEndpointSlot *)((char *)pPeer + pPeer->m_pDescriptor->m_nEndpointStateSlotOffset);
+    pState = &pEndpointSlot->m_State;
     if (pState->m_fPrimaryHandlePresent != 0 && pState->m_fSecondaryHandlePresent != 0) {
         ResetEffTransportHandleGroup((int *)&pState->m_HandleGroup);
         if (pPeer->m_pConnectionState != 0) {
@@ -636,8 +650,9 @@ void ServiceNetworkLobbySelectedPeerUpdates(void *pVsnetRuntime) {
     }
     if (g_nSelectedNetworkLobbyPeerId != 0) {
         pSelectedPeer = (GAME_EffTransportPeer *)(unsigned long)g_nSelectedNetworkLobbyPeerId;
-        pHandleOwner = (GAME_EffTransportHandleOwner *)((char *)pSelectedPeer +
-                                                        pSelectedPeer->m_pDescriptor->m_nHandleGroupOffset + 4);
+        pHandleOwner = &((GAME_EffTransportHandleOwnerSlot *)((char *)pSelectedPeer +
+                                                              pSelectedPeer->m_pDescriptor->m_nHandleGroupAdjustorSlotOffset))
+                            ->m_HandleOwner;
         if (HasShiftedRecordSlotPayloadForStream(
                 pHandleOwner,
                 pRuntime->m_pSelectedPeerStatusStream) != 0) {

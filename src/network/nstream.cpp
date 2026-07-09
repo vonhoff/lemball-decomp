@@ -55,6 +55,25 @@ struct NETWORK_EffStreamBase {
     unsigned short m_nWord36;
 };
 
+struct NETWORK_EffStreamSerializeVtable {
+    void *m_pReserved00;
+    void (*m_pLoadFromMemoryHeader)(void *pThis);
+    void (*m_pLoadFromMemoryBody)(void *pThis);
+    void (*m_pBeginWriteHeader)(void *pThis);
+    void (*m_pBeginWriteBody)(void *pThis);
+};
+
+struct NETWORK_ChannelStateRuntime {
+    virtual void CancelPending(void) = 0;
+};
+
+struct NETWORK_RuntimeService {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void Reserved08(void) = 0;
+    virtual void Invoke(void *pArgument) = 0;
+};
+
 struct NETWORK_DualHandleEffStream {
     void **m_pVtable;
     int m_nReserved04;
@@ -155,6 +174,7 @@ static void *g_NETWORK_RuntimeChannelStackFatalThunk = (void *)0x004990D8;
 static void *g_NETWORK_RuntimeChannelStackVtable = (void *)0x004990E8;
 
 void *g_pEffTransportPeerAddressState = 0;
+extern int g_nEffTransportAsyncErrorStatus;
 
 extern "C" DWORD timeGetTime(void);
 
@@ -177,9 +197,123 @@ int ReturnTrueVtableCallback(void) {
     return 1;
 }
 
+// FUNCTION: LEMBALL 0x0040ABE0
+int ReturnTrueVtableCallbackSecondary(void) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0040ABF0
+void NoopVtableCallback(void) {}
+
 static void *g_NETWORK_ReturnTrueVtable[1] = {
     (void *)ReturnTrueVtableCallback,
 };
+
+// FUNCTION: LEMBALL 0x0045EF10
+void WriteEffStreamU32BE(void *pStream, unsigned int nValue) {
+    NETWORK_EffStreamBase *pBase;
+
+    pBase = (NETWORK_EffStreamBase *)pStream;
+    *(unsigned char *)(pBase->m_nReserved1c + 3) = (unsigned char)nValue;
+    *(unsigned char *)(pBase->m_nReserved1c + 2) = (unsigned char)(nValue >> 8);
+    *(unsigned char *)(pBase->m_nReserved1c + 1) = (unsigned char)(nValue >> 16);
+    *(unsigned char *)pBase->m_nReserved1c = (unsigned char)(nValue >> 24);
+    pBase->m_nReserved1c += 4;
+}
+
+// FUNCTION: LEMBALL 0x0045EF40
+void WriteEffStreamU16BE(void *pStream, unsigned short nValue) {
+    NETWORK_EffStreamBase *pBase;
+
+    pBase = (NETWORK_EffStreamBase *)pStream;
+    *(unsigned char *)(pBase->m_nReserved1c + 1) = (unsigned char)nValue;
+    *(unsigned char *)pBase->m_nReserved1c = (unsigned char)(nValue >> 8);
+    pBase->m_nReserved1c += 2;
+}
+
+// FUNCTION: LEMBALL 0x0045EFC0
+void WriteEffStreamBytes(void *pStream, const void *pvSource, unsigned int cbWrite) {
+    unsigned int i;
+    const unsigned char *pbSource;
+    unsigned char *pbTarget;
+    NETWORK_EffStreamBase *pBase;
+
+    pBase = (NETWORK_EffStreamBase *)pStream;
+    pbSource = (const unsigned char *)pvSource;
+    pbTarget = (unsigned char *)(unsigned long)pBase->m_nReserved1c;
+
+    for (i = cbWrite >> 2; i != 0; --i) {
+        *(unsigned int *)pbTarget = *(const unsigned int *)pbSource;
+        pbSource += 4;
+        pbTarget += 4;
+    }
+
+    for (i = cbWrite & 3; i != 0; --i) {
+        *pbTarget++ = *pbSource++;
+    }
+
+    pBase->m_nReserved1c += cbWrite;
+}
+
+// FUNCTION: LEMBALL 0x0045F010
+void ReadEffStreamU32BE(void *pStream, unsigned char *pbTarget) {
+    NETWORK_EffStreamBase *pBase;
+
+    pBase = (NETWORK_EffStreamBase *)pStream;
+    pbTarget[0] = *(unsigned char *)(pBase->m_nReserved20 + 3);
+    pbTarget[1] = *(unsigned char *)(pBase->m_nReserved20 + 2);
+    pbTarget[2] = *(unsigned char *)(pBase->m_nReserved20 + 1);
+    pbTarget[3] = *(unsigned char *)pBase->m_nReserved20;
+    pBase->m_nReserved20 += 4;
+}
+
+// FUNCTION: LEMBALL 0x0045F090
+void ReadEffStreamU16BE(void *pStream, unsigned char *pbTarget) {
+    NETWORK_EffStreamBase *pBase;
+
+    pBase = (NETWORK_EffStreamBase *)pStream;
+    pbTarget[0] = *(unsigned char *)(pBase->m_nReserved20 + 1);
+    pbTarget[1] = *(unsigned char *)pBase->m_nReserved20;
+    pBase->m_nReserved20 += 2;
+}
+
+// FUNCTION: LEMBALL 0x0045F1B0
+void ReadEffStreamBytes(void *pStream, void *pvTarget, unsigned int cbRead) {
+    unsigned int i;
+    unsigned char *pbTarget;
+    unsigned char *pbSource;
+    NETWORK_EffStreamBase *pBase;
+
+    pBase = (NETWORK_EffStreamBase *)pStream;
+    pbTarget = (unsigned char *)pvTarget;
+    pbSource = (unsigned char *)(unsigned long)pBase->m_nReserved20;
+
+    for (i = cbRead >> 2; i != 0; --i) {
+        *(unsigned int *)pbTarget = *(unsigned int *)pbSource;
+        pbSource += 4;
+        pbTarget += 4;
+    }
+
+    for (i = cbRead & 3; i != 0; --i) {
+        *pbTarget++ = *pbSource++;
+    }
+
+    pBase->m_nReserved20 += cbRead;
+}
+
+// FUNCTION: LEMBALL 0x0045F250
+void SaveEffStreamToMemoryRange(void *pStream, int nTargetBuffer, int cbRange) {
+    NETWORK_EffStreamBase *pBase;
+    NETWORK_EffStreamSerializeVtable *pVtable;
+
+    pBase = (NETWORK_EffStreamBase *)pStream;
+    pBase->m_pPayloadBuffer08 = nTargetBuffer;
+    pVtable = (NETWORK_EffStreamSerializeVtable *)pBase->m_pVtable;
+    pBase->m_nReserved1c = nTargetBuffer + cbRange;
+    pBase->m_fOwnsPayload0c = pBase->m_nBufferEnd18 + nTargetBuffer + cbRange;
+    pVtable->m_pBeginWriteHeader(pStream);
+    pVtable->m_pBeginWriteBody(pStream);
+}
 
 // FUNCTION: LEMBALL 0x0045F680
 void *ConstructEffStreamChannelState(void *pChannelState) {
@@ -207,6 +341,22 @@ void DestroyEffStreamChannelState(void *pChannelState) {
     pState = (NETWORK_EffStreamChannelState *)pChannelState;
     pState->m_pVtable = (void **)g_NETWORK_EffStreamChannelStateVtable;
     FreeVSMemBlock(pState->m_pSideBuffer28);
+}
+
+// FUNCTION: LEMBALL 0x0045F6E0
+void SetEffStreamChannelAsyncErrorStatus(void *pChannelState, int nStatus) {
+    NETWORK_EffStreamChannelState *pState;
+
+    pState = (NETWORK_EffStreamChannelState *)pChannelState;
+    pState->m_nReserved04 = nStatus;
+    g_nEffTransportAsyncErrorStatus = nStatus;
+    if (nStatus != 0 && pState->m_nReserved0c != 0) {
+        ((NETWORK_ChannelStateRuntime *)pState)->CancelPending();
+        pState->m_nReserved10 = 0;
+        pState->m_nReserved0c = 0;
+        pState->m_nSelectedPeer08 = -1;
+        pState->m_nReserved14 = 0;
+    }
 }
 
 // FUNCTION: LEMBALL 0x0045F750
@@ -419,6 +569,14 @@ void DestroyTimedEffStream(void *pStream) {
     ReleaseTimedEffStreamPrimaryHandle((int)(unsigned long)pStream);
     ReleaseTimedEffStreamSecondaryHandles((int)(unsigned long)pStream);
     DestroyEffStreamBase(pStream);
+}
+
+// FUNCTION: LEMBALL 0x0045FDE0
+void InvokeTimedEffStreamServiceCallback(void *pStream, void *pArgument) {
+    NETWORK_TimedEffStream *pTimedStream;
+
+    pTimedStream = (NETWORK_TimedEffStream *)pStream;
+    ((NETWORK_RuntimeService *)pTimedStream->m_pRuntimeService70)->Invoke(pArgument);
 }
 
 // FUNCTION: LEMBALL 0x004604E0

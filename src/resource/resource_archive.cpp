@@ -659,7 +659,7 @@ void FreeResourceArchiveMemory(void *pMemoryBlock) {
 // FUNCTION: LEMBALL 0x0045BBC0
 int OpenResourceArchiveFileHandle(const char *pszPath, const char *pszMode) {
     g_pResourceArchiveFile = OpenFileWithMode(pszPath, pszMode);
-    return g_pResourceArchiveFile != 0;
+    return 1 - (g_pResourceArchiveFile == 0);
 }
 
 // FUNCTION: LEMBALL 0x0045CA30

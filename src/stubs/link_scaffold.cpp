@@ -270,24 +270,6 @@ void ConfigureEffStreamPrimaryHandleGroup(void *pStream, int cHandles, int cbHan
     (void)nMode;
 }
 
-void UnlinkAndDeleteEffTransportPeer(void *pRuntimeState, int nPeer) {
-    (void)pRuntimeState;
-    (void)nPeer;
-}
-
-void SetEffTransportPeerNameAndPort(void *pPeer, char *pszName, void *pKey, short nPort) {
-    (void)pPeer;
-    (void)pszName;
-    (void)pKey;
-    (void)nPort;
-}
-
-int MarkExistingEffTransportPeerActive(void *pRuntimeState, int nPeer) {
-    (void)pRuntimeState;
-    (void)nPeer;
-    return 0;
-}
-
 void ReleaseGlobalEffTransportBuffer(void *pObject) {
     (void)pObject;
 }
