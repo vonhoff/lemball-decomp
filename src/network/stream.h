@@ -63,12 +63,7 @@ struct NETWORK_EffStreamBase : NETWORK_EffStreamCore {
 };
 
 struct NETWORK_DualHandleEffStream : NETWORK_EffStreamBase {
-    int m_nState2c;
-    int m_nReserved30;
-    int m_nReserved34;
-    int m_nReserved38;
-    int m_nReserved3c;
-    int m_nReserved40;
+    char m_abReserved38[0x0c];
     void **m_pChannelStateConstructionOffsets44;
     void *m_pPrimaryHandleArray48;
     void *m_pPrimaryHandleObject4c;

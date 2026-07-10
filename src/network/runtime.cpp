@@ -11,6 +11,11 @@
 
 extern int g_nEffTransportAsyncErrorStatus;
 extern int ReturnTrueVtableCallback(void);
+extern int ReturnTrueVtableCallbackThunk(void);
+extern int ReturnTrueVtableCallbackSecondaryThunk(void);
+extern void NoopVtableCallbackThunk(void);
+extern void ReturnVoidVtableCallback(void);
+extern void ReadEffStreamTwoU16Fields(void *pObject);
 
 extern "C" BOOL WINAPI WaitMessage(void);
 extern "C" HANDLE WINAPI CreateThread(LPSECURITY_ATTRIBUTES pThreadAttributes,
@@ -95,8 +100,18 @@ static void *g_NETWORK_EffTransportRuntimeStateVtable =
 static void *g_NETWORK_ReturnTrueVtable[1] = {
     (void *)ReturnTrueVtableCallback,
 };
-static void *g_NETWORK_EffTransportGlobalWriteStreamVtable = NetworkGetSafeVtable();
-static void *g_NETWORK_EffTransportGlobalReadStreamVtable = NetworkGetSafeVtable();
+static void *g_NETWORK_EffTransportGlobalWriteStreamVtable[4] = {
+    (void *)ReturnTrueVtableCallbackThunk,
+    (void *)ReturnTrueVtableCallbackSecondaryThunk,
+    (void *)ReturnVoidVtableCallback,
+    (void *)NoopVtableCallbackThunk,
+};
+static void *g_NETWORK_EffTransportGlobalReadStreamVtable[4] = {
+    (void *)ReturnTrueVtableCallbackThunk,
+    (void *)ReturnTrueVtableCallbackSecondaryThunk,
+    (void *)ReadEffStreamTwoU16Fields,
+    (void *)NoopVtableCallbackThunk,
+};
 static void *g_NETWORK_RequestConnectControlStreamNameVtable = NetworkGetSafeVtable();
 static void *g_NETWORK_RequestConnectControlStreamVtable = NetworkGetSafeVtable();
 static void *g_NETWORK_RequestNewPortControlStreamVtable = NetworkGetSafeVtable();

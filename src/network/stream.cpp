@@ -20,6 +20,14 @@ struct NETWORK_AdjustorSubobject {
     void *m_pVtable;
 };
 
+struct NETWORK_AdjustorThunkHeader {
+    int m_nThisDelta;
+};
+
+struct NETWORK_EffTransportPendingWriteState {
+    void Clear(void *pUnused);
+};
+
 struct NETWORK_ThunkAdjustorGroup {
     NETWORK_ConstructionAdjustorVtable *m_pOffsets;
     NETWORK_AdjustorSubobject *m_pPrimary;
@@ -57,8 +65,12 @@ struct NETWORK_RuntimeChannelStack {
     void *m_pRuntimeSideBuffer1c;
     unsigned char m_abChannelState24[0x30];
     unsigned char m_abTimedStream54[0x78];
-    unsigned char m_abDualStreamcc[0x78];
+    /* The dual stream owns the construction-offset word at +0x124.  Keep
+     * that word at its real offset; it is not a field after a synthetic
+     * oversized dual-stream placeholder. */
+    unsigned char m_abDualStreamcc[0x58];
     void **m_pEmbeddedConstructionOffsets124;
+    unsigned char m_abDualStreamTail128[0x2c];
 
     void *ConstructEffTransportRuntimeChannelStack(int fConstructEmbeddedObjects);
 };
@@ -117,6 +129,9 @@ struct NETWORK_RuntimeWindowInterface {
 };
 
 void *DeleteEffStreamChannelStateWrapper004628E0(void *pObject, BYTE fDelete);
+void *DeleteEffChannelStreamStackWrapper(void *pChannelState, BYTE fDelete);
+void *DeleteEffChannelStreamStackAdjustedThunk(void *pObject, BYTE fDelete);
+void ClearRuntimeChannelPendingWriteAdjustedThunk(void *pObject, void *pUnused);
 void EffStreamChannelStateRet4Thunk(BYTE fDelete);
 static void *g_NETWORK_EffStreamChannelStateVtable[] = {
     (void *)CrtFatalRuntimeError0x19,
@@ -229,16 +244,10 @@ struct NETWORK_DualHandleEffStreamVtableModel {
         ++pStream->m_nReserved1c;
     }
     virtual void *Delete(BYTE fDelete) {
-        NETWORK_DualHandleEffStream *pStream = (NETWORK_DualHandleEffStream *)this;
-        pStream->DestroyDualHandleEffStream();
-        if ((fDelete & 1) != 0) {
-            FreeVSMemBlock(pStream);
-        }
-        return pStream;
+        return DeleteDualEffStreamWithChannelStateWrapper(this, fDelete);
     }
     virtual void DeleteRet(void) {}
     virtual void Fatal(void) { CrtFatalRuntimeError0x19(); }
-    virtual void FatalSecondary(void) { CrtFatalRuntimeError0x19(); }
     virtual void DeleteRet8(BYTE fDelete, BYTE fReserved) {
         (void)fDelete;
         (void)fReserved;
@@ -254,10 +263,14 @@ static int g_NETWORK_TimedEffStreamChannelStateConstructionOffsets[2] = {
 struct NETWORK_TimedPrimaryThunkVtableModel {
     virtual void Fatal(void) { CrtFatalRuntimeError0x19(); }
     virtual void *Delete(BYTE fDelete) {
-        return DeleteTimedEffStreamWithChannelStateWrapper((char *)this - 0x78, fDelete);
+        char *pAdjusted = (char *)this - *(int *)((char *)this - 4) - 0x78;
+        return DeleteTimedEffStreamWithChannelStateWrapper(pAdjusted, fDelete);
     }
     virtual void FatalSecondary(void) { CrtFatalRuntimeError0x19(); }
-    virtual void SecondaryThunk(void) {}
+    virtual void ClearPendingWrite(void *pUnused) {
+        char *pAdjusted = (char *)this - *(int *)((char *)this - 4);
+        ((NETWORK_EffTransportPendingWriteState *)pAdjusted)->Clear(pUnused);
+    }
 };
 
 static NETWORK_TimedPrimaryThunkVtableModel g_NETWORK_TimedPrimaryThunkVtableModel;
@@ -270,12 +283,7 @@ extern void *ClaimAckedEffTransportRecordPayload(void *pObject);
 
 struct NETWORK_TimedEffStreamVtableModel : NETWORK_EffStreamBaseVtableModel {
     virtual void *Delete(BYTE fDelete) {
-        NETWORK_TimedEffStream *pStream = (NETWORK_TimedEffStream *)this;
-        pStream->DestroyTimedEffStream();
-        if ((fDelete & 1) != 0) {
-            FreeVSMemBlock(pStream);
-        }
-        return pStream;
+        return DeleteTimedEffStreamWithChannelStateWrapper(this, fDelete);
     }
 
     virtual void WriteGlobalSession(void) {
@@ -285,6 +293,7 @@ struct NETWORK_TimedEffStreamVtableModel : NETWORK_EffStreamBaseVtableModel {
     virtual void *ClaimTimedRecord(void) {
         return ClaimAckedEffTransportRecordPayload(this);
     }
+    virtual void Fatal(void) { CrtFatalRuntimeError0x19(); }
 };
 
 static NETWORK_TimedEffStreamVtableModel g_NETWORK_TimedEffStreamVtableModel;
@@ -297,9 +306,9 @@ static int g_NETWORK_RuntimeChannelStackChannelStateConstructionOffsets[6] = {
 /* Separate callable table.  The offset table above is not a vtable. */
 static void *g_NETWORK_RuntimeChannelStackChannelStateVtable[4] = {
     (void *)CrtFatalRuntimeError0x19,
-    (void *)NetworkSafeVtableNoop,
+    (void *)DeleteEffChannelStreamStackAdjustedThunk,
     (void *)CrtFatalRuntimeError0x19,
-    (void *)NetworkSafeVtableNoop,
+    (void *)ClearRuntimeChannelPendingWriteAdjustedThunk,
 };
 static int g_NETWORK_RuntimeChannelStackTimedStreamConstructionOffsets[6] = {
     -0x44, -0x74, -0x44, -0x8c, -4, 0x20,
@@ -356,13 +365,28 @@ int ReturnTrueVtableCallback(void) {
     return 1;
 }
 
+// FUNCTION: LEMBALL 0x00401564
+int ReturnTrueVtableCallbackThunk(void) {
+    return ReturnTrueVtableCallback();
+}
+
 // FUNCTION: LEMBALL 0x0040ABE0
 int ReturnTrueVtableCallbackSecondary(void) {
     return 1;
 }
 
+// FUNCTION: LEMBALL 0x004026AD
+int ReturnTrueVtableCallbackSecondaryThunk(void) {
+    return ReturnTrueVtableCallbackSecondary();
+}
+
 // FUNCTION: LEMBALL 0x0040ABF0
 void NoopVtableCallback(void) {}
+
+// FUNCTION: LEMBALL 0x00401451
+void NoopVtableCallbackThunk(void) {
+    NoopVtableCallback();
+}
 
 static void *g_NETWORK_ReturnTrueVtable[1] = {
     (void *)ReturnTrueVtableCallback,
@@ -582,7 +606,7 @@ void *ConstructDualHandleEffStream(void *pStream, int fConstructChannelState) {
     pDualStream->m_pPrimaryHandleObject4c = 0;
     pDualStream->m_pSecondaryHandleArray50 = 0;
     pDualStream->m_pSecondaryHandleObject54 = 0;
-    pDualStream->m_nState2c = 0;
+    pDualStream->m_pTagBuffer2c = 0;
 
     if (g_pEffTransportPeerAddressState == 0) {
         g_pEffTransportPeerAddressState = CreateActiveNetworkRuntimeServiceObject();
@@ -618,7 +642,7 @@ void NETWORK_TimedEffStream::ReleaseTimedEffStreamPrimaryHandle(void) {
     }
 }
 
-// THUNK: LEMBALL 0x0045FE50
+// FUNCTION: LEMBALL 0x0045FE50
 void NETWORK_TimedEffStream::ReleaseTimedEffStreamPrimaryHandleThunk(
     int nUnused0, int nUnused1, int nUnused2) {
     (void)nUnused0;
@@ -929,6 +953,15 @@ void WriteEffStreamTwoU16Fields(void *pObject) {
     ((NETWORK_EffStreamBase *)pObject)->WriteEffStreamU16BE(*(unsigned short *)((char *)pObject + 0x2e));
 }
 
+// FUNCTION: LEMBALL 0x00462B00
+void ReturnVoidVtableCallback(void) {}
+
+// FUNCTION: LEMBALL 0x00462B60
+void ReadEffStreamTwoU16Fields(void *pObject) {
+    ((NETWORK_EffStreamBase *)pObject)->ReadEffStreamU16BE((unsigned char *)((char *)pObject + 0x2c));
+    ((NETWORK_EffStreamBase *)pObject)->ReadEffStreamU16BE((unsigned char *)((char *)pObject + 0x2e));
+}
+
 // FUNCTION: LEMBALL 0x00462B80
 void *DeleteEffStreamBase(void *pObject, BYTE fDelete) {
     ((NETWORK_EffStreamBase *)pObject)->DestroyEffStreamBase();
@@ -950,6 +983,25 @@ void *DeleteEffChannelStreamStackWrapper(void *pChannelState, BYTE fDelete) {
         FreeVSMemBlock((char *)pChannelState - 8);
     }
     return (char *)pView - 8;
+}
+
+// FUNCTION: LEMBALL 0x00462CA0
+void *DeleteEffChannelStreamStackAdjustedThunk(void *pObject, BYTE fDelete) {
+    return DeleteEffChannelStreamStackWrapper(
+        (char *)pObject - ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta,
+        fDelete);
+}
+
+// FUNCTION: LEMBALL 0x00462CF0
+void ClearRuntimeChannelPendingWriteAdjustedThunk(void *pObject, void *pUnused) {
+    int nVirtualBaseOffset;
+    NETWORK_EffTransportPendingWriteState *pPendingWrite;
+
+    pObject = (char *)pObject - ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta;
+    nVirtualBaseOffset = *(int *)(*(int *)((char *)pObject - 8) + 8);
+    pPendingWrite = (NETWORK_EffTransportPendingWriteState *)
+        ((char *)pObject + nVirtualBaseOffset + 0x70);
+    pPendingWrite->Clear(pUnused);
 }
 // FUNCTION: LEMBALL 0x00462ED0
 int WINAPI InitializeNonZrleVariantRenderEntry(int nValue) {
