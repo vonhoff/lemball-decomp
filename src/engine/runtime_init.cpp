@@ -5,6 +5,7 @@
 #include "../engine/memory_arena.h"
 #include "runtime_init.h"
 #include "../platform/message_window.h"
+#include "../network/safe_vtable.h"
 
 #include <ctype.h>
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
@@ -25,6 +26,7 @@ extern void UnregisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pC
 extern void *g_pStatusEntryRegistry;
 extern void *g_pSharedRenderDispatchQueue;
 extern void *g_pSharedGeometryHelper;
+extern void CrtFatalRuntimeError0x19(void);
 
 #define VSINIT_FORMAT_TARGET(pStream) \
     ((VSINIT_StreamFormatTargetState *)((char *)(pStream) + (unsigned long)((void **)((pStream)->m_pVtable))[1]))
@@ -38,10 +40,17 @@ void FormatSignedIntToRadixString(int nValue, char *pszBuffer, unsigned int nRad
 char *FormatUnsignedIntToRadixString(unsigned int uValue, char *pszBuffer, unsigned int nRadix);
 void ApplyStreamIntegerWidthPadding(VSINIT_FormattedOutputStream *pStream);
 
-void *g_StreamBaseVtable[1] = { 0 };
+void *DeleteStreamBase(void *pStream, unsigned char fFreeMemory);
+void DestroyStreamBaseVtable(void *pStream);
+void *g_StreamBaseVtable[4] = {
+    (void *)DeleteStreamBase,
+    (void *)CrtFatalRuntimeError0x19,
+    (void *)CrtFatalRuntimeError0x19,
+    (void *)CrtFatalRuntimeError0x19,
+};
 unsigned long g_FormattedOutputStreamVtable[2] = { 0, 0x12c };
-void *g_StreamFormatTargetStateVtable[1] = { 0 };
-void *g_StreamFormatSubobjectVtable[1] = { 0 };
+void *g_StreamFormatTargetStateVtable[1] = { (void *)NetworkSafeVtableNoop };
+void *g_StreamFormatSubobjectVtable[1] = { (void *)NetworkSafeVtableNoop };
 static void *g_FixedBufferStreamVtable[4] = {
     (void *)DeleteFixedBufferStreamReturnThis,
     (void *)ResetFixedBufferStream,
@@ -452,12 +461,12 @@ static VSINIT_ResourceTypeTable *g_pSecondaryResourceTypeTable = 0;
 static VSINIT_ResourceTypeTable *g_pTertiaryResourceTypeTable = 0;
 static VSINIT_VSMemPointerTable *g_pPaletteRemapPointerTable = 0;
 static void *g_pSharedRenderQueueNode = 0;
-static void *g_RenderDispatchQueueDeleteThunkVtable[1] = { 0 };
-static void *g_RenderDispatchQueueCriticalSectionHelperVtable[1] = { 0 };
-static void *g_RenderDispatchQueueVtable[1] = { 0 };
-static void *g_DeleteRenderDispatchQueueCriticalSectionHelperThunk[1] = { 0 };
-static void *g_SharedRenderQueueNodeVtable[2] = { 0 };
-static void *g_SharedGeometryHelperVtable[1] = { 0 };
+static void *g_RenderDispatchQueueDeleteThunkVtable[1] = { (void *)NetworkSafeVtableNoop };
+static void *g_RenderDispatchQueueCriticalSectionHelperVtable[1] = { (void *)NetworkSafeVtableNoop };
+static void *g_RenderDispatchQueueVtable[1] = { (void *)NetworkSafeVtableNoop };
+static void *g_DeleteRenderDispatchQueueCriticalSectionHelperThunk[1] = { (void *)NetworkSafeVtableNoop };
+static void *g_SharedRenderQueueNodeVtable[2] = { (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop };
+static void *g_SharedGeometryHelperVtable[1] = { (void *)NetworkSafeVtableNoop };
 static void *g_MainMemoryArenaStatusEntryVtable[8] = {
     (void *)WriteNamedStatusEntry,
     (void *)UpdateNamedStatusEntry,
@@ -502,6 +511,15 @@ void FlushErrorFixedBufferStream(char *pszText) {
 // FUNCTION: LEMBALL 0x004583E0
 void *ConstructStreamBaseVtable(void *pStream) {
     *(void **)pStream = g_StreamBaseVtable;
+    return pStream;
+}
+
+// FUNCTION: LEMBALL 0x00458E60
+void *DeleteStreamBase(void *pStream, unsigned char fFreeMemory) {
+    DestroyStreamBaseVtable(pStream);
+    if ((fFreeMemory & 1) != 0) {
+        FreeVSMemBlock(pStream);
+    }
     return pStream;
 }
 

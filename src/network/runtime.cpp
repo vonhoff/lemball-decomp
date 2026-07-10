@@ -4,10 +4,12 @@
 #include "../platform/message_window.h"
 #include "network/runtime.h"
 #include "network/stream.h"
+#include "network/safe_vtable.h"
 
 #include <string.h>
 #include <new>
 
+extern int g_nEffTransportAsyncErrorStatus;
 extern int ReturnTrueVtableCallback(void);
 
 extern "C" BOOL WINAPI WaitMessage(void);
@@ -20,22 +22,87 @@ extern "C" HANDLE WINAPI CreateThread(LPSECURITY_ATTRIBUTES pThreadAttributes,
 extern "C" BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority);
 extern "C" void WINAPI ExitProcess(UINT uExitCode);
 
-static void *g_NETWORK_FileBasedRuntimeWindowVtable;
-static void *g_NETWORK_FileBasedRuntimeTransportVtable;
-static void *g_NETWORK_TcpipRuntimeWindowVtable;
-static void *g_NETWORK_TcpipRuntimeTransportVtable;
-static void *g_NETWORK_EffTransportRuntimeStateVtable;
+/*
+ * The original tables live in the image's read-only data.  Keeping these
+ * globals as zero-initialized placeholders makes the first message-thread
+ * callback an indirect call through address zero.  Until each transport
+ * table is recovered, use compiler-owned fallback tables.  The fallback
+ * reports an unavailable transport and leaves the process in the normal
+ * startup error path; it never fabricates a peer or calls through null.
+ */
+static void NetworkRuntimeTransportUnavailable(void *pObject) {
+    /* Runtime state starts with the render node; shutdown is at +0x14. */
+    *(int *)((char *)pObject + 0x14) = 1;
+    g_nEffTransportAsyncErrorStatus = 1;
+}
+
+static void NetworkRuntimeTransportNoop(void *pObject) {
+    (void)pObject;
+}
+
+static int NetworkRuntimeCreateNoChannelOwner(void *pObject) {
+    (void)pObject;
+    return 0;
+}
+
+static void *NetworkRuntimeWindowCreateNoChannelOwner(void *pObject) {
+    (void)pObject;
+    return 0;
+}
+
+struct NETWORK_RuntimeFallbackTransportVtable {
+    void *m_aReserved00[3];
+    void (*m_pInitializeTransport)(void *);
+    void *m_aReserved10[4];
+    void (*m_pServiceTransport)(void *);
+    void *m_pReserved24;
+    int (*m_pCreateChannelOwner)(void *);
+    void *m_pReserved2c;
+    void (*m_pWaitForTransportMessage)(void *);
+};
+
+struct NETWORK_RuntimeFallbackWindowVtable {
+    void *m_aReserved00[11];
+    void *(*m_pCreateChannelOwner)(void *);
+};
+
+static NETWORK_RuntimeFallbackTransportVtable g_NETWORK_RuntimeFallbackTransportVtable = {
+    { 0, 0, 0 },
+    NetworkRuntimeTransportUnavailable,
+    { 0, 0, 0, 0 },
+    NetworkRuntimeTransportNoop,
+    0,
+    NetworkRuntimeCreateNoChannelOwner,
+    0,
+    NetworkRuntimeTransportNoop,
+};
+
+static NETWORK_RuntimeFallbackWindowVtable g_NETWORK_RuntimeFallbackWindowVtable = {
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    NetworkRuntimeWindowCreateNoChannelOwner,
+};
+
+static void *g_NETWORK_FileBasedRuntimeWindowVtable =
+    *(void ***)&g_NETWORK_RuntimeFallbackWindowVtable;
+static void *g_NETWORK_FileBasedRuntimeTransportVtable =
+    *(void ***)&g_NETWORK_RuntimeFallbackTransportVtable;
+static void *g_NETWORK_TcpipRuntimeWindowVtable =
+    *(void ***)&g_NETWORK_RuntimeFallbackWindowVtable;
+static void *g_NETWORK_TcpipRuntimeTransportVtable =
+    *(void ***)&g_NETWORK_RuntimeFallbackTransportVtable;
+static void *g_NETWORK_EffTransportRuntimeStateVtable =
+    *(void ***)&g_NETWORK_RuntimeFallbackTransportVtable;
 static void *g_NETWORK_ReturnTrueVtable[1] = {
     (void *)ReturnTrueVtableCallback,
 };
-static void *g_NETWORK_EffTransportGlobalWriteStreamVtable;
-static void *g_NETWORK_EffTransportGlobalReadStreamVtable;
-static void *g_NETWORK_RequestConnectControlStreamNameVtable;
-static void *g_NETWORK_RequestConnectControlStreamVtable;
-static void *g_NETWORK_RequestNewPortControlStreamVtable;
-static void *g_NETWORK_AuthoriseConnectControlStreamVtable;
-static void *g_NETWORK_GoAheadConnectControlStreamVtable;
-static void *g_NETWORK_FailedConnectControlStreamVtable;
+static void *g_NETWORK_EffTransportGlobalWriteStreamVtable = NetworkGetSafeVtable();
+static void *g_NETWORK_EffTransportGlobalReadStreamVtable = NetworkGetSafeVtable();
+static void *g_NETWORK_RequestConnectControlStreamNameVtable = NetworkGetSafeVtable();
+static void *g_NETWORK_RequestConnectControlStreamVtable = NetworkGetSafeVtable();
+static void *g_NETWORK_RequestNewPortControlStreamVtable = NetworkGetSafeVtable();
+static void *g_NETWORK_AuthoriseConnectControlStreamVtable = NetworkGetSafeVtable();
+static void *g_NETWORK_GoAheadConnectControlStreamVtable = NetworkGetSafeVtable();
+static void *g_NETWORK_FailedConnectControlStreamVtable = NetworkGetSafeVtable();
 
 struct NETWORK_RenderQueueNode {
     void **m_pVtable;
@@ -374,6 +441,10 @@ struct NETWORK_EffTransportConnectOwner {
     int m_fConnected24;
 };
 
+struct NETWORK_EffTransportConnectCallback {
+    void QueueEffTransportConnectEvent(void);
+};
+
 struct NETWORK_EffTransportConnectStateView {
     char m_abReserved00[0x14];
     int m_fConnected14;
@@ -471,9 +542,9 @@ struct NETWORK_EffTransportRecordBuffer {
     int m_nReserved14;
 };
 
-static void *g_NETWORK_EffTransportRecordBufferVtable;
-static void *g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable;
-static void *g_NETWORK_DeleteEffTransportRecordBufferVtable;
+static void *g_NETWORK_EffTransportRecordBufferVtable = NetworkGetSafeVtable();
+static void *g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable = NetworkGetSafeVtable();
+static void *g_NETWORK_DeleteEffTransportRecordBufferVtable = NetworkGetSafeVtable();
 
 struct NETWORK_LockedEffTransportRecordCriticalSection {
     NETWORK_LockedEffTransportRecordCriticalSection(void) {
@@ -660,7 +731,6 @@ extern int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cE
 extern void BeginEffStreamWriteSession(void *pObject);
 extern void CheckEffTransportIdleTimeout(void *pObject);
 extern void ConfigureEffStreamPrimaryHandleGroup(void *pStream, int cHandles, int cbHandleData, int nMode);
-extern void ReleaseTimedEffStreamPrimaryHandle(int nTimedStream);
 
 // FUNCTION: LEMBALL 0x004605B0
 void CloseAdjustedEffTransportPeerByKey(void *pAdjustedObject) {
@@ -1166,8 +1236,8 @@ void *ConstructSimpleEffTransportRecordSlotTable(void *pObject, int cRecords, un
     return pObject;
 }
 
-static void *g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable;
-static void *g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable;
+static void *g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable = NetworkGetSafeVtable();
+static void *g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable = NetworkGetSafeVtable();
 
 void *ConstructEffTransportRecordBuffer(void *pObject, int fAllocatePayload, int cbPayload,
                                         unsigned int cbRecord);
@@ -1715,7 +1785,7 @@ void NETWORK_EffTransportPeer::FreeEffTransportPeerBuffers(void) {
 }
 
 // FUNCTION: LEMBALL 0x00460D70
-void QueueEffTransportConnectEvent(void *pObject) {
+void NETWORK_EffTransportConnectCallback::QueueEffTransportConnectEvent(void) {
     NETWORK_EffDispatchEvent kEvent;
     NETWORK_EffTransportConnectStateView *pSendState;
     NETWORK_EffTransportTickStateView *pReliableTickState;
@@ -1725,7 +1795,7 @@ void QueueEffTransportConnectEvent(void *pObject) {
     NETWORK_RuntimeWindowSendGateState *pWindowState;
     DWORD dwNow;
 
-    pOwner = (NETWORK_EffTransportConnectOwner *)((char *)pObject - 0xd8);
+    pOwner = (NETWORK_EffTransportConnectOwner *)((char *)this - 0xd8);
     pOffsets = pOwner->m_pOffsets04;
     pSendState = (NETWORK_EffTransportConnectStateView *)((char *)pOwner + pOffsets->m_nSendStateViewOffset04);
     pReliableTickState = (NETWORK_EffTransportTickStateView *)((char *)pOwner + pOffsets->m_nReliableTickViewOffset08);
@@ -2051,8 +2121,8 @@ int AllocateEffTransportPeerEntry(void *pRuntimeState) {
                                          pState->m_nPrimaryHandleGroupCount,
                                          pState->m_nPrimaryHandleGroupBytes,
                                          pState->m_nPrimaryHandleGroupMode);
-    ReleaseTimedEffStreamPrimaryHandle(
-        (int)(unsigned long)((char *)pAdjustor + pAdjustor->m_pOffsets->m_nTimedStreamOffset));
+    ((NETWORK_TimedEffStream *)((char *)pAdjustor + pAdjustor->m_pOffsets->m_nTimedStreamOffset))
+        ->ReleaseTimedEffStreamPrimaryHandle();
 
     nSecondaryHandleBytes = pState->m_nSecondaryHandleGroupBytes;
     pAdjustorSlot =
@@ -2598,8 +2668,9 @@ void PrepareEffTransportBroadcastStatusPayload(void *pObject, char *pszHostName)
         (NETWORK_HandleGroupAdjustorSlot *)((char *)pObject + ((NETWORK_EffTransportPeer *)pObject)->m_pOffsets->m_nHandleGroupAdjustorSlotOffset);
     ConfigureEffStreamPrimaryHandleGroup((char *)&pAdjustorSlot->m_Adjustor + pAdjustorSlot->m_Adjustor.m_pOffsets->m_nHandleStreamOffset,
                                          3, 3, 0);
-    ReleaseTimedEffStreamPrimaryHandle((int)(unsigned long)((char *)&pAdjustorSlot->m_Adjustor +
-                                                            pAdjustorSlot->m_Adjustor.m_pOffsets->m_nTimedStreamOffset));
+    ((NETWORK_TimedEffStream *)((char *)&pAdjustorSlot->m_Adjustor +
+                                pAdjustorSlot->m_Adjustor.m_pOffsets->m_nTimedStreamOffset))
+        ->ReleaseTimedEffStreamPrimaryHandle();
 
     pAdjustorSlot =
         (NETWORK_HandleGroupAdjustorSlot *)((char *)pObject + ((NETWORK_EffTransportPeer *)pObject)->m_pOffsets->m_nHandleGroupAdjustorSlotOffset);
@@ -3093,6 +3164,10 @@ DWORD WINAPI FileBasedNetworkMessageThreadMain(LPVOID pvThreadParam) {
         g_pActiveNetworkRuntimeWindow = (char *)pRuntimeWindow + 0x10;
     }
 
+    if (g_pActiveNetworkRuntimeWindow == 0) {
+        return 0;
+    }
+
     pActiveRuntime = (NETWORK_EffTransportRuntimeState *)g_pActiveNetworkRuntimeWindow;
     fRuntimeStarted = pActiveRuntime->m_fStartRequested;
     while (fRuntimeStarted == 0 && pActiveRuntime->m_fRuntimeActive == 0 &&
@@ -3270,6 +3345,10 @@ DWORD WINAPI TcpipNetworkMessageThreadMain(LPVOID pvThreadParam) {
         g_pActiveNetworkRuntimeWindow = 0;
     } else {
         g_pActiveNetworkRuntimeWindow = (char *)pRuntimeWindow + 0x10;
+    }
+
+    if (g_pActiveNetworkRuntimeWindow == 0) {
+        return 0;
     }
 
     pActiveRuntime = (NETWORK_EffTransportRuntimeState *)g_pActiveNetworkRuntimeWindow;

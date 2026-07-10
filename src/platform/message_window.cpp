@@ -1,4 +1,5 @@
 #include "message_window.h"
+#include "../network/safe_vtable.h"
 
 #include "../main.h"
 #include "../engine/memory_arena.h"
@@ -19,8 +20,8 @@ static const char g_PLATFORM_DebugWindowTitle[] = "Debug Window";
 
 static PLATFORM_DebugTextWindow *g_pDebugTextWindow = 0;
 static HACCEL g_hDebugWindowAccelerators = 0;
-static void *g_PLATFORM_InvisibleMessageWindowVTable[1] = { 0 };
-static void *g_PLATFORM_DebugTextWindowVTable[1] = { 0 };
+static void *g_PLATFORM_InvisibleMessageWindowVTable[1] = { (void *)NetworkSafeVtableNoop };
+static void *g_PLATFORM_DebugTextWindowVTable[1] = { (void *)NetworkSafeVtableNoop };
 static int *g_pfWindowMessagePassthroughMode;
 extern HANDLE g_hDebugSyncEvent;
 

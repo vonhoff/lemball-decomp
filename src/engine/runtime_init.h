@@ -67,7 +67,7 @@ extern int g_fStartupNoWait;
 extern VSINIT_FormattedOutputStream *g_pStatusOutputStream;
 extern VSINIT_FormattedOutputStream *g_pErrorOutputStream;
 extern char g_abProcessCurrentDirectoryBuffer[0x100];
-extern void *g_StreamBaseVtable[1];
+extern void *g_StreamBaseVtable[4];
 extern unsigned long g_FormattedOutputStreamVtable[2];
 extern void *g_StreamFormatTargetStateVtable[1];
 extern void *g_StreamFormatSubobjectVtable[1];

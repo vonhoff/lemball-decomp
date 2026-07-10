@@ -1,4 +1,5 @@
 #include "graphics_driver.h"
+#include "../network/safe_vtable.h"
 #include "../main.h"
 #include "../platform/startup_options.h"
 #include "../engine/memory_arena.h"
@@ -41,30 +42,69 @@ static const char g_VSGDI_DefaultWindowModeSuffix[] =
     ". Defaulting to normal window mode (using CreateDIBSection)";
 static const char g_VSGDI_WarningCaption[] = "WARNING";
 static FARPROC g_pApplyFullscreenDisplayModeThunk = 0;
-static int g_VSGDI_CompactResourceGeometryHelperVtable = 0;
-static int g_VSGDI_ResourceGeometryRowBufferVtable = 0;
-static int g_VSGDI_ResourceGeometryHelperGroup0ConstructionAdjustorVtable = 0;
-static int g_VSGDI_ResourceGeometryHelperGroup0Vtable = 0;
-static int g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable = 0;
-static int g_VSGDI_ResourceGeometryHelperGroup1ConstructionAdjustorVtable = 0;
-static int g_VSGDI_ResourceGeometryHelperGroup1Vtable = 0;
-static int g_VSGDI_ResourceGeometryHelperGroup1CompactSubobjectVtable = 0;
-static int g_VSGDI_ResourceGeometryHelperTargetConstructionVtable = 0;
-static int g_VSGDI_CompactResourceGeometryHelperConstructionVtable = 0;
-static int g_VSGDI_ResourceGeometryHelperTargetVtable = 0;
-static int g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable = 0;
-static int g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable = 0;
-static int g_VSGDI_CompactResourceGeometryHelperSubobjectVtable = 0;
-static int g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable = 0;
-static int g_VSGDI_ResourceGeometryHelperSlotManagerVtable = 0;
-static int g_VSGDI_StatusIndicatorBaseVtable = 0;
-static int g_VSGDI_ArrowCursorRuntimeVtable = 0;
-static int g_VSGDI_StatusIndicatorRenderClientVtable = 0;
-static int g_VSGDI_StatusIndicatorPointSinkVtable = 0;
+#define VSGDI_SAFE_TABLE(name) static void *name[32]
+VSGDI_SAFE_TABLE(g_VSGDI_CompactResourceGeometryHelperVtable);
+VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryRowBufferVtable);
+VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryHelperGroup0Vtable);
+VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable);
+VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryHelperGroup1Vtable);
+VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryHelperGroup1CompactSubobjectVtable);
+VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryHelperTargetConstructionVtable);
+VSGDI_SAFE_TABLE(g_VSGDI_CompactResourceGeometryHelperConstructionVtable);
+VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryHelperTargetVtable);
+VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable);
+VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable);
+VSGDI_SAFE_TABLE(g_VSGDI_CompactResourceGeometryHelperSubobjectVtable);
+VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable);
+VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryHelperSlotManagerVtable);
+VSGDI_SAFE_TABLE(g_VSGDI_StatusIndicatorBaseVtable);
+VSGDI_SAFE_TABLE(g_VSGDI_ArrowCursorRuntimeVtable);
+VSGDI_SAFE_TABLE(g_VSGDI_StatusIndicatorRenderClientVtable);
+VSGDI_SAFE_TABLE(g_VSGDI_StatusIndicatorPointSinkVtable);
+#undef VSGDI_SAFE_TABLE
+
+struct VSGDI_SafeTableInitializer {
+    VSGDI_SafeTableInitializer(void) {
+        void **tables[] = {
+            g_VSGDI_CompactResourceGeometryHelperVtable,
+            g_VSGDI_ResourceGeometryRowBufferVtable,
+            g_VSGDI_ResourceGeometryHelperGroup0Vtable,
+            g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable,
+            g_VSGDI_ResourceGeometryHelperGroup1Vtable,
+            g_VSGDI_ResourceGeometryHelperGroup1CompactSubobjectVtable,
+            g_VSGDI_ResourceGeometryHelperTargetConstructionVtable,
+            g_VSGDI_CompactResourceGeometryHelperConstructionVtable,
+            g_VSGDI_ResourceGeometryHelperTargetVtable,
+            g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable,
+            g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable,
+            g_VSGDI_CompactResourceGeometryHelperSubobjectVtable,
+            g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable,
+            g_VSGDI_ResourceGeometryHelperSlotManagerVtable,
+            g_VSGDI_StatusIndicatorBaseVtable,
+            g_VSGDI_ArrowCursorRuntimeVtable,
+            g_VSGDI_StatusIndicatorRenderClientVtable,
+            g_VSGDI_StatusIndicatorPointSinkVtable
+        };
+        int i;
+        int j;
+        for (i = 0; i < 18; ++i)
+            for (j = 0; j < 32; ++j)
+                tables[i][j] = (void *)NetworkSafeVtableNoop;
+    }
+};
+static VSGDI_SafeTableInitializer g_VSGDI_SafeTableInitializer;
 
 struct VSGDI_CompactHelperAdjustorTable {
     int m_nThisDelta;
     int m_nSubobjectOffset;
+};
+
+/* Ghidra 00466440/00466670: both temporary row-group adjustors are {-4, 0x54}. */
+static VSGDI_CompactHelperAdjustorTable g_VSGDI_ResourceGeometryHelperGroup0ConstructionAdjustorVtable = {
+    -4, 0x54
+};
+static VSGDI_CompactHelperAdjustorTable g_VSGDI_ResourceGeometryHelperGroup1ConstructionAdjustorVtable = {
+    -4, 0x54
 };
 
 static VSGDI_CompactHelperAdjustorTable g_VSGDI_CompactHelperTargetAdjustor = { -0x40, 0x51c };

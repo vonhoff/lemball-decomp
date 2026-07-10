@@ -1,6 +1,7 @@
 #include "../game/game_app.h"
 #include "../engine/runtime_init.h"
 #include "../engine/memory_arena.h"
+#include "../network/safe_vtable.h"
 
 void DestroyNamedStatusEntry(void *pEntry);
 
@@ -12,7 +13,7 @@ static void *g_GAME_StatusEntryDeleteVtable[8] = {
     (void *)AppendCharToFixedBufferStream,
     (void *)AppendCStringToFixedBufferStream,
     (void *)ReturnStreamArgument,
-    0,
+    (void *)NetworkSafeVtableNoop,
 };
 static void *g_GAME_StatusEntryVtable[8] = {
     (void *)WriteNamedStatusEntry,
@@ -22,7 +23,7 @@ static void *g_GAME_StatusEntryVtable[8] = {
     (void *)AppendCharToFixedBufferStream,
     (void *)AppendCStringToFixedBufferStream,
     (void *)ReturnStreamArgument,
-    0,
+    (void *)NetworkSafeVtableNoop,
 };
 
 // FUNCTION: LEMBALL 0x0046E410

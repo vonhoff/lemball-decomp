@@ -17,9 +17,10 @@ struct NETWORK_EffStreamChannelState {
 
     NETWORK_EffStreamChannelState *ConstructEffStreamChannelState(void);
     void DestroyEffStreamChannelState(void);
+    void SetEffStreamChannelAsyncErrorStatus(int nStatus);
 };
 
-struct NETWORK_DualHandleEffStream {
+struct NETWORK_EffStreamCore {
     void **m_pVtable;
     int m_nReserved04;
     int m_pPayloadBuffer08;
@@ -31,35 +32,18 @@ struct NETWORK_DualHandleEffStream {
     int m_nReserved20;
     int m_nReserved24;
     int m_fBusy28;
-    int m_nState2c;
-    int m_nReserved30;
-    int m_nReserved34;
-    int m_nReserved38;
-    int m_nReserved3c;
-    int m_nReserved40;
-    void **m_pChannelStateThunk44;
-    void *m_pPrimaryHandleArray48;
-    void *m_pPrimaryHandleObject4c;
-    void *m_pSecondaryHandleArray50;
-    void *m_pSecondaryHandleObject54;
-    unsigned char m_abChannelState58[0x2c];
-
-    void DestroyDualHandleEffStream(void);
 };
 
-struct NETWORK_EffStreamBase {
-    void **m_pVtable;
-    int m_nReserved04;
-    int m_pPayloadBuffer08;
-    int m_fOwnsPayload0c;
-    int m_nReserved10;
-    int m_nReserved14;
-    int m_nBufferEnd18;
-    int m_nReserved1c;
-    int m_nReserved20;
-    int m_nReserved24;
-    int m_fBusy28;
-    int m_pTagBuffer2c;
+/*
+ * 0045F750 first installs the shared GAME_EffStream-compatible table
+ * (004932C8), calls GAME_EffStream::ResetStateFields with unchanged this,
+ * then installs the EFF stream table (00498F40).  This proves a shared ABI
+ * prefix, not a direct C++ base edge: file-backed record slots reuse the
+ * prefix but place marker data at +2c.  The common prefix is modeled as
+ * NETWORK_EffStreamCore; the GAME_EffStream class edge remains unproven.
+ */
+struct NETWORK_EffStreamBase : NETWORK_EffStreamCore {
+    int *m_pTagBuffer2c;
     unsigned short m_nWord30;
     unsigned short m_nWord32;
     unsigned short m_nWord34;
@@ -74,7 +58,53 @@ struct NETWORK_EffStreamBase {
     void SaveEffStreamToMemoryRange(int nTargetBuffer, int cbRange);
     NETWORK_EffStreamBase *ConstructEffStreamBase(void);
     void DestroyEffStreamBase(void);
+    void *DeleteEffStreamBaseWrapper(BYTE fDeleteFlags);
     void DestroyEffStreamBaseThunk(void);
+};
+
+struct NETWORK_DualHandleEffStream : NETWORK_EffStreamBase {
+    int m_nState2c;
+    int m_nReserved30;
+    int m_nReserved34;
+    int m_nReserved38;
+    int m_nReserved3c;
+    int m_nReserved40;
+    void **m_pChannelStateConstructionOffsets44;
+    void *m_pPrimaryHandleArray48;
+    void *m_pPrimaryHandleObject4c;
+    void *m_pSecondaryHandleArray50;
+    void *m_pSecondaryHandleObject54;
+    unsigned char m_abChannelState58[0x2c];
+
+    void ReleaseEffStreamPrimaryHandleGroup(void);
+    void ReleaseEffStreamSecondaryHandleGroup(void);
+    void DestroyDualHandleEffStream(void);
+};
+
+struct NETWORK_TimedEffStream : NETWORK_EffStreamBase {
+    int m_nReserved38;
+    DWORD m_dwLastTick3c;
+    int m_nReserved40;
+    void **m_pChannelStateConstructionOffsets44;
+    void *m_pPrimaryHandleArray48;
+    void *m_pSecondaryHandleArray4c;
+    void *m_pTertiaryHandleArray50;
+    int m_nReserved54;
+    int m_nReserved58;
+    int m_nHandleIndex5c;
+    int m_nReserved60;
+    int m_nReserved64;
+    int m_nReserved68;
+    int m_nReserved6c;
+    void *m_pRuntimeService70;
+    unsigned char m_abChannelState78[0x2c];
+
+    void ReleaseTimedEffStreamPrimaryHandle(void);
+    void ReleaseTimedEffStreamPrimaryHandleThunk(int nUnused0, int nUnused1, int nUnused2);
+    void ReleaseTimedEffStreamSecondaryHandles(void);
+    void InvokeTimedEffStreamServiceCallback(void *pArgument);
+    NETWORK_TimedEffStream *ConstructTimedEffStream(int fConstructChannelState);
+    void DestroyTimedEffStream(void);
 };
 
 struct NETWORK_RuntimeChannelStackReleaseFront {

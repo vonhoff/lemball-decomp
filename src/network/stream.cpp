@@ -1,6 +1,7 @@
 #include "../game/game_app.h"
 #include "../engine/memory_arena.h"
 #include "network/stream.h"
+#include "network/safe_vtable.h"
 
 struct GAME_EffStream {
     void ResetStateFields(void);
@@ -45,44 +46,9 @@ struct NETWORK_RuntimeService {
     virtual void Invoke(void *pArgument) = 0;
 };
 
-struct NETWORK_TimedEffStream {
-    void **m_pVtable;
-    int m_nReserved04;
-    int m_pPayloadBuffer08;
-    int m_fOwnsPayload0c;
-    int m_nReserved10;
-    int m_nReserved14;
-    int m_nBufferEnd18;
-    int m_nReserved1c;
-    int m_nReserved20;
-    int m_nReserved24;
-    int m_fBusy28;
-    int *m_pTagBuffer2c;
-    unsigned short m_nWord30;
-    unsigned short m_nWord32;
-    unsigned short m_nWord34;
-    unsigned short m_nWord36;
-    int m_nReserved38;
-    DWORD m_dwLastTick3c;
-    int m_nReserved40;
-    void **m_pChannelStateThunk44;
-    void *m_pPrimaryHandleArray48;
-    void *m_pSecondaryHandleArray4c;
-    void *m_pTertiaryHandleArray50;
-    int m_nReserved54;
-    int m_nReserved58;
-    int m_nHandleIndex5c;
-    int m_nReserved60;
-    int m_nReserved64;
-    int m_nReserved68;
-    int m_nReserved6c;
-    void *m_pRuntimeService70;
-    unsigned char m_abChannelState78[0x2c];
-};
-
 struct NETWORK_RuntimeChannelStack {
     void **m_pVtable;
-    void **m_pOuterThunk04;
+    void **m_pOuterConstructionOffsets04;
     int m_nReserved08;
     int m_nReserved0c;
     unsigned char *m_pbRuntimeFlags10;
@@ -92,9 +58,40 @@ struct NETWORK_RuntimeChannelStack {
     unsigned char m_abChannelState24[0x30];
     unsigned char m_abTimedStream54[0x78];
     unsigned char m_abDualStreamcc[0x78];
-    void **m_pEmbeddedThunk124;
+    void **m_pEmbeddedConstructionOffsets124;
 
     void *ConstructEffTransportRuntimeChannelStack(int fConstructEmbeddedObjects);
+};
+
+extern void CrtFatalRuntimeError0x19(void);
+extern void ServiceEffTransportConnectRequest(void *pObject);
+
+/* Ghidra: original table at 004990e8 has 8 slots:
+   claim flag, clear flag, fatal, fatal, service, fatal, fatal, null.
+   Use compiler-owned vtable storage; slot 7 is safe no-op for runtime use. */
+struct NETWORK_RuntimeChannelStackVtableModel {
+    virtual short ClaimRuntimeFlag(const char *pszFlags) {
+        NETWORK_RuntimeChannelStack *pStack = (NETWORK_RuntimeChannelStack *)this;
+        short i;
+        for (i = 0; i < 0x200; ++i) {
+            if (pszFlags[i] == 0 && pStack->m_pbRuntimeFlags10[i] == 0) {
+                pStack->m_pbRuntimeFlags10[i] = 1;
+                return i;
+            }
+        }
+        return -1;
+    }
+    virtual void ClearRuntimeFlag(short nFlag) {
+        ((NETWORK_RuntimeChannelStack *)this)->m_pbRuntimeFlags10[nFlag] = 0;
+    }
+    virtual void FatalRuntimeSlot02(void) { CrtFatalRuntimeError0x19(); }
+    virtual void FatalRuntimeSlot03(void) { CrtFatalRuntimeError0x19(); }
+    virtual void ServiceRuntimeConnect(void) {
+        ServiceEffTransportConnectRequest(this);
+    }
+    virtual void FatalRuntimeSlot05(void) { CrtFatalRuntimeError0x19(); }
+    virtual void FatalRuntimeSlot06(void) { CrtFatalRuntimeError0x19(); }
+    virtual void UnusedRuntimeSlot07(void) {}
 };
 
 struct NETWORK_RuntimeChannelStackWrapperView {
@@ -119,22 +116,221 @@ struct NETWORK_RuntimeWindowInterface {
     virtual void PumpMessages(void) = 0;
 };
 
-static void *g_NETWORK_EffStreamChannelStateVtable;
-static void *g_NETWORK_EffStreamBaseVtable;
-static void *g_NETWORK_DualHandleEffStreamChannelStateVtable;
-static void *g_NETWORK_DualHandleEffStreamPrimaryThunkVtable;
-static void *g_NETWORK_DualHandleEffStreamVtable;
-static void *g_NETWORK_TimedEffStreamChannelStateVtable;
-static void *g_NETWORK_TimedEffStreamPrimaryThunkVtable;
-static void *g_NETWORK_TimedEffStreamVtable;
-static void *g_NETWORK_RuntimeChannelStackChannelStateThunk;
-static void *g_NETWORK_RuntimeChannelStackTimedStreamThunk;
-static void *g_NETWORK_RuntimeChannelStackDualStreamThunk;
-static void *g_NETWORK_RuntimeChannelStackThunk;
-static void *g_NETWORK_RuntimeChannelStackDualThunk;
-static void *g_NETWORK_RuntimeChannelStackTimedThunk;
-static void *g_NETWORK_RuntimeChannelStackFatalThunk;
-static void *g_NETWORK_RuntimeChannelStackVtable;
+void *DeleteEffStreamChannelStateWrapper004628E0(void *pObject, BYTE fDelete);
+void EffStreamChannelStateRet4Thunk(BYTE fDelete);
+static void *g_NETWORK_EffStreamChannelStateVtable[] = {
+    (void *)CrtFatalRuntimeError0x19,
+    (void *)DeleteEffStreamChannelStateWrapper004628E0,
+    (void *)CrtFatalRuntimeError0x19,
+    (void *)EffStreamChannelStateRet4Thunk,
+};
+struct NETWORK_EffStreamBaseVtableModel {
+    virtual int ReturnTrue(void) { return 1; }
+    virtual int ReturnTrueSecondary(void) { return 1; }
+
+    virtual void WriteTaggedHeader(void) {
+        NETWORK_EffStreamBase *pStream = (NETWORK_EffStreamBase *)this;
+        unsigned char *pbTag = (unsigned char *)pStream->m_pTagBuffer2c;
+        pStream->WriteEffStreamU32BE(*(unsigned int *)pbTag);
+        pStream->WriteEffStreamU32BE(*(unsigned int *)(pbTag + 4));
+        pStream->WriteEffStreamU16BE(*(unsigned short *)(pbTag + 8));
+        pStream->WriteEffStreamU16BE(*(unsigned short *)(pbTag + 0xa));
+        pStream->WriteEffStreamU16BE(*(unsigned short *)(pbTag + 0xc));
+        *(unsigned char *)(pStream->m_nReserved1c) = pbTag[0xe];
+        ++pStream->m_nReserved1c;
+    }
+
+    virtual void Noop(void) {}
+
+    virtual void ReverseTaggedPayload(void) {
+        NETWORK_EffStreamBase *pStream = (NETWORK_EffStreamBase *)this;
+        unsigned char *pb;
+        unsigned char b;
+
+        pb = (unsigned char *)(unsigned long)pStream->m_nReserved20;
+        b = pb[0]; pb[0] = pb[3]; pb[3] = b;
+        b = pb[1]; pb[1] = pb[2]; pb[2] = b;
+        pStream->m_nReserved20 += 4;
+        pb = (unsigned char *)(unsigned long)pStream->m_nReserved20;
+        b = pb[0]; pb[0] = pb[3]; pb[3] = b;
+        b = pb[1]; pb[1] = pb[2]; pb[2] = b;
+        pStream->m_nReserved20 += 4;
+        for (int i = 0; i < 3; ++i) {
+            pb = (unsigned char *)(unsigned long)pStream->m_nReserved20;
+            b = pb[0]; pb[0] = pb[1]; pb[1] = b;
+            pStream->m_nReserved20 += 2;
+        }
+        ++pStream->m_nReserved20;
+    }
+
+    virtual void *Delete(BYTE fDelete) {
+        NETWORK_EffStreamBase *pStream = (NETWORK_EffStreamBase *)this;
+        pStream->DestroyEffStreamBase();
+        if ((fDelete & 1) != 0) {
+            FreeVSMemBlock(pStream);
+        }
+        return pStream;
+    }
+};
+
+static NETWORK_EffStreamBaseVtableModel g_NETWORK_EffStreamBaseVtableModel;
+static void *g_NETWORK_EffStreamBaseVtable =
+    *(void ***)&g_NETWORK_EffStreamBaseVtableModel;
+static int g_NETWORK_DualHandleEffStreamChannelStateConstructionOffsets[2] = {
+    -0x44, 0x14,
+};
+void *DeleteDualEffStreamWithChannelStateWrapper(void *pObject, BYTE fDelete);
+void *DeleteTimedEffStreamWithChannelStateWrapper(void *pObject, BYTE fDelete);
+
+struct NETWORK_DualPrimaryThunkVtableModel {
+    virtual void Fatal(void) { CrtFatalRuntimeError0x19(); }
+    virtual void *Delete(BYTE fDelete) {
+        return DeleteDualEffStreamWithChannelStateWrapper((char *)this - 0x58, fDelete);
+    }
+    virtual void FatalSecondary(void) { CrtFatalRuntimeError0x19(); }
+    virtual void Ret4(BYTE fDelete) { (void)fDelete; }
+};
+
+static NETWORK_DualPrimaryThunkVtableModel g_NETWORK_DualPrimaryThunkVtableModel;
+static void *g_NETWORK_DualHandleEffStreamPrimaryThunkVtable =
+    *(void ***)&g_NETWORK_DualPrimaryThunkVtableModel;
+struct NETWORK_DualHandleEffStreamVtableModel {
+    virtual int ReturnTrue(void) { return 1; }
+    virtual int ReturnTrueSecondary(void) { return 1; }
+    virtual void ReversePayload(void) {
+        NETWORK_EffStreamBase *pStream = (NETWORK_EffStreamBase *)this;
+        unsigned char *pb;
+        unsigned char b;
+        pb = (unsigned char *)(unsigned long)pStream->m_nReserved20;
+        b = pb[0]; pb[0] = pb[3]; pb[3] = b;
+        b = pb[1]; pb[1] = pb[2]; pb[2] = b;
+        pStream->m_nReserved20 += 4;
+        pb = (unsigned char *)(unsigned long)pStream->m_nReserved20;
+        b = pb[0]; pb[0] = pb[3]; pb[3] = b;
+        b = pb[1]; pb[1] = pb[2]; pb[2] = b;
+        pStream->m_nReserved20 += 4;
+        for (int i = 0; i < 3; ++i) {
+            pb = (unsigned char *)(unsigned long)pStream->m_nReserved20;
+            b = pb[0]; pb[0] = pb[1]; pb[1] = b;
+            pStream->m_nReserved20 += 2;
+        }
+        ++pStream->m_nReserved20;
+    }
+    virtual void Noop(void) {}
+    virtual void WriteTaggedHeader(void) {
+        NETWORK_EffStreamBase *pStream = (NETWORK_EffStreamBase *)this;
+        unsigned char *pbTag = (unsigned char *)pStream->m_pTagBuffer2c;
+        pStream->WriteEffStreamU32BE(*(unsigned int *)pbTag);
+        pStream->WriteEffStreamU32BE(*(unsigned int *)(pbTag + 4));
+        pStream->WriteEffStreamU16BE(*(unsigned short *)(pbTag + 8));
+        pStream->WriteEffStreamU16BE(*(unsigned short *)(pbTag + 0xa));
+        pStream->WriteEffStreamU16BE(*(unsigned short *)(pbTag + 0xc));
+        *(unsigned char *)pStream->m_nReserved1c = pbTag[0xe];
+        ++pStream->m_nReserved1c;
+    }
+    virtual void *Delete(BYTE fDelete) {
+        NETWORK_DualHandleEffStream *pStream = (NETWORK_DualHandleEffStream *)this;
+        pStream->DestroyDualHandleEffStream();
+        if ((fDelete & 1) != 0) {
+            FreeVSMemBlock(pStream);
+        }
+        return pStream;
+    }
+    virtual void DeleteRet(void) {}
+    virtual void Fatal(void) { CrtFatalRuntimeError0x19(); }
+    virtual void FatalSecondary(void) { CrtFatalRuntimeError0x19(); }
+    virtual void DeleteRet8(BYTE fDelete, BYTE fReserved) {
+        (void)fDelete;
+        (void)fReserved;
+    }
+};
+
+static NETWORK_DualHandleEffStreamVtableModel g_NETWORK_DualHandleEffStreamVtableModel;
+static void *g_NETWORK_DualHandleEffStreamVtable =
+    *(void ***)&g_NETWORK_DualHandleEffStreamVtableModel;
+static int g_NETWORK_TimedEffStreamChannelStateConstructionOffsets[2] = {
+    -0x44, 0x34,
+};
+struct NETWORK_TimedPrimaryThunkVtableModel {
+    virtual void Fatal(void) { CrtFatalRuntimeError0x19(); }
+    virtual void *Delete(BYTE fDelete) {
+        return DeleteTimedEffStreamWithChannelStateWrapper((char *)this - 0x78, fDelete);
+    }
+    virtual void FatalSecondary(void) { CrtFatalRuntimeError0x19(); }
+    virtual void SecondaryThunk(void) {}
+};
+
+static NETWORK_TimedPrimaryThunkVtableModel g_NETWORK_TimedPrimaryThunkVtableModel;
+static void *g_NETWORK_TimedEffStreamPrimaryThunkVtable =
+    *(void ***)&g_NETWORK_TimedPrimaryThunkVtableModel;
+struct NETWORK_PeerPayloadSender {
+    void WriteEffStreamWithGlobalSession(void);
+};
+extern void *ClaimAckedEffTransportRecordPayload(void *pObject);
+
+struct NETWORK_TimedEffStreamVtableModel : NETWORK_EffStreamBaseVtableModel {
+    virtual void *Delete(BYTE fDelete) {
+        NETWORK_TimedEffStream *pStream = (NETWORK_TimedEffStream *)this;
+        pStream->DestroyTimedEffStream();
+        if ((fDelete & 1) != 0) {
+            FreeVSMemBlock(pStream);
+        }
+        return pStream;
+    }
+
+    virtual void WriteGlobalSession(void) {
+        ((NETWORK_PeerPayloadSender *)this)->WriteEffStreamWithGlobalSession();
+    }
+
+    virtual void *ClaimTimedRecord(void) {
+        return ClaimAckedEffTransportRecordPayload(this);
+    }
+};
+
+static NETWORK_TimedEffStreamVtableModel g_NETWORK_TimedEffStreamVtableModel;
+static void *g_NETWORK_TimedEffStreamVtable =
+    *(void ***)&g_NETWORK_TimedEffStreamVtableModel;
+/* Exact construction-offset data recovered from the runtime stack stores. */
+static int g_NETWORK_RuntimeChannelStackChannelStateConstructionOffsets[6] = {
+    0, -0x100, -0xd0, -0x58, -0x44, -0x14,
+};
+/* Separate callable table.  The offset table above is not a vtable. */
+static void *g_NETWORK_RuntimeChannelStackChannelStateVtable[4] = {
+    (void *)CrtFatalRuntimeError0x19,
+    (void *)NetworkSafeVtableNoop,
+    (void *)CrtFatalRuntimeError0x19,
+    (void *)NetworkSafeVtableNoop,
+};
+static int g_NETWORK_RuntimeChannelStackTimedStreamConstructionOffsets[6] = {
+    -0x44, -0x74, -0x44, -0x8c, -4, 0x20,
+};
+static int g_NETWORK_RuntimeChannelStackDualStreamConstructionOffsets[6] = {
+    -0x44, -0xec, -0x44, -0x74, -4, 0x20,
+};
+static int g_NETWORK_RuntimeChannelStackOuterConstructionOffsets[6] = {
+    -4, 0x20, 0x50, 0xc8, 0x120, 0,
+};
+
+struct NETWORK_RuntimeThunkFallbackVtableModel {
+    virtual void Fatal(void) { CrtFatalRuntimeError0x19(); }
+    virtual void *Delete(BYTE fDelete) {
+        (void)fDelete;
+        return this;
+    }
+    virtual void FatalSecondary(void) { CrtFatalRuntimeError0x19(); }
+    virtual void Noop(BYTE fDelete) { (void)fDelete; }
+};
+
+static NETWORK_RuntimeThunkFallbackVtableModel g_NETWORK_RuntimeThunkFallbackVtableModel;
+static void *g_NETWORK_RuntimeChannelStackDualThunk =
+    *(void ***)&g_NETWORK_RuntimeThunkFallbackVtableModel;
+static void *g_NETWORK_RuntimeChannelStackTimedThunk =
+    *(void ***)&g_NETWORK_RuntimeThunkFallbackVtableModel;
+static void *g_NETWORK_RuntimeChannelStackFatalThunk =
+    *(void ***)&g_NETWORK_RuntimeThunkFallbackVtableModel;
+static NETWORK_RuntimeChannelStackVtableModel g_NETWORK_RuntimeChannelStackVtableModel;
+static void *g_NETWORK_RuntimeChannelStackVtable =
+    *(void ***)&g_NETWORK_RuntimeChannelStackVtableModel;
 
 void *g_pEffTransportPeerAddressState = 0;
 extern int g_nEffTransportAsyncErrorStatus;
@@ -281,18 +477,15 @@ void NETWORK_EffStreamChannelState::DestroyEffStreamChannelState(void) {
 }
 
 // FUNCTION: LEMBALL 0x0045F6E0
-void SetEffStreamChannelAsyncErrorStatus(void *pChannelState, int nStatus) {
-    NETWORK_EffStreamChannelState *pState;
-
-    pState = (NETWORK_EffStreamChannelState *)pChannelState;
-    pState->m_nReserved04 = nStatus;
+void NETWORK_EffStreamChannelState::SetEffStreamChannelAsyncErrorStatus(int nStatus) {
+    m_nReserved04 = nStatus;
     g_nEffTransportAsyncErrorStatus = nStatus;
-    if (nStatus != 0 && pState->m_nReserved0c != 0) {
-        ((NETWORK_ChannelStateRuntime *)pState)->CancelPending();
-        pState->m_nReserved10 = 0;
-        pState->m_nReserved0c = 0;
-        pState->m_nSelectedPeer08 = -1;
-        pState->m_nReserved14 = 0;
+    if (nStatus != 0 && m_nReserved0c != 0) {
+        ((NETWORK_ChannelStateRuntime *)this)->CancelPending();
+        m_nReserved10 = 0;
+        m_nReserved0c = 0;
+        m_nSelectedPeer08 = -1;
+        m_nReserved14 = 0;
     }
 }
 
@@ -335,38 +528,34 @@ void NETWORK_EffStreamBase::DestroyEffStreamBaseThunk(void) {
 }
 
 // FUNCTION: LEMBALL 0x0045F8D0
-void ReleaseEffStreamPrimaryHandleGroup(int nStream) {
-    NETWORK_DualHandleEffStream *pStream;
+void NETWORK_DualHandleEffStream::ReleaseEffStreamPrimaryHandleGroup(void) {
     void *pHandleArray;
     void *pHandleObject;
 
-    pStream = (NETWORK_DualHandleEffStream *)(unsigned long)nStream;
-    pHandleArray = pStream->m_pPrimaryHandleArray48;
+    pHandleArray = m_pPrimaryHandleArray48;
     if (pHandleArray != 0) {
         DestroyVSMemObjectPointerArray(pHandleArray);
         FreeVSMemBlock(pHandleArray);
     }
 
-    pHandleObject = pStream->m_pPrimaryHandleObject4c;
+    pHandleObject = m_pPrimaryHandleObject4c;
     if (pHandleObject != 0) {
         ((void (*)(int))**(void ***)pHandleObject)(1);
     }
 }
 
 // FUNCTION: LEMBALL 0x0045F900
-void ReleaseEffStreamSecondaryHandleGroup(int nStream) {
-    NETWORK_DualHandleEffStream *pStream;
+void NETWORK_DualHandleEffStream::ReleaseEffStreamSecondaryHandleGroup(void) {
     void *pHandleArray;
     void *pHandleObject;
 
-    pStream = (NETWORK_DualHandleEffStream *)(unsigned long)nStream;
-    pHandleArray = pStream->m_pSecondaryHandleArray50;
+    pHandleArray = m_pSecondaryHandleArray50;
     if (pHandleArray != 0) {
         DestroyVSMemObjectPointerArray(pHandleArray);
         FreeVSMemBlock(pHandleArray);
     }
 
-    pHandleObject = pStream->m_pSecondaryHandleObject54;
+    pHandleObject = m_pSecondaryHandleObject54;
     if (pHandleObject != 0) {
         ((void (*)(int))**(void ***)pHandleObject)(1);
     }
@@ -380,13 +569,13 @@ void *ConstructDualHandleEffStream(void *pStream, int fConstructChannelState) {
 
     pDualStream = (NETWORK_DualHandleEffStream *)pStream;
     if (fConstructChannelState != 0) {
-        pDualStream->m_pChannelStateThunk44 = (void **)g_NETWORK_DualHandleEffStreamChannelStateVtable;
+        pDualStream->m_pChannelStateConstructionOffsets44 = (void **)g_NETWORK_DualHandleEffStreamChannelStateConstructionOffsets;
         ((NETWORK_EffStreamChannelState *)pDualStream->m_abChannelState58)->ConstructEffStreamChannelState();
     }
 
-    ((NETWORK_EffStreamBase *)pStream)->ConstructEffStreamBase();
+    pDualStream->ConstructEffStreamBase();
     pDualStream->m_pVtable = (void **)g_NETWORK_DualHandleEffStreamVtable;
-    pOffsets = (NETWORK_ConstructionAdjustorVtable *)pDualStream->m_pChannelStateThunk44;
+    pOffsets = (NETWORK_ConstructionAdjustorVtable *)pDualStream->m_pChannelStateConstructionOffsets44;
     pPrimaryThunk = (NETWORK_AdjustorSubobject *)((char *)pDualStream + 0x44 + pOffsets->m_nPrimaryOffset - 4);
     pPrimaryThunk->m_pVtable = g_NETWORK_DualHandleEffStreamPrimaryThunkVtable;
     pDualStream->m_pPrimaryHandleArray48 = 0;
@@ -410,40 +599,45 @@ void NETWORK_DualHandleEffStream::DestroyDualHandleEffStream(void) {
 
     pDualStream = this;
     pDualStream->m_pVtable = (void **)g_NETWORK_DualHandleEffStreamVtable;
-    pOffsets = (NETWORK_ConstructionAdjustorVtable *)pDualStream->m_pChannelStateThunk44;
+    pOffsets = (NETWORK_ConstructionAdjustorVtable *)pDualStream->m_pChannelStateConstructionOffsets44;
     pPrimaryThunk = (NETWORK_AdjustorSubobject *)((char *)pDualStream + 0x44 + pOffsets->m_nPrimaryOffset - 4);
     pPrimaryThunk->m_pVtable = g_NETWORK_DualHandleEffStreamPrimaryThunkVtable;
-    ReleaseEffStreamPrimaryHandleGroup((int)(unsigned long)this);
-    ReleaseEffStreamSecondaryHandleGroup((int)(unsigned long)this);
-    ((NETWORK_EffStreamBase *)this)->DestroyEffStreamBase();
+    ReleaseEffStreamPrimaryHandleGroup();
+    ReleaseEffStreamSecondaryHandleGroup();
+    DestroyEffStreamBase();
 }
 
 // FUNCTION: LEMBALL 0x0045FDF0
-void ReleaseTimedEffStreamPrimaryHandle(int nStream) {
-    NETWORK_TimedEffStream *pStream;
+void NETWORK_TimedEffStream::ReleaseTimedEffStreamPrimaryHandle(void) {
     void *pHandleArray;
 
-    pStream = (NETWORK_TimedEffStream *)(unsigned long)nStream;
-    pHandleArray = pStream->m_pPrimaryHandleArray48;
+    pHandleArray = m_pPrimaryHandleArray48;
     if (pHandleArray != 0) {
         DestroyVSMemObjectPointerArray(pHandleArray);
         FreeVSMemBlock(pHandleArray);
     }
 }
 
+// THUNK: LEMBALL 0x0045FE50
+void NETWORK_TimedEffStream::ReleaseTimedEffStreamPrimaryHandleThunk(
+    int nUnused0, int nUnused1, int nUnused2) {
+    (void)nUnused0;
+    (void)nUnused1;
+    (void)nUnused2;
+    ReleaseTimedEffStreamPrimaryHandle();
+}
+
 // FUNCTION: LEMBALL 0x0045FE10
-void ReleaseTimedEffStreamSecondaryHandles(int nStream) {
-    NETWORK_TimedEffStream *pStream;
+void NETWORK_TimedEffStream::ReleaseTimedEffStreamSecondaryHandles(void) {
     void *pHandleArray;
 
-    pStream = (NETWORK_TimedEffStream *)(unsigned long)nStream;
-    pHandleArray = pStream->m_pSecondaryHandleArray4c;
+    pHandleArray = m_pSecondaryHandleArray4c;
     if (pHandleArray != 0) {
         DestroyVSMemObjectPointerArray(pHandleArray);
         FreeVSMemBlock(pHandleArray);
     }
 
-    pHandleArray = pStream->m_pTertiaryHandleArray50;
+    pHandleArray = m_pTertiaryHandleArray50;
     if (pHandleArray != 0) {
         DestroyVSMemObjectPointerArray(pHandleArray);
         FreeVSMemBlock(pHandleArray);
@@ -451,22 +645,22 @@ void ReleaseTimedEffStreamSecondaryHandles(int nStream) {
 }
 
 // FUNCTION: LEMBALL 0x0045FCE0
-void *ConstructTimedEffStream(void *pStream, int fConstructChannelState) {
+NETWORK_TimedEffStream *NETWORK_TimedEffStream::ConstructTimedEffStream(int fConstructChannelState) {
     DWORD dwNow;
     int *pHandleArray;
     NETWORK_TimedEffStream *pTimedStream;
     NETWORK_ConstructionAdjustorVtable *pOffsets;
     NETWORK_AdjustorSubobject *pPrimaryThunk;
 
-    pTimedStream = (NETWORK_TimedEffStream *)pStream;
+    pTimedStream = this;
     if (fConstructChannelState != 0) {
-        pTimedStream->m_pChannelStateThunk44 = (void **)g_NETWORK_TimedEffStreamChannelStateVtable;
+        pTimedStream->m_pChannelStateConstructionOffsets44 = (void **)g_NETWORK_TimedEffStreamChannelStateConstructionOffsets;
         ((NETWORK_EffStreamChannelState *)pTimedStream->m_abChannelState78)->ConstructEffStreamChannelState();
     }
 
-    ((NETWORK_EffStreamBase *)pStream)->ConstructEffStreamBase();
+    ConstructEffStreamBase();
     pTimedStream->m_pVtable = (void **)g_NETWORK_TimedEffStreamVtable;
-    pOffsets = (NETWORK_ConstructionAdjustorVtable *)pTimedStream->m_pChannelStateThunk44;
+    pOffsets = (NETWORK_ConstructionAdjustorVtable *)pTimedStream->m_pChannelStateConstructionOffsets44;
     pPrimaryThunk = (NETWORK_AdjustorSubobject *)((char *)pTimedStream + 0x44 + pOffsets->m_nPrimaryOffset - 4);
     pPrimaryThunk->m_pVtable = g_NETWORK_TimedEffStreamPrimaryThunkVtable;
     pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 0x34;
@@ -484,18 +678,18 @@ void *ConstructTimedEffStream(void *pStream, int fConstructChannelState) {
     pTimedStream->m_nReserved54 = 0;
     pTimedStream->m_nHandleIndex5c = -1;
     pTimedStream->m_pRuntimeService70 = CreateActiveNetworkRuntimeServiceObject();
-    return pStream;
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x0045FD80
-void DestroyTimedEffStream(void *pStream) {
+void NETWORK_TimedEffStream::DestroyTimedEffStream(void) {
     NETWORK_TimedEffStream *pTimedStream;
     NETWORK_ConstructionAdjustorVtable *pOffsets;
     NETWORK_AdjustorSubobject *pPrimaryThunk;
 
-    pTimedStream = (NETWORK_TimedEffStream *)pStream;
+    pTimedStream = this;
     pTimedStream->m_pVtable = (void **)g_NETWORK_TimedEffStreamVtable;
-    pOffsets = (NETWORK_ConstructionAdjustorVtable *)pTimedStream->m_pChannelStateThunk44;
+    pOffsets = (NETWORK_ConstructionAdjustorVtable *)pTimedStream->m_pChannelStateConstructionOffsets44;
     pPrimaryThunk = (NETWORK_AdjustorSubobject *)((char *)pTimedStream + 0x44 + pOffsets->m_nPrimaryOffset - 4);
     pPrimaryThunk->m_pVtable = g_NETWORK_TimedEffStreamPrimaryThunkVtable;
     pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 0x34;
@@ -503,17 +697,14 @@ void DestroyTimedEffStream(void *pStream) {
     FreeVSMemBlock(pTimedStream->m_pRuntimeService70);
     pTimedStream->m_pRuntimeService70 = 0;
     FreeVSMemBlock(pTimedStream->m_pTagBuffer2c);
-    ReleaseTimedEffStreamPrimaryHandle((int)(unsigned long)pStream);
-    ReleaseTimedEffStreamSecondaryHandles((int)(unsigned long)pStream);
-    ((NETWORK_EffStreamBase *)pStream)->DestroyEffStreamBase();
+    ReleaseTimedEffStreamPrimaryHandle();
+    ReleaseTimedEffStreamSecondaryHandles();
+    DestroyEffStreamBase();
 }
 
 // FUNCTION: LEMBALL 0x0045FDE0
-void InvokeTimedEffStreamServiceCallback(void *pStream, void *pArgument) {
-    NETWORK_TimedEffStream *pTimedStream;
-
-    pTimedStream = (NETWORK_TimedEffStream *)pStream;
-    ((NETWORK_RuntimeService *)pTimedStream->m_pRuntimeService70)->Invoke(pArgument);
+void NETWORK_TimedEffStream::InvokeTimedEffStreamServiceCallback(void *pArgument) {
+    ((NETWORK_RuntimeService *)m_pRuntimeService70)->Invoke(pArgument);
 }
 
 // FUNCTION: LEMBALL 0x004604E0
@@ -529,7 +720,7 @@ void NETWORK_RuntimeChannelStackReleaseFront::Release(void) {
 
     pChannelStack = (NETWORK_RuntimeChannelStack *)((char *)this - 0x24);
     pChannelStack->m_pVtable = (void **)g_NETWORK_RuntimeChannelStackVtable;
-    pOffsets = (NETWORK_ConstructionAdjustorVtable *)pChannelStack->m_pOuterThunk04;
+    pOffsets = (NETWORK_ConstructionAdjustorVtable *)pChannelStack->m_pOuterConstructionOffsets04;
     pPrimaryThunk = (NETWORK_AdjustorSubobject *)((char *)pChannelStack + 4 + pOffsets->m_nPrimaryOffset - 4);
     pSecondaryThunk = (NETWORK_AdjustorSubobject *)((char *)pChannelStack + 4 + pOffsets->m_nSecondaryOffset - 4);
     pTertiaryThunk = (NETWORK_AdjustorSubobject *)((char *)pChannelStack + 4 + pOffsets->m_nTertiaryOffset - 4);
@@ -575,22 +766,22 @@ void *NETWORK_RuntimeChannelStack::ConstructEffTransportRuntimeChannelStack(int 
     pStack = this;
     pbObjectBase = (char *)this;
     if (fConstructEmbeddedObjects != 0) {
-        pStack->m_pOuterThunk04 = (void **)g_NETWORK_RuntimeChannelStackThunk;
+        pStack->m_pOuterConstructionOffsets04 = (void **)g_NETWORK_RuntimeChannelStackOuterConstructionOffsets;
         pTimedStream = (NETWORK_TimedEffStream *)pStack->m_abTimedStream54;
         pDualStream = (NETWORK_DualHandleEffStream *)pStack->m_abDualStreamcc;
-        pTimedStream->m_pChannelStateThunk44 = (void **)g_NETWORK_RuntimeChannelStackDualStreamThunk;
-        pDualStream->m_pChannelStateThunk44 = (void **)g_NETWORK_RuntimeChannelStackTimedStreamThunk;
-        pStack->m_pEmbeddedThunk124 = (void **)g_NETWORK_RuntimeChannelStackChannelStateThunk;
+        pTimedStream->m_pChannelStateConstructionOffsets44 = (void **)g_NETWORK_RuntimeChannelStackDualStreamConstructionOffsets;
+        pDualStream->m_pChannelStateConstructionOffsets44 = (void **)g_NETWORK_RuntimeChannelStackTimedStreamConstructionOffsets;
+        pStack->m_pEmbeddedConstructionOffsets124 = (void **)g_NETWORK_RuntimeChannelStackChannelStateConstructionOffsets;
 
         ((NETWORK_EffStreamChannelState *)pStack->m_abChannelState24)->ConstructEffStreamChannelState();
-        ConstructTimedEffStream(pTimedStream, 0);
+        pTimedStream->ConstructTimedEffStream(0);
         ConstructDualHandleEffStream(pDualStream, 0);
 
-        pEmbeddedOffsets = (NETWORK_ConstructionAdjustorVtable *)pStack->m_pEmbeddedThunk124;
+        pEmbeddedOffsets = (NETWORK_ConstructionAdjustorVtable *)pStack->m_pEmbeddedConstructionOffsets124;
         pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x124 + pEmbeddedOffsets->m_nPrimaryOffset - 4);
         pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x124 + pEmbeddedOffsets->m_nSecondaryOffset - 4);
         pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x124 + pEmbeddedOffsets->m_nTertiaryOffset - 4);
-        pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackChannelStateThunk;
+        pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackChannelStateVtable;
         pSecondaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
         pTertiaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
         pPrimaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nPrimaryOffset - 8;
@@ -599,7 +790,7 @@ void *NETWORK_RuntimeChannelStack::ConstructEffTransportRuntimeChannelStack(int 
     }
 
     pStack->m_pVtable = (void **)g_NETWORK_RuntimeChannelStackVtable;
-    pOuterOffsets = (NETWORK_ConstructionAdjustorVtable *)pStack->m_pOuterThunk04;
+    pOuterOffsets = (NETWORK_ConstructionAdjustorVtable *)pStack->m_pOuterConstructionOffsets04;
     pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 4 + pOuterOffsets->m_nPrimaryOffset - 4);
     pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 4 + pOuterOffsets->m_nSecondaryOffset - 4);
     pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 4 + pOuterOffsets->m_nTertiaryOffset - 4);
@@ -615,11 +806,14 @@ void *NETWORK_RuntimeChannelStack::ConstructEffTransportRuntimeChannelStack(int 
     pStack->m_nReserved0c = 0;
     pStack->m_pRuntimeSideBuffer1c = 0;
 
-    g_pEffTransportRuntimeService = CreateActiveNetworkRuntimeServiceObject();
+    g_pEffTransportRuntimeService =
+        ((NETWORK_RuntimeWindowInterface *)g_pActiveNetworkRuntimeWindow)->CreateServiceObject();
     pStack->m_pbRuntimeFlags10 = (unsigned char *)AllocateVSMemBlock(0x200);
-    for (i = 0; i < 0x200; ++i) {
-        pStack->m_pbRuntimeFlags10[i] = 0;
-    }
+    i = 0;
+    do {
+        ++i;
+        pStack->m_pbRuntimeFlags10[i - 1] = 0;
+    } while (i < 0x200);
 
     return this;
 }
@@ -633,7 +827,7 @@ void *DeleteEffTransportRuntimeChannelStackWrapper(void *pChannelState, unsigned
     pbAllocationBase = (char *)pChannelState - 0x24;
     ((NETWORK_RuntimeChannelStackReleaseFront *)pChannelState)->Release();
     ((NETWORK_DualHandleEffStream *)pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
-    DestroyTimedEffStream(pView->m_abTimedStream30);
+    ((NETWORK_TimedEffStream *)pView->m_abTimedStream30)->DestroyTimedEffStream();
     ((NETWORK_EffStreamChannelState *)pView->m_abChannelState00)->DestroyEffStreamChannelState();
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pbAllocationBase);
@@ -686,6 +880,11 @@ void *DeleteEffStreamBaseWrapper004628B0(void *pObject, BYTE fDelete) {
     return pObject;
 }
 
+// FUNCTION: LEMBALL 0x004628D0
+void EffStreamChannelStateRet4Thunk(BYTE fDelete) {
+    (void)fDelete;
+}
+
 // FUNCTION: LEMBALL 0x004628E0
 void *DeleteEffStreamChannelStateWrapper004628E0(void *pObject, BYTE fDelete) {
     ((NETWORK_EffStreamChannelState *)pObject)->DestroyEffStreamChannelState();
@@ -716,7 +915,7 @@ void *DeleteDualEffStreamWithChannelStateWrapper(void *pObject, BYTE fDelete) {
 
 // FUNCTION: LEMBALL 0x00462990
 void *DeleteTimedEffStreamWithChannelStateWrapper(void *pObject, BYTE fDelete) {
-    DestroyTimedEffStream(pObject);
+    ((NETWORK_TimedEffStream *)pObject)->DestroyTimedEffStream();
     ((NETWORK_EffStreamChannelState *)((char *)pObject + 0x78))->DestroyEffStreamChannelState();
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
@@ -745,7 +944,7 @@ void *DeleteEffChannelStreamStackWrapper(void *pChannelState, BYTE fDelete) {
 
     pView = (NETWORK_RuntimeChannelStackWrapperView *)pChannelState;
     ((NETWORK_DualHandleEffStream *)((char *)pChannelState + 0xa8))->DestroyDualHandleEffStream();
-    DestroyTimedEffStream((char *)pChannelState + 0x30);
+    ((NETWORK_TimedEffStream *)((char *)pChannelState + 0x30))->DestroyTimedEffStream();
     ((NETWORK_EffStreamChannelState *)pChannelState)->DestroyEffStreamChannelState();
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock((char *)pChannelState - 8);

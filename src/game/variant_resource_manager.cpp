@@ -2,6 +2,7 @@
 #include "../platform/startup_options.h"
 #include "../audio/audio_manager.h"
 #include "../engine/memory_arena.h"
+#include "../network/safe_vtable.h"
 
 extern "C" DWORD timeGetTime(void);
 
@@ -30,7 +31,7 @@ struct GAME_MainGameVariantResourceBundle {
     int *m_panBitmapResourceIds;
 };
 
-static void *g_GAME_MainGameVariantResourceBundleVtable;
+static void *g_GAME_MainGameVariantResourceBundleVtable = NetworkGetSafeVtable();
 static int *g_GAME_MainGameVariantCompactZrleListResourceIds;
 static int *g_GAME_MainGameVariantStandardZrleListResourceIds;
 static int *g_GAME_MainGameVariantCompactListResourceIds;

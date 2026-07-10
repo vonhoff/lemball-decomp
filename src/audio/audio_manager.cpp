@@ -1,4 +1,6 @@
 #include "audio_manager.h"
+#include "../network/safe_vtable.h"
+#include "../network/safe_vtable.h"
 
 #include "../game/game_app.h"
 #include "../main.h"
@@ -175,7 +177,7 @@ void PauseMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle);
 
 void *g_pAudioManager = 0;
 
-static void *g_AudioManagerVtable[1] = { 0 };
+static void *g_AudioManagerVtable[1] = { (void *)NetworkSafeVtableNoop };
 static void *g_WaveOutEffectBackendVtable[39] = {
     (void *)DeleteWaveOutEffectBackend,
     (void *)GetWaveOutEffectBackendDescription,
@@ -273,8 +275,20 @@ static void *g_MciMusicBackendVtable[13] = {
     (void *)ReturnAudioBackendReady,
     (void *)ReturnEmptyAudioBackendName,
 };
+struct AUDIO_BackendVtableInitializer {
+    AUDIO_BackendVtableInitializer(void) {
+        int i;
+        for (i = 0; i < 39; ++i) {
+            if (g_WaveOutEffectBackendVtable[i] == 0)
+                g_WaveOutEffectBackendVtable[i] = (void *)NoOpAudioInt;
+            if (g_DirectSoundEffectBackendVtable[i] == 0)
+                g_DirectSoundEffectBackendVtable[i] = (void *)NoOpAudioInt;
+        }
+    }
+};
+static AUDIO_BackendVtableInitializer g_AUDIO_BackendVtableInitializer;
 static char g_szAudioManagerDescription[0x400];
-static void *g_AudioDynamicStringEntryVtable;
+static void *g_AudioDynamicStringEntryVtable = NetworkGetSafeVtable();
 static AUDIO_MciMusicBackend *g_pActiveMciMusicBackend = 0;
 static int g_nPreparedMciMusicTrackHandle = 0;
 static const char g_AUDIO_SequencerDeviceType[] = "sequencer";

@@ -1,4 +1,5 @@
 #include "game/game_app.h"
+#include "../network/safe_vtable.h"
 
 #include "platform/shell_ui.h"
 #include "platform/startup_options.h"
@@ -269,10 +270,24 @@ static int StubReturnZero(void) {
 static void StubNoOpPtr(void *) {
 }
 
-static void *g_GAME_PrimaryContextVtableSlots[30] = {0};
-static void *g_GAME_RenderQueueNodeVtableSlots[2] = {0};
-static void *g_GAME_GenericModeVtableSlots[2] = {0};
-static void *g_GAME_GenericScreenVtableSlots[14] = {0};
+static void *g_GAME_PrimaryContextVtableSlots[30];
+static void *g_GAME_RenderQueueNodeVtableSlots[2];
+static void *g_GAME_GenericModeVtableSlots[2];
+static void *g_GAME_GenericScreenVtableSlots[14];
+struct GAME_SafeVtableInitializer {
+    GAME_SafeVtableInitializer(void) {
+        int i;
+        for (i = 0; i < 30; ++i)
+            g_GAME_PrimaryContextVtableSlots[i] = (void *)NetworkSafeVtableNoop;
+        for (i = 0; i < 2; ++i) {
+            g_GAME_RenderQueueNodeVtableSlots[i] = (void *)NetworkSafeVtableNoop;
+            g_GAME_GenericModeVtableSlots[i] = (void *)NetworkSafeVtableNoop;
+        }
+        for (i = 0; i < 14; ++i)
+            g_GAME_GenericScreenVtableSlots[i] = (void *)NetworkSafeVtableNoop;
+    }
+};
+static GAME_SafeVtableInitializer g_GAME_SafeVtableInitializer;
 int g_nSelectedNetworkLobbyPeerId = 0;
 void *g_pActiveNetworkLobbyTransportController = 0;
 void *g_pNetworkLobbyTransportController = 0;
@@ -354,18 +369,18 @@ void *g_pNetworkLobbyVsnetRuntime = 0;
 void *g_pActiveNetworkRuntimeWindow = 0;
 int g_nLevelFrameClockTick = 0;
 void *g_pStartupModeVtable = g_GAME_GenericModeVtableSlots;
-void *g_pStartupModeRenderThunk = 0;
+void *g_pStartupModeRenderThunk = (void *)StubNoOpPtr;
 void *g_pMainMenuModeVtable = g_GAME_GenericModeVtableSlots;
-void *g_pMainMenuModeRenderThunk = 0;
+void *g_pMainMenuModeRenderThunk = (void *)StubNoOpPtr;
 void *g_pMode3Vtable = g_GAME_GenericModeVtableSlots;
-void *g_pMode3RenderThunk = 0;
+void *g_pMode3RenderThunk = (void *)StubNoOpPtr;
 void *g_pSimpleModeDeleteVtable = g_GAME_GenericModeVtableSlots;
 void *g_pSimpleModeVtable = g_GAME_GenericModeVtableSlots;
 void *g_pMode16Vtable = g_GAME_GenericModeVtableSlots;
-void *g_pMode16RenderThunk = 0;
+void *g_pMode16RenderThunk = (void *)StubNoOpPtr;
 void *g_pPrimaryContextVtable = g_GAME_PrimaryContextVtableSlots;
 void *g_pPrimaryContextRenderQueueNodeVtable = g_GAME_RenderQueueNodeVtableSlots;
-void *g_pQueuedRenderPointSinkFinalizeThunk = 0;
+void *g_pQueuedRenderPointSinkFinalizeThunk = (void *)StubNoOpPtr;
 void *g_pSharedRenderDispatchQueue = 0;
 void *g_pSharedGeometryHelper = 0;
 void *g_pActiveLevelGameMode = 0;

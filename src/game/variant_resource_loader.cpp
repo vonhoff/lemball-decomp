@@ -1,6 +1,7 @@
 #include "../game/game_app.h"
 #include "../resource/resource_archive.h"
 #include "../engine/memory_arena.h"
+#include "../network/safe_vtable.h"
 
 struct GAME_MainGameVariantResourceBundleLoader {
     void **m_pVtable;
@@ -29,14 +30,14 @@ static const unsigned int g_GAME_BitmapResourceTypeTag = 0x42544d50;
 static const unsigned int g_GAME_PaletteResourceTypeTag = 0x50414c20;
 static const unsigned int g_GAME_ZrleResourceTypeTag = 0x5a524c45;
 
-static void *g_GAME_ListResourceBaseVtable;
-static void *g_GAME_ZrleOnlyListResourceVtable;
-static void *g_GAME_IntZrleListResourceVtable;
-static void *g_GAME_TypedBitmapResourceDeleteVtable;
-static void *g_GAME_ZrleResourceVtable;
-static void *g_GAME_BitmapResourceVtable;
-static void *g_GAME_PaletteResourceVtable;
-static void *g_GAME_TwoArrayListResourceVtable;
+static void *g_GAME_ListResourceBaseVtable = NetworkGetSafeVtable();
+static void *g_GAME_ZrleOnlyListResourceVtable = NetworkGetSafeVtable();
+static void *g_GAME_IntZrleListResourceVtable = NetworkGetSafeVtable();
+static void *g_GAME_TypedBitmapResourceDeleteVtable = NetworkGetSafeVtable();
+static void *g_GAME_ZrleResourceVtable = NetworkGetSafeVtable();
+static void *g_GAME_BitmapResourceVtable = NetworkGetSafeVtable();
+static void *g_GAME_PaletteResourceVtable = NetworkGetSafeVtable();
+static void *g_GAME_TwoArrayListResourceVtable = NetworkGetSafeVtable();
 static int g_GAME_ZrleListResourceTypeToken = 0;
 static int g_GAME_IntZrleListResourceTypeToken = 0;
 static int g_GAME_TwoArrayListResourceTypeToken = 0;
@@ -301,3 +302,4 @@ void LoadMainGameVariantTwoArrayListResource(void *pBundle, int nResourceId) {
     pResourceBundle->m_ppTwoArrayListResources[pResourceBundle->m_cTwoArrayListResources] = LoadTwoArrayListResource(nResourceId);
     ++pResourceBundle->m_cTwoArrayListResources;
 }
+#include "../network/safe_vtable.h"

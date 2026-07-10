@@ -75,8 +75,8 @@ static void *g_MOGLOAD_MemoryArenaStatusEntryVtable[8] = {
 };
 static void *g_MOGLOAD_CachedResourceObjectBaseVtable[15] = {
     (void *)DeleteCachedResourceObjectBase,
-    0,
-    0,
+    (void *)NoopVfunc09,
+    (void *)NoopVfunc09,
     (void *)GetField14NeedsAgeIncrement,
     (void *)GetField1CVfunc04,
     (void *)GetField14Vfunc05,
@@ -92,8 +92,8 @@ static void *g_MOGLOAD_CachedResourceObjectBaseVtable[15] = {
 };
 static void *g_MOGLOAD_TypedResourceObjectVtable[15] = {
     (void *)DeleteTypedResourceObject,
-    0,
-    0,
+    (void *)NoopVfunc09,
+    (void *)NoopVfunc09,
     (void *)GetField14NeedsAgeIncrement,
     (void *)GetField1CVfunc04,
     (void *)GetField14Vfunc05,
@@ -109,8 +109,8 @@ static void *g_MOGLOAD_TypedResourceObjectVtable[15] = {
 };
 static void *g_MOGLOAD_EffResourceObjectVtable[15] = {
     (void *)DestroyEffResource,
-    0,
-    0,
+    (void *)NoopVfunc09,
+    (void *)NoopVfunc09,
     (void *)GetField14NeedsAgeIncrement,
     (void *)GetField1CVfunc04,
     (void *)GetField14Vfunc05,

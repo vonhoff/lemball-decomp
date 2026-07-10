@@ -1,6 +1,7 @@
 #include "game/demo_playback.h"
 
 #include "../game/game_app.h"
+#include "../network/safe_vtable.h"
 #include "../resource/resource_archive.h"
 #include "../engine/memory_arena.h"
 #include "../engine/runtime_init.h"
@@ -16,7 +17,7 @@ int DispatchLevelDemoEventsForFrameThunk(void *pPlaybackController, char nFrame)
 
 static const char g_DEMO_OpenReadMode[] = "rb";
 static const unsigned int g_DEMO_BinResourceTypeTag = 0x42494e20;
-static void *g_DEMO_BinResourceVtable;
+static void *g_DEMO_BinResourceVtable = NetworkGetSafeVtable();
 
 extern void *g_pMainResourceArchive;
 extern void *g_pCachedResourceObjectBaseDeleteVtable;
@@ -27,7 +28,9 @@ static void *g_LevelDemoPlaybackControllerVtable[2] = {
     (void *)RestoreLevelDemoPlaybackBaseVtable,
     (void *)DeleteLevelDemoPlaybackController,
 };
-void *g_pNonZrleVariantRenderEntryInitializeVtable[2] = { 0, 0 };
+void *g_pNonZrleVariantRenderEntryInitializeVtable[2] = {
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop
+};
 
 void *g_pLevelDemoPlaybackController = 0;
 void *g_pLevelDemoPlaybackDescriptor = 0;
@@ -362,3 +365,4 @@ void ReadLevelDemoLengthPrefixedRecordThunk(void *pPlaybackController, void *pRe
     cbCopy = cbRemaining;
     (void)cbCopy;
 }
+#include "../network/safe_vtable.h"

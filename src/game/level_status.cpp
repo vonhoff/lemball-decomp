@@ -4,24 +4,25 @@
 #include "../resource/resource_archive.h"
 #include "../engine/graphics_driver.h"
 #include "../engine/memory_arena.h"
+#include "../network/safe_vtable.h"
 
 extern "C" DWORD timeGetTime(void);
 
-static void *g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
-static void *g_LEVEL_CompositePointRectSinkEntryInitVtable;
-static void *g_LEVEL_FramedScreenRenderChildEntryVtable;
-static void *g_LEVEL_PackagedSpriteRenderEntryVtable;
-static void *g_LEVEL_StatusIndicatorPointSinkEntryVtable;
-static void *g_LEVEL_RenderPointRectSinkEntryVtable;
-static void *g_LEVEL_PackagedRectQueueEntryDeleteVtable;
-static void *g_LEVEL_ActionButtonPointSinkDeleteVtable;
-static void *g_LEVEL_VariantRenderManagerVtable;
-static void *g_LEVEL_StatusIndicatorManagerVtable;
-static void *g_LEVEL_StatusIndicatorManagerSlot70Vtable;
-static void *g_LEVEL_StatusIndicatorManagerSlot74Vtable;
-static void *g_LEVEL_TimedVariantFrameIndexSelectorCtorVtable;
-static void *g_LEVEL_TimedVariantFrameIndexSelectorVtable;
-static void *g_LEVEL_TimedVariantFrameIndexSelectorCallbackVtable;
+static void *g_LEVEL_QueuedRenderPointSinkFinalizeVtable = NetworkGetSafeVtable();
+static void *g_LEVEL_CompositePointRectSinkEntryInitVtable = NetworkGetSafeVtable();
+static void *g_LEVEL_FramedScreenRenderChildEntryVtable = NetworkGetSafeVtable();
+static void *g_LEVEL_PackagedSpriteRenderEntryVtable = NetworkGetSafeVtable();
+static void *g_LEVEL_StatusIndicatorPointSinkEntryVtable = NetworkGetSafeVtable();
+static void *g_LEVEL_RenderPointRectSinkEntryVtable = NetworkGetSafeVtable();
+static void *g_LEVEL_PackagedRectQueueEntryDeleteVtable = NetworkGetSafeVtable();
+static void *g_LEVEL_ActionButtonPointSinkDeleteVtable = NetworkGetSafeVtable();
+static void *g_LEVEL_VariantRenderManagerVtable = NetworkGetSafeVtable();
+static void *g_LEVEL_StatusIndicatorManagerVtable = NetworkGetSafeVtable();
+static void *g_LEVEL_StatusIndicatorManagerSlot70Vtable = NetworkGetSafeVtable();
+static void *g_LEVEL_StatusIndicatorManagerSlot74Vtable = NetworkGetSafeVtable();
+static void *g_LEVEL_TimedVariantFrameIndexSelectorCtorVtable = NetworkGetSafeVtable();
+static void *g_LEVEL_TimedVariantFrameIndexSelectorVtable = NetworkGetSafeVtable();
+static void *g_LEVEL_TimedVariantFrameIndexSelectorCallbackVtable = NetworkGetSafeVtable();
 static int *g_LEVEL_StatusIndicatorModeResourceIds;
 static unsigned int *g_LEVEL_CompactStatusIndicatorPointTable;
 static unsigned int *g_LEVEL_StandardStatusIndicatorPointTable;
@@ -933,3 +934,4 @@ void DestroyLevelScreenStatusIndicatorManager(void *pObject) {
     }
     DestroyVariantRenderManager(pObject);
 }
+#include "../network/safe_vtable.h"

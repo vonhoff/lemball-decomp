@@ -89,11 +89,11 @@ static void UpdateMainMemoryArenaFreeCounter(void);
 
 static void *g_aMainMemoryArenaVtable[10] = {
     (void *)WriteMemoryArenaReport,
-    0,
+    (void *)VSMEM_NoOpLock,
     (void *)AllocateMemoryArenaBlock,
     (void *)FreeMemoryArenaBlock,
-    0,
-    0,
+    (void *)VSMEM_NoOpLock,
+    (void *)VSMEM_NoOpLock,
     (void *)GetMemoryArenaHeaderSize,
     (void *)GetMemoryBlockHeaderSize,
     (void *)PlacementConstructMemoryArenaWithStorage,

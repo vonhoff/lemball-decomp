@@ -1,5 +1,6 @@
 #include "../game/game_app.h"
 #include "../engine/memory_arena.h"
+#include "../network/safe_vtable.h"
 
 extern "C" DWORD timeGetTime(void);
 
@@ -27,8 +28,8 @@ extern int ReturnTrueVtableCallback(void);
 static void *g_pReturnTrueVtableCallback[1] = {
     (void *)ReturnTrueVtableCallback,
 };
-static void *g_pReturnTrueVtableCallbackThunk;
-static void *g_pLevelGameStateStreamVtable;
+static void *g_pReturnTrueVtableCallbackThunk = NetworkGetSafeVtable();
+static void *g_pLevelGameStateStreamVtable = NetworkGetSafeVtable();
 
 struct GAME_EffStream {
     void ResetStateFields(void);
@@ -574,3 +575,4 @@ void ResetBoonChunkManagerObjectsThunk(void *pObject) {
     ((void (*)())*(void **)(**(int **)(pState + 0x1e) + 0x104))();
     ((void (*)())*(void **)(**(int **)(pState + 0x20) + 0x104))();
 }
+#include "../network/safe_vtable.h"

@@ -1,14 +1,15 @@
 #include "../game/game_app.h"
 #include "../engine/memory_arena.h"
+#include "../network/safe_vtable.h"
 
-static void *g_EFF_BaseStreamVtable;
-static void *g_EFF_NetworkLobbySelectedPeerStatusVtable;
-static void *g_EFF_NetworkLobbyPeerEntryVtable;
-static void *g_EFF_NetworkLobbyVsnetRuntimeVtable;
-static void *g_EFF_PayloadSize8Vtable;
-static void *g_EFF_NetworkLobbyU32PayloadVtable;
-static void *g_EFF_NetworkLobbyPeerClearCloseVtable;
-static void *g_EFF_NetworkLobbyPeerDirtyConfirmVtable;
+static void *g_EFF_BaseStreamVtable = NetworkGetSafeVtable();
+static void *g_EFF_NetworkLobbySelectedPeerStatusVtable = NetworkGetSafeVtable();
+static void *g_EFF_NetworkLobbyPeerEntryVtable = NetworkGetSafeVtable();
+static void *g_EFF_NetworkLobbyVsnetRuntimeVtable = NetworkGetSafeVtable();
+static void *g_EFF_PayloadSize8Vtable = NetworkGetSafeVtable();
+static void *g_EFF_NetworkLobbyU32PayloadVtable = NetworkGetSafeVtable();
+static void *g_EFF_NetworkLobbyPeerClearCloseVtable = NetworkGetSafeVtable();
+static void *g_EFF_NetworkLobbyPeerDirtyConfirmVtable = NetworkGetSafeVtable();
 static const char g_EFF_DefaultNetworkPath[] = "t:\\network";
 void *g_pEffTransportDispatchQueue = 0;
 void *g_pEffTransportSecondaryDispatchQueue = 0;
@@ -673,3 +674,4 @@ int RegisterNetworkLobbyVsnetRuntimeWithTransport(void *pVsnetRuntime) {
     }
     return 0;
 }
+#include "../network/safe_vtable.h"
