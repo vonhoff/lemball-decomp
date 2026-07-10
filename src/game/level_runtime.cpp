@@ -13,11 +13,11 @@ int g_nLevelFrameClockTickBase = 0;
 
 int g_fLevelEndStateRequestLatched = 0;
 void *g_pActiveManagedEntityOwner = 0;
-static unsigned char *g_GAME_ManagedEntitySlotBitMasks = (unsigned char *)0x0049d108;
-static unsigned char *g_GAME_ManagedEntitySlotClaimBitset = (unsigned char *)0x004a6410;
-static unsigned short *g_GAME_ManagedEntityRegistryCount = (unsigned short *)0x004a74bc;
-static int *g_GAME_ManagedEntityRegistryTable = (int *)0x004a6510;
-static int *g_GAME_SelectedNetworkLobbyPeerId = (int *)0x004a011c;
+static unsigned char *g_GAME_ManagedEntitySlotBitMasks;
+static unsigned char *g_GAME_ManagedEntitySlotClaimBitset;
+static unsigned short *g_GAME_ManagedEntityRegistryCount;
+static int *g_GAME_ManagedEntityRegistryTable;
+static int *g_GAME_SelectedNetworkLobbyPeerId;
 
 void *g_pLiftTileGrid = 0;
 void *g_pAnimChunkTileGrid = 0;
@@ -27,8 +27,8 @@ extern int ReturnTrueVtableCallback(void);
 static void *g_pReturnTrueVtableCallback[1] = {
     (void *)ReturnTrueVtableCallback,
 };
-static void *g_pReturnTrueVtableCallbackThunk = (void *)0x00498610;
-static void *g_pLevelGameStateStreamVtable = (void *)0x00493a00;
+static void *g_pReturnTrueVtableCallbackThunk;
+static void *g_pLevelGameStateStreamVtable;
 
 extern void ResetEffStreamStateFields(void *pEffStreamSubobject);
 

@@ -21,7 +21,7 @@ static PLATFORM_DebugTextWindow *g_pDebugTextWindow = 0;
 static HACCEL g_hDebugWindowAccelerators = 0;
 static void *g_PLATFORM_InvisibleMessageWindowVTable[1] = { 0 };
 static void *g_PLATFORM_DebugTextWindowVTable[1] = { 0 };
-static int *g_pfWindowMessagePassthroughMode = (int *)0x004A1CC4;
+static int *g_pfWindowMessagePassthroughMode;
 extern HANDLE g_hDebugSyncEvent;
 
 typedef LRESULT (*PLATFORM_WindowMessageHandler)(PLATFORM_InvisibleMessageWindow *pWindow,

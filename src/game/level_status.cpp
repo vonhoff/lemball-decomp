@@ -7,24 +7,24 @@
 
 extern "C" DWORD timeGetTime(void);
 
-static void *g_LEVEL_QueuedRenderPointSinkFinalizeVtable = (void *)0x004932c8;
-static void *g_LEVEL_CompositePointRectSinkEntryInitVtable = (void *)0x00496f58;
-static void *g_LEVEL_FramedScreenRenderChildEntryVtable = (void *)0x00497918;
-static void *g_LEVEL_PackagedSpriteRenderEntryVtable = (void *)0x00496d38;
-static void *g_LEVEL_StatusIndicatorPointSinkEntryVtable = (void *)0x00496cc8;
-static void *g_LEVEL_RenderPointRectSinkEntryVtable = (void *)0x00496e90;
-static void *g_LEVEL_PackagedRectQueueEntryDeleteVtable = (void *)0x00499628;
-static void *g_LEVEL_ActionButtonPointSinkDeleteVtable = (void *)0x00497730;
-static void *g_LEVEL_VariantRenderManagerVtable = (void *)0x00499620;
-static void *g_LEVEL_StatusIndicatorManagerVtable = (void *)0x00497c90;
-static void *g_LEVEL_StatusIndicatorManagerSlot70Vtable = (void *)0x00497c8c;
-static void *g_LEVEL_StatusIndicatorManagerSlot74Vtable = (void *)0x00497c88;
-static void *g_LEVEL_TimedVariantFrameIndexSelectorCtorVtable = (void *)0x004932c8;
-static void *g_LEVEL_TimedVariantFrameIndexSelectorVtable = (void *)0x00497b04;
-static void *g_LEVEL_TimedVariantFrameIndexSelectorCallbackVtable = (void *)0x00497af0;
-static int *g_LEVEL_StatusIndicatorModeResourceIds = (int *)0x0049ea58;
-static unsigned int *g_LEVEL_CompactStatusIndicatorPointTable = (unsigned int *)0x0049f9b0;
-static unsigned int *g_LEVEL_StandardStatusIndicatorPointTable = (unsigned int *)0x0049f9c8;
+static void *g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+static void *g_LEVEL_CompositePointRectSinkEntryInitVtable;
+static void *g_LEVEL_FramedScreenRenderChildEntryVtable;
+static void *g_LEVEL_PackagedSpriteRenderEntryVtable;
+static void *g_LEVEL_StatusIndicatorPointSinkEntryVtable;
+static void *g_LEVEL_RenderPointRectSinkEntryVtable;
+static void *g_LEVEL_PackagedRectQueueEntryDeleteVtable;
+static void *g_LEVEL_ActionButtonPointSinkDeleteVtable;
+static void *g_LEVEL_VariantRenderManagerVtable;
+static void *g_LEVEL_StatusIndicatorManagerVtable;
+static void *g_LEVEL_StatusIndicatorManagerSlot70Vtable;
+static void *g_LEVEL_StatusIndicatorManagerSlot74Vtable;
+static void *g_LEVEL_TimedVariantFrameIndexSelectorCtorVtable;
+static void *g_LEVEL_TimedVariantFrameIndexSelectorVtable;
+static void *g_LEVEL_TimedVariantFrameIndexSelectorCallbackVtable;
+static int *g_LEVEL_StatusIndicatorModeResourceIds;
+static unsigned int *g_LEVEL_CompactStatusIndicatorPointTable;
+static unsigned int *g_LEVEL_StandardStatusIndicatorPointTable;
 int g_fLevelScreenStatusIndicatorConfigured = 0;
 
 int g_nLevelScreenCompositeSequencePrimaryResourceId = 0;

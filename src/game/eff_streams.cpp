@@ -1,14 +1,14 @@
 #include "../game/game_app.h"
 #include "../engine/memory_arena.h"
 
-static void *g_EFF_BaseStreamVtable = (void *)0x004932c8;
-static void *g_EFF_NetworkLobbySelectedPeerStatusVtable = (void *)0x00498558;
-static void *g_EFF_NetworkLobbyPeerEntryVtable = (void *)0x00498578;
-static void *g_EFF_NetworkLobbyVsnetRuntimeVtable = (void *)0x004985f8;
-static void *g_EFF_PayloadSize8Vtable = (void *)0x00497878;
-static void *g_EFF_NetworkLobbyU32PayloadVtable = (void *)0x00498598;
-static void *g_EFF_NetworkLobbyPeerClearCloseVtable = (void *)0x004985b8;
-static void *g_EFF_NetworkLobbyPeerDirtyConfirmVtable = (void *)0x004985d8;
+static void *g_EFF_BaseStreamVtable;
+static void *g_EFF_NetworkLobbySelectedPeerStatusVtable;
+static void *g_EFF_NetworkLobbyPeerEntryVtable;
+static void *g_EFF_NetworkLobbyVsnetRuntimeVtable;
+static void *g_EFF_PayloadSize8Vtable;
+static void *g_EFF_NetworkLobbyU32PayloadVtable;
+static void *g_EFF_NetworkLobbyPeerClearCloseVtable;
+static void *g_EFF_NetworkLobbyPeerDirtyConfirmVtable;
 static const char g_EFF_DefaultNetworkPath[] = "t:\\network";
 void *g_pEffTransportDispatchQueue = 0;
 void *g_pEffTransportSecondaryDispatchQueue = 0;
@@ -363,7 +363,7 @@ void *ConstructNetworkLobbyVsnetRuntime(void *pObject, char *pszFileBasedNetwork
             ConfigureFileBasedNetworkPathsWrapper(pszFileBasedNetworkRoot, (char *)g_EFF_DefaultNetworkPath);
         }
 
-        if (StartEffTransportRuntimeAndWaitReady(g_pActiveNetworkRuntimeWindow, 0x004A0138, 0x400) != 0) {
+        if (StartEffTransportRuntimeAndWaitReady(g_pActiveNetworkRuntimeWindow, 0, 0x400) != 0) {
             SetEffTransportSecondaryHandleParams(g_pActiveNetworkRuntimeWindow, 100, 0x10);
             SetEffTransportPrimaryHandleParams(g_pActiveNetworkRuntimeWindow, 4, 4, 0);
             pRuntime->m_fSelectedPeerDisconnected = 0;

@@ -29,17 +29,17 @@ static const unsigned int g_GAME_BitmapResourceTypeTag = 0x42544d50;
 static const unsigned int g_GAME_PaletteResourceTypeTag = 0x50414c20;
 static const unsigned int g_GAME_ZrleResourceTypeTag = 0x5a524c45;
 
-static void *g_GAME_ListResourceBaseVtable = (void *)0x004989c0;
-static void *g_GAME_ZrleOnlyListResourceVtable = (void *)0x00498a18;
-static void *g_GAME_IntZrleListResourceVtable = (void *)0x00498af0;
-static void *g_GAME_TypedBitmapResourceDeleteVtable = (void *)0x00498ab0;
-static void *g_GAME_ZrleResourceVtable = (void *)0x00498a70;
-static void *g_GAME_BitmapResourceVtable = (void *)0x00498d20;
-static void *g_GAME_PaletteResourceVtable = (void *)0x00498c08;
-static void *g_GAME_TwoArrayListResourceVtable = (void *)0x00498c88;
-static int DAT_004a1d64 = 0x004a1d64;
-static int DAT_004a1d68 = 0x004a1d68;
-static int DAT_004a1d6c = 0x004a1d6c;
+static void *g_GAME_ListResourceBaseVtable;
+static void *g_GAME_ZrleOnlyListResourceVtable;
+static void *g_GAME_IntZrleListResourceVtable;
+static void *g_GAME_TypedBitmapResourceDeleteVtable;
+static void *g_GAME_ZrleResourceVtable;
+static void *g_GAME_BitmapResourceVtable;
+static void *g_GAME_PaletteResourceVtable;
+static void *g_GAME_TwoArrayListResourceVtable;
+static int g_GAME_ZrleListResourceTypeToken = 0;
+static int g_GAME_IntZrleListResourceTypeToken = 0;
+static int g_GAME_TwoArrayListResourceTypeToken = 0;
 
 extern void *g_pMainResourceArchive;
 extern void *g_pCachedResourceObjectBaseDeleteVtable;
@@ -52,7 +52,7 @@ void *ConstructIntZrleListResourceFromId(void *pObject, int nResourceId) {
 
     pListResource = (int *)pObject;
     *(void **)pListResource = &g_pCachedResourceObjectBaseDeleteVtable;
-    pListResource[0x12] = DAT_004a1d68;
+    pListResource[0x12] = g_GAME_IntZrleListResourceTypeToken;
     *(void **)pListResource = g_GAME_ListResourceBaseVtable;
     *(void **)pListResource = g_GAME_IntZrleListResourceVtable;
     pListResource[6] = 0;
@@ -73,7 +73,7 @@ void *ConstructTwoArrayListResourceFromId(void *pObject, int nResourceId) {
 
     pListResource = (int *)pObject;
     *(void **)pListResource = &g_pCachedResourceObjectBaseDeleteVtable;
-    pListResource[0x12] = DAT_004a1d6c;
+    pListResource[0x12] = g_GAME_TwoArrayListResourceTypeToken;
     *(void **)pListResource = g_GAME_ListResourceBaseVtable;
     pListResource[6] = 0;
     pListResource[0x17] = 0;
@@ -106,7 +106,7 @@ void *LoadZrleOnlyListResource(int nResourceId) {
         *(void **)pResourceObject = &g_pCachedResourceObjectBaseDeleteVtable;
         pResourceObject[6] = 0;
         *(void **)pResourceObject = g_GAME_ListResourceBaseVtable;
-        pResourceObject[0x12] = DAT_004a1d64;
+        pResourceObject[0x12] = g_GAME_ZrleListResourceTypeToken;
         pResourceObject[0x17] = 0;
         pResourceObject[0x16] = 0;
         pResourceObject[0x15] = 0;

@@ -16,7 +16,7 @@ int DispatchLevelDemoEventsForFrameThunk(void *pPlaybackController, char nFrame)
 
 static const char g_DEMO_OpenReadMode[] = "rb";
 static const unsigned int g_DEMO_BinResourceTypeTag = 0x42494e20;
-static void *g_DEMO_BinResourceVtable = (void *)0x00498e60;
+static void *g_DEMO_BinResourceVtable;
 
 extern void *g_pMainResourceArchive;
 extern void *g_pCachedResourceObjectBaseDeleteVtable;

@@ -198,17 +198,6 @@ void SetGeometryChildEnabled(void *pGeometryChild, int fEnabled) {
     (void)fEnabled;
 }
 
-DWORD WriteEffStreamToLockedFile(void *pFile, int *pEffStream, int nOffset, int nLength) {
-    (void)pFile;
-    (void)pEffStream;
-    (void)nOffset;
-    return (DWORD)nLength;
-}
-
-void ProcessEffTransportPacketHeader(int *pPacketHeader) {
-    (void)pPacketHeader;
-}
-
 void ScheduleNetworkRuntimeTimerEvent(void *pRuntimeWindow, int nTimerId) {
     (void)pRuntimeWindow;
     (void)nTimerId;

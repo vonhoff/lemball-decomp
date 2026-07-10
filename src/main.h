@@ -5,6 +5,12 @@
 
 extern HINSTANCE g_hApplicationInstance;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);
+#ifdef __cplusplus
+}
+#endif
 
 #endif

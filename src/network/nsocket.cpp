@@ -1,6 +1,17 @@
 #include "../game/game_app.h"
 #include "../engine/memory_arena.h"
+#include "../engine/runtime_init.h"
 #include "../platform/message_window.h"
+#include "network/nstream.h"
+#include <string.h>
+#include <stdlib.h>
+
+#ifdef ntohs
+#undef ntohs
+#endif
+#ifdef htons
+#undef htons
+#endif
 
 extern int ReturnTrueVtableCallback(void);
 
@@ -46,6 +57,106 @@ struct NETWORK_SocketWindowEffChannel {
 struct NETWORK_TimedSocketEffChannelBundleHeader {
     void **m_pVtable;
     short m_nMode;
+};
+
+struct NETWORK_TimedSocketAsyncLookupAdapter {
+    void CaptureAsyncLookupAddressForTimedStream(void *pLookupResult);
+    int SendUdpPayloadToSocketAddress(void *pBuffer, int cbBuffer);
+};
+
+struct NETWORK_TimedSocketAsyncMessageAdapter {
+    int HandleTimedSocketConnectAsyncMessage(int nMessage, void *pReserved, unsigned int nEvent);
+    void DispatchEffSocketAsyncSelectMessage(int nMessage, void *pReserved, unsigned int nEvent);
+};
+
+struct NETWORK_SocketAsyncMessageAdapter {
+    int ReceiveUdpPayloadFromConnectedSocket(void);
+    int ReceiveUdpPayloadFromSenderAddress(void);
+    int HandleSocketReceiveAsyncSelectMessage(int nMessage, void *pReserved, unsigned int nEvent);
+};
+
+struct NETWORK_SocketAsyncErrorAdapter {
+    int HandleSocketAsyncErrorLparam(void *pReserved, unsigned int nEvent, unsigned int *pBuffer);
+};
+
+struct NETWORK_TcpipClientAsyncDispatcher {
+    int DispatchTcpipClientAsyncMessage(int nMessage, void *pReserved, unsigned int nEvent);
+};
+
+struct NETWORK_UdpSocketBinder {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void PrepareBind(void) = 0;
+    void BindUdpSocketAndEnableAsyncSelect(void);
+};
+
+struct NETWORK_TcpipHostPortAsyncDispatcher {
+    int DispatchTcpipHostPortAsyncMessage(int nMessage, void *pReserved, unsigned int nEvent);
+};
+
+struct NETWORK_SocketWindowChannelWrapper {
+    void CloseSocketHandleFromChannel(void);
+    void *DeleteSocketWindowChannelStateWrapper(BYTE fFreeMemory);
+    void CaptureLastWinsockErrorStatus(void);
+};
+
+struct NETWORK_HostLookupCompletionAdapter {
+    void HandleRemoteHostLookupComplete(int nError);
+    void HandleLocalHostLookupComplete(int nError);
+    void HandleServicePortLookupComplete(int nError);
+    void HandleRemoteServiceHostLookupComplete(int nError);
+    void HandleRemoteServicePortLookupComplete(int nError);
+};
+
+struct NETWORK_InetAddressEntry {
+    virtual const char *GetAddressString(void);
+    void StoreAddressString(const char *pszAddress);
+    char m_szAddress[16];
+    int m_nAddress;
+};
+
+struct NETWORK_EffDispatchQueue {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void QueueEvent(void *pEvent) = 0;
+};
+
+struct NETWORK_TimedSocketErrorChannel {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void HandleSocketError(void) = 0;
+};
+
+struct NETWORK_SocketChannelControl {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void HandleSocketError(void) = 0;
+    virtual void Reserved0c(void) = 0;
+    virtual void Reserved10(void) = 0;
+    virtual void Reserved14(void) = 0;
+    virtual void Reserved18(void) = 0;
+    virtual void Reserved1c(void) = 0;
+    virtual void SetRemoteAddress(void *pAddress) = 0;
+    virtual void Reserved24(void) = 0;
+    virtual void SetAssignedPort(short nPort) = 0;
+};
+
+struct NETWORK_TcpipLookupOwner {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void Reserved08(void) = 0;
+    virtual void Reserved0c(void) = 0;
+    virtual void BeginPortSetup(void) = 0;
+};
+
+struct NETWORK_TimedSocketPacketChannel {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void Reserved08(void) = 0;
+    virtual void Reserved0c(void) = 0;
+    virtual void Reserved10(void) = 0;
+    virtual void Reserved14(void) = 0;
+    virtual void NotifyPacketReady(void) = 0;
 };
 
 struct NETWORK_TimedSocketEffChannelBundleLayout {
@@ -156,92 +267,144 @@ struct NETWORK_TimedSocketWindowChannelStackWrapperView {
     unsigned char m_abSocketWindowC8[0x20];
 };
 
-static void *g_NETWORK_CompositeEffTransportChannelStateVtable = (void *)0x00499128;
-static void *g_NETWORK_CompositeEffTransportTimedStreamVtable = (void *)0x00499120;
-static void *g_NETWORK_CompositeEffTransportDualStreamVtable = (void *)0x00499118;
-static void *g_NETWORK_CompositeEffTransportDualThunkVtable = (void *)0x00499108;
-static void *g_NETWORK_CompositeEffTransportVtable = (void *)0x004991A8;
-static void *g_NETWORK_CompositeEffTransportFatalThunkVtable = (void *)0x00499198;
-static void *g_NETWORK_CompositeEffTransportTimedThunkVtable = (void *)0x00499168;
-static void *g_NETWORK_CompositeEffTransportDualThunk = (void *)0x00499140;
+static void *g_NETWORK_CompositeEffTransportChannelStateVtable;
+static void *g_NETWORK_CompositeEffTransportTimedStreamVtable;
+static void *g_NETWORK_CompositeEffTransportDualStreamVtable;
+static void *g_NETWORK_CompositeEffTransportDualThunkVtable;
+static void *g_NETWORK_CompositeEffTransportVtable;
+static void *g_NETWORK_CompositeEffTransportFatalThunkVtable;
+static void *g_NETWORK_CompositeEffTransportTimedThunkVtable;
+static void *g_NETWORK_CompositeEffTransportDualThunk;
 
-static void *g_NETWORK_SocketWindowEffChannelEmbeddedStateVtable = (void *)0x0049A048;
-static void *g_NETWORK_SocketWindowEffChannelVtable = (void *)0x0049A060;
-static void *g_NETWORK_SocketWindowEffChannelThunkVtable = (void *)0x0049A050;
+static void *g_NETWORK_SocketWindowEffChannelEmbeddedStateVtable;
+static void *g_NETWORK_SocketWindowEffChannelVtable;
+static void *g_NETWORK_SocketWindowEffChannelThunkVtable;
 
-static void *g_NETWORK_TimedSocketBundleBaseVtable = (void *)0x0049A078;
-static void *g_NETWORK_TimedSocketBundleTimedStreamVtable = (void *)0x0049A070;
-static void *g_NETWORK_TimedSocketBundleSocketChannelVtable = (void *)0x0049A068;
-static void *g_NETWORK_TimedSocketBundleChannelThunkVtable = (void *)0x0049A0C0;
-static void *g_NETWORK_TimedSocketBundleTimedThunkVtable = (void *)0x0049A090;
-static void *g_NETWORK_TimedSocketBundleSocketThunkVtable = (void *)0x0049A088;
+static void *g_NETWORK_TimedSocketBundleBaseVtable;
+static void *g_NETWORK_TimedSocketBundleTimedStreamVtable;
+static void *g_NETWORK_TimedSocketBundleSocketChannelVtable;
+static void *g_NETWORK_TimedSocketBundleChannelThunkVtable;
+static void *g_NETWORK_TimedSocketBundleTimedThunkVtable;
+static void *g_NETWORK_TimedSocketBundleSocketThunkVtable;
 
-static void *g_NETWORK_TcpipCompositeTimedStreamVtable = (void *)0x0049A138;
-static void *g_NETWORK_TcpipCompositeTransportStackVtable = (void *)0x0049A118;
-static void *g_NETWORK_TcpipCompositeDualStreamVtable = (void *)0x0049A110;
-static void *g_NETWORK_TcpipCompositeDualThunkVtable = (void *)0x0049A108;
-static void *g_NETWORK_TcpipCompositeSocketWindowVtable = (void *)0x0049A0F8;
-static void *g_NETWORK_TcpipCompositeTimedSocketThunkVtable = (void *)0x0049A0F0;
-static void *g_NETWORK_TcpipCompositeTimedSocketBundleVtable = (void *)0x0049A0E0;
-static void *g_NETWORK_TcpipCompositeTimedSocketBundleDataVtable = (void *)0x0049A0D0;
-static void *g_NETWORK_TcpipCompositeRuntimeThunkVtable = (void *)0x0049A280;
-static void *g_NETWORK_TcpipCompositeTimedThunkVtable = (void *)0x0049A250;
-static void *g_NETWORK_TcpipCompositeDualThunk = (void *)0x0049A228;
-static void *g_NETWORK_TcpipCompositeSocketThunkVtable = (void *)0x0049A220;
-static void *g_NETWORK_TcpipCompositeVtable = (void *)0x0049A1C8;
-static void *g_NETWORK_TcpipCompositeOuterFatalThunkVtable = (void *)0x0049A1B8;
-static void *g_NETWORK_TcpipCompositeOuterTimedThunkVtable = (void *)0x0049A188;
-static void *g_NETWORK_TcpipCompositeOuterDualThunkVtable = (void *)0x0049A160;
-static void *g_NETWORK_TcpipCompositeOuterSocketThunkVtable = (void *)0x0049A158;
-static void *g_NETWORK_TimedSocketBundlePrimaryThunkVtable = (void *)0x0049A210;
-static void *g_NETWORK_TimedSocketBundleSecondaryThunkVtable = (void *)0x0049A1E8;
-static void *g_NETWORK_TimedSocketBundleTertiaryThunkVtable = (void *)0x0049A1E4;
+static void *g_NETWORK_TcpipCompositeTimedStreamVtable;
+static void *g_NETWORK_TcpipCompositeTransportStackVtable;
+static void *g_NETWORK_TcpipCompositeDualStreamVtable;
+static void *g_NETWORK_TcpipCompositeDualThunkVtable;
+static void *g_NETWORK_TcpipCompositeSocketWindowVtable;
+static void *g_NETWORK_TcpipCompositeTimedSocketThunkVtable;
+static void *g_NETWORK_TcpipCompositeTimedSocketBundleVtable;
+static void *g_NETWORK_TcpipCompositeTimedSocketBundleDataVtable;
+static void *g_NETWORK_TcpipCompositeRuntimeThunkVtable;
+static void *g_NETWORK_TcpipCompositeTimedThunkVtable;
+static void *g_NETWORK_TcpipCompositeDualThunk;
+static void *g_NETWORK_TcpipCompositeSocketThunkVtable;
+static void *g_NETWORK_TcpipCompositeVtable;
+static void *g_NETWORK_TcpipCompositeOuterFatalThunkVtable;
+static void *g_NETWORK_TcpipCompositeOuterTimedThunkVtable;
+static void *g_NETWORK_TcpipCompositeOuterDualThunkVtable;
+static void *g_NETWORK_TcpipCompositeOuterSocketThunkVtable;
+static void *g_NETWORK_TimedSocketBundlePrimaryThunkVtable;
+static void *g_NETWORK_TimedSocketBundleSecondaryThunkVtable;
+static void *g_NETWORK_TimedSocketBundleTertiaryThunkVtable;
 static void *g_NETWORK_ReturnTrueVtable[1] = {
     (void *)ReturnTrueVtableCallback,
 };
-static void *g_NETWORK_RuntimeChannelStackFatalThunk = (void *)0x004990D8;
+static void *g_NETWORK_RuntimeChannelStackFatalThunk;
 
-static void *g_NETWORK_TcpipSocketStackTimedStreamVtable = (void *)0x0049A430;
-static void *g_NETWORK_TcpipSocketStackDualStreamVtable = (void *)0x0049A428;
-static void *g_NETWORK_TcpipSocketStackBaseVtable = (void *)0x0049A438;
-static void *g_NETWORK_TcpipSocketStackDualThunkVtable = (void *)0x0049A418;
-static void *g_NETWORK_TcpipSocketStackTimedSocketBundleVtable = (void *)0x0049A410;
-static void *g_NETWORK_TcpipSocketStackSocketWindowVtable = (void *)0x0049A400;
-static void *g_NETWORK_TcpipSocketStackTimedSocketDataVtable = (void *)0x0049A3F0;
-static void *g_NETWORK_TcpipSocketStackRuntimeThunkVtable = (void *)0x0049A280;
-static void *g_NETWORK_TcpipSocketStackTimedThunkVtable = (void *)0x0049A250;
-static void *g_NETWORK_TcpipSocketStackDualThunk = (void *)0x0049A228;
-static void *g_NETWORK_TcpipSocketStackSocketThunkVtable = (void *)0x0049A220;
+static void *g_NETWORK_TcpipSocketStackTimedStreamVtable;
+static void *g_NETWORK_TcpipSocketStackDualStreamVtable;
+static void *g_NETWORK_TcpipSocketStackBaseVtable;
+static void *g_NETWORK_TcpipSocketStackDualThunkVtable;
+static void *g_NETWORK_TcpipSocketStackTimedSocketBundleVtable;
+static void *g_NETWORK_TcpipSocketStackSocketWindowVtable;
+static void *g_NETWORK_TcpipSocketStackTimedSocketDataVtable;
+static void *g_NETWORK_TcpipSocketStackRuntimeThunkVtable;
+static void *g_NETWORK_TcpipSocketStackTimedThunkVtable;
+static void *g_NETWORK_TcpipSocketStackDualThunk;
+static void *g_NETWORK_TcpipSocketStackSocketThunkVtable;
 
-static void *g_NETWORK_AllocatedTcpipCompositeTransportVtable = (void *)0x0049A348;
-static void *g_NETWORK_AllocatedTcpipCompositeSocketStackVtable = (void *)0x0049A328;
-static void *g_NETWORK_AllocatedTcpipCompositeDualStreamVtable = (void *)0x0049A320;
-static void *g_NETWORK_AllocatedTcpipCompositeDualThunkVtable = (void *)0x0049A318;
-static void *g_NETWORK_AllocatedTcpipCompositeSocketWindowVtable = (void *)0x0049A308;
-static void *g_NETWORK_AllocatedTcpipCompositeTimedSocketBundleVtable = (void *)0x0049A300;
-static void *g_NETWORK_AllocatedTcpipCompositeTimedSocketThunkVtable = (void *)0x0049A2F0;
-static void *g_NETWORK_AllocatedTcpipCompositeTimedSocketDataVtable = (void *)0x0049A2E0;
-static void *g_NETWORK_AllocatedTcpipCompositeVtable = (void *)0x0049A3D8;
-static void *g_NETWORK_AllocatedTcpipCompositeFatalThunkVtable = (void *)0x0049A3C8;
-static void *g_NETWORK_AllocatedTcpipCompositeTimedThunkVtable = (void *)0x0049A398;
-static void *g_NETWORK_AllocatedTcpipCompositeDualThunk = (void *)0x0049A370;
-static void *g_NETWORK_AllocatedTcpipCompositeSocketThunkVtable = (void *)0x0049A368;
+static void *g_NETWORK_AllocatedTcpipCompositeTransportVtable;
+static void *g_NETWORK_AllocatedTcpipCompositeSocketStackVtable;
+static void *g_NETWORK_AllocatedTcpipCompositeDualStreamVtable;
+static void *g_NETWORK_AllocatedTcpipCompositeDualThunkVtable;
+static void *g_NETWORK_AllocatedTcpipCompositeSocketWindowVtable;
+static void *g_NETWORK_AllocatedTcpipCompositeTimedSocketBundleVtable;
+static void *g_NETWORK_AllocatedTcpipCompositeTimedSocketThunkVtable;
+static void *g_NETWORK_AllocatedTcpipCompositeTimedSocketDataVtable;
+static void *g_NETWORK_AllocatedTcpipCompositeVtable;
+static void *g_NETWORK_AllocatedTcpipCompositeFatalThunkVtable;
+static void *g_NETWORK_AllocatedTcpipCompositeTimedThunkVtable;
+static void *g_NETWORK_AllocatedTcpipCompositeDualThunk;
+static void *g_NETWORK_AllocatedTcpipCompositeSocketThunkVtable;
 
-static const char *g_NETWORK_SocketWindowClassName = (const char *)0x004A2464;
-static int *g_pfSocketWindowClassRegistered = (int *)0x004A23B8;
+static const char *g_NETWORK_SocketWindowClassName;
+static int *g_pfSocketWindowClassRegistered;
+static void *g_NETWORK_InetAddressEntryVtable;
+static const char *g_NETWORK_UdpServiceName;
+static const char *g_NETWORK_TftpServiceName;
 
 extern "C" DWORD timeGetTime(void);
+extern "C" int WINAPI sendto(int nSocket, const char *pBuffer, int cbBuffer, int nFlags,
+                              const void *pTo, int nToLength);
+extern "C" int WINAPI WSAGetLastError(void);
+extern "C" int WINAPI closesocket(int nSocket);
+extern "C" int WINAPI recv(int nSocket, char *pBuffer, int cbBuffer, int nFlags);
+extern "C" int WINAPI recvfrom(int nSocket, char *pBuffer, int cbBuffer, int nFlags,
+                                void *pFrom, int *pcbFromLength);
+extern "C" const char *WINAPI inet_ntoa(unsigned long nAddress);
+extern "C" unsigned long WINAPI inet_addr(const char *pszAddress);
+extern "C" int WINAPI socket(int nAddressFamily, int nType, int nProtocol);
+/* The MSVC 4.20 Winsock import library used by the original build exports
+   these two Winsock 1.1 entry points. The available compatibility libraries
+   do not, so retain the ABI here until the original import library is used. */
+extern "C" int WINAPI WSAAsyncGetServByName(int nSocket, unsigned int nMessage,
+                                              const char *pszService, const char *pszProtocol,
+                                              void *pBuffer) {
+    (void)nSocket;
+    (void)nMessage;
+    (void)pszService;
+    (void)pszProtocol;
+    (void)pBuffer;
+    return 0;
+}
+
+extern "C" int WINAPI WSAAsyncGetServByNameWithLength(int nSocket, unsigned int nMessage,
+                                                        const char *pszService,
+                                                        const char *pszProtocol, void *pBuffer,
+                                                        int cbBuffer) {
+    (void)cbBuffer;
+    return WSAAsyncGetServByName(nSocket, nMessage, pszService, pszProtocol, pBuffer);
+}
+extern "C" unsigned short WINAPI ntohs(unsigned short nValue);
+extern "C" unsigned short WINAPI htons(unsigned short nValue);
+extern "C" int WINAPI setsockopt(int nSocket, int nLevel, int nOption,
+                                  const char *pValue, int cbValue);
+extern "C" int WINAPI bind(int nSocket, const void *pAddress, int cbAddress);
+extern "C" int WINAPI WSAAsyncSelect(int nSocket, void *hWnd, unsigned int nMessage,
+                                      long nEvents);
 
 extern void *g_pEffTransportPeerAddressState;
+extern void *g_pEffTransportDispatchQueue;
+extern void *g_pEffTransportPacketBuffer;
+extern void *g_pEffTransportRuntimeService;
+extern int g_fFileBasedNetworkPathConfigured;
+extern short g_nEffTransportServiceBasePort;
+extern void QueueEffTransportErrorEvent(int nError);
+extern int g_cbEffTransportCurrentPacketBytes;
+extern int g_cbEffTransportMaxPacketBytes;
+static int *g_pEffTransportReceivedPacketBytes;
+extern void SetEffStreamChannelAsyncErrorStatus(void *pChannelState, int nStatus);
+extern int ProcessEffTransportPacketHeader(int *pPacketHeader);
 
 extern void *ConstructEffTransportRuntimeChannelStack(void *pChannelStack, int fConstructEmbeddedObjects);
-extern void ReleaseEffTransportRuntimeBuffers(int nChannelStateBase);
 extern void *ConstructEffStreamChannelState(void *pChannelState);
 extern void DestroyEffStreamChannelState(void *pChannelState);
 extern void *ConstructTimedEffStream(void *pStream, int fConstructChannelState);
 extern void DestroyTimedEffStream(void *pStream);
 extern void *ConstructDualHandleEffStream(void *pStream, int fConstructChannelState);
 extern void DestroyDualHandleEffStream(void *pStream);
+extern void InvokeTimedEffStreamServiceCallback(void *pStream, void *pArgument);
 
 void *ConstructTcpipSocketChannelStack(void *pObject, int fConstructEmbeddedObjects);
 
@@ -376,6 +539,123 @@ void DestroySocketWindowEffChannel(int nChannelStateBase) {
     DestroyInvisibleMessageWindow((PLATFORM_InvisibleMessageWindow *)pChannel);
 }
 
+// FUNCTION: LEMBALL 0x0046FEE0
+int NETWORK_SocketAsyncMessageAdapter::ReceiveUdpPayloadFromConnectedSocket(void) {
+    NETWORK_TimedSocketErrorChannel *pErrorChannel;
+    NETWORK_TimedSocketPacketChannel *pPacketChannel;
+    int nThisDelta;
+    int nResult;
+    char *pbThis;
+
+    pbThis = (char *)this;
+    nThisDelta = *(int *)(*(int *)pbThis + 4);
+    nResult = recv(*(int *)(pbThis + nThisDelta + 8), (char *)g_pEffTransportPacketBuffer,
+                   g_cbEffTransportMaxPacketBytes, 0);
+    g_cbEffTransportCurrentPacketBytes = nResult;
+    *(DWORD *)(*(int *)(*(int *)pbThis + 8) + (int)(unsigned long)pbThis + 0x3c) =
+        timeGetTime();
+    if (nResult == -1) {
+        AppendCStringToStream(g_pErrorOutputStream, "Receive error (after receive):");
+        AppendIntToStream(g_pErrorOutputStream, (unsigned int)WSAGetLastError());
+        AppendCStringToStream(g_pErrorOutputStream, "\n");
+        pErrorChannel = (NETWORK_TimedSocketErrorChannel *)(pbThis + nThisDelta);
+        pErrorChannel->HandleSocketError();
+        return 0;
+    }
+    if (*(int *)(pbThis + nThisDelta + 0x10) == 0) {
+        pPacketChannel = (NETWORK_TimedSocketPacketChannel *)(pbThis +
+                                                               *(int *)(*(int *)pbThis + 8));
+        pPacketChannel->NotifyPacketReady();
+    }
+    *g_pEffTransportReceivedPacketBytes += g_cbEffTransportCurrentPacketBytes;
+    return ProcessEffTransportPacketHeader((int *)(pbThis + *(int *)(*(int *)pbThis + 8)));
+}
+
+// FUNCTION: LEMBALL 0x0046FF90
+int NETWORK_SocketAsyncMessageAdapter::HandleSocketReceiveAsyncSelectMessage(
+    int nMessage, void *pReserved, unsigned int nEvent) {
+    int nThisDelta;
+    unsigned int nError;
+    NETWORK_SocketAsyncMessageAdapter *pReceiveChannel;
+
+    (void)pReserved;
+    if (nMessage == 0x443) {
+        nThisDelta = *(int *)(*(int *)((char *)this - 0x8c) + 4);
+        if (*(int *)((char *)this + nThisDelta - 0x84) == -1) {
+            return 0;
+        }
+        nError = nEvent >> 16;
+        SetEffStreamChannelAsyncErrorStatus((char *)this + nThisDelta - 0x8c, (int)nError);
+        if ((nEvent & 0xffff) == 1) {
+            pReceiveChannel = (NETWORK_SocketAsyncMessageAdapter *)((char *)this - 0x8c);
+            if (nError == 0) {
+                pReceiveChannel->ReceiveUdpPayloadFromConnectedSocket();
+                return 0;
+            }
+            AppendCStringToStream(g_pErrorOutputStream, "Receive error:");
+            AppendIntToStream(g_pErrorOutputStream, nError);
+            AppendCStringToStream(g_pErrorOutputStream, "\n");
+            return 0;
+        }
+    }
+    return -1;
+}
+
+// FUNCTION: LEMBALL 0x0046FDB0
+int NETWORK_SocketAsyncErrorAdapter::HandleSocketAsyncErrorLparam(
+    void *pReserved, unsigned int nEvent, unsigned int *pBuffer) {
+    unsigned int nError;
+    int nChannelDelta;
+
+    (void)pReserved;
+    nError = nEvent >> 16;
+    if (nError == 0) {
+        return 0;
+    }
+    if (nError > 11000 && nError < 0x2afd) {
+        return 2;
+    }
+    nChannelDelta = *(int *)(*(int *)((char *)this + 0x10) + 4);
+    SetEffStreamChannelAsyncErrorStatus((char *)this + nChannelDelta + 0x10, (int)nError);
+    if (*pBuffer != 0) {
+        FreeVSMemBlock((void *)(unsigned long)*pBuffer);
+    }
+    *pBuffer = 0;
+    return 0x0e;
+}
+
+// FUNCTION: LEMBALL 0x0046FE10
+int NETWORK_SocketAsyncMessageAdapter::ReceiveUdpPayloadFromSenderAddress(void) {
+    unsigned char abFrom[16];
+    int cbFrom;
+    int nResult;
+    int nChannelDelta;
+    char *pszAddress;
+    NETWORK_InetAddressEntry *pPeerAddress;
+    NETWORK_SocketChannelControl *pErrorChannel;
+
+    cbFrom = 0x10;
+    nChannelDelta = *(int *)(*(int *)this + 4);
+    nResult = recvfrom(*(int *)((char *)this + nChannelDelta + 8),
+                       (char *)g_pEffTransportPacketBuffer, g_cbEffTransportMaxPacketBytes, 0,
+                       abFrom, &cbFrom);
+    g_cbEffTransportCurrentPacketBytes = nResult;
+    pPeerAddress = (NETWORK_InetAddressEntry *)g_pEffTransportPeerAddressState;
+    if (nResult == -1) {
+        AppendCStringToStream(g_pErrorOutputStream, "Receive error (after receive from):");
+        AppendIntToStream(g_pErrorOutputStream, (unsigned int)WSAGetLastError());
+        AppendCStringToStream(g_pErrorOutputStream, "\n");
+        pErrorChannel = (NETWORK_SocketChannelControl *)((char *)this + nChannelDelta);
+        pErrorChannel->HandleSocketError();
+        return 0;
+    }
+    pPeerAddress->m_nAddress = *(int *)abFrom;
+    pszAddress = (char *)inet_ntoa((unsigned long)pPeerAddress->m_nAddress);
+    strcpy(pPeerAddress->m_szAddress, pszAddress);
+    return ProcessEffTransportPacketHeader((int *)((char *)this +
+                                                    *(int *)(*(int *)this + 8)));
+}
+
 // FUNCTION: LEMBALL 0x00470030
 void *ConstructTimedSocketEffChannelBundle(void *pObject, int fConstructEmbeddedObjects) {
     NETWORK_TimedSocketEffChannelBundleLayout *pBundle;
@@ -409,6 +689,89 @@ void *ConstructTimedSocketEffChannelBundle(void *pObject, int fConstructEmbedded
     pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 0xc0;
     pBundle->m_nMode04 = 2;
     return pObject;
+}
+
+// FUNCTION: LEMBALL 0x004700F0
+void NETWORK_TimedSocketAsyncLookupAdapter::CaptureAsyncLookupAddressForTimedStream(void *pLookupResult) {
+    void *pTimedStream;
+
+    pTimedStream = (void *)(unsigned long)(*(int *)(*(int *)((char *)this - 0x48) + 8) +
+                                           (int)(unsigned long)this - 0x48);
+    InvokeTimedEffStreamServiceCallback(pTimedStream, pLookupResult);
+    *(int *)((char *)this - 0x40) = *(int *)((char *)pLookupResult + 0x14);
+}
+
+// FUNCTION: LEMBALL 0x00470120
+int NETWORK_TimedSocketAsyncLookupAdapter::SendUdpPayloadToSocketAddress(void *pBuffer, int cbBuffer) {
+    int nSocket;
+    int nResult;
+    NETWORK_TimedSocketErrorChannel *pChannel;
+    char *pbThis;
+
+    pbThis = (char *)this;
+    nSocket = *(int *)(*(int *)(pbThis - 0x48) + 4);
+    if (*(int *)(pbThis + nSocket - 0x24) == 0) {
+        return 0;
+    }
+
+    nResult = sendto(*(int *)(pbThis + nSocket - 0x40), (const char *)pBuffer, cbBuffer, 0,
+                     (const void *)(pbThis - 0x44), 0x10);
+    *(DWORD *)(*(int *)(*(int *)(pbThis - 0x48) + 8) + (int)(unsigned long)pbThis - 0x0c) =
+        timeGetTime();
+    if (nResult == -1) {
+        if (WSAGetLastError() == 0x2733) {
+            return 0;
+        }
+        pChannel = (NETWORK_TimedSocketErrorChannel *)(pbThis + nSocket - 0x48);
+        pChannel->HandleSocketError();
+        return 0;
+    }
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x004701A0
+int NETWORK_TimedSocketAsyncMessageAdapter::HandleTimedSocketConnectAsyncMessage(
+    int nMessage, void *pReserved, unsigned int nEvent) {
+    int nThisDelta;
+
+    (void)pReserved;
+    if (nMessage == 0x443) {
+        nThisDelta = *(int *)(*(int *)((char *)this - 0xc0) + 4);
+        if (*(int *)((char *)this + nThisDelta - 0xb8) == -1) {
+            return -1;
+        }
+        SetEffStreamChannelAsyncErrorStatus((char *)this + nThisDelta - 0xc0,
+                                             (int)(nEvent >> 16));
+        if ((nEvent & 0xffff) == 2) {
+            if ((nEvent >> 16) == 0) {
+                *(int *)(*(int *)(*(int *)((char *)this - 0xc0) + 4) +
+                         (int)(unsigned long)this - 0x9c) = 1;
+            }
+            return 0;
+        }
+    }
+    return -1;
+}
+
+// FUNCTION: LEMBALL 0x00470220
+void NETWORK_TimedSocketAsyncMessageAdapter::DispatchEffSocketAsyncSelectMessage(
+    int nMessage, void *pReserved, unsigned int nEvent) {
+    int nTimedDelta;
+    int nReceiveDelta;
+    int nResult;
+    NETWORK_TimedSocketAsyncMessageAdapter *pTimedChannel;
+    NETWORK_SocketAsyncMessageAdapter *pReceiveChannel;
+    char *pbThis;
+
+    pbThis = (char *)this;
+    nTimedDelta = *(int *)(*(int *)(pbThis - 0x110) + 0x1c);
+    pTimedChannel = (NETWORK_TimedSocketAsyncMessageAdapter *)(pbThis + nTimedDelta - 0x50);
+    nResult = pTimedChannel->HandleTimedSocketConnectAsyncMessage(nMessage, pReserved, nEvent);
+    if (nResult == -1) {
+        nReceiveDelta = *(int *)(*(int *)(pbThis - 0x110) + 0x18);
+        pReceiveChannel = (NETWORK_SocketAsyncMessageAdapter *)(pbThis + nReceiveDelta - 0x84);
+        pReceiveChannel->HandleSocketReceiveAsyncSelectMessage(nMessage, pReserved, nEvent);
+    }
 }
 
 // FUNCTION: LEMBALL 0x00470270
@@ -530,7 +893,184 @@ void DestroyTcpipEffTransportComposite(int nObjectBasePlus0x30) {
         FreeVSMemBlock((void *)(unsigned long)pComposite->m_nSocketWindowHandle24);
     }
 
-    ReleaseEffTransportRuntimeBuffers(nObjectBasePlus0x30 - 0xc);
+    ((NETWORK_RuntimeChannelStackReleaseFront *)(unsigned long)(nObjectBasePlus0x30 - 0xc))->Release();
+}
+
+// FUNCTION: LEMBALL 0x00470650
+void NETWORK_HostLookupCompletionAdapter::HandleRemoteHostLookupComplete(int nError) {
+    char abAddress[20];
+    char *pbLookup;
+    char *pszAddress;
+    NETWORK_InetAddressEntry *pEntry;
+    NETWORK_EffDispatchQueue *pDispatchQueue;
+    unsigned short cbAddress;
+    unsigned char abEvent[20];
+
+    pbLookup = *(char **)((char *)this + 0x24);
+    if (nError == 0) {
+        cbAddress = *(short *)(pbLookup + 0x0a);
+        memcpy(abAddress, *(void **)(*(int *)(pbLookup + 0x0c)), cbAddress);
+        pEntry = (NETWORK_InetAddressEntry *)AllocateVSMemBlock(0x18);
+        *(void ***)pEntry = (void **)g_NETWORK_InetAddressEntryVtable;
+        pEntry->m_szAddress[0] = '\0';
+        *(char **)((char *)this + 0x1c) = (char *)pEntry;
+        pEntry->m_nAddress = *(int *)abAddress;
+        pszAddress = (char *)inet_ntoa((unsigned long)pEntry->m_nAddress);
+        strcpy(pEntry->m_szAddress, pszAddress);
+        pEntry->GetAddressString();
+    } else {
+        AppendCStringToStream(g_pErrorOutputStream, "Specified computer name not found\n");
+        if (*(int *)((char *)this + 0x0c) == 2) {
+            *(unsigned short *)abEvent = 0x000d;
+            *(int *)(abEvent + 8) = 0x0f;
+            pDispatchQueue = (NETWORK_EffDispatchQueue *)g_pEffTransportDispatchQueue;
+            pDispatchQueue->QueueEvent(abEvent);
+        }
+    }
+    FreeVSMemBlock(pbLookup);
+    *(int *)((char *)this + 0x24) = 0;
+}
+
+// FUNCTION: LEMBALL 0x00470840
+void NETWORK_HostLookupCompletionAdapter::HandleLocalHostLookupComplete(int nError) {
+    char abAddress[4];
+    char *pbLookup;
+    char *pszAddress;
+    NETWORK_InetAddressEntry *pLocalAddress;
+    NETWORK_TimedSocketErrorChannel *pErrorChannel;
+    int nTimedDelta;
+    int nSocketDelta;
+    char *pbTimedSocket;
+    char *pbSocketChannel;
+
+    if (nError != 0) {
+        AppendCStringToStream(g_pErrorOutputStream, "Local host name not found\n");
+    } else {
+        nTimedDelta = *(int *)(*(int *)((char *)this + 4) + 0x14);
+        pbLookup = *(char **)((char *)this + nTimedDelta + 0x18);
+        memcpy(abAddress, *(void **)(*(int *)(pbLookup + 0x0c)), *(short *)(pbLookup + 0x0a));
+        pLocalAddress = (NETWORK_InetAddressEntry *)g_pEffTransportRuntimeService;
+        pLocalAddress->m_nAddress = *(int *)abAddress;
+        pszAddress = (char *)inet_ntoa((unsigned long)pLocalAddress->m_nAddress);
+        strcpy(pLocalAddress->m_szAddress, pszAddress);
+        pLocalAddress->GetAddressString();
+    }
+
+    g_fFileBasedNetworkPathConfigured = 1;
+    nTimedDelta = *(int *)(*(int *)((char *)this + 4) + 0x14);
+    FreeVSMemBlock(*(void **)((char *)this + nTimedDelta + 0x18));
+    *(int *)((char *)this + nTimedDelta + 0x18) = 0;
+
+    nSocketDelta = *(int *)(*(int *)((char *)this + 4) + 4);
+    pbSocketChannel = (char *)this + nSocketDelta;
+    *(int *)(pbSocketChannel + 0x0c) = socket(2, 2, 0);
+    if (*(int *)(pbSocketChannel + 0x0c) == -1) {
+        pErrorChannel = (NETWORK_TimedSocketErrorChannel *)(pbSocketChannel + 4);
+        pErrorChannel->HandleSocketError();
+        QueueEffTransportErrorEvent(1);
+        return;
+    }
+
+    *(int *)(pbSocketChannel + 0x10) = 1;
+    pbTimedSocket = (char *)this + nTimedDelta;
+    *(int *)(pbTimedSocket + 0x18) = (int)(unsigned long)AllocateVSMemBlock(0x400);
+    *(int *)(pbSocketChannel + 0x18) = 1;
+    *(int *)(pbTimedSocket + 0x1c) =
+        WSAAsyncGetServByName(*(int *)(pbTimedSocket + 8), 0x442,
+                              g_NETWORK_TftpServiceName, g_NETWORK_UdpServiceName,
+                              (void *)(unsigned long)*(int *)(pbTimedSocket + 0x18));
+    if (*(int *)(pbTimedSocket + 0x1c) == 0) {
+        pErrorChannel = (NETWORK_TimedSocketErrorChannel *)(pbSocketChannel + 4);
+        pErrorChannel->HandleSocketError();
+        QueueEffTransportErrorEvent(2);
+    }
+}
+
+// FUNCTION: LEMBALL 0x004709C0
+void NETWORK_HostLookupCompletionAdapter::HandleServicePortLookupComplete(int nError) {
+    unsigned char abAddress[16];
+    unsigned char abEvent[20];
+    int nOuterDelta;
+    int nSocketDelta;
+    int nPort;
+    int nResult;
+    int nSocket;
+    int nSocketOption;
+    char *pbLookup;
+    char *pbTimedSocket;
+    char *pbSocketChannel;
+    NETWORK_SocketChannelControl *pControl;
+    NETWORK_EffDispatchQueue *pDispatchQueue;
+
+    nSocketDelta = *(int *)(*(int *)((char *)this + 4) + 8);
+    pControl = (NETWORK_SocketChannelControl *)((char *)this + nSocketDelta + 4);
+    if (nError == 0) {
+        nOuterDelta = *(int *)(*(int *)((char *)this + 4) + 0x14);
+        pbLookup = *(char **)((char *)this + nOuterDelta + 0x18);
+        nPort = (int)(unsigned short)ntohs(*(unsigned short *)(pbLookup + 8));
+        pControl->SetAssignedPort((short)(nPort - g_nEffTransportServiceBasePort));
+    } else {
+        AppendCStringToStream(g_pErrorOutputStream, "Failed to determine service port number\n");
+        pControl->SetAssignedPort(0);
+    }
+
+    nOuterDelta = *(int *)(*(int *)((char *)this + 4) + 0x14);
+    FreeVSMemBlock(*(void **)((char *)this + nOuterDelta + 0x18));
+    *(int *)((char *)this + nOuterDelta + 0x18) = 0;
+
+    nSocketDelta = *(int *)(*(int *)((char *)this + 4) + 4);
+    pbSocketChannel = (char *)this + nSocketDelta;
+    nSocket = *(int *)(pbSocketChannel + 0x0c);
+    nSocketOption = 1;
+    nResult = setsockopt(nSocket, -1, 0x20, (const char *)&nSocketOption, 4);
+    if (nResult == -1) {
+        ((NETWORK_SocketChannelControl *)(pbSocketChannel + 4))->HandleSocketError();
+        QueueEffTransportErrorEvent(3);
+        return;
+    }
+
+    *(unsigned short *)abAddress = 2;
+    *(unsigned short *)(abAddress + 2) =
+        htons((unsigned short)(*(short *)(*(int *)(*(int *)((char *)this + 4) + 4) +
+                                               (int)(unsigned long)this + 0x24) +
+                               g_nEffTransportServiceBasePort));
+    *(int *)(abAddress + 4) =
+        *(int *)((char *)g_pEffTransportRuntimeService + 0x14);
+    nResult = bind(nSocket, abAddress, 0x10);
+    if (nResult == -1) {
+        ((NETWORK_SocketChannelControl *)(pbSocketChannel + 4))->HandleSocketError();
+        QueueEffTransportErrorEvent(4);
+        return;
+    }
+
+    nOuterDelta = *(int *)(*(int *)((char *)this + 4) + 0x14);
+    pbTimedSocket = (char *)this + nOuterDelta;
+    nResult = WSAAsyncSelect(nSocket, (void *)(unsigned long)*(int *)(pbTimedSocket + 8),
+                             0x443, *(int *)((char *)this + 0x14) != 0 ? 3 : 2);
+    if (nResult == -1) {
+        ((NETWORK_SocketChannelControl *)(pbSocketChannel + 4))->HandleSocketError();
+        QueueEffTransportErrorEvent(5);
+        return;
+    }
+
+    *(int *)(pbSocketChannel + 0x14) = 1;
+    *(int *)(pbSocketChannel + 0x18) = 0;
+    *(int *)((char *)this + 0x18) = (int)(timeGetTime() - 1000);
+    *(unsigned short *)abEvent = 2;
+    *(int *)(abEvent + 8) = 0;
+    pDispatchQueue = (NETWORK_EffDispatchQueue *)g_pEffTransportDispatchQueue;
+    pDispatchQueue->QueueEvent(abEvent);
+}
+
+// FUNCTION: LEMBALL 0x004715B0
+const char *NETWORK_InetAddressEntry::GetAddressString(void) {
+    return m_szAddress;
+}
+
+// FUNCTION: LEMBALL 0x00471550
+void NETWORK_InetAddressEntry::StoreAddressString(const char *pszAddress) {
+    m_nAddress = (int)inet_addr(pszAddress);
+    strcpy(m_szAddress, pszAddress);
 }
 
 // FUNCTION: LEMBALL 0x00462DB0
@@ -775,4 +1315,261 @@ void *ConstructTcpipSocketChannelStack(void *pObject, int fConstructEmbeddedObje
     pTertiaryThunk->m_nThisDelta = 0;
     pQuaternaryThunk->m_nThisDelta = 0;
     return pObject;
+}
+
+// FUNCTION: LEMBALL 0x00470B90
+int NETWORK_TcpipClientAsyncDispatcher::DispatchTcpipClientAsyncMessage(
+    int nMessage, void *pReserved, unsigned int nEvent) {
+    char *pbThis;
+    int nDelta;
+    int nResult;
+    NETWORK_SocketAsyncErrorAdapter *pErrorAdapter;
+    NETWORK_HostLookupCompletionAdapter *pLookupAdapter;
+    NETWORK_SocketAsyncMessageAdapter *pReceiveAdapter;
+    NETWORK_TimedSocketAsyncMessageAdapter *pSocketDispatcher;
+
+    pbThis = (char *)this;
+    switch (nMessage) {
+    case 0x440:
+        nDelta = *(int *)(*(int *)(pbThis - 0x134) + 0x14);
+        pErrorAdapter = (NETWORK_SocketAsyncErrorAdapter *)(pbThis + nDelta - 0x134);
+        nResult = pErrorAdapter->HandleSocketAsyncErrorLparam(
+            pReserved, nEvent, (unsigned int *)(pbThis + nDelta - 0x120));
+        if (nResult != 0x0e) {
+            pLookupAdapter = (NETWORK_HostLookupCompletionAdapter *)(pbThis - 0x138);
+            pLookupAdapter->HandleLocalHostLookupComplete(nResult == 2);
+        }
+        return 0;
+
+    case 0x441:
+        *(int *)(pbThis - 0x110) = 0;
+        nDelta = *(int *)(*(int *)(pbThis - 0x134) + 0x14);
+        pErrorAdapter = (NETWORK_SocketAsyncErrorAdapter *)(pbThis + nDelta - 0x134);
+        nResult = pErrorAdapter->HandleSocketAsyncErrorLparam(
+            pReserved, nEvent, (unsigned int *)(pbThis - 0x114));
+        if (nResult != 0x0e) {
+            pLookupAdapter = (NETWORK_HostLookupCompletionAdapter *)(pbThis - 0x138);
+            pLookupAdapter->HandleRemoteHostLookupComplete(nResult == 2);
+        }
+        return 0;
+
+    case 0x442:
+        nDelta = *(int *)(*(int *)(pbThis - 0x134) + 0x14);
+        pErrorAdapter = (NETWORK_SocketAsyncErrorAdapter *)(pbThis + nDelta - 0x134);
+        nResult = pErrorAdapter->HandleSocketAsyncErrorLparam(
+            pReserved, nEvent, (unsigned int *)(pbThis + nDelta - 0x120));
+        if (nResult != 0x0e) {
+            pLookupAdapter = (NETWORK_HostLookupCompletionAdapter *)(pbThis - 0x138);
+            pLookupAdapter->HandleServicePortLookupComplete(nResult == 2);
+        }
+        return 0;
+
+    case 0x443:
+        nDelta = *(int *)(*(int *)(pbThis - 0x134) + 4);
+        if (*(int *)(pbThis + nDelta - 0x12c) == -1) {
+            return 0;
+        }
+        SetEffStreamChannelAsyncErrorStatus(pbThis + nDelta - 0x134,
+                                             (int)(nEvent >> 16));
+        if ((nEvent & 0xffff) == 1) {
+            if ((nEvent >> 16) == 0) {
+                nDelta = *(int *)(*(int *)(pbThis - 0x134) + 0x18);
+                pReceiveAdapter = (NETWORK_SocketAsyncMessageAdapter *)(pbThis + nDelta - 0x134);
+                pReceiveAdapter->ReceiveUdpPayloadFromSenderAddress();
+            }
+            return 0;
+        }
+        break;
+    }
+
+    pSocketDispatcher = (NETWORK_TimedSocketAsyncMessageAdapter *)(pbThis - 8);
+    pSocketDispatcher->DispatchEffSocketAsyncSelectMessage(nMessage, pReserved, nEvent);
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x00471210
+void NETWORK_UdpSocketBinder::BindUdpSocketAndEnableAsyncSelect(void) {
+    unsigned char abAddress[16];
+    int nPrimaryDelta;
+    int nTimedDelta;
+    int nSocket;
+    int nResult;
+    NETWORK_SocketChannelControl *pErrorChannel;
+
+    PrepareBind();
+    nPrimaryDelta = *(int *)(*(int *)((char *)this + 4) + 4);
+    *(unsigned short *)abAddress = 2;
+    *(unsigned short *)(abAddress + 2) =
+        htons((unsigned short)(*(short *)((char *)this + nPrimaryDelta + 0x24) +
+                               g_nEffTransportServiceBasePort));
+    *(int *)(abAddress + 4) =
+        *(int *)((char *)g_pEffTransportRuntimeService + 0x14);
+    nSocket = *(int *)((char *)this + nPrimaryDelta + 0x0c);
+    nResult = bind(nSocket, abAddress, 0x10);
+    if (nResult == -1) {
+        pErrorChannel = (NETWORK_SocketChannelControl *)((char *)this + nPrimaryDelta + 4);
+        pErrorChannel->HandleSocketError();
+        return;
+    }
+
+    nTimedDelta = *(int *)(*(int *)((char *)this + 4) + 0x14);
+    nResult = WSAAsyncSelect(nSocket, (void *)(unsigned long)*(int *)((char *)this + nTimedDelta + 8),
+                             0x443, 3);
+    if (nResult == -1) {
+        pErrorChannel = (NETWORK_SocketChannelControl *)((char *)this + nPrimaryDelta + 4);
+        pErrorChannel->HandleSocketError();
+        return;
+    }
+
+    *(int *)((char *)this + nPrimaryDelta + 0x20) = 1;
+    *(int *)((char *)this + 0x1c) = 1;
+    *(int *)((char *)this +
+             *(int *)(*(int *)((char *)this + 4) + 0x0c) + 0x40) =
+        (int)timeGetTime();
+}
+
+// FUNCTION: LEMBALL 0x004712E0
+int NETWORK_TcpipHostPortAsyncDispatcher::DispatchTcpipHostPortAsyncMessage(
+    int nMessage, void *pReserved, unsigned int nEvent) {
+    char *pbThis;
+    int nDelta;
+    int nResult;
+    NETWORK_SocketAsyncErrorAdapter *pErrorAdapter;
+    NETWORK_HostLookupCompletionAdapter *pLookupAdapter;
+    NETWORK_TimedSocketAsyncMessageAdapter *pSocketDispatcher;
+
+    pbThis = (char *)this;
+    if (*(int *)(pbThis - 0x11c) != 0) {
+        return -1;
+    }
+    if (nMessage != 0x440 && nMessage != 0x442) {
+        pSocketDispatcher = (NETWORK_TimedSocketAsyncMessageAdapter *)this;
+        pSocketDispatcher->DispatchEffSocketAsyncSelectMessage(nMessage, pReserved, nEvent);
+        return 0;
+    }
+
+    nDelta = *(int *)(*(int *)(pbThis - 0x138) + 0x14);
+    pErrorAdapter = (NETWORK_SocketAsyncErrorAdapter *)(pbThis + nDelta - 0x138);
+    nResult = pErrorAdapter->HandleSocketAsyncErrorLparam(
+        pReserved, nEvent, (unsigned int *)(pbThis + nDelta - 0x124));
+    if (nResult != 0x0e) {
+        pLookupAdapter = (NETWORK_HostLookupCompletionAdapter *)(pbThis - 0x13c);
+        if (nMessage == 0x440) {
+            pLookupAdapter->HandleRemoteServiceHostLookupComplete(nResult == 2);
+        } else {
+            pLookupAdapter->HandleRemoteServicePortLookupComplete(nResult == 2);
+        }
+    }
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x00471A60
+void NETWORK_SocketWindowChannelWrapper::CloseSocketHandleFromChannel(void) {
+    int nDelta;
+
+    nDelta = *(int *)(*(int *)((char *)this - 0x10) + 4);
+    closesocket(*(int *)((char *)this + nDelta - 8));
+}
+
+// FUNCTION: LEMBALL 0x00471A90
+void *NETWORK_SocketWindowChannelWrapper::DeleteSocketWindowChannelStateWrapper(BYTE fFreeMemory) {
+    void *pAllocationBase;
+
+    DestroySocketWindowEffChannel((int)(unsigned long)this);
+    DestroyEffStreamChannelState(this);
+    pAllocationBase = (char *)this - 0x20;
+    if ((fFreeMemory & 1) != 0) {
+        FreeVSMemBlock(pAllocationBase);
+    }
+    return pAllocationBase;
+}
+
+// FUNCTION: LEMBALL 0x00471AD0
+void NETWORK_SocketWindowChannelWrapper::CaptureLastWinsockErrorStatus(void) {
+    int nDelta;
+
+    nDelta = *(int *)(*(int *)((char *)this - 0x10) + 4);
+    SetEffStreamChannelAsyncErrorStatus((char *)this + nDelta - 0x10, WSAGetLastError());
+}
+
+// FUNCTION: LEMBALL 0x00470ED0
+void NETWORK_HostLookupCompletionAdapter::HandleRemoteServiceHostLookupComplete(int nError) {
+    NETWORK_InetAddressEntry localAddress;
+    NETWORK_SocketChannelControl *pSocketChannel;
+    NETWORK_SocketChannelControl *pErrorChannel;
+    NETWORK_TcpipLookupOwner *pOwner;
+    char *pbLookup;
+    char *pszAddress;
+    int nTimedDelta;
+    int nSocketDelta;
+    int nPort;
+    int nLookupResult;
+
+    if (nError != 0) {
+        AppendCStringToStream(g_pErrorOutputStream, "Computer specified was not found\n");
+        return;
+    }
+
+    nTimedDelta = *(int *)(*(int *)((char *)this + 4) + 0x14);
+    pbLookup = *(char **)((char *)this + nTimedDelta + 0x18);
+    *(void ***)&localAddress = (void **)g_NETWORK_InetAddressEntryVtable;
+    localAddress.m_szAddress[0] = '\0';
+    localAddress.m_nAddress = *(int *)(*(int *)(pbLookup + 0x0c));
+    pszAddress = (char *)inet_ntoa((unsigned long)localAddress.m_nAddress);
+    strcpy(localAddress.m_szAddress, pszAddress);
+
+    nSocketDelta = *(int *)(*(int *)((char *)this + 4) + 8);
+    pSocketChannel = (NETWORK_SocketChannelControl *)((char *)this + nSocketDelta + 4);
+    pSocketChannel->SetRemoteAddress(&localAddress);
+
+    nPort = atoi(*(char **)((char *)this + 0x0c));
+    *(short *)((char *)this +
+               *(int *)(*(int *)((char *)this + 4) + 4) + 0x24) = (short)nPort;
+    pOwner = (NETWORK_TcpipLookupOwner *)this;
+    if (*(short *)((char *)this +
+                   *(int *)(*(int *)((char *)this + 4) + 4) + 0x24) != 0) {
+        pOwner->BeginPortSetup();
+        return;
+    }
+
+    *(int *)((char *)this + *(int *)(*(int *)((char *)this + 4) + 4) + 0x18) = 1;
+    nTimedDelta = *(int *)(*(int *)((char *)this + 4) + 0x14);
+    nLookupResult = WSAAsyncGetServByNameWithLength(
+        *(int *)((char *)this + nTimedDelta + 8), 0x442,
+        *(const char **)((char *)this + 0x0c), "TCP",
+        (void *)(unsigned long)*(int *)((char *)this + nTimedDelta + 0x18), 0x400);
+    *(int *)((char *)this + nTimedDelta + 0x1c) = nLookupResult;
+    if (nLookupResult == 0) {
+        nSocketDelta = *(int *)(*(int *)((char *)this + 4) + 4);
+        pErrorChannel = (NETWORK_SocketChannelControl *)((char *)this + nSocketDelta + 4);
+        pErrorChannel->HandleSocketError();
+    }
+}
+
+// FUNCTION: LEMBALL 0x00471000
+void NETWORK_HostLookupCompletionAdapter::HandleRemoteServicePortLookupComplete(int nError) {
+    int nOffsets;
+    int nTimedDelta;
+    int nPort;
+    char *pbLookup;
+    NETWORK_SocketChannelControl *pControl;
+
+    nOffsets = *(int *)((char *)this + 4);
+    pControl = (NETWORK_SocketChannelControl *)((char *)this + *(int *)(nOffsets + 8) + 4);
+    if (nError == 0) {
+        nTimedDelta = *(int *)(nOffsets + 0x14);
+        pbLookup = *(char **)((char *)this + nTimedDelta + 0x18);
+        nPort = (int)(unsigned short)ntohs(*(unsigned short *)(pbLookup + 8));
+        pControl->SetAssignedPort((short)(nPort - g_nEffTransportServiceBasePort));
+    } else {
+        pControl->SetAssignedPort(0);
+        AppendCStringToStream(g_pErrorOutputStream, "Service port number specified was not found\n");
+    }
+
+    nTimedDelta = *(int *)(nOffsets + 0x14);
+    FreeVSMemBlock(*(void **)((char *)this + nTimedDelta + 0x18));
+    *(int *)((char *)this + nTimedDelta + 0x18) = 0;
+    if (nError == 0) {
+        ((NETWORK_TcpipLookupOwner *)this)->BeginPortSetup();
+    }
 }

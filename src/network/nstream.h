@@ -23,4 +23,8 @@ struct NETWORK_EffStreamBase {
     void DestroyEffStreamBaseThunk(void);
 };
 
+struct NETWORK_RuntimeChannelStackReleaseFront {
+    void Release(void);
+};
+
 #endif

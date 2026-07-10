@@ -1,8 +1,8 @@
 #include "../game/game_app.h"
 #include "../engine/runtime_init.h"
 
-static const char *g_NETWORK_GameConnectionRequestDuringGameText = (const char *)0x004A0148;
-static const char *g_NETWORK_LobbyConnectionAcceptedText = (const char *)0x004A0368;
+static const char *g_NETWORK_GameConnectionRequestDuringGameText;
+static const char *g_NETWORK_LobbyConnectionAcceptedText;
 
 struct NETWORK_GeometryChildVtable {
     void (*m_pReserved00)(void);

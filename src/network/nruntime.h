@@ -22,4 +22,8 @@ struct NETWORK_PeerPayloadSenderRaw {
     void *m_pVtable;
 };
 
+struct NETWORK_EffTransportPendingWriteState {
+    void Clear(void *pUnused);
+};
+
 #endif

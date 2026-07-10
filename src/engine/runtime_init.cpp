@@ -39,7 +39,7 @@ char *FormatUnsignedIntToRadixString(unsigned int uValue, char *pszBuffer, unsig
 void ApplyStreamIntegerWidthPadding(VSINIT_FormattedOutputStream *pStream);
 
 void *g_StreamBaseVtable[1] = { 0 };
-void *g_FormattedOutputStreamVtable[2] = { 0, (void *)0x12c };
+unsigned long g_FormattedOutputStreamVtable[2] = { 0, 0x12c };
 void *g_StreamFormatTargetStateVtable[1] = { 0 };
 void *g_StreamFormatSubobjectVtable[1] = { 0 };
 static void *g_FixedBufferStreamVtable[4] = {
@@ -532,7 +532,7 @@ VSINIT_FormattedOutputStream *ConstructFormattedOutputStream(VSINIT_FormattedOut
                                                                     VSINIT_FixedBufferStream *pDownstream,
                                                                     int fConstructTargetState) {
     if (fConstructTargetState != 0) {
-        pStream->m_pVtable = g_FormattedOutputStreamVtable;
+        pStream->m_pVtable = (void **)g_FormattedOutputStreamVtable;
         ConstructStreamFormatTargetState(&pStream->m_TargetState, pDownstream);
     }
     pStream->m_TargetState.m_pVtable = g_StreamFormatSubobjectVtable;

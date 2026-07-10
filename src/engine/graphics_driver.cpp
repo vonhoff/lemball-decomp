@@ -62,6 +62,15 @@ static int g_VSGDI_ArrowCursorRuntimeVtable = 0;
 static int g_VSGDI_StatusIndicatorRenderClientVtable = 0;
 static int g_VSGDI_StatusIndicatorPointSinkVtable = 0;
 
+struct VSGDI_CompactHelperAdjustorTable {
+    int m_nThisDelta;
+    int m_nSubobjectOffset;
+};
+
+static VSGDI_CompactHelperAdjustorTable g_VSGDI_CompactHelperTargetAdjustor = { -0x40, 0x51c };
+static VSGDI_CompactHelperAdjustorTable g_VSGDI_HelperGroup1Adjustor = { -4, 0x514 };
+static VSGDI_CompactHelperAdjustorTable g_VSGDI_HelperGroup0Adjustor = { -4, 0x4c0 };
+
 struct VSGDI_SelectedGraphicsDriverRuntime {
     int m_nSelectedDriver;
     int m_nReserved0;
@@ -388,9 +397,9 @@ void *ConstructResourceGeometryHelperTarget(void *pvTarget, int nWrappedParam, i
 
     pTarget = (VSGDI_ResourceGeometryHelperTargetView *)pvTarget;
     if (fConstructCompactHelper != 0) {
-        *(void **)((char *)pTarget + 0x40) = (void *)0x499de8;
-        *(void **)((char *)pTarget + 0x48) = (void *)0x499de0;
-        *(void **)((char *)pTarget + 0x9c) = (void *)0x499dd8;
+        *(void **)((char *)pTarget + 0x40) = &g_VSGDI_CompactHelperTargetAdjustor;
+        *(void **)((char *)pTarget + 0x48) = &g_VSGDI_HelperGroup1Adjustor;
+        *(void **)((char *)pTarget + 0x9c) = &g_VSGDI_HelperGroup0Adjustor;
         InitializeCompactResourceGeometryHelper((char *)pTarget + 0x55c);
     }
     InitializeResourceGeometryRowBuffer(pTarget);

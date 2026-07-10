@@ -30,19 +30,19 @@ struct GAME_MainGameVariantResourceBundle {
     int *m_panBitmapResourceIds;
 };
 
-static void *g_GAME_MainGameVariantResourceBundleVtable = (void *)0x00497ad4;
-static int *g_GAME_MainGameVariantCompactZrleListResourceIds = (int *)0x0049f1c0;
-static int *g_GAME_MainGameVariantStandardZrleListResourceIds = (int *)0x0049f2d0;
-static int *g_GAME_MainGameVariantCompactListResourceIds = (int *)0x0049f3dc;
-static int *g_GAME_MainGameVariantStandardListResourceIds = (int *)0x0049f3e0;
-static int *g_GAME_MainGameVariantCompactBitmapResourceIds = (int *)0x0049f3e8;
-static int *g_GAME_MainGameVariantStandardBitmapResourceIds = (int *)0x0049f3f8;
-static int *g_GAME_MainGameVariantPaletteResourceIds = (int *)0x0049f408;
-static int *g_GAME_MainGameVariantStringResourceIds = (int *)0x0049f410;
-static int *g_GAME_MainGameVariantStringResourceIdsEnd = (int *)0x0049f414;
-static int *g_GAME_VariantResourceEntryEffectTable = (int *)0x0049eb88;
-int DAT_0049ed98 = 0;
-int DAT_0049ed9c = 0;
+static void *g_GAME_MainGameVariantResourceBundleVtable;
+static int *g_GAME_MainGameVariantCompactZrleListResourceIds;
+static int *g_GAME_MainGameVariantStandardZrleListResourceIds;
+static int *g_GAME_MainGameVariantCompactListResourceIds;
+static int *g_GAME_MainGameVariantStandardListResourceIds;
+static int *g_GAME_MainGameVariantCompactBitmapResourceIds;
+static int *g_GAME_MainGameVariantStandardBitmapResourceIds;
+static int *g_GAME_MainGameVariantPaletteResourceIds;
+static int *g_GAME_MainGameVariantStringResourceIds;
+static int *g_GAME_MainGameVariantStringResourceIdsEnd;
+static int *g_GAME_VariantResourceEntryEffectTable;
+int g_fVariantResourceEffectsEnabled = 0;
+int g_fVariantResourceMusicEnabled = 0;
 
 extern void *g_pVariantResourceEntryManager;
 extern void *g_pSessionRandomState;
@@ -66,7 +66,7 @@ extern void PruneUnreferencedCachedResourceObjects(void *pArchive);
 // FUNCTION: LEMBALL 0x00438B50
 void SetVariantResourceEffectsEnabled(int fEnabled) {
     if (g_fEffectsOptionAvailable != 0) {
-        DAT_0049ed98 = fEnabled;
+        g_fVariantResourceEffectsEnabled = fEnabled;
     }
 }
 
@@ -75,10 +75,10 @@ void SetVariantResourceMusicEnabled(void *pManager, int fEnabled) {
     int hMusic;
 
     if (fEnabled != 0) {
-        if (DAT_0049ed9c != 0) {
+        if (g_fVariantResourceMusicEnabled != 0) {
             return;
         }
-    } else if (DAT_0049ed9c == 0) {
+    } else if (g_fVariantResourceMusicEnabled == 0) {
         return;
     }
 
@@ -87,12 +87,12 @@ void SetVariantResourceMusicEnabled(void *pManager, int fEnabled) {
             hMusic = RegisterVariantResourceMusicHandle(g_pAudioManager, *(int *)((char *)pManager + 0x2c0));
             *(int *)((char *)pManager + 0x2c4) = hMusic;
             StartRegisteredVariantResourceMusic(g_pAudioManager, hMusic);
-            DAT_0049ed9c = fEnabled;
+            g_fVariantResourceMusicEnabled = fEnabled;
             return;
         }
         StopVariantResourceMusicPlayback(g_pAudioManager, *(int *)((char *)pManager + 0x2c4));
         UnregisterVariantResourceMusicHandle(g_pAudioManager, *(int *)((char *)pManager + 0x2c4));
-        DAT_0049ed9c = fEnabled;
+        g_fVariantResourceMusicEnabled = fEnabled;
     }
 }
 
@@ -229,7 +229,7 @@ void *ConstructVariantResourceEntryManager(void *pManager) {
     pVariantManager[1] = 0;
     if (g_fMusicEnabled != 0) {
         InvokeAudioManagerEmbeddedSlot04(g_pAudioManager, 0x2220, 0xb482);
-        DAT_0049ed9c = 0;
+        g_fVariantResourceMusicEnabled = 0;
     }
     SetVariantResourceEffectsEnabled(1);
     i = 0x32;

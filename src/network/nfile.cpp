@@ -4,10 +4,26 @@
 #include "network/nruntime.h"
 #include "network/nstream.h"
 #include <string.h>
+#include <stdio.h>
 
 extern int ReturnTrueVtableCallback(void);
 extern int ReturnTrueVtableCallbackSecondary(void);
 extern void NoopVtableCallback(void);
+extern "C" void _amsg_exit(int nMessage);
+
+// FUNCTION: LEMBALL 0x00462F50
+size_t WriteAndFlushFileBuffer(FILE *pFile, void *pBuffer, size_t cbBuffer) {
+    size_t cbWritten;
+
+    cbWritten = fwrite(pBuffer, 1, cbBuffer, pFile);
+    fflush(pFile);
+    return cbWritten;
+}
+
+// FUNCTION: LEMBALL 0x0047FCA0
+void CrtFatalRuntimeError0x19(void) {
+    _amsg_exit(0x19);
+}
 
 extern "C" {
 HANDLE WINAPI CreateFileA(LPCSTR lpFileName,
@@ -68,6 +84,7 @@ int UnlockWin32FileRange(void *pFileWrapper, DWORD dwOffset, DWORD cbRange);
 void InitializeGlobalStateFileBackedEffStorageAdjustor(void *pObject);
 void *GetWin32FileWrapperOwnedPath(void *pObject);
 BYTE MapNestedEffCallbackFailureToStatus6(void *pObject);
+void *DeleteEffChannelStateSideBufferWrapper(void *pObject, BYTE fFreeMemory);
 void ClearFileBackedEffChannelAsyncErrorStatus(void *pObject);
 void ClearNestedEffChannelAsyncStatus(void *pObject);
 void AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(void *pObject);
@@ -95,6 +112,17 @@ struct NETWORK_ConstructionAdjustorVtable {
     int m_nRecordTableOffsetB;
 };
 
+struct NETWORK_FileBackedStreamAdjustorOffsets {
+    int m_nSelfDelta00;
+    int m_nPrimaryOffset04;
+    int m_nSecondaryOffset08;
+    int m_nTertiaryOffset0c;
+    int m_nQuaternaryOffset10;
+    int m_nFatalOffset14;
+    int m_nRecordTableOffset18;
+    void (*m_pFatalCallback1c)(void);
+};
+
 // These tables are not ordinary virtual tables. They are compiler-emitted
 // adjustor metadata describing where embedded subobjects and thunk fronts live
 // inside one larger aggregate object.
@@ -116,9 +144,9 @@ struct NETWORK_FileBackedChannelViewOffsets {
     int m_nStreamViewOffset08;
     int m_nFileWrapperViewOffset0c;
     int m_nFatalThunkViewOffset10;
-    int m_nReserved14;
-    int m_nReserved18;
-    int m_nReserved1c;
+    void (*m_pFatalCallback14)(void);
+    void (*m_pOpenCallback18)(void);
+    void (*m_pCloseCallback1c)(void);
 };
 
 struct NETWORK_FileWrapperThunkOffsets {
@@ -154,7 +182,7 @@ struct NETWORK_EmbeddedStackFileViewOffsets {
     int m_nFileViewThunkOffset1c;
 };
 
-static const NETWORK_ConstructionAdjustorVtable g_NETWORK_FileBackedDualStreamOffsets = {
+static const NETWORK_FileBackedStreamAdjustorOffsets g_NETWORK_FileBackedDualStreamOffsets = {
     -0x44,
     -0x70,
     -0x0c,
@@ -162,12 +190,12 @@ static const NETWORK_ConstructionAdjustorVtable g_NETWORK_FileBackedDualStreamOf
     0x38,
     0x90,
     0xa4,
-    0x0047FCA0,
+    CrtFatalRuntimeError0x19,
 };
-static void *g_NETWORK_FileBackedDualPrimaryThunkVtable = (void *)0x0049A5D8;
-static void *g_NETWORK_FileBackedDualSecondaryThunkVtable = (void *)0x0049A5B0;
+static void *g_NETWORK_FileBackedDualPrimaryThunkVtable;
+static void *g_NETWORK_FileBackedDualSecondaryThunkVtable;
 static void *g_NETWORK_FileBackedFatalFileWrapperVtable[] = {
-    (void *)0x0047FCA0,
+    (void *)CrtFatalRuntimeError0x19,
     (void *)OpenWin32FileWrapperWithCreateFlag,
     (void *)OpenWin32FileWrapperCreateNew,
     (void *)ProbeWin32FileWrapperAccess,
@@ -185,7 +213,7 @@ static void *g_NETWORK_FileBackedFatalFileWrapperVtable[] = {
     (void *)GetWin32FileWrapperOwnedPath,
 };
 
-static const NETWORK_ConstructionAdjustorVtable g_NETWORK_FileBackedTimedStreamOffsets = {
+static const NETWORK_FileBackedStreamAdjustorOffsets g_NETWORK_FileBackedTimedStreamOffsets = {
     -0x44,
     -0x74,
     -0x0c,
@@ -193,10 +221,10 @@ static const NETWORK_ConstructionAdjustorVtable g_NETWORK_FileBackedTimedStreamO
     0x3c,
     0xb0,
     0xc4,
-    0x0047FCA0,
+    CrtFatalRuntimeError0x19,
 };
-static void *g_NETWORK_FileBackedTimedPrimaryThunkVtable = (void *)0x0049A708;
-static void *g_NETWORK_FileBackedTimedSecondaryThunkVtable = (void *)0x0049A6D8;
+static void *g_NETWORK_FileBackedTimedPrimaryThunkVtable;
+static void *g_NETWORK_FileBackedTimedSecondaryThunkVtable;
 
 static const NETWORK_EmbeddedStackViewOffsets g_NETWORK_EmbeddedFileBackedTimedStreamOffsets = {
     -0x44,
@@ -238,9 +266,9 @@ static const NETWORK_EmbeddedStackFileViewOffsets g_NETWORK_EmbeddedFileBackedTi
     -0x0c,
     -0x130,
 };
-static void *g_NETWORK_EmbeddedFileBackedFinalPrimaryThunkVtable = (void *)0x0049A838;
-static void *g_NETWORK_EmbeddedFileBackedFinalTimedThunkVtable = (void *)0x0049A808;
-static void *g_NETWORK_EmbeddedFileBackedFinalDualThunkVtable = (void *)0x0049A7E0;
+static void *g_NETWORK_EmbeddedFileBackedFinalPrimaryThunkVtable;
+static void *g_NETWORK_EmbeddedFileBackedFinalTimedThunkVtable;
+static void *g_NETWORK_EmbeddedFileBackedFinalDualThunkVtable;
 
 // Global-state composite layout:
 // 00 self-delta / owning view
@@ -311,14 +339,14 @@ static const NETWORK_ConstructionAdjustorVtable g_NETWORK_GlobalStateCompositeEm
     -0x0c,
     -0x134,
 };
-static void *g_NETWORK_GlobalStateCompositeInitialVtable = (void *)0x0049A848;
-static void *g_NETWORK_GlobalStateCompositeInitialPrimaryThunkVtable = (void *)0x0049AA90;
-static void *g_NETWORK_GlobalStateCompositeInitialTimedThunkVtable = (void *)0x0049AA60;
-static void *g_NETWORK_GlobalStateCompositeInitialDualThunkVtable = (void *)0x0049AA38;
-static void *g_NETWORK_GlobalStateCompositeFinalVtable = (void *)0x0049A9D8;
-static void *g_NETWORK_GlobalStateCompositeFinalPrimaryThunkVtable = (void *)0x0049A9C8;
-static void *g_NETWORK_GlobalStateCompositeFinalTimedThunkVtable = (void *)0x0049A998;
-static void *g_NETWORK_GlobalStateCompositeFinalDualThunkVtable = (void *)0x0049A970;
+static void *g_NETWORK_GlobalStateCompositeInitialVtable;
+static void *g_NETWORK_GlobalStateCompositeInitialPrimaryThunkVtable;
+static void *g_NETWORK_GlobalStateCompositeInitialTimedThunkVtable;
+static void *g_NETWORK_GlobalStateCompositeInitialDualThunkVtable;
+static void *g_NETWORK_GlobalStateCompositeFinalVtable;
+static void *g_NETWORK_GlobalStateCompositeFinalPrimaryThunkVtable;
+static void *g_NETWORK_GlobalStateCompositeFinalTimedThunkVtable;
+static void *g_NETWORK_GlobalStateCompositeFinalDualThunkVtable;
 static void *g_NETWORK_GlobalStateCompositeFinalFatalFileWrapperVtable[] = {
     (void *)InitializeGlobalStateFileBackedEffStorageAdjustor,
     (void *)0,
@@ -402,10 +430,10 @@ static const NETWORK_ConstructionAdjustorVtable g_NETWORK_DualSlotCompositeEmbed
     -0x0c,
     -0x134,
 };
-static void *g_NETWORK_DualSlotCompositeFinalVtable = (void *)0x0049AC18;
-static void *g_NETWORK_DualSlotCompositeFinalPrimaryThunkVtable = (void *)0x0049AC08;
-static void *g_NETWORK_DualSlotCompositeFinalTimedThunkVtable = (void *)0x0049ABD8;
-static void *g_NETWORK_DualSlotCompositeFinalDualThunkVtable = (void *)0x0049ABB0;
+static void *g_NETWORK_DualSlotCompositeFinalVtable;
+static void *g_NETWORK_DualSlotCompositeFinalPrimaryThunkVtable;
+static void *g_NETWORK_DualSlotCompositeFinalTimedThunkVtable;
+static void *g_NETWORK_DualSlotCompositeFinalDualThunkVtable;
 static void *g_NETWORK_DualSlotCompositeFinalFatalFileWrapperVtable[] = {
     (void *)AdjustAndWriteDualSlotTableFileBackedEffHeader,
     (void *)0,
@@ -426,10 +454,66 @@ static void *g_NETWORK_DualSlotCompositeFinalFatalFileWrapperVtable[] = {
     (void *)GetWin32FileWrapperOwnedPath,
 };
 
-static void *g_NETWORK_RuntimeChannelStackFatalThunkVtable = (void *)0x004990D8;
-static void *g_NETWORK_CrtFatalRuntimeErrorThunk = (void *)0x00498070;
-static void *g_NETWORK_CrtFatalRuntimeErrorDeleteThunk = (void *)0x0049A53C;
-static void *g_NETWORK_MapNestedEffCallbackFailureThunk = (void *)0x0049A4F0;
+static void *g_NETWORK_RuntimeChannelStackFatalThunkVtable;
+static void *g_NETWORK_CrtFatalRuntimeErrorThunkSlots[15] = {
+    (void *)CrtFatalRuntimeError0x19, (void *)CrtFatalRuntimeError0x19,
+    (void *)CrtFatalRuntimeError0x19, (void *)CrtFatalRuntimeError0x19,
+    (void *)CrtFatalRuntimeError0x19, (void *)CrtFatalRuntimeError0x19,
+    (void *)CrtFatalRuntimeError0x19, (void *)CrtFatalRuntimeError0x19,
+    (void *)CrtFatalRuntimeError0x19, (void *)CrtFatalRuntimeError0x19,
+    (void *)CrtFatalRuntimeError0x19, (void *)CrtFatalRuntimeError0x19,
+    (void *)CrtFatalRuntimeError0x19, (void *)CrtFatalRuntimeError0x19,
+    (void *)CrtFatalRuntimeError0x19,
+};
+static void *g_NETWORK_CrtFatalRuntimeErrorThunk = g_NETWORK_CrtFatalRuntimeErrorThunkSlots;
+static void *g_NETWORK_MapNestedEffCallbackFailureThunkVtable[] = {
+    (void *)MapNestedEffCallbackFailureToStatus6,
+    (void *)DeleteEffChannelStateSideBufferWrapper,
+    (void *)ClearNestedEffChannelAsyncStatus,
+    /* 004628D0 is an interior RET 4 thunk; ownership unresolved. */
+    (void *)0,
+    (void *)OpenWin32FileWrapperWithCreateFlag,
+    (void *)OpenWin32FileWrapperCreateNew,
+    (void *)ProbeWin32FileWrapperAccess,
+    (void *)CloseWin32FileWrapperIfOpen,
+    (void *)FreeWin32FileWrapperPath,
+    (void *)FreeWin32FileWrapperOwnedPath,
+    (void *)WriteWin32FileWrapper,
+    (void *)ReadWin32FileWrapper,
+    (void *)SeekWin32FileWrapper,
+    (void *)GetWin32FileWrapperLength,
+    (void *)GetWin32FileWrapperOffset,
+    (void *)LockWin32FileRange,
+    (void *)UnlockWin32FileRange,
+};
+
+struct NETWORK_CrtFatalRuntimeErrorAdjustor {
+    void (*m_pFatal)(void);
+    int m_nViewOffset04;
+    int m_nViewOffset08;
+    int m_nViewOffset0c;
+    int m_nViewOffset10;
+    int m_nViewOffset14;
+    int m_nViewOffset18;
+    int m_nViewOffset1c;
+    int m_nViewOffset20;
+    int m_nViewOffset24;
+};
+
+static const NETWORK_CrtFatalRuntimeErrorAdjustor g_NETWORK_CrtFatalRuntimeErrorDeleteAdjustor = {
+    CrtFatalRuntimeError0x19,
+    -0x04,
+    -0x18,
+    -0x9c,
+    0,
+    -0x44,
+    -0x70,
+    -0x0c,
+    -0x0c,
+    0x0c,
+};
+static void *g_NETWORK_CrtFatalRuntimeErrorDeleteThunk =
+    (void *)&g_NETWORK_CrtFatalRuntimeErrorDeleteAdjustor;
 
 struct NETWORK_EffStreamRecordSlot {
     void *m_pVtable;
@@ -472,9 +556,9 @@ static const NETWORK_FileBackedChannelViewOffsets g_NETWORK_FileBackedDualChanne
     0x38,
     0x90,
     0xa4,
-    0x0047FCA0,
-    0x0047F5B0,
-    0x0047F640,
+    CrtFatalRuntimeError0x19,
+    (void (*)(void))OpenWin32FileWrapperWithCreateFlag,
+    (void (*)(void))OpenWin32FileWrapperCreateNew,
 };
 
 static const NETWORK_FileWrapperThunkOffsets g_NETWORK_FileBackedDualFileWrapperThunkOffsets = {
@@ -494,9 +578,9 @@ static const NETWORK_FileBackedChannelViewOffsets g_NETWORK_FileBackedTimedChann
     0x3c,
     0xb0,
     0xc4,
-    0x0047FCA0,
-    0x0047F5B0,
-    0x0047F640,
+    CrtFatalRuntimeError0x19,
+    (void (*)(void))OpenWin32FileWrapperWithCreateFlag,
+    (void (*)(void))OpenWin32FileWrapperCreateNew,
 };
 
 static const NETWORK_FileWrapperThunkOffsets g_NETWORK_FileBackedTimedFileWrapperThunkOffsets = {
@@ -903,6 +987,22 @@ struct NETWORK_Eff512ByteStateStream {
     NETWORK_Eff512ByteStateStream *Construct();
 };
 
+// FUNCTION: LEMBALL 0x00479860
+int HasNonzeroEff512ByteState(int nObject) {
+    NETWORK_Eff512ByteStateStream *pStream;
+    int i;
+
+    pStream = (NETWORK_Eff512ByteStateStream *)(unsigned long)nObject;
+    i = 0;
+    do {
+        if (pStream->m_pbStateBytes2c[i] != 0) {
+            return 1;
+        }
+        ++i;
+    } while (i < 0x200);
+    return 0;
+}
+
 struct NETWORK_GlobalStateCompositeLayout {
     NETWORK_CompositeViewOffsets *m_pTransportOffsets00;
     char m_abReserved04[0x1c];
@@ -992,7 +1092,7 @@ struct NETWORK_DualFileBackedEffChannelFront {
     NETWORK_FileBackedChannelViewOffsets *m_pThunk0c;
     int m_nMode10;
     char m_abReserved14[0x74];
-    const NETWORK_ConstructionAdjustorVtable *m_pDualStreamOffsets88;
+    const NETWORK_FileBackedStreamAdjustorOffsets *m_pDualStreamOffsets88;
     char m_abReserved8c[0x28];
     NETWORK_FileWrapperThunkOffsets *m_pFileThunkb4;
     char m_abReservedb8[0x04];
@@ -1004,11 +1104,15 @@ struct NETWORK_TimedFileBackedEffChannelFront {
     NETWORK_FileBackedChannelViewOffsets *m_pThunk0c;
     int m_nMode10;
     char m_abReserved14[0x78];
-    const NETWORK_ConstructionAdjustorVtable *m_pTimedStreamOffsets8c;
+    const NETWORK_FileBackedStreamAdjustorOffsets *m_pTimedStreamOffsets8c;
     char m_abReserved90[0x44];
     NETWORK_FileWrapperThunkOffsets *m_pFileThunkd4;
     char m_abReservedd8[0x04];
     NETWORK_InlineOpenWin32FileWrapper m_FileWrapperbc;
+};
+
+struct NETWORK_TimedFileBackedEffChannelVtableRestoreView {
+    void RestoreTimedFileBackedEffChannelVtables(void);
 };
 
 struct NETWORK_ChannelStateRuntimeVtable {
@@ -1051,6 +1155,9 @@ struct NETWORK_FileBackedMarkerState {
 struct NETWORK_FileBackedMarkerOwner {
     NETWORK_FileBackedMarkerOffsets *m_pOffsets;
     NETWORK_FileBackedMarkerState m_Marker04;
+
+    DWORD IncrementFileBackedEffStreamMarker(void);
+    DWORD DecrementFileBackedEffStreamMarker(void);
 };
 
 struct NETWORK_FileBackedMarkerReleaseFront {
@@ -1150,18 +1257,23 @@ extern void *ConstructEffStreamChannelState(void *pChannelState);
 extern void DestroyEffStreamChannelState(void *pChannelState);
 extern void *ConstructTimedEffStream(void *pStream, int fConstructChannelState);
 extern void DestroyTimedEffStream(void *pStream);
+extern void InvokeTimedEffStreamServiceCallback(void *pStream, void *pArgument);
 extern void *ConstructDualHandleEffStream(void *pStream, int fConstructChannelState);
 extern void DestroyDualHandleEffStream(void *pStream);
 extern void *ConstructEffTransportRuntimeChannelStack(void *pChannelStack, int fConstructEmbeddedObjects);
-extern void ReleaseEffTransportRuntimeBuffers(int nChannelStateBase);
 extern void *ConstructCompositeEffTransportStack(void *pObject, int fConstructEmbeddedObjects);
 extern void RestoreCompositeEffTransportVtables(int nObjectBasePlus0x30);
-extern DWORD WriteEffStreamToLockedFile(void *pFileWrapper, int *pStream, int fWritePayload, int fFlush);
+struct NETWORK_FileBackedLockedWriterView {
+    DWORD WriteEffStreamToLockedFile(int *pStream, int fKeepLock, int fFlush);
+};
+extern void BeginEffStreamWriteSession(void *pStream);
+extern void EndEffStreamWriteSession(void *pStream);
 extern void ScheduleNetworkRuntimeTimerEvent(void *pRuntimeWindow, int nTicks);
 extern int LoadEffStreamFromMemory(void *pStream, int nSourceBuffer);
-extern void ProcessEffTransportPacketHeader(int *pStream);
+struct NETWORK_EffTransportPacketProcessor {
+    int ProcessEffTransportPacketHeader(void);
+};
 extern void SetEffStreamChannelAsyncErrorStatus(void *pChannelState, int nStatus);
-extern void ClearEffTransportPendingWriteState(int nAdjustedObject);
 extern void WriteEffStreamU16BE(void *pStream, unsigned short nValue);
 extern void WriteEffStreamU32BE(void *pStream, unsigned int nValue);
 extern void WriteEffStreamBytes(void *pStream, const void *pvSource, unsigned int cbWrite);
@@ -1324,19 +1436,19 @@ int WriteWin32FileWrapper(void *pFileWrapper, const void *pvSource, DWORD cbWrit
     pWrapper = (NETWORK_InlineOpenWin32FileWrapper *)pFileWrapper;
     fSuccess = WriteFile((HANDLE)(unsigned long)pWrapper->m_nReserved0c, pvSource, cbWrite, &cbWritten, 0);
     if (fSuccess == 0) {
-        AppendCStringToStream(g_pErrorOutputStream, (const char *)0x004A41F8);
+        AppendCStringToStream(g_pErrorOutputStream, "Write error: ");
         AppendIntToStream(g_pErrorOutputStream, GetLastError());
-        AppendCStringToStream(g_pErrorOutputStream, (const char *)0x004A4208);
+        AppendCStringToStream(g_pErrorOutputStream, "\n");
         return 0;
     }
 
     pWrapper->m_nReserved10 += (int)cbWritten;
     if (cbWrite != cbWritten) {
-        AppendCStringToStream(g_pErrorOutputStream, (const char *)0x004A420C);
+        AppendCStringToStream(g_pErrorOutputStream, "Write error: ");
         AppendUIntToStream(g_pErrorOutputStream, cbWritten);
-        AppendCStringToStream(g_pErrorOutputStream, (const char *)0x004A421C);
+        AppendCStringToStream(g_pErrorOutputStream, " bytes written instead of ");
         AppendIntToStream(g_pErrorOutputStream, cbWrite);
-        AppendCStringToStream(g_pErrorOutputStream, (const char *)0x004A4238);
+        AppendCStringToStream(g_pErrorOutputStream, "\n");
         return 0;
     }
     return 1;
@@ -1354,25 +1466,25 @@ int ReadWin32FileWrapper(void *pFileWrapper, LPVOID pvTarget, DWORD cbRead) {
     if (fSuccess == 0) {
         dwError = GetLastError();
         if (dwError != 0x21) {
-            AppendCStringToStream(g_pErrorOutputStream, (const char *)0x004A423C);
+            AppendCStringToStream(g_pErrorOutputStream, "Read error: ");
             AppendIntToStream(g_pErrorOutputStream, dwError);
-            AppendCStringToStream(g_pErrorOutputStream, (const char *)0x004A424C);
+            AppendCStringToStream(g_pErrorOutputStream, "\n");
         }
         return 0;
     }
 
     pWrapper->m_nReserved10 += (int)cbReadNow;
     if (cbReadNow != cbRead) {
-        AppendCStringToStream(g_pErrorOutputStream, (const char *)0x004A4250);
+        AppendCStringToStream(g_pErrorOutputStream, "Read error: ");
         AppendUIntToStream(g_pErrorOutputStream, cbReadNow);
-        AppendCStringToStream(g_pErrorOutputStream, (const char *)0x004A4260);
+        AppendCStringToStream(g_pErrorOutputStream, " bytes read instead of ");
         AppendIntToStream(g_pErrorOutputStream, cbRead);
-        AppendCStringToStream(g_pErrorOutputStream, (const char *)0x004A4278);
-        AppendCStringToStream(g_pErrorOutputStream, (const char *)0x004A427C);
+        AppendCStringToStream(g_pErrorOutputStream, "in file ");
+        AppendCStringToStream(g_pErrorOutputStream, "in file ");
         AppendCStringToStream(g_pErrorOutputStream, (const char *)(unsigned long)pWrapper->m_nReserved04);
-        AppendCStringToStream(g_pErrorOutputStream, (const char *)0x004A4288);
+        AppendCStringToStream(g_pErrorOutputStream, " which is ");
         AppendUIntToStream(g_pErrorOutputStream, GetWin32FileWrapperLength(pWrapper));
-        AppendCStringToStream(g_pErrorOutputStream, (const char *)0x004A4294);
+        AppendCStringToStream(g_pErrorOutputStream, " bytes long.\n");
         return 0;
     }
     return 1;
@@ -1654,6 +1766,15 @@ void *DeleteEffStreamRecordSlot(void *pObject, BYTE fDeleteFlags) {
     return pObject;
 }
 
+// FUNCTION: LEMBALL 0x0047B970
+void *DeleteEffStreamBaseWrapper(void *pObject, BYTE fDeleteFlags) {
+    ((NETWORK_EffStreamBase *)pObject)->DestroyEffStreamBase();
+    if ((fDeleteFlags & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
 // FUNCTION: LEMBALL 0x0047B870
 void WriteEff512ByteStatePayload(void *pObject) {
     NETWORK_Eff512ByteStateStream *pStateStream;
@@ -1689,6 +1810,19 @@ void ClearFileBackedEffChannelAsyncErrorStatus(void *pObject) {
     ClearNestedEffChannelAsyncStatus(pObject);
 }
 
+// FUNCTION: LEMBALL 0x0047B910
+void *DeleteEffChannelStateSideBufferWrapper(void *pObject, BYTE fFreeMemory) {
+    DestroyEffStreamChannelState(pObject);
+    *(void **)((char *)pObject - 0x14) = g_NETWORK_CrtFatalRuntimeErrorThunk;
+    if (*(void **)((char *)pObject - 0x10) != 0) {
+        FreeVSMemBlock(*(void **)((char *)pObject - 0x10));
+    }
+    if ((fFreeMemory & 1) != 0) {
+        FreeVSMemBlock((char *)pObject - 0x20);
+    }
+    return (char *)pObject - 0x20;
+}
+
 // FUNCTION: LEMBALL 0x0047B8F0
 void ClearNestedEffChannelAsyncStatus(void *pObject) {
     NETWORK_ConstructionAdjustorVtable *pOffsets;
@@ -1707,6 +1841,11 @@ void AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(void *pObject) {
 // FUNCTION: LEMBALL 0x0047BCA0
 BYTE AdjustAndMapGlobalStateFileBackedEffCallbackFailure(void *pObject) {
     return MapNestedEffCallbackFailureToStatus6((char *)pObject + 0xd8);
+}
+
+// FUNCTION: LEMBALL 0x0047BD10
+void AdjustAndClearTimedFileBackedEffChannelAsyncStatus(void *pObject) {
+    ClearNestedEffChannelAsyncStatus((char *)pObject + 0xd8);
 }
 
 // FUNCTION: LEMBALL 0x0047B8E0
@@ -1745,7 +1884,7 @@ void *ConstructDualFileBackedEffChannel(void *pObject, int fConstructEmbeddedObj
         pSecondaryThunk =
             (NETWORK_AdjustorSubobject *)(pbObjectBase + 0xb4 + pWrapperThunkOffsets->m_nNestedCallbackThunkOffset08);
         pPrimaryThunk->m_pVtable = g_NETWORK_OpenWin32FileWrapperVtable;
-        pSecondaryThunk->m_pVtable = g_NETWORK_MapNestedEffCallbackFailureThunk;
+        pSecondaryThunk->m_pVtable = g_NETWORK_MapNestedEffCallbackFailureThunkVtable;
     }
 
     ClearFileBackedEffChannelStateWord(pObject);
@@ -1794,7 +1933,7 @@ void *ConstructTimedFileBackedEffChannel(void *pObject, int fConstructEmbeddedOb
         pSecondaryThunk =
             (NETWORK_AdjustorSubobject *)(pbObjectBase + 0xd4 + pWrapperThunkOffsets->m_nNestedCallbackThunkOffset08);
         pPrimaryThunk->m_pVtable = g_NETWORK_OpenWin32FileWrapperVtable;
-        pSecondaryThunk->m_pVtable = g_NETWORK_MapNestedEffCallbackFailureThunk;
+        pSecondaryThunk->m_pVtable = g_NETWORK_MapNestedEffCallbackFailureThunkVtable;
     }
 
     ClearFileBackedEffChannelStateWord(pObject);
@@ -1814,7 +1953,7 @@ void *ConstructTimedFileBackedEffChannel(void *pObject, int fConstructEmbeddedOb
 }
 
 // FUNCTION: LEMBALL 0x00479F40
-void RestoreTimedFileBackedEffChannelVtables(int nTimedFileBasePlus0x0c) {
+void NETWORK_TimedFileBackedEffChannelVtableRestoreView::RestoreTimedFileBackedEffChannelVtables(void) {
     NETWORK_AdjustorSubobject *pPrimaryThunk;
     NETWORK_AdjustorSubobject *pSecondaryThunk;
     NETWORK_AdjustorSubobject *pTertiaryThunk;
@@ -1823,7 +1962,7 @@ void RestoreTimedFileBackedEffChannelVtables(int nTimedFileBasePlus0x0c) {
     NETWORK_FileBackedChannelViewOffsets *pChannelOffsets;
     char *pbChannelBase;
 
-    pbChannelBase = (char *)(unsigned long)(nTimedFileBasePlus0x0c - 0xc);
+    pbChannelBase = (char *)this - 0xc;
     pFront = (NETWORK_TimedFileBackedEffChannelFront *)pbChannelBase;
     pChannelOffsets = pFront->m_pThunk0c;
     pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbChannelBase + pChannelOffsets->m_nChannelStateViewOffset04 - 4);
@@ -1890,7 +2029,7 @@ void *ConstructEmbeddedFileBackedEffChannelStack(void *pObject, int fConstructEm
         pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x124 + pFileViewOffsets->m_nFileWrapperViewOffset04);
         pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x124 + pFileViewOffsets->m_nChannelStateViewOffset08);
         pPrimaryThunk->m_pVtable = g_NETWORK_OpenWin32FileWrapperVtable;
-        pSecondaryThunk->m_pVtable = g_NETWORK_MapNestedEffCallbackFailureThunk;
+        pSecondaryThunk->m_pVtable = g_NETWORK_MapNestedEffCallbackFailureThunkVtable;
 
         ConstructDualFileBackedEffChannel(pConstructed->m_abDualFileChannel12c, 0);
         ConstructTimedFileBackedEffChannel(pConstructed->m_abTimedFileChannel1d0, 0);
@@ -1975,7 +2114,7 @@ void *ConstructGlobalStateFileBackedEffComposite(void *pObject, int fConstructEm
         pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x180 + pFileViewOffsets->m_nFileWrapperViewOffset04);
         pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x180 + pFileViewOffsets->m_nChannelStateViewOffset08);
         pPrimaryThunk->m_pVtable = g_NETWORK_OpenWin32FileWrapperVtable;
-        pSecondaryThunk->m_pVtable = g_NETWORK_MapNestedEffCallbackFailureThunk;
+        pSecondaryThunk->m_pVtable = g_NETWORK_MapNestedEffCallbackFailureThunkVtable;
 
         ConstructDualFileBackedEffChannel(pbObjectBase + 0x188, 0);
         ConstructTimedFileBackedEffChannel(pbObjectBase + 0x19c, 0);
@@ -2103,7 +2242,7 @@ void DestroyGlobalStateFileBackedEffComposite(int nObjectBasePlus0x60) {
         g_pGlobalStateEff512ByteStream = 0;
     }
 
-    ReleaseEffTransportRuntimeBuffers(nObjectBasePlus0x60 - 0x3c);
+    ((NETWORK_RuntimeChannelStackReleaseFront *)(unsigned long)(nObjectBasePlus0x60 - 0x3c))->Release();
     ((NETWORK_EffStreamBase *)&pFront->m_InitialStream24)->DestroyEffStreamBase();
 }
 
@@ -2117,7 +2256,8 @@ void *DeleteGlobalStateFileBackedEffCompositeWrapper(void *pObject, BYTE fFreeMe
     pView = &pWrapper->m_Runtime60;
     pbAllocationBase = (char *)pWrapper;
     DestroyGlobalStateFileBackedEffComposite((int)(unsigned long)pObject);
-    RestoreTimedFileBackedEffChannelVtables((int)(unsigned long)pObject + 0x154);
+    ((NETWORK_TimedFileBackedEffChannelVtableRestoreView *)((char *)pObject + 0x154))
+        ->RestoreTimedFileBackedEffChannelVtables();
     pView->m_pResetThunk104 = g_NETWORK_CrtFatalRuntimeErrorThunk;
     if (pView->m_pSideBuffer108 != 0) {
         FreeVSMemBlock(pView->m_pSideBuffer108);
@@ -2199,7 +2339,7 @@ void *ConstructDualSlotTableFileBackedEffComposite(void *pObject, int fConstruct
         pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x184 + pFileViewOffsets->m_nFileWrapperViewOffset04);
         pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x184 + pFileViewOffsets->m_nChannelStateViewOffset08);
         pPrimaryThunk->m_pVtable = g_NETWORK_OpenWin32FileWrapperVtable;
-        pSecondaryThunk->m_pVtable = g_NETWORK_MapNestedEffCallbackFailureThunk;
+        pSecondaryThunk->m_pVtable = g_NETWORK_MapNestedEffCallbackFailureThunkVtable;
 
         ConstructDualFileBackedEffChannel(pbObjectBase + 0x18c, 0);
         ConstructTimedFileBackedEffChannel(pbObjectBase + 0x1a0, 0);
@@ -2333,7 +2473,8 @@ void WriteDualSlotTableFileBackedEffHeader(int nObjectBasePlus0x154) {
     pReadThunk = (NETWORK_FileWrapperObject *)(unsigned long)(pOffsets->m_nReadThunkOffset14 + ulObjectBase);
     pWriteThunk = (NETWORK_FileWrapperObject *)(unsigned long)(pOffsets->m_nWriteThunkOffset20 + ulObjectBase);
     pReadThunk->m_pVtable->m_pSeek(pReadThunk, 0);
-    WriteEffStreamToLockedFile(pWriteThunk, (int *)&pOwner->m_Marker04, 0, 0);
+    ((NETWORK_FileBackedLockedWriterView *)pWriteThunk)
+        ->WriteEffStreamToLockedFile((int *)&pOwner->m_Marker04, 0, 0);
 }
 
 // FUNCTION: LEMBALL 0x0047C040
@@ -2353,7 +2494,8 @@ void *DeleteCompositeFileBackedEffChannelWrapper(void *pObject, BYTE fFreeMemory
     pView = &pWrapper->m_Runtime38;
     pbAllocationBase = (char *)pWrapper;
     ((NETWORK_EffStreamBase *)((char *)pObject - 0x34))->DestroyEffStreamBase();
-    RestoreTimedFileBackedEffChannelVtables((int)(unsigned long)pObject + 0x150);
+    ((NETWORK_TimedFileBackedEffChannelVtableRestoreView *)((char *)pObject + 0x150))
+        ->RestoreTimedFileBackedEffChannelVtables();
     pView->m_pResetThunk104 = g_NETWORK_CrtFatalRuntimeErrorThunk;
     if (pView->m_pSideBuffer108 != 0) {
         FreeVSMemBlock(pView->m_pSideBuffer108);
@@ -2381,7 +2523,8 @@ void *DeleteTimedFileBackedEffChannelWrapper(void *pObject, BYTE fFreeMemory) {
 
     pView = (NETWORK_FileBackedTimedChannelWrapperView *)pObject;
     pbAllocationBase = (char *)pObject - 0x18;
-    RestoreTimedFileBackedEffChannelVtables((int)(unsigned long)pObject);
+    ((NETWORK_TimedFileBackedEffChannelVtableRestoreView *)pObject)
+        ->RestoreTimedFileBackedEffChannelVtables();
     pView->m_pResetThunkA4 = g_NETWORK_CrtFatalRuntimeErrorThunk;
     if (pView->m_pSideBufferA8 != 0) {
         FreeVSMemBlock(pView->m_pSideBufferA8);
@@ -2427,10 +2570,11 @@ void ClearAdjustedEffTransportPendingWriteState(void *pObject) {
 
     pbTransportView = (char *)pObject +
                       (*(NETWORK_GlobalSessionAdjustorOffsets **)((char *)pObject - 8))->m_nTransportViewOffset10;
-    ClearEffTransportPendingWriteState(
-        (int)(unsigned long)(pbTransportView +
-                             (*(NETWORK_GlobalSessionAdjustorOffsets **)(pbTransportView - 8))->m_nEmbeddedStreamViewOffset08 +
-                             0x70));
+    ((NETWORK_EffTransportPendingWriteState *)(pbTransportView +
+                                               (*(NETWORK_GlobalSessionAdjustorOffsets **)(pbTransportView - 8))
+                                                   ->m_nEmbeddedStreamViewOffset08 +
+                                               0x70))
+        ->Clear(pObject);
 }
 
 // FUNCTION: LEMBALL 0x0047BAA0
@@ -2515,7 +2659,8 @@ void *DeleteEmbeddedFileBackedEffChannelStackWrapper(void *pObject, BYTE fFreeMe
     pWrapper = (NETWORK_EmbeddedFileBackedEffChannelStackWrapper *)((char *)pObject - 8);
     pView = &pWrapper->m_Runtime08;
     pbAllocationBase = (char *)pWrapper;
-    RestoreTimedFileBackedEffChannelVtables((int)(unsigned long)pObject + 0x150);
+    ((NETWORK_TimedFileBackedEffChannelVtableRestoreView *)((char *)pObject + 0x150))
+        ->RestoreTimedFileBackedEffChannelVtables();
     pView->m_pResetThunk104 = g_NETWORK_CrtFatalRuntimeErrorThunk;
     if (pView->m_pSideBuffer108 != 0) {
         FreeVSMemBlock(pView->m_pSideBuffer108);
@@ -2587,7 +2732,8 @@ void *DeleteDualSlotTableFileBackedEffCompositeWrapper(void *pObject, BYTE fFree
     pView = &pWrapper->m_Runtime64;
     pbAllocationBase = (char *)pWrapper;
     DestroyDualSlotTableFileBackedEffComposite((int)(unsigned long)pObject);
-    RestoreTimedFileBackedEffChannelVtables((int)(unsigned long)pObject + 0x154);
+    ((NETWORK_TimedFileBackedEffChannelVtableRestoreView *)((char *)pObject + 0x154))
+        ->RestoreTimedFileBackedEffChannelVtables();
     pView->m_pResetThunk104 = g_NETWORK_CrtFatalRuntimeErrorThunk;
     if (pView->m_pSideBuffer108 != 0) {
         FreeVSMemBlock(pView->m_pSideBuffer108);
@@ -2690,8 +2836,89 @@ BYTE MapNestedEffCallbackFailureToStatus6(void *pObject) {
     return (BYTE)(-(nResult == 0) & 6);
 }
 
-// FUNCTION: LEMBALL 0x00479A50
-int LoadEffStreamFromFileBackedRange(void *pObject, void *pStream, int fKeepLocked, int fAlreadyLocked) {
+struct NETWORK_AdjustedTimedEffStreamServiceView {
+    void InvokeAdjustedTimedEffStreamServiceCallback(void *pArgument);
+};
+
+// FUNCTION: LEMBALL 0x0047A090
+void NETWORK_AdjustedTimedEffStreamServiceView::InvokeAdjustedTimedEffStreamServiceCallback(void *pArgument) {
+    int nTimedStreamDelta;
+
+    nTimedStreamDelta = *(int *)(unsigned long)(*(int *)((char *)this - 0x3c) + 8);
+    InvokeTimedEffStreamServiceCallback((char *)this + nTimedStreamDelta - 0x3c, pArgument);
+}
+
+struct NETWORK_LockedEffStreamFileRangeView {
+    int LoadLockedEffStreamFromFileRange(void);
+    int WriteLockedEffStreamToFileRange(void);
+};
+
+// FUNCTION: LEMBALL 0x0047AC50
+int NETWORK_LockedEffStreamFileRangeView::LoadLockedEffStreamFromFileRange(void) {
+    char *pObject;
+    NETWORK_FileWrapperObject *pFileWrapper;
+    DWORD cbStream;
+    DWORD dwOffset;
+    int nResult;
+
+    pObject = (char *)this;
+    pFileWrapper = (NETWORK_FileWrapperObject *)(pObject +
+                                                 *(int *)(unsigned long)(*(int *)(pObject + 0x20) + 0x14) + 0x20);
+    dwOffset = *(DWORD *)(pObject + 0x3c);
+    pFileWrapper->m_pVtable->m_pSeek(pFileWrapper, dwOffset);
+    cbStream = *(DWORD *)((char *)g_pGlobalStateEff512ByteStream + 0x18);
+    nResult = LockWin32FileRange(pFileWrapper, dwOffset, cbStream);
+    if (nResult == 0) {
+        return 0;
+    }
+    nResult = ReadWin32FileWrapper(pFileWrapper, (LPVOID)g_pEffTransportPacketBuffer, cbStream);
+    if (nResult != 0) {
+        LoadEffStreamFromMemory(g_pGlobalStateEff512ByteStream,
+                                (int)(unsigned long)g_pEffTransportPacketBuffer);
+        *(int *)(pObject + 0x54) = 1;
+        return 1;
+    }
+    UnlockWin32FileRange(pFileWrapper, dwOffset, cbStream);
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047ACE0
+int NETWORK_LockedEffStreamFileRangeView::WriteLockedEffStreamToFileRange(void) {
+    char *pObject;
+    NETWORK_FileWrapperObject *pFileWrapper;
+    DWORD cbStream;
+    DWORD dwOffset;
+    int nResult;
+
+    pObject = (char *)this;
+    pFileWrapper = (NETWORK_FileWrapperObject *)(pObject +
+                                                 *(int *)(unsigned long)(*(int *)(pObject + 0x20) + 0x14) + 0x20);
+    BeginEffStreamWriteSession(g_pGlobalStateEff512ByteStream);
+    cbStream = *(DWORD *)((char *)g_pGlobalStateEff512ByteStream + 0x18);
+    dwOffset = *(DWORD *)(pObject + 0x3c);
+    pFileWrapper->m_pVtable->m_pSeek(pFileWrapper, dwOffset);
+    *(int *)(pObject + 0x54) = 0;
+    nResult = WriteWin32FileWrapper(
+        pFileWrapper,
+        (const void *)(unsigned long)(*(int *)((char *)g_pGlobalStateEff512ByteStream + 8) + 0x10),
+        cbStream);
+    EndEffStreamWriteSession(g_pGlobalStateEff512ByteStream);
+    if (nResult != 0) {
+        return UnlockWin32FileRange(pFileWrapper, dwOffset, cbStream) != 0;
+    }
+    UnlockWin32FileRange(pFileWrapper, dwOffset, cbStream);
+    return 0;
+}
+
+struct NETWORK_FileBackedRecordTableView {
+    int LoadEffStreamFromFileBackedRange(void *pStream, int fKeepLocked, int fAlreadyLocked);
+    int LoadFileBackedEffRecordPayload(int nSlotIndex);
+};
+
+// FUNCTION: LEMBALL 0x00479A40
+int NETWORK_FileBackedRecordTableView::LoadEffStreamFromFileBackedRange(void *pStream,
+                                                                        int fKeepLocked,
+                                                                        int fAlreadyLocked) {
     NETWORK_FileBackedRangeLoadView LoadView;
     NETWORK_FileBackedDispatchOffsets *pOffsets;
     NETWORK_FileWrapperObject *pFileWrapper;
@@ -2703,8 +2930,8 @@ int LoadEffStreamFromFileBackedRange(void *pObject, void *pStream, int fKeepLock
     DWORD dwStartTime;
     DWORD dwNow;
 
-    pRecordTable = (NETWORK_EffStreamRecordSlotTable *)pObject;
-    pbRecordTableBase = (char *)pObject;
+    pRecordTable = (NETWORK_EffStreamRecordSlotTable *)this;
+    pbRecordTableBase = (char *)this;
     pOffsets = pRecordTable->m_pChannelThunk0c;
     LoadView.m_pRecordTable = pRecordTable;
     LoadView.m_pFileWrapper =
@@ -2737,7 +2964,7 @@ int LoadEffStreamFromFileBackedRange(void *pObject, void *pStream, int fKeepLock
 }
 
 // FUNCTION: LEMBALL 0x00479B30
-int LoadFileBackedEffRecordPayload(void *pObject, int nSlotIndex) {
+int NETWORK_FileBackedRecordTableView::LoadFileBackedEffRecordPayload(int nSlotIndex) {
     NETWORK_FileBackedRecordPayloadView PayloadView;
     NETWORK_FileBackedDispatchOffsets *pChannelOffsets;
     NETWORK_EffStreamRecordSlotTable *pRecordTable;
@@ -2752,8 +2979,8 @@ int LoadFileBackedEffRecordPayload(void *pObject, int nSlotIndex) {
     int nResult;
     DWORD dwNow;
 
-    pRecordTable = (NETWORK_EffStreamRecordSlotTable *)pObject;
-    pbRecordTableBase = (char *)pObject;
+    pRecordTable = (NETWORK_EffStreamRecordSlotTable *)this;
+    pbRecordTableBase = (char *)this;
     pChannelOffsets = pRecordTable->m_pChannelThunk0c;
     PayloadView.m_pRecordTable = pRecordTable;
     PayloadView.m_pChannelState =
@@ -2789,64 +3016,67 @@ int LoadFileBackedEffRecordPayload(void *pObject, int nSlotIndex) {
     if (pChannelState->m_fBusy10 == 0) {
         pTimedStreamVtable->m_pServiceLoadedPacket(pTimedStream);
     }
-    ProcessEffTransportPacketHeader((int *)((char *)pTimedStream + 0xc));
+    ((NETWORK_EffTransportPacketProcessor *)((char *)pTimedStream + 0xc))
+        ->ProcessEffTransportPacketHeader();
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x0047A470
-DWORD IncrementFileBackedEffStreamMarker(int *pObject) {
+DWORD NETWORK_FileBackedMarkerOwner::IncrementFileBackedEffStreamMarker(void) {
     NETWORK_FileBackedMarkerOwner *pOwner;
     NETWORK_FileBackedMarkerOffsets *pOffsets;
     NETWORK_FileWrapperObject *pReadThunk;
     NETWORK_FileWrapperObject *pWriteThunk;
     unsigned long ulObjectBase;
 
-    pOwner = (NETWORK_FileBackedMarkerOwner *)pObject;
+    pOwner = this;
     ulObjectBase = (unsigned long)pOwner;
     pOffsets = pOwner->m_pOffsets;
     pReadThunk = (NETWORK_FileWrapperObject *)(unsigned long)(pOffsets->m_nReadThunkOffset14 + ulObjectBase);
     pWriteThunk = (NETWORK_FileWrapperObject *)(unsigned long)(pOffsets->m_nWriteThunkOffset20 + ulObjectBase);
     pReadThunk->m_pVtable->m_pSeek(pReadThunk, 0);
-    if (LoadEffStreamFromFileBackedRange((void *)(unsigned long)(pOffsets->m_nStreamOffset1c + ulObjectBase),
-                                         &pOwner->m_Marker04,
-                                         1,
-                                         0) == 0) {
+    if (((NETWORK_FileBackedRecordTableView *)(unsigned long)(pOffsets->m_nStreamOffset1c + ulObjectBase))
+            ->LoadEffStreamFromFileBackedRange(&pOwner->m_Marker04, 1, 0) == 0) {
         return 0;
     }
     pOwner->m_Marker04.m_Stream04.m_wReferenceCount2c =
         (unsigned short)(pOwner->m_Marker04.m_Stream04.m_wReferenceCount2c + 1);
     pReadThunk->m_pVtable->m_pSeek(pReadThunk, 0);
-    return WriteEffStreamToLockedFile(pWriteThunk, (int *)&pOwner->m_Marker04, 0, 1);
+    return ((NETWORK_FileBackedLockedWriterView *)pWriteThunk)
+        ->WriteEffStreamToLockedFile((int *)&pOwner->m_Marker04, 0, 1);
 }
 
 // FUNCTION: LEMBALL 0x0047A4D0
-DWORD DecrementFileBackedEffStreamMarker(int *pObject) {
+DWORD NETWORK_FileBackedMarkerOwner::DecrementFileBackedEffStreamMarker(void) {
     NETWORK_FileBackedMarkerOwner *pOwner;
     NETWORK_FileBackedMarkerOffsets *pOffsets;
     NETWORK_FileWrapperObject *pReadThunk;
     NETWORK_FileWrapperObject *pWriteThunk;
     unsigned long ulObjectBase;
 
-    pOwner = (NETWORK_FileBackedMarkerOwner *)pObject;
+    pOwner = this;
     ulObjectBase = (unsigned long)pOwner;
     pOffsets = pOwner->m_pOffsets;
     pReadThunk = (NETWORK_FileWrapperObject *)(unsigned long)(pOffsets->m_nReadThunkOffset14 + ulObjectBase);
     pWriteThunk = (NETWORK_FileWrapperObject *)(unsigned long)(pOffsets->m_nWriteThunkOffset20 + ulObjectBase);
     pReadThunk->m_pVtable->m_pSeek(pReadThunk, 0);
-    if (LoadEffStreamFromFileBackedRange((void *)(unsigned long)(pOffsets->m_nStreamOffset1c + ulObjectBase),
-                                         &pOwner->m_Marker04,
-                                         1,
-                                         0) == 0) {
+    if (((NETWORK_FileBackedRecordTableView *)(unsigned long)(pOffsets->m_nStreamOffset1c + ulObjectBase))
+            ->LoadEffStreamFromFileBackedRange(&pOwner->m_Marker04, 1, 0) == 0) {
         return 0;
     }
     pOwner->m_Marker04.m_Stream04.m_wReferenceCount2c =
         (unsigned short)(pOwner->m_Marker04.m_Stream04.m_wReferenceCount2c - 1);
     pReadThunk->m_pVtable->m_pSeek(pReadThunk, 0);
-    return WriteEffStreamToLockedFile(pWriteThunk, (int *)&pOwner->m_Marker04, 0, 1);
+    return ((NETWORK_FileBackedLockedWriterView *)pWriteThunk)
+        ->WriteEffStreamToLockedFile((int *)&pOwner->m_Marker04, 0, 1);
 }
 
+struct NETWORK_FileBackedMarkerReleaseView {
+    BYTE DecrementFileBackedEffMarkerAndReleaseIfZero(void);
+};
+
 // FUNCTION: LEMBALL 0x0047A530
-BYTE DecrementFileBackedEffMarkerAndReleaseIfZero(int nObjectBasePlus0x38) {
+BYTE NETWORK_FileBackedMarkerReleaseView::DecrementFileBackedEffMarkerAndReleaseIfZero(void) {
     NETWORK_FileBackedCallbackStatusFront *pCallbackFront;
     NETWORK_FileBackedMarkerReleaseFront *pReleaseFront;
     NETWORK_FileBackedMarkerOwner *pOwner;
@@ -2854,11 +3084,12 @@ BYTE DecrementFileBackedEffMarkerAndReleaseIfZero(int nObjectBasePlus0x38) {
     NETWORK_CallbackThunkObject *pReleaseThunk;
     BYTE bStatus;
 
-    pReleaseFront = (NETWORK_FileBackedMarkerReleaseFront *)(unsigned long)nObjectBasePlus0x38;
-    pOwner = (NETWORK_FileBackedMarkerOwner *)(unsigned long)(nObjectBasePlus0x38 - 0x38);
+    pReleaseFront = (NETWORK_FileBackedMarkerReleaseFront *)this;
+    pOwner = (NETWORK_FileBackedMarkerOwner *)((char *)this - 0x38);
     pOffsets = pOwner->m_pOffsets;
-    DecrementFileBackedEffStreamMarker((int *)pOwner);
-    pCallbackFront = (NETWORK_FileBackedCallbackStatusFront *)((char *)pReleaseFront + pOffsets->m_nNestedThunkOffset18);
+    pOwner->DecrementFileBackedEffStreamMarker();
+    pCallbackFront = (NETWORK_FileBackedCallbackStatusFront *)((char *)pReleaseFront +
+                                                                pOffsets->m_nNestedThunkOffset18 - 0x18);
     bStatus = MapNestedEffCallbackFailureToStatus6(pCallbackFront);
     if (pOwner->m_Marker04.m_Stream04.m_wReferenceCount2c == 0) {
         pReleaseThunk = (NETWORK_CallbackThunkObject *)(unsigned long)(pOffsets->m_nReadThunkOffset14 +
@@ -2870,14 +3101,16 @@ BYTE DecrementFileBackedEffMarkerAndReleaseIfZero(int nObjectBasePlus0x38) {
 
 // FUNCTION: LEMBALL 0x0047B9B0
 BYTE AdjustAndReleaseCompositeFileBackedEffMarker(void *pObject) {
-    return DecrementFileBackedEffMarkerAndReleaseIfZero(
-        (int)(unsigned long)((char *)pObject - ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta));
+    return ((NETWORK_FileBackedMarkerReleaseView *)((char *)pObject -
+                                                    ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta))
+        ->DecrementFileBackedEffMarkerAndReleaseIfZero();
 }
 
 // FUNCTION: LEMBALL 0x0047BB40
 BYTE AdjustAndReleaseGlobalStateFileBackedEffMarker(void *pObject) {
-    return DecrementFileBackedEffMarkerAndReleaseIfZero(
-        (int)(unsigned long)((char *)pObject - ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta - 8));
+    return ((NETWORK_FileBackedMarkerReleaseView *)((char *)pObject -
+                                                    ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta - 8))
+        ->DecrementFileBackedEffMarkerAndReleaseIfZero();
 }
 
 // FUNCTION: LEMBALL 0x0047BE30
@@ -2885,8 +3118,12 @@ BYTE AdjustAndMapEmbeddedFileBackedEffCallbackFailure(void *pObject) {
     return MapNestedEffCallbackFailureToStatus6((char *)pObject + 0x138);
 }
 
+struct NETWORK_FileBackedPendingRecordServiceView {
+    void ServicePendingFileBackedEffRecords(void);
+};
+
 // FUNCTION: LEMBALL 0x00479C10
-void ServicePendingFileBackedEffRecords(int *pObject) {
+void NETWORK_FileBackedPendingRecordServiceView::ServicePendingFileBackedEffRecords(void) {
     NETWORK_FileBackedRecordServiceView ServiceView;
     NETWORK_EffStreamRecordSlotTable *pRecordTable;
     NETWORK_FileBackedDispatchOffsets *pChannelOffsets;
@@ -2901,8 +3138,8 @@ void ServicePendingFileBackedEffRecords(int *pObject) {
     int nSlotCount;
     int fLoadedOne;
 
-    pRecordTable = (NETWORK_EffStreamRecordSlotTable *)pObject;
-    pbRecordTableBase = (char *)pObject;
+    pRecordTable = (NETWORK_EffStreamRecordSlotTable *)this;
+    pbRecordTableBase = (char *)this;
     pChannelOffsets = pRecordTable->m_pChannelThunk0c;
     ServiceView.m_pRecordTable = pRecordTable;
     ServiceView.m_pChannelState = (NETWORK_ChannelStateHeader *)(pbRecordTableBase + pChannelOffsets->m_nChannelStateViewOffset04);
@@ -2946,7 +3183,7 @@ void ServicePendingFileBackedEffRecords(int *pObject) {
                             pRecordTable->m_nPendingSlot10 = nSlotCount;
                             return;
                         }
-                        LoadFileBackedEffRecordPayload(pObject, nSlotCount);
+            ((NETWORK_FileBackedRecordTableView *)this)->LoadFileBackedEffRecordPayload(nSlotCount);
                         pSlot->m_wObservedMarker = pSlot->m_wCommittedMarker;
                         fLoadedOne = 1;
                     }
@@ -2967,7 +3204,8 @@ void ServicePendingFileBackedEffRecords(int *pObject) {
         if (nLockResult != 0) {
             pSlot = &pRecordTable->m_pSlots[pRecordTable->m_nPendingSlot10];
             LoadEffStreamFromMemory(pSlot, (int)(unsigned long)g_pEffTransportPacketBuffer);
-            LoadFileBackedEffRecordPayload(pObject, pRecordTable->m_nPendingSlot10);
+            ((NETWORK_FileBackedRecordTableView *)this)
+                ->LoadFileBackedEffRecordPayload(pRecordTable->m_nPendingSlot10);
             pSlot->m_wObservedMarker = pSlot->m_wCommittedMarker;
             i = pRecordTable->m_nPendingSlot10;
             nSlotCount = pChannelState->m_cSlots14;
@@ -2988,8 +3226,64 @@ void ServicePendingFileBackedEffRecords(int *pObject) {
     }
 }
 
+// FUNCTION: LEMBALL 0x00479FA0
+DWORD NETWORK_FileBackedLockedWriterView::WriteEffStreamToLockedFile(int *pStream,
+                                                                     int fKeepLock, int fFlush) {
+    NETWORK_FileBackedDispatchOffsets *pOffsets;
+    NETWORK_FileWrapperObject *pFileWrapper;
+    DWORD dwFileOffset;
+    DWORD cbPayload;
+    DWORD dwStartTime;
+    DWORD dwNow;
+    int fResult;
+
+    pOffsets = *(NETWORK_FileBackedDispatchOffsets **)((char *)this + 0x0c);
+    pFileWrapper = (NETWORK_FileWrapperObject *)((char *)this +
+                                                 0x0c + pOffsets->m_nFileWrapperViewOffset0c);
+    BeginEffStreamWriteSession(pStream);
+    dwFileOffset = pFileWrapper->m_pVtable->m_pGetOffset(pFileWrapper);
+    cbPayload = (DWORD)(pStream[7] - pStream[2]) - 0x10;
+    pFileWrapper->m_pVtable->m_pGetLength(pFileWrapper);
+
+    if (fFlush == 0) {
+        dwStartTime = timeGetTime();
+        do {
+            fResult = LockWin32FileRange(pFileWrapper, dwFileOffset, cbPayload);
+            if (fResult != 0) {
+                break;
+            }
+            dwNow = timeGetTime();
+        } while (dwNow - dwStartTime < 100);
+        if (fResult == 0) {
+            cbPayload = 0;
+        }
+    }
+
+    if (cbPayload != 0) {
+        fResult = WriteWin32FileWrapper(pFileWrapper,
+                                        (const void *)(unsigned long)(pStream[2] + 0x10), cbPayload);
+        if (fResult == 0) {
+            UnlockWin32FileRange(pFileWrapper, dwFileOffset, cbPayload);
+        } else if (fKeepLock == 0 && UnlockWin32FileRange(pFileWrapper, dwFileOffset, cbPayload) == 0) {
+            fResult = 0;
+        }
+        if (fResult == 0) {
+            cbPayload = 0;
+        }
+    }
+
+    EndEffStreamWriteSession(pStream);
+    return cbPayload;
+}
+
+struct NETWORK_FileBackedRecordWriterView {
+    int AppendFileBackedEffRecordSlot(const void *pvPayload, DWORD cbPayload);
+    int AppendAdjustedFileBackedEffRecordSlot(const void *pvPayload, DWORD cbPayload);
+};
+
 // FUNCTION: LEMBALL 0x0047A0B0
-int AppendFileBackedEffRecordSlot(void *pObject, const void *pvPayload, DWORD cbPayload) {
+int NETWORK_FileBackedRecordWriterView::AppendFileBackedEffRecordSlot(const void *pvPayload,
+                                                                       DWORD cbPayload) {
     NETWORK_FileBackedAppendOffsets *pOffsets;
     NETWORK_EffTransportRuntimeService *pRuntimeService;
     NETWORK_EffStreamRecordSlot *pSlot;
@@ -3012,9 +3306,9 @@ int AppendFileBackedEffRecordSlot(void *pObject, const void *pvPayload, DWORD cb
     char *pbThunkBase;
     DWORD dwNow;
 
-    pbRecordWriterBase = (char *)pObject;
+    pbRecordWriterBase = (char *)this;
     pbThunkBase = pbRecordWriterBase - 0x3c;
-    pRecordTable = (NETWORK_EffStreamRecordSlotTable *)((char *)pObject - 0x48);
+    pRecordTable = (NETWORK_EffStreamRecordSlotTable *)((char *)this - 0x48);
     pOffsets = (NETWORK_FileBackedAppendOffsets *)pRecordTable->m_pChannelThunk0c;
     pOutputState = (NETWORK_ChannelStateHeader *)(pbThunkBase + pOffsets->m_nOutputStateOffset04);
     pFileWrapper = (NETWORK_FileWrapperObject *)(pbThunkBase + pOffsets->m_nFileWrapperOffset0c);
@@ -3085,10 +3379,8 @@ int AppendFileBackedEffRecordSlot(void *pObject, const void *pvPayload, DWORD cb
     }
 
     pSlot->m_cbPayload = cbPayload;
-    cbLocked = WriteEffStreamToLockedFile(pRecordTable,
-                                          (int *)pSlot,
-                                          1,
-                                          0);
+    cbLocked = ((NETWORK_FileBackedLockedWriterView *)pRecordTable)
+                   ->WriteEffStreamToLockedFile((int *)pSlot, 1, 0);
     fFailed = 1;
     if (cbLocked != 0) {
         dwPayloadSlotOffset = nCurrentSlot * g_cbEffTransportMaxPacketBytes + pRecordTable->m_nPayloadBaseOffset08;
@@ -3110,57 +3402,49 @@ int AppendFileBackedEffRecordSlot(void *pObject, const void *pvPayload, DWORD cb
 }
 
 // FUNCTION: LEMBALL 0x0047A420
-int AppendAdjustedFileBackedEffRecordSlot(void *pObject, const void *pvPayload, DWORD cbPayload) {
-    const NETWORK_RecordWriterAdjustorFront *pAdjustorFront;
-    const NETWORK_RecordWriterAdjustorOffsets *pAdjustorOffsets;
-    NETWORK_EffStreamRecordSlotTable *pRecordTable;
+int NETWORK_FileBackedRecordWriterView::AppendAdjustedFileBackedEffRecordSlot(const void *pvPayload,
+                                                                                DWORD cbPayload) {
+    int nRecordWriterDelta;
+    int nRecordTableDelta;
+    int nSlotCountDelta;
     int *pnCurrentSlot;
     int fAppended;
-    char *pbRecordTableView;
-    char *pbRecordWriterView;
 
-    pAdjustorFront = (const NETWORK_RecordWriterAdjustorFront *)((char *)pObject - 0x38);
-    pAdjustorOffsets = pAdjustorFront->m_pOffsets;
-    pbRecordWriterView = (char *)pObject + pAdjustorOffsets->m_nRecordWriterViewOffset1c;
-    fAppended = AppendFileBackedEffRecordSlot(pbRecordWriterView + 0x10, pvPayload, cbPayload);
+    nRecordWriterDelta = *(int *)(unsigned long)(*(int *)((char *)this - 0x38) + 0x20);
+    fAppended = ((NETWORK_FileBackedRecordWriterView *)((char *)this + nRecordWriterDelta + 0x10))
+                    ->AppendFileBackedEffRecordSlot(pvPayload, cbPayload);
     if (fAppended == 0) {
         return 0;
     }
 
-    pnCurrentSlot = (int *)(pbRecordWriterView - 0x28);
-    pbRecordTableView = (char *)pObject + pAdjustorOffsets->m_nRecordTableViewOffset18;
-    pRecordTable = (NETWORK_EffStreamRecordSlotTable *)(pbRecordTableView - 0x30);
-    *pnCurrentSlot = *pnCurrentSlot % pRecordTable->m_cSlots;
+    pnCurrentSlot = (int *)((char *)this + nRecordWriterDelta - 0x28);
+    nSlotCountDelta = *(int *)(unsigned long)(*(int *)((char *)this - 0x38) + 0x18);
+    nRecordTableDelta = *(int *)((char *)this + nSlotCountDelta - 0x30);
+    *pnCurrentSlot = *pnCurrentSlot % nRecordTableDelta;
     return fAppended;
 }
 
 // FUNCTION: LEMBALL 0x0047BC40
 int AppendAdjustedGlobalStateFileBackedEffRecordSlot(void *pObject, const void *pvPayload, DWORD cbPayload) {
-    return AppendAdjustedFileBackedEffRecordSlot(
-                                                 (char *)pObject -
-                                                     ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta +
-                                                     0x158,
-                                                 pvPayload,
-                                                 cbPayload);
+    return ((NETWORK_FileBackedRecordWriterView *)((char *)pObject -
+                                                   ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta +
+                                                   0x158))
+        ->AppendAdjustedFileBackedEffRecordSlot(pvPayload, cbPayload);
 }
 
 // FUNCTION: LEMBALL 0x0047BEF0
 int AppendAdjustedEmbeddedFileBackedEffRecordSlot(void *pObject, const void *pvPayload, DWORD cbPayload) {
-    return AppendAdjustedFileBackedEffRecordSlot(
-                                                 (char *)pObject -
-                                                     ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta,
-                                                 pvPayload,
-                                                 cbPayload);
+    return ((NETWORK_FileBackedRecordWriterView *)((char *)pObject -
+                                                   ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta))
+        ->AppendAdjustedFileBackedEffRecordSlot(pvPayload, cbPayload);
 }
 
 // FUNCTION: LEMBALL 0x0047BB00
 int AppendAdjustedGlobalStateTimedFileBackedEffRecordSlot(void *pObject, const void *pvPayload, DWORD cbPayload) {
-    return AppendAdjustedFileBackedEffRecordSlot(
-                                                 (char *)pObject -
-                                                     ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta +
-                                                     0x154,
-                                                 pvPayload,
-                                                 cbPayload);
+    return ((NETWORK_FileBackedRecordWriterView *)((char *)pObject -
+                                                   ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta +
+                                                   0x154))
+        ->AppendAdjustedFileBackedEffRecordSlot(pvPayload, cbPayload);
 }
 
 // FUNCTION: LEMBALL 0x0047AA10
@@ -3183,9 +3467,12 @@ void InitializeGlobalStateFileBackedEffStorage(int nObjectBasePlus0x15c) {
     pSlotCount =
         (NETWORK_SlotCountHolder *)(unsigned long)(pOwner->m_pOffsets->m_nSlotCountViewOffset18 + ulObjectBase);
     pReadThunk->m_pVtable->m_pSeek(pReadThunk, 0);
-    WriteEffStreamToLockedFile(pWriteThunk, (int *)&pOwner->m_InitialStream04, 0, 0);
-    WriteEffStreamToLockedFile(pWriteThunk, (int *)(unsigned long)g_pGlobalStateEff512ByteStream, 0, 0);
-    WriteEffStreamToLockedFile(pWriteThunk, (int *)(unsigned long)*(int *)pWriteThunk, 0, 0);
+    ((NETWORK_FileBackedLockedWriterView *)pWriteThunk)
+        ->WriteEffStreamToLockedFile((int *)&pOwner->m_InitialStream04, 0, 0);
+    ((NETWORK_FileBackedLockedWriterView *)pWriteThunk)
+        ->WriteEffStreamToLockedFile((int *)(unsigned long)g_pGlobalStateEff512ByteStream, 0, 0);
+    ((NETWORK_FileBackedLockedWriterView *)pWriteThunk)
+        ->WriteEffStreamToLockedFile((int *)(unsigned long)*(int *)pWriteThunk, 0, 0);
 
     pZeroBuffer = AllocateVSMemBlock(g_cbEffTransportMaxPacketBytes);
     cbPacket = g_cbEffTransportMaxPacketBytes;

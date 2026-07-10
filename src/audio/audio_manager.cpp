@@ -20,6 +20,22 @@ typedef int (*AUDIO_ReturnIntArgProc)(int nValue);
 typedef const char *(*AUDIO_NameProc)(void);
 typedef void (*AUDIO_ContextProc)(void *pPrimaryContext);
 typedef void *(*AUDIO_DeleteProc)(void *pObject, int fDelete);
+typedef void *(*AUDIO_ConstructPatchProc)(void *, void *, int, int, int, int);
+typedef void *(*AUDIO_ConstructBufferPoolProc)(void *, int, void *, int, int, int, int);
+typedef void (*AUDIO_PlayBufferProc)(void *, int, int);
+typedef void (*AUDIO_DestroyBufferProc)(int);
+
+/* Raw targets at 0047BF00/0047D310/0047D700/0047C8A0/0047C940/0047C990
+   overlap unlabeled/interior code in the current Ghidra ownership map. Keep
+   symbolic until their true function ownership is resolved. */
+static AUDIO_ConstructPatchProc g_AUDIO_ConstructPatchProc = 0;
+static AUDIO_ConstructBufferPoolProc g_AUDIO_ConstructBufferPoolProc = 0;
+static AUDIO_DestroyBufferProc g_AUDIO_DestroyBufferProc = 0;
+static AUDIO_PlayBufferProc g_AUDIO_PlayBufferProc = 0;
+static void (*g_AUDIO_PauseBufferProc)(void *, int) = 0;
+static void (*g_AUDIO_PlayBufferSlotProc)(void *, int) = 0;
+
+extern void *DeleteTimedFileBackedEffChannelWrapper(void *, BYTE);
 
 struct AUDIO_ResourceObject {
     void **m_pVtable;
@@ -258,7 +274,7 @@ static void *g_MciMusicBackendVtable[13] = {
     (void *)ReturnEmptyAudioBackendName,
 };
 static char g_szAudioManagerDescription[0x400];
-static void *g_AudioDynamicStringEntryVtable = (void *)0x0049ADB0;
+static void *g_AudioDynamicStringEntryVtable;
 static AUDIO_MciMusicBackend *g_pActiveMciMusicBackend = 0;
 static int g_nPreparedMciMusicTrackHandle = 0;
 static const char g_AUDIO_SequencerDeviceType[] = "sequencer";
@@ -793,7 +809,7 @@ int CreateWaveOutEffectInstance(void *pBackend, void *pPatchResource, int *pnEff
                 if (pPatchBuffer == 0) {
                     *(void **)(*(int *)((char *)pBackend + 0xa8) + i * 4) = 0;
                 } else {
-                    pPatchBuffer = ((void *(*)(void *, void *, int, int, int, int))0x0047BF00)(
+                    pPatchBuffer = g_AUDIO_ConstructPatchProc(
                         pPatchBuffer, pPatchResource, *(int *)((char *)pBackend + 0x8c), *(int *)((char *)pBackend + 0x84),
                         *(int *)((char *)pBackend + 0x14), *(int *)((char *)pBackend + 0x10));
                     *(void **)(*(int *)((char *)pBackend + 0xa8) + i * 4) = pPatchBuffer;
@@ -828,7 +844,7 @@ int FreeWaveOutEffectInstance(void *pBackend, int nEffectInstanceId) {
             if (*(int *)(*(int *)((char *)pBackend + 0xb0) + nOffset) == nEffectInstanceId) {
                 pPatchBuffer = *(void **)(*(int *)((char *)pBackend + 0xa8) + nOffset);
                 if (pPatchBuffer != 0) {
-                    ((void (*)(void *))0x0047BCC0)(pPatchBuffer);
+                    DeleteTimedFileBackedEffChannelWrapper(pPatchBuffer, 1);
                     FreeVSMemBlock(pPatchBuffer);
                 }
                 *(int *)(*(int *)((char *)pBackend + 0xac) + nOffset) = 0;
@@ -944,7 +960,7 @@ int CreateDirectSoundEffectInstance(void *pBackend, void *pPatchResource, int *p
                 if (pBufferPool == 0) {
                     *(void **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4) = 0;
                 } else {
-                    pBufferPool = ((void *(*)(void *, int, void *, int, int, int, int))0x0047D310)(
+                    pBufferPool = g_AUDIO_ConstructBufferPoolProc(
                         pBufferPool, *(int *)((char *)pBackend + 0x18), pPatchResource, *(int *)((char *)pBackend + 0x34),
                         *(int *)((char *)pBackend + 0x28), *(int *)((char *)pBackend + 0x24), nFlags);
                     *(void **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4) = pBufferPool;
@@ -966,7 +982,7 @@ int FreeDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId) {
 
     pBufferPool = *(unsigned int *)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4);
     if (pBufferPool != 0) {
-        ((void (*)(int))0x0047D700)(pBufferPool);
+        g_AUDIO_DestroyBufferProc((int)pBufferPool);
         FreeVSMemBlock((void *)(unsigned long)pBufferPool);
         *(int *)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4) = 0;
         return 1;
@@ -986,7 +1002,7 @@ int ReleaseAllDirectSoundEffectInstances(void *pBackend) {
         do {
             pBufferPool = *(unsigned int *)(*(int *)((char *)pBackend + 0x50) + nOffset);
             if (pBufferPool != 0) {
-                ((void (*)(int))0x0047D700)(pBufferPool);
+                g_AUDIO_DestroyBufferProc((int)pBufferPool);
                 FreeVSMemBlock((void *)(unsigned long)pBufferPool);
                 *(int *)(*(int *)((char *)pBackend + 0x50) + nOffset) = 0;
             }
@@ -1000,20 +1016,20 @@ int ReleaseAllDirectSoundEffectInstances(void *pBackend) {
 // FUNCTION: LEMBALL 0x0047E7E0
 void PlayDirectSoundEffectInstanceWithMappedVolume(void *pBackend, int nEffectInstanceId, unsigned char nVolume,
                                                    int fLoopEnabled) {
-    ((void (*)(void *, int, int))0x0047C8A0)(
+    g_AUDIO_PlayBufferProc(
         *(void **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4),
         ((unsigned int)nVolume * 10000) / 0xff - 10000, fLoopEnabled);
 }
 
 // FUNCTION: LEMBALL 0x0047E820
 void PauseDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId, int nBufferSlot) {
-    ((void (*)(void *, int))0x0047C940)(*(void **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4),
+    g_AUDIO_PauseBufferProc(*(void **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4),
                                         nBufferSlot);
 }
 
 // FUNCTION: LEMBALL 0x0047E840
 void PlayDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId, int nBufferSlot) {
-    ((void (*)(void *, int))0x0047C990)(*(void **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4),
+    g_AUDIO_PlayBufferSlotProc(*(void **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4),
                                         nBufferSlot);
 }
 

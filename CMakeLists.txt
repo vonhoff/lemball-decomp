@@ -55,11 +55,11 @@ if(LEMBALL_ENABLE_WIN32)
     )
     if(CMAKE_CXX_COMPILER_ID STREQUAL "OpenWatcom")
         set_target_properties(LEMBALL PROPERTIES
-            LINK_FLAGS "system nt_win library kernel32.lib,user32.lib,advapi32.lib,winmm.lib"
+            LINK_FLAGS "system nt_win library kernel32.lib,user32.lib,advapi32.lib,winmm.lib,ws2_32.lib,wsock32.lib"
         )
     else()
         set_target_properties(LEMBALL PROPERTIES
-            LINK_FLAGS "user32.lib advapi32.lib winmm.lib"
+            LINK_FLAGS "user32.lib advapi32.lib winmm.lib ws2_32.lib wsock32.lib"
         )
     endif()
 endif()

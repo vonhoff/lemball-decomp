@@ -53,7 +53,7 @@ static const char g_GAME_DefaultLevelFileName[] = "testlvl.lvl";
 static char g_GAME_ResourceSignatureDecodeBuffer[] = "01234567890123456789";
 static const char g_GAME_ResourceSignatureKey[] = "John Ketley is a Weatherman, and so is Michael Fish";
 static const char g_GAME_ResourceSignatureExpected[] = "Master v1.3";
-static void *g_GAME_PrimaryContextMenuDefinitionTable = (void *)0x0049e718;
+static void *g_GAME_PrimaryContextMenuDefinitionTable;
 static const unsigned int g_GAME_LevelPasswordPermutation[8] = {2, 0, 7, 4, 6, 1, 5, 3};
 int g_fRootHelperGeometryDispatchSuppressed = 0;
 
@@ -370,9 +370,9 @@ void *g_pActiveLevelGameMode = 0;
 void *g_pLevelTileGrid = 0;
 void *g_pLevelTileReachabilityHelper = 0;
 void *g_pLevelChunkStreamDispatcher = 0;
-int DAT_0049cf4c = 0;
-int DAT_0049cf50 = 0;
-int _DAT_004a640c = 0;
+int g_nGameAppState0 = 0;
+int g_nGameAppState1 = 0;
+int g_nGameAppState2 = 0;
 
 static void InitializeGameStubVtables(void) {
     static int g_fInitialized = 0;
@@ -785,8 +785,8 @@ void InitializeLevelGameMode(void *pLevelGameMode) {
         }
     }
 
-    DAT_0049cf4c = 0;
-    DAT_0049cf50 = 0;
+    g_nGameAppState0 = 0;
+    g_nGameAppState1 = 0;
     *(int *)((char *)g_pLevelProgressState + 0x0c) = 0;
     *(int *)(pModeBytes + 0x10c) = 0;
     ResetLevelFrameClockThunk();
@@ -841,7 +841,7 @@ void InitializeLevelGameMode(void *pLevelGameMode) {
     *(int *)(pModeBytes + 0xf0) = ((GAME_LevelProgressState *)g_pLevelProgressState)->m_nUnused04;
     *(int *)(pModeBytes + 0xf4) = ((GAME_LevelProgressState *)g_pLevelProgressState)->m_nUnused04;
     *(int *)(pModeBytes + 0xd8) = 0;
-    _DAT_004a640c = 0;
+    g_nGameAppState2 = 0;
     *(int *)(pModeBytes + 0xdc) = 1;
     *(int *)(pModeBytes + 0x60) = 0;
     *(int *)(pModeBytes + 0xe4) = 0;
