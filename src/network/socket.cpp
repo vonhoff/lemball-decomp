@@ -2,7 +2,7 @@
 #include "../engine/memory_arena.h"
 #include "../engine/runtime_init.h"
 #include "../platform/message_window.h"
-#include "network/nstream.h"
+#include "network/stream.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -395,15 +395,16 @@ extern int g_cbEffTransportCurrentPacketBytes;
 extern int g_cbEffTransportMaxPacketBytes;
 static int *g_pEffTransportReceivedPacketBytes;
 extern void SetEffStreamChannelAsyncErrorStatus(void *pChannelState, int nStatus);
-extern int ProcessEffTransportPacketHeader(int *pPacketHeader);
+struct NETWORK_EffTransportPacketProcessor {
+    int ProcessEffTransportPacketHeader(void);
+};
 
-extern void *ConstructEffTransportRuntimeChannelStack(void *pChannelStack, int fConstructEmbeddedObjects);
-extern void *ConstructEffStreamChannelState(void *pChannelState);
-extern void DestroyEffStreamChannelState(void *pChannelState);
+struct NETWORK_RuntimeChannelStack {
+    void *ConstructEffTransportRuntimeChannelStack(int fConstructEmbeddedObjects);
+};
 extern void *ConstructTimedEffStream(void *pStream, int fConstructChannelState);
 extern void DestroyTimedEffStream(void *pStream);
 extern void *ConstructDualHandleEffStream(void *pStream, int fConstructChannelState);
-extern void DestroyDualHandleEffStream(void *pStream);
 extern void InvokeTimedEffStreamServiceCallback(void *pStream, void *pArgument);
 
 void *ConstructTcpipSocketChannelStack(void *pObject, int fConstructEmbeddedObjects);
@@ -428,7 +429,7 @@ void *ConstructCompositeEffTransportStack(void *pObject, int fConstructEmbeddedO
         *(void **)(pbObjectBase + 0x11c) = g_NETWORK_CompositeEffTransportDualStreamVtable;
         *(void **)(pbObjectBase + 0x130) = g_NETWORK_CompositeEffTransportDualThunkVtable;
 
-        ConstructEffStreamChannelState(pComposite->m_abChannelState30);
+        ((NETWORK_EffStreamChannelState *)pComposite->m_abChannelState30)->ConstructEffStreamChannelState();
         ConstructTimedEffStream(pComposite->m_abTimedStream60, 0);
         ConstructDualHandleEffStream(pbObjectBase + 0xd8, 0);
 
@@ -502,7 +503,7 @@ void *ConstructSocketWindowEffChannel(void *pObject, int fConstructEmbeddedState
 
     if (fConstructEmbeddedState != 0) {
         pChannel->m_pEmbeddedStateVtable = (void **)g_NETWORK_SocketWindowEffChannelEmbeddedStateVtable;
-        ConstructEffStreamChannelState(pChannel->m_abChannelState);
+        ((NETWORK_EffStreamChannelState *)pChannel->m_abChannelState)->ConstructEffStreamChannelState();
     }
 
     ((PLATFORM_InvisibleMessageWindow *)pChannel)
@@ -568,7 +569,8 @@ int NETWORK_SocketAsyncMessageAdapter::ReceiveUdpPayloadFromConnectedSocket(void
         pPacketChannel->NotifyPacketReady();
     }
     *g_pEffTransportReceivedPacketBytes += g_cbEffTransportCurrentPacketBytes;
-    return ProcessEffTransportPacketHeader((int *)(pbThis + *(int *)(*(int *)pbThis + 8)));
+    return ((NETWORK_EffTransportPacketProcessor *)(pbThis + *(int *)(*(int *)pbThis + 8)))
+        ->ProcessEffTransportPacketHeader();
 }
 
 // FUNCTION: LEMBALL 0x0046FF90
@@ -652,8 +654,9 @@ int NETWORK_SocketAsyncMessageAdapter::ReceiveUdpPayloadFromSenderAddress(void) 
     pPeerAddress->m_nAddress = *(int *)abFrom;
     pszAddress = (char *)inet_ntoa((unsigned long)pPeerAddress->m_nAddress);
     strcpy(pPeerAddress->m_szAddress, pszAddress);
-    return ProcessEffTransportPacketHeader((int *)((char *)this +
-                                                    *(int *)(*(int *)this + 8)));
+    return ((NETWORK_EffTransportPacketProcessor *)((char *)this +
+                                                    *(int *)(*(int *)this + 8)))
+        ->ProcessEffTransportPacketHeader();
 }
 
 // FUNCTION: LEMBALL 0x00470030
@@ -672,7 +675,7 @@ void *ConstructTimedSocketEffChannelBundle(void *pObject, int fConstructEmbedded
         pBundle->m_pVtable00 = (void **)g_NETWORK_TimedSocketBundleBaseVtable;
         pBundle->m_pTimedStreamVtable8c = (void **)g_NETWORK_TimedSocketBundleTimedStreamVtable;
         pBundle->m_pSocketChannelVtabled0 = (void **)g_NETWORK_TimedSocketBundleSocketChannelVtable;
-        ConstructEffStreamChannelState(pBundle->m_abChannelState18);
+        ((NETWORK_EffStreamChannelState *)pBundle->m_abChannelState18)->ConstructEffStreamChannelState();
         ConstructTimedEffStream(pBundle->m_abTimedStream48, 0);
         ConstructSocketWindowEffChannel(pBundle->m_abSocketWindowC0, 0);
     }
@@ -798,7 +801,7 @@ void *ConstructTcpipEffTransportComposite(void *pObject, int fConstructEmbeddedO
             (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipCompositeTimedSocketBundleVtable;
         pComposite->m_pTimedSocketBundleDataVtable158 = (void **)g_NETWORK_TcpipCompositeTimedSocketBundleDataVtable;
 
-        ConstructEffStreamChannelState(pComposite->m_abChannelState30);
+        ((NETWORK_EffStreamChannelState *)pComposite->m_abChannelState30)->ConstructEffStreamChannelState();
         ConstructTimedEffStream(pComposite->m_abTimedStream60, 0);
         ConstructDualHandleEffStream(pComposite->m_abDualStreamD8, 0);
 
@@ -827,7 +830,7 @@ void *ConstructTcpipEffTransportComposite(void *pObject, int fConstructEmbeddedO
         ConstructTimedSocketEffChannelBundle(&pComposite->m_pTimedSocketBundleDataVtable158, 0);
     }
 
-    ConstructEffTransportRuntimeChannelStack(pObject, 0);
+    ((NETWORK_RuntimeChannelStack *)pObject)->ConstructEffTransportRuntimeChannelStack(0);
     pOffsets = pComposite->m_pTransportOffsets20;
     pPrimaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x1c + pOffsets->m_nPrimaryOffset);
     pSecondaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x1c + pOffsets->m_nSecondaryOffset);
@@ -1081,9 +1084,9 @@ void *DeleteCompositeEffTransportStackWrapper(void *pObject, BYTE fFreeMemory) {
     pView = (NETWORK_CompositeEffTransportStackWrapperView *)pObject;
     pbAllocationBase = (char *)pObject - 0x30;
     RestoreCompositeEffTransportVtables((int)(unsigned long)pObject);
-    DestroyDualHandleEffStream(pView->m_abDualStreamA8);
+    ((NETWORK_DualHandleEffStream *)pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
     DestroyTimedEffStream(pView->m_abTimedStream30);
-    DestroyEffStreamChannelState(pView->m_abChannelState00);
+    ((NETWORK_EffStreamChannelState *)pView->m_abChannelState00)->DestroyEffStreamChannelState();
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pbAllocationBase);
     }
@@ -1099,9 +1102,9 @@ void *DeleteCompositeTcpipSocketChannelStackWrapper(void *pObject, BYTE fFreeMem
     pbAllocationBase = (char *)pObject - 0x34;
     RestoreCompositeEffTransportVtables((int)(unsigned long)pObject - 4);
     DestroySocketWindowEffChannel((int)(unsigned long)pView->m_abSocketWindow128 + 0x20);
-    DestroyDualHandleEffStream(pView->m_abDualStreamA8);
+    ((NETWORK_DualHandleEffStream *)pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
     DestroyTimedEffStream(pView->m_abTimedStream30);
-    DestroyEffStreamChannelState(pView->m_abChannelState00);
+    ((NETWORK_EffStreamChannelState *)pView->m_abChannelState00)->DestroyEffStreamChannelState();
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pbAllocationBase);
     }
@@ -1116,9 +1119,9 @@ void *DeleteTcpipSocketChannelStackWrapper(void *pObject, BYTE fFreeMemory) {
     pView = (NETWORK_TcpipSocketChannelStackWrapperView *)pObject;
     pbAllocationBase = (char *)pObject - 8;
     DestroySocketWindowEffChannel((int)(unsigned long)pView->m_abSocketWindow128 + 0x20);
-    DestroyDualHandleEffStream(pView->m_abDualStreamA8);
+    ((NETWORK_DualHandleEffStream *)pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
     DestroyTimedEffStream(pView->m_abTimedStream30);
-    DestroyEffStreamChannelState(pView->m_abChannelState00);
+    ((NETWORK_EffStreamChannelState *)pView->m_abChannelState00)->DestroyEffStreamChannelState();
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pbAllocationBase);
     }
@@ -1133,8 +1136,8 @@ void *DeleteDualSocketWindowChannelStackWrapper(void *pObject, BYTE fFreeMemory)
     pView = (NETWORK_DualSocketWindowChannelStackWrapperView *)pObject;
     pbAllocationBase = (char *)pObject - 8;
     DestroySocketWindowEffChannel((int)(unsigned long)pView->m_abSocketWindowA4 + 0x20);
-    DestroyDualHandleEffStream(pView->m_abDualStream2c);
-    DestroyEffStreamChannelState(pView->m_abChannelState00);
+    ((NETWORK_DualHandleEffStream *)pView->m_abDualStream2c)->DestroyDualHandleEffStream();
+    ((NETWORK_EffStreamChannelState *)pView->m_abChannelState00)->DestroyEffStreamChannelState();
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pbAllocationBase);
     }
@@ -1150,7 +1153,7 @@ void *DeleteTimedSocketWindowChannelStackWrapper(void *pObject, BYTE fFreeMemory
     pbAllocationBase = (char *)pObject - 0x18;
     DestroySocketWindowEffChannel((int)(unsigned long)pView->m_abSocketWindowC8 + 0x20);
     DestroyTimedEffStream(pView->m_abTimedStream30);
-    DestroyEffStreamChannelState(pView->m_abChannelState00);
+    ((NETWORK_EffStreamChannelState *)pView->m_abChannelState00)->DestroyEffStreamChannelState();
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pbAllocationBase);
     }
@@ -1166,9 +1169,9 @@ void *DeleteTcpipEffTransportCompositeWrapper(void *pObject, BYTE fFreeMemory) {
     pbAllocationBase = (char *)pObject - 0x30;
     DestroyTcpipEffTransportComposite((int)(unsigned long)pObject);
     DestroySocketWindowEffChannel((int)(unsigned long)pView->m_abSocketWindow128 + 0x20);
-    DestroyDualHandleEffStream(pView->m_abDualStreamA8);
+    ((NETWORK_DualHandleEffStream *)pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
     DestroyTimedEffStream(pView->m_abTimedStream30);
-    DestroyEffStreamChannelState(pView->m_abChannelState00);
+    ((NETWORK_EffStreamChannelState *)pView->m_abChannelState00)->DestroyEffStreamChannelState();
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pbAllocationBase);
     }
@@ -1202,7 +1205,7 @@ void *AllocateTcpipEffTransportComposite(void) {
         (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_AllocatedTcpipCompositeTimedSocketThunkVtable;
     pComposite->m_pTimedSocketBundleDataVtable158 = (void **)g_NETWORK_AllocatedTcpipCompositeTimedSocketDataVtable;
 
-    ConstructEffStreamChannelState(pComposite->m_abChannelState30);
+    ((NETWORK_EffStreamChannelState *)pComposite->m_abChannelState30)->ConstructEffStreamChannelState();
     ConstructTimedEffStream(pComposite->m_abTimedStream60, 0);
     ConstructDualHandleEffStream(pComposite->m_abDualStreamD8, 0);
 
@@ -1272,7 +1275,7 @@ void *ConstructTcpipSocketChannelStack(void *pObject, int fConstructEmbeddedObje
             (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipSocketStackTimedSocketBundleVtable;
         pStack->m_pSocketWindowVtable12c = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipSocketStackSocketWindowVtable;
 
-        ConstructEffStreamChannelState(pStack->m_abChannelState08);
+        ((NETWORK_EffStreamChannelState *)pStack->m_abChannelState08)->ConstructEffStreamChannelState();
         ConstructTimedEffStream(pStack->m_abTimedStream38, 0);
         ConstructDualHandleEffStream(pStack->m_abDualStreamB0, 0);
 
@@ -1476,7 +1479,7 @@ void *NETWORK_SocketWindowChannelWrapper::DeleteSocketWindowChannelStateWrapper(
     void *pAllocationBase;
 
     DestroySocketWindowEffChannel((int)(unsigned long)this);
-    DestroyEffStreamChannelState(this);
+    ((NETWORK_EffStreamChannelState *)this)->DestroyEffStreamChannelState();
     pAllocationBase = (char *)this - 0x20;
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pAllocationBase);

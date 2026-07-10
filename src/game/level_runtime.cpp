@@ -30,7 +30,9 @@ static void *g_pReturnTrueVtableCallback[1] = {
 static void *g_pReturnTrueVtableCallbackThunk;
 static void *g_pLevelGameStateStreamVtable;
 
-extern void ResetEffStreamStateFields(void *pEffStreamSubobject);
+struct GAME_EffStream {
+    void ResetStateFields(void);
+};
 
 struct GAME_LevelChunkStreamDispatcher {
     int m_nRenderQueueNode00;
@@ -139,7 +141,7 @@ void *ConstructNetworkLevelChunkDeltaStreamThunk(void *pObject, int nOwner) {
 
     *(void **)pObject = g_pReturnTrueVtableCallback;
     *(int *)((char *)pObject + 4) = 3;
-    ResetEffStreamStateFields(pObject);
+    ((GAME_EffStream *)pObject)->ResetStateFields();
     *(void **)pObject = g_pReturnTrueVtableCallbackThunk;
     *(int *)((char *)pObject + 0x2c) = nOwner;
     *(int *)((char *)pObject + 0x30) = nOwner + 0x1d0;
@@ -156,7 +158,7 @@ void *ConstructLevelGameStateStreamThunk(void *pObject) {
     pStream = (int *)pObject;
     *(void **)pStream = g_pReturnTrueVtableCallback;
     pStream[1] = 10;
-    ResetEffStreamStateFields(pStream);
+    ((GAME_EffStream *)pStream)->ResetStateFields();
     *(void **)pStream = g_pLevelGameStateStreamVtable;
     pStream[6] += 0x10;
     pStream[9] = 1;

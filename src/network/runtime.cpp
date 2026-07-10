@@ -2,7 +2,8 @@
 #include "../engine/runtime_init.h"
 #include "../engine/memory_arena.h"
 #include "../platform/message_window.h"
-#include "network/nruntime.h"
+#include "network/runtime.h"
+#include "network/stream.h"
 
 #include <string.h>
 #include <new>
@@ -130,6 +131,15 @@ struct NETWORK_EffTransportHandleGroup {
     int m_nReserved08;
     int m_fPrimaryHandlePresent;
     int m_fSecondaryHandlePresent;
+};
+
+struct GAME_EffTransportHandleGroup {
+    void Reset(void);
+};
+
+struct GAME_EffStream {
+    void ResetStateFields(void);
+    int LoadEffStreamFromMemory(int nSourceBuffer);
 };
 
 struct NETWORK_EndpointState {
@@ -502,7 +512,6 @@ struct NETWORK_LockedEffTransportRecordSlot {
     int m_fAvailable28;
 };
 
-void ResetEffTransportHandleGroup(int *pHandleGroup);
 
 struct NETWORK_EffTransportPeer {
     void **m_pVtable;
@@ -534,7 +543,7 @@ void NETWORK_EffTransportPeer::Close(void) {
     pEndpointState = &pEndpointSlot->m_State;
     if (pEndpointState->m_fPrimaryHandleActive != 0 &&
         pEndpointState->m_fSecondaryHandleActive != 0) {
-        ResetEffTransportHandleGroup((int *)&pEndpointState->m_HandleGroup);
+        ((GAME_EffTransportHandleGroup *)&pEndpointState->m_HandleGroup)->Reset();
         if (m_fConnectComplete != 0) {
             pEndpointState->m_HandleGroup.m_pCallback->m_pVtable->m_pNotifyClosed(1);
         }
@@ -596,6 +605,10 @@ struct NETWORK_EffTransportRuntimeState {
     int BroadcastEffStreamToActivePeers(int *pStream);
 };
 
+struct NETWORK_RuntimeStartView {
+    int StartEffTransportRuntimeAndWaitReady(int nRuntimeKey, int cbMaxPacket);
+};
+
 struct NETWORK_RuntimeWindowBase {
     char m_abWindowBase[0x10];
     NETWORK_EffTransportRuntimeState m_RuntimeState;
@@ -644,9 +657,7 @@ extern void UnregisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pC
 extern void UnregisterEffTransportEventClient(void *pRuntimeWindow);
 extern void *g_pNonZrleVariantRenderEntryInitializeVtable[2];
 extern int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cEntries);
-extern void ResetEffStreamStateFields(void *pEffStreamSubobject);
 extern void BeginEffStreamWriteSession(void *pObject);
-extern void ResetEffTransportHandleGroup(int *pHandleGroup);
 extern void CheckEffTransportIdleTimeout(void *pObject);
 extern void ConfigureEffStreamPrimaryHandleGroup(void *pStream, int cHandles, int cbHandleData, int nMode);
 extern void ReleaseTimedEffStreamPrimaryHandle(int nTimedStream);
@@ -686,8 +697,6 @@ extern int g_cbEffTransportCurrentPacketBytes;
 extern void ReleaseGlobalEffTransportBuffer(void *pObject);
 extern void EndEffStreamWriteSession(void *pStream);
 extern void LoadEffStreamFromGlobalRange(void *pStream);
-extern int LoadEffStreamFromMemory(void *pStream, int nSourceBuffer);
-extern void SaveEffStreamToMemoryRange(void *pStream, int nTargetBuffer, int cbRange);
 void UnlinkAndDeleteEffTransportPeer(void *pRuntimeState, int nPeer);
 
 struct NETWORK_GlobalPacketRecordBuffer {
@@ -903,7 +912,7 @@ int NETWORK_EffTransportPacketProcessor::ProcessEffTransportPacketHeader(void) {
     unsigned short wSequence;
 
     pProcessor->m_pPacketHeader2c = (NETWORK_EffTransportPacketHeader *)g_pEffTransportPacketBuffer;
-    LoadEffStreamFromMemory(this, (int)(unsigned long)g_pEffTransportPacketBuffer);
+    ((GAME_EffStream *)this)->LoadEffStreamFromMemory((int)(unsigned long)g_pEffTransportPacketBuffer);
     pHeader = pProcessor->m_pPacketHeader2c;
     if (pHeader->m_nReserved00 != 0x56533039) {
         return 0;
@@ -992,7 +1001,8 @@ void *ClaimAckedEffTransportRecordPayload(void *pObject) {
 
     pPayload = 0;
     pReadStream = (NETWORK_EffTransportGlobalReadStream *)g_pEffTransportGlobalReadStream;
-    LoadEffStreamFromMemory(pReadStream, (int)(unsigned long)((char *)g_pEffTransportPacketBuffer + 0x10));
+    ((GAME_EffStream *)pReadStream)
+        ->LoadEffStreamFromMemory((int)(unsigned long)((char *)g_pEffTransportPacketBuffer + 0x10));
     if (pReadStream->m_wPacketKind2e != 0x100) {
         return 0;
     }
@@ -1003,12 +1013,12 @@ void *ClaimAckedEffTransportRecordPayload(void *pObject) {
     pRecord = pRecordTable->m_apRecords08[nRecordIndex];
     pSerializedHeader = (NETWORK_EffTransportPacketHeader *)(unsigned long)pRecord->m_pSerializedStream04;
 
-    LoadEffStreamFromMemory(pObject, pRecord->m_pSerializedStream04);
+    ((GAME_EffStream *)pObject)->LoadEffStreamFromMemory(pRecord->m_pSerializedStream04);
     if (pSerializedHeader->m_wSequence0a == pReadStream->m_wSequence2c && pRecord->m_fClaimed08 == 0) {
         pRecord->m_fClaimed08 = 1;
         pPayload = pRecord->m_pPayload0c;
     }
-    LoadEffStreamFromMemory(pObject, pRecord->m_pSerializedStream04);
+    ((GAME_EffStream *)pObject)->LoadEffStreamFromMemory(pRecord->m_pSerializedStream04);
     return pPayload;
 }
 
@@ -1439,7 +1449,7 @@ int NETWORK_PeerPayloadSenderState::SendReliableEffTransportPayload(void *pStrea
     cbPayload = pPayload->m_nWriteCursor1c - pPayload->m_pPayloadBuffer08;
 
     pHeader->m_fReliable0e = 1;
-    SaveEffStreamToMemoryRange(this, (int)(unsigned long)pvPayload, 0);
+    ((NETWORK_EffStreamBase *)this)->SaveEffStreamToMemoryRange((int)(unsigned long)pvPayload, 0);
     pRecord = (NETWORK_SimpleEffTransportRecordSlot *)(unsigned long)ClaimSimpleRecordSlotForPacketId(
         pSender->m_pRecordTable4c, pHeader->m_wSequence0a, pvPayload, (unsigned int)cbPayload, pStream);
     if (pRecord == 0) {
@@ -1465,8 +1475,8 @@ int RetryPendingEffTransportRecord(void *pObject, int nRecord) {
 
     pRecord = (NETWORK_SimpleEffTransportRecordSlot *)(unsigned long)nRecord;
     pSerializedHeader = (NETWORK_EffTransportPacketHeader *)(unsigned long)pRecord->m_pSerializedStream04;
-    LoadEffStreamFromMemory(pObject, pRecord->m_pSerializedStream04);
-    LoadEffStreamFromMemory(pObject, pRecord->m_pSerializedStream04);
+    ((GAME_EffStream *)pObject)->LoadEffStreamFromMemory(pRecord->m_pSerializedStream04);
+    ((GAME_EffStream *)pObject)->LoadEffStreamFromMemory(pRecord->m_pSerializedStream04);
     nSendResult =
         ((NETWORK_PeerPayloadSender *)pObject)
         ->SendPayload((void *)(unsigned long)pRecord->m_pSerializedStream04, pSerializedHeader->m_cbPayload04);
@@ -1521,14 +1531,14 @@ int NETWORK_PeerPayloadSenderState::SendFragmentedEffTransportPayload(void *pStr
         }
 
         if (pSender->m_nPendingFragmentIndex5c == 0) {
-            SaveEffStreamToMemoryRange(this, (int)(unsigned long)pbPayload, 0);
+            ((NETWORK_EffStreamBase *)this)->SaveEffStreamToMemoryRange((int)(unsigned long)pbPayload, 0);
             nSendResult = ((NETWORK_PeerPayloadSender *)pSender)->SendPayload(pbPayload, (int)cbPacket);
         } else {
             pSender->m_aFragmentPrefixWords60[0] = *(unsigned int *)(unsigned long)(pbPayload + 0);
             pSender->m_aFragmentPrefixWords60[1] = *(unsigned int *)(unsigned long)(pbPayload + 4);
             pSender->m_aFragmentPrefixWords60[2] = *(unsigned int *)(unsigned long)(pbPayload + 8);
             pSender->m_aFragmentPrefixWords60[3] = *(unsigned int *)(unsigned long)(pbPayload + 12);
-            SaveEffStreamToMemoryRange(this, (int)(unsigned long)pbPayload, 0);
+            ((NETWORK_EffStreamBase *)this)->SaveEffStreamToMemoryRange((int)(unsigned long)pbPayload, 0);
             nSendResult = ((NETWORK_PeerPayloadSender *)pSender)->SendPayload(pbPayload, (int)cbPacket);
             *(unsigned int *)(unsigned long)(pbPayload + 0) = pSender->m_aFragmentPrefixWords60[0];
             *(unsigned int *)(unsigned long)(pbPayload + 4) = pSender->m_aFragmentPrefixWords60[1];
@@ -1594,7 +1604,7 @@ int NETWORK_PeerPayloadSender::SendEffStreamPayloadWithTransportHeader(int nStre
             ++pSender->m_wUnreliableSequence32;
             pHeader->m_wSequence0a = pSender->m_wUnreliableSequence32;
             pHeader->m_fReliable0e = 0;
-            SaveEffStreamToMemoryRange(this, (int)(unsigned long)pvPayload, 0);
+            ((NETWORK_EffStreamBase *)this)->SaveEffStreamToMemoryRange((int)(unsigned long)pvPayload, 0);
             cbPayload = ((NETWORK_PeerPayloadSender *)pSender)->SendPayload(pvPayload, pHeader->m_cbPayload04);
         } else {
             ++pSender->m_wReliableSequence30;
@@ -1701,7 +1711,7 @@ void NETWORK_EffTransportPeer::FreeEffTransportPeerBuffers(void) {
     }
     nOffsets = *(int *)(pbObject + 4);
     nGroupDelta = *(int *)(nOffsets + 4);
-    ResetEffTransportHandleGroup((int *)(pbObject + nGroupDelta + 4));
+    ((GAME_EffTransportHandleGroup *)(pbObject + nGroupDelta + 4))->Reset();
 }
 
 // FUNCTION: LEMBALL 0x00460D70
@@ -1978,7 +1988,7 @@ void CheckEffTransportIdleTimeout(void *pObject) {
         if (dwNow - *(DWORD *)((char *)pObject + 0x3c) <= 10000) {
             return;
         }
-        ResetEffTransportHandleGroup((int *)pHandleGroup);
+        ((GAME_EffTransportHandleGroup *)pHandleGroup)->Reset();
         pHandleGroup->m_pCallback->m_pVtable->m_pNotifyClosed(1);
         return;
     }
@@ -1987,7 +1997,7 @@ void CheckEffTransportIdleTimeout(void *pObject) {
     }
     dwNow = timeGetTime();
     if (dwNow - *(DWORD *)((char *)pObject + 0x3c) > 10000) {
-        ResetEffTransportHandleGroup((int *)pHandleGroup);
+        ((GAME_EffTransportHandleGroup *)pHandleGroup)->Reset();
         pHandleGroup->m_pCallback->m_pVtable->m_pNotifyClosed(0);
     }
 }
@@ -2537,23 +2547,28 @@ void HandleEffTransportGoAheadConnect(void *pRuntimeState) {
 void NETWORK_EffTransportRuntimeState::DispatchEffTransportConnectControlStream(void *pPeerKey,
                                                                                   int nSourceBuffer) {
     ((void (*)(void))**(void ***)pPeerKey)();
-    if (LoadEffStreamFromMemory(g_pEffTransportRequestConnectControlStream, nSourceBuffer) != 0) {
+    if (((GAME_EffStream *)g_pEffTransportRequestConnectControlStream)
+            ->LoadEffStreamFromMemory(nSourceBuffer) != 0) {
         HandleEffTransportRequestConnect(pPeerKey);
         return;
     }
-    if (LoadEffStreamFromMemory(g_pEffTransportRequestNewPortControlStream, nSourceBuffer) != 0) {
+    if (((GAME_EffStream *)g_pEffTransportRequestNewPortControlStream)
+            ->LoadEffStreamFromMemory(nSourceBuffer) != 0) {
         HandleEffTransportRequestNewPort(pPeerKey);
         return;
     }
-    if (LoadEffStreamFromMemory(g_pEffTransportAuthoriseConnectControlStream, nSourceBuffer) != 0) {
+    if (((GAME_EffStream *)g_pEffTransportAuthoriseConnectControlStream)
+            ->LoadEffStreamFromMemory(nSourceBuffer) != 0) {
         HandleEffTransportAuthoriseConnect(this, pPeerKey);
         return;
     }
-    if (LoadEffStreamFromMemory(g_pEffTransportGoAheadConnectControlStream, nSourceBuffer) != 0) {
+    if (((GAME_EffStream *)g_pEffTransportGoAheadConnectControlStream)
+            ->LoadEffStreamFromMemory(nSourceBuffer) != 0) {
         HandleEffTransportGoAheadConnect(this);
         return;
     }
-    if (LoadEffStreamFromMemory(g_pEffTransportFailedConnectControlStream, nSourceBuffer) != 0) {
+    if (((GAME_EffStream *)g_pEffTransportFailedConnectControlStream)
+            ->LoadEffStreamFromMemory(nSourceBuffer) != 0) {
         ForwardEffTransportFailedConnect(this, pPeerKey);
     }
 }
@@ -2628,7 +2643,7 @@ void ReleaseGlobalEffTransportBuffer(void *pObject) {
     pEndpointSlot =
         (NETWORK_TransportEndpointSlot *)((char *)pChannelOwner + pChannelOwner->m_pOffsets->m_nEndpointStateSlotOffset);
     pEndpointState = &pEndpointSlot->m_State;
-    ResetEffTransportHandleGroup((int *)pEndpointState);
+    ((GAME_EffTransportHandleGroup *)pEndpointState)->Reset();
 }
 
 // FUNCTION: LEMBALL 0x00460830
@@ -2667,8 +2682,9 @@ void DispatchPrefixedEffTransportControlStream(void *pObject, int nDispatchType,
 
 // FUNCTION: LEMBALL 0x004608F0
 void LoadEffStreamFromGlobalRange(void *pStream) {
-    SaveEffStreamToMemoryRange(pStream, (int)(unsigned long)g_pszEffTransportBroadcastStatusPayload,
-                               g_cbEffTransportBroadcastStatusPayload + 0x11);
+    ((NETWORK_EffStreamBase *)pStream)->SaveEffStreamToMemoryRange(
+        (int)(unsigned long)g_pszEffTransportBroadcastStatusPayload,
+        g_cbEffTransportBroadcastStatusPayload + 0x11);
 }
 
 // FUNCTION: LEMBALL 0x00462720
@@ -2715,7 +2731,7 @@ void *ConstructEffTransportRequestConnectControlStream(void *pObject, char *pszS
     pStream = (NETWORK_RequestConnectControlStream *)pObject;
     pStream->m_Header.m_pVtable = g_NETWORK_ReturnTrueVtable;
     pStream->m_Header.m_nEventCode = 0;
-    ResetEffStreamStateFields(pObject);
+    ((GAME_EffStream *)pObject)->ResetStateFields();
     pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamNameVtable;
     pStream->m_Header.m_pszStreamName = pszStreamName;
 
@@ -2748,7 +2764,7 @@ void *ConstructEffTransportAuthoriseConnectControlStream(void *pObject, char *ps
     pStream = (NETWORK_AuthoriseConnectControlStream *)pObject;
     pStream->m_Header.m_pVtable = g_NETWORK_ReturnTrueVtable;
     pStream->m_Header.m_nEventCode = 0;
-    ResetEffStreamStateFields(pObject);
+    ((GAME_EffStream *)pObject)->ResetStateFields();
     pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamNameVtable;
     pStream->m_Header.m_pszStreamName = pszStreamName;
 
@@ -2769,7 +2785,7 @@ void *ConstructEffTransportGoAheadConnectControlStream(void *pObject, char *pszS
     pStream = (NETWORK_AuthoriseConnectControlStream *)pObject;
     pStream->m_Header.m_pVtable = g_NETWORK_ReturnTrueVtable;
     pStream->m_Header.m_nEventCode = 0;
-    ResetEffStreamStateFields(pObject);
+    ((GAME_EffStream *)pObject)->ResetStateFields();
     pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamNameVtable;
     pStream->m_Header.m_pszStreamName = pszStreamName;
 
@@ -2790,7 +2806,7 @@ void *ConstructEffTransportFailedConnectControlStream(void *pObject, char *pszSt
     pStream = (NETWORK_FailedConnectControlStream *)pObject;
     pStream->m_Header.m_pVtable = g_NETWORK_ReturnTrueVtable;
     pStream->m_Header.m_nEventCode = 0;
-    ResetEffStreamStateFields(pObject);
+    ((GAME_EffStream *)pObject)->ResetStateFields();
     pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamNameVtable;
     pStream->m_Header.m_pszStreamName = pszStreamName;
 
@@ -2906,7 +2922,7 @@ int NETWORK_EffTransportRuntimeState::InitializeEffTransportRuntimeGlobals(void)
     } else {
         *(void **)pObject = g_NETWORK_ReturnTrueVtable;
         *(int *)((char *)pObject + 4) = 1;
-        ResetEffStreamStateFields(pObject);
+        ((GAME_EffStream *)pObject)->ResetStateFields();
         *(void **)pObject = g_NETWORK_EffTransportGlobalWriteStreamVtable;
         BeginEffStreamWriteSession(pObject);
         g_pEffTransportGlobalWriteStream = pObject;
@@ -2918,7 +2934,7 @@ int NETWORK_EffTransportRuntimeState::InitializeEffTransportRuntimeGlobals(void)
     } else {
         *(void **)pObject = g_NETWORK_ReturnTrueVtable;
         *(int *)((char *)pObject + 4) = 2;
-        ResetEffStreamStateFields(pObject);
+        ((GAME_EffStream *)pObject)->ResetStateFields();
         *(void **)pObject = g_NETWORK_EffTransportGlobalReadStreamVtable;
         *(int *)((char *)pObject + 0x18) = *(int *)((char *)pObject + 0x18) + 4;
         g_pEffTransportGlobalReadStream = pObject;
@@ -2943,19 +2959,19 @@ int NETWORK_EffTransportRuntimeState::InitializeEffTransportRuntimeGlobals(void)
 }
 
 // FUNCTION: LEMBALL 0x00461AA0
-int StartEffTransportRuntimeAndWaitReady(void *pRuntimeState, int nRuntimeKey, int cbMaxPacket) {
+int NETWORK_RuntimeStartView::StartEffTransportRuntimeAndWaitReady(int nRuntimeKey, int cbMaxPacket) {
     NETWORK_EffTransportRuntimeState *pState;
     NETWORK_EffTransportRuntimeStateVtable *pVtable;
     DWORD dwStartTime;
     DWORD dwNow;
     DWORD dwDelayStart;
 
-    pState = (NETWORK_EffTransportRuntimeState *)pRuntimeState;
+    pState = (NETWORK_EffTransportRuntimeState *)this;
     pVtable = (NETWORK_EffTransportRuntimeStateVtable *)pState->m_RenderQueueNode.m_pVtable;
     pState->m_nRuntimeKey = nRuntimeKey;
     pState->m_fStartRequested = 1;
     g_cbEffTransportMaxPacketBytes = cbMaxPacket;
-    pVtable->m_pServiceTransport(pRuntimeState);
+    pVtable->m_pServiceTransport(this);
 
     dwStartTime = timeGetTime();
     if (pState->m_fTransportInitialized == 0) {
@@ -2967,7 +2983,7 @@ int StartEffTransportRuntimeAndWaitReady(void *pRuntimeState, int nRuntimeKey, i
             if (9999 < dwNow - dwStartTime) {
                 break;
             }
-            pVtable->m_pWaitForTransportMessage(pRuntimeState);
+            pVtable->m_pWaitForTransportMessage(this);
         } while (pState->m_fTransportInitialized == 0);
 
         if (pState->m_fTransportInitialized == 0) {
@@ -3005,7 +3021,7 @@ int StartEffTransportRuntimeAndWaitReady(void *pRuntimeState, int nRuntimeKey, i
                 dwNow = timeGetTime();
             } while (dwNow - dwDelayStart < 100);
 
-            pVtable->m_pServiceTransport(pRuntimeState);
+            pVtable->m_pServiceTransport(this);
             if (pState->m_fRuntimeActive == 0) {
                 break;
             }
@@ -3029,7 +3045,7 @@ int StartEffTransportRuntimeAndWaitReady(void *pRuntimeState, int nRuntimeKey, i
     }
 
     pState->m_fShutdownRequested = 1;
-    pVtable->m_pServiceTransport(pRuntimeState);
+    pVtable->m_pServiceTransport(this);
 
     dwStartTime = timeGetTime();
     do {

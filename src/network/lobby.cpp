@@ -57,6 +57,12 @@ struct NETWORK_EffTransportPeerDescriptor {
 struct NETWORK_EffTransportPeer {
     void **m_pVtable;
     NETWORK_EffTransportPeerDescriptor *m_pDescriptor;
+
+    void Close(void);
+};
+
+struct GAME_EffStream {
+    int LoadEffStreamFromMemory(int nSourceBuffer);
 };
 
 struct NETWORK_EffTransportPeerStateSlot {
@@ -168,8 +174,6 @@ extern void *g_pNetworkLobbyTransportController;
 extern void *g_pActiveNetworkLobbyScreen;
 extern void *g_pNetworkLobbyVsnetRuntime;
 
-extern void CloseEffTransportPeer(int nPeer);
-extern int LoadEffStreamFromMemory(void *pStream, int nSourceBuffer);
 extern void QueueEffStreamWriteEvent(void *pObject, int nPayload);
 extern void MarkNetworkLobbySelectedPeerDisconnected(void *pVsnetRuntime);
 extern void SetGeometryChildEnabled(void *pGeometryChild, int fEnabled);
@@ -427,7 +431,7 @@ int HandleNetworkLobbyVsnetRuntimeEvent(void *pVsnetRuntime, unsigned short *pEv
             nPeer = pType3Event->m_nPeer10;
             if (g_nSelectedNetworkLobbyPeerId != 0) {
                 AppendCStringToStream(g_pStatusOutputStream, g_NETWORK_GameConnectionRequestDuringGameText);
-                CloseEffTransportPeer(nPeer);
+                ((NETWORK_EffTransportPeer *)(unsigned long)nPeer)->Close();
                 return 1;
             }
 
@@ -450,7 +454,7 @@ int HandleNetworkLobbyVsnetRuntimeEvent(void *pVsnetRuntime, unsigned short *pEv
                                          *pnTrackedPeer);
                 pRuntime->m_fSelectionNeedsReset = 1;
             } else {
-                CloseEffTransportPeer(nPeer);
+                ((NETWORK_EffTransportPeer *)(unsigned long)nPeer)->Close();
             }
         }
         return 1;
@@ -466,11 +470,11 @@ int HandleNetworkLobbyVsnetRuntimeEvent(void *pVsnetRuntime, unsigned short *pEv
             pStreamState->m_fBusy = 0;
             return 1;
         }
-        LoadEffStreamFromMemory(pRuntime->m_pSelectedPeerStatusStream,
-                                (int)(unsigned long)((char *)pStreamState->m_pHeader + 0x10));
+        ((GAME_EffStream *)pRuntime->m_pSelectedPeerStatusStream)
+            ->LoadEffStreamFromMemory((int)(unsigned long)((char *)pStreamState->m_pHeader + 0x10));
         pStreamState->m_fBusy = 0;
         if (pRuntime->m_pSelectedPeerStatusStream->m_nU32Payload != 0) {
-            CloseEffTransportPeer(nPeer);
+            ((NETWORK_EffTransportPeer *)(unsigned long)nPeer)->Close();
         }
         return 1;
 

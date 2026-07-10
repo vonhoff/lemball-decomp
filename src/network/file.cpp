@@ -1,16 +1,14 @@
 #include "../game/game_app.h"
 #include "../engine/memory_arena.h"
 #include "../engine/runtime_init.h"
-#include "network/nruntime.h"
-#include "network/nstream.h"
+#include "network/runtime.h"
+#include "network/stream.h"
 #include <string.h>
 #include <stdio.h>
 
 extern int ReturnTrueVtableCallback(void);
 extern int ReturnTrueVtableCallbackSecondary(void);
 extern void NoopVtableCallback(void);
-extern "C" void _amsg_exit(int nMessage);
-
 // FUNCTION: LEMBALL 0x00462F50
 size_t WriteAndFlushFileBuffer(FILE *pFile, void *pBuffer, size_t cbBuffer) {
     size_t cbWritten;
@@ -22,7 +20,7 @@ size_t WriteAndFlushFileBuffer(FILE *pFile, void *pBuffer, size_t cbBuffer) {
 
 // FUNCTION: LEMBALL 0x0047FCA0
 void CrtFatalRuntimeError0x19(void) {
-    _amsg_exit(0x19);
+    ExitProcess(0x19);
 }
 
 extern "C" {
@@ -524,6 +522,8 @@ struct NETWORK_EffStreamRecordSlot {
     DWORD m_cbPayload;
     char m_szSourceName[0x15];
     char m_szTargetName[0x17];
+
+    NETWORK_EffStreamRecordSlot *Initialize(void);
 };
 
 struct NETWORK_ConstructionAdjustorVtable;
@@ -1252,15 +1252,13 @@ extern char *g_pszFileBasedNetworkLocalHostName;
 extern char *g_pszFileBasedNetworkConfiguredPath;
 extern int g_cbEffTransportMaxPacketBytes;
 
-extern void ResetEffStreamStateFields(void *pEffStreamSubobject);
-extern void *ConstructEffStreamChannelState(void *pChannelState);
-extern void DestroyEffStreamChannelState(void *pChannelState);
 extern void *ConstructTimedEffStream(void *pStream, int fConstructChannelState);
 extern void DestroyTimedEffStream(void *pStream);
 extern void InvokeTimedEffStreamServiceCallback(void *pStream, void *pArgument);
 extern void *ConstructDualHandleEffStream(void *pStream, int fConstructChannelState);
-extern void DestroyDualHandleEffStream(void *pStream);
-extern void *ConstructEffTransportRuntimeChannelStack(void *pChannelStack, int fConstructEmbeddedObjects);
+struct NETWORK_RuntimeChannelStack {
+    void *ConstructEffTransportRuntimeChannelStack(int fConstructEmbeddedObjects);
+};
 extern void *ConstructCompositeEffTransportStack(void *pObject, int fConstructEmbeddedObjects);
 extern void RestoreCompositeEffTransportVtables(int nObjectBasePlus0x30);
 struct NETWORK_FileBackedLockedWriterView {
@@ -1269,18 +1267,14 @@ struct NETWORK_FileBackedLockedWriterView {
 extern void BeginEffStreamWriteSession(void *pStream);
 extern void EndEffStreamWriteSession(void *pStream);
 extern void ScheduleNetworkRuntimeTimerEvent(void *pRuntimeWindow, int nTicks);
-extern int LoadEffStreamFromMemory(void *pStream, int nSourceBuffer);
+struct GAME_EffStream {
+    void ResetStateFields(void);
+    int LoadEffStreamFromMemory(int nSourceBuffer);
+};
 struct NETWORK_EffTransportPacketProcessor {
     int ProcessEffTransportPacketHeader(void);
 };
 extern void SetEffStreamChannelAsyncErrorStatus(void *pChannelState, int nStatus);
-extern void WriteEffStreamU16BE(void *pStream, unsigned short nValue);
-extern void WriteEffStreamU32BE(void *pStream, unsigned int nValue);
-extern void WriteEffStreamBytes(void *pStream, const void *pvSource, unsigned int cbWrite);
-extern void ReadEffStreamU16BE(void *pStream, unsigned char *pbTarget);
-extern void ReadEffStreamU32BE(void *pStream, unsigned char *pbTarget);
-extern void ReadEffStreamBytes(void *pStream, void *pvTarget, unsigned int cbRead);
-extern void SaveEffStreamToMemoryRange(void *pStream, int nTargetBuffer, int cbRange);
 
 extern "C" DWORD timeGetTime(void);
 
@@ -1480,7 +1474,6 @@ int ReadWin32FileWrapper(void *pFileWrapper, LPVOID pvTarget, DWORD cbRead) {
         AppendCStringToStream(g_pErrorOutputStream, " bytes read instead of ");
         AppendIntToStream(g_pErrorOutputStream, cbRead);
         AppendCStringToStream(g_pErrorOutputStream, "in file ");
-        AppendCStringToStream(g_pErrorOutputStream, "in file ");
         AppendCStringToStream(g_pErrorOutputStream, (const char *)(unsigned long)pWrapper->m_nReserved04);
         AppendCStringToStream(g_pErrorOutputStream, " which is ");
         AppendUIntToStream(g_pErrorOutputStream, GetWin32FileWrapperLength(pWrapper));
@@ -1538,21 +1531,18 @@ void *ClearFileBackedEffChannelStateWord(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x00479540
-void *InitializeEffStreamRecordSlot(void *pSlot) {
-    NETWORK_EffStreamRecordSlot *pRecordSlot;
-
-    pRecordSlot = (NETWORK_EffStreamRecordSlot *)pSlot;
-    pRecordSlot->m_pVtable = g_NETWORK_ReturnTrueVtable;
-    pRecordSlot->m_nReserved04 = 0;
-    ResetEffStreamStateFields(pSlot);
-    pRecordSlot->m_wObservedMarker = 1;
-    *(int *)((char *)pSlot + 0x18) = *(int *)((char *)pSlot + 0x18) + 0x30;
-    pRecordSlot->m_wCommittedMarker = 0;
-    pRecordSlot->m_pVtable = g_NETWORK_EffRecordSlotVtable;
-    pRecordSlot->m_cbPayload = 0;
-    pRecordSlot->m_szTargetName[0] = '\0';
-    pRecordSlot->m_szSourceName[0] = '\0';
-    return pSlot;
+NETWORK_EffStreamRecordSlot *NETWORK_EffStreamRecordSlot::Initialize(void) {
+    m_pVtable = g_NETWORK_ReturnTrueVtable;
+    m_nReserved04 = 0;
+    ((GAME_EffStream *)this)->ResetStateFields();
+    m_wObservedMarker = 1;
+    *(int *)((char *)this + 0x18) += 0x30;
+    m_wCommittedMarker = 0;
+    m_pVtable = g_NETWORK_EffRecordSlotVtable;
+    m_cbPayload = 0;
+    m_szTargetName[0] = '\0';
+    m_szSourceName[0] = '\0';
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x00479580
@@ -1561,11 +1551,11 @@ void SaveEffStreamRecordSlot(void *pSlot) {
 
     pRecordSlot = (NETWORK_EffStreamRecordSlot *)pSlot;
     ++pRecordSlot->m_wCommittedMarker;
-    WriteEffStreamU16BE(pRecordSlot, pRecordSlot->m_wCommittedMarker);
+    ((NETWORK_EffStreamBase *)pRecordSlot)->WriteEffStreamU16BE(pRecordSlot->m_wCommittedMarker);
     pRecordSlot->m_wObservedMarker = pRecordSlot->m_wCommittedMarker;
-    WriteEffStreamU32BE(pRecordSlot, pRecordSlot->m_cbPayload);
-    WriteEffStreamBytes(pRecordSlot, pRecordSlot->m_szTargetName, 0x15);
-    WriteEffStreamBytes(pRecordSlot, pRecordSlot->m_szSourceName, 0x15);
+    ((NETWORK_EffStreamBase *)pRecordSlot)->WriteEffStreamU32BE(pRecordSlot->m_cbPayload);
+    ((NETWORK_EffStreamBase *)pRecordSlot)->WriteEffStreamBytes(pRecordSlot->m_szTargetName, 0x15);
+    ((NETWORK_EffStreamBase *)pRecordSlot)->WriteEffStreamBytes(pRecordSlot->m_szSourceName, 0x15);
 }
 
 // FUNCTION: LEMBALL 0x004795D0
@@ -1573,11 +1563,11 @@ void LoadEffStreamRecordSlot(void *pSlot) {
     NETWORK_EffStreamRecordSlot *pRecordSlot;
 
     pRecordSlot = (NETWORK_EffStreamRecordSlot *)pSlot;
-    ReadEffStreamU16BE(pRecordSlot, (unsigned char *)&pRecordSlot->m_wCommittedMarker);
+    ((NETWORK_EffStreamBase *)pRecordSlot)->ReadEffStreamU16BE((unsigned char *)&pRecordSlot->m_wCommittedMarker);
     if (pRecordSlot->m_wObservedMarker != pRecordSlot->m_wCommittedMarker) {
-        ReadEffStreamU32BE(pRecordSlot, (unsigned char *)&pRecordSlot->m_cbPayload);
-        ReadEffStreamBytes(pRecordSlot, pRecordSlot->m_szTargetName, 0x15);
-        ReadEffStreamBytes(pRecordSlot, pRecordSlot->m_szSourceName, 0x15);
+        ((NETWORK_EffStreamBase *)pRecordSlot)->ReadEffStreamU32BE((unsigned char *)&pRecordSlot->m_cbPayload);
+        ((NETWORK_EffStreamBase *)pRecordSlot)->ReadEffStreamBytes(pRecordSlot->m_szTargetName, 0x15);
+        ((NETWORK_EffStreamBase *)pRecordSlot)->ReadEffStreamBytes(pRecordSlot->m_szSourceName, 0x15);
         return;
     }
     *(int *)((char *)pSlot + 0x20) += 0x2e;
@@ -1591,7 +1581,7 @@ NETWORK_EffStreamRecordSlotTable *NETWORK_EffStreamRecordSlotTable::Construct(in
 
     m_pVtable = g_NETWORK_ReturnTrueVtable;
     m_nRecordHeaderOffset04 = 0;
-    ResetEffStreamStateFields(this);
+    ((GAME_EffStream *)this)->ResetStateFields();
     m_cSlots = cSlots;
     m_pVtable = g_NETWORK_EffRecordSlotTableVtable;
 
@@ -1603,7 +1593,7 @@ NETWORK_EffStreamRecordSlotTable *NETWORK_EffStreamRecordSlotTable::Construct(in
         pSlot = (NETWORK_EffStreamRecordSlot *)(pSlotStorage + 1);
         i = cSlots;
         while (--i >= 0) {
-            InitializeEffStreamRecordSlot(pSlot);
+            pSlot->Initialize();
             ++pSlot;
         }
         m_pSlots = (NETWORK_EffStreamRecordSlot *)(pSlotStorage + 1);
@@ -1675,7 +1665,7 @@ void SaveEffStreamRecordSlotTable(void *pObject) {
 
     pSlot = pTable->m_pSlots;
     do {
-        SaveEffStreamToMemoryRange(pSlot, pTable->m_nSaveRangeCursor1c, 0);
+        ((NETWORK_EffStreamBase *)pSlot)->SaveEffStreamToMemoryRange(pTable->m_nSaveRangeCursor1c, 0);
         pTable->m_nSaveRangeCursor1c += *(int *)((char *)pSlot + 0x1c) - *(int *)((char *)pSlot + 8);
         ++i;
         pSlot = (NETWORK_EffStreamRecordSlot *)((char *)pSlot + 0x60);
@@ -1699,7 +1689,7 @@ void LoadEffStreamRecordSlotTable(void *pObject) {
     pSlot = pTable->m_pSlots;
     do {
         nSource = pTable->m_nLoadSourceCursor20;
-        LoadEffStreamFromMemory(pSlot, nSource);
+        ((GAME_EffStream *)pSlot)->LoadEffStreamFromMemory(nSource);
         if (*(int *)((char *)pSlot + 0x20) != 0) {
             pTable->m_nLoadSourceCursor20 = *(int *)((char *)pSlot + 0x20);
         }
@@ -1717,7 +1707,7 @@ NETWORK_Eff512ByteStateStream *NETWORK_Eff512ByteStateStream::Construct() {
     m_pVtable = g_NETWORK_ReturnTrueVtable;
     i = 0;
     m_nReserved04 = 0;
-    ResetEffStreamStateFields(this);
+    ((GAME_EffStream *)this)->ResetStateFields();
     m_pVtable = g_NETWORK_EffStateStreamVtable;
     pbPayload = (unsigned char *)AllocateVSMemBlock(0x200);
     m_pbStateBytes2c = pbPayload;
@@ -1780,7 +1770,7 @@ void WriteEff512ByteStatePayload(void *pObject) {
     NETWORK_Eff512ByteStateStream *pStateStream;
 
     pStateStream = (NETWORK_Eff512ByteStateStream *)pObject;
-    WriteEffStreamBytes(pStateStream, pStateStream->m_pbStateBytes2c, 0x200);
+    ((NETWORK_EffStreamBase *)pStateStream)->WriteEffStreamBytes(pStateStream->m_pbStateBytes2c, 0x200);
 }
 
 // FUNCTION: LEMBALL 0x0047B880
@@ -1788,7 +1778,7 @@ void LoadEff512ByteStatePayload(void *pObject) {
     NETWORK_Eff512ByteStateStream *pStateStream;
 
     pStateStream = (NETWORK_Eff512ByteStateStream *)pObject;
-    ReadEffStreamBytes(pStateStream, pStateStream->m_pbStateBytes2c, 0x200);
+    ((NETWORK_EffStreamBase *)pStateStream)->ReadEffStreamBytes(pStateStream->m_pbStateBytes2c, 0x200);
 }
 
 // FUNCTION: LEMBALL 0x0047B890
@@ -1812,7 +1802,7 @@ void ClearFileBackedEffChannelAsyncErrorStatus(void *pObject) {
 
 // FUNCTION: LEMBALL 0x0047B910
 void *DeleteEffChannelStateSideBufferWrapper(void *pObject, BYTE fFreeMemory) {
-    DestroyEffStreamChannelState(pObject);
+    ((NETWORK_EffStreamChannelState *)pObject)->DestroyEffStreamChannelState();
     *(void **)((char *)pObject - 0x14) = g_NETWORK_CrtFatalRuntimeErrorThunk;
     if (*(void **)((char *)pObject - 0x10) != 0) {
         FreeVSMemBlock(*(void **)((char *)pObject - 0x10));
@@ -1872,7 +1862,7 @@ void *ConstructDualFileBackedEffChannel(void *pObject, int fConstructEmbeddedObj
         pFront->m_pThunk0c = (NETWORK_FileBackedChannelViewOffsets *)&g_NETWORK_FileBackedDualChannelStateOffsets;
         pFront->m_pDualStreamOffsets88 = &g_NETWORK_FileBackedDualStreamOffsets;
         pFront->m_pFileThunkb4 = (NETWORK_FileWrapperThunkOffsets *)&g_NETWORK_FileBackedDualFileWrapperThunkOffsets;
-        ConstructEffStreamChannelState(pConstructed->m_abChannelState18);
+        ((NETWORK_EffStreamChannelState *)pConstructed->m_abChannelState18)->ConstructEffStreamChannelState();
         ConstructDualHandleEffStream(pConstructed->m_abDualHandleStream44, 0);
         pConstructed->m_FileWrapper9c.m_pVtable = g_NETWORK_CrtFatalRuntimeErrorThunk;
         pConstructed->m_FileWrapper9c.m_nReserved04 = 0;
@@ -1921,7 +1911,7 @@ void *ConstructTimedFileBackedEffChannel(void *pObject, int fConstructEmbeddedOb
         pFront->m_pThunk0c = (NETWORK_FileBackedChannelViewOffsets *)&g_NETWORK_FileBackedTimedChannelStateOffsets;
         pFront->m_pTimedStreamOffsets8c = &g_NETWORK_FileBackedTimedStreamOffsets;
         pFront->m_pFileThunkd4 = (NETWORK_FileWrapperThunkOffsets *)&g_NETWORK_FileBackedTimedFileWrapperThunkOffsets;
-        ConstructEffStreamChannelState(pConstructed->m_abChannelState18);
+        ((NETWORK_EffStreamChannelState *)pConstructed->m_abChannelState18)->ConstructEffStreamChannelState();
         ConstructTimedEffStream(&pConstructed->m_TimedStream48, 0);
         pConstructed->m_FileWrapperbc.m_pVtable = g_NETWORK_CrtFatalRuntimeErrorThunk;
         pConstructed->m_FileWrapperbc.m_nReserved04 = 0;
@@ -2005,7 +1995,7 @@ void *ConstructEmbeddedFileBackedEffChannelStack(void *pObject, int fConstructEm
         pStackFront->m_pPrimaryThunkOffsets138 = &g_NETWORK_EmbeddedFileBackedPrimaryThunkOffsets;
         pStackFront->m_pTimedFileViewOffsets14c = &g_NETWORK_EmbeddedFileBackedTimedFileViewOffsets;
 
-        ConstructEffStreamChannelState(pConstructed->m_abChannelState08);
+        ((NETWORK_EffStreamChannelState *)pConstructed->m_abChannelState08)->ConstructEffStreamChannelState();
         ConstructTimedEffStream(&pConstructed->m_TimedStream38, 0);
         ConstructDualHandleEffStream(pConstructed->m_abDualHandleStreamB0, 0);
 
@@ -2089,7 +2079,7 @@ void *ConstructGlobalStateFileBackedEffComposite(void *pObject, int fConstructEm
         pFront->m_pEmbeddedStackDualStreamOffsets1a8 = (NETWORK_EmbeddedStackFileViewOffsets *)&g_NETWORK_GlobalStateCompositeEmbeddedStackDataOffsets;
         pEmbeddedStackFront->m_pFinalThunkOffsets = &g_NETWORK_GlobalStateCompositeEmbeddedStackFinalOffsets;
 
-        ConstructEffStreamChannelState(pFront->m_abChannelState60);
+        ((NETWORK_EffStreamChannelState *)pFront->m_abChannelState60)->ConstructEffStreamChannelState();
         ConstructTimedEffStream(pFront->m_abTimedStream90, 0);
         ConstructDualHandleEffStream(pFront->m_abDualStream108, 0);
 
@@ -2124,7 +2114,7 @@ void *ConstructGlobalStateFileBackedEffComposite(void *pObject, int fConstructEm
     pInitialStream = &pFront->m_InitialStream24;
     pInitialStream->m_nReserved04 = 0;
     pInitialStream->m_pVtable = g_NETWORK_ReturnTrueVtable;
-    ResetEffStreamStateFields(pInitialStream);
+    ((GAME_EffStream *)pInitialStream)->ResetStateFields();
     pInitialStream->m_nSerializedLength18 += 2;
     pInitialStream->m_wFlags2c = 0;
     pInitialStream->m_pVtable = g_NETWORK_GlobalStateCompositeInitialVtable;
@@ -2144,7 +2134,7 @@ void *ConstructGlobalStateFileBackedEffComposite(void *pObject, int fConstructEm
     pSecondaryThunk->m_nThisDelta = 0;
     pTertiaryThunk->m_nThisDelta = 0;
 
-    ConstructEffTransportRuntimeChannelStack(pObject, 0);
+    ((NETWORK_RuntimeChannelStack *)pObject)->ConstructEffTransportRuntimeChannelStack(0);
 
     *(void **)pObject = g_NETWORK_GlobalStateCompositeFinalVtable;
     pPrimaryThunk->m_pVtable = g_NETWORK_GlobalStateCompositeFinalPrimaryThunkVtable;
@@ -2262,9 +2252,9 @@ void *DeleteGlobalStateFileBackedEffCompositeWrapper(void *pObject, BYTE fFreeMe
     if (pView->m_pSideBuffer108 != 0) {
         FreeVSMemBlock(pView->m_pSideBuffer108);
     }
-    DestroyDualHandleEffStream(pView->m_abDualStreamA8);
+    ((NETWORK_DualHandleEffStream *)pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
     DestroyTimedEffStream(&pView->m_TimedStream30);
-    DestroyEffStreamChannelState(&pView->m_abChannelState00);
+    ((NETWORK_EffStreamChannelState *)&pView->m_abChannelState00)->DestroyEffStreamChannelState();
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pbAllocationBase);
     }
@@ -2314,7 +2304,7 @@ void *ConstructDualSlotTableFileBackedEffComposite(void *pObject, int fConstruct
         pFront->m_pEmbeddedStackDualStreamOffsets1ac = (NETWORK_EmbeddedStackFileViewOffsets *)&g_NETWORK_DualSlotCompositeEmbeddedStackDataOffsets;
         pEmbeddedStackFront->m_pFinalThunkOffsets = &g_NETWORK_DualSlotCompositeEmbeddedStackFinalOffsets;
 
-        ConstructEffStreamChannelState(pFront->m_abChannelState64);
+        ((NETWORK_EffStreamChannelState *)pFront->m_abChannelState64)->ConstructEffStreamChannelState();
         ConstructTimedEffStream(pFront->m_abTimedStream94, 0);
         ConstructDualHandleEffStream(pFront->m_abDualStream10c, 0);
 
@@ -2349,7 +2339,7 @@ void *ConstructDualSlotTableFileBackedEffComposite(void *pObject, int fConstruct
     pInitialStream = &pFront->m_InitialStream30;
     pInitialStream->m_nReserved04 = 0;
     pInitialStream->m_pVtable = g_NETWORK_ReturnTrueVtable;
-    ResetEffStreamStateFields(pInitialStream);
+    ((GAME_EffStream *)pInitialStream)->ResetStateFields();
     pInitialStream->m_nSerializedLength18 += 2;
     pInitialStream->m_wFlags2c = 0;
     pInitialStream->m_pVtable = g_NETWORK_GlobalStateCompositeInitialVtable;
@@ -2500,9 +2490,9 @@ void *DeleteCompositeFileBackedEffChannelWrapper(void *pObject, BYTE fFreeMemory
     if (pView->m_pSideBuffer108 != 0) {
         FreeVSMemBlock(pView->m_pSideBuffer108);
     }
-    DestroyDualHandleEffStream(pView->m_abDualStreamA8);
+    ((NETWORK_DualHandleEffStream *)pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
     DestroyTimedEffStream(&pView->m_TimedStream30);
-    DestroyEffStreamChannelState(&pView->m_abChannelState00);
+    ((NETWORK_EffStreamChannelState *)&pView->m_abChannelState00)->DestroyEffStreamChannelState();
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pbAllocationBase);
     }
@@ -2530,7 +2520,7 @@ void *DeleteTimedFileBackedEffChannelWrapper(void *pObject, BYTE fFreeMemory) {
         FreeVSMemBlock(pView->m_pSideBufferA8);
     }
     DestroyTimedEffStream(&pView->m_TimedStream30);
-    DestroyEffStreamChannelState(&pView->m_abChannelState00);
+    ((NETWORK_EffStreamChannelState *)&pView->m_abChannelState00)->DestroyEffStreamChannelState();
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pbAllocationBase);
     }
@@ -2665,9 +2655,9 @@ void *DeleteEmbeddedFileBackedEffChannelStackWrapper(void *pObject, BYTE fFreeMe
     if (pView->m_pSideBuffer108 != 0) {
         FreeVSMemBlock(pView->m_pSideBuffer108);
     }
-    DestroyDualHandleEffStream(pView->m_abDualStreamA8);
+    ((NETWORK_DualHandleEffStream *)pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
     DestroyTimedEffStream(&pView->m_TimedStream30);
-    DestroyEffStreamChannelState(&pView->m_abChannelState00);
+    ((NETWORK_EffStreamChannelState *)&pView->m_abChannelState00)->DestroyEffStreamChannelState();
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pbAllocationBase);
     }
@@ -2738,9 +2728,9 @@ void *DeleteDualSlotTableFileBackedEffCompositeWrapper(void *pObject, BYTE fFree
     if (pView->m_pSideBuffer108 != 0) {
         FreeVSMemBlock(pView->m_pSideBuffer108);
     }
-    DestroyDualHandleEffStream(pView->m_abDualStreamA8);
+    ((NETWORK_DualHandleEffStream *)pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
     DestroyTimedEffStream(&pView->m_TimedStream30);
-    DestroyEffStreamChannelState(&pView->m_abChannelState00);
+    ((NETWORK_EffStreamChannelState *)&pView->m_abChannelState00)->DestroyEffStreamChannelState();
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pbAllocationBase);
     }
@@ -2873,8 +2863,8 @@ int NETWORK_LockedEffStreamFileRangeView::LoadLockedEffStreamFromFileRange(void)
     }
     nResult = ReadWin32FileWrapper(pFileWrapper, (LPVOID)g_pEffTransportPacketBuffer, cbStream);
     if (nResult != 0) {
-        LoadEffStreamFromMemory(g_pGlobalStateEff512ByteStream,
-                                (int)(unsigned long)g_pEffTransportPacketBuffer);
+    ((GAME_EffStream *)g_pGlobalStateEff512ByteStream)
+        ->LoadEffStreamFromMemory((int)(unsigned long)g_pEffTransportPacketBuffer);
         *(int *)(pObject + 0x54) = 1;
         return 1;
     }
@@ -2956,7 +2946,7 @@ int NETWORK_FileBackedRecordTableView::LoadEffStreamFromFileBackedRange(void *pS
         return 0;
     }
 
-    LoadEffStreamFromMemory(pStream, (int)(unsigned long)g_pEffTransportPacketBuffer);
+    ((GAME_EffStream *)pStream)->LoadEffStreamFromMemory((int)(unsigned long)g_pEffTransportPacketBuffer);
     if (fKeepLocked == 0 && pFileWrapper->m_pVtable->m_pUnlockRange(pFileWrapper, dwOffset, cbRead) == 0) {
         return 0;
     }
@@ -3173,7 +3163,8 @@ void NETWORK_FileBackedPendingRecordServiceView::ServicePendingFileBackedEffReco
                                                               pRecordTable->m_nAccumulatedStreamLength18);
         if (nLockResult != 0) {
             nSlotCount = 0;
-            LoadEffStreamFromMemory((void *)(unsigned long)pRecordTable->m_pVtable, (int)(unsigned long)g_pEffTransportPacketBuffer);
+            ((GAME_EffStream *)(unsigned long)pRecordTable->m_pVtable)
+                ->LoadEffStreamFromMemory((int)(unsigned long)g_pEffTransportPacketBuffer);
             fLoadedOne = 0;
             if (0 < pChannelState->m_cSlots14) {
                 do {
@@ -3203,7 +3194,7 @@ void NETWORK_FileBackedPendingRecordServiceView::ServicePendingFileBackedEffReco
                                                               pRecordTable->m_nAccumulatedStreamLength18);
         if (nLockResult != 0) {
             pSlot = &pRecordTable->m_pSlots[pRecordTable->m_nPendingSlot10];
-            LoadEffStreamFromMemory(pSlot, (int)(unsigned long)g_pEffTransportPacketBuffer);
+            ((GAME_EffStream *)pSlot)->LoadEffStreamFromMemory((int)(unsigned long)g_pEffTransportPacketBuffer);
             ((NETWORK_FileBackedRecordTableView *)this)
                 ->LoadFileBackedEffRecordPayload(pRecordTable->m_nPendingSlot10);
             pSlot->m_wObservedMarker = pSlot->m_wCommittedMarker;

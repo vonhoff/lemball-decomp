@@ -282,7 +282,9 @@ extern void *ConstructEffStreamPayloadSize8(void *pObject);
 extern void RegisterEffTransportEventClient(void *pRuntimeWindow, void *pClient);
 extern void *ConstructNetworkLobbyPeerClearCloseStream(void *pObject);
 extern void *ConstructNetworkLobbyPeerDirtyConfirmStream(void *pObject);
-extern void ResetEffStreamStateFields(void *pEffStreamSubobject);
+struct GAME_EffStream {
+    void ResetStateFields(void);
+};
 extern void *ConstructMainGameVariantResourceBundle(void *pBundle, void *pPrimaryContext, unsigned short nVariantMode);
 extern void InitializeManagedEntitySlotTablesThunk(void *pLevelGameMode);
 extern void ResetLevelFrameClockThunk(void);
@@ -733,7 +735,7 @@ void *ConstructLevelGameMode(void *pModeObject, GAME_MainContext *pMainContext) 
     pMode->m_pEffStreamVtable = (void **)&g_GAME_GenericScreenVtableSlots[10];
     pMode->m_pReserved20 = 0;
     pMode->m_pDeleteThunkVtable = (void **)g_pSimpleModeDeleteVtable;
-    ResetEffStreamStateFields(&pMode->m_pEffStreamVtable);
+    ((GAME_EffStream *)&pMode->m_pEffStreamVtable)->ResetStateFields();
     pMode->m_nReserved124 = 0;
     pMode->m_nReserved128 = 0;
     pMode->m_nReserved12C = 0;

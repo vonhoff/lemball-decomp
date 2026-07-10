@@ -1,5 +1,5 @@
-#ifndef LEMBALL_NETWORK_NRUNTIME_H
-#define LEMBALL_NETWORK_NRUNTIME_H
+#ifndef LEMBALL_NETWORK_RUNTIME_H
+#define LEMBALL_NETWORK_RUNTIME_H
 
 struct NETWORK_PeerPayloadSender {
     virtual void Reserved00(void) = 0;

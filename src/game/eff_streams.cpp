@@ -35,6 +35,9 @@ struct GAME_EffStream {
     int m_fHasPayload;
     int m_nQueuedPayload;
     int m_nU32Payload;
+
+    void ResetStateFields(void);
+    int LoadEffStreamFromMemory(int nSourceBuffer);
 };
 
 struct GAME_NetworkLobbyPeerEntryStream {
@@ -78,6 +81,8 @@ struct GAME_EffTransportHandleGroup {
     int m_nReserved08;
     int m_fPrimaryActive;
     int m_fSecondaryActive;
+
+    void Reset(void);
 };
 
 struct GAME_EffTransportEndpointState {
@@ -206,14 +211,18 @@ extern "C" DWORD timeGetTime(void);
 extern int g_nSelectedNetworkLobbyPeerId;
 extern void *g_pActiveNetworkRuntimeWindow;
 extern void *g_pNonZrleVariantRenderEntryInitializeVtable[2];
+struct NETWORK_EffTransportPeer {
+    void Close(void);
+};
+struct NETWORK_RuntimeStartView {
+    int StartEffTransportRuntimeAndWaitReady(int nRuntimeKey, int cbMaxPacket);
+};
 extern void InitializeRenderQueueNodeBase(void *pRenderQueueNode);
 extern int StartFileBasedNetworkMessageThread(void);
 extern int StartTcpipNetworkMessageThread(void);
 extern void WINAPI ConfigureFileBasedNetworkPathsWrapper(char *pszBasePath, char *pszNetworkPath);
-extern int StartEffTransportRuntimeAndWaitReady(void *pRuntimeWindow, int nRuntimeKey, int cbMaxPacket);
 extern int StopFileBasedNetworkMessageThread(void);
 extern int StopTcpipNetworkMessageThread(void);
-void ResetEffStreamStateFields(void *pEffStreamSubobject);
 void *ConstructNetworkLobbyPeerClearCloseStream(void *pObject);
 
 // FUNCTION: LEMBALL 0x004615F0
@@ -228,13 +237,10 @@ void *GetShiftedRecordSlotByPacketId(void *pSlotTable, int nPacketId) {
 }
 
 // FUNCTION: LEMBALL 0x0045F280
-int LoadEffStreamFromMemory(void *pStream, int nSourceBuffer) {
-    GAME_EffStream *pEffStream;
-
-    pEffStream = (GAME_EffStream *)pStream;
-    pEffStream->m_nQueuedPayload = nSourceBuffer;
-    if (pEffStream->m_pVtable->m_pLoadFromMemoryHeader() != 0) {
-        pEffStream->m_pVtable->m_pLoadFromMemoryBody();
+int GAME_EffStream::LoadEffStreamFromMemory(int nSourceBuffer) {
+    m_nQueuedPayload = nSourceBuffer;
+    if (m_pVtable->m_pLoadFromMemoryHeader() != 0) {
+        m_pVtable->m_pLoadFromMemoryBody();
         return 1;
     }
     return 0;
@@ -266,7 +272,7 @@ void *ConstructNetworkLobbySelectedPeerStatusStream(void *pObject) {
     pStream = (GAME_EffStream *)pObject;
     pStream->m_pVtable = (GAME_EffStreamVtable *)g_EFF_BaseStreamVtable;
     pStream->m_nEventCode = 4;
-    ResetEffStreamStateFields(pObject);
+    pStream->ResetStateFields();
     pStream->m_pVtable = (GAME_EffStreamVtable *)g_EFF_NetworkLobbySelectedPeerStatusVtable;
     pStream->m_cbSerializedLength += 4;
     return pObject;
@@ -279,7 +285,7 @@ void *ConstructNetworkLobbyPeerEntryStream(void *pObject) {
     pStream = (GAME_NetworkLobbyPeerEntryStream *)pObject;
     pStream->m_Base.m_pVtable = (GAME_EffStreamVtable *)g_EFF_BaseStreamVtable;
     pStream->m_Base.m_nEventCode = 5;
-    ResetEffStreamStateFields(pObject);
+    pStream->m_Base.ResetStateFields();
     pStream->m_Base.m_pVtable = (GAME_EffStreamVtable *)g_EFF_NetworkLobbyPeerEntryVtable;
     pStream->m_fAcceptedPeer = 0;
     pStream->m_nPeerEntryState = 0;
@@ -363,7 +369,8 @@ void *ConstructNetworkLobbyVsnetRuntime(void *pObject, char *pszFileBasedNetwork
             ConfigureFileBasedNetworkPathsWrapper(pszFileBasedNetworkRoot, (char *)g_EFF_DefaultNetworkPath);
         }
 
-        if (StartEffTransportRuntimeAndWaitReady(g_pActiveNetworkRuntimeWindow, 0, 0x400) != 0) {
+        if (((NETWORK_RuntimeStartView *)g_pActiveNetworkRuntimeWindow)
+                ->StartEffTransportRuntimeAndWaitReady(0, 0x400) != 0) {
             SetEffTransportSecondaryHandleParams(g_pActiveNetworkRuntimeWindow, 100, 0x10);
             SetEffTransportPrimaryHandleParams(g_pActiveNetworkRuntimeWindow, 4, 4, 0);
             pRuntime->m_fSelectedPeerDisconnected = 0;
@@ -466,23 +473,21 @@ void LoadStreamFromShiftedRecordSlotAndClear(void *pTransportPeer, void *pStream
                                                                      ((GAME_EffStream *)pStream)->m_nEventCode);
     pLockVtable = (GAME_ShiftedRecordLockVtable *)pSlot->m_pLockVtable;
     pLockVtable->m_pLock();
-    LoadEffStreamFromMemory(pStream, pSlot->m_pSerializedPayload + 0x10);
+    ((GAME_EffStream *)pStream)->LoadEffStreamFromMemory(pSlot->m_pSerializedPayload + 0x10);
     pLockVtable->m_pUnlock();
     pSlot->m_fHasPayload = 0;
 }
 
 // FUNCTION: LEMBALL 0x0045F720
-void ResetEffTransportHandleGroup(int *pHandleGroup) {
-    GAME_EffTransportHandleGroup *pGroup;
+void GAME_EffTransportHandleGroup::Reset(void) {
     int nResult;
 
-    pGroup = (GAME_EffTransportHandleGroup *)pHandleGroup;
-    if (pGroup->m_fPrimaryActive != 0) {
-        pGroup->m_fSecondaryActive = 0;
-        pGroup->m_fPrimaryActive = 0;
-        nResult = pGroup->m_pCallback->m_pVtable->m_pBeginReset();
+    if (m_fPrimaryActive != 0) {
+        m_fSecondaryActive = 0;
+        m_fPrimaryActive = 0;
+        nResult = m_pCallback->m_pVtable->m_pBeginReset();
         if (nResult == -1) {
-            pGroup->m_pCallback->m_pVtable->m_pFinishReset();
+            m_pCallback->m_pVtable->m_pFinishReset();
         }
     }
 }
@@ -503,36 +508,14 @@ void QueueEffStreamWriteEvent(void *pObject, int nPayload) {
     }
 }
 
-// FUNCTION: LEMBALL 0x00460FB0
-void CloseEffTransportPeer(int nPeer) {
-    GAME_EffTransportPeer *pPeer;
-    GAME_EffTransportEndpointSlot *pEndpointSlot;
-    GAME_EffTransportEndpointState *pState;
-
-    pPeer = (GAME_EffTransportPeer *)(unsigned long)nPeer;
-    pEndpointSlot =
-        (GAME_EffTransportEndpointSlot *)((char *)pPeer + pPeer->m_pDescriptor->m_nEndpointStateSlotOffset);
-    pState = &pEndpointSlot->m_State;
-    if (pState->m_fPrimaryHandlePresent != 0 && pState->m_fSecondaryHandlePresent != 0) {
-        ResetEffTransportHandleGroup((int *)&pState->m_HandleGroup);
-        if (pPeer->m_pConnectionState != 0) {
-            pState->m_HandleGroup.m_pCallback->m_pVtable->m_pNotifyClosed(1);
-        }
-    }
-    pPeer->m_fClosed = 1;
-}
-
 // FUNCTION: LEMBALL 0x0045EE80
-void ResetEffStreamStateFields(void *pEffStreamSubobject) {
-    GAME_EffStream *pStream;
-
-    pStream = (GAME_EffStream *)pEffStreamSubobject;
-    pStream->m_nQueuedPayload = 0;
-    pStream->m_fHasPayload = 0;
-    pStream->m_fOwnsBuffer = 0;
-    pStream->m_pvOwnedBuffer = 0;
-    pStream->m_pvBufferEnd = 0;
-    pStream->m_pvWriteCursor = 0;
+void GAME_EffStream::ResetStateFields(void) {
+    m_fHasPayload = 0;
+    m_nQueuedPayload = 0;
+    m_fOwnsBuffer = 0;
+    m_pvOwnedBuffer = 0;
+    m_cbSerializedLength = 0;
+    m_cWriteSessions = 0;
 }
 
 // FUNCTION: LEMBALL 0x004453B0
@@ -542,7 +525,7 @@ void *ConstructEffStreamPayloadSize8(void *pObject) {
     pStream = (GAME_EffStream *)pObject;
     pStream->m_pVtable = (GAME_EffStreamVtable *)g_EFF_BaseStreamVtable;
     pStream->m_nEventCode = 8;
-    ResetEffStreamStateFields(pObject);
+    pStream->ResetStateFields();
     pStream->m_pVtable = (GAME_EffStreamVtable *)g_EFF_PayloadSize8Vtable;
     pStream->m_cbSerializedLength += 8;
     pStream->m_fHasPayload = 1;
@@ -556,7 +539,7 @@ void *ConstructNetworkLobbyU32PayloadStream(void *pObject, int nEventCode) {
     pStream = (GAME_EffStream *)pObject;
     pStream->m_pVtable = (GAME_EffStreamVtable *)g_EFF_BaseStreamVtable;
     pStream->m_nEventCode = nEventCode;
-    ResetEffStreamStateFields(pObject);
+    pStream->ResetStateFields();
     pStream->m_pVtable = (GAME_EffStreamVtable *)g_EFF_NetworkLobbyU32PayloadVtable;
     pStream->m_cbSerializedLength += 4;
     pStream->m_fHasPayload = 1;
@@ -618,7 +601,7 @@ void UnregisterNetworkLobbyVsnetRuntimeFromTransport(void *pVsnetRuntime) {
                 break;
             }
         }
-        CloseEffTransportPeer(g_nSelectedNetworkLobbyPeerId);
+        ((NETWORK_EffTransportPeer *)(unsigned long)g_nSelectedNetworkLobbyPeerId)->Close();
         g_nSelectedNetworkLobbyPeerId = 0;
     }
 

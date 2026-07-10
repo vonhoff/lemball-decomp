@@ -16,11 +16,11 @@ set(LEMBALL_SOURCES
     src/game/level_status.cpp
     src/game/variant_resource_loader.cpp
     src/game/variant_resource_manager.cpp
-    src/network/nlobby.cpp
-    src/network/nfile.cpp
-    src/network/nsocket.cpp
-    src/network/nruntime.cpp
-    src/network/nstream.cpp
+    src/network/lobby.cpp
+    src/network/file.cpp
+    src/network/socket.cpp
+    src/network/runtime.cpp
+    src/network/stream.cpp
     src/main.cpp
     src/audio/audio_manager.cpp
     src/engine/fixed_math.cpp
