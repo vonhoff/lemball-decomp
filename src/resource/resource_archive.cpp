@@ -49,6 +49,10 @@ struct MOGLOAD_TypedResourceObjectVtable {
 
 void *DeleteCachedResourceObjectBase(void *pObject, int fDelete);
 void InitializeTypedResourceObjectBaseVtable(void *pObject);
+void CopyBufferIntoTypedResourceObjectAndParse(void *pObject, unsigned int *pSource,
+                                               unsigned int nUnused, unsigned int cbBuffer);
+void ParseIntResourceDescriptor(void);
+void UnloadTypedResourceObject(void *pObject, int fReleaseMode);
 void EnsureTypedResourceObjectLoaded(void *pObject);
 void ReleaseTypedResourceObjectIfLoaded(void *pObject, int fReleaseMode);
 int GetField14NeedsAgeIncrement(void *pObject);
@@ -62,6 +66,12 @@ void NoopVfunc12(void);
 void ClearResourceTypeTag(void *pObject);
 int GetField28GetMemorySize(void *pObject);
 void *DeleteTypedResourceObject(void *pObject, int fDelete);
+void *DestroyGRTSResourceAndFree(void *pObject, int fDelete);
+void SetGRTSResourceTypeTag(void *pObject);
+void *DestroyBitmapResource(void *pObject, int fDelete);
+void *DestroyPaletteResource(void *pObject, int fDelete);
+void ParseBitmapResourceDescriptor(void *pObject);
+void ParsePaletteResourceDescriptor(void *pObject);
 void *DestroyEffResource(void *pObject, int fDelete);
 static void *g_MOGLOAD_MemoryArenaStatusEntryVtable[8] = {
     (void *)WriteNamedStatusEntry,
@@ -75,14 +85,14 @@ static void *g_MOGLOAD_MemoryArenaStatusEntryVtable[8] = {
 };
 static void *g_MOGLOAD_CachedResourceObjectBaseVtable[15] = {
     (void *)DeleteCachedResourceObjectBase,
-    (void *)NoopVfunc09,
-    (void *)NoopVfunc09,
+    (void *)CopyBufferIntoTypedResourceObjectAndParse,
+    (void *)ParseIntResourceDescriptor,
     (void *)GetField14NeedsAgeIncrement,
     (void *)GetField1CVfunc04,
     (void *)GetField14Vfunc05,
     (void *)ReturnZeroVfunc06,
     (void *)EnsureTypedResourceObjectLoaded,
-    (void *)ReleaseTypedResourceObjectIfLoaded,
+    (void *)UnloadTypedResourceObject,
     (void *)NoopVfunc09,
     (void *)GetEffResourceDataPointer,
     (void *)NoopOnLoadVfunc11,
@@ -92,14 +102,14 @@ static void *g_MOGLOAD_CachedResourceObjectBaseVtable[15] = {
 };
 static void *g_MOGLOAD_TypedResourceObjectVtable[15] = {
     (void *)DeleteTypedResourceObject,
-    (void *)NoopVfunc09,
-    (void *)NoopVfunc09,
+    (void *)CopyBufferIntoTypedResourceObjectAndParse,
+    (void *)ParseIntResourceDescriptor,
     (void *)GetField14NeedsAgeIncrement,
     (void *)GetField1CVfunc04,
     (void *)GetField14Vfunc05,
     (void *)ReturnZeroVfunc06,
     (void *)EnsureTypedResourceObjectLoaded,
-    (void *)ReleaseTypedResourceObjectIfLoaded,
+    (void *)UnloadTypedResourceObject,
     (void *)NoopVfunc09,
     (void *)GetEffResourceDataPointer,
     (void *)NoopOnLoadVfunc11,
@@ -107,16 +117,67 @@ static void *g_MOGLOAD_TypedResourceObjectVtable[15] = {
     (void *)ClearResourceTypeTag,
     (void *)GetField28GetMemorySize,
 };
-static void *g_MOGLOAD_EffResourceObjectVtable[15] = {
-    (void *)DestroyEffResource,
-    (void *)NoopVfunc09,
-    (void *)NoopVfunc09,
+static void *g_MOGLOAD_StringResourceVtable[15] = {
+    (void *)DestroyGRTSResourceAndFree,
+    (void *)CopyBufferIntoTypedResourceObjectAndParse,
+    (void *)ParseIntResourceDescriptor,
     (void *)GetField14NeedsAgeIncrement,
     (void *)GetField1CVfunc04,
     (void *)GetField14Vfunc05,
     (void *)ReturnZeroVfunc06,
     (void *)EnsureTypedResourceObjectLoaded,
-    (void *)ReleaseTypedResourceObjectIfLoaded,
+    (void *)UnloadTypedResourceObject,
+    (void *)NoopVfunc09,
+    (void *)GetEffResourceDataPointer,
+    (void *)NoopOnLoadVfunc11,
+    (void *)NoopVfunc12,
+    (void *)SetGRTSResourceTypeTag,
+    (void *)GetField28GetMemorySize,
+};
+static void *g_MOGLOAD_EffResourceObjectVtable[15] = {
+    (void *)DestroyEffResource,
+    (void *)CopyBufferIntoTypedResourceObjectAndParse,
+    (void *)ParseIntResourceDescriptor,
+    (void *)GetField14NeedsAgeIncrement,
+    (void *)GetField1CVfunc04,
+    (void *)GetField14Vfunc05,
+    (void *)ReturnZeroVfunc06,
+    (void *)EnsureTypedResourceObjectLoaded,
+    (void *)UnloadTypedResourceObject,
+    (void *)NoopVfunc09,
+    (void *)GetEffResourceDataPointer,
+    (void *)NoopOnLoadVfunc11,
+    (void *)NoopVfunc12,
+    (void *)ClearResourceTypeTag,
+    (void *)GetField28GetMemorySize,
+};
+static void *g_MOGLOAD_BitmapResourceVtable[15] = {
+    (void *)DestroyBitmapResource,
+    (void *)CopyBufferIntoTypedResourceObjectAndParse,
+    (void *)ParseBitmapResourceDescriptor,
+    (void *)GetField14NeedsAgeIncrement,
+    (void *)GetField1CVfunc04,
+    (void *)GetField14Vfunc05,
+    (void *)ReturnZeroVfunc06,
+    (void *)EnsureTypedResourceObjectLoaded,
+    (void *)UnloadTypedResourceObject,
+    (void *)NoopVfunc09,
+    (void *)GetEffResourceDataPointer,
+    (void *)NoopOnLoadVfunc11,
+    (void *)NoopVfunc12,
+    (void *)ClearResourceTypeTag,
+    (void *)GetField28GetMemorySize,
+};
+static void *g_MOGLOAD_PaletteResourceVtable[15] = {
+    (void *)DestroyPaletteResource,
+    (void *)CopyBufferIntoTypedResourceObjectAndParse,
+    (void *)ParsePaletteResourceDescriptor,
+    (void *)GetField14NeedsAgeIncrement,
+    (void *)GetField1CVfunc04,
+    (void *)GetField14Vfunc05,
+    (void *)ReturnZeroVfunc06,
+    (void *)EnsureTypedResourceObjectLoaded,
+    (void *)UnloadTypedResourceObject,
     (void *)NoopVfunc09,
     (void *)GetEffResourceDataPointer,
     (void *)NoopOnLoadVfunc11,
@@ -150,7 +211,10 @@ extern void *DestroyMemoryArenaBaseStateReturnThis(void *pArena);
 
 void *g_pCachedResourceObjectBaseDeleteVtable = g_MOGLOAD_CachedResourceObjectBaseVtable;
 void *g_pDestroyGRTSResourceAndFreeThunk = g_MOGLOAD_TypedResourceObjectVtable;
+void *g_pStringResourceVtable = g_MOGLOAD_StringResourceVtable;
 void *g_pDestroyEffResourceAndFreeThunk = g_MOGLOAD_EffResourceObjectVtable;
+void *g_pBitmapResourceVtable = g_MOGLOAD_BitmapResourceVtable;
+void *g_pPaletteResourceVtable = g_MOGLOAD_PaletteResourceVtable;
 
 extern void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile, int nLine);
 void DestroyResourceArchiveDirectoryTree(int pDirectoryNode);
@@ -301,6 +365,71 @@ void *DestroyEffResource(void *pObject, int fDelete) {
         FreeVSMemBlock(pObject);
     }
     return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045EB80
+void *DestroyBitmapResource(void *pObject, int fDelete) {
+    InitializeTypedResourceObjectBaseVtable(pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045EAC0
+void *DestroyGRTSResourceAndFree(void *pObject, int fDelete) {
+    int cObjects;
+    char *pObjectEnd;
+    char *pCurrent;
+
+    if ((fDelete & 2) == 0) {
+        InitializeTypedResourceObjectBaseVtable(pObject);
+        if ((fDelete & 1) != 0) {
+            FreeVSMemBlock(pObject);
+        }
+        return pObject;
+    }
+
+    cObjects = *((int *)pObject - 1);
+    pObjectEnd = (char *)pObject + cObjects * 0x48;
+    pCurrent = pObjectEnd;
+    while (cObjects-- > 0) {
+        pCurrent -= 0x48;
+        InitializeTypedResourceObjectBaseVtable(pCurrent);
+    }
+    FreeVSMemBlock((char *)pObject - 4);
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045EA70
+void SetGRTSResourceTypeTag(void *pObject) {
+    *(unsigned int *)((char *)pObject + 0x40) = 0x47525453;
+    *(unsigned int *)((char *)pObject + 0x3c) = 4;
+}
+
+// FUNCTION: LEMBALL 0x0045EA50
+void *DestroyPaletteResource(void *pObject, int fDelete) {
+    InitializeTypedResourceObjectBaseVtable(pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045E290
+void ParseBitmapResourceDescriptor(void *pObject) {
+    unsigned int *pDescriptor;
+
+    pDescriptor = *(unsigned int **)((char *)pObject + 0x34);
+    *(unsigned int *)((char *)pObject + 0x48) = pDescriptor[0];
+    *(unsigned int *)((char *)pObject + 0x4c) = pDescriptor[1];
+    *(unsigned int *)((char *)pObject + 0x50) = pDescriptor[2];
+}
+
+// FUNCTION: LEMBALL 0x0045EA40
+void ParsePaletteResourceDescriptor(void *pObject) {
+    *(unsigned int *)((char *)pObject + 0x40) = 0x50414c20;
+    *(unsigned int *)((char *)pObject + 0x3c) = 4;
 }
 
 // FUNCTION: LEMBALL 0x0045BBE0
@@ -654,6 +783,11 @@ void FreeResourceArchiveMemory(void *pMemoryBlock) {
     ((void (*)(void *))(*(void ***)g_pResourceArchiveMemoryArena)[3])(pMemoryBlock);
 }
 
+// FUNCTION: LEMBALL 0x0045CF10
+void FreeResourceObjectDataBuffer(unsigned int pBuffer) {
+    FreeResourceArchiveMemory((void *)(unsigned long)pBuffer);
+}
+
 // FUNCTION: LEMBALL 0x0045BBC0
 int OpenResourceArchiveFileHandle(const char *pszPath, const char *pszMode) {
     g_pResourceArchiveFile = OpenFileWithMode(pszPath, pszMode);
@@ -700,6 +834,57 @@ unsigned int AllocateResourceDataBufferWithEviction(void *pArchive, unsigned int
         }
     }
     return pBuffer;
+}
+
+// FUNCTION: LEMBALL 0x0045D0A0
+void CopyBufferIntoTypedResourceObjectAndParse(void *pObject, unsigned int *pSource,
+                                               unsigned int nUnused, unsigned int cbBuffer) {
+    MOGLOAD_StringResourceObject *pResourceObject;
+    unsigned int *pTarget;
+    unsigned int i;
+
+    (void)nUnused;
+    pResourceObject = (MOGLOAD_StringResourceObject *)pObject;
+    if (cbBuffer != 0 && pResourceObject->m_pszText38 == 0) {
+        pTarget = (unsigned int *)AllocateResourceDataBufferWithEviction(
+            g_pMainResourceArchive, cbBuffer);
+        pResourceObject->m_pszText38 = (char *)pTarget;
+        for (i = cbBuffer >> 2; i != 0; --i) {
+            *pTarget++ = *pSource++;
+        }
+        for (i = cbBuffer & 3; i != 0; --i) {
+            *(unsigned char *)pTarget++ = *(unsigned char *)pSource++;
+        }
+    }
+    if (pResourceObject->m_padwResourceDescriptor34 != 0) {
+        pResourceObject->m_nLoadState10 = 1;
+        ((MOGLOAD_TypedResourceObjectVtable *)pResourceObject->m_pVtable)
+            ->m_pOnLoad();
+    }
+}
+
+// FUNCTION: LEMBALL 0x0045E630
+void ParseIntResourceDescriptor(void) {
+}
+
+// FUNCTION: LEMBALL 0x0045D1C0
+void UnloadTypedResourceObject(void *pObject, int fReleaseMode) {
+    MOGLOAD_StringResourceObject *pResourceObject;
+    MOGLOAD_TypedResourceObjectVtable *pVtable;
+
+    pResourceObject = (MOGLOAD_StringResourceObject *)pObject;
+    if (pResourceObject->m_nLoadState10 != 0 &&
+        pResourceObject->m_nResourceId30 != 0 &&
+        pResourceObject->m_cbResourceData28 != 0) {
+        FreeResourceObjectDataBuffer((unsigned int)(unsigned long)pResourceObject->m_pszText38);
+        pResourceObject->m_pszText38 = 0;
+    }
+    pVtable = (MOGLOAD_TypedResourceObjectVtable *)pResourceObject->m_pVtable;
+    ((void (*)(int))pVtable->m_pOnRelease)(fReleaseMode);
+    if (pResourceObject->m_nLoadState10 != 0) {
+        pResourceObject->m_nLoadState10 = 0;
+        pVtable->m_pAfterLoad();
+    }
 }
 
 // FUNCTION: LEMBALL 0x0045C940
@@ -1323,7 +1508,7 @@ MOGLOAD_StringResourceObject *LoadStringResource(int nResourceId) {
     if (pResourceObject != 0) {
         pResourceObject->m_pVtable = (void **)g_pCachedResourceObjectBaseDeleteVtable;
         pResourceObject->m_nReserved18 = 0;
-        pResourceObject->m_pVtable = (void **)g_pDestroyGRTSResourceAndFreeThunk;
+        pResourceObject->m_pVtable = (void **)g_pStringResourceVtable;
         InitializeResourceObjectFromId(pResourceObject, nResourceId);
         pLoadedObject = (MOGLOAD_StringResourceObject *)FinalizeLoadedResourceObjectResult(pResourceObject);
         return pLoadedObject;

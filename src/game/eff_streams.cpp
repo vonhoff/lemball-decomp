@@ -1,15 +1,122 @@
 #include "../game/game_app.h"
 #include "../engine/memory_arena.h"
+#include "../network/stream.h"
 #include "../network/safe_vtable.h"
 
-static void *g_EFF_BaseStreamVtable = NetworkGetSafeVtable();
-static void *g_EFF_NetworkLobbySelectedPeerStatusVtable = NetworkGetSafeVtable();
-static void *g_EFF_NetworkLobbyPeerEntryVtable = NetworkGetSafeVtable();
-static void *g_EFF_NetworkLobbyVsnetRuntimeVtable = NetworkGetSafeVtable();
-static void *g_EFF_PayloadSize8Vtable = NetworkGetSafeVtable();
-static void *g_EFF_NetworkLobbyU32PayloadVtable = NetworkGetSafeVtable();
-static void *g_EFF_NetworkLobbyPeerClearCloseVtable = NetworkGetSafeVtable();
-static void *g_EFF_NetworkLobbyPeerDirtyConfirmVtable = NetworkGetSafeVtable();
+extern void *DeleteEffStreamBaseWrapper00462810(void *pObject, BYTE fDelete);
+extern int ReturnTrueVtableCallbackThunk(void);
+extern int ReturnTrueVtableCallbackSecondaryThunk(void);
+extern void NoopVtableCallbackThunk(void);
+static void *g_EFF_BaseStreamVtable[6] = {
+    (void *)ReturnTrueVtableCallbackThunk,
+    (void *)ReturnTrueVtableCallbackSecondaryThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)DeleteEffStreamBaseWrapper00462810,
+};
+extern void ReadNetworkLevelChunkDeltaStream(void *pObject);
+
+// FUNCTION: LEMBALL 0x00452E40
+void WriteNetworkLobbySelectedPeerStatusStream(void *pObject) {
+    NETWORK_EffStreamBase *pStream;
+
+    pStream = (NETWORK_EffStreamBase *)pObject;
+    pStream->WriteEffStreamU32BE(*(unsigned int *)((char *)pObject + 0x2c));
+}
+
+// FUNCTION: LEMBALL 0x00452E50
+void ReadNetworkLobbyPeerEntryStream(void *pObject) {
+    NETWORK_EffStreamBase *pStream;
+
+    pStream = (NETWORK_EffStreamBase *)pObject;
+    *(unsigned int *)((char *)pObject + 0x2c) = pStream->ReadEffStreamU32BEValue();
+}
+
+// FUNCTION: LEMBALL 0x00452E60
+void *DeleteNetworkLobbySelectedPeerStatusStream(void *pObject, BYTE fDelete) {
+    NETWORK_EffStreamBase *pStream;
+
+    pStream = (NETWORK_EffStreamBase *)pObject;
+    pStream->DestroyEffStreamBase();
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+static void *g_EFF_NetworkLobbySelectedPeerStatusVtable[6] = {
+    (void *)ReturnTrueVtableCallbackThunk,
+    (void *)ReturnTrueVtableCallbackSecondaryThunk,
+    (void *)ReadNetworkLobbyPeerEntryStream,
+    (void *)NoopVtableCallbackThunk,
+    (void *)WriteNetworkLobbySelectedPeerStatusStream,
+    (void *)DeleteNetworkLobbySelectedPeerStatusStream,
+};
+static void *g_EFF_NetworkLobbyPeerEntryVtable[6] = {
+    (void *)ReturnTrueVtableCallbackThunk,
+    (void *)ReturnTrueVtableCallbackSecondaryThunk,
+    (void *)ReadNetworkLobbyPeerEntryStream,
+    (void *)NoopVtableCallbackThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)DeleteNetworkLobbySelectedPeerStatusStream,
+};
+
+/* 004985F8 slot +20 is read_network_level_chunk_delta_stream.  Other
+ * inherited slots remain compiler-owned callable placeholders until their
+ * targets are recovered. */
+struct GAME_NetworkLobbyVsnetRuntimeVtableModel {
+    virtual void Reserved00(void) {}
+    virtual void Reserved04(void) {}
+    virtual void Reserved08(void) {}
+    virtual void Reserved0c(void) {}
+    virtual void Reserved10(void) {}
+    virtual void Reserved14(void) {}
+    virtual void Reserved18(void) {}
+    virtual void Reserved1c(void) {}
+    virtual void ServiceRuntime(void) {
+        ReadNetworkLevelChunkDeltaStream(this);
+    }
+    virtual void Reserved24(void) {}
+    virtual void Reserved28(void) {}
+    virtual void Reserved2c(void) {}
+};
+
+static GAME_NetworkLobbyVsnetRuntimeVtableModel g_EFF_NetworkLobbyVsnetRuntimeVtableModel;
+static void *g_EFF_NetworkLobbyVsnetRuntimeVtable =
+    *(void ***)&g_EFF_NetworkLobbyVsnetRuntimeVtableModel;
+static void *g_EFF_PayloadSize8Vtable[6] = {
+    (void *)ReturnTrueVtableCallbackThunk,
+    (void *)ReturnTrueVtableCallbackSecondaryThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)DeleteNetworkLobbySelectedPeerStatusStream,
+};
+static void *g_EFF_NetworkLobbyU32PayloadVtable[6] = {
+    (void *)ReturnTrueVtableCallbackThunk,
+    (void *)ReturnTrueVtableCallbackSecondaryThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)DeleteNetworkLobbySelectedPeerStatusStream,
+};
+static void *g_EFF_NetworkLobbyPeerClearCloseVtable[6] = {
+    (void *)ReturnTrueVtableCallbackThunk,
+    (void *)ReturnTrueVtableCallbackSecondaryThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)DeleteNetworkLobbySelectedPeerStatusStream,
+};
+static void *g_EFF_NetworkLobbyPeerDirtyConfirmVtable[6] = {
+    (void *)ReturnTrueVtableCallbackThunk,
+    (void *)ReturnTrueVtableCallbackSecondaryThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)DeleteNetworkLobbySelectedPeerStatusStream,
+};
 static const char g_EFF_DefaultNetworkPath[] = "t:\\network";
 void *g_pEffTransportDispatchQueue = 0;
 void *g_pEffTransportSecondaryDispatchQueue = 0;
@@ -38,10 +145,10 @@ struct GAME_EffStream {
 
 struct GAME_EffStreamVtable {
     void *m_pReserved00;
-    int (GAME_EffStream::*m_pLoadFromMemoryHeader)(void);
-    void (GAME_EffStream::*m_pLoadFromMemoryBody)(void);
-    void (GAME_EffStream::*m_pBeginWriteHeader)(void);
-    void (GAME_EffStream::*m_pBeginWriteBody)(void);
+    int (*m_pLoadFromMemoryHeader)(GAME_EffStream *);
+    void (*m_pLoadFromMemoryBody)(GAME_EffStream *);
+    void (*m_pBeginWriteHeader)(GAME_EffStream *);
+    void (*m_pBeginWriteBody)(GAME_EffStream *);
     void (*m_pDelete)(int);
 };
 
@@ -150,10 +257,15 @@ struct GAME_NetworkLobbyVsnetRuntime {
 
 struct GAME_EffTransportRuntimeWindow {
     void **m_pVtable;
-    char m_abUnknown04[0x14];
+    int m_nQueueMagic04;
+    void *m_pReserved08;
+    void *m_pReserved0c;
+    int m_nRuntimeKey10;
+    int m_fShutdownRequested14;
     int m_fRuntimeActive;
     char m_abUnknown1C[0x20];
     void *m_pPrimaryDispatchClient;
+    void *m_pReserved40;
     void *m_pSecondaryDispatchClient;
     int m_nPrimaryHandleCount;
     int m_nPrimaryHandleStride;
@@ -241,8 +353,8 @@ void *GetShiftedRecordSlotByPacketId(void *pSlotTable, int nPacketId) {
 // FUNCTION: LEMBALL 0x0045F280
 int GAME_EffStream::LoadEffStreamFromMemory(int nSourceBuffer) {
     m_nQueuedPayload = nSourceBuffer;
-    if ((this->*m_pVtable->m_pLoadFromMemoryHeader)() != 0) {
-        (this->*m_pVtable->m_pLoadFromMemoryBody)();
+    if (m_pVtable->m_pLoadFromMemoryHeader(this) != 0) {
+        m_pVtable->m_pLoadFromMemoryBody(this);
         return 1;
     }
     return 0;
@@ -312,6 +424,7 @@ void *ConstructNetworkLobbyVsnetRuntime(void *pObject, char *pszFileBasedNetwork
     pRuntime->m_fFileBasedThreadStarted = 0;
     pRuntime->m_fTcpipThreadStarted = 0;
     pRuntime->m_nDesiredSelectedPeerStatus = 0;
+    pRuntime->m_nReserved54 = 0;
 
     pPeerEntryTable = (GAME_PeerEntryStreamTable *)AllocateVSMemBlock(0x324);
     if (pPeerEntryTable == 0) {
@@ -438,8 +551,8 @@ void GAME_EffStream::BeginEffStreamWriteSession(void) {
         } else {
             m_pvWriteCursor = m_pvOwnedBuffer + 0x10;
         }
-        (this->*m_pVtable->m_pBeginWriteHeader)();
-        (this->*m_pVtable->m_pBeginWriteBody)();
+        m_pVtable->m_pBeginWriteHeader(this);
+        m_pVtable->m_pBeginWriteBody(this);
     }
 }
 
@@ -562,10 +675,8 @@ void *ConstructNetworkLobbyPeerDirtyConfirmStream(void *pObject) {
 void RegisterEffTransportEventClient(void *pRuntimeWindow, void *pClient) {
     GAME_EffTransportRuntimeWindow *pWindow;
 
-    if (pRuntimeWindow != 0) {
-        pWindow = (GAME_EffTransportRuntimeWindow *)pRuntimeWindow;
-        pWindow->m_pSecondaryDispatchClient = pClient;
-    }
+    pWindow = (GAME_EffTransportRuntimeWindow *)pRuntimeWindow;
+    pWindow->m_pSecondaryDispatchClient = pClient;
     RegisterOrderedRenderDispatchClient(g_pEffTransportSecondaryDispatchQueue, pClient, 0);
 }
 

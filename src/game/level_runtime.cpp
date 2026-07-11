@@ -1,5 +1,6 @@
 #include "../game/game_app.h"
 #include "../engine/memory_arena.h"
+#include "../network/stream.h"
 #include "../network/safe_vtable.h"
 
 extern "C" DWORD timeGetTime(void);
@@ -24,15 +25,52 @@ void *g_pLiftTileGrid = 0;
 void *g_pAnimChunkTileGrid = 0;
 
 extern int ReturnTrueVtableCallback(void);
+extern int ReturnTrueVtableCallbackThunk(void);
+extern int ReturnTrueVtableCallbackSecondaryThunk(void);
+extern void NoopVtableCallbackThunk(void);
+void ReadNetworkLevelChunkDeltaStream(void *pObject);
+void LoadLevelGameStateStreamPayload(void *pObject);
 
 static void *g_pReturnTrueVtableCallback[1] = {
     (void *)ReturnTrueVtableCallback,
 };
-static void *g_pReturnTrueVtableCallbackThunk = NetworkGetSafeVtable();
-static void *g_pLevelGameStateStreamVtable = NetworkGetSafeVtable();
+static void *g_GAME_NetworkLevelChunkDeltaStreamVtable[6] = {
+    (void *)ReturnTrueVtableCallbackThunk,
+    (void *)ReturnTrueVtableCallbackSecondaryThunk,
+    (void *)ReadNetworkLevelChunkDeltaStream,
+    (void *)NoopVtableCallbackThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)NoopVtableCallbackThunk,
+};
+static void *g_GAME_LevelGameStateStreamVtable[6] = {
+    (void *)ReturnTrueVtableCallbackThunk,
+    (void *)ReturnTrueVtableCallbackSecondaryThunk,
+    (void *)LoadLevelGameStateStreamPayload,
+    (void *)NoopVtableCallbackThunk,
+    (void *)NoopVtableCallbackThunk,
+    (void *)NoopVtableCallbackThunk,
+};
+static void *g_pReturnTrueVtableCallbackThunk =
+    g_GAME_NetworkLevelChunkDeltaStreamVtable;
+static void *g_pLevelGameStateStreamVtable =
+    g_GAME_LevelGameStateStreamVtable;
 
 struct GAME_EffStream {
+    void **m_pVtable;
+    int m_nEventCode;
+    int m_pvOwnedBuffer;
+    int m_pvBufferEnd;
+    int m_cWriteSessions;
+    int m_fOwnsBuffer;
+    int m_cbSerializedLength;
+    int m_pvWriteCursor;
+    int m_pvReadCursor;
+    int m_fHasPayload;
+    int m_nQueuedPayload;
+    int m_nU32Payload;
+
     void ResetStateFields(void);
+    int LoadEffStreamFromMemory(int nSourceBuffer);
 };
 
 struct GAME_LevelChunkStreamDispatcher {
@@ -72,6 +110,77 @@ unsigned int FindLastFreeManagedEntitySlotIdThunk(void);
 void SetLevelChunkTypeEnabledFlagThunk(void *pLevelMode, int nChunkType, int fEnabled);
 void DispatchType14CountedChildSlotC4Thunk(int nChunkManager);
 void FillReachabilityGridFromTileFlagsThunk(void *pReachabilityHelper);
+
+// FUNCTION: LEMBALL 0x00410BE0
+void LoadLevelGameStateStreamPayload(void *pObject) {
+    NETWORK_EffStreamBase *pStream;
+    unsigned int nValue;
+
+    pStream = (NETWORK_EffStreamBase *)pObject;
+    nValue = pStream->ReadEffStreamU32BEValue();
+    *(unsigned int *)((char *)pObject + 0x2c) = nValue;
+    nValue = pStream->ReadEffStreamU32BEValue();
+    *(unsigned int *)((char *)pObject + 0x30) = nValue;
+    pStream->ReadEffStreamU32BE((unsigned char *)((char *)pObject + 0x34));
+    pStream->ReadEffStreamU32BE((unsigned char *)((char *)pObject + 0x38));
+}
+
+// FUNCTION: LEMBALL 0x00408190
+void UpdateNetworkFrameClockFromNetworkTime(unsigned int nTimeMs) {
+    if ((unsigned int)g_nNetworkFrameClockLatestTimeMs < nTimeMs) {
+        g_nLevelFrameClockTimeMs = (int)nTimeMs;
+        g_nLevelFrameClockTick = (int)(nTimeMs / 0x32);
+        g_nNetworkFrameClockLatestTimeMs = (int)nTimeMs;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00403107
+void UpdateNetworkFrameClockFromNetworkTimeThunk(unsigned int nTimeMs) {
+    UpdateNetworkFrameClockFromNetworkTime(nTimeMs);
+}
+
+// FUNCTION: LEMBALL 0x00453070
+void ReadNetworkLevelChunkDeltaStream(void *pObject) {
+    unsigned char *pbObject;
+    unsigned short nTag;
+    int nSourceBuffer;
+
+    pbObject = (unsigned char *)pObject;
+    nTag = (unsigned short)(((unsigned int) *(unsigned char *)((unsigned long) *(int *)(pbObject + 0x20)) << 8) |
+                            *(unsigned char *)((unsigned long) *(int *)(pbObject + 0x20) + 1));
+    *(int *)(pbObject + 0x20) += 2;
+    while (nTag != 0x2f) {
+        if (nTag == 0x2c) {
+            unsigned char nStreamIndex;
+            int pOwner;
+            int pStream;
+            nSourceBuffer = *(int *)(pbObject + 0x20);
+            nStreamIndex = *(unsigned char *)((unsigned long)nSourceBuffer);
+            *(int *)(pbObject + 0x20) = nSourceBuffer + 1;
+            pOwner = *(int *)(pbObject + 0x30);
+            pStream = *(int *)(pOwner + 0x10 + (unsigned int)nStreamIndex * 4);
+            pStream += 0x138;
+            if (((GAME_EffStream *)pStream)->LoadEffStreamFromMemory(
+                    *(int *)(pbObject + 0x20)) != 0) {
+                *(int *)(pbObject + 0x20) = *(int *)(pStream + 0x20);
+            }
+        } else if (nTag == 0x2d) {
+            unsigned int nTimeMs;
+            nSourceBuffer = *(int *)(pbObject + 0x20);
+            nTimeMs = ((unsigned int) *(unsigned char *)((unsigned long)nSourceBuffer) << 24) |
+                      ((unsigned int) *(unsigned char *)((unsigned long)nSourceBuffer + 1) << 16) |
+                      ((unsigned int) *(unsigned char *)((unsigned long)nSourceBuffer + 2) << 8) |
+                      *(unsigned char *)((unsigned long)nSourceBuffer + 3);
+            *(int *)(pbObject + 0x20) = nSourceBuffer + 4;
+            UpdateNetworkFrameClockFromNetworkTimeThunk(nTimeMs);
+        }
+
+        nSourceBuffer = *(int *)(pbObject + 0x20);
+        nTag = (unsigned short)(((unsigned int) *(unsigned char *)((unsigned long)nSourceBuffer) << 8) |
+                                *(unsigned char *)((unsigned long)nSourceBuffer + 1));
+        *(int *)(pbObject + 0x20) = nSourceBuffer + 2;
+    }
+}
 
 // FUNCTION: LEMBALL 0x0040CF00
 void *ReturnArgumentVtableCallback(void *pObject) {

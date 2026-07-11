@@ -1,7 +1,6 @@
 #include "game/demo_playback.h"
 
 #include "../game/game_app.h"
-#include "../network/safe_vtable.h"
 #include "../resource/resource_archive.h"
 #include "../engine/memory_arena.h"
 #include "../engine/runtime_init.h"
@@ -12,12 +11,61 @@
 extern "C" DWORD timeGetTime(void);
 
 typedef void *(*DEMO_DeleteProc)(void *pObject, unsigned char fDelete);
+extern void ReturnVoidVtableCallback(void);
 
 int DispatchLevelDemoEventsForFrameThunk(void *pPlaybackController, char nFrame);
 
 static const char g_DEMO_OpenReadMode[] = "rb";
 static const unsigned int g_DEMO_BinResourceTypeTag = 0x42494e20;
-static void *g_DEMO_BinResourceVtable = NetworkGetSafeVtable();
+
+extern void CopyBufferIntoTypedResourceObjectAndParse(void *pObject, unsigned int *pSource,
+                                                       unsigned int nUnused, unsigned int cbBuffer);
+extern void ParseIntResourceDescriptor(void);
+extern int GetField14NeedsAgeIncrement(void *pObject);
+extern int GetField1CVfunc04(void *pObject);
+extern int GetField14Vfunc05(void *pObject);
+extern int ReturnZeroVfunc06(void);
+extern void EnsureTypedResourceObjectLoaded(void *pObject);
+extern void UnloadTypedResourceObject(void *pObject, int fReleaseMode);
+extern void NoopVfunc09(void);
+extern void *GetEffResourceDataPointer(void *pObject);
+extern void NoopOnLoadVfunc11(void);
+extern void NoopVfunc12(void);
+extern int GetField28GetMemorySize(void *pObject);
+extern void InitializeTypedResourceObjectBaseVtable(void *pObject);
+
+// FUNCTION: LEMBALL 0x0045EC60
+static void SetBinResourceTypeTag(void *pObject) {
+    *(unsigned int *)((char *)pObject + 0x40) = g_DEMO_BinResourceTypeTag;
+}
+
+// FUNCTION: LEMBALL 0x0045EC70
+static void *DestroyBinResource(void *pObject, int fDelete) {
+    InitializeTypedResourceObjectBaseVtable(pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+static void *g_DEMO_BinResourceVtableStorage[15] = {
+    (void *)DestroyBinResource,
+    (void *)CopyBufferIntoTypedResourceObjectAndParse,
+    (void *)ParseIntResourceDescriptor,
+    (void *)GetField14NeedsAgeIncrement,
+    (void *)GetField1CVfunc04,
+    (void *)GetField14Vfunc05,
+    (void *)ReturnZeroVfunc06,
+    (void *)EnsureTypedResourceObjectLoaded,
+    (void *)UnloadTypedResourceObject,
+    (void *)NoopVfunc09,
+    (void *)GetEffResourceDataPointer,
+    (void *)NoopOnLoadVfunc11,
+    (void *)NoopVfunc12,
+    (void *)SetBinResourceTypeTag,
+    (void *)GetField28GetMemorySize,
+};
+static void *g_DEMO_BinResourceVtable = g_DEMO_BinResourceVtableStorage;
 
 extern void *g_pMainResourceArchive;
 extern void *g_pCachedResourceObjectBaseDeleteVtable;
@@ -29,7 +77,7 @@ static void *g_LevelDemoPlaybackControllerVtable[2] = {
     (void *)DeleteLevelDemoPlaybackController,
 };
 void *g_pNonZrleVariantRenderEntryInitializeVtable[2] = {
-    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop
+    (void *)ReturnVoidVtableCallback, (void *)ReturnVoidVtableCallback
 };
 
 void *g_pLevelDemoPlaybackController = 0;

@@ -30,22 +30,287 @@ static const unsigned int g_GAME_BitmapResourceTypeTag = 0x42544d50;
 static const unsigned int g_GAME_PaletteResourceTypeTag = 0x50414c20;
 static const unsigned int g_GAME_ZrleResourceTypeTag = 0x5a524c45;
 
-static void *g_GAME_ListResourceBaseVtable = NetworkGetSafeVtable();
-static void *g_GAME_ZrleOnlyListResourceVtable = NetworkGetSafeVtable();
-static void *g_GAME_IntZrleListResourceVtable = NetworkGetSafeVtable();
-static void *g_GAME_TypedBitmapResourceDeleteVtable = NetworkGetSafeVtable();
-static void *g_GAME_ZrleResourceVtable = NetworkGetSafeVtable();
-static void *g_GAME_BitmapResourceVtable = NetworkGetSafeVtable();
-static void *g_GAME_PaletteResourceVtable = NetworkGetSafeVtable();
-static void *g_GAME_TwoArrayListResourceVtable = NetworkGetSafeVtable();
+extern void InitializeTypedResourceObjectBaseVtable(void *pObject);
+extern void CopyBufferIntoTypedResourceObjectAndParse(void *pObject, unsigned int *pSource,
+                                                       unsigned int nUnused, unsigned int cbBuffer);
+extern void ParseIntResourceDescriptor(void);
+extern void UnloadTypedResourceObject(void *pObject, int fReleaseMode);
+extern void EnsureTypedResourceObjectLoaded(void *pObject);
+extern int GetField14NeedsAgeIncrement(void *pObject);
+extern int GetField1CVfunc04(void *pObject);
+extern int GetField14Vfunc05(void *pObject);
+extern int ReturnZeroVfunc06(void);
+extern void NoopVfunc09(void);
+extern void *GetEffResourceDataPointer(void *pObject);
+extern void NoopOnLoadVfunc11(void);
+extern void NoopVfunc12(void);
+extern void ClearResourceTypeTag(void *pObject);
+extern int GetField28GetMemorySize(void *pObject);
+
+// FUNCTION: LEMBALL 0x0045E340
+void PopulateZrleResourceDescriptorFields(void *pObject) {
+    unsigned short *pDescriptor;
+
+    pDescriptor = *(unsigned short **)((char *)pObject + 0x34);
+    *(unsigned short *)((char *)pObject + 0x48) = pDescriptor[0];
+    *(unsigned short *)((char *)pObject + 0x4a) = pDescriptor[1];
+    *(unsigned short *)((char *)pObject + 0x4c) = pDescriptor[2];
+    *(unsigned short *)((char *)pObject + 0x4e) = pDescriptor[3];
+    *(unsigned short *)((char *)pObject + 0x50) = pDescriptor[4];
+    *(unsigned short *)((char *)pObject + 0x52) = pDescriptor[5];
+}
+
+// FUNCTION: LEMBALL 0x0045E850
+void *DestroyZrleResourceEntryArray(void *pObject, unsigned int fDelete) {
+    int cEntries;
+    char *pEntry;
+
+    if ((fDelete & 2) == 0) {
+        InitializeTypedResourceObjectBaseVtable(pObject);
+        if ((fDelete & 1) != 0) {
+            FreeVSMemBlock(pObject);
+        }
+        return pObject;
+    }
+
+    cEntries = *((int *)pObject - 1);
+    pEntry = (char *)pObject + cEntries * 0x54;
+    while (cEntries-- > 0) {
+        pEntry -= 0x54;
+        InitializeTypedResourceObjectBaseVtable(pEntry);
+    }
+    FreeVSMemBlock((char *)pObject - 4);
+    return pObject;
+}
+
+static void *g_GAME_ZrleResourceVtableStorage[15] = {
+    (void *)DestroyZrleResourceEntryArray,
+    (void *)CopyBufferIntoTypedResourceObjectAndParse,
+    (void *)PopulateZrleResourceDescriptorFields,
+    (void *)GetField14NeedsAgeIncrement,
+    (void *)GetField1CVfunc04,
+    (void *)GetField14Vfunc05,
+    (void *)ReturnZeroVfunc06,
+    (void *)EnsureTypedResourceObjectLoaded,
+    (void *)UnloadTypedResourceObject,
+    (void *)NoopVfunc09,
+    (void *)GetEffResourceDataPointer,
+    (void *)NoopOnLoadVfunc11,
+    (void *)NoopVfunc12,
+    (void *)ClearResourceTypeTag,
+    (void *)GetField28GetMemorySize,
+};
+
+extern void *g_pDestroyGRTSResourceAndFreeThunk;
+extern void *g_pCachedResourceObjectBaseDeleteVtable;
+extern void *g_pBitmapResourceVtable;
+extern void *g_pPaletteResourceVtable;
+
+// LIST resource objects use the same typed-resource prefix, then keep their
+// descriptor-derived arrays at +0x38/+0x4c and list state at +0x60..+0x74.
+static void *DeleteListResourceBase(void *pObject, int fDelete);
+static void DestroyTwoArrayListResource(void *pObject);
+static void *DestroyTwoArrayListResourceAndFree(void *pObject, int fDelete);
+static void CopyBuffersIntoTwoArrayListResourceAndParse(void *pObject,
+                                                         unsigned int *pSource,
+                                                         int pRelatedObject,
+                                                         unsigned int cbBuffer);
+static void ParseListResourceDescriptor(void *pObject);
+static int ListNeedsAgeIncrement(void *pObject);
+static int ListField68Nonzero(void *pObject);
+static int ListField60Nonzero(void *pObject);
+static int EnsureIntZrleListEntriesLoaded(void *pObject);
+static void LoadListEntryArraysFromArchive(void *pObject);
+static void ReleaseListEntriesAndStreamBuffer(void *pObject, int fReleaseMode);
+static void LoadListEntriesFromStreamDescriptors(void *pObject, int nArgument);
+static void SetListResourceTypeList(void *pObject);
+static int GetListEntryArrayCursor(void *pObject);
+static void *g_GAME_ListResourceVtableStorage[15] = {
+    (void *)DeleteListResourceBase,
+    (void *)CopyBuffersIntoTwoArrayListResourceAndParse,
+    (void *)ParseListResourceDescriptor,
+    (void *)ListNeedsAgeIncrement,
+    (void *)ListField68Nonzero,
+    (void *)ListField60Nonzero,
+    (void *)EnsureIntZrleListEntriesLoaded,
+    (void *)LoadListEntryArraysFromArchive,
+    (void *)ReleaseListEntriesAndStreamBuffer,
+    (void *)LoadListEntriesFromStreamDescriptors,
+    (void *)GetEffResourceDataPointer,
+    (void *)NoopOnLoadVfunc11,
+    (void *)NoopVfunc12,
+    (void *)SetListResourceTypeList,
+    (void *)GetListEntryArrayCursor,
+};
+static void *g_GAME_TwoArrayListResourceVtableStorage[15] = {
+    (void *)DestroyTwoArrayListResourceAndFree,
+    (void *)CopyBuffersIntoTwoArrayListResourceAndParse,
+    (void *)ParseListResourceDescriptor,
+    (void *)ListNeedsAgeIncrement,
+    (void *)ListField68Nonzero,
+    (void *)ListField60Nonzero,
+    (void *)EnsureIntZrleListEntriesLoaded,
+    (void *)LoadListEntryArraysFromArchive,
+    (void *)ReleaseListEntriesAndStreamBuffer,
+    (void *)LoadListEntriesFromStreamDescriptors,
+    (void *)GetEffResourceDataPointer,
+    (void *)NoopOnLoadVfunc11,
+    (void *)NoopVfunc12,
+    (void *)SetListResourceTypeList,
+    (void *)GetListEntryArrayCursor,
+};
+static void *g_GAME_ListResourceBaseVtable = g_GAME_ListResourceVtableStorage;
+static void *g_GAME_ZrleOnlyListResourceVtable = g_GAME_ZrleResourceVtableStorage;
+static void *g_GAME_IntZrleListResourceVtable = g_GAME_ZrleResourceVtableStorage;
+static void *g_GAME_TypedBitmapResourceDeleteVtable = g_pDestroyGRTSResourceAndFreeThunk;
+static void *g_GAME_ZrleResourceVtable = g_GAME_ZrleResourceVtableStorage;
+static void *g_GAME_BitmapResourceVtable = g_pBitmapResourceVtable;
+static void *g_GAME_PaletteResourceVtable = g_pPaletteResourceVtable;
+static void *g_GAME_TwoArrayListResourceVtable = g_GAME_TwoArrayListResourceVtableStorage;
 static int g_GAME_ZrleListResourceTypeToken = 0;
 static int g_GAME_IntZrleListResourceTypeToken = 0;
 static int g_GAME_TwoArrayListResourceTypeToken = 0;
 
 extern void *g_pMainResourceArchive;
-extern void *g_pCachedResourceObjectBaseDeleteVtable;
 extern void InitializeResourceObjectFromId(void *pObject, int nResourceId);
 extern void *FinalizeLoadedResourceObjectResult(void *pObject);
+extern unsigned int AllocateResourceDataBufferWithEviction(void *pArchive, unsigned int cbBuffer);
+extern void FreeResourceObjectDataBuffer(unsigned int pBuffer);
+
+// FUNCTION: LEMBALL 0x0045E700
+static void *DeleteListResourceBase(void *pObject, int fDelete) {
+    InitializeTypedResourceObjectBaseVtable(pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045EA80
+static void *DestroyTwoArrayListResourceAndFree(void *pObject, int fDelete) {
+    DestroyTwoArrayListResource(pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045DF70
+static void DestroyTwoArrayListResource(void *pObject) {
+    void *pChild;
+
+    *(void **)pObject = g_GAME_TwoArrayListResourceVtableStorage;
+    pChild = *(void **)((char *)pObject + 0x78);
+    if (pChild != 0) {
+        ((void (*)(void *, int))*(void **)pChild)(pChild, 3);
+    }
+    pChild = *(void **)((char *)pObject + 0x7c);
+    if (pChild != 0) {
+        ((void (*)(void *, int))*(void **)pChild)(pChild, 3);
+    }
+    InitializeTypedResourceObjectBaseVtable(pObject);
+}
+
+// FUNCTION: LEMBALL 0x0045D290
+static void ParseListResourceDescriptor(void *pObject) {
+    unsigned int *pDescriptor;
+
+    pDescriptor = *(unsigned int **)((char *)pObject + 0x34);
+    *(unsigned int *)((char *)pObject + 0x6c) = pDescriptor[0];
+    *(unsigned int *)((char *)pObject + 0x70) = pDescriptor[1];
+    *(unsigned int *)((char *)pObject + 0x64) = 0xffffffff;
+    *(unsigned int *)((char *)pObject + 0x74) = pDescriptor[2];
+}
+
+// FUNCTION: LEMBALL 0x0045E6A0
+static int ListNeedsAgeIncrement(void *pObject) {
+    return *(int *)((char *)pObject + 0x60) == *(int *)((char *)pObject + 0x64);
+}
+
+// FUNCTION: LEMBALL 0x0045E6C0
+static int ListField68Nonzero(void *pObject) {
+    return *(int *)((char *)pObject + 0x68) != 0;
+}
+
+// FUNCTION: LEMBALL 0x0045E6B0
+static int ListField60Nonzero(void *pObject) {
+    return *(int *)((char *)pObject + 0x60) != 0;
+}
+
+// FUNCTION: LEMBALL 0x0045E690
+static int GetListEntryArrayCursor(void *pObject) {
+    return *(int *)((char *)pObject + 0x74);
+}
+
+// FUNCTION: LEMBALL 0x0045E680
+static void SetListResourceTypeList(void *pObject) {
+    *(unsigned int *)((char *)pObject + 0x40) = g_GAME_ListResourceTypeTag;
+    *(unsigned int *)((char *)pObject + 0x3c) = 0x0c;
+}
+
+// FUNCTION: LEMBALL 0x0045D2B0
+static void CopyBuffersIntoTwoArrayListResourceAndParse(void *pObject,
+                                                         unsigned int *pSource,
+                                                         int pRelatedObject,
+                                                         unsigned int cbBuffer) {
+    unsigned int pTarget;
+    unsigned int i;
+    char *pFrom;
+    char *pTo;
+
+    if ((int)((char *)pObject - (char *)pRelatedObject) == -0x4c) {
+        if (*(unsigned int *)((char *)pObject + 0x4c) == 0) {
+            pTarget = AllocateResourceDataBufferWithEviction(g_pMainResourceArchive, cbBuffer);
+            *(unsigned int *)((char *)pObject + 0x4c) = pTarget;
+            pFrom = (char *)pSource;
+            pTo = (char *)(unsigned long)pTarget;
+            for (i = 0; i < cbBuffer; ++i) {
+                pTo[i] = pFrom[i];
+            }
+        }
+        *(int *)((char *)pObject + 0x58) = 1;
+    } else {
+        if (*(unsigned int *)((char *)pObject + 0x38) == 0) {
+            pTarget = AllocateResourceDataBufferWithEviction(g_pMainResourceArchive, cbBuffer);
+            *(unsigned int *)((char *)pObject + 0x38) = pTarget;
+            pFrom = (char *)pSource;
+            pTo = (char *)(unsigned long)pTarget;
+            for (i = 0; i < cbBuffer; ++i) {
+                pTo[i] = pFrom[i];
+            }
+        }
+        *(int *)((char *)pObject + 0x5c) = 1;
+    }
+}
+
+// FUNCTION: LEMBALL 0x0045D4F0
+static int EnsureIntZrleListEntriesLoaded(void *pObject) {
+    return ListNeedsAgeIncrement(pObject);
+}
+
+// FUNCTION: LEMBALL 0x0045D430
+static void LoadListEntryArraysFromArchive(void *pObject) {
+    *(int *)((char *)pObject + 0x24) = 0;
+}
+
+// FUNCTION: LEMBALL 0x0045D540
+static void ReleaseListEntriesAndStreamBuffer(void *pObject, int fReleaseMode) {
+    unsigned int pBuffer;
+
+    pBuffer = *(unsigned int *)((char *)pObject + 0x38);
+    if (pBuffer != 0) {
+        FreeResourceObjectDataBuffer(pBuffer);
+        *(unsigned int *)((char *)pObject + 0x38) = 0;
+    }
+    *(int *)((char *)pObject + 0x10) = 0;
+    (void)fReleaseMode;
+}
+
+// FUNCTION: LEMBALL 0x0045D5C0
+static void LoadListEntriesFromStreamDescriptors(void *pObject, int nArgument) {
+    (void)pObject;
+    (void)nArgument;
+}
 
 // FUNCTION: LEMBALL 0x0045C7B0
 void *ConstructIntZrleListResourceFromId(void *pObject, int nResourceId) {

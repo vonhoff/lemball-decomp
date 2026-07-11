@@ -52,9 +52,12 @@ struct NETWORK_EffStreamBase : NETWORK_EffStreamCore {
     void WriteEffStreamU32BE(unsigned int nValue);
     void WriteEffStreamU16BE(unsigned short nValue);
     void WriteEffStreamBytes(const void *pvSource, unsigned int cbWrite);
+    void WriteEffStreamCString(const char *pszSource);
     void ReadEffStreamU32BE(unsigned char *pbTarget);
+    unsigned int ReadEffStreamU32BEValue(void);
     void ReadEffStreamU16BE(unsigned char *pbTarget);
     void ReadEffStreamBytes(void *pvTarget, unsigned int cbRead);
+    void ReadEffStreamCString(char **ppszTarget);
     void SaveEffStreamToMemoryRange(int nTargetBuffer, int cbRange);
     NETWORK_EffStreamBase *ConstructEffStreamBase(void);
     void DestroyEffStreamBase(void);
@@ -103,6 +106,26 @@ struct NETWORK_TimedEffStream : NETWORK_EffStreamBase {
     void InvokeTimedEffStreamServiceCallback(void *pArgument);
     NETWORK_TimedEffStream *ConstructTimedEffStream(int fConstructChannelState);
     void DestroyTimedEffStream(void);
+};
+
+/* Runtime stack contains three embedded stream subobjects.  Keep offsets
+ * explicit: channel state +0x24, timed stream +0x54, dual stream +0xcc. */
+struct NETWORK_RuntimeChannelStack {
+    void **m_pVtable;
+    void **m_pOuterConstructionOffsets04;
+    int m_nReserved08;
+    int m_nReserved0c;
+    unsigned char *m_pbRuntimeFlags10;
+    int m_nReserved14;
+    int m_nReserved18;
+    void *m_pRuntimeSideBuffer1c;
+    unsigned char m_abChannelState24[0x30];
+    unsigned char m_abTimedStream54[0x78];
+    unsigned char m_abDualStreamcc[0x58];
+    void **m_pEmbeddedConstructionOffsets124;
+    unsigned char m_abDualStreamTail128[0x2c];
+
+    void *ConstructEffTransportRuntimeChannelStack(int fConstructEmbeddedObjects);
 };
 
 struct NETWORK_RuntimeChannelStackReleaseFront {

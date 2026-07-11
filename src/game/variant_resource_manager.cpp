@@ -2,7 +2,6 @@
 #include "../platform/startup_options.h"
 #include "../audio/audio_manager.h"
 #include "../engine/memory_arena.h"
-#include "../network/safe_vtable.h"
 
 extern "C" DWORD timeGetTime(void);
 
@@ -31,7 +30,41 @@ struct GAME_MainGameVariantResourceBundle {
     int *m_panBitmapResourceIds;
 };
 
-static void *g_GAME_MainGameVariantResourceBundleVtable = NetworkGetSafeVtable();
+extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
+
+// FUNCTION: LEMBALL 0x004358C0
+static void VariantResourceBundleNoop(void) {
+}
+
+// FUNCTION: LEMBALL 0x004015B9
+void VariantResourceBundleNoopThunk(void) {
+    VariantResourceBundleNoop();
+}
+
+// FUNCTION: LEMBALL 0x00447D80
+static void UpdateMainGameVariantResourceLoadProgress(void *pObject) {
+    int nLoaded;
+    GAME_MainGameVariantResourceBundle *pBundle;
+
+    pBundle = (GAME_MainGameVariantResourceBundle *)pObject;
+    nLoaded = ++pBundle->m_nLoadedResourceCount;
+    ((void (*)(int))**(void ***)((char *)pBundle->m_pStatusIndicatorManager + 0x70))(
+        (nLoaded * 100) / pBundle->m_nTotalResourceCount);
+}
+
+// FUNCTION: LEMBALL 0x00401104
+static void UpdateMainGameVariantResourceLoadProgressThunk(void *pObject) {
+    UpdateMainGameVariantResourceLoadProgress(pObject);
+}
+
+static void *g_GAME_MainGameVariantResourceBundleVtableStorage[4] = {
+    (void *)UpdateMainGameVariantResourceLoadProgressThunk,
+    (void *)VariantResourceBundleNoopThunk,
+    0,
+    (void *)InitializeNonZrleVariantRenderEntry,
+};
+static void *g_GAME_MainGameVariantResourceBundleVtable =
+    g_GAME_MainGameVariantResourceBundleVtableStorage;
 static int *g_GAME_MainGameVariantCompactZrleListResourceIds;
 static int *g_GAME_MainGameVariantStandardZrleListResourceIds;
 static int *g_GAME_MainGameVariantCompactListResourceIds;

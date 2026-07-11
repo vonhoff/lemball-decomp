@@ -219,7 +219,17 @@ int WINAPI TranslateAcceleratorA(HWND hWnd, HACCEL hAccTable, MSG *lpMsg);
 MCIERROR WINAPI mciSendCommandA(MCIDEVICEID mciId, UINT uMsg, DWORD_PTR fdwCommand, DWORD_PTR dwParam);
 BOOL WINAPI mciGetErrorStringA(MCIERROR mcierr, LPSTR pszText, UINT cchText);
 MMRESULT WINAPI waveOutReset(HWAVEOUT hWaveOut);
+MMRESULT WINAPI waveOutClose(HWAVEOUT hWaveOut);
 MMRESULT WINAPI waveOutWrite(HWAVEOUT hWaveOut, LPWAVEHDR pWaveOutHdr, UINT cbWaveOutHdr);
+MMRESULT WINAPI waveOutOpen(HWAVEOUT *phwo,
+                            UINT uDeviceId,
+                            const void *pWaveFormat,
+                            DWORD_PTR dwCallback,
+                            DWORD_PTR dwInstance,
+                            DWORD fdwOpen);
+MMRESULT WINAPI waveOutGetErrorTextA(MMRESULT mmrError, LPSTR pszText, UINT cchText);
+MMRESULT WINAPI waveOutGetVolume(HWAVEOUT hWaveOut, LPDWORD pdwVolume);
+MMRESULT WINAPI waveOutSetVolume(HWAVEOUT hWaveOut, DWORD dwVolume);
 }
 
 #endif

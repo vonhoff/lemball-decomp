@@ -37,7 +37,9 @@ static AUDIO_PlayBufferProc g_AUDIO_PlayBufferProc = 0;
 static void (*g_AUDIO_PauseBufferProc)(void *, int) = 0;
 static void (*g_AUDIO_PlayBufferSlotProc)(void *, int) = 0;
 
-extern void *DeleteTimedFileBackedEffChannelWrapper(void *, BYTE);
+struct NETWORK_FileBackedTimedChannelWrapperView {
+    void *DeleteTimedFileBackedEffChannelWrapper(BYTE fFreeMemory);
+};
 
 struct AUDIO_ResourceObject {
     void **m_pVtable;
@@ -159,6 +161,13 @@ int CreateWaveOutEffectInstance(void *pBackend, void *pPatchResource, int *pnEff
 int FreeWaveOutEffectInstance(void *pBackend, int nEffectInstanceId);
 unsigned int PlayWaveOutEffectInstance(void *pBackend, int nEffectInstanceId);
 void *DeleteWaveOutEffectBackend(AUDIO_WaveOutEffectBackend *pBackend, unsigned char fDelete);
+int GetWaveOutEffectBackendStatus0047CC10(void *pBackend);
+int InitializeWaveOutEffectDevice0047CB00(void *pBackend,
+                                           int fActivateDevice,
+                                           int fStartStreaming);
+int ResetAndCloseWaveOutEffectDevice0047CC20(void *pBackend);
+int IsWaveOutEffectInstanceAvailable0047CDD0(void *pBackend);
+int ReturnOneWaveOutBackendValue0047CDF0(void *pBackend);
 void DestroyDirectSoundEffectBackend(void *pBackend);
 char *GetDirectSoundEffectBackendDescription(AUDIO_DirectSoundEffectBackend *pBackend);
 int CreateDirectSoundEffectInstance(void *pBackend, void *pPatchResource, int *pnEffectInstanceId, int nFlags);
@@ -288,7 +297,35 @@ struct AUDIO_BackendVtableInitializer {
 };
 static AUDIO_BackendVtableInitializer g_AUDIO_BackendVtableInitializer;
 static char g_szAudioManagerDescription[0x400];
-static void *g_AudioDynamicStringEntryVtable = NetworkGetSafeVtable();
+// FUNCTION: LEMBALL 0x0047F520
+static void SetAudioDynamicStringEntryFlag(void *pObject, int fValue) {
+    ((AUDIO_DynamicStringEntry *)pObject)->m_fReserved08 = fValue;
+}
+
+// FUNCTION: LEMBALL 0x0047F510
+static void AudioDynamicStringEntryNoop(int nUnused0, int nUnused1) {
+    (void)nUnused0;
+    (void)nUnused1;
+}
+
+// FUNCTION: LEMBALL 0x0047F530
+static int GetAudioDynamicStringEntryFlag(void *pObject) {
+    return ((AUDIO_DynamicStringEntry *)pObject)->m_fReserved08;
+}
+
+static void *g_AUDIO_DynamicStringEntryVtable[10] = {
+    (void *)DeleteAudioDynamicStringEntry,
+    (void *)AudioDynamicStringEntryNoop,
+    (void *)PrepareMciMusicTrack,
+    (void *)FreePreparedMciMusicTrack,
+    (void *)PlayPreparedMciMusicTrack,
+    (void *)StopMciMusicTrack,
+    (void *)PauseMciMusicTrack,
+    (void *)NoOpAudioInt,
+    (void *)SetAudioDynamicStringEntryFlag,
+    (void *)GetAudioDynamicStringEntryFlag,
+};
+static void *g_AudioDynamicStringEntryVtable = g_AUDIO_DynamicStringEntryVtable;
 static AUDIO_MciMusicBackend *g_pActiveMciMusicBackend = 0;
 static int g_nPreparedMciMusicTrackHandle = 0;
 static const char g_AUDIO_SequencerDeviceType[] = "sequencer";
@@ -799,8 +836,133 @@ char *GetWaveOutEffectBackendDescription(AUDIO_WaveOutEffectBackend *pBackend) {
     return (char *)g_AUDIO_NoEffectsBackendName;
 }
 
+// FUNCTION: LEMBALL 0x0047CC10
+int GetWaveOutEffectBackendStatus0047CC10(void *pBackend) {
+    return *(int *)((char *)pBackend + 0x0c);
+}
+
+// FUNCTION: LEMBALL 0x0047CB00
+int InitializeWaveOutEffectDevice0047CB00(void *pBackend,
+                                           int fActivateDevice,
+                                           int fStartStreaming) {
+    HWAVEOUT *pWaveOut;
+    MMRESULT nResult;
+    char szErrorText[0x100];
+
+    if (fActivateDevice == 1) {
+        return *(int *)((char *)pBackend + 0x08);
+    }
+    if (fStartStreaming == 1) {
+        pWaveOut = (HWAVEOUT *)((char *)pBackend + 0x8c);
+        nResult = waveOutOpen(pWaveOut,
+                              *(UINT *)((char *)pBackend + 0x88),
+                              (const void *)((char *)pBackend + 0x90),
+                              0,
+                              0,
+                              0);
+        if (nResult != 0) {
+            AppendCStringToStream(g_pErrorOutputStream,
+                                  "Error! Windows Effect device cannot be opened!\n");
+            waveOutGetErrorTextA(nResult, szErrorText, sizeof(szErrorText));
+            AppendCStringToStream(g_pErrorOutputStream, szErrorText);
+            AppendCStringToStream(g_pErrorOutputStream, "\n");
+        }
+        if ((*(unsigned char *)((char *)pBackend + 0x80) & 4) != 0) {
+            waveOutGetVolume(*pWaveOut, (DWORD *)((char *)pBackend + 0xb4));
+            waveOutSetVolume(*pWaveOut, 0xffffffff);
+        }
+        if (nResult != 0) {
+            *(int *)((char *)pBackend + 0x0c) = 0;
+            return 0;
+        }
+        *(int *)((char *)pBackend + 0x0c) = 1;
+    }
+    return 1;
+}
+
 // FUNCTION: LEMBALL 0x0047CBE0
 int IsWaveOutEffectBackendAvailable(void) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0047CC20
+int ResetAndCloseWaveOutEffectDevice0047CC20(void *pBackend) {
+    MMRESULT nResult;
+    unsigned int i;
+    char szErrorText[0x100];
+    char *(*pGetDescription)(void *pThis);
+
+    pGetDescription = (char *(*)(void *))(*(void ***)pBackend + 1);
+
+    if (*(HWAVEOUT *)((char *)pBackend + 0x8c) != 0) {
+        nResult = (MMRESULT)-1;
+        i = 0;
+        do {
+            if (i >= 500) {
+                break;
+            }
+            ++i;
+            nResult = waveOutReset(*(HWAVEOUT *)((char *)pBackend + 0x8c));
+        } while (nResult != 0);
+        if (i == 500) {
+            AppendCStringToStream(g_pErrorOutputStream,
+                                  "Error: Shutting Down Wave Device: ");
+            AppendCStringToStream(g_pErrorOutputStream,
+                                  pGetDescription(pBackend));
+            AppendCStringToStream(g_pErrorOutputStream,
+                                  "\nSystem may be unstable. ");
+            waveOutGetErrorTextA(nResult, szErrorText, sizeof(szErrorText));
+            AppendCStringToStream(g_pErrorOutputStream, szErrorText);
+            AppendCStringToStream(g_pErrorOutputStream, "\n");
+            return 0;
+        }
+        if ((*(unsigned char *)((char *)pBackend + 0x80) & 4) != 0) {
+            waveOutSetVolume(*(HWAVEOUT *)((char *)pBackend + 0x8c),
+                             *(DWORD *)((char *)pBackend + 0xb4));
+        }
+        if (*(HWAVEOUT *)((char *)pBackend + 0x8c) != 0) {
+            nResult = (MMRESULT)-1;
+            i = 0;
+            do {
+                if (i >= 500) {
+                    break;
+                }
+                ++i;
+                nResult = waveOutClose(*(HWAVEOUT *)((char *)pBackend + 0x8c));
+            } while (nResult != 0);
+            if (i == 500) {
+                AppendCStringToStream(g_pErrorOutputStream,
+                                      "Error: Closing Down Wave Device: ");
+                AppendCStringToStream(g_pErrorOutputStream,
+                                      pGetDescription(pBackend));
+                AppendCStringToStream(g_pErrorOutputStream,
+                                      "\nSystem may be unstable. ");
+                waveOutGetErrorTextA(nResult, szErrorText, sizeof(szErrorText));
+                AppendCStringToStream(g_pErrorOutputStream, szErrorText);
+                AppendCStringToStream(g_pErrorOutputStream, "\n");
+                return 0;
+            }
+        }
+    }
+    *(HWAVEOUT *)((char *)pBackend + 0x8c) = 0;
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0047CDD0
+int IsWaveOutEffectInstanceAvailable0047CDD0(void *pBackend) {
+    int i;
+
+    for (i = 0; i < 8; ++i) {
+        if (*(unsigned char *)((char *)pBackend + 0x48 + i) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047CDF0
+int ReturnOneWaveOutBackendValue0047CDF0(void *pBackend) {
+    (void)pBackend;
     return 1;
 }
 
@@ -858,7 +1020,8 @@ int FreeWaveOutEffectInstance(void *pBackend, int nEffectInstanceId) {
             if (*(int *)(*(int *)((char *)pBackend + 0xb0) + nOffset) == nEffectInstanceId) {
                 pPatchBuffer = *(void **)(*(int *)((char *)pBackend + 0xa8) + nOffset);
                 if (pPatchBuffer != 0) {
-                    DeleteTimedFileBackedEffChannelWrapper(pPatchBuffer, 1);
+                    ((NETWORK_FileBackedTimedChannelWrapperView *)pPatchBuffer)
+                        ->DeleteTimedFileBackedEffChannelWrapper(1);
                     FreeVSMemBlock(pPatchBuffer);
                 }
                 *(int *)(*(int *)((char *)pBackend + 0xac) + nOffset) = 0;
