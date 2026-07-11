@@ -20,6 +20,17 @@ struct NETWORK_EffStreamChannelState {
     void SetEffStreamChannelAsyncErrorStatus(int nStatus);
 };
 
+/* Serialized tag copied by the stream header virtual.  The binary reads
+ * exactly these fields at +0, +4, +8, +a, +c, and +e. */
+struct NETWORK_EffStreamTag {
+    unsigned int m_nWord00;
+    unsigned int m_nWord04;
+    unsigned short m_nWord08;
+    unsigned short m_nWord0a;
+    unsigned short m_nWord0c;
+    unsigned char m_bByte0e;
+};
+
 struct NETWORK_EffStreamCore {
     void **m_pVtable;
     int m_nReserved04;
@@ -28,8 +39,8 @@ struct NETWORK_EffStreamCore {
     int m_nReserved10;
     int m_nReserved14;
     int m_nBufferEnd18;
-    int m_nReserved1c;
-    int m_nReserved20;
+    unsigned char *m_nReserved1c;
+    unsigned char *m_nReserved20;
     int m_nReserved24;
     int m_fBusy28;
 };
@@ -43,7 +54,7 @@ struct NETWORK_EffStreamCore {
  * NETWORK_EffStreamCore; the GAME_EffStream class edge remains unproven.
  */
 struct NETWORK_EffStreamBase : NETWORK_EffStreamCore {
-    int *m_pTagBuffer2c;
+    NETWORK_EffStreamTag *m_pTagBuffer2c;
     unsigned short m_nWord30;
     unsigned short m_nWord32;
     unsigned short m_nWord34;

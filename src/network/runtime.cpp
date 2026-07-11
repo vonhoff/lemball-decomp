@@ -36,86 +36,70 @@ struct NETWORK_LockedEffStreamFileRangeView {
     int WriteLockedEffStreamToFileRange(void);
 };
 
+struct NETWORK_FileNetworkAddress {
+    virtual char *GetAddressString(void);
+    virtual void SelectAddressType(int nType);
+    virtual void CopyAddressFromString(const char *pszAddress);
+    virtual void CopyAddressObject(NETWORK_FileNetworkAddress *pSource);
+    virtual int CompareAddress(NETWORK_FileNetworkAddress *pOther);
+    virtual int InitializeAddress(int nUnused);
+};
+
 // FUNCTION: LEMBALL 0x0046F920
-static char *GetFileNetworkAddressString(void *pObject) {
-    return (char *)pObject + 4;
-}
-
-// FUNCTION: LEMBALL 0x0046F8B0
-static void CopyFileNetworkAddressFromString(void *pObject, const char *pszAddress) {
-    strcpy((char *)pObject + 4, pszAddress);
-}
-
-// FUNCTION: LEMBALL 0x0046F880
-static void CopyFileNetworkAddress(void *pObject, void *pSource) {
-    strcpy((char *)pObject + 4, (char *)pSource + 4);
-}
-
-// FUNCTION: LEMBALL 0x0046F8E0
-static int CompareFileNetworkAddress(void *pObject, void *pOther) {
-    return strcmp((char *)pObject + 4, (char *)pOther + 4) == 0;
+char *NETWORK_FileNetworkAddress::GetAddressString(void) {
+    return (char *)this + 4;
 }
 
 // FUNCTION: LEMBALL 0x004794E0
-static void SelectFileNetworkAddressType(void *pObject, int nType) {
+void NETWORK_FileNetworkAddress::SelectAddressType(int nType) {
     if (nType == 0) {
-        strcpy((char *)pObject + 4, "LAN");
+        strcpy((char *)this + 4, "LAN");
     } else if (nType == 1) {
-        strcpy((char *)pObject + 4, "WAN");
+        strcpy((char *)this + 4, "WAN");
     }
+}
+
+// FUNCTION: LEMBALL 0x0046F8B0
+void NETWORK_FileNetworkAddress::CopyAddressFromString(const char *pszAddress) {
+    strcpy((char *)this + 4, pszAddress);
+}
+
+// FUNCTION: LEMBALL 0x0046F880
+void NETWORK_FileNetworkAddress::CopyAddressObject(NETWORK_FileNetworkAddress *pSource) {
+    strcpy((char *)this + 4, (char *)pSource + 4);
+}
+
+// FUNCTION: LEMBALL 0x0046F8E0
+int NETWORK_FileNetworkAddress::CompareAddress(NETWORK_FileNetworkAddress *pOther) {
+    return strcmp((char *)this + 4, (char *)pOther + 4) == 0;
 }
 
 // FUNCTION: LEMBALL 0x00479510
-static int InitializeFileNetworkAddress(void *pObject, int nUnused) {
-    (void)pObject;
+int NETWORK_FileNetworkAddress::InitializeAddress(int nUnused) {
     (void)nUnused;
+    AppendCStringToStream(
+        g_pErrorOutputStream,
+        "You haven't implemented major/minor distinction in 'CFileNetworkAddress'es\n");
+    AppendCStringToStream(
+        g_pErrorOutputStream,
+        "use count entry in broadcast file\n");
     return 0;
 }
 
-static void *g_NETWORK_FileNetworkAddressRecoveredTargets[6] = {
-    (void *)GetFileNetworkAddressString,
-    (void *)SelectFileNetworkAddressType,
-    (void *)CopyFileNetworkAddressFromString,
-    (void *)CopyFileNetworkAddress,
-    (void *)CompareFileNetworkAddress,
-    (void *)InitializeFileNetworkAddress,
-};
-
-struct NETWORK_FileNetworkAddressVtableModel {
-    virtual char *GetAddressString(void) {
-        return GetFileNetworkAddressString(this);
-    }
-    virtual void SelectAddressType(int nType) {
-        SelectFileNetworkAddressType(this, nType);
-    }
-    virtual void CopyAddressFromString(const char *pszAddress) {
-        CopyFileNetworkAddressFromString(this, pszAddress);
-    }
-    virtual void CopyAddressObject(void *pSource) {
-        CopyFileNetworkAddress(this, pSource);
-    }
-    virtual int CompareAddress(void *pOther) {
-        return CompareFileNetworkAddress(this, pOther);
-    }
-    virtual int InitializeAddress(int nUnused) {
-        return InitializeFileNetworkAddress(this, nUnused);
-    }
-};
-
-static NETWORK_FileNetworkAddressVtableModel g_NETWORK_FileNetworkAddressVtableModel;
+static NETWORK_FileNetworkAddress g_NETWORK_FileNetworkAddressVtableModel;
 static void *g_NETWORK_FileNetworkAddressVtable =
     *(void ***)&g_NETWORK_FileNetworkAddressVtableModel;
 
 // FUNCTION: LEMBALL 0x0046F860
 static void *AllocateFileNetworkAddress(void) {
-    char *pObject;
+    NETWORK_FileNetworkAddress *pObject;
 
-    pObject = (char *)AllocateVSMemBlock(0x20);
+    pObject = (NETWORK_FileNetworkAddress *)AllocateVSMemBlock(0x20);
     if (pObject == 0) {
         return 0;
     }
     *(void ***)pObject = (void **)g_NETWORK_FileNetworkAddressVtable;
-    pObject[4] = 0;
+    *((char *)pObject + 4) = 0;
     return pObject;
 }
 
@@ -257,7 +241,7 @@ static NETWORK_TcpipRuntimeWindowVtableModel
  * produces code address, not dispatch-table address. */
 static NETWORK_RuntimeFallbackTransportVtable *g_NETWORK_FileBasedRuntimeTransportVtable =
     &g_NETWORK_RuntimeFallbackTransportVtable;
-static void *g_NETWORK_TcpipRuntimeWindowVtable =
+void *g_NETWORK_TcpipRuntimeWindowVtable =
     *(void ***)&g_NETWORK_TcpipRuntimeWindowVtableModel;
 static NETWORK_RuntimeFallbackTransportVtable *g_NETWORK_TcpipRuntimeTransportVtable =
     &g_NETWORK_RuntimeFallbackTransportVtable;
@@ -1044,7 +1028,7 @@ struct NETWORK_TcpipRuntimeStateVtable {
     void (NETWORK_EffTransportRuntimeState::*m_pWaitForTransportMessage)(void);
 };
 
-static NETWORK_TcpipRuntimeStateVtable g_NETWORK_TcpipRuntimeStateVtable = {
+NETWORK_TcpipRuntimeStateVtable g_NETWORK_TcpipRuntimeStateVtable = {
     (void *)NetworkRuntimeTransportNoop,
     &NETWORK_EffTransportRuntimeState::DeleteEffTransportRuntimeWindow,
     &NETWORK_EffTransportRuntimeState::ProcessEffTransportDispatchEvent,
@@ -1114,22 +1098,28 @@ struct NETWORK_FileRuntimeWindowVtableModel {
         return 0;
     }
     virtual char *GetAddressString(void) {
-        return GetFileNetworkAddressString(this);
+        return ((NETWORK_FileNetworkAddress *)this)
+            ->NETWORK_FileNetworkAddress::GetAddressString();
     }
     virtual void SelectAddressType(int nType) {
-        SelectFileNetworkAddressType(this, nType);
+        ((NETWORK_FileNetworkAddress *)this)
+            ->NETWORK_FileNetworkAddress::SelectAddressType(nType);
     }
     virtual void CopyAddressFromString(const char *pszAddress) {
-        CopyFileNetworkAddressFromString(this, pszAddress);
+        ((NETWORK_FileNetworkAddress *)this)
+            ->NETWORK_FileNetworkAddress::CopyAddressFromString(pszAddress);
     }
     virtual void CopyAddressObject(void *pSource) {
-        CopyFileNetworkAddress(this, pSource);
+        ((NETWORK_FileNetworkAddress *)this)->NETWORK_FileNetworkAddress::CopyAddressObject(
+            (NETWORK_FileNetworkAddress *)pSource);
     }
     virtual int CompareAddress(void *pOther) {
-        return CompareFileNetworkAddress(this, pOther);
+        return ((NETWORK_FileNetworkAddress *)this)->NETWORK_FileNetworkAddress::CompareAddress(
+            (NETWORK_FileNetworkAddress *)pOther);
     }
     virtual int InitializeAddress(int nUnused) {
-        return InitializeFileNetworkAddress(this, nUnused);
+        return ((NETWORK_FileNetworkAddress *)this)
+            ->NETWORK_FileNetworkAddress::InitializeAddress(nUnused);
     }
     virtual void Reserved07(void) {}
     virtual void Reserved08(void) {}

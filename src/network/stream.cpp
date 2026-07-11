@@ -130,13 +130,13 @@ struct NETWORK_EffStreamBaseVtableModel {
 
     virtual void WriteTaggedHeader(void) {
         NETWORK_EffStreamBase *pStream = (NETWORK_EffStreamBase *)this;
-        unsigned char *pbTag = (unsigned char *)pStream->m_pTagBuffer2c;
-        pStream->WriteEffStreamU32BE(*(unsigned int *)pbTag);
-        pStream->WriteEffStreamU32BE(*(unsigned int *)(pbTag + 4));
-        pStream->WriteEffStreamU16BE(*(unsigned short *)(pbTag + 8));
-        pStream->WriteEffStreamU16BE(*(unsigned short *)(pbTag + 0xa));
-        pStream->WriteEffStreamU16BE(*(unsigned short *)(pbTag + 0xc));
-        *(unsigned char *)(pStream->m_nReserved1c) = pbTag[0xe];
+        NETWORK_EffStreamTag *pTag = pStream->m_pTagBuffer2c;
+        pStream->WriteEffStreamU32BE(pTag->m_nWord00);
+        pStream->WriteEffStreamU32BE(pTag->m_nWord04);
+        pStream->WriteEffStreamU16BE(pTag->m_nWord08);
+        pStream->WriteEffStreamU16BE(pTag->m_nWord0a);
+        pStream->WriteEffStreamU16BE(pTag->m_nWord0c);
+        *(unsigned char *)(pStream->m_nReserved1c) = pTag->m_bByte0e;
         ++pStream->m_nReserved1c;
     }
 
@@ -219,13 +219,13 @@ struct NETWORK_DualHandleEffStreamVtableModel {
     virtual void Noop(void) {}
     virtual void WriteTaggedHeader(void) {
         NETWORK_EffStreamBase *pStream = (NETWORK_EffStreamBase *)this;
-        unsigned char *pbTag = (unsigned char *)pStream->m_pTagBuffer2c;
-        pStream->WriteEffStreamU32BE(*(unsigned int *)pbTag);
-        pStream->WriteEffStreamU32BE(*(unsigned int *)(pbTag + 4));
-        pStream->WriteEffStreamU16BE(*(unsigned short *)(pbTag + 8));
-        pStream->WriteEffStreamU16BE(*(unsigned short *)(pbTag + 0xa));
-        pStream->WriteEffStreamU16BE(*(unsigned short *)(pbTag + 0xc));
-        *(unsigned char *)pStream->m_nReserved1c = pbTag[0xe];
+        NETWORK_EffStreamTag *pTag = pStream->m_pTagBuffer2c;
+        pStream->WriteEffStreamU32BE(pTag->m_nWord00);
+        pStream->WriteEffStreamU32BE(pTag->m_nWord04);
+        pStream->WriteEffStreamU16BE(pTag->m_nWord08);
+        pStream->WriteEffStreamU16BE(pTag->m_nWord0a);
+        pStream->WriteEffStreamU16BE(pTag->m_nWord0c);
+        *(unsigned char *)pStream->m_nReserved1c = pTag->m_bByte0e;
         ++pStream->m_nReserved1c;
     }
     virtual void *Delete(BYTE fDelete) {
@@ -653,7 +653,7 @@ int NETWORK_EffStreamBase::SaveEffStreamToMemoryRange(int nTargetBuffer, int cbR
 
     m_pPayloadBuffer08 = nTargetBuffer;
     pVtable = (NETWORK_EffStreamSerializeVtable *)m_pVtable;
-    m_nReserved1c = nTargetBuffer + cbRange;
+    m_nReserved1c = (unsigned char *)(unsigned long)(nTargetBuffer + cbRange);
     m_fOwnsPayload0c = m_nBufferEnd18 + nTargetBuffer + cbRange;
     pVtable->m_pBeginWriteHeader(this);
     pfnWriteBody = (int (*)(void *))pVtable->m_pBeginWriteBody;
@@ -946,7 +946,7 @@ NETWORK_TimedEffStream *NETWORK_TimedEffStream::ConstructTimedEffStream(int fCon
     pTimedStream->m_dwLastTick3c = dwNow - 1000;
 
     pHandleArray = (int *)AllocateVSMemBlock(0x10);
-    pTimedStream->m_pTagBuffer2c = pHandleArray;
+    pTimedStream->m_pTagBuffer2c = (NETWORK_EffStreamTag *)pHandleArray;
     *pHandleArray = 0x56533039;
 
     pTimedStream->m_pPrimaryHandleArray48 = 0;
