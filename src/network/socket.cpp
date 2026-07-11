@@ -24,6 +24,10 @@ extern void CrtFatalRuntimeError0x19(void);
 extern void SetTimedFileBackedEffChannelWord(void *pObject, unsigned short nValue);
 extern void EffStreamChannelStateRet4Thunk(BYTE fDelete);
 
+// FUNCTION: LEMBALL 0x004629D0
+static void TcpipCompositeUnusedVtableSlot(void) {
+}
+
 struct NETWORK_ConstructionAdjustorVtable {
     void *m_pReserved00;
     int m_nPrimaryOffset;
@@ -1020,6 +1024,102 @@ static void ConfigureTcpipCompositeRemoteHost(void *pObject, const char *pszHost
 static int StartTcpipCompositeLocalHostLookup(void *pObject, char *pszHost);
 static void EnableTcpipCompositeAsyncSelect(void *pObject);
 static void DisableTcpipCompositeAsyncSelect(void *pObject);
+extern "C" int WINAPI socket(int nAddressFamily, int nType, int nProtocol);
+extern "C" int WINAPI ioctlsocket(int nSocket, long nCommand, unsigned long *pValue);
+extern "C" int WINAPI bind(int nSocket, const void *pAddress, int cbAddress);
+extern "C" int WINAPI WSAAsyncSelect(int nSocket, void *hWnd, unsigned int nMessage,
+                                      long nEvents);
+extern "C" unsigned short WINAPI htons(unsigned short nValue);
+extern "C" DWORD timeGetTime(void);
+extern void *g_pEffTransportRuntimeService;
+extern short g_nEffTransportServiceBasePort;
+
+/* These are the primary composite slots at 0049a3d8.  Keep them as real
+   member functions: the binary calls them with the composite in ECX. */
+struct NETWORK_TcpipCompositeVtableModel {
+    virtual void Reserved00(void) {
+    }
+    virtual void ServiceEffTransportPeerEntry(void) {
+        ((NETWORK_CompositeEffTransportVtableModel *)this)
+            ->ServiceEffTransportPeerEntry();
+    }
+    // FUNCTION: LEMBALL 0x00471090
+    virtual void CreateTcpipCompositeSocket(void) {
+        NETWORK_TcpipEffTransportCompositeLayout *pComposite;
+        NETWORK_ConstructionAdjustorVtable *pOffsets;
+        NETWORK_AdjustorSubobject *pSocketChannel;
+        int nSocket;
+        unsigned long nNonblocking;
+
+        pComposite = (NETWORK_TcpipEffTransportCompositeLayout *)this;
+        nSocket = socket(2, 2, 0);
+        pOffsets = pComposite->m_pOuterOffsets04;
+        pSocketChannel = (NETWORK_AdjustorSubobject *)((char *)pComposite +
+            pOffsets->m_nSecondaryOffset + 4);
+        *(int *)((char *)pSocketChannel + 0x0c) = nSocket;
+        if (nSocket == -1) {
+            ((NETWORK_SocketChannelControl *)pSocketChannel)
+                ->HandleSocketError();
+            return;
+        }
+        *(int *)((char *)pSocketChannel + 0x10) = 1;
+        nNonblocking = 1;
+        if (ioctlsocket(*(int *)((char *)pSocketChannel + 0x0c),
+                        0x8004667e, &nNonblocking) == -1) {
+            ((NETWORK_SocketChannelControl *)pSocketChannel)
+                ->HandleSocketError();
+        }
+    }
+    // FUNCTION: LEMBALL 0x00471110
+    virtual void BindTcpipCompositeAddress(void *pAddress) {
+        NETWORK_TcpipEffTransportCompositeLayout *pComposite;
+        NETWORK_ConstructionAdjustorVtable *pOffsets;
+        NETWORK_SocketChannelControl *pSocketChannel;
+        unsigned char abAddress[16];
+        int nSocket;
+
+        pComposite = (NETWORK_TcpipEffTransportCompositeLayout *)this;
+        ((NETWORK_TcpipCompositeVtableModel *)this)
+            ->CreateTcpipCompositeSocket();
+        pOffsets = pComposite->m_pOuterOffsets04;
+        pSocketChannel = (NETWORK_SocketChannelControl *)((char *)this +
+            pOffsets->m_nSecondaryOffset + 4);
+        pSocketChannel->SetRemoteAddress(pAddress);
+        *(unsigned short *)abAddress = 2;
+        *(unsigned short *)(abAddress + 2) = htons(
+            (unsigned short)(*(short *)((char *)this +
+                pOffsets->m_nSecondaryOffset + 0x24) +
+                g_nEffTransportServiceBasePort));
+        *(int *)(abAddress + 4) = *(int *)((char *)g_pEffTransportRuntimeService + 0x14);
+        nSocket = *(int *)((char *)this + pOffsets->m_nSecondaryOffset + 0x0c);
+        if (bind(nSocket, abAddress, 0x10) == -1) {
+            pSocketChannel->HandleSocketError();
+            return;
+        }
+        if (WSAAsyncSelect(nSocket,
+                (void *)(unsigned long)*(int *)((char *)g_pEffTransportRuntimeService + 0x14),
+                0x443, 3) == -1) {
+            pSocketChannel->HandleSocketError();
+            return;
+        }
+        *(int *)((char *)this + pOffsets->m_nSecondaryOffset + 0x1c) = 1;
+        *(int *)((char *)this + pOffsets->m_nSecondaryOffset + 0x20) = 1;
+        *(int *)((char *)this + 0x1c) = 0;
+        *(int *)((char *)this + pOffsets->m_nSecondaryOffset + 0x40) =
+            (int)timeGetTime() - 1000;
+        *(int *)((char *)this + pOffsets->m_nSecondaryOffset + 0x44) =
+            (int)timeGetTime();
+    }
+    // FUNCTION: LEMBALL 0x00471210
+    virtual void BindUdpCompositeSocket(void) {
+        ((NETWORK_UdpSocketBinder *)this)->BindUdpSocketAndEnableAsyncSelect();
+    }
+    virtual void Reserved14(void) {
+    }
+    virtual void Reserved18(void) {
+    }
+};
+static NETWORK_TcpipCompositeVtableModel g_NETWORK_TcpipCompositeVtableModel;
 struct NETWORK_TcpipCompositeReceiveVtableModel {
     virtual int ReceiveAsyncMessage(int nMessage, void *pReserved, unsigned int nEvent) {
         return ((NETWORK_SocketAsyncMessageAdapter *)this)
@@ -1030,15 +1130,7 @@ static NETWORK_TcpipCompositeReceiveVtableModel
     g_NETWORK_TcpipCompositeReceiveVtableModel;
 static void *g_NETWORK_TcpipCompositeReceiveVtable =
     *(void ***)&g_NETWORK_TcpipCompositeReceiveVtableModel;
-static void *g_NETWORK_TcpipCompositeRecoveredVtable[7] = {
-    0,
-    0,
-    (void *)ConfigureTcpipCompositeRemoteHost,
-    (void *)StartTcpipCompositeLocalHostLookup,
-    0,
-    (void *)EnableTcpipCompositeAsyncSelect,
-    (void *)DisableTcpipCompositeAsyncSelect,
-};
+static void *g_NETWORK_TcpipCompositeRecoveredVtable[7] = { 0 };
 static void *g_NETWORK_TcpipCompositeVtable =
     g_NETWORK_TcpipCompositeRecoveredVtable;
 static void *g_NETWORK_TcpipCompositeDualRecoveredVtable[10] = {
@@ -2248,6 +2340,16 @@ void *NETWORK_TcpipEffTransportCompositeLayout::ConstructTcpipEffTransportCompos
     NETWORK_AdjustorSubobject *pQuaternaryThunk;
 
     pComposite = this;
+    {
+        int nSlot;
+        void **pModelVtable = *(void ***)&g_NETWORK_TcpipCompositeVtableModel;
+        for (nSlot = 0; nSlot < 7; ++nSlot) {
+            g_NETWORK_TcpipCompositeRecoveredVtable[nSlot] = pModelVtable[nSlot];
+        }
+        g_NETWORK_TcpipCompositeRecoveredVtable[5] =
+            (void *)TcpipCompositeUnusedVtableSlot;
+        g_NETWORK_TcpipCompositeRecoveredVtable[6] = 0;
+    }
     g_NETWORK_TcpipCompositeRecoveredVtable[0] =
         ((void **)g_NETWORK_RuntimeChannelStackVtable)[0];
     g_NETWORK_TcpipCompositeRecoveredVtable[1] =

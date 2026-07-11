@@ -1071,12 +1071,15 @@ struct NETWORK_RuntimeWindowBase {
     char m_abWindowBase[0x10];
     NETWORK_EffTransportRuntimeState m_RuntimeState;
 
+    void *ConstructTcpipNetworkRuntimeWindow(void);
     void ScheduleNetworkRuntimeTimerEvent(UINT nMilliseconds);
 };
 
 struct NETWORK_FileBasedRuntimeWindow {
     NETWORK_RuntimeWindowBase m_Base;
     int m_nReserved78;
+
+    void *ConstructFileBasedNetworkRuntimeWindow(void);
 };
 
 struct NETWORK_FileRuntimeWindowVtableModel {
@@ -1229,7 +1232,7 @@ void QueueEffTransportErrorEvent(int nError) {
 extern void *g_pEffTransportPeerAddressState;
 extern void *g_pEffTransportPacketBuffer;
 extern int g_cbEffTransportCurrentPacketBytes;
-extern void LoadEffStreamFromGlobalRange(void *pStream);
+extern void WINAPI LoadEffStreamFromGlobalRange(void *pStream);
 
 struct NETWORK_GlobalPacketRecordBuffer {
     void *m_pReserved00;
@@ -2352,10 +2355,12 @@ void NETWORK_EffTransportConnectCallback::QueueEffTransportConnectEvent(void) {
         pReliableTickState->m_dwLastTick40 = dwNow - 1000;
         dwNow = timeGetTime();
         pTimedTickState->m_dwLastTick40 = dwNow;
-        pWindowState = (NETWORK_RuntimeWindowSendGateState *)g_pActiveNetworkRuntimeWindow;
-        if (pWindowState->m_fSendGateActive30 != 0) {
-            ((NETWORK_ChannelOwnerObject *)(unsigned long)pWindowState->m_nChannelOwner24)
-                ->ClearEffTransportSendGate();
+        if (g_pActiveNetworkRuntimeWindow != 0) {
+            pWindowState = (NETWORK_RuntimeWindowSendGateState *)g_pActiveNetworkRuntimeWindow;
+            if (pWindowState->m_fSendGateActive30 != 0) {
+                ((NETWORK_ChannelOwnerObject *)(unsigned long)pWindowState->m_nChannelOwner24)
+                    ->ClearEffTransportSendGate();
+            }
         }
     }
     ((void (*)(NETWORK_EffDispatchEvent *))(*(void ***)g_pEffTransportDispatchQueue)[2])(&kEvent);
@@ -3227,8 +3232,9 @@ void NETWORK_EffTransportPeer::ConfigureEffTransportConnectHostString(void *pHos
     void (**ppVtable)(void);
 
     if (m_nReserved1C != 0) {
-        FreeVSMemBlock((void *)(unsigned long)m_nReserved1C);
+        void *pBuffer = (void *)(unsigned long)m_nReserved1C;
         m_nReserved1C = 0;
+        FreeVSMemBlock(pBuffer);
     }
 
     *(int *)((char *)this + 0xc) = 2;
@@ -3338,7 +3344,7 @@ void NETWORK_PrefixedEffTransportControlView::DispatchPrefixedEffTransportContro
 }
 
 // FUNCTION: LEMBALL 0x004608F0
-void LoadEffStreamFromGlobalRange(void *pStream) {
+void WINAPI LoadEffStreamFromGlobalRange(void *pStream) {
     ((NETWORK_EffStreamBase *)pStream)->SaveEffStreamToMemoryRange(
         (int)(unsigned long)g_pszEffTransportBroadcastStatusPayload,
         g_cbEffTransportBroadcastStatusPayload + 0x11);
@@ -3610,21 +3616,22 @@ void *NETWORK_EffTransportRuntimeState::ConstructEffTransportRuntimeState(void) 
     InitializeRenderQueueNodeBase(this);
     pState->m_RenderQueueNode.m_pVtable = (void **)g_NETWORK_EffTransportRuntimeStateVtable;
     g_nEffTransportAsyncErrorStatus = 0;
-    pState->m_pLastPeer = 0;
     pState->m_pFirstPeer = 0;
+    pState->m_pActiveChannelOwner = 0;
     pState->m_nReserved34 = 0;
+    pState->m_pLastPeer = 0;
     pState->m_nReserved30 = 0;
+    pState->m_fRuntimeActive = 0;
     pState->m_fTransportInitialized = 0;
-    pState->m_fStartRequested = 0;
     pState->m_nReserved40 = 0;
     pState->m_nReserved3C = 0;
     pState->m_nReserved38 = 0;
     pState->m_nReserved44 = 0;
     pState->m_nReserved48 = 0;
+    pState->m_nRuntimeKey = 0;
     pState->m_fShutdownRequested = 0;
-    pState->m_fRuntimeActive = 0;
     pState->m_cbMaxPacketBytes = 0x50;
-    pState->m_pActiveChannelOwner = 0;
+    pState->m_fStartRequested = 0;
 
     pQueue = AllocateVSMemBlock(0x58);
     if (pQueue == 0) {
@@ -3842,22 +3849,19 @@ int NETWORK_RuntimeStartView::StartEffTransportRuntimeAndWaitReady(int nRuntimeK
 }
 
 // FUNCTION: LEMBALL 0x0046F6B0
-void *ConstructFileBasedNetworkRuntimeWindow(void *pRuntimeWindow) {
-    NETWORK_FileBasedRuntimeWindow *pWindow;
-
-    pWindow = (NETWORK_FileBasedRuntimeWindow *)pRuntimeWindow;
-    ((PLATFORM_InvisibleMessageWindow *)pRuntimeWindow)
+void *NETWORK_FileBasedRuntimeWindow::ConstructFileBasedNetworkRuntimeWindow(void) {
+    ((PLATFORM_InvisibleMessageWindow *)this)
         ->Construct("File-based Network", &g_fFileBasedRuntimeWindowClassRegistered);
-    pWindow->m_Base.m_RuntimeState.ConstructEffTransportRuntimeState();
-    *(void **)pWindow = (void *)g_NETWORK_FileBasedRuntimeWindowVtable;
-    pWindow->m_nReserved78 = 0;
-    pWindow->m_Base.m_RuntimeState.m_RenderQueueNode.m_pVtable =
+    m_Base.m_RuntimeState.ConstructEffTransportRuntimeState();
+    *(void **)this = (void *)g_NETWORK_FileBasedRuntimeWindowVtable;
+    m_nReserved78 = 0;
+    m_Base.m_RuntimeState.m_RenderQueueNode.m_pVtable =
         (void **)&g_NETWORK_FileBasedRuntimeStateVtable;
-    return pRuntimeWindow;
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x0046F210
-DWORD WINAPI FileBasedNetworkMessageThreadMain(LPVOID pvThreadParam) {
+DWORD FileBasedNetworkMessageThreadMain(void) {
     NETWORK_EffTransportRuntimeState *pActiveRuntime;
     NETWORK_EffTransportRuntimeStateVtable *pVtable;
     NETWORK_RenderDispatchQueue *pDispatchQueue;
@@ -3865,17 +3869,21 @@ DWORD WINAPI FileBasedNetworkMessageThreadMain(LPVOID pvThreadParam) {
     void *pRuntimeWindow;
     int fRuntimeStarted;
 
-    (void)pvThreadParam;
-
     pRuntimeWindow = AllocateVSMemBlock(0x7c);
     if (pRuntimeWindow != 0) {
-        pRuntimeWindow = ConstructFileBasedNetworkRuntimeWindow(pRuntimeWindow);
+        pRuntimeWindow =
+            ((NETWORK_FileBasedRuntimeWindow *)pRuntimeWindow)
+                ->ConstructFileBasedNetworkRuntimeWindow();
     }
 
     if (pRuntimeWindow == 0) {
         g_pActiveNetworkRuntimeWindow = 0;
     } else {
         g_pActiveNetworkRuntimeWindow = (char *)pRuntimeWindow + 0x10;
+    }
+
+    if (g_pActiveNetworkRuntimeWindow == 0) {
+        return 0;
     }
 
     pActiveRuntime = (NETWORK_EffTransportRuntimeState *)g_pActiveNetworkRuntimeWindow;
@@ -3933,8 +3941,9 @@ DWORD WINAPI FileBasedNetworkMessageThreadMain(LPVOID pvThreadParam) {
 int StartFileBasedNetworkMessageThread(void) {
     DWORD dwStartTime;
 
-    g_hFileBasedNetworkThread =
-        CreateThread(0, 0, FileBasedNetworkMessageThreadMain, 0, 0, &g_dwFileBasedNetworkThreadId);
+    g_hFileBasedNetworkThread = CreateThread(
+        0, 0, (LPTHREAD_START_ROUTINE)FileBasedNetworkMessageThreadMain, 0, 0,
+        &g_dwFileBasedNetworkThreadId);
     if (g_hFileBasedNetworkThread == 0) {
         MessageBoxA(0, "Unable to start 'VSNET Message loop' thread\n", "ERROR", 0);
         ExitProcess(0xbbbb);
@@ -4218,21 +4227,18 @@ void WINAPI ConfigureFileBasedNetworkPathsWrapper(char *pszLocalHost, char *pszB
 }
 
 // FUNCTION: LEMBALL 0x004713C0
-void *ConstructTcpipNetworkRuntimeWindow(void *pRuntimeWindow) {
-    NETWORK_RuntimeWindowBase *pWindow;
-
-    pWindow = (NETWORK_RuntimeWindowBase *)pRuntimeWindow;
-    ((PLATFORM_InvisibleMessageWindow *)pRuntimeWindow)
+void *NETWORK_RuntimeWindowBase::ConstructTcpipNetworkRuntimeWindow(void) {
+    ((PLATFORM_InvisibleMessageWindow *)this)
         ->Construct("TCPIP Network", &g_fTcpipRuntimeWindowClassRegistered);
-    pWindow->m_RuntimeState.ConstructEffTransportRuntimeState();
-    *(void **)pWindow = (void *)g_NETWORK_TcpipRuntimeWindowVtable;
-    pWindow->m_RuntimeState.m_RenderQueueNode.m_pVtable =
+    m_RuntimeState.ConstructEffTransportRuntimeState();
+    *(void **)this = (void *)g_NETWORK_TcpipRuntimeWindowVtable;
+    m_RuntimeState.m_RenderQueueNode.m_pVtable =
         (void **)&g_NETWORK_TcpipRuntimeStateVtable;
-    return pRuntimeWindow;
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x0046FA10
-DWORD WINAPI TcpipNetworkMessageThreadMain(LPVOID pvThreadParam) {
+DWORD TcpipNetworkMessageThreadMain(void) {
     NETWORK_EffTransportRuntimeState *pActiveRuntime;
     NETWORK_EffTransportRuntimeStateVtable *pVtable;
     NETWORK_RenderDispatchQueue *pDispatchQueue;
@@ -4240,11 +4246,11 @@ DWORD WINAPI TcpipNetworkMessageThreadMain(LPVOID pvThreadParam) {
     void *pRuntimeWindow;
     int fRuntimeStarted;
 
-    (void)pvThreadParam;
-
     pRuntimeWindow = AllocateVSMemBlock(0x78);
     if (pRuntimeWindow != 0) {
-        pRuntimeWindow = ConstructTcpipNetworkRuntimeWindow(pRuntimeWindow);
+        pRuntimeWindow =
+            ((NETWORK_RuntimeWindowBase *)pRuntimeWindow)
+                ->ConstructTcpipNetworkRuntimeWindow();
     }
 
     if (pRuntimeWindow == 0) {
@@ -4312,7 +4318,9 @@ DWORD WINAPI TcpipNetworkMessageThreadMain(LPVOID pvThreadParam) {
 int StartTcpipNetworkMessageThread(void) {
     DWORD dwStartTime;
 
-    g_hTcpipNetworkThread = CreateThread(0, 0, TcpipNetworkMessageThreadMain, 0, 0, &g_dwTcpipNetworkThreadId);
+    g_hTcpipNetworkThread = CreateThread(
+        0, 0, (LPTHREAD_START_ROUTINE)TcpipNetworkMessageThreadMain, 0, 0,
+        &g_dwTcpipNetworkThreadId);
     if (g_hTcpipNetworkThread == 0) {
         MessageBoxA(0, "Unable to start 'VSNET Message loop' thread\n", "ERROR", 0);
         ExitProcess(0xbbbb);

@@ -27,6 +27,8 @@ public:
 class GAME_MainContext {
 public:
     GAME_MainContext(void);
+    GAME_MainContext *InitializeMainGameContext(const char *pszCmdLine);
+    GAME_MainContext *InitializeMainGameContextThunk(const char *pszCmdLine);
 
 public:
     char m_szLevelPath[0x50];
@@ -40,7 +42,6 @@ public:
     void *m_pVariantMode;
 };
 
-GAME_MainContext *InitializeMainGameContext(GAME_MainContext *pMainContext, const char *pszCmdLine);
 void ShutdownMainGameContext(GAME_MainContext *pMainContext);
 int RunMainGameSession(int cArgs, const char *const *ppszArgs);
 char *FindCdromFilePathBySuffix(const char *pszSuffix);

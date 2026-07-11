@@ -1406,6 +1406,7 @@ void InitializeCoreSubsystems(void) {
     int fStatusInitialized;
     int fResourcesInitialized;
     GAME_StatusEntry *pMainMemoryArenaStatusEntry;
+    void *pMainMemoryArenaStatusStorage;
 
     fMemoryInitialized = InitializeMasterMainRamArena();
     if (fMemoryInitialized == 0) {
@@ -1471,10 +1472,14 @@ void InitializeCoreSubsystems(void) {
     AppendStartupCString(SelectSuccessOrFailedString(fResourcesInitialized));
     AppendStartupCString(g_VSINIT_LineBreak);
 
-    pMainMemoryArenaStatusEntry =
-        new (AllocateVSMemBlock(sizeof(GAME_StatusEntry))) GAME_StatusEntry(g_VSINIT_MainMemoryArenaName);
-    if (pMainMemoryArenaStatusEntry != 0) {
+    pMainMemoryArenaStatusStorage = AllocateVSMemBlock(sizeof(GAME_StatusEntry));
+    if (pMainMemoryArenaStatusStorage != 0) {
+        pMainMemoryArenaStatusEntry =
+            new (pMainMemoryArenaStatusStorage)
+                GAME_StatusEntry(g_VSINIT_MainMemoryArenaName);
         pMainMemoryArenaStatusEntry->m_pVtable = g_MainMemoryArenaStatusEntryVtable;
+    } else {
+        pMainMemoryArenaStatusEntry = 0;
     }
     AppendStatusEntryToRegistry(g_pStatusEntryRegistry, pMainMemoryArenaStatusEntry);
     *(GAME_StatusEntry **)((char *)g_pMainMemoryArena + 0x30) = pMainMemoryArenaStatusEntry;

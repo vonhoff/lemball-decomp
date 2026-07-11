@@ -2024,16 +2024,16 @@ void RunMainGameLoop(GAME_MainContext *pMainContext) {
 }
 
 // FUNCTION: LEMBALL 0x00406DF0
-GAME_MainContext *InitializeMainGameContext(GAME_MainContext *pMainContext, const char *pszCmdLine) {
+GAME_MainContext *GAME_MainContext::InitializeMainGameContext(const char *pszCmdLine) {
     char *pszCdromPath;
+    GAME_MainContext *pMainContext;
+    void *pStatusStorage;
+
+    pMainContext = this;
 
     (void)GetSrcDiskRegistryValueBuffer;
     (void)g_GAME_NotInstalledTitle;
     (void)g_GAME_InstallPrompt;
-
-    if (pMainContext == 0) {
-        return 0;
-    }
 
     pMainContext->m_pVariantMode = 0;
     g_pLevelProgressState = 0;
@@ -2058,10 +2058,25 @@ GAME_MainContext *InitializeMainGameContext(GAME_MainContext *pMainContext, cons
         g_pLevelProgressState = ((GAME_LevelProgressState *)g_pLevelProgressState)->Clear();
     }
 
-    pMainContext->m_pProcessingStatus =
-        new (AllocateVSMemBlock(sizeof(GAME_StatusEntry))) GAME_StatusEntry(g_GAME_ProcessingName);
-    pMainContext->m_pRefreshingStatus =
-        new (AllocateVSMemBlock(sizeof(GAME_StatusEntry))) GAME_StatusEntry(g_GAME_RefreshingName);
+    pStatusStorage = AllocateVSMemBlock(0x28);
+    if (pStatusStorage != 0) {
+        pMainContext->m_pProcessingStatus =
+            new (pStatusStorage) GAME_StatusEntry(g_GAME_ProcessingName);
+        *(int *)((char *)pMainContext->m_pProcessingStatus + 0x20) = 0;
+        *(int *)((char *)pMainContext->m_pProcessingStatus + 0x24) = 0;
+    } else {
+        pMainContext->m_pProcessingStatus = 0;
+    }
+
+    pStatusStorage = AllocateVSMemBlock(0x28);
+    if (pStatusStorage != 0) {
+        pMainContext->m_pRefreshingStatus =
+            new (pStatusStorage) GAME_StatusEntry(g_GAME_RefreshingName);
+        *(int *)((char *)pMainContext->m_pRefreshingStatus + 0x20) = 0;
+        *(int *)((char *)pMainContext->m_pRefreshingStatus + 0x24) = 0;
+    } else {
+        pMainContext->m_pRefreshingStatus = 0;
+    }
     AppendStatusEntryToRegistry(g_pStatusEntryRegistry, pMainContext->m_pProcessingStatus);
     AppendStatusEntryToRegistry(g_pStatusEntryRegistry, pMainContext->m_pRefreshingStatus);
 
@@ -2119,6 +2134,12 @@ GAME_MainContext *InitializeMainGameContext(GAME_MainContext *pMainContext, cons
     SwitchMainGameMode(pMainContext, 1);
 
     return pMainContext;
+}
+
+// FUNCTION: LEMBALL 0x00402A7C
+GAME_MainContext *GAME_MainContext::InitializeMainGameContextThunk(
+    const char *pszCmdLine) {
+    return InitializeMainGameContext(pszCmdLine);
 }
 
 // FUNCTION: LEMBALL 0x00407420
@@ -2396,7 +2417,7 @@ int RunMainGameSession(int cArgs, const char *const *ppszArgs) {
         if (pMainContext == 0) {
             pMainContext = 0;
         } else {
-            pMainContext = InitializeMainGameContext(pMainContext, 0);
+            pMainContext = pMainContext->InitializeMainGameContextThunk(0);
         }
 
         if (g_fStartupEditLevelOverride != 0) {

@@ -57,9 +57,9 @@ struct NETWORK_ChannelOwnerObject {
     void ServiceEffTransportConnectRequest(void);
 };
 
-/* Ghidra: original table at 004990e8 has 8 slots:
-   claim flag, clear flag, fatal, fatal, service, fatal, fatal, null.
-   Use compiler-owned vtable storage; slot 7 is safe no-op for runtime use. */
+/* Ghidra: original table at 004990e8 has 7 callable slots:
+   claim flag, clear flag, fatal, fatal, service, fatal, fatal.
+   The following zero is table padding, not a virtual function. */
 struct NETWORK_RuntimeChannelStackVtableModel {
     virtual short ClaimRuntimeFlag(const char *pszFlags);
     virtual void ClearRuntimeFlag(short nFlag);
@@ -70,7 +70,6 @@ struct NETWORK_RuntimeChannelStackVtableModel {
     }
     virtual void FatalRuntimeSlot05(void) { CrtFatalRuntimeError0x19(); }
     virtual void FatalRuntimeSlot06(void) { CrtFatalRuntimeError0x19(); }
-    virtual void UnusedRuntimeSlot07(void) {}
 };
 
 // FUNCTION: LEMBALL 0x004605D0

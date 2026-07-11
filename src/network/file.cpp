@@ -342,7 +342,7 @@ static const NETWORK_FileBackedStreamAdjustorOffsets g_NETWORK_FileBackedDualStr
     CrtFatalRuntimeError0x19,
 };
 /* 0049A5D8: dual file-backed channel-state thunk table.  First four entries
- * are callable adjustors; remaining entries are compiler fatal stubs. */
+ * are callable adjustors, followed by fifteen fatal stubs and a null tail. */
 static void *g_NETWORK_FileBackedDualPrimaryThunkVtable[] = {
     (void *)AdjustAndMapNestedEffCallbackFailureFromB8,
     (void *)AdjustAndDeleteDualFileBackedEffChannelWrapper,
@@ -363,7 +363,7 @@ static void *g_NETWORK_FileBackedDualPrimaryThunkVtable[] = {
     (void *)CrtFatalRuntimeError0x19,
     (void *)CrtFatalRuntimeError0x19,
     (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
+    0,
 };
 struct NETWORK_FileBackedDualSecondaryThunkVtableModel {
     virtual int ReturnTrue(void) { return 1; }
@@ -403,12 +403,13 @@ struct NETWORK_FileBackedDualSecondaryThunkVtableModel {
     virtual void *Delete(BYTE fDelete) {
         return AdjustAndDeleteDualFileBackedEffChannelWrapper2c(this, fDelete);
     }
+    // FUNCTION: LEMBALL 0x00462920
+    virtual void ReservedRet(void) {
+    }
     virtual void Fatal0(void) { CrtFatalRuntimeError0x19(); }
     virtual void Fatal1(void) { CrtFatalRuntimeError0x19(); }
-    virtual void Fatal2(void) { CrtFatalRuntimeError0x19(); }
-    virtual void DeleteRet8(BYTE fDelete, BYTE fReserved) {
-        (void)fDelete;
-        (void)fReserved;
+    virtual BYTE MapNestedFailure(void) {
+        return MapNestedEffCallbackFailureToStatus6((char *)this + 0xb8);
     }
 };
 
@@ -699,18 +700,30 @@ static void *g_NETWORK_GlobalStateFinalPrimaryThunkVtable[] = {
     (void *)AdjustAndDeleteGlobalStateFileBackedEffCompositeWrapper,
     (void *)AdjustAndClearEmbeddedEffChannelAsyncStatus13c,
     (void *)AdjustAndCloseEffTransportPeerByKey,
+    (void *)AllocateGlobalStateEffRecordSlot0047AD70,
     (void *)ReleaseGlobalStateEffRecordSlot0047AE00,
-    (void *)NoopVtableCallback,
-    (void *)NoopVtableCallback,
-    (void *)NoopVtableCallback,
-    (void *)NoopVtableCallback,
-    (void *)NoopVtableCallback,
-    (void *)NoopVtableCallback,
+    (void *)NoopGlobalStateCompositeCallback0047AB10,
+    (void *)PrepareGlobalStateBroadcastPath0047AB20,
+    (void *)ServiceGlobalStateEffComposite0047AEF0,
+    (void *)SetGlobalStateCompositeOpenFlag0047AED0,
+    (void *)ClearGlobalStateCompositeOpenFlag0047AEE0,
     (void *)CrtFatalRuntimeError0x19,
     (void *)OpenWin32FileWrapperWithCreateFlag,
     (void *)OpenWin32FileWrapperCreateNew,
     (void *)ProbeWin32FileWrapperAccess,
     (void *)CloseWin32FileWrapperIfOpen,
+    (void *)FreeWin32FileWrapperPath,
+    (void *)FreeWin32FileWrapperOwnedPath,
+    (void *)WriteWin32FileWrapper,
+    (void *)ReadWin32FileWrapper,
+    (void *)SeekWin32FileWrapper,
+    (void *)GetWin32FileWrapperLength,
+    (void *)GetWin32FileWrapperOffset,
+    (void *)LockWin32FileRange,
+    (void *)UnlockWin32FileRange,
+    (void *)WSAGetLastErrorThunk0047B8D0,
+    (void *)GetWin32FileWrapperOwnedPath,
+    0,
 };
 
 static void *g_NETWORK_GlobalStateFinalFatalVtable[] = {
@@ -986,6 +999,50 @@ struct NETWORK_DualSlotFinalDualThunkVtableModel
 static NETWORK_DualSlotFinalDualThunkVtableModel
     g_NETWORK_DualSlotFinalDualThunkVtableModel;
 
+struct NETWORK_DualSlotWaveOutStopVtableModel {
+    // FUNCTION: LEMBALL 0x0047CE00
+    virtual int StopWaveOutPlayback(void) {
+        HWAVEOUT *pWaveOut;
+        MMRESULT nResult;
+        unsigned int i;
+        char szErrorText[0x100];
+
+        pWaveOut = (HWAVEOUT *)((char *)this + 0x8c);
+        if (*pWaveOut == 0) {
+            return 1;
+        }
+
+        nResult = (MMRESULT)-1;
+        i = 0;
+        do {
+            if (i >= 500) {
+                break;
+            }
+            ++i;
+            nResult = waveOutReset(*pWaveOut);
+        } while (nResult != 0);
+
+        if (i != 500) {
+            return 1;
+        }
+
+        AppendCStringToStream(g_pErrorOutputStream,
+                              "Error stopping playback in device : ");
+        AppendCStringToStream(g_pErrorOutputStream,
+            GetWaveOutEffectBackendDescription((AUDIO_WaveOutEffectBackend *)this));
+        AppendCStringToStream(g_pErrorOutputStream,
+                              ".\nSystem may be unstable!\n");
+        waveOutGetErrorTextA(nResult, szErrorText, sizeof(szErrorText));
+        AppendCStringToStream(g_pErrorOutputStream, szErrorText);
+        AppendCStringToStream(g_pErrorOutputStream, "\n");
+        return 0;
+    }
+};
+static NETWORK_DualSlotWaveOutStopVtableModel
+    g_NETWORK_DualSlotWaveOutStopVtableModel;
+static void *g_NETWORK_DualSlotWaveOutStopVtable =
+    *(void ***)&g_NETWORK_DualSlotWaveOutStopVtableModel;
+
 /* 49AC08 is the primary compiler vtable.  49AC18 is its +4-view: the
  * composite's public methods begin after the four owner/thunk entries. */
 static void *g_NETWORK_DualSlotCompositeFullVtableModel[] = {
@@ -1009,6 +1066,7 @@ static void *g_NETWORK_DualSlotCompositeFullVtableModel[] = {
     (void *)ResetAndCloseWaveOutEffectDevice0047CC20,
     (void *)IsWaveOutEffectInstanceAvailable0047CDD0,
     (void *)ReturnOneWaveOutBackendValue0047CDF0,
+    ((void **)g_NETWORK_DualSlotWaveOutStopVtable)[0],
 };
 static void *g_NETWORK_DualSlotCompositeFinalVtable =
     g_NETWORK_DualSlotCompositeFullVtableModel + 4;
@@ -4034,7 +4092,10 @@ void NETWORK_FileBackedPendingRecordServiceView::ServicePendingFileBackedEffReco
         if (g_pActiveNetworkRuntimeWindow != 0) {
             pRuntimeWindow = (char *)g_pActiveNetworkRuntimeWindow - 0x10;
         }
-        ((NETWORK_RuntimeWindowBase *)pRuntimeWindow)->ScheduleNetworkRuntimeTimerEvent(0x32);
+        if (pRuntimeWindow != 0) {
+            ((NETWORK_RuntimeWindowBase *)pRuntimeWindow)
+                ->ScheduleNetworkRuntimeTimerEvent(0x32);
+        }
         return;
     }
 
