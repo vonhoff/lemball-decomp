@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 project(lemball_decomp CXX)
 
-option(LEMBALL_ENABLE_WIN32 "Build the reconstructed Win32 executable" OFF)
+option(LEMBALL_ENABLE_WIN32 "Build the reconstructed Win32 executable" ON)
 
 set(LEMBALL_SOURCES
     src/engine/graphics_driver.cpp

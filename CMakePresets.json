@@ -12,30 +12,14 @@
       "generator": "NMake Makefiles",
       "binaryDir": "${sourceDir}/build-msvc420",
       "toolchainFile": "${sourceDir}/cmake/msvc420-toolchain.cmake",
+      "vendor": {
+        "jetbrains.com/clion": {
+          "toolchain": "MSVC 4.20"
+        }
+      },
       "cacheVariables": {
         "LEMBALL_ENABLE_WIN32": "ON"
       }
-    },
-    {
-      "name": "openwatcom-win32",
-      "displayName": "Open Watcom 2.x Win32",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build-openwatcom",
-      "toolchainFile": "${sourceDir}/cmake/openwatcom-toolchain.cmake",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "LEMBALL_ENABLE_WIN32": "ON"
-      }
-    }
-  ],
-  "buildPresets": [
-    {
-      "name": "msvc420",
-      "configurePreset": "msvc420"
-    },
-    {
-      "name": "openwatcom-win32",
-      "configurePreset": "openwatcom-win32"
     }
   ]
 }
