@@ -1185,7 +1185,7 @@ extern "C" DWORD timeGetTime(void);
 extern void *g_pActiveNetworkRuntimeWindow;
 extern void *g_pEffTransportDispatchQueue;
 extern void *g_pEffTransportSecondaryDispatchQueue;
-extern void InitializeRenderQueueNodeBase(void *pRenderQueueNode);
+extern void LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode);
 extern void *ConstructRenderDispatchQueue(void *pQueue, int cEntries);
 extern void RegisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder);
 extern void UnregisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder);
@@ -2512,7 +2512,9 @@ void NETWORK_EffTransportPeer::SetEffTransportPeerNameAndPort(char *pszName, voi
         (NETWORK_PeerPayloadSenderSlot *)((char *)pTransportPeer + pTransportPeer->m_pOffsets->m_nPayloadSenderSlotOffset);
     pPayloadSender = &pPayloadSenderSlot->m_Sender;
     ((NETWORK_PeerPayloadSender *)pPayloadSender)->SetAssignedPort(nPort);
-    ((NETWORK_PeerPayloadSender *)pPayloadSender)->WritePeerKey(pKey);
+    /* The original routine forwards the first argument again here.  The
+     * request key is consumed by the caller, not by this peer-name setter. */
+    ((NETWORK_PeerPayloadSender *)pPayloadSender)->WritePeerKey(pszName);
 }
 
 // FUNCTION: LEMBALL 0x00460CE0
@@ -3107,7 +3109,6 @@ void NETWORK_CompleteEffTransportPendingWriteView::CompleteEffTransportPendingWr
         kEvent.m_nType = 10;
         kEvent.m_nCode = 0;
         kEvent.m_pStream = (int *)(pbObject - 0x30);
-        kEvent.m_pPeer = 0;
         ((void (*)(NETWORK_EffDispatchEvent *))(*(void ***)g_pEffTransportDispatchQueue)[2])(&kEvent);
     }
 }

@@ -34,10 +34,7 @@ int InitializeGlobalAudioManager(int nMusicResourceBase,
                                  int cEffectResources,
                                  void *pPrimaryContext);
 void ShutdownGlobalAudioManager(void);
-void *ConstructWaveOutEffectBackend(void *pBackend, int cEffectResources);
-void *ConstructDirectSoundEffectBackend(void *pBackend, int cEffectResources, int nCooperativeLevel);
 void *ConstructMciMusicBackend(void *pBackend);
-void *ConstructAudioEffectBackendBase(void *pBackend);
 void RestoreAudioEffectBackendBaseVtable(void *pBackend);
 int SelectAudioManagerBackends(void **ppEffectBackends,
                                int nMusicResourceBase,

@@ -100,8 +100,8 @@ int ShutdownResourceGeometryHelperRuntime(void);
 int InitializeSelectedGraphicsDriver(int nRequestedDriver);
 int GetSelectedGraphicsDriverId(void);
 VSGDI_DisplayState *GetDisplayState(void);
-void InitializeHelperUploadStatePending(int nUploadState);
-void PromoteHelperUploadStateToActive(int nUploadState);
+void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
+void LEMBALL_FASTCALL PromoteHelperUploadStateToActive(int nUploadState);
 void SampleRootHelperGeometryAndDispatchRenderGroups(void *pPrimaryContext, int nToken);
 
 extern int g_fStartupGraphicsDriverWing;

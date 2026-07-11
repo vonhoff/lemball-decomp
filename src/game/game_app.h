@@ -46,13 +46,25 @@ void ShutdownMainGameContext(GAME_MainContext *pMainContext);
 int RunMainGameSession(int cArgs, const char *const *ppszArgs);
 char *FindCdromFilePathBySuffix(const char *pszSuffix);
 GAME_DynamicCString *ConstructDynamicCString(GAME_DynamicCString *pString);
+GAME_DynamicCString *ConstructDynamicCStringFromCString(GAME_DynamicCString *pString, const char *pszText);
+GAME_DynamicCString *CopyConstructDynamicCString(GAME_DynamicCString *pString, const GAME_DynamicCString *pSource);
 void DestroyDynamicCString(GAME_DynamicCString *pString);
 GAME_DynamicCString *AssignDynamicCString(GAME_DynamicCString *pString, const char *pszText);
+GAME_DynamicCString *AssignDynamicCStringFromDynamic(GAME_DynamicCString *pString,
+                                                       const GAME_DynamicCString *pSource);
+GAME_DynamicCString *AppendDynamicCStringObjectAndCopyResult(GAME_DynamicCString *pString,
+                                                              GAME_DynamicCString *pResult,
+                                                              const GAME_DynamicCString *pSuffix);
+GAME_DynamicCString *AppendDynamicCStringAndCopyResult(GAME_DynamicCString *pString,
+                                                        GAME_DynamicCString *pResult,
+                                                        const char *pszSuffix);
+void *AppendDynamicCStringToStream(void *pStream, const GAME_DynamicCString *pString);
+int LEMBALL_FASTCALL GetDynamicCStringLength(const GAME_DynamicCString *pString);
 void DestroyNamedStatusEntry(void *pEntry);
 void UpdateNamedStatusEntry(void *pEntry, unsigned int nValue);
 VSINIT_FormattedOutputStream *WriteNamedStatusEntry(void *pEntry, VSINIT_FormattedOutputStream *pStream);
 void ReleaseTypedResourceObjectReference(void *pResourceObject);
-void InitializeRenderQueueNodeBase(void *pRenderQueueNode);
+void LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode);
 void RegisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder);
 void UnregisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder);
 

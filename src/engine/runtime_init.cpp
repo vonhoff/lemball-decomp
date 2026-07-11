@@ -20,7 +20,7 @@
 void AppendStringToDebugOutFile(const char *pszText);
 extern void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile, int nLine);
 extern void ReleaseTypedResourceObjectReference(void *pResourceObject);
-extern void InitializeRenderQueueNodeBase(void *pRenderQueueNode);
+extern void LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode);
 extern void RegisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder);
 extern void UnregisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder);
 extern void *g_pStatusEntryRegistry;
@@ -414,7 +414,49 @@ struct VSINIT_SharedGeometryHelper {
     void *m_pRenderDispatchQueue;
     int m_nReserved10;
     int m_dwFlags;
+    VSINIT_SharedGeometryHelper *ConstructSharedGeometryHelper(void *pRenderDispatchQueue);
 };
+extern void *g_pSharedGeometryHelperVtable;
+void LEMBALL_FASTCALL DestroySharedGeometryHelper(VSINIT_SharedGeometryHelper *pHelper);
+
+struct VSINIT_SharedGeometryHelperVtableModel {
+    // FUNCTION: LEMBALL 0x00472210
+    virtual void *ReturnArgument(void *pArgument) {
+        return pArgument;
+    }
+
+    // FUNCTION: LEMBALL 0x00472270
+    virtual void *Delete(BYTE fDelete) {
+        VSINIT_SharedGeometryHelper *pHelper = (VSINIT_SharedGeometryHelper *)this;
+
+        DestroySharedGeometryHelper(pHelper);
+        if ((fDelete & 1) != 0) {
+            FreeVSMemBlock(pHelper);
+        }
+        return pHelper;
+    }
+};
+static VSINIT_SharedGeometryHelperVtableModel
+    g_SharedGeometryHelperVtableModel;
+void *g_pSharedGeometryHelperVtable =
+    *(void ***)&g_SharedGeometryHelperVtableModel;
+
+// FUNCTION: LEMBALL 0x00472090
+void LEMBALL_FASTCALL DestroySharedGeometryHelper(VSINIT_SharedGeometryHelper *pHelper) {
+    unsigned int i;
+    void *pNode;
+    void *pNext;
+
+    pHelper->m_pVtable = g_pSharedGeometryHelperVtable;
+    pNode = *(void **)((char *)pHelper + 0x10);
+    i = 0;
+    while (i < (unsigned int)pHelper->m_nReserved08) {
+        pNext = *(void **)((char *)pNode + 4);
+        ++i;
+        FreeVSMemBlock(pNode);
+        pNode = pNext;
+    }
+}
 
 static VSINIT_CommandLineOption g_aCommandLineOptions[] = {
     { "paranoid", &g_fViSOSParanoidMode },
@@ -466,7 +508,6 @@ static void *g_RenderDispatchQueueCriticalSectionHelperVtable[1] = { (void *)Net
 static void *g_RenderDispatchQueueVtable[1] = { (void *)NetworkSafeVtableNoop };
 static void *g_DeleteRenderDispatchQueueCriticalSectionHelperThunk[1] = { (void *)NetworkSafeVtableNoop };
 static void *g_SharedRenderQueueNodeVtable[2] = { (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop };
-static void *g_SharedGeometryHelperVtable[1] = { (void *)NetworkSafeVtableNoop };
 static void *g_MainMemoryArenaStatusEntryVtable[8] = {
     (void *)WriteNamedStatusEntry,
     (void *)UpdateNamedStatusEntry,
@@ -1040,16 +1081,14 @@ void *DeleteRenderDispatchQueue(void *pQueue, unsigned char fFreeMemory) {
 }
 
 // FUNCTION: LEMBALL 0x00472070
-void *ConstructSharedGeometryHelper(void *pHelper, void *pRenderDispatchQueue) {
-    VSINIT_SharedGeometryHelper *pSharedHelper;
-
-    pSharedHelper = (VSINIT_SharedGeometryHelper *)pHelper;
-    pSharedHelper->m_pVtable = g_SharedGeometryHelperVtable;
-    pSharedHelper->m_nReserved08 = 0;
-    pSharedHelper->m_nReserved10 = 0;
-    pSharedHelper->m_pRenderDispatchQueue = pRenderDispatchQueue;
-    pSharedHelper->m_dwFlags = 0;
-    return pSharedHelper;
+VSINIT_SharedGeometryHelper *VSINIT_SharedGeometryHelper::ConstructSharedGeometryHelper(
+    void *pRenderDispatchQueue) {
+    m_pVtable = g_pSharedGeometryHelperVtable;
+    m_nReserved08 = 0;
+    m_nReserved10 = 0;
+    m_pRenderDispatchQueue = pRenderDispatchQueue;
+    m_dwFlags = 0;
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x00456660
@@ -1084,7 +1123,9 @@ int InitializeSharedEventQueueRuntime(void) {
     if (pHelper == 0) {
         g_pSharedGeometryHelper = 0;
     } else {
-        g_pSharedGeometryHelper = ConstructSharedGeometryHelper(pHelper, g_pSharedRenderDispatchQueue);
+        g_pSharedGeometryHelper =
+            ((VSINIT_SharedGeometryHelper *)pHelper)
+                ->ConstructSharedGeometryHelper(g_pSharedRenderDispatchQueue);
     }
 
     pRenderQueueNode = AllocateVSMemBlock(0x10);

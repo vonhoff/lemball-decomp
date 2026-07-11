@@ -230,6 +230,8 @@ MMRESULT WINAPI waveOutOpen(HWAVEOUT *phwo,
 MMRESULT WINAPI waveOutGetErrorTextA(MMRESULT mmrError, LPSTR pszText, UINT cchText);
 MMRESULT WINAPI waveOutGetVolume(HWAVEOUT hWaveOut, LPDWORD pdwVolume);
 MMRESULT WINAPI waveOutSetVolume(HWAVEOUT hWaveOut, DWORD dwVolume);
+UINT WINAPI waveOutGetNumDevs(void);
+MMRESULT WINAPI waveOutGetDevCapsA(UINT uDeviceID, void *pWaveOutCaps, UINT cbWaveOutCaps);
 }
 
 #endif

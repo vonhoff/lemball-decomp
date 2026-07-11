@@ -27,6 +27,8 @@ typedef void *(*AUDIO_ConstructBufferPoolProc)(void *, int, void *, int, int, in
 typedef void (*AUDIO_PlayBufferProc)(void *, int, int);
 typedef void (*AUDIO_DestroyBufferProc)(int);
 
+void *LEMBALL_FASTCALL ConstructAudioEffectBackendBase(void *pBackend);
+
 /* Raw targets at 0047BF00/0047D310/0047D700/0047C8A0/0047C940/0047C990
    overlap unlabeled/interior code in the current Ghidra ownership map. Keep
    symbolic until their true function ownership is resolved. */
@@ -77,6 +79,8 @@ struct AUDIO_WaveOutEffectBackend {
     int m_fDeviceAvailable;
     char m_abReserved10[0x48];
     char m_szDeviceDescription[0x34];
+
+    AUDIO_WaveOutEffectBackend *ConstructWaveOutEffectBackend(int cEffectResources);
 };
 
 struct AUDIO_DirectSoundEffectBackend {
@@ -89,14 +93,20 @@ struct AUDIO_DirectSoundEffectBackend {
     int m_nCooperativeLevel;
     int m_nReserved1c;
     int m_fDeviceAvailable;
+
+    AUDIO_DirectSoundEffectBackend *ConstructDirectSoundEffectBackend(
+        int cEffectResources, int nCooperativeLevel);
 };
 
-struct AUDIO_MciMusicBackend {
+struct AUDIO_DynamicStringEntry {
     void **m_pVtable;
     int m_nReserved04;
     int m_fBasePathSet;
     int m_fSearchCdromPath;
     GAME_DynamicCString m_BasePath;
+};
+
+struct AUDIO_MciMusicBackend : AUDIO_DynamicStringEntry {
     int m_nPreparedTrackHandle;
     int m_fDeviceAvailable;
     MCIDEVICEID m_uDeviceId;
@@ -104,6 +114,7 @@ struct AUDIO_MciMusicBackend {
     int m_fTrackPaused;
     int m_nPausedTrackPosition;
     HWND m_hNotificationWindow;
+    AUDIO_MciMusicBackend *ConstructMciMusicBackend(void);
 };
 
 struct AUDIO_MciOpenParms {
@@ -134,14 +145,6 @@ struct AUDIO_MciStatusParms {
     DWORD dwReturn;
     DWORD dwItem;
     DWORD dwTrack;
-};
-
-struct AUDIO_DynamicStringEntry {
-    void **m_pVtable;
-    int m_nReserved04;
-    int m_fReserved08;
-    int m_fReserved0c;
-    GAME_DynamicCString m_Text;
 };
 
 const char *ReturnEmptyAudioBackendName(void);
@@ -183,6 +186,54 @@ void FreePreparedMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle
 void PlayPreparedMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle);
 void StopMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle);
 void PauseMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle);
+void ResumeMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle);
+static void SetAudioDynamicStringEntryFlag(void *pObject, int fValue);
+static int GetAudioDynamicStringEntryFlag(void *pObject);
+
+/* The binary's MCI table is a normal single-inheritance thiscall vtable.
+   Keep dispatch compiler-shaped; raw cdecl entries corrupt the caller stack. */
+struct AUDIO_MciMusicBackendVtableModel {
+    virtual void *Delete(unsigned char fDelete) {
+        return DeleteAudioDynamicStringEntry((AUDIO_DynamicStringEntry *)this, fDelete);
+    }
+    virtual const char *GetName(void) {
+        return ReturnEmptyAudioBackendName();
+    }
+    virtual void Prepare(int nTrackHandle, int nMusicResourceId) {
+        PrepareMciMusicTrack((AUDIO_MciMusicBackend *)this, nTrackHandle, nMusicResourceId);
+    }
+    virtual void Free(int nTrackHandle) {
+        FreePreparedMciMusicTrack((AUDIO_MciMusicBackend *)this, nTrackHandle);
+    }
+    virtual void Play(int nTrackHandle) {
+        PlayPreparedMciMusicTrack((AUDIO_MciMusicBackend *)this, nTrackHandle);
+    }
+    virtual void Stop(int nTrackHandle) {
+        StopMciMusicTrack((AUDIO_MciMusicBackend *)this, nTrackHandle);
+    }
+    virtual void Pause(int nTrackHandle) {
+        PauseMciMusicTrack((AUDIO_MciMusicBackend *)this, nTrackHandle);
+    }
+    virtual void Resume(int nTrackHandle) {
+        ResumeMciMusicTrack((AUDIO_MciMusicBackend *)this, nTrackHandle);
+    }
+    virtual void SetFlag(int fValue) {
+        SetAudioDynamicStringEntryFlag((AUDIO_DynamicStringEntry *)this, fValue);
+    }
+    virtual int GetFlag(void) {
+        return GetAudioDynamicStringEntryFlag((AUDIO_DynamicStringEntry *)this);
+    }
+    virtual void Reserved10(void) {
+    }
+    virtual int IsAvailable(void) {
+        return ((AUDIO_MciMusicBackend *)this)->m_fDeviceAvailable;
+    }
+    virtual const char *GetReservedName(void) {
+        return ReturnEmptyAudioBackendName();
+    }
+};
+
+static AUDIO_MciMusicBackendVtableModel g_AUDIO_MciMusicBackendVtableModel;
 
 void *g_pAudioManager = 0;
 
@@ -269,21 +320,6 @@ static void *g_DirectSoundEffectBackendVtable[39] = {
     0,
     (void *)NoOpAudioInt,
 };
-static void *g_MciMusicBackendVtable[13] = {
-    (void *)DeleteAudioDynamicStringEntry,
-    (void *)ReturnEmptyAudioBackendName,
-    (void *)PrepareMciMusicTrack,
-    (void *)FreePreparedMciMusicTrack,
-    (void *)PlayPreparedMciMusicTrack,
-    (void *)StopMciMusicTrack,
-    (void *)PauseMciMusicTrack,
-    (void *)NoOpAudioInt,
-    (void *)NoOpAudioInt,
-    (void *)NoOpAudioPair,
-    (void *)NoOpAudioInt,
-    (void *)ReturnAudioBackendReady,
-    (void *)ReturnEmptyAudioBackendName,
-};
 struct AUDIO_BackendVtableInitializer {
     AUDIO_BackendVtableInitializer(void) {
         int i;
@@ -299,7 +335,7 @@ static AUDIO_BackendVtableInitializer g_AUDIO_BackendVtableInitializer;
 static char g_szAudioManagerDescription[0x400];
 // FUNCTION: LEMBALL 0x0047F520
 static void SetAudioDynamicStringEntryFlag(void *pObject, int fValue) {
-    ((AUDIO_DynamicStringEntry *)pObject)->m_fReserved08 = fValue;
+    ((AUDIO_DynamicStringEntry *)pObject)->m_fBasePathSet = fValue;
 }
 
 // FUNCTION: LEMBALL 0x0047F510
@@ -310,7 +346,7 @@ static void AudioDynamicStringEntryNoop(int nUnused0, int nUnused1) {
 
 // FUNCTION: LEMBALL 0x0047F530
 static int GetAudioDynamicStringEntryFlag(void *pObject) {
-    return ((AUDIO_DynamicStringEntry *)pObject)->m_fReserved08;
+    return ((AUDIO_DynamicStringEntry *)pObject)->m_fBasePathSet;
 }
 
 static void *g_AUDIO_DynamicStringEntryVtable[10] = {
@@ -330,6 +366,8 @@ static AUDIO_MciMusicBackend *g_pActiveMciMusicBackend = 0;
 static int g_nPreparedMciMusicTrackHandle = 0;
 static const char g_AUDIO_SequencerDeviceType[] = "sequencer";
 static const char g_AUDIO_MciWindowClassName[] = "HLMusicWindow";
+static const char g_AUDIO_DsoundDll[] = "DSOUND.DLL";
+static const char g_AUDIO_DirectSoundCreate[] = "DirectSoundCreate";
 static const char g_AUDIO_NoEffectsBackendName[] = "ERROR: No Effects Device for Windows";
 static const char g_AUDIO_NoDirectSoundBackendName[] = "ERROR: No Effects Device for Windows";
 static const char g_AUDIO_HlMidiNotFoundPrefix[] = "Error: HL Midi Device Not Found. ";
@@ -814,18 +852,105 @@ void ShutdownGlobalAudioManager(void) {
 }
 
 // FUNCTION: LEMBALL 0x0047C880
-void *ConstructWaveOutEffectBackend(void *pBackend, int cEffectResources) {
+AUDIO_WaveOutEffectBackend *AUDIO_WaveOutEffectBackend::ConstructWaveOutEffectBackend(
+    int cEffectResources) {
+    unsigned int cBytes;
+    unsigned int i;
+    unsigned int deviceId;
+    unsigned int cDevices;
+    unsigned int dwFormats;
+    int fFound;
+    int nFormat;
+    unsigned short nChannels;
+    unsigned short nBitsPerSample;
+    int nBytesPerSecond;
+    unsigned short nBlockAlign;
+    MMRESULT nResult;
+    unsigned char *pbBackend;
+
+    void *pBackend = this;
+
     ConstructAudioEffectBackendBase(pBackend);
-    *(void ***)pBackend = g_WaveOutEffectBackendVtable;
-    *(int *)((char *)pBackend + 4) = cEffectResources;
-    *(int *)((char *)pBackend + 8) = 0;
-    *(int *)((char *)pBackend + 0xc) = 1;
-    *(int *)((char *)pBackend + 0x10) = 0;
-    *(int *)((char *)pBackend + 0x14) = 0;
-    *(int *)((char *)pBackend + 0x18) = 0;
-    *(int *)((char *)pBackend + 0x84) = 0x5622;
-    *(int *)((char *)pBackend + 0x88) = -1;
-    return pBackend;
+    pbBackend = (unsigned char *)pBackend;
+    *(void ***)pbBackend = g_WaveOutEffectBackendVtable;
+    *(int *)(pbBackend + 4) = cEffectResources;
+    cBytes = (unsigned int)cEffectResources * 4;
+    *(void **)(pbBackend + 0xa8) = AllocateVSMemBlock(cBytes);
+    *(void **)(pbBackend + 0xb0) = AllocateVSMemBlock(cBytes);
+    *(void **)(pbBackend + 0xac) = AllocateVSMemBlock(cBytes);
+    *(int *)(pbBackend + 8) = 0;
+    *(int *)(pbBackend + 0xc) = 0;
+    *(int *)(pbBackend + 0x10) = 0;
+    *(int *)(pbBackend + 0x14) = 0;
+    *(int *)(pbBackend + 0x18) = 0;
+    *(int *)(pbBackend + 0x88) = -1;
+    *(int *)(pbBackend + 0x84) = 0;
+    for (i = 0; i < 8; ++i) {
+        *(int *)(pbBackend + 0x20 + i * 4) = -1;
+        pbBackend[0x40 + i] = 0;
+        pbBackend[0x48 + i] = 0;
+    }
+    *(int *)(pbBackend + 0xa4) = 1;
+    for (i = 0; i < (unsigned int)cEffectResources; ++i) {
+        *(int *)((char *)*(void **)(pbBackend + 0xa8) + i * 4) = 0;
+        *(int *)((char *)*(void **)(pbBackend + 0xac) + i * 4) = 0;
+        *(int *)((char *)*(void **)(pbBackend + 0xb0) + i * 4) = 0;
+    }
+
+    fFound = 0;
+    cDevices = waveOutGetNumDevs();
+    for (deviceId = 0; deviceId < cDevices; ++deviceId) {
+        if (fFound != 0) {
+            return this;
+        }
+        nResult = waveOutGetDevCapsA(deviceId, pbBackend + 0x50, 0x34);
+        if (nResult == 0) {
+            dwFormats = *(unsigned int *)(pbBackend + 0x78);
+            if ((dwFormats & 1) != 0) {
+                *(int *)(pbBackend + 0xc) = 1;
+                *(unsigned int *)(pbBackend + 0x88) = deviceId;
+                *(int *)(pbBackend + 0x14) = 0;
+                *(int *)(pbBackend + 0x84) = 0x2b11;
+            }
+            if ((dwFormats & 4) != 0) {
+                *(int *)(pbBackend + 0x14) = 1;
+                *(int *)(pbBackend + 0xc) = 1;
+                *(int *)(pbBackend + 0x84) = 0x2b11;
+                *(unsigned int *)(pbBackend + 0x88) = deviceId;
+            }
+            if ((dwFormats & 0x10) != 0) {
+                *(int *)(pbBackend + 0xc) = 1;
+                *(unsigned int *)(pbBackend + 0x88) = deviceId;
+                *(int *)(pbBackend + 0x14) = 0;
+                *(int *)(pbBackend + 0x84) = 0x5622;
+            }
+            if ((dwFormats & 0x40) != 0) {
+                *(int *)(pbBackend + 0x14) = 1;
+                *(int *)(pbBackend + 0xc) = 1;
+                *(int *)(pbBackend + 0x84) = 0x5622;
+                *(unsigned int *)(pbBackend + 0x88) = deviceId;
+            }
+        }
+        nFormat = *(int *)(pbBackend + 0x84);
+        if (nFormat != 0) {
+            *(unsigned short *)(pbBackend + 0x90) = 1;
+            nChannels = *(int *)(pbBackend + 0x10) == 1 ? 2 : 1;
+            nBitsPerSample = *(int *)(pbBackend + 0x14) == 1 ? 16 : 8;
+            *(unsigned short *)(pbBackend + 0x92) = nChannels;
+            *(int *)(pbBackend + 0x94) = nFormat;
+            *(int *)(pbBackend + 0x98) = 1;
+            *(unsigned short *)(pbBackend + 0x9e) = nBitsPerSample;
+            nBytesPerSecond = (int)nChannels * nFormat;
+            *(int *)(pbBackend + 0x98) = nBytesPerSecond;
+            nBlockAlign = (unsigned short)((((int)nBitsPerSample * (int)nChannels) + 7) >> 3);
+            *(unsigned short *)(pbBackend + 0x9c) = nBlockAlign;
+            if (*(int *)(pbBackend + 0x14) == 1) {
+                *(int *)(pbBackend + 0x98) = nBytesPerSecond * 2;
+            }
+            fFound = 1;
+        }
+    }
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x0047CAF0
@@ -1083,17 +1208,58 @@ void *DeleteWaveOutEffectBackend(AUDIO_WaveOutEffectBackend *pBackend, unsigned 
 }
 
 // FUNCTION: LEMBALL 0x0047DD80
-void *ConstructDirectSoundEffectBackend(void *pBackend, int cEffectResources, int nCooperativeLevel) {
+AUDIO_DirectSoundEffectBackend *AUDIO_DirectSoundEffectBackend::ConstructDirectSoundEffectBackend(
+    int cEffectResources, int nCooperativeLevel) {
+    void *pBackend = this;
+    int i;
+
     ConstructAudioEffectBackendBase(pBackend);
     *(void ***)pBackend = g_DirectSoundEffectBackendVtable;
     *(int *)((char *)pBackend + 0x14) = cEffectResources;
     *(int *)((char *)pBackend + 0x18) = nCooperativeLevel;
-    *(int *)((char *)pBackend + 0x20) = 1;
+    *(int *)((char *)pBackend + 0x10) = 0;
+    *(HMODULE *)((char *)pBackend + 4) = 0;
+    *(FARPROC *)((char *)pBackend + 8) = 0;
+    *(void **)((char *)pBackend + 0x50) =
+        AllocateVSMemBlock((unsigned int)cEffectResources * 4 + 4);
+    *(int *)((char *)pBackend + 0x0c) = 0;
+    *(int *)((char *)pBackend + 0x1c) = 0;
+    *(int *)((char *)pBackend + 0x20) = 0;
+    *(int *)((char *)pBackend + 0x24) = 0;
     *(int *)((char *)pBackend + 0x28) = 1;
+    *(int *)((char *)pBackend + 0x2c) = 0;
+    *(int *)((char *)pBackend + 0x30) = 0;
+    *(int *)((char *)pBackend + 0x34) = 0;
+    *(int *)((char *)pBackend + 0x38) = -1;
+    *(int *)((char *)pBackend + 0x34) = 0x5622;
+    *(int *)((char *)pBackend + 0x38) = 0;
+    if (*(void **)((char *)pBackend + 0x50) != 0) {
+        for (i = 1; i <= cEffectResources; ++i) {
+            *(int *)((char *)*(void **)((char *)pBackend + 0x50) + i * 4) = 0;
+        }
+    }
     *(int *)((char *)pBackend + 0x34) = 0x5622;
     *(int *)((char *)pBackend + 0x38) = 0;
     *(int *)((char *)pBackend + 0x40) = 0x5622;
-    return pBackend;
+    *(unsigned short *)((char *)pBackend + 0x4c) = 0;
+    *(unsigned short *)((char *)pBackend + 0x4a) = 0x10;
+    *(unsigned short *)((char *)pBackend + 0x48) = 2;
+    *(unsigned short *)((char *)pBackend + 0x3c) = 1;
+    *(int *)((char *)pBackend + 0x28) = 1;
+    *(unsigned short *)((char *)pBackend + 0x3e) = 1;
+    *(int *)((char *)pBackend + 0x44) = 1;
+    *(int *)((char *)pBackend + 0x44) = 0xac44;
+    *(HMODULE *)((char *)pBackend + 4) = LoadLibraryA(g_AUDIO_DsoundDll);
+    if (*(HMODULE *)((char *)pBackend + 4) != 0) {
+        *(FARPROC *)((char *)pBackend + 8) =
+            GetProcAddress(*(HMODULE *)((char *)pBackend + 4),
+                           g_AUDIO_DirectSoundCreate);
+        if (*(FARPROC *)((char *)pBackend + 8) != 0) {
+            *(int *)((char *)pBackend + 0x20) = 1;
+            *(int *)((char *)pBackend + 0x0c) = 0;
+        }
+    }
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x0047E000
@@ -1211,19 +1377,19 @@ void PlayDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId, int nB
 }
 
 // FUNCTION: LEMBALL 0x0047E940
-void *ConstructMciMusicBackend(void *pBackend) {
+AUDIO_MciMusicBackend *AUDIO_MciMusicBackend::ConstructMciMusicBackend(void) {
     AUDIO_MciMusicBackend *pMusicBackend;
     AUDIO_MciOpenParms OpenParms;
     WNDCLASSA WindowClass;
     MCIERROR nMciError;
     char szMciErrorText[0x80];
 
-    pMusicBackend = (AUDIO_MciMusicBackend *)pBackend;
+    pMusicBackend = this;
     ConstructDynamicCString(&pMusicBackend->m_BasePath);
     pMusicBackend->m_pVtable = (void **)g_AudioDynamicStringEntryVtable;
     pMusicBackend->m_fSearchCdromPath = 0;
     pMusicBackend->m_fBasePathSet = 0;
-    pMusicBackend->m_pVtable = g_MciMusicBackendVtable;
+    pMusicBackend->m_pVtable = *(void ***)&g_AUDIO_MciMusicBackendVtableModel;
     pMusicBackend->m_nPreparedTrackHandle = 0;
     pMusicBackend->m_fDeviceAvailable = 0;
     pMusicBackend->m_uDeviceId = 0;
@@ -1274,7 +1440,7 @@ void *ConstructMciMusicBackend(void *pBackend) {
         AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
         pMusicBackend->m_fDeviceAvailable = 0;
     }
-    return pBackend;
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x0047EAD0
@@ -1283,63 +1449,96 @@ void PrepareMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle, int
     AUDIO_MciOpenParms OpenParms;
     AUDIO_MciGenericParms SeekParms;
     AUDIO_MciSetParms SetParms;
+    GAME_DynamicCString MusicPath;
+    GAME_DynamicCString BasePath;
+    GAME_DynamicCString TemporaryPath;
     MCIERROR nMciError;
     char szMciErrorText[0x80];
-    char szMusicPath[0x200];
-    const char *pszBasePath;
-    const char *pszMusicName;
 
+    if (nTrackHandle == 0) {
+        AppendCStringToStream(g_pErrorOutputStream,
+                              "Error Call to Prepare Music (HL) with Invalid Handle!\n");
+    }
+    if (pBackend->m_nPreparedTrackHandle != 0) {
+        AppendCStringToStream(g_pErrorOutputStream,
+                              "Error: Call to Prepare Music when Music is already Prepared!\n");
+    }
+    if (pBackend->m_fTrackPlaying == 1) {
+        AppendCStringToStream(g_pErrorOutputStream,
+                              "Error: Cannot Prepare Music while Music is Playing!\n");
+    }
     pBackend->m_nPreparedTrackHandle = nTrackHandle;
     g_nPreparedMciMusicTrackHandle = nTrackHandle;
 
     pStringResource = LoadStringResource(nMusicResourceId);
-    if (pStringResource == 0) {
-        pBackend->m_nPreparedTrackHandle = 0;
-        g_nPreparedMciMusicTrackHandle = 0;
-        return;
+    if (pStringResource->m_nLoadState10 == 0) {
+        ((void (*)())pStringResource->m_pVtable[7])();
+    } else {
+        pStringResource->m_nReserved24 = 0;
     }
+    ++pStringResource->m_nLockCount08;
 
-    pszBasePath = g_abProcessCurrentDirectoryBuffer;
-    if (pBackend->m_fSearchCdromPath != 0) {
-        pszBasePath = FindCdromFilePathBySuffix(pStringResource->m_pszText38);
-        if (pszBasePath == 0) {
-            pszBasePath = g_abProcessCurrentDirectoryBuffer;
-        }
-    }
-
-    szMusicPath[0] = '\0';
+    ConstructDynamicCString(&MusicPath);
     if (pBackend->m_fBasePathSet != 0) {
-        strcpy(szMusicPath, pBackend->m_BasePath.m_pszText);
-        if (szMusicPath[0] != '\0' && szMusicPath[strlen(szMusicPath) - 1] != '\\') {
-            strcat(szMusicPath, g_AUDIO_PathSeparator);
+        AssignDynamicCStringFromDynamic(&MusicPath, &pBackend->m_BasePath);
+        if (MusicPath.m_pszText[GetDynamicCStringLength(&MusicPath) - 1] != '\\') {
+            AppendDynamicCStringAndCopyResult(&MusicPath, &TemporaryPath,
+                                              g_AUDIO_PathSeparator);
+            DestroyDynamicCString(&TemporaryPath);
         }
     }
+    AppendDynamicCStringAndCopyResult(&MusicPath, &TemporaryPath,
+                                      pStringResource->m_pszText38);
+    DestroyDynamicCString(&TemporaryPath);
+    AppendDynamicCStringAndCopyResult(&MusicPath, &TemporaryPath,
+                                      g_AUDIO_MusicExtension);
+    DestroyDynamicCString(&TemporaryPath);
 
-    strcat(szMusicPath, pszBasePath);
-    if (szMusicPath[0] != '\0' && szMusicPath[strlen(szMusicPath) - 1] != '\\') {
-        strcat(szMusicPath, g_AUDIO_PathSeparator);
+    ConstructDynamicCString(&BasePath);
+    if (pBackend->m_fSearchCdromPath == 0) {
+        AssignDynamicCString(&BasePath, g_abProcessCurrentDirectoryBuffer);
+        if (BasePath.m_pszText[GetDynamicCStringLength(&BasePath) - 1] != '\\') {
+            AppendDynamicCStringAndCopyResult(&BasePath, &TemporaryPath,
+                                              g_AUDIO_PathSeparator);
+            DestroyDynamicCString(&TemporaryPath);
+        }
+    } else {
+        const char *pszCdromPath;
+
+        pszCdromPath = FindCdromFilePathBySuffix(MusicPath.m_pszText);
+        if (pszCdromPath == 0) {
+            pszCdromPath = g_abProcessCurrentDirectoryBuffer;
+        }
+        AssignDynamicCString(&BasePath, pszCdromPath);
+        if (BasePath.m_pszText[GetDynamicCStringLength(&BasePath) - 1] != '\\') {
+            AppendDynamicCStringAndCopyResult(&BasePath, &TemporaryPath,
+                                              g_AUDIO_PathSeparator);
+            DestroyDynamicCString(&TemporaryPath);
+        }
     }
-    pszMusicName = pStringResource->m_pszText38;
-    strcat(szMusicPath, pszMusicName);
-    strcat(szMusicPath, g_AUDIO_MusicExtension);
+    AppendDynamicCStringObjectAndCopyResult(&BasePath, &TemporaryPath, &MusicPath);
+    DestroyDynamicCString(&TemporaryPath);
 
     OpenParms.dwCallback = 0;
     OpenParms.wDeviceID = 0;
     OpenParms.lpstrDeviceType = (LPCSTR)0x20b;
-    OpenParms.lpstrElementName = szMusicPath;
+    OpenParms.lpstrElementName = BasePath.m_pszText;
     OpenParms.lpstrAlias = 0;
     nMciError = mciSendCommandA(0, 0x803, 0x3200, (DWORD_PTR)&OpenParms);
+    --pStringResource->m_nLockCount08;
     ReleaseTypedResourceObjectReference(pStringResource);
     if (nMciError != 0) {
         mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
         AppendCStringToStream(g_pErrorOutputStream, "Error: Unable to Prepare Music: ");
-        AppendCStringToStream(g_pErrorOutputStream, szMusicPath);
+        AppendDynamicCStringToStream(g_pErrorOutputStream, &BasePath);
         AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
         AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_MciErrorPrefix);
         AppendCStringToStream(g_pErrorOutputStream, szMciErrorText);
         AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
         pBackend->m_nPreparedTrackHandle = 0;
         g_nPreparedMciMusicTrackHandle = 0;
+        DestroyDynamicCString(&BasePath);
+        DestroyDynamicCString(&MusicPath);
         return;
     }
 
@@ -1354,6 +1553,8 @@ void PrepareMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle, int
         AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
         pBackend->m_nPreparedTrackHandle = 0;
         g_nPreparedMciMusicTrackHandle = 0;
+        DestroyDynamicCString(&BasePath);
+        DestroyDynamicCString(&MusicPath);
         return;
     }
 
@@ -1368,11 +1569,15 @@ void PrepareMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle, int
         AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
         pBackend->m_nPreparedTrackHandle = 0;
         g_nPreparedMciMusicTrackHandle = 0;
+        DestroyDynamicCString(&BasePath);
+        DestroyDynamicCString(&MusicPath);
         return;
     }
 
     pBackend->m_fTrackPlaying = 0;
     pBackend->m_fTrackPaused = 0;
+    DestroyDynamicCString(&BasePath);
+    DestroyDynamicCString(&MusicPath);
 }
 
 // FUNCTION: LEMBALL 0x0047EE70
@@ -1452,18 +1657,34 @@ void PauseMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle) {
     MCIERROR nMciError;
     char szMciErrorText[0x80];
 
+    if (nTrackHandle == 0) {
+        AppendCStringToStream(g_pErrorOutputStream,
+                              "Error Call to Pause Music (HL) with Invalid Handle!\n");
+    }
+    if (pBackend->m_nPreparedTrackHandle != nTrackHandle) {
+        AppendCStringToStream(g_pErrorOutputStream,
+                              "Error Call to Pause (HL) with unknown Handle!\n");
+    }
+
     memset(&StatusParms, 0, sizeof(StatusParms));
     StatusParms.dwItem = 2;
     nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x814, 0x100, (DWORD_PTR)&StatusParms);
-    if (nMciError == 0) {
-        pBackend->m_nPausedTrackPosition = (int)StatusParms.dwReturn;
+    if (nMciError != 0) {
+        mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
+        AppendCStringToStream(g_pErrorOutputStream,
+                              "Error!     Unable to Get Position for Pause! (HL)\n");
+        AppendCStringToStream(g_pErrorOutputStream, "MCI Error:\t\n");
+        AppendCStringToStream(g_pErrorOutputStream, szMciErrorText);
+        AppendCStringToStream(g_pErrorOutputStream, "\n");
     }
+    pBackend->m_nPausedTrackPosition = (int)StatusParms.dwReturn;
 
     nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x808, 0, 0);
     if (nMciError != 0) {
         mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
-        AppendCStringToStream(g_pErrorOutputStream, "Error: Unable to Stop Music\n");
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_MciErrorPrefix);
+        AppendCStringToStream(g_pErrorOutputStream,
+                              "Error!     Unable to Stop Music! (HL)\n");
+        AppendCStringToStream(g_pErrorOutputStream, "MCI Error:\t\n");
         AppendCStringToStream(g_pErrorOutputStream, szMciErrorText);
         AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
         (void)nTrackHandle;
@@ -1475,8 +1696,58 @@ void PauseMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle) {
     (void)nTrackHandle;
 }
 
+// FUNCTION: LEMBALL 0x0047F250
+void ResumeMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle) {
+    AUDIO_MciGenericParms SeekParms;
+    AUDIO_MciPlayParms PlayParms;
+    MCIERROR nMciError;
+    char szMciErrorText[0x80];
+
+    if (nTrackHandle == 0) {
+        AppendCStringToStream(g_pErrorOutputStream,
+                              "Error Call to Resume Music (HL) with Invalid Handle!\n");
+    }
+    if (pBackend->m_nPreparedTrackHandle != nTrackHandle) {
+        AppendCStringToStream(g_pErrorOutputStream,
+                              "Error Call to Resume (HL) with unknown Handle!\n");
+    }
+
+    SeekParms.dwCallback = 0;
+    nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x807, 0x100,
+                                (DWORD_PTR)&SeekParms);
+    if (nMciError != 0) {
+        mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
+        AppendCStringToStream(g_pErrorOutputStream,
+                              "Error!     Unable to Restart Music (Seek)! (HL)\n");
+        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_MciErrorPrefix);
+        AppendCStringToStream(g_pErrorOutputStream, szMciErrorText);
+        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
+        (void)nTrackHandle;
+        return;
+    }
+
+    memset(&PlayParms, 0, sizeof(PlayParms));
+    PlayParms.dwCallback = (DWORD)(DWORD_PTR)pBackend->m_hNotificationWindow;
+    nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x806, 1,
+                                (DWORD_PTR)&PlayParms);
+    if (nMciError != 0) {
+        mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
+        AppendCStringToStream(g_pErrorOutputStream,
+                              "Error!     Unable to Restart Music (Play)! (HL)\n");
+        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_MciErrorPrefix);
+        AppendCStringToStream(g_pErrorOutputStream, szMciErrorText);
+        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
+        (void)nTrackHandle;
+        return;
+    }
+
+    pBackend->m_fTrackPlaying = 1;
+    pBackend->m_fTrackPaused = 0;
+    (void)nTrackHandle;
+}
+
 // FUNCTION: LEMBALL 0x0047F940
-void *ConstructAudioEffectBackendBase(void *pBackend) {
+void *LEMBALL_FASTCALL ConstructAudioEffectBackendBase(void *pBackend) {
     *(void ***)pBackend = g_WaveOutEffectBackendVtable;
     return pBackend;
 }
@@ -1507,7 +1778,9 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
             pBackend = 0;
             pBackendStorage = AllocateVSMemBlock(0xb8);
             if (pBackendStorage != 0) {
-                pBackend = ConstructWaveOutEffectBackend(pBackendStorage, cEffectResources);
+                pBackend =
+                    ((AUDIO_WaveOutEffectBackend *)pBackendStorage)
+                        ->ConstructWaveOutEffectBackend(cEffectResources);
             }
             if (pBackend != 0) {
                 pBackendVtable = *(void ***)pBackend;
@@ -1525,7 +1798,8 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
     pBackend = 0;
     pBackendStorage = AllocateVSMemBlock(0x34);
     if (pBackendStorage != 0) {
-        pBackend = ConstructMciMusicBackend(pBackendStorage);
+        pBackend =
+            ((AUDIO_MciMusicBackend *)pBackendStorage)->ConstructMciMusicBackend();
     }
     if (pBackend != 0) {
         pBackendVtable = *(void ***)pBackend;
@@ -1545,7 +1819,9 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
     pBackend = 0;
     pBackendStorage = AllocateVSMemBlock(0x54);
     if (pBackendStorage != 0) {
-        pBackend = ConstructDirectSoundEffectBackend(pBackendStorage, cEffectResources, 5);
+        pBackend =
+            ((AUDIO_DirectSoundEffectBackend *)pBackendStorage)
+                ->ConstructDirectSoundEffectBackend(cEffectResources, 5);
     }
     if (pBackend != 0) {
         pBackendVtable = *(void ***)pBackend;
@@ -1560,7 +1836,9 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
     pBackend = 0;
     pBackendStorage = AllocateVSMemBlock(0xb8);
     if (pBackendStorage != 0) {
-        pBackend = ConstructWaveOutEffectBackend(pBackendStorage, cEffectResources);
+        pBackend =
+            ((AUDIO_WaveOutEffectBackend *)pBackendStorage)
+                ->ConstructWaveOutEffectBackend(cEffectResources);
     }
     if (pBackend != 0) {
         pBackendVtable = *(void ***)pBackend;
@@ -1576,7 +1854,7 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
 // FUNCTION: LEMBALL 0x0047EAC0
 void DestroyAudioDynamicStringEntry(AUDIO_DynamicStringEntry *pEntry) {
     pEntry->m_pVtable = (void **)g_AudioDynamicStringEntryVtable;
-    DestroyDynamicCString(&pEntry->m_Text);
+    DestroyDynamicCString(&pEntry->m_BasePath);
 }
 
 // FUNCTION: LEMBALL 0x0047F590

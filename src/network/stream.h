@@ -58,7 +58,7 @@ struct NETWORK_EffStreamBase : NETWORK_EffStreamCore {
     void ReadEffStreamU16BE(unsigned char *pbTarget);
     void ReadEffStreamBytes(void *pvTarget, unsigned int cbRead);
     void ReadEffStreamCString(char **ppszTarget);
-    void SaveEffStreamToMemoryRange(int nTargetBuffer, int cbRange);
+    int SaveEffStreamToMemoryRange(int nTargetBuffer, int cbRange);
     NETWORK_EffStreamBase *ConstructEffStreamBase(void);
     void DestroyEffStreamBase(void);
     void *DeleteEffStreamBaseWrapper(BYTE fDeleteFlags);

@@ -781,7 +781,7 @@ int g_nLevelScreenMultiPhaseSequenceResourceId = 0;
 extern void *g_pQueuedRenderPointSinkFinalizeThunk;
 extern void *g_pMainResourceArchive;
 extern int g_fRootHelperGeometryDispatchSuppressed;
-extern void InitializeHelperUploadStatePending(int nUploadState);
+extern void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
 extern void *LoadBitmapResource(int nResourceId);
 extern void *LoadPalResource(int nResourceId);
 extern void *LoadZrleOnlyListResource(int nResourceId);
@@ -887,7 +887,7 @@ void SetLevelScreenStatusIndicatorMode(int nMode, int nValue) {
 }
 
 // FUNCTION: LEMBALL 0x00467AC0
-void *InitializePackagedRectQueueEntry(void *pObject) {
+void *LEMBALL_FASTCALL InitializePackagedRectQueueEntry(void *pObject) {
     int *pEntry;
 
     pEntry = (int *)pObject;

@@ -2,6 +2,7 @@
 #include "../engine/runtime_init.h"
 #include "../engine/memory_arena.h"
 #include "../network/safe_vtable.h"
+#include <string.h>
 
 void DestroyNamedStatusEntry(void *pEntry);
 
@@ -94,6 +95,98 @@ GAME_DynamicCString *AssignDynamicCString(GAME_DynamicCString *pString, const ch
         --cchText;
     }
     return pString;
+}
+
+// FUNCTION: LEMBALL 0x0046E430
+GAME_DynamicCString *ConstructDynamicCStringFromCString(GAME_DynamicCString *pString,
+                                                          const char *pszText) {
+    unsigned int cchText;
+
+    cchText = (unsigned int)strlen(pszText) + 1;
+    pString->m_cchCapacity = (int)cchText;
+    pString->m_pszText = (char *)AllocateVSMemBlock(cchText);
+    memcpy(pString->m_pszText, pszText, cchText);
+    return pString;
+}
+
+// FUNCTION: LEMBALL 0x0046E480
+GAME_DynamicCString *CopyConstructDynamicCString(GAME_DynamicCString *pString,
+                                                   const GAME_DynamicCString *pSource) {
+    pString->m_cchCapacity = pSource->m_cchCapacity;
+    pString->m_pszText = (char *)AllocateVSMemBlock((unsigned int)pString->m_cchCapacity);
+    memcpy(pString->m_pszText, pSource->m_pszText,
+           (unsigned int)strlen(pSource->m_pszText) + 1);
+    return pString;
+}
+
+// FUNCTION: LEMBALL 0x0046E510
+GAME_DynamicCString *AssignDynamicCStringFromDynamic(
+    GAME_DynamicCString *pString, const GAME_DynamicCString *pSource) {
+    FreeVSMemBlock(pString->m_pszText);
+    pString->m_cchCapacity = pSource->m_cchCapacity;
+    pString->m_pszText = (char *)AllocateVSMemBlock((unsigned int)pString->m_cchCapacity);
+    memcpy(pString->m_pszText, pSource->m_pszText,
+           (unsigned int)strlen(pSource->m_pszText) + 1);
+    return pString;
+}
+
+// FUNCTION: LEMBALL 0x0046E5D0
+GAME_DynamicCString *AppendDynamicCStringObjectAndCopyResult(
+    GAME_DynamicCString *pString, GAME_DynamicCString *pResult,
+    const GAME_DynamicCString *pSuffix) {
+    unsigned int cchPrefix;
+    unsigned int cchSuffix;
+    unsigned int cchTotal;
+    char *pszText;
+
+    cchPrefix = (unsigned int)strlen(pString->m_pszText);
+    cchSuffix = (unsigned int)strlen(pSuffix->m_pszText);
+    cchTotal = cchPrefix + cchSuffix + 1;
+    pszText = (char *)AllocateVSMemBlock(cchTotal);
+    memcpy(pszText, pString->m_pszText, cchPrefix);
+    memcpy(pszText + cchPrefix, pSuffix->m_pszText, cchSuffix + 1);
+    FreeVSMemBlock(pString->m_pszText);
+    pString->m_pszText = (char *)AllocateVSMemBlock(cchTotal);
+    pString->m_cchCapacity = (int)cchTotal;
+    memcpy(pString->m_pszText, pszText, cchTotal);
+    CopyConstructDynamicCString(pResult, pString);
+    FreeVSMemBlock(pszText);
+    return pResult;
+}
+
+// FUNCTION: LEMBALL 0x0046E6E0
+GAME_DynamicCString *AppendDynamicCStringAndCopyResult(
+    GAME_DynamicCString *pString, GAME_DynamicCString *pResult,
+    const char *pszSuffix) {
+    unsigned int cchPrefix;
+    unsigned int cchSuffix;
+    unsigned int cchTotal;
+    char *pszText;
+
+    cchPrefix = (unsigned int)strlen(pString->m_pszText);
+    cchSuffix = (unsigned int)strlen(pszSuffix);
+    cchTotal = cchPrefix + cchSuffix + 1;
+    pszText = (char *)AllocateVSMemBlock(cchTotal);
+    memcpy(pszText, pString->m_pszText, cchPrefix);
+    memcpy(pszText + cchPrefix, pszSuffix, cchSuffix + 1);
+    FreeVSMemBlock(pString->m_pszText);
+    pString->m_pszText = (char *)AllocateVSMemBlock(cchTotal);
+    pString->m_cchCapacity = (int)cchTotal;
+    memcpy(pString->m_pszText, pszText, cchTotal);
+    CopyConstructDynamicCString(pResult, pString);
+    FreeVSMemBlock(pszText);
+    return pResult;
+}
+
+// FUNCTION: LEMBALL 0x0046E7F0
+void *AppendDynamicCStringToStream(void *pStream, const GAME_DynamicCString *pString) {
+    AppendCStringToStream((VSINIT_FormattedOutputStream *)pStream, pString->m_pszText);
+    return pStream;
+}
+
+// FUNCTION: LEMBALL 0x0046EF00
+int LEMBALL_FASTCALL GetDynamicCStringLength(const GAME_DynamicCString *pString) {
+    return (int)strlen(pString->m_pszText);
 }
 
 // FUNCTION: LEMBALL 0x0045AC10

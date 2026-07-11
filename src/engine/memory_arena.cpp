@@ -57,8 +57,8 @@ struct CArena {
     int IsPointerInsideMemoryArenaStorage(void *pvPointer);
 };
 
-static unsigned char g_abMainMemoryArena[0x50];
 void *g_pMainMemoryArena = 0;
+static void *g_pMainMemoryArenaStorage = 0;
 static int g_cbMainArenaCapacity = 0;
 static int g_cbMainArenaInUse = 0;
 static int g_fMainArenaReady = 0;
@@ -160,30 +160,42 @@ void FreeVSMemBlockImpl(void *pvBlock) {
 
 // FUNCTION: LEMBALL 0x0046F060
 int InitializeMasterMainRamArena(void) {
-    CArena *pMainArena;
+    void *pStorage;
 
     g_cbMainArenaCapacity = (int)g_StartupGraphicsDriverConfig.m_dwStyle;
     g_cbMainArenaInUse = 0;
+    g_fMainArenaReady = 0;
+    g_pMainMemoryArena = 0;
+    g_pMainMemoryArenaStorage = 0;
+    if (g_cbMainArenaCapacity < (int)GetMemoryArenaHeaderSize()) {
+        return 0;
+    }
+
+    pStorage = malloc((size_t)g_cbMainArenaCapacity);
+    if (pStorage == 0) {
+        return 0;
+    }
+    g_pMainMemoryArenaStorage = pStorage;
+    g_pMainMemoryArena = ReturnSuppliedPlacementStorage(0x50, pStorage);
+    if (g_pMainMemoryArena == 0 ||
+        ConstructMemoryArena(g_pMainMemoryArena,
+                             (unsigned int)g_cbMainArenaCapacity,
+                             "Master Main Ram Arena", 0, 0) == 0) {
+        free(pStorage);
+        g_pMainMemoryArenaStorage = 0;
+        g_pMainMemoryArena = 0;
+        return 0;
+    }
     g_fMainArenaReady = 1;
-    g_pMainMemoryArena = g_abMainMemoryArena;
-    pMainArena = (CArena *)g_abMainMemoryArena;
-    pMainArena->m_pVtable = g_aMainMemoryArenaVtable;
-    pMainArena->m_nMagic = 0x5241524e;
-    pMainArena->m_pLockVtable = g_aMainMemoryArenaLockVtable;
-    pMainArena->m_pStorage = (char *)g_abMainMemoryArena + GetMemoryArenaHeaderSize();
-    pMainArena->m_cbStorage = g_cbMainArenaCapacity;
-    pMainArena->m_cbFree = g_cbMainArenaCapacity;
-    pMainArena->m_pStatusEntry = 0;
-    pMainArena->m_pFirstFreeBlock = 0;
-    pMainArena->m_pLastFreeBlock = 0;
-    pMainArena->m_pFirstAddressBlock = 0;
-    pMainArena->m_pLastAddressBlock = 0;
-    pMainArena->m_pFirstChildArena = 0;
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x0046F120
 void ShutdownMasterMainRamArena(void) {
+    if (g_pMainMemoryArenaStorage != 0) {
+        free(g_pMainMemoryArenaStorage);
+        g_pMainMemoryArenaStorage = 0;
+    }
     g_pMainMemoryArena = 0;
     g_cbMainArenaCapacity = 0;
     g_cbMainArenaInUse = 0;

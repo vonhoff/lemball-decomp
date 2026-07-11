@@ -1189,7 +1189,7 @@ void ConstructWindowOwnerRenderContext(void *pPrimaryContext) {
 }
 
 // FUNCTION: LEMBALL 0x00462EA0
-void InitializeRenderQueueNodeBase(void *pRenderQueueNode) {
+void LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode) {
     GAME_RenderQueueNode *pNode;
 
     pNode = (GAME_RenderQueueNode *)pRenderQueueNode;

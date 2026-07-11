@@ -337,7 +337,7 @@ struct NETWORK_EffTransportPeer {
 struct NETWORK_RuntimeStartView {
     int StartEffTransportRuntimeAndWaitReady(int nRuntimeKey, int cbMaxPacket);
 };
-extern void InitializeRenderQueueNodeBase(void *pRenderQueueNode);
+extern void LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode);
 extern int StartFileBasedNetworkMessageThread(void);
 extern int StartTcpipNetworkMessageThread(void);
 extern void WINAPI ConfigureFileBasedNetworkPathsWrapper(char *pszBasePath, char *pszNetworkPath);

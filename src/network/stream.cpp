@@ -373,7 +373,6 @@ static void *ClaimRuntimeDualRecordAdjusted(void *pObject) {
         ->ClaimAckedEffTransportRecordPayload();
 }
 
-// FUNCTION: LEMBALL 0x00462920
 void RuntimeDualUnusedCallback(void) {
 }
 
@@ -648,15 +647,17 @@ void NETWORK_EffStreamBase::ReadEffStreamCString(char **ppszTarget) {
 }
 
 // FUNCTION: LEMBALL 0x0045F250
-void NETWORK_EffStreamBase::SaveEffStreamToMemoryRange(int nTargetBuffer, int cbRange) {
+int NETWORK_EffStreamBase::SaveEffStreamToMemoryRange(int nTargetBuffer, int cbRange) {
     NETWORK_EffStreamSerializeVtable *pVtable;
+    int (*pfnWriteBody)(void *pThis);
 
     m_pPayloadBuffer08 = nTargetBuffer;
     pVtable = (NETWORK_EffStreamSerializeVtable *)m_pVtable;
     m_nReserved1c = nTargetBuffer + cbRange;
     m_fOwnsPayload0c = m_nBufferEnd18 + nTargetBuffer + cbRange;
     pVtable->m_pBeginWriteHeader(this);
-    pVtable->m_pBeginWriteBody(this);
+    pfnWriteBody = (int (*)(void *))pVtable->m_pBeginWriteBody;
+    return pfnWriteBody(this);
 }
 
 // FUNCTION: LEMBALL 0x0045F680

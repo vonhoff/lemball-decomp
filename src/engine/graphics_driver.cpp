@@ -225,35 +225,39 @@ static void ReleaseResourceGeometryRowBufferStorage(int nRowBuffer) {
 static void ResetHelperUploadStateMap(int) {
 }
 
+struct VSGDI_CompactResourceGeometryHelper {
+    void *InitializeCompactResourceGeometryHelper(void);
+};
+
 // FUNCTION: LEMBALL 0x004663D0
-void *InitializeCompactResourceGeometryHelper(void *pvHelper) {
-    int *pHelper;
+void *VSGDI_CompactResourceGeometryHelper::InitializeCompactResourceGeometryHelper(void) {
+    char *pbHelper;
     unsigned short wZero;
 
-    pHelper = (int *)pvHelper;
+    pbHelper = (char *)this;
     wZero = 0;
-    *(unsigned short *)((char *)pHelper + 6) = wZero;
-    *(unsigned short *)(pHelper + 1) = wZero;
-    *(unsigned short *)((char *)pHelper + 10) = wZero;
-    *(unsigned short *)(pHelper + 2) = wZero;
-    *(unsigned short *)((char *)pHelper + 0xe) = wZero;
-    *(unsigned short *)(pHelper + 3) = wZero;
-    *(unsigned short *)((char *)pHelper + 0x12) = wZero;
-    *(unsigned short *)(pHelper + 4) = wZero;
-    *(unsigned short *)((char *)pHelper + 0x16) = wZero;
-    *(unsigned short *)(pHelper + 5) = wZero;
-    *(unsigned short *)((char *)pHelper + 0x1a) = wZero;
-    *(unsigned short *)(pHelper + 6) = wZero;
-    *(unsigned short *)((char *)pHelper + 0x1e) = wZero;
-    *(unsigned short *)(pHelper + 7) = wZero;
-    *pHelper = (int)(unsigned long)&g_VSGDI_CompactResourceGeometryHelperVtable;
-    pHelper[0xf] = 1;
-    *(unsigned short *)((char *)pHelper + 0x26) = wZero;
-    pHelper[0x10] = 0;
-    *(unsigned short *)(pHelper + 9) = wZero;
-    *(unsigned short *)((char *)pHelper + 0x2a) = wZero;
-    *(unsigned short *)(pHelper + 10) = wZero;
-    return pHelper;
+    *(unsigned short *)(pbHelper + 6) = wZero;
+    *(unsigned short *)(pbHelper + 4) = wZero;
+    *(unsigned short *)(pbHelper + 10) = wZero;
+    *(unsigned short *)(pbHelper + 8) = wZero;
+    *(unsigned short *)(pbHelper + 0xe) = wZero;
+    *(unsigned short *)(pbHelper + 0xc) = wZero;
+    *(unsigned short *)(pbHelper + 0x12) = wZero;
+    *(unsigned short *)(pbHelper + 0x10) = wZero;
+    *(unsigned short *)(pbHelper + 0x16) = wZero;
+    *(unsigned short *)(pbHelper + 0x14) = wZero;
+    *(unsigned short *)(pbHelper + 0x1a) = wZero;
+    *(unsigned short *)(pbHelper + 0x18) = wZero;
+    *(unsigned short *)(pbHelper + 0x1e) = wZero;
+    *(unsigned short *)(pbHelper + 0x1c) = wZero;
+    *(void **)pbHelper = &g_VSGDI_CompactResourceGeometryHelperVtable;
+    *(int *)(pbHelper + 0x3c) = 1;
+    *(unsigned short *)(pbHelper + 0x26) = wZero;
+    *(int *)(pbHelper + 0x40) = 0;
+    *(unsigned short *)(pbHelper + 0x24) = wZero;
+    *(unsigned short *)(pbHelper + 0x2a) = wZero;
+    *(unsigned short *)(pbHelper + 0x28) = wZero;
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x00472290
@@ -284,7 +288,8 @@ void *ConstructHelperGroup1RowBuffer(void *pvHelperGroup, int fConstructCompactH
     pHelperGroup = (int *)pvHelperGroup;
     if (fConstructCompactHelper != 0) {
         *(void **)((char *)pHelperGroup + 4) = &g_VSGDI_ResourceGeometryHelperGroup1ConstructionAdjustorVtable;
-        InitializeCompactResourceGeometryHelper((char *)pHelperGroup + 0x58);
+        ((VSGDI_CompactResourceGeometryHelper *)((char *)pHelperGroup + 0x58))
+            ->InitializeCompactResourceGeometryHelper();
     }
     InitializeResourceGeometryRowBuffer((char *)pHelperGroup + 8);
     *(void **)pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup1Vtable;
@@ -307,7 +312,8 @@ void *ConstructHelperGroup0RowBuffer(void *pvHelperGroup, int fConstructCompactH
     pHelperGroup = (int *)pvHelperGroup;
     if (fConstructCompactHelper != 0) {
         *(void **)((char *)pHelperGroup + 4) = &g_VSGDI_ResourceGeometryHelperGroup0ConstructionAdjustorVtable;
-        InitializeCompactResourceGeometryHelper((char *)pHelperGroup + 0x58);
+        ((VSGDI_CompactResourceGeometryHelper *)((char *)pHelperGroup + 0x58))
+            ->InitializeCompactResourceGeometryHelper();
     }
     InitializeResourceGeometryRowBuffer((char *)pHelperGroup + 8);
     *(void **)pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup0Vtable;
@@ -440,7 +446,8 @@ void *ConstructResourceGeometryHelperTarget(void *pvTarget, int nWrappedParam, i
         *(void **)((char *)pTarget + 0x40) = &g_VSGDI_CompactHelperTargetAdjustor;
         *(void **)((char *)pTarget + 0x48) = &g_VSGDI_HelperGroup1Adjustor;
         *(void **)((char *)pTarget + 0x9c) = &g_VSGDI_HelperGroup0Adjustor;
-        InitializeCompactResourceGeometryHelper((char *)pTarget + 0x55c);
+        ((VSGDI_CompactResourceGeometryHelper *)((char *)pTarget + 0x55c))
+            ->InitializeCompactResourceGeometryHelper();
     }
     InitializeResourceGeometryRowBuffer(pTarget);
     *(void **)pTarget = &g_VSGDI_ResourceGeometryHelperTargetConstructionVtable;
@@ -485,7 +492,7 @@ void DestroyResourceGeometryRowBuffer(void *pvRowBuffer) {
 }
 
 // FUNCTION: LEMBALL 0x004664B0
-void DestroyHelperGroup0RowBuffer(void *pvHelperGroup) {
+void LEMBALL_FASTCALL DestroyHelperGroup0RowBuffer(void *pvHelperGroup) {
     int iCompactDelta;
     int *pHelperGroup;
     int *pRowBuffer;
@@ -500,7 +507,7 @@ void DestroyHelperGroup0RowBuffer(void *pvHelperGroup) {
 }
 
 // FUNCTION: LEMBALL 0x004666E0
-void DestroyHelperGroup1RowBuffer(void *pvHelperGroup) {
+void LEMBALL_FASTCALL DestroyHelperGroup1RowBuffer(void *pvHelperGroup) {
     int iCompactDelta;
     int *pHelperGroup;
     int *pRowBuffer;
@@ -829,7 +836,7 @@ void ConfigureHelperBackingStrideAndOrigin(VSGDI_HelperSurface *pSurface, int nS
 }
 
 // FUNCTION: LEMBALL 0x00466D10
-void PromoteHelperUploadStateToActive(int nUploadState) {
+void LEMBALL_FASTCALL PromoteHelperUploadStateToActive(int nUploadState) {
     if (*(char *)(unsigned long)(nUploadState + 0x48) == 'P') {
         *(char *)(unsigned long)(nUploadState + 0x48) = 'A';
         return;
@@ -841,7 +848,7 @@ void PromoteHelperUploadStateToActive(int nUploadState) {
 }
 
 // FUNCTION: LEMBALL 0x00466B60
-void InitializeHelperUploadStatePending(int nUploadState) {
+void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState) {
     *(unsigned short *)(unsigned long)(nUploadState + 0x30) = 0;
     *(int *)(unsigned long)(nUploadState + 0x2c) = 0;
     *(char *)(unsigned long)(nUploadState + 0x48) = 'P';
@@ -964,14 +971,12 @@ void SampleRootHelperGeometryAndDispatchRenderGroups(void *pPrimaryContext, int 
     VSGDI_HelperDispatchQueue *pDispatchQueue;
     VSGDI_HelperSurfaceBindingSurface *pBindingSurface;
     VSGDI_HelperSurface *pHelperTarget;
-    int *pQueuedPointSink;
+    void *pQueuedPointSink;
     void *pUploadCallbackTarget;
     int nUploadState;
     int nResult;
-    short x0;
     short x1;
     short y1;
-    short x2;
     short y2;
 
     pContext = (int *)pPrimaryContext;
@@ -992,19 +997,15 @@ void SampleRootHelperGeometryAndDispatchRenderGroups(void *pPrimaryContext, int 
     x1 = pBindingSurface->m_nOriginX;
     y1 = pBindingSurface->m_nOriginY;
 
-    pQueuedPointSink = (int *)AllocateVSMemBlock(4);
+    pQueuedPointSink = AllocateVSMemBlock(4);
     if (pQueuedPointSink != 0) {
-        *pQueuedPointSink = (int)(unsigned long)g_pQueuedRenderPointSinkFinalizeThunk;
+        *(void **)pQueuedPointSink = g_pQueuedRenderPointSinkFinalizeThunk;
     }
 
     nUploadState = ((int (*)(void))(*(void ***)pHelperTarget)[2])();
     InitializeHelperUploadStatePending(nUploadState);
-    ((void (*)(void *))(*(void ***)*(int **)pQueuedPointSink)[1])(pDispatchQueue);
-
-    x0 = *(short *)((char *)&nUploadState); /* intentional dead local shaping placeholder */
-    (void)x0;
-    x2 = (short)nUploadState; /* keep locals materialized in old-style layout */
-    (void)x2;
+    ((void (*)(void *, void *))(*(void ***)pQueuedPointSink)[1])(
+        pQueuedPointSink, pDispatchQueue);
 
     *(short *)((char *)pContext + 0x5c) = *(short *)&nUploadState;
     *(short *)((char *)pContext + 0x5e) = *((short *)&nUploadState + 1);
@@ -1043,7 +1044,7 @@ void SampleRootHelperGeometryAndDispatchRenderGroups(void *pPrimaryContext, int 
     ((void (*)())(*(void ***)pContext)[0x2d])();
 
     if (pQueuedPointSink != 0) {
-        ((void (*)(int))(*(void ***)*(int **)pQueuedPointSink)[0])(1);
+        ((void (*)(void *, int))(*(void ***)pQueuedPointSink)[0])(pQueuedPointSink, 1);
     }
 }
 

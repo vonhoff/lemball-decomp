@@ -12,4 +12,10 @@ typedef signed char s8;
 typedef signed short s16;
 typedef signed long s32;
 
+#if defined(_MSC_VER) || defined(__WATCOMC__)
+#define LEMBALL_FASTCALL __fastcall
+#else
+#define LEMBALL_FASTCALL
+#endif
+
 #endif
