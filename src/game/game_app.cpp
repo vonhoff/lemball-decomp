@@ -294,7 +294,9 @@ void *g_pNetworkLobbyTransportController = 0;
 void *g_pActiveNetworkLobbyScreen = 0;
 
 extern void *ConstructEffStreamPayloadSize8(void *pObject);
-extern void RegisterEffTransportEventClient(void *pRuntimeWindow, void *pClient);
+struct GAME_EffTransportRuntimeWindow {
+    void RegisterEffTransportEventClient(void *pClient);
+};
 extern void *ConstructNetworkLobbyPeerClearCloseStream(void *pObject);
 extern void *ConstructNetworkLobbyPeerDirtyConfirmStream(void *pObject);
 struct GAME_EffStream {
@@ -687,7 +689,8 @@ void InitializeBaseModeObject(void *pModeObject, GAME_MainContext *pMainContext)
         pMode->m_fNetworkLobbyActive = 0;
     }
     if (g_pActiveNetworkRuntimeWindow != 0) {
-        RegisterEffTransportEventClient(g_pActiveNetworkRuntimeWindow, &pMode->m_pRenderQueueNodeVtable);
+        ((GAME_EffTransportRuntimeWindow *)g_pActiveNetworkRuntimeWindow)
+            ->RegisterEffTransportEventClient(&pMode->m_pRenderQueueNodeVtable);
     }
     g_pActiveNetworkLobbyTransportController = pMode;
 }
@@ -1619,7 +1622,7 @@ GAME_PrimaryContext *ConstructPrimaryContext(GAME_PrimaryContext *pPrimaryContex
 
     pPrimaryContext->m_pFinalizeThunk = g_pQueuedRenderPointSinkFinalizeThunk;
     pPrimaryContext->m_cyCompactLayout = 0;
-    pPrimaryContext->m_pVtable = &g_pPrimaryContextVtable;
+    pPrimaryContext->m_pVtable = g_pPrimaryContextVtable;
     pPrimaryContext->m_cxCompactLayout = 0;
     pPrimaryContext->m_pRenderQueueNodeVtable = g_pPrimaryContextRenderQueueNodeVtable;
     pPrimaryContext->m_cyWideLayout = 0;

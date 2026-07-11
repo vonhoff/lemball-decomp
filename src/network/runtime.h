@@ -26,4 +26,11 @@ struct NETWORK_EffTransportPendingWriteState {
     void Clear(void *pUnused);
 };
 
+struct NETWORK_CompositeEffTransportVtableModel {
+    virtual void FatalSlot00(void);
+    virtual void ServiceEffTransportPeerEntry(void);
+    virtual void FatalSlot02(void);
+    virtual void FatalSlot03(void);
+};
+
 #endif

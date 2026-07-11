@@ -162,10 +162,7 @@ static void *g_GAME_TwoArrayListResourceVtableStorage[15] = {
 static void *g_GAME_ListResourceBaseVtable = g_GAME_ListResourceVtableStorage;
 static void *g_GAME_ZrleOnlyListResourceVtable = g_GAME_ZrleResourceVtableStorage;
 static void *g_GAME_IntZrleListResourceVtable = g_GAME_ZrleResourceVtableStorage;
-static void *g_GAME_TypedBitmapResourceDeleteVtable = g_pDestroyGRTSResourceAndFreeThunk;
 static void *g_GAME_ZrleResourceVtable = g_GAME_ZrleResourceVtableStorage;
-static void *g_GAME_BitmapResourceVtable = g_pBitmapResourceVtable;
-static void *g_GAME_PaletteResourceVtable = g_pPaletteResourceVtable;
 static void *g_GAME_TwoArrayListResourceVtable = g_GAME_TwoArrayListResourceVtableStorage;
 static int g_GAME_ZrleListResourceTypeToken = 0;
 static int g_GAME_IntZrleListResourceTypeToken = 0;
@@ -317,7 +314,7 @@ void *ConstructIntZrleListResourceFromId(void *pObject, int nResourceId) {
     int *pListResource;
 
     pListResource = (int *)pObject;
-    *(void **)pListResource = &g_pCachedResourceObjectBaseDeleteVtable;
+    *(void **)pListResource = g_pCachedResourceObjectBaseDeleteVtable;
     pListResource[0x12] = g_GAME_IntZrleListResourceTypeToken;
     *(void **)pListResource = g_GAME_ListResourceBaseVtable;
     *(void **)pListResource = g_GAME_IntZrleListResourceVtable;
@@ -338,7 +335,7 @@ void *ConstructTwoArrayListResourceFromId(void *pObject, int nResourceId) {
     int *pListResource;
 
     pListResource = (int *)pObject;
-    *(void **)pListResource = &g_pCachedResourceObjectBaseDeleteVtable;
+    *(void **)pListResource = g_pCachedResourceObjectBaseDeleteVtable;
     pListResource[0x12] = g_GAME_TwoArrayListResourceTypeToken;
     *(void **)pListResource = g_GAME_ListResourceBaseVtable;
     pListResource[6] = 0;
@@ -369,7 +366,7 @@ void *LoadZrleOnlyListResource(int nResourceId) {
 
     pResourceObject = (int *)AllocateVSMemBlock(0x7c);
     if (pResourceObject != 0) {
-        *(void **)pResourceObject = &g_pCachedResourceObjectBaseDeleteVtable;
+        *(void **)pResourceObject = g_pCachedResourceObjectBaseDeleteVtable;
         pResourceObject[6] = 0;
         *(void **)pResourceObject = g_GAME_ListResourceBaseVtable;
         pResourceObject[0x12] = g_GAME_ZrleListResourceTypeToken;
@@ -441,12 +438,12 @@ void *LoadBitmapResource(int nResourceId) {
 
     pResourceObject = (int *)AllocateVSMemBlock(0x54);
     if (pResourceObject != 0) {
-        *(void **)pResourceObject = &g_pCachedResourceObjectBaseDeleteVtable;
+        *(void **)pResourceObject = g_pCachedResourceObjectBaseDeleteVtable;
         pResourceObject[6] = 0;
-        *(void **)pResourceObject = g_GAME_TypedBitmapResourceDeleteVtable;
+        *(void **)pResourceObject = g_pDestroyGRTSResourceAndFreeThunk;
         *(unsigned short *)((char *)pResourceObject + 0x4a) = 0;
         *(unsigned short *)(pResourceObject + 0x12) = 0;
-        *(void **)pResourceObject = g_GAME_BitmapResourceVtable;
+        *(void **)pResourceObject = g_pBitmapResourceVtable;
         InitializeResourceObjectFromId(pResourceObject, nResourceId);
         return FinalizeLoadedResourceObjectResult(pResourceObject);
     }
@@ -468,9 +465,9 @@ void *LoadZrleResource(int nResourceId) {
 
     pResourceObject = (int *)AllocateVSMemBlock(0x54);
     if (pResourceObject != 0) {
-        *(void **)pResourceObject = &g_pCachedResourceObjectBaseDeleteVtable;
+        *(void **)pResourceObject = g_pCachedResourceObjectBaseDeleteVtable;
         pResourceObject[6] = 0;
-        *(void **)pResourceObject = g_GAME_TypedBitmapResourceDeleteVtable;
+        *(void **)pResourceObject = g_pDestroyGRTSResourceAndFreeThunk;
         *(unsigned short *)((char *)pResourceObject + 0x4a) = 0;
         *(unsigned short *)(pResourceObject + 0x12) = 0;
         *(unsigned short *)((char *)pResourceObject + 0x4e) = 0;
@@ -499,9 +496,9 @@ void *LoadPalResource(int nResourceId) {
 
     pResourceObject = (int *)AllocateVSMemBlock(0x4c);
     if (pResourceObject != 0) {
-        *(void **)pResourceObject = &g_pCachedResourceObjectBaseDeleteVtable;
+        *(void **)pResourceObject = g_pCachedResourceObjectBaseDeleteVtable;
         pResourceObject[6] = 0;
-        *(void **)pResourceObject = g_GAME_PaletteResourceVtable;
+        *(void **)pResourceObject = g_pPaletteResourceVtable;
         InitializeResourceObjectFromId(pResourceObject, nResourceId);
         return FinalizeLoadedResourceObjectResult(pResourceObject);
     }

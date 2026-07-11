@@ -994,7 +994,7 @@ void SampleRootHelperGeometryAndDispatchRenderGroups(void *pPrimaryContext, int 
 
     pQueuedPointSink = (int *)AllocateVSMemBlock(4);
     if (pQueuedPointSink != 0) {
-        *pQueuedPointSink = (int)(unsigned long)&g_pQueuedRenderPointSinkFinalizeThunk;
+        *pQueuedPointSink = (int)(unsigned long)g_pQueuedRenderPointSinkFinalizeThunk;
     }
 
     nUploadState = ((int (*)(void))(*(void ***)pHelperTarget)[2])();

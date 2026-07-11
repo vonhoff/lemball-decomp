@@ -1339,7 +1339,7 @@ void *ConstructLevelScreenStatusIndicatorManager(void *pObject, int nStatusMode,
         InitializeStatusIndicatorPointSinkEntry((char *)pManager + 0x110 + i * 0x10);
     }
 
-    *(void **)((char *)pManager + 0x120) = &g_pQueuedRenderPointSinkFinalizeThunk;
+    *(void **)((char *)pManager + 0x120) = g_pQueuedRenderPointSinkFinalizeThunk;
     for (i = 0; i < 1; ++i) {
         InitializeRenderPointRectSinkEntry((char *)pManager + 0x124 + i * 0x10);
     }

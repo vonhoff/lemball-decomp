@@ -375,7 +375,7 @@ struct NETWORK_CompositeEffTransportStackWrapperView {
     void *DeleteCompositeEffTransportRuntimeWrapper(BYTE fFreeMemory);
 };
 
-void ServiceEffTransportPeerEntry(void *pPeerObject);
+extern void *g_NETWORK_CompositeEffTransportVtable;
 
 struct NETWORK_EffTransportConnectCallback {
     void QueueEffTransportConnectEvent(void);
@@ -417,12 +417,6 @@ struct NETWORK_CompleteEffTransportPendingWriteView {
     void CompleteEffTransportPendingWrite(int fQueueEvent);
 };
 void CompleteEffTransportPendingWriteAdjustedThunk(void *pObject, int fQueueEvent);
-static void *g_NETWORK_CompositeEffTransportVtable[4] = {
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)ServiceEffTransportPeerEntry,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-};
 static void *g_NETWORK_CompositeEffTransportFatalThunkVtable[4] = {
     (void *)CrtFatalRuntimeError0x19,
     (void *)DeleteCompositeEffTransportStackAdjustedThunk,
@@ -487,7 +481,11 @@ struct NETWORK_DispatchAckedEffTransportPayloadView {
 struct NETWORK_QueueEffTransportPayloadEventView {
     void QueueEffTransportPayloadEvent(unsigned short nType, void *pPayload);
 };
-extern void *ClaimAckedEffTransportRecordPayload(void *pObject);
+struct NETWORK_AckedEffTransportRecordOwner {
+    char m_abUnknown00[0x4c];
+    void *m_pRecordTable4c;
+    void *ClaimAckedEffTransportRecordPayload(void);
+};
 
 // FUNCTION: LEMBALL 0x00471C60
 void *DeleteAllocatedTcpipSocketChannelStackAdjustedThunk(void *pObject,
@@ -579,7 +577,8 @@ void *ClaimCompositeTcpipEffTransportRecordAdjustedThunk(void *pObject) {
     pOffsets = *(int **)(pAdjusted - 0x38);
     pAdjusted += pOffsets[4];
     pOffsets = *(int **)(pAdjusted - 0x38);
-    return ClaimAckedEffTransportRecordPayload(pAdjusted + pOffsets[2] - 0x38);
+    return ((NETWORK_AckedEffTransportRecordOwner *)(pAdjusted + pOffsets[2] - 0x38))
+        ->ClaimAckedEffTransportRecordPayload();
 }
 
 // FUNCTION: LEMBALL 0x00472000
@@ -613,7 +612,8 @@ void *ClaimCompositeTcpipEffTransportDualRecordAdjustedThunk(void *pObject) {
     pOffsets = *(int **)(pAdjusted - 0x38);
     pAdjusted += pOffsets[4];
     pOffsets = *(int **)(pAdjusted - 0x38);
-    return ClaimAckedEffTransportRecordPayload(pAdjusted + pOffsets[2] - 0x38);
+    return ((NETWORK_AckedEffTransportRecordOwner *)(pAdjusted + pOffsets[2] - 0x38))
+        ->ClaimAckedEffTransportRecordPayload();
 }
 
 // FUNCTION: LEMBALL 0x00472030
@@ -670,7 +670,8 @@ void *ClaimTcpipSocketStackDualAdjustedThunk(void *pObject) {
     pOffsets = *(int **)(pAdjusted - 0x38);
     pAdjusted += pOffsets[4];
     pOffsets = *(int **)(pAdjusted - 0x38);
-    return ClaimAckedEffTransportRecordPayload(pAdjusted + pOffsets[2] - 0x38);
+    return ((NETWORK_AckedEffTransportRecordOwner *)(pAdjusted + pOffsets[2] - 0x38))
+        ->ClaimAckedEffTransportRecordPayload();
 }
 
 // FUNCTION: LEMBALL 0x00471C80
@@ -794,12 +795,6 @@ void WriteEffTransportTaggedHeader(void *pObject) {
     ++pStream->m_nReserved1c;
 }
 
-// FUNCTION: LEMBALL 0x00471E50
-static void *TimedSocketBundleDeleteDualAdjustedThunk(void *pObject, BYTE fDelete) {
-    return ((NETWORK_DualSocketWindowChannelStackWrapperView *)((char *)pObject - 0x2c))
-        ->DeleteDualSocketWindowChannelStackWrapper(fDelete);
-}
-
 // FUNCTION: LEMBALL 0x00471E60
 static void TimedSocketBundleCloseSocketThunk(void *pObject) {
     ((NETWORK_SocketWindowChannelWrapper *)((char *)pObject + 0xc8))
@@ -914,7 +909,6 @@ static void *g_NETWORK_TimedSocketBundleChannelThunkVtable[4] = {
     (void *)TimedSocketBundleCaptureErrorThunk,
     (void *)TimedSocketBundleClearPendingWriteThunk,
 };
-extern void *ClaimAckedEffTransportRecordPayload(void *pObject);
 static void SetTcpipSocketChannelAssignedPort(void *pObject, short nPort);
 // FUNCTION: LEMBALL 0x00471F30
 static void TimedSocketBundleSetAssignedPortThunk(void *pObject, short nPort) {
@@ -963,7 +957,8 @@ struct NETWORK_TimedSocketBundleTimedThunkVtableModel {
         ((NETWORK_PeerPayloadSender *)this)->WriteEffStreamWithGlobalSession();
     }
     virtual void *ClaimRecord(void) {
-        return ClaimAckedEffTransportRecordPayload(this);
+        return ((NETWORK_AckedEffTransportRecordOwner *)this)
+            ->ClaimAckedEffTransportRecordPayload();
     }
     virtual void CaptureLookup(void *pLookupResult) {
         TimedSocketBundleCaptureLookupAdjustedThunk(this, pLookupResult);
@@ -1036,11 +1031,11 @@ static NETWORK_TcpipCompositeReceiveVtableModel
 static void *g_NETWORK_TcpipCompositeReceiveVtable =
     *(void ***)&g_NETWORK_TcpipCompositeReceiveVtableModel;
 static void *g_NETWORK_TcpipCompositeRecoveredVtable[7] = {
-    ((void **)g_NETWORK_RuntimeChannelStackVtable)[0],
-    ((void **)g_NETWORK_RuntimeChannelStackVtable)[1],
+    0,
+    0,
     (void *)ConfigureTcpipCompositeRemoteHost,
     (void *)StartTcpipCompositeLocalHostLookup,
-    ((void **)g_NETWORK_RuntimeChannelStackVtable)[4],
+    0,
     (void *)EnableTcpipCompositeAsyncSelect,
     (void *)DisableTcpipCompositeAsyncSelect,
 };
@@ -1414,7 +1409,8 @@ struct NETWORK_TcpipSocketStackCompositeRuntimeThunkVtableModel
     }
     virtual void *ClaimRecord(void) {
         char *pAdjusted = (char *)this - *(int *)((char *)this - 4) - 8;
-        return ClaimAckedEffTransportRecordPayload(pAdjusted);
+        return ((NETWORK_AckedEffTransportRecordOwner *)pAdjusted)
+            ->ClaimAckedEffTransportRecordPayload();
     }
     virtual void CaptureLookup(void *pLookupResult) {
         ((NETWORK_TimedSocketAsyncLookupAdapter *)((char *)this + 0x140))
@@ -1534,7 +1530,7 @@ static void AllocatedTcpipCompositeBindUdpSocket(void *pObject) {
 }
 static void *g_NETWORK_AllocatedTcpipCompositeVtable[7] = {
     (void *)NoopVtableCallbackThunk,
-    (void *)ServiceEffTransportPeerEntry,
+    0,
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
     (void *)AllocatedTcpipCompositeBindUdpSocket,
@@ -1547,7 +1543,7 @@ static void *g_NETWORK_AllocatedTcpipCompositeFatalThunkVtable[8] = {
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
-    (void *)ServiceEffTransportPeerEntry,
+    0,
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
 };
@@ -2252,6 +2248,12 @@ void *NETWORK_TcpipEffTransportCompositeLayout::ConstructTcpipEffTransportCompos
     NETWORK_AdjustorSubobject *pQuaternaryThunk;
 
     pComposite = this;
+    g_NETWORK_TcpipCompositeRecoveredVtable[0] =
+        ((void **)g_NETWORK_RuntimeChannelStackVtable)[0];
+    g_NETWORK_TcpipCompositeRecoveredVtable[1] =
+        ((void **)g_NETWORK_RuntimeChannelStackVtable)[1];
+    g_NETWORK_TcpipCompositeRecoveredVtable[4] =
+        ((void **)g_NETWORK_RuntimeChannelStackVtable)[4];
     /* 0049a188 uses adjusted composite timed-view slots. */
     g_NETWORK_TcpipCompositeTimedThunkVtable =
         g_NETWORK_TcpipCompositeTimedThunkRecoveredVtable;
@@ -2682,6 +2684,11 @@ void *AllocateTcpipEffTransportComposite(void) {
     if (pComposite == 0) {
         return 0;
     }
+
+    g_NETWORK_AllocatedTcpipCompositeVtable[1] =
+        ((void **)g_NETWORK_CompositeEffTransportVtable)[1];
+    g_NETWORK_AllocatedTcpipCompositeFatalThunkVtable[5] =
+        ((void **)g_NETWORK_CompositeEffTransportVtable)[1];
 
     pbObjectBase = (char *)pComposite;
     pComposite->m_pOuterOffsets04 = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_AllocatedTcpipCompositeTransportVtable;

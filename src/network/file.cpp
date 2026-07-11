@@ -15,7 +15,6 @@ extern void NoopVtableCallback(void);
 struct NETWORK_ChannelOwnerObject {
     void ServiceEffTransportConnectRequest(void);
 };
-extern void ServiceEffTransportPeerEntry(void *pObject);
 extern void *DeleteWaveOutEffectBackend(AUDIO_WaveOutEffectBackend *pObject,
                                         unsigned char fDelete);
 struct NETWORK_CompleteEffTransportPendingWriteView {
@@ -135,7 +134,11 @@ char *FindCharInCString0047FE00(char *pszText, char ch);
 void *AdjustAndDeleteDualSlotTableTimedFileBackedEffCompositeWrapper(void *pObject, BYTE fFreeMemory);
 void *AdjustAndDeleteDualSlotTableDualFileBackedEffCompositeWrapper(void *pObject, BYTE fFreeMemory);
 void *AdjustAndDeleteDualSlotTableFileBackedEffCompositeWrapper(void *pObject, BYTE fFreeMemory);
-void *ClaimAckedEffTransportRecordPayload(void *pObject);
+struct NETWORK_AckedEffTransportRecordOwner {
+    char m_abUnknown00[0x4c];
+    void *m_pRecordTable4c;
+    void *ClaimAckedEffTransportRecordPayload(void);
+};
 extern int ReturnTrueVtableCallbackThunk(void);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void ReverseEffTransportPayload(void *pObject);
@@ -491,7 +494,8 @@ struct NETWORK_FileBackedTimedSecondaryThunkVtableModel {
         ((NETWORK_PeerPayloadSender *)this)->WriteEffStreamWithGlobalSession();
     }
     virtual void *ClaimTimedRecord(void) {
-        return ClaimAckedEffTransportRecordPayload(this);
+        return ((NETWORK_AckedEffTransportRecordOwner *)this)
+            ->ClaimAckedEffTransportRecordPayload();
     }
     virtual void InvokeService(void *pArgument) {
         InvokeAdjustedTimedEffStreamServiceCallbackThunk(this, pArgument);
@@ -1419,6 +1423,21 @@ struct NETWORK_ChannelStateHeader {
     int m_fChannelOpen24;
 };
 
+struct NETWORK_PendingRecordChannelStateHeader {
+    void **m_pVtable;
+    int m_nReserved04;
+    int m_nSelectedPeer08;
+    int m_nReserved0c;
+    int m_fBusy10;
+    int m_cSlots14;
+    int m_fPending18;
+    int m_fReceiving1c;
+    unsigned short m_nSelectedPort20;
+    unsigned short m_nReserved22;
+    int m_nReserved24;
+    int m_fChannelOpen28;
+};
+
 struct NETWORK_PeerAddressServiceVtable {
     void *m_pReserved00;
     void *m_pReserved04;
@@ -1750,7 +1769,7 @@ struct NETWORK_GlobalStateFileBackedStorageOwner {
 
 struct NETWORK_FileBackedRecordServiceView {
     NETWORK_EffStreamRecordSlotTable *m_pRecordTable;
-    NETWORK_ChannelStateHeader *m_pChannelState;
+    NETWORK_PendingRecordChannelStateHeader *m_pChannelState;
     NETWORK_FileWrapperObject *m_pFileWrapper;
 };
 
@@ -2631,7 +2650,7 @@ void *NETWORK_EmbeddedFileBackedEffChannelStackConstructorView::ConstructEmbedde
     pPrimaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nChannelStateViewOffset04 - 8;
     pSecondaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nTimedStreamViewOffset08 - 0x38;
     pTertiaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nDualStreamViewOffset0c - 0xb0;
-    return pObject;
+    return (void *)(char *)this;
 }
 
 // FUNCTION: LEMBALL 0x0047A570
@@ -2963,6 +2982,13 @@ void *NETWORK_DualSlotCompositeLayout::ConstructDualSlotTableFileBackedEffCompos
 
     ((NETWORK_CompositeEffTransportStackLayout *)this)->ConstructCompositeEffTransportStack(0);
 
+    /* Socket vtable lives in another translation unit.  Do not depend on
+     * cross-unit static initialization having run before this constructor. */
+    if (g_NETWORK_DualSlotCompositeFullVtableModel[10] == 0) {
+        g_NETWORK_DualSlotCompositeFullVtableModel[10] =
+            ((void **)g_NETWORK_SocketWindowEffChannelVtable)[0];
+    }
+
     *(void **)this = g_NETWORK_DualSlotCompositeFinalVtable;
     pPrimaryThunk->m_pVtable = g_NETWORK_DualSlotCompositeFinalPrimaryThunkVtable;
     pSecondaryThunk->m_pVtable = g_NETWORK_DualSlotCompositeFinalTimedThunkVtable;
@@ -3265,10 +3291,11 @@ void ClaimAdjustedEffTransportRecordPayload(void *pObject) {
     pbTransportView = (char *)pObject +
                       ((NETWORK_GlobalSessionAdjustorFront *)((char *)pObject - 0x38))->m_pOffsets
                           ->m_nTransportViewOffset10;
-    ClaimAckedEffTransportRecordPayload(pbTransportView +
-                                        ((NETWORK_GlobalSessionAdjustorFront *)(pbTransportView - 0x38))->m_pOffsets
-                                            ->m_nEmbeddedStreamViewOffset08 -
-                                        0x38);
+    ((NETWORK_AckedEffTransportRecordOwner *)
+         (pbTransportView +
+          ((NETWORK_GlobalSessionAdjustorFront *)(pbTransportView - 0x38))->m_pOffsets
+              ->m_nEmbeddedStreamViewOffset08 - 0x38))
+        ->ClaimAckedEffTransportRecordPayload();
 }
 
 // FUNCTION: LEMBALL 0x0047BA90
@@ -3738,6 +3765,11 @@ void NETWORK_FileBackedPendingWriteAdjustedView::ClearAdjustedPendingWriteState(
 }
 
 struct NETWORK_FileBackedRecordTableView {
+    NETWORK_EffStreamRecordSlotTable *m_pRecordTable00;
+    int m_nRecordHeaderOffset04;
+    int m_nPayloadBaseOffset08;
+    NETWORK_FileBackedDispatchOffsets *m_pChannelThunk0c;
+
     int LoadEffStreamFromFileBackedRange(void *pStream, int fKeepLocked, int fAlreadyLocked);
     int LoadFileBackedEffRecordPayload(int nSlotIndex);
 };
@@ -3757,9 +3789,9 @@ int NETWORK_FileBackedRecordTableView::LoadEffStreamFromFileBackedRange(void *pS
     DWORD dwStartTime;
     DWORD dwNow;
 
-    pRecordTable = (NETWORK_EffStreamRecordSlotTable *)this;
+    pRecordTable = m_pRecordTable00;
     pbRecordTableBase = (char *)this;
-    pOffsets = pRecordTable->m_pChannelThunk0c;
+    pOffsets = m_pChannelThunk0c;
     LoadView.m_pRecordTable = pRecordTable;
     LoadView.m_pFileWrapper =
         (NETWORK_FileWrapperObject *)(pbRecordTableBase + 0xc + pOffsets->m_nFileWrapperViewOffset0c);
@@ -3806,12 +3838,13 @@ int NETWORK_FileBackedRecordTableView::LoadFileBackedEffRecordPayload(int nSlotI
     int nResult;
     DWORD dwNow;
 
-    pRecordTable = (NETWORK_EffStreamRecordSlotTable *)this;
+    pRecordTable = m_pRecordTable00;
     pbRecordTableBase = (char *)this;
-    pChannelOffsets = pRecordTable->m_pChannelThunk0c;
+    pChannelOffsets = m_pChannelThunk0c;
     PayloadView.m_pRecordTable = pRecordTable;
     PayloadView.m_pChannelState =
-        (NETWORK_ChannelStateHeader *)(pbRecordTableBase + 0xc + pChannelOffsets->m_nChannelStateViewOffset04);
+        (NETWORK_ChannelStateHeader *)(pbRecordTableBase +
+                                       pChannelOffsets->m_nChannelStateViewOffset04);
     PayloadView.m_pTimedStream =
         (NETWORK_TimedStreamHeader *)(pbRecordTableBase + 0xc + pChannelOffsets->m_nTimedStreamViewOffset08);
     PayloadView.m_pFileWrapper =
@@ -3824,7 +3857,7 @@ int NETWORK_FileBackedRecordTableView::LoadFileBackedEffRecordPayload(int nSlotI
     pSlot = &pRecordTable->m_pSlots[nSlotIndex];
     nResult = pFileWrapper->m_pVtable->m_pSeek(pFileWrapper,
                                                g_cbEffTransportMaxPacketBytes * nSlotIndex +
-                                                   pRecordTable->m_nPayloadBaseOffset08);
+                                                   m_nPayloadBaseOffset08);
     if (nResult == 0) {
         return 0;
     }
@@ -3840,10 +3873,10 @@ int NETWORK_FileBackedRecordTableView::LoadFileBackedEffRecordPayload(int nSlotI
     g_cbEffTransportCurrentPacketBytes = (int)pSlot->m_cbPayload;
     pPeerAddressService = (NETWORK_PeerAddressService *)g_pEffTransportPeerAddressState;
     pPeerAddressService->m_pVtable->m_pSelectPeerName(pPeerAddressService, pSlot->m_szSourceName);
-    if (pChannelState->m_fBusy10 == 0) {
+    if (*(int *)((char *)pChannelState + 0x1c) == 0) {
         pTimedStreamVtable->m_pServiceLoadedPacket(pTimedStream);
     }
-    ((NETWORK_EffTransportPacketProcessor *)((char *)pTimedStream + 0xc))
+    ((NETWORK_EffTransportPacketProcessor *)pTimedStream)
         ->ProcessEffTransportPacketHeader();
     return 1;
 }
@@ -3953,6 +3986,13 @@ void *AdjustAndDeleteEmbeddedFileBackedEffChannelStackWrapper40(void *pObject, B
 }
 
 struct NETWORK_FileBackedPendingRecordServiceView {
+    NETWORK_EffStreamRecordSlotTable *m_pRecordTable00;
+    int m_nRecordHeaderOffset04;
+    int m_nPayloadBaseOffset08;
+    NETWORK_FileBackedDispatchOffsets *m_pChannelThunk0c;
+    int m_nPendingSlot10;
+    int m_nReserved14;
+
     void ServicePendingFileBackedEffRecords(void);
 };
 
@@ -3962,32 +4002,33 @@ void NETWORK_FileBackedPendingRecordServiceView::ServicePendingFileBackedEffReco
     NETWORK_EffStreamRecordSlotTable *pRecordTable;
     NETWORK_FileBackedDispatchOffsets *pChannelOffsets;
     NETWORK_FileWrapperObject *pFileWrapper;
-    NETWORK_ChannelStateHeader *pChannelState;
+    NETWORK_PendingRecordChannelStateHeader *pChannelState;
     NETWORK_EffStreamRecordSlot *pSlot;
     char *pbRecordTableBase;
     int nLockResult;
-    const int cbRecordSlot = sizeof(NETWORK_EffStreamRecordSlot);
+    int cbRecordSlot;
     void *pRuntimeWindow;
     int i;
     int nSlotCount;
     int fLoadedOne;
 
-    pRecordTable = (NETWORK_EffStreamRecordSlotTable *)this;
+    pRecordTable = m_pRecordTable00;
     pbRecordTableBase = (char *)this;
-    pChannelOffsets = pRecordTable->m_pChannelThunk0c;
+    pChannelOffsets = m_pChannelThunk0c;
     ServiceView.m_pRecordTable = pRecordTable;
-    ServiceView.m_pChannelState = (NETWORK_ChannelStateHeader *)(pbRecordTableBase + pChannelOffsets->m_nChannelStateViewOffset04);
+    ServiceView.m_pChannelState = (NETWORK_PendingRecordChannelStateHeader *)(pbRecordTableBase +
+        pChannelOffsets->m_nChannelStateViewOffset04);
     ServiceView.m_pFileWrapper =
         (NETWORK_FileWrapperObject *)(pbRecordTableBase + 0xc + pChannelOffsets->m_nFileWrapperViewOffset0c);
     pChannelState = ServiceView.m_pChannelState;
-    if ((pChannelState->m_fReceiving1c == 0 && pChannelState->m_fChannelOpen24 == 0) || pChannelState->m_fPending18 == 0) {
+    if ((pChannelState->m_fReceiving1c == 0 && pChannelState->m_fChannelOpen28 == 0) || pChannelState->m_fPending18 == 0) {
         return;
     }
 
     pFileWrapper = ServiceView.m_pFileWrapper;
-    nLockResult = pFileWrapper->m_pVtable->m_pLockRange(pFileWrapper,
-                                                        pRecordTable->m_nRecordHeaderOffset04,
-                                                        pRecordTable->m_nAccumulatedStreamLength18);
+    nLockResult = LockWin32FileRange(pFileWrapper,
+                                     m_nRecordHeaderOffset04,
+                                     pRecordTable->m_nAccumulatedStreamLength18);
     if (nLockResult == 0) {
         pRuntimeWindow = 0;
         if (g_pActiveNetworkRuntimeWindow != 0) {
@@ -3997,17 +4038,17 @@ void NETWORK_FileBackedPendingRecordServiceView::ServicePendingFileBackedEffReco
         return;
     }
 
-    if (pRecordTable->m_nPendingSlot10 == -1) {
-        pFileWrapper->m_pVtable->m_pSeek(pFileWrapper, pRecordTable->m_nRecordHeaderOffset04);
-        pFileWrapper->m_pVtable->m_pRead(pFileWrapper,
-                                         (LPVOID)g_pEffTransportPacketBuffer,
-                                         pRecordTable->m_nAccumulatedStreamLength18);
-        nLockResult = pFileWrapper->m_pVtable->m_pUnlockRange(pFileWrapper,
-                                                              pRecordTable->m_nRecordHeaderOffset04,
-                                                              pRecordTable->m_nAccumulatedStreamLength18);
+    if (m_nPendingSlot10 == -1) {
+        pFileWrapper->m_pVtable->m_pSeek(pFileWrapper, m_nRecordHeaderOffset04);
+        ReadWin32FileWrapper(pFileWrapper,
+                             (LPVOID)g_pEffTransportPacketBuffer,
+                             pRecordTable->m_nAccumulatedStreamLength18);
+        nLockResult = UnlockWin32FileRange(pFileWrapper,
+                                           m_nRecordHeaderOffset04,
+                                           pRecordTable->m_nAccumulatedStreamLength18);
         if (nLockResult != 0) {
             nSlotCount = 0;
-            ((GAME_EffStream *)(unsigned long)pRecordTable->m_pVtable)
+            ((GAME_EffStream *)pRecordTable)
                 ->LoadEffStreamFromMemory((int)(unsigned long)g_pEffTransportPacketBuffer);
             fLoadedOne = 0;
             if (0 < pChannelState->m_cSlots14) {
@@ -4015,7 +4056,7 @@ void NETWORK_FileBackedPendingRecordServiceView::ServicePendingFileBackedEffReco
                     pSlot = &pRecordTable->m_pSlots[nSlotCount];
                     if (pSlot->m_wObservedMarker < pSlot->m_wCommittedMarker) {
                         if (fLoadedOne) {
-                            pRecordTable->m_nPendingSlot10 = nSlotCount;
+                            m_nPendingSlot10 = nSlotCount;
                             return;
                         }
             ((NETWORK_FileBackedRecordTableView *)this)->LoadFileBackedEffRecordPayload(nSlotCount);
@@ -4027,35 +4068,35 @@ void NETWORK_FileBackedPendingRecordServiceView::ServicePendingFileBackedEffReco
             }
         }
     } else {
+        cbRecordSlot = pRecordTable->m_pSlots->m_cbPayload;
         pFileWrapper->m_pVtable->m_pSeek(pFileWrapper,
-                                         cbRecordSlot * pRecordTable->m_nPendingSlot10 +
-                                             pRecordTable->m_nRecordHeaderOffset04);
-        pFileWrapper->m_pVtable->m_pRead(pFileWrapper,
-                                         (LPVOID)g_pEffTransportPacketBuffer,
-                                         pRecordTable->m_nAccumulatedStreamLength18);
-        nLockResult = pFileWrapper->m_pVtable->m_pUnlockRange(pFileWrapper,
-                                                              pRecordTable->m_nRecordHeaderOffset04,
-                                                              pRecordTable->m_nAccumulatedStreamLength18);
+                                         cbRecordSlot * m_nPendingSlot10 + m_nRecordHeaderOffset04);
+        ReadWin32FileWrapper(pFileWrapper,
+                             (LPVOID)g_pEffTransportPacketBuffer,
+                             pRecordTable->m_nAccumulatedStreamLength18);
+        nLockResult = UnlockWin32FileRange(pFileWrapper,
+                                           m_nRecordHeaderOffset04,
+                                           pRecordTable->m_nAccumulatedStreamLength18);
         if (nLockResult != 0) {
-            pSlot = &pRecordTable->m_pSlots[pRecordTable->m_nPendingSlot10];
+            pSlot = &pRecordTable->m_pSlots[m_nPendingSlot10];
             ((GAME_EffStream *)pSlot)->LoadEffStreamFromMemory((int)(unsigned long)g_pEffTransportPacketBuffer);
             ((NETWORK_FileBackedRecordTableView *)this)
-                ->LoadFileBackedEffRecordPayload(pRecordTable->m_nPendingSlot10);
+                ->LoadFileBackedEffRecordPayload(m_nPendingSlot10);
             pSlot->m_wObservedMarker = pSlot->m_wCommittedMarker;
-            i = pRecordTable->m_nPendingSlot10;
+            i = m_nPendingSlot10;
             nSlotCount = pChannelState->m_cSlots14;
             if (i < nSlotCount) {
                 do {
                     pSlot = &pRecordTable->m_pSlots[i];
                     if (pSlot->m_wObservedMarker < pSlot->m_wCommittedMarker) {
-                        pRecordTable->m_nPendingSlot10 = i;
+                        m_nPendingSlot10 = i;
                         break;
                     }
                     ++i;
                 } while (i < nSlotCount);
             }
             if (pChannelState->m_cSlots14 == i) {
-                pRecordTable->m_nPendingSlot10 = -1;
+                m_nPendingSlot10 = -1;
             }
         }
     }
@@ -4384,7 +4425,8 @@ static void ServiceDualSlotCompositeRecords0047B990(void *pObject) {
     ((NETWORK_FileBackedPendingRecordServiceView *)
         ((char *)pComposite + 0x2c + pOffsets->m_nRecordTableBOffset1c))
         ->ServicePendingFileBackedEffRecords();
-    ServiceEffTransportPeerEntry(pObject);
+    ((NETWORK_CompositeEffTransportVtableModel *)pObject)
+        ->ServiceEffTransportPeerEntry();
 }
 
 // FUNCTION: LEMBALL 0x00479FA0

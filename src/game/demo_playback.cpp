@@ -314,7 +314,7 @@ int *LoadBinResource(int nResourceId) {
 
     pObjectWords = (int *)AllocateVSMemBlock(0x48);
     if (pObjectWords != 0) {
-        *(void **)pObjectWords = &g_pCachedResourceObjectBaseDeleteVtable;
+        *(void **)pObjectWords = g_pCachedResourceObjectBaseDeleteVtable;
         pObjectWords[6] = 0;
         *(void **)pObjectWords = g_DEMO_BinResourceVtable;
         InitializeResourceObjectFromId(pObjectWords, nResourceId);

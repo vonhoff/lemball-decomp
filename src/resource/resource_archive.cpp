@@ -247,7 +247,7 @@ void *DeleteCachedResourceObjectBase(void *pObject, int fDelete) {
 
 // FUNCTION: LEMBALL 0x0045D040
 void InitializeTypedResourceObjectBaseVtable(void *pObject) {
-    *(void **)pObject = &g_pCachedResourceObjectBaseDeleteVtable;
+    *(void **)pObject = g_pCachedResourceObjectBaseDeleteVtable;
 }
 
 // FUNCTION: LEMBALL 0x0045E5B0

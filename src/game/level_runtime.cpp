@@ -216,8 +216,16 @@ void InitializeManagedEntitySlotTablesThunk(void *pLevelGameMode) {
     g_GAME_ManagedEntitySlotClaimBitset[0] |= g_GAME_ManagedEntitySlotBitMasks[0];
 }
 
+struct GAME_LockedRecordSlotTableView {
+    int m_cRecords;
+    int m_nReserved04;
+    int *m_apRecords08;
+
+    void ClearLockedRecordSlotPayloadFlags(void);
+};
+
 // FUNCTION: LEMBALL 0x00461310
-void ClearLockedRecordSlotPayloadFlags(int *pTable) {
+void GAME_LockedRecordSlotTableView::ClearLockedRecordSlotPayloadFlags(void) {
     int i;
     int nSlots;
     int nOffset;
@@ -225,24 +233,26 @@ void ClearLockedRecordSlotPayloadFlags(int *pTable) {
 
     nOffset = 0;
     nSlots = 0;
-    if (0 < pTable[0]) {
+    if (0 < m_cRecords) {
         do {
             nOffset += 4;
             ++nSlots;
-            pRecordSlot = *(int **)((unsigned long)pTable[2] - 4 + nOffset);
+            pRecordSlot = *(int **)((unsigned long)m_apRecords08 - 4 + nOffset);
             *(int *)((char *)pRecordSlot + 0x24) = 0;
-        } while (nSlots < pTable[0]);
+        } while (nSlots < m_cRecords);
     }
 }
 
 // FUNCTION: LEMBALL 0x0045FCC0
 void ClearPrimaryLockedRecordTablePayloadFlags(void *pPayload) {
-    ClearLockedRecordSlotPayloadFlags(*(int **)((char *)pPayload + 0x48));
+    ((GAME_LockedRecordSlotTableView *)*(int **)((char *)pPayload + 0x48))
+        ->ClearLockedRecordSlotPayloadFlags();
 }
 
 // FUNCTION: LEMBALL 0x0045FCD0
 void ClearSecondaryLockedRecordTablePayloadFlags(void *pPayload) {
-    ClearLockedRecordSlotPayloadFlags(*(int **)((char *)pPayload + 0x50));
+    ((GAME_LockedRecordSlotTableView *)*(int **)((char *)pPayload + 0x50))
+        ->ClearLockedRecordSlotPayloadFlags();
 }
 
 // FUNCTION: LEMBALL 0x00452FE0

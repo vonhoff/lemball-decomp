@@ -165,7 +165,10 @@ struct GAME_DeleteObject {
 
 struct GAME_RecordSlotTable {
     int m_cSlots;
-    void *m_apSlots[1];
+    int m_nReserved04;
+    void **m_apSlots08;
+
+    void *GetShiftedRecordSlotByPacketId(int nPacketId);
 };
 
 struct GAME_EffTransportPeerDescriptor {
@@ -272,6 +275,9 @@ struct GAME_EffTransportRuntimeWindow {
     int m_nPrimaryHandleFlags;
     int m_nSecondaryHandleCount;
     int m_nSecondaryHandleStride;
+
+    void RegisterEffTransportEventClient(void *pClient);
+    void UnregisterEffTransportEventClient(void);
 };
 
 struct GAME_EffTransportRuntimeWindowVtable {
@@ -340,14 +346,11 @@ extern int StopTcpipNetworkMessageThread(void);
 void *ConstructNetworkLobbyPeerClearCloseStream(void *pObject);
 
 // FUNCTION: LEMBALL 0x004615F0
-void *GetShiftedRecordSlotByPacketId(void *pSlotTable, int nPacketId) {
-    GAME_RecordSlotTable *pTable;
-
+void *GAME_RecordSlotTable::GetShiftedRecordSlotByPacketId(int nPacketId) {
     if (nPacketId > 2) {
         nPacketId -= 3;
     }
-    pTable = (GAME_RecordSlotTable *)pSlotTable;
-    return pTable->m_apSlots[nPacketId];
+    return m_apSlots08[nPacketId];
 }
 
 // FUNCTION: LEMBALL 0x0045F280
@@ -567,8 +570,9 @@ int HasShiftedRecordSlotPayloadForStream(void *pTransportPeer, void *pStream) {
     GAME_ShiftedRecordSlot *pSlot;
 
     pHandleOwner = (GAME_EffTransportHandleOwner *)pTransportPeer;
-    pSlot = (GAME_ShiftedRecordSlot *)GetShiftedRecordSlotByPacketId(pHandleOwner->m_pShiftedRecordSlotTable,
-                                                                     ((GAME_EffStream *)pStream)->m_nEventCode);
+    pSlot = (GAME_ShiftedRecordSlot *)
+        ((GAME_RecordSlotTable *)pHandleOwner->m_pShiftedRecordSlotTable)
+            ->GetShiftedRecordSlotByPacketId(((GAME_EffStream *)pStream)->m_nEventCode);
     return pSlot->m_fHasPayload;
 }
 
@@ -579,8 +583,9 @@ void LoadStreamFromShiftedRecordSlotAndClear(void *pTransportPeer, void *pStream
     GAME_ShiftedRecordLockVtable *pLockVtable;
 
     pHandleOwner = (GAME_EffTransportHandleOwner *)pTransportPeer;
-    pSlot = (GAME_ShiftedRecordSlot *)GetShiftedRecordSlotByPacketId(pHandleOwner->m_pShiftedRecordSlotTable,
-                                                                     ((GAME_EffStream *)pStream)->m_nEventCode);
+    pSlot = (GAME_ShiftedRecordSlot *)
+        ((GAME_RecordSlotTable *)pHandleOwner->m_pShiftedRecordSlotTable)
+            ->GetShiftedRecordSlotByPacketId(((GAME_EffStream *)pStream)->m_nEventCode);
     pLockVtable = (GAME_ShiftedRecordLockVtable *)pSlot->m_pLockVtable;
     pLockVtable->m_pLock();
     ((GAME_EffStream *)pStream)->LoadEffStreamFromMemory(pSlot->m_pSerializedPayload + 0x10);
@@ -672,24 +677,19 @@ void *ConstructNetworkLobbyPeerDirtyConfirmStream(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x00462590
-void RegisterEffTransportEventClient(void *pRuntimeWindow, void *pClient) {
-    GAME_EffTransportRuntimeWindow *pWindow;
-
-    pWindow = (GAME_EffTransportRuntimeWindow *)pRuntimeWindow;
-    pWindow->m_pSecondaryDispatchClient = pClient;
+void GAME_EffTransportRuntimeWindow::RegisterEffTransportEventClient(void *pClient) {
+    m_pSecondaryDispatchClient = pClient;
     RegisterOrderedRenderDispatchClient(g_pEffTransportSecondaryDispatchQueue, pClient, 0);
 }
 
 // FUNCTION: LEMBALL 0x004625B0
-void UnregisterEffTransportEventClient(void *pRuntimeWindow) {
-    GAME_EffTransportRuntimeWindow *pWindow;
+void GAME_EffTransportRuntimeWindow::UnregisterEffTransportEventClient(void) {
     void *pClient;
 
-    pWindow = (GAME_EffTransportRuntimeWindow *)pRuntimeWindow;
-    pClient = pWindow->m_pSecondaryDispatchClient;
+    pClient = m_pSecondaryDispatchClient;
     if (pClient != 0) {
         UnregisterOrderedRenderDispatchClient(g_pEffTransportSecondaryDispatchQueue, pClient, 0);
-        pWindow->m_pSecondaryDispatchClient = 0;
+        m_pSecondaryDispatchClient = 0;
     }
 }
 
