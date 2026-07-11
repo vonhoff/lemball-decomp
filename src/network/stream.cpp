@@ -349,6 +349,20 @@ extern "C" DWORD timeGetTime(void);
 extern void *g_pActiveNetworkRuntimeWindow;
 extern void *g_pEffTransportRuntimeService;
 extern void *g_pEffTransportScratchBuffer;
+extern void *g_pEffTransportPacketBuffer;
+extern int g_cbEffTransportMaxPacketBytes;
+
+extern void *ConstructShiftedLockedRecordSlotTable(void *pObject, int cPacketIds,
+                                                    unsigned int cbRecord);
+extern void *ConstructRangeEffTransportRecordBufferTable(void *pObject, int nFirstPacket,
+                                                          int nLastPacket, int cbPayload,
+                                                          unsigned int cbRecord);
+extern void *ConstructRingLockedRecordSlotTable(void *pObject, int cRecords,
+                                                 unsigned int cbRecord);
+extern void *ConstructRingEffTransportRecordBufferTable(void *pObject, int cRecords,
+                                                         int cbPayload, unsigned int cbRecord);
+extern void *ConstructSimpleRecordSlotTableWrapper(void *pObject, int cRecords,
+                                                    unsigned int cbRecord);
 
 extern void DestroyVSMemObjectPointerArray(void *pObjectArray);
 
@@ -585,6 +599,61 @@ void NETWORK_DualHandleEffStream::ReleaseEffStreamSecondaryHandleGroup(void) {
     }
 }
 
+// FUNCTION: LEMBALL 0x0045F930
+void NETWORK_DualHandleEffStream::ConfigureEffStreamPrimaryHandleGroup(
+    int nPacketCount, int cbPayload, int nMode) {
+    void *pHandleArray;
+    void *pHandleObject;
+
+    ReleaseEffStreamPrimaryHandleGroup();
+    pHandleArray = AllocateVSMemBlock(0x10);
+    if (pHandleArray == 0) {
+        m_pPrimaryHandleArray48 = 0;
+    } else {
+        m_pPrimaryHandleArray48 = ConstructShiftedLockedRecordSlotTable(
+            pHandleArray, nPacketCount, (unsigned int)g_cbEffTransportMaxPacketBytes);
+    }
+
+    pHandleObject = AllocateVSMemBlock(0x28);
+    if (pHandleObject == 0) {
+        m_pPrimaryHandleObject4c = 0;
+    } else {
+        m_pPrimaryHandleObject4c = ConstructRangeEffTransportRecordBufferTable(
+            pHandleObject, nPacketCount + 1, cbPayload, nMode,
+            (unsigned int)g_cbEffTransportMaxPacketBytes);
+    }
+}
+
+// FUNCTION: LEMBALL 0x0045F9B0
+void NETWORK_DualHandleEffStream::ConfigureEffStreamSecondaryHandleGroup(
+    int nPacketCount, int cbPayload) {
+    void *pHandleArray;
+    void *pHandleObject;
+
+    ReleaseEffStreamSecondaryHandleGroup();
+    pHandleArray = AllocateVSMemBlock(0x14);
+    if (pHandleArray == 0) {
+        m_pSecondaryHandleArray50 = 0;
+    } else {
+        m_pSecondaryHandleArray50 = ConstructRingLockedRecordSlotTable(
+            pHandleArray, nPacketCount, (unsigned int)g_cbEffTransportMaxPacketBytes);
+    }
+
+    pHandleObject = AllocateVSMemBlock(0x20);
+    if (pHandleObject == 0) {
+        m_pSecondaryHandleObject54 = 0;
+    } else {
+        m_pSecondaryHandleObject54 = ConstructRingEffTransportRecordBufferTable(
+            pHandleObject, nPacketCount, cbPayload,
+            (unsigned int)g_cbEffTransportMaxPacketBytes);
+    }
+
+    if (g_pEffTransportPacketBuffer == 0) {
+        g_pEffTransportPacketBuffer = AllocateVSMemBlock(
+            (unsigned int)g_cbEffTransportMaxPacketBytes);
+    }
+}
+
 // FUNCTION: LEMBALL 0x0045F820
 void *ConstructDualHandleEffStream(void *pStream, int fConstructChannelState) {
     NETWORK_DualHandleEffStream *pDualStream;
@@ -665,6 +734,20 @@ void NETWORK_TimedEffStream::ReleaseTimedEffStreamSecondaryHandles(void) {
     if (pHandleArray != 0) {
         DestroyVSMemObjectPointerArray(pHandleArray);
         FreeVSMemBlock(pHandleArray);
+    }
+}
+
+// FUNCTION: LEMBALL 0x0045FE60
+void NETWORK_TimedEffStream::ConfigureTimedEffStreamSecondaryHandle(int nPacketCount) {
+    void *pHandleArray;
+
+    ReleaseTimedEffStreamSecondaryHandles();
+    pHandleArray = AllocateVSMemBlock(0x0c);
+    if (pHandleArray == 0) {
+        m_pSecondaryHandleArray4c = 0;
+    } else {
+        m_pSecondaryHandleArray4c = ConstructSimpleRecordSlotTableWrapper(
+            pHandleArray, nPacketCount, (unsigned int)g_cbEffTransportMaxPacketBytes);
     }
 }
 

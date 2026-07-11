@@ -197,26 +197,3 @@ void SetGeometryChildEnabled(void *pGeometryChild, int fEnabled) {
     (void)pGeometryChild;
     (void)fEnabled;
 }
-
-void ScheduleNetworkRuntimeTimerEvent(void *pRuntimeWindow, int nTimerId) {
-    (void)pRuntimeWindow;
-    (void)nTimerId;
-}
-
-void ConfigureTimedEffStreamSecondaryHandle(void *pTimedStream, int cbHandleData) {
-    (void)pTimedStream;
-    (void)cbHandleData;
-}
-
-void ConfigureEffStreamSecondaryHandleGroup(void *pStream, int cbHandleData, int nMode) {
-    (void)pStream;
-    (void)cbHandleData;
-    (void)nMode;
-}
-
-void ConfigureEffStreamPrimaryHandleGroup(void *pStream, int cHandles, int cbHandleData, int nMode) {
-    (void)pStream;
-    (void)cHandles;
-    (void)cbHandleData;
-    (void)nMode;
-}

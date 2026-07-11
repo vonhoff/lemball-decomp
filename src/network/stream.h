@@ -73,6 +73,8 @@ struct NETWORK_DualHandleEffStream : NETWORK_EffStreamBase {
 
     void ReleaseEffStreamPrimaryHandleGroup(void);
     void ReleaseEffStreamSecondaryHandleGroup(void);
+    void ConfigureEffStreamPrimaryHandleGroup(int nPacketCount, int cbPayload, int nMode);
+    void ConfigureEffStreamSecondaryHandleGroup(int nPacketCount, int cbPayload);
     void DestroyDualHandleEffStream(void);
 };
 
@@ -97,6 +99,7 @@ struct NETWORK_TimedEffStream : NETWORK_EffStreamBase {
     void ReleaseTimedEffStreamPrimaryHandle(void);
     void ReleaseTimedEffStreamPrimaryHandleThunk(int nUnused0, int nUnused1, int nUnused2);
     void ReleaseTimedEffStreamSecondaryHandles(void);
+    void ConfigureTimedEffStreamSecondaryHandle(int nPacketCount);
     void InvokeTimedEffStreamServiceCallback(void *pArgument);
     NETWORK_TimedEffStream *ConstructTimedEffStream(int fConstructChannelState);
     void DestroyTimedEffStream(void);

@@ -1680,12 +1680,14 @@ extern void RestoreCompositeEffTransportVtables(int nObjectBasePlus0x30);
 struct NETWORK_FileBackedLockedWriterView {
     DWORD WriteEffStreamToLockedFile(int *pStream, int fKeepLock, int fFlush);
 };
-extern void BeginEffStreamWriteSession(void *pStream);
-extern void EndEffStreamWriteSession(void *pStream);
-extern void ScheduleNetworkRuntimeTimerEvent(void *pRuntimeWindow, int nTicks);
+struct NETWORK_RuntimeWindowBase {
+    void ScheduleNetworkRuntimeTimerEvent(unsigned int nMilliseconds);
+};
 struct GAME_EffStream {
     void ResetStateFields(void);
     int LoadEffStreamFromMemory(int nSourceBuffer);
+    void BeginEffStreamWriteSession(void);
+    void EndEffStreamWriteSession(void);
 };
 struct NETWORK_EffTransportPacketProcessor {
     int ProcessEffTransportPacketHeader(void);
@@ -3402,7 +3404,7 @@ int NETWORK_LockedEffStreamFileRangeView::WriteLockedEffStreamToFileRange(void) 
     pObject = (char *)this;
     pFileWrapper = (NETWORK_FileWrapperObject *)(pObject +
                                                  *(int *)(unsigned long)(*(int *)(pObject + 0x20) + 0x14) + 0x20);
-    BeginEffStreamWriteSession(g_pGlobalStateEff512ByteStream);
+    ((GAME_EffStream *)g_pGlobalStateEff512ByteStream)->BeginEffStreamWriteSession();
     cbStream = *(DWORD *)((char *)g_pGlobalStateEff512ByteStream + 0x18);
     dwOffset = *(DWORD *)(pObject + 0x3c);
     pFileWrapper->m_pVtable->m_pSeek(pFileWrapper, dwOffset);
@@ -3411,7 +3413,7 @@ int NETWORK_LockedEffStreamFileRangeView::WriteLockedEffStreamToFileRange(void) 
         pFileWrapper,
         (const void *)(unsigned long)(*(int *)((char *)g_pGlobalStateEff512ByteStream + 8) + 0x10),
         cbStream);
-    EndEffStreamWriteSession(g_pGlobalStateEff512ByteStream);
+    ((GAME_EffStream *)g_pGlobalStateEff512ByteStream)->EndEffStreamWriteSession();
     if (nResult != 0) {
         return UnlockWin32FileRange(pFileWrapper, dwOffset, cbStream) != 0;
     }
@@ -3696,7 +3698,7 @@ void NETWORK_FileBackedPendingRecordServiceView::ServicePendingFileBackedEffReco
         if (g_pActiveNetworkRuntimeWindow != 0) {
             pRuntimeWindow = (char *)g_pActiveNetworkRuntimeWindow - 0x10;
         }
-        ScheduleNetworkRuntimeTimerEvent(pRuntimeWindow, 0x32);
+        ((NETWORK_RuntimeWindowBase *)pRuntimeWindow)->ScheduleNetworkRuntimeTimerEvent(0x32);
         return;
     }
 
@@ -3778,7 +3780,7 @@ DWORD NETWORK_FileBackedLockedWriterView::WriteEffStreamToLockedFile(int *pStrea
     pOffsets = *(NETWORK_FileBackedDispatchOffsets **)((char *)this + 0x0c);
     pFileWrapper = (NETWORK_FileWrapperObject *)((char *)this +
                                                  0x0c + pOffsets->m_nFileWrapperViewOffset0c);
-    BeginEffStreamWriteSession(pStream);
+    ((GAME_EffStream *)pStream)->BeginEffStreamWriteSession();
     dwFileOffset = pFileWrapper->m_pVtable->m_pGetOffset(pFileWrapper);
     cbPayload = (DWORD)(pStream[7] - pStream[2]) - 0x10;
     pFileWrapper->m_pVtable->m_pGetLength(pFileWrapper);
@@ -3810,7 +3812,7 @@ DWORD NETWORK_FileBackedLockedWriterView::WriteEffStreamToLockedFile(int *pStrea
         }
     }
 
-    EndEffStreamWriteSession(pStream);
+    ((GAME_EffStream *)pStream)->EndEffStreamWriteSession();
     return cbPayload;
 }
 
