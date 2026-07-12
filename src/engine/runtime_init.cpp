@@ -215,21 +215,9 @@ char *FormatUnsignedIntToRadixString(unsigned int uValue, char *pszBuffer, unsig
 }
 
 // FUNCTION: LEMBALL 0x004585B0
-__declspec(naked) VSINIT_FormattedOutputStream *VSINIT_FormattedOutputStream::AppendCStringToStream(const char *) {
-    __asm {
-        push esi
-        mov eax, dword ptr [ecx]
-        mov esi, ecx
-        mov edx, dword ptr [eax + 4]
-        mov eax, dword ptr [esp + 8]
-        mov ecx, dword ptr [edx + esi + 1ch]
-        push eax
-        mov eax, dword ptr [ecx]
-        call dword ptr [eax + 0ch]
-        mov eax, esi
-        pop esi
-        ret 4
-    }
+VSINIT_FormattedOutputStream *VSINIT_FormattedOutputStream::AppendCStringToStream(const char *pszText) {
+    AppendCStringToFixedBufferStream(VSINIT_FORMAT_TARGET(this)->m_pDownstream, pszText);
+    return this;
 }
 
 VSINIT_FormattedOutputStream *AppendCStringToStream(VSINIT_FormattedOutputStream *pStream,
@@ -246,21 +234,9 @@ VSINIT_FormattedOutputStream *VSINIT_FormattedOutputStream::AppendIntToStream(un
 }
 
 // FUNCTION: LEMBALL 0x004585D0
-__declspec(naked) VSINIT_FormattedOutputStream *VSINIT_FormattedOutputStream::AppendCharToStreamVariant(char) {
-    __asm {
-        push esi
-        mov eax, dword ptr [ecx]
-        mov esi, ecx
-        mov edx, dword ptr [eax + 4]
-        mov al, byte ptr [esp + 8]
-        mov ecx, dword ptr [edx + esi + 1ch]
-        push eax
-        mov eax, dword ptr [ecx]
-        call dword ptr [eax + 8]
-        mov eax, esi
-        pop esi
-        ret 4
-    }
+VSINIT_FormattedOutputStream *VSINIT_FormattedOutputStream::AppendCharToStreamVariant(char ch) {
+    AppendCharToFixedBufferStream(VSINIT_FORMAT_TARGET(this)->m_pDownstream, ch);
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x004585F0
@@ -646,35 +622,14 @@ VSINIT_FixedBufferStream *ConstructFixedBufferStream(VSINIT_FixedBufferStream *p
 }
 
 // FUNCTION: LEMBALL 0x0045ADD0
-__declspec(naked) void ResetFixedBufferStream(VSINIT_FixedBufferStream *) {
-    __asm {
-        push esi
-        push edi
-        mov eax, dword ptr [ecx + 18h]
-        mov esi, ecx
-        test eax, eax
-        jz no_flush
-        mov ecx, dword ptr [esi + 4]
-        push ecx
-        call eax
-        add esp, 4
-    no_flush:
-        mov edi, dword ptr [esi + 4]
-        mov edx, dword ptr [esi + 8]
-        xor eax, eax
-        mov ecx, edx
-        shr ecx, 2
-        mov dword ptr [esi + 0ch], edi
-        mov dword ptr [esi + 10h], 0
-        mov dword ptr [esi + 14h], 8
-        rep stosd
-        mov ecx, edx
-        and ecx, 3
-        rep stosb
-        pop edi
-        pop esi
-        ret
+void __fastcall ResetFixedBufferStream(VSINIT_FixedBufferStream *pStream) {
+    if (pStream->m_pfnFlush != 0) {
+        pStream->m_pfnFlush(pStream->m_pszBuffer);
     }
+    pStream->m_pszCursor = pStream->m_pszBuffer;
+    pStream->m_cchWritten = 0;
+    pStream->m_nTabWidth = 8;
+    memset(pStream->m_pszBuffer, 0, pStream->m_cbBuffer);
 }
 
 // FUNCTION: LEMBALL 0x0045ADC0
@@ -684,10 +639,7 @@ void LEMBALL_FASTCALL DestroyFixedBufferStream(VSINIT_FixedBufferStream *pStream
 }
 
 static void DeleteFixedBufferStream(VSINIT_FixedBufferStream *pStream, int fFreeMemory) {
-    __asm {
-        mov ecx, pStream
-        call ResetFixedBufferStream
-    }
+    ResetFixedBufferStream(pStream);
     DestroyFixedBufferStream(pStream);
     if (fFreeMemory != 0) {
         FreeVSMemBlock(pStream);
@@ -713,158 +665,49 @@ static void DestroyFormattedOutputStream(VSINIT_FormattedOutputStream *pStream, 
 }
 
 // FUNCTION: LEMBALL 0x0045AE10
-__declspec(naked) void AppendCharToFixedBufferStream(VSINIT_FixedBufferStream *, char) {
-    __asm {
-        push esi
-        mov esi, ecx
-        mov cl, byte ptr [esp + 8]
-        movsx eax, cl
-        cmp eax, 9
-        jz tab
-        cmp eax, 10
-        jz newline
-        mov eax, dword ptr [esi + 0ch]
-        mov byte ptr [eax], cl
-        mov eax, dword ptr [esi + 0ch]
-        inc eax
-        mov dword ptr [esi + 0ch], eax
-        mov byte ptr [eax], 0
-        mov eax, dword ptr [esi + 10h]
-        inc eax
-        mov ecx, dword ptr [esi + 8]
-        sub ecx, eax
-        mov dword ptr [esi + 10h], eax
-        cmp ecx, 1
-        jnz finish
-        mov eax, dword ptr [esi]
-        mov ecx, esi
-        call dword ptr [eax + 4]
-        jmp finish
-    tab:
-        mov eax, dword ptr [esi + 0ch]
-        mov byte ptr [eax], 20h
-        mov eax, dword ptr [esi + 0ch]
-        inc eax
-        mov dword ptr [esi + 0ch], eax
-        mov byte ptr [eax], 0
-        mov eax, dword ptr [esi + 10h]
-        inc eax
-        mov ecx, dword ptr [esi + 8]
-        sub ecx, eax
-        mov dword ptr [esi + 10h], eax
-        cmp ecx, 1
-        jnz tab_width
-        mov eax, dword ptr [esi]
-        mov ecx, esi
-        call dword ptr [eax + 4]
-    tab_width:
-        mov eax, dword ptr [esi + 10h]
-        cdq
-        idiv dword ptr [esi + 14h]
-        test edx, edx
-        jz finish
-    tab_loop:
-        mov eax, dword ptr [esi + 0ch]
-        mov byte ptr [eax], 20h
-        mov eax, dword ptr [esi + 0ch]
-        inc eax
-        mov dword ptr [esi + 0ch], eax
-        mov byte ptr [eax], 0
-        mov eax, dword ptr [esi + 10h]
-        inc eax
-        mov ecx, dword ptr [esi + 8]
-        sub ecx, eax
-        mov dword ptr [esi + 10h], eax
-        cmp ecx, 1
-        jnz tab_next
-        mov eax, dword ptr [esi]
-        mov ecx, esi
-        call dword ptr [eax + 4]
-    tab_next:
-        mov eax, dword ptr [esi + 10h]
-        cdq
-        idiv dword ptr [esi + 14h]
-        test edx, edx
-        jnz tab_loop
-        jmp finish
-    newline:
-        mov eax, dword ptr [esi + 0ch]
-        cmp dword ptr [esi + 18h], 0
-        mov byte ptr [eax], cl
-        jz newline_no_flush
-        inc eax
-        mov dword ptr [esi + 0ch], eax
-        mov byte ptr [eax], 0
-        mov eax, dword ptr [esi + 10h]
-        inc eax
-        mov ecx, dword ptr [esi + 8]
-        sub ecx, eax
-        mov dword ptr [esi + 10h], eax
-        cmp ecx, 1
-        jnz newline_flush
-        mov eax, dword ptr [esi]
-        mov ecx, esi
-        call dword ptr [eax + 4]
-    newline_flush:
-        mov eax, dword ptr [esi]
-        mov ecx, esi
-        call dword ptr [eax + 4]
-        pop esi
-        ret 4
-    newline_no_flush:
-        inc eax
-        mov dword ptr [esi + 0ch], eax
-        mov byte ptr [eax], 0
-        mov eax, dword ptr [esi + 10h]
-        inc eax
-        mov ecx, dword ptr [esi + 8]
-        sub ecx, eax
-        mov dword ptr [esi + 10h], eax
-        cmp ecx, 1
-        jnz finish
-        mov eax, dword ptr [esi]
-        mov ecx, esi
-        call dword ptr [eax + 4]
-    finish:
-        pop esi
-        ret 4
+void AppendCharToFixedBufferStream(VSINIT_FixedBufferStream *pStream, char ch) {
+    int cSpaces;
+
+    if (ch == '\t') {
+        ch = ' ';
+    }
+    if (ch == '\n' && pStream->m_pfnFlush != 0) {
+        *pStream->m_pszCursor++ = ch;
+        *pStream->m_pszCursor = '\0';
+        ++pStream->m_cchWritten;
+        if (pStream->m_cbBuffer - pStream->m_cchWritten == 1) {
+            ResetFixedBufferStream(pStream);
+        }
+        ResetFixedBufferStream(pStream);
+        return;
+    }
+
+    *pStream->m_pszCursor++ = ch;
+    *pStream->m_pszCursor = '\0';
+    ++pStream->m_cchWritten;
+    if (pStream->m_cbBuffer - pStream->m_cchWritten == 1) {
+        ResetFixedBufferStream(pStream);
+    }
+
+    if (ch == ' ' && pStream->m_nTabWidth > 0) {
+        cSpaces = pStream->m_cchWritten % pStream->m_nTabWidth;
+        while (cSpaces != 0) {
+            *pStream->m_pszCursor++ = ' ';
+            *pStream->m_pszCursor = '\0';
+            ++pStream->m_cchWritten;
+            if (pStream->m_cbBuffer - pStream->m_cchWritten == 1) {
+                ResetFixedBufferStream(pStream);
+            }
+            cSpaces = pStream->m_cchWritten % pStream->m_nTabWidth;
+        }
     }
 }
 
 // FUNCTION: LEMBALL 0x0045AF20
-__declspec(naked) void AppendCStringToFixedBufferStream(VSINIT_FixedBufferStream *, const char *) {
-    __asm {
-        push ebx
-        push esi
-        mov ebx, dword ptr [esp + 0ch]
-        push edi
-        push ebp
-        mov edi, ebx
-        mov ebp, ecx
-        xor eax, eax
-        mov ecx, 0ffffffffh
-        repne scasb
-        not ecx
-        lea esi, [ecx - 1]
-        test esi, esi
-        jle done
-    loop_chars:
-        mov eax, dword ptr [ebp]
-        mov edi, dword ptr [eax + 8]
-        mov eax, ebx
-        mov ecx, ebp
-        inc ebx
-        mov al, byte ptr [eax]
-        push eax
-        call edi
-        dec esi
-        jnz loop_chars
-    done:
-        pop ebp
-        pop edi
-        pop esi
-        pop ebx
-        ret 4
+void AppendCStringToFixedBufferStream(VSINIT_FixedBufferStream *pStream,
+                                      const char *pszText) {
+    while (*pszText != '\0') {
+        AppendCharToFixedBufferStream(pStream, *pszText++);
     }
 }
 

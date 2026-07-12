@@ -130,6 +130,7 @@ struct NETWORK_RuntimeChannelStack {
     int m_nReserved14;
     int m_nReserved18;
     void *m_pRuntimeSideBuffer1c;
+    int m_nReserved20;
     unsigned char m_abChannelState24[0x30];
     unsigned char m_abTimedStream54[0x78];
     unsigned char m_abDualStreamcc[0x58];

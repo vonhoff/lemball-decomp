@@ -88,7 +88,7 @@ struct GAME_ResourceSignatureStringObject {
 
 extern void LEMBALL_FASTCALL ServiceNetworkLobbySelectedPeerUpdates(void *pVsnetRuntime);
 extern int __stdcall PumpMessagesAndRunFrame(void);
-extern int LEMBALL_FASTCALL ValidateResourceFileSignatureThunk(void *pMainContext);
+extern int __stdcall ValidateResourceFileSignatureThunk(void);
 extern void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile, int nLine);
 extern void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerThunk(void *pManager);
 extern void LEMBALL_FASTCALL DestroyMainGameVariantResourceMode(void *pVariantMode);
@@ -753,7 +753,7 @@ void GAME_LevelProgressState::SetUnlockedPackCap(int nPack, int nCap) {
 }
 
 // FUNCTION: LEMBALL 0x00407300
-int LEMBALL_FASTCALL ValidateResourceFileSignature(void *) {
+int __stdcall ValidateResourceFileSignature(void) {
     const unsigned char *pszKey;
     GAME_ResourceSignatureStringObject *pStringResource;
     const unsigned char *pszEncoded;
@@ -775,8 +775,9 @@ int LEMBALL_FASTCALL ValidateResourceFileSignature(void *) {
     pszEncoded = (const unsigned char *)pStringResource->m_pszText38;
     i = 0;
     while (pszEncoded[i] != '\0') {
-        g_GAME_ResourceSignatureDecodeBuffer[++i] =
+        g_GAME_ResourceSignatureDecodeBuffer[i] =
             (char)((pszEncoded[i] - 1) ^ *pszKey++);
+        ++i;
     }
     g_GAME_ResourceSignatureDecodeBuffer[i] = '\0';
 
@@ -816,10 +817,8 @@ void ShowReleaseAssertFailureAndAbort(const char *pszExpression, const char *psz
 }
 
 // FUNCTION: LEMBALL 0x00403152
-__declspec(naked) int LEMBALL_FASTCALL ValidateResourceFileSignatureThunk(void *) {
-    __asm {
-        jmp ValidateResourceFileSignature
-    }
+int __stdcall ValidateResourceFileSignatureThunk(void) {
+    return ValidateResourceFileSignature();
 }
 
 // FUNCTION: LEMBALL 0x0045B8E0
@@ -2280,17 +2279,17 @@ char *FindCdromFilePathBySuffix(const char *pszSuffix) {
     char chDrive;
     int i;
 
+    chDrive = 'A';
+    dwDrives = GetLogicalDrives();
     strcpy(szCandidatePath, g_GAME_CdromDrivePath);
     strcat(szCandidatePath, pszSuffix);
-    dwDrives = GetLogicalDrives();
-    chDrive = 'A';
     i = 0;
 
     while (i < 32) {
         if ((dwDrives & 1u) != 0) {
             szCandidatePath[0] = chDrive;
             g_GAME_CdromDrivePath[0] = chDrive;
-            if (GetDriveTypeA(szCandidatePath) == DRIVE_CDROM) {
+            if (GetDriveTypeA(g_GAME_CdromDrivePath) == DRIVE_CDROM) {
                 FILE *pFile;
 
                 pFile = OpenFileWithMode(szCandidatePath, "rb");
@@ -2408,7 +2407,8 @@ GAME_PrimaryContext *GAME_PrimaryContext::ConstructPrimaryContext(GAME_MainConte
 
     SetLevelScreenStatusIndicatorMode(2, 0);
     ((GAME_RenderDispatchQueue *)g_pSharedRenderDispatchQueue)
-        ->RegisterOrderedRenderDispatchClient(pRenderQueueNode, -0x19);
+        ->RegisterOrderedRenderDispatchClient(
+            this != 0 ? pRenderQueueNode : 0, -0x19);
 
     m_cxCompactLayout = 0x140;
     m_cyCompactLayout = 0xf0;
@@ -2627,10 +2627,8 @@ int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresent(int *pPrimaryContext)
 }
 
 // FUNCTION: LEMBALL 0x00402630
-__declspec(naked) int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresentThunk(int *) {
-    __asm {
-        jmp IsPrimaryContextWindowReadyForPresent
-    }
+int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresentThunk(int *pPrimaryContext) {
+    return IsPrimaryContextWindowReadyForPresent(pPrimaryContext);
 }
 
 // FUNCTION: LEMBALL 0x00431860
@@ -2899,16 +2897,16 @@ GAME_MainContext *GAME_MainContext::InitializeMainGameContext(const char *pszCmd
     } else {
         g_pMainResourceArchive = 0;
     }
-    if (!ValidateResourceFileSignatureThunk(pMainContext)) {
+    if (!ValidateResourceFileSignatureThunk()) {
         TriggerReleaseAssertFailure(g_GAME_IsValidResourceFileAssert, g_GAME_SourceFileName, 0x16e);
     }
 
     pPrimaryStorage = AllocateVSMemBlock(0xe4);
     if (pPrimaryStorage != 0) {
-        char abTitleBuffer[0x50];
-        short aScreenRect[4];
-        VSINIT_FixedBufferStream TitleBufferStream;
         VSINIT_FormattedOutputStream TitleStream;
+        VSINIT_FixedBufferStream TitleBufferStream;
+        short aScreenRect[4];
+        char abTitleBuffer[0x50];
 
         pMainContext->m_pPrimaryContext =
             ((GAME_PrimaryContext *)pPrimaryStorage)
@@ -2931,6 +2929,8 @@ GAME_MainContext *GAME_MainContext::InitializeMainGameContext(const char *pszCmd
         ((GAME_PrimaryContextSetRectProc)(*(void ***)pPrimaryContext)[1])(
             pPrimaryContext, 0, pCenteredRect, 0, &TitleStream);
         DestroyFixedBufferStream(&TitleBufferStream);
+        RestoreStreamFormatSubobjectVtable(&TitleStream.m_TargetState);
+        ConstructStreamFormatState(&TitleStream.m_TargetState);
     } else {
         pMainContext->m_pPrimaryContext = 0;
     }
@@ -3217,12 +3217,8 @@ void LEMBALL_FASTCALL ShutdownMainGameContext(GAME_MainContext *pMainContext) {
 }
 
 // FUNCTION: LEMBALL 0x00401839
-__declspec(naked) int RunMainGameSessionThunk(int cArgs, const char *const *ppszArgs) {
-    (void)cArgs;
-    (void)ppszArgs;
-    __asm {
-        jmp RunMainGameSession
-    }
+int RunMainGameSessionThunk(int cArgs, const char *const *ppszArgs) {
+    return RunMainGameSession(cArgs, ppszArgs);
 }
 
 // FUNCTION: LEMBALL 0x00406310

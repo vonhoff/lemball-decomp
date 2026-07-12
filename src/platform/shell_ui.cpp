@@ -213,7 +213,6 @@ char *LEMBALL_STDCALL BuildSystemInformationReportString(void) {
     unsigned char bMinorVersion;
     unsigned int cchAudioDescription;
     int cchBuffer;
-    unsigned int cchCopyDwords;
     char *pszAudioDescription;
     char *pszAudioSource;
     char *pszAudioTarget;
@@ -278,20 +277,7 @@ char *LEMBALL_STDCALL BuildSystemInformationReportString(void) {
 
     pszAudioSource = pszAudioTarget - cchAudioDescription;
     pszTarget = pszTarget - 1;
-    cchCopyDwords = cchAudioDescription >> 2;
-    while (cchCopyDwords != 0) {
-        *(u32 *)pszTarget = *(u32 *)pszAudioSource;
-        pszAudioSource += 4;
-        pszTarget += 4;
-        --cchCopyDwords;
-    }
-    cchAudioDescription &= 3;
-    while (cchAudioDescription != 0) {
-        *pszTarget = *pszAudioSource;
-        ++pszAudioSource;
-        ++pszTarget;
-        --cchAudioDescription;
-    }
+    memcpy(pszTarget, pszAudioSource, cchAudioDescription);
 
     return g_AboutSystemInfoBuffer;
 }

@@ -1260,9 +1260,6 @@ static NETWORK_TcpipCompositeControlVtableModel
     g_NETWORK_TcpipCompositeControlVtableModel;
 static void *g_NETWORK_TcpipCompositeControlVtable =
     *(void ***)&g_NETWORK_TcpipCompositeControlVtableModel;
-static void *g_NETWORK_TcpipCompositeRecoveredVtable[8] = { 0 };
-static void *g_NETWORK_TcpipCompositeVtable =
-    g_NETWORK_TcpipCompositeRecoveredVtable;
 static void **g_NETWORK_TcpipCompositeDualRecoveredVtable =
     g_NETWORK_TcpipCompositeSocketThunkVtable + 2;
 static void *g_NETWORK_TcpipCompositeOuterFatalThunkVtable[4] = {
@@ -2509,27 +2506,10 @@ void *NETWORK_TcpipEffTransportCompositeLayout::ConstructTcpipEffTransportCompos
     NETWORK_AdjustorSubobject *pSecondaryThunk;
     NETWORK_AdjustorSubobject *pTertiaryThunk;
     NETWORK_AdjustorSubobject *pQuaternaryThunk;
+    volatile unsigned int nConstructionFlags;
 
     pComposite = this;
-    {
-        /* 0049a1c8: runtime flags, host lookup, service, async control. */
-        g_NETWORK_TcpipCompositeRecoveredVtable[0] =
-            ((void **)g_NETWORK_RuntimeChannelStackVtable)[0];
-        g_NETWORK_TcpipCompositeRecoveredVtable[1] =
-            ((void **)g_NETWORK_RuntimeChannelStackVtable)[1];
-        g_NETWORK_TcpipCompositeRecoveredVtable[2] =
-            ((void **)g_NETWORK_TcpipCompositeControlVtable)[2];
-        g_NETWORK_TcpipCompositeRecoveredVtable[3] =
-            ((void **)g_NETWORK_TcpipCompositeControlVtable)[3];
-        g_NETWORK_TcpipCompositeRecoveredVtable[4] =
-            ((void **)g_NETWORK_RuntimeChannelStackVtable)[4];
-        g_NETWORK_TcpipCompositeRecoveredVtable[5] =
-            ((void **)g_NETWORK_TcpipCompositeControlVtable)[5];
-        g_NETWORK_TcpipCompositeRecoveredVtable[6] =
-            ((void **)g_NETWORK_TcpipCompositeControlVtable)[6];
-        g_NETWORK_TcpipCompositeRecoveredVtable[7] =
-            ((void **)g_NETWORK_TcpipCompositeReceiveVtable)[0];
-    }
+    nConstructionFlags = 0;
     if (fConstructEmbeddedObjects != 0) {
         pComposite->m_pOuterOffsets04 = (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipCompositeTimedStreamVtable;
         pComposite->m_pTransportOffsets20 =
@@ -2544,10 +2524,14 @@ void *NETWORK_TcpipEffTransportCompositeLayout::ConstructTcpipEffTransportCompos
             (NETWORK_ConstructionAdjustorVtable *)g_NETWORK_TcpipCompositeTimedSocketBundleVtable;
         pComposite->m_pTimedSocketBundleConstructionData158 = (void **)g_NETWORK_TcpipCompositeTimedSocketBundleDataVtable;
 
+        nConstructionFlags |= 1;
         pComposite->m_ChannelState30.ConstructEffStreamChannelState();
+        nConstructionFlags |= 2;
         ((NETWORK_TimedEffStream *)pComposite->m_abTimedStream60)->ConstructTimedEffStream(0);
+        nConstructionFlags |= 4;
         ConstructDualHandleEffStream(pComposite->m_abDualStreamD8, 0);
 
+        nConstructionFlags |= 8;
         pOffsets = pComposite->m_pSocketThunkOffsets130;
         pPrimaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x12c + pOffsets->m_nPrimaryOffset);
         pSecondaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x12c + pOffsets->m_nSecondaryOffset);
@@ -2559,9 +2543,11 @@ void *NETWORK_TcpipEffTransportCompositeLayout::ConstructTcpipEffTransportCompos
         pSecondaryThunk->m_nThisDelta = pOffsets->m_nSecondaryOffset - 0x38;
         pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 0xb0;
 
+        nConstructionFlags |= 0x10;
         ((NETWORK_SocketWindowEffChannel *)pComposite->m_abSocketWindow138)
             ->ConstructSocketWindowEffChannel(0);
 
+        nConstructionFlags |= 0x20;
         pOffsets = pComposite->m_pTimedSocketBundleOffsets154;
         pPrimaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x150 + pOffsets->m_nPrimaryOffset);
         pSecondaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x150 + pOffsets->m_nSecondaryOffset);
@@ -2573,6 +2559,7 @@ void *NETWORK_TcpipEffTransportCompositeLayout::ConstructTcpipEffTransportCompos
 
         ((NETWORK_TimedSocketEffChannelBundleLayout *)&pComposite->m_pTimedSocketBundleConstructionData158)
             ->ConstructTimedSocketEffChannelBundle(0);
+        nConstructionFlags |= 0x40;
     }
 
     ((NETWORK_RuntimeChannelStack *)this)->ConstructEffTransportRuntimeChannelStack(0);
@@ -2590,7 +2577,7 @@ void *NETWORK_TcpipEffTransportCompositeLayout::ConstructTcpipEffTransportCompos
     pTertiaryThunk->m_nThisDelta = 0;
     pQuaternaryThunk->m_nThisDelta = 0;
 
-    pComposite->m_pVtable00 = (void **)g_NETWORK_TcpipCompositeVtable;
+    pComposite->m_pVtable00 = *(void ***)&g_NETWORK_TcpipCompositeVtableModel;
     pOffsets = pComposite->m_pOuterOffsets04;
     pPrimaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + pOffsets->m_nPrimaryOffset);
     pSecondaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + pOffsets->m_nSecondaryOffset);
@@ -2622,7 +2609,7 @@ void DestroyTcpipEffTransportComposite(int nObjectBasePlus0x30) {
 
     pbObjectBase = (char *)(unsigned long)(nObjectBasePlus0x30 - 0x30);
     pComposite = (NETWORK_TcpipEffTransportCompositeLayout *)pbObjectBase;
-    pComposite->m_pVtable00 = (void **)g_NETWORK_TcpipCompositeVtable;
+    pComposite->m_pVtable00 = *(void ***)&g_NETWORK_TcpipCompositeVtableModel;
     pOffsets = pComposite->m_pOuterOffsets04;
     pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nPrimaryOffset);
     pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + pOffsets->m_nSecondaryOffset);

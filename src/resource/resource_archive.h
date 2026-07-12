@@ -40,6 +40,9 @@ public:
                                       unsigned int uTagFilter);
     void ResetResourceArchiveEntryCursor(MOGLOAD_EntrySearchState *pState,
                                          unsigned int uTagFilter);
+    void FindResourceArchiveEntryByIdRecursive(MOGLOAD_EntrySearchState *pState,
+                                               int nResourceId,
+                                               int fAllowRecursion);
     MOGLOAD_DirectoryNode *AdvanceSubdirectory(void);
     int AppendEntryAfterCursor(void);
 
@@ -64,6 +67,7 @@ public:
 class MOGLOAD_ResourceArchive {
 public:
     void *ConstructResourceArchive(const char *pszArchiveName, unsigned int cbArenaSize);
+    int LoadResourceObjectById(int nResourceId, void *pObject, int fCacheObject);
     int LoadResourceArchiveEntryDataIntoBuffer(int *plFileOffset,
                                                unsigned int *pcbBuffer,
                                                void *pUnused);

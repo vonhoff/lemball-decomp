@@ -26,7 +26,7 @@ int InitializeGlobalAudioManager(int nMusicResourceBase,
                                  void *pPrimaryContext);
 void ShutdownGlobalAudioManager(void);
 void *ConstructMciMusicBackend(void *pBackend);
-void RestoreAudioEffectBackendBaseVtable(void *pBackend);
+void __fastcall RestoreAudioEffectBackendBaseVtable(void *pBackend);
 int SelectAudioManagerBackends(void **ppEffectBackends,
                                int nMusicResourceBase,
                                int cMusicResources,

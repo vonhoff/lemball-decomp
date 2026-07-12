@@ -118,11 +118,9 @@ static DEMO_LevelDemoPlaybackConstructorAddress g_DEMO_LevelDemoPlaybackConstruc
 };
 
 // FUNCTION: LEMBALL 0x004017A3
-__declspec(naked) DEMO_LevelDemoPlaybackController *
+DEMO_LevelDemoPlaybackController *
 DEMO_LevelDemoPlaybackController::ConstructLevelDemoPlaybackControllerThunk(unsigned int uFrameInterval) {
-    __asm {
-        jmp dword ptr [g_DEMO_LevelDemoPlaybackConstructorAddress.m_pAddress]
-    }
+    return (this->*g_DEMO_LevelDemoPlaybackConstructorAddress.m_pMethod)(uFrameInterval);
 }
 
 // FUNCTION: LEMBALL 0x004091B0

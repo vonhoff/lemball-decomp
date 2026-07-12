@@ -25,7 +25,7 @@ public:
     char m_achReserved[0x4c];
 };
 
-void DestroyInvisibleMessageWindow(PLATFORM_InvisibleMessageWindow *pWindow);
+void __fastcall DestroyInvisibleMessageWindow(PLATFORM_InvisibleMessageWindow *pWindow);
 int __stdcall DebugMessageThreadMain(void);
 PLATFORM_DebugTextWindow *GetDebugTextWindow(void);
 

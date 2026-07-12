@@ -1025,70 +1025,81 @@ void NETWORK_RuntimeChannelStackReleaseFront::Release(void) {
 
 // FUNCTION: LEMBALL 0x00460350
 void *NETWORK_RuntimeChannelStack::ConstructEffTransportRuntimeChannelStack(int fConstructEmbeddedObjects) {
+    volatile unsigned int nConstructionFlags;
     int i;
-    NETWORK_RuntimeChannelStack *pStack;
-    NETWORK_TimedEffStream *pTimedStream;
-    NETWORK_DualHandleEffStream *pDualStream;
-    NETWORK_ConstructionAdjustorVtable *pEmbeddedOffsets;
-    NETWORK_ConstructionAdjustorVtable *pOuterOffsets;
-    NETWORK_AdjustorSubobject *pPrimaryThunk;
-    NETWORK_AdjustorSubobject *pSecondaryThunk;
-    NETWORK_AdjustorSubobject *pTertiaryThunk;
-    char *pbObjectBase;
 
-    pStack = this;
-    pbObjectBase = (char *)this;
+    nConstructionFlags = 0;
     if (fConstructEmbeddedObjects != 0) {
-        pStack->m_pOuterConstructionOffsets04 = (void **)g_NETWORK_RuntimeChannelStackOuterConstructionOffsets;
-        pTimedStream = (NETWORK_TimedEffStream *)pStack->m_abTimedStream54;
-        pDualStream = (NETWORK_DualHandleEffStream *)pStack->m_abDualStreamcc;
-        pTimedStream->m_pChannelStateConstructionOffsets44 = (void **)g_NETWORK_RuntimeChannelStackTimedStreamConstructionOffsets;
-        pDualStream->m_pChannelStateConstructionOffsets44 = (void **)g_NETWORK_RuntimeChannelStackDualStreamConstructionOffsets;
-        pStack->m_pEmbeddedConstructionOffsets124 = (void **)g_NETWORK_RuntimeChannelStackChannelStateConstructionOffsets;
+        m_pOuterConstructionOffsets04 = (void **)g_NETWORK_RuntimeChannelStackOuterConstructionOffsets;
+        ((NETWORK_TimedEffStream *)m_abTimedStream54)->m_pChannelStateConstructionOffsets44 =
+            (void **)g_NETWORK_RuntimeChannelStackTimedStreamConstructionOffsets;
+        ((NETWORK_DualHandleEffStream *)m_abDualStreamcc)->m_pChannelStateConstructionOffsets44 =
+            (void **)g_NETWORK_RuntimeChannelStackDualStreamConstructionOffsets;
+        m_pEmbeddedConstructionOffsets124 = (void **)g_NETWORK_RuntimeChannelStackChannelStateConstructionOffsets;
 
-        ((NETWORK_EffStreamChannelState *)pStack->m_abChannelState24)->ConstructEffStreamChannelState();
-        pTimedStream->ConstructTimedEffStream(0);
-        ConstructDualHandleEffStream(pDualStream, 0);
+        nConstructionFlags |= 1;
+        ((NETWORK_EffStreamChannelState *)m_abChannelState24)->ConstructEffStreamChannelState();
+        nConstructionFlags |= 2;
+        ((NETWORK_TimedEffStream *)m_abTimedStream54)->ConstructTimedEffStream(0);
+        nConstructionFlags |= 4;
+        ConstructDualHandleEffStream((NETWORK_DualHandleEffStream *)m_abDualStreamcc, 0);
 
-        pEmbeddedOffsets = (NETWORK_ConstructionAdjustorVtable *)pStack->m_pEmbeddedConstructionOffsets124;
-        pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x124 + pEmbeddedOffsets->m_nPrimaryOffset - 4);
-        pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x124 + pEmbeddedOffsets->m_nSecondaryOffset - 4);
-        pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x124 + pEmbeddedOffsets->m_nTertiaryOffset - 4);
-        pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackChannelStateVtable;
+        nConstructionFlags |= 8;
+        ((NETWORK_AdjustorSubobject *)((char *)this + 0x124 +
+            ((NETWORK_ConstructionAdjustorVtable *)m_pEmbeddedConstructionOffsets124)->m_nPrimaryOffset - 4))->m_pVtable =
+            g_NETWORK_RuntimeChannelStackChannelStateVtable;
         /* 00499008 and 00498fe0 are four-slot stream-prefix tables, not
          * one-slot return-value tables.  Their first four entries are the
          * shared stream prefix: true, true, write-tagged-header, noop. */
-        pSecondaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackTimedStreamVtable;
-        pTertiaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackDualStreamVtable;
-        pPrimaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nPrimaryOffset - 8;
-        pSecondaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nSecondaryOffset - 0x38;
-        pTertiaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nTertiaryOffset - 0xb0;
+        ((NETWORK_AdjustorSubobject *)((char *)this + 0x124 +
+            ((NETWORK_ConstructionAdjustorVtable *)m_pEmbeddedConstructionOffsets124)->m_nSecondaryOffset - 4))->m_pVtable =
+            g_NETWORK_RuntimeChannelStackTimedStreamVtable;
+        ((NETWORK_AdjustorSubobject *)((char *)this + 0x124 +
+            ((NETWORK_ConstructionAdjustorVtable *)m_pEmbeddedConstructionOffsets124)->m_nTertiaryOffset - 4))->m_pVtable =
+            g_NETWORK_RuntimeChannelStackDualStreamVtable;
+        ((NETWORK_AdjustorSubobject *)((char *)this + 0x124 +
+            ((NETWORK_ConstructionAdjustorVtable *)m_pEmbeddedConstructionOffsets124)->m_nPrimaryOffset - 4))->m_nThisDelta =
+            ((NETWORK_ConstructionAdjustorVtable *)m_pEmbeddedConstructionOffsets124)->m_nPrimaryOffset - 8;
+        ((NETWORK_AdjustorSubobject *)((char *)this + 0x124 +
+            ((NETWORK_ConstructionAdjustorVtable *)m_pEmbeddedConstructionOffsets124)->m_nSecondaryOffset - 4))->m_nThisDelta =
+            ((NETWORK_ConstructionAdjustorVtable *)m_pEmbeddedConstructionOffsets124)->m_nSecondaryOffset - 0x38;
+        ((NETWORK_AdjustorSubobject *)((char *)this + 0x124 +
+            ((NETWORK_ConstructionAdjustorVtable *)m_pEmbeddedConstructionOffsets124)->m_nTertiaryOffset - 4))->m_nThisDelta =
+            ((NETWORK_ConstructionAdjustorVtable *)m_pEmbeddedConstructionOffsets124)->m_nTertiaryOffset - 0xb0;
     }
 
-    pStack->m_pVtable = (void **)g_NETWORK_RuntimeChannelStackVtable;
-    pOuterOffsets = (NETWORK_ConstructionAdjustorVtable *)pStack->m_pOuterConstructionOffsets04;
-    pPrimaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 4 + pOuterOffsets->m_nPrimaryOffset - 4);
-    pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 4 + pOuterOffsets->m_nSecondaryOffset - 4);
-    pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 4 + pOuterOffsets->m_nTertiaryOffset - 4);
-    pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunk;
-    pSecondaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackTimedThunk;
-    pTertiaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackDualThunk;
-    pPrimaryThunk->m_nThisDelta = pOuterOffsets->m_nPrimaryOffset - 0x20;
-    pSecondaryThunk->m_nThisDelta = pOuterOffsets->m_nSecondaryOffset - 0x50;
-    pTertiaryThunk->m_nThisDelta = pOuterOffsets->m_nTertiaryOffset - 200;
+    m_pVtable = (void **)g_NETWORK_RuntimeChannelStackVtable;
+    ((NETWORK_AdjustorSubobject *)((char *)this + 4 +
+        ((NETWORK_ConstructionAdjustorVtable *)m_pOuterConstructionOffsets04)->m_nPrimaryOffset - 4))->m_pVtable =
+        g_NETWORK_RuntimeChannelStackFatalThunk;
+    ((NETWORK_AdjustorSubobject *)((char *)this + 4 +
+        ((NETWORK_ConstructionAdjustorVtable *)m_pOuterConstructionOffsets04)->m_nSecondaryOffset - 4))->m_pVtable =
+        g_NETWORK_RuntimeChannelStackTimedThunk;
+    ((NETWORK_AdjustorSubobject *)((char *)this + 4 +
+        ((NETWORK_ConstructionAdjustorVtable *)m_pOuterConstructionOffsets04)->m_nTertiaryOffset - 4))->m_pVtable =
+        g_NETWORK_RuntimeChannelStackDualThunk;
+    ((NETWORK_AdjustorSubobject *)((char *)this + 4 +
+        ((NETWORK_ConstructionAdjustorVtable *)m_pOuterConstructionOffsets04)->m_nPrimaryOffset - 4))->m_nThisDelta =
+        ((NETWORK_ConstructionAdjustorVtable *)m_pOuterConstructionOffsets04)->m_nPrimaryOffset - 0x20;
+    ((NETWORK_AdjustorSubobject *)((char *)this + 4 +
+        ((NETWORK_ConstructionAdjustorVtable *)m_pOuterConstructionOffsets04)->m_nSecondaryOffset - 4))->m_nThisDelta =
+        ((NETWORK_ConstructionAdjustorVtable *)m_pOuterConstructionOffsets04)->m_nSecondaryOffset - 0x50;
+    ((NETWORK_AdjustorSubobject *)((char *)this + 4 +
+        ((NETWORK_ConstructionAdjustorVtable *)m_pOuterConstructionOffsets04)->m_nTertiaryOffset - 4))->m_nThisDelta =
+        ((NETWORK_ConstructionAdjustorVtable *)m_pOuterConstructionOffsets04)->m_nTertiaryOffset - 200;
 
-    pStack->m_nReserved14 = 0;
-    pStack->m_nReserved08 = 0;
-    pStack->m_nReserved0c = 0;
-    pStack->m_pRuntimeSideBuffer1c = 0;
+    m_nReserved14 = 0;
+    m_nReserved08 = 0;
+    m_nReserved0c = 0;
+    m_pRuntimeSideBuffer1c = 0;
 
     g_pEffTransportRuntimeService =
         ((NETWORK_RuntimeWindowInterface *)g_pActiveNetworkRuntimeWindow)->CreateServiceObject();
-    pStack->m_pbRuntimeFlags10 = (unsigned char *)AllocateVSMemBlock(0x200);
+    m_pbRuntimeFlags10 = (unsigned char *)AllocateVSMemBlock(0x200);
     i = 0;
     do {
         ++i;
-        pStack->m_pbRuntimeFlags10[i - 1] = 0;
+        m_pbRuntimeFlags10[i - 1] = 0;
     } while (i < 0x200);
 
     return this;

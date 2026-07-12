@@ -1143,9 +1143,8 @@ void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntry(void *pObject);
 void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntry(void *pObject);
 
 // FUNCTION: LEMBALL 0x0040272F
-__declspec(naked) void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(void *pObject) {
-    (void)pObject;
-    __asm { jmp InitializePackagedSpriteRenderEntry }
+void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(void *pObject) {
+    return InitializePackagedSpriteRenderEntry(pObject);
 }
 
 // FUNCTION: LEMBALL 0x004394C0
@@ -1163,9 +1162,8 @@ void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntry(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x0040135C
-__declspec(naked) void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntryThunk(void *pObject) {
-    (void)pObject;
-    __asm { jmp InitializeRenderPointRectSinkEntry }
+void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntryThunk(void *pObject) {
+    return InitializeRenderPointRectSinkEntry(pObject);
 }
 
 // FUNCTION: LEMBALL 0x00439580
@@ -1185,9 +1183,8 @@ void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntry(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x00401AC8
-__declspec(naked) void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryThunk(void *pObject) {
-    (void)pObject;
-    __asm { jmp InitializeStatusIndicatorPointSinkEntry }
+void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryThunk(void *pObject) {
+    return InitializeStatusIndicatorPointSinkEntry(pObject);
 }
 
 // FUNCTION: LEMBALL 0x00439550
@@ -1309,10 +1306,8 @@ void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapperBody(void *pObject, i
 }
 
 // FUNCTION: LEMBALL 0x00401CD5
-__declspec(naked) void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapper(void *pObject, int nResourceId) {
-    (void)pObject;
-    (void)nResourceId;
-    __asm { jmp ReleaseLevelScreenVariantStateWrapperBody }
+void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapper(void *pObject, int nResourceId) {
+    ReleaseLevelScreenVariantStateWrapperBody(pObject, 0, nResourceId);
 }
 
 // FUNCTION: LEMBALL 0x00434F00
@@ -1339,11 +1334,8 @@ void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapperRangeBody(void *pObje
 }
 
 // FUNCTION: LEMBALL 0x00402F1D
-__declspec(naked) void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapperRange(void *pObject, int nFirstResourceId, int nLastResourceId) {
-    (void)pObject;
-    (void)nFirstResourceId;
-    (void)nLastResourceId;
-    __asm { jmp ReleaseLevelScreenVariantStateWrapperRangeBody }
+void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapperRange(void *pObject, int nFirstResourceId, int nLastResourceId) {
+    ReleaseLevelScreenVariantStateWrapperRangeBody(pObject, 0, nFirstResourceId, nLastResourceId);
 }
 
 #define ReleaseVariantRenderResource(pObject, nResourceId) \
@@ -1352,8 +1344,8 @@ __declspec(naked) void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapperRan
 int ReturnTrueVirtualHookBody(void);
 
 // FUNCTION: LEMBALL 0x00402FEF
-__declspec(naked) int ReturnTrueVirtualHook(void) {
-    __asm { jmp ReturnTrueVirtualHookBody }
+int ReturnTrueVirtualHook(void) {
+    return ReturnTrueVirtualHookBody();
 }
 
 // FUNCTION: LEMBALL 0x00413090

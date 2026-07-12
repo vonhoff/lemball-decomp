@@ -45,6 +45,51 @@ struct WINDOW_OWNER_REGISTRY_NODE {
     WINDOW_OWNER_REGISTRY_NODE *m_pPrevious;
 };
 
+struct WINDOW_OWNER_STATE_DISPATCH {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved01(void) = 0;
+    virtual void Reserved02(void) = 0;
+    virtual void Reserved03(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void Reserved05(void) = 0;
+    virtual void Reserved06(void) = 0;
+    virtual void Reserved07(void) = 0;
+    virtual void Reserved08(void) = 0;
+    virtual void Reserved09(void) = 0;
+    virtual void Reserved0A(void) = 0;
+    virtual void Reserved0B(void) = 0;
+    virtual void Reserved0C(void) = 0;
+    virtual void Reserved0D(void) = 0;
+    virtual void Reserved0E(void) = 0;
+    virtual void Reserved0F(void) = 0;
+    virtual void Reserved10(void) = 0;
+    virtual void Reserved11(void) = 0;
+    virtual void Reserved12(void) = 0;
+    virtual void Reserved13(void) = 0;
+    virtual void Reserved14(void) = 0;
+    virtual void Reserved15(void) = 0;
+    virtual void Reserved16(void) = 0;
+    virtual void Reserved17(void) = 0;
+    virtual void Reserved18(void) = 0;
+    virtual void Reserved19(void) = 0;
+    virtual void Reserved1A(void) = 0;
+    virtual void SetState(int nState) = 0;
+};
+
+struct RENDER_DISPATCH_QUEUE_APPEND {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved01(void) = 0;
+    virtual void Append(void *pEvent) = 0;
+};
+
+static void SetWindowOwnerState(void *pOwner, int nState) {
+    ((WINDOW_OWNER_STATE_DISPATCH *)pOwner)->SetState(nState);
+}
+
+static void AppendWindowOwnerEvent(void *pEvent) {
+    ((RENDER_DISPATCH_QUEUE_APPEND *)g_pSharedRenderDispatchQueue)->Append(pEvent);
+}
+
 // FUNCTION: LEMBALL 0x00465F80
 void LEMBALL_FASTCALL RetainRootZrleGeometryOwner(void *pOwner) {
     WINDOW_OWNER_REGISTRY_NODE *pNode;
@@ -349,12 +394,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
             pOwnerState = (int (LEMBALL_FASTCALL *)(void *))
                 (*(void ***)pOwner)[0x68 / sizeof(void *)];
             if (pOwnerState(pOwner) != 2) {
-                __asm {
-                    mov ecx, pOwner
-                    push 2
-                    mov eax, dword ptr [ecx]
-                    call dword ptr [eax + 6ch]
-                }
+                SetWindowOwnerState(pOwner, 2);
                 pOwnerCallback = (void (LEMBALL_FASTCALL *)(void *))
                     (*(void ***)pOwner)[0x54 / sizeof(void *)];
                 pOwnerCallback(pOwner);
@@ -363,12 +403,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
             pOwnerState = (int (LEMBALL_FASTCALL *)(void *))
                 (*(void ***)pOwner)[0x68 / sizeof(void *)];
             if (pOwnerState(pOwner) != 0) {
-                __asm {
-                    mov ecx, pOwner
-                    push 0
-                    mov eax, dword ptr [ecx]
-                    call dword ptr [eax + 6ch]
-                }
+                SetWindowOwnerState(pOwner, 0);
                 pOwnerCallback = (void (LEMBALL_FASTCALL *)(void *))
                     (*(void ***)pOwner)[0x4c / sizeof(void *)];
                 pOwnerCallback(pOwner);
@@ -377,12 +412,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
             pOwnerState = (int (LEMBALL_FASTCALL *)(void *))
                 (*(void ***)pOwner)[0x68 / sizeof(void *)];
             if (pOwnerState(pOwner) != 1) {
-                __asm {
-                    mov ecx, pOwner
-                    push 1
-                    mov eax, dword ptr [ecx]
-                    call dword ptr [eax + 6ch]
-                }
+                SetWindowOwnerState(pOwner, 1);
                 pOwnerCallback = (void (LEMBALL_FASTCALL *)(void *))
                     (*(void ***)pOwner)[0x50 / sizeof(void *)];
                 pOwnerCallback(pOwner);
@@ -448,13 +478,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
 
         Event.m_nType = uMessage == 0x100 ? 2 : 1;
         Event.m_lParam = lParam;
-        __asm {
-            mov ecx, g_pSharedRenderDispatchQueue
-            lea eax, Event
-            push eax
-            mov eax, dword ptr [ecx]
-            call dword ptr [eax + 8]
-        }
+        AppendWindowOwnerEvent(&Event);
         return 0;
     }
 
@@ -474,13 +498,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         Event.m_nReserved = 0;
         Event.m_dwTime = timeGetTime();
         Event.m_nPayload = nPayload;
-        __asm {
-            mov ecx, g_pSharedRenderDispatchQueue
-            lea eax, Event
-            push eax
-            mov eax, dword ptr [ecx]
-            call dword ptr [eax + 8]
-        }
+        AppendWindowOwnerEvent(&Event);
         return 0;
     }
 
@@ -521,13 +539,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         anEvent[0] = nEventCode;
         anEvent[1] = PackEventXYWords((unsigned short)xEvent, yEvent);
         anEvent[2] = 0;
-        __asm {
-            mov ecx, g_pSharedRenderDispatchQueue
-            lea eax, anEvent
-            push eax
-            mov eax, dword ptr [ecx]
-            call dword ptr [eax + 8]
-        }
+        AppendWindowOwnerEvent(anEvent);
         if (g_nMouseButtonCaptureRefCount == 0) {
             SetCapture(hWnd);
         }
@@ -545,13 +557,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         anEvent[0] = nEventCode;
         anEvent[1] = PackEventXYWords((unsigned short)xEvent, yEvent);
         anEvent[2] = 0;
-        __asm {
-            mov ecx, g_pSharedRenderDispatchQueue
-            lea eax, anEvent
-            push eax
-            mov eax, dword ptr [ecx]
-            call dword ptr [eax + 8]
-        }
+        AppendWindowOwnerEvent(anEvent);
         if (g_nMouseButtonCaptureRefCount != 0) {
             --g_nMouseButtonCaptureRefCount;
             if (g_nMouseButtonCaptureRefCount == 0) {
@@ -587,193 +593,58 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
 }
 
 // FUNCTION: LEMBALL 0x00473790
-__declspec(naked) void __cdecl ShowFatalGetLastErrorMessageAndExit(const char *) {
-    __asm {
-        sub esp, 1f4h
-        mov dword ptr [esp], 0
-        push ebx
-        push esi
-        push edi
-        _emit 0ffh
-        _emit 015h
-        _emit 0a4h
-        _emit 0c7h
-        _emit 04ah
-        _emit 000h
-        mov dword ptr [esp + 14h], 493010h
-        mov dword ptr [esp + 54h], 493000h
-        or dword ptr [esp + 0ch], 1
-        mov dword ptr [esp + 34h], 493034h
-        mov dword ptr [esp + 48h], 0
-        mov dword ptr [esp + 4ch], 0ah
-        mov edi, eax
-        push 0
-        lea ecx, [esp + 184h]
-        push 80h
-        mov byte ptr [esp + 4ch], 20h
-        mov dword ptr [esp + 44h], 14h
-        mov eax, dword ptr [493004h]
-        push ecx
-        or dword ptr [esp + 18h], 2
-        mov dword ptr [esp + eax + 60h], 493038h
-        lea ecx, [esp + 24h]
-        _emit 0e8h
-        _emit 0b3h
-        _emit 0bbh
-        _emit 0ffh
-        _emit 0ffh
-        mov ecx, dword ptr [esp + 14h]
-        mov edx, dword ptr [ecx + 4]
-        mov dword ptr [esp + edx + 14h], 493020h
-        mov ecx, dword ptr [esp + 14h]
-        lea edx, [esp + 18h]
-        mov eax, dword ptr [ecx + 8]
-        lea ecx, [esp + eax + 14h]
-        push edi
-        push 4a2ba4h
-        push edi
-        mov eax, dword ptr [ecx]
-        push 4a2b90h
-        push 0ah
-        mov ebx, dword ptr [eax + 4]
-        mov dword ptr [ebx + ecx + 1ch], edx
-        mov ecx, dword ptr [esp + 28h]
-        mov eax, dword ptr [ecx + 8]
-        lea ecx, [esp + eax + 28h]
-        mov eax, dword ptr [esp + 218h]
-        push eax
-        _emit 0e8h
-        _emit 056h
-        _emit 0b6h
-        _emit 0ffh
-        _emit 0ffh
-        mov ecx, eax
-        _emit 0e8h
-        _emit 0bfh
-        _emit 0b6h
-        _emit 0ffh
-        _emit 0ffh
-        mov ecx, eax
-        _emit 0e8h
-        _emit 048h
-        _emit 0b6h
-        _emit 0ffh
-        _emit 0ffh
-        mov ecx, eax
-        _emit 0e8h
-        _emit 0d1h
-        _emit 0b6h
-        _emit 0ffh
-        _emit 0ffh
-        mov ecx, eax
-        _emit 0e8h
-        _emit 03ah
-        _emit 0b6h
-        _emit 0ffh
-        _emit 0ffh
-        mov ecx, eax
-        _emit 0e8h
-        _emit 053h
-        _emit 0b8h
-        _emit 0ffh
-        _emit 0ffh
-        mov ecx, dword ptr [esp + 14h]
-        mov edx, dword ptr [ecx + 4]
-        lea ecx, [esp + 18h]
-        mov dword ptr [esp + edx + 14h], 493020h
-        _emit 0e8h
-        _emit 0dbh
-        _emit 0bbh
-        _emit 0ffh
-        _emit 0ffh
-        lea ecx, [esp + 180h]
-        _emit 0e8h
-        _emit 0dfh
-        _emit 0bah
-        _emit 0ffh
-        _emit 0ffh
-        lea ecx, [esp + 34h]
-        _emit 0e8h
-        _emit 066h
-        _emit 0bah
-        _emit 0ffh
-        _emit 0ffh
-        lea ecx, [esp + 180h]
-        push 0
-        push 4a2ba8h
-        push ecx
-        push 0
-        _emit 0ffh
-        _emit 015h
-        _emit 070h
-        _emit 0c9h
-        _emit 04ah
-        _emit 000h
-        push 0aaaah
-        _emit 0ffh
-        _emit 015h
-        _emit 0d8h
-        _emit 0c7h
-        _emit 04ah
-        _emit 000h
-    }
+void __cdecl ShowFatalGetLastErrorMessageAndExit(const char *pszMessage) {
+    VSINIT_FixedBufferStream Buffer;
+    VSINIT_FormattedOutputStream Message;
+    char szBuffer[0x80];
+    unsigned int dwError;
+
+    dwError = GetLastError();
+    ConstructFixedBufferStream(&Buffer, szBuffer, sizeof(szBuffer), 0);
+    ConstructFormattedOutputStream(&Message, &Buffer, 1);
+    AppendCStringToStream(&Message, pszMessage);
+    Message.AppendCharToStreamVariant('\n');
+    AppendCStringToStream(&Message, g_szFatalGetLastErrorPrefix);
+    Message.AppendSignedIntToStreamVariant((int)dwError);
+    AppendCStringToStream(&Message, g_szFatalGetLastErrorSeparator);
+    AppendHexUIntToStream(&Message, dwError);
+    RestoreStreamFormatSubobjectVtable(&Message.m_TargetState);
+    DestroyFixedBufferStream(&Buffer);
+    ConstructStreamFormatState(&Message.m_TargetState);
+    MessageBoxA(0, szBuffer, g_szFatalErrorTitle, 0);
+    ExitProcess(0xaaaa);
 }
 
 // FUNCTION: LEMBALL 0x00465110
-__declspec(naked) int RegisterBaseWindowClass(void) {
-    __asm {
-        sub esp, 28h
-        mov dword ptr [esp], 0bh
-        push ebx
-        mov eax, dword ptr [g_hApplicationInstance]
-        mov dword ptr [esp + 14h], eax
-        push esi
-        mov dword ptr [esp + 0ch], offset WindowOwnerWindowProc
-        mov dword ptr [esp + 10h], 0
-        mov dword ptr [esp + 14h], 4
-        cmp dword ptr [g_hApplicationIcon], 0
-        push edi
-        jnz have_application_icon
-        push 7f00h
-        push 0
-        call dword ptr [LoadIconA]
-        jmp have_icon
-    have_application_icon:
-        mov eax, dword ptr [g_hApplicationIcon]
-    have_icon:
-        mov dword ptr [esp + 20h], eax
-        push 4
-        mov dword ptr [esp + 28h], 0
-        call dword ptr [GetStockObject]
-        mov dword ptr [esp + 28h], eax
-        push 7f00h
-        mov eax, dword ptr [g_pszVsBaseWindowClassName]
-        push 0
-        mov dword ptr [esp + 34h], 0
-        mov dword ptr [esp + 38h], eax
-        call dword ptr [LoadCursorA]
-        mov esi, eax
-        lea eax, [esp + 0ch]
-        push eax
-        call dword ptr [RegisterClassA]
-        mov di, ax
-        push esi
-        call dword ptr [SetCursor]
-        push 1
-        call dword ptr [ShowCursor]
-        test di, di
-        jnz registration_succeeded
-        push offset g_szUnableToRegisterBaseWindowClassError
-        call ShowFatalGetLastErrorMessageAndExit
-        add esp, 4
-    registration_succeeded:
-        mov eax, 1
-        pop edi
-        pop esi
-        pop ebx
-        add esp, 28h
-        ret
+int RegisterBaseWindowClass(void) {
+    WNDCLASSA WindowClass;
+    HICON hIcon;
+    HCURSOR hCursor;
+    ATOM nClass;
+
+    WindowClass.style = 0x0b;
+    WindowClass.lpfnWndProc = WindowOwnerWindowProc;
+    WindowClass.cbClsExtra = 0;
+    WindowClass.cbWndExtra = 4;
+    WindowClass.hInstance = g_hApplicationInstance;
+    hIcon = g_hApplicationIcon;
+    if (hIcon == 0) {
+        hIcon = LoadIconA((HINSTANCE)0, (LPCSTR)0x7f00);
     }
+    WindowClass.hIcon = hIcon;
+    WindowClass.hbrBackground = (HBRUSH)GetStockObject(4);
+    WindowClass.lpszMenuName = 0;
+    WindowClass.lpszClassName = g_pszVsBaseWindowClassName;
+    hCursor = LoadCursorA((HINSTANCE)0, (LPCSTR)0x7f00);
+    WindowClass.hCursor = hCursor;
+
+    nClass = RegisterClassA(&WindowClass);
+    SetCursor(hCursor);
+    ShowCursor(1);
+    if (nClass == 0) {
+        ShowFatalGetLastErrorMessageAndExit(g_szUnableToRegisterBaseWindowClassError);
+    }
+    return 1;
 }
 
 // FUNCTION: LEMBALL 0x00465CC0

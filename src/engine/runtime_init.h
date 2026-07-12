@@ -87,7 +87,7 @@ void LEMBALL_FASTCALL RestoreStreamFormatSubobjectVtable(VSINIT_StreamFormatTarg
 void LEMBALL_FASTCALL DestroyFixedBufferStream(VSINIT_FixedBufferStream *pStream);
 void *LEMBALL_FASTCALL DeleteFixedBufferStreamReturnThis(
     VSINIT_FixedBufferStream *pStream, int nUnused, int fFreeMemory);
-void ResetFixedBufferStream(VSINIT_FixedBufferStream *pStream);
+void __fastcall ResetFixedBufferStream(VSINIT_FixedBufferStream *pStream);
 void AppendCharToFixedBufferStream(VSINIT_FixedBufferStream *pStream, char ch);
 void AppendCStringToFixedBufferStream(VSINIT_FixedBufferStream *pStream, const char *pszText);
 void *ReturnStreamArgument(void *pStream, void *pArgument);

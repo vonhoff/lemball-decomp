@@ -304,17 +304,13 @@ void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerBody(void *pManager) 
 }
 
 // FUNCTION: LEMBALL 0x00403873
-__declspec(naked) void SetVariantResourceEffectsEnabledThunk(int) {
-    __asm {
-        jmp SetVariantResourceEffectsEnabled
-    }
+void SetVariantResourceEffectsEnabledThunk(int fEnabled) {
+    SetVariantResourceEffectsEnabled(fEnabled);
 }
 
 // FUNCTION: LEMBALL 0x0040295A
-__declspec(naked) void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerThunk(void *) {
-    __asm {
-        jmp ConstructVariantResourceEntryManagerBody
-    }
+void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerThunk(void *pManager) {
+    return ConstructVariantResourceEntryManagerBody(pManager);
 }
 
 // FUNCTION: LEMBALL 0x00439B30

@@ -203,19 +203,15 @@ void ResetLevelFrameClockThunk(void) {
 }
 
 // FUNCTION: LEMBALL 0x00402423
-__declspec(naked) void ResetLevelFrameClockEntryThunk(void) {
-    __asm {
-        jmp ResetLevelFrameClockThunk
-    }
+void ResetLevelFrameClockEntryThunk(void) {
+    ResetLevelFrameClockThunk();
 }
 
 void InitializeManagedEntitySlotTablesThunk(void *pLevelGameMode);
 
 // FUNCTION: LEMBALL 0x00401E8D
-__declspec(naked) void InitializeManagedEntitySlotTablesEntryThunk(void *pLevelGameMode) {
-    __asm {
-        jmp InitializeManagedEntitySlotTablesThunk
-    }
+void InitializeManagedEntitySlotTablesEntryThunk(void *pLevelGameMode) {
+    InitializeManagedEntitySlotTablesThunk(pLevelGameMode);
 }
 
 // FUNCTION: LEMBALL 0x004165E0

@@ -1210,48 +1210,42 @@ void *LEMBALL_FASTCALL ConstructStatusIndicatorRenderClientBase(int *pRenderClie
 }
 
 // FUNCTION: LEMBALL 0x00474B50
-__declspec(naked) void LEMBALL_FASTCALL InitializeArrowCursorState(int *) {
-    __asm {
-        push esi
-        push 7f00h
-        mov dword ptr [ecx + 9ch], 0
-        mov esi, ecx
-        push 0
-        call dword ptr [LoadCursorA]
-        mov ecx, esi
-        mov dword ptr [esi + 9ch], eax
-        mov eax, dword ptr [esi]
-        call dword ptr [eax + 18h]
-        pop esi
-        ret
-    }
+void LEMBALL_FASTCALL InitializeArrowCursorState(int *pState) {
+    struct CursorState {
+        virtual void Reserved00();
+        virtual void Reserved01();
+        virtual void Reserved02();
+        virtual void Reserved03();
+        virtual void Reserved04();
+        virtual void Reserved05();
+        virtual void InitializeCursor();
+    };
+
+    pState[0x27] = 0;
+    pState[0x27] = (int)(unsigned long)LoadCursorA((HINSTANCE)0, (LPCSTR)0x7f00);
+    ((CursorState *)pState)->InitializeCursor();
 }
 
 // FUNCTION: LEMBALL 0x00472400
-void RebuildResourceGeometryRowPointerTable(VSGDI_HelperSurface *pSurface) {
-    int *pnRowTable;
-    int nRowBase;
+void LEMBALL_FASTCALL RebuildResourceGeometryRowPointerTable(VSGDI_HelperSurface *pSurface) {
     int nRowByteOffset;
     int iRowIndex;
     int iLogicalRow;
-    int cRows;
 
-    pnRowTable = (int *)(unsigned long)*(int *)((char *)pSurface + 4);
-    nRowBase = *(int *)((char *)pSurface + 0x18);
     nRowByteOffset = *(int *)((char *)pSurface + 8);
     iLogicalRow = *(int *)((char *)pSurface + 0x14);
     iRowIndex = 0;
-    cRows = (int)*(short *)((char *)pSurface + 0x2e);
-    if (0 < cRows) {
+    if (0 < *(short *)((char *)pSurface + 0x2e)) {
         do {
-            pnRowTable[iLogicalRow] = nRowBase + nRowByteOffset;
+            *(int *)(*(int *)((char *)pSurface + 4) + iLogicalRow * 4) =
+                *(int *)((char *)pSurface + 0x18) + nRowByteOffset;
             ++iLogicalRow;
             nRowByteOffset = nRowByteOffset + *(int *)((char *)pSurface + 0x1c);
-            if (cRows <= iLogicalRow) {
-                iLogicalRow = iLogicalRow - cRows;
+            if ((int)*(short *)((char *)pSurface + 0x2e) <= iLogicalRow) {
+                iLogicalRow = iLogicalRow - (int)*(short *)((char *)pSurface + 0x2e);
             }
             ++iRowIndex;
-        } while (iRowIndex < cRows);
+        } while (iRowIndex < (int)*(short *)((char *)pSurface + 0x2e));
     }
 }
 
@@ -1408,9 +1402,32 @@ void AppendPointerQueueEntry(void *pQueue, void *pEntry) {
     pDispatchQueue->m_cEntries = pDispatchQueue->m_cEntries + 1;
 }
 
-// FUNCTION: LEMBALL 0x0040381E
+// FUNCTION: LEMBALL 0x00432380
 void QueueQueuedRenderPointSink(void *pPointSink, void *pQueue) {
     AppendPointerQueueEntry(pQueue, pPointSink);
+}
+
+// FUNCTION: LEMBALL 0x00432390
+void __stdcall PromoteQueuedRenderPointSinkTargetState(void *pPointSink) {
+    int nUploadState;
+    struct TargetState {
+        virtual void Reserved0();
+        virtual void Reserved1();
+        virtual int GetUploadState();
+    };
+
+    nUploadState = ((TargetState *)*(void ***)((char *)pPointSink + 0x0c))->GetUploadState();
+    PromoteHelperUploadStateToActive(nUploadState);
+}
+
+// FUNCTION: LEMBALL 0x0040381E
+void QueueQueuedRenderPointSinkThunk(void *pPointSink, void *pQueue) {
+    QueueQueuedRenderPointSink(pPointSink, pQueue);
+}
+
+// FUNCTION: LEMBALL 0x00402FEA
+void PromoteQueuedRenderPointSinkTargetStateThunk(void *pPointSink) {
+    PromoteQueuedRenderPointSinkTargetState(pPointSink);
 }
 
 // FUNCTION: LEMBALL 0x0046D9F0

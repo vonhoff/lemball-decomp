@@ -111,7 +111,7 @@ int LockWin32FileRange(void *pFileWrapper, DWORD dwOffset, DWORD cbRange);
 int UnlockWin32FileRange(void *pFileWrapper, DWORD dwOffset, DWORD cbRange);
 void InitializeGlobalStateFileBackedEffStorageAdjustor(void *pObject);
 void *GetWin32FileWrapperOwnedPath(void *pObject);
-BYTE MapNestedEffCallbackFailureToStatus6(void *pObject);
+BYTE __fastcall MapNestedEffCallbackFailureToStatus6(void *pObject);
 void *DeleteEffChannelStateSideBufferWrapper(void *pObject, BYTE fFreeMemory);
 void ClearNestedEffChannelAsyncStatus(void *pObject);
 void AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(void *pObject);
@@ -1648,7 +1648,7 @@ public:
 };
 
 // FUNCTION: LEMBALL 0x00479860
-int HasNonzeroEff512ByteState(int nObject) {
+int LEMBALL_FASTCALL HasNonzeroEff512ByteState(int nObject) {
     NETWORK_Eff512ByteStateStream *pStream;
     int i;
 
@@ -2292,7 +2292,7 @@ int UnlockWin32FileRange(void *pFileWrapper, DWORD dwOffset, DWORD cbRange) {
 }
 
 // FUNCTION: LEMBALL 0x00479920
-void *ClearFileBackedEffChannelStateWord(void *pObject) {
+void *LEMBALL_FASTCALL ClearFileBackedEffChannelStateWord(void *pObject) {
     *(int *)pObject = 0;
     return pObject;
 }
@@ -2418,24 +2418,23 @@ NETWORK_EffStreamRecordSlot *NETWORK_EffStreamRecordSlotTable::FindNextChangedSl
 
 // FUNCTION: LEMBALL 0x00479790
 void NETWORK_EffStreamRecordSlotTable::Save(void) {
-    NETWORK_EffStreamRecordSlotTable *pTable;
     NETWORK_EffStreamRecordSlot *pSlot;
+    int nSlotOffset;
     int i;
 
-    pTable = (NETWORK_EffStreamRecordSlotTable *)this;
+    nSlotOffset = 0;
     i = 0;
-    if (pTable->m_cSlots <= 0) {
-        return;
+    if (0 < m_cSlots) {
+        pSlot = m_pSlots;
+        do {
+            pSlot = (NETWORK_EffStreamRecordSlot *)((char *)m_pSlots + nSlotOffset);
+            ((NETWORK_EffStreamBase *)pSlot)->SaveEffStreamToMemoryRange(m_nSaveRangeCursor1c, 0);
+            m_nSaveRangeCursor1c +=
+                (int)(unsigned long)pSlot->m_nReserved1c - pSlot->m_pPayloadBuffer08;
+            nSlotOffset += 0x60;
+            ++i;
+        } while (i < m_cSlots);
     }
-
-    pSlot = pTable->m_pSlots;
-    do {
-        ((NETWORK_EffStreamBase *)pSlot)->SaveEffStreamToMemoryRange(pTable->m_nSaveRangeCursor1c, 0);
-        pTable->m_nSaveRangeCursor1c +=
-            (int)(unsigned long)pSlot->m_nReserved1c - pSlot->m_pPayloadBuffer08;
-        ++i;
-        ++pSlot;
-    } while (i < pTable->m_cSlots);
 }
 
 // FUNCTION: LEMBALL 0x004797D0
@@ -2466,19 +2465,17 @@ void NETWORK_EffStreamRecordSlotTable::Load(void) {
 // FUNCTION: LEMBALL 0x00479810
 NETWORK_Eff512ByteStateStream *NETWORK_Eff512ByteStateStream::Construct() {
     int i;
-    unsigned char *pbPayload;
 
     m_pVtable = g_NETWORK_ReturnTrueVtable;
     i = 0;
     m_nReserved04 = 0;
     ((GAME_EffStream *)this)->ResetStateFields();
     m_pVtable = g_NETWORK_EffStateStreamVtable;
-    pbPayload = (unsigned char *)AllocateVSMemBlock(0x200);
-    m_pbStateBytes2c = pbPayload;
+    m_pbStateBytes2c = (unsigned char *)AllocateVSMemBlock(0x200);
     m_nBufferEnd18 += 0x200;
     do {
         ++i;
-        pbPayload[i - 1] = 0;
+        m_pbStateBytes2c[i - 1] = 0;
     } while (i < 0x200);
     return this;
 }
@@ -3256,14 +3253,14 @@ void NETWORK_DualSlotCompositeDestroyView::DestroyDualSlotTableFileBackedEffComp
 }
 
 // FUNCTION: LEMBALL 0x0047B370
-void WriteDualSlotTableFileBackedEffHeader(int nObjectBasePlus0x154) {
+void __fastcall WriteDualSlotTableFileBackedEffHeader(void *pObjectBasePlus0x154) {
     NETWORK_FileBackedMarkerOwner *pOwner;
     NETWORK_FileBackedDispatchOffsets *pOffsets;
     NETWORK_FileWrapperObject *pReadThunk;
     NETWORK_FileWrapperObject *pWriteThunk;
     unsigned long ulObjectBase;
 
-    pOwner = (NETWORK_FileBackedMarkerOwner *)(unsigned long)(nObjectBasePlus0x154 - 0x154);
+    pOwner = (NETWORK_FileBackedMarkerOwner *)((char *)pObjectBasePlus0x154 - 0x154);
     ulObjectBase = (unsigned long)pOwner;
     pOffsets = (NETWORK_FileBackedDispatchOffsets *)pOwner->m_pOffsets;
     pReadThunk = (NETWORK_FileWrapperObject *)(unsigned long)(pOffsets->m_nReadThunkOffset14 + ulObjectBase);
@@ -3276,8 +3273,7 @@ void WriteDualSlotTableFileBackedEffHeader(int nObjectBasePlus0x154) {
 // FUNCTION: LEMBALL 0x0047C040
 void AdjustAndWriteDualSlotTableFileBackedEffHeader(void *pObject) {
     WriteDualSlotTableFileBackedEffHeader(
-        (int)(unsigned long)((char *)pObject -
-                             ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta));
+        (char *)pObject - ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta);
 }
 
 // FUNCTION: LEMBALL 0x0047B9D0
@@ -3761,7 +3757,7 @@ int OpenFileBackedEffHandleWithRetry(void *pObject, int nHandle) {
 }
 
 // FUNCTION: LEMBALL 0x00479900
-BYTE MapNestedEffCallbackFailureToStatus6(void *pObject) {
+BYTE __fastcall MapNestedEffCallbackFailureToStatus6(void *pObject) {
     NETWORK_FileBackedCallbackStatusFront *pFront;
     NETWORK_FileBackedAppendOwner *pOwner;
     NETWORK_CallbackThunkObject *pNestedThunk;
@@ -4425,13 +4421,15 @@ static void CompleteDualSlotEffTransportPendingWriteBody(void *pObject,
 
 // FUNCTION: LEMBALL 0x0047FE00
 char *FindCharInCString0047FE00(char *pszText, char ch) {
-    while (*pszText != ch) {
+    for (;;) {
+        if (*pszText == ch) {
+            return pszText;
+        }
         if (*pszText == '\0') {
             return 0;
         }
         ++pszText;
     }
-    return pszText;
 }
 
 // FUNCTION: LEMBALL 0x0047B3B0

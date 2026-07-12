@@ -184,9 +184,7 @@ int CompareSwitchNameCaseInsensitive(const char *pszLeft, const char *pszRight, 
 // FUNCTION: LEMBALL 0x00406460
 int ApplyStartupCommandLineSwitches(int cArgs, const char *const *ppszArgs) {
     unsigned int cchPrefix;
-    int fContinue;
-
-    fContinue = 1;
+    int fContinue = 1;
     if (0 < cArgs) {
         do {
             const char *pszPath;

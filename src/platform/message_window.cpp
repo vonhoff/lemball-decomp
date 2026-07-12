@@ -111,11 +111,7 @@ int PLATFORM_InvisibleMessageWindow::Construct(LPCSTR pszClassName, int *pfClass
 }
 
 // FUNCTION: LEMBALL 0x0047C140
-void DestroyInvisibleMessageWindow(PLATFORM_InvisibleMessageWindow *pWindow) {
-    if (pWindow == 0) {
-        return;
-    }
-
+void __fastcall DestroyInvisibleMessageWindow(PLATFORM_InvisibleMessageWindow *pWindow) {
     *(void ***)pWindow = g_PLATFORM_InvisibleMessageWindowVTable;
     DestroyWindow(pWindow->m_hWnd);
 }

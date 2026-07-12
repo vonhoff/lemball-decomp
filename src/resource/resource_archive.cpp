@@ -229,7 +229,6 @@ static void *g_MOGLOAD_PaletteResourceVtable[15] = {
 extern void *g_pMainResourceArchive;
 extern void *FinalizeLoadedResourceObjectResult(void *pObject);
 extern void ResetTypedResourceObjectState(void *pObject);
-extern int LoadResourceObjectById(void *pArchive, int nResourceId, int pObject, int fCacheObject);
 extern void AdvanceCachedResourceObjectFrameCounters(void *pArchive);
 extern void *g_pSmallMemoryBucketTable;
 extern unsigned int g_cbSmallMemoryBucketUpperBound;
@@ -257,10 +256,6 @@ void *g_pPaletteResourceVtable = g_MOGLOAD_PaletteResourceVtable;
 extern void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile, int nLine);
 void DestroyResourceArchiveDirectoryTree(int pDirectoryNode);
 
-void FindResourceArchiveEntryByIdRecursive(MOGLOAD_DirectoryNode *pDirectory,
-                                           MOGLOAD_EntrySearchState *pState,
-                                           int nResourceId,
-                                           int fAllowRecursion);
 int FindResourceCacheEvictionCandidateIndex(void *pArchive, unsigned int cbMinimumEvict);
 
 // FUNCTION: LEMBALL 0x0045E660
@@ -309,12 +304,13 @@ void LEMBALL_FASTCALL EnsureTypedResourceObjectLoaded(void *pObject) {
     MOGLOAD_TypedResourceObjectVtable *pVtable;
     int fArchiveEntryAlreadyLoaded;
     unsigned long nArchiveEntryCallback;
-    unsigned long uLoadedBufferValue;
+    int lFileOffset;
+    unsigned int *pBuffer;
 
     pResourceObject = (MOGLOAD_StringResourceObject *)pObject;
     if (pResourceObject->m_nLoadState10 == 0) {
         pVtable = (MOGLOAD_TypedResourceObjectVtable *)pResourceObject->m_pVtable;
-        fArchiveEntryAlreadyLoaded = pVtable->m_pGetArchiveEntryField1C(pResourceObject);
+        fArchiveEntryAlreadyLoaded = pVtable->m_pGetFrameAge14(pResourceObject);
         if (fArchiveEntryAlreadyLoaded == 0) {
             if (pResourceObject->m_nReserved04 == 0) {
                 if (pResourceObject->m_cbResourceData28 == 0) {
@@ -323,17 +319,17 @@ void LEMBALL_FASTCALL EnsureTypedResourceObjectLoaded(void *pObject) {
                         ->CopyBufferIntoTypedResourceObjectAndParse(
                             0, (unsigned int)(unsigned long)&pResourceObject->m_pszText38, 0);
                 } else {
-                    uLoadedBufferValue = (unsigned long)pResourceObject->m_pszText38;
+                    lFileOffset = pResourceObject->m_lResourceOffset2C;
+                    pBuffer = (unsigned int *)&pResourceObject->m_pszText38;
                     if (((MOGLOAD_ResourceArchive *)g_pMainResourceArchive)
                             ->LoadResourceArchiveEntryDataIntoBuffer(
-                                &pResourceObject->m_lResourceOffset2C,
-                                (unsigned int *)&uLoadedBufferValue,
+                                &lFileOffset,
+                                pBuffer,
                                 pResourceObject) != 0) {
-                        pResourceObject->m_pszText38 = (char *)uLoadedBufferValue;
                         ((MOGLOAD_TypedResourceObjectCopyInterface *)pResourceObject)
                             ->CopyBufferIntoTypedResourceObjectAndParse(
-                                (unsigned int *)uLoadedBufferValue,
-                                (unsigned int)(unsigned long)&pResourceObject->m_pszText38,
+                                (unsigned int *)(unsigned long)*pBuffer,
+                                (unsigned int)(unsigned long)pBuffer,
                                 pResourceObject->m_cbResourceData28);
                     }
                 }
@@ -985,14 +981,14 @@ next_object:
 }
 
 // FUNCTION: LEMBALL 0x0045C9D0
-int FindReusableResourceCacheSlotIndex(MOGLOAD_ResourceArchive *pArchive) {
-    MOGLOAD_StringResourceObject **ppCachedObjects;
-    int iSlot;
+int LEMBALL_FASTCALL FindReusableResourceCacheSlotIndex(MOGLOAD_ResourceArchive *pArchive) {
     int nResult;
+    int iSlot;
+    MOGLOAD_StringResourceObject **ppCachedObjects;
 
     nResult = -1;
     iSlot = 0;
-    if (pArchive->m_cCachedResourceObjects < 1) {
+    if (pArchive->m_cCachedResourceObjects <= 0) {
         nResult = 0;
     } else {
         ppCachedObjects = pArchive->m_ppCachedResourceObjects;
@@ -1035,35 +1031,33 @@ int LEMBALL_STDCALL AttachResourceEntryToObject(
 }
 
 // FUNCTION: LEMBALL 0x0045C2D0
-void FindResourceArchiveEntryByIdRecursive(MOGLOAD_DirectoryNode *pDirectory,
-                                          MOGLOAD_EntrySearchState *pState,
-                                          int nResourceId,
-                                          int fAllowRecursion) {
+void MOGLOAD_DirectoryNode::FindResourceArchiveEntryByIdRecursive(
+    MOGLOAD_EntrySearchState *pState, int nResourceId, int fAllowRecursion) {
     MOGLOAD_DirectoryNode *pChildDirectory;
     long iSavedSubdirectoryCursorIndex;
     MOGLOAD_EntryRecord *pSavedSubdirectoryCursorEntry;
 
     (void)fAllowRecursion;
-    pDirectory->ResetResourceArchiveEntryCursor(pState, (unsigned int)-1);
+    ResetResourceArchiveEntryCursor(pState, (unsigned int)-1);
     while (pState->m_pEntry != 0 && (int)pState->m_pEntry->m_uResourceId != nResourceId) {
-        pDirectory->FindNextResourceArchiveEntry(pState, (unsigned int)-1);
+        FindNextResourceArchiveEntry(pState, (unsigned int)-1);
     }
 
     if (pState->m_pEntry == 0) {
-        iSavedSubdirectoryCursorIndex = pDirectory->m_iSubdirectoryCursorIndex;
-        pSavedSubdirectoryCursorEntry = pDirectory->m_pSubdirectoryCursorEntry;
-        pDirectory->m_iSubdirectoryCursorIndex = pDirectory->m_iSubdirectorySavedIndex;
-        pDirectory->m_pSubdirectoryCursorEntry = pDirectory->m_pSubdirectorySavedEntry;
-        pDirectory->m_iSubdirectoryCursorIndex = -1;
+        iSavedSubdirectoryCursorIndex = m_iSubdirectoryCursorIndex;
+        pSavedSubdirectoryCursorEntry = m_pSubdirectoryCursorEntry;
+        m_iSubdirectoryCursorIndex = m_iSubdirectorySavedIndex;
+        m_pSubdirectoryCursorEntry = m_pSubdirectorySavedEntry;
+        m_iSubdirectoryCursorIndex = -1;
         while (pState->m_pEntry == 0) {
-            pChildDirectory = pDirectory->AdvanceSubdirectory();
+            pChildDirectory = AdvanceSubdirectory();
             if (pChildDirectory == 0) {
                 break;
             }
-            FindResourceArchiveEntryByIdRecursive(pChildDirectory, pState, nResourceId, fAllowRecursion);
+            pChildDirectory->FindResourceArchiveEntryByIdRecursive(pState, nResourceId, fAllowRecursion);
         }
-        pDirectory->m_iSubdirectoryCursorIndex = iSavedSubdirectoryCursorIndex;
-        pDirectory->m_pSubdirectoryCursorEntry = pSavedSubdirectoryCursorEntry;
+        m_iSubdirectoryCursorIndex = iSavedSubdirectoryCursorIndex;
+        m_pSubdirectoryCursorEntry = pSavedSubdirectoryCursorEntry;
         return;
     }
 }
@@ -1443,7 +1437,8 @@ void InitializeResourceObjectFromId(void *pObject, int nResourceId) {
 
     pResourceObject = (MOGLOAD_StringResourceObject *)pObject;
     ResetTypedResourceObjectState(pResourceObject);
-    if (LoadResourceObjectById(g_pMainResourceArchive, nResourceId, (int)(unsigned long)pResourceObject, 1) != 0) {
+    if (((MOGLOAD_ResourceArchive *)g_pMainResourceArchive)
+            ->LoadResourceObjectById(nResourceId, pResourceObject, 1) != 0) {
         pResourceObject->m_nResourceId30 = nResourceId;
         ppVtable = pResourceObject->m_pVtable;
         ((void (*)())ppVtable[2])();
@@ -1500,32 +1495,28 @@ void *FinalizeLoadedResourceObjectResult(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x0045CB80
-int LoadResourceObjectById(void *pArchive, int nResourceId, int pObject, int fCacheObject) {
-    MOGLOAD_ResourceArchive *pResourceArchive;
+int MOGLOAD_ResourceArchive::LoadResourceObjectById(int nResourceId, void *pObject, int fCacheObject) {
     int iSlot;
     MOGLOAD_StringResourceObject *pCachedObject;
     MOGLOAD_EntrySearchState state;
 
-    pResourceArchive = (MOGLOAD_ResourceArchive *)pArchive;
-    state.m_iIndex = 0;
-    state.m_pEntry = 0;
-    FindResourceArchiveEntryByIdRecursive(pResourceArchive->m_pCurrentDirectory, &state, nResourceId, fCacheObject);
+    m_pCurrentDirectory->FindResourceArchiveEntryByIdRecursive(&state, nResourceId, fCacheObject);
     if (state.m_pEntry == 0) {
         return 0;
     }
 
-    iSlot = FindReusableResourceCacheSlotIndex(pResourceArchive);
-    pCachedObject = pResourceArchive->m_ppCachedResourceObjects[iSlot];
+    iSlot = FindReusableResourceCacheSlotIndex(this);
+    pCachedObject = m_ppCachedResourceObjects[iSlot];
     if (pCachedObject != 0) {
         ((MOGLOAD_DeleteResourceProc)pCachedObject->m_pVtable[0])(
             pCachedObject, 0, 1);
-        pResourceArchive->m_ppCachedResourceObjects[iSlot] = 0;
-        --pResourceArchive->m_cCachedResourceObjects;
+        m_ppCachedResourceObjects[iSlot] = 0;
+        --m_cCachedResourceObjects;
     }
 
-    pResourceArchive->m_ppCachedResourceObjects[iSlot] = (MOGLOAD_StringResourceObject *)(unsigned long)pObject;
-    ++pResourceArchive->m_cCachedResourceObjects;
-    return AttachResourceEntryToObject((MOGLOAD_StringResourceObject *)(unsigned long)pObject,
+    m_ppCachedResourceObjects[iSlot] = (MOGLOAD_StringResourceObject *)pObject;
+    ++m_cCachedResourceObjects;
+    return AttachResourceEntryToObject((MOGLOAD_StringResourceObject *)pObject,
                                        (int)state.m_iIndex,
                                        state.m_pEntry);
 }

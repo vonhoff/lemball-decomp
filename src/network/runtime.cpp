@@ -357,7 +357,7 @@ struct NETWORK_ConnectRequestPeerKey {
 
 struct NETWORK_ChannelOwnerVtable {
     short (*m_pAllocatePort)(void *);
-    void (*m_pReleasePort)(DWORD);
+    void (*m_pReleasePort)(short);
     void *m_pReserved08;
     int (*m_pBindRuntimeKey)(void *, int);
     void (*m_pShutdown)(void *);
@@ -425,7 +425,6 @@ struct NETWORK_EndpointState {
     NETWORK_EffTransportHandleGroup m_HandleGroup;
     int m_fPrimaryHandleActive;
     int m_fSecondaryHandleActive;
-    char m_abUnknown18[0x0c];
     short m_nAssignedPort;
 };
 
@@ -979,6 +978,29 @@ struct NETWORK_EffTransportRuntimeState {
     void UnlinkAndDeleteEffTransportPeer(int nPeer);
 };
 
+struct NETWORK_EffTransportRuntimeOwnerDispatch {
+    virtual void Slot00(void) = 0;
+    virtual void Slot04(void) = 0;
+    virtual void Slot08(void) = 0;
+    virtual void Slot0C(void) = 0;
+    virtual void ShutdownOwnerState(void) = 0;
+    virtual void Slot14(void) = 0;
+    virtual void LockPeerList(void) = 0;
+    virtual void UnlockPeerList(void) = 0;
+};
+
+struct NETWORK_ChannelOwnerDispatch {
+    virtual short AllocatePort(void *pBinding) = 0;
+    virtual void ReleasePort(short nPort) = 0;
+    virtual void Slot08(void) = 0;
+    virtual int BindRuntimeKey(void *pKey, int nMode) = 0;
+    virtual void Shutdown(void) = 0;
+    virtual void Slot14(void) = 0;
+    virtual void LockPeerList(void) = 0;
+    virtual void UnlockPeerList(void) = 0;
+    virtual int AllocatePeer(void) = 0;
+};
+
 struct NETWORK_EffTransportRuntimeStateVtable {
     void *m_pReserved00;
     void *(NETWORK_EffTransportRuntimeState::*m_pDelete)(BYTE);
@@ -1179,6 +1201,8 @@ static int g_nEffTransportVersionMinor = 9;
 static int g_nTcpipWsaError = 0;
 static int g_nTcpipMaxUdpDatagram = 0;
 static const char g_szEffTransportBroadcastPrefix[] = "ViSOS (VSNET v";
+static const char g_szEffTransportVersionSeparator[] = ".";
+static const char g_szEffTransportVersionSpace[] = " ";
 static const char g_szEffTransportBroadcastSuffix[] = ") is Broadcasting.";
 char *g_pszFileBasedNetworkLocalHostName = 0;
 int g_cbEffTransportBroadcastStatusPayload = 0;
@@ -2204,7 +2228,6 @@ int NETWORK_PeerPayloadSender::SendEffStreamPayloadWithTransportHeader(int nStre
     NETWORK_PeerPayloadSenderRuntimeStateView *pRuntimeState;
     NETWORK_EffTransportPacketHeader *pHeader;
     NETWORK_EffStreamPayloadState *pPayload;
-    void *pvPayload;
     int cbPayload;
 
     pSender = (NETWORK_PeerPayloadSenderState *)this;
@@ -2220,7 +2243,6 @@ int NETWORK_PeerPayloadSender::SendEffStreamPayloadWithTransportHeader(int nStre
     }
 
     pHeader = (NETWORK_EffTransportPacketHeader *)(unsigned long)pSender->m_pPacketHeader2c;
-    pvPayload = (void *)(unsigned long)pPayload->m_pPayloadBuffer08;
     cbPayload = pPayload->m_nWriteCursor1c - pPayload->m_pPayloadBuffer08;
     pHeader->m_cbPayload04 = cbPayload;
     pHeader->m_nStreamEvent08 = (unsigned short)pPayload->m_nEventCode04;
@@ -2238,8 +2260,10 @@ int NETWORK_PeerPayloadSender::SendEffStreamPayloadWithTransportHeader(int nStre
             ++pSender->m_wUnreliableSequence32;
             pHeader->m_wSequence0a = pSender->m_wUnreliableSequence32;
             pHeader->m_fReliable0e = 0;
-            ((NETWORK_EffStreamBase *)this)->SaveEffStreamToMemoryRange((int)(unsigned long)pvPayload, 0);
-            cbPayload = ((NETWORK_PeerPayloadSender *)pSender)->SendPayload(pvPayload, pHeader->m_cbPayload04);
+            ((NETWORK_EffStreamBase *)this)->SaveEffStreamToMemoryRange(
+                pPayload->m_pPayloadBuffer08, 0);
+            cbPayload = ((NETWORK_PeerPayloadSender *)pSender)->SendPayload(
+                (void *)(unsigned long)pPayload->m_pPayloadBuffer08, pHeader->m_cbPayload04);
         } else {
             ++pSender->m_wReliableSequence30;
             pHeader->m_wSequence0a = pSender->m_wReliableSequence30;
@@ -2257,15 +2281,13 @@ void NETWORK_ChannelOwnerObject::ClearEffTransportSendGate(void) {
 }
 
 // FUNCTION: LEMBALL 0x00460260
-__declspec(naked) void NETWORK_EffTransportPendingWriteState::Clear(void *) {
-    __asm {
-        cmp dword ptr [ecx-01ch], -1
-        je  short clear_pending_write_done
-        mov eax, dword ptr [ecx-024h]
-        mov dword ptr [ecx-01ch], -1
-        mov dword ptr [eax+028h], 0
-clear_pending_write_done:
-        ret 4
+void NETWORK_EffTransportPendingWriteState::Clear(void *) {
+    int *pnOwnerBusy;
+
+    if (*(int *)((char *)this - 0x1c) != -1) {
+        pnOwnerBusy = *(int **)((char *)this - 0x24);
+        *(int *)((char *)this - 0x1c) = -1;
+        pnOwnerBusy[0x28 / sizeof(int)] = 0;
     }
 }
 
@@ -2966,7 +2988,6 @@ void *DeleteEffTransportRuntimeGlobalsWrapper(void *pObject, BYTE fFreeMemory) {
 // FUNCTION: LEMBALL 0x00461E10
 void NETWORK_EffTransportRuntimeState::ReleaseEffTransportRuntimeOwnerState(void) {
     NETWORK_EffTransportRuntimeState *pState;
-    NETWORK_ChannelOwnerObject *pOwner;
     NETWORK_EffTransportPeer *pPeer;
     NETWORK_EffTransportPeer *pNextPeer;
     NETWORK_TransportEndpointSlot *pEndpointSlot;
@@ -2981,13 +3002,12 @@ void NETWORK_EffTransportRuntimeState::ReleaseEffTransportRuntimeOwnerState(void
         return;
     }
 
-    pOwner = (NETWORK_ChannelOwnerObject *)pState->m_pActiveChannelOwner;
     pState->m_fTransportInitialized = 0;
     pState->m_fRuntimeActive = 0;
 
     pPeer = (NETWORK_EffTransportPeer *)pState->m_pFirstPeer;
     if (pPeer != 0) {
-        pOwner->m_pVtable->m_pLockPeerList(this);
+        ((NETWORK_EffTransportRuntimeOwnerDispatch *)pState)->LockPeerList();
         while (pPeer != 0) {
             pNextPeer = pPeer->m_pNext;
             pEndpointSlot = (NETWORK_TransportEndpointSlot *)((char *)pPeer + pPeer->m_pOffsets->m_nEndpointStateSlotOffset);
@@ -3002,10 +3022,11 @@ void NETWORK_EffTransportRuntimeState::ReleaseEffTransportRuntimeOwnerState(void
             }
             pPeer = pNextPeer;
             if (nAssignedPort != -1) {
-                pOwner->m_pVtable->m_pReleasePort((DWORD)nAssignedPort);
+                ((NETWORK_ChannelOwnerDispatch *)pState->m_pActiveChannelOwner)
+                    ->ReleasePort(nAssignedPort);
             }
         }
-        pOwner->m_pVtable->m_pUnlockPeerList(this);
+        ((NETWORK_EffTransportRuntimeOwnerDispatch *)pState)->UnlockPeerList();
     }
 
     if (pState->m_pActiveChannelOwner != 0) {
@@ -3058,7 +3079,7 @@ void NETWORK_EffTransportRuntimeState::ReleaseEffTransportRuntimeOwnerState(void
         ((NETWORK_DeleteObject *)g_pEffTransportFailedConnectControlStream)->m_pVtable->m_pDelete(1);
     }
     g_pEffTransportFailedConnectControlStream = 0;
-    pOwner->m_pVtable->m_pShutdown(this);
+    ((NETWORK_EffTransportRuntimeOwnerDispatch *)pState)->ShutdownOwnerState();
 }
 
 // FUNCTION: LEMBALL 0x00460E40
@@ -3268,27 +3289,26 @@ void NETWORK_EffTransportPeer::ConfigureEffTransportConnectHostString(void *pHos
 
 // FUNCTION: LEMBALL 0x00460650
 void NETWORK_EffTransportPeer::PrepareEffTransportBroadcastStatusPayload(char *pszHostName) {
-    NETWORK_HandleGroupAdjustorSlot *pAdjustorSlot;
-    char szNumber[16];
+    NETWORK_HandleGroupAdjustor *pAdjustor;
     char *pszTarget;
     int cbText;
 
-    pAdjustorSlot =
-        (NETWORK_HandleGroupAdjustorSlot *)((char *)this + m_pOffsets->m_nHandleGroupAdjustorSlotOffset);
-    ((NETWORK_DualHandleEffStream *)((char *)&pAdjustorSlot->m_Adjustor +
-                                     pAdjustorSlot->m_Adjustor.m_pOffsets->m_nHandleStreamOffset))
+    pAdjustor = (NETWORK_HandleGroupAdjustor *)
+        ((char *)this + m_pOffsets->m_nHandleGroupAdjustorSlotOffset + 4);
+    ((NETWORK_DualHandleEffStream *)((char *)pAdjustor +
+                                     pAdjustor->m_pOffsets->m_nHandleStreamOffset))
         ->ConfigureEffStreamPrimaryHandleGroup(3, 3, 0);
-    ((NETWORK_TimedEffStream *)((char *)&pAdjustorSlot->m_Adjustor +
-                                pAdjustorSlot->m_Adjustor.m_pOffsets->m_nTimedStreamOffset))
+    ((NETWORK_TimedEffStream *)((char *)pAdjustor +
+                                pAdjustor->m_pOffsets->m_nTimedStreamOffset))
         ->ReleaseTimedEffStreamPrimaryHandle();
 
-    pAdjustorSlot =
-        (NETWORK_HandleGroupAdjustorSlot *)((char *)this + m_pOffsets->m_nHandleGroupAdjustorSlotOffset);
-    ((NETWORK_DualHandleEffStream *)((char *)&pAdjustorSlot->m_Adjustor +
-                                     pAdjustorSlot->m_Adjustor.m_pOffsets->m_nHandleStreamOffset))
+    pAdjustor = (NETWORK_HandleGroupAdjustor *)
+        ((char *)this + m_pOffsets->m_nHandleGroupAdjustorSlotOffset + 4);
+    ((NETWORK_DualHandleEffStream *)((char *)pAdjustor +
+                                     pAdjustor->m_pOffsets->m_nHandleStreamOffset))
         ->ConfigureEffStreamSecondaryHandleGroup(1, 0);
-    ((NETWORK_TimedEffStream *)((char *)&pAdjustorSlot->m_Adjustor +
-                                pAdjustorSlot->m_Adjustor.m_pOffsets->m_nTimedStreamOffset))
+    ((NETWORK_TimedEffStream *)((char *)pAdjustor +
+                                pAdjustor->m_pOffsets->m_nTimedStreamOffset))
         ->ConfigureTimedEffStreamSecondaryHandle(1);
 
     if (g_pszEffTransportBroadcastStatusPayload == 0) {
@@ -3296,14 +3316,16 @@ void NETWORK_EffTransportPeer::PrepareEffTransportBroadcastStatusPayload(char *p
         pszTarget = g_pszEffTransportBroadcastStatusPayload + 0x10;
 
         strcpy(pszTarget, g_szEffTransportBroadcastPrefix);
-        FormatSignedIntToRadixString(g_nEffTransportVersionMajor, szNumber, 10);
-        strcat(pszTarget, szNumber);
-        strcat(pszTarget, ".");
-        FormatSignedIntToRadixString(g_nEffTransportVersionMinor, szNumber, 10);
-        strcat(pszTarget, szNumber);
-        strcat(pszTarget, " ");
-        strcat(pszTarget, pszHostName);
-        strcat(pszTarget, g_szEffTransportBroadcastSuffix);
+        FormatSignedIntToRadixString(g_nEffTransportVersionMajor,
+                                     pszTarget + strlen(pszTarget), 10);
+        *(unsigned short *)(pszTarget + strlen(pszTarget)) =
+            *(const unsigned short *)g_szEffTransportVersionSeparator;
+        FormatSignedIntToRadixString(g_nEffTransportVersionMinor,
+                                     pszTarget + strlen(pszTarget), 10);
+        *(unsigned short *)(pszTarget + strlen(pszTarget)) =
+            *(const unsigned short *)g_szEffTransportVersionSpace;
+        strcpy(pszTarget + strlen(pszTarget), pszHostName);
+        strcpy(pszTarget + strlen(pszTarget), g_szEffTransportBroadcastSuffix);
 
         cbText = (int)strlen(pszTarget);
         g_cbEffTransportBroadcastStatusPayload = cbText;

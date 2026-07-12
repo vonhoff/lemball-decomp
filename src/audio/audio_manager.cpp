@@ -104,6 +104,7 @@ struct AUDIO_DirectSoundEffectBackend {
 
     AUDIO_DirectSoundEffectBackend *ConstructDirectSoundEffectBackend(
         int cEffectResources, int nCooperativeLevel);
+    void PlayDirectSoundEffectInstance(int nEffectInstanceId, int nBufferSlot);
 };
 
 struct AUDIO_DynamicStringEntry {
@@ -123,6 +124,31 @@ struct AUDIO_MciMusicBackend : AUDIO_DynamicStringEntry {
     int m_nPausedTrackPosition;
     HWND m_hNotificationWindow;
     AUDIO_MciMusicBackend *ConstructMciMusicBackend(void);
+};
+
+struct AUDIO_StringResourceObjectView {
+    virtual void Slot00(void) = 0;
+    virtual void Slot04(void) = 0;
+    virtual void Slot08(void) = 0;
+    virtual void Slot0C(void) = 0;
+    virtual void Slot10(void) = 0;
+    virtual void Slot14(void) = 0;
+    virtual void Slot18(void) = 0;
+    virtual void PrepareStringResource(void) = 0;
+    int m_nReserved04;
+    int m_nLockCount08;
+    int m_cReferences;
+    int m_nLoadState10;
+    int m_nReserved14;
+    int m_nReserved18;
+    int m_nReserved1C;
+    int m_nReserved20;
+    int m_nReserved24;
+    int m_cbResourceData28;
+    int m_lResourceOffset2C;
+    int m_nResourceId30;
+    unsigned int *m_padwResourceDescriptor34;
+    char *m_pszText38;
 };
 
 struct AUDIO_MciOpenParms {
@@ -184,14 +210,13 @@ int ResetAndCloseWaveOutEffectDevice0047CC20(void *pBackend);
 int IsWaveOutEffectInstanceAvailable0047CDD0(void *pBackend);
 int ReturnOneWaveOutBackendValue0047CDF0(void *pBackend);
 void DestroyDirectSoundEffectBackend(void *pBackend);
-char *GetDirectSoundEffectBackendDescription(AUDIO_DirectSoundEffectBackend *pBackend);
+char *__fastcall GetDirectSoundEffectBackendDescription(AUDIO_DirectSoundEffectBackend *pBackend);
 int CreateDirectSoundEffectInstance(void *pBackend, void *pPatchResource, int *pnEffectInstanceId, int nFlags);
 int FreeDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId);
 int ReleaseAllDirectSoundEffectInstances(void *pBackend);
 void PlayDirectSoundEffectInstanceWithMappedVolume(void *pBackend, int nEffectInstanceId, unsigned char nVolume,
                                                    int fLoopEnabled);
 void PauseDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId, int nBufferSlot);
-void PlayDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId, int nBufferSlot);
 void *LEMBALL_FASTCALL DeleteDirectSoundEffectBackend(
     AUDIO_DirectSoundEffectBackend *pBackend, int nUnused, int fDelete);
 void PrepareMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle, int nMusicResourceId);
@@ -1297,7 +1322,7 @@ AUDIO_DirectSoundEffectBackend *AUDIO_DirectSoundEffectBackend::ConstructDirectS
 }
 
 // FUNCTION: LEMBALL 0x0047E000
-char *GetDirectSoundEffectBackendDescription(AUDIO_DirectSoundEffectBackend *pBackend) {
+char *__fastcall GetDirectSoundEffectBackendDescription(AUDIO_DirectSoundEffectBackend *pBackend) {
     if (pBackend->m_fDeviceAvailable == 1) {
         return (char *)"Direct Sound Device";
     }
@@ -1407,8 +1432,9 @@ void PauseDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId, int n
 }
 
 // FUNCTION: LEMBALL 0x0047E840
-void PlayDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId, int nBufferSlot) {
-    g_AUDIO_PlayBufferSlotProc(*(void **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4),
+void AUDIO_DirectSoundEffectBackend::PlayDirectSoundEffectInstance(int nEffectInstanceId,
+                                                                   int nBufferSlot) {
+    g_AUDIO_PlayBufferSlotProc(*(void **)(*(int *)((char *)this + 0x50) + nEffectInstanceId * 4),
                                         nBufferSlot);
 }
 
@@ -1482,7 +1508,7 @@ AUDIO_MciMusicBackend *AUDIO_MciMusicBackend::ConstructMciMusicBackend(void) {
 
 // FUNCTION: LEMBALL 0x0047EAD0
 void PrepareMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle, int nMusicResourceId) {
-    MOGLOAD_StringResourceObject *pStringResource;
+    AUDIO_StringResourceObjectView *pStringResource;
     AUDIO_MciOpenParms OpenParms;
     AUDIO_MciGenericParms SeekParms;
     AUDIO_MciSetParms SetParms;
@@ -1507,9 +1533,10 @@ void PrepareMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle, int
     pBackend->m_nPreparedTrackHandle = nTrackHandle;
     g_nPreparedMciMusicTrackHandle = nTrackHandle;
 
-    pStringResource = LoadStringResource(nMusicResourceId);
+    pStringResource =
+        (AUDIO_StringResourceObjectView *)LoadStringResource(nMusicResourceId);
     if (pStringResource->m_nLoadState10 == 0) {
-        ((void (*)())pStringResource->m_pVtable[7])();
+        pStringResource->PrepareStringResource();
     } else {
         pStringResource->m_nReserved24 = 0;
     }
@@ -1785,7 +1812,7 @@ void *LEMBALL_FASTCALL ConstructAudioEffectBackendBase(void *pBackend) {
 }
 
 // FUNCTION: LEMBALL 0x0047F950
-void RestoreAudioEffectBackendBaseVtable(void *pBackend) {
+void LEMBALL_FASTCALL RestoreAudioEffectBackendBaseVtable(void *pBackend) {
     *(void ***)pBackend = g_WaveOutEffectBackendVtable;
 }
 
