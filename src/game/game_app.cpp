@@ -2835,6 +2835,7 @@ void LEMBALL_FASTCALL RunMainGameLoop(GAME_MainContext *pMainContext) {
 // FUNCTION: LEMBALL 0x00406DF0
 GAME_MainContext *GAME_MainContext::InitializeMainGameContext(const char *pszCmdLine) {
     char *pszCdromPath;
+    int nCdromResponse;
     GAME_MainContext *pMainContext;
     GAME_StatusEntry *pProcessingStatusEntry;
     GAME_StatusEntry *pRefreshingStatusEntry;
@@ -2849,14 +2850,23 @@ GAME_MainContext *GAME_MainContext::InitializeMainGameContext(const char *pszCmd
     g_pVariantResourceEntryManager = 0;
     pMainContext->m_fQuitRequested = 1;
     pMainContext->m_pActiveMode = 0;
-    SetVisualSciencesRegistryRunningState(g_GAME_WindowTitle, 1);
+    if (!SetVisualSciencesRegistryRunningState(g_GAME_WindowTitle, 1)) {
+        MessageBoxA(0, g_GAME_InstallPrompt, g_GAME_NotInstalledTitle, 0);
+        return pMainContext;
+    }
 
-    pszCdromPath = FindCdromFilePathBySuffix(g_GAME_VsmemDllName);
-    while (pszCdromPath == 0) {
-        if (MessageBoxA(0, g_GAME_CdromErrorText, g_GAME_CdromErrorTitle, 1) != 1) {
-            return pMainContext;
-        }
+#if defined(LEMBALL_SKIP_CD_TEST)
+    nCdromResponse = 0;
+#endif
+    do {
         pszCdromPath = FindCdromFilePathBySuffix(g_GAME_VsmemDllName);
+        if (pszCdromPath != 0) {
+            break;
+        }
+        nCdromResponse = MessageBoxA(0, g_GAME_CdromErrorText, g_GAME_CdromErrorTitle, 1);
+    } while (nCdromResponse == 1);
+    if (nCdromResponse == 2) {
+        return pMainContext;
     }
 
     g_pLevelProgressState = AllocateVSMemBlock(0x50);
@@ -3236,8 +3246,7 @@ int RunMainGameSession(int cArgs, const char *const *ppszArgs) {
 
     pSessionRandomState = AllocateVSMemBlock(4);
     if (pSessionRandomState != 0) {
-        *(unsigned int *)pSessionRandomState = 0xad28;
-        g_pSessionRandomState = pSessionRandomState;
+        *(unsigned int *)(g_pSessionRandomState = pSessionRandomState) = 0xad28;
     } else {
         g_pSessionRandomState = 0;
     }
