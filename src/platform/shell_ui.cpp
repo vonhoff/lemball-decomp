@@ -207,7 +207,7 @@ void InitializePrimaryContextShell(SHELLUI_PrimaryContextShell *pShell) {
 }
 
 // FUNCTION: LEMBALL 0x00455FF0
-char *BuildSystemInformationReportString(void) {
+char *LEMBALL_STDCALL BuildSystemInformationReportString(void) {
     char chTerminator;
     DWORD dwVersion;
     unsigned char bMinorVersion;
@@ -224,7 +224,7 @@ char *BuildSystemInformationReportString(void) {
     dwVersion = GetVersion();
     bMinorVersion = (unsigned char)((dwVersion & 0xffff) >> 8);
 
-    if ((dwVersion & 0x80000000u) == 0) {
+    if (dwVersion < 0x80000000u) {
         wsprintfA(szOperatingSystem,
                   g_SHELLUI_WindowsNtFormat,
                   dwVersion & 0xff,

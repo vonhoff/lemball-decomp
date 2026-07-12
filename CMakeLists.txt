@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.15)
 project(lemball_decomp CXX)
 
 option(LEMBALL_ENABLE_WIN32 "Build the reconstructed Win32 executable" ON)
+option(LEMBALL_SKIP_CD_TEST "Skip CD probing and use the current directory" OFF)
+option(LEMBALL_ENABLE_PRIMARY_WINDOW_INIT "Enable the reconstructed primary window initialization dispatch" OFF)
+option(LEMBALL_PRIMARY_WINDOW_INIT_SKIP_PALETTE "Diagnostic: omit the experimental startup palette callback" OFF)
 
 set(LEMBALL_SOURCES
     src/engine/graphics_driver.cpp
@@ -9,6 +12,7 @@ set(LEMBALL_SOURCES
     src/engine/render_dispatch.cpp
     src/engine/runtime_init.cpp
     src/game/game_app.cpp
+    src/game/primary_context_window.cpp
     src/game/window_owner.cpp
     src/game/eff_streams.cpp
     src/game/level_runtime.cpp
@@ -42,12 +46,23 @@ endif()
 add_library(LEMBALL_objects OBJECT ${LEMBALL_SOURCES})
 target_include_directories(LEMBALL_objects PRIVATE src)
 target_compile_definitions(LEMBALL_objects PRIVATE LEMBALL_1996_CXX=1)
+set_property(TARGET LEMBALL_objects PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
+if(LEMBALL_SKIP_CD_TEST)
+    target_compile_definitions(LEMBALL_objects PRIVATE LEMBALL_SKIP_CD_TEST=1)
+endif()
+if(LEMBALL_ENABLE_PRIMARY_WINDOW_INIT)
+    target_compile_definitions(LEMBALL_objects PRIVATE LEMBALL_ENABLE_PRIMARY_WINDOW_INIT=1)
+endif()
+if(LEMBALL_PRIMARY_WINDOW_INIT_SKIP_PALETTE)
+    target_compile_definitions(LEMBALL_objects PRIVATE LEMBALL_PRIMARY_WINDOW_INIT_SKIP_PALETTE=1)
+endif()
 if(APPLE)
     target_compile_definitions(LEMBALL_objects PRIVATE LEMBALL_HOST_MACOS=1)
 endif()
 
 if(LEMBALL_ENABLE_WIN32)
     add_executable(LEMBALL WIN32 $<TARGET_OBJECTS:LEMBALL_objects>)
+    set_property(TARGET LEMBALL PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
     set_target_properties(LEMBALL PROPERTIES
         OUTPUT_NAME "LEMBALL"
         SUFFIX ".EXE"
@@ -62,5 +77,17 @@ if(LEMBALL_ENABLE_WIN32)
         set_target_properties(LEMBALL PROPERTIES
             LINK_FLAGS "user32.lib gdi32.lib advapi32.lib winmm.lib ws2_32.lib wsock32.lib /MAP:LEMBALL.map"
         )
+    endif()
+    set(LEMBALL_DEPLOY_COMMANDS)
+    foreach(LEMBALL_DEPENDENCY DSPDIB16.DLL DSPDIB32.DLL PBAIMOG.VSR)
+        if(EXISTS "${CMAKE_SOURCE_DIR}/data/${LEMBALL_DEPENDENCY}")
+            list(APPEND LEMBALL_DEPLOY_COMMANDS
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    "${CMAKE_SOURCE_DIR}/data/${LEMBALL_DEPENDENCY}"
+                    "$<TARGET_FILE_DIR:LEMBALL>/${LEMBALL_DEPENDENCY}")
+        endif()
+    endforeach()
+    if(LEMBALL_DEPLOY_COMMANDS)
+        add_custom_command(TARGET LEMBALL POST_BUILD ${LEMBALL_DEPLOY_COMMANDS})
     endif()
 endif()

@@ -131,7 +131,7 @@ public:
     void CaptureLastWinsockErrorStatus(void);
 };
 struct NETWORK_AdjustedEffTransportPeerView {
-    void CloseAdjustedEffTransportPeerByKey(void *pUnused);
+    void LEMBALL_FASTCALL CloseAdjustedEffTransportPeerByKey(void);
 };
 void *DeleteDualSocketWindowChannelStackWrapper(void *pObject, BYTE fFreeMemory);
 void *DeleteCompositeTcpipSocketChannelStackWrapper(void *pObject, BYTE fFreeMemory);
@@ -187,7 +187,7 @@ void CompleteEffTransportPendingWriteAllocatedAdjustedThunk(void *pObject,
 void CloseAdjustedEffTransportPeerByKeyAdjustedThunk(void *pObject) {
     pObject = (char *)pObject - *(int *)((char *)pObject - 4) - 0x0c;
     ((NETWORK_AdjustedEffTransportPeerView *)pObject)
-        ->CloseAdjustedEffTransportPeerByKey(0);
+        ->CloseAdjustedEffTransportPeerByKey();
 }
 
 
@@ -746,8 +746,7 @@ void ClearTcpipSocketStackPendingWriteAdjustedThunk(void *pObject,
     pOffsets = *(int **)(pAdjusted - 8);
     pAdjusted += pOffsets[4];
     pOffsets = *(int **)(pAdjusted - 8);
-    ((NETWORK_EffTransportPendingWriteState *)(pAdjusted + pOffsets[2] + 0x70))
-        ->Clear(pUnused);
+    ((NETWORK_EffTransportPendingWriteState *)(pAdjusted + pOffsets[2] + 0x70))->Clear(pUnused);
 }
 
 // FUNCTION: LEMBALL 0x00471DA0

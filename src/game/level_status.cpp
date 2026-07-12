@@ -224,7 +224,7 @@ static void *g_LEVEL_TimedVariantFrameIndexSelectorCallbackVtable[6] = {
     (void *)NoopVtableCallbackThunk,
     (void *)0,
 };
-static int *g_LEVEL_StatusIndicatorModeResourceIds;
+static int g_LEVEL_StatusIndicatorModeResourceIds[4] = {0, 0xfd, 0xfc, 0};
 static unsigned int *g_LEVEL_CompactStatusIndicatorPointTable;
 static unsigned int *g_LEVEL_StandardStatusIndicatorPointTable;
 int g_fLevelScreenStatusIndicatorConfigured = 0;
@@ -788,7 +788,6 @@ extern void *LoadZrleOnlyListResource(int nResourceId);
 extern void *LoadZrleResource(int nResourceId);
 extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void *pResourceObject);
 extern void PruneUnreferencedCachedResourceObjects(void *pArchive);
-extern void SampleRootHelperGeometryAndDispatchRenderGroups(void *pPrimaryContext, int nToken);
 
 void SetStatusIndicatorActive(void *pObject, int fActive);
 
@@ -1437,7 +1436,8 @@ void *ConstructLevelScreenStatusIndicatorManager(void *pObject, int nStatusMode,
 
         pPaletteObject = LoadPalResource(0xed);
         if (*(int *)(pnPrimaryContext[0x1f] + 4) == 1) {
-            SampleRootHelperGeometryAndDispatchRenderGroups(pPrimaryContext, -1);
+            ((GAME_PrimaryContext *)pPrimaryContext)
+                ->SampleRootHelperGeometryAndDispatchRenderGroups(-1);
         }
         ((void (*)(int))(*(void ***)pPrimaryContext)[0x2b])(0xed);
         ReleaseTypedResourceObjectReference(pPaletteObject);
@@ -1699,7 +1699,8 @@ void DestroyLevelScreenStatusIndicatorManager(void *pObject) {
     }
     ReleaseTypedResourceObjectReference((void *)(unsigned long)pManager[0x26]);
     if (*(int *)(pManager[0x1f] + 4) == 1) {
-        SampleRootHelperGeometryAndDispatchRenderGroups((void *)(unsigned long)pManager[0x1f], -1);
+        ((GAME_PrimaryContext *)(unsigned long)pManager[0x1f])
+            ->SampleRootHelperGeometryAndDispatchRenderGroups(-1);
     }
 
     for (i = 0; i < 1; ++i) {

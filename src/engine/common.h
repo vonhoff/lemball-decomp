@@ -14,8 +14,12 @@ typedef signed long s32;
 
 #if defined(_MSC_VER) || defined(__WATCOMC__)
 #define LEMBALL_FASTCALL __fastcall
+#define LEMBALL_STDCALL __stdcall
+#define LEMBALL_THISCALL __thiscall
 #else
 #define LEMBALL_FASTCALL
+#define LEMBALL_STDCALL
+#define LEMBALL_THISCALL
 #endif
 
 #endif

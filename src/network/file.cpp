@@ -15,8 +15,8 @@ extern void NoopVtableCallback(void);
 struct NETWORK_ChannelOwnerObject {
     void ServiceEffTransportConnectRequest(void);
 };
-extern void *DeleteWaveOutEffectBackend(AUDIO_WaveOutEffectBackend *pObject,
-                                        unsigned char fDelete);
+extern void *LEMBALL_FASTCALL DeleteWaveOutEffectBackend(
+    AUDIO_WaveOutEffectBackend *pObject, int nUnused, int fDelete);
 struct NETWORK_CompleteEffTransportPendingWriteView {
     void CompleteEffTransportPendingWrite(int fQueueEvent);
 };
@@ -115,7 +115,8 @@ BYTE MapNestedEffCallbackFailureToStatus6(void *pObject);
 void *DeleteEffChannelStateSideBufferWrapper(void *pObject, BYTE fFreeMemory);
 void ClearNestedEffChannelAsyncStatus(void *pObject);
 void AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(void *pObject);
-void AdjustAndClearGlobalStateTimedEffTransportPendingWriteState(void *pObject);
+void LEMBALL_FASTCALL AdjustAndClearGlobalStateTimedEffTransportPendingWriteState(
+    void *pObject, void *pUnused);
 void *AdjustAndDeleteGlobalStateCompositeAt30(void *pObject, BYTE fFreeMemory);
 void AdjustAndWriteGlobalStateTimedEffStreamWithGlobalSession(void *pObject);
 void AdjustAndClaimGlobalStateTimedEffTransportRecordPayload(void *pObject);
@@ -123,8 +124,11 @@ void *AdjustAndDeleteGlobalStateCompositeAtA8(void *pObject, BYTE fFreeMemory);
 void AdjustAndWriteGlobalStateDualEffStreamWithGlobalSession(void *pObject);
 void AdjustAndClaimGlobalStateDualEffTransportRecordPayload(void *pObject);
 BYTE AdjustAndMapGlobalStateFileBackedEffCallbackFailure(void *pObject);
-void AdjustAndClearGlobalStateTimedEffTransportPendingWriteState(void *pObject);
-void LEMBALL_FASTCALL ClearAdjustedEffTransportPendingWriteState(void *pObject);
+void LEMBALL_FASTCALL AdjustAndClearGlobalStateTimedEffTransportPendingWriteState(
+    void *pObject, void *pUnused);
+struct NETWORK_AdjustedEffTransportPendingWriteState {
+    void ClearPendingWrite(void *pUnused);
+};
 void AdjustAndWriteDualSlotTableFileBackedEffHeader(void *pObject);
 int PrepareGlobalStateBroadcastPath0047AB20(void *pObject, char *pszHostName);
 void InitializeDualSlotCompositeStorage0047B580(void *pObject);
@@ -158,7 +162,7 @@ struct NETWORK_QueueEffTransportPayloadEventView {
     void QueueEffTransportPayloadEvent(unsigned short nType, void *pPayload);
 };
 struct NETWORK_AdjustedEffTransportPeerView {
-    void CloseAdjustedEffTransportPeerByKey(void *pUnused);
+    void LEMBALL_FASTCALL CloseAdjustedEffTransportPeerByKey(void);
 };
 extern void EffStreamChannelStateRet4Thunk(BYTE fDelete);
 BYTE AdjustAndMapNestedEffCallbackFailureFromB8(void *pObject);
@@ -180,7 +184,6 @@ void *DeleteDualFileBackedEffChannelNoopThunk(void *pObject, BYTE fFreeMemory);
 BYTE AdjustAndMapEmbeddedFileBackedEffCallbackFailure(void *pObject);
 void *AdjustAndDeleteEmbeddedFileBackedEffChannelStackWrapper40(void *pObject, BYTE fFreeMemory);
 void AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(void *pObject);
-void LEMBALL_FASTCALL ClearAdjustedEffTransportPendingWriteState(void *pObject);
 void *AdjustAndDeleteEmbeddedTimedFileBackedEffChannelStackWrapper(void *pObject, BYTE fFreeMemory);
 void AdjustAndWriteEmbeddedTimedEffStreamWithGlobalSession(void *pObject);
 void AdjustAndClaimEmbeddedTimedEffTransportRecordPayload(void *pObject);
@@ -560,9 +563,10 @@ struct NETWORK_EmbeddedFileBackedFinalPrimaryThunkVtableModel {
     virtual void ClearAsyncError(void) {
         AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(this);
     }
-    virtual void ClearPendingWrite(void) {
-        ClearAdjustedEffTransportPendingWriteState(
-            (char *)this - *(int *)((char *)this - 4));
+    virtual void ClearPendingWrite(void *pUnused) {
+        ((NETWORK_AdjustedEffTransportPendingWriteState *)
+             ((char *)this - *(int *)((char *)this - 4)))
+            ->ClearPendingWrite(pUnused);
     }
 };
 static NETWORK_EmbeddedFileBackedFinalPrimaryThunkVtableModel
@@ -3430,22 +3434,24 @@ void InitializeGlobalStateFileBackedEffStorageAdjustor(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x0047BA50
-void AdjustAndClearGlobalStateTimedEffTransportPendingWriteState(void *pObject) {
-    ClearAdjustedEffTransportPendingWriteState(
-        (char *)pObject - ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta + 0x154);
+void LEMBALL_FASTCALL AdjustAndClearGlobalStateTimedEffTransportPendingWriteState(
+    void *pObject, void *pUnused) {
+    ((NETWORK_AdjustedEffTransportPendingWriteState *)
+         ((char *)pObject - ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta + 0x154))
+        ->ClearPendingWrite(pUnused);
 }
 
 // FUNCTION: LEMBALL 0x0047BA60
-void LEMBALL_FASTCALL ClearAdjustedEffTransportPendingWriteState(void *pObject) {
+void NETWORK_AdjustedEffTransportPendingWriteState::ClearPendingWrite(void *pUnused) {
     char *pbTransportView;
+    char *pPendingWrite;
 
-    pbTransportView = (char *)pObject +
-                      (*(NETWORK_GlobalSessionAdjustorOffsets **)((char *)pObject - 8))->m_nTransportViewOffset10;
-    ((NETWORK_EffTransportPendingWriteState *)(pbTransportView +
-                                               (*(NETWORK_GlobalSessionAdjustorOffsets **)(pbTransportView - 8))
-                                                   ->m_nEmbeddedStreamViewOffset08 +
-                                               0x70))
-        ->Clear(pObject);
+    pbTransportView = (char *)this +
+                      (*(NETWORK_GlobalSessionAdjustorOffsets **)((char *)this - 8))->m_nTransportViewOffset10;
+    pPendingWrite = pbTransportView +
+                    (*(NETWORK_GlobalSessionAdjustorOffsets **)(pbTransportView - 8))
+                        ->m_nEmbeddedStreamViewOffset08 + 0x70;
+    ((NETWORK_EffTransportPendingWriteState *)pPendingWrite)->Clear(pUnused);
 }
 
 // FUNCTION: LEMBALL 0x0047BAA0
@@ -3513,7 +3519,7 @@ void AdjustAndInvokeGlobalStateTimedEffStreamServiceCallback(void *pObject, void
 void CloseAdjustedEffTransportPeerByKeyWithArgument(void *pObject, void *pUnused) {
     (void)pUnused;
     ((NETWORK_AdjustedEffTransportPeerView *)((char *)pObject - 0x3c))
-        ->CloseAdjustedEffTransportPeerByKey(pUnused);
+        ->CloseAdjustedEffTransportPeerByKey();
 }
 
 // FUNCTION: LEMBALL 0x0047BBD0
@@ -3937,12 +3943,11 @@ void AdjustAndClearPendingWriteStateThunk(void *pObject, void *pUnused) {
 // FUNCTION: LEMBALL 0x0047BD30
 void NETWORK_FileBackedPendingWriteAdjustedView::ClearAdjustedPendingWriteState(void *pUnused) {
     NETWORK_GlobalSessionAdjustorOffsets *pOffsets;
-    NETWORK_EffTransportPendingWriteState *pPendingWrite;
+    char *pPendingWrite;
 
     pOffsets = *(NETWORK_GlobalSessionAdjustorOffsets **)((char *)this - 0x0c);
-    pPendingWrite = (NETWORK_EffTransportPendingWriteState *)
-        ((char *)this + pOffsets->m_nEmbeddedStreamViewOffset08 + 0x6c);
-    pPendingWrite->Clear(pUnused);
+    pPendingWrite = (char *)this + pOffsets->m_nEmbeddedStreamViewOffset08 + 0x6c;
+    ((NETWORK_EffTransportPendingWriteState *)pPendingWrite)->Clear(pUnused);
 }
 
 struct NETWORK_FileBackedRecordTableView {

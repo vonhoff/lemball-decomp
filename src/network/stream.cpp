@@ -275,7 +275,7 @@ struct NETWORK_CompositeEffTransportStackWrapperView {
 extern void *DeleteCompositeEffTransportRuntimeAdjustedThunk(void *pObject, BYTE fDelete);
 extern void WriteEffTransportGlobalSessionAdjustedThunk(void *pObject);
 struct NETWORK_AdjustedEffTransportPeerView {
-    void CloseAdjustedEffTransportPeerByKey(void *pUnused);
+    void LEMBALL_FASTCALL CloseAdjustedEffTransportPeerByKey(void);
 };
 extern void *g_NETWORK_TcpipSocketStackDualRet8;
 
@@ -412,7 +412,7 @@ static void *DeleteRuntimeOuterCompositeAdjusted(void *pObject, BYTE fDelete) {
 static void CloseRuntimeOuterPeerAdjusted(void *pObject) {
     pObject = (char *)pObject - *(int *)((char *)pObject - 4);
     ((NETWORK_AdjustedEffTransportPeerView *)pObject)
-        ->CloseAdjustedEffTransportPeerByKey(0);
+        ->CloseAdjustedEffTransportPeerByKey();
 }
 
 // FUNCTION: LEMBALL 0x00462C40
@@ -1237,15 +1237,14 @@ void *DeleteEffChannelStreamStackAdjustedThunk(void *pObject, BYTE fDelete) {
 }
 
 // FUNCTION: LEMBALL 0x00462CF0
-void ClearRuntimeChannelPendingWriteAdjustedThunk(void *pObject, void *pUnused) {
+    void ClearRuntimeChannelPendingWriteAdjustedThunk(void *pObject, void *pUnused) {
     int nVirtualBaseOffset;
-    NETWORK_EffTransportPendingWriteState *pPendingWrite;
+    char *pPendingWrite;
 
     pObject = (char *)pObject - ((NETWORK_AdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta;
     nVirtualBaseOffset = *(int *)(*(int *)((char *)pObject - 8) + 8);
-    pPendingWrite = (NETWORK_EffTransportPendingWriteState *)
-        ((char *)pObject + nVirtualBaseOffset + 0x70);
-        pPendingWrite->Clear(pUnused);
+    pPendingWrite = (char *)pObject + nVirtualBaseOffset + 0x70;
+    ((NETWORK_EffTransportPendingWriteState *)pPendingWrite)->Clear(pUnused);
 }
 // FUNCTION: LEMBALL 0x00462ED0
 int WINAPI InitializeNonZrleVariantRenderEntry(int nValue) {

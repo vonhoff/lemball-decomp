@@ -9,6 +9,7 @@
 #include <stdio.h>
 
 extern "C" DWORD WINAPI timeGetTime(void);
+extern void *g_pMOGLOAD_CopyBufferIntoTypedResourceObjectAndParse;
 
 typedef void *(*DEMO_DeleteProc)(void *pObject, unsigned char fDelete);
 extern void ReturnVoidVtableCallback(void);
@@ -18,15 +19,14 @@ int DispatchLevelDemoEventsForFrameThunk(void *pPlaybackController, char nFrame)
 static const char g_DEMO_OpenReadMode[] = "rb";
 static const unsigned int g_DEMO_BinResourceTypeTag = 0x42494e20;
 
-extern void CopyBufferIntoTypedResourceObjectAndParse(void *pObject, unsigned int *pSource,
-                                                       unsigned int nUnused, unsigned int cbBuffer);
 extern void ParseIntResourceDescriptor(void);
 extern int GetField14NeedsAgeIncrement(void *pObject);
 extern int GetField1CVfunc04(void *pObject);
 extern int GetField14Vfunc05(void *pObject);
 extern int ReturnZeroVfunc06(void);
-extern void EnsureTypedResourceObjectLoaded(void *pObject);
-extern void UnloadTypedResourceObject(void *pObject, int fReleaseMode);
+extern void LEMBALL_FASTCALL EnsureTypedResourceObjectLoaded(void *pObject);
+extern void LEMBALL_FASTCALL UnloadTypedResourceObject(
+    void *pObject, void *pUnusedEcx, int fReleaseMode);
 extern void NoopVfunc09(void);
 extern void *GetEffResourceDataPointer(void *pObject);
 extern void NoopOnLoadVfunc11(void);
@@ -50,7 +50,7 @@ static void *DestroyBinResource(void *pObject, int fDelete) {
 
 static void *g_DEMO_BinResourceVtableStorage[15] = {
     (void *)DestroyBinResource,
-    (void *)CopyBufferIntoTypedResourceObjectAndParse,
+    g_pMOGLOAD_CopyBufferIntoTypedResourceObjectAndParse,
     (void *)ParseIntResourceDescriptor,
     (void *)GetField14NeedsAgeIncrement,
     (void *)GetField1CVfunc04,
@@ -173,13 +173,13 @@ void DEMO_LevelDemoPlaybackController::ResetLevelDemoPlaybackCursor(void) {
 }
 
 // FUNCTION: LEMBALL 0x00409600
-void SetLevelDemoPlaybackEnabled(void *pPlaybackController, int fEnabled) {
-    *(int *)((char *)pPlaybackController + 0x4c) = fEnabled;
+void DEMO_LevelDemoPlaybackController::SetLevelDemoPlaybackEnabled(int fEnabled) {
+    *(int *)((char *)this + 0x4c) = fEnabled;
     if (fEnabled != 0) {
-        ((DEMO_LevelDemoPlaybackController *)pPlaybackController)->ResetLevelDemoPlaybackCursorThunk();
+        ResetLevelDemoPlaybackCursorThunk();
         return;
     }
-    ReleaseLevelDemoRecordBuffer(pPlaybackController);
+    ReleaseLevelDemoRecordBufferThunk(this);
 }
 
 // FUNCTION: LEMBALL 0x00409620
@@ -209,7 +209,7 @@ void LEMBALL_FASTCALL ServiceLevelDemoPlaybackThunk(void *pPlaybackController) {
 }
 
 // FUNCTION: LEMBALL 0x00409660
-void ReleaseLevelDemoRecordBuffer(void *pPlaybackController) {
+void LEMBALL_FASTCALL ReleaseLevelDemoRecordBuffer(void *pPlaybackController) {
     int *pResourceObject;
     int *pReferenceCount;
 
@@ -228,6 +228,11 @@ void ReleaseLevelDemoRecordBuffer(void *pPlaybackController) {
     }
     *(void **)((char *)pPlaybackController + 0x10) = 0;
     *(void **)((char *)pPlaybackController + 0x1c) = 0;
+}
+
+// FUNCTION: LEMBALL 0x00401A55
+void LEMBALL_FASTCALL ReleaseLevelDemoRecordBufferThunk(void *pPlaybackController) {
+    ReleaseLevelDemoRecordBuffer(pPlaybackController);
 }
 
 // FUNCTION: LEMBALL 0x004096A0

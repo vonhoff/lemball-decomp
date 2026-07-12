@@ -18,7 +18,8 @@
         }
       },
       "cacheVariables": {
-        "LEMBALL_ENABLE_WIN32": "ON"
+        "LEMBALL_ENABLE_WIN32": "ON",
+        "LEMBALL_SKIP_CD_TEST": "ON"
       }
     }
   ]

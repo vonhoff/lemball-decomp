@@ -2,28 +2,9 @@
 #include "../resource/resource_archive.h"
 #include "../engine/memory_arena.h"
 #include "../network/safe_vtable.h"
+#include "variant_resource_loader.h"
 
-struct GAME_MainGameVariantResourceBundleLoader {
-    void **m_pVtable;
-    void *m_pStatusIndicatorManager;
-    int m_nLoadedResourceCount;
-    int m_nTotalResourceCount;
-    void **m_ppZrleListResources;
-    void *m_pReserved14;
-    int m_cZrleListResources;
-    void **m_ppListResources;
-    void *m_pReserved20;
-    int m_cListResources;
-    void **m_ppBitmapResources;
-    void *m_pReserved2C;
-    int m_cBitmapResources;
-    void **m_ppPaletteResources;
-    int m_cPaletteResources;
-    void **m_ppStringResources;
-    int m_cStringResources;
-    void **m_ppTwoArrayListResources;
-    int m_cTwoArrayListResources;
-};
+extern void *g_pMOGLOAD_CopyBufferIntoTypedResourceObjectAndParse;
 
 static const unsigned int g_GAME_ListResourceTypeTag = 0x4c495354;
 static const unsigned int g_GAME_BitmapResourceTypeTag = 0x42544d50;
@@ -31,11 +12,10 @@ static const unsigned int g_GAME_PaletteResourceTypeTag = 0x50414c20;
 static const unsigned int g_GAME_ZrleResourceTypeTag = 0x5a524c45;
 
 extern void InitializeTypedResourceObjectBaseVtable(void *pObject);
-extern void CopyBufferIntoTypedResourceObjectAndParse(void *pObject, unsigned int *pSource,
-                                                       unsigned int nUnused, unsigned int cbBuffer);
 extern void ParseIntResourceDescriptor(void);
-extern void UnloadTypedResourceObject(void *pObject, int fReleaseMode);
-extern void EnsureTypedResourceObjectLoaded(void *pObject);
+extern void LEMBALL_FASTCALL UnloadTypedResourceObject(
+    void *pObject, void *pUnusedEcx, int fReleaseMode);
+extern void LEMBALL_FASTCALL EnsureTypedResourceObjectLoaded(void *pObject);
 extern int GetField14NeedsAgeIncrement(void *pObject);
 extern int GetField1CVfunc04(void *pObject);
 extern int GetField14Vfunc05(void *pObject);
@@ -61,7 +41,9 @@ void PopulateZrleResourceDescriptorFields(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x0045E850
-void *DestroyZrleResourceEntryArray(void *pObject, unsigned int fDelete) {
+void *LEMBALL_FASTCALL DestroyZrleResourceEntryArray(
+    void *pObject, int nUnused, unsigned int fDelete) {
+    (void)nUnused;
     int cEntries;
     char *pEntry;
 
@@ -85,7 +67,7 @@ void *DestroyZrleResourceEntryArray(void *pObject, unsigned int fDelete) {
 
 static void *g_GAME_ZrleResourceVtableStorage[15] = {
     (void *)DestroyZrleResourceEntryArray,
-    (void *)CopyBufferIntoTypedResourceObjectAndParse,
+    g_pMOGLOAD_CopyBufferIntoTypedResourceObjectAndParse,
     (void *)PopulateZrleResourceDescriptorFields,
     (void *)GetField14NeedsAgeIncrement,
     (void *)GetField1CVfunc04,
@@ -108,14 +90,16 @@ extern void *g_pPaletteResourceVtable;
 
 // LIST resource objects use the same typed-resource prefix, then keep their
 // descriptor-derived arrays at +0x38/+0x4c and list state at +0x60..+0x74.
-static void *DeleteListResourceBase(void *pObject, int fDelete);
+static void *LEMBALL_FASTCALL DeleteListResourceBase(
+    void *pObject, int nUnused, int fDelete);
 static void DestroyTwoArrayListResource(void *pObject);
-static void *DestroyTwoArrayListResourceAndFree(void *pObject, int fDelete);
+static void *LEMBALL_FASTCALL DestroyTwoArrayListResourceAndFree(
+    void *pObject, int nUnused, int fDelete);
 static void CopyBuffersIntoTwoArrayListResourceAndParse(void *pObject,
                                                          unsigned int *pSource,
                                                          int pRelatedObject,
                                                          unsigned int cbBuffer);
-static void ParseListResourceDescriptor(void *pObject);
+static void LEMBALL_FASTCALL ParseListResourceDescriptor(void *pObject);
 static int ListNeedsAgeIncrement(void *pObject);
 static int ListField68Nonzero(void *pObject);
 static int ListField60Nonzero(void *pObject);
@@ -175,7 +159,9 @@ extern unsigned int AllocateResourceDataBufferWithEviction(void *pArchive, unsig
 extern void FreeResourceObjectDataBuffer(unsigned int pBuffer);
 
 // FUNCTION: LEMBALL 0x0045E700
-static void *DeleteListResourceBase(void *pObject, int fDelete) {
+static void *LEMBALL_FASTCALL DeleteListResourceBase(
+    void *pObject, int nUnused, int fDelete) {
+    (void)nUnused;
     InitializeTypedResourceObjectBaseVtable(pObject);
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
@@ -184,7 +170,9 @@ static void *DeleteListResourceBase(void *pObject, int fDelete) {
 }
 
 // FUNCTION: LEMBALL 0x0045EA80
-static void *DestroyTwoArrayListResourceAndFree(void *pObject, int fDelete) {
+static void *LEMBALL_FASTCALL DestroyTwoArrayListResourceAndFree(
+    void *pObject, int nUnused, int fDelete) {
+    (void)nUnused;
     DestroyTwoArrayListResource(pObject);
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
@@ -209,7 +197,7 @@ static void DestroyTwoArrayListResource(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x0045D290
-static void ParseListResourceDescriptor(void *pObject) {
+static void LEMBALL_FASTCALL ParseListResourceDescriptor(void *pObject) {
     unsigned int *pDescriptor;
 
     pDescriptor = *(unsigned int **)((char *)pObject + 0x34);
@@ -545,14 +533,11 @@ void LoadMainGameVariantPaletteResource(void *pBundle, int nResourceId) {
     ++pResourceBundle->m_cPaletteResources;
 }
 
-// FUNCTION: LEMBALL 0x00446FB0
-void LoadMainGameVariantStringResource(void *pBundle, int nResourceId) {
-    GAME_MainGameVariantResourceBundleLoader *pResourceBundle;
-
-    pResourceBundle = (GAME_MainGameVariantResourceBundleLoader *)pBundle;
-    ((void (*)())**(void ***)pBundle)();
-    pResourceBundle->m_ppStringResources[pResourceBundle->m_cStringResources] = LoadStringResource(nResourceId);
-    ++pResourceBundle->m_cStringResources;
+// FUNCTION: LEMBALL 0x00447FB0
+void GAME_MainGameVariantResourceBundleLoader::LoadMainGameVariantStringResource(int nResourceId) {
+    ((void (*)())**(void ***)this)();
+    m_ppStringResources[m_cStringResources] = LoadStringResource(nResourceId);
+    ++m_cStringResources;
 }
 
 // FUNCTION: LEMBALL 0x00448030

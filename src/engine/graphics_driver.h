@@ -22,16 +22,22 @@ struct VSGDI_Rect {
 class VSGDI_DisplayState {
 public:
     VSGDI_DisplayState(void);
-    virtual ~VSGDI_DisplayState(void) {
-    }
+    int Create(HWND hWnd);
 
-    virtual int Create(HWND hWnd) = 0;
+    void *CreateDisplayBinding(void);
+    void ReleaseDisplayBinding(void *pBinding);
+    int InitializeDisplayBitmapInfo(void *pBitmapInfo);
+    void *CreateDisplayBitmap(int nDriver, void *pBitmapInfo);
+    int ReleaseDisplayBitmap(void *pBitmap);
+    int BindDisplayBitmap(int nDriver, void *pBitmap);
+    int DeleteDisplayBitmap(int nDriver, void *pBitmap);
 
     int IsReady(void) const;
     short Width(void) const;
     short Height(void) const;
 
 protected:
+    void *m_pVtable;
     HMODULE m_hGraphicsModule;
     void *m_pReserved08;
     int m_fReady;
@@ -39,6 +45,23 @@ protected:
     short m_cxDisplay;
     short m_cyDisplay;
     int m_dwReserved18;
+};
+
+struct VSGDI_DisplayStateDispatch {
+    virtual void Destroy(void) = 0;
+    virtual void *CreateDisplayBinding(void) = 0;
+    virtual void ReleaseDisplayBinding(void *pBinding) = 0;
+    virtual int InitializeDisplayBitmapInfo(void *pBitmapInfo) = 0;
+    virtual void *CreateDisplayBitmap(int nDriver, void *pBitmapInfo) = 0;
+    virtual int ReleaseDisplayBitmap(void *pBitmap) = 0;
+    virtual void Reserved6(void) = 0;
+    virtual void Reserved7(void) = 0;
+    virtual void Reserved8(void) = 0;
+    virtual int BindDisplayBitmap(int nDriver, void *pBitmap) = 0;
+    virtual int DeleteDisplayBitmap(int nDriver, void *pBitmap) = 0;
+    virtual void Reserved11(void) = 0;
+    virtual void Reserved12(void) = 0;
+    virtual int IsReady(void) = 0;
 };
 
 struct VSGDI_SelectedGraphicsDriverRuntime {
@@ -56,7 +79,7 @@ class VSGDI_MetricsDisplayState : public VSGDI_DisplayState {
 public:
     VSGDI_MetricsDisplayState(void);
 
-    virtual int Create(HWND hWnd);
+    int Create(HWND hWnd);
 };
 
 class VSGDI_HelperSurface {
@@ -64,6 +87,8 @@ public:
     VSGDI_HelperSurface(void);
 
     void UpdateWorkingRectAndBacking(const VSGDI_Rect *pRect);
+    void ComputeBackingDimensions(short *paOut, short *paRect, int nWidth);
+    void ConfigureBackingStrideAndOrigin(int nStride, int nOrigin);
     void ClearBackingBorderRows(void);
     void ClearBackingBorderRowsThunk(void);
     int IsReady(void) const;
@@ -78,7 +103,7 @@ class VSGDI_DibDisplayState : public VSGDI_MetricsDisplayState {
 public:
     VSGDI_DibDisplayState(const unsigned short *pDisplaySize);
 
-    virtual int Create(HWND hWnd);
+    int Create(HWND hWnd);
 
 private:
     void *m_pDisplayAddress;
@@ -92,7 +117,7 @@ class VSGDI_DirectDrawDisplayState : public VSGDI_DisplayState {
 public:
     VSGDI_DirectDrawDisplayState(const unsigned short *pDisplaySize, int fCreateWindow);
 
-    virtual int Create(HWND hWnd);
+    int Create(HWND hWnd);
 
 private:
     void *m_pDirectDrawObject;
@@ -108,13 +133,13 @@ private:
 
 int InitializeResourceGeometryHelperRuntime(void);
 int ShutdownResourceGeometryHelperRuntime(void);
+void LEMBALL_FASTCALL BuildGeometryHelperFromRenderRect(void *pOwner);
 int InitializeSelectedGraphicsDriver(int nRequestedDriver);
 int GetSelectedGraphicsDriverId(void);
 extern void *g_pSelectedGraphicsDriverRuntime;
 VSGDI_DisplayState *GetDisplayState(void);
 void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
 void LEMBALL_FASTCALL PromoteHelperUploadStateToActive(int nUploadState);
-void SampleRootHelperGeometryAndDispatchRenderGroups(void *pPrimaryContext, int nToken);
 
 extern int g_fStartupGraphicsDriverWing;
 extern int g_fStartupGraphicsDriverCds;

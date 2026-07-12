@@ -24,6 +24,11 @@ set(CMAKE_CXX_COMPILER_ID_RUN TRUE)
 set(CMAKE_CXX_COMPILER_FORCED TRUE)
 set(CMAKE_CXX_COMPILER_WORKS TRUE)
 
+# The original executable uses the statically linked MSVC 4.20 CRT.  CMake's
+# Debug configuration otherwise injects -MDd and makes the reconstruction
+# depend on the development-only MSVCRTD.DLL.
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
+
 set(CMAKE_CXX_OUTPUT_EXTENSION ".obj")
 set(CMAKE_C_OUTPUT_EXTENSION ".obj")
 set(CMAKE_EXECUTABLE_SUFFIX ".exe")
@@ -43,6 +48,12 @@ set(CMAKE_C_FLAGS_INIT "/nologo /W3 /MT")
 set(CMAKE_CXX_FLAGS_DEBUG_INIT "")
 set(CMAKE_CXX_FLAGS_RELEASE_INIT "")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT "")
+
+# CMake 4.x still adds its default Debug DLL-runtime switch for this forced
+# compiler identification.  Override the configuration flags explicitly so
+# the old compiler receives /MT rather than /MDd.
+set(CMAKE_CXX_FLAGS_DEBUG "/MT" CACHE STRING "MSVC 4.20 Debug flags" FORCE)
+set(CMAKE_C_FLAGS_DEBUG "/MT" CACHE STRING "MSVC 4.20 C Debug flags" FORCE)
 
 set(CMAKE_CXX_COMPILE_OBJECT
     "<CMAKE_CXX_COMPILER> <DEFINES> <INCLUDES> <FLAGS> /TP /O2 /Ob1 /Oy /G4 /Z7 /c /Fo<OBJECT> <SOURCE>")

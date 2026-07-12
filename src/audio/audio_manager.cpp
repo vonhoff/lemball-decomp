@@ -11,7 +11,9 @@
 #include <string.h>
 
 typedef int (*AUDIO_TestProc)(void);
-typedef int (*AUDIO_OpenProc)(int nResourceBase, int cResources, void *pPrimaryContext);
+typedef int (LEMBALL_FASTCALL *AUDIO_OpenProc)(void *pBackend, int nUnused,
+                                                int nResourceBase, int cResources,
+                                                void *pPrimaryContext);
 typedef void (*AUDIO_VoidProc)(void);
 typedef void (*AUDIO_IntProc)(int nValue);
 typedef int (*AUDIO_CreateEffectProc)(int nValue, void *pOut);
@@ -21,7 +23,13 @@ typedef int (*AUDIO_ReturnIntProc)(void);
 typedef int (*AUDIO_ReturnIntArgProc)(int nValue);
 typedef const char *(*AUDIO_NameProc)(void);
 typedef void (*AUDIO_ContextProc)(void *pPrimaryContext);
-typedef void *(*AUDIO_DeleteProc)(void *pObject, int fDelete);
+/* Vtable slot 0 is a thiscall delete entry: ECX is the object and the
+   delete flag remains on the stack.  The fastcall spelling supplies the
+   required ECX object, consumes a dummy EDX register argument, and leaves
+   the flag as the stack argument. */
+typedef void *(LEMBALL_FASTCALL *AUDIO_DeleteProc)(void *pObject,
+                                                   int nUnused,
+                                                   int fDelete);
 typedef void *(*AUDIO_ConstructPatchProc)(void *, void *, int, int, int, int);
 typedef void *(*AUDIO_ConstructBufferPoolProc)(void *, int, void *, int, int, int, int);
 typedef void (*AUDIO_PlayBufferProc)(void *, int, int);
@@ -150,20 +158,24 @@ struct AUDIO_MciStatusParms {
 const char *ReturnEmptyAudioBackendName(void);
 int ReturnAudioBackendReady(void);
 int ReturnAudioBackendUnavailable(void);
-int AcceptAudioBackendResources(int nResourceBase, int cResources, void *pPrimaryContext);
+int LEMBALL_FASTCALL AcceptAudioBackendResources(void *pBackend, int nUnused,
+                                                  int nResourceBase, int cResources,
+                                                  void *pPrimaryContext);
 int CreateFallbackEffectInstance(int nValue, void *pOut);
 void NoOpAudioInt(int nValue);
 void NoOpAudioPair(int nValue1, int nValue2);
 void NoOpAudioTriple(int nValue1, int nValue2, int nValue3);
 void DestroyAudioDynamicStringEntry(AUDIO_DynamicStringEntry *pEntry);
-void *DeleteAudioDynamicStringEntry(AUDIO_DynamicStringEntry *pEntry, unsigned char fDelete);
+void *LEMBALL_FASTCALL DeleteAudioDynamicStringEntry(
+    AUDIO_DynamicStringEntry *pEntry, int nUnused, int fDelete);
 void DestroyWaveOutEffectBackend(void *pBackend);
 char *GetWaveOutEffectBackendDescription(AUDIO_WaveOutEffectBackend *pBackend);
 int IsWaveOutEffectBackendAvailable(void);
 int CreateWaveOutEffectInstance(void *pBackend, void *pPatchResource, int *pnEffectInstanceId);
 int FreeWaveOutEffectInstance(void *pBackend, int nEffectInstanceId);
 unsigned int PlayWaveOutEffectInstance(void *pBackend, int nEffectInstanceId);
-void *DeleteWaveOutEffectBackend(AUDIO_WaveOutEffectBackend *pBackend, unsigned char fDelete);
+void *LEMBALL_FASTCALL DeleteWaveOutEffectBackend(
+    AUDIO_WaveOutEffectBackend *pBackend, int nUnused, int fDelete);
 int GetWaveOutEffectBackendStatus0047CC10(void *pBackend);
 int InitializeWaveOutEffectDevice0047CB00(void *pBackend,
                                            int fActivateDevice,
@@ -180,7 +192,8 @@ void PlayDirectSoundEffectInstanceWithMappedVolume(void *pBackend, int nEffectIn
                                                    int fLoopEnabled);
 void PauseDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId, int nBufferSlot);
 void PlayDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId, int nBufferSlot);
-void *DeleteDirectSoundEffectBackend(AUDIO_DirectSoundEffectBackend *pBackend, unsigned char fDelete);
+void *LEMBALL_FASTCALL DeleteDirectSoundEffectBackend(
+    AUDIO_DirectSoundEffectBackend *pBackend, int nUnused, int fDelete);
 void PrepareMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle, int nMusicResourceId);
 void FreePreparedMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle);
 void PlayPreparedMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle);
@@ -194,7 +207,8 @@ static int GetAudioDynamicStringEntryFlag(void *pObject);
    Keep dispatch compiler-shaped; raw cdecl entries corrupt the caller stack. */
 struct AUDIO_MciMusicBackendVtableModel {
     virtual void *Delete(unsigned char fDelete) {
-        return DeleteAudioDynamicStringEntry((AUDIO_DynamicStringEntry *)this, fDelete);
+        return DeleteAudioDynamicStringEntry(
+            (AUDIO_DynamicStringEntry *)this, 0, fDelete);
     }
     virtual const char *GetName(void) {
         return ReturnEmptyAudioBackendName();
@@ -376,13 +390,25 @@ static const char g_AUDIO_ErrorSuffix[] = "\n";
 static const char g_AUDIO_MusicExtension[] = ".mid";
 static const char g_AUDIO_PathSeparator[] = "\\";
 
+// FUNCTION: LEMBALL 0x0047E900
+LRESULT CALLBACK MciMusicWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam) {
+    if (uMessage == 0x3b9 && wParam == 1) {
+        AUDIO_MciMusicBackend *pBackend = g_pActiveMciMusicBackend;
+        if (pBackend != 0) {
+            ((AUDIO_MciMusicBackendVtableModel *)pBackend)->Resume(
+                g_nPreparedMciMusicTrackHandle);
+        }
+    }
+    return DefWindowProcA(hWnd, uMessage, wParam, lParam);
+}
+
 // FUNCTION: LEMBALL 0x0045AF80
-void *ConstructAudioManager(void *pAudioManager,
-                            int nMusicResourceBase,
-                            int cMusicResources,
-                            int fMusicBackendEnabled,
-                            int cEffectResources,
-                            void *pPrimaryContext) {
+void *AUDIO_Manager::ConstructAudioManager(int nMusicResourceBase,
+                                           int cMusicResources,
+                                           int fMusicBackendEnabled,
+                                           int cEffectResources,
+                                           void *pPrimaryContext) {
+    void *pAudioManager = this;
     void **ppBackend;
     unsigned int i;
     int fMusicBackendReady;
@@ -496,12 +522,12 @@ void DestroyAudioManager(void *pAudioManager) {
         if (ppBackend[i] != 0) {
             ((AUDIO_IntProc)(*(void ***)ppBackend[i])[22])(0);
             ((AUDIO_VoidProc)(*(void ***)ppBackend[i])[5])();
-            ((AUDIO_DeleteProc)(*(void ***)ppBackend[i])[0])(ppBackend[i], 1);
+            ((AUDIO_DeleteProc)(*(void ***)ppBackend[i])[0])(ppBackend[i], 0, 1);
         }
     }
     if (*(void **)((char *)pAudioManager + 0x34) != 0) {
         ((AUDIO_DeleteProc)(*(void ***)*(void **)((char *)pAudioManager + 0x34))[0])(
-            *(void **)((char *)pAudioManager + 0x34), 1);
+            *(void **)((char *)pAudioManager + 0x34), 0, 1);
     }
 }
 
@@ -513,9 +539,8 @@ void SetAudioManagerPrimaryContext(void *pAudioManager, void *pPrimaryContext) {
     *(void **)((char *)pAudioManager + 0x70) = pPrimaryContext;
     pBackend = *(void **)((char *)pAudioManager + 0x78);
     if (*(int *)((char *)pAudioManager + 8) == 0 && pBackend != 0) {
-        fAccepted = ((AUDIO_OpenProc)(*(void ***)pBackend)[4])(0,
-                                                                 *(int *)((char *)pAudioManager + 0x18),
-                                                                 pPrimaryContext);
+        fAccepted = ((AUDIO_OpenProc)(*(void ***)pBackend)[4])(
+            pBackend, 0, 0, *(int *)((char *)pAudioManager + 0x18), pPrimaryContext);
         if (fAccepted == 0) {
             *(int *)((char *)pAudioManager + 0x18) = 0;
         }
@@ -555,9 +580,9 @@ void RefreshAudioManagerBackendHandles(void *pAudioManager) {
             cEffectResources = *(int *)((char *)pAudioManager + 0x18);
         }
         if (*(int *)((char *)pAudioManager + 0x1c) == 0 && pMusicBackend != 0) {
-            fAccepted = ((AUDIO_OpenProc)(*(void ***)pMusicBackend)[3])(nMusicResourceBase,
-                                                                          cEffectResources,
-                                                                          *(void **)((char *)pAudioManager + 0x70));
+            fAccepted = ((AUDIO_OpenProc)(*(void ***)pMusicBackend)[3])(
+                pMusicBackend, 0, nMusicResourceBase, cEffectResources,
+                *(void **)((char *)pAudioManager + 0x70));
             if (fAccepted == 0) {
                 nMusicResourceBase = 0;
                 cEffectResources = 0;
@@ -566,8 +591,10 @@ void RefreshAudioManagerBackendHandles(void *pAudioManager) {
             *(int *)((char *)pAudioManager + 0x10) = cEffectResources;
         }
         if (*(void **)((char *)pAudioManager + 0x78) != 0) {
-            fAccepted = ((AUDIO_OpenProc)(*(void ***)((char *)pAudioManager + 0x78))[3])(
-                0, *(int *)((char *)pAudioManager + 0x18), *(void **)((char *)pAudioManager + 0x70));
+            pMusicBackend = *(void **)((char *)pAudioManager + 0x78);
+            fAccepted = ((AUDIO_OpenProc)(*(void ***)pMusicBackend)[3])(
+                pMusicBackend, 0, 0, *(int *)((char *)pAudioManager + 0x18),
+                *(void **)((char *)pAudioManager + 0x70));
             if (fAccepted == 0) {
                 *(int *)((char *)pAudioManager + 0x18) = 0;
             }
@@ -784,41 +811,43 @@ void AUDIO_Manager::SetAudioManagerMusicEnabledFlag(int fEnabled) {
 }
 
 // FUNCTION: LEMBALL 0x0045B600
-char *BuildAudioManagerDescriptionString(void *pAudioManager) {
-    VSINIT_FixedBufferStream DescriptionBufferStream;
-    VSINIT_FormattedOutputStream DescriptionStream;
+char *__fastcall BuildAudioManagerDescriptionString(void *pAudioManager) {
+    VSINIT_EffFormattedOutputStream DescriptionStream;
+    VSINIT_FormattedOutputStream *pFormattedStream;
     void *pBackend;
 
-    DescriptionStream.m_pVtable = g_FormattedOutputStreamVtable;
+    DescriptionStream.m_pVtable = g_EffFormattedOutputStreamVtable;
+    DescriptionStream.m_FormattedSubobject.m_pVtable = g_EffStreamSubobjectVtable;
     DescriptionStream.m_TargetState.m_pVtable = g_StreamFormatSubobjectVtable;
     DescriptionStream.m_TargetState.m_dwFlags = 0x14;
     DescriptionStream.m_TargetState.m_chFill = ' ';
     DescriptionStream.m_TargetState.m_nWidth = 0;
     DescriptionStream.m_TargetState.m_nRadix = 10;
-    ConstructFixedBufferStream(&DescriptionBufferStream, g_szAudioManagerDescription, sizeof(g_szAudioManagerDescription),
-                               0);
-    DescriptionStream.m_TargetState.m_pDownstream = &DescriptionBufferStream;
+    DescriptionStream.m_FixedBufferStream.ConstructFixedBufferStream(
+        g_szAudioManagerDescription, sizeof(g_szAudioManagerDescription), 0);
+    DescriptionStream.m_TargetState.m_pDownstream = &DescriptionStream.m_FixedBufferStream;
+    pFormattedStream = (VSINIT_FormattedOutputStream *)&DescriptionStream.m_FormattedSubobject;
     g_szAudioManagerDescription[0] = '\0';
 
     pBackend = *(void **)((char *)pAudioManager + 0x78);
     if (pBackend != 0 && *(int *)((char *)pAudioManager + 0x18) != 0) {
-        AppendCStringToStream(&DescriptionStream, "Effects : ");
-        AppendCStringToStream(&DescriptionStream, ((AUDIO_NameProc)(*(void ***)pBackend)[1])());
+        pFormattedStream->AppendCStringToStream("Effects : ")
+            ->AppendCStringToStream(((AUDIO_NameProc)(*(void ***)pBackend)[1])());
     }
 
     if (*(int *)((char *)pAudioManager + 0x1c) != 0 && *(int *)((char *)pAudioManager + 0x14) != 0) {
-        AppendCStringToStream(&DescriptionStream,
-                              ((AUDIO_NameProc)(*(void ***)*(void **)((char *)pAudioManager + 0x34))[12])());
-        AppendCStringToStream(&DescriptionStream, "\n");
+        pFormattedStream->AppendCStringToStream(
+            ((AUDIO_NameProc)(*(void ***)*(void **)((char *)pAudioManager + 0x34))[12])())
+            ->AppendCStringToStream("\n");
     }
 
     pBackend = *(void **)((char *)pAudioManager + 0x74);
     if (pBackend != 0 && *(int *)((char *)pAudioManager + 0x14) != 0) {
-        AppendCStringToStream(&DescriptionStream, "Music : ");
-        AppendCStringToStream(&DescriptionStream, ((AUDIO_NameProc)(*(void ***)pBackend)[1])());
+        pFormattedStream->AppendCStringToStream("Music : ")
+            ->AppendCStringToStream(((AUDIO_NameProc)(*(void ***)pBackend)[1])());
     }
 
-    DestroyFixedBufferStream(&DescriptionBufferStream);
+    DestroyFixedBufferStream(&DescriptionStream.m_FixedBufferStream);
     RestoreStreamFormatSubobjectVtable(&DescriptionStream.m_TargetState);
     ConstructStreamFormatState(&DescriptionStream.m_TargetState);
     return g_szAudioManagerDescription;
@@ -834,8 +863,8 @@ int InitializeGlobalAudioManager(int nMusicResourceBase,
     pAudioManager = AllocateVSMemBlock(0xc90);
     if (pAudioManager != 0) {
         g_pAudioManager =
-            ConstructAudioManager(pAudioManager, nMusicResourceBase, cMusicResources, 1, cEffectResources,
-                                  pPrimaryContext);
+            ((AUDIO_Manager *)pAudioManager)->ConstructAudioManager(
+                nMusicResourceBase, cMusicResources, 1, cEffectResources, pPrimaryContext);
         return 1;
     }
     g_pAudioManager = 0;
@@ -1202,7 +1231,9 @@ void DestroyWaveOutEffectBackend(void *pBackend) {
 }
 
 // FUNCTION: LEMBALL 0x0047D270
-void *DeleteWaveOutEffectBackend(AUDIO_WaveOutEffectBackend *pBackend, unsigned char fDelete) {
+void *LEMBALL_FASTCALL DeleteWaveOutEffectBackend(
+    AUDIO_WaveOutEffectBackend *pBackend, int nUnused, int fDelete) {
+    (void)nUnused;
     DestroyWaveOutEffectBackend(pBackend);
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pBackend);
@@ -1285,7 +1316,9 @@ void DestroyDirectSoundEffectBackend(void *pBackend) {
 }
 
 // FUNCTION: LEMBALL 0x0047E8E0
-void *DeleteDirectSoundEffectBackend(AUDIO_DirectSoundEffectBackend *pBackend, unsigned char fDelete) {
+void *LEMBALL_FASTCALL DeleteDirectSoundEffectBackend(
+    AUDIO_DirectSoundEffectBackend *pBackend, int nUnused, int fDelete) {
+    (void)nUnused;
     DestroyDirectSoundEffectBackend(pBackend);
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pBackend);
@@ -1416,6 +1449,7 @@ AUDIO_MciMusicBackend *AUDIO_MciMusicBackend::ConstructMciMusicBackend(void) {
 
         memset(&WindowClass, 0, sizeof(WindowClass));
         WindowClass.style = 3;
+        WindowClass.lpfnWndProc = MciMusicWindowProc;
         WindowClass.hInstance = g_hApplicationInstance;
         WindowClass.lpszClassName = g_AUDIO_MciWindowClassName;
         RegisterClassA(&WindowClass);
@@ -1787,7 +1821,7 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
                     *ppEffectBackends = pBackend;
                     return 1;
                 }
-                ((AUDIO_DeleteProc)pBackendVtable[0])(pBackend, 1);
+                ((AUDIO_DeleteProc)pBackendVtable[0])(pBackend, 0, 1);
             }
         }
         return 0;
@@ -1801,12 +1835,12 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
     }
     if (pBackend != 0) {
         pBackendVtable = *(void ***)pBackend;
-        fAvailable = ((AUDIO_TestProc)pBackendVtable[11])();
+        fAvailable = ((AUDIO_MciMusicBackendVtableModel *)pBackend)->IsAvailable();
         if (fAvailable == 1) {
             *pfMusicBackendReady = 1;
             *ppMusicBackend = pBackend;
         } else {
-            ((AUDIO_DeleteProc)pBackendVtable[0])(pBackend, 1);
+            ((AUDIO_DeleteProc)pBackendVtable[0])(pBackend, 0, 1);
         }
     }
 
@@ -1828,7 +1862,7 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
             *ppEffectBackends = pBackend;
             return 1;
         }
-        ((AUDIO_DeleteProc)pBackendVtable[0])(pBackend, 1);
+        ((AUDIO_DeleteProc)pBackendVtable[0])(pBackend, 0, 1);
     }
 
     pBackend = 0;
@@ -1856,7 +1890,9 @@ void DestroyAudioDynamicStringEntry(AUDIO_DynamicStringEntry *pEntry) {
 }
 
 // FUNCTION: LEMBALL 0x0047F590
-void *DeleteAudioDynamicStringEntry(AUDIO_DynamicStringEntry *pEntry, unsigned char fDelete) {
+void *LEMBALL_FASTCALL DeleteAudioDynamicStringEntry(
+    AUDIO_DynamicStringEntry *pEntry, int nUnused, int fDelete) {
+    (void)nUnused;
     DestroyAudioDynamicStringEntry(pEntry);
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pEntry);
@@ -1876,7 +1912,11 @@ int ReturnAudioBackendUnavailable(void) {
     return 0;
 }
 
-int AcceptAudioBackendResources(int nResourceBase, int cResources, void *pPrimaryContext) {
+int LEMBALL_FASTCALL AcceptAudioBackendResources(void *pBackend, int nUnused,
+                                                  int nResourceBase, int cResources,
+                                                  void *pPrimaryContext) {
+    (void)pBackend;
+    (void)nUnused;
     (void)nResourceBase;
     (void)cResources;
     (void)pPrimaryContext;

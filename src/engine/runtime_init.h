@@ -85,7 +85,8 @@ void *DeleteRenderDispatchQueue(void *pQueue, unsigned char fFreeMemory);
 void LEMBALL_FASTCALL ConstructStreamFormatState(VSINIT_StreamFormatTargetState *pState);
 void LEMBALL_FASTCALL RestoreStreamFormatSubobjectVtable(VSINIT_StreamFormatTargetState *pState);
 void LEMBALL_FASTCALL DestroyFixedBufferStream(VSINIT_FixedBufferStream *pStream);
-void *DeleteFixedBufferStreamReturnThis(VSINIT_FixedBufferStream *pStream, unsigned char fFreeMemory);
+void *LEMBALL_FASTCALL DeleteFixedBufferStreamReturnThis(
+    VSINIT_FixedBufferStream *pStream, int nUnused, int fFreeMemory);
 void ResetFixedBufferStream(VSINIT_FixedBufferStream *pStream);
 void AppendCharToFixedBufferStream(VSINIT_FixedBufferStream *pStream, char ch);
 void AppendCStringToFixedBufferStream(VSINIT_FixedBufferStream *pStream, const char *pszText);

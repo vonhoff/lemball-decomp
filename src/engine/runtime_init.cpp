@@ -46,7 +46,10 @@ void FormatSignedIntToRadixString(int nValue, char *pszBuffer, unsigned int nRad
 char *FormatUnsignedIntToRadixString(unsigned int uValue, char *pszBuffer, unsigned int nRadix);
 void LEMBALL_FASTCALL ApplyStreamIntegerWidthPadding(VSINIT_FormattedOutputStream *pStream);
 
-void *DeleteStreamBase(void *pStream, unsigned char fFreeMemory);
+typedef void *(LEMBALL_FASTCALL *VSINIT_DeleteProc)(
+    void *pStream, int nUnused, int fFreeMemory);
+void *LEMBALL_FASTCALL DeleteStreamBase(
+    void *pStream, int nUnused, int fFreeMemory);
 void LEMBALL_FASTCALL DestroyStreamBaseVtable(void *pStream);
 void *g_StreamBaseVtable[4] = {
     (void *)DeleteStreamBase,
@@ -560,7 +563,9 @@ void *VSINIT_FixedBufferStream::ConstructStreamBaseVtable(char *, unsigned int) 
 }
 
 // FUNCTION: LEMBALL 0x00458E60
-void *DeleteStreamBase(void *pStream, unsigned char fFreeMemory) {
+void *LEMBALL_FASTCALL DeleteStreamBase(
+    void *pStream, int nUnused, int fFreeMemory) {
+    (void)nUnused;
     DestroyStreamBaseVtable(pStream);
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pStream);
@@ -690,7 +695,9 @@ static void DeleteFixedBufferStream(VSINIT_FixedBufferStream *pStream, int fFree
 }
 
 // FUNCTION: LEMBALL 0x0045AF60
-void *DeleteFixedBufferStreamReturnThis(VSINIT_FixedBufferStream *pStream, unsigned char fFreeMemory) {
+void *LEMBALL_FASTCALL DeleteFixedBufferStreamReturnThis(
+    VSINIT_FixedBufferStream *pStream, int nUnused, int fFreeMemory) {
+    (void)nUnused;
     DestroyFixedBufferStream(pStream);
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pStream);
@@ -1515,28 +1522,26 @@ int ShutdownProcessCurrentDirectoryState(void) {
 
 // FUNCTION: LEMBALL 0x004590B0
 int ShutdownStreamChannels(void) {
-    void **pVtable;
-
     if (g_pErrorOutputStream != 0) {
-        pVtable = *(void ***)g_pErrorOutputStream;
-        ((void (*)(unsigned char))*(void **)((char *)g_pErrorOutputStream + (unsigned long)pVtable[1]))(1);
+        DestroyFormattedOutputStream(g_pErrorOutputStream, 1);
     }
     if (g_pStartupOutputStream != 0) {
-        pVtable = *(void ***)g_pStartupOutputStream;
-        ((void (*)(unsigned char))*(void **)((char *)g_pStartupOutputStream + (unsigned long)pVtable[1]))(1);
+        DestroyFormattedOutputStream(g_pStartupOutputStream, 1);
     }
     if (g_pStatusOutputStream != 0) {
-        pVtable = *(void ***)g_pStatusOutputStream;
-        ((void (*)(unsigned char))*(void **)((char *)g_pStatusOutputStream + (unsigned long)pVtable[1]))(1);
+        DestroyFormattedOutputStream(g_pStatusOutputStream, 1);
     }
     if (g_pErrorFixedBufferStream != 0) {
-        ((void (*)(void *, unsigned char))**(void ***)g_pErrorFixedBufferStream)(g_pErrorFixedBufferStream, 1);
+        ((VSINIT_DeleteProc)**(void ***)g_pErrorFixedBufferStream)(
+            g_pErrorFixedBufferStream, 0, 1);
     }
     if (g_pStartupFixedBufferStream != 0) {
-        ((void (*)(void *, unsigned char))**(void ***)g_pStartupFixedBufferStream)(g_pStartupFixedBufferStream, 1);
+        ((VSINIT_DeleteProc)**(void ***)g_pStartupFixedBufferStream)(
+            g_pStartupFixedBufferStream, 0, 1);
     }
     if (g_pStatusFixedBufferStream != 0) {
-        ((void (*)(void *, unsigned char))**(void ***)g_pStatusFixedBufferStream)(g_pStatusFixedBufferStream, 1);
+        ((VSINIT_DeleteProc)**(void ***)g_pStatusFixedBufferStream)(
+            g_pStatusFixedBufferStream, 0, 1);
     }
 
     return 1;

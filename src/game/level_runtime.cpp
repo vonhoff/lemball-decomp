@@ -335,7 +335,7 @@ void ClearLevelTileGridCells(int nTileGridCells) {
 }
 
 // FUNCTION: LEMBALL 0x004303C0
-void *ConstructLevelTileGridThunk(void *pObject) {
+void *LEMBALL_FASTCALL ConstructLevelTileGridThunk(void *pObject) {
     *(int *)((char *)pObject + 0xc) = 0;
     *(int *)((char *)pObject + 0x10) = 0;
     *(int *)((char *)pObject + 0x14) = 0;
@@ -356,15 +356,19 @@ void InitializeLevelTileGridThunk(void *pTileGrid) {
     ClearLevelTileGridCells((int)(unsigned long)pTileGrid + 8);
 }
 
+struct LEVEL_TileReachabilityHelper {
+    void *ConstructLevelTileReachabilityHelperThunk(void *pTileGrid);
+};
+
 // FUNCTION: LEMBALL 0x00423090
-void *ConstructLevelTileReachabilityHelperThunk(void *pObject, void *pTileGrid) {
-    *(void **)pObject = pTileGrid;
-    *(int *)((char *)pObject + 4) = 0;
-    *(unsigned char *)((char *)pObject + 0x100c) = 0;
-    *(int *)((char *)pObject + 8) = 0;
-    *(int *)((char *)pObject + 0x1010) = 0;
-    *(int *)((char *)pObject + 0x1014) = 0;
-    return pObject;
+void *LEVEL_TileReachabilityHelper::ConstructLevelTileReachabilityHelperThunk(void *pTileGrid) {
+    *(void **)this = pTileGrid;
+    *(int *)((char *)this + 4) = 0;
+    *(unsigned char *)((char *)this + 0x100c) = 0;
+    *(int *)((char *)this + 8) = 0;
+    *(int *)((char *)this + 0x1010) = 0;
+    *(int *)((char *)this + 0x1014) = 0;
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x004231a0

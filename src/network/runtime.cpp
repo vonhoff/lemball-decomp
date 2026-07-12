@@ -1219,7 +1219,7 @@ extern int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cE
 extern void CheckEffTransportIdleTimeout(void *pObject);
 
 struct NETWORK_AdjustedEffTransportPeerView {
-    void CloseAdjustedEffTransportPeerByKey(void *pUnused);
+    void LEMBALL_FASTCALL CloseAdjustedEffTransportPeerByKey(void);
 };
 
 struct GAME_EffTransportRuntimeWindow {
@@ -1227,13 +1227,13 @@ struct GAME_EffTransportRuntimeWindow {
 };
 
 // FUNCTION: LEMBALL 0x004605B0
-void NETWORK_AdjustedEffTransportPeerView::CloseAdjustedEffTransportPeerByKey(void *pUnused) {
-    int nKeyDelta;
+void LEMBALL_FASTCALL NETWORK_AdjustedEffTransportPeerView::CloseAdjustedEffTransportPeerByKey(void) {
+    char *pbAdjusted;
     void *pPeerKey;
 
-    (void)pUnused;
-    nKeyDelta = *(int *)(*(int *)((char *)this - 0x20) + 8);
-    pPeerKey = (void *)(unsigned long)*(int *)((char *)this + nKeyDelta + 0x50);
+    pbAdjusted = (char *)this;
+    pbAdjusted += *(int *)(*(int *)(pbAdjusted - 0x20) + 8);
+    pPeerKey = *(void **)(pbAdjusted + 0x50);
     ((NETWORK_EffTransportRuntimeState *)g_pActiveNetworkRuntimeWindow)
         ->CloseMatchingEffTransportPeer(pPeerKey);
 }
@@ -2257,14 +2257,15 @@ void NETWORK_ChannelOwnerObject::ClearEffTransportSendGate(void) {
 }
 
 // FUNCTION: LEMBALL 0x00460260
-void NETWORK_EffTransportPendingWriteState::Clear(void *pUnused) {
-    NETWORK_PeerPayloadSenderPendingWriteState *pPendingState;
-
-    (void)pUnused;
-    pPendingState = (NETWORK_PeerPayloadSenderPendingWriteState *)((char *)this - 0x24);
-    if (pPendingState->m_nPendingFragmentIndex0c != -1) {
-        pPendingState->m_nPendingFragmentIndex0c = -1;
-        pPendingState->m_pBusyStream00[10] = 0;
+__declspec(naked) void NETWORK_EffTransportPendingWriteState::Clear(void *) {
+    __asm {
+        cmp dword ptr [ecx-01ch], -1
+        je  short clear_pending_write_done
+        mov eax, dword ptr [ecx-024h]
+        mov dword ptr [ecx-01ch], -1
+        mov dword ptr [eax+028h], 0
+clear_pending_write_done:
+        ret 4
     }
 }
 
@@ -2369,7 +2370,6 @@ void NETWORK_EffTransportConnectCallback::QueueEffTransportConnectEvent(void) {
     kEvent.m_nType = 3;
     kEvent.m_nCode = 0;
     kEvent.m_pStream = (int *)pOwner;
-    kEvent.m_pPeer = 0;
     pOwner->m_fConnected24 = 1;
     pSendState->m_nCurrentState18 = 0;
     pSendState->m_nPreviousState20 = pSendState->m_nCurrentState18;
@@ -2380,12 +2380,10 @@ void NETWORK_EffTransportConnectCallback::QueueEffTransportConnectEvent(void) {
         pReliableTickState->m_dwLastTick40 = dwNow - 1000;
         dwNow = timeGetTime();
         pTimedTickState->m_dwLastTick40 = dwNow;
-        if (g_pActiveNetworkRuntimeWindow != 0) {
-            pWindowState = (NETWORK_RuntimeWindowSendGateState *)g_pActiveNetworkRuntimeWindow;
-            if (pWindowState->m_fSendGateActive30 != 0) {
-                ((NETWORK_ChannelOwnerObject *)(unsigned long)pWindowState->m_nChannelOwner24)
-                    ->ClearEffTransportSendGate();
-            }
+        pWindowState = (NETWORK_RuntimeWindowSendGateState *)g_pActiveNetworkRuntimeWindow;
+        if (pWindowState->m_fSendGateActive30 != 0) {
+            ((NETWORK_ChannelOwnerObject *)(unsigned long)pWindowState->m_nChannelOwner24)
+                ->ClearEffTransportSendGate();
         }
     }
     ((void (*)(NETWORK_EffDispatchEvent *))(*(void ***)g_pEffTransportDispatchQueue)[2])(&kEvent);
@@ -3129,8 +3127,8 @@ void NETWORK_CompleteEffTransportPendingWriteView::CompleteEffTransportPendingWr
     nOwnerState = *(int *)(*(int *)(pbObject - 0x2c) + 0x10);
     nStateDelta = *(int *)(pbObject + nOwnerState - 0x2c + 8);
     nPendingDelta = nStateDelta + nOwnerState - 0x24 + 0x70;
-    ((NETWORK_EffTransportPendingWriteState *)(pbObject + nPendingDelta))
-        ->Clear((void *)(unsigned long)fQueueEvent);
+    ((NETWORK_EffTransportPendingWriteState *)(pbObject + nPendingDelta))->Clear(
+        (void *)(unsigned long)fQueueEvent);
     if (fQueueEvent != 0) {
         kEvent.m_nType = 10;
         kEvent.m_nCode = 0;
@@ -3256,8 +3254,6 @@ void NETWORK_EffTransportRuntimeState::DispatchEffTransportConnectControlStream(
 
 // FUNCTION: LEMBALL 0x00460610
 void NETWORK_EffTransportPeer::ConfigureEffTransportConnectHostString(void *pHostName) {
-    void (**ppVtable)(void);
-
     if (m_nReserved1C != 0) {
         void *pBuffer = (void *)(unsigned long)m_nReserved1C;
         m_nReserved1C = 0;
@@ -3265,6 +3261,7 @@ void NETWORK_EffTransportPeer::ConfigureEffTransportConnectHostString(void *pHos
     }
 
     *(int *)((char *)this + 0xc) = 2;
+    void (**ppVtable)(void);
     ppVtable = *(void (***) (void))this;
     ((void (*)(void *))ppVtable[2])(pHostName);
 }

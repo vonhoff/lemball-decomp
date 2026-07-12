@@ -10,12 +10,13 @@ struct DEMO_LevelDemoPlaybackController {
     DEMO_LevelDemoPlaybackController *ConstructLevelDemoPlaybackControllerThunk(unsigned int uFrameInterval);
     void ResetLevelDemoPlaybackCursor(void);
     void ResetLevelDemoPlaybackCursorThunk(void);
+    void SetLevelDemoPlaybackEnabled(int fEnabled);
 };
 void DestroyLevelDemoPlaybackController(void *pPlaybackController);
-void SetLevelDemoPlaybackEnabled(void *pPlaybackController, int fEnabled);
+void LEMBALL_FASTCALL ReleaseLevelDemoRecordBufferThunk(void *pPlaybackController);
 void ServiceLevelDemoPlayback(void *pPlaybackController);
 void LEMBALL_FASTCALL ServiceLevelDemoPlaybackThunk(void *pPlaybackController);
-void ReleaseLevelDemoRecordBuffer(void *pPlaybackController);
+void LEMBALL_FASTCALL ReleaseLevelDemoRecordBuffer(void *pPlaybackController);
 void StopLevelDemoPlayback(void *pPlaybackController);
 int FilterLevelDemoPlaybackInputEvent(void *pPlaybackController, unsigned short *pEventId);
 void *DeleteLevelDemoPlaybackController(void *pPlaybackController, unsigned char fDelete);

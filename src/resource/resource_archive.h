@@ -12,6 +12,11 @@ class MOGLOAD_DirectoryNode;
 struct MOGLOAD_StringResourceObject;
 class MOGLOAD_ResourceArchive;
 
+struct MOGLOAD_EntrySearchState {
+    long m_iIndex;
+    class MOGLOAD_EntryRecord *m_pEntry;
+};
+
 class MOGLOAD_EntryRecord {
 public:
     char *m_pszName;
@@ -31,6 +36,10 @@ class MOGLOAD_DirectoryNode {
 public:
     MOGLOAD_DirectoryNode *Construct(long lFileOffset);
     void ReadEntryRecord(MOGLOAD_EntryRecord *pEntry);
+    void FindNextResourceArchiveEntry(MOGLOAD_EntrySearchState *pState,
+                                      unsigned int uTagFilter);
+    void ResetResourceArchiveEntryCursor(MOGLOAD_EntrySearchState *pState,
+                                         unsigned int uTagFilter);
     MOGLOAD_DirectoryNode *AdvanceSubdirectory(void);
     int AppendEntryAfterCursor(void);
 
@@ -48,11 +57,16 @@ public:
     unsigned int m_cEntries;
     unsigned int m_cLoadedEntries;
     char *m_pNameData;
+    int m_nReserved30;
+    int m_nReserved34;
 };
 
 class MOGLOAD_ResourceArchive {
 public:
     void *ConstructResourceArchive(const char *pszArchiveName, unsigned int cbArenaSize);
+    int LoadResourceArchiveEntryDataIntoBuffer(int *plFileOffset,
+                                               unsigned int *pcbBuffer,
+                                               void *pUnused);
     void RemoveCachedResourceObject(void *pResourceObject);
 
     MOGLOAD_DirectoryNode *m_pRootDirectory;

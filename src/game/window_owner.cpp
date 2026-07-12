@@ -42,7 +42,36 @@ void *g_pWindowOwnerBaseVtable = g_pSafeWindowOwnerVtable;
 struct WINDOW_OWNER_REGISTRY_NODE {
     void *m_pOwner;
     WINDOW_OWNER_REGISTRY_NODE *m_pNext;
+    WINDOW_OWNER_REGISTRY_NODE *m_pPrevious;
 };
+
+// FUNCTION: LEMBALL 0x00465F80
+void LEMBALL_FASTCALL RetainRootZrleGeometryOwner(void *pOwner) {
+    WINDOW_OWNER_REGISTRY_NODE *pNode;
+    WINDOW_OWNER_REGISTRY_NODE *pPrevious;
+
+    ++g_nLiveRootZrleGeometryOwnerCount;
+    if (*(void **)((char *)pOwner + 0x20) == 0) {
+        pNode = (WINDOW_OWNER_REGISTRY_NODE *)AllocateVSMemBlock(0x0c);
+        if (pNode != 0) {
+            pNode->m_pOwner = pOwner;
+            pNode->m_pNext = 0;
+            *(void **)((char *)pNode + 8) = 0;
+        }
+        pPrevious = (WINDOW_OWNER_REGISTRY_NODE *)
+            *(void **)((char *)g_pRootZrleGeometryOwnerRegistry + 4);
+        *(void **)((char *)pNode + 8) = pPrevious;
+        if (pPrevious != 0) {
+            pPrevious->m_pNext = pNode;
+        }
+        *(void **)((char *)g_pRootZrleGeometryOwnerRegistry + 4) = pNode;
+        if (*(void **)g_pRootZrleGeometryOwnerRegistry == 0) {
+            *(void **)g_pRootZrleGeometryOwnerRegistry = pNode;
+        }
+        ++*(int *)((char *)g_pRootZrleGeometryOwnerRegistry + 8);
+    }
+    ++*(int *)((char *)pOwner + 4);
+}
 
 struct WINDOW_OWNER_FLAGS_INTERFACE {
     virtual void Reserved00(void) = 0;
@@ -129,6 +158,13 @@ struct WINDOW_OWNER_COMMAND_EVENT {
     unsigned short m_nReserved;
     unsigned int m_dwTime;
     int m_nPayload;
+};
+
+struct WINDOW_OWNER_KEY_EVENT {
+    unsigned short m_nType;
+    unsigned short m_nReserved;
+    unsigned int m_nReserved08;
+    LPARAM m_lParam;
 };
 
 struct WINDOW_OWNER_POSITION_INTERFACE {
@@ -403,6 +439,21 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
             anDisplaySize[1] = (unsigned short)((unsigned long)lParam >> 16);
             ((VSGDI_SelectedGraphicsDriverRuntime *)pSelectedDriver)
                 ->ResizeActiveDisplayState(anDisplaySize);
+        }
+        return 0;
+    }
+
+    if (uMessage == 0x100 || uMessage == 0x101) {
+        WINDOW_OWNER_KEY_EVENT Event;
+
+        Event.m_nType = uMessage == 0x100 ? 2 : 1;
+        Event.m_lParam = lParam;
+        __asm {
+            mov ecx, g_pSharedRenderDispatchQueue
+            lea eax, Event
+            push eax
+            mov eax, dword ptr [ecx]
+            call dword ptr [eax + 8]
         }
         return 0;
     }

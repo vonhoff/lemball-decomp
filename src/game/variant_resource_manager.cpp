@@ -2,6 +2,7 @@
 #include "../platform/startup_options.h"
 #include "../audio/audio_manager.h"
 #include "../engine/memory_arena.h"
+#include "variant_resource_loader.h"
 
 extern "C" DWORD WINAPI timeGetTime(void);
 
@@ -74,7 +75,19 @@ static int *g_GAME_MainGameVariantStandardBitmapResourceIds;
 static int *g_GAME_MainGameVariantPaletteResourceIds;
 static int *g_GAME_MainGameVariantStringResourceIds;
 static int *g_GAME_MainGameVariantStringResourceIdsEnd;
-static int *g_GAME_VariantResourceEntryEffectTable;
+static int g_GAME_VariantResourceEntryEffectTable[44][3] = {
+    {1, 532, 262153}, {2, 544, 262153}, {3, 543, 262243}, {4, 537, 262153},
+    {5, 521, 9}, {6, 522, 9}, {7, 523, 458761}, {8, 524, 9},
+    {9, 525, 262153}, {10, 526, 262153}, {11, 527, 262153}, {12, 528, 262153},
+    {13, 529, 262153}, {14, 530, 458767}, {15, 531, 262151}, {16, 533, 262153},
+    {17, 534, 458761}, {18, 535, 262153}, {19, 536, 458761}, {20, 538, 262153},
+    {21, 539, 262153}, {22, 540, 262153}, {23, 542, 262153}, {24, 541, 262153},
+    {26, 545, 262153}, {27, 546, 458761}, {25, 547, 458761}, {28, 548, 262159},
+    {29, 549, 262159}, {30, 555, 262159}, {31, 550, 262153}, {32, 551, 262153},
+    {33, 552, 262153}, {34, 556, 458761}, {35, 557, 262153}, {37, 553, 458761},
+    {38, 554, 262153}, {39, 559, 196617}, {40, 560, 196617}, {41, 564, 262153},
+    {42, 562, 262153}, {43, 563, 262153}, {44, 561, 262153}, {45, 565, 262153},
+};
 int g_fVariantResourceEffectsEnabled = 0;
 int g_fVariantResourceMusicEnabled = 0;
 
@@ -92,7 +105,6 @@ extern void LoadMainGameVariantZrleListResource(void *pBundle, int nResourceId);
 extern void LoadMainGameVariantListResource(void *pBundle, int nResourceId);
 extern void LoadMainGameVariantBitmapResource(void *pBundle, int nResourceId);
 extern void LoadMainGameVariantPaletteResource(void *pBundle, int nResourceId);
-extern void LoadMainGameVariantStringResource(void *pBundle, int nResourceId);
 extern void LoadMainGameVariantTwoArrayListResource(void *pBundle, int nResourceId);
 extern void PopulateVariantResourceEntriesForFlagMask(void *pManager, unsigned short nMask);
 extern void PruneUnreferencedCachedResourceObjects(void *pArchive);
@@ -278,14 +290,14 @@ void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerBody(void *pManager) 
     } while (i != 0);
 
     if (g_fEffectsOptionAvailable != 0) {
-        pEntry = g_GAME_VariantResourceEntryEffectTable;
+        pEntry = &g_GAME_VariantResourceEntryEffectTable[0][0];
         do {
             if (g_fEffectsOptionAvailable != 0) {
                 pVariantManager[pEntry[0] * 3 + 0x1a] = (int)(unsigned long)pEntry;
                 pVariantManager[pEntry[0] * 3 + 0x1b] = -1;
             }
             pEntry += 3;
-        } while (pEntry < (g_GAME_VariantResourceEntryEffectTable + 0x96 / sizeof(int)));
+        } while (pEntry < &g_GAME_VariantResourceEntryEffectTable[44][0]);
     }
     pVariantManager[4] = 0;
     return pManager;
@@ -548,7 +560,8 @@ void *ConstructMainGameVariantResourceBundle(void *pBundle, void *pPrimaryContex
 
     for (panResourceIds = g_GAME_MainGameVariantStringResourceIds; panResourceIds < g_GAME_MainGameVariantStringResourceIdsEnd;
          ++panResourceIds) {
-        LoadMainGameVariantStringResource(pVariantBundle, *panResourceIds);
+        ((GAME_MainGameVariantResourceBundleLoader *)pVariantBundle)
+            ->LoadMainGameVariantStringResource(*panResourceIds);
     }
 
     for (i = 0x11e; i < 0x121; ++i) {

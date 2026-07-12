@@ -53,6 +53,68 @@ public:
     void *m_pVariantMode;
 };
 
+struct GAME_PrimaryContext {
+    void *m_pVtable;
+    char m_Reserved4[0x34];
+    int m_nScaleFactor;
+    char m_Reserved3c[0x10];
+    void *m_pWindowOwnerContext;
+    int m_nFrameInterval;
+    char m_Reserved54[0x3c];
+    void *m_pRenderQueueNodeVtable;
+    char m_Reserved94[0xc];
+    int m_fA0;
+    int m_nA4;
+    void *m_pBackgroundZrle;
+    void *m_pPalette2E;
+    void *m_pPalette2F;
+    int m_nLevelScreenStatusIndicatorMode;
+    int m_nB8;
+    int m_fScreenLayoutDirty;
+    GAME_MainContext *m_pMainContext;
+    void *m_pActiveLevelMode;
+    char m_ReservedC8[4];
+    int m_nActiveScreenMode;
+    void *m_pFinalizeThunk;
+    void *m_pActiveScreen;
+    int m_fCompactLayout;
+    short m_cxCompactLayout;
+    short m_cyCompactLayout;
+    short m_cxWideLayout;
+    short m_cyWideLayout;
+
+    void SampleRootHelperGeometryAndDispatchRenderGroups(int nToken);
+    GAME_PrimaryContext *ConstructPrimaryContext(GAME_MainContext *pMainContext);
+    GAME_PrimaryContext *ConstructPrimaryContextThunk(GAME_MainContext *pMainContext);
+    void SwitchPrimaryContextScreen(int nMode);
+    void DestroyPrimaryContextActiveScreen(int nUnused);
+    void UpdateWindowOwnerRenderContext(void);
+    void FlushWindowOwnerDirtyRect(int nUnused);
+    void DispatchWindowOwnerRectInitialization(short *paRect,
+                                                void *pWindowOwner,
+                                                void *pUnused);
+    void SetWindowOwnerState(int nState);
+    int GetWindowOwnerState(void);
+    void DispatchPrimaryContextActiveScreenFrame(void *pFrameArgument);
+    void MarkNestedContextDirtyIfField20(void);
+    void InitializeWindowOwnerFromRect(short *paRect,
+                                       void *pWindowOwner,
+                                       void *pUnused);
+    void InitializeWindowOwnerFromRectAndActivate(short *paRect,
+                                                   void *pWindowOwner,
+                                                   void *pUnused,
+                                                   int nActivate);
+    void ApplyWindowOwnerPaletteResource(int nResourceId);
+    void AppendQueuedRenderSinkValueNode(void *pValue);
+    void SetWindowOwnerScaleFactor(int nScaleFactor);
+    short *ComputePrimaryContextCenteredScreenRect(short *paRect,
+                                                   int nLeftOverride,
+                                                   int nTopOverride);
+    short *ComputePrimaryContextCenteredScreenRectThunk(short *paRect,
+                                                        int nLeftOverride,
+                                                        int nTopOverride);
+};
+
 void LEMBALL_FASTCALL ShutdownMainGameContext(GAME_MainContext *pMainContext);
 int RunMainGameSession(int cArgs, const char *const *ppszArgs);
 int RunMainGameSessionThunk(int cArgs, const char *const *ppszArgs);

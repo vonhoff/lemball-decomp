@@ -1,12 +1,6 @@
 #ifndef LEMBALL_AUDIO_MANAGER_H
 #define LEMBALL_AUDIO_MANAGER_H
 
-void *ConstructAudioManager(void *pAudioManager,
-                            int nMusicResourceBase,
-                            int cMusicResources,
-                            int fMusicBackendEnabled,
-                            int cEffectResources,
-                            void *pPrimaryContext);
 void DestroyAudioManager(void *pAudioManager);
 void SetAudioManagerPrimaryContext(void *pAudioManager, void *pPrimaryContext);
 void StopAllAudioManagerBackends(void *pAudioManager);
@@ -25,7 +19,7 @@ void SetAudioManagerMusicAndEffectVolume(void *pAudioManager, int nMusicVolume, 
 unsigned int GetVariantResourceEffectMasterVolume(void *pAudioManager);
 void SetAudioManagerEffectResourceContext(void *pAudioManager, void *pPrimaryContext);
 void SetAudioManagerMusicResourceContext(void *pAudioManager, void *pPrimaryContext);
-char *BuildAudioManagerDescriptionString(void *pAudioManager);
+char *__fastcall BuildAudioManagerDescriptionString(void *pAudioManager);
 int InitializeGlobalAudioManager(int nMusicResourceBase,
                                  int cMusicResources,
                                  int cEffectResources,
@@ -44,6 +38,11 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
 extern void *g_pAudioManager;
 
 struct AUDIO_Manager {
+    void *ConstructAudioManager(int nMusicResourceBase,
+                                int cMusicResources,
+                                int fMusicBackendEnabled,
+                                int cEffectResources,
+                                void *pPrimaryContext);
     void InvokeAudioManagerEmbeddedSlot04(int nValue1, int nValue2);
     void SetAudioManagerStartupMusicName(const char *pszMusicName);
     void SetAudioManagerMusicEnabledFlag(int fEnabled);
