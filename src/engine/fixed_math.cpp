@@ -159,3 +159,15 @@ unsigned int IntegerSqrtFloor(unsigned int uValue) {
     }
     return uLow;
 }
+
+// FUNCTION: LEMBALL 0x0044B640
+VSMATH_Fixed12Vector2D *VSMATH_Fixed12Vector2D::InitializeFromPixels(int nX, int nY) {
+    m_nX = nX << 12;
+    m_nY = nY << 12;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x004035AD
+VSMATH_Fixed12Vector2D *VSMATH_Fixed12Vector2D::InitializeFromPixelsThunk(int nX, int nY) {
+    return InitializeFromPixels(nX, nY);
+}

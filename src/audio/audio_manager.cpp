@@ -126,6 +126,68 @@ struct AUDIO_MciMusicBackend : AUDIO_DynamicStringEntry {
     AUDIO_MciMusicBackend *ConstructMciMusicBackend(void);
 };
 
+#define AUDIO_RESERVED_VIRTUAL(n) virtual void Reserved##n(void) = 0
+
+struct AUDIO_EffectBackendSlots00Through24 {
+    AUDIO_RESERVED_VIRTUAL(00);
+    AUDIO_RESERVED_VIRTUAL(01);
+    AUDIO_RESERVED_VIRTUAL(02);
+    AUDIO_RESERVED_VIRTUAL(03);
+    AUDIO_RESERVED_VIRTUAL(04);
+    AUDIO_RESERVED_VIRTUAL(05);
+    AUDIO_RESERVED_VIRTUAL(06);
+    AUDIO_RESERVED_VIRTUAL(07);
+    AUDIO_RESERVED_VIRTUAL(08);
+    AUDIO_RESERVED_VIRTUAL(09);
+    AUDIO_RESERVED_VIRTUAL(10);
+    AUDIO_RESERVED_VIRTUAL(11);
+    AUDIO_RESERVED_VIRTUAL(12);
+    AUDIO_RESERVED_VIRTUAL(13);
+    AUDIO_RESERVED_VIRTUAL(14);
+    AUDIO_RESERVED_VIRTUAL(15);
+    AUDIO_RESERVED_VIRTUAL(16);
+    AUDIO_RESERVED_VIRTUAL(17);
+    AUDIO_RESERVED_VIRTUAL(18);
+    AUDIO_RESERVED_VIRTUAL(19);
+    AUDIO_RESERVED_VIRTUAL(20);
+    AUDIO_RESERVED_VIRTUAL(21);
+    AUDIO_RESERVED_VIRTUAL(22);
+    AUDIO_RESERVED_VIRTUAL(23);
+    AUDIO_RESERVED_VIRTUAL(24);
+};
+
+struct AUDIO_EffectPlaybackInterface : public AUDIO_EffectBackendSlots00Through24 {
+    virtual int GetEffectVolume(int nChannel) = 0;
+    AUDIO_RESERVED_VIRTUAL(26);
+    AUDIO_RESERVED_VIRTUAL(27);
+    AUDIO_RESERVED_VIRTUAL(28);
+    AUDIO_RESERVED_VIRTUAL(29);
+    AUDIO_RESERVED_VIRTUAL(30);
+    AUDIO_RESERVED_VIRTUAL(31);
+    AUDIO_RESERVED_VIRTUAL(32);
+    AUDIO_RESERVED_VIRTUAL(33);
+    AUDIO_RESERVED_VIRTUAL(34);
+    virtual void PlayEffect(int nEffectResourceId, int nVolume) = 0;
+};
+
+struct AUDIO_EffectVolumeInterface : public AUDIO_EffectBackendSlots00Through24 {
+    AUDIO_RESERVED_VIRTUAL(25);
+    AUDIO_RESERVED_VIRTUAL(26);
+    AUDIO_RESERVED_VIRTUAL(27);
+    AUDIO_RESERVED_VIRTUAL(28);
+    AUDIO_RESERVED_VIRTUAL(29);
+    AUDIO_RESERVED_VIRTUAL(30);
+    AUDIO_RESERVED_VIRTUAL(31);
+    AUDIO_RESERVED_VIRTUAL(32);
+    AUDIO_RESERVED_VIRTUAL(33);
+    AUDIO_RESERVED_VIRTUAL(34);
+    virtual void SetEffectVolume(int nEffectInstanceId,
+                                 int nVolume,
+                                 int nReserved) = 0;
+};
+
+#undef AUDIO_RESERVED_VIRTUAL
+
 struct AUDIO_StringResourceObjectView {
     virtual void Slot00(void) = 0;
     virtual void Slot04(void) = 0;
@@ -274,6 +336,7 @@ struct AUDIO_MciMusicBackendVtableModel {
 
 static AUDIO_MciMusicBackendVtableModel g_AUDIO_MciMusicBackendVtableModel;
 
+// GLOBAL: LEMBALL 0x004a9bc8
 void *g_pAudioManager = 0;
 
 static void *g_AudioManagerVtable[1] = { (void *)NetworkSafeVtableNoop };
@@ -736,24 +799,24 @@ int CreateVariantResourceEffectInstance(void *pAudioManager, int nEffectResource
 }
 
 // FUNCTION: LEMBALL 0x0045B460
-void PlayVariantResourceEffectId(void *pAudioManager, int nEffectResourceId) {
-    void *pBackend;
+void AUDIO_Manager::PlayVariantResourceEffectId(int nEffectResourceId) {
+    AUDIO_EffectPlaybackInterface *pBackend;
     int nVolume;
 
-    if (*(int *)((char *)pAudioManager + 0x10) == 1) {
-        pBackend = *(void **)((char *)pAudioManager + 0x78);
-        nVolume = ((AUDIO_ReturnIntArgProc)(*(void ***)pBackend)[25])(0);
-        ((AUDIO_EffectPlayProc)(*(void ***)pBackend)[35])(nEffectResourceId, nVolume);
+    if (*(int *)((char *)this + 0x10) == 1) {
+        pBackend = *(AUDIO_EffectPlaybackInterface **)((char *)this + 0x78);
+        nVolume = pBackend->GetEffectVolume(0);
+        pBackend->PlayEffect(nEffectResourceId, nVolume);
     }
 }
 
 // FUNCTION: LEMBALL 0x0045B490
-void SetVariantResourceEffectInstanceVolume(void *pAudioManager, int nEffectInstanceId, int nVolume) {
-    void *pBackend;
+void AUDIO_Manager::SetVariantResourceEffectInstanceVolume(int nEffectInstanceId, int nVolume) {
+    AUDIO_EffectVolumeInterface *pBackend;
 
-    if (*(int *)((char *)pAudioManager + 0x10) == 1) {
-        pBackend = *(void **)((char *)pAudioManager + 0x78);
-        ((AUDIO_EffectVolumeProc)(*(void ***)pBackend)[35])(nEffectInstanceId, nVolume, 0);
+    if (*(int *)((char *)this + 0x10) == 1) {
+        pBackend = *(AUDIO_EffectVolumeInterface **)((char *)this + 0x78);
+        pBackend->SetEffectVolume(nEffectInstanceId, nVolume, 0);
     }
 }
 

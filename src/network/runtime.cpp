@@ -281,13 +281,13 @@ static void *g_NETWORK_EffTransportGlobalReadStreamVtable[4] = {
 };
 int CompareEffTransportRequestStreamName(void *pObject);
 void WriteEffTransportRequestStreamName(void *pObject);
-void LoadEffTransportRequestConnectStream(void *pObject);
-void WriteEffTransportRequestPortFields(void *pObject);
+void __fastcall LoadEffTransportRequestConnectStream(void *pObject);
+void __fastcall WriteEffTransportRequestPortFields(void *pObject);
 void LoadEffTransportRequestNewPortStream(void *pObject);
 void WriteEffTransportRequestNewPortStream(void *pObject);
-void LoadEffTransportAuthoriseConnectStream(void *pObject);
+void __fastcall LoadEffTransportAuthoriseConnectStream(void *pObject);
 void WriteEffTransportAuthoriseConnectStream(void *pObject);
-void LoadEffTransportGoAheadConnectStream(void *pObject);
+void __fastcall LoadEffTransportGoAheadConnectStream(void *pObject);
 void WriteEffTransportGoAheadConnectStream(void *pObject);
 void LoadEffTransportFailedConnectStream(void *pObject);
 void WriteEffTransportFailedConnectStream(void *pObject);
@@ -3478,24 +3478,23 @@ int CompareEffTransportRequestStreamName(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x0045F430
-void LoadEffTransportRequestConnectStream(void *pObject) {
+void __fastcall LoadEffTransportRequestConnectStream(void *pObject) {
     NETWORK_EffStreamBase *pStream;
-    unsigned int nValue;
 
     pStream = (NETWORK_EffStreamBase *)pObject;
-    pStream->ReadEffStreamU32BE((unsigned char *)&nValue);
-    *(short *)((char *)pObject + 0x30) = (short)nValue;
-    pStream->ReadEffStreamBytes((char *)pObject + 0x34, 0x200);
+    *(short *)((char *)pObject + 0x30) = (short)pStream->ReadEffStreamU32BEValue();
+    pStream->ReadEffStreamRangePointer((void **)((char *)pObject + 0x34), 0x200);
     pStream->ReadEffStreamCString((char **)((char *)pObject + 0x38));
 }
 
 // FUNCTION: LEMBALL 0x0045F460
-void WriteEffTransportRequestPortFields(void *pObject) {
+void __fastcall WriteEffTransportRequestPortFields(void *pObject) {
     NETWORK_EffStreamBase *pStream;
 
     pStream = (NETWORK_EffStreamBase *)pObject;
-    pStream->WriteEffStreamU16BE(*(unsigned short *)((char *)pObject + 0x30));
-    pStream->WriteEffStreamU32BE(*(unsigned int *)((char *)pObject + 0x34));
+    pStream->WriteEffStreamU32BE((unsigned int)*(short *)((char *)pObject + 0x30));
+    pStream->WriteEffStreamBytes(*(void **)((char *)pObject + 0x34), 0x200);
+    pStream->WriteEffStreamCString(*(char **)((char *)pObject + 0x38));
 }
 
 // FUNCTION: LEMBALL 0x0045F4B0
@@ -3519,16 +3518,12 @@ void WriteEffTransportRequestNewPortStream(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x0045F540
-void LoadEffTransportAuthoriseConnectStream(void *pObject) {
+void __fastcall LoadEffTransportAuthoriseConnectStream(void *pObject) {
     NETWORK_EffStreamBase *pStream;
-    unsigned short nPort;
-    unsigned int nPeer;
 
     pStream = (NETWORK_EffStreamBase *)pObject;
-    pStream->ReadEffStreamU16BE((unsigned char *)&nPort);
-    pStream->ReadEffStreamU32BE((unsigned char *)&nPeer);
-    *(unsigned short *)((char *)pObject + 0x30) = nPort;
-    *(unsigned int *)((char *)pObject + 0x34) = nPeer;
+    *(unsigned short *)((char *)pObject + 0x30) = pStream->ReadEffStreamU16BEValue();
+    *(unsigned int *)((char *)pObject + 0x34) = pStream->ReadEffStreamU32BEValue();
 }
 
 // FUNCTION: LEMBALL 0x0045F560
@@ -3537,8 +3532,12 @@ void WriteEffTransportAuthoriseConnectStream(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x0045F5D0
-void LoadEffTransportGoAheadConnectStream(void *pObject) {
-    LoadEffTransportAuthoriseConnectStream(pObject);
+void __fastcall LoadEffTransportGoAheadConnectStream(void *pObject) {
+    NETWORK_EffStreamBase *pStream;
+
+    pStream = (NETWORK_EffStreamBase *)pObject;
+    *(unsigned short *)((char *)pObject + 0x30) = pStream->ReadEffStreamU16BEValue();
+    *(unsigned int *)((char *)pObject + 0x34) = pStream->ReadEffStreamU32BEValue();
 }
 
 // FUNCTION: LEMBALL 0x0045F5F0

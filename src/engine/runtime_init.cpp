@@ -464,6 +464,7 @@ static VSINIT_FixedBufferStream *g_pStatusFixedBufferStream = 0;
 static VSINIT_FixedBufferStream *g_pErrorFixedBufferStream = 0;
 static VSINIT_FormattedOutputStream *g_pStartupOutputStream = 0;
 VSINIT_FormattedOutputStream *g_pStatusOutputStream = 0;
+// GLOBAL: LEMBALL 0x004a93a8
 VSINIT_FormattedOutputStream *g_pErrorOutputStream = 0;
 static char *g_apszParsedArgs[16];
 static unsigned int g_cParsedArgs = 0;

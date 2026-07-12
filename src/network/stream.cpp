@@ -569,6 +569,12 @@ void NETWORK_EffStreamBase::WriteEffStreamU16BE(unsigned short nValue) {
     m_nReserved1c += 2;
 }
 
+// FUNCTION: LEMBALL 0x0045EF60
+void NETWORK_EffStreamBase::WriteEffStreamU8(unsigned char nValue) {
+    *m_nReserved1c = nValue;
+    ++m_nReserved1c;
+}
+
 // FUNCTION: LEMBALL 0x0045EFC0
 void NETWORK_EffStreamBase::WriteEffStreamBytes(const void *pvSource, unsigned int cbWrite) {
     unsigned int i;
@@ -612,11 +618,82 @@ unsigned int NETWORK_EffStreamBase::ReadEffStreamU32BEValue(void) {
     return nValue;
 }
 
+// FUNCTION: LEMBALL 0x0045F040
+void NETWORK_EffStreamBase::SwapEffStreamU32BEAndAdvance(void) {
+    unsigned char nByte0;
+    unsigned char nByte1;
+
+    nByte0 = m_nReserved20[0];
+    nByte1 = m_nReserved20[1];
+    m_nReserved20[0] = m_nReserved20[3];
+    m_nReserved20[1] = m_nReserved20[2];
+    m_nReserved20[2] = nByte1;
+    m_nReserved20[3] = nByte0;
+    m_nReserved20 += 4;
+}
+
+// FUNCTION: LEMBALL 0x0045F070
+unsigned short NETWORK_EffStreamBase::ReadEffStreamU16BEValue(void) {
+    unsigned short nValue;
+
+    ReadEffStreamU16BE((unsigned char *)&nValue);
+    return nValue;
+}
+
 // FUNCTION: LEMBALL 0x0045F090
 void NETWORK_EffStreamBase::ReadEffStreamU16BE(unsigned char *pbTarget) {
     pbTarget[0] = *(unsigned char *)(m_nReserved20 + 1);
     pbTarget[1] = *(unsigned char *)m_nReserved20;
     m_nReserved20 += 2;
+}
+
+// FUNCTION: LEMBALL 0x0045F0B0
+void NETWORK_EffStreamBase::SwapEffStreamU16BEAndAdvance(void) {
+    unsigned char nByte0;
+    unsigned char nByte1;
+
+    nByte1 = m_nReserved20[1];
+    nByte0 = m_nReserved20[0];
+    m_nReserved20[1] = nByte0;
+    m_nReserved20[0] = nByte1;
+    m_nReserved20 += 2;
+}
+
+// FUNCTION: LEMBALL 0x0045F0D0
+unsigned char NETWORK_EffStreamBase::ReadEffStreamU8Value(void) {
+    unsigned char nValue;
+
+    ReadEffStreamU8(&nValue);
+    return nValue;
+}
+
+// FUNCTION: LEMBALL 0x0045F0F0
+void NETWORK_EffStreamBase::ReadEffStreamU8(unsigned char *pbTarget) {
+    *pbTarget = *m_nReserved20;
+    ++m_nReserved20;
+}
+
+// FUNCTION: LEMBALL 0x0045F110
+void NETWORK_EffStreamBase::AdvanceEffStreamReadCursorByte(void) {
+    ++m_nReserved20;
+}
+
+// FUNCTION: LEMBALL 0x0045F120
+void NETWORK_EffStreamBase::ReadEffStreamCString(char **ppszTarget) {
+    *ppszTarget = (char *)(unsigned long)m_nReserved20;
+    m_nReserved20 += (int)strlen(*ppszTarget) + 1;
+}
+
+// FUNCTION: LEMBALL 0x0045F140
+void NETWORK_EffStreamBase::ReadEffStreamRangePointer(void **ppvTarget, int cbRead) {
+    *ppvTarget = m_nReserved20;
+    m_nReserved20 += cbRead;
+}
+
+// FUNCTION: LEMBALL 0x0045F160
+void NETWORK_EffStreamBase::ReadEffStreamCStringIntoBuffer(char *pszTarget) {
+    strcpy(pszTarget, (char *)m_nReserved20);
+    m_nReserved20 += strlen(pszTarget) + 1;
 }
 
 // FUNCTION: LEMBALL 0x0045F1B0
@@ -638,12 +715,6 @@ void NETWORK_EffStreamBase::ReadEffStreamBytes(void *pvTarget, unsigned int cbRe
     }
 
     m_nReserved20 += cbRead;
-}
-
-// FUNCTION: LEMBALL 0x0045F120
-void NETWORK_EffStreamBase::ReadEffStreamCString(char **ppszTarget) {
-    *ppszTarget = (char *)(unsigned long)m_nReserved20;
-    m_nReserved20 += (int)strlen(*ppszTarget) + 1;
 }
 
 // FUNCTION: LEMBALL 0x0045F250

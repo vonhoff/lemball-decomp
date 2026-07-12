@@ -18,8 +18,14 @@ static const char g_szFatalErrorTitle[] = "FATAL ERROR";
 static void *g_pSafeWindowOwnerVtable = NetworkGetSafeVtable();
 
 static int g_fWindowMessagePassthroughMode = 0;
+// GLOBAL: LEMBALL 0x004a1f64
 static void *g_pCachedCurrentContextWindow = 0;
+// GLOBAL: LEMBALL 0x004a1f68
 static void *g_pCachedCurrentContextOwner = 0;
+// GLOBAL: LEMBALL 0x004a1f74
+static int g_nLastCursorScreenX = -1;
+// GLOBAL: LEMBALL 0x004a1f78
+static int g_nLastCursorScreenY = -1;
 static int g_nLiveRootZrleGeometryOwnerCount = 0;
 static int g_fFullscreenActivationState = 0;
 static int g_fFullscreenDisplayModeSuspended = 0;
@@ -88,6 +94,12 @@ static void SetWindowOwnerState(void *pOwner, int nState) {
 
 static void AppendWindowOwnerEvent(void *pEvent) {
     ((RENDER_DISPATCH_QUEUE_APPEND *)g_pSharedRenderDispatchQueue)->Append(pEvent);
+}
+
+// FUNCTION: LEMBALL 0x004324A0
+void LEMBALL_FASTCALL CacheCurrentContextWindow(void *pOwner) {
+    g_pCachedCurrentContextWindow = *(void **)((char *)pOwner + 0x44);
+    g_pCachedCurrentContextOwner = pOwner;
 }
 
 // FUNCTION: LEMBALL 0x00465F80
@@ -210,6 +222,15 @@ struct WINDOW_OWNER_KEY_EVENT {
     unsigned short m_nReserved;
     unsigned int m_nReserved08;
     LPARAM m_lParam;
+};
+
+struct WINDOW_OWNER_CURSOR_EVENT {
+    unsigned short m_nType;
+    unsigned short m_nReserved;
+    DWORD m_dwTime;
+    int m_nPackedPosition;
+    int m_nReserved0c;
+    int m_nReserved10;
 };
 
 struct WINDOW_OWNER_POSITION_INTERFACE {
@@ -613,6 +634,38 @@ void __cdecl ShowFatalGetLastErrorMessageAndExit(const char *pszMessage) {
     ConstructStreamFormatState(&Message.m_TargetState);
     MessageBoxA(0, szBuffer, g_szFatalErrorTitle, 0);
     ExitProcess(0xaaaa);
+}
+
+// FUNCTION: LEMBALL 0x00465050
+void LEMBALL_STDCALL PollCursorPositionEvent(void) {
+    tagPOINT Point;
+    WINDOW_OWNER_CURSOR_EVENT Event;
+
+    GetCursorPos(&Point);
+    if (Point.x == g_nLastCursorScreenX &&
+        Point.y == g_nLastCursorScreenY) {
+        return;
+    }
+
+    g_nLastCursorScreenX = Point.x;
+    g_nLastCursorScreenY = Point.y;
+    if (IsDisplayModeWindowedRange(
+            (const int *)g_pSelectedGraphicsDriverRuntime) &&
+        g_pCachedCurrentContextOwner != 0) {
+        g_nLastCursorScreenX +=
+            *(short *)((char *)g_pCachedCurrentContextOwner + 0x0c);
+        g_nLastCursorScreenY +=
+            *(short *)((char *)g_pCachedCurrentContextOwner + 0x0e);
+    }
+
+    Event.m_nType = 7;
+    Event.m_dwTime = timeGetTime();
+    Event.m_nPackedPosition =
+        PackEventXYWords(g_nLastCursorScreenX, g_nLastCursorScreenY);
+    Event.m_nReserved0c = 0;
+    Event.m_nReserved10 = 0;
+    ((RENDER_DISPATCH_QUEUE_APPEND *)g_pSharedRenderDispatchQueue)
+        ->Append(&Event);
 }
 
 // FUNCTION: LEMBALL 0x00465110

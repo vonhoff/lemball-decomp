@@ -9,5 +9,7 @@ extern void *g_pRootGeometryOwnerVtable;
 extern void *g_pWindowOwnerBaseVtable;
 
 void *LEMBALL_FASTCALL ConstructRootGeometryOwner(void *pOwner);
+int PackEventXYWords(unsigned int uLowWord, int nHighWord);
+void LEMBALL_STDCALL PollCursorPositionEvent(void);
 
 #endif

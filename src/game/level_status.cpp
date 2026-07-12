@@ -1,10 +1,15 @@
 #include "../game/game_app.h"
+#include "../game/window_owner.h"
 #include "../platform/startup_options.h"
 #include "../game/demo_playback.h"
 #include "../resource/resource_archive.h"
 #include "../engine/graphics_driver.h"
 #include "../engine/memory_arena.h"
+#include "../engine/runtime_init.h"
 #include "../network/safe_vtable.h"
+#include "eff_streams.h"
+#include "cursor_render_client.h"
+#include "variant_resource_manager.h"
 
 extern "C" DWORD WINAPI timeGetTime(void);
 extern void CrtFatalRuntimeError0x19(void);
@@ -12,6 +17,143 @@ extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 extern void NoopVtableCallbackThunk(void);
 extern void VariantResourceBundleNoopThunk(void);
 void SetTimedVariantFrameDuration(void *pObject, int nFrameDuration);
+
+struct NETWORK_EffDispatchEventPayloadView {
+    char m_abReserved00[4];
+    int m_pSerializedStream04;
+    char m_abReserved08[0x1c];
+    void *m_pOwnedPayload24;
+};
+
+struct NETWORK_EffTransportPacketHeader {
+    char m_abReserved00[8];
+    unsigned short m_nStreamEvent08;
+    char m_abReserved0A[6];
+};
+
+struct NETWORK_EffDispatchEvent {
+    volatile unsigned short m_nType;
+    unsigned short m_anReserved02[3];
+    volatile int m_nCode;
+    void *m_pPeer0C;
+    NETWORK_EffDispatchEventPayloadView *m_pPayload10;
+};
+
+struct GAME_BaseModeActionStream : public GAME_EffStream {
+    int m_nActionPhase30;
+};
+
+struct GAME_BaseModeEventClient;
+
+struct GAME_BaseModeDispatchInterface {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual int HandleTransportPayload(
+        unsigned short nStreamEvent,
+        NETWORK_EffDispatchEventPayloadView *pPayload,
+        void *pPeer) = 0;
+    virtual void Reserved0C(void) = 0;
+    virtual int HandleTransportEvent(NETWORK_EffDispatchEvent *pEvent) = 0;
+};
+
+struct GAME_BaseModeEventClient {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual int HandleBaseModeActionButtonEvent(
+        NETWORK_EffDispatchEvent *pEvent);
+
+    int m_nQueueMagic04;
+    int m_nQueueClientCount08;
+    int m_nQueueReserved0C;
+};
+
+struct GAME_BaseModePrimaryBase : public GAME_BaseModeDispatchInterface {
+    int m_nRequestedMode04;
+    int m_nStatus08;
+};
+
+struct GAME_BaseModeObject : public GAME_BaseModePrimaryBase,
+                             public GAME_BaseModeEventClient {
+    int m_fNetworkLobbyActive1C;
+    GAME_BaseModeActionStream *m_pActionStream20;
+    void *m_pMainContext24;
+
+    void QueueBaseModeUserAction(int nAction, int nPhase);
+    void QueueBaseModeUserActionThunk(int nAction, int nPhase);
+};
+
+#define GAME_BASE_MODE_SCREEN_RESERVED(n) virtual void Reserved##n(void) = 0
+
+struct GAME_BaseModeScreenInterface {
+    GAME_BASE_MODE_SCREEN_RESERVED(00);
+    GAME_BASE_MODE_SCREEN_RESERVED(01);
+    GAME_BASE_MODE_SCREEN_RESERVED(02);
+    GAME_BASE_MODE_SCREEN_RESERVED(03);
+    GAME_BASE_MODE_SCREEN_RESERVED(04);
+    GAME_BASE_MODE_SCREEN_RESERVED(05);
+    GAME_BASE_MODE_SCREEN_RESERVED(06);
+    GAME_BASE_MODE_SCREEN_RESERVED(07);
+    GAME_BASE_MODE_SCREEN_RESERVED(08);
+    GAME_BASE_MODE_SCREEN_RESERVED(09);
+    GAME_BASE_MODE_SCREEN_RESERVED(0A);
+    GAME_BASE_MODE_SCREEN_RESERVED(0B);
+    GAME_BASE_MODE_SCREEN_RESERVED(0C);
+    GAME_BASE_MODE_SCREEN_RESERVED(0D);
+    GAME_BASE_MODE_SCREEN_RESERVED(0E);
+    GAME_BASE_MODE_SCREEN_RESERVED(0F);
+    GAME_BASE_MODE_SCREEN_RESERVED(10);
+    GAME_BASE_MODE_SCREEN_RESERVED(11);
+    GAME_BASE_MODE_SCREEN_RESERVED(12);
+    GAME_BASE_MODE_SCREEN_RESERVED(13);
+    GAME_BASE_MODE_SCREEN_RESERVED(14);
+    virtual int HandleUserAction(int nAction) = 0;
+};
+
+#undef GAME_BASE_MODE_SCREEN_RESERVED
+
+struct GAME_BaseModeScreen : public GAME_BaseModeScreenInterface {
+    char m_abReserved04[0x8c];
+    int m_fActionBusy90;
+
+    void QueueActiveBaseModeUserAction(int nAction, int nPhase);
+    void QueueActiveBaseModeUserActionThunk(int nAction, int nPhase);
+    void DispatchBaseModeUserAction(int nAction, int nPhase);
+    void DispatchBaseModeUserActionThunk(int nAction, int nPhase);
+};
+
+#define GAME_RUNTIME_RESERVED(n) virtual void Reserved##n(void) = 0
+
+struct GAME_RuntimeServiceInterface {
+    GAME_RUNTIME_RESERVED(00);
+    GAME_RUNTIME_RESERVED(01);
+    GAME_RUNTIME_RESERVED(02);
+    GAME_RUNTIME_RESERVED(03);
+    GAME_RUNTIME_RESERVED(04);
+    GAME_RUNTIME_RESERVED(05);
+    GAME_RUNTIME_RESERVED(06);
+    GAME_RUNTIME_RESERVED(07);
+    GAME_RUNTIME_RESERVED(08);
+    GAME_RUNTIME_RESERVED(09);
+    GAME_RUNTIME_RESERVED(0A);
+    GAME_RUNTIME_RESERVED(0B);
+    virtual void ServiceRuntime(void) = 0;
+};
+
+#undef GAME_RUNTIME_RESERVED
+
+extern void *g_pActiveNetworkLobbyTransportController;
+extern void *g_pActiveNetworkLobbyScreen;
+extern void *g_pActiveNetworkRuntimeWindow;
+extern void *g_pVariantResourceEntryManager;
+extern int g_nSelectedNetworkLobbyPeerId;
+extern void *g_pSharedGeometryHelper;
+
+// GLOBAL: LEMBALL 0x0049f148
+static const char g_szUnknownUserActionSpecified[] =
+    "Unknown user action specified\n";
+// GLOBAL: LEMBALL 0x0049f168
+static const char g_szUnknownUserActionReceived[] =
+    "Unknown user action received\n";
 
 void *DestroyPackagedRectQueueEntryArray(void *pObject, unsigned int fDelete);
 void ResetBaseModeActionButtonPointSink(void *pObject);
@@ -21,8 +163,8 @@ static void *DeleteQueuedRenderPointSinkWrapper00432350(void *pObject, BYTE fDel
 static void *DeleteQueuedRenderPointSinkThunk00403580(void *pObject, BYTE fDelete);
 static void *DeleteStatusIndicatorPointSinkEntry00432A90(void *pObject, BYTE fDelete);
 static void *DeleteStatusIndicatorPointSinkThunk00401834(void *pObject, BYTE fDelete);
-void RestoreStatusIndicatorPointSinkEntryVtable(void *pObject);
-void RestorePackagedSpriteRenderEntryVtableA(void *pObject);
+void LEMBALL_FASTCALL RestoreStatusIndicatorPointSinkEntryVtable(void *pObject);
+void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableA(void *pObject);
 static void *DestroyStatusIndicatorPointSinkArray00467BB0(void *pObject, unsigned int fDelete);
 static void QueueStatusIndicatorPointSink00432AD0(void *pObject, void *pQueue);
 static void QueueStatusIndicatorPointSinkThunk004018AC(void *pObject, void *pQueue);
@@ -36,6 +178,7 @@ static void QueueHelperLocalRectUpdateEntry00432B10(void *pObject, void *pQueue)
 static void QueueHelperLocalRectUpdateThunk00401E6F(void *pObject, void *pQueue);
 static void DispatchHelperLocalRectUpdateEntry00432B20(void *pObject, void *pContext);
 static void DispatchHelperLocalRectUpdateThunk004037A1(void *pObject, void *pContext);
+// GLOBAL: LEMBALL 0x00496ca8
 static void *g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[8] = {
     (void *)DeleteQueuedRenderPointSinkThunk00403580,
     (void *)CrtFatalRuntimeError0x19,
@@ -56,8 +199,10 @@ static void FinalizeFramedScreenRenderEntry(void *pObject, void *pManager);
 static void FinalizeFramedScreenRenderEntryThunk(void *pObject, void *pManager);
 static void *DeleteBaseModeObjectAdjusted(void *pObject, BYTE fDelete);
 static void *DeleteBaseModeObjectAdjustedThunk(void *pObject, BYTE fDelete);
-static int HandleBaseModeActionButtonEvent(void *pObject, void *pEvent);
-static int HandleBaseModeActionButtonEventThunk(void *pObject, void *pEvent);
+static int LEMBALL_FASTCALL HandleBaseModeActionButtonEventThunk(
+    GAME_BaseModeEventClient *pClient,
+    int nUnused,
+    NETWORK_EffDispatchEvent *pEvent);
 static void *g_LEVEL_CompositePointRectSinkEntryInitVtableStorage[8] = {
     (void *)DeleteFramedScreenRenderChildEntryThunk,
     (void *)QueueFramedScreenRenderEntryThunk,
@@ -341,18 +486,283 @@ static void *DeleteBaseModeObjectAdjustedThunk(void *pObject, BYTE fDelete) {
     return DeleteBaseModeObjectAdjusted(pObject, fDelete);
 }
 
-/* Assumption: callback body is not yet recovered; keep callable return-zero behavior
- * while preserving raw slot/thunk ownership. */
+// FUNCTION: LEMBALL 0x00446860
+void GAME_BaseModeObject::QueueBaseModeUserAction(int nAction, int nPhase) {
+    DWORD dwStart;
+
+    if (m_pActionStream20->m_fWritePending != 0) {
+        dwStart = timeGetTime();
+        while (m_pActionStream20->m_fWritePending != 0 &&
+               timeGetTime() - dwStart < 2000) {
+            ((GAME_RuntimeServiceInterface *)g_pActiveNetworkRuntimeWindow)
+                ->ServiceRuntime();
+        }
+    }
+
+    m_pActionStream20->m_nU32Payload = nAction;
+    m_pActionStream20->m_nActionPhase30 = nPhase;
+    m_pActionStream20->QueueEffStreamWriteEvent(
+        g_nSelectedNetworkLobbyPeerId);
+}
+
+// FUNCTION: LEMBALL 0x00402D1A
+void GAME_BaseModeObject::QueueBaseModeUserActionThunk(int nAction, int nPhase) {
+    QueueBaseModeUserAction(nAction, nPhase);
+}
+
+// FUNCTION: LEMBALL 0x004465E0
+void GAME_BaseModeScreen::QueueActiveBaseModeUserAction(int nAction, int nPhase) {
+    m_fActionBusy90 = 1;
+    ((GAME_BaseModeObject *)g_pActiveNetworkLobbyTransportController)
+        ->QueueBaseModeUserActionThunk(nAction, nPhase);
+}
+
+// FUNCTION: LEMBALL 0x00401FAA
+void GAME_BaseModeScreen::QueueActiveBaseModeUserActionThunk(int nAction, int nPhase) {
+    QueueActiveBaseModeUserAction(nAction, nPhase);
+}
+
+// FUNCTION: LEMBALL 0x00446610
+void GAME_BaseModeScreen::DispatchBaseModeUserAction(int nAction, int nPhase) {
+    switch (nPhase) {
+    case 0:
+        if (m_fActionBusy90 != 0) {
+            QueueActiveBaseModeUserActionThunk(nAction, 2);
+            return;
+        }
+
+        m_fActionBusy90 = 1;
+        QueueActiveBaseModeUserActionThunk(nAction, 1);
+        ((GAME_VariantResourceEntryManager *)g_pVariantResourceEntryManager)
+            ->PlayVariantResourceEffectThunk(0x25);
+        if (HandleUserAction(nAction) == 0) {
+            g_pErrorOutputStream->AppendCStringToStream(
+                g_szUnknownUserActionSpecified);
+        }
+        m_fActionBusy90 = 0;
+        return;
+    case 1:
+        if (HandleUserAction(nAction) == 0) {
+            g_pErrorOutputStream->AppendCStringToStream(
+                g_szUnknownUserActionReceived);
+        }
+        m_fActionBusy90 = 0;
+        return;
+    case 2:
+        m_fActionBusy90 = 0;
+        return;
+    default:
+        return;
+    }
+}
+
+// FUNCTION: LEMBALL 0x004029BE
+void GAME_BaseModeScreen::DispatchBaseModeUserActionThunk(int nAction, int nPhase) {
+    DispatchBaseModeUserAction(nAction, nPhase);
+}
+
 // FUNCTION: LEMBALL 0x004468D0
-static int HandleBaseModeActionButtonEvent(void *pObject, void *pEvent) {
-    (void)pObject;
-    (void)pEvent;
-    return 0;
+int GAME_BaseModeEventClient::HandleBaseModeActionButtonEvent(NETWORK_EffDispatchEvent *pEvent) {
+    GAME_BaseModeObject *pMode;
+    NETWORK_EffDispatchEventPayloadView *pPayload;
+    int nSerializedStream;
+    int nEventType;
+    int nStreamEvent;
+    void *pPeer;
+    int nCode;
+
+    nCode = pEvent->m_nCode;
+    if (g_pActiveNetworkLobbyScreen == 0) {
+        return 0;
+    }
+
+    pMode = (GAME_BaseModeObject *)((char *)this - 0x0c);
+    if (pMode->HandleTransportEvent(pEvent) != 0) {
+        goto handled;
+    }
+    nEventType = pEvent->m_nType;
+    if (nEventType != 5) {
+        return 0;
+    }
+
+    pPeer = pEvent->m_pPeer0C;
+    pPayload = pEvent->m_pPayload10;
+    if (nCode != 0) {
+        return 1;
+    }
+
+    nSerializedStream = pPayload->m_pSerializedStream04;
+    nStreamEvent =
+        ((NETWORK_EffTransportPacketHeader *)(unsigned long)
+             nSerializedStream)
+            ->m_nStreamEvent08;
+    if (nStreamEvent != 8) {
+        return pMode->HandleTransportPayload(
+            nStreamEvent, pPayload, pPeer);
+    }
+
+    (*(GAME_BaseModeActionStream **)((char *)this + 0x14))
+        ->LoadEffStreamFromMemory(nSerializedStream + 0x10);
+    pPayload->m_pOwnedPayload24 = 0;
+    ((GAME_BaseModeScreen *)g_pActiveNetworkLobbyScreen)
+        ->DispatchBaseModeUserActionThunk(
+            (*(GAME_BaseModeActionStream **)((char *)this + 0x14))
+                ->m_nU32Payload,
+            (*(GAME_BaseModeActionStream **)((char *)this + 0x14))
+                ->m_nActionPhase30);
+handled:
+    return 1;
 }
 
 // FUNCTION: LEMBALL 0x0040134D
-static int HandleBaseModeActionButtonEventThunk(void *pObject, void *pEvent) {
-    return HandleBaseModeActionButtonEvent(pObject, pEvent);
+static int LEMBALL_FASTCALL HandleBaseModeActionButtonEventThunk(GAME_BaseModeEventClient *pClient, int, NETWORK_EffDispatchEvent *pEvent) {
+    return pClient->GAME_BaseModeEventClient::HandleBaseModeActionButtonEvent(
+        pEvent);
+}
+
+struct GAME_CursorPositionEvent {
+    unsigned short m_nType;
+    unsigned short m_nReserved02;
+    DWORD m_dwTime;
+    int m_nPackedPosition;
+    int m_nReserved0C;
+    int m_nReserved10;
+};
+
+struct GAME_CursorEventQueueInterface {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void Append(void *pEvent) = 0;
+};
+
+struct GAME_SharedGeometryHelperView {
+    char m_abReserved00[0x14];
+    unsigned int m_dwFlags14;
+};
+
+// FUNCTION: LEMBALL 0x0046BA50
+int VSMATH_Point2D::Equals(const VSMATH_Point2D *pOther) {
+    if (pOther->m_nX == m_nX && pOther->m_nY == m_nY) {
+        return 1;
+    }
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0046B810
+void GAME_CursorRenderClient::TickCursorRenderClientMotion(void) {
+    VSMATH_Point2D PreviousPosition;
+    DWORD dwNow;
+    int nElapsed;
+    int nMaximumVelocity;
+    short nMaximumX;
+    short nMaximumY;
+
+    if (m_fMotionPending38 == 0 &&
+        m_fIdleRefreshPending3C == 0) {
+        RefreshIdleState();
+    }
+
+    if (m_fPrimaryVisible2C == 0 ||
+        ((((GAME_SharedGeometryHelperView *)g_pSharedGeometryHelper)
+              ->m_dwFlags14 & 1) == 0)) {
+        if (m_fSecondaryVisible30 == 0 ||
+            ((((GAME_SharedGeometryHelperView *)g_pSharedGeometryHelper)
+                  ->m_dwFlags14 & 6) == 0)) {
+            return;
+        }
+    }
+    if (m_pRenderResource18 == 0) {
+        return;
+    }
+
+    dwNow = timeGetTime();
+    if (m_Acceleration64.m_nX != 0) {
+        nElapsed = (int)(dwNow - m_dwLastAccelerationXTick6C);
+        m_dwLastAccelerationXTick6C = dwNow;
+        m_Velocity5C.m_nX +=
+            (m_Acceleration64.m_nX * nElapsed) / 20;
+        nMaximumVelocity = m_nMaximumVelocity50;
+        if (nMaximumVelocity < m_Velocity5C.m_nX) {
+            m_Velocity5C.m_nX = nMaximumVelocity;
+        }
+        if (m_Velocity5C.m_nX < -nMaximumVelocity) {
+            m_Velocity5C.m_nX = -nMaximumVelocity;
+        }
+    }
+    if (m_Acceleration64.m_nY != 0) {
+        nElapsed = (int)(dwNow - m_dwLastAccelerationYTick70);
+        m_dwLastAccelerationYTick70 = dwNow;
+        m_Velocity5C.m_nY +=
+            (m_Acceleration64.m_nY * nElapsed) / 20;
+        nMaximumVelocity = m_nMaximumVelocity50;
+        if (nMaximumVelocity < m_Velocity5C.m_nY) {
+            m_Velocity5C.m_nY = nMaximumVelocity;
+        }
+        if (m_Velocity5C.m_nY < -nMaximumVelocity) {
+            m_Velocity5C.m_nY = -nMaximumVelocity;
+        }
+    }
+
+    PreviousPosition.m_nX = m_Position10.m_nX;
+    PreviousPosition.m_nY = m_Position10.m_nY;
+    m_FixedPosition54.m_nX += m_Velocity5C.m_nX;
+    m_FixedPosition54.m_nY += m_Velocity5C.m_nY;
+    m_Position10.m_nX =
+        (short)(m_FixedPosition54.m_nX >> 12);
+    m_Position10.m_nY =
+        (short)(m_FixedPosition54.m_nY >> 12);
+
+    if (m_fSecondaryVisible30 != 0 &&
+        m_Position10.Equals(&PreviousPosition) == 0) {
+        GAME_CursorPositionEvent Event;
+
+        Event.m_nType = 10;
+        Event.m_dwTime = timeGetTime();
+        Event.m_nPackedPosition =
+            PackEventXYWords((unsigned short)m_Position10.m_nX,
+                             m_Position10.m_nY);
+        Event.m_nReserved0C = 0;
+        Event.m_nReserved10 = 0;
+        ((GAME_CursorEventQueueInterface *)g_pSharedRenderDispatchQueue)
+            ->Append(&Event);
+    }
+
+    if ((int)m_BoundsSize74.m_nX *
+            (int)m_BoundsSize74.m_nY != 0) {
+        if (!(m_BoundsOrigin78.m_nX <= m_Position10.m_nX &&
+              m_Position10.m_nX <
+                  (short)(m_BoundsOrigin78.m_nX +
+                          m_BoundsSize74.m_nX) &&
+              m_BoundsOrigin78.m_nY <= m_Position10.m_nY &&
+              m_Position10.m_nY <
+                  (short)(m_BoundsOrigin78.m_nY +
+                          m_BoundsSize74.m_nY))) {
+            VSMATH_Fixed12Vector2D FixedPosition;
+
+            if (m_Position10.m_nX < m_BoundsOrigin78.m_nX) {
+                m_Position10.m_nX = m_BoundsOrigin78.m_nX;
+            }
+            if (m_Position10.m_nY < m_BoundsOrigin78.m_nY) {
+                m_Position10.m_nY = m_BoundsOrigin78.m_nY;
+            }
+
+            nMaximumX = (short)(m_BoundsOrigin78.m_nX +
+                                m_BoundsSize74.m_nX - 1);
+            nMaximumY = (short)(m_BoundsOrigin78.m_nY +
+                                m_BoundsSize74.m_nY - 1);
+            if (nMaximumX < m_Position10.m_nX) {
+                m_Position10.m_nX = nMaximumX;
+            }
+            if (nMaximumY < m_Position10.m_nY) {
+                m_Position10.m_nY = nMaximumY;
+            }
+
+            FixedPosition.InitializeFromPixelsThunk(
+                m_Position10.m_nX, m_Position10.m_nY);
+            m_FixedPosition54 = FixedPosition;
+        }
+    }
+    m_fMotionPending38 = 0;
 }
 
 // FUNCTION: LEMBALL 0x00447170
@@ -1217,29 +1627,123 @@ void *InitializeLevelSelectionPointRectSinkEntry(void *pObject) {
     return pObject;
 }
 
+// FUNCTION: LEMBALL 0x00447260
+void LEMBALL_FASTCALL RestoreFramedScreenRenderChildEntryVtableBody(void *pObject) {
+    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+}
+
 // FUNCTION: LEMBALL 0x00401974
-void RestoreFramedScreenRenderChildEntryVtable(void *pObject) {
-    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+void LEMBALL_FASTCALL RestoreFramedScreenRenderChildEntryVtable(void *pObject) {
+    RestoreFramedScreenRenderChildEntryVtableBody(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00439710
+void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableABody(void *pObject) {
+    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
 
 // FUNCTION: LEMBALL 0x00401DDE
-void RestorePackagedSpriteRenderEntryVtableA(void *pObject) {
-    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableA(void *pObject) {
+    RestorePackagedSpriteRenderEntryVtableABody(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00439720
+void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableBBody(void *pObject) {
+    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+}
+
+// FUNCTION: LEMBALL 0x00401D11
+void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableB(void *pObject) {
+    RestorePackagedSpriteRenderEntryVtableBBody(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00439730
+void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableCBody(void *pObject) {
+    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+}
+
+// FUNCTION: LEMBALL 0x00402E19
+void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableC(void *pObject) {
+    RestorePackagedSpriteRenderEntryVtableCBody(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00439740
+void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableDBody(void *pObject) {
+    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+}
+
+// FUNCTION: LEMBALL 0x004018B1
+void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableD(void *pObject) {
+    RestorePackagedSpriteRenderEntryVtableDBody(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00439750
+void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableEBody(void *pObject) {
+    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
 
 // FUNCTION: LEMBALL 0x00401B8B
-void RestorePackagedSpriteRenderEntryVtableE(void *pObject) {
-    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableE(void *pObject) {
+    RestorePackagedSpriteRenderEntryVtableEBody(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00432AC0
+void LEMBALL_FASTCALL RestoreStatusIndicatorPointSinkEntryVtableBody(void *pObject) {
+    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
 
 // FUNCTION: LEMBALL 0x00401307
-void RestoreStatusIndicatorPointSinkEntryVtable(void *pObject) {
-    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+void LEMBALL_FASTCALL RestoreStatusIndicatorPointSinkEntryVtable(void *pObject) {
+    RestoreStatusIndicatorPointSinkEntryVtableBody(pObject);
+}
+
+// FUNCTION: LEMBALL 0x0044A9C0
+void LEMBALL_FASTCALL RestoreLevelSelectionRenderChildEntryVtableBody(void *pObject) {
+    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+}
+
+// FUNCTION: LEMBALL 0x00403558
+void LEMBALL_FASTCALL RestoreLevelSelectionRenderChildEntryVtable(void *pObject) {
+    RestoreLevelSelectionRenderChildEntryVtableBody(pObject);
+}
+
+// FUNCTION: LEMBALL 0x0044B630
+void LEMBALL_FASTCALL RestoreLevelSelectionPointSinkFinalizeVtableBody(void *pObject) {
+    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
 
 // FUNCTION: LEMBALL 0x004022A2
-void RestoreLevelSelectionPointSinkFinalizeVtable(void *pObject) {
-    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+void LEMBALL_FASTCALL RestoreLevelSelectionPointSinkFinalizeVtable(void *pObject) {
+    RestoreLevelSelectionPointSinkFinalizeVtableBody(pObject);
+}
+
+// FUNCTION: LEMBALL 0x004511A0
+void LEMBALL_FASTCALL RestoreCompositePointRectSinkFinalizeVtablesBody(void *pObject) {
+    *(void **)((char *)pObject + 0x24) =
+        g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+}
+
+// FUNCTION: LEMBALL 0x00401848
+void LEMBALL_FASTCALL RestoreCompositePointRectSinkFinalizeVtables(void *pObject) {
+    RestoreCompositePointRectSinkFinalizeVtablesBody(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00467BA0
+void LEMBALL_FASTCALL ResetPackagedRectQueueEntryVtable(void *pObject) {
+    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+}
+
+// FUNCTION: LEMBALL 0x004698F0
+void LEMBALL_FASTCALL RestoreQueuedRenderPointSinkVtable(void *pObject) {
+    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+}
+
+// FUNCTION: LEMBALL 0x00469BF0
+void LEMBALL_FASTCALL ResetLevelScreenDrawEntryVtables(void *pObject) {
+    *(void **)((char *)pObject + 0x2c) =
+        g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
 
 // FUNCTION: LEMBALL 0x004673D0

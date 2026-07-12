@@ -5,14 +5,52 @@
 
 extern void LEMBALL_FASTCALL EnsureHelperGroup0BackingBuffer(int nHelperGroup);
 extern void LEMBALL_FASTCALL ReleaseHelperGroup0BackingBuffer(int nHelperGroup);
+extern void *g_GAME_PrimaryContextMenuDefinitionTable[];
 
-/* FUNCTION: LEMBALL 0x00431EB0 */
-int __cdecl GetPrimaryContextMenuDefinition(unsigned int *pMenuId,
-                                             const char **ppWindowTitle) {
+// FUNCTION: LEMBALL 0x00431EB0
+int __stdcall GetPrimaryContextMenuDefinition(unsigned int *pMenuId, void **ppMenuDefinition) {
     *pMenuId = 0x73;
-    *ppWindowTitle = (const char *)(unsigned long)0x0049e718;
+    *ppMenuDefinition = g_GAME_PrimaryContextMenuDefinitionTable;
     return 1;
 }
+
+struct GAME_MenuDefinitionEntry {
+    const char *m_pszText;
+    unsigned int m_uCommandId;
+    int m_nPosition;
+    int m_fEnabled;
+    int m_nReserved10;
+    int m_nReserved14;
+};
+
+static GAME_MenuDefinitionEntry g_GAME_FileMenuDefinition[] = {
+    {"&File", 0, 0, 1, 0, 0},
+    {"E&xit", 0x9c41, 1, 1, 0, 0},
+    {0, 0, 0, 0, 0, 0},
+};
+
+static GAME_MenuDefinitionEntry g_GAME_OptionsMenuDefinition[] = {
+    {"&Options", 0, 0, 1, 0, 0},
+    {"Full Screen      F4", 0x9c4c, 5, 1, 0, 0},
+    {0, 0, 0, 0, 0, 0},
+};
+
+static GAME_MenuDefinitionEntry g_GAME_HelpMenuDefinition[] = {
+    {"&Help", 0, 0, 1, 0, 0},
+    {"&Contents", 0x9c43, 2, 1, 0, 0},
+    {"&Search Topic", 0x9c50, 3, 1, 0, 0},
+    {"H&elp On Help", 0x9c4d, 6, 1, 0, 0},
+    {"&About...", 0x9c4b, 4, 1, 0, 0},
+    {0, 0, 0, 0, 0, 0},
+};
+
+// GLOBAL: LEMBALL 0x0049e718
+void *g_GAME_PrimaryContextMenuDefinitionTable[] = {
+    g_GAME_FileMenuDefinition,
+    g_GAME_OptionsMenuDefinition,
+    g_GAME_HelpMenuDefinition,
+    0,
+};
 
 /* FUNCTION: LEMBALL 0x004654F0 */
 unsigned int MapWindowOwnerFlagsToWin32Style(unsigned int uFlags) {

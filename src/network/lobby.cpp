@@ -1,4 +1,5 @@
 #include "../game/game_app.h"
+#include "../game/eff_streams.h"
 #include "../engine/runtime_init.h"
 
 static const char *g_NETWORK_GameConnectionRequestDuringGameText;
@@ -59,10 +60,6 @@ struct NETWORK_EffTransportPeer {
     NETWORK_EffTransportPeerDescriptor *m_pDescriptor;
 
     void Close(void);
-};
-
-struct GAME_EffStream {
-    int LoadEffStreamFromMemory(int nSourceBuffer);
 };
 
 struct NETWORK_EffTransportPeerStateSlot {
@@ -174,7 +171,6 @@ extern void *g_pNetworkLobbyTransportController;
 extern void *g_pActiveNetworkLobbyScreen;
 extern void *g_pNetworkLobbyVsnetRuntime;
 
-extern void QueueEffStreamWriteEvent(void *pObject, int nPayload);
 extern void MarkNetworkLobbySelectedPeerDisconnected(void *pVsnetRuntime);
 extern void SetGeometryChildEnabled(void *pGeometryChild, int fEnabled);
 void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen);
@@ -450,8 +446,10 @@ int HandleNetworkLobbyVsnetRuntimeEvent(void *pVsnetRuntime, unsigned short *pEv
                 *pnTrackedPeer = nPeer;
                 g_pszPendingNetworkLobbyStatusText =
                     g_fNetworkLobbyScreenActive >= 1 ? (char *)g_NETWORK_LobbyConnectionAcceptedText : 0;
-                QueueEffStreamWriteEvent((void *)(unsigned long)((int)(unsigned long)pRuntime->m_pPeerEntryTable + nSlot * 0x50),
-                                         *pnTrackedPeer);
+                ((GAME_EffStream *)(unsigned long)
+                     ((int)(unsigned long)pRuntime->m_pPeerEntryTable +
+                      nSlot * 0x50))
+                    ->QueueEffStreamWriteEvent(*pnTrackedPeer);
                 pRuntime->m_fSelectionNeedsReset = 1;
             } else {
                 ((NETWORK_EffTransportPeer *)(unsigned long)nPeer)->Close();

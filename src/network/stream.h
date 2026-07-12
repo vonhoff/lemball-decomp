@@ -62,13 +62,22 @@ struct NETWORK_EffStreamBase : NETWORK_EffStreamCore {
 
     void WriteEffStreamU32BE(unsigned int nValue);
     void WriteEffStreamU16BE(unsigned short nValue);
+    void WriteEffStreamU8(unsigned char nValue);
     void WriteEffStreamBytes(const void *pvSource, unsigned int cbWrite);
     void WriteEffStreamCString(const char *pszSource);
     void ReadEffStreamU32BE(unsigned char *pbTarget);
     unsigned int ReadEffStreamU32BEValue(void);
+    void SwapEffStreamU32BEAndAdvance(void);
     void ReadEffStreamU16BE(unsigned char *pbTarget);
+    unsigned short ReadEffStreamU16BEValue(void);
+    void SwapEffStreamU16BEAndAdvance(void);
+    void ReadEffStreamU8(unsigned char *pbTarget);
+    unsigned char ReadEffStreamU8Value(void);
+    void AdvanceEffStreamReadCursorByte(void);
+    void ReadEffStreamRangePointer(void **ppvTarget, int cbRead);
     void ReadEffStreamBytes(void *pvTarget, unsigned int cbRead);
     void ReadEffStreamCString(char **ppszTarget);
+    void ReadEffStreamCStringIntoBuffer(char *pszTarget);
     int SaveEffStreamToMemoryRange(int nTargetBuffer, int cbRange);
     NETWORK_EffStreamBase *ConstructEffStreamBase(void);
     void DestroyEffStreamBase(void);

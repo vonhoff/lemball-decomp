@@ -3,11 +3,6 @@
 // Temporary link scaffold for report generation only.
 // These definitions are not binary-backed and must not carry reccmp markers.
 
-void BuildSpecialLevelTileGridStaticRenderEntriesThunk(void *pRenderList, void *pTileGrid) {
-    (void)pRenderList;
-    (void)pTileGrid;
-}
-
 void InitializeNetworkPlayerPlasChunkObjectPoolThunk(void *pPlasManager) {
     (void)pPlasManager;
 }
@@ -19,22 +14,7 @@ void LoadLevelChunksForSkillAndLevelThunk(void *pLoaderContext, unsigned int nSk
     (void)fReuseState;
 }
 
-void *ConstructLevelChunkLoaderContextThunk(void *pObject, int nLevelMode) {
-    (void)nLevelMode;
-    return pObject;
-}
-
 void *ConstructInvsChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
-    (void)pLevelMode;
-    (void)nCapacity;
-    return pObject;
-}
-
-void ResetType35ChunkObjectsThunk(void *pObject) {
-    (void)pObject;
-}
-
-void *ConstructSlnkChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
     (void)pLevelMode;
     (void)nCapacity;
     return pObject;
@@ -66,10 +46,6 @@ void *ConstructBoonChunkManagerThunk(void *pObject, void *pLevelMode, void *pTil
     (void)pLevelMode;
     (void)pTileGrid;
     return pObject;
-}
-
-void ResetLevelField194TimerBlockThunk(void *pObject) {
-    (void)pObject;
 }
 
 void *ConstructLasrChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
@@ -108,34 +84,11 @@ void *ConstructCollChunkManagerThunk(void *pObject, void *pLevelMode, int nCapac
     return pObject;
 }
 
-void *ConstructBallChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
-    (void)pLevelMode;
-    (void)nCapacity;
-    return pObject;
-}
-
-void ResetNodeChunkRecordsThunk(void *pNodeManager) {
-    (void)pNodeManager;
-}
-
-void *ConstructNodeChunkManagerThunk(void *pObject, int nCapacity) {
-    (void)nCapacity;
-    return pObject;
-}
-
-void ActivateNestedChildrenFromOwnerTableVariantThunk(void *pObject) {
-    (void)pObject;
-}
-
 void *ConstructEnmyChunkManagerThunk(void *pObject, void *pLevelMode, void *pGmobManager, void *pProjectileGeometryTable) {
     (void)pLevelMode;
     (void)pGmobManager;
     (void)pProjectileGeometryTable;
     return pObject;
-}
-
-void ActivateNestedChildrenFromOwnerTableA4Thunk(void *pObject) {
-    (void)pObject;
 }
 
 void *ConstructShpgChunkManagerThunk(void *pObject, void *pLevelMode, void *pGmobManager, void *pProjectileGeometryTable) {
@@ -161,14 +114,6 @@ void *ConstructPlasChunkManagerThunk(void *pObject, void *pLevelMode, void *pGmo
     (void)pGmobManager;
     (void)pProjectileGeometryTable;
     return pObject;
-}
-
-void ClearProjectileGeometryField100Thunk(void *pTable) {
-    (void)pTable;
-}
-
-int *InitializeProjectileGeometryPairTableThunk(int *pTable) {
-    return pTable;
 }
 
 void *ConstructGmobChunkManagerThunk(void *pObject, void *pLevelMode) {

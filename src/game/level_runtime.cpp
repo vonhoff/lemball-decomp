@@ -2,6 +2,10 @@
 #include "../engine/memory_arena.h"
 #include "../network/stream.h"
 #include "../network/safe_vtable.h"
+#include "eff_streams.h"
+#include "level_runtime.h"
+
+#include <stdlib.h>
 
 extern "C" DWORD WINAPI timeGetTime(void);
 
@@ -12,6 +16,28 @@ int g_nLevelFrameClockTimeMs = 0;
 int g_nLevelFrameClockDemoTimeMs = 0;
 int g_nLevelFrameClockTimeBaseMs = 0;
 int g_nLevelFrameClockTickBase = 0;
+// GLOBAL: LEMBALL 0x0049e1bc
+LEVEL_BallChunkManager *g_pBallChunkManager = 0;
+// GLOBAL: LEMBALL 0x004a63fc
+char *g_pszActiveLevelFilePath = 0;
+// GLOBAL: LEMBALL 0x004a6400
+void *g_pLoadedLevelFileBuffer = 0;
+
+// GLOBAL: LEMBALL 0x0049e0d0
+static int g_LEVEL_ProjectileGeometryPairSeeds[3][8][2] = {
+    {
+        {0, 0}, {-16, 0}, {-32, 0}, {-48, 0},
+        {-64, 0}, {-80, 0}, {-96, 0}, {-112, 0}
+    },
+    {
+        {0, 0}, {-24, -16}, {-24, 16}, {-48, -32},
+        {-48, 32}, {-72, -48}, {-72, 48}, {-96, -64}
+    },
+    {
+        {0, 0}, {-24, -24}, {-24, 0}, {-24, 24},
+        {-48, -48}, {-48, -24}, {-48, 0}, {-48, 24}
+    }
+};
 
 int g_fLevelEndStateRequestLatched = 0;
 void *g_pActiveManagedEntityOwner = 0;
@@ -19,10 +45,505 @@ static unsigned char *g_GAME_ManagedEntitySlotBitMasks;
 static unsigned char *g_GAME_ManagedEntitySlotClaimBitset;
 static unsigned short *g_GAME_ManagedEntityRegistryCount;
 static int *g_GAME_ManagedEntityRegistryTable;
+
+struct LEVEL_LevelTileCell {
+    int m_nType00;
+    short m_nReserved04;
+    unsigned short m_nFlags06;
+    short m_nReserved08;
+    short m_nReserved0A;
+};
+
+struct LEVEL_LevelTileGridStaticView {
+    char m_abReserved00[0x0c];
+    LEVEL_LevelTileCell *m_pCells0C;
+    int m_cColumns10;
+    int m_cRows14;
+
+    unsigned short GetTileFlags(int x, int y) const {
+        if (x < 0 || y < 0 || x >= m_cColumns10 || y >= m_cRows14) {
+            return 3;
+        }
+        return m_pCells0C[y * m_cColumns10 + x].m_nFlags06;
+    }
+};
+
+// FUNCTION: LEMBALL 0x00409910
+static int __cdecl CompareLevelTileGridStaticRenderEntrySortKeys(
+    const void *pLeft,
+    const void *pRight)
+{
+    const LEVEL_TileGridStaticRenderEntry *pLeftEntry;
+    const LEVEL_TileGridStaticRenderEntry *pRightEntry;
+
+    pLeftEntry = (const LEVEL_TileGridStaticRenderEntry *)pLeft;
+    pRightEntry = (const LEVEL_TileGridStaticRenderEntry *)pRight;
+    return (unsigned int)pLeftEntry->m_nSortKey04 -
+           (unsigned int)pRightEntry->m_nSortKey04;
+}
+
+// FUNCTION: LEMBALL 0x00409930
+void LEVEL_SpecialTileGridStaticRenderList::BuildSpecialLevelTileGridStaticRenderEntries(
+    LEVEL_LevelTileGridStaticView *pTileGrid)
+{
+    LEVEL_LevelTileCell *pCell;
+    LEVEL_TileGridStaticRenderEntry *pEntry;
+    int cEntries;
+    int iEntry;
+    int x;
+    int y;
+    short nSortOffset;
+    int nTileType;
+    int cColumns;
+    int cRows;
+
+    cEntries = 0;
+    cColumns = pTileGrid->m_cColumns10;
+    cRows = pTileGrid->m_cRows14;
+    y = 0;
+    if (0 < cRows) {
+        do {
+            x = 0;
+            while (x < cColumns) {
+                pCell = pTileGrid->m_pCells0C +
+                        y * pTileGrid->m_cColumns10 + x;
+                switch (pCell->m_nType00) {
+                case 0x210:
+                case 0x215:
+                case 0x216:
+                case 0x219:
+                case 0x21a:
+                    ++cEntries;
+                    break;
+                default:
+                    if ((pTileGrid->GetTileFlags(x, y) & 0x20) != 0) {
+                        ++cEntries;
+                    }
+                    break;
+                }
+                ++x;
+            }
+            ++y;
+        } while (y < cRows);
+    }
+
+    m_cEntries04 = cEntries;
+    if (cEntries == 0) {
+        m_pEntries00 = 0;
+        return;
+    }
+    if (m_pEntries00 == 0) {
+        m_pEntries00 = (LEVEL_TileGridStaticRenderEntry *)
+            AllocateVSMemBlock(cEntries * sizeof(LEVEL_TileGridStaticRenderEntry));
+    }
+
+    iEntry = 0;
+    y = 0;
+    if (0 < cRows) {
+        do {
+            x = 0;
+            while (x < cColumns) {
+                pCell = pTileGrid->m_pCells0C +
+                        y * pTileGrid->m_cColumns10 + x;
+                nTileType = pCell->m_nType00;
+                switch (nTileType) {
+                case 0x210:
+                case 0x215:
+                case 0x216:
+                case 0x219:
+                case 0x21a:
+                    pEntry = m_pEntries00 + iEntry++;
+                    pEntry->m_nTileX00 = (short)x;
+                    pEntry->m_nTileY02 = (short)y;
+                    pEntry->m_nSortKey04 = (unsigned short)((x + y) << 6);
+                    pEntry->m_pTileCell08 = pCell;
+                    break;
+                default:
+                    if ((pTileGrid->GetTileFlags(x, y) & 0x20) == 0) {
+                        break;
+                    }
+                    nSortOffset = 0;
+                    switch (nTileType) {
+                    case 0x202:
+                        nSortOffset = 0x20;
+                        break;
+                    case 0x206:
+                        nSortOffset = 0x10;
+                        break;
+                    case 0x207:
+                    case 0x20a:
+                        nSortOffset = 8;
+                        break;
+                    }
+                    pEntry = m_pEntries00 + iEntry++;
+                    pEntry->m_nTileX00 = (short)x;
+                    pEntry->m_nTileY02 = (short)y;
+                    pEntry->m_nSortKey04 =
+                        (unsigned short)(((x + y) << 6) + nSortOffset);
+                    pEntry->m_pTileCell08 = pCell;
+                    break;
+                }
+                ++x;
+            }
+            ++y;
+        } while (y < cRows);
+    }
+
+    qsort(m_pEntries00,
+          m_cEntries04,
+          sizeof(LEVEL_TileGridStaticRenderEntry),
+          CompareLevelTileGridStaticRenderEntrySortKeys);
+}
+
+// FUNCTION: LEMBALL 0x004012FD
+void LEVEL_SpecialTileGridStaticRenderList::BuildSpecialLevelTileGridStaticRenderEntriesThunk(
+    LEVEL_LevelTileGridStaticView *pTileGrid)
+{
+    BuildSpecialLevelTileGridStaticRenderEntries(pTileGrid);
+}
 static int *g_GAME_SelectedNetworkLobbyPeerId;
 
 void *g_pLiftTileGrid = 0;
 void *g_pAnimChunkTileGrid = 0;
+
+// FUNCTION: LEMBALL 0x0041A3C0
+LEVEL_ProjectileGeometryPair *LEVEL_ProjectileGeometryPair::InitializeSentinel(void) {
+    m_nX = 0xaa55aa55;
+    m_nY = 0xaa55aa55;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x00402DE2
+LEVEL_ProjectileGeometryPair *LEVEL_ProjectileGeometryPair::InitializeSentinelThunk(void) {
+    return InitializeSentinel();
+}
+
+// FUNCTION: LEMBALL 0x0041A140
+LEVEL_ProjectileGeometryPairTable *LEVEL_ProjectileGeometryPairTable::InitializeProjectileGeometryPairTable(void) {
+    int i;
+    int j;
+    LEVEL_ProjectileGeometryPair *pPair;
+
+    for (i = 0; i < 24; ++i) {
+        m_aPrimaryPairs00[i].InitializeSentinelThunk();
+    }
+    for (i = 0; i < 8; ++i) {
+        m_aSecondaryPairsC0[i].InitializeSentinelThunk();
+    }
+
+    pPair = m_aPrimaryPairs00;
+    for (i = 0; i < 3; ++i) {
+        for (j = 0; j < 8; ++j) {
+            pPair->m_nX = g_LEVEL_ProjectileGeometryPairSeeds[i][j][0] << 12;
+            pPair->m_nY = g_LEVEL_ProjectileGeometryPairSeeds[i][j][1] << 12;
+            ++pPair;
+        }
+    }
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x00402752
+LEVEL_ProjectileGeometryPairTable *LEVEL_ProjectileGeometryPairTable::InitializeProjectileGeometryPairTableThunk(void) {
+    return InitializeProjectileGeometryPairTable();
+}
+
+// FUNCTION: LEMBALL 0x0041A1B0
+void LEVEL_ProjectileGeometryPairTable::ClearProjectileGeometryField100(void) {
+    m_nReserved100 = 0;
+}
+
+// FUNCTION: LEMBALL 0x00402E78
+void LEVEL_ProjectileGeometryPairTable::ClearProjectileGeometryField100Thunk(void) {
+    ClearProjectileGeometryField100();
+}
+
+// FUNCTION: LEMBALL 0x00421300
+void LEVEL_NodeChunkRecord::ResetNodeChunkRecordLinkCount(void) {
+    m_cLinks10 = 0;
+}
+
+// FUNCTION: LEMBALL 0x00401230
+void LEVEL_NodeChunkRecord::ResetNodeChunkRecordLinkCountThunk(void) {
+    ResetNodeChunkRecordLinkCount();
+}
+
+// FUNCTION: LEMBALL 0x00421180
+LEVEL_NodeChunkManager *LEVEL_NodeChunkManager::ConstructNodeChunkManager(int cCapacity) {
+    m_pRecords00 = 0;
+    m_cCapacity08 = cCapacity;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x004015E1
+LEVEL_NodeChunkManager *LEVEL_NodeChunkManager::ConstructNodeChunkManagerThunk(int cCapacity) {
+    return ConstructNodeChunkManager(cCapacity);
+}
+
+// FUNCTION: LEMBALL 0x004211A0
+void LEVEL_NodeChunkManager::ResetNodeChunkRecords(void) {
+    int i;
+
+    if (m_pRecords00 != 0 && 0 < m_cCapacity08) {
+        for (i = 0; i < m_cCapacity08; ++i) {
+            m_pRecords00[i].ResetNodeChunkRecordLinkCountThunk();
+        }
+    }
+}
+
+// FUNCTION: LEMBALL 0x00402748
+void LEVEL_NodeChunkManager::ResetNodeChunkRecordsThunk(void) {
+    ResetNodeChunkRecords();
+}
+
+// FUNCTION: LEMBALL 0x0040B8E0
+LEVEL_SlnkChunkManager *LEVEL_SlnkChunkManager::ConstructSlnkChunkManager(void *pLevelMode, int cCapacity) {
+    m_pLevelMode00 = pLevelMode;
+    m_cCapacity08 = cCapacity;
+    m_pObjects04 = 0;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x00403454
+LEVEL_SlnkChunkManager *LEVEL_SlnkChunkManager::ConstructSlnkChunkManagerThunk(void *pLevelMode, int cCapacity) {
+    return ConstructSlnkChunkManager(pLevelMode, cCapacity);
+}
+
+// FUNCTION: LEMBALL 0x00421EA0
+LEVEL_BallChunkManager *LEVEL_BallChunkManager::ConstructBallChunkManager(void *pLevelMode, int cCapacity) {
+    m_pLevelMode00 = pLevelMode;
+    g_pBallChunkManager = this;
+    m_pObjects04 = 0;
+    m_cCapacity0C = cCapacity;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x004037D8
+LEVEL_BallChunkManager *LEVEL_BallChunkManager::ConstructBallChunkManagerThunk(void *pLevelMode, int cCapacity) {
+    return ConstructBallChunkManager(pLevelMode, cCapacity);
+}
+
+// FUNCTION: LEMBALL 0x0040CF10
+void LEVEL_Field194TimerBlock::ResetLevelField194TimerBlock(void) {
+    int nNextTick;
+
+    nNextTick = g_nLevelFrameClockTick;
+    m_nReserved04 = 0;
+    m_fActive12C8 = 1;
+    m_nNextTick00 = nNextTick + 2;
+}
+
+// FUNCTION: LEMBALL 0x004034EF
+void LEVEL_Field194TimerBlock::ResetLevelField194TimerBlockThunk(void) {
+    ResetLevelField194TimerBlock();
+}
+
+// FUNCTION: LEMBALL 0x00412F00
+void *LEMBALL_FASTCALL GetLevelGameModeOwner(void *pLevelMode) {
+    return *(void **)((char *)pLevelMode + 0x154);
+}
+
+// FUNCTION: LEMBALL 0x0040117C
+void *LEMBALL_FASTCALL GetLevelGameModeOwnerThunk(void *pLevelMode) {
+    return GetLevelGameModeOwner(pLevelMode);
+}
+
+// FUNCTION: LEMBALL 0x00408210
+LEVEL_ChunkLoaderContext *LEVEL_ChunkLoaderContext::ConstructLevelChunkLoaderContext(void *pLevelMode) {
+    m_pLevelMode00 = pLevelMode;
+    m_nFallbackLevel04 = 0;
+    g_pLoadedLevelFileBuffer = 0;
+    g_pszActiveLevelFilePath =
+        (char *)GetLevelGameModeOwnerThunk(m_pLevelMode00);
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x004024D2
+LEVEL_ChunkLoaderContext *LEVEL_ChunkLoaderContext::ConstructLevelChunkLoaderContextThunk(void *pLevelMode) {
+    return ConstructLevelChunkLoaderContext(pLevelMode);
+}
+
+#define LEVEL_RESERVED_VIRTUAL(n) virtual void Reserved##n(void) = 0
+
+struct LEVEL_VirtualSlots00Through40 {
+    LEVEL_RESERVED_VIRTUAL(00);
+    LEVEL_RESERVED_VIRTUAL(01);
+    LEVEL_RESERVED_VIRTUAL(02);
+    LEVEL_RESERVED_VIRTUAL(03);
+    LEVEL_RESERVED_VIRTUAL(04);
+    LEVEL_RESERVED_VIRTUAL(05);
+    LEVEL_RESERVED_VIRTUAL(06);
+    LEVEL_RESERVED_VIRTUAL(07);
+    LEVEL_RESERVED_VIRTUAL(08);
+    LEVEL_RESERVED_VIRTUAL(09);
+    LEVEL_RESERVED_VIRTUAL(0A);
+    LEVEL_RESERVED_VIRTUAL(0B);
+    LEVEL_RESERVED_VIRTUAL(0C);
+    LEVEL_RESERVED_VIRTUAL(0D);
+    LEVEL_RESERVED_VIRTUAL(0E);
+    LEVEL_RESERVED_VIRTUAL(0F);
+    LEVEL_RESERVED_VIRTUAL(10);
+    LEVEL_RESERVED_VIRTUAL(11);
+    LEVEL_RESERVED_VIRTUAL(12);
+    LEVEL_RESERVED_VIRTUAL(13);
+    LEVEL_RESERVED_VIRTUAL(14);
+    LEVEL_RESERVED_VIRTUAL(15);
+    LEVEL_RESERVED_VIRTUAL(16);
+    LEVEL_RESERVED_VIRTUAL(17);
+    LEVEL_RESERVED_VIRTUAL(18);
+    LEVEL_RESERVED_VIRTUAL(19);
+    LEVEL_RESERVED_VIRTUAL(1A);
+    LEVEL_RESERVED_VIRTUAL(1B);
+    LEVEL_RESERVED_VIRTUAL(1C);
+    LEVEL_RESERVED_VIRTUAL(1D);
+    LEVEL_RESERVED_VIRTUAL(1E);
+    LEVEL_RESERVED_VIRTUAL(1F);
+    LEVEL_RESERVED_VIRTUAL(20);
+    LEVEL_RESERVED_VIRTUAL(21);
+    LEVEL_RESERVED_VIRTUAL(22);
+    LEVEL_RESERVED_VIRTUAL(23);
+    LEVEL_RESERVED_VIRTUAL(24);
+    LEVEL_RESERVED_VIRTUAL(25);
+    LEVEL_RESERVED_VIRTUAL(26);
+    LEVEL_RESERVED_VIRTUAL(27);
+    LEVEL_RESERVED_VIRTUAL(28);
+    LEVEL_RESERVED_VIRTUAL(29);
+    LEVEL_RESERVED_VIRTUAL(2A);
+    LEVEL_RESERVED_VIRTUAL(2B);
+    LEVEL_RESERVED_VIRTUAL(2C);
+    LEVEL_RESERVED_VIRTUAL(2D);
+    LEVEL_RESERVED_VIRTUAL(2E);
+    LEVEL_RESERVED_VIRTUAL(2F);
+    LEVEL_RESERVED_VIRTUAL(30);
+    LEVEL_RESERVED_VIRTUAL(31);
+    LEVEL_RESERVED_VIRTUAL(32);
+    LEVEL_RESERVED_VIRTUAL(33);
+    LEVEL_RESERVED_VIRTUAL(34);
+    LEVEL_RESERVED_VIRTUAL(35);
+    LEVEL_RESERVED_VIRTUAL(36);
+    LEVEL_RESERVED_VIRTUAL(37);
+    LEVEL_RESERVED_VIRTUAL(38);
+    LEVEL_RESERVED_VIRTUAL(39);
+    LEVEL_RESERVED_VIRTUAL(3A);
+    LEVEL_RESERVED_VIRTUAL(3B);
+    LEVEL_RESERVED_VIRTUAL(3C);
+    LEVEL_RESERVED_VIRTUAL(3D);
+    LEVEL_RESERVED_VIRTUAL(3E);
+    LEVEL_RESERVED_VIRTUAL(3F);
+    LEVEL_RESERVED_VIRTUAL(40);
+};
+
+struct LEVEL_NestedChildInterface : public LEVEL_VirtualSlots00Through40 {
+    virtual void Activate(void) = 0;
+};
+
+struct LEVEL_Type35ChunkObject : public LEVEL_VirtualSlots00Through40 {
+    virtual void Reset(void) = 0;
+    char m_abReserved04[0x14c];
+};
+
+struct LEVEL_NestedOwnerInterface : public LEVEL_VirtualSlots00Through40 {
+    LEVEL_RESERVED_VIRTUAL(41);
+    virtual int GetNestedChildCount(void) = 0;
+    LEVEL_RESERVED_VIRTUAL(43);
+    LEVEL_RESERVED_VIRTUAL(44);
+    LEVEL_RESERVED_VIRTUAL(45);
+    LEVEL_RESERVED_VIRTUAL(46);
+    LEVEL_RESERVED_VIRTUAL(47);
+    virtual LEVEL_NestedChildInterface *GetNestedChild(int nIndex) = 0;
+};
+
+#undef LEVEL_RESERVED_VIRTUAL
+
+// FUNCTION: LEMBALL 0x0040B900
+void LEVEL_SlnkChunkManager::ResetType35ChunkObjects(void) {
+    int i;
+    int nObjectOffset;
+
+    nObjectOffset = 0;
+    if (m_pObjects04 != 0) {
+        i = 0;
+        if (0 < m_cCapacity08) {
+            do {
+                ((LEVEL_Type35ChunkObject *)
+                     ((char *)m_pObjects04 + nObjectOffset))
+                    ->Reset();
+                ++i;
+                nObjectOffset += 0x150;
+            } while (i < m_cCapacity08);
+        }
+    }
+}
+
+// FUNCTION: LEMBALL 0x00402A86
+void LEVEL_SlnkChunkManager::ResetType35ChunkObjectsThunk(void) {
+    ResetType35ChunkObjects();
+}
+
+// FUNCTION: LEMBALL 0x0041F0E0
+void LEVEL_ShpgChunkManager::ActivateNestedChildrenFromOwnerTableA4(void) {
+    int i;
+    int j;
+    int cChildren;
+    void **ppObject;
+
+    i = 0;
+    if (0 < m_cObjectsA4) {
+        ppObject = m_apObjects04;
+        do {
+            cChildren =
+                ((LEVEL_NestedOwnerInterface *)*ppObject)
+                    ->GetNestedChildCount();
+            j = 0;
+            if (0 < cChildren) {
+                do {
+                    ((LEVEL_NestedOwnerInterface *)*ppObject)
+                        ->GetNestedChild(j++)
+                        ->Activate();
+                } while (j < cChildren);
+            }
+            ++ppObject;
+            ++i;
+        } while (i < m_cObjectsA4);
+    }
+}
+
+// FUNCTION: LEMBALL 0x0040312F
+void LEVEL_ShpgChunkManager::ActivateNestedChildrenFromOwnerTableA4Thunk(void) {
+    ActivateNestedChildrenFromOwnerTableA4();
+}
+
+// FUNCTION: LEMBALL 0x00420BB0
+void LEVEL_EnmyChunkManager::ActivateNestedChildrenFromOwnerTableVariant(void) {
+    int i;
+    int j;
+    int cChildren;
+    void **ppObject;
+
+    i = 0;
+    if (0 < m_cObjectsA4) {
+        ppObject = m_apObjects04;
+        do {
+            cChildren =
+                ((LEVEL_NestedOwnerInterface *)*ppObject)
+                    ->GetNestedChildCount();
+            j = 0;
+            if (0 < cChildren) {
+                do {
+                    ((LEVEL_NestedOwnerInterface *)*ppObject)
+                        ->GetNestedChild(j++)
+                        ->Activate();
+                } while (j < cChildren);
+            }
+            ++ppObject;
+            ++i;
+        } while (i < m_cObjectsA4);
+    }
+}
+
+// FUNCTION: LEMBALL 0x00401DFC
+void LEVEL_EnmyChunkManager::ActivateNestedChildrenFromOwnerTableVariantThunk(void) {
+    ActivateNestedChildrenFromOwnerTableVariant();
+}
 
 extern int ReturnTrueVtableCallback(void);
 extern int ReturnTrueVtableCallbackThunk(void);
@@ -58,24 +579,6 @@ static void *g_pReturnTrueVtableCallbackThunk =
     g_GAME_NetworkLevelChunkDeltaStreamVtable;
 static void *g_pLevelGameStateStreamVtable =
     g_GAME_LevelGameStateStreamVtable;
-
-struct GAME_EffStream {
-    void **m_pVtable;
-    int m_nEventCode;
-    int m_pvOwnedBuffer;
-    int m_pvBufferEnd;
-    int m_cWriteSessions;
-    int m_fOwnsBuffer;
-    int m_cbSerializedLength;
-    int m_pvWriteCursor;
-    int m_pvReadCursor;
-    int m_fHasPayload;
-    int m_nQueuedPayload;
-    int m_nU32Payload;
-
-    void ResetStateFields(void);
-    int LoadEffStreamFromMemory(int nSourceBuffer);
-};
 
 struct GAME_LevelChunkStreamDispatcher {
     int m_nRenderQueueNode00;
@@ -113,7 +616,7 @@ unsigned int FindFirstFreeManagedEntitySlotIdForwardThunk(void);
 unsigned int FindLastFreeManagedEntitySlotIdThunk(void);
 void SetLevelChunkTypeEnabledFlagThunk(void *pLevelMode, int nChunkType, int fEnabled);
 void DispatchType14CountedChildSlotC4Thunk(int nChunkManager);
-void FillReachabilityGridFromTileFlagsThunk(void *pReachabilityHelper);
+void LEMBALL_FASTCALL FillReachabilityGridFromTileFlagsThunk(void *pReachabilityHelper);
 
 // FUNCTION: LEMBALL 0x00410BE0
 void LoadLevelGameStateStreamPayload(void *pObject) {
@@ -367,8 +870,8 @@ void *LEVEL_TileReachabilityHelper::ConstructLevelTileReachabilityHelperThunk(vo
     return this;
 }
 
-// FUNCTION: LEMBALL 0x004231a0
-void ResizeLevelTileReachabilityGridThunk(void *pReachabilityHelper) {
+// FUNCTION: LEMBALL 0x00423190
+void LEMBALL_FASTCALL ResizeLevelTileReachabilityGrid(void *pReachabilityHelper) {
     GAME_LevelTileReachabilityHelper *pHelper;
     GAME_LevelTileGrid *pTileGrid;
     int i;
@@ -409,8 +912,13 @@ void ResizeLevelTileReachabilityGridThunk(void *pReachabilityHelper) {
     FillReachabilityGridFromTileFlagsThunk(pReachabilityHelper);
 }
 
-// FUNCTION: LEMBALL 0x004230f0
-void FillReachabilityGridFromTileFlagsThunk(void *pReachabilityHelper) {
+// FUNCTION: LEMBALL 0x00402379
+void LEMBALL_FASTCALL ResizeLevelTileReachabilityGridThunk(void *pReachabilityHelper) {
+    ResizeLevelTileReachabilityGrid(pReachabilityHelper);
+}
+
+// FUNCTION: LEMBALL 0x00423110
+void LEMBALL_FASTCALL FillReachabilityGridFromTileFlags(void *pReachabilityHelper) {
     GAME_LevelTileReachabilityHelper *pHelper;
     GAME_LevelTileGrid *pTileGrid;
     int nTileFlags;
@@ -453,6 +961,11 @@ void FillReachabilityGridFromTileFlagsThunk(void *pReachabilityHelper) {
     }
 }
 
+// FUNCTION: LEMBALL 0x00403364
+void LEMBALL_FASTCALL FillReachabilityGridFromTileFlagsThunk(void *pReachabilityHelper) {
+    FillReachabilityGridFromTileFlags(pReachabilityHelper);
+}
+
 // FUNCTION: LEMBALL 0x0040B120
 void ResetRegisteredLevelChunkStreamsThunk(void *pDispatcher) {
     GAME_LevelChunkStreamDispatcher *pStreamDispatcher;
@@ -490,9 +1003,14 @@ void RegisterLevelChunkStreamThunk(void *pDispatcher, void *pStreamObject) {
     ((void (*)())*(void **)((unsigned long)nVtable + 0x18))();
 }
 
-// FUNCTION: LEMBALL 0x00441B90
-int GetSelectedLevelNumberThunk(void *pLevelProgressState) {
+// FUNCTION: LEMBALL 0x00409080
+int LEMBALL_FASTCALL GetSelectedLevelNumber(void *pLevelProgressState) {
     return *(int *)((char *)pLevelProgressState + 0x3c + *(int *)((char *)pLevelProgressState + 8) * 4);
+}
+
+// FUNCTION: LEMBALL 0x004011EA
+int LEMBALL_FASTCALL GetSelectedLevelNumberThunk(void *pLevelProgressState) {
+    return GetSelectedLevelNumber(pLevelProgressState);
 }
 
 // FUNCTION: LEMBALL 0x00416610
@@ -692,8 +1210,8 @@ void AssignNetworkPlayerManagedEntitySlotIdsThunk(int nLevelMode) {
     }
 }
 
-// FUNCTION: LEMBALL 0x0043D820
-void ResetBallChunkEntriesThunk(void *pBallManager) {
+// FUNCTION: LEMBALL 0x00421EC0
+void LEMBALL_FASTCALL ResetBallChunkEntries(void *pBallManager) {
     int i;
     int cEntries;
 
@@ -708,8 +1226,13 @@ void ResetBallChunkEntriesThunk(void *pBallManager) {
     }
 }
 
-// FUNCTION: LEMBALL 0x0043E4A0
-void ResetBoonChunkManagerObjectsThunk(void *pObject) {
+// FUNCTION: LEMBALL 0x00401D48
+void LEMBALL_FASTCALL ResetBallChunkEntriesThunk(void *pBallManager) {
+    ResetBallChunkEntries(pBallManager);
+}
+
+// FUNCTION: LEMBALL 0x0042A030
+void LEMBALL_FASTCALL ResetBoonChunkManagerObjects(void *pObject) {
     unsigned short *pState;
 
     pState = (unsigned short *)pObject;
@@ -718,5 +1241,10 @@ void ResetBoonChunkManagerObjectsThunk(void *pObject) {
     ((void (*)())*(void **)(**(int **)(pState + 0x1c) + 0x104))();
     ((void (*)())*(void **)(**(int **)(pState + 0x1e) + 0x104))();
     ((void (*)())*(void **)(**(int **)(pState + 0x20) + 0x104))();
+}
+
+// FUNCTION: LEMBALL 0x00402D51
+void LEMBALL_FASTCALL ResetBoonChunkManagerObjectsThunk(void *pObject) {
+    ResetBoonChunkManagerObjects(pObject);
 }
 #include "../network/safe_vtable.h"

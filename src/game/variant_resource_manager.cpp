@@ -3,6 +3,7 @@
 #include "../audio/audio_manager.h"
 #include "../engine/memory_arena.h"
 #include "variant_resource_loader.h"
+#include "variant_resource_manager.h"
 
 extern "C" DWORD WINAPI timeGetTime(void);
 
@@ -88,6 +89,7 @@ static int g_GAME_VariantResourceEntryEffectTable[44][3] = {
     {38, 554, 262153}, {39, 559, 196617}, {40, 560, 196617}, {41, 564, 262153},
     {42, 562, 262153}, {43, 563, 262153}, {44, 561, 262153}, {45, 565, 262153},
 };
+// GLOBAL: LEMBALL 0x0049ed98
 int g_fVariantResourceEffectsEnabled = 0;
 int g_fVariantResourceMusicEnabled = 0;
 
@@ -99,14 +101,11 @@ extern void *g_pMainResourceArchive;
 extern void *ConstructLevelScreenStatusIndicatorManager(void *pObject, int nStatusMode, void *pPrimaryContext);
 extern void LEMBALL_FASTCALL ReleaseLevelSelectionModeRenderStateResource(void *pStatusIndicatorManager);
 extern void DestroyLevelScreenStatusIndicatorManager(void *pStatusIndicatorManager);
-extern int CountVariantResourceEntriesWithFlagMask(void *pManager, unsigned short nMask);
-extern void SwitchVariantResourceEntryMode(void *pManager, unsigned short nMask, void *pBundle);
 extern void LoadMainGameVariantZrleListResource(void *pBundle, int nResourceId);
 extern void LoadMainGameVariantListResource(void *pBundle, int nResourceId);
 extern void LoadMainGameVariantBitmapResource(void *pBundle, int nResourceId);
 extern void LoadMainGameVariantPaletteResource(void *pBundle, int nResourceId);
 extern void LoadMainGameVariantTwoArrayListResource(void *pBundle, int nResourceId);
-extern void PopulateVariantResourceEntriesForFlagMask(void *pManager, unsigned short nMask);
 extern void PruneUnreferencedCachedResourceObjects(void *pArchive);
 void SetVariantResourceEffectsEnabledThunk(int fEnabled);
 
@@ -117,9 +116,12 @@ void SetVariantResourceEffectsEnabled(int fEnabled) {
     }
 }
 
-// FUNCTION: LEMBALL 0x00438BA0
-void SetVariantResourceMusicEnabled(void *pManager, int fEnabled) {
+// FUNCTION: LEMBALL 0x00439BA0
+void GAME_VariantResourceEntryManager::SetVariantResourceMusicEnabled(int fEnabled) {
     int hMusic;
+    void *pManager;
+
+    pManager = this;
 
     if (fEnabled != 0) {
         if (g_fVariantResourceMusicEnabled != 0) {
@@ -143,11 +145,13 @@ void SetVariantResourceMusicEnabled(void *pManager, int fEnabled) {
     }
 }
 
-// FUNCTION: LEMBALL 0x00438D60
-void ClearActiveVariantResourceEntries(int pManager) {
+// FUNCTION: LEMBALL 0x00439D60
+void GAME_VariantResourceEntryManager::ClearActiveVariantResourceEntries(void) {
     int *pEntry;
     int i;
+    int pManager;
 
+    pManager = (int)(unsigned long)this;
     pEntry = (int *)(unsigned long)(pManager + 0x6c);
     i = 0x32;
     do {
@@ -160,12 +164,14 @@ void ClearActiveVariantResourceEntries(int pManager) {
     } while (i != 0);
 }
 
-// FUNCTION: LEMBALL 0x00438D90
-void PopulateVariantResourceEntriesForFlagMask(void *pManager, unsigned short nMask) {
+// FUNCTION: LEMBALL 0x00439D90
+void GAME_VariantResourceEntryManager::PopulateVariantResourceEntriesForFlagMask(unsigned short nMask) {
     int *pEntry;
     int i;
     DWORD dwNow;
+    void *pManager;
 
+    pManager = this;
     if (g_fEffectsOptionAvailable != 0) {
         pEntry = (int *)((char *)pManager + 0x68);
         dwNow = timeGetTime();
@@ -184,12 +190,14 @@ void PopulateVariantResourceEntriesForFlagMask(void *pManager, unsigned short nM
     }
 }
 
-// FUNCTION: LEMBALL 0x00438DF0
-int CountVariantResourceEntriesWithFlagMask(void *pManager, unsigned short nMask) {
+// FUNCTION: LEMBALL 0x00439DF0
+int GAME_VariantResourceEntryManager::CountVariantResourceEntriesWithFlagMask(unsigned short nMask) {
     int cMatches;
     int *pEntry;
     int i;
+    void *pManager;
 
+    pManager = this;
     cMatches = 0;
     if (g_fEffectsOptionAvailable != 0) {
         pEntry = (int *)((char *)pManager + 0x68);
@@ -205,20 +213,22 @@ int CountVariantResourceEntriesWithFlagMask(void *pManager, unsigned short nMask
     return cMatches;
 }
 
-// FUNCTION: LEMBALL 0x00438E30
-void SwitchVariantResourceEntryMode(void *pManager, unsigned short nMask, void *pBundle) {
+// FUNCTION: LEMBALL 0x00439E30
+void GAME_VariantResourceEntryManager::SwitchVariantResourceEntryMode(unsigned short nMask, void *pBundle) {
     int nMusicResourceId;
     unsigned int uNextRandom;
     int fEnableMusic;
+    void *pManager;
 
+    pManager = this;
     if (*(unsigned short *)((char *)pManager + 0x0c) != nMask) {
         fEnableMusic = g_fLevelDemoModeEnabled == 0;
         if (fEnableMusic) {
-            SetVariantResourceMusicEnabled(pManager, 0);
-            ClearActiveVariantResourceEntries((int)(unsigned long)pManager);
+            SetVariantResourceMusicEnabled(0);
+            ClearActiveVariantResourceEntries();
             StopAllAudioManagerBackends(g_pAudioManager);
         } else {
-            ClearActiveVariantResourceEntries((int)(unsigned long)pManager);
+            ClearActiveVariantResourceEntries();
         }
 
         *(unsigned short *)((char *)pManager + 0x0c) = nMask;
@@ -248,9 +258,9 @@ void SwitchVariantResourceEntryMode(void *pManager, unsigned short nMask, void *
             RefreshAudioManagerBackendHandles(g_pAudioManager);
             *(int *)((char *)pManager + 0x2c0) = nMusicResourceId;
         }
-        PopulateVariantResourceEntriesForFlagMask(pManager, nMask);
+        PopulateVariantResourceEntriesForFlagMask(nMask);
         if (fEnableMusic) {
-            SetVariantResourceMusicEnabled(pManager, 1);
+            SetVariantResourceMusicEnabled(1);
         }
         *(void **)((char *)pManager + 4) = 0;
     }
@@ -303,6 +313,20 @@ void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerBody(void *pManager) 
     return pManager;
 }
 
+// FUNCTION: LEMBALL 0x00439B70
+void GAME_VariantResourceEntryManager::PlayVariantResourceEffect(int nEffectSlot) {
+    if (g_fVariantResourceEffectsEnabled != 0) {
+        ((AUDIO_Manager *)g_pAudioManager)
+            ->PlayVariantResourceEffectId(
+                *(int *)((char *)this + nEffectSlot * 0x0c + 0x6c));
+    }
+}
+
+// FUNCTION: LEMBALL 0x00401479
+void GAME_VariantResourceEntryManager::PlayVariantResourceEffectThunk(int nEffectSlot) {
+    PlayVariantResourceEffect(nEffectSlot);
+}
+
 // FUNCTION: LEMBALL 0x00403873
 void SetVariantResourceEffectsEnabledThunk(int fEnabled) {
     SetVariantResourceEffectsEnabled(fEnabled);
@@ -315,10 +339,13 @@ void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerThunk(void *pManager)
 
 // FUNCTION: LEMBALL 0x00439B30
 void LEMBALL_FASTCALL ShutdownVariantResourceEntryManager(void *pManager) {
+    GAME_VariantResourceEntryManager *pVariantManager;
+
+    pVariantManager = (GAME_VariantResourceEntryManager *)pManager;
     if (g_fMusicEnabled != 0) {
-        SetVariantResourceMusicEnabled(pManager, 0);
+        pVariantManager->SetVariantResourceMusicEnabled(0);
     }
-    ClearActiveVariantResourceEntries((int)(unsigned long)pManager);
+    pVariantManager->ClearActiveVariantResourceEntries();
 }
 
 // FUNCTION: LEMBALL 0x00447DE0
@@ -429,7 +456,8 @@ void LEMBALL_FASTCALL DestroyMainGameVariantResourceMode(void *pBundle) {
 
     pVariantBundle = (GAME_MainGameVariantResourceBundle *)pBundle;
     pVariantBundle->m_pVtable = (void **)g_GAME_MainGameVariantResourceBundleVtable;
-    SwitchVariantResourceEntryMode(g_pVariantResourceEntryManager, 0, 0);
+    ((GAME_VariantResourceEntryManager *)g_pVariantResourceEntryManager)
+        ->SwitchVariantResourceEntryMode(0, 0);
 
     for (i = 0; i < (unsigned int)pVariantBundle->m_cZrleListResources; ++i) {
         ReleaseMainGameVariantZrleListResource(pVariantBundle, pVariantBundle->m_panZrleListResourceIds[i]);
@@ -531,10 +559,12 @@ void *ConstructMainGameVariantResourceBundle(void *pBundle, void *pPrimaryContex
     }
 
     pVariantBundle->m_nTotalResourceCount +=
-        CountVariantResourceEntriesWithFlagMask(g_pVariantResourceEntryManager, nVariantMode);
+        ((GAME_VariantResourceEntryManager *)g_pVariantResourceEntryManager)
+            ->CountVariantResourceEntriesWithFlagMask(nVariantMode);
     ReleaseLevelSelectionModeRenderStateResource(pVariantBundle->m_pStatusIndicatorManager);
     pVariantBundle->m_nLoadedResourceCount = 0;
-    SwitchVariantResourceEntryMode(g_pVariantResourceEntryManager, nVariantMode, pVariantBundle);
+    ((GAME_VariantResourceEntryManager *)g_pVariantResourceEntryManager)
+        ->SwitchVariantResourceEntryMode(nVariantMode, pVariantBundle);
 
     for (i = 0; i < pVariantBundle->m_cZrleListResources; ++i) {
         LoadMainGameVariantZrleListResource(pVariantBundle, pVariantBundle->m_panZrleListResourceIds[i]);

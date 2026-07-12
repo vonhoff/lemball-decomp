@@ -220,6 +220,7 @@ BOOL WINAPI TranslateMessage(const MSG *lpMsg);
 LRESULT WINAPI DispatchMessageA(const MSG *lpMsg);
 BOOL WINAPI DestroyWindow(HWND hWnd);
 BOOL WINAPI ClientToScreen(HWND hWnd, tagPOINT *lpPoint);
+__declspec(dllimport) BOOL WINAPI GetCursorPos(tagPOINT *lpPoint);
 HANDLE WINAPI CreateEventA(LPSECURITY_ATTRIBUTES lpEventAttributes,
                            BOOL bManualReset,
                            BOOL bInitialState,

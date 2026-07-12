@@ -12,8 +12,6 @@ void InvokeAudioManagerEmbeddedSlot1cIfMusicActive(void *pAudioManager, int hMus
 void StopVariantResourceMusicPlayback(void *pAudioManager, int hMusic);
 void UnregisterVariantResourceMusicHandle(void *pAudioManager, int hMusic);
 int CreateVariantResourceEffectInstance(void *pAudioManager, int nEffectResourceId);
-void PlayVariantResourceEffectId(void *pAudioManager, int nEffectResourceId);
-void SetVariantResourceEffectInstanceVolume(void *pAudioManager, int nEffectInstanceId, int nVolume);
 void InvokeAudioManagerEffectSlot48IfActive(void *pAudioManager, int nEffect);
 void SetAudioManagerMusicAndEffectVolume(void *pAudioManager, int nMusicVolume, int nEffectVolume);
 unsigned int GetVariantResourceEffectMasterVolume(void *pAudioManager);
@@ -46,6 +44,9 @@ struct AUDIO_Manager {
     void InvokeAudioManagerEmbeddedSlot04(int nValue1, int nValue2);
     void SetAudioManagerStartupMusicName(const char *pszMusicName);
     void SetAudioManagerMusicEnabledFlag(int fEnabled);
+    void PlayVariantResourceEffectId(int nEffectResourceId);
+    void SetVariantResourceEffectInstanceVolume(int nEffectInstanceId,
+                                                int nVolume);
 };
 
 #endif

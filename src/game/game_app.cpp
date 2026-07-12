@@ -1,5 +1,7 @@
 #include "game/game_app.h"
+#include "game/level_runtime.h"
 #include "game/window_owner.h"
+#include "game/cursor_render_client.h"
 #include "../network/safe_vtable.h"
 
 #include "platform/shell_ui.h"
@@ -57,8 +59,8 @@ static const char g_GAME_DefaultLevelFileName[] = "testlvl.lvl";
 static char g_GAME_ResourceSignatureDecodeBuffer[] = "01234567890123456789";
 static const char g_GAME_ResourceSignatureKey[] = "John Ketley is a Weatherman, and so is Michael Fish";
 static const char g_GAME_ResourceSignatureExpected[] = "Master v1.3";
-static void *g_GAME_PrimaryContextMenuDefinitionTable;
 static const unsigned int g_GAME_LevelPasswordPermutation[8] = {2, 0, 7, 4, 6, 1, 5, 3};
+// GLOBAL: LEMBALL 0x004a818c
 int g_fRootHelperGeometryDispatchSuppressed = 0;
 
 struct GAME_ResourceSignatureStringObject {
@@ -103,8 +105,8 @@ extern void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntryThunk(void *pObj
 extern void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryThunk(void *pObject);
 extern void LEMBALL_FASTCALL BuildGeometryHelperFromRenderRect(void *pOwner);
 extern unsigned int __stdcall ComputePrimaryContextWindowStyleFlags(void);
-extern int __cdecl GetPrimaryContextMenuDefinition(unsigned int *pMenuId,
-                                                   const char **ppWindowTitle);
+extern int __stdcall GetPrimaryContextMenuDefinition(unsigned int *pMenuId,
+                                                     void **ppMenuDefinition);
 extern void LEMBALL_FASTCALL PrepareLevelScreenRootHelperForRuntime(
     GAME_PrimaryContext *pPrimaryContext);
 extern void *LoadZrleResource(int nResourceId);
@@ -121,8 +123,6 @@ extern void *g_pEffTransportSecondaryDispatchQueue;
 extern int *g_pArrowCursorStatusIndicatorRenderClient;
 extern int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cEntries);
 extern void DispatchAndClearPointerQueue(void *pQueue);
-extern void LEMBALL_FASTCALL PollCursorPositionEvent(void);
-extern void LEMBALL_FASTCALL TickCursorRenderClientMotion(int *pRenderClient);
 extern "C" DWORD WINAPI timeGetTime(void);
 
 struct GAME_ScreenObject {
@@ -169,6 +169,7 @@ struct GAME_LevelProgressState {
     int m_anSnapshotPackCaps[4];
     int m_nUnused4C;
 
+    bool CanRetreat(void);
     GAME_LevelProgressState *Clear(void);
     unsigned int EncodePasswordValue(void);
     void ApplyPasswordValue(unsigned int uValue);
@@ -365,9 +366,12 @@ struct GAME_SafeVtableInitializer {
     }
 };
 static GAME_SafeVtableInitializer g_GAME_SafeVtableInitializer;
+// GLOBAL: LEMBALL 0x004a011c
 int g_nSelectedNetworkLobbyPeerId = 0;
+// GLOBAL: LEMBALL 0x0049f140
 void *g_pActiveNetworkLobbyTransportController = 0;
 void *g_pNetworkLobbyTransportController = 0;
+// GLOBAL: LEMBALL 0x0049f144
 void *g_pActiveNetworkLobbyScreen = 0;
 
 extern void *ConstructEffStreamPayloadSize8(void *pObject);
@@ -399,20 +403,13 @@ extern void ResetRegisteredLevelChunkStreamsThunk(void *pDispatcher);
 extern void RegisterLevelChunkStreamThunk(void *pDispatcher, void *pStream);
 extern void *ConstructLiftChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
 extern void *ConstructMoveChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
-extern int *InitializeProjectileGeometryPairTableThunk(int *pTable);
-extern void ClearProjectileGeometryField100Thunk(void *pTable);
 extern void *ConstructGmobChunkManagerThunk(void *pObject, void *pLevelMode);
 extern void *ConstructPlasChunkManagerThunk(void *pObject, void *pLevelMode, void *pGmobManager, void *pProjectileGeometryTable);
 extern void *ConstructProjectilePoolThunk(void *pObject);
 extern void *ConstructManagedEntityQueueCursorThunk(void *pObject, int nLevelMode, int nPrimaryCapacity, int nSecondaryCapacity);
 extern void *ConstructShpgChunkManagerThunk(void *pObject, void *pLevelMode, void *pGmobManager, void *pProjectileGeometryTable);
-extern void ActivateNestedChildrenFromOwnerTableA4Thunk(void *pObject);
 extern void *ConstructEnmyChunkManagerThunk(void *pObject, void *pLevelMode, void *pGmobManager, void *pProjectileGeometryTable);
-extern void ActivateNestedChildrenFromOwnerTableVariantThunk(void *pObject);
-extern void *ConstructNodeChunkManagerThunk(void *pObject, int nCapacity);
-extern void ResetNodeChunkRecordsThunk(void *pNodeManager);
-extern void *ConstructBallChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
-extern void ResetBallChunkEntriesThunk(void *pBallManager);
+extern void LEMBALL_FASTCALL ResetBallChunkEntriesThunk(void *pBallManager);
 extern void *ConstructCollChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
 extern void *ConstructMineChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
 extern void *ConstructDoorChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
@@ -420,25 +417,20 @@ extern void *ConstructRockChunkManagerThunk(void *pObject, void *pLevelMode, int
 extern void *ConstructCaptureTriggerChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
 extern void *ConstructLasrChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
 extern void *ReturnArgumentVtableCallback(void *pObject);
-extern void ResetLevelField194TimerBlockThunk(void *pObject);
 extern void *ConstructBoonChunkManagerThunk(void *pObject, void *pLevelMode, void *pTileGrid);
-extern void ResetBoonChunkManagerObjectsThunk(void *pObject);
+extern void LEMBALL_FASTCALL ResetBoonChunkManagerObjectsThunk(void *pObject);
 extern void *ConstructTramChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
 extern void *ConstructPgunChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
 extern void *ConstructIceChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
 extern void *ConstructType18ChunkStreamThunk(void *pObject);
-extern void *ConstructSlnkChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
-extern void ResetType35ChunkObjectsThunk(void *pObject);
 extern void *ConstructInvsChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
-extern void *ConstructLevelChunkLoaderContextThunk(void *pObject, int nLevelMode);
-extern int GetSelectedLevelNumberThunk(void *pLevelProgressState);
+extern int LEMBALL_FASTCALL GetSelectedLevelNumberThunk(void *pLevelProgressState);
 extern void ReadLevelDemoLengthPrefixedRecordThunk(void *pPlaybackController, void *pRecordHeader, unsigned int *pcbRecord);
 extern void LoadLevelChunksForSkillAndLevelThunk(void *pLoaderContext, unsigned int nSkill, unsigned int nLevel, int fReuseState);
 extern void InitializeNetworkPlayerPlasChunkObjectPoolThunk(void *pPlasManager);
 extern void AssignNetworkPlayerManagedEntitySlotIdsThunk(int nLevelMode);
-extern void ResizeLevelTileReachabilityGridThunk(void *pReachabilityHelper);
-extern void FillReachabilityGridFromTileFlagsThunk(void *pReachabilityHelper);
-extern void BuildSpecialLevelTileGridStaticRenderEntriesThunk(void *pRenderList, void *pTileGrid);
+extern void LEMBALL_FASTCALL ResizeLevelTileReachabilityGridThunk(void *pReachabilityHelper);
+extern void LEMBALL_FASTCALL FillReachabilityGridFromTileFlagsThunk(void *pReachabilityHelper);
 extern void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode);
 extern void InitializeLevelChunkTypeEnabledFlagsThunk(void *pLevelMode);
 extern void AdvanceCachedResourceObjectFrameCounters(void *pArchive);
@@ -448,11 +440,17 @@ struct LEVEL_GameMode {
 
 void *g_pStatusEntryRegistry = 0;
 void *g_pLevelProgressState = 0;
+// GLOBAL: LEMBALL 0x004a1d58
 void *g_pMainResourceArchive = 0;
+// GLOBAL: LEMBALL 0x0049eb80
 void *g_pVariantResourceEntryManager = 0;
 void *g_pNetworkLobbyVsnetRuntime = 0;
+// GLOBAL: LEMBALL 0x004a1e18
 void *g_pActiveNetworkRuntimeWindow = 0;
+// GLOBAL: LEMBALL 0x0049ce04
 int g_nLevelFrameClockTick = 0;
+// GLOBAL: LEMBALL 0x0049ce28
+int g_fLevelFrameClockPaused = 0;
 void *g_pStartupModeVtable = g_GAME_GenericModeVtableSlots;
 void *g_pStartupModeRenderThunk = (void *)StubNoOpPtr;
 void *g_pMainMenuModeVtable = g_GAME_GenericModeVtableSlots;
@@ -466,7 +464,9 @@ void *g_pMode16RenderThunk = (void *)StubNoOpPtr;
 void *g_pPrimaryContextVtable = g_GAME_PrimaryContextVtableSlots;
 void *g_pPrimaryContextRenderQueueNodeVtable = g_GAME_RenderQueueNodeVtableSlots;
 void *g_pQueuedRenderPointSinkFinalizeThunk = (void *)StubNoOpPtr;
+// GLOBAL: LEMBALL 0x004a9360
 void *g_pSharedRenderDispatchQueue = 0;
+// GLOBAL: LEMBALL 0x004a279c
 void *g_pSharedGeometryHelper = 0;
 void *g_pActiveLevelGameMode = 0;
 void *g_pLevelTileGrid = 0;
@@ -538,14 +538,6 @@ static void InitializeGameStubVtables(void) {
     g_fInitialized = 1;
 }
 
-// FUNCTION: LEMBALL 0x00465050
-void LEMBALL_FASTCALL PollCursorPositionEvent(void) {
-}
-
-// FUNCTION: LEMBALL 0x0046B810
-void LEMBALL_FASTCALL TickCursorRenderClientMotion(int *) {
-}
-
 // FUNCTION: LEMBALL 0x00456500
 int __stdcall PumpMessagesAndRunFrame(void) {
     MSG Message;
@@ -581,9 +573,21 @@ int __stdcall PumpMessagesAndRunFrame(void) {
         AdvanceCachedResourceObjectFrameCounters(g_pMainResourceArchive);
     }
     if (g_pArrowCursorStatusIndicatorRenderClient != 0) {
-        TickCursorRenderClientMotion(g_pArrowCursorStatusIndicatorRenderClient);
+        ((GAME_CursorRenderClient *)
+             g_pArrowCursorStatusIndicatorRenderClient)
+            ->TickCursorRenderClientMotion();
     }
     return g_fRootHelperGeometryDispatchSuppressed == 1;
+}
+
+// FUNCTION: LEMBALL 0x00408080
+void SetLevelFrameClockPauseFlag(int fPaused) {
+    g_fLevelFrameClockPaused = fPaused;
+}
+
+// FUNCTION: LEMBALL 0x00408FD0
+bool GAME_LevelProgressState::CanRetreat(void) {
+    return m_nCurrentLevel != 0;
 }
 
 // FUNCTION: LEMBALL 0x00406A90
@@ -1135,11 +1139,13 @@ void LEVEL_GameMode::InitializeLevelGameMode(void) {
     if (*(int *)(pModeBytes + 0x4c) == 0) {
         pObject = AllocateVSMemBlock(0x104);
         if (pObject != 0) {
-            pObject = InitializeProjectileGeometryPairTableThunk((int *)pObject);
+            pObject = ((LEVEL_ProjectileGeometryPairTable *)pObject)
+                          ->InitializeProjectileGeometryPairTableThunk();
         }
         *(void **)(pModeBytes + 0x16c) = pObject;
     }
-    ClearProjectileGeometryField100Thunk(*(void **)(pModeBytes + 0x16c));
+    ((LEVEL_ProjectileGeometryPairTable *)*(void **)(pModeBytes + 0x16c))
+        ->ClearProjectileGeometryField100Thunk();
 
     if (*(int *)(pModeBytes + 0x4c) == 0) {
         pObject = AllocateVSMemBlock(0x150);
@@ -1176,7 +1182,8 @@ void LEVEL_GameMode::InitializeLevelGameMode(void) {
         }
         *(void **)(pModeBytes + 0x170) = pObject;
     }
-    ActivateNestedChildrenFromOwnerTableA4Thunk(*(void **)(pModeBytes + 0x170));
+    ((LEVEL_ShpgChunkManager *)*(void **)(pModeBytes + 0x170))
+        ->ActivateNestedChildrenFromOwnerTableA4Thunk();
 
     if (*(int *)(pModeBytes + 0x4c) == 0) {
         pObject = AllocateVSMemBlock(0xb0);
@@ -1186,21 +1193,23 @@ void LEVEL_GameMode::InitializeLevelGameMode(void) {
         }
         *(void **)(pModeBytes + 0x174) = pObject;
     }
-    ActivateNestedChildrenFromOwnerTableVariantThunk(*(void **)(pModeBytes + 0x174));
+    ((LEVEL_EnmyChunkManager *)*(void **)(pModeBytes + 0x174))
+        ->ActivateNestedChildrenFromOwnerTableVariantThunk();
 
     if (*(int *)(pModeBytes + 0x4c) == 0) {
         pObject = AllocateVSMemBlock(0x0c);
         if (pObject != 0) {
-            pObject = ConstructNodeChunkManagerThunk(pObject, 300);
+            pObject = ((LEVEL_NodeChunkManager *)pObject)->ConstructNodeChunkManagerThunk(300);
         }
         *(void **)(pModeBytes + 0x17c) = pObject;
     }
-    ResetNodeChunkRecordsThunk(*(void **)(pModeBytes + 0x17c));
+    ((LEVEL_NodeChunkManager *)*(void **)(pModeBytes + 0x17c))->ResetNodeChunkRecordsThunk();
 
     if (*(int *)(pModeBytes + 0x4c) == 0) {
         pObject = AllocateVSMemBlock(0x10);
         if (pObject != 0) {
-            pObject = ConstructBallChunkManagerThunk(pObject, pLevelGameMode, 0x14);
+            pObject = ((LEVEL_BallChunkManager *)pObject)
+                          ->ConstructBallChunkManagerThunk(pLevelGameMode, 0x14);
         }
         *(void **)(pModeBytes + 0x180) = pObject;
     }
@@ -1255,7 +1264,8 @@ void LEVEL_GameMode::InitializeLevelGameMode(void) {
         }
         *(void **)(pModeBytes + 0x194) = pObject;
     }
-    ResetLevelField194TimerBlockThunk(*(void **)(pModeBytes + 0x194));
+    ((LEVEL_Field194TimerBlock *)*(void **)(pModeBytes + 0x194))
+        ->ResetLevelField194TimerBlockThunk();
 
     if (*(int *)(pModeBytes + 0x4c) == 0) {
         pObject = AllocateVSMemBlock(0x4c);
@@ -1299,11 +1309,13 @@ void LEVEL_GameMode::InitializeLevelGameMode(void) {
     if (*(int *)(pModeBytes + 0x4c) == 0) {
         pObject = AllocateVSMemBlock(0x10);
         if (pObject != 0) {
-            pObject = ConstructSlnkChunkManagerThunk(pObject, pLevelGameMode, 0x14);
+            pObject = ((LEVEL_SlnkChunkManager *)pObject)
+                          ->ConstructSlnkChunkManagerThunk(pLevelGameMode, 0x14);
         }
         *(void **)(pModeBytes + 0x1c8) = pObject;
     }
-    ResetType35ChunkObjectsThunk(*(void **)(pModeBytes + 0x1c8));
+    ((LEVEL_SlnkChunkManager *)*(void **)(pModeBytes + 0x1c8))
+        ->ResetType35ChunkObjectsThunk();
 
     if (*(int *)(pModeBytes + 0x4c) == 0) {
         pObject = AllocateVSMemBlock(0x40);
@@ -1315,7 +1327,9 @@ void LEVEL_GameMode::InitializeLevelGameMode(void) {
 
         pObject = AllocateVSMemBlock(8);
         if (pObject != 0) {
-            pObject = ConstructLevelChunkLoaderContextThunk(pObject, (int)(unsigned long)pLevelGameMode);
+            pObject = ((LEVEL_ChunkLoaderContext *)pObject)
+                          ->ConstructLevelChunkLoaderContextThunk(
+                              pLevelGameMode);
         }
         *(void **)(pModeBytes + 0x178) = pObject;
     }
@@ -1356,7 +1370,9 @@ void LEVEL_GameMode::InitializeLevelGameMode(void) {
         }
         *(int **)(pModeBytes + 0x8c) = pHeaderWords;
     }
-    BuildSpecialLevelTileGridStaticRenderEntriesThunk(*(void **)(pModeBytes + 0x8c), *(void **)(pModeBytes + 0x110));
+    ((LEVEL_SpecialTileGridStaticRenderList *)*(void **)(pModeBytes + 0x8c))
+        ->BuildSpecialLevelTileGridStaticRenderEntriesThunk(
+            (LEVEL_LevelTileGridStaticView *)*(void **)(pModeBytes + 0x110));
 
     if (*(unsigned short *)(pModeBytes + 0x54) == 0) {
         AssignMissingManagedEntitySlotIdsThunk((int)(unsigned long)pLevelGameMode);
@@ -1377,7 +1393,7 @@ void LEVEL_GameMode::InitializeLevelGameMode(void) {
 // FUNCTION: LEMBALL 0x004651D0
 void *LEMBALL_FASTCALL ConstructWindowOwnerBase(void *pOwner) {
     ConstructRootGeometryOwner(pOwner);
-    *(void **)pOwner = (void *)0x004993d0;
+    *(void **)pOwner = g_pWindowOwnerBaseVtable;
     if (g_nLiveWindowOwnerBaseCount == 1) {
         RegisterBaseWindowClass();
     }
@@ -1963,7 +1979,6 @@ int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresent(int *pPrimaryContext)
 int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresentThunk(int *pPrimaryContext);
 void LEMBALL_FASTCALL PresentPrimaryContextScreen(void *pPrimaryContext);
 void LEMBALL_FASTCALL UpdatePrimaryContextActiveScreen(void *pPrimaryContext);
-int GetPrimaryContextMenuDefinition(int *pnMenuId, void **ppMenuDefinition);
 int LEMBALL_FASTCALL PollPrimaryContextScreenStatus(void *pPrimaryContext);
 int LEMBALL_FASTCALL GetPrimaryContextRequestedScreen(void *pPrimaryContext);
 void LEMBALL_FASTCALL UpdateMainGameActiveMode(void *pMainContext);
@@ -2678,13 +2693,6 @@ void LEMBALL_FASTCALL UpdatePrimaryContextActiveScreen(void *pPrimaryContext) {
     if (pActiveScreen != 0) {
         ((GAME_ActiveScreenVirtualInterface *)pActiveScreen)->UpdateActiveScreen();
     }
-}
-
-// FUNCTION: LEMBALL 0x00431EB0
-int GetPrimaryContextMenuDefinition(int *pnMenuId, void **ppMenuDefinition) {
-    *pnMenuId = 0x73;
-    *ppMenuDefinition = g_GAME_PrimaryContextMenuDefinitionTable;
-    return 1;
 }
 
 // FUNCTION: LEMBALL 0x00431EE0

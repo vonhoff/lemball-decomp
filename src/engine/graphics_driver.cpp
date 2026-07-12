@@ -21,9 +21,11 @@ int g_fStartupFullscreen = 0;
 int g_fStartupGraphicsDriverWing = 0;
 int g_fStartupGraphicsDriverCds = 1;
 int g_fStartupGraphicsDriverGdk = 0;
+// GLOBAL: LEMBALL 0x004a0768
 void *g_pSelectedGraphicsDriverRuntime = 0;
 static void *g_pResourceGeometryHelperSlotManager = 0;
 static void *g_pResourceGeometryHelperTarget = 0;
+// GLOBAL: LEMBALL 0x004a9bf4
 int *g_pArrowCursorStatusIndicatorRenderClient = 0;
 static VSGDI_DisplayState *g_pDisplayState = 0;
 
@@ -86,7 +88,8 @@ VSGDI_SAFE_TABLE(g_VSGDI_CompactResourceGeometryHelperConstructionVtable);
 VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryHelperTargetVtable);
 VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable);
 VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable);
-VSGDI_SAFE_TABLE(g_VSGDI_CompactResourceGeometryHelperSubobjectVtable);
+// GLOBAL: LEMBALL 0x00499508
+static void *g_VSGDI_CompactResourceGeometryHelperSubobjectVtable[32];
 VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable);
 VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryHelperSlotManagerVtable);
 VSGDI_SAFE_TABLE(g_VSGDI_StatusIndicatorBaseVtable);
@@ -1120,8 +1123,9 @@ void DestroyResourceGeometryHelperTarget(void *pvTarget) {
     DestroyResourceGeometryRowBuffer(pTarget);
 }
 
-static void RestoreCompactResourceGeometryHelperVtable(void *pvHelper) {
-    *(void **)pvHelper = &g_VSGDI_CompactResourceGeometryHelperSubobjectVtable;
+// FUNCTION: LEMBALL 0x00466430
+static void LEMBALL_FASTCALL RestoreCompactResourceGeometryHelperVtable(void *pvHelper) {
+    *(void **)pvHelper = g_VSGDI_CompactResourceGeometryHelperSubobjectVtable;
 }
 
 // FUNCTION: LEMBALL 0x0046AFD0
