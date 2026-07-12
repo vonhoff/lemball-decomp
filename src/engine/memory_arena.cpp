@@ -6,6 +6,10 @@
 #include <string.h>
 #include <stdlib.h>
 
+extern void TriggerReleaseAssertFailure(const char *pszExpression,
+                                        const char *pszFile,
+                                        int nLine);
+
 struct VSMEM_BlockHeader {
     unsigned int m_cbPayload;
 };
@@ -46,6 +50,17 @@ struct CArena {
     const char *m_pszName;
     CArena *m_pFirstChildArena;
 
+    CArena *ConstructMemoryArena(unsigned int cbStorage,
+                                  const char *pszName,
+                                  void *pParentArena,
+                                  void *pReserved);
+    CArena *ConstructMemoryArenaBaseState(unsigned int cbStorage,
+                                           const char *pszName,
+                                           void *pParentArena,
+                                           void *pReserved);
+    int AllocateMemoryArenaBlock(void **ppvBlock,
+                                 unsigned int cbBlock,
+                                 const char *pszDescription);
     int ConsumeTrailingMemoryBlockIfAdjacent(void *pBlock, void *pNextBlock);
     int AppendTailMemoryBlockAddressList(void *pBlock);
     int InsertMemoryBlockAfterFreeListNode(void *pBlock, void *pPreviousBlock);
@@ -57,8 +72,38 @@ struct CArena {
     int IsPointerInsideMemoryArenaStorage(void *pvPointer);
 };
 
+struct SMALL_MEMORY_BUCKET {
+    void **m_pVtable;
+    unsigned char m_abCriticalSection[0x18];
+    int m_nReserved1C;
+    int m_nReserved20;
+    unsigned int m_cbSlot;
+    unsigned int m_cSlots;
+    unsigned int m_cbStorage;
+    unsigned int m_cbStorageAvailable;
+    int m_nReserved34;
+    int m_nReserved38;
+    int m_nReserved3C;
+    unsigned short m_wFlags;
+    unsigned short m_nReserved42;
+    unsigned int m_cBitmapWords;
+    void *m_pBitmap;
+    void *m_pStorage;
+    unsigned short m_nReserved50;
+    unsigned short m_nReserved52;
+
+    SMALL_MEMORY_BUCKET *ConstructSmallMemoryBucket(unsigned int cbSlot,
+                                                      unsigned int cSlots,
+                                                      void *pStorage,
+                                                      void *pBitmap);
+    int AllocateSlot(void **ppvSlot);
+    int FreeSlot(void *pvSlot);
+};
+
+
 void *g_pMainMemoryArena = 0;
 static void *g_pMainMemoryArenaStorage = 0;
+static HGLOBAL g_hMainMemoryArenaStorage = 0;
 static int g_cbMainArenaCapacity = 0;
 static int g_cbMainArenaInUse = 0;
 static int g_fMainArenaReady = 0;
@@ -87,10 +132,19 @@ static void *VSMEM_ReportBlockStub(void *pBlock, VSINIT_FormattedOutputStream *p
 static void *VSMEM_DeleteBlockStub(void *pBlock, int fDelete);
 static void UpdateMainMemoryArenaFreeCounter(void);
 
+union CArenaAllocateMethodAddress {
+    int (CArena::*m_pMethod)(void **, unsigned int, const char *);
+    void *m_pAddress;
+};
+
+static CArenaAllocateMethodAddress g_CArenaAllocateMethodAddress = {
+    &CArena::AllocateMemoryArenaBlock
+};
+
 static void *g_aMainMemoryArenaVtable[10] = {
     (void *)WriteMemoryArenaReport,
     (void *)VSMEM_NoOpLock,
-    (void *)AllocateMemoryArenaBlock,
+    (void *)g_CArenaAllocateMethodAddress.m_pAddress,
     (void *)FreeMemoryArenaBlock,
     (void *)VSMEM_NoOpLock,
     (void *)VSMEM_NoOpLock,
@@ -107,41 +161,251 @@ static void *g_aMemoryArenaBlockVtable[2] = {
     (void *)VSMEM_ReportBlockStub,
     (void *)VSMEM_DeleteBlockStub,
 };
+static void *g_aSmallMemoryBucketVtable[1] = { (void *)VSMEM_NoOpLock };
+static void *g_aSmallMemoryBucketBaseVtable[1] = { (void *)VSMEM_NoOpLock };
 
-int AllocateFromSmallMemoryBucketTable(void *pBucketTable, unsigned int cbBlock) {
-    (void)pBucketTable;
-    (void)cbBlock;
+// FUNCTION: LEMBALL 0x00472E40
+int SMALL_MEMORY_BUCKET::AllocateSlot(void **ppvSlot) {
+    unsigned int i;
+
+    for (i = 0; i < m_cBitmapWords; ++i) {
+        unsigned int dwWord = ((unsigned int *)m_pBitmap)[i];
+        if (dwWord != 0xffffffffU) {
+            unsigned int j;
+            for (j = 0; j < 32; ++j) {
+                unsigned int dwMask = 1U << j;
+                if ((dwWord & dwMask) == 0) {
+                    unsigned int nSlot = i * 32 + j;
+                    if (nSlot >= m_cSlots) {
+                        break;
+                    }
+                    ((unsigned int *)m_pBitmap)[i] = dwWord | dwMask;
+                    m_cbStorageAvailable -= m_cbSlot;
+                    m_nReserved34 += 1;
+                    m_nReserved38 += 1;
+                    if (m_nReserved3C < m_nReserved38) {
+                        m_nReserved3C = m_nReserved38;
+                    }
+                    *ppvSlot = (char *)m_pStorage + nSlot * m_cbSlot;
+                    return 1;
+                }
+            }
+        }
+    }
+    *ppvSlot = 0;
     return 0;
 }
 
-int FreeToSmallMemoryBucketTable(void *pBucketTable, void *pBlock) {
-    (void)pBucketTable;
-    (void)pBlock;
+// FUNCTION: LEMBALL 0x00472F00
+int SMALL_MEMORY_BUCKET::FreeSlot(void *pvSlot) {
+    unsigned int nSlot;
+    unsigned int i;
+    unsigned int j;
+    unsigned int dwMask;
+
+    if (pvSlot < m_pStorage ||
+        (char *)pvSlot >= (char *)m_pStorage + m_cbStorage) {
+        return 0;
+    }
+    nSlot = (unsigned int)(((char *)pvSlot - (char *)m_pStorage) / m_cbSlot);
+    i = nSlot >> 5;
+    j = nSlot & 31;
+    dwMask = 1U << j;
+    if ((((unsigned int *)m_pBitmap)[i] & dwMask) == 0) {
+        return 0;
+    }
+    ((unsigned int *)m_pBitmap)[i] &= ~dwMask;
+    m_cbStorageAvailable += m_cbSlot;
+    m_nReserved34 -= 1;
+    m_nReserved38 -= 1;
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x004732D0
+int SMALL_MEMORY_BUCKET_TABLE::AllocateFromSmallMemoryBucketTable(unsigned int cbBlock) {
+    int iFirstBucket;
+    int i;
+    int nPreviousSize;
+
+    iFirstBucket = (int)g_StartupGraphicsDriverConfig.m_dwReserved1;
+    nPreviousSize = 0;
+    for (i = iFirstBucket; i < m_cBuckets; ++i) {
+        if (nPreviousSize < (int)cbBlock &&
+            cbBlock <= m_acbBucketSizes[i] && m_apBuckets[i] != 0) {
+            void *pvSlot;
+            if (m_apBuckets[i]->AllocateSlot(&pvSlot) != 0) {
+                return (int)(unsigned long)pvSlot;
+            }
+            return 0;
+        }
+        nPreviousSize = (int)m_acbBucketSizes[i];
+    }
     return 0;
+}
+
+// FUNCTION: LEMBALL 0x00473340
+int SMALL_MEMORY_BUCKET_TABLE::FreeToSmallMemoryBucketTable(void *pBlock) {
+    int iFirstBucket;
+    int i;
+
+    iFirstBucket = (int)g_StartupGraphicsDriverConfig.m_dwReserved1;
+    for (i = iFirstBucket; i < m_cBuckets; ++i) {
+        if (m_apBuckets[i] != 0 && m_apBuckets[i]->FreeSlot(pBlock) != 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x00472CE0
+SMALL_MEMORY_BUCKET *SMALL_MEMORY_BUCKET::ConstructSmallMemoryBucket(
+    unsigned int cbSlot, unsigned int cSlots, void *pStorage, void *pBitmap) {
+    unsigned int cbStorage;
+    unsigned int cBitmapWords;
+    int fSmallBuckets;
+
+    m_pVtable = g_aSmallMemoryBucketBaseVtable;
+    InitializeCriticalSection(m_abCriticalSection);
+    m_pVtable = g_aSmallMemoryBucketVtable;
+    m_nReserved1C = 0;
+    m_nReserved20 = 0;
+    m_cbSlot = cbSlot;
+    m_cSlots = cSlots;
+    m_nReserved34 = 0;
+    m_nReserved38 = 0;
+    m_nReserved3C = 0;
+    m_wFlags = 0;
+    m_nReserved42 = 0;
+    cbStorage = cbSlot * cSlots;
+    m_cbStorage = cbStorage;
+    m_cbStorageAvailable = cbStorage;
+    cBitmapWords = (cSlots + 0x1f) >> 5;
+    m_cBitmapWords = cBitmapWords;
+
+    fSmallBuckets = g_fSmallMemoryBucketTableEnabled;
+    if (pStorage == 0) {
+        g_fSmallMemoryBucketTableEnabled = 0;
+        pStorage = AllocateVSMemBlock(cbStorage);
+        g_fSmallMemoryBucketTableEnabled = fSmallBuckets;
+        m_wFlags |= 2;
+    }
+    if (pBitmap == 0) {
+        g_fSmallMemoryBucketTableEnabled = 0;
+        pBitmap = AllocateVSMemBlock(cBitmapWords * sizeof(unsigned int));
+        g_fSmallMemoryBucketTableEnabled = fSmallBuckets;
+        m_wFlags |= 1;
+    }
+
+    m_pStorage = pStorage;
+    m_pBitmap = pBitmap;
+    if (pBitmap != 0) {
+        FillMemoryByte(pBitmap, 0, cBitmapWords * sizeof(unsigned int));
+    }
+    m_nReserved50 = 0;
+    m_nReserved52 = 0;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x00472DC0
+void LEMBALL_FASTCALL DestroySmallMemoryBucket(SMALL_MEMORY_BUCKET *pBucket) {
+    int fSmallBuckets;
+
+    pBucket->m_pVtable = g_aSmallMemoryBucketVtable;
+    fSmallBuckets = g_fSmallMemoryBucketTableEnabled;
+    g_fSmallMemoryBucketTableEnabled = 0;
+    if ((pBucket->m_wFlags & 2) != 0 && pBucket->m_pStorage != 0) {
+        FreeVSMemBlock(pBucket->m_pStorage);
+        pBucket->m_pStorage = 0;
+    }
+    if ((pBucket->m_wFlags & 1) != 0 && pBucket->m_pBitmap != 0) {
+        FreeVSMemBlock(pBucket->m_pBitmap);
+        pBucket->m_pBitmap = 0;
+    }
+    g_fSmallMemoryBucketTableEnabled = fSmallBuckets;
+    pBucket->m_pVtable = g_aSmallMemoryBucketBaseVtable;
+    DeleteCriticalSection(pBucket->m_abCriticalSection);
+}
+
+// FUNCTION: LEMBALL 0x00473180
+SMALL_MEMORY_BUCKET_TABLE *ConstructSmallMemoryBucketTable(
+    SMALL_MEMORY_BUCKET_TABLE *pTable) {
+    int i;
+    int iFirstBucket;
+    int cBuckets;
+    unsigned int cbSlot;
+
+    iFirstBucket = (int)g_StartupGraphicsDriverConfig.m_dwReserved1;
+    cBuckets = (int)g_StartupGraphicsDriverConfig.m_cItems;
+    if (cBuckets > 7) {
+        cBuckets = 7;
+    }
+    pTable->m_cBuckets = cBuckets;
+    for (i = 0; i < 7; ++i) {
+        pTable->m_apBuckets[i] = 0;
+        pTable->m_acbBucketSizes[i] = 0;
+    }
+
+    cbSlot = 1U << (iFirstBucket + 1);
+    for (i = iFirstBucket; i < cBuckets; ++i) {
+        SMALL_MEMORY_BUCKET *pBucket;
+
+        pTable->m_acbBucketSizes[i] = cbSlot;
+        if (g_adwStartupGraphicsBucketSizeTable[i] != 0) {
+            pBucket = (SMALL_MEMORY_BUCKET *)AllocateVSMemBlock(sizeof(SMALL_MEMORY_BUCKET));
+            if (pBucket != 0) {
+                pTable->m_apBuckets[i] =
+                    pBucket->ConstructSmallMemoryBucket(
+                        cbSlot, (unsigned int)g_adwStartupGraphicsBucketSizeTable[i], 0, 0);
+            }
+            if (g_cbSmallMemoryBucketUpperBound < cbSlot) {
+                g_cbSmallMemoryBucketUpperBound = cbSlot;
+            }
+        }
+        cbSlot <<= 1;
+    }
+    return pTable;
+}
+
+// FUNCTION: LEMBALL 0x00473280
+void LEMBALL_FASTCALL DestroySmallMemoryBucketTable(SMALL_MEMORY_BUCKET_TABLE *pTable) {
+    int i;
+    int iFirstBucket;
+
+    g_fSmallMemoryBucketTableEnabled = 0;
+    iFirstBucket = (int)g_StartupGraphicsDriverConfig.m_dwReserved1;
+    for (i = iFirstBucket; i < pTable->m_cBuckets; ++i) {
+        if (pTable->m_apBuckets[i] != 0) {
+            DestroySmallMemoryBucket(pTable->m_apBuckets[i]);
+            FreeVSMemBlock(pTable->m_apBuckets[i]);
+            pTable->m_apBuckets[i] = 0;
+        }
+    }
 }
 
 // FUNCTION: LEMBALL 0x0045A6B0
 void *AllocateVSMemBlockImpl(unsigned int cbBlock) {
-    VSMEM_BlockHeader *pHeader;
+    void *pvBlock;
+    int nSmallBlock;
+    int fAllocated;
 
-    if (!g_fMainArenaReady || cbBlock == 0) {
-        return 0;
+    pvBlock = 0;
+    if (g_fSmallMemoryBucketTableEnabled != 0 &&
+        cbBlock < g_cbSmallMemoryBucketUpperBound) {
+        nSmallBlock = ((SMALL_MEMORY_BUCKET_TABLE *)g_pSmallMemoryBucketTable)
+            ->AllocateFromSmallMemoryBucketTable(cbBlock);
+        pvBlock = (void *)(unsigned long)nSmallBlock;
+        if (nSmallBlock != 0) {
+            g_pszSmallMemoryBucketAllocTag = "Small memory bucket";
+            return pvBlock;
+        }
     }
 
-    UpdateMainMemoryArenaFreeCounter();
-    if ((long)cbBlock > CalculateMemoryArenaAvailableBytes(g_pMainMemoryArena)) {
-        return 0;
+    fAllocated = ((CArena *)g_pMainMemoryArena)->AllocateMemoryArenaBlock(
+        &pvBlock, cbBlock, g_pszSmallMemoryBucketAllocTag);
+    if (fAllocated == 0) {
+        TriggerReleaseAssertFailure("EnoughMemory", "VSMEM.CPP", 0x68d);
     }
-
-    pHeader = (VSMEM_BlockHeader *)malloc(sizeof(VSMEM_BlockHeader) + cbBlock);
-    if (pHeader == 0) {
-        return 0;
-    }
-
-    pHeader->m_cbPayload = cbBlock;
-    g_cbMainArenaInUse += (long)cbBlock;
-    UpdateMainMemoryArenaFreeCounter();
-    return pHeader + 1;
+    return pvBlock;
 }
 
 // FUNCTION: LEMBALL 0x0045A730
@@ -160,42 +424,69 @@ void FreeVSMemBlockImpl(void *pvBlock) {
 
 // FUNCTION: LEMBALL 0x0046F060
 int InitializeMasterMainRamArena(void) {
+    HGLOBAL hStorage;
     void *pStorage;
+    void *pArena;
+    int fSmallBuckets;
+    SMALL_MEMORY_BUCKET_TABLE *pTable;
 
-    g_cbMainArenaCapacity = (int)g_StartupGraphicsDriverConfig.m_dwStyle;
-    g_cbMainArenaInUse = 0;
-    g_fMainArenaReady = 0;
-    g_pMainMemoryArena = 0;
-    g_pMainMemoryArenaStorage = 0;
-    if (g_cbMainArenaCapacity < (int)GetMemoryArenaHeaderSize()) {
+    hStorage = GlobalAlloc(2, (unsigned int)g_StartupGraphicsDriverConfig.m_dwStyle);
+    g_hMainMemoryArenaStorage = hStorage;
+    if (hStorage == 0) {
         return 0;
     }
 
-    pStorage = malloc((size_t)g_cbMainArenaCapacity);
+    pStorage = GlobalLock(hStorage);
     if (pStorage == 0) {
         return 0;
     }
-    g_pMainMemoryArenaStorage = pStorage;
-    g_pMainMemoryArena = ReturnSuppliedPlacementStorage(0x50, pStorage);
-    if (g_pMainMemoryArena == 0 ||
-        ConstructMemoryArena(g_pMainMemoryArena,
-                             (unsigned int)g_cbMainArenaCapacity,
-                             "Master Main Ram Arena", 0, 0) == 0) {
-        free(pStorage);
-        g_pMainMemoryArenaStorage = 0;
+
+    pArena = ReturnSuppliedPlacementStorage(0x50, pStorage);
+    if (pArena == 0) {
         g_pMainMemoryArena = 0;
-        return 0;
+    } else {
+        g_pMainMemoryArena =
+            ((CArena *)pArena)->ConstructMemoryArena(
+                (unsigned int)g_StartupGraphicsDriverConfig.m_dwStyle,
+                "Master Main Ram Arena", 0, 0);
     }
-    g_fMainArenaReady = 1;
-    return 1;
+
+    fSmallBuckets = g_fSmallMemoryBucketTableEnabled;
+    g_pSmallMemoryBucketTable = 0;
+    pTable = 0;
+    if (fSmallBuckets != 0) {
+        g_fSmallMemoryBucketTableEnabled = 0;
+        pTable = (SMALL_MEMORY_BUCKET_TABLE *)AllocateVSMemBlock(sizeof(SMALL_MEMORY_BUCKET_TABLE));
+        if (pTable != 0) {
+            pTable = ConstructSmallMemoryBucketTable(pTable);
+        }
+    }
+    g_pSmallMemoryBucketTable = pTable;
+    g_fSmallMemoryBucketTableEnabled = fSmallBuckets;
+    if (g_pMainMemoryArena != 0 &&
+        (fSmallBuckets == 0 || g_pSmallMemoryBucketTable != 0)) {
+        return 1;
+    }
+    return 0;
 }
 
 // FUNCTION: LEMBALL 0x0046F120
 void ShutdownMasterMainRamArena(void) {
-    if (g_pMainMemoryArenaStorage != 0) {
-        free(g_pMainMemoryArenaStorage);
-        g_pMainMemoryArenaStorage = 0;
+    if (g_pSmallMemoryBucketTable != 0) {
+        DestroySmallMemoryBucketTable(
+            (SMALL_MEMORY_BUCKET_TABLE *)g_pSmallMemoryBucketTable);
+        FreeVSMemBlock(g_pSmallMemoryBucketTable);
+        g_pSmallMemoryBucketTable = 0;
     }
+    if (g_pMainMemoryArena != 0) {
+        DestroyMemoryArena(g_pMainMemoryArena);
+    }
+    if (g_hMainMemoryArenaStorage != 0) {
+        GlobalUnlock(g_hMainMemoryArenaStorage);
+        GlobalFree(g_hMainMemoryArenaStorage);
+        g_hMainMemoryArenaStorage = 0;
+    }
+    g_pMainMemoryArenaStorage = 0;
     g_pMainMemoryArena = 0;
     g_cbMainArenaCapacity = 0;
     g_cbMainArenaInUse = 0;
@@ -221,27 +512,23 @@ static void UpdateMainMemoryArenaFreeCounter(void) {
 }
 
 // FUNCTION: LEMBALL 0x004599F0
-void *ConstructMemoryArenaBaseState(void *pArena,
-                                   unsigned int cbStorage,
-                                   const char *pszName,
-                                   void *pParentArena,
-                                   void *pReserved) {
-    CArena *pMemoryArena;
-
+CArena *CArena::ConstructMemoryArenaBaseState(unsigned int cbStorage,
+                                               const char *pszName,
+                                               void *pParentArena,
+                                               void *pReserved) {
     (void)cbStorage;
     (void)pReserved;
-    pMemoryArena = (CArena *)pArena;
-    pMemoryArena->m_pVtable = g_aMainMemoryArenaVtable;
-    pMemoryArena->m_pLockVtable = g_aMainMemoryArenaLockVtable;
-    pMemoryArena->m_pszName = pszName;
-    pMemoryArena->m_pParentArena = (CArena *)pParentArena;
-    pMemoryArena->m_pFirstFreeBlock = 0;
-    pMemoryArena->m_pLastFreeBlock = 0;
-    pMemoryArena->m_pFirstAddressBlock = 0;
-    pMemoryArena->m_pLastAddressBlock = 0;
-    pMemoryArena->m_pFirstChildArena = 0;
-    pMemoryArena->m_pStatusEntry = 0;
-    return pArena;
+    m_pVtable = g_aMainMemoryArenaVtable;
+    m_pLockVtable = g_aMainMemoryArenaLockVtable;
+    m_pszName = pszName;
+    m_pParentArena = (CArena *)pParentArena;
+    m_pFirstFreeBlock = 0;
+    m_pLastFreeBlock = 0;
+    m_pFirstAddressBlock = 0;
+    m_pLastAddressBlock = 0;
+    m_pFirstChildArena = 0;
+    m_pStatusEntry = 0;
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x00459A40
@@ -451,7 +738,9 @@ void *CArena::FindSmallestFreeMemoryBlockAtLeast(unsigned int cbPayload) {
 }
 
 // FUNCTION: LEMBALL 0x00459D70
-int AllocateMemoryArenaBlock(void *pArena, void **ppvBlock, unsigned int cbBlock, const char *pszDescription) {
+int CArena::AllocateMemoryArenaBlock(void **ppvBlock,
+                                     unsigned int cbBlock,
+                                     const char *pszDescription) {
     CArena *pMemoryArena;
     CMemoryBlock *pMemoryBlock;
     CMemoryBlock *pSplitMemoryBlock;
@@ -465,7 +754,7 @@ int AllocateMemoryArenaBlock(void *pArena, void **ppvBlock, unsigned int cbBlock
     void *pStatusEntry;
     void **pLockVtable;
 
-    pMemoryArena = (CArena *)pArena;
+    pMemoryArena = this;
     pLockVtable = pMemoryArena->m_pLockVtable;
     ((VSMEM_LockProc)pLockVtable[0])();
     cbAligned = (cbBlock + 3) & 0xfffffffc;
@@ -579,7 +868,8 @@ int AllocateChildMemoryArena(void *pArena, void **ppChildArena, unsigned int cbC
     void *pChildArena;
 
     *ppChildArena = 0;
-    if (AllocateMemoryArenaBlock(pArena, &pvStorage, cbChildArena, g_VSMEM_ArenaContainerName) == 0) {
+    if (((CArena *)pArena)->AllocateMemoryArenaBlock(
+            &pvStorage, cbChildArena, g_VSMEM_ArenaContainerName) == 0) {
         return 0;
     }
     pLockVtable = *(void ***)((char *)pArena + 8);
@@ -683,7 +973,7 @@ unsigned int GetMemoryArenaPayloadByteCounter(void *pArena) {
 }
 
 // FUNCTION: LEMBALL 0x0045A350
-long CalculateMemoryArenaAvailableBytes(void *pArena) {
+long LEMBALL_FASTCALL CalculateMemoryArenaAvailableBytes(void *pArena) {
     CArena *pMemoryArena;
     CMemoryBlock *pBlock;
     VSMEM_SizeProc pfnGetBlockHeaderSize;
@@ -733,18 +1023,17 @@ void CopyMemoryBytes(void *pvTarget, const void *pvSource, unsigned int cbCopy) 
 }
 
 // FUNCTION: LEMBALL 0x0045A3F0
-void *ConstructMemoryArena(void *pArena,
-                           unsigned int cbStorage,
-                           const char *pszName,
-                           void *pParentArena,
-                           void *pReserved) {
+CArena *CArena::ConstructMemoryArena(unsigned int cbStorage,
+                                      const char *pszName,
+                                      void *pParentArena,
+                                      void *pReserved) {
     CArena *pMemoryArena;
     CMemoryBlock *pMemoryBlock;
     unsigned int cbArenaHeader;
     unsigned int cbFreeBlock;
 
-    ConstructMemoryArenaBaseState(pArena, cbStorage, pszName, pParentArena, pReserved);
-    pMemoryArena = (CArena *)pArena;
+    pMemoryArena = this;
+    pMemoryArena->ConstructMemoryArenaBaseState(cbStorage, pszName, pParentArena, pReserved);
     pMemoryArena->m_pVtable = g_aMainMemoryArenaVtable;
     pMemoryArena->m_pLockVtable = g_aMainMemoryArenaLockVtable;
     pMemoryArena->m_nMagic = 0x5241524e;
@@ -754,16 +1043,16 @@ void *ConstructMemoryArena(void *pArena,
     cbFreeBlock -= GetMemoryBlockHeaderSize();
     pMemoryArena->m_cbFree = cbFreeBlock;
     cbArenaHeader = GetMemoryArenaHeaderSize();
-    pMemoryArena->m_pStorage = (char *)pArena + cbArenaHeader;
-    pMemoryBlock = (CMemoryBlock *)PlacementConstructMemoryArenaBlock((char *)pArena + cbArenaHeader,
-                                                                      pArena,
+    pMemoryArena->m_pStorage = (char *)pMemoryArena + cbArenaHeader;
+    pMemoryBlock = (CMemoryBlock *)PlacementConstructMemoryArenaBlock((char *)pMemoryArena + cbArenaHeader,
+                                                                      pMemoryArena,
                                                                       0,
                                                                       g_VSMEM_FreeBlockName,
                                                                       pMemoryArena->m_cbStorage);
     pMemoryBlock->m_dwFlags |= 1;
     pMemoryArena->InsertMemoryBlockAfterFreeListNode(pMemoryBlock, 0);
     pMemoryArena->AppendTailMemoryBlockAddressList(pMemoryBlock);
-    return pArena;
+    return pMemoryArena;
 }
 
 // FUNCTION: LEMBALL 0x0045A480
@@ -794,7 +1083,7 @@ void *PlacementConstructMemoryArenaWithStorage(void *pvStorage,
 
     pArena = ReturnSuppliedPlacementStorage(0x50, pvStorage);
     if (pArena != 0) {
-        return ConstructMemoryArena(pArena, cbStorage, pszName, pParentArena, pReserved);
+        return ((CArena *)pArena)->ConstructMemoryArena(cbStorage, pszName, pParentArena, pReserved);
     }
     return 0;
 }

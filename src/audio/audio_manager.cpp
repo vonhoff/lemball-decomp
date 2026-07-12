@@ -579,10 +579,10 @@ void RefreshAudioManagerBackendHandles(void *pAudioManager) {
 }
 
 // FUNCTION: LEMBALL 0x0045B2C0
-void InvokeAudioManagerEmbeddedSlot04(void *pAudioManager, int nValue1, int nValue2) {
+void AUDIO_Manager::InvokeAudioManagerEmbeddedSlot04(int nValue1, int nValue2) {
     void *pControl;
 
-    pControl = *(void **)((char *)pAudioManager + 0x34);
+    pControl = *(void **)((char *)this + 0x34);
     ((void (*)(int, int))(*(void ***)pControl)[1])(nValue1, nValue2);
 }
 
@@ -767,19 +767,19 @@ void SetAudioManagerMusicResourceContext(void *pAudioManager, void *pPrimaryCont
 }
 
 // FUNCTION: LEMBALL 0x0045B5C0
-void SetAudioManagerStartupMusicName(void *pAudioManager, const char *pszMusicName) {
+void AUDIO_Manager::SetAudioManagerStartupMusicName(const char *pszMusicName) {
     AUDIO_BackendControl *pControl;
 
-    pControl = *(AUDIO_BackendControl **)((char *)pAudioManager + 0x34);
-    AssignDynamicCString(&pControl->m_StartupMusicName, pszMusicName);
+    pControl = *(AUDIO_BackendControl **)((char *)this + 0x34);
+    pControl->m_StartupMusicName.AssignDynamicCString(pszMusicName);
     pControl->m_fStartupMusicNameSet = 1;
 }
 
 // FUNCTION: LEMBALL 0x0045B5F0
-void SetAudioManagerMusicEnabledFlag(void *pAudioManager, int fEnabled) {
+void AUDIO_Manager::SetAudioManagerMusicEnabledFlag(int fEnabled) {
     AUDIO_BackendControl *pControl;
 
-    pControl = *(AUDIO_BackendControl **)((char *)pAudioManager + 0x34);
+    pControl = *(AUDIO_BackendControl **)((char *)this + 0x34);
     pControl->m_fMusicEnabled = fEnabled;
 }
 
@@ -790,8 +790,11 @@ char *BuildAudioManagerDescriptionString(void *pAudioManager) {
     void *pBackend;
 
     DescriptionStream.m_pVtable = g_FormattedOutputStreamVtable;
-    ConstructStreamFormatTargetState(&DescriptionStream.m_TargetState, &DescriptionBufferStream);
     DescriptionStream.m_TargetState.m_pVtable = g_StreamFormatSubobjectVtable;
+    DescriptionStream.m_TargetState.m_dwFlags = 0x14;
+    DescriptionStream.m_TargetState.m_chFill = ' ';
+    DescriptionStream.m_TargetState.m_nWidth = 0;
+    DescriptionStream.m_TargetState.m_nRadix = 10;
     ConstructFixedBufferStream(&DescriptionBufferStream, g_szAudioManagerDescription, sizeof(g_szAudioManagerDescription),
                                0);
     DescriptionStream.m_TargetState.m_pDownstream = &DescriptionBufferStream;
@@ -1385,7 +1388,7 @@ AUDIO_MciMusicBackend *AUDIO_MciMusicBackend::ConstructMciMusicBackend(void) {
     char szMciErrorText[0x80];
 
     pMusicBackend = this;
-    ConstructDynamicCString(&pMusicBackend->m_BasePath);
+    pMusicBackend->m_BasePath.ConstructDynamicCString();
     pMusicBackend->m_pVtable = (void **)g_AudioDynamicStringEntryVtable;
     pMusicBackend->m_fSearchCdromPath = 0;
     pMusicBackend->m_fBasePathSet = 0;
@@ -1478,28 +1481,24 @@ void PrepareMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle, int
     }
     ++pStringResource->m_nLockCount08;
 
-    ConstructDynamicCString(&MusicPath);
+    MusicPath.ConstructDynamicCString();
     if (pBackend->m_fBasePathSet != 0) {
-        AssignDynamicCStringFromDynamic(&MusicPath, &pBackend->m_BasePath);
+        MusicPath.AssignDynamicCStringFromDynamic(&pBackend->m_BasePath);
         if (MusicPath.m_pszText[GetDynamicCStringLength(&MusicPath) - 1] != '\\') {
-            AppendDynamicCStringAndCopyResult(&MusicPath, &TemporaryPath,
-                                              g_AUDIO_PathSeparator);
+            MusicPath.AppendDynamicCStringAndCopyResult(&TemporaryPath, g_AUDIO_PathSeparator);
             DestroyDynamicCString(&TemporaryPath);
         }
     }
-    AppendDynamicCStringAndCopyResult(&MusicPath, &TemporaryPath,
-                                      pStringResource->m_pszText38);
+    MusicPath.AppendDynamicCStringAndCopyResult(&TemporaryPath, pStringResource->m_pszText38);
     DestroyDynamicCString(&TemporaryPath);
-    AppendDynamicCStringAndCopyResult(&MusicPath, &TemporaryPath,
-                                      g_AUDIO_MusicExtension);
+    MusicPath.AppendDynamicCStringAndCopyResult(&TemporaryPath, g_AUDIO_MusicExtension);
     DestroyDynamicCString(&TemporaryPath);
 
-    ConstructDynamicCString(&BasePath);
+    BasePath.ConstructDynamicCString();
     if (pBackend->m_fSearchCdromPath == 0) {
-        AssignDynamicCString(&BasePath, g_abProcessCurrentDirectoryBuffer);
+        BasePath.AssignDynamicCString(g_abProcessCurrentDirectoryBuffer);
         if (BasePath.m_pszText[GetDynamicCStringLength(&BasePath) - 1] != '\\') {
-            AppendDynamicCStringAndCopyResult(&BasePath, &TemporaryPath,
-                                              g_AUDIO_PathSeparator);
+            BasePath.AppendDynamicCStringAndCopyResult(&TemporaryPath, g_AUDIO_PathSeparator);
             DestroyDynamicCString(&TemporaryPath);
         }
     } else {
@@ -1509,14 +1508,13 @@ void PrepareMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle, int
         if (pszCdromPath == 0) {
             pszCdromPath = g_abProcessCurrentDirectoryBuffer;
         }
-        AssignDynamicCString(&BasePath, pszCdromPath);
+        BasePath.AssignDynamicCString(pszCdromPath);
         if (BasePath.m_pszText[GetDynamicCStringLength(&BasePath) - 1] != '\\') {
-            AppendDynamicCStringAndCopyResult(&BasePath, &TemporaryPath,
-                                              g_AUDIO_PathSeparator);
+            BasePath.AppendDynamicCStringAndCopyResult(&TemporaryPath, g_AUDIO_PathSeparator);
             DestroyDynamicCString(&TemporaryPath);
         }
     }
-    AppendDynamicCStringObjectAndCopyResult(&BasePath, &TemporaryPath, &MusicPath);
+    BasePath.AppendDynamicCStringObjectAndCopyResult(&TemporaryPath, &MusicPath);
     DestroyDynamicCString(&TemporaryPath);
 
     OpenParms.dwCallback = 0;

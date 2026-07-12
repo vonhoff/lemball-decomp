@@ -26,7 +26,7 @@ public:
 };
 
 void DestroyInvisibleMessageWindow(PLATFORM_InvisibleMessageWindow *pWindow);
-int DebugMessageThreadMain(void);
+int __stdcall DebugMessageThreadMain(void);
 PLATFORM_DebugTextWindow *GetDebugTextWindow(void);
 
 #endif

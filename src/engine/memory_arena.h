@@ -4,6 +4,16 @@
 #include "platform/win32.h"
 
 struct VSINIT_FormattedOutputStream;
+struct SMALL_MEMORY_BUCKET;
+
+struct SMALL_MEMORY_BUCKET_TABLE {
+    SMALL_MEMORY_BUCKET *m_apBuckets[7];
+    unsigned int m_acbBucketSizes[7];
+    int m_cBuckets;
+
+    int AllocateFromSmallMemoryBucketTable(unsigned int cbBlock);
+    int FreeToSmallMemoryBucketTable(void *pBlock);
+};
 
 int InitializeMasterMainRamArena(void);
 void ShutdownMasterMainRamArena(void);
@@ -11,7 +21,7 @@ void *AllocateVSMemBlockImpl(unsigned int cbBlock);
 void FreeVSMemBlockImpl(void *pvBlock);
 void *AllocateVSMemBlock(unsigned int cbBlock);
 void FreeVSMemBlock(void *pvBlock);
-long CalculateMemoryArenaAvailableBytes(void *pArena);
+long LEMBALL_FASTCALL CalculateMemoryArenaAvailableBytes(void *pArena);
 void *WriteMemoryArenaReport(void *pArena, VSINIT_FormattedOutputStream *pOutputStream);
 unsigned int GetMemoryArenaPayloadByteCounter(void *pArena);
 void *ReturnSuppliedPlacementStorage(unsigned int cbStorage, void *pvStorage);
@@ -24,7 +34,6 @@ void *ConstructMemoryArenaBaseState(void *pArena,
                                    void *pReserved);
 void ReleaseMemoryArenaBlockLists(void *pArena);
 void DestroyMemoryArenaBaseState(void *pArena);
-int AllocateMemoryArenaBlock(void *pArena, void **ppvBlock, unsigned int cbBlock, const char *pszDescription);
 int FreeMemoryArenaBlock(void *pArena, void *pvBlock);
 int AllocateChildMemoryArena(void *pArena, void **ppChildArena, unsigned int cbChildArena);
 int ReleaseChildMemoryArena(void *pArena, void *pChildArena);

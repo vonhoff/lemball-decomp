@@ -326,7 +326,7 @@ struct GAME_NonZrleVariantRenderEntryInitializeVtable {
     void (*m_pDelete)(int);
 };
 
-extern "C" DWORD timeGetTime(void);
+extern "C" DWORD WINAPI timeGetTime(void);
 
 extern int g_nSelectedNetworkLobbyPeerId;
 extern void *g_pActiveNetworkRuntimeWindow;
@@ -337,7 +337,7 @@ struct NETWORK_EffTransportPeer {
 struct NETWORK_RuntimeStartView {
     int StartEffTransportRuntimeAndWaitReady(int nRuntimeKey, int cbMaxPacket);
 };
-extern void LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode);
+extern void *LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode);
 extern int StartFileBasedNetworkMessageThread(void);
 extern int StartTcpipNetworkMessageThread(void);
 extern void WINAPI ConfigureFileBasedNetworkPathsWrapper(char *pszBasePath, char *pszNetworkPath);
@@ -679,7 +679,8 @@ void *ConstructNetworkLobbyPeerDirtyConfirmStream(void *pObject) {
 // FUNCTION: LEMBALL 0x00462590
 void GAME_EffTransportRuntimeWindow::RegisterEffTransportEventClient(void *pClient) {
     m_pSecondaryDispatchClient = pClient;
-    RegisterOrderedRenderDispatchClient(g_pEffTransportSecondaryDispatchQueue, pClient, 0);
+    ((GAME_RenderDispatchQueue *)g_pEffTransportSecondaryDispatchQueue)
+        ->RegisterOrderedRenderDispatchClient(pClient, 0);
 }
 
 // FUNCTION: LEMBALL 0x004625B0
@@ -688,13 +689,14 @@ void GAME_EffTransportRuntimeWindow::UnregisterEffTransportEventClient(void) {
 
     pClient = m_pSecondaryDispatchClient;
     if (pClient != 0) {
-        UnregisterOrderedRenderDispatchClient(g_pEffTransportSecondaryDispatchQueue, pClient, 0);
+        ((GAME_RenderDispatchQueue *)g_pEffTransportSecondaryDispatchQueue)
+            ->UnregisterOrderedRenderDispatchClient(pClient, 0);
         m_pSecondaryDispatchClient = 0;
     }
 }
 
 // FUNCTION: LEMBALL 0x004527C0
-void UnregisterNetworkLobbyVsnetRuntimeFromTransport(void *pVsnetRuntime) {
+void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(void *pVsnetRuntime) {
     GAME_NetworkLobbyVsnetRuntime *pRuntime;
     GAME_EffTransportRuntimeWindow *pWindow;
     DWORD dwStartTime;
@@ -715,7 +717,8 @@ void UnregisterNetworkLobbyVsnetRuntimeFromTransport(void *pVsnetRuntime) {
 
     pWindow = (GAME_EffTransportRuntimeWindow *)g_pActiveNetworkRuntimeWindow;
     if (pWindow != 0 && pWindow->m_fRuntimeActive != 0) {
-        UnregisterOrderedRenderDispatchClient(g_pEffTransportSecondaryDispatchQueue, pVsnetRuntime, 0x19);
+        ((GAME_RenderDispatchQueue *)g_pEffTransportSecondaryDispatchQueue)
+            ->UnregisterOrderedRenderDispatchClient(pVsnetRuntime, 0x19);
         pWindow->m_pSecondaryDispatchClient = pVsnetRuntime;
         ((GAME_EffTransportRuntimeWindowVtable *)*(void **)g_pActiveNetworkRuntimeWindow)->m_pServiceRuntime();
     }
@@ -727,7 +730,7 @@ void MarkNetworkLobbySelectedPeerDisconnected(void *pVsnetRuntime) {
 }
 
 // FUNCTION: LEMBALL 0x00452AC0
-void ServiceNetworkLobbySelectedPeerUpdates(void *pVsnetRuntime) {
+void LEMBALL_FASTCALL ServiceNetworkLobbySelectedPeerUpdates(void *pVsnetRuntime) {
     GAME_NetworkLobbyVsnetRuntime *pRuntime;
     GAME_EffTransportPeer *pSelectedPeer;
     GAME_EffTransportHandleOwner *pHandleOwner;
@@ -776,7 +779,8 @@ int RegisterNetworkLobbyVsnetRuntimeWithTransport(void *pVsnetRuntime) {
     if (pWindow != 0 && pWindow->m_fRuntimeActive != 0) {
         pWindow->m_pPrimaryDispatchClient = pVsnetRuntime;
         ((GAME_EffTransportRuntimeWindowVtable *)*(void **)g_pActiveNetworkRuntimeWindow)->m_pServiceRuntime();
-        RegisterOrderedRenderDispatchClient(g_pEffTransportSecondaryDispatchQueue, pVsnetRuntime, 0x19);
+        ((GAME_RenderDispatchQueue *)g_pEffTransportSecondaryDispatchQueue)
+            ->RegisterOrderedRenderDispatchClient(pVsnetRuntime, 0x19);
         return 1;
     }
     return 0;

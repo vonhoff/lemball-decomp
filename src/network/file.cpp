@@ -1957,7 +1957,7 @@ struct NETWORK_EffTransportPacketProcessor {
     int ProcessEffTransportPacketHeader(void);
 };
 
-extern "C" DWORD timeGetTime(void);
+extern "C" DWORD WINAPI timeGetTime(void);
 
 int OpenWin32FileWrapperWithCreateFlag(void *pObject, LPCSTR pszPath, int nAccessMode, int fCreateNew);
 int OpenWin32FileWrapperCreateNew(void *pObject, LPCSTR pszPath, int nAccessMode);
@@ -2166,7 +2166,7 @@ int NETWORK_Win32FileWrapper::Write(const void *pvSource, DWORD cbWrite) {
     fSuccess = WriteFile((HANDLE)(unsigned long)pWrapper->m_nReserved0c, pvSource, cbWrite, &cbWritten, 0);
     if (fSuccess == 0) {
         AppendCStringToStream(g_pErrorOutputStream, "Write error: ");
-        AppendIntToStream(g_pErrorOutputStream, GetLastError());
+        g_pErrorOutputStream->AppendIntToStream(GetLastError());
         AppendCStringToStream(g_pErrorOutputStream, "\n");
         return 0;
     }
@@ -2176,7 +2176,7 @@ int NETWORK_Win32FileWrapper::Write(const void *pvSource, DWORD cbWrite) {
         AppendCStringToStream(g_pErrorOutputStream, "Write error: ");
         AppendUIntToStream(g_pErrorOutputStream, cbWritten);
         AppendCStringToStream(g_pErrorOutputStream, " bytes written instead of ");
-        AppendIntToStream(g_pErrorOutputStream, cbWrite);
+        g_pErrorOutputStream->AppendIntToStream(cbWrite);
         AppendCStringToStream(g_pErrorOutputStream, "\n");
         return 0;
     }
@@ -2200,7 +2200,7 @@ int NETWORK_Win32FileWrapper::Read(LPVOID pvTarget, DWORD cbRead) {
         dwError = GetLastError();
         if (dwError != 0x21) {
             AppendCStringToStream(g_pErrorOutputStream, "Read error: ");
-            AppendIntToStream(g_pErrorOutputStream, dwError);
+        g_pErrorOutputStream->AppendIntToStream(dwError);
             AppendCStringToStream(g_pErrorOutputStream, "\n");
         }
         return 0;
@@ -2211,7 +2211,7 @@ int NETWORK_Win32FileWrapper::Read(LPVOID pvTarget, DWORD cbRead) {
         AppendCStringToStream(g_pErrorOutputStream, "Read error: ");
         AppendUIntToStream(g_pErrorOutputStream, cbReadNow);
         AppendCStringToStream(g_pErrorOutputStream, " bytes read instead of ");
-        AppendIntToStream(g_pErrorOutputStream, cbRead);
+        g_pErrorOutputStream->AppendIntToStream(cbRead);
         AppendCStringToStream(g_pErrorOutputStream, "in file ");
         AppendCStringToStream(g_pErrorOutputStream, (const char *)(unsigned long)pWrapper->m_nReserved04);
         AppendCStringToStream(g_pErrorOutputStream, " which is ");
@@ -2736,27 +2736,18 @@ void *NETWORK_TimedFileBackedEffChannelConstructorView::ConstructTimedFileBacked
 
 // FUNCTION: LEMBALL 0x00479F40
 void NETWORK_TimedFileBackedEffChannelVtableRestoreView::RestoreTimedFileBackedEffChannelVtables(void) {
-    int *pOffsets;
-    int nOffset;
-    char *pbSubobject;
-
-    pOffsets = *(int **)((char *)this - 0xc);
-    nOffset = pOffsets[1];
-    pbSubobject = (char *)this + nOffset - 0xc;
-    *(void **)pbSubobject = g_NETWORK_FileBackedTimedPrimaryThunkVtable;
-    nOffset = pOffsets[2];
-    pbSubobject = (char *)this + nOffset - 0xc;
-    *(void **)pbSubobject = g_NETWORK_FileBackedTimedSecondaryThunkVtable;
-    nOffset = pOffsets[3];
-    pbSubobject = (char *)this + nOffset - 0xc;
-    *(void **)pbSubobject = g_NETWORK_OpenWin32FileWrapperVtable;
-    nOffset = pOffsets[4];
-    pbSubobject = (char *)this + nOffset - 0xc;
-    *(void **)pbSubobject = g_NETWORK_FileBackedFatalFileWrapperVtable;
-    nOffset = pOffsets[1];
-    *(int *)((char *)this + nOffset - 0x10) = nOffset - 0xc;
-    nOffset = pOffsets[2];
-    *(int *)((char *)this + nOffset - 0x10) = nOffset - 0x3c;
+    *(void **)((char *)this + (*(int **)((char *)this - 0xc))[1] - 0xc) =
+        g_NETWORK_FileBackedTimedPrimaryThunkVtable;
+    *(void **)((char *)this + (*(int **)((char *)this - 0xc))[2] - 0xc) =
+        g_NETWORK_FileBackedTimedSecondaryThunkVtable;
+    *(void **)((char *)this + (*(int **)((char *)this - 0xc))[3] - 0xc) =
+        g_NETWORK_OpenWin32FileWrapperVtable;
+    *(void **)((char *)this + (*(int **)((char *)this - 0xc))[4] - 0xc) =
+        g_NETWORK_FileBackedFatalFileWrapperVtable;
+    *(int *)((char *)this + (*(int **)((char *)this - 0xc))[1] - 0x10) =
+        (*(int **)((char *)this - 0xc))[1] - 0xc;
+    *(int *)((char *)this + (*(int **)((char *)this - 0xc))[2] - 0x10) =
+        (*(int **)((char *)this - 0xc))[2] - 0x3c;
 }
 
 // FUNCTION: LEMBALL 0x0047A220

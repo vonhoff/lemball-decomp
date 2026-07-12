@@ -6,7 +6,7 @@
 #include "../engine/memory_arena.h"
 #include "../network/safe_vtable.h"
 
-extern "C" DWORD timeGetTime(void);
+extern "C" DWORD WINAPI timeGetTime(void);
 extern void CrtFatalRuntimeError0x19(void);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 extern void NoopVtableCallbackThunk(void);
@@ -786,7 +786,7 @@ extern void *LoadBitmapResource(int nResourceId);
 extern void *LoadPalResource(int nResourceId);
 extern void *LoadZrleOnlyListResource(int nResourceId);
 extern void *LoadZrleResource(int nResourceId);
-extern void ReleaseTypedResourceObjectReference(void *pResourceObject);
+extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void *pResourceObject);
 extern void PruneUnreferencedCachedResourceObjects(void *pArchive);
 extern void SampleRootHelperGeometryAndDispatchRenderGroups(void *pPrimaryContext, int nToken);
 
@@ -1052,17 +1052,23 @@ void LoadVariantRenderResource(void *pObject, int nResourceId) {
     }
 }
 
-// FUNCTION: LEMBALL 0x00467500
-void ReleaseVariantRenderResource(void *pObject, int nResourceId) {
-    int *pManager;
-    int iSlot;
+struct LEVEL_VARIANT_RENDER_MANAGER_VIEW {
+    unsigned char m_abReserved00[0x24];
+    void **m_ppResourceObjects;
+    short *m_pResourceIds;
+    int m_nFreeResourceId;
+    int m_nReserved30;
+    int m_cLoadedResources;
 
-    pManager = (int *)pObject;
-    iSlot = (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2);
-    ReleaseTypedResourceObjectReference(*(void **)(unsigned long)(pManager[9] + iSlot * 4));
-    *(int *)(unsigned long)(pManager[9] + iSlot * 4) = 0;
-    *(short *)(unsigned long)(pManager[10] + nResourceId * 2) = (short)pManager[0xb];
-    --pManager[0xd];
+    void ReleaseVariantRenderResource(int nResourceId);
+};
+
+// FUNCTION: LEMBALL 0x00467500
+void LEVEL_VARIANT_RENDER_MANAGER_VIEW::ReleaseVariantRenderResource(int nResourceId) {
+    ReleaseTypedResourceObjectReference(m_ppResourceObjects[m_pResourceIds[nResourceId]]);
+    m_ppResourceObjects[m_pResourceIds[nResourceId]] = 0;
+    m_pResourceIds[nResourceId] = (short)m_nFreeResourceId;
+    --m_cLoadedResources;
 }
 
 // FUNCTION: LEMBALL 0x00467540
@@ -1133,8 +1139,18 @@ void *InitializeFramedScreenRenderChildEntry(void *pObject) {
     return pObject;
 }
 
+void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntry(void *pObject);
+void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntry(void *pObject);
+void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntry(void *pObject);
+
 // FUNCTION: LEMBALL 0x0040272F
-void *InitializePackagedSpriteRenderEntry(void *pObject) {
+__declspec(naked) void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(void *pObject) {
+    (void)pObject;
+    __asm { jmp InitializePackagedSpriteRenderEntry }
+}
+
+// FUNCTION: LEMBALL 0x004394C0
+void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntry(void *pObject) {
     int *pEntry;
 
     pEntry = (int *)pObject;
@@ -1148,7 +1164,13 @@ void *InitializePackagedSpriteRenderEntry(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x0040135C
-void *InitializeRenderPointRectSinkEntry(void *pObject) {
+__declspec(naked) void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntryThunk(void *pObject) {
+    (void)pObject;
+    __asm { jmp InitializeRenderPointRectSinkEntry }
+}
+
+// FUNCTION: LEMBALL 0x00439580
+void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntry(void *pObject) {
     int *pEntry;
 
     pEntry = (int *)pObject;
@@ -1163,8 +1185,14 @@ void *InitializeRenderPointRectSinkEntry(void *pObject) {
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x00401C7B
-void *InitializeStatusIndicatorPointSinkEntry(void *pObject) {
+// FUNCTION: LEMBALL 0x00401AC8
+__declspec(naked) void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryThunk(void *pObject) {
+    (void)pObject;
+    __asm { jmp InitializeStatusIndicatorPointSinkEntry }
+}
+
+// FUNCTION: LEMBALL 0x00439550
+void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntry(void *pObject) {
     int *pEntry;
 
     pEntry = (int *)pObject;
@@ -1264,44 +1292,73 @@ void DestroyVariantRenderManager(void *pObject) {
     }
 }
 
-// FUNCTION: LEMBALL 0x00401CD5
-void ReleaseLevelScreenVariantStateWrapper(void *pObject, int nResourceId) {
+// FUNCTION: LEMBALL 0x00434EC0
+void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapperBody(void *pObject, int nUnusedFastcallArgument, int nResourceId) {
     int *pManager;
     unsigned int uStatePointer;
 
+    (void)nUnusedFastcallArgument;
     pManager = (int *)pObject;
-    uStatePointer = *(unsigned int *)(unsigned long)(*(int *)(unsigned long)(pManager[0x1d] + 4) +
+    uStatePointer = *(unsigned int *)(unsigned long)(pManager[0x1d] +
                                                      (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2) * 4);
     if (uStatePointer != 0) {
         FreeVSMemBlock((void *)(unsigned long)uStatePointer);
-        *(int *)(unsigned long)(*(int *)(unsigned long)(pManager[0x1d] + 4) +
+        *(int *)(unsigned long)(pManager[0x1d] +
                                 (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2) * 4) = 0;
     }
-    ReleaseVariantRenderResource(pObject, nResourceId);
+    ((LEVEL_VARIANT_RENDER_MANAGER_VIEW *)pObject)->ReleaseVariantRenderResource(nResourceId);
 }
 
-// FUNCTION: LEMBALL 0x00402F1D
-void ReleaseLevelScreenVariantStateWrapperRange(void *pObject, int nFirstResourceId, int nLastResourceId) {
+// FUNCTION: LEMBALL 0x00401CD5
+__declspec(naked) void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapper(void *pObject, int nResourceId) {
+    (void)pObject;
+    (void)nResourceId;
+    __asm { jmp ReleaseLevelScreenVariantStateWrapperBody }
+}
+
+// FUNCTION: LEMBALL 0x00434F00
+void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapperRangeBody(void *pObject, int nUnusedFastcallArgument, int nFirstResourceId, int nLastResourceId) {
     int nResourceId;
     int *pManager;
     unsigned int uStatePointer;
 
+    (void)nUnusedFastcallArgument;
+
+    nResourceId = nFirstResourceId;
     pManager = (int *)pObject;
-    for (nResourceId = nFirstResourceId; nResourceId <= nLastResourceId; ++nResourceId) {
-        uStatePointer = *(unsigned int *)(unsigned long)(*(int *)(unsigned long)(pManager[0x1d] + 4) +
-                                                         (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2) *
-                                                             4);
+    while (nResourceId <= nLastResourceId) {
+        uStatePointer = (unsigned int)*(void **)((char *)pManager[0x1d] +
+                                                 (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2) * 4);
         if (uStatePointer != 0) {
             FreeVSMemBlock((void *)(unsigned long)uStatePointer);
-            *(int *)(unsigned long)(*(int *)(unsigned long)(pManager[0x1d] + 4) +
-                                    (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2) * 4) = 0;
+            *(void **)((char *)pManager[0x1d] +
+                       (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2) * 4) = 0;
         }
-        ReleaseVariantRenderResource(pObject, nResourceId);
+        ((LEVEL_VARIANT_RENDER_MANAGER_VIEW *)pObject)->ReleaseVariantRenderResource(nResourceId);
+        ++nResourceId;
     }
 }
 
+// FUNCTION: LEMBALL 0x00402F1D
+__declspec(naked) void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapperRange(void *pObject, int nFirstResourceId, int nLastResourceId) {
+    (void)pObject;
+    (void)nFirstResourceId;
+    (void)nLastResourceId;
+    __asm { jmp ReleaseLevelScreenVariantStateWrapperRangeBody }
+}
+
+#define ReleaseVariantRenderResource(pObject, nResourceId) \
+    ((LEVEL_VARIANT_RENDER_MANAGER_VIEW *)(pObject))->ReleaseVariantRenderResource(nResourceId)
+
+int ReturnTrueVirtualHookBody(void);
+
 // FUNCTION: LEMBALL 0x00402FEF
-int ReturnTrueVirtualHook(void) {
+__declspec(naked) int ReturnTrueVirtualHook(void) {
+    __asm { jmp ReturnTrueVirtualHookBody }
+}
+
+// FUNCTION: LEMBALL 0x00413090
+int ReturnTrueVirtualHookBody(void) {
     return 1;
 }
 
@@ -1419,7 +1476,7 @@ void *ConstructLevelScreenStatusIndicatorManager(void *pObject, int nStatusMode,
 }
 
 // FUNCTION: LEMBALL 0x004338B0
-void ReleaseLevelSelectionModeRenderStateResource(void *pObject) {
+void LEMBALL_FASTCALL ReleaseLevelSelectionModeRenderStateResource(void *pObject) {
     int *pManager;
 
     pManager = (int *)pObject;

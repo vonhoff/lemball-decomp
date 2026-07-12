@@ -28,7 +28,8 @@ static void *g_GAME_StatusEntryVtable[8] = {
 };
 
 // FUNCTION: LEMBALL 0x0046E410
-GAME_DynamicCString *ConstructDynamicCString(GAME_DynamicCString *pString) {
+GAME_DynamicCString *GAME_DynamicCString::ConstructDynamicCString(void) {
+    GAME_DynamicCString *pString = this;
     char *pszBuffer;
 
     pString->m_cchCapacity = 1;
@@ -44,7 +45,8 @@ void DestroyDynamicCString(GAME_DynamicCString *pString) {
 }
 
 // FUNCTION: LEMBALL 0x0046E570
-GAME_DynamicCString *AssignDynamicCString(GAME_DynamicCString *pString, const char *pszText) {
+GAME_DynamicCString *GAME_DynamicCString::AssignDynamicCString(const char *pszText) {
+    GAME_DynamicCString *pString = this;
     char ch;
     unsigned int cchText;
     unsigned int cDwords;
@@ -98,8 +100,8 @@ GAME_DynamicCString *AssignDynamicCString(GAME_DynamicCString *pString, const ch
 }
 
 // FUNCTION: LEMBALL 0x0046E430
-GAME_DynamicCString *ConstructDynamicCStringFromCString(GAME_DynamicCString *pString,
-                                                          const char *pszText) {
+GAME_DynamicCString *GAME_DynamicCString::ConstructDynamicCStringFromCString(const char *pszText) {
+    GAME_DynamicCString *pString = this;
     unsigned int cchText;
 
     cchText = (unsigned int)strlen(pszText) + 1;
@@ -110,8 +112,8 @@ GAME_DynamicCString *ConstructDynamicCStringFromCString(GAME_DynamicCString *pSt
 }
 
 // FUNCTION: LEMBALL 0x0046E480
-GAME_DynamicCString *CopyConstructDynamicCString(GAME_DynamicCString *pString,
-                                                   const GAME_DynamicCString *pSource) {
+GAME_DynamicCString *GAME_DynamicCString::CopyConstructDynamicCString(const GAME_DynamicCString *pSource) {
+    GAME_DynamicCString *pString = this;
     pString->m_cchCapacity = pSource->m_cchCapacity;
     pString->m_pszText = (char *)AllocateVSMemBlock((unsigned int)pString->m_cchCapacity);
     memcpy(pString->m_pszText, pSource->m_pszText,
@@ -120,8 +122,9 @@ GAME_DynamicCString *CopyConstructDynamicCString(GAME_DynamicCString *pString,
 }
 
 // FUNCTION: LEMBALL 0x0046E510
-GAME_DynamicCString *AssignDynamicCStringFromDynamic(
-    GAME_DynamicCString *pString, const GAME_DynamicCString *pSource) {
+GAME_DynamicCString *GAME_DynamicCString::AssignDynamicCStringFromDynamic(
+    const GAME_DynamicCString *pSource) {
+    GAME_DynamicCString *pString = this;
     FreeVSMemBlock(pString->m_pszText);
     pString->m_cchCapacity = pSource->m_cchCapacity;
     pString->m_pszText = (char *)AllocateVSMemBlock((unsigned int)pString->m_cchCapacity);
@@ -131,9 +134,9 @@ GAME_DynamicCString *AssignDynamicCStringFromDynamic(
 }
 
 // FUNCTION: LEMBALL 0x0046E5D0
-GAME_DynamicCString *AppendDynamicCStringObjectAndCopyResult(
-    GAME_DynamicCString *pString, GAME_DynamicCString *pResult,
-    const GAME_DynamicCString *pSuffix) {
+GAME_DynamicCString *GAME_DynamicCString::AppendDynamicCStringObjectAndCopyResult(
+    GAME_DynamicCString *pResult, const GAME_DynamicCString *pSuffix) {
+    GAME_DynamicCString *pString = this;
     unsigned int cchPrefix;
     unsigned int cchSuffix;
     unsigned int cchTotal;
@@ -149,15 +152,15 @@ GAME_DynamicCString *AppendDynamicCStringObjectAndCopyResult(
     pString->m_pszText = (char *)AllocateVSMemBlock(cchTotal);
     pString->m_cchCapacity = (int)cchTotal;
     memcpy(pString->m_pszText, pszText, cchTotal);
-    CopyConstructDynamicCString(pResult, pString);
+    pResult->CopyConstructDynamicCString(pString);
     FreeVSMemBlock(pszText);
     return pResult;
 }
 
 // FUNCTION: LEMBALL 0x0046E6E0
-GAME_DynamicCString *AppendDynamicCStringAndCopyResult(
-    GAME_DynamicCString *pString, GAME_DynamicCString *pResult,
-    const char *pszSuffix) {
+GAME_DynamicCString *GAME_DynamicCString::AppendDynamicCStringAndCopyResult(
+    GAME_DynamicCString *pResult, const char *pszSuffix) {
+    GAME_DynamicCString *pString = this;
     unsigned int cchPrefix;
     unsigned int cchSuffix;
     unsigned int cchTotal;
@@ -173,7 +176,7 @@ GAME_DynamicCString *AppendDynamicCStringAndCopyResult(
     pString->m_pszText = (char *)AllocateVSMemBlock(cchTotal);
     pString->m_cchCapacity = (int)cchTotal;
     memcpy(pString->m_pszText, pszText, cchTotal);
-    CopyConstructDynamicCString(pResult, pString);
+    pResult->CopyConstructDynamicCString(pString);
     FreeVSMemBlock(pszText);
     return pResult;
 }
@@ -192,9 +195,9 @@ int LEMBALL_FASTCALL GetDynamicCStringLength(const GAME_DynamicCString *pString)
 // FUNCTION: LEMBALL 0x0045AC10
 GAME_StatusEntry::GAME_StatusEntry(const char *pszName) {
     m_pVtable = g_GAME_StatusEntryDeleteVtable;
-    ConstructDynamicCString(&m_Name);
+    m_Name.ConstructDynamicCString();
     m_pVtable = g_GAME_StatusEntryVtable;
-    AssignDynamicCString(&m_Name, pszName);
+    m_Name.AssignDynamicCString(pszName);
     m_nMinimumValue = -1;
     m_nMaximumValue = 0;
     m_nTotalValue = 0;

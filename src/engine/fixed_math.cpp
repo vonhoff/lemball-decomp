@@ -69,12 +69,14 @@ static int g_anSignedTrigTable[512] = {
 static int g_fSignedTrigTableInitialized = 0;
 
 // FUNCTION: LEMBALL 0x0045A940
-void *InitializeSignedTrigTable(void *pTrigTableBuffer) {
-    int *pTable;
+int *LEMBALL_FASTCALL InitializeSignedTrigTable(int *pTrigTableBuffer) {
     const int *pSource;
+    int *pTableStart;
+    int *pTable;
     int i;
 
-    pTable = (int *)pTrigTableBuffer;
+    pTableStart = pTrigTableBuffer;
+    pTable = pTableStart;
     i = 0x1ff;
     do {
         WriteDebugSentinelDword(pTable);
@@ -86,18 +88,22 @@ void *InitializeSignedTrigTable(void *pTrigTableBuffer) {
         pSource = g_anSignedTrigTable;
         pTable = (int *)pTrigTableBuffer;
         do {
-            *pTable = *pSource;
-            ++pSource;
+            int nFixedValue;
+            int nValue;
+
+            nValue = *pSource++;
             ++pTable;
+            nFixedValue = nValue * 0x1000;
+            pTable[-1] = (nFixedValue + ((nFixedValue >> 0x1f) & 0xfff)) >> 0xc;
         } while (pSource < g_anSignedTrigTable + 512);
     }
     g_fSignedTrigTableInitialized = 1;
-    return pTrigTableBuffer;
+    return pTableStart;
 }
 
 // FUNCTION: LEMBALL 0x0045A9A0
-void *WriteDebugSentinelDword(void *pTarget) {
-    *(unsigned int *)pTarget = 0xaa55aa55;
+int *LEMBALL_FASTCALL WriteDebugSentinelDword(int *pTarget) {
+    *pTarget = (int)0xaa55aa55;
     return pTarget;
 }
 

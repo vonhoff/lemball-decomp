@@ -11,6 +11,7 @@ typedef void *HACCEL;
 typedef void *HICON;
 typedef void *HCURSOR;
 typedef void *HBRUSH;
+typedef void *HGDIOBJ;
 typedef void *HMENU;
 typedef void *HKEY;
 typedef const char *LPCSTR;
@@ -70,6 +71,7 @@ enum {
     CW_USEDEFAULT = 0x80000000u,
     GWL_USERDATA = -21,
     WM_CREATE = 0x0001u,
+    WM_DESTROY = 0x0002u,
     WM_INITDIALOG = 0x0110u,
     WM_COMMAND = 0x0111u,
     WM_QUIT = 0x0012u,
@@ -165,11 +167,18 @@ UINT WINAPI GetModuleFileNameA(HINSTANCE hModule, LPSTR lpFilename, UINT nSize);
 DWORD WINAPI GetCurrentDirectoryA(DWORD nBufferLength, LPSTR lpBuffer);
 DWORD WINAPI GetVersion(void);
 int WINAPI wsprintfA(LPSTR lpOut, LPCSTR lpFmt, ...);
-HICON WINAPI LoadIconA(HINSTANCE hInstance, LPCSTR lpIconName);
-HCURSOR WINAPI LoadCursorA(HINSTANCE hInstance, LPCSTR lpCursorName);
-HMODULE WINAPI LoadLibraryA(LPCSTR lpLibFileName);
+__declspec(dllimport) HICON WINAPI LoadIconA(HINSTANCE hInstance, LPCSTR lpIconName);
+__declspec(dllimport) HCURSOR WINAPI LoadCursorA(HINSTANCE hInstance, LPCSTR lpCursorName);
+__declspec(dllimport) HGLOBAL WINAPI GlobalAlloc(UINT uFlags, unsigned int dwBytes);
+__declspec(dllimport) LPVOID WINAPI GlobalLock(HGLOBAL hMem);
+__declspec(dllimport) BOOL WINAPI GlobalUnlock(HGLOBAL hMem);
+__declspec(dllimport) HGLOBAL WINAPI GlobalFree(HGLOBAL hMem);
+__declspec(dllimport) HGDIOBJ WINAPI GetStockObject(int fnObject);
+__declspec(dllimport) HCURSOR WINAPI SetCursor(HCURSOR hCursor);
+__declspec(dllimport) int WINAPI ShowCursor(BOOL bShow);
+__declspec(dllimport) HMODULE WINAPI LoadLibraryA(LPCSTR lpLibFileName);
 BOOL WINAPI FreeLibrary(HMODULE hLibModule);
-FARPROC WINAPI GetProcAddress(HMODULE hModule, LPCSTR lpProcName);
+__declspec(dllimport) FARPROC WINAPI GetProcAddress(HMODULE hModule, LPCSTR lpProcName);
 int WINAPI GetSystemMetrics(int nIndex);
 void WINAPI InitializeCriticalSection(LPVOID lpCriticalSection);
 void WINAPI DeleteCriticalSection(LPVOID lpCriticalSection);
@@ -179,11 +188,18 @@ BOOL WINAPI WinHelpA(HWND hWndMain, LPCSTR lpszHelp, UINT uCommand, DWORD_PTR dw
 int WINAPI
 DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam);
 int WINAPI MessageBoxA(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType);
-ATOM WINAPI RegisterClassA(const WNDCLASSA *lpWndClass);
+__declspec(dllimport) ATOM WINAPI RegisterClassA(const WNDCLASSA *lpWndClass);
 LONG WINAPI GetWindowLongA(HWND hWnd, int nIndex);
 LONG WINAPI SetWindowLongA(HWND hWnd, int nIndex, LONG dwNewLong);
 LRESULT WINAPI DefWindowProcA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
-HWND WINAPI CreateWindowExA(DWORD dwExStyle,
+__declspec(dllimport) LRESULT WINAPI SendMessageA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+BOOL WINAPI InvalidateRect(HWND hWnd, const void *lpRect, BOOL bErase);
+BOOL WINAPI ClipCursor(const void *lpRect);
+BOOL WINAPI ReleaseCapture(void);
+HWND WINAPI SetCapture(HWND hWnd);
+BOOL WINAPI SystemParametersInfoA(UINT uiAction, UINT uiParam, void *pvParam, UINT fWinIni);
+DWORD WINAPI GetMessageTime(void);
+__declspec(dllimport) HWND WINAPI CreateWindowExA(DWORD dwExStyle,
                             LPCSTR lpClassName,
                             LPCSTR lpWindowName,
                             DWORD dwStyle,
@@ -195,11 +211,15 @@ HWND WINAPI CreateWindowExA(DWORD dwExStyle,
                             HMENU hMenu,
                             HINSTANCE hInstance,
                             LPVOID lpParam);
+__declspec(dllimport) int WINAPI ShowWindow(HWND hWnd, int nCmdShow);
+__declspec(dllimport) BOOL WINAPI UpdateWindow(HWND hWnd);
+__declspec(dllimport) BOOL WINAPI SetForegroundWindow(HWND hWnd);
 BOOL WINAPI PeekMessageA(MSG *lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg);
 BOOL WINAPI GetMessageA(MSG *lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax);
 BOOL WINAPI TranslateMessage(const MSG *lpMsg);
 LRESULT WINAPI DispatchMessageA(const MSG *lpMsg);
 BOOL WINAPI DestroyWindow(HWND hWnd);
+BOOL WINAPI ClientToScreen(HWND hWnd, tagPOINT *lpPoint);
 HANDLE WINAPI CreateEventA(LPSECURITY_ATTRIBUTES lpEventAttributes,
                            BOOL bManualReset,
                            BOOL bInitialState,

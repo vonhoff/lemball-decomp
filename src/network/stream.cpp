@@ -483,7 +483,7 @@ void *g_NETWORK_RuntimeChannelStackVtable =
 void *g_pEffTransportPeerAddressState = 0;
 extern int g_nEffTransportAsyncErrorStatus;
 
-extern "C" DWORD timeGetTime(void);
+extern "C" DWORD WINAPI timeGetTime(void);
 
 extern void *g_pActiveNetworkRuntimeWindow;
 extern void *g_pEffTransportRuntimeService;

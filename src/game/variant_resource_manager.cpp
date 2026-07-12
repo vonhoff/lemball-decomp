@@ -3,7 +3,7 @@
 #include "../audio/audio_manager.h"
 #include "../engine/memory_arena.h"
 
-extern "C" DWORD timeGetTime(void);
+extern "C" DWORD WINAPI timeGetTime(void);
 
 struct GAME_MainGameVariantResourceBundle {
     void **m_pVtable;
@@ -84,7 +84,7 @@ extern int g_nLevelFrameClockTick;
 extern int g_fLevelDemoModeEnabled;
 extern void *g_pMainResourceArchive;
 extern void *ConstructLevelScreenStatusIndicatorManager(void *pObject, int nStatusMode, void *pPrimaryContext);
-extern void ReleaseLevelSelectionModeRenderStateResource(void *pStatusIndicatorManager);
+extern void LEMBALL_FASTCALL ReleaseLevelSelectionModeRenderStateResource(void *pStatusIndicatorManager);
 extern void DestroyLevelScreenStatusIndicatorManager(void *pStatusIndicatorManager);
 extern int CountVariantResourceEntriesWithFlagMask(void *pManager, unsigned short nMask);
 extern void SwitchVariantResourceEntryMode(void *pManager, unsigned short nMask, void *pBundle);
@@ -96,8 +96,9 @@ extern void LoadMainGameVariantStringResource(void *pBundle, int nResourceId);
 extern void LoadMainGameVariantTwoArrayListResource(void *pBundle, int nResourceId);
 extern void PopulateVariantResourceEntriesForFlagMask(void *pManager, unsigned short nMask);
 extern void PruneUnreferencedCachedResourceObjects(void *pArchive);
+void SetVariantResourceEffectsEnabledThunk(int fEnabled);
 
-// FUNCTION: LEMBALL 0x00438B50
+// FUNCTION: LEMBALL 0x00439B50
 void SetVariantResourceEffectsEnabled(int fEnabled) {
     if (g_fEffectsOptionAvailable != 0) {
         g_fVariantResourceEffectsEnabled = fEnabled;
@@ -247,7 +248,7 @@ done_switch:
 }
 
 // FUNCTION: LEMBALL 0x00439A70
-void *ConstructVariantResourceEntryManager(void *pManager) {
+void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerBody(void *pManager) {
     int *pVariantManager;
     int *pEntry;
     int i;
@@ -262,10 +263,11 @@ void *ConstructVariantResourceEntryManager(void *pManager) {
     pVariantManager[0xb2] = 0;
     pVariantManager[1] = 0;
     if (g_fMusicEnabled != 0) {
-        InvokeAudioManagerEmbeddedSlot04(g_pAudioManager, 0x2220, 0xb482);
+        ((AUDIO_Manager *)g_pAudioManager)
+            ->InvokeAudioManagerEmbeddedSlot04(0x2220, 0xb482);
         g_fVariantResourceMusicEnabled = 0;
     }
-    SetVariantResourceEffectsEnabled(1);
+    SetVariantResourceEffectsEnabledThunk(1);
     i = 0x32;
     pEntry = pVariantManager + 0x1b;
     do {
@@ -289,8 +291,22 @@ void *ConstructVariantResourceEntryManager(void *pManager) {
     return pManager;
 }
 
+// FUNCTION: LEMBALL 0x00403873
+__declspec(naked) void SetVariantResourceEffectsEnabledThunk(int) {
+    __asm {
+        jmp SetVariantResourceEffectsEnabled
+    }
+}
+
+// FUNCTION: LEMBALL 0x0040295A
+__declspec(naked) void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerThunk(void *) {
+    __asm {
+        jmp ConstructVariantResourceEntryManagerBody
+    }
+}
+
 // FUNCTION: LEMBALL 0x00439B30
-void ShutdownVariantResourceEntryManager(void *pManager) {
+void LEMBALL_FASTCALL ShutdownVariantResourceEntryManager(void *pManager) {
     if (g_fMusicEnabled != 0) {
         SetVariantResourceMusicEnabled(pManager, 0);
     }
@@ -398,7 +414,7 @@ void ReleaseMainGameVariantStringResource(void *pBundle, int nResourceId) {
 }
 
 // FUNCTION: LEMBALL 0x00447C50
-void DestroyMainGameVariantResourceMode(void *pBundle) {
+void LEMBALL_FASTCALL DestroyMainGameVariantResourceMode(void *pBundle) {
     GAME_MainGameVariantResourceBundle *pVariantBundle;
     int *pnResourceId;
     unsigned int i;

@@ -2,6 +2,7 @@
 #define LEMBALL_RESOURCE_ARCHIVE_H
 
 #include <stdio.h>
+#include "../engine/common.h"
 
 enum {
     MOGLOAD_TAG_CRID = 0x44495243u,
@@ -51,6 +52,9 @@ public:
 
 class MOGLOAD_ResourceArchive {
 public:
+    void *ConstructResourceArchive(const char *pszArchiveName, unsigned int cbArenaSize);
+    void RemoveCachedResourceObject(void *pResourceObject);
+
     MOGLOAD_DirectoryNode *m_pRootDirectory;
     MOGLOAD_DirectoryNode *m_pCurrentDirectory;
     int m_nOpenFailed;
@@ -65,10 +69,8 @@ public:
 
 void *AllocateResourceArchiveMemory(unsigned int cbBytes);
 void FreeResourceArchiveMemory(void *pMemoryBlock);
-void *ConstructResourceArchive(void *pArchive, const char *pszArchiveName, unsigned int cbArenaSize);
-void DestroyResourceArchive(void *pArchive);
+void LEMBALL_FASTCALL DestroyResourceArchive(void *pArchive);
 void *FindCachedResourceObjectById(void *pArchive, int nResourceId);
-void RemoveCachedResourceObject(void *pArchive, void *pResourceObject);
 int AreAllCachedResourceObjectsUnreferenced(void *pArchive);
 void PruneUnreferencedCachedResourceObjects(void *pArchive);
 MOGLOAD_StringResourceObject *LoadStringResource(int nResourceId);

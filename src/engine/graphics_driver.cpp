@@ -4,6 +4,7 @@
 #include "../platform/startup_options.h"
 #include "../engine/memory_arena.h"
 #include "../engine/runtime_init.h"
+#include "../game/game_app.h"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>
@@ -12,11 +13,13 @@
 #endif
 #include <string.h>
 
+extern LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
+
 int g_fStartupFullscreen = 0;
 int g_fStartupGraphicsDriverWing = 0;
 int g_fStartupGraphicsDriverCds = 1;
 int g_fStartupGraphicsDriverGdk = 0;
-static void *g_pSelectedGraphicsDriverRuntime = 0;
+void *g_pSelectedGraphicsDriverRuntime = 0;
 static void *g_pResourceGeometryHelperSlotManager = 0;
 static void *g_pResourceGeometryHelperTarget = 0;
 int *g_pArrowCursorStatusIndicatorRenderClient = 0;
@@ -28,6 +31,9 @@ static const char *g_VSGDI_BaseWindowClass = "VS_Base_Window_Class";
 static const char g_VSGDI_DirectDrawCreate[] = "DirectDrawCreate";
 static const char g_VSGDI_DirectDrawWindowClass[] = "DirectDrawClass";
 static const char g_VSGDI_DirectDrawWindowTitle[] = "DirectDraw";
+static const char g_VSGDI_UnknownDirectDrawError[] = "UNKNOWN DIRECT DRAW ERROR: ";
+static const char *g_pVSGDI_UnknownDirectDrawError = g_VSGDI_UnknownDirectDrawError;
+static char g_VSGDI_DirectDrawErrorText[64];
 static const char g_VSGDI_DisplayDibStart32[] = "DisplayDibStart32";
 static const char g_VSGDI_DisplayDibEnd32[] = "DisplayDibEnd32";
 static const char g_VSGDI_DisplayDibGetAddress32[] = "DisplayDibGetAddress32";
@@ -35,6 +41,12 @@ static const char g_VSGDI_DisplayDib32[] = "DisplayDib32";
 static const char g_VSGDI_ErrorNoValidDriver[] = "No valid driver selected to initialise\n";
 static const char g_VSGDI_ErrorNoValidDriverAvailable[] = "No valid driver available\n";
 static const char g_VSGDI_ErrorRegisterClass[] = "Unable to register DD base window class";
+static const char g_VSGDI_ErrorSetCooperativeLevel[] =
+    "Direct Draw Set Coorperative Level (DD object) failed : ";
+static const char g_VSGDI_ErrorSetDisplayMode[] = "Direct Draw Set Display Mode failed : ";
+static const char g_VSGDI_ErrorCreatePrimarySurface[] =
+    "Direct Draw Create Primary Surface failed : ";
+static const char g_VSGDI_ErrorLineEnd[] = "\n";
 static const char g_VSGDI_InitDriverPrefix[] = "Initialising graphics device driver: ";
 static const char g_VSGDI_AutoSelectedPrefix[] = "[ Auto selected: ";
 static const char g_VSGDI_AutoSelectedSuffix[] = " ]\n";
@@ -42,6 +54,24 @@ static const char g_VSGDI_DefaultWindowModeSuffix[] =
     ". Defaulting to normal window mode (using CreateDIBSection)";
 static const char g_VSGDI_WarningCaption[] = "WARNING";
 static FARPROC g_pApplyFullscreenDisplayModeThunk = 0;
+
+// FUNCTION: LEMBALL 0x00456720
+char *LookupDirectDrawErrorString(unsigned int nError) {
+    const char *pszPrefix = g_pVSGDI_UnknownDirectDrawError;
+
+    strcpy(g_VSGDI_DirectDrawErrorText, pszPrefix);
+    FormatSignedIntToRadixString(
+        (int)nError,
+        g_VSGDI_DirectDrawErrorText + strlen(pszPrefix),
+        10);
+    return g_VSGDI_DirectDrawErrorText;
+}
+
+// FUNCTION: LEMBALL 0x00456780
+void NoopDirectDrawCallback(unsigned int nResult, unsigned int nUnused) {
+    (void)nResult;
+    (void)nUnused;
+}
 #define VSGDI_SAFE_TABLE(name) static void *name[32]
 VSGDI_SAFE_TABLE(g_VSGDI_CompactResourceGeometryHelperVtable);
 VSGDI_SAFE_TABLE(g_VSGDI_ResourceGeometryRowBufferVtable);
@@ -111,12 +141,6 @@ static VSGDI_CompactHelperAdjustorTable g_VSGDI_CompactHelperTargetAdjustor = { 
 static VSGDI_CompactHelperAdjustorTable g_VSGDI_HelperGroup1Adjustor = { -4, 0x514 };
 static VSGDI_CompactHelperAdjustorTable g_VSGDI_HelperGroup0Adjustor = { -4, 0x4c0 };
 
-struct VSGDI_SelectedGraphicsDriverRuntime {
-    int m_nSelectedDriver;
-    int m_nReserved0;
-    int m_fFallbackWarningShown;
-};
-
 static const char g_VSGDI_UnallocatedHelperSlotMessage[] = "Unallocated helper slot found\n";
 static int g_nResourceGeometryHelperSlotCount = 0;
 static void *g_pResourceGeometryListHead = 0;
@@ -143,6 +167,8 @@ struct VSGDI_ResourceGeometryHelperSlotManager {
     int m_nReserved08;
     int m_nReserved0C;
     int m_cSlots;
+
+    VSGDI_ResourceGeometryHelperSlotManager *InitializeResourceGeometryHelperSlotManager(int cSlots);
 };
 
 struct VSGDI_ResourceGeometryLinkNode {
@@ -182,6 +208,9 @@ struct VSGDI_ResourceGeometryHelperTargetView {
     int m_fCriticalSectionReady;
     int m_nActiveUploadState;
     unsigned char m_abReserved554[8];
+
+    VSGDI_ResourceGeometryHelperTargetView *ConstructResourceGeometryHelperTarget(
+        int nWrappedParam, int fConstructCompactHelper);
 };
 
 struct VSGDI_HelperSurfaceVariableBlock {
@@ -360,12 +389,12 @@ void ResetHelperUploadRectListAndStateMap(int nUploadState) {
 }
 
 // FUNCTION: LEMBALL 0x0046BC00
-void *InitializeResourceGeometryHelperSlotManager(void *pvSlotManager, int cSlots) {
+VSGDI_ResourceGeometryHelperSlotManager *VSGDI_ResourceGeometryHelperSlotManager::InitializeResourceGeometryHelperSlotManager(int cSlots) {
     VSGDI_ResourceGeometryHelperSlotManager *pSlotManager;
     VSGDI_ResourceGeometryHelperSlot *pSlot;
     int cRemaining;
 
-    pSlotManager = (VSGDI_ResourceGeometryHelperSlotManager *)pvSlotManager;
+    pSlotManager = this;
     pSlotManager->m_pVtable = &g_VSGDI_ResourceGeometryHelperSlotManagerVtable;
     pSlotManager->m_pSlots =
         (VSGDI_ResourceGeometryHelperSlot *)AllocateVSMemBlock((unsigned int)(cSlots * sizeof(*pSlotManager->m_pSlots)));
@@ -389,6 +418,11 @@ void *InitializeResourceGeometryHelperSlotManager(void *pvSlotManager, int cSlot
     }
     g_pResourceGeometryHelperTarget = 0;
     return pSlotManager;
+}
+
+void *InitializeResourceGeometryHelperSlotManager(void *pvSlotManager, int cSlots) {
+    return ((VSGDI_ResourceGeometryHelperSlotManager *)pvSlotManager)
+        ->InitializeResourceGeometryHelperSlotManager(cSlots);
 }
 
 // FUNCTION: LEMBALL 0x0046BC90
@@ -435,13 +469,13 @@ int FindFirstFreeResourceGeometryHelperSlotIndex(void *pvSlotManager) {
 }
 
 // FUNCTION: LEMBALL 0x0046C5D0
-void *ConstructResourceGeometryHelperTarget(void *pvTarget, int nWrappedParam, int fConstructCompactHelper) {
+VSGDI_ResourceGeometryHelperTargetView *VSGDI_ResourceGeometryHelperTargetView::ConstructResourceGeometryHelperTarget(int nWrappedParam, int fConstructCompactHelper) {
     int iCompactDelta;
     VSGDI_CompactResourceGeometryHelperFields *pCompactHelper;
     VSGDI_HelperTargetParamWrapper *pParamWrapper;
     VSGDI_ResourceGeometryHelperTargetView *pTarget;
 
-    pTarget = (VSGDI_ResourceGeometryHelperTargetView *)pvTarget;
+    pTarget = this;
     if (fConstructCompactHelper != 0) {
         *(void **)((char *)pTarget + 0x40) = &g_VSGDI_CompactHelperTargetAdjustor;
         *(void **)((char *)pTarget + 0x48) = &g_VSGDI_HelperGroup1Adjustor;
@@ -483,6 +517,11 @@ void *ConstructResourceGeometryHelperTarget(void *pvTarget, int nWrappedParam, i
     pTarget->m_fCriticalSectionReady = 1;
     pCompactHelper->m_nQueuedState = 0;
     return pTarget;
+}
+
+void *ConstructResourceGeometryHelperTarget(void *pvTarget, int nWrappedParam, int fConstructCompactHelper) {
+    return ((VSGDI_ResourceGeometryHelperTargetView *)pvTarget)
+        ->ConstructResourceGeometryHelperTarget(nWrappedParam, fConstructCompactHelper);
 }
 
 // FUNCTION: LEMBALL 0x004722D0
@@ -656,7 +695,7 @@ static void RestoreCompactResourceGeometryHelperVtable(void *pvHelper) {
 }
 
 // FUNCTION: LEMBALL 0x0046AEC0
-void ConstructStatusIndicatorRenderClientBase(int *pRenderClient) {
+void LEMBALL_FASTCALL ConstructStatusIndicatorRenderClientBase(int *pRenderClient) {
     *(void **)((char *)pRenderClient + 0x40) = &g_VSGDI_StatusIndicatorRenderClientVtable;
     *(void **)((char *)pRenderClient + 0x44) = &g_VSGDI_StatusIndicatorPointSinkVtable;
     *(short *)((char *)pRenderClient + 0x12) = 0;
@@ -680,13 +719,21 @@ void ConstructStatusIndicatorRenderClientBase(int *pRenderClient) {
 }
 
 // FUNCTION: LEMBALL 0x00474B50
-void InitializeArrowCursorState(int *pRenderClient) {
-    void **pVtable;
-
-    pRenderClient[0x27] = 0;
-    pRenderClient[0x27] = (int)(unsigned long)LoadCursorA(0, (LPCSTR)0x7f00);
-    pVtable = *(void ***)pRenderClient;
-    ((void (*)(void *))pVtable[0x18 / sizeof(void *)])(pRenderClient);
+__declspec(naked) void LEMBALL_FASTCALL InitializeArrowCursorState(int *) {
+    __asm {
+        push esi
+        push 7f00h
+        mov dword ptr [ecx + 9ch], 0
+        mov esi, ecx
+        push 0
+        call dword ptr [LoadCursorA]
+        mov ecx, esi
+        mov dword ptr [esi + 9ch], eax
+        mov eax, dword ptr [esi]
+        call dword ptr [eax + 18h]
+        pop esi
+        ret
+    }
 }
 
 // FUNCTION: LEMBALL 0x00472400
@@ -1084,7 +1131,7 @@ static int IsDisplayStateReady(const VSGDI_DisplayState *pDisplayState) {
     return *(const int *)((const char *)pDisplayState + 0xc) != 0;
 }
 
-VSGDI_DisplayState::VSGDI_DisplayState(void) {
+inline VSGDI_DisplayState::VSGDI_DisplayState(void) {
     m_hGraphicsModule = 0;
     m_pReserved08 = 0;
     m_fReady = 0;
@@ -1291,11 +1338,11 @@ int VSGDI_MetricsDisplayState::Create(HWND hWnd) {
 }
 
 // FUNCTION: LEMBALL 0x00456D70
-VSGDI_DibDisplayState::VSGDI_DibDisplayState(short cxDisplay, short cyDisplay) {
+VSGDI_DibDisplayState::VSGDI_DibDisplayState(const unsigned short *pDisplaySize) {
     FARPROC pfnThunk;
 
-    m_cxDisplay = cxDisplay;
-    m_cyDisplay = cyDisplay;
+    m_cxDisplay = (short)pDisplaySize[0];
+    m_cyDisplay = (short)pDisplaySize[1];
     m_fReady = 0;
     m_pDisplayAddress = 0;
     m_dwReserved20 = 0;
@@ -1310,13 +1357,9 @@ VSGDI_DibDisplayState::VSGDI_DibDisplayState(short cxDisplay, short cyDisplay) {
         m_pfnDisplayDibGetAddress32 = GetProcAddress(m_hGraphicsModule, g_VSGDI_DisplayDibGetAddress32);
         pfnThunk = GetProcAddress(m_hGraphicsModule, g_VSGDI_DisplayDib32);
         g_pApplyFullscreenDisplayModeThunk = pfnThunk;
-        if (m_pfnDisplayDibGetAddress32 != 0) {
-            m_pDisplayAddress = ((void *(*)())m_pfnDisplayDibGetAddress32)();
-        }
-        if (m_pfnDisplayDibStart32 != 0) {
-            ((void (*)())m_pfnDisplayDibStart32)();
-            m_fReady = 1;
-        }
+        m_pDisplayAddress = ((void *(*)())m_pfnDisplayDibGetAddress32)();
+        ((void (*)())m_pfnDisplayDibStart32)();
+        m_fReady = 1;
     }
 }
 
@@ -1326,22 +1369,96 @@ int VSGDI_DibDisplayState::Create(HWND hWnd) {
 }
 
 // FUNCTION: LEMBALL 0x00457410
-VSGDI_DirectDrawDisplayState::VSGDI_DirectDrawDisplayState(short cxDisplay, short cyDisplay) {
-    m_cxDisplay = cxDisplay;
-    m_cyDisplay = cyDisplay;
+VSGDI_DirectDrawDisplayState::VSGDI_DirectDrawDisplayState(const unsigned short *pDisplaySize, int fCreateWindow) {
+    typedef unsigned int (__stdcall *DIRECTDRAW_CREATE)(void *, void **, void *);
+    typedef unsigned int (__stdcall *DIRECTDRAW_SET_COOPERATIVE_LEVEL)(void *, HWND, unsigned int);
+    typedef unsigned int (__stdcall *DIRECTDRAW_SET_DISPLAY_MODE)(void *, int, int, int);
+    typedef unsigned int (__stdcall *DIRECTDRAW_CREATE_SURFACE)(void *, void *, void **, void *);
+    unsigned char aSurfaceDescription[0x6c];
+    unsigned int uCooperativeFlags;
+    unsigned int uResult;
+    WNDCLASSA WindowClass;
+    void **ppDirectDrawObject = &m_pDirectDrawObject;
+
+    (void)fCreateWindow;
+    m_cxDisplay = (short)pDisplaySize[0];
+    m_cyDisplay = (short)pDisplaySize[1];
     m_fReady = 0;
-    m_pDirectDrawObject = 0;
+    *ppDirectDrawObject = 0;
     m_pPrimarySurface = 0;
     m_pOffscreenSurface = 0;
     m_pPalette = 0;
-    m_fDirectDrawCursorVisible = 1;
-    memset(m_abReserved34, 0, sizeof(m_abReserved34));
-    m_pfnDirectDrawCreate = 0;
-    memset(m_abReservedA4, 0, sizeof(m_abReservedA4));
+    m_fDirectDrawCursorVisible = 0;
     m_fWindowOwnershipInitialized = 1;
+    *(int *)((char *)this + 0x30) = 0;
     m_hGraphicsModule = LoadLibraryA(g_VSGDI_DdrawDll);
     if (m_hGraphicsModule != 0) {
         m_pfnDirectDrawCreate = GetProcAddress(m_hGraphicsModule, g_VSGDI_DirectDrawCreate);
+    }
+    if (m_pfnDirectDrawCreate == 0) {
+        return;
+    }
+
+    uResult = ((DIRECTDRAW_CREATE)m_pfnDirectDrawCreate)(0, ppDirectDrawObject, 0);
+    if (uResult != 0) {
+        NoopDirectDrawCallback(uResult, 0);
+        return;
+    }
+    if (*ppDirectDrawObject == 0) {
+        return;
+    }
+
+    uCooperativeFlags = 8;
+    if (fCreateWindow != 0) {
+        WindowClass.style = 0xb;
+        WindowClass.lpfnWndProc = WindowOwnerWindowProc;
+        WindowClass.cbClsExtra = 0;
+        WindowClass.cbWndExtra = 0;
+        WindowClass.hInstance = g_hApplicationInstance;
+        WindowClass.hIcon = LoadIconA((HINSTANCE)0, (LPCSTR)0x7f00);
+        WindowClass.hCursor = LoadCursorA((HINSTANCE)0, (LPCSTR)0x7f00);
+        WindowClass.hbrBackground = GetStockObject(4);
+        WindowClass.lpszMenuName = 0;
+        WindowClass.lpszClassName = g_VSGDI_DirectDrawWindowClass;
+        if (RegisterClassA(&WindowClass) == 0) {
+            return;
+        }
+        ShowCursor(0);
+        m_hDisplayWindow = CreateWindowExA(
+            8, g_VSGDI_DirectDrawWindowClass, g_VSGDI_DirectDrawWindowTitle,
+            0x80000000, 0, 0, m_cxDisplay, m_cyDisplay,
+            (HWND)0, (HMENU)0, g_hApplicationInstance, (LPVOID)0);
+        if (m_hDisplayWindow == 0) {
+            return;
+        }
+        ShowWindow(m_hDisplayWindow, 5);
+        UpdateWindow(m_hDisplayWindow);
+        SetForegroundWindow(m_hDisplayWindow);
+        uCooperativeFlags = 0x11;
+    }
+
+    {
+        void **pDirectDrawVtable = *(void ***)*ppDirectDrawObject;
+        uResult = ((DIRECTDRAW_SET_COOPERATIVE_LEVEL)pDirectDrawVtable[0x50 / 4])(
+            *ppDirectDrawObject, m_hDisplayWindow, uCooperativeFlags);
+        if (uResult != 0) {
+            return;
+        }
+        if ((uCooperativeFlags & 1) != 0) {
+            uResult = ((DIRECTDRAW_SET_DISPLAY_MODE)pDirectDrawVtable[0x54 / 4])(
+                *ppDirectDrawObject, m_cxDisplay, m_cyDisplay, 8);
+            if (uResult != 0) {
+                return;
+            }
+        }
+        *(unsigned int *)aSurfaceDescription = 0x6c;
+        *(unsigned int *)(aSurfaceDescription + 4) = 0;
+        *(unsigned int *)(aSurfaceDescription + 0x68) = 0x200;
+        uResult = ((DIRECTDRAW_CREATE_SURFACE)pDirectDrawVtable[0x18 / 4])(
+            *ppDirectDrawObject, aSurfaceDescription, &m_pPrimarySurface, 0);
+        if (uResult == 0) {
+            m_fReady = 1;
+        }
     }
 }
 
@@ -1357,34 +1474,41 @@ int VSGDI_DirectDrawDisplayState::Create(HWND hWnd) {
 
 // FUNCTION: LEMBALL 0x0046BA80
 int InitializeResourceGeometryHelperRuntime(void) {
+    VSGDI_SelectedGraphicsDriverRuntime *pSelectedGraphicsDriverRuntime;
     VSGDI_ResourceGeometryHelperSlotManager *pSlotManager;
     void *pvTarget;
     int *piArrowCursorClient;
 
     (void)g_VSGDI_BaseWindowClass;
 
-    g_pSelectedGraphicsDriverRuntime = AllocateVSMemBlock(0xc);
-    if (g_pSelectedGraphicsDriverRuntime == 0) {
-        g_pSelectedGraphicsDriverRuntime = 0;
+    pSelectedGraphicsDriverRuntime =
+        (VSGDI_SelectedGraphicsDriverRuntime *)AllocateVSMemBlock(0xc);
+    if (pSelectedGraphicsDriverRuntime != 0) {
+        pSelectedGraphicsDriverRuntime->m_pWindowOwner = 0;
+        pSelectedGraphicsDriverRuntime->m_fFallbackWarningShown = 0;
+        g_pSelectedGraphicsDriverRuntime = pSelectedGraphicsDriverRuntime;
     } else {
-        *(int *)((char *)g_pSelectedGraphicsDriverRuntime + 4) = 0;
-        *(int *)((char *)g_pSelectedGraphicsDriverRuntime + 8) = 0;
+        g_pSelectedGraphicsDriverRuntime = 0;
     }
-    InitializeSelectedGraphicsDriver(VSGDI_DRIVER_AUTO);
+    ((VSGDI_SelectedGraphicsDriverRuntime *)g_pSelectedGraphicsDriverRuntime)
+        ->InitializeSelectedGraphicsDriver(VSGDI_DRIVER_AUTO);
 
     pSlotManager = (VSGDI_ResourceGeometryHelperSlotManager *)AllocateVSMemBlock(sizeof(VSGDI_ResourceGeometryHelperSlotManager));
     if (pSlotManager == 0) {
         g_pResourceGeometryHelperSlotManager = 0;
     } else {
         g_pResourceGeometryHelperSlotManager =
-            InitializeResourceGeometryHelperSlotManager(pSlotManager, (int)g_StartupGraphicsDriverConfig.m_cbSize);
+            pSlotManager->InitializeResourceGeometryHelperSlotManager(
+                (int)g_StartupGraphicsDriverConfig.m_cbSize);
     }
 
     pvTarget = AllocateVSMemBlock(0x5a0);
     if (pvTarget == 0) {
         g_pResourceGeometryHelperTarget = 0;
     } else {
-        g_pResourceGeometryHelperTarget = ConstructResourceGeometryHelperTarget(pvTarget, 0, 1);
+        g_pResourceGeometryHelperTarget =
+            ((VSGDI_ResourceGeometryHelperTargetView *)pvTarget)
+                ->ConstructResourceGeometryHelperTarget(0, 1);
     }
 
     piArrowCursorClient = (int *)AllocateVSMemBlock(0xa4);
@@ -1429,12 +1553,11 @@ int ShutdownResourceGeometryHelperRuntime(void) {
 }
 
 // FUNCTION: LEMBALL 0x00457E10
-int InitializeSelectedGraphicsDriver(int nRequestedDriver) {
+int VSGDI_SelectedGraphicsDriverRuntime::InitializeSelectedGraphicsDriver(int nRequestedDriver) {
     int nSelectedDriver;
-    char szWarningMessage[256];
     VSGDI_SelectedGraphicsDriverRuntime *pRuntime;
 
-    pRuntime = (VSGDI_SelectedGraphicsDriverRuntime *)g_pSelectedGraphicsDriverRuntime;
+    pRuntime = this;
 
     if (nRequestedDriver < 9) {
         AppendStatusCString(g_VSGDI_InitDriverPrefix);
@@ -1450,6 +1573,9 @@ int InitializeSelectedGraphicsDriver(int nRequestedDriver) {
             nSelectedDriver = (-(unsigned int)(g_fStartupFullscreen == 0) & 2U) + 4;
         }
     }
+
+    {
+        unsigned short aDisplaySize[2];
 
     switch (nSelectedDriver) {
     case VSGDI_DRIVER_METRICS:
@@ -1472,7 +1598,9 @@ int InitializeSelectedGraphicsDriver(int nRequestedDriver) {
             if (pvDisplayState == 0) {
                 g_pDisplayState = 0;
             } else {
-                g_pDisplayState = new (pvDisplayState) VSGDI_DibDisplayState(0x140, 200);
+                aDisplaySize[0] = 0x140;
+                aDisplaySize[1] = 200;
+                g_pDisplayState = new (pvDisplayState) VSGDI_DibDisplayState(aDisplaySize);
             }
         }
         break;
@@ -1484,7 +1612,9 @@ int InitializeSelectedGraphicsDriver(int nRequestedDriver) {
             if (pvDisplayState == 0) {
                 g_pDisplayState = 0;
             } else {
-                g_pDisplayState = new (pvDisplayState) VSGDI_DibDisplayState(0x140, 0xf0);
+                aDisplaySize[0] = 0x140;
+                aDisplaySize[1] = 0xf0;
+                g_pDisplayState = new (pvDisplayState) VSGDI_DibDisplayState(aDisplaySize);
             }
         }
         break;
@@ -1496,7 +1626,9 @@ int InitializeSelectedGraphicsDriver(int nRequestedDriver) {
             if (pvDisplayState == 0) {
                 g_pDisplayState = 0;
             } else {
-                g_pDisplayState = new (pvDisplayState) VSGDI_DirectDrawDisplayState(0x280, 0x1e0);
+                aDisplaySize[0] = 0x280;
+                aDisplaySize[1] = 0x1e0;
+                g_pDisplayState = new (pvDisplayState) VSGDI_DirectDrawDisplayState(aDisplaySize, 1);
             }
         }
         break;
@@ -1509,13 +1641,16 @@ int InitializeSelectedGraphicsDriver(int nRequestedDriver) {
             if (pvDisplayState == 0) {
                 g_pDisplayState = 0;
             } else {
-                g_pDisplayState = new (pvDisplayState) VSGDI_DirectDrawDisplayState(0x280, 0x1e0);
+                aDisplaySize[0] = 0x280;
+                aDisplaySize[1] = 0x1e0;
+                g_pDisplayState = new (pvDisplayState) VSGDI_DirectDrawDisplayState(aDisplaySize, 1);
             }
         }
         break;
     default:
         AppendErrorCString(g_VSGDI_ErrorNoValidDriver);
         return 0;
+    }
     }
 
     if (g_pDisplayState == 0 || !IsDisplayStateReady(g_pDisplayState)) {
@@ -1537,11 +1672,18 @@ int InitializeSelectedGraphicsDriver(int nRequestedDriver) {
             return 0;
         }
 
-        if (pRuntime != 0 && pRuntime->m_fFallbackWarningShown == 0) {
-            strcpy(szWarningMessage, g_apszGraphicsDriverFallbackMessages[nSelectedDriver]);
-            strcat(szWarningMessage, g_VSGDI_DefaultWindowModeSuffix);
-            MessageBoxA((HWND)0, szWarningMessage, g_VSGDI_WarningCaption, 0x12000);
+        if (pRuntime->m_fFallbackWarningShown == 0) {
+            GAME_DynamicCString WarningMessage;
+            GAME_DynamicCString WarningResult;
+
+            WarningMessage.ConstructDynamicCStringFromCString(
+                g_apszGraphicsDriverFallbackMessages[nSelectedDriver]);
+            WarningMessage.AppendDynamicCStringAndCopyResult(
+                &WarningResult, g_VSGDI_DefaultWindowModeSuffix);
+            DestroyDynamicCString(&WarningResult);
+            MessageBoxA((HWND)0, WarningMessage.m_pszText, g_VSGDI_WarningCaption, 0x12000);
             pRuntime->m_fFallbackWarningShown = 1;
+            DestroyDynamicCString(&WarningMessage);
         }
         nSelectedDriver = VSGDI_DRIVER_METRICS;
     }
@@ -1556,6 +1698,23 @@ int InitializeSelectedGraphicsDriver(int nRequestedDriver) {
         pRuntime->m_nSelectedDriver = nSelectedDriver;
     }
     return 1;
+}
+
+// FUNCTION: LEMBALL 0x004581D0
+void VSGDI_SelectedGraphicsDriverRuntime::ResizeActiveDisplayState(unsigned short *pSize) {
+    VSGDI_DisplayState *pDisplayState;
+
+    if (g_pDisplayState != 0) {
+        pDisplayState = g_pDisplayState;
+        *(unsigned short *)((char *)pDisplayState + 0x14) = pSize[0];
+        *(unsigned short *)((char *)pDisplayState + 0x16) = pSize[1];
+        NotifyWindowOwnersDisplayChanged(&m_nSelectedDriver);
+    }
+}
+
+int InitializeSelectedGraphicsDriver(int nRequestedDriver) {
+    return ((VSGDI_SelectedGraphicsDriverRuntime *)g_pSelectedGraphicsDriverRuntime)
+        ->InitializeSelectedGraphicsDriver(nRequestedDriver);
 }
 
 int GetSelectedGraphicsDriverId(void) {

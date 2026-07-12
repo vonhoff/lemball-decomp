@@ -9,6 +9,7 @@ set(LEMBALL_SOURCES
     src/engine/render_dispatch.cpp
     src/engine/runtime_init.cpp
     src/game/game_app.cpp
+    src/game/window_owner.cpp
     src/game/eff_streams.cpp
     src/game/level_runtime.cpp
     src/game/vtable_callbacks.cpp
@@ -55,11 +56,11 @@ if(LEMBALL_ENABLE_WIN32)
     )
     if(CMAKE_CXX_COMPILER_ID STREQUAL "OpenWatcom")
         set_target_properties(LEMBALL PROPERTIES
-            LINK_FLAGS "system nt_win library kernel32.lib,user32.lib,advapi32.lib,winmm.lib,ws2_32.lib,wsock32.lib"
+            LINK_FLAGS "system nt_win library kernel32.lib,user32.lib,gdi32.lib,advapi32.lib,winmm.lib,ws2_32.lib,wsock32.lib"
         )
     else()
         set_target_properties(LEMBALL PROPERTIES
-            LINK_FLAGS "user32.lib advapi32.lib winmm.lib ws2_32.lib wsock32.lib"
+            LINK_FLAGS "user32.lib gdi32.lib advapi32.lib winmm.lib ws2_32.lib wsock32.lib /MAP:LEMBALL.map"
         )
     endif()
 endif()

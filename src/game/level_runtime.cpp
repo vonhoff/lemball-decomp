@@ -3,7 +3,7 @@
 #include "../network/stream.h"
 #include "../network/safe_vtable.h"
 
-extern "C" DWORD timeGetTime(void);
+extern "C" DWORD WINAPI timeGetTime(void);
 
 extern int g_nLevelFrameClockTick;
 int g_nNetworkFrameClockLatestTimeMs = 0;
@@ -28,6 +28,10 @@ extern int ReturnTrueVtableCallback(void);
 extern int ReturnTrueVtableCallbackThunk(void);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
+struct GAME_NetworkLevelChunkDeltaStream {
+    void *ConstructNetworkLevelChunkDeltaStream(int nOwner);
+    void *ConstructNetworkLevelChunkDeltaStreamEntry(int nOwner);
+};
 void ReadNetworkLevelChunkDeltaStream(void *pObject);
 void LoadLevelGameStateStreamPayload(void *pObject);
 
@@ -198,6 +202,22 @@ void ResetLevelFrameClockThunk(void) {
     g_nLevelFrameClockTickBase = g_nLevelFrameClockTimeBaseMs / 0x32;
 }
 
+// FUNCTION: LEMBALL 0x00402423
+__declspec(naked) void ResetLevelFrameClockEntryThunk(void) {
+    __asm {
+        jmp ResetLevelFrameClockThunk
+    }
+}
+
+void InitializeManagedEntitySlotTablesThunk(void *pLevelGameMode);
+
+// FUNCTION: LEMBALL 0x00401E8D
+__declspec(naked) void InitializeManagedEntitySlotTablesEntryThunk(void *pLevelGameMode) {
+    __asm {
+        jmp InitializeManagedEntitySlotTablesThunk
+    }
+}
+
 // FUNCTION: LEMBALL 0x004165E0
 void InitializeManagedEntitySlotTablesThunk(void *pLevelGameMode) {
     int i;
@@ -256,19 +276,24 @@ void ClearSecondaryLockedRecordTablePayloadFlags(void *pPayload) {
 }
 
 // FUNCTION: LEMBALL 0x00452FE0
-void *ConstructNetworkLevelChunkDeltaStreamThunk(void *pObject, int nOwner) {
+void *GAME_NetworkLevelChunkDeltaStream::ConstructNetworkLevelChunkDeltaStream(int nOwner) {
     int nDispatcherPayload;
 
-    *(void **)pObject = g_pReturnTrueVtableCallback;
-    *(int *)((char *)pObject + 4) = 3;
-    ((GAME_EffStream *)pObject)->ResetStateFields();
-    *(void **)pObject = g_pReturnTrueVtableCallbackThunk;
-    *(int *)((char *)pObject + 0x2c) = nOwner;
-    *(int *)((char *)pObject + 0x30) = nOwner + 0x1d0;
+    *(void **)this = g_pReturnTrueVtableCallback;
+    *(int *)((char *)this + 4) = 3;
+    ((GAME_EffStream *)this)->ResetStateFields();
+    *(void **)this = g_pReturnTrueVtableCallbackThunk;
+    *(int *)((char *)this + 0x2c) = nOwner;
+    *(int *)((char *)this + 0x30) = nOwner + 0x1d0;
     nDispatcherPayload = *(int *)((unsigned long)nOwner + 0x34);
-    *(int *)((char *)pObject + 0x24) = 0;
-    *(int *)((char *)pObject + 0x18) += nDispatcherPayload + 8;
-    return pObject;
+    *(int *)((char *)this + 0x24) = 0;
+    *(int *)((char *)this + 0x18) += nDispatcherPayload + 8;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x004028F6
+void *GAME_NetworkLevelChunkDeltaStream::ConstructNetworkLevelChunkDeltaStreamEntry(int nOwner) {
+    return ConstructNetworkLevelChunkDeltaStream(nOwner);
 }
 
 // FUNCTION: LEMBALL 0x00410B80

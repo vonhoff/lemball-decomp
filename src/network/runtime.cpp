@@ -237,12 +237,31 @@ struct NETWORK_TcpipRuntimeWindowVtableModel {
 static NETWORK_TcpipRuntimeWindowVtableModel
     g_NETWORK_TcpipRuntimeWindowVtableModel;
 
+static void *g_NETWORK_TcpipRuntimeWindowFallbackVtable[32] = {
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+};
+
 /* These are table addresses.  Do not load first slot from table: that
  * produces code address, not dispatch-table address. */
 static NETWORK_RuntimeFallbackTransportVtable *g_NETWORK_FileBasedRuntimeTransportVtable =
     &g_NETWORK_RuntimeFallbackTransportVtable;
 void *g_NETWORK_TcpipRuntimeWindowVtable =
-    *(void ***)&g_NETWORK_TcpipRuntimeWindowVtableModel;
+    g_NETWORK_TcpipRuntimeWindowFallbackVtable;
 static NETWORK_RuntimeFallbackTransportVtable *g_NETWORK_TcpipRuntimeTransportVtable =
     &g_NETWORK_RuntimeFallbackTransportVtable;
 static void *g_NETWORK_ReturnTrueVtable[1] = {
@@ -838,8 +857,26 @@ void NETWORK_CompositeEffTransportVtableModel::FatalSlot03(void) {
 
 static NETWORK_CompositeEffTransportVtableModel
     g_NETWORK_CompositeEffTransportVtableModel;
+static void *g_NETWORK_CompositeEffTransportFallbackVtable[32] = {
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop,
+};
 void *g_NETWORK_CompositeEffTransportVtable =
-    *(void ***)&g_NETWORK_CompositeEffTransportVtableModel;
+    g_NETWORK_CompositeEffTransportFallbackVtable;
 
 // FUNCTION: LEMBALL 0x00460FB0
 void NETWORK_EffTransportPeer::Close(void) {
@@ -1170,15 +1207,13 @@ DWORD g_dwTcpipNetworkThreadId = 0;
 HANDLE g_hFileBasedNetworkThread = 0;
 HANDLE g_hTcpipNetworkThread = 0;
 
-extern "C" DWORD timeGetTime(void);
+extern "C" DWORD WINAPI timeGetTime(void);
 
 extern void *g_pActiveNetworkRuntimeWindow;
 extern void *g_pEffTransportDispatchQueue;
 extern void *g_pEffTransportSecondaryDispatchQueue;
-extern void LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode);
+extern void *LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode);
 extern void *ConstructRenderDispatchQueue(void *pQueue, int cEntries);
-extern void RegisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder);
-extern void UnregisterOrderedRenderDispatchClient(void *pDispatchQueue, void *pClient, int nOrder);
 extern void *g_pNonZrleVariantRenderEntryInitializeVtable[2];
 extern int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cEntries);
 extern void CheckEffTransportIdleTimeout(void *pObject);
@@ -2899,7 +2934,8 @@ void NETWORK_EffTransportRuntimeState::DestroyEffTransportRuntimeGlobals(void) {
         (*(void (**)(int))(*(void ***)g_pEffTransportSecondaryDispatchQueue + 4))(1);
     }
     g_pEffTransportSecondaryDispatchQueue = 0;
-    UnregisterOrderedRenderDispatchClient(g_pEffTransportDispatchQueue, this, 0x19);
+    ((GAME_RenderDispatchQueue *)g_pEffTransportDispatchQueue)
+        ->UnregisterOrderedRenderDispatchClient(this, 0x19);
     if (g_pEffTransportDispatchQueue != 0) {
         (*(void (**)(int))(*(void ***)g_pEffTransportDispatchQueue + 4))(1);
     }
@@ -3630,7 +3666,8 @@ void *NETWORK_EffTransportRuntimeState::ConstructEffTransportRuntimeState(void) 
     } else {
         g_pEffTransportDispatchQueue = ConstructRenderDispatchQueue(pQueue, 0x1e);
     }
-    RegisterOrderedRenderDispatchClient(g_pEffTransportDispatchQueue, this, 0x19);
+    ((GAME_RenderDispatchQueue *)g_pEffTransportDispatchQueue)
+        ->RegisterOrderedRenderDispatchClient(this, 0x19);
 
     pQueue = AllocateVSMemBlock(0x58);
     if (pQueue == 0) {
@@ -4069,15 +4106,15 @@ void NETWORK_EffTransportRuntimeState::CleanupEffTransportRuntimeState(void) {
     void (**ppVtable)(void);
 
     if (m_nReserved3C != 0) {
-        RegisterOrderedRenderDispatchClient(
-            g_pEffTransportDispatchQueue, (void *)(unsigned long)m_nReserved3C, 0);
+        ((GAME_RenderDispatchQueue *)g_pEffTransportDispatchQueue)
+            ->RegisterOrderedRenderDispatchClient((void *)(unsigned long)m_nReserved3C, 0);
         m_nReserved48 = 1;
         m_nReserved38 = m_nReserved3C;
         m_nReserved3C = 0;
     }
     if (m_nReserved40 != 0) {
-        UnregisterOrderedRenderDispatchClient(
-            g_pEffTransportDispatchQueue, (void *)(unsigned long)m_nReserved40, 0);
+        ((GAME_RenderDispatchQueue *)g_pEffTransportDispatchQueue)
+            ->UnregisterOrderedRenderDispatchClient((void *)(unsigned long)m_nReserved40, 0);
         m_nReserved40 = 0;
         m_nReserved38 = 0;
         m_nReserved48 = 0;

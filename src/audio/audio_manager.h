@@ -11,7 +11,6 @@ void DestroyAudioManager(void *pAudioManager);
 void SetAudioManagerPrimaryContext(void *pAudioManager, void *pPrimaryContext);
 void StopAllAudioManagerBackends(void *pAudioManager);
 void RefreshAudioManagerBackendHandles(void *pAudioManager);
-void InvokeAudioManagerEmbeddedSlot04(void *pAudioManager, int nValue1, int nValue2);
 int RegisterVariantResourceMusicHandle(void *pAudioManager, int nMusicResourceId);
 void StartRegisteredVariantResourceMusic(void *pAudioManager, int hMusic);
 void DispatchChildInterfaceSlot18IfReady(void *pAudioManager, int hMusic);
@@ -26,8 +25,6 @@ void SetAudioManagerMusicAndEffectVolume(void *pAudioManager, int nMusicVolume, 
 unsigned int GetVariantResourceEffectMasterVolume(void *pAudioManager);
 void SetAudioManagerEffectResourceContext(void *pAudioManager, void *pPrimaryContext);
 void SetAudioManagerMusicResourceContext(void *pAudioManager, void *pPrimaryContext);
-void SetAudioManagerStartupMusicName(void *pAudioManager, const char *pszMusicName);
-void SetAudioManagerMusicEnabledFlag(void *pAudioManager, int fEnabled);
 char *BuildAudioManagerDescriptionString(void *pAudioManager);
 int InitializeGlobalAudioManager(int nMusicResourceBase,
                                  int cMusicResources,
@@ -45,5 +42,11 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
                                int cEffectResources);
 
 extern void *g_pAudioManager;
+
+struct AUDIO_Manager {
+    void InvokeAudioManagerEmbeddedSlot04(int nValue1, int nValue2);
+    void SetAudioManagerStartupMusicName(const char *pszMusicName);
+    void SetAudioManagerMusicEnabledFlag(int fEnabled);
+};
 
 #endif

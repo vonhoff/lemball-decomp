@@ -30,6 +30,7 @@ extern int g_fLevelDemoModeEnabled;
 extern unsigned char g_abOverrideLevelFilePathBuffer[260];
 extern STARTUP_GraphicsWindowConfig g_StartupGraphicsDriverConfig;
 extern int g_fSmallMemoryBucketTableEnabled;
+extern int g_adwStartupGraphicsBucketSizeTable[7];
 
 STARTUP_GraphicsWindowConfig *BuildStartupGraphicsWindowConfig(const STARTUP_GraphicsWindowConfig *pSeedConfig);
 void InitializeStartupSwitchDefaults(void);

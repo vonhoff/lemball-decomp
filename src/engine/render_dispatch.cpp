@@ -1,37 +1,7 @@
 #include "../engine/runtime_init.h"
 
-struct RDISPATCH_QueueEntry {
-    unsigned int m_awords[5];
-};
-
-struct RDISPATCH_ClientNode {
-    void *m_pClient;
-    int m_nOrder;
-    RDISPATCH_ClientNode *m_pNext;
-};
-
 struct RDISPATCH_ClientObject {
     void **m_pVtable;
-};
-
-struct RDISPATCH_Queue {
-    void *m_pVtable;
-    int m_nReserved04;
-    void *m_pLockVtable;
-    char m_abCriticalSection[0x18];
-    int m_cEntryCapacity;
-    int m_cQueuedEntries;
-    int m_cClients;
-    int m_nReserved30;
-    int m_nReserved34;
-    int m_nReserved38;
-    int m_nReserved3C;
-    int m_cEntriesDropped;
-    RDISPATCH_QueueEntry *m_pEntryBuffer;
-    RDISPATCH_QueueEntry *m_pEntryBufferEnd;
-    RDISPATCH_QueueEntry *m_pHead;
-    RDISPATCH_QueueEntry *m_pTail;
-    RDISPATCH_ClientNode *m_pClientList;
 };
 
 // FUNCTION: LEMBALL 0x004635B0

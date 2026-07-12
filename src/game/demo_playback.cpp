@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 
-extern "C" DWORD timeGetTime(void);
+extern "C" DWORD WINAPI timeGetTime(void);
 
 typedef void *(*DEMO_DeleteProc)(void *pObject, unsigned char fDelete);
 extern void ReturnVoidVtableCallback(void);
@@ -86,11 +86,12 @@ int g_nStoredLevelDemoModeEnabled = 0;
 
 // FUNCTION: LEMBALL 0x00409150
 void CreateFrameTimerController(unsigned int uFrameInterval) {
-    void *pPlaybackController;
+    DEMO_LevelDemoPlaybackController *pPlaybackController;
 
-    pPlaybackController = AllocateVSMemBlock(0x58);
+    pPlaybackController = (DEMO_LevelDemoPlaybackController *)AllocateVSMemBlock(0x58);
     if (pPlaybackController != 0) {
-        g_pLevelDemoPlaybackController = ConstructLevelDemoPlaybackController(pPlaybackController, uFrameInterval);
+        g_pLevelDemoPlaybackController =
+            pPlaybackController->ConstructLevelDemoPlaybackControllerThunk(uFrameInterval);
         return;
     }
     g_pLevelDemoPlaybackController = 0;
@@ -107,51 +108,75 @@ void DestroyFrameTimerController(void) {
     }
 }
 
+union DEMO_LevelDemoPlaybackConstructorAddress {
+    DEMO_LevelDemoPlaybackController *(DEMO_LevelDemoPlaybackController::*m_pMethod)(unsigned int);
+    void *m_pAddress;
+};
+
+static DEMO_LevelDemoPlaybackConstructorAddress g_DEMO_LevelDemoPlaybackConstructorAddress = {
+    &DEMO_LevelDemoPlaybackController::ConstructLevelDemoPlaybackController
+};
+
+// FUNCTION: LEMBALL 0x004017A3
+__declspec(naked) DEMO_LevelDemoPlaybackController *
+DEMO_LevelDemoPlaybackController::ConstructLevelDemoPlaybackControllerThunk(unsigned int uFrameInterval) {
+    __asm {
+        jmp dword ptr [g_DEMO_LevelDemoPlaybackConstructorAddress.m_pAddress]
+    }
+}
+
 // FUNCTION: LEMBALL 0x004091B0
-void *ConstructLevelDemoPlaybackController(void *pPlaybackController, unsigned int uFrameInterval) {
-    InitializeRenderQueueNodeBase(pPlaybackController);
-    *(short *)((char *)pPlaybackController + 0x42) = 0;
-    *(void ***)pPlaybackController = g_LevelDemoPlaybackControllerVtable;
-    *(short *)((char *)pPlaybackController + 0x40) = 0;
-    *(unsigned int *)((char *)pPlaybackController + 0x14) = uFrameInterval;
-    *(void **)((char *)pPlaybackController + 0x10) = 0;
-    *(void **)((char *)pPlaybackController + 0x34) = 0;
-    *(int *)((char *)pPlaybackController + 0x28) = 0;
-    *(int *)((char *)pPlaybackController + 0x2c) = 0;
-    *(int *)((char *)pPlaybackController + 0x30) = 0;
-    *(void **)((char *)pPlaybackController + 0x24) = 0;
-    *(void **)((char *)pPlaybackController + 0x20) = 0;
-    *(int *)((char *)pPlaybackController + 0x4c) = 0;
-    *(int *)((char *)pPlaybackController + 0x48) = 0;
-    *(int *)((char *)pPlaybackController + 0x50) = 0;
-    *(int *)((char *)pPlaybackController + 0x18) = -1;
-    *(int *)((char *)pPlaybackController + 0x54) = 0;
-    RegisterOrderedRenderDispatchClient(g_pSharedRenderDispatchQueue, pPlaybackController, -100);
-    ResetLevelDemoPlaybackCursor(pPlaybackController);
-    return pPlaybackController;
+DEMO_LevelDemoPlaybackController *DEMO_LevelDemoPlaybackController::ConstructLevelDemoPlaybackController(unsigned int uFrameInterval) {
+    InitializeRenderQueueNodeBase(this);
+    *(short *)((char *)this + 0x42) = 0;
+    *(void ***)this = g_LevelDemoPlaybackControllerVtable;
+    *(short *)((char *)this + 0x40) = 0;
+    *(unsigned int *)((char *)this + 0x14) = uFrameInterval;
+    *(void **)((char *)this + 0x10) = 0;
+    *(void **)((char *)this + 0x34) = 0;
+    *(int *)((char *)this + 0x28) = 0;
+    *(int *)((char *)this + 0x2c) = 0;
+    *(int *)((char *)this + 0x30) = 0;
+    *(void **)((char *)this + 0x24) = 0;
+    *(void **)((char *)this + 0x20) = 0;
+    *(int *)((char *)this + 0x4c) = 0;
+    *(int *)((char *)this + 0x48) = 0;
+    *(int *)((char *)this + 0x50) = 0;
+    *(int *)((char *)this + 0x18) = -1;
+    *(int *)((char *)this + 0x54) = 0;
+    ((GAME_RenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+        ->RegisterOrderedRenderDispatchClient(this, -100);
+    ResetLevelDemoPlaybackCursorThunk();
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x00409220
 void DestroyLevelDemoPlaybackController(void *pPlaybackController) {
     *(void ***)pPlaybackController = g_LevelDemoPlaybackControllerVtable;
     ReleaseLevelDemoRecordBuffer(pPlaybackController);
-    UnregisterOrderedRenderDispatchClient(g_pSharedRenderDispatchQueue, pPlaybackController, -100);
+    ((GAME_RenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+        ->UnregisterOrderedRenderDispatchClient(pPlaybackController, -100);
     *(void ***)pPlaybackController = g_pNonZrleVariantRenderEntryInitializeVtable;
 }
 
+// FUNCTION: LEMBALL 0x0040179E
+void DEMO_LevelDemoPlaybackController::ResetLevelDemoPlaybackCursorThunk(void) {
+    ResetLevelDemoPlaybackCursor();
+}
+
 // FUNCTION: LEMBALL 0x004095E0
-void ResetLevelDemoPlaybackCursor(void *pPlaybackController) {
-    *(int *)((char *)pPlaybackController + 0x18) = -1;
-    *(int *)((char *)pPlaybackController + 0x44) = 0;
-    *(int *)((char *)pPlaybackController + 0x50) = 0;
-    *(int *)((char *)pPlaybackController + 0x3c) = 0;
+void DEMO_LevelDemoPlaybackController::ResetLevelDemoPlaybackCursor(void) {
+    *(int *)((char *)this + 0x18) = -1;
+    *(int *)((char *)this + 0x44) = 0;
+    *(int *)((char *)this + 0x50) = 0;
+    *(int *)((char *)this + 0x3c) = 0;
 }
 
 // FUNCTION: LEMBALL 0x00409600
 void SetLevelDemoPlaybackEnabled(void *pPlaybackController, int fEnabled) {
     *(int *)((char *)pPlaybackController + 0x4c) = fEnabled;
     if (fEnabled != 0) {
-        ResetLevelDemoPlaybackCursor(pPlaybackController);
+        ((DEMO_LevelDemoPlaybackController *)pPlaybackController)->ResetLevelDemoPlaybackCursorThunk();
         return;
     }
     ReleaseLevelDemoRecordBuffer(pPlaybackController);
@@ -179,7 +204,7 @@ void ServiceLevelDemoPlayback(void *pPlaybackController) {
     }
 }
 
-void ServiceLevelDemoPlaybackThunk(void *pPlaybackController) {
+void LEMBALL_FASTCALL ServiceLevelDemoPlaybackThunk(void *pPlaybackController) {
     ServiceLevelDemoPlayback(pPlaybackController);
 }
 

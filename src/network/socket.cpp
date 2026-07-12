@@ -1114,7 +1114,7 @@ extern "C" int WINAPI bind(int nSocket, const void *pAddress, int cbAddress);
 extern "C" int WINAPI WSAAsyncSelect(int nSocket, void *hWnd, unsigned int nMessage,
                                       long nEvents);
 extern "C" unsigned short WINAPI htons(unsigned short nValue);
-extern "C" DWORD timeGetTime(void);
+extern "C" DWORD WINAPI timeGetTime(void);
 extern void *g_pEffTransportRuntimeService;
 extern short g_nEffTransportServiceBasePort;
 struct NETWORK_TcpipRuntimeStateVtable;
@@ -1657,8 +1657,15 @@ struct NETWORK_TcpipSocketStackDualRet8VtableModel {
 };
 static NETWORK_TcpipSocketStackDualRet8VtableModel
     g_NETWORK_TcpipSocketStackDualRet8VtableModel;
+/* Keep this cross-TU table reference constant-initialized.  The original
+ * binary's startup initializer consumes the pointer before the other socket
+ * translation-unit initializers run; dereferencing the C++ model here leaves
+ * a zero BSS value in the reconstructed image. */
+static void *g_NETWORK_TcpipSocketStackDualRet8FallbackVtable[1] = {
+    (void *)NetworkSafeVtableNoop,
+};
 void *g_NETWORK_TcpipSocketStackDualRet8 =
-    *(void ***)&g_NETWORK_TcpipSocketStackDualRet8VtableModel;
+    g_NETWORK_TcpipSocketStackDualRet8FallbackVtable;
 static void *g_NETWORK_TcpipSocketStackDualDispatchVtable[10] = {
     (void *)ReturnTrueVtableCallbackThunk,
     (void *)ReturnTrueVtableCallbackSecondaryThunk,
@@ -1896,7 +1903,7 @@ static void *g_NETWORK_TcpipSocketStackRuntimeRecoveredVtable[24] = {
 static const char *g_NETWORK_UdpServiceName;
 static const char *g_NETWORK_TftpServiceName;
 
-extern "C" DWORD timeGetTime(void);
+extern "C" DWORD WINAPI timeGetTime(void);
 extern "C" int WINAPI sendto(int nSocket, const char *pBuffer, int cbBuffer, int nFlags,
                               const void *pTo, int nToLength);
 extern "C" int WINAPI WSAGetLastError(void);
@@ -2270,7 +2277,7 @@ int NETWORK_SocketAsyncMessageAdapter::ReceiveUdpPayloadFromConnectedSocket(void
         timeGetTime();
     if (nResult == -1) {
         AppendCStringToStream(g_pErrorOutputStream, "Receive error (after receive):");
-        AppendIntToStream(g_pErrorOutputStream, (unsigned int)WSAGetLastError());
+        g_pErrorOutputStream->AppendIntToStream((unsigned int)WSAGetLastError());
         AppendCStringToStream(g_pErrorOutputStream, "\n");
         pErrorChannel = (NETWORK_TimedSocketErrorChannel *)(pbThis + nThisDelta);
         pErrorChannel->HandleSocketError();
@@ -2308,7 +2315,7 @@ int NETWORK_SocketAsyncMessageAdapter::HandleSocketReceiveAsyncSelectMessage(
                 return 0;
             }
             AppendCStringToStream(g_pErrorOutputStream, "Receive error:");
-            AppendIntToStream(g_pErrorOutputStream, nError);
+        g_pErrorOutputStream->AppendIntToStream(nError);
             AppendCStringToStream(g_pErrorOutputStream, "\n");
             return 0;
         }
@@ -2358,7 +2365,7 @@ int NETWORK_SocketAsyncMessageAdapter::ReceiveUdpPayloadFromSenderAddress(void) 
     pPeerAddress = (NETWORK_InetAddressEntry *)g_pEffTransportPeerAddressState;
     if (nResult == -1) {
         AppendCStringToStream(g_pErrorOutputStream, "Receive error (after receive from):");
-        AppendIntToStream(g_pErrorOutputStream, (unsigned int)WSAGetLastError());
+        g_pErrorOutputStream->AppendIntToStream((unsigned int)WSAGetLastError());
         AppendCStringToStream(g_pErrorOutputStream, "\n");
         pErrorChannel = (NETWORK_SocketChannelControl *)((char *)this + nChannelDelta);
         pErrorChannel->HandleSocketError();

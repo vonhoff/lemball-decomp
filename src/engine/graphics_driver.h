@@ -41,6 +41,17 @@ protected:
     int m_dwReserved18;
 };
 
+struct VSGDI_SelectedGraphicsDriverRuntime {
+    int m_nSelectedDriver;
+    void *m_pWindowOwner;
+    int m_fFallbackWarningShown;
+
+    int InitializeSelectedGraphicsDriver(int nRequestedDriver);
+    void ResizeActiveDisplayState(unsigned short *pSize);
+};
+
+void LEMBALL_FASTCALL NotifyWindowOwnersDisplayChanged(const int *pnSelectedDriver);
+
 class VSGDI_MetricsDisplayState : public VSGDI_DisplayState {
 public:
     VSGDI_MetricsDisplayState(void);
@@ -63,9 +74,9 @@ private:
     unsigned char m_abState[0x560];
 };
 
-class VSGDI_DibDisplayState : public VSGDI_DisplayState {
+class VSGDI_DibDisplayState : public VSGDI_MetricsDisplayState {
 public:
-    VSGDI_DibDisplayState(short cxDisplay, short cyDisplay);
+    VSGDI_DibDisplayState(const unsigned short *pDisplaySize);
 
     virtual int Create(HWND hWnd);
 
@@ -79,7 +90,7 @@ private:
 
 class VSGDI_DirectDrawDisplayState : public VSGDI_DisplayState {
 public:
-    VSGDI_DirectDrawDisplayState(short cxDisplay, short cyDisplay);
+    VSGDI_DirectDrawDisplayState(const unsigned short *pDisplaySize, int fCreateWindow);
 
     virtual int Create(HWND hWnd);
 
@@ -99,6 +110,7 @@ int InitializeResourceGeometryHelperRuntime(void);
 int ShutdownResourceGeometryHelperRuntime(void);
 int InitializeSelectedGraphicsDriver(int nRequestedDriver);
 int GetSelectedGraphicsDriverId(void);
+extern void *g_pSelectedGraphicsDriverRuntime;
 VSGDI_DisplayState *GetDisplayState(void);
 void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
 void LEMBALL_FASTCALL PromoteHelperUploadStateToActive(int nUploadState);

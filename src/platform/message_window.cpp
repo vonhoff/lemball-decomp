@@ -128,7 +128,7 @@ PLATFORM_DebugTextWindow *PLATFORM_DebugTextWindow::Construct(const char *pszTit
 }
 
 // FUNCTION: LEMBALL 0x00472B10
-int DebugMessageThreadMain(void) {
+int __stdcall DebugMessageThreadMain(void) {
     MSG Msg;
     int nMessageResult;
     void *pvTextWindow;

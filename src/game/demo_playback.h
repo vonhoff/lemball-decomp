@@ -1,14 +1,20 @@
 #ifndef LEMBALL_DEMO_PLAYBACK_H
 #define LEMBALL_DEMO_PLAYBACK_H
 
+#include "engine/common.h"
+
 void CreateFrameTimerController(unsigned int uFrameInterval);
 void DestroyFrameTimerController(void);
-void *ConstructLevelDemoPlaybackController(void *pPlaybackController, unsigned int uFrameInterval);
+struct DEMO_LevelDemoPlaybackController {
+    DEMO_LevelDemoPlaybackController *ConstructLevelDemoPlaybackController(unsigned int uFrameInterval);
+    DEMO_LevelDemoPlaybackController *ConstructLevelDemoPlaybackControllerThunk(unsigned int uFrameInterval);
+    void ResetLevelDemoPlaybackCursor(void);
+    void ResetLevelDemoPlaybackCursorThunk(void);
+};
 void DestroyLevelDemoPlaybackController(void *pPlaybackController);
-void ResetLevelDemoPlaybackCursor(void *pPlaybackController);
 void SetLevelDemoPlaybackEnabled(void *pPlaybackController, int fEnabled);
 void ServiceLevelDemoPlayback(void *pPlaybackController);
-void ServiceLevelDemoPlaybackThunk(void *pPlaybackController);
+void LEMBALL_FASTCALL ServiceLevelDemoPlaybackThunk(void *pPlaybackController);
 void ReleaseLevelDemoRecordBuffer(void *pPlaybackController);
 void StopLevelDemoPlayback(void *pPlaybackController);
 int FilterLevelDemoPlaybackInputEvent(void *pPlaybackController, unsigned short *pEventId);

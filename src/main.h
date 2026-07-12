@@ -4,6 +4,7 @@
 #include "platform/win32.h"
 
 extern HINSTANCE g_hApplicationInstance;
+extern HICON g_hApplicationIcon;
 
 #ifdef __cplusplus
 extern "C" {
