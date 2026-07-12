@@ -15,6 +15,7 @@ set(LEMBALL_SOURCES
     src/game/primary_context_window.cpp
     src/game/window_owner.cpp
     src/game/eff_streams.cpp
+    src/game/type18_chunk_stream.cpp
     src/game/level_runtime.cpp
     src/game/vtable_callbacks.cpp
     src/game/status_entry.cpp

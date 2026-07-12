@@ -153,4 +153,7 @@ struct NETWORK_RuntimeChannelStackReleaseFront {
     void Release(void);
 };
 
+extern void *g_NETWORK_RuntimeChannelStackTimedStreamVtable[10];
+extern void *g_NETWORK_RuntimeChannelStackDualStreamVtable[10];
+
 #endif

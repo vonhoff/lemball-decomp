@@ -7,6 +7,8 @@
 #include <string.h>
 #include <stdio.h>
 
+extern void *g_GAME_EffStreamConstructionVtable[6];
+
 struct AUDIO_WaveOutEffectBackend;
 
 extern int ReturnTrueVtableCallback(void);
@@ -42,10 +44,12 @@ size_t WriteAndFlushFileBuffer(FILE *pFile, void *pBuffer, size_t cbBuffer) {
     return cbWritten;
 }
 
-// FUNCTION: LEMBALL 0x0047FCA0
-void CrtFatalRuntimeError0x19(void) {
+#if !defined(_MSC_VER)
+extern "C" int _purecall(void) {
     ExitProcess(0x19);
+    return 0;
 }
+#endif
 
 extern "C" {
 HANDLE WINAPI CreateFileA(LPCSTR lpFileName,
@@ -90,10 +94,6 @@ enum {
     CREATE_NEW = 1,
     OPEN_EXISTING = 3,
     FILE_BEGIN = 0,
-};
-
-static void *g_NETWORK_ReturnTrueVtable[1] = {
-    (void *)ReturnTrueVtableCallback,
 };
 
 int OpenWin32FileWrapperWithCreateFlag(void *pObject, LPCSTR pszPath, int nAccessMode, int fCreateNew);
@@ -342,7 +342,7 @@ static const NETWORK_FileBackedStreamAdjustorOffsets g_NETWORK_FileBackedDualStr
     0x38,
     0x90,
     0xa4,
-    CrtFatalRuntimeError0x19,
+    (void (*)(void))_purecall,
 };
 /* 0049A5D8: dual file-backed channel-state thunk table.  First four entries
  * are callable adjustors, followed by fifteen fatal stubs and a null tail. */
@@ -351,21 +351,21 @@ static void *g_NETWORK_FileBackedDualPrimaryThunkVtable[] = {
     (void *)AdjustAndDeleteDualFileBackedEffChannelWrapper,
     (void *)AdjustAndClearNestedEffChannelAsyncStatusFromB8,
     (void *)DeleteDualFileBackedEffChannelNoopThunk,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
     0,
 };
 struct NETWORK_FileBackedDualSecondaryThunkVtableModel {
@@ -410,8 +410,8 @@ struct NETWORK_FileBackedDualSecondaryThunkVtableModel {
     virtual void ReservedRet(void)
     {
     }
-    virtual void Fatal0(void) { CrtFatalRuntimeError0x19(); }
-    virtual void Fatal1(void) { CrtFatalRuntimeError0x19(); }
+    virtual void Fatal0(void) { _purecall(); }
+    virtual void Fatal1(void) { _purecall(); }
     virtual BYTE MapNestedFailure(void) {
         return MapNestedEffCallbackFailureToStatus6((char *)this + 0xb8);
     }
@@ -421,7 +421,7 @@ static NETWORK_FileBackedDualSecondaryThunkVtableModel g_NETWORK_FileBackedDualS
 static void *g_NETWORK_FileBackedDualSecondaryThunkVtable =
     *(void ***)&g_NETWORK_FileBackedDualSecondaryThunkVtableModel;
 static void *g_NETWORK_FileBackedFatalFileWrapperVtable[] = {
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
     (void *)OpenWin32FileWrapperWithCreateFlag,
     (void *)OpenWin32FileWrapperCreateNew,
     (void *)ProbeWin32FileWrapperAccess,
@@ -449,7 +449,7 @@ static const NETWORK_FileBackedStreamAdjustorOffsets g_NETWORK_FileBackedTimedSt
     0x3c,
     0xb0,
     0xc4,
-    CrtFatalRuntimeError0x19,
+    (void (*)(void))_purecall,
 };
 static void *g_NETWORK_FileBackedTimedPrimaryThunkVtable[] = {
     (void *)AdjustAndMapGlobalStateFileBackedEffCallbackFailure,
@@ -712,7 +712,7 @@ static void *g_NETWORK_GlobalStateFinalPrimaryThunkVtable[] = {
     (void *)ServiceGlobalStateEffComposite0047AEF0,
     (void *)SetGlobalStateCompositeOpenFlag0047AED0,
     (void *)ClearGlobalStateCompositeOpenFlag0047AEE0,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
     (void *)OpenWin32FileWrapperWithCreateFlag,
     (void *)OpenWin32FileWrapperCreateNew,
     (void *)ProbeWin32FileWrapperAccess,
@@ -868,7 +868,7 @@ static void *g_NETWORK_GlobalStateCompositeFinalVtableModel[] = {
     (void *)ServiceGlobalStateEffComposite0047AEF0,
     (void *)SetGlobalStateCompositeOpenFlag0047AED0,
     (void *)ClearGlobalStateCompositeOpenFlag0047AEE0,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
     (void *)OpenWin32FileWrapperWithCreateFlag,
     (void *)OpenWin32FileWrapperCreateNew,
     (void *)ProbeWin32FileWrapperAccess,
@@ -1087,13 +1087,13 @@ static void *g_NETWORK_DualSlotCompositeFinalFatalFileWrapperVtable[] = {
 };
 
 static void *g_NETWORK_CrtFatalRuntimeErrorThunkSlots[14] = {
-    (void *)CrtFatalRuntimeError0x19, (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19, (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19, (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19, (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19, (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19, (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall, (void *)_purecall,
+    (void *)_purecall, (void *)_purecall,
+    (void *)_purecall, (void *)_purecall,
+    (void *)_purecall, (void *)_purecall,
+    (void *)_purecall, (void *)_purecall,
+    (void *)_purecall, (void *)_purecall,
+    (void *)_purecall,
     0,
 };
 static void *g_NETWORK_CrtFatalRuntimeErrorThunk = g_NETWORK_CrtFatalRuntimeErrorThunkSlots;
@@ -1119,7 +1119,7 @@ struct NETWORK_CrtFatalRuntimeErrorAdjustor {
 };
 
 static const NETWORK_CrtFatalRuntimeErrorAdjustor g_NETWORK_CrtFatalRuntimeErrorDeleteAdjustor = {
-    CrtFatalRuntimeError0x19,
+    (void (*)(void))_purecall,
     -0x04,
     -0x18,
     -0x9c,
@@ -1184,7 +1184,7 @@ static const NETWORK_FileBackedChannelViewOffsets g_NETWORK_FileBackedDualChanne
     0x38,
     0x90,
     0xa4,
-    CrtFatalRuntimeError0x19,
+    (void (*)(void))_purecall,
     (void (*)(void))OpenWin32FileWrapperWithCreateFlag,
     (void (*)(void))OpenWin32FileWrapperCreateNew,
 };
@@ -1206,7 +1206,7 @@ static const NETWORK_FileBackedChannelViewOffsets g_NETWORK_FileBackedTimedChann
     0x3c,
     0xb0,
     0xc4,
-    CrtFatalRuntimeError0x19,
+    (void (*)(void))_purecall,
     (void (*)(void))OpenWin32FileWrapperWithCreateFlag,
     (void (*)(void))OpenWin32FileWrapperCreateNew,
 };
@@ -2299,7 +2299,7 @@ void *LEMBALL_FASTCALL ClearFileBackedEffChannelStateWord(void *pObject) {
 
 // FUNCTION: LEMBALL 0x00479540
 NETWORK_EffStreamRecordSlot *NETWORK_EffStreamRecordSlot::Initialize(void) {
-    m_pVtable = g_NETWORK_ReturnTrueVtable;
+    m_pVtable = g_GAME_EffStreamConstructionVtable;
     m_nReserved04 = 0;
     ((GAME_EffStream *)this)->ResetStateFields();
     m_wObservedMarker = 1;
@@ -2346,7 +2346,7 @@ NETWORK_EffStreamRecordSlotTable *NETWORK_EffStreamRecordSlotTable::Construct(in
     NETWORK_EffStreamRecordSlot *pSlot;
     int i;
 
-    m_pVtable = g_NETWORK_ReturnTrueVtable;
+    m_pVtable = g_GAME_EffStreamConstructionVtable;
     m_nRecordHeaderOffset04 = 0;
     ((GAME_EffStream *)this)->ResetStateFields();
     m_cSlots = cSlots;
@@ -2466,7 +2466,7 @@ void NETWORK_EffStreamRecordSlotTable::Load(void) {
 NETWORK_Eff512ByteStateStream *NETWORK_Eff512ByteStateStream::Construct() {
     int i;
 
-    m_pVtable = g_NETWORK_ReturnTrueVtable;
+    m_pVtable = g_GAME_EffStreamConstructionVtable;
     i = 0;
     m_nReserved04 = 0;
     ((GAME_EffStream *)this)->ResetStateFields();
@@ -2791,8 +2791,10 @@ void *NETWORK_EmbeddedFileBackedEffChannelStackConstructorView::ConstructEmbedde
         pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x108 + pEmbeddedOffsets->m_nTimedStreamViewOffset08 - 4);
         pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x108 + pEmbeddedOffsets->m_nDualStreamViewOffset0c - 4);
         pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunkVtable;
-        pSecondaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
-        pTertiaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
+        pSecondaryThunk->m_pVtable =
+            g_NETWORK_RuntimeChannelStackTimedStreamVtable;
+        pTertiaryThunk->m_pVtable =
+            g_NETWORK_RuntimeChannelStackDualStreamVtable;
         pPrimaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nChannelStateViewOffset04 - 8;
         pSecondaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nTimedStreamViewOffset08 - 0x38;
         pTertiaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nDualStreamViewOffset0c - 0xb0;
@@ -2879,8 +2881,10 @@ void *NETWORK_GlobalStateCompositeLayout::ConstructGlobalStateFileBackedEffCompo
         pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbEmbeddedStackBase + pEmbeddedOffsets->m_nTimedStreamViewOffset08 - 4);
         pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbEmbeddedStackBase + pEmbeddedOffsets->m_nDualStreamViewOffset0c - 4);
         pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunkVtable;
-        pSecondaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
-        pTertiaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
+        pSecondaryThunk->m_pVtable =
+            g_NETWORK_RuntimeChannelStackTimedStreamVtable;
+        pTertiaryThunk->m_pVtable =
+            g_NETWORK_RuntimeChannelStackDualStreamVtable;
         pPrimaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nChannelStateViewOffset04 - 8;
         pSecondaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nTimedStreamViewOffset08 - 0x38;
         pTertiaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nDualStreamViewOffset0c - 0xb0;
@@ -2906,7 +2910,7 @@ void *NETWORK_GlobalStateCompositeLayout::ConstructGlobalStateFileBackedEffCompo
 
     pInitialStream = &pFront->m_InitialStream24;
     pInitialStream->m_nReserved04 = 0;
-    pInitialStream->m_pVtable = g_NETWORK_ReturnTrueVtable;
+    pInitialStream->m_pVtable = g_GAME_EffStreamConstructionVtable;
     ((GAME_EffStream *)pInitialStream)->ResetStateFields();
     pInitialStream->m_nSerializedLength18 += 2;
     pInitialStream->m_wFlags2c = 0;
@@ -3108,8 +3112,10 @@ void *NETWORK_DualSlotCompositeLayout::ConstructDualSlotTableFileBackedEffCompos
         pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbEmbeddedStackBase + pEmbeddedOffsets->m_nTimedStreamViewOffset08 - 4);
         pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbEmbeddedStackBase + pEmbeddedOffsets->m_nDualStreamViewOffset0c - 4);
         pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunkVtable;
-        pSecondaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
-        pTertiaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
+        pSecondaryThunk->m_pVtable =
+            g_NETWORK_RuntimeChannelStackTimedStreamVtable;
+        pTertiaryThunk->m_pVtable =
+            g_NETWORK_RuntimeChannelStackDualStreamVtable;
         pPrimaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nChannelStateViewOffset04 - 8;
         pSecondaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nTimedStreamViewOffset08 - 0x38;
         pTertiaryThunk->m_nThisDelta = pEmbeddedOffsets->m_nDualStreamViewOffset0c - 0xb0;
@@ -3135,7 +3141,7 @@ void *NETWORK_DualSlotCompositeLayout::ConstructDualSlotTableFileBackedEffCompos
 
     pInitialStream = &pFront->m_InitialStream30;
     pInitialStream->m_nReserved04 = 0;
-    pInitialStream->m_pVtable = g_NETWORK_ReturnTrueVtable;
+    pInitialStream->m_pVtable = g_GAME_EffStreamConstructionVtable;
     ((GAME_EffStream *)pInitialStream)->ResetStateFields();
     pInitialStream->m_nSerializedLength18 += 2;
     pInitialStream->m_wFlags2c = 0;

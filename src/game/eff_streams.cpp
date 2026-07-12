@@ -4,18 +4,9 @@
 #include "../network/safe_vtable.h"
 #include "eff_streams.h"
 
-extern void *DeleteEffStreamBaseWrapper00462810(void *pObject, BYTE fDelete);
 extern int ReturnTrueVtableCallbackThunk(void);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
-static void *g_EFF_BaseStreamVtable[6] = {
-    (void *)ReturnTrueVtableCallbackThunk,
-    (void *)ReturnTrueVtableCallbackSecondaryThunk,
-    (void *)NoopVtableCallbackThunk,
-    (void *)NoopVtableCallbackThunk,
-    (void *)NoopVtableCallbackThunk,
-    (void *)DeleteEffStreamBaseWrapper00462810,
-};
 extern void ReadNetworkLevelChunkDeltaStream(void *pObject);
 
 // FUNCTION: LEMBALL 0x004524F0
@@ -403,7 +394,8 @@ void *ConstructNetworkLobbySelectedPeerStatusStream(void *pObject) {
     GAME_EffStream *pStream;
 
     pStream = (GAME_EffStream *)pObject;
-    pStream->m_pVtable = (GAME_EffStreamVtable *)g_EFF_BaseStreamVtable;
+    pStream->m_pVtable =
+        (GAME_EffStreamVtable *)g_GAME_EffStreamConstructionVtable;
     pStream->m_nEventCode = 4;
     pStream->ResetStateFields();
     pStream->m_pVtable = (GAME_EffStreamVtable *)g_EFF_NetworkLobbySelectedPeerStatusVtable;
@@ -416,7 +408,8 @@ void *ConstructNetworkLobbyPeerEntryStream(void *pObject) {
     GAME_NetworkLobbyPeerEntryStream *pStream;
 
     pStream = (GAME_NetworkLobbyPeerEntryStream *)pObject;
-    pStream->m_Base.m_pVtable = (GAME_EffStreamVtable *)g_EFF_BaseStreamVtable;
+    pStream->m_Base.m_pVtable =
+        (GAME_EffStreamVtable *)g_GAME_EffStreamConstructionVtable;
     pStream->m_Base.m_nEventCode = 5;
     pStream->m_Base.ResetStateFields();
     pStream->m_Base.m_pVtable = (GAME_EffStreamVtable *)g_EFF_NetworkLobbyPeerEntryVtable;
@@ -657,7 +650,8 @@ void *ConstructEffStreamPayloadSize8(void *pObject) {
     GAME_EffStream *pStream;
 
     pStream = (GAME_EffStream *)pObject;
-    pStream->m_pVtable = (GAME_EffStreamVtable *)g_EFF_BaseStreamVtable;
+    pStream->m_pVtable =
+        (GAME_EffStreamVtable *)g_GAME_EffStreamConstructionVtable;
     pStream->m_nEventCode = 8;
     pStream->ResetStateFields();
     pStream->m_pVtable = (GAME_EffStreamVtable *)g_EFF_PayloadSize8Vtable;
@@ -671,7 +665,8 @@ void *ConstructNetworkLobbyU32PayloadStream(void *pObject, int nEventCode) {
     GAME_EffStream *pStream;
 
     pStream = (GAME_EffStream *)pObject;
-    pStream->m_pVtable = (GAME_EffStreamVtable *)g_EFF_BaseStreamVtable;
+    pStream->m_pVtable =
+        (GAME_EffStreamVtable *)g_GAME_EffStreamConstructionVtable;
     pStream->m_nEventCode = nEventCode;
     pStream->ResetStateFields();
     pStream->m_pVtable = (GAME_EffStreamVtable *)g_EFF_NetworkLobbyU32PayloadVtable;

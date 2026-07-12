@@ -12,7 +12,6 @@
 #include "variant_resource_manager.h"
 
 extern "C" DWORD WINAPI timeGetTime(void);
-extern void CrtFatalRuntimeError0x19(void);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 extern void NoopVtableCallbackThunk(void);
 extern void VariantResourceBundleNoopThunk(void);
@@ -181,8 +180,8 @@ static void DispatchHelperLocalRectUpdateThunk004037A1(void *pObject, void *pCon
 // GLOBAL: LEMBALL 0x00496ca8
 static void *g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[8] = {
     (void *)DeleteQueuedRenderPointSinkThunk00403580,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
+    (void *)_purecall,
     0,
     (void *)DeleteStatusIndicatorPointSinkThunk00401834,
     (void *)QueueHelperLocalRectUpdateThunk00401E6F,
@@ -251,7 +250,7 @@ static void *g_LEVEL_PackagedSpriteRenderEntryVtableStorage[8] = {
     0,
     (void *)DeletePackagedSpriteRenderEntryThunk004016F9,
     (void *)NoopPackagedSpriteRenderEntryThunk00402A22,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
     (void *)NoopPackagedSpriteRenderEntryThunk00401B77,
 };
 static void *g_LEVEL_PackagedSpriteRenderEntryVtable =
@@ -287,7 +286,7 @@ static void *g_LEVEL_StatusIndicatorPointSinkEntryVtableStorage[8] = {
     (void *)QueueStatusIndicatorPointSinkThunk004018AC,
     (void *)DispatchStatusIndicatorPointSinkThunk004025AE,
     0,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
     (void *)UpdateStatusIndicatorLoadProgressThunk00401DB1,
     (void *)VariantResourceBundleNoopThunk,
     (void *)GetStatusIndicatorPointSinkFieldThunk004011B8,
@@ -319,15 +318,15 @@ static void *g_LEVEL_VariantRenderManagerVtable =
 /* 00497C90: manager base table installed after construction. */
 static void *g_LEVEL_StatusIndicatorManagerVtable[4] = {
     (void *)NoopVtableCallbackThunk,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
+    (void *)_purecall,
     0,
 };
 static void *g_LEVEL_StatusIndicatorManagerSlot70Vtable[8] = {
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
+    (void *)_purecall,
     (void *)NoopVtableCallbackThunk,
     (void *)InitializeNonZrleVariantRenderEntry,
     (void *)NoopVtableCallbackThunk,
@@ -337,8 +336,8 @@ static void *g_LEVEL_StatusIndicatorManagerSlot74Vtable[8] = {
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
+    (void *)_purecall,
     (void *)NoopVtableCallbackThunk,
     (void *)InitializeNonZrleVariantRenderEntry,
     (void *)NoopVtableCallbackThunk,
@@ -347,7 +346,7 @@ static void *g_LEVEL_TimedVariantFrameIndexSelectorCtorVtable[8] = {
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
     (void *)InitializeNonZrleVariantRenderEntry,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
@@ -355,7 +354,7 @@ static void *g_LEVEL_TimedVariantFrameIndexSelectorCtorVtable[8] = {
 };
 static void *g_LEVEL_TimedVariantFrameIndexSelectorVtable[6] = {
     (void *)NoopVtableCallbackThunk,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,

@@ -2,6 +2,7 @@
 #define LEMBALL_GAME_APP_H
 
 #include "platform/win32.h"
+#include "game/window_owner.h"
 
 struct GAME_DynamicCString {
     char *m_pszText;
@@ -53,11 +54,7 @@ public:
     void *m_pVariantMode;
 };
 
-struct GAME_PrimaryContext {
-    void *m_pVtable;
-    char m_Reserved4[0x34];
-    int m_nScaleFactor;
-    char m_Reserved3c[0x10];
+struct GAME_PrimaryContext : public GAME_WindowOwnerBase {
     void *m_pWindowOwnerContext;
     int m_nFrameInterval;
     char m_Reserved54[0x3c];
@@ -93,20 +90,13 @@ struct GAME_PrimaryContext {
     void DispatchWindowOwnerRectInitialization(short *paRect,
                                                 void *pWindowOwner,
                                                 void *pUnused);
-    void SetWindowOwnerState(int nState);
-    int GetWindowOwnerState(void);
     void DispatchPrimaryContextActiveScreenFrame(void *pFrameArgument);
     void MarkNestedContextDirtyIfField20(void);
-    void InitializeWindowOwnerFromRect(short *paRect,
-                                       void *pWindowOwner,
-                                       void *pUnused);
     void InitializeWindowOwnerFromRectAndActivate(short *paRect,
                                                    void *pWindowOwner,
                                                    void *pUnused,
                                                    int nActivate);
     void ApplyWindowOwnerPaletteResource(int nResourceId);
-    void AppendQueuedRenderSinkValueNode(void *pValue);
-    void SetWindowOwnerScaleFactor(int nScaleFactor);
     short *ComputePrimaryContextCenteredScreenRect(short *paRect,
                                                    int nLeftOverride,
                                                    int nTopOverride);

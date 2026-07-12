@@ -3,6 +3,9 @@
 
 struct GAME_EffStreamVtable;
 
+extern void *g_GAME_EffStreamConstructionVtable[6];
+extern void *g_LEVEL_EffChunkStreamBaseVtable[10];
+
 struct GAME_EffStream {
     GAME_EffStreamVtable *m_pVtable;
     int m_nEventCode;

@@ -40,11 +40,14 @@ static int g_LEVEL_ProjectileGeometryPairSeeds[3][8][2] = {
 };
 
 int g_fLevelEndStateRequestLatched = 0;
+// GLOBAL: LEMBALL 0x004a6510
+int g_GAME_ManagedEntityRegistryTable[1000] = {0};
+// GLOBAL: LEMBALL 0x004a74b0
 void *g_pActiveManagedEntityOwner = 0;
+// GLOBAL: LEMBALL 0x004a74bc
+unsigned short g_GAME_ManagedEntityRegistryCount = 0;
 static unsigned char *g_GAME_ManagedEntitySlotBitMasks;
 static unsigned char *g_GAME_ManagedEntitySlotClaimBitset;
-static unsigned short *g_GAME_ManagedEntityRegistryCount;
-static int *g_GAME_ManagedEntityRegistryTable;
 
 struct LEVEL_LevelTileCell {
     int m_nType00;
@@ -86,16 +89,14 @@ static int __cdecl CompareLevelTileGridStaticRenderEntrySortKeys(
 void LEVEL_SpecialTileGridStaticRenderList::BuildSpecialLevelTileGridStaticRenderEntries(
     LEVEL_LevelTileGridStaticView *pTileGrid)
 {
-    LEVEL_LevelTileCell *pCell;
-    LEVEL_TileGridStaticRenderEntry *pEntry;
     int cEntries;
-    int iEntry;
-    int x;
-    int y;
-    short nSortOffset;
-    int nTileType;
     int cColumns;
     int cRows;
+    int y;
+    int x;
+    int iEntry;
+    int nSortOffset;
+    LEVEL_LevelTileCell *pCell;
 
     cEntries = 0;
     cColumns = pTileGrid->m_cColumns10;
@@ -145,25 +146,25 @@ void LEVEL_SpecialTileGridStaticRenderList::BuildSpecialLevelTileGridStaticRende
             while (x < cColumns) {
                 pCell = pTileGrid->m_pCells0C +
                         y * pTileGrid->m_cColumns10 + x;
-                nTileType = pCell->m_nType00;
-                switch (nTileType) {
+                switch (pCell->m_nType00) {
                 case 0x210:
                 case 0x215:
                 case 0x216:
                 case 0x219:
                 case 0x21a:
-                    pEntry = m_pEntries00 + iEntry++;
-                    pEntry->m_nTileX00 = (short)x;
-                    pEntry->m_nTileY02 = (short)y;
-                    pEntry->m_nSortKey04 = (unsigned short)((x + y) << 6);
-                    pEntry->m_pTileCell08 = pCell;
+                    m_pEntries00[iEntry].m_nTileX00 = (short)x;
+                    m_pEntries00[iEntry].m_nTileY02 = (short)y;
+                    m_pEntries00[iEntry].m_nSortKey04 =
+                        (unsigned short)((x + y) << 6);
+                    m_pEntries00[iEntry].m_pTileCell08 = pCell;
+                    ++iEntry;
                     break;
                 default:
                     if ((pTileGrid->GetTileFlags(x, y) & 0x20) == 0) {
                         break;
                     }
                     nSortOffset = 0;
-                    switch (nTileType) {
+                    switch (pCell->m_nType00) {
                     case 0x202:
                         nSortOffset = 0x20;
                         break;
@@ -175,12 +176,12 @@ void LEVEL_SpecialTileGridStaticRenderList::BuildSpecialLevelTileGridStaticRende
                         nSortOffset = 8;
                         break;
                     }
-                    pEntry = m_pEntries00 + iEntry++;
-                    pEntry->m_nTileX00 = (short)x;
-                    pEntry->m_nTileY02 = (short)y;
-                    pEntry->m_nSortKey04 =
+                    m_pEntries00[iEntry].m_nTileX00 = (short)x;
+                    m_pEntries00[iEntry].m_nTileY02 = (short)y;
+                    m_pEntries00[iEntry].m_nSortKey04 =
                         (unsigned short)(((x + y) << 6) + nSortOffset);
-                    pEntry->m_pTileCell08 = pCell;
+                    m_pEntries00[iEntry].m_pTileCell08 = pCell;
+                    ++iEntry;
                     break;
                 }
                 ++x;
@@ -457,19 +458,10 @@ struct LEVEL_NestedOwnerInterface : public LEVEL_VirtualSlots00Through40 {
 // FUNCTION: LEMBALL 0x0040B900
 void LEVEL_SlnkChunkManager::ResetType35ChunkObjects(void) {
     int i;
-    int nObjectOffset;
 
-    nObjectOffset = 0;
     if (m_pObjects04 != 0) {
-        i = 0;
-        if (0 < m_cCapacity08) {
-            do {
-                ((LEVEL_Type35ChunkObject *)
-                     ((char *)m_pObjects04 + nObjectOffset))
-                    ->Reset();
-                ++i;
-                nObjectOffset += 0x150;
-            } while (i < m_cCapacity08);
+        for (i = 0; i < m_cCapacity08; ++i) {
+            ((LEVEL_Type35ChunkObject *)m_pObjects04)[i].Reset();
         }
     }
 }
@@ -481,19 +473,19 @@ void LEVEL_SlnkChunkManager::ResetType35ChunkObjectsThunk(void) {
 
 // FUNCTION: LEMBALL 0x0041F0E0
 void LEVEL_ShpgChunkManager::ActivateNestedChildrenFromOwnerTableA4(void) {
+    void **ppObject;
     int i;
     int j;
     int cChildren;
-    void **ppObject;
 
     i = 0;
     if (0 < m_cObjectsA4) {
         ppObject = m_apObjects04;
         do {
+            j = 0;
             cChildren =
                 ((LEVEL_NestedOwnerInterface *)*ppObject)
                     ->GetNestedChildCount();
-            j = 0;
             if (0 < cChildren) {
                 do {
                     ((LEVEL_NestedOwnerInterface *)*ppObject)
@@ -514,19 +506,19 @@ void LEVEL_ShpgChunkManager::ActivateNestedChildrenFromOwnerTableA4Thunk(void) {
 
 // FUNCTION: LEMBALL 0x00420BB0
 void LEVEL_EnmyChunkManager::ActivateNestedChildrenFromOwnerTableVariant(void) {
+    void **ppObject;
     int i;
     int j;
     int cChildren;
-    void **ppObject;
 
     i = 0;
     if (0 < m_cObjectsA4) {
         ppObject = m_apObjects04;
         do {
+            j = 0;
             cChildren =
                 ((LEVEL_NestedOwnerInterface *)*ppObject)
                     ->GetNestedChildCount();
-            j = 0;
             if (0 < cChildren) {
                 do {
                     ((LEVEL_NestedOwnerInterface *)*ppObject)
@@ -545,7 +537,6 @@ void LEVEL_EnmyChunkManager::ActivateNestedChildrenFromOwnerTableVariantThunk(vo
     ActivateNestedChildrenFromOwnerTableVariant();
 }
 
-extern int ReturnTrueVtableCallback(void);
 extern int ReturnTrueVtableCallbackThunk(void);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
@@ -556,9 +547,6 @@ struct GAME_NetworkLevelChunkDeltaStream {
 void ReadNetworkLevelChunkDeltaStream(void *pObject);
 void LoadLevelGameStateStreamPayload(void *pObject);
 
-static void *g_pReturnTrueVtableCallback[1] = {
-    (void *)ReturnTrueVtableCallback,
-};
 static void *g_GAME_NetworkLevelChunkDeltaStreamVtable[6] = {
     (void *)ReturnTrueVtableCallbackThunk,
     (void *)ReturnTrueVtableCallbackSecondaryThunk,
@@ -610,7 +598,8 @@ struct GAME_LevelTileGrid {
 };
 
 void ClaimManagedEntitySlotId(int nManagedEntityObject);
-unsigned short GetManagedEntitySlotId(int nManagedEntityObject);
+unsigned short LEMBALL_FASTCALL GetManagedEntitySlotId(
+    int nManagedEntityObject);
 void SetManagedEntitySlotId(void *pManagedEntityObject, unsigned short nSlotId);
 unsigned int FindFirstFreeManagedEntitySlotIdForwardThunk(void);
 unsigned int FindLastFreeManagedEntitySlotIdThunk(void);
@@ -778,7 +767,7 @@ void ClearSecondaryLockedRecordTablePayloadFlags(void *pPayload) {
 void *GAME_NetworkLevelChunkDeltaStream::ConstructNetworkLevelChunkDeltaStream(int nOwner) {
     int nDispatcherPayload;
 
-    *(void **)this = g_pReturnTrueVtableCallback;
+    *(void **)this = g_GAME_EffStreamConstructionVtable;
     *(int *)((char *)this + 4) = 3;
     ((GAME_EffStream *)this)->ResetStateFields();
     *(void **)this = g_pReturnTrueVtableCallbackThunk;
@@ -800,7 +789,7 @@ void *ConstructLevelGameStateStreamThunk(void *pObject) {
     int *pStream;
 
     pStream = (int *)pObject;
-    *(void **)pStream = g_pReturnTrueVtableCallback;
+    *(void **)pStream = g_GAME_EffStreamConstructionVtable;
     pStream[1] = 10;
     ((GAME_EffStream *)pStream)->ResetStateFields();
     *(void **)pStream = g_pLevelGameStateStreamVtable;
@@ -1014,7 +1003,9 @@ int LEMBALL_FASTCALL GetSelectedLevelNumberThunk(void *pLevelProgressState) {
 }
 
 // FUNCTION: LEMBALL 0x00416610
-unsigned short GetManagedEntitySlotId(int nManagedEntityObject) {
+unsigned short LEMBALL_FASTCALL GetManagedEntitySlotId(
+    int nManagedEntityObject)
+{
     return *(unsigned short *)(nManagedEntityObject + 0x6c);
 }
 
@@ -1029,7 +1020,8 @@ void ClaimManagedEntitySlotId(int nManagedEntityObject) {
     if (nSlotId != 0xffff) {
         bClaimByte = g_GAME_ManagedEntitySlotClaimBitset[nSlotId >> 3];
         if ((g_GAME_ManagedEntitySlotBitMasks[nSlotId & 7] & bClaimByte) != 0) {
-            cManagedEntities = (unsigned int)*g_GAME_ManagedEntityRegistryCount;
+            cManagedEntities =
+                (unsigned int)g_GAME_ManagedEntityRegistryCount;
             for (i = 0; (int)i < (int)cManagedEntities; ++i) {
                 if (g_GAME_ManagedEntityRegistryTable[i & 0xffff] != 0) {
                     GetManagedEntitySlotId(g_GAME_ManagedEntityRegistryTable[i & 0xffff]);
@@ -1125,7 +1117,7 @@ void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode) {
     unsigned int i;
     unsigned int cManagedEntities;
 
-    cManagedEntities = (unsigned int)*g_GAME_ManagedEntityRegistryCount;
+    cManagedEntities = (unsigned int)g_GAME_ManagedEntityRegistryCount;
     i = 0;
     if (cManagedEntities != 0) {
         do {
@@ -1147,7 +1139,7 @@ void InitializeLevelChunkTypeEnabledFlagsThunk(void *pLevelMode) {
     unsigned int i;
     unsigned int cManagedEntities;
 
-    cManagedEntities = (unsigned int)*g_GAME_ManagedEntityRegistryCount;
+    cManagedEntities = (unsigned int)g_GAME_ManagedEntityRegistryCount;
     for (i = 0; (int)i < (int)cManagedEntities; ++i) {
         if (g_GAME_ManagedEntityRegistryTable[i & 0xffff] != 0) {
             nChunkType = *(int *)(g_GAME_ManagedEntityRegistryTable[i & 0xffff] + 100);

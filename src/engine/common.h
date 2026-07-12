@@ -22,4 +22,12 @@ typedef signed long s32;
 #define LEMBALL_THISCALL
 #endif
 
+#if defined(__cplusplus)
+#if defined(_MSC_VER) || defined(__WATCOMC__)
+extern "C" int __cdecl _purecall(void);
+#else
+extern "C" int _purecall(void);
+#endif
+#endif
+
 #endif

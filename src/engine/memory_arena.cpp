@@ -11,7 +11,6 @@
 extern void TriggerReleaseAssertFailure(const char *pszExpression,
                                         const char *pszFile,
                                         int nLine);
-extern void CrtFatalRuntimeError0x19(void);
 
 typedef void (LEMBALL_FASTCALL *VSMEM_LockProc)(void *pLockVtable);
 typedef unsigned int (*VSMEM_SizeProc)(void);
@@ -109,11 +108,11 @@ static void *g_aMemoryArenaBaseStateVtable[11] = {
     g_CArenaFreeMethodAddress.m_pAddress,
     (void *)FillMemoryByte,
     (void *)CopyMemoryBytes,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
 };
 static void *g_aMainMemoryArenaVtable[11] = {
     (void *)WriteMemoryArenaReport,
@@ -126,10 +125,10 @@ static void *g_aMainMemoryArenaVtable[11] = {
     (void *)GetMemoryBlockHeaderSize,
     (void *)PlacementConstructMemoryArenaWithStorage,
     (void *)PlacementConstructMemoryArenaBlock,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
 };
 static void *g_aMemoryArenaInitialVtable[1] = {
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
 };
 static void *g_aMemoryArenaInitialLockVtable[4] = {
     (void *)EnterMemoryArenaCriticalSection,

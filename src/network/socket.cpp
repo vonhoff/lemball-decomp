@@ -6,6 +6,7 @@
 #include "network/runtime.h"
 #include "network/safe_vtable.h"
 #include <string.h>
+
 #include <stdlib.h>
 
 #ifdef ntohs
@@ -20,7 +21,6 @@ extern int ReturnTrueVtableCallbackThunk(void);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
 extern void ReturnVoidVtableCallback(void);
-extern void CrtFatalRuntimeError0x19(void);
 extern void SetTimedFileBackedEffChannelWord(void *pObject, unsigned short nValue);
 extern void EffStreamChannelStateRet4Thunk(BYTE fDelete);
 
@@ -466,9 +466,9 @@ void WriteEffTransportGlobalSessionAdjustedThunk(void *pObject);
 void *DeleteCompositeEffTransportStackAdjustedThunk(void *pObject, BYTE fDelete);
 void CompleteEffTransportPendingWriteAdjustedThunk(void *pObject, int fQueueEvent);
 static void *g_NETWORK_CompositeEffTransportFatalThunkVtable[4] = {
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
     (void *)DeleteCompositeEffTransportStackAdjustedThunk,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
     (void *)CompleteEffTransportPendingWriteAdjustedThunk,
 };
 static void *g_NETWORK_CompositeEffTransportTimedThunkVtable[11] = {
@@ -480,8 +480,8 @@ static void *g_NETWORK_CompositeEffTransportTimedThunkVtable[11] = {
     (void *)DeleteCompositeEffTransportStackTimedAdjustedThunk,
     (void *)WriteEffTransportGlobalSessionAdjustedThunk,
     (void *)DeleteCompositeEffTransportRuntimeAdjustedThunk,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
+    (void *)_purecall,
     (void *)SetTimedFileBackedEffChannelWord,
 };
 static void *g_NETWORK_CompositeEffTransportDualThunkVtable[1] = {
@@ -1313,8 +1313,8 @@ struct NETWORK_CompositeTimedSocketSecondaryThunkVtableModel {
             ->DeleteDualSocketWindowChannelStackWrapper(fDelete);
     }
     virtual void Ret(void) {}
-    virtual void Fatal0(void) { CrtFatalRuntimeError0x19(); }
-    virtual void Fatal1(void) { CrtFatalRuntimeError0x19(); }
+    virtual void Fatal0(void) { _purecall(); }
+    virtual void Fatal1(void) { _purecall(); }
     virtual void Ret8(BYTE fDelete, BYTE fReserved) {
         (void)fDelete;
         (void)fReserved;
@@ -1372,8 +1372,8 @@ struct NETWORK_TimedSocketBundleTertiaryThunkVtableModel {
             ->DeleteDualSocketWindowChannelStackWrapper(fDelete);
     }
     virtual void Ret(void) {}
-    virtual void Fatal0(void) { CrtFatalRuntimeError0x19(); }
-    virtual void Fatal1(void) { CrtFatalRuntimeError0x19(); }
+    virtual void Fatal0(void) { _purecall(); }
+    virtual void Fatal1(void) { _purecall(); }
     virtual void Ret8(BYTE fDelete, BYTE fReserved) {
         (void)fDelete;
         (void)fReserved;
@@ -1402,18 +1402,15 @@ static void *g_NETWORK_TimedSocketBundleTertiaryThunkVtable =
 /* 0049a1e8 is suffix of 0049a1e4: skip receive-dispatch slot. */
 static void *g_NETWORK_TimedSocketBundleSecondaryThunkVtable =
     (void **)(g_NETWORK_TimedSocketBundleTertiaryThunkVtable) + 1;
-static void *g_NETWORK_ReturnTrueVtable[1] = {
-    (void *)ReturnTrueVtableCallback,
-};
 /* Temporary compiler-owned thunk storage.  The original target is the
  * runtime-stack fatal adjustor; never leave this dispatch pointer null. */
 struct NETWORK_SocketRuntimeFatalThunkVtableModel {
-    virtual void Fatal(void) { CrtFatalRuntimeError0x19(); }
+    virtual void Fatal(void) { _purecall(); }
     virtual void *Delete(BYTE fDelete) {
         (void)fDelete;
         return this;
     }
-    virtual void FatalSecondary(void) { CrtFatalRuntimeError0x19(); }
+    virtual void FatalSecondary(void) { _purecall(); }
     virtual void Noop(BYTE fDelete) { (void)fDelete; }
 };
 
@@ -2153,8 +2150,10 @@ void *NETWORK_CompositeEffTransportStackLayout::ConstructCompositeEffTransportSt
         pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x12c + pOffsets->m_nSecondaryOffset);
         pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x12c + pOffsets->m_nTertiaryOffset);
         pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunk;
-        pSecondaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
-        pTertiaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
+        pSecondaryThunk->m_pVtable =
+            g_NETWORK_RuntimeChannelStackTimedStreamVtable;
+        pTertiaryThunk->m_pVtable =
+            g_NETWORK_RuntimeChannelStackDualStreamVtable;
         pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 8;
         pSecondaryThunk->m_nThisDelta = pOffsets->m_nSecondaryOffset - 0x38;
         pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 0xb0;
@@ -2537,8 +2536,10 @@ void *NETWORK_TcpipEffTransportCompositeLayout::ConstructTcpipEffTransportCompos
         pSecondaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x12c + pOffsets->m_nSecondaryOffset);
         pTertiaryThunk = (NETWORK_AdjustorSubobject *)((char *)pComposite + 0x12c + pOffsets->m_nTertiaryOffset);
         pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunk;
-        pSecondaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
-        pTertiaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
+        pSecondaryThunk->m_pVtable =
+            g_NETWORK_RuntimeChannelStackTimedStreamVtable;
+        pTertiaryThunk->m_pVtable =
+            g_NETWORK_RuntimeChannelStackDualStreamVtable;
         pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 8;
         pSecondaryThunk->m_nThisDelta = pOffsets->m_nSecondaryOffset - 0x38;
         pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 0xb0;
@@ -2961,8 +2962,10 @@ void *AllocateTcpipEffTransportComposite(void) {
     pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x134 + pOffsets->m_nSecondaryOffset - 4);
     pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x134 + pOffsets->m_nTertiaryOffset - 4);
     pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunk;
-    pSecondaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
-    pTertiaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
+    pSecondaryThunk->m_pVtable =
+        g_NETWORK_RuntimeChannelStackTimedStreamVtable;
+    pTertiaryThunk->m_pVtable =
+        g_NETWORK_RuntimeChannelStackDualStreamVtable;
     pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 8;
     pSecondaryThunk->m_nThisDelta = pOffsets->m_nSecondaryOffset - 0x38;
     pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 0xb0;
@@ -3047,8 +3050,10 @@ void *NETWORK_TcpipSocketChannelStackLayout::ConstructTcpipSocketChannelStack(
         pSecondaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x104 + pOffsets->m_nSecondaryOffset);
         pTertiaryThunk = (NETWORK_AdjustorSubobject *)(pbObjectBase + 0x104 + pOffsets->m_nTertiaryOffset);
         pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunk;
-        pSecondaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
-        pTertiaryThunk->m_pVtable = g_NETWORK_ReturnTrueVtable;
+        pSecondaryThunk->m_pVtable =
+            g_NETWORK_RuntimeChannelStackTimedStreamVtable;
+        pTertiaryThunk->m_pVtable =
+            g_NETWORK_RuntimeChannelStackDualStreamVtable;
         pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 8;
         pSecondaryThunk->m_nThisDelta = pOffsets->m_nSecondaryOffset - 0x38;
         pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 0xb0;

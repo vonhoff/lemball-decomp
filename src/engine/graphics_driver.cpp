@@ -5,6 +5,7 @@
 #include "../engine/memory_arena.h"
 #include "../engine/runtime_init.h"
 #include "../game/game_app.h"
+#include "../game/window_owner.h"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>
@@ -861,8 +862,6 @@ VSGDI_GeometryHelperPointerArray::InitializeGeometryHelperPointerArray(
     return this;
 }
 
-extern void LEMBALL_FASTCALL RetainRootZrleGeometryOwner(void *pOwner);
-
 // FUNCTION: LEMBALL 0x00463C30
 void LEMBALL_FASTCALL BuildGeometryHelperFromRenderRect(void *pOwner) {
     unsigned char *pbOwner;
@@ -880,7 +879,7 @@ void LEMBALL_FASTCALL BuildGeometryHelperFromRenderRect(void *pOwner) {
     typedef void (LEMBALL_FASTCALL *SetWindowRectProc)(void *, int, short *);
 
     pbOwner = (unsigned char *)pOwner;
-    RetainRootZrleGeometryOwner(pOwner);
+    ((GAME_RootGeometryOwner *)pOwner)->RetainRootGeometryOwner();
 
     pParentOwner = *(void **)(pbOwner + 0x20);
     if (pParentOwner == 0) {
@@ -1430,7 +1429,7 @@ void QueueQueuedRenderPointSinkThunk(void *pPointSink, void *pQueue) {
 }
 
 // FUNCTION: LEMBALL 0x00402FEA
-void PromoteQueuedRenderPointSinkTargetStateThunk(void *pPointSink) {
+void __stdcall PromoteQueuedRenderPointSinkTargetStateThunk(void *pPointSink) {
     PromoteQueuedRenderPointSinkTargetState(pPointSink);
 }
 

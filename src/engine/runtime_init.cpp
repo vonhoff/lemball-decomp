@@ -32,7 +32,6 @@ extern void *LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNo
 extern void *g_pStatusEntryRegistry;
 extern void *g_pSharedRenderDispatchQueue;
 extern void *g_pSharedGeometryHelper;
-extern void CrtFatalRuntimeError0x19(void);
 
 #define VSINIT_FORMAT_TARGET(pStream) \
     ((VSINIT_StreamFormatTargetState *)((char *)(pStream) + (unsigned long)((void **)((pStream)->m_pVtable))[1]))
@@ -53,9 +52,9 @@ void *LEMBALL_FASTCALL DeleteStreamBase(
 void LEMBALL_FASTCALL DestroyStreamBaseVtable(void *pStream);
 void *g_StreamBaseVtable[4] = {
     (void *)DeleteStreamBase,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
 };
 unsigned long g_FormattedOutputStreamVtable[2] = { 0, 0x12c };
 unsigned long g_EffFormattedOutputStreamVtable[3] = { 0, 0x20, 0x40 };

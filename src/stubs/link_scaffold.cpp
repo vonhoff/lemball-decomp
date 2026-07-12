@@ -20,10 +20,6 @@ void *ConstructInvsChunkManagerThunk(void *pObject, void *pLevelMode, int nCapac
     return pObject;
 }
 
-void *ConstructType18ChunkStreamThunk(void *pObject) {
-    return pObject;
-}
-
 void *ConstructIceChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
     (void)pLevelMode;
     (void)nCapacity;

@@ -6,6 +6,8 @@
 #include "network/stream.h"
 #include "network/safe_vtable.h"
 
+extern void *g_GAME_EffStreamConstructionVtable[6];
+
 #include <string.h>
 #include <new>
 
@@ -23,7 +25,6 @@ extern void *DeleteEffStreamBaseWrapper00462850(void *pObject, BYTE fDelete);
 extern void *DeleteEffStreamBaseWrapper00462870(void *pObject, BYTE fDelete);
 extern void *DeleteEffStreamBaseWrapper00462890(void *pObject, BYTE fDelete);
 extern void *DeleteEffStreamBaseWrapper004628B0(void *pObject, BYTE fDelete);
-extern void CrtFatalRuntimeError0x19(void);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 extern void *g_pActiveNetworkRuntimeWindow;
 extern void *g_pEffTransportDispatchQueue;
@@ -264,9 +265,6 @@ void *g_NETWORK_TcpipRuntimeWindowVtable =
     g_NETWORK_TcpipRuntimeWindowFallbackVtable;
 static NETWORK_RuntimeFallbackTransportVtable *g_NETWORK_TcpipRuntimeTransportVtable =
     &g_NETWORK_RuntimeFallbackTransportVtable;
-static void *g_NETWORK_ReturnTrueVtable[1] = {
-    (void *)ReturnTrueVtableCallback,
-};
 static void *g_NETWORK_EffTransportGlobalWriteStreamVtable[4] = {
     (void *)ReturnTrueVtableCallbackThunk,
     (void *)ReturnTrueVtableCallbackSecondaryThunk,
@@ -295,9 +293,9 @@ void WriteEffTransportFailedConnectStream(void *pObject);
 static void *g_NETWORK_RequestConnectControlStreamNameVtable[6] = {
     (void *)ReturnTrueVtableCallbackThunk,
     (void *)CompareEffTransportRequestStreamName,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
     (void *)WriteEffTransportRequestStreamName,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
     (void *)DeleteEffStreamBaseWrapper00462810,
 };
 static void *g_NETWORK_RequestConnectControlStreamVtable[6] = {
@@ -843,15 +841,15 @@ struct NETWORK_EffTransportPeer {
 };
 
 void NETWORK_CompositeEffTransportVtableModel::FatalSlot00(void) {
-    CrtFatalRuntimeError0x19();
+    _purecall();
 }
 
 void NETWORK_CompositeEffTransportVtableModel::FatalSlot02(void) {
-    CrtFatalRuntimeError0x19();
+    _purecall();
 }
 
 void NETWORK_CompositeEffTransportVtableModel::FatalSlot03(void) {
-    CrtFatalRuntimeError0x19();
+    _purecall();
 }
 
 static NETWORK_CompositeEffTransportVtableModel
@@ -1025,15 +1023,15 @@ static void *g_NETWORK_RuntimeConstructionStateVtable[14] = {
     (void *)InitializeNonZrleVariantRenderEntry,
     (void *)DeleteEffTransportRuntimeGlobalsWrapper,
     (void *)NetworkSafeVtableNoop,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
+    (void *)_purecall,
     (void *)NetworkSafeVtableNoop,
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
     (void *)NetworkSafeVtableNoop,
 };
 
@@ -1210,6 +1208,7 @@ char *g_pszFileBasedNetworkConfiguredPath = 0;
 int g_fFileBasedNetworkPathConfigured = 0;
 short g_nEffTransportServiceBasePort = 0;
 int g_nEffTransportAsyncErrorStatus = 0;
+// GLOBAL: LEMBALL 0x004a1e24
 int g_cbEffTransportMaxPacketBytes = 0;
 void *g_pEffTransportRequestConnectControlStream = 0;
 void *g_pEffTransportRequestNewPortControlStream = 0;
@@ -2029,15 +2028,15 @@ static void *g_NETWORK_EffTransportRecordBufferVtableStorage[16] = {
     (void *)InitializeNonZrleVariantRenderEntry,
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
+    (void *)_purecall,
     (void *)InitializeNonZrleVariantRenderEntry,
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
 };
 
 static void *g_NETWORK_DeleteSimpleEffTransportRecordSlotVtableStorage[16] = {
@@ -2048,15 +2047,15 @@ static void *g_NETWORK_DeleteSimpleEffTransportRecordSlotVtableStorage[16] = {
     (void *)InitializeNonZrleVariantRenderEntry,
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
+    (void *)_purecall,
     (void *)InitializeNonZrleVariantRenderEntry,
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
-    (void *)CrtFatalRuntimeError0x19,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
 };
 
 static void *g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtableStorage[16] = {
@@ -3563,7 +3562,7 @@ void *ConstructEffTransportRequestConnectControlStream(void *pObject, char *pszS
     unsigned int cbName;
 
     pStream = (NETWORK_RequestConnectControlStream *)pObject;
-    pStream->m_Header.m_pVtable = g_NETWORK_ReturnTrueVtable;
+    pStream->m_Header.m_pVtable = g_GAME_EffStreamConstructionVtable;
     pStream->m_Header.m_nEventCode = 0;
     ((GAME_EffStream *)pObject)->ResetStateFields();
     pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamNameVtable;
@@ -3596,7 +3595,7 @@ void *ConstructEffTransportAuthoriseConnectControlStream(void *pObject, char *ps
     unsigned int cbName;
 
     pStream = (NETWORK_AuthoriseConnectControlStream *)pObject;
-    pStream->m_Header.m_pVtable = g_NETWORK_ReturnTrueVtable;
+    pStream->m_Header.m_pVtable = g_GAME_EffStreamConstructionVtable;
     pStream->m_Header.m_nEventCode = 0;
     ((GAME_EffStream *)pObject)->ResetStateFields();
     pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamNameVtable;
@@ -3617,7 +3616,7 @@ void *ConstructEffTransportGoAheadConnectControlStream(void *pObject, char *pszS
     unsigned int cbName;
 
     pStream = (NETWORK_AuthoriseConnectControlStream *)pObject;
-    pStream->m_Header.m_pVtable = g_NETWORK_ReturnTrueVtable;
+    pStream->m_Header.m_pVtable = g_GAME_EffStreamConstructionVtable;
     pStream->m_Header.m_nEventCode = 0;
     ((GAME_EffStream *)pObject)->ResetStateFields();
     pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamNameVtable;
@@ -3638,7 +3637,7 @@ void *ConstructEffTransportFailedConnectControlStream(void *pObject, char *pszSt
     unsigned int cbName;
 
     pStream = (NETWORK_FailedConnectControlStream *)pObject;
-    pStream->m_Header.m_pVtable = g_NETWORK_ReturnTrueVtable;
+    pStream->m_Header.m_pVtable = g_GAME_EffStreamConstructionVtable;
     pStream->m_Header.m_nEventCode = 0;
     ((GAME_EffStream *)pObject)->ResetStateFields();
     pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamNameVtable;
@@ -3756,7 +3755,7 @@ int NETWORK_EffTransportRuntimeState::InitializeEffTransportRuntimeGlobals(void)
     if (pObject == 0) {
         g_pEffTransportGlobalWriteStream = 0;
     } else {
-        *(void **)pObject = g_NETWORK_ReturnTrueVtable;
+        *(void **)pObject = g_GAME_EffStreamConstructionVtable;
         *(int *)((char *)pObject + 4) = 1;
         ((GAME_EffStream *)pObject)->ResetStateFields();
         *(void **)pObject = g_NETWORK_EffTransportGlobalWriteStreamVtable;
@@ -3768,7 +3767,7 @@ int NETWORK_EffTransportRuntimeState::InitializeEffTransportRuntimeGlobals(void)
     if (pObject == 0) {
         g_pEffTransportGlobalReadStream = 0;
     } else {
-        *(void **)pObject = g_NETWORK_ReturnTrueVtable;
+        *(void **)pObject = g_GAME_EffStreamConstructionVtable;
         *(int *)((char *)pObject + 4) = 2;
         ((GAME_EffStream *)pObject)->ResetStateFields();
         *(void **)pObject = g_NETWORK_EffTransportGlobalReadStreamVtable;

@@ -1,4 +1,5 @@
 #include "../platform/win32.h"
+#include "window_owner.h"
 
 // FUNCTION: LEMBALL 0x00407F20
 void noop_vtable_callback_00407f20(void) {
@@ -280,13 +281,6 @@ void PASCAL noop_root_rect_virtual(void *pUnused) {
 
 // FUNCTION: LEMBALL 0x0043A1C0
 void noop_resource_window_owner_callback_0043a1c0(void) {
-}
-
-// FUNCTION: LEMBALL 0x0043A4C0
-int PASCAL return_zero_screen_hook(void *pUnused1, void *pUnused2) {
-    (void)pUnused1;
-    (void)pUnused2;
-    return 0;
 }
 
 // FUNCTION: LEMBALL 0x0043A570
@@ -754,4 +748,25 @@ int PASCAL get_tile_flag_0x1c_object_render_entry_count(void) {
 // FUNCTION: LEMBALL 0x00469860
 void __fastcall initialize_resource_sprite_window_owner_variant_c_state(void *pObject) {
     *(void **)((char *)pObject + 0xf4) = g_pSharedRenderDispatchQueue;
+}
+
+// FUNCTION: LEMBALL 0x0043A4C0
+int GAME_RootGeometryOwner::QueryRootGeometryState(void *, void *) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0043A4D0
+void GAME_WindowOwnerBase::ReservedWindowOwnerSlot18(void) {
+}
+
+// FUNCTION: LEMBALL 0x0043A4E0
+void GAME_WindowOwnerBase::ReservedWindowOwnerSlot21(void) {
+}
+
+// FUNCTION: LEMBALL 0x0043A4F0
+void GAME_WindowOwnerBase::ReservedWindowOwnerSlot22(int) {
+}
+
+// FUNCTION: LEMBALL 0x0043A500
+void GAME_WindowOwnerBase::ReservedWindowOwnerSlot23(void) {
 }
