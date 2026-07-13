@@ -547,6 +547,7 @@ struct GAME_NetworkLevelChunkDeltaStream {
 void ReadNetworkLevelChunkDeltaStream(void *pObject);
 void LoadLevelGameStateStreamPayload(void *pObject);
 
+// GLOBAL: LEMBALL 0x00498610
 static void *g_GAME_NetworkLevelChunkDeltaStreamVtable[6] = {
     (void *)ReturnTrueVtableCallbackThunk,
     (void *)ReturnTrueVtableCallbackSecondaryThunk,
@@ -563,8 +564,6 @@ static void *g_GAME_LevelGameStateStreamVtable[6] = {
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
 };
-static void *g_pReturnTrueVtableCallbackThunk =
-    g_GAME_NetworkLevelChunkDeltaStreamVtable;
 static void *g_pLevelGameStateStreamVtable =
     g_GAME_LevelGameStateStreamVtable;
 
@@ -770,7 +769,7 @@ void *GAME_NetworkLevelChunkDeltaStream::ConstructNetworkLevelChunkDeltaStream(i
     *(void **)this = g_GAME_EffStreamConstructionVtable;
     *(int *)((char *)this + 4) = 3;
     ((GAME_EffStream *)this)->ResetStateFields();
-    *(void **)this = g_pReturnTrueVtableCallbackThunk;
+    *(void **)this = g_GAME_NetworkLevelChunkDeltaStreamVtable;
     *(int *)((char *)this + 0x2c) = nOwner;
     *(int *)((char *)this + 0x30) = nOwner + 0x1d0;
     nDispatcherPayload = *(int *)((unsigned long)nOwner + 0x34);
@@ -1202,19 +1201,44 @@ void AssignNetworkPlayerManagedEntitySlotIdsThunk(int nLevelMode) {
     }
 }
 
+struct LEVEL_ChunkObjectResetView;
+
+typedef void (LEMBALL_FASTCALL *LEVEL_ChunkObjectResetProc)(
+    LEVEL_ChunkObjectResetView *pObject);
+
+struct LEVEL_ChunkObjectResetVtable {
+    void *m_apReserved00[0x41];
+    LEVEL_ChunkObjectResetProc m_pResetObject104;
+};
+
+struct LEVEL_ChunkObjectResetView {
+    LEVEL_ChunkObjectResetVtable *m_pVtable;
+};
+
+struct LEVEL_BallChunkManagerResetView {
+    int m_nReserved00;
+    LEVEL_ChunkObjectResetView **m_ppObjects04;
+    int m_nReserved08;
+    int m_cObjects0c;
+};
+
 // FUNCTION: LEMBALL 0x00421EC0
 void LEMBALL_FASTCALL ResetBallChunkEntries(void *pBallManager) {
+    LEVEL_ChunkObjectResetView *pChunkObject;
     int i;
     int cEntries;
 
     cEntries = 0;
-    if (*(int *)((char *)pBallManager + 4) != 0 && 0 < *(int *)((char *)pBallManager + 0xc)) {
+    if (((LEVEL_BallChunkManagerResetView *)pBallManager)->m_ppObjects04 != 0 &&
+        0 < ((LEVEL_BallChunkManagerResetView *)pBallManager)->m_cObjects0c) {
         i = 0;
         do {
             cEntries += 4;
             ++i;
-            ((void (*)())*(void **)(**(int **)(*(int *)((char *)pBallManager + 4) - 4 + cEntries) + 0x104))();
-        } while (i < *(int *)((char *)pBallManager + 0xc));
+            pChunkObject = *(LEVEL_ChunkObjectResetView **)(
+                (char *)((LEVEL_BallChunkManagerResetView *)pBallManager)->m_ppObjects04 - 4 + cEntries);
+            pChunkObject->m_pVtable->m_pResetObject104(pChunkObject);
+        } while (i < ((LEVEL_BallChunkManagerResetView *)pBallManager)->m_cObjects0c);
     }
 }
 
@@ -1223,16 +1247,26 @@ void LEMBALL_FASTCALL ResetBallChunkEntriesThunk(void *pBallManager) {
     ResetBallChunkEntries(pBallManager);
 }
 
+struct LEVEL_BoonChunkManagerResetView {
+    unsigned short m_nActiveMask00;
+    unsigned char m_abReserved02[0x32];
+    LEVEL_ChunkObjectResetView *m_apObjects34[4];
+};
+
 // FUNCTION: LEMBALL 0x0042A030
 void LEMBALL_FASTCALL ResetBoonChunkManagerObjects(void *pObject) {
-    unsigned short *pState;
+    LEVEL_BoonChunkManagerResetView *pManager;
 
-    pState = (unsigned short *)pObject;
-    *pState = 0;
-    ((void (*)())*(void **)(**(int **)(pState + 0x1a) + 0x104))();
-    ((void (*)())*(void **)(**(int **)(pState + 0x1c) + 0x104))();
-    ((void (*)())*(void **)(**(int **)(pState + 0x1e) + 0x104))();
-    ((void (*)())*(void **)(**(int **)(pState + 0x20) + 0x104))();
+    pManager = (LEVEL_BoonChunkManagerResetView *)pObject;
+    pManager->m_nActiveMask00 = 0;
+    pManager->m_apObjects34[0]->m_pVtable->m_pResetObject104(
+        pManager->m_apObjects34[0]);
+    pManager->m_apObjects34[1]->m_pVtable->m_pResetObject104(
+        pManager->m_apObjects34[1]);
+    pManager->m_apObjects34[2]->m_pVtable->m_pResetObject104(
+        pManager->m_apObjects34[2]);
+    pManager->m_apObjects34[3]->m_pVtable->m_pResetObject104(
+        pManager->m_apObjects34[3]);
 }
 
 // FUNCTION: LEMBALL 0x00402D51

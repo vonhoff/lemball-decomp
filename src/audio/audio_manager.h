@@ -4,7 +4,7 @@
 void DestroyAudioManager(void *pAudioManager);
 void SetAudioManagerPrimaryContext(void *pAudioManager, void *pPrimaryContext);
 void StopAllAudioManagerBackends(void *pAudioManager);
-void RefreshAudioManagerBackendHandles(void *pAudioManager);
+void __fastcall RefreshAudioManagerBackendHandles(void *pAudioManager);
 int __fastcall RegisterVariantResourceMusicHandle(
     void *pAudioManager, int nUnused, int nMusicResourceId);
 void __fastcall StartRegisteredVariantResourceMusic(

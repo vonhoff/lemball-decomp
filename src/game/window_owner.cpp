@@ -37,7 +37,7 @@ static const char g_szQuittingStatusMessage[] = "QUIT\n";
 static const char g_szQuitStatusMessage[] = "QUIT\n";
 
 extern int g_fRootHelperGeometryDispatchSuppressed;
-extern void *g_pApplyFullscreenDisplayModeThunk;
+extern FARPROC g_pApplyFullscreenDisplayModeThunk;
 extern void *g_pSharedRenderDispatchQueue;
 extern void *g_pSharedGeometryHelper;
 extern int RegisterBaseWindowClass(void);
@@ -92,7 +92,9 @@ extern "C" BOOL WINAPI EndPaint(HWND hWnd,
 extern "C" void *WINAPI GetDC(HWND hWnd);
 extern "C" int WINAPI ReleaseDC(HWND hWnd, void *hDc);
 
+// GLOBAL: LEMBALL 0x004A1FEC
 int g_nLiveWindowOwnerBaseCount = 0;
+// GLOBAL: LEMBALL 0x004A1FF0
 void *g_pRootZrleGeometryOwnerRegistry = 0;
 
 struct WINDOW_OWNER_REGISTRY_NODE {
@@ -1799,8 +1801,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
     LRESULT (LEMBALL_FASTCALL *pOwnerResult)(
         void *, int, UINT, WPARAM, LPARAM);
     void (LEMBALL_FASTCALL *pOwnerCallback)(void *);
-    VSGDI_DisplayState *pDisplayState;
-    void *pSelectedDriver;
+    int fPreviousFullscreenActivationState;
 
     if (g_fWindowMessagePassthroughMode != 0 &&
         (uMessage != 0x1c || wParam != 0)) {
@@ -1810,29 +1811,24 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
     dwMessageTime = GetMessageTime();
 
     pOwner = (void *)(unsigned long)GetWindowLongA(hWnd, GWL_USERDATA);
-    pDisplayState = GetDisplayState();
-    if (pDisplayState == 0) {
+    if (g_pDisplayState == 0) {
         return DefWindowProcA(hWnd, uMessage, wParam, lParam);
     }
 
-    pSelectedDriver = g_pSelectedGraphicsDriverRuntime;
-    if (*(HWND *)((char *)pDisplayState + 0x10) == hWnd) {
-        if (pSelectedDriver == 0 || *(void **)((char *)pSelectedDriver + 4) == 0) {
+    if (*(HWND *)((char *)g_pDisplayState + 0x10) == hWnd) {
+        pOwner = *(void **)((char *)g_pSelectedGraphicsDriverRuntime + 4);
+        if (pOwner == 0) {
             return DefWindowProcA(hWnd, uMessage, wParam, lParam);
         }
-        pOwner = *(void **)((char *)pSelectedDriver + 4);
     } else if (pOwner == 0 && uMessage != WM_CREATE) {
         return DefWindowProcA(hWnd, uMessage, wParam, lParam);
     }
 
-    if (uMessage == WM_CREATE) {
+    switch (uMessage) {
+    case WM_CREATE: {
         pCreateStruct = (CREATESTRUCTA *)(unsigned long)lParam;
         pOwner = pCreateStruct->lpCreateParams;
         SetWindowLongA(hWnd, GWL_USERDATA, (LONG)(unsigned long)pOwner);
-        if (pOwner == 0) {
-            return 0;
-        }
-
         *(void **)((char *)pOwner + 0x44) = hWnd;
         Point.x = 0;
         Point.y = 0;
@@ -1842,7 +1838,8 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
             (*(void ***)pOwner)[0x64 / sizeof(void *)];
         uOwnerFlags = pGetOwnerFlags(pOwner);
         if ((uOwnerFlags & 0x40000000u) != 0 &&
-            IsDisplayModeWindowedRange((const int *)pSelectedDriver)) {
+            IsDisplayModeWindowedRange(
+                (const int *)g_pSelectedGraphicsDriverRuntime)) {
             Point.x += *(short *)((char *)*(void **)((char *)pOwner + 0x48) + 0x18);
             Point.y += *(short *)((char *)*(void **)((char *)pOwner + 0x48) + 0x1a);
         }
@@ -1860,42 +1857,37 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         return 0;
     }
 
-    if (uMessage == WM_QUIT) {
-        AppendStartupCString(g_szQuittingStatusMessage);
+    case WM_QUIT:
+        g_pStatusOutputStream->AppendCStringToStream(g_szQuittingStatusMessage);
         ReleaseCapture();
         return 0;
-    }
 
-    if (uMessage == WM_DESTROY) {
-        if (pOwner != 0) {
-            if (hWnd == g_pCachedCurrentContextWindow) {
-                g_pCachedCurrentContextWindow = 0;
-                g_pCachedCurrentContextOwner = 0;
-            }
-            *(void **)((char *)pOwner + 0x44) = 0;
-            pOwnerCallback = (void (LEMBALL_FASTCALL *)(void *))
-                (*(void ***)pOwner)[0x74 / sizeof(void *)];
-            pOwnerCallback(pOwner);
+    case WM_DESTROY:
+        if (hWnd == g_pCachedCurrentContextWindow) {
+            g_pCachedCurrentContextWindow = 0;
+            g_pCachedCurrentContextOwner = 0;
         }
+        *(void **)((char *)pOwner + 0x44) = 0;
+        pOwnerCallback = (void (LEMBALL_FASTCALL *)(void *))
+            (*(void ***)pOwner)[0x74 / sizeof(void *)];
+        pOwnerCallback(pOwner);
         if (g_nLiveRootZrleGeometryOwnerCount == 0) {
             g_fRootHelperGeometryDispatchSuppressed = 1;
             AppendStartupCString(g_szQuitStatusMessage);
         }
         return 0;
-    }
 
-    if (uMessage == 3 && pOwner != 0) {
-        nSelectedDisplayMode = GetSelectedGraphicsDriverId();
-        if (!IsDisplayModeWindowedRange(&nSelectedDisplayMode)) {
+    case 3:
+        if (!IsDisplayModeWindowedRange(
+                (const int *)g_pSelectedGraphicsDriverRuntime)) {
             Point.x = 0;
             Point.y = 0;
             ClientToScreen(hWnd, &Point);
             ((WINDOW_OWNER_POSITION_INTERFACE *)pOwner)->SetWindowPosition(&Point);
         }
         return 0;
-    }
 
-    if (uMessage == 5 && pOwner != 0) {
+    case 5:
         *(short *)((char *)pOwner + 0x08) = (short)(lParam & 0xffff);
         *(short *)((char *)pOwner + 0x0a) = (short)(((unsigned long)lParam) >> 16);
 
@@ -1935,55 +1927,96 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
             (*(void ***)pOwner)[0x44 / sizeof(void *)];
         pOwnerCallback(pOwner);
         return 0;
-    }
 
-    if (uMessage == 0x1c) {
-        nSelectedDisplayMode = GetSelectedGraphicsDriverId();
+    case 0x1c:
+        fPreviousFullscreenActivationState =
+            g_fFullscreenActivationState;
+        nSelectedDisplayMode = *(int *)g_pSelectedGraphicsDriverRuntime;
         if (nSelectedDisplayMode == 1) {
             g_fFullscreenDisplayModeSuspended = 1;
             g_fFullscreenActivationState = 0;
             InvalidateRect(hWnd, 0, 0);
         } else if (nSelectedDisplayMode == 2 || nSelectedDisplayMode == 3) {
             if (wParam == 0) {
+                ((void (WINAPI *)(int, int, int))g_pApplyFullscreenDisplayModeThunk)(
+                    0, 0, 0x4000);
                 g_fFullscreenActivationState = 0;
                 g_fFullscreenDisplayModeSuspended = 1;
-                InvalidateRect(hWnd, 0, 0);
+                SendMessageA(hWnd, 0x112, 0xf020, 0);
             } else {
-                if (pOwner != 0) {
-                    pOwnerState = (int (LEMBALL_FASTCALL *)(void *))
-                        (*(void ***)pOwner)[0x68 / sizeof(void *)];
-                    if (pOwnerState(pOwner) == 0) {
-                        SendMessageA(hWnd, 0x112, 0xf120, 0);
-                    }
+                pOwnerState = (int (LEMBALL_FASTCALL *)(void *))
+                    (*(void ***)pOwner)[0x68 / sizeof(void *)];
+                if (pOwnerState(pOwner) == 0) {
+                    SendMessageA(hWnd, 0x112, 0xf120, 0);
                 }
+                ((void (WINAPI *)(int, int, int))g_pApplyFullscreenDisplayModeThunk)(
+                    0, 0, nSelectedDisplayMode == 3 ? 0x8215 : 0x8211);
                 g_fFullscreenDisplayModeSuspended = 0;
                 g_fFullscreenActivationState = 1;
                 InvalidateRect(hWnd, 0, 0);
             }
         }
 
-        if (pOwner != 0) {
-            pOwnerResult = (LRESULT (LEMBALL_FASTCALL *)(
-                void *, int, UINT, WPARAM, LPARAM))
-                (*(void ***)pOwner)[0xa0 / sizeof(void *)];
-            return pOwnerResult(pOwner, 0, uMessage, wParam, lParam);
-        }
-        return 0;
-    }
+        if (fPreviousFullscreenActivationState !=
+            g_fFullscreenActivationState) {
+            if (g_fFullscreenActivationState != 0) {
+                int anMouseAccelerationParams[3];
+                WINDOW_OWNER_RECT ClipRect;
 
-    if (uMessage == 0x7e) {
-        if (pSelectedDriver != 0) {
+                SystemParametersInfoA(3, 0, anMouseAccelerationParams, 0);
+                g_anSavedMouseAccelerationParams[0] =
+                    anMouseAccelerationParams[0];
+                g_anSavedMouseAccelerationParams[1] =
+                    anMouseAccelerationParams[1];
+                g_anSavedMouseAccelerationParams[2] =
+                    anMouseAccelerationParams[2];
+                GetSystemMetrics(1);
+                anMouseAccelerationParams[2] =
+                    *(short *)((char *)g_pDisplayState + 0x14) *
+                    anMouseAccelerationParams[2] / GetSystemMetrics(0);
+                SystemParametersInfoA(4, 0, anMouseAccelerationParams, 0);
+                SystemParametersInfoA(0x10, 0,
+                                      &g_nSavedMouseTrailsCount, 0);
+                if (g_nSavedMouseTrailsCount != 0) {
+                    SystemParametersInfoA(0x11, 0, 0, 0);
+                }
+
+                ClipRect.left = 0;
+                ClipRect.top = 0;
+                ClipRect.right = *(short *)((char *)g_pDisplayState + 0x14);
+                ClipRect.bottom = *(short *)((char *)g_pDisplayState + 0x16);
+                ClipCursor(&ClipRect);
+            } else {
+                ClipCursor(0);
+                SystemParametersInfoA(4, 0,
+                                      g_anSavedMouseAccelerationParams, 0);
+                if (g_nSavedMouseTrailsCount != 0) {
+                    SystemParametersInfoA(0x11, 0,
+                                          (void *)g_nSavedMouseTrailsCount, 0);
+                }
+            }
+        }
+
+        pOwnerResult = (LRESULT (LEMBALL_FASTCALL *)(
+            void *, int, UINT, WPARAM, LPARAM))
+            (*(void ***)pOwner)[0xa0 / sizeof(void *)];
+        return pOwnerResult(pOwner, 0, uMessage, wParam, lParam);
+
+    case 0x7e: {
+        if (g_pSelectedGraphicsDriverRuntime != 0) {
             unsigned short anDisplaySize[2];
 
             anDisplaySize[0] = (unsigned short)lParam;
             anDisplaySize[1] = (unsigned short)((unsigned long)lParam >> 16);
-            ((VSGDI_SelectedGraphicsDriverRuntime *)pSelectedDriver)
+            ((VSGDI_SelectedGraphicsDriverRuntime *)
+                g_pSelectedGraphicsDriverRuntime)
                 ->ResizeActiveDisplayState(anDisplaySize);
         }
         return 0;
     }
 
-    if (uMessage == 0x100 || uMessage == 0x101) {
+    case 0x100:
+    case 0x101: {
         WINDOW_OWNER_KEY_EVENT Event;
 
         Event.m_nType = uMessage == 0x100 ? 2 : 1;
@@ -1992,7 +2025,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         return 0;
     }
 
-    if (uMessage == 0x111 && pOwner != 0) {
+    case WM_COMMAND: {
         int nPayload;
         WINDOW_OWNER_COMMAND_EVENT Event;
 
@@ -2013,9 +2046,12 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         return 0;
     }
 
-    if ((uMessage == 0x201 || uMessage == 0x203 || uMessage == 0x204 ||
-         uMessage == 0x206 || uMessage == 0x207 || uMessage == 0x209) &&
-        pOwner != 0) {
+    case 0x201:
+    case 0x203:
+    case 0x204:
+    case 0x206:
+    case 0x207:
+    case 0x209:
         pGetOwnerFlags = (unsigned int (LEMBALL_FASTCALL *)(void *))
             (*(void ***)pOwner)[0x64 / sizeof(void *)];
         uOwnerFlags = pGetOwnerFlags(pOwner);
@@ -2056,9 +2092,10 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         }
         ++g_nMouseButtonCaptureRefCount;
         return 0;
-    }
 
-    if (uMessage == 0x202 || uMessage == 0x205 || uMessage == 0x208) {
+    case 0x202:
+    case 0x205:
+    case 0x208:
         nEventCode = uMessage == 0x202 ? 0x43 :
                      (uMessage == 0x205 ? 0x44 : 0x45);
         xEvent = (short)((short)lParam +
@@ -2076,11 +2113,9 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
             }
         }
         return 0;
-    }
 
-    if (uMessage == 7 || uMessage == 8) {
-        if (g_pCachedCurrentContextWindow != 0 &&
-            g_pCachedCurrentContextOwner != 0) {
+    case 7:
+        if (g_pCachedCurrentContextWindow != 0) {
             pOwnerCallback = (void (LEMBALL_FASTCALL *)(void *))
                 (*(void ***)g_pCachedCurrentContextOwner)[0x94 / sizeof(void *)];
             pOwnerCallback(g_pCachedCurrentContextOwner);
@@ -2088,22 +2123,33 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
                 (*(void ***)g_pCachedCurrentContextOwner)[0x9c / sizeof(void *)];
             pOwnerCallback(g_pCachedCurrentContextOwner);
         }
-        if (pOwner != 0) {
-            pOwnerCallback = (void (LEMBALL_FASTCALL *)(void *))
-                (*(void ***)pOwner)[0x90 / sizeof(void *)];
-            pOwnerCallback(pOwner);
-            pOwnerCallback = (void (LEMBALL_FASTCALL *)(void *))
-                (*(void ***)pOwner)[0x98 / sizeof(void *)];
-            pOwnerCallback(pOwner);
+        pOwnerCallback = (void (LEMBALL_FASTCALL *)(void *))
+            (*(void ***)pOwner)[0x90 / sizeof(void *)];
+        pOwnerCallback(pOwner);
+        pOwnerCallback = (void (LEMBALL_FASTCALL *)(void *))
+            (*(void ***)pOwner)[0x98 / sizeof(void *)];
+        pOwnerCallback(pOwner);
+        return DefWindowProcA(hWnd, uMessage, wParam, lParam);
+
+    case 8:
+        nSelectedDisplayMode = *(int *)g_pSelectedGraphicsDriverRuntime;
+        if (nSelectedDisplayMode < 4 || nSelectedDisplayMode > 5) {
+            if (g_pCachedCurrentContextWindow != 0) {
+                pOwnerCallback = (void (LEMBALL_FASTCALL *)(void *))
+                    (*(void ***)g_pCachedCurrentContextOwner)[0x94 / sizeof(void *)];
+                pOwnerCallback(g_pCachedCurrentContextOwner);
+                pOwnerCallback = (void (LEMBALL_FASTCALL *)(void *))
+                    (*(void ***)g_pCachedCurrentContextOwner)[0x9c / sizeof(void *)];
+                pOwnerCallback(g_pCachedCurrentContextOwner);
+            }
+            g_pCachedCurrentContextWindow = 0;
         }
         return DefWindowProcA(hWnd, uMessage, wParam, lParam);
-    }
 
-    if (pOwner != 0) {
+    default:
         return ((GAME_WindowOwnerBase *)pOwner)
             ->DispatchWindowMessage(uMessage, wParam, lParam);
     }
-    return DefWindowProcA(hWnd, uMessage, wParam, lParam);
 }
 
 // FUNCTION: LEMBALL 0x00473790

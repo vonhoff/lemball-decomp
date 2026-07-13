@@ -48,6 +48,7 @@ struct SMALL_MEMORY_BUCKET {
 };
 
 
+// GLOBAL: LEMBALL 0x004aa100
 void *g_pMainMemoryArena = 0;
 static void *g_pMainMemoryArenaStorage = 0;
 static HGLOBAL g_hMainMemoryArenaStorage = 0;
@@ -80,6 +81,8 @@ static void VSMEM_NoOpLock(void);
 static void *VSMEM_ReportBlockStub(void *pBlock, VSINIT_FormattedOutputStream *pOutputStream);
 static void *LEMBALL_FASTCALL VSMEM_DeleteBlockStub(
     void *pBlock, int nUnused, int fDelete);
+void RestoreMemoryBlockBaseVtable(void *pBlock);
+void *RestoreMemoryBlockBaseVtableReturnThis(void *pBlock);
 static void UpdateMainMemoryArenaFreeCounter(void);
 static SMALL_MEMORY_BUCKET *LEMBALL_FASTCALL AllocateSmallMemoryChildBucket(
     SMALL_MEMORY_BUCKET *pParentBucket);
@@ -140,9 +143,12 @@ static void *g_aMainMemoryArenaLockVtable[2] = {
     (void *)EnterMemoryArenaCriticalSection,
     (void *)LeaveMemoryArenaCriticalSection,
 };
-static void *g_aMemoryArenaBlockVtable[2] = {
-    (void *)VSMEM_ReportBlockStub,
-    (void *)VSMEM_DeleteBlockStub,
+// GLOBAL: LEMBALL 0x00498940
+static void *g_aMemoryBlockVtables[2][2] = {
+    { (void *)VSMEM_ReportBlockStub,
+      (void *)RestoreMemoryBlockBaseVtableReturnThis },
+    { (void *)VSMEM_ReportBlockStub,
+      (void *)VSMEM_DeleteBlockStub },
 };
 static void *g_aSmallMemoryBucketVtable[2] = {
     (void *)EnterMemoryArenaCriticalSection,
@@ -1180,7 +1186,7 @@ void *PlacementConstructMemoryArenaBlock(void *pvStorage,
 CMemoryBlock *CMemoryBlock::ConstructMemoryBlockBase(void *pArena, CMemoryBlock *pPreviousBlock, const char *pszName, unsigned int cbBlock) {
     (void)pszName;
     (void)cbBlock;
-    m_pVtable = g_aMemoryArenaBlockVtable;
+    m_pVtable = g_aMemoryBlockVtables[0];
     m_pArena = pArena;
     m_pNextFree = pPreviousBlock;
     m_pPreviousFree = 0;
@@ -1192,7 +1198,7 @@ CMemoryBlock *CMemoryBlock::ConstructMemoryBlockBase(void *pArena, CMemoryBlock 
 
 // FUNCTION: LEMBALL 0x0045A570
 void RestoreMemoryBlockBaseVtable(void *pBlock) {
-    *(void ***)pBlock = g_aMemoryArenaBlockVtable;
+    *(void ***)pBlock = g_aMemoryBlockVtables[0];
 }
 
 // FUNCTION: LEMBALL 0x0045A580
@@ -1221,7 +1227,7 @@ void *ReturnPlacementBlockStorage(unsigned int cbStorage, void *pvStorage) {
 CMemoryBlock *CMemoryBlock::ConstructMemoryArenaBlock(void *pArena, CMemoryBlock *pPreviousBlock, const char *pszName, unsigned int cbBlock) {
     (void)pszName;
     ConstructMemoryBlockBase(pArena, pPreviousBlock, pszName, cbBlock);
-    m_pVtable = g_aMemoryArenaBlockVtable;
+    m_pVtable = g_aMemoryBlockVtables[1];
     m_cbPayload = cbBlock - 0x28;
     m_pPayload = (char *)this + 0x28;
     m_nMagic = 0x524d424c;
@@ -1277,9 +1283,11 @@ static void *VSMEM_ReportBlockStub(void *pBlock, VSINIT_FormattedOutputStream *p
     return pOutputStream;
 }
 
-static void *LEMBALL_FASTCALL VSMEM_DeleteBlockStub(
-    void *pBlock, int nUnused, int fDelete) {
+// FUNCTION: LEMBALL 0x0045A900
+static void *LEMBALL_FASTCALL VSMEM_DeleteBlockStub(void *pBlock, int nUnused, int fDelete) {
     (void)nUnused;
     (void)fDelete;
+    *(void ***)pBlock = g_aMemoryBlockVtables[1];
+    RestoreMemoryBlockBaseVtable(pBlock);
     return pBlock;
 }

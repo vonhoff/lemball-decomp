@@ -2025,6 +2025,7 @@ static void *g_NETWORK_FileBackedFinalFileWrapperVtable[] = {
     0,
 };
 
+// GLOBAL: LEMBALL 0x0049A4A8
 static void *g_NETWORK_EffRecordSlotVtable[] = {
     (void *)ReturnTrueVtableCallback,
     (void *)ReturnTrueVtableCallbackSecondary,
@@ -2043,6 +2044,7 @@ static void *g_NETWORK_EffRecordSlotTableVtable[] = {
     (void *)DeleteEffStreamRecordSlotTable,
 };
 
+// GLOBAL: LEMBALL 0x0049A4D8
 static void *g_NETWORK_EffStateStreamVtable[] = {
     (void *)ReturnTrueVtableCallback,
     (void *)ReturnTrueVtableCallbackSecondary,
@@ -2315,12 +2317,16 @@ NETWORK_EffStreamRecordSlot *NETWORK_EffStreamRecordSlot::Initialize(void) {
 // FUNCTION: LEMBALL 0x00479580
 void NETWORK_EffStreamRecordSlot::Save(void) {
     NETWORK_EffStreamRecordSlot *pRecordSlot;
+    unsigned short wCommittedMarker;
+    int cbPayload;
 
     pRecordSlot = (NETWORK_EffStreamRecordSlot *)this;
     ++pRecordSlot->m_wCommittedMarker;
     ((NETWORK_EffStreamBase *)pRecordSlot)->WriteEffStreamU16BE(pRecordSlot->m_wCommittedMarker);
-    pRecordSlot->m_wObservedMarker = pRecordSlot->m_wCommittedMarker;
-    ((NETWORK_EffStreamBase *)pRecordSlot)->WriteEffStreamU32BE(pRecordSlot->m_cbPayload);
+    wCommittedMarker = pRecordSlot->m_wCommittedMarker;
+    cbPayload = pRecordSlot->m_cbPayload;
+    pRecordSlot->m_wObservedMarker = wCommittedMarker;
+    ((NETWORK_EffStreamBase *)pRecordSlot)->WriteEffStreamU32BE(cbPayload);
     ((NETWORK_EffStreamBase *)pRecordSlot)->WriteEffStreamBytes(pRecordSlot->m_szTargetName, 0x15);
     ((NETWORK_EffStreamBase *)pRecordSlot)->WriteEffStreamBytes(pRecordSlot->m_szSourceName, 0x15);
 }
@@ -2545,10 +2551,12 @@ void NETWORK_Eff512ByteStateStream::Load(void) {
 // FUNCTION: LEMBALL 0x0047B890
 void *NETWORK_Eff512ByteStateStream::Delete(BYTE fDeleteFlags) {
     NETWORK_Eff512ByteStateStream *pStateStream;
+    unsigned char *pbStateBytes;
 
     pStateStream = (NETWORK_Eff512ByteStateStream *)this;
+    pbStateBytes = pStateStream->m_pbStateBytes2c;
     pStateStream->m_pVtable = g_NETWORK_EffStateStreamVtable;
-    FreeVSMemBlock((void *)(unsigned long)pStateStream->m_pbStateBytes2c);
+    FreeVSMemBlock((void *)(unsigned long)pbStateBytes);
     ((NETWORK_EffStreamBase *)pStateStream)->DestroyEffStreamBase();
     if ((fDeleteFlags & 1) != 0) {
         FreeVSMemBlock(pStateStream);

@@ -246,11 +246,9 @@ static void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntry(
 static void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntryThunk(
     void *pObject, int nUnusedEdx, void *pManager);
 static void *DeleteBaseModeObjectAdjusted(void *pObject, BYTE fDelete);
-static void *DeleteBaseModeObjectAdjustedThunk(void *pObject, BYTE fDelete);
-static int LEMBALL_FASTCALL HandleBaseModeActionButtonEventThunk(
-    GAME_BaseModeEventClient *pClient,
-    int nUnused,
-    NETWORK_EffDispatchEvent *pEvent);
+void *DeleteBaseModeObjectAdjustedThunk(void *pObject, BYTE fDelete);
+int LEMBALL_FASTCALL HandleBaseModeActionButtonEventThunk(
+    void *pClient, int nUnused, void *pEvent);
 static void *g_LEVEL_CompositePointRectSinkEntryInitVtableStorage[8] = {
     (void *)DeleteFramedScreenRenderChildEntryThunk,
     (void *)QueueFramedScreenRenderEntryThunk,
@@ -572,7 +570,7 @@ static void *DeleteBaseModeObjectAdjusted(void *pObject, BYTE fDelete) {
 }
 
 // FUNCTION: LEMBALL 0x00402C20
-static void *DeleteBaseModeObjectAdjustedThunk(void *pObject, BYTE fDelete) {
+void *DeleteBaseModeObjectAdjustedThunk(void *pObject, BYTE fDelete) {
     return DeleteBaseModeObjectAdjusted(pObject, fDelete);
 }
 
@@ -705,9 +703,10 @@ handled:
 }
 
 // FUNCTION: LEMBALL 0x0040134D
-static int LEMBALL_FASTCALL HandleBaseModeActionButtonEventThunk(GAME_BaseModeEventClient *pClient, int, NETWORK_EffDispatchEvent *pEvent) {
-    return pClient->GAME_BaseModeEventClient::HandleBaseModeActionButtonEvent(
-        pEvent);
+int LEMBALL_FASTCALL HandleBaseModeActionButtonEventThunk(void *pClient, int, void *pEvent) {
+    return ((GAME_BaseModeEventClient *)pClient)
+        ->GAME_BaseModeEventClient::HandleBaseModeActionButtonEvent(
+            (NETWORK_EffDispatchEvent *)pEvent);
 }
 
 struct GAME_CursorPositionEvent {

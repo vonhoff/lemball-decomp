@@ -121,6 +121,7 @@ static void *g_EFF_NetworkLobbyPeerDirtyConfirmVtable[6] = {
 static const char g_EFF_DefaultNetworkPath[] = "t:\\network";
 // GLOBAL: LEMBALL 0x004a1e1c
 void *g_pEffTransportDispatchQueue = 0;
+// GLOBAL: LEMBALL 0x004A1E20
 void *g_pEffTransportSecondaryDispatchQueue = 0;
 
 struct GAME_EffStreamVtable {

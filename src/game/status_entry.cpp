@@ -6,6 +6,7 @@
 
 void DestroyNamedStatusEntry(void *pEntry);
 
+// GLOBAL: LEMBALL 0x00498908
 static void *g_GAME_StatusEntryDeleteVtable[8] = {
     (void *)DestroyNamedStatusEntry,
     (void *)UpdateNamedStatusEntry,
@@ -16,6 +17,7 @@ static void *g_GAME_StatusEntryDeleteVtable[8] = {
     (void *)ReturnStreamArgument,
     (void *)NetworkSafeVtableNoop,
 };
+// GLOBAL: LEMBALL 0x00498960
 static void *g_GAME_StatusEntryVtable[8] = {
     (void *)WriteNamedStatusEntry,
     (void *)UpdateNamedStatusEntry,
@@ -231,28 +233,31 @@ void UpdateNamedStatusEntry(void *pEntry, unsigned int nValue) {
 }
 
 // FUNCTION: LEMBALL 0x0045AC90
-VSINIT_FormattedOutputStream *WriteNamedStatusEntry(void *pEntry, VSINIT_FormattedOutputStream *pStream) {
+VSINIT_FormattedOutputStream *LEMBALL_FASTCALL WriteNamedStatusEntry(void *pEntry, int, VSINIT_FormattedOutputStream *pStream) {
     GAME_StatusEntry *pStatusEntry;
     unsigned int nAverage;
 
     pStatusEntry = (GAME_StatusEntry *)pEntry;
     if (pStatusEntry->m_cSamples == 0) {
-        AppendCStringToStream(pStream, "----\n");
+        pStream->AppendCStringToStream("----\n");
         return pStream;
     }
 
     nAverage = (unsigned int)pStatusEntry->m_nTotalValue / (unsigned int)pStatusEntry->m_cSamples;
-    AppendHexUIntToStream(pStream, nAverage);
-    AppendCStringToStream(pStream, " ");
-    AppendHexUIntToStream(pStream, (unsigned int)pStatusEntry->m_nTotalValue);
-    AppendCStringToStream(pStream, " ");
-    AppendHexUIntToStream(pStream, (unsigned int)pStatusEntry->m_nMaximumValue);
-    AppendCStringToStream(pStream, " ");
-    AppendHexUIntToStream(pStream, (unsigned int)pStatusEntry->m_nMinimumValue);
-    AppendCStringToStream(pStream, " ");
-    AppendHexUIntToStream(pStream, (unsigned int)pStatusEntry->m_cSamples);
-    AppendCStringToStream(pStream, " ");
-    AppendCStringToStream(pStream, pStatusEntry->m_Name.m_pszText);
-    AppendCStringToStream(pStream, "\n");
-    return pStream;
+    return ((VSINIT_FormattedOutputStream *)AppendDynamicCStringToStream(
+        AppendHexUIntToStream(
+            AppendHexUIntToStream(
+                AppendHexUIntToStream(
+                    AppendHexUIntToStream(
+                        AppendHexUIntToStream(pStream, nAverage)
+                            ->AppendCStringToStream(" "),
+                        (unsigned int)pStatusEntry->m_nTotalValue)
+                        ->AppendCStringToStream(" "),
+                    (unsigned int)pStatusEntry->m_nMaximumValue)
+                    ->AppendCStringToStream(" "),
+                (unsigned int)pStatusEntry->m_nMinimumValue)
+                ->AppendCStringToStream(" "),
+            (unsigned int)pStatusEntry->m_cSamples)
+            ->AppendCStringToStream(" "),
+        &pStatusEntry->m_Name))->AppendCStringToStream("\n");
 }

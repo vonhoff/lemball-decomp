@@ -67,6 +67,7 @@ public:
 class MOGLOAD_ResourceArchive {
 public:
     void *ConstructResourceArchive(const char *pszArchiveName, unsigned int cbArenaSize);
+    void FreeResourceObjectDataBuffer(unsigned int pBuffer, int fReleaseMode);
     int LoadResourceObjectById(int nResourceId, void *pObject, int fCacheObject);
     int LoadResourceArchiveEntryDataIntoBuffer(int *plFileOffset,
                                                unsigned int *pcbBuffer,
@@ -84,6 +85,8 @@ public:
     void *m_pReserved20;
     int m_fExternalArena;
 };
+
+extern void *g_pResourceArchive;
 
 void *AllocateResourceArchiveMemory(unsigned int cbBytes);
 void FreeResourceArchiveMemory(void *pMemoryBlock);

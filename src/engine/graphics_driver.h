@@ -154,6 +154,7 @@ void LEMBALL_FASTCALL CopyRectTupleIfExtentEmpty(void *pTarget,
 int InitializeSelectedGraphicsDriver(int nRequestedDriver);
 int GetSelectedGraphicsDriverId(void);
 extern void *g_pSelectedGraphicsDriverRuntime;
+extern VSGDI_DisplayState *g_pDisplayState;
 extern void *g_pResourceGeometryHelperTarget;
 extern unsigned int g_adwGlobalResourceGeometryPaletteTable[256];
 VSGDI_DisplayState *GetDisplayState(void);

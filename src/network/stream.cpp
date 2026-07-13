@@ -169,9 +169,6 @@ struct NETWORK_EffStreamBaseVtableModel {
     }
 };
 
-static NETWORK_EffStreamBaseVtableModel g_NETWORK_EffStreamBaseVtableModel;
-static void *g_NETWORK_EffStreamBaseVtable =
-    *(void ***)&g_NETWORK_EffStreamBaseVtableModel;
 static int g_NETWORK_DualHandleEffStreamChannelStateConstructionOffsets[2] = {
     -0x44, 0x14,
 };
@@ -262,9 +259,23 @@ struct NETWORK_AckedEffTransportRecordOwner {
 };
 extern int ReturnTrueVtableCallback(void);
 extern int ReturnTrueVtableCallbackSecondary(void);
+extern int ReturnTrueVtableCallbackThunk(void);
+extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void ReturnVoidVtableCallback(void);
 extern void ReverseEffTransportPayload(void *pObject);
+extern void NoopVtableCallbackThunk(void);
 extern void WriteEffTransportTaggedHeader(void *pObject);
+void *DeleteEffStreamBaseWrapper00462900(void *pObject, BYTE fDelete);
+
+// GLOBAL: LEMBALL 0x00498f40
+static void *g_NETWORK_EffStreamBaseVtable[6] = {
+    (void *)ReturnTrueVtableCallbackThunk,
+    (void *)ReturnTrueVtableCallbackSecondaryThunk,
+    (void *)ReverseEffTransportPayload,
+    (void *)NoopVtableCallbackThunk,
+    (void *)WriteEffTransportTaggedHeader,
+    (void *)DeleteEffStreamBaseWrapper00462900,
+};
 struct NETWORK_CompositeEffTransportStackWrapperView {
     void *DeleteCompositeEffTransportRuntimeWrapper(BYTE fDelete);
 };
@@ -764,7 +775,7 @@ NETWORK_EffStreamBase *NETWORK_EffStreamBase::ConstructEffStreamBase(void) {
     m_nReserved04 = 0;
     ((GAME_EffStream *)this)->ResetStateFields();
     m_nWord34 = 0;
-    m_pVtable = (void **)g_NETWORK_EffStreamBaseVtable;
+    m_pVtable = g_NETWORK_EffStreamBaseVtable;
     m_nBufferEnd18 += 0x10;
     m_nWord36 = 0;
     m_nWord30 = 0;
@@ -1266,7 +1277,7 @@ void *DeleteTimedEffStreamWithChannelStateWrapper(void *pObject, BYTE fDelete) {
 }
 
 // FUNCTION: LEMBALL 0x00462B40
-void WriteEffStreamTwoU16Fields(void *pObject) {
+void LEMBALL_FASTCALL WriteEffStreamTwoU16Fields(void *pObject) {
     ((NETWORK_EffStreamBase *)pObject)->WriteEffStreamU16BE(*(unsigned short *)((char *)pObject + 0x2c));
     ((NETWORK_EffStreamBase *)pObject)->WriteEffStreamU16BE(*(unsigned short *)((char *)pObject + 0x2e));
 }
@@ -1275,7 +1286,7 @@ void WriteEffStreamTwoU16Fields(void *pObject) {
 void ReturnVoidVtableCallback(void) {}
 
 // FUNCTION: LEMBALL 0x00462B60
-void ReadEffStreamTwoU16Fields(void *pObject) {
+void LEMBALL_FASTCALL ReadEffStreamTwoU16Fields(void *pObject) {
     ((NETWORK_EffStreamBase *)pObject)->ReadEffStreamU16BE((unsigned char *)((char *)pObject + 0x2c));
     ((NETWORK_EffStreamBase *)pObject)->ReadEffStreamU16BE((unsigned char *)((char *)pObject + 0x2e));
 }

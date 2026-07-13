@@ -109,52 +109,48 @@ int *LEMBALL_FASTCALL WriteDebugSentinelDword(int *pTarget) {
 
 // FUNCTION: LEMBALL 0x0045A9B0
 unsigned int IntegerSqrtFloor(unsigned int uValue) {
-    unsigned int uLow;
     unsigned int uHigh;
+    unsigned int uLow;
     unsigned int uMid;
 
-    if (uValue < 0x4000001) {
-        if (uValue < 0x4001) {
-            if (uValue < 0x101) {
-                uLow = 0;
-                uHigh = uValue + 1;
-            } else {
-                uLow = 0x10;
-                uHigh = (uValue >> 4) + 1;
-            }
-        } else if (uValue < 0x1000001) {
-            if (uValue < 0x100001) {
-                uLow = 0x80;
-                uHigh = (uValue >> 7) + 1;
-            } else {
-                uLow = 0x400;
-                uHigh = (uValue >> 10) + 1;
-            }
-        } else {
-            uLow = 0x1000;
-            uHigh = (uValue >> 0xc) + 1;
-        }
-    } else if (uValue < 0x40000001) {
-        if (uValue < 0x10000001) {
-            uLow = 0x2000;
-            uHigh = (uValue >> 0xd) + 1;
-        } else {
-            uLow = 0x4000;
+    if (uValue > 0x4000000) {
+        if (uValue > 0x40000000) {
+            uHigh = (uValue >> 0xf) + 1;
+            uLow = 0x8000;
+        } else if (uValue > 0x10000000) {
             uHigh = (uValue >> 0xe) + 1;
+            uLow = 0x4000;
+        } else {
+            uHigh = (uValue >> 0xd) + 1;
+            uLow = 0x2000;
         }
+    } else if (uValue > 0x4000) {
+        if (uValue > 0x1000000) {
+            uHigh = (uValue >> 0xc) + 1;
+            uLow = 0x1000;
+        } else if (uValue > 0x100000) {
+            uHigh = (uValue >> 10) + 1;
+            uLow = 0x400;
+        } else {
+            uHigh = (uValue >> 7) + 1;
+            uLow = 0x80;
+        }
+    } else if (uValue > 0x100) {
+        uHigh = (uValue >> 4) + 1;
+        uLow = 0x10;
     } else {
-        uLow = 0x8000;
-        uHigh = (uValue >> 0xf) + 1;
+        uHigh = uValue + 1;
+        uLow = 0;
     }
 
     if (uHigh != uLow) {
-        while ((int)(uLow - uHigh) != -1) {
+        while (uLow - uHigh != (unsigned int)-1) {
             uMid = (uLow + uHigh) >> 1;
             if (uMid * uMid <= uValue) {
                 uLow = uMid;
-                uMid = uHigh;
+            } else {
+                uHigh = uMid;
             }
-            uHigh = uMid;
         }
     }
     return uLow;

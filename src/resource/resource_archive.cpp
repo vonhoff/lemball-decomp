@@ -229,7 +229,8 @@ static void *g_MOGLOAD_PaletteResourceVtable[15] = {
     (void *)GetField28GetMemorySize,
 };
 
-extern void *g_pMainResourceArchive;
+// GLOBAL: LEMBALL 0x004a1d5c
+void *g_pResourceArchive = 0;
 extern void *FinalizeLoadedResourceObjectResult(void *pObject);
 extern void ResetTypedResourceObjectState(void *pObject);
 extern void AdvanceCachedResourceObjectFrameCounters(void *pArchive);
@@ -245,7 +246,6 @@ extern unsigned int TellFile(FILE *pFile);
 extern unsigned int SeekFile(FILE *pFile, long lOffset, int nOrigin);
 extern unsigned int ReadFileBytes(FILE *pFile, void *pBuffer, size_t cbBuffer);
 extern "C" DWORD WINAPI timeGetTime(void);
-extern void FreeResourceObjectDataBuffer(unsigned int pBuffer);
 extern void *LEMBALL_FASTCALL DestroyMemoryArenaBaseStateReturnThis(
     void *pArena, int nUnused, int fDelete);
 
@@ -329,7 +329,7 @@ void LEMBALL_FASTCALL EnsureTypedResourceObjectLoaded(void *pObject) {
                     anFileRange[0] = pResourceObject->m_lResourceOffset2C;
                     anFileRange[1] = pResourceObject->m_cbResourceData28;
                     pBuffer = (unsigned int *)&pResourceObject->m_pszText38;
-                    if (((MOGLOAD_ResourceArchive *)g_pMainResourceArchive)
+                    if (((MOGLOAD_ResourceArchive *)g_pResourceArchive)
                             ->LoadResourceArchiveEntryDataIntoBuffer(
                                 anFileRange,
                                 pBuffer,
@@ -838,7 +838,7 @@ void FreeResourceArchiveMemory(void *pMemoryBlock) {
 }
 
 // FUNCTION: LEMBALL 0x0045CF10
-void FreeResourceObjectDataBuffer(unsigned int pBuffer) {
+void MOGLOAD_ResourceArchive::FreeResourceObjectDataBuffer(unsigned int pBuffer, int) {
     FreeResourceArchiveMemory((void *)(unsigned long)pBuffer);
 }
 
@@ -907,7 +907,7 @@ void LEMBALL_FASTCALL CopyBufferIntoTypedResourceObjectAndParse(
     (void)nUnused;
     if (cbBuffer != 0 && pResourceObject->m_pszText38 == 0) {
         pTarget = (unsigned int *)AllocateResourceDataBufferWithEviction(
-            g_pMainResourceArchive, cbBuffer);
+            g_pResourceArchive, cbBuffer);
         pResourceObject->m_pszText38 = (char *)pTarget;
         for (i = cbBuffer >> 2; i != 0; --i) {
             *pTarget++ = *pSource++;
@@ -939,7 +939,10 @@ void LEMBALL_FASTCALL UnloadTypedResourceObject(void *pObject,
     if (pResourceObject->m_nLoadState10 != 0 &&
         pResourceObject->m_nResourceId30 != 0 &&
         pResourceObject->m_cbResourceData28 != 0) {
-        FreeResourceObjectDataBuffer((unsigned int)(unsigned long)pResourceObject->m_pszText38);
+        ((MOGLOAD_ResourceArchive *)g_pResourceArchive)
+            ->FreeResourceObjectDataBuffer(
+                (unsigned int)(unsigned long)pResourceObject->m_pszText38,
+                1);
         pResourceObject->m_pszText38 = 0;
     }
     pVtable = (MOGLOAD_TypedResourceObjectVtable *)pResourceObject->m_pVtable;
@@ -1201,7 +1204,7 @@ void *MOGLOAD_ResourceArchive::ConstructResourceArchive(
 
     pResourceArchive = this;
     *(char *)g_MOGLOAD_RootPath = '/';
-    g_pMainResourceArchive = this;
+    g_pResourceArchive = this;
     pResourceArchive->m_nOpenFailed = 0;
     pResourceArchive->m_ppCachedResourceObjects = 0;
     pResourceArchive->m_pszSelectedPath = 0;
@@ -1462,7 +1465,7 @@ void InitializeResourceObjectFromId(void *pObject, int nResourceId) {
 
     pResourceObject = (MOGLOAD_StringResourceObject *)pObject;
     ResetTypedResourceObjectState(pResourceObject);
-    if (((MOGLOAD_ResourceArchive *)g_pMainResourceArchive)
+    if (((MOGLOAD_ResourceArchive *)g_pResourceArchive)
             ->LoadResourceObjectById(nResourceId, pResourceObject, 1) != 0) {
         pResourceObject->m_nResourceId30 = nResourceId;
         pVtable = (MOGLOAD_TypedResourceObjectVtable *)pResourceObject->m_pVtable;
@@ -1495,7 +1498,7 @@ void ResetTypedResourceObjectState(void *pObject) {
     pResourceObject->m_uTypeTag = 0;
     pResourceObject->m_nResultCode44 = 0;
     pVtable->m_pClearTypeTag(pResourceObject);
-    AdvanceCachedResourceObjectFrameCounters(g_pMainResourceArchive);
+    AdvanceCachedResourceObjectFrameCounters(g_pResourceArchive);
     pResourceObject->m_nReserved24 = 0;
 }
 
@@ -1505,7 +1508,7 @@ void *FinalizeLoadedResourceObjectResult(void *pObject) {
 
     pResourceObject = (MOGLOAD_StringResourceObject *)pObject;
     if (pResourceObject->m_nResultCode44 == 1) {
-        ((MOGLOAD_ResourceArchive *)g_pMainResourceArchive)
+        ((MOGLOAD_ResourceArchive *)g_pResourceArchive)
             ->RemoveCachedResourceObject(pResourceObject);
         if (pResourceObject != 0) {
             ((MOGLOAD_DeleteResourceProc)pResourceObject->m_pVtable[0])(
@@ -1567,7 +1570,7 @@ MOGLOAD_StringResourceObject *LoadStringResource(int nResourceId) {
     MOGLOAD_StringResourceObject *pResourceObject;
     MOGLOAD_StringResourceObject *pLoadedObject;
 
-    pResourceObject = (MOGLOAD_StringResourceObject *)FindCachedResourceObjectById(g_pMainResourceArchive, nResourceId);
+    pResourceObject = (MOGLOAD_StringResourceObject *)FindCachedResourceObjectById(g_pResourceArchive, nResourceId);
     if (pResourceObject != 0) {
         if (pResourceObject->m_uTypeTag != g_MOGLOAD_StringResourceTypeTag) {
             ReleaseTypedResourceObjectReference(pResourceObject);
@@ -1595,7 +1598,7 @@ void *LoadEffResource(int nResourceId) {
     MOGLOAD_StringResourceObject *pResourceObject;
     MOGLOAD_StringResourceObject *pLoadedObject;
 
-    pResourceObject = (MOGLOAD_StringResourceObject *)FindCachedResourceObjectById(g_pMainResourceArchive, nResourceId);
+    pResourceObject = (MOGLOAD_StringResourceObject *)FindCachedResourceObjectById(g_pResourceArchive, nResourceId);
     if (pResourceObject != 0) {
         if (pResourceObject->m_uTypeTag != g_MOGLOAD_EffResourceTypeTag) {
             ReleaseTypedResourceObjectReference(pResourceObject);
@@ -1643,9 +1646,9 @@ void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void *pResourceObject)
     if (pObject->m_cReferences == 0) {
         ((MOGLOAD_ResourceObjectReferenceInterface *)pObject)
             ->ReleaseReference(1);
-        if (((MOGLOAD_ResourceArchive *)g_pMainResourceArchive)->m_fSkipPruneOnDestroy != 0) {
+        if (((MOGLOAD_ResourceArchive *)g_pResourceArchive)->m_fSkipPruneOnDestroy != 0) {
             if (pObject->m_nResourceId30 != 0) {
-                ((MOGLOAD_ResourceArchive *)g_pMainResourceArchive)
+                ((MOGLOAD_ResourceArchive *)g_pResourceArchive)
                     ->RemoveCachedResourceObject(pObject);
             }
             if (pObject != 0) {

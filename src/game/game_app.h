@@ -114,7 +114,8 @@ void *AppendDynamicCStringToStream(void *pStream, const GAME_DynamicCString *pSt
 int LEMBALL_FASTCALL GetDynamicCStringLength(const GAME_DynamicCString *pString);
 void DestroyNamedStatusEntry(void *pEntry);
 void UpdateNamedStatusEntry(void *pEntry, unsigned int nValue);
-VSINIT_FormattedOutputStream *WriteNamedStatusEntry(void *pEntry, VSINIT_FormattedOutputStream *pStream);
+VSINIT_FormattedOutputStream *LEMBALL_FASTCALL WriteNamedStatusEntry(
+    void *pEntry, int nUnused, VSINIT_FormattedOutputStream *pStream);
 void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void *pResourceObject);
 void *LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode);
 struct GAME_RenderDispatchQueue {

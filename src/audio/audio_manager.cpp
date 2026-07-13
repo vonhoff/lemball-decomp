@@ -84,6 +84,12 @@ struct AUDIO_BackendControl {
     GAME_DynamicCString m_StartupMusicName;
 };
 
+struct AUDIO_BackendControlDispatch {
+    virtual void Reserved00(void) = 0;
+    virtual void InvokeEmbeddedSlot04(int nValue1, int nValue2) = 0;
+    virtual void RegisterMusicHandle(int hMusic, int nMusicResourceId) = 0;
+};
+
 struct AUDIO_WaveOutEffectBackend {
     void **m_pVtable;
     int m_cEffectResources;
@@ -189,6 +195,15 @@ static void *g_pDirectSoundDevice = 0;
 
 #define AUDIO_RESERVED_VIRTUAL(n) virtual void Reserved##n(void) = 0
 
+struct AUDIO_BackendOpenInterface {
+    AUDIO_RESERVED_VIRTUAL(00);
+    AUDIO_RESERVED_VIRTUAL(01);
+    AUDIO_RESERVED_VIRTUAL(02);
+    virtual int Open(int nResourceBase,
+                     int cResources,
+                     void *pPrimaryContext) = 0;
+};
+
 struct AUDIO_EffectBackendSlots00Through24 {
     AUDIO_RESERVED_VIRTUAL(00);
     AUDIO_RESERVED_VIRTUAL(01);
@@ -218,7 +233,7 @@ struct AUDIO_EffectBackendSlots00Through24 {
 };
 
 struct AUDIO_EffectPlaybackInterface : public AUDIO_EffectBackendSlots00Through24 {
-    virtual int GetEffectVolume(int nChannel) = 0;
+    virtual int GetEffectVolume(void) = 0;
     AUDIO_RESERVED_VIRTUAL(26);
     AUDIO_RESERVED_VIRTUAL(27);
     AUDIO_RESERVED_VIRTUAL(28);
@@ -228,7 +243,9 @@ struct AUDIO_EffectPlaybackInterface : public AUDIO_EffectBackendSlots00Through2
     AUDIO_RESERVED_VIRTUAL(32);
     AUDIO_RESERVED_VIRTUAL(33);
     AUDIO_RESERVED_VIRTUAL(34);
-    virtual void PlayEffect(int nEffectResourceId, int nVolume) = 0;
+    virtual void PlayEffect(int nEffectResourceId,
+                            int nVolume,
+                            int nReserved) = 0;
 };
 
 struct AUDIO_EffectVolumeInterface : public AUDIO_EffectBackendSlots00Through24 {
@@ -284,6 +301,11 @@ struct AUDIO_MciOpenParms {
 
 struct AUDIO_MciGenericParms {
     DWORD dwCallback;
+};
+
+struct AUDIO_MciSeekParms {
+    DWORD dwCallback;
+    DWORD dwTo;
 };
 
 struct AUDIO_MciSetParms {
@@ -769,8 +791,8 @@ void StopAllAudioManagerBackends(void *pAudioManager) {
 }
 
 // FUNCTION: LEMBALL 0x0045B210
-void RefreshAudioManagerBackendHandles(void *pAudioManager) {
-    void *pMusicBackend;
+void __fastcall RefreshAudioManagerBackendHandles(void *pAudioManager) {
+    AUDIO_BackendOpenInterface *pMusicBackend;
     int fAccepted;
     int nMusicResourceBase;
     int cEffectResources;
@@ -779,14 +801,14 @@ void RefreshAudioManagerBackendHandles(void *pAudioManager) {
         nMusicResourceBase = *(int *)((char *)pAudioManager + 0x14);
         cEffectResources = 0;
         *(int *)((char *)pAudioManager + 8) = 0;
-        pMusicBackend = *(void **)((char *)pAudioManager + 0x74);
-        if (*(void **)((char *)pAudioManager + 0x78) == pMusicBackend) {
+        pMusicBackend = *(AUDIO_BackendOpenInterface **)((char *)pAudioManager + 0x74);
+        if (*(AUDIO_BackendOpenInterface **)((char *)pAudioManager + 0x78) == pMusicBackend) {
             *(void **)((char *)pAudioManager + 0x78) = 0;
             cEffectResources = *(int *)((char *)pAudioManager + 0x18);
         }
         if (*(int *)((char *)pAudioManager + 0x1c) == 0 && pMusicBackend != 0) {
-            fAccepted = ((AUDIO_OpenProc)(*(void ***)pMusicBackend)[3])(
-                pMusicBackend, 0, nMusicResourceBase, cEffectResources,
+            fAccepted = pMusicBackend->Open(
+                nMusicResourceBase, cEffectResources,
                 *(void **)((char *)pAudioManager + 0x70));
             if (fAccepted == 0) {
                 nMusicResourceBase = 0;
@@ -795,10 +817,10 @@ void RefreshAudioManagerBackendHandles(void *pAudioManager) {
             *(int *)((char *)pAudioManager + 0xc) = nMusicResourceBase;
             *(int *)((char *)pAudioManager + 0x10) = cEffectResources;
         }
-        if (*(void **)((char *)pAudioManager + 0x78) != 0) {
-            pMusicBackend = *(void **)((char *)pAudioManager + 0x78);
-            fAccepted = ((AUDIO_OpenProc)(*(void ***)pMusicBackend)[3])(
-                pMusicBackend, 0, 0, *(int *)((char *)pAudioManager + 0x18),
+        if (*(AUDIO_BackendOpenInterface **)((char *)pAudioManager + 0x78) != 0) {
+            pMusicBackend = *(AUDIO_BackendOpenInterface **)((char *)pAudioManager + 0x78);
+            fAccepted = pMusicBackend->Open(
+                0, *(int *)((char *)pAudioManager + 0x18),
                 *(void **)((char *)pAudioManager + 0x70));
             if (fAccepted == 0) {
                 *(int *)((char *)pAudioManager + 0x18) = 0;
@@ -812,11 +834,10 @@ void RefreshAudioManagerBackendHandles(void *pAudioManager) {
 
 // FUNCTION: LEMBALL 0x0045B2C0
 void AUDIO_Manager::InvokeAudioManagerEmbeddedSlot04(int nValue1, int nValue2) {
-    void *pControl;
+    AUDIO_BackendControlDispatch *pControl;
 
-    pControl = *(void **)((char *)this + 0x34);
-    ((AUDIO_ControlPairProc)(*(void ***)pControl)[1])(
-        pControl, 0, nValue1, nValue2);
+    pControl = *(AUDIO_BackendControlDispatch **)((char *)this + 0x34);
+    pControl->InvokeEmbeddedSlot04(nValue1, nValue2);
 }
 
 // FUNCTION: LEMBALL 0x0045B2E0
@@ -935,12 +956,14 @@ int CreateVariantResourceEffectInstance(void *pAudioManager, int nEffectResource
 // FUNCTION: LEMBALL 0x0045B460
 void AUDIO_Manager::PlayVariantResourceEffectId(int nEffectResourceId) {
     AUDIO_EffectPlaybackInterface *pBackend;
-    int nVolume;
+    int nReserved;
 
+    nReserved = 0;
     if (*(int *)((char *)this + 0x10) == 1) {
         pBackend = *(AUDIO_EffectPlaybackInterface **)((char *)this + 0x78);
-        nVolume = pBackend->GetEffectVolume(0);
-        pBackend->PlayEffect(nEffectResourceId, nVolume);
+        pBackend->PlayEffect(nEffectResourceId,
+                             pBackend->GetEffectVolume(),
+                             nReserved);
     }
 }
 
@@ -2052,7 +2075,15 @@ AUDIO_MciMusicBackend *AUDIO_MciMusicBackend::ConstructMciMusicBackend(void) {
     OpenParms.lpstrElementName = 0;
     OpenParms.lpstrAlias = 0;
     nMciError = mciSendCommandA(0, 0x803, 0x2000, (DWORD_PTR)&OpenParms);
-    if (nMciError == 0) {
+    if (nMciError != 0) {
+        mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error!     HL Midi Device Not Found.\n");
+        g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
+            ->AppendCStringToStream(szMciErrorText)
+            ->AppendCStringToStream("\n");
+        pMusicBackend->m_fDeviceAvailable = 0;
+    } else {
         pMusicBackend->m_uDeviceId = OpenParms.wDeviceID;
         pMusicBackend->m_fDeviceAvailable = 1;
         mciSendCommandA(OpenParms.wDeviceID, 0x804, 0, 0);
@@ -2077,15 +2108,9 @@ AUDIO_MciMusicBackend *AUDIO_MciMusicBackend::ConstructMciMusicBackend(void) {
                             g_hApplicationInstance,
                             0);
         if (pMusicBackend->m_hNotificationWindow == 0) {
-            AppendCStringToStream(g_pErrorOutputStream, "Error: Unable to Create Window for HL Music\n");
+            g_pErrorOutputStream->AppendCStringToStream(
+                "Error! Unable to Create Window for HL Music.\n");
         }
-    } else {
-        mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_HlMidiNotFoundPrefix);
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_MciErrorPrefix);
-        AppendCStringToStream(g_pErrorOutputStream, szMciErrorText);
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
-        pMusicBackend->m_fDeviceAvailable = 0;
     }
     return this;
 }
@@ -2103,26 +2128,26 @@ void PrepareMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle, int
     char szMciErrorText[0x80];
 
     if (nTrackHandle == 0) {
-        AppendCStringToStream(g_pErrorOutputStream,
-                              "Error Call to Prepare Music (HL) with Invalid Handle!\n");
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error Call to Prepare Music (HL) with Invalid Handle!\n");
     }
     if (pBackend->m_nPreparedTrackHandle != 0) {
-        AppendCStringToStream(g_pErrorOutputStream,
-                              "Error: Call to Prepare Music when Music is already Prepared!\n");
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error! Call to Prepare Music when already prepared!\n");
     }
     if (pBackend->m_fTrackPlaying == 1) {
-        AppendCStringToStream(g_pErrorOutputStream,
-                              "Error: Cannot Prepare Music while Music is Playing!\n");
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error! Cannot Prepare Music while playing.\n");
     }
     pBackend->m_nPreparedTrackHandle = nTrackHandle;
     g_nPreparedMciMusicTrackHandle = nTrackHandle;
 
     pStringResource =
         (AUDIO_StringResourceObjectView *)LoadStringResource(nMusicResourceId);
-    if (pStringResource->m_nLoadState10 == 0) {
-        pStringResource->PrepareStringResource();
-    } else {
+    if (pStringResource->m_nLoadState10 != 0) {
         pStringResource->m_nReserved24 = 0;
+    } else {
+        pStringResource->PrepareStringResource();
     }
     ++pStringResource->m_nLockCount08;
 
@@ -2170,103 +2195,120 @@ void PrepareMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle, int
     nMciError = mciSendCommandA(0, 0x803, 0x3200, (DWORD_PTR)&OpenParms);
     --pStringResource->m_nLockCount08;
     ReleaseTypedResourceObjectReference(pStringResource);
-    if (nMciError != 0) {
+    if (nMciError == 0) {
+        pBackend->m_uDeviceId = OpenParms.wDeviceID;
+        SeekParms.dwCallback = 0;
+        nMciError = mciSendCommandA(OpenParms.wDeviceID, 0x807, 0x100, (DWORD_PTR)&SeekParms);
+        if (nMciError == 0) {
+            SetParms.dwCallback = 0;
+            SetParms.dwTimeFormat = 0;
+            nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x80d, 0x400, (DWORD_PTR)&SetParms);
+            if (nMciError == 0) {
+                pBackend->m_fTrackPlaying = 0;
+                pBackend->m_fTrackPaused = 0;
+            } else {
+                mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
+                g_pErrorOutputStream->AppendCStringToStream(
+                    "Error!     Unable to Prepare Music! (Time)\n");
+                g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t");
+                g_pErrorOutputStream->AppendCStringToStream(szMciErrorText);
+                g_pErrorOutputStream->AppendCStringToStream("\n");
+                pBackend->m_nPreparedTrackHandle = 0;
+                g_nPreparedMciMusicTrackHandle = 0;
+            }
+        } else {
+            mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
+            g_pErrorOutputStream->AppendCStringToStream(
+                "Error!     Unable to Prepare Music (Seek)!\n");
+            g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t");
+            g_pErrorOutputStream->AppendCStringToStream(szMciErrorText);
+            g_pErrorOutputStream->AppendCStringToStream("\n");
+            pBackend->m_nPreparedTrackHandle = 0;
+            g_nPreparedMciMusicTrackHandle = 0;
+        }
+    } else {
         mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
-        AppendCStringToStream(g_pErrorOutputStream, "Error: Unable to Prepare Music: ");
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error!     Unable to Prepare Music (Open) ");
         AppendDynamicCStringToStream(g_pErrorOutputStream, &BasePath);
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_MciErrorPrefix);
-        AppendCStringToStream(g_pErrorOutputStream, szMciErrorText);
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
+        g_pErrorOutputStream->AppendCStringToStream("!\n");
+        g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t");
+        g_pErrorOutputStream->AppendCStringToStream(szMciErrorText);
+        g_pErrorOutputStream->AppendCStringToStream("\n");
         pBackend->m_nPreparedTrackHandle = 0;
         g_nPreparedMciMusicTrackHandle = 0;
-        DestroyDynamicCString(&BasePath);
-        DestroyDynamicCString(&MusicPath);
-        return;
     }
 
-    pBackend->m_uDeviceId = OpenParms.wDeviceID;
-    SeekParms.dwCallback = 0;
-    nMciError = mciSendCommandA(OpenParms.wDeviceID, 0x807, 0x100, (DWORD_PTR)&SeekParms);
-    if (nMciError != 0) {
-        mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
-        AppendCStringToStream(g_pErrorOutputStream, "Error: Unable to Prepare Music\n");
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_MciErrorPrefix);
-        AppendCStringToStream(g_pErrorOutputStream, szMciErrorText);
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
-        pBackend->m_nPreparedTrackHandle = 0;
-        g_nPreparedMciMusicTrackHandle = 0;
-        DestroyDynamicCString(&BasePath);
-        DestroyDynamicCString(&MusicPath);
-        return;
-    }
-
-    SetParms.dwCallback = 0;
-    SetParms.dwTimeFormat = 0;
-    nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x80d, 0x400, (DWORD_PTR)&SetParms);
-    if (nMciError != 0) {
-        mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
-        AppendCStringToStream(g_pErrorOutputStream, "Error: Unable to Prepare Music\n");
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_MciErrorPrefix);
-        AppendCStringToStream(g_pErrorOutputStream, szMciErrorText);
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
-        pBackend->m_nPreparedTrackHandle = 0;
-        g_nPreparedMciMusicTrackHandle = 0;
-        DestroyDynamicCString(&BasePath);
-        DestroyDynamicCString(&MusicPath);
-        return;
-    }
-
-    pBackend->m_fTrackPlaying = 0;
-    pBackend->m_fTrackPaused = 0;
     DestroyDynamicCString(&BasePath);
     DestroyDynamicCString(&MusicPath);
 }
 
 // FUNCTION: LEMBALL 0x0047EE70
 void FreePreparedMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle) {
+    if (nTrackHandle == 0) {
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error Call to Free Music (HL) with Invalid Handle!\n");
+    }
+    if (pBackend->m_nPreparedTrackHandle != nTrackHandle) {
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error Call to Free Music (HL) with unknown Handle!\n");
+    }
     pBackend->m_nPreparedTrackHandle = 0;
     g_nPreparedMciMusicTrackHandle = 0;
+    if (pBackend->m_fTrackPlaying == 1) {
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error! Must stop music before closing...\n");
+    }
     mciSendCommandA(pBackend->m_uDeviceId, 0x804, 0, 0);
-    (void)nTrackHandle;
 }
 
 // FUNCTION: LEMBALL 0x0047EEE0
 void PlayPreparedMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle) {
-    AUDIO_MciGenericParms SeekParms;
+    AUDIO_MciSeekParms SeekParms;
     AUDIO_MciPlayParms PlayParms;
     MCIERROR nMciError;
     char szMciErrorText[0x80];
 
-    SeekParms.dwCallback = 0;
+    if (nTrackHandle == 0) {
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error Call to Play Music (HL) with Invalid Handle!\n");
+    }
+    if (pBackend->m_nPreparedTrackHandle != nTrackHandle) {
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error Call to Play (HL) with unknown Handle!\n");
+    }
+    if (pBackend->m_fTrackPlaying == 1) {
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error! Play Command (HL) While already playing!\n");
+    }
+
+    SeekParms.dwTo = 0;
     nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x807, 0x100, (DWORD_PTR)&SeekParms);
     if (nMciError != 0) {
         mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
-        AppendCStringToStream(g_pErrorOutputStream, "Error: Unable to Play Music\n");
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_MciErrorPrefix);
-        AppendCStringToStream(g_pErrorOutputStream, szMciErrorText);
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
-        (void)nTrackHandle;
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error!     Unable to Play Music (Seek)! (HL)\n");
+        g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
+            ->AppendCStringToStream(szMciErrorText)
+            ->AppendCStringToStream("\n");
         return;
     }
 
-    memset(&PlayParms, 0, sizeof(PlayParms));
     PlayParms.dwCallback = (DWORD)(DWORD_PTR)pBackend->m_hNotificationWindow;
     nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x806, 1, (DWORD_PTR)&PlayParms);
     if (nMciError != 0) {
         mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
-        AppendCStringToStream(g_pErrorOutputStream, "Error: Unable to Play Music\n");
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_MciErrorPrefix);
-        AppendCStringToStream(g_pErrorOutputStream, szMciErrorText);
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
-        (void)nTrackHandle;
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error!     Unable to Play Music (Play)! (HL)\n");
+        g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
+            ->AppendCStringToStream(szMciErrorText)
+            ->AppendCStringToStream("\n");
         return;
     }
 
-    pBackend->m_fTrackPlaying = 1;
     pBackend->m_fTrackPaused = 0;
     pBackend->m_nPausedTrackPosition = 0;
-    (void)nTrackHandle;
+    pBackend->m_fTrackPlaying = 1;
 }
 
 // FUNCTION: LEMBALL 0x0047F040
@@ -2274,19 +2316,28 @@ void StopMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle) {
     MCIERROR nMciError;
     char szMciErrorText[0x80];
 
+    if (nTrackHandle == 0) {
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error Call to Stop Music (HL) with Invalid Handle!\n");
+    }
+    if (pBackend->m_nPreparedTrackHandle != nTrackHandle) {
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error Call to Stop (HL) with unknown Handle!\n");
+    }
     if (pBackend->m_fTrackPlaying == 0) {
-        (void)nTrackHandle;
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error! Stop Command (HL) when not playing!\n");
         return;
     }
 
     nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x808, 0, 0);
     if (nMciError != 0) {
         mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
-        AppendCStringToStream(g_pErrorOutputStream, "Error: Unable to Stop Music\n");
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_MciErrorPrefix);
-        AppendCStringToStream(g_pErrorOutputStream, szMciErrorText);
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
-        (void)nTrackHandle;
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error!     Unable to Stop Music! (HL)\n");
+        g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
+            ->AppendCStringToStream(szMciErrorText)
+            ->AppendCStringToStream("\n");
         return;
     }
 
@@ -2309,84 +2360,76 @@ void PauseMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle) {
                               "Error Call to Pause (HL) with unknown Handle!\n");
     }
 
-    memset(&StatusParms, 0, sizeof(StatusParms));
     StatusParms.dwItem = 2;
     nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x814, 0x100, (DWORD_PTR)&StatusParms);
     if (nMciError != 0) {
         mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
-        AppendCStringToStream(g_pErrorOutputStream,
-                              "Error!     Unable to Get Position for Pause! (HL)\n");
-        AppendCStringToStream(g_pErrorOutputStream, "MCI Error:\t\n");
-        AppendCStringToStream(g_pErrorOutputStream, szMciErrorText);
-        AppendCStringToStream(g_pErrorOutputStream, "\n");
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error!     Unable to Get Position for Pause! (HL)\n");
+        g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
+            ->AppendCStringToStream(szMciErrorText)
+            ->AppendCStringToStream("\n");
     }
     pBackend->m_nPausedTrackPosition = (int)StatusParms.dwReturn;
 
     nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x808, 0, 0);
-    if (nMciError != 0) {
+    if (nMciError == 0) {
+        pBackend->m_fTrackPlaying = 0;
+        pBackend->m_fTrackPaused = 1;
+    } else {
         mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
-        AppendCStringToStream(g_pErrorOutputStream,
-                              "Error!     Unable to Stop Music! (HL)\n");
-        AppendCStringToStream(g_pErrorOutputStream, "MCI Error:\t\n");
-        AppendCStringToStream(g_pErrorOutputStream, szMciErrorText);
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
-        (void)nTrackHandle;
-        return;
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error!     Unable to Stop Music! (HL)\n");
+        g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
+            ->AppendCStringToStream(szMciErrorText)
+            ->AppendCStringToStream("\n");
     }
-
-    pBackend->m_fTrackPlaying = 0;
-    pBackend->m_fTrackPaused = 1;
-    (void)nTrackHandle;
 }
 
 // FUNCTION: LEMBALL 0x0047F250
 void ResumeMciMusicTrack(AUDIO_MciMusicBackend *pBackend, int nTrackHandle) {
-    AUDIO_MciGenericParms SeekParms;
+    AUDIO_MciSeekParms SeekParms;
     AUDIO_MciPlayParms PlayParms;
     MCIERROR nMciError;
     char szMciErrorText[0x80];
 
     if (nTrackHandle == 0) {
-        AppendCStringToStream(g_pErrorOutputStream,
-                              "Error Call to Resume Music (HL) with Invalid Handle!\n");
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error Call to Resume Music (HL) with Invalid Handle!\n");
     }
     if (pBackend->m_nPreparedTrackHandle != nTrackHandle) {
-        AppendCStringToStream(g_pErrorOutputStream,
-                              "Error Call to Resume (HL) with unknown Handle!\n");
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error Call to Resume (HL) with unknown Handle!\n");
     }
 
-    SeekParms.dwCallback = 0;
+    SeekParms.dwTo = 0;
     nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x807, 0x100,
                                 (DWORD_PTR)&SeekParms);
     if (nMciError != 0) {
         mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
-        AppendCStringToStream(g_pErrorOutputStream,
-                              "Error!     Unable to Restart Music (Seek)! (HL)\n");
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_MciErrorPrefix);
-        AppendCStringToStream(g_pErrorOutputStream, szMciErrorText);
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
-        (void)nTrackHandle;
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error!     Unable to Restart Music (Seek)! (HL)\n");
+        g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
+            ->AppendCStringToStream(szMciErrorText)
+            ->AppendCStringToStream("\n");
         return;
     }
 
-    memset(&PlayParms, 0, sizeof(PlayParms));
     PlayParms.dwCallback = (DWORD)(DWORD_PTR)pBackend->m_hNotificationWindow;
     nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x806, 1,
                                 (DWORD_PTR)&PlayParms);
     if (nMciError != 0) {
         mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
-        AppendCStringToStream(g_pErrorOutputStream,
-                              "Error!     Unable to Restart Music (Play)! (HL)\n");
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_MciErrorPrefix);
-        AppendCStringToStream(g_pErrorOutputStream, szMciErrorText);
-        AppendCStringToStream(g_pErrorOutputStream, g_AUDIO_ErrorSuffix);
-        (void)nTrackHandle;
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error!     Unable to Restart Music (Play)! (HL)\n");
+        g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
+            ->AppendCStringToStream(szMciErrorText)
+            ->AppendCStringToStream("\n");
         return;
     }
 
     pBackend->m_fTrackPlaying = 1;
     pBackend->m_fTrackPaused = 0;
-    (void)nTrackHandle;
 }
 
 // FUNCTION: LEMBALL 0x0047F940

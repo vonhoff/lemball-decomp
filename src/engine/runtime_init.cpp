@@ -59,8 +59,10 @@ void *g_StreamBaseVtable[4] = {
 unsigned long g_FormattedOutputStreamVtable[2] = { 0, 0x12c };
 unsigned long g_EffFormattedOutputStreamVtable[3] = { 0, 0x20, 0x40 };
 unsigned long g_EffStreamSubobjectVtable[2] = { 0, (unsigned long)-0x20 };
+// GLOBAL: LEMBALL 0x00493034
 void *g_StreamFormatTargetStateVtable[1] = { (void *)NetworkSafeVtableNoop };
 void *g_StreamFormatSubobjectVtable[1] = { (void *)NetworkSafeVtableNoop };
+// GLOBAL: LEMBALL 0x00498968
 static void *g_FixedBufferStreamVtable[4] = {
     (void *)DeleteFixedBufferStreamReturnThis,
     (void *)ResetFixedBufferStream,
@@ -76,51 +78,33 @@ static unsigned int g_adwRadixPowerTable[17];
 // FUNCTION: LEMBALL 0x004584C0
 void LEMBALL_FASTCALL ApplyStreamIntegerWidthPadding(VSINIT_FormattedOutputStream *pStream) {
     unsigned int dwFlags;
-    unsigned int cchWidth;
-    unsigned int cchText;
-    unsigned int cchSourceSkip;
-    unsigned int cchTargetSkip;
-    unsigned int cchCopy;
-    unsigned int cchFill;
+    int cchWidth;
+    int cchText;
+    int cchSourceSkip;
+    int cchTargetSkip;
+    int cchCopy;
     unsigned int fNegative;
-    u32 dwFillPattern;
     char *pszSource;
     char *pszTarget;
 
-    cchWidth = (unsigned int)VSINIT_FORMAT_TARGET(pStream)->m_nWidth;
-    if (cchWidth == 0) {
+    if (VSINIT_FORMAT_TARGET(pStream)->m_nWidth == 0) {
         pStream->m_pszFormattedText = pStream->m_szFormatBuffer;
         return;
     }
 
     fNegative = pStream->m_szFormatBuffer[0] == '-';
-    cchText = (unsigned int)strlen(pStream->m_szFormatBuffer);
-
-    dwFillPattern = (unsigned char)VSINIT_FORMAT_TARGET(pStream)->m_chFill;
-    dwFillPattern |= dwFillPattern << 8;
-    dwFillPattern |= dwFillPattern << 16;
+    cchSourceSkip = pStream->m_szFormatBuffer[0] == '-';
+    cchText = strlen(pStream->m_szFormatBuffer);
+    cchWidth = VSINIT_FORMAT_TARGET(pStream)->m_nWidth;
 
     pszTarget = pStream->m_szFormatBuffer + 0x21;
-    cchFill = cchWidth >> 2;
-    while (cchFill != 0) {
-        *(u32 *)pszTarget = dwFillPattern;
-        pszTarget += 4;
-        --cchFill;
-    }
-
-    cchFill = cchWidth & 3;
-    while (cchFill != 0) {
-        *pszTarget = VSINIT_FORMAT_TARGET(pStream)->m_chFill;
-        ++pszTarget;
-        --cchFill;
-    }
+    memset(pszTarget, VSINIT_FORMAT_TARGET(pStream)->m_chFill, cchWidth);
 
     pStream->m_szFormatBuffer[0x21 + cchWidth] = '\0';
     if (fNegative) {
         pStream->m_szFormatBuffer[0x21] = '-';
     }
 
-    cchSourceSkip = fNegative;
     cchTargetSkip = fNegative;
     dwFlags = VSINIT_FORMAT_TARGET(pStream)->m_dwFlags;
     if ((dwFlags & 2) == 0) {
@@ -134,21 +118,7 @@ void LEMBALL_FASTCALL ApplyStreamIntegerWidthPadding(VSINIT_FormattedOutputStrea
     pszSource = pStream->m_szFormatBuffer + cchSourceSkip;
     pszTarget = pStream->m_szFormatBuffer + 0x21 + cchTargetSkip;
     cchCopy = cchWidth - fNegative;
-    cchFill = cchCopy >> 2;
-    while (cchFill != 0) {
-        *(u32 *)pszTarget = *(u32 *)pszSource;
-        pszSource += 4;
-        pszTarget += 4;
-        --cchFill;
-    }
-
-    cchFill = cchCopy & 3;
-    while (cchFill != 0) {
-        *pszTarget = *pszSource;
-        ++pszSource;
-        ++pszTarget;
-        --cchFill;
-    }
+    memcpy(pszTarget, pszSource, cchCopy);
 
     pStream->m_pszFormattedText = pStream->m_szFormatBuffer + 0x21;
 }
@@ -347,7 +317,6 @@ static const char g_VSINIT_CommandLineOptionPrefix[] = "  Option ";
 static const char g_VSINIT_CommandLineOptionIs[] = " is ";
 static const char g_VSINIT_NotSelected[] = "not ";
 static const char g_VSINIT_Selected[] = "selected\n";
-static const char g_VSINIT_MainMemoryArenaName[] = "Main memory arena";
 static const char g_VSINIT_MemoryLeakMessage[] = "**** MEMORY LEAK, dumping memory contents ****\n";
 static const char g_VSINIT_StatusOutputHeader[] = "Stats Output\n";
 static const char g_VSINIT_StatusOutputRule[] = "---------------------------------------------------\n";
@@ -376,8 +345,8 @@ struct VSINIT_VSMemPointerTable {
     int m_cItems;
     int m_nCursor;
 
+    VSINIT_VSMemPointerTable(int cItems);
     VSINIT_VSMemPointerTable *ConstructVSMemPointerTable(int cItems);
-    VSINIT_VSMemPointerTable *ConstructVSMemPointerTableWrapper(int cItems);
 };
 
 struct VSINIT_PaletteRemapVariant {
@@ -461,12 +430,15 @@ static char g_abStreamFixedBuffer[0x400];
 static VSINIT_FixedBufferStream *g_pStartupFixedBufferStream = 0;
 static VSINIT_FixedBufferStream *g_pStatusFixedBufferStream = 0;
 static VSINIT_FixedBufferStream *g_pErrorFixedBufferStream = 0;
+// GLOBAL: LEMBALL 0x004a97b8
 static VSINIT_FormattedOutputStream *g_pStartupOutputStream = 0;
+// GLOBAL: LEMBALL 0x004a97bc
 VSINIT_FormattedOutputStream *g_pStatusOutputStream = 0;
 // GLOBAL: LEMBALL 0x004a93a8
 VSINIT_FormattedOutputStream *g_pErrorOutputStream = 0;
 static char *g_apszParsedArgs[16];
 static unsigned int g_cParsedArgs = 0;
+// GLOBAL: LEMBALL 0x004a0e68
 static int g_fSubsystemsReady = 0;
 static const char *g_pszDebugOutPath = g_VSINIT_DebugOutPath;
 static FILE *g_pDebugOutFile = 0;
@@ -476,14 +448,21 @@ HANDLE g_hDebugSyncEvent = 0;
 static HANDLE g_hDebugMessageThread = 0;
 static DWORD g_dwDebugMessageThreadId = 0;
 static PLATFORM_InvisibleMessageWindow g_InvisibleMessageWindow;
+// GLOBAL: LEMBALL 0x004a0e88
 static long g_cbMainArenaAvailableAfterInit = 0;
+// GLOBAL: LEMBALL 0x004a0e94
 static unsigned int g_uViSOSMajorVersion = 1;
+// GLOBAL: LEMBALL 0x004a0e98
 static unsigned int g_uViSOSMinorVersion = 0;
-static unsigned int g_uViSOSBuildNumber = 201;
+// GLOBAL: LEMBALL 0x00498958
 static void *g_StatusEntryPointerArrayVtable[1] = { (void *)WriteStatusEntryPointerArray };
+// GLOBAL: LEMBALL 0x004a1d64
 static VSINIT_ResourceTypeTable *g_pPrimaryResourceTypeTable = 0;
+// GLOBAL: LEMBALL 0x004a1d68
 static VSINIT_ResourceTypeTable *g_pSecondaryResourceTypeTable = 0;
+// GLOBAL: LEMBALL 0x004a1d6c
 static VSINIT_ResourceTypeTable *g_pTertiaryResourceTypeTable = 0;
+// GLOBAL: LEMBALL 0x004a2000
 static VSINIT_VSMemPointerTable *g_pPaletteRemapPointerTable = 0;
 static void *g_pSharedRenderQueueNode = 0;
 static void *g_RenderDispatchQueueDeleteThunkVtable[1] = { (void *)NetworkSafeVtableNoop };
@@ -532,6 +511,7 @@ static void *g_SharedRenderQueueNodeVtable[4] = {
     (void *)TranslateKeyboardRenderQueueEntry,
     0,
 };
+// GLOBAL: LEMBALL 0x004988c8
 static void *g_MainMemoryArenaStatusEntryVtable[8] = {
     (void *)WriteNamedStatusEntry,
     (void *)UpdateNamedStatusEntry,
@@ -546,8 +526,7 @@ static jmp_buf g_GameStartupJumpBuffer;
 static jmp_buf g_DebugThreadJumpBuffer;
 
 // FUNCTION: LEMBALL 0x00472A60
-static int LEMBALL_FASTCALL TranslateKeyboardRenderQueueEntry(
-    void *pRenderQueueNode, int, RDISPATCH_QueueEntry *pEntry) {
+static int LEMBALL_FASTCALL TranslateKeyboardRenderQueueEntry(void *pRenderQueueNode, int, RDISPATCH_QueueEntry *pEntry) {
     RDISPATCH_QueueEntry TranslatedEntry;
     unsigned short wEntryType;
     unsigned int i;
@@ -874,8 +853,8 @@ int ParseDecimalIntAndAdvance(char *pszText, char **ppszEnd, int nRadix) {
             if (chDigit > '9') {
                 break;
             }
-            ++pszText;
             nValue = chDigit - '0' + nValue * 10;
+            ++pszText;
         }
         *ppszEnd = pszText;
         return nValue;
@@ -1305,13 +1284,12 @@ VSINIT_VSMemPointerTable *VSINIT_VSMemPointerTable::ConstructVSMemPointerTable(i
 }
 
 // FUNCTION: LEMBALL 0x00473630
-VSINIT_VSMemPointerTable *VSINIT_VSMemPointerTable::ConstructVSMemPointerTableWrapper(int cItems) {
+VSINIT_VSMemPointerTable::VSINIT_VSMemPointerTable(int cItems) {
     ConstructVSMemPointerTable(cItems);
-    return this;
 }
 
 // FUNCTION: LEMBALL 0x0046AAD0
-void ReleasePaletteRemapVariantFields(VSINIT_PaletteRemapVariant *pVariant) {
+void LEMBALL_FASTCALL ReleasePaletteRemapVariantFields(VSINIT_PaletteRemapVariant *pVariant) {
     if (pVariant->m_pRemapTable != 0) {
         FreeVSMemBlock(pVariant->m_pRemapTable);
     }
@@ -1341,7 +1319,6 @@ void DestroyPaletteRemapPointerTable(VSINIT_VSMemPointerTable *pPointerTable) {
 // FUNCTION: LEMBALL 0x0045B900
 int InitializeResourceTypeTables(void) {
     VSINIT_ResourceTypeTable *pResourceTypeTable;
-    VSINIT_VSMemPointerTable *pPointerTable;
 
     pResourceTypeTable = (VSINIT_ResourceTypeTable *)AllocateVSMemBlock(0x10);
     if (pResourceTypeTable != 0) {
@@ -1386,12 +1363,9 @@ int InitializeResourceTypeTables(void) {
     ++pResourceTypeTable->m_cTags;
     g_pTertiaryResourceTypeTable = pResourceTypeTable;
 
-    pPointerTable = (VSINIT_VSMemPointerTable *)AllocateVSMemBlock(0xc);
-    if (pPointerTable != 0) {
-        g_pPaletteRemapPointerTable = pPointerTable->ConstructVSMemPointerTableWrapper(0x20);
-        return 1;
-    }
-    g_pPaletteRemapPointerTable = 0;
+    g_pPaletteRemapPointerTable =
+        new (AllocateVSMemBlock(sizeof(VSINIT_VSMemPointerTable)))
+            VSINIT_VSMemPointerTable(0x20);
     return 1;
 }
 
@@ -1531,8 +1505,9 @@ void InitializeCoreSubsystems(void) {
         ->AppendCStringToStream(".")
         ->AppendIntToStream(g_uViSOSMinorVersion)
         ->AppendCStringToStream("(")
-        ->AppendIntToStream(g_uViSOSBuildNumber)
-        ->AppendCStringToStream(")\n")
+        ->AppendIntToStream(201)
+        ->AppendCStringToStream(")")
+        ->AppendCStringToStream("\n")
         ;
 
     g_pStartupOutputStream->AppendCStringToStream("(c)")
@@ -1587,14 +1562,14 @@ void InitializeCoreSubsystems(void) {
         pMainMemoryArenaStatusEntry =
             (GAME_StatusEntry *)pMainMemoryArenaStatusStorage;
         new (pMainMemoryArenaStatusStorage)
-            GAME_StatusEntry(g_VSINIT_MainMemoryArenaName);
+            GAME_StatusEntry("Main memory arena");
         pMainMemoryArenaStatusEntry->m_pVtable = g_MainMemoryArenaStatusEntryVtable;
     } else {
         pMainMemoryArenaStatusEntry = 0;
     }
     ((VSINIT_StatusEntryPointerArray *)g_pStatusEntryRegistry)
         ->AppendStatusEntry(pMainMemoryArenaStatusEntry);
-    *(GAME_StatusEntry **)((char *)g_pMainMemoryArena + 0x30) = pMainMemoryArenaStatusEntry;
+    ((CArena *)g_pMainMemoryArena)->m_pStatusEntry = pMainMemoryArenaStatusEntry;
 }
 
 // FUNCTION: LEMBALL 0x00459520
@@ -1797,7 +1772,8 @@ int RunGameStartupSequence(char *pszCmdLine) {
         return nJumpResult;
     }
 
-    nResult = RunMainGameSession((int)g_cParsedArgs, (const char *const *)g_apszParsedArgs);
+    nResult = RunMainGameSessionThunk(
+        (int)g_cParsedArgs, (const char *const *)g_apszParsedArgs);
     ShutdownCoreSubsystems();
     return nResult;
 }
