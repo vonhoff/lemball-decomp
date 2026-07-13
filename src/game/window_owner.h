@@ -22,7 +22,7 @@ public:
     virtual void RefreshWindowOwnerMenuState(void);
     virtual void InitializeWindowOwnerFromRect(short *paRect,
                                                 void *pWindowOwner,
-                                                void *pContext) = 0;
+                                                const char *pszTitle) = 0;
     virtual void StoreRootGeometrySourceRect(const GAME_XYPair *pRect);
     virtual int QueryRootGeometryState(void *pFirst, void *pSecond);
     virtual void SetWindowOwnerMenuDefinition(const unsigned int *pnMenuId,
@@ -84,7 +84,7 @@ public:
     virtual void RefreshWindowOwnerMenuState(void);
     virtual void InitializeWindowOwnerFromRect(short *paRect,
                                                 void *pWindowOwner,
-                                                void *pContext);
+                                                const char *pszTitle);
     virtual void SetWindowOwnerMenuDefinition(const unsigned int *pnMenuId,
                                                void *pMenuDefinition);
     virtual void SetRootGeometryScaleFactor(int nScaleFactor);
@@ -131,5 +131,19 @@ extern void *g_pRootZrleGeometryOwnerRegistry;
 
 int PackEventXYWords(unsigned int uLowWord, int nHighWord);
 void LEMBALL_STDCALL PollCursorPositionEvent(void);
+void LEMBALL_FASTCALL UpdateWindowOwnerRootGeometrySourceRect(
+    void *pOwner, int nUnused, const GAME_XYPair *pRect);
+void LEMBALL_FASTCALL RefreshWindowOwnerRenderScale(
+    void *pOwner, int nUnused, int nPreviousScaleFactor);
+void LEMBALL_FASTCALL ReleaseWindowOwnerRenderResources(void *pOwner);
+void LEMBALL_FASTCALL CanonicalizeWindowOwnerRenderSubrect(void *pOwner);
+void LEMBALL_FASTCALL PopulateWindowOwnerRenderAnchor(void *pOwner);
+void LEMBALL_FASTCALL SetWindowOwnerRenderAnchorFromPoint(
+    void *pOwner, int nUnused, const GAME_XYPair *pPoint);
+void LEMBALL_FASTCALL ForwardNestedGeometryRectUpdate(
+    void *pOwner, int nUnused, short *paRect);
+LRESULT LEMBALL_FASTCALL DispatchWindowOwnerRenderContextMessage(
+    void *pOwner, int nUnused, UINT uMessage, WPARAM wParam, LPARAM lParam);
+void LEMBALL_FASTCALL PresentWindowOwnerRenderContext(void *pOwner);
 
 #endif

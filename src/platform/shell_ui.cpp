@@ -305,7 +305,9 @@ int CALLBACK AboutBoxProc(HWND hDlg, UINT uMessage, WPARAM wParam, LPARAM lParam
 }
 
 // FUNCTION: LEMBALL 0x00431CD0
-int HandlePrimaryContextMenuCommand(SHELLUI_PrimaryContextShell *pShell, const SHELLUI_MenuCommandMessage *pMessage) {
+int LEMBALL_FASTCALL HandlePrimaryContextMenuCommand(
+    SHELLUI_PrimaryContextShell *pShell, int,
+    const SHELLUI_MenuCommandMessage *pMessage) {
     char szHelpPath[256];
     char *pszCdromPath;
 
@@ -367,4 +369,11 @@ int HandlePrimaryContextMenuCommand(SHELLUI_PrimaryContextShell *pShell, const S
     }
 
     return 1;
+}
+
+// FUNCTION: LEMBALL 0x0040292D
+int LEMBALL_FASTCALL HandlePrimaryContextMenuCommandThunk(
+    SHELLUI_PrimaryContextShell *pShell, int,
+    const SHELLUI_MenuCommandMessage *pMessage) {
+    return HandlePrimaryContextMenuCommand(pShell, 0, pMessage);
 }

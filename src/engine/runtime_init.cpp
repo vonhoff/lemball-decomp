@@ -487,10 +487,51 @@ static VSINIT_ResourceTypeTable *g_pTertiaryResourceTypeTable = 0;
 static VSINIT_VSMemPointerTable *g_pPaletteRemapPointerTable = 0;
 static void *g_pSharedRenderQueueNode = 0;
 static void *g_RenderDispatchQueueDeleteThunkVtable[1] = { (void *)NetworkSafeVtableNoop };
-static void *g_RenderDispatchQueueCriticalSectionHelperVtable[1] = { (void *)NetworkSafeVtableNoop };
-static void *g_RenderDispatchQueueVtable[1] = { (void *)NetworkSafeVtableNoop };
-static void *g_DeleteRenderDispatchQueueCriticalSectionHelperThunk[1] = { (void *)NetworkSafeVtableNoop };
-static void *g_SharedRenderQueueNodeVtable[2] = { (void *)NetworkSafeVtableNoop, (void *)NetworkSafeVtableNoop };
+static void LEMBALL_FASTCALL EnterRenderDispatchQueueCriticalSection(
+    void *pObject);
+static void LEMBALL_FASTCALL LeaveRenderDispatchQueueCriticalSection(
+    void *pObject);
+static void *g_RenderDispatchQueueCriticalSectionHelperVtable[2] = {
+    (void *)EnterRenderDispatchQueueCriticalSection,
+    (void *)LeaveRenderDispatchQueueCriticalSection,
+};
+static void *g_RenderDispatchQueueVtable[4];
+static void *g_DeleteRenderDispatchQueueCriticalSectionHelperThunk[2] = {
+    (void *)EnterRenderDispatchQueueCriticalSection,
+    (void *)LeaveRenderDispatchQueueCriticalSection,
+};
+struct VSINIT_KeyCodeTranslation {
+    unsigned int m_dwVirtualKey;
+    unsigned int m_dwInputCode;
+};
+
+static const VSINIT_KeyCodeTranslation g_aKeyCodeTranslations[61] = {
+    { 0x20, 0x1f }, { 0xbe, 0x20 }, { 0xbc, 0x21 }, { 0x73, 0x25 },
+    { 0x1b, 0x23 }, { 0x41, 0x05 }, { 0x42, 0x06 }, { 0x43, 0x07 },
+    { 0x44, 0x08 }, { 0x45, 0x09 }, { 0x46, 0x0a }, { 0x47, 0x0b },
+    { 0x48, 0x0c }, { 0x49, 0x0d }, { 0x4a, 0x0e }, { 0x4b, 0x0f },
+    { 0x4c, 0x10 }, { 0x4d, 0x11 }, { 0x4e, 0x12 }, { 0x4f, 0x13 },
+    { 0x50, 0x14 }, { 0x51, 0x15 }, { 0x52, 0x16 }, { 0x53, 0x17 },
+    { 0x54, 0x18 }, { 0x55, 0x19 }, { 0x56, 0x1a }, { 0x57, 0x1b },
+    { 0x58, 0x1c }, { 0x59, 0x1d }, { 0x5a, 0x1e }, { 0x30, 0x39 },
+    { 0x31, 0x3a }, { 0x32, 0x3b }, { 0x33, 0x3c }, { 0x34, 0x3d },
+    { 0x35, 0x3e }, { 0x36, 0x3f }, { 0x37, 0x40 }, { 0x38, 0x41 },
+    { 0x39, 0x42 }, { 0x60, 0x39 }, { 0x61, 0x3a }, { 0x62, 0x3b },
+    { 0x63, 0x3c }, { 0x64, 0x3d }, { 0x65, 0x3e }, { 0x66, 0x3f },
+    { 0x67, 0x40 }, { 0x68, 0x41 }, { 0x69, 0x42 }, { 0x26, 0x01 },
+    { 0x28, 0x02 }, { 0x25, 0x03 }, { 0x27, 0x04 }, { 0x0d, 0x4c },
+    { 0x2e, 0x4d }, { 0x2e, 0x4d }, { 0x08, 0x4e }, { 0x10, 0x49 },
+    { 0xa0, 0x4a },
+};
+
+static int LEMBALL_FASTCALL TranslateKeyboardRenderQueueEntry(
+    void *pRenderQueueNode, int nUnused, RDISPATCH_QueueEntry *pEntry);
+static void *g_SharedRenderQueueNodeVtable[4] = {
+    (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop,
+    (void *)TranslateKeyboardRenderQueueEntry,
+    0,
+};
 static void *g_MainMemoryArenaStatusEntryVtable[8] = {
     (void *)WriteNamedStatusEntry,
     (void *)UpdateNamedStatusEntry,
@@ -503,6 +544,42 @@ static void *g_MainMemoryArenaStatusEntryVtable[8] = {
 };
 static jmp_buf g_GameStartupJumpBuffer;
 static jmp_buf g_DebugThreadJumpBuffer;
+
+// FUNCTION: LEMBALL 0x00472A60
+static int LEMBALL_FASTCALL TranslateKeyboardRenderQueueEntry(
+    void *pRenderQueueNode, int, RDISPATCH_QueueEntry *pEntry) {
+    RDISPATCH_QueueEntry TranslatedEntry;
+    unsigned short wEntryType;
+    unsigned int i;
+
+    wEntryType = *(unsigned short *)&pEntry->m_awords[0];
+    TranslatedEntry.m_awords[1] = pEntry->m_awords[1];
+    if (wEntryType < 1 || 2 < wEntryType) {
+        ++((unsigned int *)pRenderQueueNode)[3];
+        return 0;
+    }
+
+    for (i = 0; i < sizeof(g_aKeyCodeTranslations) / sizeof(g_aKeyCodeTranslations[0]); ++i) {
+        if (g_aKeyCodeTranslations[i].m_dwVirtualKey == pEntry->m_awords[2]) {
+            break;
+        }
+    }
+    if (i == sizeof(g_aKeyCodeTranslations) / sizeof(g_aKeyCodeTranslations[0])) {
+        ++((unsigned int *)pRenderQueueNode)[3];
+        return 0;
+    }
+
+    *(unsigned short *)&TranslatedEntry.m_awords[0] = wEntryType == 1 ? 3 : 4;
+    TranslatedEntry.m_awords[2] = g_aKeyCodeTranslations[i].m_dwInputCode;
+    if (TranslatedEntry.m_awords[2] == 0x49 && GetKeyState(VK_LSHIFT) < 0) {
+        TranslatedEntry.m_awords[2] = 0x4a;
+    }
+
+    ((int (LEMBALL_FASTCALL *)(void *, int, RDISPATCH_QueueEntry *))
+         (*(void ***)g_pSharedRenderDispatchQueue)[2])(
+        g_pSharedRenderDispatchQueue, 0, &TranslatedEntry);
+    return 1;
+}
 
 void EnterObjectCriticalSection(void *pObject) {
     EnterCriticalSection((char *)pObject + 4);
@@ -563,6 +640,16 @@ VSINIT_StreamFormatTargetState *VSINIT_StreamFormatTargetState::ConstructStreamF
     m_nRadix = 10;
     m_pDownstream = pDownstream;
     return this;
+}
+
+static void LEMBALL_FASTCALL EnterRenderDispatchQueueCriticalSection(
+    void *pObject) {
+    EnterObjectCriticalSection(pObject);
+}
+
+static void LEMBALL_FASTCALL LeaveRenderDispatchQueueCriticalSection(
+    void *pObject) {
+    LeaveObjectCriticalSection(pObject);
 }
 
 VSINIT_StreamFormatTargetState *ConstructStreamFormatTargetState(VSINIT_StreamFormatTargetState *pState,
@@ -667,8 +754,10 @@ static void DestroyFormattedOutputStream(VSINIT_FormattedOutputStream *pStream, 
 // FUNCTION: LEMBALL 0x0045AE10
 void AppendCharToFixedBufferStream(VSINIT_FixedBufferStream *pStream, char ch) {
     int cSpaces;
+    int fTab;
 
-    if (ch == '\t') {
+    fTab = ch == '\t';
+    if (fTab) {
         ch = ' ';
     }
     if (ch == '\n' && pStream->m_pfnFlush != 0) {
@@ -689,7 +778,7 @@ void AppendCharToFixedBufferStream(VSINIT_FixedBufferStream *pStream, char ch) {
         ResetFixedBufferStream(pStream);
     }
 
-    if (ch == ' ' && pStream->m_nTabWidth > 0) {
+    if (fTab && pStream->m_nTabWidth > 0) {
         cSpaces = pStream->m_cchWritten % pStream->m_nTabWidth;
         while (cSpaces != 0) {
             *pStream->m_pszCursor++ = ' ';
@@ -712,7 +801,8 @@ void AppendCStringToFixedBufferStream(VSINIT_FixedBufferStream *pStream,
 }
 
 // FUNCTION: LEMBALL 0x00463280
-void *ReturnStreamArgument(void *pStream, void *pArgument) {
+void *LEMBALL_FASTCALL ReturnStreamArgument(
+    void *pStream, int, void *pArgument) {
     (void)pStream;
     return pArgument;
 }
@@ -1033,6 +1123,29 @@ void *DeleteRenderDispatchQueue(void *pQueue, unsigned char fFreeMemory) {
     }
     return pQueue;
 }
+
+// FUNCTION: LEMBALL 0x00463940
+static void *LEMBALL_FASTCALL DeleteRenderDispatchQueueThunk00463940(
+    void *pQueue, int, int fFreeMemory) {
+    DestroyRenderDispatchQueue(pQueue);
+    if ((fFreeMemory & 1) != 0) {
+        FreeVSMemBlock(pQueue);
+    }
+    return pQueue;
+}
+
+struct RDISPATCH_FinalVtableInitializer {
+    RDISPATCH_FinalVtableInitializer(void) {
+        g_RenderDispatchQueueVtable[0] = (void *)ReturnStreamArgument;
+        g_RenderDispatchQueueVtable[1] =
+            (void *)DeleteRenderDispatchQueueThunk00463940;
+        g_RenderDispatchQueueVtable[2] =
+            (void *)AppendRenderDispatchQueueEntry;
+        g_RenderDispatchQueueVtable[3] =
+            (void *)DispatchRenderQueueEntryImmediately;
+    }
+};
+static RDISPATCH_FinalVtableInitializer g_RDISPATCH_FinalVtableInitializer;
 
 // FUNCTION: LEMBALL 0x00472070
 VSINIT_SharedGeometryHelper *VSINIT_SharedGeometryHelper::ConstructSharedGeometryHelper(void *pRenderDispatchQueue) {

@@ -5,12 +5,18 @@ void DestroyAudioManager(void *pAudioManager);
 void SetAudioManagerPrimaryContext(void *pAudioManager, void *pPrimaryContext);
 void StopAllAudioManagerBackends(void *pAudioManager);
 void RefreshAudioManagerBackendHandles(void *pAudioManager);
-int RegisterVariantResourceMusicHandle(void *pAudioManager, int nMusicResourceId);
-void StartRegisteredVariantResourceMusic(void *pAudioManager, int hMusic);
-void DispatchChildInterfaceSlot18IfReady(void *pAudioManager, int hMusic);
-void InvokeAudioManagerEmbeddedSlot1cIfMusicActive(void *pAudioManager, int hMusic);
-void StopVariantResourceMusicPlayback(void *pAudioManager, int hMusic);
-void UnregisterVariantResourceMusicHandle(void *pAudioManager, int hMusic);
+int __fastcall RegisterVariantResourceMusicHandle(
+    void *pAudioManager, int nUnused, int nMusicResourceId);
+void __fastcall StartRegisteredVariantResourceMusic(
+    void *pAudioManager, int nUnused, int hMusic);
+void __fastcall DispatchChildInterfaceSlot18IfReady(
+    void *pAudioManager, int nUnused, int hMusic);
+void __fastcall InvokeAudioManagerEmbeddedSlot1cIfMusicActive(
+    void *pAudioManager, int nUnused, int hMusic);
+void __fastcall StopVariantResourceMusicPlayback(
+    void *pAudioManager, int nUnused, int hMusic);
+void __fastcall UnregisterVariantResourceMusicHandle(
+    void *pAudioManager, int nUnused, int hMusic);
 int CreateVariantResourceEffectInstance(void *pAudioManager, int nEffectResourceId);
 void InvokeAudioManagerEffectSlot48IfActive(void *pAudioManager, int nEffect);
 void SetAudioManagerMusicAndEffectVolume(void *pAudioManager, int nMusicVolume, int nEffectVolume);

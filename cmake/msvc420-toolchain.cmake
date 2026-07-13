@@ -23,6 +23,8 @@ set(CMAKE_CXX_COMPILER "${_msvc420_root}/bin/CL.EXE")
 set(CMAKE_CXX_COMPILER_ID_RUN TRUE)
 set(CMAKE_CXX_COMPILER_FORCED TRUE)
 set(CMAKE_CXX_COMPILER_WORKS TRUE)
+set(LEMBALL_RC_COMPILER "${_msvc420_root}/bin/RC.EXE" CACHE FILEPATH
+    "Resource compiler for the reconstructed Win32 resources")
 
 # The original executable uses the statically linked MSVC 4.20 CRT.  CMake's
 # Debug configuration otherwise injects -MDd and makes the reconstruction

@@ -79,6 +79,7 @@ enum {
     INFINITE = 0xffffffffu,
     DRIVE_CDROM = 5u,
     KEY_ALL_ACCESS = 0x000f003fu,
+    VK_LSHIFT = 0xa0u,
 };
 
 struct tagPOINT {
@@ -221,6 +222,7 @@ LRESULT WINAPI DispatchMessageA(const MSG *lpMsg);
 BOOL WINAPI DestroyWindow(HWND hWnd);
 BOOL WINAPI ClientToScreen(HWND hWnd, tagPOINT *lpPoint);
 __declspec(dllimport) BOOL WINAPI GetCursorPos(tagPOINT *lpPoint);
+__declspec(dllimport) short WINAPI GetKeyState(int nVirtKey);
 HANDLE WINAPI CreateEventA(LPSECURITY_ATTRIBUTES lpEventAttributes,
                            BOOL bManualReset,
                            BOOL bInitialState,

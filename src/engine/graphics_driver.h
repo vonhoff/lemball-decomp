@@ -25,12 +25,15 @@ public:
     int Create(HWND hWnd);
 
     void *CreateDisplayBinding(void);
-    void ReleaseDisplayBinding(void *pBinding);
+    int ReleaseDisplayBinding(void *pBinding);
     int InitializeDisplayBitmapInfo(void *pBitmapInfo);
     void *CreateDisplayBitmap(int nDriver, void *pBitmapInfo);
     int ReleaseDisplayBitmap(void *pBitmap);
     int BindDisplayBitmap(int nDriver, void *pBitmap);
     int DeleteDisplayBitmap(int nDriver, void *pBitmap);
+    unsigned int DispatchSplitRectAtBackingRowBoundary(
+        void *pDestination, short *pDestinationRect,
+        void *pSource, short *pSourceRect, void *pHelperTarget);
 
     int IsReady(void) const;
     short Width(void) const;
@@ -50,7 +53,7 @@ protected:
 struct VSGDI_DisplayStateDispatch {
     virtual void Destroy(void) = 0;
     virtual void *CreateDisplayBinding(void) = 0;
-    virtual void ReleaseDisplayBinding(void *pBinding) = 0;
+    virtual int ReleaseDisplayBinding(void *pBinding) = 0;
     virtual int InitializeDisplayBitmapInfo(void *pBitmapInfo) = 0;
     virtual void *CreateDisplayBitmap(int nDriver, void *pBitmapInfo) = 0;
     virtual int ReleaseDisplayBitmap(void *pBitmap) = 0;
@@ -86,11 +89,16 @@ class VSGDI_HelperSurface {
 public:
     VSGDI_HelperSurface(void);
 
+    int ClipRenderRectToSurfaceBounds(VSGDI_Rect *pRect,
+                                      VSGDI_Rect *pClippedRect);
+    void FillRect(VSGDI_Rect Rect, int nColor);
     void UpdateWorkingRectAndBacking(const VSGDI_Rect *pRect);
     void ComputeBackingDimensions(short *paOut, short *paRect, int nWidth);
     void ConfigureBackingStrideAndOrigin(int nStride, int nOrigin);
     void ClearBackingBorderRows(void);
     void ClearBackingBorderRowsThunk(void);
+    void SplitRectAtBackingRowBoundary(
+        short *pRect, short **ppFirstRect, short **ppSecondRect);
     int IsReady(void) const;
     short BackingWidth(void) const;
     short BackingHeight(void) const;
@@ -134,9 +142,20 @@ private:
 int InitializeResourceGeometryHelperRuntime(void);
 int ShutdownResourceGeometryHelperRuntime(void);
 void LEMBALL_FASTCALL BuildGeometryHelperFromRenderRect(void *pOwner);
+void LEMBALL_FASTCALL DestroyGeometryHelperPointerArray(void *pHelper);
+void LEMBALL_FASTCALL BindHelperTargetDisplayDc(void *pTarget,
+                                                 int nUnused,
+                                                 void *hDc);
+void LEMBALL_FASTCALL PropagateGlobalPaletteToResourceGeometries(void *pTarget);
+void LEMBALL_FASTCALL PropagateGlobalPaletteToResourceGeometriesBody(void *pTarget);
+void LEMBALL_FASTCALL CopyRectTupleIfExtentEmpty(void *pTarget,
+                                                 int nUnused,
+                                                 short *paRect);
 int InitializeSelectedGraphicsDriver(int nRequestedDriver);
 int GetSelectedGraphicsDriverId(void);
 extern void *g_pSelectedGraphicsDriverRuntime;
+extern void *g_pResourceGeometryHelperTarget;
+extern unsigned int g_adwGlobalResourceGeometryPaletteTable[256];
 VSGDI_DisplayState *GetDisplayState(void);
 void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
 void LEMBALL_FASTCALL PromoteHelperUploadStateToActive(int nUploadState);

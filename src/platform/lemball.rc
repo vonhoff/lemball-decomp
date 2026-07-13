@@ -1,0 +1,30 @@
+#define IDR_MAIN_MENU 115
+
+#define IDM_FILE_EXIT 40001
+#define IDM_HELP_CONTENTS 40003
+#define IDM_HELP_ABOUT 40011
+#define IDM_OPTIONS_FULLSCREEN 40012
+#define IDM_HELP_ON_HELP 40013
+#define IDM_HELP_SEARCH_TOPIC 40016
+
+LANGUAGE 9, 2
+
+IDR_MAIN_MENU MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "E&xit", IDM_FILE_EXIT
+    END
+    POPUP "&Options"
+    BEGIN
+        MENUITEM "Full Screen        F4", IDM_OPTIONS_FULLSCREEN
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&Contents", IDM_HELP_CONTENTS
+        MENUITEM "&Search Topic", IDM_HELP_SEARCH_TOPIC
+        MENUITEM "&Help on Help", IDM_HELP_ON_HELP
+        MENUITEM SEPARATOR
+        MENUITEM "&About Paint Ball...", IDM_HELP_ABOUT
+    END
+END

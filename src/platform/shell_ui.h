@@ -26,7 +26,12 @@ struct SHELLUI_MenuCommandMessage {
 
 void InitializePrimaryContextShell(SHELLUI_PrimaryContextShell *pShell);
 char *LEMBALL_STDCALL BuildSystemInformationReportString(void);
-int HandlePrimaryContextMenuCommand(SHELLUI_PrimaryContextShell *pShell, const SHELLUI_MenuCommandMessage *pMessage);
+int LEMBALL_FASTCALL HandlePrimaryContextMenuCommand(
+    SHELLUI_PrimaryContextShell *pShell, int nUnused,
+    const SHELLUI_MenuCommandMessage *pMessage);
+int LEMBALL_FASTCALL HandlePrimaryContextMenuCommandThunk(
+    SHELLUI_PrimaryContextShell *pShell, int nUnused,
+    const SHELLUI_MenuCommandMessage *pMessage);
 int CALLBACK AboutBoxProc(HWND hDlg, UINT uMessage, WPARAM wParam, LPARAM lParam);
 
 #endif

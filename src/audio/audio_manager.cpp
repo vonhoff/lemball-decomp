@@ -10,19 +10,25 @@
 
 #include <string.h>
 
-typedef int (*AUDIO_TestProc)(void);
+typedef int (LEMBALL_FASTCALL *AUDIO_TestProc)(void *pBackend, int nUnused);
 typedef int (LEMBALL_FASTCALL *AUDIO_OpenProc)(void *pBackend, int nUnused,
                                                 int nResourceBase, int cResources,
                                                 void *pPrimaryContext);
 typedef void (*AUDIO_VoidProc)(void);
 typedef void (*AUDIO_IntProc)(int nValue);
-typedef int (*AUDIO_CreateEffectProc)(int nValue, void *pOut);
+typedef void (LEMBALL_FASTCALL *AUDIO_ControlIntProc)(
+    void *pControl, int nUnused, int nValue);
+typedef void (LEMBALL_FASTCALL *AUDIO_ControlPairProc)(
+    void *pControl, int nUnused, int nValue1, int nValue2);
+typedef int (LEMBALL_FASTCALL *AUDIO_CreateEffectProc)(
+    void *pBackend, int nUnused, int nValue, void *pOut);
 typedef void (*AUDIO_EffectPlayProc)(int nEffectResourceId, int nVolume);
 typedef void (*AUDIO_EffectVolumeProc)(int nEffectInstanceId, int nVolume, int nReserved);
 typedef int (*AUDIO_ReturnIntProc)(void);
 typedef int (*AUDIO_ReturnIntArgProc)(int nValue);
 typedef const char *(*AUDIO_NameProc)(void);
-typedef void (*AUDIO_ContextProc)(void *pPrimaryContext);
+typedef void (LEMBALL_FASTCALL *AUDIO_ContextProc)(
+    void *pBackend, int nUnused, void *pPrimaryContext);
 /* Vtable slot 0 is a thiscall delete entry: ECX is the object and the
    delete flag remains on the stack.  The fastcall spelling supplies the
    required ECX object, consumes a dummy EDX register argument, and leaves
@@ -31,17 +37,15 @@ typedef void *(LEMBALL_FASTCALL *AUDIO_DeleteProc)(void *pObject,
                                                    int nUnused,
                                                    int fDelete);
 typedef void *(*AUDIO_ConstructPatchProc)(void *, void *, int, int, int, int);
-typedef void *(*AUDIO_ConstructBufferPoolProc)(void *, int, void *, int, int, int, int);
 typedef void (*AUDIO_PlayBufferProc)(void *, int, int);
 typedef void (*AUDIO_DestroyBufferProc)(int);
 
 void *LEMBALL_FASTCALL ConstructAudioEffectBackendBase(void *pBackend);
 
-/* Raw targets at 0047BF00/0047D310/0047D700/0047C8A0/0047C940/0047C990
+/* Raw targets at 0047BF00/0047D700/0047C8A0/0047C940/0047C990
    overlap unlabeled/interior code in the current Ghidra ownership map. Keep
    symbolic until their true function ownership is resolved. */
 static AUDIO_ConstructPatchProc g_AUDIO_ConstructPatchProc = 0;
-static AUDIO_ConstructBufferPoolProc g_AUDIO_ConstructBufferPoolProc = 0;
 static AUDIO_DestroyBufferProc g_AUDIO_DestroyBufferProc = 0;
 static AUDIO_PlayBufferProc g_AUDIO_PlayBufferProc = 0;
 static void (*g_AUDIO_PauseBufferProc)(void *, int) = 0;
@@ -125,6 +129,63 @@ struct AUDIO_MciMusicBackend : AUDIO_DynamicStringEntry {
     HWND m_hNotificationWindow;
     AUDIO_MciMusicBackend *ConstructMciMusicBackend(void);
 };
+
+struct AUDIO_WaveFormat {
+    WORD wFormatTag;
+    WORD nChannels;
+    DWORD nSamplesPerSec;
+    DWORD nAvgBytesPerSec;
+    WORD nBlockAlign;
+    WORD wBitsPerSample;
+    WORD cbSize;
+};
+
+struct AUDIO_DirectSoundBufferDesc {
+    DWORD dwSize;
+    DWORD dwFlags;
+    DWORD dwBufferBytes;
+    DWORD dwReserved;
+    AUDIO_WaveFormat *pWaveFormat;
+};
+
+struct AUDIO_DirectSoundEffectBufferPool {
+    int m_fReady;
+    int m_nCurrentBuffer;
+    void **m_ppBuffers;
+    int m_nReserved0c;
+    int m_cBuffers;
+    int m_nReserved14;
+    int m_nFlags;
+};
+
+typedef LONG (__stdcall *AUDIO_DirectSoundCreateProc)(
+    const void *pGuid, void **ppDirectSound, void *pOuterUnknown);
+typedef LONG (__stdcall *AUDIO_DirectSoundCreateBufferProc)(
+    void *pDevice, AUDIO_DirectSoundBufferDesc *pDesc,
+    void **ppBuffer, void *pOuterUnknown);
+typedef LONG (__stdcall *AUDIO_DirectSoundDuplicateBufferProc)(
+    void *pDevice, void *pSourceBuffer, void **ppDuplicateBuffer);
+typedef LONG (__stdcall *AUDIO_DirectSoundSetCooperativeLevelProc)(
+    void *pDevice, HWND hWnd, DWORD dwLevel);
+typedef LONG (__stdcall *AUDIO_DirectSoundLockProc)(
+    void *pBuffer, DWORD dwOffset, DWORD dwBytes,
+    void **ppvAudioPtr1, DWORD *pdwAudioBytes1,
+    void **ppvAudioPtr2, DWORD *pdwAudioBytes2, DWORD dwFlags);
+typedef LONG (__stdcall *AUDIO_DirectSoundPlayProc)(
+    void *pBuffer, DWORD dwReserved1, DWORD dwPriority, DWORD dwFlags);
+typedef LONG (__stdcall *AUDIO_DirectSoundSetFormatProc)(
+    void *pBuffer, AUDIO_WaveFormat *pWaveFormat);
+typedef LONG (__stdcall *AUDIO_DirectSoundUnlockProc)(
+    void *pBuffer, void *pvAudioPtr1, DWORD dwAudioBytes1,
+    void *pvAudioPtr2, DWORD dwAudioBytes2);
+
+// GLOBAL: LEMBALL 0x004a3318
+static void *g_pDirectSoundPrimaryBuffer = 0;
+// GLOBAL: LEMBALL 0x004a331c
+static void *g_pDirectSoundDevice = 0;
+
+#define AUDIO_DIRECTSOUND_METHOD(pObject, nSlot, ProcType) \
+    ((ProcType)(*(void ***)(pObject))[nSlot])
 
 #define AUDIO_RESERVED_VIRTUAL(n) virtual void Reserved##n(void) = 0
 
@@ -271,9 +332,37 @@ int InitializeWaveOutEffectDevice0047CB00(void *pBackend,
 int ResetAndCloseWaveOutEffectDevice0047CC20(void *pBackend);
 int IsWaveOutEffectInstanceAvailable0047CDD0(void *pBackend);
 int ReturnOneWaveOutBackendValue0047CDF0(void *pBackend);
+void LEMBALL_FASTCALL CaptureWaveOutBackendContext0047D260(
+    void *pBackend, int nUnused, void *pPrimaryContext);
 void DestroyDirectSoundEffectBackend(void *pBackend);
 char *__fastcall GetDirectSoundEffectBackendDescription(AUDIO_DirectSoundEffectBackend *pBackend);
-int CreateDirectSoundEffectInstance(void *pBackend, void *pPatchResource, int *pnEffectInstanceId, int nFlags);
+int LEMBALL_FASTCALL InitializeDirectSoundEffectDevice(
+    void *pBackend, int nUnused, int nResourceBase,
+    int cResources, void *pPrimaryContext);
+int LEMBALL_FASTCALL AcceptDirectSoundBackendResources(
+    void *pBackend, int nUnused, int nResourceBase,
+    int cResources, void *pPrimaryContext);
+int LEMBALL_FASTCALL GetDirectSoundBackendReservedValue1c(
+    void *pBackend, int nUnused);
+int LEMBALL_FASTCALL GetDirectSoundBackendAvailability(
+    void *pBackend, int nUnused);
+int LEMBALL_FASTCALL ReturnDirectSoundBackendUnavailable(
+    void *pBackend, int nUnused);
+int LEMBALL_FASTCALL GetDirectSoundBackendBufferCount(
+    void *pBackend, int nUnused);
+void LEMBALL_FASTCALL CaptureDirectSoundBackendWindow(
+    void *pBackend, int nUnused, void *pPrimaryContext);
+AUDIO_DirectSoundEffectBufferPool *LEMBALL_FASTCALL
+ConstructDirectSoundEffectBufferPool(
+    AUDIO_DirectSoundEffectBufferPool *pPool, int nUnused,
+    int cBuffers, void *pPatchResource, int nOutputRate,
+    int fSourceIs16Bit, int nReserved, int nFlags);
+int LEMBALL_FASTCALL CreateDirectSoundEffectInstance(
+    void *pBackend, int nUnused, void *pPatchResource,
+    int *pnEffectInstanceId, int nFlags);
+int LEMBALL_FASTCALL CreateDirectSoundEffectInstanceWithDefaultFlags(
+    void *pBackend, int nUnused, void *pPatchResource,
+    int *pnEffectInstanceId);
 int FreeDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId);
 int ReleaseAllDirectSoundEffectInstances(void *pBackend);
 void PlayDirectSoundEffectInstanceWithMappedVolume(void *pBackend, int nEffectInstanceId, unsigned char nVolume,
@@ -297,9 +386,7 @@ struct AUDIO_MciMusicBackendVtableModel {
         return DeleteAudioDynamicStringEntry(
             (AUDIO_DynamicStringEntry *)this, 0, fDelete);
     }
-    virtual const char *GetName(void) {
-        return ReturnEmptyAudioBackendName();
-    }
+    virtual void Initialize(int nValue1, int nValue2);
     virtual void Prepare(int nTrackHandle, int nMusicResourceId) {
         PrepareMciMusicTrack((AUDIO_MciMusicBackend *)this, nTrackHandle, nMusicResourceId);
     }
@@ -379,25 +466,29 @@ static void *g_WaveOutEffectBackendVtable[39] = {
     (void *)NoOpAudioTriple,
     0,
     0,
-    (void *)NoOpAudioInt,
+    (void *)CaptureWaveOutBackendContext0047D260,
 };
+
+// FUNCTION: LEMBALL 0x0047F510
+void AUDIO_MciMusicBackendVtableModel::Initialize(int, int) {
+}
 static void *g_DirectSoundEffectBackendVtable[39] = {
     (void *)DeleteDirectSoundEffectBackend,
     (void *)GetDirectSoundEffectBackendDescription,
     0,
-    (void *)AcceptAudioBackendResources,
-    (void *)AcceptAudioBackendResources,
+    (void *)InitializeDirectSoundEffectDevice,
+    (void *)AcceptDirectSoundBackendResources,
     (void *)NoOpAudioInt,
     0,
     (void *)NoOpAudioInt,
     (void *)NoOpAudioInt,
-    (void *)ReturnAudioBackendUnavailable,
-    (void *)ReturnAudioBackendReady,
-    (void *)ReturnAudioBackendReady,
+    (void *)GetDirectSoundBackendReservedValue1c,
+    (void *)GetDirectSoundBackendAvailability,
+    (void *)ReturnDirectSoundBackendUnavailable,
+    (void *)GetDirectSoundBackendBufferCount,
     0,
     0,
-    0,
-    (void *)CreateDirectSoundEffectInstance,
+    (void *)CreateDirectSoundEffectInstanceWithDefaultFlags,
     0,
     0,
     (void *)FreeDirectSoundEffectInstance,
@@ -420,7 +511,7 @@ static void *g_DirectSoundEffectBackendVtable[39] = {
     (void *)NoOpAudioTriple,
     0,
     0,
-    (void *)NoOpAudioInt,
+    (void *)CaptureDirectSoundBackendWindow,
 };
 struct AUDIO_BackendVtableInitializer {
     AUDIO_BackendVtableInitializer(void) {
@@ -440,7 +531,6 @@ static void SetAudioDynamicStringEntryFlag(void *pObject, int fValue) {
     ((AUDIO_DynamicStringEntry *)pObject)->m_fBasePathSet = fValue;
 }
 
-// FUNCTION: LEMBALL 0x0047F510
 static void AudioDynamicStringEntryNoop(int nUnused0, int nUnused1) {
     (void)nUnused0;
     (void)nUnused1;
@@ -470,6 +560,29 @@ static const char g_AUDIO_SequencerDeviceType[] = "sequencer";
 static const char g_AUDIO_MciWindowClassName[] = "HLMusicWindow";
 static const char g_AUDIO_DsoundDll[] = "DSOUND.DLL";
 static const char g_AUDIO_DirectSoundCreate[] = "DirectSoundCreate";
+static const char g_AUDIO_UnknownDirectSoundError[] = "UNKNOWN DIRECT SOUND ERROR: ";
+static char g_AUDIO_UnknownDirectSoundErrorBuffer[0x80];
+struct AUDIO_DirectSoundErrorEntry {
+    const char *pszName;
+    unsigned int uCode;
+};
+static const AUDIO_DirectSoundErrorEntry g_AUDIO_DirectSoundErrors[] = {
+    { "DSERR_ALLOCATED", 0x0000000a },
+    { "DSERR_CONTROLUNAVAIL", 0x0000001e },
+    { "DSERR_INVALIDPARAM", 0x80070057 },
+    { "DSERR_INVALIDCALL", 0x00000032 },
+    { "DSERR_GENERIC", 0x80004005 },
+    { "DSERR_PRIOLEVELNEEDED", 0x00000046 },
+    { "DSERR_OUTOFMEMORY", 0x8007000e },
+    { "DSERR_BADFORMAT", 0x00000064 },
+    { "DSERR_UNSUPPORTED", 0x80004001 },
+    { "DSERR_NODRIVER", 0x00000078 },
+    { "DSERR_ALREADYINITIALIZED", 0x00000082 },
+    { "DSERR_NOAGGREGATION", 0x80040110 },
+    { "DSERR_BUFFERLOST", 0x00000096 },
+    { "DSERR_OTHERAPPHASPRIO", 0x000000a0 },
+    { 0, 0 }
+};
 static const char g_AUDIO_NoEffectsBackendName[] = "ERROR: No Effects Device for Windows";
 static const char g_AUDIO_NoDirectSoundBackendName[] = "ERROR: No Effects Device for Windows";
 static const char g_AUDIO_HlMidiNotFoundPrefix[] = "Error: HL Midi Device Not Found. ";
@@ -530,11 +643,13 @@ void *AUDIO_Manager::ConstructAudioManager(int nMusicResourceBase,
     *(void **)((char *)pAudioManager + 0x78) = 0;
     for (i = 0; i < (unsigned int)cBackends; ++i) {
         if (ppBackend[i] != 0) {
-            fBackendReady = ((AUDIO_TestProc)(*(void ***)ppBackend[i])[9])();
+            fBackendReady = ((AUDIO_TestProc)(*(void ***)ppBackend[i])[9])(
+                ppBackend[i], 0);
             if (fBackendReady == 1) {
                 *(void **)((char *)pAudioManager + 0x74) = ppBackend[i];
             }
-            fBackendReady = ((AUDIO_TestProc)(*(void ***)ppBackend[i])[10])();
+            fBackendReady = ((AUDIO_TestProc)(*(void ***)ppBackend[i])[10])(
+                ppBackend[i], 0);
             if (fBackendReady == 1) {
                 *(void **)((char *)pAudioManager + 0x78) = ppBackend[i];
             }
@@ -563,7 +678,8 @@ void *AUDIO_Manager::ConstructAudioManager(int nMusicResourceBase,
         *(unsigned char *)((char *)pAudioManager + 0xc7e) = 1;
         if (*(void **)((char *)pAudioManager + 0x74) != 0) {
             *(unsigned char *)((char *)pAudioManager + 0xc7e) =
-                ((AUDIO_TestProc)(*(void ***)*(void **)((char *)pAudioManager + 0x74))[11])();
+                ((AUDIO_TestProc)(*(void ***)*(void **)((char *)pAudioManager + 0x74))[11])(
+                    *(void **)((char *)pAudioManager + 0x74), 0);
         }
     } else {
         *(unsigned char *)((char *)pAudioManager + 0xc7c) = 0;
@@ -573,7 +689,8 @@ void *AUDIO_Manager::ConstructAudioManager(int nMusicResourceBase,
     if (*(int *)((char *)pAudioManager + 0x10) == 1) {
         *(unsigned char *)((char *)pAudioManager + 0xc7d) = 1;
         *(unsigned char *)((char *)pAudioManager + 0xc7f) =
-            ((AUDIO_TestProc)(*(void ***)*(void **)((char *)pAudioManager + 0x78))[12])();
+            ((AUDIO_TestProc)(*(void ***)*(void **)((char *)pAudioManager + 0x78))[12])(
+                *(void **)((char *)pAudioManager + 0x78), 0);
     } else {
         *(unsigned char *)((char *)pAudioManager + 0xc7d) = 0;
         *(unsigned char *)((char *)pAudioManager + 0xc7f) = 0;
@@ -698,11 +815,13 @@ void AUDIO_Manager::InvokeAudioManagerEmbeddedSlot04(int nValue1, int nValue2) {
     void *pControl;
 
     pControl = *(void **)((char *)this + 0x34);
-    ((void (*)(int, int))(*(void ***)pControl)[1])(nValue1, nValue2);
+    ((AUDIO_ControlPairProc)(*(void ***)pControl)[1])(
+        pControl, 0, nValue1, nValue2);
 }
 
 // FUNCTION: LEMBALL 0x0045B2E0
-int RegisterVariantResourceMusicHandle(void *pAudioManager, int nMusicResourceId) {
+int LEMBALL_FASTCALL RegisterVariantResourceMusicHandle(
+    void *pAudioManager, int, int nMusicResourceId) {
     int hMusic;
     void *pControl;
 
@@ -713,61 +832,72 @@ int RegisterVariantResourceMusicHandle(void *pAudioManager, int nMusicResourceId
             *(int *)((char *)pAudioManager + 0x6c) = 1;
         }
         pControl = *(void **)((char *)pAudioManager + 0x34);
-        ((void (*)(int, int))(*(void ***)pControl)[2])(hMusic, nMusicResourceId);
+        ((AUDIO_ControlPairProc)(*(void ***)pControl)[2])(
+            pControl, 0, hMusic, nMusicResourceId);
         return hMusic;
     }
     return 0;
 }
 
 // FUNCTION: LEMBALL 0x0045B330
-void StartRegisteredVariantResourceMusic(void *pAudioManager, int hMusic) {
+void LEMBALL_FASTCALL StartRegisteredVariantResourceMusic(
+    void *pAudioManager, int, int hMusic) {
     void *pControl;
 
     if (*(int *)((char *)pAudioManager + 0xc) == 1 && hMusic != 0 &&
         *(int *)((char *)pAudioManager + 0x1c) == 1) {
         pControl = *(void **)((char *)pAudioManager + 0x34);
-        ((AUDIO_IntProc)(*(void ***)pControl)[4])(hMusic);
+        ((AUDIO_ControlIntProc)(*(void ***)pControl)[4])(
+            pControl, 0, hMusic);
     }
 }
 
 // FUNCTION: LEMBALL 0x0045B370
-void DispatchChildInterfaceSlot18IfReady(void *pAudioManager, int hMusic) {
+void LEMBALL_FASTCALL DispatchChildInterfaceSlot18IfReady(
+    void *pAudioManager, int, int hMusic) {
     void *pControl;
 
     if (*(int *)((char *)pAudioManager + 0xc) == 1 && *(int *)((char *)pAudioManager + 0x1c) == 1) {
         pControl = *(void **)((char *)pAudioManager + 0x34);
-        ((AUDIO_IntProc)(*(void ***)pControl)[6])(hMusic);
+        ((AUDIO_ControlIntProc)(*(void ***)pControl)[6])(
+            pControl, 0, hMusic);
     }
 }
 
 // FUNCTION: LEMBALL 0x0045B390
-void InvokeAudioManagerEmbeddedSlot1cIfMusicActive(void *pAudioManager, int hMusic) {
+void LEMBALL_FASTCALL InvokeAudioManagerEmbeddedSlot1cIfMusicActive(
+    void *pAudioManager, int, int hMusic) {
     void *pControl;
 
     if (*(int *)((char *)pAudioManager + 0xc) == 1 && *(int *)((char *)pAudioManager + 0x1c) == 1) {
         pControl = *(void **)((char *)pAudioManager + 0x34);
-        ((AUDIO_IntProc)(*(void ***)pControl)[7])(hMusic);
+        ((AUDIO_ControlIntProc)(*(void ***)pControl)[7])(
+            pControl, 0, hMusic);
     }
 }
 
 // FUNCTION: LEMBALL 0x0045B3B0
-void StopVariantResourceMusicPlayback(void *pAudioManager, int hMusic) {
+void LEMBALL_FASTCALL StopVariantResourceMusicPlayback(
+    void *pAudioManager, int, int hMusic) {
     void *pControl;
 
     if (*(int *)((char *)pAudioManager + 0xc) == 1 && *(int *)((char *)pAudioManager + 0x1c) == 1) {
         pControl = *(void **)((char *)pAudioManager + 0x34);
-        ((AUDIO_IntProc)(*(void ***)pControl)[5])(hMusic);
+        ((AUDIO_ControlIntProc)(*(void ***)pControl)[5])(
+            pControl, 0, hMusic);
     }
 }
 
 // FUNCTION: LEMBALL 0x0045B3D0
-void UnregisterVariantResourceMusicHandle(void *pAudioManager, int hMusic) {
+void LEMBALL_FASTCALL UnregisterVariantResourceMusicHandle(
+    void *pAudioManager, int, int hMusic) {
     void *pControl;
 
     if (*(int *)((char *)pAudioManager + 0xc) == 1 && hMusic != 0 &&
         *(int *)((char *)pAudioManager + 0x1c) == 1) {
         pControl = *(void **)((char *)pAudioManager + 0x34);
-        ((AUDIO_IntProc)(*(void ***)pControl)[3])(hMusic);
+        ((AUDIO_ControlIntProc)(*(void ***)pControl)[3])(
+            pControl, 0, hMusic);
     }
 }
 
@@ -787,8 +917,12 @@ int CreateVariantResourceEffectInstance(void *pAudioManager, int nEffectResource
 
         ++pEffectResource->m_nLockCount08;
         nEffectData = ((AUDIO_ReturnIntProc)pEffectResource->m_pVtable[10])();
-        ((AUDIO_CreateEffectProc)(*(void ***)*(void **)((char *)pAudioManager + 0x78))[15])(
-            nEffectData, &nEffectInstanceId);
+        {
+            void *pEffectBackend =
+                *(void **)((char *)pAudioManager + 0x78);
+            ((AUDIO_CreateEffectProc)(*(void ***)pEffectBackend)[15])(
+                pEffectBackend, 0, nEffectData, &nEffectInstanceId);
+        }
         --pEffectResource->m_nLockCount08;
         ReleaseTypedResourceObjectReference(pEffectResource);
         return nEffectInstanceId;
@@ -868,7 +1002,8 @@ void SetAudioManagerEffectResourceContext(void *pAudioManager, void *pPrimaryCon
     void *pBackend;
 
     pBackend = *(void **)((char *)pAudioManager + 0x78);
-    ((AUDIO_ContextProc)(*(void ***)pBackend)[38])(pPrimaryContext);
+    ((AUDIO_ContextProc)(*(void ***)pBackend)[38])(
+        pBackend, 0, pPrimaryContext);
 }
 
 // FUNCTION: LEMBALL 0x0045B5A0
@@ -877,7 +1012,8 @@ void SetAudioManagerMusicResourceContext(void *pAudioManager, void *pPrimaryCont
 
     pBackend = *(void **)((char *)pAudioManager + 0x74);
     if (pBackend != 0) {
-        ((AUDIO_ContextProc)(*(void ***)pBackend)[38])(pPrimaryContext);
+        ((AUDIO_ContextProc)(*(void ***)pBackend)[38])(
+            pBackend, 0, pPrimaryContext);
     }
 }
 
@@ -1329,6 +1465,40 @@ void *LEMBALL_FASTCALL DeleteWaveOutEffectBackend(
     return pBackend;
 }
 
+// FUNCTION: LEMBALL 0x0047D260
+void LEMBALL_FASTCALL CaptureWaveOutBackendContext0047D260(
+    void *, int, void *) {
+}
+
+// FUNCTION: LEMBALL 0x0047C210
+unsigned short ByteSwapAudioWord(unsigned short uValue) {
+    return (unsigned short)((uValue >> 8) + (uValue << 8));
+}
+
+// FUNCTION: LEMBALL 0x0047C230
+unsigned int ByteSwapAudioDword(unsigned int uValue) {
+    return ((unsigned int)ByteSwapAudioWord((unsigned short)uValue) << 16) +
+           ByteSwapAudioWord((unsigned short)(uValue >> 16));
+}
+
+// FUNCTION: LEMBALL 0x0047D290
+const char *LookupDirectSoundErrorString(unsigned int uError) {
+    int i;
+
+    strcpy(g_AUDIO_UnknownDirectSoundErrorBuffer,
+           g_AUDIO_UnknownDirectSoundError);
+    for (i = 0; g_AUDIO_DirectSoundErrors[i].uCode != 0; ++i) {
+        if (g_AUDIO_DirectSoundErrors[i].uCode == uError)
+            return g_AUDIO_DirectSoundErrors[i].pszName;
+    }
+    FormatSignedIntToRadixString(
+        (int)uError,
+        g_AUDIO_UnknownDirectSoundErrorBuffer +
+            strlen(g_AUDIO_UnknownDirectSoundErrorBuffer),
+        10);
+    return g_AUDIO_UnknownDirectSoundErrorBuffer;
+}
+
 // FUNCTION: LEMBALL 0x0047DD80
 AUDIO_DirectSoundEffectBackend *AUDIO_DirectSoundEffectBackend::ConstructDirectSoundEffectBackend(
     int cEffectResources, int nCooperativeLevel) {
@@ -1392,6 +1562,172 @@ char *__fastcall GetDirectSoundEffectBackendDescription(AUDIO_DirectSoundEffectB
     return (char *)g_AUDIO_NoDirectSoundBackendName;
 }
 
+// FUNCTION: LEMBALL 0x0047E020
+int LEMBALL_FASTCALL InitializeDirectSoundEffectDevice(
+    void *pBackend, int, int, int, void *) {
+    AUDIO_DirectSoundBufferDesc BufferDesc;
+    AUDIO_WaveFormat *pWaveFormat;
+    LONG hResult;
+    const char *pszError;
+    VSINIT_FormattedOutputStream *pStream;
+
+    hResult = ((AUDIO_DirectSoundCreateProc)
+        *(FARPROC *)((char *)pBackend + 8))(
+            0, &g_pDirectSoundDevice, 0);
+    if (hResult != 0) {
+        pszError = LookupDirectSoundErrorString((unsigned int)hResult & 0xfff);
+        pStream = AppendCStringToStream(
+            g_pErrorOutputStream, "Direct Sound Create failed: ");
+        pStream = AppendCStringToStream(pStream, pszError);
+        AppendCStringToStream(pStream, "\n");
+        *(int *)((char *)pBackend + 0x20) = 0;
+        return 0;
+    }
+
+    memset(&BufferDesc, 0, sizeof(BufferDesc));
+    BufferDesc.dwSize = sizeof(BufferDesc);
+    BufferDesc.dwFlags = 1;
+    hResult = AUDIO_DIRECTSOUND_METHOD(
+        g_pDirectSoundDevice, 6,
+        AUDIO_DirectSoundSetCooperativeLevelProc)(
+            g_pDirectSoundDevice,
+            *(HWND *)((char *)pBackend + 0x10), 2);
+    if (hResult != 0) {
+        pszError = LookupDirectSoundErrorString((unsigned int)hResult & 0xfff);
+        pStream = AppendCStringToStream(
+            g_pErrorOutputStream,
+            "Effect Buffer Set Cooperative Level failed: ");
+        pStream = AppendCStringToStream(pStream, pszError);
+        AppendCStringToStream(pStream, "\n");
+        *(int *)((char *)pBackend + 0x20) = 0;
+        return 0;
+    }
+
+    hResult = AUDIO_DIRECTSOUND_METHOD(
+        g_pDirectSoundDevice, 3,
+        AUDIO_DirectSoundCreateBufferProc)(
+            g_pDirectSoundDevice, &BufferDesc,
+            &g_pDirectSoundPrimaryBuffer, 0);
+    if (hResult != 0) {
+        pszError = LookupDirectSoundErrorString((unsigned int)hResult & 0xfff);
+        pStream = AppendCStringToStream(
+            g_pErrorOutputStream, "Primary Sound Buffer failed: ");
+        pStream = AppendCStringToStream(pStream, pszError);
+        AppendCStringToStream(pStream, "\n");
+        *(int *)((char *)pBackend + 0x20) = 0;
+        return 0;
+    }
+
+    pWaveFormat = (AUDIO_WaveFormat *)((char *)pBackend + 0x3c);
+    hResult = AUDIO_DIRECTSOUND_METHOD(
+        g_pDirectSoundPrimaryBuffer, 14,
+        AUDIO_DirectSoundSetFormatProc)(
+            g_pDirectSoundPrimaryBuffer, pWaveFormat);
+    if (hResult != 0) {
+        pszError = LookupDirectSoundErrorString((unsigned int)hResult & 0xfff);
+        AppendStartupCString("Primary Buffer Set Format failed: ");
+        AppendStartupCString(pszError);
+        AppendStartupCString("\n");
+        AppendStartupCString("Trying 22Khz 8 bit...\n");
+        pWaveFormat->wBitsPerSample = 8;
+        hResult = AUDIO_DIRECTSOUND_METHOD(
+            g_pDirectSoundPrimaryBuffer, 14,
+            AUDIO_DirectSoundSetFormatProc)(
+                g_pDirectSoundPrimaryBuffer, pWaveFormat);
+        if (hResult != 0) {
+            pszError = LookupDirectSoundErrorString(
+                (unsigned int)hResult & 0xfff);
+            AppendStartupCString("Primary Buffer Set Format failed: ");
+            AppendStartupCString(pszError);
+            AppendStartupCString("\n");
+            AppendStartupCString("Trying 11khz 16 bit...\n");
+            pWaveFormat->nSamplesPerSec = 11025;
+            pWaveFormat->wBitsPerSample = 16;
+            hResult = AUDIO_DIRECTSOUND_METHOD(
+                g_pDirectSoundPrimaryBuffer, 14,
+                AUDIO_DirectSoundSetFormatProc)(
+                    g_pDirectSoundPrimaryBuffer, pWaveFormat);
+            if (hResult != 0) {
+                pszError = LookupDirectSoundErrorString(
+                    (unsigned int)hResult & 0xfff);
+                AppendStartupCString("Primary Buffer Set Format failed: ");
+                AppendStartupCString(pszError);
+                AppendStartupCString("\n");
+                AppendStartupCString("Trying 11khz 8 bit...\n");
+                pWaveFormat->wBitsPerSample = 8;
+                hResult = AUDIO_DIRECTSOUND_METHOD(
+                    g_pDirectSoundPrimaryBuffer, 14,
+                    AUDIO_DirectSoundSetFormatProc)(
+                        g_pDirectSoundPrimaryBuffer, pWaveFormat);
+                if (hResult != 0) {
+                    pszError = LookupDirectSoundErrorString(
+                        (unsigned int)hResult & 0xfff);
+                    pStream = AppendCStringToStream(
+                        g_pErrorOutputStream,
+                        "Primary Buffer Set Format failed: ");
+                    pStream = AppendCStringToStream(pStream, pszError);
+                    AppendCStringToStream(pStream, "\n");
+                    AppendCStringToStream(
+                        g_pErrorOutputStream,
+                        "Exausted iterations - cannot play effects.\n");
+                    return 0;
+                }
+            }
+        }
+    }
+
+    hResult = AUDIO_DIRECTSOUND_METHOD(
+        g_pDirectSoundPrimaryBuffer, 12,
+        AUDIO_DirectSoundPlayProc)(
+            g_pDirectSoundPrimaryBuffer, 0, 0, 1);
+    if (hResult != 0) {
+        pszError = LookupDirectSoundErrorString((unsigned int)hResult & 0xfff);
+        pStream = AppendCStringToStream(
+            g_pErrorOutputStream, "Primary Sound Buffer play failed: ");
+        pStream = AppendCStringToStream(pStream, pszError);
+        AppendCStringToStream(pStream, "\n");
+        *(int *)((char *)pBackend + 0x20) = 0;
+        return 0;
+    }
+
+    *(int *)((char *)pBackend + 0x20) = 1;
+    *(int *)((char *)pBackend + 0x0c) = 1;
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0047E350
+int LEMBALL_FASTCALL AcceptDirectSoundBackendResources(
+    void *, int, int, int, void *) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0047E360
+int LEMBALL_FASTCALL ReturnDirectSoundBackendUnavailable(void *, int) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047E370
+int LEMBALL_FASTCALL GetDirectSoundBackendBufferCount(void *pBackend, int) {
+    return *(int *)((char *)pBackend + 0x18);
+}
+
+// FUNCTION: LEMBALL 0x0047E4E0
+int LEMBALL_FASTCALL GetDirectSoundBackendReservedValue1c(void *pBackend, int) {
+    return *(int *)((char *)pBackend + 0x1c);
+}
+
+// FUNCTION: LEMBALL 0x0047E4F0
+int LEMBALL_FASTCALL GetDirectSoundBackendAvailability(void *pBackend, int) {
+    return *(int *)((char *)pBackend + 0x20);
+}
+
+// FUNCTION: LEMBALL 0x0047E8B0
+void LEMBALL_FASTCALL CaptureDirectSoundBackendWindow(
+    void *pBackend, int, void *pPrimaryContext) {
+    *(HWND *)((char *)pBackend + 0x10) =
+        *(HWND *)((char *)pPrimaryContext + 0x44);
+}
+
 // FUNCTION: LEMBALL 0x0047DFC0
 void DestroyDirectSoundEffectBackend(void *pBackend) {
     *(void ***)pBackend = g_DirectSoundEffectBackendVtable;
@@ -1414,8 +1750,183 @@ void *LEMBALL_FASTCALL DeleteDirectSoundEffectBackend(
     return pBackend;
 }
 
+// FUNCTION: LEMBALL 0x0047D310
+AUDIO_DirectSoundEffectBufferPool *LEMBALL_FASTCALL
+ConstructDirectSoundEffectBufferPool(
+    AUDIO_DirectSoundEffectBufferPool *pPool, int,
+    int cBuffers, void *pPatchResource, int nOutputRate,
+    int fSourceIs16Bit, int, int nFlags) {
+    unsigned char PatchHeader[0x1c];
+    unsigned char WaveHeader[0x38];
+    AUDIO_WaveFormat WaveFormat;
+    AUDIO_DirectSoundBufferDesc BufferDesc;
+    unsigned int cbBuffer;
+    int fDownsample;
+    unsigned char *pSampleData;
+    void *apvAudio[2];
+    DWORD acbAudio[2];
+    LONG hResult;
+    int i;
+    int j;
+    unsigned char *pSource;
+    unsigned char *pDestination;
+    const char *pszError;
+    VSINIT_FormattedOutputStream *pStream;
+
+    pPool->m_nCurrentBuffer = 0;
+    pPool->m_nFlags = nFlags;
+    pPool->m_cBuffers = cBuffers;
+    pPool->m_ppBuffers =
+        (void **)AllocateVSMemBlock((unsigned int)cBuffers * sizeof(void *));
+    for (i = 0; i < cBuffers; ++i)
+        pPool->m_ppBuffers[i] = 0;
+
+    memcpy(PatchHeader, pPatchResource, sizeof(PatchHeader));
+    *(unsigned short *)(PatchHeader + 4) =
+        ByteSwapAudioWord(*(unsigned short *)(PatchHeader + 4));
+    *(unsigned short *)(PatchHeader + 0x18) =
+        ByteSwapAudioWord(*(unsigned short *)(PatchHeader + 0x18));
+    pPool->m_fReady = 0;
+    pPool->m_nCurrentBuffer = 0;
+    if (*(unsigned short *)(PatchHeader + 0x18) != 1) {
+        pStream = AppendCStringToStream(
+            g_pErrorOutputStream, "Warning: Effect Patch ");
+        pStream = AppendCStringToStream(
+            pStream, (const char *)pPatchResource + 6);
+        pStream = AppendCStringToStream(
+            pStream, " has more than ");
+        AppendCStringToStream(
+            g_pErrorOutputStream,
+            "one Wave. Only one is supported.\n");
+    }
+
+    memcpy(WaveHeader, (char *)pPatchResource + 0x1c,
+           sizeof(WaveHeader));
+    *(unsigned short *)(WaveHeader + 4) =
+        ByteSwapAudioWord(*(unsigned short *)(WaveHeader + 4));
+    *(unsigned int *)(WaveHeader + 0x08) =
+        ByteSwapAudioDword(*(unsigned int *)(WaveHeader + 0x08));
+    *(unsigned int *)(WaveHeader + 0x14) =
+        ByteSwapAudioDword(*(unsigned int *)(WaveHeader + 0x14));
+
+    cbBuffer = *(unsigned int *)(WaveHeader + 8);
+    if (fSourceIs16Bit == 0)
+        cbBuffer >>= 1;
+    fDownsample = 0;
+    if (*(unsigned int *)(WaveHeader + 0x14) !=
+        (unsigned int)nOutputRate) {
+        cbBuffer >>= 1;
+        fDownsample = 1;
+    }
+
+    WaveFormat.wFormatTag = 1;
+    WaveFormat.nChannels = 1;
+    WaveFormat.nSamplesPerSec = nOutputRate;
+    WaveFormat.nAvgBytesPerSec = nOutputRate * 2;
+    WaveFormat.nBlockAlign = 2;
+    WaveFormat.wBitsPerSample = 16;
+    WaveFormat.cbSize = 0;
+    memset(&BufferDesc, 0, sizeof(BufferDesc));
+    BufferDesc.dwSize = sizeof(BufferDesc);
+    BufferDesc.dwFlags = 2;
+    BufferDesc.dwBufferBytes = cbBuffer;
+    BufferDesc.pWaveFormat = &WaveFormat;
+    if ((nFlags & 1) != 0)
+        BufferDesc.dwFlags = 0x82;
+    if ((nFlags & 2) != 0)
+        BufferDesc.dwFlags |= 0x40;
+    if ((nFlags & 4) != 0)
+        BufferDesc.dwFlags |= 0x20;
+
+    hResult = AUDIO_DIRECTSOUND_METHOD(
+        g_pDirectSoundDevice, 3,
+        AUDIO_DirectSoundCreateBufferProc)(
+            g_pDirectSoundDevice, &BufferDesc,
+            &pPool->m_ppBuffers[0], 0);
+    if (hResult != 0) {
+        pszError = LookupDirectSoundErrorString((unsigned int)hResult & 0xfff);
+        pStream = AppendCStringToStream(
+            g_pErrorOutputStream, "Effect Buffer Creation failed: ");
+        pStream = AppendCStringToStream(pStream, pszError);
+        AppendCStringToStream(pStream, "\n");
+        return pPool;
+    }
+
+    hResult = AUDIO_DIRECTSOUND_METHOD(
+        pPool->m_ppBuffers[0], 11,
+        AUDIO_DirectSoundLockProc)(
+            pPool->m_ppBuffers[0], 0, cbBuffer,
+            &apvAudio[0], &acbAudio[0],
+            &apvAudio[1], &acbAudio[1], 0);
+    if (hResult != 0) {
+        pszError = LookupDirectSoundErrorString((unsigned int)hResult & 0xfff);
+        pStream = AppendCStringToStream(
+            g_pErrorOutputStream, "Effect Buffer Lock failed: ");
+        pStream = AppendCStringToStream(pStream, pszError);
+        AppendCStringToStream(pStream, "\n");
+        return pPool;
+    }
+
+    pSampleData = (unsigned char *)pPatchResource + 0x54;
+    pSource = pSampleData;
+    for (i = 0; i < 2; ++i) {
+        if (acbAudio[i] != 0) {
+            pDestination = (unsigned char *)apvAudio[i];
+            if (fDownsample == 0) {
+                for (j = (int)(acbAudio[i] >> 1); j != 0; --j) {
+                    *pDestination++ = pSource[1];
+                    *pDestination++ = (unsigned char)(pSource[0] ^ 0x80);
+                    pSource += 2;
+                }
+            } else {
+                for (j = (int)(acbAudio[i] >> 2); j != 0; --j) {
+                    *pDestination++ = pSource[1];
+                    *pDestination++ = (unsigned char)(pSource[0] ^ 0x80);
+                    pSource += 4;
+                }
+            }
+        }
+    }
+
+    hResult = AUDIO_DIRECTSOUND_METHOD(
+        pPool->m_ppBuffers[0], 19,
+        AUDIO_DirectSoundUnlockProc)(
+            pPool->m_ppBuffers[0], apvAudio[0], acbAudio[0],
+            apvAudio[1], acbAudio[1]);
+    if (hResult != 0) {
+        pszError = LookupDirectSoundErrorString((unsigned int)hResult & 0xfff);
+        pStream = AppendCStringToStream(
+            g_pErrorOutputStream, "Effect Buffer Unlock failed: ");
+        pStream = AppendCStringToStream(pStream, pszError);
+        AppendCStringToStream(pStream, "\n");
+        return pPool;
+    }
+
+    for (i = 1; i < cBuffers; ++i) {
+        hResult = AUDIO_DIRECTSOUND_METHOD(
+            g_pDirectSoundDevice, 5,
+            AUDIO_DirectSoundDuplicateBufferProc)(
+                g_pDirectSoundDevice, pPool->m_ppBuffers[0],
+                &pPool->m_ppBuffers[i]);
+        if (hResult != 0) {
+            pszError = LookupDirectSoundErrorString(
+                (unsigned int)hResult & 0xfff);
+            pStream = AppendCStringToStream(
+                g_pErrorOutputStream,
+                "Effect Buffer Duplication failed: ");
+            pStream = AppendCStringToStream(pStream, pszError);
+            AppendCStringToStream(pStream, "\n");
+            return pPool;
+        }
+    }
+    pPool->m_fReady = 1;
+    return pPool;
+}
+
 // FUNCTION: LEMBALL 0x0047E520
-int CreateDirectSoundEffectInstance(void *pBackend, void *pPatchResource, int *pnEffectInstanceId, int nFlags) {
+int LEMBALL_FASTCALL CreateDirectSoundEffectInstance(
+    void *pBackend, int, void *pPatchResource, int *pnEffectInstanceId,
+    int nFlags) {
     int nEffectInstanceId;
     void *pBufferPool;
 
@@ -1427,9 +1938,12 @@ int CreateDirectSoundEffectInstance(void *pBackend, void *pPatchResource, int *p
                 if (pBufferPool == 0) {
                     *(void **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4) = 0;
                 } else {
-                    pBufferPool = g_AUDIO_ConstructBufferPoolProc(
-                        pBufferPool, *(int *)((char *)pBackend + 0x18), pPatchResource, *(int *)((char *)pBackend + 0x34),
-                        *(int *)((char *)pBackend + 0x28), *(int *)((char *)pBackend + 0x24), nFlags);
+                    pBufferPool = ConstructDirectSoundEffectBufferPool(
+                        (AUDIO_DirectSoundEffectBufferPool *)pBufferPool, 0,
+                        *(int *)((char *)pBackend + 0x18), pPatchResource,
+                        *(int *)((char *)pBackend + 0x34),
+                        *(int *)((char *)pBackend + 0x28),
+                        *(int *)((char *)pBackend + 0x24), nFlags);
                     *(void **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4) = pBufferPool;
                 }
                 if (**(int **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4) != 0) {
@@ -1499,6 +2013,13 @@ void AUDIO_DirectSoundEffectBackend::PlayDirectSoundEffectInstance(int nEffectIn
                                                                    int nBufferSlot) {
     g_AUDIO_PlayBufferSlotProc(*(void **)(*(int *)((char *)this + 0x50) + nEffectInstanceId * 4),
                                         nBufferSlot);
+}
+
+// FUNCTION: LEMBALL 0x0047E8C0
+int LEMBALL_FASTCALL CreateDirectSoundEffectInstanceWithDefaultFlags(
+    void *pBackend, int, void *pPatchResource, int *pnEffectInstanceId) {
+    return CreateDirectSoundEffectInstance(
+        pBackend, 0, pPatchResource, pnEffectInstanceId, 1);
 }
 
 // FUNCTION: LEMBALL 0x0047E940
@@ -1906,7 +2427,8 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
             }
             if (pBackend != 0) {
                 pBackendVtable = *(void ***)pBackend;
-                fAvailable = ((AUDIO_TestProc)pBackendVtable[10])();
+                fAvailable = ((AUDIO_TestProc)pBackendVtable[10])(
+                    pBackend, 0);
                 if (fAvailable == 1) {
                     *ppEffectBackends = pBackend;
                     return 1;
@@ -1947,7 +2469,8 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
     }
     if (pBackend != 0) {
         pBackendVtable = *(void ***)pBackend;
-        fAvailable = ((AUDIO_TestProc)pBackendVtable[10])();
+        fAvailable = ((AUDIO_TestProc)pBackendVtable[10])(
+            pBackend, 0);
         if (fAvailable == 1) {
             *ppEffectBackends = pBackend;
             return 1;
@@ -1964,7 +2487,8 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
     }
     if (pBackend != 0) {
         pBackendVtable = *(void ***)pBackend;
-        fAvailable = ((AUDIO_TestProc)pBackendVtable[10])();
+        fAvailable = ((AUDIO_TestProc)pBackendVtable[10])(
+            pBackend, 0);
         if (fAvailable == 1) {
             *ppEffectBackends = pBackend;
             return 1;

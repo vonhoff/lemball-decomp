@@ -56,9 +56,9 @@ void *g_GAME_PrimaryContextMenuDefinitionTable[] = {
 unsigned int MapWindowOwnerFlagsToWin32Style(unsigned int uFlags) {
     unsigned int uStyle;
 
-    uStyle = ((uFlags & 8) == 0) ? 0xcb0000 : 0;
-    uStyle |= ((uFlags & 2) == 0) ? 0x7f400000 : 0;
-    uStyle += 0xc00000;
+    uStyle = (((unsigned int)((uFlags & 8) == 0) - 1) & 0xcb0000) |
+             (((unsigned int)-(int)((uFlags & 2) == 0) & 0x7f400000) +
+              0xc00000);
     uStyle |= (uFlags & 0x400) << 8;
     uStyle |= (uFlags & 0x40) << 10;
     uStyle |= (uFlags & 0x20) << 15;
@@ -154,9 +154,7 @@ void LEMBALL_FASTCALL PrepareLevelScreenRootHelperForRuntime(
     void *pHelperGroup;
 
     pPrimaryContext->SetWindowOwnerScaleFactor(1);
-#if !defined(LEMBALL_PRIMARY_WINDOW_INIT_SKIP_PALETTE)
     pPrimaryContext->ApplyWindowOwnerPaletteResource(0x2e);
-#endif
 
     pHelperGroup = *(void **)((char *)pPrimaryContext + 0x4c);
     pHelperGroup = (char *)*(void **)((char *)pHelperGroup + 0x0c) + 0x98;

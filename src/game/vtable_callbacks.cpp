@@ -274,11 +274,6 @@ void noop_render_entry_callback_004393d0(void) {
 void noop_render_entry_callback_004393f0(void) {
 }
 
-// FUNCTION: LEMBALL 0x004399D0
-void PASCAL noop_root_rect_virtual(void *pUnused) {
-    (void)pUnused;
-}
-
 // FUNCTION: LEMBALL 0x0043A1C0
 void noop_resource_window_owner_callback_0043a1c0(void) {
 }

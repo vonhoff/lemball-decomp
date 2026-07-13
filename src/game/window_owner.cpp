@@ -1,4 +1,5 @@
 #include "game/window_owner.h"
+#include "game/game_app.h"
 
 #include "engine/memory_arena.h"
 #include "engine/graphics_driver.h"
@@ -10,6 +11,8 @@ static const char g_szVsBaseWindowClassName[] = "VS_Base_Window_Class";
 static const char *g_pszVsBaseWindowClassName = g_szVsBaseWindowClassName;
 static const char g_szUnableToRegisterBaseWindowClassError[] =
     "Unable to register base window class";
+static const char g_szUnableToCreateWindowError[] =
+    "Unable to create window";
 static const char g_szFatalGetLastErrorPrefix[] = " GetLastError()=";
 static const char g_szFatalGetLastErrorSeparator[] = ", ";
 static const char g_szFatalErrorTitle[] = "FATAL ERROR";
@@ -25,7 +28,8 @@ static int g_nLastCursorScreenX = -1;
 static int g_nLastCursorScreenY = -1;
 static int g_nLiveRootZrleGeometryOwnerCount = 0;
 static int g_fFullscreenActivationState = 0;
-static int g_fFullscreenDisplayModeSuspended = 0;
+// GLOBAL: LEMBALL 0x004a0770
+int g_fFullscreenDisplayModeSuspended = 0;
 static int g_nMouseButtonCaptureRefCount = 0;
 static int g_anSavedMouseAccelerationParams[3];
 static int g_nSavedMouseTrailsCount = 0;
@@ -35,10 +39,12 @@ static const char g_szQuitStatusMessage[] = "QUIT\n";
 extern int g_fRootHelperGeometryDispatchSuppressed;
 extern void *g_pApplyFullscreenDisplayModeThunk;
 extern void *g_pSharedRenderDispatchQueue;
+extern void *g_pSharedGeometryHelper;
 extern int RegisterBaseWindowClass(void);
 extern unsigned int MapWindowOwnerFlagsToWin32Style(unsigned int uFlags);
 int LEMBALL_FASTCALL IsDisplayModeWindowedRange(const int *pnDisplayMode);
 extern "C" DWORD WINAPI timeGetTime(void);
+extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 
 struct WINDOW_OWNER_RECT {
     LONG left;
@@ -70,6 +76,22 @@ extern "C" BOOL WINAPI SetWindowPos(HWND hWnd,
                                      int cy,
                                      UINT uFlags);
 
+struct WINDOW_OWNER_PAINTSTRUCT {
+    void *hdc;
+    BOOL fErase;
+    WINDOW_OWNER_RECT rcPaint;
+    BOOL fRestore;
+    BOOL fIncUpdate;
+    unsigned char rgbReserved[32];
+};
+
+extern "C" void *WINAPI BeginPaint(HWND hWnd,
+                                     WINDOW_OWNER_PAINTSTRUCT *pPaint);
+extern "C" BOOL WINAPI EndPaint(HWND hWnd,
+                                 const WINDOW_OWNER_PAINTSTRUCT *pPaint);
+extern "C" void *WINAPI GetDC(HWND hWnd);
+extern "C" int WINAPI ReleaseDC(HWND hWnd, void *hDc);
+
 int g_nLiveWindowOwnerBaseCount = 0;
 void *g_pRootZrleGeometryOwnerRegistry = 0;
 
@@ -88,6 +110,129 @@ struct GAME_RootGeometryOwnerChildNode {
 struct GAME_GeometryDispatchHelperDeleteInterface {
     virtual void Delete(int nDeleteFlag) = 0;
 };
+
+struct GAME_GeometryOwnerRectDispatch {
+    virtual void *Delete(int nDeleteFlag) = 0;
+    virtual void DispatchButtonTransition(const GAME_XYPair *pPoint,
+                                          int nButton) = 0;
+    virtual void DispatchButtonInside(const GAME_XYPair *pPoint,
+                                      int nButton) = 0;
+    virtual void DispatchButtonOutside(const GAME_XYPair *pPoint,
+                                       int nButton) = 0;
+    virtual void DispatchPointerEnter(void) = 0;
+    virtual void DispatchPointerLeave(void) = 0;
+    virtual void DispatchPointerMove(const GAME_XYPair *pPoint) = 0;
+    virtual int ContainsPoint(const GAME_XYPair *pPoint) = 0;
+};
+
+struct GAME_GeometryOwnerRectState {
+    void **m_pVtable00;
+    int m_fEnabled04;
+    int m_fPointerActive08;
+    GAME_GeometryOwnerRectState *m_pParent0C;
+    int m_anTransient10[6];
+    int m_fDispatchPointerMove28;
+    int m_fDispatchOutsideRelease2C;
+    GAME_XYPair m_Size30;
+    GAME_XYPair m_Position34;
+};
+
+struct GAME_RenderDispatchClientState {
+    void **m_pVtable00;
+    int m_nMagic04;
+    void *m_pReserved08;
+    int m_cDispatches0C;
+};
+
+struct GAME_GeometryOwnerChildNode {
+    GAME_GeometryOwnerRectState *m_pOwner;
+    GAME_GeometryOwnerChildNode *m_pPrevious;
+    GAME_GeometryOwnerChildNode *m_pNext;
+};
+
+struct GAME_RootGeometryDispatchHelperState {
+    GAME_GeometryOwnerRectState m_Owner00;
+    GAME_RenderDispatchClientState m_DispatchClient38;
+    GAME_GeometryOwnerChildNode *m_pChildren48;
+    GAME_GeometryOwnerChildNode *m_pChildrenTail4C;
+    int m_nScaleFactor50;
+    GAME_XYPair m_Origin54;
+    GAME_XYPair m_SourcePosition58;
+    GAME_GeometryOwnerRectState *m_pActiveOwner5C;
+};
+
+struct GAME_GeometryDispatchEvent {
+    unsigned short m_nType00;
+    unsigned short m_nReserved02;
+    unsigned int m_dwTime04;
+    unsigned int m_nPackedPosition08;
+    int m_nCommand0C;
+    int m_fHandled10;
+};
+
+typedef char GAME_GeometryOwnerRectState_size_must_be_0x38[
+    sizeof(GAME_GeometryOwnerRectState) == 0x38 ? 1 : -1];
+typedef char GAME_RootGeometryDispatchHelperState_size_must_be_0x60[
+    sizeof(GAME_RootGeometryDispatchHelperState) == 0x60 ? 1 : -1];
+
+void *LEMBALL_FASTCALL DeleteGeometryOwnerRect(
+    void *pOwner, int nUnused, int nDeleteFlag);
+void LEMBALL_FASTCALL GeometryOwnerButtonTransitionNoop(
+    void *pOwner, int nUnused, const GAME_XYPair *pPoint, int nButton);
+void LEMBALL_FASTCALL GeometryOwnerButtonInsideNoop(
+    void *pOwner, int nUnused, const GAME_XYPair *pPoint, int nButton);
+void LEMBALL_FASTCALL ClearGeometryOwnerButtonState(
+    void *pOwner, int nUnused, const GAME_XYPair *pPoint, int nButton);
+void LEMBALL_FASTCALL GeometryOwnerPointerEnterNoop(void *pOwner);
+void LEMBALL_FASTCALL ResetGeometryOwnerButtonsIfOutsideDispatchDisabled(
+    void *pOwner);
+void LEMBALL_FASTCALL GeometryOwnerPointerMoveNoop(
+    void *pOwner, int nUnused, const GAME_XYPair *pPoint);
+int LEMBALL_FASTCALL GeometryOwnerContainsPoint(
+    void *pOwner, int nUnused, const GAME_XYPair *pPoint);
+void LEMBALL_FASTCALL ResetRootGeometryOwnerButtons(void *pOwner);
+void *LEMBALL_FASTCALL DeleteRootGeometryDispatchHelper(
+    void *pHelper, int nUnused, int nDeleteFlag);
+void *LEMBALL_FASTCALL DeleteRootGeometryDispatchHelperAdjusted(
+    void *pDispatchClient, int nUnused, int nDeleteFlag);
+int LEMBALL_FASTCALL HandleRootGeometryDispatchEntry(
+    void *pDispatchClient, int nUnused, GAME_GeometryDispatchEvent *pEvent);
+
+// VTABLE: LEMBALL 0x00496EA0
+static void *g_GAME_GeometryOwnerRectVtable[8] = {
+    (void *)DeleteGeometryOwnerRect,
+    (void *)GeometryOwnerButtonTransitionNoop,
+    (void *)GeometryOwnerButtonInsideNoop,
+    (void *)ClearGeometryOwnerButtonState,
+    (void *)GeometryOwnerPointerEnterNoop,
+    (void *)ResetGeometryOwnerButtonsIfOutsideDispatchDisabled,
+    (void *)GeometryOwnerPointerMoveNoop,
+    (void *)GeometryOwnerContainsPoint,
+};
+
+// VTABLE: LEMBALL 0x00499D18
+static void *g_GAME_RootGeometryDispatchHelperVtable[8] = {
+    (void *)DeleteRootGeometryDispatchHelper,
+    (void *)GeometryOwnerButtonTransitionNoop,
+    (void *)GeometryOwnerButtonInsideNoop,
+    (void *)ClearGeometryOwnerButtonState,
+    (void *)GeometryOwnerPointerEnterNoop,
+    (void *)ResetRootGeometryOwnerButtons,
+    (void *)GeometryOwnerPointerMoveNoop,
+    (void *)GeometryOwnerContainsPoint,
+};
+
+// VTABLE: LEMBALL 0x00499D08
+static void *g_GAME_RootGeometryDispatchClientVtable[3] = {
+    (void *)InitializeNonZrleVariantRenderEntry,
+    (void *)DeleteRootGeometryDispatchHelperAdjusted,
+    (void *)HandleRootGeometryDispatchEntry,
+};
+
+// GLOBAL: LEMBALL 0x004A1FF8
+static GAME_XYPair *g_pCurrentGeometryDispatchPoint = 0;
+// GLOBAL: LEMBALL 0x004A1FFC
+static int g_cRootGeometryDispatchHelpers = 0;
 
 struct WINDOW_OWNER_STATE_DISPATCH {
     virtual void Reserved00(void) = 0;
@@ -132,6 +277,497 @@ static void SetWindowOwnerState(void *pOwner, int nState) {
 
 static void AppendWindowOwnerEvent(void *pEvent) {
     ((RENDER_DISPATCH_QUEUE_APPEND *)g_pSharedRenderDispatchQueue)->Append(pEvent);
+}
+
+// FUNCTION: LEMBALL 0x00439A40
+void *LEMBALL_FASTCALL DeleteGeometryOwnerRect(
+    void *pOwner, int, int nDeleteFlag) {
+    *(void ***)pOwner = g_GAME_GeometryOwnerRectVtable;
+    if ((nDeleteFlag & 1) != 0) {
+        FreeVSMemBlock(pOwner);
+    }
+    return pOwner;
+}
+
+// FUNCTION: LEMBALL 0x00439960
+void LEMBALL_FASTCALL GeometryOwnerButtonTransitionNoop(
+    void *, int, const GAME_XYPair *, int) {
+}
+
+// FUNCTION: LEMBALL 0x00439970
+void LEMBALL_FASTCALL GeometryOwnerButtonInsideNoop(
+    void *, int, const GAME_XYPair *, int) {
+}
+
+// FUNCTION: LEMBALL 0x00439980
+void LEMBALL_FASTCALL ClearGeometryOwnerButtonState(
+    void *pOwner, int, const GAME_XYPair *, int nButton) {
+    *(int *)((char *)pOwner + 0x1c + nButton * 4) = 0;
+    *(int *)((char *)pOwner + 0x10 + nButton * 4) = 0;
+}
+
+// FUNCTION: LEMBALL 0x004399A0
+void LEMBALL_FASTCALL GeometryOwnerPointerEnterNoop(void *) {
+}
+
+// FUNCTION: LEMBALL 0x004399B0
+void LEMBALL_FASTCALL ResetGeometryOwnerButtonsIfOutsideDispatchDisabled(
+    void *pOwner) {
+    int i;
+
+    if (*(int *)((char *)pOwner + 0x2c) == 0) {
+        for (i = 0; i < 6; ++i) {
+            *(int *)((char *)pOwner + 0x10 + i * 4) = 0;
+        }
+    }
+}
+
+// FUNCTION: LEMBALL 0x004399D0
+void LEMBALL_FASTCALL GeometryOwnerPointerMoveNoop(
+    void *, int, const GAME_XYPair *) {
+}
+
+// FUNCTION: LEMBALL 0x004399E0
+int LEMBALL_FASTCALL GeometryOwnerContainsPoint(
+    void *pOwner, int, const GAME_XYPair *pPoint) {
+    GAME_GeometryOwnerRectState *pState;
+
+    pState = (GAME_GeometryOwnerRectState *)pOwner;
+    return pState->m_Position34.m_x <= pPoint->m_x &&
+           pPoint->m_x <
+               (short)(pState->m_Position34.m_x + pState->m_Size30.m_x) &&
+           pState->m_Position34.m_y <= pPoint->m_y &&
+           pPoint->m_y <
+               (short)(pState->m_Position34.m_y + pState->m_Size30.m_y);
+}
+
+// FUNCTION: LEMBALL 0x0046AA30
+void LEMBALL_FASTCALL ResetRootGeometryOwnerButtons(void *pOwner) {
+    int i;
+
+    if (*(int *)((char *)pOwner + 0x2c) == 0) {
+        for (i = 0; i < 6; ++i) {
+            *(int *)((char *)pOwner + 0x10 + i * 4) = 0;
+        }
+    }
+}
+
+// FUNCTION: LEMBALL 0x0046A350
+void LEMBALL_FASTCALL ClearGeometryOwnerRectTransientState(void *pOwner) {
+    GAME_GeometryOwnerRectState *pState;
+    int i;
+
+    pState = (GAME_GeometryOwnerRectState *)pOwner;
+    if (pState->m_fPointerActive08 != 0) {
+        pState->m_fPointerActive08 = 0;
+        ((GAME_GeometryOwnerRectDispatch *)pOwner)->DispatchPointerLeave();
+    }
+    for (i = 0; i < 6; ++i) {
+        pState->m_anTransient10[i] = 0;
+    }
+}
+
+// FUNCTION: LEMBALL 0x0046A330
+void LEMBALL_FASTCALL ResetGeometryOwnerRectState(void *pOwner) {
+    GAME_GeometryOwnerRectState *pState;
+
+    pState = (GAME_GeometryOwnerRectState *)pOwner;
+    pState->m_fEnabled04 = 0;
+    pState->m_fDispatchPointerMove28 = 0;
+    pState->m_fDispatchOutsideRelease2C = 0;
+    pState->m_pParent0C = 0;
+    ClearGeometryOwnerRectTransientState(pOwner);
+}
+
+void LEMBALL_FASTCALL RedispatchGeometryOwnerPointerEvent(void *pOwner);
+
+// FUNCTION: LEMBALL 0x0046A530
+void LEMBALL_FASTCALL SetGeometryOwnerEnabled(
+    void *pOwner, int, int fEnabled) {
+    GAME_GeometryOwnerRectState *pState;
+
+    pState = (GAME_GeometryOwnerRectState *)pOwner;
+    pState->m_fEnabled04 = fEnabled;
+    if (fEnabled == 0) {
+        ClearGeometryOwnerRectTransientState(pOwner);
+    } else if (pState->m_pParent0C != 0) {
+        RedispatchGeometryOwnerPointerEvent(pState->m_pParent0C);
+    }
+}
+
+// FUNCTION: LEMBALL 0x0046A290
+void *LEMBALL_FASTCALL InitializeGeometryOwnerRect(
+    void *pOwner, int, const GAME_XYPair *pRect) {
+    GAME_GeometryOwnerRectState *pState;
+
+    pState = (GAME_GeometryOwnerRectState *)pOwner;
+    pState->m_Size30.m_x = 0;
+    pState->m_Size30.m_y = 0;
+    pState->m_Position34.m_x = 0;
+    pState->m_Position34.m_y = 0;
+    pState->m_pVtable00 = g_GAME_GeometryOwnerRectVtable;
+    ResetGeometryOwnerRectState(pState);
+    pState->m_Size30 = pRect[0];
+    pState->m_Position34 = pRect[1];
+    SetGeometryOwnerEnabled(pState, 0, 1);
+    return pState;
+}
+
+// FUNCTION: LEMBALL 0x0046A6E0
+void LEMBALL_FASTCALL UnlinkAndFreeGeometryOwnerChildNode(
+    void *pOwner, int, GAME_GeometryOwnerChildNode *pNode) {
+    GAME_RootGeometryDispatchHelperState *pHelper;
+
+    pHelper = (GAME_RootGeometryDispatchHelperState *)pOwner;
+    if (pNode->m_pPrevious != 0) {
+        pNode->m_pPrevious->m_pNext = pNode->m_pNext;
+    } else {
+        pHelper->m_pChildren48 = pNode->m_pNext;
+    }
+    if (pNode->m_pNext != 0) {
+        pNode->m_pNext->m_pPrevious = pNode->m_pPrevious;
+    } else {
+        pHelper->m_pChildrenTail4C = pNode->m_pPrevious;
+    }
+    FreeVSMemBlock(pNode);
+}
+
+// FUNCTION: LEMBALL 0x0046A580
+void *LEMBALL_FASTCALL ConstructRootGeometryDispatchHelper(
+    void *pObject, int, const GAME_XYPair *pRect,
+    const GAME_XYPair *pOrigin, const GAME_XYPair *pSourcePosition) {
+    GAME_RootGeometryDispatchHelperState *pHelper;
+
+    pHelper = (GAME_RootGeometryDispatchHelperState *)pObject;
+    InitializeGeometryOwnerRect(&pHelper->m_Owner00, 0, pRect);
+    InitializeRenderQueueNodeBase(&pHelper->m_DispatchClient38);
+    pHelper->m_Owner00.m_pVtable00 =
+        g_GAME_RootGeometryDispatchHelperVtable;
+    pHelper->m_DispatchClient38.m_pVtable00 =
+        g_GAME_RootGeometryDispatchClientVtable;
+    pHelper->m_Origin54.m_x = 0;
+    pHelper->m_Origin54.m_y = 0;
+    pHelper->m_SourcePosition58.m_x = 0;
+    pHelper->m_SourcePosition58.m_y = 0;
+
+    if (g_cRootGeometryDispatchHelpers++ == 0) {
+        g_pCurrentGeometryDispatchPoint =
+            (GAME_XYPair *)AllocateVSMemBlock(sizeof(GAME_XYPair));
+        if (g_pCurrentGeometryDispatchPoint != 0) {
+            g_pCurrentGeometryDispatchPoint->m_x = 0;
+            g_pCurrentGeometryDispatchPoint->m_y = 0;
+        }
+    }
+
+    pHelper->m_Origin54 = *pOrigin;
+    pHelper->m_SourcePosition58 = *pSourcePosition;
+    ((GAME_RenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+        ->RegisterOrderedRenderDispatchClient(
+            &pHelper->m_DispatchClient38, -0x19);
+    pHelper->m_pChildren48 = 0;
+    pHelper->m_pChildrenTail4C = 0;
+    pHelper->m_nScaleFactor50 = 1;
+    pHelper->m_pActiveOwner5C = 0;
+    return pHelper;
+}
+
+// FUNCTION: LEMBALL 0x0046A650
+void LEMBALL_FASTCALL DestroyRootGeometryDispatchHelper(void *pObject) {
+    GAME_RootGeometryDispatchHelperState *pHelper;
+    GAME_GeometryOwnerChildNode *pNode;
+    GAME_GeometryOwnerChildNode *pNext;
+
+    pHelper = (GAME_RootGeometryDispatchHelperState *)pObject;
+    pHelper->m_Owner00.m_pVtable00 =
+        g_GAME_RootGeometryDispatchHelperVtable;
+    pHelper->m_DispatchClient38.m_pVtable00 =
+        g_GAME_RootGeometryDispatchClientVtable;
+    pNode = pHelper->m_pChildren48;
+    while (pNode != 0) {
+        pNext = pNode->m_pNext;
+        UnlinkAndFreeGeometryOwnerChildNode(pHelper, 0, pNode);
+        pNode = pNext;
+    }
+    ((GAME_RenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+        ->UnregisterOrderedRenderDispatchClient(
+            &pHelper->m_DispatchClient38, -0x19);
+    --g_cRootGeometryDispatchHelpers;
+    if (g_cRootGeometryDispatchHelpers == 0) {
+        FreeVSMemBlock(g_pCurrentGeometryDispatchPoint);
+    }
+    pHelper->m_Owner00.m_pVtable00 = g_GAME_GeometryOwnerRectVtable;
+}
+
+// FUNCTION: LEMBALL 0x0046AA50
+void *LEMBALL_FASTCALL DeleteRootGeometryDispatchHelper(
+    void *pHelper, int, int nDeleteFlag) {
+    DestroyRootGeometryDispatchHelper(pHelper);
+    if ((nDeleteFlag & 1) != 0) {
+        FreeVSMemBlock(pHelper);
+    }
+    return pHelper;
+}
+
+// FUNCTION: LEMBALL 0x0046AA70
+void *LEMBALL_FASTCALL DeleteRootGeometryDispatchHelperAdjusted(
+    void *pDispatchClient, int, int nDeleteFlag) {
+    return DeleteRootGeometryDispatchHelper(
+        (char *)pDispatchClient - 0x38, 0, nDeleteFlag);
+}
+
+// FUNCTION: LEMBALL 0x0046A380
+void LEMBALL_FASTCALL DispatchGeometryChildEvent(
+    void *pOwner, int, GAME_GeometryDispatchEvent *pEvent,
+    const GAME_XYPair *pPoint,
+    GAME_GeometryOwnerRectState *pPreviousActiveOwner) {
+    GAME_GeometryOwnerRectState *pState;
+    GAME_GeometryOwnerRectDispatch *pDispatch;
+    int nButton;
+
+    pState = (GAME_GeometryOwnerRectState *)pOwner;
+    pDispatch = (GAME_GeometryOwnerRectDispatch *)pOwner;
+    switch (pEvent->m_nType00) {
+    case 8:
+    case 9:
+        if ((*(unsigned char *)((char *)g_pSharedGeometryHelper + 0x14) &
+             1) != 0) {
+            return;
+        }
+        /* fall through */
+    case 5:
+    case 6:
+        switch (pEvent->m_nCommand0C) {
+        case 0x43: nButton = 0; break;
+        case 0x44: nButton = 1; break;
+        case 0x45: nButton = 2; break;
+        case 0x46: nButton = 3; break;
+        case 0x47: nButton = 4; break;
+        default: nButton = 5; break;
+        }
+        if (pEvent->m_nType00 == 6 || pEvent->m_nType00 == 8) {
+            *(int *)((char *)pState + 0x10 + nButton * 4) = 1;
+        } else {
+            *(int *)((char *)pState + 0x1c + nButton * 4) = 0;
+            *(int *)((char *)pState + 0x10 + nButton * 4) = 0;
+        }
+        if (pEvent->m_nType00 != 5 && pEvent->m_nType00 != 9) {
+            pDispatch->DispatchButtonTransition(pPoint, nButton);
+            return;
+        }
+        if (pState->m_Position34.m_x <= pPoint->m_x &&
+            pPoint->m_x <
+                (short)(pState->m_Position34.m_x + pState->m_Size30.m_x) &&
+            pState->m_Position34.m_y <= pPoint->m_y &&
+            pPoint->m_y <
+                (short)(pState->m_Position34.m_y + pState->m_Size30.m_y)) {
+            pDispatch->DispatchButtonInside(pPoint, nButton);
+        } else {
+            pDispatch->DispatchButtonOutside(pPoint, nButton);
+        }
+        return;
+
+    case 10:
+        if ((*(unsigned char *)((char *)g_pSharedGeometryHelper + 0x14) &
+             1) != 0) {
+            return;
+        }
+        /* fall through */
+    case 7:
+        if (pState->m_fDispatchPointerMove28 != 0) {
+            pDispatch->DispatchPointerMove(pPoint);
+        }
+        if (pState->m_fPointerActive08 != 0 &&
+            pState == pPreviousActiveOwner) {
+            return;
+        }
+        pState->m_fPointerActive08 = 1;
+        pDispatch->DispatchPointerEnter();
+        if (pPreviousActiveOwner != 0 &&
+            pPreviousActiveOwner->m_fPointerActive08 != 0) {
+            pPreviousActiveOwner->m_fPointerActive08 = 0;
+            ((GAME_GeometryOwnerRectDispatch *)pPreviousActiveOwner)
+                ->DispatchPointerLeave();
+        }
+        return;
+    }
+}
+
+// FUNCTION: LEMBALL 0x0046A770
+void LEMBALL_FASTCALL DispatchNormalizedPointToGeometryChildren(
+    void *pOwner, int, const GAME_XYPair *pPoint,
+    GAME_GeometryDispatchEvent *pEvent) {
+    GAME_RootGeometryDispatchHelperState *pHelper;
+    GAME_GeometryOwnerChildNode *pNode;
+    GAME_GeometryOwnerRectState *pChild;
+    GAME_GeometryDispatchEvent DefaultEvent;
+    GAME_XYPair NormalizedPoint;
+    GAME_XYPair ScaledSize;
+    GAME_XYPair ScaledPosition;
+    int nEventType;
+    int fInside;
+
+    pHelper = (GAME_RootGeometryDispatchHelperState *)pOwner;
+    if (pEvent == 0) {
+        DefaultEvent.m_nType00 = 7;
+        DefaultEvent.m_nReserved02 = 0;
+        DefaultEvent.m_dwTime04 = 0;
+        DefaultEvent.m_nPackedPosition08 = 0;
+        DefaultEvent.m_nCommand0C = 0;
+        DefaultEvent.m_fHandled10 = 0;
+        pEvent = &DefaultEvent;
+    }
+    nEventType = pEvent->m_nType00;
+    NormalizedPoint.m_x = (short)(
+        (pPoint->m_x - pHelper->m_Owner00.m_Position34.m_x) /
+        pHelper->m_nScaleFactor50);
+    NormalizedPoint.m_y = (short)(
+        (pPoint->m_y - pHelper->m_Owner00.m_Position34.m_y) /
+        pHelper->m_nScaleFactor50);
+
+    pNode = pHelper->m_pChildrenTail4C;
+    while (pNode != 0) {
+        pChild = pNode->m_pOwner;
+        pNode = pNode->m_pPrevious;
+        if (pChild->m_fEnabled04 != 0 &&
+            !((GAME_GeometryOwnerRectDispatch *)pChild)
+                 ->ContainsPoint(&NormalizedPoint)) {
+            if (pChild->m_fPointerActive08 != 0) {
+                pChild->m_fPointerActive08 = 0;
+                ((GAME_GeometryOwnerRectDispatch *)pChild)
+                    ->DispatchPointerLeave();
+            }
+            if ((nEventType == 5 || nEventType == 9) &&
+                pChild->m_fDispatchOutsideRelease2C != 0) {
+                DispatchGeometryChildEvent(
+                    pChild, 0, pEvent, &NormalizedPoint,
+                    pHelper->m_pActiveOwner5C);
+            }
+        }
+    }
+
+    ScaledSize.m_x = (short)(pHelper->m_Owner00.m_Size30.m_x *
+                              pHelper->m_nScaleFactor50);
+    ScaledSize.m_y = (short)(pHelper->m_Owner00.m_Size30.m_y *
+                              pHelper->m_nScaleFactor50);
+    ScaledPosition.m_x = (short)(
+        pHelper->m_Owner00.m_Position34.m_x +
+        pHelper->m_Origin54.m_x * (pHelper->m_nScaleFactor50 - 1));
+    ScaledPosition.m_y = (short)(
+        pHelper->m_Owner00.m_Position34.m_y +
+        pHelper->m_Origin54.m_y * (pHelper->m_nScaleFactor50 - 1));
+    fInside = ScaledPosition.m_x <= pPoint->m_x &&
+              pPoint->m_x <
+                  (short)(ScaledPosition.m_x + ScaledSize.m_x) &&
+              ScaledPosition.m_y <= pPoint->m_y &&
+              pPoint->m_y <
+                  (short)(ScaledPosition.m_y + ScaledSize.m_y);
+    if (!fInside) {
+        if (pHelper->m_Owner00.m_fPointerActive08 != 0) {
+            pHelper->m_Owner00.m_fPointerActive08 = 0;
+            ((GAME_GeometryOwnerRectDispatch *)&pHelper->m_Owner00)
+                ->DispatchPointerLeave();
+        }
+        if ((nEventType == 5 || nEventType == 9) &&
+            pHelper->m_Owner00.m_fDispatchOutsideRelease2C != 0) {
+            DispatchGeometryChildEvent(
+                &pHelper->m_Owner00, 0, pEvent, &NormalizedPoint,
+                pHelper->m_pActiveOwner5C);
+            pHelper->m_pActiveOwner5C = &pHelper->m_Owner00;
+        }
+        return;
+    }
+
+    pHelper->m_Owner00.m_fPointerActive08 = 1;
+    pNode = pHelper->m_pChildrenTail4C;
+    while (pNode != 0) {
+        pChild = pNode->m_pOwner;
+        if (pChild->m_fEnabled04 != 0 &&
+            ((GAME_GeometryOwnerRectDispatch *)pChild)
+                ->ContainsPoint(&NormalizedPoint)) {
+            DispatchGeometryChildEvent(
+                pChild, 0, pEvent, &NormalizedPoint,
+                pHelper->m_pActiveOwner5C);
+            pHelper->m_pActiveOwner5C = pChild;
+            return;
+        }
+        pNode = pNode->m_pPrevious;
+    }
+    DispatchGeometryChildEvent(
+        &pHelper->m_Owner00, 0, pEvent, &NormalizedPoint,
+        pHelper->m_pActiveOwner5C);
+    pHelper->m_pActiveOwner5C = &pHelper->m_Owner00;
+}
+
+// FUNCTION: LEMBALL 0x0046A6D0
+void LEMBALL_FASTCALL RedispatchGeometryOwnerPointerEvent(void *pOwner) {
+    DispatchNormalizedPointToGeometryChildren(
+        pOwner, 0, g_pCurrentGeometryDispatchPoint, 0);
+}
+
+// FUNCTION: LEMBALL 0x0046A710
+int LEMBALL_FASTCALL HandleRootGeometryDispatchEntry(
+    void *pDispatchClient, int, GAME_GeometryDispatchEvent *pEvent) {
+    GAME_XYPair Point;
+
+    if (pEvent->m_nType00 >= 5 && pEvent->m_nType00 <= 10 &&
+        pEvent->m_fHandled10 == 0) {
+        Point.m_x = (short)(pEvent->m_nPackedPosition08 & 0xffff);
+        Point.m_y = (short)(pEvent->m_nPackedPosition08 >> 16);
+        *g_pCurrentGeometryDispatchPoint = Point;
+        DispatchNormalizedPointToGeometryChildren(
+            (char *)pDispatchClient - 0x38, 0, &Point, pEvent);
+    }
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0046A560
+void LEMBALL_FASTCALL SetGeometryOwnerParent(
+    void *pOwner, int, void *pParent) {
+    ((GAME_GeometryOwnerRectState *)pOwner)->m_pParent0C =
+        (GAME_GeometryOwnerRectState *)pParent;
+    RedispatchGeometryOwnerPointerEvent(pParent);
+}
+
+// FUNCTION: LEMBALL 0x0046A9A0
+void LEMBALL_FASTCALL AppendGeometryOwnerChild(
+    void *pOwner, int, void *pChildOwner) {
+    GAME_RootGeometryDispatchHelperState *pHelper;
+    GAME_GeometryOwnerChildNode *pNode;
+
+    pHelper = (GAME_RootGeometryDispatchHelperState *)pOwner;
+    pNode = (GAME_GeometryOwnerChildNode *)
+        AllocateVSMemBlock(sizeof(GAME_GeometryOwnerChildNode));
+    pNode->m_pOwner = (GAME_GeometryOwnerRectState *)pChildOwner;
+    pNode->m_pPrevious = 0;
+    pNode->m_pNext = 0;
+    if (pHelper->m_pChildren48 == 0) {
+        pHelper->m_pChildren48 = pNode;
+    } else {
+        pHelper->m_pChildrenTail4C->m_pNext = pNode;
+        pNode->m_pPrevious = pHelper->m_pChildrenTail4C;
+    }
+    pHelper->m_pChildrenTail4C = pNode;
+    SetGeometryOwnerParent(pChildOwner, 0, pHelper);
+}
+
+// FUNCTION: LEMBALL 0x0046AA00
+void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
+    void *pOwner, int, void *pChildOwner) {
+    GAME_RootGeometryDispatchHelperState *pHelper;
+    GAME_GeometryOwnerChildNode *pNode;
+
+    pHelper = (GAME_RootGeometryDispatchHelperState *)pOwner;
+    pNode = pHelper->m_pChildren48;
+    while (pNode != 0 && pNode->m_pOwner != pChildOwner) {
+        pNode = pNode->m_pNext;
+    }
+    if (pNode == 0) {
+        return;
+    }
+    if (pHelper->m_pActiveOwner5C == pChildOwner) {
+        pHelper->m_pActiveOwner5C = 0;
+    }
+    UnlinkAndFreeGeometryOwnerChildNode(pHelper, 0, pNode);
 }
 
 // FUNCTION: LEMBALL 0x00465F80
@@ -201,13 +837,38 @@ void GAME_RootGeometryOwner::SetWindowOwnerMenuDefinition(const unsigned int *, 
 
 // FUNCTION: LEMBALL 0x00465E60
 void GAME_RootGeometryOwner::EnsureRootGeometryDispatchHelper(void) {
-    /* Construction of the 0x60-byte dispatch helper is intentionally kept
-     * behind its own ownership boundary.  Its two vtables (00499D18 and
-     * 00499D08) are not yet closed symbolically, so manufacturing a partial
-     * helper here would make later virtual destruction unsafe. */
+    GAME_XYPair aRect[2];
+    GAME_XYPair Origin;
+    void *pHelper;
+
     if ((GetWindowOwnerFlags() & 0x800) == 0 ||
         m_pGeometryDispatchHelper1C != 0) {
         return;
+    }
+
+    aRect[0] = m_SourceSize10;
+    if ((int)aRect[0].m_x * (int)aRect[0].m_y == 0) {
+        aRect[0] = m_Size08;
+        aRect[1] = m_Position0C;
+    } else {
+        aRect[1].m_x =
+            (short)(m_SourcePosition14.m_x + m_Position0C.m_x);
+        aRect[1].m_y =
+            (short)(m_SourcePosition14.m_y + m_Position0C.m_y);
+    }
+    Origin = m_Origin18;
+    if (m_pParent20 == 0) {
+        Origin.m_x = 0;
+        Origin.m_y = 0;
+    }
+
+    pHelper = AllocateVSMemBlock(0x60);
+    if (pHelper != 0) {
+        m_pGeometryDispatchHelper1C =
+            ConstructRootGeometryDispatchHelper(
+                pHelper, 0, aRect, &Origin, &m_SourcePosition14);
+    } else {
+        m_pGeometryDispatchHelper1C = 0;
     }
 }
 
@@ -666,6 +1327,297 @@ LRESULT GAME_WindowOwnerBase::DispatchWindowMessage(UINT uMessage, WPARAM wParam
     return DefWindowProcA(m_hWindow44, uMessage, wParam, lParam);
 }
 
+struct WINDOW_OWNER_COMPACT_GEOMETRY_DISPATCH {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved01(void) = 0;
+    virtual void Reserved02(void) = 0;
+    virtual void Reserved03(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void Reserved05(void) = 0;
+    virtual void Reserved06(void) = 0;
+    virtual void Reserved07(void) = 0;
+    virtual void Reserved08(void) = 0;
+    virtual void Reserved09(void) = 0;
+    virtual void SetRenderExtent(const GAME_XYPair *pExtent) = 0;
+    virtual void SetRenderOrigin(const GAME_XYPair *pOrigin) = 0;
+    virtual void Reserved12(void) = 0;
+    virtual void Present(void) = 0;
+};
+
+// FUNCTION: LEMBALL 0x00465C70
+void LEMBALL_FASTCALL UpdateWindowOwnerRootGeometrySourceRect(
+    void *pOwner, int, const GAME_XYPair *pRect) {
+    ((GAME_RootGeometryOwner *)pOwner)
+        ->GAME_RootGeometryOwner::StoreRootGeometrySourceRect(pRect);
+}
+
+// FUNCTION: LEMBALL 0x00465C80
+void LEMBALL_FASTCALL RefreshWindowOwnerRenderScale(
+    void *pOwner, int, int nPreviousScaleFactor) {
+    void *pHelper;
+    void *pGeometryContext;
+    void *pCompactGeometry;
+
+    ((GAME_WindowOwnerBase *)pOwner)
+        ->GAME_WindowOwnerBase::SetRootGeometryScaleFactor(
+            nPreviousScaleFactor);
+    pHelper = *(void **)((char *)pOwner + 0x4c);
+    if (pHelper != 0) {
+        pGeometryContext = *(void **)((char *)pHelper + 0x0c);
+        if (pGeometryContext != 0 &&
+            *(void **)((char *)pOwner + 0x20) == 0) {
+            pCompactGeometry =
+                (char *)pGeometryContext + 0x40 +
+                *(int *)((char *)*(void **)(
+                             (char *)pGeometryContext + 0x40) +
+                         4);
+            *(short *)((char *)pCompactGeometry + 0x2c) =
+                (short)*(int *)((char *)pOwner + 0x38);
+        }
+    }
+}
+
+// FUNCTION: LEMBALL 0x00463DF0
+void LEMBALL_FASTCALL ReleaseWindowOwnerRenderResources(void *pOwner) {
+    void *pHelper;
+    short aRect[4];
+
+    pHelper = *(void **)((char *)pOwner + 0x4c);
+    if (pHelper != 0) {
+        DestroyGeometryHelperPointerArray(pHelper);
+        FreeVSMemBlock(pHelper);
+        *(void **)((char *)pOwner + 0x4c) = 0;
+    }
+
+    if ((((GAME_RootGeometryOwner *)pOwner)->GetWindowOwnerFlags() &
+         0x40000000u) != 0 &&
+        *(HWND *)((char *)pOwner + 0x44) != 0 &&
+        ((unsigned int)GetWindowLongA(
+             *(HWND *)((char *)pOwner + 0x44), -16) &
+         0x40000000u) != 0) {
+        aRect[0] = 0;
+        aRect[1] = 0;
+        aRect[2] = 0;
+        aRect[3] = 0;
+        ((GAME_RootGeometryOwner *)*(void **)((char *)pOwner + 0x48))
+            ->ReservedWindowOwnerSlot33((int)(unsigned long)aRect);
+    }
+
+    ((GAME_RootGeometryOwner *)pOwner)
+        ->GAME_RootGeometryOwner::ReleaseRootGeometryOwner();
+}
+
+// FUNCTION: LEMBALL 0x00463E70
+void LEMBALL_FASTCALL CanonicalizeWindowOwnerRenderSubrect(void *pOwner) {
+    GAME_XYPair Extent;
+    GAME_XYPair Origin;
+    GAME_RootGeometryOwner *pParent;
+    void *pGeometryContext;
+    WINDOW_OWNER_COMPACT_GEOMETRY_DISPATCH *pCompactGeometry;
+
+    ((GAME_RootGeometryOwner *)pOwner)
+        ->GAME_RootGeometryOwner::CanonicalizeRootGeometrySubrect();
+    if (*(void **)((char *)pOwner + 0x4c) == 0) {
+        return;
+    }
+
+    Extent = *(GAME_XYPair *)((char *)pOwner + 8);
+    if ((int)*(short *)((char *)pOwner + 0x10) *
+            (int)*(short *)((char *)pOwner + 0x12) !=
+        0) {
+        Extent = *(GAME_XYPair *)((char *)pOwner + 0x10);
+    }
+    pGeometryContext = *(void **)(
+        (char *)*(void **)((char *)pOwner + 0x4c) + 0x0c);
+    if (*(void **)((char *)pOwner + 0x20) == 0) {
+        Extent.m_x = (short)(Extent.m_x /
+                             *(int *)((char *)pOwner + 0x38));
+        Extent.m_y = (short)(Extent.m_y /
+                             *(int *)((char *)pOwner + 0x38));
+    }
+    pCompactGeometry = (WINDOW_OWNER_COMPACT_GEOMETRY_DISPATCH *)(
+        (char *)pGeometryContext + 0x40 +
+        *(int *)((char *)*(void **)((char *)pGeometryContext + 0x40) + 4));
+    pCompactGeometry->SetRenderExtent(&Extent);
+
+    Origin = *(GAME_XYPair *)((char *)pOwner + 0x14);
+    pParent = *(GAME_RootGeometryOwner **)((char *)pOwner + 0x20);
+    if (pParent != 0) {
+        Origin.m_x = (short)(Origin.m_x -
+                             *(short *)((char *)pParent + 0x18));
+        Origin.m_y = (short)(Origin.m_y -
+                             *(short *)((char *)pParent + 0x1a));
+    }
+    *(GAME_XYPair *)((char *)pCompactGeometry + 0x1c) = Origin;
+}
+
+// FUNCTION: LEMBALL 0x00463F30
+void LEMBALL_FASTCALL PopulateWindowOwnerRenderAnchor(void *pOwner) {
+    void *pGeometryContext;
+
+    ((GAME_RootGeometryOwner *)pOwner)
+        ->GAME_RootGeometryOwner::CanonicalizeRootGeometrySubrectAlt();
+    pGeometryContext = *(void **)(
+        (char *)*(void **)((char *)pOwner + 0x4c) + 0x0c);
+    ((WINDOW_OWNER_COMPACT_GEOMETRY_DISPATCH *)(
+         (char *)pGeometryContext + 0x40 +
+         *(int *)((char *)*(void **)((char *)pGeometryContext + 0x40) + 4)))
+        ->SetRenderOrigin((GAME_XYPair *)((char *)pOwner + 0x18));
+}
+
+// FUNCTION: LEMBALL 0x00463C20
+void LEMBALL_FASTCALL SetWindowOwnerRenderAnchorFromPoint(
+    void *pOwner, int, const GAME_XYPair *pPoint) {
+    ((GAME_WindowOwnerBase *)pOwner)
+        ->GAME_WindowOwnerBase::MoveWindowOwnerOrigin(pPoint);
+}
+
+// FUNCTION: LEMBALL 0x00432560
+void LEMBALL_FASTCALL ForwardNestedGeometryRectUpdate(
+    void *pOwner, int, short *paRect) {
+    void *pHelper;
+    void *pGeometryContext;
+
+    pHelper = *(void **)((char *)pOwner + 0x4c);
+    if (pHelper != 0) {
+        pGeometryContext = *(void **)((char *)pHelper + 0x0c);
+        if (pGeometryContext != 0) {
+            CopyRectTupleIfExtentEmpty(
+                (char *)pGeometryContext + 0x40 +
+                    *(int *)((char *)*(void **)(
+                                 (char *)pGeometryContext + 0x40) +
+                             4),
+                0,
+                paRect);
+        }
+    }
+}
+
+// FUNCTION: LEMBALL 0x00463F70
+LRESULT LEMBALL_FASTCALL DispatchWindowOwnerRenderContextMessage(
+    void *pOwner, int, UINT uMessage, WPARAM wParam, LPARAM lParam) {
+    WINDOW_OWNER_PAINTSTRUCT Paint;
+    short cxPaint;
+    short cyPaint;
+    short xPaint;
+    short yPaint;
+    short *paDirty;
+    int nSelectedDriver;
+
+    paDirty = (short *)((char *)pOwner + 0x88);
+    if (uMessage == 0x0f) {
+        nSelectedDriver = *(int *)g_pSelectedGraphicsDriverRuntime;
+        if (nSelectedDriver >= 4 && nSelectedDriver <= 5) {
+            return DefWindowProcA(
+                *(HWND *)((char *)GetDisplayState() + 0x10),
+                uMessage, wParam, lParam);
+        }
+
+        BeginPaint(*(HWND *)((char *)pOwner + 0x44), &Paint);
+        xPaint = (short)Paint.rcPaint.left;
+        yPaint = (short)Paint.rcPaint.top;
+        cxPaint = (short)(Paint.rcPaint.right - Paint.rcPaint.left);
+        cyPaint = (short)(Paint.rcPaint.bottom - Paint.rcPaint.top);
+        if ((int)cxPaint * (int)cyPaint != 0) {
+            if (paDirty[2] > xPaint) {
+                paDirty[0] = (short)(paDirty[0] + paDirty[2] - xPaint);
+                paDirty[2] = xPaint;
+            }
+            if ((short)(paDirty[2] + paDirty[0]) <
+                (short)(xPaint + cxPaint)) {
+                paDirty[0] = (short)(xPaint + cxPaint - paDirty[2]);
+            }
+            if (paDirty[3] > yPaint) {
+                paDirty[1] = (short)(paDirty[1] + paDirty[3] - yPaint);
+                paDirty[3] = yPaint;
+            }
+            if ((short)(paDirty[3] + paDirty[1]) <
+                (short)(yPaint + cyPaint)) {
+                paDirty[1] = (short)(yPaint + cyPaint - paDirty[3]);
+            }
+        }
+        EndPaint(*(HWND *)((char *)pOwner + 0x44), &Paint);
+        return 0;
+    }
+
+    if (uMessage == 0x1c) {
+        if (wParam != 0 && *(void **)((char *)pOwner + 0x4c) != 0) {
+            PropagateGlobalPaletteToResourceGeometries(
+                *(void **)((char *)*(void **)((char *)pOwner + 0x4c) +
+                           0x0c));
+        }
+    } else if (uMessage == 0x311 &&
+               (int)*(short *)((char *)pOwner + 8) *
+                       (int)*(short *)((char *)pOwner + 10) !=
+                   0) {
+        if (paDirty[2] > 0) {
+            paDirty[0] = (short)(paDirty[0] + paDirty[2]);
+            paDirty[2] = 0;
+        }
+        if ((short)(paDirty[2] + paDirty[0]) <
+            *(short *)((char *)pOwner + 8)) {
+            paDirty[0] = (short)(*(short *)((char *)pOwner + 8) -
+                                 paDirty[2]);
+        }
+        if (paDirty[3] > 0) {
+            paDirty[1] = (short)(paDirty[1] + paDirty[3]);
+            paDirty[3] = 0;
+        }
+        if ((short)(paDirty[3] + paDirty[1]) <
+            *(short *)((char *)pOwner + 10)) {
+            paDirty[1] = (short)(*(short *)((char *)pOwner + 10) -
+                                 paDirty[3]);
+        }
+    }
+
+    if (*(HWND *)((char *)pOwner + 0x44) != 0) {
+        return DefWindowProcA(*(HWND *)((char *)pOwner + 0x44),
+                              uMessage, wParam, lParam);
+    }
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x00464220
+void LEMBALL_FASTCALL PresentWindowOwnerRenderContext(void *pOwner) {
+    GAME_RootGeometryOwnerChildNode *pNode;
+    void *pGeometryContext;
+    void *hDc;
+    void (LEMBALL_FASTCALL *pPresentChild)(void *);
+
+    if (*(int *)((char *)pOwner + 4) == 0) {
+        return;
+    }
+
+    hDc = 0;
+    if (*(HWND *)((char *)pOwner + 0x44) != 0) {
+        hDc = GetDC(*(HWND *)((char *)pOwner + 0x44));
+        EnterCriticalSection(
+            (char *)g_pResourceGeometryHelperTarget + 0x534);
+        BindHelperTargetDisplayDc(g_pResourceGeometryHelperTarget, 0, hDc);
+    }
+
+    pNode = *(GAME_RootGeometryOwnerChildNode **)((char *)pOwner + 0x24);
+    while (pNode != 0) {
+        pPresentChild = (void (LEMBALL_FASTCALL *)(void *))
+            (*(void ***)pNode->m_pOwner)[45];
+        pPresentChild(pNode->m_pOwner);
+        pNode = pNode->m_pNext;
+    }
+
+    pGeometryContext = *(void **)(
+        (char *)*(void **)((char *)pOwner + 0x4c) + 0x0c);
+    ((WINDOW_OWNER_COMPACT_GEOMETRY_DISPATCH *)(
+         (char *)pGeometryContext + 0x40 +
+         *(int *)((char *)*(void **)((char *)pGeometryContext + 0x40) + 4)))
+        ->Present();
+
+    if (*(HWND *)((char *)pOwner + 0x44) != 0) {
+        ReleaseDC(*(HWND *)((char *)pOwner + 0x44), hDc);
+        LeaveCriticalSection(
+            (char *)g_pResourceGeometryHelperTarget + 0x534);
+    }
+}
+
 struct WINDOW_OWNER_FLAGS_INTERFACE {
     virtual void Reserved00(void) = 0;
     virtual void Reserved01(void) = 0;
@@ -844,7 +1796,8 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
     unsigned int uOwnerFlags;
     unsigned int (LEMBALL_FASTCALL *pGetOwnerFlags)(void *);
     int (LEMBALL_FASTCALL *pOwnerState)(void *);
-    LRESULT (LEMBALL_FASTCALL *pOwnerResult)(void *);
+    LRESULT (LEMBALL_FASTCALL *pOwnerResult)(
+        void *, int, UINT, WPARAM, LPARAM);
     void (LEMBALL_FASTCALL *pOwnerCallback)(void *);
     VSGDI_DisplayState *pDisplayState;
     void *pSelectedDriver;
@@ -885,9 +1838,11 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         Point.y = 0;
         ClientToScreen(hWnd, &Point);
 
-        nSelectedDisplayMode = GetSelectedGraphicsDriverId();
-        if ((*(unsigned int *)(*(void **)((char *)pOwner + 0x48)) & 0x40000000) != 0 &&
-            IsDisplayModeWindowedRange(&nSelectedDisplayMode)) {
+        pGetOwnerFlags = (unsigned int (LEMBALL_FASTCALL *)(void *))
+            (*(void ***)pOwner)[0x64 / sizeof(void *)];
+        uOwnerFlags = pGetOwnerFlags(pOwner);
+        if ((uOwnerFlags & 0x40000000u) != 0 &&
+            IsDisplayModeWindowedRange((const int *)pSelectedDriver)) {
             Point.x += *(short *)((char *)*(void **)((char *)pOwner + 0x48) + 0x18);
             Point.y += *(short *)((char *)*(void **)((char *)pOwner + 0x48) + 0x1a);
         }
@@ -896,9 +1851,6 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         *(short *)((char *)pOwner + 0x18) = *(short *)((char *)pOwner + 0x0c);
         *(short *)((char *)pOwner + 0x1a) = *(short *)((char *)pOwner + 0x0e);
 
-        pGetOwnerFlags = (unsigned int (LEMBALL_FASTCALL *)(void *))
-            (*(void ***)pOwner)[0x64 / sizeof(void *)];
-        (void)pGetOwnerFlags(pOwner);
         pOwnerCallback = (void (LEMBALL_FASTCALL *)(void *))
             (*(void ***)pOwner)[0x18 / sizeof(void *)];
         pOwnerCallback(pOwner);
@@ -1011,9 +1963,10 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         }
 
         if (pOwner != 0) {
-            pOwnerResult = (LRESULT (LEMBALL_FASTCALL *)(void *))
+            pOwnerResult = (LRESULT (LEMBALL_FASTCALL *)(
+                void *, int, UINT, WPARAM, LPARAM))
                 (*(void ***)pOwner)[0xa0 / sizeof(void *)];
-            return pOwnerResult(pOwner);
+            return pOwnerResult(pOwner, 0, uMessage, wParam, lParam);
         }
         return 0;
     }
@@ -1046,9 +1999,10 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         nPayload = ((WINDOW_OWNER_COMMAND_TABLE *)pOwner)
             ->LookupWindowCommandEventPayload(0, (int)wParam);
         if (nPayload == 0) {
-            pOwnerResult = (LRESULT (LEMBALL_FASTCALL *)(void *))
+            pOwnerResult = (LRESULT (LEMBALL_FASTCALL *)(
+                void *, int, UINT, WPARAM, LPARAM))
                 (*(void ***)pOwner)[0xa0 / sizeof(void *)];
-            return pOwnerResult(pOwner);
+            return pOwnerResult(pOwner, 0, uMessage, wParam, lParam);
         }
 
         Event.m_nType = 0xf;
@@ -1145,7 +2099,10 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         return DefWindowProcA(hWnd, uMessage, wParam, lParam);
     }
 
-    (void)wParam;
+    if (pOwner != 0) {
+        return ((GAME_WindowOwnerBase *)pOwner)
+            ->DispatchWindowMessage(uMessage, wParam, lParam);
+    }
     return DefWindowProcA(hWnd, uMessage, wParam, lParam);
 }
 
@@ -1308,6 +2265,137 @@ GAME_WindowOwnerBase::GAME_WindowOwnerBase(void) {
         RegisterBaseWindowClass();
     }
     m_hWindow44 = 0;
+}
+
+// FUNCTION: LEMBALL 0x00465200
+void GAME_WindowOwnerBase::InitializeWindowOwnerFromRect(
+    short *paRect, void *pWindowOwner, const char *pszTitle) {
+    WINDOW_OWNER_RECT WindowRect;
+    tagPOINT Position;
+    unsigned int uFlags;
+    unsigned int uWindowStyle;
+    unsigned int uMenuResourceId;
+    void *pMenuDefinition;
+    HMENU hMenu;
+    HWND hParentWindow;
+    int fHasMenu;
+    int nSelectedDriver;
+
+    m_Position0C.m_x = 0;
+    m_Position0C.m_y = 0;
+    m_Size08.m_x = paRect[0];
+    m_Size08.m_y = paRect[1];
+    SetWindowOwnerState(2);
+    EnsureRootGeometryDispatchHelper();
+
+    m_pParent20 = (GAME_RootGeometryOwner *)pWindowOwner;
+    m_pWindowContext48 = pWindowOwner;
+
+    uFlags = GetWindowOwnerFlags();
+    if (pWindowOwner != 0 && (uFlags & 0x40000000u) == 0) {
+        m_pParent20->AppendQueuedRenderSinkValueNode(this);
+
+        Position.x =
+            *(short *)((char *)pWindowOwner + 0x0c) + paRect[2];
+        Position.y =
+            *(short *)((char *)pWindowOwner + 0x0e) + paRect[3];
+        ClientToScreen(
+            *(HWND *)((char *)pWindowOwner + 0x44), &Position);
+        m_Position0C.m_x = (short)Position.x;
+        m_Position0C.m_y = (short)Position.y;
+        m_Origin18.m_x = paRect[2];
+        m_Origin18.m_y = paRect[3];
+        m_nScaleFactor38 =
+            *(int *)((char *)pWindowOwner + 0x38);
+
+        RetainRootGeometryOwner();
+        ReservedWindowOwnerSlot15();
+        CanonicalizeRootGeometrySubrect();
+        ReservedWindowOwnerSlot17();
+        return;
+    }
+
+    nSelectedDriver =
+        ((VSGDI_SelectedGraphicsDriverRuntime *)
+             g_pSelectedGraphicsDriverRuntime)
+            ->m_nSelectedDriver;
+    if (nSelectedDriver >= 4 && nSelectedDriver <= 5) {
+        m_pParent20 = 0;
+        m_Size08.m_x = paRect[0];
+        m_Size08.m_y = paRect[1];
+        m_Position0C.m_x = paRect[2];
+        m_Position0C.m_y = paRect[3];
+        m_Origin18.m_x = paRect[2];
+        m_Origin18.m_y = paRect[3];
+        ((VSGDI_SelectedGraphicsDriverRuntime *)
+             g_pSelectedGraphicsDriverRuntime)
+            ->m_pWindowOwner = this;
+        m_hWindow44 = *(HWND *)((char *)GetDisplayState() + 0x10);
+
+        CacheCurrentContextWindow();
+        ReservedWindowOwnerSlot38();
+        RetainRootGeometryOwner();
+        ReservedWindowOwnerSlot15();
+        CanonicalizeRootGeometrySubrect();
+        ReservedWindowOwnerSlot17();
+        return;
+    }
+
+    uWindowStyle = MapWindowOwnerFlagsToWin32Style(uFlags);
+    hParentWindow = 0;
+    if ((uFlags & 0x40000000u) != 0 && pWindowOwner != 0) {
+        m_pParent20 = 0;
+        uWindowStyle &= 0x7fffffffu;
+        uWindowStyle |= 0x40000000u;
+        hParentWindow = *(HWND *)((char *)pWindowOwner + 0x44);
+    }
+
+    WindowRect.left = paRect[2];
+    WindowRect.top = paRect[3];
+    WindowRect.right = paRect[2] + paRect[0];
+    WindowRect.bottom = paRect[3] + paRect[1];
+
+    hMenu = 0;
+    uMenuResourceId = 0;
+    pMenuDefinition = 0;
+    fHasMenu = QueryRootGeometryState(
+        &uMenuResourceId, &pMenuDefinition);
+    if (fHasMenu != 0) {
+        m_nMenuResourceId40 = uMenuResourceId;
+        m_pMenuDefinition3C = pMenuDefinition;
+        hMenu = LoadMenuA(
+            g_hApplicationInstance,
+            (LPCSTR)(unsigned long)(uMenuResourceId & 0xffff));
+    }
+
+    AdjustWindowRect(&WindowRect, uWindowStyle, fHasMenu != 0);
+    m_hWindow44 = CreateWindowExA(
+        0,
+        g_pszVsBaseWindowClassName,
+        pszTitle,
+        uWindowStyle,
+        WindowRect.left,
+        WindowRect.top,
+        WindowRect.right - WindowRect.left,
+        WindowRect.bottom - WindowRect.top,
+        hParentWindow,
+        hMenu,
+        g_hApplicationInstance,
+        this);
+
+    if (hMenu != 0) {
+        RefreshWindowOwnerMenuState();
+    }
+    if (m_hWindow44 == 0) {
+        ShowFatalGetLastErrorMessageAndExit(
+            g_szUnableToCreateWindowError);
+    }
+
+    if ((GetWindowOwnerFlags() & 1) != 0) {
+        UpdateWindow(m_hWindow44);
+        ShowWindow(m_hWindow44, 5);
+        SetForegroundWindow(m_hWindow44);
+    }
 }
 
 // FUNCTION: LEMBALL 0x00465570

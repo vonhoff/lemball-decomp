@@ -3,8 +3,7 @@ project(lemball_decomp CXX)
 
 option(LEMBALL_ENABLE_WIN32 "Build the reconstructed Win32 executable" ON)
 option(LEMBALL_SKIP_CD_TEST "Skip CD probing and use the current directory" OFF)
-option(LEMBALL_ENABLE_PRIMARY_WINDOW_INIT "Enable the reconstructed primary window initialization dispatch" OFF)
-option(LEMBALL_PRIMARY_WINDOW_INIT_SKIP_PALETTE "Diagnostic: omit the experimental startup palette callback" OFF)
+option(LEMBALL_SKIP_REGISTRY_RUNNING_STATE "Skip updating the registry running state" OFF)
 
 set(LEMBALL_SOURCES
     src/engine/graphics_driver.cpp
@@ -12,6 +11,7 @@ set(LEMBALL_SOURCES
     src/engine/render_dispatch.cpp
     src/engine/runtime_init.cpp
     src/game/game_app.cpp
+    src/game/main_menu_screen.cpp
     src/game/primary_context_window.cpp
     src/game/window_owner.cpp
     src/game/eff_streams.cpp
@@ -20,6 +20,7 @@ set(LEMBALL_SOURCES
     src/game/vtable_callbacks.cpp
     src/game/status_entry.cpp
     src/game/level_status.cpp
+    src/game/menu_selector.cpp
     src/game/variant_resource_loader.cpp
     src/game/variant_resource_manager.cpp
     src/network/lobby.cpp
@@ -51,18 +52,32 @@ set_property(TARGET LEMBALL_objects PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded
 if(LEMBALL_SKIP_CD_TEST)
     target_compile_definitions(LEMBALL_objects PRIVATE LEMBALL_SKIP_CD_TEST=1)
 endif()
-if(LEMBALL_ENABLE_PRIMARY_WINDOW_INIT)
-    target_compile_definitions(LEMBALL_objects PRIVATE LEMBALL_ENABLE_PRIMARY_WINDOW_INIT=1)
-endif()
-if(LEMBALL_PRIMARY_WINDOW_INIT_SKIP_PALETTE)
-    target_compile_definitions(LEMBALL_objects PRIVATE LEMBALL_PRIMARY_WINDOW_INIT_SKIP_PALETTE=1)
+if(LEMBALL_SKIP_REGISTRY_RUNNING_STATE)
+    target_compile_definitions(LEMBALL_objects PRIVATE LEMBALL_SKIP_REGISTRY_RUNNING_STATE=1)
 endif()
 if(APPLE)
     target_compile_definitions(LEMBALL_objects PRIVATE LEMBALL_HOST_MACOS=1)
 endif()
 
 if(LEMBALL_ENABLE_WIN32)
-    add_executable(LEMBALL WIN32 $<TARGET_OBJECTS:LEMBALL_objects>)
+    set(LEMBALL_RESOURCE_OBJECTS)
+    if(LEMBALL_RC_COMPILER)
+        set(LEMBALL_RESOURCE_OBJECT "${CMAKE_CURRENT_BINARY_DIR}/LEMBALL.res")
+        add_custom_command(
+            OUTPUT "${LEMBALL_RESOURCE_OBJECT}"
+            COMMAND "${LEMBALL_RC_COMPILER}" /r /fo "${LEMBALL_RESOURCE_OBJECT}"
+                    "${CMAKE_CURRENT_SOURCE_DIR}/src/platform/lemball.rc"
+            DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/platform/lemball.rc"
+            VERBATIM
+        )
+        set_source_files_properties("${LEMBALL_RESOURCE_OBJECT}" PROPERTIES
+            GENERATED TRUE
+            EXTERNAL_OBJECT TRUE
+        )
+        list(APPEND LEMBALL_RESOURCE_OBJECTS "${LEMBALL_RESOURCE_OBJECT}")
+    endif()
+
+    add_executable(LEMBALL WIN32 $<TARGET_OBJECTS:LEMBALL_objects> ${LEMBALL_RESOURCE_OBJECTS})
     set_property(TARGET LEMBALL PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
     set_target_properties(LEMBALL PROPERTIES
         OUTPUT_NAME "LEMBALL"

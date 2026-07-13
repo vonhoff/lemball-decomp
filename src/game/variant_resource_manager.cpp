@@ -13,13 +13,13 @@ struct GAME_MainGameVariantResourceBundle {
     int m_nLoadedResourceCount;
     int m_nTotalResourceCount;
     void **m_ppZrleListResources;
-    void *m_pReserved14;
+    int m_cLoadedZrleListResources;
     int m_cZrleListResources;
     void **m_ppListResources;
-    void *m_pReserved20;
+    int m_cLoadedListResources;
     int m_cListResources;
     void **m_ppBitmapResources;
-    void *m_pReserved2C;
+    int m_cLoadedBitmapResources;
     int m_cBitmapResources;
     void **m_ppPaletteResources;
     void *m_pReserved38;
@@ -44,18 +44,26 @@ void VariantResourceBundleNoopThunk(void) {
 }
 
 // FUNCTION: LEMBALL 0x00447D80
-static void UpdateMainGameVariantResourceLoadProgress(void *pObject) {
+static void LEMBALL_FASTCALL UpdateMainGameVariantResourceLoadProgress(
+    void *pObject) {
     int nLoaded;
     GAME_MainGameVariantResourceBundle *pBundle;
 
     pBundle = (GAME_MainGameVariantResourceBundle *)pObject;
     nLoaded = ++pBundle->m_nLoadedResourceCount;
-    ((void (*)(int))**(void ***)((char *)pBundle->m_pStatusIndicatorManager + 0x70))(
-        (nLoaded * 100) / pBundle->m_nTotalResourceCount);
+    {
+        void *pProgressClient =
+            (char *)pBundle->m_pStatusIndicatorManager + 0x70;
+        ((void (LEMBALL_FASTCALL *)(void *, int, int))
+             (*(void ***)pProgressClient)[0])(
+            pProgressClient, 0,
+            (nLoaded * 100) / pBundle->m_nTotalResourceCount);
+    }
 }
 
 // FUNCTION: LEMBALL 0x00401104
-static void UpdateMainGameVariantResourceLoadProgressThunk(void *pObject) {
+static void LEMBALL_FASTCALL UpdateMainGameVariantResourceLoadProgressThunk(
+    void *pObject) {
     UpdateMainGameVariantResourceLoadProgress(pObject);
 }
 
@@ -67,15 +75,50 @@ static void *g_GAME_MainGameVariantResourceBundleVtableStorage[4] = {
 };
 static void *g_GAME_MainGameVariantResourceBundleVtable =
     g_GAME_MainGameVariantResourceBundleVtableStorage;
-static int *g_GAME_MainGameVariantCompactZrleListResourceIds;
-static int *g_GAME_MainGameVariantStandardZrleListResourceIds;
-static int *g_GAME_MainGameVariantCompactListResourceIds;
-static int *g_GAME_MainGameVariantStandardListResourceIds;
-static int *g_GAME_MainGameVariantCompactBitmapResourceIds;
-static int *g_GAME_MainGameVariantStandardBitmapResourceIds;
-static int *g_GAME_MainGameVariantPaletteResourceIds;
-static int *g_GAME_MainGameVariantStringResourceIds;
-static int *g_GAME_MainGameVariantStringResourceIdsEnd;
+
+// GLOBAL: LEMBALL 0x0049f1c0
+static int g_GAME_MainGameVariantCompactZrleListResourceIds[0x44] = {
+    0x173, 0x174, 0x175, 0x176, 0x177, 0x178, 0x179, 0x17a,
+    0x17b, 0x1db, 0x1da, 0x1e4, 0x1dd, 0x1e0, 0x1e1, 0x1e2,
+    0x1e3, 0x1ea, 0x1f8, 0x1f7, 0x1d8, 0x1d9, 0x1d6, 0x1d7,
+    0x183, 0x1e8, 0x1e9, 0x1ec, 0x208, 0x205, 0x206, 0x207,
+    0x1ed, 0x1e7, 0x1eb, 0x1de, 0x1df, 0x1ef, 0x1f0, 0x1f3,
+    0x1f4, 0x1e5, 0x1e6, 0x1f1, 0x1f2, 0x180, 0x181, 0x17c,
+    0x182, 0x17d, 0x17e, 0x17f, 0x185, 0x184, 0x186, 0x187,
+    0x188, 0x189, 0x18a, 0x18b, 0x18c, 0x18d, 0x18e, 0x18f,
+    0x191, 0x190, 0x192, 0x1dc,
+};
+
+// GLOBAL: LEMBALL 0x0049f2d0
+static int g_GAME_MainGameVariantStandardZrleListResourceIds[0x43] = {
+    0x146, 0x147, 0x148, 0x149, 0x14a, 0x14b, 0x14c, 0x14d,
+    0x14e, 0x1a7, 0x1a6, 0x1b0, 0x1a9, 0x1ac, 0x1ad, 0x1ae,
+    0x1af, 0x1b6, 0x1c4, 0x1c3, 0x1a4, 0x1a5, 0x1a2, 0x1a3,
+    0x156, 0x1b4, 0x1b5, 0x1b8, 0x1b9, 0x1d5, 0x1d2, 0x1d3,
+    0x1d4, 0x1aa, 0x1ab, 0x1b3, 0x1b7, 0x1bb, 0x1bc, 0x1bf,
+    0x1c0, 0x1b1, 0x1b2, 0x1bd, 0x1be, 0x153, 0x154, 0x14f,
+    0x155, 0x150, 0x151, 0x152, 0x158, 0x157, 0x159, 0x15a,
+    0x15b, 0x15c, 0x15d, 0x15e, 0x15f, 0x160, 0x161, 0x162,
+    0x164, 0x163, 0x165,
+};
+
+// GLOBAL: LEMBALL 0x0049f3dc
+static int g_GAME_MainGameVariantCompactListResourceIds[1] = {0x114};
+
+// GLOBAL: LEMBALL 0x0049f3e0
+static int g_GAME_MainGameVariantStandardListResourceIds[1] = {0x113};
+
+// GLOBAL: LEMBALL 0x0049f3e8
+static int g_GAME_MainGameVariantCompactBitmapResourceIds[3] = {0x13c, 0x13d, 0x13e};
+
+// GLOBAL: LEMBALL 0x0049f3f8
+static int g_GAME_MainGameVariantStandardBitmapResourceIds[3] = {0x131, 0x132, 0x133};
+
+// GLOBAL: LEMBALL 0x0049f408
+static int g_GAME_MainGameVariantPaletteResourceIds[2] = {0x10a, 0x102};
+
+// GLOBAL: LEMBALL 0x0049f410
+static int g_GAME_MainGameVariantStringResourceIds[1] = {0x100};
 static int g_GAME_VariantResourceEntryEffectTable[44][3] = {
     {1, 532, 262153}, {2, 544, 262153}, {3, 543, 262243}, {4, 537, 262153},
     {5, 521, 9}, {6, 522, 9}, {7, 523, 458761}, {8, 524, 9},
@@ -100,6 +143,8 @@ extern int g_fLevelDemoModeEnabled;
 extern void *g_pMainResourceArchive;
 extern void *ConstructLevelScreenStatusIndicatorManager(void *pObject, int nStatusMode, void *pPrimaryContext);
 extern void LEMBALL_FASTCALL ReleaseLevelSelectionModeRenderStateResource(void *pStatusIndicatorManager);
+extern void LEMBALL_FASTCALL ReleaseStatusIndicatorPrimaryBitmapThunk(
+    void *pStatusIndicatorManager);
 extern void DestroyLevelScreenStatusIndicatorManager(void *pStatusIndicatorManager);
 extern void LoadMainGameVariantZrleListResource(void *pBundle, int nResourceId);
 extern void LoadMainGameVariantListResource(void *pBundle, int nResourceId);
@@ -133,14 +178,18 @@ void GAME_VariantResourceEntryManager::SetVariantResourceMusicEnabled(int fEnabl
 
     if (g_fMusicEnabled != 0 && *(int *)((char *)pManager + 0x2c0) != 0) {
         if (fEnabled != 0) {
-            hMusic = RegisterVariantResourceMusicHandle(g_pAudioManager, *(int *)((char *)pManager + 0x2c0));
+            hMusic = RegisterVariantResourceMusicHandle(
+                g_pAudioManager, 0, *(int *)((char *)pManager + 0x2c0));
             *(int *)((char *)pManager + 0x2c4) = hMusic;
-            StartRegisteredVariantResourceMusic(g_pAudioManager, hMusic);
+            StartRegisteredVariantResourceMusic(
+                g_pAudioManager, 0, hMusic);
             g_fVariantResourceMusicEnabled = fEnabled;
             return;
         }
-        StopVariantResourceMusicPlayback(g_pAudioManager, *(int *)((char *)pManager + 0x2c4));
-        UnregisterVariantResourceMusicHandle(g_pAudioManager, *(int *)((char *)pManager + 0x2c4));
+        StopVariantResourceMusicPlayback(
+            g_pAudioManager, 0, *(int *)((char *)pManager + 0x2c4));
+        UnregisterVariantResourceMusicHandle(
+            g_pAudioManager, 0, *(int *)((char *)pManager + 0x2c4));
         g_fVariantResourceMusicEnabled = fEnabled;
     }
 }
@@ -182,7 +231,9 @@ void GAME_VariantResourceEntryManager::PopulateVariantResourceEntriesForFlagMask
             }
             pEntry[2] = (int)(dwNow - 100);
             if (*(void **)((char *)pManager + 4) != 0) {
-                ((void (*)())**(void ***)((char *)pManager + 4))();
+                void *pBundle = *(void **)((char *)pManager + 4);
+                ((void (LEMBALL_FASTCALL *)(void *, int))(*(void ***)pBundle)[0])(
+                    pBundle, 0);
             }
             pEntry += 3;
             --i;
@@ -469,11 +520,13 @@ void LEMBALL_FASTCALL DestroyMainGameVariantResourceMode(void *pBundle) {
         ReleaseMainGameVariantBitmapResource(pVariantBundle, pVariantBundle->m_panBitmapResourceIds[i]);
     }
 
-    for (pnResourceId = g_GAME_MainGameVariantPaletteResourceIds; pnResourceId < g_GAME_MainGameVariantStringResourceIds;
+    for (pnResourceId = g_GAME_MainGameVariantPaletteResourceIds;
+         pnResourceId < g_GAME_MainGameVariantPaletteResourceIds + 2;
          ++pnResourceId) {
         ReleaseMainGameVariantPaletteResource(pVariantBundle, *pnResourceId);
     }
-    for (pnResourceId = g_GAME_MainGameVariantStringResourceIds; pnResourceId < g_GAME_MainGameVariantStringResourceIdsEnd;
+    for (pnResourceId = g_GAME_MainGameVariantStringResourceIds;
+         pnResourceId < g_GAME_MainGameVariantStringResourceIds + 1;
          ++pnResourceId) {
         ReleaseMainGameVariantStringResource(pVariantBundle, *pnResourceId);
     }
@@ -508,9 +561,9 @@ void *ConstructMainGameVariantResourceBundle(void *pBundle, void *pPrimaryContex
     pVariantBundle->m_pReserved48 = 0;
     pVariantBundle->m_pReserved40 = 0;
     pVariantBundle->m_pReserved38 = 0;
-    pVariantBundle->m_pReserved2C = 0;
-    pVariantBundle->m_pReserved20 = 0;
-    pVariantBundle->m_pReserved14 = 0;
+    pVariantBundle->m_cLoadedBitmapResources = 0;
+    pVariantBundle->m_cLoadedListResources = 0;
+    pVariantBundle->m_cLoadedZrleListResources = 0;
 
     if (g_fCompactPrimaryContextLayout != 0) {
         pVariantBundle->m_panZrleListResourceIds = g_GAME_MainGameVariantCompactZrleListResourceIds;
@@ -561,7 +614,8 @@ void *ConstructMainGameVariantResourceBundle(void *pBundle, void *pPrimaryContex
     pVariantBundle->m_nTotalResourceCount +=
         ((GAME_VariantResourceEntryManager *)g_pVariantResourceEntryManager)
             ->CountVariantResourceEntriesWithFlagMask(nVariantMode);
-    ReleaseLevelSelectionModeRenderStateResource(pVariantBundle->m_pStatusIndicatorManager);
+    ReleaseStatusIndicatorPrimaryBitmapThunk(
+        pVariantBundle->m_pStatusIndicatorManager);
     pVariantBundle->m_nLoadedResourceCount = 0;
     ((GAME_VariantResourceEntryManager *)g_pVariantResourceEntryManager)
         ->SwitchVariantResourceEntryMode(nVariantMode, pVariantBundle);
@@ -579,12 +633,14 @@ void *ConstructMainGameVariantResourceBundle(void *pBundle, void *pPrimaryContex
         LoadMainGameVariantBitmapResource(pVariantBundle, pVariantBundle->m_panBitmapResourceIds[i]);
     }
 
-    for (panResourceIds = g_GAME_MainGameVariantPaletteResourceIds; panResourceIds < g_GAME_MainGameVariantStringResourceIds;
+    for (panResourceIds = g_GAME_MainGameVariantPaletteResourceIds;
+         panResourceIds < g_GAME_MainGameVariantPaletteResourceIds + 2;
          ++panResourceIds) {
         LoadMainGameVariantPaletteResource(pVariantBundle, *panResourceIds);
     }
 
-    for (panResourceIds = g_GAME_MainGameVariantStringResourceIds; panResourceIds < g_GAME_MainGameVariantStringResourceIdsEnd;
+    for (panResourceIds = g_GAME_MainGameVariantStringResourceIds;
+         panResourceIds < g_GAME_MainGameVariantStringResourceIds + 1;
          ++panResourceIds) {
         ((GAME_MainGameVariantResourceBundleLoader *)pVariantBundle)
             ->LoadMainGameVariantStringResource(*panResourceIds);

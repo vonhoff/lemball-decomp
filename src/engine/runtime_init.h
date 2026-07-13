@@ -90,7 +90,12 @@ void *LEMBALL_FASTCALL DeleteFixedBufferStreamReturnThis(
 void __fastcall ResetFixedBufferStream(VSINIT_FixedBufferStream *pStream);
 void AppendCharToFixedBufferStream(VSINIT_FixedBufferStream *pStream, char ch);
 void AppendCStringToFixedBufferStream(VSINIT_FixedBufferStream *pStream, const char *pszText);
-void *ReturnStreamArgument(void *pStream, void *pArgument);
+void *LEMBALL_FASTCALL ReturnStreamArgument(
+    void *pStream, int nUnused, void *pArgument);
+int LEMBALL_FASTCALL AppendRenderDispatchQueueEntry(
+    void *pQueue, int nUnused, RDISPATCH_QueueEntry *pEntry);
+int LEMBALL_FASTCALL DispatchRenderQueueEntryImmediately(
+    void *pQueue, int nUnused, RDISPATCH_QueueEntry *pEntry);
 void EnterObjectCriticalSection(void *pObject);
 void LeaveObjectCriticalSection(void *pObject);
 

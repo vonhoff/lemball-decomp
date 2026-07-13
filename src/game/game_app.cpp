@@ -3,6 +3,7 @@
 #include "game/window_owner.h"
 #include "game/cursor_render_client.h"
 #include "game/type18_chunk_stream.h"
+#include "game/main_menu_screen.h"
 #include "../network/safe_vtable.h"
 
 #include "platform/shell_ui.h"
@@ -114,7 +115,8 @@ extern void *LoadZrleResource(int nResourceId);
 extern void *LoadPalResource(int nResourceId);
 extern void SetLevelScreenStatusIndicatorMode(int nMode, int nValue);
 typedef void (LEMBALL_FASTCALL *GAME_PrimaryContextSetRectProc)(
-    void *pPrimaryContext, int nUnused, short *paRect, int nFlags, void *pTitleStream);
+    void *pPrimaryContext, int nUnused, short *paRect, void *pWindowOwner,
+    const char *pszTitle);
 extern void *g_pPrimaryContextVtable;
 extern void *g_pPrimaryContextRenderQueueNodeVtable;
 extern void *g_pQueuedRenderPointSinkFinalizeThunk;
@@ -123,8 +125,9 @@ extern void *g_pSharedGeometryHelper;
 extern void *g_pEffTransportSecondaryDispatchQueue;
 extern int *g_pArrowCursorStatusIndicatorRenderClient;
 extern int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cEntries);
-extern void DispatchAndClearPointerQueue(void *pQueue);
+extern void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void *pQueue);
 extern "C" DWORD WINAPI timeGetTime(void);
+extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 
 struct GAME_ScreenObject {
     void *ConstructIntroSequenceScreen(void *pPrimaryContext,
@@ -268,17 +271,6 @@ static int StubReturnZero(void) {
 static void StubNoOpPtr(void *) {
 }
 
-static void LEMBALL_FASTCALL StubPrimaryContextSetRect(
-    void *pPrimaryContext, int, short *paRect, int, void *) {
-    if (paRect != 0) {
-        *(short *)((char *)pPrimaryContext + 0x08) = paRect[0];
-        *(short *)((char *)pPrimaryContext + 0x0a) = paRect[1];
-        *(short *)((char *)pPrimaryContext + 0x18) = paRect[2];
-        *(short *)((char *)pPrimaryContext + 0x1a) = paRect[3];
-    }
-    BuildGeometryHelperFromRenderRect(pPrimaryContext);
-}
-
 /* The primary-context present path pushes one argument and the target
  * implementation returns with RET 4.  Keep that ABI even while the body is
  * still being reconstructed. */
@@ -317,7 +309,7 @@ static void *GetPrimaryContextDispatchActiveScreenFrameAddress(void) {
 }
 
 static void *GetPrimaryContextInitializeWindowOwnerFromRectAndActivateAddress(void) {
-    void (GAME_PrimaryContext::*pMethod)(short *, void *, void *, int) =
+    void (GAME_PrimaryContext::*pMethod)(short *, void *, const char *, int) =
         &GAME_PrimaryContext::InitializeWindowOwnerFromRectAndActivate;
     return *(void **)&pMethod;
 }
@@ -341,16 +333,126 @@ static void *GetPrimaryContextMarkNestedContextDirtyAddress(void) {
 }
 
 static void *GetPrimaryContextDispatchWindowOwnerRectInitializationAddress(void) {
-    void (GAME_PrimaryContext::*pMethod)(short *, void *, void *) =
+    void (GAME_PrimaryContext::*pMethod)(short *, void *, const char *) =
         &GAME_PrimaryContext::DispatchWindowOwnerRectInitialization;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextRefreshWindowOwnerMenuStateAddress(void) {
+    void (GAME_PrimaryContext::*pMethod)(void) =
+        &GAME_PrimaryContext::RefreshWindowOwnerMenuState;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextSetWindowOwnerMenuDefinitionAddress(void) {
+    void (GAME_PrimaryContext::*pMethod)(const unsigned int *, void *) =
+        &GAME_PrimaryContext::SetWindowOwnerMenuDefinition;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextEnsureRootGeometryDispatchHelperAddress(void) {
+    void (GAME_PrimaryContext::*pMethod)(void) =
+        &GAME_PrimaryContext::EnsureRootGeometryDispatchHelper;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextOffsetRootGeometryPositionAddress(void) {
+    void (GAME_PrimaryContext::*pMethod)(unsigned int) =
+        &GAME_PrimaryContext::OffsetRootGeometryPosition;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextSetRootGeometryRectAddress(void) {
+    void (GAME_PrimaryContext::*pMethod)(const GAME_XYPair *) =
+        &GAME_PrimaryContext::SetRootGeometryRect;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextFinalizeRootGeometryRectAddress(void) {
+    void (GAME_PrimaryContext::*pMethod)(const GAME_XYPair *) =
+        &GAME_PrimaryContext::FinalizeRootGeometryRect;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextReservedWindowOwnerSlot19Address(void) {
+    void (GAME_PrimaryContext::*pMethod)(void) =
+        &GAME_PrimaryContext::ReservedWindowOwnerSlot19;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextReservedWindowOwnerSlot20Address(void) {
+    void (GAME_PrimaryContext::*pMethod)(void) =
+        &GAME_PrimaryContext::ReservedWindowOwnerSlot20;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextIsCurrentWindowOwnerContextAddress(void) {
+    int (GAME_PrimaryContext::*pMethod)(void) =
+        &GAME_PrimaryContext::IsCurrentWindowOwnerContext;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextDestroyWindowOwnerHwndAddress(void) {
+    void (GAME_PrimaryContext::*pMethod)(void) =
+        &GAME_PrimaryContext::DestroyWindowOwnerHwnd;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextRemoveQueuedRenderSinkValueNodeAddress(void) {
+    void (GAME_PrimaryContext::*pMethod)(void *) =
+        &GAME_PrimaryContext::RemoveQueuedRenderSinkValueNode;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextReservedWindowOwnerSlot34Address(void) {
+    void (GAME_PrimaryContext::*pMethod)(int) =
+        &GAME_PrimaryContext::ReservedWindowOwnerSlot34;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextPropagateWindowOwnerPositionAddress(void) {
+    void (GAME_PrimaryContext::*pMethod)(const GAME_XYPair *) =
+        &GAME_PrimaryContext::PropagateWindowOwnerPosition;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextCacheCurrentContextWindowAddress(void) {
+    void (GAME_PrimaryContext::*pMethod)(void) =
+        &GAME_PrimaryContext::CacheCurrentContextWindow;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextReservedWindowOwnerSlot37Address(void) {
+    void (GAME_PrimaryContext::*pMethod)(void) =
+        &GAME_PrimaryContext::ReservedWindowOwnerSlot37;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextReservedWindowOwnerSlot38Address(void) {
+    void (GAME_PrimaryContext::*pMethod)(void) =
+        &GAME_PrimaryContext::ReservedWindowOwnerSlot38;
+    return *(void **)&pMethod;
+}
+
+static void *GetPrimaryContextReservedWindowOwnerSlot39Address(void) {
+    void (GAME_PrimaryContext::*pMethod)(void) =
+        &GAME_PrimaryContext::ReservedWindowOwnerSlot39;
     return *(void **)&pMethod;
 }
 
 void LEMBALL_FASTCALL ForwardPrimaryContextActiveScreenSlot0x10(void *pPrimaryContext);
 void LEMBALL_FASTCALL ForwardPrimaryContextActiveScreenSlot0x14(void *pPrimaryContext);
+void LEMBALL_FASTCALL DestroyPrimaryContextActiveScreenForVtable(
+    void *pPrimaryContext);
+void LEMBALL_FASTCALL DispatchPrimaryContextSlot23Thunk(
+    void *pPrimaryContext);
+void LEMBALL_FASTCALL ForwardPrimaryContextActiveScreenSlot0x0C(
+    void *pPrimaryContext, int nUnused, int nIgnored);
+void LEMBALL_FASTCALL ForwardPrimaryContextActiveScreenSlot0x30(
+    void *pPrimaryContext);
 
 static void *g_GAME_PrimaryContextVtableSlots[46];
-static void *g_GAME_RenderQueueNodeVtableSlots[2];
+static void *g_GAME_RenderQueueNodeVtableSlots[4];
 static void *g_GAME_GenericModeVtableSlots[2];
 static void *g_GAME_GenericScreenVtableSlots[14];
 struct GAME_SafeVtableInitializer {
@@ -358,8 +460,9 @@ struct GAME_SafeVtableInitializer {
         int i;
         for (i = 0; i < 46; ++i)
             g_GAME_PrimaryContextVtableSlots[i] = (void *)NetworkSafeVtableNoop;
-        for (i = 0; i < 2; ++i) {
+        for (i = 0; i < 4; ++i)
             g_GAME_RenderQueueNodeVtableSlots[i] = (void *)NetworkSafeVtableNoop;
+        for (i = 0; i < 2; ++i) {
             g_GAME_GenericModeVtableSlots[i] = (void *)NetworkSafeVtableNoop;
         }
         for (i = 0; i < 14; ++i)
@@ -460,7 +563,37 @@ void *g_pMode16Vtable = g_GAME_GenericModeVtableSlots;
 void *g_pMode16RenderThunk = (void *)StubNoOpPtr;
 void *g_pPrimaryContextVtable = g_GAME_PrimaryContextVtableSlots;
 void *g_pPrimaryContextRenderQueueNodeVtable = g_GAME_RenderQueueNodeVtableSlots;
-void *g_pQueuedRenderPointSinkFinalizeThunk = (void *)StubNoOpPtr;
+extern void *g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[8];
+extern void LEMBALL_FASTCALL QueueQueuedRenderPointSinkThunk(
+    void *pPointSink, void *pUnusedEdx, void *pQueue);
+extern void __stdcall PromoteQueuedRenderPointSinkTargetStateThunk(
+    void *pPointSink);
+
+// FUNCTION: LEMBALL 0x00432320
+void *LEMBALL_FASTCALL DeleteQueuedRenderPointSinkFinalize(
+    void *pObject, int, int fDelete) {
+    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x00401FB4
+void *LEMBALL_FASTCALL DeleteQueuedRenderPointSinkFinalizeThunk(
+    void *pObject, int, int fDelete) {
+    return DeleteQueuedRenderPointSinkFinalize(pObject, 0, fDelete);
+}
+
+// VTABLE: LEMBALL 0x00496C98
+static void *g_GAME_QueuedRenderPointSinkFinalizeVtable[4] = {
+    (void *)DeleteQueuedRenderPointSinkFinalizeThunk,
+    (void *)QueueQueuedRenderPointSinkThunk,
+    (void *)PromoteQueuedRenderPointSinkTargetStateThunk,
+    0,
+};
+void *g_pQueuedRenderPointSinkFinalizeThunk =
+    g_GAME_QueuedRenderPointSinkFinalizeVtable;
 // GLOBAL: LEMBALL 0x004a9360
 void *g_pSharedRenderDispatchQueue = 0;
 // GLOBAL: LEMBALL 0x004a279c
@@ -480,44 +613,104 @@ static void InitializeGameStubVtables(void) {
         return;
     }
 
-    g_GAME_PrimaryContextVtableSlots[0x70 / sizeof(void *)] =
-        GetPrimaryContextFlushWindowOwnerDirtyRectAddress();
-    g_GAME_PrimaryContextVtableSlots[0x6c / sizeof(void *)] =
-        GetPrimaryContextSetWindowOwnerStateAddress();
-    g_GAME_PrimaryContextVtableSlots[0x68 / sizeof(void *)] =
-        GetPrimaryContextGetWindowOwnerStateAddress();
-    g_GAME_PrimaryContextVtableSlots[0xa4 / sizeof(void *)] =
-        GetPrimaryContextInitializeWindowOwnerFromRectAndActivateAddress();
-    g_GAME_PrimaryContextVtableSlots[0xac / sizeof(void *)] =
-        GetPrimaryContextApplyWindowOwnerPaletteResourceAddress();
-    g_GAME_PrimaryContextVtableSlots[0xa8 / sizeof(void *)] =
-        GetPrimaryContextDispatchActiveScreenFrameAddress();
-    g_GAME_PrimaryContextVtableSlots[0xb0 / sizeof(void *)] =
-        GetPrimaryContextUpdateWindowOwnerRenderContextAddress();
-    g_GAME_PrimaryContextVtableSlots[0xb4 / sizeof(void *)] = (void *)StubNoOpVoid;
-#if defined(LEMBALL_ENABLE_PRIMARY_WINDOW_INIT)
+    g_GAME_PrimaryContextVtableSlots[0] =
+        GetPrimaryContextRefreshWindowOwnerMenuStateAddress();
     g_GAME_PrimaryContextVtableSlots[1] =
         GetPrimaryContextDispatchWindowOwnerRectInitializationAddress();
-#else
-    g_GAME_PrimaryContextVtableSlots[1] = (void *)StubPrimaryContextSetRect;
-#endif
-    g_GAME_PrimaryContextVtableSlots[0x18 / sizeof(void *)] =
-        (void *)BuildGeometryHelperFromRenderRect;
-    g_GAME_PrimaryContextVtableSlots[0x20 / sizeof(void *)] =
-        GetPrimaryContextMarkNestedContextDirtyAddress();
-    g_GAME_PrimaryContextVtableSlots[0x0c / sizeof(void *)] =
+    g_GAME_PrimaryContextVtableSlots[2] =
+        (void *)UpdateWindowOwnerRootGeometrySourceRect;
+    g_GAME_PrimaryContextVtableSlots[3] =
         (void *)GetPrimaryContextMenuDefinition;
-    g_GAME_PrimaryContextVtableSlots[0x3c / sizeof(void *)] =
+    g_GAME_PrimaryContextVtableSlots[4] =
+        GetPrimaryContextSetWindowOwnerMenuDefinitionAddress();
+    g_GAME_PrimaryContextVtableSlots[5] =
+        GetPrimaryContextEnsureRootGeometryDispatchHelperAddress();
+    g_GAME_PrimaryContextVtableSlots[6] =
+        (void *)BuildGeometryHelperFromRenderRect;
+    g_GAME_PrimaryContextVtableSlots[7] =
+        (void *)ReleaseWindowOwnerRenderResources;
+    g_GAME_PrimaryContextVtableSlots[8] =
+        (void *)CanonicalizeWindowOwnerRenderSubrect;
+    g_GAME_PrimaryContextVtableSlots[9] =
+        GetPrimaryContextOffsetRootGeometryPositionAddress();
+    g_GAME_PrimaryContextVtableSlots[10] =
+        (void *)PopulateWindowOwnerRenderAnchor;
+    g_GAME_PrimaryContextVtableSlots[11] =
+        (void *)RefreshWindowOwnerRenderScale;
+    g_GAME_PrimaryContextVtableSlots[12] =
+        GetPrimaryContextSetRootGeometryRectAddress();
+    g_GAME_PrimaryContextVtableSlots[13] =
+        GetPrimaryContextFinalizeRootGeometryRectAddress();
+    g_GAME_PrimaryContextVtableSlots[14] =
+        (void *)SetWindowOwnerRenderAnchorFromPoint;
+    g_GAME_PrimaryContextVtableSlots[15] =
         (void *)PrepareLevelScreenRootHelperForRuntime;
-    g_GAME_PrimaryContextVtableSlots[0x64 / sizeof(void *)] =
-        (void *)ComputePrimaryContextWindowStyleFlags;
-    g_GAME_PrimaryContextVtableSlots[0x78 / sizeof(void *)] =
-        GetPrimaryContextAppendQueuedRenderSinkValueNodeAddress();
-    g_GAME_PrimaryContextVtableSlots[0x44 / sizeof(void *)] =
+    g_GAME_PrimaryContextVtableSlots[16] =
+        (void *)DestroyPrimaryContextActiveScreenForVtable;
+    g_GAME_PrimaryContextVtableSlots[17] =
         (void *)ForwardPrimaryContextActiveScreenSlot0x10;
-    g_GAME_PrimaryContextVtableSlots[0x58 / sizeof(void *)] =
+    g_GAME_PrimaryContextVtableSlots[18] =
         (void *)ForwardPrimaryContextActiveScreenSlot0x14;
+    g_GAME_PrimaryContextVtableSlots[19] =
+        GetPrimaryContextReservedWindowOwnerSlot19Address();
+    g_GAME_PrimaryContextVtableSlots[20] =
+        GetPrimaryContextReservedWindowOwnerSlot20Address();
+    g_GAME_PrimaryContextVtableSlots[21] =
+        (void *)DispatchPrimaryContextSlot23Thunk;
+    g_GAME_PrimaryContextVtableSlots[22] =
+        (void *)ForwardPrimaryContextActiveScreenSlot0x0C;
+    g_GAME_PrimaryContextVtableSlots[23] =
+        (void *)ForwardPrimaryContextActiveScreenSlot0x30;
+    g_GAME_PrimaryContextVtableSlots[24] =
+        GetPrimaryContextIsCurrentWindowOwnerContextAddress();
+    g_GAME_PrimaryContextVtableSlots[25] =
+        (void *)ComputePrimaryContextWindowStyleFlags;
+    g_GAME_PrimaryContextVtableSlots[26] =
+        GetPrimaryContextGetWindowOwnerStateAddress();
+    g_GAME_PrimaryContextVtableSlots[27] =
+        GetPrimaryContextSetWindowOwnerStateAddress();
+    g_GAME_PrimaryContextVtableSlots[28] =
+        GetPrimaryContextFlushWindowOwnerDirtyRectAddress();
+    g_GAME_PrimaryContextVtableSlots[29] =
+        GetPrimaryContextDestroyWindowOwnerHwndAddress();
+    g_GAME_PrimaryContextVtableSlots[30] =
+        GetPrimaryContextAppendQueuedRenderSinkValueNodeAddress();
+    g_GAME_PrimaryContextVtableSlots[31] =
+        GetPrimaryContextRemoveQueuedRenderSinkValueNodeAddress();
+    g_GAME_PrimaryContextVtableSlots[32] =
+        GetPrimaryContextMarkNestedContextDirtyAddress();
+    g_GAME_PrimaryContextVtableSlots[33] =
+        (void *)ForwardNestedGeometryRectUpdate;
+    g_GAME_PrimaryContextVtableSlots[34] =
+        GetPrimaryContextReservedWindowOwnerSlot34Address();
+    g_GAME_PrimaryContextVtableSlots[35] =
+        GetPrimaryContextPropagateWindowOwnerPositionAddress();
+    g_GAME_PrimaryContextVtableSlots[36] =
+        GetPrimaryContextCacheCurrentContextWindowAddress();
+    g_GAME_PrimaryContextVtableSlots[37] =
+        GetPrimaryContextReservedWindowOwnerSlot37Address();
+    g_GAME_PrimaryContextVtableSlots[38] =
+        GetPrimaryContextReservedWindowOwnerSlot38Address();
+    g_GAME_PrimaryContextVtableSlots[39] =
+        GetPrimaryContextReservedWindowOwnerSlot39Address();
+    g_GAME_PrimaryContextVtableSlots[40] =
+        (void *)DispatchWindowOwnerRenderContextMessage;
+    g_GAME_PrimaryContextVtableSlots[41] =
+        GetPrimaryContextInitializeWindowOwnerFromRectAndActivateAddress();
+    g_GAME_PrimaryContextVtableSlots[42] =
+        GetPrimaryContextDispatchActiveScreenFrameAddress();
+    g_GAME_PrimaryContextVtableSlots[43] =
+        GetPrimaryContextApplyWindowOwnerPaletteResourceAddress();
+    g_GAME_PrimaryContextVtableSlots[44] =
+        GetPrimaryContextUpdateWindowOwnerRenderContextAddress();
+    g_GAME_PrimaryContextVtableSlots[45] =
+        (void *)PresentWindowOwnerRenderContext;
+    g_GAME_RenderQueueNodeVtableSlots[0] =
+        (void *)InitializeNonZrleVariantRenderEntry;
     g_GAME_RenderQueueNodeVtableSlots[1] = g_pGAME_ModeDeleteVtableSlot;
+    g_GAME_RenderQueueNodeVtableSlots[2] =
+        (void *)HandlePrimaryContextMenuCommandThunk;
+    g_GAME_RenderQueueNodeVtableSlots[3] = 0;
 
     g_GAME_GenericModeVtableSlots[0] = g_pGAME_ModeDeleteVtableSlot;
     g_GAME_GenericModeVtableSlots[1] = (void *)StubNoOpVoid;
@@ -533,6 +726,35 @@ static void InitializeGameStubVtables(void) {
     g_GAME_GenericScreenVtableSlots[0x34 / sizeof(void *)] = (void *)StubNoOpVoid;
 
     g_fInitialized = 1;
+}
+
+/* The primary-context table is populated by hand until its complete class
+ * declaration is recovered.  Taking the address of an inherited virtual
+ * member with MSVC 4.20 yields a virtual-call thunk, not the address stored in
+ * the base table.  Preserve the concrete inherited entries left on the object
+ * by ConstructWindowOwnerRenderContext before installing the final table. */
+static void InstallPrimaryContextInheritedWindowOwnerSlots(
+    void **pWindowOwnerVtable) {
+    g_GAME_PrimaryContextVtableSlots[0] = pWindowOwnerVtable[0];
+    g_GAME_PrimaryContextVtableSlots[4] = pWindowOwnerVtable[4];
+    g_GAME_PrimaryContextVtableSlots[5] = pWindowOwnerVtable[5];
+    g_GAME_PrimaryContextVtableSlots[9] = pWindowOwnerVtable[9];
+    g_GAME_PrimaryContextVtableSlots[12] = pWindowOwnerVtable[12];
+    g_GAME_PrimaryContextVtableSlots[13] = pWindowOwnerVtable[13];
+    g_GAME_PrimaryContextVtableSlots[19] = pWindowOwnerVtable[19];
+    g_GAME_PrimaryContextVtableSlots[20] = pWindowOwnerVtable[20];
+    g_GAME_PrimaryContextVtableSlots[24] = pWindowOwnerVtable[24];
+    g_GAME_PrimaryContextVtableSlots[26] = pWindowOwnerVtable[26];
+    g_GAME_PrimaryContextVtableSlots[27] = pWindowOwnerVtable[27];
+    g_GAME_PrimaryContextVtableSlots[29] = pWindowOwnerVtable[29];
+    g_GAME_PrimaryContextVtableSlots[30] = pWindowOwnerVtable[30];
+    g_GAME_PrimaryContextVtableSlots[31] = pWindowOwnerVtable[31];
+    g_GAME_PrimaryContextVtableSlots[34] = pWindowOwnerVtable[34];
+    g_GAME_PrimaryContextVtableSlots[35] = pWindowOwnerVtable[35];
+    g_GAME_PrimaryContextVtableSlots[36] = pWindowOwnerVtable[36];
+    g_GAME_PrimaryContextVtableSlots[37] = pWindowOwnerVtable[37];
+    g_GAME_PrimaryContextVtableSlots[38] = pWindowOwnerVtable[38];
+    g_GAME_PrimaryContextVtableSlots[39] = pWindowOwnerVtable[39];
 }
 
 // FUNCTION: LEMBALL 0x00456500
@@ -1611,7 +1833,7 @@ struct GAME_PrimaryContextWindowInitializationInterface {
     virtual void Reserved40(void) = 0;
     virtual void InitializeWindowOwnerFromRectAndActivate(short *paRect,
                                                             void *pWindowOwner,
-                                                            void *pUnused,
+                                                            const char *pszTitle,
                                                             int nActivate) = 0;
 };
 
@@ -1819,15 +2041,45 @@ void *GAME_ScreenObject::ConstructIntroSequenceScreen(void *pPrimaryContext,
     return pScreenObject;
 }
 
-void *GAME_ScreenObject::ConstructMainMenuScreen(void *pPrimaryContext, void *pWindowOwnerContext, short *paRect) {
-    void *pScreenObject = this;
-    (void)pPrimaryContext;
-    (void)pWindowOwnerContext;
-    (void)paRect;
-    InitializeGameStubVtables();
-    memset(pScreenObject, 0, 0x3bc);
-    *(void **)pScreenObject = g_GAME_GenericScreenVtableSlots;
-    return pScreenObject;
+// FUNCTION: LEMBALL 0x00448200
+void *GAME_ScreenObject::ConstructMainMenuScreen(void *pPrimaryContext,
+                                                void *pWindowOwnerContext,
+                                                short *paRect) {
+    GAME_LevelProgressState *pProgress;
+    DWORD dwNow;
+    char *pScreen;
+    int nPack;
+
+    pScreen = (char *)this;
+    ConstructFramedScreenBaseFields(
+        pScreen, 0, pPrimaryContext, pWindowOwnerContext, paRect,
+        2, 0, 0, 0, 0, 0);
+    *(void ***)(pScreen + 4) = g_GAME_MainMenuQueueVtable;
+    *(void ***)(pScreen + 0x14) = g_GAME_MainMenuCallbackVtable;
+    *(void ***)pScreen = g_GAME_MainMenuScreenVtable;
+
+    dwNow = timeGetTime();
+    *(int *)(pScreen + 0x3b0) = 0;
+    *(DWORD *)(pScreen + 0x398) = dwNow + 20000U;
+    *(int *)(pScreen + 0x3b8) = 0;
+    *(int *)(pScreen + 0x3ac) = 0;
+    *(int *)(pScreen + 0x3a8) = 0;
+    *(int *)(pScreen + 0x3a0) = 0;
+    *(int *)(pScreen + 0x3a4) = 0;
+
+    pProgress = (GAME_LevelProgressState *)g_pLevelProgressState;
+    nPack = pProgress->m_nCurrentPack;
+    if (nPack == 0 || nPack == 4) {
+        *(int *)(pScreen + 0x3b4) = 0;
+    } else if (nPack < 4) {
+        *(int *)(pScreen + 0x3b4) = nPack;
+    }
+    pProgress->m_nUnused4C = 0;
+    *(int *)(pScreen + 0xa8) = 1;
+    *(int *)(pScreen + 0xac) = 1;
+    *(int *)(pScreen + 0xb0) = 1;
+    ActivateFramedScreenBase(pScreen);
+    return pScreen;
 }
 
 void *GAME_ScreenObject::ConstructOptionsScreen(void *pPrimaryContext, void *pWindowOwnerContext, short *paRect) {
@@ -1929,14 +2181,17 @@ static void CallNoArgVirtual(void *pObject, unsigned int nByteOffset) {
     void **pVtable;
 
     pVtable = *(void ***)pObject;
-    ((void (*)())pVtable[nByteOffset / sizeof(void *)])();
+    ((void (LEMBALL_FASTCALL *)(void *))
+         pVtable[nByteOffset / sizeof(void *)])(pObject);
 }
 
 static void CallDeleteVirtual(void *pObject, unsigned int nByteOffset, int nDeleteFlag) {
     void **pVtable;
 
     pVtable = *(void ***)pObject;
-    ((void (*)(int))pVtable[nByteOffset / sizeof(void *)])(nDeleteFlag);
+    ((void (LEMBALL_FASTCALL *)(void *, int, int))
+         pVtable[nByteOffset / sizeof(void *)])(
+        pObject, 0, nDeleteFlag);
 }
 
 static int CallNestedVirtualInt(void *pObject, unsigned int nObjectOffset, unsigned int nVtableOffset) {
@@ -1945,21 +2200,25 @@ static int CallNestedVirtualInt(void *pObject, unsigned int nObjectOffset, unsig
 
     pSubobject = *(void **)((char *)pObject + nObjectOffset);
     pVtable = *(void ***)pSubobject;
-    return ((int (*)())pVtable[nVtableOffset / sizeof(void *)])();
+    return ((int (LEMBALL_FASTCALL *)(void *))
+                pVtable[nVtableOffset / sizeof(void *)])(pSubobject);
 }
 
 static int CallIntVirtual(void *pObject, unsigned int nByteOffset) {
     void **pVtable;
 
     pVtable = *(void ***)pObject;
-    return ((int (*)())pVtable[nByteOffset / sizeof(void *)])();
+    return ((int (LEMBALL_FASTCALL *)(void *))
+                pVtable[nByteOffset / sizeof(void *)])(pObject);
 }
 
 static void CallIntArgVirtual(void *pObject, unsigned int nByteOffset, int nArg) {
     void **pVtable;
 
     pVtable = *(void ***)pObject;
-    ((void (*)(int))pVtable[nByteOffset / sizeof(void *)])(nArg);
+    ((void (LEMBALL_FASTCALL *)(void *, int, int))
+         pVtable[nByteOffset / sizeof(void *)])(
+        pObject, 0, nArg);
 }
 
 int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresent(int *pPrimaryContext);
@@ -1976,6 +2235,11 @@ extern void CloseCrtFilePointer(FILE *pFile);
 
 // FUNCTION: LEMBALL 0x0045ECB0
 int SetVisualSciencesRegistryRunningState(const char *pszProductName, int fRunning) {
+#if defined(LEMBALL_SKIP_REGISTRY_RUNNING_STATE)
+    (void)pszProductName;
+    (void)fRunning;
+    return 1;
+#else
     char szKeyPath[256];
     HKEY hRegistryKey;
     const char *pszState;
@@ -2000,6 +2264,7 @@ int SetVisualSciencesRegistryRunningState(const char *pszProductName, int fRunni
                                      (const BYTE *)pszState, cbState);
     RegCloseKey(hRegistryKey);
     return nRegistryStatus == 0;
+#endif
 }
 
 struct GAME_ModeVirtualInterface {
@@ -2034,6 +2299,8 @@ struct GAME_ActiveScreenVirtualInterface {
     virtual void UpdateActiveScreen(void) = 0;
     virtual void PrepareForPresent(void) = 0;
     virtual void FinalizePresent(void) = 0;
+    virtual int GetRequestedScreen(void) = 0;
+    virtual int GetTransitionStatus(void) = 0;
 };
 
 struct GAME_ActiveScreenSlot0x10Interface {
@@ -2042,6 +2309,73 @@ struct GAME_ActiveScreenSlot0x10Interface {
     virtual void Reserved2(void) = 0;
     virtual void ForwardPrimaryContext(void *pPrimaryContextSubobject) = 0;
 };
+
+struct GAME_ActiveScreenSlot0x30Interface {
+    virtual void Reserved0(void) = 0;
+    virtual void Reserved1(void) = 0;
+    virtual void Reserved2(void) = 0;
+    virtual void Reserved3(void) = 0;
+    virtual void Reserved4(void) = 0;
+    virtual void Reserved5(void) = 0;
+    virtual void Reserved6(void) = 0;
+    virtual void Reserved7(void) = 0;
+    virtual void Reserved8(void) = 0;
+    virtual void Reserved9(void) = 0;
+    virtual void Reserved10(void) = 0;
+    virtual void Reserved11(void) = 0;
+    virtual void ForwardSlot0x30(void) = 0;
+};
+
+// FUNCTION: LEMBALL 0x004317C0
+void LEMBALL_FASTCALL DestroyPrimaryContextActiveScreenForVtable(
+    void *pPrimaryContext) {
+    void *pActiveScreen;
+
+    SetLevelScreenStatusIndicatorMode(0, 0);
+    pActiveScreen = *(void **)((char *)pPrimaryContext + 0xd4);
+    if (pActiveScreen != 0) {
+        ((GAME_ActiveScreenVirtualInterface *)pActiveScreen)->Reserved1();
+        ((GAME_ActiveScreenVirtualInterface *)
+             *(void **)((char *)pPrimaryContext + 0xd4))
+            ->ReleaseActiveScreen();
+        pActiveScreen = *(void **)((char *)pPrimaryContext + 0xd4);
+        if (pActiveScreen != 0) {
+            ((GAME_ModeVirtualInterface *)pActiveScreen)->Delete(1);
+        }
+        *(void **)((char *)pPrimaryContext + 0xd4) = 0;
+    }
+}
+
+// FUNCTION: LEMBALL 0x004322D0
+void LEMBALL_FASTCALL DispatchPrimaryContextSlot23Thunk(
+    void *pPrimaryContext) {
+    ((GAME_RootGeometryOwner *)pPrimaryContext)
+        ->ReservedWindowOwnerSlot23();
+}
+
+// FUNCTION: LEMBALL 0x00431880
+void LEMBALL_FASTCALL ForwardPrimaryContextActiveScreenSlot0x0C(
+    void *pPrimaryContext, int, int) {
+    void *pActiveScreen;
+
+    pActiveScreen = *(void **)((char *)pPrimaryContext + 0xd4);
+    if (pActiveScreen != 0) {
+        ((GAME_ActiveScreenSlot0x10Interface *)pActiveScreen)
+            ->ForwardPrimaryContext((char *)pPrimaryContext + 8);
+    }
+}
+
+// FUNCTION: LEMBALL 0x00431ED0
+void LEMBALL_FASTCALL ForwardPrimaryContextActiveScreenSlot0x30(
+    void *pPrimaryContext) {
+    void *pActiveScreen;
+
+    pActiveScreen = *(void **)((char *)pPrimaryContext + 0xd4);
+    if (pActiveScreen != 0) {
+        ((GAME_ActiveScreenSlot0x30Interface *)pActiveScreen)
+            ->ForwardSlot0x30();
+    }
+}
 
 struct GAME_PrimaryContextVirtualInterface {
     virtual void Reserved0(void) = 0;
@@ -2075,55 +2409,54 @@ struct GAME_PrimaryContextVirtualInterface {
     virtual void SetPresentMode(int nMode) = 0;
 };
 
-// FUNCTION: LEMBALL 0x00465200
-void GAME_WindowOwnerBase::InitializeWindowOwnerFromRect(short *paRect, void *pWindowOwner, void *) {
-    GAME_PrimaryContextVirtualInterface *pInterface;
-
-    *(short *)((char *)this + 0x0c) = 0;
-    *(short *)((char *)this + 0x0e) = 0;
-    *(short *)((char *)this + 0x08) = paRect[0];
-    *(short *)((char *)this + 0x0a) = paRect[1];
-
-    pInterface = (GAME_PrimaryContextVirtualInterface *)this;
-    pInterface->SetWindowOwnerState(2);
-    pInterface->Reserved5();
-
-    *(void **)((char *)this + 0x20) = pWindowOwner;
-    *(void **)((char *)this + 0x48) = pWindowOwner;
-
-    pInterface->Reserved6();
-    pInterface->Reserved15();
-    pInterface->Reserved8();
-    pInterface->Reserved17();
-
-}
-
 // FUNCTION: LEMBALL 0x00464440
 void GAME_PrimaryContext::InitializeWindowOwnerFromRectAndActivate(
-    short *paRect, void *pWindowOwner, void *pUnused, int nActivate) {
-    InitializeWindowOwnerFromRect(paRect, pWindowOwner, pUnused);
-#if !defined(LEMBALL_PRIMARY_WINDOW_INIT_SKIP_PALETTE)
+    short *paRect, void *pWindowOwner, const char *pszTitle, int nActivate) {
+    GAME_WindowOwnerBase::InitializeWindowOwnerFromRect(
+        paRect, pWindowOwner, pszTitle);
     ((GAME_PrimaryContextExtendedVirtualInterface *)this)
         ->ApplyWindowOwnerActivation(nActivate);
-#else
-    (void)nActivate;
-#endif
 }
 
 // FUNCTION: LEMBALL 0x00464470
 void GAME_PrimaryContext::DispatchWindowOwnerRectInitialization(
-    short *paRect, void *pWindowOwner, void *pUnused) {
+    short *paRect, void *pWindowOwner, const char *pszTitle) {
     ((GAME_PrimaryContextWindowInitializationInterface *)this)
-        ->InitializeWindowOwnerFromRectAndActivate(paRect, pWindowOwner, pUnused, 0);
+        ->InitializeWindowOwnerFromRectAndActivate(paRect, pWindowOwner, pszTitle, 0);
 }
+
+struct GAME_PaletteResourceVirtualInterface {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void Reserved08(void) = 0;
+    virtual void Reserved0C(void) = 0;
+    virtual void Reserved10(void) = 0;
+    virtual void Reserved14(void) = 0;
+    virtual void Reserved18(void) = 0;
+    virtual void PreparePaletteResource(void) = 0;
+};
+
+struct VSGDI_PaletteTargetVirtualInterface {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void Reserved08(void) = 0;
+    virtual void Reserved0C(void) = 0;
+    virtual void Reserved10(void) = 0;
+    virtual void Reserved14(void) = 0;
+    virtual void Reserved18(void) = 0;
+    virtual void Reserved1C(void) = 0;
+    virtual void Reserved20(void) = 0;
+    virtual void Reserved24(void) = 0;
+    virtual void Reserved28(void) = 0;
+    virtual void Reserved2C(void) = 0;
+    virtual void ApplyPaletteResource(void *pPalette) = 0;
+};
 
 // FUNCTION: LEMBALL 0x00464490
 void GAME_PrimaryContext::ApplyWindowOwnerPaletteResource(int nResourceId) {
     int *pPalette;
     int nBackendContext;
-    void *pPaletteTarget;
-    void **pPaletteVtable;
-    void **pBackendVtable;
+    VSGDI_PaletteTargetVirtualInterface *pPaletteTarget;
 
     if (nResourceId == 0) {
         return;
@@ -2131,19 +2464,18 @@ void GAME_PrimaryContext::ApplyWindowOwnerPaletteResource(int nResourceId) {
 
     pPalette = (int *)LoadPalResource(nResourceId);
     if (pPalette[4] == 0) {
-        pPaletteVtable = *(void ***)pPalette;
-        ((void (*)(void *))pPaletteVtable[0x1c / sizeof(void *)])(pPalette);
+        ((GAME_PaletteResourceVirtualInterface *)pPalette)
+            ->PreparePaletteResource();
     } else {
         pPalette[9] = 0;
     }
 
     ++pPalette[2];
     nBackendContext = *(int *)(*(int *)((char *)this + 0x4c) + 0x0c);
-    pPaletteTarget = (void *)(*(int *)(*(int *)(nBackendContext + 0x40) + 4) +
-                              nBackendContext + 0x40);
-    pBackendVtable = *(void ***)pPaletteTarget;
-    ((void (*)(void *, void *))pBackendVtable[0x30 / sizeof(void *)])(
-        pPaletteTarget, pPalette);
+    pPaletteTarget = (VSGDI_PaletteTargetVirtualInterface *)(
+        *(int *)(*(int *)(nBackendContext + 0x40) + 4) +
+        nBackendContext + 0x40);
+    pPaletteTarget->ApplyPaletteResource(pPalette);
     --pPalette[2];
     ReleaseTypedResourceObjectReference(pPalette);
     *(int *)((char *)this + 0x54) = nResourceId;
@@ -2448,6 +2780,7 @@ GAME_PrimaryContext *GAME_PrimaryContext::ConstructPrimaryContext(GAME_MainConte
     InitializeGameStubVtables();
     pRenderQueueNode = (char *)pContext + 0x90;
     ConstructWindowOwnerRenderContext(this);
+    InstallPrimaryContextInheritedWindowOwnerSlots(*(void ***)this);
     InitializeRenderQueueNodeBase(pRenderQueueNode);
 
     m_pFinalizeThunk = g_pQueuedRenderPointSinkFinalizeThunk;
@@ -2749,19 +3082,28 @@ void LEMBALL_FASTCALL UpdatePrimaryContextActiveScreen(void *pPrimaryContext) {
 
 // FUNCTION: LEMBALL 0x00431EE0
 int LEMBALL_FASTCALL PollPrimaryContextScreenStatus(void *pPrimaryContext) {
+    GAME_ActiveScreenVirtualInterface *pActiveScreen;
+
     if (*(int *)((char *)pPrimaryContext + 0xc8) != 0) {
         return 2;
     }
-    if (*(void **)((char *)pPrimaryContext + 0xd4) != 0) {
-        return CallIntVirtual(*(void **)((char *)pPrimaryContext + 0xd4), 0x2c);
+    pActiveScreen = *(GAME_ActiveScreenVirtualInterface **)
+        ((char *)pPrimaryContext + 0xd4);
+    if (pActiveScreen != 0) {
+        return pActiveScreen->GetTransitionStatus();
     }
     return 0;
 }
 
 // FUNCTION: LEMBALL 0x00431F10
 int LEMBALL_FASTCALL GetPrimaryContextRequestedScreen(void *pPrimaryContext) {
-    if (*(int *)((char *)pPrimaryContext + 0xc8) == 0 && *(void **)((char *)pPrimaryContext + 0xd4) != 0) {
-        return CallIntVirtual(*(void **)((char *)pPrimaryContext + 0xd4), 0x28);
+    GAME_ActiveScreenVirtualInterface *pActiveScreen;
+
+    pActiveScreen = *(GAME_ActiveScreenVirtualInterface **)
+        ((char *)pPrimaryContext + 0xd4);
+    if (*(int *)((char *)pPrimaryContext + 0xc8) == 0 &&
+        pActiveScreen != 0) {
+        return pActiveScreen->GetRequestedScreen();
     }
     return 0;
 }
@@ -2997,7 +3339,7 @@ GAME_MainContext *GAME_MainContext::InitializeMainGameContext(const char *pszCmd
         short *pCenteredRect =
             pPrimaryContext->ComputePrimaryContextCenteredScreenRectThunk(aScreenRect, -1, -1);
         ((GAME_PrimaryContextSetRectProc)(*(void ***)pPrimaryContext)[1])(
-            pPrimaryContext, 0, pCenteredRect, 0, &TitleStream);
+            pPrimaryContext, 0, pCenteredRect, 0, abTitleBuffer);
         DestroyFixedBufferStream(&TitleBufferStream);
         RestoreStreamFormatSubobjectVtable(&TitleStream.m_TargetState);
         ConstructStreamFormatState(&TitleStream.m_TargetState);

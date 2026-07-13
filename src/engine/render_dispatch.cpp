@@ -4,6 +4,60 @@ struct RDISPATCH_ClientObject {
     void **m_pVtable;
 };
 
+int LEMBALL_FASTCALL DispatchRenderQueueEntryToClients(
+    void *pDispatchQueue, int nUnused, void *pEntryWords);
+int DrainRenderDispatchQueueEntries(
+    void *pDispatchQueue, unsigned int cEntries);
+
+// FUNCTION: LEMBALL 0x004631A0
+int LEMBALL_FASTCALL AppendRenderDispatchQueueEntry(
+    void *pDispatchQueue, int, RDISPATCH_QueueEntry *pEntry) {
+    RDISPATCH_Queue *pQueue;
+    int nResult;
+
+    pQueue = (RDISPATCH_Queue *)pDispatchQueue;
+    EnterObjectCriticalSection((char *)pDispatchQueue + 8);
+    pEntry->m_awords[1] = (unsigned int)pQueue->m_nReserved30;
+    ++pQueue->m_nReserved38;
+    ++pQueue->m_nReserved30;
+
+    if (pQueue->m_cEntryCapacity == pQueue->m_cQueuedEntries) {
+        ++pQueue->m_nReserved34;
+        DrainRenderDispatchQueueEntries(pDispatchQueue, 1);
+        nResult = ((int (LEMBALL_FASTCALL *)(void *, int,
+                                             RDISPATCH_QueueEntry *))
+                       (*(void ***)pDispatchQueue)[2])(
+            pDispatchQueue, 0, pEntry);
+        LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
+        return nResult;
+    }
+
+    ++pQueue->m_cQueuedEntries;
+    *pQueue->m_pTail = *pEntry;
+    ++pQueue->m_pTail;
+    if (pQueue->m_pEntryBufferEnd <= pQueue->m_pTail) {
+        pQueue->m_pTail = pQueue->m_pEntryBuffer;
+    }
+    LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x00463230
+int LEMBALL_FASTCALL DispatchRenderQueueEntryImmediately(
+    void *pDispatchQueue, int, RDISPATCH_QueueEntry *pEntry) {
+    RDISPATCH_Queue *pQueue;
+    int nResult;
+
+    pQueue = (RDISPATCH_Queue *)pDispatchQueue;
+    EnterObjectCriticalSection((char *)pDispatchQueue + 8);
+    pEntry->m_awords[1] = (unsigned int)pQueue->m_nReserved30;
+    ++pQueue->m_nReserved3C;
+    ++pQueue->m_nReserved30;
+    nResult = DispatchRenderQueueEntryToClients(pDispatchQueue, 0, pEntry);
+    LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
+    return nResult;
+}
+
 // FUNCTION: LEMBALL 0x004635B0
 int CopyRenderDispatchQueueEntryAtIndex(void *pDispatchQueue, unsigned int *paEntryWords, int nIndex) {
     RDISPATCH_Queue *pQueue;
@@ -123,7 +177,8 @@ int TakeRenderDispatchQueueEntry(void *pDispatchQueue, unsigned int *paEntryWord
 }
 
 // FUNCTION: LEMBALL 0x004638A0
-int DispatchRenderQueueEntryToClients(void *pDispatchQueue, void *pEntryWords) {
+int LEMBALL_FASTCALL DispatchRenderQueueEntryToClients(
+    void *pDispatchQueue, int, void *pEntryWords) {
     RDISPATCH_Queue *pQueue;
     unsigned int i;
     RDISPATCH_ClientObject *pClientObject;
@@ -137,7 +192,9 @@ int DispatchRenderQueueEntryToClients(void *pDispatchQueue, void *pEntryWords) {
     if (pQueue->m_cClients != 0) {
         do {
             pClientObject = (RDISPATCH_ClientObject *)pClientNode->m_pClient;
-            if (((int (*)(void *, void *))pClientObject->m_pVtable[2])(pClientNode->m_pClient, pEntryWords) == 1) {
+            if (((int (LEMBALL_FASTCALL *)(void *, int, void *))
+                     pClientObject->m_pVtable[2])(
+                    pClientNode->m_pClient, 0, pEntryWords) == 1) {
                 LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
                 return 1;
             }
@@ -172,7 +229,7 @@ int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cEntries)
                 LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
                 return 0;
             }
-            if (DispatchRenderQueueEntryToClients(pDispatchQueue, auEntryWords) == 0) {
+            if (DispatchRenderQueueEntryToClients(pDispatchQueue, 0, auEntryWords) == 0) {
                 LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
                 return 0;
             }

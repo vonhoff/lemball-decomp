@@ -89,12 +89,12 @@ struct GAME_PrimaryContext : public GAME_WindowOwnerBase {
     void FlushWindowOwnerDirtyRect(int nUnused);
     void DispatchWindowOwnerRectInitialization(short *paRect,
                                                 void *pWindowOwner,
-                                                void *pUnused);
+                                                const char *pszTitle);
     void DispatchPrimaryContextActiveScreenFrame(void *pFrameArgument);
     void MarkNestedContextDirtyIfField20(void);
     void InitializeWindowOwnerFromRectAndActivate(short *paRect,
                                                    void *pWindowOwner,
-                                                   void *pUnused,
+                                                   const char *pszTitle,
                                                    int nActivate);
     void ApplyWindowOwnerPaletteResource(int nResourceId);
     short *ComputePrimaryContextCenteredScreenRect(short *paRect,
