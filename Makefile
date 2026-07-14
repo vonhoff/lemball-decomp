@@ -1,9 +1,9 @@
 HOST_CXX ?= c++
-HOST_CXXFLAGS ?= -std=c++98 -Wall -Wextra -Werror -Isrc -Isrc/visos
+HOST_CXXFLAGS ?= -std=c++98 -Wall -Wextra -Werror -Iinclude -Isrc
 CLANG_FORMAT ?= clang-format
 CLANG_TIDY ?= clang-tidy
-FORMAT_SOURCES = $(shell rg --files src -g '*.cpp' -g '*.h')
-TIDY_SOURCES = $(shell rg --files src -g '*.cpp')
+FORMAT_SOURCES = $(shell rg --files src include -g '*.CPP' -g '*.H')
+TIDY_SOURCES = $(shell rg --files src -g '*.CPP')
 
 .PHONY: pipeline verify validate-target ghidra-functions report annotation-candidates format tidy
 
@@ -22,4 +22,4 @@ format:
 	@$(CLANG_FORMAT) -i $(FORMAT_SOURCES)
 
 tidy:
-	@$(CLANG_TIDY) $(TIDY_SOURCES) -- -x c++ -std=c++98 -DLEMBALL_1996_CXX=1 -Isrc -Isrc/visos
+	@$(CLANG_TIDY) $(TIDY_SOURCES) -- -x c++ -std=c++98 -DLEMBALL_1996_CXX=1 -Iinclude -Isrc

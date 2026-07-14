@@ -1,10 +1,10 @@
 {
   "version": "LEMBALL",
   "program": "LEMBALL.EXE",
-  "function_count": 4081,
+  "function_count": 4084,
   "summary": {
-    "total": 4081,
-    "internal": 2768,
+    "total": 4084,
+    "internal": 2771,
     "runtime": 77,
     "thunk": 1211,
     "import": 25,
@@ -26599,7 +26599,7 @@
     },
     {
       "address": "00459D70",
-      "name": "allocate_memory_arena_block",
+      "name": "CArena::Allocate",
       "size": 510,
       "category": "internal",
       "is_thunk": false,
@@ -33456,6 +33456,33 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00472910",
+      "name": "_RAWOUT_DebugString",
+      "size": 108,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra-boundary-correction"
+    },
+    {
+      "address": "00472980",
+      "name": "_RAWOUT_ErrorString",
+      "size": 108,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra-boundary-correction"
+    },
+    {
+      "address": "004729F0",
+      "name": "_RAWOUT_SysString",
+      "size": 108,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra-boundary-correction"
+    },
+    {
       "address": "00472B10",
       "name": "debug_message_thread_main",
       "size": 195,
@@ -33745,7 +33772,7 @@
     },
     {
       "address": "00473F80",
-      "name": "invalidate_debug_text_line_range",
+      "name": "CTextWindow::RedrawLines",
       "size": 115,
       "category": "internal",
       "is_thunk": false,
@@ -33844,7 +33871,7 @@
     },
     {
       "address": "00474520",
-      "name": "build_selected_text_clipboard_string",
+      "name": "CTextWindow::GetSelectionAsString",
       "size": 243,
       "category": "internal",
       "is_thunk": false,

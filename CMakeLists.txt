@@ -5,38 +5,50 @@ option(LEMBALL_ENABLE_WIN32 "Build the reconstructed Win32 executable" ON)
 option(LEMBALL_SKIP_CD_TEST "Skip CD probing and use the current directory" OFF)
 option(LEMBALL_SKIP_REGISTRY_RUNNING_STATE "Skip updating the registry running state" OFF)
 
+set(VISOS_SOURCES
+    src/VISOS/GDI/VSGDI.CPP
+    src/VISOS/MEMORY/VSMEM.CPP
+    src/VISOS/GDI/VSWING.CPP
+    src/VISOS/CORE/VSINIT.CPP
+    src/VISOS/DEBUG/RAWOUT.CPP
+    src/VISOS/GDI/VSWINDOW.CPP
+    src/VISOS/STREAM/EFFSTRM.CPP
+    src/VISOS/GDI/WINDOWVT.CPP
+    src/VISOS/GDI/GDIVT.CPP
+    src/VISOS/SOUND/SOUNDVT.CPP
+    src/VISOS/STREAM/STREAMVT.CPP
+    src/VISOS/DEBUG/DEBUGVT.CPP
+    src/VISOS/STAT/VSSTAT.CPP
+    src/VISOS/NET/VSNETFIL.CPP
+    src/VISOS/NET/VSNETTCP.CPP
+    src/VISOS/NET/VSNET.CPP
+    src/VISOS/NET/VSNETSTR.CPP
+    src/VISOS/SOUND/VSSOUND.CPP
+    src/VISOS/CORE/VSMATH.CPP
+    src/VISOS/GDI/INVISWIN.CPP
+    src/VISOS/DEBUG/TEXTWIN.CPP
+    src/VISOS/RESOURCE/MOGLOAD.CPP
+    src/VISOS/CORE/LINKSCF.CPP
+)
+
 set(LEMBALL_SOURCES
-    src/engine/graphics_driver.cpp
-    src/engine/memory_arena.cpp
-    src/engine/render_dispatch.cpp
-    src/engine/runtime_init.cpp
-    src/game/game_app.cpp
-    src/game/main_menu_screen.cpp
-    src/game/primary_context_window.cpp
-    src/game/window_owner.cpp
-    src/game/eff_streams.cpp
-    src/game/type18_chunk_stream.cpp
-    src/game/level_runtime.cpp
-    src/game/vtable_callbacks.cpp
-    src/game/status_entry.cpp
-    src/game/level_status.cpp
-    src/game/menu_selector.cpp
-    src/game/variant_resource_loader.cpp
-    src/game/variant_resource_manager.cpp
-    src/network/lobby.cpp
-    src/network/file.cpp
-    src/network/socket.cpp
-    src/network/runtime.cpp
-    src/network/stream.cpp
-    src/main.cpp
-    src/audio/audio_manager.cpp
-    src/engine/fixed_math.cpp
-    src/platform/message_window.cpp
-    src/platform/shell_ui.cpp
-    src/platform/startup_options.cpp
-    src/resource/resource_archive.cpp
-    src/game/demo_playback.cpp
-    src/stubs/link_scaffold.cpp
+    src/LEMBALL/GAME.CPP
+    src/LEMBALL/FRONTEND/MAINMENU.CPP
+    src/LEMBALL/SHELL/PRIMARY.CPP
+    src/LEMBALL/LEVEL/TYPE18.CPP
+    src/LEMBALL/LEVEL/LEVELRUN.CPP
+    src/LEMBALL/LEVEL/LEVELVT.CPP
+    src/LEMBALL/FRONTEND/SCREENVT.CPP
+    src/LEMBALL/FRONTEND/LOBBYVT.CPP
+    src/LEMBALL/LEVEL/LEVELSTAT.CPP
+    src/LEMBALL/FRONTEND/MENUSEL.CPP
+    src/LEMBALL/RESOURCE/VARLOAD.CPP
+    src/LEMBALL/RESOURCE/VARMGR.CPP
+    src/LEMBALL/FRONTEND/LOBBY.CPP
+    src/LEMBALL/SHELL/ENTRY.CPP
+    src/LEMBALL/SHELL/SHELLUI.CPP
+    src/LEMBALL/SHELL/OPTIONS.CPP
+    src/LEMBALL/LEVEL/DEMO.CPP
 )
 
 if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "OpenWatcom" AND (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "11.0" OR NOT MSVC))
@@ -45,18 +57,21 @@ if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "OpenWatcom" AND (CMAKE_CXX_COMPILER_VERSI
     set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
 
-add_library(LEMBALL_objects OBJECT ${LEMBALL_SOURCES})
-target_include_directories(LEMBALL_objects PRIVATE src)
-target_compile_definitions(LEMBALL_objects PRIVATE LEMBALL_1996_CXX=1)
-set_property(TARGET LEMBALL_objects PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
+add_library(VISOS STATIC ${VISOS_SOURCES})
+target_include_directories(VISOS
+    PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src"
+)
+target_compile_definitions(VISOS PRIVATE LEMBALL_1996_CXX=1)
+set_property(TARGET VISOS PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
 if(LEMBALL_SKIP_CD_TEST)
-    target_compile_definitions(LEMBALL_objects PRIVATE LEMBALL_SKIP_CD_TEST=1)
+    target_compile_definitions(VISOS PRIVATE LEMBALL_SKIP_CD_TEST=1)
 endif()
 if(LEMBALL_SKIP_REGISTRY_RUNNING_STATE)
-    target_compile_definitions(LEMBALL_objects PRIVATE LEMBALL_SKIP_REGISTRY_RUNNING_STATE=1)
+    target_compile_definitions(VISOS PRIVATE LEMBALL_SKIP_REGISTRY_RUNNING_STATE=1)
 endif()
 if(APPLE)
-    target_compile_definitions(LEMBALL_objects PRIVATE LEMBALL_HOST_MACOS=1)
+    target_compile_definitions(VISOS PRIVATE LEMBALL_HOST_MACOS=1)
 endif()
 
 if(LEMBALL_ENABLE_WIN32)
@@ -66,8 +81,8 @@ if(LEMBALL_ENABLE_WIN32)
         add_custom_command(
             OUTPUT "${LEMBALL_RESOURCE_OBJECT}"
             COMMAND "${LEMBALL_RC_COMPILER}" /r /fo "${LEMBALL_RESOURCE_OBJECT}"
-                    "${CMAKE_CURRENT_SOURCE_DIR}/src/platform/lemball.rc"
-            DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/platform/lemball.rc"
+                    "${CMAKE_CURRENT_SOURCE_DIR}/src/LEMBALL/LEMBALL.RC"
+            DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/LEMBALL/LEMBALL.RC"
             VERBATIM
         )
         set_source_files_properties("${LEMBALL_RESOURCE_OBJECT}" PROPERTIES
@@ -77,7 +92,19 @@ if(LEMBALL_ENABLE_WIN32)
         list(APPEND LEMBALL_RESOURCE_OBJECTS "${LEMBALL_RESOURCE_OBJECT}")
     endif()
 
-    add_executable(LEMBALL WIN32 $<TARGET_OBJECTS:LEMBALL_objects> ${LEMBALL_RESOURCE_OBJECTS})
+    add_executable(LEMBALL WIN32 ${LEMBALL_SOURCES} ${LEMBALL_RESOURCE_OBJECTS})
+    target_include_directories(LEMBALL PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+    target_link_libraries(LEMBALL PRIVATE VISOS)
+    target_compile_definitions(LEMBALL PRIVATE LEMBALL_1996_CXX=1)
+    if(LEMBALL_SKIP_CD_TEST)
+        target_compile_definitions(LEMBALL PRIVATE LEMBALL_SKIP_CD_TEST=1)
+    endif()
+    if(LEMBALL_SKIP_REGISTRY_RUNNING_STATE)
+        target_compile_definitions(LEMBALL PRIVATE LEMBALL_SKIP_REGISTRY_RUNNING_STATE=1)
+    endif()
+    if(APPLE)
+        target_compile_definitions(LEMBALL PRIVATE LEMBALL_HOST_MACOS=1)
+    endif()
     set_property(TARGET LEMBALL PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
     set_target_properties(LEMBALL PROPERTIES
         OUTPUT_NAME "LEMBALL"
@@ -91,7 +118,7 @@ if(LEMBALL_ENABLE_WIN32)
         )
     else()
         set_target_properties(LEMBALL PROPERTIES
-            LINK_FLAGS "user32.lib gdi32.lib advapi32.lib winmm.lib wsock32.lib ws2_32.lib /MAP:LEMBALL.map"
+            LINK_FLAGS "user32.lib gdi32.lib advapi32.lib winmm.lib wsock32.lib ws2_32.lib /MAP:LEMBALL.map /INCLUDE:?_RAWOUT_DebugString@@YAHPBD@Z /INCLUDE:?initialize_debug_text_line_record@@YIPAXPAX@Z /INCLUDE:?noop_embedded_mci_callback_0046e050@@YGXPAX@Z /INCLUDE:?two_array_list_is_first_entry_loaded_false@@YAHXZ"
         )
     endif()
     set(LEMBALL_DEPLOY_COMMANDS)
