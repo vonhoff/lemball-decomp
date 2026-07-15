@@ -1406,6 +1406,11 @@ void __fastcall clear_managed_entity_move_commands(void *pEntity) {
     **(unsigned short **)((char *)pEntity + 0x70) = 0;
 }
 
+// FUNCTION: LEMBALL 0x004011EF
+void __fastcall ClearManagedEntityMoveCommandsThunk(void *pEntity) {
+    clear_managed_entity_move_commands(pEntity);
+}
+
 // FUNCTION: LEMBALL 0x0041C360
 void *__fastcall initialize_three_dword_point_sentinel(void *pPoint) {
     int *pnPoint = (int *)pPoint;
