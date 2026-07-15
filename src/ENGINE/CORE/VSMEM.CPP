@@ -1078,24 +1078,8 @@ void *ReturnSuppliedPlacementStorage(unsigned int cbStorage, void *pvStorage) {
 }
 
 // FUNCTION: LEMBALL 0x0045A3A0
-void FillMemoryByte(void *pvTarget, unsigned char chValue, unsigned int cbTarget) {
-    unsigned int dwFill;
-    unsigned int i;
-    unsigned int *pdwTarget;
-    unsigned char *pbTarget;
-
-    pdwTarget = (unsigned int *)pvTarget;
-    dwFill = chValue | ((unsigned int)chValue << 8) | ((unsigned int)chValue << 16) | ((unsigned int)chValue << 24);
-    for (i = cbTarget >> 2; i != 0; --i) {
-        *pdwTarget = dwFill;
-        ++pdwTarget;
-    }
-
-    pbTarget = (unsigned char *)pdwTarget;
-    for (i = cbTarget & 3; i != 0; --i) {
-        *pbTarget = chValue;
-        ++pbTarget;
-    }
+void __stdcall FillMemoryByte(void *pvTarget, unsigned char chValue, unsigned int cbTarget) {
+    memset(pvTarget, chValue, cbTarget);
 }
 
 // FUNCTION: LEMBALL 0x0045A3D0

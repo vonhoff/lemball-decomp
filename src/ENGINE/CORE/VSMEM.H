@@ -94,7 +94,7 @@ long LEMBALL_FASTCALL CalculateMemoryArenaAvailableBytes(void *pArena);
 void *WriteMemoryArenaReport(void *pArena, VsInitFormattedOutputStream *pOutputStream);
 unsigned int LEMBALL_FASTCALL GetMemoryArenaPayloadByteCounter(void *pArena);
 void *ReturnSuppliedPlacementStorage(unsigned int cbStorage, void *pvStorage);
-void FillMemoryByte(void *pvTarget, unsigned char chValue, unsigned int cbTarget);
+void __stdcall FillMemoryByte(void *pvTarget, unsigned char chValue, unsigned int cbTarget);
 void __stdcall CopyMemoryBytes(void *pvTarget, const void *pvSource, unsigned int cbCopy);
 void *ConstructMemoryArenaBaseState(void *pArena,
                                    unsigned int cbStorage,
