@@ -118,8 +118,7 @@ GameDynamicCString *GameDynamicCString::CopyConstructDynamicCString(const GameDy
     GameDynamicCString *pString = this;
     pString->m_cchCapacity = pSource->m_cchCapacity;
     pString->m_pszText = (char *)AllocateVSMemBlock((unsigned int)pString->m_cchCapacity);
-    memcpy(pString->m_pszText, pSource->m_pszText,
-           (unsigned int)strlen(pSource->m_pszText) + 1);
+    strcpy(pString->m_pszText, pSource->m_pszText);
     return pString;
 }
 
