@@ -364,11 +364,6 @@ void *__fastcall get_object_field_0x30(void *pObject) {
     return *(void **)((char *)pObject + 0x30);
 }
 
-// FUNCTION: LEMBALL 0x00414880
-int __fastcall get_managed_entity_active_state(void *pEntity) {
-    return *(int *)((char *)pEntity + 0x168);
-}
-
 // FUNCTION: LEMBALL 0x00414C60
 int __fastcall get_managed_entity_group_command_state(void *pEntity) {
     return *(int *)((char *)pEntity + 0x154);
@@ -380,6 +375,11 @@ void *__fastcall get_first_projectile_pool_object(void *pPool) {
     return *(void **)((char *)pPool + 0x34);
 }
 
+struct LevelManagedEntityStateIdView {
+    char m_abReserved00[0xb8];
+    int m_nStateIdB8;
+};
+
 struct LevelManagedEntityChildIterator {
     char m_abReserved00[0x124];
     int m_cChildren124;
@@ -387,6 +387,7 @@ struct LevelManagedEntityChildIterator {
     int m_iCurrentChild150;
     char m_abReserved154[0x10];
     int m_fChildrenDirty164;
+    int m_nActiveState168;
 
     int GetChildCount(void);
     void *GetFirstChild(void);
@@ -395,6 +396,12 @@ struct LevelManagedEntityChildIterator {
     void *GetChildAt(int iChild);
     void AppendChild(void *pChild);
     int ContainsChild(void *pChild);
+    void *GetFirstChildThunk(void);
+    void *GetNextChildThunk(void);
+    void *GetCurrentChildThunk(void);
+    int GetActiveState(void);
+    void *GetChildWithState8(void);
+    void *GetCurrentChildWithState8(void);
 };
 
 // FUNCTION: LEMBALL 0x0041DEF0
@@ -460,6 +467,62 @@ int LevelManagedEntityChildIterator::ContainsChild(void *pChild) {
         } while (i < cChildren);
     }
     return 0;
+}
+
+// FUNCTION: LEMBALL 0x0040241E
+void *LevelManagedEntityChildIterator::GetFirstChildThunk(void) {
+    return GetFirstChild();
+}
+
+// FUNCTION: LEMBALL 0x00401816
+void *LevelManagedEntityChildIterator::GetNextChildThunk(void) {
+    return GetNextChild();
+}
+
+// FUNCTION: LEMBALL 0x00401EAB
+void *LevelManagedEntityChildIterator::GetCurrentChildThunk(void) {
+    return GetCurrentChild();
+}
+
+// FUNCTION: LEMBALL 0x00414880
+int LevelManagedEntityChildIterator::GetActiveState(void) {
+    return m_nActiveState168;
+}
+
+// FUNCTION: LEMBALL 0x00414890
+void *LevelManagedEntityChildIterator::GetChildWithState8(void) {
+    LevelManagedEntityStateIdView *pChild;
+    int nStateId;
+
+    nStateId = 8;
+    pChild = (LevelManagedEntityStateIdView *)GetFirstChildThunk();
+    for (;;) {
+        if (pChild == 0) {
+            return 0;
+        }
+        if (pChild->m_nStateIdB8 == nStateId) {
+            return pChild;
+        }
+        pChild = (LevelManagedEntityStateIdView *)GetNextChildThunk();
+    }
+}
+
+// FUNCTION: LEMBALL 0x004148C0
+void *LevelManagedEntityChildIterator::GetCurrentChildWithState8(void) {
+    LevelManagedEntityStateIdView *pChild;
+    int nStateId;
+
+    nStateId = 8;
+    pChild = (LevelManagedEntityStateIdView *)GetCurrentChildThunk();
+    for (;;) {
+        if (pChild == 0) {
+            return 0;
+        }
+        if (pChild->m_nStateIdB8 == nStateId) {
+            return pChild;
+        }
+        pChild = (LevelManagedEntityStateIdView *)GetNextChildThunk();
+    }
 }
 
 // FUNCTION: LEMBALL 0x0041E410
