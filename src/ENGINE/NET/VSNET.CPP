@@ -3087,7 +3087,7 @@ int VsNetEffTransportPeer::SendEffStreamToActivePeer(int *pStream) {
     VsNetPeerPayloadSenderSlot *pPayloadSenderSlot;
     VsNetPeerPayloadSenderRaw *pPayloadSender;
     VsNetEffDispatchEvent kFailureEvent;
-    int fWriteSessionOpen;
+    int fOpenedWriteSession;
     int nResult;
 
     pTransportPeer = this;
@@ -3095,8 +3095,8 @@ int VsNetEffTransportPeer::SendEffStreamToActivePeer(int *pStream) {
         (VsNetTransportEndpointSlot *)((char *)pTransportPeer + pTransportPeer->m_pOffsets->m_nEndpointStateSlotOffset);
     pPeerTransportState = &pEndpointSlot->m_State;
     if (pPeerTransportState->m_fSecondaryHandleActive != 0 && pTransportPeer->m_fClosed == 0) {
-        fWriteSessionOpen = pStream[4];
-        if (fWriteSessionOpen < 1) {
+        fOpenedWriteSession = pStream[4] < 1;
+        if (fOpenedWriteSession != 0) {
             ((GameEffStream *)pStream)->BeginEffStreamWriteSession();
         }
 
@@ -3117,7 +3117,7 @@ int VsNetEffTransportPeer::SendEffStreamToActivePeer(int *pStream) {
             ((void (*)(VsNetEffDispatchEvent *))(*(void ***)g_pEffTransportDispatchQueue)[2])(&kFailureEvent);
         }
 
-        if (fWriteSessionOpen < 1) {
+        if (fOpenedWriteSession != 0) {
             ((GameEffStream *)pStream)->EndEffStreamWriteSession();
         }
         return nResult;
