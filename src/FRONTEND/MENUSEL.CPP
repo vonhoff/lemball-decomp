@@ -1,0 +1,958 @@
+#include "FRONTEND/MENUSEL.H"
+
+#include "GAME.H"
+#include "RESOURCE/VARMGR.H"
+#include "MEMORY/VSMEM.H"
+#include "CORE/WIN32.H"
+
+DECOMP_SIZE_ASSERT(GameMenuSelectorEvent, 0x1c);
+DECOMP_SIZE_ASSERT(GameMenuSelectorMetadata, 0x20);
+DECOMP_SIZE_ASSERT(GameProgressiveVariantFrameSelector, 0x1c);
+DECOMP_SIZE_ASSERT(GameMenuSelectorManager, 0x27c);
+
+extern "C" DWORD WINAPI timeGetTime(void);
+extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
+extern void VariantResourceBundleNoopThunk(void);
+extern void *ConstructVariantRenderManager(void *pObject, int nOwner,
+                                           int cResourceIds,
+                                           int cPackagedRectEntries,
+                                           int cActionButtonEntries,
+                                           int nUnknown58,
+                                           int fDoubleBuffered);
+extern void LoadVariantRenderResource(void *pObject, int nResourceId);
+extern int GetVariantRenderFrameCount(void *pObject, int nResourceId);
+extern void DestroyVariantRenderManager(void *pObject);
+extern void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntry(
+    void *pObject);
+extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableC(
+    void *pObject);
+extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(
+    void *pResourceObject);
+extern void LEMBALL_FASTCALL SetGeometryOwnerEnabled(
+    void *pOwner, int nUnusedEdx, int fEnabled);
+extern void *g_pNonZrleVariantRenderEntryInitializeVtable[2];
+extern void *g_pVariantResourceEntryManager;
+extern int LEMBALL_FASTCALL GetTimedVariantFrameStartTimeThunk(
+    void *pObject);
+extern void LEMBALL_FASTCALL SetTimedVariantFrameDuration(
+    void *pObject, int nUnusedEdx, int nFrameDuration);
+extern void LEMBALL_FASTCALL set_object_field_0x10_00435890(
+    void *pObject, void *pUnusedEdx, int nValue);
+extern void LEMBALL_FASTCALL set_object_field_0x0c_004358a0(
+    void *pObject, void *pUnusedEdx, int nValue);
+extern void LEMBALL_FASTCALL set_object_field_0x18_004358b0(
+    void *pObject, void *pUnusedEdx, int nValue);
+extern int LEMBALL_FASTCALL return_object_field_0x0c_00435880(
+    void *pObject);
+
+struct GameMenuSelectorEntry {
+    void **m_pVtable00;
+    int m_nQueueTag04;
+    int m_nQueueReserved08;
+    int m_cUnhandledEvents0C;
+    int m_nOverlayKind10;
+    short m_nProgressX14;
+    short m_nProgressY16;
+    short m_nProgressWidth18;
+    short m_nProgressHeight1A;
+    int m_x1C;
+    int m_nPosition20;
+    void *m_pRenderContext24;
+    void *m_pRenderOwner28;
+    int m_nActivationMode2C;
+    int m_nToken30;
+    int m_nCommand34;
+    int m_cResources38;
+    int m_nLastResource3C;
+    int m_nFirstResource40;
+    int m_nSelectedResource44;
+    int *m_pSelection48;
+    const int *m_panResourceIds4C;
+    void *m_pAlignedOverlay50;
+    void *m_pProgressOverlay54;
+    void **m_ppLoadedResources58;
+    int m_fEnabled5C;
+};
+
+typedef char GameMenuSelectorEntry_size_must_be_0x60[
+    sizeof(GameMenuSelectorEntry) == 0x60 ? 1 : -1];
+
+typedef int (LEMBALL_FASTCALL *GameFrameSelectorIndexProc)(
+    GameProgressiveVariantFrameSelector *pSelector);
+typedef void (LEMBALL_FASTCALL *GameFrameSelectorSetProc)(
+    GameProgressiveVariantFrameSelector *pSelector, int nUnusedEdx,
+    int nValue);
+typedef int (LEMBALL_FASTCALL *GameMenuSelectorEventProc)(
+    GameMenuSelectorManager *pManager, int nUnusedEdx,
+    GameMenuSelectorEvent *pEvent);
+typedef void * (LEMBALL_FASTCALL *GameMenuSelectorDeleteProc)(
+    GameMenuSelectorManager *pManager, int nUnusedEdx, int fDelete);
+
+static void LEMBALL_FASTCALL DestroyMenuSelectorManager(
+    GameMenuSelectorManager *pManager);
+static void *LEMBALL_FASTCALL DeleteMenuSelectorManager(
+    GameMenuSelectorManager *pManager, int nUnusedEdx, int fDelete);
+static void *LEMBALL_FASTCALL DeleteMenuSelectorManagerThunk(
+    GameMenuSelectorManager *pManager, int nUnusedEdx, int fDelete);
+static int LEMBALL_FASTCALL HandleMenuSelectorEvent(
+    GameMenuSelectorManager *pManager, int nUnusedEdx,
+    GameMenuSelectorEvent *pEvent);
+static int LEMBALL_FASTCALL HandleMenuSelectorEventThunk(
+    GameMenuSelectorManager *pManager, int nUnusedEdx,
+    GameMenuSelectorEvent *pEvent);
+static void LEMBALL_FASTCALL MoveMenuSelectorPrevious(
+    GameMenuSelectorManager *pManager);
+static void LEMBALL_FASTCALL MoveMenuSelectorPreviousThunk(
+    GameMenuSelectorManager *pManager);
+static void LEMBALL_FASTCALL MoveMenuSelectorNext(
+    GameMenuSelectorManager *pManager);
+static void LEMBALL_FASTCALL MoveMenuSelectorNextThunk(
+    GameMenuSelectorManager *pManager);
+static void LEMBALL_FASTCALL SelectMenuSelectorSide0(
+    GameMenuSelectorManager *pManager);
+static void LEMBALL_FASTCALL SelectMenuSelectorSide0Thunk(
+    GameMenuSelectorManager *pManager);
+static void LEMBALL_FASTCALL SelectMenuSelectorSide1(
+    GameMenuSelectorManager *pManager);
+static void LEMBALL_FASTCALL SelectMenuSelectorSide1Thunk(
+    GameMenuSelectorManager *pManager);
+static void LEMBALL_FASTCALL StartMenuSelectorAction(
+    GameMenuSelectorManager *pManager);
+static void LEMBALL_FASTCALL StartMenuSelectorActionThunk(
+    GameMenuSelectorManager *pManager);
+
+/* GLOBAL: LEMBALL 0x004a7b44 */
+int g_nMenuSelectorResourceId0 = 0;
+/* GLOBAL: LEMBALL 0x004a7b3c */
+int g_nMenuSelectorResourceId1 = 0;
+/* GLOBAL: LEMBALL 0x004a7b40 */
+int g_nMenuSelectorResourceId2 = 0;
+/* GLOBAL: LEMBALL 0x004a7b50 */
+int g_nMenuSelectorResourceId3 = 0;
+/* GLOBAL: LEMBALL 0x004a7b38 */
+int g_nMenuSelectorResourceId4 = 0;
+/* GLOBAL: LEMBALL 0x004a7b48 */
+int g_nMenuSelectorResourceId5 = 0;
+/* GLOBAL: LEMBALL 0x004a7b54 */
+int g_nMenuSelectorResourceId6 = 0;
+/* GLOBAL: LEMBALL 0x004a7b58 */
+int g_nMenuSelectorResourceId7 = 0;
+/* GLOBAL: LEMBALL 0x004a7b4c */
+int g_nMenuSelectorResourceId8 = 0;
+
+/* GLOBAL: LEMBALL 0x0049fa70 */
+int g_anMenuSelectorActionOffsetsMode0[18] = {
+    0, 12, -8, -2, 52, -2, -13, 28, 116,
+    0, 0, -13, 19, 28, -16, 0, -24, -2
+};
+/* GLOBAL: LEMBALL 0x0049fab8 */
+int g_anMenuSelectorActionOffsetsMode1[18] = {
+    0, 6, -4, -2, 26, -2, -7, 14, 58,
+    0, 0, 0, 10, 14, -8, 0, -12, -2
+};
+
+/* FUNCTION: LEMBALL 0x00402A59 */
+static int LEMBALL_FASTCALL GetMenuSelectorStartTimeThunk(
+    GameProgressiveVariantFrameSelector *pSelector) {
+    return return_object_field_0x0c_00435880(pSelector);
+}
+
+/* FUNCTION: LEMBALL 0x00467170 */
+static int LEMBALL_FASTCALL SelectTimedVariantFrameIndex(
+    GameProgressiveVariantFrameSelector *pSelector) {
+    unsigned int dwNow;
+    unsigned int iFrame;
+
+    dwNow = (unsigned int)pSelector->m_dwFixedTime;
+    if (dwNow == 0xffffffffU) {
+        dwNow = (unsigned int)timeGetTime();
+    }
+    iFrame = (((dwNow - (unsigned int)pSelector->m_dwStartTime) %
+               (unsigned int)pSelector->m_dwDuration) *
+              (unsigned int)pSelector->m_cFrames) /
+             (unsigned int)pSelector->m_dwDuration;
+    if (pSelector->m_nDirection != 1) {
+        iFrame = (unsigned int)pSelector->m_cFrames - iFrame - 1;
+    }
+    return (int)iFrame;
+}
+
+/* FUNCTION: LEMBALL 0x004671E0 */
+static void LEMBALL_FASTCALL SetProgressiveVariantFrameDuration(
+    GameProgressiveVariantFrameSelector *pSelector, int, int dwDuration) {
+    pSelector->m_dwDuration = dwDuration;
+    if (pSelector->m_dwFixedTime == -1) {
+        pSelector->m_dwStartTime = (int)timeGetTime();
+    } else {
+        pSelector->m_dwStartTime = pSelector->m_dwFixedTime;
+    }
+}
+
+/* FUNCTION: LEMBALL 0x00467210 */
+static int LEMBALL_FASTCALL SelectProgressiveVariantFrameIndex(
+    GameProgressiveVariantFrameSelector *pSelector) {
+    unsigned int dwElapsed;
+    unsigned int iFrame;
+
+    if (pSelector->m_dwFixedTime == -1) {
+        dwElapsed = (unsigned int)timeGetTime() -
+                    (unsigned int)pSelector->m_dwStartTime;
+    } else {
+        dwElapsed = (unsigned int)(pSelector->m_dwFixedTime -
+                                   pSelector->m_dwStartTime);
+    }
+    if (dwElapsed < (unsigned int)pSelector->m_dwDuration) {
+        iFrame = ((unsigned int)pSelector->m_cFrames * dwElapsed) /
+                 (unsigned int)pSelector->m_dwDuration;
+    } else {
+        iFrame = (unsigned int)pSelector->m_cFrames - 1;
+    }
+    if (pSelector->m_nDirection != 1) {
+        iFrame = (unsigned int)pSelector->m_cFrames - iFrame - 1;
+    }
+    return (int)iFrame;
+}
+
+/* FUNCTION: LEMBALL 0x00402F3B */
+static void LEMBALL_FASTCALL SetMenuSelectorDurationFieldThunk(
+    GameProgressiveVariantFrameSelector *pSelector, int, int nValue) {
+    set_object_field_0x10_00435890(pSelector, 0, nValue);
+}
+
+/* FUNCTION: LEMBALL 0x00402DD8 */
+static void LEMBALL_FASTCALL SetMenuSelectorStartTimeFieldThunk(
+    GameProgressiveVariantFrameSelector *pSelector, int, int nValue) {
+    set_object_field_0x0c_004358a0(pSelector, 0, nValue);
+}
+
+/* FUNCTION: LEMBALL 0x00402D5B */
+static void LEMBALL_FASTCALL SetMenuSelectorDirectionFieldThunk(
+    GameProgressiveVariantFrameSelector *pSelector, int, int nValue) {
+    set_object_field_0x18_004358b0(pSelector, 0, nValue);
+}
+
+/* VTABLE: LEMBALL 0x00496D00 */
+static void *g_MenuSelectorFrameSelectorCtorVtable[2] = {
+    (void *)_purecall,
+    (void *)GetMenuSelectorStartTimeThunk
+};
+
+/* VTABLE: LEMBALL 0x00496D08 */
+static void *g_MenuSelectorTimedFrameSelectorVtable[6] = {
+    (void *)SelectTimedVariantFrameIndex,
+    (void *)_purecall,
+    (void *)SetMenuSelectorDurationFieldThunk,
+    (void *)SetMenuSelectorStartTimeFieldThunk,
+    (void *)SetMenuSelectorDirectionFieldThunk,
+    0
+};
+
+/* VTABLE: LEMBALL 0x00496D20 */
+static void *g_MenuSelectorProgressiveFrameSelectorVtable[6] = {
+    (void *)SelectProgressiveVariantFrameIndex,
+    (void *)SetProgressiveVariantFrameDuration,
+    (void *)SetMenuSelectorDurationFieldThunk,
+    (void *)SetMenuSelectorStartTimeFieldThunk,
+    (void *)SetMenuSelectorDirectionFieldThunk,
+    0
+};
+
+/* VTABLE: LEMBALL 0x00496CE4 */
+static void *g_MenuSelectorCurrentFrameCallbackVtable[7] = {
+    (void *)GetTimedVariantFrameStartTimeThunk,
+    (void *)SelectTimedVariantFrameIndex,
+    (void *)SetTimedVariantFrameDuration,
+    (void *)SetMenuSelectorDurationFieldThunk,
+    (void *)SetMenuSelectorStartTimeFieldThunk,
+    (void *)SetMenuSelectorDirectionFieldThunk,
+    0
+};
+
+/* VTABLE: LEMBALL 0x00497F0C */
+static void *g_MenuSelectorVariantRenderManagerVtable[1] = {
+    (void *)VariantResourceBundleNoopThunk
+};
+
+/* VTABLE: LEMBALL 0x00497F10 */
+static void *g_MenuSelectorManagerVtable[3] = {
+    (void *)InitializeNonZrleVariantRenderEntry,
+    (void *)DeleteMenuSelectorManagerThunk,
+    (void *)HandleMenuSelectorEventThunk
+};
+
+static inline GameProgressiveVariantFrameSelector *AllocateFrameSelector(
+    void *pVariantManager, int nResourceId) {
+    GameProgressiveVariantFrameSelector *pSelector;
+
+    pSelector = (GameProgressiveVariantFrameSelector *)
+        AllocateVSMemBlock(0x1c);
+    if (pSelector != 0) {
+        pSelector->m_pVtable = g_MenuSelectorFrameSelectorCtorVtable;
+        pSelector->m_cFrames =
+            GetVariantRenderFrameCount(pVariantManager, nResourceId);
+        pSelector->m_pVtable = g_MenuSelectorTimedFrameSelectorVtable;
+        pSelector->m_nDirection = 1;
+        pSelector->m_pVtable = g_MenuSelectorProgressiveFrameSelectorVtable;
+    }
+    return pSelector;
+}
+
+/* FUNCTION: LEMBALL 0x0044C870 */
+GameMenuSelectorManager *LEMBALL_FASTCALL ConstructMenuSelectorManager(
+    GameMenuSelectorManager *pManager, int, void *pRenderOwner,
+    void *pRenderContext, int, int nLayoutMode) {
+    int i;
+    void *pVariantManager;
+
+    InitializeRenderQueueNodeBase(pManager);
+    pVariantManager = (char *)pManager + 0x10;
+    ConstructVariantRenderManager(pVariantManager,
+                                  (int)(unsigned long)pRenderContext,
+                                  0x2b6, 10, 5, 0, 0);
+    InitializeHelperLocalRectUpdateEntry(pManager->m_abLocalRectEntry200);
+    pManager->m_pVtable00 = g_MenuSelectorManagerVtable;
+    pManager->m_cCurrentFrameCallbackFrames25C = 1;
+    *(void ***)pVariantManager = g_MenuSelectorVariantRenderManagerVtable;
+    pManager->m_fChildrenEnabled278 = 1;
+    pManager->m_nLayoutMode270 = nLayoutMode;
+    pManager->m_pRenderOwner214 = pRenderOwner;
+    pManager->m_pRenderContext210 = pRenderContext;
+    pManager->m_pCurrentFrameCallbackVtable258 =
+        g_MenuSelectorCurrentFrameCallbackVtable;
+    pManager->m_nCurrentFrameCallbackFrame264 = 0;
+    pManager->m_nNextToken218 = (int)0xabcd0000;
+    for (i = 0; i < 8; ++i) {
+        pManager->m_aMetadataE0[i].m_xSide0 = -1;
+        pManager->m_aMetadataE0[i].m_nPosition = -1;
+        pManager->m_aMetadataE0[i].m_nSide = 3;
+        pManager->m_apChildren1E0[i] = 0;
+    }
+    pManager->m_nReserved84 = 0;
+    pManager->m_cChildren80 = 0;
+    pManager->m_fMovementActiveDC = 0;
+    pManager->m_nActionStateA4 = 0;
+    pManager->m_fEventQueuedB4 = 0;
+    pManager->m_pChildContext268 = 0;
+    pManager->m_pChildRenderContext26C = 0;
+    ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+        ->RegisterOrderedRenderDispatchClient(pManager, 0);
+
+    if (nLayoutMode == 1) {
+        pManager->m_fCompactLayout274 = 1;
+        g_nMenuSelectorResourceId0 = 0x173;
+        g_nMenuSelectorResourceId1 = 0x174;
+        g_nMenuSelectorResourceId2 = 0x175;
+        g_nMenuSelectorResourceId3 = 0x176;
+        g_nMenuSelectorResourceId4 = 0x177;
+        g_nMenuSelectorResourceId5 = 0x178;
+        g_nMenuSelectorResourceId6 = 0x179;
+        g_nMenuSelectorResourceId7 = 0x17a;
+        g_nMenuSelectorResourceId8 = 0x17b;
+    } else {
+        pManager->m_fCompactLayout274 = 0;
+        g_nMenuSelectorResourceId0 = 0x146;
+        g_nMenuSelectorResourceId1 = 0x147;
+        g_nMenuSelectorResourceId2 = 0x148;
+        g_nMenuSelectorResourceId3 = 0x149;
+        g_nMenuSelectorResourceId4 = 0x14a;
+        g_nMenuSelectorResourceId5 = 0x14b;
+        g_nMenuSelectorResourceId6 = 0x14c;
+        g_nMenuSelectorResourceId7 = 0x14d;
+        g_nMenuSelectorResourceId8 = 0x14e;
+    }
+
+    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId0);
+    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId1);
+    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId2);
+    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId3);
+    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId4);
+    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId5);
+    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId6);
+    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId7);
+    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId8);
+
+    pManager->m_pSideSelector244 =
+        AllocateFrameSelector(pVariantManager, g_nMenuSelectorResourceId6);
+    pManager->m_pSideSelector244->m_dwFixedTime = -1;
+    pManager->m_pActionTailSelector248 =
+        AllocateFrameSelector(pVariantManager, g_nMenuSelectorResourceId4);
+    pManager->m_pActionTailSelector248->m_dwFixedTime = -1;
+    pManager->m_pActionLeadSelector24C =
+        AllocateFrameSelector(pVariantManager, g_nMenuSelectorResourceId0);
+    pManager->m_pActionLeadSelector24C->m_dwFixedTime = -1;
+    pManager->m_pCompletionSelector250 =
+        AllocateFrameSelector(pVariantManager, g_nMenuSelectorResourceId7);
+    pManager->m_pCompletionSelector250->m_dwFixedTime = -1;
+    pManager->m_pActionMiddleSelector254 =
+        AllocateFrameSelector(pVariantManager, g_nMenuSelectorResourceId2);
+    pManager->m_pActionMiddleSelector254->m_dwFixedTime = -1;
+    pManager->m_dwConstructionTimeD4 = (int)timeGetTime();
+    return pManager;
+}
+
+/* FUNCTION: LEMBALL 0x00402432 */
+GameMenuSelectorManager *LEMBALL_FASTCALL ConstructMenuSelectorManagerThunk(
+    GameMenuSelectorManager *pManager, int nUnusedEdx, void *pRenderOwner,
+    void *pRenderContext, int nChildCapacity, int nLayoutMode) {
+    return ConstructMenuSelectorManager(pManager, nUnusedEdx, pRenderOwner,
+                                        pRenderContext, nChildCapacity,
+                                        nLayoutMode);
+}
+
+static inline void ReleaseMenuSelectorVariantResource(void *pObject,
+                                                      int nResourceId) {
+    int *pManager;
+    void **ppResources;
+    short *pnResourceIds;
+    int iResource;
+
+    pManager = (int *)pObject;
+    ppResources = (void **)(unsigned long)pManager[9];
+    pnResourceIds = (short *)(unsigned long)pManager[10];
+    iResource = pnResourceIds[nResourceId];
+    ReleaseTypedResourceObjectReference(ppResources[iResource]);
+    ppResources[iResource] = 0;
+    pnResourceIds[nResourceId] = (short)pManager[11];
+    --pManager[13];
+}
+
+/* FUNCTION: LEMBALL 0x0044CD60 */
+static void LEMBALL_FASTCALL DestroyMenuSelectorManager(
+    GameMenuSelectorManager *pManager) {
+    int i;
+    void *pVariantManager;
+
+    pManager->m_pVtable00 = g_MenuSelectorManagerVtable;
+    pVariantManager = (char *)pManager + 0x10;
+    *(void ***)pVariantManager = g_MenuSelectorVariantRenderManagerVtable;
+    ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+        ->UnregisterOrderedRenderDispatchClient(pManager, 0);
+    for (i = 0; i < 8; ++i) {
+        if (pManager->m_apChildren1E0[i] != 0) {
+            GameMenuSelectorDeleteProc pDelete =
+                (GameMenuSelectorDeleteProc)
+                    pManager->m_apChildren1E0[i]->m_pVtable00[1];
+            pDelete((GameMenuSelectorManager *)
+                        pManager->m_apChildren1E0[i], 0, 1);
+        }
+    }
+    ReleaseMenuSelectorVariantResource(pVariantManager,
+                                       g_nMenuSelectorResourceId0);
+    ReleaseMenuSelectorVariantResource(pVariantManager,
+                                       g_nMenuSelectorResourceId1);
+    ReleaseMenuSelectorVariantResource(pVariantManager,
+                                       g_nMenuSelectorResourceId2);
+    ReleaseMenuSelectorVariantResource(pVariantManager,
+                                       g_nMenuSelectorResourceId3);
+    ReleaseMenuSelectorVariantResource(pVariantManager,
+                                       g_nMenuSelectorResourceId4);
+    ReleaseMenuSelectorVariantResource(pVariantManager,
+                                       g_nMenuSelectorResourceId5);
+    ReleaseMenuSelectorVariantResource(pVariantManager,
+                                       g_nMenuSelectorResourceId6);
+    ReleaseMenuSelectorVariantResource(pVariantManager,
+                                       g_nMenuSelectorResourceId7);
+    ReleaseMenuSelectorVariantResource(pVariantManager,
+                                       g_nMenuSelectorResourceId8);
+    FreeVSMemBlock(pManager->m_pSideSelector244);
+    FreeVSMemBlock(pManager->m_pActionTailSelector248);
+    FreeVSMemBlock(pManager->m_pActionLeadSelector24C);
+    FreeVSMemBlock(pManager->m_pCompletionSelector250);
+    FreeVSMemBlock(pManager->m_pActionMiddleSelector254);
+    /* The 0x268 descendant context is deliberately not constructed by this
+     * pass; its exact destructor depends on the unresolved 0x497e30 table. */
+    RestorePackagedSpriteRenderEntryVtableC(
+        pManager->m_abLocalRectEntry200);
+    DestroyVariantRenderManager(pVariantManager);
+    pManager->m_pVtable00 = g_pNonZrleVariantRenderEntryInitializeVtable;
+}
+
+/* FUNCTION: LEMBALL 0x0044E690 */
+static void *LEMBALL_FASTCALL DeleteMenuSelectorManager(
+    GameMenuSelectorManager *pManager, int, int fDelete) {
+    DestroyMenuSelectorManager(pManager);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pManager);
+    }
+    return pManager;
+}
+
+/* FUNCTION: LEMBALL 0x00401C9E */
+static void *LEMBALL_FASTCALL DeleteMenuSelectorManagerThunk(
+    GameMenuSelectorManager *pManager, int nUnusedEdx, int fDelete) {
+    return DeleteMenuSelectorManager(pManager, nUnusedEdx, fDelete);
+}
+
+/* FUNCTION: LEMBALL 0x00467570 */
+static short *LEMBALL_FASTCALL GetVariantFrameExtent(
+    void *pObject, int, short *pExtent, int nResourceId, int iFrame) {
+    int *pManager;
+    int *pResource;
+    short *pFrame;
+
+    pManager = (int *)pObject;
+    pResource = *(int **)(unsigned long)(
+        pManager[9] +
+        (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2) * 4);
+    if (pResource[0x10] != 0x5a524c45) {
+        pFrame = (short *)(unsigned long)(pResource[0x1e] + 0x4c +
+                                         iFrame * 0x54);
+        pExtent[0] = pFrame[0];
+        pExtent[1] = pFrame[1];
+    } else {
+        pExtent[0] = *(short *)((char *)pResource + 0x4c);
+        pExtent[1] = *(short *)((char *)pResource + 0x4e);
+    }
+    return pExtent;
+}
+
+/* FUNCTION: LEMBALL 0x0044DA70 */
+void LEMBALL_FASTCALL InitializeMenuSelectorCurrentState(
+    GameMenuSelectorManager *pManager, int, int iMetadata) {
+    short Extent[2];
+    short *pExtent;
+    short cxOwner;
+    int nSide;
+
+    pExtent = GetVariantFrameExtent((char *)pManager + 0x10, 0, Extent,
+                                    g_nMenuSelectorResourceId6, 0);
+    cxOwner = *(short *)((char *)pManager->m_pRenderOwner214 + 8);
+    pManager->m_xCenteredAction88 = cxOwner / 2 - pExtent[0] / 2;
+    pManager->m_nCurrentPosition8C =
+        pManager->m_aMetadataE0[iMetadata].m_nPosition;
+    nSide = pManager->m_aMetadataE0[iMetadata].m_nSide;
+    pManager->m_nCurrentSide94 = nSide == 1 ? 1 : 0;
+    pManager->m_xActionOrigin98 = pManager->m_xCenteredAction88;
+    pManager->m_nTargetPosition9C = pManager->m_nCurrentPosition8C;
+    pManager->m_nActionStateA4 = 0;
+    pManager->m_nSelectedSideA0 = pManager->m_nCurrentSide94;
+}
+
+/* FUNCTION: LEMBALL 0x004024F5 */
+void LEMBALL_FASTCALL InitializeMenuSelectorCurrentStateThunk(
+    GameMenuSelectorManager *pManager, int nUnusedEdx, int iMetadata) {
+    InitializeMenuSelectorCurrentState(pManager, nUnusedEdx, iMetadata);
+}
+
+static inline void BeginMenuSelectorMovement(
+    GameMenuSelectorManager *pManager) {
+    int nDistance;
+    pManager->m_dwMovementStart21C = (int)timeGetTime();
+    nDistance = pManager->m_nTargetPosition9C -
+                pManager->m_nCurrentPosition8C;
+    if (nDistance < 0) {
+        nDistance = -nDistance;
+    }
+    pManager->m_nMovementStartPosition90 =
+        pManager->m_nCurrentPosition8C;
+    pManager->m_fMovementActiveDC = 1;
+    pManager->m_dwMovementEnd220 =
+        pManager->m_dwMovementStart21C + nDistance * 3;
+}
+
+/* FUNCTION: LEMBALL 0x0044D830 */
+static void LEMBALL_FASTCALL MoveMenuSelectorPrevious(
+    GameMenuSelectorManager *pManager) {
+    int i;
+    int nBest;
+    int nSelected;
+
+    nBest = -1;
+    nSelected = -1;
+    for (i = 0; i < 8; ++i) {
+        GameMenuSelectorMetadata *pMetadata =
+            &pManager->m_aMetadataE0[i];
+        if (pMetadata->m_nSide != 3 &&
+            pMetadata->m_nPosition < pManager->m_nTargetPosition9C &&
+            nBest < pMetadata->m_nPosition) {
+            if (pMetadata->m_nSide != 2) {
+                pManager->m_nSelectedSideA0 = pMetadata->m_nSide;
+            }
+            nSelected = pMetadata->m_nPosition;
+            ((GameVariantResourceEntryManager *)
+                g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x11);
+            nBest = nSelected;
+        }
+    }
+    if (nSelected != -1) {
+        pManager->m_nTargetPosition9C = nSelected;
+    }
+    BeginMenuSelectorMovement(pManager);
+}
+
+/* FUNCTION: LEMBALL 0x00402A36 */
+static void LEMBALL_FASTCALL MoveMenuSelectorPreviousThunk(
+    GameMenuSelectorManager *pManager) {
+    MoveMenuSelectorPrevious(pManager);
+}
+
+/* FUNCTION: LEMBALL 0x0044D8E0 */
+static void LEMBALL_FASTCALL MoveMenuSelectorNext(
+    GameMenuSelectorManager *pManager) {
+    int i;
+    int nBest;
+    int nSelected;
+
+    nBest = 999999;
+    nSelected = -1;
+    for (i = 0; i < 8; ++i) {
+        GameMenuSelectorMetadata *pMetadata =
+            &pManager->m_aMetadataE0[i];
+        if (pMetadata->m_nSide != 3 &&
+            pManager->m_nTargetPosition9C < pMetadata->m_nPosition &&
+            pMetadata->m_nPosition < nBest) {
+            if (pMetadata->m_nSide != 2) {
+                pManager->m_nSelectedSideA0 = pMetadata->m_nSide;
+            }
+            nSelected = pMetadata->m_nPosition;
+            ((GameVariantResourceEntryManager *)
+                g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x11);
+            nBest = nSelected;
+        }
+    }
+    if (nSelected != -1) {
+        pManager->m_nTargetPosition9C = nSelected;
+    }
+    BeginMenuSelectorMovement(pManager);
+}
+
+/* FUNCTION: LEMBALL 0x004010E1 */
+static void LEMBALL_FASTCALL MoveMenuSelectorNextThunk(
+    GameMenuSelectorManager *pManager) {
+    MoveMenuSelectorNext(pManager);
+}
+
+/* FUNCTION: LEMBALL 0x0044D990 */
+static void LEMBALL_FASTCALL SelectMenuSelectorSide0(
+    GameMenuSelectorManager *pManager) {
+    int i;
+    if (pManager->m_nCurrentSide94 == pManager->m_nSelectedSideA0) {
+        for (i = 0; i < 8; ++i) {
+            GameMenuSelectorMetadata *pMetadata =
+                &pManager->m_aMetadataE0[i];
+            if (pMetadata->m_nPosition == pManager->m_nTargetPosition9C &&
+                (pMetadata->m_nSide == 0 || pMetadata->m_nSide == 2)) {
+                pManager->m_nSelectedSideA0 = 0;
+            }
+        }
+    }
+}
+
+/* FUNCTION: LEMBALL 0x004018F7 */
+static void LEMBALL_FASTCALL SelectMenuSelectorSide0Thunk(
+    GameMenuSelectorManager *pManager) {
+    SelectMenuSelectorSide0(pManager);
+}
+
+/* FUNCTION: LEMBALL 0x0044D9E0 */
+static void LEMBALL_FASTCALL SelectMenuSelectorSide1(
+    GameMenuSelectorManager *pManager) {
+    int i;
+    if (pManager->m_nCurrentSide94 == pManager->m_nSelectedSideA0) {
+        for (i = 0; i < 8; ++i) {
+            GameMenuSelectorMetadata *pMetadata =
+                &pManager->m_aMetadataE0[i];
+            if (pMetadata->m_nPosition == pManager->m_nTargetPosition9C &&
+                (pMetadata->m_nSide == 1 || pMetadata->m_nSide == 2)) {
+                pManager->m_nSelectedSideA0 = 1;
+            }
+        }
+    }
+}
+
+/* FUNCTION: LEMBALL 0x00401FF5 */
+static void LEMBALL_FASTCALL SelectMenuSelectorSide1Thunk(
+    GameMenuSelectorManager *pManager) {
+    SelectMenuSelectorSide1(pManager);
+}
+
+static inline void SetFrameSelectorDuration(
+    GameProgressiveVariantFrameSelector *pSelector, int dwDuration) {
+    GameFrameSelectorSetProc pSet =
+        (GameFrameSelectorSetProc)pSelector->m_pVtable[1];
+    pSet(pSelector, 0, dwDuration);
+}
+
+/* FUNCTION: LEMBALL 0x0044DB20 */
+static void LEMBALL_FASTCALL StartMenuSelectorAction(
+    GameMenuSelectorManager *pManager) {
+    int i;
+    int *panOffsets;
+    GameMenuSelectorMetadata *pMetadata;
+    int nDistance;
+
+    pManager->m_ActionEventB8.m_nType00 = 0x0c;
+    if (pManager->m_nCurrentPosition8C != pManager->m_nTargetPosition9C ||
+        pManager->m_nActionStateA4 != 0) {
+        return;
+    }
+    pMetadata = pManager->m_aMetadataE0;
+    for (i = 0; i < 8; ++i, ++pMetadata) {
+        if (pMetadata->m_nPosition == pManager->m_nTargetPosition9C) {
+            if (pManager->m_nSelectedSideA0 == 0) {
+                pManager->m_ActionEventB8.m_nPayload08 =
+                    pMetadata->m_nSide0Token;
+                pManager->m_fDelayedEventD8 =
+                    pMetadata->m_fSide0Action;
+            } else {
+                pManager->m_ActionEventB8.m_nPayload08 =
+                    pMetadata->m_nSide1Token;
+                pManager->m_fDelayedEventD8 =
+                    pMetadata->m_fSide1Action;
+            }
+            break;
+        }
+    }
+    panOffsets = pManager->m_fCompactLayout274 == 1
+                     ? g_anMenuSelectorActionOffsetsMode1
+                     : g_anMenuSelectorActionOffsetsMode0;
+    SetFrameSelectorDuration(pManager->m_pActionLeadSelector24C, 250);
+    SetFrameSelectorDuration(pManager->m_pActionMiddleSelector254, 500);
+    SetFrameSelectorDuration(pManager->m_pActionTailSelector248, 500);
+    if (pManager->m_nSelectedSideA0 == 0) {
+        pManager->m_xActionA8 = pManager->m_xActionOrigin98 + panOffsets[6];
+        pManager->m_yActionAC = pManager->m_nTargetPosition9C + panOffsets[7];
+        pManager->m_xActionDestinationB0 = pMetadata->m_xSide0 + panOffsets[8];
+        pManager->m_ActionEventB8.m_nPayload14 = pMetadata->m_xSide0 + panOffsets[10];
+        pManager->m_ActionEventB8.m_nPayload18 = pMetadata->m_nPosition + panOffsets[11];
+    } else {
+        pManager->m_xActionA8 = pManager->m_xActionOrigin98 + panOffsets[12];
+        pManager->m_yActionAC = pManager->m_nTargetPosition9C + panOffsets[13];
+        pManager->m_xActionDestinationB0 = pMetadata->m_xSide1 + panOffsets[14];
+        pManager->m_ActionEventB8.m_nPayload14 = pMetadata->m_xSide1 + panOffsets[16];
+        pManager->m_ActionEventB8.m_nPayload18 = pMetadata->m_nPosition + panOffsets[17];
+    }
+    pManager->m_dwActionLastTick22C = (int)timeGetTime();
+    nDistance = pManager->m_xActionDestinationB0 - pManager->m_xActionA8;
+    if (nDistance < 0) {
+        nDistance = -nDistance;
+    }
+    pManager->m_nActionStateA4 = 2;
+    pManager->m_dwActionMotionEnd230 =
+        pManager->m_dwActionLastTick22C + nDistance * 2;
+    ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
+        ->PlayVariantResourceEffect(7);
+}
+
+/* FUNCTION: LEMBALL 0x00402E28 */
+static void LEMBALL_FASTCALL StartMenuSelectorActionThunk(
+    GameMenuSelectorManager *pManager) {
+    StartMenuSelectorAction(pManager);
+}
+
+/* FUNCTION: LEMBALL 0x0044CEC0 */
+static int LEMBALL_FASTCALL HandleMenuSelectorEvent(
+    GameMenuSelectorManager *pManager, int,
+    GameMenuSelectorEvent *pEvent) {
+    if (pEvent->m_dwTimestamp04 - pManager->m_dwConstructionTimeD4 < 0) {
+        return 0;
+    }
+    if (pEvent->m_nType00 != 4) {
+        ++pManager->m_cUnhandledEvents0C;
+        return 0;
+    }
+    switch (pEvent->m_nPayload08) {
+    case 1:
+        MoveMenuSelectorPreviousThunk(pManager);
+        return 1;
+    case 2:
+        MoveMenuSelectorNextThunk(pManager);
+        return 1;
+    case 3:
+        SelectMenuSelectorSide0Thunk(pManager);
+        return 1;
+    case 4:
+        SelectMenuSelectorSide1Thunk(pManager);
+        return 1;
+    case 0x1f:
+    case 0x22:
+    case 0x4c:
+        StartMenuSelectorActionThunk(pManager);
+        break;
+    }
+    return 0;
+}
+
+/* FUNCTION: LEMBALL 0x00401ADC */
+static int LEMBALL_FASTCALL HandleMenuSelectorEventThunk(
+    GameMenuSelectorManager *pManager, int nUnusedEdx,
+    GameMenuSelectorEvent *pEvent) {
+    return HandleMenuSelectorEvent(pManager, nUnusedEdx, pEvent);
+}
+
+/* FUNCTION: LEMBALL 0x0044C1E0 */
+static int GetIntDirectionSign(int nValue) {
+    if (nValue < 0) {
+        return -1;
+    }
+    if (nValue > 0) {
+        return 1;
+    }
+    return 0;
+}
+
+/* FUNCTION: LEMBALL 0x004036C0 */
+static int GetIntDirectionSignThunk(int nValue) {
+    return GetIntDirectionSign(nValue);
+}
+
+static inline void QueueMenuSelectorEvent(
+    GameMenuSelectorEvent *pEvent) {
+    typedef void (LEMBALL_FASTCALL *QueueProc)(void *, int, void *);
+    QueueProc pQueue =
+        (QueueProc)(*(void ***)g_pSharedRenderDispatchQueue)[2];
+    pQueue(g_pSharedRenderDispatchQueue, 0, pEvent);
+}
+
+/* FUNCTION: LEMBALL 0x0044DCE0 */
+void LEMBALL_FASTCALL UpdateMenuSelectorAnimation(
+    GameMenuSelectorManager *pManager) {
+    unsigned int dwNow;
+    unsigned int dwEventTime;
+
+    dwNow = (unsigned int)timeGetTime();
+    if (pManager->m_nCurrentSide94 == pManager->m_nSelectedSideA0 ||
+        pManager->m_nActionStateA4 == 1) {
+        if (pManager->m_nActionStateA4 == 1) {
+            if ((unsigned int)pManager->m_dwSideTransitionEnd228 <= dwNow) {
+                pManager->m_nActionStateA4 = 0;
+                pManager->m_nCurrentSide94 = pManager->m_nSelectedSideA0;
+            }
+        } else if (pManager->m_nActionStateA4 == 2) {
+            if (dwNow < (unsigned int)pManager->m_dwActionMotionEnd230) {
+                int x = pManager->m_xActionA8;
+                int dwPrevious = pManager->m_dwActionLastTick22C;
+                int nDirection = GetIntDirectionSignThunk(
+                    pManager->m_xActionDestinationB0 - x);
+                pManager->m_dwActionLastTick22C = (int)dwNow;
+                pManager->m_xActionA8 =
+                    x + nDirection * ((int)(dwNow - dwPrevious) >> 1);
+            } else {
+                ((GameVariantResourceEntryManager *)
+                    g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x0e);
+                pManager->m_dwActionFrameStart23C = (int)dwNow;
+                pManager->m_dwActionFrameEnd240 = (int)dwNow + 500;
+                pManager->m_nActionStateA4 = 3;
+                SetFrameSelectorDuration(pManager->m_pCompletionSelector250,
+                                         500);
+            }
+        } else if (pManager->m_nActionStateA4 == 3) {
+            dwEventTime = (unsigned int)pManager->m_dwActionFrameEnd240;
+            if (pManager->m_fDelayedEventD8 != 0) {
+                dwEventTime -= 0x177;
+            }
+            if (dwEventTime <= dwNow && pManager->m_fEventQueuedB4 != 1) {
+                pManager->m_ActionEventB8.m_dwTimestamp04 =
+                    (int)timeGetTime();
+                QueueMenuSelectorEvent(&pManager->m_ActionEventB8);
+                pManager->m_fEventQueuedB4 = 1;
+            }
+            if ((unsigned int)pManager->m_dwActionFrameEnd240 <= dwNow) {
+                pManager->m_nActionStateA4 = 0;
+                pManager->m_fEventQueuedB4 = 0;
+            }
+        }
+    } else {
+        GameFrameSelectorSetProc pSetDirection;
+        pManager->m_dwSideTransitionStart224 = (int)dwNow;
+        pManager->m_dwSideTransitionEnd228 = (int)dwNow + 250;
+        pManager->m_nActionStateA4 = 1;
+        SetFrameSelectorDuration(pManager->m_pSideSelector244, 250);
+        pSetDirection = (GameFrameSelectorSetProc)
+            pManager->m_pSideSelector244->m_pVtable[4];
+        pSetDirection(pManager->m_pSideSelector244, 0,
+                      pManager->m_nSelectedSideA0 == 0 ? -1 : 1);
+    }
+    if (pManager->m_fMovementActiveDC != 0) {
+        if (dwNow < (unsigned int)pManager->m_dwMovementEnd220) {
+            pManager->m_nCurrentPosition8C =
+                ((pManager->m_nTargetPosition9C -
+                  pManager->m_nMovementStartPosition90) *
+                 ((int)dwNow - pManager->m_dwMovementStart21C)) /
+                    (pManager->m_dwMovementEnd220 -
+                     pManager->m_dwMovementStart21C) +
+                pManager->m_nMovementStartPosition90;
+        } else {
+            pManager->m_fMovementActiveDC = 0;
+            pManager->m_nCurrentPosition8C =
+                pManager->m_nTargetPosition9C;
+        }
+    }
+}
+
+/* FUNCTION: LEMBALL 0x004014CE */
+void LEMBALL_FASTCALL UpdateMenuSelectorAnimationThunk(
+    GameMenuSelectorManager *pManager) {
+    UpdateMenuSelectorAnimation(pManager);
+}
+
+/* FUNCTION: LEMBALL 0x0044C600 */
+static void LEMBALL_FASTCALL RebuildMenuSelectorEntryRects(
+    GameMenuSelectorEntry *pEntry, int, int fForce) {
+    void *apOverlays[2];
+    int i;
+    apOverlays[0] = pEntry->m_pAlignedOverlay50;
+    apOverlays[1] = pEntry->m_pProgressOverlay54;
+    for (i = 0; i < 2; ++i) {
+        if (apOverlays[i] != 0) {
+            int fPrevious;
+            short Rect[4];
+            if (*(int *)((char *)apOverlays[i] + 0xfc) == 0 || fForce != 0) {
+                Rect[0] = *(short *)((char *)apOverlays[i] + 8);
+                Rect[1] = *(short *)((char *)apOverlays[i] + 10);
+                Rect[2] = 0;
+                Rect[3] = 0;
+                fPrevious = *(int *)((char *)apOverlays[i] + 0xf8);
+                *(int *)((char *)apOverlays[i] + 0xf8) = 1;
+                typedef void (LEMBALL_FASTCALL *SetRectProc)(
+                    void *, int, short *);
+                ((SetRectProc)(*(void ***)apOverlays[i])[0x2a])(
+                    apOverlays[i], 0, Rect);
+                *(int *)((char *)apOverlays[i] + 0xf8) = fPrevious;
+            }
+            *(int *)((char *)apOverlays[i] + 0xfc) = 0;
+        }
+    }
+}
+
+/* FUNCTION: LEMBALL 0x0044D290 */
+void LEMBALL_FASTCALL RebuildMenuSelectorChildRects(
+    GameMenuSelectorManager *pManager, int, int fForce) {
+    int i;
+    for (i = 0; i < 8; ++i) {
+        if (pManager->m_apChildren1E0[i] != 0) {
+            RebuildMenuSelectorEntryRects(pManager->m_apChildren1E0[i],
+                                          0, fForce);
+        }
+    }
+}
+
+/* FUNCTION: LEMBALL 0x004012CB */
+void LEMBALL_FASTCALL RebuildMenuSelectorChildRectsThunk(
+    GameMenuSelectorManager *pManager, int nUnusedEdx, int fForce) {
+    RebuildMenuSelectorChildRects(pManager, nUnusedEdx, fForce);
+}
+
+/* FUNCTION: LEMBALL 0x0044CC90 */
+void LEMBALL_FASTCALL SetMenuSelectorChildrenEnabled(
+    GameMenuSelectorManager *pManager, int, int fEnabled) {
+    int i;
+    pManager->m_fChildrenEnabled278 = fEnabled;
+    for (i = 0; i < pManager->m_cChildren80; ++i) {
+        GameMenuSelectorEntry *pEntry = pManager->m_apChildren1E0[i];
+        if (pEntry != 0) {
+            pEntry->m_fEnabled5C = fEnabled;
+            if (pEntry->m_pAlignedOverlay50 != 0) {
+                SetGeometryOwnerEnabled(
+                    (char *)pEntry->m_pAlignedOverlay50 + 0x90,
+                    0, fEnabled);
+            }
+        }
+    }
+}
+
+/* FUNCTION: LEMBALL 0x00401D43 */
+void LEMBALL_FASTCALL SetMenuSelectorChildrenEnabledThunk(
+    GameMenuSelectorManager *pManager, int nUnusedEdx, int fEnabled) {
+    SetMenuSelectorChildrenEnabled(pManager, nUnusedEdx, fEnabled);
+}
