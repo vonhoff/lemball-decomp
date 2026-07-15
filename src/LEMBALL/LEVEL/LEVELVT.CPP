@@ -380,9 +380,54 @@ void *__fastcall get_first_projectile_pool_object(void *pPool) {
     return *(void **)((char *)pPool + 0x34);
 }
 
+struct LevelManagedEntityChildIterator {
+    char m_abReserved00[0x124];
+    int m_cChildren124;
+    void *m_apChildren128[10];
+    int m_iCurrentChild150;
+
+    int GetChildCount(void);
+    void *GetFirstChild(void);
+    void *GetNextChild(void);
+    void *GetCurrentChild(void);
+    void *GetChildAt(int iChild);
+};
+
 // FUNCTION: LEMBALL 0x0041DEF0
-int __fastcall get_managed_entity_child_count(void *pEntity) {
-    return *(int *)((char *)pEntity + 0x124);
+int LevelManagedEntityChildIterator::GetChildCount(void) {
+    return m_cChildren124;
+}
+
+// FUNCTION: LEMBALL 0x0041DF00
+void *LevelManagedEntityChildIterator::GetFirstChild(void) {
+    m_iCurrentChild150 = 0;
+    return m_apChildren128[0];
+}
+
+// FUNCTION: LEMBALL 0x0041DF20
+void *LevelManagedEntityChildIterator::GetNextChild(void) {
+    ++m_iCurrentChild150;
+    if (m_iCurrentChild150 >= m_cChildren124) {
+        return 0;
+    }
+    return m_apChildren128[m_iCurrentChild150];
+}
+
+// FUNCTION: LEMBALL 0x0041DF40
+void *LevelManagedEntityChildIterator::GetCurrentChild(void) {
+    if (m_iCurrentChild150 >= m_cChildren124) {
+        return 0;
+    }
+    return m_apChildren128[m_iCurrentChild150];
+}
+
+// FUNCTION: LEMBALL 0x0041DF60
+void *LevelManagedEntityChildIterator::GetChildAt(int iChild) {
+    m_iCurrentChild150 = iChild;
+    if (iChild >= m_cChildren124) {
+        return 0;
+    }
+    return m_apChildren128[iChild];
 }
 
 // FUNCTION: LEMBALL 0x0041E410

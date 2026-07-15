@@ -29,3 +29,8 @@
 /INCLUDE:?IncrementHeadingOctant@LevelManagedEntityStateFields@@QAEXXZ
 /INCLUDE:?DecrementHeadingOctant@LevelManagedEntityStateFields@@QAEXXZ
 /INCLUDE:?IsStateNotInactive@LevelManagedEntityStateFields@@QAEHXZ
+/INCLUDE:?GetChildCount@LevelManagedEntityChildIterator@@QAEHXZ
+/INCLUDE:?GetFirstChild@LevelManagedEntityChildIterator@@QAEPAXXZ
+/INCLUDE:?GetNextChild@LevelManagedEntityChildIterator@@QAEPAXXZ
+/INCLUDE:?GetCurrentChild@LevelManagedEntityChildIterator@@QAEPAXXZ
+/INCLUDE:?GetChildAt@LevelManagedEntityChildIterator@@QAEPAXH@Z
