@@ -283,9 +283,60 @@ void *__fastcall get_object_field_0xf0(void *pObject) {
     return *(void **)((char *)pObject + 0xf0);
 }
 
+struct LevelBoundsPoint {
+    int m_nX;
+    int m_nY;
+    int m_nZ;
+};
+
+struct LevelThreeDwordBounds {
+    LevelBoundsPoint m_Minimum;
+    LevelBoundsPoint m_Maximum;
+};
+
+struct LevelBoundedRenderObjectView {
+    char m_abReserved00[0x14];
+    LevelThreeDwordBounds m_Bounds;
+};
+
+// FUNCTION: LEMBALL 0x0040A830
+void __fastcall copy_object_fields_0x9c_triplet(
+    void *pObject, void *pUnused, LevelBoundsPoint *pPoint) {
+    (void)pUnused;
+    *pPoint = *(LevelBoundsPoint *)((char *)pObject + 0x9c);
+}
+
 // FUNCTION: LEMBALL 0x0040A880
 int __fastcall get_object_field_0x98(void *pObject) {
     return *(int *)((char *)pObject + 0x98);
+}
+
+// FUNCTION: LEMBALL 0x0040A890
+int __fastcall is_point_inside_3d_bounds(
+    LevelBoundedRenderObjectView *pObject,
+    void *pUnused,
+    const LevelBoundsPoint *pPoint) {
+    (void)pUnused;
+    return pObject->m_Bounds.m_Minimum.m_nX <= pPoint->m_nX &&
+           pPoint->m_nX <= pObject->m_Bounds.m_Maximum.m_nX &&
+           pObject->m_Bounds.m_Minimum.m_nY <= pPoint->m_nY &&
+           pPoint->m_nY <= pObject->m_Bounds.m_Maximum.m_nY &&
+           pObject->m_Bounds.m_Minimum.m_nZ <= pPoint->m_nZ &&
+           pPoint->m_nZ <= pObject->m_Bounds.m_Maximum.m_nZ;
+}
+
+// FUNCTION: LEMBALL 0x0040A8E0
+int __fastcall do_3d_bounds_intersect(
+    LevelBoundedRenderObjectView *pObject,
+    void *pUnused,
+    const LevelThreeDwordBounds *pBounds) {
+    (void)pUnused;
+    return pObject->m_Bounds.m_Minimum.m_nX <= pBounds->m_Maximum.m_nX &&
+           pBounds->m_Minimum.m_nX <= pObject->m_Bounds.m_Maximum.m_nX &&
+           pObject->m_Bounds.m_Minimum.m_nY <= pBounds->m_Maximum.m_nY &&
+           pBounds->m_Minimum.m_nY <= pObject->m_Bounds.m_Maximum.m_nY &&
+           pObject->m_Bounds.m_Minimum.m_nZ <= pBounds->m_Maximum.m_nZ &&
+           pBounds->m_Minimum.m_nZ <= pObject->m_Bounds.m_Maximum.m_nZ;
 }
 
 // FUNCTION: LEMBALL 0x0040AB10
