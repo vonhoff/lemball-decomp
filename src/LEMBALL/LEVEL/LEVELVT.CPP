@@ -444,6 +444,7 @@ struct LevelManagedEntityChildIterator {
     int GetActiveState(void);
     int GetActiveStateThunk(void);
     void *GetChildWithState8(void);
+    void *GetChildWithState8Thunk(void);
     void *GetCurrentChildWithState8(void);
     int HasDirtyChildren(void);
     int HasDirtyChildrenThunk(void);
@@ -553,6 +554,11 @@ void *LevelManagedEntityChildIterator::GetChildWithState8(void) {
         }
         pChild = (LevelManagedEntityStateIdView *)GetNextChildThunk();
     }
+}
+
+// FUNCTION: LEMBALL 0x0040173F
+void *LevelManagedEntityChildIterator::GetChildWithState8Thunk(void) {
+    return GetChildWithState8();
 }
 
 // FUNCTION: LEMBALL 0x004148C0

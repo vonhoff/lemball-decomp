@@ -51,6 +51,7 @@
 /INCLUDE:?GetCurrentChildThunk@LevelManagedEntityChildIterator@@QAEPAXXZ
 /INCLUDE:?GetActiveState@LevelManagedEntityChildIterator@@QAEHXZ
 /INCLUDE:?GetChildWithState8@LevelManagedEntityChildIterator@@QAEPAXXZ
+/INCLUDE:?GetChildWithState8Thunk@LevelManagedEntityChildIterator@@QAEPAXXZ
 /INCLUDE:?GetCurrentChildWithState8@LevelManagedEntityChildIterator@@QAEPAXXZ
 /INCLUDE:?PollChildDirtyFlag@LevelManagedEntityDirtyStateView@@QAEHXZ
 /INCLUDE:?PollChildDirtyFlagThunk@LevelManagedEntityDirtyStateView@@QAEHXZ
