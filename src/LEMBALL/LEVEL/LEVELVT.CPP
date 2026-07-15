@@ -559,6 +559,8 @@ struct LevelManagedEntityStateFields {
     void IncrementHeadingOctant(void);
     void DecrementHeadingOctant(void);
     int IsStateNotInactive(void);
+    int IsStateNotInactiveThunk(void);
+    int IsStateAvailableForVariant(void);
     void SetStateIdWithVariantLocal(int nStateId, int nVariant);
     void SetStateIdWithVariantLocalThunk(int nStateId, int nVariant);
 };
@@ -684,6 +686,35 @@ int LevelManagedEntityStateFields::IsStateNotInactive(void) {
     }
     return 1;
 inactive:
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0040367A
+int LevelManagedEntityStateFields::IsStateNotInactiveThunk(void) {
+    return IsStateNotInactive();
+}
+
+// FUNCTION: LEMBALL 0x004102D0
+int LevelManagedEntityStateFields::IsStateAvailableForVariant(void) {
+    unsigned int nVariant;
+
+    if (!IsStateNotInactiveThunk()) {
+        return 0;
+    }
+    if (m_nStateIdB8 == 0x0f) {
+        nVariant = m_nStateVariantBC;
+        if (nVariant >= 1 && nVariant <= 2) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x00423E90
+int PASCAL IsManagedEntityState8Or18(int nState) {
+    if (nState == 8 || nState == 0x18) {
+        return 1;
+    }
     return 0;
 }
 

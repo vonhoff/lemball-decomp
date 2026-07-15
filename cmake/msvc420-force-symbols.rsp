@@ -36,3 +36,6 @@
 /INCLUDE:?GetChildAt@LevelManagedEntityChildIterator@@QAEPAXH@Z
 /INCLUDE:?AppendChild@LevelManagedEntityChildIterator@@QAEXPAX@Z
 /INCLUDE:?ContainsChild@LevelManagedEntityChildIterator@@QAEHPAX@Z
+/INCLUDE:?IsStateNotInactiveThunk@LevelManagedEntityStateFields@@QAEHXZ
+/INCLUDE:?IsStateAvailableForVariant@LevelManagedEntityStateFields@@QAEHXZ
+/INCLUDE:?IsManagedEntityState8Or18@@YGHH@Z
