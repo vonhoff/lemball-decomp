@@ -122,7 +122,7 @@ void *PlacementConstructMemoryArenaBlock(void *pvStorage,
                                          void *pPreviousBlock,
                                          const char *pszName,
                                          unsigned int cbBlock);
-void RestoreMemoryBlockBaseVtable(void *pBlock);
+void LEMBALL_FASTCALL RestoreMemoryBlockBaseVtable(void *pBlock);
 int IsPointerInsideMemoryBlock(void *pBlock, void *pvPointer);
 void NoOpCallback0045A610(void);
 void *ReturnPlacementBlockStorage(unsigned int cbStorage, void *pvStorage);

@@ -85,7 +85,7 @@ static void VSMEM_NoOpLock(void);
 static void *VSMEM_ReportBlockStub(void *pBlock, VsInitFormattedOutputStream *pOutputStream);
 static void *LEMBALL_FASTCALL VSMEM_DeleteBlockStub(
     void *pBlock, int nUnused, int fDelete);
-void RestoreMemoryBlockBaseVtable(void *pBlock);
+void LEMBALL_FASTCALL RestoreMemoryBlockBaseVtable(void *pBlock);
 void *RestoreMemoryBlockBaseVtableReturnThis(void *pBlock);
 static void UpdateMainMemoryArenaFreeCounter(void);
 static SmallMemoryBucket *LEMBALL_FASTCALL AllocateSmallMemoryChildBucket(
@@ -1184,7 +1184,7 @@ CMemoryBlock *CMemoryBlock::ConstructMemoryBlockBase(void *pArena, CMemoryBlock 
 }
 
 // FUNCTION: LEMBALL 0x0045A570
-void RestoreMemoryBlockBaseVtable(void *pBlock) {
+void LEMBALL_FASTCALL RestoreMemoryBlockBaseVtable(void *pBlock) {
     *(void ***)pBlock = g_aMemoryBlockVtables[0];
 }
 
