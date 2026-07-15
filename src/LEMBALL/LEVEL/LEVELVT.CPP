@@ -490,12 +490,10 @@ void LevelManagedEntityChildIterator::AppendChild(void *pChild) {
 // FUNCTION: LEMBALL 0x0041E0C0
 int LevelManagedEntityChildIterator::ContainsChild(void *pChild) {
     int i;
-    int cChildren;
     void **ppChild;
 
     i = 0;
-    cChildren = m_cChildren124;
-    if (0 < cChildren) {
+    if (0 < m_cChildren124) {
         ppChild = m_apChildren128;
         do {
             if (*ppChild == pChild) {
@@ -503,7 +501,7 @@ int LevelManagedEntityChildIterator::ContainsChild(void *pChild) {
             }
             ++ppChild;
             ++i;
-        } while (i < cChildren);
+        } while (i < m_cChildren124);
     }
     return 0;
 }
