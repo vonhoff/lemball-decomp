@@ -245,7 +245,6 @@ int SmallMemoryBucket::FreeSlot(void *pvSlot) {
     }
     ((unsigned int *)pBucket->m_pBitmap)[i] &= ~dwMask;
     pBucket->m_cbStorageAvailable += pBucket->m_cbSlot;
-    pBucket->m_cAllocated -= 1;
     pBucket->m_cAllocations -= 1;
     pBucket->m_wFlags &= (unsigned short)~4;
     LeaveMemoryArenaCriticalSection(pBucket);
