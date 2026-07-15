@@ -473,10 +473,15 @@ extern int g_nLevelFrameClockTick;
 extern void *g_pSharedRenderDispatchQueue;
 
 struct LevelManagedEntityStateFields {
-    char m_abReserved00[0xb8];
+    char m_abReserved00[0xb4];
+    short m_nHeadingOctantB4;
+    char m_abReservedB6[2];
     int m_nStateIdB8;
     unsigned short m_nStateVariantBC;
 
+    void IncrementHeadingOctant(void);
+    void DecrementHeadingOctant(void);
+    int IsStateNotInactive(void);
     void SetStateIdWithVariantLocal(int nStateId, int nVariant);
     void SetStateIdWithVariantLocalThunk(int nStateId, int nVariant);
 };
@@ -562,6 +567,47 @@ int PASCAL IsManagedEntityState18(int nState) {
 // FUNCTION: LEMBALL 0x0040335F
 int PASCAL IsManagedEntityState18Thunk(int nState) {
     return IsManagedEntityState18(nState);
+}
+
+// FUNCTION: LEMBALL 0x00415520
+void LevelManagedEntityStateFields::IncrementHeadingOctant(void) {
+    unsigned short nMultiple;
+    short nHeading = m_nHeadingOctantB4;
+    ++nHeading;
+    m_nHeadingOctantB4 = nHeading;
+    if (nHeading >= 8) {
+        nMultiple = (unsigned short)nHeading;
+        nMultiple >>= 3;
+        nMultiple <<= 3;
+        m_nHeadingOctantB4 = nHeading - nMultiple;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00415550
+void LevelManagedEntityStateFields::DecrementHeadingOctant(void) {
+    short nHeading = m_nHeadingOctantB4;
+    unsigned short nMultiple;
+    --nHeading;
+    m_nHeadingOctantB4 = nHeading;
+    if (nHeading < 0) {
+        nMultiple = 7;
+        nMultiple -= nHeading;
+        nMultiple >>= 3;
+        m_nHeadingOctantB4 = nHeading + nMultiple * 8;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00416570
+int LevelManagedEntityStateFields::IsStateNotInactive(void) {
+    int nState = m_nStateIdB8;
+    if (nState >= 7) {
+        if (nState <= 8 || nState == 0x15) {
+            goto inactive;
+        }
+    }
+    return 1;
+inactive:
+    return 0;
 }
 
 // FUNCTION: LEMBALL 0x0040C180

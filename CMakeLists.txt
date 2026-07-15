@@ -74,6 +74,7 @@ set_property(TARGET VISOS PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
 if(LEMBALL_SKIP_CD_TEST)
     target_compile_definitions(VISOS PRIVATE LEMBALL_SKIP_CD_TEST=1)
 endif()
+
 if(LEMBALL_SKIP_REGISTRY_RUNNING_STATE)
     target_compile_definitions(VISOS PRIVATE LEMBALL_SKIP_REGISTRY_RUNNING_STATE=1)
 endif()
@@ -129,36 +130,8 @@ if(LEMBALL_ENABLE_WIN32)
         )
         # Keep COMDAT functions until their binary-backed callers or vtables
         # are reconstructed.
-        lemball_force_include(LEMBALL
-            "?_RAWOUT_DebugString@@YAHPBD@Z"
-            "?initialize_debug_text_line_record@@YIPAXPAX@Z"
-            "?noop_embedded_mci_callback_0046e050@@YGXPAX@Z"
-            "?two_array_list_is_first_entry_loaded_false@@YAHXZ"
-            "?SetStateIdWithVariantLocalThunk@LevelManagedEntityStateFields@@QAEXHH@Z"
-            "?CopyThunk@LevelThreeDwordPoint@@QAEPAU1@PBU1@@Z"
-            "?CopyThunk@LevelTwoDwordPair@@QAEPAU1@PBU1@@Z"
-            "?CopyThunk@LevelThreeDwordPointVariant@@QAEPAU1@PBU1@@Z"
-            "?GetRequestCodeThunk@LevelQueuedProjectileRequestTable@@QAEHH@Z"
-            "?CopyThunk@LevelThreeDwordPointVariantB@@QAEPAU1@PBU1@@Z"
-            "?CopyWorldPositionThunk@LevelManagedEntityPositionView@@QAEPAULevelThreeDwordPoint@@PAU2@@Z"
-            "?GetPositionThunk@LevelManagedEntityQueueCursor@@QAEXPAH0@Z"
-            "?HasPendingCommandsThunk@LevelManagedEntityCommandQueueView@@QAEHXZ"
-            "?get_object_field_0x160@@YIHPAX@Z"
-            "?get_object_field_0x124@@YIHPAX@Z"
-            "?return_object_field_0x0c_00435880@@YIHPAX@Z"
-            "?set_managed_entity_state_id_local@@YIXPAX0H@Z"
-            "?set_managed_entity_owner_group@@YIXPAX00@Z"
-            "?get_managed_entity_owner_group@@YIPAXPAX@Z"
-            "?set_managed_entity_primary_active_flag@@YIXPAX0H@Z"
-            "?set_managed_entity_secondary_active_flag@@YIXPAX0H@Z"
-            "?add_level_time_bonus_counter@@YIXPAX0H@Z"
-            "?set_level_mode_field_0xf8@@YIXPAX0H@Z"
-            "?set_managed_entity_group_command_state@@YIXPAX0H@Z"
-            "?set_object_field_0x160@@YIXPAX0H@Z"
-            "?IsManagedEntityState18@@YGHH@Z"
-            "?IsManagedEntityState18Thunk@@YGHH@Z"
-            "?ForwardManagedEntityVslot9C@@YAXPAX0@Z"
-        )
+        set_property(TARGET LEMBALL APPEND_STRING PROPERTY LINK_FLAGS
+            " @${CMAKE_CURRENT_SOURCE_DIR}/cmake/msvc420-force-symbols.rsp")
     endif()
     set(LEMBALL_DEPLOY_COMMANDS)
     foreach(LEMBALL_DEPENDENCY DSPDIB16.DLL DSPDIB32.DLL PBAIMOG.VSR)
