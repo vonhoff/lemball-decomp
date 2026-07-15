@@ -385,12 +385,16 @@ struct LevelManagedEntityChildIterator {
     int m_cChildren124;
     void *m_apChildren128[10];
     int m_iCurrentChild150;
+    char m_abReserved154[0x10];
+    int m_fChildrenDirty164;
 
     int GetChildCount(void);
     void *GetFirstChild(void);
     void *GetNextChild(void);
     void *GetCurrentChild(void);
     void *GetChildAt(int iChild);
+    void AppendChild(void *pChild);
+    int ContainsChild(void *pChild);
 };
 
 // FUNCTION: LEMBALL 0x0041DEF0
@@ -428,6 +432,34 @@ void *LevelManagedEntityChildIterator::GetChildAt(int iChild) {
         return 0;
     }
     return m_apChildren128[iChild];
+}
+
+// FUNCTION: LEMBALL 0x0041E020
+void LevelManagedEntityChildIterator::AppendChild(void *pChild) {
+    m_apChildren128[m_cChildren124] = pChild;
+    m_fChildrenDirty164 = 1;
+    ++m_cChildren124;
+}
+
+// FUNCTION: LEMBALL 0x0041E0C0
+int LevelManagedEntityChildIterator::ContainsChild(void *pChild) {
+    int i;
+    int cChildren;
+    void **ppChild;
+
+    i = 0;
+    cChildren = m_cChildren124;
+    if (0 < cChildren) {
+        ppChild = m_apChildren128;
+        do {
+            if (*ppChild == pChild) {
+                return 1;
+            }
+            ++ppChild;
+            ++i;
+        } while (i < cChildren);
+    }
+    return 0;
 }
 
 // FUNCTION: LEMBALL 0x0041E410

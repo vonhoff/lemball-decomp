@@ -34,3 +34,5 @@
 /INCLUDE:?GetNextChild@LevelManagedEntityChildIterator@@QAEPAXXZ
 /INCLUDE:?GetCurrentChild@LevelManagedEntityChildIterator@@QAEPAXXZ
 /INCLUDE:?GetChildAt@LevelManagedEntityChildIterator@@QAEPAXH@Z
+/INCLUDE:?AppendChild@LevelManagedEntityChildIterator@@QAEXPAX@Z
+/INCLUDE:?ContainsChild@LevelManagedEntityChildIterator@@QAEHPAX@Z
