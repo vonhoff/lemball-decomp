@@ -109,7 +109,7 @@ GameDynamicCString *GameDynamicCString::ConstructDynamicCStringFromCString(const
     cchText = (unsigned int)strlen(pszText) + 1;
     pString->m_cchCapacity = (int)cchText;
     pString->m_pszText = (char *)AllocateVSMemBlock(cchText);
-    memcpy(pString->m_pszText, pszText, cchText);
+    strcpy(pString->m_pszText, pszText);
     return pString;
 }
 
