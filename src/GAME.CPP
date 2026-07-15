@@ -957,8 +957,8 @@ bool GameLevelProgressState::CanRetreat(void) {
 GameLevelProgressState *GameLevelProgressState::Clear(void) {
     int *pFields;
 
-    pFields = &m_nUnused20;
     m_nCurrentLevel = 0;
+    pFields = &m_nUnused20;
     m_nUnused04 = 0;
     m_nCurrentPack = 0;
     m_nUnused0C = 0;
