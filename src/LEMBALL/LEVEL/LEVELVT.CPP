@@ -508,16 +508,10 @@ int PASCAL IsManagedEntityState18(int nState) {
     return nState == 0x18;
 }
 
-#if defined(_MSC_VER) && _MSC_VER == 1020
 // FUNCTION: LEMBALL 0x0040335F
-__declspec(naked) int PASCAL IsManagedEntityState18Thunk(int) {
-    __asm jmp IsManagedEntityState18
-}
-#else
 int PASCAL IsManagedEntityState18Thunk(int nState) {
     return IsManagedEntityState18(nState);
 }
-#endif
 
 // FUNCTION: LEMBALL 0x0040C180
 void LevelManagedEntityStateFields::SetStateIdWithVariantLocal(int nStateId, int nVariant) {

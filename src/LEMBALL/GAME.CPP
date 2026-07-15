@@ -165,7 +165,9 @@ struct GameLevelProgressState {
     int m_nUnused04;
     int m_nCurrentPack;
     int m_nUnused0C;
-    char m_szPassword[0x18];
+    char m_szPassword[0x10];
+    int m_nUnused20;
+    int m_nUnused24;
     int m_anUnlockedPackCaps[5];
     int m_anSnapshotPackCaps[4];
     int m_nUnused4C;
@@ -953,40 +955,55 @@ bool GameLevelProgressState::CanRetreat(void) {
 
 // FUNCTION: LEMBALL 0x00406A90
 GameLevelProgressState *GameLevelProgressState::Clear(void) {
+    int *pFields;
+
+    pFields = &m_nUnused20;
     m_nCurrentLevel = 0;
     m_nUnused04 = 0;
     m_nCurrentPack = 0;
     m_nUnused0C = 0;
-    m_anUnlockedPackCaps[0] = 0;
-    m_anUnlockedPackCaps[1] = 0;
-    m_anUnlockedPackCaps[2] = 0;
-    m_anUnlockedPackCaps[3] = 0;
-    m_anUnlockedPackCaps[4] = 0;
-    m_anSnapshotPackCaps[0] = 0;
-    m_anSnapshotPackCaps[1] = 0;
-    m_anSnapshotPackCaps[2] = 0;
-    m_anSnapshotPackCaps[3] = 0;
-    m_nUnused4C = 0;
+    pFields[0] = 0;
+    pFields[1] = 0;
+    pFields = m_anUnlockedPackCaps;
+    pFields[0] = 0;
+    pFields[1] = 0;
+    pFields[2] = 0;
+    pFields[3] = 0;
+    pFields[4] = 0;
+    pFields = m_anSnapshotPackCaps;
+    pFields[0] = 0;
+    pFields[1] = 0;
+    pFields[2] = 0;
+    pFields[3] = 0;
+    pFields[4] = 0;
     return this;
 }
 
 // FUNCTION: LEMBALL 0x00406AD0
 unsigned int GameLevelProgressState::EncodePasswordValue(void) {
-    unsigned int auDigits[8];
+    unsigned int auDigits[16];
+    unsigned int *puCap;
+    unsigned int *puDigit;
+    unsigned int *puDigitEnd;
     unsigned int uValue;
+    unsigned int uDigit;
     int i;
 
-    for (i = 0; i < 4; ++i) {
-        auDigits[i * 2] = ((unsigned int)m_anUnlockedPackCaps[i] & 0x38) >> 3;
-        auDigits[i * 2 + 1] = (unsigned int)m_anUnlockedPackCaps[i] & 7;
+    puCap = (unsigned int *)m_anUnlockedPackCaps;
+    puDigit = auDigits;
+    puDigitEnd = auDigits + 8;
+    while (puDigit < puDigitEnd) {
+        uValue = *puCap++;
+        *puDigit++ = (uValue & 0x38) >> 3;
+        *puDigit++ = uValue & 7;
     }
 
     uValue = 0;
     for (i = 0; i < 8; ++i) {
-        unsigned int uDigit;
-
-        uDigit = auDigits[g_GAME_LevelPasswordPermutation[i]] ^ g_GAME_LevelPasswordPermutation[i];
+        uDigit = auDigits[g_GAME_LevelPasswordPermutation[i]] ^
+                 g_GAME_LevelPasswordPermutation[i];
         uValue = (uValue << 3) | uDigit;
+        auDigits[i + 8] = uDigit;
     }
     return uValue;
 }
@@ -996,7 +1013,7 @@ void GameLevelProgressState::ApplyPasswordValue(unsigned int uValue) {
     unsigned int auDigits[16];
     int i;
 
-    for (i = 7; i >= 0; --i) {
+    for (i = 15; i >= 8; --i) {
         auDigits[i] = uValue & 7;
         uValue >>= 3;
     }
@@ -1015,26 +1032,15 @@ void GameLevelProgressState::ApplyPasswordValueThunk(unsigned int uValue) {
     ApplyPasswordValue(uValue);
 }
 
-#if defined(_MSC_VER) && _MSC_VER == 1020
 // FUNCTION: LEMBALL 0x00406BA0
-__declspec(naked) unsigned int GameLevelProgressState::ComputeLevelPasswordChecksum(unsigned int) {
-    __asm {
-        mov ecx, dword ptr [esp + 4]
-        mov eax, ecx
-        mov edx, ecx
-        shr eax, 0x10
-        shr edx, 8
-        add eax, edx
-        add eax, ecx
-        and eax, 0x1f
-        ret 4
-    }
-}
-#else
 unsigned int GameLevelProgressState::ComputeLevelPasswordChecksum(unsigned int uValue) {
-    return ((uValue >> 16) + uValue + (uValue >> 8)) & 0x1f;
+    unsigned int uHigh;
+    unsigned int uMiddle;
+
+    uHigh = uValue >> 16;
+    uMiddle = uValue >> 8;
+    return (uHigh + uMiddle + uValue) & 0x1f;
 }
-#endif
 
 // FUNCTION: LEMBALL 0x00403323
 unsigned int GameLevelProgressState::ComputeLevelPasswordChecksumThunk(unsigned int uValue) {
@@ -1053,16 +1059,10 @@ int PASCAL ComputePowerOfTwo(int nExponent) {
     return nValue;
 }
 
-#if defined(_MSC_VER) && _MSC_VER == 1020
 // FUNCTION: LEMBALL 0x004036E3
-__declspec(naked) int PASCAL ComputePowerOfTwoThunk(int) {
-    __asm jmp ComputePowerOfTwo
-}
-#else
 int PASCAL ComputePowerOfTwoThunk(int nExponent) {
     return ComputePowerOfTwo(nExponent);
 }
-#endif
 
 // FUNCTION: LEMBALL 0x00406C00
 char *GameLevelProgressState::FormatPassword(void) {
@@ -1159,9 +1159,6 @@ void GameLevelProgressState::SetUnlockedPackCap(int nPack, int nCap) {
         break;
     case 4:
         nPackLevelCount = 0x0b;
-        break;
-    default:
-        nPackLevelCount = nCap;
         break;
     }
 
