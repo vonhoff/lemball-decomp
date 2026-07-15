@@ -684,6 +684,26 @@ struct LevelManagedEntityPositionView {
     LevelThreeDwordPoint *CopyWorldPositionThunk(LevelThreeDwordPoint *pPosition);
 };
 
+struct LevelManagedEntityCommandEntry {
+    int m_nField00;
+    int m_nField04;
+    int m_nField08;
+    int m_nField0C;
+    unsigned short m_nField10;
+    unsigned short m_nReserved12;
+};
+
+struct LevelManagedEntityCommandQueue {
+    unsigned short m_cEntries00;
+    unsigned short m_nReserved02;
+    LevelManagedEntityCommandEntry *m_pEntries04;
+
+    void PopFront(void);
+    void PopFrontThunk(void);
+    void PushFront(void);
+    void PushFrontThunk(void);
+};
+
 struct LevelManagedEntityQueueCursor {
     char m_abReserved00[0x10];
     int m_nX10;
@@ -872,6 +892,61 @@ LevelThreeDwordPoint *LevelManagedEntityPositionView::CopyWorldPosition(LevelThr
 // FUNCTION: LEMBALL 0x004010BE
 LevelThreeDwordPoint *LevelManagedEntityPositionView::CopyWorldPositionThunk(LevelThreeDwordPoint *pPosition) {
     return CopyWorldPosition(pPosition);
+}
+
+// FUNCTION: LEMBALL 0x00414CD0
+void LevelManagedEntityCommandQueue::PopFront(void) {
+    LevelManagedEntityCommandEntry *pDestination;
+    LevelManagedEntityCommandEntry *pSource;
+    int nOffset;
+    int iEntry;
+
+    if (m_cEntries00 != 0) {
+        nOffset = 0;
+        for (iEntry = 0; iEntry < m_cEntries00 - 1; ++iEntry) {
+            pDestination = (LevelManagedEntityCommandEntry *)
+                ((char *)m_pEntries04 + nOffset);
+            nOffset += sizeof(LevelManagedEntityCommandEntry);
+            pSource = pDestination + 1;
+            pDestination->m_nField00 = pSource->m_nField00;
+            pDestination->m_nField04 = pSource->m_nField04;
+            pDestination->m_nField08 = pSource->m_nField08;
+            pDestination->m_nField0C = pSource->m_nField0C;
+            pDestination->m_nField10 = pSource->m_nField10;
+        }
+        --m_cEntries00;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00401BF4
+void LevelManagedEntityCommandQueue::PopFrontThunk(void) {
+    PopFront();
+}
+
+// FUNCTION: LEMBALL 0x00414D40
+void LevelManagedEntityCommandQueue::PushFront(void) {
+    LevelManagedEntityCommandEntry *pDestination;
+    LevelManagedEntityCommandEntry *pSource;
+    int nOffset;
+
+    nOffset = m_cEntries00 * sizeof(LevelManagedEntityCommandEntry);
+    while (nOffset > 0) {
+        pDestination = (LevelManagedEntityCommandEntry *)
+            ((char *)m_pEntries04 + nOffset);
+        nOffset -= sizeof(LevelManagedEntityCommandEntry);
+        pSource = pDestination - 1;
+        pDestination->m_nField00 = pSource->m_nField00;
+        pDestination->m_nField04 = pSource->m_nField04;
+        pDestination->m_nField08 = pSource->m_nField08;
+        pDestination->m_nField0C = pSource->m_nField0C;
+        pDestination->m_nField10 = pSource->m_nField10;
+    }
+    ++m_cEntries00;
+}
+
+// FUNCTION: LEMBALL 0x0040202C
+void LevelManagedEntityCommandQueue::PushFrontThunk(void) {
+    PushFront();
 }
 
 // FUNCTION: LEMBALL 0x00414E60

@@ -13,6 +13,10 @@
 /INCLUDE:?SetPosition@LevelManagedEntityQueueCursor@@QAEXHH@Z
 /INCLUDE:?ClampPosition@LevelManagedEntityQueueCursor@@QAEXXZ
 /INCLUDE:?ClampPositionThunk@LevelManagedEntityQueueCursor@@QAEXXZ
+/INCLUDE:?PopFront@LevelManagedEntityCommandQueue@@QAEXXZ
+/INCLUDE:?PopFrontThunk@LevelManagedEntityCommandQueue@@QAEXXZ
+/INCLUDE:?PushFront@LevelManagedEntityCommandQueue@@QAEXXZ
+/INCLUDE:?PushFrontThunk@LevelManagedEntityCommandQueue@@QAEXXZ
 /INCLUDE:?HasPendingCommandsThunk@LevelManagedEntityCommandQueueView@@QAEHXZ
 /INCLUDE:?get_object_field_0x160@@YIHPAX@Z
 /INCLUDE:?get_object_field_0x124@@YIHPAX@Z
