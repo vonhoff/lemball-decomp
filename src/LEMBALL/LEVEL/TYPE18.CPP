@@ -5,7 +5,7 @@
 
 DECOMP_SIZE_ASSERT(LevelType18ChunkStream, 0x54);
 
-extern int ReturnTrueVtableCallbackThunk(void);
+extern int PASCAL ReturnTrueVtableCallbackThunk(void *pObject);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
 extern void noop_vtable_callback_0040adc0(void);

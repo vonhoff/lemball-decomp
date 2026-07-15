@@ -25,6 +25,7 @@ set(CMAKE_CXX_COMPILER_FORCED TRUE)
 set(CMAKE_CXX_COMPILER_WORKS TRUE)
 set(CMAKE_AR "${_msvc420_root}/bin/LIB.EXE" CACHE FILEPATH
     "MSVC 4.20 static-library manager" FORCE)
+file(TO_NATIVE_PATH "${CMAKE_AR}" _msvc420_lib)
 set(LEMBALL_RC_COMPILER "${_msvc420_root}/bin/RC.EXE" CACHE FILEPATH
     "Resource compiler for the reconstructed Win32 resources")
 
@@ -72,9 +73,9 @@ set(CMAKE_C_COMPILE_OBJECT
     "<CMAKE_C_COMPILER> <DEFINES> <INCLUDES> <FLAGS> /TC /O2 /Ob1 /Oy /G4 /Z7 /c /Fo<OBJECT> <SOURCE>")
 
 set(CMAKE_CXX_CREATE_STATIC_LIBRARY
-    "<CMAKE_AR> /nologo /OUT:<TARGET> <OBJECTS>")
+    "${_msvc420_lib} /nologo /OUT:<TARGET> <OBJECTS>")
 set(CMAKE_C_CREATE_STATIC_LIBRARY
-    "<CMAKE_AR> /nologo /OUT:<TARGET> <OBJECTS>")
+    "${_msvc420_lib} /nologo /OUT:<TARGET> <OBJECTS>")
 
 set(CMAKE_CXX_LINK_EXECUTABLE
     "python ${_root_dir}/tools/check_link_output.py ${_msvc420_root}/bin/LINK.EXE /nologo /DEBUG /INCREMENTAL:NO /SUBSYSTEM:WINDOWS <LINK_FLAGS> /OUT:<TARGET> <OBJECTS> <LINK_LIBRARIES>")

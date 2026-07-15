@@ -257,9 +257,9 @@ static void *g_NETWORK_TimedEffStreamPrimaryThunkVtable =
 struct VsNetAckedEffTransportRecordOwner {
     void *ClaimAckedEffTransportRecordPayload(void);
 };
-extern int ReturnTrueVtableCallback(void);
+extern int PASCAL ReturnTrueVtableCallback(void *pObject);
 extern int ReturnTrueVtableCallbackSecondary(void);
-extern int ReturnTrueVtableCallbackThunk(void);
+extern int PASCAL ReturnTrueVtableCallbackThunk(void *pObject);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void ReturnVoidVtableCallback(void);
 extern void ReverseEffTransportPayload(void *pObject);
@@ -529,13 +529,13 @@ static void PumpActiveNetworkRuntimeWindow(void) {
 }
 
 // FUNCTION: LEMBALL 0x0040ABD0
-int ReturnTrueVtableCallback(void) {
+int PASCAL ReturnTrueVtableCallback(void *) {
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x00401564
-int ReturnTrueVtableCallbackThunk(void) {
-    return ReturnTrueVtableCallback();
+int PASCAL ReturnTrueVtableCallbackThunk(void *pObject) {
+    return ReturnTrueVtableCallback(pObject);
 }
 
 // FUNCTION: LEMBALL 0x0040ABE0

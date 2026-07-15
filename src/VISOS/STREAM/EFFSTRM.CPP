@@ -4,7 +4,7 @@
 #include "VISOS/SAFEVT.H"
 #include "VISOS/EFFSTRM.H"
 
-extern int ReturnTrueVtableCallbackThunk(void);
+extern int PASCAL ReturnTrueVtableCallbackThunk(void *pObject);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
 extern void ReadNetworkLevelChunkDeltaStream(void *pObject);

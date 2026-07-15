@@ -11,7 +11,7 @@ extern void *g_GAME_EffStreamConstructionVtable[6];
 
 struct VsSoundWaveOutEffectBackend;
 
-extern int ReturnTrueVtableCallback(void);
+extern int PASCAL ReturnTrueVtableCallback(void *pObject);
 extern int ReturnTrueVtableCallbackSecondary(void);
 extern void NoopVtableCallback(void);
 struct VsNetChannelOwnerObject {
@@ -113,7 +113,7 @@ void InitializeGlobalStateFileBackedEffStorageAdjustor(void *pObject);
 void *GetWin32FileWrapperOwnedPath(void *pObject);
 BYTE __fastcall MapNestedEffCallbackFailureToStatus6(void *pObject);
 void *DeleteEffChannelStateSideBufferWrapper(void *pObject, BYTE fFreeMemory);
-void ClearNestedEffChannelAsyncStatus(void *pObject);
+void LEMBALL_FASTCALL ClearNestedEffChannelAsyncStatus(void *pObject);
 void AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(void *pObject);
 void LEMBALL_FASTCALL AdjustAndClearGlobalStateTimedEffTransportPendingWriteState(
     void *pObject, void *pUnused);
@@ -143,7 +143,7 @@ struct VsNetAckedEffTransportRecordOwner {
     void *m_pRecordTable4c;
     void *ClaimAckedEffTransportRecordPayload(void);
 };
-extern int ReturnTrueVtableCallbackThunk(void);
+extern int PASCAL ReturnTrueVtableCallbackThunk(void *pObject);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void ReverseEffTransportPayload(void *pObject);
 extern void NoopVtableCallbackThunk(void);
@@ -2614,13 +2614,13 @@ void *DeleteEffChannelStateSideBufferWrapper(void *pObject, BYTE fFreeMemory) {
 }
 
 // FUNCTION: LEMBALL 0x0047B8F0
-void ClearNestedEffChannelAsyncStatus(void *pObject) {
-    VsNetConstructionAdjustorVtable *pOffsets;
-    char *pbChannelState;
-
-    pOffsets = *(VsNetConstructionAdjustorVtable **)((char *)pObject - 0x1c);
-    pbChannelState = (char *)pObject + pOffsets->m_nSecondaryOffset - 0x1c;
-    ((VsNetEffStreamChannelState *)pbChannelState)->SetEffStreamChannelAsyncErrorStatus(0);
+void LEMBALL_FASTCALL ClearNestedEffChannelAsyncStatus(void *pObject) {
+    ((VsNetEffStreamChannelState *)(
+         (char *)pObject +
+         (*(VsNetConstructionAdjustorVtable **)((char *)pObject - 0x1c))
+             ->m_nSecondaryOffset -
+         0x1c))
+        ->SetEffStreamChannelAsyncErrorStatus(0);
 }
 
 // FUNCTION: LEMBALL 0x0047BA40

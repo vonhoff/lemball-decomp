@@ -551,7 +551,7 @@ void LevelEnmyChunkManager::ActivateNestedChildrenFromOwnerTableVariantThunk(voi
     ActivateNestedChildrenFromOwnerTableVariant();
 }
 
-extern int ReturnTrueVtableCallbackThunk(void);
+extern int PASCAL ReturnTrueVtableCallbackThunk(void *pObject);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
 struct GameNetworkLevelChunkDeltaStream {

@@ -12,8 +12,8 @@ extern void *g_GAME_EffStreamConstructionVtable[6];
 #include <new>
 
 extern int g_nEffTransportAsyncErrorStatus;
-extern int ReturnTrueVtableCallback(void);
-extern int ReturnTrueVtableCallbackThunk(void);
+extern int PASCAL ReturnTrueVtableCallback(void *pObject);
+extern int PASCAL ReturnTrueVtableCallbackThunk(void *pObject);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
 extern void ReturnVoidVtableCallback(void);
