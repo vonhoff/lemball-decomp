@@ -380,6 +380,18 @@ struct LevelManagedEntityStateIdView {
     int m_nStateIdB8;
 };
 
+struct LevelManagedEntityDirtyStateView {
+    char m_abReserved00[0x98];
+    int m_nCurrentDirtyValue98;
+    char m_abReserved9C[0xc8];
+    int m_fChildDirty164;
+    char m_abReserved168[0x48];
+    int m_nCachedDirtyValue1B0;
+
+    int PollChildDirtyFlag(void);
+    int PollChildDirtyFlagThunk(void);
+};
+
 struct LevelManagedEntityChildIterator {
     char m_abReserved00[0x124];
     int m_cChildren124;
@@ -402,6 +414,7 @@ struct LevelManagedEntityChildIterator {
     int GetActiveState(void);
     void *GetChildWithState8(void);
     void *GetCurrentChildWithState8(void);
+    int HasDirtyChildren(void);
 };
 
 // FUNCTION: LEMBALL 0x0041DEF0
@@ -523,6 +536,42 @@ void *LevelManagedEntityChildIterator::GetCurrentChildWithState8(void) {
         }
         pChild = (LevelManagedEntityStateIdView *)GetNextChildThunk();
     }
+}
+
+// FUNCTION: LEMBALL 0x0040F7A0
+int LevelManagedEntityDirtyStateView::PollChildDirtyFlag(void) {
+    int *pfDirty;
+    int nCurrentValue;
+
+    nCurrentValue = m_nCurrentDirtyValue98;
+    if (m_nCachedDirtyValue1B0 == nCurrentValue &&
+        (pfDirty = &m_fChildDirty164, *pfDirty == 0)) {
+        *pfDirty = 0;
+    } else {
+        pfDirty = &m_fChildDirty164;
+        *pfDirty = 1;
+    }
+    m_nCachedDirtyValue1B0 = nCurrentValue;
+    return *pfDirty;
+}
+
+// FUNCTION: LEMBALL 0x0040142E
+int LevelManagedEntityDirtyStateView::PollChildDirtyFlagThunk(void) {
+    return PollChildDirtyFlag();
+}
+
+// FUNCTION: LEMBALL 0x004149A0
+int LevelManagedEntityChildIterator::HasDirtyChildren(void) {
+    LevelManagedEntityDirtyStateView *pChild;
+    int fDirty;
+
+    fDirty = 0;
+    pChild = (LevelManagedEntityDirtyStateView *)GetFirstChildThunk();
+    while (pChild != 0) {
+        fDirty = pChild->PollChildDirtyFlagThunk() || fDirty;
+        pChild = (LevelManagedEntityDirtyStateView *)GetNextChildThunk();
+    }
+    return fDirty;
 }
 
 // FUNCTION: LEMBALL 0x0041E410
