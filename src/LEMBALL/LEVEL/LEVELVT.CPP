@@ -374,6 +374,11 @@ int __fastcall get_managed_entity_group_command_state(void *pEntity) {
     return *(int *)((char *)pEntity + 0x154);
 }
 
+// FUNCTION: LEMBALL 0x0040185C
+int __fastcall GetManagedEntityGroupCommandStateThunk(void *pEntity) {
+    return get_managed_entity_group_command_state(pEntity);
+}
+
 // FUNCTION: LEMBALL 0x00417F40
 void *__fastcall get_first_projectile_pool_object(void *pPool) {
     *(int *)((char *)pPool + 0xd8) = 0;
