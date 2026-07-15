@@ -3478,7 +3478,7 @@ void VsNetGlobalSessionAdjustorFront::WriteAdjustedEffStreamWithGlobalSession(vo
 }
 
 // FUNCTION: LEMBALL 0x0047BAD0
-void ClaimAdjustedEffTransportRecordPayload(void *pObject) {
+void LEMBALL_FASTCALL ClaimAdjustedEffTransportRecordPayload(void *pObject) {
     char *pbTransportView;
 
     pbTransportView = (char *)pObject +
