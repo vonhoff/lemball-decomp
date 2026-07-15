@@ -854,7 +854,8 @@ void LevelManagedEntityStateFields::DecrementHeadingOctant(void) {
         nMultiple = 7;
         nMultiple -= nHeading;
         nMultiple >>= 3;
-        m_nHeadingOctantB4 = nHeading + nMultiple * 8;
+        nHeading += nMultiple * 8;
+        m_nHeadingOctantB4 = nHeading;
     }
 }
 
