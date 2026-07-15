@@ -143,6 +143,21 @@ if(LEMBALL_ENABLE_WIN32)
             "?CopyWorldPositionThunk@LevelManagedEntityPositionView@@QAEPAULevelThreeDwordPoint@@PAU2@@Z"
             "?GetPositionThunk@LevelManagedEntityQueueCursor@@QAEXPAH0@Z"
             "?HasPendingCommandsThunk@LevelManagedEntityCommandQueueView@@QAEHXZ"
+            "?get_object_field_0x160@@YIHPAX@Z"
+            "?get_object_field_0x124@@YIHPAX@Z"
+            "?return_object_field_0x0c_00435880@@YIHPAX@Z"
+            "?set_managed_entity_state_id_local@@YIXPAX0H@Z"
+            "?set_managed_entity_owner_group@@YIXPAX00@Z"
+            "?get_managed_entity_owner_group@@YIPAXPAX@Z"
+            "?set_managed_entity_primary_active_flag@@YIXPAX0H@Z"
+            "?set_managed_entity_secondary_active_flag@@YIXPAX0H@Z"
+            "?add_level_time_bonus_counter@@YIXPAX0H@Z"
+            "?set_level_mode_field_0xf8@@YIXPAX0H@Z"
+            "?set_managed_entity_group_command_state@@YIXPAX0H@Z"
+            "?set_object_field_0x160@@YIXPAX0H@Z"
+            "?IsManagedEntityState18@@YGHH@Z"
+            "?IsManagedEntityState18Thunk@@YGHH@Z"
+            "?ForwardManagedEntityVslot9C@@YAXPAX0@Z"
         )
     endif()
     set(LEMBALL_DEPLOY_COMMANDS)
