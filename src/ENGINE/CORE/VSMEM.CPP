@@ -1050,7 +1050,7 @@ void *WriteMemoryArenaReport(void *pArena, VsInitFormattedOutputStream *pOutputS
 }
 
 // FUNCTION: LEMBALL 0x0045A340
-unsigned int GetMemoryArenaPayloadByteCounter(void *pArena) {
+unsigned int LEMBALL_FASTCALL GetMemoryArenaPayloadByteCounter(void *pArena) {
     return ((CArena *)pArena)->m_cbFree;
 }
 
@@ -1058,7 +1058,6 @@ unsigned int GetMemoryArenaPayloadByteCounter(void *pArena) {
 long LEMBALL_FASTCALL CalculateMemoryArenaAvailableBytes(void *pArena) {
     CArena *pMemoryArena;
     CMemoryBlock *pBlock;
-    VSMEM_SizeProc pfnGetBlockHeaderSize;
     unsigned int cFreeBlocks;
 
     pMemoryArena = (CArena *)pArena;
@@ -1068,8 +1067,8 @@ long LEMBALL_FASTCALL CalculateMemoryArenaAvailableBytes(void *pArena) {
         ++cFreeBlocks;
         pBlock = pBlock->m_pNextFree;
     }
-    pfnGetBlockHeaderSize = (VSMEM_SizeProc)pMemoryArena->m_pVtable[7];
-    return pMemoryArena->m_cbStorage - (int)(pfnGetBlockHeaderSize() * cFreeBlocks);
+    return pMemoryArena->m_cbStorage -
+           (int)(((VSMEM_SizeProc)pMemoryArena->m_pVtable[7])() * cFreeBlocks);
 }
 
 // FUNCTION: LEMBALL 0x0045A390
