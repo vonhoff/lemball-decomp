@@ -2,9 +2,9 @@
 
 #include "GAME.H"
 #include "RESOURCE/MOGLOAD.H"
-#include "MEMORY/VSMEM.H"
-#include "CORE/VSINIT.H"
-#include "CORE/WIN32.H"
+#include "ENGINE/CORE/VSMEM.H"
+#include "ENGINE/CORE/VSINIT.H"
+#include "ENGINE/CORE/WIN32.H"
 
 #include <stdio.h>
 
@@ -468,4 +468,4 @@ void ReadLevelDemoLengthPrefixedRecordThunk(void *pPlaybackController, void *pRe
     cbCopy = cbRemaining;
     (void)cbCopy;
 }
-#include "CORE/SAFEVT.H"
+#include "ENGINE/CORE/SAFEVT.H"

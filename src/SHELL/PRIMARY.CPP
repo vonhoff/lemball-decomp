@@ -1,6 +1,6 @@
 #include "GAME.H"
-#include "GDI/VSGDI.H"
-#include "MEMORY/VSMEM.H"
+#include "ENGINE/GDI/VSGDI.H"
+#include "ENGINE/CORE/VSMEM.H"
 #include "SHELL/OPTIONS.H"
 
 extern void LEMBALL_FASTCALL EnsureHelperGroup0BackingBuffer(int nHelperGroup);

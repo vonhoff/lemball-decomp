@@ -1,8 +1,8 @@
 #include "GAME.H"
-#include "MEMORY/VSMEM.H"
-#include "STREAM/VSSTRM.H"
-#include "CORE/SAFEVT.H"
-#include "STREAM/EFFSTRM.H"
+#include "ENGINE/CORE/VSMEM.H"
+#include "ENGINE/MEDIA/VSSTRM.H"
+#include "ENGINE/CORE/SAFEVT.H"
+#include "ENGINE/MEDIA/EFFSTRM.H"
 #include "LEVEL/LEVELRUN.H"
 
 #include <stdlib.h>
@@ -1282,4 +1282,4 @@ void LEMBALL_FASTCALL ResetBoonChunkManagerObjects(void *pObject) {
 void LEMBALL_FASTCALL ResetBoonChunkManagerObjectsThunk(void *pObject) {
     ResetBoonChunkManagerObjects(pObject);
 }
-#include "CORE/SAFEVT.H"
+#include "ENGINE/CORE/SAFEVT.H"

@@ -1,7 +1,7 @@
 #include "SHELL/OPTIONS.H"
 
 #include "SHELL/ENTRY.H"
-#include "GDI/VSGDI.H"
+#include "ENGINE/GDI/VSGDI.H"
 
 #include <ctype.h>
 #include <string.h>

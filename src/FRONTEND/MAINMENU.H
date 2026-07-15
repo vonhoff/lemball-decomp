@@ -1,7 +1,7 @@
 #ifndef LEMBALL_GAME_MAIN_MENU_SCREEN_H
 #define LEMBALL_GAME_MAIN_MENU_SCREEN_H
 
-#include "CORE/COMMON.H"
+#include "ENGINE/CORE/COMMON.H"
 
 extern void *g_GAME_MainMenuScreenVtable[22];
 extern void *g_GAME_MainMenuQueueVtable[4];

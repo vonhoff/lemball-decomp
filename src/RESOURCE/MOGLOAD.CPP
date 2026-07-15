@@ -2,8 +2,8 @@
 
 #include "GAME.H"
 #include "SHELL/OPTIONS.H"
-#include "CORE/VSINIT.H"
-#include "MEMORY/VSMEM.H"
+#include "ENGINE/CORE/VSINIT.H"
+#include "ENGINE/CORE/VSMEM.H"
 
 #include <ctype.h>
 #if defined(_MSC_VER) && (_MSC_VER < 1100)

@@ -1,8 +1,8 @@
 #ifndef LEMBALL_GAME_TYPE18_CHUNK_STREAM_H
 #define LEMBALL_GAME_TYPE18_CHUNK_STREAM_H
 
-#include "CORE/COMMON.H"
-#include "STREAM/EFFSTRM.H"
+#include "ENGINE/CORE/COMMON.H"
+#include "ENGINE/MEDIA/EFFSTRM.H"
 
 class LevelType18ChunkObject;
 struct LevelType18ChunkStreamEntry;

@@ -1,7 +1,7 @@
 #include "GAME.H"
 #include "SHELL/OPTIONS.H"
-#include "SOUND/VSSOUND.H"
-#include "MEMORY/VSMEM.H"
+#include "ENGINE/MEDIA/VSSOUND.H"
+#include "ENGINE/CORE/VSMEM.H"
 #include "RESOURCE/VARLOAD.H"
 #include "RESOURCE/VARMGR.H"
 

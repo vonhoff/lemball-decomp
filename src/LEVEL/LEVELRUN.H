@@ -1,7 +1,7 @@
 #ifndef LEMBALL_GAME_LEVEL_RUNTIME_H
 #define LEMBALL_GAME_LEVEL_RUNTIME_H
 
-#include "CORE/COMMON.H"
+#include "ENGINE/CORE/COMMON.H"
 
 struct LevelLevelTileGridStaticView;
 

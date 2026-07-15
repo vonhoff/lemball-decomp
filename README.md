@@ -8,7 +8,7 @@ The goal of this project is to create a fully functional decompilation of Lemmin
 > Note: This repository is for decompilation only and its code is true to the original release.
 > The reconstructed game target will not compile for targets other than 32-bit Windows.
 
-The reconstructed game and VISOS runtime share one original-era source tree under `src/`; subsystem directories contain both implementations and their related headers, without artificial game/engine container layers or a standalone public-header tree.
+The reconstructed game and VISOS runtime share one original-era source tree under `src/`. Game-facing subsystems live directly beneath it, while reusable runtime code is grouped under `src/ENGINE/`. Implementations and related headers remain together, and there is no standalone public-header tree. Small runtime areas are consolidated into durable modules: memory and statistics live in `ENGINE/CORE`, while sound and streaming live in `ENGINE/MEDIA`.
 
 The MSVC 4.20 link uses four forced archive anchors from
 `cmake/msvc420-force-symbols.rsp`. They pull otherwise-unreferenced VISOS

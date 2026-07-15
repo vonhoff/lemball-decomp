@@ -1,7 +1,7 @@
 #include "LEVEL/TYPE18.H"
 
-#include "MEMORY/VSMEM.H"
-#include "STREAM/VSSTRM.H"
+#include "ENGINE/CORE/VSMEM.H"
+#include "ENGINE/MEDIA/VSSTRM.H"
 
 DECOMP_SIZE_ASSERT(LevelType18ChunkStream, 0x54);
 

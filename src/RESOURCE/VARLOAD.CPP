@@ -1,7 +1,7 @@
 #include "GAME.H"
 #include "RESOURCE/MOGLOAD.H"
-#include "MEMORY/VSMEM.H"
-#include "CORE/SAFEVT.H"
+#include "ENGINE/CORE/VSMEM.H"
+#include "ENGINE/CORE/SAFEVT.H"
 #include "RESOURCE/VARLOAD.H"
 
 extern void LEMBALL_FASTCALL CopyBufferIntoTypedResourceObjectAndParse(
@@ -727,4 +727,4 @@ void LoadMainGameVariantTwoArrayListResource(void *pBundle, int nResourceId) {
     pResourceBundle->m_ppTwoArrayListResources[pResourceBundle->m_cTwoArrayListResources] = LoadTwoArrayListResource(nResourceId);
     ++pResourceBundle->m_cTwoArrayListResources;
 }
-#include "CORE/SAFEVT.H"
+#include "ENGINE/CORE/SAFEVT.H"

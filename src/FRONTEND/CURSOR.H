@@ -1,7 +1,7 @@
 #ifndef LEMBALL_GAME_CURSOR_RENDER_CLIENT_H
 #define LEMBALL_GAME_CURSOR_RENDER_CLIENT_H
 
-#include "CORE/VSMATH.H"
+#include "ENGINE/CORE/VSMATH.H"
 
 struct GameCursorRenderClientInterface {
     virtual void Reserved00(void) = 0;

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_GAME_MENU_SELECTOR_H
 #define LEMBALL_GAME_MENU_SELECTOR_H
 
-#include "CORE/COMMON.H"
+#include "ENGINE/CORE/COMMON.H"
 
 struct GameMenuSelectorEntry;
 

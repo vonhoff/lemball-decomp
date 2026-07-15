@@ -1,6 +1,6 @@
 #include "GAME.H"
-#include "STREAM/EFFSTRM.H"
-#include "CORE/VSINIT.H"
+#include "ENGINE/MEDIA/EFFSTRM.H"
+#include "ENGINE/CORE/VSINIT.H"
 
 static const char *g_NETWORK_GameConnectionRequestDuringGameText;
 static const char *g_NETWORK_LobbyConnectionAcceptedText;

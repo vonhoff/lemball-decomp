@@ -1,8 +1,8 @@
 #ifndef LEMBALL_GAME_APP_H
 #define LEMBALL_GAME_APP_H
 
-#include "CORE/WIN32.H"
-#include "GDI/VSWINDOW.H"
+#include "ENGINE/CORE/WIN32.H"
+#include "ENGINE/GDI/VSWINDOW.H"
 
 struct GameDynamicCString {
     char *m_pszText;

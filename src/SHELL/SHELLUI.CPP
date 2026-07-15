@@ -1,9 +1,9 @@
 #include "SHELL/SHELLUI.H"
 
-#include "SOUND/VSSOUND.H"
+#include "ENGINE/MEDIA/VSSOUND.H"
 #include "SHELL/ENTRY.H"
-#include "GDI/VSGDI.H"
-#include "CORE/VSINIT.H"
+#include "ENGINE/GDI/VSGDI.H"
+#include "ENGINE/CORE/VSINIT.H"
 
 #include <stdio.h>
 #include <stdarg.h>

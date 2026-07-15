@@ -1,7 +1,7 @@
 #ifndef LEMBALL_DEMO_PLAYBACK_H
 #define LEMBALL_DEMO_PLAYBACK_H
 
-#include "CORE/COMMON.H"
+#include "ENGINE/CORE/COMMON.H"
 
 void CreateFrameTimerController(unsigned int uFrameInterval);
 void DestroyFrameTimerController(void);

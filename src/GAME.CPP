@@ -1,20 +1,20 @@
 #include "GAME.H"
 #include "LEVEL/LEVELRUN.H"
-#include "GDI/VSWINDOW.H"
+#include "ENGINE/GDI/VSWINDOW.H"
 #include "FRONTEND/CURSOR.H"
 #include "LEVEL/TYPE18.H"
 #include "FRONTEND/MAINMENU.H"
-#include "CORE/SAFEVT.H"
+#include "ENGINE/CORE/SAFEVT.H"
 
 #include "SHELL/SHELLUI.H"
 #include "SHELL/OPTIONS.H"
-#include "SOUND/VSSOUND.H"
+#include "ENGINE/MEDIA/VSSOUND.H"
 #include "LEVEL/DEMO.H"
-#include "GDI/VSGDI.H"
+#include "ENGINE/GDI/VSGDI.H"
 #include "RESOURCE/MOGLOAD.H"
-#include "CORE/VSMATH.H"
-#include "MEMORY/VSMEM.H"
-#include "CORE/VSINIT.H"
+#include "ENGINE/CORE/VSMATH.H"
+#include "ENGINE/CORE/VSMEM.H"
+#include "ENGINE/CORE/VSINIT.H"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>

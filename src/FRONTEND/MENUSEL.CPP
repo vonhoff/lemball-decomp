@@ -2,8 +2,8 @@
 
 #include "GAME.H"
 #include "RESOURCE/VARMGR.H"
-#include "MEMORY/VSMEM.H"
-#include "CORE/WIN32.H"
+#include "ENGINE/CORE/VSMEM.H"
+#include "ENGINE/CORE/WIN32.H"
 
 DECOMP_SIZE_ASSERT(GameMenuSelectorEvent, 0x1c);
 DECOMP_SIZE_ASSERT(GameMenuSelectorMetadata, 0x20);

@@ -1,13 +1,13 @@
 #include "GAME.H"
-#include "GDI/VSWINDOW.H"
+#include "ENGINE/GDI/VSWINDOW.H"
 #include "SHELL/OPTIONS.H"
 #include "LEVEL/DEMO.H"
 #include "RESOURCE/MOGLOAD.H"
-#include "GDI/VSGDI.H"
-#include "MEMORY/VSMEM.H"
-#include "CORE/VSINIT.H"
-#include "CORE/SAFEVT.H"
-#include "STREAM/EFFSTRM.H"
+#include "ENGINE/GDI/VSGDI.H"
+#include "ENGINE/CORE/VSMEM.H"
+#include "ENGINE/CORE/VSINIT.H"
+#include "ENGINE/CORE/SAFEVT.H"
+#include "ENGINE/MEDIA/EFFSTRM.H"
 #include "FRONTEND/CURSOR.H"
 #include "RESOURCE/VARMGR.H"
 
@@ -2443,4 +2443,4 @@ void DestroyLevelScreenStatusIndicatorManager(void *pObject) {
     }
     DestroyVariantRenderManager(pObject);
 }
-#include "CORE/SAFEVT.H"
+#include "ENGINE/CORE/SAFEVT.H"

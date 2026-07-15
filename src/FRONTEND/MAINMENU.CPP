@@ -1,7 +1,7 @@
 #include "FRONTEND/MAINMENU.H"
 
-#include "GDI/VSGDI.H"
-#include "MEMORY/VSMEM.H"
+#include "ENGINE/GDI/VSGDI.H"
+#include "ENGINE/CORE/VSMEM.H"
 #include "GAME.H"
 #include "SHELL/SHELLUI.H"
 #include "SHELL/OPTIONS.H"

@@ -2,7 +2,7 @@
 #define LEMBALL_RESOURCE_ARCHIVE_H
 
 #include <stdio.h>
-#include "CORE/COMMON.H"
+#include "ENGINE/CORE/COMMON.H"
 
 enum {
     MogLoadTAG_CRID = 0x44495243u,
