@@ -1915,7 +1915,7 @@ int GameRenderDispatchQueue::RegisterOrderedRenderDispatchClient(void *pClient, 
 }
 
 // FUNCTION: LEMBALL 0x004633B0
-void GameRenderDispatchQueue::UnregisterOrderedRenderDispatchClient(void *pClient, int nOrder) {
+int GameRenderDispatchQueue::UnregisterOrderedRenderDispatchClient(void *pClient, int nOrder) {
     GameRenderDispatchClientNode *pCurrent;
     GameRenderDispatchClientNode *pPrevious;
     unsigned int i;
@@ -1934,13 +1934,14 @@ void GameRenderDispatchQueue::UnregisterOrderedRenderDispatchClient(void *pClien
             FreeVSMemBlock(pCurrent);
             --m_cClients;
             UnlockDispatchQueue();
-            return;
+            return 1;
         }
         ++i;
         pPrevious = pCurrent;
         pCurrent = pCurrent->m_pNext;
     }
     UnlockDispatchQueue();
+    return 0;
 }
 
 struct GamePrimaryContextExtendedVirtualInterface {
