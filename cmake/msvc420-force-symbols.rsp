@@ -55,6 +55,7 @@
 /INCLUDE:?PollChildDirtyFlag@LevelManagedEntityDirtyStateView@@QAEHXZ
 /INCLUDE:?PollChildDirtyFlagThunk@LevelManagedEntityDirtyStateView@@QAEHXZ
 /INCLUDE:?HasDirtyChildren@LevelManagedEntityChildIterator@@QAEHXZ
+/INCLUDE:?HasDirtyChildrenThunk@LevelManagedEntityChildIterator@@QAEHXZ
 /INCLUDE:?PopHistoryId@LevelManagedEntityHistoryView@@QAEHXZ
 /INCLUDE:?PopHistoryIdThunk@LevelManagedEntityHistoryView@@QAEHXZ
 /INCLUDE:?GetActiveStateThunk@LevelManagedEntityChildIterator@@QAEHXZ

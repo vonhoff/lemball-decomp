@@ -446,6 +446,7 @@ struct LevelManagedEntityChildIterator {
     void *GetChildWithState8(void);
     void *GetCurrentChildWithState8(void);
     int HasDirtyChildren(void);
+    int HasDirtyChildrenThunk(void);
 };
 
 // FUNCTION: LEMBALL 0x0041DEF0
@@ -606,6 +607,11 @@ int LevelManagedEntityChildIterator::HasDirtyChildren(void) {
         pChild = (LevelManagedEntityDirtyStateView *)GetNextChildThunk();
     }
     return fDirty;
+}
+
+// FUNCTION: LEMBALL 0x0040380A
+int LevelManagedEntityChildIterator::HasDirtyChildrenThunk(void) {
+    return HasDirtyChildren();
 }
 
 // FUNCTION: LEMBALL 0x004185D0
