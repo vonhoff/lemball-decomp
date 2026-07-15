@@ -1088,7 +1088,7 @@ void MogLoadDirectoryNode::FindResourceArchiveEntryByIdRecursive(
 }
 
 // FUNCTION: LEMBALL 0x0045BD50
-int ResourceArchiveComponentEquals(char *pszEntryName, char *pszPathComponent) {
+int LEMBALL_STDCALL ResourceArchiveComponentEquals(char *pszEntryName, char *pszPathComponent) {
     int fEqual;
     char chEntry;
 
