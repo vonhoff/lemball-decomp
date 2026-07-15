@@ -10,6 +10,9 @@
 /INCLUDE:?CopyThunk@LevelThreeDwordPointVariantB@@QAEPAU1@PBU1@@Z
 /INCLUDE:?CopyWorldPositionThunk@LevelManagedEntityPositionView@@QAEPAULevelThreeDwordPoint@@PAU2@@Z
 /INCLUDE:?GetPositionThunk@LevelManagedEntityQueueCursor@@QAEXPAH0@Z
+/INCLUDE:?SetPosition@LevelManagedEntityQueueCursor@@QAEXHH@Z
+/INCLUDE:?ClampPosition@LevelManagedEntityQueueCursor@@QAEXXZ
+/INCLUDE:?ClampPositionThunk@LevelManagedEntityQueueCursor@@QAEXXZ
 /INCLUDE:?HasPendingCommandsThunk@LevelManagedEntityCommandQueueView@@QAEHXZ
 /INCLUDE:?get_object_field_0x160@@YIHPAX@Z
 /INCLUDE:?get_object_field_0x124@@YIHPAX@Z

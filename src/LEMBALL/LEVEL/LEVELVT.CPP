@@ -688,7 +688,12 @@ struct LevelManagedEntityQueueCursor {
     char m_abReserved00[0x10];
     int m_nX10;
     int m_nY14;
+    int m_nMaximumX18;
+    int m_nMaximumY1C;
 
+    void SetPosition(int nX, int nY);
+    void ClampPosition(void);
+    void ClampPositionThunk(void);
     void GetPosition(int *pnX, int *pnY);
     void GetPositionThunk(int *pnX, int *pnY);
 };
@@ -873,6 +878,33 @@ LevelThreeDwordPoint *LevelManagedEntityPositionView::CopyWorldPositionThunk(Lev
 void LevelManagedEntityQueueCursor::GetPosition(int *pnX, int *pnY) {
     *pnX = m_nX10;
     *pnY = m_nY14;
+}
+
+// FUNCTION: LEMBALL 0x00414E00
+void LevelManagedEntityQueueCursor::SetPosition(int nX, int nY) {
+    m_nX10 = nX;
+    m_nY14 = nY;
+    ClampPositionThunk();
+}
+
+// FUNCTION: LEMBALL 0x00414E20
+void LevelManagedEntityQueueCursor::ClampPosition(void) {
+    if (m_nX10 > m_nMaximumX18) {
+        m_nX10 = m_nMaximumX18;
+    } else if (m_nX10 < 0) {
+        m_nX10 = 0;
+    }
+
+    if (m_nY14 > m_nMaximumY1C) {
+        m_nY14 = m_nMaximumY1C;
+    } else if (m_nY14 < 0) {
+        m_nY14 = 0;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00403215
+void LevelManagedEntityQueueCursor::ClampPositionThunk(void) {
+    ClampPosition();
 }
 
 // FUNCTION: LEMBALL 0x00401E65
