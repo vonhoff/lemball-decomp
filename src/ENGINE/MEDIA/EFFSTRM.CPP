@@ -7,7 +7,7 @@
 extern int PASCAL ReturnTrueVtableCallbackThunk(void *pObject);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
-extern void ReadNetworkLevelChunkDeltaStream(void *pObject);
+extern void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void *pObject);
 
 // FUNCTION: LEMBALL 0x004524F0
 void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStream(void *pObject) {

@@ -553,7 +553,7 @@ struct GameNetworkLevelChunkDeltaStream {
     void *ConstructNetworkLevelChunkDeltaStream(int nOwner);
     void *ConstructNetworkLevelChunkDeltaStreamEntry(int nOwner);
 };
-void ReadNetworkLevelChunkDeltaStream(void *pObject);
+void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void *pObject);
 void LEMBALL_FASTCALL LoadLevelGameStateStreamPayload(void *pObject);
 
 // GLOBAL: LEMBALL 0x00498610
@@ -644,7 +644,7 @@ void UpdateNetworkFrameClockFromNetworkTimeThunk(unsigned int nTimeMs) {
 }
 
 // FUNCTION: LEMBALL 0x00453070
-void ReadNetworkLevelChunkDeltaStream(void *pObject) {
+void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void *pObject) {
     unsigned char *pbObject;
     unsigned short nTag;
     int nSourceBuffer;
