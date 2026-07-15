@@ -1858,7 +1858,7 @@ void *LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode) {
 }
 
 // FUNCTION: LEMBALL 0x004632A0
-void GameRenderDispatchQueue::RegisterOrderedRenderDispatchClient(void *pClient, int nOrder) {
+int GameRenderDispatchQueue::RegisterOrderedRenderDispatchClient(void *pClient, int nOrder) {
     GameRenderDispatchClientNode *pNode;
     GameRenderDispatchClientNode *pCurrent;
     GameRenderDispatchClientNode *pPrevious;
@@ -1875,14 +1875,14 @@ void GameRenderDispatchQueue::RegisterOrderedRenderDispatchClient(void *pClient,
         m_pClientList = pNode;
         m_cClients = 1;
         UnlockDispatchQueue();
-        return;
+        return 1;
     }
 
     if (m_cClients == 0) {
         m_pClientList = pNode;
         m_cClients = 1;
         UnlockDispatchQueue();
-        return;
+        return 1;
     }
 
     pPrevious = pCurrent;
@@ -1898,19 +1898,20 @@ void GameRenderDispatchQueue::RegisterOrderedRenderDispatchClient(void *pClient,
             }
             ++m_cClients;
             UnlockDispatchQueue();
-            return;
+            return 1;
         }
         if (pCurrent->m_pNext == 0) {
             pCurrent->m_pNext = pNode;
             ++m_cClients;
             UnlockDispatchQueue();
-            return;
+            return 1;
         }
         ++i;
         pPrevious = pCurrent;
         pCurrent = pCurrent->m_pNext;
     }
     UnlockDispatchQueue();
+    return 0;
 }
 
 // FUNCTION: LEMBALL 0x004633B0

@@ -137,7 +137,7 @@ struct GameRenderDispatchQueue {
     void *m_pTail;
     void *m_pClientList;
 
-    void RegisterOrderedRenderDispatchClient(void *pClient, int nOrder);
+    int RegisterOrderedRenderDispatchClient(void *pClient, int nOrder);
     void UnregisterOrderedRenderDispatchClient(void *pClient, int nOrder);
 
     void LockDispatchQueue(void) {
