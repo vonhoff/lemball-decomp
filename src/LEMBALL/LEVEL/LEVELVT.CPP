@@ -192,6 +192,11 @@ int return_false_virtual_hook(void) {
 void noop_managed_entity_group_detach_hook(void) {
 }
 
+// FUNCTION: LEMBALL 0x004020C2
+void NoopManagedEntityGroupDetachHookThunk(void) {
+    noop_managed_entity_group_detach_hook();
+}
+
 // FUNCTION: LEMBALL 0x0041A1C0
 void noop_projectile_geometry_callback(void) {
 }

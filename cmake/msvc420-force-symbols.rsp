@@ -60,3 +60,4 @@
 /INCLUDE:?GetActiveStateThunk@LevelManagedEntityChildIterator@@QAEHXZ
 /INCLUDE:?GetFirstActiveEntity@LevelManagedEntityActiveGroupView@@QAEPAULevelManagedEntityChildIterator@@XZ
 /INCLUDE:?GetFirstActiveEntityThunk@LevelManagedEntityActiveGroupView@@QAEPAULevelManagedEntityChildIterator@@XZ
+/INCLUDE:?NoopManagedEntityGroupDetachHookThunk@@YAXXZ
