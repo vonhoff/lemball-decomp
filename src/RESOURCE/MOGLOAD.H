@@ -92,7 +92,7 @@ void *AllocateResourceArchiveMemory(unsigned int cbBytes);
 void FreeResourceArchiveMemory(void *pMemoryBlock);
 void LEMBALL_FASTCALL DestroyResourceArchive(void *pArchive);
 void *FindCachedResourceObjectById(void *pArchive, int nResourceId);
-int AreAllCachedResourceObjectsUnreferenced(void *pArchive);
+int LEMBALL_FASTCALL AreAllCachedResourceObjectsUnreferenced(void *pArchive);
 void PruneUnreferencedCachedResourceObjects(void *pArchive);
 MogLoadStringResourceObject *LoadStringResource(int nResourceId);
 void *LoadEffResource(int nResourceId);

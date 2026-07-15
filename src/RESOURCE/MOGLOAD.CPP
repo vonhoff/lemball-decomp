@@ -1386,7 +1386,7 @@ void MogLoadResourceArchive::RemoveCachedResourceObject(void *pResourceObject) {
 }
 
 // FUNCTION: LEMBALL 0x0045CD60
-int AreAllCachedResourceObjectsUnreferenced(void *pArchive) {
+int LEMBALL_FASTCALL AreAllCachedResourceObjectsUnreferenced(void *pArchive) {
     MogLoadResourceArchive *pResourceArchive;
     int cRemaining;
     int iSlot;
