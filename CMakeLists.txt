@@ -1,18 +1,56 @@
 cmake_minimum_required(VERSION 3.15)
 project(lemball_decomp CXX)
 
-function(lemball_force_include target)
-    foreach(symbol ${ARGN})
-        set_property(TARGET ${target} APPEND_STRING PROPERTY
-            LINK_FLAGS " /INCLUDE:${symbol}")
-    endforeach()
-endfunction()
-
 option(LEMBALL_ENABLE_WIN32 "Build the reconstructed Win32 executable" ON)
 option(LEMBALL_SKIP_CD_TEST "Skip CD probing and use the current directory" OFF)
 option(LEMBALL_SKIP_REGISTRY_RUNNING_STATE "Skip updating the registry running state" OFF)
 
-set(VISOS_SOURCES
+set(LEMBALL_SOURCES
+    src/GAME.H
+    src/FRONTEND/CURSOR.H
+    src/FRONTEND/MAINMENU.H
+    src/FRONTEND/MENUSEL.H
+    src/LEVEL/DEMO.H
+    src/LEVEL/LEVELRUN.H
+    src/LEVEL/TYPE18.H
+    src/RESOURCE/VARLOAD.H
+    src/RESOURCE/VARMGR.H
+    src/SHELL/ENTRY.H
+    src/SHELL/OPTIONS.H
+    src/SHELL/SHELLUI.H
+    src/ENGINE/CORE/COMMON.H
+    src/ENGINE/CORE/SAFEVT.H
+    src/ENGINE/CORE/VSINIT.H
+    src/ENGINE/CORE/VSMATH.H
+    src/ENGINE/CORE/VSMEM.H
+    src/ENGINE/CORE/WIN32.H
+    src/ENGINE/DEBUG/CTEXTWIN.H
+    src/ENGINE/DEBUG/VSDBG.H
+    src/ENGINE/GDI/VSGDI.H
+    src/ENGINE/GDI/VSINVIS.H
+    src/ENGINE/GDI/VSWINDOW.H
+    src/ENGINE/MEDIA/EFFSTRM.H
+    src/ENGINE/MEDIA/VSSOUND.H
+    src/ENGINE/MEDIA/VSSTRM.H
+    src/ENGINE/NET/VSNET.H
+    src/RESOURCE/MOGLOAD.H
+    src/GAME.CPP
+    src/FRONTEND/MAINMENU.CPP
+    src/SHELL/PRIMARY.CPP
+    src/LEVEL/TYPE18.CPP
+    src/LEVEL/LEVELRUN.CPP
+    src/LEVEL/LEVELVT.CPP
+    src/FRONTEND/SCREENVT.CPP
+    src/FRONTEND/LOBBYVT.CPP
+    src/LEVEL/LEVELSTAT.CPP
+    src/FRONTEND/MENUSEL.CPP
+    src/RESOURCE/VARLOAD.CPP
+    src/RESOURCE/VARMGR.CPP
+    src/FRONTEND/LOBBY.CPP
+    src/SHELL/ENTRY.CPP
+    src/SHELL/SHELLUI.CPP
+    src/SHELL/OPTIONS.CPP
+    src/LEVEL/DEMO.CPP
     src/ENGINE/GDI/VSGDI.CPP
     src/ENGINE/CORE/VSMEM.CPP
     src/ENGINE/GDI/VSWING.CPP
@@ -38,47 +76,10 @@ set(VISOS_SOURCES
     src/ENGINE/CORE/LINKSCF.CPP
 )
 
-set(LEMBALL_SOURCES
-    src/GAME.CPP
-    src/FRONTEND/MAINMENU.CPP
-    src/SHELL/PRIMARY.CPP
-    src/LEVEL/TYPE18.CPP
-    src/LEVEL/LEVELRUN.CPP
-    src/LEVEL/LEVELVT.CPP
-    src/FRONTEND/SCREENVT.CPP
-    src/FRONTEND/LOBBYVT.CPP
-    src/LEVEL/LEVELSTAT.CPP
-    src/FRONTEND/MENUSEL.CPP
-    src/RESOURCE/VARLOAD.CPP
-    src/RESOURCE/VARMGR.CPP
-    src/FRONTEND/LOBBY.CPP
-    src/SHELL/ENTRY.CPP
-    src/SHELL/SHELLUI.CPP
-    src/SHELL/OPTIONS.CPP
-    src/LEVEL/DEMO.CPP
-)
-
 if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "OpenWatcom" AND (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "11.0" OR NOT MSVC))
     set(CMAKE_CXX_STANDARD 98)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
     set(CMAKE_CXX_EXTENSIONS OFF)
-endif()
-
-add_library(VISOS STATIC ${VISOS_SOURCES})
-target_include_directories(VISOS
-    PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src"
-)
-target_compile_definitions(VISOS PRIVATE LEMBALL_1996_CXX=1)
-set_property(TARGET VISOS PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
-if(LEMBALL_SKIP_CD_TEST)
-    target_compile_definitions(VISOS PRIVATE LEMBALL_SKIP_CD_TEST=1)
-endif()
-
-if(LEMBALL_SKIP_REGISTRY_RUNNING_STATE)
-    target_compile_definitions(VISOS PRIVATE LEMBALL_SKIP_REGISTRY_RUNNING_STATE=1)
-endif()
-if(APPLE)
-    target_compile_definitions(VISOS PRIVATE LEMBALL_HOST_MACOS=1)
 endif()
 
 if(LEMBALL_ENABLE_WIN32)
@@ -101,7 +102,6 @@ if(LEMBALL_ENABLE_WIN32)
 
     add_executable(LEMBALL WIN32 ${LEMBALL_SOURCES} ${LEMBALL_RESOURCE_OBJECTS})
     target_include_directories(LEMBALL PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
-    target_link_libraries(LEMBALL PRIVATE VISOS)
     target_compile_definitions(LEMBALL PRIVATE LEMBALL_1996_CXX=1)
     if(LEMBALL_SKIP_CD_TEST)
         target_compile_definitions(LEMBALL PRIVATE LEMBALL_SKIP_CD_TEST=1)
@@ -127,10 +127,6 @@ if(LEMBALL_ENABLE_WIN32)
         set_target_properties(LEMBALL PROPERTIES
             LINK_FLAGS "user32.lib gdi32.lib advapi32.lib winmm.lib wsock32.lib ws2_32.lib /MAP:LEMBALL.map"
         )
-        # Pull the four otherwise-unreferenced VISOS archive members that
-        # contain annotated binary-owned callbacks and debug helpers.
-        set_property(TARGET LEMBALL APPEND_STRING PROPERTY LINK_FLAGS
-            " @${CMAKE_CURRENT_SOURCE_DIR}/cmake/msvc420-force-symbols.rsp")
     endif()
     set(LEMBALL_DEPLOY_COMMANDS)
     foreach(LEMBALL_DEPENDENCY DSPDIB16.DLL DSPDIB32.DLL PBAIMOG.VSR)
