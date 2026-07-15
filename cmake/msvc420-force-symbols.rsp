@@ -57,3 +57,6 @@
 /INCLUDE:?HasDirtyChildren@LevelManagedEntityChildIterator@@QAEHXZ
 /INCLUDE:?PopHistoryId@LevelManagedEntityHistoryView@@QAEHXZ
 /INCLUDE:?PopHistoryIdThunk@LevelManagedEntityHistoryView@@QAEHXZ
+/INCLUDE:?GetActiveStateThunk@LevelManagedEntityChildIterator@@QAEHXZ
+/INCLUDE:?GetFirstActiveEntity@LevelManagedEntityActiveGroupView@@QAEPAULevelManagedEntityChildIterator@@XZ
+/INCLUDE:?GetFirstActiveEntityThunk@LevelManagedEntityActiveGroupView@@QAEPAULevelManagedEntityChildIterator@@XZ

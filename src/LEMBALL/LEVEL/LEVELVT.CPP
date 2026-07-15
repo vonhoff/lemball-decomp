@@ -401,6 +401,17 @@ struct LevelManagedEntityHistoryView {
     int PopHistoryIdThunk(void);
 };
 
+struct LevelManagedEntityChildIterator;
+
+struct LevelManagedEntityActiveGroupView {
+    void *m_pReserved00;
+    LevelManagedEntityChildIterator *m_apManagedEntities04[40];
+    int m_cManagedEntitiesA4;
+
+    LevelManagedEntityChildIterator *GetFirstActiveEntity(void);
+    LevelManagedEntityChildIterator *GetFirstActiveEntityThunk(void);
+};
+
 struct LevelManagedEntityChildIterator {
     char m_abReserved00[0x124];
     int m_cChildren124;
@@ -421,6 +432,7 @@ struct LevelManagedEntityChildIterator {
     void *GetNextChildThunk(void);
     void *GetCurrentChildThunk(void);
     int GetActiveState(void);
+    int GetActiveStateThunk(void);
     void *GetChildWithState8(void);
     void *GetCurrentChildWithState8(void);
     int HasDirtyChildren(void);
@@ -509,6 +521,11 @@ void *LevelManagedEntityChildIterator::GetCurrentChildThunk(void) {
 // FUNCTION: LEMBALL 0x00414880
 int LevelManagedEntityChildIterator::GetActiveState(void) {
     return m_nActiveState168;
+}
+
+// FUNCTION: LEMBALL 0x00403477
+int LevelManagedEntityChildIterator::GetActiveStateThunk(void) {
+    return GetActiveState();
 }
 
 // FUNCTION: LEMBALL 0x00414890
@@ -966,6 +983,25 @@ LevelThreeDwordPoint *LevelManagedEntityPositionView::CopyWorldPosition(LevelThr
 // FUNCTION: LEMBALL 0x004010BE
 LevelThreeDwordPoint *LevelManagedEntityPositionView::CopyWorldPositionThunk(LevelThreeDwordPoint *pPosition) {
     return CopyWorldPosition(pPosition);
+}
+
+// FUNCTION: LEMBALL 0x004189F0
+LevelManagedEntityChildIterator *LevelManagedEntityActiveGroupView::GetFirstActiveEntity(void) {
+    LevelManagedEntityChildIterator *pEntity;
+    int iEntity;
+
+    for (iEntity = 0; iEntity < m_cManagedEntitiesA4; ++iEntity) {
+        pEntity = m_apManagedEntities04[iEntity];
+        if (pEntity != 0 && pEntity->GetActiveStateThunk() == 1) {
+            return m_apManagedEntities04[iEntity];
+        }
+    }
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x004021DF
+LevelManagedEntityChildIterator *LevelManagedEntityActiveGroupView::GetFirstActiveEntityThunk(void) {
+    return GetFirstActiveEntity();
 }
 
 // FUNCTION: LEMBALL 0x00414CD0
