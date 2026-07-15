@@ -878,7 +878,7 @@ int LevelManagedEntityStateFields::IsStateNotInactiveThunk(void) {
 
 // FUNCTION: LEMBALL 0x004102D0
 int LevelManagedEntityStateFields::IsStateAvailableForVariant(void) {
-    unsigned int nVariant;
+    int nVariant;
 
     if (!IsStateNotInactiveThunk()) {
         return 0;
