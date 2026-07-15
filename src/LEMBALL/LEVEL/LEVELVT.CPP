@@ -392,6 +392,15 @@ struct LevelManagedEntityDirtyStateView {
     int PollChildDirtyFlagThunk(void);
 };
 
+struct LevelManagedEntityHistoryView {
+    char m_abReserved00[0x128];
+    int m_cHistoryIds128;
+    int m_anHistoryIds12C[1];
+
+    int PopHistoryId(void);
+    int PopHistoryIdThunk(void);
+};
+
 struct LevelManagedEntityChildIterator {
     char m_abReserved00[0x124];
     int m_cChildren124;
@@ -572,6 +581,22 @@ int LevelManagedEntityChildIterator::HasDirtyChildren(void) {
         pChild = (LevelManagedEntityDirtyStateView *)GetNextChildThunk();
     }
     return fDirty;
+}
+
+// FUNCTION: LEMBALL 0x004185D0
+int LevelManagedEntityHistoryView::PopHistoryId(void) {
+    int iHistoryId;
+
+    if (m_cHistoryIds128 == 0) {
+        return 0;
+    }
+    iHistoryId = --m_cHistoryIds128;
+    return m_anHistoryIds12C[iHistoryId];
+}
+
+// FUNCTION: LEMBALL 0x00402833
+int LevelManagedEntityHistoryView::PopHistoryIdThunk(void) {
+    return PopHistoryId();
 }
 
 // FUNCTION: LEMBALL 0x0041E410
