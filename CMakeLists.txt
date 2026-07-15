@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.15)
 project(lemball_decomp CXX)
 
+function(lemball_force_include target)
+    foreach(symbol ${ARGN})
+        set_property(TARGET ${target} APPEND_STRING PROPERTY
+            LINK_FLAGS " /INCLUDE:${symbol}")
+    endforeach()
+endfunction()
+
 option(LEMBALL_ENABLE_WIN32 "Build the reconstructed Win32 executable" ON)
 option(LEMBALL_SKIP_CD_TEST "Skip CD probing and use the current directory" OFF)
 option(LEMBALL_SKIP_REGISTRY_RUNNING_STATE "Skip updating the registry running state" OFF)
@@ -118,7 +125,24 @@ if(LEMBALL_ENABLE_WIN32)
         )
     else()
         set_target_properties(LEMBALL PROPERTIES
-            LINK_FLAGS "user32.lib gdi32.lib advapi32.lib winmm.lib wsock32.lib ws2_32.lib /MAP:LEMBALL.map /INCLUDE:?_RAWOUT_DebugString@@YAHPBD@Z /INCLUDE:?initialize_debug_text_line_record@@YIPAXPAX@Z /INCLUDE:?noop_embedded_mci_callback_0046e050@@YGXPAX@Z /INCLUDE:?two_array_list_is_first_entry_loaded_false@@YAHXZ"
+            LINK_FLAGS "user32.lib gdi32.lib advapi32.lib winmm.lib wsock32.lib ws2_32.lib /MAP:LEMBALL.map"
+        )
+        # Keep COMDAT functions until their binary-backed callers or vtables
+        # are reconstructed.
+        lemball_force_include(LEMBALL
+            "?_RAWOUT_DebugString@@YAHPBD@Z"
+            "?initialize_debug_text_line_record@@YIPAXPAX@Z"
+            "?noop_embedded_mci_callback_0046e050@@YGXPAX@Z"
+            "?two_array_list_is_first_entry_loaded_false@@YAHXZ"
+            "?SetStateIdWithVariantLocalThunk@LevelManagedEntityStateFields@@QAEXHH@Z"
+            "?CopyThunk@LevelThreeDwordPoint@@QAEPAU1@PBU1@@Z"
+            "?CopyThunk@LevelTwoDwordPair@@QAEPAU1@PBU1@@Z"
+            "?CopyThunk@LevelThreeDwordPointVariant@@QAEPAU1@PBU1@@Z"
+            "?GetRequestCodeThunk@LevelQueuedProjectileRequestTable@@QAEHH@Z"
+            "?CopyThunk@LevelThreeDwordPointVariantB@@QAEPAU1@PBU1@@Z"
+            "?CopyWorldPositionThunk@LevelManagedEntityPositionView@@QAEPAULevelThreeDwordPoint@@PAU2@@Z"
+            "?GetPositionThunk@LevelManagedEntityQueueCursor@@QAEXPAH0@Z"
+            "?HasPendingCommandsThunk@LevelManagedEntityCommandQueueView@@QAEHXZ"
         )
     endif()
     set(LEMBALL_DEPLOY_COMMANDS)

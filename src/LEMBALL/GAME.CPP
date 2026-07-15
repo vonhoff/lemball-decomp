@@ -175,6 +175,8 @@ struct GameLevelProgressState {
     unsigned int EncodePasswordValue(void);
     void ApplyPasswordValue(unsigned int uValue);
     void ApplyPasswordValueThunk(unsigned int uValue);
+    unsigned int ComputeLevelPasswordChecksum(unsigned int uValue);
+    unsigned int ComputeLevelPasswordChecksumThunk(unsigned int uValue);
     char *FormatPassword(void);
     int ValidateAndApplyPassword(char *pszPassword);
     int ParsePasswordDigits(void);
@@ -1013,8 +1015,9 @@ void GameLevelProgressState::ApplyPasswordValueThunk(unsigned int uValue) {
     ApplyPasswordValue(uValue);
 }
 
+#if defined(_MSC_VER) && _MSC_VER == 1020
 // FUNCTION: LEMBALL 0x00406BA0
-__declspec(naked) unsigned int LEMBALL_STDCALL ComputeLevelPasswordChecksum(unsigned int) {
+__declspec(naked) unsigned int GameLevelProgressState::ComputeLevelPasswordChecksum(unsigned int) {
     __asm {
         mov ecx, dword ptr [esp + 4]
         mov eax, ecx
@@ -1027,11 +1030,39 @@ __declspec(naked) unsigned int LEMBALL_STDCALL ComputeLevelPasswordChecksum(unsi
         ret 4
     }
 }
+#else
+unsigned int GameLevelProgressState::ComputeLevelPasswordChecksum(unsigned int uValue) {
+    return ((uValue >> 16) + uValue + (uValue >> 8)) & 0x1f;
+}
+#endif
 
 // FUNCTION: LEMBALL 0x00403323
-__declspec(naked) unsigned int LEMBALL_STDCALL ComputeLevelPasswordChecksumThunk(unsigned int) {
-    __asm jmp ComputeLevelPasswordChecksum
+unsigned int GameLevelProgressState::ComputeLevelPasswordChecksumThunk(unsigned int uValue) {
+    return ComputeLevelPasswordChecksum(uValue);
 }
+
+// FUNCTION: LEMBALL 0x00406BC0
+int PASCAL ComputePowerOfTwo(int nExponent) {
+    int nValue;
+
+    nValue = 1;
+    while (nExponent != 0) {
+        nValue *= 2;
+        --nExponent;
+    }
+    return nValue;
+}
+
+#if defined(_MSC_VER) && _MSC_VER == 1020
+// FUNCTION: LEMBALL 0x004036E3
+__declspec(naked) int PASCAL ComputePowerOfTwoThunk(int) {
+    __asm jmp ComputePowerOfTwo
+}
+#else
+int PASCAL ComputePowerOfTwoThunk(int nExponent) {
+    return ComputePowerOfTwo(nExponent);
+}
+#endif
 
 // FUNCTION: LEMBALL 0x00406C00
 char *GameLevelProgressState::FormatPassword(void) {
@@ -1051,6 +1082,7 @@ char *GameLevelProgressState::FormatPassword(void) {
 // FUNCTION: LEMBALL 0x00406CA0
 int GameLevelProgressState::ValidateAndApplyPassword(char *pszPassword) {
     int i;
+    unsigned int uChecksum;
     unsigned int uValue;
 
     strcpy(m_szPassword, pszPassword);
@@ -1068,7 +1100,8 @@ int GameLevelProgressState::ValidateAndApplyPassword(char *pszPassword) {
     if (uValue == 0) {
         return 0;
     }
-    if (((uValue & 0x1f000000) >> 0x18) != ComputeLevelPasswordChecksumThunk(uValue)) {
+    uChecksum = ComputeLevelPasswordChecksumThunk(uValue);
+    if (((uValue & 0x1f000000) >> 0x18) != uChecksum) {
         return 0;
     }
     ApplyPasswordValueThunk(uValue & 0xffffff);

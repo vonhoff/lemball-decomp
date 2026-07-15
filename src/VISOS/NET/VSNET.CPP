@@ -3421,8 +3421,8 @@ int VsNetEffTransportRuntimeState::BroadcastEffStreamToActivePeers(int *pStream)
                     pPeer = pPeer->m_pNext;
                     continue;
                 }
-                fSendBlocked = 1;
             }
+            fSendBlocked = 1;
         }
 
         pPeer = pPeer->m_pNext;

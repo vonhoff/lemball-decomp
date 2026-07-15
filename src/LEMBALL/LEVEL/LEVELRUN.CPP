@@ -465,7 +465,7 @@ void LevelSlnkChunkManager::ResetType35ChunkObjects(void) {
     cbObjectOffset = 0;
     if (pManager->m_pObjects04 != 0) {
 #if defined(_MSC_VER) && _MSC_VER == 1020
-        // Preserve the original MSVC 4.20 register-initialization schedule.
+        // Prevent MSVC 4.20 from hoisting the loop index initialization.
         __asm {
         }
 #endif

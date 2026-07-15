@@ -421,6 +421,408 @@ void __fastcall set_object_field_0x160(void *pObject, void *pUnused, int nValue)
 extern int g_nLevelFrameClockTick;
 extern void *g_pSharedRenderDispatchQueue;
 
+struct LevelManagedEntityStateFields {
+    char m_abReserved00[0xb8];
+    int m_nStateIdB8;
+    unsigned short m_nStateVariantBC;
+
+    void SetStateIdWithVariantLocal(int nStateId, int nVariant);
+    void SetStateIdWithVariantLocalThunk(int nStateId, int nVariant);
+};
+
+struct LevelThreeDwordPoint {
+    int m_nX;
+    int m_nY;
+    int m_nZ;
+
+    LevelThreeDwordPoint *Copy(const LevelThreeDwordPoint *pSource);
+    LevelThreeDwordPoint *CopyThunk(const LevelThreeDwordPoint *pSource);
+};
+
+struct LevelTwoDwordPair {
+    int m_nFirst;
+    int m_nSecond;
+
+    LevelTwoDwordPair *Copy(const LevelTwoDwordPair *pSource);
+    LevelTwoDwordPair *CopyThunk(const LevelTwoDwordPair *pSource);
+};
+
+struct LevelThreeDwordPointVariant {
+    int m_nX;
+    int m_nY;
+    int m_nZ;
+
+    LevelThreeDwordPointVariant *Copy(
+        const LevelThreeDwordPointVariant *pSource);
+    LevelThreeDwordPointVariant *CopyThunk(
+        const LevelThreeDwordPointVariant *pSource);
+};
+
+struct LevelQueuedProjectileRequestTable {
+    char m_abReserved00[0x1c0];
+    int m_anRequestCodes1C0[24];
+    int m_cRequestCodes220;
+
+    int GetRequestCode(int nIndex);
+    int GetRequestCodeThunk(int nIndex);
+};
+
+struct LevelThreeDwordPointVariantB {
+    int m_nX;
+    int m_nY;
+    int m_nZ;
+
+    LevelThreeDwordPointVariantB *Copy(
+        const LevelThreeDwordPointVariantB *pSource);
+    LevelThreeDwordPointVariantB *CopyThunk(
+        const LevelThreeDwordPointVariantB *pSource);
+};
+
+struct LevelManagedEntityPositionView {
+    void *m_pVtable00;
+    LevelThreeDwordPoint m_WorldPosition04;
+
+    LevelThreeDwordPoint *CopyWorldPosition(LevelThreeDwordPoint *pPosition);
+    LevelThreeDwordPoint *CopyWorldPositionThunk(LevelThreeDwordPoint *pPosition);
+};
+
+struct LevelManagedEntityQueueCursor {
+    char m_abReserved00[0x10];
+    int m_nX10;
+    int m_nY14;
+
+    void GetPosition(int *pnX, int *pnY);
+    void GetPositionThunk(int *pnX, int *pnY);
+};
+
+struct LevelManagedEntityCommandQueueView {
+    char m_abReserved00[0x70];
+    unsigned short *m_pCommandCount70;
+
+    int HasPendingCommands(void);
+    int HasPendingCommandsThunk(void);
+};
+
+// FUNCTION: LEMBALL 0x0040AB50
+int PASCAL IsManagedEntityState18(int nState) {
+    return nState == 0x18;
+}
+
+#if defined(_MSC_VER) && _MSC_VER == 1020
+// FUNCTION: LEMBALL 0x0040335F
+__declspec(naked) int PASCAL IsManagedEntityState18Thunk(int) {
+    __asm jmp IsManagedEntityState18
+}
+#else
+int PASCAL IsManagedEntityState18Thunk(int nState) {
+    return IsManagedEntityState18(nState);
+}
+#endif
+
+// FUNCTION: LEMBALL 0x0040C180
+void LevelManagedEntityStateFields::SetStateIdWithVariantLocal(int nStateId, int nVariant) {
+    m_nStateIdB8 = nStateId;
+    m_nStateVariantBC = (unsigned short)nVariant;
+}
+
+// FUNCTION: LEMBALL 0x004024BE
+void LevelManagedEntityStateFields::SetStateIdWithVariantLocalThunk(int nStateId, int nVariant) {
+    SetStateIdWithVariantLocal(nStateId, nVariant);
+}
+
+// FUNCTION: LEMBALL 0x0040C270
+LevelThreeDwordPoint *LevelThreeDwordPoint::Copy(const LevelThreeDwordPoint *pSource) {
+    m_nX = pSource->m_nX;
+    m_nY = pSource->m_nY;
+    m_nZ = pSource->m_nZ;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x004018A7
+LevelThreeDwordPoint *LevelThreeDwordPoint::CopyThunk(const LevelThreeDwordPoint *pSource) {
+    return Copy(pSource);
+}
+
+// FUNCTION: LEMBALL 0x0040C290
+LevelTwoDwordPair *LevelTwoDwordPair::Copy(const LevelTwoDwordPair *pSource) {
+    m_nFirst = pSource->m_nFirst;
+    m_nSecond = pSource->m_nSecond;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x00401ED3
+LevelTwoDwordPair *LevelTwoDwordPair::CopyThunk(const LevelTwoDwordPair *pSource) {
+    return Copy(pSource);
+}
+
+// FUNCTION: LEMBALL 0x0040C2B0
+LevelThreeDwordPointVariant *LevelThreeDwordPointVariant::Copy(const LevelThreeDwordPointVariant *pSource) {
+    m_nX = pSource->m_nX;
+    m_nY = pSource->m_nY;
+    m_nZ = pSource->m_nZ;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x00401046
+LevelThreeDwordPointVariant *LevelThreeDwordPointVariant::CopyThunk(const LevelThreeDwordPointVariant *pSource) {
+    return Copy(pSource);
+}
+
+// FUNCTION: LEMBALL 0x0040FCB0
+int LevelQueuedProjectileRequestTable::GetRequestCode(int nIndex) {
+    if (nIndex >= m_cRequestCodes220) {
+        return 0xffff;
+    }
+    return m_anRequestCodes1C0[nIndex];
+}
+
+// FUNCTION: LEMBALL 0x0040269E
+int LevelQueuedProjectileRequestTable::GetRequestCodeThunk(int nIndex) {
+    return GetRequestCode(nIndex);
+}
+
+// FUNCTION: LEMBALL 0x00410B50
+LevelThreeDwordPointVariantB *LevelThreeDwordPointVariantB::Copy(const LevelThreeDwordPointVariantB *pSource) {
+    m_nX = pSource->m_nX;
+    m_nY = pSource->m_nY;
+    m_nZ = pSource->m_nZ;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x0040161D
+LevelThreeDwordPointVariantB *LevelThreeDwordPointVariantB::CopyThunk(const LevelThreeDwordPointVariantB *pSource) {
+    return Copy(pSource);
+}
+
+// FUNCTION: LEMBALL 0x00414CB0
+LevelThreeDwordPoint *LevelManagedEntityPositionView::CopyWorldPosition(LevelThreeDwordPoint *pPosition) {
+    pPosition->m_nX = m_WorldPosition04.m_nX;
+    pPosition->m_nY = m_WorldPosition04.m_nY;
+    pPosition->m_nZ = m_WorldPosition04.m_nZ;
+    return pPosition;
+}
+
+// FUNCTION: LEMBALL 0x004010BE
+LevelThreeDwordPoint *LevelManagedEntityPositionView::CopyWorldPositionThunk(LevelThreeDwordPoint *pPosition) {
+    return CopyWorldPosition(pPosition);
+}
+
+// FUNCTION: LEMBALL 0x00414E60
+void LevelManagedEntityQueueCursor::GetPosition(int *pnX, int *pnY) {
+    *pnX = m_nX10;
+    *pnY = m_nY14;
+}
+
+// FUNCTION: LEMBALL 0x00401E65
+void LevelManagedEntityQueueCursor::GetPositionThunk(int *pnX, int *pnY) {
+    GetPosition(pnX, pnY);
+}
+
+// FUNCTION: LEMBALL 0x004160C0
+int LevelManagedEntityCommandQueueView::HasPendingCommands(void) {
+    return 0 < *m_pCommandCount70;
+}
+
+// FUNCTION: LEMBALL 0x00401F37
+int LevelManagedEntityCommandQueueView::HasPendingCommandsThunk(void) {
+    return HasPendingCommands();
+}
+
+typedef void (LEMBALL_FASTCALL *LevelManagedEntityNoArgVirtualProc)(void *pEntity);
+typedef void (LEMBALL_FASTCALL *LevelManagedEntityIntVirtualProc)(
+    void *pEntity, void *pUnused, int nValue);
+
+// FUNCTION: LEMBALL 0x00418720
+void PASCAL ResetManagedEntityGroupState(void *pEntity) {
+    void **pVtable;
+
+    pVtable = *(void ***)pEntity;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0x104 / sizeof(void *)])(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x00419B00
+void __cdecl ForwardManagedEntityVslot7C(void *pUnused, void *pEntity) {
+    void **pVtable;
+
+    (void)pUnused;
+    pVtable = *(void ***)pEntity;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0x7c / sizeof(void *)])(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x00419C80
+void __cdecl ForwardManagedEntityVslot1C(void *pUnused, void *pEntity) {
+    void **pVtable;
+
+    (void)pUnused;
+    pVtable = *(void ***)pEntity;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0x1c / sizeof(void *)])(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x00419D80
+void __cdecl ForwardManagedEntityVslot30(void *pUnused, void *pEntity) {
+    void **pVtable;
+
+    (void)pUnused;
+    pVtable = *(void ***)pEntity;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0x30 / sizeof(void *)])(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x00419E50
+void __cdecl ForwardManagedEntityVslot3C(void *pUnused, void *pEntity) {
+    void **pVtable;
+
+    (void)pUnused;
+    pVtable = *(void ***)pEntity;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0x3c / sizeof(void *)])(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x00419E60
+void __cdecl ForwardManagedEntityVslot40(void *pUnused, void *pEntity) {
+    void **pVtable;
+
+    (void)pUnused;
+    pVtable = *(void ***)pEntity;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0x40 / sizeof(void *)])(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x00419E70
+void __cdecl ForwardManagedEntityVslot68(void *pUnused, void *pEntity) {
+    void **pVtable;
+
+    (void)pUnused;
+    pVtable = *(void ***)pEntity;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0x68 / sizeof(void *)])(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x00419E80
+void __cdecl ForwardManagedEntityVslot24(void *pUnused, void *pEntity) {
+    void **pVtable;
+
+    (void)pUnused;
+    pVtable = *(void ***)pEntity;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0x24 / sizeof(void *)])(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x00419EB0
+void __cdecl ForwardManagedEntityVslot44(void *pUnused, void *pEntity) {
+    void **pVtable;
+
+    (void)pUnused;
+    pVtable = *(void ***)pEntity;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0x44 / sizeof(void *)])(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x00419C30
+int __cdecl CallHasPendingManagedEntityCommands(void *pUnused, LevelManagedEntityCommandQueueView *pEntity) {
+    (void)pUnused;
+    return pEntity->HasPendingCommandsThunk();
+}
+
+// FUNCTION: LEMBALL 0x00419F20
+void __cdecl ForwardManagedEntityVslotD0(void *pUnused, void *pEntity) {
+    void **pVtable;
+
+    (void)pUnused;
+    pVtable = *(void ***)pEntity;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0xd0 / sizeof(void *)])(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x00419F60
+void __cdecl ClearPlasChildRuntimeFlag30(void *pUnused, void *pEntity) {
+    void **pVtable;
+
+    (void)pUnused;
+    pVtable = *(void ***)pEntity;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0xdc / sizeof(void *)])(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x00419F70
+void __cdecl ForwardManagedEntityVslot9C(void *pUnused, void *pEntity) {
+    void **pVtable;
+
+    (void)pUnused;
+    pVtable = *(void ***)pEntity;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0x9c / sizeof(void *)])(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x00419F80
+void __cdecl ForwardManagedEntityVslot8C(void *pUnused, void *pEntity) {
+    void **pVtable;
+
+    (void)pUnused;
+    pVtable = *(void ***)pEntity;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0x8c / sizeof(void *)])(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x00419F90
+void __cdecl ForwardManagedEntityVslot88(void *pUnused, void *pEntity) {
+    void **pVtable;
+
+    (void)pUnused;
+    pVtable = *(void ***)pEntity;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0x88 / sizeof(void *)])(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x00419FA0
+void __cdecl ForwardManagedEntityVslot90(void *pUnused, void *pEntity) {
+    void **pVtable;
+
+    (void)pUnused;
+    pVtable = *(void ***)pEntity;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0x90 / sizeof(void *)])(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x0040DD30
+int PASCAL IsDoorChunkIdleOrClosedState(int nState) {
+    if (nState != 0x18 && (nState < 0x1d || nState > 0x1e)) {
+        return 0;
+    }
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x00410AA0
+void LEMBALL_FASTCALL MarkObjectField178AndSetTimer3C(void *pObject) {
+    *(int *)((char *)pObject + 0x178) = 1;
+    *(int *)((char *)pObject + 0xcc) = g_nLevelFrameClockTick + 0x3c;
+}
+
+// FUNCTION: LEMBALL 0x00421AA0
+void LEMBALL_FASTCALL CallBallChunkEntryVfuncC8(void *pEntry, void *pUnused, int nUnused) {
+    void **pVtable;
+
+    (void)pUnused;
+    (void)nUnused;
+    pVtable = *(void ***)pEntry;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0xc8 / sizeof(void *)])(pEntry);
+}
+
+// FUNCTION: LEMBALL 0x00422B30
+void LEMBALL_FASTCALL DispatchVtableSlot34WithValue2(void *pObject, void *pUnused) {
+    void **pVtable;
+
+    pVtable = *(void ***)pObject;
+    ((LevelManagedEntityIntVirtualProc)pVtable[0x34 / sizeof(void *)])(
+        pObject, pUnused, 2);
+}
+
+// FUNCTION: LEMBALL 0x00422C60
+void LEMBALL_FASTCALL DispatchVtableSlot34WithValue2Variant(void *pObject, void *pUnused) {
+    void **pVtable;
+
+    pVtable = *(void ***)pObject;
+    ((LevelManagedEntityIntVirtualProc)pVtable[0x34 / sizeof(void *)])(
+        pObject, pUnused, 2);
+}
+
+// FUNCTION: LEMBALL 0x00422C70
+void LEMBALL_FASTCALL SendCollMessage16(void *pObject, void *pUnused) {
+    void **pVtable;
+
+    pVtable = *(void ***)pObject;
+    ((LevelManagedEntityIntVirtualProc)pVtable[0x34 / sizeof(void *)])(
+        pObject, pUnused, 0x16);
+}
+
 // FUNCTION: LEMBALL 0x0040F410
 void __fastcall schedule_door_chunk_object_update_in_10_ticks(void *pObject) {
     *(int *)((char *)pObject + 0xcc) = g_nLevelFrameClockTick + 10;
