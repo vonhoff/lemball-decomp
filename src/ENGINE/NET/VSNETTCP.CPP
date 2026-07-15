@@ -2639,7 +2639,7 @@ void VsNetHostLookupCompletionAdapter::HandleRemoteHostLookupComplete(int nError
     char *pszAddress;
     VsNetInetAddressEntry *pEntry;
     VsNetEffDispatchQueue *pDispatchQueue;
-    unsigned short cbAddress;
+    short cbAddress;
     unsigned char abEvent[20];
 
     pbLookup = *(char **)((char *)this + 0x24);
