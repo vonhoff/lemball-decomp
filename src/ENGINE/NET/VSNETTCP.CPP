@@ -3264,6 +3264,7 @@ void VsNetSocketWindowChannelWrapper::CaptureLastWinsockErrorStatus(void) {
 
 // FUNCTION: LEMBALL 0x00470ED0
 void VsNetHostLookupCompletionAdapter::HandleRemoteServiceHostLookupComplete(int nError) {
+    char abAddress[20];
     VsNetInetAddressEntry localAddress;
     VsNetSocketChannelControl *pSocketChannel;
     VsNetSocketChannelControl *pErrorChannel;
@@ -3274,6 +3275,7 @@ void VsNetHostLookupCompletionAdapter::HandleRemoteServiceHostLookupComplete(int
     int nSocketDelta;
     int nPort;
     int nLookupResult;
+    short cbAddress;
 
     if (nError != 0) {
         AppendCStringToStream(g_pErrorOutputStream, "Computer specified was not found\n");
@@ -3282,9 +3284,11 @@ void VsNetHostLookupCompletionAdapter::HandleRemoteServiceHostLookupComplete(int
 
     nTimedDelta = *(int *)(*(int *)((char *)this + 4) + 0x14);
     pbLookup = *(char **)((char *)this + nTimedDelta + 0x18);
+    cbAddress = *(short *)(pbLookup + 0x0a);
+    memcpy(abAddress, *(void **)(*(int *)(pbLookup + 0x0c)), cbAddress);
     *(void ***)&localAddress = (void **)g_NETWORK_InetAddressEntryVtable;
     localAddress.m_szAddress[0] = '\0';
-    localAddress.m_nAddress = *(int *)(*(int *)(pbLookup + 0x0c));
+    localAddress.m_nAddress = *(int *)abAddress;
     pszAddress = (char *)inet_ntoa((unsigned long)localAddress.m_nAddress);
     strcpy(localAddress.m_szAddress, pszAddress);
 
