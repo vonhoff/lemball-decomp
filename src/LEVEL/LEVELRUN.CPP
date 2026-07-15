@@ -554,7 +554,7 @@ struct GameNetworkLevelChunkDeltaStream {
     void *ConstructNetworkLevelChunkDeltaStreamEntry(int nOwner);
 };
 void ReadNetworkLevelChunkDeltaStream(void *pObject);
-void LoadLevelGameStateStreamPayload(void *pObject);
+void LEMBALL_FASTCALL LoadLevelGameStateStreamPayload(void *pObject);
 
 // GLOBAL: LEMBALL 0x00498610
 static void *g_GAME_NetworkLevelChunkDeltaStreamVtable[6] = {
@@ -616,7 +616,7 @@ void DispatchType14CountedChildSlotC4Thunk(int nChunkManager);
 void LEMBALL_FASTCALL FillReachabilityGridFromTileFlagsThunk(void *pReachabilityHelper);
 
 // FUNCTION: LEMBALL 0x00410BE0
-void LoadLevelGameStateStreamPayload(void *pObject) {
+void LEMBALL_FASTCALL LoadLevelGameStateStreamPayload(void *pObject) {
     VsNetEffStreamBase *pStream;
     unsigned int nValue;
 
