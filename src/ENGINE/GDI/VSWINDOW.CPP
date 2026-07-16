@@ -594,9 +594,14 @@ void LEMBALL_FASTCALL DispatchGeometryChildEvent(
     }
 }
 
+struct VS_RootGeometryDispatchHelperDispatchView {
+    void DispatchNormalizedPointToGeometryChildren(
+        const VS_XYPair *pPoint, GameGeometryDispatchEvent *pEvent);
+};
+
 // FUNCTION: LEMBALL 0x0046A770
-void LEMBALL_FASTCALL DispatchNormalizedPointToGeometryChildren(
-    void *pOwner, int, const VS_XYPair *pPoint,
+void VS_RootGeometryDispatchHelperDispatchView::DispatchNormalizedPointToGeometryChildren(
+    const VS_XYPair *pPoint,
     GameGeometryDispatchEvent *pEvent)
 {
     VS_RootGeometryDispatchHelperState *pHelper;
@@ -609,7 +614,7 @@ void LEMBALL_FASTCALL DispatchNormalizedPointToGeometryChildren(
     int nEventType;
     int fInside;
 
-    pHelper = (VS_RootGeometryDispatchHelperState *)pOwner;
+    pHelper = (VS_RootGeometryDispatchHelperState *)this;
     if (pEvent == 0) {
         DefaultEvent.m_nType00 = 7;
         DefaultEvent.m_nReserved02 = 0;
@@ -703,8 +708,9 @@ void LEMBALL_FASTCALL DispatchNormalizedPointToGeometryChildren(
 
 // FUNCTION: LEMBALL 0x0046A6D0
 void LEMBALL_FASTCALL RedispatchGeometryOwnerPointerEvent(void *pOwner) {
-    DispatchNormalizedPointToGeometryChildren(
-        pOwner, 0, g_pCurrentGeometryDispatchPoint, 0);
+    ((VS_RootGeometryDispatchHelperDispatchView *)pOwner)
+        ->DispatchNormalizedPointToGeometryChildren(
+            g_pCurrentGeometryDispatchPoint, 0);
 }
 
 // FUNCTION: LEMBALL 0x0046A710
@@ -717,9 +723,11 @@ int LEMBALL_FASTCALL HandleRootGeometryDispatchEntry(
         pEvent->m_fHandled10 == 0) {
         Point.m_x = (short)(pEvent->m_nPackedPosition08 & 0xffff);
         Point.m_y = (short)(pEvent->m_nPackedPosition08 >> 16);
-        *g_pCurrentGeometryDispatchPoint = Point;
-        DispatchNormalizedPointToGeometryChildren(
-            (char *)pDispatchClient - 0x38, 0, &Point, pEvent);
+        g_pCurrentGeometryDispatchPoint->m_x = Point.m_x;
+        g_pCurrentGeometryDispatchPoint->m_y = Point.m_y;
+        ((VS_RootGeometryDispatchHelperDispatchView *)
+            ((char *)pDispatchClient - 0x38))
+                ->DispatchNormalizedPointToGeometryChildren(&Point, pEvent);
     }
     return 0;
 }
