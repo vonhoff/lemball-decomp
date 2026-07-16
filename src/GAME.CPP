@@ -3417,8 +3417,8 @@ void LEMBALL_FASTCALL PresentMainGameFrame(void *pMainGameContext) {
     pRefreshingStatus = pMainContext->m_pRefreshingStatus;
     if (fTimedStatus != 0 && *(int *)((char *)pRefreshingStatus + 0x24) != 0) {
         dwNow = timeGetTime();
-        ((void (*)(DWORD))(*(void ***)pRefreshingStatus)[1])(
-            dwNow - *(DWORD *)((char *)pRefreshingStatus + 0x20));
+        ((void (LEMBALL_FASTCALL *)(void *, int, DWORD))(*(void ***)pRefreshingStatus)[1])(
+            pRefreshingStatus, 0, dwNow - *(DWORD *)((char *)pRefreshingStatus + 0x20));
         *(int *)((char *)pRefreshingStatus + 0x24) = 0;
     }
 }
