@@ -197,14 +197,15 @@ void DemoLevelDemoPlaybackController::SetLevelDemoPlaybackEnabled(int fEnabled) 
 // FUNCTION: LEMBALL 0x00409620
 void ServiceLevelDemoPlayback(void *pPlaybackController) {
     DWORD dwNow;
+    DWORD dwElapsed;
     int fDispatched;
 
     if (*(int *)((char *)pPlaybackController + 0x50) == 0 &&
         *(int *)((char *)pPlaybackController + 0x4c) != 0) {
         dwNow = timeGetTime();
+        dwElapsed = dwNow - *(unsigned int *)((char *)pPlaybackController + 0x38);
         if (*(unsigned int *)((char *)pPlaybackController + 0x3c) != 0 &&
-            *(unsigned int *)((char *)pPlaybackController + 0x3c) <=
-                dwNow - *(unsigned int *)((char *)pPlaybackController + 0x38)) {
+            *(unsigned int *)((char *)pPlaybackController + 0x3c) <= dwElapsed) {
             StopLevelDemoPlayback(pPlaybackController);
             return;
         }
