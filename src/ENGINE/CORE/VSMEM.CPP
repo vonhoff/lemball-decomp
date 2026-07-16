@@ -289,7 +289,8 @@ int SmallMemoryBucketTable::FreeToSmallMemoryBucketTable(void *pBlock) {
 
 // FUNCTION: LEMBALL 0x00472CE0
 SmallMemoryBucket *SmallMemoryBucket::ConstructSmallMemoryBucket(
-    unsigned int cbSlot, unsigned int cSlots, void *pStorage, void *pBitmap) {
+    unsigned int cbSlot, unsigned int cSlots, void *pStorage, void *pBitmap)
+{
     unsigned int cbStorage;
     unsigned int cBitmapWords;
     int fSmallBuckets;
@@ -338,7 +339,8 @@ SmallMemoryBucket *SmallMemoryBucket::ConstructSmallMemoryBucket(
 
 // FUNCTION: LEMBALL 0x00473050
 static SmallMemoryBucket *LEMBALL_FASTCALL AllocateSmallMemoryChildBucket(
-    SmallMemoryBucket *pParentBucket) {
+    SmallMemoryBucket *pParentBucket)
+{
     int fSmallBuckets;
     SmallMemoryBucket *pChildBucket;
     void *pStorage;
@@ -380,7 +382,8 @@ static void LEMBALL_FASTCALL DestroySmallMemoryBucket(SmallMemoryBucket *pBucket
 
 // FUNCTION: LEMBALL 0x00473180
 SmallMemoryBucketTable *LEMBALL_FASTCALL ConstructSmallMemoryBucketTable(
-    SmallMemoryBucketTable *pTable) {
+    SmallMemoryBucketTable *pTable)
+{
     int i;
     int iFirstBucket;
     int cBuckets;
@@ -576,7 +579,8 @@ static void UpdateMainMemoryArenaFreeCounter(void) {
 CArena *CArena::ConstructMemoryArenaBaseState(unsigned int cbStorage,
                                                const char *pszName,
                                                void *pParentArena,
-                                               void *pReserved) {
+                                               void *pReserved)
+{
     (void)cbStorage;
     (void)pReserved;
     m_pVtable = g_aMemoryArenaInitialVtable;
@@ -806,7 +810,8 @@ void *CArena::FindSmallestFreeMemoryBlockAtLeast(unsigned int cbPayload) {
 // FUNCTION: LEMBALL 0x00459D70
 int CArena::Allocate(void **ppvBlock,
                                      unsigned int cbBlock,
-                                     const char *pszDescription) {
+                                     const char *pszDescription)
+{
     CArena *pMemoryArena;
     CMemoryBlock *pMemoryBlock;
     CMemoryBlock *pSplitMemoryBlock;
@@ -930,7 +935,8 @@ int CArena::FreeMemoryArenaBlock(void *pvBlock) {
 // FUNCTION: LEMBALL 0x0045A010
   int CArena::AllocateChildMemoryArena(void **ppChildArena,
                                        unsigned int cbChildArena,
-                                       const char *pszName) {
+                                       const char *pszName)
+{
       void **pLockVtable;
       void *pvStorage;
       CMemoryBlock *pMemoryBlock;
@@ -1090,7 +1096,8 @@ void __stdcall CopyMemoryBytes(void *pvTarget, const void *pvSource, unsigned in
 CArena *CArena::ConstructMemoryArena(unsigned int cbStorage,
                                       const char *pszName,
                                       void *pParentArena,
-                                      void *pReserved) {
+                                      void *pReserved)
+{
     CArena *pMemoryArena;
     CMemoryBlock *pMemoryBlock;
     unsigned int cbArenaHeader;
@@ -1142,7 +1149,8 @@ void *PlacementConstructMemoryArenaWithStorage(void *pvStorage,
                                                unsigned int cbStorage,
                                                const char *pszName,
                                                void *pParentArena,
-                                               void *pReserved) {
+                                               void *pReserved)
+{
     void *pArena;
 
     pArena = ReturnSuppliedPlacementStorage(0x50, pvStorage);
@@ -1157,7 +1165,8 @@ void *PlacementConstructMemoryArenaBlock(void *pvStorage,
                                          void *pArena,
                                          void *pPreviousBlock,
                                          const char *pszName,
-                                         unsigned int cbBlock) {
+                                         unsigned int cbBlock)
+{
     void *pBlock;
 
     pBlock = ReturnPlacementBlockStorage(0x28, pvStorage);
