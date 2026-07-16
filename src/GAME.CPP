@@ -275,6 +275,10 @@ static int StubReturnZero(void) {
 static void StubNoOpPtr(void *) {
 }
 
+static void LEMBALL_FASTCALL StubNoOpObjectArgument(
+    void *, int, void *) {
+}
+
 /* The primary-context present path pushes one argument and the target
  * implementation returns with RET 4.  Keep that ABI even while the body is
  * still being reconstructed. */
@@ -860,7 +864,14 @@ static void InitializeGameStubVtables(void) {
     g_GAME_MainMenuModeEventClientVtable[3] = 0;
 
     g_GAME_GenericScreenVtableSlots[0] = g_pGAME_ModeDeleteVtableSlot;
-    g_GAME_GenericScreenVtableSlots[0x14 / sizeof(void *)] = (void *)StubNoOpPtr;
+    g_GAME_GenericScreenVtableSlots[0x08 / sizeof(void *)] =
+        (void *)StubNoOpObjectArgument;
+    g_GAME_GenericScreenVtableSlots[0x0c / sizeof(void *)] =
+        (void *)StubNoOpObjectArgument;
+    g_GAME_GenericScreenVtableSlots[0x10 / sizeof(void *)] =
+        (void *)StubNoOpObjectArgument;
+    g_GAME_GenericScreenVtableSlots[0x14 / sizeof(void *)] =
+        (void *)StubNoOpObjectArgument;
     g_GAME_GenericScreenVtableSlots[0x18 / sizeof(void *)] = (void *)StubNoOpVoid;
     g_GAME_GenericScreenVtableSlots[0x1c / sizeof(void *)] = (void *)StubNoOpVoid;
     g_GAME_GenericScreenVtableSlots[0x20 / sizeof(void *)] = (void *)StubNoOpVoid;
