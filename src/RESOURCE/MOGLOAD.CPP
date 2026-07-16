@@ -262,7 +262,8 @@ int FindResourceCacheEvictionCandidateIndex(void *pArchive, unsigned int cbMinim
 
 // FUNCTION: LEMBALL 0x0045E660
 void *LEMBALL_FASTCALL DeleteCachedResourceObjectBase(
-    void *pObject, int nUnused, int fDelete) {
+    void *pObject, int nUnused, int fDelete)
+{
     (void)nUnused;
     InitializeTypedResourceObjectBaseVtable(pObject);
     if ((fDelete & 1) != 0 && pObject != 0) {
@@ -298,7 +299,8 @@ int ReturnZeroVfunc06(void) {
 
 // FUNCTION: LEMBALL 0x0045E5F0
 void LEMBALL_FASTCALL NoopVfunc09(
-    void *pObject, void *pUnusedEdx, int nArgument) {
+    void *pObject, void *pUnusedEdx, int nArgument)
+{
     (void)pObject;
     (void)pUnusedEdx;
     (void)nArgument;
@@ -351,7 +353,8 @@ void LEMBALL_FASTCALL EnsureTypedResourceObjectLoaded(void *pObject) {
 
 // FUNCTION: LEMBALL 0x0045D220
 void LEMBALL_FASTCALL ReleaseTypedResourceObjectIfLoaded(
-    void *pObject, void *pUnusedEdx, int fReleaseMode) {
+    void *pObject, void *pUnusedEdx, int fReleaseMode)
+{
     MogLoadStringResourceObject *pResourceObject;
     MogLoadTypedResourceObjectVtable *pVtable;
 
@@ -391,7 +394,8 @@ int LEMBALL_FASTCALL GetField28GetMemorySize(void *pObject) {
 
 // FUNCTION: LEMBALL 0x0045E820
 void *LEMBALL_FASTCALL DeleteTypedResourceObject(
-    void *pObject, int nUnused, int fDelete) {
+    void *pObject, int nUnused, int fDelete)
+{
     (void)nUnused;
     InitializeTypedResourceObjectBaseVtable(pObject);
     if ((fDelete & 1) != 0) {
@@ -402,7 +406,8 @@ void *LEMBALL_FASTCALL DeleteTypedResourceObject(
 
 // FUNCTION: LEMBALL 0x0045EBB0
 void *LEMBALL_FASTCALL DestroyEffResource(
-    void *pObject, int nUnused, int fDelete) {
+    void *pObject, int nUnused, int fDelete)
+{
     (void)nUnused;
     InitializeTypedResourceObjectBaseVtable(pObject);
     if ((fDelete & 1) != 0) {
@@ -413,7 +418,8 @@ void *LEMBALL_FASTCALL DestroyEffResource(
 
 // FUNCTION: LEMBALL 0x0045EB80
 void *LEMBALL_FASTCALL DestroyBitmapResource(
-    void *pObject, int nUnused, int fDelete) {
+    void *pObject, int nUnused, int fDelete)
+{
     (void)nUnused;
     InitializeTypedResourceObjectBaseVtable(pObject);
     if ((fDelete & 1) != 0) {
@@ -424,7 +430,8 @@ void *LEMBALL_FASTCALL DestroyBitmapResource(
 
 // FUNCTION: LEMBALL 0x0045EAC0
 void *LEMBALL_FASTCALL DestroyGRTSResourceAndFree(
-    void *pObject, int nUnused, int fDelete) {
+    void *pObject, int nUnused, int fDelete)
+{
     int cObjects;
     char *pObjectEnd;
     char *pCurrent;
@@ -457,7 +464,8 @@ void LEMBALL_FASTCALL SetGRTSResourceTypeTag(void *pObject) {
 
 // FUNCTION: LEMBALL 0x0045EA50
 void *LEMBALL_FASTCALL DestroyPaletteResource(
-    void *pObject, int nUnused, int fDelete) {
+    void *pObject, int nUnused, int fDelete)
+{
     (void)nUnused;
     InitializeTypedResourceObjectBaseVtable(pObject);
     if ((fDelete & 1) != 0) {
@@ -652,7 +660,8 @@ void MogLoadDirectoryNode::ReadEntryRecord(MogLoadEntryRecord *pEntry) {
 
 // FUNCTION: LEMBALL 0x0045C200
 void MogLoadDirectoryNode::FindNextResourceArchiveEntry(
-    MogLoadEntrySearchState *pState, unsigned int uTagFilter) {
+    MogLoadEntrySearchState *pState, unsigned int uTagFilter)
+{
     int fAtEnd;
     MogLoadEntryRecord *pCursorSource;
 
@@ -688,7 +697,8 @@ void MogLoadDirectoryNode::FindNextResourceArchiveEntry(
 
 // FUNCTION: LEMBALL 0x0045C2A0
 void MogLoadDirectoryNode::ResetResourceArchiveEntryCursor(
-    MogLoadEntrySearchState *pState, unsigned int uTagFilter) {
+    MogLoadEntrySearchState *pState, unsigned int uTagFilter)
+{
     m_iCursorIndex = m_iSavedIndex;
     m_pCursorEntry = m_pSavedEntry;
     m_iCursorIndex = -1;
@@ -896,7 +906,8 @@ void LEMBALL_FASTCALL CopyBufferIntoTypedResourceObjectAndParse(
     void *pUnusedEdx,
     unsigned int *pSource,
     unsigned int nUnused,
-    unsigned int cbBuffer) {
+    unsigned int cbBuffer)
+{
     MogLoadStringResourceObject *pResourceObject =
         (MogLoadStringResourceObject *)pObject;
     unsigned int *pTarget;
@@ -929,7 +940,8 @@ void ParseIntResourceDescriptor(void) {
 // FUNCTION: LEMBALL 0x0045D1C0
 void LEMBALL_FASTCALL UnloadTypedResourceObject(void *pObject,
                                                 void *pUnusedEcx,
-                                                int fReleaseMode) {
+                                                int fReleaseMode)
+{
     MogLoadStringResourceObject *pResourceObject;
     MogLoadTypedResourceObjectVtable *pVtable;
 
@@ -1042,7 +1054,8 @@ int LEMBALL_FASTCALL FindReusableResourceCacheSlotIndex(MogLoadResourceArchive *
 
 // FUNCTION: LEMBALL 0x0045CB50
 int LEMBALL_STDCALL AttachResourceEntryToObject(
-    MogLoadStringResourceObject *pObject, int iEntryIndex, MogLoadEntryRecord *pEntry) {
+    MogLoadStringResourceObject *pObject, int iEntryIndex, MogLoadEntryRecord *pEntry)
+{
     (void)iEntryIndex;
     if ((int)pEntry->m_uTag != (int)pObject->m_uTypeTag) {
         return 0;
@@ -1056,7 +1069,8 @@ int LEMBALL_STDCALL AttachResourceEntryToObject(
 
 // FUNCTION: LEMBALL 0x0045C2D0
 void MogLoadDirectoryNode::FindResourceArchiveEntryByIdRecursive(
-    MogLoadEntrySearchState *pState, int nResourceId, int fAllowRecursion) {
+    MogLoadEntrySearchState *pState, int nResourceId, int fAllowRecursion)
+{
     MogLoadDirectoryNode *pChildDirectory;
     long iSavedSubdirectoryCursorIndex;
     MogLoadEntryRecord *pSavedSubdirectoryCursorEntry;
@@ -1195,7 +1209,8 @@ bad_path:
 
 // FUNCTION: LEMBALL 0x0045C630
 void *MogLoadResourceArchive::ConstructResourceArchive(
-    const char *pszArchiveName, unsigned int cbArenaSize) {
+    const char *pszArchiveName, unsigned int cbArenaSize)
+{
     MogLoadResourceArchive *pResourceArchive;
     void *pChildArena;
     GameStatusEntry *pStatusEntry;
