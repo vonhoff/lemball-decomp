@@ -1,4 +1,5 @@
 #include "ENGINE/GDI/VSWINDOW.H"
+#include "ENGINE/GDI/VSGEOM.H"
 #include "GAME.H"
 
 #include "ENGINE/CORE/VSMEM.H"
@@ -129,18 +130,6 @@ struct GameGeometryOwnerRectDispatch {
     virtual void DispatchPointerLeave(void) = 0;
     virtual void DispatchPointerMove(const VS_XYPair *pPoint) = 0;
     virtual int ContainsPoint(const VS_XYPair *pPoint) = 0;
-};
-
-struct GameGeometryOwnerRectState {
-    void **m_pVtable00;
-    int m_fEnabled04;
-    int m_fPointerActive08;
-    GameGeometryOwnerRectState *m_pParent0C;
-    int m_anTransient10[6];
-    int m_fDispatchPointerMove28;
-    int m_fDispatchOutsideRelease2C;
-    VS_XYPair m_Size30;
-    VS_XYPair m_Position34;
 };
 
 struct GameRenderDispatchClientState {
@@ -388,16 +377,12 @@ void LEMBALL_FASTCALL ResetGeometryOwnerRectState(void *pOwner) {
 void LEMBALL_FASTCALL RedispatchGeometryOwnerPointerEvent(void *pOwner);
 
 // FUNCTION: LEMBALL 0x0046A530
-void LEMBALL_FASTCALL SetGeometryOwnerEnabled(
-    void *pOwner, int, int fEnabled) {
-    GameGeometryOwnerRectState *pState;
-
-    pState = (GameGeometryOwnerRectState *)pOwner;
-    pState->m_fEnabled04 = fEnabled;
+void GameGeometryOwnerRectState::SetEnabled(int fEnabled) {
+    m_fEnabled04 = fEnabled;
     if (fEnabled == 0) {
-        ClearGeometryOwnerRectTransientState(pOwner);
-    } else if (pState->m_pParent0C != 0) {
-        RedispatchGeometryOwnerPointerEvent(pState->m_pParent0C);
+        ClearGeometryOwnerRectTransientState(this);
+    } else if (m_pParent0C != 0) {
+        RedispatchGeometryOwnerPointerEvent(m_pParent0C);
     }
 }
 
@@ -415,7 +400,7 @@ void *LEMBALL_FASTCALL InitializeGeometryOwnerRect(
     ResetGeometryOwnerRectState(pState);
     pState->m_Size30 = pRect[0];
     pState->m_Position34 = pRect[1];
-    SetGeometryOwnerEnabled(pState, 0, 1);
+    pState->SetEnabled(1);
     return pState;
 }
 
