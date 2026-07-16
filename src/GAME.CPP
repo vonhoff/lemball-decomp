@@ -2799,7 +2799,7 @@ void GamePrimaryContext::DispatchPrimaryContextActiveScreenFrame(
     void *pFrameArgument) {
     void *pActiveScreen;
 
-    if (m_pWindowOwnerContext == 0 || GetWindowOwnerState() == 0) {
+    if (m_pWindowOwnerContext == 0) {
         return;
     }
 

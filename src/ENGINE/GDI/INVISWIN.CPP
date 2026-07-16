@@ -3,6 +3,7 @@
 #include "SHELL/ENTRY.H"
 #include "ENGINE/CORE/VSINIT.H"
 #include "ENGINE/CORE/SAFEVT.H"
+#include "ENGINE/GDI/VSWINDOW.H"
 
 DECOMP_SIZE_ASSERT(VS_InvisibleWindow, 0x10);
 
@@ -13,8 +14,6 @@ static const char g_PLATFORM_InvisibleWindowCreateError[] = "Failed to create in
 static const char g_PLATFORM_ErrorSuffix[] = "\n";
 
 static void *g_VS_InvisibleWindowVTable[1] = { (void *)NetworkSafeVtableNoop };
-static int *g_pfWindowMessagePassthroughMode;
-
 typedef LRESULT (*VS_WindowMessageHandler)(VS_InvisibleWindow *pWindow,
                                            UINT uMessage,
                                            WPARAM wParam,
@@ -26,7 +25,7 @@ LRESULT CALLBACK InvisibleMessageWindowWndProc(HWND hWnd, UINT uMessage, WPARAM 
     LRESULT lResult;
     CREATESTRUCTA *pCreateStruct;
 
-    if (*g_pfWindowMessagePassthroughMode != 0) {
+    if (g_fWindowMessagePassthroughMode != 0) {
         return DefWindowProcA(hWnd, uMessage, wParam, lParam);
     }
 

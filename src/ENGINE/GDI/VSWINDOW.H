@@ -3,6 +3,8 @@
 
 #include "ENGINE/CORE/WIN32.H"
 
+extern int g_fWindowMessagePassthroughMode;
+
 // SIZE 0x04
 struct VS_XYPair {
     short m_x; // 0x00

@@ -22,7 +22,7 @@ static const char g_szFatalGetLastErrorPrefix[] = " GetLastError()=";
 static const char g_szFatalGetLastErrorSeparator[] = ", ";
 static const char g_szFatalErrorTitle[] = "FATAL ERROR";
 
-static int g_fWindowMessagePassthroughMode = 0;
+int g_fWindowMessagePassthroughMode = 0;
 // GLOBAL: LEMBALL 0x004a1f64
 void *g_pCachedCurrentContextWindow = 0;
 // GLOBAL: LEMBALL 0x004a1f68
