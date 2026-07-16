@@ -73,6 +73,7 @@ public:
                                                unsigned int *pcbBuffer,
                                                void *pUnused);
     void RemoveCachedResourceObject(void *pResourceObject);
+    void AdvanceCachedResourceObjectFrameCounters(void);
 
     MogLoadDirectoryNode *m_pRootDirectory;
     MogLoadDirectoryNode *m_pCurrentDirectory;

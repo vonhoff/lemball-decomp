@@ -543,7 +543,6 @@ extern void LEMBALL_FASTCALL ResizeLevelTileReachabilityGridThunk(void *pReachab
 extern void LEMBALL_FASTCALL FillReachabilityGridFromTileFlagsThunk(void *pReachabilityHelper);
 extern void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode);
 extern void InitializeLevelChunkTypeEnabledFlagsThunk(void *pLevelMode);
-extern void AdvanceCachedResourceObjectFrameCounters(void *pArchive);
 struct LevelGameMode {
     void InitializeLevelGameMode(void);
 };
@@ -944,7 +943,8 @@ int __stdcall PumpMessagesAndRunFrame(void) {
             *(unsigned int *)((char *)g_pSharedRenderDispatchQueue + 0x28));
     }
     if (g_pMainResourceArchive != 0) {
-        AdvanceCachedResourceObjectFrameCounters(g_pMainResourceArchive);
+        ((MogLoadResourceArchive *)g_pMainResourceArchive)
+            ->AdvanceCachedResourceObjectFrameCounters();
     }
     if (g_pArrowCursorStatusIndicatorRenderClient != 0) {
         ((GameCursorRenderClient *)

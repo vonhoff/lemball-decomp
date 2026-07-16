@@ -233,7 +233,6 @@ static void *g_MOGLOAD_PaletteResourceVtable[15] = {
 void *g_pResourceArchive = 0;
 extern void *FinalizeLoadedResourceObjectResult(void *pObject);
 extern void ResetTypedResourceObjectState(void *pObject);
-extern void AdvanceCachedResourceObjectFrameCounters(void *pArchive);
 extern void *g_pSmallMemoryBucketTable;
 extern unsigned int g_cbSmallMemoryBucketUpperBound;
 extern const char *g_pszSmallMemoryBucketAllocTag;
@@ -1315,7 +1314,7 @@ void *FindCachedResourceObjectById(void *pArchive, int nResourceId) {
     }
 
     if (pResourceArchive->m_cCachedResourceObjects != 0 && cRemaining > 0) {
-        AdvanceCachedResourceObjectFrameCounters(pResourceArchive);
+        pResourceArchive->AdvanceCachedResourceObjectFrameCounters();
         ((MogLoadTypedResourceObjectVtable *)
              pResourceArchive->m_ppCachedResourceObjects[iSlot]->m_pVtable)
             ->m_pEnsureLoaded(pResourceArchive->m_ppCachedResourceObjects[iSlot]);
@@ -1327,33 +1326,29 @@ void *FindCachedResourceObjectById(void *pArchive, int nResourceId) {
 }
 
 // FUNCTION: LEMBALL 0x0045CDB0
-void AdvanceCachedResourceObjectFrameCounters(void *pArchive) {
-    MogLoadResourceArchive *pResourceArchive;
-    MogLoadStringResourceObject *pResourceObject;
-    int iCount;
+void MogLoadResourceArchive::AdvanceCachedResourceObjectFrameCounters(void) {
     int iSlot;
+    int iCount;
 
-    pResourceArchive = (MogLoadResourceArchive *)pArchive;
-    iCount = 0;
     iSlot = 0;
-    if (pResourceArchive == 0 || pResourceArchive->m_cCachedResourceObjects <= 0) {
-        return;
-    }
+    iCount = 0;
+    if (m_cCachedResourceObjects > 0) {
+        do {
+            while (m_ppCachedResourceObjects[iSlot] == 0) {
+                ++iSlot;
+            }
 
-    while (iCount < pResourceArchive->m_cCachedResourceObjects) {
-        while (pResourceArchive->m_ppCachedResourceObjects[iSlot] == 0) {
+            if (m_ppCachedResourceObjects[iSlot]->m_nLoadState10 != 0 ||
+                ((MogLoadTypedResourceObjectVtable *)
+                     m_ppCachedResourceObjects[iSlot]->m_pVtable)
+                        ->m_pGetFrameAge14(
+                            m_ppCachedResourceObjects[iSlot]) != 0) {
+                ++m_ppCachedResourceObjects[iSlot]->m_nReserved24;
+            }
+
+            ++iCount;
             ++iSlot;
-        }
-
-        pResourceObject = pResourceArchive->m_ppCachedResourceObjects[iSlot];
-        if (pResourceObject->m_nLoadState10 != 0 ||
-            ((MogLoadTypedResourceObjectVtable *)pResourceObject->m_pVtable)
-                    ->m_pGetFrameAge14(pResourceObject) != 0) {
-            ++pResourceObject->m_nReserved24;
-        }
-
-        ++iCount;
-        ++iSlot;
+        } while (iCount < m_cCachedResourceObjects);
     }
 }
 
@@ -1498,7 +1493,8 @@ void ResetTypedResourceObjectState(void *pObject) {
     pResourceObject->m_uTypeTag = 0;
     pResourceObject->m_nResultCode44 = 0;
     pVtable->m_pClearTypeTag(pResourceObject);
-    AdvanceCachedResourceObjectFrameCounters(g_pResourceArchive);
+    ((MogLoadResourceArchive *)g_pResourceArchive)
+        ->AdvanceCachedResourceObjectFrameCounters();
     pResourceObject->m_nReserved24 = 0;
 }
 
