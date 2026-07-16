@@ -586,7 +586,8 @@ extern void __stdcall PromoteQueuedRenderPointSinkTargetStateThunk(
 
 // FUNCTION: LEMBALL 0x00432320
 void *LEMBALL_FASTCALL DeleteQueuedRenderPointSinkFinalize(
-    void *pObject, int, int fDelete) {
+    void *pObject, int, int fDelete)
+{
     *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
@@ -649,7 +650,8 @@ void LEMBALL_FASTCALL DestroyBaseModeObject(void *pObject) {
 
 // FUNCTION: LEMBALL 0x00407F40
 void *LEMBALL_FASTCALL DeleteStartupMode(
-    void *pObject, int, BYTE fDelete) {
+    void *pObject, int, BYTE fDelete)
+{
     DestroyBaseModeObject(pObject);
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
@@ -659,13 +661,15 @@ void *LEMBALL_FASTCALL DeleteStartupMode(
 
 // FUNCTION: LEMBALL 0x004026F3
 void *LEMBALL_FASTCALL DeleteStartupModeThunk(
-    void *pObject, int, BYTE fDelete) {
+    void *pObject, int, BYTE fDelete)
+{
     return DeleteStartupMode(pObject, 0, fDelete);
 }
 
 // FUNCTION: LEMBALL 0x00407F70
 void *LEMBALL_FASTCALL DeleteMainMenuMode(
-    void *pObject, int, BYTE fDelete) {
+    void *pObject, int, BYTE fDelete)
+{
     DestroyBaseModeObject(pObject);
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
@@ -675,7 +679,8 @@ void *LEMBALL_FASTCALL DeleteMainMenuMode(
 
 // FUNCTION: LEMBALL 0x004027A2
 void *LEMBALL_FASTCALL DeleteMainMenuModeThunk(
-    void *pObject, int, BYTE fDelete) {
+    void *pObject, int, BYTE fDelete)
+{
     return DeleteMainMenuMode(pObject, 0, fDelete);
 }
 
@@ -715,13 +720,15 @@ int LEMBALL_FASTCALL ReturnFalseBaseModeThunk(void *) {
 
 // FUNCTION: LEMBALL 0x0040227F
 void *LEMBALL_FASTCALL DeleteStartupModeEventClientThunk(
-    void *pObject, int, BYTE fDelete) {
+    void *pObject, int, BYTE fDelete)
+{
     return DeleteStartupMode((char *)pObject - 0x0c, 0, fDelete);
 }
 
 // FUNCTION: LEMBALL 0x00402D29
 void *LEMBALL_FASTCALL DeleteMainMenuModeEventClientThunk(
-    void *pObject, int, BYTE fDelete) {
+    void *pObject, int, BYTE fDelete)
+{
     return DeleteMainMenuMode((char *)pObject - 0x0c, 0, fDelete);
 }
 
@@ -1350,7 +1357,8 @@ void *ConstructNetworkLobbyTransportController(void *pModeObject, GameMainContex
 // FUNCTION: LEMBALL 0x004022AC
 void *ConstructPaintballSequenceModeController(void *pModeObject,
                                                GameMainContext *pMainContext,
-                                               int fSequenceVariant) {
+                                               int fSequenceVariant)
+{
     GamePaintballSequenceModeController *pMode;
 
     pMode = (GamePaintballSequenceModeController *)pModeObject;
@@ -2632,7 +2640,8 @@ struct GamePrimaryContextVirtualInterface {
 
 // FUNCTION: LEMBALL 0x00464440
 void GamePrimaryContext::InitializeWindowOwnerFromRectAndActivate(
-    short *paRect, void *pWindowOwner, const char *pszTitle, int nActivate) {
+    short *paRect, void *pWindowOwner, const char *pszTitle, int nActivate)
+{
     VS_WindowOwnerBase::InitializeWindowOwnerFromRect(
         paRect, pWindowOwner, pszTitle);
     ((GamePrimaryContextExtendedVirtualInterface *)this)
@@ -2641,7 +2650,8 @@ void GamePrimaryContext::InitializeWindowOwnerFromRectAndActivate(
 
 // FUNCTION: LEMBALL 0x00464470
 void GamePrimaryContext::DispatchWindowOwnerRectInitialization(
-    short *paRect, void *pWindowOwner, const char *pszTitle) {
+    short *paRect, void *pWindowOwner, const char *pszTitle)
+{
     ((GamePrimaryContextWindowInitializationInterface *)this)
         ->InitializeWindowOwnerFromRectAndActivate(paRect, pWindowOwner, pszTitle, 0);
 }
@@ -2807,7 +2817,8 @@ struct GamePrimaryContextActiveScreenFrameInterface {
 
 // FUNCTION: LEMBALL 0x00431810
 void GamePrimaryContext::DispatchPrimaryContextActiveScreenFrame(
-    void *pFrameArgument) {
+    void *pFrameArgument)
+{
     void *pActiveScreen;
 
     if (m_pWindowOwnerContext == 0) {
@@ -2944,7 +2955,8 @@ GameMainContext::GameMainContext(void) {
 // FUNCTION: LEMBALL 0x00431F30
 short *GamePrimaryContext::ComputePrimaryContextCenteredScreenRect(short *paRect,
                                                                      int nLeftOverride,
-                                                                     int nTopOverride) {
+                                                                     int nTopOverride)
+{
     short cxScreen;
     short cyScreen;
     short cxTarget;
@@ -2983,7 +2995,8 @@ short *GamePrimaryContext::ComputePrimaryContextCenteredScreenRect(short *paRect
 // FUNCTION: LEMBALL 0x00401875
 short *GamePrimaryContext::ComputePrimaryContextCenteredScreenRectThunk(short *paRect,
                                                                           int nLeftOverride,
-                                                                          int nTopOverride) {
+                                                                          int nTopOverride)
+{
     return ComputePrimaryContextCenteredScreenRect(paRect, nLeftOverride, nTopOverride);
 }
 
@@ -3613,7 +3626,8 @@ GameMainContext *GameMainContext::InitializeMainGameContext(const char *pszCmdLi
 
 // FUNCTION: LEMBALL 0x00402A7C
 GameMainContext *GameMainContext::InitializeMainGameContextThunk(
-    const char *pszCmdLine) {
+    const char *pszCmdLine)
+{
     return InitializeMainGameContext(pszCmdLine);
 }
 

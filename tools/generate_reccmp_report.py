@@ -8,7 +8,7 @@ import csv
 import json
 import struct
 from collections import defaultdict
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from reccmp.compare.report import deserialize_reccmp_report
 from reccmp.types import EntityType
@@ -103,6 +103,14 @@ def source_path_from_module(module: str) -> str:
     return normalized
 
 
+def report_unit_identity(module: str) -> tuple[str, str]:
+    if module == "Unassigned":
+        return "Unassigned", "Unassigned"
+    path = PurePosixPath(module)
+    module_name = str(path.parent) if str(path.parent) != "." else "Root"
+    return module_name, path.name
+
+
 def load_modules(roadmap_path: Path) -> dict[int, str]:
     modules: dict[int, str] = {}
     with roadmap_path.open(newline="", encoding="utf-8-sig") as roadmap_file:
@@ -172,15 +180,21 @@ def build_report(
 
     units = []
     for module, module_functions in sorted(grouped.items()):
+        module_name, unit_name = report_unit_identity(module)
         units.append(
             {
-                "name": module,
+                "name": unit_name,
                 "measures": measures(module_functions),
                 "sections": [],
                 "functions": [objdiff_item(function) for function in module_functions],
-                "metadata": (
-                    {} if module == "Unassigned" else {"source_path": f"src/{module}"}
-                ),
+                "metadata": {
+                    "module_name": module_name,
+                    **(
+                        {}
+                        if module == "Unassigned"
+                        else {"source_path": f"src/{module}"}
+                    ),
+                },
             }
         )
     complete_units = sum(

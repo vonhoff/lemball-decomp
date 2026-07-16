@@ -16,8 +16,9 @@ This repository follows the same broad reporting pattern as `marijnvdwerf/legola
   `lemball-ghidra` project using Ghidra's supported headless scripting API.
 - [`tools/generate_reccmp_report.py`](tools/generate_reccmp_report.py) converts
   `build/reccmp-sample.json`, the Ghidra manifest, and reccmp's roadmap into an
-  objdiff v2 report grouped by source translation unit. Functions without a
-  rebuilt PDB/module attribution remain in an explicit `Unassigned` unit.
+  objdiff v2 report grouped into source-directory modules, with one unit per
+  source translation unit. Root-level sources and functions without rebuilt
+  PDB attribution remain in explicit `Root` and `Unassigned` modules.
 - `make report` writes that artifact to `build/report.json`.
 
 Pass the Ghidra project explicitly. Set `GHIDRA_HOME` only when
