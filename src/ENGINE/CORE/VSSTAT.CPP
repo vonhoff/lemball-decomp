@@ -42,8 +42,8 @@ GameDynamicCString *GameDynamicCString::ConstructDynamicCString(void) {
 }
 
 // FUNCTION: LEMBALL 0x0046E500
-void DestroyDynamicCString(GameDynamicCString *pString) {
-    FreeVSMemBlock(pString->m_pszText);
+void GameDynamicCString::DestroyDynamicCString(void) {
+    FreeVSMemBlock(m_pszText);
 }
 
 // FUNCTION: LEMBALL 0x0046E570
@@ -211,7 +211,7 @@ void DestroyNamedStatusEntry(void *pEntry) {
 
     pStatusEntry = (GameStatusEntry *)pEntry;
     pStatusEntry->m_pVtable = g_GAME_StatusEntryVtable;
-    DestroyDynamicCString(&pStatusEntry->m_Name);
+    pStatusEntry->m_Name.DestroyDynamicCString();
 }
 
 // FUNCTION: LEMBALL 0x0045AC60

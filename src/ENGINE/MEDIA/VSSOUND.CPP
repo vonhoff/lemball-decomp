@@ -2158,20 +2158,20 @@ void PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle, in
         MusicPath.AssignDynamicCStringFromDynamic(&pBackend->m_BasePath);
         if (MusicPath.m_pszText[GetDynamicCStringLength(&MusicPath) - 1] != '\\') {
             MusicPath.AppendDynamicCStringAndCopyResult(&TemporaryPath, g_AUDIO_PathSeparator);
-            DestroyDynamicCString(&TemporaryPath);
+            TemporaryPath.DestroyDynamicCString();
         }
     }
     MusicPath.AppendDynamicCStringAndCopyResult(&TemporaryPath, pStringResource->m_pszText38);
-    DestroyDynamicCString(&TemporaryPath);
+    TemporaryPath.DestroyDynamicCString();
     MusicPath.AppendDynamicCStringAndCopyResult(&TemporaryPath, g_AUDIO_MusicExtension);
-    DestroyDynamicCString(&TemporaryPath);
+    TemporaryPath.DestroyDynamicCString();
 
     BasePath.ConstructDynamicCString();
     if (pBackend->m_fSearchCdromPath == 0) {
         BasePath.AssignDynamicCString(g_abProcessCurrentDirectoryBuffer);
         if (BasePath.m_pszText[GetDynamicCStringLength(&BasePath) - 1] != '\\') {
             BasePath.AppendDynamicCStringAndCopyResult(&TemporaryPath, g_AUDIO_PathSeparator);
-            DestroyDynamicCString(&TemporaryPath);
+            TemporaryPath.DestroyDynamicCString();
         }
     } else {
         const char *pszCdromPath;
@@ -2183,11 +2183,11 @@ void PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle, in
         BasePath.AssignDynamicCString(pszCdromPath);
         if (BasePath.m_pszText[GetDynamicCStringLength(&BasePath) - 1] != '\\') {
             BasePath.AppendDynamicCStringAndCopyResult(&TemporaryPath, g_AUDIO_PathSeparator);
-            DestroyDynamicCString(&TemporaryPath);
+            TemporaryPath.DestroyDynamicCString();
         }
     }
     BasePath.AppendDynamicCStringObjectAndCopyResult(&TemporaryPath, &MusicPath);
-    DestroyDynamicCString(&TemporaryPath);
+    TemporaryPath.DestroyDynamicCString();
 
     OpenParms.dwCallback = 0;
     OpenParms.wDeviceID = 0;
@@ -2241,8 +2241,8 @@ void PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle, in
         g_nPreparedMciMusicTrackHandle = 0;
     }
 
-    DestroyDynamicCString(&BasePath);
-    DestroyDynamicCString(&MusicPath);
+    BasePath.DestroyDynamicCString();
+    MusicPath.DestroyDynamicCString();
 }
 
 // FUNCTION: LEMBALL 0x0047EE70
@@ -2545,7 +2545,7 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
 // FUNCTION: LEMBALL 0x0047EAC0
 void DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry *pEntry) {
     pEntry->m_pVtable = (void **)g_AudioDynamicStringEntryVtable;
-    DestroyDynamicCString(&pEntry->m_BasePath);
+    pEntry->m_BasePath.DestroyDynamicCString();
 }
 
 // FUNCTION: LEMBALL 0x0047F590

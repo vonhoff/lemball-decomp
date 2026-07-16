@@ -234,7 +234,7 @@ void LevelScreenDrawEntry::InitializeFromPointAndDynamicText(const short *pPoint
     m_nDrawFlags10 = nDrawFlags;
     m_nDrawValue14 = nDrawValue;
     m_pText08 = Text.m_pszText;
-    DestroyDynamicCString(&Text);
+    Text.DestroyDynamicCString();
 }
 
 // FUNCTION: LEMBALL 0x00469AC0
@@ -245,7 +245,7 @@ void LevelScreenDrawEntry::InitializeFromPositionAndDynamicText(short x, short y
     m_nDrawFlags10 = nDrawFlags;
     m_nDrawValue14 = nDrawValue;
     m_pText08 = Text.m_pszText;
-    DestroyDynamicCString(&Text);
+    Text.DestroyDynamicCString();
 }
 
 // FUNCTION: LEMBALL 0x00469A80
@@ -278,7 +278,7 @@ void LevelResourceScreenDrawEntry::InitializeFromPointAndDynamicText(const short
     strcpy(m_pszOwnedText44, Text.m_pszText);
     LevelScreenDrawEntry::InitializeFromPointAndText(
         pPoint, pOwner, m_pszOwnedText44, nDrawFlags, nDrawValue);
-    DestroyDynamicCString(&Text);
+    Text.DestroyDynamicCString();
 }
 
 // FUNCTION: LEMBALL 0x0046A140
@@ -286,7 +286,7 @@ void LevelResourceScreenDrawEntry::InitializeFromPositionAndDynamicText(short x,
     strcpy(m_pszOwnedText44, Text.m_pszText);
     LevelScreenDrawEntry::InitializeFromPositionAndText(
         x, y, pOwner, m_pszOwnedText44, nDrawFlags, nDrawValue);
-    DestroyDynamicCString(&Text);
+    Text.DestroyDynamicCString();
 }
 
 // FUNCTION: LEMBALL 0x0046A0E0

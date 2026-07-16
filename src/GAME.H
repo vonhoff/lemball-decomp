@@ -17,6 +17,7 @@ struct GameDynamicCString {
         GameDynamicCString *pResult, const GameDynamicCString *pSuffix);
     GameDynamicCString *AppendDynamicCStringAndCopyResult(
         GameDynamicCString *pResult, const char *pszSuffix);
+    void DestroyDynamicCString(void);
 };
 
 struct VsInitFormattedOutputStream;
@@ -109,7 +110,6 @@ void LEMBALL_FASTCALL ShutdownMainGameContext(GameMainContext *pMainContext);
 int RunMainGameSession(int cArgs, const char *const *ppszArgs);
 int RunMainGameSessionThunk(int cArgs, const char *const *ppszArgs);
 char *FindCdromFilePathBySuffix(const char *pszSuffix);
-void DestroyDynamicCString(GameDynamicCString *pString);
 void *AppendDynamicCStringToStream(void *pStream, const GameDynamicCString *pString);
 int LEMBALL_FASTCALL GetDynamicCStringLength(const GameDynamicCString *pString);
 void DestroyNamedStatusEntry(void *pEntry);

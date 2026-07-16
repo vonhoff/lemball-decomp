@@ -4179,10 +4179,10 @@ int VsGdiSelectedGraphicsDriverRuntime::InitializeSelectedGraphicsDriver(int nRe
                 g_apszGraphicsDriverFallbackMessages[nSelectedDriver]);
             WarningMessage.AppendDynamicCStringAndCopyResult(
                 &WarningResult, g_VSGDI_DefaultWindowModeSuffix);
-            DestroyDynamicCString(&WarningResult);
+            WarningResult.DestroyDynamicCString();
             MessageBoxA((HWND)0, WarningMessage.m_pszText, g_VSGDI_WarningCaption, 0x12000);
             pRuntime->m_fFallbackWarningShown = 1;
-            DestroyDynamicCString(&WarningMessage);
+            WarningMessage.DestroyDynamicCString();
         }
         nSelectedDriver = VsGdiDRIVER_METRICS;
     }

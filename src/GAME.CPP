@@ -1233,23 +1233,23 @@ void ShowReleaseAssertFailureAndAbort(const char *pszExpression, const char *psz
     Message.ConstructDynamicCString();
     Message.AssignDynamicCString("Release Version Assertion Failure\n");
     Message.AppendDynamicCStringAndCopyResult(&Result, "Reason: ");
-    DestroyDynamicCString(&Result);
+    Result.DestroyDynamicCString();
     Message.AppendDynamicCStringAndCopyResult(&Result, pszExpression);
-    DestroyDynamicCString(&Result);
+    Result.DestroyDynamicCString();
     Message.AppendDynamicCStringAndCopyResult(&Result, "\n");
-    DestroyDynamicCString(&Result);
+    Result.DestroyDynamicCString();
     Message.AppendDynamicCStringAndCopyResult(&Result, "In File: ");
-    DestroyDynamicCString(&Result);
+    Result.DestroyDynamicCString();
     Message.AppendDynamicCStringAndCopyResult(&Result, pszFile);
-    DestroyDynamicCString(&Result);
+    Result.DestroyDynamicCString();
     Message.AppendDynamicCStringAndCopyResult(&Result, "At Line No.: ");
-    DestroyDynamicCString(&Result);
+    Result.DestroyDynamicCString();
     FormatSignedIntToRadixString(nLine, szLine, 10);
     Message.AppendDynamicCStringAndCopyResult(&Result, szLine);
-    DestroyDynamicCString(&Result);
+    Result.DestroyDynamicCString();
     MessageBoxA(0, Message.m_pszText, "Error", 0);
     LongjmpStartupExceptionFrame(0xaaaa);
-    DestroyDynamicCString(&Message);
+    Message.DestroyDynamicCString();
 }
 
 // FUNCTION: LEMBALL 0x00403152
