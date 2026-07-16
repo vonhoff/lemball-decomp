@@ -2712,26 +2712,31 @@ void GamePrimaryContext::ApplyWindowOwnerPaletteResource(int nResourceId) {
     *(int *)((char *)this + 0x54) = nResourceId;
 }
 
+struct VS_QueuedRenderSinkValueNode {
+    void *m_pValue;
+    VS_QueuedRenderSinkValueNode *m_pNext;
+    VS_QueuedRenderSinkValueNode *m_pPrevious;
+
+    VS_QueuedRenderSinkValueNode(void *pValue)
+        : m_pValue(pValue), m_pNext(0), m_pPrevious(0) {}
+};
+
 // FUNCTION: LEMBALL 0x004323D0
 void VS_RootGeometryOwner::AppendQueuedRenderSinkValueNode(void *pValue) {
-    unsigned int *pNode;
-    unsigned int *pTail;
+    VS_QueuedRenderSinkValueNode *pNode;
+    VS_QueuedRenderSinkValueNode *pTail;
 
-    pNode = (unsigned int *)AllocateVSMemBlock(0x0c);
-    if (pNode != 0) {
-        pNode[0] = (unsigned int)(unsigned long)pValue;
-        pNode[1] = 0;
-        pNode[2] = 0;
-    }
+    pNode = new (AllocateVSMemBlock(sizeof(*pNode)))
+        VS_QueuedRenderSinkValueNode(pValue);
 
-    pNode[2] = *(unsigned int *)((char *)this + 0x28);
-    pTail = *(unsigned int **)((char *)this + 0x28);
+    pNode->m_pPrevious = *(VS_QueuedRenderSinkValueNode **)((char *)this + 0x28);
+    pTail = *(VS_QueuedRenderSinkValueNode **)((char *)this + 0x28);
     if (pTail != 0) {
-        pTail[1] = (unsigned int)(unsigned long)pNode;
+        pTail->m_pNext = pNode;
     }
-    *(unsigned int **)((char *)this + 0x28) = pNode;
+    *(VS_QueuedRenderSinkValueNode **)((char *)this + 0x28) = pNode;
     if (*(unsigned int *)((char *)this + 0x24) == 0) {
-        *(unsigned int **)((char *)this + 0x24) = pNode;
+        *(VS_QueuedRenderSinkValueNode **)((char *)this + 0x24) = pNode;
     }
     ++*(unsigned int *)((char *)this + 0x2c);
 }

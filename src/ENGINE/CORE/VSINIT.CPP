@@ -1643,20 +1643,20 @@ int ParseCommandLineOptionToken(char *pszToken) {
             size_t cchOption;
 
             pszColon = FindCharInCString0047FE00((char *)g_aCommandLineOptions[i].m_pszName, ':');
-            if (pszColon == 0) {
-                cchOption = strlen(g_aCommandLineOptions[i].m_pszName);
-            } else {
+            if (pszColon != 0) {
                 cchOption = (size_t)(pszColon - g_aCommandLineOptions[i].m_pszName);
+            } else {
+                cchOption = strlen(g_aCommandLineOptions[i].m_pszName);
             }
 
             if (CompareCommandLineOptionPrefix(pszToken, g_aCommandLineOptions[i].m_pszName, cchOption) == 0) {
-                if (strlen(g_aCommandLineOptions[i].m_pszName) == cchOption) {
-                    *g_aCommandLineOptions[i].m_pnValue ^= 1;
-                } else {
+                if (strlen(g_aCommandLineOptions[i].m_pszName) != cchOption) {
                     char *pszEnd;
 
                     *g_aCommandLineOptions[i].m_pnValue =
                         ParseDecimalIntAndAdvance(pszToken + cchOption + 1, &pszEnd, 10);
+                } else {
+                    *g_aCommandLineOptions[i].m_pnValue ^= 1;
                 }
                 g_afCommandLineOptionSpecified[i] = 1;
                 return 1;
