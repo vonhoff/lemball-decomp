@@ -2294,18 +2294,19 @@ VS_RootGeometryOwner::~VS_RootGeometryOwner(void) {
     VS_RootGeometryOwnerChildNode *pNextChildNode;
     void *pRegistry;
 
-    pRegistry = g_pRootZrleGeometryOwnerRegistry;
     --g_nLiveWindowOwnerBaseCount;
-    if (g_nLiveWindowOwnerBaseCount == 0 &&
-        g_pRootZrleGeometryOwnerRegistry != 0) {
-        pRegistryNode =
-            *(WINDOW_OWNER_REGISTRY_NODE **)g_pRootZrleGeometryOwnerRegistry;
-        while (pRegistryNode != 0) {
-            pNextRegistryNode = pRegistryNode->m_pNext;
-            FreeVSMemBlock(pRegistryNode);
-            pRegistryNode = pNextRegistryNode;
+    if (g_nLiveWindowOwnerBaseCount == 0) {
+        pRegistry = g_pRootZrleGeometryOwnerRegistry;
+        if (pRegistry != 0) {
+            pRegistryNode =
+                *(WINDOW_OWNER_REGISTRY_NODE **)pRegistry;
+            while (pRegistryNode != 0) {
+                pNextRegistryNode = pRegistryNode->m_pNext;
+                FreeVSMemBlock(pRegistryNode);
+                pRegistryNode = pNextRegistryNode;
+            }
+            FreeVSMemBlock(pRegistry);
         }
-        FreeVSMemBlock(pRegistry);
     }
 
     pChildNode = m_pChildren24;

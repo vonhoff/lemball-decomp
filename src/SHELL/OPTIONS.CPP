@@ -266,24 +266,15 @@ void FinalizeStartupGraphicsDriverConfig(void) {
     int i;
     StartupGraphicsWindowConfig *pBuiltConfig;
     int *pBucketSize;
-    const u32 *pBuiltDword;
-    u32 *pConfigDword;
 
     for (i = 0; i < 7; ++i) {
         g_adwStartupGraphicsBucketSizeTable[i] = 0x100;
     }
     g_StartupGraphicsDriverConfig.m_dwStyle <<= 0x13;
-    pBuiltConfig = BuildStartupGraphicsWindowConfig(&g_StartupGraphicsDriverConfig);
+    pBuiltConfig = BuildStartupGraphicsWindowConfigThunk(&g_StartupGraphicsDriverConfig);
     if (pBuiltConfig != 0) {
-        pBuiltDword = (const u32 *)pBuiltConfig;
-        pConfigDword = (u32 *)&g_StartupGraphicsDriverConfig;
-        i = 7;
-        do {
-            *pConfigDword = *pBuiltDword;
-            ++pBuiltDword;
-            ++pConfigDword;
-            --i;
-        } while (i != 0);
+        memcpy(&g_StartupGraphicsDriverConfig, pBuiltConfig,
+            sizeof(g_StartupGraphicsDriverConfig));
     }
     if (7 < (int)g_StartupGraphicsDriverConfig.m_cItems) {
         g_StartupGraphicsDriverConfig.m_cItems = 7;
