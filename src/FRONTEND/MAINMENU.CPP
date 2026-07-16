@@ -711,15 +711,16 @@ static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject) {
 // FUNCTION: LEMBALL 0x004466E0
 static void LEMBALL_FASTCALL RecenterFramedScreenIfNeeded(void *pObject) {
     GameFramedScreenBase *pScreen;
+    GamePrimaryContext *pPrimaryContext;
     short aRect[4];
 
     pScreen = (GameFramedScreenBase *)pObject;
     if (((GameIntNoArgVirtual)(*(void ***)pScreen->m_pPrimaryContext84)[26])(
             pScreen->m_pPrimaryContext84, 0) != 0) {
-        ((GamePrimaryContext *)pScreen->m_pPrimaryContext84)
-            ->ComputePrimaryContextCenteredScreenRect(aRect, -1, -1);
-        ((GameOneArgVirtual)(*(void ***)pScreen->m_pPrimaryContext84)[7])(
-            pScreen->m_pPrimaryContext84, 0, aRect);
+        pPrimaryContext = (GamePrimaryContext *)pScreen->m_pPrimaryContext84;
+        pPrimaryContext->ComputePrimaryContextCenteredScreenRect(aRect, -1, -1);
+        ((GameOneArgVirtual)(*(void ***)pPrimaryContext)[7])(
+            pPrimaryContext, 0, aRect);
     }
 }
 
