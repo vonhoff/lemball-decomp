@@ -23,18 +23,21 @@ struct GameMenuDefinitionEntry {
     int m_nReserved14;
 };
 
+// GLOBAL: LEMBALL 0x0049e5f8
 static GameMenuDefinitionEntry g_GAME_FileMenuDefinition[] = {
     {"&File", 0, 0, 1, 0, 0},
     {"E&xit", 0x9c41, 1, 1, 0, 0},
     {0, 0, 0, 0, 0, 0},
 };
 
+// GLOBAL: LEMBALL 0x0049e640
 static GameMenuDefinitionEntry g_GAME_OptionsMenuDefinition[] = {
     {"&Options", 0, 0, 1, 0, 0},
     {"Full Screen      F4", 0x9c4c, 5, 1, 0, 0},
     {0, 0, 0, 0, 0, 0},
 };
 
+// GLOBAL: LEMBALL 0x0049e688
 static GameMenuDefinitionEntry g_GAME_HelpMenuDefinition[] = {
     {"&Help", 0, 0, 1, 0, 0},
     {"&Contents", 0x9c43, 2, 1, 0, 0},
