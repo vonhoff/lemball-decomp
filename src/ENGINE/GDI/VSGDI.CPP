@@ -963,7 +963,7 @@ void *VsGdiCompactResourceGeometryHelper::InitializeCompactResourceGeometryHelpe
 }
 
 // FUNCTION: LEMBALL 0x00472290
-void *InitializeResourceGeometryRowBuffer(void *pvRowBuffer) {
+void *LEMBALL_FASTCALL InitializeResourceGeometryRowBuffer(void *pvRowBuffer) {
     int *pRowBuffer;
 
     pRowBuffer = (int *)pvRowBuffer;
