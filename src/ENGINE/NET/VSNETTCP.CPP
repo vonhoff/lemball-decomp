@@ -537,8 +537,8 @@ struct VsNetAckedEffTransportRecordOwner {
     void *m_pRecordTable4c;
     void *ClaimAckedEffTransportRecordPayload(void);
 };
-static void WriteCompositeTcpipGlobalSessionBody(void *pObject);
-static void *ClaimTcpipSocketStackCompositeBody(void *pObject);
+static void LEMBALL_FASTCALL WriteCompositeTcpipGlobalSessionBody(void *pObject);
+static void *LEMBALL_FASTCALL ClaimTcpipSocketStackCompositeBody(void *pObject);
 static void AllocatedTcpipCompositeCaptureLookupAdjustedThunk(
     void *pObject, void *pLookupResult);
 static int AllocatedTcpipCompositeSendUdpAdjustedThunk(
@@ -597,13 +597,13 @@ void *DeleteCompositeTcpipSocketChannelStackTimedAdjustedThunk(
 }
 
 // FUNCTION: LEMBALL 0x00471BA0
-void WriteCompositeTcpipGlobalSessionAdjustedThunk(void *pObject) {
+void LEMBALL_FASTCALL WriteCompositeTcpipGlobalSessionAdjustedThunk(void *pObject) {
     pObject = (char *)pObject - *(int *)((char *)pObject - 4);
     WriteCompositeTcpipGlobalSessionBody(pObject);
 }
 
 // FUNCTION: LEMBALL 0x00471BB0
-static void WriteCompositeTcpipGlobalSessionBody(void *pObject) {
+static void LEMBALL_FASTCALL WriteCompositeTcpipGlobalSessionBody(void *pObject) {
     char *pAdjusted;
     int *pOffsets;
 
@@ -625,13 +625,13 @@ static void *DeleteTcpipSocketStackCompositeAdjustedThunk(void *pObject,
 }
 
 // FUNCTION: LEMBALL 0x00471D60
-static void *ClaimTcpipSocketStackCompositeAdjustedThunk(void *pObject) {
+static void *LEMBALL_FASTCALL ClaimTcpipSocketStackCompositeAdjustedThunk(void *pObject) {
     pObject = (char *)pObject - *(int *)((char *)pObject - 4);
     return ClaimTcpipSocketStackCompositeBody(pObject);
 }
 
 // FUNCTION: LEMBALL 0x00471D70
-static void *ClaimTcpipSocketStackCompositeBody(void *pObject) {
+static void *LEMBALL_FASTCALL ClaimTcpipSocketStackCompositeBody(void *pObject) {
     char *pAdjusted;
     int *pOffsets;
 
@@ -763,7 +763,7 @@ void ClearTcpipSocketStackPendingWriteAdjustedThunk(void *pObject,
 }
 
 // FUNCTION: LEMBALL 0x00471DA0
-void *ClaimTcpipSocketStackDualAdjustedThunk(void *pObject) {
+void *LEMBALL_FASTCALL ClaimTcpipSocketStackDualAdjustedThunk(void *pObject) {
     pObject = (char *)pObject - *(int *)((char *)pObject - 4) - 0x78;
     return ClaimTcpipSocketStackCompositeBody(pObject);
 }

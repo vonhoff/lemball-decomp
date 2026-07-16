@@ -2640,7 +2640,8 @@ void AdjustAndClearTimedFileBackedEffChannelAsyncStatus(void *pObject) {
 
 // FUNCTION: LEMBALL 0x00479930
 void *VsNetDualFileBackedEffChannelConstructorView::ConstructDualFileBackedEffChannel(
-    int fConstructEmbeddedObjects) {
+    int fConstructEmbeddedObjects)
+{
     VsNetAdjustorSubobject *pPrimaryThunk;
     VsNetAdjustorSubobject *pSecondaryThunk;
     VsNetAdjustorSubobject *pTertiaryThunk;
@@ -2692,7 +2693,8 @@ void *VsNetDualFileBackedEffChannelConstructorView::ConstructDualFileBackedEffCh
 
 // FUNCTION: LEMBALL 0x00479E20
 void *VsNetTimedFileBackedEffChannelConstructorView::ConstructTimedFileBackedEffChannel(
-    int fConstructEmbeddedObjects) {
+    int fConstructEmbeddedObjects)
+{
     VsNetAdjustorSubobject *pPrimaryThunk;
     VsNetAdjustorSubobject *pSecondaryThunk;
     VsNetAdjustorSubobject *pTertiaryThunk;
@@ -2761,7 +2763,8 @@ void VsNetTimedFileBackedEffChannelVtableRestoreView::RestoreTimedFileBackedEffC
 
 // FUNCTION: LEMBALL 0x0047A220
 void *VsNetEmbeddedFileBackedEffChannelStackConstructorView::ConstructEmbeddedFileBackedEffChannelStack(
-    int fConstructEmbeddedObjects) {
+    int fConstructEmbeddedObjects)
+{
     VsNetAdjustorSubobject *pPrimaryThunk;
     VsNetAdjustorSubobject *pSecondaryThunk;
     VsNetAdjustorSubobject *pTertiaryThunk;
@@ -2843,7 +2846,8 @@ void *VsNetEmbeddedFileBackedEffChannelStackConstructorView::ConstructEmbeddedFi
 
 // FUNCTION: LEMBALL 0x0047A570
 void *VsNetGlobalStateCompositeLayout::ConstructGlobalStateFileBackedEffComposite(
-    int fConstructEmbeddedObjects) {
+    int fConstructEmbeddedObjects)
+{
     VsNetAdjustorSubobject *pPrimaryThunk;
     VsNetAdjustorSubobject *pSecondaryThunk;
     VsNetAdjustorSubobject *pTertiaryThunk;
@@ -3075,7 +3079,8 @@ void *AdjustAndDeleteGlobalStateDualFileBackedEffCompositeWrapper(void *pObject,
 
 // FUNCTION: LEMBALL 0x0047AF30
 void *VsNetDualSlotCompositeLayout::ConstructDualSlotTableFileBackedEffComposite(
-    int fConstructEmbeddedObjects) {
+    int fConstructEmbeddedObjects)
+{
     VsNetAdjustorSubobject *pPrimaryThunk;
     VsNetAdjustorSubobject *pSecondaryThunk;
     VsNetAdjustorSubobject *pTertiaryThunk;
@@ -3445,7 +3450,8 @@ void InitializeGlobalStateFileBackedEffStorageAdjustor(void *pObject) {
 
 // FUNCTION: LEMBALL 0x0047BA50
 void LEMBALL_FASTCALL AdjustAndClearGlobalStateTimedEffTransportPendingWriteState(
-    void *pObject, void *pUnused) {
+    void *pObject, void *pUnused)
+{
     ((VsNetAdjustedEffTransportPendingWriteState *)
          ((char *)pObject - ((VsNetAdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta + 0x154))
         ->ClearPendingWrite(pUnused);
@@ -3972,7 +3978,8 @@ struct VsNetFileBackedRecordTableView {
 // FUNCTION: LEMBALL 0x00479A40
 int VsNetFileBackedRecordTableView::LoadEffStreamFromFileBackedRange(void *pStream,
                                                                         int fKeepLocked,
-                                                                        int fAlreadyLocked) {
+                                                                        int fAlreadyLocked)
+{
     VsNetFileBackedRangeLoadView LoadView;
     VsNetFileBackedDispatchOffsets *pOffsets;
     VsNetFileWrapperObject *pFileWrapper;
@@ -4639,7 +4646,8 @@ static void ServiceDualSlotCompositeRecords0047B990(void *pObject) {
 
 // FUNCTION: LEMBALL 0x00479FA0
 DWORD VsNetFileBackedLockedWriterView::WriteEffStreamToLockedFile(int *pStream,
-                                                                     int fKeepLock, int fFlush) {
+                                                                     int fKeepLock, int fFlush)
+{
     VsNetFileBackedDispatchOffsets *pOffsets;
     VsNetFileWrapperObject *pFileWrapper;
     DWORD dwFileOffset;
@@ -4694,7 +4702,8 @@ struct VsNetFileBackedRecordWriterView {
 
 // FUNCTION: LEMBALL 0x0047A0B0
 int VsNetFileBackedRecordWriterView::AppendFileBackedEffRecordSlot(const void *pvPayload,
-                                                                       DWORD cbPayload) {
+                                                                       DWORD cbPayload)
+{
     VsNetFileBackedAppendOffsets *pOffsets;
     VsNetEffTransportRuntimeService *pRuntimeService;
     VsNetEffStreamRecordSlot *pSlot;
