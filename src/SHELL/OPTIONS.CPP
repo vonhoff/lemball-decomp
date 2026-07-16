@@ -46,6 +46,7 @@ static short g_fUnknownStartupFlag1 = 0;
 static int g_fUnknownStartupFlag2 = 0;
 
 static StartupGraphicsWindowConfig g_StartupGraphicsWindowConfig;
+// GLOBAL: LEMBALL 0x004a217c
 int g_fSmallMemoryBucketTableEnabled = 1;
 // GLOBAL: LEMBALL 0x004aa108
 int g_adwStartupGraphicsBucketSizeTable[7];

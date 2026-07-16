@@ -323,13 +323,21 @@ static const char g_VSINIT_StatusOutputHeader[] = "Stats Output\n";
 static const char g_VSINIT_StatusOutputRule[] = "---------------------------------------------------\n";
 static const char g_VSINIT_StatusOutputColumns[] = "Average  Total    Max      Min      nSamples Desc\n";
 
+// GLOBAL: LEMBALL 0x004a9328
 static int g_afCommandLineOptionSpecified[14];
+// GLOBAL: LEMBALL 0x004a0e6c
 static int g_fViSOSParanoidMode = 0;
+// GLOBAL: LEMBALL 0x004a0e90
 int g_fStartupNoWait = 0;
+// GLOBAL: LEMBALL 0x004a1d70
 static int g_fShowResourceUnloading = 0;
+// GLOBAL: LEMBALL 0x004a1d74
 static int g_fShowResourceLoading = 0;
+// GLOBAL: LEMBALL 0x004a0e8c
 static int g_nGarbageCollectorMode = 0;
+// GLOBAL: LEMBALL 0x004a0e84
 static int g_fDebugMessageThreadRunning = 0;
+// GLOBAL: LEMBALL 0x004a0e80
 int g_fDebugFileEnabled = 0;
 
 struct VsInitStatusEntryPointerArray;
@@ -412,6 +420,7 @@ void LEMBALL_FASTCALL DestroySharedGeometryHelper(VsInitSharedGeometryHelper *pH
     }
 }
 
+// GLOBAL: LEMBALL 0x004a0eb0
 static VsInitCommandLineOption g_aCommandLineOptions[] = {
     { "paranoid", &g_fViSOSParanoidMode },
     { "nowait", &g_fStartupNoWait },
@@ -439,8 +448,10 @@ static VsInitFormattedOutputStream *g_pStartupOutputStream;
 VsInitFormattedOutputStream *g_pStatusOutputStream;
 // GLOBAL: LEMBALL 0x004a93a8
 VsInitFormattedOutputStream *g_pErrorOutputStream;
+// GLOBAL: LEMBALL 0x004a8328
 static char *g_apszParsedArgs[16];
-static unsigned int g_cParsedArgs = 0;
+// GLOBAL: LEMBALL 0x004a8320
+static unsigned int g_cParsedArgs;
 // GLOBAL: LEMBALL 0x004a0e68
 int g_fSubsystemsReady = 0;
 static const char *g_pszDebugOutPath = g_VSINIT_DebugOutPath;
@@ -525,7 +536,9 @@ static void *g_MainMemoryArenaStatusEntryVtable[8] = {
     (void *)WriteMemoryArenaReport,
     (void *)DestroyMemoryArenaBaseStateReturnThis,
 };
+// GLOBAL: LEMBALL 0x004a9368
 static jmp_buf g_GameStartupJumpBuffer;
+// GLOBAL: LEMBALL 0x004a82e0
 static jmp_buf g_DebugThreadJumpBuffer;
 
 // FUNCTION: LEMBALL 0x00472A60

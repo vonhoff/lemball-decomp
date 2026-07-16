@@ -3911,7 +3911,7 @@ int VsNetRuntimeStartView::StartEffTransportRuntimeAndWaitReady(int nRuntimeKey,
     dwStartTime = timeGetTime();
     do {
         if (pState->m_fTransportInitialized == 0) {
-            return 0;
+            break;
         }
         dwNow = timeGetTime();
     } while (dwNow - dwStartTime < 10000);

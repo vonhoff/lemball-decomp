@@ -30,9 +30,13 @@ extern "C" DWORD WINAPI timeGetTime(void);
 extern void LEMBALL_FASTCALL EnsureHelperGroup0BackingBuffer(int nHelperGroup);
 extern void *__fastcall get_draw_command_rect_payload(void *pCommand);
 
+// GLOBAL: LEMBALL 0x004a0e7c
 int g_fStartupFullscreen = 0;
+// GLOBAL: LEMBALL 0x004a0e70
 int g_fStartupGraphicsDriverWing = 0;
+// GLOBAL: LEMBALL 0x004a0e74
 int g_fStartupGraphicsDriverCds = 1;
+// GLOBAL: LEMBALL 0x004a0e78
 int g_fStartupGraphicsDriverGdk = 0;
 // GLOBAL: LEMBALL 0x004a0768
 void *g_pSelectedGraphicsDriverRuntime = 0;
