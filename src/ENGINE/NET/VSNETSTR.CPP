@@ -843,7 +843,8 @@ void VsNetDualHandleEffStream::ReleaseEffStreamSecondaryHandleGroup(void) {
 
 // FUNCTION: LEMBALL 0x0045F930
 void VsNetDualHandleEffStream::ConfigureEffStreamPrimaryHandleGroup(
-    int nPacketCount, int cbPayload, int nMode) {
+    int nPacketCount, int cbPayload, int nMode)
+{
     void *pHandleArray;
     void *pHandleObject;
 
@@ -868,7 +869,8 @@ void VsNetDualHandleEffStream::ConfigureEffStreamPrimaryHandleGroup(
 
 // FUNCTION: LEMBALL 0x0045F9B0
 void VsNetDualHandleEffStream::ConfigureEffStreamSecondaryHandleGroup(
-    int nPacketCount, int cbPayload) {
+    int nPacketCount, int cbPayload)
+{
     void *pHandleArray;
     void *pHandleObject;
 
@@ -955,7 +957,8 @@ void VsNetTimedEffStream::ReleaseTimedEffStreamPrimaryHandle(void) {
 
 // FUNCTION: LEMBALL 0x0045FE50
 void VsNetTimedEffStream::ReleaseTimedEffStreamPrimaryHandleThunk(
-    int nUnused0, int nUnused1, int nUnused2) {
+    int nUnused0, int nUnused1, int nUnused2)
+{
     (void)nUnused0;
     (void)nUnused1;
     (void)nUnused2;

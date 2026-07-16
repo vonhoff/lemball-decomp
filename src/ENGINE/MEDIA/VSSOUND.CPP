@@ -356,7 +356,7 @@ int IsWaveOutEffectInstanceAvailable0047CDD0(void *pBackend);
 int ReturnOneWaveOutBackendValue0047CDF0(void *pBackend);
 void LEMBALL_FASTCALL CaptureWaveOutBackendContext0047D260(
     void *pBackend, int nUnused, void *pPrimaryContext);
-void DestroyDirectSoundEffectBackend(void *pBackend);
+void LEMBALL_FASTCALL DestroyDirectSoundEffectBackend(void *pBackend);
 char *__fastcall GetDirectSoundEffectBackendDescription(VsSoundDirectSoundEffectBackend *pBackend);
 int LEMBALL_FASTCALL InitializeDirectSoundEffectDevice(
     void *pBackend, int nUnused, int nResourceBase,
@@ -1766,7 +1766,7 @@ void LEMBALL_FASTCALL CaptureDirectSoundBackendWindow(
 }
 
 // FUNCTION: LEMBALL 0x0047DFC0
-void DestroyDirectSoundEffectBackend(void *pBackend) {
+void LEMBALL_FASTCALL DestroyDirectSoundEffectBackend(void *pBackend) {
     *(void ***)pBackend = g_DirectSoundEffectBackendVtable;
     FreeVSMemBlock(*(void **)((char *)pBackend + 0x50));
     if (*(HMODULE *)((char *)pBackend + 4) != 0) {

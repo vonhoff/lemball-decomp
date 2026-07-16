@@ -1067,7 +1067,7 @@ RenderDispatchQueue *RenderDispatchQueue::ConstructRenderDispatchQueueVariant(
 }
 
 // FUNCTION: LEMBALL 0x00463120
-void DestroyRenderDispatchQueue(void *pQueue) {
+void LEMBALL_FASTCALL DestroyRenderDispatchQueue(void *pQueue) {
     RenderDispatchQueue *pDispatchQueue;
     unsigned int cClientsReleased;
     unsigned int cClients;

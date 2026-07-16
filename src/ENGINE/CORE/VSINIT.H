@@ -81,7 +81,7 @@ struct RenderDispatchQueue {
     RenderDispatchQueue *ConstructRenderDispatchQueueVariant(int cEntries,
                                                            const char *pszName);
 };
-void DestroyRenderDispatchQueue(void *pQueue);
+void LEMBALL_FASTCALL DestroyRenderDispatchQueue(void *pQueue);
 void *DeleteRenderDispatchQueue(void *pQueue, unsigned char fFreeMemory);
 void LEMBALL_FASTCALL ConstructStreamFormatState(VsInitStreamFormatTargetState *pState);
 void LEMBALL_FASTCALL RestoreStreamFormatSubobjectVtable(VsInitStreamFormatTargetState *pState);
