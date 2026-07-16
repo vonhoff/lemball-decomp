@@ -10,6 +10,13 @@
 #include "ENGINE/MEDIA/EFFSTRM.H"
 #include "FRONTEND/CURSOR.H"
 #include "RESOURCE/VARMGR.H"
+#include "LEVEL/DRAWTEXT.H"
+
+#if defined(_MSC_VER) && (_MSC_VER < 1100)
+#include <new.h>
+#else
+#include <new>
+#endif
 
 extern "C" DWORD WINAPI timeGetTime(void);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
@@ -176,8 +183,6 @@ static const char g_szUnknownUserActionSpecified[] =
 static const char g_szUnknownUserActionReceived[] =
     "Unknown user action received\n";
 
-void *LEMBALL_FASTCALL DestroyPackagedRectQueueEntryArray(
-    void *pObject, int nUnused, unsigned int fDelete);
 void ResetBaseModeActionButtonPointSink(void *pObject);
 void *LEMBALL_FASTCALL DestroyBaseModeActionButtonPointSinkArray(
     void *pObject, int nUnused, unsigned int fDelete);
@@ -370,27 +375,14 @@ static void *g_LEVEL_StatusIndicatorPointSinkEntryVtableStorage[8] = {
 };
 static void *g_LEVEL_StatusIndicatorPointSinkEntryVtable =
     g_LEVEL_StatusIndicatorPointSinkEntryVtableStorage;
-static void *g_LEVEL_PackagedRectQueueEntryDeleteVtable[1] = {
-    (void *)DestroyPackagedRectQueueEntryArray,
-};
 static void *g_LEVEL_ActionButtonPointSinkDeleteVtable[1] = {
     (void *)DestroyBaseModeActionButtonPointSinkArray,
 };
-static void LEMBALL_FASTCALL QueueVariantRenderEntryToContext00467AE0(
-    void *pObject, int nUnusedEdx, void *pQueue);
-static void LEMBALL_FASTCALL DispatchVariantRenderEntryToContext00467B10(
-    void *pObject, int nUnusedEdx, void *pContext);
-/* 00499620. Slots 6 and 7 targets remain outside recovered source ownership;
- * use callable placeholders until their owner hierarchy is reconstructed. */
-static void *g_LEVEL_VariantRenderManagerVtableStorage[8] = {
+/* 00499620: the adjacent 00499628 packaged-entry table is now emitted by
+ * LevelPackagedRectQueueEntry rather than represented as raw storage here. */
+static void *g_LEVEL_VariantRenderManagerVtableStorage[2] = {
     (void *)VariantResourceBundleNoopThunk,
     0,
-    (void *)DestroyPackagedRectQueueEntryArray,
-    (void *)QueueVariantRenderEntryToContext00467AE0,
-    (void *)DispatchVariantRenderEntryToContext00467B10,
-    0,
-    (void *)NoopVtableCallbackThunk,
-    (void *)NoopVtableCallbackThunk,
 };
 static void *g_LEVEL_VariantRenderManagerVtable =
     g_LEVEL_VariantRenderManagerVtableStorage;
@@ -1194,63 +1186,6 @@ int LEMBALL_FASTCALL GetTimedVariantFrameStartTimeThunk(void *pObject) {
     return GetTimedVariantFrameStartTime(pObject);
 }
 
-// FUNCTION: LEMBALL 0x00467B40
-void *LEMBALL_FASTCALL DestroyPackagedRectQueueEntryArray(
-    void *pObject, int, unsigned int fDelete) {
-    int cEntries;
-    char *pEntry;
-
-    if ((fDelete & 2) == 0) {
-        *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
-        if ((fDelete & 1) != 0) {
-            FreeVSMemBlock(pObject);
-        }
-        return pObject;
-    }
-
-    cEntries = *((int *)pObject - 1);
-    pEntry = (char *)pObject + cEntries * 0x18;
-    while (cEntries-- > 0) {
-        pEntry -= 0x18;
-        *(void **)pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
-    }
-    FreeVSMemBlock((char *)pObject - 4);
-    return pObject;
-}
-
-// FUNCTION: LEMBALL 0x00467AE0
-static void LEMBALL_FASTCALL QueueVariantRenderEntryToContext00467AE0(
-    void *pObject, int, void *pQueue) {
-    int *pOwner;
-
-    pOwner = *(int **)((char *)pObject + 0x08);
-    if (pOwner[4] == 0) {
-        ((LevelNoArgVirtualProc)(*(void ***)pOwner)[7])(pOwner, 0);
-    } else {
-        pOwner[9] = 0;
-    }
-    ++pOwner[2];
-    AppendPointerQueueEntry(pQueue, pObject);
-}
-
-// FUNCTION: LEMBALL 0x00467B10
-static void LEMBALL_FASTCALL DispatchVariantRenderEntryToContext00467B10(
-    void *pObject, int, void *pContext) {
-    int *pOwner;
-    int pOwnerOffsets;
-    int pDispatchBase;
-    void *pDispatchObject;
-
-    pOwner = *(int **)((char *)pObject + 0x08);
-    pOwnerOffsets = *(int *)(*(int *)((char *)pContext + 0x0c) + 0x40);
-    pDispatchBase = *(int *)(pOwnerOffsets + 4);
-    pDispatchObject = (void *)(unsigned long)(
-        pDispatchBase + 0x40 + *(int *)((char *)pContext + 0x0c));
-    ((LevelTwoArgVirtualProc)(*(void ***)pDispatchObject)[9])(
-        pDispatchObject, 0, pObject, pOwner);
-    --pOwner[2];
-}
-
 // FUNCTION: LEMBALL 0x004439E0
 void ResetBaseModeActionButtonPointSink(void *pObject) {
     *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
@@ -1410,18 +1345,6 @@ void SetLevelScreenStatusIndicatorMode(int nMode, int nValue) {
     }
 }
 
-// FUNCTION: LEMBALL 0x00467AC0
-void *LEMBALL_FASTCALL InitializePackagedRectQueueEntry(void *pObject) {
-    int *pEntry;
-
-    pEntry = (int *)pObject;
-    *(void **)pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
-    *(unsigned short *)((char *)pEntry + 6) = 0;
-    *(void **)pEntry = g_LEVEL_PackagedRectQueueEntryDeleteVtable;
-    *(unsigned short *)(pEntry + 1) = 0;
-    return pObject;
-}
-
 // FUNCTION: LEMBALL 0x00403265
 void *InitializeBaseModeActionButtonPointSink(void *pObject) {
     int *pEntry;
@@ -1520,7 +1443,7 @@ void *ConstructVariantRenderManager(void *pObject,
             *pEntry = cEntries;
             ++pEntry;
             while (--cEntries >= 0) {
-                InitializePackagedRectQueueEntry(pEntry);
+                new (pEntry) LevelPackagedRectQueueEntry;
                 pEntry += 6;
             }
             pManager[0x19] = (int)(unsigned long)pEntry - 0x18 * pManager[0x16];
@@ -1579,33 +1502,21 @@ void LoadVariantRenderResource(void *pObject, int nResourceId) {
     }
 }
 
-struct LevelVARIANT_RENDER_MANAGER_VIEW {
-    unsigned char m_abReserved00[0x24];
-    void **m_ppResourceObjects;
-    short *m_pResourceIds;
-    int m_nFreeResourceId;
-    int m_nReserved30;
-    int m_cLoadedResources;
-
-    void ReleaseVariantRenderResource(int nResourceId);
-};
-
 // FUNCTION: LEMBALL 0x00467500
-void LevelVARIANT_RENDER_MANAGER_VIEW::ReleaseVariantRenderResource(int nResourceId) {
-    ReleaseTypedResourceObjectReference(m_ppResourceObjects[m_pResourceIds[nResourceId]]);
-    m_ppResourceObjects[m_pResourceIds[nResourceId]] = 0;
-    m_pResourceIds[nResourceId] = (short)m_nFreeResourceId;
-    --m_cLoadedResources;
+void LevelVariantRenderManagerView::ReleaseVariantRenderResource(int nResourceId) {
+    ReleaseTypedResourceObjectReference(
+        m_ppResourceObjects24[m_pResourceIds28[nResourceId]]);
+    m_ppResourceObjects24[m_pResourceIds28[nResourceId]] = 0;
+    m_pResourceIds28[nResourceId] = (short)m_nFreeResourceId2C;
+    --m_cLoadedResources34;
 }
 
 // FUNCTION: LEMBALL 0x00467540
-int GetVariantRenderFrameCount(void *pObject, int nResourceId) {
-    int *pManager;
+int LevelVariantRenderManagerView::GetVariantRenderFrameCount(int nResourceId) {
     int *pResourceObject;
 
-    pManager = (int *)pObject;
     pResourceObject =
-        *(int **)(unsigned long)(pManager[9] + (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2) * 4);
+        (int *)m_ppResourceObjects24[m_pResourceIds28[nResourceId]];
     if (pResourceObject[0x10] == 0x5a524c45) {
         return 1;
     }
@@ -1923,20 +1834,8 @@ void LEMBALL_FASTCALL RestoreCompositePointRectSinkFinalizeVtables(void *pObject
     RestoreCompositePointRectSinkFinalizeVtablesBody(pObject);
 }
 
-// FUNCTION: LEMBALL 0x00467BA0
-void LEMBALL_FASTCALL ResetPackagedRectQueueEntryVtable(void *pObject) {
-    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
-}
-
 // FUNCTION: LEMBALL 0x004698F0
 void LEMBALL_FASTCALL RestoreQueuedRenderPointSinkVtable(void *pObject) {
-    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
-}
-
-// FUNCTION: LEMBALL 0x00469BF0
-void LEMBALL_FASTCALL ResetLevelScreenDrawEntryVtables(void *pObject) {
-    *(void **)((char *)pObject + 0x2c) =
-        g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
     *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
 
@@ -2006,7 +1905,7 @@ void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapperBody(void *pObject, i
         *(int *)(unsigned long)(pManager[0x1d] +
                                 (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2) * 4) = 0;
     }
-    ((LevelVARIANT_RENDER_MANAGER_VIEW *)pObject)->ReleaseVariantRenderResource(nResourceId);
+    ((LevelVariantRenderManagerView *)pObject)->ReleaseVariantRenderResource(nResourceId);
 }
 
 // FUNCTION: LEMBALL 0x00401CD5
@@ -2032,7 +1931,7 @@ void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapperRangeBody(void *pObje
             *(void **)((char *)pManager[0x1d] +
                        (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2) * 4) = 0;
         }
-        ((LevelVARIANT_RENDER_MANAGER_VIEW *)pObject)->ReleaseVariantRenderResource(nResourceId);
+        ((LevelVariantRenderManagerView *)pObject)->ReleaseVariantRenderResource(nResourceId);
         ++nResourceId;
     }
 }
@@ -2043,7 +1942,7 @@ void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapperRange(void *pObject, 
 }
 
 #define ReleaseVariantRenderResource(pObject, nResourceId) \
-    ((LevelVARIANT_RENDER_MANAGER_VIEW *)(pObject))->ReleaseVariantRenderResource(nResourceId)
+    ((LevelVariantRenderManagerView *)(pObject))->ReleaseVariantRenderResource(nResourceId)
 
 int ReturnTrueVirtualHookBody(void);
 
@@ -2152,7 +2051,9 @@ void *ConstructLevelScreenStatusIndicatorManager(void *pObject, int nStatusMode,
 
     *(unsigned short *)((char *)pManager + 0x90) = 0;
     pManager[0x23] = 1;
-    nFrameCount = GetVariantRenderFrameCount(pManager, pManager[0x21]);
+    nFrameCount =
+        ((LevelVariantRenderManagerView *)pManager)
+            ->GetVariantRenderFrameCount(pManager[0x21]);
 
     pSelector = (int *)AllocateVSMemBlock(0x1c);
     if (pSelector == 0) {

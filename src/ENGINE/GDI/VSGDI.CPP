@@ -7,6 +7,7 @@
 #include "ENGINE/CORE/COMMON.H"
 #include "GAME.H"
 #include "ENGINE/GDI/VSWINDOW.H"
+#include "LEVEL/DRAWTEXT.H"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>
@@ -26,7 +27,6 @@ DECOMP_SIZE_ASSERT(VsGdiDirectDrawDisplayState, 0x4a8);
 
 extern LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 extern "C" DWORD WINAPI timeGetTime(void);
-extern void *LEMBALL_FASTCALL InitializePackagedRectQueueEntry(void *pObject);
 extern void LEMBALL_FASTCALL EnsureHelperGroup0BackingBuffer(int nHelperGroup);
 extern void *__fastcall get_draw_command_rect_payload(void *pCommand);
 
@@ -2387,7 +2387,7 @@ void LEMBALL_FASTCALL InitializeStatusIndicatorRenderClientDefaults(int *pRender
         pEntryBlock[0] = 1;
         pEntry = pEntryBlock + 1;
         for (i = 0; i <= 1; ++i) {
-            InitializePackagedRectQueueEntry(pEntry);
+            new (pEntry) LevelPackagedRectQueueEntry;
             pEntry += 6;
         }
         pRenderClient[7] = (int)(unsigned long)(pEntryBlock + 1);
