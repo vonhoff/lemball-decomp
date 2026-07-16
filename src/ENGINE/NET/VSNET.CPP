@@ -1209,11 +1209,15 @@ short g_nEffTransportServiceBasePort = 0;
 int g_nEffTransportAsyncErrorStatus = 0;
 // GLOBAL: LEMBALL 0x004a1e24
 int g_cbEffTransportMaxPacketBytes = 0;
+// GLOBAL: LEMBALL 0x004A1E50
 void *g_pEffTransportRequestConnectControlStream = 0;
+// GLOBAL: LEMBALL 0x004A1E54
 void *g_pEffTransportRequestNewPortControlStream = 0;
+// GLOBAL: LEMBALL 0x004A1E58
 void *g_pEffTransportAuthoriseConnectControlStream = 0;
 // GLOBAL: LEMBALL 0x004A1E5C
 void *g_pEffTransportGoAheadConnectControlStream = 0;
+// GLOBAL: LEMBALL 0x004A1E60
 void *g_pEffTransportFailedConnectControlStream = 0;
 
 extern void *g_pEffTransportPacketBuffer;
