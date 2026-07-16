@@ -1029,8 +1029,8 @@ LevelManagedEntityChildIterator *LevelManagedEntityActiveGroupView::GetFirstActi
 void LevelManagedEntityCommandQueue::PopFront(void) {
     LevelManagedEntityCommandEntry *pDestination;
     LevelManagedEntityCommandEntry *pSource;
-    int nOffset;
     int iEntry;
+    int nOffset;
 
     if (m_cEntries00 != 0) {
         nOffset = 0;
