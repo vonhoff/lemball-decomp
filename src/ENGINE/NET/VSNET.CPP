@@ -1759,8 +1759,8 @@ void *VsNetSimpleEffTransportRecordSlotTable::ConstructSimpleEffTransportRecordS
     return this;
 }
 
-static void *g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable = 0;
-static void *g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable = 0;
+extern void *g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable[1];
+extern void *g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable[1];
 
 // FUNCTION: LEMBALL 0x00461290
 void *VsNetSimpleEffTransportRecordSlotTable::ConstructLockedEffTransportRecordSlotTable(
@@ -1811,7 +1811,7 @@ void *ConstructRangeEffTransportRecordBufferTable(void *pObject, int nFirstPacke
     pTable = (VsNetEffTransportRecordBuffer *)pObject;
     cRecords = nLastPacket - nFirstPacket + 1;
     pTable->ConstructEffTransportRecordBuffer(cRecords, cbPayload, cbRecord);
-    pTable->m_pVtable = (void **)g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable;
+    pTable->m_pVtable = g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable;
     *(int *)((char *)pObject + 0x1c) = nFirstPacket;
     *(int *)((char *)pObject + 0x18) = cRecords;
     *(int *)((char *)pObject + 0x24) = 0;
@@ -1841,7 +1841,7 @@ void VsNetEffTransportRecordBuffer::DestroyRangeEffTransportRecordBufferTable(vo
     int cRecords;
 
     pTable = this;
-    pTable->m_pVtable = (void **)g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable;
+    pTable->m_pVtable = g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable;
     cRecords = *(int *)((char *)this + 0x18);
     if (*(void **)((char *)this + 0x20) != 0) {
         for (i = 0; i < cRecords; ++i) {
@@ -1874,7 +1874,7 @@ void *ConstructRingEffTransportRecordBufferTable(void *pObject, int cRecords,
 
     pTable = (VsNetEffTransportRecordBuffer *)pObject;
     pTable->ConstructEffTransportRecordBuffer(cRecords, cbPayload, cbRecord);
-    pTable->m_pVtable = (void **)g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable;
+    pTable->m_pVtable = g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable;
     *(int *)((char *)pObject + 0x18) = cRecords;
     if (cbPayload < 1) {
         *(void **)((char *)pObject + 0x1c) = 0;
@@ -1902,7 +1902,7 @@ void VsNetEffTransportRecordBuffer::DestroyRingEffTransportRecordBufferTable(voi
     int cRecords;
 
     pTable = this;
-    pTable->m_pVtable = (void **)g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable;
+    pTable->m_pVtable = g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable;
     cRecords = *(int *)((char *)this + 0x18);
     if (*(void **)((char *)this + 0x1c) != 0) {
         for (i = 0; i < cRecords; ++i) {
@@ -1917,9 +1917,8 @@ void VsNetEffTransportRecordBuffer::DestroyRingEffTransportRecordBufferTable(voi
 }
 
 // FUNCTION: LEMBALL 0x00462A60
-void *DeleteRangeEffTransportRecordBufferTableWrapper(void *pObject, BYTE fFreeMemory) {
-    ((VsNetEffTransportRecordBuffer *)pObject)
-        ->DestroyRangeEffTransportRecordBufferTable();
+void *LEMBALL_FASTCALL DeleteRangeEffTransportRecordBufferTableWrapper(VsNetEffTransportRecordBuffer *pObject, int, BYTE fFreeMemory) {
+    pObject->DestroyRangeEffTransportRecordBufferTable();
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pObject);
     }
@@ -1927,9 +1926,8 @@ void *DeleteRangeEffTransportRecordBufferTableWrapper(void *pObject, BYTE fFreeM
 }
 
 // FUNCTION: LEMBALL 0x00462A80
-void *DeleteRingEffTransportRecordBufferTableWrapper(void *pObject, BYTE fFreeMemory) {
-    ((VsNetEffTransportRecordBuffer *)pObject)
-        ->DestroyRingEffTransportRecordBufferTable();
+void *LEMBALL_FASTCALL DeleteRingEffTransportRecordBufferTableWrapper(VsNetEffTransportRecordBuffer *pObject, int, BYTE fFreeMemory) {
+    pObject->DestroyRingEffTransportRecordBufferTable();
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pObject);
     }
@@ -2055,26 +2053,18 @@ void *g_NETWORK_DeleteEffTransportRecordBufferVtable[1] = {
     (void *)DeleteEffTransportRecordBufferWrapper,
 };
 
-static void *g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtableStorage[16] = {
+// GLOBAL: LEMBALL 0x004991D8
+void *g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable[1] = {
     (void *)DeleteRangeEffTransportRecordBufferTableWrapper,
-    (void *)DeleteEffTransportRecordBufferWrapper,
-    (void *)NoopVtableCallbackThunk,
-    (void *)NoopVtableCallbackThunk,
 };
 
-static void *g_NETWORK_DeleteRingEffTransportRecordBufferTableVtableStorage[16] = {
+// GLOBAL: LEMBALL 0x004991DC
+void *g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable[1] = {
     (void *)DeleteRingEffTransportRecordBufferTableWrapper,
-    (void *)DeleteEffTransportRecordBufferWrapper,
-    (void *)NoopVtableCallbackThunk,
-    (void *)NoopVtableCallbackThunk,
 };
 
 struct VsNetInitializeRecordVtablePointers {
     VsNetInitializeRecordVtablePointers(void) {
-        g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable =
-            g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtableStorage;
-        g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable =
-            g_NETWORK_DeleteRingEffTransportRecordBufferTableVtableStorage;
     }
 };
 
