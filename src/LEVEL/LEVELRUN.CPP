@@ -21,7 +21,7 @@ LevelBallChunkManager *g_pBallChunkManager = 0;
 // GLOBAL: LEMBALL 0x004a63fc
 char *g_pszActiveLevelFilePath = 0;
 // GLOBAL: LEMBALL 0x004a6400
-void *g_pLoadedLevelFileBuffer = 0;
+void *g_pLoadedLevelFileBuffer;
 
 // GLOBAL: LEMBALL 0x0049e0d0
 static int g_LEVEL_ProjectileGeometryPairSeeds[3][8][2] = {
@@ -41,7 +41,7 @@ static int g_LEVEL_ProjectileGeometryPairSeeds[3][8][2] = {
 
 int g_fLevelEndStateRequestLatched = 0;
 // GLOBAL: LEMBALL 0x004a6510
-int g_GAME_ManagedEntityRegistryTable[1000] = {0};
+int g_GAME_ManagedEntityRegistryTable[1000];
 // GLOBAL: LEMBALL 0x004a74b0
 void *g_pActiveManagedEntityOwner;
 // GLOBAL: LEMBALL 0x004a74bc

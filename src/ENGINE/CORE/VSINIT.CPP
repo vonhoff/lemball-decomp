@@ -454,9 +454,9 @@ static VS_InvisibleWindow g_InvisibleMessageWindow;
 // GLOBAL: LEMBALL 0x004a0e88
 static long g_cbMainArenaAvailableAfterInit = 0;
 // GLOBAL: LEMBALL 0x004a0e94
-static unsigned int g_uViSOSMajorVersion = 1;
+static unsigned int g_uViSOSMajorVersion = 0;
 // GLOBAL: LEMBALL 0x004a0e98
-static unsigned int g_uViSOSMinorVersion = 0;
+static unsigned int g_uViSOSMinorVersion = 3;
 // GLOBAL: LEMBALL 0x00498958
 static void *g_StatusEntryPointerArrayVtable[1] = { (void *)WriteStatusEntryPointerArray };
 // GLOBAL: LEMBALL 0x004a1d64

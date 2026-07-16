@@ -133,7 +133,7 @@ static int g_GAME_VariantResourceEntryEffectTable[44][3] = {
     {42, 562, 262153}, {43, 563, 262153}, {44, 561, 262153}, {45, 565, 262153},
 };
 // GLOBAL: LEMBALL 0x0049ed98
-int g_fVariantResourceEffectsEnabled = 0;
+int g_fVariantResourceEffectsEnabled = 1;
 int g_fVariantResourceMusicEnabled = 0;
 
 extern void *g_pVariantResourceEntryManager;
