@@ -25,6 +25,7 @@ struct MogLoadArenaDispatch {
 };
 
 static FILE *g_pResourceArchiveFile = 0;
+// GLOBAL: LEMBALL 0x004a1d54
 void *g_pResourceArchiveMemoryArena = 0;
 static const unsigned int g_MOGLOAD_StringResourceTypeTag = 0x53545247;
 static const unsigned int g_MOGLOAD_EffResourceTypeTag = 0x45464620;

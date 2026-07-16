@@ -59,7 +59,8 @@ static HGLOBAL g_hMainMemoryArenaStorage = 0;
 static int g_cbMainArenaCapacity = 0;
 static int g_cbMainArenaInUse = 0;
 static int g_fMainArenaReady = 0;
-void *g_pSmallMemoryBucketTable = 0;
+// GLOBAL: LEMBALL 0x004aa0fc
+void *g_pSmallMemoryBucketTable;
 unsigned int g_cbSmallMemoryBucketUpperBound = 0;
 const char *g_pszSmallMemoryBucketAllocTag = "Small memory bucket";
 static const char g_VSMEM_ReportSeparator[] = "************************************************\n";

@@ -163,6 +163,10 @@ struct GameVariantResourceBundleLoadInterface {
     virtual void PrepareNextResourceLoad(void) = 0;
 };
 
+struct GameListEntryArrayDeleteInterface {
+    virtual void *Delete(int fDelete) = 0;
+};
+
 // LIST resource objects use the same typed-resource prefix, then keep their
 // descriptor-derived arrays at +0x38/+0x4c and list state at +0x60..+0x74.
 static void *LEMBALL_FASTCALL DeleteListResourceBase(
@@ -274,16 +278,13 @@ static void *LEMBALL_FASTCALL DeleteListResourceBase(
 static void *LEMBALL_FASTCALL DestroyZrleOnlyListResource(
     void *pObject, int, int fDelete)
 {
-    typedef void *(LEMBALL_FASTCALL *DeleteVirtual)(
-        void *, int, int);
-
-    void *pEntryArray;
+    GameListEntryArrayDeleteInterface *pEntryArray;
 
     *(void **)pObject = g_GAME_ZrleOnlyListResourceVtableStorage;
-    pEntryArray = *(void **)((char *)pObject + 0x78);
+    pEntryArray = *(GameListEntryArrayDeleteInterface **)
+        ((char *)pObject + 0x78);
     if (pEntryArray != 0) {
-        ((DeleteVirtual)(*(void ***)pEntryArray)[0])(
-            pEntryArray, 0, 3);
+        pEntryArray->Delete(3);
     }
     InitializeTypedResourceObjectBaseVtable(pObject);
     if ((fDelete & 1) != 0) {
