@@ -97,7 +97,7 @@ int VS_InvisibleWindow::Construct(LPCSTR pszClassName, int *pfClassRegistered) {
         AppendErrorCString(g_PLATFORM_ErrorSuffix);
     }
 
-    return m_hWnd != 0;
+    return (int)(unsigned long)this;
 }
 
 // FUNCTION: LEMBALL 0x0047C140
