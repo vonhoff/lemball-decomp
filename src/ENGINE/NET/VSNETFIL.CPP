@@ -26,15 +26,19 @@ struct VsNetEffTransportPeer {
     void PrepareEffTransportBroadcastStatusPayload(char *pszHostName);
 };
 extern void *g_pEffTransportDispatchQueue;
-extern char *GetWaveOutEffectBackendDescription(VsSoundWaveOutEffectBackend *pObject);
-extern int GetWaveOutEffectBackendStatus0047CC10(void *pObject);
-extern int InitializeWaveOutEffectDevice0047CB00(void *pObject,
-                                                  int fActivateDevice,
-                                                  int fStartStreaming);
-extern int IsWaveOutEffectBackendAvailable(void);
+extern char *LEMBALL_FASTCALL GetWaveOutEffectBackendDescription(
+    VsSoundWaveOutEffectBackend *pObject);
+extern int LEMBALL_FASTCALL GetWaveOutEffectBackendStatus0047CC10(
+    void *pObject);
+extern int LEMBALL_FASTCALL InitializeWaveOutEffectDevice0047CB00(
+    void *pObject, int nUnusedEdx, int fActivateDevice,
+    int fStartStreaming);
+extern int LEMBALL_FASTCALL IsWaveOutEffectBackendAvailable(void *pObject);
 extern int LEMBALL_FASTCALL ResetAndCloseWaveOutEffectDevice0047CC20(void *pObject);
-extern int IsWaveOutEffectInstanceAvailable0047CDD0(void *pObject);
-extern int ReturnOneWaveOutBackendValue0047CDF0(void *pObject);
+extern int LEMBALL_FASTCALL IsWaveOutEffectInstanceAvailable0047CDD0(
+    void *pObject);
+extern int LEMBALL_FASTCALL ReturnOneWaveOutBackendValue0047CDF0(
+    void *pObject);
 // FUNCTION: LEMBALL 0x00462F50
 size_t WriteAndFlushFileBuffer(FILE *pFile, void *pBuffer, size_t cbBuffer) {
     size_t cbWritten;

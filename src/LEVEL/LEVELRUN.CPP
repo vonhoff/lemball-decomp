@@ -687,7 +687,7 @@ void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x0040CF00
-void *ReturnArgumentVtableCallback(void *pObject) {
+void *LEMBALL_FASTCALL ReturnArgumentVtableCallback(void *pObject) {
     return pObject;
 }
 

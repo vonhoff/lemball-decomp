@@ -527,7 +527,7 @@ extern void *ConstructDoorChunkManagerThunk(void *pObject, void *pLevelMode, int
 extern void *ConstructRockChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
 extern void *ConstructCaptureTriggerChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
 extern void *ConstructLasrChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
-extern void *ReturnArgumentVtableCallback(void *pObject);
+extern void *LEMBALL_FASTCALL ReturnArgumentVtableCallback(void *pObject);
 extern void *ConstructBoonChunkManagerThunk(void *pObject, void *pLevelMode, void *pTileGrid);
 extern void LEMBALL_FASTCALL ResetBoonChunkManagerObjectsThunk(void *pObject);
 extern void *ConstructTramChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity);
@@ -661,9 +661,9 @@ void *LEMBALL_FASTCALL DeleteStartupMode(
 
 // FUNCTION: LEMBALL 0x004026F3
 void *LEMBALL_FASTCALL DeleteStartupModeThunk(
-    void *pObject, int, BYTE fDelete)
+    void *pObject, int nUnusedEdx, BYTE fDelete)
 {
-    return DeleteStartupMode(pObject, 0, fDelete);
+    return DeleteStartupMode(pObject, nUnusedEdx, fDelete);
 }
 
 // FUNCTION: LEMBALL 0x00407F70
@@ -679,9 +679,9 @@ void *LEMBALL_FASTCALL DeleteMainMenuMode(
 
 // FUNCTION: LEMBALL 0x004027A2
 void *LEMBALL_FASTCALL DeleteMainMenuModeThunk(
-    void *pObject, int, BYTE fDelete)
+    void *pObject, int nUnusedEdx, BYTE fDelete)
 {
-    return DeleteMainMenuMode(pObject, 0, fDelete);
+    return DeleteMainMenuMode(pObject, nUnusedEdx, fDelete);
 }
 
 // FUNCTION: LEMBALL 0x004465C0
@@ -2820,11 +2820,18 @@ struct GamePrimaryContextActiveScreenFrameInterface {
     virtual void RenderFrame(void) = 0;
 };
 
+typedef void (LEMBALL_FASTCALL *GamePrimaryContextActiveScreenRenderProc)(void *);
+struct GamePrimaryContextActiveScreenRenderVtable {
+    void *m_apSlots00[8];
+    GamePrimaryContextActiveScreenRenderProc m_pRenderFrame20;
+};
+
 // FUNCTION: LEMBALL 0x00431810
 void GamePrimaryContext::DispatchPrimaryContextActiveScreenFrame(
     void *pFrameArgument)
 {
     void *pActiveScreen;
+    GamePrimaryContextActiveScreenRenderVtable *pRenderVtable;
 
     if (m_pWindowOwnerContext == 0) {
         return;
@@ -2847,9 +2854,10 @@ void GamePrimaryContext::DispatchPrimaryContextActiveScreenFrame(
 
     pActiveScreen = *(void **)((char *)this + 0xd4);
     if (pActiveScreen != 0) {
+        pRenderVtable =
+            *(GamePrimaryContextActiveScreenRenderVtable **)pActiveScreen;
         ++m_nB8;
-        ((GamePrimaryContextActiveScreenFrameInterface *)pActiveScreen)
-            ->RenderFrame();
+        pRenderVtable->m_pRenderFrame20(pActiveScreen);
     }
 }
 

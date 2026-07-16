@@ -155,7 +155,7 @@ static void *g_GAME_ZrleResourceVtableStorage[15] = {
 };
 
 extern void *g_pDestroyGRTSResourceAndFreeThunk;
-extern void *g_pCachedResourceObjectBaseDeleteVtable;
+extern void *g_MOGLOAD_CachedResourceObjectBaseVtable[15];
 extern void *g_pBitmapResourceVtable;
 extern void *g_pPaletteResourceVtable;
 
@@ -474,7 +474,7 @@ void *ConstructIntZrleListResourceFromId(void *pObject, int nResourceId) {
     int *pListResource;
 
     pListResource = (int *)pObject;
-    *(void **)pListResource = g_pCachedResourceObjectBaseDeleteVtable;
+    *(void **)pListResource = g_MOGLOAD_CachedResourceObjectBaseVtable;
     pListResource[0x12] = g_GAME_IntZrleListResourceTypeToken;
     *(void **)pListResource = g_GAME_ListResourceBaseVtable;
     *(void **)pListResource = g_GAME_IntZrleListResourceVtable;
@@ -496,7 +496,7 @@ void *ConstructTwoArrayListResourceFromId(void *pObject, int nResourceId) {
     int *pListResource;
 
     pListResource = (int *)pObject;
-    *(void **)pListResource = g_pCachedResourceObjectBaseDeleteVtable;
+    *(void **)pListResource = g_MOGLOAD_CachedResourceObjectBaseVtable;
     pListResource[0x12] = g_GAME_TwoArrayListResourceTypeToken;
     *(void **)pListResource = g_GAME_ListResourceBaseVtable;
     pListResource[6] = 0;
@@ -528,7 +528,7 @@ void *LoadZrleOnlyListResource(int nResourceId) {
 
     pResourceObject = (int *)AllocateVSMemBlock(0x7c);
     if (pResourceObject != 0) {
-        *(void **)pResourceObject = g_pCachedResourceObjectBaseDeleteVtable;
+        *(void **)pResourceObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
         pResourceObject[6] = 0;
         *(void **)pResourceObject = g_GAME_ListResourceBaseVtable;
         pResourceObject[0x12] = g_GAME_ZrleListResourceTypeToken;
@@ -603,7 +603,7 @@ void *LoadBitmapResource(int nResourceId) {
 
     pResourceObject = (int *)AllocateVSMemBlock(0x54);
     if (pResourceObject != 0) {
-        *(void **)pResourceObject = g_pCachedResourceObjectBaseDeleteVtable;
+        *(void **)pResourceObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
         pResourceObject[6] = 0;
         *(void **)pResourceObject = g_pDestroyGRTSResourceAndFreeThunk;
         *(unsigned short *)((char *)pResourceObject + 0x4a) = 0;
@@ -631,7 +631,7 @@ void *LoadZrleResource(int nResourceId) {
 
     pResourceObject = (int *)AllocateVSMemBlock(0x54);
     if (pResourceObject != 0) {
-        *(void **)pResourceObject = g_pCachedResourceObjectBaseDeleteVtable;
+        *(void **)pResourceObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
         pResourceObject[6] = 0;
         *(void **)pResourceObject = g_pDestroyGRTSResourceAndFreeThunk;
         *(unsigned short *)((char *)pResourceObject + 0x4a) = 0;
@@ -663,7 +663,7 @@ void *LoadPalResource(int nResourceId) {
 
     pResourceObject = (int *)AllocateVSMemBlock(0x4c);
     if (pResourceObject != 0) {
-        *(void **)pResourceObject = g_pCachedResourceObjectBaseDeleteVtable;
+        *(void **)pResourceObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
         pResourceObject[6] = 0;
         *(void **)pResourceObject = g_pPaletteResourceVtable;
         InitializeResourceObjectFromId(pResourceObject, nResourceId);

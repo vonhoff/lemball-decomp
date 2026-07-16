@@ -237,12 +237,20 @@ static int LEMBALL_FASTCALL HandleMainMenuInput(
     void *pObject, int nUnusedEdx, void *pEvent);
 static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject);
 static void LEMBALL_FASTCALL DestroyMainMenuWidgets(void *pObject);
+static void LEMBALL_FASTCALL DestroyMainMenuScreen(void *pObject);
 static void *LEMBALL_FASTCALL DeleteMainMenuScreen(
     void *pObject, int nUnusedEdx, int fDelete);
 static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreen(
     void *pObject, int nUnusedEdx, int fDelete);
 static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
     void *pQueueNode, int nUnusedEdx, void *pEvent);
+
+// FUNCTION: LEMBALL 0x00401190
+static void LEMBALL_FASTCALL DestroyMainMenuScreenThunk00401190(
+    void *pObject)
+{
+    DestroyMainMenuScreen(pObject);
+}
 
 // FUNCTION: LEMBALL 0x00402595
 static void *LEMBALL_FASTCALL DeleteMainMenuScreenThunk(
@@ -1073,7 +1081,7 @@ static void LEMBALL_FASTCALL DestroyMainMenuScreen(void *pObject) {
 static void *LEMBALL_FASTCALL DeleteMainMenuScreen(
     void *pObject, int, int fDelete)
 {
-    DestroyMainMenuScreen(pObject);
+    DestroyMainMenuScreenThunk00401190(pObject);
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
     }

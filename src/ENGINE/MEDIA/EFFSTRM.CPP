@@ -124,12 +124,15 @@ void *g_pEffTransportDispatchQueue = 0;
 // GLOBAL: LEMBALL 0x004A1E20
 void *g_pEffTransportSecondaryDispatchQueue = 0;
 
+typedef int (LEMBALL_FASTCALL *GameEffStreamLoadHeaderProc)(GameEffStream *);
+typedef void (LEMBALL_FASTCALL *GameEffStreamVoidProc)(GameEffStream *);
+
 struct GameEffStreamVtable {
     void *m_pReserved00;
-    int (*m_pLoadFromMemoryHeader)(GameEffStream *);
-    void (*m_pLoadFromMemoryBody)(GameEffStream *);
-    void (*m_pBeginWriteHeader)(GameEffStream *);
-    void (*m_pBeginWriteBody)(GameEffStream *);
+    GameEffStreamLoadHeaderProc m_pLoadFromMemoryHeader;
+    GameEffStreamVoidProc m_pLoadFromMemoryBody;
+    GameEffStreamVoidProc m_pBeginWriteHeader;
+    GameEffStreamVoidProc m_pBeginWriteBody;
     void (*m_pDelete)(int);
 };
 
@@ -352,7 +355,7 @@ void *ConstructNetworkLobbyPeerClearCloseStream(void *pObject);
 
 // FUNCTION: LEMBALL 0x004615F0
 void *GameRecordSlotTable::GetShiftedRecordSlotByPacketId(int nPacketId) {
-    if (nPacketId > 2) {
+    if (nPacketId >= 3) {
         nPacketId -= 3;
     }
     return m_apSlots08[nPacketId];
@@ -360,12 +363,12 @@ void *GameRecordSlotTable::GetShiftedRecordSlotByPacketId(int nPacketId) {
 
 // FUNCTION: LEMBALL 0x0045F280
 int GameEffStream::LoadEffStreamFromMemory(int nSourceBuffer) {
-    GameEffStreamLoadInterface *pStream;
+    GameEffStreamVtable *pVtable;
 
-    pStream = (GameEffStreamLoadInterface *)this;
+    pVtable = m_pVtable;
     m_pvReadCursor = nSourceBuffer;
-    if (pStream->LoadFromMemoryHeader() != 0) {
-        pStream->LoadFromMemoryBody();
+    if (pVtable->m_pLoadFromMemoryHeader(this) != 0) {
+        pVtable->m_pLoadFromMemoryBody(this);
         return 1;
     }
     return 0;

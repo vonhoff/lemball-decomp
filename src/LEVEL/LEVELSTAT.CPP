@@ -183,7 +183,7 @@ static const char g_szUnknownUserActionSpecified[] =
 static const char g_szUnknownUserActionReceived[] =
     "Unknown user action received\n";
 
-void ResetBaseModeActionButtonPointSink(void *pObject);
+void LEMBALL_FASTCALL ResetBaseModeActionButtonPointSink(void *pObject);
 void *LEMBALL_FASTCALL DestroyBaseModeActionButtonPointSinkArray(
     void *pObject, int nUnused, unsigned int fDelete);
 extern void AppendPointerQueueEntry(void *pQueue, void *pEntry);
@@ -1188,8 +1188,8 @@ int LEMBALL_FASTCALL GetTimedVariantFrameStartTimeThunk(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x004439E0
-void ResetBaseModeActionButtonPointSink(void *pObject) {
-    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+void LEMBALL_FASTCALL ResetBaseModeActionButtonPointSink(void *pObject) {
+    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
 
 // FUNCTION: LEMBALL 0x004452E0
@@ -1900,12 +1900,11 @@ void DestroyVariantRenderManager(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x00434EC0
-void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapperBody(void *pObject, int nUnusedFastcallArgument, int nResourceId) {
+void LevelVariantRenderManagerView::ReleaseLevelScreenVariantStateWrapperBody(int nResourceId) {
     int *pManager;
     unsigned int uStatePointer;
 
-    (void)nUnusedFastcallArgument;
-    pManager = (int *)pObject;
+    pManager = (int *)this;
     uStatePointer = *(unsigned int *)(unsigned long)(pManager[0x1d] +
                                                      (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2) * 4);
     if (uStatePointer != 0) {
@@ -1913,24 +1912,22 @@ void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapperBody(void *pObject, i
         *(int *)(unsigned long)(pManager[0x1d] +
                                 (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2) * 4) = 0;
     }
-    ((LevelVariantRenderManagerView *)pObject)->ReleaseVariantRenderResource(nResourceId);
+    ReleaseVariantRenderResource(nResourceId);
 }
 
 // FUNCTION: LEMBALL 0x00401CD5
-void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapper(void *pObject, int nResourceId) {
-    ReleaseLevelScreenVariantStateWrapperBody(pObject, 0, nResourceId);
+void LevelVariantRenderManagerView::ReleaseLevelScreenVariantStateWrapper(int nResourceId) {
+    ReleaseLevelScreenVariantStateWrapperBody(nResourceId);
 }
 
 // FUNCTION: LEMBALL 0x00434F00
-void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapperRangeBody(void *pObject, int nUnusedFastcallArgument, int nFirstResourceId, int nLastResourceId) {
+void LevelVariantRenderManagerView::ReleaseLevelScreenVariantStateWrapperRangeBody(int nFirstResourceId, int nLastResourceId) {
     int nResourceId;
     int *pManager;
     unsigned int uStatePointer;
 
-    (void)nUnusedFastcallArgument;
-
     nResourceId = nFirstResourceId;
-    pManager = (int *)pObject;
+    pManager = (int *)this;
     while (nResourceId <= nLastResourceId) {
         uStatePointer = (unsigned int)*(void **)((char *)pManager[0x1d] +
                                                  (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2) * 4);
@@ -1939,15 +1936,20 @@ void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapperRangeBody(void *pObje
             *(void **)((char *)pManager[0x1d] +
                        (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2) * 4) = 0;
         }
-        ((LevelVariantRenderManagerView *)pObject)->ReleaseVariantRenderResource(nResourceId);
+        ReleaseVariantRenderResource(nResourceId);
         ++nResourceId;
     }
 }
 
 // FUNCTION: LEMBALL 0x00402F1D
-void LEMBALL_FASTCALL ReleaseLevelScreenVariantStateWrapperRange(void *pObject, int nFirstResourceId, int nLastResourceId) {
-    ReleaseLevelScreenVariantStateWrapperRangeBody(pObject, 0, nFirstResourceId, nLastResourceId);
+void LevelVariantRenderManagerView::ReleaseLevelScreenVariantStateWrapperRange(int nFirstResourceId, int nLastResourceId) {
+    ReleaseLevelScreenVariantStateWrapperRangeBody(nFirstResourceId, nLastResourceId);
 }
+
+#define ReleaseLevelScreenVariantStateWrapper(pObject, nResourceId) \
+    ((LevelVariantRenderManagerView *)(pObject))->ReleaseLevelScreenVariantStateWrapper(nResourceId)
+#define ReleaseLevelScreenVariantStateWrapperRange(pObject, nFirstResourceId, nLastResourceId) \
+    ((LevelVariantRenderManagerView *)(pObject))->ReleaseLevelScreenVariantStateWrapperRange(nFirstResourceId, nLastResourceId)
 
 #define ReleaseVariantRenderResource(pObject, nResourceId) \
     ((LevelVariantRenderManagerView *)(pObject))->ReleaseVariantRenderResource(nResourceId)

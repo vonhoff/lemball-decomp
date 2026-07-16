@@ -119,8 +119,9 @@ struct VsSoundDirectSoundEffectBackend {
 
 struct VsSoundDynamicStringEntry {
     void **m_pVtable;
-    int m_nReserved04;
-    int m_fBasePathSet;
+    unsigned char m_fBasePathSet;
+    unsigned char m_abReserved05[3];
+    int m_nReserved08;
     int m_fSearchCdromPath;
     GameDynamicCString m_BasePath;
 };
@@ -340,20 +341,24 @@ void DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry *pEntry);
 void *LEMBALL_FASTCALL DeleteAudioDynamicStringEntry(
     VsSoundDynamicStringEntry *pEntry, int nUnused, int fDelete);
 void LEMBALL_FASTCALL DestroyWaveOutEffectBackend(void *pBackend);
-char *GetWaveOutEffectBackendDescription(VsSoundWaveOutEffectBackend *pBackend);
-int IsWaveOutEffectBackendAvailable(void);
-int CreateWaveOutEffectInstance(void *pBackend, void *pPatchResource, int *pnEffectInstanceId);
-int FreeWaveOutEffectInstance(void *pBackend, int nEffectInstanceId);
-unsigned int PlayWaveOutEffectInstance(void *pBackend, int nEffectInstanceId);
+char *LEMBALL_FASTCALL GetWaveOutEffectBackendDescription(VsSoundWaveOutEffectBackend *pBackend);
+int LEMBALL_FASTCALL IsWaveOutEffectBackendAvailable(void *pBackend);
+int LEMBALL_FASTCALL CreateWaveOutEffectInstance(
+    void *pBackend, int nUnusedEdx, void *pPatchResource, int *pnEffectInstanceId);
+int LEMBALL_FASTCALL FreeWaveOutEffectInstance(
+    void *pBackend, int nUnusedEdx, int nEffectInstanceId);
+unsigned char LEMBALL_FASTCALL PlayWaveOutEffectInstance(
+    void *pBackend, int nUnusedEdx, int nEffectInstanceId,
+    int nVolume, int fLoopEnabled);
 void *LEMBALL_FASTCALL DeleteWaveOutEffectBackend(
     VsSoundWaveOutEffectBackend *pBackend, int nUnused, int fDelete);
-int GetWaveOutEffectBackendStatus0047CC10(void *pBackend);
-int InitializeWaveOutEffectDevice0047CB00(void *pBackend,
-                                           int fActivateDevice,
-                                           int fStartStreaming);
+int LEMBALL_FASTCALL GetWaveOutEffectBackendStatus0047CC10(void *pBackend);
+int LEMBALL_FASTCALL InitializeWaveOutEffectDevice0047CB00(
+    void *pBackend, int nUnusedEdx, int fActivateDevice,
+    int fStartStreaming);
 int LEMBALL_FASTCALL ResetAndCloseWaveOutEffectDevice0047CC20(void *pBackend);
-int IsWaveOutEffectInstanceAvailable0047CDD0(void *pBackend);
-int ReturnOneWaveOutBackendValue0047CDF0(void *pBackend);
+int LEMBALL_FASTCALL IsWaveOutEffectInstanceAvailable0047CDD0(void *pBackend);
+int LEMBALL_FASTCALL ReturnOneWaveOutBackendValue0047CDF0(void *pBackend);
 void LEMBALL_FASTCALL CaptureWaveOutBackendContext0047D260(
     void *pBackend, int nUnused, void *pPrimaryContext);
 void LEMBALL_FASTCALL DestroyDirectSoundEffectBackend(void *pBackend);
@@ -385,11 +390,14 @@ int LEMBALL_FASTCALL CreateDirectSoundEffectInstance(
 int LEMBALL_FASTCALL CreateDirectSoundEffectInstanceWithDefaultFlags(
     void *pBackend, int nUnused, void *pPatchResource,
     int *pnEffectInstanceId);
-int FreeDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId);
-int ReleaseAllDirectSoundEffectInstances(void *pBackend);
-void PlayDirectSoundEffectInstanceWithMappedVolume(void *pBackend, int nEffectInstanceId, unsigned char nVolume,
-                                                   int fLoopEnabled);
-void PauseDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId, int nBufferSlot);
+int LEMBALL_FASTCALL FreeDirectSoundEffectInstance(
+    void *pBackend, int nUnusedEdx, int nEffectInstanceId);
+int LEMBALL_FASTCALL ReleaseAllDirectSoundEffectInstances(void *pBackend);
+void LEMBALL_FASTCALL PlayDirectSoundEffectInstanceWithMappedVolume(
+    void *pBackend, int nUnusedEdx, int nEffectInstanceId,
+    unsigned char nVolume, int fLoopEnabled);
+void LEMBALL_FASTCALL PauseDirectSoundEffectInstance(
+    void *pBackend, int nUnusedEdx, int nEffectInstanceId, int nBufferSlot);
 void *LEMBALL_FASTCALL DeleteDirectSoundEffectBackend(
     VsSoundDirectSoundEffectBackend *pBackend, int nUnused, int fDelete);
 void PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle, int nMusicResourceId);
@@ -398,8 +406,109 @@ void PlayPreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandl
 void StopMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle);
 void PauseMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle);
 void ResumeMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle);
-static void SetAudioDynamicStringEntryFlag(void *pObject, int fValue);
-static int GetAudioDynamicStringEntryFlag(void *pObject);
+static void LEMBALL_FASTCALL InitializeAudioDynamicStringEntry(
+    void *pObject, int nUnusedEdx, int nValue1, int nValue2);
+static void LEMBALL_FASTCALL SetAudioDynamicStringEntryFlag(
+    void *pObject, int nUnusedEdx, unsigned char fValue);
+static unsigned char LEMBALL_FASTCALL GetAudioDynamicStringEntryFlag(
+    void *pObject);
+static void LEMBALL_FASTCALL ReservedAudioDynamicStringEntrySlot10(
+    void *pObject);
+static int LEMBALL_FASTCALL ReturnNullAudioDynamicStringEntryName(
+    void *pObject);
+static void *LEMBALL_FASTCALL DeleteAudioDynamicStringEntryBase(
+    VsSoundDynamicStringEntry *pEntry, int nUnusedEdx, int fDelete);
+
+static unsigned char LEMBALL_FASTCALL ReturnInvalidAudioEffectByte21(
+    void *pBackend);
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot22(
+    void *pBackend, int nUnusedEdx, int nValue);
+static unsigned char LEMBALL_FASTCALL ReturnInvalidAudioEffectByte23(
+    void *pBackend);
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot24(
+    void *pBackend, int nUnusedEdx, int nValue);
+static unsigned char LEMBALL_FASTCALL ReturnInvalidAudioEffectByte25(
+    void *pBackend);
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot26(
+    void *pBackend, int nUnusedEdx, int nValue);
+static int LEMBALL_FASTCALL ReturnFalseAudioEffectSlot27(
+    void *pBackend, int nUnusedEdx, int nValue1, int nValue2, int nValue3);
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot28(
+    void *pBackend, int nUnusedEdx, int nValue1, int nValue2, int nValue3);
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot29(
+    void *pBackend, int nUnusedEdx, int nValue1, int nValue2, int nValue3);
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot30(
+    void *pBackend, int nUnusedEdx, int nValue1, int nValue2, int nValue3);
+static unsigned char LEMBALL_FASTCALL ReturnFalseAudioEffectSlot31(
+    void *pBackend, int nUnusedEdx, int nValue1, int nValue2);
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot32(
+    void *pBackend, int nUnusedEdx, int nValue1, int nValue2);
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot33(
+    void *pBackend, int nUnusedEdx, int nValue1, int nValue2);
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot34(
+    void *pBackend, int nUnusedEdx, int nValue1, int nValue2, int nValue3);
+static unsigned char LEMBALL_FASTCALL ReturnFalseAudioEffectSlot35(
+    void *pBackend, int nUnusedEdx, int nValue1, int nValue2, int nValue3);
+static unsigned char LEMBALL_FASTCALL ReturnFalseAudioEffectSlot36(
+    void *pBackend, int nUnusedEdx, int nValue1, int nValue2, int nValue3);
+static int LEMBALL_FASTCALL ReturnTrueAudioEffectSlot37(
+    void *pBackend, int nUnusedEdx, int nValue1, int nValue2);
+static void *LEMBALL_FASTCALL DeleteAudioEffectBackendBase(
+    void *pBackend, int nUnusedEdx, int fDelete);
+
+static int LEMBALL_FASTCALL ReturnFalseWaveOutEffectSlot11(void *pBackend);
+static int LEMBALL_FASTCALL ReturnTrueWaveOutEffectSlot12(void *pBackend);
+static int LEMBALL_FASTCALL GetWaveOutEffectReserved08(void *pBackend);
+static int LEMBALL_FASTCALL GetWaveOutEffectAvailability(void *pBackend);
+static int LEMBALL_FASTCALL ReturnFalseWaveOutEffectSlot13(
+    void *pBackend, int nUnusedEdx, int, int, int, int);
+static int LEMBALL_FASTCALL ReturnFalseWaveOutEffectSlot14(
+    void *pBackend, int nUnusedEdx, int, int, int, int);
+static int LEMBALL_FASTCALL ReturnFalseWaveOutEffectSlot16(
+    void *pBackend, int nUnusedEdx, int);
+static int LEMBALL_FASTCALL ReturnFalseWaveOutEffectSlot17(
+    void *pBackend, int nUnusedEdx, int);
+static int LEMBALL_FASTCALL ReturnFalseWaveOutEffectSlot19(void *pBackend);
+static unsigned char LEMBALL_FASTCALL ReturnInvalidWaveOutEffectSlot21(
+    void *pBackend);
+static void LEMBALL_FASTCALL NoOpWaveOutEffectSlot22(
+    void *pBackend, int nUnusedEdx, int);
+static unsigned char LEMBALL_FASTCALL ReturnInvalidWaveOutEffectSlot23(
+    void *pBackend);
+static void LEMBALL_FASTCALL NoOpWaveOutEffectSlot24(
+    void *pBackend, int nUnusedEdx, int);
+static unsigned char LEMBALL_FASTCALL ReturnInvalidWaveOutEffectSlot25(
+    void *pBackend);
+static void LEMBALL_FASTCALL NoOpWaveOutEffectSlot26(
+    void *pBackend, int nUnusedEdx, int);
+static int LEMBALL_FASTCALL ReturnFalseWaveOutEffectSlot27(
+    void *pBackend, int nUnusedEdx, int, int, int);
+
+static int LEMBALL_FASTCALL GetDirectSoundEffectAvailability(void *pBackend);
+static int LEMBALL_FASTCALL ReturnTrueDirectSoundEffectSlot07(void *pBackend);
+static int LEMBALL_FASTCALL ReturnFalseDirectSoundEffectSlot13(
+    void *pBackend, int nUnusedEdx, int, int, int, int);
+static int LEMBALL_FASTCALL ReturnFalseDirectSoundEffectSlot14(
+    void *pBackend, int nUnusedEdx, int, int, int, int);
+static int LEMBALL_FASTCALL ReturnFalseDirectSoundEffectSlot16(
+    void *pBackend, int nUnusedEdx, int);
+static int LEMBALL_FASTCALL ReturnFalseDirectSoundEffectSlot17(
+    void *pBackend, int nUnusedEdx, int);
+static int LEMBALL_FASTCALL ReturnFalseDirectSoundEffectSlot19(void *pBackend);
+static unsigned char LEMBALL_FASTCALL ReturnInvalidDirectSoundEffectSlot21(
+    void *pBackend);
+static void LEMBALL_FASTCALL NoOpDirectSoundEffectSlot22(
+    void *pBackend, int nUnusedEdx, int);
+static unsigned char LEMBALL_FASTCALL ReturnInvalidDirectSoundEffectSlot23(
+    void *pBackend);
+static void LEMBALL_FASTCALL NoOpDirectSoundEffectSlot24(
+    void *pBackend, int nUnusedEdx, int);
+static unsigned char LEMBALL_FASTCALL ReturnInvalidDirectSoundEffectSlot25(
+    void *pBackend);
+static void LEMBALL_FASTCALL NoOpDirectSoundEffectSlot26(
+    void *pBackend, int nUnusedEdx, int);
+static int LEMBALL_FASTCALL ReturnFalseDirectSoundEffectSlot37(
+    void *pBackend, int nUnusedEdx, int, int);
 
 /* The binary's MCI table is a normal single-inheritance thiscall vtable.
    Keep dispatch compiler-shaped; raw cdecl entries corrupt the caller stack. */
@@ -428,7 +537,8 @@ struct VsSoundMciMusicBackendVtableModel {
         ResumeMciMusicTrack((VsSoundMciMusicBackend *)this, nTrackHandle);
     }
     virtual void SetFlag(int fValue) {
-        SetAudioDynamicStringEntryFlag((VsSoundDynamicStringEntry *)this, fValue);
+        SetAudioDynamicStringEntryFlag(
+            (VsSoundDynamicStringEntry *)this, 0, (unsigned char)fValue);
     }
     virtual int GetFlag(void) {
         return GetAudioDynamicStringEntryFlag((VsSoundDynamicStringEntry *)this);
@@ -453,87 +563,86 @@ static void *g_AudioManagerVtable[1] = { (void *)NetworkSafeVtableNoop };
 static void *g_WaveOutEffectBackendVtable[39] = {
     (void *)DeleteWaveOutEffectBackend,
     (void *)GetWaveOutEffectBackendDescription,
-    0,
-    (void *)AcceptAudioBackendResources,
-    (void *)AcceptAudioBackendResources,
-    (void *)NoOpAudioInt,
-    0,
-    (void *)NoOpAudioInt,
-    (void *)NoOpAudioInt,
-    (void *)ReturnAudioBackendUnavailable,
+    (void *)GetWaveOutEffectBackendStatus0047CC10,
+    (void *)InitializeWaveOutEffectDevice0047CB00,
     (void *)IsWaveOutEffectBackendAvailable,
-    (void *)ReturnAudioBackendReady,
+    (void *)ResetAndCloseWaveOutEffectDevice0047CC20,
+    (void *)IsWaveOutEffectInstanceAvailable0047CDD0,
+    (void *)ReturnOneWaveOutBackendValue0047CDF0,
     0,
-    0,
-    0,
+    (void *)GetWaveOutEffectReserved08,
+    (void *)GetWaveOutEffectAvailability,
+    (void *)ReturnFalseWaveOutEffectSlot11,
+    (void *)ReturnTrueWaveOutEffectSlot12,
+    (void *)ReturnFalseWaveOutEffectSlot13,
+    (void *)ReturnFalseWaveOutEffectSlot14,
     (void *)CreateWaveOutEffectInstance,
-    0,
-    0,
+    (void *)ReturnFalseWaveOutEffectSlot16,
+    (void *)ReturnFalseWaveOutEffectSlot17,
     (void *)FreeWaveOutEffectInstance,
-    (void *)ReturnAudioBackendReady,
+    (void *)ReturnFalseWaveOutEffectSlot19,
     (void *)PlayWaveOutEffectInstance,
+    (void *)ReturnInvalidWaveOutEffectSlot21,
+    (void *)NoOpWaveOutEffectSlot22,
+    (void *)ReturnInvalidWaveOutEffectSlot23,
+    (void *)NoOpWaveOutEffectSlot24,
+    (void *)ReturnInvalidWaveOutEffectSlot25,
+    (void *)NoOpWaveOutEffectSlot26,
+    (void *)ReturnFalseWaveOutEffectSlot27,
+    (void *)NoOpAudioEffectSlot28,
+    (void *)NoOpAudioEffectSlot29,
+    (void *)NoOpAudioEffectSlot30,
+    (void *)ReturnFalseAudioEffectSlot31,
+    (void *)NoOpAudioEffectSlot32,
+    (void *)NoOpAudioEffectSlot33,
+    (void *)NoOpAudioEffectSlot34,
     0,
-    (void *)NoOpAudioInt,
-    0,
-    (void *)NoOpAudioInt,
-    (void *)ReturnAudioBackendReady,
-    (void *)NoOpAudioInt,
-    (void *)NoOpAudioTriple,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    (void *)NoOpAudioTriple,
-    0,
+    (void *)PlayWaveOutEffectInstance,
     0,
     (void *)CaptureWaveOutBackendContext0047D260,
 };
 
-// FUNCTION: LEMBALL 0x0047F510
 void VsSoundMciMusicBackendVtableModel::Initialize(int, int) {
 }
 static void *g_DirectSoundEffectBackendVtable[39] = {
     (void *)DeleteDirectSoundEffectBackend,
     (void *)GetDirectSoundEffectBackendDescription,
-    0,
+    (void *)GetDirectSoundEffectAvailability,
     (void *)InitializeDirectSoundEffectDevice,
     (void *)AcceptDirectSoundBackendResources,
-    (void *)NoOpAudioInt,
     0,
-    (void *)NoOpAudioInt,
-    (void *)NoOpAudioInt,
+    0,
+    (void *)ReturnTrueDirectSoundEffectSlot07,
+    0,
     (void *)GetDirectSoundBackendReservedValue1c,
     (void *)GetDirectSoundBackendAvailability,
     (void *)ReturnDirectSoundBackendUnavailable,
     (void *)GetDirectSoundBackendBufferCount,
-    0,
-    0,
+    (void *)ReturnFalseDirectSoundEffectSlot13,
+    (void *)ReturnFalseDirectSoundEffectSlot14,
     (void *)CreateDirectSoundEffectInstanceWithDefaultFlags,
-    0,
-    0,
+    (void *)ReturnFalseDirectSoundEffectSlot16,
+    (void *)ReturnFalseDirectSoundEffectSlot17,
     (void *)FreeDirectSoundEffectInstance,
-    (void *)ReturnAudioBackendReady,
+    (void *)ReturnFalseDirectSoundEffectSlot19,
+    (void *)ReleaseAllDirectSoundEffectInstances,
+    (void *)ReturnInvalidDirectSoundEffectSlot21,
+    (void *)NoOpDirectSoundEffectSlot22,
+    (void *)ReturnInvalidDirectSoundEffectSlot23,
+    (void *)NoOpDirectSoundEffectSlot24,
+    (void *)ReturnInvalidDirectSoundEffectSlot25,
+    (void *)NoOpDirectSoundEffectSlot26,
+    0,
+    (void *)NoOpAudioEffectSlot28,
+    (void *)NoOpAudioEffectSlot29,
+    (void *)NoOpAudioEffectSlot30,
+    (void *)ReturnFalseAudioEffectSlot31,
+    (void *)NoOpAudioEffectSlot32,
+    (void *)NoOpAudioEffectSlot33,
+    (void *)NoOpAudioEffectSlot34,
     (void *)PlayDirectSoundEffectInstanceWithMappedVolume,
     0,
-    (void *)NoOpAudioInt,
-    0,
-    (void *)NoOpAudioInt,
-    (void *)ReturnAudioBackendReady,
-    (void *)NoOpAudioInt,
-    (void *)NoOpAudioTriple,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    (void *)NoOpAudioTriple,
-    0,
-    0,
+    (void *)ReturnFalseDirectSoundEffectSlot37,
     (void *)CaptureDirectSoundBackendWindow,
 };
 struct VsSoundBackendVtableInitializer {
@@ -549,34 +658,93 @@ struct VsSoundBackendVtableInitializer {
 };
 static VsSoundBackendVtableInitializer g_AUDIO_BackendVtableInitializer;
 static char g_szAudioManagerDescription[0x400];
+
+// FUNCTION: LEMBALL 0x0047F510
+static void LEMBALL_FASTCALL InitializeAudioDynamicStringEntry(void *, int, int, int) {
+}
+
 // FUNCTION: LEMBALL 0x0047F520
-static void SetAudioDynamicStringEntryFlag(void *pObject, int fValue) {
+static void LEMBALL_FASTCALL SetAudioDynamicStringEntryFlag(void *pObject, int, unsigned char fValue) {
     ((VsSoundDynamicStringEntry *)pObject)->m_fBasePathSet = fValue;
 }
 
-static void AudioDynamicStringEntryNoop(int nUnused0, int nUnused1) {
-    (void)nUnused0;
-    (void)nUnused1;
-}
-
 // FUNCTION: LEMBALL 0x0047F530
-static int GetAudioDynamicStringEntryFlag(void *pObject) {
+static unsigned char LEMBALL_FASTCALL GetAudioDynamicStringEntryFlag(void *pObject) {
     return ((VsSoundDynamicStringEntry *)pObject)->m_fBasePathSet;
 }
 
+// FUNCTION: LEMBALL 0x0047F540
+static void LEMBALL_FASTCALL ReservedAudioDynamicStringEntrySlot10(void *) {
+}
+
+// FUNCTION: LEMBALL 0x0047F550
+static int LEMBALL_FASTCALL ReturnNullAudioDynamicStringEntryName(void *) {
+    return 0;
+}
+
+// GLOBAL: LEMBALL 0x0049ADB0
 static void *g_AUDIO_DynamicStringEntryVtable[10] = {
-    (void *)DeleteAudioDynamicStringEntry,
-    (void *)AudioDynamicStringEntryNoop,
-    (void *)PrepareMciMusicTrack,
-    (void *)FreePreparedMciMusicTrack,
-    (void *)PlayPreparedMciMusicTrack,
-    (void *)StopMciMusicTrack,
-    (void *)PauseMciMusicTrack,
-    (void *)NoOpAudioInt,
+    (void *)DeleteAudioDynamicStringEntryBase,
+    (void *)InitializeAudioDynamicStringEntry,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
     (void *)SetAudioDynamicStringEntryFlag,
     (void *)GetAudioDynamicStringEntryFlag,
 };
-static void *g_AudioDynamicStringEntryVtable = g_AUDIO_DynamicStringEntryVtable;
+
+// GLOBAL: LEMBALL 0x0049ADD8
+static void *g_AUDIO_MusicBackendBaseVtable[3] = {
+    (void *)ReservedAudioDynamicStringEntrySlot10,
+    (void *)_purecall,
+    (void *)ReturnNullAudioDynamicStringEntryName,
+};
+
+// GLOBAL: LEMBALL 0x0049ADE8
+static void *g_AUDIO_EffectBackendBaseVtable[39] = {
+    (void *)DeleteAudioEffectBackendBase,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)ReturnInvalidAudioEffectByte21,
+    (void *)NoOpAudioEffectSlot22,
+    (void *)ReturnInvalidAudioEffectByte23,
+    (void *)NoOpAudioEffectSlot24,
+    (void *)ReturnInvalidAudioEffectByte25,
+    (void *)NoOpAudioEffectSlot26,
+    (void *)ReturnFalseAudioEffectSlot27,
+    (void *)NoOpAudioEffectSlot28,
+    (void *)NoOpAudioEffectSlot29,
+    (void *)NoOpAudioEffectSlot30,
+    (void *)ReturnFalseAudioEffectSlot31,
+    (void *)NoOpAudioEffectSlot32,
+    (void *)NoOpAudioEffectSlot33,
+    (void *)NoOpAudioEffectSlot34,
+    (void *)ReturnFalseAudioEffectSlot35,
+    (void *)ReturnFalseAudioEffectSlot36,
+    (void *)ReturnTrueAudioEffectSlot37,
+    (void *)CaptureWaveOutBackendContext0047D260,
+};
 static VsSoundMciMusicBackend *g_pActiveMciMusicBackend = 0;
 static int g_nPreparedMciMusicTrackHandle = 0;
 static const char g_AUDIO_SequencerDeviceType[] = "sequencer";
@@ -1245,22 +1413,31 @@ VsSoundWaveOutEffectBackend *VsSoundWaveOutEffectBackend::ConstructWaveOutEffect
 }
 
 // FUNCTION: LEMBALL 0x0047CAF0
-char *GetWaveOutEffectBackendDescription(VsSoundWaveOutEffectBackend *pBackend) {
+char *LEMBALL_FASTCALL GetWaveOutEffectBackendDescription(VsSoundWaveOutEffectBackend *pBackend) {
     if (pBackend->m_fDeviceAvailable == 1) {
         return pBackend->m_szDeviceDescription;
     }
     return (char *)g_AUDIO_NoEffectsBackendName;
 }
 
+// FUNCTION: LEMBALL 0x0047CBF0
+static int LEMBALL_FASTCALL ReturnFalseWaveOutEffectSlot11(void *) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047CC00
+static int LEMBALL_FASTCALL ReturnTrueWaveOutEffectSlot12(void *) {
+    return 1;
+}
+
 // FUNCTION: LEMBALL 0x0047CC10
-int GetWaveOutEffectBackendStatus0047CC10(void *pBackend) {
+int LEMBALL_FASTCALL GetWaveOutEffectBackendStatus0047CC10(void *pBackend) {
     return *(int *)((char *)pBackend + 0x0c);
 }
 
 // FUNCTION: LEMBALL 0x0047CB00
-int InitializeWaveOutEffectDevice0047CB00(void *pBackend,
-                                           int fActivateDevice,
-                                           int fStartStreaming)
+int LEMBALL_FASTCALL InitializeWaveOutEffectDevice0047CB00(
+    void *pBackend, int, int fActivateDevice, int fStartStreaming)
 {
     HWAVEOUT *pWaveOut;
     MMRESULT nResult;
@@ -1298,7 +1475,7 @@ int InitializeWaveOutEffectDevice0047CB00(void *pBackend,
 }
 
 // FUNCTION: LEMBALL 0x0047CBE0
-int IsWaveOutEffectBackendAvailable(void) {
+int LEMBALL_FASTCALL IsWaveOutEffectBackendAvailable(void *) {
     return 1;
 }
 
@@ -1366,7 +1543,7 @@ int LEMBALL_FASTCALL ResetAndCloseWaveOutEffectDevice0047CC20(void *pBackend) {
 }
 
 // FUNCTION: LEMBALL 0x0047CDD0
-int IsWaveOutEffectInstanceAvailable0047CDD0(void *pBackend) {
+int LEMBALL_FASTCALL IsWaveOutEffectInstanceAvailable0047CDD0(void *pBackend) {
     int i;
 
     for (i = 0; i < 8; ++i) {
@@ -1378,13 +1555,34 @@ int IsWaveOutEffectInstanceAvailable0047CDD0(void *pBackend) {
 }
 
 // FUNCTION: LEMBALL 0x0047CDF0
-int ReturnOneWaveOutBackendValue0047CDF0(void *pBackend) {
+int LEMBALL_FASTCALL ReturnOneWaveOutBackendValue0047CDF0(void *pBackend) {
     (void)pBackend;
     return 1;
 }
 
+// FUNCTION: LEMBALL 0x0047CED0
+static int LEMBALL_FASTCALL GetWaveOutEffectReserved08(void *pBackend) {
+    return *(int *)((char *)pBackend + 0x08);
+}
+
+// FUNCTION: LEMBALL 0x0047CEE0
+static int LEMBALL_FASTCALL GetWaveOutEffectAvailability(void *pBackend) {
+    return *(int *)((char *)pBackend + 0x0c);
+}
+
+// FUNCTION: LEMBALL 0x0047CEF0
+static int LEMBALL_FASTCALL ReturnFalseWaveOutEffectSlot13(void *, int, int, int, int, int) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047CF00
+static int LEMBALL_FASTCALL ReturnFalseWaveOutEffectSlot14(void *, int, int, int, int, int) {
+    return 0;
+}
+
 // FUNCTION: LEMBALL 0x0047CF10
-int CreateWaveOutEffectInstance(void *pBackend, void *pPatchResource, int *pnEffectInstanceId) {
+int LEMBALL_FASTCALL CreateWaveOutEffectInstance(
+    void *pBackend, int, void *pPatchResource, int *pnEffectInstanceId) {
     unsigned int i;
     int *pnSlotInUse;
     int nBackendVtable;
@@ -1425,8 +1623,23 @@ int CreateWaveOutEffectInstance(void *pBackend, void *pPatchResource, int *pnEff
     return 0;
 }
 
+// FUNCTION: LEMBALL 0x0047CFE0
+static int LEMBALL_FASTCALL ReturnFalseWaveOutEffectSlot16(void *, int, int) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047CFF0
+static int LEMBALL_FASTCALL ReturnFalseWaveOutEffectSlot17(void *, int, int) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047D000
+static int LEMBALL_FASTCALL ReturnFalseWaveOutEffectSlot19(void *) {
+    return 0;
+}
+
 // FUNCTION: LEMBALL 0x0047D010
-int FreeWaveOutEffectInstance(void *pBackend, int nEffectInstanceId) {
+int LEMBALL_FASTCALL FreeWaveOutEffectInstance(void *pBackend, int, int nEffectInstanceId) {
     unsigned int i;
     int nOffset;
     void *pPatchBuffer;
@@ -1450,8 +1663,41 @@ int FreeWaveOutEffectInstance(void *pBackend, int nEffectInstanceId) {
     return 0;
 }
 
+// FUNCTION: LEMBALL 0x0047D0F0
+static unsigned char LEMBALL_FASTCALL ReturnInvalidWaveOutEffectSlot21(void *) {
+    return (unsigned char)-1;
+}
+
+// FUNCTION: LEMBALL 0x0047D100
+static void LEMBALL_FASTCALL NoOpWaveOutEffectSlot22(void *, int, int) {
+}
+
+// FUNCTION: LEMBALL 0x0047D110
+static unsigned char LEMBALL_FASTCALL ReturnInvalidWaveOutEffectSlot23(void *) {
+    return (unsigned char)-1;
+}
+
+// FUNCTION: LEMBALL 0x0047D120
+static void LEMBALL_FASTCALL NoOpWaveOutEffectSlot24(void *, int, int) {
+}
+
+// FUNCTION: LEMBALL 0x0047D130
+static unsigned char LEMBALL_FASTCALL ReturnInvalidWaveOutEffectSlot25(void *) {
+    return (unsigned char)-1;
+}
+
+// FUNCTION: LEMBALL 0x0047D140
+static void LEMBALL_FASTCALL NoOpWaveOutEffectSlot26(void *, int, int) {
+}
+
+// FUNCTION: LEMBALL 0x0047D150
+static int LEMBALL_FASTCALL ReturnFalseWaveOutEffectSlot27(void *, int, int, int, int) {
+    return 0;
+}
+
 // FUNCTION: LEMBALL 0x0047D160
-unsigned int PlayWaveOutEffectInstance(void *pBackend, int nEffectInstanceId) {
+unsigned char LEMBALL_FASTCALL PlayWaveOutEffectInstance(
+    void *pBackend, int, int nEffectInstanceId, int, int) {
     unsigned int i;
     int nOffset;
     MMRESULT nWaveResult;
@@ -1472,7 +1718,7 @@ unsigned int PlayWaveOutEffectInstance(void *pBackend, int nEffectInstanceId) {
                 if (nWaveResult != 0) {
                     AppendCStringToStream(g_pErrorOutputStream, "waveOutWrite (play effect) errored: ");
                     AppendUnsignedIntToStreamVariant(g_pErrorOutputStream, nWaveResult);
-                    return (unsigned int)(unsigned char)'\n';
+                    return (unsigned char)'\n';
                 }
             }
             nOffset += 4;
@@ -1749,6 +1995,16 @@ int LEMBALL_FASTCALL GetDirectSoundBackendBufferCount(void *pBackend, int) {
     return *(int *)((char *)pBackend + 0x18);
 }
 
+// FUNCTION: LEMBALL 0x0047E380
+static int LEMBALL_FASTCALL GetDirectSoundEffectAvailability(void *pBackend) {
+    return *(int *)((char *)pBackend + 0x20);
+}
+
+// FUNCTION: LEMBALL 0x0047E490
+static int LEMBALL_FASTCALL ReturnTrueDirectSoundEffectSlot07(void *) {
+    return 1;
+}
+
 // FUNCTION: LEMBALL 0x0047E4E0
 int LEMBALL_FASTCALL GetDirectSoundBackendReservedValue1c(void *pBackend, int) {
     return *(int *)((char *)pBackend + 0x1c);
@@ -1757,6 +2013,16 @@ int LEMBALL_FASTCALL GetDirectSoundBackendReservedValue1c(void *pBackend, int) {
 // FUNCTION: LEMBALL 0x0047E4F0
 int LEMBALL_FASTCALL GetDirectSoundBackendAvailability(void *pBackend, int) {
     return *(int *)((char *)pBackend + 0x20);
+}
+
+// FUNCTION: LEMBALL 0x0047E500
+static int LEMBALL_FASTCALL ReturnFalseDirectSoundEffectSlot13(void *, int, int, int, int, int) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047E510
+static int LEMBALL_FASTCALL ReturnFalseDirectSoundEffectSlot14(void *, int, int, int, int, int) {
+    return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047E8B0
@@ -1999,8 +2265,23 @@ int LEMBALL_FASTCALL CreateDirectSoundEffectInstance(
     return 0;
 }
 
+// FUNCTION: LEMBALL 0x0047E5B0
+static int LEMBALL_FASTCALL ReturnFalseDirectSoundEffectSlot16(void *, int, int) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047E5C0
+static int LEMBALL_FASTCALL ReturnFalseDirectSoundEffectSlot17(void *, int, int) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047E5D0
+static int LEMBALL_FASTCALL ReturnFalseDirectSoundEffectSlot19(void *) {
+    return 0;
+}
+
 // FUNCTION: LEMBALL 0x0047E5E0
-int FreeDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId) {
+int LEMBALL_FASTCALL FreeDirectSoundEffectInstance(void *pBackend, int, int nEffectInstanceId) {
     unsigned int pBufferPool;
 
     pBufferPool = *(unsigned int *)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4);
@@ -2014,7 +2295,7 @@ int FreeDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId) {
 }
 
 // FUNCTION: LEMBALL 0x0047E620
-int ReleaseAllDirectSoundEffectInstances(void *pBackend) {
+int LEMBALL_FASTCALL ReleaseAllDirectSoundEffectInstances(void *pBackend) {
     int nEffectInstanceId;
     int nOffset;
     unsigned int pBufferPool;
@@ -2036,9 +2317,37 @@ int ReleaseAllDirectSoundEffectInstances(void *pBackend) {
     return 1;
 }
 
+// FUNCTION: LEMBALL 0x0047E670
+static unsigned char LEMBALL_FASTCALL ReturnInvalidDirectSoundEffectSlot21(void *) {
+    return (unsigned char)-1;
+}
+
+// FUNCTION: LEMBALL 0x0047E680
+static void LEMBALL_FASTCALL NoOpDirectSoundEffectSlot22(void *, int, int) {
+}
+
+// FUNCTION: LEMBALL 0x0047E690
+static unsigned char LEMBALL_FASTCALL ReturnInvalidDirectSoundEffectSlot23(void *) {
+    return (unsigned char)-1;
+}
+
+// FUNCTION: LEMBALL 0x0047E6A0
+static void LEMBALL_FASTCALL NoOpDirectSoundEffectSlot24(void *, int, int) {
+}
+
+// FUNCTION: LEMBALL 0x0047E6B0
+static unsigned char LEMBALL_FASTCALL ReturnInvalidDirectSoundEffectSlot25(void *) {
+    return (unsigned char)-1;
+}
+
+// FUNCTION: LEMBALL 0x0047E6C0
+static void LEMBALL_FASTCALL NoOpDirectSoundEffectSlot26(void *, int, int) {
+}
+
 // FUNCTION: LEMBALL 0x0047E7E0
-void PlayDirectSoundEffectInstanceWithMappedVolume(void *pBackend, int nEffectInstanceId, unsigned char nVolume,
-                                                   int fLoopEnabled)
+void LEMBALL_FASTCALL PlayDirectSoundEffectInstanceWithMappedVolume(
+    void *pBackend, int, int nEffectInstanceId, unsigned char nVolume,
+    int fLoopEnabled)
 {
     g_AUDIO_PlayBufferProc(
         *(void **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4),
@@ -2046,7 +2355,8 @@ void PlayDirectSoundEffectInstanceWithMappedVolume(void *pBackend, int nEffectIn
 }
 
 // FUNCTION: LEMBALL 0x0047E820
-void PauseDirectSoundEffectInstance(void *pBackend, int nEffectInstanceId, int nBufferSlot) {
+void LEMBALL_FASTCALL PauseDirectSoundEffectInstance(
+    void *pBackend, int, int nEffectInstanceId, int nBufferSlot) {
     g_AUDIO_PauseBufferProc(*(void **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4),
                                         nBufferSlot);
 }
@@ -2056,6 +2366,11 @@ void VsSoundDirectSoundEffectBackend::PlayDirectSoundEffectInstance(int nEffectI
                                                                    int nBufferSlot) {
     g_AUDIO_PlayBufferSlotProc(*(void **)(*(int *)((char *)this + 0x50) + nEffectInstanceId * 4),
                                         nBufferSlot);
+}
+
+// FUNCTION: LEMBALL 0x0047E860
+static int LEMBALL_FASTCALL ReturnFalseDirectSoundEffectSlot37(void *, int, int, int) {
+    return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047E8C0
@@ -2075,7 +2390,7 @@ VsSoundMciMusicBackend *VsSoundMciMusicBackend::ConstructMciMusicBackend(void) {
 
     pMusicBackend = this;
     pMusicBackend->m_BasePath.ConstructDynamicCString();
-    pMusicBackend->m_pVtable = (void **)g_AudioDynamicStringEntryVtable;
+    pMusicBackend->m_pVtable = g_AUDIO_DynamicStringEntryVtable;
     pMusicBackend->m_fSearchCdromPath = 0;
     pMusicBackend->m_fBasePathSet = 0;
     pMusicBackend->m_pVtable = *(void ***)&g_AUDIO_MciMusicBackendVtableModel;
@@ -2454,13 +2769,98 @@ void ResumeMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle) {
 
 // FUNCTION: LEMBALL 0x0047F940
 void *LEMBALL_FASTCALL ConstructAudioEffectBackendBase(void *pBackend) {
-    *(void ***)pBackend = g_WaveOutEffectBackendVtable;
+    *(void ***)pBackend = g_AUDIO_EffectBackendBaseVtable;
     return pBackend;
 }
 
 // FUNCTION: LEMBALL 0x0047F950
 void LEMBALL_FASTCALL RestoreAudioEffectBackendBaseVtable(void *pBackend) {
-    *(void ***)pBackend = g_WaveOutEffectBackendVtable;
+    *(void ***)pBackend = g_AUDIO_EffectBackendBaseVtable;
+}
+
+// FUNCTION: LEMBALL 0x0047F980
+static unsigned char LEMBALL_FASTCALL ReturnInvalidAudioEffectByte21(void *) {
+    return (unsigned char)-1;
+}
+
+// FUNCTION: LEMBALL 0x0047F990
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot22(void *, int, int) {
+}
+
+// FUNCTION: LEMBALL 0x0047F9A0
+static unsigned char LEMBALL_FASTCALL ReturnInvalidAudioEffectByte23(void *) {
+    return (unsigned char)-1;
+}
+
+// FUNCTION: LEMBALL 0x0047F9B0
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot24(void *, int, int) {
+}
+
+// FUNCTION: LEMBALL 0x0047F9C0
+static unsigned char LEMBALL_FASTCALL ReturnInvalidAudioEffectByte25(void *) {
+    return (unsigned char)-1;
+}
+
+// FUNCTION: LEMBALL 0x0047F9D0
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot26(void *, int, int) {
+}
+
+// FUNCTION: LEMBALL 0x0047F9E0
+static int LEMBALL_FASTCALL ReturnFalseAudioEffectSlot27(void *, int, int, int, int) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047F9F0
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot28(void *, int, int, int, int) {
+}
+
+// FUNCTION: LEMBALL 0x0047FA00
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot29(void *, int, int, int, int) {
+}
+
+// FUNCTION: LEMBALL 0x0047FA10
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot30(void *, int, int, int, int) {
+}
+
+// FUNCTION: LEMBALL 0x0047FA20
+static unsigned char LEMBALL_FASTCALL ReturnFalseAudioEffectSlot31(void *, int, int, int) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047FA30
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot32(void *, int, int, int) {
+}
+
+// FUNCTION: LEMBALL 0x0047FA40
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot33(void *, int, int, int) {
+}
+
+// FUNCTION: LEMBALL 0x0047FA50
+static void LEMBALL_FASTCALL NoOpAudioEffectSlot34(void *, int, int, int, int) {
+}
+
+// FUNCTION: LEMBALL 0x0047FA60
+static unsigned char LEMBALL_FASTCALL ReturnFalseAudioEffectSlot36(void *, int, int, int, int) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047FA70
+static unsigned char LEMBALL_FASTCALL ReturnFalseAudioEffectSlot35(void *, int, int, int, int) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0047FA80
+static int LEMBALL_FASTCALL ReturnTrueAudioEffectSlot37(void *, int, int, int) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0047FA90
+static void *LEMBALL_FASTCALL DeleteAudioEffectBackendBase(void *pBackend, int, int fDelete) {
+    RestoreAudioEffectBackendBaseVtable(pBackend);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pBackend);
+    }
+    return pBackend;
 }
 
 // FUNCTION: LEMBALL 0x00473390
@@ -2563,8 +2963,18 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
 
 // FUNCTION: LEMBALL 0x0047EAC0
 void DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry *pEntry) {
-    pEntry->m_pVtable = (void **)g_AudioDynamicStringEntryVtable;
+    pEntry->m_pVtable = g_AUDIO_DynamicStringEntryVtable;
     pEntry->m_BasePath.DestroyDynamicCString();
+}
+
+// FUNCTION: LEMBALL 0x0047F560
+static void *LEMBALL_FASTCALL DeleteAudioDynamicStringEntryBase(VsSoundDynamicStringEntry *pEntry, int, int fDelete) {
+    pEntry->m_pVtable = g_AUDIO_DynamicStringEntryVtable;
+    pEntry->m_BasePath.DestroyDynamicCString();
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pEntry);
+    }
+    return pEntry;
 }
 
 // FUNCTION: LEMBALL 0x0047F590

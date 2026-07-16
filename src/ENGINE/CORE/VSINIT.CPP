@@ -51,6 +51,7 @@ typedef void *(LEMBALL_FASTCALL *VsInitDeleteProc)(
 void *LEMBALL_FASTCALL DeleteStreamBase(
     void *pStream, int nUnused, int fFreeMemory);
 void LEMBALL_FASTCALL DestroyStreamBaseVtable(void *pStream);
+// GLOBAL: LEMBALL 0x00498888
 void *g_StreamBaseVtable[4] = {
     (void *)DeleteStreamBase,
     (void *)_purecall,

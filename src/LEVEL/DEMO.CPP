@@ -79,7 +79,7 @@ static void *g_DEMO_BinResourceVtableStorage[15] = {
 static void *g_DEMO_BinResourceVtable = g_DEMO_BinResourceVtableStorage;
 
 extern void *g_pMainResourceArchive;
-extern void *g_pCachedResourceObjectBaseDeleteVtable;
+extern void *g_MOGLOAD_CachedResourceObjectBaseVtable[15];
 extern void InitializeResourceObjectFromId(void *pObject, int nResourceId);
 extern void *FinalizeLoadedResourceObjectResult(void *pObject);
 
@@ -376,7 +376,7 @@ int *LoadBinResource(int nResourceId) {
 
     pObjectWords = (int *)AllocateVSMemBlock(0x48);
     if (pObjectWords != 0) {
-        *(void **)pObjectWords = g_pCachedResourceObjectBaseDeleteVtable;
+        *(void **)pObjectWords = g_MOGLOAD_CachedResourceObjectBaseVtable;
         pObjectWords[6] = 0;
         *(void **)pObjectWords = g_DEMO_BinResourceVtable;
         InitializeResourceObjectFromId(pObjectWords, nResourceId);

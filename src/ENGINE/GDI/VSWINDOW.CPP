@@ -132,6 +132,12 @@ struct GameGeometryOwnerRectDispatch {
     virtual int ContainsPoint(const VS_XYPair *pPoint) = 0;
 };
 
+typedef void (LEMBALL_FASTCALL *GameGeometryOwnerRectLeaveProc)(void *);
+struct GameGeometryOwnerRectLeaveVtable {
+    void *m_apSlots00[5];
+    GameGeometryOwnerRectLeaveProc m_pDispatchPointerLeave14;
+};
+
 struct GameRenderDispatchClientState {
     void **m_pVtable00;
     int m_nMagic04;
@@ -355,12 +361,14 @@ void LEMBALL_FASTCALL ResetRootGeometryOwnerButtons(void *pOwner) {
 // FUNCTION: LEMBALL 0x0046A350
 void LEMBALL_FASTCALL ClearGeometryOwnerRectTransientState(void *pOwner) {
     GameGeometryOwnerRectState *pState;
+    GameGeometryOwnerRectLeaveVtable *pVtable;
     int i;
 
     pState = (GameGeometryOwnerRectState *)pOwner;
     if (pState->m_fPointerActive08 != 0) {
+        pVtable = (GameGeometryOwnerRectLeaveVtable *)pState->m_pVtable00;
         pState->m_fPointerActive08 = 0;
-        ((GameGeometryOwnerRectDispatch *)pOwner)->DispatchPointerLeave();
+        pVtable->m_pDispatchPointerLeave14(pOwner);
     }
     for (i = 0; i < 6; ++i) {
         pState->m_anTransient10[i] = 0;

@@ -588,11 +588,12 @@ int LevelManagedEntityDirtyStateView::PollChildDirtyFlag(void) {
     if (m_nCachedDirtyValue1B0 == nCurrentValue &&
         (pfDirty = &m_fChildDirty164, *pfDirty == 0)) {
         *pfDirty = 0;
-    } else {
-        pfDirty = &m_fChildDirty164;
-        *pfDirty = 1;
+        m_nCachedDirtyValue1B0 = nCurrentValue;
+        return *pfDirty;
     }
+    pfDirty = &m_fChildDirty164;
     m_nCachedDirtyValue1B0 = nCurrentValue;
+    *pfDirty = 1;
     return *pfDirty;
 }
 

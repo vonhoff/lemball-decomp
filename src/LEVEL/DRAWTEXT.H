@@ -8,6 +8,12 @@ class LevelVariantRenderManagerView {
 public:
     void ReleaseVariantRenderResource(int nResourceId);
     int GetVariantRenderFrameCount(int nResourceId);
+    void ReleaseLevelScreenVariantStateWrapperBody(int nResourceId);
+    void ReleaseLevelScreenVariantStateWrapper(int nResourceId);
+    void ReleaseLevelScreenVariantStateWrapperRangeBody(
+        int nFirstResourceId, int nLastResourceId);
+    void ReleaseLevelScreenVariantStateWrapperRange(
+        int nFirstResourceId, int nLastResourceId);
 
     char m_abReserved00[0x24];
     void **m_ppResourceObjects24;

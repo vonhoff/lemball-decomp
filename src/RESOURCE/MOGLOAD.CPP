@@ -141,7 +141,8 @@ static void *g_MOGLOAD_MemoryArenaStatusEntryVtable[8] = {
     (void *)WriteMemoryArenaReport,
     (void *)DestroyMemoryArenaBaseStateReturnThis,
 };
-static void *g_MOGLOAD_CachedResourceObjectBaseVtable[15] = {
+// GLOBAL: LEMBALL 0x00498980
+void *g_MOGLOAD_CachedResourceObjectBaseVtable[15] = {
     (void *)DeleteCachedResourceObjectBase,
     (void *)CopyBufferIntoTypedResourceObjectAndParse,
     (void *)ParseIntResourceDescriptor,
@@ -263,7 +264,6 @@ extern "C" DWORD WINAPI timeGetTime(void);
 extern void *LEMBALL_FASTCALL DestroyMemoryArenaBaseStateReturnThis(
     void *pArena, int nUnused, int fDelete);
 
-void *g_pCachedResourceObjectBaseDeleteVtable = g_MOGLOAD_CachedResourceObjectBaseVtable;
 void *g_pDestroyGRTSResourceAndFreeThunk = g_MOGLOAD_TypedResourceObjectVtable;
 void *g_pStringResourceVtable = g_MOGLOAD_StringResourceVtable;
 void *g_pDestroyEffResourceAndFreeThunk = g_MOGLOAD_EffResourceObjectVtable;
@@ -288,7 +288,7 @@ void *LEMBALL_FASTCALL DeleteCachedResourceObjectBase(
 
 // FUNCTION: LEMBALL 0x0045D040
 void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtable(void *pObject) {
-    *(void **)pObject = g_pCachedResourceObjectBaseDeleteVtable;
+    *(void **)pObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
 }
 
 // FUNCTION: LEMBALL 0x0045E5B0
@@ -1608,7 +1608,7 @@ MogLoadStringResourceObject *LoadStringResource(int nResourceId) {
 
     pResourceObject = (MogLoadStringResourceObject *)AllocateVSMemBlock(0x48);
     if (pResourceObject != 0) {
-        pResourceObject->m_pVtable = (void **)g_pCachedResourceObjectBaseDeleteVtable;
+        pResourceObject->m_pVtable = g_MOGLOAD_CachedResourceObjectBaseVtable;
         pResourceObject->m_nReserved18 = 0;
         pResourceObject->m_pVtable = (void **)g_pStringResourceVtable;
         InitializeResourceObjectFromId(pResourceObject, nResourceId);
@@ -1638,7 +1638,7 @@ void *LoadEffResource(int nResourceId) {
 
     pResourceObject = (MogLoadStringResourceObject *)AllocateVSMemBlock(0x48);
     if (pResourceObject != 0) {
-        pResourceObject->m_pVtable = (void **)g_pCachedResourceObjectBaseDeleteVtable;
+        pResourceObject->m_pVtable = g_MOGLOAD_CachedResourceObjectBaseVtable;
         pResourceObject->m_nReserved18 = 0;
         pResourceObject->m_pVtable = (void **)g_pDestroyEffResourceAndFreeThunk;
         InitializeResourceObjectFromId(pResourceObject, nResourceId);

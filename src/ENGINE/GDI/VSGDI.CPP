@@ -2411,7 +2411,7 @@ void DestroyResourceGeometryHelperTarget(void *pvTarget) {
 
 // FUNCTION: LEMBALL 0x00466430
 static void LEMBALL_FASTCALL RestoreCompactResourceGeometryHelperVtable(void *pvHelper) {
-    *(void **)pvHelper = g_VSGDI_CompactResourceGeometryHelperSubobjectVtable;
+    *(void **)pvHelper = g_VSGDI_CompactResourceGeometryHelperVtable;
 }
 
 // FUNCTION: LEMBALL 0x0046AFD0
