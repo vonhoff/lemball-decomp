@@ -67,6 +67,12 @@ def has_total_arg(args: list[str]) -> bool:
     return "--total" in args or "-T" in args
 
 
+def ensure_output_directories(args: list[str]) -> None:
+    for index, argument in enumerate(args[:-1]):
+        if argument == "--json":
+            Path(args[index + 1]).parent.mkdir(parents=True, exist_ok=True)
+
+
 def run_reccmp(args: list[str]) -> int:
     command = ["reccmp-reccmp", "--target", TARGET_NAME]
     if not has_total_arg(args):
@@ -80,7 +86,7 @@ def run_reccmp(args: list[str]) -> int:
 
     if importlib.util.find_spec("reccmp") is not None:
         return subprocess.run(
-            [sys.executable, "-m", "reccmp.reccmp", *command[1:]],
+            [sys.executable, "-m", "reccmp.tools.asmcmp", *command[1:]],
             check=False,
         ).returncode
 
@@ -92,7 +98,9 @@ def run_reccmp(args: list[str]) -> int:
 
 def main() -> int:
     ensure_reccmp_inputs()
-    return run_reccmp(sys.argv[1:])
+    args = sys.argv[1:]
+    ensure_output_directories(args)
+    return run_reccmp(args)
 
 
 if __name__ == "__main__":
