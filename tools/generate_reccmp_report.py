@@ -129,8 +129,11 @@ def load_functions(manifest_path: Path, reccmp_path: Path) -> list[dict[str, obj
 def build_report(manifest_path: Path, reccmp_path: Path) -> dict[str, object]:
     functions = load_functions(manifest_path, reccmp_path)
     report_measures = measures(functions)
+    # Report v2 requires functions and sections to belong to a ReportUnit.
+    # Leave its name empty so the single executable's contents render at the
+    # project root instead of below a synthetic "LEMBALL.EXE" node.
     unit = {
-        "name": "LEMBALL.EXE",
+        "name": "",
         "measures": report_measures,
         "sections": [
             {

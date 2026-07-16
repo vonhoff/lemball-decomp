@@ -15,8 +15,9 @@ This repository follows the same broad reporting pattern as `marijnvdwerf/legola
 - `make ghidra-functions` regenerates `data/manifest.json` from the sibling
   `lemball-ghidra` project using Ghidra's supported headless scripting API.
 - [`tools/generate_reccmp_report.py`](tools/generate_reccmp_report.py) converts
-  `build/reccmp-sample.json` plus that manifest into an objdiff v2 report with
-  one honest unit: `LEMBALL.EXE`.
+  `build/reccmp-sample.json` plus that manifest into an objdiff v2 report. Its
+  required single unit is unnamed so the executable contents appear directly
+  at the report root instead of below a synthetic `LEMBALL.EXE` node.
 - `make report` writes that artifact to `build/report.json`.
 
 Pass the Ghidra project explicitly. Set `GHIDRA_HOME` only when
