@@ -107,7 +107,7 @@ def report_unit_identity(module: str) -> tuple[str, str]:
     if module == "Unassigned":
         return "Unassigned", "Unassigned"
     path = PurePosixPath(module)
-    module_name = str(path.parent) if str(path.parent) != "." else "Root"
+    module_name = str(path.parent) if str(path.parent) != "." else path.stem
     return module_name, path.name
 
 

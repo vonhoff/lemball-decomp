@@ -17,8 +17,9 @@ This repository follows the same broad reporting pattern as `marijnvdwerf/legola
 - [`tools/generate_reccmp_report.py`](tools/generate_reccmp_report.py) converts
   `build/reccmp-sample.json`, the Ghidra manifest, and reccmp's roadmap into an
   objdiff v2 report grouped into source-directory modules, with one unit per
-  source translation unit. Root-level sources and functions without rebuilt
-  PDB attribution remain in explicit `Root` and `Unassigned` modules.
+  source translation unit. A root-level source uses its source stem as its
+  subsystem module (for example, `GAME.CPP` belongs to `GAME`), while functions
+  without rebuilt PDB attribution remain in an explicit `Unassigned` module.
 - `make report` writes that artifact to `build/report.json`.
 
 Pass the Ghidra project explicitly. Set `GHIDRA_HOME` only when

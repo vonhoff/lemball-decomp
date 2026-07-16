@@ -134,7 +134,8 @@ static DemoLevelDemoPlaybackConstructorAddress g_DEMO_LevelDemoPlaybackConstruct
 
 // FUNCTION: LEMBALL 0x004017A3
 DemoLevelDemoPlaybackController *
-DemoLevelDemoPlaybackController::ConstructLevelDemoPlaybackControllerThunk(unsigned int uFrameInterval) {
+DemoLevelDemoPlaybackController::ConstructLevelDemoPlaybackControllerThunk(unsigned int uFrameInterval)
+{
     return (this->*g_DEMO_LevelDemoPlaybackConstructorAddress.m_pMethod)(uFrameInterval);
 }
 
@@ -284,7 +285,8 @@ int FilterLevelDemoPlaybackInputEvent(void *pPlaybackController, unsigned short 
 
 // FUNCTION: LEMBALL 0x00401A28
 static int LEMBALL_FASTCALL FilterLevelDemoPlaybackInputEventThunk(
-    void *pPlaybackController, int, unsigned short *pEventId) {
+    void *pPlaybackController, int, unsigned short *pEventId)
+{
     return FilterLevelDemoPlaybackInputEvent(pPlaybackController, pEventId);
 }
 
@@ -299,7 +301,8 @@ void *DeleteLevelDemoPlaybackController(void *pPlaybackController, unsigned char
 
 // FUNCTION: LEMBALL 0x004016A4
 static void *LEMBALL_FASTCALL DeleteLevelDemoPlaybackControllerThunk(
-    void *pPlaybackController, int, int fDelete) {
+    void *pPlaybackController, int, int fDelete)
+{
     return DeleteLevelDemoPlaybackController(
         pPlaybackController, (unsigned char)fDelete);
 }

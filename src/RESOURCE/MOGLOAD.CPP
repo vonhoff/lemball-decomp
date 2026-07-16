@@ -70,6 +70,19 @@ struct MogLoadTypedResourceObjectCopyInterface {
                                                            unsigned int cbBuffer) = 0;
 };
 
+struct MogLoadTypedResourceObjectReleaseInterface {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved01(void) = 0;
+    virtual void Reserved02(void) = 0;
+    virtual void Reserved03(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void Reserved05(void) = 0;
+    virtual void Reserved06(void) = 0;
+    virtual void Reserved07(void) = 0;
+    virtual void Reserved08(void) = 0;
+    virtual void OnRelease(int fReleaseMode) = 0;
+};
+
 void LEMBALL_FASTCALL CopyBufferIntoTypedResourceObjectAndParse(
     void *pObject,
     void *pUnusedEdx,
@@ -356,12 +369,11 @@ void LEMBALL_FASTCALL ReleaseTypedResourceObjectIfLoaded(
     void *pObject, void *pUnusedEdx, int fReleaseMode)
 {
     MogLoadStringResourceObject *pResourceObject;
-    MogLoadTypedResourceObjectVtable *pVtable;
 
     (void)pUnusedEdx;
     pResourceObject = (MogLoadStringResourceObject *)pObject;
-    pVtable = (MogLoadTypedResourceObjectVtable *)pResourceObject->m_pVtable;
-    pVtable->m_pOnRelease(pResourceObject, 0, fReleaseMode);
+    ((MogLoadTypedResourceObjectReleaseInterface *)pResourceObject)
+        ->OnRelease(fReleaseMode);
     if (pResourceObject->m_nLoadState10 != 0) {
         pResourceObject->m_nLoadState10 = 0;
         pResourceObject->m_pszText38 = 0;
