@@ -372,13 +372,15 @@ extern void *g_pSharedGeometryHelperVtable;
 void LEMBALL_FASTCALL DestroySharedGeometryHelper(VsInitSharedGeometryHelper *pHelper);
 
 struct VsInitSharedGeometryHelperVtableModel {
-    // FUNCTION: LEMBALL 0x00472210
-    virtual void *ReturnArgument(void *pArgument) {
+    // FUNCTION: LEMBALL 0x472210
+    virtual void *ReturnArgument(void *pArgument)
+    {
         return pArgument;
     }
 
-    // FUNCTION: LEMBALL 0x00472270
-    virtual void *Delete(BYTE fDelete) {
+    // FUNCTION: LEMBALL 0x472270
+    virtual void *Delete(BYTE fDelete)
+    {
         VsInitSharedGeometryHelper *pHelper = (VsInitSharedGeometryHelper *)this;
 
         DestroySharedGeometryHelper(pHelper);

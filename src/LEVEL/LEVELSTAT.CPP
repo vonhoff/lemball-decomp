@@ -226,8 +226,7 @@ static void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateEntry00432B20(
     void *pObject, int nUnusedEdx, void *pContext);
 static void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateThunk004037A1(
     void *pObject, int nUnusedEdx, void *pContext);
-// GLOBAL: LEMBALL 0x00496ca8
-// VTABLE: LEMBALL 0x00496CA8
+// GLOBAL: LEMBALL 0x496ca8
 void *g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[8] = {
     (void *)DeleteQueuedRenderPointSinkThunk00403580,
     (void *)_purecall,

@@ -193,8 +193,9 @@ void *LEMBALL_FASTCALL DeleteRootGeometryDispatchHelperAdjusted(
 int LEMBALL_FASTCALL HandleRootGeometryDispatchEntry(
     void *pDispatchClient, int nUnused, GameGeometryDispatchEvent *pEvent);
 
-// VTABLE: LEMBALL 0x00496EA0
-static void *g_GAME_GeometryOwnerRectVtable[8] = {
+// GLOBAL: LEMBALL 0x496ea0
+static void *g_GAME_GeometryOwnerRectVtable[8] =
+{
     (void *)DeleteGeometryOwnerRect,
     (void *)GeometryOwnerButtonTransitionNoop,
     (void *)GeometryOwnerButtonInsideNoop,
@@ -205,8 +206,9 @@ static void *g_GAME_GeometryOwnerRectVtable[8] = {
     (void *)GeometryOwnerContainsPoint,
 };
 
-// VTABLE: LEMBALL 0x00499D18
-static void *g_VS_RootGeometryDispatchHelperVtable[8] = {
+// GLOBAL: LEMBALL 0x499d18
+static void *g_VS_RootGeometryDispatchHelperVtable[8] =
+{
     (void *)DeleteRootGeometryDispatchHelper,
     (void *)GeometryOwnerButtonTransitionNoop,
     (void *)GeometryOwnerButtonInsideNoop,
@@ -217,14 +219,15 @@ static void *g_VS_RootGeometryDispatchHelperVtable[8] = {
     (void *)GeometryOwnerContainsPoint,
 };
 
-// VTABLE: LEMBALL 0x00499D08
-static void *g_VS_RootGeometryDispatchClientVtable[3] = {
+// GLOBAL: LEMBALL 0x499d08
+static void *g_VS_RootGeometryDispatchClientVtable[3] =
+{
     (void *)InitializeNonZrleVariantRenderEntry,
     (void *)DeleteRootGeometryDispatchHelperAdjusted,
     (void *)HandleRootGeometryDispatchEntry,
 };
 
-// GLOBAL: LEMBALL 0x004A1FF8
+// GLOBAL: LEMBALL 0x4a1ff8
 static VS_XYPair *g_pCurrentGeometryDispatchPoint = 0;
 // GLOBAL: LEMBALL 0x004A1FFC
 static int g_cRootGeometryDispatchHelpers = 0;

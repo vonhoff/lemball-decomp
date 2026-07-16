@@ -36,7 +36,7 @@ analyze: audit roadmap
 
 # Save a native reccmp JSON sample for aggregate/diff workflows.
 snapshot:
-	@reccmp-reccmp --target $(RECCMP_TARGET) --json $(RECCMP_REPORT) --silent $(RECCMP_ARGS)
+	@$(PYTHON) tools/compare_rebuilt_functions.py --json $(RECCMP_REPORT) --silent $(RECCMP_ARGS)
 
 decomplint:
 	@reccmp-decomplint --target $(RECCMP_TARGET) $(RECCMP_ARGS)

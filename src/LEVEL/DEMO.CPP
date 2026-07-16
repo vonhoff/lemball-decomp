@@ -83,8 +83,9 @@ extern void *g_pCachedResourceObjectBaseDeleteVtable;
 extern void InitializeResourceObjectFromId(void *pObject, int nResourceId);
 extern void *FinalizeLoadedResourceObjectResult(void *pObject);
 
-// VTABLE: LEMBALL 0x00493100
-static void *g_LevelDemoPlaybackControllerVtable[4] = {
+// GLOBAL: LEMBALL 0x493100
+static void *g_LevelDemoPlaybackControllerVtable[4] =
+{
     (void *)InitializeNonZrleVariantRenderEntry,
     (void *)DeleteLevelDemoPlaybackControllerThunk,
     (void *)FilterLevelDemoPlaybackInputEventThunk,

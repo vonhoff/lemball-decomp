@@ -73,16 +73,17 @@ score. It maps each original address to its rebuilt address and object module;
 sort or filter it by `module`, `row_type`, or `displacement` to group related
 reconstruction work and translate addresses while inspecting either binary.
 
-CI invokes every applicable tool after the MSVC 4.20 build and uploads the
-native comparison sample, aggregate, objdiff report, and roadmap. The main
-comparison remains the hard gate. Annotation, vtable, data, and stack diagnostics
-currently use `continue-on-error` because they expose known reconstruction debt;
-their output is still visible on every build. Export comparison is omitted
-because LEMBALL is an EXE with no DLL export table. Locally, `make audit` is
-strict and returns a failure if any structural check fails.
-`stackcmp` remains address-specific and is used when `reccmp` identifies an
-almost-matching function. `snapshot` and `aggregate` provide repeatable progress
-baselines and before/after diffs.
+CI runs the authoritative function comparison, generates the objdiff report,
+and uploads both artifacts. The annotation, vtable, data, roadmap, stack, and
+aggregate tools are investigative aids and are intentionally run only when
+their output is relevant to current reverse-engineering work. Export comparison
+is omitted because LEMBALL is an EXE with no DLL export table.
+
+Locally, `make audit` runs the annotation, vtable, and data diagnostics together.
+`stackcmp` is address-specific and is useful when a near match suggests stack or
+calling-convention differences. `snapshot` records a comparison baseline;
+`aggregate` requires at least two samples, while `aggregate --diff` compares
+before and after snapshots.
 
 Use `RECCMP_TARGET=name` to override the target. The underlying commands are
 `reccmp-decomplint`, `reccmp-reccmp`, `reccmp-stackcmp`, `reccmp-roadmap`,
