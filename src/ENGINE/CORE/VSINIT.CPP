@@ -734,7 +734,6 @@ static void DestroyFormattedOutputStream(VsInitFormattedOutputStream *pStream, i
     }
 }
 
-// FUNCTION: LEMBALL 0x0045AE10
 void AppendCharToFixedBufferStream(VsInitFixedBufferStream *pStream, char ch) {
     int cSpaces;
     int fTab;
@@ -775,7 +774,6 @@ void AppendCharToFixedBufferStream(VsInitFixedBufferStream *pStream, char ch) {
     }
 }
 
-// FUNCTION: LEMBALL 0x0045AF20
 void AppendCStringToFixedBufferStream(VsInitFixedBufferStream *pStream,
                                       const char *pszText) {
     while (*pszText != '\0') {
@@ -783,7 +781,6 @@ void AppendCStringToFixedBufferStream(VsInitFixedBufferStream *pStream,
     }
 }
 
-// FUNCTION: LEMBALL 0x00463280
 void *LEMBALL_FASTCALL ReturnStreamArgument(
     void *pStream, int, void *pArgument) {
     (void)pStream;
