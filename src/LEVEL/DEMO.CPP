@@ -43,7 +43,7 @@ extern void *LEMBALL_FASTCALL GetEffResourceDataPointer(void *pObject);
 extern void NoopOnLoadVfunc11(void);
 extern void NoopVfunc12(void);
 extern int LEMBALL_FASTCALL GetField28GetMemorySize(void *pObject);
-extern void InitializeTypedResourceObjectBaseVtable(void *pObject);
+extern void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtable(void *pObject);
 
 // FUNCTION: LEMBALL 0x0045EC60
 static void LEMBALL_FASTCALL SetBinResourceTypeTag(void *pObject) {

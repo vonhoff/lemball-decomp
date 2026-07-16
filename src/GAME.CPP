@@ -2825,7 +2825,7 @@ void GamePrimaryContext::DispatchPrimaryContextActiveScreenFrame(
         return;
     }
 
-    if (IsPrimaryContextWindowReadyForPresent((int *)this) == 0) {
+    if (IsPrimaryContextWindowReadyForPresentThunk((int *)this) == 0) {
         return;
     }
 

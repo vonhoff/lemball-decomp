@@ -96,7 +96,7 @@ void *LEMBALL_FASTCALL DestroyGRTSResourceAndFree(
     void *pObject, int nUnused, int fDelete);
 void *LEMBALL_FASTCALL DeleteCachedResourceObjectBase(
     void *pObject, int nUnused, int fDelete);
-void InitializeTypedResourceObjectBaseVtable(void *pObject);
+void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtable(void *pObject);
 void ParseIntResourceDescriptor(void);
 void LEMBALL_FASTCALL UnloadTypedResourceObject(void *pObject,
                                                 void *pUnusedEcx,
@@ -286,7 +286,7 @@ void *LEMBALL_FASTCALL DeleteCachedResourceObjectBase(
 }
 
 // FUNCTION: LEMBALL 0x0045D040
-void InitializeTypedResourceObjectBaseVtable(void *pObject) {
+void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtable(void *pObject) {
     *(void **)pObject = g_pCachedResourceObjectBaseDeleteVtable;
 }
 
