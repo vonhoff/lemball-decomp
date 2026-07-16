@@ -446,7 +446,7 @@ struct VsSoundMciMusicBackendVtableModel {
 static VsSoundMciMusicBackendVtableModel g_AUDIO_MciMusicBackendVtableModel;
 
 // GLOBAL: LEMBALL 0x004a9bc8
-void *g_pAudioManager = 0;
+void *g_pAudioManager;
 
 static void *g_AudioManagerVtable[1] = { (void *)NetworkSafeVtableNoop };
 // GLOBAL: LEMBALL 0x0049ac38

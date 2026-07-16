@@ -43,9 +43,9 @@ int g_fLevelEndStateRequestLatched = 0;
 // GLOBAL: LEMBALL 0x004a6510
 int g_GAME_ManagedEntityRegistryTable[1000] = {0};
 // GLOBAL: LEMBALL 0x004a74b0
-void *g_pActiveManagedEntityOwner = 0;
+void *g_pActiveManagedEntityOwner;
 // GLOBAL: LEMBALL 0x004a74bc
-unsigned short g_GAME_ManagedEntityRegistryCount = 0;
+unsigned short g_GAME_ManagedEntityRegistryCount;
 static unsigned char *g_GAME_ManagedEntitySlotBitMasks;
 static unsigned char *g_GAME_ManagedEntitySlotClaimBitset;
 

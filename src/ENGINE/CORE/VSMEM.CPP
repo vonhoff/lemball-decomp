@@ -53,7 +53,7 @@ struct SmallMemoryBucket {
 
 
 // GLOBAL: LEMBALL 0x004aa100
-void *g_pMainMemoryArena = 0;
+void *g_pMainMemoryArena;
 static void *g_pMainMemoryArenaStorage = 0;
 static HGLOBAL g_hMainMemoryArenaStorage = 0;
 static int g_cbMainArenaCapacity = 0;
