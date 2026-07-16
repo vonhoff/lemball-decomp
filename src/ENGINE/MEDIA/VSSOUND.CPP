@@ -449,6 +449,7 @@ static VsSoundMciMusicBackendVtableModel g_AUDIO_MciMusicBackendVtableModel;
 void *g_pAudioManager = 0;
 
 static void *g_AudioManagerVtable[1] = { (void *)NetworkSafeVtableNoop };
+// GLOBAL: LEMBALL 0x0049ac38
 static void *g_WaveOutEffectBackendVtable[39] = {
     (void *)DeleteWaveOutEffectBackend,
     (void *)GetWaveOutEffectBackendDescription,
