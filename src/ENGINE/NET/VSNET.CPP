@@ -776,9 +776,9 @@ struct VsNetEffTransportRecordBuffer {
     void DestroyRingEffTransportRecordBufferTable(void);
 };
 
-static void *g_NETWORK_EffTransportRecordBufferVtable = 0;
-static void *g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable = 0;
-static void *g_NETWORK_DeleteEffTransportRecordBufferVtable = 0;
+extern void *g_NETWORK_EffTransportRecordBufferVtable[1];
+extern void *g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable[1];
+extern void *g_NETWORK_DeleteEffTransportRecordBufferVtable[1];
 
 struct VsNetLockedEffTransportRecordCriticalSection {
     VsNetLockedEffTransportRecordCriticalSection(void) {
@@ -1700,7 +1700,7 @@ void *DeleteLockedEffTransportRecordSlotWrapper(void *pObject, BYTE fFreeMemory)
 void *VsNetSimpleEffTransportRecordSlot::ConstructSimpleEffTransportRecordSlot(
     unsigned int cbRecord)
 {
-    m_pVtable = (void **)g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable;
+    m_pVtable = g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable;
     m_pSerializedStream04 = (int)(unsigned long)AllocateVSMemBlock(cbRecord & 0xffff);
     m_fAvailable08 = 1;
     m_cRetryCount14 = 0;
@@ -1711,7 +1711,7 @@ void *VsNetSimpleEffTransportRecordSlot::ConstructSimpleEffTransportRecordSlot(
 void VsNetSimpleEffTransportRecordSlot::DestroySimpleEffTransportRecordSlot(void) {
     m_pVtable = (void **)g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable;
     FreeVSMemBlock((void *)(unsigned long)m_pSerializedStream04);
-    m_pVtable = (void **)g_NETWORK_EffTransportRecordBufferVtable;
+    m_pVtable = g_NETWORK_EffTransportRecordBufferVtable;
 }
 
 // FUNCTION: LEMBALL 0x00461250
@@ -1987,7 +1987,7 @@ void *VsNetEffTransportRecordBuffer::ConstructEffTransportRecordBuffer(
     VsNetEffTransportPacketHeader *pSerializedHeader;
     int cbSerialized;
 
-    m_pVtable = (void **)g_NETWORK_DeleteEffTransportRecordBufferVtable;
+    m_pVtable = g_NETWORK_DeleteEffTransportRecordBufferVtable;
     m_fAllocatePayload0c = fAllocatePayload;
     m_nReserved14 = 0;
     m_nReserved10 = 0;
@@ -2005,11 +2005,11 @@ void *VsNetEffTransportRecordBuffer::ConstructEffTransportRecordBuffer(
 
 // FUNCTION: LEMBALL 0x00461440
 void VsNetEffTransportRecordBuffer::DestroyEffTransportRecordBuffer(void) {
-    m_pVtable = (void **)g_NETWORK_DeleteEffTransportRecordBufferVtable;
+    m_pVtable = g_NETWORK_DeleteEffTransportRecordBufferVtable;
     if (m_pSerializedBuffer04 != 0) {
         FreeVSMemBlock((void *)(unsigned long)m_pSerializedBuffer04);
     }
-    m_pVtable = (void **)g_NETWORK_EffTransportRecordBufferVtable;
+    m_pVtable = g_NETWORK_EffTransportRecordBufferVtable;
 }
 
 // FUNCTION: LEMBALL 0x00462A20
@@ -2031,45 +2031,28 @@ void *DeleteEffTransportRecordBufferWrapper(void *pObject, BYTE fFreeMemory) {
     return pObject;
 }
 
-/* The original tables at 004991d0..004991dc are overlapping compiler
- * views.  Keep every view callable; only the delete entry is needed by the
- * record containers reconstructed here. */
-static void *g_NETWORK_EffTransportRecordBufferVtableStorage[16] = {
-    (void *)DeleteSimpleEffTransportRecordSlotWrapper,
-    (void *)DeleteEffTransportRecordBufferWrapper,
-    (void *)DeleteRangeEffTransportRecordBufferTableWrapper,
-    (void *)DeleteRingEffTransportRecordBufferTableWrapper,
-    (void *)InitializeNonZrleVariantRenderEntry,
-    (void *)NoopVtableCallbackThunk,
-    (void *)NoopVtableCallbackThunk,
-    (void *)_purecall,
-    (void *)_purecall,
-    (void *)InitializeNonZrleVariantRenderEntry,
-    (void *)NoopVtableCallbackThunk,
-    (void *)NoopVtableCallbackThunk,
-    (void *)_purecall,
-    (void *)_purecall,
-    (void *)_purecall,
-    (void *)_purecall,
+// FUNCTION: LEMBALL 0x004629E0
+void *LEMBALL_FASTCALL DeleteEffTransportRecordBufferBaseWrapper(VsNetEffTransportRecordBuffer *pObject, int, BYTE fFreeMemory) {
+    pObject->m_pVtable = g_NETWORK_EffTransportRecordBufferVtable;
+    if ((fFreeMemory & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// GLOBAL: LEMBALL 0x004991CC
+void *g_NETWORK_EffTransportRecordBufferVtable[1] = {
+    (void *)DeleteEffTransportRecordBufferBaseWrapper,
 };
 
-static void *g_NETWORK_DeleteSimpleEffTransportRecordSlotVtableStorage[16] = {
+// GLOBAL: LEMBALL 0x004991D0
+void *g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable[1] = {
     (void *)DeleteSimpleEffTransportRecordSlotWrapper,
+};
+
+// GLOBAL: LEMBALL 0x004991D4
+void *g_NETWORK_DeleteEffTransportRecordBufferVtable[1] = {
     (void *)DeleteEffTransportRecordBufferWrapper,
-    (void *)DeleteRangeEffTransportRecordBufferTableWrapper,
-    (void *)DeleteRingEffTransportRecordBufferTableWrapper,
-    (void *)InitializeNonZrleVariantRenderEntry,
-    (void *)NoopVtableCallbackThunk,
-    (void *)NoopVtableCallbackThunk,
-    (void *)_purecall,
-    (void *)_purecall,
-    (void *)InitializeNonZrleVariantRenderEntry,
-    (void *)NoopVtableCallbackThunk,
-    (void *)NoopVtableCallbackThunk,
-    (void *)_purecall,
-    (void *)_purecall,
-    (void *)_purecall,
-    (void *)_purecall,
 };
 
 static void *g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtableStorage[16] = {
@@ -2088,12 +2071,6 @@ static void *g_NETWORK_DeleteRingEffTransportRecordBufferTableVtableStorage[16] 
 
 struct VsNetInitializeRecordVtablePointers {
     VsNetInitializeRecordVtablePointers(void) {
-        g_NETWORK_EffTransportRecordBufferVtable =
-            g_NETWORK_EffTransportRecordBufferVtableStorage;
-        g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable =
-            g_NETWORK_DeleteSimpleEffTransportRecordSlotVtableStorage;
-        g_NETWORK_DeleteEffTransportRecordBufferVtable =
-            g_NETWORK_EffTransportRecordBufferVtableStorage + 1;
         g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable =
             g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtableStorage;
         g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable =
