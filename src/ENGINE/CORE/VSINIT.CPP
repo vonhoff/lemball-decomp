@@ -990,8 +990,9 @@ int InitializeProcessCurrentDirectoryState(void) {
 
     GetCurrentDirectoryA(sizeof(g_abProcessCurrentDirectoryBuffer), g_abProcessCurrentDirectoryBuffer);
     cchDirectory = strlen(g_abProcessCurrentDirectoryBuffer) + 1;
-    if (g_abProcessCurrentDirectoryBuffer[cchDirectory - 2] == '\\') {
-        g_abProcessCurrentDirectoryBuffer[cchDirectory - 2] = '\0';
+    cchDirectory -= 2;
+    if (g_abProcessCurrentDirectoryBuffer[cchDirectory] == '\\') {
+        g_abProcessCurrentDirectoryBuffer[cchDirectory] = '\0';
     }
 
     return 1;
