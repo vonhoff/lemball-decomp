@@ -741,7 +741,7 @@ void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(void *pVsn
 }
 
 // FUNCTION: LEMBALL 0x00452AB0
-void MarkNetworkLobbySelectedPeerDisconnected(void *pVsnetRuntime) {
+void LEMBALL_FASTCALL MarkNetworkLobbySelectedPeerDisconnected(void *pVsnetRuntime) {
     ((GameNetworkLobbyVsnetRuntime *)pVsnetRuntime)->m_fSelectionNeedsReset = 1;
 }
 

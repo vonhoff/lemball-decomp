@@ -171,7 +171,7 @@ extern void *g_pNetworkLobbyTransportController;
 extern void *g_pActiveNetworkLobbyScreen;
 extern void *g_pNetworkLobbyVsnetRuntime;
 
-extern void MarkNetworkLobbySelectedPeerDisconnected(void *pVsnetRuntime);
+extern void LEMBALL_FASTCALL MarkNetworkLobbySelectedPeerDisconnected(void *pVsnetRuntime);
 extern void SetGeometryChildEnabled(void *pGeometryChild, int fEnabled);
 void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen);
 
