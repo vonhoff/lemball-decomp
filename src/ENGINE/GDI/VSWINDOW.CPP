@@ -310,7 +310,8 @@ void LEMBALL_FASTCALL GeometryOwnerPointerEnterNoop(void *) {
 
 // FUNCTION: LEMBALL 0x004399B0
 void LEMBALL_FASTCALL ResetGeometryOwnerButtonsIfOutsideDispatchDisabled(
-    void *pOwner) {
+    void *pOwner)
+{
     int i;
 
     if (*(int *)((char *)pOwner + 0x2c) == 0) {
@@ -322,7 +323,8 @@ void LEMBALL_FASTCALL ResetGeometryOwnerButtonsIfOutsideDispatchDisabled(
 
 // FUNCTION: LEMBALL 0x004399D0
 void LEMBALL_FASTCALL GeometryOwnerPointerMoveNoop(
-    void *, int, const VS_XYPair *) {
+    void *, int, const VS_XYPair *)
+{
 }
 
 // FUNCTION: LEMBALL 0x004399E0
@@ -391,7 +393,8 @@ void GameGeometryOwnerRectState::SetEnabled(int fEnabled) {
 
 // FUNCTION: LEMBALL 0x0046A290
 void *LEMBALL_FASTCALL InitializeGeometryOwnerRect(
-    void *pOwner, int, const VS_XYPair *pRect) {
+    void *pOwner, int, const VS_XYPair *pRect)
+{
     GameGeometryOwnerRectState *pState;
 
     pState = (GameGeometryOwnerRectState *)pOwner;
@@ -409,7 +412,8 @@ void *LEMBALL_FASTCALL InitializeGeometryOwnerRect(
 
 // FUNCTION: LEMBALL 0x0046A6E0
 void LEMBALL_FASTCALL UnlinkAndFreeGeometryOwnerChildNode(
-    void *pOwner, int, GameGeometryOwnerChildNode *pNode) {
+    void *pOwner, int, GameGeometryOwnerChildNode *pNode)
+{
     VS_RootGeometryDispatchHelperState *pHelper;
 
     pHelper = (VS_RootGeometryDispatchHelperState *)pOwner;
@@ -429,7 +433,8 @@ void LEMBALL_FASTCALL UnlinkAndFreeGeometryOwnerChildNode(
 // FUNCTION: LEMBALL 0x0046A580
 void *LEMBALL_FASTCALL ConstructRootGeometryDispatchHelper(
     void *pObject, int, const VS_XYPair *pRect,
-    const VS_XYPair *pOrigin, const VS_XYPair *pSourcePosition) {
+    const VS_XYPair *pOrigin, const VS_XYPair *pSourcePosition)
+{
     VS_RootGeometryDispatchHelperState *pHelper;
 
     pHelper = (VS_RootGeometryDispatchHelperState *)pObject;
@@ -494,7 +499,8 @@ void LEMBALL_FASTCALL DestroyRootGeometryDispatchHelper(void *pObject) {
 
 // FUNCTION: LEMBALL 0x0046AA50
 void *LEMBALL_FASTCALL DeleteRootGeometryDispatchHelper(
-    void *pHelper, int, int nDeleteFlag) {
+    void *pHelper, int, int nDeleteFlag)
+{
     DestroyRootGeometryDispatchHelper(pHelper);
     if ((nDeleteFlag & 1) != 0) {
         FreeVSMemBlock(pHelper);
@@ -504,7 +510,8 @@ void *LEMBALL_FASTCALL DeleteRootGeometryDispatchHelper(
 
 // FUNCTION: LEMBALL 0x0046AA70
 void *LEMBALL_FASTCALL DeleteRootGeometryDispatchHelperAdjusted(
-    void *pDispatchClient, int, int nDeleteFlag) {
+    void *pDispatchClient, int, int nDeleteFlag)
+{
     return DeleteRootGeometryDispatchHelper(
         (char *)pDispatchClient - 0x38, 0, nDeleteFlag);
 }
@@ -513,7 +520,8 @@ void *LEMBALL_FASTCALL DeleteRootGeometryDispatchHelperAdjusted(
 void LEMBALL_FASTCALL DispatchGeometryChildEvent(
     void *pOwner, int, GameGeometryDispatchEvent *pEvent,
     const VS_XYPair *pPoint,
-    GameGeometryOwnerRectState *pPreviousActiveOwner) {
+    GameGeometryOwnerRectState *pPreviousActiveOwner)
+{
     GameGeometryOwnerRectState *pState;
     GameGeometryOwnerRectDispatch *pDispatch;
     int nButton;
@@ -589,7 +597,8 @@ void LEMBALL_FASTCALL DispatchGeometryChildEvent(
 // FUNCTION: LEMBALL 0x0046A770
 void LEMBALL_FASTCALL DispatchNormalizedPointToGeometryChildren(
     void *pOwner, int, const VS_XYPair *pPoint,
-    GameGeometryDispatchEvent *pEvent) {
+    GameGeometryDispatchEvent *pEvent)
+{
     VS_RootGeometryDispatchHelperState *pHelper;
     GameGeometryOwnerChildNode *pNode;
     GameGeometryOwnerRectState *pChild;
@@ -700,7 +709,8 @@ void LEMBALL_FASTCALL RedispatchGeometryOwnerPointerEvent(void *pOwner) {
 
 // FUNCTION: LEMBALL 0x0046A710
 int LEMBALL_FASTCALL HandleRootGeometryDispatchEntry(
-    void *pDispatchClient, int, GameGeometryDispatchEvent *pEvent) {
+    void *pDispatchClient, int, GameGeometryDispatchEvent *pEvent)
+{
     VS_XYPair Point;
 
     if (pEvent->m_nType00 >= 5 && pEvent->m_nType00 <= 10 &&
@@ -716,7 +726,8 @@ int LEMBALL_FASTCALL HandleRootGeometryDispatchEntry(
 
 // FUNCTION: LEMBALL 0x0046A560
 void LEMBALL_FASTCALL SetGeometryOwnerParent(
-    void *pOwner, int, void *pParent) {
+    void *pOwner, int, void *pParent)
+{
     ((GameGeometryOwnerRectState *)pOwner)->m_pParent0C =
         (GameGeometryOwnerRectState *)pParent;
     RedispatchGeometryOwnerPointerEvent(pParent);
@@ -724,7 +735,8 @@ void LEMBALL_FASTCALL SetGeometryOwnerParent(
 
 // FUNCTION: LEMBALL 0x0046A9A0
 void LEMBALL_FASTCALL AppendGeometryOwnerChild(
-    void *pOwner, int, void *pChildOwner) {
+    void *pOwner, int, void *pChildOwner)
+{
     VS_RootGeometryDispatchHelperState *pHelper;
     GameGeometryOwnerChildNode *pNode;
 
@@ -746,7 +758,8 @@ void LEMBALL_FASTCALL AppendGeometryOwnerChild(
 
 // FUNCTION: LEMBALL 0x0046AA00
 void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
-    void *pOwner, int, void *pChildOwner) {
+    void *pOwner, int, void *pChildOwner)
+{
     VS_RootGeometryDispatchHelperState *pHelper;
     GameGeometryOwnerChildNode *pNode;
 
@@ -1340,14 +1353,16 @@ struct WINDOW_OWNER_COMPACT_GEOMETRY_DISPATCH {
 
 // FUNCTION: LEMBALL 0x00465C70
 void LEMBALL_FASTCALL UpdateWindowOwnerRootGeometrySourceRect(
-    void *pOwner, int, const VS_XYPair *pRect) {
+    void *pOwner, int, const VS_XYPair *pRect)
+{
     ((VS_RootGeometryOwner *)pOwner)
         ->VS_RootGeometryOwner::StoreRootGeometrySourceRect(pRect);
 }
 
 // FUNCTION: LEMBALL 0x00465C80
 void LEMBALL_FASTCALL RefreshWindowOwnerRenderScale(
-    void *pOwner, int, int nPreviousScaleFactor) {
+    void *pOwner, int, int nPreviousScaleFactor)
+{
     void *pHelper;
     void *pGeometryContext;
     void *pCompactGeometry;
@@ -1461,7 +1476,8 @@ void LEMBALL_FASTCALL PopulateWindowOwnerRenderAnchor(void *pOwner) {
 
 // FUNCTION: LEMBALL 0x00463C20
 void LEMBALL_FASTCALL SetWindowOwnerRenderAnchorFromPoint(
-    void *pOwner, int, const VS_XYPair *pPoint) {
+    void *pOwner, int, const VS_XYPair *pPoint)
+{
     ((VS_WindowOwnerBase *)pOwner)
         ->VS_WindowOwnerBase::MoveWindowOwnerOrigin(pPoint);
 }
@@ -1489,7 +1505,8 @@ void LEMBALL_FASTCALL ForwardNestedGeometryRectUpdate(
 
 // FUNCTION: LEMBALL 0x00463F70
 LRESULT LEMBALL_FASTCALL DispatchWindowOwnerRenderContextMessage(
-    void *pOwner, int, UINT uMessage, WPARAM wParam, LPARAM lParam) {
+    void *pOwner, int, UINT uMessage, WPARAM wParam, LPARAM lParam)
+{
     WINDOW_OWNER_PAINTSTRUCT Paint;
     short cxPaint;
     short cyPaint;
@@ -2309,7 +2326,8 @@ VS_WindowOwnerBase::VS_WindowOwnerBase(void) {
 
 // FUNCTION: LEMBALL 0x00465200
 void VS_WindowOwnerBase::InitializeWindowOwnerFromRect(
-    short *paRect, void *pWindowOwner, const char *pszTitle) {
+    short *paRect, void *pWindowOwner, const char *pszTitle)
+{
     WINDOW_OWNER_RECT WindowRect;
     tagPOINT Position;
     unsigned int uFlags;
