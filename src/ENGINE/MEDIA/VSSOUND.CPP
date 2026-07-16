@@ -775,7 +775,7 @@ void SetAudioManagerPrimaryContext(void *pAudioManager, void *pPrimaryContext) {
 }
 
 // FUNCTION: LEMBALL 0x0045B1D0
-void StopAllAudioManagerBackends(void *pAudioManager) {
+void LEMBALL_FASTCALL StopAllAudioManagerBackends(void *pAudioManager) {
     void **ppBackend;
     unsigned int i;
 
