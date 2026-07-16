@@ -3314,11 +3314,12 @@ int LEMBALL_FASTCALL PollPrimaryContextScreenStatus(void *pPrimaryContext) {
 int LEMBALL_FASTCALL GetPrimaryContextRequestedScreen(void *pPrimaryContext) {
     GameActiveScreenVirtualInterface *pActiveScreen;
 
-    pActiveScreen = *(GameActiveScreenVirtualInterface **)
-        ((char *)pPrimaryContext + 0xd4);
-    if (*(int *)((char *)pPrimaryContext + 0xc8) == 0 &&
-        pActiveScreen != 0) {
-        return pActiveScreen->GetRequestedScreen();
+    if (*(int *)((char *)pPrimaryContext + 0xc8) == 0) {
+        pActiveScreen = *(GameActiveScreenVirtualInterface **)
+            ((char *)pPrimaryContext + 0xd4);
+        if (pActiveScreen != 0) {
+            return pActiveScreen->GetRequestedScreen();
+        }
     }
     return 0;
 }
