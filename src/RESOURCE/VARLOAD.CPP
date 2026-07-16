@@ -516,7 +516,8 @@ void *ConstructTwoArrayListResourceFromId(void *pObject, int nResourceId) {
 void *LoadZrleOnlyListResource(int nResourceId) {
     int *pResourceObject;
 
-    pResourceObject = (int *)FindCachedResourceObjectById(g_pMainResourceArchive, nResourceId);
+    pResourceObject = (int *)((MogLoadResourceArchive *)g_pMainResourceArchive)
+                          ->FindCachedResourceObjectById(nResourceId);
     if (pResourceObject != 0) {
         if ((unsigned int)pResourceObject[0x10] != g_GAME_ListResourceTypeTag) {
             ReleaseTypedResourceObjectReference(pResourceObject);
@@ -548,7 +549,8 @@ void *LoadZrleOnlyListResource(int nResourceId) {
 void *LoadListResource(int nResourceId) {
     int *pResourceObject;
 
-    pResourceObject = (int *)FindCachedResourceObjectById(g_pMainResourceArchive, nResourceId);
+    pResourceObject = (int *)((MogLoadResourceArchive *)g_pMainResourceArchive)
+                          ->FindCachedResourceObjectById(nResourceId);
     if (pResourceObject != 0) {
         if ((unsigned int)pResourceObject[0x10] != g_GAME_ListResourceTypeTag) {
             ReleaseTypedResourceObjectReference(pResourceObject);
@@ -568,7 +570,8 @@ void *LoadListResource(int nResourceId) {
 void *LoadTwoArrayListResource(int nResourceId) {
     int *pResourceObject;
 
-    pResourceObject = (int *)FindCachedResourceObjectById(g_pMainResourceArchive, nResourceId);
+    pResourceObject = (int *)((MogLoadResourceArchive *)g_pMainResourceArchive)
+                          ->FindCachedResourceObjectById(nResourceId);
     if (pResourceObject != 0) {
         if ((unsigned int)pResourceObject[0x10] != g_GAME_ListResourceTypeTag) {
             ReleaseTypedResourceObjectReference(pResourceObject);
@@ -588,7 +591,8 @@ void *LoadTwoArrayListResource(int nResourceId) {
 void *LoadBitmapResource(int nResourceId) {
     int *pResourceObject;
 
-    pResourceObject = (int *)FindCachedResourceObjectById(g_pMainResourceArchive, nResourceId);
+    pResourceObject = (int *)((MogLoadResourceArchive *)g_pMainResourceArchive)
+                          ->FindCachedResourceObjectById(nResourceId);
     if (pResourceObject != 0) {
         if ((unsigned int)pResourceObject[0x10] != g_GAME_BitmapResourceTypeTag) {
             ReleaseTypedResourceObjectReference(pResourceObject);
@@ -615,7 +619,8 @@ void *LoadBitmapResource(int nResourceId) {
 void *LoadZrleResource(int nResourceId) {
     int *pResourceObject;
 
-    pResourceObject = (int *)FindCachedResourceObjectById(g_pMainResourceArchive, nResourceId);
+    pResourceObject = (int *)((MogLoadResourceArchive *)g_pMainResourceArchive)
+                          ->FindCachedResourceObjectById(nResourceId);
     if (pResourceObject != 0) {
         if ((unsigned int)pResourceObject[0x10] != g_GAME_ZrleResourceTypeTag) {
             ReleaseTypedResourceObjectReference(pResourceObject);
@@ -646,7 +651,8 @@ void *LoadZrleResource(int nResourceId) {
 void *LoadPalResource(int nResourceId) {
     int *pResourceObject;
 
-    pResourceObject = (int *)FindCachedResourceObjectById(g_pMainResourceArchive, nResourceId);
+    pResourceObject = (int *)((MogLoadResourceArchive *)g_pMainResourceArchive)
+                          ->FindCachedResourceObjectById(nResourceId);
     if (pResourceObject != 0) {
         if ((unsigned int)pResourceObject[0x10] != g_GAME_PaletteResourceTypeTag) {
             ReleaseTypedResourceObjectReference(pResourceObject);

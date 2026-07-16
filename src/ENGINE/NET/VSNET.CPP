@@ -3862,15 +3862,17 @@ int VsNetRuntimeStartView::StartEffTransportRuntimeAndWaitReady(int nRuntimeKey,
 
     dwStartTime = timeGetTime();
     if (pState->m_fRuntimeActive != 0) {
-        while (pState->m_fRuntimeActive != 0) {
+        do {
             VsNetChannelOwnerObject *pActiveOwner;
 
-            pActiveOwner = (VsNetChannelOwnerObject *)pState->m_pActiveChannelOwner;
-            if (pActiveOwner != 0) {
-                if (*(int *)((char *)pActiveOwner +
-                             pActiveOwner->m_pOffsets->m_nEndpointStateSlotOffset +
-                             0x14) != 0) {
-                    break;
+            if (pState->m_fRuntimeActive != 0) {
+                pActiveOwner = (VsNetChannelOwnerObject *)pState->m_pActiveChannelOwner;
+                if (pActiveOwner != 0) {
+                    if (*(int *)((char *)pActiveOwner +
+                                 pActiveOwner->m_pOffsets->m_nEndpointStateSlotOffset +
+                                 0x14) != 0) {
+                        break;
+                    }
                 }
             }
 
@@ -3888,7 +3890,7 @@ int VsNetRuntimeStartView::StartEffTransportRuntimeAndWaitReady(int nRuntimeKey,
             } while (dwNow - dwDelayStart < 100);
 
             (pState->*pVtable->m_pServiceTransport)();
-        }
+        } while (pState->m_fRuntimeActive != 0);
     }
 
     if (pState->m_fRuntimeActive != 0) {

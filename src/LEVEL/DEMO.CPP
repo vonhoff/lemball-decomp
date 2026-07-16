@@ -364,7 +364,8 @@ int *LoadBinResource(int nResourceId) {
     int *pResourceObject;
     int *pObjectWords;
 
-    pResourceObject = (int *)FindCachedResourceObjectById(g_pMainResourceArchive, nResourceId);
+    pResourceObject = (int *)((MogLoadResourceArchive *)g_pMainResourceArchive)
+                          ->FindCachedResourceObjectById(nResourceId);
     if (pResourceObject != 0) {
         if ((unsigned int)pResourceObject[0x10] != g_DEMO_BinResourceTypeTag) {
             ReleaseTypedResourceObjectReference(pResourceObject);

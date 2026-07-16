@@ -1319,12 +1319,12 @@ void LEMBALL_FASTCALL DestroyResourceArchive(void *pArchive) {
 }
 
 // FUNCTION: LEMBALL 0x0045CAB0
-void *FindCachedResourceObjectById(void *pArchive, int nResourceId) {
+void *MogLoadResourceArchive::FindCachedResourceObjectById(int nResourceId) {
     MogLoadResourceArchive *pResourceArchive;
     int iSlot;
     int cRemaining;
 
-    pResourceArchive = (MogLoadResourceArchive *)pArchive;
+    pResourceArchive = this;
     iSlot = 0;
     cRemaining = pResourceArchive->m_cCachedResourceObjects;
     if (cRemaining > 0) {
@@ -1594,7 +1594,9 @@ MogLoadStringResourceObject *LoadStringResource(int nResourceId) {
     MogLoadStringResourceObject *pResourceObject;
     MogLoadStringResourceObject *pLoadedObject;
 
-    pResourceObject = (MogLoadStringResourceObject *)FindCachedResourceObjectById(g_pResourceArchive, nResourceId);
+    pResourceObject = (MogLoadStringResourceObject *)
+        ((MogLoadResourceArchive *)g_pResourceArchive)
+            ->FindCachedResourceObjectById(nResourceId);
     if (pResourceObject != 0) {
         if (pResourceObject->m_uTypeTag != g_MOGLOAD_StringResourceTypeTag) {
             ReleaseTypedResourceObjectReference(pResourceObject);
@@ -1622,7 +1624,9 @@ void *LoadEffResource(int nResourceId) {
     MogLoadStringResourceObject *pResourceObject;
     MogLoadStringResourceObject *pLoadedObject;
 
-    pResourceObject = (MogLoadStringResourceObject *)FindCachedResourceObjectById(g_pResourceArchive, nResourceId);
+    pResourceObject = (MogLoadStringResourceObject *)
+        ((MogLoadResourceArchive *)g_pResourceArchive)
+            ->FindCachedResourceObjectById(nResourceId);
     if (pResourceObject != 0) {
         if (pResourceObject->m_uTypeTag != g_MOGLOAD_EffResourceTypeTag) {
             ReleaseTypedResourceObjectReference(pResourceObject);

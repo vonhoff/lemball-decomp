@@ -77,6 +77,7 @@ public:
     void RemoveCachedResourceObject(void *pResourceObject);
     void AdvanceCachedResourceObjectFrameCounters(void);
     void PruneUnreferencedCachedResourceObjects(void);
+    void *FindCachedResourceObjectById(int nResourceId);
 
     MogLoadDirectoryNode *m_pRootDirectory;
     MogLoadDirectoryNode *m_pCurrentDirectory;
@@ -95,7 +96,6 @@ extern void *g_pResourceArchive;
 void *AllocateResourceArchiveMemory(unsigned int cbBytes);
 void FreeResourceArchiveMemory(void *pMemoryBlock);
 void LEMBALL_FASTCALL DestroyResourceArchive(void *pArchive);
-void *FindCachedResourceObjectById(void *pArchive, int nResourceId);
 int LEMBALL_FASTCALL AreAllCachedResourceObjectsUnreferenced(void *pArchive);
 MogLoadStringResourceObject *LoadStringResource(int nResourceId);
 void *LoadEffResource(int nResourceId);
