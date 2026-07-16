@@ -188,7 +188,7 @@ void WINAPI LeaveCriticalSection(LPVOID lpCriticalSection);
 BOOL WINAPI WinHelpA(HWND hWndMain, LPCSTR lpszHelp, UINT uCommand, DWORD_PTR dwData);
 int WINAPI
 DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam);
-int WINAPI MessageBoxA(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType);
+__declspec(dllimport) int WINAPI MessageBoxA(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType);
 __declspec(dllimport) ATOM WINAPI RegisterClassA(const WNDCLASSA *lpWndClass);
 __declspec(dllimport) LONG WINAPI GetWindowLongA(HWND hWnd, int nIndex);
 LONG WINAPI SetWindowLongA(HWND hWnd, int nIndex, LONG dwNewLong);
