@@ -260,7 +260,6 @@ extern void *g_pMainResourceArchive;
 extern void *g_pResourceArchive;
 extern void InitializeResourceObjectFromId(void *pObject, int nResourceId);
 extern void *FinalizeLoadedResourceObjectResult(void *pObject);
-extern unsigned int AllocateResourceDataBufferWithEviction(void *pArchive, unsigned int cbBuffer);
 
 // FUNCTION: LEMBALL 0x0045E700
 static void *LEMBALL_FASTCALL DeleteListResourceBase(
@@ -374,7 +373,8 @@ static void LEMBALL_FASTCALL CopyBuffersIntoTwoArrayListResourceAndParse(
     (void)pUnusedEdx;
     if ((int)((char *)pObject - (char *)pRelatedObject) == -0x4c) {
         if (*(unsigned int *)((char *)pObject + 0x4c) == 0) {
-            pTarget = AllocateResourceDataBufferWithEviction(g_pMainResourceArchive, cbBuffer);
+            pTarget = ((MogLoadResourceArchive *)g_pMainResourceArchive)
+                ->AllocateResourceDataBufferWithEviction(cbBuffer);
             *(unsigned int *)((char *)pObject + 0x4c) = pTarget;
             pFrom = (char *)pSource;
             pTo = (char *)(unsigned long)pTarget;
@@ -385,7 +385,8 @@ static void LEMBALL_FASTCALL CopyBuffersIntoTwoArrayListResourceAndParse(
         *(int *)((char *)pObject + 0x58) = 1;
     } else {
         if (*(unsigned int *)((char *)pObject + 0x38) == 0) {
-            pTarget = AllocateResourceDataBufferWithEviction(g_pMainResourceArchive, cbBuffer);
+            pTarget = ((MogLoadResourceArchive *)g_pMainResourceArchive)
+                ->AllocateResourceDataBufferWithEviction(cbBuffer);
             *(unsigned int *)((char *)pObject + 0x38) = pTarget;
             pFrom = (char *)pSource;
             pTo = (char *)(unsigned long)pTarget;

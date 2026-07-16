@@ -1058,19 +1058,23 @@ void LevelManagedEntityCommandQueue::PopFrontThunk(void) {
 void LevelManagedEntityCommandQueue::PushFront(void) {
     LevelManagedEntityCommandEntry *pDestination;
     LevelManagedEntityCommandEntry *pSource;
+    int cEntries;
     int nOffset;
 
-    nOffset = m_cEntries00 * sizeof(LevelManagedEntityCommandEntry);
-    while (nOffset > 0) {
-        pDestination = (LevelManagedEntityCommandEntry *)
-            ((char *)m_pEntries04 + nOffset);
-        nOffset -= sizeof(LevelManagedEntityCommandEntry);
-        pSource = pDestination - 1;
-        pDestination->m_nField00 = pSource->m_nField00;
-        pDestination->m_nField04 = pSource->m_nField04;
-        pDestination->m_nField08 = pSource->m_nField08;
-        pDestination->m_nField0C = pSource->m_nField0C;
-        pDestination->m_nField10 = pSource->m_nField10;
+    cEntries = m_cEntries00;
+    if (cEntries > 0) {
+        nOffset = cEntries * sizeof(LevelManagedEntityCommandEntry);
+        do {
+            pDestination = (LevelManagedEntityCommandEntry *)
+                ((char *)m_pEntries04 + nOffset);
+            nOffset -= sizeof(LevelManagedEntityCommandEntry);
+            pSource = pDestination - 1;
+            pDestination->m_nField00 = pSource->m_nField00;
+            pDestination->m_nField04 = pSource->m_nField04;
+            pDestination->m_nField08 = pSource->m_nField08;
+            pDestination->m_nField0C = pSource->m_nField0C;
+            pDestination->m_nField10 = pSource->m_nField10;
+        } while (nOffset != 0);
     }
     ++m_cEntries00;
 }

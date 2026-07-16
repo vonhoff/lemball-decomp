@@ -24,6 +24,7 @@ struct MogLoadArenaDispatch {
     virtual int Free(void *pBlock) = 0;
 };
 
+// GLOBAL: LEMBALL 0x004a1d50
 static FILE *g_pResourceArchiveFile = 0;
 // GLOBAL: LEMBALL 0x004a1d54
 void *g_pResourceArchiveMemoryArena = 0;
@@ -871,8 +872,7 @@ int OpenResourceArchiveFileHandle(const char *pszPath, const char *pszMode) {
 }
 
 // FUNCTION: LEMBALL 0x0045CA30
-unsigned int AllocateResourceDataBufferWithEviction(void *pArchive, unsigned int cbBuffer) {
-    MogLoadResourceArchive *pResourceArchive;
+unsigned int MogLoadResourceArchive::AllocateResourceDataBufferWithEviction(unsigned int cbBuffer) {
     unsigned int pBuffer;
     int cbShortfall;
     unsigned int cbMinimumEvict;
@@ -881,16 +881,15 @@ unsigned int AllocateResourceDataBufferWithEviction(void *pArchive, unsigned int
     MogLoadStringResourceObject **ppCachedObjects;
     MogLoadTypedResourceObjectVtable *pVtable;
 
-    pResourceArchive = (MogLoadResourceArchive *)pArchive;
     while ((pBuffer = (unsigned int)(unsigned long)AllocateResourceArchiveMemory(cbBuffer)) == 0) {
         cbShortfall = (int)cbBuffer - (int)GetMemoryArenaPayloadByteCounter(g_pResourceArchiveMemoryArena);
         cbMinimumEvict = cbShortfall < 0 ? cbBuffer : (unsigned int)cbShortfall;
-        iSlot = FindResourceCacheEvictionCandidateIndex(pResourceArchive, cbMinimumEvict);
+        iSlot = FindResourceCacheEvictionCandidateIndex(this, cbMinimumEvict);
         if (iSlot == -1) {
             iSlot = 0;
-            cRemaining = pResourceArchive->m_cCachedResourceObjects;
+            cRemaining = m_cCachedResourceObjects;
             if (cRemaining > 0) {
-                ppCachedObjects = pResourceArchive->m_ppCachedResourceObjects;
+                ppCachedObjects = m_ppCachedResourceObjects;
                 do {
                     if (ppCachedObjects[iSlot] == 0) {
                         ppCachedObjects += iSlot;
@@ -905,9 +904,9 @@ unsigned int AllocateResourceDataBufferWithEviction(void *pArchive, unsigned int
                 } while (cRemaining != 0);
             }
         } else {
-            pVtable = (MogLoadTypedResourceObjectVtable *)pResourceArchive->m_ppCachedResourceObjects[iSlot]->m_pVtable;
+            pVtable = (MogLoadTypedResourceObjectVtable *)m_ppCachedResourceObjects[iSlot]->m_pVtable;
             pVtable->m_pReleaseIfLoaded(
-                pResourceArchive->m_ppCachedResourceObjects[iSlot], 0, 1);
+                m_ppCachedResourceObjects[iSlot], 0, 1);
         }
     }
     return pBuffer;
@@ -929,8 +928,8 @@ void LEMBALL_FASTCALL CopyBufferIntoTypedResourceObjectAndParse(
     (void)pUnusedEdx;
     (void)nUnused;
     if (cbBuffer != 0 && pResourceObject->m_pszText38 == 0) {
-        pTarget = (unsigned int *)AllocateResourceDataBufferWithEviction(
-            g_pResourceArchive, cbBuffer);
+        pTarget = (unsigned int *)((MogLoadResourceArchive *)g_pResourceArchive)
+            ->AllocateResourceDataBufferWithEviction(cbBuffer);
         pResourceObject->m_pszText38 = (char *)pTarget;
         for (i = cbBuffer >> 2; i != 0; --i) {
             *pTarget++ = *pSource++;
@@ -1582,8 +1581,8 @@ int MogLoadResourceArchive::LoadResourceArchiveEntryDataIntoBuffer(
     unsigned int pBuffer;
 
     (void)pUnused;
-    pBuffer = AllocateResourceDataBufferWithEviction(this,
-                                                     (unsigned int)plFileOffset[1]);
+    pBuffer = AllocateResourceDataBufferWithEviction(
+        (unsigned int)plFileOffset[1]);
     *pcbBuffer = pBuffer;
     SeekFile(g_pResourceArchiveFile, (long)(plFileOffset[0] + 8), SEEK_SET);
     ReadFileBytes(g_pResourceArchiveFile, (void *)(unsigned long)*pcbBuffer, (unsigned int)plFileOffset[1]);

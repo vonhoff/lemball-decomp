@@ -67,6 +67,7 @@ public:
 class MogLoadResourceArchive {
 public:
     void *ConstructResourceArchive(const char *pszArchiveName, unsigned int cbArenaSize);
+    unsigned int AllocateResourceDataBufferWithEviction(unsigned int cbBuffer);
     void FreeResourceObjectDataBuffer(unsigned int pBuffer, int fReleaseMode);
     int LoadResourceObjectById(int nResourceId, void *pObject, int fCacheObject);
     int LoadResourceArchiveEntryDataIntoBuffer(int *plFileOffset,
