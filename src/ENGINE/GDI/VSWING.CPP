@@ -178,7 +178,8 @@ int TakeRenderDispatchQueueEntry(void *pDispatchQueue, unsigned int *paEntryWord
 
 // FUNCTION: LEMBALL 0x004638A0
 int LEMBALL_FASTCALL DispatchRenderQueueEntryToClients(
-    void *pDispatchQueue, int, void *pEntryWords) {
+    void *pDispatchQueue, int, void *pEntryWords)
+{
     RenderDispatchQueue *pQueue;
     unsigned int i;
     RenderDispatchClientObject *pClientObject;

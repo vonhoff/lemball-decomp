@@ -169,7 +169,7 @@ static void *LEMBALL_FASTCALL DeleteListResourceBase(
     void *pObject, int nUnused, int fDelete);
 static void *LEMBALL_FASTCALL DestroyZrleOnlyListResource(
     void *pObject, int nUnused, int fDelete);
-static void DestroyTwoArrayListResource(void *pObject);
+static void LEMBALL_FASTCALL DestroyTwoArrayListResource(void *pObject);
 static void *LEMBALL_FASTCALL DestroyTwoArrayListResourceAndFree(
     void *pObject, int nUnused, int fDelete);
 static void LEMBALL_FASTCALL CopyBuffersIntoTwoArrayListResourceAndParse(
@@ -305,7 +305,7 @@ static void *LEMBALL_FASTCALL DestroyTwoArrayListResourceAndFree(
 }
 
 // FUNCTION: LEMBALL 0x0045DF70
-static void DestroyTwoArrayListResource(void *pObject) {
+static void LEMBALL_FASTCALL DestroyTwoArrayListResource(void *pObject) {
     void *pChild;
 
     *(void **)pObject = g_GAME_TwoArrayListResourceVtableStorage;

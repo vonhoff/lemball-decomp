@@ -279,7 +279,7 @@ void *LEMBALL_FASTCALL DeleteCachedResourceObjectBase(
 {
     (void)nUnused;
     InitializeTypedResourceObjectBaseVtable(pObject);
-    if ((fDelete & 1) != 0 && pObject != 0) {
+    if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
     }
     return pObject;
