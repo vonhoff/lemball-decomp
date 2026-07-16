@@ -246,25 +246,29 @@ static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
 
 // FUNCTION: LEMBALL 0x00402595
 static void *LEMBALL_FASTCALL DeleteMainMenuScreenThunk(
-    void *pObject, int nUnusedEdx, int fDelete) {
+    void *pObject, int nUnusedEdx, int fDelete)
+{
     return DeleteMainMenuScreen(pObject, nUnusedEdx, fDelete);
 }
 
 // FUNCTION: LEMBALL 0x00402252
 static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBaseThunk(
-    void *pObject, int nUnusedEdx, void *pFrameArgument) {
+    void *pObject, int nUnusedEdx, void *pFrameArgument)
+{
     RefreshAndDrawFramedScreenBase(pObject, nUnusedEdx, pFrameArgument);
 }
 
 // FUNCTION: LEMBALL 0x004032EC
 static void LEMBALL_FASTCALL SetFramedScreenSizeThunk(
-    void *pObject, int nUnusedEdx, short *paSize) {
+    void *pObject, int nUnusedEdx, short *paSize)
+{
     SetFramedScreenSize(pObject, nUnusedEdx, paSize);
 }
 
 // FUNCTION: LEMBALL 0x00402C02
 static void LEMBALL_FASTCALL MainMenuSlot05Thunk(
-    void *pObject, int nUnusedEdx, void *pArgument) {
+    void *pObject, int nUnusedEdx, void *pArgument)
+{
     (void)pObject;
     (void)nUnusedEdx;
     noop_render_entry_callback_004393a0(pArgument);
@@ -283,7 +287,8 @@ static void LEMBALL_FASTCALL UpdateFramedScreenRuntimeThunk(void *pObject) {
 
 // FUNCTION: LEMBALL 0x004012AD
 static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffersThunk(
-    void *pObject) {
+    void *pObject)
+{
     ResetFramedScreenVariantBuffers(pObject);
 }
 
@@ -295,19 +300,22 @@ static void LEMBALL_FASTCALL MainMenuSlot09Thunk(void *pObject) {
 
 // FUNCTION: LEMBALL 0x0040310C
 static int LEMBALL_FASTCALL GetFramedScreenRequestedModeThunk(
-    void *pObject) {
+    void *pObject)
+{
     return get_intro_sequence_screen_requested_mode(pObject);
 }
 
 // FUNCTION: LEMBALL 0x00402A68
 static int LEMBALL_FASTCALL GetFramedScreenTransitionStatusThunk(
-    void *pObject) {
+    void *pObject)
+{
     return poll_intro_sequence_screen_transition_status(pObject);
 }
 
 // FUNCTION: LEMBALL 0x004021A3
 static void LEMBALL_FASTCALL RecenterFramedScreenIfNeededThunk(
-    void *pObject) {
+    void *pObject)
+{
     RecenterFramedScreenIfNeeded(pObject);
 }
 
@@ -324,7 +332,8 @@ static void LEMBALL_FASTCALL UpdateMainMenuScreenThunk(void *pObject) {
 
 // FUNCTION: LEMBALL 0x0040242D
 static int LEMBALL_FASTCALL HandleMainMenuInputThunk(
-    void *pObject, int nUnusedEdx, void *pEvent) {
+    void *pObject, int nUnusedEdx, void *pEvent)
+{
     return HandleMainMenuInput(pObject, nUnusedEdx, pEvent);
 }
 
@@ -372,7 +381,8 @@ static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreenThunk(
 
 // FUNCTION: LEMBALL 0x00401889
 static int LEMBALL_FASTCALL HandleFramedScreenQueueEventThunk(
-    void *pQueueNode, int nUnusedEdx, void *pEvent) {
+    void *pQueueNode, int nUnusedEdx, void *pEvent)
+{
     return HandleFramedScreenQueueEvent(pQueueNode, nUnusedEdx, pEvent);
 }
 
@@ -443,7 +453,8 @@ void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
     void *pObject, int, void *pPrimaryContext, void *pRenderContext,
     short *paSize, int nScreenType, int cExtraPackagedEntries,
     int cExtraActionEntries, int nVariantStateCount,
-    int cMappedListEntries, int nMappedListMode) {
+    int cMappedListEntries, int nMappedListMode)
+{
     GameFramedScreenBase *pScreen;
 
     pScreen = (GameFramedScreenBase *)pObject;
@@ -668,7 +679,8 @@ void LEMBALL_FASTCALL ActivateFramedScreenBase(void *pObject) {
 
 // FUNCTION: LEMBALL 0x004458E0
 static void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroup(
-    void *pObject) {
+    void *pObject)
+{
     GameFramedScreenBase *pScreen;
     unsigned char *pGroup;
 
@@ -779,7 +791,8 @@ static void LEMBALL_FASTCALL DrawFramedScreenBase(void *pObject) {
 
 // FUNCTION: LEMBALL 0x00445A40
 static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(
-    void *pObject, int, void *) {
+    void *pObject, int, void *)
+{
     GameFramedScreenBase *pScreen;
     char *pGeometryOwner;
     char *pGeometryDispatch;
@@ -806,7 +819,8 @@ static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(
 
 // FUNCTION: LEMBALL 0x004460A0
 static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(
-    void *pObject) {
+    void *pObject)
+{
     GameFramedScreenBase *pScreen;
 
     pScreen = (GameFramedScreenBase *)pObject;
@@ -860,7 +874,8 @@ static void LEMBALL_FASTCALL RecenterFramedScreenIfNeeded(void *pObject) {
 
 // FUNCTION: LEMBALL 0x00446FD0
 static void LEMBALL_FASTCALL SetFramedScreenSize(
-    void *pObject, int, short *paSize) {
+    void *pObject, int, short *paSize)
+{
     GameFramedScreenBase *pScreen;
 
     pScreen = (GameFramedScreenBase *)pObject;
@@ -952,7 +967,8 @@ static void LEMBALL_FASTCALL UpdateMainMenuScreen(void *pObject) {
 
 // FUNCTION: LEMBALL 0x00448620
 static int LEMBALL_FASTCALL HandleMainMenuInput(
-    void *pObject, int, void *pEvent) {
+    void *pObject, int, void *pEvent)
+{
     GameMainMenuScreenView *pScreen;
     GameLevelProgressStateView *pProgress;
     unsigned short nType;
@@ -1003,7 +1019,8 @@ static int LEMBALL_FASTCALL HandleMainMenuInput(
 
 // FUNCTION: LEMBALL 0x00446480
 static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
-    void *pQueueNode, int, void *pEvent) {
+    void *pQueueNode, int, void *pEvent)
+{
     GameFramedScreenBase *pScreen;
 
     pScreen = (GameFramedScreenBase *)((char *)pQueueNode - 4);
@@ -1053,7 +1070,8 @@ static void LEMBALL_FASTCALL DestroyMainMenuScreen(void *pObject) {
 
 // FUNCTION: LEMBALL 0x00448A70
 static void *LEMBALL_FASTCALL DeleteMainMenuScreen(
-    void *pObject, int, int fDelete) {
+    void *pObject, int, int fDelete)
+{
     DestroyMainMenuScreen(pObject);
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
