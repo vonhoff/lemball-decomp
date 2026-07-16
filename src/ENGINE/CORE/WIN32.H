@@ -190,7 +190,7 @@ int WINAPI
 DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam);
 int WINAPI MessageBoxA(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType);
 __declspec(dllimport) ATOM WINAPI RegisterClassA(const WNDCLASSA *lpWndClass);
-LONG WINAPI GetWindowLongA(HWND hWnd, int nIndex);
+__declspec(dllimport) LONG WINAPI GetWindowLongA(HWND hWnd, int nIndex);
 LONG WINAPI SetWindowLongA(HWND hWnd, int nIndex, LONG dwNewLong);
 LRESULT WINAPI DefWindowProcA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 __declspec(dllimport) LRESULT WINAPI SendMessageA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
