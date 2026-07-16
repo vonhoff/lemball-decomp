@@ -8,6 +8,7 @@ TIDY_SOURCES = $(shell rg --files src -g '*.CPP')
 RECCMP_TARGET ?= LEMBALL
 RECCMP_ARGS ?=
 RECCMP_REPORT ?= build/reccmp.json
+RECCMP_ROADMAP ?= build/reccmp-roadmap.csv
 PYTHON ?= python
 GHIDRA_PROJECT ?=
 GHIDRA_HOME ?=
@@ -17,7 +18,8 @@ GHIDRA_HOME ?=
 pipeline: validate-target
 
 report:
-	@$(PYTHON) tools/generate_reccmp_report.py
+	@reccmp-roadmap --target $(RECCMP_TARGET) --csv $(RECCMP_ROADMAP) $(RECCMP_ARGS)
+	@$(PYTHON) tools/generate_reccmp_report.py --roadmap $(RECCMP_ROADMAP)
 
 ghidra-functions:
 	@$(PYTHON) tools/generate_ghidra_manifest.py $(if $(GHIDRA_PROJECT),--project "$(GHIDRA_PROJECT)",) $(if $(GHIDRA_HOME),--ghidra-home "$(GHIDRA_HOME)",)
@@ -48,7 +50,7 @@ stackcmp:
 	@reccmp-stackcmp --target $(RECCMP_TARGET) $(RECCMP_ARGS)
 
 roadmap:
-	@reccmp-roadmap --target $(RECCMP_TARGET) $(RECCMP_ARGS)
+	@reccmp-roadmap --target $(RECCMP_TARGET) --csv $(RECCMP_ROADMAP) $(RECCMP_ARGS)
 
 vtable:
 	@reccmp-vtable --target $(RECCMP_TARGET) $(RECCMP_ARGS)
