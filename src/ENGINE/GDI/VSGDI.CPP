@@ -121,7 +121,8 @@ void NoopDirectDrawCallback(unsigned int nResult, unsigned int nUnused) {
     (void)nUnused;
 }
 #define VsGdiSAFE_TABLE(name) static void *name[32]
-VsGdiSAFE_TABLE(g_VSGDI_CompactResourceGeometryHelperVtable);
+// GLOBAL: LEMBALL 0x00499508
+static void *g_VSGDI_CompactResourceGeometryHelperVtable[32];
 // GLOBAL: LEMBALL 0x0049a470
 static void *g_VSGDI_ResourceGeometryRowBufferVtable[32];
 VsGdiSAFE_TABLE(g_VSGDI_ResourceGeometryHelperGroup0Vtable);

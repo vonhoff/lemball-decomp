@@ -631,7 +631,8 @@ void *VsSoundManager::ConstructAudioManager(int nMusicResourceBase,
                                            int cMusicResources,
                                            int fMusicBackendEnabled,
                                            int cEffectResources,
-                                           void *pPrimaryContext) {
+                                           void *pPrimaryContext)
+{
     void *pAudioManager = this;
     void **ppBackend;
     unsigned int i;
@@ -843,7 +844,8 @@ void VsSoundManager::InvokeAudioManagerEmbeddedSlot04(int nValue1, int nValue2) 
 
 // FUNCTION: LEMBALL 0x0045B2E0
 int LEMBALL_FASTCALL RegisterVariantResourceMusicHandle(
-    void *pAudioManager, int, int nMusicResourceId) {
+    void *pAudioManager, int, int nMusicResourceId)
+{
     int hMusic;
     void *pControl;
 
@@ -863,7 +865,8 @@ int LEMBALL_FASTCALL RegisterVariantResourceMusicHandle(
 
 // FUNCTION: LEMBALL 0x0045B330
 void LEMBALL_FASTCALL StartRegisteredVariantResourceMusic(
-    void *pAudioManager, int, int hMusic) {
+    void *pAudioManager, int, int hMusic)
+{
     void *pControl;
 
     if (*(int *)((char *)pAudioManager + 0xc) == 1 && hMusic != 0 &&
@@ -876,7 +879,8 @@ void LEMBALL_FASTCALL StartRegisteredVariantResourceMusic(
 
 // FUNCTION: LEMBALL 0x0045B370
 void LEMBALL_FASTCALL DispatchChildInterfaceSlot18IfReady(
-    void *pAudioManager, int, int hMusic) {
+    void *pAudioManager, int, int hMusic)
+{
     void *pControl;
 
     if (*(int *)((char *)pAudioManager + 0xc) == 1 && *(int *)((char *)pAudioManager + 0x1c) == 1) {
@@ -888,7 +892,8 @@ void LEMBALL_FASTCALL DispatchChildInterfaceSlot18IfReady(
 
 // FUNCTION: LEMBALL 0x0045B390
 void LEMBALL_FASTCALL InvokeAudioManagerEmbeddedSlot1cIfMusicActive(
-    void *pAudioManager, int, int hMusic) {
+    void *pAudioManager, int, int hMusic)
+{
     void *pControl;
 
     if (*(int *)((char *)pAudioManager + 0xc) == 1 && *(int *)((char *)pAudioManager + 0x1c) == 1) {
@@ -900,7 +905,8 @@ void LEMBALL_FASTCALL InvokeAudioManagerEmbeddedSlot1cIfMusicActive(
 
 // FUNCTION: LEMBALL 0x0045B3B0
 void LEMBALL_FASTCALL StopVariantResourceMusicPlayback(
-    void *pAudioManager, int, int hMusic) {
+    void *pAudioManager, int, int hMusic)
+{
     void *pControl;
 
     if (*(int *)((char *)pAudioManager + 0xc) == 1 && *(int *)((char *)pAudioManager + 0x1c) == 1) {
@@ -912,7 +918,8 @@ void LEMBALL_FASTCALL StopVariantResourceMusicPlayback(
 
 // FUNCTION: LEMBALL 0x0045B3D0
 void LEMBALL_FASTCALL UnregisterVariantResourceMusicHandle(
-    void *pAudioManager, int, int hMusic) {
+    void *pAudioManager, int, int hMusic)
+{
     void *pControl;
 
     if (*(int *)((char *)pAudioManager + 0xc) == 1 && hMusic != 0 &&
@@ -1105,7 +1112,8 @@ char *__fastcall BuildAudioManagerDescriptionString(void *pAudioManager) {
 int InitializeGlobalAudioManager(int nMusicResourceBase,
                                  int cMusicResources,
                                  int cEffectResources,
-                                 void *pPrimaryContext) {
+                                 void *pPrimaryContext)
+{
     void *pAudioManager;
 
     pAudioManager = AllocateVSMemBlock(0xc90);
@@ -1133,7 +1141,8 @@ void ShutdownGlobalAudioManager(void) {
 
 // FUNCTION: LEMBALL 0x0047C880
 VsSoundWaveOutEffectBackend *VsSoundWaveOutEffectBackend::ConstructWaveOutEffectBackend(
-    int cEffectResources) {
+    int cEffectResources)
+{
     unsigned int cBytes;
     unsigned int i;
     unsigned int deviceId;
@@ -1249,7 +1258,8 @@ int GetWaveOutEffectBackendStatus0047CC10(void *pBackend) {
 // FUNCTION: LEMBALL 0x0047CB00
 int InitializeWaveOutEffectDevice0047CB00(void *pBackend,
                                            int fActivateDevice,
-                                           int fStartStreaming) {
+                                           int fStartStreaming)
+{
     HWAVEOUT *pWaveOut;
     MMRESULT nResult;
     char szErrorText[0x100];
@@ -1526,7 +1536,8 @@ const char *LookupDirectSoundErrorString(unsigned int uError) {
 
 // FUNCTION: LEMBALL 0x0047DD80
 VsSoundDirectSoundEffectBackend *VsSoundDirectSoundEffectBackend::ConstructDirectSoundEffectBackend(
-    int cEffectResources, int nCooperativeLevel) {
+    int cEffectResources, int nCooperativeLevel)
+{
     void *pBackend = this;
     int i;
 
@@ -1748,7 +1759,8 @@ int LEMBALL_FASTCALL GetDirectSoundBackendAvailability(void *pBackend, int) {
 
 // FUNCTION: LEMBALL 0x0047E8B0
 void LEMBALL_FASTCALL CaptureDirectSoundBackendWindow(
-    void *pBackend, int, void *pPrimaryContext) {
+    void *pBackend, int, void *pPrimaryContext)
+{
     *(HWND *)((char *)pBackend + 0x10) =
         *(HWND *)((char *)pPrimaryContext + 0x44);
 }
@@ -1766,7 +1778,8 @@ void DestroyDirectSoundEffectBackend(void *pBackend) {
 
 // FUNCTION: LEMBALL 0x0047E8E0
 void *LEMBALL_FASTCALL DeleteDirectSoundEffectBackend(
-    VsSoundDirectSoundEffectBackend *pBackend, int nUnused, int fDelete) {
+    VsSoundDirectSoundEffectBackend *pBackend, int nUnused, int fDelete)
+{
     (void)nUnused;
     DestroyDirectSoundEffectBackend(pBackend);
     if ((fDelete & 1) != 0) {
@@ -1780,7 +1793,8 @@ VsSoundDirectSoundEffectBufferPool *LEMBALL_FASTCALL
 ConstructDirectSoundEffectBufferPool(
     VsSoundDirectSoundEffectBufferPool *pPool, int,
     int cBuffers, void *pPatchResource, int nOutputRate,
-    int fSourceIs16Bit, int, int nFlags) {
+    int fSourceIs16Bit, int, int nFlags)
+{
     unsigned char PatchHeader[0x1c];
     unsigned char WaveHeader[0x38];
     VsSoundWaveFormat WaveFormat;
@@ -1951,7 +1965,8 @@ ConstructDirectSoundEffectBufferPool(
 // FUNCTION: LEMBALL 0x0047E520
 int LEMBALL_FASTCALL CreateDirectSoundEffectInstance(
     void *pBackend, int, void *pPatchResource, int *pnEffectInstanceId,
-    int nFlags) {
+    int nFlags)
+{
     int nEffectInstanceId;
     void *pBufferPool;
 
@@ -2021,7 +2036,8 @@ int ReleaseAllDirectSoundEffectInstances(void *pBackend) {
 
 // FUNCTION: LEMBALL 0x0047E7E0
 void PlayDirectSoundEffectInstanceWithMappedVolume(void *pBackend, int nEffectInstanceId, unsigned char nVolume,
-                                                   int fLoopEnabled) {
+                                                   int fLoopEnabled)
+{
     g_AUDIO_PlayBufferProc(
         *(void **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4),
         ((unsigned int)nVolume * 10000) / 0xff - 10000, fLoopEnabled);
@@ -2452,7 +2468,8 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
                                int fMusicBackendEnabled,
                                int *pfMusicBackendReady,
                                void **ppMusicBackend,
-                               int cEffectResources) {
+                               int cEffectResources)
+{
     void *pBackendStorage;
     void *pBackend;
     void **pBackendVtable;
