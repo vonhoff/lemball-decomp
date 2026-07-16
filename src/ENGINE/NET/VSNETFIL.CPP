@@ -52,32 +52,32 @@ extern "C" int _purecall(void) {
 #endif
 
 extern "C" {
-HANDLE WINAPI CreateFileA(LPCSTR lpFileName,
+__declspec(dllimport) HANDLE WINAPI CreateFileA(LPCSTR lpFileName,
                           DWORD dwDesiredAccess,
                           DWORD dwShareMode,
                           LPSECURITY_ATTRIBUTES lpSecurityAttributes,
                           DWORD dwCreationDisposition,
                           DWORD dwFlagsAndAttributes,
                           HANDLE hTemplateFile);
-BOOL WINAPI CloseHandle(HANDLE hObject);
-BOOL WINAPI WriteFile(HANDLE hFile,
+__declspec(dllimport) BOOL WINAPI CloseHandle(HANDLE hObject);
+__declspec(dllimport) BOOL WINAPI WriteFile(HANDLE hFile,
                       const void *lpBuffer,
                       DWORD nNumberOfBytesToWrite,
                       DWORD *lpNumberOfBytesWritten,
                       void *lpOverlapped);
-BOOL WINAPI ReadFile(HANDLE hFile,
+__declspec(dllimport) BOOL WINAPI ReadFile(HANDLE hFile,
                      void *lpBuffer,
                      DWORD nNumberOfBytesToRead,
                      DWORD *lpNumberOfBytesRead,
                      void *lpOverlapped);
-DWORD WINAPI SetFilePointer(HANDLE hFile, LONG lDistanceToMove, LONG *lpDistanceToMoveHigh, DWORD dwMoveMethod);
-DWORD WINAPI GetFileSize(HANDLE hFile, DWORD *lpFileSizeHigh);
-BOOL WINAPI LockFile(HANDLE hFile,
+__declspec(dllimport) DWORD WINAPI SetFilePointer(HANDLE hFile, LONG lDistanceToMove, LONG *lpDistanceToMoveHigh, DWORD dwMoveMethod);
+__declspec(dllimport) DWORD WINAPI GetFileSize(HANDLE hFile, DWORD *lpFileSizeHigh);
+__declspec(dllimport) BOOL WINAPI LockFile(HANDLE hFile,
                      DWORD dwFileOffsetLow,
                      DWORD dwFileOffsetHigh,
                      DWORD nNumberOfBytesToLockLow,
                      DWORD nNumberOfBytesToLockHigh);
-BOOL WINAPI UnlockFile(HANDLE hFile,
+__declspec(dllimport) BOOL WINAPI UnlockFile(HANDLE hFile,
                        DWORD dwFileOffsetLow,
                        DWORD dwFileOffsetHigh,
                        DWORD nNumberOfBytesToUnlockLow,
