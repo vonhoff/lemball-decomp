@@ -827,7 +827,8 @@ void *AllocateResourceArchiveMemory(unsigned int cbBytes) {
 
     if (g_fSmallMemoryBucketTableEnabled != 0 && cbBytes < g_cbSmallMemoryBucketUpperBound) {
         pvBlock = (unsigned int)((SmallMemoryBucketTable *)g_pSmallMemoryBucketTable)
-            ->AllocateFromSmallMemoryBucketTable(cbBytes);
+            ->AllocateFromSmallMemoryBucketTable(
+                cbBytes, g_pszSmallMemoryBucketAllocTag);
         if (pvBlock != 0) {
             return (void *)(unsigned long)pvBlock;
         }

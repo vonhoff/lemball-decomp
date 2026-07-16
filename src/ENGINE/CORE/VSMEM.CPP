@@ -253,23 +253,31 @@ int SmallMemoryBucket::FreeSlot(void *pvSlot) {
 }
 
 // FUNCTION: LEMBALL 0x004732D0
-int SmallMemoryBucketTable::AllocateFromSmallMemoryBucketTable(unsigned int cbBlock) {
+int SmallMemoryBucketTable::AllocateFromSmallMemoryBucketTable(int cbBlock, const char *pszName) {
+    unsigned int *pcbBucketSize;
     int iFirstBucket;
     int i;
+    int cBuckets;
     int nPreviousSize;
 
     iFirstBucket = (int)g_StartupGraphicsDriverConfig.m_dwReserved1;
+    cBuckets = m_cBuckets;
     nPreviousSize = 0;
-    for (i = iFirstBucket; i < m_cBuckets; ++i) {
-        if (nPreviousSize < (int)cbBlock &&
-            cbBlock <= m_acbBucketSizes[i] && m_apBuckets[i] != 0) {
-            void *pvSlot;
-            if (m_apBuckets[i]->AllocateSlot(&pvSlot) != 0) {
-                return (int)(unsigned long)pvSlot;
+    if (iFirstBucket < cBuckets) {
+        pcbBucketSize = &m_acbBucketSizes[iFirstBucket];
+        i = iFirstBucket;
+        do {
+            if (nPreviousSize < cbBlock &&
+                cbBlock <= (int)*pcbBucketSize && m_apBuckets[i] != 0) {
+                void *pvSlot;
+                if (m_apBuckets[i]->AllocateSlot(&pvSlot) != 0) {
+                    return (int)(unsigned long)pvSlot;
+                }
+                return 0;
             }
-            return 0;
-        }
-        nPreviousSize = (int)m_acbBucketSizes[i];
+            nPreviousSize = (int)*pcbBucketSize++;
+            ++i;
+        } while (i < cBuckets);
     }
     return 0;
 }
@@ -448,7 +456,8 @@ void *AllocateVSMemBlockImpl(unsigned int cbBlock) {
     if (g_fSmallMemoryBucketTableEnabled != 0 &&
         cbBlock < g_cbSmallMemoryBucketUpperBound) {
         nSmallBlock = ((SmallMemoryBucketTable *)g_pSmallMemoryBucketTable)
-            ->AllocateFromSmallMemoryBucketTable(cbBlock);
+            ->AllocateFromSmallMemoryBucketTable(
+                cbBlock, g_pszSmallMemoryBucketAllocTag);
         pvBlock = (void *)(unsigned long)nSmallBlock;
         if (nSmallBlock != 0) {
             g_pszSmallMemoryBucketAllocTag = "Small memory bucket";

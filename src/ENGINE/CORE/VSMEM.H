@@ -80,7 +80,8 @@ struct SmallMemoryBucketTable {
     unsigned int m_acbBucketSizes[7];    // 0x1c
     int m_cBuckets;                      // 0x38
 
-    int AllocateFromSmallMemoryBucketTable(unsigned int cbBlock);
+    int AllocateFromSmallMemoryBucketTable(int cbBlock,
+                                           const char *pszName);
     int FreeToSmallMemoryBucketTable(void *pBlock);
 };
 
