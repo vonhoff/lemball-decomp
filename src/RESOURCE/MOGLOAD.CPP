@@ -1545,11 +1545,12 @@ int MogLoadResourceArchive::LoadResourceObjectById(int nResourceId, void *pObjec
                                        state.m_pEntry);
 }
 
-// FUNCTION: LEMBALL 0x0045CE00
+// FUNCTION: LEMBALL 0x45ce00
 int MogLoadResourceArchive::LoadResourceArchiveEntryDataIntoBuffer(
     int *plFileOffset,
     unsigned int *pcbBuffer,
-    void *pUnused) {
+    void *pUnused)
+{
     unsigned int pBuffer;
 
     (void)pUnused;
@@ -1561,7 +1562,7 @@ int MogLoadResourceArchive::LoadResourceArchiveEntryDataIntoBuffer(
     return 1;
 }
 
-// FUNCTION: LEMBALL 0x0045DE00
+// FUNCTION: LEMBALL 0x45de00
 MogLoadStringResourceObject *LoadStringResource(int nResourceId) {
     MogLoadStringResourceObject *pResourceObject;
     MogLoadStringResourceObject *pLoadedObject;

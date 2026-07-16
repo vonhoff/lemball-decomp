@@ -5,18 +5,59 @@ CLANG_TIDY ?= clang-tidy
 FORMAT_SOURCES = $(shell rg --files src -g '*.CPP' -g '*.H')
 TIDY_SOURCES = $(shell rg --files src -g '*.CPP')
 
-.PHONY: pipeline verify validate-target ghidra-functions report annotation-candidates format tidy
+RECCMP_TARGET ?= LEMBALL
+RECCMP_ARGS ?=
+RECCMP_REPORT ?= build/reccmp.json
+PYTHON ?= python
+GHIDRA_PROJECT ?=
+GHIDRA_HOME ?=
+
+.PHONY: pipeline verify validate-target ghidra-functions report audit analyze snapshot decomplint reccmp stackcmp roadmap vtable datacmp aggregate format tidy
 
 pipeline: validate-target
 
 report:
-	@python3 tools/generate_reccmp_report.py
+	@$(PYTHON) tools/generate_reccmp_report.py
+
+ghidra-functions:
+	@$(PYTHON) tools/generate_ghidra_manifest.py $(if $(GHIDRA_PROJECT),--project "$(GHIDRA_PROJECT)",) $(if $(GHIDRA_HOME),--ghidra-home "$(GHIDRA_HOME)",)
 
 validate-target:
-	@python3 tools/validate_target_binary.py
+	@$(PYTHON) tools/validate_target_binary.py
 
 verify:
-	@python3 tools/compare_rebuilt_functions.py
+	@$(PYTHON) tools/compare_rebuilt_functions.py
+
+# Fast correctness checks suitable for local use and CI.
+audit: decomplint vtable datacmp
+
+# Full structural overview; roadmap is informative rather than an assertion.
+analyze: audit roadmap
+
+# Save a native reccmp JSON sample for aggregate/diff workflows.
+snapshot:
+	@reccmp-reccmp --target $(RECCMP_TARGET) --json $(RECCMP_REPORT) --silent $(RECCMP_ARGS)
+
+decomplint:
+	@reccmp-decomplint --target $(RECCMP_TARGET) $(RECCMP_ARGS)
+
+reccmp:
+	@reccmp-reccmp --target $(RECCMP_TARGET) $(RECCMP_ARGS)
+
+stackcmp:
+	@reccmp-stackcmp --target $(RECCMP_TARGET) $(RECCMP_ARGS)
+
+roadmap:
+	@reccmp-roadmap --target $(RECCMP_TARGET) $(RECCMP_ARGS)
+
+vtable:
+	@reccmp-vtable --target $(RECCMP_TARGET) $(RECCMP_ARGS)
+
+datacmp:
+	@reccmp-datacmp --target $(RECCMP_TARGET) $(RECCMP_ARGS)
+
+aggregate:
+	@reccmp-aggregate $(RECCMP_ARGS)
 
 format:
 	@$(CLANG_FORMAT) -i $(FORMAT_SOURCES)

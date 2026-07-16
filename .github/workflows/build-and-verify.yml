@@ -13,6 +13,8 @@ jobs:
   build:
     name: Build + verify (MSVC 4.20)
     runs-on: windows-latest
+    env:
+      PYTHONUTF8: "1"
 
     steps:
       - name: Check out repository
@@ -65,7 +67,37 @@ jobs:
           )
 
       - name: Verify against original
-        run: python tools/compare_rebuilt_functions.py --silent
+        run: python tools/compare_rebuilt_functions.py --json build/reccmp-sample.json --silent
+
+      - name: Lint decompilation annotations
+        continue-on-error: true
+        run: reccmp-decomplint --target LEMBALL src
+
+      - name: Verify virtual tables
+        continue-on-error: true
+        run: reccmp-vtable --target LEMBALL --no-color
+
+      - name: Compare global data
+        continue-on-error: true
+        run: reccmp-datacmp --target LEMBALL --no-color
+
+      - name: Generate symbol roadmap
+        continue-on-error: true
+        run: reccmp-roadmap --target LEMBALL --csv build/reccmp-roadmap.csv
+
+      - name: Diagnose representative stack layout
+        continue-on-error: true
+        run: reccmp-stackcmp --target LEMBALL 0x00456680
+
+      - name: Aggregate native reccmp report
+        if: always()
+        shell: pwsh
+        run: |
+          if (Test-Path build/reccmp-sample.json) {
+            $manifest = Get-Content data/manifest.json -Raw | ConvertFrom-Json
+            $total = $manifest.summary.internal + $manifest.summary.thunk
+            reccmp-aggregate --samples build/reccmp-sample.json --output build/reccmp-aggregate.json --total $total --no-color
+          }
 
       - name: Generate progress report
         if: always()
@@ -77,4 +109,8 @@ jobs:
         with:
           name: LEMBALL_report
           if-no-files-found: error
-          path: build/report.json
+          path: |
+            build/report.json
+            build/reccmp-sample.json
+            build/reccmp-aggregate.json
+            build/reccmp-roadmap.csv

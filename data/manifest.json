@@ -1,13 +1,13 @@
 {
   "version": "LEMBALL",
   "program": "LEMBALL.EXE",
-  "function_count": 4084,
+  "function_count": 4086,
   "summary": {
-    "total": 4084,
-    "internal": 2771,
-    "runtime": 77,
-    "thunk": 1211,
-    "import": 25,
+    "total": 4086,
+    "internal": 2757,
+    "runtime": 90,
+    "thunk": 1212,
+    "import": 27,
     "external": 0
   },
   "functions": [
@@ -3639,6 +3639,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00401E51",
+      "name": "thunk_FUN_0041bb10",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00401E5B",
       "name": "allocate_ice_chunk_object_array",
       "size": 5,
@@ -4064,6 +4073,15 @@
     {
       "address": "00401FD7",
       "name": "construct_network_lobby_selected_peer_status_stream",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00401FDC",
+      "name": "thunk_FUN_00418c90",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -5367,6 +5385,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "004024FF",
+      "name": "thunk_FUN_0041b990",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00402504",
       "name": "find_managed_entity_at_tile_by_type",
       "size": 5,
@@ -5828,15 +5855,6 @@
     {
       "address": "004026C6",
       "name": "initialize_enmy_chunk_object_behavior_fields",
-      "size": 5,
-      "category": "thunk",
-      "is_thunk": true,
-      "is_external": false,
-      "provenance": "ghidra"
-    },
-    {
-      "address": "004026D5",
-      "name": "arm_random_delay_and_toggle_slot",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -10398,6 +10416,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00403701",
+      "name": "append_invs_chunk_object_with_bounds",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00403706",
       "name": "thunk_delete_eff_stream_base_wrapper_00417c10_00403706",
       "size": 5,
@@ -14304,15 +14331,6 @@
       "provenance": "ghidra"
     },
     {
-      "address": "00416510",
-      "name": "arm_random_delay_and_toggle_slot",
-      "size": 84,
-      "category": "internal",
-      "is_thunk": false,
-      "is_external": false,
-      "provenance": "ghidra"
-    },
-    {
       "address": "00416570",
       "name": "is_managed_entity_state_not_7_8_or_0x15",
       "size": 30,
@@ -15213,6 +15231,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00418C90",
+      "name": "FUN_00418c90",
+      "size": 14,
+      "category": "runtime",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00418CA0",
       "name": "initialize_network_player_plas_chunk_object_pool",
       "size": 127,
@@ -15789,6 +15816,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0041B990",
+      "name": "FUN_0041b990",
+      "size": 20,
+      "category": "runtime",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0041B9B0",
       "name": "clear_counted_child_back_reference",
       "size": 60,
@@ -15811,6 +15847,15 @@
       "name": "find_managed_entity_at_tile_by_type",
       "size": 141,
       "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0041BB10",
+      "name": "FUN_0041bb10",
+      "size": 169,
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -16179,15 +16224,6 @@
       "address": "0041D650",
       "name": "advance_gmob_state_machine_action_0x2a",
       "size": 233,
-      "category": "internal",
-      "is_thunk": false,
-      "is_external": false,
-      "provenance": "ghidra"
-    },
-    {
-      "address": "0041D740",
-      "name": "try_bind_action_target_or_request_state_0x1a",
-      "size": 50,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -16599,15 +16635,6 @@
       "provenance": "ghidra"
     },
     {
-      "address": "0041EBE0",
-      "name": "append_managed_entity_group_controller_from_registry_ids",
-      "size": 150,
-      "category": "internal",
-      "is_thunk": false,
-      "is_external": false,
-      "provenance": "ghidra"
-    },
-    {
       "address": "0041EC80",
       "name": "append_cached_chunk_object",
       "size": 28,
@@ -16899,7 +16926,7 @@
       "address": "0042001D",
       "name": "caseD_2",
       "size": 8,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -16908,7 +16935,7 @@
       "address": "00420034",
       "name": "caseD_4",
       "size": 8,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -16917,7 +16944,7 @@
       "address": "0042003C",
       "name": "caseD_5",
       "size": 15,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -26535,6 +26562,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00459B90",
+      "name": "FUN_00459b90",
+      "size": 51,
+      "category": "runtime",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00459BD0",
       "name": "append_tail_memory_block_address_list",
       "size": 43,
@@ -26599,7 +26635,7 @@
     },
     {
       "address": "00459D70",
-      "name": "CArena::Allocate",
+      "name": "allocate_memory_arena_block",
       "size": 510,
       "category": "internal",
       "is_thunk": false,
@@ -26980,6 +27016,15 @@
       "name": "destroy_named_status_entry",
       "size": 14,
       "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0045AC60",
+      "name": "FUN_0045ac60",
+      "size": 47,
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -30120,7 +30165,7 @@
       "address": "00462E80",
       "name": "timeGetTime",
       "size": 6,
-      "category": "thunk",
+      "category": "import",
       "is_thunk": true,
       "is_external": false,
       "provenance": "ghidra"
@@ -30129,7 +30174,7 @@
       "address": "00462E90",
       "name": "timeGetTime",
       "size": 6,
-      "category": "thunk",
+      "category": "import",
       "is_thunk": true,
       "is_external": false,
       "provenance": "ghidra"
@@ -30345,7 +30390,7 @@
       "address": "00463B20",
       "name": "swap",
       "size": 45,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -33456,33 +33501,6 @@
       "provenance": "ghidra"
     },
     {
-      "address": "00472910",
-      "name": "_RAWOUT_DebugString",
-      "size": 108,
-      "category": "internal",
-      "is_thunk": false,
-      "is_external": false,
-      "provenance": "ghidra-boundary-correction"
-    },
-    {
-      "address": "00472980",
-      "name": "_RAWOUT_ErrorString",
-      "size": 108,
-      "category": "internal",
-      "is_thunk": false,
-      "is_external": false,
-      "provenance": "ghidra-boundary-correction"
-    },
-    {
-      "address": "004729F0",
-      "name": "_RAWOUT_SysString",
-      "size": 108,
-      "category": "internal",
-      "is_thunk": false,
-      "is_external": false,
-      "provenance": "ghidra-boundary-correction"
-    },
-    {
       "address": "00472B10",
       "name": "debug_message_thread_main",
       "size": 195,
@@ -33772,7 +33790,7 @@
     },
     {
       "address": "00473F80",
-      "name": "CTextWindow::RedrawLines",
+      "name": "invalidate_debug_text_line_range",
       "size": 115,
       "category": "internal",
       "is_thunk": false,
@@ -33871,7 +33889,7 @@
     },
     {
       "address": "00474520",
-      "name": "CTextWindow::GetSelectionAsString",
+      "name": "build_selected_text_clipboard_string",
       "size": 243,
       "category": "internal",
       "is_thunk": false,
@@ -35367,7 +35385,7 @@
       "address": "0047FD40",
       "name": "atexit",
       "size": 19,
-      "category": "runtime",
+      "category": "internal",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35790,7 +35808,7 @@
       "address": "004817F0",
       "name": "exit",
       "size": 18,
-      "category": "runtime",
+      "category": "internal",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35898,7 +35916,7 @@
       "address": "00481BF0",
       "name": "xcptlookup",
       "size": 47,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35916,7 +35934,7 @@
       "address": "00481D90",
       "name": "x_ismbbtype",
       "size": 58,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35943,7 +35961,7 @@
       "address": "00481F50",
       "name": "parse_cmdline",
       "size": 466,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35979,7 +35997,7 @@
       "address": "00482700",
       "name": "getSystemCP",
       "size": 77,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35997,7 +36015,7 @@
       "address": "004827B0",
       "name": "setSBCS",
       "size": 44,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36411,7 +36429,7 @@
       "address": "00485790",
       "name": "siglookup",
       "size": 49,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
