@@ -770,7 +770,6 @@ static void LEMBALL_FASTCALL DestroyMainMenuWidgets(void *pObject) {
     if (pScreen->m_pSelectorManager334 != 0) {
         ((GameOneArgVirtual)(*(void ***)pScreen->m_pSelectorManager334)[1])(
             pScreen->m_pSelectorManager334, 0, (void *)1);
-        pScreen->m_pSelectorManager334 = 0;
     }
 }
 
