@@ -3360,18 +3360,24 @@ void LEMBALL_FASTCALL UpdateMainGameActiveMode(void *pMainGameContext) {
         }
 
         nScreenStatus = *(int *)((char *)pMainContext->m_pActiveMode + 8);
-        if (nScreenStatus == 1) {
+        switch (nScreenStatus) {
+        case 1:
             pMainContext->SwitchMainGameMode(*(int *)((char *)pMainContext->m_pActiveMode + 4));
-        } else if (nScreenStatus == 2) {
+            break;
+        case 2:
             pMainContext->m_fQuitRequested = 1;
+            break;
         }
     }
 
     nScreenStatus = PollPrimaryContextScreenStatus(pMainContext->m_pPrimaryContext);
-    if (nScreenStatus == 1) {
+    switch (nScreenStatus) {
+    case 1:
         pMainContext->SwitchMainGameMode(GetPrimaryContextRequestedScreen(pMainContext->m_pPrimaryContext));
-    } else if (nScreenStatus == 2) {
+        break;
+    case 2:
         pMainContext->m_fQuitRequested = 1;
+        break;
     }
 
     if (pMainContext->m_fQuitRequested != 0) {
