@@ -1212,6 +1212,7 @@ int g_cbEffTransportMaxPacketBytes = 0;
 void *g_pEffTransportRequestConnectControlStream = 0;
 void *g_pEffTransportRequestNewPortControlStream = 0;
 void *g_pEffTransportAuthoriseConnectControlStream = 0;
+// GLOBAL: LEMBALL 0x004A1E5C
 void *g_pEffTransportGoAheadConnectControlStream = 0;
 void *g_pEffTransportFailedConnectControlStream = 0;
 

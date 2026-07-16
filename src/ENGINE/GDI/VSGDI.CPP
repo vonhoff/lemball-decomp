@@ -81,9 +81,8 @@ static const char *g_VSGDI_BaseWindowClass = "VS_Base_Window_Class";
 static const char g_VSGDI_DirectDrawCreate[] = "DirectDrawCreate";
 static const char g_VSGDI_DirectDrawWindowClass[] = "DirectDrawClass";
 static const char g_VSGDI_DirectDrawWindowTitle[] = "DirectDraw";
-static const char g_VSGDI_UnknownDirectDrawError[] = "UNKNOWN DIRECT DRAW ERROR: ";
 // GLOBAL: LEMBALL 0x004a0aa8
-static const char *g_pVSGDI_UnknownDirectDrawError = g_VSGDI_UnknownDirectDrawError;
+static const char *g_pVSGDI_UnknownDirectDrawError = "UNKNOWN DIRECT DRAW ERROR: ";
 // GLOBAL: LEMBALL 0x004a8190
 static char g_VSGDI_DirectDrawErrorText[64];
 static const char g_VSGDI_DisplayDibStart32[] = "DisplayDibStart32";
