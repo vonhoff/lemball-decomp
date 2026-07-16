@@ -260,7 +260,8 @@ extern unsigned int AllocateResourceDataBufferWithEviction(void *pArchive, unsig
 
 // FUNCTION: LEMBALL 0x0045E700
 static void *LEMBALL_FASTCALL DeleteListResourceBase(
-    void *pObject, int nUnused, int fDelete) {
+    void *pObject, int nUnused, int fDelete)
+{
     (void)nUnused;
     InitializeTypedResourceObjectBaseVtable(pObject);
     if ((fDelete & 1) != 0) {
@@ -271,7 +272,8 @@ static void *LEMBALL_FASTCALL DeleteListResourceBase(
 
 // FUNCTION: LEMBALL 0x0045E7A0
 static void *LEMBALL_FASTCALL DestroyZrleOnlyListResource(
-    void *pObject, int, int fDelete) {
+    void *pObject, int, int fDelete)
+{
     typedef void *(LEMBALL_FASTCALL *DeleteVirtual)(
         void *, int, int);
 
@@ -292,7 +294,8 @@ static void *LEMBALL_FASTCALL DestroyZrleOnlyListResource(
 
 // FUNCTION: LEMBALL 0x0045EA80
 static void *LEMBALL_FASTCALL DestroyTwoArrayListResourceAndFree(
-    void *pObject, int nUnused, int fDelete) {
+    void *pObject, int nUnused, int fDelete)
+{
     (void)nUnused;
     DestroyTwoArrayListResource(pObject);
     if ((fDelete & 1) != 0) {
@@ -360,7 +363,8 @@ static void LEMBALL_FASTCALL CopyBuffersIntoTwoArrayListResourceAndParse(
     void *pUnusedEdx,
     unsigned int *pSource,
     int pRelatedObject,
-    unsigned int cbBuffer) {
+    unsigned int cbBuffer)
+{
     unsigned int pTarget;
     unsigned int i;
     char *pFrom;
@@ -404,7 +408,8 @@ static void LEMBALL_FASTCALL LoadListEntryArraysFromArchive(void *pObject) {
 
 // FUNCTION: LEMBALL 0x0045D540
 static void LEMBALL_FASTCALL ReleaseListEntriesAndStreamBuffer(
-    void *pObject, void *pUnusedEdx, int fReleaseMode) {
+    void *pObject, void *pUnusedEdx, int fReleaseMode)
+{
     unsigned int pBuffer;
 
     (void)pUnusedEdx;
