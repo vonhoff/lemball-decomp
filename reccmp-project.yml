@@ -1,7 +1,7 @@
 targets:
   LEMBALL:
     filename: LEMBALL.EXE
-    source_root: .
+    source_root: src
     hash:
       sha256: d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63
     report:
