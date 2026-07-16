@@ -722,7 +722,7 @@ void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(void *pVsn
         pRuntime->m_pPeerClearCloseStream
             ->QueueEffStreamWriteEvent(g_nSelectedNetworkLobbyPeerId);
         dwStartTime = timeGetTime();
-        while (pRuntime->m_pPeerClearCloseStream->m_fHasPayload != 0) {
+        while (pRuntime->m_pPeerClearCloseStream->m_fWritePending != 0) {
             if (timeGetTime() - dwStartTime >= 1000) {
                 break;
             }
@@ -735,7 +735,7 @@ void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(void *pVsn
     if (pWindow != 0 && pWindow->m_fRuntimeActive != 0) {
         ((GameRenderDispatchQueue *)g_pEffTransportSecondaryDispatchQueue)
             ->UnregisterOrderedRenderDispatchClient(pVsnetRuntime, 0x19);
-        pWindow->m_pSecondaryDispatchClient = pVsnetRuntime;
+        pWindow->m_pReserved40 = pVsnetRuntime;
         ((GameEffTransportRuntimeWindowVtable *)*(void **)g_pActiveNetworkRuntimeWindow)->m_pServiceRuntime();
     }
 }
