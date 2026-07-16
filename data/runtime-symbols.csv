@@ -1,5 +1,6 @@
 # Embedded MSVC runtime call targets verified against the Ghidra program.
-address,name,type
-0x004804E0,_fread,library
-0x00480670,_fflush,library
-0x00480830,_fwrite,library
+address,name,symbol,type
+0x00403062,DestroyBaseModeObject,?DestroyBaseModeObject@@YIXPAX@Z,library
+0x004804E0,_fread,_fread,library
+0x00480670,_fflush,_fflush,library
+0x00480830,_fwrite,_fwrite,library

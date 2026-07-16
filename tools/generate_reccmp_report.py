@@ -98,8 +98,8 @@ def source_path_from_module(module: str) -> str:
     normalized = module.replace("\\", "/")
     if normalized.startswith(prefix):
         normalized = normalized[len(prefix) :]
-    if normalized.lower().endswith(".obj"):
-        normalized = normalized[:-4]
+        if normalized.lower().endswith(".obj"):
+            normalized = normalized[:-4]
     return normalized
 
 
@@ -107,8 +107,31 @@ def report_unit_identity(module: str) -> tuple[str, str]:
     if module == "Unassigned":
         return "Unassigned", "Unassigned"
     path = PurePosixPath(module)
-    module_name = str(path.parent) if str(path.parent) != "." else path.stem
-    return module_name, path.name
+    parts = path.parts
+    if parts[0] == "ENGINE" and len(parts) > 2:
+        engine_clusters = {
+            "CORE": "Core",
+            "DEBUG": "Debug",
+            "GDI": "GDI",
+            "MEDIA": "Media",
+            "NET": "Net",
+        }
+        cluster_name = f"Engine/{engine_clusters.get(parts[1], parts[1].title())}"
+    elif parts[0] in {"FRONTEND", "LEVEL", "RESOURCE", "SHELL"}:
+        cluster_name = parts[0].title()
+    elif len(parts) == 1 and path.name == "GAME.CPP":
+        cluster_name = "Game"
+    elif parts[0] == "build":
+        cluster_name = "Runtime"
+    else:
+        cluster_name = "Other"
+    return cluster_name, path.name
+
+
+def source_metadata(module: str) -> dict[str, str]:
+    if module == "Unassigned" or not module.upper().endswith(".CPP"):
+        return {}
+    return {"source_path": f"src/{module}"}
 
 
 def load_modules(roadmap_path: Path) -> dict[int, str]:
@@ -189,11 +212,7 @@ def build_report(
                 "functions": [objdiff_item(function) for function in module_functions],
                 "metadata": {
                     "module_name": module_name,
-                    **(
-                        {}
-                        if module == "Unassigned"
-                        else {"source_path": f"src/{module}"}
-                    ),
+                    **source_metadata(module),
                 },
             }
         )

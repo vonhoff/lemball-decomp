@@ -124,7 +124,8 @@ GameDynamicCString *GameDynamicCString::CopyConstructDynamicCString(const GameDy
 
 // FUNCTION: LEMBALL 0x0046E510
 GameDynamicCString *GameDynamicCString::AssignDynamicCStringFromDynamic(
-    const GameDynamicCString *pSource) {
+    const GameDynamicCString *pSource)
+{
     GameDynamicCString *pString = this;
     FreeVSMemBlock(pString->m_pszText);
     pString->m_cchCapacity = pSource->m_cchCapacity;
@@ -136,7 +137,8 @@ GameDynamicCString *GameDynamicCString::AssignDynamicCStringFromDynamic(
 
 // FUNCTION: LEMBALL 0x0046E5D0
 GameDynamicCString *GameDynamicCString::AppendDynamicCStringObjectAndCopyResult(
-    GameDynamicCString *pResult, const GameDynamicCString *pSuffix) {
+    GameDynamicCString *pResult, const GameDynamicCString *pSuffix)
+{
     GameDynamicCString *pString = this;
     unsigned int cchPrefix;
     unsigned int cchSuffix;
@@ -160,7 +162,8 @@ GameDynamicCString *GameDynamicCString::AppendDynamicCStringObjectAndCopyResult(
 
 // FUNCTION: LEMBALL 0x0046E6E0
 GameDynamicCString *GameDynamicCString::AppendDynamicCStringAndCopyResult(
-    GameDynamicCString *pResult, const char *pszSuffix) {
+    GameDynamicCString *pResult, const char *pszSuffix)
+{
     GameDynamicCString *pString = this;
     unsigned int cchPrefix;
     unsigned int cchSuffix;
