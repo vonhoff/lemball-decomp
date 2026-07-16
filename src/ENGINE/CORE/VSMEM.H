@@ -112,12 +112,12 @@ void *ConstructMemoryArena(void *pArena,
                            void *pParentArena,
                            void *pReserved);
 void DestroyMemoryArena(void *pArena);
-void *PlacementConstructMemoryArenaWithStorage(void *pvStorage,
+void *LEMBALL_STDCALL PlacementConstructMemoryArenaWithStorage(void *pvStorage,
                                                unsigned int cbStorage,
                                                const char *pszName,
                                                void *pParentArena,
                                                void *pReserved);
-void *PlacementConstructMemoryArenaBlock(void *pvStorage,
+void *LEMBALL_STDCALL PlacementConstructMemoryArenaBlock(void *pvStorage,
                                          void *pArena,
                                          void *pPreviousBlock,
                                          const char *pszName,

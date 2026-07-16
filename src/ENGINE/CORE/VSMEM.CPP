@@ -1146,7 +1146,7 @@ unsigned int GetMemoryBlockHeaderSize(void) {
 }
 
 // FUNCTION: LEMBALL 0x0045A4C0
-void *PlacementConstructMemoryArenaWithStorage(void *pvStorage,
+void *LEMBALL_STDCALL PlacementConstructMemoryArenaWithStorage(void *pvStorage,
                                                unsigned int cbStorage,
                                                const char *pszName,
                                                void *pParentArena,
@@ -1162,7 +1162,7 @@ void *PlacementConstructMemoryArenaWithStorage(void *pvStorage,
 }
 
 // FUNCTION: LEMBALL 0x0045A500
-void *PlacementConstructMemoryArenaBlock(void *pvStorage,
+void *LEMBALL_STDCALL PlacementConstructMemoryArenaBlock(void *pvStorage,
                                          void *pArena,
                                          void *pPreviousBlock,
                                          const char *pszName,

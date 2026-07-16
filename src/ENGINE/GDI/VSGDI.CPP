@@ -1075,7 +1075,7 @@ void ReleaseHelperGroup1BackingBuffer(int nHelperGroup) {
 }
 
 // FUNCTION: LEMBALL 0x00466B90
-void ResetHelperUploadRectListAndStateMap(int nUploadState) {
+void LEMBALL_FASTCALL ResetHelperUploadRectListAndStateMap(int nUploadState) {
     if (*(int *)(unsigned long)(nUploadState + 0xc) != 0) {
         FreeVSMemBlock((void *)(unsigned long)*(int *)(unsigned long)(nUploadState + 0xc));
         *(int *)(unsigned long)(nUploadState + 0xc) = 0;
