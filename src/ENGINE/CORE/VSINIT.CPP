@@ -599,7 +599,8 @@ void *VsInitFixedBufferStream::ConstructStreamBaseVtable(char *, unsigned int) {
 
 // FUNCTION: LEMBALL 0x00458E60
 void *LEMBALL_FASTCALL DeleteStreamBase(
-    void *pStream, int nUnused, int fFreeMemory) {
+    void *pStream, int nUnused, int fFreeMemory)
+{
     (void)nUnused;
     DestroyStreamBaseVtable(pStream);
     if ((fFreeMemory & 1) != 0) {
@@ -1035,7 +1036,8 @@ void *ConstructRenderDispatchQueue(void *pQueue, int cEntries) {
 
 // FUNCTION: LEMBALL 0x004630A0
 RenderDispatchQueue *RenderDispatchQueue::ConstructRenderDispatchQueueVariant(
-    int cEntries, const char *pszName) {
+    int cEntries, const char *pszName)
+{
     RenderDispatchQueueEntry *pEntryBuffer;
     int nEntryBuffer;
 
@@ -1109,7 +1111,8 @@ void *DeleteRenderDispatchQueue(void *pQueue, unsigned char fFreeMemory) {
 
 // FUNCTION: LEMBALL 0x00463940
 static void *LEMBALL_FASTCALL DeleteRenderDispatchQueueThunk00463940(
-    void *pQueue, int, int fFreeMemory) {
+    void *pQueue, int, int fFreeMemory)
+{
     DestroyRenderDispatchQueue(pQueue);
     if ((fFreeMemory & 1) != 0) {
         FreeVSMemBlock(pQueue);
