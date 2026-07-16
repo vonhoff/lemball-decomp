@@ -28,11 +28,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+          cache: pip
+          cache-dependency-path: .github/requirements-ci.txt
 
       - name: Install Python tools
         shell: pwsh
         run: |
-          python -m pip install cmake reccmp
+          python -m pip install --requirement .github/requirements-ci.txt
           $cmakeBin = python -c "import cmake; print(cmake.CMAKE_BIN_DIR)"
           "CMAKE_BIN=$cmakeBin" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           python -c "from reccmp.compare.core import Compare"
