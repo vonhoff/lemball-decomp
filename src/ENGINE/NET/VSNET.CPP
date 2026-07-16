@@ -969,7 +969,8 @@ struct VsNetEffTransportRuntimeState {
     void HandleEffTransportRequestNewPort(void *pPeerKey);
     void DispatchEffTransportConnectControlStream(void *pPeerKey, int nSourceBuffer);
     void ForwardEffTransportFailedConnect(void *pPeerKey);
-    void HandleEffTransportGoAheadConnect(void);
+    void HandleEffTransportAuthoriseConnect(void *pPeerKey);
+    void HandleEffTransportGoAheadConnect(void *pPeerKey);
     int BroadcastEffStreamToActivePeers(int *pStream);
     void ReleaseEffTransportRuntimeOwnerState(void);
     void UnlinkAndDeleteEffTransportPeer(int nPeer);
@@ -2682,7 +2683,7 @@ void CheckEffTransportIdleTimeout(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x00462040
-int AllocateEffTransportPeerEntry(void *pRuntimeState) {
+int LEMBALL_FASTCALL AllocateEffTransportPeerEntry(void *pRuntimeState) {
     VsNetEffTransportRuntimeState *pState;
     VsNetChannelOwnerObject *pOwner;
     VsNetEffTransportPeer *pPeer;
@@ -2899,7 +2900,7 @@ void VsNetEffTransportRuntimeState::HandleEffTransportRequestNewPort(void *pPeer
 }
 
 // FUNCTION: LEMBALL 0x00462340
-void HandleEffTransportAuthoriseConnect(void *pRuntimeState, void *pPeerKey) {
+void VsNetEffTransportRuntimeState::HandleEffTransportAuthoriseConnect(void *pPeerKey) {
     VsNetEffTransportRuntimeState *pState;
     VsNetRuntimeServiceObject *pRuntimeService;
     VsNetChannelOwnerObject *pOwner;
@@ -2913,7 +2914,7 @@ void HandleEffTransportAuthoriseConnect(void *pRuntimeState, void *pPeerKey) {
     unsigned char *pbAssignedPort;
     short nAssignedPort;
 
-    pState = (VsNetEffTransportRuntimeState *)pRuntimeState;
+    pState = this;
     pRuntimeService = (VsNetRuntimeServiceObject *)g_pEffTransportRuntimeService;
     pOwner = (VsNetChannelOwnerObject *)pState->m_pActiveChannelOwner;
     pRequestNewPortStream = (VsNetRequestNewPortControlStream *)g_pEffTransportRequestNewPortControlStream;
@@ -2921,7 +2922,7 @@ void HandleEffTransportAuthoriseConnect(void *pRuntimeState, void *pPeerKey) {
     pGoAheadConnectStream = (VsNetAuthoriseConnectControlStream *)g_pEffTransportGoAheadConnectControlStream;
 
     pPeer = (VsNetEffTransportPeer *)(unsigned long)
-                ((VsNetEffTransportRuntimeState *)pRuntimeState)->FindMatchingActiveEffTransportPeer(pPeerKey);
+                FindMatchingActiveEffTransportPeer(pPeerKey);
     if (pPeer != 0 && pPeer->m_fClosed == 0 &&
         pPeer->IsEffTransportPeerStillConnecting() != 0) {
         if (pRuntimeService->m_pVtable->m_pValidatePeerKey(pPeerKey) != 0) {
@@ -2946,7 +2947,7 @@ void HandleEffTransportAuthoriseConnect(void *pRuntimeState, void *pPeerKey) {
     }
 
     *pbAssignedPort = 1;
-    pNewPeer = (VsNetEffTransportPeer *)(unsigned long)AllocateEffTransportPeerEntry(pRuntimeState);
+    pNewPeer = (VsNetEffTransportPeer *)(unsigned long)AllocateEffTransportPeerEntry(this);
     pPayloadSenderSlot =
         (VsNetPeerPayloadSenderSlot *)((char *)pNewPeer + pNewPeer->m_pOffsets->m_nPayloadSenderSlotOffset);
     pPayloadSender = &pPayloadSenderSlot->m_Sender;
@@ -3248,12 +3249,13 @@ void VsNetEffTransportRuntimeState::ForwardEffTransportFailedConnect(void *pPeer
 }
 
 // FUNCTION: LEMBALL 0x00462480
-void VsNetEffTransportRuntimeState::HandleEffTransportGoAheadConnect(void) {
+void VsNetEffTransportRuntimeState::HandleEffTransportGoAheadConnect(void *) {
     VsNetEffTransportPeer *pPeer;
 
     pPeer = ((VsNetAuthoriseConnectControlStream *)g_pEffTransportGoAheadConnectControlStream)->m_pPeer;
     if (MarkExistingEffTransportPeerActive((int)(unsigned long)pPeer) != 0) {
-        ((VsNetEffTransportPeerVtable *)pPeer->m_pVtable)->m_pCompleteConnect();
+        ((void (LEMBALL_FASTCALL *)(void *))
+             ((VsNetEffTransportPeerVtable *)pPeer->m_pVtable)->m_pCompleteConnect)(pPeer);
     }
 }
 
@@ -3261,7 +3263,7 @@ void VsNetEffTransportRuntimeState::HandleEffTransportGoAheadConnect(void) {
 void VsNetEffTransportRuntimeState::DispatchEffTransportConnectControlStream(void *pPeerKey,
                                                                                   int nSourceBuffer)
 {
-    ((void (*)(void))**(void ***)pPeerKey)();
+    ((void (LEMBALL_FASTCALL *)(void *))**(void ***)pPeerKey)(pPeerKey);
     if (((GameEffStream *)g_pEffTransportRequestConnectControlStream)
             ->LoadEffStreamFromMemory(nSourceBuffer) != 0) {
         HandleEffTransportRequestConnect(pPeerKey);
@@ -3274,12 +3276,12 @@ void VsNetEffTransportRuntimeState::DispatchEffTransportConnectControlStream(voi
     }
     if (((GameEffStream *)g_pEffTransportAuthoriseConnectControlStream)
             ->LoadEffStreamFromMemory(nSourceBuffer) != 0) {
-        HandleEffTransportAuthoriseConnect(this, pPeerKey);
+        HandleEffTransportAuthoriseConnect(pPeerKey);
         return;
     }
     if (((GameEffStream *)g_pEffTransportGoAheadConnectControlStream)
             ->LoadEffStreamFromMemory(nSourceBuffer) != 0) {
-        HandleEffTransportGoAheadConnect();
+        HandleEffTransportGoAheadConnect(pPeerKey);
         return;
     }
     if (((GameEffStream *)g_pEffTransportFailedConnectControlStream)

@@ -2124,12 +2124,17 @@ int ProbeWin32FileWrapperAccess(void *pObject, LPCSTR pszPath) {
 // FUNCTION: LEMBALL 0x0047F8C0
 int VsNetWin32FileWrapper::CloseIfOpen(void) {
     VsNetInlineOpenWin32FileWrapper *pWrapper;
+    int fClosed;
 
     pWrapper = (VsNetInlineOpenWin32FileWrapper *)this;
-    if (pWrapper->m_fOpen08 == 0 && CloseHandle((HANDLE)(unsigned long)pWrapper->m_nReserved0c) != 0) {
-        pWrapper->m_fOpen08 = 1;
+    fClosed = 1;
+    if (pWrapper->m_fOpen08 == 0) {
+        fClosed = CloseHandle((HANDLE)(unsigned long)pWrapper->m_nReserved0c);
+        if (fClosed != 0) {
+            pWrapper->m_fOpen08 = 1;
+        }
     }
-    return 1;
+    return fClosed;
 }
 
 int CloseWin32FileWrapperIfOpen(void *pObject) {
