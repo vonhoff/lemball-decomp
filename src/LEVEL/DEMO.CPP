@@ -165,7 +165,7 @@ DemoLevelDemoPlaybackController *DemoLevelDemoPlaybackController::ConstructLevel
 // FUNCTION: LEMBALL 0x00409220
 void DestroyLevelDemoPlaybackController(void *pPlaybackController) {
     *(void ***)pPlaybackController = g_LevelDemoPlaybackControllerVtable;
-    ReleaseLevelDemoRecordBuffer(pPlaybackController);
+    ReleaseLevelDemoRecordBufferThunk(pPlaybackController);
     ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
         ->UnregisterOrderedRenderDispatchClient(pPlaybackController, -100);
     *(void ***)pPlaybackController = g_pNonZrleVariantRenderEntryInitializeVtable;
