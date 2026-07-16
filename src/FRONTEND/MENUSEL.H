@@ -40,6 +40,10 @@ struct GameProgressiveVariantFrameSelector {
     int m_nDirection;  // 0x18
 };
 
+extern void *g_MenuSelectorFrameSelectorCtorVtable[2];
+extern void *g_MenuSelectorTimedFrameSelectorVtable[6];
+extern void *g_MenuSelectorProgressiveFrameSelectorVtable[6];
+
 /* Exact 0x27c manager layout constructed by 0x44c870.  The embedded
  * variant-render manager remains byte-typed because its independently owned
  * class is reconstructed in LevelStatus.cpp. */

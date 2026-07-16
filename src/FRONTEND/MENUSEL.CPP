@@ -4,6 +4,8 @@
 #include "RESOURCE/VARMGR.H"
 #include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/CORE/WIN32.H"
+#include "ENGINE/GDI/VSGEOM.H"
+#include "LEVEL/DRAWTEXT.H"
 
 DECOMP_SIZE_ASSERT(GameMenuSelectorEvent, 0x1c);
 DECOMP_SIZE_ASSERT(GameMenuSelectorMetadata, 0x20);
@@ -20,7 +22,6 @@ extern void *ConstructVariantRenderManager(void *pObject, int nOwner,
                                            int nUnknown58,
                                            int fDoubleBuffered);
 extern void LoadVariantRenderResource(void *pObject, int nResourceId);
-extern int GetVariantRenderFrameCount(void *pObject, int nResourceId);
 extern void DestroyVariantRenderManager(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntry(
     void *pObject);
@@ -28,8 +29,6 @@ extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableC(
     void *pObject);
 extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(
     void *pResourceObject);
-extern void LEMBALL_FASTCALL SetGeometryOwnerEnabled(
-    void *pOwner, int nUnusedEdx, int fEnabled);
 extern void *g_pNonZrleVariantRenderEntryInitializeVtable[2];
 extern void *g_pVariantResourceEntryManager;
 extern int LEMBALL_FASTCALL GetTimedVariantFrameStartTimeThunk(
@@ -232,13 +231,13 @@ static void LEMBALL_FASTCALL SetMenuSelectorDirectionFieldThunk(
 }
 
 /* VTABLE: LEMBALL 0x00496D00 */
-static void *g_MenuSelectorFrameSelectorCtorVtable[2] = {
+void *g_MenuSelectorFrameSelectorCtorVtable[2] = {
     (void *)_purecall,
     (void *)GetMenuSelectorStartTimeThunk
 };
 
 /* VTABLE: LEMBALL 0x00496D08 */
-static void *g_MenuSelectorTimedFrameSelectorVtable[6] = {
+void *g_MenuSelectorTimedFrameSelectorVtable[6] = {
     (void *)SelectTimedVariantFrameIndex,
     (void *)_purecall,
     (void *)SetMenuSelectorDurationFieldThunk,
@@ -248,7 +247,7 @@ static void *g_MenuSelectorTimedFrameSelectorVtable[6] = {
 };
 
 /* VTABLE: LEMBALL 0x00496D20 */
-static void *g_MenuSelectorProgressiveFrameSelectorVtable[6] = {
+void *g_MenuSelectorProgressiveFrameSelectorVtable[6] = {
     (void *)SelectProgressiveVariantFrameIndex,
     (void *)SetProgressiveVariantFrameDuration,
     (void *)SetMenuSelectorDurationFieldThunk,
@@ -289,7 +288,8 @@ static inline GameProgressiveVariantFrameSelector *AllocateFrameSelector(
     if (pSelector != 0) {
         pSelector->m_pVtable = g_MenuSelectorFrameSelectorCtorVtable;
         pSelector->m_cFrames =
-            GetVariantRenderFrameCount(pVariantManager, nResourceId);
+            ((LevelVariantRenderManagerView *)pVariantManager)
+                ->GetVariantRenderFrameCount(nResourceId);
         pSelector->m_pVtable = g_MenuSelectorTimedFrameSelectorVtable;
         pSelector->m_nDirection = 1;
         pSelector->m_pVtable = g_MenuSelectorProgressiveFrameSelectorVtable;
@@ -943,9 +943,8 @@ void LEMBALL_FASTCALL SetMenuSelectorChildrenEnabled(
         if (pEntry != 0) {
             pEntry->m_fEnabled5C = fEnabled;
             if (pEntry->m_pAlignedOverlay50 != 0) {
-                SetGeometryOwnerEnabled(
-                    (char *)pEntry->m_pAlignedOverlay50 + 0x90,
-                    0, fEnabled);
+                ((GameGeometryOwnerRectState *)((char *)
+                    pEntry->m_pAlignedOverlay50 + 0x90))->SetEnabled(fEnabled);
             }
         }
     }

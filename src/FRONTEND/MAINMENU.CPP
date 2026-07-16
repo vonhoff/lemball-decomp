@@ -6,6 +6,15 @@
 #include "SHELL/SHELLUI.H"
 #include "SHELL/OPTIONS.H"
 #include "RESOURCE/MOGLOAD.H"
+#include "LEVEL/DRAWTEXT.H"
+#include "FRONTEND/MENUSEL.H"
+#include "ENGINE/GDI/VSGEOM.H"
+
+#if defined(_MSC_VER) && (_MSC_VER < 1100)
+#include <new.h>
+#else
+#include <new>
+#endif
 
 extern "C" DWORD WINAPI timeGetTime(void);
 
@@ -55,6 +64,61 @@ extern void *g_pSharedRenderDispatchQueue;
 extern void *g_pMainResourceArchive;
 extern int g_nSelectedNetworkLobbyPeerId;
 extern void *g_pSessionRandomState;
+
+struct GameProgressiveSelectorVtableView {
+    virtual int SelectFrame(void) = 0;
+    virtual void SetProgressiveDuration(int nValue) = 0;
+    virtual void SetDuration(int nValue) = 0;
+};
+
+struct GameQueuedVariantChildView {
+    char m_abReserved00[0x4c];
+    void *m_pOverlay4C;
+    int m_nReserved50;
+    int m_fEnabled54;
+};
+
+class GameQueuedVariantManagerView {
+public:
+    void SetChildrenEnabled(int fEnabled);
+    void SetChildrenEnabledThunk(int fEnabled);
+
+    char m_abReserved00[0x80];
+    int m_cChildren80;
+    char m_abReserved84[0x28];
+    GameQueuedVariantChildView *m_apChildrenAC[4];
+    char m_aSlotRecordsBC[4][0x10];
+    char m_abReservedFC[0x48];
+    int m_nCurrentChild144;
+    int m_fChildrenEnabled148;
+};
+
+struct VsNetRuntimeModeView {
+    char m_abReserved00[0x48];
+    int m_nMode48;
+    int m_nModeState4C;
+};
+
+// FUNCTION: LEMBALL 0x0044FBD0
+void GameQueuedVariantManagerView::SetChildrenEnabled(int fEnabled) {
+    int i;
+    GameQueuedVariantChildView *pChild;
+
+    m_fChildrenEnabled148 = fEnabled;
+    for (i = 0; i < m_cChildren80; ++i) {
+        pChild = m_apChildrenAC[i];
+        if (pChild != 0) {
+            pChild->m_fEnabled54 = fEnabled;
+            ((GameGeometryOwnerRectState *)((char *)
+                pChild->m_pOverlay4C + 0x90))->SetEnabled(fEnabled);
+        }
+    }
+}
+
+// FUNCTION: LEMBALL 0x00401735
+void GameQueuedVariantManagerView::SetChildrenEnabledThunk(int fEnabled) {
+    SetChildrenEnabled(fEnabled);
+}
 
 struct GameLevelProgressStateView {
     int m_nCurrentLevel00;
@@ -137,10 +201,6 @@ typedef char GameFramedScreenBase_size_must_be_0x398[
     sizeof(GameFramedScreenBase) == 0x398 ? 1 : -1];
 typedef char GameMainMenuScreenView_size_must_be_0x3bc[
     sizeof(GameMainMenuScreenView) == 0x3bc ? 1 : -1];
-
-struct LevelVARIANT_RENDER_MANAGER_VIEW {
-    void ReleaseVariantRenderResource(int nResourceId);
-};
 
 typedef void (LEMBALL_FASTCALL *GameNoArgVirtual)(void *, int);
 typedef void (LEMBALL_FASTCALL *GameOneArgVirtual)(void *, int, void *);
@@ -481,13 +541,12 @@ static void LEMBALL_FASTCALL LoadFramedScreenFrameResources(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x00445FE0
-static void LEMBALL_FASTCALL ReleaseFramedScreenFrameResources(
-    void *pObject) {
+static void LEMBALL_FASTCALL ReleaseFramedScreenFrameResources(void *pObject) {
     GameFramedScreenBase *pScreen;
-    LevelVARIANT_RENDER_MANAGER_VIEW *pVariantManager;
+    LevelVariantRenderManagerView *pVariantManager;
 
     pScreen = (GameFramedScreenBase *)pObject;
-    pVariantManager = (LevelVARIANT_RENDER_MANAGER_VIEW *)
+    pVariantManager = (LevelVariantRenderManagerView *)
         pScreen->m_abVariantRenderManager14;
     ReleaseTypedResourceObjectReference(pScreen->m_pForegroundBitmapC0);
     ReleaseTypedResourceObjectReference(pScreen->m_pBackgroundBitmapC4);
@@ -501,8 +560,7 @@ static void LEMBALL_FASTCALL ReleaseFramedScreenFrameResources(
 }
 
 // FUNCTION: LEMBALL 0x00445E70
-static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(
-    void *pObject) {
+static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(void *pObject) {
     GameFramedScreenBase *pScreen;
     int fWindowReady;
 
@@ -521,15 +579,91 @@ static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(
     }
 }
 
+// FUNCTION: LEMBALL 0x004017AD
+static void LEMBALL_FASTCALL RefreshFramedScreenFrameResourcesThunk(void *pObject) {
+    RefreshFramedScreenFrameResources(pObject);
+}
+
 // FUNCTION: LEMBALL 0x004455F0
 void LEMBALL_FASTCALL ActivateFramedScreenBase(void *pObject) {
     GameFramedScreenBase *pScreen;
+    MappedListResourceTable *pMappedList;
+    GameProgressiveVariantFrameSelector *pSelector;
+    int nRuntimeMode;
+    VsNetRuntimeModeView *pRuntime;
+    DWORD dwNow;
 
     pScreen = (GameFramedScreenBase *)pObject;
-    SetLevelScreenStatusIndicatorMode(
-        pScreen->m_cMappedListEntriesA0 == 0 ? 0 : 2, 0);
-    RefreshFramedScreenFrameResources(pScreen);
+    if (pScreen->m_fDrawFrameA8 != 0) SetLevelScreenStatusIndicatorMode(2, 0);
+    else SetLevelScreenStatusIndicatorMode(0, 0);
+    if (pScreen->m_cMappedListEntriesA0 > 0) {
+        pMappedList = (MappedListResourceTable *)AllocateVSMemBlock(
+            sizeof(MappedListResourceTable));
+        if (pMappedList != 0) {
+            pScreen->m_pMappedListResources98 = new (pMappedList)
+                MappedListResourceTable(
+                    0x2b6, 1, pScreen->m_cMappedListEntriesA0,
+                    pScreen->m_nMappedListModeA4);
+        } else {
+            pScreen->m_pMappedListResources98 = 0;
+        }
+    }
+    RefreshFramedScreenFrameResourcesThunk(pScreen);
+    if (pScreen->m_nTimedVariantResourceId394 != 0) {
+        pSelector = (GameProgressiveVariantFrameSelector *)
+            AllocateVSMemBlock(sizeof(GameProgressiveVariantFrameSelector));
+        if (pSelector == 0) {
+            pScreen->m_pTimedFrameSelector34C = 0;
+        } else {
+            pSelector->m_cFrames =
+                ((LevelVariantRenderManagerView *)
+                    pScreen->m_abVariantRenderManager14)
+                        ->GetVariantRenderFrameCount(
+                            pScreen->m_nTimedVariantResourceId394);
+            pSelector->m_pVtable = g_MenuSelectorFrameSelectorCtorVtable;
+            pSelector->m_pVtable = g_MenuSelectorTimedFrameSelectorVtable;
+            pSelector->m_nDirection = 1;
+            pSelector->m_pVtable =
+                g_MenuSelectorProgressiveFrameSelectorVtable;
+            pScreen->m_pTimedFrameSelector34C = pSelector;
+        }
+        pSelector = (GameProgressiveVariantFrameSelector *)
+            pScreen->m_pTimedFrameSelector34C;
+        pSelector->m_dwFixedTime = -1;
+        ((GameProgressiveSelectorVtableView *)pSelector)->SetDuration(500);
+        dwNow = timeGetTime();
+        pScreen->m_dwRandomDelay33C = 0;
+        pScreen->m_dwRandomStart340 = (int)dwNow;
+    }
     g_pActiveNetworkLobbyScreen = pScreen;
+    if (pScreen->m_fNetworkScreen8C != 0) {
+        pScreen->m_fNetworkReady94 = 0;
+        pScreen->m_nNetworkState90 = 1;
+        if (pScreen->m_pQueuedVariantManager338 != 0) {
+            ((GameQueuedVariantManagerView *)
+                pScreen->m_pQueuedVariantManager338)
+                    ->SetChildrenEnabledThunk(0);
+            ((GameQueuedVariantManagerView *)
+                pScreen->m_pQueuedVariantManager338)->m_nCurrentChild144 = 0;
+        }
+        switch (pScreen->m_nScreenType370) {
+        case 4:
+            nRuntimeMode = 1;
+            break;
+        case 5:
+            nRuntimeMode = 3;
+            break;
+        case 14:
+        case 15:
+            nRuntimeMode = 2;
+            break;
+        }
+        if (nRuntimeMode != 0) {
+            pRuntime = (VsNetRuntimeModeView *)g_pNetworkLobbyVsnetRuntime;
+            pRuntime->m_nMode48 = nRuntimeMode;
+            pRuntime->m_nModeState4C = 0;
+        }
+    }
 }
 
 // FUNCTION: LEMBALL 0x004458E0
@@ -732,7 +866,7 @@ static void LEMBALL_FASTCALL SetFramedScreenSize(
     pScreen = (GameFramedScreenBase *)pObject;
     pScreen->m_cxScreen37C = paSize[0];
     pScreen->m_cyScreen37E = paSize[1];
-    RefreshFramedScreenFrameResources(pScreen);
+    RefreshFramedScreenFrameResourcesThunk(pScreen);
 }
 
 // FUNCTION: LEMBALL 0x00448300
