@@ -131,7 +131,7 @@ public:
     void CaptureLastWinsockErrorStatus(void);
 };
 struct VsNetAdjustedEffTransportPeerView {
-    void LEMBALL_FASTCALL CloseAdjustedEffTransportPeerByKey(void);
+    void CloseAdjustedEffTransportPeerByKey(void *pUnused);
 };
 void *DeleteDualSocketWindowChannelStackWrapper(void *pObject, BYTE fFreeMemory);
 void *DeleteCompositeTcpipSocketChannelStackWrapper(void *pObject, BYTE fFreeMemory);
@@ -184,10 +184,10 @@ void CompleteEffTransportPendingWriteAllocatedAdjustedThunk(void *pObject,
 }
 
 // FUNCTION: LEMBALL 0x00471FB0
-void CloseAdjustedEffTransportPeerByKeyAdjustedThunk(void *pObject) {
+void CloseAdjustedEffTransportPeerByKeyAdjustedThunk(void *pObject, void *pArgument) {
     pObject = (char *)pObject - *(int *)((char *)pObject - 4) - 0x0c;
     ((VsNetAdjustedEffTransportPeerView *)pObject)
-        ->CloseAdjustedEffTransportPeerByKey();
+        ->CloseAdjustedEffTransportPeerByKey(pArgument);
 }
 
 

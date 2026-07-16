@@ -162,7 +162,7 @@ struct VsNetQueueEffTransportPayloadEventView {
     void QueueEffTransportPayloadEvent(unsigned short nType, void *pPayload);
 };
 struct VsNetAdjustedEffTransportPeerView {
-    void LEMBALL_FASTCALL CloseAdjustedEffTransportPeerByKey(void);
+    void CloseAdjustedEffTransportPeerByKey(void *pUnused);
 };
 extern void EffStreamChannelStateRet4Thunk(BYTE fDelete);
 BYTE AdjustAndMapNestedEffCallbackFailureFromB8(void *pObject);
@@ -3527,9 +3527,8 @@ void AdjustAndInvokeGlobalStateTimedEffStreamServiceCallback(void *pObject, void
 
 // FUNCTION: LEMBALL 0x0047BBF0
 void CloseAdjustedEffTransportPeerByKeyWithArgument(void *pObject, void *pUnused) {
-    (void)pUnused;
     ((VsNetAdjustedEffTransportPeerView *)((char *)pObject - 0x3c))
-        ->CloseAdjustedEffTransportPeerByKey();
+        ->CloseAdjustedEffTransportPeerByKey(pUnused);
 }
 
 // FUNCTION: LEMBALL 0x0047BBD0

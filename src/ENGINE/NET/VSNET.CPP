@@ -1240,7 +1240,7 @@ extern int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cE
 extern void CheckEffTransportIdleTimeout(void *pObject);
 
 struct VsNetAdjustedEffTransportPeerView {
-    void LEMBALL_FASTCALL CloseAdjustedEffTransportPeerByKey(void);
+    void CloseAdjustedEffTransportPeerByKey(void *pUnused);
 };
 
 struct GameEffTransportRuntimeWindow {
@@ -1248,10 +1248,11 @@ struct GameEffTransportRuntimeWindow {
 };
 
 // FUNCTION: LEMBALL 0x004605B0
-void LEMBALL_FASTCALL VsNetAdjustedEffTransportPeerView::CloseAdjustedEffTransportPeerByKey(void) {
+void VsNetAdjustedEffTransportPeerView::CloseAdjustedEffTransportPeerByKey(void *pUnused) {
     char *pbAdjusted;
     void *pPeerKey;
 
+    (void)pUnused;
     pbAdjusted = (char *)this;
     pbAdjusted += *(int *)(*(int *)(pbAdjusted - 0x20) + 8);
     pPeerKey = *(void **)(pbAdjusted + 0x50);

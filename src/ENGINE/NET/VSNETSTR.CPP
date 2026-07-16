@@ -282,7 +282,7 @@ struct VsNetCompositeEffTransportStackWrapperView {
 extern void *DeleteCompositeEffTransportRuntimeAdjustedThunk(void *pObject, BYTE fDelete);
 extern void WriteEffTransportGlobalSessionAdjustedThunk(void *pObject);
 struct VsNetAdjustedEffTransportPeerView {
-    void LEMBALL_FASTCALL CloseAdjustedEffTransportPeerByKey(void);
+    void CloseAdjustedEffTransportPeerByKey(void *pUnused);
 };
 extern void *g_NETWORK_TcpipSocketStackDualRet8;
 
@@ -416,10 +416,10 @@ static void *DeleteRuntimeOuterCompositeAdjusted(void *pObject, BYTE fDelete) {
 }
 
 // FUNCTION: LEMBALL 0x00462C00
-static void CloseRuntimeOuterPeerAdjusted(void *pObject) {
+static void CloseRuntimeOuterPeerAdjusted(void *pObject, void *pArgument) {
     pObject = (char *)pObject - *(int *)((char *)pObject - 4);
     ((VsNetAdjustedEffTransportPeerView *)pObject)
-        ->CloseAdjustedEffTransportPeerByKey();
+        ->CloseAdjustedEffTransportPeerByKey(pArgument);
 }
 
 // FUNCTION: LEMBALL 0x00462C40

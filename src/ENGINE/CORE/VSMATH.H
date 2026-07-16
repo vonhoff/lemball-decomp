@@ -5,7 +5,7 @@
 
 int *LEMBALL_FASTCALL InitializeSignedTrigTable(int *pTrigTableBuffer);
 int *LEMBALL_FASTCALL WriteDebugSentinelDword(int *pTarget);
-unsigned int IntegerSqrtFloor(unsigned int uValue);
+unsigned int __stdcall IntegerSqrtFloor(unsigned int uValue);
 
 struct VsMathPoint2D {
     short m_nX;
