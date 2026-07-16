@@ -229,7 +229,8 @@ void LEMBALL_FASTCALL ReleaseLevelDemoRecordBuffer(void *pPlaybackController) {
     if (pResourceObject != 0) {
         pReferenceCount = pResourceObject + 2;
         --*pReferenceCount;
-        ReleaseTypedResourceObjectReference(pResourceObject);
+        ReleaseTypedResourceObjectReference(
+            *(int **)((char *)pPlaybackController + 0x24));
         *(void **)((char *)pPlaybackController + 0x24) = 0;
         *(void **)((char *)pPlaybackController + 0x10) = 0;
         *(void **)((char *)pPlaybackController + 0x1c) = 0;
