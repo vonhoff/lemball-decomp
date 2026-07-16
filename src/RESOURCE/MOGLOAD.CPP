@@ -271,7 +271,6 @@ void *g_pBitmapResourceVtable = g_MOGLOAD_BitmapResourceVtable;
 void *g_pPaletteResourceVtable = g_MOGLOAD_PaletteResourceVtable;
 
 extern void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile, int nLine);
-void DestroyResourceArchiveDirectoryTree(int pDirectoryNode);
 
 int FindResourceCacheEvictionCandidateIndex(void *pArchive, unsigned int cbMinimumEvict);
 
@@ -794,12 +793,12 @@ MogLoadDirectoryNode *MogLoadDirectoryNode::AdvanceSubdirectory(void) {
 }
 
 // FUNCTION: LEMBALL 0x0045BF10
-void DestroyResourceArchiveDirectoryTree(int pDirectoryNode) {
+void MogLoadDirectoryNode::DestroyResourceArchiveDirectoryTree(void) {
     MogLoadDirectoryNode *pDirectory;
     MogLoadEntryRecord *pEntry;
     MogLoadEntryRecord *pNextEntry;
 
-    pDirectory = (MogLoadDirectoryNode *)(unsigned long)pDirectoryNode;
+    pDirectory = this;
     pDirectory->m_iCursorIndex = pDirectory->m_iSavedIndex;
     pDirectory->m_pCursorEntry = pDirectory->m_pSavedEntry;
     pEntry = pDirectory->m_pSavedEntry;
@@ -1296,7 +1295,7 @@ void LEMBALL_FASTCALL DestroyResourceArchive(void *pArchive) {
     }
     AreAllCachedResourceObjectsUnreferenced(pResourceArchive);
     if (pResourceArchive->m_fSkipPruneOnDestroy == 0) {
-        PruneUnreferencedCachedResourceObjects(pResourceArchive);
+        pResourceArchive->PruneUnreferencedCachedResourceObjects();
     }
     if (pResourceArchive->m_ppCachedResourceObjects != 0) {
         FreeResourceArchiveMemory(pResourceArchive->m_ppCachedResourceObjects);
@@ -1304,7 +1303,8 @@ void LEMBALL_FASTCALL DestroyResourceArchive(void *pArchive) {
     }
     pRootDirectory = (unsigned int)(unsigned long)pResourceArchive->m_pRootDirectory;
     if (pRootDirectory != 0) {
-        DestroyResourceArchiveDirectoryTree((int)pRootDirectory);
+        ((MogLoadDirectoryNode *)(unsigned long)pRootDirectory)
+            ->DestroyResourceArchiveDirectoryTree();
         FreeResourceArchiveMemory((void *)(unsigned long)pRootDirectory);
         pResourceArchive->m_pRootDirectory = 0;
     }
@@ -1439,7 +1439,7 @@ int LEMBALL_FASTCALL AreAllCachedResourceObjectsUnreferenced(void *pArchive) {
 }
 
 // FUNCTION: LEMBALL 0x0045CE50
-void PruneUnreferencedCachedResourceObjects(void *pArchive) {
+void MogLoadResourceArchive::PruneUnreferencedCachedResourceObjects(void) {
     MogLoadResourceArchive *pResourceArchive;
     int cCachedObjects;
     int iProcessed;
@@ -1448,7 +1448,7 @@ void PruneUnreferencedCachedResourceObjects(void *pArchive) {
     MogLoadStringResourceObject *pResourceObject;
     MogLoadStringResourceObject **ppCachedObjects;
 
-    pResourceArchive = (MogLoadResourceArchive *)pArchive;
+    pResourceArchive = this;
     cCachedObjects = pResourceArchive->m_cCachedResourceObjects;
     iSlot = 0;
     iProcessed = 0;

@@ -1245,7 +1245,6 @@ extern void *LoadPalResource(int nResourceId);
 extern void *LoadZrleOnlyListResource(int nResourceId);
 extern void *LoadZrleResource(int nResourceId);
 extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void *pResourceObject);
-extern void PruneUnreferencedCachedResourceObjects(void *pArchive);
 
 void LEMBALL_FASTCALL SetStatusIndicatorActive(
     void *pObject, int nUnused, int fActive);
@@ -2310,7 +2309,8 @@ void LEMBALL_FASTCALL ReleaseLevelSelectionModeRenderStateResource(void *pObject
         ReleaseLevelScreenVariantStateWrapper(pObject, 0xb0);
     }
 
-    PruneUnreferencedCachedResourceObjects(g_pMainResourceArchive);
+    ((MogLoadResourceArchive *)g_pMainResourceArchive)
+        ->PruneUnreferencedCachedResourceObjects();
 }
 
 // FUNCTION: LEMBALL 0x0044AD60

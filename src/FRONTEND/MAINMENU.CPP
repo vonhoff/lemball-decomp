@@ -1065,7 +1065,8 @@ static void LEMBALL_FASTCALL DestroyMainMenuScreen(void *pObject) {
                 pScreen->m_abRenderQueueNode04, 0);
     }
     DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
-    PruneUnreferencedCachedResourceObjects(g_pMainResourceArchive);
+    ((MogLoadResourceArchive *)g_pMainResourceArchive)
+        ->PruneUnreferencedCachedResourceObjects();
 }
 
 // FUNCTION: LEMBALL 0x00448A70

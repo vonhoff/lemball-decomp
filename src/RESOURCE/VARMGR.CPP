@@ -4,6 +4,7 @@
 #include "ENGINE/CORE/VSMEM.H"
 #include "RESOURCE/VARLOAD.H"
 #include "RESOURCE/VARMGR.H"
+#include "RESOURCE/MOGLOAD.H"
 
 extern "C" DWORD WINAPI timeGetTime(void);
 
@@ -151,7 +152,6 @@ extern void LoadMainGameVariantListResource(void *pBundle, int nResourceId);
 extern void LoadMainGameVariantBitmapResource(void *pBundle, int nResourceId);
 extern void LoadMainGameVariantPaletteResource(void *pBundle, int nResourceId);
 extern void LoadMainGameVariantTwoArrayListResource(void *pBundle, int nResourceId);
-extern void PruneUnreferencedCachedResourceObjects(void *pArchive);
 void SetVariantResourceEffectsEnabledThunk(int fEnabled);
 
 // FUNCTION: LEMBALL 0x00439B50
@@ -542,7 +542,8 @@ void LEMBALL_FASTCALL DestroyMainGameVariantResourceMode(void *pBundle) {
     FreeVSMemBlock(pVariantBundle->m_ppBitmapResources);
     FreeVSMemBlock(pVariantBundle->m_ppListResources);
     FreeVSMemBlock(pVariantBundle->m_ppZrleListResources);
-    PruneUnreferencedCachedResourceObjects(g_pMainResourceArchive);
+    ((MogLoadResourceArchive *)g_pMainResourceArchive)
+        ->PruneUnreferencedCachedResourceObjects();
 }
 
 // FUNCTION: LEMBALL 0x004479E0

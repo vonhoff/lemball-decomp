@@ -45,6 +45,7 @@ public:
                                                int fAllowRecursion);
     MogLoadDirectoryNode *AdvanceSubdirectory(void);
     int AppendEntryAfterCursor(void);
+    void DestroyResourceArchiveDirectoryTree(void);
 
 public:
     long m_iSubdirectorySavedIndex;
@@ -75,6 +76,7 @@ public:
                                                void *pUnused);
     void RemoveCachedResourceObject(void *pResourceObject);
     void AdvanceCachedResourceObjectFrameCounters(void);
+    void PruneUnreferencedCachedResourceObjects(void);
 
     MogLoadDirectoryNode *m_pRootDirectory;
     MogLoadDirectoryNode *m_pCurrentDirectory;
@@ -95,7 +97,6 @@ void FreeResourceArchiveMemory(void *pMemoryBlock);
 void LEMBALL_FASTCALL DestroyResourceArchive(void *pArchive);
 void *FindCachedResourceObjectById(void *pArchive, int nResourceId);
 int LEMBALL_FASTCALL AreAllCachedResourceObjectsUnreferenced(void *pArchive);
-void PruneUnreferencedCachedResourceObjects(void *pArchive);
 MogLoadStringResourceObject *LoadStringResource(int nResourceId);
 void *LoadEffResource(int nResourceId);
 

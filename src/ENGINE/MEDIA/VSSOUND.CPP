@@ -801,8 +801,8 @@ void __fastcall RefreshAudioManagerBackendHandles(void *pAudioManager) {
 
     if (*(int *)((char *)pAudioManager + 8) != 0) {
         nMusicResourceBase = *(int *)((char *)pAudioManager + 0x14);
-        cEffectResources = 0;
         *(int *)((char *)pAudioManager + 8) = 0;
+        cEffectResources = 0;
         pMusicBackend = *(VsSoundBackendOpenInterface **)((char *)pAudioManager + 0x74);
         if (*(VsSoundBackendOpenInterface **)((char *)pAudioManager + 0x78) == pMusicBackend) {
             *(void **)((char *)pAudioManager + 0x78) = 0;
@@ -828,7 +828,9 @@ void __fastcall RefreshAudioManagerBackendHandles(void *pAudioManager) {
                 *(int *)((char *)pAudioManager + 0x18) = 0;
             }
             *(int *)((char *)pAudioManager + 0x10) = *(int *)((char *)pAudioManager + 0x18);
-        } else if (*(int *)((char *)pAudioManager + 0x10) != 0) {
+            return;
+        }
+        if (*(int *)((char *)pAudioManager + 0x10) != 0) {
             *(void **)((char *)pAudioManager + 0x78) = *(void **)((char *)pAudioManager + 0x74);
         }
     }
