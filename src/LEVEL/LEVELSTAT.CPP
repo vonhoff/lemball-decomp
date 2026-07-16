@@ -1020,7 +1020,8 @@ void NoopPackagedSpriteRenderEntry00439370(void) {
 
 // FUNCTION: LEMBALL 0x00402A22
 void LEMBALL_FASTCALL NoopPackagedSpriteRenderEntryThunk00402A22(
-    void *pUnused) {
+    void *pUnused)
+{
     (void)pUnused;
     NoopPackagedSpriteRenderEntry00439370();
 }
@@ -1032,7 +1033,8 @@ void PASCAL NoopPackagedSpriteRenderEntry00439380(void *pUnused) {
 
 // FUNCTION: LEMBALL 0x00401B77
 void LEMBALL_FASTCALL NoopPackagedSpriteRenderEntryThunk00401B77(
-    void *pUnusedThis, int nUnusedEdx, void *pArgument) {
+    void *pUnusedThis, int nUnusedEdx, void *pArgument)
+{
     (void)pUnusedThis;
     (void)nUnusedEdx;
     NoopPackagedSpriteRenderEntry00439380(pArgument);
@@ -1192,7 +1194,8 @@ void ResetBaseModeActionButtonPointSink(void *pObject) {
 
 // FUNCTION: LEMBALL 0x004452E0
 void *LEMBALL_FASTCALL DestroyBaseModeActionButtonPointSinkArray(
-    void *pObject, int, unsigned int fDelete) {
+    void *pObject, int, unsigned int fDelete)
+{
     int cEntries;
     char *pEntry;
 
@@ -1392,7 +1395,8 @@ void *ConstructVariantRenderManager(void *pObject,
                                     int cPackagedRectEntries,
                                     int cActionButtonEntries,
                                     int nUnknown58,
-                                    int fDoubleBuffered) {
+                                    int fDoubleBuffered)
+{
     int *pManager;
     int i;
     int cEntries;
@@ -1524,7 +1528,8 @@ int LevelVariantRenderManagerView::GetVariantRenderFrameCount(int nResourceId) {
 
 // FUNCTION: LEMBALL 0x004671B0
 void LEMBALL_FASTCALL SetTimedVariantFrameDuration(
-    void *pObject, int, int nFrameDuration) {
+    void *pObject, int, int nFrameDuration)
+{
     int *pSelector;
 
     pSelector = (int *)pObject;
@@ -1538,7 +1543,8 @@ void LEMBALL_FASTCALL SetTimedVariantFrameDuration(
 
 // FUNCTION: LEMBALL 0x0046B370
 void LEMBALL_FASTCALL SetStatusIndicatorActive(
-    void *pObject, int, int fActive) {
+    void *pObject, int, int fActive)
+{
     int *pClient;
     DWORD dwNow;
 
@@ -1562,7 +1568,8 @@ void LEMBALL_FASTCALL SetStatusIndicatorActive(
 
 // FUNCTION: LEMBALL 0x00447120
 void *LEMBALL_FASTCALL InitializeFramedScreenRenderChildEntryBody(
-    void *pObject) {
+    void *pObject)
+{
     int *pEntry;
 
     pEntry = (int *)pObject;
@@ -1582,13 +1589,15 @@ void *LEMBALL_FASTCALL InitializeFramedScreenRenderChildEntryBody(
 
 // FUNCTION: LEMBALL 0x004030BC
 void *LEMBALL_FASTCALL InitializeFramedScreenRenderChildEntry(
-    void *pObject) {
+    void *pObject)
+{
     return InitializeFramedScreenRenderChildEntryBody(pObject);
 }
 
 // FUNCTION: LEMBALL 0x00439520
 void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntryBody(
-    void *pObject) {
+    void *pObject)
+{
     int *pEntry;
 
     pEntry = (int *)pObject;
@@ -1603,7 +1612,8 @@ void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntryBody(
 
 // FUNCTION: LEMBALL 0x00403139
 void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntry(
-    void *pObject) {
+    void *pObject)
+{
     return InitializeHelperLocalRectUpdateEntryBody(pObject);
 }
 
@@ -2091,7 +2101,8 @@ void LEMBALL_FASTCALL ReleaseStatusIndicatorPrimaryBitmap(void *pObject) {
 
 // FUNCTION: LEMBALL 0x00401708
 void LEMBALL_FASTCALL ReleaseStatusIndicatorPrimaryBitmapThunk(
-    void *pObject) {
+    void *pObject)
+{
     ReleaseStatusIndicatorPrimaryBitmap(pObject);
 }
 

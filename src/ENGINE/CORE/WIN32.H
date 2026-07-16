@@ -195,7 +195,7 @@ LONG WINAPI SetWindowLongA(HWND hWnd, int nIndex, LONG dwNewLong);
 LRESULT WINAPI DefWindowProcA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 __declspec(dllimport) LRESULT WINAPI SendMessageA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 __declspec(dllimport) BOOL WINAPI PostMessageA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
-BOOL WINAPI InvalidateRect(HWND hWnd, const void *lpRect, BOOL bErase);
+__declspec(dllimport) BOOL WINAPI InvalidateRect(HWND hWnd, const void *lpRect, BOOL bErase);
 BOOL WINAPI ClipCursor(const void *lpRect);
 BOOL WINAPI ReleaseCapture(void);
 HWND WINAPI SetCapture(HWND hWnd);
