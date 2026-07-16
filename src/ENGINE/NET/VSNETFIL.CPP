@@ -32,7 +32,7 @@ extern int InitializeWaveOutEffectDevice0047CB00(void *pObject,
                                                   int fActivateDevice,
                                                   int fStartStreaming);
 extern int IsWaveOutEffectBackendAvailable(void);
-extern int ResetAndCloseWaveOutEffectDevice0047CC20(void *pObject);
+extern int LEMBALL_FASTCALL ResetAndCloseWaveOutEffectDevice0047CC20(void *pObject);
 extern int IsWaveOutEffectInstanceAvailable0047CDD0(void *pObject);
 extern int ReturnOneWaveOutBackendValue0047CDF0(void *pObject);
 // FUNCTION: LEMBALL 0x00462F50

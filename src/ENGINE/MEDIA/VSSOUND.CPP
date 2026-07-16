@@ -339,7 +339,7 @@ void NoOpAudioTriple(int nValue1, int nValue2, int nValue3);
 void DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry *pEntry);
 void *LEMBALL_FASTCALL DeleteAudioDynamicStringEntry(
     VsSoundDynamicStringEntry *pEntry, int nUnused, int fDelete);
-void DestroyWaveOutEffectBackend(void *pBackend);
+void LEMBALL_FASTCALL DestroyWaveOutEffectBackend(void *pBackend);
 char *GetWaveOutEffectBackendDescription(VsSoundWaveOutEffectBackend *pBackend);
 int IsWaveOutEffectBackendAvailable(void);
 int CreateWaveOutEffectInstance(void *pBackend, void *pPatchResource, int *pnEffectInstanceId);
@@ -351,7 +351,7 @@ int GetWaveOutEffectBackendStatus0047CC10(void *pBackend);
 int InitializeWaveOutEffectDevice0047CB00(void *pBackend,
                                            int fActivateDevice,
                                            int fStartStreaming);
-int ResetAndCloseWaveOutEffectDevice0047CC20(void *pBackend);
+int LEMBALL_FASTCALL ResetAndCloseWaveOutEffectDevice0047CC20(void *pBackend);
 int IsWaveOutEffectInstanceAvailable0047CDD0(void *pBackend);
 int ReturnOneWaveOutBackendValue0047CDF0(void *pBackend);
 void LEMBALL_FASTCALL CaptureWaveOutBackendContext0047D260(
@@ -1290,7 +1290,7 @@ int IsWaveOutEffectBackendAvailable(void) {
 }
 
 // FUNCTION: LEMBALL 0x0047CC20
-int ResetAndCloseWaveOutEffectDevice0047CC20(void *pBackend) {
+int LEMBALL_FASTCALL ResetAndCloseWaveOutEffectDevice0047CC20(void *pBackend) {
     MMRESULT nResult;
     unsigned int i;
     char szErrorText[0x100];
@@ -1469,8 +1469,9 @@ unsigned int PlayWaveOutEffectInstance(void *pBackend, int nEffectInstanceId) {
 }
 
 // FUNCTION: LEMBALL 0x0047CAA0
-void DestroyWaveOutEffectBackend(void *pBackend) {
+void LEMBALL_FASTCALL DestroyWaveOutEffectBackend(void *pBackend) {
     *(void ***)pBackend = g_WaveOutEffectBackendVtable;
+    ResetAndCloseWaveOutEffectDevice0047CC20(pBackend);
     FreeVSMemBlock(*(void **)((char *)pBackend + 0xa8));
     FreeVSMemBlock(*(void **)((char *)pBackend + 0xb0));
     FreeVSMemBlock(*(void **)((char *)pBackend + 0xac));
