@@ -1,10 +1,10 @@
 {
   "version": "LEMBALL",
   "program": "LEMBALL.EXE",
-  "function_count": 4086,
+  "function_count": 4093,
   "summary": {
-    "total": 4086,
-    "internal": 2757,
+    "total": 4093,
+    "internal": 2764,
     "runtime": 90,
     "thunk": 1212,
     "import": 27,
@@ -27030,6 +27030,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0045AC90",
+      "name": "WriteNamedStatusEntry",
+      "size": 223,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0045AD70",
       "name": "construct_fixed_buffer_stream",
       "size": 73,
@@ -27042,6 +27051,42 @@
       "address": "0045ADC0",
       "name": "destroy_fixed_buffer_stream",
       "size": 11,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0045ADD0",
+      "name": "ResetFixedBufferStream",
+      "size": 62,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0045AE10",
+      "name": "AppendCharToFixedBufferStream",
+      "size": 272,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0045AF20",
+      "name": "AppendCStringToFixedBufferStream",
+      "size": 56,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0045AF60",
+      "name": "DeleteFixedBufferStreamReturnThis",
+      "size": 30,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -27105,6 +27150,15 @@
       "address": "0045B2E0",
       "name": "register_variant_resource_music_handle",
       "size": 59,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0045B320",
+      "name": "ReturnStatusEntryArgument",
+      "size": 7,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -30291,6 +30345,15 @@
       "address": "00463120",
       "name": "destroy_render_dispatch_queue",
       "size": 113,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00463280",
+      "name": "ReturnStreamArgument",
+      "size": 7,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
