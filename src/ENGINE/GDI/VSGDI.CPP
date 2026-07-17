@@ -1467,19 +1467,22 @@ int LEMBALL_FASTCALL ApplyDisplaySurfacePalette(
 
 // FUNCTION: LEMBALL 0x00456c70
 static int LEMBALL_FASTCALL CopyDisplaySurfaceRect(
-    void *, int, void *pBinding, short *pDestinationRect,
-    void *, short *pSourcePoint)
+    void *, int, void *pDestinationBinding, short *pDestinationRect,
+    void *pSourceBinding, short *pSourcePoint)
 
 {
-    void *hDc;
+    void *hDestinationDc;
+    void *hSourceDc;
 
-    hDc = (void *)(unsigned long)
-        ((VsGdiHelperTargetParamWrapper *)pBinding)->m_nWrappedParam;
+    hDestinationDc = (void *)(unsigned long)
+        ((VsGdiHelperTargetParamWrapper *)pDestinationBinding)->m_nWrappedParam;
+    hSourceDc = (void *)(unsigned long)
+        ((VsGdiHelperTargetParamWrapper *)pSourceBinding)->m_nWrappedParam;
     return BitBlt(
-        hDc,
+        hDestinationDc,
         pDestinationRect[2], pDestinationRect[3],
         pDestinationRect[0], pDestinationRect[1],
-        hDc,
+        hSourceDc,
         pSourcePoint[0], pSourcePoint[1],
         0x00cc0020);
 }
@@ -1490,7 +1493,6 @@ static int LEMBALL_FASTCALL StretchDisplaySurfaceRect(
     void *pSourceBinding, short *pSourceRect)
 
 {
-    ++g_nDebugStretchCount;
     return StretchBlt(
         (void *)(unsigned long)
             ((VsGdiHelperTargetParamWrapper *)pDestinationBinding)
