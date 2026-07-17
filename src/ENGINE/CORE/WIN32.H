@@ -245,6 +245,8 @@ BOOL WINAPI mciGetErrorStringA(MCIERROR mcierr, LPSTR pszText, UINT cchText);
 MMRESULT WINAPI waveOutReset(HWAVEOUT hWaveOut);
 MMRESULT WINAPI waveOutClose(HWAVEOUT hWaveOut);
 MMRESULT WINAPI waveOutWrite(HWAVEOUT hWaveOut, LPWAVEHDR pWaveOutHdr, UINT cbWaveOutHdr);
+__declspec(dllimport) MMRESULT WINAPI waveOutUnprepareHeader(
+    HWAVEOUT hWaveOut, LPWAVEHDR pWaveOutHdr, UINT cbWaveOutHdr);
 MMRESULT WINAPI waveOutOpen(HWAVEOUT *phwo,
                             UINT uDeviceId,
                             const void *pWaveFormat,

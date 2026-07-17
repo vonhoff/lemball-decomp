@@ -111,6 +111,7 @@ extern void LEMBALL_FASTCALL PrepareLevelScreenRootHelperForRuntime(
 extern void *LoadZrleResource(int nResourceId);
 extern void *LoadPalResource(int nResourceId);
 extern void SetLevelScreenStatusIndicatorMode(int nMode, int nValue);
+void SetLevelScreenStatusIndicatorModeThunk(int nMode, int nValue);
 typedef void (LEMBALL_FASTCALL *GamePrimaryContextSetRectProc)(
     void *pPrimaryContext, int nUnused, short *paRect, void *pWindowOwner,
     const char *pszTitle);
@@ -1537,6 +1538,11 @@ int VS_WindowOwnerBase::IsCurrentWindowOwnerContext(void) {
            g_pCachedCurrentContextWindow;
 }
 
+// FUNCTION: LEMBALL 0x00401b72
+void SetLevelScreenStatusIndicatorModeThunk(int nMode, int nValue) {
+    SetLevelScreenStatusIndicatorMode(nMode, nValue);
+}
+
 // FUNCTION: LEMBALL 0x00401b90
 void *ConstructNetworkLobbyTransportController(void *pModeObject, GameMainContext *pMainContext) {
     GameNetworkLobbyTransportController *pMode;
@@ -2629,14 +2635,14 @@ void GameLevelProgressState::SetUnlockedPackCap(int nPack, int nCap) {
         break;
     }
 
-    if (m_nCurrentPack == nPack && nCap < m_nCurrentLevel) {
+    if (m_nCurrentPack == nPack && m_nCurrentLevel > nCap) {
         nCap = m_nCurrentLevel;
     }
-    if (nPackLevelCount < nCap) {
-        m_anUnlockedPackCaps[nPack] = nPackLevelCount;
+    if (nPackLevelCount >= nCap) {
+        m_anUnlockedPackCaps[nPack] = nCap;
         return;
     }
-    m_anUnlockedPackCaps[nPack] = nCap;
+    m_anUnlockedPackCaps[nPack] = nPackLevelCount;
 }
 
 // FUNCTION: LEMBALL 0x00410d00
@@ -3099,7 +3105,7 @@ GamePrimaryContext *GamePrimaryContext::ConstructPrimaryContext(GameMainContext 
     m_pPalette2E = LoadPalResource(0x2e);
     m_pPalette2F = LoadPalResource(0x2f);
 
-    SetLevelScreenStatusIndicatorMode(2, 0);
+    SetLevelScreenStatusIndicatorModeThunk(2, 0);
     ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
         ->RegisterOrderedRenderDispatchClient(
             this != 0 ? pRenderQueueNode : 0, -0x19);
@@ -3118,7 +3124,7 @@ void LEMBALL_FASTCALL DestroyPrimaryContextActiveScreenForVtable(
 {
     void *pActiveScreen;
 
-    SetLevelScreenStatusIndicatorMode(0, 0);
+    SetLevelScreenStatusIndicatorModeThunk(0, 0);
     pActiveScreen = *(void **)((char *)pPrimaryContext + 0xd4);
     if (pActiveScreen != 0) {
         ((GameActiveScreenVirtualInterface *)pActiveScreen)->Reserved1();

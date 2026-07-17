@@ -55,9 +55,6 @@ struct LevelDrawContextView {
     int m_nDispatchOffset0C;
 };
 
-static const char g_szMissingGlyphPrefix[] = "Letter '";
-static const char g_szMissingGlyphText[] = "' not found in font ";
-static const char g_szMissingGlyphNewline[] = "\n";
 
 // FUNCTION: LEMBALL 0x0045bad0
 VsInitFormattedOutputStream *AppendUIntToStreamAsInt(VsInitFormattedOutputStream *pStream, unsigned int nValue) {
@@ -312,11 +309,11 @@ void LevelScreenDrawEntry::Process(void *pRenderContext) {
             if (*pch != ' ' || m_pGlyph28 == 0) {
                 AppendUIntToStreamAsInt(
                     g_pStatusOutputStream
-                        ->AppendCStringToStream(g_szMissingGlyphPrefix)
+                        ->AppendCStringToStream("Letter '")
                         ->AppendCharToStreamVariant((char)*pch)
-                        ->AppendCStringToStream(g_szMissingGlyphText),
+                        ->AppendCStringToStream("' not found in font "),
                     ((LevelScreenDrawOwnerView *)m_pOwner04)->m_nFontResourceId30)
-                    ->AppendCStringToStream(g_szMissingGlyphNewline);
+                    ->AppendCStringToStream("\n");
             }
             AdvanceCursor();
         } else {

@@ -1851,7 +1851,10 @@ VS_RootGeometryOwner::~VS_RootGeometryOwner(void) {
         if (pRegistry != 0) {
             pRegistryNode =
                 *(WINDOW_OWNER_REGISTRY_NODE **)pRegistry;
-            while (pRegistryNode != 0) {
+            for (;;) {
+                if (pRegistryNode == 0) {
+                    break;
+                }
                 pNextRegistryNode = pRegistryNode->m_pNext;
                 FreeVSMemBlock(pRegistryNode);
                 pRegistryNode = pNextRegistryNode;

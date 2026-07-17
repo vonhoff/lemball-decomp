@@ -427,7 +427,6 @@ void *AllocateResourceArchiveMemory(unsigned int cbBytes) {
         }
     }
 
-    pvBlock = 0;
     if (((MogLoadArenaDispatch *)g_pResourceArchiveMemoryArena)->Allocate(
             (void **)&pvBlock,
             cbBytes,
@@ -1151,8 +1150,7 @@ void *MogLoadResourceArchive::FindCachedResourceObjectById(int nResourceId) {
 
     pResourceArchive = this;
     iSlot = 0;
-    cRemaining = pResourceArchive->m_cCachedResourceObjects;
-    if (cRemaining > 0) {
+    if (iSlot < (cRemaining = pResourceArchive->m_cCachedResourceObjects)) {
         do {
             while (pResourceArchive->m_ppCachedResourceObjects[iSlot] == 0) {
                 ++iSlot;

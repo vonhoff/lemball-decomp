@@ -1123,11 +1123,11 @@ LevelThreeDwordPoint *LevelManagedEntityPositionView::CopyWorldPosition(LevelThr
 void LevelManagedEntityCommandQueue::PopFront(void) {
     LevelManagedEntityCommandEntry *pDestination;
     LevelManagedEntityCommandEntry *pSource;
-    int iEntry;
     int nOffset;
+    int iEntry;
 
+    nOffset = 0;
     if (m_cEntries00 != 0) {
-        nOffset = 0;
         for (iEntry = 0; iEntry < m_cEntries00 - 1; ++iEntry) {
             pDestination = (LevelManagedEntityCommandEntry *)
                 ((char *)m_pEntries04 + nOffset);

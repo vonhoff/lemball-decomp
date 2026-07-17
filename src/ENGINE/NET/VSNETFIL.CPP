@@ -4731,12 +4731,14 @@ void *VsNetDualFileBackedEffChannelDeleteView::DeleteDualFileBackedEffChannelWra
 {
     VsNetDualFileBackedEffChannelDeleteView *pView;
     void *pObject;
+    void *pSideBuffer;
 
     pObject = (void *)this;
     pView = this;
-    pView->m_pFatalVtable84 = g_NETWORK_CrtFatalRuntimeErrorThunk;
-    if (pView->m_pSideBuffer88 != 0) {
-        FreeVSMemBlock(pView->m_pSideBuffer88);
+    pSideBuffer = pView->m_pSideBuffer88;
+    pView->m_pFatalVtable84 = g_NETWORK_CrtFatalRuntimeErrorThunkSlots;
+    if (pSideBuffer != 0) {
+        FreeVSMemBlock(pSideBuffer);
     }
     ((VsNetDualHandleEffStream *)((char *)pObject + 0x2c))->DestroyDualHandleEffStream();
     ((VsNetEffStreamChannelState *)pObject)->DestroyEffStreamChannelState();
