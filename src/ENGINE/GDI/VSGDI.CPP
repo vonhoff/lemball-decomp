@@ -5441,10 +5441,10 @@ void LEMBALL_FASTCALL BlitBitmapRowsToScanlines(
     pBitmapBytes = (unsigned char *)pBitmap;
     pSurface = (VsGdiHelperSurface *)((char *)pCompactTarget - 0x55c);
 
-    Rect.m_x = *(short *)(pCommandBytes + 4);
-    Rect.m_y = *(short *)(pCommandBytes + 6);
-    Rect.m_cx = *(short *)(pCommandBytes + 8);
-    Rect.m_cy = *(short *)(pCommandBytes + 0x0a);
+    Rect.m_x = *(short *)(pCommandBytes + 8);
+    Rect.m_y = *(short *)(pCommandBytes + 0x0a);
+    Rect.m_cx = *(short *)(pCommandBytes + 4);
+    Rect.m_cy = *(short *)(pCommandBytes + 6);
     xSource = *(short *)(pCommandBytes + 0x0c);
     ySource = *(short *)(pCommandBytes + 0x0e);
     if (Rect.m_x == 0 && Rect.m_y == 0) {
