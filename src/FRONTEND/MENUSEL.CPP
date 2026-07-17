@@ -36,6 +36,7 @@ extern void *LEMBALL_FASTCALL DeleteStatusPointSinkEntryThunk(
     void *pEntry, int nUnusedEdx, unsigned char fDelete);
 extern void LEMBALL_FASTCALL QueueStatusPointPushThunk(
     void *pEntry, int nUnusedEdx, void *pQueue);
+extern void AppendPointerQueueEntry(void *pQueue, void *pEntry);
 extern void *g_pVariantResourceEntryManager;
 extern int g_fLevelSelectionChanged;
 extern int LEMBALL_FASTCALL GetTimedVariantFrameStartTimeThunk(
@@ -307,6 +308,22 @@ static void *g_MenuSelectorManagerVtable[3] = {
     (void *)HandleMenuSelectorEventThunk
 };
 
+struct GameMenuActionFramePointSink {
+    void **m_pVtable00;
+    short m_nReserved04;
+    short m_nReserved06;
+    unsigned char m_abReserved08[0x10];
+    int m_iFrame18;
+    int *m_pResource1C;
+
+    void *Delete(unsigned int fDelete);
+    void BindToContext(void *pContext);
+    void DispatchToRenderObject(void *pContext);
+};
+
+typedef char GameMenuActionFramePointSink_size_must_be_0x20[
+    sizeof(GameMenuActionFramePointSink) == 0x20 ? 1 : -1];
+
 /* VTABLE: LEMBALL 0x00497CF8 */
 static void *g_MenuSelectorEntryVtable[3] = {
     (void *)InitializeNonZrleVariantRenderEntry,
@@ -320,10 +337,98 @@ static void *g_MenuSelectorTinyPointSinkVtable[2] = {
     (void *)QueueStatusPointPushThunk
 };
 
+static void *g_MenuActionFramePointSinkVtable[3];
+
+struct GameMenuActionFramePointSinkVtableFixup {
+    GameMenuActionFramePointSinkVtableFixup(void) {
+        union DeleteMethod {
+            void *(GameMenuActionFramePointSink::*p)(unsigned int);
+            void *v;
+        } Delete;
+        union BindMethod {
+            void (GameMenuActionFramePointSink::*p)(void *);
+            void *v;
+        } Bind;
+
+        Delete.p = &GameMenuActionFramePointSink::Delete;
+        Bind.p = &GameMenuActionFramePointSink::BindToContext;
+        g_MenuActionFramePointSinkVtable[0] = Delete.v;
+        g_MenuActionFramePointSinkVtable[1] = Bind.v;
+        Bind.p = &GameMenuActionFramePointSink::DispatchToRenderObject;
+        g_MenuActionFramePointSinkVtable[2] = Bind.v;
+    }
+};
+
+static GameMenuActionFramePointSinkVtableFixup
+    g_MenuActionFramePointSinkVtableFixup;
+
 void *LEMBALL_FASTCALL InitializeTinyPointSinkHelper(void *pObject) {
     *(void ***)pObject = g_MenuSelectorTinyPointSinkVtable;
     *(int *)((char *)pObject + 4) = 0;
     return pObject;
+}
+
+void *GameMenuActionFramePointSink::Delete(unsigned int fDelete) {
+    GameMenuActionFramePointSink *pEntry;
+    int cEntries;
+
+    if ((fDelete & 2) == 0) {
+        m_pVtable00 = (void **)g_pQueuedRenderPointSinkFinalizeThunk;
+        if ((fDelete & 1) != 0) {
+            FreeVSMemBlock(this);
+        }
+        return this;
+    }
+
+    cEntries = *(int *)((char *)this - 4);
+    pEntry = this + cEntries;
+    while (--cEntries >= 0) {
+        --pEntry;
+        pEntry->m_pVtable00 =
+            (void **)g_pQueuedRenderPointSinkFinalizeThunk;
+    }
+    FreeVSMemBlock((char *)this - 4);
+    return this;
+}
+
+void GameMenuActionFramePointSink::BindToContext(void *pContext) {
+    typedef void (LEMBALL_FASTCALL *LoadProc)(void *pObject);
+
+    if (m_pResource1C[4] == 0) {
+        ((LoadProc)(*(void ***)m_pResource1C)[7])(m_pResource1C);
+    } else {
+        m_pResource1C[9] = 0;
+    }
+    ++m_pResource1C[2];
+    AppendPointerQueueEntry(pContext, this);
+}
+
+void GameMenuActionFramePointSink::DispatchToRenderObject(void *pContext) {
+    typedef void (LEMBALL_FASTCALL *RenderProc)(
+        void *pRenderObject, int nUnusedEdx, void *pEntry,
+        void *pFrame);
+    int nContext;
+    int nRenderObject;
+    void *pFrame;
+
+    nContext = *(int *)((char *)pContext + 0x0c);
+    nRenderObject = *(int *)(*(int *)(*(int *)(nContext + 0x40) + 4) +
+                                 0x40 + nContext);
+    pFrame = (char *)m_pResource1C[0x1e] + m_iFrame18 * 0x54;
+    ((RenderProc)(*(void ***)nRenderObject)[9])(
+        (void *)nRenderObject, 0, this, pFrame);
+    --m_pResource1C[2];
+}
+
+void *LEMBALL_FASTCALL InitializeMenuActionFramePointSink(void *pObject) {
+    GameMenuActionFramePointSink *pEntry;
+
+    pEntry = (GameMenuActionFramePointSink *)pObject;
+    pEntry->m_pVtable00 = (void **)g_pQueuedRenderPointSinkFinalizeThunk;
+    pEntry->m_nReserved06 = 0;
+    pEntry->m_pVtable00 = g_MenuActionFramePointSinkVtable;
+    pEntry->m_nReserved04 = 0;
+    return pEntry;
 }
 
 static inline GameProgressiveVariantFrameSelector *AllocateFrameSelector(
