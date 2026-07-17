@@ -1,4 +1,5 @@
 #include "ENGINE/CORE/VSINIT.H"
+#include "ENGINE/CORE/WIN32.H"
 
 struct RenderDispatchClientObject {
     void **m_pVtable;
@@ -12,6 +13,32 @@ int CopyRenderDispatchQueueEntryAtIndex(
     void *pDispatchQueue, unsigned int *paEntryWords, int nIndex);
 int RemoveRenderDispatchQueueEntryAtIndex(
     void *pDispatchQueue, unsigned int nIndex);
+extern void *g_pSingletonAnimWindowOwner;
+
+struct VsWingDrawOpenRequest {
+    int m_nReserved00;
+    unsigned int m_dwType04;
+    int m_anReserved08[2];
+    int m_nOpenMode10;
+    int m_nResult14;
+};
+
+struct VsWingWindowOwnerContextView {
+    unsigned char m_abReserved00[0x0c];
+    void *m_pWindowState0C;
+};
+
+struct VsWingAnimWindowOwnerView {
+    unsigned char m_abReserved00[0x4c];
+    VsWingWindowOwnerContextView *m_pWindowOwnerContext4C;
+};
+
+struct VsWingDrawHandlerState {
+    unsigned char m_abReserved00[0x2c];
+    void *m_pWindowState2C;
+    unsigned char m_abReserved30[0x440];
+    void *m_pAnimWindowOwner470;
+};
 
 // FUNCTION: LEMBALL 0x004631a0
 int LEMBALL_FASTCALL AppendRenderDispatchQueueEntry(
@@ -244,4 +271,34 @@ int LEMBALL_FASTCALL DispatchRenderQueueEntryToClients(
     pQueue->m_cEntriesDropped = pQueue->m_cEntriesDropped + 1;
     LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
     return 1;
+}
+
+// FUNCTION: LEMBALL 0x00479190
+void *LEMBALL_STDCALL OpenVisualSciencesWingDrawHandler(
+    VsWingDrawOpenRequest *pRequest)
+{
+    VsWingDrawHandlerState *pState;
+
+    if (pRequest->m_dwType04 != 0x73646976) {
+        return 0;
+    }
+    if (pRequest->m_nOpenMode10 == 1) {
+        return 0;
+    }
+    if (pRequest->m_nOpenMode10 == 2) {
+        return 0;
+    }
+
+    pState = (VsWingDrawHandlerState *)GlobalLock(GlobalAlloc(0x42, 0x474));
+    if (pState == 0) {
+        pRequest->m_nResult14 = -3;
+        return 0;
+    }
+
+    pState->m_pAnimWindowOwner470 = g_pSingletonAnimWindowOwner;
+    pState->m_pWindowState2C =
+        ((VsWingAnimWindowOwnerView *)g_pSingletonAnimWindowOwner)
+            ->m_pWindowOwnerContext4C->m_pWindowState0C;
+    pRequest->m_nResult14 = 0;
+    return pState;
 }

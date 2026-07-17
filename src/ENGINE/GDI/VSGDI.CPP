@@ -211,7 +211,7 @@ static void *g_pResourceGeometryHelperSlotManager = 0;
 // GLOBAL: LEMBALL 0x004a200c
 void *g_pResourceGeometryHelperTarget = 0;
 // GLOBAL: LEMBALL 0x004a20c0
-static void *g_pSingletonAnimWindowOwner = 0;
+void *g_pSingletonAnimWindowOwner = 0;
 // GLOBAL: LEMBALL 0x004a9bf4
 int *g_pArrowCursorStatusIndicatorRenderClient;
 // GLOBAL: LEMBALL 0x004a9bf8
