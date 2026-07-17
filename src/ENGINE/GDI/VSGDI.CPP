@@ -1031,6 +1031,10 @@ static void InitializeDisplayStateVtables(void) {
         int (VsGdiDirectDrawDisplayState::*p)(void *, short *, void *, short *);
         void *v;
     } copyDirectDrawSurfaceMethod;
+    union {
+        int (VsGdiDirectDrawDisplayState::*p)(void *, short *, void *, short *);
+        void *v;
+    } stretchDirectDrawSurfaceMethod;
 
     for (i = 0; i < 14; ++i) {
         g_VSGDI_MetricsDisplayVtable[i] = (void *)NetworkSafeVtableNoop;
@@ -1053,6 +1057,8 @@ static void InitializeDisplayStateVtables(void) {
         &VsGdiDirectDrawDisplayState::ReleaseDirectDrawSurface;
     copyDirectDrawSurfaceMethod.p =
         &VsGdiDirectDrawDisplayState::CopyDirectDrawSurfaceRect;
+    stretchDirectDrawSurfaceMethod.p =
+        &VsGdiDirectDrawDisplayState::StretchDirectDrawSurfaceRect;
     readyMethod.p = &VsGdiDisplayState::IsReady;
     g_VSGDI_MetricsDisplayVtable[1] = createBindingMethod.v;
     g_VSGDI_DibDisplayVtable[1] = createBindingMethod.v;
@@ -1075,6 +1081,7 @@ static void InitializeDisplayStateVtables(void) {
         (void *)ApplyDirectDrawSurfacePalette;
     g_VSGDI_MetricsDisplayVtable[7] =
         (void *)StretchDisplaySurfaceRect;
+    g_VSGDI_DirectDrawDisplayVtable[7] = stretchDirectDrawSurfaceMethod.v;
     g_VSGDI_MetricsDisplayVtable[8] =
         (void *)CopyDisplaySurfaceRect;
     g_VSGDI_DirectDrawDisplayVtable[8] = copyDirectDrawSurfaceMethod.v;
@@ -1695,6 +1702,86 @@ int VsGdiDirectDrawDisplayState::CopyDirectDrawSurfaceRect(void *, short *pDesti
             ->AppendSignedIntToStreamVariant(x)
             ->AppendCStringToStream(", ")
             ->AppendSignedIntToStreamVariant(y)
+            ->AppendCStringToStream(" - ")
+            ->AppendCStringToStream(LookupDirectDrawErrorString(uResult & 0xfff))
+            ->AppendCStringToStream("\n");
+    }
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x00457a60
+int VsGdiDirectDrawDisplayState::StretchDirectDrawSurfaceRect(void *, short *pDestinationRect, void *pSourceBinding, short *pSourceRect) {
+    typedef unsigned int (__stdcall *DIRECTDRAW_BLT)(
+        void *, void *, void *, void *, unsigned int, void *);
+    struct DirectDrawRect {
+        int m_nLeft;
+        int m_nTop;
+        int m_nRight;
+        int m_nBottom;
+    } DestinationRect, SourceRect;
+    VsGdiHelperTargetParamWrapper *pBinding;
+    VsGdiDisplayBitmap *pBitmap;
+    void **ppSurfaceSlots;
+    void *pSourceSurface;
+    short cx;
+    short cy;
+    short x;
+    short y;
+    unsigned int uResult;
+
+    cx = pDestinationRect[0];
+    cy = pDestinationRect[1];
+    x = pDestinationRect[2];
+    y = pDestinationRect[3];
+    if (x < 0) {
+        cx = (short)(cx + x);
+        x = 0;
+    }
+    if ((short)(x + cx) > m_cxDisplay)
+        cx = (short)(m_cxDisplay - x);
+    if (y < 0) {
+        cy = (short)(cy + y);
+        y = 0;
+    }
+    if ((short)(y + cy) > m_cyDisplay)
+        cy = (short)(m_cyDisplay - y);
+    if (cx <= 0 || cy <= 0) {
+        cx = 0;
+        cy = 0;
+        x = 0;
+        y = 0;
+    }
+    if ((int)cx * (int)cy == 0)
+        return 1;
+    if ((int)pSourceRect[0] * (int)pSourceRect[1] == 0)
+        return 1;
+
+    DestinationRect.m_nLeft = x;
+    DestinationRect.m_nTop = y;
+    DestinationRect.m_nRight = x + cx;
+    DestinationRect.m_nBottom = y + cy;
+    SourceRect.m_nLeft = pSourceRect[2];
+    SourceRect.m_nTop = pSourceRect[3];
+    SourceRect.m_nRight = SourceRect.m_nLeft + pSourceRect[0];
+    SourceRect.m_nBottom = SourceRect.m_nTop + pSourceRect[1];
+    pBinding = (VsGdiHelperTargetParamWrapper *)pSourceBinding;
+    ppSurfaceSlots = (void **)&m_pfnDirectDrawCreate;
+    pBitmap = (VsGdiDisplayBitmap *)
+        ppSurfaceSlots[pBinding->m_nWrappedParam];
+    pSourceSurface = pBitmap->m_hPreviousBitmap;
+    uResult = ((DIRECTDRAW_BLT)(*(void ***)m_pPrimarySurface)[5])(
+        m_pPrimarySurface, &DestinationRect, pSourceSurface,
+        &SourceRect, 0, 0);
+    if (uResult != 0) {
+        g_pErrorOutputStream
+            ->AppendCStringToStream("Blit failed: ")
+            ->AppendSignedIntToStreamVariant(DestinationRect.m_nLeft)
+            ->AppendCStringToStream(", ")
+            ->AppendSignedIntToStreamVariant(DestinationRect.m_nTop)
+            ->AppendCStringToStream(", ")
+            ->AppendSignedIntToStreamVariant(DestinationRect.m_nRight)
+            ->AppendCStringToStream(", ")
+            ->AppendSignedIntToStreamVariant(DestinationRect.m_nBottom)
             ->AppendCStringToStream(" - ")
             ->AppendCStringToStream(LookupDirectDrawErrorString(uResult & 0xfff))
             ->AppendCStringToStream("\n");

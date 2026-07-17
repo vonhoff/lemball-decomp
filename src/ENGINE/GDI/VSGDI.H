@@ -138,6 +138,10 @@ public:
     VsGdiDirectDrawDisplayState(const unsigned short *pDisplaySize, int fCreateWindow);
 
     int Create(HWND hWnd);
+    int StretchDirectDrawSurfaceRect(void *pDestinationBinding,
+                                     short *pDestinationRect,
+                                     void *pSourceBinding,
+                                     short *pSourceRect);
     int CopyDirectDrawSurfaceRect(void *pDestinationBinding,
                                   short *pDestinationRect,
                                   void *pSourceBinding,
