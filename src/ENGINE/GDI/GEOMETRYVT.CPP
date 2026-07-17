@@ -15,6 +15,9 @@ extern void LEMBALL_FASTCALL GeometryOwnerPointerMoveNoop(
 extern int LEMBALL_FASTCALL GeometryOwnerContainsPoint(
     void *, int, const VS_XYPair *);
 
+// ABI-only translation unit: moving these forwarding entries changes linker
+// layout and breaks the reconstructed vtable addresses.
+
 // FUNCTION: LEMBALL 0x004023a6
 void LEMBALL_FASTCALL GeometryOwnerPointerEnterThunk(void *pOwner)
 {

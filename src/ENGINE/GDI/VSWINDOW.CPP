@@ -2597,3 +2597,21 @@ void __cdecl ShowFatalGetLastErrorMessageAndExit(const char *pszMessage) {
     MessageBoxA(0, szBuffer, g_szFatalErrorTitle, 0);
     ExitProcess(0xaaaa);
 }
+
+// Ordinary window-owner methods formerly isolated in an artificial vtable file.
+
+void VS_WindowOwnerBase::ReservedWindowOwnerSlot23(void) {
+}
+
+void VS_WindowOwnerBase::ReservedWindowOwnerSlot21(void) {
+}
+
+void VS_WindowOwnerBase::ReservedWindowOwnerSlot18(void) {
+}
+
+int VS_RootGeometryOwner::QueryRootGeometryState(void *, void *) {
+    return 0;
+}
+
+void VS_WindowOwnerBase::ReservedWindowOwnerSlot22(int) {
+}

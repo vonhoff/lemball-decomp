@@ -1587,6 +1587,27 @@ void *FinalizeLoadedResourceObjectResult(void *pObject) {
     return pObject;
 }
 
+// Default policy callbacks for the resource loader's two-array list. Their
+// address cluster (0x45e6d0-0x45e6f0) and semantics place them with MOG loading,
+// not with the generic stream implementation.
+
+// FUNCTION: LEMBALL 0x0045e6d0
+int two_array_list_is_first_entry_loaded_false(void) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0045e6e0
+void PASCAL two_array_list_dispatch_entry_noop(void *pUnused1, void *pUnused2) {
+    (void)pUnused1;
+    (void)pUnused2;
+}
+
+// FUNCTION: LEMBALL 0x0045e6f0
+int PASCAL two_array_list_has_no_entry_descriptor(void *pUnused) {
+    (void)pUnused;
+    return 0;
+}
+
 // FUNCTION: LEMBALL 0x45de00
 MogLoadStringResourceObject *LoadStringResource(int nResourceId) {
     MogLoadStringResourceObject *pResourceObject;

@@ -3388,3 +3388,23 @@ static void *LEMBALL_FASTCALL DeleteAudioEffectBackendBase(void *pBackend, int, 
     }
     return pBackend;
 }
+
+// MCI backend virtual callbacks. Kept as separate ABI entries even though their
+// recovered logical implementations are no-ops.
+
+// FUNCTION: LEMBALL 0x0046e050
+void PASCAL noop_embedded_mci_callback_0046e050(void *pUnused) {
+    (void)pUnused;
+}
+
+// FUNCTION: LEMBALL 0x0046e060
+void PASCAL noop_embedded_mci_callback_0046e060(void *pUnused1, void *pUnused2) {
+    (void)pUnused1;
+    (void)pUnused2;
+}
+
+// FUNCTION: LEMBALL 0x0046e070
+void PASCAL noop_embedded_mci_callback_0046e070(void *pUnused1, void *pUnused2) {
+    (void)pUnused1;
+    (void)pUnused2;
+}
