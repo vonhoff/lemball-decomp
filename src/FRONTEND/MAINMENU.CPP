@@ -299,6 +299,18 @@ static const int g_GAME_MainMenuWidgetLayoutCompact[12] = {
     0xe8, 0x74, 0x28, 0xae, 0xd0, 0xae
 };
 
+// GLOBAL: LEMBALL 0x0049f4f4
+static const int g_GAME_MainMenuWidgetResourcesStandard[11] = {
+    0x1a7, 0x1a6, 0x1b0, 0x1a9, 0x1c3, 0x1ac,
+    0x1ad, 0x1ae, 0x1af, 0x1b6, 0x1c4
+};
+
+// GLOBAL: LEMBALL 0x0049f520
+static const int g_GAME_MainMenuWidgetResourcesCompact[12] = {
+    0x1db, 0x1da, 0x1e4, 0x1f7, 0x1dd, 0,
+    0x1e0, 0x1e1, 0x1e2, 0x1e3, 0x1ea, 0x1f8
+};
+
 static void *g_GAME_SelectFirstVariantFrameVtable[7];
 
 static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(
