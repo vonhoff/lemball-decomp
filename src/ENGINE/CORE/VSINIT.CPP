@@ -691,11 +691,11 @@ void LEMBALL_FASTCALL DestroyStreamBaseVtable(void *pStream) {
 // FUNCTION: LEMBALL 0x00458410
 VsInitStreamFormatTargetState *VsInitStreamFormatTargetState::ConstructStreamFormatTargetState(VsInitFixedBufferStream *pDownstream) {
     m_pVtable = g_StreamFormatTargetStateVtable;
+    m_pDownstream = pDownstream;
     m_chFill = ' ';
     m_dwFlags = 0x14;
     m_nWidth = 0;
     m_nRadix = 10;
-    m_pDownstream = pDownstream;
     return this;
 }
 
