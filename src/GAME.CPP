@@ -1197,6 +1197,16 @@ static void UpdateIntroSequenceScreenPlayback(char *pScreen) {
         (*(short *)(*(char **)(pScreen + 0x84) + 10) - 0xf0) / 2);
     pMediaOwner = pScreen + 0x3bc;
     if (*(int *)(pScreen + 0x3b8) == 0) {
+#if defined(LEMBALL_SKIP_CD_TEST)
+        FILE *pMediaFile = fopen(
+            *(char **)(pMediaOwner + 0xb0), "rb");
+        if (pMediaFile == 0) {
+            RequestIntroSequenceScreenTransition(pScreen);
+            *(int *)(pScreen + 0x3b4) = -1;
+            return;
+        }
+        fclose(pMediaFile);
+#endif
         ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
             ->SwitchVariantResourceEntryMode(1, 0);
         ((InitializeMediaWindowProc)(*(void ***)pMediaOwner)[1])(

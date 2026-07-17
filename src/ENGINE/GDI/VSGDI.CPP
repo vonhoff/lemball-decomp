@@ -4759,7 +4759,7 @@ void *LEMBALL_FASTCALL ConstructResourceGeometryHelperWindowOwner(
 
 // FUNCTION: LEMBALL 0x0046ded0
 void VsGdiAnimWindowOwner::RebuildResourceGeometryHelperWindow(void) {
-    typedef HWND (WINAPI *MciWndCreateProc)(
+    typedef HWND (*MciWndCreateProc)(
         HWND, HINSTANCE, DWORD, const char *);
     HMODULE hMsvfw32;
     MciWndCreateProc pMciWndCreate;
