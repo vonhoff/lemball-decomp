@@ -457,8 +457,8 @@ struct WINDOW_OWNER_COMMAND_EVENT {
 struct WINDOW_OWNER_KEY_EVENT {
     unsigned short m_nType;
     unsigned short m_nReserved;
-    unsigned int m_nReserved08;
-    LPARAM m_lParam;
+    DWORD m_dwTime;
+    WPARAM m_nVirtualKey;
 };
 
 struct WINDOW_OWNER_CURSOR_EVENT {
@@ -1137,7 +1137,9 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         WINDOW_OWNER_KEY_EVENT Event;
 
         Event.m_nType = uMessage == 0x100 ? 2 : 1;
-        Event.m_lParam = lParam;
+        Event.m_nReserved = 0;
+        Event.m_dwTime = dwMessageTime;
+        Event.m_nVirtualKey = wParam;
         AppendWindowOwnerEvent(&Event);
         return 0;
     }
