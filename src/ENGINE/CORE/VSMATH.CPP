@@ -153,14 +153,16 @@ unsigned int __stdcall IntegerSqrtFloor(unsigned int uValue) {
         uLow = 0;
     }
 
-    if (uHigh != uLow) {
-        while (uLow - uHigh != (unsigned int)-1) {
-            uMid = (uLow + uHigh) >> 1;
-            if (uMid * uMid <= uValue) {
-                uLow = uMid;
-            } else {
-                uHigh = uMid;
-            }
+    if (uHigh == uLow) {
+        return uLow;
+    }
+
+    while (uLow - uHigh != (unsigned int)-1) {
+        uMid = (uLow + uHigh) >> 1;
+        if (uMid * uMid <= uValue) {
+            uLow = uMid;
+        } else {
+            uHigh = uMid;
         }
     }
     return uLow;
