@@ -1059,6 +1059,14 @@ static void InitializeDisplayStateVtables(void) {
         (void *)StretchDisplaySurfaceRect;
     g_VSGDI_MetricsDisplayVtable[8] =
         (void *)CopyDisplaySurfaceRect;
+    {
+        union {
+            int (VsGdiDibDisplayState::*p)(void *, short *, void *, short *);
+            void *v;
+        } copyDibRectMethod;
+        copyDibRectMethod.p = &VsGdiDibDisplayState::CopyDisplayRect;
+        g_VSGDI_DibDisplayVtable[8] = copyDibRectMethod.v;
+    }
     g_VSGDI_MetricsDisplayVtable[9] = bitmapReadyMethod.v;
     g_VSGDI_DibDisplayVtable[9] = bitmapReadyMethod.v;
     g_VSGDI_DirectDrawDisplayVtable[9] = bitmapReadyMethod.v;
@@ -1593,6 +1601,72 @@ VsGdiDirectDrawDisplayState::VsGdiDirectDrawDisplayState(const unsigned short *p
             m_fReady = 1;
         }
     }
+}
+
+int VsGdiDibDisplayState::CopyDisplayRect(
+    void *pDestinationBinding, short *pDestinationRect,
+    void *pSourceBinding, short *pSourcePoint) {
+    VsGdiRect destinationRect;
+    VsGdiDisplayBitmap *pSourceBitmap;
+    unsigned char *pDestination;
+    const unsigned char *pSource;
+    int nSourceStride;
+    int iRow;
+
+    if (g_fFullscreenDisplayModeSuspended != 0) {
+        return BitBlt(
+            (void *)(unsigned long)
+                ((VsGdiHelperTargetParamWrapper *)pDestinationBinding)
+                    ->m_nWrappedParam,
+            pDestinationRect[2], pDestinationRect[3],
+            pDestinationRect[0], pDestinationRect[1],
+            (void *)(unsigned long)
+                ((VsGdiHelperTargetParamWrapper *)pSourceBinding)
+                    ->m_nWrappedParam,
+            pSourcePoint[0], pSourcePoint[1], 0x00cc0020);
+    }
+
+    destinationRect.m_cx = pDestinationRect[0];
+    destinationRect.m_cy = pDestinationRect[1];
+    destinationRect.m_x = pDestinationRect[2];
+    destinationRect.m_y = pDestinationRect[3];
+    if (destinationRect.m_x < 0) {
+        destinationRect.m_cx =
+            (short)(destinationRect.m_cx + destinationRect.m_x);
+        destinationRect.m_x = 0;
+    }
+    if (destinationRect.m_x + destinationRect.m_cx > m_cxDisplay)
+        destinationRect.m_cx = (short)(m_cxDisplay - destinationRect.m_x);
+    if (destinationRect.m_y < 0) {
+        destinationRect.m_cy =
+            (short)(destinationRect.m_cy + destinationRect.m_y);
+        destinationRect.m_y = 0;
+    }
+    if (destinationRect.m_y + destinationRect.m_cy > m_cyDisplay)
+        destinationRect.m_cy = (short)(m_cyDisplay - destinationRect.m_y);
+    if (destinationRect.m_cx <= 0 || destinationRect.m_cy <= 0) {
+        destinationRect.m_x = 0;
+        destinationRect.m_y = 0;
+        destinationRect.m_cx = 0;
+        destinationRect.m_cy = 0;
+    }
+    if (destinationRect.m_cx * destinationRect.m_cy == 0)
+        return 1;
+
+    pSourceBitmap = (VsGdiDisplayBitmap *)(unsigned long)
+        ((VsGdiHelperTargetParamWrapper *)pSourceBinding)->m_nReserved;
+    nSourceStride = ((VsGdiDisplayBitmapDispatch *)pSourceBitmap)->Origin();
+    pDestination = (unsigned char *)m_pDisplayAddress +
+        destinationRect.m_y * m_cxDisplay + destinationRect.m_x;
+    pSource = (const unsigned char *)
+        ((VsGdiDisplayBitmapDispatch *)pSourceBitmap)->Bits() +
+        pSourcePoint[1] * nSourceStride + pSourcePoint[0];
+    for (iRow = 0; iRow < destinationRect.m_cy; ++iRow) {
+        memcpy(pDestination, pSource, destinationRect.m_cx);
+        pDestination += m_cxDisplay;
+        pSource += nSourceStride;
+    }
+    return 1;
 }
 
 // FUNCTION: LEMBALL 0x00457e10

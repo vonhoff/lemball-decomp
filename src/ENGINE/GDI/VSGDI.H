@@ -119,6 +119,10 @@ public:
     VsGdiDibDisplayState(const unsigned short *pDisplaySize);
 
     int Create(HWND hWnd);
+    int CopyDisplayRect(void *pDestinationBinding,
+                        short *pDestinationRect,
+                        void *pSourceBinding,
+                        short *pSourcePoint);
 
 private:
     void *m_pDisplayAddress;          // 0x1c
