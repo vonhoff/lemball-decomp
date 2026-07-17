@@ -431,6 +431,94 @@ void *LEMBALL_FASTCALL InitializeMenuActionFramePointSink(void *pObject) {
     return pEntry;
 }
 
+void LEMBALL_FASTCALL ComputeAlignedZrleChildLayout(void *pObject) {
+    typedef void (LEMBALL_FASTCALL *LoadProc)(void *pResource);
+    GameMenuActionFramePointSink *pFrameSink;
+    int *pListResource;
+    char *pFrame;
+    short cxFrame;
+    short cyFrame;
+    short cxOwner;
+    short cyOwner;
+    short nAlignment;
+
+    *(int *)((char *)pObject + 0x120) = 0;
+    pFrameSink = (GameMenuActionFramePointSink *)
+        AllocateVSMemBlock(sizeof(int) +
+                           sizeof(GameMenuActionFramePointSink));
+    if (pFrameSink != 0) {
+        *(int *)pFrameSink = 1;
+        pFrameSink = (GameMenuActionFramePointSink *)
+            ((char *)pFrameSink + sizeof(int));
+        InitializeMenuActionFramePointSink(pFrameSink);
+    }
+    *(GameMenuActionFramePointSink **)((char *)pObject + 0x124) =
+        pFrameSink;
+    ++*(int *)((char *)pObject + 0x50);
+
+    pListResource = (int *)LoadZrleOnlyListResource(
+        *(int *)((char *)pObject + 0x10c));
+    *(int **)((char *)pObject + 0x11c) = pListResource;
+    if (pListResource[4] == 0) {
+        ((LoadProc)(*(void ***)pListResource)[7])(pListResource);
+    } else {
+        pListResource[9] = 0;
+    }
+    ++pListResource[2];
+
+    pFrame = (char *)pListResource[0x1e];
+    cxFrame = *(short *)(pFrame + 0x4c);
+    cyFrame = *(short *)(pFrame + 0x4e);
+    if (cxFrame < *(short *)(pFrame + 0xa0)) {
+        cxFrame = *(short *)(pFrame + 0xa0);
+    }
+    if (cyFrame < *(short *)(pFrame + 0xa2)) {
+        cyFrame = *(short *)(pFrame + 0xa2);
+    }
+    *(short *)((char *)pObject + 0x114) = cxFrame;
+    *(short *)((char *)pObject + 0x116) = cyFrame;
+    --pListResource[2];
+
+    *(short *)((char *)pObject + 0x118) =
+        *(short *)((char *)pObject + 0xc4);
+    *(short *)((char *)pObject + 0x11a) =
+        *(short *)((char *)pObject + 0xc6);
+    cxOwner = *(short *)((char *)pObject + 0xc0);
+    cyOwner = *(short *)((char *)pObject + 0xc2);
+    if (cxOwner < 0) {
+        cxOwner = (short)(-cxFrame * cxOwner);
+    } else if (cxOwner == 0) {
+        cxOwner = cxFrame;
+    }
+    if (cyOwner < 0) {
+        cyOwner = (short)(-cyFrame * cyOwner);
+    } else if (cyOwner == 0) {
+        cyOwner = cyFrame;
+    }
+    *(short *)((char *)pObject + 0xc0) = cxOwner;
+    *(short *)((char *)pObject + 0xc2) = cyOwner;
+    if ((int)cxOwner * (int)cyOwner != 0) {
+        ((GameGeometryOwnerRectState *)((char *)pObject + 0x90))
+            ->SetEnabled(1);
+    }
+
+    nAlignment = *(short *)((char *)pObject + 0x118);
+    if ((*(unsigned int *)((char *)pObject + 0x110) & 4) != 0) {
+        nAlignment = (short)((cxOwner - cxFrame) / 2);
+    } else if ((*(unsigned int *)((char *)pObject + 0x110) & 0x10) != 0) {
+        nAlignment = (short)(cxOwner - cxFrame);
+    }
+    *(short *)((char *)pObject + 0x118) = nAlignment;
+
+    if ((*(unsigned int *)((char *)pObject + 0x110) & 8) != 0) {
+        *(short *)((char *)pObject + 0x11a) =
+            (short)((cyOwner - cyFrame) / 2);
+    } else if ((*(unsigned int *)((char *)pObject + 0x110) & 0x20) != 0) {
+        *(short *)((char *)pObject + 0x11a) =
+            (short)(cyOwner - cyFrame);
+    }
+}
+
 static inline GameProgressiveVariantFrameSelector *AllocateFrameSelector(
     void *pVariantManager, int nResourceId) {
     GameProgressiveVariantFrameSelector *pSelector;
