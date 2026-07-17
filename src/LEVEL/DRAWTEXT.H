@@ -62,12 +62,12 @@ public:
     virtual void InitializeFromPointAndDynamicText(const short *pPoint, void *pOwner,
                             GameDynamicCString Text,
                             int nDrawFlags, int nDrawValue);
-    virtual void InitializeFromPositionAndDynamicText(short x, short y, void *pOwner,
+    virtual void InitializeFromPositionAndDynamicText(int x, int y, void *pOwner,
                             GameDynamicCString Text,
                             int nDrawFlags, int nDrawValue);
     virtual void InitializeFromPointAndText(const short *pPoint, void *pOwner, void *pText,
                             int nDrawFlags, int nDrawValue);
-    virtual void InitializeFromPositionAndText(short x, short y, void *pOwner, void *pText,
+    virtual void InitializeFromPositionAndText(int x, int y, void *pOwner, void *pText,
                             int nDrawFlags, int nDrawValue);
 
     void AdvanceCursor();
@@ -102,12 +102,12 @@ public:
     virtual void InitializeFromPointAndDynamicText(const short *pPoint, void *pOwner,
                             GameDynamicCString Text,
                             int nDrawFlags, int nDrawValue);
-    virtual void InitializeFromPositionAndDynamicText(short x, short y, void *pOwner,
+    virtual void InitializeFromPositionAndDynamicText(int x, int y, void *pOwner,
                             GameDynamicCString Text,
                             int nDrawFlags, int nDrawValue);
     virtual void InitializeFromPointAndText(const short *pPoint, void *pOwner, void *pText,
                             int nDrawFlags, int nDrawValue);
-    virtual void InitializeFromPositionAndText(short x, short y, void *pOwner, void *pText,
+    virtual void InitializeFromPositionAndText(int x, int y, void *pOwner, void *pText,
                             int nDrawFlags, int nDrawValue);
 
     char *m_pszOwnedText44;

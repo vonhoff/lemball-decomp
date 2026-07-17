@@ -125,7 +125,7 @@ LevelScreenDrawEntry::LevelScreenDrawEntry() {
 }
 
 // FUNCTION: LEMBALL 0x00469a50
-void LevelScreenDrawEntry::InitializeFromPositionAndText(short x, short y, void *pOwner, void *pText, int nDrawFlags, int nDrawValue) {
+void LevelScreenDrawEntry::InitializeFromPositionAndText(int x, int y, void *pOwner, void *pText, int nDrawFlags, int nDrawValue) {
     m_xStart1C = x;
     m_yStart1E = y;
     m_pOwner04 = pOwner;
@@ -150,7 +150,7 @@ void LevelScreenDrawEntry::InitializeFromPointAndText(const short *pPoint, void 
 }
 
 // FUNCTION: LEMBALL 0x00469ac0
-void LevelScreenDrawEntry::InitializeFromPositionAndDynamicText(short x, short y, void *pOwner, GameDynamicCString Text, int nDrawFlags, int nDrawValue) {
+void LevelScreenDrawEntry::InitializeFromPositionAndDynamicText(int x, int y, void *pOwner, GameDynamicCString Text, int nDrawFlags, int nDrawValue) {
     m_xStart1C = x;
     m_yStart1E = y;
     m_pOwner04 = pOwner;
@@ -220,7 +220,7 @@ DECOMP_SIZE_ASSERT(LevelScreenDrawEntry, 0x44);
 DECOMP_SIZE_ASSERT(LevelResourceScreenDrawEntry, 0x4c);
 DECOMP_SIZE_ASSERT(MappedListResourceTable, 0x24);
 // FUNCTION: LEMBALL 0x0046a080
-void LevelResourceScreenDrawEntry::InitializeFromPositionAndText(short x, short y, void *pOwner, void *pText, int nDrawFlags, int nDrawValue) {
+void LevelResourceScreenDrawEntry::InitializeFromPositionAndText(int x, int y, void *pOwner, void *pText, int nDrawFlags, int nDrawValue) {
     strcpy(m_pszOwnedText44, (const char *)pText);
     LevelScreenDrawEntry::InitializeFromPositionAndText(
         x, y, pOwner, m_pszOwnedText44, nDrawFlags, nDrawValue);
@@ -234,7 +234,7 @@ void LevelResourceScreenDrawEntry::InitializeFromPointAndText(const short *pPoin
 }
 
 // FUNCTION: LEMBALL 0x0046a140
-void LevelResourceScreenDrawEntry::InitializeFromPositionAndDynamicText(short x, short y, void *pOwner, GameDynamicCString Text, int nDrawFlags, int nDrawValue) {
+void LevelResourceScreenDrawEntry::InitializeFromPositionAndDynamicText(int x, int y, void *pOwner, GameDynamicCString Text, int nDrawFlags, int nDrawValue) {
     strcpy(m_pszOwnedText44, Text.m_pszText);
     LevelScreenDrawEntry::InitializeFromPositionAndText(
         x, y, pOwner, m_pszOwnedText44, nDrawFlags, nDrawValue);
