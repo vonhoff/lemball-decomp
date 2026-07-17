@@ -5210,7 +5210,7 @@ void LEMBALL_FASTCALL CopyRectRowsToHelperGroup0Buffer(
     ySource = (int)*(short *)(pbCommand + 6);
     xDestination = (int)*(short *)(pbCommand + 0x0c);
     yDestination = (int)*(short *)(pbCommand + 0x0e);
-    if (ySource <= 0)
+    if (cRows <= 0)
         return;
 
     ppSourceRows = *(unsigned char ***)((char *)pGroup0RowBuffer - 0x94);
@@ -5246,7 +5246,7 @@ void LEMBALL_FASTCALL FillRectInHelperGroup0Buffer(
     nColor = *(int *)(pbCommand + 4);
     xDestination = (int)*(short *)(pbCommand + 0x0c);
     yDestination = (int)*(short *)(pbCommand + 0x0e);
-    if (yDestination <= 0)
+    if (cRows <= 0)
         return;
 
     ppRows = *(unsigned char ***)((char *)pGroup0RowBuffer + 0x0c);
