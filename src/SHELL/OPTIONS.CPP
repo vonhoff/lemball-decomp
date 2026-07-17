@@ -61,11 +61,7 @@ StartupGraphicsWindowConfig g_StartupGraphicsDriverConfig = {
     0,
 };
 
-// FUNCTION: LEMBALL 0x00406300
-void NoopHelpSwitchCallback(void) {
-}
-
-// FUNCTION: LEMBALL 0x004034C7
+// FUNCTION: LEMBALL 0x004034c7
 StartupGraphicsWindowConfig *BuildStartupGraphicsWindowConfigThunk(const StartupGraphicsWindowConfig *pSeedConfig) {
     return BuildStartupGraphicsWindowConfig(pSeedConfig);
 }
@@ -129,59 +125,8 @@ void InitializeStartupSwitchDefaults(void) {
         g_STARTUP_DefaultOverrideLevelPath);
 }
 
-// FUNCTION: LEMBALL 0x00406790
-int CompareSwitchNameCaseInsensitive(const char *pszLeft, const char *pszRight, int cchMax) {
-    int cchLeft;
-    int cchRight;
-    int nDifference;
-    char chLeft;
-    char chRight;
-
-    cchLeft = (int)strlen(pszLeft);
-    cchRight = (int)strlen(pszRight);
-
-    if (cchMax < cchLeft) {
-        cchLeft = cchMax;
-    }
-    if (cchMax < cchRight) {
-        cchRight = cchMax;
-    }
-    if (cchLeft != cchRight) {
-        return -1;
-    }
-
-    if (cchLeft < cchMax) {
-        cchMax = cchLeft;
-    }
-    if (cchRight < cchMax) {
-        cchMax = cchRight;
-    }
-
-    nDifference = 0;
-    while (cchMax != 0) {
-        if (isalpha((int)*pszLeft)) {
-            chLeft = (char)toupper((int)*pszLeft);
-        } else {
-            chLeft = *pszLeft;
-        }
-
-        if (isalpha((int)*pszRight)) {
-            chRight = (char)toupper((int)*pszRight);
-        } else {
-            chRight = *pszRight;
-        }
-
-        nDifference = (int)chLeft - (int)chRight;
-        if (nDifference != 0) {
-            break;
-        }
-
-        ++pszLeft;
-        ++pszRight;
-        --cchMax;
-    }
-
-    return nDifference;
+// FUNCTION: LEMBALL 0x00406300
+void NoopHelpSwitchCallback(void) {
 }
 
 // FUNCTION: LEMBALL 0x00406460
@@ -261,7 +206,62 @@ int ApplyStartupCommandLineSwitches(int cArgs, const char *const *ppszArgs) {
     return fContinue;
 }
 
-// FUNCTION: LEMBALL 0x004727B0
+// FUNCTION: LEMBALL 0x00406790
+int CompareSwitchNameCaseInsensitive(const char *pszLeft, const char *pszRight, int cchMax) {
+    int cchLeft;
+    int cchRight;
+    int nDifference;
+    char chLeft;
+    char chRight;
+
+    cchLeft = (int)strlen(pszLeft);
+    cchRight = (int)strlen(pszRight);
+
+    if (cchMax < cchLeft) {
+        cchLeft = cchMax;
+    }
+    if (cchMax < cchRight) {
+        cchRight = cchMax;
+    }
+    if (cchLeft != cchRight) {
+        return -1;
+    }
+
+    if (cchLeft < cchMax) {
+        cchMax = cchLeft;
+    }
+    if (cchRight < cchMax) {
+        cchMax = cchRight;
+    }
+
+    nDifference = 0;
+    while (cchMax != 0) {
+        if (isalpha((int)*pszLeft)) {
+            chLeft = (char)toupper((int)*pszLeft);
+        } else {
+            chLeft = *pszLeft;
+        }
+
+        if (isalpha((int)*pszRight)) {
+            chRight = (char)toupper((int)*pszRight);
+        } else {
+            chRight = *pszRight;
+        }
+
+        nDifference = (int)chLeft - (int)chRight;
+        if (nDifference != 0) {
+            break;
+        }
+
+        ++pszLeft;
+        ++pszRight;
+        --cchMax;
+    }
+
+    return nDifference;
+}
+
+// FUNCTION: LEMBALL 0x004727b0
 void FinalizeStartupGraphicsDriverConfig(void) {
     int i;
     StartupGraphicsWindowConfig *pBuiltConfig;

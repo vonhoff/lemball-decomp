@@ -29,6 +29,170 @@ extern LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM w
 extern "C" DWORD WINAPI timeGetTime(void);
 extern void LEMBALL_FASTCALL EnsureHelperGroup0BackingBuffer(int nHelperGroup);
 extern void *__fastcall get_draw_command_rect_payload(void *pCommand);
+extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
+
+void __stdcall PromoteQueuedRenderPointSinkTargetStateThunk(void *pPointSink);
+void LEMBALL_FASTCALL QueueQueuedRenderPointSinkThunk(
+    void *pPointSink, void *, void *pQueue);
+void LEMBALL_FASTCALL QueueQueuedRenderPointSink(
+    void *pPointSink, void *, void *pQueue);
+void __stdcall PromoteQueuedRenderPointSinkTargetState(void *pPointSink);
+char *LookupDirectDrawErrorString(unsigned int nError);
+void NoopDirectDrawCallback(unsigned int nResult, unsigned int nUnused);
+int LEMBALL_FASTCALL CreateAndStoreDisplayPalette(
+    void *pDisplayState, int, void *pPalette);
+int LEMBALL_FASTCALL SelectAndRealizeDisplayPalette(
+    void *pDisplayState, int, void *pDisplayDc);
+int LEMBALL_FASTCALL ApplyDisplaySurfacePalette(
+    void *, int, void *pSurface, int nFirstEntry, int cEntries,
+    const unsigned int *paColors);
+static int LEMBALL_FASTCALL CopyDisplaySurfaceRect(
+    void *, int, void *pBinding, short *pDestinationRect,
+    void *, short *pSourcePoint);
+static int LEMBALL_FASTCALL StretchDisplaySurfaceRect(
+    void *, int, void *pDestinationBinding, short *pDestinationRect,
+    void *pSourceBinding, short *pSourceRect);
+int LEMBALL_FASTCALL UsesExistingDisplayPaletteAsFallback(
+    void *pDisplayState, int);
+void LEMBALL_FASTCALL SetHelperTargetParamWrapperDisplayDc(
+    void *pParamWrapper, int, void *hDc);
+void *LEMBALL_FASTCALL DeleteHelperTargetParamWrapper(
+    void *pParamWrapper, int, int fDelete);
+void LEMBALL_FASTCALL NoopHelperTargetParamWrapperArgument(
+    void *, int, void *);
+void *LEMBALL_FASTCALL DeleteHelperTargetParamWrapperBase(
+    void *pParamWrapper, int, int fDelete);
+int LEMBALL_FASTCALL ReturnTrueHelperTargetParamWrapperA(void *, int);
+int LEMBALL_FASTCALL ReturnTrueHelperTargetParamWrapperB(void *, int);
+int LEMBALL_FASTCALL GetHelperTargetParamWrapperDisplayDc(
+    void *pParamWrapper, int);
+int LEMBALL_FASTCALL GetHelperTargetParamWrapperReserved(
+    void *pParamWrapper, int);
+void *LEMBALL_FASTCALL DeleteHelperTargetParamWrapperInterface(
+    void *pParamWrapper, int, int fDelete);
+void *LEMBALL_FASTCALL VsGdiDeleteDisplayBitmap(
+    void *pBitmap, int, int fDelete);
+void LEMBALL_FASTCALL BuildGeometryHelperFromRenderRect(void *pOwner);
+static void LEMBALL_FASTCALL RestoreCompactResourceGeometryHelperVtable(void *pvHelper);
+void *ConstructHelperGroup0RowBuffer(void *pvHelperGroup, int fConstructCompactHelper);
+void LEMBALL_FASTCALL DestroyHelperGroup0RowBuffer(void *pvHelperGroup);
+int LEMBALL_FASTCALL GetHelperGroup0DirtyFlag(void *pGroupState, int);
+void LEMBALL_FASTCALL ReleaseHelperGroup0BackingBuffer(int nHelperGroup);
+void LEMBALL_FASTCALL EnsureHelperGroup0BackingBufferThunk(void *pHelperGroup);
+void *ConstructHelperGroup1RowBuffer(void *pvHelperGroup, int fConstructCompactHelper);
+void LEMBALL_FASTCALL DestroyHelperGroup1RowBuffer(void *pvHelperGroup);
+void ReleaseHelperGroup1BackingBuffer(int nHelperGroup);
+void LEMBALL_FASTCALL EnsureHelperGroup1BackingBufferBody(void *pHelperGroup);
+void LEMBALL_FASTCALL EnsureHelperGroup1BackingBuffer(void *pHelperGroup);
+void LEMBALL_FASTCALL CopyRectTupleIfExtentEmpty(void *pTarget,
+                                                 int,
+    short *paRect);
+int LEMBALL_FASTCALL GetHelperGroup1DirtyFlag(void *pGroupState, int);
+void LEMBALL_FASTCALL ResetHelperUploadStateMap(void *pTracker);
+void LEMBALL_FASTCALL EnsureHelperUploadStateMapCapacity(void *pTracker);
+void LEMBALL_FASTCALL SetHelperUploadTrackerExtent(
+    void *pTracker, int, int nExtent);
+void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
+void LEMBALL_FASTCALL ResetHelperUploadRectListAndStateMap(int nUploadState);
+void LEMBALL_FASTCALL PromoteHelperUploadStateToActive(int nUploadState);
+void LEMBALL_FASTCALL DestroyGeometryHelperPointerArray(void *pHelper);
+void AppendPointerQueueEntry(void *pQueue, void *pEntry);
+void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void *pQueue);
+void *LEMBALL_FASTCALL ConstructStatusIndicatorRenderClientBase(int *pRenderClient);
+void LEMBALL_FASTCALL InitializeStatusIndicatorRenderClientDefaults(int *pRenderClient);
+int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(
+    void *pRenderClient, int, RenderDispatchQueueEntry *pEntry);
+int InitializeResourceGeometryHelperRuntime(void);
+int ShutdownResourceGeometryHelperRuntime(void);
+void DestroyResourceGeometryHelperSlotManager(void *pvSlotManager);
+int FindFirstFreeResourceGeometryHelperSlotIndex(void *pvSlotManager);
+void BuildAndApplyLogPalette(unsigned int *paOutputColors,
+                             void *pPaletteResource,
+                             int,
+    const unsigned int *paFallbackColors);
+void DestroyResourceGeometryHelperTarget(void *pvTarget);
+int LEMBALL_FASTCALL GetResourceGeometryHelperTargetActiveUploadState(void *pTarget);
+void LEMBALL_FASTCALL ApplyHelperTargetPaletteAndPropagate(
+    void *pCompactTarget, int, void *pPalette);
+void LEMBALL_FASTCALL SetHelperTargetRenderExtent(
+    void *pCompactTarget, int, const VsGdiRect *pExtent);
+void LEMBALL_FASTCALL BindHelperTargetDisplayDc(void *pTarget, int, void *hDc);
+void LEMBALL_FASTCALL PropagateGlobalPaletteToResourceGeometries(void *pTarget);
+void LEMBALL_FASTCALL PropagateGlobalPaletteToResourceGeometriesBody(void *pTarget);
+int RefreshHelperTargetBindingIfChanged(void *pTarget);
+void InvokeRootHelperTargetPostQueueCallback(int nTarget);
+void LEMBALL_FASTCALL FillHelperSurfaceRectCommandAdjustmentThunk(
+    void *pCompactTarget, int nUnused, void *pCommand);
+void LEMBALL_FASTCALL ForwardBitmapCommandToAdjustedSurfaceThunk(void);
+void LEMBALL_FASTCALL ForwardBitmapCommandToAdjustedSurface(
+    void *pCompactTarget, int, void *pCommand, void *pBitmap);
+void LEMBALL_FASTCALL BlitBitmapRowsToScanlinesAdjustmentThunk(
+    void *pCompactTarget, int nUnused, void *pCommand, void *pBitmap);
+void LEMBALL_FASTCALL SetHelperTargetRenderExtentAdjustmentThunk(
+    void *pCompactTarget, int nUnused, const VsGdiRect *pExtent);
+void LEMBALL_FASTCALL ApplyHelperTargetPaletteAdjustmentThunk(
+    void *pCompactTarget, int nUnused, void *pPalette);
+void LEMBALL_FASTCALL PresentCompactResourceGeometryHelperAdjustmentThunk(
+    void *pCompactTarget);
+void LEMBALL_FASTCALL PresentCompactResourceGeometryHelper(
+    void *pCompactTarget);
+unsigned char *LEMBALL_FASTCALL GetHelperTargetTokenAdjustmentThunk(
+    void *pCompactTarget);
+unsigned char *LEMBALL_FASTCALL GetHelperTargetToken(void *pTarget);
+int LEMBALL_FASTCALL GetHelperGroup0DirtyFlagAdjustmentThunk(
+    void *pCompactTarget, int nUnused);
+int LEMBALL_FASTCALL GetHelperGroup1DirtyFlagAdjustmentThunk(
+    void *pCompactTarget, int nUnused);
+void *LEMBALL_FASTCALL InitializeResourceGeometryRowBuffer(void *pvRowBuffer);
+void LEMBALL_FASTCALL DestroyResourceGeometryRowBuffer(void *pvRowBuffer);
+void LEMBALL_FASTCALL ClearResourceGeometryRowBufferFields(void *pvRowBuffer);
+void LEMBALL_FASTCALL EnsureHelperBackingRowIndexCapacity(VsGdiHelperSurface *pSurface);
+void LEMBALL_FASTCALL RebuildResourceGeometryRowPointerTable(VsGdiHelperSurface *pSurface);
+void LEMBALL_FASTCALL InitializeArrowCursorState(int *pState);
+void LEMBALL_FASTCALL InitializeArrowCursorPosition(void *pRenderClient);
+void LEMBALL_FASTCALL HideArrowCursor(void *pRenderClient);
+void LEMBALL_FASTCALL ShowArrowCursor(void *pRenderClient);
+void *LEMBALL_FASTCALL DeleteStatusIndicatorRenderClientBaseThunk(
+    void *pRenderClient, int nUnused, unsigned char fDelete);
+void LEMBALL_FASTCALL NoopStatusIndicatorRenderClientSlot(void *pRenderClient);
+int LEMBALL_FASTCALL DispatchStatusIndicatorRenderEntry(
+    void *pRenderClient, int nUnused, void *pEntry);
+void *LEMBALL_FASTCALL DeleteArrowCursorRenderClientThunk(
+    void *pRenderClient, int nUnused, unsigned char fDelete);
+void LEMBALL_FASTCALL CompactHelperReservedArgumentSlot(void *, int, void *);
+int LEMBALL_FASTCALL CompactHelperReturnZeroSlot15(void *);
+int LEMBALL_FASTCALL CompactHelperReturnZeroSlot16(void *);
+void LEMBALL_FASTCALL CompactHelperReservedArgumentSlot17(void *, int, void *);
+int LEMBALL_FASTCALL CompactHelperReturnZeroSlot18(void *);
+void *LEMBALL_FASTCALL DeleteStatusRenderEntryThunk(
+    void *, int, unsigned char);
+void LEMBALL_FASTCALL QueueStatusRenderPopThunk(void *, int, void *);
+void LEMBALL_FASTCALL ExecuteStatusRenderPopThunk(void *, int, void *);
+void LEMBALL_FASTCALL SetStatusRenderEntryFieldThunk(void *, int, int);
+int LEMBALL_FASTCALL ReturnZeroStatusRenderThunk(void *);
+void *LEMBALL_FASTCALL DeleteStatusPointSinkEntryThunk(
+    void *, int, unsigned char);
+void LEMBALL_FASTCALL QueueStatusPointPushThunk(void *, int, void *);
+void LEMBALL_FASTCALL ExecuteStatusPointPushThunk(void *, int, void *);
+void *LEMBALL_FASTCALL DeleteStatusPointSinkVariantThunk(
+    void *, int, unsigned char);
+void LEMBALL_FASTCALL AppendStatusPointSinkToQueueThunk(void *, int, void *);
+void LEMBALL_FASTCALL DispatchStatusPointSinkOwnerThunk(void *, int, void *);
+void DeleteRenderPointRectSinkThunk00401898(void *, unsigned char);
+void LEMBALL_FASTCALL QueueRenderPointRectSinkThunk00402DD3(
+    void *, int, void *);
+void LEMBALL_FASTCALL DispatchRenderPointRectSinkThunk00401C71(
+    void *, int, void *);
+void LEMBALL_FASTCALL CopyRectRowsToHelperGroup0Buffer(
+    void *pGroup0RowBuffer, int, void *pCopyCommand);
+void LEMBALL_FASTCALL FillRectInHelperGroup0Buffer(
+    void *pGroup0RowBuffer, int, void *pFillCommand);
+void LEMBALL_FASTCALL CopyHelperGroup0RectToTarget(
+    void *pGroup0RowBuffer, int, void *pCopyRect);
+void LEMBALL_FASTCALL FillHelperSurfaceRectCommand(
+    void *pCompactTarget, int, void *pCommand);
+void LEMBALL_FASTCALL BlitBitmapRowsToScanlines(
+    void *pCompactTarget, int, void *pCommand, void *pBitmap);
 
 // GLOBAL: LEMBALL 0x004a0e7c
 int g_fStartupFullscreen = 0;
@@ -40,12 +204,12 @@ int g_fStartupGraphicsDriverCds = 1;
 int g_fStartupGraphicsDriverGdk = 0;
 // GLOBAL: LEMBALL 0x004a0768
 void *g_pSelectedGraphicsDriverRuntime = 0;
-// GLOBAL: LEMBALL 0x004A2008
+// GLOBAL: LEMBALL 0x004a2008
 static void *g_pResourceGeometryHelperSlotManager = 0;
 // GLOBAL: LEMBALL 0x004a200c
 void *g_pResourceGeometryHelperTarget = 0;
 // GLOBAL: LEMBALL 0x004a9bf4
-int *g_pArrowCursorStatusIndicatorRenderClient = 0;
+int *g_pArrowCursorStatusIndicatorRenderClient;
 // GLOBAL: LEMBALL 0x004a9bf8
 unsigned int g_adwGlobalResourceGeometryPaletteTable[256];
 VsGdiDisplayState *g_pDisplayState = 0;
@@ -106,28 +270,52 @@ static const char g_VSGDI_DefaultWindowModeSuffix[] =
 static const char g_VSGDI_WarningCaption[] = "WARNING";
 FARPROC g_pApplyFullscreenDisplayModeThunk = 0;
 
-// FUNCTION: LEMBALL 0x00456720
-char *LookupDirectDrawErrorString(unsigned int nError) {
-    const char *pszPrefix = g_pVSGDI_UnknownDirectDrawError;
 
-    strcpy(g_VSGDI_DirectDrawErrorText, pszPrefix);
-    FormatSignedIntToRadixString(
-        (int)nError,
-        g_VSGDI_DirectDrawErrorText + strlen(pszPrefix),
-        10);
-    return g_VSGDI_DirectDrawErrorText;
-}
-
-// FUNCTION: LEMBALL 0x00456780
-void NoopDirectDrawCallback(unsigned int nResult, unsigned int nUnused) {
-    (void)nResult;
-    (void)nUnused;
-}
 #define VsGdiSAFE_TABLE(name) static void *name[32]
 // GLOBAL: LEMBALL 0x00499508
-static void *g_VSGDI_CompactResourceGeometryHelperVtable[32];
+static void *g_VSGDI_CompactResourceGeometryHelperVtable[20] = {
+    (void *)_purecall, (void *)_purecall, (void *)_purecall,
+    (void *)_purecall, (void *)_purecall, (void *)_purecall,
+    (void *)_purecall, (void *)_purecall, (void *)_purecall,
+    (void *)_purecall, (void *)CompactHelperReservedArgumentSlot,
+    (void *)_purecall, (void *)_purecall, (void *)_purecall,
+    (void *)_purecall, (void *)CompactHelperReturnZeroSlot15,
+    (void *)CompactHelperReturnZeroSlot16,
+    (void *)CompactHelperReservedArgumentSlot17,
+    (void *)CompactHelperReturnZeroSlot18, 0,
+};
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot0(void *);
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot1(void *);
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot2(void *);
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot3(void *);
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot4(void *);
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot5(void *);
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot9(void *);
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot11(void *);
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot17(void *);
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot18(void *);
+void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot4(void *);
+void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot5(void *);
+void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot6(void *);
+void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot8(void *);
+
 // GLOBAL: LEMBALL 0x0049a470
-static void *g_VSGDI_ResourceGeometryRowBufferVtable[32];
+static void *g_VSGDI_ResourceGeometryRowBufferVtable[14] = {
+    (void *)RebuildResourceGeometryRowPointerTable,
+    0,
+    (void *)EnterObjectCriticalSection,
+    (void *)LeaveObjectCriticalSection,
+    (void *)ResourceGeometryRowBufferSlot4,
+    (void *)ResourceGeometryRowBufferSlot5,
+    (void *)ResourceGeometryRowBufferSlot6,
+    0,
+    (void *)ResourceGeometryRowBufferSlot8,
+    (void *)_purecall,
+    (void *)_purecall,
+    0,
+    (void *)EnterObjectCriticalSection,
+    (void *)LeaveObjectCriticalSection,
+};
 VsGdiSAFE_TABLE(g_VSGDI_ResourceGeometryHelperGroup0Vtable);
 VsGdiSAFE_TABLE(g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable);
 VsGdiSAFE_TABLE(g_VSGDI_ResourceGeometryHelperGroup1Vtable);
@@ -136,29 +324,118 @@ VsGdiSAFE_TABLE(g_VSGDI_ResourceGeometryHelperTargetConstructionVtable);
 VsGdiSAFE_TABLE(g_VSGDI_CompactResourceGeometryHelperConstructionVtable);
 VsGdiSAFE_TABLE(g_VSGDI_ResourceGeometryHelperTargetVtable);
 VsGdiSAFE_TABLE(g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable);
-// GLOBAL: LEMBALL 0x00499E40
-static void *g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable[4];
-// GLOBAL: LEMBALL 0x00499DF0
-static void *g_VSGDI_CompactResourceGeometryHelperSubobjectVtable[20];
+// GLOBAL: LEMBALL 0x00499e40
+static void *g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable[4] = {
+    (void *)FillRectInHelperGroup0Buffer,
+    (void *)CopyRectRowsToHelperGroup0Buffer,
+    (void *)CopyHelperGroup0RectToTarget,
+    0,
+};
+// GLOBAL: LEMBALL 0x00499df0
+static void *g_VSGDI_CompactResourceGeometryHelperSubobjectVtable[20] = {
+    (void *)CompactHelperSubobjectSlot0,
+    (void *)CompactHelperSubobjectSlot1,
+    (void *)CompactHelperSubobjectSlot2,
+    (void *)CompactHelperSubobjectSlot3,
+    (void *)CompactHelperSubobjectSlot4,
+    (void *)CompactHelperSubobjectSlot5,
+    (void *)FillHelperSurfaceRectCommandAdjustmentThunk,
+    (void *)ForwardBitmapCommandToAdjustedSurfaceThunk,
+    (void *)BlitBitmapRowsToScanlinesAdjustmentThunk,
+    (void *)CompactHelperSubobjectSlot9,
+    (void *)SetHelperTargetRenderExtentAdjustmentThunk,
+    (void *)CompactHelperSubobjectSlot11,
+    (void *)ApplyHelperTargetPaletteAdjustmentThunk,
+    (void *)PresentCompactResourceGeometryHelperAdjustmentThunk,
+    (void *)GetHelperTargetTokenAdjustmentThunk,
+    (void *)GetHelperGroup0DirtyFlagAdjustmentThunk,
+    (void *)GetHelperGroup1DirtyFlagAdjustmentThunk,
+    (void *)CompactHelperSubobjectSlot17,
+    (void *)CompactHelperSubobjectSlot18,
+    0,
+};
+struct VsGdiTargetParamWrapperVtable {
+    void *(LEMBALL_FASTCALL *m_pDelete)(void *, int, int);
+    void (LEMBALL_FASTCALL *m_pSetDisplayDc)(void *, int, void *);
+    void *(LEMBALL_FASTCALL *m_pDeleteBase)(void *, int, int);
+    void (LEMBALL_FASTCALL *m_pNoopArgument)(void *, int, void *);
+    void *(LEMBALL_FASTCALL *m_pDeleteInterface)(void *, int, int);
+    int (LEMBALL_FASTCALL *m_pReturnTrueA)(void *, int);
+    int (LEMBALL_FASTCALL *m_pReturnTrueB)(void *, int);
+    int (LEMBALL_FASTCALL *m_pGetDisplayDc)(void *, int);
+    int (LEMBALL_FASTCALL *m_pGetReserved)(void *, int);
+    void *m_pTerminator;
+};
 // GLOBAL: LEMBALL 0x00498770
-static void *g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable[10];
+static VsGdiTargetParamWrapperVtable g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable = {
+        DeleteHelperTargetParamWrapper,
+        SetHelperTargetParamWrapperDisplayDc,
+        DeleteHelperTargetParamWrapperBase,
+        NoopHelperTargetParamWrapperArgument,
+        DeleteHelperTargetParamWrapperInterface,
+        ReturnTrueHelperTargetParamWrapperA,
+        ReturnTrueHelperTargetParamWrapperB,
+        GetHelperTargetParamWrapperDisplayDc,
+        GetHelperTargetParamWrapperReserved,
+        0,
+    };
 VsGdiSAFE_TABLE(g_VSGDI_ResourceGeometryHelperSlotManagerVtable);
 // GLOBAL: LEMBALL 0x00499d38
-static void *g_VSGDI_StatusIndicatorBaseVtable[32];
+static void *g_VSGDI_StatusIndicatorBaseVtable[8] = {
+    (void *)InitializeNonZrleVariantRenderEntry,
+    (void *)DeleteStatusIndicatorRenderClientBaseThunk,
+    (void *)HandleStatusIndicatorInputEvent,
+    (void *)DispatchStatusIndicatorRenderEntry,
+    (void *)_purecall,
+    (void *)_purecall,
+    (void *)NoopStatusIndicatorRenderClientSlot,
+    0,
+};
 // GLOBAL: LEMBALL 0x00499d58
-static void *g_VSGDI_ArrowCursorRuntimeVtable[32];
+static void *g_VSGDI_ArrowCursorRuntimeVtable[8] = {
+    (void *)InitializeNonZrleVariantRenderEntry,
+    (void *)DeleteArrowCursorRenderClientThunk,
+    (void *)HandleStatusIndicatorInputEvent,
+    (void *)DispatchStatusIndicatorRenderEntry,
+    (void *)HideArrowCursor,
+    (void *)ShowArrowCursor,
+    (void *)InitializeArrowCursorPosition,
+    0,
+};
 // GLOBAL: LEMBALL 0x00496e50
-static void *g_VSGDI_StatusIndicatorRenderClientVtable[32];
+static void *g_VSGDI_StatusIndicatorRenderClientVtable[8] = {
+    (void *)DeleteStatusRenderEntryThunk,
+    (void *)QueueStatusRenderPopThunk,
+    (void *)ExecuteStatusRenderPopThunk,
+    0,
+    (void *)SetStatusRenderEntryFieldThunk,
+    (void *)ReturnZeroStatusRenderThunk,
+    0,
+    0,
+};
 // GLOBAL: LEMBALL 0x00496e70
-static void *g_VSGDI_StatusIndicatorPointSinkVtable[32];
+static void *g_VSGDI_StatusIndicatorPointSinkVtable[12] = {
+    (void *)DeleteStatusPointSinkEntryThunk,
+    (void *)QueueStatusPointPushThunk,
+    (void *)ExecuteStatusPointPushThunk,
+    0,
+    (void *)DeleteStatusPointSinkVariantThunk,
+    (void *)AppendStatusPointSinkToQueueThunk,
+    (void *)DispatchStatusPointSinkOwnerThunk,
+    0,
+    (void *)DeleteRenderPointRectSinkThunk00401898,
+    (void *)QueueRenderPointRectSinkThunk00402DD3,
+    (void *)DispatchRenderPointRectSinkThunk00401C71,
+    0,
+};
 
 static void *LEMBALL_FASTCALL VsGdiDeleteDisplayState(
     void *pDisplayState, int nUnused, int fDelete);
-static int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(
+int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(
     void *pRenderClient, int nUnused, RenderDispatchQueueEntry *pEntry);
-static void LEMBALL_FASTCALL InitializeArrowCursorPosition(void *pRenderClient);
-static void LEMBALL_FASTCALL HideArrowCursor(void *pRenderClient);
-static void LEMBALL_FASTCALL ShowArrowCursor(void *pRenderClient);
+void LEMBALL_FASTCALL InitializeArrowCursorPosition(void *pRenderClient);
+void LEMBALL_FASTCALL HideArrowCursor(void *pRenderClient);
+void LEMBALL_FASTCALL ShowArrowCursor(void *pRenderClient);
 
 void LEMBALL_FASTCALL ApplyHelperTargetPaletteAdjustmentThunk(
     void *pCompactTarget, int nUnused, void *pPalette);
@@ -172,8 +449,7 @@ unsigned char *LEMBALL_FASTCALL GetHelperTargetTokenAdjustmentThunk(
     void *pCompactTarget);
 void LEMBALL_FASTCALL FillHelperSurfaceRectCommandAdjustmentThunk(
     void *pCompactTarget, int nUnused, void *pCommand);
-void LEMBALL_FASTCALL ForwardBitmapCommandToAdjustedSurfaceThunk(
-    void *pCompactTarget, int nUnused, void *pCommand, void *pBitmap);
+void LEMBALL_FASTCALL ForwardBitmapCommandToAdjustedSurfaceThunk(void);
 void LEMBALL_FASTCALL BlitBitmapRowsToScanlines(
     void *pCompactTarget, int nUnused, void *pCommand, void *pBitmap);
 void LEMBALL_FASTCALL BlitBitmapRowsToScanlinesAdjustmentThunk(
@@ -207,18 +483,12 @@ int LEMBALL_FASTCALL GetHelperTargetParamWrapperDisplayDc(
 int LEMBALL_FASTCALL GetHelperTargetParamWrapperReserved(
     void *pParamWrapper, int nUnused);
 
-// FUNCTION: LEMBALL 0x0046CBD0
-int LEMBALL_FASTCALL GetResourceGeometryHelperTargetActiveUploadState(void *pTarget) {
-    return *(int *)((char *)pTarget + 0x550);
-}
 
 #undef VsGdiSAFE_TABLE
 
 struct VsGdiSafeTableInitializer {
     VsGdiSafeTableInitializer(void) {
         void **tables[] = {
-            g_VSGDI_CompactResourceGeometryHelperVtable,
-            g_VSGDI_ResourceGeometryRowBufferVtable,
             g_VSGDI_ResourceGeometryHelperGroup0Vtable,
             g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable,
             g_VSGDI_ResourceGeometryHelperGroup1Vtable,
@@ -227,77 +497,16 @@ struct VsGdiSafeTableInitializer {
             g_VSGDI_CompactResourceGeometryHelperConstructionVtable,
             g_VSGDI_ResourceGeometryHelperTargetVtable,
             g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable,
-            g_VSGDI_ResourceGeometryHelperSlotManagerVtable,
-            g_VSGDI_StatusIndicatorBaseVtable,
-            g_VSGDI_ArrowCursorRuntimeVtable,
-            g_VSGDI_StatusIndicatorRenderClientVtable,
-            g_VSGDI_StatusIndicatorPointSinkVtable
+            g_VSGDI_ResourceGeometryHelperSlotManagerVtable
         };
         int i;
         int j;
-        for (i = 0; i < 15; ++i)
+        for (i = 0; i < 9; ++i)
             for (j = 0; j < 32; ++j)
                 tables[i][j] = (void *)NetworkSafeVtableNoop;
 
-        g_VSGDI_StatusIndicatorBaseVtable[2] =
-            (void *)HandleStatusIndicatorInputEvent;
-        g_VSGDI_ArrowCursorRuntimeVtable[2] =
-            (void *)HandleStatusIndicatorInputEvent;
-        g_VSGDI_ArrowCursorRuntimeVtable[4] = (void *)HideArrowCursor;
-        g_VSGDI_ArrowCursorRuntimeVtable[5] = (void *)ShowArrowCursor;
-        g_VSGDI_ArrowCursorRuntimeVtable[6] =
-            (void *)InitializeArrowCursorPosition;
-
-        for (j = 0; j < 20; ++j)
-            g_VSGDI_CompactResourceGeometryHelperSubobjectVtable[j] =
-                (void *)NetworkSafeVtableNoop;
-        g_VSGDI_CompactResourceGeometryHelperSubobjectVtable[12] =
-            (void *)ApplyHelperTargetPaletteAdjustmentThunk;
-        g_VSGDI_CompactResourceGeometryHelperSubobjectVtable[10] =
-            (void *)SetHelperTargetRenderExtentAdjustmentThunk;
-        g_VSGDI_CompactResourceGeometryHelperSubobjectVtable[14] =
-            (void *)GetHelperTargetTokenAdjustmentThunk;
-        g_VSGDI_CompactResourceGeometryHelperSubobjectVtable[6] =
-            (void *)FillHelperSurfaceRectCommandAdjustmentThunk;
-        g_VSGDI_CompactResourceGeometryHelperSubobjectVtable[7] =
-            (void *)ForwardBitmapCommandToAdjustedSurfaceThunk;
-        g_VSGDI_CompactResourceGeometryHelperSubobjectVtable[8] =
-            (void *)BlitBitmapRowsToScanlinesAdjustmentThunk;
-        g_VSGDI_CompactResourceGeometryHelperSubobjectVtable[15] =
-            (void *)GetHelperGroup0DirtyFlagAdjustmentThunk;
-        g_VSGDI_CompactResourceGeometryHelperSubobjectVtable[16] =
-            (void *)GetHelperGroup1DirtyFlagAdjustmentThunk;
-        g_VSGDI_CompactResourceGeometryHelperSubobjectVtable[13] =
-            (void *)PresentCompactResourceGeometryHelperAdjustmentThunk;
-
         g_VSGDI_ResourceGeometryHelperTargetVtable[2] =
             (void *)GetResourceGeometryHelperTargetActiveUploadState;
-        g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable[1] =
-            (void *)CopyRectRowsToHelperGroup0Buffer;
-        g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable[0] =
-            (void *)FillRectInHelperGroup0Buffer;
-        g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable[2] =
-            (void *)CopyHelperGroup0RectToTarget;
-        g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable[3] = 0;
-        g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable[1] =
-            (void *)SetHelperTargetParamWrapperDisplayDc;
-        g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable[0] =
-            (void *)DeleteHelperTargetParamWrapper;
-        g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable[2] =
-            (void *)DeleteHelperTargetParamWrapperBase;
-        g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable[3] =
-            (void *)NoopHelperTargetParamWrapperArgument;
-        g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable[4] =
-            (void *)DeleteHelperTargetParamWrapperInterface;
-        g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable[5] =
-            (void *)ReturnTrueHelperTargetParamWrapperA;
-        g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable[6] =
-            (void *)ReturnTrueHelperTargetParamWrapperB;
-        g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable[7] =
-            (void *)GetHelperTargetParamWrapperDisplayDc;
-        g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable[8] =
-            (void *)GetHelperTargetParamWrapperReserved;
-        g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable[9] = 0;
     }
 };
 static VsGdiSafeTableInitializer g_VSGDI_SafeTableInitializer;
@@ -352,75 +561,14 @@ struct VsGdiResourceGeometryHelperSlotManager {
     void DeactivateResourceGeometryHelperSlot(void *pTarget);
 };
 
-// FUNCTION: LEMBALL 0x00458250
-void LEMBALL_FASTCALL SetHelperTargetParamWrapperDisplayDc(
-    void *pParamWrapper, int, void *hDc)
-{
-    *(void **)((char *)pParamWrapper + 4) = hDc;
-}
 
-// FUNCTION: LEMBALL 0x00458260
-void *LEMBALL_FASTCALL DeleteHelperTargetParamWrapper(
-    void *pParamWrapper, int, int fDelete)
-{
-    *(void ***)pParamWrapper =
-        &g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable[2];
-    if ((fDelete & 1) != 0)
-        FreeVSMemBlock(pParamWrapper);
-    return pParamWrapper;
-}
 
-// FUNCTION: LEMBALL 0x00458280
-void LEMBALL_FASTCALL NoopHelperTargetParamWrapperArgument(
-    void *, int, void *)
-{
-}
 
-// FUNCTION: LEMBALL 0x00458290
-void *LEMBALL_FASTCALL DeleteHelperTargetParamWrapperBase(
-    void *pParamWrapper, int, int fDelete)
-{
-    *(void ***)pParamWrapper =
-        &g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable[2];
-    if ((fDelete & 1) != 0)
-        FreeVSMemBlock(pParamWrapper);
-    return pParamWrapper;
-}
 
-// FUNCTION: LEMBALL 0x004582B0
-int LEMBALL_FASTCALL ReturnTrueHelperTargetParamWrapperA(void *, int) {
-    return 1;
-}
 
-// FUNCTION: LEMBALL 0x004582C0
-int LEMBALL_FASTCALL ReturnTrueHelperTargetParamWrapperB(void *, int) {
-    return 1;
-}
 
-// FUNCTION: LEMBALL 0x004582D0
-int LEMBALL_FASTCALL GetHelperTargetParamWrapperDisplayDc(
-    void *pParamWrapper, int)
-{
-    return *(int *)((char *)pParamWrapper + 4);
-}
 
-// FUNCTION: LEMBALL 0x004582E0
-int LEMBALL_FASTCALL GetHelperTargetParamWrapperReserved(
-    void *pParamWrapper, int)
-{
-    return *(int *)((char *)pParamWrapper + 8);
-}
 
-// FUNCTION: LEMBALL 0x004582F0
-void *LEMBALL_FASTCALL DeleteHelperTargetParamWrapperInterface(
-    void *pParamWrapper, int, int fDelete)
-{
-    *(void ***)pParamWrapper =
-        &g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable[4];
-    if ((fDelete & 1) != 0)
-        FreeVSMemBlock(pParamWrapper);
-    return pParamWrapper;
-}
 
 struct VsGdiResourceGeometryLinkNode {
     void *m_pTarget;
@@ -518,133 +666,1623 @@ struct VsGdiQuantizedHelperUploadRectTracker {
     int GetHelperUploadActiveRectStartIndex(void);
 };
 
-// FUNCTION: LEMBALL 0x00474E60
-void LEMBALL_FASTCALL FillRectInHelperGroup0Buffer(
-    void *pGroup0RowBuffer, int, void *pFillCommand)
-{
-    unsigned char **ppRows;
-    unsigned char *pbCommand;
-    int cbRow;
-    int cRows;
-    int xDestination;
-    int yDestination;
-    int nColor;
-    int iRow;
 
-    pbCommand = (unsigned char *)pFillCommand;
-    cbRow = (int)*(short *)(pbCommand + 8);
-    cRows = (int)*(short *)(pbCommand + 0x0a);
-    if (cbRow == 0 || cRows == 0)
-        return;
-
-    nColor = *(int *)(pbCommand + 4);
-    xDestination = (int)*(short *)(pbCommand + 0x0c);
-    yDestination = (int)*(short *)(pbCommand + 0x0e);
-    if (yDestination <= 0)
-        return;
-
-    ppRows = *(unsigned char ***)((char *)pGroup0RowBuffer + 0x0c);
-    for (iRow = 0; iRow < cRows; ++iRow) {
-        memset(ppRows[yDestination + iRow] + xDestination,
-               (unsigned char)nColor,
-               (unsigned int)cbRow);
-    }
-}
-
-// FUNCTION: LEMBALL 0x00474EE0
-void LEMBALL_FASTCALL CopyHelperGroup0RectToTarget(
-    void *pGroup0RowBuffer, int, void *pCopyRect)
-{
-    unsigned char **ppTargetRows;
-    unsigned char **ppGroupRows;
-    short *paRect;
-    int cbRow;
-    int cRows;
-    int x;
-    int y;
-    int iRow;
-
-    paRect = (short *)pCopyRect;
-    cbRow = (int)paRect[0];
-    cRows = (int)paRect[1];
-    if (cbRow * cRows == 0)
-        return;
-
-    x = (int)paRect[2];
-    y = (int)paRect[3];
-    if (x + cbRow > (int)*(unsigned short *)((char *)pGroup0RowBuffer + 0x50))
-        cbRow = (int)*(unsigned short *)((char *)pGroup0RowBuffer + 0x50) - x;
-    if (y + cRows > (int)*(unsigned short *)((char *)pGroup0RowBuffer + 0x52))
-        cRows = (int)*(unsigned short *)((char *)pGroup0RowBuffer + 0x52) - y;
-    if (cRows <= 0)
-        return;
-
-    ppTargetRows = *(unsigned char ***)((char *)pGroup0RowBuffer - 0x94);
-    ppGroupRows = *(unsigned char ***)((char *)pGroup0RowBuffer + 0x0c);
-    for (iRow = 0; iRow < cRows; ++iRow) {
-        memcpy(ppTargetRows[y + iRow] + x,
-               ppGroupRows[y + iRow] + x,
-               (unsigned int)cbRow);
-    }
-}
 
 /* The target+0x98 row-buffer view receives a two-point/two-extent copy
  * command.  Ghidra 00474dd0 and table 00499e40 slot 1 show that the source
  * rows belong to the target base while the destination rows belong to this
  * helper-group view. */
-// FUNCTION: LEMBALL 0x00474DD0
-void LEMBALL_FASTCALL CopyRectRowsToHelperGroup0Buffer(
-    void *pGroup0RowBuffer, int, void *pCopyCommand)
-{
-    unsigned char **ppSourceRows;
-    unsigned char **ppDestinationRows;
-    unsigned char *pbCommand;
-    int cbRow;
-    int cRows;
-    int xSource;
-    int ySource;
-    int xDestination;
-    int yDestination;
-    int iRow;
-
-    pbCommand = (unsigned char *)pCopyCommand;
-    cbRow = (int)*(short *)(pbCommand + 8);
-    cRows = (int)*(short *)(pbCommand + 0x0a);
-    if (cbRow == 0 || cRows == 0)
-        return;
-
-    xSource = (int)*(short *)(pbCommand + 4);
-    ySource = (int)*(short *)(pbCommand + 6);
-    xDestination = (int)*(short *)(pbCommand + 0x0c);
-    yDestination = (int)*(short *)(pbCommand + 0x0e);
-    if (ySource <= 0)
-        return;
-
-    ppSourceRows = *(unsigned char ***)((char *)pGroup0RowBuffer - 0x94);
-    ppDestinationRows =
-        *(unsigned char ***)((char *)pGroup0RowBuffer + 0x0c);
-    for (iRow = 0; iRow < cRows; ++iRow) {
-        memcpy(ppDestinationRows[yDestination + iRow] + xDestination,
-               ppSourceRows[ySource + iRow] + xSource,
-               (unsigned int)cbRow);
-    }
-}
 
 void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
 
-// FUNCTION: LEMBALL 0x00466AC0
-void LEMBALL_FASTCALL EnsureHelperUploadStateMapCapacity(void *pTracker) {
-    int nMapEntries;
 
-    if (*(int *)((char *)pTracker + 0x10) == 0) {
-        nMapEntries = (int)*(short *)((char *)pTracker + 0x1c) *
-            (int)*(short *)((char *)pTracker + 0x1e);
-        *(int *)((char *)pTracker + 0x20) = nMapEntries;
-        *(void **)((char *)pTracker + 0x10) = AllocateVSMemBlock((unsigned int)nMapEntries);
+
+
+
+
+
+
+
+extern void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile, int nLine);
+extern int g_fRootHelperGeometryDispatchSuppressed;
+extern void *g_pQueuedRenderPointSinkFinalizeThunk;
+static int GetHelperSurfaceVariableBlockOffset(const VsGdiHelperSurface *pSurface);
+
+
+static void ReleaseResourceGeometryRowBufferStorage(int nRowBuffer) {
+    if (*(int *)(unsigned long)(nRowBuffer + 4) != 0) {
+        FreeVSMemBlock((void *)(unsigned long)*(int *)(unsigned long)(nRowBuffer + 4));
+    }
+    ClearResourceGeometryRowBufferFields((void *)(unsigned long)nRowBuffer);
+}
+
+
+
+struct VsGdiCompactResourceGeometryHelper {
+    void *InitializeCompactResourceGeometryHelper(void);
+};
+
+
+
+
+
+
+
+
+
+void *InitializeResourceGeometryHelperSlotManager(void *pvSlotManager, int cSlots) {
+    return ((VsGdiResourceGeometryHelperSlotManager *)pvSlotManager)
+        ->InitializeResourceGeometryHelperSlotManager(cSlots);
+}
+
+
+
+
+
+struct VsGdiResourceGeometryHelperSlotManagerVtableFixup {
+    VsGdiResourceGeometryHelperSlotManagerVtableFixup(void) {
+        union {
+            void *(VsGdiResourceGeometryHelperSlotManager::*p)(short *, void *);
+            void *v;
+        } allocateMethod;
+        union {
+            void (VsGdiResourceGeometryHelperSlotManager::*p)(void *);
+            void *v;
+        } deactivateMethod;
+        allocateMethod.p = &VsGdiResourceGeometryHelperSlotManager::
+            AllocateResourceGeometryHelperSlot;
+        deactivateMethod.p = &VsGdiResourceGeometryHelperSlotManager::
+            DeactivateResourceGeometryHelperSlot;
+        g_VSGDI_ResourceGeometryHelperSlotManagerVtable[0] = allocateMethod.v;
+        g_VSGDI_ResourceGeometryHelperSlotManagerVtable[3] = deactivateMethod.v;
+    }
+};
+static VsGdiResourceGeometryHelperSlotManagerVtableFixup
+    g_VSGDI_ResourceGeometryHelperSlotManagerVtableFixup;
+
+
+
+void *ConstructResourceGeometryHelperTarget(void *pvTarget, int nWrappedParam, int fConstructCompactHelper) {
+    return ((VsGdiResourceGeometryHelperTargetView *)pvTarget)
+        ->ConstructResourceGeometryHelperTarget(nWrappedParam, fConstructCompactHelper);
+}
+
+
+
+struct VsGdiResourceGeometryHelperSlotReleaseInterface {
+    virtual void Reserved0(void) = 0;
+    virtual void ReleaseResourceGeometryHelperSlot(void *pTarget) = 0;
+};
+
+
+struct VsGdiDisplayDcBindingInterface {
+    virtual void Reserved0(void) = 0;
+    virtual void BindDisplayDc(void *hDc) = 0;
+};
+
+
+struct VsGdiSystemPalettePayload {
+    unsigned short m_nVersion;
+    unsigned short m_cEntries;
+    unsigned char m_abEntries[256][4];
+};
+
+struct VsGdiDisplayPaletteDispatch {
+    virtual void Reserved0(void) = 0;
+    virtual void Reserved1(void) = 0;
+    virtual void Reserved2(void) = 0;
+    virtual void Reserved3(void) = 0;
+    virtual void Reserved4(void) = 0;
+    virtual void Reserved5(void) = 0;
+    virtual int ApplySurfacePalette(void *pSurface,
+                                    int nFirstEntry,
+                                    int cEntries,
+                                    const unsigned int *paColors) = 0;
+    virtual void Reserved7(void) = 0;
+    virtual void Reserved8(void) = 0;
+    virtual void Reserved9(void) = 0;
+    virtual void Reserved10(void) = 0;
+    virtual int ApplySystemPalette(void *pPalette) = 0;
+    virtual int SelectAndRealizePalette(void *pDisplayDc) = 0;
+    virtual int UsesExistingPaletteAsFallback(void) = 0;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct VsGdiLogPalette256 {
+    unsigned short m_nVersion;
+    unsigned short m_cEntries;
+    struct VsGdiPaletteEntry {
+        unsigned char m_bRed;
+        unsigned char m_bGreen;
+        unsigned char m_bBlue;
+        unsigned char m_bFlags;
+    } m_aEntries[256];
+};
+
+struct VsGdiDisplayPaletteStateView {
+    void *m_pVtable;
+    HMODULE m_hGraphicsModule;
+    void *m_hPalette;
+};
+
+struct VsGdiDisplayDcView {
+    void *m_pVtable;
+    void *m_hDc;
+};
+
+extern "C" {
+__declspec(dllimport) void *WINAPI GetDC(HWND hWnd);
+__declspec(dllimport) int WINAPI ReleaseDC(HWND hWnd, void *hDc);
+__declspec(dllimport) UINT WINAPI GetSystemPaletteEntries(
+    void *hDc, UINT nFirstEntry, UINT cEntries, void *pEntries);
+__declspec(dllimport) BOOL WINAPI DeleteObject(HGDIOBJ hObject);
+__declspec(dllimport) void *WINAPI CreatePalette(const void *pPalette);
+__declspec(dllimport) void *WINAPI SelectPalette(
+    void *hDc, void *hPalette, BOOL fForceBackground);
+__declspec(dllimport) UINT WINAPI RealizePalette(void *hDc);
+__declspec(dllimport) UINT WINAPI SetDIBColorTable(
+    void *hDc, UINT nFirstEntry, UINT cEntries, const void *pColors);
+__declspec(dllimport) void *WINAPI CreateCompatibleDC(void *hDc);
+__declspec(dllimport) BOOL WINAPI DeleteDC(void *hDc);
+__declspec(dllimport) void *WINAPI CreateDIBSection(
+    void *hDc, const void *pBitmapInfo, UINT nUsage, void **ppBits,
+    HANDLE hSection, DWORD dwOffset);
+__declspec(dllimport) BOOL WINAPI BitBlt(
+    void *hDcDestination, int xDestination, int yDestination,
+    int cx, int cy, void *hDcSource, int xSource, int ySource,
+    DWORD dwRasterOperation);
+__declspec(dllimport) BOOL WINAPI StretchBlt(
+    void *hDcDestination, int xDestination, int yDestination,
+    int cxDestination, int cyDestination, void *hDcSource,
+    int xSource, int ySource, int cxSource, int cySource,
+    DWORD dwRasterOperation);
+__declspec(dllimport) HGDIOBJ WINAPI SelectObject(
+    void *hDc, HGDIOBJ hObject);
+__declspec(dllimport) BOOL WINAPI GdiFlush(void);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+static int GetHelperSurfaceVariableBlockOffset(const VsGdiHelperSurface *pSurface) {
+    return *(const int *)((const char *)(unsigned long)*(const int *)((const char *)pSurface + 0x40) + 4);
+}
+
+
+struct VsGdiResourceGeometryVtableFixup {
+    VsGdiResourceGeometryVtableFixup(void) {
+        union {
+            void (VsGdiResourceGeometryHelperTargetView::*p)(short *);
+            void *v;
+        } markDirtyMethod;
+        markDirtyMethod.p = &VsGdiResourceGeometryHelperTargetView::MarkOrForwardHelperTargetDirtyRect;
+        g_VSGDI_ResourceGeometryHelperTargetVtable[1] = markDirtyMethod.v;
+    }
+};
+static VsGdiResourceGeometryVtableFixup g_VSGDI_ResourceGeometryVtableFixup;
+
+
+
+
+static const char *g_apszGraphicsDriverNames[] = {
+    "NO",
+    "CDS",
+    "VGA (Full Screen 320*200)",
+    "VGA (Full Screen 320*240)",
+    "Direct Draw (Full Screen 640*480)",
+    "Direct Draw (Full Screen 320*200)",
+    "Direct Draw (Windowed 640*480)",
+    "Direct Draw (Windowed 320*200)",
+    "Auto Select",
+};
+
+static const char *g_apszGraphicsDriverFallbackMessages[] = {
+    "None",
+    "Defaulting to normal 640*480 mode (using CreateDIBSection)",
+    "Unable to find DispDib32 Libraries for full screen 320*200 mode (dspdib16.dll & dspdib32.dll) - please reinstall",
+    "Unable to find DispDib32 Libraries for full screen 320*240 mode (dspdib16.dll & dspdib32.dll) - please reinstall",
+    "Unable to find Direct Draw libraries for full screen 640*480 mode (ddraw.dll) - please reinstall the DirectX libraries",
+    "Unable to find Direct Draw libraries for full screen 320*200 mode (ddraw.dll) - please reinstall the DirectX libraries",
+};
+
+static void CallDeleteVirtual(void *pObject, unsigned int nByteOffset, int nDeleteFlag) {
+    void **pVtable;
+
+    pVtable = *(void ***)pObject;
+    ((void *(LEMBALL_FASTCALL *)(void *, int, int))
+         pVtable[nByteOffset / sizeof(void *)])(pObject, 0, nDeleteFlag);
+}
+
+static int IsDisplayStateReady(const VsGdiDisplayState *pDisplayState) {
+    return *(const int *)((const char *)pDisplayState + 0xc) != 0;
+}
+
+struct VsGdiDisplayBitmap {
+    void **m_pVtable;
+    void *m_pBits;
+    int m_nStride;
+    HGDIOBJ m_hPreviousBitmap;
+    HGDIOBJ m_hBitmap;
+};
+
+struct VsGdiDisplayBitmapDispatch {
+    virtual void Reserved0(void) = 0;
+    virtual void Reserved1(void) = 0;
+    virtual void Reserved2(void) = 0;
+    virtual int Bits(void) = 0;
+    virtual int Origin(void) = 0;
+};
+
+struct VsGdiDisplayBitmapVtable {
+    void *(LEMBALL_FASTCALL *m_pDelete)(void *, int, int);
+    int (LEMBALL_FASTCALL *m_pReserved1)(void *, int);
+    int (LEMBALL_FASTCALL *m_pReserved2)(void *, int);
+    int (LEMBALL_FASTCALL *m_pDisplayDc)(void *, int);
+    int (LEMBALL_FASTCALL *m_pReserved)(void *, int);
+    void *m_pTerminator;
+};
+// GLOBAL: LEMBALL 0x00498798
+static VsGdiDisplayBitmapVtable g_VSGDI_DisplayBitmapVtable = {
+    VsGdiDeleteDisplayBitmap,
+    ReturnTrueHelperTargetParamWrapperA,
+    ReturnTrueHelperTargetParamWrapperB,
+    GetHelperTargetParamWrapperDisplayDc,
+    GetHelperTargetParamWrapperReserved,
+    0,
+};
+static void *g_VSGDI_MetricsDisplayVtable[14];
+static void *g_VSGDI_DibDisplayVtable[14];
+static void *g_VSGDI_DirectDrawDisplayVtable[14];
+
+static void *LEMBALL_FASTCALL VsGdiDeleteDisplayState(
+    void *pDisplayState, int nUnused, int fDelete) {
+    (void)nUnused;
+    if (fDelete != 0)
+        FreeVSMemBlock(pDisplayState);
+    return pDisplayState;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+static int VsGdiDisplayStateReady(void *pDisplayState) {
+    return IsDisplayStateReady((const VsGdiDisplayState *)pDisplayState);
+}
+
+static void InitializeDisplayStateVtables(void) {
+    int i;
+    union { void *(VsGdiDisplayState::*p)(void); void *v; } createBindingMethod;
+    union { int (VsGdiDisplayState::*p)(void *); void *v; } releaseBindingMethod;
+    union { int (VsGdiDisplayState::*p)(void *); void *v; } bitmapInfoMethod;
+    union { void *(VsGdiDisplayState::*p)(int, void *); void *v; } createBitmapMethod;
+    union { int (VsGdiDisplayState::*p)(void *); void *v; } bitmapObjectMethod;
+    union { int (VsGdiDisplayState::*p)(int, void *); void *v; } bitmapReadyMethod;
+    union { int (VsGdiDisplayState::*p)(int, void *); void *v; } bitmapDeleteMethod;
+    union { int (VsGdiDisplayState::*p)(void) const; void *v; } readyMethod;
+
+    for (i = 0; i < 14; ++i) {
+        g_VSGDI_MetricsDisplayVtable[i] = (void *)NetworkSafeVtableNoop;
+        g_VSGDI_DibDisplayVtable[i] = (void *)NetworkSafeVtableNoop;
+        g_VSGDI_DirectDrawDisplayVtable[i] = (void *)NetworkSafeVtableNoop;
+    }
+    g_VSGDI_MetricsDisplayVtable[0] = (void *)VsGdiDeleteDisplayState;
+    g_VSGDI_DibDisplayVtable[0] = (void *)VsGdiDeleteDisplayState;
+    g_VSGDI_DirectDrawDisplayVtable[0] = (void *)VsGdiDeleteDisplayState;
+    createBindingMethod.p = &VsGdiDisplayState::CreateDisplayBinding;
+    releaseBindingMethod.p = &VsGdiDisplayState::ReleaseDisplayBinding;
+    bitmapInfoMethod.p = &VsGdiDisplayState::InitializeDisplayBitmapInfo;
+    createBitmapMethod.p = &VsGdiDisplayState::CreateDisplayBitmap;
+    bitmapObjectMethod.p = &VsGdiDisplayState::ReleaseDisplayBitmap;
+    bitmapReadyMethod.p = &VsGdiDisplayState::BindDisplayBitmap;
+    bitmapDeleteMethod.p = &VsGdiDisplayState::DeleteDisplayBitmap;
+    readyMethod.p = &VsGdiDisplayState::IsReady;
+    g_VSGDI_MetricsDisplayVtable[1] = createBindingMethod.v;
+    g_VSGDI_DibDisplayVtable[1] = createBindingMethod.v;
+    g_VSGDI_DirectDrawDisplayVtable[1] = createBindingMethod.v;
+    g_VSGDI_MetricsDisplayVtable[2] = releaseBindingMethod.v;
+    g_VSGDI_DibDisplayVtable[2] = releaseBindingMethod.v;
+    g_VSGDI_DirectDrawDisplayVtable[2] = releaseBindingMethod.v;
+    g_VSGDI_MetricsDisplayVtable[3] = bitmapInfoMethod.v;
+    g_VSGDI_DibDisplayVtable[3] = bitmapInfoMethod.v;
+    g_VSGDI_DirectDrawDisplayVtable[3] = bitmapInfoMethod.v;
+    g_VSGDI_MetricsDisplayVtable[4] = createBitmapMethod.v;
+    g_VSGDI_DibDisplayVtable[4] = createBitmapMethod.v;
+    g_VSGDI_DirectDrawDisplayVtable[4] = createBitmapMethod.v;
+    g_VSGDI_MetricsDisplayVtable[5] = bitmapObjectMethod.v;
+    g_VSGDI_DibDisplayVtable[5] = bitmapObjectMethod.v;
+    g_VSGDI_DirectDrawDisplayVtable[5] = bitmapObjectMethod.v;
+    g_VSGDI_MetricsDisplayVtable[6] =
+        (void *)ApplyDisplaySurfacePalette;
+    g_VSGDI_MetricsDisplayVtable[7] =
+        (void *)StretchDisplaySurfaceRect;
+    g_VSGDI_MetricsDisplayVtable[8] =
+        (void *)CopyDisplaySurfaceRect;
+    g_VSGDI_MetricsDisplayVtable[9] = bitmapReadyMethod.v;
+    g_VSGDI_DibDisplayVtable[9] = bitmapReadyMethod.v;
+    g_VSGDI_DirectDrawDisplayVtable[9] = bitmapReadyMethod.v;
+    g_VSGDI_MetricsDisplayVtable[10] = bitmapDeleteMethod.v;
+    g_VSGDI_DibDisplayVtable[10] = bitmapDeleteMethod.v;
+    g_VSGDI_DirectDrawDisplayVtable[10] = bitmapDeleteMethod.v;
+    g_VSGDI_MetricsDisplayVtable[11] =
+        (void *)CreateAndStoreDisplayPalette;
+    g_VSGDI_MetricsDisplayVtable[12] =
+        (void *)SelectAndRealizeDisplayPalette;
+    g_VSGDI_MetricsDisplayVtable[13] =
+        (void *)UsesExistingDisplayPaletteAsFallback;
+    g_VSGDI_DibDisplayVtable[13] = readyMethod.v;
+    g_VSGDI_DirectDrawDisplayVtable[13] = readyMethod.v;
+}
+
+struct VsGdiDisplayStateVtableInitializer {
+    VsGdiDisplayStateVtableInitializer(void) {
+        InitializeDisplayStateVtables();
+    }
+};
+static VsGdiDisplayStateVtableInitializer g_VSGDI_DisplayStateVtableInitializer;
+
+inline VsGdiDisplayState::VsGdiDisplayState(void) {
+    m_pVtable = 0;
+    m_hGraphicsModule = 0;
+    m_pReserved08 = 0;
+    m_fReady = 0;
+    m_hDisplayWindow = 0;
+    m_cxDisplay = 0;
+    m_cyDisplay = 0;
+    m_dwReserved18 = 0;
+}
+
+int VsGdiDisplayState::IsReady(void) const {
+    return m_fReady;
+}
+
+short VsGdiDisplayState::Width(void) const {
+    return m_cxDisplay;
+}
+
+short VsGdiDisplayState::Height(void) const {
+    return m_cyDisplay;
+}
+
+VsGdiHelperSurface::VsGdiHelperSurface(void) {
+    memset(m_abState, 0, sizeof(m_abState));
+}
+
+
+
+
+int VsGdiHelperSurface::IsReady(void) const {
+    return *(const int *)((const char *)this + 0x524) != 0;
+}
+
+short VsGdiHelperSurface::BackingWidth(void) const {
+    return *(const short *)((const char *)this + GetHelperSurfaceVariableBlockOffset(this) + 0x64);
+}
+
+short VsGdiHelperSurface::BackingHeight(void) const {
+    return *(const short *)((const char *)this + GetHelperSurfaceVariableBlockOffset(this) + 0x66);
+}
+
+
+int VsGdiMetricsDisplayState::Create(HWND hWnd) {
+    m_hDisplayWindow = hWnd;
+    return m_fReady;
+}
+
+
+int VsGdiDibDisplayState::Create(HWND hWnd) {
+    m_hDisplayWindow = hWnd;
+    return m_fReady;
+}
+
+
+int VsGdiDirectDrawDisplayState::Create(HWND hWnd) {
+    m_hDisplayWindow = hWnd;
+    (void)g_hApplicationInstance;
+    (void)g_VSGDI_BaseWindowClass;
+    (void)g_VSGDI_DirectDrawWindowClass;
+    (void)g_VSGDI_DirectDrawWindowTitle;
+    (void)g_VSGDI_ErrorRegisterClass;
+    return m_fReady;
+}
+
+
+
+
+
+int InitializeSelectedGraphicsDriver(int nRequestedDriver) {
+    return ((VsGdiSelectedGraphicsDriverRuntime *)g_pSelectedGraphicsDriverRuntime)
+        ->InitializeSelectedGraphicsDriver(nRequestedDriver);
+}
+
+int GetSelectedGraphicsDriverId(void) {
+    if (g_pSelectedGraphicsDriverRuntime == 0) {
+        return VsGdiDRIVER_AUTO;
+    }
+
+    return ((VsGdiSelectedGraphicsDriverRuntime *)g_pSelectedGraphicsDriverRuntime)->m_nSelectedDriver;
+}
+
+VsGdiDisplayState *GetDisplayState(void) {
+    return g_pDisplayState;
+}
+
+
+// FUNCTION: LEMBALL 0x00402fea
+void __stdcall PromoteQueuedRenderPointSinkTargetStateThunk(void *pPointSink) {
+    PromoteQueuedRenderPointSinkTargetState(pPointSink);
+}
+
+// FUNCTION: LEMBALL 0x0040381e
+void LEMBALL_FASTCALL QueueQueuedRenderPointSinkThunk(
+    void *pPointSink, void *, void *pQueue)
+
+{
+    QueueQueuedRenderPointSink(pPointSink, 0, pQueue);
+}
+
+// FUNCTION: LEMBALL 0x00432380
+void LEMBALL_FASTCALL QueueQueuedRenderPointSink(
+    void *pPointSink, void *, void *pQueue)
+
+{
+    AppendPointerQueueEntry(pQueue, pPointSink);
+}
+
+// FUNCTION: LEMBALL 0x00432390
+void __stdcall PromoteQueuedRenderPointSinkTargetState(void *pPointSink) {
+    int nUploadState;
+    struct TargetState {
+        virtual void Reserved0();
+        virtual void Reserved1();
+        virtual int GetUploadState();
+    };
+
+    nUploadState = ((TargetState *)*(void ***)((char *)pPointSink + 0x0c))->GetUploadState();
+    PromoteHelperUploadStateToActive(nUploadState);
+}
+
+// FUNCTION: LEMBALL 0x00456720
+char *LookupDirectDrawErrorString(unsigned int nError) {
+    const char *pszPrefix = g_pVSGDI_UnknownDirectDrawError;
+
+    strcpy(g_VSGDI_DirectDrawErrorText, pszPrefix);
+    FormatSignedIntToRadixString(
+        (int)nError,
+        g_VSGDI_DirectDrawErrorText + strlen(pszPrefix),
+        10);
+    return g_VSGDI_DirectDrawErrorText;
+}
+
+// FUNCTION: LEMBALL 0x00456780
+void NoopDirectDrawCallback(unsigned int nResult, unsigned int nUnused) {
+    (void)nResult;
+    (void)nUnused;
+}
+
+// FUNCTION: LEMBALL 0x004567c0
+int LEMBALL_FASTCALL CreateAndStoreDisplayPalette(
+    void *pDisplayState, int, void *pPalette)
+
+{
+    VsGdiDisplayPaletteStateView *pState;
+
+    pState = (VsGdiDisplayPaletteStateView *)pDisplayState;
+    if (pState->m_hPalette != 0) {
+        DeleteObject(pState->m_hPalette);
+    }
+    pState->m_hPalette = CreatePalette(pPalette);
+    return pState->m_hPalette != 0;
+}
+
+// FUNCTION: LEMBALL 0x004567f0
+int LEMBALL_FASTCALL SelectAndRealizeDisplayPalette(
+    void *pDisplayState, int, void *pDisplayDc)
+
+{
+    VsGdiDisplayPaletteStateView *pState;
+    VsGdiDisplayDcView *pDc;
+
+    pState = (VsGdiDisplayPaletteStateView *)pDisplayState;
+    if (pState->m_hPalette != 0) {
+        pDc = (VsGdiDisplayDcView *)pDisplayDc;
+        SelectPalette(pDc->m_hDc, pState->m_hPalette, 0);
+        RealizePalette(pDc->m_hDc);
+    }
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x00456970
+unsigned int VsGdiDisplayState::DispatchSplitRectAtBackingRowBoundary(
+    void *pDestination, short *pDestinationRect,
+    void *pSource, short *pSourceRect, void *pHelperTarget)
+
+{
+    short *pFirstRect;
+    short *pSecondRect;
+    short aScaledRect[4];
+    int nScale;
+    unsigned int nFirstResult;
+    unsigned int nSecondResult;
+    typedef int (LEMBALL_FASTCALL *StretchRectProc)(
+        void *, int, void *, short *, void *, short *);
+
+    pFirstRect = 0;
+    pSecondRect = 0;
+    *(void **)((char *)this + 0x18) = pHelperTarget;
+    nScale = pDestinationRect[0] / pSourceRect[0];
+    ((VsGdiHelperSurface *)pHelperTarget)
+        ->SplitRectAtBackingRowBoundary(
+            pSourceRect, &pFirstRect, &pSecondRect);
+    nFirstResult = 0;
+    nSecondResult = 0;
+    if (pFirstRect != 0) {
+        aScaledRect[0] = (short)(pFirstRect[0] * nScale);
+        aScaledRect[1] = (short)(pFirstRect[1] * nScale);
+        aScaledRect[2] = pDestinationRect[2];
+        aScaledRect[3] = pDestinationRect[3];
+        nFirstResult = ((StretchRectProc)(*(void ***)this)[7])(
+            this, 0, pDestination, aScaledRect, pSource, pFirstRect);
+    }
+    if (pSecondRect != 0) {
+        aScaledRect[0] = (short)(pSecondRect[0] * nScale);
+        aScaledRect[1] = (short)(pSecondRect[1] * nScale);
+        aScaledRect[2] = pDestinationRect[2];
+        aScaledRect[3] = (short)(pFirstRect[1] * nScale +
+                                 pDestinationRect[3]);
+        nSecondResult = ((StretchRectProc)(*(void ***)this)[7])(
+            this, 0, pDestination, aScaledRect, pSource, pSecondRect);
+    }
+    return nFirstResult | nSecondResult;
+}
+
+// FUNCTION: LEMBALL 0x00456a90
+VsGdiMetricsDisplayState::VsGdiMetricsDisplayState(void) {
+    m_pVtable = g_VSGDI_MetricsDisplayVtable;
+    m_fReady = 1;
+    m_cxDisplay = (short)GetSystemMetrics(0);
+    m_cyDisplay = (short)GetSystemMetrics(1);
+}
+
+// FUNCTION: LEMBALL 0x00456ae0
+void *VsGdiDisplayState::CreateDisplayBinding(void) {
+    VsGdiHelperTargetParamWrapper *pBinding;
+    void *hDc;
+
+    hDc = CreateCompatibleDC(0);
+    if (hDc == 0)
+        return 0;
+    pBinding = (VsGdiHelperTargetParamWrapper *)AllocateVSMemBlock(0xc);
+    if (pBinding == 0)
+        return 0;
+    pBinding->m_pVtable =
+        (void **)&g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable;
+    pBinding->m_nWrappedParam = (int)(unsigned long)hDc;
+    pBinding->m_nReserved = 0;
+    return pBinding;
+}
+
+// FUNCTION: LEMBALL 0x00456b20
+int VsGdiDisplayState::ReleaseDisplayBinding(void *pBinding) {
+    int nResult;
+
+    if (pBinding == 0)
+        return 0;
+    nResult = DeleteDC((void *)(unsigned long)
+        ((VsGdiHelperTargetParamWrapper *)pBinding)->m_nWrappedParam);
+    DeleteHelperTargetParamWrapper(pBinding, 0, 1);
+    return nResult;
+}
+
+// FUNCTION: LEMBALL 0x00456b50
+int VsGdiDisplayState::InitializeDisplayBitmapInfo(void *pBitmapInfo) {
+    unsigned char *pbInfo = (unsigned char *)pBitmapInfo;
+    *(unsigned short *)(pbInfo + 0xc) = 1;
+    *(unsigned int *)pbInfo = 0x28;
+    *(unsigned int *)(pbInfo + 0x10) = 0;
+    *(unsigned int *)(pbInfo + 0x14) = 0;
+    *(unsigned int *)(pbInfo + 0x18) = 0;
+    *(unsigned int *)(pbInfo + 0x1c) = 0;
+    *(unsigned int *)(pbInfo + 0x20) = 0;
+    *(int *)(pbInfo + 0x08) = -1;
+    *(unsigned short *)(pbInfo + 0x0e) = 8;
+    *(unsigned int *)(pbInfo + 0x24) = 0;
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x00456b90
+void *VsGdiDisplayState::CreateDisplayBitmap(int nDriver, void *pBitmapInfo) {
+    VsGdiDisplayBitmap *pBitmap;
+    VsGdiHelperTargetParamWrapper *pBinding;
+    void *pBits;
+    HGDIOBJ hBitmap;
+
+    pBinding = (VsGdiHelperTargetParamWrapper *)(unsigned long)nDriver;
+    pBits = 0;
+    hBitmap = (HGDIOBJ)CreateDIBSection(
+        (void *)(unsigned long)pBinding->m_nWrappedParam,
+        pBitmapInfo, 0, &pBits, 0, 0);
+    if (hBitmap == 0)
+        return 0;
+    pBitmap = (VsGdiDisplayBitmap *)AllocateVSMemBlock(0x14);
+    if (pBitmap == 0)
+        return 0;
+    pBitmap->m_pVtable = (void **)&g_VSGDI_DisplayBitmapVtable;
+    pBitmap->m_pBits = pBits;
+    pBitmap->m_nStride = *(int *)((char *)pBitmapInfo + 4);
+    pBitmap->m_hPreviousBitmap = 0;
+    pBitmap->m_hBitmap = hBitmap;
+    pBinding->m_nReserved = (int)(unsigned long)pBitmap;
+    return pBitmap;
+}
+
+// FUNCTION: LEMBALL 0x00456c10
+int VsGdiDisplayState::ReleaseDisplayBitmap(void *pBitmap) {
+    VsGdiDisplayBitmap *pDisplayBitmap;
+    int nResult;
+
+    pDisplayBitmap = (VsGdiDisplayBitmap *)pBitmap;
+    if (pDisplayBitmap == 0)
+        return 1;
+    nResult = DeleteObject(pDisplayBitmap->m_hBitmap);
+    VsGdiDeleteDisplayBitmap(pDisplayBitmap, 0, 1);
+    return nResult;
+}
+
+// FUNCTION: LEMBALL 0x00456c50
+int LEMBALL_FASTCALL ApplyDisplaySurfacePalette(
+    void *, int, void *pSurface, int nFirstEntry, int cEntries,
+    const unsigned int *paColors)
+
+{
+    return SetDIBColorTable(((VsGdiDisplayDcView *)pSurface)->m_hDc,
+                            nFirstEntry,
+                            cEntries,
+                            paColors);
+}
+
+// FUNCTION: LEMBALL 0x00456c70
+static int LEMBALL_FASTCALL CopyDisplaySurfaceRect(
+    void *, int, void *pBinding, short *pDestinationRect,
+    void *, short *pSourcePoint)
+
+{
+    void *hDc;
+
+    hDc = (void *)(unsigned long)
+        ((VsGdiHelperTargetParamWrapper *)pBinding)->m_nWrappedParam;
+    return BitBlt(
+        hDc,
+        pDestinationRect[2], pDestinationRect[3],
+        pDestinationRect[0], pDestinationRect[1],
+        hDc,
+        pSourcePoint[0], pSourcePoint[1],
+        0x00cc0020);
+}
+
+// FUNCTION: LEMBALL 0x00456cc0
+static int LEMBALL_FASTCALL StretchDisplaySurfaceRect(
+    void *, int, void *pDestinationBinding, short *pDestinationRect,
+    void *pSourceBinding, short *pSourceRect)
+
+{
+    ++g_nDebugStretchCount;
+    return StretchBlt(
+        (void *)(unsigned long)
+            ((VsGdiHelperTargetParamWrapper *)pDestinationBinding)
+                ->m_nWrappedParam,
+        pDestinationRect[2], pDestinationRect[3],
+        pDestinationRect[0], pDestinationRect[1],
+        (void *)(unsigned long)
+            ((VsGdiHelperTargetParamWrapper *)pSourceBinding)
+                ->m_nWrappedParam,
+        pSourceRect[2], pSourceRect[3],
+        pSourceRect[0], pSourceRect[1],
+        0x00cc0020);
+}
+
+// FUNCTION: LEMBALL 0x00456d10
+int VsGdiDisplayState::BindDisplayBitmap(int nDriver, void *pBitmap) {
+    VsGdiHelperTargetParamWrapper *pBinding;
+    VsGdiDisplayBitmap *pDisplayBitmap;
+
+    pBinding = (VsGdiHelperTargetParamWrapper *)(unsigned long)nDriver;
+    pDisplayBitmap = (VsGdiDisplayBitmap *)pBitmap;
+    pDisplayBitmap->m_hPreviousBitmap = SelectObject(
+        (void *)(unsigned long)pBinding->m_nWrappedParam,
+        pDisplayBitmap->m_hBitmap);
+    if (pDisplayBitmap->m_hPreviousBitmap == 0)
+        return 0;
+    return (int)(unsigned long)pDisplayBitmap;
+}
+
+// FUNCTION: LEMBALL 0x00456d40
+int VsGdiDisplayState::DeleteDisplayBitmap(int nDriver, void *pBitmap) {
+    VsGdiHelperTargetParamWrapper *pBinding;
+    VsGdiDisplayBitmap *pDisplayBitmap;
+    HGDIOBJ hResult;
+
+    pBinding = (VsGdiHelperTargetParamWrapper *)(unsigned long)nDriver;
+    pDisplayBitmap = (VsGdiDisplayBitmap *)pBitmap;
+    hResult = SelectObject(
+        (void *)(unsigned long)pBinding->m_nWrappedParam,
+        pDisplayBitmap->m_hPreviousBitmap);
+    if (hResult == 0)
+        return 0;
+    return (int)(unsigned long)pDisplayBitmap;
+}
+
+// FUNCTION: LEMBALL 0x00456d70
+VsGdiDibDisplayState::VsGdiDibDisplayState(const unsigned short *pDisplaySize) {
+    FARPROC pfnThunk;
+
+    m_cxDisplay = (short)pDisplaySize[0];
+    m_cyDisplay = (short)pDisplaySize[1];
+    m_fReady = 0;
+    m_pDisplayAddress = 0;
+    m_dwReserved20 = 0;
+    m_pfnDisplayDibStart32 = 0;
+    m_pfnDisplayDibEnd32 = 0;
+    m_pfnDisplayDibGetAddress32 = 0;
+    m_pVtable = g_VSGDI_DibDisplayVtable;
+    g_pApplyFullscreenDisplayModeThunk = 0;
+    m_hGraphicsModule = LoadLibraryA(g_VSGDI_Dspdib32Dll);
+    if (m_hGraphicsModule != 0) {
+        m_pfnDisplayDibStart32 = GetProcAddress(m_hGraphicsModule, g_VSGDI_DisplayDibStart32);
+        m_pfnDisplayDibEnd32 = GetProcAddress(m_hGraphicsModule, g_VSGDI_DisplayDibEnd32);
+        m_pfnDisplayDibGetAddress32 = GetProcAddress(m_hGraphicsModule, g_VSGDI_DisplayDibGetAddress32);
+        pfnThunk = GetProcAddress(m_hGraphicsModule, g_VSGDI_DisplayDib32);
+        g_pApplyFullscreenDisplayModeThunk = pfnThunk;
+        m_pDisplayAddress = ((void *(*)())m_pfnDisplayDibGetAddress32)();
+        ((void (*)())m_pfnDisplayDibStart32)();
+        m_fReady = 1;
     }
 }
 
-// FUNCTION: LEMBALL 0x004669A0
+// FUNCTION: LEMBALL 0x00457410
+VsGdiDirectDrawDisplayState::VsGdiDirectDrawDisplayState(const unsigned short *pDisplaySize, int fCreateWindow) {
+    typedef unsigned int (__stdcall *DIRECTDRAW_CREATE)(void *, void **, void *);
+    typedef unsigned int (__stdcall *DIRECTDRAW_SET_COOPERATIVE_LEVEL)(void *, HWND, unsigned int);
+    typedef unsigned int (__stdcall *DIRECTDRAW_SET_DISPLAY_MODE)(void *, int, int, int);
+    typedef unsigned int (__stdcall *DIRECTDRAW_CREATE_SURFACE)(void *, void *, void **, void *);
+    unsigned char aSurfaceDescription[0x6c];
+    unsigned int uCooperativeFlags;
+    unsigned int uResult;
+    WNDCLASSA WindowClass;
+    void **ppDirectDrawObject = &m_pDirectDrawObject;
+
+    (void)fCreateWindow;
+    m_pVtable = g_VSGDI_DirectDrawDisplayVtable;
+    m_cxDisplay = (short)pDisplaySize[0];
+    m_cyDisplay = (short)pDisplaySize[1];
+    m_fReady = 0;
+    *ppDirectDrawObject = 0;
+    m_pPrimarySurface = 0;
+    m_pOffscreenSurface = 0;
+    m_pPalette = 0;
+    m_fDirectDrawCursorVisible = 0;
+    m_fWindowOwnershipInitialized = 1;
+    *(int *)((char *)this + 0x30) = 0;
+    m_hGraphicsModule = LoadLibraryA(g_VSGDI_DdrawDll);
+    if (m_hGraphicsModule != 0) {
+        m_pfnDirectDrawCreate = GetProcAddress(m_hGraphicsModule, g_VSGDI_DirectDrawCreate);
+    }
+    if (m_pfnDirectDrawCreate == 0) {
+        return;
+    }
+
+    uResult = ((DIRECTDRAW_CREATE)m_pfnDirectDrawCreate)(0, ppDirectDrawObject, 0);
+    if (uResult != 0) {
+        NoopDirectDrawCallback(uResult, 0);
+        return;
+    }
+    if (*ppDirectDrawObject == 0) {
+        return;
+    }
+
+    uCooperativeFlags = 8;
+    if (fCreateWindow != 0) {
+        WindowClass.style = 0xb;
+        WindowClass.lpfnWndProc = WindowOwnerWindowProc;
+        WindowClass.cbClsExtra = 0;
+        WindowClass.cbWndExtra = 0;
+        WindowClass.hInstance = g_hApplicationInstance;
+        WindowClass.hIcon = LoadIconA((HINSTANCE)0, (LPCSTR)0x7f00);
+        WindowClass.hCursor = LoadCursorA((HINSTANCE)0, (LPCSTR)0x7f00);
+        WindowClass.hbrBackground = GetStockObject(4);
+        WindowClass.lpszMenuName = 0;
+        WindowClass.lpszClassName = g_VSGDI_DirectDrawWindowClass;
+        if (RegisterClassA(&WindowClass) == 0) {
+            return;
+        }
+        ShowCursor(0);
+        m_hDisplayWindow = CreateWindowExA(
+            8, g_VSGDI_DirectDrawWindowClass, g_VSGDI_DirectDrawWindowTitle,
+            0x80000000, 0, 0, m_cxDisplay, m_cyDisplay,
+            (HWND)0, (HMENU)0, g_hApplicationInstance, (LPVOID)0);
+        if (m_hDisplayWindow == 0) {
+            return;
+        }
+        ShowWindow(m_hDisplayWindow, 5);
+        UpdateWindow(m_hDisplayWindow);
+        SetForegroundWindow(m_hDisplayWindow);
+        uCooperativeFlags = 0x11;
+    }
+
+    {
+        void **pDirectDrawVtable = *(void ***)*ppDirectDrawObject;
+        uResult = ((DIRECTDRAW_SET_COOPERATIVE_LEVEL)pDirectDrawVtable[0x50 / 4])(
+            *ppDirectDrawObject, m_hDisplayWindow, uCooperativeFlags);
+        if (uResult != 0) {
+            return;
+        }
+        if ((uCooperativeFlags & 1) != 0) {
+            uResult = ((DIRECTDRAW_SET_DISPLAY_MODE)pDirectDrawVtable[0x54 / 4])(
+                *ppDirectDrawObject, m_cxDisplay, m_cyDisplay, 8);
+            if (uResult != 0) {
+                return;
+            }
+        }
+        *(unsigned int *)aSurfaceDescription = 0x6c;
+        *(unsigned int *)(aSurfaceDescription + 4) = 0;
+        *(unsigned int *)(aSurfaceDescription + 0x68) = 0x200;
+        uResult = ((DIRECTDRAW_CREATE_SURFACE)pDirectDrawVtable[0x18 / 4])(
+            *ppDirectDrawObject, aSurfaceDescription, &m_pPrimarySurface, 0);
+        if (uResult == 0) {
+            m_fReady = 1;
+        }
+    }
+}
+
+// FUNCTION: LEMBALL 0x00457e10
+int VsGdiSelectedGraphicsDriverRuntime::InitializeSelectedGraphicsDriver(int nRequestedDriver) {
+    int nSelectedDriver;
+    VsGdiSelectedGraphicsDriverRuntime *pRuntime;
+
+    pRuntime = this;
+
+    if (nRequestedDriver < 9) {
+        AppendStatusCString(g_VSGDI_InitDriverPrefix);
+        AppendStatusCString(g_apszGraphicsDriverNames[nRequestedDriver]);
+        AppendStatusCString("\n");
+    }
+
+    nSelectedDriver = nRequestedDriver;
+    if (nRequestedDriver == VsGdiDRIVER_AUTO) {
+        if (g_fStartupGraphicsDriverGdk == 0) {
+            nSelectedDriver = (-(unsigned int)(g_fStartupFullscreen == 0) & 0xfffffffeU) + 3;
+        } else {
+            nSelectedDriver = (-(unsigned int)(g_fStartupFullscreen == 0) & 2U) + 4;
+        }
+    }
+
+    {
+        unsigned short aDisplaySize[2];
+
+    switch (nSelectedDriver) {
+    case VsGdiDRIVER_METRICS:
+        {
+            void *pvDisplayState;
+
+            pvDisplayState = AllocateVSMemBlock(0x1c);
+            if (pvDisplayState == 0) {
+                g_pDisplayState = 0;
+            } else {
+                g_pDisplayState = new (pvDisplayState) VsGdiMetricsDisplayState;
+            }
+        }
+        break;
+    case VsGdiDRIVER_DIB_320_200:
+        {
+            void *pvDisplayState;
+
+            pvDisplayState = AllocateVSMemBlock(0x30);
+            if (pvDisplayState == 0) {
+                g_pDisplayState = 0;
+            } else {
+                aDisplaySize[0] = 0x140;
+                aDisplaySize[1] = 200;
+                g_pDisplayState = new (pvDisplayState) VsGdiDibDisplayState(aDisplaySize);
+            }
+        }
+        break;
+    case VsGdiDRIVER_DIB_640_480:
+        {
+            void *pvDisplayState;
+
+            pvDisplayState = AllocateVSMemBlock(0x30);
+            if (pvDisplayState == 0) {
+                g_pDisplayState = 0;
+            } else {
+                aDisplaySize[0] = 0x140;
+                aDisplaySize[1] = 0xf0;
+                g_pDisplayState = new (pvDisplayState) VsGdiDibDisplayState(aDisplaySize);
+            }
+        }
+        break;
+    case VsGdiDRIVER_DDRAW_320_200:
+        {
+            void *pvDisplayState;
+
+            pvDisplayState = AllocateVSMemBlock(0x4a8);
+            if (pvDisplayState == 0) {
+                g_pDisplayState = 0;
+            } else {
+                aDisplaySize[0] = 0x280;
+                aDisplaySize[1] = 0x1e0;
+                g_pDisplayState = new (pvDisplayState) VsGdiDirectDrawDisplayState(aDisplaySize, 1);
+            }
+        }
+        break;
+    case VsGdiDRIVER_DDRAW_640_480:
+        nSelectedDriver = VsGdiDRIVER_DDRAW_320_200;
+        {
+            void *pvDisplayState;
+
+            pvDisplayState = AllocateVSMemBlock(0x4a8);
+            if (pvDisplayState == 0) {
+                g_pDisplayState = 0;
+            } else {
+                aDisplaySize[0] = 0x280;
+                aDisplaySize[1] = 0x1e0;
+                g_pDisplayState = new (pvDisplayState) VsGdiDirectDrawDisplayState(aDisplaySize, 1);
+            }
+        }
+        break;
+    default:
+        AppendErrorCString(g_VSGDI_ErrorNoValidDriver);
+        return 0;
+    }
+    }
+
+    if (g_pDisplayState == 0 || !IsDisplayStateReady(g_pDisplayState)) {
+        if (g_pDisplayState != 0) {
+            CallDeleteVirtual(g_pDisplayState, 0, 1);
+        }
+        {
+            void *pvDisplayState;
+
+            pvDisplayState = AllocateVSMemBlock(0x1c);
+            if (pvDisplayState == 0) {
+                g_pDisplayState = 0;
+            } else {
+                g_pDisplayState = new (pvDisplayState) VsGdiMetricsDisplayState;
+            }
+        }
+        if (g_pDisplayState == 0 || !IsDisplayStateReady(g_pDisplayState)) {
+            AppendErrorCString(g_VSGDI_ErrorNoValidDriverAvailable);
+            return 0;
+        }
+
+        if (pRuntime->m_fFallbackWarningShown == 0) {
+            GameDynamicCString WarningMessage;
+            GameDynamicCString WarningResult;
+
+            WarningMessage.ConstructDynamicCStringFromCString(
+                g_apszGraphicsDriverFallbackMessages[nSelectedDriver]);
+            WarningMessage.AppendDynamicCStringAndCopyResult(
+                &WarningResult, g_VSGDI_DefaultWindowModeSuffix);
+            WarningResult.DestroyDynamicCString();
+            MessageBoxA((HWND)0, WarningMessage.m_pszText, g_VSGDI_WarningCaption, 0x12000);
+            pRuntime->m_fFallbackWarningShown = 1;
+            WarningMessage.DestroyDynamicCString();
+        }
+        nSelectedDriver = VsGdiDRIVER_METRICS;
+    }
+
+    if (nRequestedDriver != nSelectedDriver) {
+        AppendStatusCString(g_VSGDI_AutoSelectedPrefix);
+        AppendStatusCString(g_apszGraphicsDriverNames[nSelectedDriver]);
+        AppendStatusCString(g_VSGDI_AutoSelectedSuffix);
+    }
+
+    if (pRuntime != 0) {
+        pRuntime->m_nSelectedDriver = nSelectedDriver;
+    }
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x004581d0
+void VsGdiSelectedGraphicsDriverRuntime::ResizeActiveDisplayState(unsigned short *pSize) {
+    VsGdiDisplayState *pDisplayState;
+
+    if (g_pDisplayState != 0) {
+        pDisplayState = g_pDisplayState;
+        *(unsigned short *)((char *)pDisplayState + 0x14) = pSize[0];
+        *(unsigned short *)((char *)pDisplayState + 0x16) = pSize[1];
+        NotifyWindowOwnersDisplayChanged(&m_nSelectedDriver);
+    }
+}
+
+// FUNCTION: LEMBALL 0x00458200
+int LEMBALL_FASTCALL UsesExistingDisplayPaletteAsFallback(
+    void *pDisplayState, int)
+
+{
+    return ((VsGdiDisplayPaletteStateView *)pDisplayState)->m_hPalette ==
+           (void *)1;
+}
+
+// FUNCTION: LEMBALL 0x00458250
+void LEMBALL_FASTCALL SetHelperTargetParamWrapperDisplayDc(
+    void *pParamWrapper, int, void *hDc)
+
+{
+    *(void **)((char *)pParamWrapper + 4) = hDc;
+}
+
+// FUNCTION: LEMBALL 0x00458260
+void *LEMBALL_FASTCALL DeleteHelperTargetParamWrapper(
+    void *pParamWrapper, int, int fDelete)
+
+{
+    *(void ***)pParamWrapper =
+        (void **)&g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable + 2;
+    if ((fDelete & 1) != 0)
+        FreeVSMemBlock(pParamWrapper);
+    return pParamWrapper;
+}
+
+// FUNCTION: LEMBALL 0x00458280
+void LEMBALL_FASTCALL NoopHelperTargetParamWrapperArgument(
+    void *, int, void *)
+
+{
+}
+
+// FUNCTION: LEMBALL 0x00458290
+void *LEMBALL_FASTCALL DeleteHelperTargetParamWrapperBase(
+    void *pParamWrapper, int, int fDelete)
+
+{
+    *(void ***)pParamWrapper =
+        (void **)&g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable + 2;
+    if ((fDelete & 1) != 0)
+        FreeVSMemBlock(pParamWrapper);
+    return pParamWrapper;
+}
+
+// FUNCTION: LEMBALL 0x004582b0
+int LEMBALL_FASTCALL ReturnTrueHelperTargetParamWrapperA(void *, int) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x004582c0
+int LEMBALL_FASTCALL ReturnTrueHelperTargetParamWrapperB(void *, int) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x004582d0
+int LEMBALL_FASTCALL GetHelperTargetParamWrapperDisplayDc(
+    void *pParamWrapper, int)
+
+{
+    return *(int *)((char *)pParamWrapper + 4);
+}
+
+// FUNCTION: LEMBALL 0x004582e0
+int LEMBALL_FASTCALL GetHelperTargetParamWrapperReserved(
+    void *pParamWrapper, int)
+
+{
+    return *(int *)((char *)pParamWrapper + 8);
+}
+
+// FUNCTION: LEMBALL 0x004582f0
+void *LEMBALL_FASTCALL DeleteHelperTargetParamWrapperInterface(
+    void *pParamWrapper, int, int fDelete)
+
+{
+    *(void ***)pParamWrapper =
+        (void **)&g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable + 4;
+    if ((fDelete & 1) != 0)
+        FreeVSMemBlock(pParamWrapper);
+    return pParamWrapper;
+}
+
+// FUNCTION: LEMBALL 0x00458310
+void *LEMBALL_FASTCALL VsGdiDeleteDisplayBitmap(
+    void *pBitmap, int, int fDelete)
+
+{
+    *(void ***)pBitmap =
+        (void **)&g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable + 4;
+    if ((fDelete & 1) != 0)
+        FreeVSMemBlock(pBitmap);
+    return pBitmap;
+}
+
+// FUNCTION: LEMBALL 0x00463c30
+void LEMBALL_FASTCALL BuildGeometryHelperFromRenderRect(void *pOwner) {
+    unsigned char *pbOwner;
+    void *pParentOwner;
+    void *pWrappedTarget;
+    short aRect[4];
+    short aWindowRect[4];
+    short sOriginX;
+    short sOriginY;
+    unsigned int uOwnerFlags;
+    unsigned int uWindowStyle;
+    VsGdiResourceGeometryHelperTargetView *pTarget;
+    VsGdiGeometryHelperPointerArray *pHelper;
+    typedef unsigned int (LEMBALL_FASTCALL *GetOwnerFlagsProc)(void *);
+    typedef void (LEMBALL_FASTCALL *SetWindowRectProc)(void *, int, short *);
+
+    pbOwner = (unsigned char *)pOwner;
+    ((VS_RootGeometryOwner *)pOwner)
+        ->VS_RootGeometryOwner::RetainRootGeometryOwner();
+
+    pParentOwner = *(void **)(pbOwner + 0x20);
+    if (pParentOwner == 0) {
+        pWrappedTarget = g_pResourceGeometryHelperTarget;
+    } else {
+        pWrappedTarget = *(void **)((char *)*(void **)(pbOwner + 0x20) + 0x4c);
+        pWrappedTarget = *(void **)((char *)pWrappedTarget + 0x0c);
+    }
+
+    aRect[0] = *(short *)(pbOwner + 0x08);
+    aRect[1] = *(short *)(pbOwner + 0x0a);
+    aRect[2] = *(short *)(pbOwner + 0x18);
+    aRect[3] = *(short *)(pbOwner + 0x1a);
+
+    if ((short)*(short *)(pbOwner + 0x10) *
+            (short)*(short *)(pbOwner + 0x12) != 0) {
+        aRect[0] = *(short *)(pbOwner + 0x10);
+        aRect[1] = *(short *)(pbOwner + 0x12);
+        aRect[2] = *(short *)(pbOwner + 0x14) + *(short *)(pbOwner + 0x18);
+        aRect[3] = *(short *)(pbOwner + 0x16) + *(short *)(pbOwner + 0x1a);
+    }
+    if (pParentOwner == 0) {
+        aRect[0] = (short)((int)aRect[0] / *(int *)(pbOwner + 0x38));
+        aRect[1] = (short)((int)aRect[1] / *(int *)(pbOwner + 0x38));
+    }
+
+    pHelper = (VsGdiGeometryHelperPointerArray *)AllocateVSMemBlock(sizeof(*pHelper));
+    if (pHelper == 0) {
+        *(void **)(pbOwner + 0x4c) = 0;
+        return;
+    }
+    pHelper = pHelper->InitializeGeometryHelperPointerArray(
+        aRect, *(int *)(pbOwner + 0x50), pWrappedTarget);
+    *(VsGdiGeometryHelperPointerArray **)(pbOwner + 0x4c) = pHelper;
+
+    pTarget = pHelper->m_pTarget;
+    if (pParentOwner == 0) {
+        *(short *)((char *)pTarget +
+                   *(int *)(*(int *)((char *)pTarget + 0x40) + 4) + 0x6c) =
+            (short)*(int *)(pbOwner + 0x38);
+    }
+
+    sOriginX = *(short *)(pbOwner + 0x14);
+    sOriginY = *(short *)(pbOwner + 0x16);
+    if (pParentOwner != 0) {
+        sOriginX = (short)(sOriginX - *(short *)((char *)pParentOwner + 0x18));
+        sOriginY = (short)(sOriginY - *(short *)((char *)pParentOwner + 0x1a));
+    }
+    *(short *)((char *)pTarget +
+               *(int *)(*(int *)((char *)pTarget + 0x40) + 4) + 0x5c) = sOriginX;
+    *(short *)((char *)pTarget +
+               *(int *)(*(int *)((char *)pTarget + 0x40) + 4) + 0x5e) = sOriginY;
+
+    uOwnerFlags = ((GetOwnerFlagsProc)(*(void ***)pOwner)[0x64 / sizeof(void *)])(
+        pOwner);
+    if ((uOwnerFlags & 0x40000000u) != 0 && *(HWND *)(pbOwner + 0x44) != 0) {
+        uWindowStyle = GetWindowLongA(*(HWND *)(pbOwner + 0x44), -16);
+        if ((uWindowStyle & 0x40000000u) != 0) {
+            aWindowRect[0] = *(short *)(pbOwner + 0x14) -
+                             *(short *)((char *)*(void **)(pbOwner + 0x48) + 0x18);
+            aWindowRect[1] = *(short *)(pbOwner + 0x16) -
+                             *(short *)((char *)*(void **)(pbOwner + 0x48) + 0x1a);
+            aWindowRect[2] = aRect[2];
+            aWindowRect[3] = aRect[3];
+            *(short *)((char *)pTarget + 0xec) = aWindowRect[0];
+            *(short *)((char *)pTarget + 0xee) = aWindowRect[1];
+            ((SetWindowRectProc)(*(void ***)*(void **)(pbOwner + 0x48))[0x84 / sizeof(void *)])(
+                *(void **)(pbOwner + 0x48), 0, aWindowRect);
+        }
+    }
+    *(int *)((char *)pTarget + 0x10) =
+        *(int *)g_pSelectedGraphicsDriverRuntime != 3;
+}
+
+// FUNCTION: LEMBALL 0x00465aa0
+void GamePrimaryContext::SampleRootHelperGeometryAndDispatchRenderGroups(int nToken) {
+    int *pContext;
+    VsGdiHelperDispatchQueue *pDispatchQueue;
+    VsGdiHelperSurfaceBindingSurface *pBindingSurface;
+    VsGdiHelperSurface *pHelperTarget;
+    void *pQueuedPointSink;
+    int nUploadState;
+    int nResult;
+    short x1;
+    short y1;
+    short y2;
+    typedef unsigned char *(LEMBALL_FASTCALL *TokenVirtual)(void *, int);
+    typedef int (LEMBALL_FASTCALL *IntVirtual)(void *, int);
+    typedef void (LEMBALL_FASTCALL *VoidVirtual)(void *, int);
+    typedef void (LEMBALL_FASTCALL *OneArgVirtual)(void *, int, void *);
+    typedef void (LEMBALL_FASTCALL *DeleteVirtual)(void *, int, int);
+
+    pContext = (int *)this;
+    if (g_fRootHelperGeometryDispatchSuppressed != 0 || pContext[1] != 1 || pContext[0x13] == 0) {
+        return;
+    }
+
+    if (nToken == -1) {
+        nToken = 0;
+    }
+
+    pDispatchQueue = (VsGdiHelperDispatchQueue *)(unsigned long)pContext[0x13];
+    pHelperTarget = pDispatchQueue->m_pHelperTarget;
+    pBindingSurface =
+        (VsGdiHelperSurfaceBindingSurface *)((char *)pHelperTarget + GetHelperSurfaceVariableBlockOffset(pHelperTarget) + 0x40);
+    ((TokenVirtual)pBindingSurface->m_pVtable[0xe])(
+        pBindingSurface, 0);
+
+    x1 = pBindingSurface->m_nOriginX;
+    y1 = pBindingSurface->m_nOriginY;
+
+    pQueuedPointSink = AllocateVSMemBlock(4);
+    if (pQueuedPointSink != 0) {
+        *(void **)pQueuedPointSink = g_pQueuedRenderPointSinkFinalizeThunk;
+    }
+
+    nUploadState = ((IntVirtual)(*(void ***)pHelperTarget)[2])(
+        pHelperTarget, 0);
+    InitializeHelperUploadStatePending(nUploadState);
+    ((OneArgVirtual)(*(void ***)pQueuedPointSink)[1])(
+        pQueuedPointSink, 0, pDispatchQueue);
+
+    *(short *)((char *)pContext + 0x5c) = *(short *)&nUploadState;
+    *(short *)((char *)pContext + 0x5e) = *((short *)&nUploadState + 1);
+    *(short *)((char *)pContext + 0x60) = y1;
+    *(short *)((char *)pContext + 0x62) = x1;
+    pContext[0x19] = nToken;
+    ((OneArgVirtual)(*(void ***)((char *)pContext + 0x58))[1])(
+        (char *)pContext + 0x58, 0, pDispatchQueue);
+
+    nResult = ((IntVirtual)pBindingSurface->m_pVtable[0xf])(
+        pBindingSurface, 0);
+    y2 = *((short *)&nResult + 1);
+    if (nResult != 0) {
+        *(short *)((char *)pContext + 0x6c) = 0;
+        *(short *)((char *)pContext + 0x6e) = 0;
+        *(short *)((char *)pContext + 0x70) = (short)nResult;
+        *(short *)((char *)pContext + 0x72) = y2;
+        *(short *)((char *)pContext + 0x74) = *(short *)&nUploadState;
+        *(short *)((char *)pContext + 0x76) = *((short *)&nUploadState + 1);
+        ((OneArgVirtual)(*(void ***)((char *)pContext + 0x68))[1])(
+            (char *)pContext + 0x68, 0, pDispatchQueue);
+    }
+
+    nResult = ((IntVirtual)pBindingSurface->m_pVtable[0x10])(
+        pBindingSurface, 0);
+    if (nResult != 0) {
+        *(short *)((char *)pContext + 0x80) = (short)nResult;
+        *(short *)((char *)pContext + 0x82) = *((short *)&nResult + 1);
+        *(short *)((char *)pContext + 0x84) = *(short *)&nUploadState;
+        *(short *)((char *)pContext + 0x86) = *((short *)&nUploadState + 1);
+        pContext[0x1f] = 0;
+        ((OneArgVirtual)(*(void ***)((char *)pContext + 0x78))[1])(
+            (char *)pContext + 0x78, 0, pDispatchQueue);
+    }
+
+    DispatchAndClearPointerQueue(pDispatchQueue);
+    pDispatchQueue->m_cEntries = 0;
+    ((VoidVirtual)(*(void ***)pContext)[0x2d])(pContext, 0);
+
+    if (pQueuedPointSink != 0) {
+        ((DeleteVirtual)(*(void ***)pQueuedPointSink)[0])(
+            pQueuedPointSink, 0, 1);
+    }
+}
+
+// FUNCTION: LEMBALL 0x004663d0
+void *VsGdiCompactResourceGeometryHelper::InitializeCompactResourceGeometryHelper(void) {
+    char *pbHelper;
+    unsigned short wZero;
+
+    pbHelper = (char *)this;
+    wZero = 0;
+    *(unsigned short *)(pbHelper + 6) = wZero;
+    *(unsigned short *)(pbHelper + 4) = wZero;
+    *(unsigned short *)(pbHelper + 10) = wZero;
+    *(unsigned short *)(pbHelper + 8) = wZero;
+    *(unsigned short *)(pbHelper + 0xe) = wZero;
+    *(unsigned short *)(pbHelper + 0xc) = wZero;
+    *(unsigned short *)(pbHelper + 0x12) = wZero;
+    *(unsigned short *)(pbHelper + 0x10) = wZero;
+    *(unsigned short *)(pbHelper + 0x16) = wZero;
+    *(unsigned short *)(pbHelper + 0x14) = wZero;
+    *(unsigned short *)(pbHelper + 0x1a) = wZero;
+    *(unsigned short *)(pbHelper + 0x18) = wZero;
+    *(unsigned short *)(pbHelper + 0x1e) = wZero;
+    *(unsigned short *)(pbHelper + 0x1c) = wZero;
+    *(void **)pbHelper = &g_VSGDI_CompactResourceGeometryHelperVtable;
+    *(int *)(pbHelper + 0x3c) = 1;
+    *(unsigned short *)(pbHelper + 0x26) = wZero;
+    *(int *)(pbHelper + 0x40) = 0;
+    *(unsigned short *)(pbHelper + 0x24) = wZero;
+    *(unsigned short *)(pbHelper + 0x2a) = wZero;
+    *(unsigned short *)(pbHelper + 0x28) = wZero;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x00466430
+static void LEMBALL_FASTCALL RestoreCompactResourceGeometryHelperVtable(void *pvHelper) {
+    *(void **)pvHelper = g_VSGDI_CompactResourceGeometryHelperVtable;
+}
+
+// FUNCTION: LEMBALL 0x00466440
+void *ConstructHelperGroup0RowBuffer(void *pvHelperGroup, int fConstructCompactHelper) {
+    int iCompactDelta;
+    int *pHelperGroup;
+
+    pHelperGroup = (int *)pvHelperGroup;
+    if (fConstructCompactHelper != 0) {
+        *(void **)((char *)pHelperGroup + 4) = &g_VSGDI_ResourceGeometryHelperGroup0ConstructionAdjustorVtable;
+        ((VsGdiCompactResourceGeometryHelper *)((char *)pHelperGroup + 0x58))
+            ->InitializeCompactResourceGeometryHelper();
+    }
+    InitializeResourceGeometryRowBuffer((char *)pHelperGroup + 8);
+    *(void **)pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup0Vtable;
+    iCompactDelta = *(int *)((char *)(unsigned long)pHelperGroup[1] + 4);
+    *(void **)((char *)pHelperGroup + 4 + iCompactDelta) =
+        (void *)&g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable;
+    *(int *)((char *)pHelperGroup + iCompactDelta) = iCompactDelta - 0x54;
+    *(short *)((char *)pHelperGroup + 0x50) = 0;
+    *(int *)((char *)pHelperGroup + 0x4c) = 0;
+    *(short *)((char *)pHelperGroup + 0x52) = 0;
+    *(int *)((char *)pHelperGroup + 0x48) = 0;
+    return pHelperGroup;
+}
+
+// FUNCTION: LEMBALL 0x004664b0
+void LEMBALL_FASTCALL DestroyHelperGroup0RowBuffer(void *pvHelperGroup) {
+    int iCompactDelta;
+    int *pHelperGroup;
+    int *pRowBuffer;
+
+    pHelperGroup = (int *)pvHelperGroup;
+    *(void **)pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup0Vtable;
+    pRowBuffer = pHelperGroup + 2;
+    iCompactDelta = *(int *)((char *)(unsigned long)pHelperGroup[1] + 4);
+    *(void **)((char *)pRowBuffer + iCompactDelta - 4) = (void *)&g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable;
+    *(int *)((char *)pRowBuffer + iCompactDelta - 8) = iCompactDelta - 0x54;
+    DestroyResourceGeometryRowBuffer(pRowBuffer);
+}
+
+// FUNCTION: LEMBALL 0x004664e0
+int LEMBALL_FASTCALL GetHelperGroup0DirtyFlag(void *pGroupState, int) {
+    void *pLinkedTarget;
+    void *pLinkedCompact;
+    void **pVtable;
+    int nCompactDelta;
+
+    nCompactDelta = *(int *)((char *)*(void **)((char *)pGroupState - 0x54) + 4);
+    pLinkedTarget = *(void **)((char *)pGroupState + nCompactDelta - 0x34);
+    if (pLinkedTarget != g_pResourceGeometryHelperTarget) {
+        nCompactDelta = *(int *)((char *)*(void **)((char *)pLinkedTarget + 0x40) + 4);
+        pLinkedCompact =
+            (char *)pLinkedTarget + 0x40 + nCompactDelta;
+        pVtable = *(void ***)pLinkedCompact;
+        return ((int (LEMBALL_FASTCALL *)(void *, int))pVtable[15])(
+            pLinkedCompact, 0);
+    }
+    return *(int *)((char *)pGroupState - 0x10);
+}
+
+// FUNCTION: LEMBALL 0x00466510
+void LEMBALL_FASTCALL ReleaseHelperGroup0BackingBuffer(int nHelperGroup) {
+    if (*(int *)(unsigned long)(nHelperGroup + 0x4c) != 0) {
+        FreeVSMemBlock((void *)(unsigned long)*(int *)(unsigned long)(nHelperGroup + 0x4c));
+        *(int *)(unsigned long)(nHelperGroup + 0x4c) = 0;
+        *(short *)(unsigned long)(nHelperGroup + 0x52) = 0;
+        *(short *)(unsigned long)(nHelperGroup + 0x50) = 0;
+    }
+    ReleaseResourceGeometryRowBufferStorage(nHelperGroup + 8);
+}
+
+// FUNCTION: LEMBALL 0x00466660
+void LEMBALL_FASTCALL EnsureHelperGroup0BackingBufferThunk(void *pHelperGroup) {
+    EnsureHelperGroup0BackingBuffer((int)(unsigned long)pHelperGroup);
+}
+
+// FUNCTION: LEMBALL 0x00466670
+void *ConstructHelperGroup1RowBuffer(void *pvHelperGroup, int fConstructCompactHelper) {
+    int iCompactDelta;
+    int *pHelperGroup;
+
+    pHelperGroup = (int *)pvHelperGroup;
+    if (fConstructCompactHelper != 0) {
+        *(void **)((char *)pHelperGroup + 4) = &g_VSGDI_ResourceGeometryHelperGroup1ConstructionAdjustorVtable;
+        ((VsGdiCompactResourceGeometryHelper *)((char *)pHelperGroup + 0x58))
+            ->InitializeCompactResourceGeometryHelper();
+    }
+    InitializeResourceGeometryRowBuffer((char *)pHelperGroup + 8);
+    *(void **)pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup1Vtable;
+    iCompactDelta = *(int *)((char *)(unsigned long)pHelperGroup[1] + 4);
+    *(void **)((char *)pHelperGroup + 4 + iCompactDelta) =
+        (void *)&g_VSGDI_ResourceGeometryHelperGroup1CompactSubobjectVtable;
+    *(int *)((char *)pHelperGroup + iCompactDelta) = iCompactDelta - 0x54;
+    *(short *)((char *)pHelperGroup + 0x50) = 0;
+    *(int *)((char *)pHelperGroup + 0x48) = 0;
+    *(short *)((char *)pHelperGroup + 0x52) = 0;
+    *(int *)((char *)pHelperGroup + 0x4c) = 0;
+    return pHelperGroup;
+}
+
+// FUNCTION: LEMBALL 0x004666e0
+void LEMBALL_FASTCALL DestroyHelperGroup1RowBuffer(void *pvHelperGroup) {
+    int *pHelperGroup;
+
+    pHelperGroup = (int *)pvHelperGroup;
+    *(void **)pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup1Vtable;
+    pHelperGroup += 2;
+    *(void **)((char *)pHelperGroup +
+               *(int *)((char *)(unsigned long)pHelperGroup[-1] + 4) - 4) =
+        (void *)&g_VSGDI_ResourceGeometryHelperGroup1CompactSubobjectVtable;
+    *(int *)((char *)pHelperGroup +
+             *(int *)((char *)(unsigned long)pHelperGroup[-1] + 4) - 8) =
+        *(int *)((char *)(unsigned long)pHelperGroup[-1] + 4) - 0x54;
+    DestroyResourceGeometryRowBuffer(pHelperGroup);
+}
+
+// FUNCTION: LEMBALL 0x00466710
+void ReleaseHelperGroup1BackingBuffer(int nHelperGroup) {
+    if (*(int *)(unsigned long)(nHelperGroup + 0x4c) != 0) {
+        FreeVSMemBlock((void *)(unsigned long)*(int *)(unsigned long)(nHelperGroup + 0x4c));
+        *(int *)(unsigned long)(nHelperGroup + 0x4c) = 0;
+        *(short *)(unsigned long)(nHelperGroup + 0x52) = 0;
+        *(short *)(unsigned long)(nHelperGroup + 0x50) = 0;
+    }
+    ReleaseResourceGeometryRowBufferStorage(nHelperGroup + 8);
+}
+
+// FUNCTION: LEMBALL 0x00466740
+void LEMBALL_FASTCALL EnsureHelperGroup1BackingBufferBody(void *pHelperGroup) {
+    VsGdiHelperSurface *pSurface;
+    short *pExtent;
+    short aRequestedRect[4];
+    short aBackingSize[2];
+    int nCompactDelta;
+    unsigned int cbExisting;
+    unsigned int cbRequired;
+
+    nCompactDelta = *(int *)((char *)*(void **)((char *)pHelperGroup + 4) + 4);
+    pExtent = (short *)((char *)pHelperGroup + nCompactDelta + 0x18);
+    aRequestedRect[0] = (short)(pExtent[0] * 2);
+    aRequestedRect[1] = pExtent[1];
+    aRequestedRect[2] = 0;
+    aRequestedRect[3] = 0;
+    pSurface = (VsGdiHelperSurface *)((char *)pHelperGroup + 8);
+    pSurface->ComputeBackingDimensions(
+        aBackingSize,
+        aRequestedRect,
+        *(int *)((char *)pHelperGroup + nCompactDelta + 0x44) * 2);
+
+    cbExisting = (unsigned short)*(short *)((char *)pHelperGroup + 0x50) *
+                 (unsigned short)*(short *)((char *)pHelperGroup + 0x52) * 2;
+    cbRequired = (unsigned int)((int)aBackingSize[0] *
+                                (int)aBackingSize[1]);
+    if (cbExisting < cbRequired) {
+        ReleaseHelperGroup1BackingBuffer(
+            (int)(unsigned long)pHelperGroup);
+    }
+
+    if ((int)pExtent[0] * (int)pExtent[1] != 0) {
+        if (*(void **)((char *)pHelperGroup + 0x4c) == 0) {
+            *(short *)((char *)pHelperGroup + 0x50) =
+                (short)((unsigned int)(int)aBackingSize[0] >> 1);
+            *(short *)((char *)pHelperGroup + 0x52) = aBackingSize[1];
+            *(void **)((char *)pHelperGroup + 0x4c) =
+                AllocateVSMemBlock(
+                    (unsigned short)*(short *)((char *)pHelperGroup + 0x50) *
+                    (unsigned short)aBackingSize[1] * 2);
+        }
+        if (*(void **)((char *)pHelperGroup + 0x4c) == 0) {
+            *(int *)((char *)pHelperGroup + 0x48) = 0;
+        }
+        pSurface->ConfigureBackingStrideAndOrigin(
+            (int)(unsigned long)*(void **)((char *)pHelperGroup + 0x4c),
+            (int)aBackingSize[0]);
+    }
+}
+
+// FUNCTION: LEMBALL 0x00466870
+void LEMBALL_FASTCALL EnsureHelperGroup1BackingBuffer(void *pHelperGroup) {
+    EnsureHelperGroup1BackingBufferBody(pHelperGroup);
+}
+
+// FUNCTION: LEMBALL 0x00466880
+void LEMBALL_FASTCALL CopyRectTupleIfExtentEmpty(void *pTarget,
+                                                 int,
+    short *paRect)
+
+{
+    short *paCurrentRect;
+    short *paPosition;
+
+    paCurrentRect = (short *)((char *)pTarget + 4);
+    if ((int)paCurrentRect[0] * (int)paCurrentRect[1] != 0 &&
+        (int)paRect[0] * (int)paRect[1] != 0) {
+        return;
+    }
+
+    paCurrentRect[0] = paRect[0];
+    paCurrentRect[1] = paRect[1];
+    paPosition = paRect != 0 ? paRect + 2 : 0;
+    paCurrentRect[2] = paPosition[0];
+    paCurrentRect[3] = paPosition[1];
+}
+
+// FUNCTION: LEMBALL 0x00466990
+int LEMBALL_FASTCALL GetHelperGroup1DirtyFlag(void *pGroupState, int) {
+    return *(int *)((char *)pGroupState - 0x10);
+}
+
+// FUNCTION: LEMBALL 0x004669a0
 int VsGdiQuantizedHelperUploadRectTracker::InitializeQuantizedHelperUploadRectTracker(int cRectEntries, int nTrackerExtent, int nCellExtent) {
     short *pTracker;
     short *pRect;
@@ -703,7 +2341,84 @@ int VsGdiQuantizedHelperUploadRectTracker::InitializeQuantizedHelperUploadRectTr
     return (int)(unsigned long)this;
 }
 
-// FUNCTION: LEMBALL 0x00466BE0
+// FUNCTION: LEMBALL 0x00466a90
+void LEMBALL_FASTCALL ResetHelperUploadStateMap(void *pTracker) {
+    if (*(void **)((char *)pTracker + 0x10) != 0) {
+        FreeVSMemBlock(*(void **)((char *)pTracker + 0x10));
+        *(void **)((char *)pTracker + 0x10) = 0;
+    }
+    InitializeHelperUploadStatePending((int)(unsigned long)pTracker);
+}
+
+// FUNCTION: LEMBALL 0x00466ac0
+void LEMBALL_FASTCALL EnsureHelperUploadStateMapCapacity(void *pTracker) {
+    int nMapEntries;
+
+    if (*(int *)((char *)pTracker + 0x10) == 0) {
+        nMapEntries = (int)*(short *)((char *)pTracker + 0x1c) *
+            (int)*(short *)((char *)pTracker + 0x1e);
+        *(int *)((char *)pTracker + 0x20) = nMapEntries;
+        *(void **)((char *)pTracker + 0x10) = AllocateVSMemBlock((unsigned int)nMapEntries);
+    }
+}
+
+// FUNCTION: LEMBALL 0x00466af0
+void LEMBALL_FASTCALL SetHelperUploadTrackerExtent(
+    void *pTracker, int, int nExtent)
+
+{
+    short cxExtent;
+    short cyExtent;
+    short cxCell;
+    short cyCell;
+    short cxMap;
+    short cyMap;
+
+    cxExtent = (short)nExtent;
+    cyExtent = (short)((unsigned int)nExtent >> 16);
+    if (*(short *)((char *)pTracker + 0x14) == cxExtent &&
+        *(short *)((char *)pTracker + 0x16) == cyExtent) {
+        return;
+    }
+
+    cxCell = *(short *)((char *)pTracker + 0x18);
+    cyCell = *(short *)((char *)pTracker + 0x1a);
+    cxMap = (short)(cxExtent / cxCell);
+    cyMap = (short)(cyExtent / cyCell);
+    *(short *)((char *)pTracker + 0x14) = cxExtent;
+    *(short *)((char *)pTracker + 0x16) = cyExtent;
+    *(short *)((char *)pTracker + 0x1c) = cxMap;
+    *(short *)((char *)pTracker + 0x1e) = cyMap;
+    if ((int)cxMap * (int)cyMap > *(int *)((char *)pTracker + 0x20)) {
+        ResetHelperUploadStateMap(pTracker);
+    }
+    if ((int)cxExtent * (int)cyExtent > 0) {
+        EnsureHelperUploadStateMapCapacity(pTracker);
+    }
+}
+
+// FUNCTION: LEMBALL 0x00466b60
+void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState) {
+    *(unsigned short *)(unsigned long)(nUploadState + 0x30) = 0;
+    *(int *)(unsigned long)(nUploadState + 0x2c) = 0;
+    *(char *)(unsigned long)(nUploadState + 0x48) = 'P';
+    *(unsigned short *)(unsigned long)(nUploadState + 0x32) = 0;
+    *(unsigned short *)(unsigned long)(nUploadState + 0x34) = 0;
+    *(unsigned short *)(unsigned long)(nUploadState + 0x36) = 0;
+    *(int *)(unsigned long)(nUploadState + 4) = -1;
+    *(int *)(unsigned long)(nUploadState + 8) = -1;
+}
+
+// FUNCTION: LEMBALL 0x00466b90
+void LEMBALL_FASTCALL ResetHelperUploadRectListAndStateMap(int nUploadState) {
+    if (*(int *)(unsigned long)(nUploadState + 0xc) != 0) {
+        FreeVSMemBlock((void *)(unsigned long)*(int *)(unsigned long)(nUploadState + 0xc));
+        *(int *)(unsigned long)(nUploadState + 0xc) = 0;
+    }
+    ResetHelperUploadStateMap((void *)(unsigned long)nUploadState);
+}
+
+// FUNCTION: LEMBALL 0x00466be0
 void VsGdiQuantizedHelperUploadRectTracker::MarkHelperUploadCellsForRect(short *pRect) {
     char *pTracker;
     short cxCell;
@@ -748,9 +2463,10 @@ void VsGdiQuantizedHelperUploadRectTracker::MarkHelperUploadCellsForRect(short *
     *(int *)(pTracker + 0x2c) += (int)pRect[0] * (int)pRect[1];
 }
 
-// FUNCTION: LEMBALL 0x00466CE0
+// FUNCTION: LEMBALL 0x00466ce0
 void VsGdiQuantizedHelperUploadRectTracker::MarkHelperUploadRectWithState(
     short *pRect, unsigned char bState)
+
 {
     unsigned char bPreviousState;
     bPreviousState = *(unsigned char *)((char *)this + 0x48);
@@ -759,10 +2475,26 @@ void VsGdiQuantizedHelperUploadRectTracker::MarkHelperUploadRectWithState(
     *(unsigned char *)((char *)this + 0x48) = bPreviousState;
 }
 
-// FUNCTION: LEMBALL 0x00466D40
+// FUNCTION: LEMBALL 0x00466d10
+void LEMBALL_FASTCALL PromoteHelperUploadStateToActive(int nUploadState) {
+    unsigned int nState;
+
+    nState = *(unsigned char *)(unsigned long)(nUploadState + 0x48);
+    switch (nState) {
+    case 'P':
+        *(char *)(unsigned long)(nUploadState + 0x48) = 'A';
+        break;
+    case 'p':
+        *(char *)(unsigned long)(nUploadState + 0x48) = 'a';
+        break;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00466d40
 int VsGdiQuantizedHelperUploadRectTracker::ConsumeMarkedHelperUploadRun(
     unsigned char bTargetState, int nEntryState,
                                      unsigned char bReplacementState)
+
 {
     char *pTracker;
     unsigned char *pMap;
@@ -823,8 +2555,9 @@ int VsGdiQuantizedHelperUploadRectTracker::ConsumeMarkedHelperUploadRun(
     return 1;
 }
 
-// FUNCTION: LEMBALL 0x00466EF0
+// FUNCTION: LEMBALL 0x00466ef0
 int VsGdiQuantizedHelperUploadRectTracker::BuildHelperUploadRectList(void)
+
 {
     char *pTracker;
     pTracker = (char *)this;
@@ -859,6 +2592,7 @@ int VsGdiQuantizedHelperUploadRectTracker::BuildHelperUploadRectList(void)
 // FUNCTION: LEMBALL 0x00467000
 short *VsGdiQuantizedHelperUploadRectTracker::GetHelperUploadRectEntryByIndex(
     int iRect)
+
 {
     if (*(int *)((char *)this + 4) == -1)
         BuildHelperUploadRectList();
@@ -868,6 +2602,7 @@ short *VsGdiQuantizedHelperUploadRectTracker::GetHelperUploadRectEntryByIndex(
 // FUNCTION: LEMBALL 0x00467020
 int VsGdiQuantizedHelperUploadRectTracker::GetHelperUploadActiveRectStartIndex(
     void)
+
 {
     if (*(void **)((char *)this + 0x10) == 0)
         return 0;
@@ -876,213 +2611,337 @@ int VsGdiQuantizedHelperUploadRectTracker::GetHelperUploadActiveRectStartIndex(
     return *(int *)((char *)this + 8);
 }
 
-extern void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile, int nLine);
-extern int g_fRootHelperGeometryDispatchSuppressed;
-extern void *g_pQueuedRenderPointSinkFinalizeThunk;
-static int GetHelperSurfaceVariableBlockOffset(const VsGdiHelperSurface *pSurface);
+// FUNCTION: LEMBALL 0x00467060
+VsGdiGeometryHelperPointerArray *
+VsGdiGeometryHelperPointerArray::InitializeGeometryHelperPointerArray(
+    short *pRect, int nEntryParameter, void *pWrappedTarget)
 
-// FUNCTION: LEMBALL 0x00472310
-void LEMBALL_FASTCALL ClearResourceGeometryRowBufferFields(void *pvRowBuffer) {
-    char *pRowBuffer;
-
-    pRowBuffer = (char *)pvRowBuffer;
-    *(int *)(pRowBuffer + 0x10) = 0;
-    *(int *)(pRowBuffer + 0x08) = 0;
-    *(int *)(pRowBuffer + 0x0c) = 0;
-    *(int *)(pRowBuffer + 0x18) = 0;
-    *(int *)(pRowBuffer + 0x14) = 0;
-    *(int *)(pRowBuffer + 0x04) = 0;
-    *(int *)(pRowBuffer + 0x1c) = 0;
-    *(int *)(pRowBuffer + 0x24) = 0;
-    *(int *)(pRowBuffer + 0x20) = 0;
-    *(int *)(pRowBuffer + 0x28) = 0;
-}
-
-static void ReleaseResourceGeometryRowBufferStorage(int nRowBuffer) {
-    if (*(int *)(unsigned long)(nRowBuffer + 4) != 0) {
-        FreeVSMemBlock((void *)(unsigned long)*(int *)(unsigned long)(nRowBuffer + 4));
-    }
-    ClearResourceGeometryRowBufferFields((void *)(unsigned long)nRowBuffer);
-}
-
-// FUNCTION: LEMBALL 0x00466A90
-void LEMBALL_FASTCALL ResetHelperUploadStateMap(void *pTracker) {
-    if (*(void **)((char *)pTracker + 0x10) != 0) {
-        FreeVSMemBlock(*(void **)((char *)pTracker + 0x10));
-        *(void **)((char *)pTracker + 0x10) = 0;
-    }
-    InitializeHelperUploadStatePending((int)(unsigned long)pTracker);
-}
-
-// FUNCTION: LEMBALL 0x00466AF0
-void LEMBALL_FASTCALL SetHelperUploadTrackerExtent(
-    void *pTracker, int, int nExtent)
 {
-    short cxExtent;
-    short cyExtent;
-    short cxCell;
-    short cyCell;
-    short cxMap;
-    short cyMap;
+    int i;
+    int nEntryCount;
+    void *pSlotManager;
+    if ((int)pRect[0] * (int)pRect[1] > 1) {
+        nEntryCount = nEntryParameter + 3;
+        m_nEntryCount = nEntryCount;
+        m_pEntries = AllocateVSMemBlock((unsigned int)nEntryCount * 4);
 
-    cxExtent = (short)nExtent;
-    cyExtent = (short)((unsigned int)nExtent >> 16);
-    if (*(short *)((char *)pTracker + 0x14) == cxExtent &&
-        *(short *)((char *)pTracker + 0x16) == cyExtent) {
-        return;
+        pSlotManager = g_pResourceGeometryHelperSlotManager;
+        m_pTarget = (VsGdiResourceGeometryHelperTargetView *)
+            ((VsGdiResourceGeometryHelperSlotManager *)pSlotManager)
+                ->AllocateResourceGeometryHelperSlot(pRect, pWrappedTarget);
+        m_nReserved = 0;
+        for (i = 0; i < m_nEntryCount; ++i) {
+            ((void **)m_pEntries)[i] = 0;
+        }
     }
-
-    cxCell = *(short *)((char *)pTracker + 0x18);
-    cyCell = *(short *)((char *)pTracker + 0x1a);
-    cxMap = (short)(cxExtent / cxCell);
-    cyMap = (short)(cyExtent / cyCell);
-    *(short *)((char *)pTracker + 0x14) = cxExtent;
-    *(short *)((char *)pTracker + 0x16) = cyExtent;
-    *(short *)((char *)pTracker + 0x1c) = cxMap;
-    *(short *)((char *)pTracker + 0x1e) = cyMap;
-    if ((int)cxMap * (int)cyMap > *(int *)((char *)pTracker + 0x20)) {
-        ResetHelperUploadStateMap(pTracker);
-    }
-    if ((int)cxExtent * (int)cyExtent > 0) {
-        EnsureHelperUploadStateMapCapacity(pTracker);
-    }
-}
-
-struct VsGdiCompactResourceGeometryHelper {
-    void *InitializeCompactResourceGeometryHelper(void);
-};
-
-// FUNCTION: LEMBALL 0x004663D0
-void *VsGdiCompactResourceGeometryHelper::InitializeCompactResourceGeometryHelper(void) {
-    char *pbHelper;
-    unsigned short wZero;
-
-    pbHelper = (char *)this;
-    wZero = 0;
-    *(unsigned short *)(pbHelper + 6) = wZero;
-    *(unsigned short *)(pbHelper + 4) = wZero;
-    *(unsigned short *)(pbHelper + 10) = wZero;
-    *(unsigned short *)(pbHelper + 8) = wZero;
-    *(unsigned short *)(pbHelper + 0xe) = wZero;
-    *(unsigned short *)(pbHelper + 0xc) = wZero;
-    *(unsigned short *)(pbHelper + 0x12) = wZero;
-    *(unsigned short *)(pbHelper + 0x10) = wZero;
-    *(unsigned short *)(pbHelper + 0x16) = wZero;
-    *(unsigned short *)(pbHelper + 0x14) = wZero;
-    *(unsigned short *)(pbHelper + 0x1a) = wZero;
-    *(unsigned short *)(pbHelper + 0x18) = wZero;
-    *(unsigned short *)(pbHelper + 0x1e) = wZero;
-    *(unsigned short *)(pbHelper + 0x1c) = wZero;
-    *(void **)pbHelper = &g_VSGDI_CompactResourceGeometryHelperVtable;
-    *(int *)(pbHelper + 0x3c) = 1;
-    *(unsigned short *)(pbHelper + 0x26) = wZero;
-    *(int *)(pbHelper + 0x40) = 0;
-    *(unsigned short *)(pbHelper + 0x24) = wZero;
-    *(unsigned short *)(pbHelper + 0x2a) = wZero;
-    *(unsigned short *)(pbHelper + 0x28) = wZero;
     return this;
 }
 
-// FUNCTION: LEMBALL 0x00472290
-void *LEMBALL_FASTCALL InitializeResourceGeometryRowBuffer(void *pvRowBuffer) {
-    int *pRowBuffer;
+// FUNCTION: LEMBALL 0x004670d0
+void LEMBALL_FASTCALL DestroyGeometryHelperPointerArray(void *pHelper) {
+    VsGdiGeometryHelperPointerArray *pArray;
 
-    pRowBuffer = (int *)pvRowBuffer;
-    *(short *)((char *)pRowBuffer + 0x2e) = 0;
-    *(short *)(pRowBuffer + 0xb) = 0;
-    *(short *)((char *)pRowBuffer + 0x32) = 0;
-    *(short *)(pRowBuffer + 0xc) = 0;
-    *(short *)((char *)pRowBuffer + 0x36) = 0;
-    *(short *)(pRowBuffer + 0xd) = 0;
-    *pRowBuffer = (int)(unsigned long)&g_VSGDI_ResourceGeometryRowBufferVtable;
-    *(short *)((char *)pRowBuffer + 0x3a) = 0;
-    *(short *)(pRowBuffer + 0xe) = 0;
-    *(short *)((char *)pRowBuffer + 0x3e) = 0;
-    *(short *)(pRowBuffer + 0xf) = 0;
-    ClearResourceGeometryRowBufferFields(pRowBuffer);
-    return pRowBuffer;
+    pArray = (VsGdiGeometryHelperPointerArray *)pHelper;
+    FreeVSMemBlock(pArray->m_pEntries);
+    ((VsGdiResourceGeometryHelperSlotReleaseInterface *)
+         g_pResourceGeometryHelperSlotManager)
+        ->ReleaseResourceGeometryHelperSlot(pArray->m_pTarget);
 }
 
-// FUNCTION: LEMBALL 0x00466670
-void *ConstructHelperGroup1RowBuffer(void *pvHelperGroup, int fConstructCompactHelper) {
-    int iCompactDelta;
-    int *pHelperGroup;
+// FUNCTION: LEMBALL 0x004670f0
+void AppendPointerQueueEntry(void *pQueue, void *pEntry) {
+    VsGdiHelperDispatchQueue *pDispatchQueue;
 
-    pHelperGroup = (int *)pvHelperGroup;
-    if (fConstructCompactHelper != 0) {
-        *(void **)((char *)pHelperGroup + 4) = &g_VSGDI_ResourceGeometryHelperGroup1ConstructionAdjustorVtable;
-        ((VsGdiCompactResourceGeometryHelper *)((char *)pHelperGroup + 0x58))
-            ->InitializeCompactResourceGeometryHelper();
+    pDispatchQueue = (VsGdiHelperDispatchQueue *)pQueue;
+    pDispatchQueue->m_ppEntries[pDispatchQueue->m_cEntries] = pEntry;
+    pDispatchQueue->m_cEntries = pDispatchQueue->m_cEntries + 1;
+}
+
+// FUNCTION: LEMBALL 0x00467110
+void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void *pQueue) {
+    void *pQueuedEntry;
+    VsGdiHelperDispatchQueue *pDispatchQueue;
+    int nByteOffset;
+    int i;
+    typedef void (LEMBALL_FASTCALL *EntryDispatchVirtual)(
+        void *, int, void *);
+
+    pDispatchQueue = (VsGdiHelperDispatchQueue *)pQueue;
+    if (RefreshHelperTargetBindingIfChanged(pDispatchQueue->m_pHelperTarget) != 0) {
+        nByteOffset = 0;
+        i = 0;
+        if (0 < pDispatchQueue->m_cEntries) {
+            do {
+                pQueuedEntry = *(void **)((char *)pDispatchQueue->m_ppEntries + nByteOffset);
+                if (IsPointerInsideManagedMemoryRegions(pQueuedEntry) != 0) {
+                    ((EntryDispatchVirtual)(*(void ***)pQueuedEntry)[2])(
+                        pQueuedEntry, 0, pDispatchQueue);
+                }
+                nByteOffset += 4;
+                ++i;
+            } while (i < pDispatchQueue->m_cEntries);
+        }
+        InvokeRootHelperTargetPostQueueCallback((int)(unsigned long)pDispatchQueue->m_pHelperTarget);
     }
-    InitializeResourceGeometryRowBuffer((char *)pHelperGroup + 8);
-    *(void **)pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup1Vtable;
-    iCompactDelta = *(int *)((char *)(unsigned long)pHelperGroup[1] + 4);
-    *(void **)((char *)pHelperGroup + 4 + iCompactDelta) =
-        (void *)&g_VSGDI_ResourceGeometryHelperGroup1CompactSubobjectVtable;
-    *(int *)((char *)pHelperGroup + iCompactDelta) = iCompactDelta - 0x54;
-    *(short *)((char *)pHelperGroup + 0x50) = 0;
-    *(int *)((char *)pHelperGroup + 0x48) = 0;
-    *(short *)((char *)pHelperGroup + 0x52) = 0;
-    *(int *)((char *)pHelperGroup + 0x4c) = 0;
-    return pHelperGroup;
 }
 
-// FUNCTION: LEMBALL 0x00466440
-void *ConstructHelperGroup0RowBuffer(void *pvHelperGroup, int fConstructCompactHelper) {
-    int iCompactDelta;
-    int *pHelperGroup;
+// FUNCTION: LEMBALL 0x0046aec0
+void *LEMBALL_FASTCALL ConstructStatusIndicatorRenderClientBase(int *pRenderClient) {
+    InitializeRenderQueueNodeBase(pRenderClient);
+    *(void **)((char *)pRenderClient + 0x40) = g_VSGDI_StatusIndicatorRenderClientVtable;
+    *(void **)((char *)pRenderClient + 0x44) = g_VSGDI_StatusIndicatorPointSinkVtable;
+    *(short *)((char *)pRenderClient + 0x12) = 0;
+    pRenderClient[0x12] = 0;
+    *(short *)((char *)pRenderClient + 0x10) = 0;
+    pRenderClient[0x13] = 0xaa55aa55;
+    *(short *)((char *)pRenderClient + 0x16) = 0;
+    pRenderClient[0x14] = 0xaa55aa55;
+    *(short *)((char *)pRenderClient + 0x14) = 0;
+    pRenderClient[0x15] = 0xaa55aa55;
+    pRenderClient[0x16] = 0xaa55aa55;
+    pRenderClient[0x17] = 0xaa55aa55;
+    *(short *)((char *)pRenderClient + 0x76) = 0;
+    pRenderClient[0x18] = 0xaa55aa55;
+    *(short *)((char *)pRenderClient + 0x74) = 0;
+    pRenderClient[0x19] = 0xaa55aa55;
+    *(short *)((char *)pRenderClient + 0x7a) = 0;
+    pRenderClient[0x1a] = 0xaa55aa55;
+    *(short *)((char *)pRenderClient + 0x78) = 0;
+    *(void **)pRenderClient = g_VSGDI_StatusIndicatorBaseVtable;
+    InitializeStatusIndicatorRenderClientDefaults(pRenderClient);
+    return pRenderClient;
+}
 
-    pHelperGroup = (int *)pvHelperGroup;
-    if (fConstructCompactHelper != 0) {
-        *(void **)((char *)pHelperGroup + 4) = &g_VSGDI_ResourceGeometryHelperGroup0ConstructionAdjustorVtable;
-        ((VsGdiCompactResourceGeometryHelper *)((char *)pHelperGroup + 0x58))
-            ->InitializeCompactResourceGeometryHelper();
+// FUNCTION: LEMBALL 0x0046afd0
+void LEMBALL_FASTCALL InitializeStatusIndicatorRenderClientDefaults(int *pRenderClient) {
+    int *pEntryBlock;
+    int *pEntry;
+    int i;
+    int nZero;
+    DWORD dwNow;
+
+    nZero = 0;
+    pRenderClient[0xa] = nZero;
+    pEntryBlock = (int *)AllocateVSMemBlock(0x1c);
+    if (pEntryBlock == 0) {
+        pRenderClient[7] = 0;
+    } else {
+        pEntryBlock[0] = 1;
+        pEntry = pEntryBlock + 1;
+        for (i = 0; i <= 1; ++i) {
+            new (pEntry) LevelPackagedRectQueueEntry;
+            pEntry += 6;
+        }
+        pRenderClient[7] = (int)(unsigned long)(pEntryBlock + 1);
     }
-    InitializeResourceGeometryRowBuffer((char *)pHelperGroup + 8);
-    *(void **)pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup0Vtable;
-    iCompactDelta = *(int *)((char *)(unsigned long)pHelperGroup[1] + 4);
-    *(void **)((char *)pHelperGroup + 4 + iCompactDelta) =
-        (void *)&g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable;
-    *(int *)((char *)pHelperGroup + iCompactDelta) = iCompactDelta - 0x54;
-    *(short *)((char *)pHelperGroup + 0x50) = 0;
-    *(int *)((char *)pHelperGroup + 0x4c) = 0;
-    *(short *)((char *)pHelperGroup + 0x52) = 0;
-    *(int *)((char *)pHelperGroup + 0x48) = 0;
-    return pHelperGroup;
+    pEntry = (int *)(unsigned long)pRenderClient[7];
+    *(short *)((char *)pEntry + 4) = 0;
+    *(short *)((char *)pEntry + 6) = 0;
+    pEntry[2] = 0;
+    pEntry[3] = 0;
+    pEntry[4] = 0;
+    ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+        ->RegisterOrderedRenderDispatchClient(pRenderClient, -0x19);
+    pRenderClient[0xd] = 0;
+    pRenderClient[0xc] = 0;
+    pRenderClient[0xb] = 0;
+    pRenderClient[6] = 0;
+    pRenderClient[0xe] = 0;
+    pRenderClient[0xf] = 1;
+    pRenderClient[8] = 0;
+    pRenderClient[0x12] = 1;
+    pRenderClient[0x1f] = 3;
+    pRenderClient[0x20] = 4;
+    pRenderClient[0x21] = 1;
+    pRenderClient[0x24] = 0;
+    pRenderClient[0x22] = 2;
+    pRenderClient[0x23] = 0x1f;
+    pRenderClient[0x25] = 0x49;
+    pRenderClient[0x13] = 0x199;
+    pRenderClient[0x14] = 0x8000;
+    pRenderClient[0x17] = 0;
+    pRenderClient[0x15] = (int)*(short *)((char *)pRenderClient + 0x10) << 12;
+    pRenderClient[0x18] = 0;
+    pRenderClient[0x19] = 0;
+    pRenderClient[0x1a] = 0;
+    pRenderClient[0x16] = (int)*(short *)((char *)pRenderClient + 0x12) << 12;
+    dwNow = timeGetTime();
+    pRenderClient[0x1b] = (int)dwNow;
+    pRenderClient[0x1c] = (int)dwNow;
 }
 
-// FUNCTION: LEMBALL 0x00466510
-void LEMBALL_FASTCALL ReleaseHelperGroup0BackingBuffer(int nHelperGroup) {
-    if (*(int *)(unsigned long)(nHelperGroup + 0x4c) != 0) {
-        FreeVSMemBlock((void *)(unsigned long)*(int *)(unsigned long)(nHelperGroup + 0x4c));
-        *(int *)(unsigned long)(nHelperGroup + 0x4c) = 0;
-        *(short *)(unsigned long)(nHelperGroup + 0x52) = 0;
-        *(short *)(unsigned long)(nHelperGroup + 0x50) = 0;
+// FUNCTION: LEMBALL 0x0046b0e0
+int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(
+    void *pRenderClient, int, RenderDispatchQueueEntry *pEntry)
+
+{
+    int *pState;
+    unsigned short wType;
+    unsigned int dwCode;
+    unsigned int dwNow;
+    RenderDispatchQueueEntry OutputEntry;
+
+    pState = (int *)pRenderClient;
+    if (pState[6] == 0) {
+        return 0;
     }
-    ReleaseResourceGeometryRowBufferStorage(nHelperGroup + 8);
-}
 
-// FUNCTION: LEMBALL 0x00466710
-void ReleaseHelperGroup1BackingBuffer(int nHelperGroup) {
-    if (*(int *)(unsigned long)(nHelperGroup + 0x4c) != 0) {
-        FreeVSMemBlock((void *)(unsigned long)*(int *)(unsigned long)(nHelperGroup + 0x4c));
-        *(int *)(unsigned long)(nHelperGroup + 0x4c) = 0;
-        *(short *)(unsigned long)(nHelperGroup + 0x52) = 0;
-        *(short *)(unsigned long)(nHelperGroup + 0x50) = 0;
+    wType = *(unsigned short *)&pEntry->m_awords[0];
+    dwCode = pEntry->m_awords[2];
+    if (wType == 3 || wType == 4) {
+        if (pState[12] == 0) {
+            return 0;
+        }
+
+        dwNow = timeGetTime();
+        if (pState[13] != 0) {
+            if (dwCode == (unsigned int)pState[0x23]) {
+                OutputEntry.m_awords[3] = 0x43;
+            } else if (dwCode == (unsigned int)pState[0x25]) {
+                OutputEntry.m_awords[3] = 0x44;
+            } else if (dwCode == (unsigned int)pState[0x24]) {
+                OutputEntry.m_awords[3] = 0x45;
+            } else {
+                return 0;
+            }
+
+            *(unsigned short *)&OutputEntry.m_awords[0] =
+                wType == 4 ? 9 : 8;
+            OutputEntry.m_awords[1] = pEntry->m_awords[1];
+            OutputEntry.m_awords[2] =
+                ((unsigned int)(unsigned short)*(short *)((char *)pState + 0x12) << 16) |
+                (unsigned short)*(short *)((char *)pState + 0x10);
+            OutputEntry.m_awords[4] = 0;
+            ((int (LEMBALL_FASTCALL *)(void *, int, RenderDispatchQueueEntry *))
+                 (*(void ***)g_pSharedRenderDispatchQueue)[2])(
+                g_pSharedRenderDispatchQueue, 0, &OutputEntry);
+            return 0;
+        }
+
+        if (wType == 3) {
+            if (dwCode == (unsigned int)pState[0x21] ||
+                dwCode == (unsigned int)pState[0x22]) {
+                pState[0x18] = 0;
+                pState[0x1a] = 0;
+            } else if (dwCode == (unsigned int)pState[0x1f] ||
+                       dwCode == (unsigned int)pState[0x20]) {
+                pState[0x17] = 0;
+                pState[0x19] = 0;
+            }
+            return 0;
+        }
+
+        if (dwCode == (unsigned int)pState[0x21]) {
+            pState[0x1c] = (int)dwNow;
+            pState[0x1a] = -pState[0x13];
+        } else if (dwCode == (unsigned int)pState[0x22]) {
+            pState[0x1c] = (int)dwNow;
+            pState[0x1a] = pState[0x13];
+        } else if (dwCode == (unsigned int)pState[0x1f]) {
+            pState[0x1b] = (int)dwNow;
+            pState[0x19] = -pState[0x13];
+        } else if (dwCode == (unsigned int)pState[0x20]) {
+            pState[0x1b] = (int)dwNow;
+            pState[0x19] = pState[0x13];
+        }
+        return 0;
     }
-    ReleaseResourceGeometryRowBufferStorage(nHelperGroup + 8);
-}
 
-// FUNCTION: LEMBALL 0x00466B90
-void LEMBALL_FASTCALL ResetHelperUploadRectListAndStateMap(int nUploadState) {
-    if (*(int *)(unsigned long)(nUploadState + 0xc) != 0) {
-        FreeVSMemBlock((void *)(unsigned long)*(int *)(unsigned long)(nUploadState + 0xc));
-        *(int *)(unsigned long)(nUploadState + 0xc) = 0;
+    if (wType == 7 && pState[0x0b] != 0 && pEntry->m_awords[4] == 0) {
+        short x;
+        short y;
+
+        x = (short)(pEntry->m_awords[2] & 0xffff);
+        y = (short)(pEntry->m_awords[2] >> 16);
+        *(short *)((char *)pState + 0x10) = x;
+        *(short *)((char *)pState + 0x12) = y;
+        pState[0x15] = (int)x << 12;
+        pState[0x16] = (int)y << 12;
     }
-    ResetHelperUploadStateMap((void *)(unsigned long)nUploadState);
+    return 0;
 }
 
-// FUNCTION: LEMBALL 0x0046BC00
+// FUNCTION: LEMBALL 0x0046ba80
+int InitializeResourceGeometryHelperRuntime(void) {
+    VsGdiSelectedGraphicsDriverRuntime *pSelectedGraphicsDriverRuntime;
+    VsGdiResourceGeometryHelperSlotManager *pSlotManager;
+    void *pvTarget;
+    int *piArrowCursorClient;
+
+    (void)g_VSGDI_BaseWindowClass;
+
+    pSelectedGraphicsDriverRuntime =
+        (VsGdiSelectedGraphicsDriverRuntime *)AllocateVSMemBlock(0xc);
+    if (pSelectedGraphicsDriverRuntime != 0) {
+        pSelectedGraphicsDriverRuntime->m_pWindowOwner = 0;
+        pSelectedGraphicsDriverRuntime->m_fFallbackWarningShown = 0;
+        g_pSelectedGraphicsDriverRuntime = pSelectedGraphicsDriverRuntime;
+    } else {
+        g_pSelectedGraphicsDriverRuntime = 0;
+    }
+    ((VsGdiSelectedGraphicsDriverRuntime *)g_pSelectedGraphicsDriverRuntime)
+        ->InitializeSelectedGraphicsDriver(VsGdiDRIVER_AUTO);
+
+    pSlotManager = (VsGdiResourceGeometryHelperSlotManager *)AllocateVSMemBlock(sizeof(VsGdiResourceGeometryHelperSlotManager));
+    if (pSlotManager != 0) {
+        g_pResourceGeometryHelperSlotManager =
+            pSlotManager->InitializeResourceGeometryHelperSlotManager(
+                (int)g_StartupGraphicsDriverConfig.m_cbSize);
+    } else {
+        g_pResourceGeometryHelperSlotManager = 0;
+    }
+
+    pvTarget = AllocateVSMemBlock(0x5a0);
+    if (pvTarget != 0) {
+        g_pResourceGeometryHelperTarget =
+            ((VsGdiResourceGeometryHelperTargetView *)pvTarget)
+                ->ConstructResourceGeometryHelperTarget(0, 1);
+    } else {
+        g_pResourceGeometryHelperTarget = 0;
+    }
+
+    piArrowCursorClient = (int *)AllocateVSMemBlock(0xa4);
+    if (piArrowCursorClient != 0) {
+        ConstructStatusIndicatorRenderClientBase(piArrowCursorClient);
+        *(void **)piArrowCursorClient = g_VSGDI_ArrowCursorRuntimeVtable;
+        InitializeArrowCursorState(piArrowCursorClient);
+        g_pArrowCursorStatusIndicatorRenderClient = piArrowCursorClient;
+    } else {
+        g_pArrowCursorStatusIndicatorRenderClient = 0;
+    }
+
+    if (g_pResourceGeometryHelperSlotManager != 0 && g_pResourceGeometryHelperTarget != 0) {
+        return 1;
+    }
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0046bb70
+int ShutdownResourceGeometryHelperRuntime(void) {
+    if (g_pArrowCursorStatusIndicatorRenderClient != 0) {
+        CallDeleteVirtual(g_pArrowCursorStatusIndicatorRenderClient, 4, 1);
+    }
+    if (g_pResourceGeometryHelperTarget != 0) {
+        DestroyResourceGeometryHelperTarget(g_pResourceGeometryHelperTarget);
+        RestoreCompactResourceGeometryHelperVtable((char *)g_pResourceGeometryHelperTarget + 0x55c);
+        FreeVSMemBlock(g_pResourceGeometryHelperTarget);
+    }
+    if (g_pResourceGeometryHelperSlotManager != 0) {
+        DestroyResourceGeometryHelperSlotManager(g_pResourceGeometryHelperSlotManager);
+        FreeVSMemBlock(g_pResourceGeometryHelperSlotManager);
+    }
+    g_pResourceGeometryHelperTarget = 0;
+    g_pResourceGeometryHelperSlotManager = 0;
+    if (g_pDisplayState != 0) {
+        CallDeleteVirtual(g_pDisplayState, 0, 1);
+    }
+    if (g_pSelectedGraphicsDriverRuntime != 0) {
+        FreeVSMemBlock(g_pSelectedGraphicsDriverRuntime);
+    }
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0046bc00
 VsGdiResourceGeometryHelperSlotManager *VsGdiResourceGeometryHelperSlotManager::InitializeResourceGeometryHelperSlotManager(int cSlots) {
     VsGdiResourceGeometryHelperSlotManager *pSlotManager;
     VsGdiResourceGeometryHelperSlot *pSlot;
@@ -1114,12 +2973,7 @@ VsGdiResourceGeometryHelperSlotManager *VsGdiResourceGeometryHelperSlotManager::
     return pSlotManager;
 }
 
-void *InitializeResourceGeometryHelperSlotManager(void *pvSlotManager, int cSlots) {
-    return ((VsGdiResourceGeometryHelperSlotManager *)pvSlotManager)
-        ->InitializeResourceGeometryHelperSlotManager(cSlots);
-}
-
-// FUNCTION: LEMBALL 0x0046BC90
+// FUNCTION: LEMBALL 0x0046bc90
 void DestroyResourceGeometryHelperSlotManager(void *pvSlotManager) {
     VsGdiResourceGeometryHelperSlotManager *pSlotManager;
     VsGdiResourceGeometryHelperSlot *pSlot;
@@ -1141,7 +2995,7 @@ void DestroyResourceGeometryHelperSlotManager(void *pvSlotManager) {
     FreeVSMemBlock(pSlotManager->m_pSlots);
 }
 
-// FUNCTION: LEMBALL 0x0046BCE0
+// FUNCTION: LEMBALL 0x0046bce0
 int FindFirstFreeResourceGeometryHelperSlotIndex(void *pvSlotManager) {
     VsGdiResourceGeometryHelperSlotManager *pSlotManager;
     VsGdiResourceGeometryHelperSlot *pSlot;
@@ -1162,9 +3016,42 @@ int FindFirstFreeResourceGeometryHelperSlotIndex(void *pvSlotManager) {
     return -1;
 }
 
-// FUNCTION: LEMBALL 0x0046BF70
+// FUNCTION: LEMBALL 0x0046bd10
+void *VsGdiResourceGeometryHelperSlotManager::AllocateResourceGeometryHelperSlot(
+    short *pRect, void *pWrappedTarget)
+
+{
+    VsGdiResourceGeometryHelperSlotManager *pSlotManager;
+    VsGdiResourceGeometryHelperSlot *pSlot;
+    VsGdiResourceGeometryHelperTargetView *pTarget;
+    int i;
+
+    pSlotManager = this;
+    i = FindFirstFreeResourceGeometryHelperSlotIndex(pSlotManager);
+    if (i < 0)
+        return 0;
+
+    pSlot = pSlotManager->m_pSlots + i;
+    pTarget = (VsGdiResourceGeometryHelperTargetView *)AllocateVSMemBlock(0x5a0);
+    if (pTarget != 0) {
+        pTarget->InitializeResourceGeometryHelper((const VsGdiRect *)pRect, pWrappedTarget, 1);
+    }
+    pSlot->m_nOwnerOrState0 = (int)(unsigned long)pTarget;
+    pSlot->m_nOwnerOrState4 = (int)(unsigned long)pWrappedTarget;
+    pSlot->m_nOwnerOrState8 = 0;
+    pSlot->m_nOwnerOrStateC = 0;
+    pSlot->m_nOwnerOrState10 = pWrappedTarget == g_pResourceGeometryHelperTarget;
+    pSlot->m_fAvailable = 0;
+    pSlot->m_nOwnerOrState18 = 0;
+    if (pSlot->m_nOwnerOrState10 != 0)
+        ++g_nResourceGeometryHelperSlotCount;
+    return pTarget;
+}
+
+// FUNCTION: LEMBALL 0x0046bf70
 int VsGdiResourceGeometryHelperSlotManager::FindResourceGeometryHelperSlot(
     void *pTarget)
+
 {
     int i;
     for (i = 0; i < m_cSlots; ++i) {
@@ -1174,9 +3061,10 @@ int VsGdiResourceGeometryHelperSlotManager::FindResourceGeometryHelperSlot(
     return -1;
 }
 
-// FUNCTION: LEMBALL 0x0046BFD0
+// FUNCTION: LEMBALL 0x0046bfd0
 void VsGdiResourceGeometryHelperSlotManager::DeactivateResourceGeometryHelperSlot(
     void *pTarget)
+
 {
     VsGdiResourceGeometryHelperSlot *pSlot;
     void *pTimer;
@@ -1204,79 +3092,7 @@ void VsGdiResourceGeometryHelperSlotManager::DeactivateResourceGeometryHelperSlo
                 g_pResourceGeometryHelperTarget);
 }
 
-struct VsGdiResourceGeometryHelperSlotManagerVtableFixup {
-    VsGdiResourceGeometryHelperSlotManagerVtableFixup(void) {
-        union {
-            void *(VsGdiResourceGeometryHelperSlotManager::*p)(short *, void *);
-            void *v;
-        } allocateMethod;
-        union {
-            void (VsGdiResourceGeometryHelperSlotManager::*p)(void *);
-            void *v;
-        } deactivateMethod;
-        allocateMethod.p = &VsGdiResourceGeometryHelperSlotManager::
-            AllocateResourceGeometryHelperSlot;
-        deactivateMethod.p = &VsGdiResourceGeometryHelperSlotManager::
-            DeactivateResourceGeometryHelperSlot;
-        g_VSGDI_ResourceGeometryHelperSlotManagerVtable[0] = allocateMethod.v;
-        g_VSGDI_ResourceGeometryHelperSlotManagerVtable[3] = deactivateMethod.v;
-    }
-};
-static VsGdiResourceGeometryHelperSlotManagerVtableFixup
-    g_VSGDI_ResourceGeometryHelperSlotManagerVtableFixup;
-
-// FUNCTION: LEMBALL 0x0046C5D0
-VsGdiResourceGeometryHelperTargetView *VsGdiResourceGeometryHelperTargetView::ConstructResourceGeometryHelperTarget(int nWrappedParam, int fConstructCompactHelper) {
-    int iCompactDelta;
-    VsGdiCompactResourceGeometryHelperFields *pCompactHelper;
-    VsGdiHelperTargetParamWrapper *pParamWrapper;
-    VsGdiResourceGeometryHelperTargetView *pTarget;
-
-    pTarget = this;
-    if (fConstructCompactHelper != 0) {
-        *(void **)((char *)pTarget + 0x40) = &g_VSGDI_CompactHelperTargetAdjustor;
-        *(void **)((char *)pTarget + 0x48) = &g_VSGDI_HelperGroup1Adjustor;
-        *(void **)((char *)pTarget + 0x9c) = &g_VSGDI_HelperGroup0Adjustor;
-        ((VsGdiCompactResourceGeometryHelper *)((char *)pTarget + 0x55c))
-            ->InitializeCompactResourceGeometryHelper();
-    }
-    InitializeResourceGeometryRowBuffer(pTarget);
-    *(void **)pTarget = &g_VSGDI_ResourceGeometryHelperTargetConstructionVtable;
-    iCompactDelta = *(int *)((char *)(unsigned long)*(int *)((char *)pTarget + 0x40) + 4);
-    pCompactHelper = (VsGdiCompactResourceGeometryHelperFields *)((char *)pTarget + iCompactDelta);
-    pCompactHelper->m_pVtable = &g_VSGDI_CompactResourceGeometryHelperConstructionVtable;
-    ConstructHelperGroup1RowBuffer((char *)pTarget + 0x44, 0);
-    ConstructHelperGroup0RowBuffer((char *)pTarget + 0x98, 0);
-    pTarget->m_nReservedEE = 0;
-    pTarget->m_ChildTargetLinks.m_pTail = 0;
-    pTarget->m_nReservedEC = 0;
-    pTarget->m_ChildTargetLinks.m_pHead = 0;
-    pTarget->m_ChildTargetLinks.m_cNodes = 0;
-    *(void **)pTarget = &g_VSGDI_ResourceGeometryHelperTargetVtable;
-    *(void **)((char *)pTarget + 0x44) = &g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable;
-    *(void **)((char *)pTarget + 0x98) = &g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable;
-    pCompactHelper->m_pVtable = &g_VSGDI_CompactResourceGeometryHelperSubobjectVtable;
-    pCompactHelper->m_nThisAdjust = iCompactDelta - 0x51c;
-
-    pParamWrapper = (VsGdiHelperTargetParamWrapper *)AllocateVSMemBlock(0xc);
-    if (pParamWrapper == 0) {
-        pTarget->m_pDisplayBinding = 0;
-    } else {
-        pParamWrapper->m_pVtable = &g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable;
-        pParamWrapper->m_nWrappedParam = nWrappedParam;
-        pParamWrapper->m_nReserved = 0;
-        pTarget->m_pDisplayBinding = pParamWrapper;
-    }
-    pTarget->m_pBackingBitmap = 0;
-    pTarget->m_nActiveUploadState = 0;
-    pCompactHelper->m_pLinkedTarget = 0;
-    InitializeCriticalSection(pTarget->m_abCriticalSection);
-    pTarget->m_fCriticalSectionReady = 1;
-    pCompactHelper->m_nQueuedState = 0;
-    return pTarget;
-}
-
-// FUNCTION: LEMBALL 0x0046C050
+// FUNCTION: LEMBALL 0x0046c050
 VsGdiResourceGeometryHelperTargetView *VsGdiResourceGeometryHelperTargetView::InitializeResourceGeometryHelper(const VsGdiRect *pRect, void *pWrappedTarget, int fConstructCompactHelper) {
     int iCompactDelta;
     VsGdiCompactResourceGeometryHelperFields *pCompactHelper;
@@ -1388,563 +3204,12 @@ VsGdiResourceGeometryHelperTargetView *VsGdiResourceGeometryHelperTargetView::In
     return this;
 }
 
-void *ConstructResourceGeometryHelperTarget(void *pvTarget, int nWrappedParam, int fConstructCompactHelper) {
-    return ((VsGdiResourceGeometryHelperTargetView *)pvTarget)
-        ->ConstructResourceGeometryHelperTarget(nWrappedParam, fConstructCompactHelper);
-}
-
-// FUNCTION: LEMBALL 0x0046BD10
-void *VsGdiResourceGeometryHelperSlotManager::AllocateResourceGeometryHelperSlot(
-    short *pRect, void *pWrappedTarget)
-{
-    VsGdiResourceGeometryHelperSlotManager *pSlotManager;
-    VsGdiResourceGeometryHelperSlot *pSlot;
-    VsGdiResourceGeometryHelperTargetView *pTarget;
-    int i;
-
-    pSlotManager = this;
-    i = FindFirstFreeResourceGeometryHelperSlotIndex(pSlotManager);
-    if (i < 0)
-        return 0;
-
-    pSlot = pSlotManager->m_pSlots + i;
-    pTarget = (VsGdiResourceGeometryHelperTargetView *)AllocateVSMemBlock(0x5a0);
-    if (pTarget != 0) {
-        pTarget->InitializeResourceGeometryHelper((const VsGdiRect *)pRect, pWrappedTarget, 1);
-    }
-    pSlot->m_nOwnerOrState0 = (int)(unsigned long)pTarget;
-    pSlot->m_nOwnerOrState4 = (int)(unsigned long)pWrappedTarget;
-    pSlot->m_nOwnerOrState8 = 0;
-    pSlot->m_nOwnerOrStateC = 0;
-    pSlot->m_nOwnerOrState10 = pWrappedTarget == g_pResourceGeometryHelperTarget;
-    pSlot->m_fAvailable = 0;
-    pSlot->m_nOwnerOrState18 = 0;
-    if (pSlot->m_nOwnerOrState10 != 0)
-        ++g_nResourceGeometryHelperSlotCount;
-    return pTarget;
-}
-
-// FUNCTION: LEMBALL 0x00467060
-VsGdiGeometryHelperPointerArray *
-VsGdiGeometryHelperPointerArray::InitializeGeometryHelperPointerArray(
-    short *pRect, int nEntryParameter, void *pWrappedTarget)
-{
-    int i;
-    int nEntryCount;
-    void *pSlotManager;
-    if ((int)pRect[0] * (int)pRect[1] > 1) {
-        nEntryCount = nEntryParameter + 3;
-        m_nEntryCount = nEntryCount;
-        m_pEntries = AllocateVSMemBlock((unsigned int)nEntryCount * 4);
-
-        pSlotManager = g_pResourceGeometryHelperSlotManager;
-        m_pTarget = (VsGdiResourceGeometryHelperTargetView *)
-            ((VsGdiResourceGeometryHelperSlotManager *)pSlotManager)
-                ->AllocateResourceGeometryHelperSlot(pRect, pWrappedTarget);
-        m_nReserved = 0;
-        for (i = 0; i < m_nEntryCount; ++i) {
-            ((void **)m_pEntries)[i] = 0;
-        }
-    }
-    return this;
-}
-
-struct VsGdiResourceGeometryHelperSlotReleaseInterface {
-    virtual void Reserved0(void) = 0;
-    virtual void ReleaseResourceGeometryHelperSlot(void *pTarget) = 0;
-};
-
-// FUNCTION: LEMBALL 0x004670D0
-void LEMBALL_FASTCALL DestroyGeometryHelperPointerArray(void *pHelper) {
-    VsGdiGeometryHelperPointerArray *pArray;
-
-    pArray = (VsGdiGeometryHelperPointerArray *)pHelper;
-    FreeVSMemBlock(pArray->m_pEntries);
-    ((VsGdiResourceGeometryHelperSlotReleaseInterface *)
-         g_pResourceGeometryHelperSlotManager)
-        ->ReleaseResourceGeometryHelperSlot(pArray->m_pTarget);
-}
-
-struct VsGdiDisplayDcBindingInterface {
-    virtual void Reserved0(void) = 0;
-    virtual void BindDisplayDc(void *hDc) = 0;
-};
-
-// FUNCTION: LEMBALL 0x0046D7E0
-void LEMBALL_FASTCALL BindHelperTargetDisplayDc(void *pTarget, int, void *hDc) {
-    void *pDisplayBinding;
-
-    pDisplayBinding = *(void **)((char *)pTarget + 0xf8);
-    ((VsGdiDisplayDcBindingInterface *)pDisplayBinding)->BindDisplayDc(hDc);
-}
-
-struct VsGdiSystemPalettePayload {
-    unsigned short m_nVersion;
-    unsigned short m_cEntries;
-    unsigned char m_abEntries[256][4];
-};
-
-struct VsGdiDisplayPaletteDispatch {
-    virtual void Reserved0(void) = 0;
-    virtual void Reserved1(void) = 0;
-    virtual void Reserved2(void) = 0;
-    virtual void Reserved3(void) = 0;
-    virtual void Reserved4(void) = 0;
-    virtual void Reserved5(void) = 0;
-    virtual int ApplySurfacePalette(void *pSurface,
-                                    int nFirstEntry,
-                                    int cEntries,
-                                    const unsigned int *paColors) = 0;
-    virtual void Reserved7(void) = 0;
-    virtual void Reserved8(void) = 0;
-    virtual void Reserved9(void) = 0;
-    virtual void Reserved10(void) = 0;
-    virtual int ApplySystemPalette(void *pPalette) = 0;
-    virtual int SelectAndRealizePalette(void *pDisplayDc) = 0;
-    virtual int UsesExistingPaletteAsFallback(void) = 0;
-};
-
-// FUNCTION: LEMBALL 0x00466660
-void LEMBALL_FASTCALL EnsureHelperGroup0BackingBufferThunk(void *pHelperGroup) {
-    EnsureHelperGroup0BackingBuffer((int)(unsigned long)pHelperGroup);
-}
-
-// FUNCTION: LEMBALL 0x00466740
-void LEMBALL_FASTCALL EnsureHelperGroup1BackingBufferBody(void *pHelperGroup) {
-    VsGdiHelperSurface *pSurface;
-    short *pExtent;
-    short aRequestedRect[4];
-    short aBackingSize[2];
-    int nCompactDelta;
-    unsigned int cbExisting;
-    unsigned int cbRequired;
-
-    nCompactDelta = *(int *)((char *)*(void **)((char *)pHelperGroup + 4) + 4);
-    pExtent = (short *)((char *)pHelperGroup + nCompactDelta + 0x18);
-    aRequestedRect[0] = (short)(pExtent[0] * 2);
-    aRequestedRect[1] = pExtent[1];
-    aRequestedRect[2] = 0;
-    aRequestedRect[3] = 0;
-    pSurface = (VsGdiHelperSurface *)((char *)pHelperGroup + 8);
-    pSurface->ComputeBackingDimensions(
-        aBackingSize,
-        aRequestedRect,
-        *(int *)((char *)pHelperGroup + nCompactDelta + 0x44) * 2);
-
-    cbExisting = (unsigned short)*(short *)((char *)pHelperGroup + 0x50) *
-                 (unsigned short)*(short *)((char *)pHelperGroup + 0x52) * 2;
-    cbRequired = (unsigned int)((int)aBackingSize[0] *
-                                (int)aBackingSize[1]);
-    if (cbExisting < cbRequired) {
-        ReleaseHelperGroup1BackingBuffer(
-            (int)(unsigned long)pHelperGroup);
-    }
-
-    if ((int)pExtent[0] * (int)pExtent[1] != 0) {
-        if (*(void **)((char *)pHelperGroup + 0x4c) == 0) {
-            *(short *)((char *)pHelperGroup + 0x50) =
-                (short)((unsigned int)(int)aBackingSize[0] >> 1);
-            *(short *)((char *)pHelperGroup + 0x52) = aBackingSize[1];
-            *(void **)((char *)pHelperGroup + 0x4c) =
-                AllocateVSMemBlock(
-                    (unsigned short)*(short *)((char *)pHelperGroup + 0x50) *
-                    (unsigned short)aBackingSize[1] * 2);
-        }
-        if (*(void **)((char *)pHelperGroup + 0x4c) == 0) {
-            *(int *)((char *)pHelperGroup + 0x48) = 0;
-        }
-        pSurface->ConfigureBackingStrideAndOrigin(
-            (int)(unsigned long)*(void **)((char *)pHelperGroup + 0x4c),
-            (int)aBackingSize[0]);
-    }
-}
-
-// FUNCTION: LEMBALL 0x00466870
-void LEMBALL_FASTCALL EnsureHelperGroup1BackingBuffer(void *pHelperGroup) {
-    EnsureHelperGroup1BackingBufferBody(pHelperGroup);
-}
-
-// FUNCTION: LEMBALL 0x004664E0
-int LEMBALL_FASTCALL GetHelperGroup0DirtyFlag(void *pGroupState, int) {
-    void *pLinkedTarget;
-    void *pLinkedCompact;
-    void **pVtable;
-    int nCompactDelta;
-
-    nCompactDelta = *(int *)((char *)*(void **)((char *)pGroupState - 0x54) + 4);
-    pLinkedTarget = *(void **)((char *)pGroupState + nCompactDelta - 0x34);
-    if (pLinkedTarget != g_pResourceGeometryHelperTarget) {
-        nCompactDelta = *(int *)((char *)*(void **)((char *)pLinkedTarget + 0x40) + 4);
-        pLinkedCompact =
-            (char *)pLinkedTarget + 0x40 + nCompactDelta;
-        pVtable = *(void ***)pLinkedCompact;
-        return ((int (LEMBALL_FASTCALL *)(void *, int))pVtable[15])(
-            pLinkedCompact, 0);
-    }
-    return *(int *)((char *)pGroupState - 0x10);
-}
-
-// FUNCTION: LEMBALL 0x0046DC90
-int LEMBALL_FASTCALL GetHelperGroup0DirtyFlagAdjustmentThunk(
-    void *pCompactTarget, int nUnused)
-{
-    return GetHelperGroup0DirtyFlag(
-        (char *)pCompactTarget - 0x46c, nUnused);
-}
-
-// FUNCTION: LEMBALL 0x0046DC80
-unsigned char *LEMBALL_FASTCALL GetHelperTargetToken(void *pTarget) {
-    return (unsigned char *)pTarget - 8;
-}
-
-// FUNCTION: LEMBALL 0x0046DC70
-unsigned char *LEMBALL_FASTCALL GetHelperTargetTokenAdjustmentThunk(
-    void *pCompactTarget)
-{
-    pCompactTarget =
-        (char *)pCompactTarget - *(int *)((char *)pCompactTarget - 4);
-    return GetHelperTargetToken(pCompactTarget);
-}
-
-// FUNCTION: LEMBALL 0x00475080
-void LEMBALL_FASTCALL FillHelperSurfaceRectCommand(
-    void *pCompactTarget, int, void *pCommand)
-{
-    const VsGdiRect *pCommandRect;
-    VsGdiRect Rect;
-
-    pCommandRect = (const VsGdiRect *)get_draw_command_rect_payload(pCommand);
-    Rect.m_x = pCommandRect->m_x;
-    Rect.m_y = pCommandRect->m_y;
-    Rect.m_cx = pCommandRect->m_cx;
-    Rect.m_cy = pCommandRect->m_cy;
-    ((VsGdiHelperSurface *)((char *)pCompactTarget - 0x55c))
-        ->FillRect(Rect, *(int *)((char *)pCommand + 0x0c));
-}
-
-// FUNCTION: LEMBALL 0x0046DBA0
-void LEMBALL_FASTCALL FillHelperSurfaceRectCommandAdjustmentThunk(
-    void *pCompactTarget, int nUnused, void *pCommand)
-{
-    pCompactTarget =
-        (char *)pCompactTarget - *(int *)((char *)pCompactTarget - 4);
-    FillHelperSurfaceRectCommand(pCompactTarget, nUnused, pCommand);
-}
-
-// FUNCTION: LEMBALL 0x0046DBC0
-void LEMBALL_FASTCALL ForwardBitmapCommandToAdjustedSurface(
-    void *pCompactTarget, int, void *pCommand, void *pBitmap)
-{
-    typedef void (LEMBALL_FASTCALL *BitmapCommandVirtual)(
-        void *, int, void *, void *);
-
-    int nSurfaceOffset;
-    void *pSurface;
-
-    nSurfaceOffset =
-        *(int *)((char *)*(void **)((char *)pCompactTarget - 0x51c) + 4);
-    pSurface = (char *)pCompactTarget + nSurfaceOffset - 0x51c;
-    ((BitmapCommandVirtual)(*(void ***)pSurface)[8])(
-        pSurface, 0, pCommand, pBitmap);
-}
-
-// FUNCTION: LEMBALL 0x0046DBB0
-void LEMBALL_FASTCALL ForwardBitmapCommandToAdjustedSurfaceThunk(
-    void *pCompactTarget, int nUnused, void *pCommand, void *pBitmap)
-{
-    pCompactTarget =
-        (char *)pCompactTarget - *(int *)((char *)pCompactTarget - 4);
-    ForwardBitmapCommandToAdjustedSurface(
-        pCompactTarget, nUnused, pCommand, pBitmap);
-}
-
-// FUNCTION: LEMBALL 0x004787F0
-void LEMBALL_FASTCALL BlitBitmapRowsToScanlines(
-    void *pCompactTarget, int, void *pCommand, void *pBitmap)
-{
-    typedef void (LEMBALL_FASTCALL *DirtyRectVirtual)(
-        void *, int, VsGdiRect *);
-    typedef unsigned char *(LEMBALL_FASTCALL *GetBitmapDataVirtual)(
-        void *);
-
-    unsigned char *pCommandBytes;
-    unsigned char *pBitmapBytes;
-    VsGdiHelperSurface *pSurface;
-    VsGdiRect Rect;
-    VsGdiRect ClippedRect;
-    unsigned char **ppRows;
-    unsigned char *pSource;
-    unsigned char *pDestination;
-    int cxBitmap;
-    int cyBitmap;
-    int xSource;
-    int ySource;
-    int iSourceRow;
-    int iDestinationRow;
-    int nDestinationRowStep;
-    int i;
-    unsigned int dwFlags;
-
-    pCommandBytes = (unsigned char *)pCommand;
-    pBitmapBytes = (unsigned char *)pBitmap;
-    pSurface = (VsGdiHelperSurface *)((char *)pCompactTarget - 0x55c);
-
-    Rect.m_x = *(short *)(pCommandBytes + 8);
-    Rect.m_y = *(short *)(pCommandBytes + 0x0a);
-    Rect.m_cx = *(short *)(pCommandBytes + 4);
-    Rect.m_cy = *(short *)(pCommandBytes + 6);
-    xSource = *(short *)(pCommandBytes + 0x0c);
-    ySource = *(short *)(pCommandBytes + 0x0e);
-    if (Rect.m_x == 0 && Rect.m_y == 0) {
-        Rect.m_x = *(short *)(pBitmapBytes + 0x48);
-        Rect.m_y = *(short *)(pBitmapBytes + 0x4a);
-    }
-
-    cxBitmap = *(short *)(pBitmapBytes + 0x48);
-    cyBitmap = *(short *)(pBitmapBytes + 0x4a);
-    if (cxBitmap * cyBitmap == 0) {
-        return;
-    }
-
-    memset(&ClippedRect, 0, sizeof(ClippedRect));
-    if (pSurface->ClipRenderRectToSurfaceBounds(&Rect, &ClippedRect)) {
-        if (ClippedRect.m_x < 1 || ClippedRect.m_y < 1) {
-            return;
-        }
-        Rect.m_x = ClippedRect.m_x;
-        Rect.m_y = ClippedRect.m_y;
-    }
-
-    ((DirtyRectVirtual)(*(void ***)pSurface)[1])(
-        pSurface, 0, &Rect);
-
-    dwFlags = *(unsigned int *)(pCommandBytes + 0x14);
-    iDestinationRow = Rect.m_cy;
-    nDestinationRowStep = 1;
-    if ((dwFlags & 2) != 0) {
-        nDestinationRowStep = -1;
-        iDestinationRow += Rect.m_y - 1;
-    }
-
-    pSource = ((GetBitmapDataVirtual)(*(void ***)pBitmap)[10])(pBitmap);
-    pSource += (ySource + ClippedRect.m_cy) * cxBitmap +
-               xSource + ClippedRect.m_cx;
-    ppRows = *(unsigned char ***)((char *)pSurface + 4);
-
-    for (iSourceRow = 0; iSourceRow < Rect.m_y; ++iSourceRow) {
-        pDestination = ppRows[iDestinationRow] + Rect.m_cx;
-        if ((dwFlags & 0x800) != 0) {
-            for (i = 0; i < Rect.m_x; ++i) {
-                if (pSource[i] != 0) {
-                    pDestination[i] = pSource[i];
-                }
-            }
-        } else {
-            memcpy(pDestination, pSource, (unsigned short)Rect.m_x);
-        }
-        iDestinationRow += nDestinationRowStep;
-        pSource += cxBitmap;
-    }
-}
-
-// FUNCTION: LEMBALL 0x0046DBF0
-void LEMBALL_FASTCALL BlitBitmapRowsToScanlinesAdjustmentThunk(
-    void *pCompactTarget, int nUnused, void *pCommand, void *pBitmap)
-{
-    pCompactTarget =
-        (char *)pCompactTarget - *(int *)((char *)pCompactTarget - 4);
-    BlitBitmapRowsToScanlines(
-        pCompactTarget, nUnused, pCommand, pBitmap);
-}
-
-// FUNCTION: LEMBALL 0x00466990
-int LEMBALL_FASTCALL GetHelperGroup1DirtyFlag(void *pGroupState, int) {
-    return *(int *)((char *)pGroupState - 0x10);
-}
-
-// FUNCTION: LEMBALL 0x0046DCA0
-int LEMBALL_FASTCALL GetHelperGroup1DirtyFlagAdjustmentThunk(
-    void *pCompactTarget, int nUnused)
-{
-    return GetHelperGroup1DirtyFlag(
-        (char *)pCompactTarget - 0x4c0, nUnused);
-}
-
-// FUNCTION: LEMBALL 0x0046D420
-void LEMBALL_FASTCALL SetHelperTargetRenderExtent(
-    void *pCompactTarget, int, const VsGdiRect *pExtent)
-{
-    VsGdiResourceGeometryLinkNode *pNode;
-    VsGdiResourceGeometryHelperTargetView *pChild;
-    VsGdiRect Rect;
-    void *pChildCompact;
-    void **pVtable;
-    void *pTracker;
-    int nCompactDelta;
-    int nExtent;
-
-    nCompactDelta = *(int *)((char *)*(void **)((char *)pCompactTarget - 0x51c) + 4);
-    Rect.m_x = pExtent->m_x;
-    Rect.m_y = pExtent->m_y;
-    Rect.m_cx = *(short *)((char *)pCompactTarget + 0x10);
-    Rect.m_cy = *(short *)((char *)pCompactTarget + 0x12);
-
-    pTracker = *(void **)((char *)pCompactTarget - 0x0c);
-    if (pTracker != 0) {
-        nExtent = (unsigned short)Rect.m_x |
-                  ((unsigned int)(unsigned short)Rect.m_y << 16);
-        SetHelperUploadTrackerExtent(pTracker, 0, nExtent);
-    }
-
-    ((VsGdiHelperSurface *)((char *)pCompactTarget - 0x55c))
-        ->UpdateWorkingRectAndBacking(&Rect);
-
-    if (*(void **)((char *)pCompactTarget + nCompactDelta - 0x4fc) ==
-        g_pResourceGeometryHelperTarget) {
-        pVtable = *(void ***)pCompactTarget;
-        if (((int (LEMBALL_FASTCALL *)(void *, int))pVtable[15])(
-                pCompactTarget, 0) != 0) {
-            EnsureHelperGroup0BackingBufferThunk(
-                (char *)pCompactTarget - 0x4c4);
-        }
-        if (((int (LEMBALL_FASTCALL *)(void *, int))pVtable[16])(
-                pCompactTarget, 0) != 0) {
-            EnsureHelperGroup1BackingBuffer(
-                (char *)pCompactTarget - 0x518);
-        }
-    }
-
-    pNode = *(VsGdiResourceGeometryLinkNode **)(
-        (char *)pCompactTarget - 0x34);
-    while (pNode != 0) {
-        pChild = (VsGdiResourceGeometryHelperTargetView *)pNode->m_pTarget;
-        nCompactDelta = *(int *)((char *)*(void **)((char *)pChild + 0x40) + 4);
-        pChildCompact = (char *)pChild + 0x40 + nCompactDelta;
-        Rect.m_x = *(short *)((char *)pChild + nCompactDelta + 0x4c);
-        Rect.m_y = *(short *)((char *)pChild + nCompactDelta + 0x4e);
-        pVtable = *(void ***)pChildCompact;
-        ((void (LEMBALL_FASTCALL *)(void *, int, const VsGdiRect *))
-             pVtable[10])(pChildCompact, 0, &Rect);
-        pNode = pNode->m_pPrev;
-    }
-}
-
-// FUNCTION: LEMBALL 0x0046DC10
-void LEMBALL_FASTCALL SetHelperTargetRenderExtentAdjustmentThunk(
-    void *pCompactTarget, int nUnused, const VsGdiRect *pExtent)
-{
-    pCompactTarget =
-        (char *)pCompactTarget - *(int *)((char *)pCompactTarget - 4);
-    SetHelperTargetRenderExtent(pCompactTarget, nUnused, pExtent);
-}
-
-struct VsGdiLogPalette256 {
-    unsigned short m_nVersion;
-    unsigned short m_cEntries;
-    struct VsGdiPaletteEntry {
-        unsigned char m_bRed;
-        unsigned char m_bGreen;
-        unsigned char m_bBlue;
-        unsigned char m_bFlags;
-    } m_aEntries[256];
-};
-
-struct VsGdiDisplayPaletteStateView {
-    void *m_pVtable;
-    HMODULE m_hGraphicsModule;
-    void *m_hPalette;
-};
-
-struct VsGdiDisplayDcView {
-    void *m_pVtable;
-    void *m_hDc;
-};
-
-extern "C" {
-__declspec(dllimport) void *WINAPI GetDC(HWND hWnd);
-__declspec(dllimport) int WINAPI ReleaseDC(HWND hWnd, void *hDc);
-__declspec(dllimport) UINT WINAPI GetSystemPaletteEntries(
-    void *hDc, UINT nFirstEntry, UINT cEntries, void *pEntries);
-__declspec(dllimport) BOOL WINAPI DeleteObject(HGDIOBJ hObject);
-__declspec(dllimport) void *WINAPI CreatePalette(const void *pPalette);
-__declspec(dllimport) void *WINAPI SelectPalette(
-    void *hDc, void *hPalette, BOOL fForceBackground);
-__declspec(dllimport) UINT WINAPI RealizePalette(void *hDc);
-__declspec(dllimport) UINT WINAPI SetDIBColorTable(
-    void *hDc, UINT nFirstEntry, UINT cEntries, const void *pColors);
-__declspec(dllimport) void *WINAPI CreateCompatibleDC(void *hDc);
-__declspec(dllimport) BOOL WINAPI DeleteDC(void *hDc);
-__declspec(dllimport) void *WINAPI CreateDIBSection(
-    void *hDc, const void *pBitmapInfo, UINT nUsage, void **ppBits,
-    HANDLE hSection, DWORD dwOffset);
-__declspec(dllimport) BOOL WINAPI BitBlt(
-    void *hDcDestination, int xDestination, int yDestination,
-    int cx, int cy, void *hDcSource, int xSource, int ySource,
-    DWORD dwRasterOperation);
-__declspec(dllimport) BOOL WINAPI StretchBlt(
-    void *hDcDestination, int xDestination, int yDestination,
-    int cxDestination, int cyDestination, void *hDcSource,
-    int xSource, int ySource, int cxSource, int cySource,
-    DWORD dwRasterOperation);
-__declspec(dllimport) HGDIOBJ WINAPI SelectObject(
-    void *hDc, HGDIOBJ hObject);
-__declspec(dllimport) BOOL WINAPI GdiFlush(void);
-}
-
-// FUNCTION: LEMBALL 0x004567C0
-int LEMBALL_FASTCALL CreateAndStoreDisplayPalette(
-    void *pDisplayState, int, void *pPalette)
-{
-    VsGdiDisplayPaletteStateView *pState;
-
-    pState = (VsGdiDisplayPaletteStateView *)pDisplayState;
-    if (pState->m_hPalette != 0) {
-        DeleteObject(pState->m_hPalette);
-    }
-    pState->m_hPalette = CreatePalette(pPalette);
-    return pState->m_hPalette != 0;
-}
-
-// FUNCTION: LEMBALL 0x004567F0
-int LEMBALL_FASTCALL SelectAndRealizeDisplayPalette(
-    void *pDisplayState, int, void *pDisplayDc)
-{
-    VsGdiDisplayPaletteStateView *pState;
-    VsGdiDisplayDcView *pDc;
-
-    pState = (VsGdiDisplayPaletteStateView *)pDisplayState;
-    if (pState->m_hPalette != 0) {
-        pDc = (VsGdiDisplayDcView *)pDisplayDc;
-        SelectPalette(pDc->m_hDc, pState->m_hPalette, 0);
-        RealizePalette(pDc->m_hDc);
-    }
-    return 1;
-}
-
-// FUNCTION: LEMBALL 0x00456C50
-int LEMBALL_FASTCALL ApplyDisplaySurfacePalette(
-    void *, int, void *pSurface, int nFirstEntry, int cEntries,
-    const unsigned int *paColors)
-{
-    return SetDIBColorTable(((VsGdiDisplayDcView *)pSurface)->m_hDc,
-                            nFirstEntry,
-                            cEntries,
-                            paColors);
-}
-
-// FUNCTION: LEMBALL 0x00458200
-int LEMBALL_FASTCALL UsesExistingDisplayPaletteAsFallback(
-    void *pDisplayState, int)
-{
-    return ((VsGdiDisplayPaletteStateView *)pDisplayState)->m_hPalette ==
-           (void *)1;
-}
-
-// FUNCTION: LEMBALL 0x0046C380
+// FUNCTION: LEMBALL 0x0046c380
 void BuildAndApplyLogPalette(unsigned int *paOutputColors,
                              void *pPaletteResource,
                              int,
     const unsigned int *paFallbackColors)
+
 {
     VsGdiLogPalette256 Palette;
     VsGdiLogPalette256::VsGdiPaletteEntry *pEntry;
@@ -2051,234 +3316,59 @@ void BuildAndApplyLogPalette(unsigned int *paOutputColors,
         ->ApplySystemPalette(&Palette);
 }
 
-// FUNCTION: LEMBALL 0x0046D040
-void LEMBALL_FASTCALL ApplyHelperTargetPaletteAndPropagate(
-    void *pCompactTarget, int, void *pPalette)
-{
-    const unsigned int *paFallbackColors;
-
-    paFallbackColors =
-        ((VsGdiDisplayPaletteDispatch *)g_pDisplayState)
-                ->UsesExistingPaletteAsFallback()
-            ? g_adwGlobalResourceGeometryPaletteTable
-            : 0;
-    BuildAndApplyLogPalette(g_adwGlobalResourceGeometryPaletteTable,
-                            pPalette,
-                            0,
-                            paFallbackColors);
-    PropagateGlobalPaletteToResourceGeometries(
-        (char *)pCompactTarget - 0x55c);
-}
-
-// FUNCTION: LEMBALL 0x0046DC30
-void LEMBALL_FASTCALL ApplyHelperTargetPaletteAdjustmentThunk(
-    void *pCompactTarget, int nUnused, void *pPalette)
-{
-    pCompactTarget =
-        (char *)pCompactTarget - *(int *)((char *)pCompactTarget - 4);
-    ApplyHelperTargetPaletteAndPropagate(pCompactTarget, nUnused, pPalette);
-}
-
-// FUNCTION: LEMBALL 0x0046D930
-void LEMBALL_FASTCALL PropagateGlobalPaletteToResourceGeometriesBody(void *pTarget) {
-    VsGdiSystemPalettePayload Palette;
-    VsGdiResourceGeometryLinkNode *pNode;
-    VsGdiResourceGeometryHelperTargetView *pListedTarget;
-    unsigned char *pEntry;
-    unsigned int uColor;
-    int i;
-
-    Palette.m_nVersion = 0x300;
-    Palette.m_cEntries = 0x100;
-    for (i = 0; i < 0x100; ++i) {
-        uColor = g_adwGlobalResourceGeometryPaletteTable[i];
-        pEntry = Palette.m_abEntries[i];
-        pEntry[0] = (unsigned char)(uColor >> 16);
-        pEntry[1] = (unsigned char)(uColor >> 8);
-        pEntry[2] = (unsigned char)uColor;
-        pEntry[3] = 4;
-    }
-
-    ((VsGdiDisplayPaletteDispatch *)g_pDisplayState)
-        ->ApplySystemPalette(&Palette);
-
-    pNode = g_pResourceGeometryListHead != 0
-                ? *(VsGdiResourceGeometryLinkNode **)g_pResourceGeometryListHead
-                : 0;
-    while (pNode != 0) {
-        pListedTarget =
-            (VsGdiResourceGeometryHelperTargetView *)pNode->m_pTarget;
-        memcpy((char *)pTarget + 0x124,
-               g_adwGlobalResourceGeometryPaletteTable,
-               sizeof(g_adwGlobalResourceGeometryPaletteTable));
-        if (pListedTarget->m_pDisplayBinding != 0) {
-            ((VsGdiDisplayPaletteDispatch *)g_pDisplayState)
-                ->ApplySurfacePalette(pListedTarget->m_pDisplayBinding,
-                                      0,
-                                      0x100,
-                                      g_adwGlobalResourceGeometryPaletteTable);
-        }
-        pNode = pNode->m_pPrev;
-    }
-}
-
-// FUNCTION: LEMBALL 0x0046D920
-void LEMBALL_FASTCALL PropagateGlobalPaletteToResourceGeometries(void *pTarget) {
-    PropagateGlobalPaletteToResourceGeometriesBody(pTarget);
-}
-
-// FUNCTION: LEMBALL 0x00466880
-void LEMBALL_FASTCALL CopyRectTupleIfExtentEmpty(void *pTarget,
-                                                 int,
-    short *paRect)
-{
-    short *paCurrentRect;
-    short *paPosition;
-
-    paCurrentRect = (short *)((char *)pTarget + 4);
-    if ((int)paCurrentRect[0] * (int)paCurrentRect[1] != 0 &&
-        (int)paRect[0] * (int)paRect[1] != 0) {
-        return;
-    }
-
-    paCurrentRect[0] = paRect[0];
-    paCurrentRect[1] = paRect[1];
-    paPosition = paRect != 0 ? paRect + 2 : 0;
-    paCurrentRect[2] = paPosition[0];
-    paCurrentRect[3] = paPosition[1];
-}
-
-// FUNCTION: LEMBALL 0x00463C30
-void LEMBALL_FASTCALL BuildGeometryHelperFromRenderRect(void *pOwner) {
-    unsigned char *pbOwner;
-    void *pParentOwner;
-    void *pWrappedTarget;
-    short aRect[4];
-    short aWindowRect[4];
-    short sOriginX;
-    short sOriginY;
-    unsigned int uOwnerFlags;
-    unsigned int uWindowStyle;
-    VsGdiResourceGeometryHelperTargetView *pTarget;
-    VsGdiGeometryHelperPointerArray *pHelper;
-    typedef unsigned int (LEMBALL_FASTCALL *GetOwnerFlagsProc)(void *);
-    typedef void (LEMBALL_FASTCALL *SetWindowRectProc)(void *, int, short *);
-
-    pbOwner = (unsigned char *)pOwner;
-    ((VS_RootGeometryOwner *)pOwner)
-        ->VS_RootGeometryOwner::RetainRootGeometryOwner();
-
-    pParentOwner = *(void **)(pbOwner + 0x20);
-    if (pParentOwner == 0) {
-        pWrappedTarget = g_pResourceGeometryHelperTarget;
-    } else {
-        pWrappedTarget = *(void **)((char *)*(void **)(pbOwner + 0x20) + 0x4c);
-        pWrappedTarget = *(void **)((char *)pWrappedTarget + 0x0c);
-    }
-
-    aRect[0] = *(short *)(pbOwner + 0x08);
-    aRect[1] = *(short *)(pbOwner + 0x0a);
-    aRect[2] = *(short *)(pbOwner + 0x18);
-    aRect[3] = *(short *)(pbOwner + 0x1a);
-
-    if ((short)*(short *)(pbOwner + 0x10) *
-            (short)*(short *)(pbOwner + 0x12) != 0) {
-        aRect[0] = *(short *)(pbOwner + 0x10);
-        aRect[1] = *(short *)(pbOwner + 0x12);
-        aRect[2] = *(short *)(pbOwner + 0x14) + *(short *)(pbOwner + 0x18);
-        aRect[3] = *(short *)(pbOwner + 0x16) + *(short *)(pbOwner + 0x1a);
-    }
-    if (pParentOwner == 0) {
-        aRect[0] = (short)((int)aRect[0] / *(int *)(pbOwner + 0x38));
-        aRect[1] = (short)((int)aRect[1] / *(int *)(pbOwner + 0x38));
-    }
-
-    pHelper = (VsGdiGeometryHelperPointerArray *)AllocateVSMemBlock(sizeof(*pHelper));
-    if (pHelper == 0) {
-        *(void **)(pbOwner + 0x4c) = 0;
-        return;
-    }
-    pHelper = pHelper->InitializeGeometryHelperPointerArray(
-        aRect, *(int *)(pbOwner + 0x50), pWrappedTarget);
-    *(VsGdiGeometryHelperPointerArray **)(pbOwner + 0x4c) = pHelper;
-
-    pTarget = pHelper->m_pTarget;
-    if (pParentOwner == 0) {
-        *(short *)((char *)pTarget +
-                   *(int *)(*(int *)((char *)pTarget + 0x40) + 4) + 0x6c) =
-            (short)*(int *)(pbOwner + 0x38);
-    }
-
-    sOriginX = *(short *)(pbOwner + 0x14);
-    sOriginY = *(short *)(pbOwner + 0x16);
-    if (pParentOwner != 0) {
-        sOriginX = (short)(sOriginX - *(short *)((char *)pParentOwner + 0x18));
-        sOriginY = (short)(sOriginY - *(short *)((char *)pParentOwner + 0x1a));
-    }
-    *(short *)((char *)pTarget +
-               *(int *)(*(int *)((char *)pTarget + 0x40) + 4) + 0x5c) = sOriginX;
-    *(short *)((char *)pTarget +
-               *(int *)(*(int *)((char *)pTarget + 0x40) + 4) + 0x5e) = sOriginY;
-
-    uOwnerFlags = ((GetOwnerFlagsProc)(*(void ***)pOwner)[0x64 / sizeof(void *)])(
-        pOwner);
-    if ((uOwnerFlags & 0x40000000u) != 0 && *(HWND *)(pbOwner + 0x44) != 0) {
-        uWindowStyle = GetWindowLongA(*(HWND *)(pbOwner + 0x44), -16);
-        if ((uWindowStyle & 0x40000000u) != 0) {
-            aWindowRect[0] = *(short *)(pbOwner + 0x14) -
-                             *(short *)((char *)*(void **)(pbOwner + 0x48) + 0x18);
-            aWindowRect[1] = *(short *)(pbOwner + 0x16) -
-                             *(short *)((char *)*(void **)(pbOwner + 0x48) + 0x1a);
-            aWindowRect[2] = aRect[2];
-            aWindowRect[3] = aRect[3];
-            *(short *)((char *)pTarget + 0xec) = aWindowRect[0];
-            *(short *)((char *)pTarget + 0xee) = aWindowRect[1];
-            ((SetWindowRectProc)(*(void ***)*(void **)(pbOwner + 0x48))[0x84 / sizeof(void *)])(
-                *(void **)(pbOwner + 0x48), 0, aWindowRect);
-        }
-    }
-    *(int *)((char *)pTarget + 0x10) =
-        *(int *)g_pSelectedGraphicsDriverRuntime != 3;
-}
-
-// FUNCTION: LEMBALL 0x004722D0
-void LEMBALL_FASTCALL DestroyResourceGeometryRowBuffer(void *pvRowBuffer) {
-    *(void **)pvRowBuffer = &g_VSGDI_ResourceGeometryRowBufferVtable;
-    ReleaseResourceGeometryRowBufferStorage((int)(unsigned long)pvRowBuffer);
-}
-
-// FUNCTION: LEMBALL 0x004664B0
-void LEMBALL_FASTCALL DestroyHelperGroup0RowBuffer(void *pvHelperGroup) {
+// FUNCTION: LEMBALL 0x0046c5d0
+VsGdiResourceGeometryHelperTargetView *VsGdiResourceGeometryHelperTargetView::ConstructResourceGeometryHelperTarget(int nWrappedParam, int fConstructCompactHelper) {
     int iCompactDelta;
-    int *pHelperGroup;
-    int *pRowBuffer;
+    VsGdiCompactResourceGeometryHelperFields *pCompactHelper;
+    VsGdiHelperTargetParamWrapper *pParamWrapper;
+    VsGdiResourceGeometryHelperTargetView *pTarget;
 
-    pHelperGroup = (int *)pvHelperGroup;
-    *(void **)pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup0Vtable;
-    pRowBuffer = pHelperGroup + 2;
-    iCompactDelta = *(int *)((char *)(unsigned long)pHelperGroup[1] + 4);
-    *(void **)((char *)pRowBuffer + iCompactDelta - 4) = (void *)&g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable;
-    *(int *)((char *)pRowBuffer + iCompactDelta - 8) = iCompactDelta - 0x54;
-    DestroyResourceGeometryRowBuffer(pRowBuffer);
+    pTarget = this;
+    if (fConstructCompactHelper != 0) {
+        *(void **)((char *)pTarget + 0x40) = &g_VSGDI_CompactHelperTargetAdjustor;
+        *(void **)((char *)pTarget + 0x48) = &g_VSGDI_HelperGroup1Adjustor;
+        *(void **)((char *)pTarget + 0x9c) = &g_VSGDI_HelperGroup0Adjustor;
+        ((VsGdiCompactResourceGeometryHelper *)((char *)pTarget + 0x55c))
+            ->InitializeCompactResourceGeometryHelper();
+    }
+    InitializeResourceGeometryRowBuffer(pTarget);
+    *(void **)pTarget = &g_VSGDI_ResourceGeometryHelperTargetConstructionVtable;
+    iCompactDelta = *(int *)((char *)(unsigned long)*(int *)((char *)pTarget + 0x40) + 4);
+    pCompactHelper = (VsGdiCompactResourceGeometryHelperFields *)((char *)pTarget + iCompactDelta);
+    pCompactHelper->m_pVtable = &g_VSGDI_CompactResourceGeometryHelperConstructionVtable;
+    ConstructHelperGroup1RowBuffer((char *)pTarget + 0x44, 0);
+    ConstructHelperGroup0RowBuffer((char *)pTarget + 0x98, 0);
+    pTarget->m_nReservedEE = 0;
+    pTarget->m_ChildTargetLinks.m_pTail = 0;
+    pTarget->m_nReservedEC = 0;
+    pTarget->m_ChildTargetLinks.m_pHead = 0;
+    pTarget->m_ChildTargetLinks.m_cNodes = 0;
+    *(void **)pTarget = &g_VSGDI_ResourceGeometryHelperTargetVtable;
+    *(void **)((char *)pTarget + 0x44) = &g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable;
+    *(void **)((char *)pTarget + 0x98) = &g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable;
+    pCompactHelper->m_pVtable = &g_VSGDI_CompactResourceGeometryHelperSubobjectVtable;
+    pCompactHelper->m_nThisAdjust = iCompactDelta - 0x51c;
+
+    pParamWrapper = (VsGdiHelperTargetParamWrapper *)AllocateVSMemBlock(0xc);
+    if (pParamWrapper == 0) {
+        pTarget->m_pDisplayBinding = 0;
+    } else {
+        pParamWrapper->m_pVtable =
+            (void **)&g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable;
+        pParamWrapper->m_nWrappedParam = nWrappedParam;
+        pParamWrapper->m_nReserved = 0;
+        pTarget->m_pDisplayBinding = pParamWrapper;
+    }
+    pTarget->m_pBackingBitmap = 0;
+    pTarget->m_nActiveUploadState = 0;
+    pCompactHelper->m_pLinkedTarget = 0;
+    InitializeCriticalSection(pTarget->m_abCriticalSection);
+    pTarget->m_fCriticalSectionReady = 1;
+    pCompactHelper->m_nQueuedState = 0;
+    return pTarget;
 }
 
-// FUNCTION: LEMBALL 0x004666E0
-void LEMBALL_FASTCALL DestroyHelperGroup1RowBuffer(void *pvHelperGroup) {
-    int *pHelperGroup;
-
-    pHelperGroup = (int *)pvHelperGroup;
-    *(void **)pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup1Vtable;
-    pHelperGroup += 2;
-    *(void **)((char *)pHelperGroup +
-               *(int *)((char *)(unsigned long)pHelperGroup[-1] + 4) - 4) =
-        (void *)&g_VSGDI_ResourceGeometryHelperGroup1CompactSubobjectVtable;
-    *(int *)((char *)pHelperGroup +
-             *(int *)((char *)(unsigned long)pHelperGroup[-1] + 4) - 8) =
-        *(int *)((char *)(unsigned long)pHelperGroup[-1] + 4) - 0x54;
-    DestroyResourceGeometryRowBuffer(pHelperGroup);
-}
-
-// FUNCTION: LEMBALL 0x0046C710
+// FUNCTION: LEMBALL 0x0046c710
 void DestroyResourceGeometryHelperTarget(void *pvTarget) {
     int iCompactDelta;
     int iCriticalSectionReady;
@@ -2409,653 +3499,7 @@ void DestroyResourceGeometryHelperTarget(void *pvTarget) {
     DestroyResourceGeometryRowBuffer(pTarget);
 }
 
-// FUNCTION: LEMBALL 0x00466430
-static void LEMBALL_FASTCALL RestoreCompactResourceGeometryHelperVtable(void *pvHelper) {
-    *(void **)pvHelper = g_VSGDI_CompactResourceGeometryHelperVtable;
-}
-
-// FUNCTION: LEMBALL 0x0046AFD0
-void LEMBALL_FASTCALL InitializeStatusIndicatorRenderClientDefaults(int *pRenderClient) {
-    int *pEntryBlock;
-    int *pEntry;
-    int i;
-    int nZero;
-    DWORD dwNow;
-
-    nZero = 0;
-    pRenderClient[0xa] = nZero;
-    pEntryBlock = (int *)AllocateVSMemBlock(0x1c);
-    if (pEntryBlock == 0) {
-        pRenderClient[7] = 0;
-    } else {
-        pEntryBlock[0] = 1;
-        pEntry = pEntryBlock + 1;
-        for (i = 0; i <= 1; ++i) {
-            new (pEntry) LevelPackagedRectQueueEntry;
-            pEntry += 6;
-        }
-        pRenderClient[7] = (int)(unsigned long)(pEntryBlock + 1);
-    }
-    pEntry = (int *)(unsigned long)pRenderClient[7];
-    *(short *)((char *)pEntry + 4) = 0;
-    *(short *)((char *)pEntry + 6) = 0;
-    pEntry[2] = 0;
-    pEntry[3] = 0;
-    pEntry[4] = 0;
-    ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
-        ->RegisterOrderedRenderDispatchClient(pRenderClient, -0x19);
-    pRenderClient[0xd] = 0;
-    pRenderClient[0xc] = 0;
-    pRenderClient[0xb] = 0;
-    pRenderClient[6] = 0;
-    pRenderClient[0xe] = 0;
-    pRenderClient[0xf] = 1;
-    pRenderClient[8] = 0;
-    pRenderClient[0x12] = 1;
-    pRenderClient[0x1f] = 3;
-    pRenderClient[0x20] = 4;
-    pRenderClient[0x21] = 1;
-    pRenderClient[0x24] = 0;
-    pRenderClient[0x22] = 2;
-    pRenderClient[0x23] = 0x1f;
-    pRenderClient[0x25] = 0x49;
-    pRenderClient[0x13] = 0x199;
-    pRenderClient[0x14] = 0x8000;
-    pRenderClient[0x17] = 0;
-    pRenderClient[0x15] = (int)*(short *)((char *)pRenderClient + 0x10) << 12;
-    pRenderClient[0x18] = 0;
-    pRenderClient[0x19] = 0;
-    pRenderClient[0x1a] = 0;
-    pRenderClient[0x16] = (int)*(short *)((char *)pRenderClient + 0x12) << 12;
-    dwNow = timeGetTime();
-    pRenderClient[0x1b] = (int)dwNow;
-    pRenderClient[0x1c] = (int)dwNow;
-}
-
-// FUNCTION: LEMBALL 0x0046B0E0
-static int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(
-    void *pRenderClient, int, RenderDispatchQueueEntry *pEntry)
-{
-    int *pState;
-    unsigned short wType;
-    unsigned int dwCode;
-    unsigned int dwNow;
-    RenderDispatchQueueEntry OutputEntry;
-
-    pState = (int *)pRenderClient;
-    if (pState[6] == 0) {
-        return 0;
-    }
-
-    wType = *(unsigned short *)&pEntry->m_awords[0];
-    dwCode = pEntry->m_awords[2];
-    if (wType == 3 || wType == 4) {
-        if (pState[12] == 0) {
-            return 0;
-        }
-
-        dwNow = timeGetTime();
-        if (pState[13] != 0) {
-            if (dwCode == (unsigned int)pState[0x23]) {
-                OutputEntry.m_awords[3] = 0x43;
-            } else if (dwCode == (unsigned int)pState[0x25]) {
-                OutputEntry.m_awords[3] = 0x44;
-            } else if (dwCode == (unsigned int)pState[0x24]) {
-                OutputEntry.m_awords[3] = 0x45;
-            } else {
-                return 0;
-            }
-
-            *(unsigned short *)&OutputEntry.m_awords[0] =
-                wType == 4 ? 9 : 8;
-            OutputEntry.m_awords[1] = pEntry->m_awords[1];
-            OutputEntry.m_awords[2] =
-                ((unsigned int)(unsigned short)*(short *)((char *)pState + 0x12) << 16) |
-                (unsigned short)*(short *)((char *)pState + 0x10);
-            OutputEntry.m_awords[4] = 0;
-            ((int (LEMBALL_FASTCALL *)(void *, int, RenderDispatchQueueEntry *))
-                 (*(void ***)g_pSharedRenderDispatchQueue)[2])(
-                g_pSharedRenderDispatchQueue, 0, &OutputEntry);
-            return 0;
-        }
-
-        if (wType == 3) {
-            if (dwCode == (unsigned int)pState[0x21] ||
-                dwCode == (unsigned int)pState[0x22]) {
-                pState[0x18] = 0;
-                pState[0x1a] = 0;
-            } else if (dwCode == (unsigned int)pState[0x1f] ||
-                       dwCode == (unsigned int)pState[0x20]) {
-                pState[0x17] = 0;
-                pState[0x19] = 0;
-            }
-            return 0;
-        }
-
-        if (dwCode == (unsigned int)pState[0x21]) {
-            pState[0x1c] = (int)dwNow;
-            pState[0x1a] = -pState[0x13];
-        } else if (dwCode == (unsigned int)pState[0x22]) {
-            pState[0x1c] = (int)dwNow;
-            pState[0x1a] = pState[0x13];
-        } else if (dwCode == (unsigned int)pState[0x1f]) {
-            pState[0x1b] = (int)dwNow;
-            pState[0x19] = -pState[0x13];
-        } else if (dwCode == (unsigned int)pState[0x20]) {
-            pState[0x1b] = (int)dwNow;
-            pState[0x19] = pState[0x13];
-        }
-        return 0;
-    }
-
-    if (wType == 7 && pState[0x0b] != 0 && pEntry->m_awords[4] == 0) {
-        short x;
-        short y;
-
-        x = (short)(pEntry->m_awords[2] & 0xffff);
-        y = (short)(pEntry->m_awords[2] >> 16);
-        *(short *)((char *)pState + 0x10) = x;
-        *(short *)((char *)pState + 0x12) = y;
-        pState[0x15] = (int)x << 12;
-        pState[0x16] = (int)y << 12;
-    }
-    return 0;
-}
-
-// FUNCTION: LEMBALL 0x00474B80
-static void LEMBALL_FASTCALL InitializeArrowCursorPosition(void *pRenderClient) {
-    tagPOINT Point;
-
-    GetCursorPos(&Point);
-    *(short *)((char *)pRenderClient + 0x10) = (short)Point.x;
-    *(short *)((char *)pRenderClient + 0x12) = (short)Point.y;
-}
-
-// FUNCTION: LEMBALL 0x00474BE0
-static void LEMBALL_FASTCALL HideArrowCursor(void *pRenderClient) {
-    SetCursor((HCURSOR)0);
-    ShowCursor(0);
-    *(int *)((char *)pRenderClient + 0x3c) = 0;
-}
-
-// FUNCTION: LEMBALL 0x00474C00
-static void LEMBALL_FASTCALL ShowArrowCursor(void *pRenderClient) {
-    ShowCursor(1);
-    *(int *)((char *)pRenderClient + 0x3c) = 1;
-}
-
-// FUNCTION: LEMBALL 0x0046AEC0
-void *LEMBALL_FASTCALL ConstructStatusIndicatorRenderClientBase(int *pRenderClient) {
-    InitializeRenderQueueNodeBase(pRenderClient);
-    *(void **)((char *)pRenderClient + 0x40) = g_VSGDI_StatusIndicatorRenderClientVtable;
-    *(void **)((char *)pRenderClient + 0x44) = g_VSGDI_StatusIndicatorPointSinkVtable;
-    *(short *)((char *)pRenderClient + 0x12) = 0;
-    pRenderClient[0x12] = 0;
-    *(short *)((char *)pRenderClient + 0x10) = 0;
-    pRenderClient[0x13] = 0xaa55aa55;
-    *(short *)((char *)pRenderClient + 0x16) = 0;
-    pRenderClient[0x14] = 0xaa55aa55;
-    *(short *)((char *)pRenderClient + 0x14) = 0;
-    pRenderClient[0x15] = 0xaa55aa55;
-    pRenderClient[0x16] = 0xaa55aa55;
-    pRenderClient[0x17] = 0xaa55aa55;
-    *(short *)((char *)pRenderClient + 0x76) = 0;
-    pRenderClient[0x18] = 0xaa55aa55;
-    *(short *)((char *)pRenderClient + 0x74) = 0;
-    pRenderClient[0x19] = 0xaa55aa55;
-    *(short *)((char *)pRenderClient + 0x7a) = 0;
-    pRenderClient[0x1a] = 0xaa55aa55;
-    *(short *)((char *)pRenderClient + 0x78) = 0;
-    *(void **)pRenderClient = g_VSGDI_StatusIndicatorBaseVtable;
-    InitializeStatusIndicatorRenderClientDefaults(pRenderClient);
-    return pRenderClient;
-}
-
-// FUNCTION: LEMBALL 0x00474B50
-void LEMBALL_FASTCALL InitializeArrowCursorState(int *pState) {
-    struct CursorState {
-        virtual void Reserved00();
-        virtual void Reserved01();
-        virtual void Reserved02();
-        virtual void Reserved03();
-        virtual void Reserved04();
-        virtual void Reserved05();
-        virtual void InitializeCursor();
-    };
-
-    pState[0x27] = 0;
-    pState[0x27] = (int)(unsigned long)LoadCursorA((HINSTANCE)0, (LPCSTR)0x7f00);
-    ((CursorState *)pState)->InitializeCursor();
-}
-
-// FUNCTION: LEMBALL 0x00472400
-void LEMBALL_FASTCALL RebuildResourceGeometryRowPointerTable(VsGdiHelperSurface *pSurface) {
-    int nRowByteOffset;
-    int iRowIndex;
-    int iLogicalRow;
-
-    nRowByteOffset = *(int *)((char *)pSurface + 8);
-    iLogicalRow = *(int *)((char *)pSurface + 0x14);
-    iRowIndex = 0;
-    if (0 < *(short *)((char *)pSurface + 0x2e)) {
-        do {
-            *(int *)(*(int *)((char *)pSurface + 4) + iLogicalRow * 4) =
-                *(int *)((char *)pSurface + 0x18) + nRowByteOffset;
-            ++iLogicalRow;
-            nRowByteOffset = nRowByteOffset + *(int *)((char *)pSurface + 0x1c);
-            if ((int)*(short *)((char *)pSurface + 0x2e) <= iLogicalRow) {
-                iLogicalRow = iLogicalRow - (int)*(short *)((char *)pSurface + 0x2e);
-            }
-            ++iRowIndex;
-        } while (iRowIndex < (int)*(short *)((char *)pSurface + 0x2e));
-    }
-}
-
-// FUNCTION: LEMBALL 0x004723A0
-void VsGdiHelperSurface::ClearBackingBorderRows(void) {
-    unsigned int cbBorderRow;
-    unsigned int cDwords;
-    unsigned int cTailBytes;
-    char *pbBackingBase;
-    char *pbTarget;
-    int nAbsoluteStride;
-    int nStrideSign;
-
-    *(int *)((char *)this + 0x18) = 0;
-    *(int *)((char *)this + 0x14) = 0;
-    RebuildResourceGeometryRowPointerTable(this);
-
-    cbBorderRow = (unsigned int)*(int *)((char *)this + 0x20);
-    if (0 < (int)cbBorderRow) {
-        pbBackingBase = (char *)(unsigned long)*(int *)((char *)this + 0xc);
-        pbTarget = pbBackingBase;
-        cDwords = cbBorderRow >> 2;
-        while (cDwords != 0) {
-            *(unsigned int *)pbTarget = 0;
-            pbTarget = pbTarget + 4;
-            --cDwords;
-        }
-        cTailBytes = cbBorderRow & 3;
-        while (cTailBytes != 0) {
-            *pbTarget = 0;
-            ++pbTarget;
-            --cTailBytes;
-        }
-
-        nAbsoluteStride = *(int *)((char *)this + 0x1c);
-        nStrideSign = nAbsoluteStride >> 0x1f;
-        nAbsoluteStride = (nAbsoluteStride ^ nStrideSign) - nStrideSign;
-        pbTarget = pbBackingBase + nAbsoluteStride * (int)*(short *)((char *)this + 0x2e) + cbBorderRow;
-        cDwords = cbBorderRow >> 2;
-        while (cDwords != 0) {
-            *(unsigned int *)pbTarget = 0;
-            pbTarget = pbTarget + 4;
-            --cDwords;
-        }
-        cTailBytes = cbBorderRow & 3;
-        while (cTailBytes != 0) {
-            *pbTarget = 0;
-            ++pbTarget;
-            --cTailBytes;
-        }
-    }
-}
-
-// FUNCTION: LEMBALL 0x00472760
-void VsGdiHelperSurface::ClearBackingBorderRowsThunk(void) {
-    ClearBackingBorderRows();
-}
-
-// FUNCTION: LEMBALL 0x00472340
-void LEMBALL_FASTCALL EnsureHelperBackingRowIndexCapacity(VsGdiHelperSurface *pSurface) {
-    int cRows;
-    int cbRowIndexBytes;
-
-    cRows = (int)*(short *)((char *)pSurface + 0x2e);
-    if (*(int *)((char *)pSurface + 0x28) < cRows) {
-        if (*(int *)((char *)pSurface + 4) != 0) {
-            FreeVSMemBlock((void *)(unsigned long)*(int *)((char *)pSurface + 4));
-            *(int *)((char *)pSurface + 4) = 0;
-        }
-        if (0 < *(short *)((char *)pSurface + 0x2e)) {
-            cbRowIndexBytes = cRows << 2;
-            *(int *)((char *)pSurface + 4) = (int)(unsigned long)AllocateVSMemBlock((unsigned int)cbRowIndexBytes);
-            pSurface->ClearBackingBorderRows();
-        }
-        *(int *)((char *)pSurface + 0x28) = cRows;
-        return;
-    }
-    pSurface->ClearBackingBorderRows();
-}
-
-// FUNCTION: LEMBALL 0x004725F0
-void VsGdiHelperSurface::ComputeBackingDimensions(short *paOut, short *paRect, int nWidth) {
-    VsGdiHelperSurface *pSurface = this;
-    short cxRect;
-    short cyRect;
-    int cBorderRows;
-
-    cxRect = paRect[0];
-    *(short *)((char *)pSurface + 0x2c) = cxRect;
-    cyRect = paRect[1];
-    *(short *)((char *)pSurface + 0x2e) = cyRect;
-    if (nWidth == 0 || *(int *)((char *)pSurface + 0x10) != 0) {
-        *(int *)((char *)pSurface + 0x20) = 0;
-    } else {
-        *(int *)((char *)pSurface + 0x20) = nWidth - cxRect;
-    }
-    if (cxRect == 0) {
-        *(int *)((char *)pSurface + 0x24) = 0;
-    } else {
-        *(int *)((char *)pSurface + 0x24) =
-            (cxRect - 1 + *(int *)((char *)pSurface + 0x20) * 2) / (int)cxRect;
-    }
-    cBorderRows = *(int *)((char *)pSurface + 0x24);
-    paOut[0] = cxRect;
-    paOut[1] = (short)cBorderRows + cyRect;
-}
-
-// FUNCTION: LEMBALL 0x00472670
-void VsGdiHelperSurface::ConfigureBackingStrideAndOrigin(int nStride, int nOrigin) {
-    VsGdiHelperSurface *pSurface = this;
-    int nRowBase;
-
-    nRowBase = *(int *)((char *)pSurface + 0x20) + nStride;
-    *(int *)((char *)pSurface + 0xc) = nStride;
-    *(int *)((char *)pSurface + 8) = nRowBase;
-    *(int *)((char *)pSurface + 0x1c) = nOrigin;
-    if (nOrigin < 0) {
-        *(int *)((char *)pSurface + 8) =
-            (1 - (int)*(short *)((char *)pSurface + 0x2e)) * nOrigin + nRowBase;
-    }
-    EnsureHelperBackingRowIndexCapacity(pSurface);
-}
-
-// FUNCTION: LEMBALL 0x004726B0
-void VsGdiHelperSurface::SplitRectAtBackingRowBoundary(short *pRect, short **ppFirstRect, short **ppSecondRect) {
-    short *pFirstRect;
-    short *pSecondRect;
-    int yBoundary;
-    pFirstRect = (short *)((char *)this + 0x30);
-    pFirstRect[0] = pRect[0];
-    pFirstRect[1] = pRect[1];
-    pFirstRect[2] = pRect[2];
-    pFirstRect[3] = pRect[3];
-    *ppFirstRect = pFirstRect;
-    *ppSecondRect = 0;
-    yBoundary = *(int *)((char *)this + 0x14);
-    if (yBoundary < (short)(pRect[1] + pRect[3]) &&
-        pRect[3] < yBoundary) {
-        pFirstRect[1] = (short)yBoundary - pFirstRect[3];
-        pSecondRect = (short *)((char *)this + 0x38);
-        pSecondRect[0] = pRect[0];
-        pSecondRect[1] = (short)(pRect[1] - yBoundary + pRect[3]);
-        pSecondRect[2] = pRect[2];
-        pSecondRect[3] = (short)yBoundary;
-        *ppSecondRect = pSecondRect;
-    }
-}
-
-// FUNCTION: LEMBALL 0x00466D10
-void LEMBALL_FASTCALL PromoteHelperUploadStateToActive(int nUploadState) {
-    unsigned int nState;
-
-    nState = *(unsigned char *)(unsigned long)(nUploadState + 0x48);
-    switch (nState) {
-    case 'P':
-        *(char *)(unsigned long)(nUploadState + 0x48) = 'A';
-        break;
-    case 'p':
-        *(char *)(unsigned long)(nUploadState + 0x48) = 'a';
-        break;
-    }
-}
-
-// FUNCTION: LEMBALL 0x00466B60
-void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState) {
-    *(unsigned short *)(unsigned long)(nUploadState + 0x30) = 0;
-    *(int *)(unsigned long)(nUploadState + 0x2c) = 0;
-    *(char *)(unsigned long)(nUploadState + 0x48) = 'P';
-    *(unsigned short *)(unsigned long)(nUploadState + 0x32) = 0;
-    *(unsigned short *)(unsigned long)(nUploadState + 0x34) = 0;
-    *(unsigned short *)(unsigned long)(nUploadState + 0x36) = 0;
-    *(int *)(unsigned long)(nUploadState + 4) = -1;
-    *(int *)(unsigned long)(nUploadState + 8) = -1;
-}
-
-// FUNCTION: LEMBALL 0x004670F0
-void AppendPointerQueueEntry(void *pQueue, void *pEntry) {
-    VsGdiHelperDispatchQueue *pDispatchQueue;
-
-    pDispatchQueue = (VsGdiHelperDispatchQueue *)pQueue;
-    pDispatchQueue->m_ppEntries[pDispatchQueue->m_cEntries] = pEntry;
-    pDispatchQueue->m_cEntries = pDispatchQueue->m_cEntries + 1;
-}
-
-// FUNCTION: LEMBALL 0x00432380
-void LEMBALL_FASTCALL QueueQueuedRenderPointSink(
-    void *pPointSink, void *, void *pQueue)
-{
-    AppendPointerQueueEntry(pQueue, pPointSink);
-}
-
-// FUNCTION: LEMBALL 0x00432390
-void __stdcall PromoteQueuedRenderPointSinkTargetState(void *pPointSink) {
-    int nUploadState;
-    struct TargetState {
-        virtual void Reserved0();
-        virtual void Reserved1();
-        virtual int GetUploadState();
-    };
-
-    nUploadState = ((TargetState *)*(void ***)((char *)pPointSink + 0x0c))->GetUploadState();
-    PromoteHelperUploadStateToActive(nUploadState);
-}
-
-// FUNCTION: LEMBALL 0x0040381E
-void LEMBALL_FASTCALL QueueQueuedRenderPointSinkThunk(
-    void *pPointSink, void *, void *pQueue)
-{
-    QueueQueuedRenderPointSink(pPointSink, 0, pQueue);
-}
-
-// FUNCTION: LEMBALL 0x00402FEA
-void __stdcall PromoteQueuedRenderPointSinkTargetStateThunk(void *pPointSink) {
-    PromoteQueuedRenderPointSinkTargetState(pPointSink);
-}
-
-// FUNCTION: LEMBALL 0x0046D9F0
-int RefreshHelperTargetBindingIfChanged(void *pTarget) {
-    int *pnCachedBindingValue;
-    VsGdiHelperSurfaceVariableBlock *pVariableBlock;
-    void *pBindingSource;
-    VsGdiHelperSurface *pLinkedTarget;
-    int *pBackingRow;
-    int nBindingValue;
-
-    if (*(int *)((char *)pTarget + 4) == 0) {
-        return 0;
-    }
-
-    pVariableBlock =
-        (VsGdiHelperSurfaceVariableBlock *)((char *)pTarget + GetHelperSurfaceVariableBlockOffset((const VsGdiHelperSurface *)pTarget));
-    pnCachedBindingValue = (int *)((char *)pTarget + 0xc);
-    pLinkedTarget = (VsGdiHelperSurface *)pVariableBlock->m_pLinkedTarget;
-    if ((void *)pLinkedTarget == g_pResourceGeometryHelperTarget) {
-        pBindingSource = *(void **)((char *)pTarget + 0xf0);
-        if (pBindingSource == 0) {
-            return 0;
-        }
-        if (((int (*)())(*(void ***)pBindingSource)[1])() == 0) {
-            return 0;
-        }
-        nBindingValue = ((int (*)(void))(*(void ***)pBindingSource)[3])();
-        if (nBindingValue != 0 && *pnCachedBindingValue != nBindingValue) {
-            *pnCachedBindingValue = nBindingValue;
-            EnsureHelperBackingRowIndexCapacity((VsGdiHelperSurface *)pTarget);
-            return 1;
-        }
-    } else {
-        if (pLinkedTarget == 0) {
-            return 0;
-        }
-        if (RefreshHelperTargetBindingIfChanged(pLinkedTarget) == 0) {
-            return 0;
-        }
-        pBackingRow = *(int **)(unsigned long)(*(int *)((char *)pLinkedTarget + 4) + pVariableBlock->m_aWorkingRect[3] * 4);
-        nBindingValue = *(int *)((char *)pBackingRow + pVariableBlock->m_aWorkingRect[2]);
-        if (nBindingValue != *pnCachedBindingValue) {
-            EnsureHelperBackingRowIndexCapacity((VsGdiHelperSurface *)pTarget);
-            return 1;
-        }
-    }
-    return 1;
-}
-
-// FUNCTION: LEMBALL 0x0046DAA0
-void InvokeRootHelperTargetPostQueueCallback(int nTarget) {
-    void *pBindingSource;
-    VsGdiHelperSurfaceVariableBlock *pVariableBlock;
-    VsGdiHelperSurface *pRootTarget;
-    VsGdiHelperSurface *pTarget;
-
-    pTarget = (VsGdiHelperSurface *)(unsigned long)nTarget;
-    do {
-        pRootTarget = pTarget;
-        pVariableBlock =
-            (VsGdiHelperSurfaceVariableBlock *)((char *)pRootTarget + GetHelperSurfaceVariableBlockOffset(pRootTarget));
-        pTarget = (VsGdiHelperSurface *)pVariableBlock->m_pLinkedTarget;
-    } while (g_pResourceGeometryHelperTarget != (void *)pTarget);
-
-    pBindingSource = *(void **)((char *)pRootTarget + 0xf0);
-    ((void (*)())(*(void ***)pBindingSource)[2])();
-}
-
-// FUNCTION: LEMBALL 0x00467110
-void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void *pQueue) {
-    void *pQueuedEntry;
-    VsGdiHelperDispatchQueue *pDispatchQueue;
-    int nByteOffset;
-    int i;
-    typedef void (LEMBALL_FASTCALL *EntryDispatchVirtual)(
-        void *, int, void *);
-
-    pDispatchQueue = (VsGdiHelperDispatchQueue *)pQueue;
-    if (RefreshHelperTargetBindingIfChanged(pDispatchQueue->m_pHelperTarget) != 0) {
-        nByteOffset = 0;
-        i = 0;
-        if (0 < pDispatchQueue->m_cEntries) {
-            do {
-                pQueuedEntry = *(void **)((char *)pDispatchQueue->m_ppEntries + nByteOffset);
-                if (IsPointerInsideManagedMemoryRegions(pQueuedEntry) != 0) {
-                    ((EntryDispatchVirtual)(*(void ***)pQueuedEntry)[2])(
-                        pQueuedEntry, 0, pDispatchQueue);
-                }
-                nByteOffset += 4;
-                ++i;
-            } while (i < pDispatchQueue->m_cEntries);
-        }
-        InvokeRootHelperTargetPostQueueCallback((int)(unsigned long)pDispatchQueue->m_pHelperTarget);
-    }
-}
-
-// FUNCTION: LEMBALL 0x00465AA0
-void GamePrimaryContext::SampleRootHelperGeometryAndDispatchRenderGroups(int nToken) {
-    int *pContext;
-    VsGdiHelperDispatchQueue *pDispatchQueue;
-    VsGdiHelperSurfaceBindingSurface *pBindingSurface;
-    VsGdiHelperSurface *pHelperTarget;
-    void *pQueuedPointSink;
-    int nUploadState;
-    int nResult;
-    short x1;
-    short y1;
-    short y2;
-    typedef unsigned char *(LEMBALL_FASTCALL *TokenVirtual)(void *, int);
-    typedef int (LEMBALL_FASTCALL *IntVirtual)(void *, int);
-    typedef void (LEMBALL_FASTCALL *VoidVirtual)(void *, int);
-    typedef void (LEMBALL_FASTCALL *OneArgVirtual)(void *, int, void *);
-    typedef void (LEMBALL_FASTCALL *DeleteVirtual)(void *, int, int);
-
-    pContext = (int *)this;
-    if (g_fRootHelperGeometryDispatchSuppressed != 0 || pContext[1] != 1 || pContext[0x13] == 0) {
-        return;
-    }
-
-    if (nToken == -1) {
-        nToken = 0;
-    }
-
-    pDispatchQueue = (VsGdiHelperDispatchQueue *)(unsigned long)pContext[0x13];
-    pHelperTarget = pDispatchQueue->m_pHelperTarget;
-    pBindingSurface =
-        (VsGdiHelperSurfaceBindingSurface *)((char *)pHelperTarget + GetHelperSurfaceVariableBlockOffset(pHelperTarget) + 0x40);
-    ((TokenVirtual)pBindingSurface->m_pVtable[0xe])(
-        pBindingSurface, 0);
-
-    x1 = pBindingSurface->m_nOriginX;
-    y1 = pBindingSurface->m_nOriginY;
-
-    pQueuedPointSink = AllocateVSMemBlock(4);
-    if (pQueuedPointSink != 0) {
-        *(void **)pQueuedPointSink = g_pQueuedRenderPointSinkFinalizeThunk;
-    }
-
-    nUploadState = ((IntVirtual)(*(void ***)pHelperTarget)[2])(
-        pHelperTarget, 0);
-    InitializeHelperUploadStatePending(nUploadState);
-    ((OneArgVirtual)(*(void ***)pQueuedPointSink)[1])(
-        pQueuedPointSink, 0, pDispatchQueue);
-
-    *(short *)((char *)pContext + 0x5c) = *(short *)&nUploadState;
-    *(short *)((char *)pContext + 0x5e) = *((short *)&nUploadState + 1);
-    *(short *)((char *)pContext + 0x60) = y1;
-    *(short *)((char *)pContext + 0x62) = x1;
-    pContext[0x19] = nToken;
-    ((OneArgVirtual)(*(void ***)((char *)pContext + 0x58))[1])(
-        (char *)pContext + 0x58, 0, pDispatchQueue);
-
-    nResult = ((IntVirtual)pBindingSurface->m_pVtable[0xf])(
-        pBindingSurface, 0);
-    y2 = *((short *)&nResult + 1);
-    if (nResult != 0) {
-        *(short *)((char *)pContext + 0x6c) = 0;
-        *(short *)((char *)pContext + 0x6e) = 0;
-        *(short *)((char *)pContext + 0x70) = (short)nResult;
-        *(short *)((char *)pContext + 0x72) = y2;
-        *(short *)((char *)pContext + 0x74) = *(short *)&nUploadState;
-        *(short *)((char *)pContext + 0x76) = *((short *)&nUploadState + 1);
-        ((OneArgVirtual)(*(void ***)((char *)pContext + 0x68))[1])(
-            (char *)pContext + 0x68, 0, pDispatchQueue);
-    }
-
-    nResult = ((IntVirtual)pBindingSurface->m_pVtable[0x10])(
-        pBindingSurface, 0);
-    if (nResult != 0) {
-        *(short *)((char *)pContext + 0x80) = (short)nResult;
-        *(short *)((char *)pContext + 0x82) = *((short *)&nResult + 1);
-        *(short *)((char *)pContext + 0x84) = *(short *)&nUploadState;
-        *(short *)((char *)pContext + 0x86) = *((short *)&nUploadState + 1);
-        pContext[0x1f] = 0;
-        ((OneArgVirtual)(*(void ***)((char *)pContext + 0x78))[1])(
-            (char *)pContext + 0x78, 0, pDispatchQueue);
-    }
-
-    DispatchAndClearPointerQueue(pDispatchQueue);
-    pDispatchQueue->m_cEntries = 0;
-    ((VoidVirtual)(*(void ***)pContext)[0x2d])(pContext, 0);
-
-    if (pQueuedPointSink != 0) {
-        ((DeleteVirtual)(*(void ***)pQueuedPointSink)[0])(
-            pQueuedPointSink, 0, 1);
-    }
-}
-
-static int GetHelperSurfaceVariableBlockOffset(const VsGdiHelperSurface *pSurface) {
-    return *(const int *)((const char *)(unsigned long)*(const int *)((const char *)pSurface + 0x40) + 4);
-}
-
-// FUNCTION: LEMBALL 0x0046CB20
+// FUNCTION: LEMBALL 0x0046cb20
 void VsGdiResourceGeometryHelperTargetView::MarkOrForwardHelperTargetDirtyRect(short *pRect) {
     char *pTarget;
     char *pCompactHelper;
@@ -3085,22 +3529,16 @@ void VsGdiResourceGeometryHelperTargetView::MarkOrForwardHelperTargetDirtyRect(s
         ->MarkHelperUploadCellsForRect(pRect);
 }
 
-struct VsGdiResourceGeometryVtableFixup {
-    VsGdiResourceGeometryVtableFixup(void) {
-        union {
-            void (VsGdiResourceGeometryHelperTargetView::*p)(short *);
-            void *v;
-        } markDirtyMethod;
-        markDirtyMethod.p = &VsGdiResourceGeometryHelperTargetView::MarkOrForwardHelperTargetDirtyRect;
-        g_VSGDI_ResourceGeometryHelperTargetVtable[1] = markDirtyMethod.v;
-    }
-};
-static VsGdiResourceGeometryVtableFixup g_VSGDI_ResourceGeometryVtableFixup;
+// FUNCTION: LEMBALL 0x0046cbd0
+int LEMBALL_FASTCALL GetResourceGeometryHelperTargetActiveUploadState(void *pTarget) {
+    return *(int *)((char *)pTarget + 0x550);
+}
 
-// FUNCTION: LEMBALL 0x0046CDA0
+// FUNCTION: LEMBALL 0x0046cda0
 void VsGdiResourceGeometryHelperTargetView::
 FlushResourceGeometryHelperTargetUpdates(
     VsGdiResourceGeometryHelperTargetView *pPeerTarget)
+
 {
     char *pVariableBlock;
     VsGdiResourceGeometryHelperTargetView *pLinkedTarget;
@@ -3205,507 +3643,27 @@ FlushResourceGeometryHelperTargetUpdates(
     }
 }
 
-// FUNCTION: LEMBALL 0x0046DC50
-void LEMBALL_FASTCALL PresentCompactResourceGeometryHelper(
-    void *pCompactTarget)
+// FUNCTION: LEMBALL 0x0046d040
+void LEMBALL_FASTCALL ApplyHelperTargetPaletteAndPropagate(
+    void *pCompactTarget, int, void *pPalette)
+
 {
-    typedef void (LEMBALL_FASTCALL *DeactivateSlotProc)(void *, int, void *);
-    void *pTarget;
-    ++g_nDebugPresentCount;
-    pTarget = (char *)pCompactTarget - 0x55c;
-    ((DeactivateSlotProc)(*(void ***)g_pResourceGeometryHelperSlotManager)[3])(
-        g_pResourceGeometryHelperSlotManager, 0, pTarget);
+    const unsigned int *paFallbackColors;
+
+    paFallbackColors =
+        ((VsGdiDisplayPaletteDispatch *)g_pDisplayState)
+                ->UsesExistingPaletteAsFallback()
+            ? g_adwGlobalResourceGeometryPaletteTable
+            : 0;
+    BuildAndApplyLogPalette(g_adwGlobalResourceGeometryPaletteTable,
+                            pPalette,
+                            0,
+                            paFallbackColors);
+    PropagateGlobalPaletteToResourceGeometries(
+        (char *)pCompactTarget - 0x55c);
 }
 
-// FUNCTION: LEMBALL 0x0046DC40
-void LEMBALL_FASTCALL PresentCompactResourceGeometryHelperAdjustmentThunk(
-    void *pCompactTarget)
-{
-    pCompactTarget = (char *)pCompactTarget -
-        *(int *)((char *)pCompactTarget - 4);
-    PresentCompactResourceGeometryHelper(pCompactTarget);
-}
-
-static const char *g_apszGraphicsDriverNames[] = {
-    "NO",
-    "CDS",
-    "VGA (Full Screen 320*200)",
-    "VGA (Full Screen 320*240)",
-    "Direct Draw (Full Screen 640*480)",
-    "Direct Draw (Full Screen 320*200)",
-    "Direct Draw (Windowed 640*480)",
-    "Direct Draw (Windowed 320*200)",
-    "Auto Select",
-};
-
-static const char *g_apszGraphicsDriverFallbackMessages[] = {
-    "None",
-    "Defaulting to normal 640*480 mode (using CreateDIBSection)",
-    "Unable to find DispDib32 Libraries for full screen 320*200 mode (dspdib16.dll & dspdib32.dll) - please reinstall",
-    "Unable to find DispDib32 Libraries for full screen 320*240 mode (dspdib16.dll & dspdib32.dll) - please reinstall",
-    "Unable to find Direct Draw libraries for full screen 640*480 mode (ddraw.dll) - please reinstall the DirectX libraries",
-    "Unable to find Direct Draw libraries for full screen 320*200 mode (ddraw.dll) - please reinstall the DirectX libraries",
-};
-
-static void CallDeleteVirtual(void *pObject, unsigned int nByteOffset, int nDeleteFlag) {
-    void **pVtable;
-
-    pVtable = *(void ***)pObject;
-    ((void *(LEMBALL_FASTCALL *)(void *, int, int))
-         pVtable[nByteOffset / sizeof(void *)])(pObject, 0, nDeleteFlag);
-}
-
-static int IsDisplayStateReady(const VsGdiDisplayState *pDisplayState) {
-    return *(const int *)((const char *)pDisplayState + 0xc) != 0;
-}
-
-struct VsGdiDisplayBitmap {
-    void **m_pVtable;
-    void *m_pBits;
-    int m_nStride;
-    HGDIOBJ m_hPreviousBitmap;
-    HGDIOBJ m_hBitmap;
-};
-
-struct VsGdiDisplayBitmapDispatch {
-    virtual void Reserved0(void) = 0;
-    virtual void Reserved1(void) = 0;
-    virtual void Reserved2(void) = 0;
-    virtual int Bits(void) = 0;
-    virtual int Origin(void) = 0;
-};
-
-// GLOBAL: LEMBALL 0x00498798
-static void *g_VSGDI_DisplayBitmapVtable[6];
-static void *g_VSGDI_MetricsDisplayVtable[14];
-static void *g_VSGDI_DibDisplayVtable[14];
-static void *g_VSGDI_DirectDrawDisplayVtable[14];
-
-static void *LEMBALL_FASTCALL VsGdiDeleteDisplayState(
-    void *pDisplayState, int nUnused, int fDelete) {
-    (void)nUnused;
-    if (fDelete != 0)
-        FreeVSMemBlock(pDisplayState);
-    return pDisplayState;
-}
-
-// FUNCTION: LEMBALL 0x00458310
-static void *LEMBALL_FASTCALL VsGdiDeleteDisplayBitmap(
-    void *pBitmap, int, int fDelete)
-{
-    *(void ***)pBitmap =
-        &g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable[4];
-    if ((fDelete & 1) != 0)
-        FreeVSMemBlock(pBitmap);
-    return pBitmap;
-}
-
-// FUNCTION: LEMBALL 0x00456AE0
-void *VsGdiDisplayState::CreateDisplayBinding(void) {
-    VsGdiHelperTargetParamWrapper *pBinding;
-    void *hDc;
-
-    hDc = CreateCompatibleDC(0);
-    if (hDc == 0)
-        return 0;
-    pBinding = (VsGdiHelperTargetParamWrapper *)AllocateVSMemBlock(0xc);
-    if (pBinding == 0)
-        return 0;
-    pBinding->m_pVtable = g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable;
-    pBinding->m_nWrappedParam = (int)(unsigned long)hDc;
-    pBinding->m_nReserved = 0;
-    return pBinding;
-}
-
-// FUNCTION: LEMBALL 0x00456B20
-int VsGdiDisplayState::ReleaseDisplayBinding(void *pBinding) {
-    int nResult;
-
-    if (pBinding == 0)
-        return 0;
-    nResult = DeleteDC((void *)(unsigned long)
-        ((VsGdiHelperTargetParamWrapper *)pBinding)->m_nWrappedParam);
-    DeleteHelperTargetParamWrapper(pBinding, 0, 1);
-    return nResult;
-}
-
-// FUNCTION: LEMBALL 0x00456B50
-int VsGdiDisplayState::InitializeDisplayBitmapInfo(void *pBitmapInfo) {
-    unsigned char *pbInfo = (unsigned char *)pBitmapInfo;
-    *(unsigned short *)(pbInfo + 0xc) = 1;
-    *(unsigned int *)pbInfo = 0x28;
-    *(unsigned int *)(pbInfo + 0x10) = 0;
-    *(unsigned int *)(pbInfo + 0x14) = 0;
-    *(unsigned int *)(pbInfo + 0x18) = 0;
-    *(unsigned int *)(pbInfo + 0x1c) = 0;
-    *(unsigned int *)(pbInfo + 0x20) = 0;
-    *(int *)(pbInfo + 0x08) = -1;
-    *(unsigned short *)(pbInfo + 0x0e) = 8;
-    *(unsigned int *)(pbInfo + 0x24) = 0;
-    return 1;
-}
-
-// FUNCTION: LEMBALL 0x00456B90
-void *VsGdiDisplayState::CreateDisplayBitmap(int nDriver, void *pBitmapInfo) {
-    VsGdiDisplayBitmap *pBitmap;
-    VsGdiHelperTargetParamWrapper *pBinding;
-    void *pBits;
-    HGDIOBJ hBitmap;
-
-    pBinding = (VsGdiHelperTargetParamWrapper *)(unsigned long)nDriver;
-    pBits = 0;
-    hBitmap = (HGDIOBJ)CreateDIBSection(
-        (void *)(unsigned long)pBinding->m_nWrappedParam,
-        pBitmapInfo, 0, &pBits, 0, 0);
-    if (hBitmap == 0)
-        return 0;
-    pBitmap = (VsGdiDisplayBitmap *)AllocateVSMemBlock(0x14);
-    if (pBitmap == 0)
-        return 0;
-    pBitmap->m_pVtable = g_VSGDI_DisplayBitmapVtable;
-    pBitmap->m_pBits = pBits;
-    pBitmap->m_nStride = *(int *)((char *)pBitmapInfo + 4);
-    pBitmap->m_hPreviousBitmap = 0;
-    pBitmap->m_hBitmap = hBitmap;
-    pBinding->m_nReserved = (int)(unsigned long)pBitmap;
-    return pBitmap;
-}
-
-// FUNCTION: LEMBALL 0x00456D10
-int VsGdiDisplayState::BindDisplayBitmap(int nDriver, void *pBitmap) {
-    VsGdiHelperTargetParamWrapper *pBinding;
-    VsGdiDisplayBitmap *pDisplayBitmap;
-
-    pBinding = (VsGdiHelperTargetParamWrapper *)(unsigned long)nDriver;
-    pDisplayBitmap = (VsGdiDisplayBitmap *)pBitmap;
-    pDisplayBitmap->m_hPreviousBitmap = SelectObject(
-        (void *)(unsigned long)pBinding->m_nWrappedParam,
-        pDisplayBitmap->m_hBitmap);
-    if (pDisplayBitmap->m_hPreviousBitmap == 0)
-        return 0;
-    return (int)(unsigned long)pDisplayBitmap;
-}
-
-// FUNCTION: LEMBALL 0x00456C10
-int VsGdiDisplayState::ReleaseDisplayBitmap(void *pBitmap) {
-    VsGdiDisplayBitmap *pDisplayBitmap;
-    int nResult;
-
-    pDisplayBitmap = (VsGdiDisplayBitmap *)pBitmap;
-    if (pDisplayBitmap == 0)
-        return 1;
-    nResult = DeleteObject(pDisplayBitmap->m_hBitmap);
-    VsGdiDeleteDisplayBitmap(pDisplayBitmap, 0, 1);
-    return nResult;
-}
-
-// FUNCTION: LEMBALL 0x00456D40
-int VsGdiDisplayState::DeleteDisplayBitmap(int nDriver, void *pBitmap) {
-    VsGdiHelperTargetParamWrapper *pBinding;
-    VsGdiDisplayBitmap *pDisplayBitmap;
-    HGDIOBJ hResult;
-
-    pBinding = (VsGdiHelperTargetParamWrapper *)(unsigned long)nDriver;
-    pDisplayBitmap = (VsGdiDisplayBitmap *)pBitmap;
-    hResult = SelectObject(
-        (void *)(unsigned long)pBinding->m_nWrappedParam,
-        pDisplayBitmap->m_hPreviousBitmap);
-    if (hResult == 0)
-        return 0;
-    return (int)(unsigned long)pDisplayBitmap;
-}
-
-// FUNCTION: LEMBALL 0x00456C70
-static int LEMBALL_FASTCALL CopyDisplaySurfaceRect(
-    void *, int, void *pBinding, short *pDestinationRect,
-    void *, short *pSourcePoint)
-{
-    void *hDc;
-
-    hDc = (void *)(unsigned long)
-        ((VsGdiHelperTargetParamWrapper *)pBinding)->m_nWrappedParam;
-    return BitBlt(
-        hDc,
-        pDestinationRect[2], pDestinationRect[3],
-        pDestinationRect[0], pDestinationRect[1],
-        hDc,
-        pSourcePoint[0], pSourcePoint[1],
-        0x00cc0020);
-}
-
-// FUNCTION: LEMBALL 0x00456CC0
-static int LEMBALL_FASTCALL StretchDisplaySurfaceRect(
-    void *, int, void *pDestinationBinding, short *pDestinationRect,
-    void *pSourceBinding, short *pSourceRect)
-{
-    ++g_nDebugStretchCount;
-    return StretchBlt(
-        (void *)(unsigned long)
-            ((VsGdiHelperTargetParamWrapper *)pDestinationBinding)
-                ->m_nWrappedParam,
-        pDestinationRect[2], pDestinationRect[3],
-        pDestinationRect[0], pDestinationRect[1],
-        (void *)(unsigned long)
-            ((VsGdiHelperTargetParamWrapper *)pSourceBinding)
-                ->m_nWrappedParam,
-        pSourceRect[2], pSourceRect[3],
-        pSourceRect[0], pSourceRect[1],
-        0x00cc0020);
-}
-
-// FUNCTION: LEMBALL 0x00456970
-unsigned int VsGdiDisplayState::DispatchSplitRectAtBackingRowBoundary(
-    void *pDestination, short *pDestinationRect,
-    void *pSource, short *pSourceRect, void *pHelperTarget)
-{
-    short *pFirstRect;
-    short *pSecondRect;
-    short aScaledRect[4];
-    int nScale;
-    unsigned int nFirstResult;
-    unsigned int nSecondResult;
-    typedef int (LEMBALL_FASTCALL *StretchRectProc)(
-        void *, int, void *, short *, void *, short *);
-
-    pFirstRect = 0;
-    pSecondRect = 0;
-    *(void **)((char *)this + 0x18) = pHelperTarget;
-    nScale = pDestinationRect[0] / pSourceRect[0];
-    ((VsGdiHelperSurface *)pHelperTarget)
-        ->SplitRectAtBackingRowBoundary(
-            pSourceRect, &pFirstRect, &pSecondRect);
-    nFirstResult = 0;
-    nSecondResult = 0;
-    if (pFirstRect != 0) {
-        aScaledRect[0] = (short)(pFirstRect[0] * nScale);
-        aScaledRect[1] = (short)(pFirstRect[1] * nScale);
-        aScaledRect[2] = pDestinationRect[2];
-        aScaledRect[3] = pDestinationRect[3];
-        nFirstResult = ((StretchRectProc)(*(void ***)this)[7])(
-            this, 0, pDestination, aScaledRect, pSource, pFirstRect);
-    }
-    if (pSecondRect != 0) {
-        aScaledRect[0] = (short)(pSecondRect[0] * nScale);
-        aScaledRect[1] = (short)(pSecondRect[1] * nScale);
-        aScaledRect[2] = pDestinationRect[2];
-        aScaledRect[3] = (short)(pFirstRect[1] * nScale +
-                                 pDestinationRect[3]);
-        nSecondResult = ((StretchRectProc)(*(void ***)this)[7])(
-            this, 0, pDestination, aScaledRect, pSource, pSecondRect);
-    }
-    return nFirstResult | nSecondResult;
-}
-
-static int VsGdiDisplayStateReady(void *pDisplayState) {
-    return IsDisplayStateReady((const VsGdiDisplayState *)pDisplayState);
-}
-
-static void InitializeDisplayStateVtables(void) {
-    int i;
-    union { void *(VsGdiDisplayState::*p)(void); void *v; } createBindingMethod;
-    union { int (VsGdiDisplayState::*p)(void *); void *v; } releaseBindingMethod;
-    union { int (VsGdiDisplayState::*p)(void *); void *v; } bitmapInfoMethod;
-    union { void *(VsGdiDisplayState::*p)(int, void *); void *v; } createBitmapMethod;
-    union { int (VsGdiDisplayState::*p)(void *); void *v; } bitmapObjectMethod;
-    union { int (VsGdiDisplayState::*p)(int, void *); void *v; } bitmapReadyMethod;
-    union { int (VsGdiDisplayState::*p)(int, void *); void *v; } bitmapDeleteMethod;
-    union { int (VsGdiDisplayState::*p)(void) const; void *v; } readyMethod;
-
-    g_VSGDI_DisplayBitmapVtable[0] = (void *)VsGdiDeleteDisplayBitmap;
-    g_VSGDI_DisplayBitmapVtable[1] =
-        (void *)ReturnTrueHelperTargetParamWrapperA;
-    g_VSGDI_DisplayBitmapVtable[2] =
-        (void *)ReturnTrueHelperTargetParamWrapperB;
-    g_VSGDI_DisplayBitmapVtable[3] =
-        (void *)GetHelperTargetParamWrapperDisplayDc;
-    g_VSGDI_DisplayBitmapVtable[4] =
-        (void *)GetHelperTargetParamWrapperReserved;
-    g_VSGDI_DisplayBitmapVtable[5] = 0;
-
-    for (i = 0; i < 14; ++i) {
-        g_VSGDI_MetricsDisplayVtable[i] = (void *)NetworkSafeVtableNoop;
-        g_VSGDI_DibDisplayVtable[i] = (void *)NetworkSafeVtableNoop;
-        g_VSGDI_DirectDrawDisplayVtable[i] = (void *)NetworkSafeVtableNoop;
-    }
-    g_VSGDI_MetricsDisplayVtable[0] = (void *)VsGdiDeleteDisplayState;
-    g_VSGDI_DibDisplayVtable[0] = (void *)VsGdiDeleteDisplayState;
-    g_VSGDI_DirectDrawDisplayVtable[0] = (void *)VsGdiDeleteDisplayState;
-    createBindingMethod.p = &VsGdiDisplayState::CreateDisplayBinding;
-    releaseBindingMethod.p = &VsGdiDisplayState::ReleaseDisplayBinding;
-    bitmapInfoMethod.p = &VsGdiDisplayState::InitializeDisplayBitmapInfo;
-    createBitmapMethod.p = &VsGdiDisplayState::CreateDisplayBitmap;
-    bitmapObjectMethod.p = &VsGdiDisplayState::ReleaseDisplayBitmap;
-    bitmapReadyMethod.p = &VsGdiDisplayState::BindDisplayBitmap;
-    bitmapDeleteMethod.p = &VsGdiDisplayState::DeleteDisplayBitmap;
-    readyMethod.p = &VsGdiDisplayState::IsReady;
-    g_VSGDI_MetricsDisplayVtable[1] = createBindingMethod.v;
-    g_VSGDI_DibDisplayVtable[1] = createBindingMethod.v;
-    g_VSGDI_DirectDrawDisplayVtable[1] = createBindingMethod.v;
-    g_VSGDI_MetricsDisplayVtable[2] = releaseBindingMethod.v;
-    g_VSGDI_DibDisplayVtable[2] = releaseBindingMethod.v;
-    g_VSGDI_DirectDrawDisplayVtable[2] = releaseBindingMethod.v;
-    g_VSGDI_MetricsDisplayVtable[3] = bitmapInfoMethod.v;
-    g_VSGDI_DibDisplayVtable[3] = bitmapInfoMethod.v;
-    g_VSGDI_DirectDrawDisplayVtable[3] = bitmapInfoMethod.v;
-    g_VSGDI_MetricsDisplayVtable[4] = createBitmapMethod.v;
-    g_VSGDI_DibDisplayVtable[4] = createBitmapMethod.v;
-    g_VSGDI_DirectDrawDisplayVtable[4] = createBitmapMethod.v;
-    g_VSGDI_MetricsDisplayVtable[5] = bitmapObjectMethod.v;
-    g_VSGDI_DibDisplayVtable[5] = bitmapObjectMethod.v;
-    g_VSGDI_DirectDrawDisplayVtable[5] = bitmapObjectMethod.v;
-    g_VSGDI_MetricsDisplayVtable[6] =
-        (void *)ApplyDisplaySurfacePalette;
-    g_VSGDI_MetricsDisplayVtable[7] =
-        (void *)StretchDisplaySurfaceRect;
-    g_VSGDI_MetricsDisplayVtable[8] =
-        (void *)CopyDisplaySurfaceRect;
-    g_VSGDI_MetricsDisplayVtable[9] = bitmapReadyMethod.v;
-    g_VSGDI_DibDisplayVtable[9] = bitmapReadyMethod.v;
-    g_VSGDI_DirectDrawDisplayVtable[9] = bitmapReadyMethod.v;
-    g_VSGDI_MetricsDisplayVtable[10] = bitmapDeleteMethod.v;
-    g_VSGDI_DibDisplayVtable[10] = bitmapDeleteMethod.v;
-    g_VSGDI_DirectDrawDisplayVtable[10] = bitmapDeleteMethod.v;
-    g_VSGDI_MetricsDisplayVtable[11] =
-        (void *)CreateAndStoreDisplayPalette;
-    g_VSGDI_MetricsDisplayVtable[12] =
-        (void *)SelectAndRealizeDisplayPalette;
-    g_VSGDI_MetricsDisplayVtable[13] =
-        (void *)UsesExistingDisplayPaletteAsFallback;
-    g_VSGDI_DibDisplayVtable[13] = readyMethod.v;
-    g_VSGDI_DirectDrawDisplayVtable[13] = readyMethod.v;
-}
-
-struct VsGdiDisplayStateVtableInitializer {
-    VsGdiDisplayStateVtableInitializer(void) {
-        InitializeDisplayStateVtables();
-    }
-};
-static VsGdiDisplayStateVtableInitializer g_VSGDI_DisplayStateVtableInitializer;
-
-inline VsGdiDisplayState::VsGdiDisplayState(void) {
-    m_pVtable = 0;
-    m_hGraphicsModule = 0;
-    m_pReserved08 = 0;
-    m_fReady = 0;
-    m_hDisplayWindow = 0;
-    m_cxDisplay = 0;
-    m_cyDisplay = 0;
-    m_dwReserved18 = 0;
-}
-
-int VsGdiDisplayState::IsReady(void) const {
-    return m_fReady;
-}
-
-short VsGdiDisplayState::Width(void) const {
-    return m_cxDisplay;
-}
-
-short VsGdiDisplayState::Height(void) const {
-    return m_cyDisplay;
-}
-
-VsGdiHelperSurface::VsGdiHelperSurface(void) {
-    memset(m_abState, 0, sizeof(m_abState));
-}
-
-// FUNCTION: LEMBALL 0x00476580
-int VsGdiHelperSurface::ClipRenderRectToSurfaceBounds(
-    VsGdiRect *pRect, VsGdiRect *pClippedRect)
-{
-    short *paRect;
-    short *paClippedRect;
-    short sOriginX;
-    short sOriginY;
-    short sRectX;
-    short sRectY;
-    short sRight;
-    short sBottom;
-    short *paSurfaceBounds;
-    int nVariableBlockOffset;
-    int fRightInside;
-
-    paRect = (short *)pRect;
-    paClippedRect = (short *)pClippedRect;
-    nVariableBlockOffset = GetHelperSurfaceVariableBlockOffset(this);
-    paSurfaceBounds = (short *)((char *)this + nVariableBlockOffset + 0x64);
-    sOriginX = paSurfaceBounds[2];
-    sOriginY = paSurfaceBounds[3];
-    sRectX = paRect[2];
-    sRectY = paRect[3];
-
-    if ((short)(sOriginX + paSurfaceBounds[0]) < sRectX ||
-        (short)(sOriginY + paSurfaceBounds[1]) < sRectY ||
-        (short)(paRect[0] + sRectX) < sOriginX ||
-        (short)(paRect[1] + sRectY) < sOriginY) {
-        return true;
-    }
-
-    if (sRectX < sOriginX) {
-        paClippedRect[2] = (short)(sOriginX - sRectX);
-        paRect[2] = sOriginX;
-        paRect[0] = (short)(paRect[0] - paClippedRect[2]);
-    }
-    if (sRectY < sOriginY) {
-        paClippedRect[3] = (short)(sOriginY - sRectY);
-        paRect[3] = sOriginY;
-        paRect[1] = (short)(paRect[1] - paClippedRect[3]);
-    }
-
-    nVariableBlockOffset = GetHelperSurfaceVariableBlockOffset(this);
-    paSurfaceBounds = (short *)((char *)this + nVariableBlockOffset + 0x64);
-    sRight = (short)(paSurfaceBounds[2] + paSurfaceBounds[0]);
-    fRightInside = (short)(paRect[2] + paRect[0]) <= sRight;
-    if (fRightInside) {
-        paClippedRect[0] = paRect[0];
-    } else {
-        paClippedRect[0] = (short)(sRight - paRect[2]);
-        paRect[0] = paClippedRect[0];
-    }
-
-    nVariableBlockOffset = GetHelperSurfaceVariableBlockOffset(this);
-    paSurfaceBounds = (short *)((char *)this + nVariableBlockOffset + 0x64);
-    sBottom = (short)(paSurfaceBounds[3] + paSurfaceBounds[1]);
-    if (sBottom < (short)(paRect[3] + paRect[1])) {
-        paClippedRect[1] = (short)(sBottom - paRect[3]);
-        paRect[1] = paClippedRect[1];
-        return true;
-    }
-    paClippedRect[1] = paRect[1];
-    return !fRightInside || sRectY < sOriginY || sRectX < sOriginX;
-}
-
-// FUNCTION: LEMBALL 0x004756E0
-void VsGdiHelperSurface::FillRect(VsGdiRect Rect, int nColor) {
-    typedef void (LEMBALL_FASTCALL *DirtyRectVirtual)(
-        void *, int, VsGdiRect *);
-
-    VsGdiRect ClippedRect;
-    short *paRect;
-    short *paClippedRect;
-    unsigned char **ppRows;
-    int iRow;
-
-    memset(&ClippedRect, 0, sizeof(ClippedRect));
-    paRect = (short *)&Rect;
-    paClippedRect = (short *)&ClippedRect;
-    if (ClipRenderRectToSurfaceBounds(&Rect, &ClippedRect)) {
-        if (paClippedRect[0] < 1 || paClippedRect[1] < 1)
-            return;
-        paRect[0] = paClippedRect[0];
-        paRect[1] = paClippedRect[1];
-    }
-
-    ppRows = *(unsigned char ***)((char *)this + 4);
-    for (iRow = 0; iRow < paRect[1]; ++iRow) {
-        memset(ppRows[paRect[3] + iRow] + paRect[2],
-               (unsigned char)nColor,
-               (unsigned int)(unsigned short)paRect[0]);
-    }
-    ((DirtyRectVirtual)(*(void ***)this)[1])(this, 0, &Rect);
-}
-
-// FUNCTION: LEMBALL 0x0046D090
+// FUNCTION: LEMBALL 0x0046d090
 void VsGdiHelperSurface::UpdateWorkingRectAndBacking(const VsGdiRect *pRect) {
     short aRectBuffer[4];
     VsGdiHelperSurfaceVariableBlock *pLinkedVariableBlock;
@@ -3863,421 +3821,873 @@ void VsGdiHelperSurface::UpdateWorkingRectAndBacking(const VsGdiRect *pRect) {
     LeaveCriticalSection((char *)this + 0x534);
 }
 
-int VsGdiHelperSurface::IsReady(void) const {
-    return *(const int *)((const char *)this + 0x524) != 0;
-}
+// FUNCTION: LEMBALL 0x0046d420
+void LEMBALL_FASTCALL SetHelperTargetRenderExtent(
+    void *pCompactTarget, int, const VsGdiRect *pExtent)
 
-short VsGdiHelperSurface::BackingWidth(void) const {
-    return *(const short *)((const char *)this + GetHelperSurfaceVariableBlockOffset(this) + 0x64);
-}
+{
+    VsGdiResourceGeometryLinkNode *pNode;
+    VsGdiResourceGeometryHelperTargetView *pChild;
+    VsGdiRect Rect;
+    void *pChildCompact;
+    void **pVtable;
+    void *pTracker;
+    int nCompactDelta;
+    int nExtent;
 
-short VsGdiHelperSurface::BackingHeight(void) const {
-    return *(const short *)((const char *)this + GetHelperSurfaceVariableBlockOffset(this) + 0x66);
-}
+    nCompactDelta = *(int *)((char *)*(void **)((char *)pCompactTarget - 0x51c) + 4);
+    Rect.m_x = pExtent->m_x;
+    Rect.m_y = pExtent->m_y;
+    Rect.m_cx = *(short *)((char *)pCompactTarget + 0x10);
+    Rect.m_cy = *(short *)((char *)pCompactTarget + 0x12);
 
-// FUNCTION: LEMBALL 0x00456A90
-VsGdiMetricsDisplayState::VsGdiMetricsDisplayState(void) {
-    m_pVtable = g_VSGDI_MetricsDisplayVtable;
-    m_fReady = 1;
-    m_cxDisplay = (short)GetSystemMetrics(0);
-    m_cyDisplay = (short)GetSystemMetrics(1);
-}
-
-int VsGdiMetricsDisplayState::Create(HWND hWnd) {
-    m_hDisplayWindow = hWnd;
-    return m_fReady;
-}
-
-// FUNCTION: LEMBALL 0x00456D70
-VsGdiDibDisplayState::VsGdiDibDisplayState(const unsigned short *pDisplaySize) {
-    FARPROC pfnThunk;
-
-    m_cxDisplay = (short)pDisplaySize[0];
-    m_cyDisplay = (short)pDisplaySize[1];
-    m_fReady = 0;
-    m_pDisplayAddress = 0;
-    m_dwReserved20 = 0;
-    m_pfnDisplayDibStart32 = 0;
-    m_pfnDisplayDibEnd32 = 0;
-    m_pfnDisplayDibGetAddress32 = 0;
-    m_pVtable = g_VSGDI_DibDisplayVtable;
-    g_pApplyFullscreenDisplayModeThunk = 0;
-    m_hGraphicsModule = LoadLibraryA(g_VSGDI_Dspdib32Dll);
-    if (m_hGraphicsModule != 0) {
-        m_pfnDisplayDibStart32 = GetProcAddress(m_hGraphicsModule, g_VSGDI_DisplayDibStart32);
-        m_pfnDisplayDibEnd32 = GetProcAddress(m_hGraphicsModule, g_VSGDI_DisplayDibEnd32);
-        m_pfnDisplayDibGetAddress32 = GetProcAddress(m_hGraphicsModule, g_VSGDI_DisplayDibGetAddress32);
-        pfnThunk = GetProcAddress(m_hGraphicsModule, g_VSGDI_DisplayDib32);
-        g_pApplyFullscreenDisplayModeThunk = pfnThunk;
-        m_pDisplayAddress = ((void *(*)())m_pfnDisplayDibGetAddress32)();
-        ((void (*)())m_pfnDisplayDibStart32)();
-        m_fReady = 1;
-    }
-}
-
-int VsGdiDibDisplayState::Create(HWND hWnd) {
-    m_hDisplayWindow = hWnd;
-    return m_fReady;
-}
-
-// FUNCTION: LEMBALL 0x00457410
-VsGdiDirectDrawDisplayState::VsGdiDirectDrawDisplayState(const unsigned short *pDisplaySize, int fCreateWindow) {
-    typedef unsigned int (__stdcall *DIRECTDRAW_CREATE)(void *, void **, void *);
-    typedef unsigned int (__stdcall *DIRECTDRAW_SET_COOPERATIVE_LEVEL)(void *, HWND, unsigned int);
-    typedef unsigned int (__stdcall *DIRECTDRAW_SET_DISPLAY_MODE)(void *, int, int, int);
-    typedef unsigned int (__stdcall *DIRECTDRAW_CREATE_SURFACE)(void *, void *, void **, void *);
-    unsigned char aSurfaceDescription[0x6c];
-    unsigned int uCooperativeFlags;
-    unsigned int uResult;
-    WNDCLASSA WindowClass;
-    void **ppDirectDrawObject = &m_pDirectDrawObject;
-
-    (void)fCreateWindow;
-    m_pVtable = g_VSGDI_DirectDrawDisplayVtable;
-    m_cxDisplay = (short)pDisplaySize[0];
-    m_cyDisplay = (short)pDisplaySize[1];
-    m_fReady = 0;
-    *ppDirectDrawObject = 0;
-    m_pPrimarySurface = 0;
-    m_pOffscreenSurface = 0;
-    m_pPalette = 0;
-    m_fDirectDrawCursorVisible = 0;
-    m_fWindowOwnershipInitialized = 1;
-    *(int *)((char *)this + 0x30) = 0;
-    m_hGraphicsModule = LoadLibraryA(g_VSGDI_DdrawDll);
-    if (m_hGraphicsModule != 0) {
-        m_pfnDirectDrawCreate = GetProcAddress(m_hGraphicsModule, g_VSGDI_DirectDrawCreate);
-    }
-    if (m_pfnDirectDrawCreate == 0) {
-        return;
+    pTracker = *(void **)((char *)pCompactTarget - 0x0c);
+    if (pTracker != 0) {
+        nExtent = (unsigned short)Rect.m_x |
+                  ((unsigned int)(unsigned short)Rect.m_y << 16);
+        SetHelperUploadTrackerExtent(pTracker, 0, nExtent);
     }
 
-    uResult = ((DIRECTDRAW_CREATE)m_pfnDirectDrawCreate)(0, ppDirectDrawObject, 0);
-    if (uResult != 0) {
-        NoopDirectDrawCallback(uResult, 0);
-        return;
-    }
-    if (*ppDirectDrawObject == 0) {
-        return;
-    }
+    ((VsGdiHelperSurface *)((char *)pCompactTarget - 0x55c))
+        ->UpdateWorkingRectAndBacking(&Rect);
 
-    uCooperativeFlags = 8;
-    if (fCreateWindow != 0) {
-        WindowClass.style = 0xb;
-        WindowClass.lpfnWndProc = WindowOwnerWindowProc;
-        WindowClass.cbClsExtra = 0;
-        WindowClass.cbWndExtra = 0;
-        WindowClass.hInstance = g_hApplicationInstance;
-        WindowClass.hIcon = LoadIconA((HINSTANCE)0, (LPCSTR)0x7f00);
-        WindowClass.hCursor = LoadCursorA((HINSTANCE)0, (LPCSTR)0x7f00);
-        WindowClass.hbrBackground = GetStockObject(4);
-        WindowClass.lpszMenuName = 0;
-        WindowClass.lpszClassName = g_VSGDI_DirectDrawWindowClass;
-        if (RegisterClassA(&WindowClass) == 0) {
-            return;
+    if (*(void **)((char *)pCompactTarget + nCompactDelta - 0x4fc) ==
+        g_pResourceGeometryHelperTarget) {
+        pVtable = *(void ***)pCompactTarget;
+        if (((int (LEMBALL_FASTCALL *)(void *, int))pVtable[15])(
+                pCompactTarget, 0) != 0) {
+            EnsureHelperGroup0BackingBufferThunk(
+                (char *)pCompactTarget - 0x4c4);
         }
-        ShowCursor(0);
-        m_hDisplayWindow = CreateWindowExA(
-            8, g_VSGDI_DirectDrawWindowClass, g_VSGDI_DirectDrawWindowTitle,
-            0x80000000, 0, 0, m_cxDisplay, m_cyDisplay,
-            (HWND)0, (HMENU)0, g_hApplicationInstance, (LPVOID)0);
-        if (m_hDisplayWindow == 0) {
-            return;
-        }
-        ShowWindow(m_hDisplayWindow, 5);
-        UpdateWindow(m_hDisplayWindow);
-        SetForegroundWindow(m_hDisplayWindow);
-        uCooperativeFlags = 0x11;
-    }
-
-    {
-        void **pDirectDrawVtable = *(void ***)*ppDirectDrawObject;
-        uResult = ((DIRECTDRAW_SET_COOPERATIVE_LEVEL)pDirectDrawVtable[0x50 / 4])(
-            *ppDirectDrawObject, m_hDisplayWindow, uCooperativeFlags);
-        if (uResult != 0) {
-            return;
-        }
-        if ((uCooperativeFlags & 1) != 0) {
-            uResult = ((DIRECTDRAW_SET_DISPLAY_MODE)pDirectDrawVtable[0x54 / 4])(
-                *ppDirectDrawObject, m_cxDisplay, m_cyDisplay, 8);
-            if (uResult != 0) {
-                return;
-            }
-        }
-        *(unsigned int *)aSurfaceDescription = 0x6c;
-        *(unsigned int *)(aSurfaceDescription + 4) = 0;
-        *(unsigned int *)(aSurfaceDescription + 0x68) = 0x200;
-        uResult = ((DIRECTDRAW_CREATE_SURFACE)pDirectDrawVtable[0x18 / 4])(
-            *ppDirectDrawObject, aSurfaceDescription, &m_pPrimarySurface, 0);
-        if (uResult == 0) {
-            m_fReady = 1;
-        }
-    }
-}
-
-int VsGdiDirectDrawDisplayState::Create(HWND hWnd) {
-    m_hDisplayWindow = hWnd;
-    (void)g_hApplicationInstance;
-    (void)g_VSGDI_BaseWindowClass;
-    (void)g_VSGDI_DirectDrawWindowClass;
-    (void)g_VSGDI_DirectDrawWindowTitle;
-    (void)g_VSGDI_ErrorRegisterClass;
-    return m_fReady;
-}
-
-// FUNCTION: LEMBALL 0x0046BA80
-int InitializeResourceGeometryHelperRuntime(void) {
-    VsGdiSelectedGraphicsDriverRuntime *pSelectedGraphicsDriverRuntime;
-    VsGdiResourceGeometryHelperSlotManager *pSlotManager;
-    void *pvTarget;
-    int *piArrowCursorClient;
-
-    (void)g_VSGDI_BaseWindowClass;
-
-    pSelectedGraphicsDriverRuntime =
-        (VsGdiSelectedGraphicsDriverRuntime *)AllocateVSMemBlock(0xc);
-    if (pSelectedGraphicsDriverRuntime != 0) {
-        pSelectedGraphicsDriverRuntime->m_pWindowOwner = 0;
-        pSelectedGraphicsDriverRuntime->m_fFallbackWarningShown = 0;
-        g_pSelectedGraphicsDriverRuntime = pSelectedGraphicsDriverRuntime;
-    } else {
-        g_pSelectedGraphicsDriverRuntime = 0;
-    }
-    ((VsGdiSelectedGraphicsDriverRuntime *)g_pSelectedGraphicsDriverRuntime)
-        ->InitializeSelectedGraphicsDriver(VsGdiDRIVER_AUTO);
-
-    pSlotManager = (VsGdiResourceGeometryHelperSlotManager *)AllocateVSMemBlock(sizeof(VsGdiResourceGeometryHelperSlotManager));
-    if (pSlotManager != 0) {
-        g_pResourceGeometryHelperSlotManager =
-            pSlotManager->InitializeResourceGeometryHelperSlotManager(
-                (int)g_StartupGraphicsDriverConfig.m_cbSize);
-    } else {
-        g_pResourceGeometryHelperSlotManager = 0;
-    }
-
-    pvTarget = AllocateVSMemBlock(0x5a0);
-    if (pvTarget != 0) {
-        g_pResourceGeometryHelperTarget =
-            ((VsGdiResourceGeometryHelperTargetView *)pvTarget)
-                ->ConstructResourceGeometryHelperTarget(0, 1);
-    } else {
-        g_pResourceGeometryHelperTarget = 0;
-    }
-
-    piArrowCursorClient = (int *)AllocateVSMemBlock(0xa4);
-    if (piArrowCursorClient != 0) {
-        ConstructStatusIndicatorRenderClientBase(piArrowCursorClient);
-        *(void **)piArrowCursorClient = g_VSGDI_ArrowCursorRuntimeVtable;
-        InitializeArrowCursorState(piArrowCursorClient);
-        g_pArrowCursorStatusIndicatorRenderClient = piArrowCursorClient;
-    } else {
-        g_pArrowCursorStatusIndicatorRenderClient = 0;
-    }
-
-    if (g_pResourceGeometryHelperSlotManager != 0 && g_pResourceGeometryHelperTarget != 0) {
-        return 1;
-    }
-    return 0;
-}
-
-// FUNCTION: LEMBALL 0x0046BB70
-int ShutdownResourceGeometryHelperRuntime(void) {
-    if (g_pArrowCursorStatusIndicatorRenderClient != 0) {
-        CallDeleteVirtual(g_pArrowCursorStatusIndicatorRenderClient, 4, 1);
-    }
-    if (g_pResourceGeometryHelperTarget != 0) {
-        DestroyResourceGeometryHelperTarget(g_pResourceGeometryHelperTarget);
-        RestoreCompactResourceGeometryHelperVtable((char *)g_pResourceGeometryHelperTarget + 0x55c);
-        FreeVSMemBlock(g_pResourceGeometryHelperTarget);
-    }
-    if (g_pResourceGeometryHelperSlotManager != 0) {
-        DestroyResourceGeometryHelperSlotManager(g_pResourceGeometryHelperSlotManager);
-        FreeVSMemBlock(g_pResourceGeometryHelperSlotManager);
-    }
-    g_pResourceGeometryHelperTarget = 0;
-    g_pResourceGeometryHelperSlotManager = 0;
-    if (g_pDisplayState != 0) {
-        CallDeleteVirtual(g_pDisplayState, 0, 1);
-    }
-    if (g_pSelectedGraphicsDriverRuntime != 0) {
-        FreeVSMemBlock(g_pSelectedGraphicsDriverRuntime);
-    }
-    return 1;
-}
-
-// FUNCTION: LEMBALL 0x00457E10
-int VsGdiSelectedGraphicsDriverRuntime::InitializeSelectedGraphicsDriver(int nRequestedDriver) {
-    int nSelectedDriver;
-    VsGdiSelectedGraphicsDriverRuntime *pRuntime;
-
-    pRuntime = this;
-
-    if (nRequestedDriver < 9) {
-        AppendStatusCString(g_VSGDI_InitDriverPrefix);
-        AppendStatusCString(g_apszGraphicsDriverNames[nRequestedDriver]);
-        AppendStatusCString("\n");
-    }
-
-    nSelectedDriver = nRequestedDriver;
-    if (nRequestedDriver == VsGdiDRIVER_AUTO) {
-        if (g_fStartupGraphicsDriverGdk == 0) {
-            nSelectedDriver = (-(unsigned int)(g_fStartupFullscreen == 0) & 0xfffffffeU) + 3;
-        } else {
-            nSelectedDriver = (-(unsigned int)(g_fStartupFullscreen == 0) & 2U) + 4;
+        if (((int (LEMBALL_FASTCALL *)(void *, int))pVtable[16])(
+                pCompactTarget, 0) != 0) {
+            EnsureHelperGroup1BackingBuffer(
+                (char *)pCompactTarget - 0x518);
         }
     }
 
-    {
-        unsigned short aDisplaySize[2];
+    pNode = *(VsGdiResourceGeometryLinkNode **)(
+        (char *)pCompactTarget - 0x34);
+    while (pNode != 0) {
+        pChild = (VsGdiResourceGeometryHelperTargetView *)pNode->m_pTarget;
+        nCompactDelta = *(int *)((char *)*(void **)((char *)pChild + 0x40) + 4);
+        pChildCompact = (char *)pChild + 0x40 + nCompactDelta;
+        Rect.m_x = *(short *)((char *)pChild + nCompactDelta + 0x4c);
+        Rect.m_y = *(short *)((char *)pChild + nCompactDelta + 0x4e);
+        pVtable = *(void ***)pChildCompact;
+        ((void (LEMBALL_FASTCALL *)(void *, int, const VsGdiRect *))
+             pVtable[10])(pChildCompact, 0, &Rect);
+        pNode = pNode->m_pPrev;
+    }
+}
 
-    switch (nSelectedDriver) {
-    case VsGdiDRIVER_METRICS:
-        {
-            void *pvDisplayState;
+// FUNCTION: LEMBALL 0x0046d7e0
+void LEMBALL_FASTCALL BindHelperTargetDisplayDc(void *pTarget, int, void *hDc) {
+    void *pDisplayBinding;
 
-            pvDisplayState = AllocateVSMemBlock(0x1c);
-            if (pvDisplayState == 0) {
-                g_pDisplayState = 0;
-            } else {
-                g_pDisplayState = new (pvDisplayState) VsGdiMetricsDisplayState;
-            }
+    pDisplayBinding = *(void **)((char *)pTarget + 0xf8);
+    ((VsGdiDisplayDcBindingInterface *)pDisplayBinding)->BindDisplayDc(hDc);
+}
+
+// FUNCTION: LEMBALL 0x0046d920
+void LEMBALL_FASTCALL PropagateGlobalPaletteToResourceGeometries(void *pTarget) {
+    PropagateGlobalPaletteToResourceGeometriesBody(pTarget);
+}
+
+// FUNCTION: LEMBALL 0x0046d930
+void LEMBALL_FASTCALL PropagateGlobalPaletteToResourceGeometriesBody(void *pTarget) {
+    VsGdiSystemPalettePayload Palette;
+    VsGdiResourceGeometryLinkNode *pNode;
+    VsGdiResourceGeometryHelperTargetView *pListedTarget;
+    unsigned char *pEntry;
+    unsigned int uColor;
+    int i;
+
+    Palette.m_nVersion = 0x300;
+    Palette.m_cEntries = 0x100;
+    for (i = 0; i < 0x100; ++i) {
+        uColor = g_adwGlobalResourceGeometryPaletteTable[i];
+        pEntry = Palette.m_abEntries[i];
+        pEntry[0] = (unsigned char)(uColor >> 16);
+        pEntry[1] = (unsigned char)(uColor >> 8);
+        pEntry[2] = (unsigned char)uColor;
+        pEntry[3] = 4;
+    }
+
+    ((VsGdiDisplayPaletteDispatch *)g_pDisplayState)
+        ->ApplySystemPalette(&Palette);
+
+    pNode = g_pResourceGeometryListHead != 0
+                ? *(VsGdiResourceGeometryLinkNode **)g_pResourceGeometryListHead
+                : 0;
+    while (pNode != 0) {
+        pListedTarget =
+            (VsGdiResourceGeometryHelperTargetView *)pNode->m_pTarget;
+        memcpy((char *)pTarget + 0x124,
+               g_adwGlobalResourceGeometryPaletteTable,
+               sizeof(g_adwGlobalResourceGeometryPaletteTable));
+        if (pListedTarget->m_pDisplayBinding != 0) {
+            ((VsGdiDisplayPaletteDispatch *)g_pDisplayState)
+                ->ApplySurfacePalette(pListedTarget->m_pDisplayBinding,
+                                      0,
+                                      0x100,
+                                      g_adwGlobalResourceGeometryPaletteTable);
         }
-        break;
-    case VsGdiDRIVER_DIB_320_200:
-        {
-            void *pvDisplayState;
+        pNode = pNode->m_pPrev;
+    }
+}
 
-            pvDisplayState = AllocateVSMemBlock(0x30);
-            if (pvDisplayState == 0) {
-                g_pDisplayState = 0;
-            } else {
-                aDisplaySize[0] = 0x140;
-                aDisplaySize[1] = 200;
-                g_pDisplayState = new (pvDisplayState) VsGdiDibDisplayState(aDisplaySize);
-            }
-        }
-        break;
-    case VsGdiDRIVER_DIB_640_480:
-        {
-            void *pvDisplayState;
+// FUNCTION: LEMBALL 0x0046d9f0
+int RefreshHelperTargetBindingIfChanged(void *pTarget) {
+    int *pnCachedBindingValue;
+    VsGdiHelperSurfaceVariableBlock *pVariableBlock;
+    void *pBindingSource;
+    VsGdiHelperSurface *pLinkedTarget;
+    int *pBackingRow;
+    int nBindingValue;
 
-            pvDisplayState = AllocateVSMemBlock(0x30);
-            if (pvDisplayState == 0) {
-                g_pDisplayState = 0;
-            } else {
-                aDisplaySize[0] = 0x140;
-                aDisplaySize[1] = 0xf0;
-                g_pDisplayState = new (pvDisplayState) VsGdiDibDisplayState(aDisplaySize);
-            }
-        }
-        break;
-    case VsGdiDRIVER_DDRAW_320_200:
-        {
-            void *pvDisplayState;
-
-            pvDisplayState = AllocateVSMemBlock(0x4a8);
-            if (pvDisplayState == 0) {
-                g_pDisplayState = 0;
-            } else {
-                aDisplaySize[0] = 0x280;
-                aDisplaySize[1] = 0x1e0;
-                g_pDisplayState = new (pvDisplayState) VsGdiDirectDrawDisplayState(aDisplaySize, 1);
-            }
-        }
-        break;
-    case VsGdiDRIVER_DDRAW_640_480:
-        nSelectedDriver = VsGdiDRIVER_DDRAW_320_200;
-        {
-            void *pvDisplayState;
-
-            pvDisplayState = AllocateVSMemBlock(0x4a8);
-            if (pvDisplayState == 0) {
-                g_pDisplayState = 0;
-            } else {
-                aDisplaySize[0] = 0x280;
-                aDisplaySize[1] = 0x1e0;
-                g_pDisplayState = new (pvDisplayState) VsGdiDirectDrawDisplayState(aDisplaySize, 1);
-            }
-        }
-        break;
-    default:
-        AppendErrorCString(g_VSGDI_ErrorNoValidDriver);
+    if (*(int *)((char *)pTarget + 4) == 0) {
         return 0;
     }
-    }
 
-    if (g_pDisplayState == 0 || !IsDisplayStateReady(g_pDisplayState)) {
-        if (g_pDisplayState != 0) {
-            CallDeleteVirtual(g_pDisplayState, 0, 1);
-        }
-        {
-            void *pvDisplayState;
-
-            pvDisplayState = AllocateVSMemBlock(0x1c);
-            if (pvDisplayState == 0) {
-                g_pDisplayState = 0;
-            } else {
-                g_pDisplayState = new (pvDisplayState) VsGdiMetricsDisplayState;
-            }
-        }
-        if (g_pDisplayState == 0 || !IsDisplayStateReady(g_pDisplayState)) {
-            AppendErrorCString(g_VSGDI_ErrorNoValidDriverAvailable);
+    pVariableBlock =
+        (VsGdiHelperSurfaceVariableBlock *)((char *)pTarget + GetHelperSurfaceVariableBlockOffset((const VsGdiHelperSurface *)pTarget));
+    pnCachedBindingValue = (int *)((char *)pTarget + 0xc);
+    pLinkedTarget = (VsGdiHelperSurface *)pVariableBlock->m_pLinkedTarget;
+    if ((void *)pLinkedTarget == g_pResourceGeometryHelperTarget) {
+        pBindingSource = *(void **)((char *)pTarget + 0xf0);
+        if (pBindingSource == 0) {
             return 0;
         }
-
-        if (pRuntime->m_fFallbackWarningShown == 0) {
-            GameDynamicCString WarningMessage;
-            GameDynamicCString WarningResult;
-
-            WarningMessage.ConstructDynamicCStringFromCString(
-                g_apszGraphicsDriverFallbackMessages[nSelectedDriver]);
-            WarningMessage.AppendDynamicCStringAndCopyResult(
-                &WarningResult, g_VSGDI_DefaultWindowModeSuffix);
-            WarningResult.DestroyDynamicCString();
-            MessageBoxA((HWND)0, WarningMessage.m_pszText, g_VSGDI_WarningCaption, 0x12000);
-            pRuntime->m_fFallbackWarningShown = 1;
-            WarningMessage.DestroyDynamicCString();
+        if (((int (*)())(*(void ***)pBindingSource)[1])() == 0) {
+            return 0;
         }
-        nSelectedDriver = VsGdiDRIVER_METRICS;
-    }
-
-    if (nRequestedDriver != nSelectedDriver) {
-        AppendStatusCString(g_VSGDI_AutoSelectedPrefix);
-        AppendStatusCString(g_apszGraphicsDriverNames[nSelectedDriver]);
-        AppendStatusCString(g_VSGDI_AutoSelectedSuffix);
-    }
-
-    if (pRuntime != 0) {
-        pRuntime->m_nSelectedDriver = nSelectedDriver;
+        nBindingValue = ((int (*)(void))(*(void ***)pBindingSource)[3])();
+        if (nBindingValue != 0 && *pnCachedBindingValue != nBindingValue) {
+            *pnCachedBindingValue = nBindingValue;
+            EnsureHelperBackingRowIndexCapacity((VsGdiHelperSurface *)pTarget);
+            return 1;
+        }
+    } else {
+        if (pLinkedTarget == 0) {
+            return 0;
+        }
+        if (RefreshHelperTargetBindingIfChanged(pLinkedTarget) == 0) {
+            return 0;
+        }
+        pBackingRow = *(int **)(unsigned long)(*(int *)((char *)pLinkedTarget + 4) + pVariableBlock->m_aWorkingRect[3] * 4);
+        nBindingValue = *(int *)((char *)pBackingRow + pVariableBlock->m_aWorkingRect[2]);
+        if (nBindingValue != *pnCachedBindingValue) {
+            EnsureHelperBackingRowIndexCapacity((VsGdiHelperSurface *)pTarget);
+            return 1;
+        }
     }
     return 1;
 }
 
-// FUNCTION: LEMBALL 0x004581D0
-void VsGdiSelectedGraphicsDriverRuntime::ResizeActiveDisplayState(unsigned short *pSize) {
-    VsGdiDisplayState *pDisplayState;
+// FUNCTION: LEMBALL 0x0046daa0
+void InvokeRootHelperTargetPostQueueCallback(int nTarget) {
+    void *pBindingSource;
+    VsGdiHelperSurfaceVariableBlock *pVariableBlock;
+    VsGdiHelperSurface *pRootTarget;
+    VsGdiHelperSurface *pTarget;
 
-    if (g_pDisplayState != 0) {
-        pDisplayState = g_pDisplayState;
-        *(unsigned short *)((char *)pDisplayState + 0x14) = pSize[0];
-        *(unsigned short *)((char *)pDisplayState + 0x16) = pSize[1];
-        NotifyWindowOwnersDisplayChanged(&m_nSelectedDriver);
+    pTarget = (VsGdiHelperSurface *)(unsigned long)nTarget;
+    do {
+        pRootTarget = pTarget;
+        pVariableBlock =
+            (VsGdiHelperSurfaceVariableBlock *)((char *)pRootTarget + GetHelperSurfaceVariableBlockOffset(pRootTarget));
+        pTarget = (VsGdiHelperSurface *)pVariableBlock->m_pLinkedTarget;
+    } while (g_pResourceGeometryHelperTarget != (void *)pTarget);
+
+    pBindingSource = *(void **)((char *)pRootTarget + 0xf0);
+    ((void (*)())(*(void ***)pBindingSource)[2])();
+}
+
+// FUNCTION: LEMBALL 0x0046dba0
+__declspec(naked) void LEMBALL_FASTCALL FillHelperSurfaceRectCommandAdjustmentThunk(
+    void *pCompactTarget, int nUnused, void *pCommand)
+{
+    __asm {
+        sub ecx, dword ptr [ecx - 4]
+        jmp FillHelperSurfaceRectCommand
     }
 }
 
-int InitializeSelectedGraphicsDriver(int nRequestedDriver) {
-    return ((VsGdiSelectedGraphicsDriverRuntime *)g_pSelectedGraphicsDriverRuntime)
-        ->InitializeSelectedGraphicsDriver(nRequestedDriver);
+// FUNCTION: LEMBALL 0x0046dbb0
+__declspec(naked) void LEMBALL_FASTCALL ForwardBitmapCommandToAdjustedSurfaceThunk(void)
+{
+    __asm {
+        sub ecx, dword ptr [ecx - 4]
+        jmp offset ForwardBitmapCommandToAdjustedSurface
+    }
 }
 
-int GetSelectedGraphicsDriverId(void) {
-    if (g_pSelectedGraphicsDriverRuntime == 0) {
-        return VsGdiDRIVER_AUTO;
+// FUNCTION: LEMBALL 0x0046dbc0
+void LEMBALL_FASTCALL ForwardBitmapCommandToAdjustedSurface(
+    void *pCompactTarget, int, void *pCommand, void *pBitmap)
+
+{
+    typedef void (LEMBALL_FASTCALL *BitmapCommandVirtual)(
+        void *, int, void *, void *);
+
+    int nSurfaceOffset;
+    void *pSurface;
+
+    nSurfaceOffset =
+        *(int *)((char *)*(void **)((char *)pCompactTarget - 0x51c) + 4);
+    pSurface = (char *)pCompactTarget + nSurfaceOffset - 0x51c;
+    ((BitmapCommandVirtual)(*(void ***)pSurface)[8])(
+        pSurface, 0, pCommand, pBitmap);
+}
+
+// FUNCTION: LEMBALL 0x0046dbf0
+__declspec(naked) void LEMBALL_FASTCALL BlitBitmapRowsToScanlinesAdjustmentThunk(
+    void *pCompactTarget, int nUnused, void *pCommand, void *pBitmap)
+{
+    __asm {
+        sub ecx, dword ptr [ecx - 4]
+        jmp offset BlitBitmapRowsToScanlines
+    }
+}
+
+// FUNCTION: LEMBALL 0x0046dc10
+__declspec(naked) void LEMBALL_FASTCALL SetHelperTargetRenderExtentAdjustmentThunk(
+    void *pCompactTarget, int nUnused, const VsGdiRect *pExtent)
+{
+    __asm {
+        sub ecx, dword ptr [ecx - 4]
+        jmp offset SetHelperTargetRenderExtent
+    }
+}
+
+// FUNCTION: LEMBALL 0x0046dc30
+__declspec(naked) void LEMBALL_FASTCALL ApplyHelperTargetPaletteAdjustmentThunk(
+    void *pCompactTarget, int nUnused, void *pPalette)
+{
+    __asm {
+        sub ecx, dword ptr [ecx - 4]
+        jmp offset ApplyHelperTargetPaletteAndPropagate
+    }
+}
+
+// FUNCTION: LEMBALL 0x0046dc40
+void LEMBALL_FASTCALL PresentCompactResourceGeometryHelperAdjustmentThunk(
+    void *pCompactTarget)
+
+{
+    pCompactTarget = (char *)pCompactTarget -
+        *(int *)((char *)pCompactTarget - 4);
+    PresentCompactResourceGeometryHelper(pCompactTarget);
+}
+
+// FUNCTION: LEMBALL 0x0046dc50
+void LEMBALL_FASTCALL PresentCompactResourceGeometryHelper(
+    void *pCompactTarget)
+
+{
+    typedef void (LEMBALL_FASTCALL *DeactivateSlotProc)(void *, int, void *);
+    void *pTarget;
+    ++g_nDebugPresentCount;
+    pTarget = (char *)pCompactTarget - 0x55c;
+    ((DeactivateSlotProc)(*(void ***)g_pResourceGeometryHelperSlotManager)[3])(
+        g_pResourceGeometryHelperSlotManager, 0, pTarget);
+}
+
+// FUNCTION: LEMBALL 0x0046dc70
+unsigned char *LEMBALL_FASTCALL GetHelperTargetTokenAdjustmentThunk(
+    void *pCompactTarget)
+
+{
+    pCompactTarget =
+        (char *)pCompactTarget - *(int *)((char *)pCompactTarget - 4);
+    return GetHelperTargetToken(pCompactTarget);
+}
+
+// FUNCTION: LEMBALL 0x0046dc80
+unsigned char *LEMBALL_FASTCALL GetHelperTargetToken(void *pTarget) {
+    return (unsigned char *)pTarget - 8;
+}
+
+// FUNCTION: LEMBALL 0x0046dc90
+int LEMBALL_FASTCALL GetHelperGroup0DirtyFlagAdjustmentThunk(
+    void *pCompactTarget, int nUnused)
+
+{
+    return GetHelperGroup0DirtyFlag(
+        (char *)pCompactTarget - 0x46c, nUnused);
+}
+
+// FUNCTION: LEMBALL 0x0046dca0
+int LEMBALL_FASTCALL GetHelperGroup1DirtyFlagAdjustmentThunk(
+    void *pCompactTarget, int nUnused)
+
+{
+    return GetHelperGroup1DirtyFlag(
+        (char *)pCompactTarget - 0x4c0, nUnused);
+}
+
+// FUNCTION: LEMBALL 0x00472290
+void *LEMBALL_FASTCALL InitializeResourceGeometryRowBuffer(void *pvRowBuffer) {
+    int *pRowBuffer;
+
+    pRowBuffer = (int *)pvRowBuffer;
+    *(short *)((char *)pRowBuffer + 0x2e) = 0;
+    *(short *)(pRowBuffer + 0xb) = 0;
+    *(short *)((char *)pRowBuffer + 0x32) = 0;
+    *(short *)(pRowBuffer + 0xc) = 0;
+    *(short *)((char *)pRowBuffer + 0x36) = 0;
+    *(short *)(pRowBuffer + 0xd) = 0;
+    *pRowBuffer = (int)(unsigned long)&g_VSGDI_ResourceGeometryRowBufferVtable;
+    *(short *)((char *)pRowBuffer + 0x3a) = 0;
+    *(short *)(pRowBuffer + 0xe) = 0;
+    *(short *)((char *)pRowBuffer + 0x3e) = 0;
+    *(short *)(pRowBuffer + 0xf) = 0;
+    ClearResourceGeometryRowBufferFields(pRowBuffer);
+    return pRowBuffer;
+}
+
+// FUNCTION: LEMBALL 0x004722d0
+void LEMBALL_FASTCALL DestroyResourceGeometryRowBuffer(void *pvRowBuffer) {
+    *(void **)pvRowBuffer = &g_VSGDI_ResourceGeometryRowBufferVtable;
+    ReleaseResourceGeometryRowBufferStorage((int)(unsigned long)pvRowBuffer);
+}
+
+// FUNCTION: LEMBALL 0x00472310
+void LEMBALL_FASTCALL ClearResourceGeometryRowBufferFields(void *pvRowBuffer) {
+    char *pRowBuffer;
+
+    pRowBuffer = (char *)pvRowBuffer;
+    *(int *)(pRowBuffer + 0x10) = 0;
+    *(int *)(pRowBuffer + 0x08) = 0;
+    *(int *)(pRowBuffer + 0x0c) = 0;
+    *(int *)(pRowBuffer + 0x18) = 0;
+    *(int *)(pRowBuffer + 0x14) = 0;
+    *(int *)(pRowBuffer + 0x04) = 0;
+    *(int *)(pRowBuffer + 0x1c) = 0;
+    *(int *)(pRowBuffer + 0x24) = 0;
+    *(int *)(pRowBuffer + 0x20) = 0;
+    *(int *)(pRowBuffer + 0x28) = 0;
+}
+
+// FUNCTION: LEMBALL 0x00472340
+void LEMBALL_FASTCALL EnsureHelperBackingRowIndexCapacity(VsGdiHelperSurface *pSurface) {
+    int cRows;
+    int cbRowIndexBytes;
+
+    cRows = (int)*(short *)((char *)pSurface + 0x2e);
+    if (*(int *)((char *)pSurface + 0x28) < cRows) {
+        if (*(int *)((char *)pSurface + 4) != 0) {
+            FreeVSMemBlock((void *)(unsigned long)*(int *)((char *)pSurface + 4));
+            *(int *)((char *)pSurface + 4) = 0;
+        }
+        if (0 < *(short *)((char *)pSurface + 0x2e)) {
+            cbRowIndexBytes = cRows << 2;
+            *(int *)((char *)pSurface + 4) = (int)(unsigned long)AllocateVSMemBlock((unsigned int)cbRowIndexBytes);
+            pSurface->ClearBackingBorderRows();
+        }
+        *(int *)((char *)pSurface + 0x28) = cRows;
+        return;
+    }
+    pSurface->ClearBackingBorderRows();
+}
+
+// FUNCTION: LEMBALL 0x004723a0
+void VsGdiHelperSurface::ClearBackingBorderRows(void) {
+    unsigned int cbBorderRow;
+    unsigned int cDwords;
+    unsigned int cTailBytes;
+    char *pbBackingBase;
+    char *pbTarget;
+    int nAbsoluteStride;
+    int nStrideSign;
+
+    *(int *)((char *)this + 0x18) = 0;
+    *(int *)((char *)this + 0x14) = 0;
+    RebuildResourceGeometryRowPointerTable(this);
+
+    cbBorderRow = (unsigned int)*(int *)((char *)this + 0x20);
+    if (0 < (int)cbBorderRow) {
+        pbBackingBase = (char *)(unsigned long)*(int *)((char *)this + 0xc);
+        pbTarget = pbBackingBase;
+        cDwords = cbBorderRow >> 2;
+        while (cDwords != 0) {
+            *(unsigned int *)pbTarget = 0;
+            pbTarget = pbTarget + 4;
+            --cDwords;
+        }
+        cTailBytes = cbBorderRow & 3;
+        while (cTailBytes != 0) {
+            *pbTarget = 0;
+            ++pbTarget;
+            --cTailBytes;
+        }
+
+        nAbsoluteStride = *(int *)((char *)this + 0x1c);
+        nStrideSign = nAbsoluteStride >> 0x1f;
+        nAbsoluteStride = (nAbsoluteStride ^ nStrideSign) - nStrideSign;
+        pbTarget = pbBackingBase + nAbsoluteStride * (int)*(short *)((char *)this + 0x2e) + cbBorderRow;
+        cDwords = cbBorderRow >> 2;
+        while (cDwords != 0) {
+            *(unsigned int *)pbTarget = 0;
+            pbTarget = pbTarget + 4;
+            --cDwords;
+        }
+        cTailBytes = cbBorderRow & 3;
+        while (cTailBytes != 0) {
+            *pbTarget = 0;
+            ++pbTarget;
+            --cTailBytes;
+        }
+    }
+}
+
+// FUNCTION: LEMBALL 0x00472400
+void LEMBALL_FASTCALL RebuildResourceGeometryRowPointerTable(VsGdiHelperSurface *pSurface) {
+    int nRowByteOffset;
+    int iRowIndex;
+    int iLogicalRow;
+
+    nRowByteOffset = *(int *)((char *)pSurface + 8);
+    iLogicalRow = *(int *)((char *)pSurface + 0x14);
+    iRowIndex = 0;
+    if (0 < *(short *)((char *)pSurface + 0x2e)) {
+        do {
+            *(int *)(*(int *)((char *)pSurface + 4) + iLogicalRow * 4) =
+                *(int *)((char *)pSurface + 0x18) + nRowByteOffset;
+            ++iLogicalRow;
+            nRowByteOffset = nRowByteOffset + *(int *)((char *)pSurface + 0x1c);
+            if ((int)*(short *)((char *)pSurface + 0x2e) <= iLogicalRow) {
+                iLogicalRow = iLogicalRow - (int)*(short *)((char *)pSurface + 0x2e);
+            }
+            ++iRowIndex;
+        } while (iRowIndex < (int)*(short *)((char *)pSurface + 0x2e));
+    }
+}
+
+// FUNCTION: LEMBALL 0x004725f0
+void VsGdiHelperSurface::ComputeBackingDimensions(short *paOut, short *paRect, int nWidth) {
+    VsGdiHelperSurface *pSurface = this;
+    short cxRect;
+    short cyRect;
+    int cBorderRows;
+
+    cxRect = paRect[0];
+    *(short *)((char *)pSurface + 0x2c) = cxRect;
+    cyRect = paRect[1];
+    *(short *)((char *)pSurface + 0x2e) = cyRect;
+    if (nWidth == 0 || *(int *)((char *)pSurface + 0x10) != 0) {
+        *(int *)((char *)pSurface + 0x20) = 0;
+    } else {
+        *(int *)((char *)pSurface + 0x20) = nWidth - cxRect;
+    }
+    if (cxRect == 0) {
+        *(int *)((char *)pSurface + 0x24) = 0;
+    } else {
+        *(int *)((char *)pSurface + 0x24) =
+            (cxRect - 1 + *(int *)((char *)pSurface + 0x20) * 2) / (int)cxRect;
+    }
+    cBorderRows = *(int *)((char *)pSurface + 0x24);
+    paOut[0] = cxRect;
+    paOut[1] = (short)cBorderRows + cyRect;
+}
+
+// FUNCTION: LEMBALL 0x00472670
+void VsGdiHelperSurface::ConfigureBackingStrideAndOrigin(int nStride, int nOrigin) {
+    VsGdiHelperSurface *pSurface = this;
+    int nRowBase;
+
+    nRowBase = *(int *)((char *)pSurface + 0x20) + nStride;
+    *(int *)((char *)pSurface + 0xc) = nStride;
+    *(int *)((char *)pSurface + 8) = nRowBase;
+    *(int *)((char *)pSurface + 0x1c) = nOrigin;
+    if (nOrigin < 0) {
+        *(int *)((char *)pSurface + 8) =
+            (1 - (int)*(short *)((char *)pSurface + 0x2e)) * nOrigin + nRowBase;
+    }
+    EnsureHelperBackingRowIndexCapacity(pSurface);
+}
+
+// FUNCTION: LEMBALL 0x004726b0
+void VsGdiHelperSurface::SplitRectAtBackingRowBoundary(short *pRect, short **ppFirstRect, short **ppSecondRect) {
+    short *pFirstRect;
+    short *pSecondRect;
+    int yBoundary;
+    pFirstRect = (short *)((char *)this + 0x30);
+    pFirstRect[0] = pRect[0];
+    pFirstRect[1] = pRect[1];
+    pFirstRect[2] = pRect[2];
+    pFirstRect[3] = pRect[3];
+    *ppFirstRect = pFirstRect;
+    *ppSecondRect = 0;
+    yBoundary = *(int *)((char *)this + 0x14);
+    if (yBoundary < (short)(pRect[1] + pRect[3]) &&
+        pRect[3] < yBoundary) {
+        pFirstRect[1] = (short)yBoundary - pFirstRect[3];
+        pSecondRect = (short *)((char *)this + 0x38);
+        pSecondRect[0] = pRect[0];
+        pSecondRect[1] = (short)(pRect[1] - yBoundary + pRect[3]);
+        pSecondRect[2] = pRect[2];
+        pSecondRect[3] = (short)yBoundary;
+        *ppSecondRect = pSecondRect;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00472760
+void VsGdiHelperSurface::ClearBackingBorderRowsThunk(void) {
+    ClearBackingBorderRows();
+}
+
+// FUNCTION: LEMBALL 0x00474b50
+void LEMBALL_FASTCALL InitializeArrowCursorState(int *pState) {
+    struct CursorState {
+        virtual void Reserved00();
+        virtual void Reserved01();
+        virtual void Reserved02();
+        virtual void Reserved03();
+        virtual void Reserved04();
+        virtual void Reserved05();
+        virtual void InitializeCursor();
+    };
+
+    pState[0x27] = 0;
+    pState[0x27] = (int)(unsigned long)LoadCursorA((HINSTANCE)0, (LPCSTR)0x7f00);
+    ((CursorState *)pState)->InitializeCursor();
+}
+
+// FUNCTION: LEMBALL 0x00474b80
+void LEMBALL_FASTCALL InitializeArrowCursorPosition(void *pRenderClient) {
+    tagPOINT Point;
+
+    GetCursorPos(&Point);
+    *(short *)((char *)pRenderClient + 0x10) = (short)Point.x;
+    *(short *)((char *)pRenderClient + 0x12) = (short)Point.y;
+}
+
+// FUNCTION: LEMBALL 0x00474be0
+void LEMBALL_FASTCALL HideArrowCursor(void *pRenderClient) {
+    SetCursor((HCURSOR)0);
+    ShowCursor(0);
+    *(int *)((char *)pRenderClient + 0x3c) = 0;
+}
+
+// FUNCTION: LEMBALL 0x00474c00
+void LEMBALL_FASTCALL ShowArrowCursor(void *pRenderClient) {
+    ShowCursor(1);
+    *(int *)((char *)pRenderClient + 0x3c) = 1;
+}
+
+// FUNCTION: LEMBALL 0x00474dd0
+void LEMBALL_FASTCALL CopyRectRowsToHelperGroup0Buffer(
+    void *pGroup0RowBuffer, int, void *pCopyCommand)
+
+{
+    unsigned char **ppSourceRows;
+    unsigned char **ppDestinationRows;
+    unsigned char *pbCommand;
+    int cbRow;
+    int cRows;
+    int xSource;
+    int ySource;
+    int xDestination;
+    int yDestination;
+    int iRow;
+
+    pbCommand = (unsigned char *)pCopyCommand;
+    cbRow = (int)*(short *)(pbCommand + 8);
+    cRows = (int)*(short *)(pbCommand + 0x0a);
+    if (cbRow == 0 || cRows == 0)
+        return;
+
+    xSource = (int)*(short *)(pbCommand + 4);
+    ySource = (int)*(short *)(pbCommand + 6);
+    xDestination = (int)*(short *)(pbCommand + 0x0c);
+    yDestination = (int)*(short *)(pbCommand + 0x0e);
+    if (ySource <= 0)
+        return;
+
+    ppSourceRows = *(unsigned char ***)((char *)pGroup0RowBuffer - 0x94);
+    ppDestinationRows =
+        *(unsigned char ***)((char *)pGroup0RowBuffer + 0x0c);
+    for (iRow = 0; iRow < cRows; ++iRow) {
+        memcpy(ppDestinationRows[yDestination + iRow] + xDestination,
+               ppSourceRows[ySource + iRow] + xSource,
+               (unsigned int)cbRow);
+    }
+}
+
+// FUNCTION: LEMBALL 0x00474e60
+void LEMBALL_FASTCALL FillRectInHelperGroup0Buffer(
+    void *pGroup0RowBuffer, int, void *pFillCommand)
+
+{
+    unsigned char **ppRows;
+    unsigned char *pbCommand;
+    int cbRow;
+    int cRows;
+    int xDestination;
+    int yDestination;
+    int nColor;
+    int iRow;
+
+    pbCommand = (unsigned char *)pFillCommand;
+    cbRow = (int)*(short *)(pbCommand + 8);
+    cRows = (int)*(short *)(pbCommand + 0x0a);
+    if (cbRow == 0 || cRows == 0)
+        return;
+
+    nColor = *(int *)(pbCommand + 4);
+    xDestination = (int)*(short *)(pbCommand + 0x0c);
+    yDestination = (int)*(short *)(pbCommand + 0x0e);
+    if (yDestination <= 0)
+        return;
+
+    ppRows = *(unsigned char ***)((char *)pGroup0RowBuffer + 0x0c);
+    for (iRow = 0; iRow < cRows; ++iRow) {
+        memset(ppRows[yDestination + iRow] + xDestination,
+               (unsigned char)nColor,
+               (unsigned int)cbRow);
+    }
+}
+
+// FUNCTION: LEMBALL 0x00474ee0
+void LEMBALL_FASTCALL CopyHelperGroup0RectToTarget(
+    void *pGroup0RowBuffer, int, void *pCopyRect)
+
+{
+    unsigned char **ppTargetRows;
+    unsigned char **ppGroupRows;
+    short *paRect;
+    int cbRow;
+    int cRows;
+    int x;
+    int y;
+    int iRow;
+
+    paRect = (short *)pCopyRect;
+    cbRow = (int)paRect[0];
+    cRows = (int)paRect[1];
+    if (cbRow * cRows == 0)
+        return;
+
+    x = (int)paRect[2];
+    y = (int)paRect[3];
+    if (x + cbRow > (int)*(unsigned short *)((char *)pGroup0RowBuffer + 0x50))
+        cbRow = (int)*(unsigned short *)((char *)pGroup0RowBuffer + 0x50) - x;
+    if (y + cRows > (int)*(unsigned short *)((char *)pGroup0RowBuffer + 0x52))
+        cRows = (int)*(unsigned short *)((char *)pGroup0RowBuffer + 0x52) - y;
+    if (cRows <= 0)
+        return;
+
+    ppTargetRows = *(unsigned char ***)((char *)pGroup0RowBuffer - 0x94);
+    ppGroupRows = *(unsigned char ***)((char *)pGroup0RowBuffer + 0x0c);
+    for (iRow = 0; iRow < cRows; ++iRow) {
+        memcpy(ppTargetRows[y + iRow] + x,
+               ppGroupRows[y + iRow] + x,
+               (unsigned int)cbRow);
+    }
+}
+
+// FUNCTION: LEMBALL 0x00475080
+void LEMBALL_FASTCALL FillHelperSurfaceRectCommand(
+    void *pCompactTarget, int, void *pCommand)
+
+{
+    const VsGdiRect *pCommandRect;
+    VsGdiRect Rect;
+
+    pCommandRect = (const VsGdiRect *)get_draw_command_rect_payload(pCommand);
+    Rect.m_x = pCommandRect->m_x;
+    Rect.m_y = pCommandRect->m_y;
+    Rect.m_cx = pCommandRect->m_cx;
+    Rect.m_cy = pCommandRect->m_cy;
+    ((VsGdiHelperSurface *)((char *)pCompactTarget - 0x55c))
+        ->FillRect(Rect, *(int *)((char *)pCommand + 0x0c));
+}
+
+// FUNCTION: LEMBALL 0x004756e0
+void VsGdiHelperSurface::FillRect(VsGdiRect Rect, int nColor) {
+    typedef void (LEMBALL_FASTCALL *DirtyRectVirtual)(
+        void *, int, VsGdiRect *);
+
+    VsGdiRect ClippedRect;
+    short *paRect;
+    short *paClippedRect;
+    unsigned char **ppRows;
+    int iRow;
+
+    memset(&ClippedRect, 0, sizeof(ClippedRect));
+    paRect = (short *)&Rect;
+    paClippedRect = (short *)&ClippedRect;
+    if (ClipRenderRectToSurfaceBounds(&Rect, &ClippedRect)) {
+        if (paClippedRect[0] < 1 || paClippedRect[1] < 1)
+            return;
+        paRect[0] = paClippedRect[0];
+        paRect[1] = paClippedRect[1];
     }
 
-    return ((VsGdiSelectedGraphicsDriverRuntime *)g_pSelectedGraphicsDriverRuntime)->m_nSelectedDriver;
+    ppRows = *(unsigned char ***)((char *)this + 4);
+    for (iRow = 0; iRow < paRect[1]; ++iRow) {
+        memset(ppRows[paRect[3] + iRow] + paRect[2],
+               (unsigned char)nColor,
+               (unsigned int)(unsigned short)paRect[0]);
+    }
+    ((DirtyRectVirtual)(*(void ***)this)[1])(this, 0, &Rect);
 }
 
-VsGdiDisplayState *GetDisplayState(void) {
-    return g_pDisplayState;
+// FUNCTION: LEMBALL 0x00476580
+int VsGdiHelperSurface::ClipRenderRectToSurfaceBounds(
+    VsGdiRect *pRect, VsGdiRect *pClippedRect)
+
+{
+    short *paRect;
+    short *paClippedRect;
+    short sOriginX;
+    short sOriginY;
+    short sRectX;
+    short sRectY;
+    short sRight;
+    short sBottom;
+    short *paSurfaceBounds;
+    int nVariableBlockOffset;
+    int fRightInside;
+
+    paRect = (short *)pRect;
+    paClippedRect = (short *)pClippedRect;
+    nVariableBlockOffset = GetHelperSurfaceVariableBlockOffset(this);
+    paSurfaceBounds = (short *)((char *)this + nVariableBlockOffset + 0x64);
+    sOriginX = paSurfaceBounds[2];
+    sOriginY = paSurfaceBounds[3];
+    sRectX = paRect[2];
+    sRectY = paRect[3];
+
+    if ((short)(sOriginX + paSurfaceBounds[0]) < sRectX ||
+        (short)(sOriginY + paSurfaceBounds[1]) < sRectY ||
+        (short)(paRect[0] + sRectX) < sOriginX ||
+        (short)(paRect[1] + sRectY) < sOriginY) {
+        return true;
+    }
+
+    if (sRectX < sOriginX) {
+        paClippedRect[2] = (short)(sOriginX - sRectX);
+        paRect[2] = sOriginX;
+        paRect[0] = (short)(paRect[0] - paClippedRect[2]);
+    }
+    if (sRectY < sOriginY) {
+        paClippedRect[3] = (short)(sOriginY - sRectY);
+        paRect[3] = sOriginY;
+        paRect[1] = (short)(paRect[1] - paClippedRect[3]);
+    }
+
+    nVariableBlockOffset = GetHelperSurfaceVariableBlockOffset(this);
+    paSurfaceBounds = (short *)((char *)this + nVariableBlockOffset + 0x64);
+    sRight = (short)(paSurfaceBounds[2] + paSurfaceBounds[0]);
+    fRightInside = (short)(paRect[2] + paRect[0]) <= sRight;
+    if (fRightInside) {
+        paClippedRect[0] = paRect[0];
+    } else {
+        paClippedRect[0] = (short)(sRight - paRect[2]);
+        paRect[0] = paClippedRect[0];
+    }
+
+    nVariableBlockOffset = GetHelperSurfaceVariableBlockOffset(this);
+    paSurfaceBounds = (short *)((char *)this + nVariableBlockOffset + 0x64);
+    sBottom = (short)(paSurfaceBounds[3] + paSurfaceBounds[1]);
+    if (sBottom < (short)(paRect[3] + paRect[1])) {
+        paClippedRect[1] = (short)(sBottom - paRect[3]);
+        paRect[1] = paClippedRect[1];
+        return true;
+    }
+    paClippedRect[1] = paRect[1];
+    return !fRightInside || sRectY < sOriginY || sRectX < sOriginX;
+}
+
+// FUNCTION: LEMBALL 0x004787f0
+void LEMBALL_FASTCALL BlitBitmapRowsToScanlines(
+    void *pCompactTarget, int, void *pCommand, void *pBitmap)
+
+{
+    typedef void (LEMBALL_FASTCALL *DirtyRectVirtual)(
+        void *, int, VsGdiRect *);
+    typedef unsigned char *(LEMBALL_FASTCALL *GetBitmapDataVirtual)(
+        void *);
+
+    unsigned char *pCommandBytes;
+    unsigned char *pBitmapBytes;
+    VsGdiHelperSurface *pSurface;
+    VsGdiRect Rect;
+    VsGdiRect ClippedRect;
+    unsigned char **ppRows;
+    unsigned char *pSource;
+    unsigned char *pDestination;
+    int cxBitmap;
+    int cyBitmap;
+    int xSource;
+    int ySource;
+    int iSourceRow;
+    int iDestinationRow;
+    int nDestinationRowStep;
+    int i;
+    unsigned int dwFlags;
+
+    pCommandBytes = (unsigned char *)pCommand;
+    pBitmapBytes = (unsigned char *)pBitmap;
+    pSurface = (VsGdiHelperSurface *)((char *)pCompactTarget - 0x55c);
+
+    Rect.m_x = *(short *)(pCommandBytes + 8);
+    Rect.m_y = *(short *)(pCommandBytes + 0x0a);
+    Rect.m_cx = *(short *)(pCommandBytes + 4);
+    Rect.m_cy = *(short *)(pCommandBytes + 6);
+    xSource = *(short *)(pCommandBytes + 0x0c);
+    ySource = *(short *)(pCommandBytes + 0x0e);
+    if (Rect.m_x == 0 && Rect.m_y == 0) {
+        Rect.m_x = *(short *)(pBitmapBytes + 0x48);
+        Rect.m_y = *(short *)(pBitmapBytes + 0x4a);
+    }
+
+    cxBitmap = *(short *)(pBitmapBytes + 0x48);
+    cyBitmap = *(short *)(pBitmapBytes + 0x4a);
+    if (cxBitmap * cyBitmap == 0) {
+        return;
+    }
+
+    memset(&ClippedRect, 0, sizeof(ClippedRect));
+    if (pSurface->ClipRenderRectToSurfaceBounds(&Rect, &ClippedRect)) {
+        if (ClippedRect.m_x < 1 || ClippedRect.m_y < 1) {
+            return;
+        }
+        Rect.m_x = ClippedRect.m_x;
+        Rect.m_y = ClippedRect.m_y;
+    }
+
+    ((DirtyRectVirtual)(*(void ***)pSurface)[1])(
+        pSurface, 0, &Rect);
+
+    dwFlags = *(unsigned int *)(pCommandBytes + 0x14);
+    iDestinationRow = Rect.m_cy;
+    nDestinationRowStep = 1;
+    if ((dwFlags & 2) != 0) {
+        nDestinationRowStep = -1;
+        iDestinationRow += Rect.m_y - 1;
+    }
+
+    pSource = ((GetBitmapDataVirtual)(*(void ***)pBitmap)[10])(pBitmap);
+    pSource += (ySource + ClippedRect.m_cy) * cxBitmap +
+               xSource + ClippedRect.m_cx;
+    ppRows = *(unsigned char ***)((char *)pSurface + 4);
+
+    for (iSourceRow = 0; iSourceRow < Rect.m_y; ++iSourceRow) {
+        pDestination = ppRows[iDestinationRow] + Rect.m_cx;
+        if ((dwFlags & 0x800) != 0) {
+            for (i = 0; i < Rect.m_x; ++i) {
+                if (pSource[i] != 0) {
+                    pDestination[i] = pSource[i];
+                }
+            }
+        } else {
+            memcpy(pDestination, pSource, (unsigned short)Rect.m_x);
+        }
+        iDestinationRow += nDestinationRowStep;
+        pSource += cxBitmap;
+    }
 }

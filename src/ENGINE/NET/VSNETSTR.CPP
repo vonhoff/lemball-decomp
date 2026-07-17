@@ -68,24 +68,7 @@ struct VsNetRuntimeChannelStackVtableModel {
     virtual void FatalRuntimeSlot06(void) { _purecall(); }
 };
 
-// FUNCTION: LEMBALL 0x004605D0
-short VsNetRuntimeChannelStackVtableModel::ClaimRuntimeFlag(const char *pszFlags) {
-    VsNetRuntimeChannelStack *pStack = (VsNetRuntimeChannelStack *)this;
-    short i;
 
-    for (i = 0; i < 0x200; ++i) {
-        if (pszFlags[i] == 0 && pStack->m_pbRuntimeFlags10[i] == 0) {
-            pStack->m_pbRuntimeFlags10[i] = 1;
-            return i;
-        }
-    }
-    return -1;
-}
-
-// FUNCTION: LEMBALL 0x004629C0
-void VsNetRuntimeChannelStackVtableModel::ClearRuntimeFlag(short nFlag) {
-    ((VsNetRuntimeChannelStack *)this)->m_pbRuntimeFlags10[nFlag] = 0;
-}
 
 struct VsNetRuntimeChannelStackWrapperView {
     unsigned char m_abChannelState00[0x30];
@@ -267,6 +250,44 @@ extern void NoopVtableCallbackThunk(void);
 extern void WriteEffTransportTaggedHeader(void *pObject);
 void *DeleteEffStreamBaseWrapper00462900(void *pObject, BYTE fDelete);
 
+void NoopVtableCallbackThunk(void);
+int PASCAL ReturnTrueVtableCallbackThunk(void *pObject);
+int ReturnTrueVtableCallbackSecondaryThunk(void);
+int PASCAL ReturnTrueVtableCallback(void *);
+int ReturnTrueVtableCallbackSecondary(void);
+void NoopVtableCallback(void);
+void *ConstructDualHandleEffStream(void *pStream, int fConstructChannelState);
+void *DeleteEffStreamBaseWrapper00462810(void *pObject, BYTE fDelete);
+void *DeleteEffStreamBaseWrapper00462830(void *pObject, BYTE fDelete);
+void *DeleteEffStreamBaseWrapper00462850(void *pObject, BYTE fDelete);
+void *DeleteEffStreamBaseWrapper00462870(void *pObject, BYTE fDelete);
+void *DeleteEffStreamBaseWrapper00462890(void *pObject, BYTE fDelete);
+void *DeleteEffStreamBaseWrapper004628B0(void *pObject, BYTE fDelete);
+void EffStreamChannelStateRet4Thunk(BYTE fDelete);
+void *DeleteEffStreamChannelStateWrapper004628E0(void *pObject, BYTE fDelete);
+void *DeleteEffStreamBaseWrapper00462900(void *pObject, BYTE fDelete);
+void *DeleteDualEffStreamWithChannelStateWrapper(void *pObject, BYTE fDelete);
+void *DeleteTimedEffStreamWithChannelStateWrapper(void *pObject, BYTE fDelete);
+void ReturnVoidVtableCallback(void);
+void LEMBALL_FASTCALL WriteEffStreamTwoU16Fields(void *pObject);
+void LEMBALL_FASTCALL ReadEffStreamTwoU16Fields(void *pObject);
+void *DeleteEffStreamBase(void *pObject, BYTE fDelete);
+static void *DeleteRuntimeOuterCompositeAdjusted(void *pObject, BYTE fDelete);
+static void CloseRuntimeOuterPeerAdjusted(void *pObject, void *pArgument);
+static void *ClaimRuntimeOuterRecordAdjusted(void *pObject);
+static void *DeleteRuntimeOuterDualAdjusted(void *pObject, BYTE fDelete);
+static void WriteRuntimeOuterDualGlobalSessionAdjusted(void *pObject);
+void *DeleteEffChannelStreamStackAdjustedThunk(void *pObject, BYTE fDelete);
+void *DeleteEffChannelStreamStackWrapper(void *pChannelState, BYTE fDelete);
+    void ClearRuntimeChannelPendingWriteAdjustedThunk(void *pObject, void *pUnused);
+static void *DeleteRuntimeTimedChannelStackAdjusted(void *pObject, BYTE fDelete);
+static void WriteRuntimeTimedGlobalSessionAdjusted(void *pObject);
+static void *ClaimRuntimeTimedRecordAdjusted(void *pObject);
+static void *DeleteRuntimeDualChannelStackAdjusted(void *pObject, BYTE fDelete);
+static void WriteRuntimeDualGlobalSessionAdjusted(void *pObject);
+static void *ClaimRuntimeDualRecordAdjusted(void *pObject);
+int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
+
 // GLOBAL: LEMBALL 0x00498f40
 static void *g_NETWORK_EffStreamBaseVtable[6] = {
     (void *)ReturnTrueVtableCallbackThunk,
@@ -326,59 +347,11 @@ static int g_NETWORK_RuntimeChannelStackOuterConstructionOffsets[6] = {
     -4, 0x20, 0x50, 0xc8, 0x120, 0,
 };
 
-// FUNCTION: LEMBALL 0x00462D20
-static void *DeleteRuntimeTimedChannelStackAdjusted(void *pObject, BYTE fDelete) {
-    pObject = (char *)pObject - *(int *)((char *)pObject - 4) - 0x30;
-    return DeleteEffChannelStreamStackWrapper(pObject, fDelete);
-}
 
-// FUNCTION: LEMBALL 0x00462D30
-static void WriteRuntimeTimedGlobalSessionAdjusted(void *pObject) {
-    int *pOffsets;
 
-    pObject = (char *)pObject - *(int *)((char *)pObject - 4);
-    pOffsets = *(int **)((char *)pObject - 0x38);
-    ((VsNetPeerPayloadSender *)((char *)pObject + pOffsets[2] - 0x38))
-        ->WriteEffStreamWithGlobalSession();
-}
 
-// FUNCTION: LEMBALL 0x00462D40
-static void *ClaimRuntimeTimedRecordAdjusted(void *pObject) {
-    int *pOffsets;
 
-    pObject = (char *)pObject - *(int *)((char *)pObject - 4);
-    pOffsets = *(int **)((char *)pObject - 0x38);
-    return ((VsNetAckedEffTransportRecordOwner *)
-                ((char *)pObject + pOffsets[2] - 0x38))
-        ->ClaimAckedEffTransportRecordPayload();
-}
 
-// FUNCTION: LEMBALL 0x00462D50
-static void *DeleteRuntimeDualChannelStackAdjusted(void *pObject, BYTE fDelete) {
-    pObject = (char *)pObject - *(int *)((char *)pObject - 4) - 0xa8;
-    return DeleteEffChannelStreamStackWrapper(pObject, fDelete);
-}
-
-// FUNCTION: LEMBALL 0x00462D60
-static void WriteRuntimeDualGlobalSessionAdjusted(void *pObject) {
-    int *pOffsets;
-
-    pObject = (char *)pObject - *(int *)((char *)pObject - 4) - 0x78;
-    pOffsets = *(int **)((char *)pObject - 0x38);
-    ((VsNetPeerPayloadSender *)((char *)pObject + pOffsets[2] - 0x38))
-        ->WriteEffStreamWithGlobalSession();
-}
-
-// FUNCTION: LEMBALL 0x00462D70
-static void *ClaimRuntimeDualRecordAdjusted(void *pObject) {
-    int *pOffsets;
-
-    pObject = (char *)pObject - *(int *)((char *)pObject - 4) - 0x78;
-    pOffsets = *(int **)((char *)pObject - 0x38);
-    return ((VsNetAckedEffTransportRecordOwner *)
-                ((char *)pObject + pOffsets[2] - 0x38))
-        ->ClaimAckedEffTransportRecordPayload();
-}
 
 void RuntimeDualUnusedCallback(void) {
 }
@@ -408,47 +381,10 @@ void *g_NETWORK_RuntimeChannelStackDualStreamVtable[10] = {
     *(void **)g_NETWORK_TcpipSocketStackDualRet8,
 };
 
-// FUNCTION: LEMBALL 0x00462BB0
-static void *DeleteRuntimeOuterCompositeAdjusted(void *pObject, BYTE fDelete) {
-    pObject = (char *)pObject - *(int *)((char *)pObject - 4);
-    return ((VsNetCompositeEffTransportStackWrapperView *)pObject)
-        ->DeleteCompositeEffTransportRuntimeWrapper(fDelete);
-}
 
-// FUNCTION: LEMBALL 0x00462C00
-static void CloseRuntimeOuterPeerAdjusted(void *pObject, void *pArgument) {
-    pObject = (char *)pObject - *(int *)((char *)pObject - 4);
-    ((VsNetAdjustedEffTransportPeerView *)pObject)
-        ->CloseAdjustedEffTransportPeerByKey(pArgument);
-}
 
-// FUNCTION: LEMBALL 0x00462C40
-static void *ClaimRuntimeOuterRecordAdjusted(void *pObject) {
-    int *pOffsets;
 
-    pObject = (char *)pObject - *(int *)((char *)pObject - 4) + 0x108;
-    pOffsets = *(int **)((char *)pObject - 0x38);
-    return ((VsNetAckedEffTransportRecordOwner *)
-                ((char *)pObject + pOffsets[2] - 0x38))
-        ->ClaimAckedEffTransportRecordPayload();
-}
 
-// FUNCTION: LEMBALL 0x00462C60
-static void *DeleteRuntimeOuterDualAdjusted(void *pObject, BYTE fDelete) {
-    pObject = (char *)pObject - *(int *)((char *)pObject - 4) - 0xa8;
-    return ((VsNetCompositeEffTransportStackWrapperView *)pObject)
-        ->DeleteCompositeEffTransportRuntimeWrapper(fDelete);
-}
-
-// FUNCTION: LEMBALL 0x00462C70
-static void WriteRuntimeOuterDualGlobalSessionAdjusted(void *pObject) {
-    int *pOffsets;
-
-    pObject = (char *)pObject - *(int *)((char *)pObject - 4) + 0x90;
-    pOffsets = *(int **)((char *)pObject - 0x38);
-    ((VsNetPeerPayloadSender *)((char *)pObject + pOffsets[2] - 0x38))
-        ->WriteEffStreamWithGlobalSession();
-}
 
 static void *g_NETWORK_RuntimeChannelStackOuterFatalThunkVtable[4] = {
     (void *)_purecall,
@@ -528,9 +464,10 @@ static void PumpActiveNetworkRuntimeWindow(void) {
     ((VsNetRuntimeWindowInterface *)g_pActiveNetworkRuntimeWindow)->PumpMessages();
 }
 
-// FUNCTION: LEMBALL 0x0040ABD0
-int PASCAL ReturnTrueVtableCallback(void *) {
-    return 1;
+
+// FUNCTION: LEMBALL 0x00401451
+void NoopVtableCallbackThunk(void) {
+    NoopVtableCallback();
 }
 
 // FUNCTION: LEMBALL 0x00401564
@@ -538,25 +475,44 @@ int PASCAL ReturnTrueVtableCallbackThunk(void *pObject) {
     return ReturnTrueVtableCallback(pObject);
 }
 
-// FUNCTION: LEMBALL 0x0040ABE0
-int ReturnTrueVtableCallbackSecondary(void) {
-    return 1;
-}
-
-// FUNCTION: LEMBALL 0x004026AD
+// FUNCTION: LEMBALL 0x004026ad
 int ReturnTrueVtableCallbackSecondaryThunk(void) {
     return ReturnTrueVtableCallbackSecondary();
 }
 
-// FUNCTION: LEMBALL 0x0040ABF0
-void NoopVtableCallback(void) {}
-
-// FUNCTION: LEMBALL 0x00401451
-void NoopVtableCallbackThunk(void) {
-    NoopVtableCallback();
+// FUNCTION: LEMBALL 0x0040abd0
+int PASCAL ReturnTrueVtableCallback(void *) {
+    return 1;
 }
 
-// FUNCTION: LEMBALL 0x0045EF10
+// FUNCTION: LEMBALL 0x0040abe0
+int ReturnTrueVtableCallbackSecondary(void) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0040abf0
+void NoopVtableCallback(void) {}
+
+// FUNCTION: LEMBALL 0x0045eea0
+void VsNetEffStreamBase::DestroyEffStreamBase(void) {
+    DWORD dwStartTime;
+
+    m_pVtable = (void **)g_GAME_EffStreamConstructionVtable;
+    if (m_fBusy28 != 0) {
+        dwStartTime = timeGetTime();
+        while (m_fBusy28 != 0 && timeGetTime() - dwStartTime < 2000) {
+            if (g_pActiveNetworkRuntimeWindow != 0) {
+                PumpActiveNetworkRuntimeWindow();
+            }
+        }
+    }
+    if (m_nReserved14 != 0) {
+        FreeVSMemBlock((void *)(unsigned long)m_pPayloadBuffer08);
+        m_pPayloadBuffer08 = 0;
+    }
+}
+
+// FUNCTION: LEMBALL 0x0045ef10
 void VsNetEffStreamBase::WriteEffStreamU32BE(unsigned int nValue) {
     *(unsigned char *)(m_nReserved1c + 3) = (unsigned char)nValue;
     *(unsigned char *)(m_nReserved1c + 2) = (unsigned char)(nValue >> 8);
@@ -565,20 +521,25 @@ void VsNetEffStreamBase::WriteEffStreamU32BE(unsigned int nValue) {
     m_nReserved1c += 4;
 }
 
-// FUNCTION: LEMBALL 0x0045EF40
+// FUNCTION: LEMBALL 0x0045ef40
 void VsNetEffStreamBase::WriteEffStreamU16BE(unsigned short nValue) {
     *(unsigned char *)(m_nReserved1c + 1) = (unsigned char)nValue;
     *(unsigned char *)m_nReserved1c = (unsigned char)(nValue >> 8);
     m_nReserved1c += 2;
 }
 
-// FUNCTION: LEMBALL 0x0045EF60
+// FUNCTION: LEMBALL 0x0045ef60
 void VsNetEffStreamBase::WriteEffStreamU8(unsigned char nValue) {
     *m_nReserved1c = nValue;
     ++m_nReserved1c;
 }
 
-// FUNCTION: LEMBALL 0x0045EFC0
+// FUNCTION: LEMBALL 0x0045ef70
+void VsNetEffStreamBase::WriteEffStreamCString(const char *pszSource) {
+    WriteEffStreamBytes(pszSource, (unsigned int)strlen(pszSource) + 1);
+}
+
+// FUNCTION: LEMBALL 0x0045efc0
 void VsNetEffStreamBase::WriteEffStreamBytes(const void *pvSource, unsigned int cbWrite) {
     unsigned int i;
     const unsigned char *pbSource;
@@ -599,12 +560,15 @@ void VsNetEffStreamBase::WriteEffStreamBytes(const void *pvSource, unsigned int 
     m_nReserved1c += cbWrite;
 }
 
-// FUNCTION: LEMBALL 0x0045EF70
-void VsNetEffStreamBase::WriteEffStreamCString(const char *pszSource) {
-    WriteEffStreamBytes(pszSource, (unsigned int)strlen(pszSource) + 1);
+// FUNCTION: LEMBALL 0x0045eff0
+unsigned int VsNetEffStreamBase::ReadEffStreamU32BEValue(void) {
+    unsigned int nValue;
+
+    ReadEffStreamU32BE((unsigned char *)&nValue);
+    return nValue;
 }
 
-// FUNCTION: LEMBALL 0x0045F010
+// FUNCTION: LEMBALL 0x0045f010
 void VsNetEffStreamBase::ReadEffStreamU32BE(unsigned char *pbTarget) {
     pbTarget[0] = *(unsigned char *)(m_nReserved20 + 3);
     pbTarget[1] = *(unsigned char *)(m_nReserved20 + 2);
@@ -613,15 +577,7 @@ void VsNetEffStreamBase::ReadEffStreamU32BE(unsigned char *pbTarget) {
     m_nReserved20 += 4;
 }
 
-// FUNCTION: LEMBALL 0x0045EFF0
-unsigned int VsNetEffStreamBase::ReadEffStreamU32BEValue(void) {
-    unsigned int nValue;
-
-    ReadEffStreamU32BE((unsigned char *)&nValue);
-    return nValue;
-}
-
-// FUNCTION: LEMBALL 0x0045F040
+// FUNCTION: LEMBALL 0x0045f040
 void VsNetEffStreamBase::SwapEffStreamU32BEAndAdvance(void) {
     unsigned char nByte0;
     unsigned char nByte1;
@@ -635,7 +591,7 @@ void VsNetEffStreamBase::SwapEffStreamU32BEAndAdvance(void) {
     m_nReserved20 += 4;
 }
 
-// FUNCTION: LEMBALL 0x0045F070
+// FUNCTION: LEMBALL 0x0045f070
 unsigned short VsNetEffStreamBase::ReadEffStreamU16BEValue(void) {
     unsigned short nValue;
 
@@ -643,14 +599,14 @@ unsigned short VsNetEffStreamBase::ReadEffStreamU16BEValue(void) {
     return nValue;
 }
 
-// FUNCTION: LEMBALL 0x0045F090
+// FUNCTION: LEMBALL 0x0045f090
 void VsNetEffStreamBase::ReadEffStreamU16BE(unsigned char *pbTarget) {
     pbTarget[0] = *(unsigned char *)(m_nReserved20 + 1);
     pbTarget[1] = *(unsigned char *)m_nReserved20;
     m_nReserved20 += 2;
 }
 
-// FUNCTION: LEMBALL 0x0045F0B0
+// FUNCTION: LEMBALL 0x0045f0b0
 void VsNetEffStreamBase::SwapEffStreamU16BEAndAdvance(void) {
     unsigned char nByte0;
     unsigned char nByte1;
@@ -662,7 +618,7 @@ void VsNetEffStreamBase::SwapEffStreamU16BEAndAdvance(void) {
     m_nReserved20 += 2;
 }
 
-// FUNCTION: LEMBALL 0x0045F0D0
+// FUNCTION: LEMBALL 0x0045f0d0
 unsigned char VsNetEffStreamBase::ReadEffStreamU8Value(void) {
     unsigned char nValue;
 
@@ -670,36 +626,36 @@ unsigned char VsNetEffStreamBase::ReadEffStreamU8Value(void) {
     return nValue;
 }
 
-// FUNCTION: LEMBALL 0x0045F0F0
+// FUNCTION: LEMBALL 0x0045f0f0
 void VsNetEffStreamBase::ReadEffStreamU8(unsigned char *pbTarget) {
     *pbTarget = *m_nReserved20;
     ++m_nReserved20;
 }
 
-// FUNCTION: LEMBALL 0x0045F110
+// FUNCTION: LEMBALL 0x0045f110
 void VsNetEffStreamBase::AdvanceEffStreamReadCursorByte(void) {
     ++m_nReserved20;
 }
 
-// FUNCTION: LEMBALL 0x0045F120
+// FUNCTION: LEMBALL 0x0045f120
 void VsNetEffStreamBase::ReadEffStreamCString(char **ppszTarget) {
     *ppszTarget = (char *)(unsigned long)m_nReserved20;
     m_nReserved20 += (int)strlen(*ppszTarget) + 1;
 }
 
-// FUNCTION: LEMBALL 0x0045F140
+// FUNCTION: LEMBALL 0x0045f140
 void VsNetEffStreamBase::ReadEffStreamRangePointer(void **ppvTarget, int cbRead) {
     *ppvTarget = m_nReserved20;
     m_nReserved20 += cbRead;
 }
 
-// FUNCTION: LEMBALL 0x0045F160
+// FUNCTION: LEMBALL 0x0045f160
 void VsNetEffStreamBase::ReadEffStreamCStringIntoBuffer(char *pszTarget) {
     strcpy(pszTarget, (char *)m_nReserved20);
     m_nReserved20 += strlen(pszTarget) + 1;
 }
 
-// FUNCTION: LEMBALL 0x0045F1B0
+// FUNCTION: LEMBALL 0x0045f1b0
 void VsNetEffStreamBase::ReadEffStreamBytes(void *pvTarget, unsigned int cbRead) {
     unsigned int i;
     unsigned char *pbTarget;
@@ -720,7 +676,7 @@ void VsNetEffStreamBase::ReadEffStreamBytes(void *pvTarget, unsigned int cbRead)
     m_nReserved20 += cbRead;
 }
 
-// FUNCTION: LEMBALL 0x0045F250
+// FUNCTION: LEMBALL 0x0045f250
 int VsNetEffStreamBase::SaveEffStreamToMemoryRange(int nTargetBuffer, int cbRange) {
     VsNetEffStreamSerializeVtable *pVtable;
     int (*pfnWriteBody)(void *pThis);
@@ -734,7 +690,7 @@ int VsNetEffStreamBase::SaveEffStreamToMemoryRange(int nTargetBuffer, int cbRang
     return pfnWriteBody(this);
 }
 
-// FUNCTION: LEMBALL 0x0045F680
+// FUNCTION: LEMBALL 0x0045f680
 VsNetEffStreamChannelState *VsNetEffStreamChannelState::ConstructEffStreamChannelState(void) {
     m_pVtable = (void **)g_NETWORK_EffStreamChannelStateVtable;
     m_nSelectedPeer08 = -1;
@@ -750,13 +706,13 @@ VsNetEffStreamChannelState *VsNetEffStreamChannelState::ConstructEffStreamChanne
     return this;
 }
 
-// FUNCTION: LEMBALL 0x0045F6C0
+// FUNCTION: LEMBALL 0x0045f6c0
 void VsNetEffStreamChannelState::DestroyEffStreamChannelState(void) {
     m_pVtable = (void **)g_NETWORK_EffStreamChannelStateVtable;
     FreeVSMemBlock(m_pSideBuffer28);
 }
 
-// FUNCTION: LEMBALL 0x0045F6E0
+// FUNCTION: LEMBALL 0x0045f6e0
 void VsNetEffStreamChannelState::SetEffStreamChannelAsyncErrorStatus(int nStatus) {
     m_nReserved04 = nStatus;
     g_nEffTransportAsyncErrorStatus = nStatus;
@@ -769,7 +725,7 @@ void VsNetEffStreamChannelState::SetEffStreamChannelAsyncErrorStatus(int nStatus
     }
 }
 
-// FUNCTION: LEMBALL 0x0045F750
+// FUNCTION: LEMBALL 0x0045f750
 VsNetEffStreamBase *VsNetEffStreamBase::ConstructEffStreamBase(void) {
     m_pVtable = (void **)g_GAME_EffStreamConstructionVtable;
     m_nReserved04 = 0;
@@ -783,122 +739,7 @@ VsNetEffStreamBase *VsNetEffStreamBase::ConstructEffStreamBase(void) {
     return this;
 }
 
-// FUNCTION: LEMBALL 0x0045EEA0
-void VsNetEffStreamBase::DestroyEffStreamBase(void) {
-    DWORD dwStartTime;
-
-    m_pVtable = (void **)g_GAME_EffStreamConstructionVtable;
-    if (m_fBusy28 != 0) {
-        dwStartTime = timeGetTime();
-        while (m_fBusy28 != 0 && timeGetTime() - dwStartTime < 2000) {
-            if (g_pActiveNetworkRuntimeWindow != 0) {
-                PumpActiveNetworkRuntimeWindow();
-            }
-        }
-    }
-    if (m_nReserved14 != 0) {
-        FreeVSMemBlock((void *)(unsigned long)m_pPayloadBuffer08);
-        m_pPayloadBuffer08 = 0;
-    }
-}
-
-// FUNCTION: LEMBALL 0x0047B860
-void VsNetEffStreamBase::DestroyEffStreamBaseThunk(void) {
-    DestroyEffStreamBase();
-}
-
-// FUNCTION: LEMBALL 0x0045F8D0
-void VsNetDualHandleEffStream::ReleaseEffStreamPrimaryHandleGroup(void) {
-    void *pHandleArray;
-    void *pHandleObject;
-
-    pHandleArray = m_pPrimaryHandleArray48;
-    if (pHandleArray != 0) {
-        ((VsNetVSMemObjectPointerArray *)pHandleArray)->DestroyVSMemObjectPointerArray();
-        FreeVSMemBlock(pHandleArray);
-    }
-
-    pHandleObject = m_pPrimaryHandleObject4c;
-    if (pHandleObject != 0) {
-        ((void (*)(int))**(void ***)pHandleObject)(1);
-    }
-}
-
-// FUNCTION: LEMBALL 0x0045F900
-void VsNetDualHandleEffStream::ReleaseEffStreamSecondaryHandleGroup(void) {
-    void *pHandleArray;
-    void *pHandleObject;
-
-    pHandleArray = m_pSecondaryHandleArray50;
-    if (pHandleArray != 0) {
-        ((VsNetVSMemObjectPointerArray *)pHandleArray)->DestroyVSMemObjectPointerArray();
-        FreeVSMemBlock(pHandleArray);
-    }
-
-    pHandleObject = m_pSecondaryHandleObject54;
-    if (pHandleObject != 0) {
-        ((void (*)(int))**(void ***)pHandleObject)(1);
-    }
-}
-
-// FUNCTION: LEMBALL 0x0045F930
-void VsNetDualHandleEffStream::ConfigureEffStreamPrimaryHandleGroup(
-    int nPacketCount, int cbPayload, int nMode)
-{
-    void *pHandleArray;
-    void *pHandleObject;
-
-    ReleaseEffStreamPrimaryHandleGroup();
-    pHandleArray = AllocateVSMemBlock(0x10);
-    if (pHandleArray == 0) {
-        m_pPrimaryHandleArray48 = 0;
-    } else {
-        m_pPrimaryHandleArray48 = ConstructShiftedLockedRecordSlotTable(
-            pHandleArray, nPacketCount, (unsigned int)g_cbEffTransportMaxPacketBytes);
-    }
-
-    pHandleObject = AllocateVSMemBlock(0x28);
-    if (pHandleObject == 0) {
-        m_pPrimaryHandleObject4c = 0;
-    } else {
-        m_pPrimaryHandleObject4c = ConstructRangeEffTransportRecordBufferTable(
-            pHandleObject, nPacketCount + 1, cbPayload, nMode,
-            (unsigned int)g_cbEffTransportMaxPacketBytes);
-    }
-}
-
-// FUNCTION: LEMBALL 0x0045F9B0
-void VsNetDualHandleEffStream::ConfigureEffStreamSecondaryHandleGroup(
-    int nPacketCount, int cbPayload)
-{
-    void *pHandleArray;
-    void *pHandleObject;
-
-    ReleaseEffStreamSecondaryHandleGroup();
-    pHandleArray = AllocateVSMemBlock(0x14);
-    if (pHandleArray == 0) {
-        m_pSecondaryHandleArray50 = 0;
-    } else {
-        m_pSecondaryHandleArray50 = ConstructRingLockedRecordSlotTable(
-            pHandleArray, nPacketCount, (unsigned int)g_cbEffTransportMaxPacketBytes);
-    }
-
-    pHandleObject = AllocateVSMemBlock(0x20);
-    if (pHandleObject == 0) {
-        m_pSecondaryHandleObject54 = 0;
-    } else {
-        m_pSecondaryHandleObject54 = ConstructRingEffTransportRecordBufferTable(
-            pHandleObject, nPacketCount, cbPayload,
-            (unsigned int)g_cbEffTransportMaxPacketBytes);
-    }
-
-    if (g_pEffTransportPacketBuffer == 0) {
-        g_pEffTransportPacketBuffer = AllocateVSMemBlock(
-            (unsigned int)g_cbEffTransportMaxPacketBytes);
-    }
-}
-
-// FUNCTION: LEMBALL 0x0045F820
+// FUNCTION: LEMBALL 0x0045f820
 void *ConstructDualHandleEffStream(void *pStream, int fConstructChannelState) {
     VsNetDualHandleEffStream *pDualStream;
     VsNetConstructionAdjustorVtable *pOffsets;
@@ -928,7 +769,7 @@ void *ConstructDualHandleEffStream(void *pStream, int fConstructChannelState) {
     return pStream;
 }
 
-// FUNCTION: LEMBALL 0x0045F8A0
+// FUNCTION: LEMBALL 0x0045f8a0
 void VsNetDualHandleEffStream::DestroyDualHandleEffStream(void) {
     VsNetDualHandleEffStream *pDualStream;
     VsNetConstructionAdjustorVtable *pOffsets;
@@ -944,61 +785,100 @@ void VsNetDualHandleEffStream::DestroyDualHandleEffStream(void) {
     DestroyEffStreamBase();
 }
 
-// FUNCTION: LEMBALL 0x0045FDF0
-void VsNetTimedEffStream::ReleaseTimedEffStreamPrimaryHandle(void) {
+// FUNCTION: LEMBALL 0x0045f8d0
+void VsNetDualHandleEffStream::ReleaseEffStreamPrimaryHandleGroup(void) {
     void *pHandleArray;
+    void *pHandleObject;
 
     pHandleArray = m_pPrimaryHandleArray48;
     if (pHandleArray != 0) {
         ((VsNetVSMemObjectPointerArray *)pHandleArray)->DestroyVSMemObjectPointerArray();
         FreeVSMemBlock(pHandleArray);
     }
+
+    pHandleObject = m_pPrimaryHandleObject4c;
+    if (pHandleObject != 0) {
+        ((void (*)(int))**(void ***)pHandleObject)(1);
+    }
 }
 
-// FUNCTION: LEMBALL 0x0045FE50
-void VsNetTimedEffStream::ReleaseTimedEffStreamPrimaryHandleThunk(
-    int nUnused0, int nUnused1, int nUnused2)
+// FUNCTION: LEMBALL 0x0045f900
+void VsNetDualHandleEffStream::ReleaseEffStreamSecondaryHandleGroup(void) {
+    void *pHandleArray;
+    void *pHandleObject;
+
+    pHandleArray = m_pSecondaryHandleArray50;
+    if (pHandleArray != 0) {
+        ((VsNetVSMemObjectPointerArray *)pHandleArray)->DestroyVSMemObjectPointerArray();
+        FreeVSMemBlock(pHandleArray);
+    }
+
+    pHandleObject = m_pSecondaryHandleObject54;
+    if (pHandleObject != 0) {
+        ((void (*)(int))**(void ***)pHandleObject)(1);
+    }
+}
+
+// FUNCTION: LEMBALL 0x0045f930
+void VsNetDualHandleEffStream::ConfigureEffStreamPrimaryHandleGroup(
+    int nPacketCount, int cbPayload, int nMode)
+
 {
-    (void)nUnused0;
-    (void)nUnused1;
-    (void)nUnused2;
-    ReleaseTimedEffStreamPrimaryHandle();
-}
-
-// FUNCTION: LEMBALL 0x0045FE10
-void VsNetTimedEffStream::ReleaseTimedEffStreamSecondaryHandles(void) {
     void *pHandleArray;
+    void *pHandleObject;
 
-    pHandleArray = m_pSecondaryHandleArray4c;
-    if (pHandleArray != 0) {
-        ((VsNetVSMemObjectPointerArray *)pHandleArray)->DestroyVSMemObjectPointerArray();
-        FreeVSMemBlock(pHandleArray);
-    }
-
-    pHandleArray = m_pTertiaryHandleArray50;
-    if (pHandleArray != 0) {
-        ((VsNetVSMemObjectPointerArray *)pHandleArray)->DestroyVSMemObjectPointerArray();
-        FreeVSMemBlock(pHandleArray);
-    }
-}
-
-// FUNCTION: LEMBALL 0x0045FE60
-void VsNetTimedEffStream::ConfigureTimedEffStreamSecondaryHandle(int nPacketCount) {
-    void *pHandleArray;
-
-    ReleaseTimedEffStreamSecondaryHandles();
-    pHandleArray = AllocateVSMemBlock(0x0c);
+    ReleaseEffStreamPrimaryHandleGroup();
+    pHandleArray = AllocateVSMemBlock(0x10);
     if (pHandleArray == 0) {
-        m_pSecondaryHandleArray4c = 0;
+        m_pPrimaryHandleArray48 = 0;
     } else {
-        m_pSecondaryHandleArray4c =
-            ((VsNetSimpleEffTransportRecordSlotTable *)pHandleArray)
-                ->ConstructSimpleRecordSlotTableWrapper(
-                    nPacketCount, (unsigned int)g_cbEffTransportMaxPacketBytes);
+        m_pPrimaryHandleArray48 = ConstructShiftedLockedRecordSlotTable(
+            pHandleArray, nPacketCount, (unsigned int)g_cbEffTransportMaxPacketBytes);
+    }
+
+    pHandleObject = AllocateVSMemBlock(0x28);
+    if (pHandleObject == 0) {
+        m_pPrimaryHandleObject4c = 0;
+    } else {
+        m_pPrimaryHandleObject4c = ConstructRangeEffTransportRecordBufferTable(
+            pHandleObject, nPacketCount + 1, cbPayload, nMode,
+            (unsigned int)g_cbEffTransportMaxPacketBytes);
     }
 }
 
-// FUNCTION: LEMBALL 0x0045FCE0
+// FUNCTION: LEMBALL 0x0045f9b0
+void VsNetDualHandleEffStream::ConfigureEffStreamSecondaryHandleGroup(
+    int nPacketCount, int cbPayload)
+
+{
+    void *pHandleArray;
+    void *pHandleObject;
+
+    ReleaseEffStreamSecondaryHandleGroup();
+    pHandleArray = AllocateVSMemBlock(0x14);
+    if (pHandleArray == 0) {
+        m_pSecondaryHandleArray50 = 0;
+    } else {
+        m_pSecondaryHandleArray50 = ConstructRingLockedRecordSlotTable(
+            pHandleArray, nPacketCount, (unsigned int)g_cbEffTransportMaxPacketBytes);
+    }
+
+    pHandleObject = AllocateVSMemBlock(0x20);
+    if (pHandleObject == 0) {
+        m_pSecondaryHandleObject54 = 0;
+    } else {
+        m_pSecondaryHandleObject54 = ConstructRingEffTransportRecordBufferTable(
+            pHandleObject, nPacketCount, cbPayload,
+            (unsigned int)g_cbEffTransportMaxPacketBytes);
+    }
+
+    if (g_pEffTransportPacketBuffer == 0) {
+        g_pEffTransportPacketBuffer = AllocateVSMemBlock(
+            (unsigned int)g_cbEffTransportMaxPacketBytes);
+    }
+}
+
+// FUNCTION: LEMBALL 0x0045fce0
 VsNetTimedEffStream *VsNetTimedEffStream::ConstructTimedEffStream(int fConstructChannelState) {
     DWORD dwNow;
     int *pHandleArray;
@@ -1035,7 +915,7 @@ VsNetTimedEffStream *VsNetTimedEffStream::ConstructTimedEffStream(int fConstruct
     return this;
 }
 
-// FUNCTION: LEMBALL 0x0045FD80
+// FUNCTION: LEMBALL 0x0045fd80
 void VsNetTimedEffStream::DestroyTimedEffStream(void) {
     VsNetTimedEffStream *pTimedStream;
     VsNetConstructionAdjustorVtable *pOffsets;
@@ -1056,47 +936,63 @@ void VsNetTimedEffStream::DestroyTimedEffStream(void) {
     DestroyEffStreamBase();
 }
 
-// FUNCTION: LEMBALL 0x0045FDE0
+// FUNCTION: LEMBALL 0x0045fde0
 void VsNetTimedEffStream::InvokeTimedEffStreamServiceCallback(void *pArgument) {
     ((VsNetRuntimeService *)m_pRuntimeService70)->Invoke(pArgument);
 }
 
-// FUNCTION: LEMBALL 0x004604E0
-void VsNetRuntimeChannelStackReleaseFront::Release(void) {
-    VsNetRuntimeChannelStack *pChannelStack;
-    VsNetConstructionAdjustorVtable *pOffsets;
-    VsNetAdjustorSubobject *pPrimaryThunk;
-    VsNetAdjustorSubobject *pSecondaryThunk;
-    VsNetAdjustorSubobject *pTertiaryThunk;
-    void *pRuntimeService;
+// FUNCTION: LEMBALL 0x0045fdf0
+void VsNetTimedEffStream::ReleaseTimedEffStreamPrimaryHandle(void) {
+    void *pHandleArray;
 
-    pChannelStack = (VsNetRuntimeChannelStack *)((char *)this - 0x24);
-    pChannelStack->m_pVtable = (void **)g_NETWORK_RuntimeChannelStackVtable;
-    pOffsets = (VsNetConstructionAdjustorVtable *)pChannelStack->m_pOuterConstructionOffsets04;
-    pPrimaryThunk = (VsNetAdjustorSubobject *)((char *)pChannelStack + 4 + pOffsets->m_nPrimaryOffset - 4);
-    pSecondaryThunk = (VsNetAdjustorSubobject *)((char *)pChannelStack + 4 + pOffsets->m_nSecondaryOffset - 4);
-    pTertiaryThunk = (VsNetAdjustorSubobject *)((char *)pChannelStack + 4 + pOffsets->m_nTertiaryOffset - 4);
-    pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunk;
-    pSecondaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackTimedThunk;
-    pTertiaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackDualThunk;
-    pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 0x20;
-    pSecondaryThunk->m_nThisDelta = pOffsets->m_nSecondaryOffset - 0x50;
-    pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 200;
+    pHandleArray = m_pPrimaryHandleArray48;
+    if (pHandleArray != 0) {
+        ((VsNetVSMemObjectPointerArray *)pHandleArray)->DestroyVSMemObjectPointerArray();
+        FreeVSMemBlock(pHandleArray);
+    }
+}
 
-    if (pChannelStack->m_pRuntimeSideBuffer1c != 0) {
-        FreeVSMemBlock(pChannelStack->m_pRuntimeSideBuffer1c);
+// FUNCTION: LEMBALL 0x0045fe10
+void VsNetTimedEffStream::ReleaseTimedEffStreamSecondaryHandles(void) {
+    void *pHandleArray;
+
+    pHandleArray = m_pSecondaryHandleArray4c;
+    if (pHandleArray != 0) {
+        ((VsNetVSMemObjectPointerArray *)pHandleArray)->DestroyVSMemObjectPointerArray();
+        FreeVSMemBlock(pHandleArray);
     }
-    FreeVSMemBlock(pChannelStack->m_pbRuntimeFlags10);
-    pRuntimeService = g_pEffTransportRuntimeService;
-    FreeVSMemBlock(pRuntimeService);
-    g_pEffTransportRuntimeService = 0;
-    if (g_pszFileBasedNetworkLocalHostName != 0) {
-        FreeVSMemBlock(g_pszFileBasedNetworkLocalHostName);
-        g_pszFileBasedNetworkLocalHostName = 0;
+
+    pHandleArray = m_pTertiaryHandleArray50;
+    if (pHandleArray != 0) {
+        ((VsNetVSMemObjectPointerArray *)pHandleArray)->DestroyVSMemObjectPointerArray();
+        FreeVSMemBlock(pHandleArray);
     }
-    if (g_pszEffTransportBroadcastStatusPayload != 0) {
-        FreeVSMemBlock(g_pszEffTransportBroadcastStatusPayload);
-        g_pszEffTransportBroadcastStatusPayload = 0;
+}
+
+// FUNCTION: LEMBALL 0x0045fe50
+void VsNetTimedEffStream::ReleaseTimedEffStreamPrimaryHandleThunk(
+    int nUnused0, int nUnused1, int nUnused2)
+
+{
+    (void)nUnused0;
+    (void)nUnused1;
+    (void)nUnused2;
+    ReleaseTimedEffStreamPrimaryHandle();
+}
+
+// FUNCTION: LEMBALL 0x0045fe60
+void VsNetTimedEffStream::ConfigureTimedEffStreamSecondaryHandle(int nPacketCount) {
+    void *pHandleArray;
+
+    ReleaseTimedEffStreamSecondaryHandles();
+    pHandleArray = AllocateVSMemBlock(0x0c);
+    if (pHandleArray == 0) {
+        m_pSecondaryHandleArray4c = 0;
+    } else {
+        m_pSecondaryHandleArray4c =
+            ((VsNetSimpleEffTransportRecordSlotTable *)pHandleArray)
+                ->ConstructSimpleRecordSlotTableWrapper(
+                    nPacketCount, (unsigned int)g_cbEffTransportMaxPacketBytes);
     }
 }
 
@@ -1182,6 +1078,59 @@ void *VsNetRuntimeChannelStack::ConstructEffTransportRuntimeChannelStack(int fCo
     return this;
 }
 
+// FUNCTION: LEMBALL 0x004604e0
+void VsNetRuntimeChannelStackReleaseFront::Release(void) {
+    VsNetRuntimeChannelStack *pChannelStack;
+    VsNetConstructionAdjustorVtable *pOffsets;
+    VsNetAdjustorSubobject *pPrimaryThunk;
+    VsNetAdjustorSubobject *pSecondaryThunk;
+    VsNetAdjustorSubobject *pTertiaryThunk;
+    void *pRuntimeService;
+
+    pChannelStack = (VsNetRuntimeChannelStack *)((char *)this - 0x24);
+    pChannelStack->m_pVtable = (void **)g_NETWORK_RuntimeChannelStackVtable;
+    pOffsets = (VsNetConstructionAdjustorVtable *)pChannelStack->m_pOuterConstructionOffsets04;
+    pPrimaryThunk = (VsNetAdjustorSubobject *)((char *)pChannelStack + 4 + pOffsets->m_nPrimaryOffset - 4);
+    pSecondaryThunk = (VsNetAdjustorSubobject *)((char *)pChannelStack + 4 + pOffsets->m_nSecondaryOffset - 4);
+    pTertiaryThunk = (VsNetAdjustorSubobject *)((char *)pChannelStack + 4 + pOffsets->m_nTertiaryOffset - 4);
+    pPrimaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackFatalThunk;
+    pSecondaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackTimedThunk;
+    pTertiaryThunk->m_pVtable = g_NETWORK_RuntimeChannelStackDualThunk;
+    pPrimaryThunk->m_nThisDelta = pOffsets->m_nPrimaryOffset - 0x20;
+    pSecondaryThunk->m_nThisDelta = pOffsets->m_nSecondaryOffset - 0x50;
+    pTertiaryThunk->m_nThisDelta = pOffsets->m_nTertiaryOffset - 200;
+
+    if (pChannelStack->m_pRuntimeSideBuffer1c != 0) {
+        FreeVSMemBlock(pChannelStack->m_pRuntimeSideBuffer1c);
+    }
+    FreeVSMemBlock(pChannelStack->m_pbRuntimeFlags10);
+    pRuntimeService = g_pEffTransportRuntimeService;
+    FreeVSMemBlock(pRuntimeService);
+    g_pEffTransportRuntimeService = 0;
+    if (g_pszFileBasedNetworkLocalHostName != 0) {
+        FreeVSMemBlock(g_pszFileBasedNetworkLocalHostName);
+        g_pszFileBasedNetworkLocalHostName = 0;
+    }
+    if (g_pszEffTransportBroadcastStatusPayload != 0) {
+        FreeVSMemBlock(g_pszEffTransportBroadcastStatusPayload);
+        g_pszEffTransportBroadcastStatusPayload = 0;
+    }
+}
+
+// FUNCTION: LEMBALL 0x004605d0
+short VsNetRuntimeChannelStackVtableModel::ClaimRuntimeFlag(const char *pszFlags) {
+    VsNetRuntimeChannelStack *pStack = (VsNetRuntimeChannelStack *)this;
+    short i;
+
+    for (i = 0; i < 0x200; ++i) {
+        if (pszFlags[i] == 0 && pStack->m_pbRuntimeFlags10[i] == 0) {
+            pStack->m_pbRuntimeFlags10[i] = 1;
+            return i;
+        }
+    }
+    return -1;
+}
+
 // FUNCTION: LEMBALL 0x00462810
 void *DeleteEffStreamBaseWrapper00462810(void *pObject, BYTE fDelete) {
     ((VsNetEffStreamBase *)pObject)->DestroyEffStreamBase();
@@ -1227,7 +1176,7 @@ void *DeleteEffStreamBaseWrapper00462890(void *pObject, BYTE fDelete) {
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x004628B0
+// FUNCTION: LEMBALL 0x004628b0
 void *DeleteEffStreamBaseWrapper004628B0(void *pObject, BYTE fDelete) {
     ((VsNetEffStreamBase *)pObject)->DestroyEffStreamBase();
     if ((fDelete & 1) != 0) {
@@ -1236,12 +1185,12 @@ void *DeleteEffStreamBaseWrapper004628B0(void *pObject, BYTE fDelete) {
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x004628D0
+// FUNCTION: LEMBALL 0x004628d0
 void EffStreamChannelStateRet4Thunk(BYTE fDelete) {
     (void)fDelete;
 }
 
-// FUNCTION: LEMBALL 0x004628E0
+// FUNCTION: LEMBALL 0x004628e0
 void *DeleteEffStreamChannelStateWrapper004628E0(void *pObject, BYTE fDelete) {
     ((VsNetEffStreamChannelState *)pObject)->DestroyEffStreamChannelState();
     if ((fDelete & 1) != 0) {
@@ -1279,22 +1228,27 @@ void *DeleteTimedEffStreamWithChannelStateWrapper(void *pObject, BYTE fDelete) {
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x00462B40
+// FUNCTION: LEMBALL 0x004629c0
+void VsNetRuntimeChannelStackVtableModel::ClearRuntimeFlag(short nFlag) {
+    ((VsNetRuntimeChannelStack *)this)->m_pbRuntimeFlags10[nFlag] = 0;
+}
+
+// FUNCTION: LEMBALL 0x00462b00
+void ReturnVoidVtableCallback(void) {}
+
+// FUNCTION: LEMBALL 0x00462b40
 void LEMBALL_FASTCALL WriteEffStreamTwoU16Fields(void *pObject) {
     ((VsNetEffStreamBase *)pObject)->WriteEffStreamU16BE(*(unsigned short *)((char *)pObject + 0x2c));
     ((VsNetEffStreamBase *)pObject)->WriteEffStreamU16BE(*(unsigned short *)((char *)pObject + 0x2e));
 }
 
-// FUNCTION: LEMBALL 0x00462B00
-void ReturnVoidVtableCallback(void) {}
-
-// FUNCTION: LEMBALL 0x00462B60
+// FUNCTION: LEMBALL 0x00462b60
 void LEMBALL_FASTCALL ReadEffStreamTwoU16Fields(void *pObject) {
     ((VsNetEffStreamBase *)pObject)->ReadEffStreamU16BE((unsigned char *)((char *)pObject + 0x2c));
     ((VsNetEffStreamBase *)pObject)->ReadEffStreamU16BE((unsigned char *)((char *)pObject + 0x2e));
 }
 
-// FUNCTION: LEMBALL 0x00462B80
+// FUNCTION: LEMBALL 0x00462b80
 void *DeleteEffStreamBase(void *pObject, BYTE fDelete) {
     ((VsNetEffStreamBase *)pObject)->DestroyEffStreamBase();
     if ((fDelete & 1) != 0) {
@@ -1303,7 +1257,53 @@ void *DeleteEffStreamBase(void *pObject, BYTE fDelete) {
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x00462CB0
+static void *DeleteRuntimeOuterCompositeAdjusted(void *pObject, BYTE fDelete) {
+    pObject = (char *)pObject - *(int *)((char *)pObject - 4);
+    return ((VsNetCompositeEffTransportStackWrapperView *)pObject)
+        ->DeleteCompositeEffTransportRuntimeWrapper(fDelete);
+}
+
+static void CloseRuntimeOuterPeerAdjusted(void *pObject, void *pArgument) {
+    pObject = (char *)pObject - *(int *)((char *)pObject - 4);
+    ((VsNetAdjustedEffTransportPeerView *)pObject)
+        ->CloseAdjustedEffTransportPeerByKey(pArgument);
+}
+
+// FUNCTION: LEMBALL 0x00462c40
+static void *ClaimRuntimeOuterRecordAdjusted(void *pObject) {
+    int *pOffsets;
+
+    pObject = (char *)pObject - *(int *)((char *)pObject - 4) + 0x108;
+    pOffsets = *(int **)((char *)pObject - 0x38);
+    return ((VsNetAckedEffTransportRecordOwner *)
+                ((char *)pObject + pOffsets[2] - 0x38))
+        ->ClaimAckedEffTransportRecordPayload();
+}
+
+// FUNCTION: LEMBALL 0x00462c60
+static void *DeleteRuntimeOuterDualAdjusted(void *pObject, BYTE fDelete) {
+    pObject = (char *)pObject - *(int *)((char *)pObject - 4) - 0xa8;
+    return ((VsNetCompositeEffTransportStackWrapperView *)pObject)
+        ->DeleteCompositeEffTransportRuntimeWrapper(fDelete);
+}
+
+// FUNCTION: LEMBALL 0x00462c70
+static void WriteRuntimeOuterDualGlobalSessionAdjusted(void *pObject) {
+    int *pOffsets;
+
+    pObject = (char *)pObject - *(int *)((char *)pObject - 4) + 0x90;
+    pOffsets = *(int **)((char *)pObject - 0x38);
+    ((VsNetPeerPayloadSender *)((char *)pObject + pOffsets[2] - 0x38))
+        ->WriteEffStreamWithGlobalSession();
+}
+
+void *DeleteEffChannelStreamStackAdjustedThunk(void *pObject, BYTE fDelete) {
+    return DeleteEffChannelStreamStackWrapper(
+        (char *)pObject - ((VsNetAdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta,
+        fDelete);
+}
+
+// FUNCTION: LEMBALL 0x00462cb0
 void *DeleteEffChannelStreamStackWrapper(void *pChannelState, BYTE fDelete) {
     VsNetRuntimeChannelStackWrapperView *pView;
 
@@ -1317,14 +1317,7 @@ void *DeleteEffChannelStreamStackWrapper(void *pChannelState, BYTE fDelete) {
     return (char *)pView - 8;
 }
 
-// FUNCTION: LEMBALL 0x00462CA0
-void *DeleteEffChannelStreamStackAdjustedThunk(void *pObject, BYTE fDelete) {
-    return DeleteEffChannelStreamStackWrapper(
-        (char *)pObject - ((VsNetAdjustorThunkHeader *)((char *)pObject - 4))->m_nThisDelta,
-        fDelete);
-}
-
-// FUNCTION: LEMBALL 0x00462CF0
+// FUNCTION: LEMBALL 0x00462cf0
     void ClearRuntimeChannelPendingWriteAdjustedThunk(void *pObject, void *pUnused) {
     int nVirtualBaseOffset;
     char *pPendingWrite;
@@ -1334,7 +1327,66 @@ void *DeleteEffChannelStreamStackAdjustedThunk(void *pObject, BYTE fDelete) {
     pPendingWrite = (char *)pObject + nVirtualBaseOffset + 0x70;
     ((VsNetEffTransportPendingWriteState *)pPendingWrite)->Clear(pUnused);
 }
-// FUNCTION: LEMBALL 0x00462ED0
+
+static void *DeleteRuntimeTimedChannelStackAdjusted(void *pObject, BYTE fDelete) {
+    pObject = (char *)pObject - *(int *)((char *)pObject - 4) - 0x30;
+    return DeleteEffChannelStreamStackWrapper(pObject, fDelete);
+}
+
+// FUNCTION: LEMBALL 0x00462d30
+static void WriteRuntimeTimedGlobalSessionAdjusted(void *pObject) {
+    int *pOffsets;
+
+    pObject = (char *)pObject - *(int *)((char *)pObject - 4);
+    pOffsets = *(int **)((char *)pObject - 0x38);
+    ((VsNetPeerPayloadSender *)((char *)pObject + pOffsets[2] - 0x38))
+        ->WriteEffStreamWithGlobalSession();
+}
+
+// FUNCTION: LEMBALL 0x00462d40
+static void *ClaimRuntimeTimedRecordAdjusted(void *pObject) {
+    int *pOffsets;
+
+    pObject = (char *)pObject - *(int *)((char *)pObject - 4);
+    pOffsets = *(int **)((char *)pObject - 0x38);
+    return ((VsNetAckedEffTransportRecordOwner *)
+                ((char *)pObject + pOffsets[2] - 0x38))
+        ->ClaimAckedEffTransportRecordPayload();
+}
+
+// FUNCTION: LEMBALL 0x00462d50
+static void *DeleteRuntimeDualChannelStackAdjusted(void *pObject, BYTE fDelete) {
+    pObject = (char *)pObject - *(int *)((char *)pObject - 4) - 0xa8;
+    return DeleteEffChannelStreamStackWrapper(pObject, fDelete);
+}
+
+// FUNCTION: LEMBALL 0x00462d60
+static void WriteRuntimeDualGlobalSessionAdjusted(void *pObject) {
+    int *pOffsets;
+
+    pObject = (char *)pObject - *(int *)((char *)pObject - 4) - 0x78;
+    pOffsets = *(int **)((char *)pObject - 0x38);
+    ((VsNetPeerPayloadSender *)((char *)pObject + pOffsets[2] - 0x38))
+        ->WriteEffStreamWithGlobalSession();
+}
+
+// FUNCTION: LEMBALL 0x00462d70
+static void *ClaimRuntimeDualRecordAdjusted(void *pObject) {
+    int *pOffsets;
+
+    pObject = (char *)pObject - *(int *)((char *)pObject - 4) - 0x78;
+    pOffsets = *(int **)((char *)pObject - 0x38);
+    return ((VsNetAckedEffTransportRecordOwner *)
+                ((char *)pObject + pOffsets[2] - 0x38))
+        ->ClaimAckedEffTransportRecordPayload();
+}
+
+// FUNCTION: LEMBALL 0x00462ed0
 int WINAPI InitializeNonZrleVariantRenderEntry(int nValue) {
     return nValue;
+}
+
+// FUNCTION: LEMBALL 0x0047b860
+void VsNetEffStreamBase::DestroyEffStreamBaseThunk(void) {
+    DestroyEffStreamBase();
 }

@@ -99,26 +99,7 @@ struct VsNetRuntimeModeView {
     int m_nModeState4C;
 };
 
-// FUNCTION: LEMBALL 0x0044FBD0
-void GameQueuedVariantManagerView::SetChildrenEnabled(int fEnabled) {
-    int i;
-    GameQueuedVariantChildView *pChild;
 
-    m_fChildrenEnabled148 = fEnabled;
-    for (i = 0; i < m_cChildren80; ++i) {
-        pChild = m_apChildrenAC[i];
-        if (pChild != 0) {
-            pChild->m_fEnabled54 = fEnabled;
-            ((GameGeometryOwnerRectState *)((char *)
-                pChild->m_pOverlay4C + 0x90))->SetEnabled(fEnabled);
-        }
-    }
-}
-
-// FUNCTION: LEMBALL 0x00401735
-void GameQueuedVariantManagerView::SetChildrenEnabledThunk(int fEnabled) {
-    SetChildrenEnabled(fEnabled);
-}
 
 struct GameLevelProgressStateView {
     int m_nCurrentLevel00;
@@ -207,6 +188,77 @@ typedef void (LEMBALL_FASTCALL *GameOneArgVirtual)(void *, int, void *);
 typedef int (LEMBALL_FASTCALL *GameIntNoArgVirtual)(void *, int);
 typedef int (LEMBALL_FASTCALL *GameIntOneArgVirtual)(void *, int, void *);
 
+static void LEMBALL_FASTCALL DestroyMainMenuScreenThunk00401190(
+    void *pObject);
+static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffersThunk(
+    void *pObject);
+static int LEMBALL_FASTCALL MainMenuSlot21Thunk(
+    void *pObject, int nUnusedEdx, void *pArgument);
+static void LEMBALL_FASTCALL UpdateFramedScreenRuntimeThunk(void *pObject);
+static void LEMBALL_FASTCALL RefreshFramedScreenFrameResourcesThunk(void *pObject);
+static int LEMBALL_FASTCALL HandleFramedScreenQueueEventThunk(
+    void *pQueueNode, int nUnusedEdx, void *pEvent);
+static void LEMBALL_FASTCALL UpdateMainMenuScreenThunk(void *pObject);
+static void LEMBALL_FASTCALL InitializeMainMenuWidgetsThunk(void *pObject);
+static void LEMBALL_FASTCALL MainMenuSlot06Thunk(void *pObject);
+static void LEMBALL_FASTCALL MainMenuSlot19Thunk(void *pObject);
+static void LEMBALL_FASTCALL RecenterFramedScreenIfNeededThunk(
+    void *pObject);
+static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBaseThunk(
+    void *pObject, int nUnusedEdx, void *pFrameArgument);
+static int LEMBALL_FASTCALL HandleMainMenuInputThunk(
+    void *pObject, int nUnusedEdx, void *pEvent);
+static void *LEMBALL_FASTCALL DeleteMainMenuScreenThunk(
+    void *pObject, int nUnusedEdx, int fDelete);
+static void LEMBALL_FASTCALL MainMenuSlot18Thunk(void *pObject);
+static int LEMBALL_FASTCALL GetFramedScreenTransitionStatusThunk(
+    void *pObject);
+static void LEMBALL_FASTCALL MainMenuSlot05Thunk(
+    void *pObject, int nUnusedEdx, void *pArgument);
+static void LEMBALL_FASTCALL MainMenuSlot20Thunk(void *pObject);
+static int LEMBALL_FASTCALL GetFramedScreenRequestedModeThunk(
+    void *pObject);
+static void LEMBALL_FASTCALL MainMenuSlot09Thunk(void *pObject);
+static void LEMBALL_FASTCALL MainMenuSlot13Thunk(void *pObject);
+static void LEMBALL_FASTCALL SetFramedScreenSizeThunk(
+    void *pObject, int nUnusedEdx, short *paSize);
+static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreenThunk(
+    void *pObject, int nUnusedEdx, int fDelete);
+static void LEMBALL_FASTCALL DestroyMainMenuWidgetsThunk(void *pObject);
+void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
+    void *pObject, int, void *pPrimaryContext, void *pRenderContext,
+    short *paSize, int nScreenType, int cExtraPackagedEntries,
+    int cExtraActionEntries, int nVariantStateCount,
+    int cMappedListEntries, int nMappedListMode);
+void LEMBALL_FASTCALL ActivateFramedScreenBase(void *pObject);
+static void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroup(
+    void *pObject);
+static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(
+    void *pObject, int, void *);
+static void LEMBALL_FASTCALL DrawFramedScreenBase(void *pObject);
+static void LEMBALL_FASTCALL DrawFramedScreenFrameLayer(void *pObject);
+static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(void *pObject);
+static void LEMBALL_FASTCALL LoadFramedScreenFrameResources(void *pObject);
+static void LEMBALL_FASTCALL ReleaseFramedScreenFrameResources(void *pObject);
+static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(
+    void *pObject);
+static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
+    void *pQueueNode, int, void *pEvent);
+static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject);
+static void LEMBALL_FASTCALL RecenterFramedScreenIfNeeded(void *pObject);
+static void LEMBALL_FASTCALL SetFramedScreenSize(
+    void *pObject, int, short *paSize);
+static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject);
+static void LEMBALL_FASTCALL DestroyMainMenuWidgets(void *pObject);
+static void LEMBALL_FASTCALL DestroyMainMenuScreen(void *pObject);
+static int LEMBALL_FASTCALL HandleMainMenuInput(
+    void *pObject, int, void *pEvent);
+static void LEMBALL_FASTCALL UpdateMainMenuScreen(void *pObject);
+static void *LEMBALL_FASTCALL DeleteMainMenuScreen(
+    void *pObject, int, int fDelete);
+static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreen(
+    void *pObject, int nUnusedEdx, int fDelete);
+
 // GLOBAL: LEMBALL 0x0049f4f0
 int g_fNextMainMenuTimeoutIsTitle = 1;
 // GLOBAL: LEMBALL 0x004a6300
@@ -245,154 +297,28 @@ static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreen(
 static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
     void *pQueueNode, int nUnusedEdx, void *pEvent);
 
-// FUNCTION: LEMBALL 0x00401190
-static void LEMBALL_FASTCALL DestroyMainMenuScreenThunk00401190(
-    void *pObject)
-{
-    DestroyMainMenuScreen(pObject);
-}
 
-// FUNCTION: LEMBALL 0x00402595
-static void *LEMBALL_FASTCALL DeleteMainMenuScreenThunk(
-    void *pObject, int nUnusedEdx, int fDelete)
-{
-    return DeleteMainMenuScreen(pObject, nUnusedEdx, fDelete);
-}
 
-// FUNCTION: LEMBALL 0x00402252
-static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBaseThunk(
-    void *pObject, int nUnusedEdx, void *pFrameArgument)
-{
-    RefreshAndDrawFramedScreenBase(pObject, nUnusedEdx, pFrameArgument);
-}
 
-// FUNCTION: LEMBALL 0x004032EC
-static void LEMBALL_FASTCALL SetFramedScreenSizeThunk(
-    void *pObject, int nUnusedEdx, short *paSize)
-{
-    SetFramedScreenSize(pObject, nUnusedEdx, paSize);
-}
 
-// FUNCTION: LEMBALL 0x00402C02
-static void LEMBALL_FASTCALL MainMenuSlot05Thunk(
-    void *pObject, int nUnusedEdx, void *pArgument)
-{
-    (void)pObject;
-    (void)nUnusedEdx;
-    noop_render_entry_callback_004393a0(pArgument);
-}
 
-// FUNCTION: LEMBALL 0x00401DC5
-static void LEMBALL_FASTCALL MainMenuSlot06Thunk(void *pObject) {
-    (void)pObject;
-    noop_main_menu_screen_hook();
-}
 
-// FUNCTION: LEMBALL 0x00401767
-static void LEMBALL_FASTCALL UpdateFramedScreenRuntimeThunk(void *pObject) {
-    UpdateFramedScreenRuntime(pObject);
-}
 
-// FUNCTION: LEMBALL 0x004012AD
-static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffersThunk(
-    void *pObject)
-{
-    ResetFramedScreenVariantBuffers(pObject);
-}
 
-// FUNCTION: LEMBALL 0x0040313E
-static void LEMBALL_FASTCALL MainMenuSlot09Thunk(void *pObject) {
-    (void)pObject;
-    noop_render_entry_callback_004393d0();
-}
 
-// FUNCTION: LEMBALL 0x0040310C
-static int LEMBALL_FASTCALL GetFramedScreenRequestedModeThunk(
-    void *pObject)
-{
-    return get_intro_sequence_screen_requested_mode(pObject);
-}
 
-// FUNCTION: LEMBALL 0x00402A68
-static int LEMBALL_FASTCALL GetFramedScreenTransitionStatusThunk(
-    void *pObject)
-{
-    return poll_intro_sequence_screen_transition_status(pObject);
-}
 
-// FUNCTION: LEMBALL 0x004021A3
-static void LEMBALL_FASTCALL RecenterFramedScreenIfNeededThunk(
-    void *pObject)
-{
-    RecenterFramedScreenIfNeeded(pObject);
-}
 
-// FUNCTION: LEMBALL 0x0040321F
-static void LEMBALL_FASTCALL MainMenuSlot13Thunk(void *pObject) {
-    (void)pObject;
-    noop_render_entry_callback_004393f0();
-}
 
-// FUNCTION: LEMBALL 0x004018DE
-static void LEMBALL_FASTCALL UpdateMainMenuScreenThunk(void *pObject) {
-    UpdateMainMenuScreen(pObject);
-}
 
-// FUNCTION: LEMBALL 0x0040242D
-static int LEMBALL_FASTCALL HandleMainMenuInputThunk(
-    void *pObject, int nUnusedEdx, void *pEvent)
-{
-    return HandleMainMenuInput(pObject, nUnusedEdx, pEvent);
-}
 
-// FUNCTION: LEMBALL 0x00401BA4
-static void LEMBALL_FASTCALL InitializeMainMenuWidgetsThunk(void *pObject) {
-    InitializeMainMenuWidgets(pObject);
-}
 
-// FUNCTION: LEMBALL 0x0040367F
-static void LEMBALL_FASTCALL DestroyMainMenuWidgetsThunk(void *pObject) {
-    DestroyMainMenuWidgets(pObject);
-}
 
-// FUNCTION: LEMBALL 0x004026BC
-static void LEMBALL_FASTCALL MainMenuSlot18Thunk(void *pObject) {
-    (void)pObject;
-    noop_screen_callback_00446f70();
-}
 
-// FUNCTION: LEMBALL 0x00402185
-static void LEMBALL_FASTCALL MainMenuSlot19Thunk(void *pObject) {
-    (void)pObject;
-    noop_screen_callback_00446f80();
-}
 
-// FUNCTION: LEMBALL 0x0040308A
-static void LEMBALL_FASTCALL MainMenuSlot20Thunk(void *pObject) {
-    (void)pObject;
-    noop_main_menu_screen_hook();
-}
 
-// FUNCTION: LEMBALL 0x00401528
-static int LEMBALL_FASTCALL MainMenuSlot21Thunk(
-    void *pObject, int nUnusedEdx, void *pArgument) {
-    (void)pObject;
-    (void)nUnusedEdx;
-    return return_zero_screen_callback_00446fa0(pArgument);
-}
 
-// FUNCTION: LEMBALL 0x004035D0
-static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreenThunk(
-    void *pObject, int nUnusedEdx, int fDelete) {
-    return DeleteAdjustedMainMenuScreen(pObject, nUnusedEdx, fDelete);
-}
 
-// FUNCTION: LEMBALL 0x00401889
-static int LEMBALL_FASTCALL HandleFramedScreenQueueEventThunk(
-    void *pQueueNode, int nUnusedEdx, void *pEvent)
-{
-    return HandleFramedScreenQueueEvent(pQueueNode, nUnusedEdx, pEvent);
-}
 
 void *g_GAME_MainMenuScreenVtable[22] = {
     (void *)DeleteMainMenuScreenThunk,
@@ -456,12 +382,186 @@ static void *g_GAME_FramedScreenBaseVtable[22] = {
     (void *)MainMenuSlot21Thunk
 };
 
+
+// FUNCTION: LEMBALL 0x00401190
+static void LEMBALL_FASTCALL DestroyMainMenuScreenThunk00401190(
+    void *pObject)
+
+{
+    DestroyMainMenuScreen(pObject);
+}
+
+// FUNCTION: LEMBALL 0x004012ad
+static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffersThunk(
+    void *pObject)
+
+{
+    ResetFramedScreenVariantBuffers(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00401528
+static int LEMBALL_FASTCALL MainMenuSlot21Thunk(
+    void *pObject, int nUnusedEdx, void *pArgument)
+{
+    (void)pObject;
+    (void)nUnusedEdx;
+    return return_zero_screen_callback_00446fa0(pArgument);
+}
+
+// FUNCTION: LEMBALL 0x00401735
+void GameQueuedVariantManagerView::SetChildrenEnabledThunk(int fEnabled) {
+    SetChildrenEnabled(fEnabled);
+}
+
+// FUNCTION: LEMBALL 0x00401767
+static void LEMBALL_FASTCALL UpdateFramedScreenRuntimeThunk(void *pObject) {
+    UpdateFramedScreenRuntime(pObject);
+}
+
+// FUNCTION: LEMBALL 0x004017ad
+static void LEMBALL_FASTCALL RefreshFramedScreenFrameResourcesThunk(void *pObject) {
+    RefreshFramedScreenFrameResources(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00401889
+static int LEMBALL_FASTCALL HandleFramedScreenQueueEventThunk(
+    void *pQueueNode, int nUnusedEdx, void *pEvent)
+
+{
+    return HandleFramedScreenQueueEvent(pQueueNode, nUnusedEdx, pEvent);
+}
+
+// FUNCTION: LEMBALL 0x004018de
+static void LEMBALL_FASTCALL UpdateMainMenuScreenThunk(void *pObject) {
+    UpdateMainMenuScreen(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00401ba4
+static void LEMBALL_FASTCALL InitializeMainMenuWidgetsThunk(void *pObject) {
+    InitializeMainMenuWidgets(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00401dc5
+static void LEMBALL_FASTCALL MainMenuSlot06Thunk(void *pObject) {
+    (void)pObject;
+    noop_main_menu_screen_hook();
+}
+
+// FUNCTION: LEMBALL 0x00402185
+static void LEMBALL_FASTCALL MainMenuSlot19Thunk(void *pObject) {
+    (void)pObject;
+    noop_screen_callback_00446f80();
+}
+
+// FUNCTION: LEMBALL 0x004021a3
+static void LEMBALL_FASTCALL RecenterFramedScreenIfNeededThunk(
+    void *pObject)
+
+{
+    RecenterFramedScreenIfNeeded(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00402252
+static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBaseThunk(
+    void *pObject, int nUnusedEdx, void *pFrameArgument)
+
+{
+    RefreshAndDrawFramedScreenBase(pObject, nUnusedEdx, pFrameArgument);
+}
+
+// FUNCTION: LEMBALL 0x0040242d
+static int LEMBALL_FASTCALL HandleMainMenuInputThunk(
+    void *pObject, int nUnusedEdx, void *pEvent)
+
+{
+    return HandleMainMenuInput(pObject, nUnusedEdx, pEvent);
+}
+
+// FUNCTION: LEMBALL 0x00402595
+static void *LEMBALL_FASTCALL DeleteMainMenuScreenThunk(
+    void *pObject, int nUnusedEdx, int fDelete)
+
+{
+    return DeleteMainMenuScreen(pObject, nUnusedEdx, fDelete);
+}
+
+// FUNCTION: LEMBALL 0x004026bc
+static void LEMBALL_FASTCALL MainMenuSlot18Thunk(void *pObject) {
+    (void)pObject;
+    noop_screen_callback_00446f70();
+}
+
+// FUNCTION: LEMBALL 0x00402a68
+static int LEMBALL_FASTCALL GetFramedScreenTransitionStatusThunk(
+    void *pObject)
+
+{
+    return poll_intro_sequence_screen_transition_status(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00402c02
+static void LEMBALL_FASTCALL MainMenuSlot05Thunk(
+    void *pObject, int nUnusedEdx, void *pArgument)
+
+{
+    (void)pObject;
+    (void)nUnusedEdx;
+    noop_render_entry_callback_004393a0(pArgument);
+}
+
+// FUNCTION: LEMBALL 0x0040308a
+static void LEMBALL_FASTCALL MainMenuSlot20Thunk(void *pObject) {
+    (void)pObject;
+    noop_main_menu_screen_hook();
+}
+
+// FUNCTION: LEMBALL 0x0040310c
+static int LEMBALL_FASTCALL GetFramedScreenRequestedModeThunk(
+    void *pObject)
+
+{
+    return get_intro_sequence_screen_requested_mode(pObject);
+}
+
+// FUNCTION: LEMBALL 0x0040313e
+static void LEMBALL_FASTCALL MainMenuSlot09Thunk(void *pObject) {
+    (void)pObject;
+    noop_render_entry_callback_004393d0();
+}
+
+// FUNCTION: LEMBALL 0x0040321f
+static void LEMBALL_FASTCALL MainMenuSlot13Thunk(void *pObject) {
+    (void)pObject;
+    noop_render_entry_callback_004393f0();
+}
+
+// FUNCTION: LEMBALL 0x004032ec
+static void LEMBALL_FASTCALL SetFramedScreenSizeThunk(
+    void *pObject, int nUnusedEdx, short *paSize)
+
+{
+    SetFramedScreenSize(pObject, nUnusedEdx, paSize);
+}
+
+// FUNCTION: LEMBALL 0x004035d0
+static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreenThunk(
+    void *pObject, int nUnusedEdx, int fDelete)
+{
+    return DeleteAdjustedMainMenuScreen(pObject, nUnusedEdx, fDelete);
+}
+
+// FUNCTION: LEMBALL 0x0040367f
+static void LEMBALL_FASTCALL DestroyMainMenuWidgetsThunk(void *pObject) {
+    DestroyMainMenuWidgets(pObject);
+}
+
 // FUNCTION: LEMBALL 0x00445420
 void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
     void *pObject, int, void *pPrimaryContext, void *pRenderContext,
     short *paSize, int nScreenType, int cExtraPackagedEntries,
     int cExtraActionEntries, int nVariantStateCount,
     int cMappedListEntries, int nMappedListMode)
+
 {
     GameFramedScreenBase *pScreen;
 
@@ -529,81 +629,7 @@ void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x00445ED0
-static void LEMBALL_FASTCALL LoadFramedScreenFrameResources(void *pObject) {
-    GameFramedScreenBase *pScreen;
-
-    pScreen = (GameFramedScreenBase *)pObject;
-    pScreen->m_fFrameResourcesLoaded9C = 1;
-    if (pScreen->m_fCompactLayout32C == 0) {
-        pScreen->m_pBackgroundBitmapC4 = LoadBitmapResource(0x131);
-        pScreen->m_pForegroundBitmapC0 = LoadBitmapResource(0x132);
-        pScreen->m_nMappedListResourceId38C = 0x151;
-        pScreen->m_nMappedListRemapResourceId384 = 0x113;
-        pScreen->m_nFrameResourceId388 = 0x150;
-        pScreen->m_nFrameResourceId390 = 0x152;
-    } else {
-        pScreen->m_pBackgroundBitmapC4 = LoadBitmapResource(0x13c);
-        pScreen->m_pForegroundBitmapC0 = LoadBitmapResource(0x13d);
-        pScreen->m_nMappedListResourceId38C = 0x17e;
-        pScreen->m_nMappedListRemapResourceId384 = 0x114;
-        pScreen->m_nFrameResourceId388 = 0x17d;
-        pScreen->m_nFrameResourceId390 = 0x17f;
-    }
-
-    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
-                              pScreen->m_nFrameResourceId388);
-    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
-                              pScreen->m_nMappedListResourceId38C);
-    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
-                              pScreen->m_nFrameResourceId390);
-}
-
-// FUNCTION: LEMBALL 0x00445FE0
-static void LEMBALL_FASTCALL ReleaseFramedScreenFrameResources(void *pObject) {
-    GameFramedScreenBase *pScreen;
-    LevelVariantRenderManagerView *pVariantManager;
-
-    pScreen = (GameFramedScreenBase *)pObject;
-    pVariantManager = (LevelVariantRenderManagerView *)
-        pScreen->m_abVariantRenderManager14;
-    ReleaseTypedResourceObjectReference(pScreen->m_pForegroundBitmapC0);
-    ReleaseTypedResourceObjectReference(pScreen->m_pBackgroundBitmapC4);
-    pVariantManager->ReleaseVariantRenderResource(
-        pScreen->m_nFrameResourceId388);
-    pVariantManager->ReleaseVariantRenderResource(
-        pScreen->m_nMappedListResourceId38C);
-    pVariantManager->ReleaseVariantRenderResource(
-        pScreen->m_nFrameResourceId390);
-    pScreen->m_fFrameResourcesLoaded9C = 0;
-}
-
-// FUNCTION: LEMBALL 0x00445E70
-static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(void *pObject) {
-    GameFramedScreenBase *pScreen;
-    int fWindowReady;
-
-    pScreen = (GameFramedScreenBase *)pObject;
-    fWindowReady = IsPrimaryContextWindowReadyForPresent(
-        (int *)pScreen->m_pPrimaryContext84);
-    if (pScreen->m_fFrameResourcesLoaded9C != 0) {
-        ((GameNoArgVirtual)pScreen->m_pVtable00[17])(pScreen, 0);
-        ReleaseFramedScreenFrameResources(pScreen);
-    }
-    pScreen->m_fCompactLayout32C = g_fCompactPrimaryContextLayout;
-    if (fWindowReady != 0) {
-        LoadFramedScreenFrameResources(pScreen);
-        ((GameNoArgVirtual)pScreen->m_pVtable00[16])(pScreen, 0);
-        pScreen->m_fSelectorDirty360 = 1;
-    }
-}
-
-// FUNCTION: LEMBALL 0x004017AD
-static void LEMBALL_FASTCALL RefreshFramedScreenFrameResourcesThunk(void *pObject) {
-    RefreshFramedScreenFrameResources(pObject);
-}
-
-// FUNCTION: LEMBALL 0x004455F0
+// FUNCTION: LEMBALL 0x004455f0
 void LEMBALL_FASTCALL ActivateFramedScreenBase(void *pObject) {
     GameFramedScreenBase *pScreen;
     MappedListResourceTable *pMappedList;
@@ -685,9 +711,10 @@ void LEMBALL_FASTCALL ActivateFramedScreenBase(void *pObject) {
     }
 }
 
-// FUNCTION: LEMBALL 0x004458E0
+// FUNCTION: LEMBALL 0x004458e0
 static void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroup(
     void *pObject)
+
 {
     GameFramedScreenBase *pScreen;
     unsigned char *pGroup;
@@ -720,7 +747,58 @@ static void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroup(
     }
 }
 
-// FUNCTION: LEMBALL 0x00445C10
+// FUNCTION: LEMBALL 0x00445a40
+static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(
+    void *pObject, int, void *)
+
+{
+    GameFramedScreenBase *pScreen;
+    char *pGeometryOwner;
+    char *pGeometryDispatch;
+    int nDispatchOffset;
+
+    pScreen = (GameFramedScreenBase *)pObject;
+    if (pScreen->m_pRenderContext88 == 0) {
+        return;
+    }
+    pGeometryOwner =
+        *(char **)((char *)pScreen->m_pRenderContext88 + 0x0c);
+    nDispatchOffset =
+        *(int *)((char *)*(void **)(pGeometryOwner + 0x40) + 4);
+    pGeometryDispatch = pGeometryOwner + 0x40 + nDispatchOffset;
+    ((GameNoArgVirtual)(*(void ***)pGeometryDispatch)[14])(
+        pGeometryDispatch, 0);
+    pScreen->m_iRenderEntryGroup328 = 0;
+    if (pScreen->m_fSelectorDirty360 != 0) {
+        RefreshFramedScreenRenderEntryGroup(pScreen);
+    }
+    DrawFramedScreenBase(pScreen);
+    pScreen->m_fFrameDirty330 = 0;
+}
+
+// FUNCTION: LEMBALL 0x00445ac0
+static void LEMBALL_FASTCALL DrawFramedScreenBase(void *pObject) {
+    GameFramedScreenBase *pScreen;
+    void *pUploadOwner;
+    int nUploadState;
+    unsigned char *pGroup;
+
+    pScreen = (GameFramedScreenBase *)pObject;
+    pUploadOwner = *(void **)((char *)pScreen->m_pRenderContext88 + 0x0c);
+    nUploadState = ((GameIntNoArgVirtual)(*(void ***)pUploadOwner)[2])(
+        pUploadOwner, 0);
+    InitializeHelperUploadStatePending(nUploadState);
+    pGroup = pScreen->m_abRenderEntryGroupC8;
+    AppendPointerQueueEntry(pScreen->m_pRenderContext88, pGroup + 0x1bc);
+
+    if (pScreen->m_fBuildingRenderEntries364 != 0) {
+        DrawFramedScreenFrameLayer(pScreen);
+        ((GameNoArgVirtual)pScreen->m_pVtable00[20])(pScreen, 0);
+    }
+    ((GameNoArgVirtual)pScreen->m_pVtable00[19])(pScreen, 0);
+}
+
+// FUNCTION: LEMBALL 0x00445c10
 static void LEMBALL_FASTCALL DrawFramedScreenFrameLayer(void *pObject) {
     GameFramedScreenBase *pScreen;
     unsigned char *pGroup;
@@ -775,59 +853,79 @@ static void LEMBALL_FASTCALL DrawFramedScreenFrameLayer(void *pObject) {
     }
 }
 
-// FUNCTION: LEMBALL 0x00445AC0
-static void LEMBALL_FASTCALL DrawFramedScreenBase(void *pObject) {
+// FUNCTION: LEMBALL 0x00445e70
+static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(void *pObject) {
     GameFramedScreenBase *pScreen;
-    void *pUploadOwner;
-    int nUploadState;
-    unsigned char *pGroup;
+    int fWindowReady;
 
     pScreen = (GameFramedScreenBase *)pObject;
-    pUploadOwner = *(void **)((char *)pScreen->m_pRenderContext88 + 0x0c);
-    nUploadState = ((GameIntNoArgVirtual)(*(void ***)pUploadOwner)[2])(
-        pUploadOwner, 0);
-    InitializeHelperUploadStatePending(nUploadState);
-    pGroup = pScreen->m_abRenderEntryGroupC8;
-    AppendPointerQueueEntry(pScreen->m_pRenderContext88, pGroup + 0x1bc);
-
-    if (pScreen->m_fBuildingRenderEntries364 != 0) {
-        DrawFramedScreenFrameLayer(pScreen);
-        ((GameNoArgVirtual)pScreen->m_pVtable00[20])(pScreen, 0);
+    fWindowReady = IsPrimaryContextWindowReadyForPresent(
+        (int *)pScreen->m_pPrimaryContext84);
+    if (pScreen->m_fFrameResourcesLoaded9C != 0) {
+        ((GameNoArgVirtual)pScreen->m_pVtable00[17])(pScreen, 0);
+        ReleaseFramedScreenFrameResources(pScreen);
     }
-    ((GameNoArgVirtual)pScreen->m_pVtable00[19])(pScreen, 0);
+    pScreen->m_fCompactLayout32C = g_fCompactPrimaryContextLayout;
+    if (fWindowReady != 0) {
+        LoadFramedScreenFrameResources(pScreen);
+        ((GameNoArgVirtual)pScreen->m_pVtable00[16])(pScreen, 0);
+        pScreen->m_fSelectorDirty360 = 1;
+    }
 }
 
-// FUNCTION: LEMBALL 0x00445A40
-static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(
-    void *pObject, int, void *)
-{
+// FUNCTION: LEMBALL 0x00445ed0
+static void LEMBALL_FASTCALL LoadFramedScreenFrameResources(void *pObject) {
     GameFramedScreenBase *pScreen;
-    char *pGeometryOwner;
-    char *pGeometryDispatch;
-    int nDispatchOffset;
 
     pScreen = (GameFramedScreenBase *)pObject;
-    if (pScreen->m_pRenderContext88 == 0) {
-        return;
+    pScreen->m_fFrameResourcesLoaded9C = 1;
+    if (pScreen->m_fCompactLayout32C == 0) {
+        pScreen->m_pBackgroundBitmapC4 = LoadBitmapResource(0x131);
+        pScreen->m_pForegroundBitmapC0 = LoadBitmapResource(0x132);
+        pScreen->m_nMappedListResourceId38C = 0x151;
+        pScreen->m_nMappedListRemapResourceId384 = 0x113;
+        pScreen->m_nFrameResourceId388 = 0x150;
+        pScreen->m_nFrameResourceId390 = 0x152;
+    } else {
+        pScreen->m_pBackgroundBitmapC4 = LoadBitmapResource(0x13c);
+        pScreen->m_pForegroundBitmapC0 = LoadBitmapResource(0x13d);
+        pScreen->m_nMappedListResourceId38C = 0x17e;
+        pScreen->m_nMappedListRemapResourceId384 = 0x114;
+        pScreen->m_nFrameResourceId388 = 0x17d;
+        pScreen->m_nFrameResourceId390 = 0x17f;
     }
-    pGeometryOwner =
-        *(char **)((char *)pScreen->m_pRenderContext88 + 0x0c);
-    nDispatchOffset =
-        *(int *)((char *)*(void **)(pGeometryOwner + 0x40) + 4);
-    pGeometryDispatch = pGeometryOwner + 0x40 + nDispatchOffset;
-    ((GameNoArgVirtual)(*(void ***)pGeometryDispatch)[14])(
-        pGeometryDispatch, 0);
-    pScreen->m_iRenderEntryGroup328 = 0;
-    if (pScreen->m_fSelectorDirty360 != 0) {
-        RefreshFramedScreenRenderEntryGroup(pScreen);
-    }
-    DrawFramedScreenBase(pScreen);
-    pScreen->m_fFrameDirty330 = 0;
+
+    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
+                              pScreen->m_nFrameResourceId388);
+    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
+                              pScreen->m_nMappedListResourceId38C);
+    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
+                              pScreen->m_nFrameResourceId390);
 }
 
-// FUNCTION: LEMBALL 0x004460A0
+// FUNCTION: LEMBALL 0x00445fe0
+static void LEMBALL_FASTCALL ReleaseFramedScreenFrameResources(void *pObject) {
+    GameFramedScreenBase *pScreen;
+    LevelVariantRenderManagerView *pVariantManager;
+
+    pScreen = (GameFramedScreenBase *)pObject;
+    pVariantManager = (LevelVariantRenderManagerView *)
+        pScreen->m_abVariantRenderManager14;
+    ReleaseTypedResourceObjectReference(pScreen->m_pForegroundBitmapC0);
+    ReleaseTypedResourceObjectReference(pScreen->m_pBackgroundBitmapC4);
+    pVariantManager->ReleaseVariantRenderResource(
+        pScreen->m_nFrameResourceId388);
+    pVariantManager->ReleaseVariantRenderResource(
+        pScreen->m_nMappedListResourceId38C);
+    pVariantManager->ReleaseVariantRenderResource(
+        pScreen->m_nFrameResourceId390);
+    pScreen->m_fFrameResourcesLoaded9C = 0;
+}
+
+// FUNCTION: LEMBALL 0x004460a0
 static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(
     void *pObject)
+
 {
     GameFramedScreenBase *pScreen;
 
@@ -837,7 +935,27 @@ static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(
     pScreen->m_iPackagedEntry36C = 0;
 }
 
-// FUNCTION: LEMBALL 0x004464D0
+// FUNCTION: LEMBALL 0x00446480
+static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
+    void *pQueueNode, int, void *pEvent)
+
+{
+    GameFramedScreenBase *pScreen;
+
+    pScreen = (GameFramedScreenBase *)((char *)pQueueNode - 4);
+    if (*(int *)((char *)pQueueNode + 0x8c) != 0) {
+        return 0;
+    }
+    if (*(int *)((char *)pEvent + 4) -
+            *(int *)((char *)pQueueNode + 0xb8) <
+        0) {
+        return 0;
+    }
+    return ((GameIntOneArgVirtual)pScreen->m_pVtable00[15])(
+               pScreen, 0, pEvent) != 0;
+}
+
+// FUNCTION: LEMBALL 0x004464d0
 static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject) {
     GameFramedScreenBase *pScreen;
     DWORD dwNow;
@@ -864,7 +982,7 @@ static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject) {
     ((GameNoArgVirtual)pScreen->m_pVtable00[14])(pScreen, 0);
 }
 
-// FUNCTION: LEMBALL 0x004466E0
+// FUNCTION: LEMBALL 0x004466e0
 static void LEMBALL_FASTCALL RecenterFramedScreenIfNeeded(void *pObject) {
     GameFramedScreenBase *pScreen;
     GamePrimaryContext *pPrimaryContext;
@@ -880,9 +998,10 @@ static void LEMBALL_FASTCALL RecenterFramedScreenIfNeeded(void *pObject) {
     }
 }
 
-// FUNCTION: LEMBALL 0x00446FD0
+// FUNCTION: LEMBALL 0x00446fd0
 static void LEMBALL_FASTCALL SetFramedScreenSize(
     void *pObject, int, short *paSize)
+
 {
     GameFramedScreenBase *pScreen;
 
@@ -930,52 +1049,43 @@ static void LEMBALL_FASTCALL DestroyMainMenuWidgets(void *pObject) {
     }
 }
 
-// FUNCTION: LEMBALL 0x00448800
-static void LEMBALL_FASTCALL UpdateMainMenuScreen(void *pObject) {
+// FUNCTION: LEMBALL 0x00448560
+static void LEMBALL_FASTCALL DestroyMainMenuScreen(void *pObject) {
     GameMainMenuScreenView *pScreen;
     GameLevelProgressStateView *pProgress;
-    DWORD dwNow;
-    int fReady;
 
     pScreen = (GameMainMenuScreenView *)pObject;
     pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
-    if (g_fStartupTestAllLevels != 0) {
-        pProgress->m_nCurrentLevel00 = pProgress->m_anSnapshotPackCaps3C[0];
-        pProgress->m_nCurrentPack08 = 0;
-        pScreen->m_nTransitionStatus378 = 1;
-        pScreen->m_nRequestedMode374 = 4;
+    pScreen->m_pVtable00 = g_GAME_MainMenuScreenVtable;
+    *(void ***)pScreen->m_abRenderQueueNode04 =
+        g_GAME_MainMenuQueueVtable;
+    *(void ***)pScreen->m_abVariantRenderManager14 =
+        g_GAME_MainMenuCallbackVtable;
+    if ((unsigned int)pScreen->m_nPackSelection3B4 < 4U) {
+        pProgress->m_nCurrentLevel00 =
+            pProgress->m_anSnapshotPackCaps3C[pScreen->m_nPackSelection3B4];
+        pProgress->m_nCurrentPack08 = pScreen->m_nPackSelection3B4;
     }
-
-    dwNow = timeGetTime();
-    fReady = IsPrimaryContextWindowReadyForPresent(
-        (int *)pScreen->m_pPrimaryContext84);
-    if (fReady != 0) {
-        fReady = ((GameIntNoArgVirtual)
-                      (*(void ***)pScreen->m_pPrimaryContext84)[24])(
-            pScreen->m_pPrimaryContext84, 0);
+    g_nLastMainMenuPackSelection = pScreen->m_nPackSelection3B4;
+    if (pScreen->m_fFrameResourcesLoaded9C != 0) {
+        DestroyMainMenuWidgets(pScreen);
+        ReleaseFramedScreenFrameResources(pScreen);
     }
-    if (fReady == 0) {
-        pScreen->m_dwTimeout398 = timeGetTime() + 20000U;
-        return;
+    g_pActiveNetworkLobbyScreen = 0;
+    if (g_pSharedRenderDispatchQueue != 0) {
+        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+            ->UnregisterOrderedRenderDispatchClient(
+                pScreen->m_abRenderQueueNode04, 0);
     }
-    if (dwNow <= pScreen->m_dwTimeout398) {
-        return;
-    }
-
-    pScreen->m_nTransitionStatus378 = 1;
-    if (g_fNextMainMenuTimeoutIsTitle == 0 &&
-        g_fSkipStartupSequence == 0) {
-        pScreen->m_nRequestedMode374 = 1;
-        g_fNextMainMenuTimeoutIsTitle = 1;
-    } else {
-        pScreen->m_nRequestedMode374 = 0x13;
-        g_fNextMainMenuTimeoutIsTitle = 0;
-    }
+    DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
+    ((MogLoadResourceArchive *)g_pMainResourceArchive)
+        ->PruneUnreferencedCachedResourceObjects();
 }
 
 // FUNCTION: LEMBALL 0x00448620
 static int LEMBALL_FASTCALL HandleMainMenuInput(
     void *pObject, int, void *pEvent)
+
 {
     GameMainMenuScreenView *pScreen;
     GameLevelProgressStateView *pProgress;
@@ -1025,61 +1135,53 @@ static int LEMBALL_FASTCALL HandleMainMenuInput(
     return 1;
 }
 
-// FUNCTION: LEMBALL 0x00446480
-static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
-    void *pQueueNode, int, void *pEvent)
-{
-    GameFramedScreenBase *pScreen;
-
-    pScreen = (GameFramedScreenBase *)((char *)pQueueNode - 4);
-    if (*(int *)((char *)pQueueNode + 0x8c) != 0) {
-        return 0;
-    }
-    if (*(int *)((char *)pEvent + 4) -
-            *(int *)((char *)pQueueNode + 0xb8) <
-        0) {
-        return 0;
-    }
-    return ((GameIntOneArgVirtual)pScreen->m_pVtable00[15])(
-               pScreen, 0, pEvent) != 0;
-}
-
-// FUNCTION: LEMBALL 0x00448560
-static void LEMBALL_FASTCALL DestroyMainMenuScreen(void *pObject) {
+// FUNCTION: LEMBALL 0x00448800
+static void LEMBALL_FASTCALL UpdateMainMenuScreen(void *pObject) {
     GameMainMenuScreenView *pScreen;
     GameLevelProgressStateView *pProgress;
+    DWORD dwNow;
+    int fReady;
 
     pScreen = (GameMainMenuScreenView *)pObject;
     pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
-    pScreen->m_pVtable00 = g_GAME_MainMenuScreenVtable;
-    *(void ***)pScreen->m_abRenderQueueNode04 =
-        g_GAME_MainMenuQueueVtable;
-    *(void ***)pScreen->m_abVariantRenderManager14 =
-        g_GAME_MainMenuCallbackVtable;
-    if ((unsigned int)pScreen->m_nPackSelection3B4 < 4U) {
-        pProgress->m_nCurrentLevel00 =
-            pProgress->m_anSnapshotPackCaps3C[pScreen->m_nPackSelection3B4];
-        pProgress->m_nCurrentPack08 = pScreen->m_nPackSelection3B4;
+    if (g_fStartupTestAllLevels != 0) {
+        pProgress->m_nCurrentLevel00 = pProgress->m_anSnapshotPackCaps3C[0];
+        pProgress->m_nCurrentPack08 = 0;
+        pScreen->m_nTransitionStatus378 = 1;
+        pScreen->m_nRequestedMode374 = 4;
     }
-    g_nLastMainMenuPackSelection = pScreen->m_nPackSelection3B4;
-    if (pScreen->m_fFrameResourcesLoaded9C != 0) {
-        DestroyMainMenuWidgets(pScreen);
-        ReleaseFramedScreenFrameResources(pScreen);
+
+    dwNow = timeGetTime();
+    fReady = IsPrimaryContextWindowReadyForPresent(
+        (int *)pScreen->m_pPrimaryContext84);
+    if (fReady != 0) {
+        fReady = ((GameIntNoArgVirtual)
+                      (*(void ***)pScreen->m_pPrimaryContext84)[24])(
+            pScreen->m_pPrimaryContext84, 0);
     }
-    g_pActiveNetworkLobbyScreen = 0;
-    if (g_pSharedRenderDispatchQueue != 0) {
-        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
-            ->UnregisterOrderedRenderDispatchClient(
-                pScreen->m_abRenderQueueNode04, 0);
+    if (fReady == 0) {
+        pScreen->m_dwTimeout398 = timeGetTime() + 20000U;
+        return;
     }
-    DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
-    ((MogLoadResourceArchive *)g_pMainResourceArchive)
-        ->PruneUnreferencedCachedResourceObjects();
+    if (dwNow <= pScreen->m_dwTimeout398) {
+        return;
+    }
+
+    pScreen->m_nTransitionStatus378 = 1;
+    if (g_fNextMainMenuTimeoutIsTitle == 0 &&
+        g_fSkipStartupSequence == 0) {
+        pScreen->m_nRequestedMode374 = 1;
+        g_fNextMainMenuTimeoutIsTitle = 1;
+    } else {
+        pScreen->m_nRequestedMode374 = 0x13;
+        g_fNextMainMenuTimeoutIsTitle = 0;
+    }
 }
 
-// FUNCTION: LEMBALL 0x00448A70
+// FUNCTION: LEMBALL 0x00448a70
 static void *LEMBALL_FASTCALL DeleteMainMenuScreen(
     void *pObject, int, int fDelete)
+
 {
     DestroyMainMenuScreenThunk00401190(pObject);
     if ((fDelete & 1) != 0) {
@@ -1088,8 +1190,25 @@ static void *LEMBALL_FASTCALL DeleteMainMenuScreen(
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x00448AA0
+// FUNCTION: LEMBALL 0x00448aa0
 static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreen(
-    void *pObject, int nUnusedEdx, int fDelete) {
+    void *pObject, int nUnusedEdx, int fDelete)
+{
     return DeleteMainMenuScreen((char *)pObject - 4, nUnusedEdx, fDelete);
+}
+
+// FUNCTION: LEMBALL 0x0044fbd0
+void GameQueuedVariantManagerView::SetChildrenEnabled(int fEnabled) {
+    int i;
+    GameQueuedVariantChildView *pChild;
+
+    m_fChildrenEnabled148 = fEnabled;
+    for (i = 0; i < m_cChildren80; ++i) {
+        pChild = m_apChildrenAC[i];
+        if (pChild != 0) {
+            pChild->m_fEnabled54 = fEnabled;
+            ((GameGeometryOwnerRectState *)((char *)
+                pChild->m_pOverlay4C + 0x90))->SetEnabled(fEnabled);
+        }
+    }
 }

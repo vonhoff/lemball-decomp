@@ -68,7 +68,17 @@ static int g_anSignedTrigTable[512] = {
 };
 static int g_fSignedTrigTableInitialized = 0;
 
-// FUNCTION: LEMBALL 0x0045A940
+// FUNCTION: LEMBALL 0x004035ad
+VsMathFixed12Vector2D *VsMathFixed12Vector2D::InitializeFromPixelsThunk(int nX, int nY) {
+    return InitializeFromPixels(nX, nY);
+}
+// FUNCTION: LEMBALL 0x0044b640
+VsMathFixed12Vector2D *VsMathFixed12Vector2D::InitializeFromPixels(int nX, int nY) {
+    m_nX = nX << 12;
+    m_nY = nY << 12;
+    return this;
+}
+// FUNCTION: LEMBALL 0x0045a940
 int *LEMBALL_FASTCALL InitializeSignedTrigTable(int *pTrigTableBuffer) {
     const int *pSource;
     int *pTableStart;
@@ -101,13 +111,13 @@ int *LEMBALL_FASTCALL InitializeSignedTrigTable(int *pTrigTableBuffer) {
     return pTableStart;
 }
 
-// FUNCTION: LEMBALL 0x0045A9A0
+// FUNCTION: LEMBALL 0x0045a9a0
 int *LEMBALL_FASTCALL WriteDebugSentinelDword(int *pTarget) {
     *pTarget = (int)0xaa55aa55;
     return pTarget;
 }
 
-// FUNCTION: LEMBALL 0x0045A9B0
+// FUNCTION: LEMBALL 0x0045a9b0
 unsigned int __stdcall IntegerSqrtFloor(unsigned int uValue) {
     unsigned int uHigh;
     unsigned int uLow;
@@ -154,16 +164,4 @@ unsigned int __stdcall IntegerSqrtFloor(unsigned int uValue) {
         }
     }
     return uLow;
-}
-
-// FUNCTION: LEMBALL 0x0044B640
-VsMathFixed12Vector2D *VsMathFixed12Vector2D::InitializeFromPixels(int nX, int nY) {
-    m_nX = nX << 12;
-    m_nY = nY << 12;
-    return this;
-}
-
-// FUNCTION: LEMBALL 0x004035AD
-VsMathFixed12Vector2D *VsMathFixed12Vector2D::InitializeFromPixelsThunk(int nX, int nY) {
-    return InitializeFromPixels(nX, nY);
 }

@@ -40,7 +40,7 @@ int _RAWOUT_ErrorString(const char *pszText) {
     return RawOutputString(pszText, "_RAWOUT_ErrorString", 0x000000ff);
 }
 
-// FUNCTION: LEMBALL 0x004729F0
+// FUNCTION: LEMBALL 0x004729f0
 int _RAWOUT_SysString(const char *pszText) {
     return RawOutputString(pszText, "_RAWOUT_SysString", 0x00ff0000);
 }

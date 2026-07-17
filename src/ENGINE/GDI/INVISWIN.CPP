@@ -18,37 +18,10 @@ typedef LRESULT (*VS_WindowMessageHandler)(VS_InvisibleWindow *pWindow,
                                            UINT uMessage,
                                            WPARAM wParam,
                                            LPARAM lParam);
+LRESULT CALLBACK InvisibleMessageWindowWndProc(
+    HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 
-// FUNCTION: LEMBALL 0x0047C160
-LRESULT CALLBACK InvisibleMessageWindowWndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam) {
-    VS_InvisibleWindow *pWindow;
-    LRESULT lResult;
-    CREATESTRUCTA *pCreateStruct;
-
-    if (g_fWindowMessagePassthroughMode != 0) {
-        return DefWindowProcA(hWnd, uMessage, wParam, lParam);
-    }
-
-    pWindow = (VS_InvisibleWindow *)(unsigned long)GetWindowLongA(hWnd, GWL_USERDATA);
-    if (uMessage == WM_CREATE) {
-        pCreateStruct = (CREATESTRUCTA *)(unsigned long)lParam;
-        SetWindowLongA(hWnd, GWL_USERDATA, (LONG)(unsigned long)pCreateStruct->lpCreateParams);
-        return 0;
-    }
-
-    if (pWindow != 0) {
-        if (pWindow->m_dwReserved1 == 0 || uMessage < pWindow->m_dwReserved0 || pWindow->m_dwReserved1 < uMessage) {
-            lResult = ((VS_WindowMessageHandler)(*(void **)pWindow->m_pVTable))(pWindow, uMessage, wParam, lParam);
-            if (lResult != -1) {
-                return lResult;
-            }
-        }
-    }
-
-    return DefWindowProcA(hWnd, uMessage, wParam, lParam);
-}
-
-// FUNCTION: LEMBALL 0x0047C050
+// FUNCTION: LEMBALL 0x0047c050
 int VS_InvisibleWindow::Construct(LPCSTR pszClassName, int *pfClassRegistered) {
     WNDCLASSA WndClass;
 
@@ -99,8 +72,36 @@ int VS_InvisibleWindow::Construct(LPCSTR pszClassName, int *pfClassRegistered) {
     return (int)(unsigned long)this;
 }
 
-// FUNCTION: LEMBALL 0x0047C140
+// FUNCTION: LEMBALL 0x0047c140
 void __fastcall DestroyInvisibleMessageWindow(VS_InvisibleWindow *pWindow) {
     *(void ***)pWindow = g_VS_InvisibleWindowVTable;
     DestroyWindow(pWindow->m_hWnd);
+}
+// FUNCTION: LEMBALL 0x0047c160
+LRESULT CALLBACK InvisibleMessageWindowWndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam) {
+    VS_InvisibleWindow *pWindow;
+    LRESULT lResult;
+    CREATESTRUCTA *pCreateStruct;
+
+    if (g_fWindowMessagePassthroughMode != 0) {
+        return DefWindowProcA(hWnd, uMessage, wParam, lParam);
+    }
+
+    pWindow = (VS_InvisibleWindow *)(unsigned long)GetWindowLongA(hWnd, GWL_USERDATA);
+    if (uMessage == WM_CREATE) {
+        pCreateStruct = (CREATESTRUCTA *)(unsigned long)lParam;
+        SetWindowLongA(hWnd, GWL_USERDATA, (LONG)(unsigned long)pCreateStruct->lpCreateParams);
+        return 0;
+    }
+
+    if (pWindow != 0) {
+        if (pWindow->m_dwReserved1 == 0 || uMessage < pWindow->m_dwReserved0 || pWindow->m_dwReserved1 < uMessage) {
+            lResult = ((VS_WindowMessageHandler)(*(void **)pWindow->m_pVTable))(pWindow, uMessage, wParam, lParam);
+            if (lResult != -1) {
+                return lResult;
+            }
+        }
+    }
+
+    return DefWindowProcA(hWnd, uMessage, wParam, lParam);
 }

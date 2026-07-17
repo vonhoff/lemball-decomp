@@ -174,100 +174,92 @@ extern void *g_pNetworkLobbyVsnetRuntime;
 extern void LEMBALL_FASTCALL MarkNetworkLobbySelectedPeerDisconnected(void *pVsnetRuntime);
 extern void SetGeometryChildEnabled(void *pGeometryChild, int fEnabled);
 void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen);
+void ThunkActivateSelectedNetworkLobbyPlayerEntry(int nNetworkLobbyScreen);
+int ThunkSelectNextNetworkLobbyPlayerEntry(int nNetworkLobbyScreen);
+int ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen);
+void RemoveUnavailableNetworkLobbyPlayerEntries(int nNetworkLobbyScreen);
 
-// FUNCTION: LEMBALL 0x00453250
-void ResetNetworkLobbyPlayerEntryChildFlags(int nEntryChild) {
-    VsNetNetworkLobbyPlayerEntryChild *pEntry;
-
-    pEntry = (VsNetNetworkLobbyPlayerEntryChild *)(unsigned long)nEntryChild;
-    pEntry->m_fDirty40 = 0;
-    pEntry->m_fDirty3c = 0;
-    pEntry->m_fDirty38 = 0;
+// FUNCTION: LEMBALL 0x00401f23
+void ThunkHandleNetworkLobbyTransportStatusEvent(int nEventType) {
+    if (g_pActiveNetworkLobbyScreen != 0) {
+        if (nEventType == 10) {
+            RemoveUnavailableNetworkLobbyPlayerEntries((int)(unsigned long)g_pActiveNetworkLobbyScreen);
+            return;
+        }
+        if (nEventType == 0xd) {
+            *(int *)((char *)g_pActiveNetworkLobbyScreen + 0x430) = 7;
+        }
+    }
 }
-
-// FUNCTION: LEMBALL 0x00454F00
-void RemoveUnavailableNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
+// FUNCTION: LEMBALL 0x004026a8
+void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
     VsNetNetworkLobbyScreen *pScreen;
     VsNetNetworkLobbyVsnetRuntime *pRuntime;
-    int *pnPeerId;
+    VsNetNetworkLobbyOwnerTable *pOwnerTable;
+    void *pEntryChild;
+    int *pnPeerIds;
     VsNetEffTransportPeerStateSlot *pPeerState;
+    VsNetEffTransportPeerStateSlot *pPeerEntryTable;
     int nEntryOffset;
-    int nEntryIndex;
+    short y;
 
     pScreen = (VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen;
-    nEntryOffset = 0;
+    pPeerEntryTable = 0;
+    pnPeerIds = 0;
     if (g_pNetworkLobbyVsnetRuntime != 0) {
         pRuntime = (VsNetNetworkLobbyVsnetRuntime *)g_pNetworkLobbyVsnetRuntime;
-        pnPeerId = pRuntime->m_anTrackedPeers;
-        pPeerState = pRuntime->m_pPeerEntryTable;
-        nEntryIndex = 0;
-        do {
-            if (*pnPeerId == 0 || pPeerState->m_fActive == 0) {
-                ResetNetworkLobbyPlayerEntryChildFlags((int)(unsigned long)((char *)pScreen->m_pEntryTable + nEntryOffset));
-                if (pScreen->m_nResolvedSelection == nEntryIndex) {
-                    pScreen->m_nResolvedSelection = -1;
-                }
-            }
-            nEntryOffset += 0x44;
-            ++pPeerState;
-            ++pnPeerId;
-            ++nEntryIndex;
-        } while (nEntryOffset < 0x2a8);
+        pnPeerIds = pRuntime->m_anTrackedPeers;
+        pPeerEntryTable = pRuntime->m_pPeerEntryTable;
     }
 
-    ThunkRefreshNetworkLobbyPlayerEntries(nNetworkLobbyScreen);
-}
-
-// FUNCTION: LEMBALL 0x0040346D
-int ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
-    VsNetNetworkLobbyScreen *pScreen;
-    VsNetNetworkLobbyPlayerEntryTable *pEntryTable;
-    int *pnEntryState;
-    int nSelectedEntry;
-    int nEntryOffset;
-
-    pScreen = (VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen;
-    pEntryTable = pScreen->m_pEntryTable;
-    if (pScreen->m_cVisibleEntries == 0 || pScreen->m_nSelectedEntry == 0) {
-        return 0;
-    }
-
-    if (pScreen->m_nSelectedEntry == -1) {
-        pScreen->m_pCursorOwner->m_fWrapSelection = 0;
-        pScreen->m_nSelectedEntry = 10;
-    }
-
-    nSelectedEntry = pScreen->m_nSelectedEntry - 1;
-    if (nSelectedEntry >= 0) {
-        pnEntryState = (int *)((char *)pEntryTable + 4 + nSelectedEntry * 0x44);
-        do {
-            if (*pnEntryState != 0) {
-                break;
-            }
-            pnEntryState -= 0x11;
-            --nSelectedEntry;
-        } while (nSelectedEntry >= 0);
-    }
-
-    if (nSelectedEntry < 0) {
-        return 0;
-    }
-
-    pScreen->m_nSelectedEntry = nSelectedEntry;
+    pOwnerTable = pScreen->m_pEntryOwnerTable;
+    y = pOwnerTable->m_nEntryStartY;
     nEntryOffset = 0;
+    pPeerState = pPeerEntryTable;
+    pScreen->m_cVisibleEntries = 0;
+
     do {
-        ((VsNetNetworkLobbyPlayerEntryChild *)((char *)pEntryTable + nEntryOffset))->m_fSelected = 0;
-        pnEntryState = (int *)((char *)pEntryTable + nEntryOffset);
+        if (pScreen->m_cVisibleEntries < 4 && pnPeerIds != 0 && *pnPeerIds != 0 && pPeerState->m_fActive != 0) {
+            pEntryChild = (void *)(unsigned long)((int)(unsigned long)pScreen->m_pEntryTable + nEntryOffset);
+            *(unsigned short *)((char *)pEntryChild + 0x30) = pOwnerTable->m_nSourceX;
+            *(unsigned short *)((char *)pEntryChild + 0x32) = pOwnerTable->m_nSourceY;
+            *(unsigned short *)((char *)pEntryChild + 0x34) = pOwnerTable->m_nSourceHeight;
+            *(short *)((char *)pEntryChild + 0x36) = y;
+            SetGeometryChildEnabled(pEntryChild, 1);
+            y = (short)(y + pOwnerTable->m_nEntryYStep);
+            pScreen->m_cVisibleEntries = pScreen->m_cVisibleEntries + 1;
+        } else {
+            SetGeometryChildEnabled((void *)(unsigned long)((int)(unsigned long)pScreen->m_pEntryTable + nEntryOffset), 0);
+        }
+
         nEntryOffset += 0x44;
-        ((VsNetNetworkLobbyPlayerEntryChild *)pnEntryState)->Deactivate();
+        ++pPeerState;
+        ++pnPeerIds;
     } while (nEntryOffset < 0x2a8);
 
-    pEntryTable->m_aEntries[pScreen->m_nSelectedEntry].m_fSelected = 1;
-    pEntryTable->m_aEntries[pScreen->m_nSelectedEntry].Activate();
-    return 1;
+    ThunkActivateSelectedNetworkLobbyPlayerEntry(nNetworkLobbyScreen);
 }
 
-// FUNCTION: LEMBALL 0x00402F4A
+// FUNCTION: LEMBALL 0x0040296e
+void ThunkActivateSelectedNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
+    VsNetNetworkLobbyScreen *pScreen;
+    VsNetNetworkLobbyPlayerEntryChild *pEntryChild;
+
+    pScreen = (VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen;
+    if (pScreen->m_nSelectedEntry != -1) {
+        pEntryChild = &pScreen->m_pEntryTable->m_aEntries[pScreen->m_nSelectedEntry];
+        if (pEntryChild->m_fEnabled == 0) {
+            if (ThunkSelectPreviousNetworkLobbyPlayerEntry(nNetworkLobbyScreen) == 0) {
+                ThunkSelectNextNetworkLobbyPlayerEntry(nNetworkLobbyScreen);
+            }
+        } else {
+            pEntryChild->m_fSelected = 1;
+            pEntryChild->Activate();
+        }
+    }
+}
+
+// FUNCTION: LEMBALL 0x00402f4a
 int ThunkSelectNextNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
     VsNetNetworkLobbyScreen *pScreen;
     VsNetNetworkLobbyPlayerEntryTable *pEntryTable;
@@ -321,85 +313,53 @@ int ThunkSelectNextNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
     return 1;
 }
 
-// FUNCTION: LEMBALL 0x0040296E
-void ThunkActivateSelectedNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
+// FUNCTION: LEMBALL 0x0040346d
+int ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
     VsNetNetworkLobbyScreen *pScreen;
-    VsNetNetworkLobbyPlayerEntryChild *pEntryChild;
-
-    pScreen = (VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen;
-    if (pScreen->m_nSelectedEntry != -1) {
-        pEntryChild = &pScreen->m_pEntryTable->m_aEntries[pScreen->m_nSelectedEntry];
-        if (pEntryChild->m_fEnabled == 0) {
-            if (ThunkSelectPreviousNetworkLobbyPlayerEntry(nNetworkLobbyScreen) == 0) {
-                ThunkSelectNextNetworkLobbyPlayerEntry(nNetworkLobbyScreen);
-            }
-        } else {
-            pEntryChild->m_fSelected = 1;
-            pEntryChild->Activate();
-        }
-    }
-}
-
-// FUNCTION: LEMBALL 0x004026A8
-void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
-    VsNetNetworkLobbyScreen *pScreen;
-    VsNetNetworkLobbyVsnetRuntime *pRuntime;
-    VsNetNetworkLobbyOwnerTable *pOwnerTable;
-    void *pEntryChild;
-    int *pnPeerIds;
-    VsNetEffTransportPeerStateSlot *pPeerState;
-    VsNetEffTransportPeerStateSlot *pPeerEntryTable;
+    VsNetNetworkLobbyPlayerEntryTable *pEntryTable;
+    int *pnEntryState;
+    int nSelectedEntry;
     int nEntryOffset;
-    short y;
 
     pScreen = (VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen;
-    pPeerEntryTable = 0;
-    pnPeerIds = 0;
-    if (g_pNetworkLobbyVsnetRuntime != 0) {
-        pRuntime = (VsNetNetworkLobbyVsnetRuntime *)g_pNetworkLobbyVsnetRuntime;
-        pnPeerIds = pRuntime->m_anTrackedPeers;
-        pPeerEntryTable = pRuntime->m_pPeerEntryTable;
+    pEntryTable = pScreen->m_pEntryTable;
+    if (pScreen->m_cVisibleEntries == 0 || pScreen->m_nSelectedEntry == 0) {
+        return 0;
     }
 
-    pOwnerTable = pScreen->m_pEntryOwnerTable;
-    y = pOwnerTable->m_nEntryStartY;
+    if (pScreen->m_nSelectedEntry == -1) {
+        pScreen->m_pCursorOwner->m_fWrapSelection = 0;
+        pScreen->m_nSelectedEntry = 10;
+    }
+
+    nSelectedEntry = pScreen->m_nSelectedEntry - 1;
+    if (nSelectedEntry >= 0) {
+        pnEntryState = (int *)((char *)pEntryTable + 4 + nSelectedEntry * 0x44);
+        do {
+            if (*pnEntryState != 0) {
+                break;
+            }
+            pnEntryState -= 0x11;
+            --nSelectedEntry;
+        } while (nSelectedEntry >= 0);
+    }
+
+    if (nSelectedEntry < 0) {
+        return 0;
+    }
+
+    pScreen->m_nSelectedEntry = nSelectedEntry;
     nEntryOffset = 0;
-    pPeerState = pPeerEntryTable;
-    pScreen->m_cVisibleEntries = 0;
-
     do {
-        if (pScreen->m_cVisibleEntries < 4 && pnPeerIds != 0 && *pnPeerIds != 0 && pPeerState->m_fActive != 0) {
-            pEntryChild = (void *)(unsigned long)((int)(unsigned long)pScreen->m_pEntryTable + nEntryOffset);
-            *(unsigned short *)((char *)pEntryChild + 0x30) = pOwnerTable->m_nSourceX;
-            *(unsigned short *)((char *)pEntryChild + 0x32) = pOwnerTable->m_nSourceY;
-            *(unsigned short *)((char *)pEntryChild + 0x34) = pOwnerTable->m_nSourceHeight;
-            *(short *)((char *)pEntryChild + 0x36) = y;
-            SetGeometryChildEnabled(pEntryChild, 1);
-            y = (short)(y + pOwnerTable->m_nEntryYStep);
-            pScreen->m_cVisibleEntries = pScreen->m_cVisibleEntries + 1;
-        } else {
-            SetGeometryChildEnabled((void *)(unsigned long)((int)(unsigned long)pScreen->m_pEntryTable + nEntryOffset), 0);
-        }
-
+        ((VsNetNetworkLobbyPlayerEntryChild *)((char *)pEntryTable + nEntryOffset))->m_fSelected = 0;
+        pnEntryState = (int *)((char *)pEntryTable + nEntryOffset);
         nEntryOffset += 0x44;
-        ++pPeerState;
-        ++pnPeerIds;
+        ((VsNetNetworkLobbyPlayerEntryChild *)pnEntryState)->Deactivate();
     } while (nEntryOffset < 0x2a8);
 
-    ThunkActivateSelectedNetworkLobbyPlayerEntry(nNetworkLobbyScreen);
-}
-
-// FUNCTION: LEMBALL 0x00401F23
-void ThunkHandleNetworkLobbyTransportStatusEvent(int nEventType) {
-    if (g_pActiveNetworkLobbyScreen != 0) {
-        if (nEventType == 10) {
-            RemoveUnavailableNetworkLobbyPlayerEntries((int)(unsigned long)g_pActiveNetworkLobbyScreen);
-            return;
-        }
-        if (nEventType == 0xd) {
-            *(int *)((char *)g_pActiveNetworkLobbyScreen + 0x430) = 7;
-        }
-    }
+    pEntryTable->m_aEntries[pScreen->m_nSelectedEntry].m_fSelected = 1;
+    pEntryTable->m_aEntries[pScreen->m_nSelectedEntry].Activate();
+    return 1;
 }
 
 // FUNCTION: LEMBALL 0x00452850
@@ -503,4 +463,46 @@ int HandleNetworkLobbyVsnetRuntimeEvent(void *pVsnetRuntime, unsigned short *pEv
     default:
         return 0;
     }
+}
+// FUNCTION: LEMBALL 0x00453250
+void ResetNetworkLobbyPlayerEntryChildFlags(int nEntryChild) {
+    VsNetNetworkLobbyPlayerEntryChild *pEntry;
+
+    pEntry = (VsNetNetworkLobbyPlayerEntryChild *)(unsigned long)nEntryChild;
+    pEntry->m_fDirty40 = 0;
+    pEntry->m_fDirty3c = 0;
+    pEntry->m_fDirty38 = 0;
+}
+
+// FUNCTION: LEMBALL 0x00454f00
+void RemoveUnavailableNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
+    VsNetNetworkLobbyScreen *pScreen;
+    VsNetNetworkLobbyVsnetRuntime *pRuntime;
+    int *pnPeerId;
+    VsNetEffTransportPeerStateSlot *pPeerState;
+    int nEntryOffset;
+    int nEntryIndex;
+
+    pScreen = (VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen;
+    nEntryOffset = 0;
+    if (g_pNetworkLobbyVsnetRuntime != 0) {
+        pRuntime = (VsNetNetworkLobbyVsnetRuntime *)g_pNetworkLobbyVsnetRuntime;
+        pnPeerId = pRuntime->m_anTrackedPeers;
+        pPeerState = pRuntime->m_pPeerEntryTable;
+        nEntryIndex = 0;
+        do {
+            if (*pnPeerId == 0 || pPeerState->m_fActive == 0) {
+                ResetNetworkLobbyPlayerEntryChildFlags((int)(unsigned long)((char *)pScreen->m_pEntryTable + nEntryOffset));
+                if (pScreen->m_nResolvedSelection == nEntryIndex) {
+                    pScreen->m_nResolvedSelection = -1;
+                }
+            }
+            nEntryOffset += 0x44;
+            ++pPeerState;
+            ++pnPeerId;
+            ++nEntryIndex;
+        } while (nEntryOffset < 0x2a8);
+    }
+
+    ThunkRefreshNetworkLobbyPlayerEntries(nNetworkLobbyScreen);
 }

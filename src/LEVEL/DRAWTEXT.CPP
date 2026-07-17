@@ -59,13 +59,12 @@ static const char g_szMissingGlyphPrefix[] = "Letter '";
 static const char g_szMissingGlyphText[] = "' not found in font ";
 static const char g_szMissingGlyphNewline[] = "\n";
 
-// FUNCTION: LEMBALL 0x0045BAD0
+// FUNCTION: LEMBALL 0x0045bad0
 VsInitFormattedOutputStream *AppendUIntToStreamAsInt(VsInitFormattedOutputStream *pStream, unsigned int nValue) {
     pStream->AppendIntToStream(nValue);
     return pStream;
 }
-
-// FUNCTION: LEMBALL 0x0045DB20
+// FUNCTION: LEMBALL 0x0045db20
 void *LevelScreenDrawOwnerView::LookupGlyph(unsigned int ch) {
     return m_pGlyphList78->FindGlyph(ch);
 }
@@ -73,17 +72,13 @@ void *LevelScreenDrawOwnerView::LookupGlyph(unsigned int ch) {
 LevelQueuedRenderPointSink::~LevelQueuedRenderPointSink() {
 }
 
-// FUNCTION: LEMBALL 0x00467AC0
+// FUNCTION: LEMBALL 0x00467ac0
 LevelPackagedRectQueueEntry::LevelPackagedRectQueueEntry() {
     m_x04 = 0;
     m_y06 = 0;
 }
 
-// FUNCTION: LEMBALL 0x00467BA0
-LevelPackagedRectQueueEntry::~LevelPackagedRectQueueEntry() {
-}
-
-// FUNCTION: LEMBALL 0x00467AE0
+// FUNCTION: LEMBALL 0x00467ae0
 void LevelPackagedRectQueueEntry::AppendToQueue(void *pQueue) {
     int *pOwner;
 
@@ -98,7 +93,7 @@ void LevelPackagedRectQueueEntry::AppendToQueue(void *pQueue) {
     AppendPointerQueueEntry(pQueue, this);
 }
 
-// FUNCTION: LEMBALL 0x00467B10
+// FUNCTION: LEMBALL 0x00467b10
 void LevelPackagedRectQueueEntry::Process(void *pContext) {
     int *pOwner;
     int pOwnerOffsets;
@@ -116,7 +111,11 @@ void LevelPackagedRectQueueEntry::Process(void *pContext) {
     --pOwner[2];
 }
 
-// FUNCTION: LEMBALL 0x00469A00
+// FUNCTION: LEMBALL 0x00467ba0
+LevelPackagedRectQueueEntry::~LevelPackagedRectQueueEntry() {
+}
+
+// FUNCTION: LEMBALL 0x00469a00
 LevelScreenDrawEntry::LevelScreenDrawEntry() {
     m_xCurrent0C = 0;
     m_yCurrent0E = 0;
@@ -128,17 +127,132 @@ LevelScreenDrawEntry::LevelScreenDrawEntry() {
     m_nReserved26 = 0;
 }
 
-// FUNCTION: LEMBALL 0x00469BF0
-LevelScreenDrawEntry::~LevelScreenDrawEntry() {
+// FUNCTION: LEMBALL 0x00469a50
+void LevelScreenDrawEntry::InitializeFromPositionAndText(short x, short y, void *pOwner, void *pText, int nDrawFlags, int nDrawValue) {
+    m_xStart1C = x;
+    m_yStart1E = y;
+    m_pOwner04 = pOwner;
+    m_nDrawValue14 = nDrawValue;
+    m_nDrawFlags10 = nDrawFlags;
+    m_pText08 = pText;
 }
 
-// FUNCTION: LEMBALL 0x00469B40
+LevelResourceScreenDrawEntry::LevelResourceScreenDrawEntry(int cchText) {
+    m_cchOwnedText48 = cchText;
+    m_pszOwnedText44 = (char *)AllocateVSMemBlock(cchText + 1);
+}
+
+// FUNCTION: LEMBALL 0x00469a80
+void LevelScreenDrawEntry::InitializeFromPointAndText(const short *pPoint, void *pOwner, void *pText, int nDrawFlags, int nDrawValue) {
+    m_xStart1C = pPoint[0];
+    m_yStart1E = pPoint[1];
+    m_pOwner04 = pOwner;
+    m_nDrawValue14 = nDrawValue;
+    m_nDrawFlags10 = nDrawFlags;
+    m_pText08 = pText;
+}
+
+// FUNCTION: LEMBALL 0x00469ac0
+void LevelScreenDrawEntry::InitializeFromPositionAndDynamicText(short x, short y, void *pOwner, GameDynamicCString Text, int nDrawFlags, int nDrawValue) {
+    m_xStart1C = x;
+    m_yStart1E = y;
+    m_pOwner04 = pOwner;
+    m_nDrawFlags10 = nDrawFlags;
+    m_nDrawValue14 = nDrawValue;
+    m_pText08 = Text.m_pszText;
+    Text.DestroyDynamicCString();
+}
+
+// FUNCTION: LEMBALL 0x00469b00
+void LevelScreenDrawEntry::InitializeFromPointAndDynamicText(const short *pPoint, void *pOwner, GameDynamicCString Text, int nDrawFlags, int nDrawValue) {
+    m_xStart1C = pPoint[0];
+    m_yStart1E = pPoint[1];
+    m_pOwner04 = pOwner;
+    m_nDrawFlags10 = nDrawFlags;
+    m_nDrawValue14 = nDrawValue;
+    m_pText08 = Text.m_pszText;
+    Text.DestroyDynamicCString();
+}
+
+// FUNCTION: LEMBALL 0x00469b40
 void LevelScreenDrawEntry::AppendToQueue(void *pQueue) {
     m_nQueueState20 = 0;
     AppendPointerQueueEntry(pQueue, this);
 }
 
-// FUNCTION: LEMBALL 0x004749C0
+// FUNCTION: LEMBALL 0x00469bf0
+LevelScreenDrawEntry::~LevelScreenDrawEntry() {
+}
+
+// FUNCTION: LEMBALL 0x00469c60
+MappedListResourceTable::MappedListResourceTable(int cResourceIds, int cSlots, int cDrawEntries, int cchOwnedText) {
+    int i;
+
+    m_nCurrentSlot18 = 0;
+    m_cResourceIds0C = cResourceIds;
+    m_nReserved10 = 0;
+    m_cSlots08 = cSlots;
+    m_apResources00 = (void **)AllocateVSMemBlock(cSlots * sizeof(void *));
+    m_aiResourceSlots04 =
+        (short *)AllocateVSMemBlock(cResourceIds * sizeof(short));
+    for (i = 0; i < cSlots; ++i) {
+        m_apResources00[i] = 0;
+    }
+    for (i = 0; i < cResourceIds; ++i) {
+        m_aiResourceSlots04[i] = (short)cSlots;
+    }
+    m_cDrawEntries14 = cDrawEntries;
+    m_apDrawEntries20 = (LevelScreenDrawEntry **)AllocateVSMemBlock(
+        cDrawEntries * sizeof(LevelScreenDrawEntry *));
+    for (i = 0; i < cDrawEntries; ++i) {
+        if (cchOwnedText == 0) {
+            m_apDrawEntries20[i] = new (AllocateVSMemBlock(
+                sizeof(LevelScreenDrawEntry))) LevelScreenDrawEntry;
+        } else {
+            m_apDrawEntries20[i] = new (AllocateVSMemBlock(
+                sizeof(LevelResourceScreenDrawEntry)))
+                    LevelResourceScreenDrawEntry(cchOwnedText);
+        }
+    }
+    m_nCurrentSlot18 = 0;
+}
+
+DECOMP_SIZE_ASSERT(LevelQueuedRenderPointSink, 0x04);
+DECOMP_SIZE_ASSERT(LevelPackagedRectQueueEntry, 0x18);
+DECOMP_SIZE_ASSERT(LevelScreenDrawEntry, 0x44);
+DECOMP_SIZE_ASSERT(LevelResourceScreenDrawEntry, 0x4c);
+DECOMP_SIZE_ASSERT(MappedListResourceTable, 0x24);
+// FUNCTION: LEMBALL 0x0046a080
+void LevelResourceScreenDrawEntry::InitializeFromPositionAndText(short x, short y, void *pOwner, void *pText, int nDrawFlags, int nDrawValue) {
+    strcpy(m_pszOwnedText44, (const char *)pText);
+    LevelScreenDrawEntry::InitializeFromPositionAndText(
+        x, y, pOwner, m_pszOwnedText44, nDrawFlags, nDrawValue);
+}
+
+// FUNCTION: LEMBALL 0x0046a0e0
+void LevelResourceScreenDrawEntry::InitializeFromPointAndText(const short *pPoint, void *pOwner, void *pText, int nDrawFlags, int nDrawValue) {
+    strcpy(m_pszOwnedText44, (const char *)pText);
+    LevelScreenDrawEntry::InitializeFromPointAndText(
+        pPoint, pOwner, m_pszOwnedText44, nDrawFlags, nDrawValue);
+}
+
+// FUNCTION: LEMBALL 0x0046a140
+void LevelResourceScreenDrawEntry::InitializeFromPositionAndDynamicText(short x, short y, void *pOwner, GameDynamicCString Text, int nDrawFlags, int nDrawValue) {
+    strcpy(m_pszOwnedText44, Text.m_pszText);
+    LevelScreenDrawEntry::InitializeFromPositionAndText(
+        x, y, pOwner, m_pszOwnedText44, nDrawFlags, nDrawValue);
+    Text.DestroyDynamicCString();
+}
+
+// FUNCTION: LEMBALL 0x0046a1b0
+void LevelResourceScreenDrawEntry::InitializeFromPointAndDynamicText(const short *pPoint, void *pOwner, GameDynamicCString Text, int nDrawFlags, int nDrawValue) {
+    strcpy(m_pszOwnedText44, Text.m_pszText);
+    LevelScreenDrawEntry::InitializeFromPointAndText(
+        pPoint, pOwner, m_pszOwnedText44, nDrawFlags, nDrawValue);
+    Text.DestroyDynamicCString();
+}
+
+// FUNCTION: LEMBALL 0x004749c0
 void LevelScreenDrawEntry::AdvanceCursor() {
     short cx;
     short cy;
@@ -166,7 +280,7 @@ void LevelScreenDrawEntry::AdvanceCursor() {
     }
 }
 
-// FUNCTION: LEMBALL 0x00474A20
+// FUNCTION: LEMBALL 0x00474a20
 void LevelScreenDrawEntry::Process(void *pRenderContext) {
     LevelScreenDrawOwnerView *pOwner;
     const unsigned char *pch;
@@ -225,119 +339,3 @@ void LevelScreenDrawEntry::Process(void *pRenderContext) {
     }
     --((LevelScreenDrawOwnerView *)m_pOwner04)->m_cQueuedEntries08;
 }
-
-// FUNCTION: LEMBALL 0x00469B00
-void LevelScreenDrawEntry::InitializeFromPointAndDynamicText(const short *pPoint, void *pOwner, GameDynamicCString Text, int nDrawFlags, int nDrawValue) {
-    m_xStart1C = pPoint[0];
-    m_yStart1E = pPoint[1];
-    m_pOwner04 = pOwner;
-    m_nDrawFlags10 = nDrawFlags;
-    m_nDrawValue14 = nDrawValue;
-    m_pText08 = Text.m_pszText;
-    Text.DestroyDynamicCString();
-}
-
-// FUNCTION: LEMBALL 0x00469AC0
-void LevelScreenDrawEntry::InitializeFromPositionAndDynamicText(short x, short y, void *pOwner, GameDynamicCString Text, int nDrawFlags, int nDrawValue) {
-    m_xStart1C = x;
-    m_yStart1E = y;
-    m_pOwner04 = pOwner;
-    m_nDrawFlags10 = nDrawFlags;
-    m_nDrawValue14 = nDrawValue;
-    m_pText08 = Text.m_pszText;
-    Text.DestroyDynamicCString();
-}
-
-// FUNCTION: LEMBALL 0x00469A80
-void LevelScreenDrawEntry::InitializeFromPointAndText(const short *pPoint, void *pOwner, void *pText, int nDrawFlags, int nDrawValue) {
-    m_xStart1C = pPoint[0];
-    m_yStart1E = pPoint[1];
-    m_pOwner04 = pOwner;
-    m_nDrawValue14 = nDrawValue;
-    m_nDrawFlags10 = nDrawFlags;
-    m_pText08 = pText;
-}
-
-// FUNCTION: LEMBALL 0x00469A50
-void LevelScreenDrawEntry::InitializeFromPositionAndText(short x, short y, void *pOwner, void *pText, int nDrawFlags, int nDrawValue) {
-    m_xStart1C = x;
-    m_yStart1E = y;
-    m_pOwner04 = pOwner;
-    m_nDrawValue14 = nDrawValue;
-    m_nDrawFlags10 = nDrawFlags;
-    m_pText08 = pText;
-}
-
-LevelResourceScreenDrawEntry::LevelResourceScreenDrawEntry(int cchText) {
-    m_cchOwnedText48 = cchText;
-    m_pszOwnedText44 = (char *)AllocateVSMemBlock(cchText + 1);
-}
-
-// FUNCTION: LEMBALL 0x0046A1B0
-void LevelResourceScreenDrawEntry::InitializeFromPointAndDynamicText(const short *pPoint, void *pOwner, GameDynamicCString Text, int nDrawFlags, int nDrawValue) {
-    strcpy(m_pszOwnedText44, Text.m_pszText);
-    LevelScreenDrawEntry::InitializeFromPointAndText(
-        pPoint, pOwner, m_pszOwnedText44, nDrawFlags, nDrawValue);
-    Text.DestroyDynamicCString();
-}
-
-// FUNCTION: LEMBALL 0x0046A140
-void LevelResourceScreenDrawEntry::InitializeFromPositionAndDynamicText(short x, short y, void *pOwner, GameDynamicCString Text, int nDrawFlags, int nDrawValue) {
-    strcpy(m_pszOwnedText44, Text.m_pszText);
-    LevelScreenDrawEntry::InitializeFromPositionAndText(
-        x, y, pOwner, m_pszOwnedText44, nDrawFlags, nDrawValue);
-    Text.DestroyDynamicCString();
-}
-
-// FUNCTION: LEMBALL 0x0046A0E0
-void LevelResourceScreenDrawEntry::InitializeFromPointAndText(const short *pPoint, void *pOwner, void *pText, int nDrawFlags, int nDrawValue) {
-    strcpy(m_pszOwnedText44, (const char *)pText);
-    LevelScreenDrawEntry::InitializeFromPointAndText(
-        pPoint, pOwner, m_pszOwnedText44, nDrawFlags, nDrawValue);
-}
-
-// FUNCTION: LEMBALL 0x0046A080
-void LevelResourceScreenDrawEntry::InitializeFromPositionAndText(short x, short y, void *pOwner, void *pText, int nDrawFlags, int nDrawValue) {
-    strcpy(m_pszOwnedText44, (const char *)pText);
-    LevelScreenDrawEntry::InitializeFromPositionAndText(
-        x, y, pOwner, m_pszOwnedText44, nDrawFlags, nDrawValue);
-}
-
-// FUNCTION: LEMBALL 0x00469C60
-MappedListResourceTable::MappedListResourceTable(int cResourceIds, int cSlots, int cDrawEntries, int cchOwnedText) {
-    int i;
-
-    m_nCurrentSlot18 = 0;
-    m_cResourceIds0C = cResourceIds;
-    m_nReserved10 = 0;
-    m_cSlots08 = cSlots;
-    m_apResources00 = (void **)AllocateVSMemBlock(cSlots * sizeof(void *));
-    m_aiResourceSlots04 =
-        (short *)AllocateVSMemBlock(cResourceIds * sizeof(short));
-    for (i = 0; i < cSlots; ++i) {
-        m_apResources00[i] = 0;
-    }
-    for (i = 0; i < cResourceIds; ++i) {
-        m_aiResourceSlots04[i] = (short)cSlots;
-    }
-    m_cDrawEntries14 = cDrawEntries;
-    m_apDrawEntries20 = (LevelScreenDrawEntry **)AllocateVSMemBlock(
-        cDrawEntries * sizeof(LevelScreenDrawEntry *));
-    for (i = 0; i < cDrawEntries; ++i) {
-        if (cchOwnedText == 0) {
-            m_apDrawEntries20[i] = new (AllocateVSMemBlock(
-                sizeof(LevelScreenDrawEntry))) LevelScreenDrawEntry;
-        } else {
-            m_apDrawEntries20[i] = new (AllocateVSMemBlock(
-                sizeof(LevelResourceScreenDrawEntry)))
-                    LevelResourceScreenDrawEntry(cchOwnedText);
-        }
-    }
-    m_nCurrentSlot18 = 0;
-}
-
-DECOMP_SIZE_ASSERT(LevelQueuedRenderPointSink, 0x04);
-DECOMP_SIZE_ASSERT(LevelPackagedRectQueueEntry, 0x18);
-DECOMP_SIZE_ASSERT(LevelScreenDrawEntry, 0x44);
-DECOMP_SIZE_ASSERT(LevelResourceScreenDrawEntry, 0x4c);
-DECOMP_SIZE_ASSERT(MappedListResourceTable, 0x24);

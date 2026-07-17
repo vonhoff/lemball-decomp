@@ -47,6 +47,8 @@ void AppendUIntToStream(VsInitFormattedOutputStream *pStream, unsigned int uValu
 void AppendUnsignedIntToStreamVariant(VsInitFormattedOutputStream *pStream, unsigned int uValue);
 VsInitFormattedOutputStream *AppendUIntHexToStream(VsInitFormattedOutputStream *pStream, unsigned int uValue);
 VsInitFormattedOutputStream *AppendHexUIntToStream(VsInitFormattedOutputStream *pStream, unsigned int uValue);
+// FUNCTION: LEMBALL 0x0045abb0
+// WriteStatusEntryPointerArray
 VsInitFormattedOutputStream *WriteStatusEntryPointerArray(void *pRegistry, VsInitFormattedOutputStream *pStream);
 void *ConstructRenderDispatchQueue(void *pQueue, int cEntries);
 struct RenderDispatchQueueEntry {
@@ -89,7 +91,11 @@ void LEMBALL_FASTCALL DestroyFixedBufferStream(VsInitFixedBufferStream *pStream)
 void *LEMBALL_FASTCALL DeleteFixedBufferStreamReturnThis(
     VsInitFixedBufferStream *pStream, int nUnused, int fFreeMemory);
 void __fastcall ResetFixedBufferStream(VsInitFixedBufferStream *pStream);
+// FUNCTION: LEMBALL 0x0045ae10
+// AppendCharToFixedBufferStream
 void AppendCharToFixedBufferStream(VsInitFixedBufferStream *pStream, char ch);
+// FUNCTION: LEMBALL 0x0045af20
+// AppendCStringToFixedBufferStream
 void AppendCStringToFixedBufferStream(VsInitFixedBufferStream *pStream, const char *pszText);
 void *LEMBALL_FASTCALL ReturnStreamArgument(
     void *pStream, int nUnused, void *pArgument);
@@ -97,7 +103,11 @@ int LEMBALL_FASTCALL AppendRenderDispatchQueueEntry(
     void *pQueue, int nUnused, RenderDispatchQueueEntry *pEntry);
 int LEMBALL_FASTCALL DispatchRenderQueueEntryImmediately(
     void *pQueue, int nUnused, RenderDispatchQueueEntry *pEntry);
+// FUNCTION: LEMBALL 0x00459990
+// EnterObjectCriticalSection
 void EnterObjectCriticalSection(void *pObject);
+// FUNCTION: LEMBALL 0x004599a0
+// LeaveObjectCriticalSection
 void LeaveObjectCriticalSection(void *pObject);
 
 extern int g_fStartupNoWait;

@@ -122,70 +122,14 @@ public:
     virtual int Reserved24(void) = 0;
 };
 
-// FUNCTION: LEMBALL 0x0040AC00
-void *LEMBALL_FASTCALL DeleteEffStreamConstructionBase(
-    void *pObject, void *pUnused, BYTE fDelete)
-{
-    (void)pUnused;
-    ((VsNetEffStreamBase *)pObject)->DestroyEffStreamBase();
-    if ((fDelete & 1) != 0) {
-        FreeVSMemBlock(pObject);
-    }
-    return pObject;
-}
 
-// FUNCTION: LEMBALL 0x00401AAA
-void *LEMBALL_FASTCALL DeleteEffStreamConstructionBaseThunk(
-    void *pObject, void *pUnused, BYTE fDelete)
-{
-    return DeleteEffStreamConstructionBase(pObject, pUnused, fDelete);
-}
 
-// FUNCTION: LEMBALL 0x0040ABA0
-void *LEMBALL_FASTCALL DeleteLevelEffChunkStreamBase(
-    void *pObject, void *pUnused, BYTE fDelete)
-{
-    (void)pUnused;
-    ((VsNetEffStreamBase *)pObject)->DestroyEffStreamBase();
-    if ((fDelete & 1) != 0) {
-        FreeVSMemBlock(pObject);
-    }
-    return pObject;
-}
 
-// FUNCTION: LEMBALL 0x00401645
-void *LEMBALL_FASTCALL DeleteLevelEffChunkStreamBaseThunk(
-    void *pObject, void *pUnused, BYTE fDelete)
-{
-    return DeleteLevelEffChunkStreamBase(pObject, pUnused, fDelete);
-}
 
-// FUNCTION: LEMBALL 0x0040AB70
-void NoopLevelEffChunkStreamVirtual(void) {
-}
 
-// FUNCTION: LEMBALL 0x00403427
-void NoopLevelEffChunkStreamVirtualThunk(void) {
-    NoopLevelEffChunkStreamVirtual();
-}
 
-// FUNCTION: LEMBALL 0x00402E23
-void NoopType18ChunkStreamWriteThunk(void) {
-    noop_vtable_callback_0040adc0();
-}
 
-// FUNCTION: LEMBALL 0x00402DFB
-int PASCAL ReturnFalseChunkStreamCommandThunk(
-    void *pUnused1, void *pUnused2, void *pUnused3)
-{
-    return return_false_vtable_callback_0040ab80(
-        pUnused1, pUnused2, pUnused3);
-}
 
-// FUNCTION: LEMBALL 0x004012B7
-int PASCAL ReturnFalseChunkStreamRenderThunk(void *pUnused) {
-    return return_false_vtable_callback_0040ab90(pUnused);
-}
 
 void LEMBALL_FASTCALL DispatchType18ChunkStreamCommands(
     LevelType18ChunkStream *pStream);
@@ -196,42 +140,53 @@ void LEMBALL_FASTCALL PrepareType18ChunkStreamObjects(
 void *LEMBALL_FASTCALL DeleteType18ChunkStream(
     LevelType18ChunkStream *pStream, void *pUnused, BYTE fDelete);
 
-// FUNCTION: LEMBALL 0x00402586
-void LEMBALL_FASTCALL DispatchType18ChunkStreamCommandsThunk(
-    LevelType18ChunkStream *pStream)
-{
-    DispatchType18ChunkStreamCommands(pStream);
-}
 
-// FUNCTION: LEMBALL 0x00402BF8
-void LEMBALL_FASTCALL ResetType18ChunkStreamObjectsThunk(
-    LevelType18ChunkStream *pStream)
-{
-    ResetType18ChunkStreamObjects(pStream);
-}
 
-// FUNCTION: LEMBALL 0x00402A90
-void LEMBALL_FASTCALL PrepareType18ChunkStreamObjectsThunk(
-    LevelType18ChunkStream *pStream)
-{
-    PrepareType18ChunkStreamObjects(pStream);
-}
 
-// FUNCTION: LEMBALL 0x0040280B
-int LEMBALL_FASTCALL EmitType18ChunkStreamEntriesThunk(
-    LevelType18ChunkStream *pStream, void *pUnused, void *pOutput)
-{
-    (void)pUnused;
-    return pStream->EmitEntries(
-        (LevelType18ChunkStreamEntry *)pOutput);
-}
 
-// FUNCTION: LEMBALL 0x0040114A
+
 void *LEMBALL_FASTCALL DeleteType18ChunkStreamThunk(
-    LevelType18ChunkStream *pStream, void *pUnused, BYTE fDelete)
-{
-    return DeleteType18ChunkStream(pStream, pUnused, fDelete);
-}
+    LevelType18ChunkStream *pStream, void *pUnused, BYTE fDelete);
+int PASCAL ReturnFalseChunkStreamRenderThunk(void *pUnused);
+void *LEMBALL_FASTCALL DeleteLevelEffChunkStreamBaseThunk(
+    void *pObject, void *pUnused, BYTE fDelete);
+unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(
+    int nManagedEntityObject);
+void *LEMBALL_FASTCALL DeleteEffStreamConstructionBaseThunk(
+    void *pObject, void *pUnused, BYTE fDelete);
+void LEMBALL_FASTCALL DestroyType18ChunkStreamThunk(
+    LevelType18ChunkStream *pStream);
+void LEMBALL_FASTCALL DispatchType18ChunkStreamCommandsThunk(
+    LevelType18ChunkStream *pStream);
+LevelType18ChunkStream *LEMBALL_FASTCALL ConstructType18ChunkStreamThunk(
+    LevelType18ChunkStream *pStream);
+int LEMBALL_FASTCALL EmitType18ChunkStreamEntriesThunk(
+    LevelType18ChunkStream *pStream, void *pUnused, void *pOutput);
+void LEMBALL_FASTCALL PrepareType18ChunkStreamObjectsThunk(
+    LevelType18ChunkStream *pStream);
+void LEMBALL_FASTCALL ResetType18ChunkStreamObjectsThunk(
+    LevelType18ChunkStream *pStream);
+int PASCAL ReturnFalseChunkStreamCommandThunk(
+    void *pUnused1, void *pUnused2, void *pUnused3);
+void NoopType18ChunkStreamWriteThunk(void);
+void NoopLevelEffChunkStreamVirtualThunk(void);
+void NoopLevelEffChunkStreamVirtual(void);
+void *LEMBALL_FASTCALL DeleteLevelEffChunkStreamBase(
+    void *pObject, void *pUnused, BYTE fDelete);
+void *LEMBALL_FASTCALL DeleteEffStreamConstructionBase(
+    void *pObject, void *pUnused, BYTE fDelete);
+void LEMBALL_FASTCALL DispatchType18ChunkStreamCommands(
+    LevelType18ChunkStream *pStream);
+LevelType18ChunkStream *LEMBALL_FASTCALL ConstructType18ChunkStream(
+    LevelType18ChunkStream *pStream);
+void LEMBALL_FASTCALL ResetType18ChunkStreamObjects(
+    LevelType18ChunkStream *pStream);
+void LEMBALL_FASTCALL DestroyType18ChunkStream(
+    LevelType18ChunkStream *pStream);
+void LEMBALL_FASTCALL PrepareType18ChunkStreamObjects(
+    LevelType18ChunkStream *pStream);
+void *LEMBALL_FASTCALL DeleteType18ChunkStream(
+    LevelType18ChunkStream *pStream, void *pUnused, BYTE fDelete);
 
 // GLOBAL: LEMBALL 0x004932c8
 void *g_GAME_EffStreamConstructionVtable[6] = {
@@ -271,153 +226,147 @@ static void *g_LEVEL_Type18ChunkStreamVtable[10] = {
     (void *)EmitType18ChunkStreamEntriesThunk,
 };
 
-// FUNCTION: LEMBALL 0x0040C750
-LevelType18ChunkStream *LEMBALL_FASTCALL ConstructType18ChunkStream(
-    LevelType18ChunkStream *pStream)
-{
-    int i;
 
-    pStream->m_pVtable =
-        (GameEffStreamVtable *)g_GAME_EffStreamConstructionVtable;
-    pStream->m_nEventCode = 0x1e;
-    pStream->ResetStateFields();
-    pStream->m_nU32Payload = 0x13;
-    pStream->m_pVtable =
-        (GameEffStreamVtable *)g_LEVEL_EffChunkStreamBaseVtable;
-    if (g_pActiveNetworkRuntimeWindow != 0) {
-        pStream->m_fHasPayload = 1;
-        pStream->m_cbSerializedLength += g_cbEffTransportMaxPacketBytes;
-    }
-    pStream->m_pVtable =
-        (GameEffStreamVtable *)g_LEVEL_Type18ChunkStreamVtable;
-    pStream->m_cObjects50 = 0;
-    for (i = 0; i < 8; ++i) {
-        pStream->m_apObjects30[i] = 0;
-    }
-    return pStream;
-}
-
-// FUNCTION: LEMBALL 0x00402734
-LevelType18ChunkStream *LEMBALL_FASTCALL ConstructType18ChunkStreamThunk(
-    LevelType18ChunkStream *pStream)
-{
-    return ConstructType18ChunkStream(pStream);
-}
-
-// FUNCTION: LEMBALL 0x0040C7B0
-void LEMBALL_FASTCALL ResetType18ChunkStreamObjects(
-    LevelType18ChunkStream *pStream)
-{
-    LevelType18ChunkObject **ppObject;
-    int i;
-
-    i = 0;
-    if (0 < pStream->m_cObjects50) {
-        ppObject = pStream->m_apObjects30;
-        do {
-            (*ppObject)->Reset();
-            ++ppObject;
-            ++i;
-        } while (i < pStream->m_cObjects50);
-    }
-}
-
-// FUNCTION: LEMBALL 0x0040C7E0
-void LEMBALL_FASTCALL DestroyType18ChunkStream(
-    LevelType18ChunkStream *pStream)
-{
-    LevelType18ChunkObject **ppObject;
-    int i;
-
-    ppObject = pStream->m_apObjects30;
-    pStream->m_pVtable =
-        (GameEffStreamVtable *)g_LEVEL_Type18ChunkStreamVtable;
-    i = 8;
-    do {
-        if (*ppObject != 0) {
-            (*ppObject)->Delete(1);
-        }
-        ++ppObject;
-        --i;
-    } while (i != 0);
-    ((VsNetEffStreamBase *)pStream)->DestroyEffStreamBase();
-}
-
-// FUNCTION: LEMBALL 0x0040222A
-void LEMBALL_FASTCALL DestroyType18ChunkStreamThunk(
-    LevelType18ChunkStream *pStream)
-{
-    DestroyType18ChunkStream(pStream);
-}
-
-// FUNCTION: LEMBALL 0x0040CED0
-void *LEMBALL_FASTCALL DeleteType18ChunkStream(
+// FUNCTION: LEMBALL 0x0040114a
+void *LEMBALL_FASTCALL DeleteType18ChunkStreamThunk(
     LevelType18ChunkStream *pStream, void *pUnused, BYTE fDelete)
+
 {
-    (void)pUnused;
-    DestroyType18ChunkStreamThunk(pStream);
-    if ((fDelete & 1) != 0) {
-        FreeVSMemBlock(pStream);
-    }
-    return pStream;
+    return DeleteType18ChunkStream(pStream, pUnused, fDelete);
 }
 
-// FUNCTION: LEMBALL 0x0040C8F0
-void LEMBALL_FASTCALL PrepareType18ChunkStreamObjects(
-    LevelType18ChunkStream *pStream)
-{
-    int i;
-
-    if (pStream->m_cObjects50 != 0) {
-        i = 0;
-        if (0 < pStream->m_cObjects50) {
-            do {
-                pStream->m_apObjects30[i]->m_fPrepare124 = 1;
-                if (pStream->m_apObjects30[i]->m_fPending148 != 0 &&
-                    pStream->m_apObjects30[i]->TestPreparedState() == 0) {
-                    pStream->m_apObjects30[i]->m_fPending148 = 0;
-                }
-                ++i;
-            } while (i < pStream->m_cObjects50);
-        }
-    }
+// FUNCTION: LEMBALL 0x004012b7
+int PASCAL ReturnFalseChunkStreamRenderThunk(void *pUnused) {
+    return return_false_vtable_callback_0040ab90(pUnused);
 }
 
-// FUNCTION: LEMBALL 0x0040C890
-int LevelType18ChunkStream::EmitEntries(
-    LevelType18ChunkStreamEntry *pEntry)
-{
-    int cEntries;
-    int i;
-    LevelType18ChunkObject **ppObject;
+// FUNCTION: LEMBALL 0x00401645
+void *LEMBALL_FASTCALL DeleteLevelEffChunkStreamBaseThunk(
+    void *pObject, void *pUnused, BYTE fDelete)
 
-    cEntries = 0;
-    i = 0;
-    if (0 < m_cObjects50) {
-        ppObject = m_apObjects30;
-        do {
-            if ((*ppObject)->m_nStateB8 != 0x18 &&
-                (*ppObject)->m_nStateB8 != 0x1e) {
-                (*ppObject)->EmitRenderEntry(pEntry++);
-                ++cEntries;
-            }
-            ++ppObject;
-            ++i;
-        } while (i < m_cObjects50);
-    }
-    return cEntries;
+{
+    return DeleteLevelEffChunkStreamBase(pObject, pUnused, fDelete);
 }
 
 // FUNCTION: LEMBALL 0x00401794
 unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(
     int nManagedEntityObject)
+
 {
     return GetManagedEntitySlotId(nManagedEntityObject);
 }
 
-// FUNCTION: LEMBALL 0x0040AED0
+// FUNCTION: LEMBALL 0x00401aaa
+void *LEMBALL_FASTCALL DeleteEffStreamConstructionBaseThunk(
+    void *pObject, void *pUnused, BYTE fDelete)
+
+{
+    return DeleteEffStreamConstructionBase(pObject, pUnused, fDelete);
+}
+
+// FUNCTION: LEMBALL 0x0040222a
+void LEMBALL_FASTCALL DestroyType18ChunkStreamThunk(
+    LevelType18ChunkStream *pStream)
+
+{
+    DestroyType18ChunkStream(pStream);
+}
+
+// FUNCTION: LEMBALL 0x00402586
+void LEMBALL_FASTCALL DispatchType18ChunkStreamCommandsThunk(
+    LevelType18ChunkStream *pStream)
+
+{
+    DispatchType18ChunkStreamCommands(pStream);
+}
+
+// FUNCTION: LEMBALL 0x00402734
+LevelType18ChunkStream *LEMBALL_FASTCALL ConstructType18ChunkStreamThunk(
+    LevelType18ChunkStream *pStream)
+
+{
+    return ConstructType18ChunkStream(pStream);
+}
+
+// FUNCTION: LEMBALL 0x0040280b
+int LEMBALL_FASTCALL EmitType18ChunkStreamEntriesThunk(
+    LevelType18ChunkStream *pStream, void *pUnused, void *pOutput)
+
+{
+    (void)pUnused;
+    return pStream->EmitEntries(
+        (LevelType18ChunkStreamEntry *)pOutput);
+}
+
+// FUNCTION: LEMBALL 0x00402a90
+void LEMBALL_FASTCALL PrepareType18ChunkStreamObjectsThunk(
+    LevelType18ChunkStream *pStream)
+
+{
+    PrepareType18ChunkStreamObjects(pStream);
+}
+
+// FUNCTION: LEMBALL 0x00402bf8
+void LEMBALL_FASTCALL ResetType18ChunkStreamObjectsThunk(
+    LevelType18ChunkStream *pStream)
+
+{
+    ResetType18ChunkStreamObjects(pStream);
+}
+
+// FUNCTION: LEMBALL 0x00402dfb
+int PASCAL ReturnFalseChunkStreamCommandThunk(
+    void *pUnused1, void *pUnused2, void *pUnused3)
+
+{
+    return return_false_vtable_callback_0040ab80(
+        pUnused1, pUnused2, pUnused3);
+}
+
+// FUNCTION: LEMBALL 0x00402e23
+void NoopType18ChunkStreamWriteThunk(void) {
+    noop_vtable_callback_0040adc0();
+}
+
+// FUNCTION: LEMBALL 0x00403427
+void NoopLevelEffChunkStreamVirtualThunk(void) {
+    NoopLevelEffChunkStreamVirtual();
+}
+
+// FUNCTION: LEMBALL 0x0040ab70
+void NoopLevelEffChunkStreamVirtual(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040aba0
+void *LEMBALL_FASTCALL DeleteLevelEffChunkStreamBase(
+    void *pObject, void *pUnused, BYTE fDelete)
+
+{
+    (void)pUnused;
+    ((VsNetEffStreamBase *)pObject)->DestroyEffStreamBase();
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0040ac00
+void *LEMBALL_FASTCALL DeleteEffStreamConstructionBase(
+    void *pObject, void *pUnused, BYTE fDelete)
+
+{
+    (void)pUnused;
+    ((VsNetEffStreamBase *)pObject)->DestroyEffStreamBase();
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0040aed0
 void LEMBALL_FASTCALL DispatchType18ChunkStreamCommands(
     LevelType18ChunkStream *pStream)
+
 {
     LevelType18ChunkObject *pObject;
     LevelType18ChunkObject *pCandidate;
@@ -454,4 +403,133 @@ void LEMBALL_FASTCALL DispatchType18ChunkStreamCommands(
         nCommand = ((VsNetEffStreamBase *)pStream)
             ->ReadEffStreamU16BEValue();
     }
+}
+
+// FUNCTION: LEMBALL 0x0040c750
+LevelType18ChunkStream *LEMBALL_FASTCALL ConstructType18ChunkStream(
+    LevelType18ChunkStream *pStream)
+
+{
+    int i;
+
+    pStream->m_pVtable =
+        (GameEffStreamVtable *)g_GAME_EffStreamConstructionVtable;
+    pStream->m_nEventCode = 0x1e;
+    pStream->ResetStateFields();
+    pStream->m_nU32Payload = 0x13;
+    pStream->m_pVtable =
+        (GameEffStreamVtable *)g_LEVEL_EffChunkStreamBaseVtable;
+    if (g_pActiveNetworkRuntimeWindow != 0) {
+        pStream->m_fHasPayload = 1;
+        pStream->m_cbSerializedLength += g_cbEffTransportMaxPacketBytes;
+    }
+    pStream->m_pVtable =
+        (GameEffStreamVtable *)g_LEVEL_Type18ChunkStreamVtable;
+    pStream->m_cObjects50 = 0;
+    for (i = 0; i < 8; ++i) {
+        pStream->m_apObjects30[i] = 0;
+    }
+    return pStream;
+}
+
+// FUNCTION: LEMBALL 0x0040c7b0
+void LEMBALL_FASTCALL ResetType18ChunkStreamObjects(
+    LevelType18ChunkStream *pStream)
+
+{
+    LevelType18ChunkObject **ppObject;
+    int i;
+
+    i = 0;
+    if (0 < pStream->m_cObjects50) {
+        ppObject = pStream->m_apObjects30;
+        do {
+            (*ppObject)->Reset();
+            ++ppObject;
+            ++i;
+        } while (i < pStream->m_cObjects50);
+    }
+}
+
+// FUNCTION: LEMBALL 0x0040c7e0
+void LEMBALL_FASTCALL DestroyType18ChunkStream(
+    LevelType18ChunkStream *pStream)
+
+{
+    LevelType18ChunkObject **ppObject;
+    int i;
+
+    ppObject = pStream->m_apObjects30;
+    pStream->m_pVtable =
+        (GameEffStreamVtable *)g_LEVEL_Type18ChunkStreamVtable;
+    i = 8;
+    do {
+        if (*ppObject != 0) {
+            (*ppObject)->Delete(1);
+        }
+        ++ppObject;
+        --i;
+    } while (i != 0);
+    ((VsNetEffStreamBase *)pStream)->DestroyEffStreamBase();
+}
+
+// FUNCTION: LEMBALL 0x0040c890
+int LevelType18ChunkStream::EmitEntries(
+    LevelType18ChunkStreamEntry *pEntry)
+
+{
+    int cEntries;
+    int i;
+    LevelType18ChunkObject **ppObject;
+
+    cEntries = 0;
+    i = 0;
+    if (0 < m_cObjects50) {
+        ppObject = m_apObjects30;
+        do {
+            if ((*ppObject)->m_nStateB8 != 0x18 &&
+                (*ppObject)->m_nStateB8 != 0x1e) {
+                (*ppObject)->EmitRenderEntry(pEntry++);
+                ++cEntries;
+            }
+            ++ppObject;
+            ++i;
+        } while (i < m_cObjects50);
+    }
+    return cEntries;
+}
+
+// FUNCTION: LEMBALL 0x0040c8f0
+void LEMBALL_FASTCALL PrepareType18ChunkStreamObjects(
+    LevelType18ChunkStream *pStream)
+
+{
+    int i;
+
+    if (pStream->m_cObjects50 != 0) {
+        i = 0;
+        if (0 < pStream->m_cObjects50) {
+            do {
+                pStream->m_apObjects30[i]->m_fPrepare124 = 1;
+                if (pStream->m_apObjects30[i]->m_fPending148 != 0 &&
+                    pStream->m_apObjects30[i]->TestPreparedState() == 0) {
+                    pStream->m_apObjects30[i]->m_fPending148 = 0;
+                }
+                ++i;
+            } while (i < pStream->m_cObjects50);
+        }
+    }
+}
+
+// FUNCTION: LEMBALL 0x0040ced0
+void *LEMBALL_FASTCALL DeleteType18ChunkStream(
+    LevelType18ChunkStream *pStream, void *pUnused, BYTE fDelete)
+
+{
+    (void)pUnused;
+    DestroyType18ChunkStreamThunk(pStream);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pStream);
+    }
+    return pStream;
 }

@@ -11,70 +11,16 @@ extern void LEMBALL_FASTCALL CopyBufferIntoTypedResourceObjectAndParse(
     unsigned int nUnused,
     unsigned int cbBuffer);
 
-// FUNCTION: LEMBALL 0x0045E720
-int LEMBALL_FASTCALL ListIsFirstEntryLoaded(void *pResource) {
-    int fLoaded;
 
-    fLoaded = 0;
-    if (*(int *)((char *)*(void **)((char *)pResource + 0x78) + 0x18) != 0) {
-        fLoaded = 1;
-    }
-    return fLoaded;
-}
 
-// FUNCTION: LEMBALL 0x0045E840
-void LEMBALL_FASTCALL SetupZrleResourceType(void *pResource) {
-    *(unsigned int *)((char *)pResource + 0x40) = 0x5a524c45;
-    *(int *)((char *)pResource + 0x3c) = 0x0c;
-}
 
-// FUNCTION: LEMBALL 0x0045E910
-void LEMBALL_FASTCALL SetIntResourceTypeTag(void *pResource) {
-    *(unsigned int *)((char *)pResource + 0x40) = 0x494e5420;
-}
 
-// FUNCTION: LEMBALL 0x0045E920
-void LEMBALL_FASTCALL ReadIntResourcePayloadFromStream(void *pResource) {
-    *(int *)((char *)pResource + 0x48) = **(int **)((char *)pResource + 0x38);
-}
 
-// FUNCTION: LEMBALL 0x0045EA30
-void LEMBALL_FASTCALL SetPalResourceType(void *pResource) {
-    *(unsigned int *)((char *)pResource + 0x40) = 0x50414c20;
-    *(int *)((char *)pResource + 0x3c) = 4;
-}
 
-// FUNCTION: LEMBALL 0x0045EB40
-void LEMBALL_FASTCALL SetGamiResourceTypeTag(void *pResource) {
-    *(unsigned int *)((char *)pResource + 0x40) = 0x494d4147;
-    *(int *)((char *)pResource + 0x3c) = 0x10;
-}
 
-// FUNCTION: LEMBALL 0x0045EB70
-void LEMBALL_FASTCALL SetBitmapResourceType(void *pResource) {
-    *(unsigned int *)((char *)pResource + 0x40) = 0x42544d50;
-    *(int *)((char *)pResource + 0x3c) = 0x0c;
-}
 
-// FUNCTION: LEMBALL 0x0045EBA0
-void LEMBALL_FASTCALL SetEffResourceTypeTag(void *pResource) {
-    *(unsigned int *)((char *)pResource + 0x40) = 0x45464620;
-}
 
-// FUNCTION: LEMBALL 0x0045EBD0
-void LEMBALL_FASTCALL SetPtchResourceTypeTag(void *pResource) {
-    *(unsigned int *)((char *)pResource + 0x40) = 0x50544348;
-}
 
-// FUNCTION: LEMBALL 0x0045EC00
-void LEMBALL_FASTCALL SetTuneResourceTypeTag(void *pResource) {
-    *(unsigned int *)((char *)pResource + 0x40) = 0x54554e45;
-}
-
-// FUNCTION: LEMBALL 0x0045EC30
-void LEMBALL_FASTCALL SetPresResourceTypeTag(void *pResource) {
-    *(unsigned int *)((char *)pResource + 0x40) = 0x50524553;
-}
 
 static const unsigned int g_GAME_ListResourceTypeTag = 0x4c495354;
 static const unsigned int g_GAME_BitmapResourceTypeTag = 0x42544d50;
@@ -98,43 +44,10 @@ extern void NoopVfunc12(void);
 extern void LEMBALL_FASTCALL ClearResourceTypeTag(void *pObject);
 extern int LEMBALL_FASTCALL GetField28GetMemorySize(void *pObject);
 
-// FUNCTION: LEMBALL 0x0045E340
-void LEMBALL_FASTCALL PopulateZrleResourceDescriptorFields(void *pObject) {
-    unsigned short *pDescriptor;
-
-    pDescriptor = *(unsigned short **)((char *)pObject + 0x34);
-    *(unsigned short *)((char *)pObject + 0x48) = pDescriptor[0];
-    *(unsigned short *)((char *)pObject + 0x4a) = pDescriptor[1];
-    *(unsigned short *)((char *)pObject + 0x4c) = pDescriptor[2];
-    *(unsigned short *)((char *)pObject + 0x4e) = pDescriptor[3];
-    *(unsigned short *)((char *)pObject + 0x50) = pDescriptor[4];
-    *(unsigned short *)((char *)pObject + 0x52) = pDescriptor[5];
-}
-
-// FUNCTION: LEMBALL 0x0045E850
+void LEMBALL_FASTCALL PopulateZrleResourceDescriptorFields(void *pObject);
+void LEMBALL_FASTCALL SetupZrleResourceType(void *pResource);
 void *LEMBALL_FASTCALL DestroyZrleResourceEntryArray(
-    void *pObject, int nUnused, unsigned int fDelete) {
-    (void)nUnused;
-    int cEntries;
-    char *pEntry;
-
-    if ((fDelete & 2) == 0) {
-        InitializeTypedResourceObjectBaseVtable(pObject);
-        if ((fDelete & 1) != 0) {
-            FreeVSMemBlock(pObject);
-        }
-        return pObject;
-    }
-
-    cEntries = *((int *)pObject - 1);
-    pEntry = (char *)pObject + cEntries * 0x54;
-    while (cEntries-- > 0) {
-        pEntry -= 0x54;
-        InitializeTypedResourceObjectBaseVtable(pEntry);
-    }
-    FreeVSMemBlock((char *)pObject - 4);
-    return pObject;
-}
+    void *pObject, int nUnused, unsigned int fDelete);
 
 static void *g_GAME_ZrleResourceVtableStorage[15] = {
     (void *)DestroyZrleResourceEntryArray,
@@ -211,7 +124,59 @@ static void *g_GAME_ListResourceVtableStorage[15] = {
     (void *)SetListResourceTypeList,
     (void *)GetListEntryArrayCursor,
 };
-// GLOBAL: LEMBALL 0x00498A18
+void LoadMainGameVariantZrleListResource(void *pBundle, int nResourceId);
+void LoadMainGameVariantListResource(void *pBundle, int nResourceId);
+void LoadMainGameVariantBitmapResource(void *pBundle, int nResourceId);
+void LoadMainGameVariantPaletteResource(void *pBundle, int nResourceId);
+void LoadMainGameVariantTwoArrayListResource(void *pBundle, int nResourceId);
+static void LEMBALL_FASTCALL ParseListResourceDescriptor(void *pObject);
+static void LEMBALL_FASTCALL CopyBuffersIntoTwoArrayListResourceAndParse(
+    void *pObject,
+    void *pUnusedEdx,
+    unsigned int *pSource,
+    int pRelatedObject,
+    unsigned int cbBuffer);
+static void LEMBALL_FASTCALL LoadListEntryArraysFromArchive(void *pObject);
+static int LEMBALL_FASTCALL EnsureIntZrleListEntriesLoaded(void *pObject);
+static void LEMBALL_FASTCALL ReleaseListEntriesAndStreamBuffer(
+    void *pObject, void *pUnusedEdx, int fReleaseMode);
+static void LEMBALL_FASTCALL LoadListEntriesFromStreamDescriptors(void *pObject, void *pUnused, int nArgument);
+void *LoadZrleOnlyListResource(int nResourceId);
+void *ConstructIntZrleListResourceFromId(void *pObject, int nResourceId);
+void *LoadListResource(int nResourceId);
+void *LoadPalResource(int nResourceId);
+void *LoadTwoArrayListResource(int nResourceId);
+void *ConstructTwoArrayListResourceFromId(void *pObject, int nResourceId);
+static void LEMBALL_FASTCALL DestroyTwoArrayListResource(void *pObject);
+void *LoadBitmapResource(int nResourceId);
+void *LoadZrleResource(int nResourceId);
+void LEMBALL_FASTCALL PopulateZrleResourceDescriptorFields(void *pObject);
+static void LEMBALL_FASTCALL SetListResourceTypeList(void *pObject);
+static int LEMBALL_FASTCALL GetListEntryArrayCursor(void *pObject);
+static int LEMBALL_FASTCALL ListNeedsAgeIncrement(void *pObject);
+static int LEMBALL_FASTCALL ListField60Nonzero(void *pObject);
+static int LEMBALL_FASTCALL ListField68Nonzero(void *pObject);
+static void *LEMBALL_FASTCALL DeleteListResourceBase(
+    void *pObject, int nUnused, int fDelete);
+int LEMBALL_FASTCALL ListIsFirstEntryLoaded(void *pResource);
+static void *LEMBALL_FASTCALL DestroyZrleOnlyListResource(
+    void *pObject, int, int fDelete);
+void LEMBALL_FASTCALL SetupZrleResourceType(void *pResource);
+void *LEMBALL_FASTCALL DestroyZrleResourceEntryArray(
+    void *pObject, int nUnused, unsigned int fDelete);
+void LEMBALL_FASTCALL SetIntResourceTypeTag(void *pResource);
+void LEMBALL_FASTCALL ReadIntResourcePayloadFromStream(void *pResource);
+void LEMBALL_FASTCALL SetPalResourceType(void *pResource);
+static void *LEMBALL_FASTCALL DestroyTwoArrayListResourceAndFree(
+    void *pObject, int nUnused, int fDelete);
+void LEMBALL_FASTCALL SetGamiResourceTypeTag(void *pResource);
+void LEMBALL_FASTCALL SetBitmapResourceType(void *pResource);
+void LEMBALL_FASTCALL SetEffResourceTypeTag(void *pResource);
+void LEMBALL_FASTCALL SetPtchResourceTypeTag(void *pResource);
+void LEMBALL_FASTCALL SetTuneResourceTypeTag(void *pResource);
+void LEMBALL_FASTCALL SetPresResourceTypeTag(void *pResource);
+
+// GLOBAL: LEMBALL 0x00498a18
 static void *g_GAME_ZrleOnlyListResourceVtableStorage[15] = {
     (void *)DestroyZrleOnlyListResource,
     (void *)CopyBuffersIntoTwoArrayListResourceAndParse,
@@ -261,66 +226,127 @@ extern void *g_pResourceArchive;
 extern void InitializeResourceObjectFromId(void *pObject, int nResourceId);
 extern void *FinalizeLoadedResourceObjectResult(void *pObject);
 
-// FUNCTION: LEMBALL 0x0045E700
-static void *LEMBALL_FASTCALL DeleteListResourceBase(
-    void *pObject, int nUnused, int fDelete)
-{
-    (void)nUnused;
-    InitializeTypedResourceObjectBaseVtable(pObject);
-    if ((fDelete & 1) != 0) {
-        FreeVSMemBlock(pObject);
-    }
-    return pObject;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct GameListResourceStreamInterface {
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void Reserved08(void) = 0;
+    virtual void Reserved0C(void) = 0;
+    virtual void Reserved10(void) = 0;
+    virtual int PrepareListEntryStream(void) = 0;
+    virtual void Reserved18(void) = 0;
+    virtual void Reserved1C(void) = 0;
+    virtual void Reserved20(void) = 0;
+    virtual void Reserved24(void) = 0;
+    virtual void Reserved28(void) = 0;
+    virtual void Reserved2C(void) = 0;
+    virtual void Reserved30(void) = 0;
+    virtual void Reserved34(void) = 0;
+    virtual void Reserved38(void) = 0;
+    virtual void Reserved3C(void) = 0;
+    virtual void LoadListEntryFromStream(unsigned int nIndex, int nArgument) = 0;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include "ENGINE/CORE/SAFEVT.H"
+
+
+// FUNCTION: LEMBALL 0x00447db0
+void LoadMainGameVariantZrleListResource(void *pBundle, int nResourceId) {
+    GameMainGameVariantResourceBundleLoader *pResourceBundle;
+
+    pResourceBundle = (GameMainGameVariantResourceBundleLoader *)pBundle;
+    ((GameVariantResourceBundleLoadInterface *)pBundle)
+        ->PrepareNextResourceLoad();
+    pResourceBundle->m_ppZrleListResources[
+        pResourceBundle->m_cLoadedZrleListResources] =
+        LoadZrleOnlyListResource(nResourceId);
+    ++pResourceBundle->m_cLoadedZrleListResources;
 }
 
-// FUNCTION: LEMBALL 0x0045E7A0
-static void *LEMBALL_FASTCALL DestroyZrleOnlyListResource(
-    void *pObject, int, int fDelete)
-{
-    GameListEntryArrayDeleteInterface *pEntryArray;
+// FUNCTION: LEMBALL 0x00447e30
+void LoadMainGameVariantListResource(void *pBundle, int nResourceId) {
+    GameMainGameVariantResourceBundleLoader *pResourceBundle;
 
-    *(void **)pObject = g_GAME_ZrleOnlyListResourceVtableStorage;
-    pEntryArray = *(GameListEntryArrayDeleteInterface **)
-        ((char *)pObject + 0x78);
-    if (pEntryArray != 0) {
-        pEntryArray->Delete(3);
-    }
-    InitializeTypedResourceObjectBaseVtable(pObject);
-    if ((fDelete & 1) != 0) {
-        FreeVSMemBlock(pObject);
-    }
-    return pObject;
+    pResourceBundle = (GameMainGameVariantResourceBundleLoader *)pBundle;
+    ((GameVariantResourceBundleLoadInterface *)pBundle)
+        ->PrepareNextResourceLoad();
+    pResourceBundle->m_ppListResources[
+        pResourceBundle->m_cLoadedListResources] =
+        LoadListResource(nResourceId);
+    ++pResourceBundle->m_cLoadedListResources;
 }
 
-// FUNCTION: LEMBALL 0x0045EA80
-static void *LEMBALL_FASTCALL DestroyTwoArrayListResourceAndFree(
-    void *pObject, int nUnused, int fDelete)
-{
-    (void)nUnused;
-    DestroyTwoArrayListResource(pObject);
-    if ((fDelete & 1) != 0) {
-        FreeVSMemBlock(pObject);
-    }
-    return pObject;
+// FUNCTION: LEMBALL 0x00447eb0
+void LoadMainGameVariantBitmapResource(void *pBundle, int nResourceId) {
+    GameMainGameVariantResourceBundleLoader *pResourceBundle;
+
+    pResourceBundle = (GameMainGameVariantResourceBundleLoader *)pBundle;
+    ((GameVariantResourceBundleLoadInterface *)pBundle)
+        ->PrepareNextResourceLoad();
+    pResourceBundle->m_ppBitmapResources[
+        pResourceBundle->m_cLoadedBitmapResources] =
+        LoadBitmapResource(nResourceId);
+    ++pResourceBundle->m_cLoadedBitmapResources;
 }
 
-// FUNCTION: LEMBALL 0x0045DF70
-static void LEMBALL_FASTCALL DestroyTwoArrayListResource(void *pObject) {
-    void *pChild;
+// FUNCTION: LEMBALL 0x00447f30
+void LoadMainGameVariantPaletteResource(void *pBundle, int nResourceId) {
+    GameMainGameVariantResourceBundleLoader *pResourceBundle;
 
-    *(void **)pObject = g_GAME_TwoArrayListResourceVtableStorage;
-    pChild = *(void **)((char *)pObject + 0x78);
-    if (pChild != 0) {
-        ((void (*)(void *, int))*(void **)pChild)(pChild, 3);
-    }
-    pChild = *(void **)((char *)pObject + 0x7c);
-    if (pChild != 0) {
-        ((void (*)(void *, int))*(void **)pChild)(pChild, 3);
-    }
-    InitializeTypedResourceObjectBaseVtable(pObject);
+    pResourceBundle = (GameMainGameVariantResourceBundleLoader *)pBundle;
+    ((GameVariantResourceBundleLoadInterface *)pBundle)
+        ->PrepareNextResourceLoad();
+    pResourceBundle->m_ppPaletteResources[pResourceBundle->m_cPaletteResources] = LoadPalResource(nResourceId);
+    ++pResourceBundle->m_cPaletteResources;
 }
 
-// FUNCTION: LEMBALL 0x0045D290
+// FUNCTION: LEMBALL 0x00447fb0
+void GameMainGameVariantResourceBundleLoader::LoadMainGameVariantStringResource(int nResourceId) {
+    ((GameVariantResourceBundleLoadInterface *)this)
+        ->PrepareNextResourceLoad();
+    m_ppStringResources[m_cStringResources] = LoadStringResource(nResourceId);
+    ++m_cStringResources;
+}
+
+// FUNCTION: LEMBALL 0x00448030
+void LoadMainGameVariantTwoArrayListResource(void *pBundle, int nResourceId) {
+    GameMainGameVariantResourceBundleLoader *pResourceBundle;
+
+    pResourceBundle = (GameMainGameVariantResourceBundleLoader *)pBundle;
+    ((GameVariantResourceBundleLoadInterface *)pBundle)
+        ->PrepareNextResourceLoad();
+    pResourceBundle->m_ppTwoArrayListResources[pResourceBundle->m_cTwoArrayListResources] = LoadTwoArrayListResource(nResourceId);
+    ++pResourceBundle->m_cTwoArrayListResources;
+}
+
+// FUNCTION: LEMBALL 0x0045d290
 static void LEMBALL_FASTCALL ParseListResourceDescriptor(void *pObject) {
     unsigned int *pDescriptor;
 
@@ -331,39 +357,14 @@ static void LEMBALL_FASTCALL ParseListResourceDescriptor(void *pObject) {
     *(unsigned int *)((char *)pObject + 0x64) = 0xffffffff;
 }
 
-// FUNCTION: LEMBALL 0x0045E6A0
-static int LEMBALL_FASTCALL ListNeedsAgeIncrement(void *pObject) {
-    return *(int *)((char *)pObject + 0x60) == *(int *)((char *)pObject + 0x64);
-}
-
-// FUNCTION: LEMBALL 0x0045E6C0
-static int LEMBALL_FASTCALL ListField68Nonzero(void *pObject) {
-    return *(int *)((char *)pObject + 0x68) != 0;
-}
-
-// FUNCTION: LEMBALL 0x0045E6B0
-static int LEMBALL_FASTCALL ListField60Nonzero(void *pObject) {
-    return *(int *)((char *)pObject + 0x60) != 0;
-}
-
-// FUNCTION: LEMBALL 0x0045E690
-static int LEMBALL_FASTCALL GetListEntryArrayCursor(void *pObject) {
-    return *(int *)((char *)pObject + 0x74);
-}
-
-// FUNCTION: LEMBALL 0x0045E680
-static void LEMBALL_FASTCALL SetListResourceTypeList(void *pObject) {
-    *(unsigned int *)((char *)pObject + 0x40) = g_GAME_ListResourceTypeTag;
-    *(unsigned int *)((char *)pObject + 0x3c) = 0x0c;
-}
-
-// FUNCTION: LEMBALL 0x0045D2B0
+// FUNCTION: LEMBALL 0x0045d2b0
 static void LEMBALL_FASTCALL CopyBuffersIntoTwoArrayListResourceAndParse(
     void *pObject,
     void *pUnusedEdx,
     unsigned int *pSource,
     int pRelatedObject,
     unsigned int cbBuffer)
+
 {
     unsigned int pTarget;
     unsigned int i;
@@ -398,19 +399,20 @@ static void LEMBALL_FASTCALL CopyBuffersIntoTwoArrayListResourceAndParse(
     }
 }
 
-// FUNCTION: LEMBALL 0x0045D4F0
-static int LEMBALL_FASTCALL EnsureIntZrleListEntriesLoaded(void *pObject) {
-    return ListNeedsAgeIncrement(pObject);
-}
-
-// FUNCTION: LEMBALL 0x0045D430
+// FUNCTION: LEMBALL 0x0045d430
 static void LEMBALL_FASTCALL LoadListEntryArraysFromArchive(void *pObject) {
     *(int *)((char *)pObject + 0x24) = 0;
 }
 
-// FUNCTION: LEMBALL 0x0045D540
+// FUNCTION: LEMBALL 0x0045d4f0
+static int LEMBALL_FASTCALL EnsureIntZrleListEntriesLoaded(void *pObject) {
+    return ListNeedsAgeIncrement(pObject);
+}
+
+// FUNCTION: LEMBALL 0x0045d540
 static void LEMBALL_FASTCALL ReleaseListEntriesAndStreamBuffer(
     void *pObject, void *pUnusedEdx, int fReleaseMode)
+
 {
     unsigned int pBuffer;
 
@@ -425,27 +427,7 @@ static void LEMBALL_FASTCALL ReleaseListEntriesAndStreamBuffer(
     (void)fReleaseMode;
 }
 
-struct GameListResourceStreamInterface {
-    virtual void Reserved00(void) = 0;
-    virtual void Reserved04(void) = 0;
-    virtual void Reserved08(void) = 0;
-    virtual void Reserved0C(void) = 0;
-    virtual void Reserved10(void) = 0;
-    virtual int PrepareListEntryStream(void) = 0;
-    virtual void Reserved18(void) = 0;
-    virtual void Reserved1C(void) = 0;
-    virtual void Reserved20(void) = 0;
-    virtual void Reserved24(void) = 0;
-    virtual void Reserved28(void) = 0;
-    virtual void Reserved2C(void) = 0;
-    virtual void Reserved30(void) = 0;
-    virtual void Reserved34(void) = 0;
-    virtual void Reserved38(void) = 0;
-    virtual void Reserved3C(void) = 0;
-    virtual void LoadListEntryFromStream(unsigned int nIndex, int nArgument) = 0;
-};
-
-// FUNCTION: LEMBALL 0x0045D5C0
+// FUNCTION: LEMBALL 0x0045d5c0
 static void LEMBALL_FASTCALL LoadListEntriesFromStreamDescriptors(void *pObject, void *pUnused, int nArgument) {
     GameListResourceStreamInterface *pResource;
     unsigned int i;
@@ -469,50 +451,7 @@ static void LEMBALL_FASTCALL LoadListEntriesFromStreamDescriptors(void *pObject,
                          *(unsigned int *)(*(int *)((char *)pObject + 0x48) + 4));
 }
 
-// FUNCTION: LEMBALL 0x0045D7B0
-void *ConstructIntZrleListResourceFromId(void *pObject, int nResourceId) {
-    int *pListResource;
-
-    pListResource = (int *)pObject;
-    *(void **)pListResource = g_MOGLOAD_CachedResourceObjectBaseVtable;
-    pListResource[0x12] = g_GAME_IntZrleListResourceTypeToken;
-    *(void **)pListResource = g_GAME_ListResourceBaseVtable;
-    *(void **)pListResource = g_GAME_IntZrleListResourceVtable;
-    pListResource[6] = 0;
-    pListResource[0x17] = 0;
-    pListResource[0x16] = 0;
-    pListResource[0x15] = 0;
-    pListResource[0x18] = 0;
-    pListResource[0x1f] = 0;
-    pListResource[0x20] = 0;
-    pListResource[0x1e] = 0;
-    InitializeResourceObjectFromId(pListResource, nResourceId);
-    pListResource[6] = 1;
-    return pObject;
-}
-
-// FUNCTION: LEMBALL 0x0045DF20
-void *ConstructTwoArrayListResourceFromId(void *pObject, int nResourceId) {
-    int *pListResource;
-
-    pListResource = (int *)pObject;
-    *(void **)pListResource = g_MOGLOAD_CachedResourceObjectBaseVtable;
-    pListResource[0x12] = g_GAME_TwoArrayListResourceTypeToken;
-    *(void **)pListResource = g_GAME_ListResourceBaseVtable;
-    pListResource[6] = 0;
-    pListResource[0x17] = 0;
-    pListResource[0x16] = 0;
-    pListResource[0x15] = 0;
-    pListResource[0x18] = 0;
-    *(void **)pListResource = g_GAME_TwoArrayListResourceVtable;
-    pListResource[0x1e] = 0;
-    pListResource[0x1f] = 0;
-    InitializeResourceObjectFromId(pListResource, nResourceId);
-    pListResource[6] = 0;
-    return pObject;
-}
-
-// FUNCTION: LEMBALL 0x0045D610
+// FUNCTION: LEMBALL 0x0045d610
 void *LoadZrleOnlyListResource(int nResourceId) {
     int *pResourceObject;
 
@@ -545,7 +484,29 @@ void *LoadZrleOnlyListResource(int nResourceId) {
     return FinalizeLoadedResourceObjectResult(0);
 }
 
-// FUNCTION: LEMBALL 0x0045D850
+// FUNCTION: LEMBALL 0x0045d7b0
+void *ConstructIntZrleListResourceFromId(void *pObject, int nResourceId) {
+    int *pListResource;
+
+    pListResource = (int *)pObject;
+    *(void **)pListResource = g_MOGLOAD_CachedResourceObjectBaseVtable;
+    pListResource[0x12] = g_GAME_IntZrleListResourceTypeToken;
+    *(void **)pListResource = g_GAME_ListResourceBaseVtable;
+    *(void **)pListResource = g_GAME_IntZrleListResourceVtable;
+    pListResource[6] = 0;
+    pListResource[0x17] = 0;
+    pListResource[0x16] = 0;
+    pListResource[0x15] = 0;
+    pListResource[0x18] = 0;
+    pListResource[0x1f] = 0;
+    pListResource[0x20] = 0;
+    pListResource[0x1e] = 0;
+    InitializeResourceObjectFromId(pListResource, nResourceId);
+    pListResource[6] = 1;
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045d850
 void *LoadListResource(int nResourceId) {
     int *pResourceObject;
 
@@ -566,7 +527,32 @@ void *LoadListResource(int nResourceId) {
     return FinalizeLoadedResourceObjectResult(0);
 }
 
-// FUNCTION: LEMBALL 0x0045DE70
+// FUNCTION: LEMBALL 0x0045dd90
+void *LoadPalResource(int nResourceId) {
+    int *pResourceObject;
+
+    pResourceObject = (int *)((MogLoadResourceArchive *)g_pMainResourceArchive)
+                          ->FindCachedResourceObjectById(nResourceId);
+    if (pResourceObject != 0) {
+        if ((unsigned int)pResourceObject[0x10] != g_GAME_PaletteResourceTypeTag) {
+            ReleaseTypedResourceObjectReference(pResourceObject);
+            pResourceObject = 0;
+        }
+        return pResourceObject;
+    }
+
+    pResourceObject = (int *)AllocateVSMemBlock(0x4c);
+    if (pResourceObject != 0) {
+        *(void **)pResourceObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
+        pResourceObject[6] = 0;
+        *(void **)pResourceObject = g_pPaletteResourceVtable;
+        InitializeResourceObjectFromId(pResourceObject, nResourceId);
+        return FinalizeLoadedResourceObjectResult(pResourceObject);
+    }
+    return FinalizeLoadedResourceObjectResult(0);
+}
+
+// FUNCTION: LEMBALL 0x0045de70
 void *LoadTwoArrayListResource(int nResourceId) {
     int *pResourceObject;
 
@@ -587,7 +573,44 @@ void *LoadTwoArrayListResource(int nResourceId) {
     return FinalizeLoadedResourceObjectResult(0);
 }
 
-// FUNCTION: LEMBALL 0x0045E210
+// FUNCTION: LEMBALL 0x0045df20
+void *ConstructTwoArrayListResourceFromId(void *pObject, int nResourceId) {
+    int *pListResource;
+
+    pListResource = (int *)pObject;
+    *(void **)pListResource = g_MOGLOAD_CachedResourceObjectBaseVtable;
+    pListResource[0x12] = g_GAME_TwoArrayListResourceTypeToken;
+    *(void **)pListResource = g_GAME_ListResourceBaseVtable;
+    pListResource[6] = 0;
+    pListResource[0x17] = 0;
+    pListResource[0x16] = 0;
+    pListResource[0x15] = 0;
+    pListResource[0x18] = 0;
+    *(void **)pListResource = g_GAME_TwoArrayListResourceVtable;
+    pListResource[0x1e] = 0;
+    pListResource[0x1f] = 0;
+    InitializeResourceObjectFromId(pListResource, nResourceId);
+    pListResource[6] = 0;
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045df70
+static void LEMBALL_FASTCALL DestroyTwoArrayListResource(void *pObject) {
+    void *pChild;
+
+    *(void **)pObject = g_GAME_TwoArrayListResourceVtableStorage;
+    pChild = *(void **)((char *)pObject + 0x78);
+    if (pChild != 0) {
+        ((void (*)(void *, int))*(void **)pChild)(pChild, 3);
+    }
+    pChild = *(void **)((char *)pObject + 0x7c);
+    if (pChild != 0) {
+        ((void (*)(void *, int))*(void **)pChild)(pChild, 3);
+    }
+    InitializeTypedResourceObjectBaseVtable(pObject);
+}
+
+// FUNCTION: LEMBALL 0x0045e210
 void *LoadBitmapResource(int nResourceId) {
     int *pResourceObject;
 
@@ -615,7 +638,7 @@ void *LoadBitmapResource(int nResourceId) {
     return FinalizeLoadedResourceObjectResult(0);
 }
 
-// FUNCTION: LEMBALL 0x0045E2B0
+// FUNCTION: LEMBALL 0x0045e2b0
 void *LoadZrleResource(int nResourceId) {
     int *pResourceObject;
 
@@ -647,97 +670,178 @@ void *LoadZrleResource(int nResourceId) {
     return FinalizeLoadedResourceObjectResult(0);
 }
 
-// FUNCTION: LEMBALL 0x0045DD90
-void *LoadPalResource(int nResourceId) {
-    int *pResourceObject;
+// FUNCTION: LEMBALL 0x0045e340
+void LEMBALL_FASTCALL PopulateZrleResourceDescriptorFields(void *pObject) {
+    unsigned short *pDescriptor;
 
-    pResourceObject = (int *)((MogLoadResourceArchive *)g_pMainResourceArchive)
-                          ->FindCachedResourceObjectById(nResourceId);
-    if (pResourceObject != 0) {
-        if ((unsigned int)pResourceObject[0x10] != g_GAME_PaletteResourceTypeTag) {
-            ReleaseTypedResourceObjectReference(pResourceObject);
-            pResourceObject = 0;
+    pDescriptor = *(unsigned short **)((char *)pObject + 0x34);
+    *(unsigned short *)((char *)pObject + 0x48) = pDescriptor[0];
+    *(unsigned short *)((char *)pObject + 0x4a) = pDescriptor[1];
+    *(unsigned short *)((char *)pObject + 0x4c) = pDescriptor[2];
+    *(unsigned short *)((char *)pObject + 0x4e) = pDescriptor[3];
+    *(unsigned short *)((char *)pObject + 0x50) = pDescriptor[4];
+    *(unsigned short *)((char *)pObject + 0x52) = pDescriptor[5];
+}
+
+// FUNCTION: LEMBALL 0x0045e680
+static void LEMBALL_FASTCALL SetListResourceTypeList(void *pObject) {
+    *(unsigned int *)((char *)pObject + 0x40) = g_GAME_ListResourceTypeTag;
+    *(unsigned int *)((char *)pObject + 0x3c) = 0x0c;
+}
+
+// FUNCTION: LEMBALL 0x0045e690
+static int LEMBALL_FASTCALL GetListEntryArrayCursor(void *pObject) {
+    return *(int *)((char *)pObject + 0x74);
+}
+
+// FUNCTION: LEMBALL 0x0045e6a0
+static int LEMBALL_FASTCALL ListNeedsAgeIncrement(void *pObject) {
+    return *(int *)((char *)pObject + 0x60) == *(int *)((char *)pObject + 0x64);
+}
+
+// FUNCTION: LEMBALL 0x0045e6b0
+static int LEMBALL_FASTCALL ListField60Nonzero(void *pObject) {
+    return *(int *)((char *)pObject + 0x60) != 0;
+}
+
+// FUNCTION: LEMBALL 0x0045e6c0
+static int LEMBALL_FASTCALL ListField68Nonzero(void *pObject) {
+    return *(int *)((char *)pObject + 0x68) != 0;
+}
+
+// FUNCTION: LEMBALL 0x0045e700
+static void *LEMBALL_FASTCALL DeleteListResourceBase(
+    void *pObject, int nUnused, int fDelete)
+
+{
+    (void)nUnused;
+    InitializeTypedResourceObjectBaseVtable(pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045e720
+int LEMBALL_FASTCALL ListIsFirstEntryLoaded(void *pResource) {
+    int fLoaded;
+
+    fLoaded = 0;
+    if (*(int *)((char *)*(void **)((char *)pResource + 0x78) + 0x18) != 0) {
+        fLoaded = 1;
+    }
+    return fLoaded;
+}
+
+// FUNCTION: LEMBALL 0x0045e7a0
+static void *LEMBALL_FASTCALL DestroyZrleOnlyListResource(
+    void *pObject, int, int fDelete)
+
+{
+    GameListEntryArrayDeleteInterface *pEntryArray;
+
+    *(void **)pObject = g_GAME_ZrleOnlyListResourceVtableStorage;
+    pEntryArray = *(GameListEntryArrayDeleteInterface **)
+        ((char *)pObject + 0x78);
+    if (pEntryArray != 0) {
+        pEntryArray->Delete(3);
+    }
+    InitializeTypedResourceObjectBaseVtable(pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045e840
+void LEMBALL_FASTCALL SetupZrleResourceType(void *pResource) {
+    *(unsigned int *)((char *)pResource + 0x40) = 0x5a524c45;
+    *(int *)((char *)pResource + 0x3c) = 0x0c;
+}
+
+// FUNCTION: LEMBALL 0x0045e850
+void *LEMBALL_FASTCALL DestroyZrleResourceEntryArray(
+    void *pObject, int nUnused, unsigned int fDelete)
+{
+    (void)nUnused;
+    int cEntries;
+    char *pEntry;
+
+    if ((fDelete & 2) == 0) {
+        InitializeTypedResourceObjectBaseVtable(pObject);
+        if ((fDelete & 1) != 0) {
+            FreeVSMemBlock(pObject);
         }
-        return pResourceObject;
+        return pObject;
     }
 
-    pResourceObject = (int *)AllocateVSMemBlock(0x4c);
-    if (pResourceObject != 0) {
-        *(void **)pResourceObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
-        pResourceObject[6] = 0;
-        *(void **)pResourceObject = g_pPaletteResourceVtable;
-        InitializeResourceObjectFromId(pResourceObject, nResourceId);
-        return FinalizeLoadedResourceObjectResult(pResourceObject);
+    cEntries = *((int *)pObject - 1);
+    pEntry = (char *)pObject + cEntries * 0x54;
+    while (cEntries-- > 0) {
+        pEntry -= 0x54;
+        InitializeTypedResourceObjectBaseVtable(pEntry);
     }
-    return FinalizeLoadedResourceObjectResult(0);
+    FreeVSMemBlock((char *)pObject - 4);
+    return pObject;
 }
 
-// FUNCTION: LEMBALL 0x00447DB0
-void LoadMainGameVariantZrleListResource(void *pBundle, int nResourceId) {
-    GameMainGameVariantResourceBundleLoader *pResourceBundle;
-
-    pResourceBundle = (GameMainGameVariantResourceBundleLoader *)pBundle;
-    ((GameVariantResourceBundleLoadInterface *)pBundle)
-        ->PrepareNextResourceLoad();
-    pResourceBundle->m_ppZrleListResources[
-        pResourceBundle->m_cLoadedZrleListResources] =
-        LoadZrleOnlyListResource(nResourceId);
-    ++pResourceBundle->m_cLoadedZrleListResources;
+// FUNCTION: LEMBALL 0x0045e910
+void LEMBALL_FASTCALL SetIntResourceTypeTag(void *pResource) {
+    *(unsigned int *)((char *)pResource + 0x40) = 0x494e5420;
 }
 
-// FUNCTION: LEMBALL 0x00447E30
-void LoadMainGameVariantListResource(void *pBundle, int nResourceId) {
-    GameMainGameVariantResourceBundleLoader *pResourceBundle;
-
-    pResourceBundle = (GameMainGameVariantResourceBundleLoader *)pBundle;
-    ((GameVariantResourceBundleLoadInterface *)pBundle)
-        ->PrepareNextResourceLoad();
-    pResourceBundle->m_ppListResources[
-        pResourceBundle->m_cLoadedListResources] =
-        LoadListResource(nResourceId);
-    ++pResourceBundle->m_cLoadedListResources;
+// FUNCTION: LEMBALL 0x0045e920
+void LEMBALL_FASTCALL ReadIntResourcePayloadFromStream(void *pResource) {
+    *(int *)((char *)pResource + 0x48) = **(int **)((char *)pResource + 0x38);
 }
 
-// FUNCTION: LEMBALL 0x00447EB0
-void LoadMainGameVariantBitmapResource(void *pBundle, int nResourceId) {
-    GameMainGameVariantResourceBundleLoader *pResourceBundle;
-
-    pResourceBundle = (GameMainGameVariantResourceBundleLoader *)pBundle;
-    ((GameVariantResourceBundleLoadInterface *)pBundle)
-        ->PrepareNextResourceLoad();
-    pResourceBundle->m_ppBitmapResources[
-        pResourceBundle->m_cLoadedBitmapResources] =
-        LoadBitmapResource(nResourceId);
-    ++pResourceBundle->m_cLoadedBitmapResources;
+// FUNCTION: LEMBALL 0x0045ea30
+void LEMBALL_FASTCALL SetPalResourceType(void *pResource) {
+    *(unsigned int *)((char *)pResource + 0x40) = 0x50414c20;
+    *(int *)((char *)pResource + 0x3c) = 4;
 }
 
-// FUNCTION: LEMBALL 0x00447F30
-void LoadMainGameVariantPaletteResource(void *pBundle, int nResourceId) {
-    GameMainGameVariantResourceBundleLoader *pResourceBundle;
+// FUNCTION: LEMBALL 0x0045ea80
+static void *LEMBALL_FASTCALL DestroyTwoArrayListResourceAndFree(
+    void *pObject, int nUnused, int fDelete)
 
-    pResourceBundle = (GameMainGameVariantResourceBundleLoader *)pBundle;
-    ((GameVariantResourceBundleLoadInterface *)pBundle)
-        ->PrepareNextResourceLoad();
-    pResourceBundle->m_ppPaletteResources[pResourceBundle->m_cPaletteResources] = LoadPalResource(nResourceId);
-    ++pResourceBundle->m_cPaletteResources;
+{
+    (void)nUnused;
+    DestroyTwoArrayListResource(pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
 }
 
-// FUNCTION: LEMBALL 0x00447FB0
-void GameMainGameVariantResourceBundleLoader::LoadMainGameVariantStringResource(int nResourceId) {
-    ((GameVariantResourceBundleLoadInterface *)this)
-        ->PrepareNextResourceLoad();
-    m_ppStringResources[m_cStringResources] = LoadStringResource(nResourceId);
-    ++m_cStringResources;
+// FUNCTION: LEMBALL 0x0045eb40
+void LEMBALL_FASTCALL SetGamiResourceTypeTag(void *pResource) {
+    *(unsigned int *)((char *)pResource + 0x40) = 0x494d4147;
+    *(int *)((char *)pResource + 0x3c) = 0x10;
 }
 
-// FUNCTION: LEMBALL 0x00448030
-void LoadMainGameVariantTwoArrayListResource(void *pBundle, int nResourceId) {
-    GameMainGameVariantResourceBundleLoader *pResourceBundle;
-
-    pResourceBundle = (GameMainGameVariantResourceBundleLoader *)pBundle;
-    ((GameVariantResourceBundleLoadInterface *)pBundle)
-        ->PrepareNextResourceLoad();
-    pResourceBundle->m_ppTwoArrayListResources[pResourceBundle->m_cTwoArrayListResources] = LoadTwoArrayListResource(nResourceId);
-    ++pResourceBundle->m_cTwoArrayListResources;
+// FUNCTION: LEMBALL 0x0045eb70
+void LEMBALL_FASTCALL SetBitmapResourceType(void *pResource) {
+    *(unsigned int *)((char *)pResource + 0x40) = 0x42544d50;
+    *(int *)((char *)pResource + 0x3c) = 0x0c;
 }
-#include "ENGINE/CORE/SAFEVT.H"
+
+// FUNCTION: LEMBALL 0x0045eba0
+void LEMBALL_FASTCALL SetEffResourceTypeTag(void *pResource) {
+    *(unsigned int *)((char *)pResource + 0x40) = 0x45464620;
+}
+
+// FUNCTION: LEMBALL 0x0045ebd0
+void LEMBALL_FASTCALL SetPtchResourceTypeTag(void *pResource) {
+    *(unsigned int *)((char *)pResource + 0x40) = 0x50544348;
+}
+
+// FUNCTION: LEMBALL 0x0045ec00
+void LEMBALL_FASTCALL SetTuneResourceTypeTag(void *pResource) {
+    *(unsigned int *)((char *)pResource + 0x40) = 0x54554e45;
+}
+
+// FUNCTION: LEMBALL 0x0045ec30
+void LEMBALL_FASTCALL SetPresResourceTypeTag(void *pResource) {
+    *(unsigned int *)((char *)pResource + 0x40) = 0x50524553;
+}

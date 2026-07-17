@@ -4,289 +4,64 @@
 // STRONG INFERENCE: callbacks relocated from the artificial aggregate by
 // vtable owner, semantic role, and neighboring address/call-graph cluster.
 
-// FUNCTION: LEMBALL 0x00407F20
-void noop_vtable_callback_00407f20(void) {
-}
 
-// FUNCTION: LEMBALL 0x00407F30
-int PASCAL return_false_vtable_callback_00407f30(void *pUnused) {
-    (void)pUnused;
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x00408000
-void noop_vtable_callback_00408000(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040A7F0
-void PASCAL noop_vtable_callback_0040a7f0(void *pUnused) {
-    (void)pUnused;
-}
 
-// FUNCTION: LEMBALL 0x0040A800
-int PASCAL return_true_vtable_callback_0040a800(void *pUnused) {
-    (void)pUnused;
-    return 1;
-}
 
-// FUNCTION: LEMBALL 0x0040A930
-void PASCAL noop_vtable_callback_0040a930(void *pUnused) {
-    (void)pUnused;
-}
 
-// FUNCTION: LEMBALL 0x0040A940
-void noop_vtable_callback_0040a940(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040A950
-int return_false_vtable_callback_0040a950(void) {
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x0040A960
-void noop_vtable_callback_0040a960(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040A970
-void noop_vtable_callback_0040a970(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040A980
-void noop_vtable_callback_0040a980(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040A990
-void noop_vtable_callback_0040a990(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040A9C0
-int return_false_vtable_callback_0040a9c0(void) {
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x0040A9D0
-int return_false_vtable_callback_0040a9d0(void) {
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x0040A9F0
-void noop_vtable_callback_0040a9f0(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040AA00
-void noop_vtable_callback_0040aa00(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040AA10
-void noop_vtable_callback_0040aa10(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040AA30
-int return_false_vtable_callback_0040aa30(void) {
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x0040AA40
-void noop_vtable_callback_0040aa40(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040AA50
-int return_true_vtable_callback_0040aa50(void) {
-    return 1;
-}
 
-// FUNCTION: LEMBALL 0x0040AA60
-int PASCAL return_false_vtable_callback_0040aa60(void *pUnused) {
-    (void)pUnused;
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x0040AA70
-int PASCAL return_false_vtable_callback_0040aa70(void *pUnused1, void *pUnused2) {
-    (void)pUnused1;
-    (void)pUnused2;
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x0040AA90
-int PASCAL return_false_vtable_callback_0040aa90(void *pUnused) {
-    (void)pUnused;
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x0040AAB0
-void noop_vtable_callback_0040aab0(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040AAD0
-void noop_callback_0040aad0(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040AB20
-void PASCAL noop_callback_0040ab20(void *pUnused1, void *pUnused2, void *pUnused3) {
-    (void)pUnused1;
-    (void)pUnused2;
-    (void)pUnused3;
-}
 
-// FUNCTION: LEMBALL 0x0040AB30
-int return_false_vtable_callback_0040ab30(void) {
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x0040AB40
-int return_false_vtable_callback_0040ab40(void) {
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x0040AB80
-int PASCAL return_false_vtable_callback_0040ab80(void *pUnused1, void *pUnused2, void *pUnused3) {
-    (void)pUnused1;
-    (void)pUnused2;
-    (void)pUnused3;
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x0040AB90
-int PASCAL return_false_vtable_callback_0040ab90(void *pUnused) {
-    (void)pUnused;
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x0040ADC0
-void noop_vtable_callback_0040adc0(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040C1A0
-void noop_managed_entity_virtual_hook(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040C1B0
-void noop_callback_0040c1b0(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040C1C0
-int return_two_vtable_callback(void) {
-    return 2;
-}
 
-// FUNCTION: LEMBALL 0x0040CE40
-void noop_vtable_callback_0040ce40(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040CE80
-int return_two_callback(void) {
-    return 2;
-}
 
-// FUNCTION: LEMBALL 0x0040CF30
-void noop_vtable_callback_0040cf30(void) {
-}
 
-// FUNCTION: LEMBALL 0x00417AA0
-int return_false_virtual_hook(void) {
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x00418640
-void noop_managed_entity_group_detach_hook(void) {
-}
 
-// FUNCTION: LEMBALL 0x004020C2
-void NoopManagedEntityGroupDetachHookThunk(void) {
-    noop_managed_entity_group_detach_hook();
-}
 
-// FUNCTION: LEMBALL 0x0041A1C0
-void noop_projectile_geometry_callback(void) {
-}
 
-// FUNCTION: LEMBALL 0x0041C3F0
-int return_true_vtable_callback_0041c3f0(void) {
-    return 1;
-}
 
-// FUNCTION: LEMBALL 0x0041C430
-int return_two_vtable_callback_0041c430(void) {
-    return 2;
-}
 
-// FUNCTION: LEMBALL 0x0041C5B0
-int return_true_vtable_callback_0041c5b0(void) {
-    return 1;
-}
 
-// FUNCTION: LEMBALL 0x0041C630
-int return_two_vtable_callback_0041c630(void) {
-    return 2;
-}
 
-// FUNCTION: LEMBALL 0x0041DC40
-int return_two_vtable_callback_0041dc40(void) {
-    return 2;
-}
 
-// FUNCTION: LEMBALL 0x0041E3C0
-void PASCAL noop_vtable_callback_0041e3c0(void *pUnused1, void *pUnused2, void *pUnused3) {
-    (void)pUnused1;
-    (void)pUnused2;
-    (void)pUnused3;
-}
 
-// FUNCTION: LEMBALL 0x0041F870
-int return_zero_vtable_callback_0041f870(void) {
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x00422FA0
-void noop_vtable_callback_00422fa0(void) {
-}
 
-// FUNCTION: LEMBALL 0x00423040
-void noop_vtable_callback_00423040(void) {
-}
 
-// FUNCTION: LEMBALL 0x00423050
-int return_true_vtable_callback_00423050(void) {
-    return 1;
-}
 
-// FUNCTION: LEMBALL 0x0042C9A0
-void noop_vtable_callback_0042c9a0(void) {
-}
 
-// FUNCTION: LEMBALL 0x0042DD30
-int PASCAL return_zero_vtable_callback_0042dd30(void *pUnused) {
-    (void)pUnused;
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x004453A0
-unsigned int return_hresult_80000000_callback(void) {
-    return 0x80000000U;
-}
 
-// FUNCTION: LEMBALL 0x0044FBC0
-void noop_queued_variant_child_slot_manager_update(void) {
-}
 
-// FUNCTION: LEMBALL 0x004510D0
-unsigned int return_hresult_40000001_callback(void) {
-    return 0x40000001U;
-}
 
-// FUNCTION: LEMBALL 0x00452B80
-void noop_callback_00452b80(void) {
-}
 
-// FUNCTION: LEMBALL 0x00456600
-void noop_callback_00456600(void) {
-}
 
-// FUNCTION: LEMBALL 0x0040A810
-void *__fastcall get_object_field_0xf0(void *pObject) {
-    return *(void **)((char *)pObject + 0xf0);
-}
 
 struct LevelBoundsPoint {
     int m_nX;
@@ -304,86 +79,17 @@ struct LevelBoundedRenderObjectView {
     LevelThreeDwordBounds m_Bounds;
 };
 
-// FUNCTION: LEMBALL 0x0040A830
-void __fastcall copy_object_fields_0x9c_triplet(
-    void *pObject, void *pUnused, LevelBoundsPoint *pPoint) {
-    (void)pUnused;
-    *pPoint = *(LevelBoundsPoint *)((char *)pObject + 0x9c);
-}
 
-// FUNCTION: LEMBALL 0x0040A880
-int __fastcall get_object_field_0x98(void *pObject) {
-    return *(int *)((char *)pObject + 0x98);
-}
 
-// FUNCTION: LEMBALL 0x0040A890
-int __fastcall is_point_inside_3d_bounds(
-    LevelBoundedRenderObjectView *pObject,
-    void *pUnused,
-    const LevelBoundsPoint *pPoint) {
-    (void)pUnused;
-    return pObject->m_Bounds.m_Minimum.m_nX <= pPoint->m_nX &&
-           pPoint->m_nX <= pObject->m_Bounds.m_Maximum.m_nX &&
-           pObject->m_Bounds.m_Minimum.m_nY <= pPoint->m_nY &&
-           pPoint->m_nY <= pObject->m_Bounds.m_Maximum.m_nY &&
-           pObject->m_Bounds.m_Minimum.m_nZ <= pPoint->m_nZ &&
-           pPoint->m_nZ <= pObject->m_Bounds.m_Maximum.m_nZ;
-}
 
-// FUNCTION: LEMBALL 0x0040A8E0
-int __fastcall do_3d_bounds_intersect(
-    LevelBoundedRenderObjectView *pObject,
-    void *pUnused,
-    const LevelThreeDwordBounds *pBounds) {
-    (void)pUnused;
-    return pObject->m_Bounds.m_Minimum.m_nX <= pBounds->m_Maximum.m_nX &&
-           pBounds->m_Minimum.m_nX <= pObject->m_Bounds.m_Maximum.m_nX &&
-           pObject->m_Bounds.m_Minimum.m_nY <= pBounds->m_Maximum.m_nY &&
-           pBounds->m_Minimum.m_nY <= pObject->m_Bounds.m_Maximum.m_nY &&
-           pObject->m_Bounds.m_Minimum.m_nZ <= pBounds->m_Maximum.m_nZ &&
-           pBounds->m_Minimum.m_nZ <= pObject->m_Bounds.m_Maximum.m_nZ;
-}
 
-// FUNCTION: LEMBALL 0x0040AB10
-int __fastcall get_plas_child_runtime_flag_0x30(void *pObject) {
-    return *(int *)((char *)pObject + 0x30);
-}
 
-// FUNCTION: LEMBALL 0x00410A10
-void *__fastcall get_level_mode_chunk_loader_context(void *pLevelMode) {
-    return *(void **)((char *)pLevelMode + 0x178);
-}
 
-// FUNCTION: LEMBALL 0x00410AF0
-void *__fastcall get_level_mode_mine_chunk_manager(void *pLevelMode) {
-    return *(void **)((char *)pLevelMode + 0x188);
-}
 
-// FUNCTION: LEMBALL 0x00410B00
-void *__fastcall get_level_mode_lift_chunk_manager(void *pLevelMode) {
-    return *(void **)((char *)pLevelMode + 0x18c);
-}
 
-// FUNCTION: LEMBALL 0x00410B10
-void *__fastcall get_object_field_0x30(void *pObject) {
-    return *(void **)((char *)pObject + 0x30);
-}
 
-// FUNCTION: LEMBALL 0x00414C60
-int __fastcall get_managed_entity_group_command_state(void *pEntity) {
-    return *(int *)((char *)pEntity + 0x154);
-}
 
-// FUNCTION: LEMBALL 0x0040185C
-int __fastcall GetManagedEntityGroupCommandStateThunk(void *pEntity) {
-    return get_managed_entity_group_command_state(pEntity);
-}
 
-// FUNCTION: LEMBALL 0x00417F40
-void *__fastcall get_first_projectile_pool_object(void *pPool) {
-    *(int *)((char *)pPool + 0xd8) = 0;
-    return *(void **)((char *)pPool + 0x34);
-}
 
 struct LevelManagedEntityStateIdView {
     char m_abReserved00[0xb8];
@@ -450,276 +156,41 @@ struct LevelManagedEntityChildIterator {
     int HasDirtyChildrenThunk(void);
 };
 
-// FUNCTION: LEMBALL 0x0041DEF0
-int LevelManagedEntityChildIterator::GetChildCount(void) {
-    return m_cChildren124;
-}
 
-// FUNCTION: LEMBALL 0x0041DF00
-void *LevelManagedEntityChildIterator::GetFirstChild(void) {
-    m_iCurrentChild150 = 0;
-    return m_apChildren128[0];
-}
 
-// FUNCTION: LEMBALL 0x0041DF20
-void *LevelManagedEntityChildIterator::GetNextChild(void) {
-    ++m_iCurrentChild150;
-    if (m_iCurrentChild150 >= m_cChildren124) {
-        return 0;
-    }
-    return m_apChildren128[m_iCurrentChild150];
-}
 
-// FUNCTION: LEMBALL 0x0041DF40
-void *LevelManagedEntityChildIterator::GetCurrentChild(void) {
-    if (m_iCurrentChild150 >= m_cChildren124) {
-        return 0;
-    }
-    return m_apChildren128[m_iCurrentChild150];
-}
 
-// FUNCTION: LEMBALL 0x0041DF60
-void *LevelManagedEntityChildIterator::GetChildAt(int iChild) {
-    m_iCurrentChild150 = iChild;
-    if (iChild >= m_cChildren124) {
-        return 0;
-    }
-    return m_apChildren128[iChild];
-}
 
-// FUNCTION: LEMBALL 0x0041E020
-void LevelManagedEntityChildIterator::AppendChild(void *pChild) {
-    m_apChildren128[m_cChildren124] = pChild;
-    m_fChildrenDirty164 = 1;
-    ++m_cChildren124;
-}
 
-// FUNCTION: LEMBALL 0x0041E0C0
-int LevelManagedEntityChildIterator::ContainsChild(void *pChild) {
-    int i;
-    void **ppChild;
 
-    i = 0;
-    if (0 < m_cChildren124) {
-        ppChild = m_apChildren128;
-        do {
-            if (*ppChild == pChild) {
-                return 1;
-            }
-            ++ppChild;
-            ++i;
-        } while (i < m_cChildren124);
-    }
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x0040241E
-void *LevelManagedEntityChildIterator::GetFirstChildThunk(void) {
-    return GetFirstChild();
-}
 
-// FUNCTION: LEMBALL 0x00401816
-void *LevelManagedEntityChildIterator::GetNextChildThunk(void) {
-    return GetNextChild();
-}
 
-// FUNCTION: LEMBALL 0x00401EAB
-void *LevelManagedEntityChildIterator::GetCurrentChildThunk(void) {
-    return GetCurrentChild();
-}
 
-// FUNCTION: LEMBALL 0x00414880
-int LevelManagedEntityChildIterator::GetActiveState(void) {
-    return m_nActiveState168;
-}
 
-// FUNCTION: LEMBALL 0x00403477
-int LevelManagedEntityChildIterator::GetActiveStateThunk(void) {
-    return GetActiveState();
-}
 
-// FUNCTION: LEMBALL 0x00414890
-void *LevelManagedEntityChildIterator::GetChildWithState8(void) {
-    LevelManagedEntityStateIdView *pChild;
-    int nStateId;
 
-    nStateId = 8;
-    pChild = (LevelManagedEntityStateIdView *)GetFirstChildThunk();
-    for (;;) {
-        if (pChild == 0) {
-            return 0;
-        }
-        if (pChild->m_nStateIdB8 == nStateId) {
-            return pChild;
-        }
-        pChild = (LevelManagedEntityStateIdView *)GetNextChildThunk();
-    }
-}
 
-// FUNCTION: LEMBALL 0x0040173F
-void *LevelManagedEntityChildIterator::GetChildWithState8Thunk(void) {
-    return GetChildWithState8();
-}
 
-// FUNCTION: LEMBALL 0x004148C0
-void *LevelManagedEntityChildIterator::GetCurrentChildWithState8(void) {
-    LevelManagedEntityStateIdView *pChild;
-    int nStateId;
 
-    nStateId = 8;
-    pChild = (LevelManagedEntityStateIdView *)GetCurrentChildThunk();
-    for (;;) {
-        if (pChild == 0) {
-            return 0;
-        }
-        if (pChild->m_nStateIdB8 == nStateId) {
-            return pChild;
-        }
-        pChild = (LevelManagedEntityStateIdView *)GetNextChildThunk();
-    }
-}
 
-// FUNCTION: LEMBALL 0x0040F7A0
-int LevelManagedEntityDirtyStateView::PollChildDirtyFlag(void) {
-    int *pfDirty;
-    int nCurrentValue;
 
-    nCurrentValue = m_nCurrentDirtyValue98;
-    if (m_nCachedDirtyValue1B0 == nCurrentValue &&
-        (pfDirty = &m_fChildDirty164, *pfDirty == 0)) {
-        *pfDirty = 0;
-        m_nCachedDirtyValue1B0 = nCurrentValue;
-        return *pfDirty;
-    }
-    pfDirty = &m_fChildDirty164;
-    m_nCachedDirtyValue1B0 = nCurrentValue;
-    *pfDirty = 1;
-    return *pfDirty;
-}
 
-// FUNCTION: LEMBALL 0x0040142E
-int LevelManagedEntityDirtyStateView::PollChildDirtyFlagThunk(void) {
-    return PollChildDirtyFlag();
-}
 
-// FUNCTION: LEMBALL 0x004149A0
-int LevelManagedEntityChildIterator::HasDirtyChildren(void) {
-    LevelManagedEntityDirtyStateView *pChild;
-    int fDirty;
 
-    fDirty = 0;
-    pChild = (LevelManagedEntityDirtyStateView *)GetFirstChildThunk();
-    while (pChild != 0) {
-        fDirty = pChild->PollChildDirtyFlagThunk() || fDirty;
-        pChild = (LevelManagedEntityDirtyStateView *)GetNextChildThunk();
-    }
-    return fDirty;
-}
 
-// FUNCTION: LEMBALL 0x0040380A
-int LevelManagedEntityChildIterator::HasDirtyChildrenThunk(void) {
-    return HasDirtyChildren();
-}
 
-// FUNCTION: LEMBALL 0x004185D0
-int LevelManagedEntityHistoryView::PopHistoryId(void) {
-    int iHistoryId;
 
-    if (m_cHistoryIds128 == 0) {
-        return 0;
-    }
-    iHistoryId = --m_cHistoryIds128;
-    return m_anHistoryIds12C[iHistoryId];
-}
 
-// FUNCTION: LEMBALL 0x00402833
-int LevelManagedEntityHistoryView::PopHistoryIdThunk(void) {
-    return PopHistoryId();
-}
 
-// FUNCTION: LEMBALL 0x0041E410
-int __fastcall get_object_field_0x160(void *pObject) {
-    return *(int *)((char *)pObject + 0x160);
-}
 
-// FUNCTION: LEMBALL 0x00420AA0
-int __fastcall get_object_field_0x124(void *pObject) {
-    return *(int *)((char *)pObject + 0x124);
-}
 
-// FUNCTION: LEMBALL 0x00435880
-int __fastcall return_object_field_0x0c_00435880(void *pObject) {
-    return *(int *)((char *)pObject + 0x0c);
-}
 
-// FUNCTION: LEMBALL 0x0040A870
-void __fastcall set_object_field_0x98(void *pObject, void *pUnused, int nValue) {
-    (void)pUnused;
-    *(int *)((char *)pObject + 0x98) = nValue;
-}
 
-// FUNCTION: LEMBALL 0x0040AAE0
-void __fastcall set_object_field_0x30_true(void *pObject) {
-    *(int *)((char *)pObject + 0x30) = 1;
-}
 
-// FUNCTION: LEMBALL 0x0040AB00
-void __fastcall set_object_field_0x30_false(void *pObject) {
-    *(int *)((char *)pObject + 0x30) = 0;
-}
 
-// FUNCTION: LEMBALL 0x0040C170
-void __fastcall set_managed_entity_state_id_local(void *pEntity, void *pUnused, int nStateId) {
-    (void)pUnused;
-    *(int *)((char *)pEntity + 0xb8) = nStateId;
-}
 
-// FUNCTION: LEMBALL 0x0040F0D0
-void __fastcall set_managed_entity_owner_group(void *pEntity, void *pUnused, void *pOwnerGroup) {
-    (void)pUnused;
-    *(void **)((char *)pEntity + 0x224) = pOwnerGroup;
-}
 
-// FUNCTION: LEMBALL 0x0040F0E0
-void *__fastcall get_managed_entity_owner_group(void *pEntity) {
-    return *(void **)((char *)pEntity + 0x224);
-}
-
-// FUNCTION: LEMBALL 0x0040F0F0
-void __fastcall set_managed_entity_primary_active_flag(void *pEntity, void *pUnused, int fActive) {
-    (void)pUnused;
-    *(int *)((char *)pEntity + 0x17c) = fActive;
-}
-
-// FUNCTION: LEMBALL 0x0040F100
-void __fastcall set_managed_entity_secondary_active_flag(void *pEntity, void *pUnused, int fActive) {
-    (void)pUnused;
-    *(int *)((char *)pEntity + 0x180) = fActive;
-}
-
-// FUNCTION: LEMBALL 0x004121E0
-void __fastcall add_level_time_bonus_counter(void *pLevelMode, void *pUnused, int nBonus) {
-    (void)pUnused;
-    *(int *)((char *)pLevelMode + 0xe8) += nBonus;
-}
-
-// FUNCTION: LEMBALL 0x004130F0
-void __fastcall set_level_mode_field_0xf8(void *pLevelMode, void *pUnused, int nValue) {
-    (void)pUnused;
-    *(int *)((char *)pLevelMode + 0xf8) = nValue;
-}
-
-// FUNCTION: LEMBALL 0x00414C70
-void __fastcall set_managed_entity_group_command_state(void *pEntity, void *pUnused, int nState) {
-    (void)pUnused;
-    *(int *)((char *)pEntity + 0x154) = nState;
-}
-
-// FUNCTION: LEMBALL 0x0041E400
-void __fastcall set_object_field_0x160(void *pObject, void *pUnused, int nValue) {
-    (void)pUnused;
-    *(int *)((char *)pObject + 0x160) = nValue;
-}
 
 extern int g_nLevelFrameClockTick;
 extern void *g_pSharedRenderDispatchQueue;
@@ -838,14 +309,891 @@ struct LevelManagedEntityCommandQueueView {
     int HasPendingCommandsThunk(void);
 };
 
-// FUNCTION: LEMBALL 0x0040AB50
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+typedef void (LEMBALL_FASTCALL *LevelManagedEntityNoArgVirtualProc)(void *pEntity);
+typedef void (LEMBALL_FASTCALL *LevelManagedEntityIntVirtualProc)(
+    void *pEntity, void *pUnused, int nValue);
+
+
+void __fastcall ClearManagedEntityMoveCommandsThunk(void *pEntity);
+int __fastcall GetManagedEntityGroupCommandStateThunk(void *pEntity);
+void NoopManagedEntityGroupDetachHookThunk(void);
+int PASCAL IsManagedEntityState18Thunk(int nState);
+void noop_vtable_callback_00407f20(void);
+int PASCAL return_false_vtable_callback_00407f30(void *pUnused);
+void noop_vtable_callback_00408000(void);
+void PASCAL noop_vtable_callback_0040a7f0(void *pUnused);
+int PASCAL return_true_vtable_callback_0040a800(void *pUnused);
+void *__fastcall get_object_field_0xf0(void *pObject);
+void __fastcall copy_object_fields_0x9c_triplet(
+    void *pObject, void *pUnused, LevelBoundsPoint *pPoint);
+void __fastcall set_object_field_0x98(void *pObject, void *pUnused, int nValue);
+int __fastcall get_object_field_0x98(void *pObject);
+int __fastcall is_point_inside_3d_bounds(
+    LevelBoundedRenderObjectView *pObject,
+    void *pUnused,
+    const LevelBoundsPoint *pPoint);
+int __fastcall do_3d_bounds_intersect(
+    LevelBoundedRenderObjectView *pObject,
+    void *pUnused,
+    const LevelThreeDwordBounds *pBounds);
+void PASCAL noop_vtable_callback_0040a930(void *pUnused);
+void noop_vtable_callback_0040a940(void);
+int return_false_vtable_callback_0040a950(void);
+void noop_vtable_callback_0040a960(void);
+void noop_vtable_callback_0040a970(void);
+void noop_vtable_callback_0040a980(void);
+void noop_vtable_callback_0040a990(void);
+int return_false_vtable_callback_0040a9c0(void);
+int return_false_vtable_callback_0040a9d0(void);
+void noop_vtable_callback_0040a9f0(void);
+void noop_vtable_callback_0040aa00(void);
+void noop_vtable_callback_0040aa10(void);
+int return_false_vtable_callback_0040aa30(void);
+void noop_vtable_callback_0040aa40(void);
+int return_true_vtable_callback_0040aa50(void);
+int PASCAL return_false_vtable_callback_0040aa60(void *pUnused);
+int PASCAL return_false_vtable_callback_0040aa70(void *pUnused1, void *pUnused2);
+int PASCAL return_false_vtable_callback_0040aa90(void *pUnused);
+void noop_vtable_callback_0040aab0(void);
+void noop_callback_0040aad0(void);
+void __fastcall set_object_field_0x30_true(void *pObject);
+void __fastcall set_object_field_0x30_false(void *pObject);
+int __fastcall get_plas_child_runtime_flag_0x30(void *pObject);
+void PASCAL noop_callback_0040ab20(void *pUnused1, void *pUnused2, void *pUnused3);
+int return_false_vtable_callback_0040ab30(void);
+int return_false_vtable_callback_0040ab40(void);
+int PASCAL IsManagedEntityState18(int nState);
+int PASCAL return_false_vtable_callback_0040ab80(void *pUnused1, void *pUnused2, void *pUnused3);
+int PASCAL return_false_vtable_callback_0040ab90(void *pUnused);
+void noop_vtable_callback_0040adc0(void);
+void __fastcall set_managed_entity_state_id_local(void *pEntity, void *pUnused, int nStateId);
+void noop_managed_entity_virtual_hook(void);
+void noop_callback_0040c1b0(void);
+int return_two_vtable_callback(void);
+void noop_vtable_callback_0040ce40(void);
+int return_two_callback(void);
+void noop_vtable_callback_0040cf30(void);
+int PASCAL IsDoorChunkIdleOrClosedState(int nState);
+void __fastcall set_managed_entity_owner_group(void *pEntity, void *pUnused, void *pOwnerGroup);
+void *__fastcall get_managed_entity_owner_group(void *pEntity);
+void __fastcall set_managed_entity_primary_active_flag(void *pEntity, void *pUnused, int fActive);
+void __fastcall set_managed_entity_secondary_active_flag(void *pEntity, void *pUnused, int fActive);
+int __fastcall has_door_chunk_object_target_tile_latched(void *pObject);
+void __fastcall schedule_door_chunk_object_update_in_10_ticks(void *pObject);
+void __fastcall clear_door_chunk_object_target_tile_latch(void *pObject);
+void *__fastcall get_level_mode_chunk_loader_context(void *pLevelMode);
+void LEMBALL_FASTCALL MarkObjectField178AndSetTimer3C(void *pObject);
+void *__fastcall get_level_mode_mine_chunk_manager(void *pLevelMode);
+void *__fastcall get_level_mode_lift_chunk_manager(void *pLevelMode);
+void *__fastcall get_object_field_0x30(void *pObject);
+void __fastcall add_level_time_bonus_counter(void *pLevelMode, void *pUnused, int nBonus);
+void __fastcall set_level_mode_field_0xf8(void *pLevelMode, void *pUnused, int nValue);
+int __fastcall has_level_plas_history_entries(void *pLevelMode);
+int __fastcall get_managed_entity_group_command_state(void *pEntity);
+void __fastcall set_managed_entity_group_command_state(void *pEntity, void *pUnused, int nState);
+void __fastcall set_entity_field_0x08_if_flags_bit0(void *pEntity);
+void __fastcall clear_managed_entity_move_commands(void *pEntity);
+int return_false_virtual_hook(void);
+void *__fastcall get_first_projectile_pool_object(void *pPool);
+void noop_managed_entity_group_detach_hook(void);
+void PASCAL ResetManagedEntityGroupState(void *pEntity);
+void __cdecl ForwardManagedEntityVslot7C(void *pUnused, void *pEntity);
+int __cdecl CallHasPendingManagedEntityCommands(void *pUnused, LevelManagedEntityCommandQueueView *pEntity);
+void __cdecl ForwardManagedEntityVslot1C(void *pUnused, void *pEntity);
+void __cdecl ForwardManagedEntityVslot30(void *pUnused, void *pEntity);
+void __cdecl ForwardManagedEntityVslot3C(void *pUnused, void *pEntity);
+void __cdecl ForwardManagedEntityVslot40(void *pUnused, void *pEntity);
+void __cdecl ForwardManagedEntityVslot68(void *pUnused, void *pEntity);
+void __cdecl ForwardManagedEntityVslot24(void *pUnused, void *pEntity);
+void __cdecl ForwardManagedEntityVslot44(void *pUnused, void *pEntity);
+void __cdecl ForwardManagedEntityVslotD0(void *pUnused, void *pEntity);
+void __cdecl ClearPlasChildRuntimeFlag30(void *pUnused, void *pEntity);
+void __cdecl ForwardManagedEntityVslot9C(void *pUnused, void *pEntity);
+void __cdecl ForwardManagedEntityVslot8C(void *pUnused, void *pEntity);
+void __cdecl ForwardManagedEntityVslot88(void *pUnused, void *pEntity);
+void __cdecl ForwardManagedEntityVslot90(void *pUnused, void *pEntity);
+void noop_projectile_geometry_callback(void);
+void *__fastcall initialize_three_dword_point_sentinel(void *pPoint);
+int return_true_vtable_callback_0041c3f0(void);
+int return_two_vtable_callback_0041c430(void);
+int return_true_vtable_callback_0041c5b0(void);
+int return_two_vtable_callback_0041c630(void);
+int return_two_vtable_callback_0041dc40(void);
+void PASCAL noop_vtable_callback_0041e3c0(void *pUnused1, void *pUnused2, void *pUnused3);
+void __fastcall set_object_field_0x160(void *pObject, void *pUnused, int nValue);
+int __fastcall get_object_field_0x160(void *pObject);
+int return_zero_vtable_callback_0041f870(void);
+int __fastcall is_delayed_move_to_saved_target_armed(void *pObject);
+void __fastcall set_chunk_short_delay_timer(void *pObject);
+int __fastcall get_object_field_0x124(void *pObject);
+void LEMBALL_FASTCALL CallBallChunkEntryVfuncC8(void *pEntry, void *pUnused, int nUnused);
+void LEMBALL_FASTCALL DispatchVtableSlot34WithValue2(void *pObject, void *pUnused);
+void LEMBALL_FASTCALL DispatchVtableSlot34WithValue2Variant(void *pObject, void *pUnused);
+void LEMBALL_FASTCALL SendCollMessage16(void *pObject, void *pUnused);
+void noop_vtable_callback_00422fa0(void);
+void noop_vtable_callback_00423040(void);
+int return_true_vtable_callback_00423050(void);
+int PASCAL IsManagedEntityState8Or18(int nState);
+void __fastcall clear_rock_chunk_object_count(void *pManager);
+int PASCAL get_tile_flag_0x1c_object_render_entry_count(void);
+void noop_vtable_callback_0042c9a0(void);
+void __fastcall reset_ice_chunk_object_count(void *pManager);
+int PASCAL return_zero_vtable_callback_0042dd30(void *pUnused);
+void __fastcall set_move_chunk_object_trigger_latch(void *pObject);
+void __fastcall reset_move_chunk_object_count(void *pManager);
+int __fastcall return_object_field_0x0c_00435880(void *pObject);
+void __fastcall set_object_field_0x10_00435890(void *pObject, void *pUnused, int nValue);
+void __fastcall set_object_field_0x0c_004358a0(void *pObject, void *pUnused, int nValue);
+void __fastcall set_object_field_0x18_004358b0(void *pObject, void *pUnused, int nValue);
+unsigned int return_hresult_80000000_callback(void);
+void *__fastcall clear_two_word_point(void *pPoint);
+void noop_queued_variant_child_slot_manager_update(void);
+unsigned int return_hresult_40000001_callback(void);
+void noop_callback_00452b80(void);
+void noop_callback_00456600(void);
+
+// FUNCTION: LEMBALL 0x00401046
+LevelThreeDwordPointVariant *LevelThreeDwordPointVariant::CopyThunk(const LevelThreeDwordPointVariant *pSource) {
+    return Copy(pSource);
+}
+
+// FUNCTION: LEMBALL 0x004010be
+LevelThreeDwordPoint *LevelManagedEntityPositionView::CopyWorldPositionThunk(LevelThreeDwordPoint *pPosition) {
+    return CopyWorldPosition(pPosition);
+}
+
+// FUNCTION: LEMBALL 0x004011ef
+void __fastcall ClearManagedEntityMoveCommandsThunk(void *pEntity) {
+    clear_managed_entity_move_commands(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x0040142e
+int LevelManagedEntityDirtyStateView::PollChildDirtyFlagThunk(void) {
+    return PollChildDirtyFlag();
+}
+
+// FUNCTION: LEMBALL 0x0040161d
+LevelThreeDwordPointVariantB *LevelThreeDwordPointVariantB::CopyThunk(const LevelThreeDwordPointVariantB *pSource) {
+    return Copy(pSource);
+}
+
+// FUNCTION: LEMBALL 0x0040173f
+void *LevelManagedEntityChildIterator::GetChildWithState8Thunk(void) {
+    return GetChildWithState8();
+}
+
+// FUNCTION: LEMBALL 0x00401816
+void *LevelManagedEntityChildIterator::GetNextChildThunk(void) {
+    return GetNextChild();
+}
+
+// FUNCTION: LEMBALL 0x0040185c
+int __fastcall GetManagedEntityGroupCommandStateThunk(void *pEntity) {
+    return get_managed_entity_group_command_state(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x004018a7
+LevelThreeDwordPoint *LevelThreeDwordPoint::CopyThunk(const LevelThreeDwordPoint *pSource) {
+    return Copy(pSource);
+}
+
+// FUNCTION: LEMBALL 0x00401bf4
+void LevelManagedEntityCommandQueue::PopFrontThunk(void) {
+    PopFront();
+}
+
+// FUNCTION: LEMBALL 0x00401e65
+void LevelManagedEntityQueueCursor::GetPositionThunk(int *pnX, int *pnY) {
+    GetPosition(pnX, pnY);
+}
+
+// FUNCTION: LEMBALL 0x00401eab
+void *LevelManagedEntityChildIterator::GetCurrentChildThunk(void) {
+    return GetCurrentChild();
+}
+
+// FUNCTION: LEMBALL 0x00401ed3
+LevelTwoDwordPair *LevelTwoDwordPair::CopyThunk(const LevelTwoDwordPair *pSource) {
+    return Copy(pSource);
+}
+
+// FUNCTION: LEMBALL 0x00401f37
+int LevelManagedEntityCommandQueueView::HasPendingCommandsThunk(void) {
+    return HasPendingCommands();
+}
+
+// FUNCTION: LEMBALL 0x0040202c
+void LevelManagedEntityCommandQueue::PushFrontThunk(void) {
+    PushFront();
+}
+
+// FUNCTION: LEMBALL 0x004020c2
+void NoopManagedEntityGroupDetachHookThunk(void) {
+    noop_managed_entity_group_detach_hook();
+}
+
+// FUNCTION: LEMBALL 0x004021df
+LevelManagedEntityChildIterator *LevelManagedEntityActiveGroupView::GetFirstActiveEntityThunk(void) {
+    return GetFirstActiveEntity();
+}
+
+// FUNCTION: LEMBALL 0x0040241e
+void *LevelManagedEntityChildIterator::GetFirstChildThunk(void) {
+    return GetFirstChild();
+}
+
+// FUNCTION: LEMBALL 0x004024be
+void LevelManagedEntityStateFields::SetStateIdWithVariantLocalThunk(int nStateId, int nVariant) {
+    SetStateIdWithVariantLocal(nStateId, nVariant);
+}
+
+// FUNCTION: LEMBALL 0x0040269e
+int LevelQueuedProjectileRequestTable::GetRequestCodeThunk(int nIndex) {
+    return GetRequestCode(nIndex);
+}
+
+// FUNCTION: LEMBALL 0x00402833
+int LevelManagedEntityHistoryView::PopHistoryIdThunk(void) {
+    return PopHistoryId();
+}
+
+// FUNCTION: LEMBALL 0x00403215
+void LevelManagedEntityQueueCursor::ClampPositionThunk(void) {
+    ClampPosition();
+}
+
+// FUNCTION: LEMBALL 0x0040335f
+int PASCAL IsManagedEntityState18Thunk(int nState) {
+    return IsManagedEntityState18(nState);
+}
+
+// FUNCTION: LEMBALL 0x00403477
+int LevelManagedEntityChildIterator::GetActiveStateThunk(void) {
+    return GetActiveState();
+}
+
+// FUNCTION: LEMBALL 0x0040367a
+int LevelManagedEntityStateFields::IsStateNotInactiveThunk(void) {
+    return IsStateNotInactive();
+}
+
+// FUNCTION: LEMBALL 0x0040380a
+int LevelManagedEntityChildIterator::HasDirtyChildrenThunk(void) {
+    return HasDirtyChildren();
+}
+
+// FUNCTION: LEMBALL 0x00407f20
+void noop_vtable_callback_00407f20(void) {
+}
+
+// FUNCTION: LEMBALL 0x00407f30
+int PASCAL return_false_vtable_callback_00407f30(void *pUnused) {
+    (void)pUnused;
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x00408000
+void noop_vtable_callback_00408000(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040a7f0
+void PASCAL noop_vtable_callback_0040a7f0(void *pUnused) {
+    (void)pUnused;
+}
+
+// FUNCTION: LEMBALL 0x0040a800
+int PASCAL return_true_vtable_callback_0040a800(void *pUnused) {
+    (void)pUnused;
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0040a810
+void *__fastcall get_object_field_0xf0(void *pObject) {
+    return *(void **)((char *)pObject + 0xf0);
+}
+
+// FUNCTION: LEMBALL 0x0040a830
+void __fastcall copy_object_fields_0x9c_triplet(
+    void *pObject, void *pUnused, LevelBoundsPoint *pPoint)
+{
+    (void)pUnused;
+    *pPoint = *(LevelBoundsPoint *)((char *)pObject + 0x9c);
+}
+
+// FUNCTION: LEMBALL 0x0040a870
+void __fastcall set_object_field_0x98(void *pObject, void *pUnused, int nValue) {
+    (void)pUnused;
+    *(int *)((char *)pObject + 0x98) = nValue;
+}
+
+// FUNCTION: LEMBALL 0x0040a880
+int __fastcall get_object_field_0x98(void *pObject) {
+    return *(int *)((char *)pObject + 0x98);
+}
+
+// FUNCTION: LEMBALL 0x0040a890
+int __fastcall is_point_inside_3d_bounds(
+    LevelBoundedRenderObjectView *pObject,
+    void *pUnused,
+    const LevelBoundsPoint *pPoint)
+{
+    (void)pUnused;
+    return pObject->m_Bounds.m_Minimum.m_nX <= pPoint->m_nX &&
+           pPoint->m_nX <= pObject->m_Bounds.m_Maximum.m_nX &&
+           pObject->m_Bounds.m_Minimum.m_nY <= pPoint->m_nY &&
+           pPoint->m_nY <= pObject->m_Bounds.m_Maximum.m_nY &&
+           pObject->m_Bounds.m_Minimum.m_nZ <= pPoint->m_nZ &&
+           pPoint->m_nZ <= pObject->m_Bounds.m_Maximum.m_nZ;
+}
+
+// FUNCTION: LEMBALL 0x0040a8e0
+int __fastcall do_3d_bounds_intersect(
+    LevelBoundedRenderObjectView *pObject,
+    void *pUnused,
+    const LevelThreeDwordBounds *pBounds)
+{
+    (void)pUnused;
+    return pObject->m_Bounds.m_Minimum.m_nX <= pBounds->m_Maximum.m_nX &&
+           pBounds->m_Minimum.m_nX <= pObject->m_Bounds.m_Maximum.m_nX &&
+           pObject->m_Bounds.m_Minimum.m_nY <= pBounds->m_Maximum.m_nY &&
+           pBounds->m_Minimum.m_nY <= pObject->m_Bounds.m_Maximum.m_nY &&
+           pObject->m_Bounds.m_Minimum.m_nZ <= pBounds->m_Maximum.m_nZ &&
+           pBounds->m_Minimum.m_nZ <= pObject->m_Bounds.m_Maximum.m_nZ;
+}
+
+// FUNCTION: LEMBALL 0x0040a930
+void PASCAL noop_vtable_callback_0040a930(void *pUnused) {
+    (void)pUnused;
+}
+
+// FUNCTION: LEMBALL 0x0040a940
+void noop_vtable_callback_0040a940(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040a950
+int return_false_vtable_callback_0040a950(void) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0040a960
+void noop_vtable_callback_0040a960(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040a970
+void noop_vtable_callback_0040a970(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040a980
+void noop_vtable_callback_0040a980(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040a990
+void noop_vtable_callback_0040a990(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040a9c0
+int return_false_vtable_callback_0040a9c0(void) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0040a9d0
+int return_false_vtable_callback_0040a9d0(void) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0040a9f0
+void noop_vtable_callback_0040a9f0(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040aa00
+void noop_vtable_callback_0040aa00(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040aa10
+void noop_vtable_callback_0040aa10(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040aa30
+int return_false_vtable_callback_0040aa30(void) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0040aa40
+void noop_vtable_callback_0040aa40(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040aa50
+int return_true_vtable_callback_0040aa50(void) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0040aa60
+int PASCAL return_false_vtable_callback_0040aa60(void *pUnused) {
+    (void)pUnused;
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0040aa70
+int PASCAL return_false_vtable_callback_0040aa70(void *pUnused1, void *pUnused2) {
+    (void)pUnused1;
+    (void)pUnused2;
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0040aa90
+int PASCAL return_false_vtable_callback_0040aa90(void *pUnused) {
+    (void)pUnused;
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0040aab0
+void noop_vtable_callback_0040aab0(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040aad0
+void noop_callback_0040aad0(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040aae0
+void __fastcall set_object_field_0x30_true(void *pObject) {
+    *(int *)((char *)pObject + 0x30) = 1;
+}
+
+// FUNCTION: LEMBALL 0x0040ab00
+void __fastcall set_object_field_0x30_false(void *pObject) {
+    *(int *)((char *)pObject + 0x30) = 0;
+}
+
+// FUNCTION: LEMBALL 0x0040ab10
+int __fastcall get_plas_child_runtime_flag_0x30(void *pObject) {
+    return *(int *)((char *)pObject + 0x30);
+}
+
+// FUNCTION: LEMBALL 0x0040ab20
+void PASCAL noop_callback_0040ab20(void *pUnused1, void *pUnused2, void *pUnused3) {
+    (void)pUnused1;
+    (void)pUnused2;
+    (void)pUnused3;
+}
+
+// FUNCTION: LEMBALL 0x0040ab30
+int return_false_vtable_callback_0040ab30(void) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0040ab40
+int return_false_vtable_callback_0040ab40(void) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0040ab50
 int PASCAL IsManagedEntityState18(int nState) {
     return nState == 0x18;
 }
 
-// FUNCTION: LEMBALL 0x0040335F
-int PASCAL IsManagedEntityState18Thunk(int nState) {
-    return IsManagedEntityState18(nState);
+// FUNCTION: LEMBALL 0x0040ab80
+int PASCAL return_false_vtable_callback_0040ab80(void *pUnused1, void *pUnused2, void *pUnused3) {
+    (void)pUnused1;
+    (void)pUnused2;
+    (void)pUnused3;
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0040ab90
+int PASCAL return_false_vtable_callback_0040ab90(void *pUnused) {
+    (void)pUnused;
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0040adc0
+void noop_vtable_callback_0040adc0(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040c170
+void __fastcall set_managed_entity_state_id_local(void *pEntity, void *pUnused, int nStateId) {
+    (void)pUnused;
+    *(int *)((char *)pEntity + 0xb8) = nStateId;
+}
+
+// FUNCTION: LEMBALL 0x0040c180
+void LevelManagedEntityStateFields::SetStateIdWithVariantLocal(int nStateId, int nVariant) {
+    m_nStateIdB8 = nStateId;
+    m_nStateVariantBC = (unsigned short)nVariant;
+}
+
+// FUNCTION: LEMBALL 0x0040c1a0
+void noop_managed_entity_virtual_hook(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040c1b0
+void noop_callback_0040c1b0(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040c1c0
+int return_two_vtable_callback(void) {
+    return 2;
+}
+
+// FUNCTION: LEMBALL 0x0040c270
+LevelThreeDwordPoint *LevelThreeDwordPoint::Copy(const LevelThreeDwordPoint *pSource) {
+    m_nX = pSource->m_nX;
+    m_nY = pSource->m_nY;
+    m_nZ = pSource->m_nZ;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x0040c290
+LevelTwoDwordPair *LevelTwoDwordPair::Copy(const LevelTwoDwordPair *pSource) {
+    m_nFirst = pSource->m_nFirst;
+    m_nSecond = pSource->m_nSecond;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x0040c2b0
+LevelThreeDwordPointVariant *LevelThreeDwordPointVariant::Copy(const LevelThreeDwordPointVariant *pSource) {
+    m_nX = pSource->m_nX;
+    m_nY = pSource->m_nY;
+    m_nZ = pSource->m_nZ;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x0040ce40
+void noop_vtable_callback_0040ce40(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040ce80
+int return_two_callback(void) {
+    return 2;
+}
+
+// FUNCTION: LEMBALL 0x0040cf30
+void noop_vtable_callback_0040cf30(void) {
+}
+
+// FUNCTION: LEMBALL 0x0040dd30
+int PASCAL IsDoorChunkIdleOrClosedState(int nState) {
+    if (nState != 0x18 && (nState < 0x1d || nState > 0x1e)) {
+        return 0;
+    }
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0040f0d0
+void __fastcall set_managed_entity_owner_group(void *pEntity, void *pUnused, void *pOwnerGroup) {
+    (void)pUnused;
+    *(void **)((char *)pEntity + 0x224) = pOwnerGroup;
+}
+
+// FUNCTION: LEMBALL 0x0040f0e0
+void *__fastcall get_managed_entity_owner_group(void *pEntity) {
+    return *(void **)((char *)pEntity + 0x224);
+}
+
+// FUNCTION: LEMBALL 0x0040f0f0
+void __fastcall set_managed_entity_primary_active_flag(void *pEntity, void *pUnused, int fActive) {
+    (void)pUnused;
+    *(int *)((char *)pEntity + 0x17c) = fActive;
+}
+
+// FUNCTION: LEMBALL 0x0040f100
+void __fastcall set_managed_entity_secondary_active_flag(void *pEntity, void *pUnused, int fActive) {
+    (void)pUnused;
+    *(int *)((char *)pEntity + 0x180) = fActive;
+}
+
+// FUNCTION: LEMBALL 0x0040f2b0
+int __fastcall has_door_chunk_object_target_tile_latched(void *pObject) {
+    return *(int *)((char *)pObject + 0x184) == 1;
+}
+
+// FUNCTION: LEMBALL 0x0040f410
+void __fastcall schedule_door_chunk_object_update_in_10_ticks(void *pObject) {
+    *(int *)((char *)pObject + 0xcc) = g_nLevelFrameClockTick + 10;
+}
+
+// FUNCTION: LEMBALL 0x0040f420
+void __fastcall clear_door_chunk_object_target_tile_latch(void *pObject) {
+    *(int *)((char *)pObject + 0x184) = 0;
+}
+
+// FUNCTION: LEMBALL 0x0040f7a0
+int LevelManagedEntityDirtyStateView::PollChildDirtyFlag(void) {
+    int *pfDirty;
+    int nCurrentValue;
+
+    nCurrentValue = m_nCurrentDirtyValue98;
+    if (m_nCachedDirtyValue1B0 == nCurrentValue &&
+        (pfDirty = &m_fChildDirty164, *pfDirty == 0)) {
+        *pfDirty = 0;
+        m_nCachedDirtyValue1B0 = nCurrentValue;
+        return *pfDirty;
+    }
+    pfDirty = &m_fChildDirty164;
+    m_nCachedDirtyValue1B0 = nCurrentValue;
+    *pfDirty = 1;
+    return *pfDirty;
+}
+
+// FUNCTION: LEMBALL 0x0040fcb0
+int LevelQueuedProjectileRequestTable::GetRequestCode(int nIndex) {
+    if (nIndex >= m_cRequestCodes220) {
+        return 0xffff;
+    }
+    return m_anRequestCodes1C0[nIndex];
+}
+
+// FUNCTION: LEMBALL 0x004102d0
+int LevelManagedEntityStateFields::IsStateAvailableForVariant(void) {
+    int nVariant;
+
+    if (!IsStateNotInactiveThunk()) {
+        return 0;
+    }
+    if (m_nStateIdB8 == 0x0f) {
+        nVariant = m_nStateVariantBC;
+        if (nVariant >= 1 && nVariant <= 2) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x00410a10
+void *__fastcall get_level_mode_chunk_loader_context(void *pLevelMode) {
+    return *(void **)((char *)pLevelMode + 0x178);
+}
+
+// FUNCTION: LEMBALL 0x00410aa0
+void LEMBALL_FASTCALL MarkObjectField178AndSetTimer3C(void *pObject) {
+    *(int *)((char *)pObject + 0x178) = 1;
+    *(int *)((char *)pObject + 0xcc) = g_nLevelFrameClockTick + 0x3c;
+}
+
+// FUNCTION: LEMBALL 0x00410af0
+void *__fastcall get_level_mode_mine_chunk_manager(void *pLevelMode) {
+    return *(void **)((char *)pLevelMode + 0x188);
+}
+
+// FUNCTION: LEMBALL 0x00410b00
+void *__fastcall get_level_mode_lift_chunk_manager(void *pLevelMode) {
+    return *(void **)((char *)pLevelMode + 0x18c);
+}
+
+// FUNCTION: LEMBALL 0x00410b10
+void *__fastcall get_object_field_0x30(void *pObject) {
+    return *(void **)((char *)pObject + 0x30);
+}
+
+// FUNCTION: LEMBALL 0x00410b50
+LevelThreeDwordPointVariantB *LevelThreeDwordPointVariantB::Copy(const LevelThreeDwordPointVariantB *pSource) {
+    m_nX = pSource->m_nX;
+    m_nY = pSource->m_nY;
+    m_nZ = pSource->m_nZ;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x004121e0
+void __fastcall add_level_time_bonus_counter(void *pLevelMode, void *pUnused, int nBonus) {
+    (void)pUnused;
+    *(int *)((char *)pLevelMode + 0xe8) += nBonus;
+}
+
+// FUNCTION: LEMBALL 0x004130f0
+void __fastcall set_level_mode_field_0xf8(void *pLevelMode, void *pUnused, int nValue) {
+    (void)pUnused;
+    *(int *)((char *)pLevelMode + 0xf8) = nValue;
+}
+
+// FUNCTION: LEMBALL 0x00413370
+int __fastcall has_level_plas_history_entries(void *pLevelMode) {
+    void *pPlasManager = *(void **)((char *)pLevelMode + 0x15c);
+    return *(int *)((char *)pPlasManager + 0x128);
+}
+
+// FUNCTION: LEMBALL 0x00414880
+int LevelManagedEntityChildIterator::GetActiveState(void) {
+    return m_nActiveState168;
+}
+
+// FUNCTION: LEMBALL 0x00414890
+void *LevelManagedEntityChildIterator::GetChildWithState8(void) {
+    LevelManagedEntityStateIdView *pChild;
+    int nStateId;
+
+    nStateId = 8;
+    pChild = (LevelManagedEntityStateIdView *)GetFirstChildThunk();
+    for (;;) {
+        if (pChild == 0) {
+            return 0;
+        }
+        if (pChild->m_nStateIdB8 == nStateId) {
+            return pChild;
+        }
+        pChild = (LevelManagedEntityStateIdView *)GetNextChildThunk();
+    }
+}
+
+// FUNCTION: LEMBALL 0x004148c0
+void *LevelManagedEntityChildIterator::GetCurrentChildWithState8(void) {
+    LevelManagedEntityStateIdView *pChild;
+    int nStateId;
+
+    nStateId = 8;
+    pChild = (LevelManagedEntityStateIdView *)GetCurrentChildThunk();
+    for (;;) {
+        if (pChild == 0) {
+            return 0;
+        }
+        if (pChild->m_nStateIdB8 == nStateId) {
+            return pChild;
+        }
+        pChild = (LevelManagedEntityStateIdView *)GetNextChildThunk();
+    }
+}
+
+// FUNCTION: LEMBALL 0x004149a0
+int LevelManagedEntityChildIterator::HasDirtyChildren(void) {
+    LevelManagedEntityDirtyStateView *pChild;
+    int fDirty;
+
+    fDirty = 0;
+    pChild = (LevelManagedEntityDirtyStateView *)GetFirstChildThunk();
+    while (pChild != 0) {
+        fDirty = pChild->PollChildDirtyFlagThunk() || fDirty;
+        pChild = (LevelManagedEntityDirtyStateView *)GetNextChildThunk();
+    }
+    return fDirty;
+}
+
+// FUNCTION: LEMBALL 0x00414c60
+int __fastcall get_managed_entity_group_command_state(void *pEntity) {
+    return *(int *)((char *)pEntity + 0x154);
+}
+
+// FUNCTION: LEMBALL 0x00414c70
+void __fastcall set_managed_entity_group_command_state(void *pEntity, void *pUnused, int nState) {
+    (void)pUnused;
+    *(int *)((char *)pEntity + 0x154) = nState;
+}
+
+// FUNCTION: LEMBALL 0x00414cb0
+LevelThreeDwordPoint *LevelManagedEntityPositionView::CopyWorldPosition(LevelThreeDwordPoint *pPosition) {
+    pPosition->m_nX = m_WorldPosition04.m_nX;
+    pPosition->m_nY = m_WorldPosition04.m_nY;
+    pPosition->m_nZ = m_WorldPosition04.m_nZ;
+    return pPosition;
+}
+
+// FUNCTION: LEMBALL 0x00414cd0
+void LevelManagedEntityCommandQueue::PopFront(void) {
+    LevelManagedEntityCommandEntry *pDestination;
+    LevelManagedEntityCommandEntry *pSource;
+    int iEntry;
+    int nOffset;
+
+    if (m_cEntries00 != 0) {
+        nOffset = 0;
+        for (iEntry = 0; iEntry < m_cEntries00 - 1; ++iEntry) {
+            pDestination = (LevelManagedEntityCommandEntry *)
+                ((char *)m_pEntries04 + nOffset);
+            nOffset += sizeof(LevelManagedEntityCommandEntry);
+            pSource = pDestination + 1;
+            pDestination->m_nField00 = pSource->m_nField00;
+            pDestination->m_nField04 = pSource->m_nField04;
+            pDestination->m_nField08 = pSource->m_nField08;
+            pDestination->m_nField0C = pSource->m_nField0C;
+            pDestination->m_nField10 = pSource->m_nField10;
+        }
+        --m_cEntries00;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00414d40
+void LevelManagedEntityCommandQueue::PushFront(void) {
+    LevelManagedEntityCommandEntry *pDestination;
+    LevelManagedEntityCommandEntry *pSource;
+    int cEntries;
+    int nOffset;
+
+    cEntries = m_cEntries00;
+    if (cEntries > 0) {
+        nOffset = cEntries * sizeof(LevelManagedEntityCommandEntry);
+        do {
+            pDestination = (LevelManagedEntityCommandEntry *)
+                ((char *)m_pEntries04 + nOffset);
+            nOffset -= sizeof(LevelManagedEntityCommandEntry);
+            pSource = pDestination - 1;
+            pDestination->m_nField00 = pSource->m_nField00;
+            pDestination->m_nField04 = pSource->m_nField04;
+            pDestination->m_nField08 = pSource->m_nField08;
+            pDestination->m_nField0C = pSource->m_nField0C;
+            pDestination->m_nField10 = pSource->m_nField10;
+        } while (nOffset != 0);
+    }
+    ++m_cEntries00;
+}
+
+// FUNCTION: LEMBALL 0x00414e00
+void LevelManagedEntityQueueCursor::SetPosition(int nX, int nY) {
+    m_nX10 = nX;
+    m_nY14 = nY;
+    ClampPositionThunk();
+}
+
+// FUNCTION: LEMBALL 0x00414e20
+void LevelManagedEntityQueueCursor::ClampPosition(void) {
+    if (m_nX10 > m_nMaximumX18) {
+        m_nX10 = m_nMaximumX18;
+    } else if (m_nX10 < 0) {
+        m_nX10 = 0;
+    }
+
+    if (m_nY14 > m_nMaximumY1C) {
+        m_nY14 = m_nMaximumY1C;
+    } else if (m_nY14 < 0) {
+        m_nY14 = 0;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00414e60
+void LevelManagedEntityQueueCursor::GetPosition(int *pnX, int *pnY) {
+    *pnX = m_nX10;
+    *pnY = m_nY14;
 }
 
 // FUNCTION: LEMBALL 0x00415520
@@ -877,6 +1225,23 @@ void LevelManagedEntityStateFields::DecrementHeadingOctant(void) {
     }
 }
 
+// FUNCTION: LEMBALL 0x00415a20
+void __fastcall set_entity_field_0x08_if_flags_bit0(void *pEntity) {
+    if ((*(unsigned char *)((char *)pEntity + 0x68) & 1) != 0) {
+        *(int *)((char *)pEntity + 8) = 1;
+    }
+}
+
+// FUNCTION: LEMBALL 0x004160c0
+int LevelManagedEntityCommandQueueView::HasPendingCommands(void) {
+    return 0 < *m_pCommandCount70;
+}
+
+// FUNCTION: LEMBALL 0x004160e0
+void __fastcall clear_managed_entity_move_commands(void *pEntity) {
+    **(unsigned short **)((char *)pEntity + 0x70) = 0;
+}
+
 // FUNCTION: LEMBALL 0x00416570
 int LevelManagedEntityStateFields::IsStateNotInactive(void) {
     int nState = m_nStateIdB8;
@@ -890,124 +1255,41 @@ inactive:
     return 0;
 }
 
-// FUNCTION: LEMBALL 0x0040367A
-int LevelManagedEntityStateFields::IsStateNotInactiveThunk(void) {
-    return IsStateNotInactive();
-}
-
-// FUNCTION: LEMBALL 0x004102D0
-int LevelManagedEntityStateFields::IsStateAvailableForVariant(void) {
-    int nVariant;
-
-    if (!IsStateNotInactiveThunk()) {
-        return 0;
-    }
-    if (m_nStateIdB8 == 0x0f) {
-        nVariant = m_nStateVariantBC;
-        if (nVariant >= 1 && nVariant <= 2) {
-            return 0;
-        }
-    }
-    return 1;
-}
-
-// FUNCTION: LEMBALL 0x00423E90
-int PASCAL IsManagedEntityState8Or18(int nState) {
-    if (nState == 8 || nState == 0x18) {
-        return 1;
-    }
+// FUNCTION: LEMBALL 0x00417aa0
+int return_false_virtual_hook(void) {
     return 0;
 }
 
-// FUNCTION: LEMBALL 0x0040C180
-void LevelManagedEntityStateFields::SetStateIdWithVariantLocal(int nStateId, int nVariant) {
-    m_nStateIdB8 = nStateId;
-    m_nStateVariantBC = (unsigned short)nVariant;
+// FUNCTION: LEMBALL 0x00417f40
+void *__fastcall get_first_projectile_pool_object(void *pPool) {
+    *(int *)((char *)pPool + 0xd8) = 0;
+    return *(void **)((char *)pPool + 0x34);
 }
 
-// FUNCTION: LEMBALL 0x004024BE
-void LevelManagedEntityStateFields::SetStateIdWithVariantLocalThunk(int nStateId, int nVariant) {
-    SetStateIdWithVariantLocal(nStateId, nVariant);
-}
+// FUNCTION: LEMBALL 0x004185d0
+int LevelManagedEntityHistoryView::PopHistoryId(void) {
+    int iHistoryId;
 
-// FUNCTION: LEMBALL 0x0040C270
-LevelThreeDwordPoint *LevelThreeDwordPoint::Copy(const LevelThreeDwordPoint *pSource) {
-    m_nX = pSource->m_nX;
-    m_nY = pSource->m_nY;
-    m_nZ = pSource->m_nZ;
-    return this;
-}
-
-// FUNCTION: LEMBALL 0x004018A7
-LevelThreeDwordPoint *LevelThreeDwordPoint::CopyThunk(const LevelThreeDwordPoint *pSource) {
-    return Copy(pSource);
-}
-
-// FUNCTION: LEMBALL 0x0040C290
-LevelTwoDwordPair *LevelTwoDwordPair::Copy(const LevelTwoDwordPair *pSource) {
-    m_nFirst = pSource->m_nFirst;
-    m_nSecond = pSource->m_nSecond;
-    return this;
-}
-
-// FUNCTION: LEMBALL 0x00401ED3
-LevelTwoDwordPair *LevelTwoDwordPair::CopyThunk(const LevelTwoDwordPair *pSource) {
-    return Copy(pSource);
-}
-
-// FUNCTION: LEMBALL 0x0040C2B0
-LevelThreeDwordPointVariant *LevelThreeDwordPointVariant::Copy(const LevelThreeDwordPointVariant *pSource) {
-    m_nX = pSource->m_nX;
-    m_nY = pSource->m_nY;
-    m_nZ = pSource->m_nZ;
-    return this;
-}
-
-// FUNCTION: LEMBALL 0x00401046
-LevelThreeDwordPointVariant *LevelThreeDwordPointVariant::CopyThunk(const LevelThreeDwordPointVariant *pSource) {
-    return Copy(pSource);
-}
-
-// FUNCTION: LEMBALL 0x0040FCB0
-int LevelQueuedProjectileRequestTable::GetRequestCode(int nIndex) {
-    if (nIndex >= m_cRequestCodes220) {
-        return 0xffff;
+    if (m_cHistoryIds128 == 0) {
+        return 0;
     }
-    return m_anRequestCodes1C0[nIndex];
+    iHistoryId = --m_cHistoryIds128;
+    return m_anHistoryIds12C[iHistoryId];
 }
 
-// FUNCTION: LEMBALL 0x0040269E
-int LevelQueuedProjectileRequestTable::GetRequestCodeThunk(int nIndex) {
-    return GetRequestCode(nIndex);
+// FUNCTION: LEMBALL 0x00418640
+void noop_managed_entity_group_detach_hook(void) {
 }
 
-// FUNCTION: LEMBALL 0x00410B50
-LevelThreeDwordPointVariantB *LevelThreeDwordPointVariantB::Copy(const LevelThreeDwordPointVariantB *pSource) {
-    m_nX = pSource->m_nX;
-    m_nY = pSource->m_nY;
-    m_nZ = pSource->m_nZ;
-    return this;
+// FUNCTION: LEMBALL 0x00418720
+void PASCAL ResetManagedEntityGroupState(void *pEntity) {
+    void **pVtable;
+
+    pVtable = *(void ***)pEntity;
+    ((LevelManagedEntityNoArgVirtualProc)pVtable[0x104 / sizeof(void *)])(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x0040161D
-LevelThreeDwordPointVariantB *LevelThreeDwordPointVariantB::CopyThunk(const LevelThreeDwordPointVariantB *pSource) {
-    return Copy(pSource);
-}
-
-// FUNCTION: LEMBALL 0x00414CB0
-LevelThreeDwordPoint *LevelManagedEntityPositionView::CopyWorldPosition(LevelThreeDwordPoint *pPosition) {
-    pPosition->m_nX = m_WorldPosition04.m_nX;
-    pPosition->m_nY = m_WorldPosition04.m_nY;
-    pPosition->m_nZ = m_WorldPosition04.m_nZ;
-    return pPosition;
-}
-
-// FUNCTION: LEMBALL 0x004010BE
-LevelThreeDwordPoint *LevelManagedEntityPositionView::CopyWorldPositionThunk(LevelThreeDwordPoint *pPosition) {
-    return CopyWorldPosition(pPosition);
-}
-
-// FUNCTION: LEMBALL 0x004189F0
+// FUNCTION: LEMBALL 0x004189f0
 LevelManagedEntityChildIterator *LevelManagedEntityActiveGroupView::GetFirstActiveEntity(void) {
     LevelManagedEntityChildIterator *pEntity;
     int iEntity;
@@ -1021,131 +1303,7 @@ LevelManagedEntityChildIterator *LevelManagedEntityActiveGroupView::GetFirstActi
     return 0;
 }
 
-// FUNCTION: LEMBALL 0x004021DF
-LevelManagedEntityChildIterator *LevelManagedEntityActiveGroupView::GetFirstActiveEntityThunk(void) {
-    return GetFirstActiveEntity();
-}
-
-// FUNCTION: LEMBALL 0x00414CD0
-void LevelManagedEntityCommandQueue::PopFront(void) {
-    LevelManagedEntityCommandEntry *pDestination;
-    LevelManagedEntityCommandEntry *pSource;
-    int iEntry;
-    int nOffset;
-
-    if (m_cEntries00 != 0) {
-        nOffset = 0;
-        for (iEntry = 0; iEntry < m_cEntries00 - 1; ++iEntry) {
-            pDestination = (LevelManagedEntityCommandEntry *)
-                ((char *)m_pEntries04 + nOffset);
-            nOffset += sizeof(LevelManagedEntityCommandEntry);
-            pSource = pDestination + 1;
-            pDestination->m_nField00 = pSource->m_nField00;
-            pDestination->m_nField04 = pSource->m_nField04;
-            pDestination->m_nField08 = pSource->m_nField08;
-            pDestination->m_nField0C = pSource->m_nField0C;
-            pDestination->m_nField10 = pSource->m_nField10;
-        }
-        --m_cEntries00;
-    }
-}
-
-// FUNCTION: LEMBALL 0x00401BF4
-void LevelManagedEntityCommandQueue::PopFrontThunk(void) {
-    PopFront();
-}
-
-// FUNCTION: LEMBALL 0x00414D40
-void LevelManagedEntityCommandQueue::PushFront(void) {
-    LevelManagedEntityCommandEntry *pDestination;
-    LevelManagedEntityCommandEntry *pSource;
-    int cEntries;
-    int nOffset;
-
-    cEntries = m_cEntries00;
-    if (cEntries > 0) {
-        nOffset = cEntries * sizeof(LevelManagedEntityCommandEntry);
-        do {
-            pDestination = (LevelManagedEntityCommandEntry *)
-                ((char *)m_pEntries04 + nOffset);
-            nOffset -= sizeof(LevelManagedEntityCommandEntry);
-            pSource = pDestination - 1;
-            pDestination->m_nField00 = pSource->m_nField00;
-            pDestination->m_nField04 = pSource->m_nField04;
-            pDestination->m_nField08 = pSource->m_nField08;
-            pDestination->m_nField0C = pSource->m_nField0C;
-            pDestination->m_nField10 = pSource->m_nField10;
-        } while (nOffset != 0);
-    }
-    ++m_cEntries00;
-}
-
-// FUNCTION: LEMBALL 0x0040202C
-void LevelManagedEntityCommandQueue::PushFrontThunk(void) {
-    PushFront();
-}
-
-// FUNCTION: LEMBALL 0x00414E60
-void LevelManagedEntityQueueCursor::GetPosition(int *pnX, int *pnY) {
-    *pnX = m_nX10;
-    *pnY = m_nY14;
-}
-
-// FUNCTION: LEMBALL 0x00414E00
-void LevelManagedEntityQueueCursor::SetPosition(int nX, int nY) {
-    m_nX10 = nX;
-    m_nY14 = nY;
-    ClampPositionThunk();
-}
-
-// FUNCTION: LEMBALL 0x00414E20
-void LevelManagedEntityQueueCursor::ClampPosition(void) {
-    if (m_nX10 > m_nMaximumX18) {
-        m_nX10 = m_nMaximumX18;
-    } else if (m_nX10 < 0) {
-        m_nX10 = 0;
-    }
-
-    if (m_nY14 > m_nMaximumY1C) {
-        m_nY14 = m_nMaximumY1C;
-    } else if (m_nY14 < 0) {
-        m_nY14 = 0;
-    }
-}
-
-// FUNCTION: LEMBALL 0x00403215
-void LevelManagedEntityQueueCursor::ClampPositionThunk(void) {
-    ClampPosition();
-}
-
-// FUNCTION: LEMBALL 0x00401E65
-void LevelManagedEntityQueueCursor::GetPositionThunk(int *pnX, int *pnY) {
-    GetPosition(pnX, pnY);
-}
-
-// FUNCTION: LEMBALL 0x004160C0
-int LevelManagedEntityCommandQueueView::HasPendingCommands(void) {
-    return 0 < *m_pCommandCount70;
-}
-
-// FUNCTION: LEMBALL 0x00401F37
-int LevelManagedEntityCommandQueueView::HasPendingCommandsThunk(void) {
-    return HasPendingCommands();
-}
-
-typedef void (LEMBALL_FASTCALL *LevelManagedEntityNoArgVirtualProc)(void *pEntity);
-typedef void (LEMBALL_FASTCALL *LevelManagedEntityIntVirtualProc)(
-    void *pEntity, void *pUnused, int nValue);
-
-// FUNCTION: LEMBALL 0x00418720
-void PASCAL ResetManagedEntityGroupState(void *pEntity) {
-    void **pVtable;
-
-    pVtable = *(void ***)pEntity;
-    ((LevelManagedEntityNoArgVirtualProc)pVtable[0x104 / sizeof(void *)])(pEntity);
-}
-
-// FUNCTION: LEMBALL 0x00419B00
+// FUNCTION: LEMBALL 0x00419b00
 void __cdecl ForwardManagedEntityVslot7C(void *pUnused, void *pEntity) {
     void **pVtable;
 
@@ -1154,7 +1312,13 @@ void __cdecl ForwardManagedEntityVslot7C(void *pUnused, void *pEntity) {
     ((LevelManagedEntityNoArgVirtualProc)pVtable[0x7c / sizeof(void *)])(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x00419C80
+// FUNCTION: LEMBALL 0x00419c30
+int __cdecl CallHasPendingManagedEntityCommands(void *pUnused, LevelManagedEntityCommandQueueView *pEntity) {
+    (void)pUnused;
+    return pEntity->HasPendingCommandsThunk();
+}
+
+// FUNCTION: LEMBALL 0x00419c80
 void __cdecl ForwardManagedEntityVslot1C(void *pUnused, void *pEntity) {
     void **pVtable;
 
@@ -1163,7 +1327,7 @@ void __cdecl ForwardManagedEntityVslot1C(void *pUnused, void *pEntity) {
     ((LevelManagedEntityNoArgVirtualProc)pVtable[0x1c / sizeof(void *)])(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x00419D80
+// FUNCTION: LEMBALL 0x00419d80
 void __cdecl ForwardManagedEntityVslot30(void *pUnused, void *pEntity) {
     void **pVtable;
 
@@ -1172,7 +1336,7 @@ void __cdecl ForwardManagedEntityVslot30(void *pUnused, void *pEntity) {
     ((LevelManagedEntityNoArgVirtualProc)pVtable[0x30 / sizeof(void *)])(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x00419E50
+// FUNCTION: LEMBALL 0x00419e50
 void __cdecl ForwardManagedEntityVslot3C(void *pUnused, void *pEntity) {
     void **pVtable;
 
@@ -1181,7 +1345,7 @@ void __cdecl ForwardManagedEntityVslot3C(void *pUnused, void *pEntity) {
     ((LevelManagedEntityNoArgVirtualProc)pVtable[0x3c / sizeof(void *)])(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x00419E60
+// FUNCTION: LEMBALL 0x00419e60
 void __cdecl ForwardManagedEntityVslot40(void *pUnused, void *pEntity) {
     void **pVtable;
 
@@ -1190,7 +1354,7 @@ void __cdecl ForwardManagedEntityVslot40(void *pUnused, void *pEntity) {
     ((LevelManagedEntityNoArgVirtualProc)pVtable[0x40 / sizeof(void *)])(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x00419E70
+// FUNCTION: LEMBALL 0x00419e70
 void __cdecl ForwardManagedEntityVslot68(void *pUnused, void *pEntity) {
     void **pVtable;
 
@@ -1199,7 +1363,7 @@ void __cdecl ForwardManagedEntityVslot68(void *pUnused, void *pEntity) {
     ((LevelManagedEntityNoArgVirtualProc)pVtable[0x68 / sizeof(void *)])(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x00419E80
+// FUNCTION: LEMBALL 0x00419e80
 void __cdecl ForwardManagedEntityVslot24(void *pUnused, void *pEntity) {
     void **pVtable;
 
@@ -1208,7 +1372,7 @@ void __cdecl ForwardManagedEntityVslot24(void *pUnused, void *pEntity) {
     ((LevelManagedEntityNoArgVirtualProc)pVtable[0x24 / sizeof(void *)])(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x00419EB0
+// FUNCTION: LEMBALL 0x00419eb0
 void __cdecl ForwardManagedEntityVslot44(void *pUnused, void *pEntity) {
     void **pVtable;
 
@@ -1217,13 +1381,7 @@ void __cdecl ForwardManagedEntityVslot44(void *pUnused, void *pEntity) {
     ((LevelManagedEntityNoArgVirtualProc)pVtable[0x44 / sizeof(void *)])(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x00419C30
-int __cdecl CallHasPendingManagedEntityCommands(void *pUnused, LevelManagedEntityCommandQueueView *pEntity) {
-    (void)pUnused;
-    return pEntity->HasPendingCommandsThunk();
-}
-
-// FUNCTION: LEMBALL 0x00419F20
+// FUNCTION: LEMBALL 0x00419f20
 void __cdecl ForwardManagedEntityVslotD0(void *pUnused, void *pEntity) {
     void **pVtable;
 
@@ -1232,7 +1390,7 @@ void __cdecl ForwardManagedEntityVslotD0(void *pUnused, void *pEntity) {
     ((LevelManagedEntityNoArgVirtualProc)pVtable[0xd0 / sizeof(void *)])(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x00419F60
+// FUNCTION: LEMBALL 0x00419f60
 void __cdecl ClearPlasChildRuntimeFlag30(void *pUnused, void *pEntity) {
     void **pVtable;
 
@@ -1241,7 +1399,7 @@ void __cdecl ClearPlasChildRuntimeFlag30(void *pUnused, void *pEntity) {
     ((LevelManagedEntityNoArgVirtualProc)pVtable[0xdc / sizeof(void *)])(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x00419F70
+// FUNCTION: LEMBALL 0x00419f70
 void __cdecl ForwardManagedEntityVslot9C(void *pUnused, void *pEntity) {
     void **pVtable;
 
@@ -1250,7 +1408,7 @@ void __cdecl ForwardManagedEntityVslot9C(void *pUnused, void *pEntity) {
     ((LevelManagedEntityNoArgVirtualProc)pVtable[0x9c / sizeof(void *)])(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x00419F80
+// FUNCTION: LEMBALL 0x00419f80
 void __cdecl ForwardManagedEntityVslot8C(void *pUnused, void *pEntity) {
     void **pVtable;
 
@@ -1259,7 +1417,7 @@ void __cdecl ForwardManagedEntityVslot8C(void *pUnused, void *pEntity) {
     ((LevelManagedEntityNoArgVirtualProc)pVtable[0x8c / sizeof(void *)])(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x00419F90
+// FUNCTION: LEMBALL 0x00419f90
 void __cdecl ForwardManagedEntityVslot88(void *pUnused, void *pEntity) {
     void **pVtable;
 
@@ -1268,7 +1426,7 @@ void __cdecl ForwardManagedEntityVslot88(void *pUnused, void *pEntity) {
     ((LevelManagedEntityNoArgVirtualProc)pVtable[0x88 / sizeof(void *)])(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x00419FA0
+// FUNCTION: LEMBALL 0x00419fa0
 void __cdecl ForwardManagedEntityVslot90(void *pUnused, void *pEntity) {
     void **pVtable;
 
@@ -1277,21 +1435,146 @@ void __cdecl ForwardManagedEntityVslot90(void *pUnused, void *pEntity) {
     ((LevelManagedEntityNoArgVirtualProc)pVtable[0x90 / sizeof(void *)])(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x0040DD30
-int PASCAL IsDoorChunkIdleOrClosedState(int nState) {
-    if (nState != 0x18 && (nState < 0x1d || nState > 0x1e)) {
-        return 0;
-    }
+// FUNCTION: LEMBALL 0x0041a1c0
+void noop_projectile_geometry_callback(void) {
+}
+
+// FUNCTION: LEMBALL 0x0041c360
+void *__fastcall initialize_three_dword_point_sentinel(void *pPoint) {
+    int *pnPoint = (int *)pPoint;
+    pnPoint[0] = (int)0xaa55aa55;
+    pnPoint[1] = (int)0xaa55aa55;
+    pnPoint[2] = (int)0xaa55aa55;
+    return pPoint;
+}
+
+// FUNCTION: LEMBALL 0x0041c3f0
+int return_true_vtable_callback_0041c3f0(void) {
     return 1;
 }
 
-// FUNCTION: LEMBALL 0x00410AA0
-void LEMBALL_FASTCALL MarkObjectField178AndSetTimer3C(void *pObject) {
-    *(int *)((char *)pObject + 0x178) = 1;
-    *(int *)((char *)pObject + 0xcc) = g_nLevelFrameClockTick + 0x3c;
+// FUNCTION: LEMBALL 0x0041c430
+int return_two_vtable_callback_0041c430(void) {
+    return 2;
 }
 
-// FUNCTION: LEMBALL 0x00421AA0
+// FUNCTION: LEMBALL 0x0041c5b0
+int return_true_vtable_callback_0041c5b0(void) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0041c630
+int return_two_vtable_callback_0041c630(void) {
+    return 2;
+}
+
+// FUNCTION: LEMBALL 0x0041dc40
+int return_two_vtable_callback_0041dc40(void) {
+    return 2;
+}
+
+// FUNCTION: LEMBALL 0x0041def0
+int LevelManagedEntityChildIterator::GetChildCount(void) {
+    return m_cChildren124;
+}
+
+// FUNCTION: LEMBALL 0x0041df00
+void *LevelManagedEntityChildIterator::GetFirstChild(void) {
+    m_iCurrentChild150 = 0;
+    return m_apChildren128[0];
+}
+
+// FUNCTION: LEMBALL 0x0041df20
+void *LevelManagedEntityChildIterator::GetNextChild(void) {
+    ++m_iCurrentChild150;
+    if (m_iCurrentChild150 >= m_cChildren124) {
+        return 0;
+    }
+    return m_apChildren128[m_iCurrentChild150];
+}
+
+// FUNCTION: LEMBALL 0x0041df40
+void *LevelManagedEntityChildIterator::GetCurrentChild(void) {
+    if (m_iCurrentChild150 >= m_cChildren124) {
+        return 0;
+    }
+    return m_apChildren128[m_iCurrentChild150];
+}
+
+// FUNCTION: LEMBALL 0x0041df60
+void *LevelManagedEntityChildIterator::GetChildAt(int iChild) {
+    m_iCurrentChild150 = iChild;
+    if (iChild >= m_cChildren124) {
+        return 0;
+    }
+    return m_apChildren128[iChild];
+}
+
+// FUNCTION: LEMBALL 0x0041e020
+void LevelManagedEntityChildIterator::AppendChild(void *pChild) {
+    m_apChildren128[m_cChildren124] = pChild;
+    m_fChildrenDirty164 = 1;
+    ++m_cChildren124;
+}
+
+// FUNCTION: LEMBALL 0x0041e0c0
+int LevelManagedEntityChildIterator::ContainsChild(void *pChild) {
+    int i;
+    void **ppChild;
+
+    i = 0;
+    if (0 < m_cChildren124) {
+        ppChild = m_apChildren128;
+        do {
+            if (*ppChild == pChild) {
+                return 1;
+            }
+            ++ppChild;
+            ++i;
+        } while (i < m_cChildren124);
+    }
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0041e3c0
+void PASCAL noop_vtable_callback_0041e3c0(void *pUnused1, void *pUnused2, void *pUnused3) {
+    (void)pUnused1;
+    (void)pUnused2;
+    (void)pUnused3;
+}
+
+// FUNCTION: LEMBALL 0x0041e400
+void __fastcall set_object_field_0x160(void *pObject, void *pUnused, int nValue) {
+    (void)pUnused;
+    *(int *)((char *)pObject + 0x160) = nValue;
+}
+
+// FUNCTION: LEMBALL 0x0041e410
+int __fastcall get_object_field_0x160(void *pObject) {
+    return *(int *)((char *)pObject + 0x160);
+}
+
+// FUNCTION: LEMBALL 0x0041f870
+int return_zero_vtable_callback_0041f870(void) {
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x004203d0
+int __fastcall is_delayed_move_to_saved_target_armed(void *pObject) {
+    return *(int *)((char *)pObject + 0x168) == 1;
+}
+
+// FUNCTION: LEMBALL 0x004204d0
+void __fastcall set_chunk_short_delay_timer(void *pObject) {
+    *(int *)((char *)pObject + 0xcc) = g_nLevelFrameClockTick + 10;
+}
+
+// FUNCTION: LEMBALL 0x00420aa0
+int __fastcall get_object_field_0x124(void *pObject) {
+    return *(int *)((char *)pObject + 0x124);
+}
+
+// FUNCTION: LEMBALL 0x00421aa0
 void LEMBALL_FASTCALL CallBallChunkEntryVfuncC8(void *pEntry, void *pUnused, int nUnused) {
     void **pVtable;
 
@@ -1301,7 +1584,7 @@ void LEMBALL_FASTCALL CallBallChunkEntryVfuncC8(void *pEntry, void *pUnused, int
     ((LevelManagedEntityNoArgVirtualProc)pVtable[0xc8 / sizeof(void *)])(pEntry);
 }
 
-// FUNCTION: LEMBALL 0x00422B30
+// FUNCTION: LEMBALL 0x00422b30
 void LEMBALL_FASTCALL DispatchVtableSlot34WithValue2(void *pObject, void *pUnused) {
     void **pVtable;
 
@@ -1310,7 +1593,7 @@ void LEMBALL_FASTCALL DispatchVtableSlot34WithValue2(void *pObject, void *pUnuse
         pObject, pUnused, 2);
 }
 
-// FUNCTION: LEMBALL 0x00422C60
+// FUNCTION: LEMBALL 0x00422c60
 void LEMBALL_FASTCALL DispatchVtableSlot34WithValue2Variant(void *pObject, void *pUnused) {
     void **pVtable;
 
@@ -1319,7 +1602,7 @@ void LEMBALL_FASTCALL DispatchVtableSlot34WithValue2Variant(void *pObject, void 
         pObject, pUnused, 2);
 }
 
-// FUNCTION: LEMBALL 0x00422C70
+// FUNCTION: LEMBALL 0x00422c70
 void LEMBALL_FASTCALL SendCollMessage16(void *pObject, void *pUnused) {
     void **pVtable;
 
@@ -1328,34 +1611,65 @@ void LEMBALL_FASTCALL SendCollMessage16(void *pObject, void *pUnused) {
         pObject, pUnused, 0x16);
 }
 
-// FUNCTION: LEMBALL 0x0040F410
-void __fastcall schedule_door_chunk_object_update_in_10_ticks(void *pObject) {
-    *(int *)((char *)pObject + 0xcc) = g_nLevelFrameClockTick + 10;
+// FUNCTION: LEMBALL 0x00422fa0
+void noop_vtable_callback_00422fa0(void) {
 }
 
-// FUNCTION: LEMBALL 0x004204D0
-void __fastcall set_chunk_short_delay_timer(void *pObject) {
-    *(int *)((char *)pObject + 0xcc) = g_nLevelFrameClockTick + 10;
+// FUNCTION: LEMBALL 0x00423040
+void noop_vtable_callback_00423040(void) {
 }
 
-// FUNCTION: LEMBALL 0x00426C20
+// FUNCTION: LEMBALL 0x00423050
+int return_true_vtable_callback_00423050(void) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x00423e90
+int PASCAL IsManagedEntityState8Or18(int nState) {
+    if (nState == 8 || nState == 0x18) {
+        return 1;
+    }
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x00426c20
 void __fastcall clear_rock_chunk_object_count(void *pManager) {
     *(int *)((char *)pManager + 0x34) = 0;
 }
 
-// FUNCTION: LEMBALL 0x0042D900
+// FUNCTION: LEMBALL 0x00427a90
+int PASCAL get_tile_flag_0x1c_object_render_entry_count(void) {
+    return 2;
+}
+
+// FUNCTION: LEMBALL 0x0042c9a0
+void noop_vtable_callback_0042c9a0(void) {
+}
+
+// FUNCTION: LEMBALL 0x0042d900
 void __fastcall reset_ice_chunk_object_count(void *pManager) {
     *(int *)((char *)pManager + 0x34) = 0;
 }
 
-// FUNCTION: LEMBALL 0x0042EEB0
+// FUNCTION: LEMBALL 0x0042dd30
+int PASCAL return_zero_vtable_callback_0042dd30(void *pUnused) {
+    (void)pUnused;
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0042eeb0
 void __fastcall set_move_chunk_object_trigger_latch(void *pObject) {
     *(int *)((char *)pObject + 0x148) = 1;
 }
 
-// FUNCTION: LEMBALL 0x0042F2E0
+// FUNCTION: LEMBALL 0x0042f2e0
 void __fastcall reset_move_chunk_object_count(void *pManager) {
     *(int *)((char *)pManager + 0x34) = 0;
+}
+
+// FUNCTION: LEMBALL 0x00435880
+int __fastcall return_object_field_0x0c_00435880(void *pObject) {
+    return *(int *)((char *)pObject + 0x0c);
 }
 
 // FUNCTION: LEMBALL 0x00435890
@@ -1364,73 +1678,43 @@ void __fastcall set_object_field_0x10_00435890(void *pObject, void *pUnused, int
     *(int *)((char *)pObject + 0x10) = nValue;
 }
 
-// FUNCTION: LEMBALL 0x004358A0
+// FUNCTION: LEMBALL 0x004358a0
 void __fastcall set_object_field_0x0c_004358a0(void *pObject, void *pUnused, int nValue) {
     (void)pUnused;
     *(int *)((char *)pObject + 0x0c) = nValue;
 }
 
-// FUNCTION: LEMBALL 0x004358B0
+// FUNCTION: LEMBALL 0x004358b0
 void __fastcall set_object_field_0x18_004358b0(void *pObject, void *pUnused, int nValue) {
     (void)pUnused;
     *(int *)((char *)pObject + 0x18) = nValue;
 }
 
-// FUNCTION: LEMBALL 0x0044B5D0
+// FUNCTION: LEMBALL 0x004453a0
+unsigned int return_hresult_80000000_callback(void) {
+    return 0x80000000U;
+}
+
+// FUNCTION: LEMBALL 0x0044b5d0
 void *__fastcall clear_two_word_point(void *pPoint) {
     *(unsigned short *)pPoint = 0;
     *(unsigned short *)((char *)pPoint + 2) = 0;
     return pPoint;
 }
 
-// FUNCTION: LEMBALL 0x0040F2B0
-int __fastcall has_door_chunk_object_target_tile_latched(void *pObject) {
-    return *(int *)((char *)pObject + 0x184) == 1;
+// FUNCTION: LEMBALL 0x0044fbc0
+void noop_queued_variant_child_slot_manager_update(void) {
 }
 
-// FUNCTION: LEMBALL 0x0040F420
-void __fastcall clear_door_chunk_object_target_tile_latch(void *pObject) {
-    *(int *)((char *)pObject + 0x184) = 0;
+// FUNCTION: LEMBALL 0x004510d0
+unsigned int return_hresult_40000001_callback(void) {
+    return 0x40000001U;
 }
 
-// FUNCTION: LEMBALL 0x00413370
-int __fastcall has_level_plas_history_entries(void *pLevelMode) {
-    void *pPlasManager = *(void **)((char *)pLevelMode + 0x15c);
-    return *(int *)((char *)pPlasManager + 0x128);
+// FUNCTION: LEMBALL 0x00452b80
+void noop_callback_00452b80(void) {
 }
 
-// FUNCTION: LEMBALL 0x00415A20
-void __fastcall set_entity_field_0x08_if_flags_bit0(void *pEntity) {
-    if ((*(unsigned char *)((char *)pEntity + 0x68) & 1) != 0) {
-        *(int *)((char *)pEntity + 8) = 1;
-    }
-}
-
-// FUNCTION: LEMBALL 0x004160E0
-void __fastcall clear_managed_entity_move_commands(void *pEntity) {
-    **(unsigned short **)((char *)pEntity + 0x70) = 0;
-}
-
-// FUNCTION: LEMBALL 0x004011EF
-void __fastcall ClearManagedEntityMoveCommandsThunk(void *pEntity) {
-    clear_managed_entity_move_commands(pEntity);
-}
-
-// FUNCTION: LEMBALL 0x0041C360
-void *__fastcall initialize_three_dword_point_sentinel(void *pPoint) {
-    int *pnPoint = (int *)pPoint;
-    pnPoint[0] = (int)0xaa55aa55;
-    pnPoint[1] = (int)0xaa55aa55;
-    pnPoint[2] = (int)0xaa55aa55;
-    return pPoint;
-}
-
-// FUNCTION: LEMBALL 0x004203D0
-int __fastcall is_delayed_move_to_saved_target_armed(void *pObject) {
-    return *(int *)((char *)pObject + 0x168) == 1;
-}
-
-// FUNCTION: LEMBALL 0x00427A90
-int PASCAL get_tile_flag_0x1c_object_render_entry_count(void) {
-    return 2;
+// FUNCTION: LEMBALL 0x00456600
+void noop_callback_00456600(void) {
 }

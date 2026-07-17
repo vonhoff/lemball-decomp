@@ -125,6 +125,10 @@ void *LEMBALL_STDCALL PlacementConstructMemoryArenaBlock(void *pvStorage,
                                          unsigned int cbBlock);
 void LEMBALL_FASTCALL RestoreMemoryBlockBaseVtable(void *pBlock);
 int IsPointerInsideMemoryBlock(void *pBlock, void *pvPointer);
+// FUNCTION: LEMBALL 0x0045a5b0
+// VSMEM_ReportBlockStub
+void *VSMEM_ReportBlockStub(
+    void *pBlock, VsInitFormattedOutputStream *pOutputStream);
 void NoOpCallback0045A610(void);
 void *ReturnPlacementBlockStorage(unsigned int cbStorage, void *pvStorage);
 void *ConstructMemoryArenaBlock(void *pBlock,

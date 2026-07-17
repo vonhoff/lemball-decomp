@@ -50,7 +50,6 @@ static void CallNoArgVirtual(void *pObject, unsigned int nByteOffset) {
     pVtable = *(void ***)pObject;
     ((void (*)())pVtable[nByteOffset / sizeof(void *)])();
 }
-
 static int FormatCStringV(char *pszBuffer, unsigned int cchBuffer, const char *pszFormat, va_list pArgs) {
     int cchWritten;
 
@@ -127,7 +126,6 @@ static int HostGetDlgItemTextA(HWND hDlg, int nControlId, char *pszText, int cch
     pszText[0] = '\0';
     return 0;
 }
-
 static int HostSetDlgItemTextA(HWND hDlg, int nControlId, const char *pszText) {
     (void)hDlg;
     (void)nControlId;
@@ -148,7 +146,6 @@ static LRESULT HostSendMessageA(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM 
     (void)lParam;
     return 0;
 }
-
 static int HostEndDialog(HWND hDlg, int nResult) {
     (void)hDlg;
     (void)nResult;
@@ -177,7 +174,15 @@ void ShellUiPrimaryContextShell::RequestQuit(void) {
     *(int *)((char *)this + 0x38) = 1;
 }
 
-// FUNCTION: LEMBALL 0x00431C90
+// FUNCTION: LEMBALL 0x0040292d
+int LEMBALL_FASTCALL HandlePrimaryContextMenuCommandThunk(
+    ShellUiPrimaryContextShell *pShell, int,
+    const ShellUiMenuCommandMessage *pMessage)
+
+{
+    return HandlePrimaryContextMenuCommand(pShell, 0, pMessage);
+}
+// FUNCTION: LEMBALL 0x00431c90
 void TogglePrimaryContextDisplayMode(ShellUiPrimaryContextShell *pShell) {
     char *pPrimaryContext;
     int nDriver;
@@ -206,7 +211,75 @@ void InitializePrimaryContextShell(ShellUiPrimaryContextShell *pShell) {
     *pShell = ShellUiPrimaryContextShell();
 }
 
-// FUNCTION: LEMBALL 0x00455FF0
+// FUNCTION: LEMBALL 0x00431cd0
+int LEMBALL_FASTCALL HandlePrimaryContextMenuCommand(
+    ShellUiPrimaryContextShell *pShell, int,
+    const ShellUiMenuCommandMessage *pMessage)
+{
+    char szHelpPath[256];
+    char *pszCdromPath;
+
+    if (pShell == 0 || pMessage == 0) {
+        return 0;
+    }
+
+    if (pMessage->m_wMessage == ShellUiMENU_EVENT_DISPLAY) {
+        if (pMessage->m_nCommand != 0x25) {
+            return 0;
+        }
+
+        TogglePrimaryContextDisplayMode(pShell);
+        return 1;
+    }
+
+    if (pMessage->m_wMessage != ShellUiMENU_EVENT_COMMAND) {
+        return 0;
+    }
+
+    switch (pMessage->m_nCommand) {
+    case ShellUiMENU_COMMAND_EXIT:
+        pShell->RequestQuit();
+        return 0;
+    case ShellUiMENU_COMMAND_HELP_INDEX:
+        szHelpPath[0] = '\0';
+        pszCdromPath = FindCdromFilePathBySuffix(g_SHELLUI_HelpPath);
+        if (pszCdromPath != 0) {
+            CopyCString(szHelpPath, sizeof(szHelpPath), pszCdromPath);
+        }
+        if (!WinHelpA(GetPrimaryContextMainWindow(pShell), szHelpPath, 0x101, 0x49e7cc)) {
+            AppendErrorCString(g_SHELLUI_HelpError);
+        }
+        return 0;
+    case ShellUiMENU_COMMAND_HELP_TOPIC:
+        szHelpPath[0] = '\0';
+        pszCdromPath = FindCdromFilePathBySuffix(g_SHELLUI_HelpPath);
+        if (pszCdromPath != 0) {
+            CopyCString(szHelpPath, sizeof(szHelpPath), pszCdromPath);
+        }
+        if (!WinHelpA(GetPrimaryContextMainWindow(pShell), szHelpPath, 0x105, 0x49e814)) {
+            AppendErrorCString(g_SHELLUI_HelpError);
+        }
+        return 0;
+    case ShellUiMENU_COMMAND_ABOUT:
+        DialogBoxParamA(
+            g_hApplicationInstance, g_SHELLUI_AboutBoxName, GetPrimaryContextMainWindow(pShell), AboutBoxProc, 0);
+        return 0;
+    case ShellUiMENU_COMMAND_DISPLAY_MODE:
+        TogglePrimaryContextDisplayMode(pShell);
+        return 0;
+    case ShellUiMENU_COMMAND_HELP_ON_HELP:
+        if (!WinHelpA(GetPrimaryContextMainWindow(pShell), 0, 4, 0)) {
+            AppendErrorCString(g_SHELLUI_HelpError);
+        }
+        return 0;
+    default:
+        break;
+    }
+
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x00455ff0
 char *LEMBALL_STDCALL BuildSystemInformationReportString(void) {
     char chTerminator;
     DWORD dwVersion;
@@ -302,78 +375,4 @@ int CALLBACK AboutBoxProc(HWND hDlg, UINT uMessage, WPARAM wParam, LPARAM lParam
     }
 
     return 0;
-}
-
-// FUNCTION: LEMBALL 0x00431CD0
-int LEMBALL_FASTCALL HandlePrimaryContextMenuCommand(
-    ShellUiPrimaryContextShell *pShell, int,
-    const ShellUiMenuCommandMessage *pMessage) {
-    char szHelpPath[256];
-    char *pszCdromPath;
-
-    if (pShell == 0 || pMessage == 0) {
-        return 0;
-    }
-
-    if (pMessage->m_wMessage == ShellUiMENU_EVENT_DISPLAY) {
-        if (pMessage->m_nCommand != 0x25) {
-            return 0;
-        }
-
-        TogglePrimaryContextDisplayMode(pShell);
-        return 1;
-    }
-
-    if (pMessage->m_wMessage != ShellUiMENU_EVENT_COMMAND) {
-        return 0;
-    }
-
-    switch (pMessage->m_nCommand) {
-    case ShellUiMENU_COMMAND_EXIT:
-        pShell->RequestQuit();
-        return 0;
-    case ShellUiMENU_COMMAND_HELP_INDEX:
-        szHelpPath[0] = '\0';
-        pszCdromPath = FindCdromFilePathBySuffix(g_SHELLUI_HelpPath);
-        if (pszCdromPath != 0) {
-            CopyCString(szHelpPath, sizeof(szHelpPath), pszCdromPath);
-        }
-        if (!WinHelpA(GetPrimaryContextMainWindow(pShell), szHelpPath, 0x101, 0x49e7cc)) {
-            AppendErrorCString(g_SHELLUI_HelpError);
-        }
-        return 0;
-    case ShellUiMENU_COMMAND_HELP_TOPIC:
-        szHelpPath[0] = '\0';
-        pszCdromPath = FindCdromFilePathBySuffix(g_SHELLUI_HelpPath);
-        if (pszCdromPath != 0) {
-            CopyCString(szHelpPath, sizeof(szHelpPath), pszCdromPath);
-        }
-        if (!WinHelpA(GetPrimaryContextMainWindow(pShell), szHelpPath, 0x105, 0x49e814)) {
-            AppendErrorCString(g_SHELLUI_HelpError);
-        }
-        return 0;
-    case ShellUiMENU_COMMAND_ABOUT:
-        DialogBoxParamA(
-            g_hApplicationInstance, g_SHELLUI_AboutBoxName, GetPrimaryContextMainWindow(pShell), AboutBoxProc, 0);
-        return 0;
-    case ShellUiMENU_COMMAND_DISPLAY_MODE:
-        TogglePrimaryContextDisplayMode(pShell);
-        return 0;
-    case ShellUiMENU_COMMAND_HELP_ON_HELP:
-        if (!WinHelpA(GetPrimaryContextMainWindow(pShell), 0, 4, 0)) {
-            AppendErrorCString(g_SHELLUI_HelpError);
-        }
-        return 0;
-    default:
-        break;
-    }
-
-    return 1;
-}
-
-// FUNCTION: LEMBALL 0x0040292D
-int LEMBALL_FASTCALL HandlePrimaryContextMenuCommandThunk(
-    ShellUiPrimaryContextShell *pShell, int,
-    const ShellUiMenuCommandMessage *pMessage) {
-    return HandlePrimaryContextMenuCommand(pShell, 0, pMessage);
 }

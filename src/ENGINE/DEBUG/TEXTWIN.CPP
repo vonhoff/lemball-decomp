@@ -38,7 +38,7 @@ void PostAllocatedTextControlString(CTextWindow *pWindow,
                  (LPARAM)dwColour);
 }
 
-// FUNCTION: LEMBALL 0x00472B10
+// FUNCTION: LEMBALL 0x00472b10
 int __stdcall DebugMessageThreadMain(void) {
     MSG Msg;
     int nMessageResult;

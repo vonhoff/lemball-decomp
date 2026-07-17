@@ -5,8 +5,30 @@
 #include "ENGINE/NET/VSNET.H"
 #include "ENGINE/MEDIA/VSSTRM.H"
 #include "ENGINE/CORE/SAFEVT.H"
+#include "ENGINE/NET/VSNET_FORWARD.H"
 
 extern void *g_GAME_EffStreamConstructionVtable[6];
+
+// GLOBAL: LEMBALL 0x004991cc
+void *g_NETWORK_EffTransportRecordBufferVtable[1] = {
+    (void *)DeleteEffTransportRecordBufferBaseWrapper,
+};
+// GLOBAL: LEMBALL 0x004991d0
+void *g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable[1] = {
+    (void *)DeleteSimpleEffTransportRecordSlotWrapper,
+};
+// GLOBAL: LEMBALL 0x004991d4
+void *g_NETWORK_DeleteEffTransportRecordBufferVtable[1] = {
+    (void *)DeleteEffTransportRecordBufferWrapper,
+};
+// GLOBAL: LEMBALL 0x004991d8
+void *g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable[1] = {
+    (void *)DeleteRangeEffTransportRecordBufferTableWrapper,
+};
+// GLOBAL: LEMBALL 0x004991dc
+void *g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable[1] = {
+    (void *)DeleteRingEffTransportRecordBufferTableWrapper,
+};
 
 #include <string.h>
 #include <new>
@@ -46,63 +68,16 @@ struct CFileNetworkAddress {
     virtual int InitializeAddress(int nUnused);
 };
 
-// FUNCTION: LEMBALL 0x0046F920
-char *CFileNetworkAddress::GetAddressString(void) {
-    return (char *)this + 4;
-}
 
-// FUNCTION: LEMBALL 0x004794E0
-void CFileNetworkAddress::SelectAddressType(int nType) {
-    if (nType == 0) {
-        strcpy((char *)this + 4, "LAN");
-    } else if (nType == 1) {
-        strcpy((char *)this + 4, "WAN");
-    }
-}
 
-// FUNCTION: LEMBALL 0x0046F8B0
-void CFileNetworkAddress::CopyAddressFromString(const char *pszAddress) {
-    strcpy((char *)this + 4, pszAddress);
-}
 
-// FUNCTION: LEMBALL 0x0046F880
-void CFileNetworkAddress::CopyAddressObject(CFileNetworkAddress *pSource) {
-    strcpy((char *)this + 4, (char *)pSource + 4);
-}
 
-// FUNCTION: LEMBALL 0x0046F8E0
-int CFileNetworkAddress::CompareAddress(CFileNetworkAddress *pOther) {
-    return strcmp((char *)this + 4, (char *)pOther + 4) == 0;
-}
 
-// FUNCTION: LEMBALL 0x00479510
-int CFileNetworkAddress::InitializeAddress(int nUnused) {
-    (void)nUnused;
-    AppendCStringToStream(
-        g_pErrorOutputStream,
-        "You haven't implemented major/minor distinction in 'CFileNetworkAddress'es\n");
-    AppendCStringToStream(
-        g_pErrorOutputStream,
-        "use count entry in broadcast file\n");
-    return 0;
-}
 
 static CFileNetworkAddress g_CFileNetworkAddressVtableModel;
 static void *g_CFileNetworkAddressVtable =
     *(void ***)&g_CFileNetworkAddressVtableModel;
 
-// FUNCTION: LEMBALL 0x0046F860
-static void *AllocateFileNetworkAddress(void) {
-    CFileNetworkAddress *pObject;
-
-    pObject = (CFileNetworkAddress *)AllocateVSMemBlock(0x20);
-    if (pObject == 0) {
-        return 0;
-    }
-    *(void ***)pObject = (void **)g_CFileNetworkAddressVtable;
-    *((char *)pObject + 4) = 0;
-    return pObject;
-}
 
 extern "C" BOOL WINAPI WaitMessage(void);
 extern "C" BOOL WINAPI KillTimer(HWND hWnd, unsigned int uIDEvent);
@@ -120,40 +95,27 @@ extern "C" HANDLE WINAPI CreateThread(LPSECURITY_ATTRIBUTES pThreadAttributes,
 extern "C" BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority);
 extern "C" void WINAPI ExitProcess(UINT uExitCode);
 
+// GLOBAL: LEMBALL 0x004a1e24
+int g_cbEffTransportMaxPacketBytes = 0;
+// GLOBAL: LEMBALL 0x004a1e4c
+int g_nEffTransportAsyncErrorStatus = 0;
+// GLOBAL: LEMBALL 0x004a1e50
+void *g_pEffTransportRequestConnectControlStream = 0;
+// GLOBAL: LEMBALL 0x004a1e54
+void *g_pEffTransportRequestNewPortControlStream = 0;
+// GLOBAL: LEMBALL 0x004a1e58
+void *g_pEffTransportAuthoriseConnectControlStream = 0;
+// GLOBAL: LEMBALL 0x004a1e5c
+void *g_pEffTransportGoAheadConnectControlStream = 0;
+// GLOBAL: LEMBALL 0x004a1e60
+void *g_pEffTransportFailedConnectControlStream = 0;
+
 struct VsNetGlobalStateCompositeLayout {
     void *ConstructGlobalStateFileBackedEffComposite(int fConstructEmbeddedObjects);
 };
 struct VsNetDualSlotCompositeLayout {
     void *ConstructDualSlotTableFileBackedEffComposite(int fConstructEmbeddedObjects);
 };
-
-/*
- * The original tables live in the image's read-only data.  Keeping these
- * globals as zero-initialized placeholders makes the first message-thread
- * callback an indirect call through address zero.  Until each transport
- * table is recovered, use compiler-owned fallback tables.  The fallback
- * reports an unavailable transport and leaves the process in the normal
- * startup error path; it never fabricates a peer or calls through null.
- */
-static void NetworkRuntimeTransportUnavailable(void *pObject) {
-    /* Runtime state starts with the render node; shutdown is at +0x14. */
-    *(int *)((char *)pObject + 0x14) = 1;
-    g_nEffTransportAsyncErrorStatus = 1;
-}
-
-static void NetworkRuntimeTransportNoop(void *pObject) {
-    (void)pObject;
-}
-
-static int NetworkRuntimeCreateNoChannelOwner(void *pObject) {
-    (void)pObject;
-    return 0;
-}
-
-static void *NetworkRuntimeWindowCreateNoChannelOwner(void *pObject) {
-    (void)pObject;
-    return 0;
-}
 
 struct VsNetRuntimeFallbackTransportVtable {
     void *m_aReserved00[3];
@@ -204,35 +166,10 @@ static VsNetRuntimeFallbackWindowVtable g_NETWORK_RuntimeFallbackWindowVtable = 
 };
 
 struct VsNetEffTransportRuntimeState;
-// FUNCTION: LEMBALL 0x00471480
 struct VsNetTcpipRuntimeWindowVtableModel {
     virtual int HandleTcpipRuntimeWindowMessage(unsigned int nMessage,
                                                 unsigned int nWParam,
-                                                unsigned int nLParam) {
-        VsNetEffTransportRuntimeState *pState;
-        void **ppStateVtable;
-        void (*pStateCallback)(void *);
-        void *pDispatchQueue;
-
-        (void)nWParam;
-        (void)nLParam;
-        if (nMessage != 0x444 && nMessage != 0x113) {
-            return -1;
-        }
-        if (nMessage == 0x444) {
-            pDispatchQueue = g_pEffTransportDispatchQueue;
-            if (pDispatchQueue != 0 && *(int *)((char *)pDispatchQueue + 0x28) != 0) {
-                DrainRenderDispatchQueueEntries(
-                    pDispatchQueue, *(unsigned int *)((char *)pDispatchQueue + 0x28));
-            }
-        }
-        pState = (VsNetEffTransportRuntimeState *)
-            ((char *)this + 0x10);
-        ppStateVtable = *(void ***)pState;
-        pStateCallback = (void (*)(void *))ppStateVtable[5];
-        pStateCallback(pState);
-        return 0;
-    }
+                                                unsigned int nLParam);
 };
 static VsNetTcpipRuntimeWindowVtableModel
     g_NETWORK_TcpipRuntimeWindowVtableModel;
@@ -839,18 +776,6 @@ struct VsNetEffTransportPeer {
     void PrepareEffTransportBroadcastStatusPayload(char *pszHostName);
 };
 
-void VsNetCompositeEffTransportVtableModel::FatalSlot00(void) {
-    _purecall();
-}
-
-void VsNetCompositeEffTransportVtableModel::FatalSlot02(void) {
-    _purecall();
-}
-
-void VsNetCompositeEffTransportVtableModel::FatalSlot03(void) {
-    _purecall();
-}
-
 static VsNetCompositeEffTransportVtableModel
     g_NETWORK_CompositeEffTransportVtableModel;
 static void *g_NETWORK_CompositeEffTransportFallbackVtable[32] = {
@@ -873,24 +798,6 @@ static void *g_NETWORK_CompositeEffTransportFallbackVtable[32] = {
 };
 void *g_NETWORK_CompositeEffTransportVtable =
     g_NETWORK_CompositeEffTransportFallbackVtable;
-
-// FUNCTION: LEMBALL 0x00460FB0
-void VsNetEffTransportPeer::Close(void) {
-    VsNetTransportEndpointSlot *pEndpointSlot;
-    VsNetEndpointState *pEndpointState;
-
-    pEndpointSlot = (VsNetTransportEndpointSlot *)((char *)this +
-                                                       m_pOffsets->m_nEndpointStateSlotOffset);
-    pEndpointState = &pEndpointSlot->m_State;
-    if (pEndpointState->m_fPrimaryHandleActive != 0 &&
-        pEndpointState->m_fSecondaryHandleActive != 0) {
-        ((GameEffTransportHandleGroup *)&pEndpointState->m_HandleGroup)->Reset();
-        if (m_fConnectComplete != 0) {
-            pEndpointState->m_HandleGroup.m_pCallback->m_pVtable->m_pNotifyClosed(1);
-        }
-    }
-    m_fClosed = 1;
-}
 
 struct VsNetRenderDispatchQueue {
     void *m_pVtable;
@@ -1124,34 +1031,7 @@ struct VsNetFileBasedRuntimeWindow {
 };
 
 struct VsNetFileRuntimeWindowVtableModel {
-    // FUNCTION: LEMBALL 0x0046F7E0
-    virtual int HandleFileRuntimeWindowMessage(unsigned int nMessage, unsigned int nWParam, unsigned int nLParam) {
-        VsNetFileBasedRuntimeWindow *pWindow;
-        VsNetEffTransportRuntimeState *pState;
-        VsNetEffTransportRuntimeStateVtable *pStateVtable;
-        (void)nWParam;
-        (void)nLParam;
-        pWindow = (VsNetFileBasedRuntimeWindow *)this;
-        if (nMessage != 0x444 && nMessage != 0x113) {
-            return -1;
-        }
-        if (nMessage == 0x444) {
-            if (pWindow->m_nReserved78 != 0) {
-                pWindow->m_Base.ScheduleNetworkRuntimeTimerEvent(0x14);
-            }
-            if (g_pEffTransportDispatchQueue != 0 &&
-                *(int *)((char *)g_pEffTransportDispatchQueue + 0x28) != 0) {
-                DrainRenderDispatchQueueEntries(
-                    g_pEffTransportDispatchQueue,
-                    *(unsigned int *)((char *)g_pEffTransportDispatchQueue + 0x28));
-            }
-        }
-        pState = &pWindow->m_Base.m_RuntimeState;
-        pStateVtable = (VsNetEffTransportRuntimeStateVtable *)
-            pState->m_RenderQueueNode.m_pVtable;
-        (pState->*pStateVtable->m_pCleanupRuntimeState)();
-        return 0;
-    }
+    virtual int HandleFileRuntimeWindowMessage(unsigned int nMessage, unsigned int nWParam, unsigned int nLParam);
     virtual char *GetAddressString(void) {
         return ((CFileNetworkAddress *)this)
             ->CFileNetworkAddress::GetAddressString();
@@ -1187,6 +1067,8 @@ struct VsNetFileRuntimeWindowVtableModel {
     virtual void Reserved0F(void) {}
 };
 
+
+
 static VsNetFileRuntimeWindowVtableModel g_NETWORK_FileRuntimeWindowVtableModel;
 static void *g_NETWORK_FileBasedRuntimeWindowVtable =
     *(void ***)&g_NETWORK_FileRuntimeWindowVtableModel;
@@ -1205,20 +1087,6 @@ int g_cbEffTransportBroadcastStatusPayload = 0;
 char *g_pszFileBasedNetworkConfiguredPath = 0;
 int g_fFileBasedNetworkPathConfigured = 0;
 short g_nEffTransportServiceBasePort = 0;
-// GLOBAL: LEMBALL 0x004A1E4C
-int g_nEffTransportAsyncErrorStatus = 0;
-// GLOBAL: LEMBALL 0x004a1e24
-int g_cbEffTransportMaxPacketBytes = 0;
-// GLOBAL: LEMBALL 0x004A1E50
-void *g_pEffTransportRequestConnectControlStream = 0;
-// GLOBAL: LEMBALL 0x004A1E54
-void *g_pEffTransportRequestNewPortControlStream = 0;
-// GLOBAL: LEMBALL 0x004A1E58
-void *g_pEffTransportAuthoriseConnectControlStream = 0;
-// GLOBAL: LEMBALL 0x004A1E5C
-void *g_pEffTransportGoAheadConnectControlStream = 0;
-// GLOBAL: LEMBALL 0x004A1E60
-void *g_pEffTransportFailedConnectControlStream = 0;
 
 extern void *g_pEffTransportPacketBuffer;
 extern void *g_pEffTransportPeerAddressState;
@@ -1253,18 +1121,6 @@ struct GameEffTransportRuntimeWindow {
     void UnregisterEffTransportEventClient(void);
 };
 
-// FUNCTION: LEMBALL 0x004605B0
-void VsNetAdjustedEffTransportPeerView::CloseAdjustedEffTransportPeerByKey(void *pUnused) {
-    char *pbAdjusted;
-    void *pPeerKey;
-
-    (void)pUnused;
-    pbAdjusted = (char *)this;
-    pbAdjusted += *(int *)(*(int *)(pbAdjusted - 0x20) + 8);
-    pPeerKey = *(void **)(pbAdjusted + 0x50);
-    ((VsNetEffTransportRuntimeState *)g_pActiveNetworkRuntimeWindow)
-        ->CloseMatchingEffTransportPeer(pPeerKey);
-}
 
 struct VsNetErrorDispatchQueue {
     virtual void Reserved00(void) = 0;
@@ -1272,16 +1128,6 @@ struct VsNetErrorDispatchQueue {
     virtual void QueueEvent(void *pEvent) = 0;
 };
 
-// FUNCTION: LEMBALL 0x004609F0
-void QueueEffTransportErrorEvent(int nError) {
-    unsigned char abEvent[20];
-    VsNetErrorDispatchQueue *pDispatchQueue;
-
-    *(unsigned short *)abEvent = 2;
-    *(int *)(abEvent + 8) = nError;
-    pDispatchQueue = (VsNetErrorDispatchQueue *)g_pEffTransportDispatchQueue;
-    pDispatchQueue->QueueEvent(abEvent);
-}
 extern void *g_pEffTransportPeerAddressState;
 extern void *g_pEffTransportPacketBuffer;
 extern int g_cbEffTransportCurrentPacketBytes;
@@ -1335,151 +1181,12 @@ struct VsNetGlobalLockedPacketState {
     void *ClaimGlobalPacketLockedRecordSlot(void);
 };
 
-// FUNCTION: LEMBALL 0x004612F0
-void VsNetGlobalLockedPacketState::CopyGlobalPacketIntoLockedRecordSlot(int nIndex) {
-    m_appSlots08[nIndex]
-        ->CopyIntoLockedEffTransportRecordSlot(
-            g_pEffTransportPacketBuffer, (unsigned int)g_cbEffTransportCurrentPacketBytes);
-}
 
-// FUNCTION: LEMBALL 0x00461470
-void VsNetGlobalPacketRecordBuffer::AppendGlobalPacketIntoRecordBuffer(void) {
-    unsigned int cbPacket;
-    unsigned int cbPayload;
-    unsigned short nFragment;
-    unsigned char *pbSource;
-    unsigned char *pbTarget;
 
-    cbPacket = (unsigned int)g_cbEffTransportCurrentPacketBytes;
-    nFragment = *(unsigned short *)((char *)g_pEffTransportPacketBuffer + 0x0c);
-    if (nFragment != 0) {
-        if (m_cbFragment10 == 0) {
-            memcpy(m_pbSerialized04, g_pEffTransportPacketBuffer, 0x10);
-            m_cbSerialized14 += 0x10;
-        }
-        cbPayload = cbPacket - 0x10;
-        pbSource = (unsigned char *)g_pEffTransportPacketBuffer + 0x10;
-        pbTarget = m_pbSerialized04 + 0x10 + m_cbFragmentStep08 * nFragment;
-        memcpy(pbTarget, pbSource, cbPayload);
-        m_cbSerialized14 += cbPayload;
-        ++m_cbFragment10;
-        return;
-    }
-    if (m_cbFragment10 == 0) {
-        memcpy(m_pbSerialized04, g_pEffTransportPacketBuffer, cbPacket);
-        m_cbSerialized14 += cbPacket;
-        ++m_cbFragment10;
-        return;
-    }
-    cbPayload = cbPacket - 0x10;
-    memcpy(m_pbSerialized04 + 0x10,
-           (unsigned char *)g_pEffTransportPacketBuffer + 0x10, cbPayload);
-    m_cbSerialized14 += cbPayload;
-    ++m_cbFragment10;
-}
 
-// FUNCTION: LEMBALL 0x00461580
-void *VsNetGlobalLockedPacketState::ClaimGlobalPacketLockedRecordSlot(void) {
-    VsNetLockedEffTransportRecordSlot *pSlot;
-    unsigned short nPacket;
-    unsigned int nIndex;
-    unsigned short nSequence;
-    int fClaimed;
 
-    nPacket = *(unsigned short *)((char *)g_pEffTransportPacketBuffer + 8);
-    nIndex = nPacket;
-    if (nPacket > 2) {
-        nIndex -= 3;
-    }
-    pSlot = m_appSlots08[nIndex];
-    fClaimed = 0;
-    nSequence = *(unsigned short *)((char *)pSlot->m_pPayload04 + 0x0a);
-    if (nPacket < 3 ||
-        (*(unsigned short *)((char *)g_pEffTransportPacketBuffer + 0x0a) != nSequence &&
-         (short)(*(unsigned short *)((char *)g_pEffTransportPacketBuffer + 0x0a) - nSequence) >= 0)) {
-        fClaimed = pSlot->m_fPayloadPresent24 == 0;
-        CopyGlobalPacketIntoLockedRecordSlot((int)nIndex);
-    }
-    if (fClaimed != 0) {
-        return m_appSlots08[nIndex];
-    }
-    return 0;
-}
 
-// FUNCTION: LEMBALL 0x00461700
-void *VsNetGlobalPacketRangeState::AppendGlobalPacketToRangeRecordSlot(void) {
-    int nIndex;
-    VsNetGlobalPacketRecordBuffer *pBuffer;
-    unsigned short nSequence;
 
-    nIndex = (int)*(unsigned short *)((char *)g_pEffTransportPacketBuffer + 8) - m_nFirstPacket1c;
-    pBuffer = m_appBuffers20[nIndex];
-    if (*(unsigned short *)((char *)g_pEffTransportPacketBuffer + 8) > 2 &&
-        (short)(*(unsigned short *)((char *)g_pEffTransportPacketBuffer + 0x0a) -
-                *(unsigned short *)(pBuffer->m_pbSerialized04 + 0x0a)) < 0) {
-        return 0;
-    }
-    nSequence = *(unsigned short *)((char *)g_pEffTransportPacketBuffer + 0x0a);
-    if ((int)nSequence < m_nNextSequence24) {
-        return 0;
-    }
-    if (*(unsigned short *)(pBuffer->m_pbSerialized04 + 0x0a) != nSequence &&
-        pBuffer->m_cbFragment10 > 0) {
-        m_nNextSequence24 = nSequence + 1;
-        return 0;
-    }
-    pBuffer->AppendGlobalPacketIntoRecordBuffer();
-    return m_appBuffers20[nIndex];
-}
-
-// FUNCTION: LEMBALL 0x004617A0
-void *VsNetGlobalPacketRingState::ClaimOrderedGlobalPacketLockedSlot(void) {
-    VsNetLockedEffTransportRecordSlot *pSlot;
-    unsigned int nIndex;
-    unsigned short nSequence;
-
-    nSequence = *(unsigned short *)((char *)g_pEffTransportPacketBuffer + 0x0a);
-    nIndex = (unsigned int)nSequence % (unsigned int)m_cBuffers00;
-    pSlot = m_appBuffers08[nIndex];
-    if (pSlot->m_fPayloadPresent24 == 0 && pSlot->m_fAvailable28 != 0) {
-        pSlot->CopyIntoLockedEffTransportRecordSlot(
-            g_pEffTransportPacketBuffer, (unsigned int)g_cbEffTransportCurrentPacketBytes);
-        if (m_nNextSequence0c - (unsigned int)nSequence == -1) {
-            ++m_nNextSequence0c;
-            pSlot->m_fAvailable28 = 1;
-            return pSlot;
-        }
-        pSlot->m_fAvailable28 = 0;
-        return 0;
-    }
-    m_fOverflow10 = 1;
-    return 0;
-}
-
-// FUNCTION: LEMBALL 0x00461810
-void *VsNetGlobalPacketRingState::ClaimNextReadyLockedRecordSlot(void) {
-    VsNetLockedEffTransportRecordSlot *pSlot;
-
-    pSlot = m_appBuffers08[
-        (unsigned int)m_nNextSequence0c % (unsigned int)m_cBuffers00];
-    if (pSlot->m_fPayloadPresent24 != 0 && pSlot->m_fAvailable28 == 0) {
-        ++m_nNextSequence0c;
-        pSlot->m_fAvailable28 = 1;
-        return pSlot;
-    }
-    return 0;
-}
-
-// FUNCTION: LEMBALL 0x00461930
-void *VsNetGlobalPacketAppendRingState::AppendGlobalPacketToRingRecordSlot(void) {
-    int nIndex;
-    unsigned short nSequence;
-
-    nSequence = *(unsigned short *)((char *)g_pEffTransportPacketBuffer + 0x0a);
-    nIndex = (int)nSequence % m_cBuffers18;
-    m_appBuffers1c[nIndex]->AppendGlobalPacketIntoRecordBuffer();
-    return m_appBuffers1c[nIndex];
-}
 
 struct VsNetEffTransportPacketProcessorVtable {
     void *m_apReserved00[7];
@@ -1502,7 +1209,329 @@ struct VsNetEffTransportPacketProcessor {
     int ProcessEffTransportPacketHeader(void);
 };
 
-// FUNCTION: LEMBALL 0x0045FA40
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern void *g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable[1];
+extern void *g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable[1];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct VsNetInitializeRecordVtablePointers {
+    VsNetInitializeRecordVtablePointers(void) {
+    }
+};
+
+static VsNetInitializeRecordVtablePointers g_NETWORK_InitializeRecordVtablePointers;
+
+
+
+
+
+
+
+
+
+
+
+
+struct VsNetEffTransportRetryOwnerView {
+    char m_abReserved00[0x24];
+    void ArmEffTransportConnectRequestRetry(void);
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct VsNetCompleteEffTransportPendingWriteView {
+    void CompleteEffTransportPendingWrite(int fQueueEvent);
+};
+
+
+
+struct VsNetDispatchAckedEffTransportPayloadView {
+    void *DispatchAckedEffTransportPayloadEvent(void);
+};
+
+
+struct VsNetQueueEffTransportPayloadEventView {
+    void QueueEffTransportPayloadEvent(unsigned short nType, void *pPayload);
+};
+
+
+
+
+
+
+
+
+struct VsNetPrefixedEffTransportControlView {
+    void DispatchPrefixedEffTransportControlStream(int nDispatchType, void *pEvent);
+};
+
+
+
+
+
+// FUNCTION: LEMBALL 0x0045f360
+void WriteEffTransportRequestStreamName(void *pObject) {
+    VsNetEffStreamBase *pStream;
+
+    pStream = (VsNetEffStreamBase *)pObject;
+    pStream->WriteEffStreamCString(*(char **)((char *)pObject + 0x2c));
+}
+
+// FUNCTION: LEMBALL 0x0045f370
+int CompareEffTransportRequestStreamName(void *pObject) {
+    const unsigned char *pbStream;
+    const unsigned char *pbName;
+
+    pbStream = (const unsigned char *)(unsigned long)*(int *)((char *)pObject + 0x20);
+    pbName = (const unsigned char *)*(char **)((char *)pObject + 0x2c);
+    while (*pbStream == *pbName) {
+        if (*pbStream == 0) {
+            return 1;
+        }
+        ++pbStream;
+        ++pbName;
+    }
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x0045f3d0
+void *ConstructEffTransportRequestConnectControlStream(void *pObject, char *pszStreamName) {
+    VsNetRequestConnectControlStream *pStream;
+    unsigned int cbName;
+
+    pStream = (VsNetRequestConnectControlStream *)pObject;
+    pStream->m_Header.m_pVtable = g_GAME_EffStreamConstructionVtable;
+    pStream->m_Header.m_nEventCode = 0;
+    ((GameEffStream *)pObject)->ResetStateFields();
+    pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamNameVtable;
+    pStream->m_Header.m_pszStreamName = pszStreamName;
+
+    cbName = (unsigned int)strlen(pszStreamName) + 1;
+    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + cbName;
+
+    pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamVtable;
+    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + 0x3c;
+    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + 0x101;
+    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + 0x200;
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045f430
+void __fastcall LoadEffTransportRequestConnectStream(void *pObject) {
+    VsNetEffStreamBase *pStream;
+
+    pStream = (VsNetEffStreamBase *)pObject;
+    *(short *)((char *)pObject + 0x30) = (short)pStream->ReadEffStreamU32BEValue();
+    pStream->ReadEffStreamRangePointer((void **)((char *)pObject + 0x34), 0x200);
+    pStream->ReadEffStreamCString((char **)((char *)pObject + 0x38));
+}
+
+// FUNCTION: LEMBALL 0x0045f460
+void __fastcall WriteEffTransportRequestPortFields(void *pObject) {
+    VsNetRequestConnectControlStream *pControlStream;
+    VsNetEffStreamBase *pStream;
+
+    pControlStream = (VsNetRequestConnectControlStream *)pObject;
+    pStream = (VsNetEffStreamBase *)pObject;
+    pStream->WriteEffStreamU32BE((unsigned int)pControlStream->m_nBasePort);
+    pStream->WriteEffStreamBytes(pControlStream->m_pPortBinding, 0x200);
+    pStream->WriteEffStreamCString(pControlStream->m_pszHostName);
+}
+
+// FUNCTION: LEMBALL 0x0045f490
+void *ConstructEffTransportRequestNewPortControlStream(void *pObject, char *pszStreamName) {
+    VsNetRequestNewPortControlStream *pStream;
+
+    ConstructEffTransportRequestConnectControlStream(pObject, pszStreamName);
+    pStream = (VsNetRequestNewPortControlStream *)pObject;
+    pStream->m_Base.m_Header.m_pVtable = g_NETWORK_RequestNewPortControlStreamVtable;
+    pStream->m_Base.m_Header.m_cbSerializedLength = pStream->m_Base.m_Header.m_cbSerializedLength + 0x10;
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045f4b0
+void LEMBALL_FASTCALL LoadEffTransportRequestNewPortStream(void *pObject) {
+    VsNetRequestNewPortControlStream *pControlStream;
+    VsNetEffStreamBase *pStream;
+
+    pControlStream = (VsNetRequestNewPortControlStream *)pObject;
+    LoadEffTransportRequestConnectStream(pObject);
+    pStream = (VsNetEffStreamBase *)pObject;
+    pControlStream->m_pPeer =
+        (VsNetEffTransportPeer *)pStream->ReadEffStreamU32BEValue();
+}
+
+// FUNCTION: LEMBALL 0x0045f4d0
+void LEMBALL_FASTCALL WriteEffTransportRequestNewPortStream(void *pObject) {
+    VsNetRequestNewPortControlStream *pControlStream;
+    VsNetEffStreamBase *pStream;
+
+    pControlStream = (VsNetRequestNewPortControlStream *)pObject;
+    pStream = (VsNetEffStreamBase *)pObject;
+    WriteEffTransportRequestPortFields(pObject);
+    pStream->WriteEffStreamU32BE((unsigned int)pControlStream->m_pPeer);
+}
+
+// FUNCTION: LEMBALL 0x0045f4f0
+void *ConstructEffTransportAuthoriseConnectControlStream(void *pObject, char *pszStreamName) {
+    VsNetAuthoriseConnectControlStream *pStream;
+    unsigned int cbName;
+
+    pStream = (VsNetAuthoriseConnectControlStream *)pObject;
+    pStream->m_Header.m_pVtable = g_GAME_EffStreamConstructionVtable;
+    pStream->m_Header.m_nEventCode = 0;
+    ((GameEffStream *)pObject)->ResetStateFields();
+    pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamNameVtable;
+    pStream->m_Header.m_pszStreamName = pszStreamName;
+
+    cbName = (unsigned int)strlen(pszStreamName) + 1;
+    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + cbName;
+
+    pStream->m_Header.m_pVtable = g_NETWORK_AuthoriseConnectControlStreamVtable;
+    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + 0x38;
+    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + 0x101;
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045f540
+void __fastcall LoadEffTransportAuthoriseConnectStream(void *pObject) {
+    VsNetEffStreamBase *pStream;
+
+    pStream = (VsNetEffStreamBase *)pObject;
+    *(unsigned short *)((char *)pObject + 0x30) = pStream->ReadEffStreamU16BEValue();
+    *(unsigned int *)((char *)pObject + 0x34) = pStream->ReadEffStreamU32BEValue();
+}
+
+// FUNCTION: LEMBALL 0x0045f560
+void LEMBALL_FASTCALL WriteEffTransportAuthoriseConnectStream(void *pObject) {
+    VsNetAuthoriseConnectControlStream *pControlStream;
+    VsNetEffStreamBase *pStream;
+
+    pControlStream = (VsNetAuthoriseConnectControlStream *)pObject;
+    pStream = (VsNetEffStreamBase *)pObject;
+    pStream->WriteEffStreamU16BE(pControlStream->m_nAssignedPort);
+    pStream->WriteEffStreamU32BE((unsigned int)pControlStream->m_pPeer);
+}
+
+// FUNCTION: LEMBALL 0x0045f580
+void *ConstructEffTransportGoAheadConnectControlStream(void *pObject, char *pszStreamName) {
+    VsNetAuthoriseConnectControlStream *pStream;
+    unsigned int cbName;
+
+    pStream = (VsNetAuthoriseConnectControlStream *)pObject;
+    pStream->m_Header.m_pVtable = g_GAME_EffStreamConstructionVtable;
+    pStream->m_Header.m_nEventCode = 0;
+    ((GameEffStream *)pObject)->ResetStateFields();
+    pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamNameVtable;
+    pStream->m_Header.m_pszStreamName = pszStreamName;
+
+    cbName = (unsigned int)strlen(pszStreamName) + 1;
+    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + cbName;
+
+    pStream->m_Header.m_pVtable = g_NETWORK_GoAheadConnectControlStreamVtable;
+    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + 0x38;
+    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + 0x101;
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045f5d0
+void __fastcall LoadEffTransportGoAheadConnectStream(void *pObject) {
+    VsNetEffStreamBase *pStream;
+
+    pStream = (VsNetEffStreamBase *)pObject;
+    *(unsigned short *)((char *)pObject + 0x30) = pStream->ReadEffStreamU16BEValue();
+    *(unsigned int *)((char *)pObject + 0x34) = pStream->ReadEffStreamU32BEValue();
+}
+
+// FUNCTION: LEMBALL 0x0045f5f0
+void LEMBALL_FASTCALL WriteEffTransportGoAheadConnectStream(void *pObject) {
+    VsNetAuthoriseConnectControlStream *pControlStream;
+    VsNetEffStreamBase *pStream;
+
+    pControlStream = (VsNetAuthoriseConnectControlStream *)pObject;
+    pStream = (VsNetEffStreamBase *)pObject;
+    pStream->WriteEffStreamU16BE(pControlStream->m_nAssignedPort);
+    pStream->WriteEffStreamU32BE((unsigned int)pControlStream->m_pPeer);
+}
+
+// FUNCTION: LEMBALL 0x0045f610
+void *ConstructEffTransportFailedConnectControlStream(void *pObject, char *pszStreamName) {
+    VsNetFailedConnectControlStream *pStream;
+    unsigned int cbName;
+
+    pStream = (VsNetFailedConnectControlStream *)pObject;
+    pStream->m_Header.m_pVtable = g_GAME_EffStreamConstructionVtable;
+    pStream->m_Header.m_nEventCode = 0;
+    ((GameEffStream *)pObject)->ResetStateFields();
+    pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamNameVtable;
+    pStream->m_Header.m_pszStreamName = pszStreamName;
+
+    cbName = (unsigned int)strlen(pszStreamName) + 1;
+    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + cbName;
+
+    pStream->m_Header.m_pVtable = g_NETWORK_FailedConnectControlStreamVtable;
+    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + 0x101;
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045f660
+void LEMBALL_FASTCALL LoadEffTransportFailedConnectStream(void *pObject) {
+    ((VsNetEffStreamBase *)pObject)->ReadEffStreamCString(
+        (char **)((char *)pObject + 0x30));
+}
+
+// FUNCTION: LEMBALL 0x0045f670
+void LEMBALL_FASTCALL WriteEffTransportFailedConnectStream(void *pObject) {
+    ((VsNetEffStreamBase *)pObject)->WriteEffStreamCString(
+        *(char **)((char *)pObject + 0x30));
+}
+
+// FUNCTION: LEMBALL 0x0045fa40
 int VsNetEffTransportPacketProcessor::ProcessEffTransportPacketHeader(void) {
     VsNetEffTransportPacketProcessor *pProcessor = this;
     VsNetEffTransportPacketHeader *pHeader;
@@ -1583,499 +1612,39 @@ int VsNetEffTransportPacketProcessor::ProcessEffTransportPacketHeader(void) {
     return 0;
 }
 
-// FUNCTION: LEMBALL 0x004601B0
-void VsNetPeerPayloadSender::WriteEffStreamWithGlobalSession(void) {
-    ((GameEffStream *)g_pEffTransportGlobalReadStream)->BeginEffStreamWriteSession();
-    SendEffStreamPayloadWithTransportHeader((int)(unsigned long)g_pEffTransportGlobalReadStream);
-    ((GameEffStream *)g_pEffTransportGlobalReadStream)->EndEffStreamWriteSession();
-}
+// FUNCTION: LEMBALL 0x0045fbb0
+void CheckEffTransportIdleTimeout(void *pObject) {
+    int nStateDelta;
+    char *pbState;
+    DWORD dwNow;
+    VsNetEffTransportHandleGroup *pHandleGroup;
 
-// FUNCTION: LEMBALL 0x004601E0
-void *VsNetAckedEffTransportRecordOwner::ClaimAckedEffTransportRecordPayload(void) {
-    VsNetAckedEffTransportRecordOwner *pOwner;
-    VsNetAckedEffTransportRecordTable *pRecordTable;
-    VsNetAckedEffTransportRecord *pRecord;
-    VsNetEffTransportGlobalReadStream *pReadStream;
-    VsNetEffTransportPacketHeader *pSerializedHeader;
-    void *pPayload;
-    int nRecordIndex;
-
-    pPayload = 0;
-    pReadStream = (VsNetEffTransportGlobalReadStream *)g_pEffTransportGlobalReadStream;
-    ((GameEffStream *)pReadStream)
-        ->LoadEffStreamFromMemory((int)(unsigned long)((char *)g_pEffTransportPacketBuffer + 0x10));
-    if (pReadStream->m_wPacketKind2e != 0x100) {
-        return 0;
-    }
-
-    pOwner = this;
-    pRecordTable = pOwner->m_pRecordTable4c;
-    nRecordIndex = pReadStream->m_wSequence2c % pRecordTable->m_cRecords;
-    pRecord = pRecordTable->m_apRecords08[nRecordIndex];
-    pSerializedHeader = (VsNetEffTransportPacketHeader *)(unsigned long)pRecord->m_pSerializedStream04;
-
-    ((GameEffStream *)this)->LoadEffStreamFromMemory(pRecord->m_pSerializedStream04);
-    if (pSerializedHeader->m_wSequence0a == pReadStream->m_wSequence2c && pRecord->m_fClaimed08 == 0) {
-        pRecord->m_fClaimed08 = 1;
-        pPayload = pRecord->m_pPayload0c;
-    }
-    ((GameEffStream *)this)->LoadEffStreamFromMemory(pRecord->m_pSerializedStream04);
-    return pPayload;
-}
-
-// FUNCTION: LEMBALL 0x004611E0
-void VsNetSimpleEffTransportRecordSlot::CopyIntoSimpleEffTransportRecordSlot(
-    const void *pvSource, unsigned int cbSource, void *pPayload)
-{
-    unsigned int i;
-    const unsigned char *pbSource;
-    unsigned char *pbTarget;
-    m_pPayload0c = pPayload;
-    m_cRetryCount14 = 0;
-
-    pbSource = (const unsigned char *)pvSource;
-    pbTarget = (unsigned char *)(unsigned long)m_pSerializedStream04;
-    cbSource &= 0xffff;
-
-    for (i = cbSource >> 2; i != 0; --i) {
-        *(unsigned int *)pbTarget = *(const unsigned int *)pbSource;
-        pbSource += 4;
-        pbTarget += 4;
-    }
-
-    for (i = cbSource & 3; i != 0; --i) {
-        *pbTarget++ = *pbSource++;
-    }
-}
-
-// FUNCTION: LEMBALL 0x00461210
-void *VsNetSimpleEffTransportRecordSlotTable::ConstructEffTransportRecordSlotTable(
-    int cRecords, unsigned int cbRecord)
-{
-    m_nReserved04 = cbRecord & 0xffff;
-    m_cRecords = cRecords;
-    if (cRecords > 0) {
-        m_apRecords08 = (VsNetSimpleEffTransportRecordSlot **)AllocateVSMemBlock(
-            (unsigned int)(cRecords << 2));
-    } else {
-        m_apRecords08 = 0;
-    }
-    return this;
-}
-
-// FUNCTION: LEMBALL 0x00461090
-VsNetLockedEffTransportRecordSlot::VsNetLockedEffTransportRecordSlot(
-    unsigned int cbPayload)
-{
-    m_pPayload04 = AllocateVSMemBlock(cbPayload & 0xffff);
-    m_fAvailable28 = 1;
-    m_fPayloadPresent24 = 0;
-    *(unsigned short *)((char *)m_pPayload04 + 0x0a) = 0;
-}
-
-// FUNCTION: LEMBALL 0x004610F0
-void VsNetLockedEffTransportRecordSlot::DestroyLockedEffTransportRecordSlot(void) {
-    FreeVSMemBlock(m_pPayload04);
-    m_CriticalSection08.~VsNetLockedEffTransportRecordCriticalSection();
-}
-
-// FUNCTION: LEMBALL 0x00461140
-void VsNetLockedEffTransportRecordSlot::CopyIntoLockedEffTransportRecordSlot(
-    const void *pvSource, unsigned int cbSource)
-{
-    unsigned int cbCopy;
-
-    m_CriticalSection08.Enter();
-    cbCopy = cbSource & 0xffff;
-    memcpy(m_pPayload04, pvSource, cbCopy);
-    m_fPayloadPresent24 = 1;
-    m_CriticalSection08.Leave();
-}
-
-// FUNCTION: LEMBALL 0x00462A00
-void *DeleteLockedEffTransportRecordSlotWrapper(void *pObject, BYTE fFreeMemory) {
-    ((VsNetLockedEffTransportRecordSlot *)pObject)->DestroyLockedEffTransportRecordSlot();
-    if ((fFreeMemory & 1) != 0) {
-        FreeVSMemBlock(pObject);
-    }
-    return pObject;
-}
-
-// FUNCTION: LEMBALL 0x00461190
-void *VsNetSimpleEffTransportRecordSlot::ConstructSimpleEffTransportRecordSlot(
-    unsigned int cbRecord)
-{
-    m_pVtable = g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable;
-    m_pSerializedStream04 = (int)(unsigned long)AllocateVSMemBlock(cbRecord & 0xffff);
-    m_fAvailable08 = 1;
-    m_cRetryCount14 = 0;
-    return this;
-}
-
-// FUNCTION: LEMBALL 0x004611C0
-void VsNetSimpleEffTransportRecordSlot::DestroySimpleEffTransportRecordSlot(void) {
-    m_pVtable = (void **)g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable;
-    FreeVSMemBlock((void *)(unsigned long)m_pSerializedStream04);
-    m_pVtable = g_NETWORK_EffTransportRecordBufferVtable;
-}
-
-// FUNCTION: LEMBALL 0x00461250
-void VsNetVSMemObjectPointerArray::DestroyVSMemObjectPointerArray(void) {
-    VsNetDeleteObject *pDeleteObject;
-    int i;
-    int nOffset;
-
-    if (m_pObjectArray08 != 0) {
-        nOffset = 0;
-        for (i = 0; i < m_cObjects; ++i) {
-            pDeleteObject = *(VsNetDeleteObject **)(unsigned long)(m_pObjectArray08 + nOffset);
-            if (pDeleteObject != 0) {
-                pDeleteObject->m_pVtable->m_pDelete(1);
-            }
-            nOffset += 4;
+    nStateDelta = *(int *)(*(int *)((char *)pObject + 0x44) + 4);
+    pbState = (char *)pObject + nStateDelta;
+    pHandleGroup = (VsNetEffTransportHandleGroup *)((char *)pObject + nStateDelta + 0x44);
+    if (*(int *)(pbState + 0x54) != 0) {
+        if (*(int *)(pbState + 0x5c) == 0) {
+            return;
         }
-        FreeVSMemBlock((void *)(unsigned long)m_pObjectArray08);
-    }
-}
-
-// FUNCTION: LEMBALL 0x00461340
-void *VsNetSimpleEffTransportRecordSlotTable::ConstructSimpleEffTransportRecordSlotTable(
-    int cRecords, unsigned int cbRecord)
-{
-    void *pSlotStorage;
-    int i;
-    int nOffset;
-
-    ConstructEffTransportRecordSlotTable(cRecords, cbRecord);
-    if (m_apRecords08 != 0) {
-        nOffset = 0;
-        for (i = 0; i < m_cRecords; ++i) {
-            pSlotStorage = AllocateVSMemBlock(0x18);
-            if (pSlotStorage == 0) {
-                *(void **)(unsigned long)((int)(unsigned long)m_apRecords08 + nOffset) = 0;
-            } else {
-                *(void **)(unsigned long)((int)(unsigned long)m_apRecords08 + nOffset) =
-                    ((VsNetSimpleEffTransportRecordSlot *)pSlotStorage)
-                        ->ConstructSimpleEffTransportRecordSlot((unsigned int)m_nReserved04);
-            }
-            nOffset += 4;
+        dwNow = timeGetTime();
+        if (dwNow - *(DWORD *)((char *)pObject + 0x3c) <= 10000) {
+            return;
         }
+        ((GameEffTransportHandleGroup *)pHandleGroup)->Reset();
+        pHandleGroup->m_pCallback->m_pVtable->m_pNotifyClosed(1);
+        return;
     }
-    return this;
-}
-
-extern void *g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable[1];
-extern void *g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable[1];
-
-// FUNCTION: LEMBALL 0x00461290
-void *VsNetSimpleEffTransportRecordSlotTable::ConstructLockedEffTransportRecordSlotTable(
-    int cRecords, unsigned int cbRecord)
-{
-    VsNetSimpleEffTransportRecordSlotTable *pTable;
-    void *pSlotStorage;
-    int i;
-    int nOffset;
-
-    pTable = (VsNetSimpleEffTransportRecordSlotTable *)
-        ConstructEffTransportRecordSlotTable(cRecords, cbRecord);
-    if (pTable->m_apRecords08 != 0) {
-        nOffset = 0;
-        for (i = 0; i < pTable->m_cRecords; ++i) {
-            pSlotStorage = AllocateVSMemBlock(0x2c);
-            if (pSlotStorage == 0) {
-                *(void **)((char *)pTable->m_apRecords08 + nOffset) = 0;
-            } else {
-                *(void **)((char *)pTable->m_apRecords08 + nOffset) =
-                    new (pSlotStorage) VsNetLockedEffTransportRecordSlot(
-                        (unsigned int)pTable->m_nReserved04);
-            }
-            nOffset += 4;
-        }
+    if (*(int *)(pbState + 0x60) == 0) {
+        return;
     }
-    return this;
-}
-
-// FUNCTION: LEMBALL 0x00461560
-void *ConstructShiftedLockedRecordSlotTable(void *pObject, int cPacketIds, unsigned int cbRecord) {
-    ((VsNetSimpleEffTransportRecordSlotTable *)pObject)
-        ->ConstructLockedEffTransportRecordSlotTable(cPacketIds - 2, cbRecord);
-    *(int *)((char *)pObject + 0x0c) = cPacketIds - 2;
-    return pObject;
-}
-
-// FUNCTION: LEMBALL 0x00461610
-void *ConstructRangeEffTransportRecordBufferTable(void *pObject, int nFirstPacket,
-                                                  int nLastPacket, int cbPayload,
-                                                  unsigned int cbRecord)
-{
-    VsNetEffTransportRecordBuffer *pTable;
-    VsNetEffTransportRecordBuffer *pChild;
-    int cRecords;
-    int i;
-
-    pTable = (VsNetEffTransportRecordBuffer *)pObject;
-    cRecords = nLastPacket - nFirstPacket + 1;
-    pTable->ConstructEffTransportRecordBuffer(cRecords, cbPayload, cbRecord);
-    pTable->m_pVtable = g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable;
-    *(int *)((char *)pObject + 0x1c) = nFirstPacket;
-    *(int *)((char *)pObject + 0x18) = cRecords;
-    *(int *)((char *)pObject + 0x24) = 0;
-    if (cbPayload < 1) {
-        *(void **)((char *)pObject + 0x20) = 0;
-        return pObject;
+    dwNow = timeGetTime();
+    if (dwNow - *(DWORD *)((char *)pObject + 0x3c) > 10000) {
+        ((GameEffTransportHandleGroup *)pHandleGroup)->Reset();
+        pHandleGroup->m_pCallback->m_pVtable->m_pNotifyClosed(0);
     }
-    *(void **)((char *)pObject + 0x20) = AllocateVSMemBlock(cRecords * 4);
-    for (i = 0; i < cRecords; ++i) {
-        pChild = (VsNetEffTransportRecordBuffer *)AllocateVSMemBlock(0x18);
-        if (pChild == 0) {
-            ((VsNetEffTransportRecordBuffer **)*(void **)((char *)pObject + 0x20))[i] = 0;
-        } else {
-            ((VsNetEffTransportRecordBuffer **)*(void **)((char *)pObject + 0x20))[i] =
-                (VsNetEffTransportRecordBuffer *)pChild->ConstructEffTransportRecordBuffer(
-                    cRecords, cbPayload, cbRecord);
-        }
-    }
-    return pObject;
 }
 
-// FUNCTION: LEMBALL 0x004616B0
-void VsNetEffTransportRecordBuffer::DestroyRangeEffTransportRecordBufferTable(void) {
-    VsNetEffTransportRecordBuffer *pTable;
-    VsNetDeleteObject *pChild;
-    int i;
-    int cRecords;
-
-    pTable = this;
-    pTable->m_pVtable = g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable;
-    cRecords = *(int *)((char *)this + 0x18);
-    if (*(void **)((char *)this + 0x20) != 0) {
-        for (i = 0; i < cRecords; ++i) {
-            pChild = ((VsNetDeleteObject **)*(void **)((char *)this + 0x20))[i];
-            if (pChild != 0) {
-                pChild->m_pVtable->m_pDelete(1);
-            }
-        }
-        FreeVSMemBlock(*(void **)((char *)this + 0x20));
-    }
-    DestroyEffTransportRecordBuffer();
-}
-
-// FUNCTION: LEMBALL 0x00461780
-void *ConstructRingLockedRecordSlotTable(void *pObject, int cRecords, unsigned int cbRecord) {
-    ((VsNetSimpleEffTransportRecordSlotTable *)pObject)
-        ->ConstructLockedEffTransportRecordSlotTable(cRecords, cbRecord);
-    *(int *)((char *)pObject + 0x0c) = 0;
-    *(int *)((char *)pObject + 0x10) = 0;
-    return pObject;
-}
-
-// FUNCTION: LEMBALL 0x00461840
-void *ConstructRingEffTransportRecordBufferTable(void *pObject, int cRecords,
-                                                 int cbPayload, unsigned int cbRecord)
-{
-    VsNetEffTransportRecordBuffer *pTable;
-    VsNetEffTransportRecordBuffer *pChild;
-    int i;
-
-    pTable = (VsNetEffTransportRecordBuffer *)pObject;
-    pTable->ConstructEffTransportRecordBuffer(cRecords, cbPayload, cbRecord);
-    pTable->m_pVtable = g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable;
-    *(int *)((char *)pObject + 0x18) = cRecords;
-    if (cbPayload < 1) {
-        *(void **)((char *)pObject + 0x1c) = 0;
-        return pObject;
-    }
-    *(void **)((char *)pObject + 0x1c) = AllocateVSMemBlock(cRecords * 4);
-    for (i = 0; i < cRecords; ++i) {
-        pChild = (VsNetEffTransportRecordBuffer *)AllocateVSMemBlock(0x18);
-        if (pChild == 0) {
-            ((VsNetEffTransportRecordBuffer **)*(void **)((char *)pObject + 0x1c))[i] = 0;
-        } else {
-            ((VsNetEffTransportRecordBuffer **)*(void **)((char *)pObject + 0x1c))[i] =
-                (VsNetEffTransportRecordBuffer *)pChild->ConstructEffTransportRecordBuffer(
-                    cRecords, cbPayload, cbRecord);
-        }
-    }
-    return pObject;
-}
-
-// FUNCTION: LEMBALL 0x004618E0
-void VsNetEffTransportRecordBuffer::DestroyRingEffTransportRecordBufferTable(void) {
-    VsNetEffTransportRecordBuffer *pTable;
-    VsNetDeleteObject *pChild;
-    int i;
-    int cRecords;
-
-    pTable = this;
-    pTable->m_pVtable = g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable;
-    cRecords = *(int *)((char *)this + 0x18);
-    if (*(void **)((char *)this + 0x1c) != 0) {
-        for (i = 0; i < cRecords; ++i) {
-            pChild = ((VsNetDeleteObject **)*(void **)((char *)this + 0x1c))[i];
-            if (pChild != 0) {
-                pChild->m_pVtable->m_pDelete(1);
-            }
-        }
-        FreeVSMemBlock(*(void **)((char *)this + 0x1c));
-    }
-    DestroyEffTransportRecordBuffer();
-}
-
-// FUNCTION: LEMBALL 0x00462A60
-void *LEMBALL_FASTCALL DeleteRangeEffTransportRecordBufferTableWrapper(VsNetEffTransportRecordBuffer *pObject, int, BYTE fFreeMemory) {
-    pObject->DestroyRangeEffTransportRecordBufferTable();
-    if ((fFreeMemory & 1) != 0) {
-        FreeVSMemBlock(pObject);
-    }
-    return pObject;
-}
-
-// FUNCTION: LEMBALL 0x00462A80
-void *LEMBALL_FASTCALL DeleteRingEffTransportRecordBufferTableWrapper(VsNetEffTransportRecordBuffer *pObject, int, BYTE fFreeMemory) {
-    pObject->DestroyRingEffTransportRecordBufferTable();
-    if ((fFreeMemory & 1) != 0) {
-        FreeVSMemBlock(pObject);
-    }
-    return pObject;
-}
-
-// FUNCTION: LEMBALL 0x00461970
-void *VsNetSimpleEffTransportRecordSlotTable::ConstructSimpleRecordSlotTableWrapper(
-    int cRecords, unsigned int cbRecord)
-{
-    ConstructSimpleEffTransportRecordSlotTable(cRecords, cbRecord);
-    return this;
-}
-
-// FUNCTION: LEMBALL 0x004619D0
-unsigned char VsNetSimpleEffTransportRecordSlotTable::GetNextEffTransportRecordClaimFlag(
-    unsigned int nSequence)
-{
-    int nIndex;
-
-    nIndex = (int)(nSequence & 0xffff) + 1;
-    nIndex %= m_cRecords;
-    return m_apRecords08[nIndex]->m_fAvailable08;
-}
-
-// FUNCTION: LEMBALL 0x004613A0
-void VsNetSimpleEffTransportRecordSlotTable::CopyPayloadIntoSimpleRecordSlot(
-    int nIndex, const void *pvSource, unsigned int cbSource, void *pPayload)
-{
-    m_apRecords08[nIndex]->CopyIntoSimpleEffTransportRecordSlot(
-        pvSource, cbSource, pPayload);
-}
-
-// FUNCTION: LEMBALL 0x00461990
-void *VsNetSimpleEffTransportRecordSlotTable::ClaimSimpleRecordSlotForPacketId(
-    unsigned int nPacketId, const void *pvSource, unsigned int cbSource, void *pPayload)
-{
-    VsNetSimpleEffTransportRecordSlot *pSlot;
-    int nIndex;
-
-    nIndex = (int)(nPacketId & 0xffff) % m_cRecords;
-    pSlot = m_apRecords08[nIndex];
-    if (pSlot->m_fAvailable08 == 0) {
-        return 0;
-    }
-
-    CopyPayloadIntoSimpleRecordSlot(nIndex, pvSource, cbSource, pPayload);
-    return pSlot;
-}
-
-// FUNCTION: LEMBALL 0x004613D0
-void *VsNetEffTransportRecordBuffer::ConstructEffTransportRecordBuffer(
-    int fAllocatePayload, int cbPayload, unsigned int cbRecord)
-{
-    VsNetEffTransportPacketHeader *pSerializedHeader;
-    int cbSerialized;
-
-    m_pVtable = g_NETWORK_DeleteEffTransportRecordBufferVtable;
-    m_fAllocatePayload0c = fAllocatePayload;
-    m_nReserved14 = 0;
-    m_nReserved10 = 0;
-    cbSerialized = (cbRecord & 0xffff) - 0x10;
-    m_cbPayload08 = cbSerialized;
-    if (fAllocatePayload != 0 && cbSerialized != 0) {
-        m_pSerializedBuffer04 = (int)(unsigned long)AllocateVSMemBlock((unsigned int)(cbPayload + 0x10));
-        pSerializedHeader = (VsNetEffTransportPacketHeader *)(unsigned long)m_pSerializedBuffer04;
-        pSerializedHeader->m_wSequence0a = 0;
-    } else {
-        m_pSerializedBuffer04 = 0;
-    }
-    return this;
-}
-
-// FUNCTION: LEMBALL 0x00461440
-void VsNetEffTransportRecordBuffer::DestroyEffTransportRecordBuffer(void) {
-    m_pVtable = g_NETWORK_DeleteEffTransportRecordBufferVtable;
-    if (m_pSerializedBuffer04 != 0) {
-        FreeVSMemBlock((void *)(unsigned long)m_pSerializedBuffer04);
-    }
-    m_pVtable = g_NETWORK_EffTransportRecordBufferVtable;
-}
-
-// FUNCTION: LEMBALL 0x00462A20
-void *DeleteSimpleEffTransportRecordSlotWrapper(void *pObject, BYTE fFreeMemory) {
-    ((VsNetSimpleEffTransportRecordSlot *)pObject)
-        ->DestroySimpleEffTransportRecordSlot();
-    if ((fFreeMemory & 1) != 0) {
-        FreeVSMemBlock(pObject);
-    }
-    return pObject;
-}
-
-// FUNCTION: LEMBALL 0x00462A40
-void *DeleteEffTransportRecordBufferWrapper(void *pObject, BYTE fFreeMemory) {
-    ((VsNetEffTransportRecordBuffer *)pObject)->DestroyEffTransportRecordBuffer();
-    if ((fFreeMemory & 1) != 0) {
-        FreeVSMemBlock(pObject);
-    }
-    return pObject;
-}
-
-// FUNCTION: LEMBALL 0x004629E0
-void *LEMBALL_FASTCALL DeleteEffTransportRecordBufferBaseWrapper(VsNetEffTransportRecordBuffer *pObject, int, BYTE fFreeMemory) {
-    pObject->m_pVtable = g_NETWORK_EffTransportRecordBufferVtable;
-    if ((fFreeMemory & 1) != 0) {
-        FreeVSMemBlock(pObject);
-    }
-    return pObject;
-}
-
-// GLOBAL: LEMBALL 0x004991CC
-void *g_NETWORK_EffTransportRecordBufferVtable[1] = {
-    (void *)DeleteEffTransportRecordBufferBaseWrapper,
-};
-
-// GLOBAL: LEMBALL 0x004991D0
-void *g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable[1] = {
-    (void *)DeleteSimpleEffTransportRecordSlotWrapper,
-};
-
-// GLOBAL: LEMBALL 0x004991D4
-void *g_NETWORK_DeleteEffTransportRecordBufferVtable[1] = {
-    (void *)DeleteEffTransportRecordBufferWrapper,
-};
-
-// GLOBAL: LEMBALL 0x004991D8
-void *g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable[1] = {
-    (void *)DeleteRangeEffTransportRecordBufferTableWrapper,
-};
-
-// GLOBAL: LEMBALL 0x004991DC
-void *g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable[1] = {
-    (void *)DeleteRingEffTransportRecordBufferTableWrapper,
-};
-
-struct VsNetInitializeRecordVtablePointers {
-    VsNetInitializeRecordVtablePointers(void) {
-    }
-};
-
-static VsNetInitializeRecordVtablePointers g_NETWORK_InitializeRecordVtablePointers;
-
-// FUNCTION: LEMBALL 0x0045FEA0
+// FUNCTION: LEMBALL 0x0045fea0
 int VsNetPeerPayloadSenderState::SendReliableEffTransportPayload(void *pStream) {
     VsNetEffTransportPacketHeader *pHeader;
     VsNetEffStreamPayloadState *pPayload;
@@ -2110,7 +1679,7 @@ int VsNetPeerPayloadSenderState::SendReliableEffTransportPayload(void *pStream) 
     return 1;
 }
 
-// FUNCTION: LEMBALL 0x0045FF20
+// FUNCTION: LEMBALL 0x0045ff20
 int RetryPendingEffTransportRecord(void *pObject, int nRecord) {
     VsNetSimpleEffTransportRecordSlot *pRecord;
     VsNetEffTransportPacketHeader *pSerializedHeader;
@@ -2131,7 +1700,7 @@ int RetryPendingEffTransportRecord(void *pObject, int nRecord) {
     return nSendResult;
 }
 
-// FUNCTION: LEMBALL 0x0045FF70
+// FUNCTION: LEMBALL 0x0045ff70
 int VsNetPeerPayloadSenderState::SendFragmentedEffTransportPayload(void *pStream) {
     const int cbFragmentStep = g_cbEffTransportMaxPacketBytes - 0x10;
     VsNetPeerPayloadSenderState *pSender;
@@ -2206,7 +1775,7 @@ int VsNetPeerPayloadSenderState::SendFragmentedEffTransportPayload(void *pStream
     return 0;
 }
 
-// FUNCTION: LEMBALL 0x004600D0
+// FUNCTION: LEMBALL 0x004600d0
 int VsNetPeerPayloadSender::SendEffStreamPayloadWithTransportHeader(int nStream) {
     VsNetPeerPayloadSenderState *pSender;
     VsNetPeerPayloadSenderStateOffsets *pOffsets;
@@ -2260,9 +1829,44 @@ int VsNetPeerPayloadSender::SendEffStreamPayloadWithTransportHeader(int nStream)
     return cbPayload;
 }
 
-// FUNCTION: LEMBALL 0x00460A40
-void VsNetChannelOwnerObject::ClearEffTransportSendGate(void) {
-    m_nSendGate = 0;
+// FUNCTION: LEMBALL 0x004601b0
+void VsNetPeerPayloadSender::WriteEffStreamWithGlobalSession(void) {
+    ((GameEffStream *)g_pEffTransportGlobalReadStream)->BeginEffStreamWriteSession();
+    SendEffStreamPayloadWithTransportHeader((int)(unsigned long)g_pEffTransportGlobalReadStream);
+    ((GameEffStream *)g_pEffTransportGlobalReadStream)->EndEffStreamWriteSession();
+}
+
+// FUNCTION: LEMBALL 0x004601e0
+void *VsNetAckedEffTransportRecordOwner::ClaimAckedEffTransportRecordPayload(void) {
+    VsNetAckedEffTransportRecordOwner *pOwner;
+    VsNetAckedEffTransportRecordTable *pRecordTable;
+    VsNetAckedEffTransportRecord *pRecord;
+    VsNetEffTransportGlobalReadStream *pReadStream;
+    VsNetEffTransportPacketHeader *pSerializedHeader;
+    void *pPayload;
+    int nRecordIndex;
+
+    pPayload = 0;
+    pReadStream = (VsNetEffTransportGlobalReadStream *)g_pEffTransportGlobalReadStream;
+    ((GameEffStream *)pReadStream)
+        ->LoadEffStreamFromMemory((int)(unsigned long)((char *)g_pEffTransportPacketBuffer + 0x10));
+    if (pReadStream->m_wPacketKind2e != 0x100) {
+        return 0;
+    }
+
+    pOwner = this;
+    pRecordTable = pOwner->m_pRecordTable4c;
+    nRecordIndex = pReadStream->m_wSequence2c % pRecordTable->m_cRecords;
+    pRecord = pRecordTable->m_apRecords08[nRecordIndex];
+    pSerializedHeader = (VsNetEffTransportPacketHeader *)(unsigned long)pRecord->m_pSerializedStream04;
+
+    ((GameEffStream *)this)->LoadEffStreamFromMemory(pRecord->m_pSerializedStream04);
+    if (pSerializedHeader->m_wSequence0a == pReadStream->m_wSequence2c && pRecord->m_fClaimed08 == 0) {
+        pRecord->m_fClaimed08 = 1;
+        pPayload = pRecord->m_pPayload0c;
+    }
+    ((GameEffStream *)this)->LoadEffStreamFromMemory(pRecord->m_pSerializedStream04);
+    return pPayload;
 }
 
 // FUNCTION: LEMBALL 0x00460260
@@ -2338,76 +1942,138 @@ void VsNetPeerPayloadSenderState::ServiceEffTransportRetries(void) {
     }
 }
 
-// FUNCTION: LEMBALL 0x00460D20
-void VsNetEffTransportPeer::FreeEffTransportPeerBuffers(void) {
-    char *pbObject;
-    int nOffsets;
-    int nGroupDelta;
+// FUNCTION: LEMBALL 0x004605b0
+void VsNetAdjustedEffTransportPeerView::CloseAdjustedEffTransportPeerByKey(void *pUnused) {
+    char *pbAdjusted;
+    void *pPeerKey;
 
-    pbObject = (char *)this;
-    if (*(void **)(pbObject + 8) != 0) {
-        FreeVSMemBlock(*(void **)(pbObject + 8));
-        *(void **)(pbObject + 8) = 0;
-    }
-    if (*(void **)(pbObject + 0x0c) != 0) {
-        FreeVSMemBlock(*(void **)(pbObject + 0x0c));
-        *(void **)(pbObject + 0x0c) = 0;
-    }
-    nOffsets = *(int *)(pbObject + 4);
-    nGroupDelta = *(int *)(nOffsets + 4);
-    ((GameEffTransportHandleGroup *)(pbObject + nGroupDelta + 4))->Reset();
+    (void)pUnused;
+    pbAdjusted = (char *)this;
+    pbAdjusted += *(int *)(*(int *)(pbAdjusted - 0x20) + 8);
+    pPeerKey = *(void **)(pbAdjusted + 0x50);
+    ((VsNetEffTransportRuntimeState *)g_pActiveNetworkRuntimeWindow)
+        ->CloseMatchingEffTransportPeer(pPeerKey);
 }
 
-// FUNCTION: LEMBALL 0x00460D70
-void VsNetEffTransportConnectCallback::QueueEffTransportConnectEvent(void) {
-    VsNetEffDispatchEvent kEvent;
-    VsNetEffTransportConnectStateView *pSendState;
-    VsNetEffTransportTickStateView *pReliableTickState;
-    VsNetEffTransportTickStateView *pTimedTickState;
-    VsNetEffTransportConnectOffsets *pOffsets;
-    VsNetEffTransportConnectOwner *pOwner;
-    VsNetRuntimeWindowSendGateState *pWindowState;
-    DWORD dwNow;
-
-    pOwner = (VsNetEffTransportConnectOwner *)((char *)this - 0xd8);
-    pOffsets = pOwner->m_pOffsets04;
-    pSendState = (VsNetEffTransportConnectStateView *)((char *)pOwner + pOffsets->m_nSendStateViewOffset04);
-    pReliableTickState = (VsNetEffTransportTickStateView *)((char *)pOwner + pOffsets->m_nReliableTickViewOffset08);
-    pTimedTickState = (VsNetEffTransportTickStateView *)((char *)pOwner + pOffsets->m_nTimedTickViewOffset0c);
-    kEvent.m_nType = 3;
-    kEvent.m_nCode = 0;
-    kEvent.m_pStream = (int *)pOwner;
-    pOwner->m_fConnected24 = 1;
-    pSendState->m_nCurrentState18 = 0;
-    pSendState->m_nPreviousState20 = pSendState->m_nCurrentState18;
-    pSendState->m_fConnected14 = 1;
-    if (pOwner->m_fTrackActivePeer1c != 0) {
-        pSendState->m_fTrackActivePeer1c = 1;
-        dwNow = timeGetTime();
-        pReliableTickState->m_dwLastTick40 = dwNow - 1000;
-        dwNow = timeGetTime();
-        pTimedTickState->m_dwLastTick40 = dwNow;
-        pWindowState = (VsNetRuntimeWindowSendGateState *)g_pActiveNetworkRuntimeWindow;
-        if (pWindowState->m_fSendGateActive30 != 0) {
-            ((VsNetChannelOwnerObject *)(unsigned long)pWindowState->m_nChannelOwner24)
-                ->ClearEffTransportSendGate();
-        }
+// FUNCTION: LEMBALL 0x00460610
+void VsNetEffTransportPeer::ConfigureEffTransportConnectHostString(void *pHostName) {
+    if (m_nReserved1C != 0) {
+        void *pBuffer = (void *)(unsigned long)m_nReserved1C;
+        m_nReserved1C = 0;
+        FreeVSMemBlock(pBuffer);
     }
-    ((void (*)(VsNetEffDispatchEvent *))(*(void ***)g_pEffTransportDispatchQueue)[2])(&kEvent);
+
+    *(int *)((char *)this + 0xc) = 2;
+    void (**ppVtable)(void);
+    ppVtable = *(void (***) (void))this;
+    ((void (*)(void *))ppVtable[2])(pHostName);
 }
 
-// FUNCTION: LEMBALL 0x00460A50
-void VsNetChannelOwnerObject::SendLoadedEffEventToPeer(void *pPeerKey, void *pStream) {
-    VsNetPeerPayloadSenderSlot *pPayloadSenderSlot;
-    VsNetPeerPayloadSenderRaw *pPayloadSender;
+// FUNCTION: LEMBALL 0x00460650
+void VsNetEffTransportPeer::PrepareEffTransportBroadcastStatusPayload(char *pszHostName) {
+    VsNetHandleGroupAdjustor *pAdjustor;
+    char *pszTarget;
+    int cbText;
 
-    LoadEffStreamFromGlobalRange(pStream);
-    pPayloadSenderSlot =
-        (VsNetPeerPayloadSenderSlot *)((char *)this + m_pOffsets->m_nPayloadSenderSlotOffset);
-    pPayloadSender = &pPayloadSenderSlot->m_Sender;
-    ((VsNetPeerPayloadSender *)pPayloadSender)->WritePeerKey(pPeerKey);
-    ((VsNetPeerPayloadSender *)pPayloadSender)
-        ->SendEffStreamPayloadWithTransportHeader((int)(unsigned long)pStream);
+    pAdjustor = (VsNetHandleGroupAdjustor *)
+        ((char *)this + m_pOffsets->m_nHandleGroupAdjustorSlotOffset + 4);
+    ((VsNetDualHandleEffStream *)((char *)pAdjustor +
+                                     pAdjustor->m_pOffsets->m_nHandleStreamOffset))
+        ->ConfigureEffStreamPrimaryHandleGroup(3, 3, 0);
+    ((VsNetTimedEffStream *)((char *)pAdjustor +
+                                pAdjustor->m_pOffsets->m_nTimedStreamOffset))
+        ->ReleaseTimedEffStreamPrimaryHandle();
+
+    pAdjustor = (VsNetHandleGroupAdjustor *)
+        ((char *)this + m_pOffsets->m_nHandleGroupAdjustorSlotOffset + 4);
+    ((VsNetDualHandleEffStream *)((char *)pAdjustor +
+                                     pAdjustor->m_pOffsets->m_nHandleStreamOffset))
+        ->ConfigureEffStreamSecondaryHandleGroup(1, 0);
+    ((VsNetTimedEffStream *)((char *)pAdjustor +
+                                pAdjustor->m_pOffsets->m_nTimedStreamOffset))
+        ->ConfigureTimedEffStreamSecondaryHandle(1);
+
+    if (g_pszEffTransportBroadcastStatusPayload == 0) {
+        g_pszEffTransportBroadcastStatusPayload = (char *)AllocateVSMemBlock(0x410);
+        pszTarget = g_pszEffTransportBroadcastStatusPayload + 0x10;
+
+        strcpy(pszTarget, g_szEffTransportBroadcastPrefix);
+        FormatSignedIntToRadixString(g_nEffTransportVersionMajor,
+                                     pszTarget + strlen(pszTarget), 10);
+        *(unsigned short *)(pszTarget + strlen(pszTarget)) =
+            *(const unsigned short *)g_szEffTransportVersionSeparator;
+        FormatSignedIntToRadixString(g_nEffTransportVersionMinor,
+                                     pszTarget + strlen(pszTarget), 10);
+        *(unsigned short *)(pszTarget + strlen(pszTarget)) =
+            *(const unsigned short *)g_szEffTransportVersionSpace;
+        strcpy(pszTarget + strlen(pszTarget), pszHostName);
+        strcpy(pszTarget + strlen(pszTarget), g_szEffTransportBroadcastSuffix);
+
+        cbText = (int)strlen(pszTarget);
+        g_cbEffTransportBroadcastStatusPayload = cbText;
+    }
+}
+
+// FUNCTION: LEMBALL 0x004607f0
+void VsNetChannelOwnerObject::ReleaseGlobalEffTransportBuffer(void) {
+    VsNetChannelOwnerObject *pChannelOwner;
+    VsNetTransportEndpointSlot *pEndpointSlot;
+    VsNetEndpointState *pEndpointState;
+
+    if (g_pszFileBasedNetworkLocalHostName != 0) {
+        FreeVSMemBlock(g_pszFileBasedNetworkLocalHostName);
+        g_pszFileBasedNetworkLocalHostName = 0;
+    }
+
+    pChannelOwner = this;
+    pEndpointSlot =
+        (VsNetTransportEndpointSlot *)((char *)this + m_pOffsets->m_nEndpointStateSlotOffset);
+    pEndpointState = &pEndpointSlot->m_State;
+    ((GameEffTransportHandleGroup *)pEndpointState)->Reset();
+}
+
+// FUNCTION: LEMBALL 0x00460830
+void VsNetPrefixedEffTransportControlView::DispatchPrefixedEffTransportControlStream(
+    int nDispatchType, void *pEvent)
+
+{
+    VsNetEffDispatchEventPayloadView *pEventView;
+    VsNetEffPrefixedControlDispatchOwner *pOwner;
+    VsNetRuntimeServiceObject *pPeerAddressState;
+    char *pszPayloadText;
+    int nIsLocalPeer;
+    int nPayloadBuffer;
+
+    pOwner = (VsNetEffPrefixedControlDispatchOwner *)((char *)this - 0xd8);
+    pEventView = (VsNetEffDispatchEventPayloadView *)pEvent;
+    pPeerAddressState = (VsNetRuntimeServiceObject *)g_pEffTransportPeerAddressState;
+    ((void (*)(void))**(void ***)pPeerAddressState)();
+    nIsLocalPeer =
+        pPeerAddressState->m_pVtable->m_pValidatePeerKey(g_pEffTransportRuntimeService);
+
+    nPayloadBuffer = pEventView->m_nPayloadBuffer04;
+    pszPayloadText = (char *)(unsigned long)(nPayloadBuffer + 0x10);
+    if (nIsLocalPeer == 0 &&
+        ((pOwner->m_nPeerMode18 != 2 ||
+          (pOwner->m_pPeerKey28 != 0 && pPeerAddressState->m_pVtable->m_pValidatePeerKey(pOwner->m_pPeerKey28) != 0)) &&
+         strncmp(pszPayloadText, g_pszEffTransportBroadcastStatusPayload + 0x10,
+                 g_cbEffTransportBroadcastStatusPayload + 1) == 0)) {
+        ((VsNetEffTransportRuntimeState *)g_pActiveNetworkRuntimeWindow)
+            ->DispatchEffTransportConnectControlStream(
+                g_pEffTransportPeerAddressState,
+                nPayloadBuffer + g_cbEffTransportBroadcastStatusPayload + 0x11);
+    }
+
+    if (nDispatchType == 7) {
+        pEventView->m_pOwnedPayload24 = 0;
+    }
+}
+
+// FUNCTION: LEMBALL 0x004608f0
+void WINAPI LoadEffStreamFromGlobalRange(void *pStream) {
+    ((VsNetEffStreamBase *)pStream)->SaveEffStreamToMemoryRange(
+        (int)(unsigned long)g_pszEffTransportBroadcastStatusPayload,
+        g_cbEffTransportBroadcastStatusPayload + 0x11);
 }
 
 // FUNCTION: LEMBALL 0x00460910
@@ -2469,12 +2135,18 @@ void VsNetChannelOwnerObject::ServiceEffTransportConnectRequest(void) {
     *(DWORD *)(pbObject + 0x18) = dwNow;
 }
 
-struct VsNetEffTransportRetryOwnerView {
-    char m_abReserved00[0x24];
-    void ArmEffTransportConnectRequestRetry(void);
-};
+// FUNCTION: LEMBALL 0x004609f0
+void QueueEffTransportErrorEvent(int nError) {
+    unsigned char abEvent[20];
+    VsNetErrorDispatchQueue *pDispatchQueue;
 
-// FUNCTION: LEMBALL 0x00460A20
+    *(unsigned short *)abEvent = 2;
+    *(int *)(abEvent + 8) = nError;
+    pDispatchQueue = (VsNetErrorDispatchQueue *)g_pEffTransportDispatchQueue;
+    pDispatchQueue->QueueEvent(abEvent);
+}
+
+// FUNCTION: LEMBALL 0x00460a20
 void VsNetEffTransportRetryOwnerView::ArmEffTransportConnectRequestRetry(void) {
     DWORD dwNow;
 
@@ -2483,7 +2155,26 @@ void VsNetEffTransportRetryOwnerView::ArmEffTransportConnectRequestRetry(void) {
     *(DWORD *)((char *)this + 0x18) = dwNow - 1000;
 }
 
-// FUNCTION: LEMBALL 0x00460C60
+// FUNCTION: LEMBALL 0x00460a40
+void VsNetChannelOwnerObject::ClearEffTransportSendGate(void) {
+    m_nSendGate = 0;
+}
+
+// FUNCTION: LEMBALL 0x00460a50
+void VsNetChannelOwnerObject::SendLoadedEffEventToPeer(void *pPeerKey, void *pStream) {
+    VsNetPeerPayloadSenderSlot *pPayloadSenderSlot;
+    VsNetPeerPayloadSenderRaw *pPayloadSender;
+
+    LoadEffStreamFromGlobalRange(pStream);
+    pPayloadSenderSlot =
+        (VsNetPeerPayloadSenderSlot *)((char *)this + m_pOffsets->m_nPayloadSenderSlotOffset);
+    pPayloadSender = &pPayloadSenderSlot->m_Sender;
+    ((VsNetPeerPayloadSender *)pPayloadSender)->WritePeerKey(pPeerKey);
+    ((VsNetPeerPayloadSender *)pPayloadSender)
+        ->SendEffStreamPayloadWithTransportHeader((int)(unsigned long)pStream);
+}
+
+// FUNCTION: LEMBALL 0x00460c60
 void VsNetEffTransportPeer::SetEffTransportPeerNameAndPort(char *pszName, void *pKey, short nPort) {
     VsNetEffTransportPeer *pTransportPeer;
     VsNetPeerPayloadSenderSlot *pPayloadSenderSlot;
@@ -2547,7 +2238,7 @@ void VsNetEffTransportPeer::SetEffTransportPeerNameAndPort(char *pszName, void *
     ((VsNetPeerPayloadSender *)pPayloadSender)->WritePeerKey(pszName);
 }
 
-// FUNCTION: LEMBALL 0x00460CE0
+// FUNCTION: LEMBALL 0x00460ce0
 int VsNetEffTransportPeer::IsEffTransportPeerStillConnecting(void) {
     DWORD dwNow;
 
@@ -2561,96 +2252,1154 @@ int VsNetEffTransportPeer::IsEffTransportPeerStillConnecting(void) {
     return 1;
 }
 
-// FUNCTION: LEMBALL 0x00460D10
+// FUNCTION: LEMBALL 0x00460d10
 void VsNetEffTransportPeer::MarkEffTransportPeerActivityTime(void) {
     m_dwConnectStartTick = timeGetTime();
 }
 
-// FUNCTION: LEMBALL 0x00462130
-int VsNetEffTransportRuntimeState::MarkExistingEffTransportPeerActive(int nPeer) {
-    VsNetEffTransportRuntimeState *pState;
-    VsNetEffTransportPeer *pPeer;
+// FUNCTION: LEMBALL 0x00460d20
+void VsNetEffTransportPeer::FreeEffTransportPeerBuffers(void) {
+    char *pbObject;
+    int nOffsets;
+    int nGroupDelta;
 
-    pState = this;
-    pPeer = (VsNetEffTransportPeer *)pState->m_pFirstPeer;
-    while (pPeer != 0) {
-        if ((int)(unsigned long)pPeer == nPeer) {
-            if (pPeer->IsEffTransportPeerStillConnecting() == 0) {
-                return 0;
-            }
-            if (pPeer->m_fClosed == 0) {
-                pPeer->MarkEffTransportPeerActivityTime();
-                return 1;
-            }
-            return 0;
+    pbObject = (char *)this;
+    if (*(void **)(pbObject + 8) != 0) {
+        FreeVSMemBlock(*(void **)(pbObject + 8));
+        *(void **)(pbObject + 8) = 0;
+    }
+    if (*(void **)(pbObject + 0x0c) != 0) {
+        FreeVSMemBlock(*(void **)(pbObject + 0x0c));
+        *(void **)(pbObject + 0x0c) = 0;
+    }
+    nOffsets = *(int *)(pbObject + 4);
+    nGroupDelta = *(int *)(nOffsets + 4);
+    ((GameEffTransportHandleGroup *)(pbObject + nGroupDelta + 4))->Reset();
+}
+
+// FUNCTION: LEMBALL 0x00460d70
+void VsNetEffTransportConnectCallback::QueueEffTransportConnectEvent(void) {
+    VsNetEffDispatchEvent kEvent;
+    VsNetEffTransportConnectStateView *pSendState;
+    VsNetEffTransportTickStateView *pReliableTickState;
+    VsNetEffTransportTickStateView *pTimedTickState;
+    VsNetEffTransportConnectOffsets *pOffsets;
+    VsNetEffTransportConnectOwner *pOwner;
+    VsNetRuntimeWindowSendGateState *pWindowState;
+    DWORD dwNow;
+
+    pOwner = (VsNetEffTransportConnectOwner *)((char *)this - 0xd8);
+    pOffsets = pOwner->m_pOffsets04;
+    pSendState = (VsNetEffTransportConnectStateView *)((char *)pOwner + pOffsets->m_nSendStateViewOffset04);
+    pReliableTickState = (VsNetEffTransportTickStateView *)((char *)pOwner + pOffsets->m_nReliableTickViewOffset08);
+    pTimedTickState = (VsNetEffTransportTickStateView *)((char *)pOwner + pOffsets->m_nTimedTickViewOffset0c);
+    kEvent.m_nType = 3;
+    kEvent.m_nCode = 0;
+    kEvent.m_pStream = (int *)pOwner;
+    pOwner->m_fConnected24 = 1;
+    pSendState->m_nCurrentState18 = 0;
+    pSendState->m_nPreviousState20 = pSendState->m_nCurrentState18;
+    pSendState->m_fConnected14 = 1;
+    if (pOwner->m_fTrackActivePeer1c != 0) {
+        pSendState->m_fTrackActivePeer1c = 1;
+        dwNow = timeGetTime();
+        pReliableTickState->m_dwLastTick40 = dwNow - 1000;
+        dwNow = timeGetTime();
+        pTimedTickState->m_dwLastTick40 = dwNow;
+        pWindowState = (VsNetRuntimeWindowSendGateState *)g_pActiveNetworkRuntimeWindow;
+        if (pWindowState->m_fSendGateActive30 != 0) {
+            ((VsNetChannelOwnerObject *)(unsigned long)pWindowState->m_nChannelOwner24)
+                ->ClearEffTransportSendGate();
         }
-        pPeer = pPeer->m_pNext;
+    }
+    ((void (*)(VsNetEffDispatchEvent *))(*(void ***)g_pEffTransportDispatchQueue)[2])(&kEvent);
+}
+
+// FUNCTION: LEMBALL 0x00460e40
+int VsNetEffTransportPeer::SendEffStreamToActivePeer(int *pStream) {
+    VsNetEffTransportPeer *pTransportPeer;
+    VsNetTransportEndpointSlot *pEndpointSlot;
+    VsNetEndpointState *pPeerTransportState;
+    VsNetPeerPayloadSenderSlot *pPayloadSenderSlot;
+    VsNetPeerPayloadSenderRaw *pPayloadSender;
+    VsNetEffDispatchEvent kFailureEvent;
+    int fOpenedWriteSession;
+    int nResult;
+
+    pTransportPeer = this;
+    pEndpointSlot =
+        (VsNetTransportEndpointSlot *)((char *)pTransportPeer + pTransportPeer->m_pOffsets->m_nEndpointStateSlotOffset);
+    pPeerTransportState = &pEndpointSlot->m_State;
+    if (pPeerTransportState->m_fSecondaryHandleActive != 0 && pTransportPeer->m_fClosed == 0) {
+        fOpenedWriteSession = pStream[4] < 1;
+        if (fOpenedWriteSession != 0) {
+            ((GameEffStream *)pStream)->BeginEffStreamWriteSession();
+        }
+
+        pPayloadSenderSlot =
+            (VsNetPeerPayloadSenderSlot *)((char *)pTransportPeer +
+                                              pTransportPeer->m_pOffsets->m_nPayloadSenderSlotOffset);
+        pPayloadSender = &pPayloadSenderSlot->m_Sender;
+        nResult = ((VsNetPeerPayloadSender *)pPayloadSender)
+                      ->SendEffStreamPayloadWithTransportHeader((int)(unsigned long)pStream);
+        if (nResult == 0) {
+            kFailureEvent.m_nType = 1;
+            kFailureEvent.m_nCode = 0xc;
+            if (pStream[9] == 0) {
+                kFailureEvent.m_nCode = 0xb;
+            }
+            kFailureEvent.m_pStream = pStream;
+            kFailureEvent.m_pPeer = this;
+            ((void (*)(VsNetEffDispatchEvent *))(*(void ***)g_pEffTransportDispatchQueue)[2])(&kFailureEvent);
+        }
+
+        if (fOpenedWriteSession != 0) {
+            ((GameEffStream *)pStream)->EndEffStreamWriteSession();
+        }
+        return nResult;
+    }
+
+    pStream[10] = 0;
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x00460f00
+void VsNetCompleteEffTransportPendingWriteView::CompleteEffTransportPendingWrite(
+    int fQueueEvent)
+
+{
+    char *pbObject;
+    int nOwnerState;
+    int nStateDelta;
+    int nPendingDelta;
+    VsNetEffDispatchEvent kEvent;
+
+    pbObject = (char *)this;
+    *(int *)(pbObject - 0x10) = 1;
+    nOwnerState = *(int *)(*(int *)(pbObject - 0x2c) + 0x10);
+    nStateDelta = *(int *)(pbObject + nOwnerState - 0x2c + 8);
+    nPendingDelta = nStateDelta + nOwnerState - 0x24 + 0x70;
+    ((VsNetEffTransportPendingWriteState *)(pbObject + nPendingDelta))->Clear(
+        (void *)(unsigned long)fQueueEvent);
+    if (fQueueEvent != 0) {
+        kEvent.m_nType = 10;
+        kEvent.m_nCode = 0;
+        kEvent.m_pStream = (int *)(pbObject - 0x30);
+        ((void (*)(VsNetEffDispatchEvent *))(*(void ***)g_pEffTransportDispatchQueue)[2])(&kEvent);
+    }
+}
+
+// FUNCTION: LEMBALL 0x00460f60
+void *VsNetDispatchAckedEffTransportPayloadView::DispatchAckedEffTransportPayloadEvent(void) {
+    VsNetEffDispatchEvent kEvent;
+    VsNetEffTransportAckDispatchOwner *pOwner;
+    void *pPayload;
+
+    pOwner = (VsNetEffTransportAckDispatchOwner *)((char *)this - 0x60);
+    pPayload = ((VsNetAckedEffTransportRecordOwner *)
+                    ((char *)this + pOwner->m_pOffsets04->m_nAckRecordOwnerViewOffset08 - 0x5c))
+                   ->ClaimAckedEffTransportRecordPayload();
+    if (pPayload != 0) {
+        kEvent.m_nType = 6;
+        kEvent.m_nCode = 0;
+        kEvent.m_pStream = (int *)pOwner;
+        kEvent.m_pPeer = pPayload;
+        ((void (*)(VsNetEffDispatchEvent *))(*(void ***)g_pEffTransportSecondaryDispatchQueue)[2])(&kEvent);
+    }
+    return pPayload;
+}
+
+// FUNCTION: LEMBALL 0x00460fb0
+void VsNetEffTransportPeer::Close(void) {
+    VsNetTransportEndpointSlot *pEndpointSlot;
+    VsNetEndpointState *pEndpointState;
+
+    pEndpointSlot = (VsNetTransportEndpointSlot *)((char *)this +
+                                                       m_pOffsets->m_nEndpointStateSlotOffset);
+    pEndpointState = &pEndpointSlot->m_State;
+    if (pEndpointState->m_fPrimaryHandleActive != 0 &&
+        pEndpointState->m_fSecondaryHandleActive != 0) {
+        ((GameEffTransportHandleGroup *)&pEndpointState->m_HandleGroup)->Reset();
+        if (m_fConnectComplete != 0) {
+            pEndpointState->m_HandleGroup.m_pCallback->m_pVtable->m_pNotifyClosed(1);
+        }
+    }
+    m_fClosed = 1;
+}
+
+// FUNCTION: LEMBALL 0x00460ff0
+void VsNetQueueEffTransportPayloadEventView::QueueEffTransportPayloadEvent(
+    unsigned short nType, void *pPayload)
+
+{
+    VsNetEffDispatchEvent kEvent;
+
+    kEvent.m_nType = nType;
+    kEvent.m_nCode = 0;
+    kEvent.m_pStream = (int *)((char *)this - 0xd8);
+    kEvent.m_pPeer = pPayload;
+    ((void (*)(VsNetEffDispatchEvent *))(*(void ***)g_pEffTransportSecondaryDispatchQueue)[2])(&kEvent);
+}
+
+// FUNCTION: LEMBALL 0x00461030
+void VsNetCompositeEffTransportVtableModel::ServiceEffTransportPeerEntry(void) {
+    VsNetEffTransportPeer *pPeer;
+    char *pbPeer;
+    int nOffsets;
+    DWORD dwNow;
+
+    pPeer = (VsNetEffTransportPeer *)this;
+    pbPeer = (char *)pPeer;
+    if (*(int *)(pbPeer + 0x20) != 0) {
+        return;
+    }
+    if (*(int *)(pbPeer + 0x24) == 0) {
+        nOffsets = *(int *)(pbPeer + 4);
+        if (*(int *)(pbPeer + *(int *)(nOffsets + 4) + 0x20) == 0) {
+            dwNow = timeGetTime();
+            if (dwNow - *(DWORD *)(pbPeer + 0x28) <= 4000) {
+                return;
+            }
+            pPeer->Close();
+            return;
+        }
+    }
+    nOffsets = *(int *)(pbPeer + 4);
+    CheckEffTransportIdleTimeout(pbPeer + *(int *)(nOffsets + 0x0c) + 4);
+    ((VsNetPeerPayloadSenderState *)(pbPeer + *(int *)(nOffsets + 8) + 4))
+        ->ServiceEffTransportRetries();
+}
+
+// FUNCTION: LEMBALL 0x00461090
+VsNetLockedEffTransportRecordSlot::VsNetLockedEffTransportRecordSlot(
+    unsigned int cbPayload)
+
+{
+    m_pPayload04 = AllocateVSMemBlock(cbPayload & 0xffff);
+    m_fAvailable28 = 1;
+    m_fPayloadPresent24 = 0;
+    *(unsigned short *)((char *)m_pPayload04 + 0x0a) = 0;
+}
+
+// FUNCTION: LEMBALL 0x004610f0
+void VsNetLockedEffTransportRecordSlot::DestroyLockedEffTransportRecordSlot(void) {
+    FreeVSMemBlock(m_pPayload04);
+    m_CriticalSection08.~VsNetLockedEffTransportRecordCriticalSection();
+}
+
+// FUNCTION: LEMBALL 0x00461140
+void VsNetLockedEffTransportRecordSlot::CopyIntoLockedEffTransportRecordSlot(
+    const void *pvSource, unsigned int cbSource)
+
+{
+    unsigned int cbCopy;
+
+    m_CriticalSection08.Enter();
+    cbCopy = cbSource & 0xffff;
+    memcpy(m_pPayload04, pvSource, cbCopy);
+    m_fPayloadPresent24 = 1;
+    m_CriticalSection08.Leave();
+}
+
+// FUNCTION: LEMBALL 0x00461190
+void *VsNetSimpleEffTransportRecordSlot::ConstructSimpleEffTransportRecordSlot(
+    unsigned int cbRecord)
+
+{
+    m_pVtable = g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable;
+    m_pSerializedStream04 = (int)(unsigned long)AllocateVSMemBlock(cbRecord & 0xffff);
+    m_fAvailable08 = 1;
+    m_cRetryCount14 = 0;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x004611c0
+void VsNetSimpleEffTransportRecordSlot::DestroySimpleEffTransportRecordSlot(void) {
+    m_pVtable = (void **)g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable;
+    FreeVSMemBlock((void *)(unsigned long)m_pSerializedStream04);
+    m_pVtable = g_NETWORK_EffTransportRecordBufferVtable;
+}
+
+// FUNCTION: LEMBALL 0x004611e0
+void VsNetSimpleEffTransportRecordSlot::CopyIntoSimpleEffTransportRecordSlot(
+    const void *pvSource, unsigned int cbSource, void *pPayload)
+
+{
+    unsigned int i;
+    const unsigned char *pbSource;
+    unsigned char *pbTarget;
+    m_pPayload0c = pPayload;
+    m_cRetryCount14 = 0;
+
+    pbSource = (const unsigned char *)pvSource;
+    pbTarget = (unsigned char *)(unsigned long)m_pSerializedStream04;
+    cbSource &= 0xffff;
+
+    for (i = cbSource >> 2; i != 0; --i) {
+        *(unsigned int *)pbTarget = *(const unsigned int *)pbSource;
+        pbSource += 4;
+        pbTarget += 4;
+    }
+
+    for (i = cbSource & 3; i != 0; --i) {
+        *pbTarget++ = *pbSource++;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00461210
+void *VsNetSimpleEffTransportRecordSlotTable::ConstructEffTransportRecordSlotTable(
+    int cRecords, unsigned int cbRecord)
+
+{
+    m_nReserved04 = cbRecord & 0xffff;
+    m_cRecords = cRecords;
+    if (cRecords > 0) {
+        m_apRecords08 = (VsNetSimpleEffTransportRecordSlot **)AllocateVSMemBlock(
+            (unsigned int)(cRecords << 2));
+    } else {
+        m_apRecords08 = 0;
+    }
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x00461250
+void VsNetVSMemObjectPointerArray::DestroyVSMemObjectPointerArray(void) {
+    VsNetDeleteObject *pDeleteObject;
+    int i;
+    int nOffset;
+
+    if (m_pObjectArray08 != 0) {
+        nOffset = 0;
+        for (i = 0; i < m_cObjects; ++i) {
+            pDeleteObject = *(VsNetDeleteObject **)(unsigned long)(m_pObjectArray08 + nOffset);
+            if (pDeleteObject != 0) {
+                pDeleteObject->m_pVtable->m_pDelete(1);
+            }
+            nOffset += 4;
+        }
+        FreeVSMemBlock((void *)(unsigned long)m_pObjectArray08);
+    }
+}
+
+// FUNCTION: LEMBALL 0x00461290
+void *VsNetSimpleEffTransportRecordSlotTable::ConstructLockedEffTransportRecordSlotTable(
+    int cRecords, unsigned int cbRecord)
+
+{
+    VsNetSimpleEffTransportRecordSlotTable *pTable;
+    void *pSlotStorage;
+    int i;
+    int nOffset;
+
+    pTable = (VsNetSimpleEffTransportRecordSlotTable *)
+        ConstructEffTransportRecordSlotTable(cRecords, cbRecord);
+    if (pTable->m_apRecords08 != 0) {
+        nOffset = 0;
+        for (i = 0; i < pTable->m_cRecords; ++i) {
+            pSlotStorage = AllocateVSMemBlock(0x2c);
+            if (pSlotStorage == 0) {
+                *(void **)((char *)pTable->m_apRecords08 + nOffset) = 0;
+            } else {
+                *(void **)((char *)pTable->m_apRecords08 + nOffset) =
+                    new (pSlotStorage) VsNetLockedEffTransportRecordSlot(
+                        (unsigned int)pTable->m_nReserved04);
+            }
+            nOffset += 4;
+        }
+    }
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x004612f0
+void VsNetGlobalLockedPacketState::CopyGlobalPacketIntoLockedRecordSlot(int nIndex) {
+    m_appSlots08[nIndex]
+        ->CopyIntoLockedEffTransportRecordSlot(
+            g_pEffTransportPacketBuffer, (unsigned int)g_cbEffTransportCurrentPacketBytes);
+}
+
+// FUNCTION: LEMBALL 0x00461340
+void *VsNetSimpleEffTransportRecordSlotTable::ConstructSimpleEffTransportRecordSlotTable(
+    int cRecords, unsigned int cbRecord)
+
+{
+    void *pSlotStorage;
+    int i;
+    int nOffset;
+
+    ConstructEffTransportRecordSlotTable(cRecords, cbRecord);
+    if (m_apRecords08 != 0) {
+        nOffset = 0;
+        for (i = 0; i < m_cRecords; ++i) {
+            pSlotStorage = AllocateVSMemBlock(0x18);
+            if (pSlotStorage == 0) {
+                *(void **)(unsigned long)((int)(unsigned long)m_apRecords08 + nOffset) = 0;
+            } else {
+                *(void **)(unsigned long)((int)(unsigned long)m_apRecords08 + nOffset) =
+                    ((VsNetSimpleEffTransportRecordSlot *)pSlotStorage)
+                        ->ConstructSimpleEffTransportRecordSlot((unsigned int)m_nReserved04);
+            }
+            nOffset += 4;
+        }
+    }
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x004613a0
+void VsNetSimpleEffTransportRecordSlotTable::CopyPayloadIntoSimpleRecordSlot(
+    int nIndex, const void *pvSource, unsigned int cbSource, void *pPayload)
+
+{
+    m_apRecords08[nIndex]->CopyIntoSimpleEffTransportRecordSlot(
+        pvSource, cbSource, pPayload);
+}
+
+// FUNCTION: LEMBALL 0x004613d0
+void *VsNetEffTransportRecordBuffer::ConstructEffTransportRecordBuffer(
+    int fAllocatePayload, int cbPayload, unsigned int cbRecord)
+
+{
+    VsNetEffTransportPacketHeader *pSerializedHeader;
+    int cbSerialized;
+
+    m_pVtable = g_NETWORK_DeleteEffTransportRecordBufferVtable;
+    m_fAllocatePayload0c = fAllocatePayload;
+    m_nReserved14 = 0;
+    m_nReserved10 = 0;
+    cbSerialized = (cbRecord & 0xffff) - 0x10;
+    m_cbPayload08 = cbSerialized;
+    if (fAllocatePayload != 0 && cbSerialized != 0) {
+        m_pSerializedBuffer04 = (int)(unsigned long)AllocateVSMemBlock((unsigned int)(cbPayload + 0x10));
+        pSerializedHeader = (VsNetEffTransportPacketHeader *)(unsigned long)m_pSerializedBuffer04;
+        pSerializedHeader->m_wSequence0a = 0;
+    } else {
+        m_pSerializedBuffer04 = 0;
+    }
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x00461440
+void VsNetEffTransportRecordBuffer::DestroyEffTransportRecordBuffer(void) {
+    m_pVtable = g_NETWORK_DeleteEffTransportRecordBufferVtable;
+    if (m_pSerializedBuffer04 != 0) {
+        FreeVSMemBlock((void *)(unsigned long)m_pSerializedBuffer04);
+    }
+    m_pVtable = g_NETWORK_EffTransportRecordBufferVtable;
+}
+
+// FUNCTION: LEMBALL 0x00461470
+void VsNetGlobalPacketRecordBuffer::AppendGlobalPacketIntoRecordBuffer(void) {
+    unsigned int cbPacket;
+    unsigned int cbPayload;
+    unsigned short nFragment;
+    unsigned char *pbSource;
+    unsigned char *pbTarget;
+
+    cbPacket = (unsigned int)g_cbEffTransportCurrentPacketBytes;
+    nFragment = *(unsigned short *)((char *)g_pEffTransportPacketBuffer + 0x0c);
+    if (nFragment != 0) {
+        if (m_cbFragment10 == 0) {
+            memcpy(m_pbSerialized04, g_pEffTransportPacketBuffer, 0x10);
+            m_cbSerialized14 += 0x10;
+        }
+        cbPayload = cbPacket - 0x10;
+        pbSource = (unsigned char *)g_pEffTransportPacketBuffer + 0x10;
+        pbTarget = m_pbSerialized04 + 0x10 + m_cbFragmentStep08 * nFragment;
+        memcpy(pbTarget, pbSource, cbPayload);
+        m_cbSerialized14 += cbPayload;
+        ++m_cbFragment10;
+        return;
+    }
+    if (m_cbFragment10 == 0) {
+        memcpy(m_pbSerialized04, g_pEffTransportPacketBuffer, cbPacket);
+        m_cbSerialized14 += cbPacket;
+        ++m_cbFragment10;
+        return;
+    }
+    cbPayload = cbPacket - 0x10;
+    memcpy(m_pbSerialized04 + 0x10,
+           (unsigned char *)g_pEffTransportPacketBuffer + 0x10, cbPayload);
+    m_cbSerialized14 += cbPayload;
+    ++m_cbFragment10;
+}
+
+// FUNCTION: LEMBALL 0x00461560
+void *ConstructShiftedLockedRecordSlotTable(void *pObject, int cPacketIds, unsigned int cbRecord) {
+    ((VsNetSimpleEffTransportRecordSlotTable *)pObject)
+        ->ConstructLockedEffTransportRecordSlotTable(cPacketIds - 2, cbRecord);
+    *(int *)((char *)pObject + 0x0c) = cPacketIds - 2;
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x00461580
+void *VsNetGlobalLockedPacketState::ClaimGlobalPacketLockedRecordSlot(void) {
+    VsNetLockedEffTransportRecordSlot *pSlot;
+    unsigned short nPacket;
+    unsigned int nIndex;
+    unsigned short nSequence;
+    int fClaimed;
+
+    nPacket = *(unsigned short *)((char *)g_pEffTransportPacketBuffer + 8);
+    nIndex = nPacket;
+    if (nPacket > 2) {
+        nIndex -= 3;
+    }
+    pSlot = m_appSlots08[nIndex];
+    fClaimed = 0;
+    nSequence = *(unsigned short *)((char *)pSlot->m_pPayload04 + 0x0a);
+    if (nPacket < 3 ||
+        (*(unsigned short *)((char *)g_pEffTransportPacketBuffer + 0x0a) != nSequence &&
+         (short)(*(unsigned short *)((char *)g_pEffTransportPacketBuffer + 0x0a) - nSequence) >= 0)) {
+        fClaimed = pSlot->m_fPayloadPresent24 == 0;
+        CopyGlobalPacketIntoLockedRecordSlot((int)nIndex);
+    }
+    if (fClaimed != 0) {
+        return m_appSlots08[nIndex];
     }
     return 0;
 }
 
-// FUNCTION: LEMBALL 0x00462180
-int VsNetEffTransportRuntimeState::FindMatchingActiveEffTransportPeer(void *pPeerKey) {
-    VsNetEffTransportRuntimeState *pState;
-    VsNetEffTransportPeer *pPeer;
-    VsNetPeerPayloadSenderSlot *pPayloadSenderSlot;
-    VsNetTransportPeerMatcher *pPeerMatcher;
+// FUNCTION: LEMBALL 0x00461610
+void *ConstructRangeEffTransportRecordBufferTable(void *pObject, int nFirstPacket,
+                                                  int nLastPacket, int cbPayload,
+                                                  unsigned int cbRecord)
 
-    pState = this;
-    pPeer = (VsNetEffTransportPeer *)pState->m_pFirstPeer;
-    while (pPeer != 0) {
-        if (pPeer->m_fClosed == 0) {
-            pPayloadSenderSlot =
-                (VsNetPeerPayloadSenderSlot *)((char *)pPeer + pPeer->m_pOffsets->m_nPayloadSenderSlotOffset);
-            pPeerMatcher = pPayloadSenderSlot->m_pMatcher;
-            if (((VsNetTransportPeerMatcherVtable *)pPeerMatcher->m_pVtable)->m_pMatchPeerKey(pPeerKey) != 0) {
-                break;
+{
+    VsNetEffTransportRecordBuffer *pTable;
+    VsNetEffTransportRecordBuffer *pChild;
+    int cRecords;
+    int i;
+
+    pTable = (VsNetEffTransportRecordBuffer *)pObject;
+    cRecords = nLastPacket - nFirstPacket + 1;
+    pTable->ConstructEffTransportRecordBuffer(cRecords, cbPayload, cbRecord);
+    pTable->m_pVtable = g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable;
+    *(int *)((char *)pObject + 0x1c) = nFirstPacket;
+    *(int *)((char *)pObject + 0x18) = cRecords;
+    *(int *)((char *)pObject + 0x24) = 0;
+    if (cbPayload < 1) {
+        *(void **)((char *)pObject + 0x20) = 0;
+        return pObject;
+    }
+    *(void **)((char *)pObject + 0x20) = AllocateVSMemBlock(cRecords * 4);
+    for (i = 0; i < cRecords; ++i) {
+        pChild = (VsNetEffTransportRecordBuffer *)AllocateVSMemBlock(0x18);
+        if (pChild == 0) {
+            ((VsNetEffTransportRecordBuffer **)*(void **)((char *)pObject + 0x20))[i] = 0;
+        } else {
+            ((VsNetEffTransportRecordBuffer **)*(void **)((char *)pObject + 0x20))[i] =
+                (VsNetEffTransportRecordBuffer *)pChild->ConstructEffTransportRecordBuffer(
+                    cRecords, cbPayload, cbRecord);
+        }
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x004616b0
+void VsNetEffTransportRecordBuffer::DestroyRangeEffTransportRecordBufferTable(void) {
+    VsNetEffTransportRecordBuffer *pTable;
+    VsNetDeleteObject *pChild;
+    int i;
+    int cRecords;
+
+    pTable = this;
+    pTable->m_pVtable = g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable;
+    cRecords = *(int *)((char *)this + 0x18);
+    if (*(void **)((char *)this + 0x20) != 0) {
+        for (i = 0; i < cRecords; ++i) {
+            pChild = ((VsNetDeleteObject **)*(void **)((char *)this + 0x20))[i];
+            if (pChild != 0) {
+                pChild->m_pVtable->m_pDelete(1);
             }
         }
-        pPeer = pPeer->m_pNext;
+        FreeVSMemBlock(*(void **)((char *)this + 0x20));
     }
-    return (int)(unsigned long)pPeer;
+    DestroyEffTransportRecordBuffer();
 }
 
-// FUNCTION: LEMBALL 0x004621C0
-void VsNetEffTransportRuntimeState::CloseMatchingEffTransportPeer(void *pPeerKey) {
-    int nPeer;
+// FUNCTION: LEMBALL 0x00461700
+void *VsNetGlobalPacketRangeState::AppendGlobalPacketToRangeRecordSlot(void) {
+    int nIndex;
+    VsNetGlobalPacketRecordBuffer *pBuffer;
+    unsigned short nSequence;
 
-    nPeer = FindMatchingActiveEffTransportPeer(pPeerKey);
-    if (nPeer != 0) {
-        ((VsNetEffTransportPeer *)(unsigned long)nPeer)->Close();
+    nIndex = (int)*(unsigned short *)((char *)g_pEffTransportPacketBuffer + 8) - m_nFirstPacket1c;
+    pBuffer = m_appBuffers20[nIndex];
+    if (*(unsigned short *)((char *)g_pEffTransportPacketBuffer + 8) > 2 &&
+        (short)(*(unsigned short *)((char *)g_pEffTransportPacketBuffer + 0x0a) -
+                *(unsigned short *)(pBuffer->m_pbSerialized04 + 0x0a)) < 0) {
+        return 0;
     }
+    nSequence = *(unsigned short *)((char *)g_pEffTransportPacketBuffer + 0x0a);
+    if ((int)nSequence < m_nNextSequence24) {
+        return 0;
+    }
+    if (*(unsigned short *)(pBuffer->m_pbSerialized04 + 0x0a) != nSequence &&
+        pBuffer->m_cbFragment10 > 0) {
+        m_nNextSequence24 = nSequence + 1;
+        return 0;
+    }
+    pBuffer->AppendGlobalPacketIntoRecordBuffer();
+    return m_appBuffers20[nIndex];
 }
 
-// FUNCTION: LEMBALL 0x0045FBB0
-void CheckEffTransportIdleTimeout(void *pObject) {
-    int nStateDelta;
-    char *pbState;
+// FUNCTION: LEMBALL 0x00461780
+void *ConstructRingLockedRecordSlotTable(void *pObject, int cRecords, unsigned int cbRecord) {
+    ((VsNetSimpleEffTransportRecordSlotTable *)pObject)
+        ->ConstructLockedEffTransportRecordSlotTable(cRecords, cbRecord);
+    *(int *)((char *)pObject + 0x0c) = 0;
+    *(int *)((char *)pObject + 0x10) = 0;
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x004617a0
+void *VsNetGlobalPacketRingState::ClaimOrderedGlobalPacketLockedSlot(void) {
+    VsNetLockedEffTransportRecordSlot *pSlot;
+    unsigned int nIndex;
+    unsigned short nSequence;
+
+    nSequence = *(unsigned short *)((char *)g_pEffTransportPacketBuffer + 0x0a);
+    nIndex = (unsigned int)nSequence % (unsigned int)m_cBuffers00;
+    pSlot = m_appBuffers08[nIndex];
+    if (pSlot->m_fPayloadPresent24 == 0 && pSlot->m_fAvailable28 != 0) {
+        pSlot->CopyIntoLockedEffTransportRecordSlot(
+            g_pEffTransportPacketBuffer, (unsigned int)g_cbEffTransportCurrentPacketBytes);
+        if (m_nNextSequence0c - (unsigned int)nSequence == -1) {
+            ++m_nNextSequence0c;
+            pSlot->m_fAvailable28 = 1;
+            return pSlot;
+        }
+        pSlot->m_fAvailable28 = 0;
+        return 0;
+    }
+    m_fOverflow10 = 1;
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x00461810
+void *VsNetGlobalPacketRingState::ClaimNextReadyLockedRecordSlot(void) {
+    VsNetLockedEffTransportRecordSlot *pSlot;
+
+    pSlot = m_appBuffers08[
+        (unsigned int)m_nNextSequence0c % (unsigned int)m_cBuffers00];
+    if (pSlot->m_fPayloadPresent24 != 0 && pSlot->m_fAvailable28 == 0) {
+        ++m_nNextSequence0c;
+        pSlot->m_fAvailable28 = 1;
+        return pSlot;
+    }
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x00461840
+void *ConstructRingEffTransportRecordBufferTable(void *pObject, int cRecords,
+                                                 int cbPayload, unsigned int cbRecord)
+
+{
+    VsNetEffTransportRecordBuffer *pTable;
+    VsNetEffTransportRecordBuffer *pChild;
+    int i;
+
+    pTable = (VsNetEffTransportRecordBuffer *)pObject;
+    pTable->ConstructEffTransportRecordBuffer(cRecords, cbPayload, cbRecord);
+    pTable->m_pVtable = g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable;
+    *(int *)((char *)pObject + 0x18) = cRecords;
+    if (cbPayload < 1) {
+        *(void **)((char *)pObject + 0x1c) = 0;
+        return pObject;
+    }
+    *(void **)((char *)pObject + 0x1c) = AllocateVSMemBlock(cRecords * 4);
+    for (i = 0; i < cRecords; ++i) {
+        pChild = (VsNetEffTransportRecordBuffer *)AllocateVSMemBlock(0x18);
+        if (pChild == 0) {
+            ((VsNetEffTransportRecordBuffer **)*(void **)((char *)pObject + 0x1c))[i] = 0;
+        } else {
+            ((VsNetEffTransportRecordBuffer **)*(void **)((char *)pObject + 0x1c))[i] =
+                (VsNetEffTransportRecordBuffer *)pChild->ConstructEffTransportRecordBuffer(
+                    cRecords, cbPayload, cbRecord);
+        }
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x004618e0
+void VsNetEffTransportRecordBuffer::DestroyRingEffTransportRecordBufferTable(void) {
+    VsNetEffTransportRecordBuffer *pTable;
+    VsNetDeleteObject *pChild;
+    int i;
+    int cRecords;
+
+    pTable = this;
+    pTable->m_pVtable = g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable;
+    cRecords = *(int *)((char *)this + 0x18);
+    if (*(void **)((char *)this + 0x1c) != 0) {
+        for (i = 0; i < cRecords; ++i) {
+            pChild = ((VsNetDeleteObject **)*(void **)((char *)this + 0x1c))[i];
+            if (pChild != 0) {
+                pChild->m_pVtable->m_pDelete(1);
+            }
+        }
+        FreeVSMemBlock(*(void **)((char *)this + 0x1c));
+    }
+    DestroyEffTransportRecordBuffer();
+}
+
+// FUNCTION: LEMBALL 0x00461930
+void *VsNetGlobalPacketAppendRingState::AppendGlobalPacketToRingRecordSlot(void) {
+    int nIndex;
+    unsigned short nSequence;
+
+    nSequence = *(unsigned short *)((char *)g_pEffTransportPacketBuffer + 0x0a);
+    nIndex = (int)nSequence % m_cBuffers18;
+    m_appBuffers1c[nIndex]->AppendGlobalPacketIntoRecordBuffer();
+    return m_appBuffers1c[nIndex];
+}
+
+// FUNCTION: LEMBALL 0x00461970
+void *VsNetSimpleEffTransportRecordSlotTable::ConstructSimpleRecordSlotTableWrapper(
+    int cRecords, unsigned int cbRecord)
+
+{
+    ConstructSimpleEffTransportRecordSlotTable(cRecords, cbRecord);
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x00461990
+void *VsNetSimpleEffTransportRecordSlotTable::ClaimSimpleRecordSlotForPacketId(
+    unsigned int nPacketId, const void *pvSource, unsigned int cbSource, void *pPayload)
+
+{
+    VsNetSimpleEffTransportRecordSlot *pSlot;
+    int nIndex;
+
+    nIndex = (int)(nPacketId & 0xffff) % m_cRecords;
+    pSlot = m_apRecords08[nIndex];
+    if (pSlot->m_fAvailable08 == 0) {
+        return 0;
+    }
+
+    CopyPayloadIntoSimpleRecordSlot(nIndex, pvSource, cbSource, pPayload);
+    return pSlot;
+}
+
+// FUNCTION: LEMBALL 0x004619d0
+unsigned char VsNetSimpleEffTransportRecordSlotTable::GetNextEffTransportRecordClaimFlag(
+    unsigned int nSequence)
+
+{
+    int nIndex;
+
+    nIndex = (int)(nSequence & 0xffff) + 1;
+    nIndex %= m_cRecords;
+    return m_apRecords08[nIndex]->m_fAvailable08;
+}
+
+// FUNCTION: LEMBALL 0x004619f0
+void *VsNetEffTransportRuntimeState::ConstructEffTransportRuntimeState(void) {
+    VsNetEffTransportRuntimeState *pState;
+    void *pQueue;
+
+    pState = this;
+    InitializeRenderQueueNodeBase(this);
+    pState->m_RenderQueueNode.m_pVtable = (void **)g_NETWORK_EffTransportRuntimeStateVtable;
+    g_nEffTransportAsyncErrorStatus = 0;
+    pState->m_pFirstPeer = 0;
+    pState->m_pActiveChannelOwner = 0;
+    pState->m_nReserved34 = 0;
+    pState->m_pLastPeer = 0;
+    pState->m_nReserved30 = 0;
+    pState->m_fRuntimeActive = 0;
+    pState->m_fTransportInitialized = 0;
+    pState->m_nReserved40 = 0;
+    pState->m_nReserved3C = 0;
+    pState->m_nReserved38 = 0;
+    pState->m_nReserved44 = 0;
+    pState->m_nReserved48 = 0;
+    pState->m_nRuntimeKey = 0;
+    pState->m_fShutdownRequested = 0;
+    pState->m_cbMaxPacketBytes = 0x50;
+    pState->m_fStartRequested = 0;
+
+    pQueue = AllocateVSMemBlock(0x58);
+    if (pQueue == 0) {
+        g_pEffTransportDispatchQueue = 0;
+    } else {
+        g_pEffTransportDispatchQueue = ConstructRenderDispatchQueue(pQueue, 0x1e);
+    }
+    ((GameRenderDispatchQueue *)g_pEffTransportDispatchQueue)
+        ->RegisterOrderedRenderDispatchClient(this, 0x19);
+
+    pQueue = AllocateVSMemBlock(0x58);
+    if (pQueue == 0) {
+        g_pEffTransportSecondaryDispatchQueue = 0;
+    } else {
+        g_pEffTransportSecondaryDispatchQueue = ConstructRenderDispatchQueue(pQueue, 0x1e);
+    }
+
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x00461aa0
+int VsNetRuntimeStartView::StartEffTransportRuntimeAndWaitReady(int nRuntimeKey, int cbMaxPacket) {
+    VsNetEffTransportRuntimeState *pState;
+    VsNetEffTransportRuntimeStateVtable *pVtable;
+    DWORD dwStartTime;
     DWORD dwNow;
-    VsNetEffTransportHandleGroup *pHandleGroup;
+    DWORD dwDelayStart;
 
-    nStateDelta = *(int *)(*(int *)((char *)pObject + 0x44) + 4);
-    pbState = (char *)pObject + nStateDelta;
-    pHandleGroup = (VsNetEffTransportHandleGroup *)((char *)pObject + nStateDelta + 0x44);
-    if (*(int *)(pbState + 0x54) != 0) {
-        if (*(int *)(pbState + 0x5c) == 0) {
-            return;
+    pState = (VsNetEffTransportRuntimeState *)this;
+    pVtable = (VsNetEffTransportRuntimeStateVtable *)pState->m_RenderQueueNode.m_pVtable;
+    pState->m_nRuntimeKey = nRuntimeKey;
+    pState->m_fStartRequested = 1;
+    g_cbEffTransportMaxPacketBytes = cbMaxPacket;
+    (pState->*pVtable->m_pServiceTransport)();
+
+    dwStartTime = timeGetTime();
+    if (pState->m_fTransportInitialized == 0) {
+        do {
+            if (g_nEffTransportAsyncErrorStatus != 0) {
+                break;
+            }
+            dwNow = timeGetTime();
+            if (dwNow - dwStartTime >= 10000) {
+                break;
+            }
+            (pState->*pVtable->m_pWaitForTransportMessage)();
+        } while (pState->m_fTransportInitialized == 0);
+
+        if (pState->m_fTransportInitialized == 0) {
+            return 0;
+        }
+    }
+
+    dwStartTime = timeGetTime();
+    if (pState->m_fRuntimeActive != 0) {
+        do {
+            VsNetChannelOwnerObject *pActiveOwner;
+
+            if (pState->m_fRuntimeActive != 0) {
+                pActiveOwner = (VsNetChannelOwnerObject *)pState->m_pActiveChannelOwner;
+                if (pActiveOwner != 0) {
+                    if (*(int *)((char *)pActiveOwner +
+                                 pActiveOwner->m_pOffsets->m_nEndpointStateSlotOffset +
+                                 0x14) != 0) {
+                        break;
+                    }
+                }
+            }
+
+            if (g_nEffTransportAsyncErrorStatus != 0) {
+                break;
+            }
+            dwNow = timeGetTime();
+            if (dwNow - dwStartTime >= 10000) {
+                break;
+            }
+
+            dwDelayStart = timeGetTime();
+            do {
+                dwNow = timeGetTime();
+            } while (dwNow - dwDelayStart < 100);
+
+            (pState->*pVtable->m_pServiceTransport)();
+        } while (pState->m_fRuntimeActive != 0);
+    }
+
+    if (pState->m_fRuntimeActive != 0) {
+        VsNetChannelOwnerObject *pActiveOwner;
+
+        pActiveOwner = (VsNetChannelOwnerObject *)pState->m_pActiveChannelOwner;
+        if (pActiveOwner != 0) {
+            if (*(int *)((char *)pActiveOwner +
+                         pActiveOwner->m_pOffsets->m_nEndpointStateSlotOffset +
+                         0x14) != 0 &&
+                g_nEffTransportAsyncErrorStatus == 0) {
+                return 1;
+            }
+        }
+    }
+
+    pState->m_fShutdownRequested = 1;
+    (pState->*pVtable->m_pServiceTransport)();
+
+    dwStartTime = timeGetTime();
+    do {
+        if (pState->m_fTransportInitialized == 0) {
+            break;
         }
         dwNow = timeGetTime();
-        if (dwNow - *(DWORD *)((char *)pObject + 0x3c) <= 10000) {
+    } while (dwNow - dwStartTime < 10000);
+
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x00461bd0
+int VsNetEffTransportRuntimeState::InitializeEffTransportRuntimeGlobals(void) {
+    VsNetEffTransportRuntimeState *pState;
+    VsNetEffTransportRuntimeStateVtable *pVtable;
+    VsNetChannelOwnerObject *pOwner;
+    void *pObject;
+
+    pState = this;
+    pVtable = (VsNetEffTransportRuntimeStateVtable *)pState->m_RenderQueueNode.m_pVtable;
+    pState->m_fStartRequested = 0;
+    (this->*pVtable->m_pInitializeTransport)();
+    if (g_nEffTransportAsyncErrorStatus != 0) {
+        return 0;
+    }
+
+    pObject = AllocateVSMemBlock(0x3c);
+    if (pObject == 0) {
+        g_pEffTransportRequestConnectControlStream = 0;
+    } else {
+        g_pEffTransportRequestConnectControlStream =
+            ConstructEffTransportRequestConnectControlStream(pObject, (char *)"Request Connect");
+    }
+
+    pObject = AllocateVSMemBlock(0x40);
+    if (pObject == 0) {
+        g_pEffTransportRequestNewPortControlStream = 0;
+    } else {
+        g_pEffTransportRequestNewPortControlStream =
+            ConstructEffTransportRequestNewPortControlStream(pObject, (char *)"Request New Port");
+    }
+
+    pObject = AllocateVSMemBlock(0x38);
+    if (pObject == 0) {
+        g_pEffTransportAuthoriseConnectControlStream = 0;
+    } else {
+        g_pEffTransportAuthoriseConnectControlStream =
+            ConstructEffTransportAuthoriseConnectControlStream(pObject, (char *)"Authorise Connect");
+    }
+
+    pObject = AllocateVSMemBlock(0x38);
+    if (pObject == 0) {
+        g_pEffTransportGoAheadConnectControlStream = 0;
+    } else {
+        g_pEffTransportGoAheadConnectControlStream =
+            ConstructEffTransportGoAheadConnectControlStream(pObject, (char *)"Go Ahead Connect");
+    }
+
+    pObject = AllocateVSMemBlock(0x34);
+    if (pObject == 0) {
+        g_pEffTransportFailedConnectControlStream = 0;
+    } else {
+        g_pEffTransportFailedConnectControlStream =
+            ConstructEffTransportFailedConnectControlStream(pObject, (char *)"Failed Connect");
+    }
+
+    pObject = AllocateVSMemBlock(0x2c);
+    if (pObject == 0) {
+        g_pEffTransportGlobalWriteStream = 0;
+    } else {
+        *(void **)pObject = g_GAME_EffStreamConstructionVtable;
+        *(int *)((char *)pObject + 4) = 1;
+        ((GameEffStream *)pObject)->ResetStateFields();
+        *(void **)pObject = g_NETWORK_EffTransportGlobalWriteStreamVtable;
+        ((GameEffStream *)pObject)->BeginEffStreamWriteSession();
+        g_pEffTransportGlobalWriteStream = pObject;
+    }
+
+    pObject = AllocateVSMemBlock(0x30);
+    if (pObject == 0) {
+        g_pEffTransportGlobalReadStream = 0;
+    } else {
+        *(void **)pObject = g_GAME_EffStreamConstructionVtable;
+        *(int *)((char *)pObject + 4) = 2;
+        ((GameEffStream *)pObject)->ResetStateFields();
+        *(void **)pObject = g_NETWORK_EffTransportGlobalReadStreamVtable;
+        *(int *)((char *)pObject + 0x18) = *(int *)((char *)pObject + 0x18) + 4;
+        g_pEffTransportGlobalReadStream = pObject;
+    }
+
+    pState->m_pActiveChannelOwner = (this->*pVtable->m_pCreateChannelOwner)();
+    pState->m_fTransportInitialized = 1;
+    pState->m_fRuntimeActive = 1;
+    (pState->*pVtable->m_pServiceTransport)();
+
+    if (pState->m_fRuntimeActive != 0 && g_nEffTransportAsyncErrorStatus == 0) {
+        pOwner = (VsNetChannelOwnerObject *)pState->m_pActiveChannelOwner;
+        if (pOwner->m_pVtable->m_pBindRuntimeKey(pOwner, pState->m_nRuntimeKey) == 0) {
+            pState->m_fRuntimeActive = 0;
+            return 0;
+        }
+        return g_nEffTransportAsyncErrorStatus == 0;
+    }
+
+    pState->m_fRuntimeActive = 0;
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x00461db0
+void VsNetEffTransportRuntimeState::DestroyEffTransportRuntimeGlobals(void) {
+    *(void **)this = g_NETWORK_RuntimeConstructionStateVtable;
+    ((GameEffTransportRuntimeWindow *)this)
+        ->UnregisterEffTransportEventClient();
+    if (g_pEffTransportSecondaryDispatchQueue != 0) {
+        (*(void (**)(int))(*(void ***)g_pEffTransportSecondaryDispatchQueue + 4))(1);
+    }
+    g_pEffTransportSecondaryDispatchQueue = 0;
+    ((GameRenderDispatchQueue *)g_pEffTransportDispatchQueue)
+        ->UnregisterOrderedRenderDispatchClient(this, 0x19);
+    if (g_pEffTransportDispatchQueue != 0) {
+        (*(void (**)(int))(*(void ***)g_pEffTransportDispatchQueue + 4))(1);
+    }
+    g_pEffTransportDispatchQueue = 0;
+    *(void **)this = g_pNonZrleVariantRenderEntryInitializeVtable;
+}
+
+// FUNCTION: LEMBALL 0x00461e10
+void VsNetEffTransportRuntimeState::ReleaseEffTransportRuntimeOwnerState(void) {
+    VsNetEffTransportRuntimeState *pState;
+    VsNetEffTransportPeer *pPeer;
+    VsNetEffTransportPeer *pNextPeer;
+    VsNetTransportEndpointSlot *pEndpointSlot;
+    VsNetEndpointState *pPeerTransportState;
+    short nAssignedPort;
+    VsNetDeleteObject *pDeletePeer;
+    VsNetDeleteObject *pDeleteObject;
+    VsNetPeerPayloadSenderSlot *pPayloadSenderSlot;
+
+    pState = this;
+    if (pState->m_fTransportInitialized == 0) {
+        return;
+    }
+
+    pState->m_fTransportInitialized = 0;
+    pState->m_fRuntimeActive = 0;
+
+    pPeer = (VsNetEffTransportPeer *)pState->m_pFirstPeer;
+    if (pPeer != 0) {
+        ((VsNetEffTransportRuntimeOwnerDispatch *)pState)->LockPeerList();
+        while (pPeer != 0) {
+            pNextPeer = pPeer->m_pNext;
+            pEndpointSlot = (VsNetTransportEndpointSlot *)((char *)pPeer + pPeer->m_pOffsets->m_nEndpointStateSlotOffset);
+            pPeerTransportState = &pEndpointSlot->m_State;
+            nAssignedPort = pPeerTransportState->m_nAssignedPort;
+            pPeer->FreeEffTransportPeerBuffers();
+            if (pPeer != 0) {
+                pPayloadSenderSlot =
+                    (VsNetPeerPayloadSenderSlot *)((char *)pPeer + pPeer->m_pOffsets->m_nPayloadSenderSlotOffset);
+                pDeletePeer = (VsNetDeleteObject *)&pPayloadSenderSlot->m_Sender;
+                pDeletePeer->m_pVtable->m_pDelete(1);
+            }
+            pPeer = pNextPeer;
+            if (nAssignedPort != -1) {
+                ((VsNetChannelOwnerDispatch *)pState->m_pActiveChannelOwner)
+                    ->ReleasePort(nAssignedPort);
+            }
+        }
+        ((VsNetEffTransportRuntimeOwnerDispatch *)pState)->UnlockPeerList();
+    }
+
+    if (pState->m_pActiveChannelOwner != 0) {
+        ((VsNetChannelOwnerObject *)pState->m_pActiveChannelOwner)
+            ->ReleaseGlobalEffTransportBuffer();
+        if (pState->m_pActiveChannelOwner != 0) {
+            pPayloadSenderSlot =
+                (VsNetPeerPayloadSenderSlot *)((char *)pState->m_pActiveChannelOwner +
+                                                  ((VsNetChannelOwnerObject *)pState->m_pActiveChannelOwner)
+                                                      ->m_pOffsets->m_nPayloadSenderSlotOffset);
+            pDeleteObject = (VsNetDeleteObject *)&pPayloadSenderSlot->m_Sender;
+            pDeleteObject->m_pVtable->m_pDelete(1);
+        }
+    }
+
+    if (g_pEffTransportPacketBuffer != 0) {
+        FreeVSMemBlock(g_pEffTransportPacketBuffer);
+    }
+    g_pEffTransportPacketBuffer = 0;
+    if (g_pEffTransportPeerAddressState != 0) {
+        FreeVSMemBlock(g_pEffTransportPeerAddressState);
+    }
+    g_pEffTransportPeerAddressState = 0;
+
+    if (g_pEffTransportGlobalReadStream != 0) {
+        ((VsNetDeleteObject *)g_pEffTransportGlobalReadStream)->m_pVtable->m_pDelete(1);
+    }
+    g_pEffTransportGlobalReadStream = 0;
+    if (g_pEffTransportGlobalWriteStream != 0) {
+        ((VsNetDeleteObject *)g_pEffTransportGlobalWriteStream)->m_pVtable->m_pDelete(1);
+    }
+    g_pEffTransportGlobalWriteStream = 0;
+    if (g_pEffTransportRequestConnectControlStream != 0) {
+        ((VsNetDeleteObject *)g_pEffTransportRequestConnectControlStream)->m_pVtable->m_pDelete(1);
+    }
+    g_pEffTransportRequestConnectControlStream = 0;
+    if (g_pEffTransportRequestNewPortControlStream != 0) {
+        ((VsNetDeleteObject *)g_pEffTransportRequestNewPortControlStream)->m_pVtable->m_pDelete(1);
+    }
+    g_pEffTransportRequestNewPortControlStream = 0;
+    if (g_pEffTransportAuthoriseConnectControlStream != 0) {
+        ((VsNetDeleteObject *)g_pEffTransportAuthoriseConnectControlStream)->m_pVtable->m_pDelete(1);
+    }
+    g_pEffTransportAuthoriseConnectControlStream = 0;
+    if (g_pEffTransportGoAheadConnectControlStream != 0) {
+        ((VsNetDeleteObject *)g_pEffTransportGoAheadConnectControlStream)->m_pVtable->m_pDelete(1);
+    }
+    g_pEffTransportGoAheadConnectControlStream = 0;
+    if (g_pEffTransportFailedConnectControlStream != 0) {
+        ((VsNetDeleteObject *)g_pEffTransportFailedConnectControlStream)->m_pVtable->m_pDelete(1);
+    }
+    g_pEffTransportFailedConnectControlStream = 0;
+    ((VsNetEffTransportRuntimeOwnerDispatch *)pState)->ShutdownOwnerState();
+}
+
+// FUNCTION: LEMBALL 0x00461fc0
+void VsNetEffTransportRuntimeState::UnlinkAndDeleteEffTransportPeer(int nPeer) {
+    VsNetEffTransportRuntimeState *pState;
+    VsNetChannelOwnerObject *pOwner;
+    VsNetEffTransportPeer *pHeadPeer;
+    VsNetEffTransportPeer *pPeer;
+    VsNetEffTransportPeer *pNextPeer;
+    VsNetEffTransportPeer *pPreviousPeer;
+    VsNetTransportEndpointSlot *pEndpointSlot;
+    VsNetEndpointState *pEndpoint;
+    VsNetPeerPayloadSenderSlot *pPayloadSenderSlot;
+    VsNetDeleteObject *pDeletePeer;
+    DWORD dwReleasedPortKey;
+
+    pState = this;
+    pHeadPeer = (VsNetEffTransportPeer *)pState->m_pFirstPeer;
+    pPeer = pHeadPeer;
+    if (pPeer == 0) {
+        return;
+    }
+
+    while ((int)(unsigned long)pPeer != nPeer) {
+        pPeer = pPeer->m_pNext;
+        if (pPeer == 0) {
             return;
         }
-        ((GameEffTransportHandleGroup *)pHandleGroup)->Reset();
-        pHandleGroup->m_pCallback->m_pVtable->m_pNotifyClosed(1);
-        return;
     }
-    if (*(int *)(pbState + 0x60) == 0) {
-        return;
+
+    pNextPeer = pPeer->m_pNext;
+    pPreviousPeer = pPeer->m_pPrevious;
+    if (pState->m_pLastPeer == pPeer) {
+        pState->m_pLastPeer = pPreviousPeer;
     }
-    dwNow = timeGetTime();
-    if (dwNow - *(DWORD *)((char *)pObject + 0x3c) > 10000) {
-        ((GameEffTransportHandleGroup *)pHandleGroup)->Reset();
-        pHandleGroup->m_pCallback->m_pVtable->m_pNotifyClosed(0);
+    if (pPeer == pHeadPeer) {
+        pState->m_pFirstPeer = pNextPeer;
+    }
+
+    pOwner = (VsNetChannelOwnerObject *)pState->m_pActiveChannelOwner;
+    pEndpointSlot = (VsNetTransportEndpointSlot *)((char *)pPeer + pPeer->m_pOffsets->m_nEndpointStateSlotOffset);
+    pEndpoint = &pEndpointSlot->m_State;
+    dwReleasedPortKey = ((DWORD)(unsigned long)pPeer->m_pOffsets->m_nEndpointStateSlotOffset & 0xffff0000UL) |
+                        (unsigned short)pEndpoint->m_nAssignedPort;
+    pOwner->m_pVtable->m_pReleasePort(dwReleasedPortKey);
+
+    pPeer->FreeEffTransportPeerBuffers();
+    if (pPeer != 0) {
+        pPayloadSenderSlot =
+            (VsNetPeerPayloadSenderSlot *)((char *)pPeer + pPeer->m_pOffsets->m_nPayloadSenderSlotOffset);
+        pDeletePeer = (VsNetDeleteObject *)&pPayloadSenderSlot->m_Sender;
+        pDeletePeer->m_pVtable->m_pDelete(1);
+    }
+
+    if (pPreviousPeer != 0) {
+        pPreviousPeer->m_pNext = pNextPeer;
+    }
+    if (pNextPeer != 0) {
+        pNextPeer->m_pPrevious = pPreviousPeer;
     }
 }
 
@@ -2721,67 +3470,63 @@ int LEMBALL_FASTCALL AllocateEffTransportPeerEntry(void *pRuntimeState) {
     return (int)(unsigned long)pPeer;
 }
 
-// FUNCTION: LEMBALL 0x00461FC0
-void VsNetEffTransportRuntimeState::UnlinkAndDeleteEffTransportPeer(int nPeer) {
+// FUNCTION: LEMBALL 0x00462130
+int VsNetEffTransportRuntimeState::MarkExistingEffTransportPeerActive(int nPeer) {
     VsNetEffTransportRuntimeState *pState;
-    VsNetChannelOwnerObject *pOwner;
-    VsNetEffTransportPeer *pHeadPeer;
     VsNetEffTransportPeer *pPeer;
-    VsNetEffTransportPeer *pNextPeer;
-    VsNetEffTransportPeer *pPreviousPeer;
-    VsNetTransportEndpointSlot *pEndpointSlot;
-    VsNetEndpointState *pEndpoint;
-    VsNetPeerPayloadSenderSlot *pPayloadSenderSlot;
-    VsNetDeleteObject *pDeletePeer;
-    DWORD dwReleasedPortKey;
 
     pState = this;
-    pHeadPeer = (VsNetEffTransportPeer *)pState->m_pFirstPeer;
-    pPeer = pHeadPeer;
-    if (pPeer == 0) {
-        return;
-    }
-
-    while ((int)(unsigned long)pPeer != nPeer) {
-        pPeer = pPeer->m_pNext;
-        if (pPeer == 0) {
-            return;
+    pPeer = (VsNetEffTransportPeer *)pState->m_pFirstPeer;
+    while (pPeer != 0) {
+        if ((int)(unsigned long)pPeer == nPeer) {
+            if (pPeer->IsEffTransportPeerStillConnecting() == 0) {
+                return 0;
+            }
+            if (pPeer->m_fClosed == 0) {
+                pPeer->MarkEffTransportPeerActivityTime();
+                return 1;
+            }
+            return 0;
         }
+        pPeer = pPeer->m_pNext;
     }
+    return 0;
+}
 
-    pNextPeer = pPeer->m_pNext;
-    pPreviousPeer = pPeer->m_pPrevious;
-    if (pState->m_pLastPeer == pPeer) {
-        pState->m_pLastPeer = pPreviousPeer;
-    }
-    if (pPeer == pHeadPeer) {
-        pState->m_pFirstPeer = pNextPeer;
-    }
+// FUNCTION: LEMBALL 0x00462180
+int VsNetEffTransportRuntimeState::FindMatchingActiveEffTransportPeer(void *pPeerKey) {
+    VsNetEffTransportRuntimeState *pState;
+    VsNetEffTransportPeer *pPeer;
+    VsNetPeerPayloadSenderSlot *pPayloadSenderSlot;
+    VsNetTransportPeerMatcher *pPeerMatcher;
 
-    pOwner = (VsNetChannelOwnerObject *)pState->m_pActiveChannelOwner;
-    pEndpointSlot = (VsNetTransportEndpointSlot *)((char *)pPeer + pPeer->m_pOffsets->m_nEndpointStateSlotOffset);
-    pEndpoint = &pEndpointSlot->m_State;
-    dwReleasedPortKey = ((DWORD)(unsigned long)pPeer->m_pOffsets->m_nEndpointStateSlotOffset & 0xffff0000UL) |
-                        (unsigned short)pEndpoint->m_nAssignedPort;
-    pOwner->m_pVtable->m_pReleasePort(dwReleasedPortKey);
-
-    pPeer->FreeEffTransportPeerBuffers();
-    if (pPeer != 0) {
-        pPayloadSenderSlot =
-            (VsNetPeerPayloadSenderSlot *)((char *)pPeer + pPeer->m_pOffsets->m_nPayloadSenderSlotOffset);
-        pDeletePeer = (VsNetDeleteObject *)&pPayloadSenderSlot->m_Sender;
-        pDeletePeer->m_pVtable->m_pDelete(1);
+    pState = this;
+    pPeer = (VsNetEffTransportPeer *)pState->m_pFirstPeer;
+    while (pPeer != 0) {
+        if (pPeer->m_fClosed == 0) {
+            pPayloadSenderSlot =
+                (VsNetPeerPayloadSenderSlot *)((char *)pPeer + pPeer->m_pOffsets->m_nPayloadSenderSlotOffset);
+            pPeerMatcher = pPayloadSenderSlot->m_pMatcher;
+            if (((VsNetTransportPeerMatcherVtable *)pPeerMatcher->m_pVtable)->m_pMatchPeerKey(pPeerKey) != 0) {
+                break;
+            }
+        }
+        pPeer = pPeer->m_pNext;
     }
+    return (int)(unsigned long)pPeer;
+}
 
-    if (pPreviousPeer != 0) {
-        pPreviousPeer->m_pNext = pNextPeer;
-    }
-    if (pNextPeer != 0) {
-        pNextPeer->m_pPrevious = pPreviousPeer;
+// FUNCTION: LEMBALL 0x004621c0
+void VsNetEffTransportRuntimeState::CloseMatchingEffTransportPeer(void *pPeerKey) {
+    int nPeer;
+
+    nPeer = FindMatchingActiveEffTransportPeer(pPeerKey);
+    if (nPeer != 0) {
+        ((VsNetEffTransportPeer *)(unsigned long)nPeer)->Close();
     }
 }
 
-// FUNCTION: LEMBALL 0x004621E0
+// FUNCTION: LEMBALL 0x004621e0
 void VsNetEffTransportRuntimeState::HandleEffTransportRequestConnect(void *pPeerKey) {
     VsNetEffTransportRuntimeState *pState;
     VsNetEffTransportPeer *pPeer;
@@ -2930,290 +3675,6 @@ void VsNetEffTransportRuntimeState::HandleEffTransportAuthoriseConnect(void *pPe
     pOwner->SendLoadedEffEventToPeer(pPeerKey, pGoAheadConnectStream);
 }
 
-// FUNCTION: LEMBALL 0x00461DB0
-void VsNetEffTransportRuntimeState::DestroyEffTransportRuntimeGlobals(void) {
-    *(void **)this = g_NETWORK_RuntimeConstructionStateVtable;
-    ((GameEffTransportRuntimeWindow *)this)
-        ->UnregisterEffTransportEventClient();
-    if (g_pEffTransportSecondaryDispatchQueue != 0) {
-        (*(void (**)(int))(*(void ***)g_pEffTransportSecondaryDispatchQueue + 4))(1);
-    }
-    g_pEffTransportSecondaryDispatchQueue = 0;
-    ((GameRenderDispatchQueue *)g_pEffTransportDispatchQueue)
-        ->UnregisterOrderedRenderDispatchClient(this, 0x19);
-    if (g_pEffTransportDispatchQueue != 0) {
-        (*(void (**)(int))(*(void ***)g_pEffTransportDispatchQueue + 4))(1);
-    }
-    g_pEffTransportDispatchQueue = 0;
-    *(void **)this = g_pNonZrleVariantRenderEntryInitializeVtable;
-}
-
-// FUNCTION: LEMBALL 0x0046F970
-void *VsNetEffTransportRuntimeState::DeleteEffTransportRuntimeWindow(BYTE fFreeMemory) {
-    char *pWindowBase;
-
-    pWindowBase = (char *)this - 0x10;
-    DestroyEffTransportRuntimeGlobals();
-    DestroyInvisibleMessageWindow((VS_InvisibleWindow *)pWindowBase);
-    if ((fFreeMemory & 1) != 0) {
-        FreeVSMemBlock(pWindowBase);
-    }
-    return pWindowBase;
-}
-
-// FUNCTION: LEMBALL 0x00462AD0
-void *DeleteEffTransportRuntimeGlobalsWrapper(void *pObject, BYTE fFreeMemory) {
-    ((VsNetEffTransportRuntimeState *)pObject)->DestroyEffTransportRuntimeGlobals();
-    if ((fFreeMemory & 1) != 0) {
-        FreeVSMemBlock(pObject);
-    }
-    return pObject;
-}
-
-// FUNCTION: LEMBALL 0x00461E10
-void VsNetEffTransportRuntimeState::ReleaseEffTransportRuntimeOwnerState(void) {
-    VsNetEffTransportRuntimeState *pState;
-    VsNetEffTransportPeer *pPeer;
-    VsNetEffTransportPeer *pNextPeer;
-    VsNetTransportEndpointSlot *pEndpointSlot;
-    VsNetEndpointState *pPeerTransportState;
-    short nAssignedPort;
-    VsNetDeleteObject *pDeletePeer;
-    VsNetDeleteObject *pDeleteObject;
-    VsNetPeerPayloadSenderSlot *pPayloadSenderSlot;
-
-    pState = this;
-    if (pState->m_fTransportInitialized == 0) {
-        return;
-    }
-
-    pState->m_fTransportInitialized = 0;
-    pState->m_fRuntimeActive = 0;
-
-    pPeer = (VsNetEffTransportPeer *)pState->m_pFirstPeer;
-    if (pPeer != 0) {
-        ((VsNetEffTransportRuntimeOwnerDispatch *)pState)->LockPeerList();
-        while (pPeer != 0) {
-            pNextPeer = pPeer->m_pNext;
-            pEndpointSlot = (VsNetTransportEndpointSlot *)((char *)pPeer + pPeer->m_pOffsets->m_nEndpointStateSlotOffset);
-            pPeerTransportState = &pEndpointSlot->m_State;
-            nAssignedPort = pPeerTransportState->m_nAssignedPort;
-            pPeer->FreeEffTransportPeerBuffers();
-            if (pPeer != 0) {
-                pPayloadSenderSlot =
-                    (VsNetPeerPayloadSenderSlot *)((char *)pPeer + pPeer->m_pOffsets->m_nPayloadSenderSlotOffset);
-                pDeletePeer = (VsNetDeleteObject *)&pPayloadSenderSlot->m_Sender;
-                pDeletePeer->m_pVtable->m_pDelete(1);
-            }
-            pPeer = pNextPeer;
-            if (nAssignedPort != -1) {
-                ((VsNetChannelOwnerDispatch *)pState->m_pActiveChannelOwner)
-                    ->ReleasePort(nAssignedPort);
-            }
-        }
-        ((VsNetEffTransportRuntimeOwnerDispatch *)pState)->UnlockPeerList();
-    }
-
-    if (pState->m_pActiveChannelOwner != 0) {
-        ((VsNetChannelOwnerObject *)pState->m_pActiveChannelOwner)
-            ->ReleaseGlobalEffTransportBuffer();
-        if (pState->m_pActiveChannelOwner != 0) {
-            pPayloadSenderSlot =
-                (VsNetPeerPayloadSenderSlot *)((char *)pState->m_pActiveChannelOwner +
-                                                  ((VsNetChannelOwnerObject *)pState->m_pActiveChannelOwner)
-                                                      ->m_pOffsets->m_nPayloadSenderSlotOffset);
-            pDeleteObject = (VsNetDeleteObject *)&pPayloadSenderSlot->m_Sender;
-            pDeleteObject->m_pVtable->m_pDelete(1);
-        }
-    }
-
-    if (g_pEffTransportPacketBuffer != 0) {
-        FreeVSMemBlock(g_pEffTransportPacketBuffer);
-    }
-    g_pEffTransportPacketBuffer = 0;
-    if (g_pEffTransportPeerAddressState != 0) {
-        FreeVSMemBlock(g_pEffTransportPeerAddressState);
-    }
-    g_pEffTransportPeerAddressState = 0;
-
-    if (g_pEffTransportGlobalReadStream != 0) {
-        ((VsNetDeleteObject *)g_pEffTransportGlobalReadStream)->m_pVtable->m_pDelete(1);
-    }
-    g_pEffTransportGlobalReadStream = 0;
-    if (g_pEffTransportGlobalWriteStream != 0) {
-        ((VsNetDeleteObject *)g_pEffTransportGlobalWriteStream)->m_pVtable->m_pDelete(1);
-    }
-    g_pEffTransportGlobalWriteStream = 0;
-    if (g_pEffTransportRequestConnectControlStream != 0) {
-        ((VsNetDeleteObject *)g_pEffTransportRequestConnectControlStream)->m_pVtable->m_pDelete(1);
-    }
-    g_pEffTransportRequestConnectControlStream = 0;
-    if (g_pEffTransportRequestNewPortControlStream != 0) {
-        ((VsNetDeleteObject *)g_pEffTransportRequestNewPortControlStream)->m_pVtable->m_pDelete(1);
-    }
-    g_pEffTransportRequestNewPortControlStream = 0;
-    if (g_pEffTransportAuthoriseConnectControlStream != 0) {
-        ((VsNetDeleteObject *)g_pEffTransportAuthoriseConnectControlStream)->m_pVtable->m_pDelete(1);
-    }
-    g_pEffTransportAuthoriseConnectControlStream = 0;
-    if (g_pEffTransportGoAheadConnectControlStream != 0) {
-        ((VsNetDeleteObject *)g_pEffTransportGoAheadConnectControlStream)->m_pVtable->m_pDelete(1);
-    }
-    g_pEffTransportGoAheadConnectControlStream = 0;
-    if (g_pEffTransportFailedConnectControlStream != 0) {
-        ((VsNetDeleteObject *)g_pEffTransportFailedConnectControlStream)->m_pVtable->m_pDelete(1);
-    }
-    g_pEffTransportFailedConnectControlStream = 0;
-    ((VsNetEffTransportRuntimeOwnerDispatch *)pState)->ShutdownOwnerState();
-}
-
-// FUNCTION: LEMBALL 0x00460E40
-int VsNetEffTransportPeer::SendEffStreamToActivePeer(int *pStream) {
-    VsNetEffTransportPeer *pTransportPeer;
-    VsNetTransportEndpointSlot *pEndpointSlot;
-    VsNetEndpointState *pPeerTransportState;
-    VsNetPeerPayloadSenderSlot *pPayloadSenderSlot;
-    VsNetPeerPayloadSenderRaw *pPayloadSender;
-    VsNetEffDispatchEvent kFailureEvent;
-    int fOpenedWriteSession;
-    int nResult;
-
-    pTransportPeer = this;
-    pEndpointSlot =
-        (VsNetTransportEndpointSlot *)((char *)pTransportPeer + pTransportPeer->m_pOffsets->m_nEndpointStateSlotOffset);
-    pPeerTransportState = &pEndpointSlot->m_State;
-    if (pPeerTransportState->m_fSecondaryHandleActive != 0 && pTransportPeer->m_fClosed == 0) {
-        fOpenedWriteSession = pStream[4] < 1;
-        if (fOpenedWriteSession != 0) {
-            ((GameEffStream *)pStream)->BeginEffStreamWriteSession();
-        }
-
-        pPayloadSenderSlot =
-            (VsNetPeerPayloadSenderSlot *)((char *)pTransportPeer +
-                                              pTransportPeer->m_pOffsets->m_nPayloadSenderSlotOffset);
-        pPayloadSender = &pPayloadSenderSlot->m_Sender;
-        nResult = ((VsNetPeerPayloadSender *)pPayloadSender)
-                      ->SendEffStreamPayloadWithTransportHeader((int)(unsigned long)pStream);
-        if (nResult == 0) {
-            kFailureEvent.m_nType = 1;
-            kFailureEvent.m_nCode = 0xc;
-            if (pStream[9] == 0) {
-                kFailureEvent.m_nCode = 0xb;
-            }
-            kFailureEvent.m_pStream = pStream;
-            kFailureEvent.m_pPeer = this;
-            ((void (*)(VsNetEffDispatchEvent *))(*(void ***)g_pEffTransportDispatchQueue)[2])(&kFailureEvent);
-        }
-
-        if (fOpenedWriteSession != 0) {
-            ((GameEffStream *)pStream)->EndEffStreamWriteSession();
-        }
-        return nResult;
-    }
-
-    pStream[10] = 0;
-    return 0;
-}
-
-struct VsNetCompleteEffTransportPendingWriteView {
-    void CompleteEffTransportPendingWrite(int fQueueEvent);
-};
-
-// FUNCTION: LEMBALL 0x00460F00
-void VsNetCompleteEffTransportPendingWriteView::CompleteEffTransportPendingWrite(
-    int fQueueEvent)
-{
-    char *pbObject;
-    int nOwnerState;
-    int nStateDelta;
-    int nPendingDelta;
-    VsNetEffDispatchEvent kEvent;
-
-    pbObject = (char *)this;
-    *(int *)(pbObject - 0x10) = 1;
-    nOwnerState = *(int *)(*(int *)(pbObject - 0x2c) + 0x10);
-    nStateDelta = *(int *)(pbObject + nOwnerState - 0x2c + 8);
-    nPendingDelta = nStateDelta + nOwnerState - 0x24 + 0x70;
-    ((VsNetEffTransportPendingWriteState *)(pbObject + nPendingDelta))->Clear(
-        (void *)(unsigned long)fQueueEvent);
-    if (fQueueEvent != 0) {
-        kEvent.m_nType = 10;
-        kEvent.m_nCode = 0;
-        kEvent.m_pStream = (int *)(pbObject - 0x30);
-        ((void (*)(VsNetEffDispatchEvent *))(*(void ***)g_pEffTransportDispatchQueue)[2])(&kEvent);
-    }
-}
-
-// FUNCTION: LEMBALL 0x00461030
-void VsNetCompositeEffTransportVtableModel::ServiceEffTransportPeerEntry(void) {
-    VsNetEffTransportPeer *pPeer;
-    char *pbPeer;
-    int nOffsets;
-    DWORD dwNow;
-
-    pPeer = (VsNetEffTransportPeer *)this;
-    pbPeer = (char *)pPeer;
-    if (*(int *)(pbPeer + 0x20) != 0) {
-        return;
-    }
-    if (*(int *)(pbPeer + 0x24) == 0) {
-        nOffsets = *(int *)(pbPeer + 4);
-        if (*(int *)(pbPeer + *(int *)(nOffsets + 4) + 0x20) == 0) {
-            dwNow = timeGetTime();
-            if (dwNow - *(DWORD *)(pbPeer + 0x28) <= 4000) {
-                return;
-            }
-            pPeer->Close();
-            return;
-        }
-    }
-    nOffsets = *(int *)(pbPeer + 4);
-    CheckEffTransportIdleTimeout(pbPeer + *(int *)(nOffsets + 0x0c) + 4);
-    ((VsNetPeerPayloadSenderState *)(pbPeer + *(int *)(nOffsets + 8) + 4))
-        ->ServiceEffTransportRetries();
-}
-
-struct VsNetDispatchAckedEffTransportPayloadView {
-    void *DispatchAckedEffTransportPayloadEvent(void);
-};
-
-// FUNCTION: LEMBALL 0x00460F60
-void *VsNetDispatchAckedEffTransportPayloadView::DispatchAckedEffTransportPayloadEvent(void) {
-    VsNetEffDispatchEvent kEvent;
-    VsNetEffTransportAckDispatchOwner *pOwner;
-    void *pPayload;
-
-    pOwner = (VsNetEffTransportAckDispatchOwner *)((char *)this - 0x60);
-    pPayload = ((VsNetAckedEffTransportRecordOwner *)
-                    ((char *)this + pOwner->m_pOffsets04->m_nAckRecordOwnerViewOffset08 - 0x5c))
-                   ->ClaimAckedEffTransportRecordPayload();
-    if (pPayload != 0) {
-        kEvent.m_nType = 6;
-        kEvent.m_nCode = 0;
-        kEvent.m_pStream = (int *)pOwner;
-        kEvent.m_pPeer = pPayload;
-        ((void (*)(VsNetEffDispatchEvent *))(*(void ***)g_pEffTransportSecondaryDispatchQueue)[2])(&kEvent);
-    }
-    return pPayload;
-}
-
-struct VsNetQueueEffTransportPayloadEventView {
-    void QueueEffTransportPayloadEvent(unsigned short nType, void *pPayload);
-};
-
-// FUNCTION: LEMBALL 0x00460FF0
-void VsNetQueueEffTransportPayloadEventView::QueueEffTransportPayloadEvent(
-    unsigned short nType, void *pPayload)
-{
-    VsNetEffDispatchEvent kEvent;
-
-    kEvent.m_nType = nType;
-    kEvent.m_nCode = 0;
-    kEvent.m_pStream = (int *)((char *)this - 0xd8);
-    kEvent.m_pPeer = pPayload;
-    ((void (*)(VsNetEffDispatchEvent *))(*(void ***)g_pEffTransportSecondaryDispatchQueue)[2])(&kEvent);
-}
-
 // FUNCTION: LEMBALL 0x00462460
 void VsNetEffTransportRuntimeState::ForwardEffTransportFailedConnect(void *pPeerKey) {
     ((VsNetChannelOwnerObject *)m_pActiveChannelOwner)
@@ -3231,9 +3692,10 @@ void VsNetEffTransportRuntimeState::HandleEffTransportGoAheadConnect(void *) {
     }
 }
 
-// FUNCTION: LEMBALL 0x004624A0
+// FUNCTION: LEMBALL 0x004624a0
 void VsNetEffTransportRuntimeState::DispatchEffTransportConnectControlStream(void *pPeerKey,
                                                                                   int nSourceBuffer)
+
 {
     ((void (LEMBALL_FASTCALL *)(void *))**(void ***)pPeerKey)(pPeerKey);
     if (((GameEffStream *)g_pEffTransportRequestConnectControlStream)
@@ -3262,128 +3724,57 @@ void VsNetEffTransportRuntimeState::DispatchEffTransportConnectControlStream(voi
     }
 }
 
-// FUNCTION: LEMBALL 0x00460610
-void VsNetEffTransportPeer::ConfigureEffTransportConnectHostString(void *pHostName) {
-    if (m_nReserved1C != 0) {
-        void *pBuffer = (void *)(unsigned long)m_nReserved1C;
-        m_nReserved1C = 0;
-        FreeVSMemBlock(pBuffer);
-    }
-
-    *(int *)((char *)this + 0xc) = 2;
+// FUNCTION: LEMBALL 0x004625e0
+void VsNetEffTransportRuntimeState::CleanupEffTransportRuntimeState(void) {
+    VsNetEffTransportRuntimeState *pActiveState;
+    void *pOwner;
+    void *pPeer;
+    void *pNextPeer;
     void (**ppVtable)(void);
-    ppVtable = *(void (***) (void))this;
-    ((void (*)(void *))ppVtable[2])(pHostName);
-}
 
-// FUNCTION: LEMBALL 0x00460650
-void VsNetEffTransportPeer::PrepareEffTransportBroadcastStatusPayload(char *pszHostName) {
-    VsNetHandleGroupAdjustor *pAdjustor;
-    char *pszTarget;
-    int cbText;
-
-    pAdjustor = (VsNetHandleGroupAdjustor *)
-        ((char *)this + m_pOffsets->m_nHandleGroupAdjustorSlotOffset + 4);
-    ((VsNetDualHandleEffStream *)((char *)pAdjustor +
-                                     pAdjustor->m_pOffsets->m_nHandleStreamOffset))
-        ->ConfigureEffStreamPrimaryHandleGroup(3, 3, 0);
-    ((VsNetTimedEffStream *)((char *)pAdjustor +
-                                pAdjustor->m_pOffsets->m_nTimedStreamOffset))
-        ->ReleaseTimedEffStreamPrimaryHandle();
-
-    pAdjustor = (VsNetHandleGroupAdjustor *)
-        ((char *)this + m_pOffsets->m_nHandleGroupAdjustorSlotOffset + 4);
-    ((VsNetDualHandleEffStream *)((char *)pAdjustor +
-                                     pAdjustor->m_pOffsets->m_nHandleStreamOffset))
-        ->ConfigureEffStreamSecondaryHandleGroup(1, 0);
-    ((VsNetTimedEffStream *)((char *)pAdjustor +
-                                pAdjustor->m_pOffsets->m_nTimedStreamOffset))
-        ->ConfigureTimedEffStreamSecondaryHandle(1);
-
-    if (g_pszEffTransportBroadcastStatusPayload == 0) {
-        g_pszEffTransportBroadcastStatusPayload = (char *)AllocateVSMemBlock(0x410);
-        pszTarget = g_pszEffTransportBroadcastStatusPayload + 0x10;
-
-        strcpy(pszTarget, g_szEffTransportBroadcastPrefix);
-        FormatSignedIntToRadixString(g_nEffTransportVersionMajor,
-                                     pszTarget + strlen(pszTarget), 10);
-        *(unsigned short *)(pszTarget + strlen(pszTarget)) =
-            *(const unsigned short *)g_szEffTransportVersionSeparator;
-        FormatSignedIntToRadixString(g_nEffTransportVersionMinor,
-                                     pszTarget + strlen(pszTarget), 10);
-        *(unsigned short *)(pszTarget + strlen(pszTarget)) =
-            *(const unsigned short *)g_szEffTransportVersionSpace;
-        strcpy(pszTarget + strlen(pszTarget), pszHostName);
-        strcpy(pszTarget + strlen(pszTarget), g_szEffTransportBroadcastSuffix);
-
-        cbText = (int)strlen(pszTarget);
-        g_cbEffTransportBroadcastStatusPayload = cbText;
+    if (m_nReserved3C != 0) {
+        ((GameRenderDispatchQueue *)g_pEffTransportDispatchQueue)
+            ->RegisterOrderedRenderDispatchClient((void *)(unsigned long)m_nReserved3C, 0);
+        m_nReserved48 = 1;
+        m_nReserved38 = m_nReserved3C;
+        m_nReserved3C = 0;
     }
-}
-
-// FUNCTION: LEMBALL 0x004607F0
-void VsNetChannelOwnerObject::ReleaseGlobalEffTransportBuffer(void) {
-    VsNetChannelOwnerObject *pChannelOwner;
-    VsNetTransportEndpointSlot *pEndpointSlot;
-    VsNetEndpointState *pEndpointState;
-
-    if (g_pszFileBasedNetworkLocalHostName != 0) {
-        FreeVSMemBlock(g_pszFileBasedNetworkLocalHostName);
-        g_pszFileBasedNetworkLocalHostName = 0;
+    if (m_nReserved40 != 0) {
+        ((GameRenderDispatchQueue *)g_pEffTransportDispatchQueue)
+            ->UnregisterOrderedRenderDispatchClient((void *)(unsigned long)m_nReserved40, 0);
+        m_nReserved40 = 0;
+        m_nReserved38 = 0;
+        m_nReserved48 = 0;
     }
 
-    pChannelOwner = this;
-    pEndpointSlot =
-        (VsNetTransportEndpointSlot *)((char *)this + m_pOffsets->m_nEndpointStateSlotOffset);
-    pEndpointState = &pEndpointSlot->m_State;
-    ((GameEffTransportHandleGroup *)pEndpointState)->Reset();
-}
-
-struct VsNetPrefixedEffTransportControlView {
-    void DispatchPrefixedEffTransportControlStream(int nDispatchType, void *pEvent);
-};
-
-// FUNCTION: LEMBALL 0x00460830
-void VsNetPrefixedEffTransportControlView::DispatchPrefixedEffTransportControlStream(
-    int nDispatchType, void *pEvent)
-{
-    VsNetEffDispatchEventPayloadView *pEventView;
-    VsNetEffPrefixedControlDispatchOwner *pOwner;
-    VsNetRuntimeServiceObject *pPeerAddressState;
-    char *pszPayloadText;
-    int nIsLocalPeer;
-    int nPayloadBuffer;
-
-    pOwner = (VsNetEffPrefixedControlDispatchOwner *)((char *)this - 0xd8);
-    pEventView = (VsNetEffDispatchEventPayloadView *)pEvent;
-    pPeerAddressState = (VsNetRuntimeServiceObject *)g_pEffTransportPeerAddressState;
-    ((void (*)(void))**(void ***)pPeerAddressState)();
-    nIsLocalPeer =
-        pPeerAddressState->m_pVtable->m_pValidatePeerKey(g_pEffTransportRuntimeService);
-
-    nPayloadBuffer = pEventView->m_nPayloadBuffer04;
-    pszPayloadText = (char *)(unsigned long)(nPayloadBuffer + 0x10);
-    if (nIsLocalPeer == 0 &&
-        ((pOwner->m_nPeerMode18 != 2 ||
-          (pOwner->m_pPeerKey28 != 0 && pPeerAddressState->m_pVtable->m_pValidatePeerKey(pOwner->m_pPeerKey28) != 0)) &&
-         strncmp(pszPayloadText, g_pszEffTransportBroadcastStatusPayload + 0x10,
-                 g_cbEffTransportBroadcastStatusPayload + 1) == 0)) {
-        ((VsNetEffTransportRuntimeState *)g_pActiveNetworkRuntimeWindow)
-            ->DispatchEffTransportConnectControlStream(
-                g_pEffTransportPeerAddressState,
-                nPayloadBuffer + g_cbEffTransportBroadcastStatusPayload + 0x11);
+    pActiveState = (VsNetEffTransportRuntimeState *)g_pActiveNetworkRuntimeWindow;
+    if (pActiveState != 0 && pActiveState->m_fTransportInitialized != 0) {
+        pActiveState->InitializeEffTransportRuntimeGlobals();
+        return;
+    }
+    if (m_fShutdownRequested != 0) {
+        ReleaseEffTransportRuntimeOwnerState();
+        return;
     }
 
-    if (nDispatchType == 7) {
-        pEventView->m_pOwnedPayload24 = 0;
+    pOwner = m_pActiveChannelOwner;
+    if (pOwner != 0) {
+        ppVtable = *(void (***)(void))pOwner;
+        ppVtable[4]();
     }
-}
 
-// FUNCTION: LEMBALL 0x004608F0
-void WINAPI LoadEffStreamFromGlobalRange(void *pStream) {
-    ((VsNetEffStreamBase *)pStream)->SaveEffStreamToMemoryRange(
-        (int)(unsigned long)g_pszEffTransportBroadcastStatusPayload,
-        g_cbEffTransportBroadcastStatusPayload + 0x11);
+    pPeer = m_pFirstPeer;
+    while (pPeer != 0) {
+        ppVtable = *(void (***)(void))pPeer;
+        ppVtable[1]();
+        pNextPeer = *(void **)((char *)pPeer + 0x10);
+        pPeer = pNextPeer;
+    }
+
+    if (m_nReserved38 != 0) {
+        ppVtable = *(void (***)(void))(unsigned long)m_nReserved38;
+        ppVtable[3]();
+    }
 }
 
 // FUNCTION: LEMBALL 0x00462720
@@ -3422,9 +3813,10 @@ int VsNetEffTransportRuntimeState::BroadcastEffStreamToActivePeers(int *pStream)
     }
 }
 
-// FUNCTION: LEMBALL 0x004627B0
+// FUNCTION: LEMBALL 0x004627b0
 int VsNetEffTransportRuntimeState::ProcessEffTransportDispatchEvent(
-    VsNetEffDispatchEvent *pEvent) {
+    VsNetEffDispatchEvent *pEvent)
+{
     if (pEvent->m_nType == 0xb) {
         if (pEvent->m_nCode == 1) {
             ((VsNetEffTransportPeer *)pEvent->m_pPeer)
@@ -3442,472 +3834,75 @@ int VsNetEffTransportRuntimeState::ProcessEffTransportDispatchEvent(
     return 0;
 }
 
-// FUNCTION: LEMBALL 0x0045F360
-void WriteEffTransportRequestStreamName(void *pObject) {
-    VsNetEffStreamBase *pStream;
-
-    pStream = (VsNetEffStreamBase *)pObject;
-    pStream->WriteEffStreamCString(*(char **)((char *)pObject + 0x2c));
-}
-
-// FUNCTION: LEMBALL 0x0045F370
-int CompareEffTransportRequestStreamName(void *pObject) {
-    const unsigned char *pbStream;
-    const unsigned char *pbName;
-
-    pbStream = (const unsigned char *)(unsigned long)*(int *)((char *)pObject + 0x20);
-    pbName = (const unsigned char *)*(char **)((char *)pObject + 0x2c);
-    while (*pbStream == *pbName) {
-        if (*pbStream == 0) {
-            return 1;
-        }
-        ++pbStream;
-        ++pbName;
+// FUNCTION: LEMBALL 0x004629e0
+void *LEMBALL_FASTCALL DeleteEffTransportRecordBufferBaseWrapper(VsNetEffTransportRecordBuffer *pObject, int, BYTE fFreeMemory) {
+    pObject->m_pVtable = g_NETWORK_EffTransportRecordBufferVtable;
+    if ((fFreeMemory & 1) != 0) {
+        FreeVSMemBlock(pObject);
     }
-    return 0;
-}
-
-// FUNCTION: LEMBALL 0x0045F430
-void __fastcall LoadEffTransportRequestConnectStream(void *pObject) {
-    VsNetEffStreamBase *pStream;
-
-    pStream = (VsNetEffStreamBase *)pObject;
-    *(short *)((char *)pObject + 0x30) = (short)pStream->ReadEffStreamU32BEValue();
-    pStream->ReadEffStreamRangePointer((void **)((char *)pObject + 0x34), 0x200);
-    pStream->ReadEffStreamCString((char **)((char *)pObject + 0x38));
-}
-
-// FUNCTION: LEMBALL 0x0045F460
-void __fastcall WriteEffTransportRequestPortFields(void *pObject) {
-    VsNetRequestConnectControlStream *pControlStream;
-    VsNetEffStreamBase *pStream;
-
-    pControlStream = (VsNetRequestConnectControlStream *)pObject;
-    pStream = (VsNetEffStreamBase *)pObject;
-    pStream->WriteEffStreamU32BE((unsigned int)pControlStream->m_nBasePort);
-    pStream->WriteEffStreamBytes(pControlStream->m_pPortBinding, 0x200);
-    pStream->WriteEffStreamCString(pControlStream->m_pszHostName);
-}
-
-// FUNCTION: LEMBALL 0x0045F4B0
-void LEMBALL_FASTCALL LoadEffTransportRequestNewPortStream(void *pObject) {
-    VsNetRequestNewPortControlStream *pControlStream;
-    VsNetEffStreamBase *pStream;
-
-    pControlStream = (VsNetRequestNewPortControlStream *)pObject;
-    LoadEffTransportRequestConnectStream(pObject);
-    pStream = (VsNetEffStreamBase *)pObject;
-    pControlStream->m_pPeer =
-        (VsNetEffTransportPeer *)pStream->ReadEffStreamU32BEValue();
-}
-
-// FUNCTION: LEMBALL 0x0045F4D0
-void LEMBALL_FASTCALL WriteEffTransportRequestNewPortStream(void *pObject) {
-    VsNetRequestNewPortControlStream *pControlStream;
-    VsNetEffStreamBase *pStream;
-
-    pControlStream = (VsNetRequestNewPortControlStream *)pObject;
-    pStream = (VsNetEffStreamBase *)pObject;
-    WriteEffTransportRequestPortFields(pObject);
-    pStream->WriteEffStreamU32BE((unsigned int)pControlStream->m_pPeer);
-}
-
-// FUNCTION: LEMBALL 0x0045F540
-void __fastcall LoadEffTransportAuthoriseConnectStream(void *pObject) {
-    VsNetEffStreamBase *pStream;
-
-    pStream = (VsNetEffStreamBase *)pObject;
-    *(unsigned short *)((char *)pObject + 0x30) = pStream->ReadEffStreamU16BEValue();
-    *(unsigned int *)((char *)pObject + 0x34) = pStream->ReadEffStreamU32BEValue();
-}
-
-// FUNCTION: LEMBALL 0x0045F560
-void LEMBALL_FASTCALL WriteEffTransportAuthoriseConnectStream(void *pObject) {
-    VsNetAuthoriseConnectControlStream *pControlStream;
-    VsNetEffStreamBase *pStream;
-
-    pControlStream = (VsNetAuthoriseConnectControlStream *)pObject;
-    pStream = (VsNetEffStreamBase *)pObject;
-    pStream->WriteEffStreamU16BE(pControlStream->m_nAssignedPort);
-    pStream->WriteEffStreamU32BE((unsigned int)pControlStream->m_pPeer);
-}
-
-// FUNCTION: LEMBALL 0x0045F5D0
-void __fastcall LoadEffTransportGoAheadConnectStream(void *pObject) {
-    VsNetEffStreamBase *pStream;
-
-    pStream = (VsNetEffStreamBase *)pObject;
-    *(unsigned short *)((char *)pObject + 0x30) = pStream->ReadEffStreamU16BEValue();
-    *(unsigned int *)((char *)pObject + 0x34) = pStream->ReadEffStreamU32BEValue();
-}
-
-// FUNCTION: LEMBALL 0x0045F5F0
-void LEMBALL_FASTCALL WriteEffTransportGoAheadConnectStream(void *pObject) {
-    VsNetAuthoriseConnectControlStream *pControlStream;
-    VsNetEffStreamBase *pStream;
-
-    pControlStream = (VsNetAuthoriseConnectControlStream *)pObject;
-    pStream = (VsNetEffStreamBase *)pObject;
-    pStream->WriteEffStreamU16BE(pControlStream->m_nAssignedPort);
-    pStream->WriteEffStreamU32BE((unsigned int)pControlStream->m_pPeer);
-}
-
-// FUNCTION: LEMBALL 0x0045F660
-void LEMBALL_FASTCALL LoadEffTransportFailedConnectStream(void *pObject) {
-    ((VsNetEffStreamBase *)pObject)->ReadEffStreamCString(
-        (char **)((char *)pObject + 0x30));
-}
-
-// FUNCTION: LEMBALL 0x0045F670
-void LEMBALL_FASTCALL WriteEffTransportFailedConnectStream(void *pObject) {
-    ((VsNetEffStreamBase *)pObject)->WriteEffStreamCString(
-        *(char **)((char *)pObject + 0x30));
-}
-
-// FUNCTION: LEMBALL 0x0045F3D0
-void *ConstructEffTransportRequestConnectControlStream(void *pObject, char *pszStreamName) {
-    VsNetRequestConnectControlStream *pStream;
-    unsigned int cbName;
-
-    pStream = (VsNetRequestConnectControlStream *)pObject;
-    pStream->m_Header.m_pVtable = g_GAME_EffStreamConstructionVtable;
-    pStream->m_Header.m_nEventCode = 0;
-    ((GameEffStream *)pObject)->ResetStateFields();
-    pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamNameVtable;
-    pStream->m_Header.m_pszStreamName = pszStreamName;
-
-    cbName = (unsigned int)strlen(pszStreamName) + 1;
-    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + cbName;
-
-    pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamVtable;
-    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + 0x3c;
-    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + 0x101;
-    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + 0x200;
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x0045F490
-void *ConstructEffTransportRequestNewPortControlStream(void *pObject, char *pszStreamName) {
-    VsNetRequestNewPortControlStream *pStream;
-
-    ConstructEffTransportRequestConnectControlStream(pObject, pszStreamName);
-    pStream = (VsNetRequestNewPortControlStream *)pObject;
-    pStream->m_Base.m_Header.m_pVtable = g_NETWORK_RequestNewPortControlStreamVtable;
-    pStream->m_Base.m_Header.m_cbSerializedLength = pStream->m_Base.m_Header.m_cbSerializedLength + 0x10;
+// FUNCTION: LEMBALL 0x00462a00
+void *DeleteLockedEffTransportRecordSlotWrapper(void *pObject, BYTE fFreeMemory) {
+    ((VsNetLockedEffTransportRecordSlot *)pObject)->DestroyLockedEffTransportRecordSlot();
+    if ((fFreeMemory & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x0045F4F0
-void *ConstructEffTransportAuthoriseConnectControlStream(void *pObject, char *pszStreamName) {
-    VsNetAuthoriseConnectControlStream *pStream;
-    unsigned int cbName;
-
-    pStream = (VsNetAuthoriseConnectControlStream *)pObject;
-    pStream->m_Header.m_pVtable = g_GAME_EffStreamConstructionVtable;
-    pStream->m_Header.m_nEventCode = 0;
-    ((GameEffStream *)pObject)->ResetStateFields();
-    pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamNameVtable;
-    pStream->m_Header.m_pszStreamName = pszStreamName;
-
-    cbName = (unsigned int)strlen(pszStreamName) + 1;
-    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + cbName;
-
-    pStream->m_Header.m_pVtable = g_NETWORK_AuthoriseConnectControlStreamVtable;
-    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + 0x38;
-    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + 0x101;
+// FUNCTION: LEMBALL 0x00462a20
+void *DeleteSimpleEffTransportRecordSlotWrapper(void *pObject, BYTE fFreeMemory) {
+    ((VsNetSimpleEffTransportRecordSlot *)pObject)
+        ->DestroySimpleEffTransportRecordSlot();
+    if ((fFreeMemory & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x0045F580
-void *ConstructEffTransportGoAheadConnectControlStream(void *pObject, char *pszStreamName) {
-    VsNetAuthoriseConnectControlStream *pStream;
-    unsigned int cbName;
-
-    pStream = (VsNetAuthoriseConnectControlStream *)pObject;
-    pStream->m_Header.m_pVtable = g_GAME_EffStreamConstructionVtable;
-    pStream->m_Header.m_nEventCode = 0;
-    ((GameEffStream *)pObject)->ResetStateFields();
-    pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamNameVtable;
-    pStream->m_Header.m_pszStreamName = pszStreamName;
-
-    cbName = (unsigned int)strlen(pszStreamName) + 1;
-    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + cbName;
-
-    pStream->m_Header.m_pVtable = g_NETWORK_GoAheadConnectControlStreamVtable;
-    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + 0x38;
-    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + 0x101;
+// FUNCTION: LEMBALL 0x00462a40
+void *DeleteEffTransportRecordBufferWrapper(void *pObject, BYTE fFreeMemory) {
+    ((VsNetEffTransportRecordBuffer *)pObject)->DestroyEffTransportRecordBuffer();
+    if ((fFreeMemory & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x0045F610
-void *ConstructEffTransportFailedConnectControlStream(void *pObject, char *pszStreamName) {
-    VsNetFailedConnectControlStream *pStream;
-    unsigned int cbName;
-
-    pStream = (VsNetFailedConnectControlStream *)pObject;
-    pStream->m_Header.m_pVtable = g_GAME_EffStreamConstructionVtable;
-    pStream->m_Header.m_nEventCode = 0;
-    ((GameEffStream *)pObject)->ResetStateFields();
-    pStream->m_Header.m_pVtable = g_NETWORK_RequestConnectControlStreamNameVtable;
-    pStream->m_Header.m_pszStreamName = pszStreamName;
-
-    cbName = (unsigned int)strlen(pszStreamName) + 1;
-    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + cbName;
-
-    pStream->m_Header.m_pVtable = g_NETWORK_FailedConnectControlStreamVtable;
-    pStream->m_Header.m_cbSerializedLength = pStream->m_Header.m_cbSerializedLength + 0x101;
+// FUNCTION: LEMBALL 0x00462a60
+void *LEMBALL_FASTCALL DeleteRangeEffTransportRecordBufferTableWrapper(VsNetEffTransportRecordBuffer *pObject, int, BYTE fFreeMemory) {
+    pObject->DestroyRangeEffTransportRecordBufferTable();
+    if ((fFreeMemory & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x004619F0
-void *VsNetEffTransportRuntimeState::ConstructEffTransportRuntimeState(void) {
-    VsNetEffTransportRuntimeState *pState;
-    void *pQueue;
-
-    pState = this;
-    InitializeRenderQueueNodeBase(this);
-    pState->m_RenderQueueNode.m_pVtable = (void **)g_NETWORK_EffTransportRuntimeStateVtable;
-    g_nEffTransportAsyncErrorStatus = 0;
-    pState->m_pFirstPeer = 0;
-    pState->m_pActiveChannelOwner = 0;
-    pState->m_nReserved34 = 0;
-    pState->m_pLastPeer = 0;
-    pState->m_nReserved30 = 0;
-    pState->m_fRuntimeActive = 0;
-    pState->m_fTransportInitialized = 0;
-    pState->m_nReserved40 = 0;
-    pState->m_nReserved3C = 0;
-    pState->m_nReserved38 = 0;
-    pState->m_nReserved44 = 0;
-    pState->m_nReserved48 = 0;
-    pState->m_nRuntimeKey = 0;
-    pState->m_fShutdownRequested = 0;
-    pState->m_cbMaxPacketBytes = 0x50;
-    pState->m_fStartRequested = 0;
-
-    pQueue = AllocateVSMemBlock(0x58);
-    if (pQueue == 0) {
-        g_pEffTransportDispatchQueue = 0;
-    } else {
-        g_pEffTransportDispatchQueue = ConstructRenderDispatchQueue(pQueue, 0x1e);
+// FUNCTION: LEMBALL 0x00462a80
+void *LEMBALL_FASTCALL DeleteRingEffTransportRecordBufferTableWrapper(VsNetEffTransportRecordBuffer *pObject, int, BYTE fFreeMemory) {
+    pObject->DestroyRingEffTransportRecordBufferTable();
+    if ((fFreeMemory & 1) != 0) {
+        FreeVSMemBlock(pObject);
     }
-    ((GameRenderDispatchQueue *)g_pEffTransportDispatchQueue)
-        ->RegisterOrderedRenderDispatchClient(this, 0x19);
-
-    pQueue = AllocateVSMemBlock(0x58);
-    if (pQueue == 0) {
-        g_pEffTransportSecondaryDispatchQueue = 0;
-    } else {
-        g_pEffTransportSecondaryDispatchQueue = ConstructRenderDispatchQueue(pQueue, 0x1e);
-    }
-
-    return this;
+    return pObject;
 }
 
-// FUNCTION: LEMBALL 0x00461BD0
-int VsNetEffTransportRuntimeState::InitializeEffTransportRuntimeGlobals(void) {
-    VsNetEffTransportRuntimeState *pState;
-    VsNetEffTransportRuntimeStateVtable *pVtable;
-    VsNetChannelOwnerObject *pOwner;
-    void *pObject;
-
-    pState = this;
-    pVtable = (VsNetEffTransportRuntimeStateVtable *)pState->m_RenderQueueNode.m_pVtable;
-    pState->m_fStartRequested = 0;
-    (this->*pVtable->m_pInitializeTransport)();
-    if (g_nEffTransportAsyncErrorStatus != 0) {
-        return 0;
-    }
-
-    pObject = AllocateVSMemBlock(0x3c);
-    if (pObject == 0) {
-        g_pEffTransportRequestConnectControlStream = 0;
-    } else {
-        g_pEffTransportRequestConnectControlStream =
-            ConstructEffTransportRequestConnectControlStream(pObject, (char *)"Request Connect");
-    }
-
-    pObject = AllocateVSMemBlock(0x40);
-    if (pObject == 0) {
-        g_pEffTransportRequestNewPortControlStream = 0;
-    } else {
-        g_pEffTransportRequestNewPortControlStream =
-            ConstructEffTransportRequestNewPortControlStream(pObject, (char *)"Request New Port");
-    }
-
-    pObject = AllocateVSMemBlock(0x38);
-    if (pObject == 0) {
-        g_pEffTransportAuthoriseConnectControlStream = 0;
-    } else {
-        g_pEffTransportAuthoriseConnectControlStream =
-            ConstructEffTransportAuthoriseConnectControlStream(pObject, (char *)"Authorise Connect");
-    }
-
-    pObject = AllocateVSMemBlock(0x38);
-    if (pObject == 0) {
-        g_pEffTransportGoAheadConnectControlStream = 0;
-    } else {
-        g_pEffTransportGoAheadConnectControlStream =
-            ConstructEffTransportGoAheadConnectControlStream(pObject, (char *)"Go Ahead Connect");
-    }
-
-    pObject = AllocateVSMemBlock(0x34);
-    if (pObject == 0) {
-        g_pEffTransportFailedConnectControlStream = 0;
-    } else {
-        g_pEffTransportFailedConnectControlStream =
-            ConstructEffTransportFailedConnectControlStream(pObject, (char *)"Failed Connect");
-    }
-
-    pObject = AllocateVSMemBlock(0x2c);
-    if (pObject == 0) {
-        g_pEffTransportGlobalWriteStream = 0;
-    } else {
-        *(void **)pObject = g_GAME_EffStreamConstructionVtable;
-        *(int *)((char *)pObject + 4) = 1;
-        ((GameEffStream *)pObject)->ResetStateFields();
-        *(void **)pObject = g_NETWORK_EffTransportGlobalWriteStreamVtable;
-        ((GameEffStream *)pObject)->BeginEffStreamWriteSession();
-        g_pEffTransportGlobalWriteStream = pObject;
-    }
-
-    pObject = AllocateVSMemBlock(0x30);
-    if (pObject == 0) {
-        g_pEffTransportGlobalReadStream = 0;
-    } else {
-        *(void **)pObject = g_GAME_EffStreamConstructionVtable;
-        *(int *)((char *)pObject + 4) = 2;
-        ((GameEffStream *)pObject)->ResetStateFields();
-        *(void **)pObject = g_NETWORK_EffTransportGlobalReadStreamVtable;
-        *(int *)((char *)pObject + 0x18) = *(int *)((char *)pObject + 0x18) + 4;
-        g_pEffTransportGlobalReadStream = pObject;
-    }
-
-    pState->m_pActiveChannelOwner = (this->*pVtable->m_pCreateChannelOwner)();
-    pState->m_fTransportInitialized = 1;
-    pState->m_fRuntimeActive = 1;
-    (pState->*pVtable->m_pServiceTransport)();
-
-    if (pState->m_fRuntimeActive != 0 && g_nEffTransportAsyncErrorStatus == 0) {
-        pOwner = (VsNetChannelOwnerObject *)pState->m_pActiveChannelOwner;
-        if (pOwner->m_pVtable->m_pBindRuntimeKey(pOwner, pState->m_nRuntimeKey) == 0) {
-            pState->m_fRuntimeActive = 0;
-            return 0;
-        }
-        return g_nEffTransportAsyncErrorStatus == 0;
-    }
-
-    pState->m_fRuntimeActive = 0;
-    return 0;
+// FUNCTION: LEMBALL 0x00462ac0
+void VsNetEffTransportRuntimeState::WaitForFileBasedNetworkMessage(void) {
 }
 
-// FUNCTION: LEMBALL 0x00461AA0
-int VsNetRuntimeStartView::StartEffTransportRuntimeAndWaitReady(int nRuntimeKey, int cbMaxPacket) {
-    VsNetEffTransportRuntimeState *pState;
-    VsNetEffTransportRuntimeStateVtable *pVtable;
-    DWORD dwStartTime;
-    DWORD dwNow;
-    DWORD dwDelayStart;
-
-    pState = (VsNetEffTransportRuntimeState *)this;
-    pVtable = (VsNetEffTransportRuntimeStateVtable *)pState->m_RenderQueueNode.m_pVtable;
-    pState->m_nRuntimeKey = nRuntimeKey;
-    pState->m_fStartRequested = 1;
-    g_cbEffTransportMaxPacketBytes = cbMaxPacket;
-    (pState->*pVtable->m_pServiceTransport)();
-
-    dwStartTime = timeGetTime();
-    if (pState->m_fTransportInitialized == 0) {
-        do {
-            if (g_nEffTransportAsyncErrorStatus != 0) {
-                break;
-            }
-            dwNow = timeGetTime();
-            if (dwNow - dwStartTime >= 10000) {
-                break;
-            }
-            (pState->*pVtable->m_pWaitForTransportMessage)();
-        } while (pState->m_fTransportInitialized == 0);
-
-        if (pState->m_fTransportInitialized == 0) {
-            return 0;
-        }
+// FUNCTION: LEMBALL 0x00462ad0
+void *DeleteEffTransportRuntimeGlobalsWrapper(void *pObject, BYTE fFreeMemory) {
+    ((VsNetEffTransportRuntimeState *)pObject)->DestroyEffTransportRuntimeGlobals();
+    if ((fFreeMemory & 1) != 0) {
+        FreeVSMemBlock(pObject);
     }
-
-    dwStartTime = timeGetTime();
-    if (pState->m_fRuntimeActive != 0) {
-        do {
-            VsNetChannelOwnerObject *pActiveOwner;
-
-            if (pState->m_fRuntimeActive != 0) {
-                pActiveOwner = (VsNetChannelOwnerObject *)pState->m_pActiveChannelOwner;
-                if (pActiveOwner != 0) {
-                    if (*(int *)((char *)pActiveOwner +
-                                 pActiveOwner->m_pOffsets->m_nEndpointStateSlotOffset +
-                                 0x14) != 0) {
-                        break;
-                    }
-                }
-            }
-
-            if (g_nEffTransportAsyncErrorStatus != 0) {
-                break;
-            }
-            dwNow = timeGetTime();
-            if (dwNow - dwStartTime >= 10000) {
-                break;
-            }
-
-            dwDelayStart = timeGetTime();
-            do {
-                dwNow = timeGetTime();
-            } while (dwNow - dwDelayStart < 100);
-
-            (pState->*pVtable->m_pServiceTransport)();
-        } while (pState->m_fRuntimeActive != 0);
-    }
-
-    if (pState->m_fRuntimeActive != 0) {
-        VsNetChannelOwnerObject *pActiveOwner;
-
-        pActiveOwner = (VsNetChannelOwnerObject *)pState->m_pActiveChannelOwner;
-        if (pActiveOwner != 0) {
-            if (*(int *)((char *)pActiveOwner +
-                         pActiveOwner->m_pOffsets->m_nEndpointStateSlotOffset +
-                         0x14) != 0 &&
-                g_nEffTransportAsyncErrorStatus == 0) {
-                return 1;
-            }
-        }
-    }
-
-    pState->m_fShutdownRequested = 1;
-    (pState->*pVtable->m_pServiceTransport)();
-
-    dwStartTime = timeGetTime();
-    do {
-        if (pState->m_fTransportInitialized == 0) {
-            break;
-        }
-        dwNow = timeGetTime();
-    } while (dwNow - dwStartTime < 10000);
-
-    return 0;
+    return pObject;
 }
 
-// FUNCTION: LEMBALL 0x0046F6B0
-void *VsNetFileBasedRuntimeWindow::ConstructFileBasedNetworkRuntimeWindow(void) {
-    ((VS_InvisibleWindow *)this)
-        ->Construct("File-based Network", &g_fFileBasedRuntimeWindowClassRegistered);
-    m_Base.m_RuntimeState.ConstructEffTransportRuntimeState();
-    *(void **)this = (void *)g_NETWORK_FileBasedRuntimeWindowVtable;
-    m_nReserved78 = 0;
-    m_Base.m_RuntimeState.m_RenderQueueNode.m_pVtable =
-        (void **)&g_NETWORK_FileBasedRuntimeStateVtable;
-    return this;
-}
-
-// FUNCTION: LEMBALL 0x0046F210
+// FUNCTION: LEMBALL 0x0046f210
 DWORD FileBasedNetworkMessageThreadMain(void) {
     VsNetEffTransportRuntimeState *pActiveRuntime;
     VsNetEffTransportRuntimeStateVtable *pVtable;
@@ -3984,7 +3979,7 @@ DWORD FileBasedNetworkMessageThreadMain(void) {
     return 1;
 }
 
-// FUNCTION: LEMBALL 0x0046F3B0
+// FUNCTION: LEMBALL 0x0046f3b0
 int StartFileBasedNetworkMessageThread(void) {
     DWORD dwStartTime;
 
@@ -4017,7 +4012,7 @@ int StartFileBasedNetworkMessageThread(void) {
     return 1;
 }
 
-// FUNCTION: LEMBALL 0x0046F480
+// FUNCTION: LEMBALL 0x0046f480
 int StopFileBasedNetworkMessageThread(void) {
     VsNetEffTransportRuntimeState *pActiveRuntime;
     VsNetEffTransportRuntimeStateVtable *pVtable;
@@ -4043,199 +4038,7 @@ int StopFileBasedNetworkMessageThread(void) {
     return 1;
 }
 
-// FUNCTION: LEMBALL 0x0046F740
-void VsNetRuntimeWindowBase::ScheduleNetworkRuntimeTimerEvent(UINT nMilliseconds) {
-    VsInitFormattedOutputStream *pStream;
-
-    pStream = AppendCStringToStream(g_pStatusOutputStream,
-                                    "Setting next timer event to ");
-    AppendUnsignedIntToStreamVariant(pStream, nMilliseconds);
-    AppendCStringToStream(pStream, "ms from now\n");
-
-    KillTimer(*(HWND *)((char *)this + 4),
-              *(unsigned int *)((char *)this + 0x74));
-    *(unsigned int *)((char *)this + 0x74) =
-        SetTimer(*(HWND *)((char *)this + 4), 0x12345679,
-                 nMilliseconds, (void *)0);
-    *(unsigned int *)((char *)this + 0x78) =
-        *(unsigned int *)((char *)this + 0x78) == 0;
-}
-
-// FUNCTION: LEMBALL 0x0046F6F0
-void VsNetEffTransportRuntimeState::InitializeFileBasedNetworkTransport(void) {
-    AppendCStringToStream(g_pStatusOutputStream, "Network Initialised:\n");
-    AppendCStringToStream(g_pStatusOutputStream, "Windows file-based networking\n");
-    m_nTimerId64 = SetTimer(*(HWND *)((char *)this - 0x0c),
-                            0x12345679, 0x14, (void *)0);
-}
-
-// FUNCTION: LEMBALL 0x0046F730
-unsigned int VsNetEffTransportRuntimeState::GetNetworkRuntimeTimerId(void) {
-    return m_nTimerId64;
-}
-
-void VsNetEffTransportRuntimeState::FallbackInitializeTransport(void) {
-    m_fShutdownRequested = 1;
-    g_nEffTransportAsyncErrorStatus = 1;
-}
-
-void VsNetEffTransportRuntimeState::FallbackServiceTransport(void) {
-}
-
-void *VsNetEffTransportRuntimeState::FallbackCreateChannelOwner(void) {
-    return 0;
-}
-
-void VsNetEffTransportRuntimeState::FallbackWaitForTransportMessage(void) {
-}
-
-// FUNCTION: LEMBALL 0x004713F0
-void VsNetEffTransportRuntimeState::InitializeTcpipNetworkTransport(void) {
-    char abWsaData[0x190];
-    int nWsaResult;
-    int nMaxUdpDatagram;
-
-    nWsaResult = WSAStartup(0x101, abWsaData);
-    if (nWsaResult != 0) {
-        g_nTcpipWsaError = WSAGetLastError();
-        g_nEffTransportAsyncErrorStatus = 1;
-        return;
-    }
-
-    nMaxUdpDatagram = *(int *)(abWsaData + 0x18c) & 0xffff;
-    if (g_nTcpipMaxUdpDatagram <= nMaxUdpDatagram) {
-        g_nTcpipMaxUdpDatagram = nMaxUdpDatagram;
-    }
-    m_nTimerId64 = SetTimer(*(HWND *)((char *)this - 0x0c),
-                            0x12345678, 10, (void *)0);
-}
-
-// FUNCTION: LEMBALL 0x00471460
-void VsNetEffTransportRuntimeState::ShutdownTcpipNetworkTransport(void) {
-    KillTimer(*(HWND *)((char *)this - 0x0c), m_nTimerId64);
-    WSACleanup();
-}
-
-// FUNCTION: LEMBALL 0x004625E0
-void VsNetEffTransportRuntimeState::CleanupEffTransportRuntimeState(void) {
-    VsNetEffTransportRuntimeState *pActiveState;
-    void *pOwner;
-    void *pPeer;
-    void *pNextPeer;
-    void (**ppVtable)(void);
-
-    if (m_nReserved3C != 0) {
-        ((GameRenderDispatchQueue *)g_pEffTransportDispatchQueue)
-            ->RegisterOrderedRenderDispatchClient((void *)(unsigned long)m_nReserved3C, 0);
-        m_nReserved48 = 1;
-        m_nReserved38 = m_nReserved3C;
-        m_nReserved3C = 0;
-    }
-    if (m_nReserved40 != 0) {
-        ((GameRenderDispatchQueue *)g_pEffTransportDispatchQueue)
-            ->UnregisterOrderedRenderDispatchClient((void *)(unsigned long)m_nReserved40, 0);
-        m_nReserved40 = 0;
-        m_nReserved38 = 0;
-        m_nReserved48 = 0;
-    }
-
-    pActiveState = (VsNetEffTransportRuntimeState *)g_pActiveNetworkRuntimeWindow;
-    if (pActiveState != 0 && pActiveState->m_fTransportInitialized != 0) {
-        pActiveState->InitializeEffTransportRuntimeGlobals();
-        return;
-    }
-    if (m_fShutdownRequested != 0) {
-        ReleaseEffTransportRuntimeOwnerState();
-        return;
-    }
-
-    pOwner = m_pActiveChannelOwner;
-    if (pOwner != 0) {
-        ppVtable = *(void (***)(void))pOwner;
-        ppVtable[4]();
-    }
-
-    pPeer = m_pFirstPeer;
-    while (pPeer != 0) {
-        ppVtable = *(void (***)(void))pPeer;
-        ppVtable[1]();
-        pNextPeer = *(void **)((char *)pPeer + 0x10);
-        pPeer = pNextPeer;
-    }
-
-    if (m_nReserved38 != 0) {
-        ppVtable = *(void (***)(void))(unsigned long)m_nReserved38;
-        ppVtable[3]();
-    }
-}
-
-// FUNCTION: LEMBALL 0x0046F7C0
-int VsNetEffTransportRuntimeState::LoadActiveFileRange(void) {
-    return ((VsNetLockedEffStreamFileRangeView *)m_pActiveChannelOwner)
-        ->LoadLockedEffStreamFromFileRange();
-}
-
-// FUNCTION: LEMBALL 0x0046F7D0
-int VsNetEffTransportRuntimeState::WriteActiveFileRange(void) {
-    return ((VsNetLockedEffStreamFileRangeView *)m_pActiveChannelOwner)
-        ->WriteLockedEffStreamToFileRange();
-}
-
-int VsNetEffTransportRuntimeState::FallbackRuntimeStateSlot(void) {
-    return 0;
-}
-
-void *VsNetEffTransportRuntimeState::CreateFileNetworkAddress(void) {
-    return AllocateFileNetworkAddress();
-}
-
-// FUNCTION: LEMBALL 0x0046F930
-void *VsNetEffTransportRuntimeState::CreateGlobalStateFileBackedComposite(void) {
-    void *pObject;
-
-    pObject = AllocateVSMemBlock(0x1b8);
-    if (pObject == 0) {
-        return 0;
-    }
-    return ((VsNetGlobalStateCompositeLayout *)pObject)
-        ->ConstructGlobalStateFileBackedEffComposite(1);
-}
-
-// FUNCTION: LEMBALL 0x004714D0
-void VsNetEffTransportRuntimeState::ServiceTcpipNetworkTransport(void) {
-    PostMessageA(*(HWND *)((char *)this - 0x0c), 0x444, 0, 0);
-}
-
-void *VsNetEffTransportRuntimeState::CreateTcpipChannelOwner(void) {
-    return AllocateTcpipEffTransportRuntimeOwner();
-}
-
-void *VsNetEffTransportRuntimeState::CreateTcpipSecondaryOwner(void) {
-    return AllocateTcpipEffTransportComposite();
-}
-
-// FUNCTION: LEMBALL 0x0046F840
-void VsNetEffTransportRuntimeState::ServiceFileBasedNetworkTransport(void) {
-    PostMessageA(*(HWND *)((char *)this - 0x0c), 0x444, 0, 0);
-}
-
-// FUNCTION: LEMBALL 0x00462AC0
-void VsNetEffTransportRuntimeState::WaitForFileBasedNetworkMessage(void) {
-}
-
-// FUNCTION: LEMBALL 0x0046F950
-void *VsNetEffTransportRuntimeState::CreateFileBasedChannelOwner(void) {
-    void *pObject;
-
-    pObject = AllocateVSMemBlock(0x1b4);
-    if (pObject == 0) {
-        return 0;
-    }
-    return ((VsNetDualSlotCompositeLayout *)pObject)
-        ->ConstructDualSlotTableFileBackedEffComposite(1);
-}
-
-// FUNCTION: LEMBALL 0x0046F4F0
+// FUNCTION: LEMBALL 0x0046f4f0
 void ConfigureFileBasedNetworkPaths(char *pszLocalHost, char *pszBasePath) {
     size_t cchHost;
     size_t cchPath;
@@ -4268,23 +4071,172 @@ void ConfigureFileBasedNetworkPaths(char *pszLocalHost, char *pszBasePath) {
     strcat(g_pszFileBasedNetworkConfiguredPath, szNumber);
 }
 
-// FUNCTION: LEMBALL 0x0046F7A0
+// FUNCTION: LEMBALL 0x0046f6b0
+void *VsNetFileBasedRuntimeWindow::ConstructFileBasedNetworkRuntimeWindow(void) {
+    ((VS_InvisibleWindow *)this)
+        ->Construct("File-based Network", &g_fFileBasedRuntimeWindowClassRegistered);
+    m_Base.m_RuntimeState.ConstructEffTransportRuntimeState();
+    *(void **)this = (void *)g_NETWORK_FileBasedRuntimeWindowVtable;
+    m_nReserved78 = 0;
+    m_Base.m_RuntimeState.m_RenderQueueNode.m_pVtable =
+        (void **)&g_NETWORK_FileBasedRuntimeStateVtable;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x0046f6f0
+void VsNetEffTransportRuntimeState::InitializeFileBasedNetworkTransport(void) {
+    AppendCStringToStream(g_pStatusOutputStream, "Network Initialised:\n");
+    AppendCStringToStream(g_pStatusOutputStream, "Windows file-based networking\n");
+    m_nTimerId64 = SetTimer(*(HWND *)((char *)this - 0x0c),
+                            0x12345679, 0x14, (void *)0);
+}
+
+// FUNCTION: LEMBALL 0x0046f730
+unsigned int VsNetEffTransportRuntimeState::GetNetworkRuntimeTimerId(void) {
+    return m_nTimerId64;
+}
+
+// FUNCTION: LEMBALL 0x0046f740
+void VsNetRuntimeWindowBase::ScheduleNetworkRuntimeTimerEvent(UINT nMilliseconds) {
+    VsInitFormattedOutputStream *pStream;
+
+    pStream = AppendCStringToStream(g_pStatusOutputStream,
+                                    "Setting next timer event to ");
+    AppendUnsignedIntToStreamVariant(pStream, nMilliseconds);
+    AppendCStringToStream(pStream, "ms from now\n");
+
+    KillTimer(*(HWND *)((char *)this + 4),
+              *(unsigned int *)((char *)this + 0x74));
+    *(unsigned int *)((char *)this + 0x74) =
+        SetTimer(*(HWND *)((char *)this + 4), 0x12345679,
+                 nMilliseconds, (void *)0);
+    *(unsigned int *)((char *)this + 0x78) =
+        *(unsigned int *)((char *)this + 0x78) == 0;
+}
+
+// FUNCTION: LEMBALL 0x0046f7a0
 void WINAPI ConfigureFileBasedNetworkPathsWrapper(char *pszLocalHost, char *pszBasePath) {
     ConfigureFileBasedNetworkPaths(pszLocalHost, pszBasePath);
 }
 
-// FUNCTION: LEMBALL 0x004713C0
-void *VsNetRuntimeWindowBase::ConstructTcpipNetworkRuntimeWindow(void) {
-    ((VS_InvisibleWindow *)this)
-        ->Construct("TCPIP Network", &g_fTcpipRuntimeWindowClassRegistered);
-    m_RuntimeState.ConstructEffTransportRuntimeState();
-    *(void **)this = (void *)g_NETWORK_TcpipRuntimeWindowVtable;
-    m_RuntimeState.m_RenderQueueNode.m_pVtable =
-        (void **)&g_NETWORK_TcpipRuntimeStateVtable;
-    return this;
+// FUNCTION: LEMBALL 0x0046f7c0
+int VsNetEffTransportRuntimeState::LoadActiveFileRange(void) {
+    return ((VsNetLockedEffStreamFileRangeView *)m_pActiveChannelOwner)
+        ->LoadLockedEffStreamFromFileRange();
 }
 
-// FUNCTION: LEMBALL 0x0046FA10
+// FUNCTION: LEMBALL 0x0046f7d0
+int VsNetEffTransportRuntimeState::WriteActiveFileRange(void) {
+    return ((VsNetLockedEffStreamFileRangeView *)m_pActiveChannelOwner)
+        ->WriteLockedEffStreamToFileRange();
+}
+
+// FUNCTION: LEMBALL 0x0046f7e0
+int VsNetFileRuntimeWindowVtableModel::HandleFileRuntimeWindowMessage(unsigned int nMessage, unsigned int nWParam, unsigned int nLParam)
+{
+        VsNetFileBasedRuntimeWindow *pWindow;
+        VsNetEffTransportRuntimeState *pState;
+        VsNetEffTransportRuntimeStateVtable *pStateVtable;
+        (void)nWParam;
+        (void)nLParam;
+        pWindow = (VsNetFileBasedRuntimeWindow *)this;
+        if (nMessage != 0x444 && nMessage != 0x113) {
+            return -1;
+        }
+        if (nMessage == 0x444) {
+            if (pWindow->m_nReserved78 != 0) {
+                pWindow->m_Base.ScheduleNetworkRuntimeTimerEvent(0x14);
+            }
+            if (g_pEffTransportDispatchQueue != 0 &&
+                *(int *)((char *)g_pEffTransportDispatchQueue + 0x28) != 0) {
+                DrainRenderDispatchQueueEntries(
+                    g_pEffTransportDispatchQueue,
+                    *(unsigned int *)((char *)g_pEffTransportDispatchQueue + 0x28));
+            }
+        }
+        pState = &pWindow->m_Base.m_RuntimeState;
+        pStateVtable = (VsNetEffTransportRuntimeStateVtable *)
+            pState->m_RenderQueueNode.m_pVtable;
+        (pState->*pStateVtable->m_pCleanupRuntimeState)();
+        return 0;
+}
+
+// FUNCTION: LEMBALL 0x0046f840
+void VsNetEffTransportRuntimeState::ServiceFileBasedNetworkTransport(void) {
+    PostMessageA(*(HWND *)((char *)this - 0x0c), 0x444, 0, 0);
+}
+
+// FUNCTION: LEMBALL 0x0046f860
+static void *AllocateFileNetworkAddress(void) {
+    CFileNetworkAddress *pObject;
+
+    pObject = (CFileNetworkAddress *)AllocateVSMemBlock(0x20);
+    if (pObject == 0) {
+        return 0;
+    }
+    *(void ***)pObject = (void **)g_CFileNetworkAddressVtable;
+    *((char *)pObject + 4) = 0;
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0046f880
+void CFileNetworkAddress::CopyAddressObject(CFileNetworkAddress *pSource) {
+    strcpy((char *)this + 4, (char *)pSource + 4);
+}
+
+// FUNCTION: LEMBALL 0x0046f8b0
+void CFileNetworkAddress::CopyAddressFromString(const char *pszAddress) {
+    strcpy((char *)this + 4, pszAddress);
+}
+
+// FUNCTION: LEMBALL 0x0046f8e0
+int CFileNetworkAddress::CompareAddress(CFileNetworkAddress *pOther) {
+    return strcmp((char *)this + 4, (char *)pOther + 4) == 0;
+}
+
+// FUNCTION: LEMBALL 0x0046f920
+char *CFileNetworkAddress::GetAddressString(void) {
+    return (char *)this + 4;
+}
+
+// FUNCTION: LEMBALL 0x0046f930
+void *VsNetEffTransportRuntimeState::CreateGlobalStateFileBackedComposite(void) {
+    void *pObject;
+
+    pObject = AllocateVSMemBlock(0x1b8);
+    if (pObject == 0) {
+        return 0;
+    }
+    return ((VsNetGlobalStateCompositeLayout *)pObject)
+        ->ConstructGlobalStateFileBackedEffComposite(1);
+}
+
+// FUNCTION: LEMBALL 0x0046f950
+void *VsNetEffTransportRuntimeState::CreateFileBasedChannelOwner(void) {
+    void *pObject;
+
+    pObject = AllocateVSMemBlock(0x1b4);
+    if (pObject == 0) {
+        return 0;
+    }
+    return ((VsNetDualSlotCompositeLayout *)pObject)
+        ->ConstructDualSlotTableFileBackedEffComposite(1);
+}
+
+// FUNCTION: LEMBALL 0x0046f970
+void *VsNetEffTransportRuntimeState::DeleteEffTransportRuntimeWindow(BYTE fFreeMemory) {
+    char *pWindowBase;
+
+    pWindowBase = (char *)this - 0x10;
+    DestroyEffTransportRuntimeGlobals();
+    DestroyInvisibleMessageWindow((VS_InvisibleWindow *)pWindowBase);
+    if ((fFreeMemory & 1) != 0) {
+        FreeVSMemBlock(pWindowBase);
+    }
+    return pWindowBase;
+}
+
+// FUNCTION: LEMBALL 0x0046fa10
 DWORD TcpipNetworkMessageThreadMain(void) {
     VsNetEffTransportRuntimeState *pActiveRuntime;
     VsNetEffTransportRuntimeStateVtable *pVtable;
@@ -4361,7 +4313,7 @@ DWORD TcpipNetworkMessageThreadMain(void) {
     return 1;
 }
 
-// FUNCTION: LEMBALL 0x0046FBB0
+// FUNCTION: LEMBALL 0x0046fbb0
 int StartTcpipNetworkMessageThread(void) {
     DWORD dwStartTime;
 
@@ -4394,7 +4346,7 @@ int StartTcpipNetworkMessageThread(void) {
     return 1;
 }
 
-// FUNCTION: LEMBALL 0x0046FC80
+// FUNCTION: LEMBALL 0x0046fc80
 int StopTcpipNetworkMessageThread(void) {
     VsNetEffTransportRuntimeState *pActiveRuntime;
     VsNetEffTransportRuntimeStateVtable *pVtable;
@@ -4419,3 +4371,95 @@ int StopTcpipNetworkMessageThread(void) {
 
     return 1;
 }
+
+// FUNCTION: LEMBALL 0x004713c0
+void *VsNetRuntimeWindowBase::ConstructTcpipNetworkRuntimeWindow(void) {
+    ((VS_InvisibleWindow *)this)
+        ->Construct("TCPIP Network", &g_fTcpipRuntimeWindowClassRegistered);
+    m_RuntimeState.ConstructEffTransportRuntimeState();
+    *(void **)this = (void *)g_NETWORK_TcpipRuntimeWindowVtable;
+    m_RuntimeState.m_RenderQueueNode.m_pVtable =
+        (void **)&g_NETWORK_TcpipRuntimeStateVtable;
+    return this;
+}
+
+// FUNCTION: LEMBALL 0x004713f0
+void VsNetEffTransportRuntimeState::InitializeTcpipNetworkTransport(void) {
+    char abWsaData[0x190];
+    int nWsaResult;
+    int nMaxUdpDatagram;
+
+    nWsaResult = WSAStartup(0x101, abWsaData);
+    if (nWsaResult != 0) {
+        g_nTcpipWsaError = WSAGetLastError();
+        g_nEffTransportAsyncErrorStatus = 1;
+        return;
+    }
+
+    nMaxUdpDatagram = *(int *)(abWsaData + 0x18c) & 0xffff;
+    if (g_nTcpipMaxUdpDatagram <= nMaxUdpDatagram) {
+        g_nTcpipMaxUdpDatagram = nMaxUdpDatagram;
+    }
+    m_nTimerId64 = SetTimer(*(HWND *)((char *)this - 0x0c),
+                            0x12345678, 10, (void *)0);
+}
+
+// FUNCTION: LEMBALL 0x00471460
+void VsNetEffTransportRuntimeState::ShutdownTcpipNetworkTransport(void) {
+    KillTimer(*(HWND *)((char *)this - 0x0c), m_nTimerId64);
+    WSACleanup();
+}
+
+// FUNCTION: LEMBALL 0x00471480
+int VsNetTcpipRuntimeWindowVtableModel::HandleTcpipRuntimeWindowMessage(unsigned int nMessage, unsigned int nWParam, unsigned int nLParam) {
+    VsNetEffTransportRuntimeState *pState;
+    void **ppStateVtable;
+    void (*pStateCallback)(void *);
+    void *pDispatchQueue;
+
+    (void)nWParam;
+    (void)nLParam;
+    if (nMessage != 0x444 && nMessage != 0x113) {
+        return -1;
+    }
+    if (nMessage == 0x444) {
+        pDispatchQueue = g_pEffTransportDispatchQueue;
+        if (pDispatchQueue != 0 && *(int *)((char *)pDispatchQueue + 0x28) != 0) {
+            DrainRenderDispatchQueueEntries(
+                pDispatchQueue, *(unsigned int *)((char *)pDispatchQueue + 0x28));
+        }
+    }
+    pState = (VsNetEffTransportRuntimeState *)((char *)this + 0x10);
+    ppStateVtable = *(void ***)pState;
+    pStateCallback = (void (*)(void *))ppStateVtable[5];
+    pStateCallback(pState);
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x004714d0
+void VsNetEffTransportRuntimeState::ServiceTcpipNetworkTransport(void) {
+    PostMessageA(*(HWND *)((char *)this - 0x0c), 0x444, 0, 0);
+}
+
+// FUNCTION: LEMBALL 0x004794e0
+void CFileNetworkAddress::SelectAddressType(int nType) {
+    if (nType == 0) {
+        strcpy((char *)this + 4, "LAN");
+    } else if (nType == 1) {
+        strcpy((char *)this + 4, "WAN");
+    }
+}
+
+// FUNCTION: LEMBALL 0x00479510
+int CFileNetworkAddress::InitializeAddress(int nUnused) {
+    (void)nUnused;
+    AppendCStringToStream(
+        g_pErrorOutputStream,
+        "You haven't implemented major/minor distinction in 'CFileNetworkAddress'es\n");
+    AppendCStringToStream(
+        g_pErrorOutputStream,
+        "use count entry in broadcast file\n");
+    return 0;
+}
+
+#include "ENGINE/NET/VSNET_UNANNOTATED.INL"

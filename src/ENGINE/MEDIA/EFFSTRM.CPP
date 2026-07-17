@@ -8,43 +8,14 @@ extern int PASCAL ReturnTrueVtableCallbackThunk(void *pObject);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
 extern void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void *pObject);
+void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void *pObject);
+void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStream(void *pObject);
+void *LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(
+    void *pObject, void *pUnused, BYTE fDelete);
 
-// FUNCTION: LEMBALL 0x004524F0
-void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStream(void *pObject) {
-    VsNetEffStreamBase *pStream;
 
-    pStream = (VsNetEffStreamBase *)pObject;
-    pStream->WriteEffStreamU32BE(*(unsigned int *)((char *)pObject + 0x2c));
-}
 
-// FUNCTION: LEMBALL 0x00452500
-void LEMBALL_FASTCALL ReadNetworkLobbyU32PayloadStream(void *pObject) {
-    VsNetEffStreamBase *pStream;
 
-    pStream = (VsNetEffStreamBase *)pObject;
-    *(unsigned int *)((char *)pObject + 0x2c) = pStream->ReadEffStreamU32BEValue();
-}
-
-// FUNCTION: LEMBALL 0x00452E50
-void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void *pObject) {
-    VsNetEffStreamBase *pStream;
-
-    pStream = (VsNetEffStreamBase *)pObject;
-    *(unsigned int *)((char *)pObject + 0x2c) = pStream->ReadEffStreamU32BEValue();
-}
-
-// FUNCTION: LEMBALL 0x00452E60
-void *LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void *pObject, void *pUnused, BYTE fDelete) {
-    VsNetEffStreamBase *pStream;
-
-    (void)pUnused;
-    pStream = (VsNetEffStreamBase *)pObject;
-    pStream->DestroyEffStreamBase();
-    if ((fDelete & 1) != 0) {
-        FreeVSMemBlock(pObject);
-    }
-    return pObject;
-}
 
 static void *g_EFF_NetworkLobbySelectedPeerStatusVtable[6] = {
     (void *)ReturnTrueVtableCallbackThunk,
@@ -119,9 +90,30 @@ static void *g_EFF_NetworkLobbyPeerDirtyConfirmVtable[6] = {
     (void *)DeleteNetworkLobbySelectedPeerStatusStream,
 };
 static const char g_EFF_DefaultNetworkPath[] = "t:\\network";
+void *ConstructEffStreamPayloadSize8(void *pObject);
+void *ConstructNetworkLobbySelectedPeerStatusStream(void *pObject);
+void *ConstructNetworkLobbyPeerEntryStream(void *pObject);
+void *ConstructNetworkLobbyU32PayloadStream(void *pObject, int nEventCode);
+void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStream(void *pObject);
+void LEMBALL_FASTCALL ReadNetworkLobbyU32PayloadStream(void *pObject);
+void *ConstructNetworkLobbyPeerClearCloseStream(void *pObject);
+void *ConstructNetworkLobbyPeerDirtyConfirmStream(void *pObject);
+void *ConstructNetworkLobbyVsnetRuntime(void *pObject, char *pszFileBasedNetworkRoot);
+void DestroyNetworkLobbyVsnetRuntime(void *pObject);
+int RegisterNetworkLobbyVsnetRuntimeWithTransport(void *pVsnetRuntime);
+void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(void *pVsnetRuntime);
+void LEMBALL_FASTCALL MarkNetworkLobbySelectedPeerDisconnected(void *pVsnetRuntime);
+void LEMBALL_FASTCALL ServiceNetworkLobbySelectedPeerUpdates(void *pVsnetRuntime);
+void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void *pObject);
+void *LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void *pObject, void *pUnused, BYTE fDelete);
+int HasShiftedRecordSlotPayloadForStream(void *pTransportPeer, void *pStream);
+void LoadStreamFromShiftedRecordSlotAndClear(void *pTransportPeer, void *pStream);
+void SetEffTransportPrimaryHandleParams(void *pRuntimeWindow, int nPrimaryHandleCount, int nPrimaryHandleStride, int nFlags);
+void SetEffTransportSecondaryHandleParams(void *pRuntimeWindow, int nSecondaryHandleCount, int nSecondaryHandleStride);
+
 // GLOBAL: LEMBALL 0x004a1e1c
 void *g_pEffTransportDispatchQueue = 0;
-// GLOBAL: LEMBALL 0x004A1E20
+// GLOBAL: LEMBALL 0x004a1e20
 void *g_pEffTransportSecondaryDispatchQueue = 0;
 
 typedef int (LEMBALL_FASTCALL *GameEffStreamLoadHeaderProc)(GameEffStream *);
@@ -353,47 +345,49 @@ extern int StopFileBasedNetworkMessageThread(void);
 extern int StopTcpipNetworkMessageThread(void);
 void *ConstructNetworkLobbyPeerClearCloseStream(void *pObject);
 
-// FUNCTION: LEMBALL 0x004615F0
-void *GameRecordSlotTable::GetShiftedRecordSlotByPacketId(int nPacketId) {
-    if (nPacketId >= 3) {
-        nPacketId -= 3;
-    }
-    return m_apSlots08[nPacketId];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include "ENGINE/CORE/SAFEVT.H"
+
+
+// FUNCTION: LEMBALL 0x004453b0
+void *ConstructEffStreamPayloadSize8(void *pObject) {
+    GameEffStream *pStream;
+
+    pStream = (GameEffStream *)pObject;
+    pStream->m_pVtable =
+        (GameEffStreamVtable *)g_GAME_EffStreamConstructionVtable;
+    pStream->m_nEventCode = 8;
+    pStream->ResetStateFields();
+    pStream->m_pVtable = (GameEffStreamVtable *)g_EFF_PayloadSize8Vtable;
+    pStream->m_cbSerializedLength += 8;
+    pStream->m_fHasPayload = 1;
+    return pObject;
 }
 
-// FUNCTION: LEMBALL 0x0045F280
-int GameEffStream::LoadEffStreamFromMemory(int nSourceBuffer) {
-    GameEffStreamVtable *pVtable;
-
-    pVtable = m_pVtable;
-    m_pvReadCursor = nSourceBuffer;
-    if (pVtable->m_pLoadFromMemoryHeader(this) != 0) {
-        pVtable->m_pLoadFromMemoryBody(this);
-        return 1;
-    }
-    return 0;
-}
-
-// FUNCTION: LEMBALL 0x00462550
-void SetEffTransportPrimaryHandleParams(void *pRuntimeWindow, int nPrimaryHandleCount, int nPrimaryHandleStride, int nFlags) {
-    GameEffTransportRuntimeWindow *pWindow;
-
-    pWindow = (GameEffTransportRuntimeWindow *)pRuntimeWindow;
-    pWindow->m_nPrimaryHandleCount = nPrimaryHandleCount;
-    pWindow->m_nPrimaryHandleStride = nPrimaryHandleStride;
-    pWindow->m_nPrimaryHandleFlags = nFlags;
-}
-
-// FUNCTION: LEMBALL 0x00462570
-void SetEffTransportSecondaryHandleParams(void *pRuntimeWindow, int nSecondaryHandleCount, int nSecondaryHandleStride) {
-    GameEffTransportRuntimeWindow *pWindow;
-
-    pWindow = (GameEffTransportRuntimeWindow *)pRuntimeWindow;
-    pWindow->m_nSecondaryHandleCount = nSecondaryHandleCount;
-    pWindow->m_nSecondaryHandleStride = nSecondaryHandleStride;
-}
-
-// FUNCTION: LEMBALL 0x004523B0
+// FUNCTION: LEMBALL 0x004523b0
 void *ConstructNetworkLobbySelectedPeerStatusStream(void *pObject) {
     GameEffStream *pStream;
 
@@ -407,7 +401,7 @@ void *ConstructNetworkLobbySelectedPeerStatusStream(void *pObject) {
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x004523E0
+// FUNCTION: LEMBALL 0x004523e0
 void *ConstructNetworkLobbyPeerEntryStream(void *pObject) {
     GameNetworkLobbyPeerEntryStream *pStream;
 
@@ -421,6 +415,52 @@ void *ConstructNetworkLobbyPeerEntryStream(void *pObject) {
     pStream->m_nPeerEntryState = 0;
     pStream->m_Base.m_cbSerializedLength += 0x1e;
     pStream->m_Base.m_fHasPayload = 1;
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x004524b0
+void *ConstructNetworkLobbyU32PayloadStream(void *pObject, int nEventCode) {
+    GameEffStream *pStream;
+
+    pStream = (GameEffStream *)pObject;
+    pStream->m_pVtable =
+        (GameEffStreamVtable *)g_GAME_EffStreamConstructionVtable;
+    pStream->m_nEventCode = nEventCode;
+    pStream->ResetStateFields();
+    pStream->m_pVtable = (GameEffStreamVtable *)g_EFF_NetworkLobbyU32PayloadVtable;
+    pStream->m_cbSerializedLength += 4;
+    pStream->m_fHasPayload = 1;
+    pStream->m_nU32Payload = 0;
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x004524f0
+void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStream(void *pObject) {
+    VsNetEffStreamBase *pStream;
+
+    pStream = (VsNetEffStreamBase *)pObject;
+    pStream->WriteEffStreamU32BE(*(unsigned int *)((char *)pObject + 0x2c));
+}
+
+// FUNCTION: LEMBALL 0x00452500
+void LEMBALL_FASTCALL ReadNetworkLobbyU32PayloadStream(void *pObject) {
+    VsNetEffStreamBase *pStream;
+
+    pStream = (VsNetEffStreamBase *)pObject;
+    *(unsigned int *)((char *)pObject + 0x2c) = pStream->ReadEffStreamU32BEValue();
+}
+
+// FUNCTION: LEMBALL 0x00452510
+void *ConstructNetworkLobbyPeerClearCloseStream(void *pObject) {
+    ConstructNetworkLobbyU32PayloadStream(pObject, 6);
+    *(void **)pObject = g_EFF_NetworkLobbyPeerClearCloseVtable;
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x00452530
+void *ConstructNetworkLobbyPeerDirtyConfirmStream(void *pObject) {
+    ConstructNetworkLobbyU32PayloadStream(pObject, 7);
+    *(void **)pObject = g_EFF_NetworkLobbyPeerDirtyConfirmVtable;
     return pObject;
 }
 
@@ -513,7 +553,7 @@ void *ConstructNetworkLobbyVsnetRuntime(void *pObject, char *pszFileBasedNetwork
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x004526E0
+// FUNCTION: LEMBALL 0x004526e0
 void DestroyNetworkLobbyVsnetRuntime(void *pObject) {
     GameNetworkLobbyVsnetRuntime *pRuntime;
     void *pOwnedObject;
@@ -551,169 +591,22 @@ void DestroyNetworkLobbyVsnetRuntime(void *pObject) {
     pRuntime->m_pVtable = g_pNonZrleVariantRenderEntryInitializeVtable;
 }
 
-// FUNCTION: LEMBALL 0x0045F1E0
-void GameEffStream::BeginEffStreamWriteSession(void) {
-    int cbPayload;
+// FUNCTION: LEMBALL 0x00452740
+int RegisterNetworkLobbyVsnetRuntimeWithTransport(void *pVsnetRuntime) {
+    GameEffTransportRuntimeWindow *pWindow;
 
-    cbPayload = m_cWriteSessions;
-    m_cWriteSessions = cbPayload + 1;
-    if (cbPayload == 0) {
-        if (m_fOwnsBuffer == 0) {
-            cbPayload = (int)(unsigned long)AllocateVSMemBlock((unsigned int)(m_cbSerializedLength + 0x10));
-            m_fOwnsBuffer = 1;
-            m_pvOwnedBuffer = cbPayload;
-            m_pvWriteCursor = cbPayload + 0x10;
-            m_pvBufferEnd = m_cbSerializedLength + cbPayload + 0x10;
-        } else {
-            m_pvWriteCursor = m_pvOwnedBuffer + 0x10;
-        }
-        m_pVtable->m_pBeginWriteHeader(this);
-        m_pVtable->m_pBeginWriteBody(this);
-    }
-}
-
-// FUNCTION: LEMBALL 0x0045F240
-void GameEffStream::EndEffStreamWriteSession(void) {
-    --m_cWriteSessions;
-}
-
-// FUNCTION: LEMBALL 0x0045FC30
-int HasShiftedRecordSlotPayloadForStream(void *pTransportPeer, void *pStream) {
-    GameEffTransportHandleOwner *pHandleOwner;
-    GameShiftedRecordSlot *pSlot;
-
-    pHandleOwner = (GameEffTransportHandleOwner *)pTransportPeer;
-    pSlot = (GameShiftedRecordSlot *)
-        ((GameRecordSlotTable *)pHandleOwner->m_pShiftedRecordSlotTable)
-            ->GetShiftedRecordSlotByPacketId(((GameEffStream *)pStream)->m_nEventCode);
-    return pSlot->m_fHasPayload;
-}
-
-// FUNCTION: LEMBALL 0x0045FC50
-void LoadStreamFromShiftedRecordSlotAndClear(void *pTransportPeer, void *pStream) {
-    GameEffTransportHandleOwner *pHandleOwner;
-    GameShiftedRecordSlot *pSlot;
-    GameShiftedRecordLockVtable *pLockVtable;
-
-    pHandleOwner = (GameEffTransportHandleOwner *)pTransportPeer;
-    pSlot = (GameShiftedRecordSlot *)
-        ((GameRecordSlotTable *)pHandleOwner->m_pShiftedRecordSlotTable)
-            ->GetShiftedRecordSlotByPacketId(((GameEffStream *)pStream)->m_nEventCode);
-    pLockVtable = (GameShiftedRecordLockVtable *)pSlot->m_pLockVtable;
-    pLockVtable->m_pLock();
-    ((GameEffStream *)pStream)->LoadEffStreamFromMemory(pSlot->m_pSerializedPayload + 0x10);
-    pLockVtable->m_pUnlock();
-    pSlot->m_fHasPayload = 0;
-}
-
-// FUNCTION: LEMBALL 0x0045F720
-void GameEffTransportHandleGroup::Reset(void) {
-    int nResult;
-
-    if (m_fPrimaryActive != 0) {
-        m_fSecondaryActive = 0;
-        m_fPrimaryActive = 0;
-        nResult = m_pCallback->m_pVtable->m_pBeginReset();
-        if (nResult == -1) {
-            m_pCallback->m_pVtable->m_pFinishReset();
-        }
-    }
-}
-
-// FUNCTION: LEMBALL 0x0045F2B0
-void GameEffStream::QueueEffStreamWriteEvent(int nPayload) {
-    GameEffQueuedWriteEvent event;
-
-    if (nPayload != 0) {
-        event.m_nPayload = nPayload;
-        event.m_fWrite = 1;
-        event.m_nEventType = 0xb;
-        event.m_pStream = this;
-        BeginEffStreamWriteSession();
-        m_fWritePending = 1;
-        ((GameRenderQueueServiceInterface *)g_pEffTransportDispatchQueue)
-            ->QueueWriteEvent(&event);
-        ((GameEffTransportRuntimeServiceInterface *)
-             g_pActiveNetworkRuntimeWindow)
-            ->ServiceRuntime();
-    }
-}
-
-// FUNCTION: LEMBALL 0x0045EE80
-void GameEffStream::ResetStateFields(void) {
-    m_fHasPayload = 0;
-    m_fWritePending = 0;
-    m_fOwnsBuffer = 0;
-    m_pvOwnedBuffer = 0;
-    m_cbSerializedLength = 0;
-    m_cWriteSessions = 0;
-}
-
-// FUNCTION: LEMBALL 0x004453B0
-void *ConstructEffStreamPayloadSize8(void *pObject) {
-    GameEffStream *pStream;
-
-    pStream = (GameEffStream *)pObject;
-    pStream->m_pVtable =
-        (GameEffStreamVtable *)g_GAME_EffStreamConstructionVtable;
-    pStream->m_nEventCode = 8;
-    pStream->ResetStateFields();
-    pStream->m_pVtable = (GameEffStreamVtable *)g_EFF_PayloadSize8Vtable;
-    pStream->m_cbSerializedLength += 8;
-    pStream->m_fHasPayload = 1;
-    return pObject;
-}
-
-// FUNCTION: LEMBALL 0x004524B0
-void *ConstructNetworkLobbyU32PayloadStream(void *pObject, int nEventCode) {
-    GameEffStream *pStream;
-
-    pStream = (GameEffStream *)pObject;
-    pStream->m_pVtable =
-        (GameEffStreamVtable *)g_GAME_EffStreamConstructionVtable;
-    pStream->m_nEventCode = nEventCode;
-    pStream->ResetStateFields();
-    pStream->m_pVtable = (GameEffStreamVtable *)g_EFF_NetworkLobbyU32PayloadVtable;
-    pStream->m_cbSerializedLength += 4;
-    pStream->m_fHasPayload = 1;
-    pStream->m_nU32Payload = 0;
-    return pObject;
-}
-
-// FUNCTION: LEMBALL 0x00452510
-void *ConstructNetworkLobbyPeerClearCloseStream(void *pObject) {
-    ConstructNetworkLobbyU32PayloadStream(pObject, 6);
-    *(void **)pObject = g_EFF_NetworkLobbyPeerClearCloseVtable;
-    return pObject;
-}
-
-// FUNCTION: LEMBALL 0x00452530
-void *ConstructNetworkLobbyPeerDirtyConfirmStream(void *pObject) {
-    ConstructNetworkLobbyU32PayloadStream(pObject, 7);
-    *(void **)pObject = g_EFF_NetworkLobbyPeerDirtyConfirmVtable;
-    return pObject;
-}
-
-// FUNCTION: LEMBALL 0x00462590
-void GameEffTransportRuntimeWindow::RegisterEffTransportEventClient(void *pClient) {
-    m_pSecondaryDispatchClient = pClient;
-    ((GameRenderDispatchQueue *)g_pEffTransportSecondaryDispatchQueue)
-        ->RegisterOrderedRenderDispatchClient(pClient, 0);
-}
-
-// FUNCTION: LEMBALL 0x004625B0
-void GameEffTransportRuntimeWindow::UnregisterEffTransportEventClient(void) {
-    void *pClient;
-
-    pClient = m_pSecondaryDispatchClient;
-    if (pClient != 0) {
+    pWindow = (GameEffTransportRuntimeWindow *)g_pActiveNetworkRuntimeWindow;
+    if (pWindow != 0 && pWindow->m_fRuntimeActive != 0) {
+        pWindow->m_pPrimaryDispatchClient = pVsnetRuntime;
+        ((GameEffTransportRuntimeWindowVtable *)*(void **)g_pActiveNetworkRuntimeWindow)->m_pServiceRuntime();
         ((GameRenderDispatchQueue *)g_pEffTransportSecondaryDispatchQueue)
-            ->UnregisterOrderedRenderDispatchClient(pClient, 0);
-        m_pSecondaryDispatchClient = 0;
+            ->RegisterOrderedRenderDispatchClient(pVsnetRuntime, 0x19);
+        return 1;
     }
+    return 0;
 }
 
-// FUNCTION: LEMBALL 0x004527C0
+// FUNCTION: LEMBALL 0x004527c0
 void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(void *pVsnetRuntime) {
     GameNetworkLobbyVsnetRuntime *pRuntime;
     GameEffTransportRuntimeWindow *pWindow;
@@ -743,12 +636,12 @@ void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(void *pVsn
     }
 }
 
-// FUNCTION: LEMBALL 0x00452AB0
+// FUNCTION: LEMBALL 0x00452ab0
 void LEMBALL_FASTCALL MarkNetworkLobbySelectedPeerDisconnected(void *pVsnetRuntime) {
     ((GameNetworkLobbyVsnetRuntime *)pVsnetRuntime)->m_fSelectionNeedsReset = 1;
 }
 
-// FUNCTION: LEMBALL 0x00452AC0
+// FUNCTION: LEMBALL 0x00452ac0
 void LEMBALL_FASTCALL ServiceNetworkLobbySelectedPeerUpdates(void *pVsnetRuntime) {
     GameNetworkLobbyVsnetRuntime *pRuntime;
     GameEffTransportPeer *pSelectedPeer;
@@ -792,18 +685,180 @@ void LEMBALL_FASTCALL ServiceNetworkLobbySelectedPeerUpdates(void *pVsnetRuntime
     }
 }
 
-// FUNCTION: LEMBALL 0x00452740
-int RegisterNetworkLobbyVsnetRuntimeWithTransport(void *pVsnetRuntime) {
-    GameEffTransportRuntimeWindow *pWindow;
+// FUNCTION: LEMBALL 0x00452e50
+void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void *pObject) {
+    VsNetEffStreamBase *pStream;
 
-    pWindow = (GameEffTransportRuntimeWindow *)g_pActiveNetworkRuntimeWindow;
-    if (pWindow != 0 && pWindow->m_fRuntimeActive != 0) {
-        pWindow->m_pPrimaryDispatchClient = pVsnetRuntime;
-        ((GameEffTransportRuntimeWindowVtable *)*(void **)g_pActiveNetworkRuntimeWindow)->m_pServiceRuntime();
-        ((GameRenderDispatchQueue *)g_pEffTransportSecondaryDispatchQueue)
-            ->RegisterOrderedRenderDispatchClient(pVsnetRuntime, 0x19);
+    pStream = (VsNetEffStreamBase *)pObject;
+    *(unsigned int *)((char *)pObject + 0x2c) = pStream->ReadEffStreamU32BEValue();
+}
+
+// FUNCTION: LEMBALL 0x00452e60
+void *LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void *pObject, void *pUnused, BYTE fDelete) {
+    VsNetEffStreamBase *pStream;
+
+    (void)pUnused;
+    pStream = (VsNetEffStreamBase *)pObject;
+    pStream->DestroyEffStreamBase();
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045ee80
+void GameEffStream::ResetStateFields(void) {
+    m_fHasPayload = 0;
+    m_fWritePending = 0;
+    m_fOwnsBuffer = 0;
+    m_pvOwnedBuffer = 0;
+    m_cbSerializedLength = 0;
+    m_cWriteSessions = 0;
+}
+
+// FUNCTION: LEMBALL 0x0045f1e0
+void GameEffStream::BeginEffStreamWriteSession(void) {
+    int cbPayload;
+
+    cbPayload = m_cWriteSessions;
+    m_cWriteSessions = cbPayload + 1;
+    if (cbPayload == 0) {
+        if (m_fOwnsBuffer == 0) {
+            cbPayload = (int)(unsigned long)AllocateVSMemBlock((unsigned int)(m_cbSerializedLength + 0x10));
+            m_fOwnsBuffer = 1;
+            m_pvOwnedBuffer = cbPayload;
+            m_pvWriteCursor = cbPayload + 0x10;
+            m_pvBufferEnd = m_cbSerializedLength + cbPayload + 0x10;
+        } else {
+            m_pvWriteCursor = m_pvOwnedBuffer + 0x10;
+        }
+        m_pVtable->m_pBeginWriteHeader(this);
+        m_pVtable->m_pBeginWriteBody(this);
+    }
+}
+
+// FUNCTION: LEMBALL 0x0045f240
+void GameEffStream::EndEffStreamWriteSession(void) {
+    --m_cWriteSessions;
+}
+
+// FUNCTION: LEMBALL 0x0045f280
+int GameEffStream::LoadEffStreamFromMemory(int nSourceBuffer) {
+    GameEffStreamVtable *pVtable;
+
+    pVtable = m_pVtable;
+    m_pvReadCursor = nSourceBuffer;
+    if (pVtable->m_pLoadFromMemoryHeader(this) != 0) {
+        pVtable->m_pLoadFromMemoryBody(this);
         return 1;
     }
     return 0;
 }
-#include "ENGINE/CORE/SAFEVT.H"
+
+// FUNCTION: LEMBALL 0x0045f2b0
+void GameEffStream::QueueEffStreamWriteEvent(int nPayload) {
+    GameEffQueuedWriteEvent event;
+
+    if (nPayload != 0) {
+        event.m_nPayload = nPayload;
+        event.m_fWrite = 1;
+        event.m_nEventType = 0xb;
+        event.m_pStream = this;
+        BeginEffStreamWriteSession();
+        m_fWritePending = 1;
+        ((GameRenderQueueServiceInterface *)g_pEffTransportDispatchQueue)
+            ->QueueWriteEvent(&event);
+        ((GameEffTransportRuntimeServiceInterface *)
+             g_pActiveNetworkRuntimeWindow)
+            ->ServiceRuntime();
+    }
+}
+
+// FUNCTION: LEMBALL 0x0045f720
+void GameEffTransportHandleGroup::Reset(void) {
+    int nResult;
+
+    if (m_fPrimaryActive != 0) {
+        m_fSecondaryActive = 0;
+        m_fPrimaryActive = 0;
+        nResult = m_pCallback->m_pVtable->m_pBeginReset();
+        if (nResult == -1) {
+            m_pCallback->m_pVtable->m_pFinishReset();
+        }
+    }
+}
+
+// FUNCTION: LEMBALL 0x0045fc30
+int HasShiftedRecordSlotPayloadForStream(void *pTransportPeer, void *pStream) {
+    GameEffTransportHandleOwner *pHandleOwner;
+    GameShiftedRecordSlot *pSlot;
+
+    pHandleOwner = (GameEffTransportHandleOwner *)pTransportPeer;
+    pSlot = (GameShiftedRecordSlot *)
+        ((GameRecordSlotTable *)pHandleOwner->m_pShiftedRecordSlotTable)
+            ->GetShiftedRecordSlotByPacketId(((GameEffStream *)pStream)->m_nEventCode);
+    return pSlot->m_fHasPayload;
+}
+
+// FUNCTION: LEMBALL 0x0045fc50
+void LoadStreamFromShiftedRecordSlotAndClear(void *pTransportPeer, void *pStream) {
+    GameEffTransportHandleOwner *pHandleOwner;
+    GameShiftedRecordSlot *pSlot;
+    GameShiftedRecordLockVtable *pLockVtable;
+
+    pHandleOwner = (GameEffTransportHandleOwner *)pTransportPeer;
+    pSlot = (GameShiftedRecordSlot *)
+        ((GameRecordSlotTable *)pHandleOwner->m_pShiftedRecordSlotTable)
+            ->GetShiftedRecordSlotByPacketId(((GameEffStream *)pStream)->m_nEventCode);
+    pLockVtable = (GameShiftedRecordLockVtable *)pSlot->m_pLockVtable;
+    pLockVtable->m_pLock();
+    ((GameEffStream *)pStream)->LoadEffStreamFromMemory(pSlot->m_pSerializedPayload + 0x10);
+    pLockVtable->m_pUnlock();
+    pSlot->m_fHasPayload = 0;
+}
+
+// FUNCTION: LEMBALL 0x004615f0
+void *GameRecordSlotTable::GetShiftedRecordSlotByPacketId(int nPacketId) {
+    if (nPacketId >= 3) {
+        nPacketId -= 3;
+    }
+    return m_apSlots08[nPacketId];
+}
+
+// FUNCTION: LEMBALL 0x00462550
+void SetEffTransportPrimaryHandleParams(void *pRuntimeWindow, int nPrimaryHandleCount, int nPrimaryHandleStride, int nFlags) {
+    GameEffTransportRuntimeWindow *pWindow;
+
+    pWindow = (GameEffTransportRuntimeWindow *)pRuntimeWindow;
+    pWindow->m_nPrimaryHandleCount = nPrimaryHandleCount;
+    pWindow->m_nPrimaryHandleStride = nPrimaryHandleStride;
+    pWindow->m_nPrimaryHandleFlags = nFlags;
+}
+
+// FUNCTION: LEMBALL 0x00462570
+void SetEffTransportSecondaryHandleParams(void *pRuntimeWindow, int nSecondaryHandleCount, int nSecondaryHandleStride) {
+    GameEffTransportRuntimeWindow *pWindow;
+
+    pWindow = (GameEffTransportRuntimeWindow *)pRuntimeWindow;
+    pWindow->m_nSecondaryHandleCount = nSecondaryHandleCount;
+    pWindow->m_nSecondaryHandleStride = nSecondaryHandleStride;
+}
+
+// FUNCTION: LEMBALL 0x00462590
+void GameEffTransportRuntimeWindow::RegisterEffTransportEventClient(void *pClient) {
+    m_pSecondaryDispatchClient = pClient;
+    ((GameRenderDispatchQueue *)g_pEffTransportSecondaryDispatchQueue)
+        ->RegisterOrderedRenderDispatchClient(pClient, 0);
+}
+
+// FUNCTION: LEMBALL 0x004625b0
+void GameEffTransportRuntimeWindow::UnregisterEffTransportEventClient(void) {
+    void *pClient;
+
+    pClient = m_pSecondaryDispatchClient;
+    if (pClient != 0) {
+        ((GameRenderDispatchQueue *)g_pEffTransportSecondaryDispatchQueue)
+            ->UnregisterOrderedRenderDispatchClient(pClient, 0);
+        m_pSecondaryDispatchClient = 0;
+    }
+}

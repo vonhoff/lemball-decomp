@@ -7,7 +7,7 @@ extern void LEMBALL_FASTCALL EnsureHelperGroup0BackingBuffer(int nHelperGroup);
 extern void LEMBALL_FASTCALL ReleaseHelperGroup0BackingBuffer(int nHelperGroup);
 extern void *g_GAME_PrimaryContextMenuDefinitionTable[];
 
-// FUNCTION: LEMBALL 0x00431EB0
+// FUNCTION: LEMBALL 0x00431eb0
 int __stdcall GetPrimaryContextMenuDefinition(unsigned int *pMenuId, void **ppMenuDefinition) {
     *pMenuId = 0x73;
     *ppMenuDefinition = g_GAME_PrimaryContextMenuDefinitionTable;

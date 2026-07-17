@@ -30,6 +30,8 @@ public:
     virtual void Process(void *pContext) = 0;
 };
 
+// SYNTHETIC: LEMBALL 0x00467b40
+// LevelPackagedRectQueueEntry::`scalar deleting destructor'
 // VTABLE: LEMBALL 0x00499628
 // SIZE 0x18
 class LevelPackagedRectQueueEntry : public LevelQueuedRenderPointSink {
@@ -47,7 +49,9 @@ public:
     int m_nReserved14;
 };
 
-// VTABLE: LEMBALL 0x00499AE8
+// SYNTHETIC: LEMBALL 0x00469b80
+// LevelScreenDrawEntry::`scalar deleting destructor'
+// VTABLE: LEMBALL 0x00499ae8
 // SIZE 0x44
 class LevelScreenDrawEntry : public LevelQueuedRenderPointSink {
 public:
@@ -85,7 +89,9 @@ public:
     LevelPackagedRectQueueEntry m_DrawSink2C;
 };
 
-// VTABLE: LEMBALL 0x00499CE8
+// SYNTHETIC: LEMBALL 0x0046a220
+// LevelResourceScreenDrawEntry::`scalar deleting destructor'
+// VTABLE: LEMBALL 0x00499ce8
 // SIZE 0x4c
 class LevelResourceScreenDrawEntry : public LevelScreenDrawEntry {
 public:

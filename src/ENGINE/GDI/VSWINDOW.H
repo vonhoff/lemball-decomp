@@ -3,6 +3,37 @@
 
 #include "ENGINE/CORE/WIN32.H"
 
+// FUNCTION: LEMBALL 0x00401028
+// VS_WindowOwnerBase::ReservedWindowOwnerSlot23
+// FUNCTION: LEMBALL 0x004010a0
+// VS_RootGeometryOwner::GetWindowOwnerState
+// FUNCTION: LEMBALL 0x0040119f
+// VS_WindowOwnerBase::ReservedWindowOwnerSlot37
+// FUNCTION: LEMBALL 0x0040150f
+// VS_RootGeometryOwner::AppendQueuedRenderSinkValueNode
+// FUNCTION: LEMBALL 0x00401514
+// VS_WindowOwnerBase::ReservedWindowOwnerSlot21
+// FUNCTION: LEMBALL 0x004018cf
+// VS_WindowOwnerBase::IsCurrentWindowOwnerContext
+// FUNCTION: LEMBALL 0x00401e29
+// VS_WindowOwnerBase::ReservedWindowOwnerSlot19
+// FUNCTION: LEMBALL 0x004028bf
+// VS_WindowOwnerBase::ReservedWindowOwnerSlot18
+// FUNCTION: LEMBALL 0x004029b4
+// VS_WindowOwnerBase::ReservedWindowOwnerSlot39
+// FUNCTION: LEMBALL 0x00402e1e
+// VS_WindowOwnerBase::CacheCurrentContextWindow
+// FUNCTION: LEMBALL 0x004030c1
+// VS_RootGeometryOwner::RemoveQueuedRenderSinkValueNode
+// FUNCTION: LEMBALL 0x00403440
+// VS_WindowOwnerBase::ReservedWindowOwnerSlot20
+// FUNCTION: LEMBALL 0x004034a9
+// VS_RootGeometryOwner::QueryRootGeometryState
+// FUNCTION: LEMBALL 0x00403657
+// VS_RootGeometryOwner::SetWindowOwnerState
+// FUNCTION: LEMBALL 0x00403693
+// VS_WindowOwnerBase::ReservedWindowOwnerSlot22
+
 extern int g_fWindowMessagePassthroughMode;
 
 // SIZE 0x04
@@ -79,7 +110,7 @@ protected:
     int m_nScaleFactor38;                              // 0x38
 };
 
-// VTABLE: LEMBALL 0x004993D0
+// VTABLE: LEMBALL 0x004993d0
 // SIZE 0x4c
 class VS_WindowOwnerBase : public VS_RootGeometryOwner {
 public:
