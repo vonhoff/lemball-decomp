@@ -1064,24 +1064,43 @@ struct GamePrimaryContextGeometryVirtualInterface {
     virtual void DispatchPrimaryContextActiveScreenFrame(void *pFrameArgument) = 0;
 };
 
-
-
-
-
-
 void *GameScreenObject::ConstructIntroSequenceScreen(void *pPrimaryContext,
                                                       void *pWindowOwnerContext,
                                                       short *paRect,
                                                       int fSkipVariant) {
-    void *pScreenObject = this;
-    (void)pPrimaryContext;
-    (void)pWindowOwnerContext;
-    (void)paRect;
-    (void)fSkipVariant;
-    InitializeGameStubVtables();
-    memset(pScreenObject, 0, 0x484);
-    *(void **)pScreenObject = g_GAME_GenericScreenVtableSlots;
-    return pScreenObject;
+    char *pScreen;
+    char *pMediaOwner;
+
+    pScreen = (char *)this;
+    ConstructFramedScreenBaseFields(
+        pScreen, 0, pPrimaryContext, pWindowOwnerContext, paRect,
+        1, 0, 0, 0, 0, 0);
+    *(unsigned short *)(pScreen + 0x3a4) = 0;
+    *(unsigned short *)(pScreen + 0x3a6) = 0;
+    *(unsigned short *)(pScreen + 0x3a8) = 0;
+    *(unsigned short *)(pScreen + 0x3aa) = 0;
+
+    pMediaOwner = pScreen + 0x3bc;
+    ConstructResourceGeometryHelperWindowOwner(pMediaOwner);
+    *(int *)(pScreen + 0x398) = fSkipVariant;
+    *(int *)(pScreen + 0x39c) = fSkipVariant != 0 ? 0xe : 2;
+    *(int *)(pScreen + 0x3b8) = 0;
+    *(int *)(pScreen + 0x3b4) = 10;
+
+    ((GamePrimaryContext *)pPrimaryContext)
+        ->SampleRootHelperGeometryAndDispatchRenderGroups(-1);
+    *(void **)(pMediaOwner + 0xbc) = pScreen;
+    *(void **)(pMediaOwner + 0xc0) = pPrimaryContext;
+    *(int *)(pMediaOwner + 0xc4) = fSkipVariant;
+    *(int *)(pScreen + 0x450) = 1;
+    ((GameDynamicCString *)(pScreen + 0x454))
+        ->AssignDynamicCString("lemball");
+    *(int *)(pScreen + 0x44c) = 1;
+    *(int *)(pScreen + 0xa8) = 0;
+    *(int *)(pScreen + 0xac) = 0;
+    *(int *)(pScreen + 0xb0) = 0;
+    ActivateFramedScreenBase(pScreen);
+    return pScreen;
 }
 
 

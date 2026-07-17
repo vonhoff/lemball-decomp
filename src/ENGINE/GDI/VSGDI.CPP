@@ -28,6 +28,8 @@ DECOMP_SIZE_ASSERT(VsGdiDirectDrawDisplayState, 0x4a8);
 extern LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 extern "C" DWORD WINAPI timeGetTime(void);
 extern void LEMBALL_FASTCALL EnsureHelperGroup0BackingBuffer(int nHelperGroup);
+extern void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(
+    void *pPrimaryContext);
 extern void *__fastcall get_draw_command_rect_payload(void *pCommand);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 
@@ -712,18 +714,28 @@ extern "C" unsigned long LEMBALL_STDCALL DispatchVisualSciencesWingDriverMessage
 
 class VsGdiAnimWindowOwner {
 public:
+    void *ConstructResourceGeometryHelperWindowOwner(void);
     void BindAsSingletonAnimWindow(void);
+    void RebuildResourceGeometryHelperWindow(void);
     void InstallEmbeddedMciDrawCallback(int nUnused);
+    void StartEmbeddedMciWindowPlaybackOnce(void);
+    void ResumeEmbeddedMciWindowPlayback(void);
 
 private:
-    unsigned char m_abReserved00[0xa0];
+    unsigned char m_abReserved00[0x90];
+    int m_nReserved90;
+    int m_nReserved94;
+    GameDynamicCString m_MediaName98;
     int m_nA0;
     int m_nA4;
     int m_nA8;
     int m_nAC;
-    unsigned char m_abReservedB0[8];
-    void *m_hMciWindowB8;
+    GameDynamicCString m_MediaPathB0;
+    HWND m_hMciWindowB8;
 };
+
+static void *g_VSGDI_AnimWindowOwnerVtable[50];
+static int g_fVSGDIAnimWindowOwnerVtableInitialized;
 
 
 
@@ -4678,6 +4690,66 @@ void VsGdiAnimWindowOwner::BindAsSingletonAnimWindow(void) {
     g_pSingletonAnimWindowOwner = this;
 }
 
+// FUNCTION: LEMBALL 0x0046ddc0
+void *VsGdiAnimWindowOwner::ConstructResourceGeometryHelperWindowOwner(void) {
+    void **pBaseVtable;
+    union {
+        void (VsGdiAnimWindowOwner::*pMethod)(void);
+        void *pAddress;
+    } rebuildMethod;
+    int i;
+
+    ConstructWindowOwnerRenderContext(this);
+    pBaseVtable = *(void ***)this;
+    m_MediaName98.ConstructDynamicCString();
+    m_nReserved94 = 0;
+    m_nReserved90 = 0;
+    m_MediaPathB0.ConstructDynamicCString();
+    if (g_fVSGDIAnimWindowOwnerVtableInitialized == 0) {
+        for (i = 0; i < 50; ++i) {
+            g_VSGDI_AnimWindowOwnerVtable[i] = pBaseVtable[i];
+        }
+        rebuildMethod.pMethod =
+            &VsGdiAnimWindowOwner::RebuildResourceGeometryHelperWindow;
+        g_VSGDI_AnimWindowOwnerVtable[6] = rebuildMethod.pAddress;
+        g_fVSGDIAnimWindowOwnerVtableInitialized = 1;
+    }
+    *(void ***)this = g_VSGDI_AnimWindowOwnerVtable;
+    BindAsSingletonAnimWindow();
+    return this;
+}
+
+void *LEMBALL_FASTCALL ConstructResourceGeometryHelperWindowOwner(
+    void *pOwner)
+{
+    return ((VsGdiAnimWindowOwner *)pOwner)
+        ->ConstructResourceGeometryHelperWindowOwner();
+}
+
+// FUNCTION: LEMBALL 0x0046ded0
+void VsGdiAnimWindowOwner::RebuildResourceGeometryHelperWindow(void) {
+    typedef HWND (WINAPI *MciWndCreateProc)(
+        HWND, HINSTANCE, DWORD, const char *);
+    HMODULE hMsvfw32;
+    MciWndCreateProc pMciWndCreate;
+
+    BuildGeometryHelperFromRenderRect(this);
+    if (m_hMciWindowB8 != 0) {
+        SendMessageA(m_hMciWindowB8, 0x10, 0, 0);
+        m_hMciWindowB8 = 0;
+    }
+    hMsvfw32 = LoadLibraryA("MSVFW32.DLL");
+    pMciWndCreate = hMsvfw32 != 0
+        ? (MciWndCreateProc)GetProcAddress(hMsvfw32, "MCIWndCreateA")
+        : 0;
+    m_hMciWindowB8 = pMciWndCreate != 0
+        ? pMciWndCreate(*(HWND *)((char *)this + 0x44),
+                        g_hApplicationInstance, 0x50001f0a, 0)
+        : 0;
+    SendMessageA(m_hMciWindowB8, 0x499, 0,
+                 (LPARAM)m_MediaPathB0.m_pszText);
+}
+
 struct VsGdiMciDrawCallbackParameters {
     DWORD m_dwCallback00;
     DWORD m_dwFlags04;
@@ -4700,6 +4772,31 @@ void VsGdiAnimWindowOwner::InstallEmbeddedMciDrawCallback(int) {
         MessageBoxA(0, "Unable to set MCI Draw Procedure",
                     "MCI ERROR", 0x10);
     }
+}
+
+// FUNCTION: LEMBALL 0x0046e300
+void VsGdiAnimWindowOwner::StartEmbeddedMciWindowPlaybackOnce(void) {
+    if (m_nA4 == 0) {
+        SendMessageA(m_hMciWindowB8, 0x807, 0, -1);
+        SendMessageA(m_hMciWindowB8, 0x806, 0, 0);
+        m_nA4 = 1;
+    }
+}
+
+void LEMBALL_FASTCALL StartEmbeddedMciWindowPlaybackOnce(void *pOwner) {
+    ((VsGdiAnimWindowOwner *)pOwner)->StartEmbeddedMciWindowPlaybackOnce();
+}
+
+// FUNCTION: LEMBALL 0x0046e3c0
+void VsGdiAnimWindowOwner::ResumeEmbeddedMciWindowPlayback(void) {
+    if (m_nA8 != 0) {
+        SendMessageA(m_hMciWindowB8, 0x855, 0, 0);
+        m_nA8 = 0;
+    }
+}
+
+void LEMBALL_FASTCALL ResumeEmbeddedMciWindowPlayback(void *pOwner) {
+    ((VsGdiAnimWindowOwner *)pOwner)->ResumeEmbeddedMciWindowPlayback();
 }
 
 // FUNCTION: LEMBALL 0x00472290
