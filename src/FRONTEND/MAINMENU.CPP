@@ -93,6 +93,17 @@ public:
     int m_fChildrenEnabled148;
 };
 
+class GameIntroSequenceMediaState {
+public:
+    void ConfigureOwner(void *pScreen, void *pPrimaryContext, int fSkipVariant);
+
+private:
+    unsigned char m_abReserved00[0xbc];
+    void *m_pScreenBC;
+    void *m_pPrimaryContextC0;
+    int m_fSkipVariantC4;
+};
+
 struct VsNetRuntimeModeView {
     char m_abReserved00[0x48];
     int m_nMode48;
@@ -1021,6 +1032,15 @@ static void LEMBALL_FASTCALL SetFramedScreenSize(
     pScreen->m_cxScreen37C = paSize[0];
     pScreen->m_cyScreen37E = paSize[1];
     RefreshFramedScreenFrameResourcesThunk(pScreen);
+}
+
+// FUNCTION: LEMBALL 0x004477b0
+void GameIntroSequenceMediaState::ConfigureOwner(
+    void *pScreen, void *pPrimaryContext, int fSkipVariant)
+{
+    m_fSkipVariantC4 = fSkipVariant;
+    m_pScreenBC = pScreen;
+    m_pPrimaryContextC0 = pPrimaryContext;
 }
 
 // FUNCTION: LEMBALL 0x00448300
