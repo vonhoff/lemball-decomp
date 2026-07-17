@@ -2755,11 +2755,10 @@ int VsSoundDirectSoundEffectBufferPool::GetDirectSoundEffectBufferSlotVolume(
 int VsSoundDirectSoundEffectBufferPool::SetDirectSoundEffectBufferSlotVolume(
     int nBufferSlot, int nVolume)
 {
-    VsSoundDirectSoundBufferInterface *pBuffer;
     LONG hResult;
 
-    pBuffer = (VsSoundDirectSoundBufferInterface *)m_ppBuffers[nBufferSlot];
-    hResult = pBuffer->SetVolume(nVolume);
+    hResult = ((VsSoundDirectSoundBufferInterface *)m_ppBuffers[nBufferSlot])
+        ->SetVolume(nVolume);
     if (hResult != 0) {
         g_pErrorOutputStream
             ->AppendCStringToStream(
@@ -2848,11 +2847,10 @@ int VsSoundDirectSoundEffectBufferPool::GetDirectSoundEffectBufferSlotFrequency(
 int VsSoundDirectSoundEffectBufferPool::SetDirectSoundEffectBufferSlotFrequency(
     int nBufferSlot, int nFrequency)
 {
-    VsSoundDirectSoundBufferInterface *pBuffer;
     LONG hResult;
 
-    pBuffer = (VsSoundDirectSoundBufferInterface *)m_ppBuffers[nBufferSlot];
-    hResult = pBuffer->SetFrequency(nFrequency);
+    hResult = ((VsSoundDirectSoundBufferInterface *)m_ppBuffers[nBufferSlot])
+        ->SetFrequency(nFrequency);
     if (hResult != 0) {
         g_pErrorOutputStream
             ->AppendCStringToStream(
