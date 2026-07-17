@@ -2183,8 +2183,7 @@ int LEMBALL_FASTCALL UsesExistingDisplayPaletteAsFallback(
     void *pDisplayState, int)
 
 {
-    return ((VsGdiDisplayPaletteStateView *)pDisplayState)->m_hPalette ==
-           (void *)1;
+    return ((VsGdiDisplayPaletteStateView *)pDisplayState)->m_hPalette != 0;
 }
 
 // FUNCTION: LEMBALL 0x00458230
