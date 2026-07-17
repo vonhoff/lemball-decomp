@@ -1027,6 +1027,10 @@ static void InitializeDisplayStateVtables(void) {
         bindDirectDrawSurfaceMethod;
     union { int (VsGdiDirectDrawDisplayState::*p)(int, void *); void *v; }
         releaseDirectDrawSurfaceMethod;
+    union {
+        int (VsGdiDirectDrawDisplayState::*p)(void *, short *, void *, short *);
+        void *v;
+    } copyDirectDrawSurfaceMethod;
 
     for (i = 0; i < 14; ++i) {
         g_VSGDI_MetricsDisplayVtable[i] = (void *)NetworkSafeVtableNoop;
@@ -1047,6 +1051,8 @@ static void InitializeDisplayStateVtables(void) {
         &VsGdiDirectDrawDisplayState::BindDirectDrawSurface;
     releaseDirectDrawSurfaceMethod.p =
         &VsGdiDirectDrawDisplayState::ReleaseDirectDrawSurface;
+    copyDirectDrawSurfaceMethod.p =
+        &VsGdiDirectDrawDisplayState::CopyDirectDrawSurfaceRect;
     readyMethod.p = &VsGdiDisplayState::IsReady;
     g_VSGDI_MetricsDisplayVtable[1] = createBindingMethod.v;
     g_VSGDI_DibDisplayVtable[1] = createBindingMethod.v;
@@ -1071,6 +1077,7 @@ static void InitializeDisplayStateVtables(void) {
         (void *)StretchDisplaySurfaceRect;
     g_VSGDI_MetricsDisplayVtable[8] =
         (void *)CopyDisplaySurfaceRect;
+    g_VSGDI_DirectDrawDisplayVtable[8] = copyDirectDrawSurfaceMethod.v;
     {
         union {
             int (VsGdiDibDisplayState::*p)(void *, short *, void *, short *);
@@ -1620,6 +1627,79 @@ VsGdiDirectDrawDisplayState::VsGdiDirectDrawDisplayState(const unsigned short *p
 // FUNCTION: LEMBALL 0x004578c0
 static int LEMBALL_FASTCALL ApplyDirectDrawSurfacePalette(void *, int, void *, int, int, const unsigned int *) {
     return 0x100;
+}
+
+// FUNCTION: LEMBALL 0x004578d0
+int VsGdiDirectDrawDisplayState::CopyDirectDrawSurfaceRect(void *, short *pDestinationRect, void *pSourceBinding, short *pSourcePoint) {
+    typedef unsigned int (__stdcall *DIRECTDRAW_BLT_FAST)(
+        void *, unsigned int, unsigned int, void *, void *, unsigned int);
+    struct DirectDrawRect {
+        int m_nLeft;
+        int m_nTop;
+        int m_nRight;
+        int m_nBottom;
+    } SourceRect;
+    VsGdiHelperTargetParamWrapper *pBinding;
+    VsGdiDisplayBitmap *pBitmap;
+    void **ppSurfaceSlots;
+    void *pSourceSurface;
+    short cx;
+    short cy;
+    short x;
+    short y;
+    unsigned int uResult;
+
+    cx = pDestinationRect[0];
+    cy = pDestinationRect[1];
+    x = pDestinationRect[2];
+    y = pDestinationRect[3];
+    if (x < 0) {
+        cx = (short)(cx + x);
+        x = 0;
+    }
+    if ((short)(x + cx) > m_cxDisplay)
+        cx = (short)(m_cxDisplay - x);
+    if (y < 0) {
+        cy = (short)(cy + y);
+        y = 0;
+    }
+    if ((short)(y + cy) > m_cyDisplay)
+        cy = (short)(m_cyDisplay - y);
+    if (cx <= 0 || cy <= 0) {
+        cx = 0;
+        cy = 0;
+        x = 0;
+        y = 0;
+    }
+    if ((int)cx * (int)cy == 0)
+        return 1;
+
+    SourceRect.m_nLeft = pSourcePoint[0];
+    SourceRect.m_nTop = pSourcePoint[1];
+    SourceRect.m_nRight = SourceRect.m_nLeft + cx;
+    SourceRect.m_nBottom = SourceRect.m_nTop + cy;
+    pBinding = (VsGdiHelperTargetParamWrapper *)pSourceBinding;
+    ppSurfaceSlots = (void **)&m_pfnDirectDrawCreate;
+    pBitmap = (VsGdiDisplayBitmap *)
+        ppSurfaceSlots[pBinding->m_nWrappedParam];
+    pSourceSurface = pBitmap->m_hPreviousBitmap;
+    uResult = ((DIRECTDRAW_BLT_FAST)(*(void ***)m_pPrimarySurface)[7])(
+        m_pPrimarySurface, x, y, pSourceSurface, &SourceRect, 0);
+    if (uResult != 0) {
+        g_pErrorOutputStream
+            ->AppendCStringToStream("Blit failed: ")
+            ->AppendSignedIntToStreamVariant(SourceRect.m_nLeft)
+            ->AppendCStringToStream(", ")
+            ->AppendSignedIntToStreamVariant(SourceRect.m_nTop)
+            ->AppendCStringToStream(", ")
+            ->AppendSignedIntToStreamVariant(x)
+            ->AppendCStringToStream(", ")
+            ->AppendSignedIntToStreamVariant(y)
+            ->AppendCStringToStream(" - ")
+            ->AppendCStringToStream(LookupDirectDrawErrorString(uResult & 0xfff))
+            ->AppendCStringToStream("\n");
+    }
+    return 1;
 }
 
 // FUNCTION: LEMBALL 0x00457c50
