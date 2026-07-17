@@ -87,6 +87,7 @@ void LEMBALL_FASTCALL NotifyWindowOwnersDisplayChanged(const int *pnSelectedDriv
 class VsGdiMetricsDisplayState : public VsGdiDisplayState {
 public:
     VsGdiMetricsDisplayState(void);
+    void *Delete(int fDelete);
 
     int Create(HWND hWnd);
 };

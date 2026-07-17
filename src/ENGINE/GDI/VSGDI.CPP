@@ -1041,13 +1041,16 @@ static void InitializeDisplayStateVtables(void) {
         deleteDirectDrawDisplayStateMethod;
     union { void *(VsGdiDibDisplayState::*p)(int); void *v; }
         deleteDibDisplayStateMethod;
+    union { void *(VsGdiMetricsDisplayState::*p)(int); void *v; }
+        deleteMetricsDisplayStateMethod;
 
     for (i = 0; i < 14; ++i) {
         g_VSGDI_MetricsDisplayVtable[i] = (void *)NetworkSafeVtableNoop;
         g_VSGDI_DibDisplayVtable[i] = (void *)NetworkSafeVtableNoop;
         g_VSGDI_DirectDrawDisplayVtable[i] = (void *)NetworkSafeVtableNoop;
     }
-    g_VSGDI_MetricsDisplayVtable[0] = (void *)VsGdiDeleteDisplayState;
+    deleteMetricsDisplayStateMethod.p = &VsGdiMetricsDisplayState::Delete;
+    g_VSGDI_MetricsDisplayVtable[0] = deleteMetricsDisplayStateMethod.v;
     deleteDibDisplayStateMethod.p = &VsGdiDibDisplayState::Delete;
     g_VSGDI_DibDisplayVtable[0] = deleteDibDisplayStateMethod.v;
     deleteDirectDrawDisplayStateMethod.p =
@@ -2181,6 +2184,18 @@ int LEMBALL_FASTCALL UsesExistingDisplayPaletteAsFallback(
 {
     return ((VsGdiDisplayPaletteStateView *)pDisplayState)->m_hPalette ==
            (void *)1;
+}
+
+// FUNCTION: LEMBALL 0x00458230
+void *VsGdiMetricsDisplayState::Delete(int fDelete) {
+    void *pThis;
+
+    pThis = this;
+    this->VsGdiDisplayState::~VsGdiDisplayState();
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pThis);
+    }
+    return pThis;
 }
 
 // FUNCTION: LEMBALL 0x00458250
