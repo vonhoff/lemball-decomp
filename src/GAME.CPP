@@ -480,8 +480,6 @@ struct GameSafeVtableInitializer {
         int i;
         for (i = 0; i < 46; ++i)
             g_GAME_PrimaryContextVtableSlots[i] = (void *)NetworkSafeVtableNoop;
-        for (i = 0; i < 4; ++i)
-            g_GAME_RenderQueueNodeVtableSlots[i] = (void *)NetworkSafeVtableNoop;
         for (i = 0; i < 2; ++i) {
             g_GAME_GenericModeVtableSlots[i] = (void *)NetworkSafeVtableNoop;
         }
