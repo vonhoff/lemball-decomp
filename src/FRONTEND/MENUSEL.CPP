@@ -5,6 +5,7 @@
 #include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/CORE/WIN32.H"
 #include "ENGINE/GDI/VSGEOM.H"
+#include "ENGINE/GDI/VSGDI.H"
 #include "LEVEL/DRAWTEXT.H"
 
 DECOMP_SIZE_ASSERT(GameMenuSelectorEvent, 0x1c);
@@ -443,6 +444,101 @@ void LEMBALL_FASTCALL DetachGeometryChildAndDestroyWindowOwner(
     RemoveGeometryOwnerChild(
         *(void **)((char *)pRenderOwner + 0x1c), 0, pChildOwner);
     ((VS_WindowOwnerBase *)pObject)->DestroyWindowOwnerHwnd();
+}
+
+static inline int ResolveResourceGeometryRenderObject(void *pObject) {
+    int nContext;
+
+    nContext = *(int *)(*(int *)((char *)pObject + 0x4c) + 0x0c);
+    return *(int *)(*(int *)(nContext + 0x40) + 4) +
+           0x40 + nContext;
+}
+
+void LEMBALL_FASTCALL RefreshCompactZrleOwnerFromResourceHelper(
+    void *pObject) {
+    typedef void (LEMBALL_FASTCALL *VoidProc)(void *pObject);
+    typedef void (LEMBALL_FASTCALL *ContextProc)(
+        void *pObject, int nUnusedEdx, void *pContext);
+    int nRenderObject;
+
+    nRenderObject = ResolveResourceGeometryRenderObject(pObject);
+    ((VoidProc)(*(void ***)nRenderObject)[14])((void *)nRenderObject);
+    if (*(int *)((char *)pObject + 0xd8) == 0) {
+        *(int *)((char *)pObject + 0xf0) = 0;
+    } else {
+        --*(int *)((char *)pObject + 0xd8);
+        nRenderObject = ResolveResourceGeometryRenderObject(pObject);
+        *(short *)((char *)pObject + 0xe8) =
+            *(short *)(nRenderObject + 0x14);
+        *(short *)((char *)pObject + 0xea) =
+            *(short *)(nRenderObject + 0x16);
+        *(short *)((char *)pObject + 0xec) = 0;
+        *(short *)((char *)pObject + 0xee) = 0;
+        *(int *)((char *)pObject + 0xf0) = 0x10000;
+        nRenderObject = ResolveResourceGeometryRenderObject(pObject);
+        *(int *)(nRenderObject + 0x78) = 1;
+    }
+    ((ContextProc)(*(void ***)((char *)pObject + 0xe4))[1])(
+        (char *)pObject + 0xe4, 0,
+        *(void **)((char *)pObject + 0x4c));
+}
+
+void LEMBALL_FASTCALL RefreshCompactZrleOwnerIfHelperDirty(
+    void *pObject) {
+    typedef int (LEMBALL_FASTCALL *QueryProc)(void *pObject);
+    int nRenderObject;
+
+    if (*(int *)((char *)pObject + 0x104) ==
+        *(int *)((char *)pObject + 0x108)) {
+        nRenderObject = ResolveResourceGeometryRenderObject(pObject);
+        if (((QueryProc)(*(void ***)nRenderObject)[15])(
+                (void *)nRenderObject) == 0) {
+            RefreshCompactZrleOwnerFromResourceHelper(pObject);
+            return;
+        }
+    }
+    nRenderObject = ResolveResourceGeometryRenderObject(pObject);
+    *(int *)(nRenderObject + 0x78) = 1;
+    *(int *)((char *)pObject + 0x108) =
+        *(int *)((char *)pObject + 0x104);
+    RefreshCompactZrleOwnerFromResourceHelper(pObject);
+}
+
+void LEMBALL_FASTCALL QueueCompactZrleOwnerIfDirty(void *pObject) {
+    typedef int (LEMBALL_FASTCALL *QueryProc)(void *pObject);
+    typedef void (LEMBALL_FASTCALL *VoidProc)(void *pObject);
+    void *pRenderContext;
+    void *pOwner;
+    int nRenderObject;
+    int fHelperDirty;
+    int nUploadState;
+
+    nRenderObject = ResolveResourceGeometryRenderObject(pObject);
+    fHelperDirty = ((QueryProc)(*(void ***)nRenderObject)[15])(
+        (void *)nRenderObject);
+    pRenderContext = *(void **)((char *)pObject + 0x4c);
+    if (!((fHelperDirty != 0 &&
+           (*(int *)((char *)pObject + 0xd0) != 0 ||
+            *(int *)((char *)pObject + 0x104) !=
+                *(int *)((char *)pObject + 0x108))) ||
+          (*(int *)((char *)pRenderContext + 4) == 0 &&
+           (*(int *)((char *)pObject + 0xf8) != 0 ||
+            *(int *)((char *)pObject + 0xd8) != 0 ||
+            *(int *)((char *)pObject + 0xd0) !=
+                *(int *)((char *)pObject + 0xd4))))) {
+        return;
+    }
+
+    if (((QueryProc)(*(void ***)pObject)[26])(pObject) != 0) {
+        ((VoidProc)(*(void ***)pObject)[46])(pObject);
+        ((VoidProc)(*(void ***)pObject)[47])(pObject);
+    }
+    pOwner = *(void **)((char *)pRenderContext + 0x0c);
+    nUploadState = ((QueryProc)(*(void ***)pOwner)[2])(pOwner);
+    AppendPointerQueueEntry(pRenderContext,
+                            *(void **)((char *)pObject + 0xe0));
+    InitializeHelperUploadStatePending(nUploadState);
+    *(int *)((char *)pObject + 0xfc) = 1;
 }
 
 void LEMBALL_FASTCALL ComputeAlignedZrleChildLayout(void *pObject) {
