@@ -40,6 +40,12 @@ extern void LEMBALL_FASTCALL QueueStatusPointPushThunk(
 extern void AppendPointerQueueEntry(void *pQueue, void *pEntry);
 extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
     void *pOwner, int nUnusedEdx, void *pChildOwner);
+extern void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(
+    void *pObject);
+extern void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(
+    void *pObject);
+extern void *LEMBALL_FASTCALL InitializeEmptyGeometryOwnerRect(
+    void *pOwner);
 extern void *g_pVariantResourceEntryManager;
 extern int g_fLevelSelectionChanged;
 extern int LEMBALL_FASTCALL GetTimedVariantFrameStartTimeThunk(
@@ -151,6 +157,7 @@ static void *LEMBALL_FASTCALL DeleteMenuSelectorEntryThunk(
 static int LEMBALL_FASTCALL HandleMenuSelectorEntryEventThunk(
     GameMenuSelectorEntry *pEntry, int nUnusedEdx,
     GameMenuSelectorEvent *pEvent);
+void LEMBALL_FASTCALL InitializeSharedSpriteOwnerState(void *pObject);
 
 /* GLOBAL: LEMBALL 0x004a7b44 */
 int g_nMenuSelectorResourceId0 = 0;
@@ -324,6 +331,21 @@ struct GameMenuActionFramePointSink {
     void DispatchToRenderObject(void *pContext);
 };
 
+class GameResourceGeometryChildView {
+public:
+    void SetRenderAnchorWithOriginCompensation(const VS_XYPair *pPoint);
+    int GetQueuedRenderPointSinkState(void);
+    void DetachAndDestroyWindowOwner(void);
+    void ForwardNestedRectUpdate(short *pRect);
+    void QueueIfDirty(void);
+    void RefreshIfHelperDirty(void);
+};
+
+class GameResourceGeometryChildDeleteView {
+public:
+    void *Delete(unsigned int fDelete);
+};
+
 typedef char GameMenuActionFramePointSink_size_must_be_0x20[
     sizeof(GameMenuActionFramePointSink) == 0x20 ? 1 : -1];
 
@@ -364,6 +386,11 @@ struct GameMenuActionFramePointSinkVtableFixup {
 
 static GameMenuActionFramePointSinkVtableFixup
     g_MenuActionFramePointSinkVtableFixup;
+
+static void *g_ResourceGeometryChildVtable[48];
+static void *g_ResourceGeometryChildDeleteVtable[8];
+static void **g_pWindowOwnerRenderContextVtable;
+static int g_fResourceGeometryChildVtablesInitialized;
 
 void *LEMBALL_FASTCALL InitializeTinyPointSinkHelper(void *pObject) {
     *(void ***)pObject = g_MenuSelectorTinyPointSinkVtable;
@@ -539,6 +566,152 @@ void LEMBALL_FASTCALL QueueCompactZrleOwnerIfDirty(void *pObject) {
                             *(void **)((char *)pObject + 0xe0));
     InitializeHelperUploadStatePending(nUploadState);
     *(int *)((char *)pObject + 0xfc) = 1;
+}
+
+void GameResourceGeometryChildView::SetRenderAnchorWithOriginCompensation(
+    const VS_XYPair *pPoint) {
+    char *pObject;
+
+    pObject = (char *)this;
+    *(int *)(pObject + 0xd8) = 1;
+    *(short *)(pObject + 0xc4) -= *(short *)(pObject + 0x18);
+    *(short *)(pObject + 0xc6) -= *(short *)(pObject + 0x1a);
+    SetWindowOwnerRenderAnchorFromPoint(this, 0, pPoint);
+    *(short *)(pObject + 0xc4) += *(short *)(pObject + 0x18);
+    *(short *)(pObject + 0xc6) += *(short *)(pObject + 0x1a);
+}
+
+int GameResourceGeometryChildView::GetQueuedRenderPointSinkState(void) {
+    return *(int *)((char *)this + 0x30);
+}
+
+void GameResourceGeometryChildView::DetachAndDestroyWindowOwner(void) {
+    DetachGeometryChildAndDestroyWindowOwner(this);
+}
+
+void GameResourceGeometryChildView::ForwardNestedRectUpdate(short *pRect) {
+    ForwardNestedGeometryRectUpdate(this, 0, pRect);
+}
+
+void GameResourceGeometryChildView::QueueIfDirty(void) {
+    QueueCompactZrleOwnerIfDirty(this);
+}
+
+void GameResourceGeometryChildView::RefreshIfHelperDirty(void) {
+    RefreshCompactZrleOwnerIfHelperDirty(this);
+}
+
+static void InitializeResourceGeometryChildVtables(
+    void **pWindowOwnerVtable, void **pGeometryOwnerVtable) {
+    union PointMethod {
+        void (GameResourceGeometryChildView::*p)(const VS_XYPair *);
+        void *v;
+    } Point;
+    union RectMethod {
+        void (GameResourceGeometryChildView::*p)(short *);
+        void *v;
+    } Rect;
+    union VoidMethod {
+        void (GameResourceGeometryChildView::*p)(void);
+        void *v;
+    } Void;
+    union IntMethod {
+        int (GameResourceGeometryChildView::*p)(void);
+        void *v;
+    } Int;
+    union DeleteMethod {
+        void *(GameResourceGeometryChildDeleteView::*p)(unsigned int);
+        void *v;
+    } Delete;
+    int i;
+
+    if (g_fResourceGeometryChildVtablesInitialized != 0) {
+        return;
+    }
+    for (i = 0; i < 48; ++i) {
+        g_ResourceGeometryChildVtable[i] = pWindowOwnerVtable[i];
+    }
+    for (i = 0; i < 8; ++i) {
+        g_ResourceGeometryChildDeleteVtable[i] = pGeometryOwnerVtable[i];
+    }
+    g_pWindowOwnerRenderContextVtable = pWindowOwnerVtable;
+
+    Point.p = &GameResourceGeometryChildView::
+        SetRenderAnchorWithOriginCompensation;
+    g_ResourceGeometryChildVtable[14] = Point.v;
+    Int.p = &GameResourceGeometryChildView::GetQueuedRenderPointSinkState;
+    g_ResourceGeometryChildVtable[26] = Int.v;
+    Void.p = &GameResourceGeometryChildView::DetachAndDestroyWindowOwner;
+    g_ResourceGeometryChildVtable[29] = Void.v;
+    Rect.p = &GameResourceGeometryChildView::ForwardNestedRectUpdate;
+    g_ResourceGeometryChildVtable[33] = Rect.v;
+    Void.p = &GameResourceGeometryChildView::QueueIfDirty;
+    g_ResourceGeometryChildVtable[42] = Void.v;
+    Void.p = &GameResourceGeometryChildView::RefreshIfHelperDirty;
+    g_ResourceGeometryChildVtable[46] = Void.v;
+    g_ResourceGeometryChildVtable[47] = (void *)_purecall;
+
+    Delete.p = &GameResourceGeometryChildDeleteView::Delete;
+    g_ResourceGeometryChildDeleteVtable[0] = Delete.v;
+    g_fResourceGeometryChildVtablesInitialized = 1;
+}
+
+void LEMBALL_FASTCALL DestroyResourceGeometryChild(void *pChildOwner) {
+    typedef void (LEMBALL_FASTCALL *DeleteProc)(
+        void *pObject, int nUnusedEdx, unsigned int fDelete);
+    char *pObject;
+    void *pOwnedEntry;
+
+    pObject = (char *)pChildOwner - 0x90;
+    *(void ***)pObject = g_ResourceGeometryChildVtable;
+    *(void ***)pChildOwner = g_ResourceGeometryChildDeleteVtable;
+    if (*(int *)(*(int *)(pObject + 0xc8) + 4) == 1) {
+        DetachGeometryChildAndDestroyWindowOwner(pObject);
+    }
+    pOwnedEntry = *(void **)(pObject + 0xe0);
+    if (pOwnedEntry != 0) {
+        ((DeleteProc)(*(void ***)pOwnedEntry)[0])(
+            pOwnedEntry, 0, 1);
+    }
+    RestorePackagedSpriteRenderEntryVtableC(pObject + 0xe4);
+    *(void ***)pObject = g_pWindowOwnerRenderContextVtable;
+    DestroyWindowOwnerRenderContext(pObject);
+}
+
+void *GameResourceGeometryChildDeleteView::Delete(unsigned int fDelete) {
+    char *pObject;
+
+    pObject = (char *)this - 0x90;
+    DestroyResourceGeometryChild(this);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+void *LEMBALL_FASTCALL ConstructResourceGeometryChildBase(
+    void *pObject, int nUnusedEdx, void *pRenderOwner) {
+    void **pWindowOwnerVtable;
+    void **pGeometryOwnerVtable;
+
+    (void)nUnusedEdx;
+    ConstructWindowOwnerRenderContext(pObject);
+    pWindowOwnerVtable = *(void ***)pObject;
+    InitializeEmptyGeometryOwnerRect((char *)pObject + 0x90);
+    pGeometryOwnerVtable = *(void ***)((char *)pObject + 0x90);
+    InitializeResourceGeometryChildVtables(
+        pWindowOwnerVtable, pGeometryOwnerVtable);
+    *(short *)((char *)pObject + 0xdc) = 0;
+    *(short *)((char *)pObject + 0xde) = 0;
+    InitializeHelperLocalRectUpdateEntry((char *)pObject + 0xe4);
+    *(short *)((char *)pObject + 0x100) = 0;
+    *(short *)((char *)pObject + 0x102) = 0;
+    *(void ***)pObject = g_ResourceGeometryChildVtable;
+    *(void ***)((char *)pObject + 0x90) =
+        g_ResourceGeometryChildDeleteVtable;
+    *(void **)((char *)pObject + 0xc8) = pRenderOwner;
+    InitializeSharedSpriteOwnerState(pObject);
+    return pObject;
 }
 
 void LEMBALL_FASTCALL ComputeAlignedZrleChildLayout(void *pObject) {
