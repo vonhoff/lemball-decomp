@@ -1078,6 +1078,10 @@ static void InitializeDisplayStateVtables(void) {
         deleteDirectDrawDisplayStateMethod;
     union { void *(VsGdiDibDisplayState::*p)(int); void *v; }
         deleteDibDisplayStateMethod;
+    union {
+        int (VsGdiDibDisplayState::*p)(void *, short *, void *, short *);
+        void *v;
+    } stretchDibRectMethod;
     union { void *(VsGdiMetricsDisplayState::*p)(int); void *v; }
         deleteMetricsDisplayStateMethod;
 
@@ -1133,6 +1137,8 @@ static void InitializeDisplayStateVtables(void) {
         (void *)ApplyDirectDrawSurfacePalette;
     g_VSGDI_MetricsDisplayVtable[7] =
         (void *)StretchDisplaySurfaceRect;
+    stretchDibRectMethod.p = &VsGdiDibDisplayState::StretchDisplayRect;
+    g_VSGDI_DibDisplayVtable[7] = stretchDibRectMethod.v;
     g_VSGDI_DirectDrawDisplayVtable[7] = stretchDirectDrawSurfaceMethod.v;
     g_VSGDI_MetricsDisplayVtable[8] =
         (void *)CopyDisplaySurfaceRect;
@@ -1611,6 +1617,19 @@ VsGdiDibDisplayState::~VsGdiDibDisplayState(void) {
         ((DISPLAY_DIB_MESSAGE)g_pApplyFullscreenDisplayModeThunk)(0, 0, 0x4000);
         ((DISPLAY_DIB_END)m_pfnDisplayDibEnd32)();
     }
+}
+
+// FUNCTION: LEMBALL 0x00457020
+int VsGdiDibDisplayState::StretchDisplayRect(
+    void *pDestinationBinding, short *pDestinationRect,
+    void *pSourceBinding, short *pSourceRect)
+{
+    short aSourcePoint[2];
+
+    aSourcePoint[0] = pSourceRect[2];
+    aSourcePoint[1] = pSourceRect[3];
+    return CopyDisplayRect(pDestinationBinding, pDestinationRect,
+                           pSourceBinding, aSourcePoint);
 }
 
 int VsGdiDibDisplayState::CopyDisplayRect(
@@ -5452,11 +5471,11 @@ void LEMBALL_FASTCALL BlitBitmapRowsToScanlines(
         pSurface, 0, &Rect);
 
     dwFlags = *(unsigned int *)(pCommandBytes + 0x14);
-    iDestinationRow = Rect.m_cy;
+    iDestinationRow = Rect.m_y;
     nDestinationRowStep = 1;
     if ((dwFlags & 2) != 0) {
         nDestinationRowStep = -1;
-        iDestinationRow += Rect.m_y - 1;
+        iDestinationRow += Rect.m_cy - 1;
     }
 
     pSource = ((GetBitmapDataVirtual)(*(void ***)pBitmap)[10])(pBitmap);
@@ -5464,16 +5483,16 @@ void LEMBALL_FASTCALL BlitBitmapRowsToScanlines(
                xSource + ClippedRect.m_cx;
     ppRows = *(unsigned char ***)((char *)pSurface + 4);
 
-    for (iSourceRow = 0; iSourceRow < Rect.m_y; ++iSourceRow) {
-        pDestination = ppRows[iDestinationRow] + Rect.m_cx;
+    for (iSourceRow = 0; iSourceRow < Rect.m_cy; ++iSourceRow) {
+        pDestination = ppRows[iDestinationRow] + Rect.m_x;
         if ((dwFlags & 0x800) != 0) {
-            for (i = 0; i < Rect.m_x; ++i) {
+            for (i = 0; i < Rect.m_cx; ++i) {
                 if (pSource[i] != 0) {
                     pDestination[i] = pSource[i];
                 }
             }
         } else {
-            memcpy(pDestination, pSource, (unsigned short)Rect.m_x);
+            memcpy(pDestination, pSource, (unsigned short)Rect.m_cx);
         }
         iDestinationRow += nDestinationRowStep;
         pSource += cxBitmap;

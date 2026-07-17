@@ -125,6 +125,10 @@ public:
     void *Delete(int fDelete);
 
     int Create(HWND hWnd);
+    int StretchDisplayRect(void *pDestinationBinding,
+                           short *pDestinationRect,
+                           void *pSourceBinding,
+                           short *pSourceRect);
     int CopyDisplayRect(void *pDestinationBinding,
                         short *pDestinationRect,
                         void *pSourceBinding,
