@@ -1035,6 +1035,8 @@ static void InitializeDisplayStateVtables(void) {
         int (VsGdiDirectDrawDisplayState::*p)(void *, short *, void *, short *);
         void *v;
     } stretchDirectDrawSurfaceMethod;
+    union { int (VsGdiDirectDrawDisplayState::*p)(void *); void *v; }
+        applyDirectDrawPaletteMethod;
 
     for (i = 0; i < 14; ++i) {
         g_VSGDI_MetricsDisplayVtable[i] = (void *)NetworkSafeVtableNoop;
@@ -1059,6 +1061,8 @@ static void InitializeDisplayStateVtables(void) {
         &VsGdiDirectDrawDisplayState::CopyDirectDrawSurfaceRect;
     stretchDirectDrawSurfaceMethod.p =
         &VsGdiDirectDrawDisplayState::StretchDirectDrawSurfaceRect;
+    applyDirectDrawPaletteMethod.p =
+        &VsGdiDirectDrawDisplayState::ApplyDirectDrawPalette;
     readyMethod.p = &VsGdiDisplayState::IsReady;
     g_VSGDI_MetricsDisplayVtable[1] = createBindingMethod.v;
     g_VSGDI_DibDisplayVtable[1] = createBindingMethod.v;
@@ -1101,6 +1105,7 @@ static void InitializeDisplayStateVtables(void) {
     g_VSGDI_DirectDrawDisplayVtable[10] = releaseDirectDrawSurfaceMethod.v;
     g_VSGDI_MetricsDisplayVtable[11] =
         (void *)CreateAndStoreDisplayPalette;
+    g_VSGDI_DirectDrawDisplayVtable[11] = applyDirectDrawPaletteMethod.v;
     g_VSGDI_MetricsDisplayVtable[12] =
         (void *)SelectAndRealizeDisplayPalette;
     g_VSGDI_DirectDrawDisplayVtable[12] =
@@ -1559,7 +1564,7 @@ VsGdiDirectDrawDisplayState::VsGdiDirectDrawDisplayState(const unsigned short *p
     m_pPalette = 0;
     m_fDirectDrawCursorVisible = 0;
     m_fWindowOwnershipInitialized = 1;
-    *(int *)((char *)this + 0x30) = 0;
+    m_pDirectDrawPalette = 0;
     m_hGraphicsModule = LoadLibraryA(g_VSGDI_DdrawDll);
     if (m_hGraphicsModule != 0) {
         m_pfnDirectDrawCreate = GetProcAddress(m_hGraphicsModule, g_VSGDI_DirectDrawCreate);
@@ -1803,6 +1808,81 @@ int VsGdiDirectDrawDisplayState::BindDirectDrawSurface(int nDriver, void *pSurfa
 // FUNCTION: LEMBALL 0x00457c70
 int VsGdiDirectDrawDisplayState::ReleaseDirectDrawSurface(int, void *pSurface) {
     return (int)(unsigned long)pSurface;
+}
+
+// FUNCTION: LEMBALL 0x00457c80
+int VsGdiDirectDrawDisplayState::ApplyDirectDrawPalette(void *pPalette) {
+    typedef unsigned int (__stdcall *DIRECTDRAW_BLT)(
+        void *, void *, void *, void *, unsigned int, void *);
+    typedef unsigned int (__stdcall *DIRECTDRAW_CREATE_PALETTE)(
+        void *, unsigned int, void *, void **, void *);
+    typedef unsigned int (__stdcall *DIRECTDRAW_SET_PALETTE_ENTRIES)(
+        void *, unsigned int, unsigned int, unsigned int, void *);
+    typedef unsigned int (__stdcall *DIRECTDRAW_SET_PALETTE)(void *, void *);
+    struct DirectDrawPaletteData {
+        unsigned short m_nReserved00;
+        unsigned short m_cEntries02;
+        unsigned int m_aEntries04[1];
+    };
+    unsigned char aBltEffects[100];
+    DirectDrawPaletteData *pPaletteData;
+    unsigned int uResult;
+
+    *(unsigned int *)aBltEffects = sizeof(aBltEffects);
+    *(unsigned int *)(aBltEffects + 0x50) = 0;
+    uResult = ((DIRECTDRAW_BLT)(*(void ***)m_pPrimarySurface)[5])(
+        m_pPrimarySurface, 0, 0, 0, 0x400, aBltEffects);
+    if (uResult != 0) {
+        g_pErrorOutputStream
+            ->AppendCStringToStream(
+                "Direct Draw Initial rectangle blit failed : ")
+            ->AppendCStringToStream(
+                LookupDirectDrawErrorString(uResult & 0xfff))
+            ->AppendCStringToStream("\n");
+        return 0;
+    }
+
+    pPaletteData = (DirectDrawPaletteData *)pPalette;
+    if (m_pDirectDrawPalette != 0) {
+        uResult = ((DIRECTDRAW_SET_PALETTE_ENTRIES)
+            (*(void ***)m_pDirectDrawPalette)[6])(
+                m_pDirectDrawPalette, 0, 0, pPaletteData->m_cEntries02,
+                pPaletteData->m_aEntries04);
+        if (uResult != 0) {
+            g_pErrorOutputStream
+                ->AppendCStringToStream(
+                    "Direct Draw Set Palette Entries failed: ")
+                ->AppendCStringToStream(
+                    LookupDirectDrawErrorString(uResult & 0xfff))
+                ->AppendCStringToStream("\n");
+            return 0;
+        }
+    } else {
+        uResult = ((DIRECTDRAW_CREATE_PALETTE)
+            (*(void ***)m_pDirectDrawObject)[5])(
+                m_pDirectDrawObject, 0xc, pPaletteData->m_aEntries04,
+                &m_pDirectDrawPalette, 0);
+        if (uResult != 0) {
+            g_pErrorOutputStream
+                ->AppendCStringToStream("Direct Draw Create Palette failed: ")
+                ->AppendCStringToStream(
+                    LookupDirectDrawErrorString(uResult & 0xfff))
+                ->AppendCStringToStream("\n");
+            return 0;
+        }
+        uResult = ((DIRECTDRAW_SET_PALETTE)
+            (*(void ***)m_pPrimarySurface)[31])(
+                m_pPrimarySurface, m_pDirectDrawPalette);
+        if (uResult != 0) {
+            g_pErrorOutputStream
+                ->AppendCStringToStream("Direct Draw Set Palette failed: ")
+                ->AppendCStringToStream(
+                    LookupDirectDrawErrorString(uResult & 0xfff))
+                ->AppendCStringToStream("\n");
+            return 0;
+        }
+    }
+    return 1;
 }
 
 int VsGdiDibDisplayState::CopyDisplayRect(

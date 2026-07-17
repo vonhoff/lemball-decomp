@@ -146,6 +146,7 @@ public:
                                   short *pDestinationRect,
                                   void *pSourceBinding,
                                   short *pSourcePoint);
+    int ApplyDirectDrawPalette(void *pPalette);
     int BindDirectDrawSurface(int nDriver, void *pSurface);
     int ReleaseDirectDrawSurface(int nDriver, void *pSurface);
 
@@ -155,7 +156,8 @@ private:
     void *m_pOffscreenSurface;             // 0x24
     void *m_pPalette;                      // 0x28
     int m_fDirectDrawCursorVisible;        // 0x2c
-    unsigned char m_abReserved34[0x70];    // 0x30
+    void *m_pDirectDrawPalette;            // 0x30
+    unsigned char m_abReserved34[0x6c];    // 0x34
     FARPROC m_pfnDirectDrawCreate;         // 0xa0
     unsigned char m_abReservedA4[0x400];   // 0xa4
     int m_fWindowOwnershipInitialized;     // 0x4a4
