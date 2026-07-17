@@ -1682,9 +1682,6 @@ VsGdiDirectDrawDisplayState::VsGdiDirectDrawDisplayState(const unsigned short *p
         NoopDirectDrawCallback(uResult, 0);
         return;
     }
-    if (*ppDirectDrawObject == 0) {
-        return;
-    }
 
     uCooperativeFlags = 8;
     if (fCreateWindow != 0) {
