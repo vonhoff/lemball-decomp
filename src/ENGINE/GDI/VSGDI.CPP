@@ -52,6 +52,8 @@ static int LEMBALL_FASTCALL CopyDisplaySurfaceRect(
 static int LEMBALL_FASTCALL StretchDisplaySurfaceRect(
     void *, int, void *pDestinationBinding, short *pDestinationRect,
     void *pSourceBinding, short *pSourceRect);
+static int LEMBALL_FASTCALL ApplyDirectDrawSurfacePalette(
+    void *, int, void *, int, int, const unsigned int *);
 int LEMBALL_FASTCALL UsesExistingDisplayPaletteAsFallback(
     void *pDisplayState, int);
 void LEMBALL_FASTCALL SetHelperTargetParamWrapperDisplayDc(
@@ -1055,6 +1057,8 @@ static void InitializeDisplayStateVtables(void) {
     g_VSGDI_DirectDrawDisplayVtable[5] = bitmapObjectMethod.v;
     g_VSGDI_MetricsDisplayVtable[6] =
         (void *)ApplyDisplaySurfacePalette;
+    g_VSGDI_DirectDrawDisplayVtable[6] =
+        (void *)ApplyDirectDrawSurfacePalette;
     g_VSGDI_MetricsDisplayVtable[7] =
         (void *)StretchDisplaySurfaceRect;
     g_VSGDI_MetricsDisplayVtable[8] =
@@ -1076,6 +1080,8 @@ static void InitializeDisplayStateVtables(void) {
     g_VSGDI_MetricsDisplayVtable[11] =
         (void *)CreateAndStoreDisplayPalette;
     g_VSGDI_MetricsDisplayVtable[12] =
+        (void *)SelectAndRealizeDisplayPalette;
+    g_VSGDI_DirectDrawDisplayVtable[12] =
         (void *)SelectAndRealizeDisplayPalette;
     g_VSGDI_MetricsDisplayVtable[13] =
         (void *)UsesExistingDisplayPaletteAsFallback;
@@ -1601,6 +1607,13 @@ VsGdiDirectDrawDisplayState::VsGdiDirectDrawDisplayState(const unsigned short *p
             m_fReady = 1;
         }
     }
+}
+
+// FUNCTION: LEMBALL 0x004578c0
+static int LEMBALL_FASTCALL ApplyDirectDrawSurfacePalette(
+    void *, int, void *, int, int, const unsigned int *)
+{
+    return 0x100;
 }
 
 int VsGdiDibDisplayState::CopyDisplayRect(
