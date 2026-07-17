@@ -43,8 +43,8 @@ int LEMBALL_FASTCALL CreateAndStoreDisplayPalette(
     void *pDisplayState, int, void *pPalette);
 int LEMBALL_FASTCALL SelectAndRealizeDisplayPalette(
     void *pDisplayState, int, void *pDisplayDc);
-int LEMBALL_FASTCALL ApplyDisplaySurfacePalette(
-    void *, int, void *pSurface, int nFirstEntry, int cEntries,
+int LEMBALL_STDCALL ApplyDisplaySurfacePalette(
+    void *pSurface, int nFirstEntry, int cEntries,
     const unsigned int *paColors);
 static int LEMBALL_STDCALL CopyDisplaySurfaceRect(
     void *pBinding, short *pDestinationRect,
@@ -1454,8 +1454,8 @@ int VsGdiDisplayState::ReleaseDisplayBitmap(void *pBitmap) {
 }
 
 // FUNCTION: LEMBALL 0x00456c50
-int LEMBALL_FASTCALL ApplyDisplaySurfacePalette(
-    void *, int, void *pSurface, int nFirstEntry, int cEntries,
+int LEMBALL_STDCALL ApplyDisplaySurfacePalette(
+    void *pSurface, int nFirstEntry, int cEntries,
     const unsigned int *paColors)
 
 {
