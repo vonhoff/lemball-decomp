@@ -1,5 +1,7 @@
 #include "ENGINE/CORE/VSINIT.H"
 #include "ENGINE/CORE/WIN32.H"
+#include "ENGINE/GDI/VSGDI.H"
+#include <string.h>
 
 struct RenderDispatchClientObject {
     void **m_pVtable;
@@ -22,7 +24,9 @@ __declspec(dllimport) HGLOBAL WINAPI GlobalHandle(const void *pMemory);
 __declspec(dllimport) int WINAPI MultiByteToWideChar(
     unsigned int nCodePage, DWORD dwFlags, const char *pszSource,
     int cchSource, unsigned short *pwszDestination, int cchDestination);
+__declspec(dllimport) int WINAPI SetStretchBltMode(void *hDc, int nMode);
 }
+extern unsigned int g_adwGlobalResourceGeometryPaletteTable[256];
 
 struct VsWingDrawOpenRequest {
     int m_nReserved00;
@@ -43,7 +47,17 @@ struct VsWingAnimWindowOwnerView {
 };
 
 struct VsWingDrawHandlerState {
-    unsigned char m_abReserved00[0x2c];
+    void *m_pReserved00;
+    void *m_hDrawDC04;
+    int m_xDestination08;
+    int m_yDestination0C;
+    int m_cxDestination10;
+    int m_cyDestination14;
+    int m_xSource18;
+    int m_ySource1C;
+    int m_cxSource20;
+    int m_cySource24;
+    int m_nReserved28;
     void *m_pWindowState2C;
     void *m_hMemoryDC30;
     void *m_hBitmap34;
@@ -82,6 +96,20 @@ struct VsWingBitmapInfoHeader {
 struct VsWingSuggestFormatRequest {
     VsWingBitmapInfoHeader *m_pSource00;
     VsWingBitmapInfoHeader *m_pDestination04;
+};
+
+struct VsWingDrawBeginRequest {
+    DWORD m_dwFlags00;
+    unsigned char m_abReserved04[0x0c];
+    int m_xDestination10;
+    int m_yDestination14;
+    int m_cxDestination18;
+    int m_cyDestination1C;
+    VsWingBitmapInfoHeader *m_pSourceFormat20;
+    int m_xSource24;
+    int m_ySource28;
+    int m_cxSource2C;
+    int m_cySource30;
 };
 
 // FUNCTION: LEMBALL 0x004631a0
@@ -432,4 +460,36 @@ int LEMBALL_STDCALL SuggestVisualSciencesWingDrawFormat(
     pDestination->m_dwCompression10 = 0;
     pDestination->m_cbImage14 = 0;
     return pSource->m_cColorsUsed20 * 4 + 0x28;
+}
+
+// FUNCTION: LEMBALL 0x004793e0
+int LEMBALL_STDCALL BeginVisualSciencesWingDraw(
+    VsWingDrawHandlerState *pState, VsWingDrawBeginRequest *pRequest, void *)
+{
+    int nResult;
+
+    nResult = ValidateVisualSciencesWing8BppFormat(
+        pState, pRequest->m_pSourceFormat20);
+    if (nResult == 0 && (pRequest->m_dwFlags00 & 1) == 0) {
+        pState->m_xDestination08 = pRequest->m_xDestination10;
+        pState->m_yDestination0C = pRequest->m_yDestination14;
+        pState->m_cxDestination10 = pRequest->m_cxDestination18;
+        pState->m_cyDestination14 = pRequest->m_cyDestination1C;
+        pState->m_xSource18 = pRequest->m_xSource24;
+        pState->m_ySource1C = pRequest->m_ySource28;
+        pState->m_cxSource20 = pRequest->m_cxSource2C;
+        pState->m_cySource24 = pRequest->m_cySource30;
+        SetStretchBltMode(pState->m_hDrawDC04, 3);
+
+        nResult = pRequest->m_pSourceFormat20->m_cColorsUsed20;
+        nResult = nResult * 4 - 4;
+        if (nResult > 0) {
+            memcpy(g_adwGlobalResourceGeometryPaletteTable + 1,
+                   (unsigned char *)pRequest->m_pSourceFormat20 + 0x2c,
+                   nResult);
+            PropagateGlobalPaletteToResourceGeometries(pState->m_pWindowState2C);
+        }
+        nResult = 0;
+    }
+    return nResult;
 }
