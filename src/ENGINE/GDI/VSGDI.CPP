@@ -293,12 +293,13 @@ static void *g_VSGDI_CompactResourceGeometryHelperVtable[20] = {
     (void *)CompactHelperReturnZeroSlot18, 0,
 };
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot0(void *);
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot1(void *);
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot1(void *, int, void *);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot2(void *);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot3(void *);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot4(void *);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot5(void *);
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot9(void *);
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot9(
+    void *, int, void *, void *);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot11(void *);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot17(void *);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot18(void *);
@@ -3180,7 +3181,8 @@ void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void *pQueue) {
         void *, int, void *);
 
     pDispatchQueue = (VsGdiHelperDispatchQueue *)pQueue;
-    if (RefreshHelperTargetBindingIfChanged(pDispatchQueue->m_pHelperTarget) != 0) {
+    if (RefreshHelperTargetBindingIfChanged(
+            pDispatchQueue->m_pHelperTarget) != 0) {
         nByteOffset = 0;
         i = 0;
         if (0 < pDispatchQueue->m_cEntries) {

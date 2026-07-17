@@ -925,10 +925,18 @@ static void InitializeWindowOwnerRenderContextVtable(
     g_GAME_WindowOwnerRenderContextVtableSlots[28] = g_GAME_PrimaryContextVtableSlots[28];
     g_GAME_WindowOwnerRenderContextVtableSlots[32] = g_GAME_PrimaryContextVtableSlots[32];
     g_GAME_WindowOwnerRenderContextVtableSlots[33] = g_GAME_PrimaryContextVtableSlots[33];
-    for (i = 40; i < 46; ++i) {
-        g_GAME_WindowOwnerRenderContextVtableSlots[i] =
-            g_GAME_PrimaryContextVtableSlots[i];
-    }
+    g_GAME_WindowOwnerRenderContextVtableSlots[40] =
+        g_GAME_PrimaryContextVtableSlots[40];
+    g_GAME_WindowOwnerRenderContextVtableSlots[41] =
+        g_GAME_PrimaryContextVtableSlots[41];
+    g_GAME_WindowOwnerRenderContextVtableSlots[42] =
+        (void *)StubNoOpObjectArgument;
+    g_GAME_WindowOwnerRenderContextVtableSlots[43] =
+        g_GAME_PrimaryContextVtableSlots[43];
+    g_GAME_WindowOwnerRenderContextVtableSlots[44] =
+        g_GAME_PrimaryContextVtableSlots[44];
+    g_GAME_WindowOwnerRenderContextVtableSlots[45] =
+        g_GAME_PrimaryContextVtableSlots[45];
     g_fWindowOwnerRenderContextVtableInitialized = 1;
 }
 
@@ -3423,7 +3431,6 @@ void LEMBALL_FASTCALL ForwardPrimaryContextActiveScreenSlot0x14(void *pPrimaryCo
 int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresent(int *pPrimaryContext) {
     short nHeight;
     short nWidth;
-
     if (!((GamePrimaryContextVirtualInterface *)pPrimaryContext)->GetWindowOwnerState()) {
         return 0;
     }

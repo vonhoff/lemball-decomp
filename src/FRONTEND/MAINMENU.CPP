@@ -794,7 +794,8 @@ static void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroup(
     ((GameNoArgVirtual)(*(void ***)pScreen->m_pPrimaryContext84)[44])(
         pScreen->m_pPrimaryContext84, 0);
 
-    pGroup = pScreen->m_abRenderEntryGroupC8;
+    pGroup = pScreen->m_abRenderEntryGroupC8 +
+             pScreen->m_iRenderEntryGroup328 * 0x260;
     *(short *)(pGroup + 4) = 0;
     *(short *)(pGroup + 6) = 0;
     *(short *)(pGroup + 8) = pScreen->m_cxScreen37C;
@@ -864,20 +865,41 @@ static void LEMBALL_FASTCALL DrawFramedScreenBase(void *pObject) {
     void *pUploadOwner;
     int nUploadState;
     unsigned char *pGroup;
+    unsigned char *pEntry;
 
     pScreen = (GameFramedScreenBase *)pObject;
     pUploadOwner = *(void **)((char *)pScreen->m_pRenderContext88 + 0x0c);
     nUploadState = ((GameIntNoArgVirtual)(*(void ***)pUploadOwner)[2])(
         pUploadOwner, 0);
     InitializeHelperUploadStatePending(nUploadState);
-    pGroup = pScreen->m_abRenderEntryGroupC8;
+    pGroup = pScreen->m_abRenderEntryGroupC8 +
+             pScreen->m_iRenderEntryGroup328 * 0x260;
     AppendPointerQueueEntry(pScreen->m_pRenderContext88, pGroup + 0x1bc);
 
     if (pScreen->m_fBuildingRenderEntries364 != 0) {
+        if (pScreen->m_fTileBackgroundAC == 0) {
+            pEntry = pGroup + 0x1c0 +
+                     pScreen->m_iPackagedEntry36C * 0x10;
+            *(short *)(pEntry + 4) = pScreen->m_cxScreen37C;
+            *(short *)(pEntry + 6) = pScreen->m_cyScreen37E;
+            *(short *)(pEntry + 8) = 0;
+            *(short *)(pEntry + 10) = 0;
+            *(int *)(pEntry + 12) = 0;
+            ((GameMainMenuRenderEntryInterface *)pEntry)
+                ->AppendToQueue(pScreen->m_pRenderContext88);
+            ++pScreen->m_iPackagedEntry36C;
+        }
         DrawFramedScreenFrameLayer(pScreen);
         ((GameNoArgVirtual)pScreen->m_pVtable00[20])(pScreen, 0);
+    } else {
+        ((GameNoArgVirtual)pScreen->m_pVtable00[18])(pScreen, 0);
     }
     ((GameNoArgVirtual)pScreen->m_pVtable00[19])(pScreen, 0);
+    if (pScreen->m_fBuildingRenderEntries364 == 0 &&
+        pScreen->m_pSelectorManager334 != 0) {
+        EmitMenuSelectorResourceEntries(
+            (GameMenuSelectorManager *)pScreen->m_pSelectorManager334);
+    }
 }
 
 // FUNCTION: LEMBALL 0x00445c10
@@ -893,7 +915,8 @@ static void LEMBALL_FASTCALL DrawFramedScreenFrameLayer(void *pObject) {
     int iEntry;
 
     pScreen = (GameFramedScreenBase *)pObject;
-    pGroup = pScreen->m_abRenderEntryGroupC8;
+    pGroup = pScreen->m_abRenderEntryGroupC8 +
+             pScreen->m_iRenderEntryGroup328 * 0x260;
     if (pScreen->m_fTileBackgroundAC != 0 &&
         pScreen->m_pBackgroundBitmapC4 != 0) {
         cxTile = *(short *)((char *)pScreen->m_pBackgroundBitmapC4 + 0x48);

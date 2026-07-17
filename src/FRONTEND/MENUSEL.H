@@ -156,5 +156,7 @@ void LEMBALL_FASTCALL RebuildMenuSelectorChildRects(
     GameMenuSelectorManager *pManager, int nUnusedEdx, int fForce);
 void LEMBALL_FASTCALL RebuildMenuSelectorChildRectsThunk(
     GameMenuSelectorManager *pManager, int nUnusedEdx, int fForce);
+void LEMBALL_FASTCALL EmitMenuSelectorResourceEntries(
+    GameMenuSelectorManager *pManager);
 
 #endif

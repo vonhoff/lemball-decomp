@@ -23,6 +23,11 @@ extern void *ConstructVariantRenderManager(void *pObject, int nOwner,
                                            int nUnknown58,
                                            int fDoubleBuffered);
 extern void LoadVariantRenderResource(void *pObject, int nResourceId);
+extern void EmitVariantRenderResourceEntry(void *pObject, short *pRect,
+                                           const short *pPoint,
+                                           int nResourceId, int nFlags,
+                                           void *pFrameSelector, int nValue);
+extern void ResetOrFlipVariantRenderBuffers(int nManager);
 extern void DestroyVariantRenderManager(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntry(
     void *pObject);
@@ -471,8 +476,8 @@ void GameMenuActionFramePointSink::DispatchToRenderObject(void *pContext) {
     void *pFrame;
 
     nContext = *(int *)((char *)pContext + 0x0c);
-    nRenderObject = *(int *)(*(int *)(*(int *)(nContext + 0x40) + 4) +
-                                 0x40 + nContext);
+    nRenderObject = *(int *)(*(int *)(nContext + 0x40) + 4) +
+                    0x40 + nContext;
     pFrame = (char *)m_pResource1C[0x1e] + m_iFrame18 * 0x54;
     ((RenderProc)(*(void ***)nRenderObject)[9])(
         (void *)nRenderObject, 0, this, pFrame);
@@ -674,8 +679,6 @@ static void InitializeResourceGeometryChildVtables(
     g_ResourceGeometryChildVtable[29] = Void.v;
     Rect.p = &GameResourceGeometryChildView::ForwardNestedRectUpdate;
     g_ResourceGeometryChildVtable[33] = Rect.v;
-    Void.p = &GameResourceGeometryChildView::QueueIfDirty;
-    g_ResourceGeometryChildVtable[42] = Void.v;
     Void.p = &GameResourceGeometryChildView::RefreshIfHelperDirty;
     g_ResourceGeometryChildVtable[46] = Void.v;
     g_ResourceGeometryChildVtable[47] = (void *)_purecall;
@@ -1168,6 +1171,78 @@ GameMenuSelectorManager *LEMBALL_FASTCALL ConstructMenuSelectorManagerThunk(
     return ConstructMenuSelectorManager(pManager, nUnusedEdx, pRenderOwner,
                                         pRenderContext, nChildCapacity,
                                         nLayoutMode);
+}
+
+/* FUNCTION: LEMBALL 0x0044D2D0 */
+void LEMBALL_FASTCALL EmitMenuSelectorResourceEntries(GameMenuSelectorManager *pManager) {
+    int nContext;
+    int nRenderObject;
+    int nOwner;
+    int i;
+    short Point[2];
+    short Rect[4];
+    const int *pOffsets;
+
+    for (i = 0; i < pManager->m_cChildren80; ++i) {
+        GameMenuSelectorEntry *pEntry;
+
+        pEntry = pManager->m_apChildren1E0[i];
+        if (pEntry != 0 && pEntry->m_fEnabled5C != 0 &&
+            pEntry->m_pAlignedOverlay50 != 0) {
+            void *pOverlay;
+            char *pFrameSink;
+
+            pOverlay = pEntry->m_pAlignedOverlay50;
+            pFrameSink = *(char **)((char *)pOverlay + 0x124);
+            *(short *)(pFrameSink + 4) = (short)pEntry->m_x1C;
+            *(short *)(pFrameSink + 6) = (short)pEntry->m_nPosition20;
+            *(void **)(pFrameSink + 0x1c) =
+                *(void **)((char *)pOverlay + 0x11c);
+            *(int *)(pFrameSink + 0x18) = 0;
+            *(int *)(pFrameSink + 0x0c) = 0;
+            *(int *)(pFrameSink + 0x10) = 0;
+            ((void (LEMBALL_FASTCALL *)(void *, int, void *))
+                (*(void ***)pFrameSink)[1])(
+                    pFrameSink, 0, pManager->m_pRenderContext210);
+        }
+    }
+
+    nContext = *(int *)((char *)pManager->m_pChildRenderContext26C + 0x0c);
+    nRenderObject = *(int *)(*(int *)(nContext + 0x40) + 4) +
+                    0x40 + nContext;
+    ((void (LEMBALL_FASTCALL *)(void *, int))(*(void ***)nRenderObject)[14])(
+        (void *)nRenderObject, 0);
+    Point[0] = *(short *)(nRenderObject + 0x14);
+    Point[1] = *(short *)(nRenderObject + 0x16);
+    *(short *)(pManager->m_abLocalRectEntry200 + 4) = Point[0];
+    *(short *)(pManager->m_abLocalRectEntry200 + 6) = Point[1];
+    *(short *)(pManager->m_abLocalRectEntry200 + 8) = 0;
+    *(short *)(pManager->m_abLocalRectEntry200 + 10) = 0;
+    *(int *)(pManager->m_abLocalRectEntry200 + 12) = 0x10000;
+    AppendPointerQueueEntry(pManager->m_pChildRenderContext26C,
+                            pManager->m_abLocalRectEntry200);
+
+    pOffsets = pManager->m_fCompactLayout274 != 1
+        ? g_anMenuSelectorActionOffsetsMode0
+        : g_anMenuSelectorActionOffsetsMode1;
+    if (pManager->m_nActionStateA4 == 0) {
+        pManager->m_nCurrentFrameCallbackFrame264 =
+            pManager->m_nCurrentSide94 == 0 ? 0 :
+            ((LevelVariantRenderManagerView *)
+                pManager->m_abVariantRenderManager10)
+                ->GetVariantRenderFrameCount(g_nMenuSelectorResourceId6) - 1;
+        Point[0] = (short)(pManager->m_xCenteredAction88 + pOffsets[0]);
+        Point[1] = (short)(pManager->m_nCurrentPosition8C + pOffsets[1]);
+        nOwner = *(int *)(pManager->m_abVariantRenderManager10 + 0x1c);
+        *(void **)(pManager->m_abVariantRenderManager10 + 0x1c) =
+            pManager->m_pChildRenderContext26C;
+        EmitVariantRenderResourceEntry(
+            pManager->m_abVariantRenderManager10, Rect, Point,
+            g_nMenuSelectorResourceId6, 0, 0, 0);
+        *(int *)(pManager->m_abVariantRenderManager10 + 0x1c) = nOwner;
+    }
+    ResetOrFlipVariantRenderBuffers(
+        (int)(unsigned long)pManager->m_abVariantRenderManager10);
 }
 
 void LEMBALL_FASTCALL InitializeSharedSpriteOwnerState(void *pObject) {

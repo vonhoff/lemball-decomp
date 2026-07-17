@@ -381,6 +381,15 @@ static void *g_LEVEL_StatusIndicatorPointSinkEntryVtable =
 static void *g_LEVEL_ActionButtonPointSinkDeleteVtable[1] = {
     (void *)DestroyBaseModeActionButtonPointSinkArray,
 };
+static void LEMBALL_FASTCALL QueueVariantActionFramePointSink(
+    void *pObject, int nUnusedEdx, void *pQueue);
+static void LEMBALL_FASTCALL DispatchVariantActionFramePointSink(
+    void *pObject, int nUnusedEdx, void *pContext);
+static void *g_LEVEL_ActionButtonPointSinkVtable[3] = {
+    (void *)DestroyBaseModeActionButtonPointSinkArray,
+    (void *)QueueVariantActionFramePointSink,
+    (void *)DispatchVariantActionFramePointSink,
+};
 /* 00499620: the adjacent 00499628 packaged-entry table is now emitted by
  * LevelPackagedRectQueueEntry rather than represented as raw storage here. */
 static void *g_LEVEL_VariantRenderManagerVtableStorage[2] = {
@@ -799,6 +808,10 @@ void *ConstructVariantRenderManager(void *pObject,
 void DestroyVariantRenderManager(void *pObject);
 void LoadVariantRenderResource(void *pObject, int nResourceId);
 void ResetOrFlipVariantRenderBuffers(int nManager);
+void EmitVariantRenderResourceEntry(void *pObject, short *pRect,
+                                    const short *pPoint, int nResourceId,
+                                    int nFlags, void *pFrameSelector,
+                                    int nValue);
 static void *DestroyStatusIndicatorPointSinkArray00467BB0(void *pObject, unsigned int fDelete);
 void LEMBALL_FASTCALL RestoreQueuedRenderPointSinkVtable(void *pObject);
 static void *DestroyPackagedSpriteRenderEntryArray00469930(void *pObject, unsigned int fDelete);
@@ -1091,7 +1104,7 @@ void *InitializeBaseModeActionButtonPointSink(void *pObject) {
     pEntry = (int *)pObject;
     *(void **)pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
     *(unsigned short *)((char *)pEntry + 6) = 0;
-    *(void **)pEntry = g_LEVEL_ActionButtonPointSinkDeleteVtable;
+    *(void **)pEntry = g_LEVEL_ActionButtonPointSinkVtable;
     *(unsigned short *)(pEntry + 1) = 0;
     return pObject;
 }
@@ -1218,6 +1231,41 @@ static void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateEntry00432B20(
     pDispatchObject = (void *)(unsigned long)(pDispatchBase + 0x40 + pOwner);
     ((LevelOneArgVirtualProc)(*(void ***)pDispatchObject)[1])(
         pDispatchObject, 0, pObject);
+}
+
+static void LEMBALL_FASTCALL QueueVariantActionFramePointSink(
+    void *pObject, int, void *pQueue) {
+    int *pResource;
+
+    pResource = *(int **)((char *)pObject + 0x1c);
+    if (pResource[4] == 0) {
+        ((void (LEMBALL_FASTCALL *)(void *, int))
+            (*(void ***)pResource)[7])(pResource, 0);
+    } else {
+        pResource[9] = 0;
+    }
+    ++pResource[2];
+    AppendPointerQueueEntry(pQueue, pObject);
+}
+
+static void LEMBALL_FASTCALL DispatchVariantActionFramePointSink(
+    void *pObject, int, void *pContext) {
+    typedef void (LEMBALL_FASTCALL *RenderProc)(
+        void *, int, void *, void *);
+    int nContext;
+    int nRenderObject;
+    int *pResource;
+    void *pFrame;
+
+    pResource = *(int **)((char *)pObject + 0x1c);
+    pFrame = (char *)pResource[0x1e] +
+             *(int *)((char *)pObject + 0x18) * 0x54;
+    nContext = *(int *)((char *)pContext + 0x0c);
+    nRenderObject = *(int *)(*(int *)(nContext + 0x40) + 4) +
+                    0x40 + nContext;
+    ((RenderProc)(*(void ***)nRenderObject)[9])(
+        (void *)nRenderObject, 0, pObject, pFrame);
+    --pResource[2];
 }
 
 // FUNCTION: LEMBALL 0x004338b0
@@ -2410,6 +2458,99 @@ int LevelVariantRenderManagerView::GetVariantRenderFrameCount(int nResourceId) {
         return 1;
     }
     return pResourceObject[0x1b];
+}
+
+// FUNCTION: LEMBALL 0x00467730
+void EmitVariantRenderResourceEntry(void *pObject, short *pRect, const short *pPoint, int nResourceId, int nFlags, void *pFrameSelector, int nValue) {
+    typedef int (LEMBALL_FASTCALL *FrameProc)(void *, int);
+    typedef void (LEMBALL_FASTCALL *QueueProc)(void *, int, void *);
+    int *pManager;
+    int *pResource;
+    int *pEntry;
+    int *pFrame;
+    int iEntry;
+    int iFrame;
+
+    pManager = (int *)pObject;
+    if (pManager[0x0e] != 0 && pManager[7] != pManager[8] &&
+        pManager[8] != 0) {
+        int nOwner = pManager[7];
+        pManager[7] = pManager[8];
+        ResetOrFlipVariantRenderBuffers((int)(unsigned long)pManager);
+        pManager[7] = nOwner;
+    }
+    pManager[8] = pManager[7];
+    pResource = *(int **)(unsigned long)(pManager[9] +
+        *(short *)(unsigned long)(pManager[10] + nResourceId * 2) * 4);
+
+    if (pResource[0x10] == 0x5a524c45) {
+        if (pManager[0x0e] == 0) {
+            iEntry = pManager[0x17]++;
+            pEntry = (int *)(unsigned long)(pManager[0x19] + iEntry * 0x18);
+        } else {
+            if (pManager[0x16] == pManager[0x13]) {
+                ResetOrFlipVariantRenderBuffers((int)(unsigned long)pManager);
+            }
+            iEntry = pManager[0x13];
+            pManager[0x13] += 2;
+            pEntry = (int *)(unsigned long)(pManager[0x19] +
+                (pManager[0x14] + iEntry) * 0x18);
+        }
+        pEntry[5] = *(unsigned short *)((char *)pManager + 0x68);
+        *(short *)(pEntry + 1) = pPoint[0];
+        *(short *)((char *)pEntry + 6) = pPoint[1];
+        pEntry[2] = (int)(unsigned long)pResource;
+        pEntry[3] = nFlags;
+        pEntry[4] = nValue;
+        if (pResource[4] == 0) {
+            ((void (LEMBALL_FASTCALL *)(void *, int))
+                (*(void ***)pResource)[7])(pResource, 0);
+        } else {
+            pResource[9] = 0;
+        }
+        ++pResource[2];
+        AppendPointerQueueEntry((void *)(unsigned long)pManager[7], pEntry);
+        pFrame = pResource;
+    } else {
+        iFrame = 0;
+        if (pFrameSelector != 0) {
+            iFrame = ((FrameProc)(*(void ***)pFrameSelector)[0])(
+                pFrameSelector, 0);
+            ((int *)pFrameSelector)[2] = iFrame;
+        }
+        pFrame = (int *)(unsigned long)(pResource[0x1e] + iFrame * 0x54);
+        if (pManager[0x0e] == 0) {
+            iEntry = pManager[0x10]++;
+            pEntry = (int *)(unsigned long)(pManager[0x15] + iEntry * 0x20);
+        } else {
+            if (pManager[0x0f] == pManager[0x12]) {
+                ResetOrFlipVariantRenderBuffers((int)(unsigned long)pManager);
+            }
+            iEntry = pManager[0x12];
+            pManager[0x12] += 2;
+            pEntry = (int *)(unsigned long)(pManager[0x15] +
+                (pManager[0x14] + iEntry) * 0x20);
+        }
+        pEntry[5] = *(unsigned short *)((char *)pManager + 0x68);
+        *(short *)(pEntry + 1) = pPoint[0];
+        *(short *)((char *)pEntry + 6) = pPoint[1];
+        pEntry[7] = (int)(unsigned long)pResource;
+        pEntry[6] = iFrame;
+        pEntry[3] = nFlags;
+        pEntry[4] = nValue;
+        if (pResource[4] == 0) {
+            ((void (LEMBALL_FASTCALL *)(void *, int))
+                (*(void ***)pResource)[7])(pResource, 0);
+        } else {
+            pResource[9] = 0;
+        }
+        ++pResource[2];
+        AppendPointerQueueEntry((void *)(unsigned long)pManager[7], pEntry);
+    }
+    pRect[0] = *(short *)((char *)pFrame + 0x4c);
+    pRect[1] = *(short *)((char *)pFrame + 0x4e);
+    pRect[2] = *(short *)((char *)pFrame + 0x48);
+    pRect[3] = *(short *)((char *)pFrame + 0x4a);
 }
 
 // FUNCTION: LEMBALL 0x004678c0
