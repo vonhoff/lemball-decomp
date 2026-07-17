@@ -26,8 +26,14 @@ __declspec(dllimport) int WINAPI MultiByteToWideChar(
     unsigned int nCodePage, DWORD dwFlags, const char *pszSource,
     int cchSource, unsigned short *pwszDestination, int cchDestination);
 __declspec(dllimport) int WINAPI SetStretchBltMode(void *hDc, int nMode);
+__declspec(dllimport) LONG WINAPI DefDriverProc(
+    DWORD dwDriverId, void *hDriver, unsigned int nMessage,
+    LONG lParam1, LONG lParam2);
 }
 extern unsigned int g_adwGlobalResourceGeometryPaletteTable[256];
+extern int PASCAL noop_visual_sciences_wing_draw_change_palette(
+    void *pUnused1, void *pUnused2);
+extern int PASCAL noop_visual_sciences_wing_draw_end(void *pUnused);
 
 struct VsWingDrawOpenRequest {
     int m_nReserved00;
@@ -123,6 +129,23 @@ struct VsWingRenderOwnerView {
     void *m_pVtable00;
     int m_nWindowState04;
 };
+
+void *LEMBALL_STDCALL OpenVisualSciencesWingDrawHandler(
+    VsWingDrawOpenRequest *pRequest);
+int LEMBALL_STDCALL CloseVisualSciencesWingDrawHandler(
+    VsWingDrawHandlerState *pState);
+DWORD LEMBALL_STDCALL FillVisualSciencesWingDrawInfo(
+    VsWingDrawCodecInfo *pInfo, DWORD cbInfo);
+int LEMBALL_STDCALL ValidateVisualSciencesWing8BppFormat(
+    void *pState, VsWingBitmapInfoHeader *pFormat);
+int LEMBALL_STDCALL SuggestVisualSciencesWingDrawFormat(
+    void *pState, VsWingSuggestFormatRequest *pRequest, void *pUnused);
+int LEMBALL_STDCALL BeginVisualSciencesWingDraw(
+    VsWingDrawHandlerState *pState, VsWingDrawBeginRequest *pRequest,
+    void *pUnused);
+int LEMBALL_STDCALL DrawVisualSciencesWingFrame(
+    VsWingDrawHandlerState *pState, VsWingDrawFrameRequest *pFrame,
+    void *pUnused);
 
 // FUNCTION: LEMBALL 0x004631a0
 int LEMBALL_FASTCALL AppendRenderDispatchQueueEntry(
@@ -355,6 +378,83 @@ int LEMBALL_FASTCALL DispatchRenderQueueEntryToClients(
     pQueue->m_cEntriesDropped = pQueue->m_cEntriesDropped + 1;
     LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
     return 1;
+}
+
+// FUNCTION: LEMBALL 0x00478fb0
+extern "C" unsigned long LEMBALL_STDCALL DispatchVisualSciencesWingDriverMessage(
+    VsWingDrawHandlerState *pState, void *hDriver, unsigned int nMessage,
+    void *pParam1, unsigned int nParam2)
+{
+    if (nMessage < 0x4010) {
+        if (nMessage == 0x400f) {
+            return BeginVisualSciencesWingDraw(
+                pState, (VsWingDrawBeginRequest *)pParam1,
+                (void *)nParam2);
+        }
+        switch (nMessage) {
+        case 1:
+        case 2:
+        case 5:
+        case 6:
+        case 7:
+        case 9:
+        case 10:
+            return 1;
+        case 3:
+            if (nParam2 != 0) {
+                return (unsigned long)OpenVisualSciencesWingDrawHandler(
+                    (VsWingDrawOpenRequest *)nParam2);
+            }
+            return 1;
+        case 4:
+            return CloseVisualSciencesWingDrawHandler(pState);
+        case 8:
+            return 0;
+        }
+    } else if (nMessage < 0x4020) {
+        if (nMessage == 0x401f) {
+            return ValidateVisualSciencesWing8BppFormat(
+                pState, (VsWingBitmapInfoHeader *)pParam1);
+        }
+        if (nMessage == 0x4015) {
+            return noop_visual_sciences_wing_draw_end(pState);
+        }
+    } else if (nMessage < 0x4025) {
+        if (nMessage == 0x4024) {
+            pState->m_hDrawDC04 = pParam1;
+        } else if (nMessage == 0x4021) {
+            return DrawVisualSciencesWingFrame(
+                pState, (VsWingDrawFrameRequest *)pParam1,
+                (void *)nParam2);
+        }
+    } else if (nMessage < 0x5002) {
+        if (nMessage >= 0x5000) {
+            return 0;
+        }
+        if (nMessage == 0x4032) {
+            return SuggestVisualSciencesWingDrawFormat(
+                pState, (VsWingSuggestFormatRequest *)pParam1,
+                (void *)nParam2);
+        }
+        if (nMessage == 0x4033) {
+            return noop_visual_sciences_wing_draw_change_palette(
+                pState, pParam1);
+        }
+    } else {
+        if (nMessage == 0x5002) {
+            return FillVisualSciencesWingDrawInfo(
+                (VsWingDrawCodecInfo *)pParam1, nParam2);
+        }
+        if (nMessage > 0x5009 && nMessage < 0x500c) {
+            return 0xffffffff;
+        }
+    }
+
+    if (nMessage >= 0x4000) {
+        return 0xffffffff;
+    }
+    return DefDriverProc((DWORD)pState, hDriver, nMessage,
+                         (LONG)pParam1, (LONG)nParam2);
 }
 
 // FUNCTION: LEMBALL 0x00479190

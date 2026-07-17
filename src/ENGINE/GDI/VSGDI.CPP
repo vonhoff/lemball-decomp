@@ -706,9 +706,14 @@ struct VsGdiCompactResourceGeometryHelper {
     void *InitializeCompactResourceGeometryHelper(void);
 };
 
+extern "C" unsigned long LEMBALL_STDCALL DispatchVisualSciencesWingDriverMessage(
+    void *pState, void *hDriver, unsigned int nMessage,
+    void *pParam1, unsigned int nParam2);
+
 class VsGdiAnimWindowOwner {
 public:
     void BindAsSingletonAnimWindow(void);
+    void InstallEmbeddedMciDrawCallback(int nUnused);
 
 private:
     unsigned char m_abReserved00[0xa0];
@@ -717,7 +722,7 @@ private:
     int m_nA8;
     int m_nAC;
     unsigned char m_abReservedB0[8];
-    int m_nB8;
+    void *m_hMciWindowB8;
 };
 
 
@@ -4664,13 +4669,37 @@ void VsGdiAnimWindowOwner::BindAsSingletonAnimWindow(void) {
     m_nA4 = 0;
     m_nA8 = 0;
     m_nAC = 0;
-    m_nB8 = 0;
+    m_hMciWindowB8 = 0;
     if (g_pSingletonAnimWindowOwner != 0) {
         MessageBoxA(0, "Unable to support more than one Anim Window",
                     "!!ERROR!!", 0x1000);
         LongjmpStartupExceptionFrame(0xaaaa);
     }
     g_pSingletonAnimWindowOwner = this;
+}
+
+struct VsGdiMciDrawCallbackParameters {
+    DWORD m_dwCallback00;
+    DWORD m_dwFlags04;
+    void *m_pDrawProc08;
+    DWORD m_adwReserved0C[4];
+};
+
+// FUNCTION: LEMBALL 0x0046dfe0
+void VsGdiAnimWindowOwner::InstallEmbeddedMciDrawCallback(int) {
+    VsGdiMciDrawCallbackParameters Parameters;
+    MCIDEVICEID nDeviceId;
+
+    Parameters.m_pDrawProc08 = (void *)DispatchVisualSciencesWingDriverMessage;
+    Parameters.m_dwFlags04 = 0x8000;
+    nDeviceId = (MCIDEVICEID)SendMessageA(
+        (HWND)m_hMciWindowB8, 0x464, 0, 0);
+    if (nDeviceId != 0 &&
+        mciSendCommandA(nDeviceId, 0x876, 0x1100000,
+                        (DWORD_PTR)&Parameters) != 0) {
+        MessageBoxA(0, "Unable to set MCI Draw Procedure",
+                    "MCI ERROR", 0x10);
+    }
 }
 
 // FUNCTION: LEMBALL 0x00472290
