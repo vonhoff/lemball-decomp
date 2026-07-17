@@ -31,6 +31,7 @@ extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(
     void *pResourceObject);
 extern void *LoadZrleOnlyListResource(int nResourceId);
 extern void *g_pNonZrleVariantRenderEntryInitializeVtable[2];
+extern void *g_pQueuedRenderPointSinkFinalizeThunk;
 extern void *g_pVariantResourceEntryManager;
 extern int g_fLevelSelectionChanged;
 extern int LEMBALL_FASTCALL GetTimedVariantFrameStartTimeThunk(
@@ -427,6 +428,26 @@ GameMenuSelectorManager *LEMBALL_FASTCALL ConstructMenuSelectorManagerThunk(
     return ConstructMenuSelectorManager(pManager, nUnusedEdx, pRenderOwner,
                                         pRenderContext, nChildCapacity,
                                         nLayoutMode);
+}
+
+// FUNCTION: LEMBALL 0x00467d50
+void LEMBALL_FASTCALL InitializeSharedSpriteOwnerState(void *pObject) {
+    void **ppFinalize;
+
+    *(int *)((char *)pObject + 0xd8) = 1;
+    *(int *)((char *)pObject + 0xf8) = 1;
+    *(int *)((char *)pObject + 0xbc) = 1;
+    *(int *)((char *)pObject + 0xd0) = 0;
+    *(int *)((char *)pObject + 0xd4) = 0;
+    *(int *)((char *)pObject + 0xfc) = 0;
+    ppFinalize = (void **)AllocateVSMemBlock(sizeof(void *));
+    if (ppFinalize != 0) {
+        *ppFinalize = g_pQueuedRenderPointSinkFinalizeThunk;
+    }
+    *(void **)((char *)pObject + 0xe0) = ppFinalize;
+    *(int *)((char *)pObject + 0x50) = 2;
+    *(int *)((char *)pObject + 0xf4) = 0;
+    *(int *)((char *)pObject + 0xcc) = 0;
 }
 
 /* FUNCTION: LEMBALL 0x0044D150 */

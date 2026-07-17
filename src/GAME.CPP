@@ -103,6 +103,9 @@ extern int g_fEffectsEnabled;
 extern void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntryThunk(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryThunk(void *pObject);
+extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableA(void *pObject);
+extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableD(void *pObject);
+extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableE(void *pObject);
 extern void LEMBALL_FASTCALL BuildGeometryHelperFromRenderRect(void *pOwner);
 extern unsigned int __stdcall ComputePrimaryContextWindowStyleFlags(void);
 extern int __stdcall GetPrimaryContextMenuDefinition(unsigned int *pMenuId,
@@ -669,6 +672,7 @@ int SetVisualSciencesRegistryRunningState(const char *pszProductName, int fRunni
 char *FindCdromFilePathBySuffix(const char *pszSuffix);
 void *LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode);
 void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pPrimaryContext);
+void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(void *pPrimaryContext);
 char *GetSrcDiskRegistryValueBuffer(void);
 void ShowReleaseAssertFailureAndAbort(const char *pszExpression, const char *pszFile, int nLine);
 
@@ -4032,6 +4036,29 @@ void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pPrimaryContext) 
     *(unsigned short *)((char *)pPrimaryContext + 0x8c) = 0;
     *(int *)((char *)pPrimaryContext + 0x54) = 0;
     return pPrimaryContext;
+}
+
+// FUNCTION: LEMBALL 0x00463bd0
+void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(void *pPrimaryContext) {
+    char *pEntry;
+    int i;
+
+    pEntry = (char *)pPrimaryContext + 0x88;
+    for (i = 0; i >= 0; --i) {
+        pEntry -= 0x10;
+        RestorePackagedSpriteRenderEntryVtableD(pEntry);
+    }
+    pEntry = (char *)pPrimaryContext + 0x78;
+    for (i = 0; i >= 0; --i) {
+        pEntry -= 0x10;
+        RestorePackagedSpriteRenderEntryVtableE(pEntry);
+    }
+    pEntry = (char *)pPrimaryContext + 0x68;
+    for (i = 0; i >= 0; --i) {
+        pEntry -= 0x10;
+        RestorePackagedSpriteRenderEntryVtableA(pEntry);
+    }
+    ((VS_WindowOwnerBase *)pPrimaryContext)->~VS_WindowOwnerBase();
 }
 
 // FUNCTION: LEMBALL 0x00464190
