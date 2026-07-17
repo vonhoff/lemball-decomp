@@ -685,6 +685,8 @@ void *g_pQueuedRenderPointSinkFinalizeThunk =
 void *g_pSharedRenderDispatchQueue;
 // GLOBAL: LEMBALL 0x004a279c
 void *g_pSharedGeometryHelper = 0;
+static void *g_pCursorWindowOwner = 0;
+static unsigned int g_uCursorWindowOwnerState = 0;
 void *g_pActiveLevelGameMode = 0;
 void *g_pLevelTileGrid = 0;
 void *g_pLevelTileReachabilityHelper = 0;
@@ -4033,6 +4035,98 @@ void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pPrimaryContext) 
 }
 
 // FUNCTION: LEMBALL 0x00464190
+static void LEMBALL_FASTCALL UpdateCursorRenderClientForWindowOwner(
+    void *pCursor, void *pOwner)
+{
+    typedef int (LEMBALL_FASTCALL *IntProc)(void *, int);
+    typedef int (LEMBALL_FASTCALL *IntArgumentProc)(void *, int, void *);
+    typedef void (LEMBALL_FASTCALL *VoidProc)(void *);
+    typedef void (LEMBALL_FASTCALL *EntryProc)(void *, int, void *);
+    short aRect[4];
+    short *pOwnerClip;
+    void *pGeometryQueue;
+    void *pGeometryContext;
+    void *pCompactGeometry;
+    void *pRenderEntry;
+    void **pCursorVtable;
+    int nCompactOffset;
+    int nScale;
+
+    if ((*(int *)((char *)pCursor + 0x2c) == 0 ||
+         (*(unsigned char *)((char *)g_pSharedGeometryHelper + 0x14) & 1) == 0) &&
+        (*(int *)((char *)pCursor + 0x30) == 0 ||
+         (*(unsigned char *)((char *)g_pSharedGeometryHelper + 0x14) & 6) == 0))
+        return;
+
+    if ((g_uCursorWindowOwnerState & 1) == 0) {
+        g_uCursorWindowOwnerState |= 1;
+        g_pCursorWindowOwner = pOwner;
+    }
+    if (((IntProc)(*(void ***)pOwner)[24])(pOwner, 0) == 0) {
+        if (pOwner == g_pCursorWindowOwner) {
+            ((VoidProc)(*(void ***)pCursor)[5])(pCursor);
+            g_pCursorWindowOwner = 0;
+        }
+    } else {
+        g_pCursorWindowOwner = pOwner;
+    }
+
+    if (*(int *)((char *)pCursor + 0x18) == 0)
+        return;
+
+    aRect[0] = *(short *)((char *)pOwner + 8);
+    aRect[1] = *(short *)((char *)pOwner + 10);
+    aRect[2] = *(short *)((char *)pOwner + 12);
+    aRect[3] = *(short *)((char *)pOwner + 14);
+    pOwnerClip = (short *)((char *)pOwner + 0x10);
+    if ((int)pOwnerClip[0] * (int)pOwnerClip[1] != 0) {
+        short xClip = (short)(*(short *)((char *)pOwner + 0x14) + aRect[2]);
+        short yClip = (short)(*(short *)((char *)pOwner + 0x16) + aRect[3]);
+        if (aRect[2] < xClip) {
+            aRect[0] = (short)(aRect[0] + aRect[2] - xClip);
+            aRect[2] = xClip;
+        }
+        if ((short)(xClip + pOwnerClip[0]) < (short)(aRect[2] + aRect[0]))
+            aRect[0] = (short)(xClip + pOwnerClip[0] - aRect[2]);
+        if (aRect[3] < yClip) {
+            aRect[1] = (short)(aRect[1] + aRect[3] - yClip);
+            aRect[3] = yClip;
+        }
+        if ((short)(yClip + pOwnerClip[1]) < (short)(aRect[3] + aRect[1]))
+            aRect[1] = (short)(yClip + pOwnerClip[1] - aRect[3]);
+        if (aRect[0] < 1 || aRect[1] < 1) {
+            aRect[0] = 0;
+            aRect[1] = 0;
+        }
+    }
+
+    pCursorVtable = *(void ***)pCursor;
+    if (((IntArgumentProc)pCursorVtable[3])(pCursor, 0, pOwner) == 0)
+        return;
+    if (*(int *)((char *)pCursor + 0x3c) != 0)
+        ((VoidProc)pCursorVtable[4])(pCursor);
+    *(int *)((char *)pCursor + 0x38) = 1;
+    pRenderEntry = *(void **)((char *)pCursor + 0x1c);
+    if (pRenderEntry == 0)
+        return;
+
+    nScale = *(int *)((char *)pOwner + 0x38);
+    pGeometryQueue = *(void **)((char *)pOwner + 0x4c);
+    pGeometryContext = *(void **)((char *)pGeometryQueue + 0x0c);
+    ((VoidProc)(*(void ***)pGeometryContext)[2])(pGeometryContext);
+    nCompactOffset = *(int *)((char *)*(void **)((char *)pGeometryContext + 0x40) + 4);
+    pCompactGeometry = (char *)pGeometryContext + 0x40 + nCompactOffset;
+    ((VoidProc)(*(void ***)pCompactGeometry)[14])(pCompactGeometry);
+    *(short *)((char *)pRenderEntry + 4) =
+        (short)((*(short *)((char *)pCursor + 0x10) - aRect[0]) / nScale) -
+        *(short *)((char *)pCursor + 0x14);
+    *(short *)((char *)pRenderEntry + 6) =
+        (short)((*(short *)((char *)pCursor + 0x12) - aRect[1]) / nScale) -
+        *(short *)((char *)pCursor + 0x16);
+    ((VoidProc)(*(void ***)pCompactGeometry)[14])(pCompactGeometry);
+    ((EntryProc)(*(void ***)pRenderEntry)[1])(pRenderEntry, 0, pGeometryQueue);
+}
+
 void GamePrimaryContext::UpdateWindowOwnerRenderContext(void) {
     short aRect[4];
     void *pQueue;
@@ -4062,9 +4156,14 @@ void GamePrimaryContext::UpdateWindowOwnerRenderContext(void) {
         pChild = *(void **)((char *)pChild + 4);
     }
 
-    /* Cursor-client synchronization is intentionally deferred until the
-     * cursor render-client body is reconstructed; the queue flush above is
-     * still the target's required ownership boundary. */
+    if (*(int *)((char *)this + 0x20) == 0 &&
+        g_pArrowCursorStatusIndicatorRenderClient != 0) {
+        UpdateCursorRenderClientForWindowOwner(
+            g_pArrowCursorStatusIndicatorRenderClient, this);
+        pQueue = *(void **)((char *)this + 0x4c);
+        DispatchAndClearPointerQueue(pQueue);
+        *(int *)((char *)pQueue + 4) = 0;
+    }
 }
 
 // FUNCTION: LEMBALL 0x004642c0
