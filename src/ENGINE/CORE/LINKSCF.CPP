@@ -1,4 +1,5 @@
 #include "ENGINE/CORE/WIN32.H"
+#include "ENGINE/GDI/VSGEOM.H"
 
 // Temporary link scaffold for report generation only.
 // These definitions are not binary-backed and must not carry reccmp markers.
@@ -135,6 +136,5 @@ void *ConstructLevelChunkStreamDispatcherThunk(void *pObject, int nChunkTypeCoun
 }
 
 void SetGeometryChildEnabled(void *pGeometryChild, int fEnabled) {
-    (void)pGeometryChild;
-    (void)fEnabled;
+    ((GameGeometryOwnerRectState *)pGeometryChild)->SetEnabled(fEnabled);
 }
