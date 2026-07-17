@@ -17,6 +17,7 @@ typedef int (LEMBALL_FASTCALL *VsSoundOpenProc)(void *pBackend, int nUnused,
                                                 int nResourceBase, int cResources,
                                                 void *pPrimaryContext);
 typedef void (*VsSoundVoidProc)(void);
+typedef void (LEMBALL_FASTCALL *VsSoundThisProc)(void *pObject);
 typedef void (*VsSoundIntProc)(int nValue);
 typedef void (LEMBALL_FASTCALL *VsSoundControlIntProc)(
     void *pControl, int nUnused, int nValue);
@@ -1276,11 +1277,11 @@ void __fastcall DestroyAudioManager(void *pAudioManager) {
     *(void ***)pAudioManager = g_AudioManagerVtable;
     if (*(int *)((char *)pAudioManager + 0xc) != 0 && *(void **)((char *)pAudioManager + 0x74) != 0) {
         pBackend = *(void **)((char *)pAudioManager + 0x74);
-        ((VsSoundVoidProc)(*(void ***)pBackend)[7])();
+        ((VsSoundThisProc)(*(void ***)pBackend)[7])(pBackend);
     }
     if (*(int *)((char *)pAudioManager + 0x10) != 0 && *(void **)((char *)pAudioManager + 0x78) != 0) {
         pBackend = *(void **)((char *)pAudioManager + 0x78);
-        ((VsSoundVoidProc)(*(void ***)pBackend)[8])();
+        ((VsSoundThisProc)(*(void ***)pBackend)[8])(pBackend);
     }
     *(void **)((char *)pAudioManager + 0x74) = 0;
     *(void **)((char *)pAudioManager + 0x78) = 0;
@@ -1288,7 +1289,7 @@ void __fastcall DestroyAudioManager(void *pAudioManager) {
     for (i = 0; i < *(unsigned int *)((char *)pAudioManager + 0x20); ++i) {
         if (ppBackend[i] != 0) {
             ((VsSoundIntProc)(*(void ***)ppBackend[i])[22])(0);
-            ((VsSoundVoidProc)(*(void ***)ppBackend[i])[5])();
+            ((VsSoundThisProc)(*(void ***)ppBackend[i])[5])(ppBackend[i]);
             ((VsSoundDeleteProc)(*(void ***)ppBackend[i])[0])(ppBackend[i], 0, 1);
         }
     }
