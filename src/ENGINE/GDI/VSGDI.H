@@ -105,6 +105,8 @@ public:
     void ConfigureBackingStrideAndOrigin(int nStride, int nOrigin);
     void ClearBackingBorderRows(void);
     void ClearBackingBorderRowsThunk(void);
+    void CopyClippedBitmapIntoHelperBufferAndNotify(
+        const void *pBitmapInfo, const void *pBitmapBits);
     void SplitRectAtBackingRowBoundary(
         short *pRect, short **ppFirstRect, short **ppSecondRect);
     int IsReady(void) const;

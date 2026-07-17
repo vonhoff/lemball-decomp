@@ -1,6 +1,7 @@
 #include "ENGINE/CORE/VSINIT.H"
 #include "ENGINE/CORE/WIN32.H"
 #include "ENGINE/GDI/VSGDI.H"
+#include "GAME.H"
 #include <string.h>
 
 struct RenderDispatchClientObject {
@@ -110,6 +111,17 @@ struct VsWingDrawBeginRequest {
     int m_ySource28;
     int m_cxSource2C;
     int m_cySource30;
+};
+
+struct VsWingDrawFrameRequest {
+    int m_nReserved00;
+    const void *m_pBitmapInfo04;
+    const void *m_pBitmapBits08;
+};
+
+struct VsWingRenderOwnerView {
+    void *m_pVtable00;
+    int m_nWindowState04;
 };
 
 // FUNCTION: LEMBALL 0x004631a0
@@ -492,4 +504,19 @@ int LEMBALL_STDCALL BeginVisualSciencesWingDraw(
         nResult = 0;
     }
     return nResult;
+}
+
+// FUNCTION: LEMBALL 0x00479480
+int LEMBALL_STDCALL DrawVisualSciencesWingFrame(
+    VsWingDrawHandlerState *pState, VsWingDrawFrameRequest *pFrame, void *)
+{
+    if (((VsWingRenderOwnerView *)pState->m_pAnimWindowOwner470)
+            ->m_nWindowState04 == 1) {
+        ((VsGdiHelperSurface *)pState->m_pWindowState2C)
+            ->CopyClippedBitmapIntoHelperBufferAndNotify(
+                pFrame->m_pBitmapInfo04, pFrame->m_pBitmapBits08);
+        ((GamePrimaryContext *)pState->m_pAnimWindowOwner470)
+            ->FlushWindowOwnerDirtyRect(0);
+    }
+    return 0;
 }

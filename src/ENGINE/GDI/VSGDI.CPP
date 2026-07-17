@@ -4362,6 +4362,64 @@ void LEMBALL_FASTCALL BindHelperTargetDisplayDc(void *pTarget, int, void *hDc) {
     ((VsGdiDisplayDcBindingInterface *)pDisplayBinding)->BindDisplayDc(hDc);
 }
 
+struct VsGdiBitmapInfoHeaderView {
+    unsigned int m_cbSize00;
+    int m_cx04;
+    int m_cy08;
+    unsigned short m_cPlanes0C;
+    unsigned short m_cBitsPerPixel0E;
+};
+
+// FUNCTION: LEMBALL 0x0046d800
+void VsGdiHelperSurface::CopyClippedBitmapIntoHelperBufferAndNotify(
+    const void *pBitmapInfo, const void *pBitmapBits)
+{
+    const VsGdiBitmapInfoHeaderView *pHeader;
+    unsigned char *pSourceRow;
+    unsigned char **ppDestinationRows;
+    short *pWorkingSize;
+    short aRect[4];
+    int nVariableBlockOffset;
+    int nCopyWidth;
+    int nCopyHeight;
+    int nSourceStride;
+    int iRow;
+
+    if (*(int *)((char *)this + 0x550) == 0) {
+        return;
+    }
+
+    EnterCriticalSection((char *)this + 0x534);
+    pHeader = (const VsGdiBitmapInfoHeaderView *)pBitmapInfo;
+    nVariableBlockOffset = *(int *)(*(char **)((char *)this + 0x40) + 4);
+    pWorkingSize = (short *)((char *)this + nVariableBlockOffset + 0x54);
+    nCopyWidth = pWorkingSize[0] <= pHeader->m_cx04
+        ? pWorkingSize[0] : pHeader->m_cx04;
+    nCopyHeight = pWorkingSize[1] <= pHeader->m_cy08
+        ? pWorkingSize[1] : pHeader->m_cy08;
+    nSourceStride =
+        ((pHeader->m_cBitsPerPixel0E * pHeader->m_cx04 + 0x1f) & ~0x1f) / 8;
+    pSourceRow = (unsigned char *)pBitmapBits +
+        (pHeader->m_cy08 - 1) * nSourceStride;
+    ppDestinationRows = *(unsigned char ***)((char *)this + 4);
+
+    for (iRow = 0; iRow < nCopyHeight; ++iRow) {
+        memcpy(ppDestinationRows[iRow], pSourceRow, nCopyWidth);
+        nCopyHeight = pWorkingSize[1] <= pHeader->m_cy08
+            ? pWorkingSize[1] : pHeader->m_cy08;
+        pSourceRow -= nSourceStride;
+    }
+
+    aRect[0] = pWorkingSize[0];
+    aRect[1] = pWorkingSize[1];
+    aRect[2] = 0;
+    aRect[3] = 0;
+    InitializeHelperUploadStatePending(*(int *)((char *)this + 0x550));
+    ((void (LEMBALL_FASTCALL *)(void *, int, short *))(*(void ***)this)[1])(
+        this, 0, aRect);
+    LeaveCriticalSection((char *)this + 0x534);
+}
+
 // FUNCTION: LEMBALL 0x0046d920
 void LEMBALL_FASTCALL PropagateGlobalPaletteToResourceGeometries(void *pTarget) {
     PropagateGlobalPaletteToResourceGeometriesBody(pTarget);
