@@ -210,6 +210,8 @@ void *g_pSelectedGraphicsDriverRuntime = 0;
 static void *g_pResourceGeometryHelperSlotManager = 0;
 // GLOBAL: LEMBALL 0x004a200c
 void *g_pResourceGeometryHelperTarget = 0;
+// GLOBAL: LEMBALL 0x004a20c0
+static void *g_pSingletonAnimWindowOwner = 0;
 // GLOBAL: LEMBALL 0x004a9bf4
 int *g_pArrowCursorStatusIndicatorRenderClient;
 // GLOBAL: LEMBALL 0x004a9bf8
@@ -702,6 +704,20 @@ static void ReleaseResourceGeometryRowBufferStorage(int nRowBuffer) {
 
 struct VsGdiCompactResourceGeometryHelper {
     void *InitializeCompactResourceGeometryHelper(void);
+};
+
+class VsGdiAnimWindowOwner {
+public:
+    void BindAsSingletonAnimWindow(void);
+
+private:
+    unsigned char m_abReserved00[0xa0];
+    int m_nA0;
+    int m_nA4;
+    int m_nA8;
+    int m_nAC;
+    unsigned char m_abReservedB0[8];
+    int m_nB8;
 };
 
 
@@ -4582,6 +4598,21 @@ int LEMBALL_FASTCALL GetHelperGroup1DirtyFlagAdjustmentThunk(
 {
     return GetHelperGroup1DirtyFlag(
         (char *)pCompactTarget - 0x4c0, nUnused);
+}
+
+// FUNCTION: LEMBALL 0x0046dd60
+void VsGdiAnimWindowOwner::BindAsSingletonAnimWindow(void) {
+    m_nA0 = 0;
+    m_nA4 = 0;
+    m_nA8 = 0;
+    m_nAC = 0;
+    m_nB8 = 0;
+    if (g_pSingletonAnimWindowOwner != 0) {
+        MessageBoxA(0, "Unable to support more than one Anim Window",
+                    "!!ERROR!!", 0x1000);
+        LongjmpStartupExceptionFrame(0xaaaa);
+    }
+    g_pSingletonAnimWindowOwner = this;
 }
 
 // FUNCTION: LEMBALL 0x00472290
