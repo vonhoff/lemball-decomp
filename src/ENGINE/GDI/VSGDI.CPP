@@ -5441,10 +5441,10 @@ void LEMBALL_FASTCALL BlitBitmapRowsToScanlines(
     pBitmapBytes = (unsigned char *)pBitmap;
     pSurface = (VsGdiHelperSurface *)((char *)pCompactTarget - 0x55c);
 
-    Rect.m_x = *(short *)(pCommandBytes + 8);
-    Rect.m_y = *(short *)(pCommandBytes + 0x0a);
-    Rect.m_cx = *(short *)(pCommandBytes + 4);
-    Rect.m_cy = *(short *)(pCommandBytes + 6);
+    Rect.m_x = *(short *)(pCommandBytes + 4);
+    Rect.m_y = *(short *)(pCommandBytes + 6);
+    Rect.m_cx = *(short *)(pCommandBytes + 8);
+    Rect.m_cy = *(short *)(pCommandBytes + 0x0a);
     xSource = *(short *)(pCommandBytes + 0x0c);
     ySource = *(short *)(pCommandBytes + 0x0e);
     if (Rect.m_x == 0 && Rect.m_y == 0) {
@@ -5471,11 +5471,11 @@ void LEMBALL_FASTCALL BlitBitmapRowsToScanlines(
         pSurface, 0, &Rect);
 
     dwFlags = *(unsigned int *)(pCommandBytes + 0x14);
-    iDestinationRow = Rect.m_y;
+    iDestinationRow = Rect.m_cy;
     nDestinationRowStep = 1;
     if ((dwFlags & 2) != 0) {
         nDestinationRowStep = -1;
-        iDestinationRow += Rect.m_cy - 1;
+        iDestinationRow += Rect.m_y - 1;
     }
 
     pSource = ((GetBitmapDataVirtual)(*(void ***)pBitmap)[10])(pBitmap);
@@ -5483,16 +5483,16 @@ void LEMBALL_FASTCALL BlitBitmapRowsToScanlines(
                xSource + ClippedRect.m_cx;
     ppRows = *(unsigned char ***)((char *)pSurface + 4);
 
-    for (iSourceRow = 0; iSourceRow < Rect.m_cy; ++iSourceRow) {
-        pDestination = ppRows[iDestinationRow] + Rect.m_x;
+    for (iSourceRow = 0; iSourceRow < Rect.m_y; ++iSourceRow) {
+        pDestination = ppRows[iDestinationRow] + Rect.m_cx;
         if ((dwFlags & 0x800) != 0) {
-            for (i = 0; i < Rect.m_cx; ++i) {
+            for (i = 0; i < Rect.m_x; ++i) {
                 if (pSource[i] != 0) {
                     pDestination[i] = pSource[i];
                 }
             }
         } else {
-            memcpy(pDestination, pSource, (unsigned short)Rect.m_cx);
+            memcpy(pDestination, pSource, (unsigned short)Rect.m_x);
         }
         iDestinationRow += nDestinationRowStep;
         pSource += cxBitmap;
