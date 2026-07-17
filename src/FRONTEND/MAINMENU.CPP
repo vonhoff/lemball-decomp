@@ -256,6 +256,7 @@ void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
 void LEMBALL_FASTCALL ActivateFramedScreenBase(void *pObject);
 static void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroup(
     void *pObject);
+static int ConsumeLevelSelectionChangedFlag(void);
 static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(
     void *pObject, int, void *);
 static void LEMBALL_FASTCALL DrawFramedScreenBase(void *pObject);
@@ -286,6 +287,8 @@ static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreen(
 int g_fNextMainMenuTimeoutIsTitle = 1;
 // GLOBAL: LEMBALL 0x004a6300
 int g_nLastMainMenuPackSelection = 0;
+// GLOBAL: LEMBALL 0x0049fa68
+int g_fLevelSelectionChanged = 0;
 
 static const int g_GAME_MainMenuWidgetLayoutStandard[12] = {
     0x20, 0x74, 0x1e0, 0x74, 0x30, 0xe8,
@@ -741,15 +744,41 @@ static void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroup(
 {
     GameFramedScreenBase *pScreen;
     unsigned char *pGroup;
+    int fQueuedVariantChildrenEnabled;
+    int fSelectorChildrenEnabled;
 
     pScreen = (GameFramedScreenBase *)pObject;
+    fQueuedVariantChildrenEnabled = 0;
+    fSelectorChildrenEnabled = 0;
     pScreen->m_fSelectorDirty360 = 0;
     pScreen->m_fBuildingRenderEntries364 = 1;
-    pScreen->m_fRenderEntriesInitialized368 = 1;
-    if (g_pArrowCursorStatusIndicatorRenderClient != 0) {
-        SetStatusIndicatorActive(
-            g_pArrowCursorStatusIndicatorRenderClient, 0, 0);
+
+    if (pScreen->m_pQueuedVariantManager338 != 0) {
+        fQueuedVariantChildrenEnabled =
+            ((GameQueuedVariantManagerView *)
+                 pScreen->m_pQueuedVariantManager338)
+                ->m_fChildrenEnabled148;
+        if (fQueuedVariantChildrenEnabled != 0) {
+            ((GameQueuedVariantManagerView *)
+                 pScreen->m_pQueuedVariantManager338)
+                ->SetChildrenEnabledThunk(0);
+        }
     }
+    if (pScreen->m_pSelectorManager334 != 0) {
+        fSelectorChildrenEnabled =
+            ((GameMenuSelectorManager *)pScreen->m_pSelectorManager334)
+                ->m_fChildrenEnabled278;
+        if (fSelectorChildrenEnabled != 0) {
+            SetMenuSelectorChildrenEnabledThunk(
+                (GameMenuSelectorManager *)pScreen->m_pSelectorManager334,
+                0, 0);
+        }
+    }
+    if (pScreen->m_fRenderEntriesInitialized368 == 0) {
+        pScreen->m_fRenderEntriesInitialized368 = 1;
+    }
+    SetStatusIndicatorActive(
+        g_pArrowCursorStatusIndicatorRenderClient, 0, 0);
     ((GameNoArgVirtual)(*(void ***)pScreen->m_pPrimaryContext84)[44])(
         pScreen->m_pPrimaryContext84, 0);
 
@@ -764,10 +793,20 @@ static void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroup(
         ->AppendToQueue(pScreen->m_pRenderContext88);
 
     pScreen->m_fBuildingRenderEntries364 = 0;
-    if (g_pArrowCursorStatusIndicatorRenderClient != 0) {
-        SetStatusIndicatorActive(
-            g_pArrowCursorStatusIndicatorRenderClient, 0, 1);
+    if (pScreen->m_pQueuedVariantManager338 != 0 &&
+        fQueuedVariantChildrenEnabled != 0) {
+        ((GameQueuedVariantManagerView *)
+             pScreen->m_pQueuedVariantManager338)
+            ->SetChildrenEnabledThunk(1);
     }
+    if (pScreen->m_pSelectorManager334 != 0 &&
+        fSelectorChildrenEnabled != 0) {
+        SetMenuSelectorChildrenEnabledThunk(
+            (GameMenuSelectorManager *)pScreen->m_pSelectorManager334,
+            0, 1);
+    }
+    SetStatusIndicatorActive(
+        g_pArrowCursorStatusIndicatorRenderClient, 0, 1);
 }
 
 // FUNCTION: LEMBALL 0x00445a40
@@ -792,6 +831,14 @@ static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(
     ((GameNoArgVirtual)(*(void ***)pGeometryDispatch)[14])(
         pGeometryDispatch, 0);
     pScreen->m_iRenderEntryGroup328 = 0;
+    if (pScreen->m_pSelectorManager334 != 0) {
+        if (ConsumeLevelSelectionChangedFlag() != 0 ||
+            pScreen->m_fSelectorDirty360 != 0) {
+            pScreen->m_fSelectorDirty360 = 1;
+        } else {
+            pScreen->m_fSelectorDirty360 = 0;
+        }
+    }
     if (pScreen->m_fSelectorDirty360 != 0) {
         RefreshFramedScreenRenderEntryGroup(pScreen);
     }
@@ -1228,6 +1275,15 @@ static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreen(
     void *pObject, int nUnusedEdx, int fDelete)
 {
     return DeleteMainMenuScreen((char *)pObject - 4, nUnusedEdx, fDelete);
+}
+
+// FUNCTION: LEMBALL 0x0044c440
+static int ConsumeLevelSelectionChangedFlag(void) {
+    if (g_fLevelSelectionChanged != 0) {
+        g_fLevelSelectionChanged = 0;
+        return 1;
+    }
+    return 0;
 }
 
 // FUNCTION: LEMBALL 0x0044fbd0
