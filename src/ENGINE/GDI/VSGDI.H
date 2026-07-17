@@ -24,6 +24,7 @@ struct VsGdiRect {
 class VsGdiDisplayState {
 public:
     VsGdiDisplayState(void);
+    ~VsGdiDisplayState(void);
     int Create(HWND hWnd);
 
     void *CreateDisplayBinding(void);
@@ -136,6 +137,8 @@ private:
 class VsGdiDirectDrawDisplayState : public VsGdiDisplayState {
 public:
     VsGdiDirectDrawDisplayState(const unsigned short *pDisplaySize, int fCreateWindow);
+    ~VsGdiDirectDrawDisplayState(void);
+    void *Delete(int fDelete);
 
     int Create(HWND hWnd);
     int StretchDirectDrawSurfaceRect(void *pDestinationBinding,

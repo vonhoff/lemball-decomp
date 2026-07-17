@@ -1037,6 +1037,8 @@ static void InitializeDisplayStateVtables(void) {
     } stretchDirectDrawSurfaceMethod;
     union { int (VsGdiDirectDrawDisplayState::*p)(void *); void *v; }
         applyDirectDrawPaletteMethod;
+    union { void *(VsGdiDirectDrawDisplayState::*p)(int); void *v; }
+        deleteDirectDrawDisplayStateMethod;
 
     for (i = 0; i < 14; ++i) {
         g_VSGDI_MetricsDisplayVtable[i] = (void *)NetworkSafeVtableNoop;
@@ -1045,7 +1047,10 @@ static void InitializeDisplayStateVtables(void) {
     }
     g_VSGDI_MetricsDisplayVtable[0] = (void *)VsGdiDeleteDisplayState;
     g_VSGDI_DibDisplayVtable[0] = (void *)VsGdiDeleteDisplayState;
-    g_VSGDI_DirectDrawDisplayVtable[0] = (void *)VsGdiDeleteDisplayState;
+    deleteDirectDrawDisplayStateMethod.p =
+        &VsGdiDirectDrawDisplayState::Delete;
+    g_VSGDI_DirectDrawDisplayVtable[0] =
+        deleteDirectDrawDisplayStateMethod.v;
     createBindingMethod.p = &VsGdiDisplayState::CreateDisplayBinding;
     releaseBindingMethod.p = &VsGdiDisplayState::ReleaseDisplayBinding;
     bitmapInfoMethod.p = &VsGdiDisplayState::InitializeDisplayBitmapInfo;
@@ -1209,7 +1214,6 @@ VsGdiDisplayState *GetDisplayState(void) {
     return g_pDisplayState;
 }
 
-
 // FUNCTION: LEMBALL 0x00402fea
 void __stdcall PromoteQueuedRenderPointSinkTargetStateThunk(void *pPointSink) {
     PromoteQueuedRenderPointSinkTargetState(pPointSink);
@@ -1260,6 +1264,18 @@ char *LookupDirectDrawErrorString(unsigned int nError) {
 void NoopDirectDrawCallback(unsigned int nResult, unsigned int nUnused) {
     (void)nResult;
     (void)nUnused;
+}
+
+// FUNCTION: LEMBALL 0x00456790
+VsGdiDisplayState::~VsGdiDisplayState(void) {
+    m_pVtable = g_VSGDI_MetricsDisplayVtable;
+    if (m_hGraphicsModule != 0) {
+        FreeLibrary(m_hGraphicsModule);
+        m_hGraphicsModule = 0;
+    }
+    if (m_pReserved08 != 0) {
+        DeleteObject((HGDIOBJ)m_pReserved08);
+    }
 }
 
 // FUNCTION: LEMBALL 0x004567c0
@@ -1633,6 +1649,38 @@ VsGdiDirectDrawDisplayState::VsGdiDirectDrawDisplayState(const unsigned short *p
         if (uResult == 0) {
             m_fReady = 1;
         }
+    }
+}
+
+// FUNCTION: LEMBALL 0x004576e0
+VsGdiDirectDrawDisplayState::~VsGdiDirectDrawDisplayState(void) {
+    typedef unsigned int (__stdcall *DIRECTDRAW_RELEASE)(void *);
+
+    m_pVtable = g_VSGDI_DirectDrawDisplayVtable;
+    if (m_pDirectDrawObject != 0) {
+        if (m_pPrimarySurface != 0) {
+            ((DIRECTDRAW_RELEASE)(*(void ***)m_pPrimarySurface)[2])(
+                m_pPrimarySurface);
+            m_pPrimarySurface = 0;
+        }
+        if (m_pPalette != 0) {
+            m_pPalette = 0;
+        }
+        if (m_fDirectDrawCursorVisible != 0) {
+            m_fDirectDrawCursorVisible = 0;
+        }
+        if (m_pDirectDrawPalette != 0) {
+            ((DIRECTDRAW_RELEASE)(*(void ***)m_pDirectDrawPalette)[2])(
+                m_pDirectDrawPalette);
+            m_pDirectDrawPalette = 0;
+        }
+        ((DIRECTDRAW_RELEASE)(*(void ***)m_pDirectDrawObject)[2])(
+            m_pDirectDrawObject);
+        m_pDirectDrawObject = 0;
+        ShowCursor(1);
+    }
+    if (m_hDisplayWindow != 0) {
+        m_hDisplayWindow = 0;
     }
 }
 
@@ -2207,6 +2255,18 @@ void *LEMBALL_FASTCALL VsGdiDeleteDisplayBitmap(
     if ((fDelete & 1) != 0)
         FreeVSMemBlock(pBitmap);
     return pBitmap;
+}
+
+// FUNCTION: LEMBALL 0x00458360
+void *VsGdiDirectDrawDisplayState::Delete(int fDelete) {
+    void *pThis;
+
+    pThis = this;
+    this->~VsGdiDirectDrawDisplayState();
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pThis);
+    }
+    return pThis;
 }
 
 // FUNCTION: LEMBALL 0x00463c30
