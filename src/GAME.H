@@ -112,7 +112,7 @@ int RunMainGameSessionThunk(int cArgs, const char *const *ppszArgs);
 char *FindCdromFilePathBySuffix(const char *pszSuffix);
 void *AppendDynamicCStringToStream(void *pStream, const GameDynamicCString *pString);
 int LEMBALL_FASTCALL GetDynamicCStringLength(const GameDynamicCString *pString);
-void DestroyNamedStatusEntry(void *pEntry);
+void LEMBALL_FASTCALL DestroyNamedStatusEntry(void *pEntry);
 void UpdateNamedStatusEntry(void *pEntry, unsigned int nValue);
 VsInitFormattedOutputStream *LEMBALL_FASTCALL WriteNamedStatusEntry(
     void *pEntry, int nUnused, VsInitFormattedOutputStream *pStream);

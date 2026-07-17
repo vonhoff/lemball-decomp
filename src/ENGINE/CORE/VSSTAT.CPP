@@ -4,7 +4,7 @@
 #include "ENGINE/CORE/SAFEVT.H"
 #include <string.h>
 
-void DestroyNamedStatusEntry(void *pEntry);
+void LEMBALL_FASTCALL DestroyNamedStatusEntry(void *pEntry);
 
 struct GameStatusEntryInitialVtable {
     int (*m_pPurecall)(void);
@@ -52,7 +52,7 @@ GameStatusEntry::GameStatusEntry(const char *pszName) {
     m_cSamples = 0;
 }
 // FUNCTION: LEMBALL 0x0045ac50
-void DestroyNamedStatusEntry(void *pEntry) {
+void LEMBALL_FASTCALL DestroyNamedStatusEntry(void *pEntry) {
     GameStatusEntry *pStatusEntry;
 
     pStatusEntry = (GameStatusEntry *)pEntry;

@@ -6,8 +6,6 @@ void SetAudioManagerPrimaryContext(void *pAudioManager, void *pPrimaryContext);
 void __fastcall StopAllAudioManagerBackends(void *pAudioManager);
 void __fastcall RefreshAudioManagerBackendHandles(void *pAudioManager);
 int StopWaveOutPlayback(void *pBackend);
-int __fastcall RegisterVariantResourceMusicHandle(
-    void *pAudioManager, int nUnused, int nMusicResourceId);
 void __fastcall StartRegisteredVariantResourceMusic(
     void *pAudioManager, int nUnused, int hMusic);
 void __fastcall DispatchChildInterfaceSlot18IfReady(
@@ -49,6 +47,7 @@ struct VsSoundManager {
                                 int cEffectResources,
                                 void *pPrimaryContext);
     void InvokeAudioManagerEmbeddedSlot04(int nValue1, int nValue2);
+    int RegisterVariantResourceMusicHandle(int nMusicResourceId, int nUnused);
     void SetAudioManagerStartupMusicName(const char *pszMusicName);
     void SetAudioManagerMusicEnabledFlag(int fEnabled);
     void PlayVariantResourceEffectId(int nEffectResourceId);

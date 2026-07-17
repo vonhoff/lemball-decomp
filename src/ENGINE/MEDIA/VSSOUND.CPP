@@ -40,7 +40,7 @@ typedef void *(LEMBALL_FASTCALL *VsSoundDeleteProc)(void *pObject,
                                                    int fDelete);
 typedef void *(*VsSoundConstructPatchProc)(void *, void *, int, int, int, int);
 typedef void (*VsSoundPlayBufferProc)(void *, int, int);
-typedef void (*VsSoundDestroyBufferProc)(int);
+typedef void (LEMBALL_STDCALL *VsSoundReleaseDirectSoundBufferProc)(void *);
 
 void *LEMBALL_FASTCALL ConstructAudioEffectBackendBase(void *pBackend);
 
@@ -48,7 +48,6 @@ void *LEMBALL_FASTCALL ConstructAudioEffectBackendBase(void *pBackend);
    overlap unlabeled/interior code in the current Ghidra ownership map. Keep
    symbolic until their true function ownership is resolved. */
 static VsSoundConstructPatchProc g_AUDIO_ConstructPatchProc = 0;
-static VsSoundDestroyBufferProc g_AUDIO_DestroyBufferProc = 0;
 static VsSoundPlayBufferProc g_AUDIO_PlayBufferProc = 0;
 static void (*g_AUDIO_PauseBufferProc)(void *, int) = 0;
 static void (*g_AUDIO_PlayBufferSlotProc)(void *, int) = 0;
@@ -90,6 +89,11 @@ struct VsSoundBackendControlDispatch {
     virtual void Reserved00(void) = 0;
     virtual void InvokeEmbeddedSlot04(int nValue1, int nValue2) = 0;
     virtual void RegisterMusicHandle(int hMusic, int nMusicResourceId) = 0;
+    virtual void UnregisterMusicHandle(int hMusic) = 0;
+    virtual void StartMusic(int hMusic) = 0;
+    virtual void StopMusic(int hMusic) = 0;
+    virtual void DispatchMusicSlot18(int hMusic) = 0;
+    virtual void DispatchMusicSlot1c(int hMusic) = 0;
 };
 
 struct VsSoundWaveOutEffectBackend {
@@ -165,6 +169,8 @@ struct VsSoundDirectSoundEffectBufferPool {
     int m_cBuffers;
     int m_nReserved14;
     int m_nFlags;
+
+    void DestroyDirectSoundEffectBufferPool(void);
 };
 
 typedef LONG (__stdcall *VsSoundDirectSoundCreateProc)(
@@ -192,8 +198,6 @@ void DestroyAudioManager(void *pAudioManager);
 void SetAudioManagerPrimaryContext(void *pAudioManager, void *pPrimaryContext);
 void LEMBALL_FASTCALL StopAllAudioManagerBackends(void *pAudioManager);
 void __fastcall RefreshAudioManagerBackendHandles(void *pAudioManager);
-int LEMBALL_FASTCALL RegisterVariantResourceMusicHandle(
-    void *pAudioManager, int, int nMusicResourceId);
 void LEMBALL_FASTCALL StartRegisteredVariantResourceMusic(
     void *pAudioManager, int, int hMusic);
 void LEMBALL_FASTCALL DispatchChildInterfaceSlot18IfReady(
@@ -1313,22 +1317,22 @@ void VsSoundManager::InvokeAudioManagerEmbeddedSlot04(int nValue1, int nValue2) 
 }
 
 // FUNCTION: LEMBALL 0x0045b2e0
-int LEMBALL_FASTCALL RegisterVariantResourceMusicHandle(
-    void *pAudioManager, int, int nMusicResourceId)
+int VsSoundManager::RegisterVariantResourceMusicHandle(
+    int nMusicResourceId, int)
 
 {
     int hMusic;
-    void *pControl;
+    VsSoundBackendControlDispatch *pControl;
+    void *pAudioManager = this;
 
     if (*(int *)((char *)pAudioManager + 0xc) == 1 && *(int *)((char *)pAudioManager + 0x1c) == 1) {
         hMusic = *(int *)((char *)pAudioManager + 0x6c);
         *(int *)((char *)pAudioManager + 0x6c) = hMusic + 1;
-        if (hMusic + 1 == 0) {
+        if (*(int *)((char *)pAudioManager + 0x6c) == 0) {
             *(int *)((char *)pAudioManager + 0x6c) = 1;
         }
-        pControl = *(void **)((char *)pAudioManager + 0x34);
-        ((VsSoundControlPairProc)(*(void ***)pControl)[2])(
-            pControl, 0, hMusic, nMusicResourceId);
+        pControl = *(VsSoundBackendControlDispatch **)((char *)pAudioManager + 0x34);
+        pControl->RegisterMusicHandle(hMusic, nMusicResourceId);
         return hMusic;
     }
     return 0;
@@ -1339,13 +1343,12 @@ void LEMBALL_FASTCALL StartRegisteredVariantResourceMusic(
     void *pAudioManager, int, int hMusic)
 
 {
-    void *pControl;
+    VsSoundBackendControlDispatch *pControl;
 
     if (*(int *)((char *)pAudioManager + 0xc) == 1 && hMusic != 0 &&
         *(int *)((char *)pAudioManager + 0x1c) == 1) {
-        pControl = *(void **)((char *)pAudioManager + 0x34);
-        ((VsSoundControlIntProc)(*(void ***)pControl)[4])(
-            pControl, 0, hMusic);
+        pControl = *(VsSoundBackendControlDispatch **)((char *)pAudioManager + 0x34);
+        pControl->StartMusic(hMusic);
     }
 }
 
@@ -1354,12 +1357,11 @@ void LEMBALL_FASTCALL DispatchChildInterfaceSlot18IfReady(
     void *pAudioManager, int, int hMusic)
 
 {
-    void *pControl;
+    VsSoundBackendControlDispatch *pControl;
 
     if (*(int *)((char *)pAudioManager + 0xc) == 1 && *(int *)((char *)pAudioManager + 0x1c) == 1) {
-        pControl = *(void **)((char *)pAudioManager + 0x34);
-        ((VsSoundControlIntProc)(*(void ***)pControl)[6])(
-            pControl, 0, hMusic);
+        pControl = *(VsSoundBackendControlDispatch **)((char *)pAudioManager + 0x34);
+        pControl->DispatchMusicSlot18(hMusic);
     }
 }
 
@@ -1368,12 +1370,11 @@ void LEMBALL_FASTCALL InvokeAudioManagerEmbeddedSlot1cIfMusicActive(
     void *pAudioManager, int, int hMusic)
 
 {
-    void *pControl;
+    VsSoundBackendControlDispatch *pControl;
 
     if (*(int *)((char *)pAudioManager + 0xc) == 1 && *(int *)((char *)pAudioManager + 0x1c) == 1) {
-        pControl = *(void **)((char *)pAudioManager + 0x34);
-        ((VsSoundControlIntProc)(*(void ***)pControl)[7])(
-            pControl, 0, hMusic);
+        pControl = *(VsSoundBackendControlDispatch **)((char *)pAudioManager + 0x34);
+        pControl->DispatchMusicSlot1c(hMusic);
     }
 }
 
@@ -1382,12 +1383,11 @@ void LEMBALL_FASTCALL StopVariantResourceMusicPlayback(
     void *pAudioManager, int, int hMusic)
 
 {
-    void *pControl;
+    VsSoundBackendControlDispatch *pControl;
 
     if (*(int *)((char *)pAudioManager + 0xc) == 1 && *(int *)((char *)pAudioManager + 0x1c) == 1) {
-        pControl = *(void **)((char *)pAudioManager + 0x34);
-        ((VsSoundControlIntProc)(*(void ***)pControl)[5])(
-            pControl, 0, hMusic);
+        pControl = *(VsSoundBackendControlDispatch **)((char *)pAudioManager + 0x34);
+        pControl->StopMusic(hMusic);
     }
 }
 
@@ -1396,13 +1396,12 @@ void LEMBALL_FASTCALL UnregisterVariantResourceMusicHandle(
     void *pAudioManager, int, int hMusic)
 
 {
-    void *pControl;
+    VsSoundBackendControlDispatch *pControl;
 
     if (*(int *)((char *)pAudioManager + 0xc) == 1 && hMusic != 0 &&
         *(int *)((char *)pAudioManager + 0x1c) == 1) {
-        pControl = *(void **)((char *)pAudioManager + 0x34);
-        ((VsSoundControlIntProc)(*(void ***)pControl)[3])(
-            pControl, 0, hMusic);
+        pControl = *(VsSoundBackendControlDispatch **)((char *)pAudioManager + 0x34);
+        pControl->UnregisterMusicHandle(hMusic);
     }
 }
 
@@ -2418,6 +2417,27 @@ ConstructDirectSoundEffectBufferPool(
     return pPool;
 }
 
+// FUNCTION: LEMBALL 0x0047d6e0
+void VsSoundDirectSoundEffectBufferPool::DestroyDirectSoundEffectBufferPool(void) {
+    int i;
+    int nOffset;
+    void *pBuffer;
+
+    i = 0;
+    if (0 < m_cBuffers) {
+        nOffset = 0;
+        do {
+            pBuffer = *(void **)((char *)m_ppBuffers + nOffset);
+            if (pBuffer != 0) {
+                ((VsSoundReleaseDirectSoundBufferProc)(*(void ***)pBuffer)[2])(pBuffer);
+            }
+            nOffset += sizeof(void *);
+            ++i;
+        } while (i < m_cBuffers);
+    }
+    FreeVSMemBlock(m_ppBuffers);
+}
+
 // FUNCTION: LEMBALL 0x0047dd80
 VsSoundDirectSoundEffectBackend *VsSoundDirectSoundEffectBackend::ConstructDirectSoundEffectBackend(
     int cEffectResources, int nCooperativeLevel)
@@ -2732,7 +2752,8 @@ int LEMBALL_FASTCALL FreeDirectSoundEffectInstance(void *pBackend, int, int nEff
 
     pBufferPool = *(unsigned int *)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4);
     if (pBufferPool != 0) {
-        g_AUDIO_DestroyBufferProc((int)pBufferPool);
+        ((VsSoundDirectSoundEffectBufferPool *)(unsigned long)pBufferPool)
+            ->DestroyDirectSoundEffectBufferPool();
         FreeVSMemBlock((void *)(unsigned long)pBufferPool);
         *(int *)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4) = 0;
         return 1;
@@ -2742,23 +2763,26 @@ int LEMBALL_FASTCALL FreeDirectSoundEffectInstance(void *pBackend, int, int nEff
 
 // FUNCTION: LEMBALL 0x0047e620
 int LEMBALL_FASTCALL ReleaseAllDirectSoundEffectInstances(void *pBackend) {
+    void *pDirectSoundBackend;
     int nEffectInstanceId;
     int nOffset;
     unsigned int pBufferPool;
 
     nEffectInstanceId = 1;
-    if (0 < *(int *)((char *)pBackend + 0x14)) {
+    if (nEffectInstanceId <= *(int *)((char *)pBackend + 0x14)) {
+        pDirectSoundBackend = pBackend;
         nOffset = 4;
         do {
-            pBufferPool = *(unsigned int *)(*(int *)((char *)pBackend + 0x50) + nOffset);
+            pBufferPool = *(unsigned int *)(*(int *)((char *)pDirectSoundBackend + 0x50) + nOffset);
             if (pBufferPool != 0) {
-                g_AUDIO_DestroyBufferProc((int)pBufferPool);
+                ((VsSoundDirectSoundEffectBufferPool *)(unsigned long)pBufferPool)
+                    ->DestroyDirectSoundEffectBufferPool();
                 FreeVSMemBlock((void *)(unsigned long)pBufferPool);
-                *(int *)(*(int *)((char *)pBackend + 0x50) + nOffset) = 0;
+                *(int *)(*(int *)((char *)pDirectSoundBackend + 0x50) + nOffset) = 0;
             }
             nOffset += 4;
             ++nEffectInstanceId;
-        } while (nEffectInstanceId <= *(int *)((char *)pBackend + 0x14));
+        } while (nEffectInstanceId <= *(int *)((char *)pDirectSoundBackend + 0x14));
     }
     return 1;
 }

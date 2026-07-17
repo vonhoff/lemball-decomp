@@ -8,7 +8,7 @@ static void NetworkRuntimeTransportNoop(void *pObject);
 static int NetworkRuntimeCreateNoChannelOwner(void *pObject);
 static void *NetworkRuntimeWindowCreateNoChannelOwner(void *pObject);
 
-void WriteEffTransportRequestStreamName(void *pObject);
+void LEMBALL_FASTCALL WriteEffTransportRequestStreamName(void *pObject);
 int CompareEffTransportRequestStreamName(void *pObject);
 void *ConstructEffTransportRequestConnectControlStream(void *pObject, char *pszStreamName);
 void __fastcall LoadEffTransportRequestConnectStream(void *pObject);

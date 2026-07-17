@@ -102,8 +102,8 @@ void *ConstructMemoryArenaBaseState(void *pArena,
                                    const char *pszName,
                                    void *pParentArena,
                                    void *pReserved);
-void ReleaseMemoryArenaBlockLists(void *pArena);
-void DestroyMemoryArenaBaseState(void *pArena);
+void LEMBALL_FASTCALL ReleaseMemoryArenaBlockLists(void *pArena);
+void LEMBALL_FASTCALL DestroyMemoryArenaBaseState(void *pArena);
 int PASCAL HasMemoryBlockMagic(void *pBlock);
 int PASCAL IsUsedMemoryBlock(void *pBlock);
 int PASCAL IsFreeMemoryBlock(void *pBlock);
@@ -112,7 +112,7 @@ void *ConstructMemoryArena(void *pArena,
                            const char *pszName,
                            void *pParentArena,
                            void *pReserved);
-void DestroyMemoryArena(void *pArena);
+void LEMBALL_FASTCALL DestroyMemoryArena(void *pArena);
 void *LEMBALL_STDCALL PlacementConstructMemoryArenaWithStorage(void *pvStorage,
                                                unsigned int cbStorage,
                                                const char *pszName,

@@ -8,6 +8,10 @@
 
 extern "C" DWORD WINAPI timeGetTime(void);
 
+struct GameStatusProgressClient {
+    virtual void SetLoadProgress(int nProgress) = 0;
+};
+
 struct GameMainGameVariantResourceBundle {
     void **m_pVtable;
     void *m_pStatusIndicatorManager;
@@ -264,8 +268,8 @@ void GameVariantResourceEntryManager::SetVariantResourceMusicEnabled(int fEnable
 
     if (g_fMusicEnabled != 0 && *(int *)((char *)pManager + 0x2c0) != 0) {
         if (fEnabled != 0) {
-            hMusic = RegisterVariantResourceMusicHandle(
-                g_pAudioManager, 0, *(int *)((char *)pManager + 0x2c0));
+            hMusic = ((VsSoundManager *)g_pAudioManager)->RegisterVariantResourceMusicHandle(
+                *(int *)((char *)pManager + 0x2c0), 1);
             *(int *)((char *)pManager + 0x2c4) = hMusic;
             StartRegisteredVariantResourceMusic(
                 g_pAudioManager, 0, hMusic);
@@ -576,17 +580,15 @@ static void LEMBALL_FASTCALL UpdateMainGameVariantResourceLoadProgress(
 {
     int nLoaded;
     GameMainGameVariantResourceBundle *pBundle;
+    GameStatusProgressClient *pProgressClient;
 
     pBundle = (GameMainGameVariantResourceBundle *)pObject;
-    nLoaded = ++pBundle->m_nLoadedResourceCount;
-    {
-        void *pProgressClient =
-            (char *)pBundle->m_pStatusIndicatorManager + 0x70;
-        ((void (LEMBALL_FASTCALL *)(void *, int, int))
-             (*(void ***)pProgressClient)[0])(
-            pProgressClient, 0,
-            (nLoaded * 100) / pBundle->m_nTotalResourceCount);
-    }
+    nLoaded = pBundle->m_nLoadedResourceCount + 1;
+    pProgressClient =
+        (GameStatusProgressClient *)((char *)pBundle->m_pStatusIndicatorManager + 0x70);
+    pBundle->m_nLoadedResourceCount = nLoaded;
+    pProgressClient->SetLoadProgress(
+        (nLoaded * 100) / pBundle->m_nTotalResourceCount);
 }
 
 // FUNCTION: LEMBALL 0x00447de0

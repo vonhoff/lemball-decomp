@@ -28,6 +28,10 @@ extern void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void *pQueue);
 extern void LEMBALL_FASTCALL PresentPrimaryContextScreen(void *pPrimaryContext);
 extern void noop_callback_00456600(void);
 
+struct LevelStatusProgressClient {
+    virtual void SetLoadProgress(int nProgress) = 0;
+};
+
 struct VsGdiCompactGeometryTokenDispatch {
     virtual void Reserved00(void) = 0;
     virtual void Reserved01(void) = 0;
@@ -1434,10 +1438,9 @@ static void LEMBALL_FASTCALL UpdateStatusIndicatorLoadProgress00434D10(
     nLoaded = ++*(int *)((char *)pObject + 0x1c);
     pOwner = *(void **)((char *)pObject + 0x08);
     if (pOwner != 0) {
-        void *pProgressClient = (char *)pOwner + 0x70;
-        ((void (LEMBALL_FASTCALL *)(void *, int, int))
-             (*(void ***)pProgressClient)[0])(
-            pProgressClient, 0,
+        LevelStatusProgressClient *pProgressClient =
+            (LevelStatusProgressClient *)((char *)pOwner + 0x70);
+        pProgressClient->SetLoadProgress(
             (nLoaded * 100) / *(int *)((char *)pObject + 0x20));
     }
 }

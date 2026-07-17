@@ -190,7 +190,7 @@ CArena *CArena::ConstructMemoryArenaBaseState(unsigned int cbStorage,
     return this;
 }
 // FUNCTION: LEMBALL 0x00459a40
-void ReleaseMemoryArenaBlockLists(void *pArena) {
+void LEMBALL_FASTCALL ReleaseMemoryArenaBlockLists(void *pArena) {
     CArena *pMemoryArena;
     void **pLockVtable;
     void *pBlock;
@@ -217,7 +217,7 @@ void ReleaseMemoryArenaBlockLists(void *pArena) {
 }
 
 // FUNCTION: LEMBALL 0x00459aa0
-void DestroyMemoryArenaBaseState(void *pArena) {
+void LEMBALL_FASTCALL DestroyMemoryArenaBaseState(void *pArena) {
     ((CArena *)pArena)->m_pVtable = g_aMemoryArenaBaseStateVtable;
     ((CArena *)pArena)->m_pLockVtable = g_aMainMemoryArenaLockVtable;
     DeleteCriticalSection(((CArena *)pArena)->m_abCriticalSection);
@@ -717,7 +717,7 @@ CArena *CArena::ConstructMemoryArena(unsigned int cbStorage,
 }
 
 // FUNCTION: LEMBALL 0x0045a480
-void DestroyMemoryArena(void *pArena) {
+void LEMBALL_FASTCALL DestroyMemoryArena(void *pArena) {
     ((CArena *)pArena)->m_pVtable = g_aMainMemoryArenaVtable;
     ((CArena *)pArena)->m_pLockVtable = g_aMainMemoryArenaLockVtable;
     ReleaseMemoryArenaBlockLists(pArena);

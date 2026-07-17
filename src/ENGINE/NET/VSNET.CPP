@@ -214,7 +214,7 @@ static void *g_NETWORK_EffTransportGlobalReadStreamVtable[4] = {
     (void *)NoopVtableCallbackThunk,
 };
 int CompareEffTransportRequestStreamName(void *pObject);
-void WriteEffTransportRequestStreamName(void *pObject);
+void LEMBALL_FASTCALL WriteEffTransportRequestStreamName(void *pObject);
 void __fastcall LoadEffTransportRequestConnectStream(void *pObject);
 void __fastcall WriteEffTransportRequestPortFields(void *pObject);
 void LEMBALL_FASTCALL LoadEffTransportRequestNewPortStream(void *pObject);
@@ -1315,7 +1315,7 @@ struct VsNetPrefixedEffTransportControlView {
 
 
 // FUNCTION: LEMBALL 0x0045f360
-void WriteEffTransportRequestStreamName(void *pObject) {
+void LEMBALL_FASTCALL WriteEffTransportRequestStreamName(void *pObject) {
     VsNetEffStreamBase *pStream;
 
     pStream = (VsNetEffStreamBase *)pObject;

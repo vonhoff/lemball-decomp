@@ -108,7 +108,7 @@ void *GetWin32FileWrapperOwnedPath(void *pObject);
 BYTE __fastcall MapNestedEffCallbackFailureToStatus6(void *pObject);
 void *DeleteEffChannelStateSideBufferWrapper(void *pObject, BYTE fFreeMemory);
 void LEMBALL_FASTCALL ClearNestedEffChannelAsyncStatus(void *pObject);
-void AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(void *pObject);
+void LEMBALL_FASTCALL AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(void *pObject);
 void LEMBALL_FASTCALL AdjustAndClearGlobalStateTimedEffTransportPendingWriteState(
     void *pObject, void *pUnused);
 void *AdjustAndDeleteGlobalStateCompositeAt30(void *pObject, BYTE fFreeMemory);
@@ -117,7 +117,7 @@ void AdjustAndClaimGlobalStateTimedEffTransportRecordPayload(void *pObject);
 void *AdjustAndDeleteGlobalStateCompositeAtA8(void *pObject, BYTE fFreeMemory);
 void AdjustAndWriteGlobalStateDualEffStreamWithGlobalSession(void *pObject);
 void AdjustAndClaimGlobalStateDualEffTransportRecordPayload(void *pObject);
-BYTE AdjustAndMapGlobalStateFileBackedEffCallbackFailure(void *pObject);
+BYTE LEMBALL_FASTCALL AdjustAndMapGlobalStateFileBackedEffCallbackFailure(void *pObject);
 void LEMBALL_FASTCALL AdjustAndClearGlobalStateTimedEffTransportPendingWriteState(
     void *pObject, void *pUnused);
 struct VsNetAdjustedEffTransportPendingWriteState {
@@ -159,12 +159,12 @@ struct VsNetAdjustedEffTransportPeerView {
     void CloseAdjustedEffTransportPeerByKey(void *pUnused);
 };
 extern void EffStreamChannelStateRet4Thunk(BYTE fDelete);
-BYTE AdjustAndMapNestedEffCallbackFailureFromB8(void *pObject);
+BYTE LEMBALL_FASTCALL AdjustAndMapNestedEffCallbackFailureFromB8(void *pObject);
 void *AdjustAndDeleteDualFileBackedEffChannelWrapper(void *pObject, BYTE fFreeMemory);
 void *AdjustAndDeleteDualFileBackedEffChannelWrapper2c(void *pObject, BYTE fFreeMemory);
 void *AdjustAndDeleteTimedFileBackedEffChannelWrapper30(void *pObject, BYTE fFreeMemory);
 void *AdjustAndDeleteTimedFileBackedEffChannelWrapper(void *pObject, BYTE fFreeMemory);
-void AdjustAndClearTimedFileBackedEffChannelAsyncStatus(void *pObject);
+void LEMBALL_FASTCALL AdjustAndClearTimedFileBackedEffChannelAsyncStatus(void *pObject);
 void AdjustAndClearPendingWriteStateThunk(void *pObject, void *pUnused);
 void InvokeAdjustedTimedEffStreamServiceCallbackThunk(void *pObject, void *pArgument);
 int AppendAdjustedFileBackedEffRecordSlotThunk(void *pObject, const void *pvPayload, DWORD cbPayload);
@@ -173,11 +173,11 @@ int AppendAdjustedGlobalStateTimedFileBackedEffRecordSlot(void *pObject,
                                                            const void *pvPayload,
                                                            DWORD cbPayload);
 void SetTimedFileBackedEffChannelWord(void *pObject, unsigned short nValue);
-void AdjustAndClearNestedEffChannelAsyncStatusFromB8(void *pObject);
+void LEMBALL_FASTCALL AdjustAndClearNestedEffChannelAsyncStatusFromB8(void *pObject);
 void *DeleteDualFileBackedEffChannelNoopThunk(void *pObject, BYTE fFreeMemory);
-BYTE AdjustAndMapEmbeddedFileBackedEffCallbackFailure(void *pObject);
+BYTE LEMBALL_FASTCALL AdjustAndMapEmbeddedFileBackedEffCallbackFailure(void *pObject);
 void *AdjustAndDeleteEmbeddedFileBackedEffChannelStackWrapper40(void *pObject, BYTE fFreeMemory);
-void AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(void *pObject);
+void LEMBALL_FASTCALL AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(void *pObject);
 void *AdjustAndDeleteEmbeddedTimedFileBackedEffChannelStackWrapper(void *pObject, BYTE fFreeMemory);
 void AdjustAndWriteEmbeddedTimedEffStreamWithGlobalSession(void *pObject);
 void AdjustAndClaimEmbeddedTimedEffTransportRecordPayload(void *pObject);
@@ -191,7 +191,7 @@ void *AdjustAndDeleteGlobalStateFileBackedEffCompositeWrapper(void *pObject, BYT
 void *AdjustAndDeleteGlobalStateTimedFileBackedEffCompositeWrapper(void *pObject, BYTE fFreeMemory);
 void *AdjustAndDeleteGlobalStateDualFileBackedEffCompositeWrapper(void *pObject, BYTE fFreeMemory);
 void AdjustAndCloseEffTransportPeerByKey(void *pObject, void *pArgument);
-void AdjustAndClearEmbeddedEffChannelAsyncStatus13c(void *pObject);
+void LEMBALL_FASTCALL AdjustAndClearEmbeddedEffChannelAsyncStatus13c(void *pObject);
 void AdjustAndWriteGlobalStateTimedEffStreamFrom158(void *pObject);
 void AdjustAndClaimGlobalStateTimedEffStreamFrom158(void *pObject);
 void AdjustAndInvokeTimedEffStreamServiceFrom154(void *pObject, void *pArgument);
@@ -199,7 +199,7 @@ void AdjustAndWriteDualSlotTimedEffStreamWithGlobalSession(void *pObject);
 void AdjustAndClaimDualSlotTimedEffTransportRecordPayload(void *pObject);
 void DispatchAdjustedPrefixedEffTransportControlStream(void *pObject, int nDispatchType, void *pEvent);
 void DispatchAdjustedAckedEffTransportPayloadEventFromEmbeddedThunk(void *pObject);
-void QueueAdjustedEffTransportConnectEvent(void *pObject);
+void LEMBALL_FASTCALL QueueAdjustedEffTransportConnectEvent(void *pObject);
 void DispatchAdjustedAckedEffTransportPayloadEventFromDualThunk(void *pObject);
 void QueueAdjustedEffTransportPayloadEvent(void *pObject, unsigned short nType, void *pPayload);
 BYTE AdjustAndReleaseCompositeFileBackedEffMarker(void *pObject);
@@ -2319,7 +2319,7 @@ void *DeleteEffChannelStateSideBufferWrapper(void *pObject, BYTE fFreeMemory);
 static void ServiceDualSlotCompositeRecords0047B990(void *pObject);
 BYTE AdjustAndReleaseCompositeFileBackedEffMarker(void *pObject);
 void *AdjustAndDeleteCompositeFileBackedEffChannelWrapper(void *pObject, BYTE fFreeMemory);
-void AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(void *pObject);
+void LEMBALL_FASTCALL AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(void *pObject);
 void LEMBALL_FASTCALL AdjustAndClearGlobalStateTimedEffTransportPendingWriteState(
     void *pObject, void *pUnused);
 void *AdjustAndDeleteGlobalStateCompositeAt30(void *pObject, BYTE fFreeMemory);
@@ -2334,7 +2334,7 @@ void AdjustAndClaimGlobalStateDualEffTransportRecordPayload(void *pObject);
 BYTE AdjustAndReleaseGlobalStateFileBackedEffMarker(void *pObject);
 void *AdjustAndDeleteGlobalStateFileBackedEffCompositeWrapper(void *pObject, BYTE fFreeMemory);
 void *DeleteGlobalStateFileBackedEffCompositeWrapper(void *pObject, BYTE fFreeMemory);
-void AdjustAndClearEmbeddedEffChannelAsyncStatus13c(void *pObject);
+void LEMBALL_FASTCALL AdjustAndClearEmbeddedEffChannelAsyncStatus13c(void *pObject);
 void AdjustAndCloseEffTransportPeerByKey(void *pObject, void *pArgument);
 void CloseAdjustedEffTransportPeerByKeyWithArgument(void *pObject, void *pUnused);
 void *AdjustAndDeleteGlobalStateTimedFileBackedEffCompositeWrapper(void *pObject, BYTE fFreeMemory);
@@ -2347,19 +2347,19 @@ void AdjustAndWriteDualSlotTimedEffStreamWithGlobalSession(void *pObject);
 void AdjustAndClaimDualSlotTimedEffTransportRecordPayload(void *pObject);
 void DispatchAdjustedPrefixedEffTransportControlStream(void *pObject, int nDispatchType, void *pEvent);
 void InitializeGlobalStateFileBackedEffStorageAdjustor(void *pObject);
-BYTE AdjustAndMapGlobalStateFileBackedEffCallbackFailure(void *pObject);
+BYTE LEMBALL_FASTCALL AdjustAndMapGlobalStateFileBackedEffCallbackFailure(void *pObject);
 void *AdjustAndDeleteTimedFileBackedEffChannelWrapper(void *pObject, BYTE fFreeMemory);
-void AdjustAndClearTimedFileBackedEffChannelAsyncStatus(void *pObject);
+void LEMBALL_FASTCALL AdjustAndClearTimedFileBackedEffChannelAsyncStatus(void *pObject);
 void AdjustAndClearPendingWriteStateThunk(void *pObject, void *pUnused);
 void *AdjustAndDeleteTimedFileBackedEffChannelWrapper30(void *pObject, BYTE fFreeMemory);
 void InvokeAdjustedTimedEffStreamServiceCallbackThunk(void *pObject, void *pArgument);
 int AppendAdjustedFileBackedEffRecordSlotThunk(void *pObject, const void *pvPayload, DWORD cbPayload);
-BYTE AdjustAndMapNestedEffCallbackFailureFromB8(void *pObject);
+BYTE LEMBALL_FASTCALL AdjustAndMapNestedEffCallbackFailureFromB8(void *pObject);
 void *AdjustAndDeleteDualFileBackedEffChannelWrapper(void *pObject, BYTE fFreeMemory);
-void AdjustAndClearNestedEffChannelAsyncStatusFromB8(void *pObject);
+void LEMBALL_FASTCALL AdjustAndClearNestedEffChannelAsyncStatusFromB8(void *pObject);
 void *DeleteDualFileBackedEffChannelNoopThunk(void *pObject, BYTE fFreeMemory);
 void *AdjustAndDeleteDualFileBackedEffChannelWrapper2c(void *pObject, BYTE fFreeMemory);
-BYTE AdjustAndMapEmbeddedFileBackedEffCallbackFailure(void *pObject);
+BYTE LEMBALL_FASTCALL AdjustAndMapEmbeddedFileBackedEffCallbackFailure(void *pObject);
 void *AdjustAndDeleteEmbeddedFileBackedEffChannelStackWrapper40(void *pObject, BYTE fFreeMemory);
 void *AdjustAndDeleteEmbeddedTimedFileBackedEffChannelStackWrapper(void *pObject, BYTE fFreeMemory);
 void AdjustAndWriteEmbeddedTimedEffStreamWithGlobalSession(void *pObject);
@@ -2375,9 +2375,9 @@ static void CompleteDualSlotEffTransportPendingWriteBody(void *pObject,
                                                            int fQueueEvent);
 void *AdjustAndDeleteDualSlotTableTimedFileBackedEffCompositeWrapper(void *pObject, BYTE fFreeMemory);
 void DispatchAdjustedAckedEffTransportPayloadEventFromEmbeddedThunk(void *pObject);
-void DispatchAdjustedAckedEffTransportPayloadEvent(void *pObject);
+void LEMBALL_FASTCALL DispatchAdjustedAckedEffTransportPayloadEvent(void *pObject);
 void *AdjustAndDeleteDualSlotTableDualFileBackedEffCompositeWrapper(void *pObject, BYTE fFreeMemory);
-void QueueAdjustedEffTransportConnectEvent(void *pObject);
+void LEMBALL_FASTCALL QueueAdjustedEffTransportConnectEvent(void *pObject);
 void DispatchAdjustedAckedEffTransportPayloadEventFromDualThunk(void *pObject);
 void QueueAdjustedEffTransportPayloadEvent(void *pObject, unsigned short nType, void *pPayload);
 void AdjustAndWriteDualSlotTableFileBackedEffHeader(void *pObject);
@@ -4422,7 +4422,7 @@ void *VsNetFileBackedCompositeWrapperView::DeleteCompositeFileBackedEffChannelWr
 }
 
 // FUNCTION: LEMBALL 0x0047ba40
-void AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(void *pObject) {
+void LEMBALL_FASTCALL AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(void *pObject) {
     ClearNestedEffChannelAsyncStatus((char *)pObject + 0x138);
 }
 
@@ -4564,7 +4564,7 @@ void *DeleteGlobalStateFileBackedEffCompositeWrapper(void *pObject, BYTE fFreeMe
 }
 
 // FUNCTION: LEMBALL 0x0047bbd0
-void AdjustAndClearEmbeddedEffChannelAsyncStatus13c(void *pObject) {
+void LEMBALL_FASTCALL AdjustAndClearEmbeddedEffChannelAsyncStatus13c(void *pObject) {
     ClearNestedEffChannelAsyncStatus((char *)pObject + 0x13c);
 }
 
@@ -4640,7 +4640,7 @@ void InitializeGlobalStateFileBackedEffStorageAdjustor(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x0047bca0
-BYTE AdjustAndMapGlobalStateFileBackedEffCallbackFailure(void *pObject) {
+BYTE LEMBALL_FASTCALL AdjustAndMapGlobalStateFileBackedEffCallbackFailure(void *pObject) {
     return MapNestedEffCallbackFailureToStatus6((char *)pObject + 0xd8);
 }
 
@@ -4676,7 +4676,7 @@ void *VsNetFileBackedTimedChannelWrapperView::DeleteTimedFileBackedEffChannelWra
 }
 
 // FUNCTION: LEMBALL 0x0047bd10
-void AdjustAndClearTimedFileBackedEffChannelAsyncStatus(void *pObject) {
+void LEMBALL_FASTCALL AdjustAndClearTimedFileBackedEffChannelAsyncStatus(void *pObject) {
     ClearNestedEffChannelAsyncStatus((char *)pObject + 0xd8);
 }
 
@@ -4715,7 +4715,7 @@ int AppendAdjustedFileBackedEffRecordSlotThunk(void *pObject, const void *pvPayl
 }
 
 // FUNCTION: LEMBALL 0x0047bd80
-BYTE AdjustAndMapNestedEffCallbackFailureFromB8(void *pObject) {
+BYTE LEMBALL_FASTCALL AdjustAndMapNestedEffCallbackFailureFromB8(void *pObject) {
     return MapNestedEffCallbackFailureToStatus6((char *)pObject + 0xb8);
 }
 
@@ -4747,7 +4747,7 @@ void *VsNetDualFileBackedEffChannelDeleteView::DeleteDualFileBackedEffChannelWra
 }
 
 // FUNCTION: LEMBALL 0x0047bdf0
-void AdjustAndClearNestedEffChannelAsyncStatusFromB8(void *pObject) {
+void LEMBALL_FASTCALL AdjustAndClearNestedEffChannelAsyncStatusFromB8(void *pObject) {
     ClearNestedEffChannelAsyncStatus((char *)pObject + 0xb8);
 }
 
@@ -4764,7 +4764,7 @@ void *AdjustAndDeleteDualFileBackedEffChannelWrapper2c(void *pObject, BYTE fFree
 }
 
 // FUNCTION: LEMBALL 0x0047be30
-BYTE AdjustAndMapEmbeddedFileBackedEffCallbackFailure(void *pObject) {
+BYTE LEMBALL_FASTCALL AdjustAndMapEmbeddedFileBackedEffCallbackFailure(void *pObject) {
     return MapNestedEffCallbackFailureToStatus6((char *)pObject + 0x138);
 }
 
@@ -4908,7 +4908,7 @@ void DispatchAdjustedAckedEffTransportPayloadEventFromEmbeddedThunk(void *pObjec
 }
 
 // FUNCTION: LEMBALL 0x0047bff0
-void DispatchAdjustedAckedEffTransportPayloadEvent(void *pObject) {
+void LEMBALL_FASTCALL DispatchAdjustedAckedEffTransportPayloadEvent(void *pObject) {
     ((VsNetDispatchAckedEffTransportPayloadView *)((char *)pObject - 0x34))
         ->DispatchAckedEffTransportPayloadEvent();
 }
@@ -4921,7 +4921,7 @@ void *AdjustAndDeleteDualSlotTableDualFileBackedEffCompositeWrapper(void *pObjec
 }
 
 // FUNCTION: LEMBALL 0x0047c010
-void QueueAdjustedEffTransportConnectEvent(void *pObject) {
+void LEMBALL_FASTCALL QueueAdjustedEffTransportConnectEvent(void *pObject) {
     ((VsNetEffTransportConnectCallback *)((char *)pObject - 0x34))
         ->QueueEffTransportConnectEvent();
 }

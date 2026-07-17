@@ -421,7 +421,7 @@ void CaptureLastWinsockErrorStatusAdjustedThunk(void *pObject);
 void CaptureLastWinsockErrorStatusOuterDoubleAdjustedThunk(void *pObject);
 void *DeleteCompositeTcpipSocketChannelStackAdjustedThunk(void *pObject,
                                                             BYTE fFreeMemory);
-void CaptureLastWinsockErrorStatusOuterAdjustedThunk(void *pObject);
+void LEMBALL_FASTCALL CaptureLastWinsockErrorStatusOuterAdjustedThunk(void *pObject);
 void CompleteEffTransportPendingWriteAllocatedAdjustedThunk(void *pObject,
                                                               int fQueueEvent);
 void CompleteEffTransportPendingWriteAllocatedThunkBody(void *pObject,
@@ -460,14 +460,14 @@ void *DeleteTcpipSocketStackDualAdjustedThunk(void *pObject, BYTE fFreeMemory);
 void *LEMBALL_FASTCALL ClaimTcpipSocketStackDualAdjustedThunk(void *pObject);
 static void TimedSocketBundleDispatchAsyncThunk(void *pObject, int nMessage,
                                                  void *pReserved, unsigned int nEvent);
-static void TimedSocketBundlePrimaryCloseThunk(void *pObject);
+static void LEMBALL_FASTCALL TimedSocketBundlePrimaryCloseThunk(void *pObject);
 static void *TimedSocketBundlePrimaryDeleteThunk(void *pObject, BYTE fDelete);
-static void TimedSocketBundlePrimaryCaptureErrorThunk(void *pObject);
+static void LEMBALL_FASTCALL TimedSocketBundlePrimaryCaptureErrorThunk(void *pObject);
 static void TimedSocketBundlePrimaryNoopThunk(void *pObject, BYTE fDelete);
 static void TimedSocketBundlePrimaryNoopBody(BYTE fDelete);
-static void TimedSocketBundleCloseSocketThunk(void *pObject);
+static void LEMBALL_FASTCALL TimedSocketBundleCloseSocketThunk(void *pObject);
 static void *TimedSocketBundleDeleteThunk(void *pObject, BYTE fDelete);
-static void TimedSocketBundleCaptureErrorThunk(void *pObject);
+static void LEMBALL_FASTCALL TimedSocketBundleCaptureErrorThunk(void *pObject);
 static void TimedSocketBundleClearPendingWriteThunk(void *pObject, void *pUnused);
 static void TimedSocketBundleClearPendingWriteBody(void *pObject, void *pUnused);
 static void *TimedSocketBundleDeleteAdjustedThunk(void *pObject, BYTE fDelete);
@@ -3074,7 +3074,7 @@ void *VsNetTcpipSocketChannelStackWrapperView::DeleteCompositeTcpipSocketChannel
 }
 
 // FUNCTION: LEMBALL 0x00471b60
-void CaptureLastWinsockErrorStatusOuterAdjustedThunk(void *pObject) {
+void LEMBALL_FASTCALL CaptureLastWinsockErrorStatusOuterAdjustedThunk(void *pObject) {
     ((VsNetSocketWindowChannelWrapper *)((char *)pObject + 0x128))
         ->CaptureLastWinsockErrorStatus();
 }
@@ -3329,7 +3329,7 @@ static void TimedSocketBundleDispatchAsyncThunk(void *pObject, int nMessage,
 }
 
 // FUNCTION: LEMBALL 0x00471dc0
-static void TimedSocketBundlePrimaryCloseThunk(void *pObject) {
+static void LEMBALL_FASTCALL TimedSocketBundlePrimaryCloseThunk(void *pObject) {
     ((VsNetSocketWindowChannelWrapper *)((char *)pObject + 0xa4))
         ->CloseSocketHandleFromChannel();
 }
@@ -3362,7 +3362,7 @@ void *VsNetDualSocketWindowChannelStackWrapperView::DeleteDualSocketWindowChanne
 }
 
 // FUNCTION: LEMBALL 0x00471e20
-static void TimedSocketBundlePrimaryCaptureErrorThunk(void *pObject) {
+static void LEMBALL_FASTCALL TimedSocketBundlePrimaryCaptureErrorThunk(void *pObject) {
     ((VsNetSocketWindowChannelWrapper *)((char *)pObject + 0xa4))
         ->CaptureLastWinsockErrorStatus();
 }
@@ -3378,7 +3378,7 @@ static void TimedSocketBundlePrimaryNoopBody(BYTE fDelete) {
 }
 
 // FUNCTION: LEMBALL 0x00471e60
-static void TimedSocketBundleCloseSocketThunk(void *pObject) {
+static void LEMBALL_FASTCALL TimedSocketBundleCloseSocketThunk(void *pObject) {
     ((VsNetSocketWindowChannelWrapper *)((char *)pObject + 0xc8))
         ->CloseSocketHandleFromChannel();
 }
@@ -3411,7 +3411,7 @@ void *VsNetTimedSocketWindowChannelStackWrapperView::DeleteTimedSocketWindowChan
 }
 
 // FUNCTION: LEMBALL 0x00471ec0
-static void TimedSocketBundleCaptureErrorThunk(void *pObject) {
+static void LEMBALL_FASTCALL TimedSocketBundleCaptureErrorThunk(void *pObject) {
     ((VsNetSocketWindowChannelWrapper *)((char *)pObject + 0xc8))
         ->CaptureLastWinsockErrorStatus();
 }
