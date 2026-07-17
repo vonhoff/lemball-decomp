@@ -46,6 +46,10 @@ extern void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(
     void *pObject);
 extern void *LEMBALL_FASTCALL InitializeEmptyGeometryOwnerRect(
     void *pOwner);
+extern void LEMBALL_FASTCALL RestoreQueuedRenderPointSinkVtable(
+    void *pObject);
+extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(
+    void *pOwner, int nUnusedEdx, void *pChildOwner);
 extern void *g_pVariantResourceEntryManager;
 extern int g_fLevelSelectionChanged;
 extern int LEMBALL_FASTCALL GetTimedVariantFrameStartTimeThunk(
@@ -158,6 +162,7 @@ static int LEMBALL_FASTCALL HandleMenuSelectorEntryEventThunk(
     GameMenuSelectorEntry *pEntry, int nUnusedEdx,
     GameMenuSelectorEvent *pEvent);
 void LEMBALL_FASTCALL InitializeSharedSpriteOwnerState(void *pObject);
+void LEMBALL_FASTCALL ComputeAlignedZrleChildLayout(void *pObject);
 
 /* GLOBAL: LEMBALL 0x004a7b44 */
 int g_nMenuSelectorResourceId0 = 0;
@@ -346,6 +351,17 @@ public:
     void *Delete(unsigned int fDelete);
 };
 
+class GameAlignedZrleChildOverlayView {
+public:
+    void ReleaseFrameResource(void);
+    void QueueAlignedFrame(void);
+};
+
+class GameAlignedZrleChildOverlayDeleteView {
+public:
+    void *Delete(unsigned int fDelete);
+};
+
 typedef char GameMenuActionFramePointSink_size_must_be_0x20[
     sizeof(GameMenuActionFramePointSink) == 0x20 ? 1 : -1];
 
@@ -391,6 +407,9 @@ static void *g_ResourceGeometryChildVtable[48];
 static void *g_ResourceGeometryChildDeleteVtable[8];
 static void **g_pWindowOwnerRenderContextVtable;
 static int g_fResourceGeometryChildVtablesInitialized;
+static void *g_AlignedZrleChildOverlayVtable[48];
+static void *g_AlignedZrleChildOverlayDeleteVtable[8];
+static int g_fAlignedZrleChildOverlayVtablesInitialized;
 
 void *LEMBALL_FASTCALL InitializeTinyPointSinkHelper(void *pObject) {
     *(void ***)pObject = g_MenuSelectorTinyPointSinkVtable;
@@ -711,6 +730,164 @@ void *LEMBALL_FASTCALL ConstructResourceGeometryChildBase(
         g_ResourceGeometryChildDeleteVtable;
     *(void **)((char *)pObject + 0xc8) = pRenderOwner;
     InitializeSharedSpriteOwnerState(pObject);
+    return pObject;
+}
+
+void GameAlignedZrleChildOverlayView::ReleaseFrameResource(void) {
+    void *pResource;
+
+    pResource = *(void **)((char *)this + 0x11c);
+    if (pResource != 0) {
+        ReleaseTypedResourceObjectReference(pResource);
+        *(void **)((char *)this + 0x11c) = 0;
+    }
+}
+
+void GameAlignedZrleChildOverlayView::QueueAlignedFrame(void) {
+    typedef void (LEMBALL_FASTCALL *RefreshProc)(
+        void *pObject, int nUnusedEdx);
+    typedef void (LEMBALL_FASTCALL *QueueProc)(
+        void *pObject, int nUnusedEdx, void *pQueueOwner);
+    char *pObject;
+    char *pFrameSink;
+    void *pGeometryContext;
+    void *pQueueOwner;
+    short x;
+    short y;
+    int fResourceReady;
+
+    pObject = (char *)this;
+    x = *(short *)(pObject + 0x118);
+    y = *(short *)(pObject + 0x11a);
+    fResourceReady = *(int *)(pObject + 0x104) != 0 &&
+                     *(int *)(pObject + 0x94) != 0;
+    if ((*(unsigned int *)(pObject + 0x110) & 0x40) != 0 &&
+        fResourceReady) {
+        ++x;
+        ++y;
+    }
+
+    pQueueOwner = *(void **)(pObject + 0x4c);
+    pGeometryContext = *(void **)((char *)pQueueOwner + 0x0c);
+    pGeometryContext = (char *)pGeometryContext +
+        *(int *)(*(int *)((char *)pGeometryContext + 0x40) + 4) + 0x40;
+    ((RefreshProc)(*(void ***)pGeometryContext)[14])(
+        pGeometryContext, 0);
+
+    pFrameSink = *(char **)(pObject + 0x124);
+    *(short *)(pFrameSink + 4) = x;
+    *(short *)(pFrameSink + 6) = y;
+    *(void **)(pFrameSink + 0x1c) = *(void **)(pObject + 0x11c);
+    *(int *)(pFrameSink + 0x18) =
+        *(void **)(pObject + 0x11c) != 0;
+    *(int *)(pFrameSink + 0x0c) = 0;
+    *(void **)(pFrameSink + 0x10) = *(void **)(pObject + 0x120);
+    ((QueueProc)(*(void ***)pFrameSink)[1])(
+        pFrameSink, 0, pQueueOwner);
+}
+
+static void InitializeAlignedZrleChildOverlayVtables(void) {
+    union VoidMethod {
+        void (GameAlignedZrleChildOverlayView::*p)(void);
+        void *v;
+    } Void;
+    union DeleteMethod {
+        void *(GameAlignedZrleChildOverlayDeleteView::*p)(unsigned int);
+        void *v;
+    } Delete;
+    int i;
+
+    if (g_fAlignedZrleChildOverlayVtablesInitialized != 0) {
+        return;
+    }
+    for (i = 0; i < 48; ++i) {
+        g_AlignedZrleChildOverlayVtable[i] =
+            g_ResourceGeometryChildVtable[i];
+    }
+    for (i = 0; i < 8; ++i) {
+        g_AlignedZrleChildOverlayDeleteVtable[i] =
+            g_ResourceGeometryChildDeleteVtable[i];
+    }
+    Void.p = &GameAlignedZrleChildOverlayView::ReleaseFrameResource;
+    g_AlignedZrleChildOverlayVtable[16] = Void.v;
+    Void.p = &GameAlignedZrleChildOverlayView::QueueAlignedFrame;
+    g_AlignedZrleChildOverlayVtable[47] = Void.v;
+    Delete.p = &GameAlignedZrleChildOverlayDeleteView::Delete;
+    g_AlignedZrleChildOverlayDeleteVtable[0] = Delete.v;
+    g_fAlignedZrleChildOverlayVtablesInitialized = 1;
+}
+
+void LEMBALL_FASTCALL DestroyAlignedZrleChildOverlay(void *pChildOwner) {
+    typedef void (LEMBALL_FASTCALL *DeleteProc)(
+        void *pObject, int nUnusedEdx, unsigned int fDelete);
+    char *pObject;
+    void *pFrameSink;
+
+    pObject = (char *)pChildOwner - 0x90;
+    *(void ***)pChildOwner = g_AlignedZrleChildOverlayDeleteVtable;
+    *(void ***)pObject = g_AlignedZrleChildOverlayVtable;
+    if (*(int *)(pObject + 4) == 1) {
+        DetachGeometryChildAndDestroyWindowOwner(pObject);
+    }
+    pFrameSink = *(void **)(pObject + 0x124);
+    if (pFrameSink != 0) {
+        ((DeleteProc)(*(void ***)pFrameSink)[0])(pFrameSink, 0, 3);
+    }
+    RestoreQueuedRenderPointSinkVtable(pObject + 0x128);
+    DestroyResourceGeometryChild(pChildOwner);
+}
+
+void *GameAlignedZrleChildOverlayDeleteView::Delete(unsigned int fDelete) {
+    char *pObject;
+
+    pObject = (char *)this - 0x90;
+    DestroyAlignedZrleChildOverlay(this);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+void *LEMBALL_FASTCALL ConstructAlignedZrleChildOverlayFromPoint(
+    void *pObject, int nUnusedEdx, const VS_XYPair *pPoint,
+    void *pRenderOwner, int nResourceId, int fAlignment) {
+    typedef void (LEMBALL_FASTCALL *InitializeRectProc)(
+        void *pObject, int nUnusedEdx, short *pRect,
+        void *pOwner, const char *pszName);
+    short aRect[4];
+
+    (void)nUnusedEdx;
+    ConstructResourceGeometryChildBase(pObject, 0, pRenderOwner);
+    *(short *)((char *)pObject + 0x114) = 0;
+    *(short *)((char *)pObject + 0x116) = 0;
+    *(int *)((char *)pObject + 0x104) = 0;
+    *(int *)((char *)pObject + 0x108) = 0;
+    *(short *)((char *)pObject + 0x118) = 0;
+    *(short *)((char *)pObject + 0x11a) = 0;
+    InitializeTinyPointSinkHelper((char *)pObject + 0x128);
+    InitializeAlignedZrleChildOverlayVtables();
+    *(void ***)pObject = g_AlignedZrleChildOverlayVtable;
+    *(void ***)((char *)pObject + 0x90) =
+        g_AlignedZrleChildOverlayDeleteVtable;
+    *(int *)((char *)pObject + 0x10c) = nResourceId;
+    *(int *)((char *)pObject + 0x110) = fAlignment;
+    ComputeAlignedZrleChildLayout(pObject);
+
+    *(short *)((char *)pObject + 0xdc) = pPoint->m_x;
+    *(short *)((char *)pObject + 0xde) = pPoint->m_y;
+    aRect[0] = *(short *)((char *)pObject + 0xc0);
+    aRect[1] = *(short *)((char *)pObject + 0xc2);
+    aRect[2] = pPoint->m_x;
+    aRect[3] = pPoint->m_y;
+    ((InitializeRectProc)(*(void ***)pObject)[1])(
+        pObject, 0, aRect, pRenderOwner, "Button");
+    *(short *)((char *)pObject + 0xc4) +=
+        *(short *)((char *)pObject + 0x18);
+    *(short *)((char *)pObject + 0xc6) +=
+        *(short *)((char *)pObject + 0x1a);
+    AppendGeometryOwnerChild(
+        *(void **)((char *)pRenderOwner + 0x1c), 0,
+        (char *)pObject + 0x90);
     return pObject;
 }
 
