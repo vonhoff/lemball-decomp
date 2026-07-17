@@ -37,6 +37,8 @@ extern void *LEMBALL_FASTCALL DeleteStatusPointSinkEntryThunk(
 extern void LEMBALL_FASTCALL QueueStatusPointPushThunk(
     void *pEntry, int nUnusedEdx, void *pQueue);
 extern void AppendPointerQueueEntry(void *pQueue, void *pEntry);
+extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
+    void *pOwner, int nUnusedEdx, void *pChildOwner);
 extern void *g_pVariantResourceEntryManager;
 extern int g_fLevelSelectionChanged;
 extern int LEMBALL_FASTCALL GetTimedVariantFrameStartTimeThunk(
@@ -429,6 +431,18 @@ void *LEMBALL_FASTCALL InitializeMenuActionFramePointSink(void *pObject) {
     pEntry->m_pVtable00 = g_MenuActionFramePointSinkVtable;
     pEntry->m_nReserved04 = 0;
     return pEntry;
+}
+
+void LEMBALL_FASTCALL DetachGeometryChildAndDestroyWindowOwner(
+    void *pObject) {
+    void *pChildOwner;
+    void *pRenderOwner;
+
+    pChildOwner = pObject == 0 ? 0 : (char *)pObject + 0x90;
+    pRenderOwner = *(void **)((char *)pObject + 0xc8);
+    RemoveGeometryOwnerChild(
+        *(void **)((char *)pRenderOwner + 0x1c), 0, pChildOwner);
+    ((VS_WindowOwnerBase *)pObject)->DestroyWindowOwnerHwnd();
 }
 
 void LEMBALL_FASTCALL ComputeAlignedZrleChildLayout(void *pObject) {
