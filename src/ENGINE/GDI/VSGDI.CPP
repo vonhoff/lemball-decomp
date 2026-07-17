@@ -46,11 +46,11 @@ int LEMBALL_FASTCALL SelectAndRealizeDisplayPalette(
 int LEMBALL_FASTCALL ApplyDisplaySurfacePalette(
     void *, int, void *pSurface, int nFirstEntry, int cEntries,
     const unsigned int *paColors);
-static int LEMBALL_FASTCALL CopyDisplaySurfaceRect(
-    void *, int, void *pBinding, short *pDestinationRect,
-    void *, short *pSourcePoint);
-static int LEMBALL_FASTCALL StretchDisplaySurfaceRect(
-    void *, int, void *pDestinationBinding, short *pDestinationRect,
+static int LEMBALL_STDCALL CopyDisplaySurfaceRect(
+    void *pBinding, short *pDestinationRect,
+    void *pSourceBinding, short *pSourcePoint);
+static int LEMBALL_STDCALL StretchDisplaySurfaceRect(
+    void *pDestinationBinding, short *pDestinationRect,
     void *pSourceBinding, short *pSourceRect);
 static int LEMBALL_FASTCALL ApplyDirectDrawSurfacePalette(
     void *, int, void *, int, int, const unsigned int *);
@@ -1466,8 +1466,8 @@ int LEMBALL_FASTCALL ApplyDisplaySurfacePalette(
 }
 
 // FUNCTION: LEMBALL 0x00456c70
-static int LEMBALL_FASTCALL CopyDisplaySurfaceRect(
-    void *, int, void *pDestinationBinding, short *pDestinationRect,
+static int LEMBALL_STDCALL CopyDisplaySurfaceRect(
+    void *pDestinationBinding, short *pDestinationRect,
     void *pSourceBinding, short *pSourcePoint)
 
 {
@@ -1488,8 +1488,8 @@ static int LEMBALL_FASTCALL CopyDisplaySurfaceRect(
 }
 
 // FUNCTION: LEMBALL 0x00456cc0
-static int LEMBALL_FASTCALL StretchDisplaySurfaceRect(
-    void *, int, void *pDestinationBinding, short *pDestinationRect,
+static int LEMBALL_STDCALL StretchDisplaySurfaceRect(
+    void *pDestinationBinding, short *pDestinationRect,
     void *pSourceBinding, short *pSourceRect)
 
 {
