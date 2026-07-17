@@ -34,6 +34,8 @@ extern void ParseIntResourceDescriptor(void);
 extern void LEMBALL_FASTCALL UnloadTypedResourceObject(
     void *pObject, void *pUnusedEcx, int fReleaseMode);
 extern void LEMBALL_FASTCALL EnsureTypedResourceObjectLoaded(void *pObject);
+extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectIfLoaded(
+    void *pObject, void *pUnusedEdx, int fReleaseMode);
 extern int LEMBALL_FASTCALL GetField14NeedsAgeIncrement(void *pObject);
 extern int LEMBALL_FASTCALL GetField1CVfunc04(void *pObject);
 extern int LEMBALL_FASTCALL GetField14Vfunc05(void *pObject);
@@ -156,6 +158,16 @@ void *LoadZrleResource(int nResourceId);
 void LEMBALL_FASTCALL PopulateZrleResourceDescriptorFields(void *pObject);
 static void LEMBALL_FASTCALL SetListResourceTypeList(void *pObject);
 static int LEMBALL_FASTCALL GetListEntryArrayCursor(void *pObject);
+static void InitializeZrleOnlyListEntry(void *pEntry);
+static void LEMBALL_FASTCALL AllocateZrleOnlyListEntryArray(void *pObject, int, int cEntries);
+static void LEMBALL_FASTCALL DispatchZrleOnlyListEntryMethod(void *pObject, int, int iEntry, int nArgument);
+static int LEMBALL_FASTCALL HasZrleOnlyListEntryDescriptor(void *pObject, int, int iEntry);
+static void LEMBALL_FASTCALL LoadZrleOnlyListEntryFromStream(
+    void *pObject, int, int iEntry, int *pDescriptor);
+static void LEMBALL_FASTCALL LoadZrleOnlyListEntryFromBuffer(
+    void *pObject, int, int iEntry, int *pDescriptorCursor, int *pDataCursor);
+static void LEMBALL_FASTCALL ReleaseZrleOnlyListEntry(
+    void *pObject, int, int iEntry, int fReleaseMode);
 static int LEMBALL_FASTCALL ReturnFalseTwoArrayListEntryState(void *pObject);
 static void LEMBALL_FASTCALL NoopTwoArrayListEntryDispatch(
     void *pObject, int nUnusedEdx, void *pUnused1, void *pUnused2);
@@ -190,7 +202,7 @@ void LEMBALL_FASTCALL SetTuneResourceTypeTag(void *pResource);
 void LEMBALL_FASTCALL SetPresResourceTypeTag(void *pResource);
 
 // GLOBAL: LEMBALL 0x00498a18
-static void *g_GAME_ZrleOnlyListResourceVtableStorage[15] = {
+static void *g_GAME_ZrleOnlyListResourceVtableStorage[22] = {
     (void *)DestroyZrleOnlyListResource,
     (void *)CopyBuffersIntoTwoArrayListResourceAndParse,
     (void *)ParseListResourceDescriptor,
@@ -206,6 +218,13 @@ static void *g_GAME_ZrleOnlyListResourceVtableStorage[15] = {
     (void *)NoopVfunc12,
     (void *)SetListResourceTypeList,
     (void *)GetListEntryArrayCursor,
+    (void *)HasZrleOnlyListEntryDescriptor,
+    (void *)DispatchZrleOnlyListEntryMethod,
+    (void *)AllocateZrleOnlyListEntryArray,
+    (void *)ListIsFirstEntryLoaded,
+    (void *)LoadZrleOnlyListEntryFromBuffer,
+    (void *)LoadZrleOnlyListEntryFromStream,
+    (void *)ReleaseZrleOnlyListEntry,
 };
 static void *g_GAME_TwoArrayListResourceVtableStorage[24] = {
     (void *)DestroyTwoArrayListResourceAndFree,
@@ -402,6 +421,24 @@ static int LoadTypedResourceObjectFromBufferDescriptor(
     *(int *)((char *)pObject + 0x24) = 0;
     *(int *)((char *)pObject + 0x10) = 1;
     *(int *)((char *)pObject + 0x24) = 0;
+    ((void (LEMBALL_FASTCALL *)(void *, int))pVtable[0x0b])(pObject, 0);
+    return 0;
+}
+
+static int LoadTypedResourceObjectFromStreamDescriptor(
+    void *pObject, int *pDataCursor, void *pOwner)
+{
+    void **pVtable;
+
+    *(void **)((char *)pObject + 4) = pOwner;
+    *(int *)((char *)pObject + 0x38) = *pDataCursor;
+    *pDataCursor += *(int *)((char *)pObject + 0x28);
+    ++*(int *)((char *)pObject + 0x0c);
+    ++*(int *)((char *)pObject + 0x08);
+    *(int *)((char *)pObject + 0x24) = 0;
+    *(int *)((char *)pObject + 0x10) = 1;
+    *(int *)((char *)pObject + 0x24) = 0;
+    pVtable = *(void ***)pObject;
     ((void (LEMBALL_FASTCALL *)(void *, int))pVtable[0x0b])(pObject, 0);
     return 0;
 }
@@ -688,6 +725,53 @@ void *LoadZrleOnlyListResource(int nResourceId) {
     return FinalizeLoadedResourceObjectResult(0);
 }
 
+// FUNCTION: LEMBALL 0x0045d6a0
+static void LEMBALL_FASTCALL AllocateZrleOnlyListEntryArray(
+    void *pObject, int, int cEntries)
+{
+    int *pAllocation;
+    char *pEntry;
+    int i;
+
+    pAllocation = (int *)AllocateVSMemBlock(cEntries * 0x54 + 4);
+    if (pAllocation == 0) {
+        *(void **)((char *)pObject + 0x78) = 0;
+        return;
+    }
+    *pAllocation = cEntries;
+    pEntry = (char *)(pAllocation + 1);
+    for (i = 0; i < cEntries; ++i, pEntry += 0x54) {
+        InitializeZrleOnlyListEntry(pEntry);
+    }
+    *(void **)((char *)pObject + 0x78) = pAllocation + 1;
+}
+
+// FUNCTION: LEMBALL 0x0045d700
+static void LEMBALL_FASTCALL DispatchZrleOnlyListEntryMethod(
+    void *pObject, int, int iEntry, int nArgument)
+{
+    char *pEntry;
+
+    pEntry = (char *)*(void **)((char *)pObject + 0x78) + iEntry * 0x54;
+    ((void (LEMBALL_FASTCALL *)(void *, int, int))(*(void ***)pEntry)[9])(
+        pEntry, 0, nArgument);
+}
+
+// FUNCTION: LEMBALL 0x0045d720
+static int LEMBALL_FASTCALL HasZrleOnlyListEntryDescriptor(
+    void *pObject, int, int iEntry)
+{
+    char *pEntry;
+    void **pVtable;
+
+    pEntry = (char *)*(void **)((char *)pObject + 0x78) + iEntry * 0x54;
+    pVtable = *(void ***)pEntry;
+    if (((int (LEMBALL_FASTCALL *)(void *))pVtable[3])(pEntry) != 0) {
+        return 1;
+    }
+    return ((int (LEMBALL_FASTCALL *)(void *))pVtable[3])(pEntry);
+}
+
 // FUNCTION: LEMBALL 0x0045d7b0
 void *ConstructIntZrleListResourceFromId(void *pObject, int nResourceId) {
     int *pListResource;
@@ -938,6 +1022,33 @@ int LEMBALL_FASTCALL ListIsFirstEntryLoaded(void *pResource) {
     return fLoaded;
 }
 
+// FUNCTION: LEMBALL 0x0045e730
+static void LEMBALL_FASTCALL LoadZrleOnlyListEntryFromStream(
+    void *pObject, int, int iEntry, int *pDescriptor)
+{
+    LoadTypedResourceObjectFromStreamDescriptor(
+        (char *)*(void **)((char *)pObject + 0x78) + iEntry * 0x54,
+        pDescriptor, pObject);
+}
+
+// FUNCTION: LEMBALL 0x0045e750
+static void LEMBALL_FASTCALL LoadZrleOnlyListEntryFromBuffer(
+    void *pObject, int, int iEntry, int *pDescriptorCursor, int *pDataCursor)
+{
+    LoadTypedResourceObjectFromBufferDescriptor(
+        (char *)*(void **)((char *)pObject + 0x78) + iEntry * 0x54,
+        pDescriptorCursor, pDataCursor, pObject);
+}
+
+// FUNCTION: LEMBALL 0x0045e780
+static void LEMBALL_FASTCALL ReleaseZrleOnlyListEntry(
+    void *pObject, int, int iEntry, int fReleaseMode)
+{
+    ReleaseTypedResourceObjectIfLoaded(
+        (char *)*(void **)((char *)pObject + 0x78) + iEntry * 0x54,
+        0, fReleaseMode);
+}
+
 // FUNCTION: LEMBALL 0x0045e7a0
 static void *LEMBALL_FASTCALL DestroyZrleOnlyListResource(
     void *pObject, int, int fDelete)
@@ -956,6 +1067,23 @@ static void *LEMBALL_FASTCALL DestroyZrleOnlyListResource(
         FreeVSMemBlock(pObject);
     }
     return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045e7e0
+static void InitializeZrleOnlyListEntry(void *pEntry) {
+    char *pBytes;
+
+    pBytes = (char *)pEntry;
+    *(short *)(pBytes + 0x4a) = 0;
+    InitializeTypedResourceObjectBaseVtable(pEntry);
+    *(short *)(pBytes + 0x48) = 0;
+    *(int *)(pBytes + 0x18) = 0;
+    *(short *)(pBytes + 0x4e) = 0;
+    *(void **)pEntry = g_GAME_ZrleResourceVtableStorage;
+    *(short *)(pBytes + 0x4c) = 0;
+    *(short *)(pBytes + 0x52) = 0;
+    *(short *)(pBytes + 0x50) = 0;
+    ResetTypedResourceObjectState(pEntry);
 }
 
 // FUNCTION: LEMBALL 0x0045e840
