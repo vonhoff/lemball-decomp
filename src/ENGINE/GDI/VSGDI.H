@@ -138,6 +138,8 @@ public:
     VsGdiDirectDrawDisplayState(const unsigned short *pDisplaySize, int fCreateWindow);
 
     int Create(HWND hWnd);
+    int BindDirectDrawSurface(int nDriver, void *pSurface);
+    int ReleaseDirectDrawSurface(int nDriver, void *pSurface);
 
 private:
     void *m_pDirectDrawObject;             // 0x1c

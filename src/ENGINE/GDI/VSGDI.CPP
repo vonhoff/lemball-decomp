@@ -1023,6 +1023,10 @@ static void InitializeDisplayStateVtables(void) {
     union { int (VsGdiDisplayState::*p)(int, void *); void *v; } bitmapReadyMethod;
     union { int (VsGdiDisplayState::*p)(int, void *); void *v; } bitmapDeleteMethod;
     union { int (VsGdiDisplayState::*p)(void) const; void *v; } readyMethod;
+    union { int (VsGdiDirectDrawDisplayState::*p)(int, void *); void *v; }
+        bindDirectDrawSurfaceMethod;
+    union { int (VsGdiDirectDrawDisplayState::*p)(int, void *); void *v; }
+        releaseDirectDrawSurfaceMethod;
 
     for (i = 0; i < 14; ++i) {
         g_VSGDI_MetricsDisplayVtable[i] = (void *)NetworkSafeVtableNoop;
@@ -1039,6 +1043,10 @@ static void InitializeDisplayStateVtables(void) {
     bitmapObjectMethod.p = &VsGdiDisplayState::ReleaseDisplayBitmap;
     bitmapReadyMethod.p = &VsGdiDisplayState::BindDisplayBitmap;
     bitmapDeleteMethod.p = &VsGdiDisplayState::DeleteDisplayBitmap;
+    bindDirectDrawSurfaceMethod.p =
+        &VsGdiDirectDrawDisplayState::BindDirectDrawSurface;
+    releaseDirectDrawSurfaceMethod.p =
+        &VsGdiDirectDrawDisplayState::ReleaseDirectDrawSurface;
     readyMethod.p = &VsGdiDisplayState::IsReady;
     g_VSGDI_MetricsDisplayVtable[1] = createBindingMethod.v;
     g_VSGDI_DibDisplayVtable[1] = createBindingMethod.v;
@@ -1073,10 +1081,10 @@ static void InitializeDisplayStateVtables(void) {
     }
     g_VSGDI_MetricsDisplayVtable[9] = bitmapReadyMethod.v;
     g_VSGDI_DibDisplayVtable[9] = bitmapReadyMethod.v;
-    g_VSGDI_DirectDrawDisplayVtable[9] = bitmapReadyMethod.v;
+    g_VSGDI_DirectDrawDisplayVtable[9] = bindDirectDrawSurfaceMethod.v;
     g_VSGDI_MetricsDisplayVtable[10] = bitmapDeleteMethod.v;
     g_VSGDI_DibDisplayVtable[10] = bitmapDeleteMethod.v;
-    g_VSGDI_DirectDrawDisplayVtable[10] = bitmapDeleteMethod.v;
+    g_VSGDI_DirectDrawDisplayVtable[10] = releaseDirectDrawSurfaceMethod.v;
     g_VSGDI_MetricsDisplayVtable[11] =
         (void *)CreateAndStoreDisplayPalette;
     g_VSGDI_MetricsDisplayVtable[12] =
@@ -1610,10 +1618,24 @@ VsGdiDirectDrawDisplayState::VsGdiDirectDrawDisplayState(const unsigned short *p
 }
 
 // FUNCTION: LEMBALL 0x004578c0
-static int LEMBALL_FASTCALL ApplyDirectDrawSurfacePalette(
-    void *, int, void *, int, int, const unsigned int *)
-{
+static int LEMBALL_FASTCALL ApplyDirectDrawSurfacePalette(void *, int, void *, int, int, const unsigned int *) {
     return 0x100;
+}
+
+// FUNCTION: LEMBALL 0x00457c50
+int VsGdiDirectDrawDisplayState::BindDirectDrawSurface(int nDriver, void *pSurface) {
+    VsGdiHelperTargetParamWrapper *pBinding;
+    void **ppSurfaceSlots;
+
+    pBinding = (VsGdiHelperTargetParamWrapper *)(unsigned long)nDriver;
+    ppSurfaceSlots = (void **)&m_pfnDirectDrawCreate;
+    ppSurfaceSlots[pBinding->m_nWrappedParam] = pSurface;
+    return (int)(unsigned long)pSurface;
+}
+
+// FUNCTION: LEMBALL 0x00457c70
+int VsGdiDirectDrawDisplayState::ReleaseDirectDrawSurface(int, void *pSurface) {
+    return (int)(unsigned long)pSurface;
 }
 
 int VsGdiDibDisplayState::CopyDisplayRect(
