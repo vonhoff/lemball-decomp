@@ -14,6 +14,15 @@ int CopyRenderDispatchQueueEntryAtIndex(
 int RemoveRenderDispatchQueueEntryAtIndex(
     void *pDispatchQueue, unsigned int nIndex);
 extern void *g_pSingletonAnimWindowOwner;
+extern "C" {
+__declspec(dllimport) void *WINAPI SelectObject(void *hDc, void *hObject);
+__declspec(dllimport) BOOL WINAPI DeleteObject(void *hObject);
+__declspec(dllimport) BOOL WINAPI DeleteDC(void *hDc);
+__declspec(dllimport) HGLOBAL WINAPI GlobalHandle(const void *pMemory);
+__declspec(dllimport) int WINAPI MultiByteToWideChar(
+    unsigned int nCodePage, DWORD dwFlags, const char *pszSource,
+    int cchSource, unsigned short *pwszDestination, int cchDestination);
+}
 
 struct VsWingDrawOpenRequest {
     int m_nReserved00;
@@ -36,8 +45,43 @@ struct VsWingAnimWindowOwnerView {
 struct VsWingDrawHandlerState {
     unsigned char m_abReserved00[0x2c];
     void *m_pWindowState2C;
-    unsigned char m_abReserved30[0x440];
+    void *m_hMemoryDC30;
+    void *m_hBitmap34;
+    void *m_hPreviousBitmap38;
+    void *m_hPalette3C;
+    void *m_hPreviousPalette40;
+    unsigned char m_abReserved44[0x42c];
     void *m_pAnimWindowOwner470;
+};
+
+struct VsWingDrawCodecInfo {
+    DWORD m_cbSize00;
+    DWORD m_dwType04;
+    DWORD m_dwHandler08;
+    DWORD m_dwFlags0C;
+    DWORD m_dwVersion10;
+    DWORD m_dwIcmVersion14;
+    unsigned char m_abReserved18[0x20];
+    unsigned short m_awDescription38[0x100];
+};
+
+struct VsWingBitmapInfoHeader {
+    DWORD m_cbSize00;
+    int m_cx04;
+    int m_cy08;
+    unsigned short m_cPlanes0C;
+    unsigned short m_cBitsPerPixel0E;
+    DWORD m_dwCompression10;
+    DWORD m_cbImage14;
+    int m_nXPelsPerMeter18;
+    int m_nYPelsPerMeter1C;
+    DWORD m_cColorsUsed20;
+    DWORD m_cImportantColors24;
+};
+
+struct VsWingSuggestFormatRequest {
+    VsWingBitmapInfoHeader *m_pSource00;
+    VsWingBitmapInfoHeader *m_pDestination04;
 };
 
 // FUNCTION: LEMBALL 0x004631a0
@@ -301,4 +345,91 @@ void *LEMBALL_STDCALL OpenVisualSciencesWingDrawHandler(
             ->m_pWindowOwnerContext4C->m_pWindowState0C;
     pRequest->m_nResult14 = 0;
     return pState;
+}
+
+// FUNCTION: LEMBALL 0x00479210
+int LEMBALL_STDCALL CloseVisualSciencesWingDrawHandler(
+    VsWingDrawHandlerState *pState)
+{
+    if (pState->m_hMemoryDC30 != 0) {
+        if (pState->m_hPreviousBitmap38 != 0) {
+            SelectObject(pState->m_hMemoryDC30, pState->m_hPreviousBitmap38);
+        }
+        if (pState->m_hPreviousPalette40 != 0) {
+            SelectObject(pState->m_hMemoryDC30, pState->m_hPreviousPalette40);
+        }
+        DeleteDC(pState->m_hMemoryDC30);
+    }
+    if (pState->m_hBitmap34 != 0) {
+        DeleteObject(pState->m_hBitmap34);
+    }
+    if (pState->m_hPalette3C != 0) {
+        DeleteObject(pState->m_hPalette3C);
+    }
+    GlobalUnlock(GlobalHandle(pState));
+    GlobalFree(GlobalHandle(pState));
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x004792a0
+DWORD LEMBALL_STDCALL FillVisualSciencesWingDrawInfo(
+    VsWingDrawCodecInfo *pInfo, DWORD cbInfo)
+{
+    if (pInfo == 0) {
+        return 0x238;
+    }
+    if (cbInfo < 0x238) {
+        return 0;
+    }
+
+    pInfo->m_dwType04 = 0x63646976;
+    pInfo->m_dwHandler08 = 0x4e415356;
+    pInfo->m_cbSize00 = 0x238;
+    pInfo->m_dwFlags0C = 0x10;
+    pInfo->m_dwVersion10 = 0x10000;
+    pInfo->m_dwIcmVersion14 = 0x104;
+    MultiByteToWideChar(0, 0, "Visual Sciences WinG Draw Handler", -1,
+                        pInfo->m_awDescription38, 0x100);
+    MultiByteToWideChar(0, 0, "VS - WinG Anim", -1,
+                        pInfo->m_awDescription38, 0x100);
+    return 0x238;
+}
+
+// FUNCTION: LEMBALL 0x00479330
+int LEMBALL_STDCALL ValidateVisualSciencesWing8BppFormat(
+    void *, VsWingBitmapInfoHeader *pFormat)
+{
+    if (pFormat == 0) {
+        return -2;
+    }
+    if (pFormat->m_dwCompression10 != 0) {
+        return -2;
+    }
+    return (unsigned short)(pFormat->m_cBitsPerPixel0E - 8) < 1 ? 0 : -2;
+}
+
+// FUNCTION: LEMBALL 0x00479370
+int LEMBALL_STDCALL SuggestVisualSciencesWingDrawFormat(
+    void *, VsWingSuggestFormatRequest *pRequest, void *)
+{
+    VsWingBitmapInfoHeader *pSource;
+    VsWingBitmapInfoHeader *pDestination;
+
+    pDestination = pRequest->m_pDestination04;
+    if (pDestination == 0) {
+        return 0x428;
+    }
+
+    pSource = pRequest->m_pSource00;
+    pDestination->m_cColorsUsed20 = pSource->m_cColorsUsed20;
+    pDestination->m_cImportantColors24 = pSource->m_cImportantColors24;
+    pDestination->m_cbSize00 = pSource->m_cbSize00;
+    pDestination->m_cx04 = pSource->m_cx04;
+    pDestination->m_cy08 = pSource->m_cy08;
+    pDestination->m_cbImage14 = pSource->m_cx04 * pSource->m_cy08;
+    pDestination->m_cPlanes0C = 1;
+    pDestination->m_cBitsPerPixel0E = 8;
+    pDestination->m_dwCompression10 = 0;
+    pDestination->m_cbImage14 = 0;
+    return pSource->m_cColorsUsed20 * 4 + 0x28;
 }
