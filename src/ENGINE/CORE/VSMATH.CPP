@@ -119,8 +119,8 @@ int *LEMBALL_FASTCALL WriteDebugSentinelDword(int *pTarget) {
 
 // FUNCTION: LEMBALL 0x0045a9b0
 unsigned int __stdcall IntegerSqrtFloor(unsigned int uValue) {
-    unsigned int uHigh;
     unsigned int uLow;
+    unsigned int uHigh;
     unsigned int uMid;
 
     if (uValue > 0x4000000) {
