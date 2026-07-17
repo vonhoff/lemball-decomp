@@ -254,11 +254,11 @@ static unsigned int g_uViSOSMinorVersion = 3;
 // GLOBAL: LEMBALL 0x00498958
 static void *g_StatusEntryPointerArrayVtable[1] = { (void *)WriteStatusEntryPointerArray };
 // GLOBAL: LEMBALL 0x004a1d64
-static VsInitResourceTypeTable *g_pPrimaryResourceTypeTable = 0;
+VsInitResourceTypeTable *g_pPrimaryResourceTypeTable = 0;
 // GLOBAL: LEMBALL 0x004a1d68
-static VsInitResourceTypeTable *g_pSecondaryResourceTypeTable = 0;
+VsInitResourceTypeTable *g_pSecondaryResourceTypeTable = 0;
 // GLOBAL: LEMBALL 0x004a1d6c
-static VsInitResourceTypeTable *g_pTertiaryResourceTypeTable = 0;
+VsInitResourceTypeTable *g_pTertiaryResourceTypeTable = 0;
 // GLOBAL: LEMBALL 0x004a2000
 static VsInitVSMemPointerTable *g_pPaletteRemapPointerTable = 0;
 static void *g_pSharedRenderQueueNode = 0;

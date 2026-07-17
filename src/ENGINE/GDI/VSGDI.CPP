@@ -32,6 +32,8 @@ extern void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(
     void *pPrimaryContext);
 extern void *__fastcall get_draw_command_rect_payload(void *pCommand);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
+extern void *LoadTwoArrayListResource(int nResourceId);
+extern void *g_pLevelProgressState;
 
 void __stdcall PromoteQueuedRenderPointSinkTargetStateThunk(void *pPointSink);
 void LEMBALL_FASTCALL QueueQueuedRenderPointSinkThunk(
@@ -720,6 +722,8 @@ public:
     void InstallEmbeddedMciDrawCallback(int nUnused);
     void StartEmbeddedMciWindowPlaybackOnce(void);
     void ResumeEmbeddedMciWindowPlayback(void);
+    void UpdateMediaPathFromListResource(int nResourceId);
+    void SelectIntroSequenceMediaPath(void);
 
 private:
     unsigned char m_abReserved00[0x90];
@@ -4797,6 +4801,110 @@ void VsGdiAnimWindowOwner::ResumeEmbeddedMciWindowPlayback(void) {
 
 void LEMBALL_FASTCALL ResumeEmbeddedMciWindowPlayback(void *pOwner) {
     ((VsGdiAnimWindowOwner *)pOwner)->ResumeEmbeddedMciWindowPlayback();
+}
+
+struct VsGdiMediaListResourceView {
+    void **m_pVtable00;
+    int m_nReserved04;
+    int m_cLocks08;
+    int m_nReserved0C;
+    int m_nLoadState10;
+    unsigned char m_abReserved14[0x10];
+    int m_nReserved24;
+    unsigned char m_abReserved28[0x50];
+    char *m_pTextEntry78;
+};
+
+void VsGdiAnimWindowOwner::UpdateMediaPathFromListResource(int nResourceId) {
+    VsGdiMediaListResourceView *pResource;
+    const char *pszMediaName;
+    const char *pszBasePath;
+    GameDynamicCString MediaPath;
+    GameDynamicCString TemporaryPath;
+
+    pszMediaName = "test";
+    pResource = 0;
+    if (nResourceId != 0) {
+        m_nAC = nResourceId;
+        pResource = (VsGdiMediaListResourceView *)
+            LoadTwoArrayListResource(nResourceId);
+        if (pResource->m_nLoadState10 == 0) {
+            ((void (LEMBALL_FASTCALL *)(void *, int))
+                pResource->m_pVtable00[7])(pResource, 0);
+        } else {
+            pResource->m_nReserved24 = 0;
+        }
+        ++pResource->m_cLocks08;
+        pszMediaName = *(char **)(pResource->m_pTextEntry78 + 0x38);
+    }
+
+    MediaPath.ConstructDynamicCString();
+    if (m_nReserved90 != 0) {
+        MediaPath.AssignDynamicCStringFromDynamic(&m_MediaName98);
+        if (MediaPath.m_pszText[GetDynamicCStringLength(&MediaPath) - 1] != '\\') {
+            MediaPath.AppendDynamicCStringAndCopyResult(&TemporaryPath, "\\");
+            TemporaryPath.DestroyDynamicCString();
+        }
+    }
+    MediaPath.AppendDynamicCStringAndCopyResult(&TemporaryPath, pszMediaName);
+    TemporaryPath.DestroyDynamicCString();
+    MediaPath.AppendDynamicCStringAndCopyResult(&TemporaryPath, ".avi");
+    TemporaryPath.DestroyDynamicCString();
+
+    if (m_nReserved94 == 0) {
+        m_MediaPathB0.AssignDynamicCString(
+            g_abProcessCurrentDirectoryBuffer);
+        if (m_MediaPathB0.m_pszText[
+                GetDynamicCStringLength(&m_MediaPathB0) - 1] != '\\') {
+            m_MediaPathB0.AppendDynamicCStringAndCopyResult(
+                &TemporaryPath, "\\");
+            TemporaryPath.DestroyDynamicCString();
+        }
+    } else {
+        pszBasePath = FindCdromFilePathBySuffix(MediaPath.m_pszText);
+        if (pszBasePath == 0) {
+            pszBasePath = g_abProcessCurrentDirectoryBuffer;
+        }
+        m_MediaPathB0.AssignDynamicCString(pszBasePath);
+        if (m_MediaPathB0.m_pszText[
+                GetDynamicCStringLength(&m_MediaPathB0) - 1] != '\\') {
+            m_MediaPathB0.AppendDynamicCStringAndCopyResult(
+                &TemporaryPath, "\\");
+            TemporaryPath.DestroyDynamicCString();
+        }
+    }
+    m_MediaPathB0.AppendDynamicCStringObjectAndCopyResult(
+        &TemporaryPath, &MediaPath);
+    TemporaryPath.DestroyDynamicCString();
+    if (pResource != 0) {
+        --pResource->m_cLocks08;
+        ReleaseTypedResourceObjectReference(pResource);
+    }
+    if (m_hMciWindowB8 != 0) {
+        SendMessageA(m_hMciWindowB8, 0x499, 0,
+                     (LPARAM)m_MediaPathB0.m_pszText);
+    }
+    m_nA0 = 1;
+    MediaPath.DestroyDynamicCString();
+}
+
+void VsGdiAnimWindowOwner::SelectIntroSequenceMediaPath(void) {
+    int nMode;
+
+    if (*(int *)((char *)this + 0xc4) == 0) {
+        UpdateMediaPathFromListResource(0x116);
+        return;
+    }
+    nMode = *(int *)((char *)g_pLevelProgressState + 8);
+    if (nMode == 0 || nMode == 3) {
+        UpdateMediaPathFromListResource(0x117);
+    } else if (nMode == 1 || nMode == 2) {
+        UpdateMediaPathFromListResource(0x118);
+    }
+}
+
+void LEMBALL_FASTCALL SelectIntroSequenceMediaPath(void *pOwner) {
+    ((VsGdiAnimWindowOwner *)pOwner)->SelectIntroSequenceMediaPath();
 }
 
 // FUNCTION: LEMBALL 0x00472290

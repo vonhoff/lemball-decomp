@@ -2,6 +2,7 @@
 #include "RESOURCE/MOGLOAD.H"
 #include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/CORE/SAFEVT.H"
+#include "ENGINE/CORE/VSINIT.H"
 #include "RESOURCE/VARLOAD.H"
 
 extern void LEMBALL_FASTCALL CopyBufferIntoTypedResourceObjectAndParse(
@@ -28,6 +29,7 @@ static const unsigned int g_GAME_PaletteResourceTypeTag = 0x50414c20;
 static const unsigned int g_GAME_ZrleResourceTypeTag = 0x5a524c45;
 
 extern void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtable(void *pObject);
+extern void ResetTypedResourceObjectState(void *pObject);
 extern void ParseIntResourceDescriptor(void);
 extern void LEMBALL_FASTCALL UnloadTypedResourceObject(
     void *pObject, void *pUnusedEcx, int fReleaseMode);
@@ -68,6 +70,7 @@ static void *g_GAME_ZrleResourceVtableStorage[15] = {
 };
 
 extern void *g_pDestroyGRTSResourceAndFreeThunk;
+extern void *g_pStringResourceVtable;
 extern void *g_MOGLOAD_CachedResourceObjectBaseVtable[15];
 extern void *g_pBitmapResourceVtable;
 extern void *g_pPaletteResourceVtable;
@@ -153,6 +156,16 @@ void *LoadZrleResource(int nResourceId);
 void LEMBALL_FASTCALL PopulateZrleResourceDescriptorFields(void *pObject);
 static void LEMBALL_FASTCALL SetListResourceTypeList(void *pObject);
 static int LEMBALL_FASTCALL GetListEntryArrayCursor(void *pObject);
+static int LEMBALL_FASTCALL ReturnFalseTwoArrayListEntryState(void *pObject);
+static void LEMBALL_FASTCALL NoopTwoArrayListEntryDispatch(
+    void *pObject, int nUnusedEdx, void *pUnused1, void *pUnused2);
+static int LEMBALL_FASTCALL ReturnZeroTwoArrayListDescriptor(
+    void *pObject, int nUnusedEdx, int nUnused);
+static void LEMBALL_FASTCALL AllocateTwoArrayListEntryArrays(
+    void *pObject, int nUnusedEdx, int cEntries);
+static int LEMBALL_FASTCALL LoadTwoArrayListEntryPairFromBuffers(
+    void *pObject, int nUnusedEdx, int iEntry,
+    int *pDescriptorCursor, int *pDataCursor);
 static int LEMBALL_FASTCALL ListNeedsAgeIncrement(void *pObject);
 static int LEMBALL_FASTCALL ListField60Nonzero(void *pObject);
 static int LEMBALL_FASTCALL ListField68Nonzero(void *pObject);
@@ -194,7 +207,7 @@ static void *g_GAME_ZrleOnlyListResourceVtableStorage[15] = {
     (void *)SetListResourceTypeList,
     (void *)GetListEntryArrayCursor,
 };
-static void *g_GAME_TwoArrayListResourceVtableStorage[15] = {
+static void *g_GAME_TwoArrayListResourceVtableStorage[24] = {
     (void *)DestroyTwoArrayListResourceAndFree,
     (void *)CopyBuffersIntoTwoArrayListResourceAndParse,
     (void *)ParseListResourceDescriptor,
@@ -210,6 +223,15 @@ static void *g_GAME_TwoArrayListResourceVtableStorage[15] = {
     (void *)NoopVfunc12,
     (void *)SetListResourceTypeList,
     (void *)GetListEntryArrayCursor,
+    (void *)ReturnZeroTwoArrayListDescriptor,
+    (void *)NoopTwoArrayListEntryDispatch,
+    (void *)AllocateTwoArrayListEntryArrays,
+    (void *)ReturnFalseTwoArrayListEntryState,
+    (void *)LoadTwoArrayListEntryPairFromBuffers,
+    0,
+    0,
+    0,
+    0,
 };
 static void *g_GAME_ListResourceBaseVtable = g_GAME_ListResourceVtableStorage;
 static void *g_GAME_ZrleOnlyListResourceVtable =
@@ -217,9 +239,6 @@ static void *g_GAME_ZrleOnlyListResourceVtable =
 static void *g_GAME_IntZrleListResourceVtable = g_GAME_ZrleResourceVtableStorage;
 static void *g_GAME_ZrleResourceVtable = g_GAME_ZrleResourceVtableStorage;
 static void *g_GAME_TwoArrayListResourceVtable = g_GAME_TwoArrayListResourceVtableStorage;
-static int g_GAME_ZrleListResourceTypeToken = 0;
-static int g_GAME_IntZrleListResourceTypeToken = 0;
-static int g_GAME_TwoArrayListResourceTypeToken = 0;
 
 extern void *g_pMainResourceArchive;
 extern void *g_pResourceArchive;
@@ -357,6 +376,107 @@ static void LEMBALL_FASTCALL ParseListResourceDescriptor(void *pObject) {
     *(unsigned int *)((char *)pObject + 0x64) = 0xffffffff;
 }
 
+static int LoadTypedResourceObjectFromBufferDescriptor(
+    void *pObject, int *pDescriptorCursor, int *pDataCursor,
+    void *pOwner)
+{
+    int *pEntry;
+    void **pVtable;
+
+    *(void **)((char *)pObject + 4) = pOwner;
+    pEntry = (int *)*pDescriptorCursor;
+    if (*(int *)((char *)pObject + 0x40) != pEntry[0]) {
+        *(int *)((char *)pObject + 0x44) = 1;
+        return 1;
+    }
+    pVtable = *(void ***)pObject;
+    *(int *)((char *)pObject + 0x28) = pEntry[1];
+    *(int **)((char *)pObject + 0x34) = pEntry + 2;
+    ((void (LEMBALL_FASTCALL *)(void *, int))pVtable[2])(pObject, 0);
+    *pDescriptorCursor = (int)pEntry +
+        *(int *)((char *)pObject + 0x3c) + 8;
+    *(int *)((char *)pObject + 0x38) = *pDataCursor;
+    *pDataCursor += *(int *)((char *)pObject + 0x28);
+    ++*(int *)((char *)pObject + 0x0c);
+    ++*(int *)((char *)pObject + 0x08);
+    *(int *)((char *)pObject + 0x24) = 0;
+    *(int *)((char *)pObject + 0x10) = 1;
+    *(int *)((char *)pObject + 0x24) = 0;
+    ((void (LEMBALL_FASTCALL *)(void *, int))pVtable[0x0b])(pObject, 0);
+    return 0;
+}
+
+static void InitializeTwoArrayListEntry(void *pEntry) {
+    InitializeTypedResourceObjectBaseVtable(pEntry);
+    *(void **)pEntry = g_pStringResourceVtable;
+    *(int *)((char *)pEntry + 0x18) = 0;
+    ResetTypedResourceObjectState(pEntry);
+}
+
+static void LEMBALL_FASTCALL AllocateTwoArrayListEntryArrays(
+    void *pObject, int, int cEntries)
+{
+    int *pAllocation;
+    char *pEntry;
+    int i;
+
+    pAllocation = (int *)AllocateVSMemBlock(cEntries * 0x48 + 4);
+    if (pAllocation != 0) {
+        pAllocation[0] = cEntries;
+        pEntry = (char *)(pAllocation + 1);
+        for (i = 0; i < cEntries; ++i, pEntry += 0x48) {
+            InitializeTwoArrayListEntry(pEntry);
+        }
+        *(void **)((char *)pObject + 0x78) = pAllocation + 1;
+    } else {
+        *(void **)((char *)pObject + 0x78) = 0;
+    }
+
+    pAllocation = (int *)AllocateVSMemBlock(cEntries * 0x4c + 4);
+    if (pAllocation != 0) {
+        pAllocation[0] = cEntries;
+        pEntry = (char *)(pAllocation + 1);
+        for (i = 0; i < cEntries; ++i, pEntry += 0x4c) {
+            InitializeTwoArrayListEntry(pEntry);
+        }
+        *(void **)((char *)pObject + 0x7c) = pAllocation + 1;
+    } else {
+        *(void **)((char *)pObject + 0x7c) = 0;
+    }
+}
+
+static int LEMBALL_FASTCALL LoadTwoArrayListEntryPairFromBuffers(
+    void *pObject, int, int iEntry,
+    int *pDescriptorCursor, int *pDataCursor)
+{
+    if (LoadTypedResourceObjectFromBufferDescriptor(
+            (char *)*(void **)((char *)pObject + 0x78) + iEntry * 0x48,
+            pDescriptorCursor, pDataCursor, pObject) != 0) {
+        return 1;
+    }
+    if (LoadTypedResourceObjectFromBufferDescriptor(
+            (char *)*(void **)((char *)pObject + 0x7c) + iEntry * 0x4c,
+            pDescriptorCursor, pDataCursor, pObject) != 0) {
+        return 1;
+    }
+    return 0;
+}
+
+static int LEMBALL_FASTCALL ReturnFalseTwoArrayListEntryState(void *) {
+    return 0;
+}
+
+static void LEMBALL_FASTCALL NoopTwoArrayListEntryDispatch(
+    void *, int, void *, void *)
+{
+}
+
+static int LEMBALL_FASTCALL ReturnZeroTwoArrayListDescriptor(
+    void *, int, int)
+{
+    return 0;
+}
+
 // FUNCTION: LEMBALL 0x0045d2b0
 static void LEMBALL_FASTCALL CopyBuffersIntoTwoArrayListResourceAndParse(
     void *pObject,
@@ -397,11 +517,94 @@ static void LEMBALL_FASTCALL CopyBuffersIntoTwoArrayListResourceAndParse(
         }
         *(int *)((char *)pObject + 0x5c) = 1;
     }
+
+    if (*(int *)((char *)pObject + 0x10) == 0 &&
+        *(int *)((char *)pObject + 0x5c) != 0 &&
+        *(int *)((char *)pObject + 0x58) != 0) {
+        void **pVtable;
+        int cEntries;
+        int i;
+        int DescriptorCursor;
+        int DataCursor;
+
+        pVtable = *(void ***)pObject;
+        cEntries = *(unsigned int *)((char *)pObject + 0x6c) /
+            ((unsigned int *)*(void **)((char *)pObject + 0x48))[1];
+        DataCursor = *(int *)((char *)pObject + 0x38);
+        if (*(int *)((char *)pObject + 0x54) == 0) {
+            DescriptorCursor = *(int *)((char *)pObject + 0x4c);
+            *(int *)((char *)pObject + 0x64) =
+                ((int (LEMBALL_FASTCALL *)(void *, int))pVtable[0x12])(
+                    pObject, 0) * cEntries;
+            if (*(int *)((char *)pObject + 0x64) == 0) {
+                *(int *)((char *)pObject + 0x64) = -1;
+            }
+            for (i = 0; i < cEntries; ++i) {
+                ((int (LEMBALL_FASTCALL *)(
+                    void *, int, int, int *, int *))pVtable[0x13])(
+                        pObject, 0, i, &DescriptorCursor, &DataCursor);
+            }
+            ((MogLoadResourceArchive *)g_pResourceArchive)
+                ->FreeResourceObjectDataBuffer(
+                    *(unsigned int *)((char *)pObject + 0x4c), 1);
+            *(int *)((char *)pObject + 0x4c) = 0;
+            *(int *)((char *)pObject + 0x54) = 1;
+        }
+        *(int *)((char *)pObject + 0x10) = 1;
+        ((void (LEMBALL_FASTCALL *)(void *, int))pVtable[0x0b])(
+            pObject, 0);
+        **(int **)((char *)pObject + 0x48) = -1;
+    }
 }
 
 // FUNCTION: LEMBALL 0x0045d430
 static void LEMBALL_FASTCALL LoadListEntryArraysFromArchive(void *pObject) {
-    *(int *)((char *)pObject + 0x24) = 0;
+    typedef int (LEMBALL_FASTCALL *NoArgIntProc)(void *, int);
+    typedef void (LEMBALL_FASTCALL *OneArgProc)(void *, int, unsigned int);
+    typedef void (LEMBALL_FASTCALL *CopyDataProc)(
+        void *, int, unsigned int, unsigned int *, unsigned int);
+    int *pList;
+    void **pVtable;
+    int aArchiveRange[2];
+    unsigned int *pBuffer;
+
+    pList = (int *)pObject;
+    if (pList[4] == 0) {
+        pVtable = *(void ***)pList;
+        if (((NoArgIntProc)pVtable[3])(pList, 0) == 0) {
+            if (*(int *)pList[0x12] != -1 &&
+                pList[0x1b] != *(int *)pList[0x12]) {
+                return;
+            }
+            if (pList[0x15] == 0) {
+                ((OneArgProc)pVtable[0x11])(
+                    pList, 0,
+                    (unsigned int)pList[0x1b] /
+                        (unsigned int)((int *)pList[0x12])[1]);
+                aArchiveRange[0] = pList[0xb];
+                aArchiveRange[1] = pList[0x1c];
+                pBuffer = (unsigned int *)(pList + 0x13);
+                if (((MogLoadResourceArchive *)g_pResourceArchive)
+                        ->LoadResourceArchiveEntryDataIntoBuffer(
+                            aArchiveRange, pBuffer, pList) != 0) {
+                    ((CopyDataProc)pVtable[1])(
+                        pList, 0, *pBuffer, pBuffer,
+                        (unsigned int)pList[0x1c]);
+                }
+            }
+            aArchiveRange[0] = pList[0xb] + pList[0x1c];
+            aArchiveRange[1] = pList[0x1d];
+            pBuffer = (unsigned int *)(pList + 0xe);
+            if (((MogLoadResourceArchive *)g_pResourceArchive)
+                    ->LoadResourceArchiveEntryDataIntoBuffer(
+                        aArchiveRange, pBuffer, pList) != 0) {
+                ((CopyDataProc)pVtable[1])(
+                    pList, 0, *pBuffer, pBuffer,
+                    (unsigned int)pList[0x1c]);
+            }
+        }
+    }
+    pList[9] = 0;
 }
 
 // FUNCTION: LEMBALL 0x0045d4f0
@@ -470,7 +673,8 @@ void *LoadZrleOnlyListResource(int nResourceId) {
         *(void **)pResourceObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
         pResourceObject[6] = 0;
         *(void **)pResourceObject = g_GAME_ListResourceBaseVtable;
-        pResourceObject[0x12] = g_GAME_ZrleListResourceTypeToken;
+        pResourceObject[0x12] =
+            (int)(unsigned long)g_pPrimaryResourceTypeTable;
         pResourceObject[0x17] = 0;
         pResourceObject[0x16] = 0;
         pResourceObject[0x15] = 0;
@@ -490,7 +694,8 @@ void *ConstructIntZrleListResourceFromId(void *pObject, int nResourceId) {
 
     pListResource = (int *)pObject;
     *(void **)pListResource = g_MOGLOAD_CachedResourceObjectBaseVtable;
-    pListResource[0x12] = g_GAME_IntZrleListResourceTypeToken;
+    pListResource[0x12] =
+        (int)(unsigned long)g_pSecondaryResourceTypeTable;
     *(void **)pListResource = g_GAME_ListResourceBaseVtable;
     *(void **)pListResource = g_GAME_IntZrleListResourceVtable;
     pListResource[6] = 0;
@@ -579,7 +784,7 @@ void *ConstructTwoArrayListResourceFromId(void *pObject, int nResourceId) {
 
     pListResource = (int *)pObject;
     *(void **)pListResource = g_MOGLOAD_CachedResourceObjectBaseVtable;
-    pListResource[0x12] = g_GAME_TwoArrayListResourceTypeToken;
+    pListResource[0x12] = (int)(unsigned long)g_pTertiaryResourceTypeTable;
     *(void **)pListResource = g_GAME_ListResourceBaseVtable;
     pListResource[6] = 0;
     pListResource[0x17] = 0;
