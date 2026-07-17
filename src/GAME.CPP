@@ -469,6 +469,8 @@ void LEMBALL_FASTCALL ForwardPrimaryContextActiveScreenSlot0x30(
     void *pPrimaryContext);
 
 static void *g_GAME_PrimaryContextVtableSlots[46];
+static void *g_GAME_WindowOwnerRenderContextVtableSlots[46];
+static int g_fWindowOwnerRenderContextVtableInitialized;
 extern void *LEMBALL_FASTCALL DeleteRenderQueueNodeThunk(
     void *pObject, int nUnused, unsigned char fDelete);
 extern int LEMBALL_FASTCALL IncrementRenderQueueNodeCounterThunk(
@@ -895,6 +897,39 @@ static void InstallPrimaryContextInheritedWindowOwnerSlots(
     g_GAME_PrimaryContextVtableSlots[37] = pWindowOwnerVtable[37];
     g_GAME_PrimaryContextVtableSlots[38] = pWindowOwnerVtable[38];
     g_GAME_PrimaryContextVtableSlots[39] = pWindowOwnerVtable[39];
+}
+
+static void InitializeWindowOwnerRenderContextVtable(
+    void **pWindowOwnerBaseVtable) {
+    int i;
+
+    if (g_fWindowOwnerRenderContextVtableInitialized != 0) {
+        return;
+    }
+    for (i = 0; i < 46; ++i) {
+        g_GAME_WindowOwnerRenderContextVtableSlots[i] =
+            pWindowOwnerBaseVtable[i];
+    }
+    g_GAME_WindowOwnerRenderContextVtableSlots[1] = g_GAME_PrimaryContextVtableSlots[1];
+    g_GAME_WindowOwnerRenderContextVtableSlots[2] = g_GAME_PrimaryContextVtableSlots[2];
+    g_GAME_WindowOwnerRenderContextVtableSlots[6] = g_GAME_PrimaryContextVtableSlots[6];
+    g_GAME_WindowOwnerRenderContextVtableSlots[7] = g_GAME_PrimaryContextVtableSlots[7];
+    g_GAME_WindowOwnerRenderContextVtableSlots[8] = g_GAME_PrimaryContextVtableSlots[8];
+    g_GAME_WindowOwnerRenderContextVtableSlots[10] = g_GAME_PrimaryContextVtableSlots[10];
+    g_GAME_WindowOwnerRenderContextVtableSlots[11] = g_GAME_PrimaryContextVtableSlots[11];
+    g_GAME_WindowOwnerRenderContextVtableSlots[14] = g_GAME_PrimaryContextVtableSlots[14];
+    g_GAME_WindowOwnerRenderContextVtableSlots[15] = (void *)StubNoOpVoid;
+    g_GAME_WindowOwnerRenderContextVtableSlots[16] = (void *)StubNoOpVoid;
+    g_GAME_WindowOwnerRenderContextVtableSlots[17] = (void *)StubNoOpVoid;
+    g_GAME_WindowOwnerRenderContextVtableSlots[25] = g_GAME_PrimaryContextVtableSlots[25];
+    g_GAME_WindowOwnerRenderContextVtableSlots[28] = g_GAME_PrimaryContextVtableSlots[28];
+    g_GAME_WindowOwnerRenderContextVtableSlots[32] = g_GAME_PrimaryContextVtableSlots[32];
+    g_GAME_WindowOwnerRenderContextVtableSlots[33] = g_GAME_PrimaryContextVtableSlots[33];
+    for (i = 40; i < 46; ++i) {
+        g_GAME_WindowOwnerRenderContextVtableSlots[i] =
+            g_GAME_PrimaryContextVtableSlots[i];
+    }
+    g_fWindowOwnerRenderContextVtableInitialized = 1;
 }
 
 
@@ -4008,8 +4043,11 @@ void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pPrimaryContext) 
     void *pWindowOwnerBaseVtable;
     int i;
 
+    InitializeGameStubVtables();
     new (pPrimaryContext) VS_WindowOwnerBase;
     pWindowOwnerBaseVtable = *(void **)pPrimaryContext;
+    InitializeWindowOwnerRenderContextVtable(
+        (void **)pWindowOwnerBaseVtable);
     pEntry = (char *)pPrimaryContext + 0x58;
     for (i = 0; i >= 0; --i) {
         InitializePackagedSpriteRenderEntryThunk(pEntry);
@@ -4026,9 +4064,9 @@ void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pPrimaryContext) 
         pEntry += 0x10;
     }
 
-    *(void **)pPrimaryContext = pWindowOwnerBaseVtable;
+    *(void **)pPrimaryContext = g_GAME_WindowOwnerRenderContextVtableSlots;
     *(unsigned short *)((char *)pPrimaryContext + 0x8a) = 0;
-    *(void **)pPrimaryContext = pWindowOwnerBaseVtable;
+    *(void **)pPrimaryContext = g_GAME_WindowOwnerRenderContextVtableSlots;
     *(unsigned short *)((char *)pPrimaryContext + 0x88) = 0;
     *(int *)((char *)pPrimaryContext + 0x4c) = 0;
     *(unsigned short *)((char *)pPrimaryContext + 0x8e) = 0;
