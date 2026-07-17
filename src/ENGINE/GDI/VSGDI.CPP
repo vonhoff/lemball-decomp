@@ -1668,9 +1668,11 @@ VsGdiDirectDrawDisplayState::VsGdiDirectDrawDisplayState(const unsigned short *p
     m_fWindowOwnershipInitialized = 1;
     m_pDirectDrawPalette = 0;
     m_hGraphicsModule = LoadLibraryA(g_VSGDI_DdrawDll);
-    if (m_hGraphicsModule != 0) {
-        m_pfnDirectDrawCreate = GetProcAddress(m_hGraphicsModule, g_VSGDI_DirectDrawCreate);
+    if (m_hGraphicsModule == 0) {
+        return;
     }
+    m_pfnDirectDrawCreate = GetProcAddress(
+        m_hGraphicsModule, g_VSGDI_DirectDrawCreate);
     if (m_pfnDirectDrawCreate == 0) {
         return;
     }
