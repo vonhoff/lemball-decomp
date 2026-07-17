@@ -32,6 +32,10 @@ extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(
 extern void *LoadZrleOnlyListResource(int nResourceId);
 extern void *g_pNonZrleVariantRenderEntryInitializeVtable[2];
 extern void *g_pQueuedRenderPointSinkFinalizeThunk;
+extern void *LEMBALL_FASTCALL DeleteStatusPointSinkEntryThunk(
+    void *pEntry, int nUnusedEdx, unsigned char fDelete);
+extern void LEMBALL_FASTCALL QueueStatusPointPushThunk(
+    void *pEntry, int nUnusedEdx, void *pQueue);
 extern void *g_pVariantResourceEntryManager;
 extern int g_fLevelSelectionChanged;
 extern int LEMBALL_FASTCALL GetTimedVariantFrameStartTimeThunk(
@@ -310,6 +314,18 @@ static void *g_MenuSelectorEntryVtable[3] = {
     (void *)HandleMenuSelectorEntryEventThunk
 };
 
+/* VTABLE: LEMBALL 0x00496e70 */
+static void *g_MenuSelectorTinyPointSinkVtable[2] = {
+    (void *)DeleteStatusPointSinkEntryThunk,
+    (void *)QueueStatusPointPushThunk
+};
+
+void *LEMBALL_FASTCALL InitializeTinyPointSinkHelper(void *pObject) {
+    *(void ***)pObject = g_MenuSelectorTinyPointSinkVtable;
+    *(int *)((char *)pObject + 4) = 0;
+    return pObject;
+}
+
 static inline GameProgressiveVariantFrameSelector *AllocateFrameSelector(
     void *pVariantManager, int nResourceId) {
     GameProgressiveVariantFrameSelector *pSelector;
@@ -430,7 +446,6 @@ GameMenuSelectorManager *LEMBALL_FASTCALL ConstructMenuSelectorManagerThunk(
                                         nLayoutMode);
 }
 
-// FUNCTION: LEMBALL 0x00467d50
 void LEMBALL_FASTCALL InitializeSharedSpriteOwnerState(void *pObject) {
     void **ppFinalize;
 

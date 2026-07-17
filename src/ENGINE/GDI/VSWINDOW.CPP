@@ -2154,6 +2154,20 @@ void *LEMBALL_FASTCALL InitializeGeometryOwnerRect(
     return pState;
 }
 
+// FUNCTION: LEMBALL 0x0046a300
+void *LEMBALL_FASTCALL InitializeEmptyGeometryOwnerRect(void *pOwner) {
+    GameGeometryOwnerRectState *pState;
+
+    pState = (GameGeometryOwnerRectState *)pOwner;
+    pState->m_Size30.m_x = 0;
+    pState->m_Size30.m_y = 0;
+    pState->m_Position34.m_x = 0;
+    pState->m_Position34.m_y = 0;
+    pState->m_pVtable00 = g_GAME_GeometryOwnerRectVtable;
+    ResetGeometryOwnerRectState(pState);
+    return pState;
+}
+
 // FUNCTION: LEMBALL 0x0046a330
 void LEMBALL_FASTCALL ResetGeometryOwnerRectState(void *pOwner) {
     GameGeometryOwnerRectState *pState;
