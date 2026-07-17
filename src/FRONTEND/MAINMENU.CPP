@@ -185,6 +185,18 @@ typedef char GameMainMenuScreenView_size_must_be_0x3bc[
 
 typedef void (LEMBALL_FASTCALL *GameNoArgVirtual)(void *, int);
 typedef void (LEMBALL_FASTCALL *GameOneArgVirtual)(void *, int, void *);
+
+class GameMainMenuSelectorManagerInterface {
+public:
+    virtual void Reserved00(void *) = 0;
+    virtual void Delete(void *fDelete) = 0;
+};
+
+class GameMainMenuRenderEntryInterface {
+public:
+    virtual void Reserved00(void) = 0;
+    virtual void AppendToQueue(void *pRenderContext) = 0;
+};
 typedef int (LEMBALL_FASTCALL *GameIntNoArgVirtual)(void *, int);
 typedef int (LEMBALL_FASTCALL *GameIntOneArgVirtual)(void *, int, void *);
 
@@ -737,8 +749,8 @@ static void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroup(
     *(short *)(pGroup + 10) = pScreen->m_cyScreen37E;
     *(short *)(pGroup + 12) = 0;
     *(short *)(pGroup + 14) = 0;
-    ((GameOneArgVirtual)(*(void ***)pGroup)[1])(
-        pGroup, 0, pScreen->m_pRenderContext88);
+    ((GameMainMenuRenderEntryInterface *)pGroup)
+        ->AppendToQueue(pScreen->m_pRenderContext88);
 
     pScreen->m_fBuildingRenderEntries364 = 0;
     if (g_pArrowCursorStatusIndicatorRenderClient != 0) {
@@ -829,8 +841,8 @@ static void LEMBALL_FASTCALL DrawFramedScreenFrameLayer(void *pObject) {
                 *(void **)(pEntry + 0x10) = pScreen->m_pBackgroundBitmapC4;
                 *(int *)(pEntry + 0x14) = 0;
                 *(int *)(pEntry + 0x18) = 0;
-                ((GameOneArgVirtual)(*(void ***)pEntry)[1])(
-                    pEntry, 0, pScreen->m_pRenderContext88);
+                ((GameMainMenuRenderEntryInterface *)pEntry)
+                    ->AppendToQueue(pScreen->m_pRenderContext88);
                 ++iEntry;
             }
         }
@@ -839,8 +851,8 @@ static void LEMBALL_FASTCALL DrawFramedScreenFrameLayer(void *pObject) {
     if (pScreen->m_fDrawForegroundB0 != 0) {
         unsigned char *pEntry;
         pEntry = pGroup + 0x10;
-        ((GameOneArgVirtual)(*(void ***)pEntry)[1])(
-            pEntry, 0, pScreen->m_pRenderContext88);
+        ((GameMainMenuRenderEntryInterface *)pEntry)
+            ->AppendToQueue(pScreen->m_pRenderContext88);
     }
 
     if (pScreen->m_nAppliedCursorResourceIdB8 !=
@@ -1044,8 +1056,9 @@ static void LEMBALL_FASTCALL DestroyMainMenuWidgets(void *pObject) {
 
     pScreen = (GameMainMenuScreenView *)pObject;
     if (pScreen->m_pSelectorManager334 != 0) {
-        ((GameOneArgVirtual)(*(void ***)pScreen->m_pSelectorManager334)[1])(
-            pScreen->m_pSelectorManager334, 0, (void *)1);
+        ((GameMainMenuSelectorManagerInterface *)
+             pScreen->m_pSelectorManager334)
+            ->Delete((void *)1);
     }
 }
 
