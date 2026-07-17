@@ -4019,7 +4019,8 @@ void VsGdiResourceGeometryHelperTargetView::MarkOrForwardHelperTargetDirtyRect(s
         return;
     }
 
-    ((VsGdiQuantizedHelperUploadRectTracker *)((char *)this + 0x550))
+    ((VsGdiQuantizedHelperUploadRectTracker *)
+         *(void **)((char *)this + 0x550))
         ->MarkHelperUploadCellsForRect(pRect);
 }
 
@@ -4491,6 +4492,8 @@ void LEMBALL_FASTCALL PropagateGlobalPaletteToResourceGeometriesBody(void *pTarg
 
 // FUNCTION: LEMBALL 0x0046d9f0
 int RefreshHelperTargetBindingIfChanged(void *pTarget) {
+    typedef int (LEMBALL_FASTCALL *BindingReadyProc)(void *pBinding);
+    typedef int (LEMBALL_FASTCALL *BindingAddressProc)(void *pBinding);
     int *pnCachedBindingValue;
     VsGdiHelperSurfaceVariableBlock *pVariableBlock;
     void *pBindingSource;
@@ -4511,10 +4514,13 @@ int RefreshHelperTargetBindingIfChanged(void *pTarget) {
         if (pBindingSource == 0) {
             return 0;
         }
-        if (((int (*)())(*(void ***)pBindingSource)[1])() == 0) {
+        if (((BindingReadyProc)(*(void ***)pBindingSource)[1])(
+                pBindingSource) == 0) {
             return 0;
         }
-        nBindingValue = ((int (*)(void))(*(void ***)pBindingSource)[3])();
+        nBindingValue =
+            ((BindingAddressProc)(*(void ***)pBindingSource)[3])(
+                pBindingSource);
         if (nBindingValue != 0 && *pnCachedBindingValue != nBindingValue) {
             *pnCachedBindingValue = nBindingValue;
             EnsureHelperBackingRowIndexCapacity((VsGdiHelperSurface *)pTarget);
@@ -4528,7 +4534,8 @@ int RefreshHelperTargetBindingIfChanged(void *pTarget) {
             return 0;
         }
         pBackingRow = *(int **)(unsigned long)(*(int *)((char *)pLinkedTarget + 4) + pVariableBlock->m_aWorkingRect[3] * 4);
-        nBindingValue = *(int *)((char *)pBackingRow + pVariableBlock->m_aWorkingRect[2]);
+        nBindingValue = (int)(unsigned long)(
+            (char *)pBackingRow + pVariableBlock->m_aWorkingRect[2]);
         if (nBindingValue != *pnCachedBindingValue) {
             EnsureHelperBackingRowIndexCapacity((VsGdiHelperSurface *)pTarget);
             return 1;
@@ -4539,6 +4546,7 @@ int RefreshHelperTargetBindingIfChanged(void *pTarget) {
 
 // FUNCTION: LEMBALL 0x0046daa0
 void InvokeRootHelperTargetPostQueueCallback(int nTarget) {
+    typedef void (LEMBALL_FASTCALL *PostQueueProc)(void *pBinding);
     void *pBindingSource;
     VsGdiHelperSurfaceVariableBlock *pVariableBlock;
     VsGdiHelperSurface *pRootTarget;
@@ -4553,7 +4561,7 @@ void InvokeRootHelperTargetPostQueueCallback(int nTarget) {
     } while (g_pResourceGeometryHelperTarget != (void *)pTarget);
 
     pBindingSource = *(void **)((char *)pRootTarget + 0xf0);
-    ((void (*)())(*(void ***)pBindingSource)[2])();
+    ((PostQueueProc)(*(void ***)pBindingSource)[2])(pBindingSource);
 }
 
 // FUNCTION: LEMBALL 0x0046dba0
