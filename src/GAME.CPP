@@ -3281,7 +3281,6 @@ void GamePrimaryContext::SwitchPrimaryContextScreen(int nMode) {
     short aRect[4];
     int nUploadState;
     void *pActiveLevelMode;
-    GameWindowOwnerContext *pWindowOwnerContext;
 
     pContext = this;
     if (pContext->m_nActiveScreenMode == nMode) {
@@ -3290,14 +3289,12 @@ void GamePrimaryContext::SwitchPrimaryContextScreen(int nMode) {
 
     pContext->SetWindowOwnerScaleFactor(1);
     aRect[0] = *(short *)((char *)pContext + 8);
-    pWindowOwnerContext =
-        (GameWindowOwnerContext *)pContext->m_pWindowOwnerContext;
     aRect[1] = *(short *)((char *)pContext + 10);
-    aRect[2] = 0;
     aRect[3] = 0;
+    aRect[2] = 0;
 
-    nUploadState = pWindowOwnerContext->m_pStateSubobject
-        ->GetCurrentWindowOwnerState();
+    nUploadState = ((GameWindowOwnerContext *)pContext->m_pWindowOwnerContext)
+        ->m_pStateSubobject->GetCurrentWindowOwnerState();
     InitializeHelperUploadStatePending(nUploadState);
     PromoteHelperUploadStateToActive(nUploadState);
 

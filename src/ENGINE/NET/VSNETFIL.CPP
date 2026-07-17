@@ -1093,7 +1093,7 @@ public:
     VsNetEffStreamRecordSlot *Initialize(void);
     void Load(void);
     void Save(void);
-    void *Delete(BYTE fDeleteFlags);
+    void *Delete(int fDeleteFlags);
 };
 
 struct VsNetConstructionAdjustorVtable;
@@ -1963,7 +1963,7 @@ struct VsNetEffRecordSlotVtable {
     void (VsNetEffStreamRecordSlot::*m_pLoad)(void);
     void (*m_pNoop)(void);
     void (VsNetEffStreamRecordSlot::*m_pSave)(void);
-    void *(VsNetEffStreamRecordSlot::*m_pDelete)(BYTE);
+    void *(VsNetEffStreamRecordSlot::*m_pDelete)(int);
 };
 // GLOBAL: LEMBALL 0x0049a4a8
 static VsNetEffRecordSlotVtable g_NETWORK_EffRecordSlotVtable = {
@@ -4268,7 +4268,7 @@ void *VsNetEffStreamRecordSlotTable::Delete(BYTE fDeleteFlags) {
 }
 
 // FUNCTION: LEMBALL 0x0047b7f0
-void *VsNetEffStreamRecordSlot::Delete(BYTE fDeleteFlags) {
+void *VsNetEffStreamRecordSlot::Delete(int fDeleteFlags) {
     VsNetEffStreamRecordSlot *pSlot;
     VsNetEffStreamRecordSlot *pCurrent;
     int cSlots;
@@ -4279,7 +4279,7 @@ void *VsNetEffStreamRecordSlot::Delete(BYTE fDeleteFlags) {
         pCurrent = pSlot + cSlots;
         while (--cSlots >= 0) {
             --pCurrent;
-    ((VsNetEffStreamBase *)pCurrent)->DestroyEffStreamBase();
+            ((VsNetEffStreamBase *)pCurrent)->DestroyEffStreamBaseThunk();
         }
         FreeVSMemBlock((int *)pSlot - 1);
         return this;
