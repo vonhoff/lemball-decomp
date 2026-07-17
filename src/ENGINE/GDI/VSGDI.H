@@ -118,6 +118,8 @@ private:
 class VsGdiDibDisplayState : public VsGdiMetricsDisplayState {
 public:
     VsGdiDibDisplayState(const unsigned short *pDisplaySize);
+    ~VsGdiDibDisplayState(void);
+    void *Delete(int fDelete);
 
     int Create(HWND hWnd);
     int CopyDisplayRect(void *pDestinationBinding,

@@ -1039,6 +1039,8 @@ static void InitializeDisplayStateVtables(void) {
         applyDirectDrawPaletteMethod;
     union { void *(VsGdiDirectDrawDisplayState::*p)(int); void *v; }
         deleteDirectDrawDisplayStateMethod;
+    union { void *(VsGdiDibDisplayState::*p)(int); void *v; }
+        deleteDibDisplayStateMethod;
 
     for (i = 0; i < 14; ++i) {
         g_VSGDI_MetricsDisplayVtable[i] = (void *)NetworkSafeVtableNoop;
@@ -1046,7 +1048,8 @@ static void InitializeDisplayStateVtables(void) {
         g_VSGDI_DirectDrawDisplayVtable[i] = (void *)NetworkSafeVtableNoop;
     }
     g_VSGDI_MetricsDisplayVtable[0] = (void *)VsGdiDeleteDisplayState;
-    g_VSGDI_DibDisplayVtable[0] = (void *)VsGdiDeleteDisplayState;
+    deleteDibDisplayStateMethod.p = &VsGdiDibDisplayState::Delete;
+    g_VSGDI_DibDisplayVtable[0] = deleteDibDisplayStateMethod.v;
     deleteDirectDrawDisplayStateMethod.p =
         &VsGdiDirectDrawDisplayState::Delete;
     g_VSGDI_DirectDrawDisplayVtable[0] =
@@ -1554,6 +1557,18 @@ VsGdiDibDisplayState::VsGdiDibDisplayState(const unsigned short *pDisplaySize) {
         m_pDisplayAddress = ((void *(*)())m_pfnDisplayDibGetAddress32)();
         ((void (*)())m_pfnDisplayDibStart32)();
         m_fReady = 1;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00456e20
+VsGdiDibDisplayState::~VsGdiDibDisplayState(void) {
+    typedef void (__stdcall *DISPLAY_DIB_MESSAGE)(int, int, int);
+    typedef void (__stdcall *DISPLAY_DIB_END)(void);
+
+    m_pVtable = g_VSGDI_DibDisplayVtable;
+    if (m_pfnDisplayDibEnd32 != 0) {
+        ((DISPLAY_DIB_MESSAGE)g_pApplyFullscreenDisplayModeThunk)(0, 0, 0x4000);
+        ((DISPLAY_DIB_END)m_pfnDisplayDibEnd32)();
     }
 }
 
@@ -2255,6 +2270,18 @@ void *LEMBALL_FASTCALL VsGdiDeleteDisplayBitmap(
     if ((fDelete & 1) != 0)
         FreeVSMemBlock(pBitmap);
     return pBitmap;
+}
+
+// FUNCTION: LEMBALL 0x00458330
+void *VsGdiDibDisplayState::Delete(int fDelete) {
+    void *pThis;
+
+    pThis = this;
+    this->~VsGdiDibDisplayState();
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pThis);
+    }
+    return pThis;
 }
 
 // FUNCTION: LEMBALL 0x00458360
