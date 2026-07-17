@@ -103,6 +103,7 @@ struct VsSoundBackendControlDispatch {
     virtual void StopMusic(int hMusic) = 0;
     virtual void DispatchMusicSlot18(int hMusic) = 0;
     virtual void DispatchMusicSlot1c(int hMusic) = 0;
+    virtual void SetEffectVolume(int nVolume) = 0;
 };
 
 struct VsSoundWaveOutEffectBackend {
@@ -277,7 +278,6 @@ void LEMBALL_FASTCALL UnregisterVariantResourceMusicHandle(
     void *pAudioManager, int, int hMusic);
 int CreateVariantResourceEffectInstance(void *pAudioManager, int nEffectResourceId);
 void InvokeAudioManagerEffectSlot48IfActive(void *pAudioManager, int nEffect);
-void SetAudioManagerMusicAndEffectVolume(void *pAudioManager, int nMusicVolume, int nEffectVolume);
 unsigned int GetVariantResourceEffectMasterVolume(void *pAudioManager);
 void SetAudioManagerEffectResourceContext(void *pAudioManager, void *pPrimaryContext);
 void SetAudioManagerMusicResourceContext(void *pAudioManager, void *pPrimaryContext);
@@ -461,7 +461,12 @@ struct VsSoundEffectBackendSlots00Through24 {
     VsSoundRESERVED_VIRTUAL(21);
     VsSoundRESERVED_VIRTUAL(22);
     VsSoundRESERVED_VIRTUAL(23);
-    VsSoundRESERVED_VIRTUAL(24);
+    virtual void SetMasterVolume(int nVolume) = 0;
+};
+
+struct VsSoundMusicVolumeInterface : public VsSoundEffectBackendSlots00Through24 {
+    VsSoundRESERVED_VIRTUAL(25);
+    virtual void SetMusicVolume(int nVolume) = 0;
 };
 
 struct VsSoundEffectPlaybackInterface : public VsSoundEffectBackendSlots00Through24 {
@@ -1538,23 +1543,29 @@ void InvokeAudioManagerEffectSlot48IfActive(void *pAudioManager, int nEffect) {
 }
 
 // FUNCTION: LEMBALL 0x0045b510
-void SetAudioManagerMusicAndEffectVolume(void *pAudioManager, int nMusicVolume, int nEffectVolume) {
-    void *pBackend;
-    void *pControl;
+void VsSoundManager::SetAudioManagerMusicAndEffectVolume(int nMusicVolume, int nEffectVolume) {
+    VsSoundMusicVolumeInterface *pMusicBackend;
+    VsSoundEffectBackendSlots00Through24 *pEffectBackend;
+    VsSoundBackendControlDispatch *pControl;
+    void *pAudioManager;
 
-    pBackend = *(void **)((char *)pAudioManager + 0x78);
-    if (nMusicVolume != -1 && pBackend != 0) {
-        ((VsSoundIntProc)(*(void ***)pBackend)[26])(nMusicVolume);
+    pAudioManager = this;
+    if (nMusicVolume != -1) {
+        pMusicBackend = *(VsSoundMusicVolumeInterface **)((char *)pAudioManager + 0x78);
+        if (pMusicBackend != 0) {
+            pMusicBackend->SetMusicVolume(nMusicVolume);
+        }
+    }
+    if (nEffectVolume != -1 &&
+        *(int *)((char *)pAudioManager + 0x1c) != 0) {
+        pControl = *(VsSoundBackendControlDispatch **)((char *)pAudioManager + 0x34);
+        pControl->SetEffectVolume(nEffectVolume);
+        return;
     }
     if (nEffectVolume != -1) {
-        if (*(int *)((char *)pAudioManager + 0x1c) != 0) {
-            pControl = *(void **)((char *)pAudioManager + 0x34);
-            ((VsSoundIntProc)(*(void ***)pControl)[8])(nEffectVolume);
-        } else {
-            pBackend = *(void **)((char *)pAudioManager + 0x74);
-            if (pBackend != 0) {
-                ((VsSoundIntProc)(*(void ***)pBackend)[24])(nEffectVolume);
-            }
+        pEffectBackend = *(VsSoundEffectBackendSlots00Through24 **)((char *)pAudioManager + 0x74);
+        if (pEffectBackend != 0) {
+            pEffectBackend->SetMasterVolume(nEffectVolume);
         }
     }
 }

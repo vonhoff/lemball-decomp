@@ -18,7 +18,6 @@ void __fastcall UnregisterVariantResourceMusicHandle(
     void *pAudioManager, int nUnused, int hMusic);
 int CreateVariantResourceEffectInstance(void *pAudioManager, int nEffectResourceId);
 void InvokeAudioManagerEffectSlot48IfActive(void *pAudioManager, int nEffect);
-void SetAudioManagerMusicAndEffectVolume(void *pAudioManager, int nMusicVolume, int nEffectVolume);
 unsigned int GetVariantResourceEffectMasterVolume(void *pAudioManager);
 void SetAudioManagerEffectResourceContext(void *pAudioManager, void *pPrimaryContext);
 void SetAudioManagerMusicResourceContext(void *pAudioManager, void *pPrimaryContext);
@@ -53,6 +52,8 @@ struct VsSoundManager {
     void PlayVariantResourceEffectId(int nEffectResourceId);
     void SetVariantResourceEffectInstanceVolume(int nEffectInstanceId,
                                                 int nVolume);
+    void SetAudioManagerMusicAndEffectVolume(int nMusicVolume,
+                                             int nEffectVolume);
 };
 
 #endif
