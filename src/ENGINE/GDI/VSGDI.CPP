@@ -1020,8 +1020,8 @@ static void InitializeDisplayStateVtables(void) {
     union { int (VsGdiDisplayState::*p)(void *); void *v; } bitmapInfoMethod;
     union { void *(VsGdiDisplayState::*p)(int, void *); void *v; } createBitmapMethod;
     union { int (VsGdiDisplayState::*p)(void *); void *v; } bitmapObjectMethod;
-    union { int (VsGdiDisplayState::*p)(int, void *); void *v; } bitmapReadyMethod;
-    union { int (VsGdiDisplayState::*p)(int, void *); void *v; } bitmapDeleteMethod;
+    union { void *(VsGdiDisplayState::*p)(int, void *); void *v; } bitmapReadyMethod;
+    union { void *(VsGdiDisplayState::*p)(int, void *); void *v; } bitmapDeleteMethod;
     union { int (VsGdiDisplayState::*p)(void) const; void *v; } readyMethod;
     union { int (VsGdiDirectDrawDisplayState::*p)(int, void *); void *v; }
         bindDirectDrawSurfaceMethod;
@@ -1508,22 +1508,24 @@ static int LEMBALL_STDCALL StretchDisplaySurfaceRect(
 }
 
 // FUNCTION: LEMBALL 0x00456d10
-int VsGdiDisplayState::BindDisplayBitmap(int nDriver, void *pBitmap) {
+void *VsGdiDisplayState::BindDisplayBitmap(int nDriver, void *pBitmap) {
     VsGdiHelperTargetParamWrapper *pBinding;
     VsGdiDisplayBitmap *pDisplayBitmap;
+    HGDIOBJ hPreviousBitmap;
 
     pBinding = (VsGdiHelperTargetParamWrapper *)(unsigned long)nDriver;
     pDisplayBitmap = (VsGdiDisplayBitmap *)pBitmap;
-    pDisplayBitmap->m_hPreviousBitmap = SelectObject(
+    hPreviousBitmap = SelectObject(
         (void *)(unsigned long)pBinding->m_nWrappedParam,
         pDisplayBitmap->m_hBitmap);
-    if (pDisplayBitmap->m_hPreviousBitmap == 0)
+    if (hPreviousBitmap == 0)
         return 0;
-    return (int)(unsigned long)pDisplayBitmap;
+    pDisplayBitmap->m_hPreviousBitmap = hPreviousBitmap;
+    return pDisplayBitmap;
 }
 
 // FUNCTION: LEMBALL 0x00456d40
-int VsGdiDisplayState::DeleteDisplayBitmap(int nDriver, void *pBitmap) {
+void *VsGdiDisplayState::DeleteDisplayBitmap(int nDriver, void *pBitmap) {
     VsGdiHelperTargetParamWrapper *pBinding;
     VsGdiDisplayBitmap *pDisplayBitmap;
     HGDIOBJ hResult;
@@ -1533,9 +1535,7 @@ int VsGdiDisplayState::DeleteDisplayBitmap(int nDriver, void *pBitmap) {
     hResult = SelectObject(
         (void *)(unsigned long)pBinding->m_nWrappedParam,
         pDisplayBitmap->m_hPreviousBitmap);
-    if (hResult == 0)
-        return 0;
-    return (int)(unsigned long)pDisplayBitmap;
+    return hResult != 0 ? pDisplayBitmap : 0;
 }
 
 // FUNCTION: LEMBALL 0x00456d70

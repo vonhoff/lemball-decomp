@@ -32,8 +32,8 @@ public:
     int InitializeDisplayBitmapInfo(void *pBitmapInfo);
     void *CreateDisplayBitmap(int nDriver, void *pBitmapInfo);
     int ReleaseDisplayBitmap(void *pBitmap);
-    int BindDisplayBitmap(int nDriver, void *pBitmap);
-    int DeleteDisplayBitmap(int nDriver, void *pBitmap);
+    void *BindDisplayBitmap(int nDriver, void *pBitmap);
+    void *DeleteDisplayBitmap(int nDriver, void *pBitmap);
     unsigned int DispatchSplitRectAtBackingRowBoundary(
         void *pDestination, short *pDestinationRect,
         void *pSource, short *pSourceRect, void *pHelperTarget);
@@ -64,8 +64,8 @@ struct VsGdiDisplayStateDispatch {
     virtual void Reserved6(void) = 0; // vtable+0x18
     virtual void Reserved7(void) = 0; // vtable+0x1c
     virtual void Reserved8(void) = 0; // vtable+0x20
-    virtual int BindDisplayBitmap(int nDriver, void *pBitmap) = 0; // vtable+0x24
-    virtual int DeleteDisplayBitmap(int nDriver, void *pBitmap) = 0; // vtable+0x28
+    virtual void *BindDisplayBitmap(int nDriver, void *pBitmap) = 0; // vtable+0x24
+    virtual void *DeleteDisplayBitmap(int nDriver, void *pBitmap) = 0; // vtable+0x28
     virtual void Reserved11(void) = 0; // vtable+0x2c
     virtual void Reserved12(void) = 0; // vtable+0x30
     virtual int IsReady(void) = 0; // vtable+0x34
