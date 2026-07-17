@@ -310,7 +310,7 @@ int LEMBALL_FASTCALL CreateDirectSoundEffectInstanceWithDefaultFlags(
 void *LEMBALL_FASTCALL DeleteDirectSoundEffectBackend(
     VsSoundDirectSoundEffectBackend *pBackend, int nUnused, int fDelete);
 LRESULT CALLBACK MciMusicWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
-void DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry *pEntry);
+void LEMBALL_FASTCALL DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry *pEntry);
 void PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle, int nMusicResourceId);
 void FreePreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle);
 void PlayPreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle);
@@ -497,7 +497,7 @@ int CreateFallbackEffectInstance(int nValue, void *pOut);
 void NoOpAudioInt(int nValue);
 void NoOpAudioPair(int nValue1, int nValue2);
 void NoOpAudioTriple(int nValue1, int nValue2, int nValue3);
-void DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry *pEntry);
+void LEMBALL_FASTCALL DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry *pEntry);
 void *LEMBALL_FASTCALL DeleteAudioDynamicStringEntry(
     VsSoundDynamicStringEntry *pEntry, int nUnused, int fDelete);
 void LEMBALL_FASTCALL DestroyWaveOutEffectBackend(void *pBackend);
@@ -2926,7 +2926,7 @@ VsSoundMciMusicBackend *VsSoundMciMusicBackend::ConstructMciMusicBackend(void) {
 }
 
 // FUNCTION: LEMBALL 0x0047eac0
-void DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry *pEntry) {
+void LEMBALL_FASTCALL DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry *pEntry) {
     pEntry->m_pVtable = g_AUDIO_DynamicStringEntryVtable;
     pEntry->m_BasePath.DestroyDynamicCString();
 }
