@@ -651,7 +651,13 @@ void LEMBALL_FASTCALL NotifyWindowOwnersDisplayChanged(const int *pnSelectedDriv
 
 // FUNCTION: LEMBALL 0x00458180
 int LEMBALL_FASTCALL IsDisplayModeWindowedRange(const int *pnDisplayMode) {
-    return 1 < *pnDisplayMode && *pnDisplayMode < 6;
+    if (*pnDisplayMode < 2) {
+        return 0;
+    }
+    if (*pnDisplayMode <= 5) {
+        return 1;
+    }
+    return 0;
 }
 
 // FUNCTION: LEMBALL 0x00463000
