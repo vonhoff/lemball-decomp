@@ -1422,7 +1422,6 @@ void *VsGdiDisplayState::CreateDisplayBitmap(int nDriver, void *pBitmapInfo) {
     HGDIOBJ hBitmap;
 
     pBinding = (VsGdiHelperTargetParamWrapper *)(unsigned long)nDriver;
-    pBits = 0;
     hBitmap = (HGDIOBJ)CreateDIBSection(
         (void *)(unsigned long)pBinding->m_nWrappedParam,
         pBitmapInfo, 0, &pBits, 0, 0);
