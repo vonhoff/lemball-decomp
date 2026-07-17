@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AUDIO_MANAGER_H
 #define LEMBALL_AUDIO_MANAGER_H
 
-void DestroyAudioManager(void *pAudioManager);
+void __fastcall DestroyAudioManager(void *pAudioManager);
 void SetAudioManagerPrimaryContext(void *pAudioManager, void *pPrimaryContext);
 void __fastcall StopAllAudioManagerBackends(void *pAudioManager);
 void __fastcall RefreshAudioManagerBackendHandles(void *pAudioManager);

@@ -260,7 +260,7 @@ typedef LONG (__stdcall *VsSoundDirectSoundUnlockProc)(
     void *pBuffer, void *pvAudioPtr1, DWORD dwAudioBytes1,
     void *pvAudioPtr2, DWORD dwAudioBytes2);
 
-void DestroyAudioManager(void *pAudioManager);
+void __fastcall DestroyAudioManager(void *pAudioManager);
 void SetAudioManagerPrimaryContext(void *pAudioManager, void *pPrimaryContext);
 void LEMBALL_FASTCALL StopAllAudioManagerBackends(void *pAudioManager);
 void __fastcall RefreshAudioManagerBackendHandles(void *pAudioManager);
@@ -1268,7 +1268,7 @@ void *VsSoundManager::ConstructAudioManager(int nMusicResourceBase,
 }
 
 // FUNCTION: LEMBALL 0x0045b110
-void DestroyAudioManager(void *pAudioManager) {
+void __fastcall DestroyAudioManager(void *pAudioManager) {
     void **ppBackend;
     unsigned int i;
     void *pBackend;
