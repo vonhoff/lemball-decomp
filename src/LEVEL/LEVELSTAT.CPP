@@ -1344,6 +1344,9 @@ struct LevelScreenTerrainRenderView {
     void EmitVariantStripPassA(int nTileX, int nTileY, int cEntries);
     void EmitVariantStripPassB(int nTileX, int nTileY, int cEntries);
     void BuildStaticRegionEntries(const short *pRegion);
+    void EmitObjectVariantRenderEntries(
+        unsigned short *pEntry, unsigned int nEntityId, int fSecondary);
+    void DispatchDynamicRenderEntry(int iEntry, unsigned short nDepth);
     void PrepareAndSortDynamicDepthEntries(void);
     short ComputeDynamicRenderEntrySortKey(int iEntry);
     void DrawStaticRenderEntry(int iEntry, unsigned short nDepth);
@@ -1492,6 +1495,27 @@ static void EmitLevelScreenFixedVariantEntry(
     EmitVariantRenderResourceEntry(
         pManager, Rect, Point, nResourceId,
         pManager[0x2b], pSelector, nValue);
+}
+
+static void EmitLevelScreenVariantEntry(
+    void *pObject, short x, short y, int nResourceId,
+    int nFlags, void *pFrameSelector, int nValue)
+{
+    int *pManager;
+    short iSlot;
+    short Point[2];
+    short Rect[4];
+
+    if (nResourceId == 0) return;
+    pManager = (int *)pObject;
+    iSlot = *(short *)(unsigned long)(pManager[10] + nResourceId * 2);
+    if ((unsigned short)iSlot >= (unsigned int)pManager[0xb] ||
+        *(void **)(unsigned long)(pManager[9] + iSlot * 4) == 0) return;
+    Point[0] = (short)(x + *(short *)((char *)pManager + 0xb0));
+    Point[1] = (short)(y + *(short *)((char *)pManager + 0xb2));
+    EmitVariantRenderResourceEntry(
+        pManager, Rect, Point, nResourceId,
+        nFlags, pFrameSelector, nValue);
 }
 
 void EmitMappedLevelScreenVariantRenderEntry(
@@ -2851,6 +2875,125 @@ void LevelScreenTerrainRenderView::BuildStaticRegionEntries(
     }
 }
 
+// FUNCTION: LEMBALL 0x0043c200
+void LevelScreenTerrainRenderView::EmitObjectVariantRenderEntries(
+    unsigned short *pEntry, unsigned int, int fSecondary)
+{
+    static const int s_anDefaultResources[8] =
+        { 0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x47 };
+    static const int s_anAlternateResources[8] =
+        { 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x35 };
+    static const int s_anOffsetResources[8] =
+        { 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x4f };
+    static const int s_anTallResources[8] =
+        { 0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6e, 0x67 };
+    static const short s_anOffsetX[8] =
+        { 11, 8, 10, 16, 19, 26, 26, 14 };
+    static const short s_anOffsetY[8] =
+        { 9, 5, 5, 4, 4, 6, 9, 13 };
+    static const short s_anTallOffsetX[8] =
+        { 28, 24, 24, 19, 23, 25, 32, 25 };
+    static const short s_anTallOffsetY[8] =
+        { 25, 24, 31, 25, 24, 21, 36, 26 };
+    static const short s_anModeOffsetX[4] = { 13, 10, 7, 7 };
+    static const short s_anModeOffsetY[4] = { 25, 18, 14, 14 };
+    static const int s_anModeResources[4] = { 0x42, 0x41, 0x40, 0x40 };
+    char *pScreen;
+    int nDirection;
+    int nSubtype;
+    int nResourceId;
+    short nOffsetX;
+    short nOffsetY;
+    int nMode;
+    int nPalette;
+
+    pScreen = (char *)this;
+    nDirection = (pEntry[0] + *(int *)(pScreen + 0x90c) * 2) & 7;
+    nSubtype = *(int *)(pEntry + 0x0c);
+    nResourceId = 0;
+    nOffsetX = 0;
+    nOffsetY = 0;
+    switch (nSubtype) {
+    case 0: case 1: case 9: case 0x0d: case 0x23:
+        nResourceId = s_anDefaultResources[nDirection];
+        nOffsetX = 8; nOffsetY = 0x12; break;
+    case 2:
+        nResourceId = s_anAlternateResources[nDirection];
+        nOffsetX = 8; nOffsetY = 0x12; break;
+    case 3:
+        nResourceId = s_anOffsetResources[nDirection];
+        nOffsetX = (short)(s_anOffsetX[nDirection] + 8);
+        nOffsetY = (short)(s_anOffsetY[nDirection] + 0x12);
+        break;
+    case 6:
+        nMode = fSecondary == 0 ? pEntry[0x0e] : 0;
+        nMode &= 3;
+        nResourceId = s_anModeResources[nMode];
+        nOffsetX = s_anModeOffsetX[nMode];
+        nOffsetY = s_anModeOffsetY[nMode];
+        break;
+    case 7:
+        nResourceId = s_anTallResources[nDirection];
+        nOffsetX = s_anTallOffsetX[nDirection];
+        nOffsetY = s_anTallOffsetY[nDirection];
+        break;
+    case 0x0e:
+        nResourceId = pEntry[0x0e] == 0 ? 0x3e : 0x3d;
+        nOffsetX = 0x0e; nOffsetY = 0x1b; break;
+    default:
+        return;
+    }
+    nPalette = fSecondary != 0 ? *(int *)(pScreen + 0x968) : 0;
+    EmitLevelScreenVariantEntry(
+        *(void **)(pScreen + 0xa40),
+        (short)(*(int *)(pEntry + 2) - nOffsetX),
+        (short)(*(int *)(pEntry + 4) - nOffsetY),
+        nResourceId, *(int *)(pEntry + 0x10),
+        *(void **)(pEntry + 0x12), nPalette);
+}
+
+// FUNCTION: LEMBALL 0x0043dc70
+void LevelScreenTerrainRenderView::DispatchDynamicRenderEntry(
+    int iEntry, unsigned short nDepth)
+{
+    static const int s_anRotatedResources[8] =
+        { 0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x5f };
+    char *pScreen;
+    unsigned short *pEntry;
+    int nType;
+    int nDirection;
+
+    pScreen = (char *)this;
+    pEntry = (unsigned short *)(*(char **)(pScreen + 0x95c) +
+                                iEntry * 0x4c);
+    *(unsigned short *)(*(char **)(pScreen + 0xa40) + 0x68) = nDepth;
+    nType = *(int *)(pEntry + 0x14);
+    switch (nType) {
+    case 1:
+        EmitObjectVariantRenderEntries(pEntry, pEntry[0x16], 1);
+        break;
+    case 2:
+        EmitObjectVariantRenderEntries(pEntry, pEntry[0x16], 0);
+        break;
+    case 3:
+        nDirection = (pEntry[0] + *(int *)(pScreen + 0x90c) * 2) & 7;
+        EmitLevelScreenVariantEntry(
+            *(void **)(pScreen + 0xa40),
+            (short)(*(int *)(pEntry + 2) - 4),
+            (short)(*(int *)(pEntry + 4) - 4),
+            s_anRotatedResources[nDirection], 0,
+            *(void **)(pEntry + 0x12), 0);
+        break;
+    case 0x12:
+        EmitLevelScreenVariantEntry(
+            *(void **)(pScreen + 0xa40),
+            (short)(*(int *)(pEntry + 2) - 0x10),
+            (short)(*(int *)(pEntry + 4) - 0x10),
+            0x81, 0, *(void **)(pEntry + 0x12), 0);
+        break;
+    }
+}
+
 // FUNCTION: LEMBALL 0x0043ff60
 static int CompareLevelDynamicRenderEntryDepth(
     const void *pLeft, const void *pRight)
@@ -2943,29 +3086,59 @@ void LevelScreenTerrainRenderView::DrawStaticDepthEntries(void)
     int *pList;
     char *pEntries;
     int cEntries;
-    int i;
+    int iStatic;
+    int iDynamic;
+    int cDynamic;
     char *pEntry;
     char *pTile;
-    unsigned short nDepth;
+    unsigned short nStaticDepth;
+    unsigned short nDynamicDepth;
 
     pScreen = (char *)this;
     pLevelMode = *(char **)(pScreen + 0x96c);
-    if (pLevelMode == 0) return;
-    pList = *(int **)(pLevelMode + 0x8c);
-    if (pList == 0) return;
-    pEntries = (char *)(unsigned long)pList[0];
-    cEntries = pList[1];
-    if (pEntries == 0 || cEntries <= 0 || cEntries > 0x10000) return;
+    pList = pLevelMode != 0 ? *(int **)(pLevelMode + 0x8c) : 0;
+    pEntries = pList != 0 ? (char *)(unsigned long)pList[0] : 0;
+    cEntries = pList != 0 ? pList[1] : 0;
+    if (pEntries == 0 || cEntries < 0 || cEntries > 0x10000)
+        cEntries = 0;
+    cDynamic = *(unsigned short *)(pScreen + 0x964);
+    if (cDynamic > 200) cDynamic = 0;
     *(char **)(pScreen + 0x2220) = pEntries;
     *(int *)(pScreen + 0x2224) = cEntries;
     *(int *)(*(char **)(pScreen + 0xa40) + 0xac) = 0x80000;
-    for (i = 0; i < cEntries; ++i) {
-        pEntry = pEntries + i * 0x0c;
+    iStatic = 0;
+    iDynamic = 0;
+    while (iStatic < cEntries && iDynamic < cDynamic) {
+        pEntry = pEntries + iStatic * 0x0c;
         pTile = *(char **)(pEntry + 8);
-        if (pTile == 0) continue;
-        nDepth = (unsigned short)(
+        if (pTile == 0) {
+            ++iStatic;
+            continue;
+        }
+        nStaticDepth = (unsigned short)(
             *(short *)(pEntry + 4) + *(short *)(pTile + 8));
-        DrawStaticRenderEntry(i, nDepth);
+        nDynamicDepth = (unsigned short)*(int *)(
+            *(char **)(pScreen + 0x95c) + iDynamic * 0x4c + 0x48);
+        if (nStaticDepth < nDynamicDepth) {
+            DrawStaticRenderEntry(iStatic++, nStaticDepth);
+        } else {
+            DispatchDynamicRenderEntry(iDynamic++, nDynamicDepth);
+        }
+    }
+    while (iDynamic < cDynamic) {
+        nDynamicDepth = (unsigned short)*(int *)(
+            *(char **)(pScreen + 0x95c) + iDynamic * 0x4c + 0x48);
+        DispatchDynamicRenderEntry(iDynamic++, nDynamicDepth);
+    }
+    while (iStatic < cEntries) {
+        pEntry = pEntries + iStatic * 0x0c;
+        pTile = *(char **)(pEntry + 8);
+        if (pTile != 0) {
+            nStaticDepth = (unsigned short)(
+                *(short *)(pEntry + 4) + *(short *)(pTile + 8));
+            DrawStaticRenderEntry(iStatic, nStaticDepth);
+        }
+        ++iStatic;
     }
 }
 
