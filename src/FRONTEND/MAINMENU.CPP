@@ -3563,14 +3563,26 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
         g_GAME_NetworkLobbyQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
         g_GAME_MainMenuCallbackVtable;
-    memset((char *)pScreen + 0x398, 0, 0x438 - 0x398);
+    InitializeFramedScreenRenderChildEntry(pScreen->m_abPointSink3EC);
+    pScreen->m_fTextPrompt39C = 0;
+    pScreen->m_nPendingPrompt3A4 = 0;
+    pScreen->m_nStatus3A8 = 1;
+    pScreen->m_nDrawnStatus3AC = 1;
+    pScreen->m_dwStatusDuration3B4 = 0;
+    pScreen->m_nReserved3B8 = 0;
+    pScreen->m_fBlink3C0 = 0;
+    pScreen->m_fRefreshPlayers3C4 = 0;
+    pScreen->m_fPromptActive3DC = 0;
+    pScreen->m_fPendingText3E0 = 0;
+    pScreen->m_pszLocalAddress3E4 = 0;
+    pScreen->m_pszLocalComputer3E8 = 0;
+    pScreen->m_cVisiblePlayers3D8 = 0;
+    pScreen->m_nDeferredStatus430 = 0;
     pScreen->m_pTextBuffer398 = AllocateVSMemBlock(0x10);
     if (pScreen->m_pTextBuffer398 != 0) {
         ConstructBoundedTextBuffer(
             (GameBoundedTextBuffer *)pScreen->m_pTextBuffer398, 0x28);
     }
-    pScreen->m_nStatus3A8 = 1;
-    pScreen->m_nDrawnStatus3AC = 1;
     pScreen->m_dwBlinkStart3C8 = timeGetTime();
     pScreen->m_nSelectedPlayer3D0 = -1;
     pScreen->m_nResolvedPlayer3D4 = -1;
@@ -3582,6 +3594,8 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
             ConstructNetworkLobbyPlayerEntry(
                 (char *)pScreen->m_pPlayerEntries3CC + i * 0x44);
         }
+    } else {
+        pScreen->m_pPlayerEntries3CC = 0;
     }
     nPaletteResourceId =
         *(int *)((char *)pScreen->m_pPrimaryContext84 + 0x54);
@@ -4033,6 +4047,7 @@ static void DestroyNetworkLobbyScreen(
     ((MogLoadResourceArchive *)g_pMainResourceArchive)
         ->PruneUnreferencedCachedResourceObjects();
     DestroyFramedScreenRenderEntryGroup(pScreen->m_abRenderEntryGroupC8);
+    RestoreLevelSelectionRenderChildEntryVtable(pScreen->m_abPointSink3EC);
     DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
 }
 
