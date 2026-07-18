@@ -14,6 +14,10 @@ public:
         int nFirstResourceId, int nLastResourceId);
     void ReleaseLevelScreenVariantStateWrapperRange(
         int nFirstResourceId, int nLastResourceId);
+    void EmitVariantRenderResourceEntry(
+        short *pRect, const short *pPoint, int nResourceId,
+        int nFlags, void *pFrameSelector, int nValue);
+    void ResetOrFlipVariantRenderBuffers(void);
 
     char m_abReserved00[0x24];
     void **m_ppResourceObjects24;

@@ -26,11 +26,6 @@ extern void *ConstructVariantRenderManager(void *pObject, int nOwner,
                                            int nUnknown58,
                                            int fDoubleBuffered);
 extern void LoadVariantRenderResource(void *pObject, int nResourceId);
-extern void EmitVariantRenderResourceEntry(void *pObject, short *pRect,
-                                           const short *pPoint,
-                                           int nResourceId, int nFlags,
-                                           void *pFrameSelector, int nValue);
-extern void ResetOrFlipVariantRenderBuffers(int nManager);
 extern void DestroyVariantRenderManager(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntry(
     void *pObject);
@@ -1845,13 +1840,15 @@ void LEMBALL_FASTCALL EmitMenuSelectorResourceEntries(GameMenuSelectorManager *p
         nOwner = *(int *)(pManager->m_abVariantRenderManager10 + 0x1c);
         *(void **)(pManager->m_abVariantRenderManager10 + 0x1c) =
             pManager->m_pChildRenderContext26C;
-        EmitVariantRenderResourceEntry(
-            pManager->m_abVariantRenderManager10, Rect, Point,
-            g_nMenuSelectorResourceId6, 0, 0, 0);
+        ((LevelVariantRenderManagerView *)
+             pManager->m_abVariantRenderManager10)
+            ->EmitVariantRenderResourceEntry(
+                Rect, Point, g_nMenuSelectorResourceId6, 0, 0, 0);
         *(int *)(pManager->m_abVariantRenderManager10 + 0x1c) = nOwner;
     }
-    ResetOrFlipVariantRenderBuffers(
-        (int)(unsigned long)pManager->m_abVariantRenderManager10);
+    ((LevelVariantRenderManagerView *)
+         pManager->m_abVariantRenderManager10)
+        ->ResetOrFlipVariantRenderBuffers();
 }
 
 void LEMBALL_FASTCALL InitializeSharedSpriteOwnerState(void *pObject) {

@@ -27,10 +27,6 @@ extern void VariantResourceBundleNoopThunk(void);
 extern void *LoadBitmapResource(int nResourceId);
 extern int *LoadBinResource(int nResourceId);
 extern void LoadVariantRenderResource(void *pManager, int nResourceId);
-extern void EmitVariantRenderResourceEntry(
-    void *pManager, short *pRect, const short *pPoint,
-    int nResourceId, int nFlags, void *pFrameSelector, int nValue);
-extern void ResetOrFlipVariantRenderBuffers(int nManager);
 extern void DestroyVariantRenderManager(void *pManager);
 extern void *ConstructVariantRenderManager(void *pManager,
                                            int nOwner,
@@ -1958,11 +1954,12 @@ static void LEMBALL_FASTCALL EmitFramedScreenOverlayVariantEntry(
     if (pScreen->m_pTimedFrameSelector34C != 0) {
         *(DWORD *)((char *)pScreen->m_pTimedFrameSelector34C + 0x14) =
             timeGetTime();
-        EmitVariantRenderResourceEntry(
-            pScreen->m_abVariantRenderManager14, Rect,
-            &pScreen->m_xOverlay380,
-            pScreen->m_nTimedVariantResourceId394, 0,
-            pScreen->m_pTimedFrameSelector34C, 0);
+        ((LevelVariantRenderManagerView *)
+             pScreen->m_abVariantRenderManager14)
+            ->EmitVariantRenderResourceEntry(
+                Rect, &pScreen->m_xOverlay380,
+                pScreen->m_nTimedVariantResourceId394, 0,
+                pScreen->m_pTimedFrameSelector34C, 0);
     }
 }
 
@@ -1974,8 +1971,8 @@ static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(
     GameFramedScreenBase *pScreen;
 
     pScreen = (GameFramedScreenBase *)pObject;
-    ResetOrFlipVariantRenderBuffers(
-        (int)(unsigned long)pScreen->m_abVariantRenderManager14);
+    ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
+        ->ResetOrFlipVariantRenderBuffers();
     pScreen->m_iPackagedEntry36C = 0;
 }
 
@@ -3618,9 +3615,10 @@ static void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void *pObject) {
         pSavedContext = *(void **)(pScreen->m_abVariantRenderManager14 + 0x1c);
         *(void **)(pScreen->m_abVariantRenderManager14 + 0x1c) =
             pScreen->m_pInputPanelRenderContext474;
-        EmitVariantRenderResourceEntry(
-            pScreen->m_abVariantRenderManager14, Rect, Point,
-            pScreen->m_nPanelResourceId398, 0, 0, 0);
+        ((LevelVariantRenderManagerView *)
+             pScreen->m_abVariantRenderManager14)
+            ->EmitVariantRenderResourceEntry(
+                Rect, Point, pScreen->m_nPanelResourceId398, 0, 0, 0);
         *(void **)(pScreen->m_abVariantRenderManager14 + 0x1c) =
             pSavedContext;
     }
@@ -3971,19 +3969,22 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionStatus(
     }
     Point[0] = (short)pLayout[30];
     Point[1] = (short)pLayout[31];
-    EmitVariantRenderResourceEntry(
-        pScreen->m_abVariantRenderManager14, Rect, Point,
-        pScreen->m_nResourceId3D8, 0, pScreen->m_pSelector3C4, 0);
+    ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
+        ->EmitVariantRenderResourceEntry(
+            Rect, Point, pScreen->m_nResourceId3D8, 0,
+            pScreen->m_pSelector3C4, 0);
     Point[0] = (short)pLayout[24];
     Point[1] = (short)pLayout[25];
-    EmitVariantRenderResourceEntry(
-        pScreen->m_abVariantRenderManager14, Rect, Point,
-        pScreen->m_nResourceId3DC, 0, pScreen->m_pSelector3C0, 0);
+    ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
+        ->EmitVariantRenderResourceEntry(
+            Rect, Point, pScreen->m_nResourceId3DC, 0,
+            pScreen->m_pSelector3C0, 0);
     Point[0] = (short)pLayout[18];
     Point[1] = (short)pLayout[19];
-    EmitVariantRenderResourceEntry(
-        pScreen->m_abVariantRenderManager14, Rect, Point,
-        pScreen->m_nResourceId3E0, 0, pScreen->m_pSelector3C8, 0);
+    ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
+        ->EmitVariantRenderResourceEntry(
+            Rect, Point, pScreen->m_nResourceId3E0, 0,
+            pScreen->m_pSelector3C8, 0);
 }
 
 static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(
@@ -4250,12 +4251,14 @@ static void LEMBALL_FASTCALL EmitQueuedVariantChildSlotEntry(
     Point[1] = (short)(*(int *)(pManager + 0x9c) + nPointBias);
     pSavedOwner = *(void **)(pManager + 0x2c);
     *(void **)(pManager + 0x2c) = pRenderContext;
-    EmitVariantRenderResourceEntry(
-        pManager + 0x10, Rect, Point,
-        g_nQueuedVariantChildSlotManagerModeSelectedResourceId, 0,
-        pManager + 0x118, 0);
+    ((LevelVariantRenderManagerView *)(pManager + 0x10))
+        ->EmitVariantRenderResourceEntry(
+            Rect, Point,
+            g_nQueuedVariantChildSlotManagerModeSelectedResourceId, 0,
+            pManager + 0x118, 0);
     *(void **)(pManager + 0x2c) = pSavedOwner;
-    ResetOrFlipVariantRenderBuffers((int)(unsigned long)(pManager + 0x10));
+    ((LevelVariantRenderManagerView *)(pManager + 0x10))
+        ->ResetOrFlipVariantRenderBuffers();
 }
 
 // FUNCTION: LEMBALL 0x0044fbd0

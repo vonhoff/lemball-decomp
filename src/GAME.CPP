@@ -118,7 +118,6 @@ extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
 extern void *ConstructLevelScreenVariantRenderManager(void *pObject,
     int nRenderOwner, void *pPrimaryContext, void *pLevelMode);
 extern void DestroyLevelScreenVariantRenderManager(void *pObject);
-extern void ResetOrFlipVariantRenderBuffers(int nManager);
 extern void RenderReconstructedLevelScreenTerrain(void *pObject);
 extern void DrawReconstructedLevelScreenStatusText(void *pObject);
 extern int EmitLevelGameModeDynamicRenderEntries(
@@ -1920,8 +1919,9 @@ void *GameScreenObject::ConstructLevelScreen(void *pPrimaryContext,
         }
     }
     if (*(void **)(pScreenObject + 0xa40) != 0) {
-        ResetOrFlipVariantRenderBuffers(
-            (int)(unsigned long)*(void **)(pScreenObject + 0xa40));
+        ((LevelVariantRenderManagerView *)
+             *(void **)(pScreenObject + 0xa40))
+            ->ResetOrFlipVariantRenderBuffers();
     }
     if (*(MappedListResourceTable **)(pScreenObject + 0x78) != 0) {
         (*(MappedListResourceTable **)(pScreenObject + 0x78))

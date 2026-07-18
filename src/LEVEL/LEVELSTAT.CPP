@@ -972,11 +972,6 @@ void *ConstructVariantRenderManager(void *pObject,
                                     int fDoubleBuffered);
 void DestroyVariantRenderManager(void *pObject);
 void LoadVariantRenderResource(void *pObject, int nResourceId);
-void ResetOrFlipVariantRenderBuffers(int nManager);
-void EmitVariantRenderResourceEntry(void *pObject, short *pRect,
-                                    const short *pPoint, int nResourceId,
-                                    int nFlags, void *pFrameSelector,
-                                    int nValue);
 static void *DestroyStatusIndicatorPointSinkArray00467BB0(void *pObject, unsigned int fDelete);
 void LEMBALL_FASTCALL RestoreQueuedRenderPointSinkVtable(void *pObject);
 static void *DestroyPackagedSpriteRenderEntryArray00469930(void *pObject, unsigned int fDelete);
@@ -1545,9 +1540,10 @@ static void EmitLevelScreenFixedVariantEntry(
     pSelector[3] = iFrame;
     Point[0] = (short)(x + *(short *)((char *)pManager + 0xb0));
     Point[1] = (short)(y + *(short *)((char *)pManager + 0xb2));
-    EmitVariantRenderResourceEntry(
-        pManager, Rect, Point, nResourceId,
-        pManager[0x2b], pSelector, nValue);
+    ((LevelVariantRenderManagerView *)pManager)
+        ->EmitVariantRenderResourceEntry(
+            Rect, Point, nResourceId,
+            pManager[0x2b], pSelector, nValue);
 }
 
 static void EmitLevelScreenVariantEntry(
@@ -1566,9 +1562,10 @@ static void EmitLevelScreenVariantEntry(
         *(void **)(unsigned long)(pManager[9] + iSlot * 4) == 0) return;
     Point[0] = (short)(x + *(short *)((char *)pManager + 0xb0));
     Point[1] = (short)(y + *(short *)((char *)pManager + 0xb2));
-    EmitVariantRenderResourceEntry(
-        pManager, Rect, Point, nResourceId,
-        nFlags, pFrameSelector, nValue);
+    ((LevelVariantRenderManagerView *)pManager)
+        ->EmitVariantRenderResourceEntry(
+            Rect, Point, nResourceId,
+            nFlags, pFrameSelector, nValue);
 }
 
 void EmitMappedLevelScreenVariantRenderEntry(
@@ -3910,7 +3907,8 @@ void RenderReconstructedLevelScreenTerrain(void *pObject)
         *(short *)(pScreen + 0x95a) <= 0) {
         return;
     }
-    ResetOrFlipVariantRenderBuffers((int)(unsigned long)pManager);
+    ((LevelVariantRenderManagerView *)pManager)
+        ->ResetOrFlipVariantRenderBuffers();
     if (*(MappedListResourceTable **)(pScreen + 0x78) != 0) {
         (*(MappedListResourceTable **)(pScreen + 0x78))->ResetDrawEntryPool();
     }
@@ -4700,7 +4698,8 @@ void *ConstructVariantRenderManager(void *pObject,
 
     pManager[4] = 0;
     pManager[1] = 0;
-    ResetOrFlipVariantRenderBuffers((int)(unsigned long)pManager);
+    ((LevelVariantRenderManagerView *)pManager)
+        ->ResetOrFlipVariantRenderBuffers();
     return pObject;
 }
 
@@ -4808,7 +4807,7 @@ int LevelVariantRenderManagerView::GetVariantRenderFrameCount(int nResourceId) {
 }
 
 // FUNCTION: LEMBALL 0x00467730
-void EmitVariantRenderResourceEntry(void *pObject, short *pRect, const short *pPoint, int nResourceId, int nFlags, void *pFrameSelector, int nValue) {
+void LevelVariantRenderManagerView::EmitVariantRenderResourceEntry(short *pRect, const short *pPoint, int nResourceId, int nFlags, void *pFrameSelector, int nValue) {
     typedef int (LEMBALL_FASTCALL *FrameProc)(void *, int);
     typedef void (LEMBALL_FASTCALL *QueueProc)(void *, int, void *);
     int *pManager;
@@ -4818,12 +4817,12 @@ void EmitVariantRenderResourceEntry(void *pObject, short *pRect, const short *pP
     int iEntry;
     int iFrame;
 
-    pManager = (int *)pObject;
+    pManager = (int *)this;
     if (pManager[0x0e] != 0 && pManager[7] != pManager[8] &&
         pManager[8] != 0) {
         int nOwner = pManager[7];
         pManager[7] = pManager[8];
-        ResetOrFlipVariantRenderBuffers((int)(unsigned long)pManager);
+        ResetOrFlipVariantRenderBuffers();
         pManager[7] = nOwner;
     }
     pManager[8] = pManager[7];
@@ -4836,7 +4835,7 @@ void EmitVariantRenderResourceEntry(void *pObject, short *pRect, const short *pP
             pEntry = (int *)(unsigned long)(pManager[0x19] + iEntry * 0x18);
         } else {
             if (pManager[0x16] == pManager[0x13]) {
-                ResetOrFlipVariantRenderBuffers((int)(unsigned long)pManager);
+                ResetOrFlipVariantRenderBuffers();
             }
             iEntry = pManager[0x13];
             pManager[0x13] += 2;
@@ -4871,7 +4870,7 @@ void EmitVariantRenderResourceEntry(void *pObject, short *pRect, const short *pP
             pEntry = (int *)(unsigned long)(pManager[0x15] + iEntry * 0x20);
         } else {
             if (pManager[0x0f] == pManager[0x12]) {
-                ResetOrFlipVariantRenderBuffers((int)(unsigned long)pManager);
+                ResetOrFlipVariantRenderBuffers();
             }
             iEntry = pManager[0x12];
             pManager[0x12] += 2;
@@ -4901,11 +4900,13 @@ void EmitVariantRenderResourceEntry(void *pObject, short *pRect, const short *pP
 }
 
 // FUNCTION: LEMBALL 0x004678c0
-void ResetOrFlipVariantRenderBuffers(int nManager) {
+void LevelVariantRenderManagerView::ResetOrFlipVariantRenderBuffers(void) {
     int nTarget;
+    int nManager;
     unsigned char *pbToken;
     VsGdiCompactGeometryTokenDispatch *pCompactTarget;
 
+    nManager = (int)(unsigned long)this;
     *(int *)(unsigned long)(nManager + 0xc) = 0;
     if (*(int *)(unsigned long)(nManager + 0x38) == 0) {
         *(int *)(unsigned long)(nManager + 0x5c) = 0;
