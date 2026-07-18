@@ -1635,6 +1635,7 @@ static void LEMBALL_FASTCALL ReloadMenuSelectorOverlayResource(
     *(int *)((char *)pOverlay + 0x10c) = nResourceId;
     *(void **)((char *)pOverlay + 0x11c) =
         LoadZrleOnlyListResource(nResourceId);
+    *(int *)((char *)pOverlay + 0x104) = 0;
     *(int *)((char *)pOverlay + 0xd8) = 1;
 }
 
