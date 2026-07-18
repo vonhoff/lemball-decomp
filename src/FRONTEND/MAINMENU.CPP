@@ -3883,6 +3883,102 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
     return pScreen;
 }
 
+// FUNCTION: LEMBALL 0x0044fbd0
+void GameQueuedVariantManagerView::SetChildrenEnabled(int fEnabled) {
+    int i;
+    GameQueuedVariantChildView *pChild;
+
+    m_fChildrenEnabled148 = fEnabled;
+    for (i = 0; i < m_cChildren80; ++i) {
+        pChild = m_apChildrenAC[i];
+        if (pChild != 0) {
+            pChild->m_fEnabled54 = fEnabled;
+            ((GameGeometryOwnerRectState *)((char *)
+                pChild->m_pOverlay4C + 0x90))->SetEnabled(fEnabled);
+        }
+    }
+}
+
+// FUNCTION: LEMBALL 0x004536f0
+static void DrawNetworkLobbyPlayerEntry(
+    GameNetworkLobbyScreenView *pScreen, int iPeer,
+    int *piVisible, int nColor) {
+    GameNetworkLobbyRuntimeView *pRuntime;
+    GameNetworkLobbyPeerStateView *pPeerState;
+    GameNetworkLobbyTrackedPeerView *pPeer;
+    GameNetworkLobbyAddressView *pAddress;
+    MappedListResourceTable *pMappedList;
+    void *pFontResource;
+    const char *pszAddress;
+    char szComputer[0x18];
+    short Point[2];
+    short Relative[2];
+    short Extent[2];
+    int nRemap;
+    int cchComputer;
+
+    pRuntime = (GameNetworkLobbyRuntimeView *)g_pNetworkLobbyVsnetRuntime;
+    if (pRuntime == 0 || pRuntime->m_pPeerStates14 == 0 ||
+        pRuntime->m_apTrackedPeers20[iPeer] == 0 ||
+        pRuntime->m_pPeerStates14[iPeer].m_fActive4C == 0) {
+        return;
+    }
+    pMappedList = (MappedListResourceTable *)pScreen->m_pMappedListResources98;
+    pFontResource = pMappedList->GetMappedResource(
+        pScreen->m_nMappedListRemapResourceId384);
+    pPeerState = pRuntime->m_pPeerStates14 + iPeer;
+    pPeer = pRuntime->m_apTrackedPeers20[iPeer];
+    nRemap = nColor == 6 ? 0 : pScreen->m_anPaletteRemaps414[nColor];
+    Relative[0] = 0;
+    Relative[1] = 0;
+    Point[1] = (short)(pScreen->m_pLayout42C[27] +
+                       *piVisible * pScreen->m_pLayout42C[35]);
+
+    MeasureFunctionalLevelTitleExtent(
+        pFontResource, Extent, pPeerState->m_szName2C);
+    Point[0] = (short)(pScreen->m_pLayout42C[26] - Extent[0] / 2);
+    pMappedList->SubmitRenderEntry(
+        pScreen->m_pRenderContext88, Point, Relative,
+        pScreen->m_nMappedListRemapResourceId384,
+        pPeerState->m_szName2C, 0x20, nRemap);
+
+    pszAddress = "";
+    if (pPeer->m_pDescriptor04 != 0) {
+        pAddress = *(GameNetworkLobbyAddressView **)(
+            (char *)pPeer +
+            pPeer->m_pDescriptor04->m_nAddressOwnerOffset08 + 0x74);
+        if (pAddress != 0) {
+            pszAddress = pAddress->GetAddressString();
+        }
+    }
+    if (pszAddress == 0) {
+        pszAddress = "";
+    }
+    MeasureFunctionalLevelTitleExtent(pFontResource, Extent, pszAddress);
+    Point[0] = (short)(pScreen->m_pLayout42C[30] - Extent[0] / 2);
+    pMappedList->SubmitRenderEntry(
+        pScreen->m_pRenderContext88, Point, Relative,
+        pScreen->m_nMappedListRemapResourceId384,
+        (void *)pszAddress, 0x20, nRemap);
+
+    strncpy(szComputer, pPeerState->m_szComputer35, 20);
+    szComputer[20] = '\0';
+    cchComputer = (int)strlen(szComputer);
+    MeasureFunctionalLevelTitleExtent(pFontResource, Extent, szComputer);
+    while (0 < cchComputer &&
+           pScreen->m_pLayout42C[38] < Extent[0]) {
+        szComputer[--cchComputer] = '\0';
+        MeasureFunctionalLevelTitleExtent(
+            pFontResource, Extent, szComputer);
+    }
+    Point[0] = (short)(pScreen->m_pLayout42C[32] - Extent[0] / 2);
+    pMappedList->SubmitRenderEntry(
+        pScreen->m_pRenderContext88, Point, Relative,
+        pScreen->m_nMappedListRemapResourceId384,
+        szComputer, 0x20, nRemap);
+    ++*piVisible;
+}
+
 static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
     GameNetworkLobbyScreenView *pScreen;
     MappedListResourceTable *pMappedList;
@@ -3896,10 +3992,6 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
     char szDisplayText[0x40];
     int nRemap;
     GameNetworkLobbyRuntimeView *pRuntime;
-    GameNetworkLobbyPeerStateView *pPeerState;
-    GameNetworkLobbyTrackedPeerView *pPeer;
-    GameNetworkLobbyAddressView *pAddress;
-    const char *pszAddress;
     int iPeer;
     int iVisible;
     int nColor;
@@ -3990,6 +4082,15 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
                     pScreen->m_anPaletteRemaps414[0]);
             }
         }
+        pRuntime = (GameNetworkLobbyRuntimeView *)
+            g_pNetworkLobbyVsnetRuntime;
+        if (pRuntime != 0) {
+            iVisible = 0;
+            for (iPeer = 0; iPeer < 10 && iVisible < 4; ++iPeer) {
+                DrawNetworkLobbyPlayerEntry(
+                    pScreen, iPeer, &iVisible, 1);
+            }
+        }
         return;
     }
     nStatus = pScreen->m_nStatus3A8;
@@ -4022,9 +4123,8 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
         pScreen->m_pPlayerEntries3CC != 0) {
         iVisible = 0;
         for (iPeer = 0; iPeer < 10 && iVisible < 4; ++iPeer) {
-            pPeerState = pRuntime->m_pPeerStates14 + iPeer;
-            pPeer = pRuntime->m_apTrackedPeers20[iPeer];
-            if (pPeer == 0 || pPeerState->m_fActive4C == 0) {
+            if (pRuntime->m_apTrackedPeers20[iPeer] == 0 ||
+                pRuntime->m_pPeerStates14[iPeer].m_fActive4C == 0) {
                 continue;
             }
             nPeerOffset = iPeer * 0x44;
@@ -4045,39 +4145,11 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
                 nColor += 3;
             }
             if (nColor != 1) {
-                strncpy(szDisplayText, pPeerState->m_szName2C, 9);
-                szDisplayText[9] = '\0';
-                SUBMIT_CENTERED_LOBBY_TEXT(
-                    szDisplayText, pScreen->m_pLayout42C[26],
-                    pScreen->m_pLayout42C[27] +
-                        iVisible * pScreen->m_pLayout42C[35],
-                    pScreen->m_anPaletteRemaps414[nColor]);
-                pszAddress = "";
-                if (pPeer->m_pDescriptor04 != 0) {
-                    pAddress = *(GameNetworkLobbyAddressView **)(
-                        (char *)pPeer +
-                        pPeer->m_pDescriptor04->m_nAddressOwnerOffset08 +
-                        0x74);
-                    if (pAddress != 0) {
-                        pszAddress = pAddress->GetAddressString();
-                    }
-                }
-                if (pszAddress != 0) {
-                    SUBMIT_CENTERED_LOBBY_TEXT(
-                        pszAddress, pScreen->m_pLayout42C[30],
-                        pScreen->m_pLayout42C[27] +
-                            iVisible * pScreen->m_pLayout42C[35],
-                        pScreen->m_anPaletteRemaps414[nColor]);
-                }
-                strncpy(szDisplayText, pPeerState->m_szComputer35, 20);
-                szDisplayText[20] = '\0';
-                SUBMIT_CENTERED_LOBBY_TEXT(
-                    szDisplayText, pScreen->m_pLayout42C[32],
-                    pScreen->m_pLayout42C[27] +
-                        iVisible * pScreen->m_pLayout42C[35],
-                    pScreen->m_anPaletteRemaps414[nColor]);
+                DrawNetworkLobbyPlayerEntry(
+                    pScreen, iPeer, &iVisible, nColor);
+            } else {
+                ++iVisible;
             }
-            ++iVisible;
         }
     }
     pBuffer = (GameBoundedTextBuffer *)pScreen->m_pTextBuffer398;
@@ -5847,7 +5919,6 @@ static void SelectFunctionalLevel(
 static void LEMBALL_FASTCALL NoopFunctionalLevelSelectionHook(void *) {
 }
 
-// FUNCTION: LEMBALL 0x0044fa00
 static void LEMBALL_FASTCALL EmitQueuedVariantChildSlotEntry(
     void *pObject)
 {
@@ -5897,20 +5968,4 @@ static void LEMBALL_FASTCALL EmitQueuedVariantChildSlotEntry(
 
 static void LEMBALL_FASTCALL NoopQueuedVariantChildSlotManagerUpdate(
     void *) {
-}
-
-// FUNCTION: LEMBALL 0x0044fbd0
-void GameQueuedVariantManagerView::SetChildrenEnabled(int fEnabled) {
-    int i;
-    GameQueuedVariantChildView *pChild;
-
-    m_fChildrenEnabled148 = fEnabled;
-    for (i = 0; i < m_cChildren80; ++i) {
-        pChild = m_apChildrenAC[i];
-        if (pChild != 0) {
-            pChild->m_fEnabled54 = fEnabled;
-            ((GameGeometryOwnerRectState *)((char *)
-                pChild->m_pOverlay4C + 0x90))->SetEnabled(fEnabled);
-        }
-    }
 }
