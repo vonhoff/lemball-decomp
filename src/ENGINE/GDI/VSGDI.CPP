@@ -1066,6 +1066,82 @@ struct VsGdiDirectDrawBinding {
     int m_nSurfaceSlot;
 };
 
+// SIZE 0x7c
+struct VsGdiDirectDrawSurfaceBitmap {
+    void **m_pVtable;                    // 0x00
+    void *m_pCachedPixels;               // 0x04
+    int m_nCachedPitch;                  // 0x08
+    void *m_pSurface;                    // 0x0c
+    unsigned char m_abSurfaceDesc[0x6c]; // 0x10
+};
+
+static int LEMBALL_FASTCALL LockDirectDrawSurfaceBitmap(
+    VsGdiDirectDrawSurfaceBitmap *pBitmap) {
+    typedef unsigned int (__stdcall *DIRECTDRAW_LOCK)(
+        void *, void *, void *, unsigned int, void *);
+    unsigned int uResult;
+
+    do {
+        uResult = ((DIRECTDRAW_LOCK)(*(void ***)pBitmap->m_pSurface)[25])(
+            pBitmap->m_pSurface, 0, pBitmap->m_abSurfaceDesc, 0, 0);
+        if (uResult == 0) {
+            pBitmap->m_pCachedPixels =
+                *(void **)(pBitmap->m_abSurfaceDesc + 0x24);
+            pBitmap->m_nCachedPitch =
+                *(int *)(pBitmap->m_abSurfaceDesc + 0x10);
+            return 1;
+        }
+    } while (uResult != 0x887601c2UL);
+    return 0;
+}
+
+static int LEMBALL_FASTCALL UnlockDirectDrawSurfaceBitmap(
+    VsGdiDirectDrawSurfaceBitmap *pBitmap) {
+    typedef unsigned int (__stdcall *DIRECTDRAW_UNLOCK)(void *, void *);
+    unsigned int uResult;
+
+    do {
+        uResult = ((DIRECTDRAW_UNLOCK)(*(void ***)pBitmap->m_pSurface)[32])(
+            pBitmap->m_pSurface, pBitmap->m_pCachedPixels);
+        if (uResult == 0) {
+            return 1;
+        }
+    } while (uResult != 0x887601c2UL);
+    return 0;
+}
+
+static int LEMBALL_FASTCALL GetDirectDrawSurfaceBitmapPixels(
+    VsGdiDirectDrawSurfaceBitmap *pBitmap) {
+    if (pBitmap->m_pCachedPixels == 0) {
+        LockDirectDrawSurfaceBitmap(pBitmap);
+        UnlockDirectDrawSurfaceBitmap(pBitmap);
+    }
+    return (int)(unsigned long)pBitmap->m_pCachedPixels;
+}
+
+static int LEMBALL_FASTCALL GetDirectDrawSurfaceBitmapPitch(
+    VsGdiDirectDrawSurfaceBitmap *pBitmap) {
+    return pBitmap->m_nCachedPitch;
+}
+
+static void *LEMBALL_FASTCALL DeleteDirectDrawSurfaceBitmap(
+    VsGdiDirectDrawSurfaceBitmap *pBitmap, int nUnused, int fDelete) {
+    (void)nUnused;
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pBitmap);
+    }
+    return pBitmap;
+}
+
+static void *g_VSGDI_DirectDrawSurfaceBitmapVtable[6] = {
+    (void *)DeleteDirectDrawSurfaceBitmap,
+    (void *)LockDirectDrawSurfaceBitmap,
+    (void *)UnlockDirectDrawSurfaceBitmap,
+    (void *)GetDirectDrawSurfaceBitmapPixels,
+    (void *)GetDirectDrawSurfaceBitmapPitch,
+    0,
+};
+
 static void *LEMBALL_FASTCALL DeleteDirectDrawBinding(
     void *pBinding, int nUnused, int fDelete) {
     (void)nUnused;
@@ -1137,6 +1213,10 @@ static void InitializeDisplayStateVtables(void) {
         releaseDirectDrawBindingMethod;
     union { int (VsGdiDirectDrawDisplayState::*p)(void *); void *v; }
         initializeDirectDrawBitmapInfoMethod;
+    union { void *(VsGdiDirectDrawDisplayState::*p)(int, void *); void *v; }
+        createDirectDrawDisplayBitmapMethod;
+    union { int (VsGdiDirectDrawDisplayState::*p)(void *); void *v; }
+        releaseDirectDrawDisplayBitmapMethod;
     union { void *(VsGdiDibDisplayState::*p)(int); void *v; }
         deleteDibDisplayStateMethod;
     union {
@@ -1183,6 +1263,10 @@ static void InitializeDisplayStateVtables(void) {
         &VsGdiDirectDrawDisplayState::ReleaseDirectDrawDisplayBinding;
     initializeDirectDrawBitmapInfoMethod.p =
         &VsGdiDirectDrawDisplayState::InitializeDirectDrawBitmapInfo;
+    createDirectDrawDisplayBitmapMethod.p =
+        &VsGdiDirectDrawDisplayState::CreateDirectDrawDisplayBitmap;
+    releaseDirectDrawDisplayBitmapMethod.p =
+        &VsGdiDirectDrawDisplayState::ReleaseDirectDrawDisplayBitmap;
     g_VSGDI_MetricsDisplayVtable[1] = createBindingMethod.v;
     g_VSGDI_DibDisplayVtable[1] = createBindingMethod.v;
     g_VSGDI_DirectDrawDisplayVtable[1] = createDirectDrawBindingMethod.v;
@@ -1194,10 +1278,10 @@ static void InitializeDisplayStateVtables(void) {
     g_VSGDI_DirectDrawDisplayVtable[3] = initializeDirectDrawBitmapInfoMethod.v;
     g_VSGDI_MetricsDisplayVtable[4] = createBitmapMethod.v;
     g_VSGDI_DibDisplayVtable[4] = createBitmapMethod.v;
-    g_VSGDI_DirectDrawDisplayVtable[4] = createBitmapMethod.v;
+    g_VSGDI_DirectDrawDisplayVtable[4] = createDirectDrawDisplayBitmapMethod.v;
     g_VSGDI_MetricsDisplayVtable[5] = bitmapObjectMethod.v;
     g_VSGDI_DibDisplayVtable[5] = bitmapObjectMethod.v;
-    g_VSGDI_DirectDrawDisplayVtable[5] = bitmapObjectMethod.v;
+    g_VSGDI_DirectDrawDisplayVtable[5] = releaseDirectDrawDisplayBitmapMethod.v;
     g_VSGDI_MetricsDisplayVtable[6] =
         (void *)ApplyDisplaySurfacePalette;
     g_VSGDI_DirectDrawDisplayVtable[6] =
@@ -1962,6 +2046,68 @@ int VsGdiDirectDrawDisplayState::InitializeDirectDrawBitmapInfo(
     *(int *)(pbInfo + 0x08) = -1;
     *(unsigned short *)(pbInfo + 0x0e) = 8;
     *(unsigned int *)(pbInfo + 0x24) = 0;
+    return 1;
+}
+
+void *VsGdiDirectDrawDisplayState::CreateDirectDrawDisplayBitmap(
+    int nDriver, void *pBitmapInfo) {
+    typedef unsigned int (__stdcall *DIRECTDRAW_CREATE_SURFACE)(
+        void *, void *, void **, void *);
+    typedef unsigned int (__stdcall *DIRECTDRAW_GET_SURFACE_DESC)(
+        void *, void *);
+    unsigned char aSurfaceDescription[0x6c];
+    VsGdiDirectDrawSurfaceBitmap *pBitmap;
+    void *pSurface;
+    int nHeight;
+    unsigned int uResult;
+
+    (void)nDriver;
+    *(unsigned int *)(aSurfaceDescription + 0x00) = 0x6c;
+    *(unsigned int *)(aSurfaceDescription + 0x04) = 6;
+    nHeight = *(int *)((char *)pBitmapInfo + 8);
+    if (nHeight < 0) {
+        nHeight = -nHeight;
+    }
+    *(int *)(aSurfaceDescription + 0x08) = nHeight;
+    *(int *)(aSurfaceDescription + 0x0c) =
+        *(int *)((char *)pBitmapInfo + 4);
+    *(unsigned int *)(aSurfaceDescription + 0x68) = 0x40;
+    pSurface = 0;
+    uResult = ((DIRECTDRAW_CREATE_SURFACE)
+        (*(void ***)m_pDirectDrawObject)[6])(
+            m_pDirectDrawObject, aSurfaceDescription, &pSurface, 0);
+    if (uResult != 0) {
+        return 0;
+    }
+
+    pBitmap = (VsGdiDirectDrawSurfaceBitmap *)AllocateVSMemBlock(
+        sizeof(VsGdiDirectDrawSurfaceBitmap));
+    if (pBitmap == 0) {
+        return 0;
+    }
+    pBitmap->m_pVtable = g_VSGDI_DirectDrawSurfaceBitmapVtable;
+    pBitmap->m_pCachedPixels = 0;
+    pBitmap->m_nCachedPitch = 0;
+    pBitmap->m_pSurface = pSurface;
+    *(unsigned int *)(pBitmap->m_abSurfaceDesc + 0x00) = 0x6c;
+    uResult = ((DIRECTDRAW_GET_SURFACE_DESC)(*(void ***)pSurface)[22])(
+        pSurface, pBitmap->m_abSurfaceDesc);
+    if (uResult != 0) {
+        g_pErrorOutputStream
+            ->AppendCStringToStream(
+                "Direct Draw Surface Get Description Failed : ")
+            ->AppendCStringToStream(LookupDirectDrawErrorString(uResult & 0xfff))
+            ->AppendCStringToStream("\n");
+    }
+    return pBitmap;
+}
+
+int VsGdiDirectDrawDisplayState::ReleaseDirectDrawDisplayBitmap(
+    void *pBitmap) {
+    if (pBitmap != 0) {
+        ((void *(LEMBALL_FASTCALL *)(void *, int, int))
+             (*(void ***)pBitmap)[0])(pBitmap, 0, 1);
+    }
     return 1;
 }
 

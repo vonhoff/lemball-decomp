@@ -153,6 +153,8 @@ public:
     void *CreateDirectDrawDisplayBinding(void);
     int ReleaseDirectDrawDisplayBinding(void *pBinding);
     int InitializeDirectDrawBitmapInfo(void *pBitmapInfo);
+    void *CreateDirectDrawDisplayBitmap(int nDriver, void *pBitmapInfo);
+    int ReleaseDirectDrawDisplayBitmap(void *pBitmap);
     int StretchDirectDrawSurfaceRect(void *pDestinationBinding,
                                      short *pDestinationRect,
                                      void *pSourceBinding,
