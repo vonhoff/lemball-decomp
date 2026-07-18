@@ -43,7 +43,7 @@ typedef void *(LEMBALL_FASTCALL *VsSoundDeleteProc)(void *pObject,
                                                    int fDelete);
 typedef void *(*VsSoundConstructPatchProc)(void *, void *, int, int, int, int);
 typedef void (*VsSoundPlayBufferProc)(void *, int, int);
-typedef void (LEMBALL_STDCALL *VsSoundReleaseDirectSoundBufferProc)(void *);
+typedef LONG (LEMBALL_STDCALL *VsSoundReleaseDirectSoundBufferProc)(void *);
 typedef LONG (LEMBALL_STDCALL *VsSoundPauseDirectSoundBufferProc)(void *);
 typedef LONG (LEMBALL_STDCALL *VsSoundPlayDirectSoundBufferProc)(
     void *, DWORD, DWORD, DWORD);
@@ -141,6 +141,9 @@ struct VsSoundDirectSoundEffectBackend {
                                         int nBufferSlot);
     void SetDirectSoundEffectInstancePan(int nEffectInstanceId,
                                          int nBufferSlot, int nPan);
+    int PlayDirectSoundEffectInstanceLooped(int nEffectInstanceId,
+                                             int nReserved,
+                                             int fLoopEnabled);
     void PlayDirectSoundEffectInstance(int nEffectInstanceId, int nBufferSlot);
 };
 
@@ -344,7 +347,10 @@ int LEMBALL_FASTCALL AcceptDirectSoundBackendResources(
 int LEMBALL_FASTCALL ReturnDirectSoundBackendUnavailable(void *, int);
 int LEMBALL_FASTCALL GetDirectSoundBackendBufferCount(void *pBackend, int);
 static int LEMBALL_FASTCALL GetDirectSoundEffectAvailability(void *pBackend);
+static int LEMBALL_FASTCALL ReleaseDirectSoundEffectDevice(void *pBackend);
+static int LEMBALL_FASTCALL IsAnyDirectSoundEffectInstancePlaying(void *pBackend);
 static int LEMBALL_FASTCALL ReturnTrueDirectSoundEffectSlot07(void *);
+static int LEMBALL_FASTCALL StopAllDirectSoundEffectInstances(void *pBackend);
 int LEMBALL_FASTCALL GetDirectSoundBackendReservedValue1c(void *pBackend, int);
 int LEMBALL_FASTCALL GetDirectSoundBackendAvailability(void *pBackend, int);
 static int LEMBALL_FASTCALL ReturnFalseDirectSoundEffectSlot13(void *, int, int, int, int, int);
@@ -848,10 +854,10 @@ static void *g_DirectSoundEffectBackendVtable[39] = {
     (void *)GetDirectSoundEffectAvailability,
     (void *)InitializeDirectSoundEffectDevice,
     (void *)AcceptDirectSoundBackendResources,
-    0,
-    0,
+    (void *)ReleaseDirectSoundEffectDevice,
+    (void *)IsAnyDirectSoundEffectInstancePlaying,
     (void *)ReturnTrueDirectSoundEffectSlot07,
-    0,
+    (void *)StopAllDirectSoundEffectInstances,
     (void *)GetDirectSoundBackendReservedValue1c,
     (void *)GetDirectSoundBackendAvailability,
     (void *)ReturnDirectSoundBackendUnavailable,
@@ -879,19 +885,35 @@ static void *g_DirectSoundEffectBackendVtable[39] = {
     (void *)NoOpAudioEffectSlot33,
     (void *)NoOpAudioEffectSlot34,
     (void *)PlayDirectSoundEffectInstanceWithMappedVolume,
-    (void *)PauseDirectSoundEffectInstance,
+    0,
     (void *)ReturnFalseDirectSoundEffectSlot37,
     (void *)CaptureDirectSoundBackendWindow,
 };
 struct VsSoundBackendVtableInitializer {
     VsSoundBackendVtableInitializer(void) {
         int i;
+        union {
+            void (VsSoundDirectSoundEffectBackend::*p)(int, int,
+                                                        unsigned char);
+            void *v;
+        } setVolumeMethod;
+        union {
+            int (VsSoundDirectSoundEffectBackend::*p)(int, int, int);
+            void *v;
+        } playLoopedMethod;
+
         for (i = 0; i < 39; ++i) {
             if (g_WaveOutEffectBackendVtable[i] == 0)
                 g_WaveOutEffectBackendVtable[i] = (void *)NoOpAudioInt;
             if (g_DirectSoundEffectBackendVtable[i] == 0)
                 g_DirectSoundEffectBackendVtable[i] = (void *)NoOpAudioInt;
         }
+        setVolumeMethod.p =
+            &VsSoundDirectSoundEffectBackend::SetDirectSoundEffectInstanceVolume;
+        g_DirectSoundEffectBackendVtable[27] = setVolumeMethod.v;
+        playLoopedMethod.p =
+            &VsSoundDirectSoundEffectBackend::PlayDirectSoundEffectInstanceLooped;
+        g_DirectSoundEffectBackendVtable[36] = playLoopedMethod.v;
     }
 };
 static VsSoundBackendVtableInitializer g_AUDIO_BackendVtableInitializer;
@@ -3207,8 +3229,94 @@ static int LEMBALL_FASTCALL GetDirectSoundEffectAvailability(void *pBackend) {
     return *(int *)((char *)pBackend + 0x20);
 }
 
+// FUNCTION: LEMBALL 0x0047e390
+static int LEMBALL_FASTCALL ReleaseDirectSoundEffectDevice(void *) {
+    LONG hResult;
+
+    if (g_pDirectSoundPrimaryBuffer != 0) {
+        hResult = ((VsSoundReleaseDirectSoundBufferProc)
+                       (*(void ***)g_pDirectSoundPrimaryBuffer)[2])(
+            g_pDirectSoundPrimaryBuffer);
+        if (hResult != 0) {
+            g_pErrorOutputStream
+                ->AppendCStringToStream("Primary Sound Buffer Release: ")
+                ->AppendCStringToStream(
+                    LookupDirectSoundErrorString(
+                        (unsigned int)hResult & 0xfff))
+                ->AppendCStringToStream("\n");
+            return 0;
+        }
+        g_pDirectSoundPrimaryBuffer = 0;
+    }
+    if (g_pDirectSoundDevice != 0) {
+        hResult = ((VsSoundReleaseDirectSoundBufferProc)
+                       (*(void ***)g_pDirectSoundDevice)[2])(
+            g_pDirectSoundDevice);
+        if (hResult != 0) {
+            g_pErrorOutputStream
+                ->AppendCStringToStream("Direct Sound Release failed: ")
+                ->AppendCStringToStream(
+                    LookupDirectSoundErrorString(
+                        (unsigned int)hResult & 0xfff))
+                ->AppendCStringToStream("\n");
+            return 0;
+        }
+        g_pDirectSoundDevice = 0;
+    }
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0047e450
+static int LEMBALL_FASTCALL IsAnyDirectSoundEffectInstancePlaying(
+    void *pBackend)
+{
+    int nEffectInstanceId;
+    int nOffset;
+    VsSoundDirectSoundEffectBufferPool *pBufferPool;
+
+    nEffectInstanceId = 1;
+    if (nEffectInstanceId <= *(int *)((char *)pBackend + 0x14)) {
+        nOffset = sizeof(void *);
+        do {
+            pBufferPool = *(VsSoundDirectSoundEffectBufferPool **)(
+                *(int *)((char *)pBackend + 0x50) + nOffset);
+            if (pBufferPool != 0 &&
+                pBufferPool->IsAnyDirectSoundEffectBufferPlaying()) {
+                return 1;
+            }
+            nOffset += sizeof(void *);
+            ++nEffectInstanceId;
+        } while (nEffectInstanceId <=
+                 *(int *)((char *)pBackend + 0x14));
+    }
+    return 0;
+}
+
 // FUNCTION: LEMBALL 0x0047e490
 static int LEMBALL_FASTCALL ReturnTrueDirectSoundEffectSlot07(void *) {
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x0047e4a0
+static int LEMBALL_FASTCALL StopAllDirectSoundEffectInstances(void *pBackend) {
+    int nEffectInstanceId;
+    int nOffset;
+    VsSoundDirectSoundEffectBufferPool *pBufferPool;
+
+    nEffectInstanceId = 1;
+    if (nEffectInstanceId <= *(int *)((char *)pBackend + 0x14)) {
+        nOffset = sizeof(void *);
+        do {
+            pBufferPool = *(VsSoundDirectSoundEffectBufferPool **)(
+                *(int *)((char *)pBackend + 0x50) + nOffset);
+            if (pBufferPool != 0) {
+                pBufferPool->StopAllDirectSoundEffectBufferSlots();
+            }
+            nOffset += sizeof(void *);
+            ++nEffectInstanceId;
+        } while (nEffectInstanceId <=
+                 *(int *)((char *)pBackend + 0x14));
+    }
     return 1;
 }
 
@@ -3395,6 +3503,16 @@ void VsSoundDirectSoundEffectBackend::SetDirectSoundEffectInstancePan(
     ((VsSoundDirectSoundEffectBufferPool *)
          *(void **)(*(int *)((char *)this + 0x50) + nEffectInstanceId * 4))
         ->SetDirectSoundEffectBufferSlotPan(nBufferSlot, nPan);
+}
+
+// FUNCTION: LEMBALL 0x0047e7c0
+int VsSoundDirectSoundEffectBackend::PlayDirectSoundEffectInstanceLooped(
+    int nEffectInstanceId, int, int fLoopEnabled)
+{
+    return ((VsSoundDirectSoundEffectBufferPool *)
+                *(void **)(*(int *)((char *)this + 0x50) +
+                           nEffectInstanceId * 4))
+        ->PlayDirectSoundEffectBufferPool(fLoopEnabled);
 }
 
 // FUNCTION: LEMBALL 0x0047e7e0
