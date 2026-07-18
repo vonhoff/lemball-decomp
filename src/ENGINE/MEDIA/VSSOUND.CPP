@@ -433,7 +433,7 @@ struct VsSoundBackendOpenInterface {
 };
 
 struct VsSoundEffectBackendSlots00Through24 {
-    VsSoundRESERVED_VIRTUAL(00);
+    virtual void *Delete(int fDelete) = 0;
     VsSoundRESERVED_VIRTUAL(01);
     VsSoundRESERVED_VIRTUAL(02);
     VsSoundRESERVED_VIRTUAL(03);
@@ -455,7 +455,7 @@ struct VsSoundEffectBackendSlots00Through24 {
     VsSoundRESERVED_VIRTUAL(19);
     VsSoundRESERVED_VIRTUAL(20);
     VsSoundRESERVED_VIRTUAL(21);
-    VsSoundRESERVED_VIRTUAL(22);
+    virtual void ReleaseAll(int nValue) = 0;
     VsSoundRESERVED_VIRTUAL(23);
     virtual void SetMasterVolume(int nVolume) = 0;
 };
@@ -795,7 +795,8 @@ static VsSoundMciMusicBackendVtableModel g_AUDIO_MciMusicBackendVtableModel;
 // GLOBAL: LEMBALL 0x004a9bc8
 void *g_pAudioManager;
 
-static void *g_AudioManagerVtable[1] = { (void *)NetworkSafeVtableNoop };
+// GLOBAL: LEMBALL 0x00498978
+static void *g_AudioManagerVtable[1] = { (void *)ReturnStreamArgument };
 // GLOBAL: LEMBALL 0x0049ac38
 static void *g_WaveOutEffectBackendVtable[39] = {
     (void *)DeleteWaveOutEffectBackend,
@@ -1277,8 +1278,9 @@ void *VsSoundManager::ConstructAudioManager(int nMusicResourceBase,
 
 // FUNCTION: LEMBALL 0x0045b110
 void __fastcall DestroyAudioManager(void *pAudioManager) {
-    void **ppBackend;
+    VsSoundEffectBackendSlots00Through24 **ppBackend;
     unsigned int i;
+    VsSoundEffectBackendSlots00Through24 *pEffectBackend;
     void *pBackend;
 
     *(void ***)pAudioManager = g_AudioManagerVtable;
@@ -1292,18 +1294,26 @@ void __fastcall DestroyAudioManager(void *pAudioManager) {
     }
     *(void **)((char *)pAudioManager + 0x74) = 0;
     *(void **)((char *)pAudioManager + 0x78) = 0;
-    ppBackend = (void **)((char *)pAudioManager + 0x24);
-    for (i = 0; i < *(unsigned int *)((char *)pAudioManager + 0x20); ++i) {
-        if (ppBackend[i] != 0) {
-            ((VsSoundIntProc)(*(void ***)ppBackend[i])[22])(
-                ppBackend[i], 0, 0);
-            ((VsSoundThisProc)(*(void ***)ppBackend[i])[5])(ppBackend[i]);
-            ((VsSoundDeleteProc)(*(void ***)ppBackend[i])[0])(ppBackend[i], 0, 1);
-        }
+    i = 0;
+    if (i < *(unsigned int *)((char *)pAudioManager + 0x20)) {
+        ppBackend = (VsSoundEffectBackendSlots00Through24 **)
+            ((char *)pAudioManager + 0x24);
+        do {
+            if (*ppBackend != 0) {
+                pEffectBackend = *ppBackend;
+                pEffectBackend->ReleaseAll(0);
+                (*ppBackend)->Stop();
+                if (*ppBackend != 0) {
+                    (*ppBackend)->Delete(1);
+                }
+            }
+            ++ppBackend;
+            ++i;
+        } while (i < *(unsigned int *)((char *)pAudioManager + 0x20));
     }
     if (*(void **)((char *)pAudioManager + 0x34) != 0) {
-        ((VsSoundDeleteProc)(*(void ***)*(void **)((char *)pAudioManager + 0x34))[0])(
-            *(void **)((char *)pAudioManager + 0x34), 0, 1);
+        ((VsSoundEffectBackendSlots00Through24 *)
+             *(void **)((char *)pAudioManager + 0x34))->Delete(1);
     }
 }
 
