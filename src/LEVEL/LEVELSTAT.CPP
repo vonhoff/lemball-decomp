@@ -3931,6 +3931,10 @@ void RenderReconstructedLevelScreenTerrain(void *pObject)
 
 void DrawReconstructedLevelScreenStatusText(void *pObject)
 {
+    static DWORD s_dwDemoBlinkStart = 0;
+    static int s_fDemoBlinkInitialized = 0;
+    static int s_fDemoBlinkVisible = 0;
+    static char s_szDemoStatus[] = "Demo";
     char *pScreen;
     char *pMode;
     MappedListResourceTable *pMappedList;
@@ -3951,6 +3955,30 @@ void DrawReconstructedLevelScreenStatusText(void *pObject)
 
     RelativePoint[0] = -4;
     RelativePoint[1] = 0;
+    if (g_pLevelDemoPlaybackController != 0 &&
+        *(int *)((char *)g_pLevelDemoPlaybackController + 0x4c) != 0) {
+        DWORD dwNow;
+
+        if (s_fDemoBlinkInitialized == 0) {
+            s_fDemoBlinkInitialized = 1;
+            s_dwDemoBlinkStart = timeGetTime();
+        }
+        dwNow = timeGetTime();
+        if (dwNow - s_dwDemoBlinkStart > 500) {
+            s_fDemoBlinkVisible = s_fDemoBlinkVisible == 0;
+            s_dwDemoBlinkStart = timeGetTime();
+        }
+        if (s_fDemoBlinkVisible != 0) {
+            RelativePoint[0] = 0;
+            pMappedList->SubmitRenderEntry(
+                *(void **)(pScreen + 0x970),
+                (short *)(pScreen + 0x8e6), RelativePoint,
+                0xf8, s_szDemoStatus, 0x20,
+                *(int *)(pScreen + 0x74));
+        }
+        return;
+    }
+
     nBaseTime = *(unsigned short *)(pMode + 0xe4);
     nTime = nBaseTime + *(int *)(pMode + 0xe8);
     if (nTime < 0) nTime = 0;
