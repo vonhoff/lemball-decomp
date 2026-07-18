@@ -1010,6 +1010,7 @@ struct VsGdiDisplayBitmap {
     int m_nStride;
     HGDIOBJ m_hPreviousBitmap;
     HGDIOBJ m_hBitmap;
+
 };
 
 struct VsGdiDisplayBitmapDispatch {
@@ -1056,6 +1057,7 @@ static VsGdiDisplayBitmapVtable g_VSGDI_DisplayBitmapVtable = {
     GetHelperTargetParamWrapperReserved,
     0,
 };
+
 static void *g_VSGDI_MetricsDisplayVtable[14];
 static void *g_VSGDI_DibDisplayVtable[14];
 static void *g_VSGDI_DirectDrawDisplayVtable[14];
@@ -1495,25 +1497,31 @@ int VsGdiDisplayState::InitializeDisplayBitmapInfo(void *pBitmapInfo) {
 // FUNCTION: LEMBALL 0x00456b90
 void *VsGdiDisplayState::CreateDisplayBitmap(int nDriver, void *pBitmapInfo) {
     VsGdiDisplayBitmap *pBitmap;
-    VsGdiHelperTargetParamWrapper *pBinding;
     void *pBits;
     HGDIOBJ hBitmap;
 
-    pBinding = (VsGdiHelperTargetParamWrapper *)(unsigned long)nDriver;
     hBitmap = (HGDIOBJ)CreateDIBSection(
-        (void *)(unsigned long)pBinding->m_nWrappedParam,
+        (void *)(unsigned long)
+            ((VsGdiHelperTargetParamWrapper *)(unsigned long)nDriver)
+                ->m_nWrappedParam,
         pBitmapInfo, 0, &pBits, 0, 0);
     if (hBitmap == 0)
         return 0;
     pBitmap = (VsGdiDisplayBitmap *)AllocateVSMemBlock(0x14);
-    if (pBitmap == 0)
-        return 0;
-    pBitmap->m_pVtable = (void **)&g_VSGDI_DisplayBitmapVtable;
-    pBitmap->m_pBits = pBits;
+    if (pBitmap != 0) {
+        pBitmap->m_pVtable =
+            (void **)&g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable + 4;
+        pBitmap->m_pBits = 0;
+        pBitmap->m_nStride = 0;
+        pBitmap->m_pVtable = (void **)&g_VSGDI_DisplayBitmapVtable;
+        pBitmap->m_hBitmap = hBitmap;
+    } else {
+        pBitmap = 0;
+    }
     pBitmap->m_nStride = *(int *)((char *)pBitmapInfo + 4);
-    pBitmap->m_hPreviousBitmap = 0;
-    pBitmap->m_hBitmap = hBitmap;
-    pBinding->m_nReserved = (int)(unsigned long)pBitmap;
+    pBitmap->m_pBits = pBits;
+    ((VsGdiHelperTargetParamWrapper *)(unsigned long)nDriver)->m_nReserved =
+        (int)(unsigned long)pBitmap;
     return pBitmap;
 }
 
