@@ -247,19 +247,28 @@ static const unsigned char g_aabVSGDIReservedOutputColors[2][3] = {
     { 0xff, 0xff, 0xff }, { 0x00, 0x00, 0x00 }
 };
 
+// GLOBAL: LEMBALL 0x004a0b58
 static const char g_VSGDI_DdrawDll[] = "DDRAW.DLL";
+// GLOBAL: LEMBALL 0x004a0ac8
 static const char g_VSGDI_Dspdib32Dll[] = "DSPDIB32.DLL";
 static const char *g_VSGDI_BaseWindowClass = "VS_Base_Window_Class";
+// GLOBAL: LEMBALL 0x004a0b64
 static const char g_VSGDI_DirectDrawCreate[] = "DirectDrawCreate";
+// GLOBAL: LEMBALL 0x004a0bc0
 static const char g_VSGDI_DirectDrawWindowClass[] = "DirectDrawClass";
+// GLOBAL: LEMBALL 0x004a0bb4
 static const char g_VSGDI_DirectDrawWindowTitle[] = "DirectDraw";
 // GLOBAL: LEMBALL 0x004a0aa8
 static const char *g_pVSGDI_UnknownDirectDrawError = "UNKNOWN DIRECT DRAW ERROR: ";
 // GLOBAL: LEMBALL 0x004a8190
 static char g_VSGDI_DirectDrawErrorText[64];
+// GLOBAL: LEMBALL 0x004a0ad8
 static const char g_VSGDI_DisplayDibStart32[] = "DisplayDibStart32";
+// GLOBAL: LEMBALL 0x004a0aec
 static const char g_VSGDI_DisplayDibEnd32[] = "DisplayDibEnd32";
+// GLOBAL: LEMBALL 0x004a0afc
 static const char g_VSGDI_DisplayDibGetAddress32[] = "DisplayDibGetAddress32";
+// GLOBAL: LEMBALL 0x004a0b14
 static const char g_VSGDI_DisplayDib32[] = "DisplayDib32";
 static const char g_VSGDI_ErrorNoValidDriver[] = "No valid driver selected to initialise\n";
 static const char g_VSGDI_ErrorNoValidDriverAvailable[] = "No valid driver available\n";
@@ -277,7 +286,8 @@ static const char g_VSGDI_AutoSelectedSuffix[] = " ]\n";
 static const char g_VSGDI_DefaultWindowModeSuffix[] =
     ". Defaulting to normal window mode (using CreateDIBSection)";
 static const char g_VSGDI_WarningCaption[] = "WARNING";
-FARPROC g_pApplyFullscreenDisplayModeThunk = 0;
+// GLOBAL: LEMBALL 0x004a8290
+FARPROC g_pApplyFullscreenDisplayModeThunk;
 
 
 #define VsGdiSAFE_TABLE(name) static void *name[32]
