@@ -88,6 +88,8 @@ extern void *g_pMainResourceArchive;
 extern int g_nSelectedNetworkLobbyPeerId;
 extern void *g_pSessionRandomState;
 extern void *g_pVariantResourceEntryManager;
+extern void *g_pEffTransportRuntimeService;
+extern char *g_pszFileBasedNetworkLocalHostName;
 extern void *g_GAME_RenderQueueNodeVtableSlots[4];
 extern void *g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[8];
 extern void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(
@@ -390,6 +392,13 @@ struct GameNetworkLobbyRuntimeView {
     GameNetworkLobbyPeerStateView *m_pPeerStates14;
     char m_abReserved18[8];
     GameNetworkLobbyTrackedPeerView *m_apTrackedPeers20[10];
+    char m_abReserved48[0x0c];
+    int m_fPlayerEntriesDirty54;
+};
+
+class GameNetworkRuntimeServiceView {
+public:
+    virtual const char *GetLocalHostName(void) = 0;
 };
 
 typedef char GameFramedScreenBase_size_must_be_0x398[
@@ -982,6 +991,18 @@ static void ShowNetworkLobbyTextPrompt(
     if (fClear != 0) {
         ClearBoundedTextBuffer(pBuffer);
     }
+    if (pScreen->m_nReserved3A0 == 2) {
+        StartNetworkLobbyTransportSession(
+            g_pActiveNetworkLobbyTransportController);
+        if (g_pActiveNetworkLobbyTransportController == 0 ||
+            *(int *)((char *)g_pActiveNetworkLobbyTransportController +
+                     0x2c) == 0 ||
+            *(int *)((char *)g_pActiveNetworkLobbyTransportController +
+                     0x28) != 0) {
+            SetTimedNetworkLobbyStatus(pScreen, 9, 6000);
+            return;
+        }
+    }
     pBuffer->m_cCapacity00 =
         pScreen->m_nReserved3A0 == 1 ? 8 : 20;
     SetNetworkLobbyStatus(pScreen, pScreen->m_nReserved3A0 + 1);
@@ -1024,6 +1045,12 @@ static void BeginNetworkLobbyTextPrompt(
     GameNetworkLobbyScreenView *pScreen, int nAddressPrompt) {
     GameBoundedTextBuffer *pBuffer;
 
+    if (pScreen->m_fTextPrompt39C != 0 &&
+        ((pScreen->m_nReserved3BC != 0 && nAddressPrompt != 0) ||
+         (pScreen->m_nReserved3BC == 0 && nAddressPrompt == 0))) {
+        CommitNetworkLobbyTextPrompt(pScreen);
+        return;
+    }
     pBuffer = (GameBoundedTextBuffer *)pScreen->m_pTextBuffer398;
     pScreen->m_nReserved3BC = nAddressPrompt;
     pScreen->m_nReserved3B8 = 0;
@@ -1035,6 +1062,35 @@ static void BeginNetworkLobbyTextPrompt(
         CopyBoundedText(pBuffer, g_szNetworkLobbyLocalPlayerName);
         ShowNetworkLobbyTextPrompt(pScreen, 1, 0);
     }
+}
+
+static void SubmitNetworkLobbyPendingText(
+    GameNetworkLobbyScreenView *pScreen) {
+    pScreen->m_nReserved3B8 = 1;
+    StartNetworkLobbyTransportSession(
+        g_pActiveNetworkLobbyTransportController);
+    if (g_pActiveNetworkLobbyTransportController != 0 &&
+        *(int *)((char *)g_pActiveNetworkLobbyTransportController +
+                 0x2c) != 0 &&
+        *(int *)((char *)g_pActiveNetworkLobbyTransportController +
+                 0x28) == 0) {
+        ConfigureNetworkLobbyTransportHostName(
+            g_pNetworkLobbyVsnetRuntime, g_szNetworkLobbyJoinAddress);
+        SetNetworkLobbyStatus(pScreen, 4);
+        return;
+    }
+    SetTimedNetworkLobbyStatus(pScreen, 9, 6000);
+}
+
+static void FlushNetworkLobbyDeferredStatus(
+    GameNetworkLobbyScreenView *pScreen) {
+    if (pScreen->m_nDeferredStatus430 == 7 &&
+        pScreen->m_nReserved3B8 == 0) {
+        return;
+    }
+    SetTimedNetworkLobbyStatus(
+        pScreen, pScreen->m_nDeferredStatus430, 6000);
+    pScreen->m_nDeferredStatus430 = 0;
 }
 
 static unsigned char g_GAME_NetworkLobbyPaletteRemaps[6][8] = {
@@ -3826,6 +3882,9 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
 
 static void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void *pObject) {
     GameNetworkLobbyScreenView *pScreen;
+    GameNetworkLobbyRuntimeView *pRuntime;
+    const char *pszLocalAddress;
+    const char *pszLocalComputer;
     DWORD dwNow;
 
     pScreen = (GameNetworkLobbyScreenView *)pObject;
@@ -3833,24 +3892,35 @@ static void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void *pObject) {
         return;
     }
     if (pScreen->m_fPendingText3E0 != 0) {
-        pScreen->m_nReserved3B8 = 1;
-        if (StartNetworkLobbyTransportSession(
-                g_pActiveNetworkLobbyTransportController) != 0 &&
-            g_pNetworkLobbyVsnetRuntime != 0) {
-            ConfigureNetworkLobbyTransportHostName(
-                g_pNetworkLobbyVsnetRuntime,
-                g_szNetworkLobbyJoinAddress);
-            SetNetworkLobbyStatus(pScreen, 4);
-        } else {
-            SetTimedNetworkLobbyStatus(pScreen, 9, 6000);
-        }
+        SubmitNetworkLobbyPendingText(pScreen);
         pScreen->m_fPendingText3E0 = 0;
     }
     dwNow = timeGetTime();
     if (dwNow - pScreen->m_dwBlinkStart3C8 > 499U) {
         pScreen->m_fBlink3C0 = pScreen->m_fBlink3C0 == 0;
-        pScreen->m_dwBlinkStart3C8 = dwNow;
-        pScreen->m_fSelectorDirty360 = 1;
+        pScreen->m_dwBlinkStart3C8 = timeGetTime();
+    }
+    pRuntime = (GameNetworkLobbyRuntimeView *)g_pNetworkLobbyVsnetRuntime;
+    if (pRuntime != 0) {
+        pszLocalAddress = 0;
+        if (g_pEffTransportRuntimeService != 0) {
+            pszLocalAddress =
+                ((GameNetworkRuntimeServiceView *)
+                    g_pEffTransportRuntimeService)->GetLocalHostName();
+        }
+        pszLocalComputer = g_pszFileBasedNetworkLocalHostName;
+        if (pScreen->m_pszLocalAddress3E4 != pszLocalAddress) {
+            pScreen->m_pszLocalAddress3E4 = pszLocalAddress;
+            pScreen->m_fSelectorDirty360 = 1;
+        }
+        if (pScreen->m_pszLocalComputer3E8 != pszLocalComputer) {
+            pScreen->m_pszLocalComputer3E8 = pszLocalComputer;
+            pScreen->m_fSelectorDirty360 = 1;
+        }
+        if (pRuntime->m_fPlayerEntriesDirty54 != 0) {
+            pRuntime->m_fPlayerEntriesDirty54 = 0;
+            pScreen->m_fRefreshPlayers3C4 = 1;
+        }
     }
     if (pScreen->m_dwStatusDuration3B4 != 0 &&
         dwNow - pScreen->m_dwStatusStart3B0 >
@@ -3863,6 +3933,9 @@ static void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void *pObject) {
         ShowNetworkLobbyTextPrompt(
             pScreen, pScreen->m_nPendingPrompt3A4, 1);
         pScreen->m_nPendingPrompt3A4 = 0;
+    }
+    if (pScreen->m_nDeferredStatus430 != 0) {
+        FlushNetworkLobbyDeferredStatus(pScreen);
     }
     if (pScreen->m_fRefreshPlayers3C4 != 0 &&
         pScreen->m_pPlayerEntries3CC != 0) {
