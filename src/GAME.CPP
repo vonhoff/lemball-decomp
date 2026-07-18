@@ -2066,14 +2066,8 @@ void *GameScreenObject::ConstructRegistrationInfoScreen(void *pPrimaryContext,
 void *GameScreenObject::ConstructNetworkLobbyScreen(void *pPrimaryContext,
                                                      void *pWindowOwnerContext,
                                                      short *paRect) {
-    void *pScreenObject = this;
-    (void)pPrimaryContext;
-    (void)pWindowOwnerContext;
-    (void)paRect;
-    InitializeGameStubVtables();
-    memset(pScreenObject, 0, 0x438);
-    *(void **)pScreenObject = g_GAME_GenericScreenVtableSlots;
-    return pScreenObject;
+    return ConstructFunctionalNetworkLobbyScreen(
+        this, 0, pPrimaryContext, pWindowOwnerContext, paRect);
 }
 
 void *GameScreenObject::ConstructPaintballSequenceScreen(void *pPrimaryContext,

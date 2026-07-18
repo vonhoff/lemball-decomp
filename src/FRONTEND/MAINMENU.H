@@ -26,5 +26,8 @@ void *LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(
 void *LEMBALL_FASTCALL ConstructFunctionalPasswordEntryScreen(
     void *pObject, int nUnusedEdx, void *pPrimaryContext,
     void *pRenderContext, short *paSize);
+void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
+    void *pObject, int nUnusedEdx, void *pPrimaryContext,
+    void *pRenderContext, short *paSize);
 
 #endif
