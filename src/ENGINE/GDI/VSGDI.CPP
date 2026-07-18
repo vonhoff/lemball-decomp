@@ -1450,16 +1450,18 @@ void *VsGdiDisplayState::CreateDisplayBinding(void) {
     void *hDc;
 
     hDc = CreateCompatibleDC(0);
-    if (hDc == 0)
+    if (hDc != 0) {
+        pBinding = (VsGdiHelperTargetParamWrapper *)AllocateVSMemBlock(0xc);
+        if (pBinding != 0) {
+            pBinding->m_pVtable =
+                (void **)&g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable;
+            pBinding->m_nWrappedParam = (int)(unsigned long)hDc;
+            pBinding->m_nReserved = 0;
+            return pBinding;
+        }
         return 0;
-    pBinding = (VsGdiHelperTargetParamWrapper *)AllocateVSMemBlock(0xc);
-    if (pBinding == 0)
-        return 0;
-    pBinding->m_pVtable =
-        (void **)&g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable;
-    pBinding->m_nWrappedParam = (int)(unsigned long)hDc;
-    pBinding->m_nReserved = 0;
-    return pBinding;
+    }
+    return 0;
 }
 
 // FUNCTION: LEMBALL 0x00456b20
