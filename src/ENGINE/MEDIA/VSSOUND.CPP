@@ -28,6 +28,7 @@ typedef int (LEMBALL_FASTCALL *VsSoundCreateEffectProc)(
 typedef void (*VsSoundEffectPlayProc)(int nEffectResourceId, int nVolume);
 typedef void (*VsSoundEffectVolumeProc)(int nEffectInstanceId, int nVolume, int nReserved);
 typedef int (*VsSoundReturnIntProc)(void);
+typedef int (LEMBALL_FASTCALL *VsSoundReturnThisIntProc)(void *pObject);
 typedef int (*VsSoundReturnIntArgProc)(int nValue);
 typedef const char *(*VsSoundNameProc)(void);
 typedef void (LEMBALL_FASTCALL *VsSoundContextProc)(
@@ -263,8 +264,6 @@ typedef LONG (__stdcall *VsSoundDirectSoundUnlockProc)(
     void *pvAudioPtr2, DWORD dwAudioBytes2);
 
 void __fastcall DestroyAudioManager(void *pAudioManager);
-void SetAudioManagerPrimaryContext(void *pAudioManager, void *pPrimaryContext);
-void LEMBALL_FASTCALL StopAllAudioManagerBackends(void *pAudioManager);
 void __fastcall RefreshAudioManagerBackendHandles(void *pAudioManager);
 void LEMBALL_FASTCALL StartRegisteredVariantResourceMusic(
     void *pAudioManager, int, int hMusic);
@@ -276,11 +275,6 @@ void LEMBALL_FASTCALL StopVariantResourceMusicPlayback(
     void *pAudioManager, int, int hMusic);
 void LEMBALL_FASTCALL UnregisterVariantResourceMusicHandle(
     void *pAudioManager, int, int hMusic);
-int CreateVariantResourceEffectInstance(void *pAudioManager, int nEffectResourceId);
-void InvokeAudioManagerEffectSlot48IfActive(void *pAudioManager, int nEffect);
-unsigned int GetVariantResourceEffectMasterVolume(void *pAudioManager);
-void SetAudioManagerEffectResourceContext(void *pAudioManager, void *pPrimaryContext);
-void SetAudioManagerMusicResourceContext(void *pAudioManager, void *pPrimaryContext);
 char *__fastcall BuildAudioManagerDescriptionString(void *pAudioManager);
 int InitializeGlobalAudioManager(int nMusicResourceBase,
                                  int cMusicResources,
@@ -442,7 +436,7 @@ struct VsSoundEffectBackendSlots00Through24 {
     VsSoundRESERVED_VIRTUAL(02);
     VsSoundRESERVED_VIRTUAL(03);
     VsSoundRESERVED_VIRTUAL(04);
-    VsSoundRESERVED_VIRTUAL(05);
+    virtual void Stop(void) = 0;
     VsSoundRESERVED_VIRTUAL(06);
     VsSoundRESERVED_VIRTUAL(07);
     VsSoundRESERVED_VIRTUAL(08);
@@ -452,16 +446,21 @@ struct VsSoundEffectBackendSlots00Through24 {
     VsSoundRESERVED_VIRTUAL(12);
     VsSoundRESERVED_VIRTUAL(13);
     VsSoundRESERVED_VIRTUAL(14);
-    VsSoundRESERVED_VIRTUAL(15);
+    virtual int CreateEffect(int nEffectData, int *pnEffectInstanceId) = 0;
     VsSoundRESERVED_VIRTUAL(16);
     VsSoundRESERVED_VIRTUAL(17);
-    VsSoundRESERVED_VIRTUAL(18);
+    virtual void ReleaseEffect(int nEffectInstanceId) = 0;
     VsSoundRESERVED_VIRTUAL(19);
     VsSoundRESERVED_VIRTUAL(20);
     VsSoundRESERVED_VIRTUAL(21);
     VsSoundRESERVED_VIRTUAL(22);
     VsSoundRESERVED_VIRTUAL(23);
     virtual void SetMasterVolume(int nVolume) = 0;
+};
+
+struct VsSoundEffectMasterVolumeInterface
+    : public VsSoundEffectBackendSlots00Through24 {
+    virtual unsigned int GetEffectMasterVolume(void) = 0;
 };
 
 struct VsSoundMusicVolumeInterface : public VsSoundEffectBackendSlots00Through24 {
@@ -499,6 +498,12 @@ struct VsSoundEffectVolumeInterface : public VsSoundEffectBackendSlots00Through2
     virtual void SetEffectVolume(int nEffectInstanceId,
                                  int nVolume,
                                  int nReserved) = 0;
+};
+
+struct VsSoundEffectContextInterface : public VsSoundEffectVolumeInterface {
+    VsSoundRESERVED_VIRTUAL(36);
+    VsSoundRESERVED_VIRTUAL(37);
+    virtual void SetResourceContext(void *pPrimaryContext) = 0;
 };
 
 #undef VsSoundRESERVED_VIRTUAL
@@ -1234,10 +1239,10 @@ void *VsSoundManager::ConstructAudioManager(int nMusicResourceBase,
         }
     }
     if (*(int *)((char *)pAudioManager + 0x18) != 0) {
-        SetAudioManagerEffectResourceContext(pAudioManager, pPrimaryContext);
+        SetAudioManagerEffectResourceContext(pPrimaryContext);
     }
     if (*(int *)((char *)pAudioManager + 0x14) != 0) {
-        SetAudioManagerMusicResourceContext(pAudioManager, pPrimaryContext);
+        SetAudioManagerMusicResourceContext(pPrimaryContext);
     }
     RefreshAudioManagerBackendHandles(pAudioManager);
 
@@ -1305,15 +1310,18 @@ void __fastcall DestroyAudioManager(void *pAudioManager) {
 }
 
 // FUNCTION: LEMBALL 0x0045b190
-void SetAudioManagerPrimaryContext(void *pAudioManager, void *pPrimaryContext) {
+void VsSoundManager::SetAudioManagerPrimaryContext(void *pPrimaryContext) {
     int fAccepted;
-    void *pBackend;
+    VsSoundBackendOpenInterface *pBackend;
+    void *pAudioManager;
 
+    pAudioManager = this;
     *(void **)((char *)pAudioManager + 0x70) = pPrimaryContext;
-    pBackend = *(void **)((char *)pAudioManager + 0x78);
+    pBackend = *(VsSoundBackendOpenInterface **)
+        ((char *)pAudioManager + 0x78);
     if (*(int *)((char *)pAudioManager + 8) == 0 && pBackend != 0) {
-        fAccepted = ((VsSoundOpenProc)(*(void ***)pBackend)[4])(
-            pBackend, 0, 0, *(int *)((char *)pAudioManager + 0x18), pPrimaryContext);
+        fAccepted = pBackend->Open(
+            0, *(int *)((char *)pAudioManager + 0x18), pPrimaryContext);
         if (fAccepted == 0) {
             *(int *)((char *)pAudioManager + 0x18) = 0;
         }
@@ -1321,16 +1329,19 @@ void SetAudioManagerPrimaryContext(void *pAudioManager, void *pPrimaryContext) {
 }
 
 // FUNCTION: LEMBALL 0x0045b1d0
-void LEMBALL_FASTCALL StopAllAudioManagerBackends(void *pAudioManager) {
-    void **ppBackend;
+void VsSoundManager::StopAllAudioManagerBackends(void) {
+    VsSoundEffectBackendSlots00Through24 **ppBackend;
     unsigned int i;
+    void *pAudioManager;
 
+    pAudioManager = this;
     if (*(int *)((char *)pAudioManager + 8) == 0) {
         *(int *)((char *)pAudioManager + 8) = 1;
-        ppBackend = (void **)((char *)pAudioManager + 0x24);
+        ppBackend = (VsSoundEffectBackendSlots00Through24 **)
+            ((char *)pAudioManager + 0x24);
         for (i = 0; i < *(unsigned int *)((char *)pAudioManager + 0x20); ++i) {
             if (ppBackend[i] != 0) {
-                ((VsSoundVoidProc)(*(void ***)ppBackend[i])[5])();
+                ppBackend[i]->Stop();
             }
         }
     }
@@ -1478,26 +1489,31 @@ void LEMBALL_FASTCALL UnregisterVariantResourceMusicHandle(
 }
 
 // FUNCTION: LEMBALL 0x0045b3f0
-int CreateVariantResourceEffectInstance(void *pAudioManager, int nEffectResourceId) {
+int VsSoundManager::CreateVariantResourceEffectInstance(
+    int nEffectResourceId) {
     VsSoundResourceObject *pEffectResource;
     int nEffectInstanceId;
     int nEffectData;
+    void *pAudioManager;
 
+    pAudioManager = this;
     if (*(int *)((char *)pAudioManager + 0x10) == 1) {
         pEffectResource = (VsSoundResourceObject *)LoadEffResource(nEffectResourceId);
         if (pEffectResource->m_nLoadState10 == 0) {
-            ((VsSoundVoidProc)pEffectResource->m_pVtable[7])();
+            ((VsSoundThisProc)pEffectResource->m_pVtable[7])(
+                pEffectResource);
         } else {
             pEffectResource->m_nReserved24 = 0;
         }
 
         ++pEffectResource->m_nLockCount08;
-        nEffectData = ((VsSoundReturnIntProc)pEffectResource->m_pVtable[10])();
+        nEffectData = ((VsSoundReturnThisIntProc)
+            pEffectResource->m_pVtable[10])(pEffectResource);
         {
             void *pEffectBackend =
                 *(void **)((char *)pAudioManager + 0x78);
-            ((VsSoundCreateEffectProc)(*(void ***)pEffectBackend)[15])(
-                pEffectBackend, 0, nEffectData, &nEffectInstanceId);
+            ((VsSoundEffectBackendSlots00Through24 *)pEffectBackend)
+                ->CreateEffect(nEffectData, &nEffectInstanceId);
         }
         --pEffectResource->m_nLockCount08;
         ReleaseTypedResourceObjectReference(pEffectResource);
@@ -1533,12 +1549,15 @@ void VsSoundManager::SetVariantResourceEffectInstanceVolume(int nEffectInstanceI
 }
 
 // FUNCTION: LEMBALL 0x0045b4f0
-void InvokeAudioManagerEffectSlot48IfActive(void *pAudioManager, int nEffect) {
-    void *pBackend;
+void VsSoundManager::InvokeAudioManagerEffectSlot48IfActive(int nEffect) {
+    VsSoundEffectBackendSlots00Through24 *pBackend;
+    void *pAudioManager;
 
+    pAudioManager = this;
     if (*(int *)((char *)pAudioManager + 0x10) == 1) {
-        pBackend = *(void **)((char *)pAudioManager + 0x78);
-        ((VsSoundIntProc)(*(void ***)pBackend)[18])(nEffect);
+        pBackend = *(VsSoundEffectBackendSlots00Through24 **)
+            ((char *)pAudioManager + 0x78);
+        pBackend->ReleaseEffect(nEffect);
     }
 }
 
@@ -1571,35 +1590,44 @@ void VsSoundManager::SetAudioManagerMusicAndEffectVolume(int nMusicVolume, int n
 }
 
 // FUNCTION: LEMBALL 0x0045b560
-unsigned int GetVariantResourceEffectMasterVolume(void *pAudioManager) {
-    void *pBackend;
+unsigned int VsSoundManager::GetVariantResourceEffectMasterVolume(void) {
+    VsSoundEffectMasterVolumeInterface *pBackend;
+    void *pAudioManager;
 
-    pBackend = *(void **)((char *)pAudioManager + 0x78);
+    pAudioManager = this;
+    pBackend = *(VsSoundEffectMasterVolumeInterface **)
+        ((char *)pAudioManager + 0x78);
     if (pBackend != 0) {
-        return ((VsSoundReturnIntProc)(*(void ***)pBackend)[25])();
+        return pBackend->GetEffectMasterVolume();
     }
     return 0;
 }
 
+#pragma auto_inline(off)
 // FUNCTION: LEMBALL 0x0045b580
-void SetAudioManagerEffectResourceContext(void *pAudioManager, void *pPrimaryContext) {
-    void *pBackend;
+void VsSoundManager::SetAudioManagerEffectResourceContext(void *pPrimaryContext) {
+    VsSoundEffectContextInterface *pBackend;
+    void *pAudioManager;
 
-    pBackend = *(void **)((char *)pAudioManager + 0x78);
-    ((VsSoundContextProc)(*(void ***)pBackend)[38])(
-        pBackend, 0, pPrimaryContext);
+    pAudioManager = this;
+    pBackend = *(VsSoundEffectContextInterface **)
+        ((char *)pAudioManager + 0x78);
+    pBackend->SetResourceContext(pPrimaryContext);
 }
 
 // FUNCTION: LEMBALL 0x0045b5a0
-void SetAudioManagerMusicResourceContext(void *pAudioManager, void *pPrimaryContext) {
-    void *pBackend;
+void VsSoundManager::SetAudioManagerMusicResourceContext(void *pPrimaryContext) {
+    VsSoundEffectContextInterface *pBackend;
+    void *pAudioManager;
 
-    pBackend = *(void **)((char *)pAudioManager + 0x74);
+    pAudioManager = this;
+    pBackend = *(VsSoundEffectContextInterface **)
+        ((char *)pAudioManager + 0x74);
     if (pBackend != 0) {
-        ((VsSoundContextProc)(*(void ***)pBackend)[38])(
-            pBackend, 0, pPrimaryContext);
+        pBackend->SetResourceContext(pPrimaryContext);
     }
 }
+#pragma auto_inline(on)
 
 // FUNCTION: LEMBALL 0x0045b5c0
 void VsSoundManager::SetAudioManagerStartupMusicName(const char *pszMusicName) {

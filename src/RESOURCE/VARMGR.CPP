@@ -295,7 +295,8 @@ void GameVariantResourceEntryManager::ClearActiveVariantResourceEntries(void) {
     i = 0x32;
     do {
         if (*pEntry != -1) {
-            InvokeAudioManagerEffectSlot48IfActive(g_pAudioManager, *pEntry);
+            ((VsSoundManager *)g_pAudioManager)
+                ->InvokeAudioManagerEffectSlot48IfActive(*pEntry);
             *pEntry = -1;
         }
         pEntry += 3;
@@ -317,7 +318,9 @@ void GameVariantResourceEntryManager::PopulateVariantResourceEntriesForFlagMask(
         i = 0x32;
         do {
             if (*pEntry != 0 && ((*(unsigned short *)(unsigned long)(*pEntry + 10) & nMask) != 0)) {
-                pEntry[1] = CreateVariantResourceEffectInstance(g_pAudioManager, *(int *)(unsigned long)(*pEntry + 4));
+                pEntry[1] = ((VsSoundManager *)g_pAudioManager)
+                    ->CreateVariantResourceEffectInstance(
+                        *(int *)(unsigned long)(*pEntry + 4));
             }
             pEntry[2] = (int)(dwNow - 100);
             if (*(void **)((char *)pManager + 4) != 0) {
@@ -367,7 +370,8 @@ void GameVariantResourceEntryManager::SwitchVariantResourceEntryMode(unsigned sh
         if (fEnableMusic) {
             SetVariantResourceMusicEnabled(0);
             ClearActiveVariantResourceEntries();
-            StopAllAudioManagerBackends(g_pAudioManager);
+            ((VsSoundManager *)g_pAudioManager)
+                ->StopAllAudioManagerBackends();
         } else {
             ClearActiveVariantResourceEntries();
         }
@@ -383,10 +387,12 @@ void GameVariantResourceEntryManager::SwitchVariantResourceEntryMode(unsigned sh
             fEnableMusic = 0;
         case 3:
             nMusicResourceId = 0x242;
-            SetAudioManagerPrimaryContext(g_pAudioManager, (void *)0x243);
+            ((VsSoundManager *)g_pAudioManager)
+                ->SetAudioManagerPrimaryContext((void *)0x243);
             break;
         case 4:
-            SetAudioManagerPrimaryContext(g_pAudioManager, (void *)0x243);
+            ((VsSoundManager *)g_pAudioManager)
+                ->SetAudioManagerPrimaryContext((void *)0x243);
             nMusicResourceId = *(int *)((char *)pManager + 0x2c8) + 0x239;
             nNextRandom = (*(int *)g_pSessionRandomState * 0x29 + 0x1f) & 0x7fffff;
             *(int *)g_pSessionRandomState = nNextRandom;

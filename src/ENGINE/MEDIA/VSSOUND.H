@@ -1,9 +1,9 @@
 #ifndef LEMBALL_AUDIO_MANAGER_H
 #define LEMBALL_AUDIO_MANAGER_H
 
+#include "ENGINE/CORE/COMMON.H"
+
 void __fastcall DestroyAudioManager(void *pAudioManager);
-void SetAudioManagerPrimaryContext(void *pAudioManager, void *pPrimaryContext);
-void __fastcall StopAllAudioManagerBackends(void *pAudioManager);
 void __fastcall RefreshAudioManagerBackendHandles(void *pAudioManager);
 int StopWaveOutPlayback(void *pBackend);
 void __fastcall StartRegisteredVariantResourceMusic(
@@ -16,11 +16,6 @@ void __fastcall StopVariantResourceMusicPlayback(
     void *pAudioManager, int nUnused, int hMusic);
 void __fastcall UnregisterVariantResourceMusicHandle(
     void *pAudioManager, int nUnused, int hMusic);
-int CreateVariantResourceEffectInstance(void *pAudioManager, int nEffectResourceId);
-void InvokeAudioManagerEffectSlot48IfActive(void *pAudioManager, int nEffect);
-unsigned int GetVariantResourceEffectMasterVolume(void *pAudioManager);
-void SetAudioManagerEffectResourceContext(void *pAudioManager, void *pPrimaryContext);
-void SetAudioManagerMusicResourceContext(void *pAudioManager, void *pPrimaryContext);
 char *__fastcall BuildAudioManagerDescriptionString(void *pAudioManager);
 int InitializeGlobalAudioManager(int nMusicResourceBase,
                                  int cMusicResources,
@@ -46,6 +41,13 @@ struct VsSoundManager {
                                 int cEffectResources,
                                 void *pPrimaryContext);
     void InvokeAudioManagerEmbeddedSlot04(int nValue1, int nValue2);
+    void SetAudioManagerPrimaryContext(void *pPrimaryContext);
+    void StopAllAudioManagerBackends(void);
+    int CreateVariantResourceEffectInstance(int nEffectResourceId);
+    void InvokeAudioManagerEffectSlot48IfActive(int nEffect);
+    unsigned int GetVariantResourceEffectMasterVolume(void);
+    void SetAudioManagerEffectResourceContext(void *pPrimaryContext);
+    void SetAudioManagerMusicResourceContext(void *pPrimaryContext);
     int RegisterVariantResourceMusicHandle(int nMusicResourceId, int nUnused);
     void SetAudioManagerStartupMusicName(const char *pszMusicName);
     void SetAudioManagerMusicEnabledFlag(int fEnabled);
