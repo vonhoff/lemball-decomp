@@ -11,6 +11,9 @@
 extern void *g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
 extern void *g_pActiveLevelGameMode;
+extern void *g_pActiveManagedEntityOwner;
+extern int g_nLevelFrameClockTick;
+extern int g_nLevelFrameClockTimeMs;
 extern int g_GAME_ManagedEntityRegistryTable[1000];
 extern unsigned short g_GAME_ManagedEntityRegistryCount;
 extern int *LoadBinResource(int nResourceId);
@@ -71,6 +74,9 @@ static void *g_LINKSCF_BoonChunkObjectVtable[66];
 static void *g_LINKSCF_LevelChunkStreamDispatcherVtable[10];
 static int g_fLinkScfChunkVtablesInitialized;
 static char *g_pLINKSCF_PlasLevelMode;
+static unsigned short g_nLINKSCF_LocalPlasOrdinal;
+
+static void LEMBALL_FASTCALL ActivateOrStagePlasChunkObject(void *pObject);
 
 static void InitializeLinkScfChunkVtables(void) {
     int i;
@@ -104,6 +110,8 @@ static void InitializeLinkScfChunkVtables(void) {
         g_LINKSCF_PlasChunkObjectVtable[i] =
             (void *)NoopChunkStreamVirtual;
     }
+    g_LINKSCF_PlasChunkObjectVtable[65] =
+        (void *)ActivateOrStagePlasChunkObject;
     g_LINKSCF_ShpgChunkManagerVtable[1] =
         (void *)GetFirstCachedChunkObject;
     g_LINKSCF_ShpgChunkManagerVtable[2] =
@@ -150,17 +158,21 @@ static void InitializeLinkScfChunkVtables(void) {
     g_fLinkScfChunkVtablesInitialized = 1;
 }
 
-static void *ConstructPlasChunkObjectForLevel(void *pObject,
-                                               int nX,
-                                               int nY,
-                                               int nZ,
-                                               unsigned short nVariant,
-                                               int nNetworkPlayer,
-                                               int nStartDelay) {
+static void *LEMBALL_FASTCALL ConstructPlasChunkObjectForLevel(
+    void *pObject,
+    int nUnusedEdx,
+    int nX,
+    int nY,
+    int nZ,
+    unsigned short nVariant,
+    int nNetworkPlayer,
+    int nStartDelay) {
     int i;
     int nRegistryIndex;
     unsigned short *pChildSlots;
     int *pChildRecords;
+
+    (void)nUnusedEdx;
 
     for (i = 0; i < 0x22c / 4; ++i) {
         ((int *)pObject)[i] = 0;
@@ -230,12 +242,87 @@ static void *ConstructPlasChunkObjectForLevel(void *pObject,
     return pObject;
 }
 
-static void LoadPlasChunkObjects(void *pManager,
-                                 const unsigned short *pChunk,
-                                 int fReuseState) {
+static void LEMBALL_FASTCALL ActivateOrStagePlasChunkObject(void *pObject) {
+    char *pPlayer;
+    char *pOwner;
+    unsigned short nOrdinal;
+    int nX;
+    int nY;
+    int nZ;
+    int nManagedCount;
+
+    pPlayer = (char *)pObject;
+    pOwner = (char *)g_pActiveManagedEntityOwner;
+    if (*(int *)(pPlayer + 0x170) != 0) {
+        *(int *)(pPlayer + 0x114) = 1;
+        *(int *)(pPlayer + 0xb8) = 8;
+        return;
+    }
+
+    nOrdinal = g_nLINKSCF_LocalPlasOrdinal++;
+    *(unsigned short *)(pPlayer + 0x168) = nOrdinal;
+    if (pOwner != 0 && nOrdinal < 4) {
+        *(void **)(pOwner + 0x1d0 + nOrdinal * 4) = pObject;
+    }
+    *(int *)(pPlayer + 0xb8) = 0x0c;
+    *(int *)(pPlayer + 0x94) = g_nLevelFrameClockTimeMs;
+    *(int *)(pPlayer + 0xcc) =
+        *(int *)(pPlayer + 0x174) + g_nLevelFrameClockTick;
+
+    nX = *(int *)(pPlayer + 0x40) >> 12;
+    nY = *(int *)(pPlayer + 0x44) >> 12;
+    nZ = *(int *)(pPlayer + 0x48) >> 12;
+    *(int *)(pPlayer + 0x14) = nX - 8;
+    *(int *)(pPlayer + 0x18) = nY - 8;
+    *(int *)(pPlayer + 0x1c) = nZ;
+    *(int *)(pPlayer + 0x20) = nX + 7;
+    *(int *)(pPlayer + 0x24) = nY + 7;
+    *(int *)(pPlayer + 0x28) = nZ + 0x0f;
+
+    if (pOwner != 0 && *(void **)(pOwner + 0x120) != 0) {
+        nManagedCount = *(int *)(pOwner + 0x118);
+        if (nManagedCount < *(int *)(pOwner + 0x11c)) {
+            *(void **)(*(char **)(pOwner + 0x120) + nManagedCount * 4) =
+                pObject;
+            *(int *)(pOwner + 0x118) = nManagedCount + 1;
+        }
+    }
+    *(int *)(pPlayer + 0x4c) = 0x3000;
+    *(int *)(pPlayer + 0x50) = 0;
+    *(int *)(pPlayer + 0x54) = 0xa000;
+    *(int *)(pPlayer + 0x7c) = 0;
+    *(unsigned short *)(pPlayer + 0x6e) =
+        *(unsigned short *)(pPlayer + 0xb6);
+    *(int *)(pPlayer + 0x78) = 0;
+    *(int *)(pPlayer + 0x74) = 0;
+    *(int *)(pPlayer + 0x84) = 0;
+    *(int *)(pPlayer + 0x9c) = *(int *)(pPlayer + 0x40);
+    *(int *)(pPlayer + 0xa0) = *(int *)(pPlayer + 0x44);
+    *(int *)(pPlayer + 0xa4) = *(int *)(pPlayer + 0x48) + 0x44000;
+    *(int *)(pPlayer + 0x2c) = 0;
+    *(int *)(pPlayer + 0x164) = 1;
+    *(int *)(pPlayer + 0x224) = 0;
+    *(int *)(pPlayer + 0x18c) = 0;
+    *(int *)(pPlayer + 0x188) = 0;
+    *(int *)(pPlayer + 0x218) = 0;
+    *(unsigned short *)(pPlayer + 0x228) = 0x19;
+    *(unsigned short *)(pPlayer + 0xb4) =
+        *(unsigned short *)(pPlayer + 0xb6);
+    *(int *)(pPlayer + 0x220) = 0;
+}
+
+static void LEMBALL_FASTCALL LoadPlasChunkObjects(
+    void *pManager,
+    int nUnusedEdx,
+    const unsigned short *pChunk,
+    unsigned int cbChunk,
+    int fReuseState) {
     char *pManagerBytes;
     int nPlayerCount;
     int nPlayerIndex;
+
+    (void)nUnusedEdx;
+    (void)cbChunk;
 
     pManagerBytes = (char *)pManager;
     *(int *)(pManagerBytes + 0x124) = 1;
@@ -258,6 +345,7 @@ static void LoadPlasChunkObjects(void *pManager,
         nPlayerCount = 4;
     }
     *(int *)(pManagerBytes + 0x128) = nPlayerCount;
+    g_nLINKSCF_LocalPlasOrdinal = 0;
     for (nPlayerIndex = 0; nPlayerIndex < 4; ++nPlayerIndex) {
         void *pPlayer;
 
@@ -270,7 +358,7 @@ static void LoadPlasChunkObjects(void *pManager,
             pPlayer = AllocateVSMemBlock(0x22c);
             if (pPlayer != 0) {
                 ConstructPlasChunkObjectForLevel(
-                    pPlayer,
+                    pPlayer, 0,
                     *(int *)(pManagerBytes + 0xe0 + nPlayerIndex * 4),
                     *(int *)(pManagerBytes + 0xf0 + nPlayerIndex * 4),
                     *(int *)(pManagerBytes + 0x100 + nPlayerIndex * 4),
@@ -278,6 +366,9 @@ static void LoadPlasChunkObjects(void *pManager,
                     nPlayerIndex < nPlayerCount ? 0 :
                     (0xf3c + (nPlayerIndex - nPlayerCount) * 800) / 0x32);
             }
+        }
+        if (pPlayer != 0) {
+            ActivateOrStagePlasChunkObject(pPlayer);
         }
         if (nPlayerIndex < nPlayerCount) {
             *(void **)(pManagerBytes + 0x12c + nPlayerIndex * 4) = pPlayer;
@@ -394,8 +485,9 @@ void LoadLevelChunksForSkillAndLevelThunk(void *pLoaderContext, unsigned int nSk
                 (const unsigned short *)(pChunk + 8), cbChunk - 8,
                 fReuseState);
         } else if (nTag == 0x504c4153) {
-            LoadPlasChunkObjects(*(void **)(pLevelMode + 0x15c),
+            LoadPlasChunkObjects(*(void **)(pLevelMode + 0x15c), 0,
                                  (const unsigned short *)(pChunk + 8),
+                                 cbChunk - 8,
                                  fReuseState);
         }
         if (nTag == 0x454e443f) {
