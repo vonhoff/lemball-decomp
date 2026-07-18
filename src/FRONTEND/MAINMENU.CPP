@@ -2995,6 +2995,7 @@ static void LEMBALL_FASTCALL InitializePaintballSequenceResources(
     const int *panBackResources;
     const int *panPlayResources;
     void *pButtonManager;
+    unsigned char *pForegroundEntry;
     int nPrimaryResource;
     int nSecondaryResource;
     short x;
@@ -3026,16 +3027,25 @@ static void LEMBALL_FASTCALL InitializePaintballSequenceResources(
     pScreen->m_pPrimaryBitmap4FC = LoadBitmapResource(nPrimaryResource);
     pScreen->m_pSecondaryBitmap500 = pScreen->m_fMediaEnabled604 == 0
         ? LoadBitmapResource(nSecondaryResource) : 0;
+    pForegroundEntry = pScreen->m_abRenderEntryGroupC8 + 0x14;
+    ConfigurePaintballBitmapEntry(
+        pForegroundEntry, pScreen->m_pForegroundBitmapC0,
+        (short)(pScreen->m_cxScreen37C -
+            *(short *)((char *)pScreen->m_pForegroundBitmapC0 + 0x48)),
+        (short)pScreen->m_pLayout510[5]);
     if (pScreen->m_pPrimaryBitmap4FC != 0) {
         x = (short)(pScreen->m_cxScreen37C -
             *(short *)((char *)pScreen->m_pPrimaryBitmap4FC + 0x48));
         ConfigurePaintballBitmapEntry(
             pScreen->m_abPrimaryBitmapEntry398,
-            pScreen->m_pPrimaryBitmap4FC, x, 0);
+            pScreen->m_pPrimaryBitmap4FC, x,
+            (short)pScreen->m_pLayout510[7]);
+        ((int *)pScreen->m_pLayout510)[6] = x;
+        ((int *)pScreen->m_pLayout510)[10] = x;
     }
     if (pScreen->m_pSecondaryBitmap500 != 0) {
         ConfigurePaintballBitmapEntry(
-            (unsigned char *)pScreen + 0x3bc,
+            pScreen->m_abSecondaryBitmapEntry3E0,
             pScreen->m_pSecondaryBitmap500,
             (short)pScreen->m_pLayout510[20],
             (short)pScreen->m_pLayout510[21]);
