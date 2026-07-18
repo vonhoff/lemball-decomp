@@ -89,6 +89,7 @@ extern int g_nSelectedNetworkLobbyPeerId;
 extern void *g_pSessionRandomState;
 extern void *g_pVariantResourceEntryManager;
 extern void *g_GAME_RenderQueueNodeVtableSlots[4];
+extern void *g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[8];
 extern void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(
     void *pVsnetRuntime);
 extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableA(
@@ -4063,9 +4064,17 @@ void *LEMBALL_FASTCALL ConstructFunctionalPasswordEntryScreen(
         g_GAME_PasswordEntryQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
         g_GAME_MainMenuCallbackVtable;
-    memset((char *)pScreen + 0x398, 0, 0x494 - 0x398);
-    strncpy(pScreen->m_szPassword3B0, FormatCurrentLevelPassword(), 10);
-    pScreen->m_szPassword3B0[10] = '\0';
+    *(void ***)pScreen->m_abInputPanelPointSink454 =
+        g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage + 4;
+    *(short *)(pScreen->m_abInputPanelPointSink454 + 4) = 0;
+    *(short *)(pScreen->m_abInputPanelPointSink454 + 6) = 0;
+    *(short *)(pScreen->m_abInputPanelPointSink454 + 8) = 0;
+    *(short *)(pScreen->m_abInputPanelPointSink454 + 10) = 0;
+    *(void ***)pScreen->m_abInputPanelFrameSelector464 =
+        g_MenuSelectorCurrentFrameCallbackVtable;
+    *(int *)(pScreen->m_abInputPanelFrameSelector464 + 4) = 1;
+    *(int *)(pScreen->m_abInputPanelFrameSelector464 + 12) = 0;
+    strcpy(pScreen->m_szPassword3B0, FormatCurrentLevelPassword());
     pScreen->m_cPassword420 = 10;
     pScreen->m_nSelectedKey480 = 4;
     pScreen->m_fDrawFrameA8 = 1;
@@ -4416,6 +4425,10 @@ static void LEMBALL_FASTCALL DrawPasswordEntryText(void *pObject) {
 static void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void *pObject) {
     GamePasswordEntryScreenView *pScreen;
     MappedListResourceTable *pMappedList;
+    typedef void (LEMBALL_FASTCALL *QueuePointSinkVirtual)(
+        void *, int, void *);
+    int nContext;
+    int nExtent;
     short Point[2];
     short Relative[2];
     short Extent[2];
@@ -4423,24 +4436,40 @@ static void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void *pObject) {
     void *pSavedContext;
 
     pScreen = (GamePasswordEntryScreenView *)pObject;
-    if (pScreen->m_pMappedListResources98 == 0 ||
-        pScreen->m_pLayout3A8 == 0) {
-        return;
-    }
-    pMappedList = (MappedListResourceTable *)pScreen->m_pMappedListResources98;
     if (pScreen->m_pInputPanelRenderContext474 != 0) {
-        Point[0] = 0;
-        Point[1] = 0;
+        nContext = *(int *)((char *)pScreen->m_pInputPanelRenderContext474 +
+                           0x0c);
+        nExtent = nContext + *(int *)(*(int *)(nContext + 0x40) + 4) + 0x40;
+        *(int *)(pScreen->m_abInputPanelPointSink454 + 12) = 0x10000;
+        *(short *)(pScreen->m_abInputPanelPointSink454 + 4) =
+            *(short *)(nExtent + 0x14);
+        *(short *)(pScreen->m_abInputPanelPointSink454 + 6) =
+            *(short *)(nExtent + 0x16);
+        *(short *)(pScreen->m_abInputPanelPointSink454 + 8) = 0;
+        *(short *)(pScreen->m_abInputPanelPointSink454 + 10) = 0;
+        ((QueuePointSinkVirtual)
+            (*(void ***)pScreen->m_abInputPanelPointSink454)[1])(
+                pScreen->m_abInputPanelPointSink454, 0,
+                pScreen->m_pInputPanelRenderContext474);
+        Point[0] = (short)pScreen->m_xSelected478;
+        Point[1] = (short)pScreen->m_ySelected47C;
         pSavedContext = *(void **)(pScreen->m_abVariantRenderManager14 + 0x1c);
+        *(int *)(pScreen->m_abInputPanelFrameSelector464 + 12) = 0;
         *(void **)(pScreen->m_abVariantRenderManager14 + 0x1c) =
             pScreen->m_pInputPanelRenderContext474;
         ((LevelVariantRenderManagerView *)
              pScreen->m_abVariantRenderManager14)
             ->EmitVariantRenderResourceEntry(
-                Rect, Point, pScreen->m_nPanelResourceId398, 0, 0, 0);
+                Rect, Point, pScreen->m_nPanelResourceId398, 0,
+                pScreen->m_abInputPanelFrameSelector464, 0);
         *(void **)(pScreen->m_abVariantRenderManager14 + 0x1c) =
             pSavedContext;
     }
+    if (pScreen->m_pMappedListResources98 == 0 ||
+        pScreen->m_pLayout3A8 == 0) {
+        return;
+    }
+    pMappedList = (MappedListResourceTable *)pScreen->m_pMappedListResources98;
     Relative[0] = 0;
     Relative[1] = 0;
     MeasureFunctionalLevelTitleExtent(
