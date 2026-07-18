@@ -306,6 +306,10 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionStatus(
     void *pObject);
 static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(
     void *pObject);
+static void RefreshFunctionalLevelSelectionMetadata(
+    GameLevelSelectionScreenView *pScreen);
+static void SelectFunctionalLevel(
+    GameLevelSelectionScreenView *pScreen, int nDirection);
 static GameProgressiveVariantFrameSelector *
     ConstructLevelSelectionFrameSelector(void *pManager, int nResourceId);
 static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(
@@ -1589,18 +1593,30 @@ static void *LEMBALL_FASTCALL DeleteFunctionalLevelSelectionScreen(
 
 static int LEMBALL_FASTCALL HandleFunctionalLevelSelectionInput(
     void *pObject, int, void *pEvent) {
-    GameFramedScreenBase *pScreen;
+    GameLevelSelectionScreenView *pScreen;
     unsigned short nType;
     int nCode;
 
-    pScreen = (GameFramedScreenBase *)pObject;
+    pScreen = (GameLevelSelectionScreenView *)pObject;
     nType = *(unsigned short *)pEvent;
     nCode = *(int *)((char *)pEvent + 8);
     if (nType == 4) {
-        if (nCode == 0x23) {
+        if (nCode == 0x1b || nCode == 0x23) {
             pScreen->m_nRequestedMode374 = 2;
-        } else if (nCode == 0x1f || nCode == 0x4c) {
+        } else if (nCode == 0x0d || nCode == 0x1f || nCode == 0x4c) {
             pScreen->m_nRequestedMode374 = 5;
+        } else if (nCode == 0x27 || nCode == 0x28 ||
+                   nCode == 2 || nCode == 4) {
+            if (pScreen->m_fNextLocked480 == 0) {
+                SelectFunctionalLevel(pScreen, 1);
+            }
+            return 1;
+        } else if (nCode == 0x25 || nCode == 0x26 ||
+                   nCode == 1 || nCode == 3) {
+            if (pScreen->m_fPreviousLocked484 == 0) {
+                SelectFunctionalLevel(pScreen, -1);
+            }
+            return 1;
         } else {
             return 0;
         }
@@ -1609,6 +1625,16 @@ static int LEMBALL_FASTCALL HandleFunctionalLevelSelectionInput(
             pScreen->m_nRequestedMode374 = 2;
         } else if ((unsigned int)nCode == 0xacef000dU) {
             pScreen->m_nRequestedMode374 = 5;
+        } else if ((unsigned int)nCode == 0xacef000eU) {
+            if (pScreen->m_fNextLocked480 == 0) {
+                SelectFunctionalLevel(pScreen, 1);
+            }
+            return 1;
+        } else if ((unsigned int)nCode == 0xacef000fU) {
+            if (pScreen->m_fPreviousLocked484 == 0) {
+                SelectFunctionalLevel(pScreen, -1);
+            }
+            return 1;
         } else {
             return 0;
         }
@@ -1679,27 +1705,15 @@ static void LEMBALL_FASTCALL InitializeFunctionalLevelSelectionResources(
     *(int *)(pForegroundEntry + 0x14) = 0;
     {
         GameLevelSelectionScreenView *pLevelScreen;
-        const char *pszTitle;
-        int nPack;
 
         pLevelScreen = (GameLevelSelectionScreenView *)pScreen;
-        pszTitle = "UN-NAMED LEVEL";
-        strcpy(pLevelScreen->m_aszTitleLines3FC[0], pszTitle);
-        pLevelScreen->m_aszTitleLines3FC[1][0] = '\0';
-        pLevelScreen->m_aszTitleLines3FC[2][0] = '\0';
         pLevelScreen->m_aTitlePositions464[0][0] = pLayout[36];
         pLevelScreen->m_aTitlePositions464[0][1] = pLayout[37];
         pLevelScreen->m_aTitlePositions464[1][0] = -1;
         pLevelScreen->m_aTitlePositions464[1][1] = -1;
         pLevelScreen->m_aTitlePositions464[2][0] = -1;
         pLevelScreen->m_aTitlePositions464[2][1] = -1;
-        strcpy(pLevelScreen->m_abTime45C, "0:00");
-        nPack = ((GameLevelProgressStateView *)g_pLevelProgressState)
-                    ->m_nCurrentPack08;
-        pLevelScreen->m_cSkillStatus3F4 = nPack;
-        pLevelScreen->m_cStatus3EC = 0;
-        pLevelScreen->m_cNetworkStatus3F0 = 0;
-        pLevelScreen->m_nLevelTime3F8 = 0;
+        RefreshFunctionalLevelSelectionMetadata(pLevelScreen);
     }
     pScreen->m_fSelectorDirty360 = 1;
 }
@@ -1811,6 +1825,64 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(
         pScreen->m_pRenderContext88, Point, Relative,
         pScreen->m_nMappedListRemapResourceId384,
         (void *)s_apszSkillNames[nPack], 0x20, 0);
+}
+
+static void RefreshFunctionalLevelSelectionMetadata(
+    GameLevelSelectionScreenView *pScreen) {
+    GameLevelProgressStateView *pProgress;
+    int nPack;
+    int nCurrentLevel;
+    int nUnlockedCap;
+
+    pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
+    nPack = pProgress->m_nCurrentPack08;
+    nCurrentLevel = pProgress->m_nCurrentLevel00;
+    wsprintfA(pScreen->m_aszTitleLines3FC[0],
+              "LEVEL %d", nCurrentLevel + 1);
+    pScreen->m_aszTitleLines3FC[1][0] = '\0';
+    pScreen->m_aszTitleLines3FC[2][0] = '\0';
+    strcpy(pScreen->m_abTime45C, "0:00");
+    pScreen->m_cSkillStatus3F4 = nPack;
+    pScreen->m_cStatus3EC = 0;
+    pScreen->m_cNetworkStatus3F0 = 0;
+    pScreen->m_nLevelTime3F8 = 0;
+    pScreen->m_fPreviousLocked484 = nCurrentLevel == 0;
+    if (nPack == 4) {
+        pScreen->m_fNextLocked480 = nCurrentLevel >= 10;
+    } else {
+        nUnlockedCap = pProgress->m_anUnlockedPackCaps28[nPack];
+        pScreen->m_fNextLocked480 = nCurrentLevel >= nUnlockedCap;
+    }
+    pScreen->m_fSelectorDirty360 = 1;
+    pScreen->m_fFrameDirty330 = 1;
+}
+
+static void SelectFunctionalLevel(
+    GameLevelSelectionScreenView *pScreen, int nDirection) {
+    GameLevelProgressStateView *pProgress;
+    static const int s_anLevelCaps[5] = { 0x18, 0x19, 0x1c, 0x15, 0x0b };
+    int nPack;
+
+    pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
+    nPack = pProgress->m_nCurrentPack08;
+    if (nDirection < 0) {
+        if (0 < pProgress->m_nCurrentLevel00) {
+            --pProgress->m_nCurrentLevel00;
+        }
+    } else if (pProgress->m_nCurrentLevel00 < s_anLevelCaps[nPack]) {
+        ++pProgress->m_nCurrentLevel00;
+        if (nPack != 4 &&
+            pProgress->m_anUnlockedPackCaps28[nPack] <
+                pProgress->m_nCurrentLevel00) {
+            pProgress->m_anUnlockedPackCaps28[nPack] =
+                pProgress->m_nCurrentLevel00;
+        }
+    }
+    if (nPack < 4) {
+        pProgress->m_anSnapshotPackCaps3C[nPack] =
+            pProgress->m_nCurrentLevel00;
+    }
+    RefreshFunctionalLevelSelectionMetadata(pScreen);
 }
 
 static void LEMBALL_FASTCALL NoopFunctionalLevelSelectionHook(void *) {
