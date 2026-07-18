@@ -1352,18 +1352,18 @@ void VsSoundManager::SetAudioManagerPrimaryContext(void *pPrimaryContext) {
 
 // FUNCTION: LEMBALL 0x0045b1d0
 void VsSoundManager::StopAllAudioManagerBackends(void) {
-    VsSoundEffectBackendSlots00Through24 **ppBackend;
+    VsSoundEffectBackendSlots00Through24 *pBackend;
     unsigned int i;
     void *pAudioManager;
 
     pAudioManager = this;
     if (*(int *)((char *)pAudioManager + 8) == 0) {
         *(int *)((char *)pAudioManager + 8) = 1;
-        ppBackend = (VsSoundEffectBackendSlots00Through24 **)
-            ((char *)pAudioManager + 0x24);
         for (i = 0; i < *(unsigned int *)((char *)pAudioManager + 0x20); ++i) {
-            if (ppBackend[i] != 0) {
-                ppBackend[i]->Stop();
+            pBackend = *(VsSoundEffectBackendSlots00Through24 **)
+                ((char *)pAudioManager + 0x24 + i * 4);
+            if (pBackend != 0) {
+                pBackend->Stop();
             }
         }
     }
