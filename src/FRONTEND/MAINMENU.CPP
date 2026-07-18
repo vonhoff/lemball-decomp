@@ -403,6 +403,25 @@ public:
     virtual void AppendToQueue(void *pRenderContext) = 0;
 };
 
+class GameGeometryDispatchInterface {
+public:
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved01(void) = 0;
+    virtual void Reserved02(void) = 0;
+    virtual void Reserved03(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void Reserved05(void) = 0;
+    virtual void Reserved06(void) = 0;
+    virtual void Reserved07(void) = 0;
+    virtual void Reserved08(void) = 0;
+    virtual void Reserved09(void) = 0;
+    virtual void Reserved10(void) = 0;
+    virtual void Reserved11(void) = 0;
+    virtual void Reserved12(void) = 0;
+    virtual void Reserved13(void) = 0;
+    virtual void BeginFrame(void) = 0;
+};
+
 class GameNetworkRuntimeVirtualInterface {
 public:
     virtual void Reserved(void) = 0;
@@ -1686,8 +1705,7 @@ static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(
     nDispatchOffset =
         *(int *)((char *)*(void **)(pGeometryOwner + 0x40) + 4);
     pGeometryDispatch = pGeometryOwner + 0x40 + nDispatchOffset;
-    ((GameNoArgVirtual)(*(void ***)pGeometryDispatch)[14])(
-        pGeometryDispatch, 0);
+    ((GameGeometryDispatchInterface *)pGeometryDispatch)->BeginFrame();
     pScreen->m_iRenderEntryGroup328 = 0;
     if (pScreen->m_pSelectorManager334 != 0) {
         if (ConsumeLevelSelectionChangedFlag() != 0 ||
