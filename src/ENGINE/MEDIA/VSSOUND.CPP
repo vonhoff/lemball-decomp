@@ -3461,53 +3461,59 @@ LRESULT CALLBACK MciMusicWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPA
 
 // FUNCTION: LEMBALL 0x0047e940
 VsSoundMciMusicBackend *VsSoundMciMusicBackend::ConstructMciMusicBackend(void) {
+    struct MciMusicBackendConstructorLocals {
+        WNDCLASSA m_WindowClass;
+        VsSoundMciOpenParms m_OpenParms;
+        char m_szMciErrorText[0x80];
+    } Locals;
     VsSoundMciMusicBackend *pMusicBackend;
-    VsSoundMciOpenParms OpenParms;
-    WNDCLASSA WindowClass;
+    VsSoundMciOpenParms *pOpenParms;
     MCIERROR nMciError;
-    char szMciErrorText[0x80];
 
     pMusicBackend = this;
     pMusicBackend->m_BasePath.ConstructDynamicCString();
     pMusicBackend->m_pVtable = g_AUDIO_DynamicStringEntryVtable;
     pMusicBackend->m_fSearchCdromPath = 0;
-    pMusicBackend->m_fBasePathSet = 0;
+    pMusicBackend->m_nReserved08 = 0;
     pMusicBackend->m_pVtable = *(void ***)&g_AUDIO_MciMusicBackendVtableModel;
+    pOpenParms = &Locals.m_OpenParms;
     pMusicBackend->m_nPreparedTrackHandle = 0;
-    pMusicBackend->m_fDeviceAvailable = 0;
-    pMusicBackend->m_uDeviceId = 0;
+    g_nPreparedMciMusicTrackHandle = 0;
+    pOpenParms->dwCallback = 0;
     pMusicBackend->m_fTrackPlaying = 0;
     pMusicBackend->m_fTrackPaused = 0;
     pMusicBackend->m_nPausedTrackPosition = 0;
-    pMusicBackend->m_hNotificationWindow = 0;
-    g_nPreparedMciMusicTrackHandle = 0;
+    pOpenParms->wDeviceID = 0;
+    pOpenParms->lpstrAlias = 0;
+    pOpenParms->lpstrDeviceType = g_AUDIO_SequencerDeviceType;
+    pOpenParms->lpstrElementName = 0;
     g_pActiveMciMusicBackend = pMusicBackend;
-
-    OpenParms.dwCallback = 0;
-    OpenParms.wDeviceID = 0;
-    OpenParms.lpstrDeviceType = g_AUDIO_SequencerDeviceType;
-    OpenParms.lpstrElementName = 0;
-    OpenParms.lpstrAlias = 0;
-    nMciError = mciSendCommandA(0, 0x803, 0x2000, (DWORD_PTR)&OpenParms);
+    nMciError = mciSendCommandA(0, 0x803, 0x2000, (DWORD_PTR)pOpenParms);
     if (nMciError != 0) {
-        mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
+        mciGetErrorStringA(nMciError, Locals.m_szMciErrorText,
+                           sizeof(Locals.m_szMciErrorText));
         g_pErrorOutputStream->AppendCStringToStream(
             "Error!     HL Midi Device Not Found.\n");
         g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
-            ->AppendCStringToStream(szMciErrorText)
+            ->AppendCStringToStream(Locals.m_szMciErrorText)
             ->AppendCStringToStream("\n");
         pMusicBackend->m_fDeviceAvailable = 0;
     } else {
-        pMusicBackend->m_uDeviceId = OpenParms.wDeviceID;
+        pMusicBackend->m_uDeviceId = Locals.m_OpenParms.wDeviceID;
         pMusicBackend->m_fDeviceAvailable = 1;
-        mciSendCommandA(OpenParms.wDeviceID, 0x804, 0, 0);
+        mciSendCommandA(Locals.m_OpenParms.wDeviceID, 0x804, 0, 0);
 
-        memset(&WindowClass, 0, sizeof(WindowClass));
-        WindowClass.style = 3;
-        WindowClass.lpfnWndProc = MciMusicWindowProc;
-        WindowClass.hInstance = g_hApplicationInstance;
-        WindowClass.lpszClassName = g_AUDIO_MciWindowClassName;
-        RegisterClassA(&WindowClass);
+        Locals.m_WindowClass.style = 3;
+        Locals.m_WindowClass.lpfnWndProc = MciMusicWindowProc;
+        Locals.m_WindowClass.cbClsExtra = 0;
+        Locals.m_WindowClass.cbWndExtra = 0;
+        Locals.m_WindowClass.hInstance = g_hApplicationInstance;
+        Locals.m_WindowClass.hIcon = 0;
+        Locals.m_WindowClass.hCursor = 0;
+        Locals.m_WindowClass.hbrBackground = 0;
+        Locals.m_WindowClass.lpszMenuName = 0;
+        Locals.m_WindowClass.lpszClassName = g_AUDIO_MciWindowClassName;
+        RegisterClassA(&Locals.m_WindowClass);
         pMusicBackend->m_hNotificationWindow =
             CreateWindowExA(0,
                             g_AUDIO_MciWindowClassName,
