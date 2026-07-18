@@ -1537,6 +1537,47 @@ void LEMBALL_FASTCALL RefreshQueuedVariantChildByToken(
     }
 }
 
+static void LEMBALL_FASTCALL RebuildCompactZrleOwnerSourceRectIfNeeded(
+    void *pOverlay, int, int fForce) {
+    int fPrevious;
+    short Rect[4];
+    typedef void (LEMBALL_FASTCALL *SetRectProc)(void *, int, short *);
+
+    if (*(int *)((char *)pOverlay + 0xfc) == 0 || fForce != 0) {
+        Rect[0] = *(short *)((char *)pOverlay + 8);
+        Rect[1] = *(short *)((char *)pOverlay + 10);
+        Rect[2] = 0;
+        Rect[3] = 0;
+        fPrevious = *(int *)((char *)pOverlay + 0xf8);
+        *(int *)((char *)pOverlay + 0xf8) = 1;
+        ((SetRectProc)(*(void ***)pOverlay)[42])(pOverlay, 0, Rect);
+        *(int *)((char *)pOverlay + 0xf8) = fPrevious;
+    }
+    *(int *)((char *)pOverlay + 0xfc) = 0;
+}
+
+static void LEMBALL_FASTCALL RebuildQueuedVariantChildSourceRect(
+    GameQueuedVariantRangeEntry *pEntry, int, int fForce) {
+    if (pEntry->m_pOverlay4C != 0) {
+        RebuildCompactZrleOwnerSourceRectIfNeeded(
+            pEntry->m_pOverlay4C, 0, fForce);
+    }
+}
+
+void LEMBALL_FASTCALL RebuildQueuedVariantChildSlotSourceRects(
+    void *pObject, int, int fForce) {
+    GameQueuedVariantChildSlotManager *pManager;
+    int i;
+
+    pManager = (GameQueuedVariantChildSlotManager *)pObject;
+    for (i = 0; i < 4; ++i) {
+        if (pManager->m_apChildrenAC[i] != 0) {
+            RebuildQueuedVariantChildSourceRect(
+                pManager->m_apChildrenAC[i], 0, fForce);
+        }
+    }
+}
+
 static int LEMBALL_FASTCALL HandleQueuedVariantChildSlotManagerEvent(
     GameQueuedVariantChildSlotManager *pManager, int,
     GameMenuSelectorEvent *pEvent) {

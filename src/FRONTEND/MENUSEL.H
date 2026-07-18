@@ -180,6 +180,8 @@ void LEMBALL_FASTCALL InitializeQueuedVariantChildContext(
     void *pManager);
 void LEMBALL_FASTCALL RefreshQueuedVariantChildByToken(
     void *pManager, int nUnusedEdx, int nToken);
+void LEMBALL_FASTCALL RebuildQueuedVariantChildSlotSourceRects(
+    void *pManager, int nUnusedEdx, int fForce);
 void LEMBALL_FASTCALL DestroyQueuedVariantChildSlotManager(
     void *pManager);
 

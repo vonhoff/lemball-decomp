@@ -2000,6 +2000,16 @@ static void LEMBALL_FASTCALL DrawFramedScreenFrameLayer(void *pObject) {
             ->AppendToQueue(pScreen->m_pRenderContext88);
     }
 
+    if (pScreen->m_pSelectorManager334 != 0) {
+        RebuildMenuSelectorChildRects(
+            (GameMenuSelectorManager *)pScreen->m_pSelectorManager334,
+            0, 1);
+    }
+    if (pScreen->m_pQueuedVariantManager338 != 0) {
+        RebuildQueuedVariantChildSlotSourceRects(
+            pScreen->m_pQueuedVariantManager338, 0, 1);
+    }
+
     if (pScreen->m_nAppliedCursorResourceIdB8 !=
         pScreen->m_nCursorResourceIdB4) {
         ((GameOneArgVirtual)(*(void ***)pScreen->m_pPrimaryContext84)[43])(
