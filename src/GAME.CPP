@@ -1442,6 +1442,30 @@ static void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void *pObject) {
         }
         ((QueueProc)(*(void ***)(pScreen + 0x908))[1])(
             pScreen + 0x908, 0, pRenderQueue);
+        {
+            char *pFrameEntry;
+            char *pOwner;
+            char *pDispatchObject;
+            int iFrameEntry;
+
+            iFrameEntry = *(int *)(pScreen + 0x2188);
+            if (iFrameEntry < 210) {
+                *(int *)(pScreen + 0x2188) = iFrameEntry + 1;
+                pFrameEntry = pScreen + 0x1468 + iFrameEntry * 0x10;
+                pOwner = *(char **)((char *)pRenderQueue + 0x0c);
+                pDispatchObject = pOwner + 0x40 +
+                    *(int *)(*(char **)(pOwner + 0x40) + 4);
+                *(short *)(pFrameEntry + 4) =
+                    *(short *)(pDispatchObject + 0x14);
+                *(short *)(pFrameEntry + 6) =
+                    *(short *)(pDispatchObject + 0x16);
+                *(short *)(pFrameEntry + 8) = 0;
+                *(short *)(pFrameEntry + 0x0a) = 0;
+                *(int *)(pFrameEntry + 0x0c) = 0;
+                ((QueueProc)(*(void ***)pFrameEntry)[1])(
+                    pFrameEntry, 0, pRenderQueue);
+            }
+        }
     }
 }
 
