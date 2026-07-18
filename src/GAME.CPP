@@ -211,6 +211,9 @@ struct GameLevelProgressState {
     int m_anSnapshotPackCaps[4];
     int m_nUnused4C;
 
+    void Advance(void);
+    bool Retreat(void);
+    bool IsCurrentLevelAvailable(void);
     bool CanRetreat(void);
     GameLevelProgressState *Clear(void);
     unsigned int EncodePasswordValue(void);
@@ -3787,6 +3790,65 @@ void *LEMBALL_FASTCALL DeleteMainMenuMode(
 // FUNCTION: LEMBALL 0x00408080
 void SetLevelFrameClockPauseFlag(int fPaused) {
     g_fLevelFrameClockPaused = fPaused;
+}
+
+// FUNCTION: LEMBALL 0x00408dc0
+void GameLevelProgressState::Advance(void) {
+    int nPack;
+    int nLevelCount;
+
+    nPack = m_nCurrentPack;
+    switch (nPack) {
+    case 0:
+        nLevelCount = 0x18;
+        break;
+    case 1:
+        nLevelCount = 0x19;
+        break;
+    case 2:
+        nLevelCount = 0x1c;
+        break;
+    case 3:
+        nLevelCount = 0x15;
+        break;
+    case 4:
+        nLevelCount = 0x0b;
+        break;
+    }
+    if (m_nCurrentLevel < nLevelCount) {
+        ++m_nCurrentLevel;
+    }
+    if (nPack != 4 &&
+        m_anUnlockedPackCaps[nPack] < m_nCurrentLevel) {
+        m_anUnlockedPackCaps[nPack] = m_nCurrentLevel;
+    }
+    m_anSnapshotPackCaps[m_nCurrentPack] = m_nCurrentLevel;
+    IsCurrentLevelAvailable();
+}
+
+// FUNCTION: LEMBALL 0x00408e40
+bool GameLevelProgressState::Retreat(void) {
+    if (0 < m_nCurrentLevel) {
+        --m_nCurrentLevel;
+    }
+    m_anSnapshotPackCaps[m_nCurrentPack] = m_nCurrentLevel;
+    return m_nCurrentLevel != 0;
+}
+
+// FUNCTION: LEMBALL 0x00408fa0
+bool GameLevelProgressState::IsCurrentLevelAvailable(void) {
+    bool fAvailable;
+
+    if (m_nCurrentPack == 4) {
+        fAvailable = true;
+        if (10 < m_nCurrentLevel) {
+            return false;
+        }
+    } else {
+        fAvailable =
+            m_anUnlockedPackCaps[m_nCurrentPack] != m_nCurrentLevel;
+    }
+    return fAvailable;
 }
 
 // FUNCTION: LEMBALL 0x00408fd0
