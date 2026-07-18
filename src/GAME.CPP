@@ -104,6 +104,8 @@ extern int g_fEffectsEnabled;
 extern void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntryThunk(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryThunk(void *pObject);
+extern void *LEMBALL_FASTCALL InitializeRenderRectSinkEntryA(void *pObject);
+extern void *LEMBALL_FASTCALL InitializeRenderRectSinkEntryB(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntry(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeGeometryOwnerRect(
     void *pOwner, int nUnused, const VS_XYPair *pRect);
@@ -1717,7 +1719,7 @@ void *GameScreenObject::ConstructLevelScreen(void *pPrimaryContext,
     }
     pEntry = pScreenObject + 0xa00;
     for (i = 0; i < 4; ++i, pEntry += 0x10) {
-        InitializeStatusIndicatorPointSinkEntryThunk(pEntry);
+        InitializeRenderRectSinkEntryA(pEntry);
     }
     pEntry = pScreenObject + 0x1468;
     for (i = 0; i < 210; ++i, pEntry += 0x10) {
@@ -1726,7 +1728,7 @@ void *GameScreenObject::ConstructLevelScreen(void *pPrimaryContext,
     InitializeHelperLocalRectUpdateEntry(pScreenObject + 0x2190);
     pEntry = pScreenObject + 0x21d0;
     for (i = 0; i < 2; ++i, pEntry += 0x10) {
-        InitializeStatusIndicatorPointSinkEntryThunk(pEntry);
+        InitializeRenderRectSinkEntryB(pEntry);
     }
     pEntry = pScreenObject + 0x21f4;
     for (i = 0; i < 2; ++i, pEntry += 0x10) {
@@ -1734,6 +1736,8 @@ void *GameScreenObject::ConstructLevelScreen(void *pPrimaryContext,
     }
     *(void **)(pScreenObject + 0x990) =
         g_pQueuedRenderPointSinkFinalizeThunk;
+    InitializePackagedSpriteRenderEntryThunk(pScreenObject + 0x998);
+    InitializePackagedSpriteRenderEntryThunk(pScreenObject + 0x9a8);
     if (g_fGAMELevelScreenRenderStatePopVtableInitialized == 0) {
         for (i = 0; i < 4; ++i) {
             g_GAME_LevelScreenRenderStatePopVtable[i] =

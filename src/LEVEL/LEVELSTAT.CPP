@@ -367,6 +367,52 @@ static void *g_LEVEL_RenderPointRectSinkEntryVtableStorage[8] = {
 };
 static void *g_LEVEL_RenderPointRectSinkEntryVtable =
     g_LEVEL_RenderPointRectSinkEntryVtableStorage;
+static void *LEMBALL_FASTCALL DeleteLevelRenderRectSink(
+    void *pObject, int, unsigned int fDelete)
+{
+    *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+static void LEMBALL_FASTCALL QueueLevelRenderRectSink(
+    void *pObject, int, void *pQueue)
+{
+    AppendPointerQueueEntry(pQueue, pObject);
+}
+static void LEMBALL_FASTCALL DispatchLevelRenderRectSinkA(
+    void *pObject, int, void *pContext)
+{
+    typedef void (LEMBALL_FASTCALL *DispatchProc)(
+        void *pObject, int nUnusedEdx, void *pEntry);
+    void *pOwner;
+
+    pOwner = *(void **)((char *)pContext + 0x0c);
+    ((DispatchProc)(*(void ***)pOwner)[38])(pOwner, 0, pObject);
+}
+static void LEMBALL_FASTCALL DispatchLevelRenderRectSinkB(
+    void *pObject, int, void *pContext)
+{
+    typedef void (LEMBALL_FASTCALL *DispatchProc)(
+        void *pObject, int nUnusedEdx, void *pEntry);
+    void *pTarget;
+
+    pTarget = (char *)*(void **)((char *)pContext + 0x0c) + 0x44;
+    ((DispatchProc)(*(void ***)pTarget)[0])(pTarget, 0, pObject);
+}
+static void *g_LEVEL_RenderRectSinkEntryAVtable[4] = {
+    (void *)DeleteLevelRenderRectSink,
+    (void *)QueueLevelRenderRectSink,
+    (void *)DispatchLevelRenderRectSinkA,
+    0
+};
+static void *g_LEVEL_RenderRectSinkEntryBVtable[4] = {
+    (void *)DeleteLevelRenderRectSink,
+    (void *)QueueLevelRenderRectSink,
+    (void *)DispatchLevelRenderRectSinkB,
+    0
+};
 static void *g_LEVEL_StatusIndicatorPointSinkEntryVtableStorage[8] = {
     (void *)DestroyStatusIndicatorPointSinkArray00467BB0,
     (void *)QueueStatusIndicatorPointSinkThunk004018AC,
@@ -665,6 +711,8 @@ void LEMBALL_FASTCALL SetStatusIndicatorActive(
 
 void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntry(void *pObject);
 void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntry(void *pObject);
+void *LEMBALL_FASTCALL InitializeRenderRectSinkEntryA(void *pObject);
+void *LEMBALL_FASTCALL InitializeRenderRectSinkEntryB(void *pObject);
 void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntry(void *pObject);
 
 
@@ -2471,6 +2519,32 @@ void *LEMBALL_FASTCALL ConstructFramedScreenRenderEntryGroup(void *pObject) {
         InitializePackagedSpriteRenderEntry(
             (char *)pObject + 0x1c0 + i * 0x10);
     }
+    return pObject;
+}
+
+void *LEMBALL_FASTCALL InitializeRenderRectSinkEntryA(void *pObject) {
+    int *pEntry;
+
+    pEntry = (int *)pObject;
+    *(void **)pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+    *(unsigned short *)((char *)pEntry + 10) = 0;
+    *(void **)pEntry = g_LEVEL_RenderRectSinkEntryAVtable;
+    *(unsigned short *)(pEntry + 2) = 0;
+    *(unsigned short *)((char *)pEntry + 14) = 0;
+    *(unsigned short *)(pEntry + 3) = 0;
+    return pObject;
+}
+
+void *LEMBALL_FASTCALL InitializeRenderRectSinkEntryB(void *pObject) {
+    int *pEntry;
+
+    pEntry = (int *)pObject;
+    *(void **)pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+    *(unsigned short *)((char *)pEntry + 10) = 0;
+    *(void **)pEntry = g_LEVEL_RenderRectSinkEntryBVtable;
+    *(unsigned short *)(pEntry + 2) = 0;
+    *(unsigned short *)((char *)pEntry + 14) = 0;
+    *(unsigned short *)(pEntry + 3) = 0;
     return pObject;
 }
 
