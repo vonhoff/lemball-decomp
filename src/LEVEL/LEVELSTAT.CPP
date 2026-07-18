@@ -413,6 +413,42 @@ static void *g_LEVEL_RenderRectSinkEntryBVtable[4] = {
     (void *)DispatchLevelRenderRectSinkB,
     0
 };
+static void LEMBALL_FASTCALL DispatchLevelSurfaceRectSink(
+    void *pObject, int, void *pContext)
+{
+    typedef void (LEMBALL_FASTCALL *DispatchProc)(
+        void *pObject, int nUnusedEdx, void *pEntry);
+    char *pGeometryContext;
+    void *pRenderObject;
+
+    pGeometryContext = *(char **)((char *)pContext + 0x0c);
+    pRenderObject = pGeometryContext +
+        *(int *)(*(int *)(pGeometryContext + 0x40) + 4) + 0x40;
+    ((DispatchProc)(*(void ***)pRenderObject)[0])(
+        pRenderObject, 0, pObject);
+}
+static void LEMBALL_FASTCALL DispatchLevelNestedRectSink(
+    void *pObject, int, void *pContext)
+{
+    typedef void (LEMBALL_FASTCALL *DispatchProc)(
+        void *pObject, int nUnusedEdx, void *pEntry);
+    void *pNested;
+
+    pNested = (char *)*(void **)((char *)pContext + 0x0c) + 0x44;
+    ((DispatchProc)(*(void ***)pNested)[1])(pNested, 0, pObject);
+}
+static void *g_LEVEL_SurfaceRectSinkVtable[4] = {
+    (void *)DeleteLevelRenderRectSink,
+    (void *)QueueLevelRenderRectSink,
+    (void *)DispatchLevelSurfaceRectSink,
+    0
+};
+static void *g_LEVEL_NestedRectSinkVtable[4] = {
+    (void *)DeleteLevelRenderRectSink,
+    (void *)QueueLevelRenderRectSink,
+    (void *)DispatchLevelNestedRectSink,
+    0
+};
 static void *g_LEVEL_StatusIndicatorPointSinkEntryVtableStorage[8] = {
     (void *)DestroyStatusIndicatorPointSinkArray00467BB0,
     (void *)QueueStatusIndicatorPointSinkThunk004018AC,
@@ -713,6 +749,8 @@ void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntry(void *pObject);
 void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntry(void *pObject);
 void *LEMBALL_FASTCALL InitializeRenderRectSinkEntryA(void *pObject);
 void *LEMBALL_FASTCALL InitializeRenderRectSinkEntryB(void *pObject);
+void *LEMBALL_FASTCALL InitializeLevelSurfaceRectSink(void *pObject);
+void *LEMBALL_FASTCALL InitializeLevelNestedRectSink(void *pObject);
 void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntry(void *pObject);
 
 
@@ -2545,6 +2583,18 @@ void *LEMBALL_FASTCALL InitializeRenderRectSinkEntryB(void *pObject) {
     *(unsigned short *)(pEntry + 2) = 0;
     *(unsigned short *)((char *)pEntry + 14) = 0;
     *(unsigned short *)(pEntry + 3) = 0;
+    return pObject;
+}
+
+void *LEMBALL_FASTCALL InitializeLevelSurfaceRectSink(void *pObject) {
+    memset(pObject, 0, 0x10);
+    *(void ***)pObject = g_LEVEL_SurfaceRectSinkVtable;
+    return pObject;
+}
+
+void *LEMBALL_FASTCALL InitializeLevelNestedRectSink(void *pObject) {
+    memset(pObject, 0, 0x10);
+    *(void ***)pObject = g_LEVEL_NestedRectSinkVtable;
     return pObject;
 }
 
