@@ -62,8 +62,10 @@ static int g_cbMainArenaInUse = 0;
 static int g_fMainArenaReady = 0;
 // GLOBAL: LEMBALL 0x004aa0fc
 void *g_pSmallMemoryBucketTable;
+// GLOBAL: LEMBALL 0x004a1178
 unsigned int g_cbSmallMemoryBucketUpperBound = 0;
-const char *g_pszSmallMemoryBucketAllocTag = "Small memory bucket";
+// GLOBAL: LEMBALL 0x004a1174
+const char *g_pszSmallMemoryBucketAllocTag = "new";
 static const char g_VSMEM_ReportSeparator[] = "************************************************\n";
 static const char g_VSMEM_ReportFreeSizePrefix[] = "Memory Block list free size = ";
 static const char g_VSMEM_ReportLineBreak[] = "\n";
