@@ -1361,6 +1361,71 @@ static int LEMBALL_FASTCALL GetLevelScreenTransitionStatus(void *pObject) {
     return *(int *)((char *)pObject + 0xa78);
 }
 
+static void ActivateReconstructedLevelScreen(char *pScreen) {
+    GamePrimaryContext *pPrimaryContext;
+    char *pLevelMode;
+    int nScale;
+
+    pPrimaryContext = *(GamePrimaryContext **)(pScreen + 0x978);
+    pLevelMode = *(char **)(pScreen + 0x96c);
+    SetLevelScreenStatusIndicatorModeThunk(1, 0);
+    nScale = 2;
+    if (g_fCompactPrimaryContextLayout != 0 ||
+        g_fStartupEditLevelOverride != 0 ||
+        g_fZoomedViewportEnabled != 0) {
+        nScale = 1;
+    }
+    *(unsigned short *)(pScreen + 0x160) = (unsigned short)nScale;
+    *(short *)(pScreen + 0x940) =
+        (short)(*(short *)((char *)pPrimaryContext + 8) / nScale);
+    *(short *)(pScreen + 0x942) =
+        (short)(*(short *)((char *)pPrimaryContext + 10) / nScale);
+    if (g_fZoomedViewportEnabled == 0 ||
+        g_fCompactPrimaryContextLayout != 0) {
+        *(short *)(pScreen + 0x958) = *(short *)(pScreen + 0x940);
+        *(short *)(pScreen + 0x95a) = *(short *)(pScreen + 0x942);
+        *(int *)(pScreen + 0x950) = 0;
+        *(int *)(pScreen + 0x954) = 0;
+    } else {
+        *(short *)(pScreen + 0x958) = 0x140;
+        *(short *)(pScreen + 0x95a) = 0xf0;
+        *(int *)(pScreen + 0x950) = 0xa0;
+        *(int *)(pScreen + 0x954) = 0x78;
+    }
+    *(short *)(pScreen + 0x8d2) = 0x33;
+    *(short *)(pScreen + 0x8d4) = 0x20;
+    *(short *)(pScreen + 0x8d6) =
+        (short)(*(short *)(pScreen + 0x958) - 0x43);
+    *(short *)(pScreen + 0x8d8) = 8;
+    *(short *)(pScreen + 0x8da) = 0x60;
+    *(short *)(pScreen + 0x8dc) = 0x20;
+    *(short *)(pScreen + 0x8de) = 0x10;
+    *(short *)(pScreen + 0x8e0) = 8;
+    *(int *)(pScreen + 0x994) = 1;
+    *(int *)(pScreen + 0x2214) = 1;
+    *(int *)(pScreen + 0x2218) = 0;
+    pPrimaryContext->SetWindowOwnerScaleFactor(nScale);
+    if (g_pLevelDemoPlaybackController != 0) {
+        *(void **)((char *)g_pLevelDemoPlaybackController + 0x34) =
+            pPrimaryContext;
+        if (*(int *)((char *)g_pLevelDemoPlaybackController + 0x4c) != 0) {
+            *(DWORD *)((char *)g_pLevelDemoPlaybackController + 0x38) =
+                timeGetTime();
+            *(int *)((char *)g_pLevelDemoPlaybackController + 0x3c) = 0;
+        }
+    }
+    pPrimaryContext->SampleRootHelperGeometryAndDispatchRenderGroups(0);
+    if (*(int *)(pLevelMode + 0x64) == 0) {
+        RequestLocalLevelGameStateChange(pLevelMode, 2);
+        *(int *)(pLevelMode + 0x68) = 1;
+    } else if (g_pNetworkLobbyVsnetRuntime != 0) {
+        *(int *)(pLevelMode + 0x6c) = 1;
+        *(int *)(pLevelMode + 0x70) = 0;
+        *(int *)((char *)g_pNetworkLobbyVsnetRuntime + 0x48) = 3;
+        *(int *)((char *)g_pNetworkLobbyVsnetRuntime + 0x4c) = 0;
+    }
+}
+
 static void LEMBALL_FASTCALL UpdateReconstructedLevelScreen(void *pObject) {
     char *pScreen;
     void *pManager;
@@ -1373,6 +1438,7 @@ static void LEMBALL_FASTCALL UpdateReconstructedLevelScreen(void *pObject) {
         *(int *)((char *)pManager + 0x84) == 0) {
         RebuildLevelScreenVariantResourceSet(
             pManager, *(int *)((char *)pLevelMode + 0x60));
+        ActivateReconstructedLevelScreen(pScreen);
     }
 }
 
