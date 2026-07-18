@@ -2,6 +2,7 @@
 
 #include "ENGINE/GDI/VSGDI.H"
 #include "ENGINE/CORE/VSMEM.H"
+#include "ENGINE/CORE/VSINIT.H"
 #include "GAME.H"
 #include "SHELL/SHELLUI.H"
 #include "SHELL/OPTIONS.H"
@@ -663,7 +664,8 @@ void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
     pScreen->m_nTimedVariantResourceId394 = 0;
     pScreen->m_pTimedFrameSelector34C = 0;
     pScreen->m_pMappedListResources98 = 0;
-    pScreen->m_dwConstructionTimeBC = timeGetTime();
+    pScreen->m_dwConstructionTimeBC =
+        ((RenderDispatchQueue *)g_pSharedRenderDispatchQueue)->m_nReserved30;
     return pObject;
 }
 
@@ -897,6 +899,8 @@ static void LEMBALL_FASTCALL DrawFramedScreenBase(void *pObject) {
     ((GameNoArgVirtual)pScreen->m_pVtable00[19])(pScreen, 0);
     if (pScreen->m_fBuildingRenderEntries364 == 0 &&
         pScreen->m_pSelectorManager334 != 0) {
+        UpdateMenuSelectorAnimation(
+            (GameMenuSelectorManager *)pScreen->m_pSelectorManager334);
         EmitMenuSelectorResourceEntries(
             (GameMenuSelectorManager *)pScreen->m_pSelectorManager334);
     }

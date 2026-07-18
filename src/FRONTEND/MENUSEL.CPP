@@ -3,6 +3,7 @@
 #include "GAME.H"
 #include "RESOURCE/VARMGR.H"
 #include "ENGINE/CORE/VSMEM.H"
+#include "ENGINE/CORE/VSINIT.H"
 #include "ENGINE/CORE/WIN32.H"
 #include "ENGINE/GDI/VSGEOM.H"
 #include "ENGINE/GDI/VSGDI.H"
@@ -504,7 +505,8 @@ void LEMBALL_FASTCALL DetachGeometryChildAndDestroyWindowOwner(
     pRenderOwner = *(void **)((char *)pObject + 0xc8);
     RemoveGeometryOwnerChild(
         *(void **)((char *)pRenderOwner + 0x1c), 0, pChildOwner);
-    ((VS_WindowOwnerBase *)pObject)->DestroyWindowOwnerHwnd();
+    ((VS_WindowOwnerBase *)pObject)
+        ->VS_WindowOwnerBase::DestroyWindowOwnerHwnd();
 }
 
 static inline int ResolveResourceGeometryRenderObject(void *pObject) {
@@ -1160,7 +1162,8 @@ GameMenuSelectorManager *LEMBALL_FASTCALL ConstructMenuSelectorManager(
     pManager->m_pActionMiddleSelector254 =
         AllocateFrameSelector(pVariantManager, g_nMenuSelectorResourceId2);
     pManager->m_pActionMiddleSelector254->m_dwFixedTime = -1;
-    pManager->m_dwConstructionTimeD4 = (int)timeGetTime();
+    pManager->m_dwConstructionTimeD4 =
+        ((RenderDispatchQueue *)g_pSharedRenderDispatchQueue)->m_nReserved30;
     return pManager;
 }
 
