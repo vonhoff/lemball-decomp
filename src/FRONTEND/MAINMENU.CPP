@@ -84,6 +84,7 @@ extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(
     void *pOwner, int nUnusedEdx, void *pChild);
 extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
     void *pOwner, int nUnusedEdx, void *pChild);
+extern void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen);
 
 struct GameProgressiveSelectorVtableView {
     virtual int SelectFrame(void) = 0;
@@ -329,6 +330,34 @@ struct GameBoundedTextBuffer {
     int m_cLength04;
     int m_cAllocated08;
     char *m_pszText0C;
+};
+
+struct GameNetworkLobbyPeerStateView {
+    char m_abReserved00[0x2c];
+    char m_szName2C[9];
+    char m_szComputer35[0x17];
+    int m_fActive4C;
+};
+
+struct GameNetworkLobbyPeerDescriptorView {
+    char m_abReserved00[8];
+    int m_nAddressOwnerOffset08;
+};
+
+struct GameNetworkLobbyTrackedPeerView {
+    void **m_pVtable00;
+    GameNetworkLobbyPeerDescriptorView *m_pDescriptor04;
+};
+
+struct GameNetworkLobbyAddressView {
+    virtual const char *GetAddressString(void) = 0;
+};
+
+struct GameNetworkLobbyRuntimeView {
+    char m_abReserved00[0x14];
+    GameNetworkLobbyPeerStateView *m_pPeerStates14;
+    char m_abReserved18[8];
+    GameNetworkLobbyTrackedPeerView *m_apTrackedPeers20[10];
 };
 
 typedef char GameFramedScreenBase_size_must_be_0x398[
@@ -2545,6 +2574,10 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
     pScreen->m_pLayout42C = pScreen->m_fCompactLayout32C != 0
         ? g_GAME_NetworkLobbyLayoutCompact
         : g_GAME_NetworkLobbyLayoutStandard;
+    if (pScreen->m_pPlayerEntries3CC != 0) {
+        ThunkRefreshNetworkLobbyPlayerEntries(
+            (int)(unsigned long)pScreen);
+    }
     panButtonResources = pScreen->m_fCompactLayout32C != 0
         ? g_GAME_NetworkLobbyButtonResourcesCompact
         : g_GAME_NetworkLobbyButtonResourcesStandard;
@@ -2591,6 +2624,15 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
     GameBoundedTextBuffer *pBuffer;
     char szDisplayText[0x40];
     int nRemap;
+    GameNetworkLobbyRuntimeView *pRuntime;
+    GameNetworkLobbyPeerStateView *pPeerState;
+    GameNetworkLobbyTrackedPeerView *pPeer;
+    GameNetworkLobbyAddressView *pAddress;
+    const char *pszAddress;
+    int iPeer;
+    int iVisible;
+    int nColor;
+    int nPeerOffset;
 
 #define SUBMIT_CENTERED_LOBBY_TEXT(text, x, y, remap) \
     Point[0] = (short)((x) - (int)strlen(text) * 4); \
@@ -2678,6 +2720,69 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
             pszStatus, pScreen->m_pLayout42C[18],
             pScreen->m_pLayout42C[19], nRemap);
     }
+    pRuntime = (GameNetworkLobbyRuntimeView *)g_pNetworkLobbyVsnetRuntime;
+    if (pRuntime != 0 && pRuntime->m_pPeerStates14 != 0 &&
+        pScreen->m_pPlayerEntries3CC != 0) {
+        iVisible = 0;
+        for (iPeer = 0; iPeer < 10 && iVisible < 4; ++iPeer) {
+            pPeerState = pRuntime->m_pPeerStates14 + iPeer;
+            pPeer = pRuntime->m_apTrackedPeers20[iPeer];
+            if (pPeer == 0 || pPeerState->m_fActive4C == 0) {
+                continue;
+            }
+            nPeerOffset = iPeer * 0x44;
+            nColor = 1;
+            if (*(int *)((char *)pScreen->m_pPlayerEntries3CC +
+                         nPeerOffset + 0x38) != 0 ||
+                pScreen->m_nResolvedPlayer3D4 == iPeer) {
+                ++nColor;
+            }
+            if ((pScreen->m_nSelectedPlayer3D0 == iPeer &&
+                 (*(int *)((char *)pScreen->m_pPlayerEntries3CC +
+                           nPeerOffset + 0x40) == 0 ||
+                  pScreen->m_fBlink3C0 != 0)) ||
+                (pScreen->m_nSelectedPlayer3D0 != iPeer &&
+                 *(int *)((char *)pScreen->m_pPlayerEntries3CC +
+                          nPeerOffset + 0x40) != 0 &&
+                 pScreen->m_fBlink3C0 == 0)) {
+                nColor += 3;
+            }
+            if (nColor != 1) {
+                strncpy(szDisplayText, pPeerState->m_szName2C, 9);
+                szDisplayText[9] = '\0';
+                SUBMIT_CENTERED_LOBBY_TEXT(
+                    szDisplayText, pScreen->m_pLayout42C[26],
+                    pScreen->m_pLayout42C[27] +
+                        iVisible * pScreen->m_pLayout42C[35],
+                    pScreen->m_anPaletteRemaps414[nColor]);
+                pszAddress = "";
+                if (pPeer->m_pDescriptor04 != 0) {
+                    pAddress = *(GameNetworkLobbyAddressView **)(
+                        (char *)pPeer +
+                        pPeer->m_pDescriptor04->m_nAddressOwnerOffset08 +
+                        0x74);
+                    if (pAddress != 0) {
+                        pszAddress = pAddress->GetAddressString();
+                    }
+                }
+                if (pszAddress != 0) {
+                    SUBMIT_CENTERED_LOBBY_TEXT(
+                        pszAddress, pScreen->m_pLayout42C[30],
+                        pScreen->m_pLayout42C[27] +
+                            iVisible * pScreen->m_pLayout42C[35],
+                        pScreen->m_anPaletteRemaps414[nColor]);
+                }
+                strncpy(szDisplayText, pPeerState->m_szComputer35, 20);
+                szDisplayText[20] = '\0';
+                SUBMIT_CENTERED_LOBBY_TEXT(
+                    szDisplayText, pScreen->m_pLayout42C[32],
+                    pScreen->m_pLayout42C[27] +
+                        iVisible * pScreen->m_pLayout42C[35],
+                    pScreen->m_anPaletteRemaps414[nColor]);
+            }
+            ++iVisible;
+        }
+    }
     pBuffer = (GameBoundedTextBuffer *)pScreen->m_pTextBuffer398;
     if (pScreen->m_fTextPrompt39C != 0 && pBuffer != 0 &&
         pBuffer->m_pszText0C != 0) {
@@ -2720,6 +2825,13 @@ static void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void *pObject) {
         ShowNetworkLobbyTextPrompt(
             pScreen, pScreen->m_nPendingPrompt3A4, 1);
         pScreen->m_nPendingPrompt3A4 = 0;
+    }
+    if (pScreen->m_fRefreshPlayers3C4 != 0 &&
+        pScreen->m_pPlayerEntries3CC != 0) {
+        ThunkRefreshNetworkLobbyPlayerEntries(
+            (int)(unsigned long)pScreen);
+        pScreen->m_fRefreshPlayers3C4 = 0;
+        pScreen->m_fSelectorDirty360 = 1;
     }
 }
 
