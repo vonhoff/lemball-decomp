@@ -3099,8 +3099,8 @@ int LEMBALL_FASTCALL InitializeDirectSoundEffectDevice(
                     (unsigned int)hResult & 0xfff))
             ->AppendCStringToStream("\n");
         g_pStartupOutputStream->AppendCStringToStream(
-            "Trying 22Khz 8 bit...\n");
-        pWaveFormat->wBitsPerSample = 8;
+            "Trying 22Khz/8-bit...\n");
+        *(unsigned short *)((char *)pBackend + 0x4a) = 8;
         hResult = VsSoundDIRECTSOUND_METHOD(
             g_pDirectSoundPrimaryBuffer, 14,
             VsSoundDirectSoundSetFormatProc)(
@@ -3114,9 +3114,9 @@ int LEMBALL_FASTCALL InitializeDirectSoundEffectDevice(
                         (unsigned int)hResult & 0xfff))
                 ->AppendCStringToStream("\n");
             g_pStartupOutputStream->AppendCStringToStream(
-                "Trying 11khz 16 bit...\n");
-            pWaveFormat->nSamplesPerSec = 11025;
-            pWaveFormat->wBitsPerSample = 16;
+                "Trying 11khz/16-bit...\n");
+            *(unsigned int *)((char *)pBackend + 0x40) = 11025;
+            *(unsigned short *)((char *)pBackend + 0x4a) = 16;
             hResult = VsSoundDIRECTSOUND_METHOD(
                 g_pDirectSoundPrimaryBuffer, 14,
                 VsSoundDirectSoundSetFormatProc)(
@@ -3130,8 +3130,8 @@ int LEMBALL_FASTCALL InitializeDirectSoundEffectDevice(
                             (unsigned int)hResult & 0xfff))
                     ->AppendCStringToStream("\n");
                 g_pStartupOutputStream->AppendCStringToStream(
-                    "Trying 11khz 8 bit...\n");
-                pWaveFormat->wBitsPerSample = 8;
+                    "Trying 11khz/8-bit...\n");
+                *(unsigned short *)((char *)pBackend + 0x4a) = 8;
                 hResult = VsSoundDIRECTSOUND_METHOD(
                     g_pDirectSoundPrimaryBuffer, 14,
                     VsSoundDirectSoundSetFormatProc)(
@@ -3145,7 +3145,7 @@ int LEMBALL_FASTCALL InitializeDirectSoundEffectDevice(
                                 (unsigned int)hResult & 0xfff))
                         ->AppendCStringToStream("\n");
                     g_pErrorOutputStream->AppendCStringToStream(
-                        "Exausted iterations - cannot play effects.\n");
+                        "Exausted iterations - cannot play sample\n");
                     return 0;
                 }
             }
