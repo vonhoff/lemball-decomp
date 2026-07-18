@@ -324,6 +324,13 @@ struct GameNetworkLobbyScreenView : public GameFramedScreenBase {
     int m_nButtonSelection434;
 };
 
+struct GameBoundedTextBuffer {
+    int m_cCapacity00;
+    int m_cLength04;
+    int m_cAllocated08;
+    char *m_pszText0C;
+};
+
 typedef char GameFramedScreenBase_size_must_be_0x398[
     sizeof(GameFramedScreenBase) == 0x398 ? 1 : -1];
 typedef char GameMainMenuScreenView_size_must_be_0x3bc[
@@ -655,8 +662,15 @@ static const int g_GAME_NetworkLobbyLayoutCompact[40] = {
     32, 109, 49, 34, 12, 34, 129, 2,
     244, 0, 0, 14, 297, 12, 128, 0
 };
+static const int g_GAME_NetworkLobbyButtonResourcesStandard[3] = {
+    0x1bf, 0x1c0, 0x1b3
+};
+static const int g_GAME_NetworkLobbyButtonResourcesCompact[3] = {
+    0x1f3, 0x1f4, 0x1e7
+};
 
 static const char *g_GAME_NetworkLobbyStatusText[10] = {
+    "No Message",
     "Play with a LAN or specific computer",
     "Enter your name:",
     "Enter your opponents I.P. Address:",
@@ -665,9 +679,142 @@ static const char *g_GAME_NetworkLobbyStatusText[10] = {
     "Initialising Network...",
     "Invalid name or address specified",
     "You must enter your name",
-    "Network Facilities not available",
-    "No Message"
+    "Network Facilities not available"
 };
+
+// GLOBAL: LEMBALL 0x004a0368
+char g_szNetworkLobbyLocalPlayerName[0x10] = "";
+// GLOBAL: LEMBALL 0x004a0378
+char g_szNetworkLobbyJoinAddress[0x10] = "";
+
+static GameBoundedTextBuffer *ConstructBoundedTextBuffer(
+    GameBoundedTextBuffer *pBuffer, int cCapacity) {
+    pBuffer->m_pszText0C =
+        (char *)AllocateVSMemBlock(cCapacity + 1);
+    pBuffer->m_cAllocated08 = cCapacity;
+    pBuffer->m_cCapacity00 = cCapacity;
+    pBuffer->m_cLength04 = 0;
+    if (pBuffer->m_pszText0C != 0) {
+        pBuffer->m_pszText0C[0] = '\0';
+    }
+    return pBuffer;
+}
+
+static void ClearBoundedTextBuffer(GameBoundedTextBuffer *pBuffer) {
+    if (pBuffer == 0 || pBuffer->m_pszText0C == 0) {
+        return;
+    }
+    pBuffer->m_cLength04 = 0;
+    pBuffer->m_pszText0C[0] = '\0';
+}
+
+static void AppendBoundedTextCharacter(
+    GameBoundedTextBuffer *pBuffer, char ch) {
+    if (pBuffer->m_cLength04 < pBuffer->m_cCapacity00) {
+        pBuffer->m_pszText0C[pBuffer->m_cLength04++] = ch;
+        pBuffer->m_pszText0C[pBuffer->m_cLength04] = '\0';
+    }
+}
+
+static void CopyBoundedText(
+    GameBoundedTextBuffer *pBuffer, const char *pszText) {
+    if (pBuffer == 0 || pBuffer->m_pszText0C == 0) {
+        return;
+    }
+    strncpy(pBuffer->m_pszText0C, pszText, pBuffer->m_cAllocated08);
+    pBuffer->m_pszText0C[pBuffer->m_cAllocated08] = '\0';
+    pBuffer->m_cLength04 = (int)strlen(pBuffer->m_pszText0C);
+}
+
+static void SetNetworkLobbyStatus(
+    GameNetworkLobbyScreenView *pScreen, int nStatus) {
+    pScreen->m_nStatus3A8 = nStatus;
+    pScreen->m_dwStatusDuration3B4 = 0;
+    pScreen->m_fSelectorDirty360 = 1;
+    pScreen->m_fBlink3C0 = 1;
+    pScreen->m_dwBlinkStart3C8 = timeGetTime();
+}
+
+static void SetTimedNetworkLobbyStatus(
+    GameNetworkLobbyScreenView *pScreen, int nStatus, DWORD dwDuration) {
+    pScreen->m_nStatus3A8 = nStatus;
+    pScreen->m_dwStatusStart3B0 = timeGetTime();
+    pScreen->m_dwStatusDuration3B4 = dwDuration;
+    pScreen->m_fSelectorDirty360 = 1;
+    pScreen->m_fBlink3C0 = 1;
+    pScreen->m_dwBlinkStart3C8 = timeGetTime();
+}
+
+static void ShowNetworkLobbyTextPrompt(
+    GameNetworkLobbyScreenView *pScreen, int nPrompt, int fClear) {
+    GameBoundedTextBuffer *pBuffer;
+
+    pBuffer = (GameBoundedTextBuffer *)pScreen->m_pTextBuffer398;
+    if (pBuffer == 0 || pBuffer->m_pszText0C == 0) {
+        SetTimedNetworkLobbyStatus(pScreen, 9, 6000);
+        return;
+    }
+    pScreen->m_fTextPrompt39C = 0;
+    if (nPrompt != 3) {
+        pScreen->m_nReserved3A0 = nPrompt;
+    }
+    if (fClear != 0) {
+        ClearBoundedTextBuffer(pBuffer);
+    }
+    pBuffer->m_cCapacity00 =
+        pScreen->m_nReserved3A0 == 1 ? 8 : 20;
+    SetNetworkLobbyStatus(pScreen, pScreen->m_nReserved3A0 + 1);
+    pScreen->m_fTextPrompt39C = 1;
+}
+
+static void CommitNetworkLobbyTextPrompt(
+    GameNetworkLobbyScreenView *pScreen) {
+    GameBoundedTextBuffer *pBuffer;
+
+    pBuffer = (GameBoundedTextBuffer *)pScreen->m_pTextBuffer398;
+    pScreen->m_fTextPrompt39C = 0;
+    if (pScreen->m_nReserved3A0 == 1) {
+        if (pBuffer->m_pszText0C[0] == '\0') {
+            SetTimedNetworkLobbyStatus(pScreen, 8, 6000);
+            return;
+        }
+        strncpy(g_szNetworkLobbyLocalPlayerName,
+                pBuffer->m_pszText0C,
+                sizeof(g_szNetworkLobbyLocalPlayerName) - 1);
+        g_szNetworkLobbyLocalPlayerName[
+            sizeof(g_szNetworkLobbyLocalPlayerName) - 1] = '\0';
+        if (pScreen->m_nReserved3BC == 0) {
+            g_szNetworkLobbyJoinAddress[0] = '\0';
+            pScreen->m_fPendingText3E0 = 1;
+        } else {
+            pScreen->m_nPendingPrompt3A4 = 2;
+        }
+    } else if (pScreen->m_nReserved3A0 == 2) {
+        strncpy(g_szNetworkLobbyJoinAddress,
+                pBuffer->m_pszText0C,
+                sizeof(g_szNetworkLobbyJoinAddress) - 1);
+        g_szNetworkLobbyJoinAddress[
+            sizeof(g_szNetworkLobbyJoinAddress) - 1] = '\0';
+        pScreen->m_fPendingText3E0 = 1;
+    }
+}
+
+static void BeginNetworkLobbyTextPrompt(
+    GameNetworkLobbyScreenView *pScreen, int nAddressPrompt) {
+    GameBoundedTextBuffer *pBuffer;
+
+    pBuffer = (GameBoundedTextBuffer *)pScreen->m_pTextBuffer398;
+    pScreen->m_nReserved3BC = nAddressPrompt;
+    pScreen->m_nReserved3B8 = 0;
+    pScreen->m_fTextPrompt39C = 0;
+    pScreen->m_nDeferredStatus430 = 0;
+    if (g_szNetworkLobbyLocalPlayerName[0] == '\0') {
+        ShowNetworkLobbyTextPrompt(pScreen, 1, 1);
+    } else {
+        CopyBoundedText(pBuffer, g_szNetworkLobbyLocalPlayerName);
+        ShowNetworkLobbyTextPrompt(pScreen, 1, 0);
+    }
+}
 
 static unsigned char g_GAME_NetworkLobbyPaletteRemaps[6][8] = {
     {2, 0xf1, 0x51, 0x5d, 0x3d, 0, 0, 0},
@@ -2342,6 +2489,8 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
     GameNetworkLobbyScreenView *pScreen;
     int *pEntryArray;
     int nPaletteResourceId;
+    const int *panButtonResources;
+    GameMenuSelectorManager *pButtonManager;
     int i;
 
     pScreen = (GameNetworkLobbyScreenView *)pObject;
@@ -2355,6 +2504,11 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
     *(void ***)pScreen->m_abVariantRenderManager14 =
         g_GAME_MainMenuCallbackVtable;
     memset((char *)pScreen + 0x398, 0, 0x438 - 0x398);
+    pScreen->m_pTextBuffer398 = AllocateVSMemBlock(0x10);
+    if (pScreen->m_pTextBuffer398 != 0) {
+        ConstructBoundedTextBuffer(
+            (GameBoundedTextBuffer *)pScreen->m_pTextBuffer398, 0x28);
+    }
     pScreen->m_nStatus3A8 = 1;
     pScreen->m_nDrawnStatus3AC = 1;
     pScreen->m_dwBlinkStart3C8 = timeGetTime();
@@ -2387,6 +2541,35 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
     pScreen->m_pLayout42C = pScreen->m_fCompactLayout32C != 0
         ? g_GAME_NetworkLobbyLayoutCompact
         : g_GAME_NetworkLobbyLayoutStandard;
+    panButtonResources = pScreen->m_fCompactLayout32C != 0
+        ? g_GAME_NetworkLobbyButtonResourcesCompact
+        : g_GAME_NetworkLobbyButtonResourcesStandard;
+    pButtonManager = (GameMenuSelectorManager *)AllocateVSMemBlock(
+        sizeof(GameMenuSelectorManager));
+    if (pButtonManager != 0) {
+        ConstructMenuSelectorManager(
+            pButtonManager, 0, pScreen->m_pPrimaryContext84,
+            pScreen->m_pRenderContext88, 4,
+            pScreen->m_fCompactLayout32C);
+        pScreen->m_pSelectorManager334 = pButtonManager;
+        AppendMenuSelectorChild(
+            pButtonManager, 0,
+            pScreen->m_pLayout42C[0], pScreen->m_pLayout42C[1],
+            panButtonResources, 1, 0, 0, 0,
+            &pScreen->m_nButtonSelection434, (int)0xacef000cU);
+        AppendMenuSelectorChild(
+            pButtonManager, 0,
+            pScreen->m_pLayout42C[2], pScreen->m_pLayout42C[3],
+            panButtonResources + 1, 1, 0, 0, 0,
+            &pScreen->m_nButtonSelection434, (int)0xacef000dU);
+        AppendMenuSelectorChild(
+            pButtonManager, 0,
+            pScreen->m_pLayout42C[4], pScreen->m_pLayout42C[5],
+            panButtonResources + 2, 1, 0, 0, 0,
+            &pScreen->m_nButtonSelection434, (int)0xacef000eU);
+        InitializeMenuSelectorCurrentState(pButtonManager, 0, 0);
+        InitializeMenuSelectorChildContext(pButtonManager);
+    }
     pScreen->m_fDrawFrameA8 = 1;
     pScreen->m_fTileBackgroundAC = 1;
     pScreen->m_fDrawForegroundB0 = 0;
@@ -2401,6 +2584,7 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
     short Point[2];
     short Relative[2];
     int nStatus;
+    GameBoundedTextBuffer *pBuffer;
 
     pScreen = (GameNetworkLobbyScreenView *)pObject;
     if (pScreen->m_pMappedListResources98 == 0 ||
@@ -2423,6 +2607,16 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
         pScreen->m_pRenderContext88, Point, Relative,
         pScreen->m_nMappedListRemapResourceId384,
         (void *)pszStatus, 0x20, 0);
+    pBuffer = (GameBoundedTextBuffer *)pScreen->m_pTextBuffer398;
+    if (pScreen->m_fTextPrompt39C != 0 && pBuffer != 0 &&
+        pBuffer->m_pszText0C != 0) {
+        Point[0] = (short)pScreen->m_pLayout42C[22];
+        Point[1] = (short)pScreen->m_pLayout42C[23];
+        pMappedList->SubmitRenderEntry(
+            pScreen->m_pRenderContext88, Point, Relative,
+            pScreen->m_nMappedListRemapResourceId384,
+            pBuffer->m_pszText0C, 0x20, 0);
+    }
     pScreen->m_nDrawnStatus3AC = pScreen->m_nStatus3A8;
 }
 
@@ -2444,19 +2638,78 @@ static void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void *pObject) {
         pScreen->m_dwStatusDuration3B4 = 0;
         pScreen->m_fSelectorDirty360 = 1;
     }
+    if (pScreen->m_nPendingPrompt3A4 != 0) {
+        ShowNetworkLobbyTextPrompt(
+            pScreen, pScreen->m_nPendingPrompt3A4, 1);
+        pScreen->m_nPendingPrompt3A4 = 0;
+    }
 }
 
 static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(
     void *pObject, int, void *pEvent) {
     GameNetworkLobbyScreenView *pScreen;
     GameMenuSelectorEvent *pInput;
+    GameBoundedTextBuffer *pBuffer;
+    unsigned int nCode;
+    char ch;
 
     pScreen = (GameNetworkLobbyScreenView *)pObject;
     pInput = (GameMenuSelectorEvent *)pEvent;
+    nCode = (unsigned int)pInput->m_nPayload08;
+    if (pInput->m_nType00 == 0x0c) {
+        if (nCode == 0xacef000cU && pScreen->m_fTextPrompt39C == 0) {
+            BeginNetworkLobbyTextPrompt(pScreen, 0);
+            return 1;
+        }
+        if (nCode == 0xacef000dU && pScreen->m_fTextPrompt39C == 0) {
+            BeginNetworkLobbyTextPrompt(pScreen, 1);
+            return 1;
+        }
+        if (nCode == 0xacef000eU) {
+            pScreen->m_nTransitionStatus378 = 1;
+            pScreen->m_nRequestedMode374 = 2;
+            return 1;
+        }
+    }
     if ((pInput->m_nType00 == 3 || pInput->m_nType00 == 4) &&
-        (unsigned int)pInput->m_nPayload08 == 0x1bU) {
+        nCode == 0x1bU) {
         pScreen->m_nTransitionStatus378 = 1;
         pScreen->m_nRequestedMode374 = 2;
+        return 1;
+    }
+    if (pScreen->m_fTextPrompt39C != 0 &&
+        (pInput->m_nType00 == 3 || pInput->m_nType00 == 4)) {
+        if (pInput->m_nType00 == 3) {
+            return 1;
+        }
+        pBuffer = (GameBoundedTextBuffer *)pScreen->m_pTextBuffer398;
+        if (pBuffer == 0 || pBuffer->m_pszText0C == 0) {
+            return 1;
+        }
+        ch = 0;
+        if (nCode >= 5U && nCode <= 0x1eU) {
+            ch = (char)('a' + nCode - 5U);
+        } else if (nCode >= 0x39U && nCode <= 0x42U) {
+            ch = (char)('0' + nCode - 0x39U);
+        } else if (nCode == 0x1fU) {
+            ch = ' ';
+        } else if (nCode == 0x20U) {
+            ch = '.';
+        } else if (nCode == 0x4cU) {
+            CommitNetworkLobbyTextPrompt(pScreen);
+            return 1;
+        } else if (nCode == 0x4dU || nCode == 0x4eU) {
+            if (pBuffer->m_cLength04 != 0) {
+                --pBuffer->m_cLength04;
+                pBuffer->m_pszText0C[pBuffer->m_cLength04] = '\0';
+                pScreen->m_fSelectorDirty360 = 1;
+            }
+            return 1;
+        }
+        if (ch != 0) {
+            AppendBoundedTextCharacter(pBuffer, ch);
+            pScreen->m_fSelectorDirty360 = 1;
+        }
         return 1;
     }
     ++*(int *)((char *)pScreen + 0x10);
@@ -2473,6 +2726,21 @@ static void DestroyNetworkLobbyScreen(
     *(void ***)pScreen->m_abVariantRenderManager14 =
         g_GAME_MainMenuCallbackVtable;
     g_pActiveNetworkLobbyScreen = 0;
+    if (pScreen->m_pSelectorManager334 != 0) {
+        ((GameMainMenuSelectorManagerInterface *)
+             pScreen->m_pSelectorManager334)->Delete((void *)1);
+        pScreen->m_pSelectorManager334 = 0;
+    }
+    if (pScreen->m_pTextBuffer398 != 0) {
+        GameBoundedTextBuffer *pBuffer;
+
+        pBuffer = (GameBoundedTextBuffer *)pScreen->m_pTextBuffer398;
+        if (pBuffer->m_pszText0C != 0) {
+            FreeVSMemBlock(pBuffer->m_pszText0C);
+        }
+        FreeVSMemBlock(pBuffer);
+        pScreen->m_pTextBuffer398 = 0;
+    }
     if (pScreen->m_pPlayerEntries3CC != 0) {
         for (i = 0; i < 10; ++i) {
             RemoveGeometryOwnerChild(
