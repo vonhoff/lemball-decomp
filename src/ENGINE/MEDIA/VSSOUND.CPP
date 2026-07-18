@@ -2969,7 +2969,7 @@ VsSoundDirectSoundEffectBackend *VsSoundDirectSoundEffectBackend::ConstructDirec
     *(unsigned short *)((char *)this + 0x3c) = 1;
     *(int *)((char *)this + 0x28) = 1;
     *(unsigned short *)((char *)this + 0x3e) = 1;
-    *(int *)((char *)this + 0x44) = 1;
+    *(volatile int *)((char *)this + 0x44) = 1;
     *(int *)((char *)this + 0x44) = 0xac44;
     *(HMODULE *)((char *)this + 4) = LoadLibraryA(g_AUDIO_DsoundDll);
     if (*(HMODULE *)((char *)this + 4) != 0) {
