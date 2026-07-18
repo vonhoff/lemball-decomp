@@ -49,6 +49,8 @@ extern void LEMBALL_FASTCALL SetStatusIndicatorActive(
 extern void AppendPointerQueueEntry(void *pQueue, void *pEntry);
 extern int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresent(
     int *pPrimaryContext);
+extern int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresentThunk(
+    int *pPrimaryContext);
 extern void TogglePrimaryContextDisplayMode(
     ShellUiPrimaryContextShell *pShell);
 extern void LEMBALL_FASTCALL NoopPackagedSpriteRenderEntryThunk00402A22(
@@ -2025,7 +2027,7 @@ static void LEMBALL_FASTCALL UpdateMainMenuScreen(void *pObject) {
     }
 
     dwNow = timeGetTime();
-    if (IsPrimaryContextWindowReadyForPresent(
+    if (IsPrimaryContextWindowReadyForPresentThunk(
             (int *)pScreen->m_pPrimaryContext84) == 0 ||
         ((GameIntNoArgVirtual)
              (*(void ***)pScreen->m_pPrimaryContext84)[24])(
