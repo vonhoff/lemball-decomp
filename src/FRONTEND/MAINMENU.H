@@ -23,5 +23,8 @@ void *LEMBALL_FASTCALL ConstructFunctionalOptionsScreen(
 void *LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(
     void *pObject, int nUnusedEdx, void *pPrimaryContext,
     void *pRenderContext, short *paSize, int fSecondVariant);
+void *LEMBALL_FASTCALL ConstructFunctionalPasswordEntryScreen(
+    void *pObject, int nUnusedEdx, void *pPrimaryContext,
+    void *pRenderContext, short *paSize);
 
 #endif

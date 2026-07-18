@@ -2088,14 +2088,8 @@ void *GameScreenObject::ConstructPaintballSequenceScreen(void *pPrimaryContext,
 void *GameScreenObject::ConstructPasswordEntryScreen(void *pPrimaryContext,
                                                       void *pWindowOwnerContext,
                                                       short *paRect) {
-    void *pScreenObject = this;
-    (void)pPrimaryContext;
-    (void)pWindowOwnerContext;
-    (void)paRect;
-    InitializeGameStubVtables();
-    memset(pScreenObject, 0, 0x494);
-    *(void **)pScreenObject = g_GAME_GenericScreenVtableSlots;
-    return pScreenObject;
+    return ConstructFunctionalPasswordEntryScreen(
+        this, 0, pPrimaryContext, pWindowOwnerContext, paRect);
 }
 
 static void CallNoArgVirtual(void *pObject, unsigned int nByteOffset) {
@@ -4460,6 +4454,19 @@ void GamePrimaryContext::SwitchPrimaryContextScreen(int nMode) {
         ((GameActiveScreenVirtualInterface *)pContext->m_pActiveScreen)->FinalizePresent();
         ((GameActiveScreenVirtualInterface *)pContext->m_pActiveScreen)->PrepareForPresent();
     }
+}
+
+char *FormatCurrentLevelPassword(void) {
+    return ((GameLevelProgressState *)g_pLevelProgressState)->FormatPassword();
+}
+
+int ValidateCurrentLevelPassword(char *pszPassword) {
+    return ((GameLevelProgressState *)g_pLevelProgressState)
+        ->ValidateAndApplyPassword(pszPassword);
+}
+
+void SnapshotCurrentLevelProgress(void) {
+    ((GameLevelProgressState *)g_pLevelProgressState)->Snapshot();
 }
 
 // FUNCTION: LEMBALL 0x00431ed0

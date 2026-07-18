@@ -150,4 +150,8 @@ struct GameRenderDispatchQueue {
 
 extern void *g_pSharedRenderDispatchQueue;
 
+char *FormatCurrentLevelPassword(void);
+int ValidateCurrentLevelPassword(char *pszPassword);
+void SnapshotCurrentLevelProgress(void);
+
 #endif
