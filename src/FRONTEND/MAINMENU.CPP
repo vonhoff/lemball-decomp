@@ -3886,9 +3886,11 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
 static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
     GameNetworkLobbyScreenView *pScreen;
     MappedListResourceTable *pMappedList;
+    void *pFontResource;
     const char *pszStatus;
     short Point[2];
     short Relative[2];
+    short Extent[2];
     int nStatus;
     GameBoundedTextBuffer *pBuffer;
     char szDisplayText[0x40];
@@ -3902,14 +3904,20 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
     int iVisible;
     int nColor;
     int nPeerOffset;
+    int cchDisplay;
+    int i;
 
 #define SUBMIT_CENTERED_LOBBY_TEXT(text, x, y, remap) \
-    Point[0] = (short)((x) - (int)strlen(text) * 4); \
-    Point[1] = (short)(y); \
-    pMappedList->SubmitRenderEntry( \
-        pScreen->m_pRenderContext88, Point, Relative, \
-        pScreen->m_nMappedListRemapResourceId384, \
-        (void *)(text), 0x20, (remap))
+    do { \
+        MeasureFunctionalLevelTitleExtent( \
+            pFontResource, Extent, (text)); \
+        Point[0] = (short)((x) - Extent[0] / 2); \
+        Point[1] = (short)(y); \
+        pMappedList->SubmitRenderEntry( \
+            pScreen->m_pRenderContext88, Point, Relative, \
+            pScreen->m_nMappedListRemapResourceId384, \
+            (void *)(text), 0x20, (remap)); \
+    } while (0)
 
     pScreen = (GameNetworkLobbyScreenView *)pObject;
     if (pScreen->m_pMappedListResources98 == 0 ||
@@ -3917,18 +3925,22 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
         return;
     }
     pMappedList = (MappedListResourceTable *)pScreen->m_pMappedListResources98;
-    pMappedList->ResetDrawEntryPool();
+    pFontResource = pMappedList->GetMappedResource(
+        pScreen->m_nMappedListRemapResourceId384);
     Relative[0] = 0;
     Relative[1] = 0;
     if (pScreen->m_fBuildingRenderEntries364 != 0) {
-        Point[0] = 0;
+        pszStatus = pScreen->m_fCompactLayout32C != 0
+            ? g_szNetworkLobbyDividerCompact
+            : g_szNetworkLobbyDividerStandard;
+        MeasureFunctionalLevelTitleExtent(
+            pFontResource, Extent, pszStatus);
+        Point[0] = (short)((pScreen->m_cxScreen37C - Extent[0]) / 2);
         Point[1] = (short)pScreen->m_pLayout42C[20];
         pMappedList->SubmitRenderEntry(
             pScreen->m_pRenderContext88, Point, Relative,
             pScreen->m_nMappedListRemapResourceId384,
-            (void *)(pScreen->m_fCompactLayout32C != 0
-                ? g_szNetworkLobbyDividerCompact
-                : g_szNetworkLobbyDividerStandard), 0x20, 0);
+            (void *)pszStatus, 0x20, 0);
         SUBMIT_CENTERED_LOBBY_TEXT(
             "Name", pScreen->m_pLayout42C[26],
             pScreen->m_pLayout42C[21], 0);
@@ -3956,6 +3968,22 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
                 pScreen->m_pszLocalComputer3E8[0] != '\0') {
                 strncpy(szDisplayText, pScreen->m_pszLocalComputer3E8, 20);
                 szDisplayText[20] = '\0';
+                cchDisplay = (int)strlen(szDisplayText);
+                MeasureFunctionalLevelTitleExtent(
+                    pFontResource, Extent, szDisplayText);
+                while (0 < cchDisplay &&
+                       pScreen->m_pLayout42C[38] < Extent[0]) {
+                    szDisplayText[--cchDisplay] = '\0';
+                    MeasureFunctionalLevelTitleExtent(
+                        pFontResource, Extent, szDisplayText);
+                }
+                for (i = 0; szDisplayText[i] != '\0'; ++i) {
+                    if (szDisplayText[i] >= 'A' &&
+                        szDisplayText[i] <= 'Z') {
+                        szDisplayText[i] =
+                            (char)(szDisplayText[i] - 'A' + 'a');
+                    }
+                }
                 SUBMIT_CENTERED_LOBBY_TEXT(
                     szDisplayText, pScreen->m_pLayout42C[32],
                     pScreen->m_pLayout42C[25],
