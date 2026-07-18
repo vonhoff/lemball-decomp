@@ -566,6 +566,7 @@ struct VsGdiResourceGeometryHelperSlotManager {
 
     VsGdiResourceGeometryHelperSlotManager *InitializeResourceGeometryHelperSlotManager(int cSlots);
     void *AllocateResourceGeometryHelperSlot(short *pRect, void *pWrappedTarget);
+    void RemoveResourceGeometryHelperSlot(void *pTarget);
     int FindResourceGeometryHelperSlot(void *pTarget);
     void DeactivateResourceGeometryHelperSlot(void *pTarget);
 };
@@ -768,13 +769,23 @@ struct VsGdiResourceGeometryHelperSlotManagerVtableFixup {
         union {
             void (VsGdiResourceGeometryHelperSlotManager::*p)(void *);
             void *v;
-        } deactivateMethod;
+        } voidMethod;
+        union {
+            int (VsGdiResourceGeometryHelperSlotManager::*p)(void *);
+            void *v;
+        } findMethod;
         allocateMethod.p = &VsGdiResourceGeometryHelperSlotManager::
             AllocateResourceGeometryHelperSlot;
-        deactivateMethod.p = &VsGdiResourceGeometryHelperSlotManager::
+        voidMethod.p = &VsGdiResourceGeometryHelperSlotManager::
+            RemoveResourceGeometryHelperSlot;
+        g_VSGDI_ResourceGeometryHelperSlotManagerVtable[1] = voidMethod.v;
+        findMethod.p = &VsGdiResourceGeometryHelperSlotManager::
+            FindResourceGeometryHelperSlot;
+        g_VSGDI_ResourceGeometryHelperSlotManagerVtable[2] = findMethod.v;
+        voidMethod.p = &VsGdiResourceGeometryHelperSlotManager::
             DeactivateResourceGeometryHelperSlot;
         g_VSGDI_ResourceGeometryHelperSlotManagerVtable[0] = allocateMethod.v;
-        g_VSGDI_ResourceGeometryHelperSlotManagerVtable[3] = deactivateMethod.v;
+        g_VSGDI_ResourceGeometryHelperSlotManagerVtable[3] = voidMethod.v;
     }
 };
 static VsGdiResourceGeometryHelperSlotManagerVtableFixup
@@ -3561,6 +3572,33 @@ void *VsGdiResourceGeometryHelperSlotManager::AllocateResourceGeometryHelperSlot
     if (pSlot->m_nOwnerOrState10 != 0)
         ++g_nResourceGeometryHelperSlotCount;
     return pTarget;
+}
+
+// FUNCTION: LEMBALL 0x0046bed0
+void VsGdiResourceGeometryHelperSlotManager::RemoveResourceGeometryHelperSlot(
+    void *pTarget)
+{
+    VsGdiResourceGeometryHelperSlot *pSlot;
+    int i;
+
+    i = FindResourceGeometryHelperSlot(pTarget);
+    pSlot = m_pSlots + i;
+    if (pSlot->m_nOwnerOrState0 != 0) {
+        DestroyResourceGeometryHelperTarget(
+            (void *)(unsigned long)pSlot->m_nOwnerOrState0);
+        RestoreCompactResourceGeometryHelperVtable(
+            (char *)(unsigned long)pSlot->m_nOwnerOrState0 + 0x55c);
+        FreeVSMemBlock((void *)(unsigned long)pSlot->m_nOwnerOrState0);
+    }
+    if (pSlot->m_nOwnerOrState10 != 0) {
+        --m_nReserved0C;
+    }
+    pSlot->m_nOwnerOrState0 = 0;
+    pSlot->m_nOwnerOrState8 = 0;
+    pSlot->m_nOwnerOrState4 = 0;
+    pSlot->m_nOwnerOrState10 = 0;
+    pSlot->m_nOwnerOrStateC = 0;
+    pSlot->m_fAvailable = 1;
 }
 
 // FUNCTION: LEMBALL 0x0046bf70

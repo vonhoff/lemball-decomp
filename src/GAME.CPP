@@ -1318,14 +1318,8 @@ void *GameScreenObject::ConstructOptionsScreen(void *pPrimaryContext, void *pWin
 void *GameScreenObject::ConstructLevelSelectionScreen(void *pPrimaryContext,
                                                        void *pWindowOwnerContext,
                                                        short *paRect) {
-    void *pScreenObject = this;
-    (void)pPrimaryContext;
-    (void)pWindowOwnerContext;
-    (void)paRect;
-    InitializeGameStubVtables();
-    memset(pScreenObject, 0, 0x488);
-    *(void **)pScreenObject = g_GAME_GenericScreenVtableSlots;
-    return pScreenObject;
+    return ConstructFunctionalLevelSelectionScreen(
+        this, 0, pPrimaryContext, pWindowOwnerContext, paRect);
 }
 
 void *GameScreenObject::ConstructLevelScreen(void *pPrimaryContext,

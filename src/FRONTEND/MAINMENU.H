@@ -4,6 +4,9 @@
 #include "ENGINE/CORE/COMMON.H"
 
 extern void *g_GAME_MainMenuScreenVtable[22];
+void *LEMBALL_FASTCALL ConstructFunctionalLevelSelectionScreen(
+    void *pObject, int nUnusedEdx, void *pPrimaryContext,
+    void *pRenderContext, short *paSize);
 extern void *g_GAME_MainMenuQueueVtable[4];
 extern void *g_GAME_MainMenuCallbackVtable[2];
 

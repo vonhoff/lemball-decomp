@@ -23,6 +23,9 @@ extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 extern void VariantResourceBundleNoopThunk(void);
 extern void *LoadBitmapResource(int nResourceId);
 extern void LoadVariantRenderResource(void *pManager, int nResourceId);
+extern void EmitVariantRenderResourceEntry(
+    void *pManager, short *pRect, const short *pPoint,
+    int nResourceId, int nFlags, void *pFrameSelector, int nValue);
 extern void ResetOrFlipVariantRenderBuffers(int nManager);
 extern void DestroyVariantRenderManager(void *pManager);
 extern void *ConstructVariantRenderManager(void *pManager,
@@ -258,6 +261,20 @@ void LEMBALL_FASTCALL ActivateFramedScreenBase(void *pObject);
 static void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroup(
     void *pObject);
 static int ConsumeLevelSelectionChangedFlag(void);
+static void *LEMBALL_FASTCALL DeleteFunctionalLevelSelectionScreen(
+    void *pObject, int nUnusedEdx, int fDelete);
+static int LEMBALL_FASTCALL HandleFunctionalLevelSelectionInput(
+    void *pObject, int nUnusedEdx, void *pEvent);
+static void LEMBALL_FASTCALL UpdateFunctionalLevelSelectionScreen(
+    void *pObject);
+static void LEMBALL_FASTCALL InitializeFunctionalLevelSelectionResources(
+    void *pObject);
+static void LEMBALL_FASTCALL ReleaseFunctionalLevelSelectionResources(
+    void *pObject);
+static void LEMBALL_FASTCALL NoopFunctionalLevelSelectionHook(
+    void *pObject);
+static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionStatus(
+    void *pObject);
 static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(
     void *pObject, int, void *);
 static void LEMBALL_FASTCALL DrawFramedScreenBase(void *pObject);
@@ -394,6 +411,29 @@ void *g_GAME_MainMenuQueueVtable[4] = {
 void *g_GAME_MainMenuCallbackVtable[2] = {
     (void *)VariantResourceBundleNoopThunk,
     0
+};
+
+static void *g_GAME_FunctionalLevelSelectionVtable[22];
+static int g_fFunctionalLevelSelectionVtableInitialized;
+
+static const int g_GAME_LevelSelectionLayoutStandard[54] = {
+    25, 375, 178, 375, 331, 375, 484, 375,
+    10, 0, 336, 12, 288, 292, 32, 160,
+    138, 76, 352, 266, 404, 267, 440, 267,
+    352, 203, 404, 219, 440, 203, 352, 153,
+    404, 158, 440, 153, 352, 56, 256, 88,
+    488, 22, 352, 305, 404, 310, 440, 305,
+    288, 352, 15, 0, 0, 221
+};
+
+static const int g_GAME_LevelSelectionLayoutCompact[54] = {
+    12, 186, 89, 186, 165, 186, 242, 186,
+    6, 0, 168, 6, 144, 160, 16, 80,
+    69, 38, 176, 135, 202, 135, 220, 135,
+    176, 102, 202, 112, 220, 102, 176, 77,
+    202, 81, 220, 77, 176, 28, 128, 44,
+    244, 12, 176, 153, 202, 157, 220, 153,
+    144, 176, 9, 0, 0, 113
 };
 
 static void *g_GAME_FramedScreenBaseVtable[22] = {
@@ -1388,6 +1428,236 @@ static int ConsumeLevelSelectionChangedFlag(void) {
         return 1;
     }
     return 0;
+}
+
+static void InitializeFunctionalLevelSelectionVtable(void) {
+    int i;
+
+    if (g_fFunctionalLevelSelectionVtableInitialized != 0) {
+        return;
+    }
+    for (i = 0; i < 22; ++i) {
+        g_GAME_FunctionalLevelSelectionVtable[i] =
+            g_GAME_MainMenuScreenVtable[i];
+    }
+    g_GAME_FunctionalLevelSelectionVtable[0] =
+        (void *)DeleteFunctionalLevelSelectionScreen;
+    g_GAME_FunctionalLevelSelectionVtable[14] =
+        (void *)UpdateFunctionalLevelSelectionScreen;
+    g_GAME_FunctionalLevelSelectionVtable[15] =
+        (void *)HandleFunctionalLevelSelectionInput;
+    g_GAME_FunctionalLevelSelectionVtable[16] =
+        (void *)InitializeFunctionalLevelSelectionResources;
+    g_GAME_FunctionalLevelSelectionVtable[17] =
+        (void *)ReleaseFunctionalLevelSelectionResources;
+    g_GAME_FunctionalLevelSelectionVtable[18] =
+        (void *)DrawFunctionalLevelSelectionStatus;
+    g_GAME_FunctionalLevelSelectionVtable[19] =
+        (void *)NoopFunctionalLevelSelectionHook;
+    g_GAME_FunctionalLevelSelectionVtable[20] =
+        (void *)NoopFunctionalLevelSelectionHook;
+    g_GAME_FunctionalLevelSelectionVtable[21] =
+        (void *)NoopFunctionalLevelSelectionHook;
+    g_fFunctionalLevelSelectionVtableInitialized = 1;
+}
+
+void *LEMBALL_FASTCALL ConstructFunctionalLevelSelectionScreen(
+    void *pObject, int, void *pPrimaryContext,
+    void *pRenderContext, short *paSize) {
+    GameFramedScreenBase *pScreen;
+
+    pScreen = (GameFramedScreenBase *)pObject;
+    ConstructFramedScreenBaseFields(
+        pScreen, 0, pPrimaryContext, pRenderContext, paSize,
+        4, 0x32, 200, 0, 0x28, 0x30);
+    InitializeFunctionalLevelSelectionVtable();
+    pScreen->m_pVtable00 = g_GAME_FunctionalLevelSelectionVtable;
+    *(void ***)pScreen->m_abRenderQueueNode04 =
+        g_GAME_MainMenuQueueVtable;
+    *(void ***)pScreen->m_abVariantRenderManager14 =
+        g_GAME_MainMenuCallbackVtable;
+    pScreen->m_fDrawFrameA8 = 1;
+    pScreen->m_fTileBackgroundAC = 1;
+    pScreen->m_fDrawForegroundB0 = 1;
+    ActivateFramedScreenBase(pScreen);
+    return pScreen;
+}
+
+static void *LEMBALL_FASTCALL DeleteFunctionalLevelSelectionScreen(
+    void *pObject, int, int fDelete) {
+    GameFramedScreenBase *pScreen;
+
+    pScreen = (GameFramedScreenBase *)pObject;
+    pScreen->m_pVtable00 = g_GAME_FunctionalLevelSelectionVtable;
+    *(void ***)pScreen->m_abRenderQueueNode04 =
+        g_GAME_MainMenuQueueVtable;
+    *(void ***)pScreen->m_abVariantRenderManager14 =
+        g_GAME_MainMenuCallbackVtable;
+    if (pScreen->m_fFrameResourcesLoaded9C != 0) {
+        ReleaseFunctionalLevelSelectionResources(pScreen);
+        ReleaseFramedScreenFrameResources(pScreen);
+    }
+    g_pActiveNetworkLobbyScreen = 0;
+    if (g_pSharedRenderDispatchQueue != 0) {
+        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+            ->UnregisterOrderedRenderDispatchClient(
+                pScreen->m_abRenderQueueNode04, 0);
+    }
+    DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
+    ((MogLoadResourceArchive *)g_pMainResourceArchive)
+        ->PruneUnreferencedCachedResourceObjects();
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pScreen);
+    }
+    return pObject;
+}
+
+static int LEMBALL_FASTCALL HandleFunctionalLevelSelectionInput(
+    void *pObject, int, void *pEvent) {
+    GameFramedScreenBase *pScreen;
+    unsigned short nType;
+    int nCode;
+
+    pScreen = (GameFramedScreenBase *)pObject;
+    nType = *(unsigned short *)pEvent;
+    nCode = *(int *)((char *)pEvent + 8);
+    if (nType == 4) {
+        if (nCode == 0x23) {
+            pScreen->m_nRequestedMode374 = 2;
+        } else if (nCode == 0x1f || nCode == 0x4c) {
+            pScreen->m_nRequestedMode374 = 5;
+        } else {
+            return 0;
+        }
+    } else if (nType == 0x0c) {
+        if ((unsigned int)nCode == 0xacef000cU) {
+            pScreen->m_nRequestedMode374 = 2;
+        } else if ((unsigned int)nCode == 0xacef000dU) {
+            pScreen->m_nRequestedMode374 = 5;
+        } else {
+            return 0;
+        }
+    } else {
+        ++*(int *)((char *)pScreen + 0x10);
+        return 0;
+    }
+    pScreen->m_nTransitionStatus378 = 1;
+    return 1;
+}
+
+static void LEMBALL_FASTCALL UpdateFunctionalLevelSelectionScreen(
+    void *pObject) {
+    GameFramedScreenBase *pScreen;
+
+    pScreen = (GameFramedScreenBase *)pObject;
+    if (g_fStartupTestAllLevels != 0) {
+        pScreen->m_nTransitionStatus378 = 1;
+        pScreen->m_nRequestedMode374 = 5;
+    }
+}
+
+static void LEMBALL_FASTCALL InitializeFunctionalLevelSelectionResources(
+    void *pObject) {
+    GameFramedScreenBase *pScreen;
+    const int *pLayout;
+    unsigned char *pForegroundEntry;
+    void *pBitmap;
+    int nResource0;
+    int nResource1;
+    int nResource2;
+
+    pScreen = (GameFramedScreenBase *)pObject;
+    if (pScreen->m_fCompactLayout32C == 1) {
+        pLayout = g_GAME_LevelSelectionLayoutCompact;
+        pBitmap = LoadBitmapResource(0x13e);
+        nResource0 = 0x180;
+        nResource1 = 0x181;
+        nResource2 = 0x182;
+        pScreen->m_nTimedVariantResourceId394 = 0x17c;
+    } else {
+        pLayout = g_GAME_LevelSelectionLayoutStandard;
+        pBitmap = LoadBitmapResource(0x133);
+        nResource0 = 0x153;
+        nResource1 = 0x154;
+        nResource2 = 0x155;
+        pScreen->m_nTimedVariantResourceId394 = 0x14f;
+    }
+    *(void **)((char *)pScreen + 0x3bc) = pBitmap;
+    *(const int **)((char *)pScreen + 0x3d4) = pLayout;
+    *(int *)((char *)pScreen + 0x3d8) = nResource0;
+    *(int *)((char *)pScreen + 0x3dc) = nResource1;
+    *(int *)((char *)pScreen + 0x3e0) = nResource2;
+    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
+                              nResource0);
+    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
+                              nResource1);
+    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
+                              pScreen->m_nTimedVariantResourceId394);
+    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
+                              nResource2);
+
+    pForegroundEntry = pScreen->m_abRenderEntryGroupC8 + 0x14;
+    *(short *)(pForegroundEntry + 0) = (short)pLayout[14];
+    *(short *)(pForegroundEntry + 2) = (short)pLayout[15];
+    *(void **)(pForegroundEntry + 0x0c) = pBitmap;
+    *(int *)(pForegroundEntry + 0x10) = 0x800;
+    *(int *)(pForegroundEntry + 0x14) = 0;
+    pScreen->m_fSelectorDirty360 = 1;
+}
+
+static void LEMBALL_FASTCALL ReleaseFunctionalLevelSelectionResources(
+    void *pObject) {
+    GameFramedScreenBase *pScreen;
+    LevelVariantRenderManagerView *pVariantManager;
+
+    pScreen = (GameFramedScreenBase *)pObject;
+    pVariantManager = (LevelVariantRenderManagerView *)
+        pScreen->m_abVariantRenderManager14;
+    if (*(void **)((char *)pScreen + 0x3bc) != 0) {
+        ReleaseTypedResourceObjectReference(
+            *(void **)((char *)pScreen + 0x3bc));
+        *(void **)((char *)pScreen + 0x3bc) = 0;
+    }
+    pVariantManager->ReleaseVariantRenderResource(
+        *(int *)((char *)pScreen + 0x3d8));
+    pVariantManager->ReleaseVariantRenderResource(
+        *(int *)((char *)pScreen + 0x3dc));
+    pVariantManager->ReleaseVariantRenderResource(
+        pScreen->m_nTimedVariantResourceId394);
+    pVariantManager->ReleaseVariantRenderResource(
+        *(int *)((char *)pScreen + 0x3e0));
+}
+
+static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionStatus(
+    void *pObject) {
+    GameFramedScreenBase *pScreen;
+    const int *pLayout;
+    short Point[2];
+    short Rect[4];
+
+    pScreen = (GameFramedScreenBase *)pObject;
+    pLayout = *(const int **)((char *)pScreen + 0x3d4);
+    if (pLayout == 0) {
+        return;
+    }
+    Point[0] = (short)pLayout[30];
+    Point[1] = (short)pLayout[31];
+    EmitVariantRenderResourceEntry(
+        pScreen->m_abVariantRenderManager14, Rect, Point,
+        *(int *)((char *)pScreen + 0x3d8), 0, 0, 0);
+    Point[0] = (short)pLayout[24];
+    Point[1] = (short)pLayout[25];
+    EmitVariantRenderResourceEntry(
+        pScreen->m_abVariantRenderManager14, Rect, Point,
+        *(int *)((char *)pScreen + 0x3dc), 0, 0, 0);
+    Point[0] = (short)pLayout[18];
+    Point[1] = (short)pLayout[19];
+    EmitVariantRenderResourceEntry(
+        pScreen->m_abVariantRenderManager14, Rect, Point,
+        *(int *)((char *)pScreen + 0x3e0), 0, 0, 0);
+}
+
+static void LEMBALL_FASTCALL NoopFunctionalLevelSelectionHook(void *) {
 }
 
 // FUNCTION: LEMBALL 0x0044fbd0
