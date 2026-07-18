@@ -30,6 +30,7 @@ extern void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void *pQueue);
 extern void LEMBALL_FASTCALL PresentPrimaryContextScreen(void *pPrimaryContext);
 extern void noop_callback_00456600(void);
 extern int g_nLevelFrameClockTimeMs;
+extern int g_nLevelFrameClockTick;
 
 struct LevelStatusProgressClient {
     virtual void SetLoadProgress(int nProgress) = 0;
@@ -3926,6 +3927,67 @@ void RenderReconstructedLevelScreenTerrain(void *pObject)
         ->PrepareAndSortDynamicDepthEntries();
     ((LevelScreenTerrainRenderView *)pScreen)->DrawStaticDepthEntries();
     *(int *)((char *)pManager + 0xac) = 0;
+}
+
+void DrawReconstructedLevelScreenStatusText(void *pObject)
+{
+    char *pScreen;
+    char *pMode;
+    MappedListResourceTable *pMappedList;
+    short RelativePoint[2];
+    char szTimer[5];
+    char szCounter[8];
+    int nBaseTime;
+    int nTime;
+    int nTargetCounter;
+    int nCounter;
+    int i;
+
+    pScreen = (char *)pObject;
+    pMode = *(char **)(pScreen + 0x96c);
+    pMappedList = *(MappedListResourceTable **)(pScreen + 0x78);
+    if (pMode == 0 || pMappedList == 0 ||
+        *(void **)(pScreen + 0x970) == 0) return;
+
+    RelativePoint[0] = -4;
+    RelativePoint[1] = 0;
+    nBaseTime = *(unsigned short *)(pMode + 0xe4);
+    nTime = nBaseTime + *(int *)(pMode + 0xe8);
+    if (nTime < 0) nTime = 0;
+    if (nTime <= 599 || nBaseTime <= 599) {
+        if (nTime > 599) nTime = 599;
+        szTimer[0] = (char)(nTime / 60) + '0';
+        szTimer[1] = ':';
+        szTimer[2] = (char)((nTime % 60) / 10) + '0';
+        szTimer[3] = (char)(nTime % 10) + '0';
+        szTimer[4] = '\0';
+        pMappedList->SubmitRenderEntry(
+            *(void **)(pScreen + 0x970),
+            (short *)(pScreen + 0x8d6), RelativePoint,
+            0x115, szTimer, 0x20, 0);
+    }
+
+    nTargetCounter = *(int *)(pMode + 0xf0);
+    nCounter = *(int *)(pScreen + 0x8f0);
+    if ((unsigned int)*(int *)(pScreen + 0x8f8) <=
+        (unsigned int)g_nLevelFrameClockTick) {
+        if (nCounter != nTargetCounter) {
+            nCounter += *(int *)(pMode + 0x108) == 2 ? 10 : 100;
+            if (nCounter > nTargetCounter) nCounter = nTargetCounter;
+            *(int *)(pScreen + 0x8f0) = nCounter;
+        }
+        *(int *)(pScreen + 0x8f8) = g_nLevelFrameClockTick + 1;
+    }
+    if (nCounter > 9999999) nCounter = 9999999;
+    szCounter[7] = '\0';
+    for (i = 6; i >= 0; --i) {
+        szCounter[i] = (char)(nCounter % 10) + '0';
+        nCounter /= 10;
+    }
+    pMappedList->SubmitRenderEntry(
+        *(void **)(pScreen + 0x970),
+        (short *)(pScreen + 0x8de), RelativePoint,
+        0x115, szCounter, 0x20, 0);
 }
 
 // FUNCTION: LEMBALL 0x004439e0

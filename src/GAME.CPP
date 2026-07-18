@@ -120,6 +120,7 @@ extern void *ConstructLevelScreenVariantRenderManager(void *pObject,
 extern void DestroyLevelScreenVariantRenderManager(void *pObject);
 extern void ResetOrFlipVariantRenderBuffers(int nManager);
 extern void RenderReconstructedLevelScreenTerrain(void *pObject);
+extern void DrawReconstructedLevelScreenStatusText(void *pObject);
 extern int EmitLevelGameModeDynamicRenderEntries(
     void *pObject, void *pOutputEntries);
 extern void RebuildLevelScreenVariantResourceSet(void *pObject, int nMode);
@@ -1413,12 +1414,7 @@ static void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void *pObject) {
     ++*(int *)(pScreen + 0x190);
     *(short *)(pScreen + 0x166) =
         (short)(g_nLevelFrameClockTimeMs / 100);
-    pPanel = *(void **)(pScreen + 0x97c);
-    if (pPanel == 0) {
-        return;
-    }
-    pOverlay = *(void **)((char *)pPanel + 0x2c);
-    if (pOverlay != 0) {
+    {
         typedef int (LEMBALL_FASTCALL *GetUploadStateProc)(void *pObject);
         typedef void (LEMBALL_FASTCALL *QueueProc)(
             void *pObject, int nUnusedEdx, void *pQueue);
@@ -1434,8 +1430,16 @@ static void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void *pObject) {
             EmitLevelGameModeDynamicRenderEntries(
                 *(void **)(pScreen + 0x96c),
                 *(void **)(pScreen + 0x95c));
+        ((QueueProc)(*(void ***)(pScreen + 0x900))[1])(
+            pScreen + 0x900, 0, pRenderQueue);
         RenderReconstructedLevelScreenTerrain(pScreen);
-        ((DrawProc)(*(void ***)pOverlay)[47])(pOverlay);
+        DrawReconstructedLevelScreenStatusText(pScreen);
+
+        pPanel = *(void **)(pScreen + 0x97c);
+        pOverlay = pPanel != 0 ? *(void **)((char *)pPanel + 0x2c) : 0;
+        if (pOverlay != 0) {
+            ((DrawProc)(*(void ***)pOverlay)[47])(pOverlay);
+        }
         ((QueueProc)(*(void ***)(pScreen + 0x908))[1])(
             pScreen + 0x908, 0, pRenderQueue);
     }
