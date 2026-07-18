@@ -578,9 +578,11 @@ static void LEMBALL_FASTCALL NoopFunctionalLevelSelectionHook(
     void *pObject);
 static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionStatus(
     void *pObject);
+static short *GetFunctionalVariantFrameExtent(
+    void *pManager, short *pExtent, int nResourceId, int iFrame);
 static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(
     void *pObject);
-static void RefreshFunctionalLevelSelectionMetadata(
+static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(
     GameLevelSelectionScreenView *pScreen);
 static void MeasureFunctionalLevelTitleExtent(
     void *pResource, short *pExtent, const char *pszText);
@@ -3950,7 +3952,6 @@ void *LEMBALL_FASTCALL ConstructFunctionalLevelSelectionScreen(
         pScreen, 0, pPrimaryContext, pRenderContext, paSize,
         4, 0x32, 200, 0, 0x28, 0x30);
     InitializeFramedScreenRenderChildEntry(pScreen->m_abRenderChild398);
-    InitializeFramedScreenRenderChildEntry(&pScreen->m_pLevelBitmap3BC);
     InitializeFunctionalLevelSelectionVtable();
     pScreen->m_pVtable00 = g_GAME_FunctionalLevelSelectionVtable;
     *(void ***)pScreen->m_abRenderQueueNode04 =
@@ -4063,7 +4064,6 @@ static void *LEMBALL_FASTCALL DeleteFunctionalLevelSelectionScreen(
         ->PruneUnreferencedCachedResourceObjects();
     DestroyFramedScreenRenderEntryGroup(
         pScreen->m_abRenderEntryGroupC8);
-    RestoreLevelSelectionRenderChildEntryVtable(&pScreen->m_pLevelBitmap3BC);
     RestoreLevelSelectionRenderChildEntryVtable(pScreen->m_abRenderChild398);
     DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
     if ((fDelete & 1) != 0) {
@@ -4274,8 +4274,12 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionStatus(
     void *pObject) {
     GameLevelSelectionScreenView *pScreen;
     const int *pLayout;
+    short Extent[2];
     short Point[2];
     short Rect[4];
+    int cxFrame;
+    int x;
+    int i;
 
     pScreen = (GameLevelSelectionScreenView *)pObject;
     pLayout = pScreen->m_pLayout3D4;
@@ -4300,17 +4304,105 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionStatus(
         ->EmitVariantRenderResourceEntry(
             Rect, Point, pScreen->m_nResourceId3E0, 0,
             pScreen->m_pSelector3C8, 0);
+
+    if (pScreen->m_fNetworkScreen8C != 0) {
+        Point[0] = (short)pLayout[42];
+        Point[1] = (short)pLayout[43];
+        ((LevelVariantRenderManagerView *)
+            pScreen->m_abVariantRenderManager14)
+                ->EmitVariantRenderResourceEntry(
+                    Rect, Point, pScreen->m_nResourceId3D8, 0,
+                    pScreen->m_pSelector3C4,
+                    pScreen->m_nPaletteRemap3D0);
+        GetFunctionalVariantFrameExtent(
+            pScreen->m_abVariantRenderManager14, Extent,
+            pScreen->m_nResourceId3D8, 0);
+        cxFrame = Extent[0];
+        x = pLayout[10] - cxFrame / 4 + pLayout[12];
+        for (i = 0; i < pScreen->m_cNetworkStatus3F0; ++i) {
+            x -= cxFrame + cxFrame / 8;
+            Point[0] = (short)x;
+            Point[1] = (short)pLayout[47];
+            ((LevelVariantRenderManagerView *)
+                pScreen->m_abVariantRenderManager14)
+                    ->EmitVariantRenderResourceEntry(
+                        Rect, Point, pScreen->m_nResourceId3D8, 0,
+                        pScreen->m_pSelector3C4,
+                        pScreen->m_nPaletteRemap3D0);
+        }
+    }
+
+    GetFunctionalVariantFrameExtent(
+        pScreen->m_abVariantRenderManager14, Extent,
+        pScreen->m_nResourceId3D8, 0);
+    cxFrame = Extent[0];
+    x = pLayout[10] - cxFrame / 4 + pLayout[12];
+    for (i = 0; i < pScreen->m_cStatus3EC; ++i) {
+        x -= cxFrame + cxFrame / 8;
+        Point[0] = (short)x;
+        Point[1] = (short)pLayout[35];
+        ((LevelVariantRenderManagerView *)
+            pScreen->m_abVariantRenderManager14)
+                ->EmitVariantRenderResourceEntry(
+                    Rect, Point, pScreen->m_nResourceId3D8, 0,
+                    pScreen->m_pSelector3C4, 0);
+    }
+
+    GetFunctionalVariantFrameExtent(
+        pScreen->m_abVariantRenderManager14, Extent,
+        pScreen->m_nResourceId3DC, 0);
+    x = pLayout[10] - pLayout[50] + pLayout[12];
+    if (pScreen->m_cSkillStatus3F4 < 5) {
+        for (i = 0; i < pScreen->m_cSkillStatus3F4; ++i) {
+            x -= Extent[0];
+            Point[0] = (short)x;
+            Point[1] = (short)pLayout[29];
+            ((LevelVariantRenderManagerView *)
+                pScreen->m_abVariantRenderManager14)
+                    ->EmitVariantRenderResourceEntry(
+                        Rect, Point, pScreen->m_nResourceId3DC, 0,
+                        pScreen->m_pSelector3C0, 0);
+        }
+    }
+}
+
+static short *GetFunctionalVariantFrameExtent(
+    void *pObject, short *pExtent, int nResourceId, int iFrame) {
+    int *pManager;
+    int *pResource;
+    short *pFrame;
+
+    pManager = (int *)pObject;
+    pResource = *(int **)(unsigned long)(
+        pManager[9] +
+        (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2) * 4);
+    if (pResource[0x10] != 0x5a524c45) {
+        pFrame = (short *)(unsigned long)(pResource[0x1e] + 0x4c +
+                                         iFrame * 0x54);
+        pExtent[0] = pFrame[0];
+        pExtent[1] = pFrame[1];
+    } else {
+        pExtent[0] = *(short *)((char *)pResource + 0x4c);
+        pExtent[1] = *(short *)((char *)pResource + 0x4e);
+    }
+    return pExtent;
 }
 
 static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(
     void *pObject) {
     static const char *s_apszSkillNames[5] = {
-        "Fun", "Tricky", "Taxing", "Mayhem", "Network"
+        "Fun", " Tricky", "Taxing", "Mayhem", "Network"
     };
+    static const int s_anStatusLabelPoints[4] = { 10, 13, 16, 22 };
     GameLevelSelectionScreenView *pScreen;
     MappedListResourceTable *pMappedList;
+    void *pFontResource;
+    const char *pszTime;
+    const char *pszSkill;
     short Point[2];
     short Relative[2];
+    short Extent[2];
+    int cStatusLabels;
     int i;
     int nPack;
 
@@ -4335,26 +4427,55 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(
                 pScreen->m_aszTitleLines3FC[i], 0x20, 0);
         }
     }
+
+    cStatusLabels = pScreen->m_fNetworkScreen8C != 0 ? 4 : 3;
+    for (i = 0; i < cStatusLabels; ++i) {
+        Point[0] = (short)pScreen->m_pLayout3D4[
+            s_anStatusLabelPoints[i] * 2];
+        Point[1] = (short)pScreen->m_pLayout3D4[
+            s_anStatusLabelPoints[i] * 2 + 1];
+        pMappedList->SubmitRenderEntry(
+            pScreen->m_pRenderContext88, Point, Relative,
+            pScreen->m_nMappedListRemapResourceId384,
+            (void *)"x", 0x20, 0);
+    }
+
+    pszTime = pScreen->m_abTime45C;
+    if (pScreen->m_abTime45C[0] >= ':') {
+        pszTime = "Infinite";
+    }
     Point[0] = (short)pScreen->m_pLayout3D4[22];
     Point[1] = (short)pScreen->m_pLayout3D4[23];
     pMappedList->SubmitRenderEntry(
         pScreen->m_pRenderContext88, Point, Relative,
         pScreen->m_nMappedListRemapResourceId384,
-        pScreen->m_abTime45C, 0x20, 0);
+        (void *)pszTime, 0x20, 0);
     nPack = ((GameLevelProgressStateView *)g_pLevelProgressState)
                 ->m_nCurrentPack08;
     if (nPack < 0 || 4 < nPack) {
         nPack = 0;
     }
-    Point[0] = (short)pScreen->m_pLayout3D4[40];
+    pszSkill = s_apszSkillNames[nPack];
+    pFontResource = pMappedList->GetMappedResource(
+        pScreen->m_nMappedListRemapResourceId384);
+    MeasureFunctionalLevelTitleExtent(pFontResource, Extent, pszSkill);
+    Point[0] = (short)(pScreen->m_pLayout3D4[40] - Extent[0] / 2);
     Point[1] = (short)pScreen->m_pLayout3D4[41];
     pMappedList->SubmitRenderEntry(
         pScreen->m_pRenderContext88, Point, Relative,
         pScreen->m_nMappedListRemapResourceId384,
-        (void *)s_apszSkillNames[nPack], 0x20, 0);
+        (void *)pszSkill, 0x20, 0);
+    if (4 < pScreen->m_cSkillStatus3F4) {
+        Point[0] = (short)pScreen->m_pLayout3D4[22];
+        Point[1] = (short)pScreen->m_pLayout3D4[53];
+        pMappedList->SubmitRenderEntry(
+            pScreen->m_pRenderContext88, Point, Relative,
+            pScreen->m_nMappedListRemapResourceId384,
+            (void *)"None", 0x20, 0);
+    }
 }
 
-static void RefreshFunctionalLevelSelectionMetadata(
+static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(
     GameLevelSelectionScreenView *pScreen) {
     GameLevelProgressStateView *pProgress;
     const char *pszTitle;
