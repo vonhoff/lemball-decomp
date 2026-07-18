@@ -290,8 +290,8 @@ void GameVariantResourceEntryManager::SetVariantResourceMusicEnabled(int fEnable
 
 // FUNCTION: LEMBALL 0x00439d60
 void GameVariantResourceEntryManager::ClearActiveVariantResourceEntries(void) {
-    int *pEntry;
     int i;
+    int *pEntry;
     int pManager;
 
     pManager = (int)(unsigned long)this;
