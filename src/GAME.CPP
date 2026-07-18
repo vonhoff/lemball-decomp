@@ -115,6 +115,7 @@ extern void *ConstructLevelScreenVariantRenderManager(void *pObject,
     int nRenderOwner, void *pPrimaryContext, void *pLevelMode);
 extern void DestroyLevelScreenVariantRenderManager(void *pObject);
 extern void ResetOrFlipVariantRenderBuffers(int nManager);
+extern void RebuildLevelScreenVariantResourceSet(void *pObject, int nMode);
 extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableA(void *pObject);
 extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableD(void *pObject);
 extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableE(void *pObject);
@@ -1360,6 +1361,21 @@ static int LEMBALL_FASTCALL GetLevelScreenTransitionStatus(void *pObject) {
     return *(int *)((char *)pObject + 0xa78);
 }
 
+static void LEMBALL_FASTCALL UpdateReconstructedLevelScreen(void *pObject) {
+    char *pScreen;
+    void *pManager;
+    void *pLevelMode;
+
+    pScreen = (char *)pObject;
+    pManager = *(void **)(pScreen + 0xa40);
+    pLevelMode = *(void **)(pScreen + 0x96c);
+    if (pManager != 0 && pLevelMode != 0 &&
+        *(int *)((char *)pManager + 0x84) == 0) {
+        RebuildLevelScreenVariantResourceSet(
+            pManager, *(int *)((char *)pLevelMode + 0x60));
+    }
+}
+
 static void LEMBALL_FASTCALL DestroyReconstructedLevelScreen(void *pObject) {
     char *pScreen;
     MappedListResourceTable *pMappedList;
@@ -1524,6 +1540,8 @@ void *GameScreenObject::ConstructLevelScreen(void *pPrimaryContext,
             (void *)DeleteReconstructedLevelScreen;
         g_GAME_LevelScreenVtableSlots[1] =
             (void *)DestroyReconstructedLevelScreen;
+        g_GAME_LevelScreenVtableSlots[7] =
+            (void *)UpdateReconstructedLevelScreen;
         g_GAME_LevelScreenVtableSlots[10] =
             (void *)GetLevelScreenTransitionStatus;
         g_GAME_LevelScreenVtableSlots[11] =

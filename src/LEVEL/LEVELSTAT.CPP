@@ -455,6 +455,61 @@ static void *g_LEVEL_TimedVariantFrameIndexSelectorCallbackVtable[6] = {
     (void *)NoopVtableCallbackThunk,
     (void *)0,
 };
+static int LEMBALL_FASTCALL SelectLevelFirstVariantFrame(void *) {
+    return 0;
+}
+static int LEMBALL_FASTCALL SelectLevelStoredVariantFrame(void *pObject) {
+    return *(int *)((char *)pObject + 0x0c);
+}
+static int LEMBALL_FASTCALL SelectLevelTimedVariantFrame(void *pObject) {
+    int *pSelector;
+    unsigned int dwNow;
+    unsigned int iFrame;
+
+    pSelector = (int *)pObject;
+    dwNow = pSelector[5] == -1 ? (unsigned int)timeGetTime() :
+        (unsigned int)pSelector[5];
+    if (pSelector[4] == 0) return 0;
+    iFrame = (((dwNow - (unsigned int)pSelector[3]) %
+               (unsigned int)pSelector[4]) *
+              (unsigned int)pSelector[1]) /
+             (unsigned int)pSelector[4];
+    return pSelector[6] == 1 ? (int)iFrame :
+        pSelector[1] - (int)iFrame - 1;
+}
+static int LEMBALL_FASTCALL SelectLevelProgressiveVariantFrame(
+    void *pObject)
+{
+    int *pSelector;
+    unsigned int dwNow;
+    unsigned int dwElapsed;
+    unsigned int iFrame;
+
+    pSelector = (int *)pObject;
+    dwNow = pSelector[5] == -1 ? (unsigned int)timeGetTime() :
+        (unsigned int)pSelector[5];
+    dwElapsed = dwNow - (unsigned int)pSelector[3];
+    if (pSelector[4] != 0 && dwElapsed < (unsigned int)pSelector[4]) {
+        iFrame = (unsigned int)pSelector[1] * dwElapsed /
+            (unsigned int)pSelector[4];
+    } else {
+        iFrame = (unsigned int)pSelector[1] - 1;
+    }
+    return pSelector[6] == 1 ? (int)iFrame :
+        pSelector[1] - (int)iFrame - 1;
+}
+static void *g_LEVEL_SelectFirstFrameVtable[1] = {
+    (void *)SelectLevelFirstVariantFrame,
+};
+static void *g_LEVEL_SelectStoredFrameVtable[1] = {
+    (void *)SelectLevelStoredVariantFrame,
+};
+static void *g_LEVEL_SelectTimedFrameVtable[1] = {
+    (void *)SelectLevelTimedVariantFrame,
+};
+static void *g_LEVEL_SelectProgressiveFrameVtable[1] = {
+    (void *)SelectLevelProgressiveVariantFrame,
+};
 static int g_LEVEL_StatusIndicatorModeResourceIds[4] = {0, 0xfd, 0xfc, 0};
 // GLOBAL: LEMBALL 0x0049f9b0
 static unsigned int g_LEVEL_CompactStatusIndicatorPointTable[5] = {
@@ -1356,6 +1411,192 @@ static void LEMBALL_FASTCALL DispatchVariantActionFramePointSink(
     ((RenderProc)(*(void ***)nRenderObject)[9])(
         (void *)nRenderObject, 0, pObject, pFrame);
     --pResource[2];
+}
+
+struct LevelVariantResourceLoadSpec {
+    unsigned short m_nResourceId;
+    unsigned short m_nSelectorMode;
+};
+
+static void LoadLevelScreenVariantState(void *pObject,
+                                        int nResourceId,
+                                        int nSelectorMode)
+{
+    int *pManager;
+    int *pSelector;
+    int iSlot;
+    int cFrames;
+
+    pManager = (int *)pObject;
+    if (pManager[0x25] != 0) {
+        ++pManager[0x24];
+        return;
+    }
+    LoadVariantRenderResource(pObject, nResourceId);
+    cFrames = 1;
+    if (nSelectorMode == 1 || nSelectorMode == 3) {
+        cFrames = ((LevelVariantRenderManagerView *)pObject)
+            ->GetVariantRenderFrameCount(nResourceId);
+        pSelector = (int *)AllocateVSMemBlock(0x1c);
+        if (pSelector != 0) {
+            pSelector[0] = (int)(unsigned long)
+                (nSelectorMode == 1 ? g_LEVEL_SelectTimedFrameVtable :
+                                      g_LEVEL_SelectProgressiveFrameVtable);
+            pSelector[1] = cFrames;
+            pSelector[3] = (int)timeGetTime();
+            pSelector[4] = cFrames * 0x42;
+            pSelector[5] = -1;
+            pSelector[6] = 1;
+        }
+    } else {
+        pSelector = (int *)AllocateVSMemBlock(0x10);
+        if (pSelector != 0) {
+            pSelector[0] = (int)(unsigned long)
+                (nSelectorMode == 0 ? g_LEVEL_SelectFirstFrameVtable :
+                                      g_LEVEL_SelectStoredFrameVtable);
+            pSelector[1] = 1;
+            pSelector[2] = 0;
+            pSelector[3] = 0;
+        }
+    }
+    iSlot = *(short *)(unsigned long)(pManager[10] + nResourceId * 2);
+    *(int *)(unsigned long)(pManager[0x1d] + iSlot * 4) =
+        (int)(unsigned long)pSelector;
+    UpdateStatusIndicatorLoadProgress00434D10((char *)pObject + 0x70);
+}
+
+static void SelectLevelScreenVariantResourceIds(int nMode) {
+    static const int aanMappedIds[4][11] = {
+        {0xb5,0xb6,0xb7,0xb8,0xb9,0xba,0xbb,0xbc,0xbd,0xbe,0xe4},
+        {0xbf,0xc0,0xc1,0xc2,0xc3,0xc4,0xc5,0xc6,0xc7,0xc8,0x105},
+        {0xc9,0xca,0xcb,0xcc,0xcd,0xce,0xcf,0xd0,0xd1,0xd2,0x103},
+        {0xd3,0xd4,0xd5,0xd6,0xd7,0xd8,0xd9,0xda,0xdb,0xdc,0}
+    };
+    static const int aanSequenceIds[4][7] = {
+        {0x20,0x21,0x8b,0x72,0x73,0x99,0xe7},
+        {0x22,0x23,0x8b,0x79,0x7a,0x9b,0x106},
+        {0x24,0x25,0x8a,0x77,0x78,0x9a,0x104},
+        {0x26,0x27,0x8b,0x72,0x73,0x9b,0}
+    };
+    int i;
+
+    if (nMode < 0 || nMode > 3) nMode = 0;
+    g_nLevelScreenMappedVariantResourceId0x206 = aanMappedIds[nMode][0];
+    g_nLevelScreenMappedVariantResourceId0x207 = aanMappedIds[nMode][1];
+    g_nLevelScreenMappedVariantResourceId0x208 = aanMappedIds[nMode][2];
+    g_nLevelScreenMappedVariantResourceId0x209 = aanMappedIds[nMode][3];
+    g_nLevelScreenMappedVariantResourceId0x20A = aanMappedIds[nMode][4];
+    g_nLevelScreenMappedVariantResourceId0x20B = aanMappedIds[nMode][5];
+    g_nLevelScreenMappedVariantResourceId0x20C = aanMappedIds[nMode][6];
+    g_nLevelScreenMappedVariantResourceId0x20D = aanMappedIds[nMode][7];
+    g_nLevelScreenMappedVariantResourceId0x20E = aanMappedIds[nMode][8];
+    g_nLevelScreenMappedVariantResourceId0x20F = aanMappedIds[nMode][9];
+    g_nLevelScreenMappedVariantResourceId0x202 = aanMappedIds[nMode][10];
+    g_nLevelScreenMultiStageSequencePrimaryResourceId = aanSequenceIds[nMode][0];
+    g_nLevelScreenMultiStageSequenceSecondaryResourceId = aanSequenceIds[nMode][1];
+    g_nLevelScreenTimedVariantResourceId = aanSequenceIds[nMode][2];
+    g_nLevelScreenCompositeSequencePrimaryResourceId = aanSequenceIds[nMode][3];
+    g_nLevelScreenCompositeSequenceSecondaryResourceId = aanSequenceIds[nMode][4];
+    g_nLevelScreenMultiPhaseSequenceResourceId = aanSequenceIds[nMode][5];
+    g_nLevelScreenContextSelectedVariantResourceId = aanSequenceIds[nMode][6];
+    (void)i;
+}
+
+static void LoadLevelScreenVariantResourceBatch(void *pObject) {
+    static const LevelVariantResourceLoadSpec aResources[] = {
+        {0xdd,2},{0xfd,0},{0xad,0},{0xaf,0},{0x6f,0},{0x70,0},{0x71,0},
+        {0x94,0},{0x95,0},{0x96,0},{0x44,2},{0x43,2},{0x46,2},{0x45,2},
+        {0x3f,2},{0x7c,1},{0x82,3},{0xae,1},{0x75,2},{0x76,2},{0x80,1},
+        {0x81,1},{0xb1,0},{0x86,0},{0xdf,2},{0xe0,2},{0xe1,2},{0xb2,0},
+        {0xde,2},{0x84,0},{0x2a,2},{0x2c,2},{0x2b,2},{0x2d,2},{0xa0,2},
+        {0x83,3},{0x87,3},{0xb0,3},{0x74,3},{0x88,2},{0x89,2},{0x8c,2},
+        {0x8d,2},{0x8e,2},{0x8f,2},{0x97,2},{0x98,2},{0x9d,2},{0x9f,2},
+        {0x9c,2},{0x9e,2},{0x28,2},{0x29,2},{0x7d,1},{0x7e,2},{0x85,1},
+        {0x1f,2}
+    };
+    int i;
+    int nResourceId;
+
+    for (i = 0; i < (int)(sizeof(aResources) / sizeof(aResources[0])); ++i) {
+        LoadLevelScreenVariantState(
+            pObject, aResources[i].m_nResourceId,
+            aResources[i].m_nSelectorMode);
+    }
+    for (nResourceId = 0x35; nResourceId <= 0x3e; ++nResourceId)
+        LoadLevelScreenVariantState(pObject, nResourceId, 1);
+    for (nResourceId = 0x47; nResourceId <= 0x56; ++nResourceId)
+        LoadLevelScreenVariantState(pObject, nResourceId, 1);
+    for (nResourceId = 0x5f; nResourceId <= 0x6e; ++nResourceId)
+        LoadLevelScreenVariantState(pObject, nResourceId, 1);
+    for (nResourceId = 0xa1; nResourceId <= 0xac; ++nResourceId)
+        LoadLevelScreenVariantState(pObject, nResourceId, 1);
+
+    LoadLevelScreenVariantState(pObject,
+        g_nLevelScreenCompositeSequencePrimaryResourceId, 0);
+    LoadLevelScreenVariantState(pObject,
+        g_nLevelScreenCompositeSequenceSecondaryResourceId, 3);
+    LoadLevelScreenVariantState(pObject,
+        g_nLevelScreenMultiStageSequencePrimaryResourceId, 2);
+    LoadLevelScreenVariantState(pObject,
+        g_nLevelScreenMultiStageSequenceSecondaryResourceId, 2);
+    LoadLevelScreenVariantState(pObject,
+        g_nLevelScreenTimedVariantResourceId, 2);
+    LoadLevelScreenVariantState(pObject,
+        g_nLevelScreenMultiPhaseSequenceResourceId, 2);
+    if (g_nLevelScreenContextSelectedVariantResourceId != 0)
+        LoadLevelScreenVariantState(pObject,
+            g_nLevelScreenContextSelectedVariantResourceId, 0);
+    LoadLevelScreenVariantState(pObject,
+        g_nLevelScreenMappedVariantResourceId0x206, 2);
+    LoadLevelScreenVariantState(pObject,
+        g_nLevelScreenMappedVariantResourceId0x207, 2);
+    LoadLevelScreenVariantState(pObject,
+        g_nLevelScreenMappedVariantResourceId0x208, 2);
+    LoadLevelScreenVariantState(pObject,
+        g_nLevelScreenMappedVariantResourceId0x209, 2);
+    LoadLevelScreenVariantState(pObject,
+        g_nLevelScreenMappedVariantResourceId0x20A, 2);
+    LoadLevelScreenVariantState(pObject,
+        g_nLevelScreenMappedVariantResourceId0x20B, 2);
+    LoadLevelScreenVariantState(pObject,
+        g_nLevelScreenMappedVariantResourceId0x20C, 2);
+    LoadLevelScreenVariantState(pObject,
+        g_nLevelScreenMappedVariantResourceId0x20D, 2);
+    LoadLevelScreenVariantState(pObject,
+        g_nLevelScreenMappedVariantResourceId0x20E, 2);
+    LoadLevelScreenVariantState(pObject,
+        g_nLevelScreenMappedVariantResourceId0x20F, 2);
+    if (g_nLevelScreenMappedVariantResourceId0x202 != 0)
+        LoadLevelScreenVariantState(pObject,
+            g_nLevelScreenMappedVariantResourceId0x202, 2);
+}
+
+// FUNCTION: LEMBALL 0x004337f0
+void RebuildLevelScreenVariantResourceSet(void *pObject, int nMode) {
+    int *pManager;
+    void *pStatusManager;
+
+    pManager = (int *)pObject;
+    pManager[0x2a] = nMode;
+    SelectLevelScreenVariantResourceIds(nMode);
+    pManager[0x23] = 0;
+    pManager[0x24] = 0;
+    pManager[0x25] = 1;
+    LoadLevelScreenVariantResourceBatch(pObject);
+    pManager[0x25] = 0;
+    ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
+        ->SwitchVariantResourceEntryMode(4, (char *)pObject + 0x70);
+    LoadLevelScreenVariantResourceBatch(pObject);
+
+    pStatusManager = (void *)(unsigned long)pManager[0x1e];
+    if (pStatusManager != 0) {
+        DestroyLevelScreenStatusIndicatorManager(pStatusManager);
+        FreeVSMemBlock(pStatusManager);
+        pManager[0x1e] = 0;
+    }
+    ((GamePrimaryContext *)(unsigned long)pManager[0x1f])
+        ->ApplyWindowOwnerPaletteResource(0x2e);
+    pManager[0x21] = 1;
 }
 
 // FUNCTION: LEMBALL 0x004338b0
