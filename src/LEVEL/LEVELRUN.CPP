@@ -305,6 +305,76 @@ struct GameLevelChunkStreamDispatcher {
     int *m_pChunkTypeToIndex1C;
 };
 
+extern void *g_pLevelChunkStreamDispatcher;
+
+typedef int (LEMBALL_FASTCALL *LevelRenderEntryEmitterProc)(
+    void *pObject, int nUnusedEdx, void *pEntries);
+typedef void (LEMBALL_FASTCALL *LevelSingleRenderEntryProc)(
+    void *pObject, int nUnusedEdx, void *pEntry);
+
+static int EmitRegisteredLevelChunkStreamEntries(
+    GameLevelChunkStreamDispatcher *pDispatcher, char *pEntries)
+{
+    int cEntries;
+    int i;
+    void *pStream;
+
+    cEntries = 0;
+    if (pDispatcher == 0) return 0;
+    for (i = 0; i < pDispatcher->m_cRegisteredStreams18; ++i) {
+        pStream = pDispatcher->m_ppRegisteredStreams10[i];
+        if (pStream != 0) {
+            cEntries += ((LevelRenderEntryEmitterProc)
+                (*(void ***)pStream)[9])(
+                    pStream, 0, pEntries + cEntries * 0x4c);
+        }
+    }
+    return cEntries;
+}
+
+static int EmitBoonChunkManagerRenderEntries(
+    void *pObject, char *pEntries)
+{
+    char *pManager;
+    int cEntries;
+    int i;
+
+    pManager = (char *)pObject;
+    if (pManager == 0) return 0;
+    cEntries = 0;
+    for (i = 0; i < 4; ++i) {
+        if ((*(unsigned char *)pManager & (1 << i)) != 0 &&
+            *(void **)(pManager + 0x34 + i * 4) != 0) {
+            void *pEntryObject = *(void **)(pManager + 0x34 + i * 4);
+            ((LevelSingleRenderEntryProc)(*(void ***)pEntryObject)[3])(
+                pEntryObject, 0, pEntries + cEntries * 0x4c);
+            ++cEntries;
+        }
+    }
+    return cEntries;
+}
+
+static int EmitSlnkChunkManagerRenderEntries(
+    void *pObject, char *pEntries)
+{
+    char *pManager;
+    int cEntries;
+    int i;
+    char *pEntryObject;
+
+    pManager = (char *)pObject;
+    if (pManager == 0) return 0;
+    cEntries = *(int *)(pManager + 0x0c);
+    if (cEntries < 0 || cEntries > 200 ||
+        *(void **)(pManager + 4) == 0) return 0;
+    pEntryObject = *(char **)(pManager + 4);
+    for (i = 0; i < cEntries; ++i, pEntryObject += 0x150) {
+        ((LevelSingleRenderEntryProc)(*(void ***)pEntryObject)[3])(
+            pEntryObject, 0, pEntries + i * 0x4c);
+    }
+    return cEntries;
+}
+
 struct GameLevelTileReachabilityHelper {
     int m_pTileGrid00;
     int m_ppRows04;
@@ -965,6 +1035,54 @@ void InitializeLevelChunkTypeEnabledFlagsThunk(void *pLevelMode) {
     if (*(int *)(*(int *)((char *)pLevelMode + 0x1c8) + 0xc) == 0) {
         SetLevelChunkTypeEnabledFlagThunk(pLevelMode, 0x35, 0);
     }
+}
+
+// FUNCTION: LEMBALL 0x004124d0
+int EmitLevelGameModeDynamicRenderEntries(
+    void *pObject, void *pOutputEntries)
+{
+    char *pLevelMode;
+    char *pEntries;
+    char *pList;
+    void *pEmitter;
+    int cEntries;
+    int cListEntries;
+    int i;
+
+    pLevelMode = (char *)pObject;
+    pEntries = (char *)pOutputEntries;
+    cEntries = EmitRegisteredLevelChunkStreamEntries(
+        (GameLevelChunkStreamDispatcher *)g_pLevelChunkStreamDispatcher,
+        pEntries);
+    pEmitter = *(void **)(pLevelMode + 0x174);
+    if (pEmitter != 0) {
+        cEntries += ((LevelRenderEntryEmitterProc)(*(void ***)pEmitter)[19])(
+            pEmitter, 0, pEntries + cEntries * 0x4c);
+    }
+    pEmitter = *(void **)(pLevelMode + 0x170);
+    if (pEmitter != 0) {
+        cEntries += ((LevelRenderEntryEmitterProc)(*(void ***)pEmitter)[19])(
+            pEmitter, 0, pEntries + cEntries * 0x4c);
+    }
+    pList = *(char **)(pLevelMode + 0x180);
+    if (pList != 0) {
+        cListEntries = *(int *)(pList + 8);
+        if (cListEntries > 0 && cListEntries <= 200) {
+            for (i = 0; i < cListEntries; ++i) {
+                pEmitter = *(void **)(*(char **)(pList + 4) + i * 4);
+                if (pEmitter != 0) {
+                    ((LevelSingleRenderEntryProc)(*(void ***)pEmitter)[3])(
+                        pEmitter, 0, pEntries + cEntries * 0x4c);
+                    ++cEntries;
+                }
+            }
+        }
+    }
+    cEntries += EmitBoonChunkManagerRenderEntries(
+        *(void **)(pLevelMode + 0x1a8), pEntries + cEntries * 0x4c);
+    cEntries += EmitSlnkChunkManagerRenderEntries(
+        *(void **)(pLevelMode + 0x1c8), pEntries + cEntries * 0x4c);
+    return cEntries;
 }
 
 // FUNCTION: LEMBALL 0x00412f00
