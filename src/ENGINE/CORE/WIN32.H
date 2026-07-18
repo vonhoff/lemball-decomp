@@ -178,7 +178,7 @@ __declspec(dllimport) HGDIOBJ WINAPI GetStockObject(int fnObject);
 __declspec(dllimport) HCURSOR WINAPI SetCursor(HCURSOR hCursor);
 __declspec(dllimport) int WINAPI ShowCursor(BOOL bShow);
 __declspec(dllimport) HMODULE WINAPI LoadLibraryA(LPCSTR lpLibFileName);
-BOOL WINAPI FreeLibrary(HMODULE hLibModule);
+__declspec(dllimport) BOOL WINAPI FreeLibrary(HMODULE hLibModule);
 __declspec(dllimport) FARPROC WINAPI GetProcAddress(HMODULE hModule, LPCSTR lpProcName);
 __declspec(dllimport) UINT WINAPI GetSystemDirectoryA(LPSTR lpBuffer, UINT uSize);
 __declspec(dllimport) DWORD WINAPI GetFileVersionInfoSizeA(LPCSTR lptstrFilename, LPDWORD lpdwHandle);
