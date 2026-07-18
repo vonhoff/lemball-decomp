@@ -240,7 +240,8 @@ static unsigned int g_cParsedArgs;
 int g_fSubsystemsReady = 0;
 static const char *g_pszDebugOutPath = g_VSINIT_DebugOutPath;
 static FILE *g_pDebugOutFile = 0;
-static void *g_pProcessCurrentDirectoryState = 0;
+// GLOBAL: LEMBALL 0x004a1dcc
+void *g_pProcessCurrentDirectoryState = 0;
 // GLOBAL: LEMBALL 0x004a8088
 char g_abProcessCurrentDirectoryBuffer[0x100];
 HANDLE g_hDebugSyncEvent = 0;
