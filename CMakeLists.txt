@@ -134,7 +134,7 @@ if(LEMBALL_ENABLE_WIN32)
         )
     else()
         set_target_properties(LEMBALL PROPERTIES
-            LINK_FLAGS "user32.lib gdi32.lib advapi32.lib winmm.lib wsock32.lib ws2_32.lib /MAP:LEMBALL.map"
+            LINK_FLAGS "user32.lib gdi32.lib advapi32.lib winmm.lib version.lib wsock32.lib ws2_32.lib /MAP:LEMBALL.map"
         )
     endif()
     set(LEMBALL_DEPLOY_COMMANDS)

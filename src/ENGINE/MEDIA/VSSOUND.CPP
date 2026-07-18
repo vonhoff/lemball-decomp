@@ -977,7 +977,14 @@ static int g_nPreparedMciMusicTrackHandle = 0;
 static const char g_AUDIO_SequencerDeviceType[] = "sequencer";
 static const char g_AUDIO_MciWindowClassName[] = "HLMusicWindow";
 static const char g_AUDIO_DsoundDll[] = "DSOUND.DLL";
+static const char g_AUDIO_SystemDsoundDllSuffix[] = "\\DSOUND.DLL";
 static const char g_AUDIO_DirectSoundCreate[] = "DirectSoundCreate";
+static const char g_AUDIO_RootVersionQuery[] = "\\";
+static const char g_AUDIO_DsoundVersionPrefix[] = "DSOUND version ";
+static const char g_AUDIO_VersionSeparator[] = ".";
+static const char g_AUDIO_DsoundVersionTooOld[] = "DSOUND version too old\n";
+static const char g_AUDIO_DefaultWindowsSound[] =
+    "Defaulting to windows sound device\n";
 static const char g_AUDIO_UnknownDirectSoundError[] = "UNKNOWN DIRECT SOUND ERROR: ";
 static char g_AUDIO_UnknownDirectSoundErrorBuffer[0x80];
 struct VsSoundDirectSoundErrorEntry {
@@ -2918,53 +2925,94 @@ VsSoundDirectSoundEffectBackend *VsSoundDirectSoundEffectBackend::ConstructDirec
     int cEffectResources, int nCooperativeLevel)
 
 {
-    void *pBackend = this;
+    char szSystemDsoundPath[256];
+    DWORD dwVersionHandle;
+    DWORD cbVersionInfo;
+    void *pVersionInfo;
+    void *pFixedVersionInfo;
+    UINT cbFixedVersionInfo;
+    unsigned int dwFileVersionMS;
+    unsigned int dwFileVersionLS;
+    int fVersionSupported;
     int i;
 
-    ConstructAudioEffectBackendBase(pBackend);
-    *(void ***)pBackend = g_DirectSoundEffectBackendVtable;
-    *(int *)((char *)pBackend + 0x14) = cEffectResources;
-    *(int *)((char *)pBackend + 0x18) = nCooperativeLevel;
-    *(int *)((char *)pBackend + 0x10) = 0;
-    *(HMODULE *)((char *)pBackend + 4) = 0;
-    *(FARPROC *)((char *)pBackend + 8) = 0;
-    *(void **)((char *)pBackend + 0x50) =
+    ConstructAudioEffectBackendBase(this);
+    *(void ***)this = g_DirectSoundEffectBackendVtable;
+    *(int *)((char *)this + 0x14) = cEffectResources;
+    *(int *)((char *)this + 0x18) = nCooperativeLevel;
+    *(int *)((char *)this + 0x10) = 0;
+    *(void **)((char *)this + 0x50) =
         AllocateVSMemBlock((unsigned int)cEffectResources * 4 + 4);
-    *(int *)((char *)pBackend + 0x0c) = 0;
-    *(int *)((char *)pBackend + 0x1c) = 0;
-    *(int *)((char *)pBackend + 0x20) = 0;
-    *(int *)((char *)pBackend + 0x24) = 0;
-    *(int *)((char *)pBackend + 0x28) = 1;
-    *(int *)((char *)pBackend + 0x2c) = 0;
-    *(int *)((char *)pBackend + 0x30) = 0;
-    *(int *)((char *)pBackend + 0x34) = 0;
-    *(int *)((char *)pBackend + 0x38) = -1;
-    *(int *)((char *)pBackend + 0x34) = 0x5622;
-    *(int *)((char *)pBackend + 0x38) = 0;
-    if (*(void **)((char *)pBackend + 0x50) != 0) {
-        for (i = 1; i <= cEffectResources; ++i) {
-            *(int *)((char *)*(void **)((char *)pBackend + 0x50) + i * 4) = 0;
-        }
+    *(int *)((char *)this + 0x0c) = 0;
+    *(int *)((char *)this + 0x1c) = 0;
+    *(int *)((char *)this + 0x20) = 0;
+    *(int *)((char *)this + 0x24) = 0;
+    *(int *)((char *)this + 0x28) = 0;
+    *(int *)((char *)this + 0x2c) = 0;
+    *(int *)((char *)this + 0x34) = 0;
+    *(int *)((char *)this + 0x38) = -1;
+    for (i = 1; i <= *(int *)((char *)this + 0x14); ++i) {
+        *(int *)((char *)*(void **)((char *)this + 0x50) + i * 4) = 0;
     }
-    *(int *)((char *)pBackend + 0x34) = 0x5622;
-    *(int *)((char *)pBackend + 0x38) = 0;
-    *(int *)((char *)pBackend + 0x40) = 0x5622;
-    *(unsigned short *)((char *)pBackend + 0x4c) = 0;
-    *(unsigned short *)((char *)pBackend + 0x4a) = 0x10;
-    *(unsigned short *)((char *)pBackend + 0x48) = 2;
-    *(unsigned short *)((char *)pBackend + 0x3c) = 1;
-    *(int *)((char *)pBackend + 0x28) = 1;
-    *(unsigned short *)((char *)pBackend + 0x3e) = 1;
-    *(int *)((char *)pBackend + 0x44) = 1;
-    *(int *)((char *)pBackend + 0x44) = 0xac44;
-    *(HMODULE *)((char *)pBackend + 4) = LoadLibraryA(g_AUDIO_DsoundDll);
-    if (*(HMODULE *)((char *)pBackend + 4) != 0) {
-        *(FARPROC *)((char *)pBackend + 8) =
-            GetProcAddress(*(HMODULE *)((char *)pBackend + 4),
-                           g_AUDIO_DirectSoundCreate);
-        if (*(FARPROC *)((char *)pBackend + 8) != 0) {
-            *(int *)((char *)pBackend + 0x20) = 1;
-            *(int *)((char *)pBackend + 0x0c) = 0;
+    *(int *)((char *)this + 0x34) = 0x5622;
+    *(int *)((char *)this + 0x38) = 0;
+    *(int *)((char *)this + 0x40) = 0x5622;
+    *(unsigned short *)((char *)this + 0x4c) = 0;
+    *(unsigned short *)((char *)this + 0x4a) = 0x10;
+    *(unsigned short *)((char *)this + 0x48) = 2;
+    *(unsigned short *)((char *)this + 0x3c) = 1;
+    *(int *)((char *)this + 0x28) = 1;
+    *(unsigned short *)((char *)this + 0x3e) = 1;
+    *(int *)((char *)this + 0x44) = 1;
+    *(int *)((char *)this + 0x44) = 0xac44;
+    *(HMODULE *)((char *)this + 4) = LoadLibraryA(g_AUDIO_DsoundDll);
+    if (*(HMODULE *)((char *)this + 4) != 0) {
+        if (GetSystemDirectoryA(szSystemDsoundPath,
+                                sizeof(szSystemDsoundPath)) != 0) {
+            strcat(szSystemDsoundPath, g_AUDIO_SystemDsoundDllSuffix);
+            cbVersionInfo = GetFileVersionInfoSizeA(
+                szSystemDsoundPath, &dwVersionHandle);
+            pVersionInfo = AllocateVSMemBlock(cbVersionInfo);
+            fVersionSupported = 0;
+            if (GetFileVersionInfoA(szSystemDsoundPath, 0,
+                                    cbVersionInfo, pVersionInfo) != 0) {
+                VerQueryValueA(pVersionInfo, g_AUDIO_RootVersionQuery,
+                               &pFixedVersionInfo, &cbFixedVersionInfo);
+                dwFileVersionMS = ((unsigned int *)pFixedVersionInfo)[2];
+                dwFileVersionLS = ((unsigned int *)pFixedVersionInfo)[3];
+                g_pStatusOutputStream->AppendCStringToStream(
+                    g_AUDIO_DsoundVersionPrefix);
+                AppendUnsignedIntToStreamVariant(
+                    g_pStatusOutputStream, dwFileVersionMS >> 16);
+                g_pStatusOutputStream->AppendCStringToStream(
+                    g_AUDIO_VersionSeparator);
+                AppendUnsignedIntToStreamVariant(
+                    g_pStatusOutputStream, dwFileVersionMS & 0xffff);
+                g_pStatusOutputStream->AppendCStringToStream(
+                    g_AUDIO_VersionSeparator);
+                AppendUIntToStream(g_pStatusOutputStream, dwFileVersionLS);
+                g_pStatusOutputStream->AppendCStringToStream("\n");
+                if ((dwFileVersionMS >> 16) < 4 ||
+                    ((dwFileVersionMS >> 16) == 4 &&
+                     (dwFileVersionMS & 0xffff) < 2)) {
+                    g_pErrorOutputStream->AppendCStringToStream(
+                        g_AUDIO_DsoundVersionTooOld);
+                    g_pErrorOutputStream->AppendCStringToStream(
+                        g_AUDIO_DefaultWindowsSound);
+                } else {
+                    fVersionSupported = 1;
+                }
+            }
+            FreeVSMemBlock(pVersionInfo);
+            if (fVersionSupported != 0) {
+                *(FARPROC *)((char *)this + 8) =
+                    GetProcAddress(*(HMODULE *)((char *)this + 4),
+                                   g_AUDIO_DirectSoundCreate);
+                if (*(FARPROC *)((char *)this + 8) != 0) {
+                    *(int *)((char *)this + 0x20) = 1;
+                    *(int *)((char *)this + 0x0c) = 0;
+                }
+            }
         }
     }
     return this;
