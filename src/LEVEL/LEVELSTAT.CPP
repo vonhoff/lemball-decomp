@@ -4901,33 +4901,39 @@ void LevelVariantRenderManagerView::EmitVariantRenderResourceEntry(short *pRect,
 
 // FUNCTION: LEMBALL 0x004678c0
 void LevelVariantRenderManagerView::ResetOrFlipVariantRenderBuffers(void) {
+    struct VariantRenderBufferCounts {
+        int m_cEntries;
+        int m_nToken;
+    };
+    VariantRenderBufferCounts *pActiveCounts;
+    VariantRenderBufferCounts *pAvailableCounts;
     int nTarget;
-    int nManager;
     unsigned char *pbToken;
     VsGdiCompactGeometryTokenDispatch *pCompactTarget;
 
-    nManager = (int)(unsigned long)this;
-    *(int *)(unsigned long)(nManager + 0xc) = 0;
-    if (*(int *)(unsigned long)(nManager + 0x38) == 0) {
-        *(int *)(unsigned long)(nManager + 0x5c) = 0;
-        *(int *)(unsigned long)(nManager + 0x40) = *(int *)(unsigned long)(nManager + 0x5c);
-        *(int *)(unsigned long)(nManager + 0x44) = *(int *)(unsigned long)(nManager + 0x60);
-        nTarget = *(int *)(*(int *)(unsigned long)(nManager + 0x1c) + 0xc);
+    *(int *)((char *)this + 0x0c) = 0;
+    if (*(int *)((char *)this + 0x38) == 0) {
+        pAvailableCounts =
+            (VariantRenderBufferCounts *)((char *)this + 0x5c);
+        pActiveCounts =
+            (VariantRenderBufferCounts *)((char *)this + 0x40);
+        pAvailableCounts->m_cEntries = 0;
+        *pActiveCounts = *pAvailableCounts;
+        nTarget = *(int *)(*(int *)((char *)this + 0x1c) + 0x0c);
         pCompactTarget = (VsGdiCompactGeometryTokenDispatch *)(
             *(int *)(*(int *)(unsigned long)(nTarget + 0x40) + 4) +
             0x40 + nTarget);
         pbToken = pCompactTarget->GetToken();
-        *(unsigned char *)(unsigned long)(nManager + 0x44) = *pbToken;
-        *(unsigned char *)(unsigned long)(nManager + 0x60) = *pbToken;
+        *(unsigned char *)((char *)this + 0x44) = *pbToken;
+        *(unsigned char *)((char *)this + 0x60) = *pbToken;
         return;
     }
 
-    DispatchAndClearPointerQueue(
-        (void *)(unsigned long)*(int *)(unsigned long)(nManager + 0x1c));
-    *(int *)(unsigned long)(*(int *)(unsigned long)(nManager + 0x1c) + 4) = 0;
-    *(int *)(unsigned long)(nManager + 0x4c) = 0;
-    *(int *)(unsigned long)(nManager + 0x48) = 0;
-    *(unsigned int *)(unsigned long)(nManager + 0x50) ^= 1;
+    DispatchAndClearPointerQueue(*(void **)((char *)this + 0x1c));
+    *(int *)((char *)*(void **)((char *)this + 0x1c) + 4) = 0;
+    *(int *)((char *)this + 0x4c) = 0;
+    *(int *)((char *)this + 0x48) = 0;
+    *(unsigned int *)((char *)this + 0x50) ^= 1;
 }
 
 // FUNCTION: LEMBALL 0x00467bb0
