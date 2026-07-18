@@ -4216,8 +4216,8 @@ void LEMBALL_FASTCALL ForwardPrimaryContextActiveScreenSlot0x14(void *pPrimaryCo
 
 // FUNCTION: LEMBALL 0x004318c0
 int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresent(int *pPrimaryContext) {
-    short nHeight;
     short nWidth;
+    short nHeight;
     if (!((GamePrimaryContextVirtualInterface *)pPrimaryContext)->GetWindowOwnerState()) {
         return 0;
     }

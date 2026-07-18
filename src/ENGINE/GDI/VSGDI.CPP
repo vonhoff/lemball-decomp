@@ -1580,14 +1580,14 @@ static int LEMBALL_STDCALL StretchDisplaySurfaceRect(
 
 // FUNCTION: LEMBALL 0x00456d10
 void *VsGdiDisplayState::BindDisplayBitmap(int nDriver, void *pBitmap) {
-    VsGdiHelperTargetParamWrapper *pBinding;
     VsGdiDisplayBitmap *pDisplayBitmap;
     HGDIOBJ hPreviousBitmap;
 
-    pBinding = (VsGdiHelperTargetParamWrapper *)(unsigned long)nDriver;
     pDisplayBitmap = (VsGdiDisplayBitmap *)pBitmap;
     hPreviousBitmap = SelectObject(
-        (void *)(unsigned long)pBinding->m_nWrappedParam,
+        (void *)(unsigned long)
+            ((VsGdiHelperTargetParamWrapper *)(unsigned long)nDriver)
+                ->m_nWrappedParam,
         pDisplayBitmap->m_hBitmap);
     if (hPreviousBitmap == 0)
         return 0;
