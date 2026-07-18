@@ -1340,6 +1340,8 @@ struct LevelViewRotationTransform {
 struct LevelScreenTerrainRenderView {
     void EmitRepeatedVariantColumn(short x, int y,
                                    int nHeight, int cEntries);
+    void EmitVariantStripPassA(int nTileX, int nTileY, int cEntries);
+    void EmitVariantStripPassB(int nTileX, int nTileY, int cEntries);
     void DrawStaticRenderEntry(int iEntry, unsigned short nDepth);
 };
 
@@ -2537,6 +2539,176 @@ void LevelScreenTerrainRenderView::EmitRepeatedVariantColumn(
             g_nLevelScreenMappedVariantResourceId0x206, 0, 0);
         --cEntries;
         nEntryY -= 0x10;
+    }
+}
+
+// FUNCTION: LEMBALL 0x0043ad40
+void LevelScreenTerrainRenderView::EmitVariantStripPassA(
+    int nTileX, int nTileY, int cEntries)
+{
+    char *pScreen;
+    char *pLevel;
+    char *pTile;
+    int nScreenX;
+    int nScreenY;
+    int i;
+    int nResourceId;
+    unsigned int nFrame;
+    short nHeight;
+    short cRepeated;
+    short nDepth;
+    short nDepthBias;
+    int fDrawTile;
+
+    pScreen = (char *)this;
+    pLevel = *(char **)(pScreen + 0x914);
+    nScreenX = *(int *)(pScreen + 0x184);
+    nScreenY = *(int *)(pScreen + 0x188);
+    nDepth = (short)((short)nTileX + (short)nTileY) * 0x40;
+    if (nDepth < 0) nDepth = 0;
+    for (i = 0; i < cEntries; ++i) {
+        nResourceId = *(int *)(pLevel + 0x4c);
+        nFrame = *(unsigned int *)(pLevel + 0x50);
+        nHeight = 0;
+        cRepeated = 0;
+        nDepthBias = 0;
+        fDrawTile = 1;
+        if (nTileX >= 0 && nTileY >= 0 &&
+            nTileX < (int)*(unsigned short *)(pScreen + 0x162) &&
+            nTileY < (int)*(unsigned short *)(pScreen + 0x164)) {
+            pTile = *(char **)(pLevel + 0x0c) +
+                    (*(int *)(pLevel + 0x10) * nTileY + nTileX) * 0x0c;
+            if ((pTile[6] & 0x20) == 0) {
+                nResourceId = *(int *)pTile;
+                nFrame = *(unsigned short *)(pTile + 4);
+                nHeight = *(short *)(pTile + 8);
+                cRepeated = *(short *)(pTile + 0x0a);
+                if (nHeight < 0) {
+                    nHeight = 0;
+                    nResourceId = *(int *)(pLevel + 0x4c);
+                    nFrame = *(unsigned short *)(pLevel + 0x50);
+                }
+                switch (nResourceId) {
+                case 0x202: nDepthBias = 0x20; break;
+                case 0x206: nDepthBias = 0x10; break;
+                case 0x207:
+                case 0x20a: nDepthBias = 8; break;
+                case 0x210:
+                case 0x215:
+                case 0x216:
+                case 0x219:
+                case 0x21a: fDrawTile = 0; break;
+                }
+                *(short *)(*(char **)(pScreen + 0xa40) + 0x68) =
+                    (short)(nDepth + nHeight + nDepthBias);
+                if (nHeight > 0) {
+                    EmitRepeatedVariantColumn(
+                        (short)nScreenX, nScreenY, nHeight, cRepeated);
+                }
+                if (fDrawTile) {
+                    EmitMappedLevelScreenVariantRenderEntry(
+                        pScreen, (unsigned short)nScreenX,
+                        (short)(nScreenY - nHeight), nResourceId,
+                        ((unsigned int)(unsigned short)nDepth << 16) |
+                        (nFrame & 0xffff));
+                }
+            }
+        } else {
+            *(short *)(*(char **)(pScreen + 0xa40) + 0x68) = nDepth;
+            EmitMappedLevelScreenVariantRenderEntry(
+                pScreen, (unsigned short)nScreenX, (short)nScreenY,
+                nResourceId, nFrame);
+        }
+        nTileX += *(int *)(pScreen + 0x170);
+        nTileY += *(int *)(pScreen + 0x174);
+        nScreenX += 0x20;
+    }
+}
+
+// FUNCTION: LEMBALL 0x0043b0e0
+void LevelScreenTerrainRenderView::EmitVariantStripPassB(
+    int nTileX, int nTileY, int cEntries)
+{
+    char *pScreen;
+    char *pLevel;
+    char *pTile;
+    int nScreenX;
+    int nScreenY;
+    int i;
+    int nResourceId;
+    unsigned int nFrame;
+    short nHeight;
+    short cRepeated;
+    short nDepth;
+    short nDepthBias;
+    int fDrawTile;
+    int fDrawColumn;
+
+    pScreen = (char *)this;
+    pLevel = *(char **)(pScreen + 0x914);
+    nScreenX = *(int *)(pScreen + 0x184);
+    nScreenY = *(int *)(pScreen + 0x188);
+    nDepth = (short)((short)nTileX + (short)nTileY) * 0x40;
+    if (nDepth < 0) nDepth = 0;
+    for (i = 0; i < cEntries; ++i) {
+        nResourceId = *(int *)(pLevel + 0x4c);
+        nFrame = *(unsigned int *)(pLevel + 0x50);
+        if (nTileX >= 0 && nTileY >= 0 &&
+            nTileX < (int)*(unsigned short *)(pScreen + 0x162) &&
+            nTileY < (int)*(unsigned short *)(pScreen + 0x164)) {
+            pTile = *(char **)(pLevel + 0x0c) +
+                    (*(int *)(pLevel + 0x10) * nTileY + nTileX) * 0x0c;
+            if ((pTile[6] & 0x20) == 0) {
+                nResourceId = *(int *)pTile;
+                nFrame = *(unsigned short *)(pTile + 4);
+                nHeight = *(short *)(pTile + 8);
+                cRepeated = *(short *)(pTile + 0x0a);
+                if (nHeight < 0) {
+                    nHeight = 0;
+                    nResourceId = *(int *)(pLevel + 0x4c);
+                    nFrame = *(unsigned short *)(pLevel + 0x50);
+                }
+                nDepthBias = 0;
+                if (nResourceId == 0x202) nDepthBias = 0x20;
+                else if (nResourceId == 0x206) nDepthBias = 0x10;
+                else if (nResourceId == 0x207 || nResourceId == 0x20a)
+                    nDepthBias = 8;
+                *(short *)(*(char **)(pScreen + 0xa40) + 0x68) =
+                    (short)(nDepth + nHeight + nDepthBias);
+                fDrawTile = 0;
+                fDrawColumn = 0;
+                switch (nResourceId) {
+                case 0x202: case 0x206: case 0x207: case 0x208:
+                case 0x209: case 0x20a: case 0x20d: case 0x20e:
+                case 0x20f: case 0x214: case 0x217:
+                    fDrawTile = 1; fDrawColumn = nHeight > 0; break;
+                case 0x20b: case 0x20c:
+                    fDrawTile = 1; fDrawColumn = nHeight > 0x18; break;
+                case 0x210: case 0x215: case 0x216:
+                case 0x219: case 0x21a:
+                    fDrawColumn = nHeight > 0; break;
+                }
+                if (fDrawColumn) {
+                    EmitRepeatedVariantColumn(
+                        (short)nScreenX, nScreenY, nHeight, cRepeated);
+                }
+                if (fDrawTile) {
+                    EmitMappedLevelScreenVariantRenderEntry(
+                        pScreen, (unsigned short)nScreenX,
+                        (short)(nScreenY - nHeight), nResourceId,
+                        ((unsigned int)(unsigned short)nDepth << 16) |
+                        (nFrame & 0xffff));
+                }
+            }
+        } else {
+            *(short *)(*(char **)(pScreen + 0xa40) + 0x68) = nDepth;
+            EmitMappedLevelScreenVariantRenderEntry(
+                pScreen, (unsigned short)nScreenX, (short)nScreenY,
+                nResourceId, nFrame);
+        }
+        nTileX += *(int *)(pScreen + 0x170);
+        nTileY += *(int *)(pScreen + 0x174);
+        nScreenX += 0x20;
     }
 }
 
