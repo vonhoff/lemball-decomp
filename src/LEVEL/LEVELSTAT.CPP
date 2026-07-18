@@ -29,6 +29,7 @@ void LEMBALL_FASTCALL SetTimedVariantFrameDuration(
 extern void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void *pQueue);
 extern void LEMBALL_FASTCALL PresentPrimaryContextScreen(void *pPrimaryContext);
 extern void noop_callback_00456600(void);
+extern int g_nLevelFrameClockTimeMs;
 
 struct LevelStatusProgressClient {
     virtual void SetLoadProgress(int nProgress) = 0;
@@ -3017,6 +3018,9 @@ void LevelScreenTerrainRenderView::DispatchDynamicRenderEntry(
     int nSubtype;
     int nFlags;
     int nPalette;
+    int nResourceId;
+    int nOffsetX;
+    int nOffsetY;
     unsigned int nProgress;
 
     pScreen = (char *)this;
@@ -3218,6 +3222,148 @@ void LevelScreenTerrainRenderView::DispatchDynamicRenderEntry(
             (short)(*(int *)(pRecord + 4) - 0x1c),
             (short)(*(int *)(pRecord + 8) - 0x3f),
             0x89, nFlags, 0, nPalette);
+        break;
+    case 0x1e:
+    case 0x2f:
+    case 0x30:
+    case 0x31:
+        if (nType == 0x1e || nType == 0x30) {
+            nResourceId = 0x8c;
+            nOffsetX = 0x14;
+        } else {
+            nResourceId = 0x8e;
+            nOffsetX = 0x2e;
+        }
+        nSubtype = *(int *)(pRecord + 0x18);
+        if (nSubtype == 0x17 || nSubtype == 0x18) {
+            nFlags = 0;
+        } else if (nSubtype == 0x19 || nSubtype == 0x1a) {
+            nProgress = (unsigned int)(
+                ((*(int *)(pRecord + 0x24) -
+                  *(int *)(pRecord + 0x20)) * 0x0f) / 1000);
+            if (nProgress > 0x11) nProgress = 0x11;
+            nFlags = (int)nProgress;
+        } else {
+            break;
+        }
+        EmitLevelScreenVariantEntry(
+            *(void **)(pScreen + 0xa40),
+            (short)(*(int *)(pRecord + 4) - nOffsetX),
+            (short)(*(int *)(pRecord + 8) - 10),
+            nResourceId, nFlags, 0, 0);
+        break;
+    case 0x1f:
+        nSubtype = *(int *)(pRecord + 0x18);
+        nPalette = *(short *)(pRecord + 0x1c) != 0 ?
+            *(int *)(pScreen + 0x968) : 0;
+        if (nSubtype == 0x17 || nSubtype == 0x18) {
+            nFlags = 0;
+            nPalette = 0;
+        } else if (nSubtype == 0x19 || nSubtype == 0x1a) {
+            nProgress = (unsigned int)(
+                ((*(int *)(pRecord + 0x24) -
+                  *(int *)(pRecord + 0x20)) * 0x0f) / 1000);
+            if (nProgress > 0x0b) nProgress = 0x0b;
+            nFlags = (int)nProgress;
+        } else {
+            break;
+        }
+        EmitLevelScreenVariantEntry(
+            *(void **)(pScreen + 0xa40),
+            (short)(*(int *)(pRecord + 4) - 0x31),
+            (short)(*(int *)(pRecord + 8) - 0x14),
+            g_nLevelScreenTimedVariantResourceId,
+            nFlags, 0, nPalette);
+        break;
+    case 0x22:
+        nSubtype = *(int *)(pRecord + 0x18);
+        if (nSubtype == 0x18) {
+            nFlags = 0;
+        } else if (nSubtype == 0x1b) {
+            nProgress = (unsigned int)(
+                ((*(int *)(pRecord + 0x24) -
+                  *(int *)(pRecord + 0x20)) * 0x0f) / 1000);
+            if (nProgress > 0x0b) nProgress = 0x0b;
+            nFlags = (int)nProgress;
+        } else {
+            break;
+        }
+        EmitLevelScreenVariantEntry(
+            *(void **)(pScreen + 0xa40),
+            (short)(*(int *)(pRecord + 4) - 0x16),
+            (short)(*(int *)(pRecord + 8) - 0x16),
+            0x97, nFlags, 0, 0);
+        break;
+    case 0x26:
+    case 0x32:
+        if (nType == 0x26) {
+            nResourceId = 0x8f;
+            nOffsetX = 0x0d;
+            nOffsetY = 9;
+        } else {
+            nResourceId = 0x8d;
+            nOffsetX = 0x16;
+            nOffsetY = 0x0f;
+        }
+        EmitLevelScreenVariantEntry(
+            *(void **)(pScreen + 0xa40),
+            (short)(*(int *)(pRecord + 4) - nOffsetX),
+            (short)(*(int *)(pRecord + 8) - nOffsetY),
+            nResourceId, 0, 0, 0);
+        break;
+    case 0x34:
+        switch (*(int *)(*(char **)(pScreen + 0x96c) + 0x60)) {
+        case 0: nFlags = 0x50; break;
+        case 1: nFlags = 0x1a; break;
+        case 2: nFlags = 0x52; break;
+        case 3: nFlags = 0x38; break;
+        default: break;
+        }
+        nSubtype = *(short *)(pRecord + 0x1c);
+        if (nSubtype == 0) {
+            nResourceId = g_nLevelScreenMappedVariantResourceId0x209;
+            nOffsetX = 0x10;
+            nOffsetY = 0x1c;
+        } else if (nSubtype == 1) {
+            nResourceId = 0xa0;
+            nOffsetX = 0x11;
+            nOffsetY = 0x26;
+            nFlags = (g_nLevelFrameClockTimeMs / 0x46) & 7;
+        } else {
+            break;
+        }
+        EmitLevelScreenVariantEntry(
+            *(void **)(pScreen + 0xa40),
+            (short)(*(int *)(pRecord + 4) - nOffsetX),
+            (short)(*(int *)(pRecord + 8) - nOffsetY),
+            nResourceId, nFlags, 0, 0);
+        break;
+    case 0x35:
+        {
+            static const short s_anOffsetX[4] = { 13, 30, 29, 14 };
+            static const short s_anOffsetY[4] = { 25, 32, 26, 34 };
+            static const int s_anResources[4] =
+                { 0x9c, 0x9e, 0x9d, 0x9f };
+            unsigned int iVariant;
+
+            iVariant = *(unsigned short *)(pRecord + 0x1c);
+            if (iVariant >= 4) break;
+            nSubtype = *(int *)(pRecord + 0x18);
+            if (nSubtype == 0x18) {
+                nFlags = 0;
+            } else if (nSubtype == 0x1b) {
+                nFlags = ((*(int *)(pRecord + 0x24) -
+                           *(int *)(pRecord + 0x20)) * 0x0f) / 1000;
+                if (nFlags > 0x0c) nFlags = 0x0c;
+            } else {
+                break;
+            }
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - s_anOffsetX[iVariant]),
+                (short)(*(int *)(pRecord + 8) - s_anOffsetY[iVariant]),
+                s_anResources[iVariant], nFlags, 0, 0);
+        }
         break;
     }
 }
