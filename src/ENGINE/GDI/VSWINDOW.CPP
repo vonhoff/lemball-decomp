@@ -1555,7 +1555,10 @@ void VS_WindowOwnerBase::DestroyWindowOwnerHwnd(void) {
         return;
     }
     pNode = m_pChildren24;
-    while (pNode != 0) {
+    for (;;) {
+        if (pNode == 0) {
+            break;
+        }
         pOwner = pNode->m_pOwner;
         pNode = pNode->m_pNext;
         pOwner->DestroyWindowOwnerHwnd();

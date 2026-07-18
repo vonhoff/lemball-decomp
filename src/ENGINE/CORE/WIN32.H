@@ -224,7 +224,7 @@ BOOL WINAPI PeekMessageA(MSG *lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFil
 BOOL WINAPI GetMessageA(MSG *lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax);
 BOOL WINAPI TranslateMessage(const MSG *lpMsg);
 LRESULT WINAPI DispatchMessageA(const MSG *lpMsg);
-BOOL WINAPI DestroyWindow(HWND hWnd);
+__declspec(dllimport) BOOL WINAPI DestroyWindow(HWND hWnd);
 BOOL WINAPI ClientToScreen(HWND hWnd, tagPOINT *lpPoint);
 __declspec(dllimport) BOOL WINAPI GetCursorPos(tagPOINT *lpPoint);
 __declspec(dllimport) short WINAPI GetKeyState(int nVirtKey);
