@@ -87,6 +87,10 @@ void noop_screen_callback_00446f70(void) {
 void noop_screen_callback_00446f80(void) {
 }
 
+// FUNCTION: LEMBALL 0x00446f90
+void noop_screen_callback_00446f90(void) {
+}
+
 // FUNCTION: LEMBALL 0x00446fa0
 int PASCAL return_zero_screen_callback_00446fa0(void *pUnused) {
     (void)pUnused;
