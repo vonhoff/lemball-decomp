@@ -996,7 +996,6 @@ static const VsSoundDirectSoundErrorEntry g_AUDIO_DirectSoundErrors[] = {
     { 0, 0 }
 };
 static const char g_AUDIO_NoEffectsBackendName[] = "ERROR: No Effects Device for Windows";
-static const char g_AUDIO_NoDirectSoundBackendName[] = "ERROR: No Effects Device for Windows";
 static const char g_AUDIO_HlMidiNotFoundPrefix[] = "Error: HL Midi Device Not Found. ";
 static const char g_AUDIO_MciErrorPrefix[] = "MCI Error: ";
 static const char g_AUDIO_ErrorSuffix[] = "\n";
@@ -3027,9 +3026,9 @@ void LEMBALL_FASTCALL DestroyDirectSoundEffectBackend(void *pBackend) {
 // FUNCTION: LEMBALL 0x0047e000
 char *__fastcall GetDirectSoundEffectBackendDescription(VsSoundDirectSoundEffectBackend *pBackend) {
     if (pBackend->m_fDeviceAvailable == 1) {
-        return (char *)"Direct Sound Device";
+        return (char *)"Direct Sound Device\n";
     }
-    return (char *)g_AUDIO_NoDirectSoundBackendName;
+    return (char *)"ERROR! No Effects Device for WinEff!\n";
 }
 
 // FUNCTION: LEMBALL 0x0047e020
