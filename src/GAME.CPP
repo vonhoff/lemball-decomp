@@ -4564,6 +4564,18 @@ void *LEMBALL_FASTCALL DeleteQueuedRenderPointSinkFinalize(
     return pObject;
 }
 
+// FUNCTION: LEMBALL 0x00439f50
+void SetAudioMusicAndEffectVolumeByte(unsigned char nVolume) {
+    ((VsSoundManager *)g_pAudioManager)
+        ->SetAudioManagerMusicAndEffectVolume(nVolume, -1);
+}
+
+// FUNCTION: LEMBALL 0x00439f70
+void SetVariantResourceEffectMasterVolume(unsigned char nVolume) {
+    ((VsSoundManager *)g_pAudioManager)
+        ->SetAudioManagerMusicAndEffectVolume(-1, nVolume);
+}
+
 // FUNCTION: LEMBALL 0x004465c0
 void LEMBALL_FASTCALL RequestFramedScreenTransitionMode2(void *pScreen) {
     *(int *)((char *)pScreen + 0x378) = 1;

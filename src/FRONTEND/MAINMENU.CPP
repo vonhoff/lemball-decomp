@@ -49,6 +49,8 @@ extern int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresentThunk(
     int *pPrimaryContext);
 extern void TogglePrimaryContextDisplayMode(
     ShellUiPrimaryContextShell *pShell);
+extern void SetAudioMusicAndEffectVolumeByte(unsigned char nVolume);
+extern void SetVariantResourceEffectMasterVolume(unsigned char nVolume);
 extern void LEMBALL_FASTCALL NoopPackagedSpriteRenderEntryThunk00402A22(
     void *pUnused);
 extern void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(
@@ -2478,6 +2480,7 @@ static void LEMBALL_FASTCALL InitializeOptionsScreenWidgets(void *pObject) {
     InitializeMenuSelectorChildContext(pManager);
 }
 
+// FUNCTION: LEMBALL 0x00448dc0
 static void LEMBALL_FASTCALL ReleaseOptionsScreenWidgets(void *pObject) {
     GameOptionsScreenView *pScreen;
 
@@ -2485,7 +2488,6 @@ static void LEMBALL_FASTCALL ReleaseOptionsScreenWidgets(void *pObject) {
     if (pScreen->m_pSelectorManager334 != 0) {
         ((GameMainMenuSelectorManagerInterface *)
              pScreen->m_pSelectorManager334)->Delete((void *)1);
-        pScreen->m_pSelectorManager334 = 0;
     }
 }
 
@@ -2517,10 +2519,24 @@ static int LEMBALL_FASTCALL HandleOptionsScreenInput(
     }
     if (nCommand == 0xacff0000U) {
         g_nOptionsEffectsSliderValue = pSelectorEvent->m_nPayload0C;
+        SetAudioMusicAndEffectVolumeByte((unsigned char)(
+            (unsigned int)pSelectorEvent->m_nPayload0C * 0xffU /
+            (unsigned int)pSelectorEvent->m_nPayload10));
         return 1;
     }
     if (nCommand == 0xacff0001U) {
+        unsigned char nVolume;
+
         g_nOptionsMusicSliderValue = pSelectorEvent->m_nPayload0C;
+        nVolume = (unsigned char)(
+            (unsigned int)pSelectorEvent->m_nPayload0C * 0xffU /
+            (unsigned int)pSelectorEvent->m_nPayload10);
+        AppendCStringToStream(g_pStartupOutputStream,
+                              "Setting music volume ");
+        AppendCharToFormattedStream(g_pStartupOutputStream,
+                                    (char)nVolume);
+        AppendCStringToStream(g_pStartupOutputStream, "\n");
+        SetVariantResourceEffectMasterVolume(nVolume);
         return 1;
     }
     return 0;
