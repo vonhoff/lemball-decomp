@@ -899,6 +899,10 @@ static const char g_szNetworkLobbyDividerCompact[] =
 char g_szNetworkLobbyLocalPlayerName[0x10] = "";
 // GLOBAL: LEMBALL 0x004a0378
 char g_szNetworkLobbyJoinAddress[0x10] = "";
+// GLOBAL: LEMBALL 0x004a0390
+int g_fNetworkLobbyShiftPressed = 0;
+// GLOBAL: LEMBALL 0x004a0394
+int g_nNetworkLobbyModifierMask = 0;
 
 static GameBoundedTextBuffer *ConstructBoundedTextBuffer(
     GameBoundedTextBuffer *pBuffer, int cCapacity) {
@@ -3876,6 +3880,7 @@ static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(
     GameBoundedTextBuffer *pBuffer;
     unsigned int nCode;
     char ch;
+    int fEdited;
 
     pScreen = (GameNetworkLobbyScreenView *)pObject;
     pInput = (GameMenuSelectorEvent *)pEvent;
@@ -3905,18 +3910,34 @@ static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(
         pScreen->m_nRequestedMode374 = 2;
         return 1;
     }
-    if (pScreen->m_fTextPrompt39C != 0 &&
-        (pInput->m_nType00 == 3 || pInput->m_nType00 == 4)) {
-        if (pInput->m_nType00 == 3) {
+    if (pInput->m_nType00 == 4 && nCode == 0x49U) {
+        g_fNetworkLobbyShiftPressed = 1;
+        g_nNetworkLobbyModifierMask |= 1;
+        return 1;
+    }
+    if (pInput->m_nType00 == 3 && nCode == 0x49U) {
+        g_nNetworkLobbyModifierMask &= ~1;
+        g_fNetworkLobbyShiftPressed = 0;
+        return 1;
+    }
+    if (pScreen->m_fTextPrompt39C != 0 && pInput->m_nType00 == 3) {
+        if ((nCode >= 5U && nCode <= 0x1eU) || nCode == 1U ||
+            nCode == 0x1fU || nCode == 0x4cU ||
+            nCode == 0x4dU || nCode == 0x4eU) {
             return 1;
         }
+        return 0;
+    }
+    if (pScreen->m_fTextPrompt39C != 0 && pInput->m_nType00 == 4) {
         pBuffer = (GameBoundedTextBuffer *)pScreen->m_pTextBuffer398;
         if (pBuffer == 0 || pBuffer->m_pszText0C == 0) {
             return 1;
         }
         ch = 0;
+        fEdited = 0;
         if (nCode >= 5U && nCode <= 0x1eU) {
-            ch = (char)('a' + nCode - 5U);
+            ch = (char)((g_fNetworkLobbyShiftPressed != 0 ? 'A' : 'a') +
+                        nCode - 5U);
         } else if (nCode >= 0x39U && nCode <= 0x42U) {
             ch = (char)('0' + nCode - 0x39U);
         } else if (nCode == 0x1fU) {
@@ -3928,37 +3949,43 @@ static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(
             pScreen->m_fTextPrompt39C = 0;
             pScreen->m_nDeferredStatus430 = 0;
             SetNetworkLobbyStatus(pScreen, 1);
-            pScreen->m_fBlink3C0 = 0;
-            pScreen->m_dwBlinkStart3C8 = timeGetTime();
-            if (g_pVariantResourceEntryManager != 0) {
-                ((GameVariantResourceEntryManager *)
-                    g_pVariantResourceEntryManager)
-                        ->PlayVariantResourceEffect(0x25);
-            }
-            return 1;
+            fEdited = 1;
         } else if (nCode == 0x4cU) {
             CommitNetworkLobbyTextPrompt(pScreen);
-            pScreen->m_fBlink3C0 = 0;
-            pScreen->m_dwBlinkStart3C8 = timeGetTime();
-            if (g_pVariantResourceEntryManager != 0) {
-                ((GameVariantResourceEntryManager *)
-                    g_pVariantResourceEntryManager)
-                        ->PlayVariantResourceEffect(0x25);
-            }
-            return 1;
+            fEdited = 1;
         } else if (nCode == 0x4dU || nCode == 0x4eU) {
             if (pBuffer->m_cLength04 != 0) {
                 --pBuffer->m_cLength04;
                 pBuffer->m_pszText0C[pBuffer->m_cLength04] = '\0';
                 pScreen->m_fSelectorDirty360 = 1;
+                fEdited = 1;
+            } else if (g_pVariantResourceEntryManager != 0) {
+                ((GameVariantResourceEntryManager *)
+                    g_pVariantResourceEntryManager)
+                        ->PlayVariantResourceEffect(0x19);
+            }
+        }
+        if (ch != 0) {
+            if (pBuffer->m_cLength04 != pBuffer->m_cCapacity00) {
+                AppendBoundedTextCharacter(pBuffer, ch);
+                pScreen->m_fSelectorDirty360 = 1;
+                fEdited = 1;
+            } else if (g_pVariantResourceEntryManager != 0) {
+                ((GameVariantResourceEntryManager *)
+                    g_pVariantResourceEntryManager)
+                        ->PlayVariantResourceEffect(0x19);
+            }
+        }
+        if (fEdited != 0) {
+            pScreen->m_dwBlinkStart3C8 = timeGetTime();
+            pScreen->m_fBlink3C0 = 0;
+            if (g_pVariantResourceEntryManager != 0) {
+                ((GameVariantResourceEntryManager *)
+                    g_pVariantResourceEntryManager)
+                        ->PlayVariantResourceEffect(0x25);
             }
             return 1;
         }
-        if (ch != 0) {
-            AppendBoundedTextCharacter(pBuffer, ch);
-            pScreen->m_fSelectorDirty360 = 1;
-        }
-        return 1;
     }
     if (pInput->m_nType00 == 4) {
         int fMoved;
