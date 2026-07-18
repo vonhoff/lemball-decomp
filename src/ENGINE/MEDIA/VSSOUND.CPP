@@ -162,6 +162,7 @@ struct VsSoundMciMusicBackend : VsSoundDynamicStringEntry {
     int m_nPausedTrackPosition;
     HWND m_hNotificationWindow;
     VsSoundMciMusicBackend *ConstructMciMusicBackend(void);
+    void FreePreparedMciMusicTrack(int nTrackHandle);
 };
 
 struct VsSoundWaveFormat {
@@ -378,7 +379,6 @@ void *LEMBALL_FASTCALL DeleteDirectSoundEffectBackend(
 LRESULT CALLBACK MciMusicWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 void LEMBALL_FASTCALL DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry *pEntry);
 void LEMBALL_FASTCALL PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle, int nMusicResourceId);
-void LEMBALL_FASTCALL FreePreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
 void LEMBALL_FASTCALL PlayPreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
 void LEMBALL_FASTCALL StopMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
 void LEMBALL_FASTCALL PauseMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
@@ -646,7 +646,6 @@ void LEMBALL_FASTCALL PauseDirectSoundEffectInstance(
 void *LEMBALL_FASTCALL DeleteDirectSoundEffectBackend(
     VsSoundDirectSoundEffectBackend *pBackend, int nUnused, int fDelete);
 void LEMBALL_FASTCALL PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle, int nMusicResourceId);
-void LEMBALL_FASTCALL FreePreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
 void LEMBALL_FASTCALL PlayPreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
 void LEMBALL_FASTCALL StopMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
 void LEMBALL_FASTCALL PauseMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
@@ -767,7 +766,7 @@ struct VsSoundMciMusicBackendVtableModel {
         PrepareMciMusicTrack((VsSoundMciMusicBackend *)this, 0, nTrackHandle, nMusicResourceId);
     }
     virtual void Free(int nTrackHandle) {
-        FreePreparedMciMusicTrack((VsSoundMciMusicBackend *)this, 0, nTrackHandle);
+        ((VsSoundMciMusicBackend *)this)->FreePreparedMciMusicTrack(nTrackHandle);
     }
     virtual void Play(int nTrackHandle) {
         PlayPreparedMciMusicTrack((VsSoundMciMusicBackend *)this, 0, nTrackHandle);
@@ -3670,7 +3669,8 @@ void LEMBALL_FASTCALL PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int
 }
 
 // FUNCTION: LEMBALL 0x0047ee70
-void LEMBALL_FASTCALL FreePreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle) {
+void VsSoundMciMusicBackend::FreePreparedMciMusicTrack(int nTrackHandle) {
+    VsSoundMciMusicBackend *pBackend = this;
     if (nTrackHandle == 0) {
         g_pErrorOutputStream->AppendCStringToStream(
             "Error Call to Free Music (HL) with Invalid Handle!\n");
