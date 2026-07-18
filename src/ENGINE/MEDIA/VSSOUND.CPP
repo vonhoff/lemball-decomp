@@ -3542,16 +3542,28 @@ void LEMBALL_FASTCALL DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry *
 
 // FUNCTION: LEMBALL 0x0047ead0
 void VsSoundMciMusicBackend::PrepareMciMusicTrack(int nTrackHandle, int nMusicResourceId) {
+    struct MciMusicTrackPrepareLocals {
+        GameDynamicCString m_BasePath;
+        GameDynamicCString m_MusicPath;
+        VsSoundMciOpenParms m_OpenParms;
+        VsSoundMciGenericParms m_SeekParms;
+        VsSoundMciSetParms m_SetParms;
+        union {
+            GameDynamicCString m_TemporaryPath;
+            char m_szMciErrorText[0x80];
+        } m_Temporary;
+        DWORD m_adwReservedB0[2];
+    } Locals;
     VsSoundMciMusicBackend *pBackend = this;
     VsSoundStringResourceObjectView *pStringResource;
-    VsSoundMciOpenParms OpenParms;
-    VsSoundMciGenericParms SeekParms;
-    VsSoundMciSetParms SetParms;
-    GameDynamicCString MusicPath;
-    GameDynamicCString BasePath;
-    GameDynamicCString TemporaryPath;
+    VsSoundMciOpenParms &OpenParms = Locals.m_OpenParms;
+    VsSoundMciGenericParms &SeekParms = Locals.m_SeekParms;
+    VsSoundMciSetParms &SetParms = Locals.m_SetParms;
+    GameDynamicCString &MusicPath = Locals.m_MusicPath;
+    GameDynamicCString &BasePath = Locals.m_BasePath;
+    GameDynamicCString &TemporaryPath = Locals.m_Temporary.m_TemporaryPath;
     MCIERROR nMciError;
-    char szMciErrorText[0x80];
+    char (&szMciErrorText)[0x80] = Locals.m_Temporary.m_szMciErrorText;
 
     if (nTrackHandle == 0) {
         g_pErrorOutputStream->AppendCStringToStream(
@@ -3636,9 +3648,9 @@ void VsSoundMciMusicBackend::PrepareMciMusicTrack(int nTrackHandle, int nMusicRe
                 mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
                 g_pErrorOutputStream->AppendCStringToStream(
                     "Error!     Unable to Prepare Music! (Time)\n");
-                g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t");
-                g_pErrorOutputStream->AppendCStringToStream(szMciErrorText);
-                g_pErrorOutputStream->AppendCStringToStream("\n");
+                g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
+                    ->AppendCStringToStream(szMciErrorText)
+                    ->AppendCStringToStream("\n");
                 pBackend->m_nPreparedTrackHandle = 0;
                 g_nPreparedMciMusicTrackHandle = 0;
             }
@@ -3646,9 +3658,9 @@ void VsSoundMciMusicBackend::PrepareMciMusicTrack(int nTrackHandle, int nMusicRe
             mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
             g_pErrorOutputStream->AppendCStringToStream(
                 "Error!     Unable to Prepare Music (Seek)!\n");
-            g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t");
-            g_pErrorOutputStream->AppendCStringToStream(szMciErrorText);
-            g_pErrorOutputStream->AppendCStringToStream("\n");
+            g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
+                ->AppendCStringToStream(szMciErrorText)
+                ->AppendCStringToStream("\n");
             pBackend->m_nPreparedTrackHandle = 0;
             g_nPreparedMciMusicTrackHandle = 0;
         }
@@ -3658,9 +3670,9 @@ void VsSoundMciMusicBackend::PrepareMciMusicTrack(int nTrackHandle, int nMusicRe
             "Error!     Unable to Prepare Music (Open) ");
         AppendDynamicCStringToStream(g_pErrorOutputStream, &BasePath);
         g_pErrorOutputStream->AppendCStringToStream("!\n");
-        g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t");
-        g_pErrorOutputStream->AppendCStringToStream(szMciErrorText);
-        g_pErrorOutputStream->AppendCStringToStream("\n");
+        g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
+            ->AppendCStringToStream(szMciErrorText)
+            ->AppendCStringToStream("\n");
         pBackend->m_nPreparedTrackHandle = 0;
         g_nPreparedMciMusicTrackHandle = 0;
     }
