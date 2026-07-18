@@ -270,8 +270,6 @@ static const char g_VSGDI_DisplayDibEnd32[] = "DisplayDibEnd32";
 static const char g_VSGDI_DisplayDibGetAddress32[] = "DisplayDibGetAddress32";
 // GLOBAL: LEMBALL 0x004a0b14
 static const char g_VSGDI_DisplayDib32[] = "DisplayDib32";
-static const char g_VSGDI_ErrorNoValidDriver[] = "No valid driver selected to initialise\n";
-static const char g_VSGDI_ErrorNoValidDriverAvailable[] = "No valid driver available\n";
 static const char g_VSGDI_ErrorRegisterClass[] =
     "Unable to register DD base window class\n";
 static const char g_VSGDI_ErrorSetCooperativeLevel[] =
@@ -280,12 +278,6 @@ static const char g_VSGDI_ErrorSetDisplayMode[] = "Direct Draw Set Display Mode 
 static const char g_VSGDI_ErrorCreatePrimarySurface[] =
     "Direct Draw Create Primary Surface failed : ";
 static const char g_VSGDI_ErrorLineEnd[] = "\n";
-static const char g_VSGDI_InitDriverPrefix[] = "Initialising graphics device driver: ";
-static const char g_VSGDI_AutoSelectedPrefix[] = "[ Auto selected: ";
-static const char g_VSGDI_AutoSelectedSuffix[] = " ]\n";
-static const char g_VSGDI_DefaultWindowModeSuffix[] =
-    ". Defaulting to normal window mode (using CreateDIBSection)";
-static const char g_VSGDI_WarningCaption[] = "WARNING";
 // GLOBAL: LEMBALL 0x004a8290
 FARPROC g_pApplyFullscreenDisplayModeThunk;
 
@@ -2388,7 +2380,7 @@ int VsGdiSelectedGraphicsDriverRuntime::InitializeSelectedGraphicsDriver(int nRe
 
     if (nRequestedDriver < 9) {
         g_pStatusOutputStream
-            ->AppendCStringToStream(g_VSGDI_InitDriverPrefix)
+            ->AppendCStringToStream("Initialising graphics device driver: ")
             ->AppendCStringToStream(
                 g_apszGraphicsDriverNames[nRequestedDriver])
             ->AppendCStringToStream("\n");
@@ -2478,7 +2470,7 @@ int VsGdiSelectedGraphicsDriverRuntime::InitializeSelectedGraphicsDriver(int nRe
         break;
     default:
         g_pErrorOutputStream->AppendCStringToStream(
-            g_VSGDI_ErrorNoValidDriver);
+            "No valid driver selected to initialise\n");
         return 0;
     }
     }
@@ -2499,7 +2491,7 @@ int VsGdiSelectedGraphicsDriverRuntime::InitializeSelectedGraphicsDriver(int nRe
         }
         if (g_pDisplayState == 0 || !IsDisplayStateReady(g_pDisplayState)) {
             g_pErrorOutputStream->AppendCStringToStream(
-                g_VSGDI_ErrorNoValidDriverAvailable);
+                "No valid driver available\n");
             return 0;
         }
 
@@ -2510,9 +2502,10 @@ int VsGdiSelectedGraphicsDriverRuntime::InitializeSelectedGraphicsDriver(int nRe
             WarningMessage.ConstructDynamicCStringFromCString(
                 g_apszGraphicsDriverFallbackMessages[nSelectedDriver]);
             WarningMessage.AppendDynamicCStringAndCopyResult(
-                &WarningResult, g_VSGDI_DefaultWindowModeSuffix);
+                &WarningResult,
+                ". Defaulting to normal window mode (using CreateDIBSection)");
             WarningResult.DestroyDynamicCString();
-            MessageBoxA((HWND)0, WarningMessage.m_pszText, g_VSGDI_WarningCaption, 0x12000);
+            MessageBoxA((HWND)0, WarningMessage.m_pszText, "WARNING", 0x12000);
             pRuntime->m_fFallbackWarningShown = 1;
             WarningMessage.DestroyDynamicCString();
         }
@@ -2521,10 +2514,10 @@ int VsGdiSelectedGraphicsDriverRuntime::InitializeSelectedGraphicsDriver(int nRe
 
     if (nRequestedDriver != nSelectedDriver) {
         g_pStatusOutputStream
-            ->AppendCStringToStream(g_VSGDI_AutoSelectedPrefix)
+            ->AppendCStringToStream("[ Auto selected: ")
             ->AppendCStringToStream(
                 g_apszGraphicsDriverNames[nSelectedDriver])
-            ->AppendCStringToStream(g_VSGDI_AutoSelectedSuffix);
+            ->AppendCStringToStream(" ]\n");
     }
 
     if (pRuntime != 0) {
