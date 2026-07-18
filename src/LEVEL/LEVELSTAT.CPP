@@ -1865,6 +1865,9 @@ void *ConstructLevelScreenVariantRenderManager(void *pObject,
     }
     pManager[0x2b] = 0;
     pManager[0x21] = 0;
+    pManager[0x27] = 0;
+    pManager[0x28] = 0;
+    pManager[0x29] = 0;
 
     pStatusManager = AllocateVSMemBlock(0x134);
     if (pStatusManager != 0) {
@@ -4787,9 +4790,18 @@ void LoadVariantRenderResource(void *pObject, int nResourceId) {
 
 // FUNCTION: LEMBALL 0x00467500
 void LevelVariantRenderManagerView::ReleaseVariantRenderResource(int nResourceId) {
-    ReleaseTypedResourceObjectReference(
-        m_ppResourceObjects24[m_pResourceIds28[nResourceId]]);
-    m_ppResourceObjects24[m_pResourceIds28[nResourceId]] = 0;
+    void *pResourceObject;
+    int iResourceSlot;
+
+    iResourceSlot = m_pResourceIds28[nResourceId];
+    if (iResourceSlot == m_nFreeResourceId2C) {
+        return;
+    }
+    pResourceObject = m_ppResourceObjects24[iResourceSlot];
+    if (pResourceObject != 0) {
+        ReleaseTypedResourceObjectReference(pResourceObject);
+    }
+    m_ppResourceObjects24[iResourceSlot] = 0;
     m_pResourceIds28[nResourceId] = (short)m_nFreeResourceId2C;
     --m_cLoadedResources34;
 }

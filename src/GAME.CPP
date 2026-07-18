@@ -1489,7 +1489,8 @@ static void LEMBALL_FASTCALL DispatchLevelScreenRenderStatePop(
                            0x38 + nDepth);
 }
 
-static void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void *pObject) {
+static void LEMBALL_FASTCALL DrawReconstructedLevelScreen(
+    void *pObject, int nUnusedEdx, void *pFrameArgument) {
     typedef void (LEMBALL_FASTCALL *DrawProc)(void *pObject);
     char *pScreen;
     void *pManager;
@@ -1499,6 +1500,8 @@ static void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void *pObject) {
     void *pGeometryContext;
     int nUploadState;
 
+    (void)nUnusedEdx;
+    (void)pFrameArgument;
     pScreen = (char *)pObject;
     if (*(void **)(pScreen + 0x970) == 0 ||
         *(short *)(pScreen + 0x958) <= 0 ||
@@ -2592,6 +2595,7 @@ GameMainContext *GameMainContext::InitializeMainGameContextThunk(
 // FUNCTION: LEMBALL 0x00402b8f
 void *ConstructLevelGameMode(void *pModeObject, GameMainContext *pMainContext) {
     GameLevelGameMode *pMode;
+    int i;
 
     pMode = (GameLevelGameMode *)pModeObject;
     InitializeRenderQueueNodeBase(pMode);
@@ -2616,6 +2620,9 @@ void *ConstructLevelGameMode(void *pModeObject, GameMainContext *pMainContext) {
     pMode->m_pManagedEntityTable = AllocateVSMemBlock(400);
     if (pMode->m_nManagedEntityCapacity > 0 && pMode->m_pManagedEntityTable != 0) {
         memset(pMode->m_pManagedEntityTable, 0, pMode->m_nManagedEntityCapacity * sizeof(void *));
+    }
+    for (i = 0; i < 4; ++i) {
+        *(void **)((char *)pMode + 0x1d0 + i * 4) = 0;
     }
     pMode->m_anHeaderDwords[0] = (int)(unsigned long)g_pQueuedRenderPointSinkFinalizeThunk;
     pMode->m_pEffStreamVtable = (void **)g_pMode3Vtable;
