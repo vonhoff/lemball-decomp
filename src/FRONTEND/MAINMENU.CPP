@@ -54,8 +54,8 @@ extern int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresentThunk(
     int *pPrimaryContext);
 extern void TogglePrimaryContextDisplayMode(
     ShellUiPrimaryContextShell *pShell);
-extern void SetAudioMusicAndEffectVolumeByte(unsigned char nVolume);
-extern void SetVariantResourceEffectMasterVolume(unsigned char nVolume);
+extern void PASCAL SetAudioMusicAndEffectVolumeByte(unsigned char nVolume);
+extern void PASCAL SetVariantResourceEffectMasterVolume(unsigned char nVolume);
 extern void LEMBALL_FASTCALL NoopPackagedSpriteRenderEntryThunk00402A22(
     void *pUnused);
 extern void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(
