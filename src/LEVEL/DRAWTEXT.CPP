@@ -11,6 +11,7 @@
 #include <string.h>
 
 extern void AppendPointerQueueEntry(void *pQueue, void *pEntry);
+extern void *LoadListResource(int nResourceId);
 
 class LevelGlyphListView {
 public:
@@ -219,6 +220,95 @@ DECOMP_SIZE_ASSERT(LevelPackagedRectQueueEntry, 0x18);
 DECOMP_SIZE_ASSERT(LevelScreenDrawEntry, 0x44);
 DECOMP_SIZE_ASSERT(LevelResourceScreenDrawEntry, 0x4c);
 DECOMP_SIZE_ASSERT(MappedListResourceTable, 0x24);
+
+// FUNCTION: LEMBALL 0x00469e20
+void MappedListResourceTable::Destroy(void)
+{
+    typedef void (LEMBALL_FASTCALL *DeleteProc)(
+        void *pObject, int nUnusedEdx, int fDelete);
+    int i;
+    int cReleased;
+
+    cReleased = 0;
+    for (i = 0; i < m_cSlots08 && cReleased < m_nReserved10; ++i) {
+        if (m_apResources00[i] != 0) {
+            ReleaseTypedResourceObjectReference(m_apResources00[i]);
+            ++cReleased;
+        }
+    }
+    FreeVSMemBlock(m_apResources00);
+    FreeVSMemBlock(m_aiResourceSlots04);
+    if (m_apDrawEntries20 != 0) {
+        for (i = 0; i < m_cDrawEntries14; ++i) {
+            if (m_apDrawEntries20[i] != 0) {
+                ((DeleteProc)(*(void ***)m_apDrawEntries20[i])[0])(
+                    m_apDrawEntries20[i], 0, 1);
+            }
+        }
+        FreeVSMemBlock(m_apDrawEntries20);
+    }
+}
+
+// FUNCTION: LEMBALL 0x00469eb0
+void MappedListResourceTable::LoadListResourceIntoSlot(int nResourceId)
+{
+    int i;
+
+    i = 0;
+    while (m_apResources00[i] != 0) {
+        ++i;
+    }
+    m_apResources00[i] = LoadListResource(nResourceId);
+    m_aiResourceSlots04[nResourceId] = (short)i;
+    if (m_apResources00[i] != 0) {
+        ++m_nReserved10;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00469ef0
+void *MappedListResourceTable::GetMappedResource(int nResourceId)
+{
+    return m_apResources00[m_aiResourceSlots04[nResourceId]];
+}
+
+// FUNCTION: LEMBALL 0x00469f10
+void MappedListResourceTable::ReleaseListResourceSlot(int nResourceId)
+{
+    int i;
+
+    i = m_aiResourceSlots04[nResourceId];
+    if (m_apResources00[i] != 0) {
+        ReleaseTypedResourceObjectReference(m_apResources00[i]);
+        --m_nReserved10;
+    }
+    m_apResources00[i] = 0;
+}
+
+// FUNCTION: LEMBALL 0x00469f50
+void MappedListResourceTable::SubmitRenderEntry(
+    void *pRenderQueue, const short *pPoint,
+    const short *pRelativePoint, int nResourceId,
+    void *pText, unsigned int nDrawFlags, int nDrawValue)
+{
+    LevelScreenDrawEntry *pEntry;
+    void *pResource;
+
+    pEntry = m_apDrawEntries20[m_nCurrentSlot18++];
+    pResource = GetMappedResource(nResourceId);
+    if (pResource == 0) {
+        --m_nCurrentSlot18;
+        return;
+    }
+    if (pRelativePoint[0] != 0 || pRelativePoint[1] != 0) {
+        pEntry->m_nReserved18 = pRelativePoint[0];
+        pEntry->m_nReserved1A = pRelativePoint[1];
+        nDrawFlags |= 0x200;
+    }
+    pEntry->InitializeFromPointAndText(
+        pPoint, pResource, pText,
+        nDrawFlags, nDrawValue);
+    pEntry->AppendToQueue(pRenderQueue);
+}
 // FUNCTION: LEMBALL 0x0046a080
 void LevelResourceScreenDrawEntry::InitializeFromPositionAndText(int x, int y, void *pOwner, void *pText, int nDrawFlags, int nDrawValue) {
     strcpy(m_pszOwnedText44, (const char *)pText);

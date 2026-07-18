@@ -118,6 +118,15 @@ class MappedListResourceTable {
 public:
     MappedListResourceTable(int cResourceIds, int cSlots,
                             int cDrawEntries, int cchOwnedText);
+    void LoadListResourceIntoSlot(int nResourceId);
+    void ReleaseListResourceSlot(int nResourceId);
+    void *GetMappedResource(int nResourceId);
+    void SubmitRenderEntry(void *pRenderQueue, const short *pPoint,
+                           const short *pRelativePoint, int nResourceId,
+                           void *pText, unsigned int nDrawFlags,
+                           int nDrawValue);
+    void Destroy(void);
+    void ResetDrawEntryPool(void) { m_nCurrentSlot18 = 0; }
 
     void **m_apResources00;
     short *m_aiResourceSlots04;
