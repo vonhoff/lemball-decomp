@@ -2387,9 +2387,11 @@ int VsGdiSelectedGraphicsDriverRuntime::InitializeSelectedGraphicsDriver(int nRe
     pRuntime = this;
 
     if (nRequestedDriver < 9) {
-        AppendStatusCString(g_VSGDI_InitDriverPrefix);
-        AppendStatusCString(g_apszGraphicsDriverNames[nRequestedDriver]);
-        AppendStatusCString("\n");
+        g_pStatusOutputStream
+            ->AppendCStringToStream(g_VSGDI_InitDriverPrefix)
+            ->AppendCStringToStream(
+                g_apszGraphicsDriverNames[nRequestedDriver])
+            ->AppendCStringToStream("\n");
     }
 
     nSelectedDriver = nRequestedDriver;
@@ -2475,7 +2477,8 @@ int VsGdiSelectedGraphicsDriverRuntime::InitializeSelectedGraphicsDriver(int nRe
         }
         break;
     default:
-        AppendErrorCString(g_VSGDI_ErrorNoValidDriver);
+        g_pErrorOutputStream->AppendCStringToStream(
+            g_VSGDI_ErrorNoValidDriver);
         return 0;
     }
     }
@@ -2495,7 +2498,8 @@ int VsGdiSelectedGraphicsDriverRuntime::InitializeSelectedGraphicsDriver(int nRe
             }
         }
         if (g_pDisplayState == 0 || !IsDisplayStateReady(g_pDisplayState)) {
-            AppendErrorCString(g_VSGDI_ErrorNoValidDriverAvailable);
+            g_pErrorOutputStream->AppendCStringToStream(
+                g_VSGDI_ErrorNoValidDriverAvailable);
             return 0;
         }
 
@@ -2516,9 +2520,11 @@ int VsGdiSelectedGraphicsDriverRuntime::InitializeSelectedGraphicsDriver(int nRe
     }
 
     if (nRequestedDriver != nSelectedDriver) {
-        AppendStatusCString(g_VSGDI_AutoSelectedPrefix);
-        AppendStatusCString(g_apszGraphicsDriverNames[nSelectedDriver]);
-        AppendStatusCString(g_VSGDI_AutoSelectedSuffix);
+        g_pStatusOutputStream
+            ->AppendCStringToStream(g_VSGDI_AutoSelectedPrefix)
+            ->AppendCStringToStream(
+                g_apszGraphicsDriverNames[nSelectedDriver])
+            ->AppendCStringToStream(g_VSGDI_AutoSelectedSuffix);
     }
 
     if (pRuntime != 0) {
