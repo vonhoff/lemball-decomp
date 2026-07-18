@@ -40,6 +40,8 @@ void SetLevelTileGridDefaultVariantIds(void *pTileGrid,
 void SetLevelTileGridName(void *pTileGrid, const char *pszName);
 void LoadAnimChunkRecords(void *pTimerBlock, const unsigned short *pWords);
 void LEMBALL_FASTCALL AdvanceAnimChunkFrames(void *pTimerBlock);
+void LoadNodeChunkRecords(void *pManager, const unsigned short *pWords,
+                          unsigned int cbPayload, int fReuseState);
 int LEMBALL_FASTCALL GetSelectedLevelNumber(void *pLevelProgressState);
 static int __cdecl CompareLevelTileGridStaticRenderEntrySortKeys(
     const void *pLeft,
@@ -1544,6 +1546,37 @@ static void ResizeLevelTileGrid(void *pTileGrid, int cColumns, int cRows) {
     *(void **)(pGrid + 0x48) = AllocateVSMemBlock((unsigned int)cCells);
 }
 
+static void ComputeLevelTileGridRepeatedColumnCounts(void *pTileGrid) {
+    char *pGrid;
+    int x;
+    int y;
+
+    pGrid = (char *)pTileGrid;
+    for (y = 0; y < *(int *)(pGrid + 0x20); ++y) {
+        for (x = 0; x < *(int *)(pGrid + 0x1c); ++x) {
+            LevelLevelTileCell *pCell =
+                (LevelLevelTileCell *)((char *)*(void **)(pGrid + 0x0c) +
+                    (y * *(int *)(pGrid + 0x10) + x) * 0x0c);
+            int nHeight = (unsigned short)pCell->m_nReserved08;
+            if (x < *(int *)(pGrid + 0x1c) - 1 &&
+                y < *(int *)(pGrid + 0x20) - 1) {
+                LevelLevelTileCell *pRight = pCell + 1;
+                LevelLevelTileCell *pBelow =
+                    pCell + *(int *)(pGrid + 0x10);
+                int nNeighborHeight =
+                    (unsigned short)pRight->m_nReserved08;
+                if ((unsigned short)pBelow->m_nReserved08 < nNeighborHeight) {
+                    nNeighborHeight =
+                        (unsigned short)pBelow->m_nReserved08;
+                }
+                nHeight -= nNeighborHeight;
+            }
+            pCell->m_nReserved0A =
+                (short)((nHeight + 0x0f + ((nHeight + 0x0f) >> 31 & 0x0f)) >> 4);
+        }
+    }
+}
+
 void LoadLevelTileGridChunk(void *pTileGrid, const unsigned short *pWords) {
     int cColumns;
     int cRows;
@@ -1567,6 +1600,7 @@ void LoadLevelTileGridChunk(void *pTileGrid, const unsigned short *pWords) {
             pWords += 3;
         }
     }
+    ComputeLevelTileGridRepeatedColumnCounts(pTileGrid);
 }
 
 void LoadLevelAiChunk(void *pLevelMode, const unsigned short *pWords,
@@ -1702,5 +1736,71 @@ void LEMBALL_FASTCALL AdvanceAnimChunkFrames(void *pTimerBlock) {
         if (*(void **)(pRecord + 8) != 0) {
             *(short *)((char *)*(void **)(pRecord + 8) + 4) = nFrame;
         }
+    }
+}
+
+void LoadNodeChunkRecords(void *pManager, const unsigned short *pWords,
+                          unsigned int cbPayload, int fReuseState) {
+    char *pManagerBytes;
+    char *pRecord;
+    const unsigned short *pEnd;
+    unsigned int cRecords;
+    unsigned int i;
+
+    pManagerBytes = (char *)pManager;
+    cRecords = *pWords++;
+    *(int *)(pManagerBytes + 4) = 0;
+    if (cRecords == 0) {
+        *(void **)pManagerBytes = 0;
+        return;
+    }
+    if (*(void **)pManagerBytes == 0) {
+        int cCapacity = *(int *)(pManagerBytes + 8);
+        char *pAllocation =
+            (char *)AllocateVSMemBlock((unsigned int)cCapacity * 0x14 + 4);
+        if (pAllocation == 0) {
+            return;
+        }
+        *(int *)pAllocation = cCapacity;
+        *(void **)pManagerBytes = pAllocation + 4;
+        for (i = 0; i < (unsigned int)cCapacity; ++i) {
+            pRecord = pAllocation + 4 + i * 0x14;
+            *(int *)(pRecord + 0) = 0xaa55aa55;
+            *(int *)(pRecord + 4) = 0xaa55aa55;
+            *(int *)(pRecord + 8) = 0;
+            *(void **)(pRecord + 0x0c) = 0;
+            *(int *)(pRecord + 0x10) = 0;
+        }
+    }
+    for (i = 0; i < (unsigned int)*(int *)(pManagerBytes + 8); ++i) {
+        *(int *)((char *)*(void **)pManagerBytes + i * 0x14 + 0x10) = 0;
+    }
+    *(int *)(pManagerBytes + 4) = cRecords;
+    if (fReuseState != 0) {
+        return;
+    }
+
+    pEnd = (const unsigned short *)((const char *)pWords + cbPayload - 2);
+    pRecord = (char *)*(void **)pManagerBytes;
+    for (i = 0; i < cRecords && pWords + 3 <= pEnd; ++i) {
+        unsigned int cLinks = pWords[2];
+        *(int *)(pRecord + 0) = (unsigned int)pWords[0] << 12;
+        *(int *)(pRecord + 4) = (unsigned int)pWords[1] << 12;
+        *(int *)(pRecord + 8) = cLinks;
+        *(int *)(pRecord + 0x10) = 0;
+        pWords += 3;
+        if (cLinks != 0 && *(void **)(pRecord + 0x0c) == 0) {
+            *(void **)(pRecord + 0x0c) =
+                AllocateVSMemBlock(cLinks * 8);
+        }
+        while (cLinks-- != 0 && pWords + 2 <= pEnd) {
+            int nLink = *(int *)(pRecord + 0x10);
+            int *pLinks = *(int **)(pRecord + 0x0c);
+            pLinks[nLink * 2] = pWords[0];
+            pLinks[nLink * 2 + 1] = pWords[1];
+            ++*(int *)(pRecord + 0x10);
+            pWords += 2;
+        }
+        pRecord += 0x14;
     }
 }

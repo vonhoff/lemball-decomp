@@ -239,6 +239,10 @@ void LoadLevelChunksForSkillAndLevelThunk(void *pLoaderContext, unsigned int nSk
         } else if (nTag == 0x414e494d) {
             LoadAnimChunkRecords(*(void **)(pLevelMode + 0x194),
                                  (const unsigned short *)(pChunk + 8));
+        } else if (nTag == 0x4e4f4445) {
+            LoadNodeChunkRecords(*(void **)(pLevelMode + 0x17c),
+                (const unsigned short *)(pChunk + 8), cbChunk - 8,
+                fReuseState);
         }
         if (nTag == 0x454e443f) {
             break;

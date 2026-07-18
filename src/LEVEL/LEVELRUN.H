@@ -132,6 +132,8 @@ void SetLevelTileGridDefaultVariantIds(void *pTileGrid,
 void SetLevelTileGridName(void *pTileGrid, const char *pszName);
 void LoadAnimChunkRecords(void *pTimerBlock, const unsigned short *pWords);
 void LEMBALL_FASTCALL AdvanceAnimChunkFrames(void *pTimerBlock);
+void LoadNodeChunkRecords(void *pManager, const unsigned short *pWords,
+                          unsigned int cbPayload, int fReuseState);
 
 extern LevelBallChunkManager *g_pBallChunkManager;
 extern char *g_pszActiveLevelFilePath;
