@@ -737,7 +737,6 @@ public:
     void StartEmbeddedMciWindowPlaybackOnce(void);
     void ResumeEmbeddedMciWindowPlayback(void);
     void UpdateMediaPathFromListResource(int nResourceId);
-    void SelectIntroSequenceMediaPath(void);
 
 private:
     unsigned char m_abReserved00[0x90];
@@ -5331,25 +5330,6 @@ void LEMBALL_FASTCALL UpdateEmbeddedMciMediaPath(void *pOwner,
                                                  int nResourceId) {
     ((VsGdiAnimWindowOwner *)pOwner)
         ->UpdateMediaPathFromListResource(nResourceId);
-}
-
-void VsGdiAnimWindowOwner::SelectIntroSequenceMediaPath(void) {
-    int nMode;
-
-    if (*(int *)((char *)this + 0xc4) == 0) {
-        UpdateMediaPathFromListResource(0x116);
-        return;
-    }
-    nMode = *(int *)((char *)g_pLevelProgressState + 8);
-    if (nMode == 0 || nMode == 3) {
-        UpdateMediaPathFromListResource(0x117);
-    } else if (nMode == 1 || nMode == 2) {
-        UpdateMediaPathFromListResource(0x118);
-    }
-}
-
-void LEMBALL_FASTCALL SelectIntroSequenceMediaPath(void *pOwner) {
-    ((VsGdiAnimWindowOwner *)pOwner)->SelectIntroSequenceMediaPath();
 }
 
 // FUNCTION: LEMBALL 0x00472290

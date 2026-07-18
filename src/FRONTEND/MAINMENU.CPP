@@ -102,6 +102,11 @@ extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
     void *pOwner, int nUnusedEdx, void *pChild);
 extern void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen);
 
+class VsGdiAnimWindowOwner {
+public:
+    void UpdateMediaPathFromListResource(int nResourceId);
+};
+
 // GLOBAL: LEMBALL 0x004a7b64
 int g_nQueuedVariantChildSlotManagerModeSelectedResourceId;
 
@@ -735,7 +740,6 @@ int g_nOptionsEffectsSliderValue;
 // GLOBAL: LEMBALL 0x004a7774
 int g_nOptionsMusicSliderValue;
 
-static void *g_GAME_SelectFirstVariantFrameVtable[7];
 
 static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(
     void *pObject);
@@ -1546,7 +1550,9 @@ void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
     pScreen->m_pPrimaryContext84 = pPrimaryContext;
     pScreen->m_pRenderContext88 = pRenderContext;
     pScreen->m_pFrameSelectorVtable350 =
-        g_GAME_SelectFirstVariantFrameVtable;
+        g_MenuSelectorFrameSelectorCtorVtable;
+    pScreen->m_pFrameSelectorVtable350 =
+        g_MenuSelectorCurrentFrameCallbackVtable;
     *(void ***)pScreen->m_abRenderQueueNode04 =
         g_GAME_MainMenuQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
@@ -2291,6 +2297,29 @@ void GameIntroSequenceMediaState::ConfigureOwner(
     m_pPrimaryContextC0 = pPrimaryContext;
 }
 
+// FUNCTION: LEMBALL 0x004477e0
+void LEMBALL_FASTCALL SelectIntroSequenceMediaPath(void *pOwner) {
+    int nMode;
+    VsGdiAnimWindowOwner *pMediaOwner;
+
+    pMediaOwner = (VsGdiAnimWindowOwner *)pOwner;
+    if (*(int *)((char *)pOwner + 0xc4) == 0) {
+        pMediaOwner->UpdateMediaPathFromListResource(0x116);
+        return;
+    }
+    nMode = *(int *)((char *)g_pLevelProgressState + 8);
+    switch (nMode) {
+    case 0:
+    case 3:
+        pMediaOwner->UpdateMediaPathFromListResource(0x117);
+        break;
+    case 1:
+    case 2:
+        pMediaOwner->UpdateMediaPathFromListResource(0x118);
+        break;
+    }
+}
+
 // FUNCTION: LEMBALL 0x00448300
 static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject) {
     GameMainMenuScreenView *pScreen;
@@ -2839,6 +2868,14 @@ void *LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(
         pScreen->m_abPrimaryBitmapEntry398);
     InitializePackagedSpriteRenderEntryThunk(
         pScreen->m_abSecondaryBitmapEntry3E0);
+    *(short *)((char *)pScreen + 0x4e8) = 0;
+    *(short *)((char *)pScreen + 0x4ea) = 0;
+    *(short *)((char *)pScreen + 0x4ec) = 0;
+    *(short *)((char *)pScreen + 0x4ee) = 0;
+    *(short *)((char *)pScreen + 0x4f0) = 0;
+    *(short *)((char *)pScreen + 0x4f2) = 0;
+    *(short *)((char *)pScreen + 0x4f4) = 0;
+    *(short *)((char *)pScreen + 0x4f6) = 0;
     pMediaOwner = pScreen->m_abMediaOwner520;
     ConstructResourceGeometryHelperWindowOwner(pMediaOwner);
     InitializePaintballSequenceMediaOwnerVtable(pMediaOwner);
@@ -2869,6 +2906,7 @@ void *LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(
     pScreen->m_fDrawFrameA8 = 1;
     pScreen->m_fTileBackgroundAC = 1;
     pScreen->m_fDrawForegroundB0 = 1;
+    pScreen->m_pszPassword4F8 = FormatCurrentLevelPassword();
     ActivateFramedScreenBase(pScreen);
     return pScreen;
 }
@@ -3032,6 +3070,13 @@ static void LEMBALL_FASTCALL UpdatePaintballSequenceScreen(void *pObject) {
             pScreen->m_pPrimaryContext84, "Paintball Sequence");
         StartEmbeddedMciWindowPlaybackOnce(pScreen->m_abMediaOwner520);
         pScreen->m_fMediaStarted5FC = 1;
+    }
+    if ((pScreen->m_fMediaStarted5FC != 0 ||
+         g_fSkipStartupSequence != 0) &&
+        g_fStartupTestAllLevels != 0 &&
+        (*(int *)((char *)g_pLevelProgressState + 8) != 3 ||
+         *(int *)((char *)g_pLevelProgressState + 0x48) != 0x15)) {
+        FinishPaintballSequence(pScreen, 4);
     }
     if (pScreen->m_fEffectStarted51C == 0) {
         if (g_pVariantResourceEntryManager != 0) {
