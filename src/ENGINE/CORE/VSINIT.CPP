@@ -227,7 +227,7 @@ static VsInitFixedBufferStream *g_pStartupFixedBufferStream = 0;
 static VsInitFixedBufferStream *g_pStatusFixedBufferStream = 0;
 static VsInitFixedBufferStream *g_pErrorFixedBufferStream = 0;
 // GLOBAL: LEMBALL 0x004a97b8
-static VsInitFormattedOutputStream *g_pStartupOutputStream;
+VsInitFormattedOutputStream *g_pStartupOutputStream;
 // GLOBAL: LEMBALL 0x004a97bc
 VsInitFormattedOutputStream *g_pStatusOutputStream;
 // GLOBAL: LEMBALL 0x004a93a8

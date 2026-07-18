@@ -118,6 +118,7 @@ void LeaveObjectCriticalSection(void *pObject);
 extern int g_fStartupNoWait;
 extern VsInitFormattedOutputStream *g_pStatusOutputStream;
 extern VsInitFormattedOutputStream *g_pErrorOutputStream;
+extern VsInitFormattedOutputStream *g_pStartupOutputStream;
 extern char g_abProcessCurrentDirectoryBuffer[0x100];
 struct VsInitResourceTypeTable;
 extern VsInitResourceTypeTable *g_pPrimaryResourceTypeTable;

@@ -3034,18 +3034,17 @@ int LEMBALL_FASTCALL InitializeDirectSoundEffectDevice(
     VsSoundDirectSoundBufferDesc BufferDesc;
     VsSoundWaveFormat *pWaveFormat;
     LONG hResult;
-    const char *pszError;
-    VsInitFormattedOutputStream *pStream;
 
     hResult = ((VsSoundDirectSoundCreateProc)
         *(FARPROC *)((char *)pBackend + 8))(
             0, &g_pDirectSoundDevice, 0);
     if (hResult != 0) {
-        pszError = LookupDirectSoundErrorString((unsigned int)hResult & 0xfff);
-        pStream = AppendCStringToStream(
-            g_pErrorOutputStream, "Direct Sound Create failed: ");
-        pStream = AppendCStringToStream(pStream, pszError);
-        AppendCStringToStream(pStream, "\n");
+        g_pErrorOutputStream
+            ->AppendCStringToStream("Direct Sound Create failed: ")
+            ->AppendCStringToStream(
+                LookupDirectSoundErrorString(
+                    (unsigned int)hResult & 0xfff))
+            ->AppendCStringToStream("\n");
         *(int *)((char *)pBackend + 0x20) = 0;
         return 0;
     }
@@ -3059,12 +3058,13 @@ int LEMBALL_FASTCALL InitializeDirectSoundEffectDevice(
             g_pDirectSoundDevice,
             *(HWND *)((char *)pBackend + 0x10), 2);
     if (hResult != 0) {
-        pszError = LookupDirectSoundErrorString((unsigned int)hResult & 0xfff);
-        pStream = AppendCStringToStream(
-            g_pErrorOutputStream,
-            "Effect Buffer Set Cooperative Level failed: ");
-        pStream = AppendCStringToStream(pStream, pszError);
-        AppendCStringToStream(pStream, "\n");
+        g_pErrorOutputStream
+            ->AppendCStringToStream(
+                "Effect Buffer Set Cooperative Level failed: ")
+            ->AppendCStringToStream(
+                LookupDirectSoundErrorString(
+                    (unsigned int)hResult & 0xfff))
+            ->AppendCStringToStream("\n");
         *(int *)((char *)pBackend + 0x20) = 0;
         return 0;
     }
@@ -3075,11 +3075,12 @@ int LEMBALL_FASTCALL InitializeDirectSoundEffectDevice(
             g_pDirectSoundDevice, &BufferDesc,
             &g_pDirectSoundPrimaryBuffer, 0);
     if (hResult != 0) {
-        pszError = LookupDirectSoundErrorString((unsigned int)hResult & 0xfff);
-        pStream = AppendCStringToStream(
-            g_pErrorOutputStream, "Primary Sound Buffer failed: ");
-        pStream = AppendCStringToStream(pStream, pszError);
-        AppendCStringToStream(pStream, "\n");
+        g_pErrorOutputStream
+            ->AppendCStringToStream("Primary Sound Buffer failed: ")
+            ->AppendCStringToStream(
+                LookupDirectSoundErrorString(
+                    (unsigned int)hResult & 0xfff))
+            ->AppendCStringToStream("\n");
         *(int *)((char *)pBackend + 0x20) = 0;
         return 0;
     }
@@ -3090,23 +3091,29 @@ int LEMBALL_FASTCALL InitializeDirectSoundEffectDevice(
         VsSoundDirectSoundSetFormatProc)(
             g_pDirectSoundPrimaryBuffer, pWaveFormat);
     if (hResult != 0) {
-        pszError = LookupDirectSoundErrorString((unsigned int)hResult & 0xfff);
-        AppendStartupCString("Primary Buffer Set Format failed: ");
-        AppendStartupCString(pszError);
-        AppendStartupCString("\n");
-        AppendStartupCString("Trying 22Khz 8 bit...\n");
+        g_pStartupOutputStream
+            ->AppendCStringToStream("Primary Buffer Set Format failed: ")
+            ->AppendCStringToStream(
+                LookupDirectSoundErrorString(
+                    (unsigned int)hResult & 0xfff))
+            ->AppendCStringToStream("\n");
+        g_pStartupOutputStream->AppendCStringToStream(
+            "Trying 22Khz 8 bit...\n");
         pWaveFormat->wBitsPerSample = 8;
         hResult = VsSoundDIRECTSOUND_METHOD(
             g_pDirectSoundPrimaryBuffer, 14,
             VsSoundDirectSoundSetFormatProc)(
                 g_pDirectSoundPrimaryBuffer, pWaveFormat);
         if (hResult != 0) {
-            pszError = LookupDirectSoundErrorString(
-                (unsigned int)hResult & 0xfff);
-            AppendStartupCString("Primary Buffer Set Format failed: ");
-            AppendStartupCString(pszError);
-            AppendStartupCString("\n");
-            AppendStartupCString("Trying 11khz 16 bit...\n");
+            g_pStartupOutputStream
+                ->AppendCStringToStream(
+                    "Primary Buffer Set Format failed: ")
+                ->AppendCStringToStream(
+                    LookupDirectSoundErrorString(
+                        (unsigned int)hResult & 0xfff))
+                ->AppendCStringToStream("\n");
+            g_pStartupOutputStream->AppendCStringToStream(
+                "Trying 11khz 16 bit...\n");
             pWaveFormat->nSamplesPerSec = 11025;
             pWaveFormat->wBitsPerSample = 16;
             hResult = VsSoundDIRECTSOUND_METHOD(
@@ -3114,27 +3121,29 @@ int LEMBALL_FASTCALL InitializeDirectSoundEffectDevice(
                 VsSoundDirectSoundSetFormatProc)(
                     g_pDirectSoundPrimaryBuffer, pWaveFormat);
             if (hResult != 0) {
-                pszError = LookupDirectSoundErrorString(
-                    (unsigned int)hResult & 0xfff);
-                AppendStartupCString("Primary Buffer Set Format failed: ");
-                AppendStartupCString(pszError);
-                AppendStartupCString("\n");
-                AppendStartupCString("Trying 11khz 8 bit...\n");
+                g_pStartupOutputStream
+                    ->AppendCStringToStream(
+                        "Primary Buffer Set Format failed: ")
+                    ->AppendCStringToStream(
+                        LookupDirectSoundErrorString(
+                            (unsigned int)hResult & 0xfff))
+                    ->AppendCStringToStream("\n");
+                g_pStartupOutputStream->AppendCStringToStream(
+                    "Trying 11khz 8 bit...\n");
                 pWaveFormat->wBitsPerSample = 8;
                 hResult = VsSoundDIRECTSOUND_METHOD(
                     g_pDirectSoundPrimaryBuffer, 14,
                     VsSoundDirectSoundSetFormatProc)(
                         g_pDirectSoundPrimaryBuffer, pWaveFormat);
                 if (hResult != 0) {
-                    pszError = LookupDirectSoundErrorString(
-                        (unsigned int)hResult & 0xfff);
-                    pStream = AppendCStringToStream(
-                        g_pErrorOutputStream,
-                        "Primary Buffer Set Format failed: ");
-                    pStream = AppendCStringToStream(pStream, pszError);
-                    AppendCStringToStream(pStream, "\n");
-                    AppendCStringToStream(
-                        g_pErrorOutputStream,
+                    g_pErrorOutputStream
+                        ->AppendCStringToStream(
+                            "Primary Buffer Set Format failed: ")
+                        ->AppendCStringToStream(
+                            LookupDirectSoundErrorString(
+                                (unsigned int)hResult & 0xfff))
+                        ->AppendCStringToStream("\n");
+                    g_pErrorOutputStream->AppendCStringToStream(
                         "Exausted iterations - cannot play effects.\n");
                     return 0;
                 }
@@ -3147,11 +3156,12 @@ int LEMBALL_FASTCALL InitializeDirectSoundEffectDevice(
         VsSoundDirectSoundPlayProc)(
             g_pDirectSoundPrimaryBuffer, 0, 0, 1);
     if (hResult != 0) {
-        pszError = LookupDirectSoundErrorString((unsigned int)hResult & 0xfff);
-        pStream = AppendCStringToStream(
-            g_pErrorOutputStream, "Primary Sound Buffer play failed: ");
-        pStream = AppendCStringToStream(pStream, pszError);
-        AppendCStringToStream(pStream, "\n");
+        g_pErrorOutputStream
+            ->AppendCStringToStream("Primary Sound Buffer play: ")
+            ->AppendCStringToStream(
+                LookupDirectSoundErrorString(
+                    (unsigned int)hResult & 0xfff))
+            ->AppendCStringToStream("\n");
         *(int *)((char *)pBackend + 0x20) = 0;
         return 0;
     }
