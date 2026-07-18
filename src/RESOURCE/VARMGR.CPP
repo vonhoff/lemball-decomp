@@ -112,6 +112,7 @@ static int g_GAME_MainGameVariantPaletteResourceIds[2] = {0x10a, 0x102};
 
 // GLOBAL: LEMBALL 0x0049f410
 static int g_GAME_MainGameVariantStringResourceIds[1] = {0x100};
+// GLOBAL: LEMBALL 0x0049eb88
 static int g_GAME_VariantResourceEntryEffectTable[44][3] = {
     {1, 532, 262153}, {2, 544, 262153}, {3, 543, 262243}, {4, 537, 262153},
     {5, 521, 9}, {6, 522, 9}, {7, 523, 458761}, {8, 524, 9},
@@ -181,8 +182,8 @@ static void VariantResourceBundleNoop(void) {
 // FUNCTION: LEMBALL 0x00439a70
 void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerBody(void *pManager) {
     int *pVariantManager;
-    int *pEntry;
     int i;
+    int *pEntry;
 
     pVariantManager = (int *)pManager;
     pVariantManager[0x19] = 0;
@@ -200,8 +201,8 @@ void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerBody(void *pManager) 
     }
     ((GameVariantResourceEntryManager *)pManager)
         ->SetVariantResourceEffectsEnabledThunk(1);
-    i = 0x32;
     pEntry = pVariantManager + 0x1b;
+    i = 0x32;
     do {
         *pEntry = -1;
         pEntry[-1] = 0;
