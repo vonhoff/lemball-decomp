@@ -637,6 +637,9 @@ extern void *LoadZrleOnlyListResource(int nResourceId);
 extern void *LoadZrleResource(int nResourceId);
 extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void *pResourceObject);
 extern void *g_pSharedRenderDispatchQueue;
+extern void *LEMBALL_FASTCALL ConstructAlignedZrleChildOverlayFromPoint(
+    void *pObject, int nUnusedEdx, const VS_XYPair *pPoint,
+    void *pRenderOwner, int nResourceId, int fAlignment);
 
 void LEMBALL_FASTCALL SetStatusIndicatorActive(
     void *pObject, int nUnused, int fActive);
@@ -1371,6 +1374,22 @@ void *ConstructLevelScreenActionPanelResources(
         (nContextWidth / nScale - *(short *)(pPanel + 0x50)) / 2);
     *(short *)(pPanel + 0x56) = (short)(
         nContextHeight / nScale - *(short *)(pPanel + 0x4e));
+    {
+        VS_XYPair Point;
+        void *pOverlay;
+
+        Point.m_x = *(short *)(pPanel + 0x54);
+        Point.m_y = *(short *)(pPanel + 0x56);
+        pOverlay = AllocateVSMemBlock(0x13c);
+        if (pOverlay != 0) {
+            ConstructAlignedZrleChildOverlayFromPoint(
+                pOverlay, 0, &Point, pPrimaryContext, 0x2d, 3);
+            *(void **)((char *)pOverlay + 0x134) = pPanel;
+            *(int *)((char *)pOverlay + 0x138) = 0;
+            *(int *)((char *)pOverlay + 0xb8) = 1;
+        }
+        *(void **)(pPanel + 0x2c) = pOverlay;
+    }
     if (g_pSharedRenderDispatchQueue != 0) {
         ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
             ->RegisterOrderedRenderDispatchClient(pPanel, 0);
@@ -1386,6 +1405,16 @@ void DestroyLevelScreenActionPanelResources(void *pObject) {
     if (g_pSharedRenderDispatchQueue != 0) {
         ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
             ->UnregisterOrderedRenderDispatchClient(pPanel, 0);
+    }
+    if (*(void **)(pPanel + 0x2c) != 0) {
+        typedef void (LEMBALL_FASTCALL *DeleteProc)(
+            void *pObject, int nUnusedEdx, unsigned int fDelete);
+        void *pOverlay;
+
+        pOverlay = *(void **)(pPanel + 0x2c);
+        ((DeleteProc)(*(void ***)((char *)pOverlay + 0x90))[0])(
+            (char *)pOverlay + 0x90, 0, 1);
+        *(void **)(pPanel + 0x2c) = 0;
     }
     for (i = 0x3c; i >= 0x30; i -= 4) {
         if (*(void **)(pPanel + i) != 0) {

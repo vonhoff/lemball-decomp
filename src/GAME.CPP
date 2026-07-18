@@ -1364,6 +1364,36 @@ static int LEMBALL_FASTCALL GetLevelScreenTransitionStatus(void *pObject) {
     return *(int *)((char *)pObject + 0xa78);
 }
 
+static void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void *pObject) {
+    typedef void (LEMBALL_FASTCALL *DrawProc)(void *pObject);
+    char *pScreen;
+    void *pManager;
+    void *pPanel;
+    void *pOverlay;
+
+    pScreen = (char *)pObject;
+    if (*(void **)(pScreen + 0x970) == 0 ||
+        *(short *)(pScreen + 0x958) <= 0 ||
+        *(short *)(pScreen + 0x95a) <= 0) {
+        return;
+    }
+    pManager = *(void **)(pScreen + 0xa40);
+    if (pManager == 0 || *(int *)((char *)pManager + 0x84) == 0) {
+        return;
+    }
+    ++*(int *)(pScreen + 0x190);
+    *(short *)(pScreen + 0x166) =
+        (short)(g_nLevelFrameClockTimeMs / 100);
+    pPanel = *(void **)(pScreen + 0x97c);
+    if (pPanel == 0) {
+        return;
+    }
+    pOverlay = *(void **)((char *)pPanel + 0x2c);
+    if (pOverlay != 0) {
+        ((DrawProc)(*(void ***)pOverlay)[47])(pOverlay);
+    }
+}
+
 static void ActivateReconstructedLevelScreen(char *pScreen) {
     GamePrimaryContext *pPrimaryContext;
     char *pLevelMode;
@@ -1623,6 +1653,8 @@ void *GameScreenObject::ConstructLevelScreen(void *pPrimaryContext,
             (void *)DeleteReconstructedLevelScreen;
         g_GAME_LevelScreenVtableSlots[1] =
             (void *)DestroyReconstructedLevelScreen;
+        g_GAME_LevelScreenVtableSlots[2] =
+            (void *)DrawReconstructedLevelScreen;
         g_GAME_LevelScreenVtableSlots[7] =
             (void *)UpdateReconstructedLevelScreen;
         g_GAME_LevelScreenVtableSlots[10] =
