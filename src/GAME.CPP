@@ -1390,6 +1390,8 @@ void *GameScreenObject::ConstructIntroSequenceScreen(void *pPrimaryContext,
     ConstructFramedScreenBaseFields(
         pScreen, 0, pPrimaryContext, pWindowOwnerContext, paRect,
         1, 0, 0, 0, 0, 0);
+    *(void ***)(pScreen + 0x3a0) =
+        g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage + 4;
     *(unsigned short *)(pScreen + 0x3a4) = 0;
     *(unsigned short *)(pScreen + 0x3a6) = 0;
     *(unsigned short *)(pScreen + 0x3a8) = 0;
