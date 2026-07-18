@@ -2523,7 +2523,7 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
     int *pEntryArray;
     int nPaletteResourceId;
     const int *panButtonResources;
-    GameMenuSelectorManager *pButtonManager;
+    void *pButtonManager;
     int i;
 
     pScreen = (GameNetworkLobbyScreenView *)pObject;
@@ -2581,31 +2581,30 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
     panButtonResources = pScreen->m_fCompactLayout32C != 0
         ? g_GAME_NetworkLobbyButtonResourcesCompact
         : g_GAME_NetworkLobbyButtonResourcesStandard;
-    pButtonManager = (GameMenuSelectorManager *)AllocateVSMemBlock(
-        sizeof(GameMenuSelectorManager));
+    pButtonManager = AllocateVSMemBlock(0x14c);
     if (pButtonManager != 0) {
-        ConstructMenuSelectorManager(
+        ConstructQueuedVariantChildSlotManager(
             pButtonManager, 0, pScreen->m_pPrimaryContext84,
             pScreen->m_pRenderContext88, 4,
-            pScreen->m_fCompactLayout32C);
-        pScreen->m_pSelectorManager334 = pButtonManager;
-        AppendMenuSelectorChild(
+            pScreen->m_fCompactLayout32C, 0);
+        pScreen->m_pQueuedVariantManager338 = pButtonManager;
+        AppendQueuedVariantChildSlot(
             pButtonManager, 0,
             pScreen->m_pLayout42C[0], pScreen->m_pLayout42C[1],
             panButtonResources, 1, 0, 0, 0,
             &pScreen->m_nButtonSelection434, (int)0xacef000cU);
-        AppendMenuSelectorChild(
+        AppendQueuedVariantChildSlot(
             pButtonManager, 0,
             pScreen->m_pLayout42C[2], pScreen->m_pLayout42C[3],
             panButtonResources + 1, 1, 0, 0, 0,
             &pScreen->m_nButtonSelection434, (int)0xacef000dU);
-        AppendMenuSelectorChild(
+        AppendQueuedVariantChildSlot(
             pButtonManager, 0,
             pScreen->m_pLayout42C[4], pScreen->m_pLayout42C[5],
             panButtonResources + 2, 1, 0, 0, 0,
             &pScreen->m_nButtonSelection434, (int)0xacef000eU);
-        InitializeMenuSelectorCurrentState(pButtonManager, 0, 0);
-        InitializeMenuSelectorChildContext(pButtonManager);
+        SelectQueuedVariantChildSlot(pButtonManager, 0, 0);
+        InitializeQueuedVariantChildContext(pButtonManager);
     }
     pScreen->m_fDrawFrameA8 = 1;
     pScreen->m_fTileBackgroundAC = 1;
@@ -2916,10 +2915,11 @@ static void DestroyNetworkLobbyScreen(
     *(void ***)pScreen->m_abVariantRenderManager14 =
         g_GAME_MainMenuCallbackVtable;
     g_pActiveNetworkLobbyScreen = 0;
-    if (pScreen->m_pSelectorManager334 != 0) {
-        ((GameMainMenuSelectorManagerInterface *)
-             pScreen->m_pSelectorManager334)->Delete((void *)1);
-        pScreen->m_pSelectorManager334 = 0;
+    if (pScreen->m_pQueuedVariantManager338 != 0) {
+        DestroyQueuedVariantChildSlotManager(
+            pScreen->m_pQueuedVariantManager338);
+        FreeVSMemBlock(pScreen->m_pQueuedVariantManager338);
+        pScreen->m_pQueuedVariantManager338 = 0;
     }
     if (pScreen->m_pTextBuffer398 != 0) {
         GameBoundedTextBuffer *pBuffer;

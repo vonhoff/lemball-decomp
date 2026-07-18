@@ -164,4 +164,20 @@ void *LEMBALL_FASTCALL ConstructAlignedZrleChildOverlayFromPoint(
     void *pRenderOwner, int nResourceId, int fAlignment);
 void LEMBALL_FASTCALL DestroyAlignedZrleChildOverlay(void *pChildOwner);
 
+void *LEMBALL_FASTCALL ConstructQueuedVariantChildSlotManager(
+    void *pManager, int nUnusedEdx, void *pRenderOwner,
+    void *pRenderContext, int nChildCapacity,
+    int nLayoutMode, int nNavigationMode);
+void LEMBALL_FASTCALL AppendQueuedVariantChildSlot(
+    void *pManager, int nUnusedEdx, int x, int y,
+    const int *panResourceIds, int nActivationMode,
+    int nFirstResource, int nLastResource, int nReserved,
+    int *pSelection, int nCommand);
+void LEMBALL_FASTCALL SelectQueuedVariantChildSlot(
+    void *pManager, int nUnusedEdx, int iChild);
+void LEMBALL_FASTCALL InitializeQueuedVariantChildContext(
+    void *pManager);
+void LEMBALL_FASTCALL DestroyQueuedVariantChildSlotManager(
+    void *pManager);
+
 #endif

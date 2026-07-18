@@ -9,6 +9,8 @@
 #include "ENGINE/GDI/VSGDI.H"
 #include "LEVEL/DRAWTEXT.H"
 
+#include <string.h>
+
 DECOMP_SIZE_ASSERT(GameMenuSelectorEvent, 0x1c);
 DECOMP_SIZE_ASSERT(GameMenuSelectorMetadata, 0x20);
 DECOMP_SIZE_ASSERT(GameProgressiveVariantFrameSelector, 0x1c);
@@ -1144,6 +1146,373 @@ void LEMBALL_FASTCALL InitializeMenuSelectorChildContext(
 void LEMBALL_FASTCALL InitializeMenuSelectorChildContextThunk(
     GameMenuSelectorManager *pManager) {
     InitializeMenuSelectorChildContext(pManager);
+}
+
+struct GameQueuedVariantRangeEntry {
+    void **m_pVtable00;
+    int m_nQueueTag04;
+    int m_nQueueReserved08;
+    int m_cUnhandledEvents0C;
+    short m_nReserved10;
+    short m_nReserved12;
+    short m_nReserved14;
+    short m_nReserved16;
+    int m_x18;
+    int m_y1C;
+    void *m_pRenderContext20;
+    void *m_pRenderOwner24;
+    int m_nActivationMode28;
+    int m_nToken2C;
+    int m_nCommand30;
+    int m_cResources34;
+    int m_nLastResource38;
+    int m_nFirstResource3C;
+    int m_nSelectedResource40;
+    int *m_pSelection44;
+    const int *m_panResourceIds48;
+    void *m_pOverlay4C;
+    void **m_ppLoadedResources50;
+    int m_fEnabled54;
+};
+
+struct GameQueuedVariantSlotRecord {
+    int m_fActive00;
+    int m_x04;
+    int m_y08;
+    int m_nToken0C;
+};
+
+struct GameQueuedVariantChildSlotManager {
+    void **m_pVtable00;
+    int m_nQueueTag04;
+    int m_nQueueReserved08;
+    int m_cUnhandledEvents0C;
+    unsigned char m_abVariantRenderManager10[0x70];
+    int m_cChildren80;
+    GameMenuSelectorEvent m_ActionEvent84;
+    int m_nCurrentChildA0;
+    int m_nReservedA4;
+    int m_iSelectedChildA8;
+    GameQueuedVariantRangeEntry *m_apChildrenAC[4];
+    GameQueuedVariantSlotRecord m_aSlotsBC[4];
+    unsigned char m_abPointSinkFC[0x10];
+    void *m_pRenderContext10C;
+    void *m_pRenderOwner110;
+    int m_nNextToken114;
+    unsigned char m_abCallback118[0x0c];
+    int m_nReserved124;
+    void *m_pChildContext128;
+    void *m_pChildRenderContext12C;
+    int m_nLayoutMode130;
+    int m_nNavigationMode134;
+    int m_fCompactLayout138;
+    int m_dwSelectionStart13C;
+    int m_dwSelectionEnd140;
+    int m_fInputEnabled144;
+    int m_fChildrenEnabled148;
+};
+
+typedef char GameQueuedVariantRangeEntry_size_must_be_0x58[
+    sizeof(GameQueuedVariantRangeEntry) == 0x58 ? 1 : -1];
+typedef char GameQueuedVariantChildSlotManager_size_must_be_0x14c[
+    sizeof(GameQueuedVariantChildSlotManager) == 0x14c ? 1 : -1];
+
+static int LEMBALL_FASTCALL HandleQueuedVariantRangeEntryEvent(
+    GameQueuedVariantRangeEntry *pEntry, int,
+    GameMenuSelectorEvent *pEvent);
+static int LEMBALL_FASTCALL HandleQueuedVariantChildSlotManagerEvent(
+    GameQueuedVariantChildSlotManager *pManager, int,
+    GameMenuSelectorEvent *pEvent);
+static void *LEMBALL_FASTCALL DeleteQueuedVariantRangeEntry(
+    GameQueuedVariantRangeEntry *pEntry, int, int fDelete);
+static void *LEMBALL_FASTCALL DeleteQueuedVariantChildSlotManager(
+    GameQueuedVariantChildSlotManager *pManager, int, int fDelete);
+
+static void *g_QueuedVariantRangeEntryVtable[3] = {
+    (void *)InitializeNonZrleVariantRenderEntry,
+    (void *)DeleteQueuedVariantRangeEntry,
+    (void *)HandleQueuedVariantRangeEntryEvent
+};
+static void *g_QueuedVariantChildSlotManagerVtable[3] = {
+    (void *)InitializeNonZrleVariantRenderEntry,
+    (void *)DeleteQueuedVariantChildSlotManager,
+    (void *)HandleQueuedVariantChildSlotManagerEvent
+};
+
+static void QueueQueuedVariantCommand(int nCommand) {
+    typedef void (LEMBALL_FASTCALL *QueueProc)(void *, int, void *);
+    GameMenuSelectorEvent Event;
+
+    Event.m_nType00 = 0x0c;
+    Event.m_nReserved02 = 0;
+    Event.m_dwTimestamp04 = (int)timeGetTime();
+    Event.m_nPayload08 = nCommand;
+    Event.m_nPayload0C = 0;
+    Event.m_nPayload10 = 0;
+    Event.m_nPayload14 = 0;
+    Event.m_nPayload18 = 0;
+    ((QueueProc)(*(void ***)g_pSharedRenderDispatchQueue)[2])(
+        g_pSharedRenderDispatchQueue, 0, &Event);
+}
+
+static void DestroyQueuedVariantRangeEntryResources(
+    GameQueuedVariantRangeEntry *pEntry) {
+    typedef void (LEMBALL_FASTCALL *DeleteOverlayProc)(
+        void *, int, int);
+    int i;
+
+    if (pEntry->m_pOverlay4C != 0) {
+        void *pDelete = (char *)pEntry->m_pOverlay4C + 0x90;
+        ((DeleteOverlayProc)(*(void ***)pDelete)[0])(pDelete, 0, 1);
+        pEntry->m_pOverlay4C = 0;
+    }
+    if (pEntry->m_ppLoadedResources50 != 0) {
+        for (i = 0; i < pEntry->m_cResources34; ++i) {
+            ReleaseTypedResourceObjectReference(
+                pEntry->m_ppLoadedResources50[i]);
+        }
+        FreeVSMemBlock(pEntry->m_ppLoadedResources50);
+        pEntry->m_ppLoadedResources50 = 0;
+    }
+}
+
+static void DestroyQueuedVariantRangeEntry(
+    GameQueuedVariantRangeEntry *pEntry) {
+    pEntry->m_pVtable00 = g_QueuedVariantRangeEntryVtable;
+    ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+        ->UnregisterOrderedRenderDispatchClient(pEntry, 0);
+    DestroyQueuedVariantRangeEntryResources(pEntry);
+    pEntry->m_pVtable00 = g_pNonZrleVariantRenderEntryInitializeVtable;
+}
+
+static void *LEMBALL_FASTCALL DeleteQueuedVariantRangeEntry(
+    GameQueuedVariantRangeEntry *pEntry, int, int fDelete) {
+    DestroyQueuedVariantRangeEntry(pEntry);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pEntry);
+    }
+    return pEntry;
+}
+
+static int LEMBALL_FASTCALL HandleQueuedVariantRangeEntryEvent(
+    GameQueuedVariantRangeEntry *pEntry, int,
+    GameMenuSelectorEvent *pEvent) {
+    if (pEvent->m_nPayload08 != pEntry->m_nToken2C) {
+        return 0;
+    }
+    if (pEvent->m_nType00 == 0x0b) {
+        ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
+            ->PlayVariantResourceEffect(0x25);
+        return 0;
+    }
+    if (pEvent->m_nType00 == 0x0c &&
+        pEntry->m_nActivationMode28 == 1) {
+        QueueQueuedVariantCommand(pEntry->m_nCommand30);
+    }
+    return 0;
+}
+
+static GameQueuedVariantRangeEntry *ConstructQueuedVariantRangeEntry(
+    GameQueuedVariantRangeEntry *pEntry, void *pRenderOwner,
+    void *pRenderContext, int x, int y,
+    const int *panResourceIds, int nActivationMode,
+    int nFirstResource, int nLastResource, int nToken,
+    int *pSelection, int nCommand) {
+    VS_XYPair Point;
+    int i;
+
+    InitializeRenderQueueNodeBase(pEntry);
+    pEntry->m_pVtable00 = g_QueuedVariantRangeEntryVtable;
+    pEntry->m_nReserved10 = 0;
+    pEntry->m_nReserved12 = 0;
+    pEntry->m_nReserved14 = 0;
+    pEntry->m_nReserved16 = 0;
+    pEntry->m_x18 = x;
+    pEntry->m_y1C = y;
+    pEntry->m_pRenderContext20 = pRenderContext;
+    pEntry->m_pRenderOwner24 = pRenderOwner;
+    pEntry->m_nActivationMode28 = nActivationMode;
+    pEntry->m_nToken2C = nToken;
+    pEntry->m_nCommand30 = nCommand;
+    pEntry->m_cResources34 = nLastResource - nFirstResource + 1;
+    if (pEntry->m_cResources34 < 2) pEntry->m_cResources34 = 1;
+    pEntry->m_nLastResource38 = nLastResource;
+    pEntry->m_nFirstResource3C = nFirstResource;
+    pEntry->m_nSelectedResource40 = pSelection == 0 ? 0 : *pSelection;
+    pEntry->m_pSelection44 = pSelection;
+    pEntry->m_panResourceIds48 = panResourceIds;
+    pEntry->m_fEnabled54 = 1;
+    pEntry->m_ppLoadedResources50 = (void **)AllocateVSMemBlock(
+        pEntry->m_cResources34 * sizeof(void *));
+    for (i = 0; i < pEntry->m_cResources34; ++i) {
+        pEntry->m_ppLoadedResources50[i] =
+            LoadZrleOnlyListResource(panResourceIds[i]);
+    }
+    pEntry->m_pOverlay4C = AllocateVSMemBlock(0x130);
+    if (pEntry->m_pOverlay4C != 0) {
+        Point.m_x = (short)x;
+        Point.m_y = (short)y;
+        ConstructAlignedZrleChildOverlayFromPoint(
+            pEntry->m_pOverlay4C, 0, &Point, pRenderOwner,
+            panResourceIds[pEntry->m_nSelectedResource40 - nFirstResource],
+            3);
+        *(int *)((char *)pEntry->m_pOverlay4C + 0xf8) = 0;
+        *(void **)((char *)pEntry->m_pOverlay4C + 0xf4) =
+            g_pSharedRenderDispatchQueue;
+        *(int *)((char *)pEntry->m_pOverlay4C + 0xcc) = nToken;
+    }
+    ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+        ->RegisterOrderedRenderDispatchClient(pEntry, 0);
+    return pEntry;
+}
+
+void *LEMBALL_FASTCALL ConstructQueuedVariantChildSlotManager(
+    void *pObject, int, void *pRenderOwner,
+    void *pRenderContext, int, int nLayoutMode,
+    int nNavigationMode) {
+    GameQueuedVariantChildSlotManager *pManager;
+    int i;
+
+    pManager = (GameQueuedVariantChildSlotManager *)pObject;
+    memset(pManager, 0, sizeof(*pManager));
+    InitializeRenderQueueNodeBase(pManager);
+    pManager->m_pVtable00 = g_QueuedVariantChildSlotManagerVtable;
+    ConstructVariantRenderManager(
+        pManager->m_abVariantRenderManager10,
+        (int)(unsigned long)pRenderContext, 0x2b6, 1, 1, 0, 0);
+    pManager->m_pRenderContext10C = pRenderContext;
+    pManager->m_pRenderOwner110 = pRenderOwner;
+    pManager->m_nNextToken114 = (int)0xabcd0000U;
+    pManager->m_nLayoutMode130 = nLayoutMode;
+    pManager->m_nNavigationMode134 = nNavigationMode;
+    pManager->m_fCompactLayout138 = nLayoutMode == 1;
+    pManager->m_fInputEnabled144 = 1;
+    pManager->m_fChildrenEnabled148 = 1;
+    for (i = 0; i < 4; ++i) {
+        pManager->m_apChildrenAC[i] = 0;
+        pManager->m_aSlotsBC[i].m_fActive00 = 0;
+    }
+    ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+        ->RegisterOrderedRenderDispatchClient(pManager, 0);
+    LoadVariantRenderResource(
+        pManager->m_abVariantRenderManager10,
+        nLayoutMode == 1 ? 0x183 : 0x156);
+    return pManager;
+}
+
+void LEMBALL_FASTCALL AppendQueuedVariantChildSlot(
+    void *pObject, int, int x, int y,
+    const int *panResourceIds, int nActivationMode,
+    int nFirstResource, int nLastResource, int,
+    int *pSelection, int nCommand) {
+    GameQueuedVariantChildSlotManager *pManager;
+    GameQueuedVariantRangeEntry *pEntry;
+    int iChild;
+    int nToken;
+
+    pManager = (GameQueuedVariantChildSlotManager *)pObject;
+    iChild = pManager->m_cChildren80;
+    if (iChild >= 4) return;
+    nToken = ++pManager->m_nNextToken114;
+    pEntry = (GameQueuedVariantRangeEntry *)
+        AllocateVSMemBlock(sizeof(GameQueuedVariantRangeEntry));
+    if (pEntry != 0) {
+        ConstructQueuedVariantRangeEntry(
+            pEntry, pManager->m_pRenderOwner110,
+            pManager->m_pRenderContext10C, x, y,
+            panResourceIds, nActivationMode, nFirstResource,
+            nLastResource, nToken, pSelection, nCommand);
+    }
+    pManager->m_apChildrenAC[iChild] = pEntry;
+    pManager->m_aSlotsBC[iChild].m_fActive00 = pEntry != 0;
+    pManager->m_aSlotsBC[iChild].m_x04 = x;
+    pManager->m_aSlotsBC[iChild].m_y08 = y;
+    pManager->m_aSlotsBC[iChild].m_nToken0C = nToken;
+    ++pManager->m_cChildren80;
+}
+
+void LEMBALL_FASTCALL SelectQueuedVariantChildSlot(
+    void *pObject, int, int iChild) {
+    GameQueuedVariantChildSlotManager *pManager;
+    DWORD dwNow;
+
+    pManager = (GameQueuedVariantChildSlotManager *)pObject;
+    if (iChild < 0 || iChild >= pManager->m_cChildren80) return;
+    pManager->m_iSelectedChildA8 = iChild;
+    dwNow = timeGetTime();
+    pManager->m_dwSelectionStart13C = (int)dwNow;
+    pManager->m_dwSelectionEnd140 = (int)dwNow;
+}
+
+void LEMBALL_FASTCALL InitializeQueuedVariantChildContext(void *pManager) {
+    (void)pManager;
+}
+
+static int LEMBALL_FASTCALL HandleQueuedVariantChildSlotManagerEvent(
+    GameQueuedVariantChildSlotManager *pManager, int,
+    GameMenuSelectorEvent *pEvent) {
+    int iChild;
+
+    if (pManager->m_fInputEnabled144 == 0) return 0;
+    if (pEvent->m_nType00 != 4) {
+        ++pManager->m_cUnhandledEvents0C;
+        return 0;
+    }
+    iChild = pManager->m_iSelectedChildA8;
+    if (pEvent->m_nPayload08 == 1 || pEvent->m_nPayload08 == 3) {
+        if (iChild > 0) SelectQueuedVariantChildSlot(pManager, 0, iChild - 1);
+        ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
+            ->PlayVariantResourceEffect(0x1b);
+        return 1;
+    }
+    if (pEvent->m_nPayload08 == 2 || pEvent->m_nPayload08 == 4) {
+        if (iChild + 1 < pManager->m_cChildren80)
+            SelectQueuedVariantChildSlot(pManager, 0, iChild + 1);
+        ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
+            ->PlayVariantResourceEffect(0x1b);
+        return 1;
+    }
+    if (pEvent->m_nPayload08 == 0x1f ||
+        pEvent->m_nPayload08 == 0x22 ||
+        pEvent->m_nPayload08 == 0x4c) {
+        QueueQueuedVariantCommand(
+            pManager->m_aSlotsBC[pManager->m_iSelectedChildA8].m_nToken0C == 0
+                ? 0
+                : pManager->m_apChildrenAC[
+                    pManager->m_iSelectedChildA8]->m_nCommand30);
+    }
+    return 0;
+}
+
+void LEMBALL_FASTCALL DestroyQueuedVariantChildSlotManager(void *pObject) {
+    GameQueuedVariantChildSlotManager *pManager;
+    int i;
+    int nResourceId;
+
+    pManager = (GameQueuedVariantChildSlotManager *)pObject;
+    pManager->m_pVtable00 = g_QueuedVariantChildSlotManagerVtable;
+    ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+        ->UnregisterOrderedRenderDispatchClient(pManager, 0);
+    for (i = 0; i < 4; ++i) {
+        if (pManager->m_apChildrenAC[i] != 0) {
+            DeleteQueuedVariantRangeEntry(
+                pManager->m_apChildrenAC[i], 0, 1);
+            pManager->m_apChildrenAC[i] = 0;
+        }
+    }
+    nResourceId = pManager->m_nLayoutMode130 == 1 ? 0x183 : 0x156;
+    ((LevelVariantRenderManagerView *)
+        pManager->m_abVariantRenderManager10)
+            ->ReleaseVariantRenderResource(nResourceId);
+    DestroyVariantRenderManager(pManager->m_abVariantRenderManager10);
+    pManager->m_pVtable00 = g_pNonZrleVariantRenderEntryInitializeVtable;
+}
+
+static void *LEMBALL_FASTCALL DeleteQueuedVariantChildSlotManager(
+    GameQueuedVariantChildSlotManager *pManager, int, int fDelete) {
+    DestroyQueuedVariantChildSlotManager(pManager);
+    if ((fDelete & 1) != 0) FreeVSMemBlock(pManager);
+    return pManager;
 }
 
 void LEMBALL_FASTCALL ComputeAlignedZrleChildLayout(void *pObject) {
