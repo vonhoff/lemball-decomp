@@ -439,7 +439,7 @@ int CArena::Allocate(void **ppvBlock,
         AppendCStringToStream(g_pErrorOutputStream, g_VSMEM_HexPrefix);
         AppendHexUIntToStream(g_pErrorOutputStream, cbAligned);
         AppendCStringToStream(g_pErrorOutputStream, g_VSMEM_FreeSizePrefix);
-        AppendUIntToStream(g_pErrorOutputStream, cbFree);
+        g_pErrorOutputStream->AppendUIntToStream(cbFree);
         AppendCStringToStream(g_pErrorOutputStream, g_VSMEM_LineBreak);
         ((VSMEM_LockProc)pLockVtable[1])((char *)pMemoryArena + 8);
         return 0;
@@ -452,7 +452,7 @@ int CArena::Allocate(void **ppvBlock,
         AppendCStringToStream(g_pErrorOutputStream, g_VSMEM_HexPrefix);
         AppendHexUIntToStream(g_pErrorOutputStream, cbAligned);
         AppendCStringToStream(g_pErrorOutputStream, g_VSMEM_FreeSizePrefix);
-        AppendUIntToStream(g_pErrorOutputStream, pMemoryArena->m_cbFree);
+        g_pErrorOutputStream->AppendUIntToStream(pMemoryArena->m_cbFree);
         AppendCStringToStream(g_pErrorOutputStream, g_VSMEM_LineBreak);
         ((CArena *)g_pMainMemoryArena)->WriteMemoryArenaReport(
             g_pErrorOutputStream);
@@ -633,7 +633,7 @@ void *CArena::WriteMemoryArenaReport(VsInitFormattedOutputStream *pOutputStream)
     ((VSMEM_LockProc)pLockVtable[0])((char *)pMemoryArena + 8);
     AppendCStringToStream(pOutputStream, g_VSMEM_ReportSeparator);
     AppendCStringToStream(pOutputStream, g_VSMEM_ReportFreeSizePrefix);
-    AppendUIntToStream(pOutputStream, GetMemoryArenaPayloadByteCounter(this));
+    pOutputStream->AppendUIntToStream(GetMemoryArenaPayloadByteCounter(this));
     AppendCStringToStream(pOutputStream, g_VSMEM_ReportLineBreak);
     AppendCStringToStream(pOutputStream, g_VSMEM_ReportHeaderRule);
     AppendCStringToStream(pOutputStream, g_VSMEM_ReportColumns);

@@ -5072,7 +5072,7 @@ int VsNetWin32FileWrapper::Write(const void *pvSource, DWORD cbWrite) {
     pWrapper->m_nReserved10 += (int)cbWritten;
     if (cbWrite != cbWritten) {
         AppendCStringToStream(g_pErrorOutputStream, "Write error: ");
-        AppendUIntToStream(g_pErrorOutputStream, cbWritten);
+        g_pErrorOutputStream->AppendUIntToStream(cbWritten);
         AppendCStringToStream(g_pErrorOutputStream, " bytes written instead of ");
         g_pErrorOutputStream->AppendIntToStream(cbWrite);
         AppendCStringToStream(g_pErrorOutputStream, "\n");
@@ -5103,13 +5103,13 @@ int VsNetWin32FileWrapper::Read(LPVOID pvTarget, DWORD cbRead) {
     pWrapper->m_nReserved10 += (int)cbReadNow;
     if (cbReadNow != cbRead) {
         AppendCStringToStream(g_pErrorOutputStream, "Read error: ");
-        AppendUIntToStream(g_pErrorOutputStream, cbReadNow);
+        g_pErrorOutputStream->AppendUIntToStream(cbReadNow);
         AppendCStringToStream(g_pErrorOutputStream, " bytes read instead of ");
         g_pErrorOutputStream->AppendIntToStream(cbRead);
         AppendCStringToStream(g_pErrorOutputStream, "in file ");
         AppendCStringToStream(g_pErrorOutputStream, (const char *)(unsigned long)pWrapper->m_nReserved04);
         AppendCStringToStream(g_pErrorOutputStream, " which is ");
-        AppendUIntToStream(g_pErrorOutputStream, GetWin32FileWrapperLength(pWrapper));
+        g_pErrorOutputStream->AppendUIntToStream(GetWin32FileWrapperLength(pWrapper));
         AppendCStringToStream(g_pErrorOutputStream, " bytes long.\n");
         return 0;
     }

@@ -4134,7 +4134,7 @@ void VsNetRuntimeWindowBase::ScheduleNetworkRuntimeTimerEvent(UINT nMilliseconds
 
     pStream = AppendCStringToStream(g_pStatusOutputStream,
                                     "Setting next timer event to ");
-    AppendUnsignedIntToStreamVariant(pStream, nMilliseconds);
+    pStream->AppendUnsignedIntToStreamVariant(nMilliseconds);
     AppendCStringToStream(pStream, "ms from now\n");
 
     KillTimer(*(HWND *)((char *)this + 4),

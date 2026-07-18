@@ -43,8 +43,6 @@ VsInitFormattedOutputStream *AppendCStringToStream(VsInitFormattedOutputStream *
                                                      const char *pszText);
 void AppendPointerToStreamVariant(VsInitFormattedOutputStream *pStream, unsigned int uValue);
 void AppendCharToFormattedStream(VsInitFormattedOutputStream *pStream, char ch);
-void AppendUIntToStream(VsInitFormattedOutputStream *pStream, unsigned int uValue);
-void AppendUnsignedIntToStreamVariant(VsInitFormattedOutputStream *pStream, unsigned int uValue);
 VsInitFormattedOutputStream *AppendUIntHexToStream(VsInitFormattedOutputStream *pStream, unsigned int uValue);
 VsInitFormattedOutputStream *AppendHexUIntToStream(VsInitFormattedOutputStream *pStream, unsigned int uValue);
 // FUNCTION: LEMBALL 0x0045abb0
@@ -193,6 +191,8 @@ struct VsInitFormattedOutputStream {
     VsInitFormattedOutputStream *AppendCharToStreamVariant(char ch);
     VsInitFormattedOutputStream *AppendIntToStream(unsigned int uValue);
     VsInitFormattedOutputStream *AppendSignedIntToStreamVariant(int nValue);
+    VsInitFormattedOutputStream *AppendUIntToStream(unsigned int uValue);
+    VsInitFormattedOutputStream *AppendUnsignedIntToStreamVariant(unsigned int uValue);
     VsInitFormattedOutputStream *ConstructFormattedOutputStream(VsInitFixedBufferStream *pDownstream,
                                                                   int fConstructTargetState);
 };

@@ -597,8 +597,6 @@ void LEMBALL_FASTCALL RestoreStreamFormatSubobjectVtable(VsInitStreamFormatTarge
 void LEMBALL_FASTCALL ApplyStreamIntegerWidthPadding(VsInitFormattedOutputStream *pStream);
 void AppendPointerToStreamVariant(VsInitFormattedOutputStream *pStream, unsigned int uValue);
 void AppendCharToFormattedStream(VsInitFormattedOutputStream *pStream, char ch);
-void AppendUIntToStream(VsInitFormattedOutputStream *pStream, unsigned int uValue);
-void AppendUnsignedIntToStreamVariant(VsInitFormattedOutputStream *pStream, unsigned int uValue);
 VsInitFormattedOutputStream *AppendUIntHexToStream(VsInitFormattedOutputStream *pStream, unsigned int uValue);
 VsInitFormattedOutputStream *AppendHexUIntToStream(VsInitFormattedOutputStream *pStream, unsigned int uValue);
 void FormatSignedIntToRadixString(int nValue, char *pszBuffer, unsigned int nRadix);
@@ -831,19 +829,19 @@ void AppendCharToFormattedStream(VsInitFormattedOutputStream *pStream, char ch) 
 }
 
 // FUNCTION: LEMBALL 0x004586e0
-void AppendUIntToStream(VsInitFormattedOutputStream *pStream, unsigned int uValue) {
-    FormatUnsignedIntToRadixString(uValue, pStream->m_szFormatBuffer,
-                                   (unsigned int)VsInitFORMAT_TARGET(pStream)->m_nRadix);
-    ApplyStreamIntegerWidthPadding(pStream);
-    AppendCStringToStream(pStream, pStream->m_pszFormattedText);
+VsInitFormattedOutputStream *VsInitFormattedOutputStream::AppendUIntToStream(unsigned int uValue) {
+    FormatUnsignedIntToRadixString(uValue, m_szFormatBuffer,
+                                   (unsigned int)VsInitFORMAT_TARGET(this)->m_nRadix);
+    ApplyStreamIntegerWidthPadding(this);
+    return AppendCStringToStream(m_pszFormattedText);
 }
 
 // FUNCTION: LEMBALL 0x00458720
-void AppendUnsignedIntToStreamVariant(VsInitFormattedOutputStream *pStream, unsigned int uValue) {
-    FormatUnsignedIntToRadixString(uValue, pStream->m_szFormatBuffer,
-                                   (unsigned int)VsInitFORMAT_TARGET(pStream)->m_nRadix);
-    ApplyStreamIntegerWidthPadding(pStream);
-    AppendCStringToStream(pStream, pStream->m_pszFormattedText);
+VsInitFormattedOutputStream *VsInitFormattedOutputStream::AppendUnsignedIntToStreamVariant(unsigned int uValue) {
+    FormatUnsignedIntToRadixString(uValue, m_szFormatBuffer,
+                                   (unsigned int)VsInitFORMAT_TARGET(this)->m_nRadix);
+    ApplyStreamIntegerWidthPadding(this);
+    return AppendCStringToStream(m_pszFormattedText);
 }
 
 // FUNCTION: LEMBALL 0x00458780
@@ -855,7 +853,7 @@ VsInitFormattedOutputStream *AppendUIntHexToStream(VsInitFormattedOutputStream *
     VsInitFORMAT_TARGET(pStream)->m_dwFlags = (dwFlags & 0xffff7fcf) | 0x40;
     nRadix = (unsigned int)VsInitFORMAT_TARGET(pStream)->m_nRadix;
     VsInitFORMAT_TARGET(pStream)->m_nRadix = 0x10;
-    AppendUIntToStream(pStream, uValue);
+    pStream->AppendUIntToStream(uValue);
     VsInitFORMAT_TARGET(pStream)->m_nRadix = (int)nRadix;
     VsInitFORMAT_TARGET(pStream)->m_dwFlags = dwFlags;
     return pStream;
@@ -876,7 +874,7 @@ VsInitFormattedOutputStream *AppendHexUIntToStream(VsInitFormattedOutputStream *
     VsInitFORMAT_TARGET(pStream)->m_dwFlags = (dwFlags & 0xffff7fcf) | 0x40;
     nRadix = (unsigned int)VsInitFORMAT_TARGET(pStream)->m_nRadix;
     VsInitFORMAT_TARGET(pStream)->m_nRadix = 0x10;
-    AppendUIntToStream(pStream, uValue);
+    pStream->AppendUIntToStream(uValue);
     VsInitFORMAT_TARGET(pStream)->m_nWidth = (int)nWidth;
     VsInitFORMAT_TARGET(pStream)->m_nRadix = (int)nRadix;
     VsInitFORMAT_TARGET(pStream)->m_chFill = chFill;

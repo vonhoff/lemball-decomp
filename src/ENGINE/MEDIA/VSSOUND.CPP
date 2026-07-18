@@ -977,14 +977,7 @@ static int g_nPreparedMciMusicTrackHandle = 0;
 static const char g_AUDIO_SequencerDeviceType[] = "sequencer";
 static const char g_AUDIO_MciWindowClassName[] = "HLMusicWindow";
 static const char g_AUDIO_DsoundDll[] = "DSOUND.DLL";
-static const char g_AUDIO_SystemDsoundDllSuffix[] = "\\DSOUND.DLL";
 static const char g_AUDIO_DirectSoundCreate[] = "DirectSoundCreate";
-static const char g_AUDIO_RootVersionQuery[] = "\\";
-static const char g_AUDIO_DsoundVersionPrefix[] = "DSOUND version ";
-static const char g_AUDIO_VersionSeparator[] = ".";
-static const char g_AUDIO_DsoundVersionTooOld[] = "DSOUND version too old\n";
-static const char g_AUDIO_DefaultWindowsSound[] =
-    "Defaulting to windows sound device\n";
 static const char g_AUDIO_UnknownDirectSoundError[] = "UNKNOWN DIRECT SOUND ERROR: ";
 static char g_AUDIO_UnknownDirectSoundErrorBuffer[0x80];
 struct VsSoundDirectSoundErrorEntry {
@@ -2313,7 +2306,7 @@ unsigned char LEMBALL_FASTCALL PlayWaveOutEffectInstance(
                 nWaveResult = waveOutReset(*(HWAVEOUT *)((char *)pBackend + 0x8c));
                 if (nWaveResult != 0) {
                     AppendCStringToStream(g_pErrorOutputStream, "waveOutReset errored: ");
-                    AppendUnsignedIntToStreamVariant(g_pErrorOutputStream, nWaveResult);
+                    g_pErrorOutputStream->AppendUnsignedIntToStreamVariant(nWaveResult);
                     AppendCStringToStream(g_pErrorOutputStream, "\n");
                 }
                 nWaveResult = waveOutWrite(*(HWAVEOUT *)((char *)pBackend + 0x8c),
@@ -2321,7 +2314,7 @@ unsigned char LEMBALL_FASTCALL PlayWaveOutEffectInstance(
                                            0x20);
                 if (nWaveResult != 0) {
                     AppendCStringToStream(g_pErrorOutputStream, "waveOutWrite (play effect) errored: ");
-                    AppendUnsignedIntToStreamVariant(g_pErrorOutputStream, nWaveResult);
+                    g_pErrorOutputStream->AppendUnsignedIntToStreamVariant(nWaveResult);
                     return (unsigned char)'\n';
                 }
             }
@@ -2925,15 +2918,11 @@ VsSoundDirectSoundEffectBackend *VsSoundDirectSoundEffectBackend::ConstructDirec
     int cEffectResources, int nCooperativeLevel)
 
 {
-    char szSystemDsoundPath[256];
-    DWORD dwVersionHandle;
-    DWORD cbVersionInfo;
-    void *pVersionInfo;
     void *pFixedVersionInfo;
-    UINT cbFixedVersionInfo;
-    unsigned int dwFileVersionMS;
     unsigned int dwFileVersionLS;
-    int fVersionSupported;
+    UINT cbFixedVersionInfo;
+    DWORD dwVersionHandle;
+    char szSystemDsoundPath[256];
     int i;
 
     ConstructAudioEffectBackendBase(this);
@@ -2969,36 +2958,37 @@ VsSoundDirectSoundEffectBackend *VsSoundDirectSoundEffectBackend::ConstructDirec
     if (*(HMODULE *)((char *)this + 4) != 0) {
         if (GetSystemDirectoryA(szSystemDsoundPath,
                                 sizeof(szSystemDsoundPath)) != 0) {
-            strcat(szSystemDsoundPath, g_AUDIO_SystemDsoundDllSuffix);
+            DWORD cbVersionInfo;
+            void *pVersionInfo;
+            int fVersionSupported;
+
+            strcat(szSystemDsoundPath, "\\DSOUND.DLL");
             cbVersionInfo = GetFileVersionInfoSizeA(
                 szSystemDsoundPath, &dwVersionHandle);
             pVersionInfo = AllocateVSMemBlock(cbVersionInfo);
             fVersionSupported = 0;
             if (GetFileVersionInfoA(szSystemDsoundPath, 0,
                                     cbVersionInfo, pVersionInfo) != 0) {
-                VerQueryValueA(pVersionInfo, g_AUDIO_RootVersionQuery,
+                VerQueryValueA(pVersionInfo, "\\",
                                &pFixedVersionInfo, &cbFixedVersionInfo);
-                dwFileVersionMS = ((unsigned int *)pFixedVersionInfo)[2];
+                unsigned int dwFileVersionMS =
+                    ((unsigned int *)pFixedVersionInfo)[2];
                 dwFileVersionLS = ((unsigned int *)pFixedVersionInfo)[3];
-                g_pStatusOutputStream->AppendCStringToStream(
-                    g_AUDIO_DsoundVersionPrefix);
-                AppendUnsignedIntToStreamVariant(
-                    g_pStatusOutputStream, dwFileVersionMS >> 16);
-                g_pStatusOutputStream->AppendCStringToStream(
-                    g_AUDIO_VersionSeparator);
-                AppendUnsignedIntToStreamVariant(
-                    g_pStatusOutputStream, dwFileVersionMS & 0xffff);
-                g_pStatusOutputStream->AppendCStringToStream(
-                    g_AUDIO_VersionSeparator);
-                AppendUIntToStream(g_pStatusOutputStream, dwFileVersionLS);
-                g_pStatusOutputStream->AppendCStringToStream("\n");
+                g_pStatusOutputStream
+                    ->AppendCStringToStream("DSOUND version ")
+                    ->AppendUnsignedIntToStreamVariant(dwFileVersionMS >> 16)
+                    ->AppendCStringToStream(".")
+                    ->AppendUnsignedIntToStreamVariant(dwFileVersionMS & 0xffff)
+                    ->AppendCStringToStream(".")
+                    ->AppendUIntToStream(dwFileVersionLS)
+                    ->AppendCStringToStream("\n");
                 if ((dwFileVersionMS >> 16) < 4 ||
                     ((dwFileVersionMS >> 16) == 4 &&
                      (dwFileVersionMS & 0xffff) < 2)) {
                     g_pErrorOutputStream->AppendCStringToStream(
-                        g_AUDIO_DsoundVersionTooOld);
+                        "DSOUND version too old\n");
                     g_pErrorOutputStream->AppendCStringToStream(
-                        g_AUDIO_DefaultWindowsSound);
+                        "Defaulting to windows sound device\n");
                 } else {
                     fVersionSupported = 1;
                 }
