@@ -656,7 +656,10 @@ static void *LEMBALL_FASTCALL DeleteAdjustedOptionsScreen(
 static void LEMBALL_FASTCALL InitializePaintballSequenceResources(void *pObject);
 static void LEMBALL_FASTCALL ReleasePaintballSequenceResources(void *pObject);
 static void LEMBALL_FASTCALL DrawPaintballSequenceFrame(void *pObject);
+static void LEMBALL_FASTCALL DrawPaintballSequencePromptText(void *pObject);
 static void LEMBALL_FASTCALL UpdatePaintballSequenceScreen(void *pObject);
+static int LEMBALL_FASTCALL DispatchPaintballSequenceUserAction(
+    void *pObject, int nUnusedEdx, int nAction);
 static void LEMBALL_FASTCALL ActivatePaintballSequenceMedia(void *pObject,
                                                             int nUnused);
 static void DeactivatePaintballSequenceMedia(
@@ -1105,6 +1108,19 @@ static const int g_GAME_PasswordKeyPermutation[12] = {
     7, 8, 9, 4, 5, 6, 1, 2, 3, 10, 0, 11
 };
 
+static const int g_GAME_PaintballSequenceLayoutStandard[26] = {
+    92, 375, 416, 375, 0, 0, 32, 146, 145, 77, 32, 146, 147,
+    96, 16, 80, 272, 224, 0, 6, 32, 96, 240, 192, 0, 306
+};
+static const int g_GAME_PaintballSequenceLayoutCompact[26] = {
+    46, 190, 208, 190, 0, 0, 16, 75, 73, 41, 16, 70, 73,
+    44, 8, 40, 144, 112, 0, 4, 16, 48, 128, 96, 0, 153
+};
+static const int g_GAME_PaintballSequenceBackStandard[1] = {0x1b3};
+static const int g_GAME_PaintballSequencePlayStandard[1] = {0x1b6};
+static const int g_GAME_PaintballSequenceBackCompact[1] = {0x1e7};
+static const int g_GAME_PaintballSequencePlayCompact[1] = {0x1ea};
+
 static void InitializeFunctionalOptionsVtables(void) {
     int i;
 
@@ -1150,7 +1166,13 @@ static void InitializeFunctionalPaintballSequenceVtables(void) {
     g_GAME_PaintballSequenceScreenVtable[17] =
         (void *)ReleasePaintballSequenceResources;
     g_GAME_PaintballSequenceScreenVtable[18] =
+        (void *)NoopFunctionalLevelSelectionHook;
+    g_GAME_PaintballSequenceScreenVtable[19] =
+        (void *)DrawPaintballSequencePromptText;
+    g_GAME_PaintballSequenceScreenVtable[20] =
         (void *)DrawPaintballSequenceFrame;
+    g_GAME_PaintballSequenceScreenVtable[21] =
+        (void *)DispatchPaintballSequenceUserAction;
     g_GAME_PaintballSequenceQueueVtable[0] =
         (void *)InitializeNonZrleVariantRenderEntry;
     g_GAME_PaintballSequenceQueueVtable[1] =
@@ -2924,22 +2946,28 @@ void *LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(
 
 static void ConfigurePaintballBitmapEntry(
     unsigned char *pEntry, void *pBitmap, short x, short y) {
-    *(short *)(pEntry + 0) = x;
-    *(short *)(pEntry + 2) = y;
-    *(void **)(pEntry + 0x0c) = pBitmap;
-    *(int *)(pEntry + 0x10) = 0x800;
-    *(int *)(pEntry + 0x14) = 0;
+    *(short *)(pEntry + 4) = x;
+    *(short *)(pEntry + 6) = y;
+    *(void **)(pEntry + 0x10) = pBitmap;
+    *(int *)(pEntry + 0x14) = 0x800;
+    *(int *)(pEntry + 0x18) = 0;
 }
 
 static void LEMBALL_FASTCALL InitializePaintballSequenceResources(
     void *pObject) {
     GamePaintballSequenceScreenView *pScreen;
+    const int *panBackResources;
+    const int *panPlayResources;
+    void *pButtonManager;
     int nPrimaryResource;
     int nSecondaryResource;
     short x;
 
     pScreen = (GamePaintballSequenceScreenView *)pObject;
     if (pScreen->m_fCompactLayout32C == 0) {
+        pScreen->m_pLayout510 = g_GAME_PaintballSequenceLayoutStandard;
+        panBackResources = g_GAME_PaintballSequenceBackStandard;
+        panPlayResources = g_GAME_PaintballSequencePlayStandard;
         nPrimaryResource = pScreen->m_fSecondVariant518 == 0
             ? 0x135 : 0x134;
         nSecondaryResource = pScreen->m_fSecondVariant518 == 0
@@ -2947,6 +2975,9 @@ static void LEMBALL_FASTCALL InitializePaintballSequenceResources(
         pScreen->m_nButtonResourceId508 =
             pScreen->m_fSecondVariant518 == 0 ? 0x157 : 0x158;
     } else {
+        pScreen->m_pLayout510 = g_GAME_PaintballSequenceLayoutCompact;
+        panBackResources = g_GAME_PaintballSequenceBackCompact;
+        panPlayResources = g_GAME_PaintballSequencePlayCompact;
         nPrimaryResource = pScreen->m_fSecondVariant518 == 0
             ? 0x140 : 0x13f;
         nSecondaryResource = pScreen->m_fSecondVariant518 == 0
@@ -2968,8 +2999,46 @@ static void LEMBALL_FASTCALL InitializePaintballSequenceResources(
     }
     if (pScreen->m_pSecondaryBitmap500 != 0) {
         ConfigurePaintballBitmapEntry(
-            pScreen->m_abSecondaryBitmapEntry3E0,
-            pScreen->m_pSecondaryBitmap500, 0, 0);
+            (unsigned char *)pScreen + 0x3bc,
+            pScreen->m_pSecondaryBitmap500,
+            (short)pScreen->m_pLayout510[20],
+            (short)pScreen->m_pLayout510[21]);
+    }
+    pScreen->m_nActionSelection514 = 0;
+    pButtonManager = AllocateVSMemBlock(0x14c);
+    if (pButtonManager != 0) {
+        pScreen->m_pQueuedVariantManager338 =
+            ConstructQueuedVariantChildSlotManager(
+                pButtonManager, 0, pScreen->m_pPrimaryContext84,
+                pScreen->m_pRenderContext88, 2,
+                pScreen->m_fCompactLayout32C, 0);
+    } else {
+        pScreen->m_pQueuedVariantManager338 = 0;
+    }
+    AppendQueuedVariantChildSlot(
+        pScreen->m_pQueuedVariantManager338, 0,
+        pScreen->m_pLayout510[0], pScreen->m_pLayout510[1],
+        panPlayResources, 1, 0, 0, 0,
+        &pScreen->m_nActionSelection514, (int)0xacef0010U);
+    AppendQueuedVariantChildSlot(
+        pScreen->m_pQueuedVariantManager338, 0,
+        pScreen->m_pLayout510[2], pScreen->m_pLayout510[3],
+        panBackResources, 1, 0, 0, 0,
+        &pScreen->m_nActionSelection514, (int)0xacef0011U);
+    SelectQueuedVariantChildSlot(
+        pScreen->m_pQueuedVariantManager338, 0, 0);
+    InitializeQueuedVariantChildContext(
+        pScreen->m_pQueuedVariantManager338);
+    if (pScreen->m_fSecondVariant518 == 0) {
+        pScreen->m_xOverlay380 = (short)(pScreen->m_pLayout510[10] +
+                                        pScreen->m_pLayout510[12]);
+        pScreen->m_yOverlay382 = (short)(pScreen->m_pLayout510[11] +
+                                        pScreen->m_pLayout510[13]);
+    } else {
+        pScreen->m_xOverlay380 = (short)(pScreen->m_pLayout510[6] +
+                                        pScreen->m_pLayout510[8]);
+        pScreen->m_yOverlay382 = (short)(pScreen->m_pLayout510[7] +
+                                        pScreen->m_pLayout510[9]);
     }
     if (pScreen->m_fMediaEnabled604 != 0) {
         unsigned char *pMediaOwner = pScreen->m_abMediaOwner520;
@@ -3005,18 +3074,26 @@ static void LEMBALL_FASTCALL ReleasePaintballSequenceResources(
 
 static void LEMBALL_FASTCALL DrawPaintballSequenceFrame(void *pObject) {
     GamePaintballSequenceScreenView *pScreen;
+    unsigned char *pEntry;
 
     pScreen = (GamePaintballSequenceScreenView *)pObject;
-    if (pScreen->m_pPrimaryBitmap4FC != 0) {
-        ((GameMainMenuRenderEntryInterface *)
-            pScreen->m_abPrimaryBitmapEntry398)
-            ->AppendToQueue(pScreen->m_pRenderContext88);
-    }
+    EmitScreenFrameRect(
+        pScreen, (short)pScreen->m_pLayout510[14],
+        (short)pScreen->m_pLayout510[15],
+        (short)pScreen->m_pLayout510[16],
+        (short)pScreen->m_pLayout510[17]);
+    pEntry = (unsigned char *)pScreen + 0x398 +
+             pScreen->m_iRenderEntryGroup328 * 0x48;
+    ((GameMainMenuRenderEntryInterface *)pEntry)
+        ->AppendToQueue(pScreen->m_pRenderContext88);
     if (pScreen->m_pSecondaryBitmap500 != 0) {
-        ((GameMainMenuRenderEntryInterface *)
-            pScreen->m_abSecondaryBitmapEntry3E0)
+        ((GameMainMenuRenderEntryInterface *)(pEntry + 0x24))
             ->AppendToQueue(pScreen->m_pRenderContext88);
     }
+}
+
+static void LEMBALL_FASTCALL DrawPaintballSequencePromptText(void *) {
+    /* The mapped-font submissions are restored with the prompt layout pass. */
 }
 
 static void FinishPaintballSequence(
@@ -3036,27 +3113,42 @@ static int LEMBALL_FASTCALL HandlePaintballSequenceInput(
     nCode = (unsigned int)pSelectorEvent->m_nPayload08;
     if (pSelectorEvent->m_nType00 == 0x0c) {
         if (nCode == 0xacef0010U) {
+            if (pScreen->m_fNetworkScreen8C != 0) {
+                ((GameBaseModeScreen *)pScreen)
+                    ->QueueActiveBaseModeUserAction(3, 0);
+                return 1;
+            }
             FinishPaintballSequence(pScreen, 4);
             return 1;
         }
         if (nCode == 0xacef0011U) {
+            if (pScreen->m_fNetworkScreen8C != 0) {
+                ((GameBaseModeScreen *)pScreen)
+                    ->QueueActiveBaseModeUserAction(2, 0);
+                return 1;
+            }
             FinishPaintballSequence(pScreen, 2);
-            return 1;
-        }
-        return 0;
-    }
-    if (pSelectorEvent->m_nType00 == 4) {
-        if (nCode == 0x1bU) {
-            FinishPaintballSequence(pScreen, 2);
-            return 1;
-        }
-        if (nCode == 0x0dU || nCode == 0x20U) {
-            FinishPaintballSequence(pScreen, 4);
             return 1;
         }
         return 0;
     }
     ++*(int *)((char *)pScreen + 0x10);
+    return 0;
+}
+
+static int LEMBALL_FASTCALL DispatchPaintballSequenceUserAction(
+    void *pObject, int, int nAction) {
+    GamePaintballSequenceScreenView *pScreen;
+
+    pScreen = (GamePaintballSequenceScreenView *)pObject;
+    if (nAction == 2) {
+        FinishPaintballSequence(pScreen, 2);
+        return 1;
+    }
+    if (nAction == 3) {
+        FinishPaintballSequence(pScreen, 4);
+        return 1;
+    }
     return 0;
 }
 
