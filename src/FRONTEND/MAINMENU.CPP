@@ -1229,7 +1229,7 @@ int LEMBALL_FASTCALL HandleNetworkLobbyTransportPayloadEvent(
     return 0;
 }
 
-void CloseNetworkLobbyTransportPeers(void *pController) {
+void LEMBALL_FASTCALL CloseNetworkLobbyTransportPeers(void *pController) {
     GameNetworkLobbyScreenView *pScreen;
     GameNetworkLobbyRuntimeView *pRuntime;
     GameEffStream *pCloseStream;

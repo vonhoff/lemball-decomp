@@ -752,7 +752,8 @@ extern int LEMBALL_FASTCALL HandleBaseModeActionButtonEventThunk(
 extern int LEMBALL_FASTCALL HandleNetworkLobbyTransportPayloadEvent(
     void *pController, int nUnusedEdx, unsigned short nEventType,
     void *pPayloadObject, void *pPeer);
-extern void CloseNetworkLobbyTransportPeers(void *pController);
+extern void LEMBALL_FASTCALL CloseNetworkLobbyTransportPeers(
+    void *pController);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 
 class GameNetworkLobbyTransportControllerVtableModel {

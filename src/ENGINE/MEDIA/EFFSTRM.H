@@ -27,7 +27,7 @@ struct GameEffStream {
     void QueueEffStreamWriteEvent(int nPayload);
 };
 
-int LEMBALL_FASTCALL StartNetworkLobbyTransportSession(void *pController);
+void LEMBALL_FASTCALL StartNetworkLobbyTransportSession(void *pController);
 void LEMBALL_FASTCALL StopNetworkLobbyTransportSession(void *pController);
 void ConfigureNetworkLobbyTransportHostName(void *pRuntime,
                                             char *pszHostName);

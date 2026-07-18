@@ -731,17 +731,23 @@ void *LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void *pObject,
     return pObject;
 }
 
-int LEMBALL_FASTCALL StartNetworkLobbyTransportSession(void *pController) {
+struct NetworkLobbyVsnetRuntimeDeleteView {
+    virtual void Reserved00(void) = 0;
+    virtual void Delete(int fDelete) = 0;
+};
+
+extern void LEMBALL_FASTCALL CloseNetworkLobbyTransportPeers(
+    void *pController);
+
+// FUNCTION: LEMBALL 0x00455130
+void LEMBALL_FASTCALL StartNetworkLobbyTransportSession(void *pController) {
     int *pnControllerFields;
     void *pRuntimeStorage;
 
-    if (pController == 0) {
-        return 0;
-    }
     pnControllerFields = (int *)pController;
     pnControllerFields[0x28 / 4] = 0;
     if (pnControllerFields[0x2c / 4] != 0) {
-        return 1;
+        return;
     }
     pRuntimeStorage = AllocateVSMemBlock(0x6c);
     if (pRuntimeStorage == 0) {
@@ -750,48 +756,45 @@ int LEMBALL_FASTCALL StartNetworkLobbyTransportSession(void *pController) {
         g_pNetworkLobbyVsnetRuntime =
             ConstructNetworkLobbyVsnetRuntime(pRuntimeStorage, 0);
     }
-    if (g_pNetworkLobbyVsnetRuntime == 0 ||
-        RegisterNetworkLobbyVsnetRuntimeWithTransport(
+    if (RegisterNetworkLobbyVsnetRuntimeWithTransport(
             g_pNetworkLobbyVsnetRuntime) == 0) {
+        UnregisterNetworkLobbyVsnetRuntimeFromTransport(
+            g_pNetworkLobbyVsnetRuntime);
         if (g_pNetworkLobbyVsnetRuntime != 0) {
-            UnregisterNetworkLobbyVsnetRuntimeFromTransport(
-                g_pNetworkLobbyVsnetRuntime);
-            DestroyNetworkLobbyVsnetRuntime(g_pNetworkLobbyVsnetRuntime);
-            FreeVSMemBlock(g_pNetworkLobbyVsnetRuntime);
-            g_pNetworkLobbyVsnetRuntime = 0;
+            ((NetworkLobbyVsnetRuntimeDeleteView *)
+                g_pNetworkLobbyVsnetRuntime)->Delete(1);
         }
+        g_pNetworkLobbyVsnetRuntime = 0;
         pnControllerFields[0x28 / 4] = 1;
-        return 0;
+        return;
     }
-    if (g_pActiveNetworkRuntimeWindow != 0) {
-        ((GameEffTransportRuntimeWindow *)g_pActiveNetworkRuntimeWindow)
-            ->RegisterEffTransportEventClient((char *)pController + 0xc);
-    }
+    ((GameEffTransportRuntimeWindow *)g_pActiveNetworkRuntimeWindow)
+        ->RegisterEffTransportEventClient((char *)pController + 0xc);
     pnControllerFields[0x2c / 4] = 1;
-    return 1;
 }
 
+// FUNCTION: LEMBALL 0x004552a0
 void LEMBALL_FASTCALL StopNetworkLobbyTransportSession(void *pController) {
     int *pnControllerFields;
     DWORD dwStartTime;
 
-    if (pController == 0) {
-        return;
-    }
     pnControllerFields = (int *)pController;
+    CloseNetworkLobbyTransportPeers(pController);
     if (g_pNetworkLobbyVsnetRuntime != 0) {
         UnregisterNetworkLobbyVsnetRuntimeFromTransport(
             g_pNetworkLobbyVsnetRuntime);
     }
     if (g_pActiveNetworkRuntimeWindow != 0) {
         dwStartTime = timeGetTime();
-        while (*(int *)((char *)g_pActiveNetworkRuntimeWindow + 0x48) != 0 &&
-               timeGetTime() - dwStartTime < 2000) {
-        }
+        do {
+            if (timeGetTime() - dwStartTime >= 2000) {
+                break;
+            }
+        } while (*(int *)((char *)g_pActiveNetworkRuntimeWindow + 0x48) != 0);
     }
     if (g_pNetworkLobbyVsnetRuntime != 0) {
-        DestroyNetworkLobbyVsnetRuntime(g_pNetworkLobbyVsnetRuntime);
-        FreeVSMemBlock(g_pNetworkLobbyVsnetRuntime);
+        ((NetworkLobbyVsnetRuntimeDeleteView *)
+            g_pNetworkLobbyVsnetRuntime)->Delete(1);
         g_pNetworkLobbyVsnetRuntime = 0;
     }
     pnControllerFields[0x28 / 4] = 0;
