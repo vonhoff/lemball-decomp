@@ -1767,8 +1767,43 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
     (void)nMusicResourceBase;
     *pfMusicBackendReady = 0;
     *ppMusicBackend = 0;
-    if (fMusicBackendEnabled != 1) {
+    if (fMusicBackendEnabled == 1) {
+        pBackend = 0;
+        pBackendStorage = AllocateVSMemBlock(0x34);
+        if (pBackendStorage != 0) {
+            pBackend =
+                ((VsSoundMciMusicBackend *)pBackendStorage)->ConstructMciMusicBackend();
+        }
+        if (pBackend != 0) {
+            pBackendVtable = *(void ***)pBackend;
+            fAvailable = ((VsSoundMciMusicBackendVtableModel *)pBackend)->IsAvailable();
+            if (fAvailable == 1) {
+                *pfMusicBackendReady = 1;
+                *ppMusicBackend = pBackend;
+            } else {
+                ((VsSoundDeleteProc)pBackendVtable[0])(pBackend, 0, 1);
+            }
+        }
+
         if (cMusicResources == 1) {
+            pBackend = 0;
+            pBackendStorage = AllocateVSMemBlock(0x54);
+            if (pBackendStorage != 0) {
+                pBackend =
+                    ((VsSoundDirectSoundEffectBackend *)pBackendStorage)
+                        ->ConstructDirectSoundEffectBackend(cEffectResources, 5);
+            }
+            if (pBackend != 0) {
+                pBackendVtable = *(void ***)pBackend;
+                fAvailable = ((VsSoundTestProc)pBackendVtable[10])(
+                    pBackend, 0);
+                if (fAvailable == 1) {
+                    *ppEffectBackends = pBackend;
+                    return 1;
+                }
+                ((VsSoundDeleteProc)pBackendVtable[0])(pBackend, 0, 1);
+            }
+
             pBackend = 0;
             pBackendStorage = AllocateVSMemBlock(0xb8);
             if (pBackendStorage != 0) {
@@ -1784,65 +1819,25 @@ int SelectAudioManagerBackends(void **ppEffectBackends,
                     *ppEffectBackends = pBackend;
                     return 1;
                 }
-                ((VsSoundDeleteProc)pBackendVtable[0])(pBackend, 0, 1);
             }
         }
-        return 0;
-    }
-
-    pBackend = 0;
-    pBackendStorage = AllocateVSMemBlock(0x34);
-    if (pBackendStorage != 0) {
-        pBackend =
-            ((VsSoundMciMusicBackend *)pBackendStorage)->ConstructMciMusicBackend();
-    }
-    if (pBackend != 0) {
-        pBackendVtable = *(void ***)pBackend;
-        fAvailable = ((VsSoundMciMusicBackendVtableModel *)pBackend)->IsAvailable();
-        if (fAvailable == 1) {
-            *pfMusicBackendReady = 1;
-            *ppMusicBackend = pBackend;
-        } else {
+    } else if (cMusicResources == 1) {
+        pBackend = 0;
+        pBackendStorage = AllocateVSMemBlock(0xb8);
+        if (pBackendStorage != 0) {
+            pBackend =
+                ((VsSoundWaveOutEffectBackend *)pBackendStorage)
+                    ->ConstructWaveOutEffectBackend(cEffectResources);
+        }
+        if (pBackend != 0) {
+            pBackendVtable = *(void ***)pBackend;
+            fAvailable = ((VsSoundTestProc)pBackendVtable[10])(
+                pBackend, 0);
+            if (fAvailable == 1) {
+                *ppEffectBackends = pBackend;
+                return 1;
+            }
             ((VsSoundDeleteProc)pBackendVtable[0])(pBackend, 0, 1);
-        }
-    }
-
-    if (cMusicResources != 1) {
-        return 0;
-    }
-
-    pBackend = 0;
-    pBackendStorage = AllocateVSMemBlock(0x54);
-    if (pBackendStorage != 0) {
-        pBackend =
-            ((VsSoundDirectSoundEffectBackend *)pBackendStorage)
-                ->ConstructDirectSoundEffectBackend(cEffectResources, 5);
-    }
-    if (pBackend != 0) {
-        pBackendVtable = *(void ***)pBackend;
-        fAvailable = ((VsSoundTestProc)pBackendVtable[10])(
-            pBackend, 0);
-        if (fAvailable == 1) {
-            *ppEffectBackends = pBackend;
-            return 1;
-        }
-        ((VsSoundDeleteProc)pBackendVtable[0])(pBackend, 0, 1);
-    }
-
-    pBackend = 0;
-    pBackendStorage = AllocateVSMemBlock(0xb8);
-    if (pBackendStorage != 0) {
-        pBackend =
-            ((VsSoundWaveOutEffectBackend *)pBackendStorage)
-                ->ConstructWaveOutEffectBackend(cEffectResources);
-    }
-    if (pBackend != 0) {
-        pBackendVtable = *(void ***)pBackend;
-        fAvailable = ((VsSoundTestProc)pBackendVtable[10])(
-            pBackend, 0);
-        if (fAvailable == 1) {
-            *ppEffectBackends = pBackend;
-            return 1;
         }
     }
     return 0;
