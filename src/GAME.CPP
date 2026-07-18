@@ -1,5 +1,6 @@
 #include "GAME.H"
 #include "LEVEL/LEVELRUN.H"
+#include "LEVEL/DRAWTEXT.H"
 #include "ENGINE/GDI/VSWINDOW.H"
 #include "FRONTEND/CURSOR.H"
 #include "LEVEL/TYPE18.H"
@@ -103,6 +104,16 @@ extern int g_fEffectsEnabled;
 extern void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntryThunk(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryThunk(void *pObject);
+extern void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntry(void *pObject);
+extern void *LEMBALL_FASTCALL InitializeGeometryOwnerRect(
+    void *pOwner, int nUnused, const VS_XYPair *pRect);
+extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(
+    void *pOwner, int nUnused, void *pChildOwner);
+extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
+    void *pOwner, int nUnused, void *pChildOwner);
+extern void *ConstructLevelScreenVariantRenderManager(void *pObject,
+    int nRenderOwner, void *pPrimaryContext, void *pLevelMode);
+extern void DestroyLevelScreenVariantRenderManager(void *pObject);
 extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableA(void *pObject);
 extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableD(void *pObject);
 extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableE(void *pObject);
@@ -1335,20 +1346,246 @@ void *GameScreenObject::ConstructLevelSelectionScreen(void *pPrimaryContext,
         this, 0, pPrimaryContext, pWindowOwnerContext, paRect);
 }
 
+static void *g_GAME_LevelScreenVtableSlots[14];
+static int g_fGAMELevelScreenVtableInitialized;
+
+static int LEMBALL_FASTCALL GetLevelScreenRequestedMode(void *pObject) {
+    return *(int *)((char *)pObject + 0x8fc);
+}
+
+static int LEMBALL_FASTCALL GetLevelScreenTransitionStatus(void *pObject) {
+    return *(int *)((char *)pObject + 0xa78);
+}
+
+static void LEMBALL_FASTCALL DestroyReconstructedLevelScreen(void *pObject) {
+    char *pScreen;
+    MappedListResourceTable *pMappedList;
+    int *pGrid;
+    void *pPrimaryContext;
+
+    pScreen = (char *)pObject;
+    pMappedList = *(MappedListResourceTable **)(pScreen + 0x78);
+    if (pMappedList != 0) {
+        pMappedList->ReleaseListResourceSlot(0x115);
+        pMappedList->ReleaseListResourceSlot(0xf8);
+        pMappedList->Destroy();
+        FreeVSMemBlock(pMappedList);
+        *(void **)(pScreen + 0x78) = 0;
+    }
+    if (*(void **)(pScreen + 0xa40) != 0) {
+        DestroyLevelScreenVariantRenderManager(
+            *(void **)(pScreen + 0xa40));
+        FreeVSMemBlock(*(void **)(pScreen + 0xa40));
+        *(void **)(pScreen + 0xa40) = 0;
+    }
+    pGrid = *(int **)(pScreen + 0x934);
+    if (pGrid != 0) {
+        FreeVSMemBlock((void *)(unsigned long)pGrid[3]);
+        FreeVSMemBlock(pGrid);
+        *(void **)(pScreen + 0x934) = 0;
+    }
+    if (g_pSharedRenderDispatchQueue != 0) {
+        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+            ->UnregisterOrderedRenderDispatchClient(pScreen + 4, 0);
+    }
+    pPrimaryContext = *(void **)(pScreen + 0x978);
+    if (pPrimaryContext != 0 && *(void **)((char *)pPrimaryContext + 0x1c) != 0) {
+        RemoveGeometryOwnerChild(
+            *(void **)((char *)pPrimaryContext + 0x1c), 0,
+            pScreen + 0x14);
+    }
+    FreeVSMemBlock(*(void **)(pScreen + 0x95c));
+    FreeVSMemBlock(*(void **)(pScreen + 0x960));
+    *(void **)(pScreen + 0x95c) = 0;
+    *(void **)(pScreen + 0x960) = 0;
+    SetLevelScreenStatusIndicatorModeThunk(0, 0);
+}
+
+static void *LEMBALL_FASTCALL DeleteReconstructedLevelScreen(
+    void *pObject, int, int fDelete)
+{
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+static void InitializeLevelScreenHotspotEntry(void *pObject) {
+    char *pEntry;
+
+    pEntry = (char *)pObject;
+    *(unsigned short *)(pEntry + 0x2c) = 0xffff;
+    *(int *)(pEntry + 0x38) = 0xaa55aa55;
+    *(int *)(pEntry + 0x3c) = 0xaa55aa55;
+    *(int *)(pEntry + 0x40) = 0xaa55aa55;
+    *(int *)(pEntry + 0x34) = 0;
+    *(int *)(pEntry + 0x30) = 0;
+    *(int *)(pEntry + 0x18) = 0;
+    *(int *)(pEntry + 0x20) = 0;
+}
+
 void *GameScreenObject::ConstructLevelScreen(void *pPrimaryContext,
                                               void *pLevelModeObject,
                                               void *pWindowOwnerContext,
                                               int nStatusIndicatorMode,
                                               short *paRect) {
-    void *pScreenObject = this;
-    (void)pPrimaryContext;
-    (void)pLevelModeObject;
-    (void)pWindowOwnerContext;
-    (void)nStatusIndicatorMode;
-    (void)paRect;
+    char *pScreenObject;
+    char *pEntry;
+    int *pGrid;
+    int cGridEntries;
+    int i;
+    int nScale;
+
+    pScreenObject = (char *)this;
     InitializeGameStubVtables();
     memset(pScreenObject, 0, 0x2428);
-    *(void **)pScreenObject = g_GAME_GenericScreenVtableSlots;
+
+    if (g_fGAMELevelScreenVtableInitialized == 0) {
+        for (i = 0; i < 14; ++i) {
+            g_GAME_LevelScreenVtableSlots[i] =
+                g_GAME_GenericScreenVtableSlots[i];
+        }
+        g_GAME_LevelScreenVtableSlots[0] =
+            (void *)DeleteReconstructedLevelScreen;
+        g_GAME_LevelScreenVtableSlots[1] =
+            (void *)DestroyReconstructedLevelScreen;
+        g_GAME_LevelScreenVtableSlots[10] =
+            (void *)GetLevelScreenTransitionStatus;
+        g_GAME_LevelScreenVtableSlots[11] =
+            (void *)GetLevelScreenRequestedMode;
+        g_fGAMELevelScreenVtableInitialized = 1;
+    }
+
+    *(void ***)pScreenObject = g_GAME_LevelScreenVtableSlots;
+    InitializeRenderQueueNodeBase(pScreenObject + 4);
+    InitializeGeometryOwnerRect(
+        pScreenObject + 0x14, 0, (const VS_XYPair *)paRect);
+
+    *(unsigned short *)(pScreenObject + 0xa8) = 0xffff;
+    *(int *)(pScreenObject + 0xb4) = 0xaa55aa55;
+    *(int *)(pScreenObject + 0xb8) = 0xaa55aa55;
+    *(int *)(pScreenObject + 0xbc) = 0xaa55aa55;
+    *(unsigned short *)(pScreenObject + 0xf4) = 0xffff;
+    *(unsigned short *)(pScreenObject + 0x140) = 0xffff;
+
+    pEntry = pScreenObject + 0x9c0;
+    for (i = 0; i < 4; ++i, pEntry += 0x10) {
+        InitializePackagedSpriteRenderEntryThunk(pEntry);
+    }
+    pEntry = pScreenObject + 0xa00;
+    for (i = 0; i < 4; ++i, pEntry += 0x10) {
+        InitializeStatusIndicatorPointSinkEntryThunk(pEntry);
+    }
+    pEntry = pScreenObject + 0x1468;
+    for (i = 0; i < 210; ++i, pEntry += 0x10) {
+        InitializeHelperLocalRectUpdateEntry(pEntry);
+    }
+    InitializeHelperLocalRectUpdateEntry(pScreenObject + 0x2190);
+    pEntry = pScreenObject + 0x21d0;
+    for (i = 0; i < 2; ++i, pEntry += 0x10) {
+        InitializeStatusIndicatorPointSinkEntryThunk(pEntry);
+    }
+    pEntry = pScreenObject + 0x21f4;
+    for (i = 0; i < 2; ++i, pEntry += 0x10) {
+        InitializeRenderPointRectSinkEntryThunk(pEntry);
+    }
+
+    *(int *)(pScreenObject + 0x8ec) = 1;
+    *(int *)(pScreenObject + 0x8fc) = 2;
+    *(int *)(pScreenObject + 0x1a8) = g_nLevelFrameClockTimeMs;
+    *(void **)(pScreenObject + 0x96c) = pLevelModeObject;
+    *(void **)(pScreenObject + 0x970) = pWindowOwnerContext;
+    *(void **)(pScreenObject + 0x978) = pPrimaryContext;
+    *(void **)(pScreenObject + 0x914) =
+        (void *)(unsigned long)nStatusIndicatorMode;
+    *(int *)(pScreenObject + 0x3c) = 1;
+    *(void **)(pScreenObject + 0x974) =
+        *(void **)((char *)pLevelModeObject + 0x164);
+    if (nStatusIndicatorMode != 0) {
+        *(int *)((char *)(unsigned long)nStatusIndicatorMode + 4) = 0;
+    }
+
+    if (*(void **)((char *)pPrimaryContext + 0x1c) != 0) {
+        AppendGeometryOwnerChild(
+            *(void **)((char *)pPrimaryContext + 0x1c), 0,
+            pScreenObject + 0x14);
+    }
+
+    *(void **)(pScreenObject + 0xa40) = AllocateVSMemBlock(0xb4);
+    if (*(void **)(pScreenObject + 0xa40) != 0) {
+        ConstructLevelScreenVariantRenderManager(
+            *(void **)(pScreenObject + 0xa40),
+            (int)(unsigned long)pWindowOwnerContext,
+            pPrimaryContext, pLevelModeObject);
+    }
+    {
+        MappedListResourceTable *pMappedList;
+        pMappedList = (MappedListResourceTable *)AllocateVSMemBlock(
+            sizeof(MappedListResourceTable));
+        if (pMappedList != 0) {
+            pMappedList = new (pMappedList)
+                MappedListResourceTable(0x2b6, 2, 2, 10);
+        }
+        *(MappedListResourceTable **)(pScreenObject + 0x78) = pMappedList;
+        if (pMappedList != 0) {
+            pMappedList->LoadListResourceIntoSlot(0x115);
+        }
+    }
+
+    *(int *)(pScreenObject + 0x994) = 1;
+    *(void **)(pScreenObject + 0x95c) = AllocateVSMemBlock(0x3b60);
+    if (*(void **)(pScreenObject + 0x95c) != 0) {
+        pEntry = (char *)*(void **)(pScreenObject + 0x95c);
+        for (i = 0; i < 200; ++i, pEntry += 0x4c) {
+            InitializeLevelScreenHotspotEntry(pEntry);
+        }
+    }
+    *(void **)(pScreenObject + 0x960) = AllocateVSMemBlock(0x800);
+    if (g_pSharedRenderDispatchQueue != 0) {
+        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+            ->RegisterOrderedRenderDispatchClient(pScreenObject + 4, 0);
+    }
+    SetLevelFrameClockPauseFlag(0);
+
+    pGrid = (int *)AllocateVSMemBlock(0x1a4);
+    *(int **)(pScreenObject + 0x934) = pGrid;
+    if (pGrid != 0) {
+        memset(pGrid, 0, 0x1a4);
+        *(short *)(pGrid + 2) = 0x10;
+        *(short *)((char *)pGrid + 10) = 0x10;
+        *(short *)(pGrid + 1) = (short)
+            *(int *)((char *)(unsigned long)nStatusIndicatorMode + 0x10);
+        *(short *)((char *)pGrid + 6) = (short)
+            *(int *)((char *)(unsigned long)nStatusIndicatorMode + 0x14);
+        cGridEntries = (int)*(short *)(pGrid + 1) *
+            (int)*(short *)((char *)pGrid + 6);
+        pGrid[0] = cGridEntries;
+        pGrid[3] = (int)(unsigned long)
+            AllocateVSMemBlock((unsigned int)cGridEntries * 10);
+        if (pGrid[3] != 0) {
+            memset((void *)(unsigned long)pGrid[3], 0,
+                   (unsigned int)cGridEntries * 10);
+        }
+    }
+
+    *(short *)(pScreenObject + 0x162) = (short)
+        *(int *)((char *)(unsigned long)nStatusIndicatorMode + 0x10);
+    *(short *)(pScreenObject + 0x164) = (short)
+        *(int *)((char *)(unsigned long)nStatusIndicatorMode + 0x14);
+    nScale = *(int *)((char *)pPrimaryContext + 0x38);
+    if (nScale == 0) nScale = 1;
+    *(unsigned short *)(pScreenObject + 0x160) = (unsigned short)nScale;
+    *(short *)(pScreenObject + 0x940) = (short)(paRect[0] / nScale);
+    *(short *)(pScreenObject + 0x942) = (short)(paRect[1] / nScale);
+    *(short *)(pScreenObject + 0x958) =
+        *(short *)(pScreenObject + 0x940);
+    *(short *)(pScreenObject + 0x95a) =
+        *(short *)(pScreenObject + 0x942);
+    *(int *)(pScreenObject + 0x8f8) = g_nLevelFrameClockTick;
+    *(int *)(pScreenObject + 0x8f0) =
+        *(int *)((char *)pLevelModeObject + 0xf0);
+    *(int *)(pScreenObject + 0x8f4) =
+        *(int *)(pScreenObject + 0x8f0);
     return pScreenObject;
 }
 

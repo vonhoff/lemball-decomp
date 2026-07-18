@@ -398,6 +398,15 @@ static void *g_LEVEL_VariantRenderManagerVtableStorage[2] = {
 };
 static void *g_LEVEL_VariantRenderManagerVtable =
     g_LEVEL_VariantRenderManagerVtableStorage;
+static void *DeleteLevelScreenVariantRenderManager(void *pObject,
+                                                    BYTE fDelete);
+static void *g_LEVEL_LevelScreenVariantManagerVtable[2] = {
+    (void *)DeleteLevelScreenVariantRenderManager,
+    (void *)GetTimedVariantFrameStartTimeThunk,
+};
+static void *g_LEVEL_LevelScreenVariantProgressVtable[1] = {
+    (void *)UpdateStatusIndicatorLoadProgressThunk00401DB1,
+};
 /* 00497C90: manager base table installed after construction. */
 static void *g_LEVEL_StatusIndicatorManagerVtable[4] = {
     (void *)NoopVtableCallbackThunk,
@@ -791,6 +800,9 @@ static void LEMBALL_FASTCALL RenderBitmapEntryViaContext(
 void LEMBALL_FASTCALL RestoreLevelSelectionRenderChildEntryVtableBody(void *pObject);
 void *ConstructLevelScreenStatusIndicatorManager(void *pObject, int nStatusMode, void *pPrimaryContext);
 void DestroyLevelScreenStatusIndicatorManager(void *pObject);
+void *ConstructLevelScreenVariantRenderManager(void *pObject,
+    int nRenderOwner, void *pPrimaryContext, void *pLevelMode);
+void DestroyLevelScreenVariantRenderManager(void *pObject);
 void LEMBALL_FASTCALL ReleaseStatusIndicatorPrimaryBitmap(void *pObject);
 static void LEMBALL_FASTCALL SetStatusIndicatorLoadProgress0044B340(
     void *pObject, int, int nProgress);
@@ -1231,6 +1243,84 @@ static void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateEntry00432B20(
     pDispatchObject = (void *)(unsigned long)(pDispatchBase + 0x40 + pOwner);
     ((LevelOneArgVirtualProc)(*(void ***)pDispatchObject)[1])(
         pDispatchObject, 0, pObject);
+}
+
+// FUNCTION: LEMBALL 0x00432b50
+void *ConstructLevelScreenVariantRenderManager(void *pObject,
+    int nRenderOwner, void *pPrimaryContext, void *pLevelMode)
+{
+    int *pManager;
+    int *pWrapperTable;
+    void *pStatusManager;
+    int i;
+
+    pManager = (int *)pObject;
+    ConstructVariantRenderManager(
+        pObject, nRenderOwner, 0x2b6, 200, 0x28, 0x14, 1);
+    *(void ***)pManager = g_LEVEL_LevelScreenVariantManagerVtable;
+    *(void ***)(pManager + 0x1c) =
+        g_LEVEL_LevelScreenVariantProgressVtable;
+    pManager[0x1f] = (int)(unsigned long)pPrimaryContext;
+    pManager[0x20] = nRenderOwner;
+    pManager[0x22] = (int)(unsigned long)
+        g_pQueuedRenderPointSinkFinalizeThunk;
+    pManager[0x26] = (int)(unsigned long)pLevelMode;
+
+    pWrapperTable = (int *)AllocateVSMemBlock(0xad8);
+    pManager[0x1d] = (int)(unsigned long)pWrapperTable;
+    if (pWrapperTable != 0) {
+        for (i = 0; i < 0xad8 / 4; ++i) {
+            pWrapperTable[i] = 0;
+        }
+    }
+    pManager[0x2b] = 0;
+    pManager[0x21] = 0;
+
+    pStatusManager = AllocateVSMemBlock(0x134);
+    if (pStatusManager != 0) {
+        pStatusManager = ConstructLevelScreenStatusIndicatorManager(
+            pStatusManager, nRenderOwner, pPrimaryContext);
+    }
+    pManager[0x1e] = (int)(unsigned long)pStatusManager;
+    *(unsigned short *)((char *)pManager + 0xb0) = 0;
+    *(unsigned short *)((char *)pManager + 0xb2) = 0;
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x00432c20
+void DestroyLevelScreenVariantRenderManager(void *pObject)
+{
+    int *pManager;
+    void *pStatusManager;
+
+    pManager = (int *)pObject;
+    *(void ***)pManager = g_LEVEL_LevelScreenVariantManagerVtable;
+    *(void ***)(pManager + 0x1c) =
+        g_LEVEL_LevelScreenVariantProgressVtable;
+    pStatusManager = (void *)(unsigned long)pManager[0x1e];
+    if (pStatusManager != 0) {
+        DestroyLevelScreenStatusIndicatorManager(pStatusManager);
+        FreeVSMemBlock(pStatusManager);
+        pManager[0x1e] = 0;
+    }
+    ReleaseLevelSelectionModeRenderStateResource(pObject);
+    if (pManager[0x1d] != 0) {
+        FreeVSMemBlock((void *)(unsigned long)pManager[0x1d]);
+        pManager[0x1d] = 0;
+    }
+    pManager[0x22] = (int)(unsigned long)
+        g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+    DestroyVariantRenderManager(pObject);
+}
+
+static void *DeleteLevelScreenVariantRenderManager(void *pObject,
+                                                    BYTE fDelete)
+{
+    DestroyLevelScreenVariantRenderManager(pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
 }
 
 static void LEMBALL_FASTCALL QueueVariantActionFramePointSink(
