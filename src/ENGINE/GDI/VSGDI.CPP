@@ -5009,12 +5009,16 @@ void LEMBALL_FASTCALL PresentCompactResourceGeometryHelper(
     void *pCompactTarget)
 
 {
-    typedef void (LEMBALL_FASTCALL *DeactivateSlotProc)(void *, int, void *);
+    struct SlotManagerDispatch {
+        virtual void Reserved00(void) = 0;
+        virtual void Reserved04(void) = 0;
+        virtual void Reserved08(void) = 0;
+        virtual void DeactivateResourceGeometryHelperSlot(void *pTarget) = 0;
+    };
     void *pTarget;
-    ++g_nDebugPresentCount;
     pTarget = (char *)pCompactTarget - 0x55c;
-    ((DeactivateSlotProc)(*(void ***)g_pResourceGeometryHelperSlotManager)[3])(
-        g_pResourceGeometryHelperSlotManager, 0, pTarget);
+    ((SlotManagerDispatch *)g_pResourceGeometryHelperSlotManager)
+        ->DeactivateResourceGeometryHelperSlot(pTarget);
 }
 
 // FUNCTION: LEMBALL 0x0046dc70
