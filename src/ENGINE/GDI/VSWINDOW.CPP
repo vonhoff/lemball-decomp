@@ -909,7 +909,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
     tagPOINT Point;
     int nSelectedDisplayMode;
     int nEventCode;
-    int anEvent[3];
+    GameGeometryDispatchEvent MouseEvent;
     short xEvent;
     short yEvent;
     unsigned int uOwnerFlags;
@@ -1202,10 +1202,16 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         xEvent = (short)((short)lParam + *(short *)((char *)pOwner + 0x0c));
         yEvent = (short)(((unsigned long)lParam >> 16) +
                          *(short *)((char *)pOwner + 0x0e));
-        anEvent[0] = nEventCode;
-        anEvent[1] = PackEventXYWords((unsigned short)xEvent, yEvent);
-        anEvent[2] = 0;
-        AppendWindowOwnerEvent(anEvent);
+        MouseEvent.m_nType00 =
+            (uMessage == 0x203 || uMessage == 0x206 ||
+             uMessage == 0x209) ? 8 : 6;
+        MouseEvent.m_nReserved02 = 0;
+        MouseEvent.m_dwTime04 = dwMessageTime;
+        MouseEvent.m_nPackedPosition08 =
+            PackEventXYWords((unsigned short)xEvent, yEvent);
+        MouseEvent.m_nCommand0C = nEventCode;
+        MouseEvent.m_fHandled10 = 0;
+        AppendWindowOwnerEvent(&MouseEvent);
         if (g_nMouseButtonCaptureRefCount == 0) {
             SetCapture(hWnd);
         }
@@ -1221,10 +1227,14 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
                          (pOwner != 0 ? *(short *)((char *)pOwner + 0x0c) : 0));
         yEvent = (short)(((unsigned long)lParam >> 16) +
                          (pOwner != 0 ? *(short *)((char *)pOwner + 0x0e) : 0));
-        anEvent[0] = nEventCode;
-        anEvent[1] = PackEventXYWords((unsigned short)xEvent, yEvent);
-        anEvent[2] = 0;
-        AppendWindowOwnerEvent(anEvent);
+        MouseEvent.m_nType00 = 5;
+        MouseEvent.m_nReserved02 = 0;
+        MouseEvent.m_dwTime04 = dwMessageTime;
+        MouseEvent.m_nPackedPosition08 =
+            PackEventXYWords((unsigned short)xEvent, yEvent);
+        MouseEvent.m_nCommand0C = nEventCode;
+        MouseEvent.m_fHandled10 = 0;
+        AppendWindowOwnerEvent(&MouseEvent);
         if (g_nMouseButtonCaptureRefCount != 0) {
             --g_nMouseButtonCaptureRefCount;
             if (g_nMouseButtonCaptureRefCount == 0) {
