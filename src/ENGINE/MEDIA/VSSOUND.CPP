@@ -2234,9 +2234,9 @@ int LEMBALL_FASTCALL FreeWaveOutEffectInstance(void *pBackend, int, int nEffectI
 
 // FUNCTION: LEMBALL 0x0047d080
 int LEMBALL_FASTCALL ReleaseAllWaveOutEffectInstances(void *pBackend) {
-    unsigned int i;
-    int nOffset;
     void *pPatchBuffer;
+    int nOffset;
+    unsigned int i;
 
     i = 0;
     if (i < *(unsigned int *)((char *)pBackend + 4)) {
@@ -2554,9 +2554,9 @@ ConstructDirectSoundEffectBufferPool(
 
 // FUNCTION: LEMBALL 0x0047d6e0
 void VsSoundDirectSoundEffectBufferPool::DestroyDirectSoundEffectBufferPool(void) {
-    int i;
-    int nOffset;
     void *pBuffer;
+    int nOffset;
+    int i;
 
     i = 0;
     if (0 < m_cBuffers) {
