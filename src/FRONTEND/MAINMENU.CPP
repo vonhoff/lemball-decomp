@@ -2083,6 +2083,11 @@ static void LEMBALL_FASTCALL ReleaseFramedScreenFrameResources(void *pObject) {
     pScreen = (GameFramedScreenBase *)pObject;
     pVariantManager = (LevelVariantRenderManagerView *)
         pScreen->m_abVariantRenderManager14;
+    if (pScreen->m_pMappedListResources98 != 0) {
+        ((MappedListResourceTable *)pScreen->m_pMappedListResources98)
+            ->ReleaseListResourceSlot(
+                pScreen->m_nMappedListRemapResourceId384);
+    }
     ReleaseTypedResourceObjectReference(pScreen->m_pForegroundBitmapC0);
     ReleaseTypedResourceObjectReference(pScreen->m_pBackgroundBitmapC4);
     pVariantManager->ReleaseVariantRenderResource(
