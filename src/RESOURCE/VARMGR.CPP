@@ -359,21 +359,22 @@ int GameVariantResourceEntryManager::CountVariantResourceEntriesWithFlagMask(uns
 
 // FUNCTION: LEMBALL 0x00439e30
 void GameVariantResourceEntryManager::SwitchVariantResourceEntryMode(unsigned short nMask, void *pBundle) {
+    int fEnableMusic;
     int nMusicResourceId;
     int nNextRandom;
-    int fEnableMusic;
     void *pManager;
 
     pManager = this;
     if (*(unsigned short *)((char *)pManager + 0x0c) != nMask) {
-        fEnableMusic = g_fLevelDemoModeEnabled == 0;
-        if (fEnableMusic) {
+        fEnableMusic = 1;
+        if (g_fLevelDemoModeEnabled != 0) {
+            fEnableMusic = 0;
+            ClearActiveVariantResourceEntries();
+        } else {
             SetVariantResourceMusicEnabled(0);
             ClearActiveVariantResourceEntries();
             ((VsSoundManager *)g_pAudioManager)
                 ->StopAllAudioManagerBackends();
-        } else {
-            ClearActiveVariantResourceEntries();
         }
 
         *(unsigned short *)((char *)pManager + 0x0c) = nMask;
@@ -386,9 +387,9 @@ void GameVariantResourceEntryManager::SwitchVariantResourceEntryMode(unsigned sh
             nMask = 3;
             fEnableMusic = 0;
         case 3:
-            nMusicResourceId = 0x242;
             ((VsSoundManager *)g_pAudioManager)
                 ->SetAudioManagerPrimaryContext((void *)0x243);
+            nMusicResourceId = 0x242;
             break;
         case 4:
             ((VsSoundManager *)g_pAudioManager)
