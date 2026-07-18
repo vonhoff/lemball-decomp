@@ -1,6 +1,7 @@
 #include "GAME.H"
 #include "ENGINE/MEDIA/EFFSTRM.H"
 #include "ENGINE/CORE/VSINIT.H"
+#include "ENGINE/GDI/VSGEOM.H"
 
 extern "C" int WINAPI IsBadReadPtr(const void *pAddress,
                                     unsigned int cbAddress);
@@ -104,12 +105,14 @@ struct VsNetEffTransportRuntimeWindow {
 
 struct VsNetNetworkLobbyOwnerTable {
     char m_abUnknown00[0x70];
-    short m_nSourceHeight;
-    short m_nEntryStartY;
-    char m_abUnknown74[0x18];
-    int m_nEntryYStep;
-    unsigned short m_nSourceX;
-    unsigned short m_nSourceY;
+    short m_nSourceHeight70;
+    short m_nReserved72;
+    short m_nEntryStartY74;
+    char m_abUnknown76[0x16];
+    int m_nEntryYStep8c;
+    unsigned short m_nSourceX90;
+    unsigned short m_nReserved92;
+    unsigned short m_nSourceY94;
 };
 
 struct VsNetNetworkLobbyCursorOwner {
@@ -129,6 +132,10 @@ struct VsNetNetworkLobbyScreen {
     VsNetNetworkLobbyOwnerTable *m_pEntryOwnerTable;
 
     void RemoveUnavailablePlayerEntries(void);
+    void RefreshPlayerEntries(void);
+    void ActivateSelectedPlayerEntry(void);
+    int SelectNextPlayerEntry(void);
+    int SelectPreviousPlayerEntry(void);
 };
 
 struct VsNetVsnetEventType3 {
@@ -197,72 +204,23 @@ void ThunkHandleNetworkLobbyTransportStatusEvent(int nEventType) {
         }
     }
 }
-// FUNCTION: LEMBALL 0x004026a8
-void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
-    VsNetNetworkLobbyScreen *pScreen;
-    VsNetNetworkLobbyVsnetRuntime *pRuntime;
-    VsNetNetworkLobbyOwnerTable *pOwnerTable;
-    void *pEntryChild;
-    int *pnPeerIds;
-    VsNetEffTransportPeerStateSlot *pPeerState;
-    VsNetEffTransportPeerStateSlot *pPeerEntryTable;
-    int nEntryOffset;
-    short y;
 
-    pScreen = (VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen;
-    pPeerEntryTable = 0;
-    pnPeerIds = 0;
-    if (g_pNetworkLobbyVsnetRuntime != 0 &&
-        IsBadReadPtr(g_pNetworkLobbyVsnetRuntime,
-                     sizeof(VsNetNetworkLobbyVsnetRuntime)) == 0) {
-        pRuntime = (VsNetNetworkLobbyVsnetRuntime *)g_pNetworkLobbyVsnetRuntime;
-        pnPeerIds = pRuntime->m_anTrackedPeers;
-        pPeerEntryTable = pRuntime->m_pPeerEntryTable;
-    }
-
-    pOwnerTable = pScreen->m_pEntryOwnerTable;
-    y = pOwnerTable->m_nEntryStartY;
-    nEntryOffset = 0;
-    pPeerState = pPeerEntryTable;
-    pScreen->m_cVisibleEntries = 0;
-
-    do {
-        if (pScreen->m_cVisibleEntries < 4 && pnPeerIds != 0 && *pnPeerIds != 0 && pPeerState->m_fActive != 0) {
-            pEntryChild = (void *)(unsigned long)((int)(unsigned long)pScreen->m_pEntryTable + nEntryOffset);
-            *(unsigned short *)((char *)pEntryChild + 0x30) = pOwnerTable->m_nSourceX;
-            *(unsigned short *)((char *)pEntryChild + 0x32) = pOwnerTable->m_nSourceY;
-            *(unsigned short *)((char *)pEntryChild + 0x34) = pOwnerTable->m_nSourceHeight;
-            *(short *)((char *)pEntryChild + 0x36) = y;
-            SetGeometryChildEnabled(pEntryChild, 1);
-            y = (short)(y + pOwnerTable->m_nEntryYStep);
-            pScreen->m_cVisibleEntries = pScreen->m_cVisibleEntries + 1;
-        } else {
-            SetGeometryChildEnabled((void *)(unsigned long)((int)(unsigned long)pScreen->m_pEntryTable + nEntryOffset), 0);
-        }
-
-        nEntryOffset += 0x44;
-        if (pPeerState != 0) {
-            ++pPeerState;
-        }
-        if (pnPeerIds != 0) {
-            ++pnPeerIds;
-        }
-    } while (nEntryOffset < 0x2a8);
-
-    ThunkActivateSelectedNetworkLobbyPlayerEntry(nNetworkLobbyScreen);
+// FUNCTION: LEMBALL 0x00453250
+void VsNetNetworkLobbyPlayerEntryChild::ResetFlags(void) {
+    m_fDirty40 = 0;
+    m_fDirty3c = 0;
+    m_fDirty38 = 0;
 }
 
-// FUNCTION: LEMBALL 0x0040296e
-void ThunkActivateSelectedNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
-    VsNetNetworkLobbyScreen *pScreen;
+// FUNCTION: LEMBALL 0x00454bb0
+void VsNetNetworkLobbyScreen::ActivateSelectedPlayerEntry(void) {
     VsNetNetworkLobbyPlayerEntryChild *pEntryChild;
 
-    pScreen = (VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen;
-    if (pScreen->m_nResolvedSelection != -1) {
-        pEntryChild = &pScreen->m_pEntryTable->m_aEntries[pScreen->m_nResolvedSelection];
+    if (m_nResolvedSelection != -1) {
+        pEntryChild = &m_pEntryTable->m_aEntries[m_nResolvedSelection];
         if (pEntryChild->m_fEnabled == 0) {
-            if (ThunkSelectPreviousNetworkLobbyPlayerEntry(nNetworkLobbyScreen) == 0) {
-                ThunkSelectNextNetworkLobbyPlayerEntry(nNetworkLobbyScreen);
+            if (SelectPreviousPlayerEntry() == 0) {
+                SelectNextPlayerEntry();
             }
         } else {
             pEntryChild->m_fSelected = 1;
@@ -271,80 +229,24 @@ void ThunkActivateSelectedNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
     }
 }
 
-// FUNCTION: LEMBALL 0x00402f4a
-int ThunkSelectNextNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
-    VsNetNetworkLobbyScreen *pScreen;
+// FUNCTION: LEMBALL 0x00454c10
+int VsNetNetworkLobbyScreen::SelectPreviousPlayerEntry(void) {
     VsNetNetworkLobbyPlayerEntryTable *pEntryTable;
     int *pnEntryState;
     int nSelectedEntry;
     int nEntryOffset;
 
-    pScreen = (VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen;
-    pEntryTable = pScreen->m_pEntryTable;
-    if (pScreen->m_cVisibleEntries == 0) {
-        if (pScreen->m_nResolvedSelection == -1) {
-            return 0;
-        }
-        pScreen->m_pCursorOwner->m_fWrapSelection = 1;
-        pScreen->m_nResolvedSelection = -1;
-    }
-
-    if (pScreen->m_nResolvedSelection == -1) {
+    pEntryTable = m_pEntryTable;
+    if (m_cVisibleEntries == 0 || m_nResolvedSelection == 0) {
         return 0;
     }
 
-    nSelectedEntry = pScreen->m_nResolvedSelection + 1;
-    if (nSelectedEntry < 10) {
-        pnEntryState = (int *)((char *)pEntryTable + 4 + nSelectedEntry * 0x44);
-        do {
-            if (*pnEntryState != 0) {
-                break;
-            }
-            pnEntryState += 0x11;
-            ++nSelectedEntry;
-        } while (nSelectedEntry < 10);
+    if (m_nResolvedSelection == -1) {
+        m_pCursorOwner->m_fWrapSelection = 0;
+        m_nResolvedSelection = 10;
     }
 
-    pScreen->m_nResolvedSelection = nSelectedEntry;
-    nEntryOffset = 0;
-    do {
-        ((VsNetNetworkLobbyPlayerEntryChild *)((char *)pEntryTable + nEntryOffset))->m_fSelected = 0;
-        pnEntryState = (int *)((char *)pEntryTable + nEntryOffset);
-        nEntryOffset += 0x44;
-        ((VsNetNetworkLobbyPlayerEntryChild *)pnEntryState)->Deactivate();
-    } while (nEntryOffset < 0x2a8);
-
-    if (pScreen->m_nResolvedSelection == 10) {
-        pScreen->m_pCursorOwner->m_fWrapSelection = 1;
-        pScreen->m_nResolvedSelection = -1;
-        return 1;
-    }
-
-    pEntryTable->m_aEntries[pScreen->m_nResolvedSelection].m_fSelected = 1;
-    pEntryTable->m_aEntries[pScreen->m_nResolvedSelection].Activate();
-    return 1;
-}
-
-// FUNCTION: LEMBALL 0x0040346d
-int ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
-    VsNetNetworkLobbyScreen *pScreen;
-    VsNetNetworkLobbyPlayerEntryTable *pEntryTable;
-    int *pnEntryState;
-    int nSelectedEntry;
-    int nEntryOffset;
-
-    pScreen = (VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen;
-    pEntryTable = pScreen->m_pEntryTable;
-    if (pScreen->m_cVisibleEntries == 0 || pScreen->m_nResolvedSelection == 0) {
-        return 0;
-    }
-
-    if (pScreen->m_nResolvedSelection == -1) {
-        pScreen->m_pCursorOwner->m_fWrapSelection = 0;
-        pScreen->m_nResolvedSelection = 10;
-    }
-
-    nSelectedEntry = pScreen->m_nResolvedSelection - 1;
+    nSelectedEntry = m_nResolvedSelection - 1;
     if (nSelectedEntry >= 0) {
         pnEntryState = (int *)((char *)pEntryTable + 4 + nSelectedEntry * 0x44);
         do {
@@ -360,7 +262,54 @@ int ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
         return 0;
     }
 
-    pScreen->m_nResolvedSelection = nSelectedEntry;
+    m_nResolvedSelection = nSelectedEntry;
+    nEntryOffset = 0;
+    do {
+        ((VsNetNetworkLobbyPlayerEntryChild *)
+            ((char *)pEntryTable + nEntryOffset))->m_fSelected = 0;
+        pnEntryState = (int *)((char *)pEntryTable + nEntryOffset);
+        nEntryOffset += 0x44;
+        ((VsNetNetworkLobbyPlayerEntryChild *)pnEntryState)->Deactivate();
+    } while (nEntryOffset < 0x2a8);
+
+    pEntryTable->m_aEntries[m_nResolvedSelection].m_fSelected = 1;
+    pEntryTable->m_aEntries[m_nResolvedSelection].Activate();
+    return 1;
+}
+
+// FUNCTION: LEMBALL 0x00454cf0
+int VsNetNetworkLobbyScreen::SelectNextPlayerEntry(void) {
+    VsNetNetworkLobbyPlayerEntryTable *pEntryTable;
+    int *pnEntryState;
+    int nSelectedEntry;
+    int nEntryOffset;
+
+    pEntryTable = m_pEntryTable;
+    if (m_cVisibleEntries == 0) {
+        if (m_nResolvedSelection == -1) {
+            return 0;
+        }
+        m_pCursorOwner->m_fWrapSelection = 1;
+        m_nResolvedSelection = -1;
+    }
+
+    if (m_nResolvedSelection == -1) {
+        return 0;
+    }
+
+    nSelectedEntry = m_nResolvedSelection + 1;
+    if (nSelectedEntry < 10) {
+        pnEntryState = (int *)((char *)pEntryTable + 4 + nSelectedEntry * 0x44);
+        do {
+            if (*pnEntryState != 0) {
+                break;
+            }
+            pnEntryState += 0x11;
+            ++nSelectedEntry;
+        } while (nSelectedEntry < 10);
+    }
+
+    m_nResolvedSelection = nSelectedEntry;
     nEntryOffset = 0;
     do {
         ((VsNetNetworkLobbyPlayerEntryChild *)((char *)pEntryTable + nEntryOffset))->m_fSelected = 0;
@@ -369,12 +318,87 @@ int ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
         ((VsNetNetworkLobbyPlayerEntryChild *)pnEntryState)->Deactivate();
     } while (nEntryOffset < 0x2a8);
 
-    pEntryTable->m_aEntries[pScreen->m_nResolvedSelection].m_fSelected = 1;
-    pEntryTable->m_aEntries[pScreen->m_nResolvedSelection].Activate();
+    if (m_nResolvedSelection == 10) {
+        m_pCursorOwner->m_fWrapSelection = 1;
+        m_nResolvedSelection = -1;
+        return 1;
+    }
+
+    pEntryTable->m_aEntries[m_nResolvedSelection].m_fSelected = 1;
+    pEntryTable->m_aEntries[m_nResolvedSelection].Activate();
     return 1;
 }
 
-// FUNCTION: LEMBALL 0x00452850
+// FUNCTION: LEMBALL 0x00454df0
+void VsNetNetworkLobbyScreen::RefreshPlayerEntries(void) {
+    VsNetNetworkLobbyVsnetRuntime *pRuntime;
+    VsNetNetworkLobbyOwnerTable *pOwnerTable;
+    void *pEntryChild;
+    int *pnPeerIds;
+    VsNetEffTransportPeerStateSlot *pPeerEntryTable;
+    int *pfPeerActive;
+    int nEntryOffset;
+    short y;
+    unsigned short nSourceX;
+    unsigned short nSourceY;
+    unsigned short nSourceHeight;
+
+    pPeerEntryTable = 0;
+    pnPeerIds = 0;
+    if (g_pNetworkLobbyVsnetRuntime != 0) {
+        pRuntime = (VsNetNetworkLobbyVsnetRuntime *)g_pNetworkLobbyVsnetRuntime;
+        pnPeerIds = pRuntime->m_anTrackedPeers;
+        pPeerEntryTable = pRuntime->m_pPeerEntryTable;
+    }
+
+    pOwnerTable = m_pEntryOwnerTable;
+    y = pOwnerTable->m_nEntryStartY74;
+    nSourceX = pOwnerTable->m_nSourceX90;
+    nSourceY = pOwnerTable->m_nSourceY94;
+    nSourceHeight = pOwnerTable->m_nSourceHeight70;
+    nEntryOffset = 0;
+    pfPeerActive = (int *)((char *)pPeerEntryTable + 0x4c);
+    m_cVisibleEntries = 0;
+
+    do {
+        if (m_cVisibleEntries < 4 && pnPeerIds != 0 &&
+            *pnPeerIds != 0 && *pfPeerActive != 0) {
+            pEntryChild = (void *)((char *)m_pEntryTable + nEntryOffset);
+            *(unsigned short *)((char *)pEntryChild + 0x30) = nSourceX;
+            *(unsigned short *)((char *)pEntryChild + 0x32) = nSourceY;
+            *(unsigned short *)((char *)pEntryChild + 0x34) = nSourceHeight;
+            *(short *)((char *)pEntryChild + 0x36) = y;
+            ((GameGeometryOwnerRectState *)pEntryChild)->SetEnabled(1);
+            y = (short)(y + pOwnerTable->m_nEntryYStep8c);
+            ++m_cVisibleEntries;
+        } else {
+            ((GameGeometryOwnerRectState *)
+                ((char *)m_pEntryTable + nEntryOffset))->SetEnabled(0);
+        }
+
+        nEntryOffset += 0x44;
+        pfPeerActive += 0x14;
+        ++pnPeerIds;
+    } while (nEntryOffset < 0x2a8);
+
+    ActivateSelectedPlayerEntry();
+}
+
+void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
+    ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
+        ->RefreshPlayerEntries();
+}
+
+int ThunkSelectNextNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
+    return ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
+        ->SelectNextPlayerEntry();
+}
+
+int ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
+    return ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
+        ->SelectPreviousPlayerEntry();
+}
+
 int HandleNetworkLobbyVsnetRuntimeEvent(void *pVsnetRuntime, unsigned short *pEvent) {
     VsNetNetworkLobbyVsnetRuntime *pRuntime;
     VsNetVsnetEventType3 *pType3Event;
@@ -476,13 +500,6 @@ int HandleNetworkLobbyVsnetRuntimeEvent(void *pVsnetRuntime, unsigned short *pEv
         return 0;
     }
 }
-// FUNCTION: LEMBALL 0x00453250
-void VsNetNetworkLobbyPlayerEntryChild::ResetFlags(void) {
-    m_fDirty40 = 0;
-    m_fDirty3c = 0;
-    m_fDirty38 = 0;
-}
-
 // FUNCTION: LEMBALL 0x00454f00
 void VsNetNetworkLobbyScreen::RemoveUnavailablePlayerEntries(void) {
     VsNetNetworkLobbyVsnetRuntime *pRuntime;
@@ -501,8 +518,8 @@ void VsNetNetworkLobbyScreen::RemoveUnavailablePlayerEntries(void) {
             if (*pnPeerId == 0 || pPeerState->m_fActive == 0) {
                 ((VsNetNetworkLobbyPlayerEntryChild *)
                     ((char *)m_pEntryTable + nEntryOffset))->ResetFlags();
-                if (m_nResolvedSelection == nEntryIndex) {
-                    m_nResolvedSelection = -1;
+                if (m_nCurrentSelectedEntry == nEntryIndex) {
+                    m_nCurrentSelectedEntry = -1;
                 }
             }
             nEntryOffset += 0x44;
@@ -512,7 +529,7 @@ void VsNetNetworkLobbyScreen::RemoveUnavailablePlayerEntries(void) {
         } while (nEntryOffset < 0x2a8);
     }
 
-    ThunkRefreshNetworkLobbyPlayerEntries((int)(unsigned long)this);
+    RefreshPlayerEntries();
 }
 
 // Network-lobby player-entry virtual callbacks. These are logical lobby
