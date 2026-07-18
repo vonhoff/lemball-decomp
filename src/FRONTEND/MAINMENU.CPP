@@ -4487,8 +4487,10 @@ static void LEMBALL_FASTCALL ReleaseFunctionalLevelSelectionResources(
     pVariantManager = (LevelVariantRenderManagerView *)
         pScreen->m_abVariantRenderManager14;
     if (pScreen->m_pQueuedVariantManager338 != 0) {
-        DestroyQueuedVariantChildSlotManager(
-            pScreen->m_pQueuedVariantManager338);
+        typedef void *(LEMBALL_FASTCALL *DeleteProc)(void *, int, int);
+        ((DeleteProc)(*(void ***)pScreen->m_pQueuedVariantManager338)[1])(
+            pScreen->m_pQueuedVariantManager338, 0, 1);
+        pScreen->m_pQueuedVariantManager338 = 0;
     }
     if (*(void **)((char *)pScreen + 0x3bc) != 0) {
         ReleaseTypedResourceObjectReference(
@@ -4527,18 +4529,18 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionStatus(
         ->EmitVariantRenderResourceEntry(
             Rect, Point, pScreen->m_nResourceId3D8, 0,
             pScreen->m_pSelector3C4, 0);
-    Point[0] = (short)pLayout[24];
-    Point[1] = (short)pLayout[25];
-    ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
-        ->EmitVariantRenderResourceEntry(
-            Rect, Point, pScreen->m_nResourceId3DC, 0,
-            pScreen->m_pSelector3C0, 0);
     Point[0] = (short)pLayout[18];
     Point[1] = (short)pLayout[19];
     ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
         ->EmitVariantRenderResourceEntry(
             Rect, Point, pScreen->m_nResourceId3E0, 0,
             pScreen->m_pSelector3C8, 0);
+    Point[0] = (short)pLayout[24];
+    Point[1] = (short)pLayout[25];
+    ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
+        ->EmitVariantRenderResourceEntry(
+            Rect, Point, pScreen->m_nResourceId3DC, 0,
+            pScreen->m_pSelector3C0, 0);
 
     if (pScreen->m_fNetworkScreen8C != 0) {
         Point[0] = (short)pLayout[42];
@@ -4610,7 +4612,7 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionFrame(
     ((GameMainMenuRenderEntryInterface *)pScreen->m_abRenderChild398)
         ->AppendToQueue(pScreen->m_pRenderContext88);
     pFramePoint = pScreen->m_pLayout3D4 +
-        (pScreen->m_fNetworkScreen8C == 0 ? 0 : 36);
+        (pScreen->m_fNetworkScreen8C == 0 ? 12 : 48);
     EmitScreenFrameRect(
         pScreen,
         (short)pScreen->m_pLayout3D4[10],
