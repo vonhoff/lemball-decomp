@@ -1344,6 +1344,7 @@ struct LevelScreenTerrainRenderView {
     void EmitVariantStripPassB(int nTileX, int nTileY, int cEntries);
     void BuildStaticRegionEntries(const short *pRegion);
     void DrawStaticRenderEntry(int iEntry, unsigned short nDepth);
+    void DrawStaticDepthEntries(void);
 };
 
 // FUNCTION: LEMBALL 0x00430a50
@@ -2886,6 +2887,39 @@ void LevelScreenTerrainRenderView::DrawStaticRenderEntry(
         (short)(nScreenY - nHeight), pTile[0], nFrameValue);
 }
 
+void LevelScreenTerrainRenderView::DrawStaticDepthEntries(void)
+{
+    char *pScreen;
+    char *pLevelMode;
+    int *pList;
+    char *pEntries;
+    int cEntries;
+    int i;
+    char *pEntry;
+    char *pTile;
+    unsigned short nDepth;
+
+    pScreen = (char *)this;
+    pLevelMode = *(char **)(pScreen + 0x96c);
+    if (pLevelMode == 0) return;
+    pList = *(int **)(pLevelMode + 0x8c);
+    if (pList == 0) return;
+    pEntries = (char *)(unsigned long)pList[0];
+    cEntries = pList[1];
+    if (pEntries == 0 || cEntries <= 0 || cEntries > 0x10000) return;
+    *(char **)(pScreen + 0x2220) = pEntries;
+    *(int *)(pScreen + 0x2224) = cEntries;
+    *(int *)(*(char **)(pScreen + 0xa40) + 0xac) = 0x80000;
+    for (i = 0; i < cEntries; ++i) {
+        pEntry = pEntries + i * 0x0c;
+        pTile = *(char **)(pEntry + 8);
+        if (pTile == 0) continue;
+        nDepth = (unsigned short)(
+            *(short *)(pEntry + 4) + *(short *)(pTile + 8));
+        DrawStaticRenderEntry(i, nDepth);
+    }
+}
+
 void RenderReconstructedLevelScreenTerrain(void *pObject)
 {
     char *pScreen;
@@ -2917,6 +2951,7 @@ void RenderReconstructedLevelScreenTerrain(void *pObject)
     Region[2] = 0;
     Region[3] = 0;
     ((LevelScreenTerrainRenderView *)pScreen)->BuildStaticRegionEntries(Region);
+    ((LevelScreenTerrainRenderView *)pScreen)->DrawStaticDepthEntries();
     *(int *)((char *)pManager + 0xac) = 0;
 }
 
