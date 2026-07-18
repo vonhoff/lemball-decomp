@@ -18,6 +18,7 @@
 #include <new>
 #endif
 #include <string.h>
+#include <stdlib.h>
 
 extern "C" DWORD WINAPI timeGetTime(void);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
@@ -1343,6 +1344,8 @@ struct LevelScreenTerrainRenderView {
     void EmitVariantStripPassA(int nTileX, int nTileY, int cEntries);
     void EmitVariantStripPassB(int nTileX, int nTileY, int cEntries);
     void BuildStaticRegionEntries(const short *pRegion);
+    void PrepareAndSortDynamicDepthEntries(void);
+    short ComputeDynamicRenderEntrySortKey(int iEntry);
     void DrawStaticRenderEntry(int iEntry, unsigned short nDepth);
     void DrawStaticDepthEntries(void);
 };
@@ -2848,6 +2851,52 @@ void LevelScreenTerrainRenderView::BuildStaticRegionEntries(
     }
 }
 
+// FUNCTION: LEMBALL 0x0043ff60
+static int CompareLevelDynamicRenderEntryDepth(
+    const void *pLeft, const void *pRight)
+{
+    return *(const int *)((const char *)pLeft + 0x48) -
+           *(const int *)((const char *)pRight + 0x48);
+}
+
+// FUNCTION: LEMBALL 0x0043ff70
+void LevelScreenTerrainRenderView::PrepareAndSortDynamicDepthEntries(void)
+{
+    char *pScreen;
+    char *pEntry;
+    int cEntries;
+    int i;
+    int nX;
+    int nY;
+    int nHeight;
+
+    pScreen = (char *)this;
+    cEntries = *(unsigned short *)(pScreen + 0x964);
+    if (cEntries <= 0 || cEntries > 200 ||
+        *(void **)(pScreen + 0x95c) == 0) return;
+    pEntry = *(char **)(pScreen + 0x95c);
+    for (i = 0; i < cEntries; ++i, pEntry += 0x4c) {
+        *(short *)(pEntry + 0x10) = (short)*(int *)(pEntry + 4);
+        *(short *)(pEntry + 0x12) = (short)*(int *)(pEntry + 8);
+        nX = *(int *)(pEntry + 4);
+        nY = *(int *)(pEntry + 8);
+        nHeight = *(int *)(pEntry + 0x0c);
+        ((LevelViewRotationTransform *)*(void **)(pScreen + 0x914))
+            ->TransformTileInPlace(&nX, &nY);
+        *(int *)(pEntry + 4) = nX - *(int *)(pScreen + 0x918);
+        *(int *)(pEntry + 8) =
+            nY - nHeight - *(int *)(pScreen + 0x91c);
+        *(int *)(pEntry + 0x0c) = nHeight;
+        if (*(int *)(pEntry + 0x34) != 0) {
+            *(int *)(pScreen + 0x2214) = 1;
+        }
+        *(int *)(pEntry + 0x48) =
+            (unsigned short)ComputeDynamicRenderEntrySortKey(i);
+    }
+    qsort(*(void **)(pScreen + 0x95c), cEntries, 0x4c,
+          CompareLevelDynamicRenderEntryDepth);
+}
+
 // FUNCTION: LEMBALL 0x00440490
 void LevelScreenTerrainRenderView::DrawStaticRenderEntry(
     int iEntry, unsigned short nDepth)
@@ -2920,6 +2969,36 @@ void LevelScreenTerrainRenderView::DrawStaticDepthEntries(void)
     }
 }
 
+// FUNCTION: LEMBALL 0x004407e0
+short LevelScreenTerrainRenderView::ComputeDynamicRenderEntrySortKey(
+    int iEntry)
+{
+    char *pScreen;
+    char *pEntry;
+    int nType;
+    int nTileX;
+    int nTileY;
+    int nHeight;
+    int nDepth;
+
+    pScreen = (char *)this;
+    pEntry = *(char **)(pScreen + 0x95c) + iEntry * 0x4c;
+    nType = *(int *)(pEntry + 0x28);
+    if (nType == 0x18 || nType == 0x1f) return 0x7fff;
+    nTileX = *(short *)(pEntry + 0x10);
+    nTileY = *(short *)(pEntry + 0x12);
+    if (nType == 0x19 || nType == 0x1a) {
+        nTileX += 0x10;
+        nTileY += 0x10;
+    } else if (nType == 0x34) {
+        nTileX = (nTileX - 8) & ~0x0f;
+        nTileY = (nTileY - 8) & ~0x0f;
+    }
+    nHeight = *(short *)(pEntry + 0x0c);
+    nDepth = ((nTileX / 0x10) + (nTileY / 0x10)) * 0x40 + 4;
+    return (short)(nDepth + nHeight + 1);
+}
+
 void RenderReconstructedLevelScreenTerrain(void *pObject)
 {
     char *pScreen;
@@ -2951,6 +3030,8 @@ void RenderReconstructedLevelScreenTerrain(void *pObject)
     Region[2] = 0;
     Region[3] = 0;
     ((LevelScreenTerrainRenderView *)pScreen)->BuildStaticRegionEntries(Region);
+    ((LevelScreenTerrainRenderView *)pScreen)
+        ->PrepareAndSortDynamicDepthEntries();
     ((LevelScreenTerrainRenderView *)pScreen)->DrawStaticDepthEntries();
     *(int *)((char *)pManager + 0xac) = 0;
 }
