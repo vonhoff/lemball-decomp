@@ -1644,8 +1644,7 @@ void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
     pScreen->m_nTimedVariantResourceId394 = 0;
     pScreen->m_pTimedFrameSelector34C = 0;
     pScreen->m_pMappedListResources98 = 0;
-    pScreen->m_dwConstructionTimeBC =
-        ((RenderDispatchQueue *)g_pSharedRenderDispatchQueue)->m_nReserved30;
+    pScreen->m_dwConstructionTimeBC = timeGetTime();
     return pObject;
 }
 
