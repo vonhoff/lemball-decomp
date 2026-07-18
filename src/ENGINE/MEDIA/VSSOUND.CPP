@@ -3636,37 +3636,7 @@ void VsSoundMciMusicBackend::PrepareMciMusicTrack(int nTrackHandle, int nMusicRe
     nMciError = mciSendCommandA(0, 0x803, 0x3200, (DWORD_PTR)&OpenParms);
     --pStringResource->m_nLockCount08;
     ReleaseTypedResourceObjectReference(pStringResource);
-    if (nMciError == 0) {
-        pBackend->m_uDeviceId = OpenParms.wDeviceID;
-        SeekParms.dwCallback = 0;
-        nMciError = mciSendCommandA(OpenParms.wDeviceID, 0x807, 0x100, (DWORD_PTR)&SeekParms);
-        if (nMciError == 0) {
-            SetParms.dwTimeFormat = 0;
-            nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x80d, 0x400, (DWORD_PTR)&SetParms);
-            if (nMciError == 0) {
-                pBackend->m_fTrackPlaying = 0;
-                pBackend->m_fTrackPaused = 0;
-            } else {
-                mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
-                g_pErrorOutputStream->AppendCStringToStream(
-                    "Error!     Unable to Prepare Music! (Time)\n");
-                g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
-                    ->AppendCStringToStream(szMciErrorText)
-                    ->AppendCStringToStream("\n");
-                pBackend->m_nPreparedTrackHandle = 0;
-                g_nPreparedMciMusicTrackHandle = 0;
-            }
-        } else {
-            mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
-            g_pErrorOutputStream->AppendCStringToStream(
-                "Error!     Unable to Prepare Music (Seek)!\n");
-            g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
-                ->AppendCStringToStream(szMciErrorText)
-                ->AppendCStringToStream("\n");
-            pBackend->m_nPreparedTrackHandle = 0;
-            g_nPreparedMciMusicTrackHandle = 0;
-        }
-    } else {
+    if (nMciError != 0) {
         mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
         g_pErrorOutputStream->AppendCStringToStream(
             "Error!     Unable to Prepare Music (Open) ");
@@ -3677,6 +3647,36 @@ void VsSoundMciMusicBackend::PrepareMciMusicTrack(int nTrackHandle, int nMusicRe
             ->AppendCStringToStream("\n");
         pBackend->m_nPreparedTrackHandle = 0;
         g_nPreparedMciMusicTrackHandle = 0;
+    } else {
+        pBackend->m_uDeviceId = OpenParms.wDeviceID;
+        SeekParms.dwCallback = 0;
+        nMciError = mciSendCommandA(OpenParms.wDeviceID, 0x807, 0x100, (DWORD_PTR)&SeekParms);
+        if (nMciError != 0) {
+            mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
+            g_pErrorOutputStream->AppendCStringToStream(
+                "Error!     Unable to Prepare Music (Seek)!\n");
+            g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
+                ->AppendCStringToStream(szMciErrorText)
+                ->AppendCStringToStream("\n");
+            pBackend->m_nPreparedTrackHandle = 0;
+            g_nPreparedMciMusicTrackHandle = 0;
+        } else {
+            SetParms.dwTimeFormat = 0;
+            nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x80d, 0x400, (DWORD_PTR)&SetParms);
+            if (nMciError != 0) {
+                mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
+                g_pErrorOutputStream->AppendCStringToStream(
+                    "Error!     Unable to Prepare Music! (Time)\n");
+                g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
+                    ->AppendCStringToStream(szMciErrorText)
+                    ->AppendCStringToStream("\n");
+                pBackend->m_nPreparedTrackHandle = 0;
+                g_nPreparedMciMusicTrackHandle = 0;
+            } else {
+                pBackend->m_fTrackPlaying = 0;
+                pBackend->m_fTrackPaused = 0;
+            }
+        }
     }
 
     BasePath.DestroyDynamicCString();
