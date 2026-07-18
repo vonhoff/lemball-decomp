@@ -17,6 +17,7 @@
 #else
 #include <new>
 #endif
+#include <string.h>
 
 extern "C" DWORD WINAPI timeGetTime(void);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
@@ -635,6 +636,7 @@ extern void *LoadPalResource(int nResourceId);
 extern void *LoadZrleOnlyListResource(int nResourceId);
 extern void *LoadZrleResource(int nResourceId);
 extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void *pResourceObject);
+extern void *g_pSharedRenderDispatchQueue;
 
 void LEMBALL_FASTCALL SetStatusIndicatorActive(
     void *pObject, int nUnused, int fActive);
@@ -1298,6 +1300,99 @@ static void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateEntry00432B20(
     pDispatchObject = (void *)(unsigned long)(pDispatchBase + 0x40 + pOwner);
     ((LevelOneArgVirtualProc)(*(void ***)pDispatchObject)[1])(
         pDispatchObject, 0, pObject);
+}
+
+static short GetLevelActionPanelListEntryDimension(
+    void *pResource, int nOffset)
+{
+    char *pEntry;
+
+    if (pResource == 0) {
+        return 0;
+    }
+    pEntry = *(char **)((char *)pResource + 0x78);
+    if (pEntry == 0) {
+        return 0;
+    }
+    return *(short *)(pEntry + nOffset);
+}
+
+void *ConstructLevelScreenActionPanelResources(
+    void *pObject, void *pLevelScreen)
+{
+    char *pPanel;
+    char *pScreen;
+    char *pPrimaryContext;
+    int nScale;
+    int nContextWidth;
+    int nContextHeight;
+
+    pPanel = (char *)pObject;
+    pScreen = (char *)pLevelScreen;
+    memset(pPanel, 0, 0x58);
+    InitializeRenderQueueNodeBase(pPanel);
+    *(void **)(pPanel + 0x10) = pScreen;
+    *(void **)(pPanel + 0x14) = *(void **)(pScreen + 0x978);
+    *(void **)(pPanel + 0x18) = *(void **)(pScreen + 0x96c);
+    *(void **)(pPanel + 0x30) = LoadZrleOnlyListResource(0x2d);
+    *(void **)(pPanel + 0x34) = LoadZrleOnlyListResource(0x2a);
+    *(void **)(pPanel + 0x38) = LoadZrleOnlyListResource(0x2c);
+    *(void **)(pPanel + 0x3c) = LoadZrleOnlyListResource(0x2b);
+    *(short *)(pPanel + 0x44) = GetLevelActionPanelListEntryDimension(
+        *(void **)(pPanel + 0x34), 0x4c);
+    *(short *)(pPanel + 0x46) = GetLevelActionPanelListEntryDimension(
+        *(void **)(pPanel + 0x34), 0x4e);
+    *(short *)(pPanel + 0x48) = GetLevelActionPanelListEntryDimension(
+        *(void **)(pPanel + 0x38), 0x4c);
+    *(short *)(pPanel + 0x4a) = GetLevelActionPanelListEntryDimension(
+        *(void **)(pPanel + 0x38), 0x4e);
+    *(short *)(pPanel + 0x4c) = GetLevelActionPanelListEntryDimension(
+        *(void **)(pPanel + 0x30), 0x4c);
+    *(short *)(pPanel + 0x4e) = GetLevelActionPanelListEntryDimension(
+        *(void **)(pPanel + 0x30), 0x4e);
+    *(short *)(pPanel + 0x50) = (short)(
+        *(short *)(pPanel + 0x4c) +
+        (*(short *)(pPanel + 0x48) + *(short *)(pPanel + 0x44)) * 4);
+
+    pPrimaryContext = *(char **)(pPanel + 0x14);
+    nScale = *(int *)(pPrimaryContext + 0x38);
+    if (nScale == 0) {
+        nScale = 1;
+    }
+    if (*(short *)(pPrimaryContext + 0x10) *
+            *(short *)(pPrimaryContext + 0x12) == 0) {
+        nContextWidth = *(short *)(pPrimaryContext + 8);
+        nContextHeight = *(short *)(pPrimaryContext + 10);
+    } else {
+        nContextWidth = *(short *)(pPrimaryContext + 0x10);
+        nContextHeight = *(short *)(pPrimaryContext + 0x12);
+    }
+    *(short *)(pPanel + 0x54) = (short)(
+        (nContextWidth / nScale - *(short *)(pPanel + 0x50)) / 2);
+    *(short *)(pPanel + 0x56) = (short)(
+        nContextHeight / nScale - *(short *)(pPanel + 0x4e));
+    if (g_pSharedRenderDispatchQueue != 0) {
+        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+            ->RegisterOrderedRenderDispatchClient(pPanel, 0);
+    }
+    return pPanel;
+}
+
+void DestroyLevelScreenActionPanelResources(void *pObject) {
+    char *pPanel;
+    int i;
+
+    pPanel = (char *)pObject;
+    if (g_pSharedRenderDispatchQueue != 0) {
+        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+            ->UnregisterOrderedRenderDispatchClient(pPanel, 0);
+    }
+    for (i = 0x3c; i >= 0x30; i -= 4) {
+        if (*(void **)(pPanel + i) != 0) {
+            ReleaseTypedResourceObjectReference(*(void **)(pPanel + i));
+            *(void **)(pPanel + i) = 0;
+        }
+    }
 }
 
 // FUNCTION: LEMBALL 0x00432b50
