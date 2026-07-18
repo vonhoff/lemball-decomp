@@ -274,16 +274,6 @@ typedef LONG (__stdcall *VsSoundDirectSoundUnlockProc)(
 
 void __fastcall DestroyAudioManager(void *pAudioManager);
 void __fastcall RefreshAudioManagerBackendHandles(void *pAudioManager);
-void LEMBALL_FASTCALL StartRegisteredVariantResourceMusic(
-    void *pAudioManager, int, int hMusic);
-void LEMBALL_FASTCALL DispatchChildInterfaceSlot18IfReady(
-    void *pAudioManager, int, int hMusic);
-void LEMBALL_FASTCALL InvokeAudioManagerEmbeddedSlot1cIfMusicActive(
-    void *pAudioManager, int, int hMusic);
-void LEMBALL_FASTCALL StopVariantResourceMusicPlayback(
-    void *pAudioManager, int, int hMusic);
-void LEMBALL_FASTCALL UnregisterVariantResourceMusicHandle(
-    void *pAudioManager, int, int hMusic);
 char *__fastcall BuildAudioManagerDescriptionString(void *pAudioManager);
 int InitializeGlobalAudioManager(int nMusicResourceBase,
                                  int cMusicResources,
@@ -1454,68 +1444,63 @@ int VsSoundManager::RegisterVariantResourceMusicHandle(
 }
 
 // FUNCTION: LEMBALL 0x0045b330
-void LEMBALL_FASTCALL StartRegisteredVariantResourceMusic(
-    void *pAudioManager, int, int hMusic)
+void VsSoundManager::StartRegisteredVariantResourceMusic(int hMusic)
 
 {
     VsSoundBackendControlDispatch *pControl;
 
-    if (*(int *)((char *)pAudioManager + 0xc) == 1 && hMusic != 0 &&
-        *(int *)((char *)pAudioManager + 0x1c) == 1) {
-        pControl = *(VsSoundBackendControlDispatch **)((char *)pAudioManager + 0x34);
+    if (*(int *)((char *)this + 0xc) == 1 && hMusic != 0 &&
+        *(int *)((char *)this + 0x1c) == 1) {
+        pControl = *(VsSoundBackendControlDispatch **)((char *)this + 0x34);
         pControl->StartMusic(hMusic);
     }
 }
 
 // FUNCTION: LEMBALL 0x0045b370
-void LEMBALL_FASTCALL DispatchChildInterfaceSlot18IfReady(
-    void *pAudioManager, int, int hMusic)
+void VsSoundManager::DispatchChildInterfaceSlot18IfReady(int hMusic)
 
 {
     VsSoundBackendControlDispatch *pControl;
 
-    if (*(int *)((char *)pAudioManager + 0xc) == 1 && *(int *)((char *)pAudioManager + 0x1c) == 1) {
-        pControl = *(VsSoundBackendControlDispatch **)((char *)pAudioManager + 0x34);
+    if (*(int *)((char *)this + 0xc) == 1 && *(int *)((char *)this + 0x1c) == 1) {
+        pControl = *(VsSoundBackendControlDispatch **)((char *)this + 0x34);
         pControl->DispatchMusicSlot18(hMusic);
     }
 }
 
 // FUNCTION: LEMBALL 0x0045b390
-void LEMBALL_FASTCALL InvokeAudioManagerEmbeddedSlot1cIfMusicActive(
-    void *pAudioManager, int, int hMusic)
+void VsSoundManager::InvokeAudioManagerEmbeddedSlot1cIfMusicActive(int hMusic)
 
 {
     VsSoundBackendControlDispatch *pControl;
 
-    if (*(int *)((char *)pAudioManager + 0xc) == 1 && *(int *)((char *)pAudioManager + 0x1c) == 1) {
-        pControl = *(VsSoundBackendControlDispatch **)((char *)pAudioManager + 0x34);
+    if (*(int *)((char *)this + 0xc) == 1 && *(int *)((char *)this + 0x1c) == 1) {
+        pControl = *(VsSoundBackendControlDispatch **)((char *)this + 0x34);
         pControl->DispatchMusicSlot1c(hMusic);
     }
 }
 
 // FUNCTION: LEMBALL 0x0045b3b0
-void LEMBALL_FASTCALL StopVariantResourceMusicPlayback(
-    void *pAudioManager, int, int hMusic)
+void VsSoundManager::StopVariantResourceMusicPlayback(int hMusic)
 
 {
     VsSoundBackendControlDispatch *pControl;
 
-    if (*(int *)((char *)pAudioManager + 0xc) == 1 && *(int *)((char *)pAudioManager + 0x1c) == 1) {
-        pControl = *(VsSoundBackendControlDispatch **)((char *)pAudioManager + 0x34);
+    if (*(int *)((char *)this + 0xc) == 1 && *(int *)((char *)this + 0x1c) == 1) {
+        pControl = *(VsSoundBackendControlDispatch **)((char *)this + 0x34);
         pControl->StopMusic(hMusic);
     }
 }
 
 // FUNCTION: LEMBALL 0x0045b3d0
-void LEMBALL_FASTCALL UnregisterVariantResourceMusicHandle(
-    void *pAudioManager, int, int hMusic)
+void VsSoundManager::UnregisterVariantResourceMusicHandle(int hMusic)
 
 {
     VsSoundBackendControlDispatch *pControl;
 
-    if (*(int *)((char *)pAudioManager + 0xc) == 1 && hMusic != 0 &&
-        *(int *)((char *)pAudioManager + 0x1c) == 1) {
-        pControl = *(VsSoundBackendControlDispatch **)((char *)pAudioManager + 0x34);
+    if (*(int *)((char *)this + 0xc) == 1 && hMusic != 0 &&
+        *(int *)((char *)this + 0x1c) == 1) {
+        pControl = *(VsSoundBackendControlDispatch **)((char *)this + 0x34);
         pControl->UnregisterMusicHandle(hMusic);
     }
 }

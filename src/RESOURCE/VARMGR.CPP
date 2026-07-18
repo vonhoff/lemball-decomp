@@ -129,7 +129,8 @@ static int g_GAME_VariantResourceEntryEffectTable[44][3] = {
 };
 // GLOBAL: LEMBALL 0x0049ed98
 int g_fVariantResourceEffectsEnabled = 1;
-int g_fVariantResourceMusicEnabled = 0;
+// GLOBAL: LEMBALL 0x0049ed9c
+int g_fVariantResourceMusicEnabled = 1;
 
 extern void *g_pVariantResourceEntryManager;
 extern void *g_pSessionRandomState;
@@ -262,8 +263,11 @@ void GameVariantResourceEntryManager::SetVariantResourceMusicEnabled(int fEnable
         if (g_fVariantResourceMusicEnabled != 0) {
             return;
         }
-    } else if (g_fVariantResourceMusicEnabled == 0) {
-        return;
+    }
+    if (fEnabled == 0) {
+        if (g_fVariantResourceMusicEnabled == 0) {
+            return;
+        }
     }
 
     if (g_fMusicEnabled != 0 && *(int *)((char *)pManager + 0x2c0) != 0) {
@@ -271,15 +275,17 @@ void GameVariantResourceEntryManager::SetVariantResourceMusicEnabled(int fEnable
             hMusic = ((VsSoundManager *)g_pAudioManager)->RegisterVariantResourceMusicHandle(
                 *(int *)((char *)pManager + 0x2c0), 1);
             *(int *)((char *)pManager + 0x2c4) = hMusic;
-            StartRegisteredVariantResourceMusic(
-                g_pAudioManager, 0, hMusic);
+            ((VsSoundManager *)g_pAudioManager)
+                ->StartRegisteredVariantResourceMusic(hMusic);
             g_fVariantResourceMusicEnabled = fEnabled;
             return;
         }
-        StopVariantResourceMusicPlayback(
-            g_pAudioManager, 0, *(int *)((char *)pManager + 0x2c4));
-        UnregisterVariantResourceMusicHandle(
-            g_pAudioManager, 0, *(int *)((char *)pManager + 0x2c4));
+        ((VsSoundManager *)g_pAudioManager)
+            ->StopVariantResourceMusicPlayback(
+                *(int *)((char *)pManager + 0x2c4));
+        ((VsSoundManager *)g_pAudioManager)
+            ->UnregisterVariantResourceMusicHandle(
+                *(int *)((char *)pManager + 0x2c4));
         g_fVariantResourceMusicEnabled = fEnabled;
     }
 }

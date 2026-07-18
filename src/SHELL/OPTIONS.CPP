@@ -25,6 +25,7 @@ static const char g_STARTUP_SwitchGraphics[] = "/GRAPHICS";
 int g_fStartupAnimationsEnabled = 0;
 int g_fSkipStartupSequence = 0;
 int g_fMusicOptionAvailable = 0;
+// GLOBAL: LEMBALL 0x004a6278
 int g_fMusicEnabled = 0;
 int g_fEffectsOptionAvailable = 0;
 int g_fEffectsEnabled = 0;

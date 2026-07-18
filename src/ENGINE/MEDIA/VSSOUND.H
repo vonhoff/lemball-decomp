@@ -6,16 +6,6 @@
 void __fastcall DestroyAudioManager(void *pAudioManager);
 void __fastcall RefreshAudioManagerBackendHandles(void *pAudioManager);
 int StopWaveOutPlayback(void *pBackend);
-void __fastcall StartRegisteredVariantResourceMusic(
-    void *pAudioManager, int nUnused, int hMusic);
-void __fastcall DispatchChildInterfaceSlot18IfReady(
-    void *pAudioManager, int nUnused, int hMusic);
-void __fastcall InvokeAudioManagerEmbeddedSlot1cIfMusicActive(
-    void *pAudioManager, int nUnused, int hMusic);
-void __fastcall StopVariantResourceMusicPlayback(
-    void *pAudioManager, int nUnused, int hMusic);
-void __fastcall UnregisterVariantResourceMusicHandle(
-    void *pAudioManager, int nUnused, int hMusic);
 char *__fastcall BuildAudioManagerDescriptionString(void *pAudioManager);
 int InitializeGlobalAudioManager(int nMusicResourceBase,
                                  int cMusicResources,
@@ -49,6 +39,11 @@ struct VsSoundManager {
     void SetAudioManagerEffectResourceContext(void *pPrimaryContext);
     void SetAudioManagerMusicResourceContext(void *pPrimaryContext);
     int RegisterVariantResourceMusicHandle(int nMusicResourceId, int nUnused);
+    void StartRegisteredVariantResourceMusic(int hMusic);
+    void DispatchChildInterfaceSlot18IfReady(int hMusic);
+    void InvokeAudioManagerEmbeddedSlot1cIfMusicActive(int hMusic);
+    void StopVariantResourceMusicPlayback(int hMusic);
+    void UnregisterVariantResourceMusicHandle(int hMusic);
     void SetAudioManagerStartupMusicName(const char *pszMusicName);
     void SetAudioManagerMusicEnabledFlag(int fEnabled);
     void PlayVariantResourceEffectId(int nEffectResourceId);
