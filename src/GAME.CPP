@@ -1342,14 +1342,8 @@ void *GameScreenObject::ConstructIntroSequenceScreen(void *pPrimaryContext,
 
 
 void *GameScreenObject::ConstructOptionsScreen(void *pPrimaryContext, void *pWindowOwnerContext, short *paRect) {
-    void *pScreenObject = this;
-    (void)pPrimaryContext;
-    (void)pWindowOwnerContext;
-    (void)paRect;
-    InitializeGameStubVtables();
-    memset(pScreenObject, 0, 0x3ac);
-    *(void **)pScreenObject = g_GAME_GenericScreenVtableSlots;
-    return pScreenObject;
+    return ConstructFunctionalOptionsScreen(
+        this, 0, pPrimaryContext, pWindowOwnerContext, paRect);
 }
 
 void *GameScreenObject::ConstructLevelSelectionScreen(void *pPrimaryContext,

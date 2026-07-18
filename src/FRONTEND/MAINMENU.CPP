@@ -7,6 +7,7 @@
 #include "SHELL/SHELLUI.H"
 #include "SHELL/OPTIONS.H"
 #include "RESOURCE/MOGLOAD.H"
+#include "RESOURCE/VARMGR.H"
 #include "LEVEL/DRAWTEXT.H"
 #include "FRONTEND/MENUSEL.H"
 #include "ENGINE/GDI/VSGEOM.H"
@@ -72,6 +73,8 @@ extern void *g_pSharedRenderDispatchQueue;
 extern void *g_pMainResourceArchive;
 extern int g_nSelectedNetworkLobbyPeerId;
 extern void *g_pSessionRandomState;
+extern void *g_pVariantResourceEntryManager;
+extern void SetVariantResourceEffectsEnabled(int fEnabled);
 
 struct GameProgressiveSelectorVtableView {
     virtual int SelectFrame(void) = 0;
@@ -205,6 +208,14 @@ struct GameMainMenuScreenView : public GameFramedScreenBase {
     int m_nSharedSelection3B8;
 };
 
+struct GameOptionsScreenView : public GameFramedScreenBase {
+    int m_fZoomDisabled398;
+    int m_nBackSelection39C;
+    int m_nReserved3A0;
+    int m_fSkipStartupSequence3A4;
+    const int *m_panWidgetLayout3A8;
+};
+
 struct GameLevelSelectionScreenView : public GameFramedScreenBase {
     unsigned char m_abRenderChild398[0x24];
     void *m_pLevelBitmap3BC;
@@ -235,6 +246,8 @@ typedef char GameFramedScreenBase_size_must_be_0x398[
     sizeof(GameFramedScreenBase) == 0x398 ? 1 : -1];
 typedef char GameMainMenuScreenView_size_must_be_0x3bc[
     sizeof(GameMainMenuScreenView) == 0x3bc ? 1 : -1];
+typedef char GameOptionsScreenView_size_must_be_0x3ac[
+    sizeof(GameOptionsScreenView) == 0x3ac ? 1 : -1];
 typedef char GameLevelSelectionScreenView_size_must_be_0x488[
     sizeof(GameLevelSelectionScreenView) == 0x488 ? 1 : -1];
 
@@ -350,6 +363,14 @@ static void *LEMBALL_FASTCALL DeleteMainMenuScreen(
     void *pObject, int, int fDelete);
 static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreen(
     void *pObject, int nUnusedEdx, int fDelete);
+static void LEMBALL_FASTCALL InitializeOptionsScreenWidgets(void *pObject);
+static void LEMBALL_FASTCALL ReleaseOptionsScreenWidgets(void *pObject);
+static int LEMBALL_FASTCALL HandleOptionsScreenInput(
+    void *pObject, int nUnusedEdx, void *pEvent);
+static void *LEMBALL_FASTCALL DeleteOptionsScreen(
+    void *pObject, int nUnusedEdx, int fDelete);
+static void *LEMBALL_FASTCALL DeleteAdjustedOptionsScreen(
+    void *pObject, int nUnusedEdx, int fDelete);
 
 // GLOBAL: LEMBALL 0x0049f4f0
 int g_fNextMainMenuTimeoutIsTitle = 1;
@@ -378,6 +399,31 @@ static const int g_GAME_MainMenuWidgetResourcesCompact[12] = {
     0x1db, 0x1da, 0x1e4, 0x1f7, 0x1dd, 0,
     0x1e0, 0x1e1, 0x1e2, 0x1e3, 0x1ea, 0x1f8
 };
+
+// GLOBAL: LEMBALL 0x0049f578
+static const int g_GAME_OptionsZoomResourcesStandard[2] = {0x1b5, 0x1b4};
+static const int g_GAME_OptionsEffectsResourcesStandard[2] = {0x1d5, 0x1d2};
+static const int g_GAME_OptionsMusicResourcesStandard[2] = {0x1d3, 0x1d4};
+static const int g_GAME_OptionsBackResourcesStandard[2] = {0x1b3, 0x1ab};
+static const int g_GAME_OptionsIntroResourcesStandard[2] = {0x1bb, 0x1bc};
+static const int g_GAME_OptionsZoomResourcesCompact[2] = {0x1e9, 0x1e8};
+static const int g_GAME_OptionsEffectsResourcesCompact[2] = {0x208, 0x205};
+static const int g_GAME_OptionsMusicResourcesCompact[2] = {0x206, 0x207};
+static const int g_GAME_OptionsBackResourcesCompact[2] = {0x1e7, 0x1df};
+static const int g_GAME_OptionsIntroResourcesCompact[2] = {0x1ef, 0x1f0};
+static const int g_GAME_OptionsLayoutStandard[12] = {
+    0x20, 0x74, 0x1e0, 0x74, 0x30, 0xe8,
+    0x1d0, 0xe8, 0x40, 0x15c, 0x1a0, 0x15c
+};
+static const int g_GAME_OptionsLayoutCompact[12] = {
+    0x10, 0x3a, 0xf0, 0x3a, 0x18, 0x74,
+    0xe8, 0x74, 0x20, 0xae, 0xd0, 0xae
+};
+
+// GLOBAL: LEMBALL 0x004a7770
+int g_nOptionsEffectsSliderValue;
+// GLOBAL: LEMBALL 0x004a7774
+int g_nOptionsMusicSliderValue;
 
 static void *g_GAME_SelectFirstVariantFrameVtable[7];
 
@@ -462,6 +508,34 @@ void *g_GAME_MainMenuCallbackVtable[2] = {
     (void *)VariantResourceBundleNoopThunk,
     0
 };
+
+static void *g_GAME_OptionsScreenVtable[22];
+static void *g_GAME_OptionsQueueVtable[4];
+static int g_fOptionsScreenVtableInitialized;
+
+static void InitializeFunctionalOptionsVtables(void) {
+    int i;
+
+    if (g_fOptionsScreenVtableInitialized != 0) {
+        return;
+    }
+    for (i = 0; i < 22; ++i) {
+        g_GAME_OptionsScreenVtable[i] = g_GAME_MainMenuScreenVtable[i];
+    }
+    g_GAME_OptionsScreenVtable[0] = (void *)DeleteOptionsScreen;
+    g_GAME_OptionsScreenVtable[14] = (void *)MainMenuSlot13Thunk;
+    g_GAME_OptionsScreenVtable[15] = (void *)HandleOptionsScreenInput;
+    g_GAME_OptionsScreenVtable[16] = (void *)InitializeOptionsScreenWidgets;
+    g_GAME_OptionsScreenVtable[17] = (void *)ReleaseOptionsScreenWidgets;
+    g_GAME_OptionsQueueVtable[0] =
+        (void *)InitializeNonZrleVariantRenderEntry;
+    g_GAME_OptionsQueueVtable[1] =
+        (void *)DeleteAdjustedOptionsScreen;
+    g_GAME_OptionsQueueVtable[2] =
+        (void *)HandleFramedScreenQueueEventThunk;
+    g_GAME_OptionsQueueVtable[3] = 0;
+    g_fOptionsScreenVtableInitialized = 1;
+}
 
 static void *g_GAME_FunctionalLevelSelectionVtable[22];
 static int g_fFunctionalLevelSelectionVtableInitialized;
@@ -1490,7 +1564,237 @@ static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreen(
     return DeleteMainMenuScreen((char *)pObject - 4, nUnusedEdx, fDelete);
 }
 
-// FUNCTION: LEMBALL 0x0044c440
+void *LEMBALL_FASTCALL ConstructFunctionalOptionsScreen(
+    void *pObject, int, void *pPrimaryContext,
+    void *pRenderContext, short *paSize) {
+    GameOptionsScreenView *pScreen;
+
+    pScreen = (GameOptionsScreenView *)pObject;
+    ConstructFramedScreenBaseFields(
+        pScreen, 0, pPrimaryContext, pRenderContext, paSize,
+        3, 0, 0, 0, 0, 0);
+    InitializeFunctionalOptionsVtables();
+    pScreen->m_pVtable00 = g_GAME_OptionsScreenVtable;
+    *(void ***)pScreen->m_abRenderQueueNode04 =
+        g_GAME_OptionsQueueVtable;
+    *(void ***)pScreen->m_abVariantRenderManager14 =
+        g_GAME_MainMenuCallbackVtable;
+
+    if (g_fMusicOptionAvailable == 0) {
+        g_fMusicEnabled = 0;
+    }
+    if (g_fEffectsOptionAvailable == 0) {
+        g_fEffectsEnabled = 0;
+    }
+    if (g_fZoomOptionAvailable == 0) {
+        g_fZoomedViewportEnabled = 0;
+    }
+    if (g_fStartupAnimationsEnabled == 0) {
+        g_fSkipStartupSequence = 1;
+    }
+    pScreen->m_fZoomDisabled398 = g_fZoomedViewportEnabled == 0;
+    pScreen->m_fSkipStartupSequence3A4 = g_fSkipStartupSequence;
+    pScreen->m_nReserved3A0 = 0;
+    pScreen->m_nBackSelection39C = 0;
+    g_nOptionsEffectsSliderValue = g_fEffectsEnabled;
+    g_nOptionsMusicSliderValue = g_fMusicEnabled;
+    pScreen->m_fDrawFrameA8 = 1;
+    pScreen->m_fTileBackgroundAC = 1;
+    pScreen->m_fDrawForegroundB0 = 1;
+    ActivateFramedScreenBase(pScreen);
+    return pScreen;
+}
+
+static void LEMBALL_FASTCALL InitializeOptionsScreenWidgets(void *pObject) {
+    GameOptionsScreenView *pScreen;
+    GameMenuSelectorManager *pManager;
+    unsigned char *pForegroundEntry;
+    const int *pZoomResources;
+    const int *pEffectsResources;
+    const int *pMusicResources;
+    const int *pBackResources;
+    const int *pIntroResources;
+    short cxForeground;
+    int fCompact;
+
+    pScreen = (GameOptionsScreenView *)pObject;
+    fCompact = pScreen->m_fCompactLayout32C != 0;
+    if (fCompact == 0) {
+        pScreen->m_panWidgetLayout3A8 = g_GAME_OptionsLayoutStandard;
+        pZoomResources = g_GAME_OptionsZoomResourcesStandard;
+        pEffectsResources = g_GAME_OptionsEffectsResourcesStandard;
+        pMusicResources = g_GAME_OptionsMusicResourcesStandard;
+        pBackResources = g_GAME_OptionsBackResourcesStandard;
+        pIntroResources = g_GAME_OptionsIntroResourcesStandard;
+    } else {
+        pScreen->m_panWidgetLayout3A8 = g_GAME_OptionsLayoutCompact;
+        pZoomResources = g_GAME_OptionsZoomResourcesCompact;
+        pEffectsResources = g_GAME_OptionsEffectsResourcesCompact;
+        pMusicResources = g_GAME_OptionsMusicResourcesCompact;
+        pBackResources = g_GAME_OptionsBackResourcesCompact;
+        pIntroResources = g_GAME_OptionsIntroResourcesCompact;
+        pScreen->m_fZoomDisabled398 = 1;
+    }
+
+    pForegroundEntry = pScreen->m_abRenderEntryGroupC8 + 0x14;
+    cxForeground = *(short *)((char *)pScreen->m_pForegroundBitmapC0 + 0x48);
+    *(short *)(pForegroundEntry + 0) =
+        (short)((pScreen->m_cxScreen37C - cxForeground) / 2);
+    *(short *)(pForegroundEntry + 2) = 0;
+    *(void **)(pForegroundEntry + 0x0c) = pScreen->m_pForegroundBitmapC0;
+    *(int *)(pForegroundEntry + 0x10) = 0x800;
+    *(int *)(pForegroundEntry + 0x14) = 0;
+
+    pManager = (GameMenuSelectorManager *)
+        AllocateVSMemBlock(sizeof(GameMenuSelectorManager));
+    if (pManager == 0) {
+        pScreen->m_pSelectorManager334 = 0;
+        return;
+    }
+    ConstructMenuSelectorManager(
+        pManager, 0, pScreen->m_pPrimaryContext84,
+        pScreen->m_pRenderContext88, 8, fCompact);
+    pScreen->m_pSelectorManager334 = pManager;
+
+    AppendMenuSelectorChild(pManager, 0,
+        pScreen->m_panWidgetLayout3A8[0],
+        pScreen->m_panWidgetLayout3A8[1], pZoomResources,
+        0, fCompact, 1, 0, &pScreen->m_fZoomDisabled398,
+        (int)0xacef0004U);
+    AppendMenuSelectorChild(pManager, 0,
+        pScreen->m_panWidgetLayout3A8[2],
+        pScreen->m_panWidgetLayout3A8[3], pIntroResources,
+        0, 0, 1, 0, &pScreen->m_fSkipStartupSequence3A4,
+        (int)0xacef0007U);
+    AppendMenuSelectorChild(pManager, 0,
+        pScreen->m_panWidgetLayout3A8[4],
+        pScreen->m_panWidgetLayout3A8[5], pEffectsResources,
+        0, 0, 1, 0, &g_nOptionsEffectsSliderValue,
+        (int)0xacef0005U);
+    AppendMenuSelectorChild(pManager, 0,
+        pScreen->m_panWidgetLayout3A8[6],
+        pScreen->m_panWidgetLayout3A8[7], pMusicResources,
+        0, 0, 1, 0, &g_nOptionsMusicSliderValue,
+        (int)0xacef0006U);
+    AppendMenuSelectorChild(pManager, 0,
+        pScreen->m_panWidgetLayout3A8[10],
+        pScreen->m_panWidgetLayout3A8[11], pBackResources,
+        1, 0, 0, 0, &pScreen->m_nBackSelection39C,
+        (int)0xacef0008U);
+    InitializeMenuSelectorCurrentState(pManager, 0, 0);
+    InitializeMenuSelectorChildContext(pManager);
+}
+
+static void LEMBALL_FASTCALL ReleaseOptionsScreenWidgets(void *pObject) {
+    GameOptionsScreenView *pScreen;
+
+    pScreen = (GameOptionsScreenView *)pObject;
+    if (pScreen->m_pSelectorManager334 != 0) {
+        ((GameMainMenuSelectorManagerInterface *)
+             pScreen->m_pSelectorManager334)->Delete((void *)1);
+        pScreen->m_pSelectorManager334 = 0;
+    }
+}
+
+static int LEMBALL_FASTCALL HandleOptionsScreenInput(
+    void *pObject, int, void *pEvent) {
+    GameOptionsScreenView *pScreen;
+    GameMenuSelectorEvent *pSelectorEvent;
+    unsigned int nCommand;
+
+    pScreen = (GameOptionsScreenView *)pObject;
+    pSelectorEvent = (GameMenuSelectorEvent *)pEvent;
+    if (pSelectorEvent->m_nType00 != 0x0c) {
+        ++*(int *)((char *)pScreen + 0x10);
+        return 0;
+    }
+    nCommand = (unsigned int)pSelectorEvent->m_nPayload08;
+    if (nCommand == 0xacef0008U) {
+        pScreen->m_nTransitionStatus378 = 1;
+        pScreen->m_nRequestedMode374 = 2;
+        return 1;
+    }
+    if (nCommand == 0xacef0009U) {
+        pScreen->m_nTransitionStatus378 = 1;
+        pScreen->m_nRequestedMode374 = 0x11;
+        return 1;
+    }
+    if (nCommand >= 0xacef0005U && nCommand <= 0xacef0006U) {
+        return 1;
+    }
+    if (nCommand == 0xacff0000U) {
+        g_nOptionsEffectsSliderValue = pSelectorEvent->m_nPayload0C;
+        return 1;
+    }
+    if (nCommand == 0xacff0001U) {
+        g_nOptionsMusicSliderValue = pSelectorEvent->m_nPayload0C;
+        return 1;
+    }
+    return 0;
+}
+
+static void DestroyOptionsScreen(GameOptionsScreenView *pScreen) {
+    pScreen->m_pVtable00 = g_GAME_OptionsScreenVtable;
+    *(void ***)pScreen->m_abRenderQueueNode04 = g_GAME_OptionsQueueVtable;
+    *(void ***)pScreen->m_abVariantRenderManager14 =
+        g_GAME_MainMenuCallbackVtable;
+    if (pScreen->m_fCompactLayout32C == 0) {
+        g_fZoomedViewportEnabled = pScreen->m_fZoomDisabled398 == 0;
+    }
+    g_fSkipStartupSequence = pScreen->m_fSkipStartupSequence3A4;
+    SetVariantResourceEffectsEnabled(g_nOptionsEffectsSliderValue);
+    if (g_pVariantResourceEntryManager != 0) {
+        ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
+            ->SetVariantResourceMusicEnabled(g_nOptionsMusicSliderValue);
+    }
+    g_fMusicEnabled = g_nOptionsMusicSliderValue;
+    g_fEffectsEnabled = g_nOptionsEffectsSliderValue;
+    if (g_fMusicOptionAvailable == 0) g_fMusicEnabled = 0;
+    if (g_fEffectsOptionAvailable == 0) g_fEffectsEnabled = 0;
+    if (g_fZoomOptionAvailable == 0) g_fZoomedViewportEnabled = 0;
+    if (g_fStartupAnimationsEnabled == 0) g_fSkipStartupSequence = 1;
+    if (pScreen->m_fFrameResourcesLoaded9C != 0) {
+        ReleaseOptionsScreenWidgets(pScreen);
+    }
+    g_pActiveNetworkLobbyScreen = 0;
+    if (pScreen->m_pTimedFrameSelector34C != 0) {
+        FreeVSMemBlock(pScreen->m_pTimedFrameSelector34C);
+        pScreen->m_pTimedFrameSelector34C = 0;
+    }
+    if (g_pSharedRenderDispatchQueue != 0) {
+        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+            ->UnregisterOrderedRenderDispatchClient(
+                pScreen->m_abRenderQueueNode04, 0);
+    }
+    if (pScreen->m_fFrameResourcesLoaded9C != 0) {
+        ReleaseFramedScreenFrameResources(pScreen);
+    }
+    if (pScreen->m_pMappedListResources98 != 0) {
+        ((MappedListResourceTable *)pScreen->m_pMappedListResources98)
+            ->Destroy();
+        FreeVSMemBlock(pScreen->m_pMappedListResources98);
+        pScreen->m_pMappedListResources98 = 0;
+    }
+    ((MogLoadResourceArchive *)g_pMainResourceArchive)
+        ->PruneUnreferencedCachedResourceObjects();
+    DestroyFramedScreenRenderEntryGroup(pScreen->m_abRenderEntryGroupC8);
+    DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
+}
+
+static void *LEMBALL_FASTCALL DeleteOptionsScreen(
+    void *pObject, int, int fDelete) {
+    DestroyOptionsScreen((GameOptionsScreenView *)pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+static void *LEMBALL_FASTCALL DeleteAdjustedOptionsScreen(
+    void *pObject, int nUnusedEdx, int fDelete) {
+    return DeleteOptionsScreen((char *)pObject - 4, nUnusedEdx, fDelete);
+}
+
 static int ConsumeLevelSelectionChangedFlag(void) {
     if (g_fLevelSelectionChanged != 0) {
         g_fLevelSelectionChanged = 0;
