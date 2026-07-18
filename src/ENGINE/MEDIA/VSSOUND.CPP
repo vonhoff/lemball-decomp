@@ -3773,12 +3773,12 @@ void LEMBALL_FASTCALL PauseMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, 
     char szMciErrorText[0x80];
 
     if (nTrackHandle == 0) {
-        AppendCStringToStream(g_pErrorOutputStream,
-                              "Error Call to Pause Music (HL) with Invalid Handle!\n");
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error Call to Pause Music (HL) with Invalid Handle!\n");
     }
     if (pBackend->m_nPreparedTrackHandle != nTrackHandle) {
-        AppendCStringToStream(g_pErrorOutputStream,
-                              "Error Call to Pause (HL) with unknown Handle!\n");
+        g_pErrorOutputStream->AppendCStringToStream(
+            "Error Call to Pause (HL) with unknown Handle!\n");
     }
 
     StatusParms.dwItem = 2;
@@ -3794,16 +3794,16 @@ void LEMBALL_FASTCALL PauseMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, 
     pBackend->m_nPausedTrackPosition = (int)StatusParms.dwReturn;
 
     nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x808, 0, 0);
-    if (nMciError == 0) {
-        pBackend->m_fTrackPlaying = 0;
-        pBackend->m_fTrackPaused = 1;
-    } else {
+    if (nMciError != 0) {
         mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
         g_pErrorOutputStream->AppendCStringToStream(
             "Error!     Unable to Stop Music! (HL)\n");
         g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
             ->AppendCStringToStream(szMciErrorText)
             ->AppendCStringToStream("\n");
+    } else {
+        pBackend->m_fTrackPlaying = 0;
+        pBackend->m_fTrackPaused = 1;
     }
 }
 
