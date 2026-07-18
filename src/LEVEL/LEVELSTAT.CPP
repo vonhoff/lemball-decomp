@@ -1342,6 +1342,7 @@ struct LevelScreenTerrainRenderView {
                                    int nHeight, int cEntries);
     void EmitVariantStripPassA(int nTileX, int nTileY, int cEntries);
     void EmitVariantStripPassB(int nTileX, int nTileY, int cEntries);
+    void BuildStaticRegionEntries(const short *pRegion);
     void DrawStaticRenderEntry(int iEntry, unsigned short nDepth);
 };
 
@@ -2709,6 +2710,140 @@ void LevelScreenTerrainRenderView::EmitVariantStripPassB(
         nTileX += *(int *)(pScreen + 0x170);
         nTileY += *(int *)(pScreen + 0x174);
         nScreenX += 0x20;
+    }
+}
+
+// FUNCTION: LEMBALL 0x0043b4d0
+void LevelScreenTerrainRenderView::BuildStaticRegionEntries(
+    const short *pRegion)
+{
+    static const int s_anTileStepX[4] = { 1, -1, -1, 1 };
+    static const int s_anTileStepY[4] = { -1, -1, 1, 1 };
+    static const int s_anHalfStepX[4] = { 0, 1, 0, -1 };
+    static const int s_anHalfStepY[4] = { 1, 0, -1, 0 };
+    static const int s_anNextRowX[4] = { 1, -1, -1, 1 };
+    static const int s_anNextRowY[4] = { -1, -1, 1, 1 };
+    typedef void (LEMBALL_FASTCALL *QueueProc)(void *, int, void *);
+    char *pScreen;
+    char *pEntry;
+    LevelViewRotationTransform *pTransform;
+    int nRotation;
+    int nWidth;
+    int nHeight;
+    int nRegionX;
+    int nRegionY;
+    int nLeft;
+    int nTop;
+    int nRight;
+    int nBottom;
+    int nTileX;
+    int nTileY;
+    int nStripCount;
+    int nRowCount;
+    int i;
+
+    pScreen = (char *)this;
+    pTransform = (LevelViewRotationTransform *)*(void **)(pScreen + 0x914);
+    nRotation = pTransform->m_nRotation04 & 3;
+    *(int *)(pScreen + 0x170) = s_anTileStepX[nRotation];
+    *(int *)(pScreen + 0x174) = s_anTileStepY[nRotation];
+    *(int *)(pScreen + 0x1464) = 0;
+    nWidth = pRegion[0];
+    nHeight = pRegion[1];
+    nRegionX = pRegion[2];
+    nRegionY = pRegion[3];
+    if (nRegionX + nWidth > *(short *)(pScreen + 0x958))
+        nWidth = *(short *)(pScreen + 0x958) - nRegionX;
+    if (nRegionY + nHeight > *(short *)(pScreen + 0x95a))
+        nHeight = *(short *)(pScreen + 0x95a) - nRegionY;
+    if (nWidth <= 0 || nHeight <= 0) return;
+    i = *(int *)(pScreen + 0x2188);
+    if (i < 210) {
+        pEntry = pScreen + 0x1468 + i * 0x10;
+        *(short *)(pEntry + 4) = (short)nWidth;
+        *(short *)(pEntry + 6) = (short)nHeight;
+        *(short *)(pEntry + 8) = (short)nRegionX;
+        *(short *)(pEntry + 0x0a) = (short)nRegionY;
+        *(int *)(pEntry + 0x0c) = 0;
+        ((QueueProc)(*(void ***)pEntry)[1])(
+            pEntry, 0, *(void **)(pScreen + 0x970));
+        *(int *)(pScreen + 0x2188) = i + 1;
+    }
+
+    nLeft = nRegionX - 0x10;
+    if (nLeft < -0x10) nLeft = -0x10;
+    nTop = nRegionY - 0x18;
+    if (nTop < -0x18) nTop = -0x18;
+    nRight = nLeft + nWidth + 0x20;
+    if (nRight > *(short *)(pScreen + 0x958))
+        nRight = *(short *)(pScreen + 0x958);
+    nBottom = nTop + nHeight + 0x30;
+    if (nBottom > *(short *)(pScreen + 0x95a))
+        nBottom = *(short *)(pScreen + 0x95a);
+    nStripCount = (nRight - nLeft + 0x1f) / 0x20;
+
+    pTransform->TransformScreenToTile(
+        *(int *)(pScreen + 0x918) + nLeft,
+        *(int *)(pScreen + 0x91c) + nTop, &nTileX, &nTileY);
+    nTileX /= 0x10;
+    nTileY /= 0x10;
+    pTransform->TransformTileToScreen(
+        nTileX << 4, nTileY << 4,
+        (int *)(pScreen + 0x184), (int *)(pScreen + 0x188));
+    *(int *)(pScreen + 0x184) -= *(int *)(pScreen + 0x918);
+    *(int *)(pScreen + 0x188) -= *(int *)(pScreen + 0x91c);
+    nRowCount = (nBottom - nTop + 0x0f) / 0x10;
+    for (i = 0; i < nRowCount; ++i) {
+        EmitVariantStripPassA(nTileX, nTileY, nStripCount + 3);
+        *(int *)(pScreen + 0x184) -= 0x10;
+        *(int *)(pScreen + 0x188) += 8;
+        EmitVariantStripPassA(
+            nTileX + s_anHalfStepX[nRotation],
+            nTileY + s_anHalfStepY[nRotation], nStripCount + 4);
+        nTileX += s_anNextRowX[nRotation];
+        nTileY += s_anNextRowY[nRotation];
+        *(int *)(pScreen + 0x184) += 0x10;
+        *(int *)(pScreen + 0x188) += 8;
+    }
+
+    nBottom += *(unsigned short *)(pScreen + 0x8d0);
+    pTransform->TransformScreenToTile(
+        *(int *)(pScreen + 0x918) + nLeft,
+        *(int *)(pScreen + 0x91c) + nTop + nRowCount * 0x10,
+        &nTileX, &nTileY);
+    nTileX /= 0x10;
+    nTileY /= 0x10;
+    pTransform->TransformTileToScreen(
+        nTileX << 4, nTileY << 4,
+        (int *)(pScreen + 0x184), (int *)(pScreen + 0x188));
+    *(int *)(pScreen + 0x184) -= *(int *)(pScreen + 0x918);
+    *(int *)(pScreen + 0x188) -= *(int *)(pScreen + 0x91c);
+    nRowCount = (*(unsigned short *)(pScreen + 0x8d0) + 0x0f) / 0x10;
+    for (i = 0; i < nRowCount; ++i) {
+        EmitVariantStripPassB(nTileX, nTileY, nStripCount + 3);
+        *(int *)(pScreen + 0x184) -= 0x10;
+        *(int *)(pScreen + 0x188) += 8;
+        EmitVariantStripPassB(
+            nTileX + s_anHalfStepX[nRotation],
+            nTileY + s_anHalfStepY[nRotation], nStripCount + 4);
+        nTileX += s_anNextRowX[nRotation];
+        nTileY += s_anNextRowY[nRotation];
+        *(int *)(pScreen + 0x184) += 0x10;
+        *(int *)(pScreen + 0x188) += 8;
+    }
+
+    i = *(int *)(pScreen + 0x21f0);
+    if (i < 2) {
+        pEntry = pScreen + 0x21f4 + i * 0x10;
+        *(short *)(pEntry + 4) = (short)nWidth;
+        *(short *)(pEntry + 6) = (short)nHeight;
+        *(short *)(pEntry + 8) = (short)nRegionX;
+        *(short *)(pEntry + 0x0a) = (short)nRegionY;
+        *(short *)(pEntry + 0x0c) = (short)nWidth;
+        *(short *)(pEntry + 0x0e) = (short)nHeight;
+        ((QueueProc)(*(void ***)pEntry)[1])(
+            pEntry, 0, *(void **)(pScreen + 0x970));
+        *(int *)(pScreen + 0x21f0) = i + 1;
     }
 }
 
