@@ -364,6 +364,10 @@ class GameAlignedZrleChildOverlayView {
 public:
     void ReleaseFrameResource(void);
     void QueueAlignedFrame(void);
+    void HandleButtonRelease(int nButton);
+    void HandleButtonPress(int nButton);
+    void HandlePointerEnter(void);
+    void HandlePointerLeave(void);
 };
 
 class GameAlignedZrleChildOverlayDeleteView {
@@ -791,7 +795,7 @@ static void InitializeResourceGeometryChildVtables(
     if (g_fResourceGeometryChildVtablesInitialized != 0) {
         return;
     }
-    for (i = 0; i < 52; ++i) {
+    for (i = 0; i < 46; ++i) {
         g_ResourceGeometryChildVtable[i] = pWindowOwnerVtable[i];
     }
     for (i = 0; i < 8; ++i) {
@@ -811,6 +815,10 @@ static void InitializeResourceGeometryChildVtables(
     Void.p = &GameResourceGeometryChildView::RefreshIfHelperDirty;
     g_ResourceGeometryChildVtable[46] = Void.v;
     g_ResourceGeometryChildVtable[47] = (void *)_purecall;
+    g_ResourceGeometryChildVtable[48] = (void *)_purecall;
+    g_ResourceGeometryChildVtable[49] = (void *)_purecall;
+    g_ResourceGeometryChildVtable[50] = (void *)_purecall;
+    g_ResourceGeometryChildVtable[51] = (void *)_purecall;
 
     Delete.p = &GameResourceGeometryChildDeleteView::Delete;
     g_ResourceGeometryChildDeleteVtable[0] = Delete.v;
@@ -920,12 +928,34 @@ void GameAlignedZrleChildOverlayView::QueueAlignedFrame(void) {
     *(short *)(pFrameSink + 4) = x;
     *(short *)(pFrameSink + 6) = y;
     *(void **)(pFrameSink + 0x1c) = *(void **)(pObject + 0x11c);
-    *(int *)(pFrameSink + 0x18) =
-        *(void **)(pObject + 0x11c) != 0;
+    *(int *)(pFrameSink + 0x18) = *(int *)(pObject + 0x104);
     *(int *)(pFrameSink + 0x0c) = 0;
     *(void **)(pFrameSink + 0x10) = *(void **)(pObject + 0x120);
     ((QueueProc)(*(void ***)pFrameSink)[1])(
         pFrameSink, 0, pQueueOwner);
+}
+
+static void SetAlignedZrleChildOverlayFrame(void *pObject, int iFrame) {
+    if (*(int *)((char *)pObject + 0x104) != iFrame) {
+        *(int *)((char *)pObject + 0x104) = iFrame;
+        *(int *)((char *)pObject + 0xd8) = 1;
+    }
+}
+
+void GameAlignedZrleChildOverlayView::HandleButtonRelease(int) {
+    SetAlignedZrleChildOverlayFrame(this, 1);
+}
+
+void GameAlignedZrleChildOverlayView::HandleButtonPress(int) {
+    SetAlignedZrleChildOverlayFrame(this, 2);
+}
+
+void GameAlignedZrleChildOverlayView::HandlePointerEnter(void) {
+    SetAlignedZrleChildOverlayFrame(this, 1);
+}
+
+void GameAlignedZrleChildOverlayView::HandlePointerLeave(void) {
+    SetAlignedZrleChildOverlayFrame(this, 0);
 }
 
 static void InitializeAlignedZrleChildOverlayVtables(void) {
@@ -937,6 +967,10 @@ static void InitializeAlignedZrleChildOverlayVtables(void) {
         void *(GameAlignedZrleChildOverlayDeleteView::*p)(unsigned int);
         void *v;
     } Delete;
+    union IntMethod {
+        void (GameAlignedZrleChildOverlayView::*p)(int);
+        void *v;
+    } Int;
     int i;
 
     if (g_fAlignedZrleChildOverlayVtablesInitialized != 0) {
@@ -954,6 +988,14 @@ static void InitializeAlignedZrleChildOverlayVtables(void) {
     g_AlignedZrleChildOverlayVtable[16] = Void.v;
     Void.p = &GameAlignedZrleChildOverlayView::QueueAlignedFrame;
     g_AlignedZrleChildOverlayVtable[47] = Void.v;
+    Int.p = &GameAlignedZrleChildOverlayView::HandleButtonRelease;
+    g_AlignedZrleChildOverlayVtable[48] = Int.v;
+    Int.p = &GameAlignedZrleChildOverlayView::HandleButtonPress;
+    g_AlignedZrleChildOverlayVtable[49] = Int.v;
+    Void.p = &GameAlignedZrleChildOverlayView::HandlePointerEnter;
+    g_AlignedZrleChildOverlayVtable[50] = Void.v;
+    Void.p = &GameAlignedZrleChildOverlayView::HandlePointerLeave;
+    g_AlignedZrleChildOverlayVtable[51] = Void.v;
     g_AlignedZrleChildOverlayDeleteVtable[1] =
         (void *)HandleSpriteOwnerButtonTransition;
     g_AlignedZrleChildOverlayDeleteVtable[2] =
