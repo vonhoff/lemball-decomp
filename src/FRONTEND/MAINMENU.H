@@ -20,5 +20,8 @@ void LEMBALL_FASTCALL ActivateFramedScreenBase(void *pScreen);
 void *LEMBALL_FASTCALL ConstructFunctionalOptionsScreen(
     void *pObject, int nUnusedEdx, void *pPrimaryContext,
     void *pRenderContext, short *paSize);
+void *LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(
+    void *pObject, int nUnusedEdx, void *pPrimaryContext,
+    void *pRenderContext, short *paSize, int fSecondVariant);
 
 #endif

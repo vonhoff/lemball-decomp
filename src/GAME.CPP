@@ -2080,15 +2080,9 @@ void *GameScreenObject::ConstructPaintballSequenceScreen(void *pPrimaryContext,
                                                           void *pWindowOwnerContext,
                                                           short *paRect,
                                                           int fFirstSequenceVariant) {
-    void *pScreenObject = this;
-    (void)pPrimaryContext;
-    (void)pWindowOwnerContext;
-    (void)paRect;
-    (void)fFirstSequenceVariant;
-    InitializeGameStubVtables();
-    memset(pScreenObject, 0, 0x60c);
-    *(void **)pScreenObject = g_GAME_GenericScreenVtableSlots;
-    return pScreenObject;
+    return ConstructFunctionalPaintballSequenceScreen(
+        this, 0, pPrimaryContext, pWindowOwnerContext,
+        paRect, fFirstSequenceVariant);
 }
 
 void *GameScreenObject::ConstructPasswordEntryScreen(void *pPrimaryContext,

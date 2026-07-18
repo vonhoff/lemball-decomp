@@ -52,6 +52,8 @@ extern void TogglePrimaryContextDisplayMode(
     ShellUiPrimaryContextShell *pShell);
 extern void LEMBALL_FASTCALL NoopPackagedSpriteRenderEntryThunk00402A22(
     void *pUnused);
+extern void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(
+    void *pObject);
 extern void LEMBALL_FASTCALL NoopPackagedSpriteRenderEntryThunk00401B77(
     void *pUnusedThis, int nUnusedEdx, void *pArgument);
 extern void PASCAL noop_render_entry_callback_004393a0(void *pUnused);
@@ -216,6 +218,27 @@ struct GameOptionsScreenView : public GameFramedScreenBase {
     const int *m_panWidgetLayout3A8;
 };
 
+struct GamePaintballSequenceScreenView : public GameFramedScreenBase {
+    unsigned char m_abPrimaryBitmapEntry398[0x48];
+    unsigned char m_abSecondaryBitmapEntry3E0[0x118];
+    char *m_pszPassword4F8;
+    void *m_pPrimaryBitmap4FC;
+    void *m_pSecondaryBitmap500;
+    int m_nPrimaryBitmapResourceId504;
+    int m_nButtonResourceId508;
+    int m_nSecondaryBitmapResourceId50C;
+    const int *m_pLayout510;
+    int m_nActionSelection514;
+    int m_fSecondVariant518;
+    int m_fEffectStarted51C;
+    unsigned char m_abMediaOwner520[0xd8];
+    DWORD m_dwMediaStart5F8;
+    int m_fMediaStarted5FC;
+    DWORD m_dwEffectStart600;
+    int m_fMediaEnabled604;
+    int m_nReserved608;
+};
+
 struct GameLevelSelectionScreenView : public GameFramedScreenBase {
     unsigned char m_abRenderChild398[0x24];
     void *m_pLevelBitmap3BC;
@@ -248,6 +271,8 @@ typedef char GameMainMenuScreenView_size_must_be_0x3bc[
     sizeof(GameMainMenuScreenView) == 0x3bc ? 1 : -1];
 typedef char GameOptionsScreenView_size_must_be_0x3ac[
     sizeof(GameOptionsScreenView) == 0x3ac ? 1 : -1];
+typedef char GamePaintballSequenceScreenView_size_must_be_0x60c[
+    sizeof(GamePaintballSequenceScreenView) == 0x60c ? 1 : -1];
 typedef char GameLevelSelectionScreenView_size_must_be_0x488[
     sizeof(GameLevelSelectionScreenView) == 0x488 ? 1 : -1];
 
@@ -370,6 +395,16 @@ static int LEMBALL_FASTCALL HandleOptionsScreenInput(
 static void *LEMBALL_FASTCALL DeleteOptionsScreen(
     void *pObject, int nUnusedEdx, int fDelete);
 static void *LEMBALL_FASTCALL DeleteAdjustedOptionsScreen(
+    void *pObject, int nUnusedEdx, int fDelete);
+static void LEMBALL_FASTCALL InitializePaintballSequenceResources(void *pObject);
+static void LEMBALL_FASTCALL ReleasePaintballSequenceResources(void *pObject);
+static void LEMBALL_FASTCALL DrawPaintballSequenceFrame(void *pObject);
+static void LEMBALL_FASTCALL UpdatePaintballSequenceScreen(void *pObject);
+static int LEMBALL_FASTCALL HandlePaintballSequenceInput(
+    void *pObject, int nUnusedEdx, void *pEvent);
+static void *LEMBALL_FASTCALL DeletePaintballSequenceScreen(
+    void *pObject, int nUnusedEdx, int fDelete);
+static void *LEMBALL_FASTCALL DeleteAdjustedPaintballSequenceScreen(
     void *pObject, int nUnusedEdx, int fDelete);
 
 // GLOBAL: LEMBALL 0x0049f4f0
@@ -512,6 +547,9 @@ void *g_GAME_MainMenuCallbackVtable[2] = {
 static void *g_GAME_OptionsScreenVtable[22];
 static void *g_GAME_OptionsQueueVtable[4];
 static int g_fOptionsScreenVtableInitialized;
+static void *g_GAME_PaintballSequenceScreenVtable[22];
+static void *g_GAME_PaintballSequenceQueueVtable[4];
+static int g_fPaintballSequenceVtableInitialized;
 
 static void InitializeFunctionalOptionsVtables(void) {
     int i;
@@ -535,6 +573,38 @@ static void InitializeFunctionalOptionsVtables(void) {
         (void *)HandleFramedScreenQueueEventThunk;
     g_GAME_OptionsQueueVtable[3] = 0;
     g_fOptionsScreenVtableInitialized = 1;
+}
+
+static void InitializeFunctionalPaintballSequenceVtables(void) {
+    int i;
+
+    if (g_fPaintballSequenceVtableInitialized != 0) {
+        return;
+    }
+    for (i = 0; i < 22; ++i) {
+        g_GAME_PaintballSequenceScreenVtable[i] =
+            g_GAME_MainMenuScreenVtable[i];
+    }
+    g_GAME_PaintballSequenceScreenVtable[0] =
+        (void *)DeletePaintballSequenceScreen;
+    g_GAME_PaintballSequenceScreenVtable[14] =
+        (void *)UpdatePaintballSequenceScreen;
+    g_GAME_PaintballSequenceScreenVtable[15] =
+        (void *)HandlePaintballSequenceInput;
+    g_GAME_PaintballSequenceScreenVtable[16] =
+        (void *)InitializePaintballSequenceResources;
+    g_GAME_PaintballSequenceScreenVtable[17] =
+        (void *)ReleasePaintballSequenceResources;
+    g_GAME_PaintballSequenceScreenVtable[18] =
+        (void *)DrawPaintballSequenceFrame;
+    g_GAME_PaintballSequenceQueueVtable[0] =
+        (void *)InitializeNonZrleVariantRenderEntry;
+    g_GAME_PaintballSequenceQueueVtable[1] =
+        (void *)DeleteAdjustedPaintballSequenceScreen;
+    g_GAME_PaintballSequenceQueueVtable[2] =
+        (void *)HandleFramedScreenQueueEventThunk;
+    g_GAME_PaintballSequenceQueueVtable[3] = 0;
+    g_fPaintballSequenceVtableInitialized = 1;
 }
 
 static void *g_GAME_FunctionalLevelSelectionVtable[22];
@@ -1793,6 +1863,228 @@ static void *LEMBALL_FASTCALL DeleteOptionsScreen(
 static void *LEMBALL_FASTCALL DeleteAdjustedOptionsScreen(
     void *pObject, int nUnusedEdx, int fDelete) {
     return DeleteOptionsScreen((char *)pObject - 4, nUnusedEdx, fDelete);
+}
+
+void *LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(
+    void *pObject, int, void *pPrimaryContext,
+    void *pRenderContext, short *paSize, int fSecondVariant) {
+    GamePaintballSequenceScreenView *pScreen;
+
+    pScreen = (GamePaintballSequenceScreenView *)pObject;
+    ConstructFramedScreenBaseFields(
+        pScreen, 0, pPrimaryContext, pRenderContext, paSize,
+        0x0e, 0x32, 200, 0, 0x28, 0x30);
+    InitializeFunctionalPaintballSequenceVtables();
+    pScreen->m_pVtable00 = g_GAME_PaintballSequenceScreenVtable;
+    *(void ***)pScreen->m_abRenderQueueNode04 =
+        g_GAME_PaintballSequenceQueueVtable;
+    *(void ***)pScreen->m_abVariantRenderManager14 =
+        g_GAME_MainMenuCallbackVtable;
+    InitializePackagedSpriteRenderEntryThunk(
+        pScreen->m_abPrimaryBitmapEntry398);
+    InitializePackagedSpriteRenderEntryThunk(
+        pScreen->m_abSecondaryBitmapEntry3E0);
+    pScreen->m_fSecondVariant518 = fSecondVariant;
+    pScreen->m_fMediaEnabled604 = g_fSkipStartupSequence == 0;
+    pScreen->m_nActionSelection514 = 0;
+    pScreen->m_fEffectStarted51C = 0;
+    pScreen->m_fMediaStarted5FC = 0;
+    pScreen->m_nReserved608 = 0;
+    pScreen->m_dwMediaStart5F8 = timeGetTime() + 40U;
+    pScreen->m_fDrawFrameA8 = 1;
+    pScreen->m_fTileBackgroundAC = 1;
+    pScreen->m_fDrawForegroundB0 = 1;
+    ActivateFramedScreenBase(pScreen);
+    return pScreen;
+}
+
+static void ConfigurePaintballBitmapEntry(
+    unsigned char *pEntry, void *pBitmap, short x, short y) {
+    *(short *)(pEntry + 0) = x;
+    *(short *)(pEntry + 2) = y;
+    *(void **)(pEntry + 0x0c) = pBitmap;
+    *(int *)(pEntry + 0x10) = 0x800;
+    *(int *)(pEntry + 0x14) = 0;
+}
+
+static void LEMBALL_FASTCALL InitializePaintballSequenceResources(
+    void *pObject) {
+    GamePaintballSequenceScreenView *pScreen;
+    int nPrimaryResource;
+    int nSecondaryResource;
+    short x;
+
+    pScreen = (GamePaintballSequenceScreenView *)pObject;
+    if (pScreen->m_fCompactLayout32C == 0) {
+        nPrimaryResource = pScreen->m_fSecondVariant518 == 0
+            ? 0x135 : 0x134;
+        nSecondaryResource = pScreen->m_fSecondVariant518 == 0
+            ? 0x137 : 0x138;
+        pScreen->m_nButtonResourceId508 =
+            pScreen->m_fSecondVariant518 == 0 ? 0x157 : 0x158;
+    } else {
+        nPrimaryResource = pScreen->m_fSecondVariant518 == 0
+            ? 0x140 : 0x13f;
+        nSecondaryResource = pScreen->m_fSecondVariant518 == 0
+            ? 0x142 : 0x143;
+        pScreen->m_nButtonResourceId508 =
+            pScreen->m_fSecondVariant518 == 0 ? 0x184 : 0x185;
+    }
+    pScreen->m_nPrimaryBitmapResourceId504 = nPrimaryResource;
+    pScreen->m_nSecondaryBitmapResourceId50C = nSecondaryResource;
+    pScreen->m_pPrimaryBitmap4FC = LoadBitmapResource(nPrimaryResource);
+    pScreen->m_pSecondaryBitmap500 = pScreen->m_fMediaEnabled604 == 0
+        ? LoadBitmapResource(nSecondaryResource) : 0;
+    if (pScreen->m_pPrimaryBitmap4FC != 0) {
+        x = (short)(pScreen->m_cxScreen37C -
+            *(short *)((char *)pScreen->m_pPrimaryBitmap4FC + 0x48));
+        ConfigurePaintballBitmapEntry(
+            pScreen->m_abPrimaryBitmapEntry398,
+            pScreen->m_pPrimaryBitmap4FC, x, 0);
+    }
+    if (pScreen->m_pSecondaryBitmap500 != 0) {
+        ConfigurePaintballBitmapEntry(
+            pScreen->m_abSecondaryBitmapEntry3E0,
+            pScreen->m_pSecondaryBitmap500, 0, 0);
+    }
+}
+
+static void LEMBALL_FASTCALL ReleasePaintballSequenceResources(
+    void *pObject) {
+    GamePaintballSequenceScreenView *pScreen;
+
+    pScreen = (GamePaintballSequenceScreenView *)pObject;
+    if (pScreen->m_pPrimaryBitmap4FC != 0) {
+        ReleaseTypedResourceObjectReference(pScreen->m_pPrimaryBitmap4FC);
+        pScreen->m_pPrimaryBitmap4FC = 0;
+    }
+    if (pScreen->m_pSecondaryBitmap500 != 0) {
+        ReleaseTypedResourceObjectReference(pScreen->m_pSecondaryBitmap500);
+        pScreen->m_pSecondaryBitmap500 = 0;
+    }
+}
+
+static void LEMBALL_FASTCALL DrawPaintballSequenceFrame(void *pObject) {
+    GamePaintballSequenceScreenView *pScreen;
+
+    pScreen = (GamePaintballSequenceScreenView *)pObject;
+    if (pScreen->m_pPrimaryBitmap4FC != 0) {
+        ((GameMainMenuRenderEntryInterface *)
+            pScreen->m_abPrimaryBitmapEntry398)
+            ->AppendToQueue(pScreen->m_pRenderContext88);
+    }
+    if (pScreen->m_pSecondaryBitmap500 != 0) {
+        ((GameMainMenuRenderEntryInterface *)
+            pScreen->m_abSecondaryBitmapEntry3E0)
+            ->AppendToQueue(pScreen->m_pRenderContext88);
+    }
+}
+
+static void FinishPaintballSequence(
+    GamePaintballSequenceScreenView *pScreen, int nMode) {
+    pScreen->m_nTransitionStatus378 = 1;
+    pScreen->m_nRequestedMode374 = nMode;
+}
+
+static int LEMBALL_FASTCALL HandlePaintballSequenceInput(
+    void *pObject, int, void *pEvent) {
+    GamePaintballSequenceScreenView *pScreen;
+    GameMenuSelectorEvent *pSelectorEvent;
+    unsigned int nCode;
+
+    pScreen = (GamePaintballSequenceScreenView *)pObject;
+    pSelectorEvent = (GameMenuSelectorEvent *)pEvent;
+    nCode = (unsigned int)pSelectorEvent->m_nPayload08;
+    if (pSelectorEvent->m_nType00 == 0x0c) {
+        if (nCode == 0xacef0010U) {
+            FinishPaintballSequence(pScreen, 4);
+            return 1;
+        }
+        if (nCode == 0xacef0011U) {
+            FinishPaintballSequence(pScreen, 2);
+            return 1;
+        }
+        return 0;
+    }
+    if (pSelectorEvent->m_nType00 == 4) {
+        if (nCode == 0x1bU) {
+            FinishPaintballSequence(pScreen, 2);
+            return 1;
+        }
+        if (nCode == 0x0dU || nCode == 0x20U) {
+            FinishPaintballSequence(pScreen, 4);
+            return 1;
+        }
+        return 0;
+    }
+    ++*(int *)((char *)pScreen + 0x10);
+    return 0;
+}
+
+static void LEMBALL_FASTCALL UpdatePaintballSequenceScreen(void *pObject) {
+    GamePaintballSequenceScreenView *pScreen;
+
+    pScreen = (GamePaintballSequenceScreenView *)pObject;
+    if (pScreen->m_fEffectStarted51C == 0) {
+        if (g_pVariantResourceEntryManager != 0) {
+            ((GameVariantResourceEntryManager *)
+                g_pVariantResourceEntryManager)->PlayVariantResourceEffect(
+                    pScreen->m_fSecondVariant518 == 0 ? 0x28 : 0x27);
+        }
+        pScreen->m_fEffectStarted51C = 1;
+        pScreen->m_dwEffectStart600 = timeGetTime();
+    }
+}
+
+static void DestroyPaintballSequenceScreen(
+    GamePaintballSequenceScreenView *pScreen) {
+    pScreen->m_pVtable00 = g_GAME_PaintballSequenceScreenVtable;
+    *(void ***)pScreen->m_abRenderQueueNode04 =
+        g_GAME_PaintballSequenceQueueVtable;
+    *(void ***)pScreen->m_abVariantRenderManager14 =
+        g_GAME_MainMenuCallbackVtable;
+    if (pScreen->m_fFrameResourcesLoaded9C != 0) {
+        ReleasePaintballSequenceResources(pScreen);
+    }
+    g_pActiveNetworkLobbyScreen = 0;
+    if (pScreen->m_pTimedFrameSelector34C != 0) {
+        FreeVSMemBlock(pScreen->m_pTimedFrameSelector34C);
+        pScreen->m_pTimedFrameSelector34C = 0;
+    }
+    if (g_pSharedRenderDispatchQueue != 0) {
+        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+            ->UnregisterOrderedRenderDispatchClient(
+                pScreen->m_abRenderQueueNode04, 0);
+    }
+    if (pScreen->m_fFrameResourcesLoaded9C != 0) {
+        ReleaseFramedScreenFrameResources(pScreen);
+    }
+    if (pScreen->m_pMappedListResources98 != 0) {
+        ((MappedListResourceTable *)pScreen->m_pMappedListResources98)
+            ->Destroy();
+        FreeVSMemBlock(pScreen->m_pMappedListResources98);
+        pScreen->m_pMappedListResources98 = 0;
+    }
+    ((MogLoadResourceArchive *)g_pMainResourceArchive)
+        ->PruneUnreferencedCachedResourceObjects();
+    DestroyFramedScreenRenderEntryGroup(pScreen->m_abRenderEntryGroupC8);
+    DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
+}
+
+static void *LEMBALL_FASTCALL DeletePaintballSequenceScreen(
+    void *pObject, int, int fDelete) {
+    DestroyPaintballSequenceScreen(
+        (GamePaintballSequenceScreenView *)pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+static void *LEMBALL_FASTCALL DeleteAdjustedPaintballSequenceScreen(
+    void *pObject, int nUnusedEdx, int fDelete) {
+    return DeletePaintballSequenceScreen(
+        (char *)pObject - 4, nUnusedEdx, fDelete);
 }
 
 static int ConsumeLevelSelectionChangedFlag(void) {
