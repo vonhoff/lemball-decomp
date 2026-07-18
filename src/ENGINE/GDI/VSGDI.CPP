@@ -1010,7 +1010,6 @@ struct VsGdiDisplayBitmap {
     int m_nStride;
     HGDIOBJ m_hPreviousBitmap;
     HGDIOBJ m_hBitmap;
-
 };
 
 struct VsGdiDisplayBitmapDispatch {
@@ -1057,7 +1056,6 @@ static VsGdiDisplayBitmapVtable g_VSGDI_DisplayBitmapVtable = {
     GetHelperTargetParamWrapperReserved,
     0,
 };
-
 static void *g_VSGDI_MetricsDisplayVtable[14];
 static void *g_VSGDI_DibDisplayVtable[14];
 static void *g_VSGDI_DirectDrawDisplayVtable[14];
@@ -1627,15 +1625,13 @@ void *VsGdiDisplayState::DeleteDisplayBitmap(int nDriver, void *pBitmap) {
 VsGdiDibDisplayState::VsGdiDibDisplayState(const unsigned short *pDisplaySize) {
     FARPROC pfnThunk;
 
+    m_pVtable = g_VSGDI_DibDisplayVtable;
+    m_fReady = 0;
     m_cxDisplay = (short)pDisplaySize[0];
     m_cyDisplay = (short)pDisplaySize[1];
-    m_fReady = 0;
-    m_pDisplayAddress = 0;
-    m_dwReserved20 = 0;
     m_pfnDisplayDibStart32 = 0;
     m_pfnDisplayDibEnd32 = 0;
     m_pfnDisplayDibGetAddress32 = 0;
-    m_pVtable = g_VSGDI_DibDisplayVtable;
     g_pApplyFullscreenDisplayModeThunk = 0;
     m_hGraphicsModule = LoadLibraryA(g_VSGDI_Dspdib32Dll);
     if (m_hGraphicsModule != 0) {
