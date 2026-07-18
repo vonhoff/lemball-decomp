@@ -5145,31 +5145,8 @@ static void *LEMBALL_FASTCALL DeleteFunctionalLevelSelectionScreen(
     if (pScreen->m_fFrameResourcesLoaded9C != 0) {
         ReleaseFunctionalLevelSelectionResources(pScreen);
     }
-    g_pActiveNetworkLobbyScreen = 0;
-    if (pScreen->m_pTimedFrameSelector34C != 0) {
-        FreeVSMemBlock(pScreen->m_pTimedFrameSelector34C);
-        pScreen->m_pTimedFrameSelector34C = 0;
-    }
-    if (g_pSharedRenderDispatchQueue != 0) {
-        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
-            ->UnregisterOrderedRenderDispatchClient(
-                pScreen->m_abRenderQueueNode04, 0);
-    }
-    if (pScreen->m_fFrameResourcesLoaded9C != 0) {
-        ReleaseFramedScreenFrameResources(pScreen);
-    }
-    if (pScreen->m_pMappedListResources98 != 0) {
-        ((MappedListResourceTable *)pScreen->m_pMappedListResources98)
-            ->Destroy();
-        FreeVSMemBlock(pScreen->m_pMappedListResources98);
-        pScreen->m_pMappedListResources98 = 0;
-    }
-    ((MogLoadResourceArchive *)g_pMainResourceArchive)
-        ->PruneUnreferencedCachedResourceObjects();
-    DestroyFramedScreenRenderEntryGroup(
-        pScreen->m_abRenderEntryGroupC8);
     RestoreLevelSelectionRenderChildEntryVtable(pScreen->m_abRenderChild398);
-    DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
+    DestroyFunctionalFramedScreenBase(pScreen);
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pScreen);
     }
