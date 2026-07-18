@@ -1337,6 +1337,12 @@ struct LevelViewRotationTransform {
     void TransformTileInPlace(int *pX, int *pY);
 };
 
+struct LevelScreenTerrainRenderView {
+    void EmitRepeatedVariantColumn(short x, int y,
+                                   int nHeight, int cEntries);
+    void DrawStaticRenderEntry(int iEntry, unsigned short nDepth);
+};
+
 // FUNCTION: LEMBALL 0x00430a50
 void LevelViewRotationTransform::TransformScreenToTile(
     int nScreenX, int nScreenY, int *pTileX, int *pTileY)
@@ -2513,6 +2519,64 @@ void SetLevelScreenStatusIndicatorMode(int nMode, int nValue) {
             g_pArrowCursorStatusIndicatorRenderClient, 0, 1);
         break;
     }
+}
+
+// FUNCTION: LEMBALL 0x0043ace0
+void LevelScreenTerrainRenderView::EmitRepeatedVariantColumn(
+    short x, int y, int nHeight, int cEntries)
+{
+    char *pScreen;
+    int nEntryY;
+
+    pScreen = (char *)this;
+    nEntryY = y + cEntries * 0x10 - nHeight;
+    while (cEntries > 0) {
+        EmitLevelScreenFixedVariantEntry(
+            *(void **)(pScreen + 0xa40),
+            (short)(x - 0x10), (short)(nEntryY - 0x10),
+            g_nLevelScreenMappedVariantResourceId0x206, 0, 0);
+        --cEntries;
+        nEntryY -= 0x10;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00440490
+void LevelScreenTerrainRenderView::DrawStaticRenderEntry(
+    int iEntry, unsigned short nDepth)
+{
+    char *pScreen;
+    unsigned short *pEntry;
+    int *pTile;
+    unsigned short nHeight;
+    short cRepeatedEntries;
+    unsigned short nFlags;
+    int nScreenX;
+    int nScreenY;
+    unsigned int nFrameValue;
+
+    pScreen = (char *)this;
+    pEntry = (unsigned short *)(unsigned long)(
+        *(int *)(pScreen + 0x2220) + iEntry * 0x0c);
+    pTile = *(int **)(pEntry + 4);
+    nHeight = *(unsigned short *)(pTile + 2);
+    cRepeatedEntries = *(short *)((char *)pTile + 0x0a);
+    nFlags = *(unsigned short *)((char *)pTile + 6);
+    ((LevelViewRotationTransform *)*(void **)(pScreen + 0x914))
+        ->TransformTileToScreen(
+            (int)pEntry[0] << 4, (int)pEntry[1] << 4,
+            &nScreenX, &nScreenY);
+    nScreenX -= *(int *)(pScreen + 0x918);
+    nScreenY -= *(int *)(pScreen + 0x91c);
+    *(unsigned short *)(*(char **)(pScreen + 0xa40) + 0x68) = nDepth;
+    if ((nFlags & 0x20) != 0 && nHeight != 0) {
+        EmitRepeatedVariantColumn(
+            (short)nScreenX, nScreenY, nHeight, cRepeatedEntries);
+    }
+    nFrameValue = ((unsigned int)(unsigned short)nScreenY << 16) |
+                  *(unsigned short *)(pTile + 1);
+    EmitMappedLevelScreenVariantRenderEntry(
+        pScreen, (unsigned short)nScreenX,
+        (short)(nScreenY - nHeight), pTile[0], nFrameValue);
 }
 
 // FUNCTION: LEMBALL 0x004439e0
