@@ -46,6 +46,21 @@ extern void PASCAL noop_vtable_callback_0040aa80(
 extern void noop_vtable_callback_0040aaa0(void);
 extern void noop_vtable_callback_0040aab0(void);
 extern int PASCAL IsManagedEntityState18(int nState);
+extern void LEMBALL_FASTCALL MarkObjectField178AndSetTimer3C(
+    void *pObject);
+extern void *LEMBALL_FASTCALL get_level_mode_chunk_loader_context(
+    void *pLevelMode);
+extern int LEMBALL_FASTCALL has_door_chunk_object_target_tile_latched(
+    void *pObject);
+extern void LEMBALL_FASTCALL schedule_door_chunk_object_update_in_10_ticks(
+    void *pObject);
+extern void LEMBALL_FASTCALL clear_door_chunk_object_target_tile_latch(
+    void *pObject);
+extern void *LEMBALL_FASTCALL get_object_field_0x30(void *pObject);
+extern void *LEMBALL_FASTCALL get_level_mode_mine_chunk_manager(
+    void *pLevelMode);
+extern void *LEMBALL_FASTCALL get_level_mode_lift_chunk_manager(
+    void *pLevelMode);
 extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(
     void *pResourceObject);
 
@@ -159,8 +174,18 @@ static void InitializeLinkScfChunkVtables(void) {
         (void *)do_3d_bounds_intersect;
     g_LINKSCF_PlasChunkObjectVtable[20] =
         (void *)is_point_inside_3d_bounds;
+    g_LINKSCF_PlasChunkObjectVtable[22] =
+        (void *)MarkObjectField178AndSetTimer3C;
+    g_LINKSCF_PlasChunkObjectVtable[23] =
+        (void *)get_level_mode_chunk_loader_context;
     g_LINKSCF_PlasChunkObjectVtable[27] =
         (void *)noop_vtable_callback_0040a990;
+    g_LINKSCF_PlasChunkObjectVtable[31] =
+        (void *)has_door_chunk_object_target_tile_latched;
+    g_LINKSCF_PlasChunkObjectVtable[35] =
+        (void *)schedule_door_chunk_object_update_in_10_ticks;
+    g_LINKSCF_PlasChunkObjectVtable[36] =
+        (void *)clear_door_chunk_object_target_tile_latch;
     g_LINKSCF_PlasChunkObjectVtable[44] =
         (void *)return_true_vtable_callback_0040aa50;
     g_LINKSCF_PlasChunkObjectVtable[47] =
@@ -171,6 +196,12 @@ static void InitializeLinkScfChunkVtables(void) {
         (void *)noop_vtable_callback_0040aaa0;
     g_LINKSCF_PlasChunkObjectVtable[50] =
         (void *)noop_vtable_callback_0040aab0;
+    g_LINKSCF_PlasChunkObjectVtable[56] =
+        (void *)get_object_field_0x30;
+    g_LINKSCF_PlasChunkObjectVtable[57] =
+        (void *)get_level_mode_mine_chunk_manager;
+    g_LINKSCF_PlasChunkObjectVtable[59] =
+        (void *)get_level_mode_lift_chunk_manager;
     g_LINKSCF_PlasChunkObjectVtable[64] =
         (void *)IsManagedEntityState18;
     g_LINKSCF_ShpgChunkManagerVtable[1] =
