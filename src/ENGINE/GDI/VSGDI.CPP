@@ -2396,10 +2396,10 @@ int VsGdiSelectedGraphicsDriverRuntime::InitializeSelectedGraphicsDriver(int nRe
 
     nSelectedDriver = nRequestedDriver;
     if (nRequestedDriver == VsGdiDRIVER_AUTO) {
-        if (g_fStartupGraphicsDriverGdk == 0) {
-            nSelectedDriver = (-(unsigned int)(g_fStartupFullscreen == 0) & 0xfffffffeU) + 3;
+        if (g_fStartupGraphicsDriverGdk != 0) {
+            nSelectedDriver = (-(g_fStartupFullscreen == 0) & 2) + 4;
         } else {
-            nSelectedDriver = (-(unsigned int)(g_fStartupFullscreen == 0) & 2U) + 4;
+            nSelectedDriver = (-(g_fStartupFullscreen == 0) & -2) + 3;
         }
     }
 
