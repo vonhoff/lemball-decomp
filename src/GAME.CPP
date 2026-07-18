@@ -4617,10 +4617,6 @@ void *GameScreenObject::ConstructMainMenuScreen(void *pPrimaryContext, void *pWi
     pProgress = (GameLevelProgressState *)g_pLevelProgressState;
     nPack = pProgress->m_nCurrentPack;
     switch (nPack) {
-    case 0:
-    case 4:
-        *(int *)(pScreen + 0x3b4) = 0;
-        break;
     case 1:
         *(int *)(pScreen + 0x3b4) = 1;
         break;
@@ -4629,6 +4625,9 @@ void *GameScreenObject::ConstructMainMenuScreen(void *pPrimaryContext, void *pWi
         break;
     case 3:
         *(int *)(pScreen + 0x3b4) = 3;
+        break;
+    default:
+        *(int *)(pScreen + 0x3b4) = 0;
         break;
     }
     ((GameLevelProgressState *)g_pLevelProgressState)->m_nUnused4C = 0;
