@@ -79,6 +79,10 @@ extern void noop_main_menu_screen_hook(void);
 extern "C" int __cdecl _purecall(void);
 
 extern void *g_pLevelProgressState;
+extern "C" bool LEMBALL_FASTCALL IsCurrentLevelProgressAvailableThunk(
+    void *pProgress);
+extern "C" bool LEMBALL_FASTCALL CanRetreatCurrentLevelProgressThunk(
+    void *pProgress);
 extern void *g_pActiveNetworkLobbyScreen;
 extern void *g_pNetworkLobbyVsnetRuntime;
 extern void *g_pActiveNetworkRuntimeWindow;
@@ -5719,20 +5723,12 @@ static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(
 
 static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionNavigationLocks(
     GameLevelSelectionScreenView *pScreen) {
-    GameLevelProgressStateView *pProgress;
-    int nPack;
-
-    pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
-    nPack = pProgress->m_nCurrentPack08;
     pScreen->m_fNextLocked480 = 0;
-    if ((nPack == 4 && 10 < pProgress->m_nCurrentLevel00) ||
-        (nPack != 4 &&
-         pProgress->m_anUnlockedPackCaps28[nPack] ==
-             pProgress->m_nCurrentLevel00)) {
+    if (IsCurrentLevelProgressAvailableThunk(g_pLevelProgressState) != true) {
         pScreen->m_fNextLocked480 = 1;
     }
     pScreen->m_fPreviousLocked484 = 0;
-    if (pProgress->m_nCurrentLevel00 == 0) {
+    if (CanRetreatCurrentLevelProgressThunk(g_pLevelProgressState) != true) {
         pScreen->m_fPreviousLocked484 = 1;
     }
     RefreshQueuedVariantChildByToken(

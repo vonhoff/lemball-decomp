@@ -2499,6 +2499,16 @@ void GameLevelProgressState::SetUnlockedPackCapThunk(int nPack, int nCap) {
     SetUnlockedPackCap(nPack, nCap);
 }
 
+extern "C" bool LEMBALL_FASTCALL CanRetreatCurrentLevelProgressThunk(
+    void *pProgress) {
+    return ((GameLevelProgressState *)pProgress)->CanRetreat();
+}
+
+extern "C" bool LEMBALL_FASTCALL IsCurrentLevelProgressAvailableThunk(
+    void *pProgress) {
+    return ((GameLevelProgressState *)pProgress)->IsCurrentLevelAvailable();
+}
+
 void VS_RootGeometryOwner::AppendQueuedRenderSinkValueNode(void *pValue) {
     VS_QueuedRenderSinkValueNode *pNode;
     VS_QueuedRenderSinkValueNode *pTail;
