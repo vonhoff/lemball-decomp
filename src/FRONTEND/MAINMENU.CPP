@@ -657,6 +657,8 @@ static void LEMBALL_FASTCALL InitializePaintballSequenceResources(void *pObject)
 static void LEMBALL_FASTCALL ReleasePaintballSequenceResources(void *pObject);
 static void LEMBALL_FASTCALL DrawPaintballSequenceFrame(void *pObject);
 static void LEMBALL_FASTCALL DrawPaintballSequencePromptText(void *pObject);
+static void LayoutPaintballSequencePromptText(
+    GamePaintballSequenceScreenView *pScreen);
 static void LEMBALL_FASTCALL UpdatePaintballSequenceScreen(void *pObject);
 static int LEMBALL_FASTCALL DispatchPaintballSequenceUserAction(
     void *pObject, int nUnusedEdx, int nAction);
@@ -1120,6 +1122,23 @@ static const int g_GAME_PaintballSequenceBackStandard[1] = {0x1b3};
 static const int g_GAME_PaintballSequencePlayStandard[1] = {0x1b6};
 static const int g_GAME_PaintballSequenceBackCompact[1] = {0x1e7};
 static const int g_GAME_PaintballSequencePlayCompact[1] = {0x1ea};
+static const char *g_GAME_PaintballSequenceSoloWinPrompts[8] = {
+    0, 0, "You collected all the flags!", 0, 0, 0, 0, 0
+};
+static const char *g_GAME_PaintballSequenceNetworkWinPrompts[8] = {
+    0, "You beat #'s score!", "You collected all your flags!",
+    "You splatted all #'s lemmings!", "# ran out of time!",
+    "# gave up!", 0, 0
+};
+static const char *g_GAME_PaintballSequenceSoloLossPrompts[8] = {
+    0, 0, 0, "All your lemmings have been eliminated!",
+    "You ran out of time!", "You gave up!", 0, 0
+};
+static const char *g_GAME_PaintballSequenceNetworkLossPrompts[8] = {
+    0, "# beat your score!", "# collected all the flags!",
+    "# splatted all your lemmings!", "You ran out of time!",
+    "You gave up!", 0, 0
+};
 
 static void InitializeFunctionalOptionsVtables(void) {
     int i;
@@ -3040,6 +3059,7 @@ static void LEMBALL_FASTCALL InitializePaintballSequenceResources(
         pScreen->m_yOverlay382 = (short)(pScreen->m_pLayout510[7] +
                                         pScreen->m_pLayout510[9]);
     }
+    LayoutPaintballSequencePromptText(pScreen);
     if (pScreen->m_fMediaEnabled604 != 0) {
         unsigned char *pMediaOwner = pScreen->m_abMediaOwner520;
         int nBaseResource = pScreen->m_fCompactLayout32C == 0
@@ -3092,8 +3112,153 @@ static void LEMBALL_FASTCALL DrawPaintballSequenceFrame(void *pObject) {
     }
 }
 
-static void LEMBALL_FASTCALL DrawPaintballSequencePromptText(void *) {
-    /* The mapped-font submissions are restored with the prompt layout pass. */
+static const char *GetPaintballSequencePeerName(void) {
+    GameNetworkLobbyRuntimeView *pRuntime;
+    int i;
+
+    if (g_pNetworkLobbyVsnetRuntime == 0 ||
+        g_nSelectedNetworkLobbyPeerId == 0) {
+        return 0;
+    }
+    pRuntime = (GameNetworkLobbyRuntimeView *)g_pNetworkLobbyVsnetRuntime;
+    for (i = 0; i < 10; ++i) {
+        if ((int)(unsigned long)pRuntime->m_apTrackedPeers20[i] ==
+            g_nSelectedNetworkLobbyPeerId) {
+            return pRuntime->m_pPeerStates14[i].m_szName2C;
+        }
+    }
+    return 0;
+}
+
+static void LayoutPaintballSequencePromptText(
+    GamePaintballSequenceScreenView *pScreen) {
+    const char *const *papszPrompts;
+    const char *pszPrompt;
+    const char *pszPeerName;
+    char *pszBuffer;
+    char *pszMarker;
+    char *pszSecondLine;
+    char *pszPreviousSplit;
+    void *pFontResource;
+    short Extent[2];
+    int nPrompt;
+    int cyFirstLine;
+    int x;
+
+    if (pScreen->m_fNetworkScreen8C == 0) {
+        papszPrompts = pScreen->m_fSecondVariant518 != 0
+            ? g_GAME_PaintballSequenceSoloWinPrompts
+            : g_GAME_PaintballSequenceSoloLossPrompts;
+    } else {
+        papszPrompts = pScreen->m_fSecondVariant518 != 0
+            ? g_GAME_PaintballSequenceNetworkWinPrompts
+            : g_GAME_PaintballSequenceNetworkLossPrompts;
+    }
+    nPrompt = ((GameLevelProgressStateView *)g_pLevelProgressState)
+                  ->m_nReserved0C;
+    pszPrompt = (0 <= nPrompt && nPrompt < 8) ? papszPrompts[nPrompt] : 0;
+    if (pszPrompt == 0) {
+        pszPrompt = "";
+    }
+    pszBuffer = (char *)pScreen + 0x3e0;
+    pszMarker = strchr(pszPrompt, '#');
+    if (pszMarker == 0) {
+        strcpy(pszBuffer, pszPrompt);
+    } else {
+        memcpy(pszBuffer, pszPrompt, pszMarker - pszPrompt);
+        pszBuffer[pszMarker - pszPrompt] = '\0';
+        pszPeerName = GetPaintballSequencePeerName();
+        if (pszPeerName != 0) {
+            strcat(pszBuffer, pszPeerName);
+        }
+        strcat(pszBuffer, pszMarker + 1);
+    }
+    *(char **)((char *)pScreen + 0x4e0) = pszBuffer;
+    *(char **)((char *)pScreen + 0x4e4) = 0;
+    pFontResource = ((MappedListResourceTable *)
+        pScreen->m_pMappedListResources98)->GetMappedResource(
+            pScreen->m_nMappedListRemapResourceId384);
+    pszSecondLine = 0;
+    do {
+        MeasureFunctionalLevelTitleExtent(pFontResource, Extent, pszBuffer);
+        x = pScreen->m_pLayout510[14] +
+            (pScreen->m_pLayout510[16] - Extent[0]) / 2;
+        pszPreviousSplit = pszSecondLine != 0 ? pszSecondLine - 1 : 0;
+        if (x < pScreen->m_pLayout510[18]) {
+            pszSecondLine = strrchr(pszBuffer, ' ');
+            if (pszSecondLine == 0) {
+                break;
+            }
+            *pszSecondLine++ = '\0';
+            if (pszPreviousSplit != 0) {
+                *pszPreviousSplit = ' ';
+            }
+        }
+    } while (x < pScreen->m_pLayout510[18]);
+    cyFirstLine = Extent[1];
+    *(char **)((char *)pScreen + 0x4e4) = pszSecondLine;
+    *(short *)((char *)pScreen + 0x4e8) = (short)x;
+    *(short *)((char *)pScreen + 0x4ea) =
+        (short)pScreen->m_pLayout510[19];
+    if (pszSecondLine == 0) {
+        *(short *)((char *)pScreen + 0x4ea) += Extent[1] / 2;
+    } else {
+        MeasureFunctionalLevelTitleExtent(
+            pFontResource, Extent, pszSecondLine);
+        *(short *)((char *)pScreen + 0x4ec) = (short)(
+            pScreen->m_pLayout510[14] +
+            (pScreen->m_pLayout510[16] - Extent[0]) / 2);
+        *(short *)((char *)pScreen + 0x4ee) = (short)(
+            pScreen->m_pLayout510[19] + cyFirstLine);
+    }
+    MeasureFunctionalLevelTitleExtent(pFontResource, Extent, "Password:");
+    *(short *)((char *)pScreen + 0x4f0) = (short)(
+        pScreen->m_pLayout510[14] +
+        (pScreen->m_pLayout510[16] - Extent[0]) / 2);
+    *(short *)((char *)pScreen + 0x4f2) =
+        (short)pScreen->m_pLayout510[25];
+    x = Extent[1];
+    MeasureFunctionalLevelTitleExtent(
+        pFontResource, Extent, pScreen->m_pszPassword4F8);
+    *(short *)((char *)pScreen + 0x4f4) = (short)(
+        pScreen->m_pLayout510[14] +
+        (pScreen->m_pLayout510[16] - Extent[0]) / 2);
+    *(short *)((char *)pScreen + 0x4f6) = (short)(
+        pScreen->m_pLayout510[25] + x);
+}
+
+static void LEMBALL_FASTCALL DrawPaintballSequencePromptText(void *pObject) {
+    GamePaintballSequenceScreenView *pScreen;
+    MappedListResourceTable *pMappedList;
+    short Relative[2];
+
+    pScreen = (GamePaintballSequenceScreenView *)pObject;
+    if (pScreen->m_fBuildingRenderEntries364 == 0 ||
+        pScreen->m_pMappedListResources98 == 0) {
+        return;
+    }
+    pMappedList = (MappedListResourceTable *)pScreen->m_pMappedListResources98;
+    Relative[0] = 0;
+    Relative[1] = 0;
+    pMappedList->SubmitRenderEntry(
+        pScreen->m_pRenderContext88, (short *)((char *)pScreen + 0x4e8),
+        Relative, pScreen->m_nMappedListRemapResourceId384,
+        *(void **)((char *)pScreen + 0x4e0), 0x20, 0);
+    if (*(void **)((char *)pScreen + 0x4e4) != 0) {
+        pMappedList->SubmitRenderEntry(
+            pScreen->m_pRenderContext88,
+            (short *)((char *)pScreen + 0x4ec), Relative,
+            pScreen->m_nMappedListRemapResourceId384,
+            *(void **)((char *)pScreen + 0x4e4), 0x20, 0);
+    }
+    pMappedList->SubmitRenderEntry(
+        pScreen->m_pRenderContext88, (short *)((char *)pScreen + 0x4f0),
+        Relative, pScreen->m_nMappedListRemapResourceId384,
+        (void *)"Password:", 0x20, 0);
+    pMappedList->SubmitRenderEntry(
+        pScreen->m_pRenderContext88, (short *)((char *)pScreen + 0x4f4),
+        Relative, pScreen->m_nMappedListRemapResourceId384,
+        pScreen->m_pszPassword4F8, 0x20, 0);
 }
 
 static void FinishPaintballSequence(
