@@ -686,6 +686,10 @@ static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(
     void *pObject, int nUnusedEdx, void *pEvent);
 static void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void *pObject);
 static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject);
+static void LEMBALL_FASTCALL InitializeNetworkLobbyActionButtons(void *pObject);
+static void LEMBALL_FASTCALL DestroyNetworkLobbyActionButtons(void *pObject);
+static void LEMBALL_FASTCALL NoopNetworkLobbyScreen(void *pObject);
+static void LEMBALL_FASTCALL DrawNetworkLobbyActionButtonFrames(void *pObject);
 
 // GLOBAL: LEMBALL 0x0049f4f0
 int g_fNextMainMenuTimeoutIsTitle = 1;
@@ -1205,10 +1209,15 @@ static void InitializeFunctionalNetworkLobbyVtables(void) {
     g_GAME_NetworkLobbyScreenVtable[0] = (void *)DeleteNetworkLobbyScreen;
     g_GAME_NetworkLobbyScreenVtable[14] = (void *)UpdateNetworkLobbyScreen;
     g_GAME_NetworkLobbyScreenVtable[15] = (void *)HandleNetworkLobbyScreenInput;
-    g_GAME_NetworkLobbyScreenVtable[16] = (void *)MainMenuSlot18Thunk;
-    g_GAME_NetworkLobbyScreenVtable[17] = (void *)MainMenuSlot19Thunk;
-    g_GAME_NetworkLobbyScreenVtable[18] = (void *)MainMenuSlot18Thunk;
+    g_GAME_NetworkLobbyScreenVtable[16] =
+        (void *)InitializeNetworkLobbyActionButtons;
+    g_GAME_NetworkLobbyScreenVtable[17] =
+        (void *)DestroyNetworkLobbyActionButtons;
+    g_GAME_NetworkLobbyScreenVtable[18] = (void *)NoopNetworkLobbyScreen;
     g_GAME_NetworkLobbyScreenVtable[19] = (void *)DrawNetworkLobbyScreen;
+    g_GAME_NetworkLobbyScreenVtable[20] =
+        (void *)DrawNetworkLobbyActionButtonFrames;
+    g_GAME_NetworkLobbyScreenVtable[21] = (void *)MainMenuSlot21Thunk;
     g_GAME_NetworkLobbyQueueVtable[0] =
         (void *)InitializeNonZrleVariantRenderEntry;
     g_GAME_NetworkLobbyQueueVtable[1] =
@@ -3178,14 +3187,94 @@ static void *LEMBALL_FASTCALL DeleteAdjustedPaintballSequenceScreen(
         (char *)pObject - 4, nUnusedEdx, fDelete);
 }
 
+static void LEMBALL_FASTCALL InitializeNetworkLobbyActionButtons(
+    void *pObject) {
+    GameNetworkLobbyScreenView *pScreen;
+    const int *panButtonResources;
+    void *pButtonManager;
+
+    pScreen = (GameNetworkLobbyScreenView *)pObject;
+    pScreen->m_pLayout42C = pScreen->m_fCompactLayout32C != 0
+        ? g_GAME_NetworkLobbyLayoutCompact
+        : g_GAME_NetworkLobbyLayoutStandard;
+    panButtonResources = pScreen->m_fCompactLayout32C != 0
+        ? g_GAME_NetworkLobbyButtonResourcesCompact
+        : g_GAME_NetworkLobbyButtonResourcesStandard;
+    pScreen->m_nButtonSelection434 = 0;
+    pButtonManager = AllocateVSMemBlock(0x14c);
+    if (pButtonManager != 0) {
+        pScreen->m_pQueuedVariantManager338 =
+            ConstructQueuedVariantChildSlotManager(
+                pButtonManager, 0, pScreen->m_pPrimaryContext84,
+                pScreen->m_pRenderContext88, 4,
+                pScreen->m_fCompactLayout32C, 0);
+    } else {
+        pScreen->m_pQueuedVariantManager338 = 0;
+    }
+    AppendQueuedVariantChildSlot(
+        pScreen->m_pQueuedVariantManager338, 0,
+        pScreen->m_pLayout42C[0], pScreen->m_pLayout42C[1],
+        panButtonResources, 1, 0, 0, 0,
+        &pScreen->m_nButtonSelection434, (int)0xacef000cU);
+    AppendQueuedVariantChildSlot(
+        pScreen->m_pQueuedVariantManager338, 0,
+        pScreen->m_pLayout42C[2], pScreen->m_pLayout42C[3],
+        panButtonResources + 1, 1, 0, 0, 0,
+        &pScreen->m_nButtonSelection434, (int)0xacef000dU);
+    AppendQueuedVariantChildSlot(
+        pScreen->m_pQueuedVariantManager338, 0,
+        pScreen->m_pLayout42C[4], pScreen->m_pLayout42C[5],
+        panButtonResources + 2, 1, 0, 0, 0,
+        &pScreen->m_nButtonSelection434, (int)0xacef000eU);
+    SelectQueuedVariantChildSlot(
+        pScreen->m_pQueuedVariantManager338, 0, 0);
+    InitializeQueuedVariantChildContext(
+        pScreen->m_pQueuedVariantManager338);
+    ThunkRefreshNetworkLobbyPlayerEntries((int)(unsigned long)pScreen);
+}
+
+static void LEMBALL_FASTCALL DestroyNetworkLobbyActionButtons(
+    void *pObject) {
+    GameNetworkLobbyScreenView *pScreen;
+
+    pScreen = (GameNetworkLobbyScreenView *)pObject;
+    if (pScreen->m_pQueuedVariantManager338 != 0) {
+        typedef void *(LEMBALL_FASTCALL *DeleteProc)(void *, int, int);
+        ((DeleteProc)(*(void ***)pScreen->m_pQueuedVariantManager338)[1])(
+            pScreen->m_pQueuedVariantManager338, 0, 1);
+        pScreen->m_pQueuedVariantManager338 = 0;
+    }
+}
+
+static void LEMBALL_FASTCALL NoopNetworkLobbyScreen(void *) {
+}
+
+static void DrawNetworkLobbyActionButtonFrame(
+    GameNetworkLobbyScreenView *pScreen, int iLayoutRect) {
+    const int *pRect;
+
+    pRect = pScreen->m_pLayout42C + iLayoutRect * 2;
+    EmitScreenFrameRect(
+        pScreen, (short)pRect[0], (short)pRect[1],
+        (short)pRect[2], (short)pRect[3]);
+}
+
+static void LEMBALL_FASTCALL DrawNetworkLobbyActionButtonFrames(
+    void *pObject) {
+    GameNetworkLobbyScreenView *pScreen;
+
+    pScreen = (GameNetworkLobbyScreenView *)pObject;
+    DrawNetworkLobbyActionButtonFrame(pScreen, 3);
+    DrawNetworkLobbyActionButtonFrame(pScreen, 5);
+    DrawNetworkLobbyActionButtonFrame(pScreen, 7);
+}
+
 void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
     void *pObject, int, void *pPrimaryContext,
     void *pRenderContext, short *paSize) {
     GameNetworkLobbyScreenView *pScreen;
     int *pEntryArray;
     int nPaletteResourceId;
-    const int *panButtonResources;
-    void *pButtonManager;
     int i;
 
     pScreen = (GameNetworkLobbyScreenView *)pObject;
@@ -3232,41 +3321,6 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
                 *(void **)((char *)pScreen->m_pPrimaryContext84 + 0x1c),
                 0, (char *)pScreen->m_pPlayerEntries3CC + i * 0x44);
         }
-    }
-    pScreen->m_pLayout42C = pScreen->m_fCompactLayout32C != 0
-        ? g_GAME_NetworkLobbyLayoutCompact
-        : g_GAME_NetworkLobbyLayoutStandard;
-    if (pScreen->m_pPlayerEntries3CC != 0) {
-        ThunkRefreshNetworkLobbyPlayerEntries(
-            (int)(unsigned long)pScreen);
-    }
-    panButtonResources = pScreen->m_fCompactLayout32C != 0
-        ? g_GAME_NetworkLobbyButtonResourcesCompact
-        : g_GAME_NetworkLobbyButtonResourcesStandard;
-    pButtonManager = AllocateVSMemBlock(0x14c);
-    if (pButtonManager != 0) {
-        ConstructQueuedVariantChildSlotManager(
-            pButtonManager, 0, pScreen->m_pPrimaryContext84,
-            pScreen->m_pRenderContext88, 4,
-            pScreen->m_fCompactLayout32C, 0);
-        pScreen->m_pQueuedVariantManager338 = pButtonManager;
-        AppendQueuedVariantChildSlot(
-            pButtonManager, 0,
-            pScreen->m_pLayout42C[0], pScreen->m_pLayout42C[1],
-            panButtonResources, 1, 0, 0, 0,
-            &pScreen->m_nButtonSelection434, (int)0xacef000cU);
-        AppendQueuedVariantChildSlot(
-            pButtonManager, 0,
-            pScreen->m_pLayout42C[2], pScreen->m_pLayout42C[3],
-            panButtonResources + 1, 1, 0, 0, 0,
-            &pScreen->m_nButtonSelection434, (int)0xacef000dU);
-        AppendQueuedVariantChildSlot(
-            pButtonManager, 0,
-            pScreen->m_pLayout42C[4], pScreen->m_pLayout42C[5],
-            panButtonResources + 2, 1, 0, 0, 0,
-            &pScreen->m_nButtonSelection434, (int)0xacef000eU);
-        SelectQueuedVariantChildSlot(pButtonManager, 0, 0);
-        InitializeQueuedVariantChildContext(pButtonManager);
     }
     pScreen->m_fDrawFrameA8 = 1;
     pScreen->m_fTileBackgroundAC = 1;
