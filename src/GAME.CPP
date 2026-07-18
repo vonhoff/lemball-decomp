@@ -1307,6 +1307,8 @@ static void DestroyIntroSequenceScreen(void *pObject) {
     ((GamePrimaryContext *)*(void **)(pScreen + 0x84))
         ->SampleRootHelperGeometryAndDispatchRenderGroups(-1);
     DestroyResourceGeometryHelperWindowOwner(pScreen + 0x3bc);
+    *(void **)(pScreen + 0x3a0) =
+        g_pQueuedRenderPointSinkFinalizeThunk;
     DestroyFunctionalFramedScreenBase(pScreen);
 }
 
