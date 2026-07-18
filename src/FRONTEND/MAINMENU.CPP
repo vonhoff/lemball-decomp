@@ -1130,6 +1130,103 @@ static void ClearNetworkLobbyPlayerEntryDirty(
     }
 }
 
+static int FindNetworkLobbyPeerSlot(
+    GameNetworkLobbyRuntimeView *pRuntime, void *pPeer) {
+    int i;
+
+    for (i = 0; i < 10; ++i) {
+        if (pRuntime->m_apTrackedPeers20[i] == pPeer) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+static int ConfirmSelectedNetworkLobbyPlayerEntry(
+    GameNetworkLobbyScreenView *pScreen) {
+    GameNetworkLobbyRuntimeView *pRuntime;
+    GameLevelProgressStateView *pProgress;
+    int fEntriesWereVisible;
+    void *pPeer;
+
+    fEntriesWereVisible = pScreen->m_fPromptActive3DC == 0;
+    pRuntime = (GameNetworkLobbyRuntimeView *)g_pNetworkLobbyVsnetRuntime;
+    if (pRuntime != 0 && pScreen->m_nSelectedPlayer3D0 != -1) {
+        pPeer = pRuntime->m_apTrackedPeers20[
+            pScreen->m_nSelectedPlayer3D0];
+        if (pPeer != 0) {
+            HideNetworkLobbyPlayerEntries(pScreen);
+            g_nSelectedNetworkLobbyPeerId = (int)(unsigned long)pPeer;
+            pScreen->m_nTransitionStatus378 = 1;
+            pScreen->m_nRequestedMode374 = 4;
+            pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
+            pProgress->m_nCurrentLevel00 = pProgress->m_nReserved4C;
+            pProgress->m_nCurrentPack08 = 4;
+            return fEntriesWereVisible;
+        }
+    }
+    ShowNetworkLobbyPlayerEntries(pScreen);
+    return 0;
+}
+
+int LEMBALL_FASTCALL HandleNetworkLobbyTransportPayloadEvent(
+    void *pController, int, unsigned short nEventType,
+    void *pPayloadObject, void *pPeer) {
+    GameNetworkLobbyScreenView *pScreen;
+    GameNetworkLobbyRuntimeView *pRuntime;
+    GameEffStream *pStream;
+    int nPeerSlot;
+    int nSerializedStream;
+
+    pScreen = (GameNetworkLobbyScreenView *)g_pActiveNetworkLobbyScreen;
+    pRuntime = (GameNetworkLobbyRuntimeView *)g_pNetworkLobbyVsnetRuntime;
+    if (pScreen == 0 || pRuntime == 0 || pPayloadObject == 0) {
+        return 0;
+    }
+    nSerializedStream = *(int *)((char *)pPayloadObject + 4) + 0x10;
+    nPeerSlot = FindNetworkLobbyPeerSlot(pRuntime, pPeer);
+    if (nEventType == 5) {
+        if (nPeerSlot != -1 && pRuntime->m_pPeerStates14 != 0) {
+            pStream = (GameEffStream *)((char *)pRuntime->m_pPeerStates14 +
+                                        nPeerSlot * 0x50);
+            pStream->LoadEffStreamFromMemory(nSerializedStream);
+        }
+        *(int *)((char *)pPayloadObject + 0x24) = 0;
+        pScreen->m_fRefreshPlayers3C4 = 1;
+        return 1;
+    }
+    if (nEventType == 6) {
+        pStream = *(GameEffStream **)((char *)pController + 0x30);
+        if (pStream != 0) {
+            pStream->LoadEffStreamFromMemory(nSerializedStream);
+        }
+        *(int *)((char *)pPayloadObject + 0x24) = 0;
+        ClearNetworkLobbyPlayerEntryDirty(pScreen, nPeerSlot);
+        if (pStream != 0 && pStream->m_nU32Payload != 0) {
+            ((VsNetEffTransportPeer *)pPeer)->Close();
+        }
+        pScreen->m_fRefreshPlayers3C4 = 1;
+        return 1;
+    }
+    if (nEventType == 7) {
+        pStream = *(GameEffStream **)((char *)pController + 0x34);
+        if (pStream != 0) {
+            pStream->LoadEffStreamFromMemory(nSerializedStream);
+        }
+        *(int *)((char *)pPayloadObject + 0x24) = 0;
+        if (nPeerSlot != -1 && pScreen->m_pPlayerEntries3CC != 0) {
+            *(int *)((char *)pScreen->m_pPlayerEntries3CC +
+                     nPeerSlot * 0x44 + 0x40) = 1;
+        }
+        if (pStream != 0 && pStream->m_nU32Payload != 0 &&
+            ConfirmSelectedNetworkLobbyPlayerEntry(pScreen) != 0) {
+            pStream->QueueEffStreamWriteEvent((int)(unsigned long)pPeer);
+        }
+        return 1;
+    }
+    return 0;
+}
+
 static void CloseNetworkLobbyTransportPeers(void *pController) {
     GameNetworkLobbyScreenView *pScreen;
     GameNetworkLobbyRuntimeView *pRuntime;

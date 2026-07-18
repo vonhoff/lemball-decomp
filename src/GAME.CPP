@@ -623,6 +623,7 @@ static void *g_GAME_StartupModeVtable[6];
 static void *g_GAME_StartupModeEventClientVtable[4];
 static void *g_GAME_MainMenuModeVtable[6];
 static void *g_GAME_MainMenuModeEventClientVtable[4];
+static void *g_GAME_NetworkLobbyTransportControllerVtable[6];
 static void *g_GAME_LevelModeActiveInterfaceVtable[2];
 void *g_pStartupModeVtable = g_GAME_StartupModeVtable;
 void *g_pStartupModeRenderThunk = g_GAME_StartupModeEventClientVtable;
@@ -633,7 +634,7 @@ void *g_pMode3RenderThunk = g_GAME_LevelModeActiveInterfaceVtable;
 void *g_pSimpleModeDeleteVtable = g_GAME_GenericModeVtableSlots;
 void *g_pSimpleModeVtable = g_GAME_GenericModeVtableSlots;
 void *g_pMode16Vtable = g_GAME_GenericModeVtableSlots;
-void *g_pMode16RenderThunk = (void *)StubNoOpPtr;
+void *g_pMode16RenderThunk = g_GAME_MainMenuModeEventClientVtable;
 void *g_pPrimaryContextVtable = g_GAME_PrimaryContextVtableSlots;
 void *g_pPrimaryContextRenderQueueNodeVtable = g_GAME_RenderQueueNodeVtableSlots;
 extern void *g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[8];
@@ -745,7 +746,27 @@ extern void *g_pNonZrleVariantRenderEntryInitializeVtable[2];
 extern void *DeleteBaseModeObjectAdjustedThunk(void *pObject, BYTE fDelete);
 extern int LEMBALL_FASTCALL HandleBaseModeActionButtonEventThunk(
     void *pClient, int nUnused, void *pEvent);
+extern int LEMBALL_FASTCALL HandleNetworkLobbyTransportPayloadEvent(
+    void *pController, int nUnusedEdx, unsigned short nEventType,
+    void *pPayloadObject, void *pPeer);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
+
+class GameNetworkLobbyTransportControllerVtableModel {
+public:
+    virtual void Reserved00(void) {}
+    virtual void Reserved04(void) {}
+    virtual int HandleTransportPayload(
+        unsigned short nEventType, void *pPayloadObject, void *pPeer) {
+        return HandleNetworkLobbyTransportPayloadEvent(
+            this, 0, nEventType, pPayloadObject, pPeer);
+    }
+    virtual void Reserved0C(void) {}
+    virtual int HandleTransportEvent(void *) { return 0; }
+    virtual void Reserved14(void) {}
+};
+
+static GameNetworkLobbyTransportControllerVtableModel
+    g_GAME_NetworkLobbyTransportControllerVtableModel;
 
 
 
@@ -893,6 +914,18 @@ static void InitializeGameStubVtables(void) {
     g_GAME_MainMenuModeEventClientVtable[2] =
         (void *)HandleBaseModeActionButtonEventThunk;
     g_GAME_MainMenuModeEventClientVtable[3] = 0;
+
+    g_GAME_NetworkLobbyTransportControllerVtable[0] =
+        g_pGAME_ModeDeleteVtableSlot;
+    g_GAME_NetworkLobbyTransportControllerVtable[1] =
+        (void *)UpdateBaseModeThunk;
+    g_GAME_NetworkLobbyTransportControllerVtable[2] =
+        (*(void ***)&g_GAME_NetworkLobbyTransportControllerVtableModel)[2];
+    g_GAME_NetworkLobbyTransportControllerVtable[3] =
+        (void *)NoopBaseModeThunk;
+    g_GAME_NetworkLobbyTransportControllerVtable[4] =
+        (void *)ReturnFalseBaseModeThunk;
+    g_GAME_NetworkLobbyTransportControllerVtable[5] = 0;
 
     g_GAME_GenericScreenVtableSlots[0] = g_pGAME_ModeDeleteVtableSlot;
     g_GAME_GenericScreenVtableSlots[0x08 / sizeof(void *)] =
@@ -2528,8 +2561,9 @@ void *ConstructNetworkLobbyTransportController(void *pModeObject, GameMainContex
 
     pMode = (GameNetworkLobbyTransportController *)pModeObject;
     InitializeBaseModeObject(pMode, pMainContext);
-    pMode->m_pVtable = (void **)g_pMode16Vtable;
-    pMode->m_pRenderQueueNodeVtable = (void **)g_pMode16RenderThunk;
+    pMode->m_pVtable = g_GAME_NetworkLobbyTransportControllerVtable;
+    pMode->m_pRenderQueueNodeVtable =
+        g_GAME_MainMenuModeEventClientVtable;
     pMode->m_pPeerClearCloseStream = AllocateVSMemBlock(0x30);
     if (pMode->m_pPeerClearCloseStream != 0) {
         pMode->m_pPeerClearCloseStream = ConstructNetworkLobbyPeerClearCloseStream(pMode->m_pPeerClearCloseStream);
