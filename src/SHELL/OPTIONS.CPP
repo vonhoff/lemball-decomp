@@ -23,6 +23,7 @@ static const char g_STARTUP_SwitchPlayPrefix[] = "/PLAY@";
 static const char g_STARTUP_SwitchGraphics[] = "/GRAPHICS";
 
 int g_fStartupAnimationsEnabled = 0;
+// GLOBAL: LEMBALL 0x004a6284
 int g_fSkipStartupSequence = 0;
 int g_fMusicOptionAvailable = 0;
 // GLOBAL: LEMBALL 0x004a6278
@@ -35,6 +36,7 @@ int g_fZoomedViewportEnabled = 0;
 int g_fCompactPrimaryContextLayout = 0;
 int g_fStartupEditLevelOverride = 0;
 int g_fStartupPlayLevelOverride = 0;
+// GLOBAL: LEMBALL 0x0049ca30
 int g_fStartupTestAllLevels = 0;
 int g_fStartupGraphicsDialogRequested = 0;
 int g_fLevelDemoModeEnabled = 0;
