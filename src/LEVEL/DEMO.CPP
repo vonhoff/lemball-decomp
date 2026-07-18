@@ -20,6 +20,7 @@ extern void LEMBALL_FASTCALL CopyBufferIntoTypedResourceObjectAndParse(
 typedef void *(LEMBALL_FASTCALL *DemoDeleteProc)(
     void *pObject, int nUnusedEdx, unsigned char fDelete);
 extern void ReturnVoidVtableCallback(void);
+extern void *g_GAME_RenderQueueNodeVtableSlots[4];
 
 int DispatchLevelDemoEventsForFrameThunk(void *pPlaybackController, char nFrame);
 static void *LEMBALL_FASTCALL DeleteLevelDemoPlaybackControllerThunk(
@@ -254,7 +255,7 @@ void DemoLevelDemoPlaybackController::DestroyLevelDemoPlaybackController(void) {
     ReleaseLevelDemoRecordBufferThunk(pPlaybackController);
     ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
         ->UnregisterOrderedRenderDispatchClient(pPlaybackController, -100);
-    *(void ***)pPlaybackController = g_pNonZrleVariantRenderEntryInitializeVtable;
+    *(void ***)pPlaybackController = g_GAME_RenderQueueNodeVtableSlots;
 }
 
 // FUNCTION: LEMBALL 0x00409460

@@ -240,8 +240,10 @@ DWORD WINAPI WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds);
 BOOL WINAPI TerminateThread(HANDLE hThread, DWORD dwExitCode);
 void WINAPI ExitProcess(UINT uExitCode);
 int WINAPI TranslateAcceleratorA(HWND hWnd, HACCEL hAccTable, MSG *lpMsg);
-MCIERROR WINAPI mciSendCommandA(MCIDEVICEID mciId, UINT uMsg, DWORD_PTR fdwCommand, DWORD_PTR dwParam);
-BOOL WINAPI mciGetErrorStringA(MCIERROR mcierr, LPSTR pszText, UINT cchText);
+__declspec(dllimport) MCIERROR WINAPI mciSendCommandA(
+    MCIDEVICEID mciId, UINT uMsg, DWORD_PTR fdwCommand, DWORD_PTR dwParam);
+__declspec(dllimport) BOOL WINAPI mciGetErrorStringA(
+    MCIERROR mcierr, LPSTR pszText, UINT cchText);
 MMRESULT WINAPI waveOutReset(HWAVEOUT hWaveOut);
 MMRESULT WINAPI waveOutClose(HWAVEOUT hWaveOut);
 MMRESULT WINAPI waveOutWrite(HWAVEOUT hWaveOut, LPWAVEHDR pWaveOutHdr, UINT cbWaveOutHdr);

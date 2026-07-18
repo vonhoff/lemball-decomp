@@ -501,7 +501,7 @@ extern int LEMBALL_FASTCALL IncrementRenderQueueNodeCounterThunk(
     void *pRenderQueueNode, int nUnused, void *pEntry);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 // GLOBAL: LEMBALL 0x00493110
-static void *g_GAME_RenderQueueNodeVtableSlots[4] = {
+void *g_GAME_RenderQueueNodeVtableSlots[4] = {
     (void *)InitializeNonZrleVariantRenderEntry,
     (void *)DeleteRenderQueueNodeThunk,
     (void *)IncrementRenderQueueNodeCounterThunk,
