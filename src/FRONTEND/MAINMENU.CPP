@@ -408,6 +408,35 @@ public:
     virtual void Reserved(void) = 0;
     virtual void Close(int nCloseFlag) = 0;
 };
+
+class GamePrimaryContextSlot24Interface {
+public:
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved01(void) = 0;
+    virtual void Reserved02(void) = 0;
+    virtual void Reserved03(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void Reserved05(void) = 0;
+    virtual void Reserved06(void) = 0;
+    virtual void Reserved07(void) = 0;
+    virtual void Reserved08(void) = 0;
+    virtual void Reserved09(void) = 0;
+    virtual void Reserved10(void) = 0;
+    virtual void Reserved11(void) = 0;
+    virtual void Reserved12(void) = 0;
+    virtual void Reserved13(void) = 0;
+    virtual void Reserved14(void) = 0;
+    virtual void Reserved15(void) = 0;
+    virtual void Reserved16(void) = 0;
+    virtual void Reserved17(void) = 0;
+    virtual void Reserved18(void) = 0;
+    virtual void Reserved19(void) = 0;
+    virtual void Reserved20(void) = 0;
+    virtual void Reserved21(void) = 0;
+    virtual void Reserved22(void) = 0;
+    virtual void Reserved23(void) = 0;
+    virtual int IsMainMenuTimeoutAllowed(void) = 0;
+};
 typedef int (LEMBALL_FASTCALL *GameIntNoArgVirtual)(void *, int);
 typedef int (LEMBALL_FASTCALL *GameIntOneArgVirtual)(void *, int, void *);
 
@@ -2192,9 +2221,9 @@ static void LEMBALL_FASTCALL UpdateMainMenuScreen(void *pObject) {
     dwNow = timeGetTime();
     if (IsPrimaryContextWindowReadyForPresentThunk(
             (int *)pScreen->m_pPrimaryContext84) == 0 ||
-        ((GameIntNoArgVirtual)
-             (*(void ***)pScreen->m_pPrimaryContext84)[24])(
-            pScreen->m_pPrimaryContext84, 0) == 0) {
+        ((GamePrimaryContextSlot24Interface *)
+             pScreen->m_pPrimaryContext84)
+                ->IsMainMenuTimeoutAllowed() == 0) {
         pScreen->m_dwTimeout398 = timeGetTime() + 20000U;
         return;
     }
