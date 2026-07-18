@@ -1363,6 +1363,18 @@ static GameQueuedVariantRangeEntry *ConstructQueuedVariantRangeEntry(
     return pEntry;
 }
 
+static void LEMBALL_FASTCALL RefreshQueuedVariantRangeSelection(
+    GameQueuedVariantRangeEntry *pEntry) {
+    int nResourceId;
+
+    if (pEntry->m_pSelection44 != 0) {
+        pEntry->m_nSelectedResource40 = *pEntry->m_pSelection44;
+    }
+    nResourceId = pEntry->m_panResourceIds48[
+        pEntry->m_nSelectedResource40 - pEntry->m_nFirstResource3C];
+    ReloadMenuSelectorOverlayResource(pEntry->m_pOverlay4C, 0, nResourceId);
+}
+
 void *LEMBALL_FASTCALL ConstructQueuedVariantChildSlotManager(
     void *pObject, int, void *pRenderOwner,
     void *pRenderContext, int, int nLayoutMode,
@@ -1488,6 +1500,22 @@ void LEMBALL_FASTCALL InitializeQueuedVariantChildContext(void *pObject) {
         pContext, 0, Rect, pManager->m_pRenderOwner110, 0);
     pManager->m_pChildRenderContext12C =
         *(void **)((char *)pContext + 0x4c);
+}
+
+void LEMBALL_FASTCALL RefreshQueuedVariantChildByToken(
+    void *pObject, int, int nToken) {
+    GameQueuedVariantChildSlotManager *pManager;
+    GameQueuedVariantRangeEntry *pEntry;
+    int i;
+
+    pManager = (GameQueuedVariantChildSlotManager *)pObject;
+    for (i = 0; i < pManager->m_cChildren80; ++i) {
+        pEntry = pManager->m_apChildrenAC[i];
+        if (pEntry != 0 && pEntry->m_nCommand30 == nToken) {
+            RefreshQueuedVariantRangeSelection(pEntry);
+            return;
+        }
+    }
 }
 
 static int LEMBALL_FASTCALL HandleQueuedVariantChildSlotManagerEvent(

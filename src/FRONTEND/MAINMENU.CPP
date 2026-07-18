@@ -4203,7 +4203,7 @@ static void RefreshFunctionalLevelSelectionMetadata(
     memset(&Metadata, 0, sizeof(Metadata));
     if (ReadFunctionalLevelMetadata(nPack, nCurrentLevel, &Metadata) == 0 ||
         Metadata.m_szTitle08[0] == '\0') {
-        wsprintfA(Metadata.m_szTitle08, "LEVEL %d", nCurrentLevel + 1);
+        strcpy(Metadata.m_szTitle08, "UN-NAMED LEVEL");
     }
     strncpy(pScreen->m_aszTitleLines3FC[0], Metadata.m_szTitle08, 0x1f);
     pScreen->m_aszTitleLines3FC[0][0x1f] = '\0';
@@ -4215,14 +4215,20 @@ static void RefreshFunctionalLevelSelectionMetadata(
               Metadata.m_nTimeSeconds06 % 60);
     pScreen->m_cSkillStatus3F4 = Metadata.m_cSkill00;
     pScreen->m_cStatus3EC = Metadata.m_cPlayers02;
-    pScreen->m_cNetworkStatus3F0 = Metadata.m_cNetworkPlayers04;
+    if (pScreen->m_fNetworkScreen8C != 0) {
+        pScreen->m_cNetworkStatus3F0 = Metadata.m_cNetworkPlayers04;
+    }
     pScreen->m_fPreviousLocked484 = nCurrentLevel == 0;
     if (nPack == 4) {
-        pScreen->m_fNextLocked480 = nCurrentLevel >= 10;
+        pScreen->m_fNextLocked480 = nCurrentLevel > 10;
     } else {
         nUnlockedCap = pProgress->m_anUnlockedPackCaps28[nPack];
-        pScreen->m_fNextLocked480 = nCurrentLevel >= nUnlockedCap;
+        pScreen->m_fNextLocked480 = nCurrentLevel == nUnlockedCap;
     }
+    RefreshQueuedVariantChildByToken(
+        pScreen->m_pQueuedVariantManager338, 0, (int)0xacef000eU);
+    RefreshQueuedVariantChildByToken(
+        pScreen->m_pQueuedVariantManager338, 0, (int)0xacef000fU);
     pScreen->m_fSelectorDirty360 = 1;
     pScreen->m_fFrameDirty330 = 1;
 }
@@ -4353,10 +4359,8 @@ static void SelectFunctionalLevel(
                 pProgress->m_nCurrentLevel00;
         }
     }
-    if (nPack < 4) {
-        pProgress->m_anSnapshotPackCaps3C[nPack] =
-            pProgress->m_nCurrentLevel00;
-    }
+    pProgress->m_anSnapshotPackCaps3C[nPack] =
+        pProgress->m_nCurrentLevel00;
     RefreshFunctionalLevelSelectionMetadata(pScreen);
 }
 
