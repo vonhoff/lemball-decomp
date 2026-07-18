@@ -309,15 +309,22 @@ static void *g_SharedRenderQueueNodeVtable[4] = {
     (void *)TranslateKeyboardRenderQueueEntry,
     0,
 };
+struct MainMemoryArenaStatusEntryVtable {
+    void *m_apPrefix[6];
+    void *(CArena::*m_pWriteReport)(VsInitFormattedOutputStream *);
+    void *m_pDestroy;
+};
 // GLOBAL: LEMBALL 0x004988c8
-static void *g_MainMemoryArenaStatusEntryVtable[8] = {
-    (void *)WriteNamedStatusEntry,
-    (void *)UpdateNamedStatusEntry,
-    (void *)EnterObjectCriticalSection,
-    (void *)LeaveObjectCriticalSection,
-    (void *)EnterObjectCriticalSection,
-    (void *)LeaveObjectCriticalSection,
-    (void *)WriteMemoryArenaReport,
+static MainMemoryArenaStatusEntryVtable g_MainMemoryArenaStatusEntryVtable = {
+    {
+        (void *)WriteNamedStatusEntry,
+        (void *)UpdateNamedStatusEntry,
+        (void *)EnterObjectCriticalSection,
+        (void *)LeaveObjectCriticalSection,
+        (void *)EnterObjectCriticalSection,
+        (void *)LeaveObjectCriticalSection,
+    },
+    &CArena::WriteMemoryArenaReport,
     (void *)DestroyMemoryArenaBaseStateReturnThis,
 };
 // GLOBAL: LEMBALL 0x004a9368
@@ -408,7 +415,8 @@ static void DestroyFormattedOutputStream(VsInitFormattedOutputStream *pStream, i
     }
 }
 
-void AppendCharToFixedBufferStream(VsInitFixedBufferStream *pStream, char ch) {
+void LEMBALL_FASTCALL AppendCharToFixedBufferStream(
+    VsInitFixedBufferStream *pStream, int nUnused, char ch) {
     int cSpaces;
     int fTab;
 
@@ -448,10 +456,10 @@ void AppendCharToFixedBufferStream(VsInitFixedBufferStream *pStream, char ch) {
     }
 }
 
-void AppendCStringToFixedBufferStream(VsInitFixedBufferStream *pStream,
-                                      const char *pszText) {
+void LEMBALL_FASTCALL AppendCStringToFixedBufferStream(
+    VsInitFixedBufferStream *pStream, int nUnused, const char *pszText) {
     while (*pszText != '\0') {
-        AppendCharToFixedBufferStream(pStream, *pszText++);
+        AppendCharToFixedBufferStream(pStream, 0, *pszText++);
     }
 }
 
@@ -523,9 +531,11 @@ VsInitStatusEntryPointerArray *ConstructStatusEntryPointerArray(void *pRegistry,
     return ((VsInitStatusEntryPointerArray *)pRegistry)->ConstructStatusEntryPointerArray(cEntriesMax);
 }
 
-VsInitFormattedOutputStream *WriteStatusEntryPointerArray(void *pRegistry, VsInitFormattedOutputStream *pStream) {
+VsInitFormattedOutputStream *LEMBALL_FASTCALL WriteStatusEntryPointerArray(
+    void *pRegistry, int nUnused, VsInitFormattedOutputStream *pStream) {
     VsInitStatusEntryPointerArray *pPointerArray;
-    VsInitFormattedOutputStream *(*pfnWriteEntry)(void *, VsInitFormattedOutputStream *);
+    VsInitFormattedOutputStream *(LEMBALL_FASTCALL *pfnWriteEntry)(
+        void *, int, VsInitFormattedOutputStream *);
     int i;
 
     pPointerArray = (VsInitStatusEntryPointerArray *)pRegistry;
@@ -533,9 +543,10 @@ VsInitFormattedOutputStream *WriteStatusEntryPointerArray(void *pRegistry, VsIni
     AppendCStringToStream(pStream, g_VSINIT_StatusOutputRule);
     AppendCStringToStream(pStream, g_VSINIT_StatusOutputColumns);
     for (i = 0; i < pPointerArray->m_cEntries; ++i) {
-        pfnWriteEntry = (VsInitFormattedOutputStream * (*)(void *, VsInitFormattedOutputStream *))
+        pfnWriteEntry = (VsInitFormattedOutputStream *(LEMBALL_FASTCALL *)(
+            void *, int, VsInitFormattedOutputStream *))
             (*(void ***)pPointerArray->m_ppEntries[i])[0];
-        pfnWriteEntry(pPointerArray->m_ppEntries[i], pStream);
+        pfnWriteEntry(pPointerArray->m_ppEntries[i], 0, pStream);
     }
     AppendCStringToStream(pStream, g_VSINIT_StatusOutputRule);
     return pStream;
@@ -775,13 +786,15 @@ void LEMBALL_FASTCALL ApplyStreamIntegerWidthPadding(VsInitFormattedOutputStream
 
 // FUNCTION: LEMBALL 0x004585b0
 VsInitFormattedOutputStream *VsInitFormattedOutputStream::AppendCStringToStream(const char *pszText) {
-    AppendCStringToFixedBufferStream(VsInitFORMAT_TARGET(this)->m_pDownstream, pszText);
+    AppendCStringToFixedBufferStream(
+        VsInitFORMAT_TARGET(this)->m_pDownstream, 0, pszText);
     return this;
 }
 
 // FUNCTION: LEMBALL 0x004585d0
 VsInitFormattedOutputStream *VsInitFormattedOutputStream::AppendCharToStreamVariant(char ch) {
-    AppendCharToFixedBufferStream(VsInitFORMAT_TARGET(this)->m_pDownstream, ch);
+    AppendCharToFixedBufferStream(
+        VsInitFORMAT_TARGET(this)->m_pDownstream, 0, ch);
     return this;
 }
 
@@ -1210,7 +1223,8 @@ void InitializeCoreSubsystems(void) {
             (GameStatusEntry *)pMainMemoryArenaStatusStorage;
         new (pMainMemoryArenaStatusStorage)
             GameStatusEntry("Main memory arena");
-        pMainMemoryArenaStatusEntry->m_pVtable = g_MainMemoryArenaStatusEntryVtable;
+        pMainMemoryArenaStatusEntry->m_pVtable =
+            (void **)&g_MainMemoryArenaStatusEntryVtable;
     } else {
         pMainMemoryArenaStatusEntry = 0;
     }
@@ -1236,7 +1250,8 @@ void ShutdownCoreSubsystems(void) {
     cbAvailableNow = CalculateMemoryArenaAvailableBytes(g_pMainMemoryArena);
     if (cbAvailableNow != g_cbMainArenaAvailableAfterInit) {
         AppendErrorCString(g_VSINIT_MemoryLeakMessage);
-        WriteMemoryArenaReport(g_pMainMemoryArena, g_pErrorOutputStream);
+        ((CArena *)g_pMainMemoryArena)->WriteMemoryArenaReport(
+            g_pErrorOutputStream);
         AppendErrorCString(g_VSINIT_LineBreak);
     }
 
@@ -1425,13 +1440,16 @@ int InitializeStatusEntryRegistry(void) {
 // FUNCTION: LEMBALL 0x0045aab0
 int ShutdownStatusEntryRegistry(void) {
     void *pRegistry;
-    VsInitFormattedOutputStream *(*pfnWriteRegistry)(void *, VsInitFormattedOutputStream *);
+    VsInitFormattedOutputStream *(LEMBALL_FASTCALL *pfnWriteRegistry)(
+        void *, int, VsInitFormattedOutputStream *);
 
     pRegistry = g_pStatusEntryRegistry;
     if (g_pStatusEntryRegistry != 0) {
         pfnWriteRegistry =
-            (VsInitFormattedOutputStream * (*)(void *, VsInitFormattedOutputStream *))(*(void ***)pRegistry)[0];
-        pfnWriteRegistry(pRegistry, g_pStartupOutputStream);
+            (VsInitFormattedOutputStream *(LEMBALL_FASTCALL *)(
+                void *, int, VsInitFormattedOutputStream *))
+                (*(void ***)pRegistry)[0];
+        pfnWriteRegistry(pRegistry, 0, g_pStartupOutputStream);
         DestroyStatusEntryPointerArray(g_pStatusEntryRegistry);
         FreeVSMemBlock(pRegistry);
         g_pStatusEntryRegistry = 0;

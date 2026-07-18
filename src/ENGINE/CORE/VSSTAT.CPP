@@ -11,8 +11,7 @@ struct GameStatusEntryInitialVtable {
     void *m_pReserved;
     void (*m_pEnterCriticalSection)(void *);
     void (*m_pLeaveCriticalSection)(void *);
-    void *(*m_pWriteMemoryArenaReport)(
-        void *, VsInitFormattedOutputStream *);
+    void *(CArena::*m_pWriteMemoryArenaReport)(VsInitFormattedOutputStream *);
     void *(LEMBALL_FASTCALL *m_pDestroyMemoryArena)(void *, int, int);
     int (CArena::*m_pAllocate)(void **, unsigned int, const char *);
     int (CArena::*m_pFree)(void *);
@@ -23,7 +22,7 @@ static GameStatusEntryInitialVtable g_GAME_StatusEntryDeleteVtable = {
     0,
     EnterObjectCriticalSection,
     LeaveObjectCriticalSection,
-    WriteMemoryArenaReport,
+    &CArena::WriteMemoryArenaReport,
     DestroyMemoryArenaReturnThis,
     &CArena::Allocate,
     &CArena::FreeMemoryArenaBlock,

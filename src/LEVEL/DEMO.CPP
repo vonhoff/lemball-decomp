@@ -17,7 +17,8 @@ extern void LEMBALL_FASTCALL CopyBufferIntoTypedResourceObjectAndParse(
     unsigned int nUnused,
     unsigned int cbBuffer);
 
-typedef void *(*DemoDeleteProc)(void *pObject, unsigned char fDelete);
+typedef void *(LEMBALL_FASTCALL *DemoDeleteProc)(
+    void *pObject, int nUnusedEdx, unsigned char fDelete);
 extern void ReturnVoidVtableCallback(void);
 
 int DispatchLevelDemoEventsForFrameThunk(void *pPlaybackController, char nFrame);
@@ -80,14 +81,12 @@ static int LEMBALL_FASTCALL FilterLevelDemoPlaybackInputEventThunk(
 void LEMBALL_FASTCALL ReleaseLevelDemoRecordBufferThunk(void *pPlaybackController);
 void CreateFrameTimerController(unsigned int uFrameInterval);
 void DestroyFrameTimerController(void);
-void DestroyLevelDemoPlaybackController(void *pPlaybackController);
 int LoadNextLevelDemoRecordBuffer(void *pPlaybackController);
 void ReadLevelDemoLengthPrefixedRecordThunk(void *pPlaybackController, void *pRecordBuffer, unsigned int *pcbRecord);
 void ServiceLevelDemoPlayback(void *pPlaybackController);
 void LEMBALL_FASTCALL ReleaseLevelDemoRecordBuffer(void *pPlaybackController);
 void StopLevelDemoPlayback(void *pPlaybackController);
 int FilterLevelDemoPlaybackInputEvent(void *pPlaybackController, unsigned short *pEventId);
-void *DeleteLevelDemoPlaybackController(void *pPlaybackController, unsigned char fDelete);
 void *RestoreLevelDemoPlaybackBaseVtable(void *pPlaybackController, unsigned char fDelete);
 int *LoadBinResource(int nResourceId);
 static void LEMBALL_FASTCALL SetBinResourceTypeTag(void *pObject);
@@ -168,8 +167,8 @@ static void *LEMBALL_FASTCALL DeleteLevelDemoPlaybackControllerThunk(
     void *pPlaybackController, int, int fDelete)
 
 {
-    return DeleteLevelDemoPlaybackController(
-        pPlaybackController, (unsigned char)fDelete);
+    return ((DemoLevelDemoPlaybackController *)pPlaybackController)
+        ->DeleteLevelDemoPlaybackController((unsigned char)fDelete);
 }
 
 // FUNCTION: LEMBALL 0x0040179e
@@ -217,7 +216,8 @@ void DestroyFrameTimerController(void) {
 
     pPlaybackController = g_pLevelDemoPlaybackController;
     if (g_pLevelDemoPlaybackController != 0) {
-        ((DemoDeleteProc)(*(void ***)pPlaybackController)[1])(pPlaybackController, 1);
+        ((DemoDeleteProc)(*(void ***)pPlaybackController)[1])(
+            pPlaybackController, 0, 1);
         g_pLevelDemoPlaybackController = 0;
     }
 }
@@ -248,7 +248,8 @@ DemoLevelDemoPlaybackController *DemoLevelDemoPlaybackController::ConstructLevel
 }
 
 // FUNCTION: LEMBALL 0x00409220
-void DestroyLevelDemoPlaybackController(void *pPlaybackController) {
+void DemoLevelDemoPlaybackController::DestroyLevelDemoPlaybackController(void) {
+    void *pPlaybackController = this;
     *(void ***)pPlaybackController = g_LevelDemoPlaybackControllerVtable;
     ReleaseLevelDemoRecordBufferThunk(pPlaybackController);
     ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
@@ -443,9 +444,10 @@ int FilterLevelDemoPlaybackInputEvent(void *pPlaybackController, unsigned short 
     return 0;
 }
 
-// FUNCTION: LEMBALL 0x004098b0
-void *DeleteLevelDemoPlaybackController(void *pPlaybackController, unsigned char fDelete) {
-    DestroyLevelDemoPlaybackController(pPlaybackController);
+void *DemoLevelDemoPlaybackController::DeleteLevelDemoPlaybackController(
+    unsigned char fDelete) {
+    void *pPlaybackController = this;
+    DestroyLevelDemoPlaybackController();
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pPlaybackController);
     }

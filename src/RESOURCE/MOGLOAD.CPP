@@ -131,6 +131,13 @@ void *LEMBALL_FASTCALL DestroyEffResource(
 extern void LEMBALL_FASTCALL SetPalResourceType(void *pObject);
 extern void LEMBALL_FASTCALL SetBitmapResourceType(void *pObject);
 extern void LEMBALL_FASTCALL SetEffResourceTypeTag(void *pObject);
+union MogLoadArenaReportMethodAddress {
+    void *(CArena::*m_pMethod)(VsInitFormattedOutputStream *);
+    void *m_pAddress;
+};
+static MogLoadArenaReportMethodAddress g_MogLoadArenaReportMethodAddress = {
+    &CArena::WriteMemoryArenaReport
+};
 static void *g_MOGLOAD_MemoryArenaStatusEntryVtable[8] = {
     (void *)WriteNamedStatusEntry,
     (void *)UpdateNamedStatusEntry,
@@ -138,7 +145,7 @@ static void *g_MOGLOAD_MemoryArenaStatusEntryVtable[8] = {
     (void *)LeaveObjectCriticalSection,
     (void *)EnterObjectCriticalSection,
     (void *)LeaveObjectCriticalSection,
-    (void *)WriteMemoryArenaReport,
+    g_MogLoadArenaReportMethodAddress.m_pAddress,
     (void *)DestroyMemoryArenaBaseStateReturnThis,
 };
 // GLOBAL: LEMBALL 0x00498980

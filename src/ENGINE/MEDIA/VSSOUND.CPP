@@ -18,7 +18,8 @@ typedef int (LEMBALL_FASTCALL *VsSoundOpenProc)(void *pBackend, int nUnused,
                                                 void *pPrimaryContext);
 typedef void (*VsSoundVoidProc)(void);
 typedef void (LEMBALL_FASTCALL *VsSoundThisProc)(void *pObject);
-typedef void (*VsSoundIntProc)(int nValue);
+typedef void (LEMBALL_FASTCALL *VsSoundIntProc)(
+    void *pObject, int nUnused, int nValue);
 typedef void (LEMBALL_FASTCALL *VsSoundControlIntProc)(
     void *pControl, int nUnused, int nValue);
 typedef void (LEMBALL_FASTCALL *VsSoundControlPairProc)(
@@ -1301,7 +1302,8 @@ void __fastcall DestroyAudioManager(void *pAudioManager) {
     ppBackend = (void **)((char *)pAudioManager + 0x24);
     for (i = 0; i < *(unsigned int *)((char *)pAudioManager + 0x20); ++i) {
         if (ppBackend[i] != 0) {
-            ((VsSoundIntProc)(*(void ***)ppBackend[i])[22])(0);
+            ((VsSoundIntProc)(*(void ***)ppBackend[i])[22])(
+                ppBackend[i], 0, 0);
             ((VsSoundThisProc)(*(void ***)ppBackend[i])[5])(ppBackend[i]);
             ((VsSoundDeleteProc)(*(void ***)ppBackend[i])[0])(ppBackend[i], 0, 1);
         }

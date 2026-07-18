@@ -3207,10 +3207,7 @@ void LEMBALL_FASTCALL ShutdownMainGameContext(GameMainContext *pMainContext) {
         }
     }
     if (pMainContext->m_pActiveMode != 0) {
-        void **pActiveModeVtable;
-
-        pActiveModeVtable = *(void ***)pMainContext->m_pActiveMode;
-        ((void (*)(int))pActiveModeVtable[0])(1);
+        CallDeleteVirtual(pMainContext->m_pActiveMode, 0, 1);
         pMainContext->m_pActiveMode = 0;
     }
 
@@ -3230,6 +3227,7 @@ void LEMBALL_FASTCALL ShutdownMainGameContext(GameMainContext *pMainContext) {
     }
     if (g_pLevelProgressState != 0) {
         FreeVSMemBlock(g_pLevelProgressState);
+        g_pLevelProgressState = 0;
     }
 
     SetVisualSciencesRegistryRunningState(g_GAME_WindowTitle, 0);

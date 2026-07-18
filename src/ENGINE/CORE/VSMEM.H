@@ -72,6 +72,7 @@ struct CArena {
     int UnlinkMemoryBlockFromAddressList(void *pBlock);
     void *FindSmallestFreeMemoryBlockAtLeast(unsigned int cbPayload);
     int IsPointerInsideMemoryArenaStorage(void *pvPointer);
+    void *WriteMemoryArenaReport(VsInitFormattedOutputStream *pOutputStream);
 };
 
 // SIZE 0x3c
@@ -92,7 +93,6 @@ void FreeVSMemBlockImpl(void *pvBlock);
 void *AllocateVSMemBlock(unsigned int cbBlock);
 void FreeVSMemBlock(void *pvBlock);
 long LEMBALL_FASTCALL CalculateMemoryArenaAvailableBytes(void *pArena);
-void *WriteMemoryArenaReport(void *pArena, VsInitFormattedOutputStream *pOutputStream);
 unsigned int LEMBALL_FASTCALL GetMemoryArenaPayloadByteCounter(void *pArena);
 void *ReturnSuppliedPlacementStorage(unsigned int cbStorage, void *pvStorage);
 void __stdcall FillMemoryByte(void *pvTarget, unsigned char chValue, unsigned int cbTarget);
@@ -127,8 +127,8 @@ void LEMBALL_FASTCALL RestoreMemoryBlockBaseVtable(void *pBlock);
 int IsPointerInsideMemoryBlock(void *pBlock, void *pvPointer);
 // FUNCTION: LEMBALL 0x0045a5b0
 // VSMEM_ReportBlockStub
-void *VSMEM_ReportBlockStub(
-    void *pBlock, VsInitFormattedOutputStream *pOutputStream);
+void *LEMBALL_FASTCALL VSMEM_ReportBlockStub(
+    void *pBlock, int nUnused, VsInitFormattedOutputStream *pOutputStream);
 void NoOpCallback0045A610(void);
 void *ReturnPlacementBlockStorage(unsigned int cbStorage, void *pvStorage);
 void *ConstructMemoryArenaBlock(void *pBlock,

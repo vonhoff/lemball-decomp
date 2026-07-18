@@ -116,7 +116,7 @@ void BuildAndApplyLogPalette(unsigned int *paOutputColors,
                              void *pPaletteResource,
                              int,
     const unsigned int *paFallbackColors);
-void DestroyResourceGeometryHelperTarget(void *pvTarget);
+void LEMBALL_FASTCALL DestroyResourceGeometryHelperTarget(void *pvTarget);
 int LEMBALL_FASTCALL GetResourceGeometryHelperTargetActiveUploadState(void *pTarget);
 void LEMBALL_FASTCALL ApplyHelperTargetPaletteAndPropagate(
     void *pCompactTarget, int, void *pPalette);
@@ -3980,7 +3980,7 @@ VsGdiResourceGeometryHelperTargetView *VsGdiResourceGeometryHelperTargetView::Co
 }
 
 // FUNCTION: LEMBALL 0x0046c710
-void DestroyResourceGeometryHelperTarget(void *pvTarget) {
+void LEMBALL_FASTCALL DestroyResourceGeometryHelperTarget(void *pvTarget) {
     int iCompactDelta;
     int iCriticalSectionReady;
     unsigned int pFollowingNode;
@@ -4007,10 +4007,15 @@ void DestroyResourceGeometryHelperTarget(void *pvTarget) {
         EnterCriticalSection(pTarget->m_abCriticalSection);
     }
     if (pTarget->m_pBackingBitmap != 0 && g_pDisplayState != 0) {
-        ((void (*)(void *, int, int))(*(void ***)g_pDisplayState)[0x28 / sizeof(void *)])(
-            g_pDisplayState, (int)(unsigned long)pTarget->m_pDisplayBinding, (int)(unsigned long)pTarget->m_pBackingBitmap);
-        ((void (*)(void *, int))(*(void ***)g_pDisplayState)[0x14 / sizeof(void *)])(
-            g_pDisplayState, (int)(unsigned long)pTarget->m_pBackingBitmap);
+        ((void (LEMBALL_FASTCALL *)(void *, int, int, int))
+             (*(void ***)g_pDisplayState)[0x28 / sizeof(void *)])(
+            g_pDisplayState, 0,
+            (int)(unsigned long)pTarget->m_pDisplayBinding,
+            (int)(unsigned long)pTarget->m_pBackingBitmap);
+        ((void (LEMBALL_FASTCALL *)(void *, int, int))
+             (*(void ***)g_pDisplayState)[0x14 / sizeof(void *)])(
+            g_pDisplayState, 0,
+            (int)(unsigned long)pTarget->m_pBackingBitmap);
         pTarget->m_pBackingBitmap = 0;
     }
     if (pCompactHelper->m_pLinkedTarget == g_pResourceGeometryHelperTarget) {
@@ -4019,8 +4024,10 @@ void DestroyResourceGeometryHelperTarget(void *pvTarget) {
     }
     if (pTarget->m_pDisplayBinding != 0 && g_pDisplayState != 0 &&
         (*(void ***)g_pDisplayState)[2] != 0) {
-        ((void (*)(void *, int))(*(void ***)g_pDisplayState)[8 / sizeof(void *)])(
-            g_pDisplayState, (int)(unsigned long)pTarget->m_pDisplayBinding);
+        ((void (LEMBALL_FASTCALL *)(void *, int, int))
+             (*(void ***)g_pDisplayState)[8 / sizeof(void *)])(
+            g_pDisplayState, 0,
+            (int)(unsigned long)pTarget->m_pDisplayBinding);
         pTarget->m_pDisplayBinding = 0;
     }
     if (pTarget->m_nActiveUploadState != 0) {
