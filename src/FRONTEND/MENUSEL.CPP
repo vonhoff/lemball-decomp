@@ -309,7 +309,7 @@ void *g_MenuSelectorProgressiveFrameSelectorVtable[6] = {
 };
 
 /* VTABLE: LEMBALL 0x00496CE4 */
-static void *g_MenuSelectorCurrentFrameCallbackVtable[7] = {
+void *g_MenuSelectorCurrentFrameCallbackVtable[7] = {
     (void *)GetTimedVariantFrameStartTimeThunk,
     (void *)SelectTimedVariantFrameIndex,
     (void *)SetTimedVariantFrameDuration,

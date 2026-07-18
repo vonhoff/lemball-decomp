@@ -3852,7 +3852,7 @@ ConstructLevelSelectionFrameSelector(void *pManager, int nResourceId) {
     pSelector->m_pVtable = g_MenuSelectorTimedFrameSelectorVtable;
     pSelector->m_nDirection = 1;
     pSelector->m_pVtable =
-        g_MenuSelectorProgressiveFrameSelectorVtable;
+        g_MenuSelectorCurrentFrameCallbackVtable + 1;
     ((GameProgressiveSelectorVtableView *)pSelector)->SetDuration(500);
     pSelector->m_dwFixedTime = -1;
     return pSelector;

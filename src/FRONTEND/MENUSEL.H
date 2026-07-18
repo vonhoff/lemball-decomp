@@ -44,6 +44,7 @@ struct GameProgressiveVariantFrameSelector {
 extern void *g_MenuSelectorFrameSelectorCtorVtable[2];
 extern void *g_MenuSelectorTimedFrameSelectorVtable[6];
 extern void *g_MenuSelectorProgressiveFrameSelectorVtable[6];
+extern void *g_MenuSelectorCurrentFrameCallbackVtable[7];
 
 /* Exact 0x27c manager layout constructed by 0x44c870.  The embedded
  * variant-render manager remains byte-typed because its independently owned
