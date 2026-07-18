@@ -428,6 +428,9 @@ struct VsSoundBackendOpenInterface {
     virtual int Open(int nResourceBase,
                      int cResources,
                      void *pPrimaryContext) = 0;
+    virtual int OpenPrimaryContext(int nResourceBase,
+                                   int cResources,
+                                   void *pPrimaryContext) = 0;
 };
 
 struct VsSoundEffectBackendSlots00Through24 {
@@ -1317,13 +1320,15 @@ void VsSoundManager::SetAudioManagerPrimaryContext(void *pPrimaryContext) {
 
     pAudioManager = this;
     *(void **)((char *)pAudioManager + 0x70) = pPrimaryContext;
-    pBackend = *(VsSoundBackendOpenInterface **)
-        ((char *)pAudioManager + 0x78);
-    if (*(int *)((char *)pAudioManager + 8) == 0 && pBackend != 0) {
-        fAccepted = pBackend->Open(
-            0, *(int *)((char *)pAudioManager + 0x18), pPrimaryContext);
-        if (fAccepted == 0) {
-            *(int *)((char *)pAudioManager + 0x18) = 0;
+    if (*(int *)((char *)pAudioManager + 8) == 0) {
+        pBackend = *(VsSoundBackendOpenInterface **)
+            ((char *)pAudioManager + 0x78);
+        if (pBackend != 0) {
+            fAccepted = pBackend->OpenPrimaryContext(
+                0, *(int *)((char *)pAudioManager + 0x18), pPrimaryContext);
+            if (fAccepted == 0) {
+                *(int *)((char *)pAudioManager + 0x18) = 0;
+            }
         }
     }
 }

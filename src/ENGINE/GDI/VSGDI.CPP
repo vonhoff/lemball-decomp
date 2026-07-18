@@ -723,7 +723,7 @@ public:
     void *ConstructResourceGeometryHelperWindowOwner(void);
     void BindAsSingletonAnimWindow(void);
     void RebuildResourceGeometryHelperWindow(void);
-    void InstallEmbeddedMciDrawCallback(int nUnused);
+    void InstallEmbeddedMciDrawCallback(void);
     void StartEmbeddedMciWindowPlaybackOnce(void);
     void ResumeEmbeddedMciWindowPlayback(void);
     void UpdateMediaPathFromListResource(int nResourceId);
@@ -4834,7 +4834,7 @@ struct VsGdiMciDrawCallbackParameters {
 };
 
 // FUNCTION: LEMBALL 0x0046dfe0
-void VsGdiAnimWindowOwner::InstallEmbeddedMciDrawCallback(int) {
+void VsGdiAnimWindowOwner::InstallEmbeddedMciDrawCallback(void) {
     VsGdiMciDrawCallbackParameters Parameters;
     MCIDEVICEID nDeviceId;
 
