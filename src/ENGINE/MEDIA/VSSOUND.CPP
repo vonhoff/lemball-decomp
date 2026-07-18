@@ -162,6 +162,7 @@ struct VsSoundMciMusicBackend : VsSoundDynamicStringEntry {
     int m_nPausedTrackPosition;
     HWND m_hNotificationWindow;
     VsSoundMciMusicBackend *ConstructMciMusicBackend(void);
+    void PrepareMciMusicTrack(int nTrackHandle, int nMusicResourceId);
     void FreePreparedMciMusicTrack(int nTrackHandle);
 };
 
@@ -378,7 +379,6 @@ void *LEMBALL_FASTCALL DeleteDirectSoundEffectBackend(
     VsSoundDirectSoundEffectBackend *pBackend, int nUnused, int fDelete);
 LRESULT CALLBACK MciMusicWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 void LEMBALL_FASTCALL DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry *pEntry);
-void LEMBALL_FASTCALL PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle, int nMusicResourceId);
 void LEMBALL_FASTCALL PlayPreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
 void LEMBALL_FASTCALL StopMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
 void LEMBALL_FASTCALL PauseMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
@@ -645,7 +645,6 @@ void LEMBALL_FASTCALL PauseDirectSoundEffectInstance(
     void *pBackend, int nUnusedEdx, int nEffectInstanceId, int nBufferSlot);
 void *LEMBALL_FASTCALL DeleteDirectSoundEffectBackend(
     VsSoundDirectSoundEffectBackend *pBackend, int nUnused, int fDelete);
-void LEMBALL_FASTCALL PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle, int nMusicResourceId);
 void LEMBALL_FASTCALL PlayPreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
 void LEMBALL_FASTCALL StopMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
 void LEMBALL_FASTCALL PauseMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
@@ -763,7 +762,8 @@ struct VsSoundMciMusicBackendVtableModel {
     }
     virtual void Initialize(int nValue1, int nValue2);
     virtual void Prepare(int nTrackHandle, int nMusicResourceId) {
-        PrepareMciMusicTrack((VsSoundMciMusicBackend *)this, 0, nTrackHandle, nMusicResourceId);
+        ((VsSoundMciMusicBackend *)this)->PrepareMciMusicTrack(
+            nTrackHandle, nMusicResourceId);
     }
     virtual void Free(int nTrackHandle) {
         ((VsSoundMciMusicBackend *)this)->FreePreparedMciMusicTrack(nTrackHandle);
@@ -3541,7 +3541,8 @@ void LEMBALL_FASTCALL DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry *
 }
 
 // FUNCTION: LEMBALL 0x0047ead0
-void LEMBALL_FASTCALL PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle, int nMusicResourceId) {
+void VsSoundMciMusicBackend::PrepareMciMusicTrack(int nTrackHandle, int nMusicResourceId) {
+    VsSoundMciMusicBackend *pBackend = this;
     VsSoundStringResourceObjectView *pStringResource;
     VsSoundMciOpenParms OpenParms;
     VsSoundMciGenericParms SeekParms;
@@ -3577,7 +3578,7 @@ void LEMBALL_FASTCALL PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int
     ++pStringResource->m_nLockCount08;
 
     MusicPath.ConstructDynamicCString();
-    if (pBackend->m_fBasePathSet != 0) {
+    if (pBackend->m_nReserved08 != 0) {
         MusicPath.AssignDynamicCStringFromDynamic(&pBackend->m_BasePath);
         if (MusicPath.m_pszText[GetDynamicCStringLength(&MusicPath) - 1] != '\\') {
             MusicPath.AppendDynamicCStringAndCopyResult(&TemporaryPath, g_AUDIO_PathSeparator);
