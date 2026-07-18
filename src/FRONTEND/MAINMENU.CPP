@@ -584,6 +584,8 @@ static void LEMBALL_FASTCALL ReleaseFunctionalLevelSelectionResources(
     void *pObject);
 static void LEMBALL_FASTCALL NoopFunctionalLevelSelectionHook(
     void *pObject);
+static int LEMBALL_FASTCALL DispatchFunctionalLevelSelectionAction(
+    void *pObject, int nUnusedEdx, int nAction);
 static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionStatus(
     void *pObject);
 static short *GetFunctionalVariantFrameExtent(
@@ -4557,7 +4559,7 @@ static void InitializeFunctionalLevelSelectionVtable(void) {
     g_GAME_FunctionalLevelSelectionVtable[20] =
         (void *)DrawFunctionalLevelSelectionFrame;
     g_GAME_FunctionalLevelSelectionVtable[21] =
-        (void *)NoopFunctionalLevelSelectionHook;
+        (void *)DispatchFunctionalLevelSelectionAction;
     g_fFunctionalLevelSelectionVtableInitialized = 1;
 }
 
@@ -4740,6 +4742,31 @@ static int LEMBALL_FASTCALL HandleFunctionalLevelSelectionInput(
             ((GameBaseModeScreen *)pScreen)
                 ->QueueActiveBaseModeUserAction(1, 0);
         }
+        return 1;
+    default:
+        return 0;
+    }
+}
+
+static int LEMBALL_FASTCALL DispatchFunctionalLevelSelectionAction(
+    void *pObject, int, int nAction) {
+    GameLevelSelectionScreenView *pScreen;
+
+    pScreen = (GameLevelSelectionScreenView *)pObject;
+    switch (nAction) {
+    case 0:
+        SelectFunctionalLevel(pScreen, 1);
+        return 1;
+    case 1:
+        SelectFunctionalLevel(pScreen, -1);
+        return 1;
+    case 2:
+        pScreen->m_nRequestedMode374 = 2;
+        pScreen->m_nTransitionStatus378 = 1;
+        return 1;
+    case 3:
+        pScreen->m_nRequestedMode374 = 5;
+        pScreen->m_nTransitionStatus378 = 1;
         return 1;
     default:
         return 0;
