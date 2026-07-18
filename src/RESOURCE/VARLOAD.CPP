@@ -52,6 +52,10 @@ void LEMBALL_FASTCALL PopulateZrleResourceDescriptorFields(void *pObject);
 void LEMBALL_FASTCALL SetupZrleResourceType(void *pResource);
 void *LEMBALL_FASTCALL DestroyZrleResourceEntryArray(
     void *pObject, int nUnused, unsigned int fDelete);
+static void *LEMBALL_FASTCALL DestroyIntResourceEntryArray(
+    void *pObject, int nUnused, unsigned int fDelete);
+void LEMBALL_FASTCALL ReadIntResourcePayloadFromStream(void *pResource);
+void LEMBALL_FASTCALL SetIntResourceTypeTag(void *pResource);
 
 static void *g_GAME_ZrleResourceVtableStorage[15] = {
     (void *)DestroyZrleResourceEntryArray,
@@ -72,6 +76,8 @@ static void *g_GAME_ZrleResourceVtableStorage[15] = {
 };
 
 extern void *g_pDestroyGRTSResourceAndFreeThunk;
+extern void *LEMBALL_FASTCALL DestroyGRTSResourceAndFree(
+    void *pObject, int nUnusedEdx, int fDelete);
 extern void *g_pStringResourceVtable;
 extern void *g_MOGLOAD_CachedResourceObjectBaseVtable[15];
 extern void *g_pBitmapResourceVtable;
@@ -178,6 +184,10 @@ static void LEMBALL_FASTCALL AllocateTwoArrayListEntryArrays(
 static int LEMBALL_FASTCALL LoadTwoArrayListEntryPairFromBuffers(
     void *pObject, int nUnusedEdx, int iEntry,
     int *pDescriptorCursor, int *pDataCursor);
+static int LEMBALL_FASTCALL LoadTwoArrayListEntryPairFromStream(
+    void *pObject, int nUnusedEdx, int iEntry, int *pDataCursor);
+static void LEMBALL_FASTCALL ReleaseTwoArrayListEntryPair(
+    void *pObject, int nUnusedEdx, int iEntry, int fReleaseMode);
 static int LEMBALL_FASTCALL ListNeedsAgeIncrement(void *pObject);
 static int LEMBALL_FASTCALL ListField60Nonzero(void *pObject);
 static int LEMBALL_FASTCALL ListField68Nonzero(void *pObject);
@@ -226,6 +236,24 @@ static void *g_GAME_ZrleOnlyListResourceVtableStorage[22] = {
     (void *)LoadZrleOnlyListEntryFromStream,
     (void *)ReleaseZrleOnlyListEntry,
 };
+
+static void *g_GAME_IntResourceVtableStorage[15] = {
+    (void *)DestroyIntResourceEntryArray,
+    (void *)CopyBufferIntoTypedResourceObjectAndParse,
+    (void *)ParseIntResourceDescriptor,
+    (void *)GetField14NeedsAgeIncrement,
+    (void *)GetField1CVfunc04,
+    (void *)GetField14Vfunc05,
+    (void *)ReturnZeroVfunc06,
+    (void *)EnsureTypedResourceObjectLoaded,
+    (void *)UnloadTypedResourceObject,
+    (void *)NoopVfunc09,
+    (void *)GetEffResourceDataPointer,
+    (void *)ReadIntResourcePayloadFromStream,
+    (void *)NoopVfunc12,
+    (void *)SetIntResourceTypeTag,
+    (void *)GetField28GetMemorySize,
+};
 static void *g_GAME_TwoArrayListResourceVtableStorage[24] = {
     (void *)DestroyTwoArrayListResourceAndFree,
     (void *)CopyBuffersIntoTwoArrayListResourceAndParse,
@@ -247,8 +275,8 @@ static void *g_GAME_TwoArrayListResourceVtableStorage[24] = {
     (void *)AllocateTwoArrayListEntryArrays,
     (void *)ReturnFalseTwoArrayListEntryState,
     (void *)LoadTwoArrayListEntryPairFromBuffers,
-    0,
-    0,
+    (void *)LoadTwoArrayListEntryPairFromStream,
+    (void *)ReleaseTwoArrayListEntryPair,
     0,
     0,
 };
@@ -443,9 +471,16 @@ static int LoadTypedResourceObjectFromStreamDescriptor(
     return 0;
 }
 
-static void InitializeTwoArrayListEntry(void *pEntry) {
+static void InitializeGrtsListEntry(void *pEntry) {
     InitializeTypedResourceObjectBaseVtable(pEntry);
     *(void **)pEntry = g_pStringResourceVtable;
+    *(int *)((char *)pEntry + 0x18) = 0;
+    ResetTypedResourceObjectState(pEntry);
+}
+
+static void InitializeIntListEntry(void *pEntry) {
+    InitializeTypedResourceObjectBaseVtable(pEntry);
+    *(void **)pEntry = g_GAME_IntResourceVtableStorage;
     *(int *)((char *)pEntry + 0x18) = 0;
     ResetTypedResourceObjectState(pEntry);
 }
@@ -462,7 +497,7 @@ static void LEMBALL_FASTCALL AllocateTwoArrayListEntryArrays(
         pAllocation[0] = cEntries;
         pEntry = (char *)(pAllocation + 1);
         for (i = 0; i < cEntries; ++i, pEntry += 0x48) {
-            InitializeTwoArrayListEntry(pEntry);
+            InitializeGrtsListEntry(pEntry);
         }
         *(void **)((char *)pObject + 0x78) = pAllocation + 1;
     } else {
@@ -474,7 +509,7 @@ static void LEMBALL_FASTCALL AllocateTwoArrayListEntryArrays(
         pAllocation[0] = cEntries;
         pEntry = (char *)(pAllocation + 1);
         for (i = 0; i < cEntries; ++i, pEntry += 0x4c) {
-            InitializeTwoArrayListEntry(pEntry);
+            InitializeIntListEntry(pEntry);
         }
         *(void **)((char *)pObject + 0x7c) = pAllocation + 1;
     } else {
@@ -497,6 +532,33 @@ static int LEMBALL_FASTCALL LoadTwoArrayListEntryPairFromBuffers(
         return 1;
     }
     return 0;
+}
+
+static int LEMBALL_FASTCALL LoadTwoArrayListEntryPairFromStream(
+    void *pObject, int, int iEntry, int *pDataCursor)
+{
+    if (LoadTypedResourceObjectFromStreamDescriptor(
+            (char *)*(void **)((char *)pObject + 0x78) + iEntry * 0x48,
+            pDataCursor, pObject) != 0) {
+        return 1;
+    }
+    if (LoadTypedResourceObjectFromStreamDescriptor(
+            (char *)*(void **)((char *)pObject + 0x7c) + iEntry * 0x4c,
+            pDataCursor, pObject) != 0) {
+        return 1;
+    }
+    return 0;
+}
+
+static void LEMBALL_FASTCALL ReleaseTwoArrayListEntryPair(
+    void *pObject, int, int iEntry, int fReleaseMode)
+{
+    ReleaseTypedResourceObjectIfLoaded(
+        (char *)*(void **)((char *)pObject + 0x78) + iEntry * 0x48,
+        0, fReleaseMode);
+    ReleaseTypedResourceObjectIfLoaded(
+        (char *)*(void **)((char *)pObject + 0x7c) + iEntry * 0x4c,
+        0, fReleaseMode);
 }
 
 static int LEMBALL_FASTCALL ReturnFalseTwoArrayListEntryState(void *) {
@@ -654,17 +716,35 @@ static void LEMBALL_FASTCALL ReleaseListEntriesAndStreamBuffer(
     void *pObject, void *pUnusedEdx, int fReleaseMode)
 
 {
+    typedef int (LEMBALL_FASTCALL *StateProc)(void *pObject);
+    typedef void (LEMBALL_FASTCALL *ReleaseEntryProc)(
+        void *pObject, int nUnusedEdx, int iEntry, int fReleaseMode);
+    void **pVtable;
     unsigned int pBuffer;
+    unsigned int cEntries;
+    unsigned int i;
 
     (void)pUnusedEdx;
-    pBuffer = *(unsigned int *)((char *)pObject + 0x38);
-    if (pBuffer != 0) {
+    pVtable = *(void ***)pObject;
+    if (*(int *)((char *)pObject + 0x10) == 0) {
+        if (((StateProc)pVtable[5])(pObject) == 0) {
+            return;
+        }
+    } else {
+        *(int *)((char *)pObject + 0x10) = 0;
+        pBuffer = *(unsigned int *)((char *)pObject + 0x38);
         ((MogLoadResourceArchive *)g_pResourceArchive)
             ->FreeResourceObjectDataBuffer(pBuffer, 1);
         *(unsigned int *)((char *)pObject + 0x38) = 0;
     }
-    *(int *)((char *)pObject + 0x10) = 0;
-    (void)fReleaseMode;
+
+    cEntries = *(unsigned int *)((char *)pObject + 0x6c) /
+        *(unsigned int *)(*(int *)((char *)pObject + 0x48) + 4);
+    for (i = 0; i < cEntries; ++i) {
+        ((ReleaseEntryProc)pVtable[21])(
+            pObject, 0, (int)i, fReleaseMode);
+    }
+    NoopVfunc12();
 }
 
 // FUNCTION: LEMBALL 0x0045d5c0
@@ -890,11 +970,11 @@ static void LEMBALL_FASTCALL DestroyTwoArrayListResource(void *pObject) {
     *(void **)pObject = g_GAME_TwoArrayListResourceVtableStorage;
     pChild = *(void **)((char *)pObject + 0x78);
     if (pChild != 0) {
-        ((void (*)(void *, int))*(void **)pChild)(pChild, 3);
+        DestroyGRTSResourceAndFree(pChild, 0, 3);
     }
     pChild = *(void **)((char *)pObject + 0x7c);
     if (pChild != 0) {
-        ((void (*)(void *, int))*(void **)pChild)(pChild, 3);
+        DestroyIntResourceEntryArray(pChild, 0, 3);
     }
     InitializeTypedResourceObjectBaseVtable(pObject);
 }
@@ -1112,6 +1192,31 @@ void *LEMBALL_FASTCALL DestroyZrleResourceEntryArray(
     pEntry = (char *)pObject + cEntries * 0x54;
     while (cEntries-- > 0) {
         pEntry -= 0x54;
+        InitializeTypedResourceObjectBaseVtable(pEntry);
+    }
+    FreeVSMemBlock((char *)pObject - 4);
+    return pObject;
+}
+
+static void *LEMBALL_FASTCALL DestroyIntResourceEntryArray(
+    void *pObject, int nUnused, unsigned int fDelete)
+{
+    int cEntries;
+    char *pEntry;
+
+    (void)nUnused;
+    if ((fDelete & 2) == 0) {
+        InitializeTypedResourceObjectBaseVtable(pObject);
+        if ((fDelete & 1) != 0) {
+            FreeVSMemBlock(pObject);
+        }
+        return pObject;
+    }
+
+    cEntries = *((int *)pObject - 1);
+    pEntry = (char *)pObject + cEntries * 0x4c;
+    while (cEntries-- > 0) {
+        pEntry -= 0x4c;
         InitializeTypedResourceObjectBaseVtable(pEntry);
     }
     FreeVSMemBlock((char *)pObject - 4);

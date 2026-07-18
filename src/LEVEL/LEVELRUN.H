@@ -120,6 +120,18 @@ struct LevelField194TimerBlock {
 
 void *LEMBALL_FASTCALL GetLevelGameModeOwner(void *pLevelMode);
 void *LEMBALL_FASTCALL GetLevelGameModeOwnerThunk(void *pLevelMode);
+void AdvanceLevelFrameClock(void);
+void LEMBALL_FASTCALL ServiceRegisteredLevelChunkStreams(void *pDispatcher);
+void LEMBALL_FASTCALL ServiceCachedChunkObjects(void *pManager);
+void LoadLevelTileGridChunk(void *pTileGrid, const unsigned short *pWords);
+void LoadLevelAiChunk(void *pLevelMode, const unsigned short *pWords,
+                      unsigned int cbPayload);
+void LoadLevelFlagChunk(void *pLevelMode, const unsigned short *pWords);
+void SetLevelTileGridDefaultVariantIds(void *pTileGrid,
+                                       const unsigned short *pWords);
+void SetLevelTileGridName(void *pTileGrid, const char *pszName);
+void LoadAnimChunkRecords(void *pTimerBlock, const unsigned short *pWords);
+void LEMBALL_FASTCALL AdvanceAnimChunkFrames(void *pTimerBlock);
 
 extern LevelBallChunkManager *g_pBallChunkManager;
 extern char *g_pszActiveLevelFilePath;

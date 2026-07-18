@@ -28,6 +28,18 @@ void DispatchType14CountedChildSlotC4Thunk(int nChunkManager);
 void LEMBALL_FASTCALL FillReachabilityGridFromTileFlagsThunk(void *pReachabilityHelper);
 void ResetLevelFrameClockThunk(void);
 void UpdateNetworkFrameClockFromNetworkTime(unsigned int nTimeMs);
+void AdvanceLevelFrameClock(void);
+void LEMBALL_FASTCALL ServiceRegisteredLevelChunkStreams(void *pDispatcher);
+void LEMBALL_FASTCALL ServiceCachedChunkObjects(void *pManager);
+void LoadLevelTileGridChunk(void *pTileGrid, const unsigned short *pWords);
+void LoadLevelAiChunk(void *pLevelMode, const unsigned short *pWords,
+                      unsigned int cbPayload);
+void LoadLevelFlagChunk(void *pLevelMode, const unsigned short *pWords);
+void SetLevelTileGridDefaultVariantIds(void *pTileGrid,
+                                       const unsigned short *pWords);
+void SetLevelTileGridName(void *pTileGrid, const char *pszName);
+void LoadAnimChunkRecords(void *pTimerBlock, const unsigned short *pWords);
+void LEMBALL_FASTCALL AdvanceAnimChunkFrames(void *pTimerBlock);
 int LEMBALL_FASTCALL GetSelectedLevelNumber(void *pLevelProgressState);
 static int __cdecl CompareLevelTileGridStaticRenderEntrySortKeys(
     const void *pLeft,
@@ -90,8 +102,12 @@ int g_GAME_ManagedEntityRegistryTable[1000];
 void *g_pActiveManagedEntityOwner;
 // GLOBAL: LEMBALL 0x004a74bc
 unsigned short g_GAME_ManagedEntityRegistryCount;
-static unsigned char *g_GAME_ManagedEntitySlotBitMasks;
-static unsigned char *g_GAME_ManagedEntitySlotClaimBitset;
+// GLOBAL: LEMBALL 0x0049d108
+static unsigned char g_GAME_ManagedEntitySlotBitMasks[8] = {
+    1, 2, 4, 8, 0x10, 0x20, 0x40, 0x80
+};
+// GLOBAL: LEMBALL 0x004a6410
+static unsigned char g_GAME_ManagedEntitySlotClaimBitset[0x100];
 
 struct LevelLevelTileCell {
     int m_nType00;
@@ -117,7 +133,7 @@ struct LevelLevelTileGridStaticView {
 
 
 
-static int *g_GAME_SelectedNetworkLobbyPeerId;
+extern int g_nSelectedNetworkLobbyPeerId;
 
 void *g_pLiftTileGrid = 0;
 void *g_pAnimChunkTileGrid = 0;
@@ -706,6 +722,7 @@ void LevelSpecialTileGridStaticRenderList::BuildSpecialLevelTileGridStaticRender
 
 // FUNCTION: LEMBALL 0x0040b120
 void ResetRegisteredLevelChunkStreamsThunk(void *pDispatcher) {
+    typedef void (LEMBALL_FASTCALL *ResetStreamProc)(void *, int);
     GameLevelChunkStreamDispatcher *pStreamDispatcher;
     int *pStream;
     int i;
@@ -718,7 +735,8 @@ void ResetRegisteredLevelChunkStreamsThunk(void *pDispatcher) {
         do {
             pStream = *(int **)((unsigned long)pStreamDispatcher->m_ppRegisteredStreams10 + nOffset);
             if (pStream != 0) {
-                ((void (*)())*(void **)((unsigned long)*pStream + 0x18))();
+                ((ResetStreamProc)*(void **)((unsigned long)*pStream + 0x18))(
+                    pStream, 0);
             }
             nOffset += 4;
             ++i;
@@ -728,6 +746,7 @@ void ResetRegisteredLevelChunkStreamsThunk(void *pDispatcher) {
 
 // FUNCTION: LEMBALL 0x0040b150
 void RegisterLevelChunkStreamThunk(void *pDispatcher, void *pStreamObject) {
+    typedef void (LEMBALL_FASTCALL *ResetStreamProc)(void *, int);
     GameLevelChunkStreamDispatcher *pStreamDispatcher;
     int nVtable;
     int *pStream;
@@ -738,7 +757,72 @@ void RegisterLevelChunkStreamThunk(void *pDispatcher, void *pStreamObject) {
     nVtable = *pStream;
     pStreamDispatcher->m_ppRegisteredStreams10[pStreamDispatcher->m_cRegisteredStreams18] = pStreamObject;
     ++pStreamDispatcher->m_cRegisteredStreams18;
-    ((void (*)())*(void **)((unsigned long)nVtable + 0x18))();
+    ((ResetStreamProc)*(void **)((unsigned long)nVtable + 0x18))(
+        pStream, 0);
+}
+
+void AdvanceLevelFrameClock(void) {
+    DWORD dwNow;
+    unsigned int nTargetTime;
+    extern void *g_pLevelDemoPlaybackController;
+    extern int g_fLevelFrameClockPaused;
+
+    if (g_fLevelFrameClockPaused != 0) {
+        return;
+    }
+    if (g_pLevelDemoPlaybackController != 0 &&
+        *(int *)((char *)g_pLevelDemoPlaybackController + 0x4c) != 0) {
+        nTargetTime = (unsigned int)g_nLevelFrameClockLastSampleMs + 0x50;
+        do {
+            dwNow = timeGetTime();
+        } while (dwNow - (DWORD)g_nLevelFrameClockTimeBaseMs < nTargetTime);
+        g_nLevelFrameClockDemoTimeMs += 0x50;
+        g_nLevelFrameClockLastSampleMs =
+            (int)(dwNow - (DWORD)g_nLevelFrameClockTimeBaseMs);
+        g_nLevelFrameClockTick = g_nLevelFrameClockDemoTimeMs / 0x32;
+        g_nLevelFrameClockTimeMs = g_nLevelFrameClockTick * 0x32;
+        return;
+    }
+
+    dwNow = timeGetTime();
+    g_nLevelFrameClockTick =
+        (int)(dwNow / 0x32) - g_nLevelFrameClockTickBase;
+    if (g_nLevelFrameClockLastSampleMs + 2 < g_nLevelFrameClockTick) {
+        g_nLevelFrameClockTickBase +=
+            g_nLevelFrameClockTick - g_nLevelFrameClockLastSampleMs - 2;
+        g_nLevelFrameClockTick = g_nLevelFrameClockLastSampleMs + 2;
+    }
+    g_nLevelFrameClockTimeMs = g_nLevelFrameClockTick * 0x32;
+    g_nLevelFrameClockLastSampleMs = g_nLevelFrameClockTick;
+}
+
+// FUNCTION: LEMBALL 0x0040b320
+void LEMBALL_FASTCALL ServiceRegisteredLevelChunkStreams(void *pDispatcher) {
+    int i;
+    int cStreams;
+    void **ppStreams;
+
+    cStreams = *(int *)((char *)pDispatcher + 0x18);
+    ppStreams = *(void ***)((char *)pDispatcher + 0x10);
+    for (i = 0; i < cStreams; ++i) {
+        void *pStream = ppStreams[i];
+        if (pStream != 0) {
+            ((void (LEMBALL_FASTCALL *)(void *))(*(void ***)pStream)[7])(
+                pStream);
+        }
+    }
+}
+
+void LEMBALL_FASTCALL ServiceCachedChunkObjects(void *pManager) {
+    void **pVtable;
+    void *pChild;
+
+    pVtable = *(void ***)pManager;
+    pChild = ((void *(LEMBALL_FASTCALL *)(void *))pVtable[1])(pManager);
+    while (pChild != 0) {
+        ((void (LEMBALL_FASTCALL *)(void *))(*(void ***)pChild)[5])(pChild);
+        pChild = ((void *(LEMBALL_FASTCALL *)(void *))pVtable[2])(pManager);
+    }
 }
 
 // FUNCTION: LEMBALL 0x0040b8e0
@@ -820,10 +904,10 @@ void AssignNetworkPlayerManagedEntitySlotIdsThunk(int nLevelMode) {
     void **ppManagedEntities;
     int anOffsets[2];
 
-    if (*g_GAME_SelectedNetworkLobbyPeerId != 0) {
+    if (g_nSelectedNetworkLobbyPeerId != 0) {
         anOffsets[0] = 0;
         anOffsets[1] = 0;
-        if (*(int *)(*g_GAME_SelectedNetworkLobbyPeerId + 0x1c) == 0) {
+        if (*(int *)(g_nSelectedNetworkLobbyPeerId + 0x1c) == 0) {
             anOffsets[1] = 4;
         } else {
             anOffsets[0] = 4;
@@ -1406,5 +1490,217 @@ void GameLockedRecordSlotTableView::ClearLockedRecordSlotPayloadFlags(void) {
             pRecordSlot = *(int **)((unsigned long)m_apRecords08 - 4 + nOffset);
             *(int *)((char *)pRecordSlot + 0x24) = 0;
         } while (nSlots < m_cRecords);
+    }
+}
+
+static void InitializeLevelTileGridCellRenderFlags(LevelLevelTileCell *pCell) {
+    switch (pCell->m_nType00) {
+    case 0x202:
+    case 0x204:
+    case 0x210:
+        pCell->m_nFlags06 = 3;
+        break;
+    case 0x205:
+        pCell->m_nFlags06 = 2;
+        break;
+    case 0x20a:
+        pCell->m_nFlags06 = 1;
+        break;
+    case 0x215:
+    case 0x216:
+    case 0x217:
+        pCell->m_nFlags06 = 4;
+        break;
+    default:
+        pCell->m_nFlags06 = 0;
+        break;
+    }
+}
+
+static void ResizeLevelTileGrid(void *pTileGrid, int cColumns, int cRows) {
+    char *pGrid;
+    int cCells;
+
+    pGrid = (char *)pTileGrid;
+    if (*(int *)(pGrid + 0x1c) == cColumns &&
+        *(int *)(pGrid + 0x20) == cRows) {
+        return;
+    }
+    *(int *)(pGrid + 0x1c) = cColumns;
+    *(int *)(pGrid + 0x20) = cRows;
+    if (*(void **)(pGrid + 0x0c) != 0) {
+        FreeVSMemBlock(*(void **)(pGrid + 0x0c));
+    }
+    *(int *)(pGrid + 0x10) = cColumns;
+    *(int *)(pGrid + 0x14) = cRows;
+    cCells = cColumns * cRows;
+    *(void **)(pGrid + 0x0c) = AllocateVSMemBlock((unsigned int)cCells * 0x0c);
+    if (*(void **)(pGrid + 0x0c) != 0) {
+        ClearLevelTileGridCells((int)(unsigned long)pGrid + 8);
+    }
+    if (*(void **)(pGrid + 0x48) != 0) {
+        FreeVSMemBlock(*(void **)(pGrid + 0x48));
+    }
+    *(void **)(pGrid + 0x48) = AllocateVSMemBlock((unsigned int)cCells);
+}
+
+void LoadLevelTileGridChunk(void *pTileGrid, const unsigned short *pWords) {
+    int cColumns;
+    int cRows;
+    int x;
+    int y;
+    LevelLevelTileCell *pCells;
+
+    cColumns = pWords[0];
+    cRows = pWords[1];
+    pWords += 2;
+    ClearLevelTileGridCells((int)(unsigned long)pTileGrid + 8);
+    ResizeLevelTileGrid(pTileGrid, cColumns, cRows);
+    pCells = *(LevelLevelTileCell **)((char *)pTileGrid + 0x0c);
+    for (y = 0; y < cRows; ++y) {
+        for (x = 0; x < cColumns; ++x) {
+            LevelLevelTileCell *pCell = &pCells[y * cColumns + x];
+            pCell->m_nType00 = pWords[0];
+            pCell->m_nReserved04 = (short)pWords[1];
+            InitializeLevelTileGridCellRenderFlags(pCell);
+            pCell->m_nReserved08 = (short)pWords[2];
+            pWords += 3;
+        }
+    }
+}
+
+void LoadLevelAiChunk(void *pLevelMode, const unsigned short *pWords,
+                      unsigned int cbPayload) {
+    char *pMode;
+    void *pTileGrid;
+
+    pMode = (char *)pLevelMode;
+    if (cbPayload < 5) {
+        *(unsigned short *)(pMode + 0x54) = 0;
+    } else {
+        *(unsigned short *)(pMode + 0x54) = *pWords++;
+    }
+    pTileGrid = *(void **)(pMode + 0x110);
+    *(int *)(pMode + 0x60) = pWords[0];
+    *(int *)(pMode + 0xec) = pWords[1];
+    *(int *)pTileGrid = pWords[0];
+    ClearLevelTileGridCells((int)(unsigned long)pTileGrid + 8);
+    if (*(unsigned short *)(pMode + 0x54) < 4) {
+        *(int *)(pMode + 0xf8) = 4;
+        *(int *)(pMode + 0xfc) = 1;
+    } else {
+        *(int *)(pMode + 0xf8) = pWords[2];
+        *(int *)(pMode + 0xfc) = pWords[3];
+    }
+    *(int *)(pMode + 0xe4) = *(int *)(pMode + 0xec);
+}
+
+void LoadLevelFlagChunk(void *pLevelMode, const unsigned short *pWords) {
+    char *pMode;
+
+    pMode = (char *)pLevelMode;
+    if (*(int *)(pMode + 0x64) == 1 && *(int *)(pMode + 0x7c) != 1) {
+        *(int *)(pMode + 0x100) = pWords[0];
+        *(int *)(pMode + 0xfc) = pWords[1];
+    } else {
+        *(int *)(pMode + 0xfc) = pWords[0];
+        *(int *)(pMode + 0x100) = pWords[1];
+    }
+}
+
+void SetLevelTileGridDefaultVariantIds(void *pTileGrid,
+                                       const unsigned short *pWords) {
+    *(int *)((char *)pTileGrid + 0x4c) = pWords[0];
+    *(int *)((char *)pTileGrid + 0x50) = pWords[1];
+}
+
+void SetLevelTileGridName(void *pTileGrid, const char *pszName) {
+    int i;
+    char ch;
+
+    i = 0;
+    do {
+        ch = *pszName++;
+        *((char *)pTileGrid + 0x24 + i) = ch;
+        if (ch == '\0') {
+            break;
+        }
+        ++i;
+    } while (i < 0x20);
+    *((char *)pTileGrid + 0x44) = '\0';
+}
+
+static int HasAnimChunkRecordAtTile(void *pTimerBlock,
+                                    short nX, short nY) {
+    int i;
+
+    for (i = 0; i < *(int *)((char *)pTimerBlock + 4); ++i) {
+        short *pRecord = (short *)((char *)pTimerBlock + 8 + i * 0x18);
+        if (pRecord[0] == nX && pRecord[1] == nY) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void LoadAnimChunkRecords(void *pTimerBlock, const unsigned short *pWords) {
+    unsigned int cRecords;
+
+    cRecords = *pWords++;
+    while (cRecords-- != 0) {
+        short nX = (short)pWords[0];
+        short nY = (short)pWords[1];
+        short nReserved = (short)pWords[2];
+        unsigned short nFirstFrame = pWords[3];
+        unsigned short nLastFrame = pWords[4];
+        int nIndex = *(int *)((char *)pTimerBlock + 4);
+
+        if (!HasAnimChunkRecordAtTile(pTimerBlock, nX, nY) && nIndex < 200) {
+            char *pRecord = (char *)pTimerBlock + 8 + nIndex * 0x18;
+            int nColumn = ((int)nX + ((int)nX >> 31 & 0x0f)) >> 4;
+            int nRow = ((int)nY + ((int)nY >> 31 & 0x0f)) >> 4;
+            *(short *)(pRecord + 0) = nX;
+            *(short *)(pRecord + 2) = nY;
+            *(short *)(pRecord + 4) = nReserved;
+            *(void **)(pRecord + 8) =
+                (char *)(unsigned long)*(int *)((char *)g_pAnimChunkTileGrid + 0x0c) +
+                (nRow * *(int *)((char *)g_pAnimChunkTileGrid + 0x10) +
+                 nColumn) * 0x0c;
+            *(unsigned short *)(pRecord + 0x0c) = nFirstFrame;
+            *(unsigned short *)(pRecord + 0x0e) = nFirstFrame;
+            *(unsigned short *)(pRecord + 0x10) = nLastFrame;
+            *(short *)(pRecord + 0x12) =
+                (short)(nLastFrame < nFirstFrame ? -1 : 1);
+            *(int *)(pRecord + 0x14) = 1;
+            ++*(int *)((char *)pTimerBlock + 4);
+        }
+        pWords += 5;
+    }
+}
+
+void LEMBALL_FASTCALL AdvanceAnimChunkFrames(void *pTimerBlock) {
+    int i;
+    char *pTimer;
+
+    pTimer = (char *)pTimerBlock;
+    if (*(int *)pTimer > g_nLevelFrameClockTick) {
+        return;
+    }
+    *(int *)pTimer = g_nLevelFrameClockTick + 2;
+    for (i = 0; i < *(int *)(pTimer + 4); ++i) {
+        char *pRecord = pTimer + 8 + i * 0x18;
+        short nFrame;
+        if (*(int *)(pRecord + 0x14) == 0) {
+            continue;
+        }
+        nFrame = *(short *)(pRecord + 0x0c) + *(short *)(pRecord + 0x12);
+        if (nFrame < *(short *)(pRecord + 0x0e) ||
+            *(short *)(pRecord + 0x10) < nFrame) {
+            nFrame = *(short *)(pRecord + 0x0e);
+        }
+        *(short *)(pRecord + 0x0c) = nFrame;
+        if (*(void **)(pRecord + 8) != 0) {
+            *(short *)((char *)*(void **)(pRecord + 8) + 4) = nFrame;
+        }
     }
 }

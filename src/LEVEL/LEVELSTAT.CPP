@@ -1925,6 +1925,33 @@ void *LEMBALL_FASTCALL ConstructFramedScreenRenderEntryGroup(void *pObject) {
     return pObject;
 }
 
+void LEMBALL_FASTCALL DestroyFramedScreenRenderEntryGroup(void *pObject) {
+    int i;
+    char *pEntry;
+
+    pEntry = (char *)pObject + 0x1c0 + 10 * 0x10;
+    for (i = 0; i < 10; ++i) {
+        pEntry -= 0x10;
+        RestorePackagedSpriteRenderEntryVtableA(pEntry);
+    }
+    *(void **)((char *)pObject + 0x1bc) =
+        g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+    pEntry = (char *)pObject + 0x19c + 2 * 0x10;
+    for (i = 0; i < 2; ++i) {
+        pEntry -= 0x10;
+        RestorePackagedSpriteRenderEntryVtableC(pEntry);
+    }
+    pEntry = (char *)pObject + 0x34 + 10 * 0x24;
+    for (i = 0; i < 10; ++i) {
+        pEntry -= 0x24;
+        RestoreFramedScreenRenderChildEntryVtableBody(pEntry);
+    }
+    *(void **)((char *)pObject + 0x10) =
+        g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+    *(void **)pObject =
+        g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+}
+
 // FUNCTION: LEMBALL 0x00447120
 void *LEMBALL_FASTCALL InitializeFramedScreenRenderChildEntryBody(
     void *pObject)

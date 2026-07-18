@@ -599,7 +599,9 @@ struct VsGdiCompactResourceGeometryHelperFields {
     unsigned char m_abReserved44[0x1c];
     void *m_pLinkedTarget;
     unsigned char m_abReserved64[0xc];
+    int m_fForwardingEnabled;
     int m_nQueuedState;
+    int m_nReserved78;
 };
 
 struct VsGdiResourceGeometryHelperTargetView {
@@ -3682,7 +3684,9 @@ VsGdiResourceGeometryHelperTargetView *VsGdiResourceGeometryHelperTargetView::In
     pCompactHelper->m_pVtable = &g_VSGDI_CompactResourceGeometryHelperSubobjectVtable;
     pCompactHelper->m_nThisAdjust = iCompactDelta - 0x51c;
     pCompactHelper->m_pLinkedTarget = pWrappedTarget;
+    pCompactHelper->m_fForwardingEnabled = 1;
     pCompactHelper->m_nQueuedState = 0;
+    pCompactHelper->m_nReserved78 = 0;
 
     pChildList = (VsGdiResourceGeometryLinkList *)((char *)pWrappedTarget + 0x528);
     pLink = (VsGdiResourceGeometryLinkNode *)AllocateVSMemBlock(0xc);
@@ -3724,6 +3728,7 @@ VsGdiResourceGeometryHelperTargetView *VsGdiResourceGeometryHelperTargetView::In
     *(short *)((char *)this + iCompactDelta + 0x6c) = 1;
     *(int *)((char *)this + 0xf0) = 0;
     m_pBackingBitmap = 0;
+    m_pDisplayBinding = 0;
     *(int *)((char *)this + iCompactDelta + 0x80) = 0;
     InitializeCriticalSection(m_abCriticalSection);
     m_fCriticalSectionReady = 1;
@@ -3917,7 +3922,7 @@ VsGdiResourceGeometryHelperTargetView *VsGdiResourceGeometryHelperTargetView::Co
     pCompactHelper->m_pLinkedTarget = 0;
     InitializeCriticalSection(pTarget->m_abCriticalSection);
     pTarget->m_fCriticalSectionReady = 1;
-    pCompactHelper->m_nQueuedState = 0;
+    pCompactHelper->m_fForwardingEnabled = 0;
     return pTarget;
 }
 

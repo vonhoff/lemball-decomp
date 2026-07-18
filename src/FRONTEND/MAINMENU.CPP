@@ -39,6 +39,8 @@ extern void *ConstructVariantRenderManager(void *pManager,
                                            int fDoubleBuffered);
 extern void *LEMBALL_FASTCALL ConstructFramedScreenRenderEntryGroup(
     void *pGroup);
+extern void LEMBALL_FASTCALL DestroyFramedScreenRenderEntryGroup(
+    void *pGroup);
 extern void SetLevelScreenStatusIndicatorMode(int nMode, int nValue);
 extern void LEMBALL_FASTCALL SetStatusIndicatorActive(
     void *pObject, int nUnused, int fActive);
@@ -1346,17 +1348,31 @@ static void LEMBALL_FASTCALL DestroyMainMenuScreen(void *pObject) {
     g_nLastMainMenuPackSelection = pScreen->m_nPackSelection3B4;
     if (pScreen->m_fFrameResourcesLoaded9C != 0) {
         DestroyMainMenuWidgets(pScreen);
-        ReleaseFramedScreenFrameResources(pScreen);
     }
     g_pActiveNetworkLobbyScreen = 0;
+    if (pScreen->m_pTimedFrameSelector34C != 0) {
+        FreeVSMemBlock(pScreen->m_pTimedFrameSelector34C);
+        pScreen->m_pTimedFrameSelector34C = 0;
+    }
     if (g_pSharedRenderDispatchQueue != 0) {
         ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
             ->UnregisterOrderedRenderDispatchClient(
                 pScreen->m_abRenderQueueNode04, 0);
     }
-    DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
+    if (pScreen->m_fFrameResourcesLoaded9C != 0) {
+        ReleaseFramedScreenFrameResources(pScreen);
+    }
+    if (pScreen->m_pMappedListResources98 != 0) {
+        ((MappedListResourceTable *)pScreen->m_pMappedListResources98)
+            ->Destroy();
+        FreeVSMemBlock(pScreen->m_pMappedListResources98);
+        pScreen->m_pMappedListResources98 = 0;
+    }
     ((MogLoadResourceArchive *)g_pMainResourceArchive)
         ->PruneUnreferencedCachedResourceObjects();
+    DestroyFramedScreenRenderEntryGroup(
+        pScreen->m_abRenderEntryGroupC8);
+    DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
 }
 
 // FUNCTION: LEMBALL 0x00448620
@@ -1574,28 +1590,36 @@ static void *LEMBALL_FASTCALL DeleteFunctionalLevelSelectionScreen(
         g_GAME_MainMenuQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
         g_GAME_MainMenuCallbackVtable;
-    if (pScreen->m_fFrameResourcesLoaded9C != 0) {
-        ReleaseFunctionalLevelSelectionResources(pScreen);
-        ReleaseFramedScreenFrameResources(pScreen);
-    }
     FreeVSMemBlock(pScreen->m_pSelector3C4);
     FreeVSMemBlock(pScreen->m_pSelector3C0);
     FreeVSMemBlock(pScreen->m_pSelector3C8);
+    if (pScreen->m_fFrameResourcesLoaded9C != 0) {
+        ReleaseFunctionalLevelSelectionResources(pScreen);
+    }
+    g_pActiveNetworkLobbyScreen = 0;
+    if (pScreen->m_pTimedFrameSelector34C != 0) {
+        FreeVSMemBlock(pScreen->m_pTimedFrameSelector34C);
+        pScreen->m_pTimedFrameSelector34C = 0;
+    }
+    if (g_pSharedRenderDispatchQueue != 0) {
+        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+            ->UnregisterOrderedRenderDispatchClient(
+                pScreen->m_abRenderQueueNode04, 0);
+    }
+    if (pScreen->m_fFrameResourcesLoaded9C != 0) {
+        ReleaseFramedScreenFrameResources(pScreen);
+    }
     if (pScreen->m_pMappedListResources98 != 0) {
         ((MappedListResourceTable *)pScreen->m_pMappedListResources98)
             ->Destroy();
         FreeVSMemBlock(pScreen->m_pMappedListResources98);
         pScreen->m_pMappedListResources98 = 0;
     }
-    g_pActiveNetworkLobbyScreen = 0;
-    if (g_pSharedRenderDispatchQueue != 0) {
-        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
-            ->UnregisterOrderedRenderDispatchClient(
-                pScreen->m_abRenderQueueNode04, 0);
-    }
-    DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
     ((MogLoadResourceArchive *)g_pMainResourceArchive)
         ->PruneUnreferencedCachedResourceObjects();
+    DestroyFramedScreenRenderEntryGroup(
+        pScreen->m_abRenderEntryGroupC8);
+    DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pScreen);
     }
@@ -1737,11 +1761,6 @@ static void LEMBALL_FASTCALL ReleaseFunctionalLevelSelectionResources(
     pScreen = (GameFramedScreenBase *)pObject;
     pVariantManager = (LevelVariantRenderManagerView *)
         pScreen->m_abVariantRenderManager14;
-    if (pScreen->m_pMappedListResources98 != 0) {
-        ((MappedListResourceTable *)pScreen->m_pMappedListResources98)
-            ->ReleaseListResourceSlot(
-                pScreen->m_nMappedListRemapResourceId384);
-    }
     if (*(void **)((char *)pScreen + 0x3bc) != 0) {
         ReleaseTypedResourceObjectReference(
             *(void **)((char *)pScreen + 0x3bc));

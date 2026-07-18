@@ -232,14 +232,13 @@ struct GameLevelGameMode {
     void **m_pEffStreamVtable;
     void *m_pReserved20;
     char m_abUnknown24[0xf4];
-    int m_nStatusIndicatorMode;
-    int m_nReserved114;
     int m_nManagedEntityCount;
     int m_nManagedEntityCapacity;
     void *m_pManagedEntityTable;
     int m_nReserved124;
     int m_nReserved128;
     int m_nReserved12C;
+    int m_nReserved130;
     int m_nReserved134;
     int m_nReserved138;
     int m_nReserved13C;
@@ -523,6 +522,7 @@ struct GameNetworkLevelChunkDeltaStream {
 };
 extern void *ConstructMainGameVariantResourceBundle(void *pBundle, void *pPrimaryContext, unsigned short nVariantMode);
 extern void InitializeManagedEntitySlotTablesEntryThunk(void *pLevelGameMode);
+extern unsigned short g_GAME_ManagedEntityRegistryCount;
 extern void ResetLevelFrameClockEntryThunk(void);
 extern void *ConstructLevelGameStateStreamThunk(void *pObject);
 extern void *LEMBALL_FASTCALL ConstructLevelTileGridThunk(void *pObject);
@@ -583,18 +583,22 @@ void *g_pNetworkLobbyVsnetRuntime = 0;
 void *g_pActiveNetworkRuntimeWindow = 0;
 // GLOBAL: LEMBALL 0x0049ce04
 int g_nLevelFrameClockTick = 0;
+extern int g_nLevelFrameClockTimeMs;
+extern int g_nNetworkFrameClockLatestTimeMs;
+extern int g_fLevelEndStateRequestLatched;
 // GLOBAL: LEMBALL 0x0049ce28
 int g_fLevelFrameClockPaused = 0;
 static void *g_GAME_StartupModeVtable[6];
 static void *g_GAME_StartupModeEventClientVtable[4];
 static void *g_GAME_MainMenuModeVtable[6];
 static void *g_GAME_MainMenuModeEventClientVtable[4];
+static void *g_GAME_LevelModeActiveInterfaceVtable[2];
 void *g_pStartupModeVtable = g_GAME_StartupModeVtable;
 void *g_pStartupModeRenderThunk = g_GAME_StartupModeEventClientVtable;
 void *g_pMainMenuModeVtable = g_GAME_MainMenuModeVtable;
 void *g_pMainMenuModeRenderThunk = g_GAME_MainMenuModeEventClientVtable;
 void *g_pMode3Vtable = g_GAME_GenericModeVtableSlots;
-void *g_pMode3RenderThunk = (void *)StubNoOpPtr;
+void *g_pMode3RenderThunk = g_GAME_LevelModeActiveInterfaceVtable;
 void *g_pSimpleModeDeleteVtable = g_GAME_GenericModeVtableSlots;
 void *g_pSimpleModeVtable = g_GAME_GenericModeVtableSlots;
 void *g_pMode16Vtable = g_GAME_GenericModeVtableSlots;
@@ -629,6 +633,11 @@ void *LEMBALL_FASTCALL DeleteMainMenuModeThunk(
     void *pObject, int nUnusedEdx, BYTE fDelete);
 void EnsureMainGameVariantResourceMode(GameMainContext *pMainContext, int nVariantMode);
 void *ConstructLevelGameMode(void *pModeObject, GameMainContext *pMainContext);
+void *LEMBALL_FASTCALL DeleteLevelModeActiveInterfaceThunk(
+    void *pActiveInterface, int nUnusedEdx, BYTE fDelete);
+void LEMBALL_FASTCALL UpdateLevelModeActiveInterfaceThunk(
+    void *pActiveInterface);
+void RequestLocalLevelGameStateChange(void *pLevelMode, int nState);
 void LEMBALL_FASTCALL UpdateBaseModeThunk(int *pMode);
 void *LEMBALL_FASTCALL DeleteMainMenuModeEventClientThunk(
     void *pObject, int, BYTE fDelete);
@@ -821,6 +830,10 @@ static void InitializeGameStubVtables(void) {
         (void *)PresentWindowOwnerRenderContext;
     g_GAME_GenericModeVtableSlots[0] = g_pGAME_ModeDeleteVtableSlot;
     g_GAME_GenericModeVtableSlots[1] = (void *)StubNoOpVoid;
+    g_GAME_LevelModeActiveInterfaceVtable[0] =
+        (void *)DeleteLevelModeActiveInterfaceThunk;
+    g_GAME_LevelModeActiveInterfaceVtable[1] =
+        (void *)UpdateLevelModeActiveInterfaceThunk;
 
     g_GAME_StartupModeVtable[0] = (void *)DeleteStartupModeThunk;
     g_GAME_StartupModeVtable[1] = (void *)UpdateBaseModeThunk;
@@ -1897,6 +1910,7 @@ void *ConstructLevelGameMode(void *pModeObject, GameMainContext *pMainContext) {
     pMode->m_nReserved124 = 0;
     pMode->m_nReserved128 = 0;
     pMode->m_nReserved12C = 0;
+    pMode->m_nReserved130 = 0;
     pMode->m_nReserved134 = 0;
     pMode->m_nReserved138 = 0;
     pMode->m_nReserved13C = 0;
@@ -1913,9 +1927,106 @@ void *ConstructLevelGameMode(void *pModeObject, GameMainContext *pMainContext) {
     pMode->m_pEffStreamVtable = (void **)g_pMode3Vtable;
     pMode->m_pDeleteThunkVtable = (void **)g_pMode3RenderThunk;
     pMode->m_pMainContext = pMainContext;
-    pMode->m_pReserved20 = 0;
+    *(int *)((char *)pMode + 0x4c) = 0;
+    g_GAME_ManagedEntityRegistryCount = 0;
     ((LevelGameMode *)pMode)->InitializeLevelGameMode();
     return pModeObject;
+}
+
+void *LEMBALL_FASTCALL DeleteLevelModeActiveInterfaceThunk(
+    void *pActiveInterface, int, BYTE)
+{
+    return (char *)pActiveInterface - 0x10;
+}
+
+void LEMBALL_FASTCALL UpdateLevelModeActiveInterfaceThunk(
+    void *pActiveInterface)
+{
+    char *pMode;
+    int nFrameTick;
+    int nState;
+
+    pMode = (char *)pActiveInterface - 0x10;
+    if (*(int *)(pMode + 0x64) != 0 && g_nSelectedNetworkLobbyPeerId == 0) {
+        return;
+    }
+    if (*(void **)(pMode + 0x164) != 0) {
+        void *pDispatchQueue = *(void **)(pMode + 0x164);
+        DrainRenderDispatchQueueEntries(
+            pDispatchQueue, *(unsigned int *)((char *)pDispatchQueue + 0x28));
+    }
+    if (*(int *)(pMode + 0xd8) != 0) {
+        AdvanceLevelFrameClock();
+        return;
+    }
+
+    nState = *(int *)(pMode + 0x108);
+    if (nState != 0 && nState != 2 && nState != 4 && nState != 6) {
+        AdvanceLevelFrameClock();
+        return;
+    }
+    if (*(int *)(pMode + 0x68) == 0 || *(int *)(pMode + 0x6c) != 0) {
+        return;
+    }
+
+    AdvanceLevelFrameClock();
+    nFrameTick = g_nLevelFrameClockTick;
+    *(int *)(pMode + 0x88) = 1;
+    if (*(int *)(pMode + 0xdc) != 0) {
+        *(int *)(pMode + 0xe0) = nFrameTick;
+        *(int *)(pMode + 0xdc) = 0;
+        *(int *)(pMode + 0xe4) = *(int *)(pMode + 0xec);
+    } else {
+        if (g_fLevelEndStateRequestLatched == 0 &&
+            *(int *)(pMode + 0xe4) < 600) {
+            *(int *)(pMode + 0xe4) = *(int *)(pMode + 0xec) -
+                (nFrameTick - *(int *)(pMode + 0xe0)) / 0x14;
+        }
+        if (*(int *)(pMode + 0xe4) + *(int *)(pMode + 0xe8) < 0) {
+            RequestLocalLevelGameStateChange(pMode, 7);
+            *(int *)(pMode + 0xe4) = -1 - *(int *)(pMode + 0xe8);
+        }
+        if (*(int *)(pMode + 0x58) == 0 &&
+            (unsigned int)*(int *)(pMode + 0x5c) <
+                (unsigned int)(nFrameTick - *(int *)(pMode + 0xe0))) {
+            *(int *)(pMode + 0x58) = 1;
+        }
+    }
+    if (*(void **)(pMode + 0x174) != 0) {
+        ServiceCachedChunkObjects(*(void **)(pMode + 0x174));
+    }
+    if (*(void **)(pMode + 0x170) != 0) {
+        ServiceCachedChunkObjects(*(void **)(pMode + 0x170));
+    }
+    if (*(void **)(pMode + 0x194) != 0) {
+        AdvanceAnimChunkFrames(*(void **)(pMode + 0x194));
+    }
+    if (g_pLevelChunkStreamDispatcher != 0) {
+        ServiceRegisteredLevelChunkStreams(g_pLevelChunkStreamDispatcher);
+    }
+}
+
+void RequestLocalLevelGameStateChange(void *pLevelMode, int nState) {
+    char *pMode;
+
+    pMode = (char *)pLevelMode;
+    if (*(int *)(pMode + 0x64) != 0) {
+        return;
+    }
+    if (nState == 3) {
+        *(int *)((char *)g_pLevelProgressState + 0x0c) = 2;
+        *(int *)(pMode + 0x108) = 3;
+    } else if (nState == 5) {
+        if (*(int *)((char *)g_pLevelProgressState + 0x0c) == 0) {
+            *(int *)((char *)g_pLevelProgressState + 0x0c) = 3;
+        }
+        *(int *)(pMode + 0x108) = 5;
+    } else if (nState == 7) {
+        *(int *)((char *)g_pLevelProgressState + 0x0c) = 4;
+        *(int *)(pMode + 0x108) = 5;
+    } else {
+        *(int *)(pMode + 0x108) = nState;
+    }
 }
 
 // FUNCTION: LEMBALL 0x00402d24
@@ -2684,7 +2795,8 @@ void LEMBALL_FASTCALL UpdateMainGameActiveMode(void *pMainGameContext) {
         pProcessingStatus = pMainContext->m_pProcessingStatus;
         if (fTimedStatus != 0 && *(int *)((char *)pProcessingStatus + 0x24) != 0) {
             dwNow = timeGetTime();
-            ((void (*)(DWORD))(*(void ***)pProcessingStatus)[1])(
+            ((void (*)(void *, DWORD))(*(void ***)pProcessingStatus)[1])(
+                pProcessingStatus,
                 dwNow - *(DWORD *)((char *)pProcessingStatus + 0x20));
             *(int *)((char *)pProcessingStatus + 0x24) = 0;
         }
@@ -2751,8 +2863,9 @@ void LEMBALL_FASTCALL PresentMainGameFrame(void *pMainGameContext) {
     pRefreshingStatus = pMainContext->m_pRefreshingStatus;
     if (fTimedStatus != 0 && *(int *)((char *)pRefreshingStatus + 0x24) != 0) {
         dwNow = timeGetTime();
-        ((void (LEMBALL_FASTCALL *)(void *, int, DWORD))(*(void ***)pRefreshingStatus)[1])(
-            pRefreshingStatus, 0, dwNow - *(DWORD *)((char *)pRefreshingStatus + 0x20));
+        ((void (*)(void *, DWORD))(*(void ***)pRefreshingStatus)[1])(
+            pRefreshingStatus,
+            dwNow - *(DWORD *)((char *)pRefreshingStatus + 0x20));
         *(int *)((char *)pRefreshingStatus + 0x24) = 0;
     }
 }
