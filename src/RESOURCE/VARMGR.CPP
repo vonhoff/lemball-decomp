@@ -312,15 +312,16 @@ void GameVariantResourceEntryManager::ClearActiveVariantResourceEntries(void) {
 
 // FUNCTION: LEMBALL 0x00439d90
 void GameVariantResourceEntryManager::PopulateVariantResourceEntriesForFlagMask(unsigned short nMask) {
+    struct VariantResourceBundleUpdate {
+        virtual void UpdateVariantResourceBundle(void);
+    };
     int *pEntry;
     int i;
     DWORD dwNow;
-    void *pManager;
 
-    pManager = this;
     if (g_fEffectsOptionAvailable != 0) {
-        pEntry = (int *)((char *)pManager + 0x68);
-        dwNow = timeGetTime();
+        pEntry = (int *)((char *)this + 0x68);
+        dwNow = timeGetTime() - 100;
         i = 0x32;
         do {
             if (*pEntry != 0 && ((*(unsigned short *)(unsigned long)(*pEntry + 10) & nMask) != 0)) {
@@ -328,11 +329,11 @@ void GameVariantResourceEntryManager::PopulateVariantResourceEntriesForFlagMask(
                     ->CreateVariantResourceEffectInstance(
                         *(int *)(unsigned long)(*pEntry + 4));
             }
-            pEntry[2] = (int)(dwNow - 100);
-            if (*(void **)((char *)pManager + 4) != 0) {
-                void *pBundle = *(void **)((char *)pManager + 4);
-                ((void (LEMBALL_FASTCALL *)(void *, int))(*(void ***)pBundle)[0])(
-                    pBundle, 0);
+            pEntry[2] = (int)dwNow;
+            if (*(void **)((char *)this + 4) != 0) {
+                ((VariantResourceBundleUpdate *)
+                    *(void **)((char *)this + 4))
+                    ->UpdateVariantResourceBundle();
             }
             pEntry += 3;
             --i;

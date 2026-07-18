@@ -27,6 +27,7 @@ int g_fSkipStartupSequence = 0;
 int g_fMusicOptionAvailable = 0;
 // GLOBAL: LEMBALL 0x004a6278
 int g_fMusicEnabled = 0;
+// GLOBAL: LEMBALL 0x004a6290
 int g_fEffectsOptionAvailable = 0;
 int g_fEffectsEnabled = 0;
 int g_fZoomOptionAvailable = 0;
