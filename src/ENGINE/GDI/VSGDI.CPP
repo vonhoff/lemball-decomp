@@ -1906,16 +1906,19 @@ VsGdiDirectDrawDisplayState::VsGdiDirectDrawDisplayState(const unsigned short *p
         WindowClass.cbWndExtra = 0;
         WindowClass.hInstance = g_hApplicationInstance;
         WindowClass.hIcon = LoadIconA((HINSTANCE)0, (LPCSTR)0x7f00);
-        WindowClass.hCursor = LoadCursorA((HINSTANCE)0, (LPCSTR)0x7f00);
         WindowClass.hbrBackground = GetStockObject(4);
+        WindowClass.hCursor = LoadCursorA((HINSTANCE)0, (LPCSTR)0x7f00);
         WindowClass.lpszMenuName = 0;
         WindowClass.lpszClassName = g_VSGDI_DirectDrawWindowClass;
-        if (RegisterClassA(&WindowClass) == 0) {
+        {
+            unsigned short nClass = RegisterClassA(&WindowClass);
+            ShowCursor(0);
+            if (nClass == 0) {
             g_pErrorOutputStream->AppendCStringToStream(
                 g_VSGDI_ErrorRegisterClass);
             return;
+            }
         }
-        ShowCursor(0);
         m_hDisplayWindow = CreateWindowExA(
             8, g_VSGDI_DirectDrawWindowClass, g_VSGDI_DirectDrawWindowTitle,
             0x80000000, 0, 0, m_cxDisplay, m_cyDisplay,
