@@ -20,12 +20,16 @@ extern int *LoadBinResource(int nResourceId);
 extern void PASCAL noop_vtable_callback_0040a7f0(void *pUnused);
 extern int PASCAL return_true_vtable_callback_0040a800(void *pUnused);
 extern void *LEMBALL_FASTCALL get_object_field_0xf0(void *pObject);
+extern int return_false_vtable_callback_0040a820(void);
 extern void LEMBALL_FASTCALL set_object_field_0x98(
     void *pObject, void *pUnused, int nValue);
 extern int LEMBALL_FASTCALL get_object_field_0x98(void *pObject);
 extern void noop_vtable_callback_0040a990(void);
 extern int return_true_vtable_callback_0040aa50(void);
 extern int PASCAL return_false_vtable_callback_0040aa90(void *pUnused);
+extern void PASCAL noop_vtable_callback_0040aa80(
+    void *pUnused1, void *pUnused2);
+extern void noop_vtable_callback_0040aaa0(void);
 extern void noop_vtable_callback_0040aab0(void);
 extern int PASCAL IsManagedEntityState18(int nState);
 extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(
@@ -129,6 +133,8 @@ static void InitializeLinkScfChunkVtables(void) {
         (void *)return_true_vtable_callback_0040a800;
     g_LINKSCF_PlasChunkObjectVtable[7] =
         (void *)get_object_field_0xf0;
+    g_LINKSCF_PlasChunkObjectVtable[10] =
+        (void *)return_false_vtable_callback_0040a820;
     g_LINKSCF_PlasChunkObjectVtable[13] =
         (void *)set_object_field_0x98;
     g_LINKSCF_PlasChunkObjectVtable[14] =
@@ -137,8 +143,12 @@ static void InitializeLinkScfChunkVtables(void) {
         (void *)noop_vtable_callback_0040a990;
     g_LINKSCF_PlasChunkObjectVtable[44] =
         (void *)return_true_vtable_callback_0040aa50;
+    g_LINKSCF_PlasChunkObjectVtable[47] =
+        (void *)noop_vtable_callback_0040aa80;
     g_LINKSCF_PlasChunkObjectVtable[48] =
         (void *)return_false_vtable_callback_0040aa90;
+    g_LINKSCF_PlasChunkObjectVtable[49] =
+        (void *)noop_vtable_callback_0040aaa0;
     g_LINKSCF_PlasChunkObjectVtable[50] =
         (void *)noop_vtable_callback_0040aab0;
     g_LINKSCF_PlasChunkObjectVtable[64] =

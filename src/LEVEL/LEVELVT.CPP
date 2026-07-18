@@ -359,6 +359,7 @@ void noop_vtable_callback_00408000(void);
 void PASCAL noop_vtable_callback_0040a7f0(void *pUnused);
 int PASCAL return_true_vtable_callback_0040a800(void *pUnused);
 void *__fastcall get_object_field_0xf0(void *pObject);
+int return_false_vtable_callback_0040a820(void);
 void __fastcall copy_object_fields_0x9c_triplet(
     void *pObject, void *pUnused, LevelBoundsPoint *pPoint);
 void __fastcall set_object_field_0x98(void *pObject, void *pUnused, int nValue);
@@ -388,7 +389,9 @@ void noop_vtable_callback_0040aa40(void);
 int return_true_vtable_callback_0040aa50(void);
 int PASCAL return_false_vtable_callback_0040aa60(void *pUnused);
 int PASCAL return_false_vtable_callback_0040aa70(void *pUnused1, void *pUnused2);
+void PASCAL noop_vtable_callback_0040aa80(void *pUnused1, void *pUnused2);
 int PASCAL return_false_vtable_callback_0040aa90(void *pUnused);
+void noop_vtable_callback_0040aaa0(void);
 void noop_vtable_callback_0040aab0(void);
 void noop_callback_0040aad0(void);
 void __fastcall set_object_field_0x30_true(void *pObject);
@@ -647,6 +650,11 @@ void *__fastcall get_object_field_0xf0(void *pObject) {
     return *(void **)((char *)pObject + 0xf0);
 }
 
+// FUNCTION: LEMBALL 0x0040a820
+int return_false_vtable_callback_0040a820(void) {
+    return 0;
+}
+
 // FUNCTION: LEMBALL 0x0040a830
 void __fastcall copy_object_fields_0x9c_triplet(
     void *pObject, void *pUnused, LevelBoundsPoint *pPoint)
@@ -775,10 +783,20 @@ int PASCAL return_false_vtable_callback_0040aa70(void *pUnused1, void *pUnused2)
     return 0;
 }
 
+void PASCAL noop_vtable_callback_0040aa80(
+    void *pUnused1, void *pUnused2) {
+    (void)pUnused1;
+    (void)pUnused2;
+}
+
 // FUNCTION: LEMBALL 0x0040aa90
 int PASCAL return_false_vtable_callback_0040aa90(void *pUnused) {
     (void)pUnused;
     return 0;
+}
+
+// FUNCTION: LEMBALL 0x0040aaa0
+void noop_vtable_callback_0040aaa0(void) {
 }
 
 // FUNCTION: LEMBALL 0x0040aab0
