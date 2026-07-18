@@ -45,7 +45,7 @@ struct VsSoundManager {
     void StopAllAudioManagerBackends(void);
     int CreateVariantResourceEffectInstance(int nEffectResourceId);
     void InvokeAudioManagerEffectSlot48IfActive(int nEffect);
-    unsigned int GetVariantResourceEffectMasterVolume(void);
+    unsigned char GetVariantResourceEffectMasterVolume(void);
     void SetAudioManagerEffectResourceContext(void *pPrimaryContext);
     void SetAudioManagerMusicResourceContext(void *pPrimaryContext);
     int RegisterVariantResourceMusicHandle(int nMusicResourceId, int nUnused);

@@ -376,12 +376,12 @@ void *LEMBALL_FASTCALL DeleteDirectSoundEffectBackend(
     VsSoundDirectSoundEffectBackend *pBackend, int nUnused, int fDelete);
 LRESULT CALLBACK MciMusicWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 void LEMBALL_FASTCALL DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry *pEntry);
-void PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle, int nMusicResourceId);
-void FreePreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle);
-void PlayPreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle);
-void StopMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle);
-void PauseMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle);
-void ResumeMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle);
+void LEMBALL_FASTCALL PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle, int nMusicResourceId);
+void LEMBALL_FASTCALL FreePreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
+void LEMBALL_FASTCALL PlayPreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
+void LEMBALL_FASTCALL StopMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
+void LEMBALL_FASTCALL PauseMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
+void LEMBALL_FASTCALL ResumeMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
 static void LEMBALL_FASTCALL InitializeAudioDynamicStringEntry(void *, int, int, int);
 static void LEMBALL_FASTCALL SetAudioDynamicStringEntryFlag(void *pObject, int, unsigned char fValue);
 static unsigned char LEMBALL_FASTCALL GetAudioDynamicStringEntryFlag(void *pObject);
@@ -463,7 +463,7 @@ struct VsSoundEffectBackendSlots00Through24 {
 
 struct VsSoundEffectMasterVolumeInterface
     : public VsSoundEffectBackendSlots00Through24 {
-    virtual unsigned int GetEffectMasterVolume(void) = 0;
+    virtual unsigned char GetEffectMasterVolume(void) = 0;
 };
 
 struct VsSoundMusicVolumeInterface : public VsSoundEffectBackendSlots00Through24 {
@@ -644,12 +644,12 @@ void LEMBALL_FASTCALL PauseDirectSoundEffectInstance(
     void *pBackend, int nUnusedEdx, int nEffectInstanceId, int nBufferSlot);
 void *LEMBALL_FASTCALL DeleteDirectSoundEffectBackend(
     VsSoundDirectSoundEffectBackend *pBackend, int nUnused, int fDelete);
-void PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle, int nMusicResourceId);
-void FreePreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle);
-void PlayPreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle);
-void StopMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle);
-void PauseMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle);
-void ResumeMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle);
+void LEMBALL_FASTCALL PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle, int nMusicResourceId);
+void LEMBALL_FASTCALL FreePreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
+void LEMBALL_FASTCALL PlayPreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
+void LEMBALL_FASTCALL StopMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
+void LEMBALL_FASTCALL PauseMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
+void LEMBALL_FASTCALL ResumeMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle);
 static void LEMBALL_FASTCALL InitializeAudioDynamicStringEntry(
     void *pObject, int nUnusedEdx, int nValue1, int nValue2);
 static void LEMBALL_FASTCALL SetAudioDynamicStringEntryFlag(
@@ -763,22 +763,22 @@ struct VsSoundMciMusicBackendVtableModel {
     }
     virtual void Initialize(int nValue1, int nValue2);
     virtual void Prepare(int nTrackHandle, int nMusicResourceId) {
-        PrepareMciMusicTrack((VsSoundMciMusicBackend *)this, nTrackHandle, nMusicResourceId);
+        PrepareMciMusicTrack((VsSoundMciMusicBackend *)this, 0, nTrackHandle, nMusicResourceId);
     }
     virtual void Free(int nTrackHandle) {
-        FreePreparedMciMusicTrack((VsSoundMciMusicBackend *)this, nTrackHandle);
+        FreePreparedMciMusicTrack((VsSoundMciMusicBackend *)this, 0, nTrackHandle);
     }
     virtual void Play(int nTrackHandle) {
-        PlayPreparedMciMusicTrack((VsSoundMciMusicBackend *)this, nTrackHandle);
+        PlayPreparedMciMusicTrack((VsSoundMciMusicBackend *)this, 0, nTrackHandle);
     }
     virtual void Stop(int nTrackHandle) {
-        StopMciMusicTrack((VsSoundMciMusicBackend *)this, nTrackHandle);
+        StopMciMusicTrack((VsSoundMciMusicBackend *)this, 0, nTrackHandle);
     }
     virtual void Pause(int nTrackHandle) {
-        PauseMciMusicTrack((VsSoundMciMusicBackend *)this, nTrackHandle);
+        PauseMciMusicTrack((VsSoundMciMusicBackend *)this, 0, nTrackHandle);
     }
     virtual void Resume(int nTrackHandle) {
-        ResumeMciMusicTrack((VsSoundMciMusicBackend *)this, nTrackHandle);
+        ResumeMciMusicTrack((VsSoundMciMusicBackend *)this, 0, nTrackHandle);
     }
     virtual void SetFlag(int fValue) {
         SetAudioDynamicStringEntryFlag(
@@ -1597,7 +1597,7 @@ void VsSoundManager::SetAudioManagerMusicAndEffectVolume(int nMusicVolume, int n
 }
 
 // FUNCTION: LEMBALL 0x0045b560
-unsigned int VsSoundManager::GetVariantResourceEffectMasterVolume(void) {
+unsigned char VsSoundManager::GetVariantResourceEffectMasterVolume(void) {
     VsSoundEffectMasterVolumeInterface *pBackend;
     void *pAudioManager;
 
@@ -3487,7 +3487,7 @@ void LEMBALL_FASTCALL DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry *
 }
 
 // FUNCTION: LEMBALL 0x0047ead0
-void PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle, int nMusicResourceId) {
+void LEMBALL_FASTCALL PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle, int nMusicResourceId) {
     VsSoundStringResourceObjectView *pStringResource;
     VsSoundMciOpenParms OpenParms;
     VsSoundMciGenericParms SeekParms;
@@ -3615,7 +3615,7 @@ void PrepareMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle, in
 }
 
 // FUNCTION: LEMBALL 0x0047ee70
-void FreePreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle) {
+void LEMBALL_FASTCALL FreePreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle) {
     if (nTrackHandle == 0) {
         g_pErrorOutputStream->AppendCStringToStream(
             "Error Call to Free Music (HL) with Invalid Handle!\n");
@@ -3634,7 +3634,7 @@ void FreePreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandl
 }
 
 // FUNCTION: LEMBALL 0x0047eee0
-void PlayPreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle) {
+void LEMBALL_FASTCALL PlayPreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle) {
     VsSoundMciSeekParms SeekParms;
     VsSoundMciPlayParms PlayParms;
     MCIERROR nMciError;
@@ -3683,7 +3683,7 @@ void PlayPreparedMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandl
 }
 
 // FUNCTION: LEMBALL 0x0047f040
-void StopMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle) {
+void LEMBALL_FASTCALL StopMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle) {
     MCIERROR nMciError;
     char szMciErrorText[0x80];
 
@@ -3717,7 +3717,7 @@ void StopMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle) {
 }
 
 // FUNCTION: LEMBALL 0x0047f120
-void PauseMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle) {
+void LEMBALL_FASTCALL PauseMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle) {
     VsSoundMciStatusParms StatusParms;
     MCIERROR nMciError;
     char szMciErrorText[0x80];
@@ -3758,7 +3758,7 @@ void PauseMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle) {
 }
 
 // FUNCTION: LEMBALL 0x0047f250
-void ResumeMciMusicTrack(VsSoundMciMusicBackend *pBackend, int nTrackHandle) {
+void LEMBALL_FASTCALL ResumeMciMusicTrack(VsSoundMciMusicBackend *pBackend, int, int nTrackHandle) {
     VsSoundMciSeekParms SeekParms;
     VsSoundMciPlayParms PlayParms;
     MCIERROR nMciError;
