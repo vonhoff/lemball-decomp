@@ -547,6 +547,8 @@ struct GameEffTransportRuntimeWindow {
 };
 extern void *ConstructNetworkLobbyPeerClearCloseStream(void *pObject);
 extern void *ConstructNetworkLobbyPeerDirtyConfirmStream(void *pObject);
+extern void LEMBALL_FASTCALL StopNetworkLobbyTransportSession(
+    void *pController);
 struct GameNetworkLevelChunkDeltaStream {
     void *ConstructNetworkLevelChunkDeltaStream(int nOwner);
     void *ConstructNetworkLevelChunkDeltaStreamEntry(int nOwner);
@@ -624,6 +626,7 @@ static void *g_GAME_StartupModeEventClientVtable[4];
 static void *g_GAME_MainMenuModeVtable[6];
 static void *g_GAME_MainMenuModeEventClientVtable[4];
 static void *g_GAME_NetworkLobbyTransportControllerVtable[6];
+static void *g_GAME_NetworkLobbyTransportEventClientVtable[4];
 static void *g_GAME_LevelModeActiveInterfaceVtable[2];
 void *g_pStartupModeVtable = g_GAME_StartupModeVtable;
 void *g_pStartupModeRenderThunk = g_GAME_StartupModeEventClientVtable;
@@ -634,7 +637,7 @@ void *g_pMode3RenderThunk = g_GAME_LevelModeActiveInterfaceVtable;
 void *g_pSimpleModeDeleteVtable = g_GAME_GenericModeVtableSlots;
 void *g_pSimpleModeVtable = g_GAME_GenericModeVtableSlots;
 void *g_pMode16Vtable = g_GAME_GenericModeVtableSlots;
-void *g_pMode16RenderThunk = g_GAME_MainMenuModeEventClientVtable;
+void *g_pMode16RenderThunk = g_GAME_NetworkLobbyTransportEventClientVtable;
 void *g_pPrimaryContextVtable = g_GAME_PrimaryContextVtableSlots;
 void *g_pPrimaryContextRenderQueueNodeVtable = g_GAME_RenderQueueNodeVtableSlots;
 extern void *g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[8];
@@ -749,6 +752,7 @@ extern int LEMBALL_FASTCALL HandleBaseModeActionButtonEventThunk(
 extern int LEMBALL_FASTCALL HandleNetworkLobbyTransportPayloadEvent(
     void *pController, int nUnusedEdx, unsigned short nEventType,
     void *pPayloadObject, void *pPeer);
+extern void CloseNetworkLobbyTransportPeers(void *pController);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 
 class GameNetworkLobbyTransportControllerVtableModel {
@@ -767,6 +771,13 @@ public:
 
 static GameNetworkLobbyTransportControllerVtableModel
     g_GAME_NetworkLobbyTransportControllerVtableModel;
+
+static void DestroyNetworkLobbyTransportController(void *pObject);
+static void *LEMBALL_FASTCALL DeleteNetworkLobbyTransportController(
+    void *pObject, int nUnusedEdx, BYTE fDelete);
+static void *LEMBALL_FASTCALL
+DeleteNetworkLobbyTransportControllerEventClient(
+    void *pObject, int nUnusedEdx, BYTE fDelete);
 
 
 
@@ -916,7 +927,7 @@ static void InitializeGameStubVtables(void) {
     g_GAME_MainMenuModeEventClientVtable[3] = 0;
 
     g_GAME_NetworkLobbyTransportControllerVtable[0] =
-        g_pGAME_ModeDeleteVtableSlot;
+        (void *)DeleteNetworkLobbyTransportController;
     g_GAME_NetworkLobbyTransportControllerVtable[1] =
         (void *)UpdateBaseModeThunk;
     g_GAME_NetworkLobbyTransportControllerVtable[2] =
@@ -926,6 +937,13 @@ static void InitializeGameStubVtables(void) {
     g_GAME_NetworkLobbyTransportControllerVtable[4] =
         (void *)ReturnFalseBaseModeThunk;
     g_GAME_NetworkLobbyTransportControllerVtable[5] = 0;
+    g_GAME_NetworkLobbyTransportEventClientVtable[0] =
+        (void *)InitializeNonZrleVariantRenderEntry;
+    g_GAME_NetworkLobbyTransportEventClientVtable[1] =
+        (void *)DeleteNetworkLobbyTransportControllerEventClient;
+    g_GAME_NetworkLobbyTransportEventClientVtable[2] =
+        (void *)HandleBaseModeActionButtonEventThunk;
+    g_GAME_NetworkLobbyTransportEventClientVtable[3] = 0;
 
     g_GAME_GenericScreenVtableSlots[0] = g_pGAME_ModeDeleteVtableSlot;
     g_GAME_GenericScreenVtableSlots[0x08 / sizeof(void *)] =
@@ -2563,7 +2581,7 @@ void *ConstructNetworkLobbyTransportController(void *pModeObject, GameMainContex
     InitializeBaseModeObject(pMode, pMainContext);
     pMode->m_pVtable = g_GAME_NetworkLobbyTransportControllerVtable;
     pMode->m_pRenderQueueNodeVtable =
-        g_GAME_MainMenuModeEventClientVtable;
+        g_GAME_NetworkLobbyTransportEventClientVtable;
     pMode->m_pPeerClearCloseStream = AllocateVSMemBlock(0x30);
     if (pMode->m_pPeerClearCloseStream != 0) {
         pMode->m_pPeerClearCloseStream = ConstructNetworkLobbyPeerClearCloseStream(pMode->m_pPeerClearCloseStream);
@@ -2576,6 +2594,53 @@ void *ConstructNetworkLobbyTransportController(void *pModeObject, GameMainContex
     pMode->m_nReserved28 = 0;
     g_pNetworkLobbyTransportController = pMode;
     return pModeObject;
+}
+
+static void DestroyNetworkLobbyTransportController(void *pObject) {
+    GameNetworkLobbyTransportController *pMode;
+    void *pStream;
+
+    pMode = (GameNetworkLobbyTransportController *)pObject;
+    pMode->m_pVtable = g_GAME_NetworkLobbyTransportControllerVtable;
+    pMode->m_pRenderQueueNodeVtable =
+        g_GAME_NetworkLobbyTransportEventClientVtable;
+    g_pNetworkLobbyTransportController = 0;
+    if (g_pActiveNetworkLobbyScreen != 0) {
+        if (*(int *)((char *)g_pActiveNetworkLobbyScreen + 0x374) == 0) {
+            StopNetworkLobbyTransportSession(pMode);
+        } else {
+            CloseNetworkLobbyTransportPeers(pMode);
+        }
+    }
+    pStream = pMode->m_pPeerClearCloseStream;
+    if (pStream != 0) {
+        ((void (LEMBALL_FASTCALL *)(void *, int, int))
+            (*(void ***)pStream)[5])(pStream, 0, 1);
+        pMode->m_pPeerClearCloseStream = 0;
+    }
+    pStream = pMode->m_pPeerDirtyConfirmStream;
+    if (pStream != 0) {
+        ((void (LEMBALL_FASTCALL *)(void *, int, int))
+            (*(void ***)pStream)[5])(pStream, 0, 1);
+        pMode->m_pPeerDirtyConfirmStream = 0;
+    }
+    DestroyBaseModeObject(pMode);
+}
+
+static void *LEMBALL_FASTCALL DeleteNetworkLobbyTransportController(
+    void *pObject, int, BYTE fDelete) {
+    DestroyNetworkLobbyTransportController(pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+static void *LEMBALL_FASTCALL
+DeleteNetworkLobbyTransportControllerEventClient(
+    void *pObject, int nUnusedEdx, BYTE fDelete) {
+    return DeleteNetworkLobbyTransportController(
+        (char *)pObject - 0x0c, nUnusedEdx, fDelete);
 }
 
 // FUNCTION: LEMBALL 0x00401c6c
