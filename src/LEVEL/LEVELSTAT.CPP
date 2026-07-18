@@ -1338,6 +1338,57 @@ struct LevelViewRotationTransform {
     void TransformTileInPlace(int *pX, int *pY);
 };
 
+static short SampleLevelTileHeightOffset(
+    const char *pTile, int nLocalX, int nLocalY)
+{
+    short nHeight;
+
+    nHeight = *(const short *)(pTile + 8);
+    switch (*(const int *)pTile) {
+    case 0x206: return (short)(nHeight + 0x10);
+    case 0x207: return (short)(nHeight + 8);
+    case 0x208: return (short)(nHeight - nLocalY + 0x10);
+    case 0x20b: return (short)(nHeight + nLocalX);
+    case 0x20c: return (short)(nHeight + nLocalY);
+    case 0x20d: return (short)(nHeight - nLocalX + 0x10);
+    case 0x20e: return (short)(nHeight - nLocalY / 2 + 7);
+    case 0x20f: return (short)(nHeight - nLocalX / 2 + 7);
+    case 0x202: case 0x209: case 0x20a: case 0x210:
+    case 0x214: case 0x215: case 0x216: case 0x217:
+    case 0x219: case 0x21a:
+        return nHeight;
+    }
+    return 0;
+}
+
+static short GetLevelTileHeightSample(
+    const char *pLevel, int x, int y, int nLocalX, int nLocalY)
+{
+    int nTileX;
+    int nTileY;
+
+    nTileX = x >> 4;
+    nTileY = y >> 4;
+    if (x < 0 || y < 0 ||
+        nTileX >= *(const int *)(pLevel + 0x10) ||
+        nTileY >= *(const int *)(pLevel + 0x14)) return 0;
+    return SampleLevelTileHeightOffset(
+        *(const char **)(pLevel + 0x0c) +
+        (nTileY * *(const int *)(pLevel + 0x10) + nTileX) * 0x0c,
+        nLocalX, nLocalY);
+}
+
+static int GetLevelTileSolidFlag(
+    const char *pLevel, int nTileX, int nTileY)
+{
+    if (nTileX < 0 || nTileY < 0 ||
+        nTileX >= *(const int *)(pLevel + 0x10) ||
+        nTileY >= *(const int *)(pLevel + 0x14)) return 1;
+    return (*(const unsigned short *)(
+        *(const char **)(pLevel + 0x0c) +
+        (nTileY * *(const int *)(pLevel + 0x10) + nTileX) * 0x0c + 6) & 1) != 0;
+}
+
 struct LevelScreenTerrainRenderView {
     void EmitRepeatedVariantColumn(short x, int y,
                                    int nHeight, int cEntries);
@@ -3265,6 +3316,15 @@ short LevelScreenTerrainRenderView::ComputeDynamicRenderEntrySortKey(
     int nTileY;
     int nHeight;
     int nDepth;
+    char *pLevel;
+    short nSampleA;
+    short nSampleB;
+    short nSampleC;
+    int nThreshold;
+    int fSolidA;
+    int fSolidB;
+    int fSolidC;
+    int fIgnoreTerrain;
 
     pScreen = (char *)this;
     pEntry = *(char **)(pScreen + 0x95c) + iEntry * 0x4c;
@@ -3272,15 +3332,50 @@ short LevelScreenTerrainRenderView::ComputeDynamicRenderEntrySortKey(
     if (nType == 0x18 || nType == 0x1f) return 0x7fff;
     nTileX = *(short *)(pEntry + 0x10);
     nTileY = *(short *)(pEntry + 0x12);
+    fIgnoreTerrain = 0;
     if (nType == 0x19 || nType == 0x1a) {
         nTileX += 0x10;
         nTileY += 0x10;
+        fIgnoreTerrain = 1;
+    } else if (nType == 0x22) {
+        fIgnoreTerrain = 1;
     } else if (nType == 0x34) {
         nTileX = (nTileX - 8) & ~0x0f;
         nTileY = (nTileY - 8) & ~0x0f;
     }
     nHeight = *(short *)(pEntry + 0x0c);
     nDepth = ((nTileX / 0x10) + (nTileY / 0x10)) * 0x40 + 4;
+    if (fIgnoreTerrain) return (short)(nDepth + nHeight + 1);
+    pLevel = *(char **)(pScreen + 0x914);
+    if (pLevel == 0 || *(void **)(pLevel + 0x0c) == 0)
+        return (short)(nDepth + nHeight + 1);
+    nSampleA = GetLevelTileHeightSample(
+        pLevel, nTileX, nTileY + 0x10,
+        nTileX & 0x0f, nTileY & 0x0f);
+    nSampleB = GetLevelTileHeightSample(
+        pLevel, nTileX + 0x10, nTileY,
+        nTileX & 0x0f, nTileY & 0x0f);
+    nSampleC = GetLevelTileHeightSample(
+        pLevel, nTileX + 0x10, nTileY + 0x10,
+        nTileX & 0x0f, nTileY & 0x0f);
+    nThreshold = nHeight - 0x16;
+    nTileX /= 0x10;
+    nTileY /= 0x10;
+    fSolidA = nSampleA >= nThreshold &&
+              GetLevelTileSolidFlag(pLevel, nTileX, nTileY + 1);
+    fSolidB = nSampleB >= nThreshold &&
+              GetLevelTileSolidFlag(pLevel, nTileX + 1, nTileY);
+    fSolidC = nSampleC >= nThreshold &&
+              GetLevelTileSolidFlag(pLevel, nTileX + 1, nTileY + 1);
+    if (nHeight + 2 < nSampleA && nHeight + 2 < nSampleB)
+        return (short)(nDepth + nHeight + 1);
+    if (nHeight + 2 >= nSampleA &&
+        nHeight + 2 >= nSampleB &&
+        nHeight + 2 >= nSampleC &&
+        !fSolidA && !fSolidB && !fSolidC)
+        nDepth += 0x80;
+    else
+        nDepth += 0x40;
     return (short)(nDepth + nHeight + 1);
 }
 
