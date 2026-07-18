@@ -1028,6 +1028,21 @@ struct VsGdiDisplayBitmapVtable {
     int (LEMBALL_FASTCALL *m_pReserved)(void *, int);
     void *m_pTerminator;
 };
+
+struct VsGdiDibRectDispatch {
+    virtual void Reserved0(void) = 0;
+    virtual void Reserved1(void) = 0;
+    virtual void Reserved2(void) = 0;
+    virtual void Reserved3(void) = 0;
+    virtual void Reserved4(void) = 0;
+    virtual void Reserved5(void) = 0;
+    virtual void Reserved6(void) = 0;
+    virtual void Reserved7(void) = 0;
+    virtual int CopyDisplayRect(void *pDestinationBinding,
+                                short *pDestinationRect,
+                                void *pSourceBinding,
+                                short *pSourcePoint) = 0;
+};
 // GLOBAL: LEMBALL 0x00498798
 static VsGdiDisplayBitmapVtable g_VSGDI_DisplayBitmapVtable = {
     VsGdiDeleteDisplayBitmap,
@@ -1639,11 +1654,14 @@ int VsGdiDibDisplayState::StretchDisplayRect(
     void *pSourceBinding, short *pSourceRect)
 {
     short aSourcePoint[2];
+    short *pAdjustedSourceRect;
 
-    aSourcePoint[0] = pSourceRect[2];
-    aSourcePoint[1] = pSourceRect[3];
-    return CopyDisplayRect(pDestinationBinding, pDestinationRect,
-                           pSourceBinding, aSourcePoint);
+    pAdjustedSourceRect = pSourceRect != 0 ? pSourceRect + 2 : 0;
+    aSourcePoint[0] = pAdjustedSourceRect[0];
+    aSourcePoint[1] = pAdjustedSourceRect[1];
+    return ((VsGdiDibRectDispatch *)this)->CopyDisplayRect(
+        pDestinationBinding, pDestinationRect,
+        pSourceBinding, aSourcePoint);
 }
 
 int VsGdiDibDisplayState::CopyDisplayRect(
