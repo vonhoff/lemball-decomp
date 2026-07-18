@@ -36,6 +36,8 @@ extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(
 extern void *LoadZrleOnlyListResource(int nResourceId);
 extern void *g_pNonZrleVariantRenderEntryInitializeVtable[2];
 extern void *g_pQueuedRenderPointSinkFinalizeThunk;
+extern void *g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[8];
+extern int g_nQueuedVariantChildSlotManagerModeSelectedResourceId;
 extern void *LEMBALL_FASTCALL DeleteStatusPointSinkEntryThunk(
     void *pEntry, int nUnusedEdx, unsigned char fDelete);
 extern void LEMBALL_FASTCALL QueueStatusPointPushThunk(
@@ -1230,6 +1232,11 @@ static void *g_QueuedVariantRangeEntryVtable[3] = {
     (void *)DeleteQueuedVariantRangeEntry,
     (void *)HandleQueuedVariantRangeEntryEvent
 };
+/* VTABLE: LEMBALL 0x0049823C */
+static void *g_QueuedVariantChildSlotManagerRenderManagerVtable[1] = {
+    (void *)VariantResourceBundleNoopThunk
+};
+/* VTABLE: LEMBALL 0x00498240 */
 static void *g_QueuedVariantChildSlotManagerVtable[3] = {
     (void *)InitializeNonZrleVariantRenderEntry,
     (void *)DeleteQueuedVariantChildSlotManager,
@@ -1389,6 +1396,17 @@ void *LEMBALL_FASTCALL ConstructQueuedVariantChildSlotManager(
     ConstructVariantRenderManager(
         pManager->m_abVariantRenderManager10,
         (int)(unsigned long)pRenderContext, 0x2b6, 1, 1, 0, 0);
+    *(void ***)pManager->m_abPointSinkFC =
+        g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+    *(void ***)pManager->m_abPointSinkFC =
+        g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage + 4;
+    *(void ***)pManager->m_abCallback118 =
+        g_MenuSelectorFrameSelectorCtorVtable;
+    *(int *)(pManager->m_abCallback118 + 4) = 1;
+    *(void ***)pManager->m_abCallback118 =
+        g_MenuSelectorCurrentFrameCallbackVtable;
+    *(void ***)pManager->m_abVariantRenderManager10 =
+        g_QueuedVariantChildSlotManagerRenderManagerVtable;
     pManager->m_pRenderContext10C = pRenderContext;
     pManager->m_pRenderOwner110 = pRenderOwner;
     pManager->m_nNextToken114 = (int)0xabcd0000U;
@@ -1396,16 +1414,17 @@ void *LEMBALL_FASTCALL ConstructQueuedVariantChildSlotManager(
     pManager->m_nNavigationMode134 = nNavigationMode;
     pManager->m_fCompactLayout138 = nLayoutMode == 1;
     pManager->m_fInputEnabled144 = 1;
-    pManager->m_fChildrenEnabled148 = 1;
     for (i = 0; i < 4; ++i) {
         pManager->m_apChildrenAC[i] = 0;
         pManager->m_aSlotsBC[i].m_fActive00 = 0;
     }
     ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
         ->RegisterOrderedRenderDispatchClient(pManager, 0);
+    g_nQueuedVariantChildSlotManagerModeSelectedResourceId =
+        nLayoutMode == 1 ? 0x183 : 0x156;
     LoadVariantRenderResource(
         pManager->m_abVariantRenderManager10,
-        nLayoutMode == 1 ? 0x183 : 0x156);
+        g_nQueuedVariantChildSlotManagerModeSelectedResourceId);
     return pManager;
 }
 

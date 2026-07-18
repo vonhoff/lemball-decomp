@@ -103,7 +103,7 @@ extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
 extern void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen);
 
 // GLOBAL: LEMBALL 0x004a7b64
-static int g_nQueuedVariantChildSlotManagerModeSelectedResourceId;
+int g_nQueuedVariantChildSlotManagerModeSelectedResourceId;
 
 struct GameProgressiveSelectorVtableView {
     virtual int SelectFrame(void) = 0;
