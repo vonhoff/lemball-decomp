@@ -432,6 +432,8 @@ static void *g_AlignedZrleChildOverlayDeleteVtable[8];
 static int g_fAlignedZrleChildOverlayVtablesInitialized;
 static void *g_MenuSelectorChildContextVtable[46];
 static int g_fMenuSelectorChildContextVtableInitialized;
+static void *g_QueuedVariantChildContextVtable[46];
+static int g_fQueuedVariantChildContextVtableInitialized;
 
 static int MapSpriteOwnerEventToFrameSlot(int nEvent) {
     switch (nEvent) {
@@ -1444,8 +1446,53 @@ void LEMBALL_FASTCALL SelectQueuedVariantChildSlot(
     pManager->m_dwSelectionEnd140 = (int)dwNow;
 }
 
-void LEMBALL_FASTCALL InitializeQueuedVariantChildContext(void *pManager) {
-    (void)pManager;
+static void *ConstructQueuedVariantChildContextObject(void *pObject) {
+    union VoidMethod {
+        void (GameMenuSelectorChildContextView::*p)(void);
+        void *v;
+    } Void;
+    void **pBaseVtable;
+    int i;
+
+    ConstructWindowOwnerRenderContext(pObject);
+    pBaseVtable = *(void ***)pObject;
+    if (g_fQueuedVariantChildContextVtableInitialized == 0) {
+        for (i = 0; i < 46; ++i) {
+            g_QueuedVariantChildContextVtable[i] = pBaseVtable[i];
+        }
+        Void.p = &GameMenuSelectorChildContextView::MarkRenderObjectDirty;
+        g_QueuedVariantChildContextVtable[15] = Void.v;
+        g_fQueuedVariantChildContextVtableInitialized = 1;
+    }
+    *(void ***)pObject = g_QueuedVariantChildContextVtable;
+    ++*(int *)((char *)pObject + 0x50);
+    return pObject;
+}
+
+void LEMBALL_FASTCALL InitializeQueuedVariantChildContext(void *pObject) {
+    typedef void (LEMBALL_FASTCALL *InitializeRectProc)(
+        void *, int, short *, void *, int);
+    GameQueuedVariantChildSlotManager *pManager;
+    short Rect[4];
+    void *pContext;
+
+    pManager = (GameQueuedVariantChildSlotManager *)pObject;
+    pContext = AllocateVSMemBlock(0x90);
+    if (pContext == 0) {
+        pManager->m_pChildContext128 = 0;
+        pManager->m_pChildRenderContext12C = 0;
+        return;
+    }
+    ConstructQueuedVariantChildContextObject(pContext);
+    pManager->m_pChildContext128 = pContext;
+    Rect[0] = *(short *)((char *)pManager->m_pRenderOwner110 + 8);
+    Rect[1] = *(short *)((char *)pManager->m_pRenderOwner110 + 10);
+    Rect[2] = 0;
+    Rect[3] = 0;
+    ((InitializeRectProc)(*(void ***)pContext)[1])(
+        pContext, 0, Rect, pManager->m_pRenderOwner110, 0);
+    pManager->m_pChildRenderContext12C =
+        *(void **)((char *)pContext + 0x4c);
 }
 
 static int LEMBALL_FASTCALL HandleQueuedVariantChildSlotManagerEvent(
@@ -1504,6 +1551,17 @@ void LEMBALL_FASTCALL DestroyQueuedVariantChildSlotManager(void *pObject) {
     ((LevelVariantRenderManagerView *)
         pManager->m_abVariantRenderManager10)
             ->ReleaseVariantRenderResource(nResourceId);
+    if (pManager->m_pChildContext128 != 0) {
+        typedef void (LEMBALL_FASTCALL *DetachProc)(void *, int);
+        if (*(int *)((char *)pManager->m_pChildContext128 + 4) == 1) {
+            ((DetachProc)(*(void ***)pManager->m_pChildContext128)[29])(
+                pManager->m_pChildContext128, 0);
+        }
+        DestroyWindowOwnerRenderContext(pManager->m_pChildContext128);
+        FreeVSMemBlock(pManager->m_pChildContext128);
+        pManager->m_pChildContext128 = 0;
+        pManager->m_pChildRenderContext12C = 0;
+    }
     DestroyVariantRenderManager(pManager->m_abVariantRenderManager10);
     pManager->m_pVtable00 = g_pNonZrleVariantRenderEntryInitializeVtable;
 }
