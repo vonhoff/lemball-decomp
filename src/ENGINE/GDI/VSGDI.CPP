@@ -5304,6 +5304,12 @@ void VsGdiAnimWindowOwner::UpdateMediaPathFromListResource(int nResourceId) {
     MediaPath.DestroyDynamicCString();
 }
 
+void LEMBALL_FASTCALL UpdateEmbeddedMciMediaPath(void *pOwner,
+                                                 int nResourceId) {
+    ((VsGdiAnimWindowOwner *)pOwner)
+        ->UpdateMediaPathFromListResource(nResourceId);
+}
+
 void VsGdiAnimWindowOwner::SelectIntroSequenceMediaPath(void) {
     int nMode;
 
