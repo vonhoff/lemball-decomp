@@ -2626,6 +2626,10 @@ static void DestroyOptionsScreen(GameOptionsScreenView *pScreen) {
     if (g_fEffectsOptionAvailable == 0) g_fEffectsEnabled = 0;
     if (g_fZoomOptionAvailable == 0) g_fZoomedViewportEnabled = 0;
     if (g_fStartupAnimationsEnabled == 0) g_fSkipStartupSequence = 1;
+    ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
+        ->SetVariantResourceEffectsEnabled(g_nOptionsEffectsSliderValue);
+    ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
+        ->SetVariantResourceMusicEnabled(g_nOptionsMusicSliderValue);
     if (pScreen->m_fFrameResourcesLoaded9C != 0) {
         ReleaseOptionsScreenWidgets(pScreen);
     }
@@ -2940,9 +2944,8 @@ static void DestroyPaintballSequenceScreen(
             ->SetVariantResourceMusicEnabled(1);
         *(int *)(pScreen->m_abMediaOwner520 + 0xd4) = 1;
     }
-    ((void (LEMBALL_FASTCALL *)(void *, int, int))
-         (*(void ***)pScreen->m_abMediaOwner520)[0])(
-        pScreen->m_abMediaOwner520, 0, 0);
+    DestroyResourceGeometryHelperWindowOwner(
+        pScreen->m_abMediaOwner520);
     g_pActiveNetworkLobbyScreen = 0;
     if (pScreen->m_pTimedFrameSelector34C != 0) {
         FreeVSMemBlock(pScreen->m_pTimedFrameSelector34C);
@@ -3666,7 +3669,6 @@ static void ApplyPasswordEntryAction(
         if (pScreen->m_cPassword420 < 10) {
             pScreen->m_szPassword3B0[pScreen->m_cPassword420++] =
                 (char)('0' + nAction);
-            pScreen->m_szPassword3B0[pScreen->m_cPassword420] = '\0';
         } else if (g_pVariantResourceEntryManager != 0) {
             ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
                 ->PlayVariantResourceEffect(0x19);
@@ -3674,7 +3676,7 @@ static void ApplyPasswordEntryAction(
     } else if (nAction == 10) {
         if (pScreen->m_cPassword420 != 0) {
             --pScreen->m_cPassword420;
-            pScreen->m_szPassword3B0[pScreen->m_cPassword420] = '\0';
+            pScreen->m_szPassword3B0[pScreen->m_cPassword420] = '-';
         } else if (g_pVariantResourceEntryManager != 0) {
             ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
                 ->PlayVariantResourceEffect(0x19);
@@ -3682,6 +3684,7 @@ static void ApplyPasswordEntryAction(
     } else if (nAction == 11) {
         pScreen->m_fPasswordValid484 =
             ValidateCurrentLevelPassword(pScreen->m_szPassword3B0);
+        ((GameNoArgVirtual)pScreen->m_pVtable00[19])(pScreen, 0);
         SnapshotCurrentLevelProgress();
         nEffect = pScreen->m_fPasswordValid484 != 0 ? 0x13 : 0x22;
         if (g_pVariantResourceEntryManager != 0) {
@@ -3696,6 +3699,22 @@ static void ApplyPasswordEntryAction(
     pScreen->m_fFrameDirty330 = 1;
 }
 
+static void DispatchPasswordOverlayInput(void *pOverlay, int iSlot) {
+    typedef void (LEMBALL_FASTCALL *DispatchOverlayInputProc)(
+        void *, int, short *, int);
+    short Point[2];
+    void *pInputInterface;
+
+    if (pOverlay == 0) {
+        return;
+    }
+    Point[0] = 0;
+    Point[1] = 0;
+    pInputInterface = (char *)pOverlay + 0x90;
+    ((DispatchOverlayInputProc)(*(void ***)pInputInterface)[iSlot])(
+        pInputInterface, 0, Point, 0);
+}
+
 static int LEMBALL_FASTCALL HandlePasswordEntryInput(
     void *pObject, int, void *pEvent) {
     GamePasswordEntryScreenView *pScreen;
@@ -3707,31 +3726,50 @@ static int LEMBALL_FASTCALL HandlePasswordEntryInput(
     pSelectorEvent = (GameMenuSelectorEvent *)pEvent;
     nCode = (unsigned int)pSelectorEvent->m_nPayload08;
     nAction = -1;
-    if (pSelectorEvent->m_nType00 == 0x0c &&
-        nCode >= 0xabcd00b0U && nCode <= 0xabcd00bbU) {
-        nAction = (int)(nCode - 0xabcd00b0U);
-    } else if (pSelectorEvent->m_nType00 == 3 ||
-               pSelectorEvent->m_nType00 == 4) {
-        if (nCode >= 0x39U && nCode <= 0x42U) nAction = (int)(nCode - 0x39U);
-        else if (nCode >= '0' && nCode <= '9') nAction = (int)(nCode - '0');
-        else if (nCode == 0x4dU || nCode == 0x4eU || nCode == 8U) nAction = 10;
-        else if (nCode == 0x4cU || nCode == 13U) nAction = 11;
-        else if (nCode == 0x1fU || nCode == 0x22U || nCode == 0x20U)
-            nAction = g_GAME_PasswordKeyPermutation[
-                pScreen->m_nSelectedKey480];
-        else if (nCode >= 1U && nCode <= 4U) {
+    if (pSelectorEvent->m_nType00 == 3 ||
+        pSelectorEvent->m_nType00 == 4) {
+        void *pOverlay;
+        int iSlot;
+
+        pOverlay = 0;
+        iSlot = pSelectorEvent->m_nType00 == 3 ? 2 : 1;
+        if (nCode == 0x1fU || nCode == 0x22U) {
+            pOverlay = pScreen->m_apKeyOverlays424[
+                g_GAME_PasswordKeyPermutation[pScreen->m_nSelectedKey480]];
+        } else if (nCode == 0x4cU) {
+            pOverlay = pScreen->m_apKeyOverlays424[11];
+        } else if (nCode == 0x4dU || nCode == 0x4eU) {
+            pOverlay = pScreen->m_apKeyOverlays424[10];
+        } else if (nCode > 0x38U && nCode < 0x43U) {
+            pOverlay = pScreen->m_apKeyOverlays424[nCode - 0x39U];
+        } else if (pSelectorEvent->m_nType00 == 4 &&
+                   nCode >= 1U && nCode <= 4U) {
             RotatePasswordEntrySelection(pScreen, (int)nCode);
             return 1;
         }
-        else if (nCode == 0x1bU) {
-            pScreen->m_nTransitionStatus378 = 1;
-            pScreen->m_nRequestedMode374 = 2;
+        if (pOverlay != 0) {
+            DispatchPasswordOverlayInput(pOverlay, iSlot);
             return 1;
         }
+        return 0;
+    }
+    if (pSelectorEvent->m_nType00 == 0x0b) {
+        if (g_pVariantResourceEntryManager != 0) {
+            ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
+                ->PlayVariantResourceEffect(0x25);
+        }
+        return 0;
+    }
+    if (pSelectorEvent->m_nType00 == 0x0c &&
+        nCode >= 0xabcd00b0U && nCode <= 0xabcd00bbU) {
+        nAction = (int)(nCode - 0xabcd00b0U);
     }
     if (nAction >= 0) {
         ApplyPasswordEntryAction(pScreen, nAction);
         return 1;
+    }
+    if (pSelectorEvent->m_nType00 == 0x0c) {
+        return 0;
     }
     ++*(int *)((char *)pScreen + 0x10);
     return 0;
