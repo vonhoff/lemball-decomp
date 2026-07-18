@@ -972,8 +972,10 @@ static void *g_AUDIO_EffectBackendBaseVtable[39] = {
     (void *)ReturnTrueAudioEffectSlot37,
     (void *)CaptureWaveOutBackendContext0047D260,
 };
-static VsSoundMciMusicBackend *g_pActiveMciMusicBackend = 0;
-static int g_nPreparedMciMusicTrackHandle = 0;
+// GLOBAL: LEMBALL 0x004aa228
+static VsSoundMciMusicBackend *g_pActiveMciMusicBackend;
+// GLOBAL: LEMBALL 0x004aa22c
+static int g_nPreparedMciMusicTrackHandle;
 static const char g_AUDIO_SequencerDeviceType[] = "sequencer";
 static const char g_AUDIO_MciWindowClassName[] = "HLMusicWindow";
 static const char g_AUDIO_DsoundDll[] = "DSOUND.DLL";
@@ -3451,11 +3453,8 @@ void *LEMBALL_FASTCALL DeleteDirectSoundEffectBackend(
 // FUNCTION: LEMBALL 0x0047e900
 LRESULT CALLBACK MciMusicWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam) {
     if (uMessage == 0x3b9 && wParam == 1) {
-        VsSoundMciMusicBackend *pBackend = g_pActiveMciMusicBackend;
-        if (pBackend != 0) {
-            ((VsSoundMciMusicBackendVtableModel *)pBackend)->Resume(
-                g_nPreparedMciMusicTrackHandle);
-        }
+        ((VsSoundMciMusicBackendVtableModel *)g_pActiveMciMusicBackend)->Resume(
+            g_nPreparedMciMusicTrackHandle);
     }
     return DefWindowProcA(hWnd, uMessage, wParam, lParam);
 }
