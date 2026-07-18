@@ -705,7 +705,7 @@ void LEMBALL_FASTCALL DestroyBaseModeObject(void *pObject);
 int __stdcall PumpMessagesAndRunFrame(void);
 void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile, int nLine);
 int SetVisualSciencesRegistryRunningState(const char *pszProductName, int fRunning);
-char *FindCdromFilePathBySuffix(const char *pszSuffix);
+char *__stdcall FindCdromFilePathBySuffix(const char *pszSuffix);
 void *LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode);
 void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pPrimaryContext);
 void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(void *pPrimaryContext);
@@ -4712,7 +4712,7 @@ int SetVisualSciencesRegistryRunningState(const char *pszProductName, int fRunni
 }
 
 // FUNCTION: LEMBALL 0x0045eda0
-char *FindCdromFilePathBySuffix(const char *pszSuffix) {
+char *__stdcall FindCdromFilePathBySuffix(const char *pszSuffix) {
 #if defined(LEMBALL_SKIP_CD_TEST)
     (void)pszSuffix;
     if (GetCurrentDirectoryA(sizeof(g_GAME_CdromDrivePath), g_GAME_CdromDrivePath) == 0)

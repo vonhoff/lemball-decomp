@@ -3770,10 +3770,7 @@ void VsSoundMciMusicBackend::PrepareMciMusicTrack(int nTrackHandle, int nMusicRe
     BasePath.AppendDynamicCStringObjectAndCopyResult(&TemporaryPath, &MusicPath);
     TemporaryPath.DestroyDynamicCString();
 
-    OpenParms.dwCallback = 0;
-    OpenParms.wDeviceID = 0;
     OpenParms.lpstrElementName = BasePath.m_pszText;
-    OpenParms.lpstrAlias = 0;
     nMciError = mciSendCommandA(0, 0x803, 0x3200, (DWORD_PTR)&OpenParms);
     --pStringResource->m_nLockCount08;
     ReleaseTypedResourceObjectReference(pStringResource);
@@ -3790,7 +3787,6 @@ void VsSoundMciMusicBackend::PrepareMciMusicTrack(int nTrackHandle, int nMusicRe
         g_nPreparedMciMusicTrackHandle = 0;
     } else {
         pBackend->m_uDeviceId = OpenParms.wDeviceID;
-        SeekParms.dwCallback = 0;
         nMciError = mciSendCommandA(OpenParms.wDeviceID, 0x807, 0x100, (DWORD_PTR)&SeekParms);
         if (nMciError != 0) {
             mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));

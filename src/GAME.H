@@ -109,7 +109,7 @@ struct GamePrimaryContext : public VS_WindowOwnerBase {
 void LEMBALL_FASTCALL ShutdownMainGameContext(GameMainContext *pMainContext);
 int RunMainGameSession(int cArgs, const char *const *ppszArgs);
 int RunMainGameSessionThunk(int cArgs, const char *const *ppszArgs);
-char *FindCdromFilePathBySuffix(const char *pszSuffix);
+char *__stdcall FindCdromFilePathBySuffix(const char *pszSuffix);
 void *AppendDynamicCStringToStream(void *pStream, const GameDynamicCString *pString);
 int LEMBALL_FASTCALL GetDynamicCStringLength(const GameDynamicCString *pString);
 void LEMBALL_FASTCALL DestroyNamedStatusEntry(void *pEntry);
