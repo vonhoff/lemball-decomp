@@ -640,6 +640,10 @@ extern void *g_pSharedRenderDispatchQueue;
 extern void *LEMBALL_FASTCALL ConstructAlignedZrleChildOverlayFromPoint(
     void *pObject, int nUnusedEdx, const VS_XYPair *pPoint,
     void *pRenderOwner, int nResourceId, int fAlignment);
+extern void *LEMBALL_FASTCALL ConstructResourceGeometryChildBase(
+    void *pObject, int nUnusedEdx, void *pRenderOwner);
+extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(
+    void *pOwner, int nUnusedEdx, void *pChildOwner);
 
 void LEMBALL_FASTCALL SetStatusIndicatorActive(
     void *pObject, int nUnused, int fActive);
@@ -1320,6 +1324,56 @@ static short GetLevelActionPanelListEntryDimension(
     return *(short *)(pEntry + nOffset);
 }
 
+static void *ConstructLevelActionButtonGeometry(
+    void *pObject, void *pModeObject, const VS_XYPair *pPanelOrigin,
+    void *pPanel)
+{
+    typedef void (LEMBALL_FASTCALL *InitializeRectProc)(
+        void *pObject, int nUnusedEdx, short *pRect,
+        void *pOwner, const char *pszName);
+    char *pButton;
+    char *pChild;
+    char *pPanelBytes;
+    short aRect[4];
+    short nSlot;
+    void *pPrimaryContext;
+
+    pButton = (char *)pObject;
+    pPanelBytes = (char *)pPanel;
+    memset(pButton, 0, 0x2c);
+    *(void **)(pButton + 8) = pModeObject;
+    *(void **)(pButton + 0x0c) = pPanel;
+    nSlot = pModeObject == 0 ? 0 :
+        *(unsigned short *)((char *)pModeObject + 0x168);
+    *(unsigned short *)(pButton + 0x14) = (unsigned short)nSlot;
+    *(int *)(pButton + 0x18) = -1;
+
+    pChild = (char *)AllocateVSMemBlock(0x1b8);
+    *(void **)(pButton + 4) = pChild;
+    if (pChild == 0) {
+        return pButton;
+    }
+    pPrimaryContext = *(void **)(pPanelBytes + 0x14);
+    ConstructResourceGeometryChildBase(pChild, 0, pPrimaryContext);
+    aRect[0] = (short)(*(short *)(pPanelBytes + 0x44) +
+                             *(short *)(pPanelBytes + 0x48));
+    aRect[1] = *(short *)(pPanelBytes + 0x4a);
+    aRect[2] = (short)(pPanelOrigin->m_x +
+        aRect[0] * nSlot);
+    aRect[3] = pPanelOrigin->m_y;
+    *(short *)(pChild + 0xdc) = aRect[2];
+    *(short *)(pChild + 0xde) = aRect[3];
+    ((InitializeRectProc)(*(void ***)pChild)[1])(
+        pChild, 0, aRect, pPrimaryContext, "Button");
+    *(short *)(pChild + 0xc4) += *(short *)(pChild + 0x18);
+    *(short *)(pChild + 0xc6) += *(short *)(pChild + 0x1a);
+    AppendGeometryOwnerChild(
+        *(void **)((char *)pPrimaryContext + 0x1c), 0,
+        pChild + 0x90);
+    *(int *)(pChild + 0xb8) = 1;
+    return pButton;
+}
+
 void *ConstructLevelScreenActionPanelResources(
     void *pObject, void *pLevelScreen)
 {
@@ -1390,6 +1444,28 @@ void *ConstructLevelScreenActionPanelResources(
         }
         *(void **)(pPanel + 0x2c) = pOverlay;
     }
+    {
+        VS_XYPair ButtonOrigin;
+        char *pLevelMode;
+        void *pButton;
+        void *pModeObject;
+        int i;
+
+        ButtonOrigin.m_x = (short)(*(short *)(pPanel + 0x54) +
+                                     *(short *)(pPanel + 0x4c));
+        ButtonOrigin.m_y = *(short *)(pPanel + 0x56);
+        pLevelMode = *(char **)(pPanel + 0x18);
+        for (i = 0; i < 4; ++i) {
+            pButton = AllocateVSMemBlock(0x2c);
+            pModeObject = pLevelMode == 0 ? 0 :
+                *(void **)(pLevelMode + 0x1d0 + i * 4);
+            if (pButton != 0) {
+                ConstructLevelActionButtonGeometry(
+                    pButton, pModeObject, &ButtonOrigin, pPanel);
+            }
+            *(void **)(pPanel + 0x1c + i * 4) = pButton;
+        }
+    }
     if (g_pSharedRenderDispatchQueue != 0) {
         ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
             ->RegisterOrderedRenderDispatchClient(pPanel, 0);
@@ -1406,6 +1482,30 @@ void DestroyLevelScreenActionPanelResources(void *pObject) {
         ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
             ->UnregisterOrderedRenderDispatchClient(pPanel, 0);
     }
+    for (i = 0; i < 4; ++i) {
+        char *pButton;
+        void *pChild;
+
+        pButton = *(char **)(pPanel + 0x1c + i * 4);
+        if (pButton != 0) {
+            pChild = *(void **)(pButton + 4);
+            if (pChild != 0) {
+                typedef void (LEMBALL_FASTCALL *DeleteProc)(
+                    void *pObject, int nUnusedEdx,
+                    unsigned int fDelete);
+                ((DeleteProc)(*(void ***)((char *)pChild + 0x90))[0])(
+                    (char *)pChild + 0x90, 0, 1);
+            }
+            FreeVSMemBlock(pButton);
+            *(void **)(pPanel + 0x1c + i * 4) = 0;
+        }
+    }
+    for (i = 0x3c; i >= 0x30; i -= 4) {
+        if (*(void **)(pPanel + i) != 0) {
+            ReleaseTypedResourceObjectReference(*(void **)(pPanel + i));
+            *(void **)(pPanel + i) = 0;
+        }
+    }
     if (*(void **)(pPanel + 0x2c) != 0) {
         typedef void (LEMBALL_FASTCALL *DeleteProc)(
             void *pObject, int nUnusedEdx, unsigned int fDelete);
@@ -1415,12 +1515,6 @@ void DestroyLevelScreenActionPanelResources(void *pObject) {
         ((DeleteProc)(*(void ***)((char *)pOverlay + 0x90))[0])(
             (char *)pOverlay + 0x90, 0, 1);
         *(void **)(pPanel + 0x2c) = 0;
-    }
-    for (i = 0x3c; i >= 0x30; i -= 4) {
-        if (*(void **)(pPanel + i) != 0) {
-            ReleaseTypedResourceObjectReference(*(void **)(pPanel + i));
-            *(void **)(pPanel + i) = 0;
-        }
     }
 }
 
