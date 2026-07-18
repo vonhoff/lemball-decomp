@@ -730,6 +730,7 @@ extern "C" unsigned long LEMBALL_STDCALL DispatchVisualSciencesWingDriverMessage
 class VsGdiAnimWindowOwner {
 public:
     void *ConstructResourceGeometryHelperWindowOwner(void);
+    void DestroyResourceGeometryHelperWindowOwner(void);
     void BindAsSingletonAnimWindow(void);
     void RebuildResourceGeometryHelperWindow(void);
     void InstallEmbeddedMciDrawCallback(void *pUnusedDispatchArgument);
@@ -5143,6 +5144,28 @@ void *LEMBALL_FASTCALL ConstructResourceGeometryHelperWindowOwner(
 {
     return ((VsGdiAnimWindowOwner *)pOwner)
         ->ConstructResourceGeometryHelperWindowOwner();
+}
+
+// FUNCTION: LEMBALL 0x0046de70
+void VsGdiAnimWindowOwner::DestroyResourceGeometryHelperWindowOwner(void) {
+    if (*(int *)((char *)this + 4) == 1) {
+        ((void (LEMBALL_FASTCALL *)(void *, int))(*(void ***)this)[29])(
+            this, 0);
+    }
+    g_pSingletonAnimWindowOwner = 0;
+    if (m_hMciWindowB8 != 0) {
+        SendMessageA(m_hMciWindowB8, 0x10, 0, 0);
+        m_hMciWindowB8 = 0;
+    }
+    m_MediaPathB0.DestroyDynamicCString();
+    m_MediaName98.DestroyDynamicCString();
+    ((VS_WindowOwnerBase *)this)->~VS_WindowOwnerBase();
+}
+
+void LEMBALL_FASTCALL DestroyResourceGeometryHelperWindowOwner(
+    void *pOwner) {
+    ((VsGdiAnimWindowOwner *)pOwner)
+        ->DestroyResourceGeometryHelperWindowOwner();
 }
 
 // FUNCTION: LEMBALL 0x0046ded0

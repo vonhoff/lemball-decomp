@@ -17,6 +17,7 @@ void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
     int nVariantStateCount, int cMappedListEntries,
     int nMappedListMode);
 void LEMBALL_FASTCALL ActivateFramedScreenBase(void *pScreen);
+void LEMBALL_FASTCALL DestroyFunctionalFramedScreenBase(void *pScreen);
 void *LEMBALL_FASTCALL ConstructFunctionalOptionsScreen(
     void *pObject, int nUnusedEdx, void *pPrimaryContext,
     void *pRenderContext, short *paSize);

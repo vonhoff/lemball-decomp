@@ -186,6 +186,8 @@ int ShutdownResourceGeometryHelperRuntime(void);
 void LEMBALL_FASTCALL BuildGeometryHelperFromRenderRect(void *pOwner);
 void *LEMBALL_FASTCALL ConstructResourceGeometryHelperWindowOwner(
     void *pOwner);
+void LEMBALL_FASTCALL DestroyResourceGeometryHelperWindowOwner(
+    void *pOwner);
 void LEMBALL_FASTCALL StartEmbeddedMciWindowPlaybackOnce(void *pOwner);
 void LEMBALL_FASTCALL ResumeEmbeddedMciWindowPlayback(void *pOwner);
 void LEMBALL_FASTCALL UpdateEmbeddedMciMediaPath(void *pOwner,

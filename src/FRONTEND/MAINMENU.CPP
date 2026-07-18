@@ -875,6 +875,10 @@ static GameBoundedTextBuffer *ConstructBoundedTextBuffer(
     return pBuffer;
 }
 
+void LEMBALL_FASTCALL DestroyFunctionalFramedScreenBase(void *pScreen) {
+    DestroyFramedScreenBaseThunk00402081(pScreen);
+}
+
 static void ClearBoundedTextBuffer(GameBoundedTextBuffer *pBuffer) {
     if (pBuffer == 0 || pBuffer->m_pszText0C == 0) {
         return;
