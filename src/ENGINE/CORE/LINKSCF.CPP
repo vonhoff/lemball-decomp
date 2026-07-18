@@ -8,6 +8,10 @@
 // Recovered constructor and loader boundaries that are still being split into
 // their original level modules.  Keep unverified addresses free of markers.
 
+struct LevelBoundsPoint;
+struct LevelThreeDwordBounds;
+struct LevelBoundedRenderObjectView;
+
 extern void *g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
 extern void *g_pActiveLevelGameMode;
@@ -21,9 +25,19 @@ extern void PASCAL noop_vtable_callback_0040a7f0(void *pUnused);
 extern int PASCAL return_true_vtable_callback_0040a800(void *pUnused);
 extern void *LEMBALL_FASTCALL get_object_field_0xf0(void *pObject);
 extern int return_false_vtable_callback_0040a820(void);
+extern void LEMBALL_FASTCALL copy_object_fields_0x9c_triplet(
+    void *pObject, void *pUnused, LevelBoundsPoint *pPoint);
 extern void LEMBALL_FASTCALL set_object_field_0x98(
     void *pObject, void *pUnused, int nValue);
 extern int LEMBALL_FASTCALL get_object_field_0x98(void *pObject);
+extern int LEMBALL_FASTCALL is_point_inside_3d_bounds(
+    LevelBoundedRenderObjectView *pObject,
+    void *pUnused,
+    const LevelBoundsPoint *pPoint);
+extern int LEMBALL_FASTCALL do_3d_bounds_intersect(
+    LevelBoundedRenderObjectView *pObject,
+    void *pUnused,
+    const LevelThreeDwordBounds *pBounds);
 extern void noop_vtable_callback_0040a990(void);
 extern int return_true_vtable_callback_0040aa50(void);
 extern int PASCAL return_false_vtable_callback_0040aa90(void *pUnused);
@@ -135,10 +149,16 @@ static void InitializeLinkScfChunkVtables(void) {
         (void *)get_object_field_0xf0;
     g_LINKSCF_PlasChunkObjectVtable[10] =
         (void *)return_false_vtable_callback_0040a820;
+    g_LINKSCF_PlasChunkObjectVtable[11] =
+        (void *)copy_object_fields_0x9c_triplet;
     g_LINKSCF_PlasChunkObjectVtable[13] =
         (void *)set_object_field_0x98;
     g_LINKSCF_PlasChunkObjectVtable[14] =
         (void *)get_object_field_0x98;
+    g_LINKSCF_PlasChunkObjectVtable[19] =
+        (void *)do_3d_bounds_intersect;
+    g_LINKSCF_PlasChunkObjectVtable[20] =
+        (void *)is_point_inside_3d_bounds;
     g_LINKSCF_PlasChunkObjectVtable[27] =
         (void *)noop_vtable_callback_0040a990;
     g_LINKSCF_PlasChunkObjectVtable[44] =
