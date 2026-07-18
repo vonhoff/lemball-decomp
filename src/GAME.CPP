@@ -1353,6 +1353,8 @@ void *GameScreenObject::ConstructLevelSelectionScreen(void *pPrimaryContext,
 
 static void *g_GAME_LevelScreenVtableSlots[14];
 static int g_fGAMELevelScreenVtableInitialized;
+static void *g_GAME_LevelScreenRenderStatePopVtable[4];
+static int g_fGAMELevelScreenRenderStatePopVtableInitialized;
 static void RegisterLevelScreenPaletteRemaps(char *pScreen);
 static void ReleaseLevelScreenPaletteRemaps(char *pScreen);
 
@@ -1364,12 +1366,32 @@ static int LEMBALL_FASTCALL GetLevelScreenTransitionStatus(void *pObject) {
     return *(int *)((char *)pObject + 0xa78);
 }
 
+static void LEMBALL_FASTCALL DispatchLevelScreenRenderStatePop(
+    void *, int, void *pContext)
+{
+    typedef int (LEMBALL_FASTCALL *GetUploadStateProc)(void *pObject);
+    int nUploadState;
+    int nDepth;
+
+    nUploadState = ((GetUploadStateProc)(*(void ***)
+        *(void **)((char *)pContext + 0x0c))[2])(
+            *(void **)((char *)pContext + 0x0c));
+    nDepth = *(int *)((char *)(unsigned long)nUploadState + 0x44) - 1;
+    *(int *)((char *)(unsigned long)nUploadState + 0x44) = nDepth;
+    *(unsigned char *)((char *)(unsigned long)nUploadState + 0x48) =
+        *(unsigned char *)((char *)(unsigned long)nUploadState +
+                           0x38 + nDepth);
+}
+
 static void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void *pObject) {
     typedef void (LEMBALL_FASTCALL *DrawProc)(void *pObject);
     char *pScreen;
     void *pManager;
     void *pPanel;
     void *pOverlay;
+    void *pRenderQueue;
+    void *pGeometryContext;
+    int nUploadState;
 
     pScreen = (char *)pObject;
     if (*(void **)(pScreen + 0x970) == 0 ||
@@ -1390,7 +1412,20 @@ static void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void *pObject) {
     }
     pOverlay = *(void **)((char *)pPanel + 0x2c);
     if (pOverlay != 0) {
+        typedef int (LEMBALL_FASTCALL *GetUploadStateProc)(void *pObject);
+        typedef void (LEMBALL_FASTCALL *QueueProc)(
+            void *pObject, int nUnusedEdx, void *pQueue);
+
+        pRenderQueue = *(void **)(pScreen + 0x970);
+        pGeometryContext = *(void **)((char *)pRenderQueue + 0x0c);
+        nUploadState = ((GetUploadStateProc)(*(void ***)pGeometryContext)[2])(
+            pGeometryContext);
+        ((QueueProc)(*(void ***)(pScreen + 0x990))[1])(
+            pScreen + 0x990, 0, pRenderQueue);
+        InitializeHelperUploadStatePending(nUploadState);
         ((DrawProc)(*(void ***)pOverlay)[47])(pOverlay);
+        ((QueueProc)(*(void ***)(pScreen + 0x908))[1])(
+            pScreen + 0x908, 0, pRenderQueue);
     }
 }
 
@@ -1697,6 +1732,19 @@ void *GameScreenObject::ConstructLevelScreen(void *pPrimaryContext,
     for (i = 0; i < 2; ++i, pEntry += 0x10) {
         InitializeRenderPointRectSinkEntryThunk(pEntry);
     }
+    *(void **)(pScreenObject + 0x990) =
+        g_pQueuedRenderPointSinkFinalizeThunk;
+    if (g_fGAMELevelScreenRenderStatePopVtableInitialized == 0) {
+        for (i = 0; i < 4; ++i) {
+            g_GAME_LevelScreenRenderStatePopVtable[i] =
+                ((void **)g_pQueuedRenderPointSinkFinalizeThunk)[i];
+        }
+        g_GAME_LevelScreenRenderStatePopVtable[2] =
+            (void *)DispatchLevelScreenRenderStatePop;
+        g_fGAMELevelScreenRenderStatePopVtableInitialized = 1;
+    }
+    *(void ***)(pScreenObject + 0x908) =
+        g_GAME_LevelScreenRenderStatePopVtable;
 
     *(int *)(pScreenObject + 0x8ec) = 1;
     *(int *)(pScreenObject + 0x8fc) = 2;
