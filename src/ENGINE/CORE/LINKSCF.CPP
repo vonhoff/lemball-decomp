@@ -11,6 +11,8 @@
 extern void *g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
 extern void *g_pActiveLevelGameMode;
+extern int g_GAME_ManagedEntityRegistryTable[1000];
+extern unsigned short g_GAME_ManagedEntityRegistryCount;
 extern int *LoadBinResource(int nResourceId);
 extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(
     void *pResourceObject);
@@ -50,6 +52,7 @@ static void *g_LINKSCF_MoveChunkManagerVtable[10];
 static void *g_LINKSCF_GmobChunkManagerVtable[10];
 static void *g_LINKSCF_PlasChunkManagerVtable[10];
 static void *g_LINKSCF_PlasChunkStreamVtable[10];
+static void *g_LINKSCF_PlasChunkObjectVtable[66];
 static void *g_LINKSCF_ProjectilePoolVtable[10];
 static void *g_LINKSCF_ManagedEntityQueueCursorVtable[4];
 static void *g_LINKSCF_ShpgChunkManagerVtable[8];
@@ -67,6 +70,7 @@ static void *g_LINKSCF_InvsChunkManagerVtable[10];
 static void *g_LINKSCF_BoonChunkObjectVtable[66];
 static void *g_LINKSCF_LevelChunkStreamDispatcherVtable[10];
 static int g_fLinkScfChunkVtablesInitialized;
+static char *g_pLINKSCF_PlasLevelMode;
 
 static void InitializeLinkScfChunkVtables(void) {
     int i;
@@ -95,6 +99,10 @@ static void InitializeLinkScfChunkVtables(void) {
     for (i = 0; i < 8; ++i) {
         g_LINKSCF_ShpgChunkManagerVtable[i] = 0;
         g_LINKSCF_EnmyChunkManagerVtable[i] = 0;
+    }
+    for (i = 0; i < 66; ++i) {
+        g_LINKSCF_PlasChunkObjectVtable[i] =
+            (void *)NoopChunkStreamVirtual;
     }
     g_LINKSCF_ShpgChunkManagerVtable[1] =
         (void *)GetFirstCachedChunkObject;
@@ -140,6 +148,148 @@ static void InitializeLinkScfChunkVtables(void) {
         pTable[9] = (void *)ReturnFalseChunkStreamVirtual;
     }
     g_fLinkScfChunkVtablesInitialized = 1;
+}
+
+static void *ConstructPlasChunkObjectForLevel(void *pObject,
+                                               int nX,
+                                               int nY,
+                                               int nZ,
+                                               unsigned short nVariant,
+                                               int nNetworkPlayer,
+                                               int nStartDelay) {
+    int i;
+    int nRegistryIndex;
+    unsigned short *pChildSlots;
+    int *pChildRecords;
+
+    for (i = 0; i < 0x22c / 4; ++i) {
+        ((int *)pObject)[i] = 0;
+    }
+    *(void **)pObject = g_LINKSCF_PlasChunkObjectVtable;
+    *(int *)((char *)pObject + 0x20) = -1;
+    *(int *)((char *)pObject + 0x24) = -1;
+    *(int *)((char *)pObject + 0x28) = -1;
+    for (i = 0x40; i <= 0x54; i += 4) {
+        *(int *)((char *)pObject + i) = 0xaa55aa55;
+    }
+    for (i = 0x78; i <= 0x84; i += 4) {
+        *(int *)((char *)pObject + i) = 0xaa55aa55;
+    }
+    for (i = 0x9c; i <= 0xb0; i += 4) {
+        *(int *)((char *)pObject + i) = 0xaa55aa55;
+    }
+    for (i = 0xd8; i <= 0xec; i += 4) {
+        *(int *)((char *)pObject + i) = 0xaa55aa55;
+    }
+    for (i = 0xf4; i <= 0xfc; i += 4) {
+        *(int *)((char *)pObject + i) = 0xaa55aa55;
+    }
+    *(int *)((char *)pObject + 0x64) = nNetworkPlayer == 0 ? 2 : 1;
+    *(unsigned short *)((char *)pObject + 0x68) = 0x17f;
+    *(unsigned short *)((char *)pObject + 0x6c) = 0xffff;
+    pChildSlots = (unsigned short *)AllocateVSMemBlock(8);
+    if (pChildSlots != 0) {
+        pChildSlots[0] = 0;
+        pChildSlots[1] = 0x14;
+        pChildRecords = (int *)AllocateVSMemBlock(0x14 * 0x14);
+        *(int **)(pChildSlots + 2) = pChildRecords;
+        if (pChildRecords != 0) {
+            for (i = 0; i < 0x14; ++i) {
+                pChildRecords[i * 5] = 0;
+                pChildRecords[i * 5 + 1] = 0xaa55aa55;
+                pChildRecords[i * 5 + 2] = 0xaa55aa55;
+                pChildRecords[i * 5 + 3] = 0xaa55aa55;
+            }
+        }
+    }
+    *(unsigned short **)((char *)pObject + 0x70) = pChildSlots;
+    nRegistryIndex = 0;
+    while (nRegistryIndex < g_GAME_ManagedEntityRegistryCount &&
+           g_GAME_ManagedEntityRegistryTable[nRegistryIndex] != 0) {
+        ++nRegistryIndex;
+    }
+    if (nRegistryIndex == g_GAME_ManagedEntityRegistryCount) {
+        ++g_GAME_ManagedEntityRegistryCount;
+    }
+    *(unsigned short *)((char *)pObject + 0x6a) =
+        (unsigned short)nRegistryIndex;
+    g_GAME_ManagedEntityRegistryTable[nRegistryIndex] =
+        (int)(unsigned long)pObject;
+    *(int *)((char *)pObject + 0x40) = nX << 12;
+    *(int *)((char *)pObject + 0x44) = nY << 12;
+    *(int *)((char *)pObject + 0x48) = nZ << 12;
+    *(unsigned short *)((char *)pObject + 0xb6) = nVariant;
+    *(int *)((char *)pObject + 0x170) = nNetworkPlayer;
+    *(int *)((char *)pObject + 0x174) = nStartDelay;
+    *(int *)((char *)pObject + 0x194) = 0xaa55aa55;
+    *(int *)((char *)pObject + 0x198) = 0xaa55aa55;
+    *(int *)((char *)pObject + 0x19c) = 0xaa55aa55;
+    *(int *)((char *)pObject + 0x1b4) = 0xaa55aa55;
+    *(int *)((char *)pObject + 0x1b8) = 0xaa55aa55;
+    *(int *)((char *)pObject + 0x1bc) = 0xaa55aa55;
+    return pObject;
+}
+
+static void LoadPlasChunkObjects(void *pManager,
+                                 const unsigned short *pChunk,
+                                 int fReuseState) {
+    char *pManagerBytes;
+    int nPlayerCount;
+    int nPlayerIndex;
+
+    pManagerBytes = (char *)pManager;
+    *(int *)(pManagerBytes + 0x124) = 1;
+    *(int *)(pManagerBytes + 0xe0) = pChunk[0];
+    *(int *)(pManagerBytes + 0xf0) = pChunk[1];
+    *(int *)(pManagerBytes + 0x100) = pChunk[2];
+    for (nPlayerIndex = 0; nPlayerIndex < 3; ++nPlayerIndex) {
+        *(int *)(pManagerBytes + 0xe4 + nPlayerIndex * 4) =
+            *(int *)(pManagerBytes + 0xe0);
+        *(int *)(pManagerBytes + 0xf4 + nPlayerIndex * 4) =
+            *(int *)(pManagerBytes + 0xf0);
+        *(int *)(pManagerBytes + 0x104 + nPlayerIndex * 4) =
+            *(int *)(pManagerBytes + 0x100);
+    }
+
+    nPlayerCount = 4 - *(int *)(g_pLINKSCF_PlasLevelMode + 0xf8);
+    if (nPlayerCount < 0) {
+        nPlayerCount = 0;
+    } else if (nPlayerCount > 4) {
+        nPlayerCount = 4;
+    }
+    *(int *)(pManagerBytes + 0x128) = nPlayerCount;
+    for (nPlayerIndex = 0; nPlayerIndex < 4; ++nPlayerIndex) {
+        void *pPlayer;
+
+        pPlayer = 0;
+        if (fReuseState != 0) {
+            pPlayer = *(void **)(g_pLINKSCF_PlasLevelMode +
+                                 0x1d0 + nPlayerIndex * 4);
+        }
+        if (pPlayer == 0) {
+            pPlayer = AllocateVSMemBlock(0x22c);
+            if (pPlayer != 0) {
+                ConstructPlasChunkObjectForLevel(
+                    pPlayer,
+                    *(int *)(pManagerBytes + 0xe0 + nPlayerIndex * 4),
+                    *(int *)(pManagerBytes + 0xf0 + nPlayerIndex * 4),
+                    *(int *)(pManagerBytes + 0x100 + nPlayerIndex * 4),
+                    0, 0,
+                    nPlayerIndex < nPlayerCount ? 0 :
+                    (0xf3c + (nPlayerIndex - nPlayerCount) * 800) / 0x32);
+            }
+        }
+        if (nPlayerIndex < nPlayerCount) {
+            *(void **)(pManagerBytes + 0x12c + nPlayerIndex * 4) = pPlayer;
+        }
+        *(void **)(g_pLINKSCF_PlasLevelMode +
+                   0x1d0 + nPlayerIndex * 4) = pPlayer;
+    }
+    *(int *)(pManagerBytes + 0x110) =
+        *(int *)(g_pLINKSCF_PlasLevelMode + 0xf8);
+    *(int *)(pManagerBytes + 0x114) = 0;
+    *(int *)(pManagerBytes + 0x118) = 0;
+    *(int *)(pManagerBytes + 0x11c) = 0;
 }
 
 static void InitializeEffChunkStreamBase(void *pObject,
@@ -243,6 +393,10 @@ void LoadLevelChunksForSkillAndLevelThunk(void *pLoaderContext, unsigned int nSk
             LoadNodeChunkRecords(*(void **)(pLevelMode + 0x17c),
                 (const unsigned short *)(pChunk + 8), cbChunk - 8,
                 fReuseState);
+        } else if (nTag == 0x504c4153) {
+            LoadPlasChunkObjects(*(void **)(pLevelMode + 0x15c),
+                                 (const unsigned short *)(pChunk + 8),
+                                 fReuseState);
         }
         if (nTag == 0x454e443f) {
             break;
@@ -417,6 +571,7 @@ void *ConstructPlasChunkManagerThunk(void *pObject, void *pLevelMode, void *pGmo
     char *pStream;
 
     InitializeLinkScfChunkVtables();
+    g_pLINKSCF_PlasLevelMode = (char *)pLevelMode;
     for (i = 0; i < 40; ++i) {
         ((int *)pObject)[i] = 0;
     }
