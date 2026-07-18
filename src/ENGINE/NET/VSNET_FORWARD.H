@@ -29,6 +29,8 @@ void CheckEffTransportIdleTimeout(void *pObject);
 int RetryPendingEffTransportRecord(void *pObject, int nRecord);
 void WINAPI LoadEffStreamFromGlobalRange(void *pStream);
 void QueueEffTransportErrorEvent(int nError);
+void ConfigureActiveEffTransportConnectHost(void *pRuntime,
+                                            char *pszHostName);
 void *ConstructShiftedLockedRecordSlotTable(void *pObject, int cPacketIds, unsigned int cbRecord);
 void *ConstructRangeEffTransportRecordBufferTable(void *pObject, int nFirstPacket,
                                                   int nLastPacket, int cbPayload,

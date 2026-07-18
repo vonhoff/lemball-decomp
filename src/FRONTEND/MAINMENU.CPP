@@ -3,6 +3,7 @@
 #include "ENGINE/GDI/VSGDI.H"
 #include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/CORE/VSINIT.H"
+#include "ENGINE/MEDIA/EFFSTRM.H"
 #include "GAME.H"
 #include "SHELL/SHELLUI.H"
 #include "SHELL/OPTIONS.H"
@@ -71,6 +72,7 @@ extern void noop_main_menu_screen_hook(void);
 extern void *g_pLevelProgressState;
 extern void *g_pActiveNetworkLobbyScreen;
 extern void *g_pNetworkLobbyVsnetRuntime;
+extern void *g_pActiveNetworkLobbyTransportController;
 extern void *g_pSharedRenderDispatchQueue;
 extern void *g_pMainResourceArchive;
 extern int g_nSelectedNetworkLobbyPeerId;
@@ -2807,6 +2809,23 @@ static void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void *pObject) {
     DWORD dwNow;
 
     pScreen = (GameNetworkLobbyScreenView *)pObject;
+    if (pScreen->m_nDrawnStatus3AC != pScreen->m_nStatus3A8) {
+        return;
+    }
+    if (pScreen->m_fPendingText3E0 != 0) {
+        pScreen->m_nReserved3B8 = 1;
+        if (StartNetworkLobbyTransportSession(
+                g_pActiveNetworkLobbyTransportController) != 0 &&
+            g_pNetworkLobbyVsnetRuntime != 0) {
+            ConfigureNetworkLobbyTransportHostName(
+                g_pNetworkLobbyVsnetRuntime,
+                g_szNetworkLobbyJoinAddress);
+            SetNetworkLobbyStatus(pScreen, 4);
+        } else {
+            SetTimedNetworkLobbyStatus(pScreen, 9, 6000);
+        }
+        pScreen->m_fPendingText3E0 = 0;
+    }
     dwNow = timeGetTime();
     if (dwNow - pScreen->m_dwBlinkStart3C8 > 499U) {
         pScreen->m_fBlink3C0 = pScreen->m_fBlink3C0 == 0;

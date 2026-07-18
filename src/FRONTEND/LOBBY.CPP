@@ -2,6 +2,9 @@
 #include "ENGINE/MEDIA/EFFSTRM.H"
 #include "ENGINE/CORE/VSINIT.H"
 
+extern "C" int WINAPI IsBadReadPtr(const void *pAddress,
+                                    unsigned int cbAddress);
+
 static const char *g_NETWORK_GameConnectionRequestDuringGameText;
 static const char *g_NETWORK_LobbyConnectionAcceptedText;
 
@@ -206,7 +209,9 @@ void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
     pScreen = (VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen;
     pPeerEntryTable = 0;
     pnPeerIds = 0;
-    if (g_pNetworkLobbyVsnetRuntime != 0) {
+    if (g_pNetworkLobbyVsnetRuntime != 0 &&
+        IsBadReadPtr(g_pNetworkLobbyVsnetRuntime,
+                     sizeof(VsNetNetworkLobbyVsnetRuntime)) == 0) {
         pRuntime = (VsNetNetworkLobbyVsnetRuntime *)g_pNetworkLobbyVsnetRuntime;
         pnPeerIds = pRuntime->m_anTrackedPeers;
         pPeerEntryTable = pRuntime->m_pPeerEntryTable;
@@ -233,8 +238,12 @@ void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
         }
 
         nEntryOffset += 0x44;
-        ++pPeerState;
-        ++pnPeerIds;
+        if (pPeerState != 0) {
+            ++pPeerState;
+        }
+        if (pnPeerIds != 0) {
+            ++pnPeerIds;
+        }
     } while (nEntryOffset < 0x2a8);
 
     ThunkActivateSelectedNetworkLobbyPlayerEntry(nNetworkLobbyScreen);

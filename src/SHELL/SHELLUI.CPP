@@ -7,6 +7,9 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+
+extern "C" int WINAPI IsBadReadPtr(const void *pAddress,
+                                    unsigned int cbAddress);
 #include <string.h>
 
 static const char g_SHELLUI_RegistryKey[] = "SOFTWARE\\Visual Sciences\\Lemmings Paintball";
@@ -47,8 +50,17 @@ static DWORD g_SHELLUI_AvailableMemorySize = 11UL * 1024UL * 1024UL;
 static void CallNoArgVirtual(void *pObject, unsigned int nByteOffset) {
     void **pVtable;
 
+    if (pObject == 0 || IsBadReadPtr(pObject, sizeof(void *)) != 0) {
+        return;
+    }
     pVtable = *(void ***)pObject;
-    ((void (*)())pVtable[nByteOffset / sizeof(void *)])();
+    if (pVtable == 0 ||
+        IsBadReadPtr(pVtable + nByteOffset / sizeof(void *),
+                     sizeof(void *)) != 0) {
+        return;
+    }
+    ((void (LEMBALL_FASTCALL *)(void *, int))
+        pVtable[nByteOffset / sizeof(void *)])(pObject, 0);
 }
 static int FormatCStringV(char *pszBuffer, unsigned int cchBuffer, const char *pszFormat, va_list pArgs) {
     int cchWritten;

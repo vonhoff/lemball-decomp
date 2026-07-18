@@ -2160,6 +2160,38 @@ void VsNetChannelOwnerObject::ClearEffTransportSendGate(void) {
     m_nSendGate = 0;
 }
 
+void ConfigureActiveEffTransportConnectHost(void *pRuntime,
+                                            char *pszHostName) {
+    VsNetEffTransportRuntimeState *pRuntimeState;
+    VsNetChannelOwnerObject *pOwner;
+
+    if (pRuntime == 0 || g_pActiveNetworkRuntimeWindow == 0) {
+        return;
+    }
+
+    *(DWORD *)((char *)pRuntime + 0x58) = timeGetTime();
+    pRuntimeState =
+        (VsNetEffTransportRuntimeState *)g_pActiveNetworkRuntimeWindow;
+    pOwner = (VsNetChannelOwnerObject *)pRuntimeState->m_pActiveChannelOwner;
+    if (pOwner == 0) {
+        return;
+    }
+    if (pOwner->m_nSendGate != 0) {
+        pOwner->ClearEffTransportSendGate();
+    }
+    if (pszHostName == 0 || pszHostName[0] == '\0') {
+        pOwner->m_nReserved0C = 0;
+    } else {
+        ((VsNetEffTransportPeer *)pOwner)
+            ->ConfigureEffTransportConnectHostString(pszHostName);
+    }
+    if (pOwner->m_nSendGate == 0) {
+        pRuntimeState->m_nReserved30 = 0;
+        ((VsNetEffTransportRetryOwnerView *)pOwner)
+            ->ArmEffTransportConnectRequestRetry();
+    }
+}
+
 // FUNCTION: LEMBALL 0x00460a50
 void VsNetChannelOwnerObject::SendLoadedEffEventToPeer(void *pPeerKey, void *pStream) {
     VsNetPeerPayloadSenderSlot *pPayloadSenderSlot;

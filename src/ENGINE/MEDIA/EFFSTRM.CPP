@@ -3,8 +3,10 @@
 #include "ENGINE/MEDIA/VSSTRM.H"
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/MEDIA/EFFSTRM.H"
+#include "ENGINE/NET/VSNET_FORWARD.H"
 
 extern int PASCAL ReturnTrueVtableCallbackThunk(void *pObject);
+extern void *g_pNetworkLobbyVsnetRuntime;
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
 extern void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void *pObject);
@@ -258,7 +260,7 @@ struct GameEffTransportRuntimeWindow {
 
 struct GameEffTransportRuntimeWindowVtable {
     void *m_pReserved00[8];
-    void (*m_pServiceRuntime)(void);
+    void (LEMBALL_FASTCALL *m_pServiceRuntime)(void *, int);
 };
 
 struct GamePeerEntryStreamTable {
@@ -598,12 +600,34 @@ int RegisterNetworkLobbyVsnetRuntimeWithTransport(void *pVsnetRuntime) {
     pWindow = (GameEffTransportRuntimeWindow *)g_pActiveNetworkRuntimeWindow;
     if (pWindow != 0 && pWindow->m_fRuntimeActive != 0) {
         pWindow->m_pPrimaryDispatchClient = pVsnetRuntime;
-        ((GameEffTransportRuntimeWindowVtable *)*(void **)g_pActiveNetworkRuntimeWindow)->m_pServiceRuntime();
+        ((GameEffTransportRuntimeWindowVtable *)pWindow->m_pVtable)
+            ->m_pServiceRuntime(pWindow, 0);
         ((GameRenderDispatchQueue *)g_pEffTransportSecondaryDispatchQueue)
             ->RegisterOrderedRenderDispatchClient(pVsnetRuntime, 0x19);
         return 1;
     }
     return 0;
+}
+
+void ConfigureNetworkLobbyTransportHostName(void *pRuntime,
+                                            char *pszHostName) {
+    GameEffTransportRuntimeWindow *pWindow;
+    void *pOwner;
+    void **pOwnerVtable;
+
+    pWindow = (GameEffTransportRuntimeWindow *)g_pActiveNetworkRuntimeWindow;
+    if (pRuntime == 0 || pWindow == 0) {
+        return;
+    }
+    pOwner = *(void **)((char *)pWindow + 0x24);
+    if (pOwner == 0) {
+        return;
+    }
+    pOwnerVtable = *(void ***)pOwner;
+    ((void (*)(void *))pOwnerVtable[6])(pOwner);
+    ConfigureActiveEffTransportConnectHost(pRuntime, pszHostName);
+    *(int *)((char *)pWindow + 0x34) = 1;
+    ((void (*)(void *))pOwnerVtable[5])(pOwner);
 }
 
 // FUNCTION: LEMBALL 0x004527c0
@@ -632,7 +656,8 @@ void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(void *pVsn
         ((GameRenderDispatchQueue *)g_pEffTransportSecondaryDispatchQueue)
             ->UnregisterOrderedRenderDispatchClient(pVsnetRuntime, 0x19);
         pWindow->m_pReserved40 = pVsnetRuntime;
-        ((GameEffTransportRuntimeWindowVtable *)*(void **)g_pActiveNetworkRuntimeWindow)->m_pServiceRuntime();
+        ((GameEffTransportRuntimeWindowVtable *)pWindow->m_pVtable)
+            ->m_pServiceRuntime(pWindow, 0);
     }
 }
 
@@ -704,6 +729,73 @@ void *LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void *pObject,
         FreeVSMemBlock(pObject);
     }
     return pObject;
+}
+
+int LEMBALL_FASTCALL StartNetworkLobbyTransportSession(void *pController) {
+    int *pnControllerFields;
+    void *pRuntimeStorage;
+
+    if (pController == 0) {
+        return 0;
+    }
+    pnControllerFields = (int *)pController;
+    pnControllerFields[0x28 / 4] = 0;
+    if (pnControllerFields[0x2c / 4] != 0) {
+        return 1;
+    }
+    pRuntimeStorage = AllocateVSMemBlock(0x6c);
+    if (pRuntimeStorage == 0) {
+        g_pNetworkLobbyVsnetRuntime = 0;
+    } else {
+        g_pNetworkLobbyVsnetRuntime =
+            ConstructNetworkLobbyVsnetRuntime(pRuntimeStorage, 0);
+    }
+    if (g_pNetworkLobbyVsnetRuntime == 0 ||
+        RegisterNetworkLobbyVsnetRuntimeWithTransport(
+            g_pNetworkLobbyVsnetRuntime) == 0) {
+        if (g_pNetworkLobbyVsnetRuntime != 0) {
+            UnregisterNetworkLobbyVsnetRuntimeFromTransport(
+                g_pNetworkLobbyVsnetRuntime);
+            DestroyNetworkLobbyVsnetRuntime(g_pNetworkLobbyVsnetRuntime);
+            FreeVSMemBlock(g_pNetworkLobbyVsnetRuntime);
+            g_pNetworkLobbyVsnetRuntime = 0;
+        }
+        pnControllerFields[0x28 / 4] = 1;
+        return 0;
+    }
+    if (g_pActiveNetworkRuntimeWindow != 0) {
+        ((GameEffTransportRuntimeWindow *)g_pActiveNetworkRuntimeWindow)
+            ->RegisterEffTransportEventClient((char *)pController + 0xc);
+    }
+    pnControllerFields[0x2c / 4] = 1;
+    return 1;
+}
+
+void LEMBALL_FASTCALL StopNetworkLobbyTransportSession(void *pController) {
+    int *pnControllerFields;
+    DWORD dwStartTime;
+
+    if (pController == 0) {
+        return;
+    }
+    pnControllerFields = (int *)pController;
+    if (g_pNetworkLobbyVsnetRuntime != 0) {
+        UnregisterNetworkLobbyVsnetRuntimeFromTransport(
+            g_pNetworkLobbyVsnetRuntime);
+    }
+    if (g_pActiveNetworkRuntimeWindow != 0) {
+        dwStartTime = timeGetTime();
+        while (*(int *)((char *)g_pActiveNetworkRuntimeWindow + 0x48) != 0 &&
+               timeGetTime() - dwStartTime < 2000) {
+        }
+    }
+    if (g_pNetworkLobbyVsnetRuntime != 0) {
+        DestroyNetworkLobbyVsnetRuntime(g_pNetworkLobbyVsnetRuntime);
+        FreeVSMemBlock(g_pNetworkLobbyVsnetRuntime);
+        g_pNetworkLobbyVsnetRuntime = 0;
+    }
+    pnControllerFields[0x28 / 4] = 0;
+    pnControllerFields[0x2c / 4] = 0;
 }
 
 // FUNCTION: LEMBALL 0x0045ee80
