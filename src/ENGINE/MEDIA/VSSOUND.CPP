@@ -1497,6 +1497,7 @@ void LEMBALL_FASTCALL UnregisterVariantResourceMusicHandle(
 int VsSoundManager::CreateVariantResourceEffectInstance(
     int nEffectResourceId) {
     VsSoundResourceObject *pEffectResource;
+    void **pEffectResourceVtable;
     int nEffectInstanceId;
     int nEffectData;
     void *pAudioManager;
@@ -1504,16 +1505,17 @@ int VsSoundManager::CreateVariantResourceEffectInstance(
     pAudioManager = this;
     if (*(int *)((char *)pAudioManager + 0x10) == 1) {
         pEffectResource = (VsSoundResourceObject *)LoadEffResource(nEffectResourceId);
-        if (pEffectResource->m_nLoadState10 == 0) {
+        if (pEffectResource->m_nLoadState10 != 0) {
+            pEffectResource->m_nReserved24 = 0;
+        } else {
             ((VsSoundThisProc)pEffectResource->m_pVtable[7])(
                 pEffectResource);
-        } else {
-            pEffectResource->m_nReserved24 = 0;
         }
 
+        pEffectResourceVtable = pEffectResource->m_pVtable;
         ++pEffectResource->m_nLockCount08;
         nEffectData = ((VsSoundReturnThisIntProc)
-            pEffectResource->m_pVtable[10])(pEffectResource);
+            pEffectResourceVtable[10])(pEffectResource);
         {
             void *pEffectBackend =
                 *(void **)((char *)pAudioManager + 0x78);
