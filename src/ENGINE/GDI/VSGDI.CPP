@@ -15,6 +15,9 @@
 #include <new>
 #endif
 #include <string.h>
+#if defined(LEMBALL_ENABLE_LEGACY_VGA_PORT_IO)
+#include <conio.h>
+#endif
 
 DECOMP_SIZE_ASSERT(VsGdiRect, 0x08);
 DECOMP_SIZE_ASSERT(VsGdiDisplayState, 0x1c);
@@ -48,6 +51,9 @@ int LEMBALL_FASTCALL CreateAndStoreDisplayPalette(
 int LEMBALL_FASTCALL SelectAndRealizeDisplayPalette(
     void *pDisplayState, int, void *pDisplayDc);
 int LEMBALL_STDCALL ApplyDisplaySurfacePalette(
+    void *pSurface, int nFirstEntry, int cEntries,
+    const unsigned int *paColors);
+int LEMBALL_STDCALL ApplyDibDisplayPalette(
     void *pSurface, int nFirstEntry, int cEntries,
     const unsigned int *paColors);
 static int LEMBALL_STDCALL CopyDisplaySurfaceRect(
@@ -1290,6 +1296,8 @@ static void InitializeDisplayStateVtables(void) {
     g_VSGDI_DirectDrawDisplayVtable[5] = releaseDirectDrawDisplayBitmapMethod.v;
     g_VSGDI_MetricsDisplayVtable[6] =
         (void *)ApplyDisplaySurfacePalette;
+    g_VSGDI_DibDisplayVtable[6] =
+        (void *)ApplyDibDisplayPalette;
     g_VSGDI_DirectDrawDisplayVtable[6] =
         (void *)ApplyDirectDrawSurfacePalette;
     g_VSGDI_MetricsDisplayVtable[7] =
@@ -1316,8 +1324,12 @@ static void InitializeDisplayStateVtables(void) {
     g_VSGDI_DirectDrawDisplayVtable[10] = releaseDirectDrawSurfaceMethod.v;
     g_VSGDI_MetricsDisplayVtable[11] =
         (void *)CreateAndStoreDisplayPalette;
+    g_VSGDI_DibDisplayVtable[11] =
+        (void *)CreateAndStoreDisplayPalette;
     g_VSGDI_DirectDrawDisplayVtable[11] = applyDirectDrawPaletteMethod.v;
     g_VSGDI_MetricsDisplayVtable[12] =
+        (void *)SelectAndRealizeDisplayPalette;
+    g_VSGDI_DibDisplayVtable[12] =
         (void *)SelectAndRealizeDisplayPalette;
     g_VSGDI_DirectDrawDisplayVtable[12] =
         (void *)SelectAndRealizeDisplayPalette;
@@ -1781,6 +1793,25 @@ VsGdiDibDisplayState::~VsGdiDibDisplayState(void) {
         ((DISPLAY_DIB_MESSAGE)g_pApplyFullscreenDisplayModeThunk)(0, 0, 0x4000);
         ((DISPLAY_DIB_END)m_pfnDisplayDibEnd32)();
     }
+}
+
+// FUNCTION: LEMBALL 0x00456e50
+int LEMBALL_STDCALL ApplyDibDisplayPalette(
+    void *pSurface, int nFirstEntry, int cEntries,
+    const unsigned int *paColors)
+{
+    SetDIBColorTable(((VsGdiDisplayDcView *)pSurface)->m_hDc,
+                     nFirstEntry, cEntries, paColors);
+#if defined(LEMBALL_ENABLE_LEGACY_VGA_PORT_IO)
+    _outp(0x3c8, nFirstEntry);
+    while (cEntries-- != 0) {
+        _outp(0x3c9, ((const unsigned char *)paColors)[2] >> 2);
+        _outp(0x3c9, ((const unsigned char *)paColors)[1] >> 2);
+        _outp(0x3c9, ((const unsigned char *)paColors)[0] >> 2);
+        ++paColors;
+    }
+#endif
+    return 0x100;
 }
 
 // FUNCTION: LEMBALL 0x00457020
