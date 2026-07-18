@@ -56,11 +56,9 @@ static void LEMBALL_FASTCALL UpdateMainGameVariantResourceLoadProgressThunk(
     void *pObject);
 void VariantResourceBundleNoopThunk(void);
 void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerThunk(void *pManager);
-void SetVariantResourceEffectsEnabledThunk(int fEnabled);
 static void VariantResourceBundleNoop(void);
 void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerBody(void *pManager);
 void LEMBALL_FASTCALL ShutdownVariantResourceEntryManager(void *pManager);
-void SetVariantResourceEffectsEnabled(int fEnabled);
 void *ConstructMainGameVariantResourceBundle(void *pBundle, void *pPrimaryContext, unsigned short nVariantMode);
 void LEMBALL_FASTCALL DestroyMainGameVariantResourceMode(void *pBundle);
 static void LEMBALL_FASTCALL UpdateMainGameVariantResourceLoadProgress(
@@ -147,7 +145,6 @@ extern void LoadMainGameVariantListResource(void *pBundle, int nResourceId);
 extern void LoadMainGameVariantBitmapResource(void *pBundle, int nResourceId);
 extern void LoadMainGameVariantPaletteResource(void *pBundle, int nResourceId);
 extern void LoadMainGameVariantTwoArrayListResource(void *pBundle, int nResourceId);
-void SetVariantResourceEffectsEnabledThunk(int fEnabled);
 
 
 // FUNCTION: LEMBALL 0x00401104
@@ -173,7 +170,7 @@ void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerThunk(void *pManager)
 }
 
 // FUNCTION: LEMBALL 0x00403873
-void SetVariantResourceEffectsEnabledThunk(int fEnabled) {
+void GameVariantResourceEntryManager::SetVariantResourceEffectsEnabledThunk(int fEnabled) {
     SetVariantResourceEffectsEnabled(fEnabled);
 }
 
@@ -201,7 +198,8 @@ void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerBody(void *pManager) 
             ->InvokeAudioManagerEmbeddedSlot04(0x2220, 0xb482);
         g_fVariantResourceMusicEnabled = 0;
     }
-    SetVariantResourceEffectsEnabledThunk(1);
+    ((GameVariantResourceEntryManager *)pManager)
+        ->SetVariantResourceEffectsEnabledThunk(1);
     i = 0x32;
     pEntry = pVariantManager + 0x1b;
     do {
@@ -237,7 +235,7 @@ void LEMBALL_FASTCALL ShutdownVariantResourceEntryManager(void *pManager) {
 }
 
 // FUNCTION: LEMBALL 0x00439b50
-void SetVariantResourceEffectsEnabled(int fEnabled) {
+void GameVariantResourceEntryManager::SetVariantResourceEffectsEnabled(int fEnabled) {
     if (g_fEffectsOptionAvailable != 0) {
         g_fVariantResourceEffectsEnabled = fEnabled;
     }

@@ -5,6 +5,8 @@ class GameVariantResourceEntryManager {
 public:
     void PlayVariantResourceEffect(int nEffectSlot);
     void PlayVariantResourceEffectThunk(int nEffectSlot);
+    void SetVariantResourceEffectsEnabledThunk(int fEnabled);
+    void SetVariantResourceEffectsEnabled(int fEnabled);
     void SetVariantResourceMusicEnabled(int fEnabled);
     void ClearActiveVariantResourceEntries(void);
     void PopulateVariantResourceEntriesForFlagMask(unsigned short nMask);

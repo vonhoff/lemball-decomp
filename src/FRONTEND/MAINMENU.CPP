@@ -78,7 +78,6 @@ extern void *g_pMainResourceArchive;
 extern int g_nSelectedNetworkLobbyPeerId;
 extern void *g_pSessionRandomState;
 extern void *g_pVariantResourceEntryManager;
-extern void SetVariantResourceEffectsEnabled(int fEnabled);
 extern void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pObject);
 extern void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeEmptyGeometryOwnerRect(void *pObject);
@@ -2243,7 +2242,8 @@ static void DestroyOptionsScreen(GameOptionsScreenView *pScreen) {
         g_fZoomedViewportEnabled = pScreen->m_fZoomDisabled398 == 0;
     }
     g_fSkipStartupSequence = pScreen->m_fSkipStartupSequence3A4;
-    SetVariantResourceEffectsEnabled(g_nOptionsEffectsSliderValue);
+    ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
+        ->SetVariantResourceEffectsEnabled(g_nOptionsEffectsSliderValue);
     if (g_pVariantResourceEntryManager != 0) {
         ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
             ->SetVariantResourceMusicEnabled(g_nOptionsMusicSliderValue);
