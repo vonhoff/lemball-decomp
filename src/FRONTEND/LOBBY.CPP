@@ -37,6 +37,8 @@ struct VsNetNetworkLobbyPlayerEntryChild {
     void Deactivate(void) {
         ((VsNetGeometryChildVtable *)m_pVtable)->m_pDeactivate();
     }
+
+    void ResetFlags(void);
 };
 
 struct VsNetNetworkLobbyPlayerEntryTable {
@@ -125,6 +127,8 @@ struct VsNetNetworkLobbyScreen {
     int m_cVisibleEntries;
     char m_abUnknown3dc[0x50];
     VsNetNetworkLobbyOwnerTable *m_pEntryOwnerTable;
+
+    void RemoveUnavailablePlayerEntries(void);
 };
 
 struct VsNetVsnetEventType3 {
@@ -180,13 +184,12 @@ void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen);
 void ThunkActivateSelectedNetworkLobbyPlayerEntry(int nNetworkLobbyScreen);
 int ThunkSelectNextNetworkLobbyPlayerEntry(int nNetworkLobbyScreen);
 int ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen);
-void RemoveUnavailableNetworkLobbyPlayerEntries(int nNetworkLobbyScreen);
-
 // FUNCTION: LEMBALL 0x00401f23
 void ThunkHandleNetworkLobbyTransportStatusEvent(int nEventType) {
     if (g_pActiveNetworkLobbyScreen != 0) {
         if (nEventType == 10) {
-            RemoveUnavailableNetworkLobbyPlayerEntries((int)(unsigned long)g_pActiveNetworkLobbyScreen);
+            ((VsNetNetworkLobbyScreen *)g_pActiveNetworkLobbyScreen)
+                ->RemoveUnavailablePlayerEntries();
             return;
         }
         if (nEventType == 0xd) {
@@ -474,25 +477,20 @@ int HandleNetworkLobbyVsnetRuntimeEvent(void *pVsnetRuntime, unsigned short *pEv
     }
 }
 // FUNCTION: LEMBALL 0x00453250
-void ResetNetworkLobbyPlayerEntryChildFlags(int nEntryChild) {
-    VsNetNetworkLobbyPlayerEntryChild *pEntry;
-
-    pEntry = (VsNetNetworkLobbyPlayerEntryChild *)(unsigned long)nEntryChild;
-    pEntry->m_fDirty40 = 0;
-    pEntry->m_fDirty3c = 0;
-    pEntry->m_fDirty38 = 0;
+void VsNetNetworkLobbyPlayerEntryChild::ResetFlags(void) {
+    m_fDirty40 = 0;
+    m_fDirty3c = 0;
+    m_fDirty38 = 0;
 }
 
 // FUNCTION: LEMBALL 0x00454f00
-void RemoveUnavailableNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
-    VsNetNetworkLobbyScreen *pScreen;
+void VsNetNetworkLobbyScreen::RemoveUnavailablePlayerEntries(void) {
     VsNetNetworkLobbyVsnetRuntime *pRuntime;
     int *pnPeerId;
     VsNetEffTransportPeerStateSlot *pPeerState;
     int nEntryOffset;
     int nEntryIndex;
 
-    pScreen = (VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen;
     nEntryOffset = 0;
     if (g_pNetworkLobbyVsnetRuntime != 0) {
         pRuntime = (VsNetNetworkLobbyVsnetRuntime *)g_pNetworkLobbyVsnetRuntime;
@@ -501,9 +499,10 @@ void RemoveUnavailableNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
         nEntryIndex = 0;
         do {
             if (*pnPeerId == 0 || pPeerState->m_fActive == 0) {
-                ResetNetworkLobbyPlayerEntryChildFlags((int)(unsigned long)((char *)pScreen->m_pEntryTable + nEntryOffset));
-                if (pScreen->m_nResolvedSelection == nEntryIndex) {
-                    pScreen->m_nResolvedSelection = -1;
+                ((VsNetNetworkLobbyPlayerEntryChild *)
+                    ((char *)m_pEntryTable + nEntryOffset))->ResetFlags();
+                if (m_nResolvedSelection == nEntryIndex) {
+                    m_nResolvedSelection = -1;
                 }
             }
             nEntryOffset += 0x44;
@@ -513,7 +512,7 @@ void RemoveUnavailableNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
         } while (nEntryOffset < 0x2a8);
     }
 
-    ThunkRefreshNetworkLobbyPlayerEntries(nNetworkLobbyScreen);
+    ThunkRefreshNetworkLobbyPlayerEntries((int)(unsigned long)this);
 }
 
 // Network-lobby player-entry virtual callbacks. These are logical lobby

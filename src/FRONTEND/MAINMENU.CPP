@@ -358,6 +358,8 @@ struct GameNetworkLobbyScreenView : public GameFramedScreenBase {
     const int *m_pLayout42C;
     int m_nDeferredStatus430;
     int m_nButtonSelection434;
+
+    void DrawPlayerEntry(int iPeer, int *piVisible, int nColor);
 };
 
 struct GameBoundedTextBuffer {
@@ -3899,10 +3901,8 @@ void GameQueuedVariantManagerView::SetChildrenEnabled(int fEnabled) {
     }
 }
 
-// FUNCTION: LEMBALL 0x004536f0
-static void DrawNetworkLobbyPlayerEntry(
-    GameNetworkLobbyScreenView *pScreen, int iPeer,
-    int *piVisible, int nColor) {
+void GameNetworkLobbyScreenView::DrawPlayerEntry(
+    int iPeer, int *piVisible, int nColor) {
     GameNetworkLobbyRuntimeView *pRuntime;
     GameNetworkLobbyPeerStateView *pPeerState;
     GameNetworkLobbyTrackedPeerView *pPeer;
@@ -3911,71 +3911,68 @@ static void DrawNetworkLobbyPlayerEntry(
     void *pFontResource;
     const char *pszAddress;
     char szComputer[0x18];
-    short Point[2];
+    short NamePoint[2];
+    short AddressPoint[2];
+    short ComputerPoint[2];
     short Relative[2];
     short Extent[2];
     int nRemap;
     int cchComputer;
 
     pRuntime = (GameNetworkLobbyRuntimeView *)g_pNetworkLobbyVsnetRuntime;
-    if (pRuntime == 0 || pRuntime->m_pPeerStates14 == 0 ||
-        pRuntime->m_apTrackedPeers20[iPeer] == 0 ||
+    if (pRuntime == 0 ||
         pRuntime->m_pPeerStates14[iPeer].m_fActive4C == 0) {
         return;
     }
-    pMappedList = (MappedListResourceTable *)pScreen->m_pMappedListResources98;
+    pMappedList = (MappedListResourceTable *)m_pMappedListResources98;
     pFontResource = pMappedList->GetMappedResource(
-        pScreen->m_nMappedListRemapResourceId384);
+        m_nMappedListRemapResourceId384);
     pPeerState = pRuntime->m_pPeerStates14 + iPeer;
     pPeer = pRuntime->m_apTrackedPeers20[iPeer];
-    nRemap = nColor == 6 ? 0 : pScreen->m_anPaletteRemaps414[nColor];
+    nRemap = nColor == 6 ? 0 : m_anPaletteRemaps414[nColor];
     Relative[0] = 0;
     Relative[1] = 0;
-    Point[1] = (short)(pScreen->m_pLayout42C[27] +
-                       *piVisible * pScreen->m_pLayout42C[35]);
+    NamePoint[0] = (short)m_pLayout42C[26];
+    AddressPoint[0] = (short)m_pLayout42C[30];
+    ComputerPoint[0] = (short)m_pLayout42C[32];
+    NamePoint[1] = AddressPoint[1] = ComputerPoint[1] =
+        (short)(m_pLayout42C[27] + *piVisible * m_pLayout42C[35]);
+
+    pAddress = *(GameNetworkLobbyAddressView **)(
+        (char *)pPeer +
+        pPeer->m_pDescriptor04->m_nAddressOwnerOffset08 + 0x74);
+    pszAddress = pAddress->GetAddressString();
+
+    strncpy(szComputer, pPeerState->m_szComputer35, 20);
+    cchComputer = 20;
+    do {
+        szComputer[cchComputer] = '\0';
+        MeasureFunctionalLevelTitleExtent(
+            pFontResource, Extent, szComputer);
+        --cchComputer;
+    } while (m_pLayout42C[38] < Extent[0]);
 
     MeasureFunctionalLevelTitleExtent(
         pFontResource, Extent, pPeerState->m_szName2C);
-    Point[0] = (short)(pScreen->m_pLayout42C[26] - Extent[0] / 2);
-    pMappedList->SubmitRenderEntry(
-        pScreen->m_pRenderContext88, Point, Relative,
-        pScreen->m_nMappedListRemapResourceId384,
-        pPeerState->m_szName2C, 0x20, nRemap);
-
-    pszAddress = "";
-    if (pPeer->m_pDescriptor04 != 0) {
-        pAddress = *(GameNetworkLobbyAddressView **)(
-            (char *)pPeer +
-            pPeer->m_pDescriptor04->m_nAddressOwnerOffset08 + 0x74);
-        if (pAddress != 0) {
-            pszAddress = pAddress->GetAddressString();
-        }
-    }
-    if (pszAddress == 0) {
-        pszAddress = "";
-    }
+    NamePoint[0] = (short)(NamePoint[0] - Extent[0] / 2);
     MeasureFunctionalLevelTitleExtent(pFontResource, Extent, pszAddress);
-    Point[0] = (short)(pScreen->m_pLayout42C[30] - Extent[0] / 2);
-    pMappedList->SubmitRenderEntry(
-        pScreen->m_pRenderContext88, Point, Relative,
-        pScreen->m_nMappedListRemapResourceId384,
-        (void *)pszAddress, 0x20, nRemap);
+    AddressPoint[0] = (short)(AddressPoint[0] - Extent[0] / 2);
+    MeasureFunctionalLevelTitleExtent(
+        pFontResource, Extent, pPeerState->m_szComputer35);
+    ComputerPoint[0] = (short)(ComputerPoint[0] - Extent[0] / 2);
 
-    strncpy(szComputer, pPeerState->m_szComputer35, 20);
-    szComputer[20] = '\0';
-    cchComputer = (int)strlen(szComputer);
-    MeasureFunctionalLevelTitleExtent(pFontResource, Extent, szComputer);
-    while (0 < cchComputer &&
-           pScreen->m_pLayout42C[38] < Extent[0]) {
-        szComputer[--cchComputer] = '\0';
-        MeasureFunctionalLevelTitleExtent(
-            pFontResource, Extent, szComputer);
-    }
-    Point[0] = (short)(pScreen->m_pLayout42C[32] - Extent[0] / 2);
     pMappedList->SubmitRenderEntry(
-        pScreen->m_pRenderContext88, Point, Relative,
-        pScreen->m_nMappedListRemapResourceId384,
-        szComputer, 0x20, nRemap);
+        m_pRenderContext88, NamePoint, Relative,
+        m_nMappedListRemapResourceId384,
+        pPeerState->m_szName2C, 0x20, nRemap);
+    pMappedList->SubmitRenderEntry(
+        m_pRenderContext88, AddressPoint, Relative,
+        m_nMappedListRemapResourceId384,
+        (void *)pszAddress, 0x20, nRemap);
+    pMappedList->SubmitRenderEntry(
+        m_pRenderContext88, ComputerPoint, Relative,
+        m_nMappedListRemapResourceId384,
+        pPeerState->m_szComputer35, 0x20, nRemap);
     ++*piVisible;
 }
 
@@ -4087,8 +4084,7 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
         if (pRuntime != 0) {
             iVisible = 0;
             for (iPeer = 0; iPeer < 10 && iVisible < 4; ++iPeer) {
-                DrawNetworkLobbyPlayerEntry(
-                    pScreen, iPeer, &iVisible, 1);
+                pScreen->DrawPlayerEntry(iPeer, &iVisible, 1);
             }
         }
         return;
@@ -4145,8 +4141,7 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
                 nColor += 3;
             }
             if (nColor != 1) {
-                DrawNetworkLobbyPlayerEntry(
-                    pScreen, iPeer, &iVisible, nColor);
+                pScreen->DrawPlayerEntry(iPeer, &iVisible, nColor);
             } else {
                 ++iVisible;
             }
