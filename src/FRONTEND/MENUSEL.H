@@ -4,6 +4,7 @@
 #include "ENGINE/CORE/COMMON.H"
 
 struct GameMenuSelectorEntry;
+struct VS_XYPair;
 
 // SIZE 0x1c
 struct GameMenuSelectorEvent {
@@ -158,5 +159,9 @@ void LEMBALL_FASTCALL RebuildMenuSelectorChildRectsThunk(
     GameMenuSelectorManager *pManager, int nUnusedEdx, int fForce);
 void LEMBALL_FASTCALL EmitMenuSelectorResourceEntries(
     GameMenuSelectorManager *pManager);
+void *LEMBALL_FASTCALL ConstructAlignedZrleChildOverlayFromPoint(
+    void *pObject, int nUnusedEdx, const VS_XYPair *pPoint,
+    void *pRenderOwner, int nResourceId, int fAlignment);
+void LEMBALL_FASTCALL DestroyAlignedZrleChildOverlay(void *pChildOwner);
 
 #endif

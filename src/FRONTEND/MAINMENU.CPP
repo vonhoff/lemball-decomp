@@ -605,6 +605,9 @@ static const int g_GAME_PasswordResourcesCompact[12] = {
     0x186, 0x187, 0x188, 0x189, 0x18a, 0x18b,
     0x18c, 0x18d, 0x18e, 0x18f, 0x190, 0x191
 };
+static const int g_GAME_PasswordKeyPermutation[12] = {
+    7, 8, 9, 4, 5, 6, 1, 2, 3, 10, 0, 11
+};
 
 static void InitializeFunctionalOptionsVtables(void) {
     int i;
@@ -2194,8 +2197,12 @@ void *LEMBALL_FASTCALL ConstructFunctionalPasswordEntryScreen(
 static void LEMBALL_FASTCALL InitializePasswordEntryResources(void *pObject) {
     GamePasswordEntryScreenView *pScreen;
     unsigned char *pForegroundEntry;
+    void *pOverlay;
+    int nContext;
+    int nRenderObject;
     short cxForeground;
     int i;
+    VS_XYPair Point;
 
     pScreen = (GamePasswordEntryScreenView *)pObject;
     if (pScreen->m_fCompactLayout32C != 0) {
@@ -2220,26 +2227,80 @@ static void LEMBALL_FASTCALL InitializePasswordEntryResources(void *pObject) {
         *(int *)(pForegroundEntry + 0x10) = 0x800;
         *(int *)(pForegroundEntry + 0x14) = 0;
     }
+    Point.m_x = (short)pScreen->m_pLayout3A8[28];
+    Point.m_y = (short)pScreen->m_pLayout3A8[29];
     for (i = 0; i < 12; ++i) {
-        pScreen->m_aKeyPositions3C0[i][0] =
-            pScreen->m_pLayout3A8[6 + (i % 3) * 2];
-        pScreen->m_aKeyPositions3C0[i][1] =
-            pScreen->m_pLayout3A8[7 + (i / 3) * 2];
+        pOverlay = AllocateVSMemBlock(0x130);
+        if (pOverlay != 0) {
+            ConstructAlignedZrleChildOverlayFromPoint(
+                pOverlay, 0, &Point, pScreen->m_pPrimaryContext84,
+                pScreen->m_pKeyResourceIds3AC[i], 3);
+            *(int *)((char *)pOverlay + 0xf8) = 0;
+            nContext = *(int *)(*(int *)((char *)pOverlay + 0x4c) + 0x0c);
+            nRenderObject = nContext +
+                *(int *)(*(int *)(nContext + 0x40) + 4) + 0x70;
+            *(int *)nRenderObject = 0;
+            *(void **)((char *)pOverlay + 0xf4) =
+                g_pSharedRenderDispatchQueue;
+            *(int *)((char *)pOverlay + 0xcc) =
+                (int)(0xabcd00b0U + i);
+            pScreen->m_aKeyPositions3C0[i][0] =
+                *(short *)((char *)pOverlay + 0xc0);
+            pScreen->m_aKeyPositions3C0[i][1] =
+                *(short *)((char *)pOverlay + 0xc2);
+        }
+        pScreen->m_apKeyOverlays424[i] = pOverlay;
     }
-    pScreen->m_xSelected478 =
-        pScreen->m_aKeyPositions3C0[pScreen->m_nSelectedKey480][0];
-    pScreen->m_ySelected47C =
-        pScreen->m_aKeyPositions3C0[pScreen->m_nSelectedKey480][1];
+    i = g_GAME_PasswordKeyPermutation[pScreen->m_nSelectedKey480];
+    pScreen->m_xSelected478 = pScreen->m_aKeyPositions3C0[i][0];
+    pScreen->m_ySelected47C = pScreen->m_aKeyPositions3C0[i][1];
 }
 
 static void LEMBALL_FASTCALL ReleasePasswordEntryResources(void *pObject) {
     GamePasswordEntryScreenView *pScreen;
+    int i;
     pScreen = (GamePasswordEntryScreenView *)pObject;
+    for (i = 0; i < 12; ++i) {
+        if (pScreen->m_apKeyOverlays424[i] != 0) {
+            DestroyAlignedZrleChildOverlay(
+                (char *)pScreen->m_apKeyOverlays424[i] + 0x90);
+            FreeVSMemBlock(pScreen->m_apKeyOverlays424[i]);
+            pScreen->m_apKeyOverlays424[i] = 0;
+        }
+    }
     if (pScreen->m_nPanelResourceId398 != 0) {
         ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
             ->ReleaseVariantRenderResource(pScreen->m_nPanelResourceId398);
         pScreen->m_nPanelResourceId398 = 0;
     }
+}
+
+static void RotatePasswordEntrySelection(
+    GamePasswordEntryScreenView *pScreen, int nDirection) {
+    int nPosition;
+    int nAction;
+
+    nPosition = pScreen->m_nSelectedKey480;
+    switch (nDirection) {
+    case 1:
+        nPosition = (nPosition + 9) % 12;
+        break;
+    case 2:
+        nPosition = (nPosition + 3) % 12;
+        break;
+    case 3:
+        nPosition = (nPosition % 3 == 0) ? nPosition + 2 : nPosition - 1;
+        break;
+    case 4:
+        nPosition = (nPosition % 3 == 2) ? nPosition - 2 : nPosition + 1;
+        break;
+    }
+    pScreen->m_nSelectedKey480 = nPosition;
+    nAction = g_GAME_PasswordKeyPermutation[nPosition];
+    pScreen->m_xSelected478 = pScreen->m_aKeyPositions3C0[nAction][0];
+    pScreen->m_ySelected47C = pScreen->m_aKeyPositions3C0[nAction][1];
+    pScreen->m_fSelectorDirty360 = 1;
+    pScreen->m_fFrameDirty330 = 1;
 }
 
 static void ApplyPasswordEntryAction(
@@ -2301,6 +2362,13 @@ static int LEMBALL_FASTCALL HandlePasswordEntryInput(
         else if (nCode >= '0' && nCode <= '9') nAction = (int)(nCode - '0');
         else if (nCode == 0x4dU || nCode == 0x4eU || nCode == 8U) nAction = 10;
         else if (nCode == 0x4cU || nCode == 13U) nAction = 11;
+        else if (nCode == 0x1fU || nCode == 0x22U || nCode == 0x20U)
+            nAction = g_GAME_PasswordKeyPermutation[
+                pScreen->m_nSelectedKey480];
+        else if (nCode >= 1U && nCode <= 4U) {
+            RotatePasswordEntrySelection(pScreen, (int)nCode);
+            return 1;
+        }
         else if (nCode == 0x1bU) {
             pScreen->m_nTransitionStatus378 = 1;
             pScreen->m_nRequestedMode374 = 2;
