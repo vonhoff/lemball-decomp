@@ -215,6 +215,9 @@ struct VsSoundDirectSoundEffectBufferPool {
     int m_nReserved14;
     int m_nFlags;
 
+    VsSoundDirectSoundEffectBufferPool *ConstructDirectSoundEffectBufferPool(
+        int cBuffers, void *pPatchResource, int nOutputRate,
+        int fSourceIs16Bit, int nReserved, int nFlags);
     void DestroyDirectSoundEffectBufferPool(void);
     int FindAvailableDirectSoundEffectBufferSlot(void);
     int IsAnyDirectSoundEffectBufferPlaying(void);
@@ -332,11 +335,6 @@ void LEMBALL_FASTCALL CaptureWaveOutBackendContext0047D260(
 void *LEMBALL_FASTCALL DeleteWaveOutEffectBackend(
     VsSoundWaveOutEffectBackend *pBackend, int nUnused, int fDelete);
 const char *LookupDirectSoundErrorString(unsigned int uError);
-VsSoundDirectSoundEffectBufferPool *LEMBALL_FASTCALL
-ConstructDirectSoundEffectBufferPool(
-    VsSoundDirectSoundEffectBufferPool *pPool, int,
-    int cBuffers, void *pPatchResource, int nOutputRate,
-    int fSourceIs16Bit, int, int nFlags);
 void LEMBALL_FASTCALL DestroyDirectSoundEffectBackend(void *pBackend);
 char *__fastcall GetDirectSoundEffectBackendDescription(VsSoundDirectSoundEffectBackend *pBackend);
 int LEMBALL_FASTCALL InitializeDirectSoundEffectDevice(
@@ -624,11 +622,6 @@ int LEMBALL_FASTCALL GetDirectSoundBackendBufferCount(
     void *pBackend, int nUnused);
 void LEMBALL_FASTCALL CaptureDirectSoundBackendWindow(
     void *pBackend, int nUnused, void *pPrimaryContext);
-VsSoundDirectSoundEffectBufferPool *LEMBALL_FASTCALL
-ConstructDirectSoundEffectBufferPool(
-    VsSoundDirectSoundEffectBufferPool *pPool, int nUnused,
-    int cBuffers, void *pPatchResource, int nOutputRate,
-    int fSourceIs16Bit, int nReserved, int nFlags);
 int LEMBALL_FASTCALL CreateDirectSoundEffectInstance(
     void *pBackend, int nUnused, void *pPatchResource,
     int *pnEffectInstanceId, int nFlags);
@@ -2379,13 +2372,13 @@ const char *LookupDirectSoundErrorString(unsigned int uError) {
 }
 
 // FUNCTION: LEMBALL 0x0047d310
-VsSoundDirectSoundEffectBufferPool *LEMBALL_FASTCALL
-ConstructDirectSoundEffectBufferPool(
-    VsSoundDirectSoundEffectBufferPool *pPool, int,
+VsSoundDirectSoundEffectBufferPool *
+VsSoundDirectSoundEffectBufferPool::ConstructDirectSoundEffectBufferPool(
     int cBuffers, void *pPatchResource, int nOutputRate,
     int fSourceIs16Bit, int, int nFlags)
 
 {
+    VsSoundDirectSoundEffectBufferPool *pPool;
     unsigned char PatchHeader[0x1c];
     unsigned char WaveHeader[0x38];
     VsSoundWaveFormat WaveFormat;
@@ -2403,6 +2396,7 @@ ConstructDirectSoundEffectBufferPool(
     const char *pszError;
     VsInitFormattedOutputStream *pStream;
 
+    pPool = this;
     pPool->m_nCurrentBuffer = 0;
     pPool->m_nFlags = nFlags;
     pPool->m_cBuffers = cBuffers;
@@ -3225,24 +3219,28 @@ int LEMBALL_FASTCALL CreateDirectSoundEffectInstance(
     int nFlags)
 
 {
+    int cEffectInstances;
     int nEffectInstanceId;
     void *pBufferPool;
 
+    cEffectInstances = *(int *)((char *)pBackend + 0x14);
     nEffectInstanceId = 1;
-    if (0 < *(int *)((char *)pBackend + 0x14)) {
+    if (nEffectInstanceId <= cEffectInstances) {
         do {
             if (*(int *)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4) == 0) {
                 pBufferPool = AllocateVSMemBlock(0x1c);
-                if (pBufferPool == 0) {
-                    *(void **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4) = 0;
-                } else {
-                    pBufferPool = ConstructDirectSoundEffectBufferPool(
-                        (VsSoundDirectSoundEffectBufferPool *)pBufferPool, 0,
-                        *(int *)((char *)pBackend + 0x18), pPatchResource,
-                        *(int *)((char *)pBackend + 0x34),
-                        *(int *)((char *)pBackend + 0x28),
-                        *(int *)((char *)pBackend + 0x24), nFlags);
+                if (pBufferPool != 0) {
+                    pBufferPool =
+                        ((VsSoundDirectSoundEffectBufferPool *)pBufferPool)
+                        ->ConstructDirectSoundEffectBufferPool(
+                            *(int *)((char *)pBackend + 0x18),
+                            pPatchResource,
+                            *(int *)((char *)pBackend + 0x34),
+                            *(int *)((char *)pBackend + 0x28),
+                            *(int *)((char *)pBackend + 0x24), nFlags);
                     *(void **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4) = pBufferPool;
+                } else {
+                    *(void **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4) = 0;
                 }
                 if (**(int **)(*(int *)((char *)pBackend + 0x50) + nEffectInstanceId * 4) != 0) {
                     *pnEffectInstanceId = nEffectInstanceId;
@@ -3250,7 +3248,7 @@ int LEMBALL_FASTCALL CreateDirectSoundEffectInstance(
                 return 1;
             }
             ++nEffectInstanceId;
-        } while (nEffectInstanceId <= *(int *)((char *)pBackend + 0x14));
+        } while (nEffectInstanceId <= cEffectInstances);
     }
     return 0;
 }
