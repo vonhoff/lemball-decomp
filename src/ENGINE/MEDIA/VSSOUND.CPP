@@ -3546,8 +3546,11 @@ void VsSoundMciMusicBackend::PrepareMciMusicTrack(int nTrackHandle, int nMusicRe
         GameDynamicCString m_BasePath;
         GameDynamicCString m_MusicPath;
         VsSoundMciOpenParms m_OpenParms;
-        VsSoundMciGenericParms m_SeekParms;
-        VsSoundMciSetParms m_SetParms;
+        union {
+            VsSoundMciGenericParms m_SeekParms;
+            VsSoundMciSetParms m_SetParms;
+        } m_CommandParms;
+        DWORD m_dwReserved3C;
         union {
             GameDynamicCString m_TemporaryPath;
             char m_szMciErrorText[0x80];
@@ -3557,8 +3560,8 @@ void VsSoundMciMusicBackend::PrepareMciMusicTrack(int nTrackHandle, int nMusicRe
     VsSoundMciMusicBackend *pBackend = this;
     VsSoundStringResourceObjectView *pStringResource;
     VsSoundMciOpenParms &OpenParms = Locals.m_OpenParms;
-    VsSoundMciGenericParms &SeekParms = Locals.m_SeekParms;
-    VsSoundMciSetParms &SetParms = Locals.m_SetParms;
+    VsSoundMciGenericParms &SeekParms = Locals.m_CommandParms.m_SeekParms;
+    VsSoundMciSetParms &SetParms = Locals.m_CommandParms.m_SetParms;
     GameDynamicCString &MusicPath = Locals.m_MusicPath;
     GameDynamicCString &BasePath = Locals.m_BasePath;
     GameDynamicCString &TemporaryPath = Locals.m_Temporary.m_TemporaryPath;
@@ -3589,24 +3592,25 @@ void VsSoundMciMusicBackend::PrepareMciMusicTrack(int nTrackHandle, int nMusicRe
     }
     ++pStringResource->m_nLockCount08;
 
+    OpenParms.lpstrDeviceType = (LPCSTR)0x20b;
     MusicPath.ConstructDynamicCString();
     if (pBackend->m_nReserved08 != 0) {
         MusicPath.AssignDynamicCStringFromDynamic(&pBackend->m_BasePath);
         if (MusicPath.m_pszText[GetDynamicCStringLength(&MusicPath) - 1] != '\\') {
-            MusicPath.AppendDynamicCStringAndCopyResult(&TemporaryPath, g_AUDIO_PathSeparator);
+            MusicPath.AppendDynamicCStringAndCopyResult(&TemporaryPath, "\\");
             TemporaryPath.DestroyDynamicCString();
         }
     }
     MusicPath.AppendDynamicCStringAndCopyResult(&TemporaryPath, pStringResource->m_pszText38);
     TemporaryPath.DestroyDynamicCString();
-    MusicPath.AppendDynamicCStringAndCopyResult(&TemporaryPath, g_AUDIO_MusicExtension);
+    MusicPath.AppendDynamicCStringAndCopyResult(&TemporaryPath, ".mid");
     TemporaryPath.DestroyDynamicCString();
 
     BasePath.ConstructDynamicCString();
     if (pBackend->m_fSearchCdromPath == 0) {
         BasePath.AssignDynamicCString(g_abProcessCurrentDirectoryBuffer);
         if (BasePath.m_pszText[GetDynamicCStringLength(&BasePath) - 1] != '\\') {
-            BasePath.AppendDynamicCStringAndCopyResult(&TemporaryPath, g_AUDIO_PathSeparator);
+            BasePath.AppendDynamicCStringAndCopyResult(&TemporaryPath, "\\");
             TemporaryPath.DestroyDynamicCString();
         }
     } else {
@@ -3618,7 +3622,7 @@ void VsSoundMciMusicBackend::PrepareMciMusicTrack(int nTrackHandle, int nMusicRe
         }
         BasePath.AssignDynamicCString(pszCdromPath);
         if (BasePath.m_pszText[GetDynamicCStringLength(&BasePath) - 1] != '\\') {
-            BasePath.AppendDynamicCStringAndCopyResult(&TemporaryPath, g_AUDIO_PathSeparator);
+            BasePath.AppendDynamicCStringAndCopyResult(&TemporaryPath, "\\");
             TemporaryPath.DestroyDynamicCString();
         }
     }
@@ -3627,7 +3631,6 @@ void VsSoundMciMusicBackend::PrepareMciMusicTrack(int nTrackHandle, int nMusicRe
 
     OpenParms.dwCallback = 0;
     OpenParms.wDeviceID = 0;
-    OpenParms.lpstrDeviceType = (LPCSTR)0x20b;
     OpenParms.lpstrElementName = BasePath.m_pszText;
     OpenParms.lpstrAlias = 0;
     nMciError = mciSendCommandA(0, 0x803, 0x3200, (DWORD_PTR)&OpenParms);
@@ -3638,7 +3641,6 @@ void VsSoundMciMusicBackend::PrepareMciMusicTrack(int nTrackHandle, int nMusicRe
         SeekParms.dwCallback = 0;
         nMciError = mciSendCommandA(OpenParms.wDeviceID, 0x807, 0x100, (DWORD_PTR)&SeekParms);
         if (nMciError == 0) {
-            SetParms.dwCallback = 0;
             SetParms.dwTimeFormat = 0;
             nMciError = mciSendCommandA(pBackend->m_uDeviceId, 0x80d, 0x400, (DWORD_PTR)&SetParms);
             if (nMciError == 0) {
