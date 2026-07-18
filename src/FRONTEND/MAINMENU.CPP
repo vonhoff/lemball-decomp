@@ -100,6 +100,7 @@ extern void *g_pEffTransportRuntimeService;
 extern char *g_pszFileBasedNetworkLocalHostName;
 extern void *g_GAME_RenderQueueNodeVtableSlots[4];
 extern void *g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[8];
+extern void *g_pQueuedRenderPointSinkFinalizeThunk;
 extern void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(
     void *pVsnetRuntime);
 extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableA(
@@ -4465,12 +4466,18 @@ static void DestroyNetworkLobbyScreen(
         CloseNetworkLobbyTransportPeers(
             g_pActiveNetworkLobbyTransportController);
     }
-    g_pActiveNetworkLobbyScreen = 0;
-    if (pScreen->m_pQueuedVariantManager338 != 0) {
-        DestroyQueuedVariantChildSlotManager(
-            pScreen->m_pQueuedVariantManager338);
-        FreeVSMemBlock(pScreen->m_pQueuedVariantManager338);
-        pScreen->m_pQueuedVariantManager338 = 0;
+    if (pScreen->m_pPlayerEntries3CC != 0) {
+        typedef void *(LEMBALL_FASTCALL *DeleteArrayProc)(
+            void *, int, int);
+
+        for (i = 0; i < 10; ++i) {
+            RemoveGeometryOwnerChild(
+                *(void **)((char *)pScreen->m_pPrimaryContext84 + 0x1c),
+                0, (char *)pScreen->m_pPlayerEntries3CC + i * 0x44);
+        }
+        ((DeleteArrayProc)(*(void ***)pScreen->m_pPlayerEntries3CC)[0])(
+            pScreen->m_pPlayerEntries3CC, 0, 3);
+        pScreen->m_pPlayerEntries3CC = 0;
     }
     if (pScreen->m_pTextBuffer398 != 0) {
         GameBoundedTextBuffer *pBuffer;
@@ -4482,41 +4489,17 @@ static void DestroyNetworkLobbyScreen(
         FreeVSMemBlock(pBuffer);
         pScreen->m_pTextBuffer398 = 0;
     }
-    if (pScreen->m_pPlayerEntries3CC != 0) {
-        for (i = 0; i < 10; ++i) {
-            RemoveGeometryOwnerChild(
-                *(void **)((char *)pScreen->m_pPrimaryContext84 + 0x1c),
-                0, (char *)pScreen->m_pPlayerEntries3CC + i * 0x44);
-            *(void ***)((char *)pScreen->m_pPlayerEntries3CC + i * 0x44) =
-                g_pNetworkLobbyPlayerEntryBaseVtable;
-        }
-        FreeVSMemBlock((char *)pScreen->m_pPlayerEntries3CC - 4);
-        pScreen->m_pPlayerEntries3CC = 0;
-    }
     for (i = 0; i < 6; ++i) {
         ReleasePaletteRemapVariant(
             (void *)(unsigned long)pScreen->m_anPaletteRemaps414[i]);
         pScreen->m_anPaletteRemaps414[i] = 0;
     }
-    if (g_pSharedRenderDispatchQueue != 0) {
-        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
-            ->UnregisterOrderedRenderDispatchClient(
-                pScreen->m_abRenderQueueNode04, 0);
-    }
     if (pScreen->m_fFrameResourcesLoaded9C != 0) {
-        ReleaseFramedScreenFrameResources(pScreen);
+        DestroyNetworkLobbyActionButtons(pScreen);
     }
-    if (pScreen->m_pMappedListResources98 != 0) {
-        ((MappedListResourceTable *)pScreen->m_pMappedListResources98)
-            ->Destroy();
-        FreeVSMemBlock(pScreen->m_pMappedListResources98);
-        pScreen->m_pMappedListResources98 = 0;
-    }
-    ((MogLoadResourceArchive *)g_pMainResourceArchive)
-        ->PruneUnreferencedCachedResourceObjects();
-    DestroyFramedScreenRenderEntryGroup(pScreen->m_abRenderEntryGroupC8);
-    RestoreLevelSelectionRenderChildEntryVtable(pScreen->m_abPointSink3EC);
-    DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
+    *(void **)pScreen->m_abPointSink3EC =
+        g_pQueuedRenderPointSinkFinalizeThunk;
+    DestroyFunctionalFramedScreenBase(pScreen);
 }
 
 static void *LEMBALL_FASTCALL DeleteNetworkLobbyScreen(
