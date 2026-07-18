@@ -2566,15 +2566,21 @@ void VsSoundDirectSoundEffectBufferPool::DestroyDirectSoundEffectBufferPool(void
 
 // FUNCTION: LEMBALL 0x0047d720
 int VsSoundDirectSoundEffectBufferPool::FindAvailableDirectSoundEffectBufferSlot(void) {
+    VsSoundDirectSoundEffectBufferPool *pPool;
+    void *pBuffer;
     int i;
+    int nOffset;
     DWORD dwStatus;
     LONG hResult;
 
+    pPool = this;
+    nOffset = 0;
     i = 0;
-    while (i < m_cBuffers) {
+    while (i < pPool->m_cBuffers) {
+        pBuffer = *(void **)((char *)pPool->m_ppBuffers + nOffset);
         hResult = ((VsSoundGetDirectSoundBufferStatusProc)
-                       (*(void ***)m_ppBuffers[i])[9])(
-            m_ppBuffers[i], &dwStatus);
+                       (*(void ***)pBuffer)[9])(
+            pBuffer, &dwStatus);
         if (hResult != 0) {
             g_pErrorOutputStream
                 ->AppendCStringToStream(
@@ -2588,6 +2594,7 @@ int VsSoundDirectSoundEffectBufferPool::FindAvailableDirectSoundEffectBufferSlot
         if ((dwStatus & 1) == 0) {
             return i;
         }
+        nOffset += sizeof(void *);
         ++i;
     }
     return -1;
@@ -2595,16 +2602,22 @@ int VsSoundDirectSoundEffectBufferPool::FindAvailableDirectSoundEffectBufferSlot
 
 // FUNCTION: LEMBALL 0x0047d830
 int VsSoundDirectSoundEffectBufferPool::IsAnyDirectSoundEffectBufferPlaying(void) {
+    int nOffset;
+    VsSoundDirectSoundEffectBufferPool *pPool;
+    void *pBuffer;
     int i;
     unsigned char abStatus[sizeof(DWORD)];
     LONG hResult;
 
+    nOffset = 0;
+    pPool = this;
     i = 0;
-    while (i < m_cBuffers) {
+    while (i < pPool->m_cBuffers) {
+        pBuffer = *(void **)((char *)pPool->m_ppBuffers + nOffset);
         hResult = VsSoundDIRECTSOUND_METHOD(
-            m_ppBuffers[i], 9,
+            pBuffer, 9,
             VsSoundGetDirectSoundBufferStatusProc)(
-                m_ppBuffers[i], (DWORD *)abStatus);
+                pBuffer, (DWORD *)abStatus);
         if (hResult != 0) {
             g_pErrorOutputStream
                 ->AppendCStringToStream(
@@ -2618,6 +2631,7 @@ int VsSoundDirectSoundEffectBufferPool::IsAnyDirectSoundEffectBufferPlaying(void
         if ((abStatus[0] & 1) != 0) {
             return 1;
         }
+        nOffset += sizeof(void *);
         ++i;
     }
     return 0;
