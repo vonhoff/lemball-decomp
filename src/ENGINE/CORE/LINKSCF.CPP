@@ -17,6 +17,17 @@ extern int g_nLevelFrameClockTimeMs;
 extern int g_GAME_ManagedEntityRegistryTable[1000];
 extern unsigned short g_GAME_ManagedEntityRegistryCount;
 extern int *LoadBinResource(int nResourceId);
+extern void PASCAL noop_vtable_callback_0040a7f0(void *pUnused);
+extern int PASCAL return_true_vtable_callback_0040a800(void *pUnused);
+extern void *LEMBALL_FASTCALL get_object_field_0xf0(void *pObject);
+extern void LEMBALL_FASTCALL set_object_field_0x98(
+    void *pObject, void *pUnused, int nValue);
+extern int LEMBALL_FASTCALL get_object_field_0x98(void *pObject);
+extern void noop_vtable_callback_0040a990(void);
+extern int return_true_vtable_callback_0040aa50(void);
+extern int PASCAL return_false_vtable_callback_0040aa90(void *pUnused);
+extern void noop_vtable_callback_0040aab0(void);
+extern int PASCAL IsManagedEntityState18(int nState);
 extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(
     void *pResourceObject);
 
@@ -112,6 +123,26 @@ static void InitializeLinkScfChunkVtables(void) {
     }
     g_LINKSCF_PlasChunkObjectVtable[65] =
         (void *)ActivateOrStagePlasChunkObject;
+    g_LINKSCF_PlasChunkObjectVtable[4] =
+        (void *)noop_vtable_callback_0040a7f0;
+    g_LINKSCF_PlasChunkObjectVtable[6] =
+        (void *)return_true_vtable_callback_0040a800;
+    g_LINKSCF_PlasChunkObjectVtable[7] =
+        (void *)get_object_field_0xf0;
+    g_LINKSCF_PlasChunkObjectVtable[13] =
+        (void *)set_object_field_0x98;
+    g_LINKSCF_PlasChunkObjectVtable[14] =
+        (void *)get_object_field_0x98;
+    g_LINKSCF_PlasChunkObjectVtable[27] =
+        (void *)noop_vtable_callback_0040a990;
+    g_LINKSCF_PlasChunkObjectVtable[44] =
+        (void *)return_true_vtable_callback_0040aa50;
+    g_LINKSCF_PlasChunkObjectVtable[48] =
+        (void *)return_false_vtable_callback_0040aa90;
+    g_LINKSCF_PlasChunkObjectVtable[50] =
+        (void *)noop_vtable_callback_0040aab0;
+    g_LINKSCF_PlasChunkObjectVtable[64] =
+        (void *)IsManagedEntityState18;
     g_LINKSCF_ShpgChunkManagerVtable[1] =
         (void *)GetFirstCachedChunkObject;
     g_LINKSCF_ShpgChunkManagerVtable[2] =
