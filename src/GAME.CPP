@@ -2499,6 +2499,16 @@ void GameLevelProgressState::SetUnlockedPackCapThunk(int nPack, int nCap) {
     SetUnlockedPackCap(nPack, nCap);
 }
 
+extern "C" void LEMBALL_FASTCALL AdvanceCurrentLevelProgressThunk(
+    void *pProgress) {
+    ((GameLevelProgressState *)pProgress)->Advance();
+}
+
+extern "C" bool LEMBALL_FASTCALL RetreatCurrentLevelProgressThunk(
+    void *pProgress) {
+    return ((GameLevelProgressState *)pProgress)->Retreat();
+}
+
 extern "C" bool LEMBALL_FASTCALL CanRetreatCurrentLevelProgressThunk(
     void *pProgress) {
     return ((GameLevelProgressState *)pProgress)->CanRetreat();

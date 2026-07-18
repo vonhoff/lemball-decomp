@@ -79,6 +79,10 @@ extern void noop_main_menu_screen_hook(void);
 extern "C" int __cdecl _purecall(void);
 
 extern void *g_pLevelProgressState;
+extern "C" void LEMBALL_FASTCALL AdvanceCurrentLevelProgressThunk(
+    void *pProgress);
+extern "C" bool LEMBALL_FASTCALL RetreatCurrentLevelProgressThunk(
+    void *pProgress);
 extern "C" bool LEMBALL_FASTCALL IsCurrentLevelProgressAvailableThunk(
     void *pProgress);
 extern "C" bool LEMBALL_FASTCALL CanRetreatCurrentLevelProgressThunk(
@@ -623,8 +627,10 @@ static void MeasureFunctionalLevelTitleExtent(
     void *pResource, short *pExtent, const char *pszText);
 static int ReadFunctionalLevelMetadata(
     int nSkill, int nLevel, GameLevelMetadataView *pMetadata);
-static void SelectFunctionalLevel(
-    GameLevelSelectionScreenView *pScreen, int nDirection);
+static void LEMBALL_FASTCALL SelectNextFunctionalLevel(
+    GameLevelSelectionScreenView *pScreen);
+static void LEMBALL_FASTCALL SelectPreviousFunctionalLevel(
+    GameLevelSelectionScreenView *pScreen);
 static GameProgressiveVariantFrameSelector *
 ConstructLevelSelectionFrameSelector(void *pManager, int nResourceId);
 static void InitializeFunctionalLevelSelectionPaletteRemap(
@@ -5204,7 +5210,7 @@ static int LEMBALL_FASTCALL HandleFunctionalLevelSelectionInput(
         if (pScreen->m_fNextLocked480 == 1) {
             pScreen->m_fFrameDirty330 = 1;
         } else if (pScreen->m_fNetworkScreen8C == 0) {
-            SelectFunctionalLevel(pScreen, 1);
+            SelectNextFunctionalLevel(pScreen);
         } else {
             ((GameBaseModeScreen *)pScreen)
                 ->QueueActiveBaseModeUserAction(0, 0);
@@ -5214,7 +5220,7 @@ static int LEMBALL_FASTCALL HandleFunctionalLevelSelectionInput(
         if (pScreen->m_fPreviousLocked484 == 1) {
             pScreen->m_fFrameDirty330 = 1;
         } else if (pScreen->m_fNetworkScreen8C == 0) {
-            SelectFunctionalLevel(pScreen, -1);
+            SelectPreviousFunctionalLevel(pScreen);
         } else {
             ((GameBaseModeScreen *)pScreen)
                 ->QueueActiveBaseModeUserAction(1, 0);
@@ -5232,10 +5238,10 @@ static int LEMBALL_FASTCALL DispatchFunctionalLevelSelectionAction(
     pScreen = (GameLevelSelectionScreenView *)pObject;
     switch (nAction) {
     case 0:
-        SelectFunctionalLevel(pScreen, 1);
+        SelectNextFunctionalLevel(pScreen);
         return 1;
     case 1:
-        SelectFunctionalLevel(pScreen, -1);
+        SelectPreviousFunctionalLevel(pScreen);
         return 1;
     case 2:
         pScreen->m_nRequestedMode374 = 2;
@@ -5881,29 +5887,15 @@ static int ReadFunctionalLevelMetadata(
     }
 }
 
-static void SelectFunctionalLevel(
-    GameLevelSelectionScreenView *pScreen, int nDirection) {
-    GameLevelProgressStateView *pProgress;
-    static const int s_anLevelCaps[5] = { 0x18, 0x19, 0x1c, 0x15, 0x0b };
-    int nPack;
+static void LEMBALL_FASTCALL SelectNextFunctionalLevel(
+    GameLevelSelectionScreenView *pScreen) {
+    AdvanceCurrentLevelProgressThunk(g_pLevelProgressState);
+    RefreshFunctionalLevelSelectionMetadata(pScreen);
+}
 
-    pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
-    nPack = pProgress->m_nCurrentPack08;
-    if (nDirection < 0) {
-        if (0 < pProgress->m_nCurrentLevel00) {
-            --pProgress->m_nCurrentLevel00;
-        }
-    } else if (pProgress->m_nCurrentLevel00 < s_anLevelCaps[nPack]) {
-        ++pProgress->m_nCurrentLevel00;
-        if (nPack != 4 &&
-            pProgress->m_anUnlockedPackCaps28[nPack] <
-                pProgress->m_nCurrentLevel00) {
-            pProgress->m_anUnlockedPackCaps28[nPack] =
-                pProgress->m_nCurrentLevel00;
-        }
-    }
-    pProgress->m_anSnapshotPackCaps3C[nPack] =
-        pProgress->m_nCurrentLevel00;
+static void LEMBALL_FASTCALL SelectPreviousFunctionalLevel(
+    GameLevelSelectionScreenView *pScreen) {
+    RetreatCurrentLevelProgressThunk(g_pLevelProgressState);
     RefreshFunctionalLevelSelectionMetadata(pScreen);
 }
 
