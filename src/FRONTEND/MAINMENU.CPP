@@ -582,6 +582,8 @@ static short *GetFunctionalVariantFrameExtent(
     void *pManager, short *pExtent, int nResourceId, int iFrame);
 static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(
     void *pObject);
+static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionFrame(
+    void *pObject);
 static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(
     GameLevelSelectionScreenView *pScreen);
 static void MeasureFunctionalLevelTitleExtent(
@@ -2074,9 +2076,28 @@ static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
 // FUNCTION: LEMBALL 0x004464d0
 static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject) {
     GameFramedScreenBase *pScreen;
+    VsNetRuntimeModeView *pNetworkRuntime;
     DWORD dwNow;
 
     pScreen = (GameFramedScreenBase *)pObject;
+    if (pScreen->m_fNetworkScreen8C != 0 &&
+        pScreen->m_fNetworkReady94 == 0) {
+        pNetworkRuntime =
+            (VsNetRuntimeModeView *)g_pNetworkLobbyVsnetRuntime;
+        if (pNetworkRuntime != 0 &&
+            pNetworkRuntime->m_nMode48 ==
+                pNetworkRuntime->m_nModeState4C) {
+            pScreen->m_nNetworkState90 = 0;
+            pScreen->m_fNetworkReady94 = 1;
+            if (pScreen->m_pQueuedVariantManager338 != 0) {
+                ((GameQueuedVariantManagerView *)
+                    pScreen->m_pQueuedVariantManager338)
+                        ->SetChildrenEnabled(1);
+                *(int *)((char *)pScreen->m_pQueuedVariantManager338 +
+                         0x144) = 1;
+            }
+        }
+    }
     if (pScreen->m_pTimedFrameSelector34C != 0) {
         dwNow = timeGetTime();
         if (pScreen->m_dwRandomDelay33C + 1000U <
@@ -2094,6 +2115,10 @@ static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject) {
                 pScreen->m_dwRandomDelay33C = uRandom % 6000U;
             }
         }
+    }
+    if (pScreen->m_pSelectorManager334 != 0) {
+        UpdateMenuSelectorAnimation(
+            (GameMenuSelectorManager *)pScreen->m_pSelectorManager334);
     }
     ((GameNoArgVirtual)pScreen->m_pVtable00[14])(pScreen, 0);
 }
@@ -3936,7 +3961,7 @@ static void InitializeFunctionalLevelSelectionVtable(void) {
     g_GAME_FunctionalLevelSelectionVtable[19] =
         (void *)DrawFunctionalLevelSelectionText;
     g_GAME_FunctionalLevelSelectionVtable[20] =
-        (void *)NoopFunctionalLevelSelectionHook;
+        (void *)DrawFunctionalLevelSelectionFrame;
     g_GAME_FunctionalLevelSelectionVtable[21] =
         (void *)NoopFunctionalLevelSelectionHook;
     g_fFunctionalLevelSelectionVtableInitialized = 1;
@@ -4364,6 +4389,15 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionStatus(
                         pScreen->m_pSelector3C0, 0);
         }
     }
+}
+
+static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionFrame(
+    void *pObject) {
+    GameLevelSelectionScreenView *pScreen;
+
+    pScreen = (GameLevelSelectionScreenView *)pObject;
+    ((GameMainMenuRenderEntryInterface *)pScreen->m_abRenderChild398)
+        ->AppendToQueue(pScreen->m_pRenderContext88);
 }
 
 static short *GetFunctionalVariantFrameExtent(
