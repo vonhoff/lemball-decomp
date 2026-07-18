@@ -3638,10 +3638,10 @@ void VsSoundMciMusicBackend::PrepareMciMusicTrack(int nTrackHandle, int nMusicRe
     ReleaseTypedResourceObjectReference(pStringResource);
     if (nMciError != 0) {
         mciGetErrorStringA(nMciError, szMciErrorText, sizeof(szMciErrorText));
-        g_pErrorOutputStream->AppendCStringToStream(
-            "Error!     Unable to Prepare Music (Open) ");
-        AppendDynamicCStringToStream(g_pErrorOutputStream, &BasePath);
-        g_pErrorOutputStream->AppendCStringToStream("!\n");
+        ((VsInitFormattedOutputStream *)AppendDynamicCStringToStream(
+            g_pErrorOutputStream->AppendCStringToStream(
+                "Error!     Unable to Prepare Music (Open) "),
+            &BasePath))->AppendCStringToStream("!\n");
         g_pErrorOutputStream->AppendCStringToStream("MCI Error:\t")
             ->AppendCStringToStream(szMciErrorText)
             ->AppendCStringToStream("\n");
