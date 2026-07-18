@@ -414,6 +414,12 @@ public:
     virtual void AppendToQueue(void *pRenderContext) = 0;
 };
 
+class GameLevelTitleGlyphListInterface {
+public:
+    virtual void *GetGlyphListResource(void) = 0;
+    virtual void *FindGlyph(unsigned int ch) = 0;
+};
+
 class GameGeometryDispatchInterface {
 public:
     virtual void Reserved00(void) = 0;
@@ -576,6 +582,8 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(
     void *pObject);
 static void RefreshFunctionalLevelSelectionMetadata(
     GameLevelSelectionScreenView *pScreen);
+static void MeasureFunctionalLevelTitleExtent(
+    void *pResource, short *pExtent, const char *pszText);
 static int ReadFunctionalLevelMetadata(
     int nSkill, int nLevel, GameLevelMetadataView *pMetadata);
 static void SelectFunctionalLevel(
@@ -4349,6 +4357,18 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(
 static void RefreshFunctionalLevelSelectionMetadata(
     GameLevelSelectionScreenView *pScreen) {
     GameLevelProgressStateView *pProgress;
+    const char *pszTitle;
+    void *pFontResource;
+    char szLine[0x20];
+    short Extent[2];
+    int iLine;
+    int iSource;
+    int iLineStart;
+    int iLastSpaceSource;
+    int iLastSpaceDest;
+    int cchLine;
+    int y;
+    int cchTitle;
     int nPack;
     int nCurrentLevel;
     int nUnlockedCap;
@@ -4362,14 +4382,75 @@ static void RefreshFunctionalLevelSelectionMetadata(
         Metadata.m_szTitle08[0] == '\0') {
         strcpy(Metadata.m_szTitle08, "UN-NAMED LEVEL");
     }
-    strncpy(pScreen->m_aszTitleLines3FC[0], Metadata.m_szTitle08, 0x1f);
-    pScreen->m_aszTitleLines3FC[0][0x1f] = '\0';
-    pScreen->m_aszTitleLines3FC[1][0] = '\0';
-    pScreen->m_aszTitleLines3FC[2][0] = '\0';
+    pScreen->m_fSelectorDirty360 = 1;
+    pScreen->m_fFrameDirty330 = 1;
+    memset(pScreen->m_aszTitleLines3FC, 0,
+           sizeof(pScreen->m_aszTitleLines3FC));
+    for (iLine = 0; iLine < 3; ++iLine) {
+        pScreen->m_aTitlePositions464[iLine][0] = -1;
+        pScreen->m_aTitlePositions464[iLine][1] = -1;
+    }
+
+    pszTitle = Metadata.m_szTitle08;
+    cchTitle = strlen(pszTitle);
+    iSource = 0;
+    y = pScreen->m_pLayout3D4[37];
+    pFontResource = ((MappedListResourceTable *)
+        pScreen->m_pMappedListResources98)->GetMappedResource(
+            pScreen->m_nMappedListRemapResourceId384);
+    for (iLine = 0; iLine < 3 && iSource < cchTitle; ++iLine) {
+        while (pszTitle[iSource] == ' ') {
+            ++iSource;
+        }
+        iLineStart = iSource;
+        iLastSpaceSource = -1;
+        iLastSpaceDest = -1;
+        cchLine = 0;
+        szLine[0] = '\0';
+        while (iSource < cchTitle && cchLine < 0x1f) {
+            if (pszTitle[iSource] == ' ') {
+                iLastSpaceSource = iSource;
+                iLastSpaceDest = cchLine;
+            }
+            szLine[cchLine++] = pszTitle[iSource++];
+            szLine[cchLine] = '\0';
+            MeasureFunctionalLevelTitleExtent(
+                pFontResource, Extent, szLine);
+            if (pScreen->m_pLayout3D4[38] < Extent[0]) {
+                if (iLastSpaceDest >= 0) {
+                    cchLine = iLastSpaceDest;
+                    iSource = iLastSpaceSource + 1;
+                } else if (1 < cchLine) {
+                    --cchLine;
+                    --iSource;
+                }
+                break;
+            }
+        }
+        if (cchLine == 0 && iSource == iLineStart) {
+            szLine[cchLine++] = pszTitle[iSource++];
+        }
+        while (0 < cchLine && szLine[cchLine - 1] == ' ') {
+            --cchLine;
+        }
+        szLine[cchLine] = '\0';
+        strcpy(pScreen->m_aszTitleLines3FC[iLine], szLine);
+        MeasureFunctionalLevelTitleExtent(pFontResource, Extent, szLine);
+        pScreen->m_aTitlePositions464[iLine][0] =
+            pScreen->m_pLayout3D4[36] +
+            (pScreen->m_pLayout3D4[38] - Extent[0]) / 2;
+        pScreen->m_aTitlePositions464[iLine][1] = y;
+        y += Extent[1];
+    }
     pScreen->m_nLevelTime3F8 = Metadata.m_nTimeSeconds06;
-    wsprintfA(pScreen->m_abTime45C, "%d:%02d",
-              Metadata.m_nTimeSeconds06 / 60,
-              Metadata.m_nTimeSeconds06 % 60);
+    pScreen->m_abTime45C[0] =
+        (char)(Metadata.m_nTimeSeconds06 / 60 + '0');
+    pScreen->m_abTime45C[1] = ':';
+    pScreen->m_abTime45C[2] =
+        (char)((Metadata.m_nTimeSeconds06 % 60) / 10 + '0');
+    pScreen->m_abTime45C[3] =
+        (char)(Metadata.m_nTimeSeconds06 % 10 + '0');
+    pScreen->m_abTime45C[4] = '\0';
     pScreen->m_cSkillStatus3F4 = Metadata.m_cSkill00;
     pScreen->m_cStatus3EC = Metadata.m_cPlayers02;
     if (pScreen->m_fNetworkScreen8C != 0) {
@@ -4386,8 +4467,45 @@ static void RefreshFunctionalLevelSelectionMetadata(
         pScreen->m_pQueuedVariantManager338, 0, (int)0xacef000eU);
     RefreshQueuedVariantChildByToken(
         pScreen->m_pQueuedVariantManager338, 0, (int)0xacef000fU);
-    pScreen->m_fSelectorDirty360 = 1;
-    pScreen->m_fFrameDirty330 = 1;
+}
+
+static void MeasureFunctionalLevelTitleExtent(
+    void *pResource, short *pExtent, const char *pszText) {
+    void *pGlyph;
+    void *pGlyphList;
+    int i;
+    int cx;
+    int cy;
+
+    cx = 0;
+    cy = 0;
+    if (pResource != 0) {
+        pGlyphList = *(void **)((char *)pResource + 0x78);
+        for (i = 0; pszText[i] != '\0'; ++i) {
+            pGlyph = ((GameLevelTitleGlyphListInterface *)pGlyphList)
+                ->FindGlyph((unsigned char)pszText[i]);
+            if (pGlyph == 0) {
+                pGlyph = ((GameLevelTitleGlyphListInterface *)pGlyphList)
+                    ->FindGlyph('I');
+                if (pGlyph == 0) {
+                    pGlyph = *(void **)((char *)pResource + 0x7c);
+                }
+            }
+            if (pGlyph != 0) {
+                cx += *(short *)((char *)pGlyph + 0x4c) + 1;
+                if (cy < *(short *)((char *)pGlyph + 0x4a) +
+                         *(short *)((char *)pGlyph + 0x4e)) {
+                    cy = *(short *)((char *)pGlyph + 0x4a) +
+                         *(short *)((char *)pGlyph + 0x4e);
+                }
+            }
+        }
+        if (0 < cx) {
+            --cx;
+        }
+    }
+    pExtent[0] = (short)cx;
+    pExtent[1] = (short)cy;
 }
 
 static int GetFunctionalLevelBinResourceId(int nSkill, int nLevel) {
