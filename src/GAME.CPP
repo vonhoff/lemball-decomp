@@ -114,6 +114,7 @@ extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
 extern void *ConstructLevelScreenVariantRenderManager(void *pObject,
     int nRenderOwner, void *pPrimaryContext, void *pLevelMode);
 extern void DestroyLevelScreenVariantRenderManager(void *pObject);
+extern void ResetOrFlipVariantRenderBuffers(int nManager);
 extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableA(void *pObject);
 extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableD(void *pObject);
 extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableE(void *pObject);
@@ -1348,6 +1349,8 @@ void *GameScreenObject::ConstructLevelSelectionScreen(void *pPrimaryContext,
 
 static void *g_GAME_LevelScreenVtableSlots[14];
 static int g_fGAMELevelScreenVtableInitialized;
+static void RegisterLevelScreenPaletteRemaps(char *pScreen);
+static void ReleaseLevelScreenPaletteRemaps(char *pScreen);
 
 static int LEMBALL_FASTCALL GetLevelScreenRequestedMode(void *pObject) {
     return *(int *)((char *)pObject + 0x8fc);
@@ -1398,6 +1401,7 @@ static void LEMBALL_FASTCALL DestroyReconstructedLevelScreen(void *pObject) {
     FreeVSMemBlock(*(void **)(pScreen + 0x960));
     *(void **)(pScreen + 0x95c) = 0;
     *(void **)(pScreen + 0x960) = 0;
+    ReleaseLevelScreenPaletteRemaps(pScreen);
     SetLevelScreenStatusIndicatorModeThunk(0, 0);
 }
 
@@ -1422,6 +1426,77 @@ static void InitializeLevelScreenHotspotEntry(void *pObject) {
     *(int *)(pEntry + 0x30) = 0;
     *(int *)(pEntry + 0x18) = 0;
     *(int *)(pEntry + 0x20) = 0;
+}
+
+static const unsigned char g_GAME_LevelPaletteRemapSourceIndices[17] = {
+    250, 204, 205, 206, 118, 107, 101, 95, 85,
+    75, 69, 59, 49, 46, 44, 37, 48
+};
+static const unsigned char g_GAME_LevelPaletteRemapTargetIndices[4][17] = {
+    {224,225,226,227,228,229,230,231,232,232,233,234,234,234,234,235,235},
+    {192,193,194,195,196,197,198,199,200,200,201,202,202,202,202,203,203},
+    {208,209,210,211,212,213,214,215,216,216,217,218,218,218,218,219,219},
+    {179,180,181,182,183,184,185,186,187,187,188,189,189,189,189,190,191}
+};
+static unsigned char g_GAME_LevelPaletteSparsePairs[5] = {
+    2, 0xf1, 0x51, 0xa8, 0x6c
+};
+
+static void RegisterLevelScreenPaletteRemaps(char *pScreen) {
+    void *pPalette;
+    unsigned int cbPalette;
+    unsigned char *pRemap;
+    int i;
+    int j;
+
+    pPalette = LoadPalResource(0x2e);
+    cbPalette = *(unsigned int *)((char *)pPalette + 0x48);
+    for (i = 0; i < 4; ++i) {
+        pRemap = (unsigned char *)AllocateVSMemBlock(cbPalette);
+        *(unsigned char **)(pScreen + 0x54 + i * 4) = pRemap;
+        if (pRemap != 0) {
+            for (j = 0; j < (int)cbPalette; ++j) {
+                pRemap[j] = (unsigned char)j;
+            }
+            for (j = 0; j < 17; ++j) {
+                pRemap[g_GAME_LevelPaletteRemapSourceIndices[j]] =
+                    g_GAME_LevelPaletteRemapTargetIndices[i][j];
+            }
+        }
+        *(void **)(pScreen + 0x64 + i * 4) =
+            RegisterPaletteRemapVariant(0x2e, pRemap, 0);
+    }
+    *(void **)(pScreen + 0x74) = RegisterPaletteRemapVariant(
+        0x2e, g_GAME_LevelPaletteSparsePairs, 2);
+    ReleaseTypedResourceObjectReference(pPalette);
+
+    pRemap = (unsigned char *)AllocateVSMemBlock(0x100);
+    if (pRemap != 0) {
+        for (i = 0; i < 0x100; ++i) {
+            pRemap[i] = (unsigned char)i;
+        }
+        pRemap[0x37] = 0x52;
+        pRemap[0x5c] = 0x74;
+        pRemap[0x71] = 0x74;
+        pRemap[0x75] = 0x74;
+        pRemap[0x80] = 0x8c;
+    }
+    *(void **)(pScreen + 0x968) =
+        RegisterPaletteRemapVariant(0x2e, pRemap, 0);
+}
+
+static void ReleaseLevelScreenPaletteRemaps(char *pScreen) {
+    int i;
+
+    for (i = 0; i < 4; ++i) {
+        ReleasePaletteRemapVariant(*(void **)(pScreen + 0x64 + i * 4));
+        *(void **)(pScreen + 0x64 + i * 4) = 0;
+        *(void **)(pScreen + 0x54 + i * 4) = 0;
+    }
+    ReleasePaletteRemapVariant(*(void **)(pScreen + 0x74));
+    ReleasePaletteRemapVariant(*(void **)(pScreen + 0x968));
+    *(void **)(pScreen + 0x74) = 0;
+    *(void **)(pScreen + 0x968) = 0;
 }
 
 void *GameScreenObject::ConstructLevelScreen(void *pPrimaryContext,
@@ -1531,6 +1606,17 @@ void *GameScreenObject::ConstructLevelScreen(void *pPrimaryContext,
             pMappedList->LoadListResourceIntoSlot(0x115);
         }
     }
+    if (*(void **)(pScreenObject + 0xa40) != 0) {
+        ResetOrFlipVariantRenderBuffers(
+            (int)(unsigned long)*(void **)(pScreenObject + 0xa40));
+    }
+    if (*(MappedListResourceTable **)(pScreenObject + 0x78) != 0) {
+        (*(MappedListResourceTable **)(pScreenObject + 0x78))
+            ->ResetDrawEntryPool();
+    }
+    *(int *)(pScreenObject + 0xc90) = 0;
+    *(int *)(pScreenObject + 0x2188) = 0;
+    RegisterLevelScreenPaletteRemaps(pScreenObject);
 
     *(int *)(pScreenObject + 0x994) = 1;
     *(void **)(pScreenObject + 0x95c) = AllocateVSMemBlock(0x3b60);

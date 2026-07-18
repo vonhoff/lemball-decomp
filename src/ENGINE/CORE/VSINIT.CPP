@@ -29,6 +29,7 @@ extern char *FindCharInCString0047FE00(char *pszText, char ch);
 void AppendStringToDebugOutFile(const char *pszText);
 extern void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile, int nLine);
 extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void *pResourceObject);
+extern void *LoadPalResource(int nResourceId);
 extern void *LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode);
 extern void *g_pStatusEntryRegistry;
 extern void *g_pSharedRenderDispatchQueue;
@@ -1769,6 +1770,85 @@ void DestroyPaletteRemapPointerTable(VsInitVSMemPointerTable *pPointerTable) {
     }
     if (pPointerTable->m_ppItems != 0) {
         FreeVSMemBlock(pPointerTable->m_ppItems);
+    }
+}
+
+// FUNCTION: LEMBALL 0x0046ad70
+void *RegisterPaletteRemapVariant(int nPaletteResourceId,
+                                  unsigned char *pRemapTable,
+                                  int nBuildMode)
+{
+    VsInitPaletteRemapVariant *pVariant;
+    unsigned char *pOwnedTable;
+    unsigned int cbPalette;
+    unsigned int i;
+    unsigned int cPairs;
+    int iSlot;
+
+    if (g_pPaletteRemapPointerTable == 0) {
+        return 0;
+    }
+    iSlot = 0;
+    while (g_pPaletteRemapPointerTable->m_ppItems[iSlot] != 0) {
+        ++iSlot;
+    }
+    pVariant = (VsInitPaletteRemapVariant *)
+        AllocateVSMemBlock(sizeof(VsInitPaletteRemapVariant));
+    if (pVariant == 0) {
+        return 0;
+    }
+    pVariant->m_pResourceObject = LoadPalResource(nPaletteResourceId);
+    pVariant->m_pRemapTable = pRemapTable;
+
+    if (nBuildMode != 0) {
+        cbPalette = *(unsigned int *)
+            ((char *)pVariant->m_pResourceObject + 0x48);
+        pOwnedTable = (unsigned char *)AllocateVSMemBlock(cbPalette);
+        if (pOwnedTable != 0) {
+            for (i = 0; i < cbPalette; ++i) {
+                pOwnedTable[i] = (unsigned char)i;
+            }
+            if (nBuildMode == 2 && pRemapTable != 0) {
+                cPairs = pRemapTable[0];
+                for (i = 0; i < cPairs; ++i) {
+                    if (pRemapTable[cPairs + i + 1] != 0) {
+                        pOwnedTable[pRemapTable[i + 1]] =
+                            pRemapTable[cPairs + i + 1];
+                    }
+                }
+            }
+        }
+        pVariant->m_pRemapTable = pOwnedTable;
+    }
+
+    g_pPaletteRemapPointerTable->m_ppItems[iSlot] = pVariant;
+    ++g_pPaletteRemapPointerTable->m_nCursor;
+    return pVariant;
+}
+
+// FUNCTION: LEMBALL 0x0046add0
+void ReleasePaletteRemapVariant(void *pVariant)
+{
+    int i;
+    int cFound;
+
+    if (g_pPaletteRemapPointerTable == 0 || pVariant == 0) {
+        return;
+    }
+    cFound = 0;
+    for (i = 0; cFound < g_pPaletteRemapPointerTable->m_nCursor; ++i) {
+        if (g_pPaletteRemapPointerTable->m_ppItems[i] == 0) {
+            continue;
+        }
+        if (g_pPaletteRemapPointerTable->m_ppItems[i] == pVariant) {
+            ReleasePaletteRemapVariantFields(
+                (VsInitPaletteRemapVariant *)pVariant);
+            FreeVSMemBlock(pVariant);
+            g_pPaletteRemapPointerTable->m_ppItems[i] = 0;
+            --g_pPaletteRemapPointerTable->m_nCursor;
+            return;
+        }
+        ++cFound;
     }
 }
 
