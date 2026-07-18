@@ -401,6 +401,11 @@ public:
     virtual const char *GetLocalHostName(void) = 0;
 };
 
+class VsNetEffTransportPeer {
+public:
+    void Close(void);
+};
+
 typedef char GameFramedScreenBase_size_must_be_0x398[
     sizeof(GameFramedScreenBase) == 0x398 ? 1 : -1];
 typedef char GameMainMenuScreenView_size_must_be_0x3bc[
@@ -1091,6 +1096,65 @@ static void FlushNetworkLobbyDeferredStatus(
     SetTimedNetworkLobbyStatus(
         pScreen, pScreen->m_nDeferredStatus430, 6000);
     pScreen->m_nDeferredStatus430 = 0;
+}
+
+static void CloseNetworkLobbyTransportPeers(void *pController) {
+    GameNetworkLobbyScreenView *pScreen;
+    GameNetworkLobbyRuntimeView *pRuntime;
+    GameEffStream *pCloseStream;
+    DWORD dwStart;
+    void *pPeer;
+    int i;
+
+    if (pController == 0 || g_pNetworkLobbyVsnetRuntime == 0) {
+        return;
+    }
+    pScreen = (GameNetworkLobbyScreenView *)g_pActiveNetworkLobbyScreen;
+    pRuntime = (GameNetworkLobbyRuntimeView *)g_pNetworkLobbyVsnetRuntime;
+    pCloseStream = *(GameEffStream **)((char *)pController + 0x30);
+    if (pCloseStream == 0) {
+        return;
+    }
+    pCloseStream->m_nU32Payload = 1;
+    for (i = 0; i < 10; ++i) {
+        if (pScreen != 0 && pScreen->m_pPlayerEntries3CC != 0) {
+            *(int *)((char *)pScreen->m_pPlayerEntries3CC +
+                     i * 0x44 + 0x40) = 0;
+        }
+        pPeer = pRuntime->m_apTrackedPeers20[i];
+        if (pPeer == 0 ||
+            (int)(unsigned long)pPeer == g_nSelectedNetworkLobbyPeerId) {
+            continue;
+        }
+        dwStart = timeGetTime();
+        while (pCloseStream->m_fWritePending != 0 &&
+               timeGetTime() - dwStart < 1000U) {
+        }
+        pCloseStream->QueueEffStreamWriteEvent(
+            (int)(unsigned long)pPeer);
+        dwStart = timeGetTime();
+        while (pCloseStream->m_fWritePending != 0 &&
+               timeGetTime() - dwStart < 1000U) {
+        }
+        ((VsNetEffTransportPeer *)pPeer)->Close();
+    }
+}
+
+static void CancelNetworkLobbyPrompt(
+    GameNetworkLobbyScreenView *pScreen) {
+    if (g_pActiveNetworkLobbyTransportController != 0) {
+        CloseNetworkLobbyTransportPeers(
+            g_pActiveNetworkLobbyTransportController);
+        if (*(int *)((char *)g_pActiveNetworkLobbyTransportController +
+                     0x2c) != 0 &&
+            *(int *)((char *)g_pActiveNetworkLobbyTransportController +
+                     0x28) == 0) {
+            StopNetworkLobbyTransportSession(
+                g_pActiveNetworkLobbyTransportController);
+        }
+    }
+    SetNetworkLobbyStatus(pScreen, 0);
+    pScreen->m_fTextPrompt39C = 0;
 }
 
 static unsigned char g_GAME_NetworkLobbyPaletteRemaps[6][8] = {
@@ -3972,6 +4036,7 @@ static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(
             return 0;
         }
         if (nCode == 0xacef000eU) {
+            CancelNetworkLobbyPrompt(pScreen);
             pScreen->m_nTransitionStatus378 = 1;
             pScreen->m_nRequestedMode374 = 2;
             return 1;
@@ -4109,6 +4174,14 @@ static void DestroyNetworkLobbyScreen(
         g_GAME_NetworkLobbyQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
         g_GAME_MainMenuCallbackVtable;
+    if (pScreen->m_nRequestedMode374 == 0) {
+        if (g_pActiveNetworkLobbyTransportController != 0) {
+            CancelNetworkLobbyPrompt(pScreen);
+        }
+    } else if (g_pActiveNetworkLobbyTransportController != 0) {
+        CloseNetworkLobbyTransportPeers(
+            g_pActiveNetworkLobbyTransportController);
+    }
     g_pActiveNetworkLobbyScreen = 0;
     if (pScreen->m_pQueuedVariantManager338 != 0) {
         DestroyQueuedVariantChildSlotManager(
