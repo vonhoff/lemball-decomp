@@ -1202,9 +1202,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         xEvent = (short)((short)lParam + *(short *)((char *)pOwner + 0x0c));
         yEvent = (short)(((unsigned long)lParam >> 16) +
                          *(short *)((char *)pOwner + 0x0e));
-        MouseEvent.m_nType00 =
-            (uMessage == 0x203 || uMessage == 0x206 ||
-             uMessage == 0x209) ? 8 : 6;
+        MouseEvent.m_nType00 = 6;
         MouseEvent.m_nReserved02 = 0;
         MouseEvent.m_dwTime04 = dwMessageTime;
         MouseEvent.m_nPackedPosition08 =

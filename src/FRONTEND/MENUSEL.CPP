@@ -417,15 +417,142 @@ struct GameMenuActionFramePointSinkVtableFixup {
 static GameMenuActionFramePointSinkVtableFixup
     g_MenuActionFramePointSinkVtableFixup;
 
-static void *g_ResourceGeometryChildVtable[48];
+static void *g_ResourceGeometryChildVtable[52];
 static void *g_ResourceGeometryChildDeleteVtable[8];
 static void **g_pWindowOwnerRenderContextVtable;
 static int g_fResourceGeometryChildVtablesInitialized;
-static void *g_AlignedZrleChildOverlayVtable[48];
+static void *g_AlignedZrleChildOverlayVtable[52];
 static void *g_AlignedZrleChildOverlayDeleteVtable[8];
 static int g_fAlignedZrleChildOverlayVtablesInitialized;
 static void *g_MenuSelectorChildContextVtable[46];
 static int g_fMenuSelectorChildContextVtableInitialized;
+
+static int MapSpriteOwnerEventToFrameSlot(int nEvent) {
+    switch (nEvent) {
+    case 0:
+    case 3:
+        return 0;
+    case 1:
+    case 4:
+        return 1;
+    case 2:
+    case 5:
+        return 2;
+    }
+    return 6;
+}
+
+static void QueueSpriteOwnerEvent(
+    void *pObject, short nType, int nFrame) {
+    GameMenuSelectorEvent Event;
+
+    Event.m_nType00 = nType;
+    Event.m_nReserved02 = 0;
+    Event.m_dwTimestamp04 = (int)timeGetTime();
+    Event.m_nPayload08 = *(int *)((char *)pObject + 0xcc);
+    Event.m_nPayload0C = (int)(unsigned long)pObject;
+    Event.m_nPayload10 = nFrame;
+    Event.m_nPayload14 = 0;
+    Event.m_nPayload18 = 0;
+    ((void (LEMBALL_FASTCALL *)(void *, int, void *))
+         (*(void ***)g_pSharedRenderDispatchQueue)[2])(
+            g_pSharedRenderDispatchQueue, 0, &Event);
+}
+
+static void NotifySpriteOwnerFrameEvent(
+    void *pObject, short nType, int nEvent) {
+    if (*(int *)((char *)pObject + 0xf8) == 0) {
+        *(int *)((char *)pObject + 0xd8) = 1;
+    }
+    if (*(void **)((char *)pObject + 0xf4) != 0) {
+        QueueSpriteOwnerEvent(
+            pObject, nType, MapSpriteOwnerEventToFrameSlot(nEvent));
+    }
+}
+
+static void NotifySpriteOwnerStateEvent(void *pObject, short nType) {
+    if (*(void **)((char *)pObject + 0xf4) != 0) {
+        QueueSpriteOwnerEvent(pObject, nType, 0);
+    }
+}
+
+static void StoreSpriteOwnerLocalPoint(
+    void *pGeometryOwner, const VS_XYPair *pPoint) {
+    *(short *)((char *)pGeometryOwner + 0x70) =
+        (short)(pPoint->m_x -
+                *(short *)((char *)pGeometryOwner - 0x78));
+    *(short *)((char *)pGeometryOwner + 0x72) =
+        (short)(pPoint->m_y -
+                *(short *)((char *)pGeometryOwner - 0x76));
+}
+
+static void LEMBALL_FASTCALL HandleSpriteOwnerPointerEnter(
+    void *pGeometryOwner) {
+    void *pObject;
+
+    pObject = (char *)pGeometryOwner - 0x90;
+    if (*(int *)((char *)pGeometryOwner + 0x10) != 0 ||
+        *(int *)((char *)pGeometryOwner + 0x1c) != 0) {
+        *(int *)((char *)pGeometryOwner + 0x40) = 1;
+    }
+    NotifySpriteOwnerStateEvent(pObject, 0x0d);
+    ((void (LEMBALL_FASTCALL *)(void *))(*(void ***)pObject)[50])(
+        pObject);
+}
+
+static void LEMBALL_FASTCALL HandleSpriteOwnerPointerLeave(
+    void *pGeometryOwner) {
+    void *pObject;
+
+    pObject = (char *)pGeometryOwner - 0x90;
+    *(int *)((char *)pGeometryOwner + 0x40) = 0;
+    NotifySpriteOwnerStateEvent(pObject, 0x0e);
+    ((void (LEMBALL_FASTCALL *)(void *))(*(void ***)pObject)[51])(
+        pObject);
+}
+
+static void LEMBALL_FASTCALL HandleSpriteOwnerButtonTransition(
+    void *pGeometryOwner, int, const VS_XYPair *pPoint, int nButton) {
+    void *pObject;
+    int nFrame;
+
+    pObject = (char *)pGeometryOwner - 0x90;
+    if (nButton == 0 || nButton == 3) {
+        *(int *)((char *)pGeometryOwner + 0x40) = 1;
+    }
+    nFrame = MapSpriteOwnerEventToFrameSlot(nButton);
+    StoreSpriteOwnerLocalPoint(pGeometryOwner, pPoint);
+    NotifySpriteOwnerFrameEvent(pObject, 0x0b, nFrame);
+    ((void (LEMBALL_FASTCALL *)(void *, int, int))
+         (*(void ***)pObject)[49])(pObject, 0, nFrame);
+}
+
+static void LEMBALL_FASTCALL HandleSpriteOwnerButtonInside(
+    void *pGeometryOwner, int, const VS_XYPair *pPoint, int nButton) {
+    void *pObject;
+    int nFrame;
+
+    if (*(int *)((char *)pGeometryOwner + 0x40) == 0) {
+        return;
+    }
+    pObject = (char *)pGeometryOwner - 0x90;
+    nFrame = MapSpriteOwnerEventToFrameSlot(nButton);
+    *(int *)((char *)pGeometryOwner + 0x40) = 0;
+    StoreSpriteOwnerLocalPoint(pGeometryOwner, pPoint);
+    NotifySpriteOwnerFrameEvent(pObject, 0x0c, nFrame);
+    ((void (LEMBALL_FASTCALL *)(void *, int, int))
+         (*(void ***)pObject)[48])(pObject, 0, nFrame);
+}
+
+static void LEMBALL_FASTCALL ResetSpriteOwnerButtonState(
+    void *pGeometryOwner, int, const VS_XYPair *pPoint, int) {
+    int i;
+
+    StoreSpriteOwnerLocalPoint(pGeometryOwner, pPoint);
+    for (i = 0; i < 6; ++i) {
+        *(int *)((char *)pGeometryOwner + 0x10 + i * 4) = 0;
+    }
+}
 
 void *LEMBALL_FASTCALL InitializeTinyPointSinkHelper(void *pObject) {
     *(void ***)pObject = g_MenuSelectorTinyPointSinkVtable;
@@ -664,7 +791,7 @@ static void InitializeResourceGeometryChildVtables(
     if (g_fResourceGeometryChildVtablesInitialized != 0) {
         return;
     }
-    for (i = 0; i < 48; ++i) {
+    for (i = 0; i < 52; ++i) {
         g_ResourceGeometryChildVtable[i] = pWindowOwnerVtable[i];
     }
     for (i = 0; i < 8; ++i) {
@@ -815,7 +942,7 @@ static void InitializeAlignedZrleChildOverlayVtables(void) {
     if (g_fAlignedZrleChildOverlayVtablesInitialized != 0) {
         return;
     }
-    for (i = 0; i < 48; ++i) {
+    for (i = 0; i < 52; ++i) {
         g_AlignedZrleChildOverlayVtable[i] =
             g_ResourceGeometryChildVtable[i];
     }
@@ -827,6 +954,16 @@ static void InitializeAlignedZrleChildOverlayVtables(void) {
     g_AlignedZrleChildOverlayVtable[16] = Void.v;
     Void.p = &GameAlignedZrleChildOverlayView::QueueAlignedFrame;
     g_AlignedZrleChildOverlayVtable[47] = Void.v;
+    g_AlignedZrleChildOverlayDeleteVtable[1] =
+        (void *)HandleSpriteOwnerButtonTransition;
+    g_AlignedZrleChildOverlayDeleteVtable[2] =
+        (void *)HandleSpriteOwnerButtonInside;
+    g_AlignedZrleChildOverlayDeleteVtable[3] =
+        (void *)ResetSpriteOwnerButtonState;
+    g_AlignedZrleChildOverlayDeleteVtable[4] =
+        (void *)HandleSpriteOwnerPointerEnter;
+    g_AlignedZrleChildOverlayDeleteVtable[5] =
+        (void *)HandleSpriteOwnerPointerLeave;
     Delete.p = &GameAlignedZrleChildOverlayDeleteView::Delete;
     g_AlignedZrleChildOverlayDeleteVtable[0] = Delete.v;
     g_fAlignedZrleChildOverlayVtablesInitialized = 1;
