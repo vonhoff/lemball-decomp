@@ -3098,6 +3098,31 @@ void LevelScreenTerrainRenderView::DispatchDynamicRenderEntry(
                 *(void **)(pRecord + 0x24), 0);
         }
         break;
+    case 7:
+        {
+            static const int s_anMode2Resources[8] =
+                { 0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 0xa7, 0xa8, 0xa1 };
+            static const int s_anMode014Resources[8] =
+                { 0xa9, 0xa3, 0xaa, 0xa5, 0xab, 0xa7, 0xac, 0xa1 };
+
+            nDirection = (pEntry[0] +
+                          *(int *)(pScreen + 0x90c) * 2) & 7;
+            nSubtype = *(int *)(pRecord + 0x18);
+            if (nSubtype == 2) {
+                nResourceId = s_anMode2Resources[nDirection];
+            } else if (nSubtype == 0 || nSubtype == 1 || nSubtype == 4) {
+                nResourceId = s_anMode014Resources[nDirection];
+            } else {
+                break;
+            }
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 9),
+                (short)(*(int *)(pRecord + 8) - 8),
+                nResourceId, *(int *)(pRecord + 0x20),
+                *(void **)(pRecord + 0x24), 0);
+        }
+        break;
     case 9:
         nSubtype = *(int *)(pRecord + 0x18);
         if (nSubtype == 0x25) {
@@ -3115,6 +3140,32 @@ void LevelScreenTerrainRenderView::DispatchDynamicRenderEntry(
                 (short)(*(int *)(pRecord + 4) - 0x0f),
                 (short)(*(int *)(pRecord + 8) - 0x11),
                 0x7e, nFlags, 0, 0);
+        }
+        break;
+    case 0x0b:
+    case 0x0c:
+        nPalette = nType == 0x0b ?
+            *(int *)(pScreen + 0x70) : *(int *)(pScreen + 0x68);
+        EmitLevelScreenVariantEntry(
+            *(void **)(pScreen + 0xa40),
+            (short)(*(int *)(pRecord + 4) - 0x0f),
+            (short)(*(int *)(pRecord + 8) - 0x1c),
+            0x80, 0, *(void **)(pRecord + 0x24), nPalette);
+        break;
+    case 0x0d:
+        {
+            static const short s_anOriginX[3] = { 0x1f, 0x22, 0x22 };
+            static const short s_anOriginY[3] = { 0x5a, 0x60, 0x60 };
+            int nMode;
+
+            nMode = *(int *)(*(char **)(pScreen + 0x96c) + 0x60);
+            if (nMode < 0 || nMode >= 3) break;
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - s_anOriginX[nMode]),
+                (short)(*(int *)(pRecord + 8) - s_anOriginY[nMode]),
+                g_nLevelScreenContextSelectedVariantResourceId,
+                0, 0, 0);
         }
         break;
     case 0x11:
@@ -3188,6 +3239,141 @@ void LevelScreenTerrainRenderView::DispatchDynamicRenderEntry(
             (short)(*(int *)(pRecord + 4) - 8),
             (short)(*(int *)(pRecord + 8) - 0x20),
             0xb2, 0, 0, nPalette);
+        break;
+    case 0x18:
+        nSubtype = *(int *)(pRecord + 0x18);
+        nProgress = (unsigned int)(*(int *)(pRecord + 0x24) -
+                                   *(int *)(pRecord + 0x20)) / 0x42;
+        if (nSubtype == 0x1f) {
+            if (nProgress > 0x28) nProgress = 0x28;
+            nFlags = (int)nProgress;
+            if (nProgress > 0x20) {
+                EmitLevelScreenVariantEntry(
+                    *(void **)(pScreen + 0xa40),
+                    (short)(*(int *)(pRecord + 4) - 0x30),
+                    (short)(*(int *)(pRecord + 8) - 0x28),
+                    g_nLevelScreenMultiStageSequencePrimaryResourceId,
+                    0x21, 0, 0);
+                nFlags = (int)nProgress + 1;
+            }
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x30),
+                (short)(*(int *)(pRecord + 8) - 0x28),
+                g_nLevelScreenMultiStageSequencePrimaryResourceId,
+                nFlags, 0, 0);
+            if (nProgress > 0x17) {
+                if (nProgress > 0x21) nProgress = 0x21;
+                EmitLevelScreenVariantEntry(
+                    *(void **)(pScreen + 0xa40),
+                    (short)(*(int *)(pRecord + 4) - 0x20),
+                    (short)(*(int *)(pRecord + 8) + 0x26),
+                    0x1f, (int)nProgress - 0x17, 0, 0);
+            }
+        } else if (nSubtype >= 0x20 && nSubtype <= 0x22) {
+            if (nSubtype == 0x20) {
+                if (nProgress > 0x0e) nProgress = 0x0e;
+                nFlags = (int)nProgress + 1;
+            } else if (nSubtype == 0x21) {
+                nFlags = 0x0f;
+            } else {
+                if (nProgress > 7) nProgress = 7;
+                nFlags = 8 - (int)nProgress;
+            }
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x30),
+                (short)(*(int *)(pRecord + 8) - 0x28),
+                g_nLevelScreenMultiStageSequenceSecondaryResourceId,
+                0, 0, 0);
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x30),
+                (short)(*(int *)(pRecord + 8) - 0x28),
+                g_nLevelScreenMultiStageSequenceSecondaryResourceId,
+                nFlags, 0, 0);
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x20),
+                (short)(*(int *)(pRecord + 8) + 0x26),
+                0x1f, 10, 0, 0);
+        } else if (nSubtype == 0x23) {
+            if (nProgress > 0x28) nProgress = 0x28;
+            if (0x28 - nProgress >= 0x21) {
+                EmitLevelScreenVariantEntry(
+                    *(void **)(pScreen + 0xa40),
+                    (short)(*(int *)(pRecord + 4) - 0x30),
+                    (short)(*(int *)(pRecord + 8) - 0x28),
+                    g_nLevelScreenMultiStageSequencePrimaryResourceId,
+                    0x21, 0, 0);
+                nFlags = 0x29 - (int)nProgress;
+            } else {
+                nFlags = 0x28 - (int)nProgress;
+            }
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x30),
+                (short)(*(int *)(pRecord + 8) - 0x28),
+                g_nLevelScreenMultiStageSequencePrimaryResourceId,
+                nFlags, 0, 0);
+            if (nProgress < 0x0d) {
+                nFlags = 10;
+            } else if (nProgress < 0x17) {
+                nFlags = 0x17 - (int)nProgress;
+            } else {
+                break;
+            }
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x20),
+                (short)(*(int *)(pRecord + 8) + 0x26),
+                0x1f, nFlags, 0, 0);
+        }
+        break;
+    case 0x19:
+    case 0x1a:
+        nResourceId = nType == 0x19 ? 0x29 : 0x28;
+        nSubtype = *(int *)(pRecord + 0x18);
+        if (nSubtype == 0x1c) {
+            switch (*(short *)(pRecord + 0x1c)) {
+            case 0x14: nPalette = -1; break;
+            case 0x15: nPalette = 3; break;
+            case 0x16: nPalette = 1; break;
+            case 0x17: nPalette = 4; break;
+            default: nPalette = -1; break;
+            }
+            if (nPalette >= 0) {
+                nPalette = nPalette < 4 ?
+                    *(int *)(pScreen + 0x64 + nPalette * 4) : 0;
+                EmitLevelScreenVariantEntry(
+                    *(void **)(pScreen + 0xa40),
+                    (short)(*(int *)(pRecord + 4) - 10),
+                    (short)(*(int *)(pRecord + 8) - 0x2c),
+                    0xb2, 0, 0, nPalette);
+            }
+            nFlags = 1;
+        } else if (nSubtype == 0x1d || nSubtype == 0x1e) {
+            nFlags = 1;
+        } else if (nSubtype == 0x20 || nSubtype == 0x22) {
+            nFlags = ((*(int *)(pRecord + 0x24) -
+                       *(int *)(pRecord + 0x20)) * 0x0f) / 0x400;
+            if (nFlags > 7) nFlags = 7;
+            nFlags = nSubtype == 0x20 ? nFlags + 1 : 8 - nFlags;
+        } else if (nSubtype == 0x21) {
+            nFlags = 8;
+        } else {
+            break;
+        }
+        EmitLevelScreenVariantEntry(
+            *(void **)(pScreen + 0xa40),
+            (short)(*(int *)(pRecord + 4) - 0x1a),
+            (short)(*(int *)(pRecord + 8) - 0x18),
+            nResourceId, 0, 0, 0);
+        EmitLevelScreenVariantEntry(
+            *(void **)(pScreen + 0xa40),
+            (short)(*(int *)(pRecord + 4) - 0x1a),
+            (short)(*(int *)(pRecord + 8) - 0x18),
+            nResourceId, nFlags, 0, 0);
         break;
     case 0x1b:
         EmitLevelScreenVariantEntry(
@@ -3275,6 +3461,82 @@ void LevelScreenTerrainRenderView::DispatchDynamicRenderEntry(
             g_nLevelScreenTimedVariantResourceId,
             nFlags, 0, nPalette);
         break;
+    case 0x20:
+        nProgress = (unsigned int)(
+            ((*(int *)(pRecord + 0x24) -
+              *(int *)(pRecord + 0x20)) * 0x0f) / 1000);
+        nFlags = -1;
+        if (nProgress < 8) {
+            nResourceId = nProgress > 3 ? 4 : (int)nProgress;
+        } else if (nProgress < 0x0e) {
+            nResourceId = nProgress < 0x0b ?
+                (int)nProgress - 3 : 8;
+        } else if (nProgress < 0x14) {
+            nFlags = 9;
+            nResourceId = (int)nProgress - 4;
+        } else if (nProgress < 0x20) {
+            nFlags = 0x10;
+            nResourceId = ((int)nProgress - 0x14 & 1) + 0x11;
+        } else if (nProgress <= 0x2a) {
+            nResourceId = (int)nProgress - 0x0b;
+            if (nResourceId > 0x19) {
+                nFlags = 0x1a;
+                nResourceId = (int)nProgress - 10;
+            }
+        } else {
+            nFlags = 0x20;
+            nResourceId = ((int)nProgress & 1) + 0x21;
+        }
+        if (nFlags != -1) {
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x0d),
+                (short)(*(int *)(pRecord + 8) - 0x49),
+                0x88, nFlags, 0, 0);
+        }
+        EmitLevelScreenVariantEntry(
+            *(void **)(pScreen + 0xa40),
+            (short)(*(int *)(pRecord + 4) - 0x0d),
+            (short)(*(int *)(pRecord + 8) - 0x49),
+            0x88, nResourceId, 0, 0);
+        break;
+    case 0x21:
+        nSubtype = *(int *)(pRecord + 0x18);
+        if (nSubtype != 3 && nSubtype != 0x1b) break;
+        nProgress = (unsigned int)(
+            ((*(int *)(pRecord + 0x24) -
+              *(int *)(pRecord + 0x20)) * 8) / 1000);
+        if (nProgress > 0x39) nProgress = 0;
+        if (nProgress < 0x0c) {
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x19),
+                (short)(*(int *)(pRecord + 8) - 0x1b),
+                g_nLevelScreenMultiPhaseSequenceResourceId,
+                (int)nProgress, 0, 0);
+        } else if (nProgress < 0x2f) {
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x19),
+                (short)(*(int *)(pRecord + 8) - 0x1b),
+                g_nLevelScreenMultiPhaseSequenceResourceId,
+                0x0b, 0, 0);
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x19),
+                (short)(*(int *)(pRecord + 8) - 0x1b),
+                0x98, (int)nProgress - 0x0c, 0, 0);
+        }
+        if (nProgress > 0x2e) {
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x19),
+                (short)(*(int *)(pRecord + 8) - 0x1b +
+                        (int)nProgress - 0x2f),
+                g_nLevelScreenMultiPhaseSequenceResourceId,
+                0x0b, 0, 0);
+        }
+        break;
     case 0x22:
         nSubtype = *(int *)(pRecord + 0x18);
         if (nSubtype == 0x18) {
@@ -3310,6 +3572,45 @@ void LevelScreenTerrainRenderView::DispatchDynamicRenderEntry(
             (short)(*(int *)(pRecord + 4) - nOffsetX),
             (short)(*(int *)(pRecord + 8) - nOffsetY),
             nResourceId, 0, 0, 0);
+        break;
+    case 0x27:
+    case 0x28:
+    case 0x29:
+    case 0x2a:
+    case 0x2b:
+    case 0x2c:
+    case 0x2d:
+    case 0x2e:
+        if (nType == 0x27 || nType == 0x28) nPalette = 3;
+        else if (nType == 0x29 || nType == 0x2a) nPalette = 1;
+        else if (nType == 0x2b || nType == 0x2c) nPalette = 4;
+        else nPalette = 0;
+        nPalette = nPalette < 4 ?
+            *(int *)(pScreen + 0x64 + nPalette * 4) : 0;
+        if ((nType & 1) != 0) {
+            nProgress = (unsigned int)(*(int *)(pRecord + 0x24) -
+                                       *(int *)(pRecord + 0x20));
+            nOffsetX = (int)((nProgress & 0x780) >> 7) - 4;
+            if (((nProgress & 0x780) >> 7) > 7)
+                nOffsetX = 0x0c - (int)((nProgress & 0x780) >> 7);
+            nOffsetY = nOffsetX / 4;
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) + nOffsetX - 0x10),
+                (short)(*(int *)(pRecord + 8) + nOffsetY - 0x40),
+                0x94, 0, 0, nPalette);
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) + nOffsetX - 9),
+                (short)(*(int *)(pRecord + 8) + nOffsetY - 9),
+                0x96, 0, 0, 0);
+        } else {
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x10),
+                (short)(*(int *)(pRecord + 8) - 0x40),
+                0x95, 0, 0, nPalette);
+        }
         break;
     case 0x34:
         switch (*(int *)(*(char **)(pScreen + 0x96c) + 0x60)) {
