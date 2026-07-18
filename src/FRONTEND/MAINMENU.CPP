@@ -4364,29 +4364,46 @@ static void LEMBALL_FASTCALL UpdatePasswordEntryScreen(void *pObject) {
 }
 
 static void LEMBALL_FASTCALL DrawPasswordEntryText(void *pObject) {
+    static const char *s_apszSkillNames[4] = {
+        "Fun", "Tricky", "Taxing", "Mayhem"
+    };
     GamePasswordEntryScreenView *pScreen;
     MappedListResourceTable *pMappedList;
+    GameLevelProgressStateView *pProgress;
     short Point[2];
     short Relative[2];
+    char aszLevelCounts[4][6];
     const char *pszResult;
+    int i;
 
     pScreen = (GamePasswordEntryScreenView *)pObject;
-    if (pScreen->m_fBuildingRenderEntries364 == 0 ||
-        pScreen->m_pMappedListResources98 == 0 ||
+    if (pScreen->m_pMappedListResources98 == 0 ||
         pScreen->m_pLayout3A8 == 0) return;
     pMappedList = (MappedListResourceTable *)pScreen->m_pMappedListResources98;
-    pMappedList->ResetDrawEntryPool();
+    pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
     Relative[0] = 0;
     Relative[1] = 0;
-    Point[0] = (short)pScreen->m_pLayout3A8[22];
-    Point[1] = (short)pScreen->m_pLayout3A8[23];
-    pMappedList->SubmitRenderEntry(
-        pScreen->m_pRenderContext88, Point, Relative,
-        pScreen->m_nMappedListRemapResourceId384,
-        pScreen->m_szPassword3B0, 0x20, 0);
+    for (i = 0; i < 4; ++i) {
+        Point[0] = (short)pScreen->m_pLayout3A8[6 + i * 2];
+        Point[1] = (short)pScreen->m_pLayout3A8[7 + i * 2];
+        pMappedList->SubmitRenderEntry(
+            pScreen->m_pRenderContext88, Point, Relative,
+            pScreen->m_nMappedListRemapResourceId384,
+            (void *)s_apszSkillNames[i], 0x20, 0);
+        strcpy(aszLevelCounts[i], ": ");
+        FormatSignedIntToRadixString(
+            pProgress->m_anUnlockedPackCaps28[i] + 1,
+            aszLevelCounts[i] + 2, 10);
+        Point[0] = (short)pScreen->m_pLayout3A8[14 + i * 2];
+        Point[1] = (short)pScreen->m_pLayout3A8[15 + i * 2];
+        pMappedList->SubmitRenderEntry(
+            pScreen->m_pRenderContext88, Point, Relative,
+            pScreen->m_nMappedListRemapResourceId384,
+            aszLevelCounts[i], 0x20, 0);
+    }
     if (pScreen->m_nResultState488 == 1) {
         pszResult = pScreen->m_fPasswordValid484 != 0
-            ? "Password OK!" : "Invalid Password";
+            ? "Password OK!" : "Invalid Password!";
         Point[0] = (short)pScreen->m_pLayout3A8[30];
         Point[1] = (short)pScreen->m_pLayout3A8[31];
         pMappedList->SubmitRenderEntry(
@@ -4401,6 +4418,7 @@ static void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void *pObject) {
     MappedListResourceTable *pMappedList;
     short Point[2];
     short Relative[2];
+    short Extent[2];
     short Rect[4];
     void *pSavedContext;
 
@@ -4425,8 +4443,12 @@ static void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void *pObject) {
     }
     Relative[0] = 0;
     Relative[1] = 0;
+    MeasureFunctionalLevelTitleExtent(
+        pMappedList->GetMappedResource(
+            pScreen->m_nMappedListRemapResourceId384),
+        Extent, pScreen->m_szPassword3B0);
     Point[0] = (short)(pScreen->m_cxScreen37C -
-        pScreen->m_pLayout3A8[22] - pScreen->m_cPassword420 * 8);
+        pScreen->m_pLayout3A8[22] - Extent[0]);
     Point[1] = (short)pScreen->m_pLayout3A8[23];
     pMappedList->SubmitRenderEntry(
         pScreen->m_pRenderContext88, Point, Relative,
