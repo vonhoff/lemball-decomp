@@ -1043,6 +1043,10 @@ struct VsGdiDibRectDispatch {
                                 void *pSourceBinding,
                                 short *pSourcePoint) = 0;
 };
+
+struct VsGdiDeleteDispatch {
+    virtual ~VsGdiDeleteDispatch(void) = 0;
+};
 // GLOBAL: LEMBALL 0x00498798
 static VsGdiDisplayBitmapVtable g_VSGDI_DisplayBitmapVtable = {
     VsGdiDeleteDisplayBitmap,
@@ -1520,7 +1524,7 @@ int VsGdiDisplayState::ReleaseDisplayBitmap(void *pBitmap) {
     if (pDisplayBitmap == 0)
         return 1;
     nResult = DeleteObject(pDisplayBitmap->m_hBitmap);
-    VsGdiDeleteDisplayBitmap(pDisplayBitmap, 0, 1);
+    delete (VsGdiDeleteDispatch *)pDisplayBitmap;
     return nResult;
 }
 
@@ -1597,14 +1601,14 @@ void *VsGdiDisplayState::BindDisplayBitmap(int nDriver, void *pBitmap) {
 
 // FUNCTION: LEMBALL 0x00456d40
 void *VsGdiDisplayState::DeleteDisplayBitmap(int nDriver, void *pBitmap) {
-    VsGdiHelperTargetParamWrapper *pBinding;
     VsGdiDisplayBitmap *pDisplayBitmap;
     HGDIOBJ hResult;
 
-    pBinding = (VsGdiHelperTargetParamWrapper *)(unsigned long)nDriver;
     pDisplayBitmap = (VsGdiDisplayBitmap *)pBitmap;
     hResult = SelectObject(
-        (void *)(unsigned long)pBinding->m_nWrappedParam,
+        (void *)(unsigned long)
+            ((VsGdiHelperTargetParamWrapper *)(unsigned long)nDriver)
+                ->m_nWrappedParam,
         pDisplayBitmap->m_hPreviousBitmap);
     return hResult != 0 ? pDisplayBitmap : 0;
 }
