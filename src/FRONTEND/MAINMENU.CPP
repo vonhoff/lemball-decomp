@@ -23,6 +23,7 @@ extern "C" DWORD WINAPI timeGetTime(void);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 extern void VariantResourceBundleNoopThunk(void);
 extern void *LoadBitmapResource(int nResourceId);
+extern int *LoadBinResource(int nResourceId);
 extern void LoadVariantRenderResource(void *pManager, int nResourceId);
 extern void EmitVariantRenderResourceEntry(
     void *pManager, short *pRect, const short *pPoint,
@@ -96,6 +97,14 @@ public:
     char m_abReservedFC[0x48];
     int m_nCurrentChild144;
     int m_fChildrenEnabled148;
+};
+
+struct GameLevelMetadataView {
+    unsigned short m_cSkill00;
+    unsigned short m_cPlayers02;
+    unsigned short m_cNetworkPlayers04;
+    unsigned short m_nTimeSeconds06;
+    char m_szTitle08[0x24];
 };
 
 class GameIntroSequenceMediaState {
@@ -308,6 +317,8 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(
     void *pObject);
 static void RefreshFunctionalLevelSelectionMetadata(
     GameLevelSelectionScreenView *pScreen);
+static int ReadFunctionalLevelMetadata(
+    int nSkill, int nLevel, GameLevelMetadataView *pMetadata);
 static void SelectFunctionalLevel(
     GameLevelSelectionScreenView *pScreen, int nDirection);
 static GameProgressiveVariantFrameSelector *
@@ -1833,19 +1844,27 @@ static void RefreshFunctionalLevelSelectionMetadata(
     int nPack;
     int nCurrentLevel;
     int nUnlockedCap;
+    GameLevelMetadataView Metadata;
 
     pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
     nPack = pProgress->m_nCurrentPack08;
-    nCurrentLevel = pProgress->m_nCurrentLevel00;
-    wsprintfA(pScreen->m_aszTitleLines3FC[0],
-              "LEVEL %d", nCurrentLevel + 1);
+    nCurrentLevel = pProgress->m_anSnapshotPackCaps3C[nPack];
+    memset(&Metadata, 0, sizeof(Metadata));
+    if (ReadFunctionalLevelMetadata(nPack, nCurrentLevel, &Metadata) == 0 ||
+        Metadata.m_szTitle08[0] == '\0') {
+        wsprintfA(Metadata.m_szTitle08, "LEVEL %d", nCurrentLevel + 1);
+    }
+    strncpy(pScreen->m_aszTitleLines3FC[0], Metadata.m_szTitle08, 0x1f);
+    pScreen->m_aszTitleLines3FC[0][0x1f] = '\0';
     pScreen->m_aszTitleLines3FC[1][0] = '\0';
     pScreen->m_aszTitleLines3FC[2][0] = '\0';
-    strcpy(pScreen->m_abTime45C, "0:00");
-    pScreen->m_cSkillStatus3F4 = nPack;
-    pScreen->m_cStatus3EC = 0;
-    pScreen->m_cNetworkStatus3F0 = 0;
-    pScreen->m_nLevelTime3F8 = 0;
+    pScreen->m_nLevelTime3F8 = Metadata.m_nTimeSeconds06;
+    wsprintfA(pScreen->m_abTime45C, "%d:%02d",
+              Metadata.m_nTimeSeconds06 / 60,
+              Metadata.m_nTimeSeconds06 % 60);
+    pScreen->m_cSkillStatus3F4 = Metadata.m_cSkill00;
+    pScreen->m_cStatus3EC = Metadata.m_cPlayers02;
+    pScreen->m_cNetworkStatus3F0 = Metadata.m_cNetworkPlayers04;
     pScreen->m_fPreviousLocked484 = nCurrentLevel == 0;
     if (nPack == 4) {
         pScreen->m_fNextLocked480 = nCurrentLevel >= 10;
@@ -1855,6 +1874,111 @@ static void RefreshFunctionalLevelSelectionMetadata(
     }
     pScreen->m_fSelectorDirty360 = 1;
     pScreen->m_fFrameDirty330 = 1;
+}
+
+static int GetFunctionalLevelBinResourceId(int nSkill, int nLevel) {
+    static const int s_anFirstResourceIds[5] = {
+        0x244, 0x25d, 0x277, 0x294, 0x2aa
+    };
+
+    if ((unsigned int)nSkill >= 5U) {
+        nSkill = 4;
+    }
+    return s_anFirstResourceIds[nSkill] + nLevel;
+}
+
+static int ReadFunctionalLevelMetadata(
+    int nSkill, int nLevel, GameLevelMetadataView *pMetadata) {
+    typedef void (LEMBALL_FASTCALL *LoadProc)(void *, int);
+    typedef unsigned char *(LEMBALL_FASTCALL *GetDataProc)(void *, int);
+    int *pResource;
+    unsigned char *pChunk;
+    unsigned char *pPayload;
+    unsigned int nChunkType;
+    unsigned int cbChunk;
+    unsigned int cbAligned;
+    unsigned short nVersion;
+    unsigned short cEntries;
+    unsigned short nTotal;
+    unsigned int i;
+
+    pResource = LoadBinResource(
+        GetFunctionalLevelBinResourceId(nSkill, nLevel));
+    if (pResource == 0) {
+        return 0;
+    }
+    if (pResource[4] == 0) {
+        ((LoadProc)(*(void ***)pResource)[7])(pResource, 0);
+    } else {
+        pResource[9] = 0;
+    }
+    ++pResource[2];
+    pChunk = ((GetDataProc)(*(void ***)pResource)[10])(pResource, 0);
+    if (pChunk == 0) {
+        --pResource[2];
+        ReleaseTypedResourceObjectReference(pResource);
+        return 0;
+    }
+
+    for (;;) {
+        nChunkType = *(unsigned int *)(pChunk + 0);
+        cbChunk = *(unsigned int *)(pChunk + 4);
+        pPayload = pChunk + 8;
+        if (nChunkType == 0x41492020U) {
+            nVersion = 0;
+            if (4 < cbChunk - 8) {
+                nVersion = *(unsigned short *)pPayload;
+                pPayload += 2;
+            }
+            pMetadata->m_nTimeSeconds06 =
+                *(unsigned short *)(pPayload + 2);
+            if (nVersion < 4) {
+                pMetadata->m_cPlayers02 = 4;
+                pMetadata->m_cSkill00 = 1;
+            } else {
+                pMetadata->m_cPlayers02 =
+                    *(unsigned short *)(pPayload + 4);
+                pMetadata->m_cSkill00 =
+                    *(unsigned short *)(pPayload + 6);
+            }
+        } else if (nChunkType == 0x4e414d45U) {
+            strcpy(pMetadata->m_szTitle08, (const char *)pPayload);
+            pMetadata->m_szTitle08[0x20] = '\0';
+        } else if (nChunkType == 0x4e455457U ||
+                   nChunkType == 0x504c5331U) {
+            cEntries = *(unsigned short *)pPayload;
+            nTotal = 0;
+            pPayload += 2;
+            for (i = 0; i < cEntries; ++i) {
+                pPayload += 6;
+                nTotal = (unsigned short)(
+                    nTotal + *(unsigned short *)pPayload);
+                pPayload += 2;
+            }
+            if (nChunkType == 0x4e455457U) {
+                if (g_nSelectedNetworkLobbyPeerId == 0 ||
+                    *(int *)(g_nSelectedNetworkLobbyPeerId + 0x1c) == 1) {
+                    pMetadata->m_cNetworkPlayers04 = nTotal;
+                } else {
+                    pMetadata->m_cPlayers02 = nTotal;
+                }
+            } else if (g_nSelectedNetworkLobbyPeerId == 0 ||
+                       *(int *)(g_nSelectedNetworkLobbyPeerId + 0x1c) == 1) {
+                pMetadata->m_cPlayers02 = nTotal;
+            } else {
+                pMetadata->m_cNetworkPlayers04 = nTotal;
+            }
+        } else if (nChunkType == 0x454e443fU) {
+            --pResource[2];
+            ReleaseTypedResourceObjectReference(pResource);
+            return 1;
+        }
+        cbAligned = cbChunk;
+        if ((cbAligned & 3U) != 0) {
+            cbAligned = (cbAligned & ~3U) + 4;
+        }
+        pChunk += cbAligned;
+    }
 }
 
 static void SelectFunctionalLevel(

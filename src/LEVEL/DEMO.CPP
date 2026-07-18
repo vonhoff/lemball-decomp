@@ -46,7 +46,8 @@ extern int LEMBALL_FASTCALL GetField28GetMemorySize(void *pObject);
 extern void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtable(void *pObject);
 
 static void LEMBALL_FASTCALL SetBinResourceTypeTag(void *pObject);
-static void *DestroyBinResource(void *pObject, int fDelete);
+static void *LEMBALL_FASTCALL DestroyBinResource(
+    void *pObject, int nUnused, int fDelete);
 
 static void *g_DEMO_BinResourceVtableStorage[15] = {
     (void *)DestroyBinResource,
@@ -90,7 +91,8 @@ void *DeleteLevelDemoPlaybackController(void *pPlaybackController, unsigned char
 void *RestoreLevelDemoPlaybackBaseVtable(void *pPlaybackController, unsigned char fDelete);
 int *LoadBinResource(int nResourceId);
 static void LEMBALL_FASTCALL SetBinResourceTypeTag(void *pObject);
-static void *DestroyBinResource(void *pObject, int fDelete);
+static void *LEMBALL_FASTCALL DestroyBinResource(
+    void *pObject, int nUnused, int fDelete);
 FILE *OpenFileWithMode(const char *pszPath, const char *pszMode);
 void CloseCrtFilePointer(FILE *pFile);
 unsigned int ReadFileBytes(FILE *pFile, void *pBuffer, size_t cbBuffer);
@@ -491,7 +493,10 @@ static void LEMBALL_FASTCALL SetBinResourceTypeTag(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x0045ec70
-static void *DestroyBinResource(void *pObject, int fDelete) {
+static void *LEMBALL_FASTCALL DestroyBinResource(
+    void *pObject, int, int fDelete)
+
+{
     InitializeTypedResourceObjectBaseVtable(pObject);
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
