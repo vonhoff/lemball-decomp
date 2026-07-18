@@ -606,6 +606,8 @@ static void LEMBALL_FASTCALL EmitFramedScreenOverlayVariantEntry(
     void *pObject);
 static void LEMBALL_FASTCALL EmitQueuedVariantChildSlotEntry(
     void *pObject);
+static void LEMBALL_FASTCALL NoopQueuedVariantChildSlotManagerUpdate(
+    void *pObject);
 static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(void *pObject);
 static void LEMBALL_FASTCALL LoadFramedScreenFrameResources(void *pObject);
 static void LEMBALL_FASTCALL ReleaseFramedScreenFrameResources(void *pObject);
@@ -2084,15 +2086,14 @@ static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject) {
         pScreen->m_fNetworkReady94 == 0) {
         pNetworkRuntime =
             (VsNetRuntimeModeView *)g_pNetworkLobbyVsnetRuntime;
-        if (pNetworkRuntime != 0 &&
-            pNetworkRuntime->m_nMode48 ==
-                pNetworkRuntime->m_nModeState4C) {
+        if (pNetworkRuntime->m_nMode48 ==
+            pNetworkRuntime->m_nModeState4C) {
             pScreen->m_nNetworkState90 = 0;
             pScreen->m_fNetworkReady94 = 1;
             if (pScreen->m_pQueuedVariantManager338 != 0) {
                 ((GameQueuedVariantManagerView *)
                     pScreen->m_pQueuedVariantManager338)
-                        ->SetChildrenEnabled(1);
+                        ->SetChildrenEnabledThunk(1);
                 *(int *)((char *)pScreen->m_pQueuedVariantManager338 +
                          0x144) = 1;
             }
@@ -2102,12 +2103,13 @@ static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject) {
         dwNow = timeGetTime();
         if (pScreen->m_dwRandomDelay33C + 1000U <
             dwNow - pScreen->m_dwRandomStart340) {
+            dwNow = timeGetTime();
             pScreen->m_dwRandomStart340 = dwNow;
             ((GameOneArgVirtual)
                  (*(void ***)pScreen->m_pTimedFrameSelector34C)[3])(
                 pScreen->m_pTimedFrameSelector34C, 0,
                 (void *)(unsigned long)dwNow);
-            if (g_pSessionRandomState != 0) {
+            {
                 unsigned int uRandom;
                 uRandom = (*(unsigned int *)g_pSessionRandomState * 0x29U +
                            0x1fU) & 0x7fffffU;
@@ -2119,6 +2121,10 @@ static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject) {
     if (pScreen->m_pSelectorManager334 != 0) {
         UpdateMenuSelectorAnimation(
             (GameMenuSelectorManager *)pScreen->m_pSelectorManager334);
+    }
+    if (pScreen->m_pQueuedVariantManager338 != 0) {
+        NoopQueuedVariantChildSlotManagerUpdate(
+            pScreen->m_pQueuedVariantManager338);
     }
     ((GameNoArgVirtual)pScreen->m_pVtable00[14])(pScreen, 0);
 }
@@ -4843,6 +4849,10 @@ static void LEMBALL_FASTCALL EmitQueuedVariantChildSlotEntry(
     *(void **)(pManager + 0x2c) = pSavedOwner;
     ((LevelVariantRenderManagerView *)(pManager + 0x10))
         ->ResetOrFlipVariantRenderBuffers();
+}
+
+static void LEMBALL_FASTCALL NoopQueuedVariantChildSlotManagerUpdate(
+    void *) {
 }
 
 // FUNCTION: LEMBALL 0x0044fbd0
