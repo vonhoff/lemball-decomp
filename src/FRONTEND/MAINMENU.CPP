@@ -2014,11 +2014,10 @@ static void LEMBALL_FASTCALL UpdateMainMenuScreen(void *pObject) {
     GameMainMenuScreenView *pScreen;
     GameLevelProgressStateView *pProgress;
     DWORD dwNow;
-    int fReady;
 
     pScreen = (GameMainMenuScreenView *)pObject;
-    pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
     if (g_fStartupTestAllLevels != 0) {
+        pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
         pProgress->m_nCurrentLevel00 = pProgress->m_anSnapshotPackCaps3C[0];
         pProgress->m_nCurrentPack08 = 0;
         pScreen->m_nTransitionStatus378 = 1;
@@ -2026,14 +2025,11 @@ static void LEMBALL_FASTCALL UpdateMainMenuScreen(void *pObject) {
     }
 
     dwNow = timeGetTime();
-    fReady = IsPrimaryContextWindowReadyForPresent(
-        (int *)pScreen->m_pPrimaryContext84);
-    if (fReady != 0) {
-        fReady = ((GameIntNoArgVirtual)
-                      (*(void ***)pScreen->m_pPrimaryContext84)[24])(
-            pScreen->m_pPrimaryContext84, 0);
-    }
-    if (fReady == 0) {
+    if (IsPrimaryContextWindowReadyForPresent(
+            (int *)pScreen->m_pPrimaryContext84) == 0 ||
+        ((GameIntNoArgVirtual)
+             (*(void ***)pScreen->m_pPrimaryContext84)[24])(
+            pScreen->m_pPrimaryContext84, 0) == 0) {
         pScreen->m_dwTimeout398 = timeGetTime() + 20000U;
         return;
     }
