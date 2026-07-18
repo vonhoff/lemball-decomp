@@ -166,6 +166,7 @@ public:
     int ApplyDirectDrawPalette(void *pPalette);
     int BindDirectDrawSurface(int nDriver, void *pSurface);
     int ReleaseDirectDrawSurface(int nDriver, void *pSurface);
+    int IsDirectDrawPaletteReady(void) const;
 
 private:
     void *m_pDirectDrawObject;             // 0x1c

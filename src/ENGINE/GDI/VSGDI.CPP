@@ -1192,7 +1192,10 @@ static void InitializeDisplayStateVtables(void) {
     union { int (VsGdiDisplayState::*p)(void *); void *v; } bitmapObjectMethod;
     union { void *(VsGdiDisplayState::*p)(int, void *); void *v; } bitmapReadyMethod;
     union { void *(VsGdiDisplayState::*p)(int, void *); void *v; } bitmapDeleteMethod;
-    union { int (VsGdiDisplayState::*p)(void) const; void *v; } readyMethod;
+    union {
+        int (VsGdiDirectDrawDisplayState::*p)(void) const;
+        void *v;
+    } directDrawReadyMethod;
     union { int (VsGdiDirectDrawDisplayState::*p)(int, void *); void *v; }
         bindDirectDrawSurfaceMethod;
     union { int (VsGdiDirectDrawDisplayState::*p)(int, void *); void *v; }
@@ -1258,7 +1261,8 @@ static void InitializeDisplayStateVtables(void) {
         &VsGdiDirectDrawDisplayState::StretchDirectDrawSurfaceRect;
     applyDirectDrawPaletteMethod.p =
         &VsGdiDirectDrawDisplayState::ApplyDirectDrawPalette;
-    readyMethod.p = &VsGdiDisplayState::IsReady;
+    directDrawReadyMethod.p =
+        &VsGdiDirectDrawDisplayState::IsDirectDrawPaletteReady;
     createDirectDrawBindingMethod.p =
         &VsGdiDirectDrawDisplayState::CreateDirectDrawDisplayBinding;
     releaseDirectDrawBindingMethod.p =
@@ -1319,8 +1323,9 @@ static void InitializeDisplayStateVtables(void) {
         (void *)SelectAndRealizeDisplayPalette;
     g_VSGDI_MetricsDisplayVtable[13] =
         (void *)UsesExistingDisplayPaletteAsFallback;
-    g_VSGDI_DibDisplayVtable[13] = readyMethod.v;
-    g_VSGDI_DirectDrawDisplayVtable[13] = readyMethod.v;
+    g_VSGDI_DibDisplayVtable[13] =
+        (void *)UsesExistingDisplayPaletteAsFallback;
+    g_VSGDI_DirectDrawDisplayVtable[13] = directDrawReadyMethod.v;
 }
 
 struct VsGdiDisplayStateVtableInitializer {
@@ -2657,6 +2662,11 @@ void *VsGdiDibDisplayState::Delete(int fDelete) {
         FreeVSMemBlock(pThis);
     }
     return pThis;
+}
+
+// FUNCTION: LEMBALL 0x00458350
+int VsGdiDirectDrawDisplayState::IsDirectDrawPaletteReady(void) const {
+    return m_pDirectDrawPalette != 0;
 }
 
 // FUNCTION: LEMBALL 0x00458360
