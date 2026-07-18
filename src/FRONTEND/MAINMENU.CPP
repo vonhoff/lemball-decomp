@@ -661,6 +661,7 @@ static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
 
 
 
+// GLOBAL: LEMBALL 0x00497af0
 void *g_GAME_MainMenuScreenVtable[22] = {
     (void *)DeleteMainMenuScreenThunk,
     (void *)NoopPackagedSpriteRenderEntryThunk00402A22,
@@ -686,6 +687,7 @@ void *g_GAME_MainMenuScreenVtable[22] = {
     (void *)MainMenuSlot21Thunk
 };
 
+// GLOBAL: LEMBALL 0x00497ae0
 void *g_GAME_MainMenuQueueVtable[4] = {
     (void *)InitializeNonZrleVariantRenderEntry,
     (void *)DeleteAdjustedMainMenuScreenThunk,
@@ -693,6 +695,7 @@ void *g_GAME_MainMenuQueueVtable[4] = {
     0
 };
 
+// GLOBAL: LEMBALL 0x00497ad8
 void *g_GAME_MainMenuCallbackVtable[2] = {
     (void *)VariantResourceBundleNoopThunk,
     0
@@ -2074,13 +2077,14 @@ static void LEMBALL_FASTCALL DestroyMainMenuScreen(void *pObject) {
     GameLevelProgressStateView *pProgress;
     int nPackSelection;
 
-    pScreen = (GameMainMenuScreenView *)pObject;
-    nPackSelection = pScreen->m_nPackSelection3B4;
-    pScreen->m_pVtable00 = g_GAME_MainMenuScreenVtable;
-    *(void ***)pScreen->m_abRenderQueueNode04 =
+    nPackSelection =
+        ((GameMainMenuScreenView *)pObject)->m_nPackSelection3B4;
+    *(void ***)pObject = g_GAME_MainMenuScreenVtable;
+    *(void ***)((char *)pObject + 4) =
         g_GAME_MainMenuQueueVtable;
-    *(void ***)pScreen->m_abVariantRenderManager14 =
+    *(void ***)((char *)pObject + 0x14) =
         g_GAME_MainMenuCallbackVtable;
+    pScreen = (GameMainMenuScreenView *)pObject;
     switch (nPackSelection) {
         case 0:
             pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
