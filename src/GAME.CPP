@@ -4631,7 +4631,7 @@ void *GameScreenObject::ConstructMainMenuScreen(void *pPrimaryContext, void *pWi
         *(int *)(pScreen + 0x3b4) = 3;
         break;
     }
-    pProgress->m_nUnused4C = 0;
+    ((GameLevelProgressState *)g_pLevelProgressState)->m_nUnused4C = 0;
     *(int *)(pScreen + 0xa8) = 1;
     *(int *)(pScreen + 0xac) = 1;
     *(int *)(pScreen + 0xb0) = 1;
