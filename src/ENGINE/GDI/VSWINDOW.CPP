@@ -1548,7 +1548,7 @@ VS_WindowOwnerBase::~VS_WindowOwnerBase(void) {
 // FUNCTION: LEMBALL 0x004655a0
 void VS_WindowOwnerBase::DestroyWindowOwnerHwnd(void) {
     VS_RootGeometryOwnerChildNode *pNode;
-    VS_RootGeometryOwnerChildNode *pNext;
+    VS_RootGeometryOwner *pOwner;
     int nSelectedDriver;
 
     if (m_cRetains04 == 0) {
@@ -1556,9 +1556,9 @@ void VS_WindowOwnerBase::DestroyWindowOwnerHwnd(void) {
     }
     pNode = m_pChildren24;
     while (pNode != 0) {
-        pNext = pNode->m_pNext;
-        pNode->m_pOwner->DestroyWindowOwnerHwnd();
-        pNode = pNext;
+        pOwner = pNode->m_pOwner;
+        pNode = pNode->m_pNext;
+        pOwner->DestroyWindowOwnerHwnd();
     }
     ReservedWindowOwnerSlot16();
     ReleaseRootGeometryOwner();
