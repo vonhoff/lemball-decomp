@@ -79,6 +79,11 @@ extern void *g_pVariantResourceEntryManager;
 extern void SetVariantResourceEffectsEnabled(int fEnabled);
 extern void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pObject);
 extern void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(void *pObject);
+extern void *LEMBALL_FASTCALL InitializeEmptyGeometryOwnerRect(void *pObject);
+extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(
+    void *pOwner, int nUnusedEdx, void *pChild);
+extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
+    void *pOwner, int nUnusedEdx, void *pChild);
 
 struct GameProgressiveSelectorVtableView {
     virtual int SelectFrame(void) = 0;
@@ -663,6 +668,64 @@ static const char *g_GAME_NetworkLobbyStatusText[10] = {
     "Network Facilities not available",
     "No Message"
 };
+
+static unsigned char g_GAME_NetworkLobbyPaletteRemaps[6][8] = {
+    {2, 0xf1, 0x51, 0x5d, 0x3d, 0, 0, 0},
+    {2, 0xf1, 0x51, 0x45, 0x20, 0, 0, 0},
+    {2, 0xf1, 0x51, 0x65, 0x31, 0, 0, 0},
+    {2, 0xf1, 0x51, 0xad, 0xbd, 0, 0, 0},
+    {2, 0xf1, 0x51, 0x8c, 0xad, 0, 0, 0},
+    {2, 0xf1, 0x51, 0xa8, 0x6c, 0, 0, 0}
+};
+
+static void *g_GAME_NetworkLobbyPlayerEntryVtable[8];
+static void **g_pNetworkLobbyPlayerEntryBaseVtable;
+static int g_fNetworkLobbyPlayerEntryVtableInitialized;
+
+static void LEMBALL_FASTCALL MarkNetworkLobbyPlayerEntryActive(
+    void *pEntry) {
+    *(int *)((char *)pEntry + 0x38) = 1;
+}
+
+static void LEMBALL_FASTCALL ClearNetworkLobbyPlayerEntryActive(
+    void *pEntry) {
+    *(int *)((char *)pEntry + 0x38) = 0;
+}
+
+static void LEMBALL_FASTCALL MarkNetworkLobbyPlayerEntryEventDirty(
+    void *pEntry, int, const VS_XYPair *, int nEvent) {
+    if (nEvent == 0 || nEvent == 3) {
+        *(int *)((char *)pEntry + 0x3c) = 1;
+    }
+}
+
+static void InitializeNetworkLobbyPlayerEntryVtable(void **pBaseVtable) {
+    int i;
+
+    if (g_fNetworkLobbyPlayerEntryVtableInitialized != 0) {
+        return;
+    }
+    g_pNetworkLobbyPlayerEntryBaseVtable = pBaseVtable;
+    for (i = 0; i < 8; ++i) {
+        g_GAME_NetworkLobbyPlayerEntryVtable[i] = pBaseVtable[i];
+    }
+    g_GAME_NetworkLobbyPlayerEntryVtable[4] =
+        (void *)MarkNetworkLobbyPlayerEntryActive;
+    g_GAME_NetworkLobbyPlayerEntryVtable[5] =
+        (void *)ClearNetworkLobbyPlayerEntryActive;
+    g_GAME_NetworkLobbyPlayerEntryVtable[6] =
+        (void *)MarkNetworkLobbyPlayerEntryEventDirty;
+    g_fNetworkLobbyPlayerEntryVtableInitialized = 1;
+}
+
+static void ConstructNetworkLobbyPlayerEntry(void *pEntry) {
+    InitializeEmptyGeometryOwnerRect(pEntry);
+    InitializeNetworkLobbyPlayerEntryVtable(*(void ***)pEntry);
+    *(void ***)pEntry = g_GAME_NetworkLobbyPlayerEntryVtable;
+    *(int *)((char *)pEntry + 0x38) = 0;
+    *(int *)((char *)pEntry + 0x3c) = 0;
+    *(int *)((char *)pEntry + 0x40) = 0;
+}
 
 static const int g_GAME_PasswordLayoutStandard[32] = {
     0, 0, 384, 32, 16, 16, 16, 176,
@@ -2277,6 +2340,9 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
     void *pObject, int, void *pPrimaryContext,
     void *pRenderContext, short *paSize) {
     GameNetworkLobbyScreenView *pScreen;
+    int *pEntryArray;
+    int nPaletteResourceId;
+    int i;
 
     pScreen = (GameNetworkLobbyScreenView *)pObject;
     ConstructFramedScreenBaseFields(
@@ -2294,6 +2360,30 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
     pScreen->m_dwBlinkStart3C8 = timeGetTime();
     pScreen->m_nSelectedPlayer3D0 = -1;
     pScreen->m_nResolvedPlayer3D4 = -1;
+    pEntryArray = (int *)AllocateVSMemBlock(0x2ac);
+    if (pEntryArray != 0) {
+        pEntryArray[0] = 10;
+        pScreen->m_pPlayerEntries3CC = pEntryArray + 1;
+        for (i = 0; i < 10; ++i) {
+            ConstructNetworkLobbyPlayerEntry(
+                (char *)pScreen->m_pPlayerEntries3CC + i * 0x44);
+        }
+    }
+    nPaletteResourceId =
+        *(int *)((char *)pScreen->m_pPrimaryContext84 + 0x54);
+    for (i = 0; i < 6; ++i) {
+        pScreen->m_anPaletteRemaps414[i] =
+            (int)(unsigned long)RegisterPaletteRemapVariant(
+                nPaletteResourceId,
+                g_GAME_NetworkLobbyPaletteRemaps[i], 2);
+    }
+    if (pScreen->m_pPlayerEntries3CC != 0) {
+        for (i = 0; i < 10; ++i) {
+            AppendGeometryOwnerChild(
+                *(void **)((char *)pScreen->m_pPrimaryContext84 + 0x1c),
+                0, (char *)pScreen->m_pPlayerEntries3CC + i * 0x44);
+        }
+    }
     pScreen->m_pLayout42C = pScreen->m_fCompactLayout32C != 0
         ? g_GAME_NetworkLobbyLayoutCompact
         : g_GAME_NetworkLobbyLayoutStandard;
@@ -2375,12 +2465,30 @@ static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(
 
 static void DestroyNetworkLobbyScreen(
     GameNetworkLobbyScreenView *pScreen) {
+    int i;
+
     pScreen->m_pVtable00 = g_GAME_NetworkLobbyScreenVtable;
     *(void ***)pScreen->m_abRenderQueueNode04 =
         g_GAME_NetworkLobbyQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
         g_GAME_MainMenuCallbackVtable;
     g_pActiveNetworkLobbyScreen = 0;
+    if (pScreen->m_pPlayerEntries3CC != 0) {
+        for (i = 0; i < 10; ++i) {
+            RemoveGeometryOwnerChild(
+                *(void **)((char *)pScreen->m_pPrimaryContext84 + 0x1c),
+                0, (char *)pScreen->m_pPlayerEntries3CC + i * 0x44);
+            *(void ***)((char *)pScreen->m_pPlayerEntries3CC + i * 0x44) =
+                g_pNetworkLobbyPlayerEntryBaseVtable;
+        }
+        FreeVSMemBlock((char *)pScreen->m_pPlayerEntries3CC - 4);
+        pScreen->m_pPlayerEntries3CC = 0;
+    }
+    for (i = 0; i < 6; ++i) {
+        ReleasePaletteRemapVariant(
+            (void *)(unsigned long)pScreen->m_anPaletteRemaps414[i]);
+        pScreen->m_anPaletteRemaps414[i] = 0;
+    }
     if (g_pSharedRenderDispatchQueue != 0) {
         ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
             ->UnregisterOrderedRenderDispatchClient(
