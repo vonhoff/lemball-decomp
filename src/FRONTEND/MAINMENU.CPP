@@ -103,6 +103,7 @@ extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(
     void *pOwner, int nUnusedEdx, void *pChild);
 extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
     void *pOwner, int nUnusedEdx, void *pChild);
+extern void SetGeometryChildEnabled(void *pGeometryChild, int fEnabled);
 extern void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen);
 extern int ThunkSelectNextNetworkLobbyPlayerEntry(int nNetworkLobbyScreen);
 extern int ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen);
@@ -1098,6 +1099,37 @@ static void FlushNetworkLobbyDeferredStatus(
     pScreen->m_nDeferredStatus430 = 0;
 }
 
+static void HideNetworkLobbyPlayerEntries(
+    GameNetworkLobbyScreenView *pScreen) {
+    int i;
+
+    pScreen->m_fPromptActive3DC = 1;
+    if (pScreen->m_pPlayerEntries3CC != 0) {
+        for (i = 0; i < 10; ++i) {
+            SetGeometryChildEnabled(
+                (char *)pScreen->m_pPlayerEntries3CC + i * 0x44, 0);
+        }
+    }
+}
+
+static void ShowNetworkLobbyPlayerEntries(
+    GameNetworkLobbyScreenView *pScreen) {
+    pScreen->m_fPromptActive3DC = 0;
+    ThunkRefreshNetworkLobbyPlayerEntries((int)(unsigned long)pScreen);
+}
+
+static void ClearNetworkLobbyPlayerEntryDirty(
+    GameNetworkLobbyScreenView *pScreen, int iEntry) {
+    if (iEntry != -1 && iEntry < 10 &&
+        pScreen->m_pPlayerEntries3CC != 0) {
+        *(int *)((char *)pScreen->m_pPlayerEntries3CC +
+                 iEntry * 0x44 + 0x40) = 0;
+        if (pScreen->m_nSelectedPlayer3D0 == iEntry) {
+            ShowNetworkLobbyPlayerEntries(pScreen);
+        }
+    }
+}
+
 static void CloseNetworkLobbyTransportPeers(void *pController) {
     GameNetworkLobbyScreenView *pScreen;
     GameNetworkLobbyRuntimeView *pRuntime;
@@ -1117,9 +1149,8 @@ static void CloseNetworkLobbyTransportPeers(void *pController) {
     }
     pCloseStream->m_nU32Payload = 1;
     for (i = 0; i < 10; ++i) {
-        if (pScreen != 0 && pScreen->m_pPlayerEntries3CC != 0) {
-            *(int *)((char *)pScreen->m_pPlayerEntries3CC +
-                     i * 0x44 + 0x40) = 0;
+        if (pScreen != 0) {
+            ClearNetworkLobbyPlayerEntryDirty(pScreen, i);
         }
         pPeer = pRuntime->m_apTrackedPeers20[i];
         if (pPeer == 0 ||
@@ -3949,6 +3980,9 @@ static void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void *pObject) {
     GameNetworkLobbyRuntimeView *pRuntime;
     const char *pszLocalAddress;
     const char *pszLocalComputer;
+    GameEffStream *pStream;
+    void *pPeer;
+    int i;
     DWORD dwNow;
 
     pScreen = (GameNetworkLobbyScreenView *)pObject;
@@ -4007,6 +4041,53 @@ static void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void *pObject) {
             (int)(unsigned long)pScreen);
         pScreen->m_fRefreshPlayers3C4 = 0;
         pScreen->m_fSelectorDirty360 = 1;
+    }
+    if (pRuntime != 0 && pScreen->m_pPlayerEntries3CC != 0 &&
+        g_pActiveNetworkLobbyTransportController != 0) {
+        for (i = 0; i < 10; ++i) {
+            if (*(int *)((char *)pScreen->m_pPlayerEntries3CC +
+                         i * 0x44 + 0x3c) != 0 &&
+                pScreen->m_nSelectedPlayer3D0 != i) {
+                if (g_pVariantResourceEntryManager != 0) {
+                    ((GameVariantResourceEntryManager *)
+                        g_pVariantResourceEntryManager)
+                            ->PlayVariantResourceEffect(0x25);
+                }
+                if (pScreen->m_nSelectedPlayer3D0 != -1) {
+                    pPeer = pRuntime->m_apTrackedPeers20[
+                        pScreen->m_nSelectedPlayer3D0];
+                    if (pPeer != 0) {
+                        pStream = *(GameEffStream **)(
+                            (char *)g_pActiveNetworkLobbyTransportController +
+                            0x30);
+                        if (pStream != 0) {
+                            pStream->m_nU32Payload = 0;
+                            pStream->QueueEffStreamWriteEvent(
+                                (int)(unsigned long)pPeer);
+                        }
+                    }
+                }
+                pScreen->m_nSelectedPlayer3D0 = i;
+                pPeer = pRuntime->m_apTrackedPeers20[i];
+                if (pPeer != 0) {
+                    pStream = *(GameEffStream **)(
+                        (char *)g_pActiveNetworkLobbyTransportController +
+                        0x34);
+                    if (pStream != 0) {
+                        pStream->m_nU32Payload = *(int *)(
+                            (char *)pScreen->m_pPlayerEntries3CC +
+                            i * 0x44 + 0x40);
+                        if (pStream->m_nU32Payload != 0) {
+                            HideNetworkLobbyPlayerEntries(pScreen);
+                        }
+                        pStream->QueueEffStreamWriteEvent(
+                            (int)(unsigned long)pPeer);
+                    }
+                }
+            }
+            *(int *)((char *)pScreen->m_pPlayerEntries3CC +
+                     i * 0x44 + 0x3c) = 0;
+        }
     }
 }
 
