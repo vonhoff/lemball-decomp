@@ -596,6 +596,8 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionFrame(
     void *pObject);
 static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(
     GameLevelSelectionScreenView *pScreen);
+static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionNavigationLocks(
+    GameLevelSelectionScreenView *pScreen);
 static void MeasureFunctionalLevelTitleExtent(
     void *pResource, short *pExtent, const char *pszText);
 static int ReadFunctionalLevelMetadata(
@@ -3265,6 +3267,7 @@ static void LEMBALL_FASTCALL DrawPaintballSequencePromptText(void *pObject) {
         return;
     }
     pMappedList = (MappedListResourceTable *)pScreen->m_pMappedListResources98;
+    pMappedList->ResetDrawEntryPool();
     Relative[0] = 0;
     Relative[1] = 0;
     pMappedList->SubmitRenderEntry(
@@ -3663,7 +3666,6 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
         return;
     }
     pMappedList = (MappedListResourceTable *)pScreen->m_pMappedListResources98;
-    pMappedList->ResetDrawEntryPool();
     Relative[0] = 0;
     Relative[1] = 0;
     if (pScreen->m_fBuildingRenderEntries364 != 0) {
@@ -5104,7 +5106,6 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(
     }
     pMappedList = (MappedListResourceTable *)
         pScreen->m_pMappedListResources98;
-    pMappedList->ResetDrawEntryPool();
     Relative[0] = 0;
     Relative[1] = 0;
     for (i = 0; i < 3; ++i) {
@@ -5183,7 +5184,6 @@ static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(
     int cchTitle;
     int nPack;
     int nCurrentLevel;
-    int nUnlockedCap;
     GameLevelMetadataView Metadata;
 
     pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
@@ -5268,12 +5268,26 @@ static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(
     if (pScreen->m_fNetworkScreen8C != 0) {
         pScreen->m_cNetworkStatus3F0 = Metadata.m_cNetworkPlayers04;
     }
-    pScreen->m_fPreviousLocked484 = nCurrentLevel == 0;
-    if (nPack == 4) {
-        pScreen->m_fNextLocked480 = nCurrentLevel > 10;
-    } else {
-        nUnlockedCap = pProgress->m_anUnlockedPackCaps28[nPack];
-        pScreen->m_fNextLocked480 = nCurrentLevel == nUnlockedCap;
+    RefreshFunctionalLevelSelectionNavigationLocks(pScreen);
+}
+
+static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionNavigationLocks(
+    GameLevelSelectionScreenView *pScreen) {
+    GameLevelProgressStateView *pProgress;
+    int nPack;
+
+    pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
+    nPack = pProgress->m_nCurrentPack08;
+    pScreen->m_fNextLocked480 = 0;
+    if ((nPack == 4 && 10 < pProgress->m_nCurrentLevel00) ||
+        (nPack != 4 &&
+         pProgress->m_anUnlockedPackCaps28[nPack] ==
+             pProgress->m_nCurrentLevel00)) {
+        pScreen->m_fNextLocked480 = 1;
+    }
+    pScreen->m_fPreviousLocked484 = 0;
+    if (pProgress->m_nCurrentLevel00 == 0) {
+        pScreen->m_fPreviousLocked484 = 1;
     }
     RefreshQueuedVariantChildByToken(
         pScreen->m_pQueuedVariantManager338, 0, (int)0xacef000eU);
