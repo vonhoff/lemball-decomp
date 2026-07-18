@@ -380,17 +380,19 @@ struct GameLevelTileReachabilityHelper {
     int m_ppRows04;
     int m_nReserved08;
     char m_abReserved0C[0x1000];
-    int m_cColumns100C;
-    int m_cRows1010;
-    int m_nReserved1014;
+    unsigned char m_nReserved100C;
+    char m_abReserved100D[3];
+    int m_cColumns1010;
+    int m_cRows1014;
 };
 
 struct GameLevelTileGrid {
     int m_nReserved00;
     int m_pReserved04;
-    int m_cColumns08;
-    int m_cRows0C;
-    int m_pCells10;
+    int m_nReserved08;
+    int m_pCells0C;
+    int m_cColumns10;
+    int m_cRows14;
 };
 
 void ClaimManagedEntitySlotId(int nManagedEntityObject);
@@ -1388,21 +1390,21 @@ void LEMBALL_FASTCALL FillReachabilityGridFromTileFlags(void *pReachabilityHelpe
     pHelper = (GameLevelTileReachabilityHelper *)pReachabilityHelper;
     pTileGrid = (GameLevelTileGrid *)(unsigned long)pHelper->m_pTileGrid00;
     y = 0;
-    if (0 < pHelper->m_cRows1010) {
+    if (0 < pHelper->m_cRows1014) {
         do {
             x = 0;
             pReachabilityRow = (unsigned short *)(unsigned long)(*(int *)(pHelper->m_ppRows04 + y * 4));
-            if (0 < pHelper->m_cColumns100C) {
+            if (0 < pHelper->m_cColumns1010) {
                 do {
                     if (x < 0 || y < 0) {
                         nCellValue = 3;
                     } else {
                         nTileFlags = pHelper->m_pTileGrid00;
-                        if (pTileGrid->m_cColumns08 <= x || pTileGrid->m_cRows0C <= y) {
+                        if (pTileGrid->m_cColumns10 <= x || pTileGrid->m_cRows14 <= y) {
                             nCellValue = 3;
                         } else {
-                            nCellValue = *(unsigned short *)(pTileGrid->m_pCells10 + 6 +
-                                                             (y * pTileGrid->m_cColumns08 + x) * 0xc);
+                            nCellValue = *(unsigned short *)(pTileGrid->m_pCells0C + 6 +
+                                                             (y * pTileGrid->m_cColumns10 + x) * 0xc);
                         }
                     }
 
@@ -1412,10 +1414,10 @@ void LEMBALL_FASTCALL FillReachabilityGridFromTileFlags(void *pReachabilityHelpe
                         pReachabilityRow[x] = 0xffff;
                     }
                     ++x;
-                } while (x < pHelper->m_cColumns100C);
+                } while (x < pHelper->m_cColumns1010);
             }
             ++y;
-        } while (y < pHelper->m_cRows1010);
+        } while (y < pHelper->m_cRows1014);
     }
 }
 
@@ -1433,30 +1435,30 @@ void LEMBALL_FASTCALL ResizeLevelTileReachabilityGrid(void *pReachabilityHelper)
     i = 0;
     if (pHelper->m_ppRows04 != 0) {
         ppRows = (int **)(unsigned long)(pHelper->m_ppRows04 - 4);
-        if (0 < pHelper->m_cRows1010) {
+        if (0 < pHelper->m_cRows1014) {
             cAllocatedRows = 0;
             do {
                 ++ppRows;
                 ++cAllocatedRows;
                 FreeVSMemBlock(*ppRows);
-            } while (cAllocatedRows < pHelper->m_cRows1010);
+            } while (cAllocatedRows < pHelper->m_cRows1014);
         }
         FreeVSMemBlock((void *)(unsigned long)pHelper->m_ppRows04);
     }
 
-    pHelper->m_cColumns100C = pTileGrid->m_cColumns08;
-    cRows = pTileGrid->m_cRows0C;
+    pHelper->m_cColumns1010 = pTileGrid->m_cColumns10;
+    cRows = pTileGrid->m_cRows14;
     i = 0;
     cAllocatedRows = 0;
-    pHelper->m_cRows1010 = cRows;
+    pHelper->m_cRows1014 = cRows;
     pHelper->m_ppRows04 = (int)(unsigned long)AllocateVSMemBlock((unsigned int)cRows << 2);
     ppRows = (int **)(unsigned long)(pHelper->m_ppRows04 - 4);
-    if (0 < pHelper->m_cRows1010) {
+    if (0 < pHelper->m_cRows1014) {
         do {
             ++ppRows;
             ++cAllocatedRows;
-            *ppRows = (int *)AllocateVSMemBlock((unsigned int)pHelper->m_cColumns100C * 2);
-        } while (cAllocatedRows < pHelper->m_cRows1010);
+            *ppRows = (int *)AllocateVSMemBlock((unsigned int)pHelper->m_cColumns1010 * 2);
+        } while (cAllocatedRows < pHelper->m_cRows1014);
     }
     FillReachabilityGridFromTileFlagsThunk(pReachabilityHelper);
 }

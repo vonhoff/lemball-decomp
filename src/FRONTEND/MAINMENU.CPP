@@ -4032,9 +4032,9 @@ static void LEMBALL_FASTCALL InitializeFunctionalLevelSelectionResources(
                               nResource2);
 
     pForegroundEntry = pScreen->m_abRenderEntryGroupC8 + 0x14;
-    *(short *)(pForegroundEntry + 0) = (short)pLayout[14];
-    *(short *)(pForegroundEntry + 2) = (short)pLayout[15];
-    *(void **)(pForegroundEntry + 0x0c) = pBitmap;
+    *(short *)(pForegroundEntry + 0) = (short)pLayout[8];
+    *(short *)(pForegroundEntry + 2) = (short)pLayout[9];
+    *(void **)(pForegroundEntry + 0x0c) = pScreen->m_pForegroundBitmapC0;
     *(int *)(pForegroundEntry + 0x10) = 0x800;
     *(int *)(pForegroundEntry + 0x14) = 0;
     pLevelEntry = pScreen->m_abRenderChild398 + 4;
