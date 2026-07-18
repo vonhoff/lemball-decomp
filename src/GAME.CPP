@@ -119,6 +119,7 @@ extern void *ConstructLevelScreenVariantRenderManager(void *pObject,
     int nRenderOwner, void *pPrimaryContext, void *pLevelMode);
 extern void DestroyLevelScreenVariantRenderManager(void *pObject);
 extern void ResetOrFlipVariantRenderBuffers(int nManager);
+extern void RenderReconstructedLevelScreenTerrain(void *pObject);
 extern void RebuildLevelScreenVariantResourceSet(void *pObject, int nMode);
 extern void *ConstructLevelScreenActionPanelResources(
     void *pObject, void *pLevelScreen);
@@ -1427,6 +1428,7 @@ static void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void *pObject) {
         ((QueueProc)(*(void ***)(pScreen + 0x990))[1])(
             pScreen + 0x990, 0, pRenderQueue);
         InitializeHelperUploadStatePending(nUploadState);
+        RenderReconstructedLevelScreenTerrain(pScreen);
         ((DrawProc)(*(void ***)pOverlay)[47])(pOverlay);
         ((QueueProc)(*(void ***)(pScreen + 0x908))[1])(
             pScreen + 0x908, 0, pRenderQueue);

@@ -2886,6 +2886,40 @@ void LevelScreenTerrainRenderView::DrawStaticRenderEntry(
         (short)(nScreenY - nHeight), pTile[0], nFrameValue);
 }
 
+void RenderReconstructedLevelScreenTerrain(void *pObject)
+{
+    char *pScreen;
+    char *pLevel;
+    void *pManager;
+    short Region[4];
+
+    pScreen = (char *)pObject;
+    pLevel = *(char **)(pScreen + 0x914);
+    pManager = *(void **)(pScreen + 0xa40);
+    if (pLevel == 0 || pManager == 0 ||
+        *(void **)(pLevel + 0x0c) == 0 ||
+        *(int *)(pLevel + 0x10) <= 0 ||
+        *(int *)(pLevel + 0x14) <= 0 ||
+        *(short *)(pScreen + 0x958) <= 0 ||
+        *(short *)(pScreen + 0x95a) <= 0) {
+        return;
+    }
+    ResetOrFlipVariantRenderBuffers((int)(unsigned long)pManager);
+    if (*(MappedListResourceTable **)(pScreen + 0x78) != 0) {
+        (*(MappedListResourceTable **)(pScreen + 0x78))->ResetDrawEntryPool();
+    }
+    *(unsigned short *)(pScreen + 0x8d0) = 0x40;
+    *(int *)(pScreen + 0x2188) = 0;
+    *(int *)(pScreen + 0x21f0) = 0;
+    *(int *)((char *)pManager + 0xac) = 0x40000;
+    Region[0] = *(short *)(pScreen + 0x958);
+    Region[1] = *(short *)(pScreen + 0x95a);
+    Region[2] = 0;
+    Region[3] = 0;
+    ((LevelScreenTerrainRenderView *)pScreen)->BuildStaticRegionEntries(Region);
+    *(int *)((char *)pManager + 0xac) = 0;
+}
+
 // FUNCTION: LEMBALL 0x004439e0
 void LEMBALL_FASTCALL ResetBaseModeActionButtonPointSink(void *pObject) {
     *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
