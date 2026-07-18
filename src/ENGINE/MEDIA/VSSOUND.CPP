@@ -2956,6 +2956,7 @@ VsSoundDirectSoundEffectBackend *VsSoundDirectSoundEffectBackend::ConstructDirec
 {
     void *pFixedVersionInfo;
     unsigned int dwFileVersionLS;
+    unsigned short wFileVersionMajor;
     UINT cbFixedVersionInfo;
     DWORD dwVersionHandle;
     char szSystemDsoundPath[256];
@@ -2998,29 +2999,34 @@ VsSoundDirectSoundEffectBackend *VsSoundDirectSoundEffectBackend::ConstructDirec
             void *pVersionInfo;
             int fVersionSupported;
 
-            strcat(szSystemDsoundPath, "\\DSOUND.DLL");
+            memcpy(szSystemDsoundPath + strlen(szSystemDsoundPath),
+                   "\\DSOUND.DLL", sizeof("\\DSOUND.DLL"));
             cbVersionInfo = GetFileVersionInfoSizeA(
                 szSystemDsoundPath, &dwVersionHandle);
             pVersionInfo = AllocateVSMemBlock(cbVersionInfo);
-            fVersionSupported = 0;
-            if (GetFileVersionInfoA(szSystemDsoundPath, 0,
-                                    cbVersionInfo, pVersionInfo) != 0) {
+            fVersionSupported = GetFileVersionInfoA(
+                szSystemDsoundPath, 0, cbVersionInfo, pVersionInfo);
+            if (fVersionSupported != 0) {
                 VerQueryValueA(pVersionInfo, "\\",
                                &pFixedVersionInfo, &cbFixedVersionInfo);
                 unsigned int dwFileVersionMS =
                     ((unsigned int *)pFixedVersionInfo)[2];
                 dwFileVersionLS = ((unsigned int *)pFixedVersionInfo)[3];
+                wFileVersionMajor =
+                    (unsigned short)(dwFileVersionMS >> 16);
                 g_pStatusOutputStream
                     ->AppendCStringToStream("DSOUND version ")
-                    ->AppendUnsignedIntToStreamVariant(dwFileVersionMS >> 16)
+                    ->AppendUnsignedIntToStreamVariant(
+                        wFileVersionMajor)
                     ->AppendCStringToStream(".")
-                    ->AppendUnsignedIntToStreamVariant(dwFileVersionMS & 0xffff)
+                    ->AppendUnsignedIntToStreamVariant(
+                        (unsigned short)dwFileVersionMS)
                     ->AppendCStringToStream(".")
                     ->AppendUIntToStream(dwFileVersionLS)
                     ->AppendCStringToStream("\n");
-                if ((dwFileVersionMS >> 16) < 4 ||
-                    ((dwFileVersionMS >> 16) == 4 &&
-                     (dwFileVersionMS & 0xffff) < 2)) {
+                if (wFileVersionMajor < 4 ||
+                    (wFileVersionMajor == 4 &&
+                     (unsigned short)dwFileVersionMS < 2)) {
                     g_pErrorOutputStream->AppendCStringToStream(
                         "DSOUND version too old\n");
                     g_pErrorOutputStream->AppendCStringToStream(
