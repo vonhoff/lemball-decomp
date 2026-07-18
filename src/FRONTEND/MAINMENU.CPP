@@ -2091,6 +2091,8 @@ static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject) {
     const int *pPackResources;
     const int *pOptionsResources;
     GameMenuSelectorManager *pSelectorManager;
+    GameMenuSelectorManager **ppSelectorManager;
+    void *pForegroundBitmap;
     short cxForeground;
     int cRenderGroups;
 
@@ -2116,66 +2118,70 @@ static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject) {
     cRenderGroups = 1;
     pForegroundEntry = pScreen->m_abRenderEntryGroupC8 + 0x14;
     do {
-        cxForeground = *(short *)((char *)pScreen->m_pForegroundBitmapC0 + 0x48);
+        pForegroundBitmap = pScreen->m_pForegroundBitmapC0;
+        cxForeground = *(short *)((char *)pForegroundBitmap + 0x48);
         *(short *)(pForegroundEntry + 0) =
             (short)((*(short *)((char *)pScreen->m_pPrimaryContext84 + 8) -
                      cxForeground) / 2);
         *(short *)(pForegroundEntry + 2) = 0;
-        *(void **)(pForegroundEntry + 0x0c) = pScreen->m_pForegroundBitmapC0;
+        *(void **)(pForegroundEntry + 0x0c) = pForegroundBitmap;
         *(int *)(pForegroundEntry + 0x10) = 0x800;
         *(int *)(pForegroundEntry + 0x14) = 0;
         pForegroundEntry += 0x260;
         --cRenderGroups;
     } while (cRenderGroups != 0);
 
+    ppSelectorManager =
+        (GameMenuSelectorManager **)&pScreen->m_pSelectorManager334;
     pSelectorManager = (GameMenuSelectorManager *)
         AllocateVSMemBlock(sizeof(GameMenuSelectorManager));
     if (pSelectorManager != 0) {
-        pSelectorManager = ConstructMenuSelectorManager(
+        *ppSelectorManager = ConstructMenuSelectorManager(
             pSelectorManager, 0, pScreen->m_pPrimaryContext84,
             pScreen->m_pRenderContext88, 6,
             pScreen->m_fCompactLayout32C);
+    } else {
+        *ppSelectorManager = 0;
     }
-    pScreen->m_pSelectorManager334 = pSelectorManager;
 
     AppendMenuSelectorChild(
-        pSelectorManager, 0,
+        *ppSelectorManager, 0,
         pScreen->m_panWidgetLayout39C[0],
         pScreen->m_panWidgetLayout39C[1],
         pPlayResources, 1, 0, 0, 0,
         &pScreen->m_nPlaySelection3A0, (int)0xacef00a6U);
     AppendMenuSelectorChild(
-        pSelectorManager, 0,
+        *ppSelectorManager, 0,
         pScreen->m_panWidgetLayout39C[2],
         pScreen->m_panWidgetLayout39C[3],
         pSinglePlayerResources, 1, 0, 0, 0,
         &pScreen->m_nSharedSelection3B8, (int)0xacef0001U);
     AppendMenuSelectorChild(
-        pSelectorManager, 0,
+        *ppSelectorManager, 0,
         pScreen->m_panWidgetLayout39C[4],
         pScreen->m_panWidgetLayout39C[5],
         pMultiPlayerResources, 1, 0, 0, 0,
         &pScreen->m_nMultiplayerSelection3A4, (int)0xacef00a7U);
     AppendMenuSelectorChild(
-        pSelectorManager, 0,
+        *ppSelectorManager, 0,
         pScreen->m_panWidgetLayout39C[8],
         pScreen->m_panWidgetLayout39C[9],
         pDisplayResources, 1, 0, 0, 0,
         &pScreen->m_nDisplayModeSelection3B0, (int)0xacef00a5U);
     AppendMenuSelectorChild(
-        pSelectorManager, 0,
+        *ppSelectorManager, 0,
         pScreen->m_panWidgetLayout39C[6],
         pScreen->m_panWidgetLayout39C[7],
         pPackResources, 0, 0, 3, 0,
         &pScreen->m_nPackSelection3B4, -1);
     AppendMenuSelectorChild(
-        pSelectorManager, 0,
+        *ppSelectorManager, 0,
         pScreen->m_panWidgetLayout39C[10],
         pScreen->m_panWidgetLayout39C[11],
         pOptionsResources, 1, 0, 0, 0,
         &pScreen->m_nSharedSelection3B8, (int)0xacef00a4U);
-    InitializeMenuSelectorCurrentState(pSelectorManager, 0, 0);
-    InitializeMenuSelectorChildContext(pSelectorManager);
+    InitializeMenuSelectorCurrentState(*ppSelectorManager, 0, 0);
+    InitializeMenuSelectorChildContext(*ppSelectorManager);
 }
 
 // FUNCTION: LEMBALL 0x00448540
