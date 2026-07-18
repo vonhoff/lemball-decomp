@@ -608,6 +608,10 @@ static void LEMBALL_FASTCALL EmitQueuedVariantChildSlotEntry(
     void *pObject);
 static void LEMBALL_FASTCALL NoopQueuedVariantChildSlotManagerUpdate(
     void *pObject);
+static void EmitScreenFrameRect(GameFramedScreenBase *pScreen,
+                                short x, short y, short cx, short cy);
+static void EmitTiledScreenFrameRect(GameFramedScreenBase *pScreen,
+                                     const short *pRect);
 static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(void *pObject);
 static void LEMBALL_FASTCALL LoadFramedScreenFrameResources(void *pObject);
 static void LEMBALL_FASTCALL ReleaseFramedScreenFrameResources(void *pObject);
@@ -2053,6 +2057,107 @@ static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(
     ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
         ->ResetOrFlipVariantRenderBuffers();
     pScreen->m_iPackagedEntry36C = 0;
+}
+
+static void EmitScreenFrameRect(GameFramedScreenBase *pScreen,
+                                short x, short y, short cx, short cy) {
+    short Rect[4];
+
+    Rect[0] = x;
+    Rect[1] = y;
+    Rect[2] = cx;
+    Rect[3] = cy;
+    EmitTiledScreenFrameRect(pScreen, Rect);
+}
+
+static void EmitTiledScreenFrameRect(GameFramedScreenBase *pScreen,
+                                     const short *pRect) {
+    LevelVariantRenderManagerView *pManager;
+    unsigned char *pEntry;
+    short Extent[2];
+    short Point[2];
+    short OutputRect[4];
+    int xEnd;
+    int yEnd;
+    int xStep;
+    int yStep;
+    int x;
+    int y;
+
+    pManager = (LevelVariantRenderManagerView *)
+        pScreen->m_abVariantRenderManager14;
+    GetFunctionalVariantFrameExtent(
+        pManager, Extent, pScreen->m_nFrameResourceId388, 0);
+    xStep = Extent[0];
+    yStep = Extent[1];
+    xEnd = pRect[0] + xStep - 1;
+    xEnd -= xEnd % xStep;
+    yEnd = pRect[1] + yStep - 1;
+    yEnd -= yEnd % yStep;
+
+    pEntry = (unsigned char *)pScreen + 0x288 +
+        pScreen->m_iRenderEntryGroup328 * 0x260 +
+        pScreen->m_iPackagedEntry36C * 0x10;
+    *(short *)(pEntry + 4) = (short)xEnd;
+    *(short *)(pEntry + 6) = (short)yEnd;
+    *(short *)(pEntry + 8) = pRect[2];
+    *(short *)(pEntry + 10) = pRect[3];
+    *(int *)(pEntry + 12) = 0x10;
+    ((GameMainMenuRenderEntryInterface *)pEntry)
+        ->AppendToQueue(pScreen->m_pRenderContext88);
+    ++pScreen->m_iPackagedEntry36C;
+
+    Point[1] = (short)yEnd;
+    Point[0] = pRect[0];
+    pScreen->m_nFrameSelectorFixedTime35C = 0;
+    pManager->EmitVariantRenderResourceEntry(
+        OutputRect, Point, pScreen->m_nFrameResourceId388, 0,
+        &pScreen->m_pFrameSelectorVtable350, 0);
+    for (x = xStep; x < xEnd - xStep; x += xStep) {
+        Point[0] = (short)(pRect[0] + x);
+        pScreen->m_nFrameSelectorFixedTime35C = 1;
+        pManager->EmitVariantRenderResourceEntry(
+            OutputRect, Point, pScreen->m_nFrameResourceId388, 0,
+            &pScreen->m_pFrameSelectorVtable350, 0);
+    }
+    Point[0] = (short)(pRect[0] + x);
+    pScreen->m_nFrameSelectorFixedTime35C = 2;
+    pManager->EmitVariantRenderResourceEntry(
+        OutputRect, Point, pScreen->m_nFrameResourceId388, 0,
+        &pScreen->m_pFrameSelectorVtable350, 0);
+
+    for (y = yStep; y < yEnd - yStep; y += yStep) {
+        Point[0] = pRect[0];
+        Point[1] = (short)(pRect[1] + y);
+        pScreen->m_nFrameSelectorFixedTime35C = 0;
+        pManager->EmitVariantRenderResourceEntry(
+            OutputRect, Point, pScreen->m_nMappedListResourceId38C, 0,
+            &pScreen->m_pFrameSelectorVtable350, 0);
+        Point[0] = (short)(pRect[0] + xEnd - xStep);
+        pScreen->m_nFrameSelectorFixedTime35C = 2;
+        pManager->EmitVariantRenderResourceEntry(
+            OutputRect, Point, pScreen->m_nMappedListResourceId38C, 0,
+            &pScreen->m_pFrameSelectorVtable350, 0);
+    }
+
+    Point[1] = (short)(pRect[1] + y);
+    Point[0] = pRect[0];
+    pScreen->m_nFrameSelectorFixedTime35C = 0;
+    pManager->EmitVariantRenderResourceEntry(
+        OutputRect, Point, pScreen->m_nFrameResourceId390, 0,
+        &pScreen->m_pFrameSelectorVtable350, 0);
+    for (x = xStep; x < xEnd - xStep; x += xStep) {
+        Point[0] = (short)(pRect[0] + x);
+        pScreen->m_nFrameSelectorFixedTime35C = 1;
+        pManager->EmitVariantRenderResourceEntry(
+            OutputRect, Point, pScreen->m_nFrameResourceId390, 0,
+            &pScreen->m_pFrameSelectorVtable350, 0);
+    }
+    Point[0] = (short)(pRect[0] + x);
+    pScreen->m_nFrameSelectorFixedTime35C = 2;
+    pManager->EmitVariantRenderResourceEntry(
+        OutputRect, Point, pScreen->m_nFrameResourceId390, 0,
+        &pScreen->m_pFrameSelectorVtable350, 0);
 }
 
 // FUNCTION: LEMBALL 0x00446480
@@ -4400,10 +4505,19 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionStatus(
 static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionFrame(
     void *pObject) {
     GameLevelSelectionScreenView *pScreen;
+    const int *pFramePoint;
 
     pScreen = (GameLevelSelectionScreenView *)pObject;
     ((GameMainMenuRenderEntryInterface *)pScreen->m_abRenderChild398)
         ->AppendToQueue(pScreen->m_pRenderContext88);
+    pFramePoint = pScreen->m_pLayout3D4 +
+        (pScreen->m_fNetworkScreen8C == 0 ? 0 : 36);
+    EmitScreenFrameRect(
+        pScreen,
+        (short)pScreen->m_pLayout3D4[10],
+        (short)pScreen->m_pLayout3D4[11],
+        (short)pFramePoint[0],
+        (short)pFramePoint[1]);
 }
 
 static short *GetFunctionalVariantFrameExtent(
