@@ -681,6 +681,10 @@ static const char *g_GAME_NetworkLobbyStatusText[10] = {
     "You must enter your name",
     "Network Facilities not available"
 };
+static const char g_szNetworkLobbyDividerStandard[] =
+    "________________________________";
+static const char g_szNetworkLobbyDividerCompact[] =
+    "_________________________________";
 
 // GLOBAL: LEMBALL 0x004a0368
 char g_szNetworkLobbyLocalPlayerName[0x10] = "";
@@ -2585,10 +2589,68 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
     short Relative[2];
     int nStatus;
     GameBoundedTextBuffer *pBuffer;
+    char szDisplayText[0x40];
+    int nRemap;
+
+#define SUBMIT_CENTERED_LOBBY_TEXT(text, x, y, remap) \
+    Point[0] = (short)((x) - (int)strlen(text) * 4); \
+    Point[1] = (short)(y); \
+    pMappedList->SubmitRenderEntry( \
+        pScreen->m_pRenderContext88, Point, Relative, \
+        pScreen->m_nMappedListRemapResourceId384, \
+        (void *)(text), 0x20, (remap))
 
     pScreen = (GameNetworkLobbyScreenView *)pObject;
     if (pScreen->m_pMappedListResources98 == 0 ||
         pScreen->m_pLayout42C == 0) {
+        return;
+    }
+    pMappedList = (MappedListResourceTable *)pScreen->m_pMappedListResources98;
+    pMappedList->ResetDrawEntryPool();
+    Relative[0] = 0;
+    Relative[1] = 0;
+    if (pScreen->m_fBuildingRenderEntries364 != 0) {
+        Point[0] = 0;
+        Point[1] = (short)pScreen->m_pLayout42C[20];
+        pMappedList->SubmitRenderEntry(
+            pScreen->m_pRenderContext88, Point, Relative,
+            pScreen->m_nMappedListRemapResourceId384,
+            (void *)(pScreen->m_fCompactLayout32C != 0
+                ? g_szNetworkLobbyDividerCompact
+                : g_szNetworkLobbyDividerStandard), 0x20, 0);
+        SUBMIT_CENTERED_LOBBY_TEXT(
+            "Name", pScreen->m_pLayout42C[26],
+            pScreen->m_pLayout42C[21], 0);
+        SUBMIT_CENTERED_LOBBY_TEXT(
+            "I.P. Address", pScreen->m_pLayout42C[30],
+            pScreen->m_pLayout42C[21], 0);
+        SUBMIT_CENTERED_LOBBY_TEXT(
+            "Computer", pScreen->m_pLayout42C[32],
+            pScreen->m_pLayout42C[21], 0);
+        if (g_szNetworkLobbyLocalPlayerName[0] != '\0') {
+            SUBMIT_CENTERED_LOBBY_TEXT(
+                g_szNetworkLobbyLocalPlayerName,
+                pScreen->m_pLayout42C[26],
+                pScreen->m_pLayout42C[25],
+                pScreen->m_anPaletteRemaps414[0]);
+            if (pScreen->m_pszLocalAddress3E4 != 0 &&
+                pScreen->m_pszLocalAddress3E4[0] != '\0') {
+                SUBMIT_CENTERED_LOBBY_TEXT(
+                    pScreen->m_pszLocalAddress3E4,
+                    pScreen->m_pLayout42C[30],
+                    pScreen->m_pLayout42C[25],
+                    pScreen->m_anPaletteRemaps414[0]);
+            }
+            if (pScreen->m_pszLocalComputer3E8 != 0 &&
+                pScreen->m_pszLocalComputer3E8[0] != '\0') {
+                strncpy(szDisplayText, pScreen->m_pszLocalComputer3E8, 20);
+                szDisplayText[20] = '\0';
+                SUBMIT_CENTERED_LOBBY_TEXT(
+                    szDisplayText, pScreen->m_pLayout42C[32],
+                    pScreen->m_pLayout42C[25],
+                    pScreen->m_anPaletteRemaps414[0]);
+            }
+        }
         return;
     }
     nStatus = pScreen->m_nStatus3A8;
@@ -2596,28 +2658,44 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
         nStatus = 9;
     }
     pszStatus = g_GAME_NetworkLobbyStatusText[nStatus];
-    pMappedList = (MappedListResourceTable *)pScreen->m_pMappedListResources98;
-    pMappedList->ResetDrawEntryPool();
-    Relative[0] = 0;
-    Relative[1] = 0;
-    Point[0] = (short)(pScreen->m_pLayout42C[18] -
-                       (int)strlen(pszStatus) * 4);
-    Point[1] = (short)pScreen->m_pLayout42C[19];
-    pMappedList->SubmitRenderEntry(
-        pScreen->m_pRenderContext88, Point, Relative,
-        pScreen->m_nMappedListRemapResourceId384,
-        (void *)pszStatus, 0x20, 0);
+    nRemap = 0;
+    if (nStatus == 4) {
+        if (g_szNetworkLobbyJoinAddress[0] == '\0') {
+            pszStatus = g_GAME_NetworkLobbyStatusText[5];
+        } else {
+            strncpy(szDisplayText, pszStatus, sizeof(szDisplayText) - 1);
+            szDisplayText[sizeof(szDisplayText) - 1] = '\0';
+            strncat(szDisplayText, g_szNetworkLobbyJoinAddress,
+                    sizeof(szDisplayText) - strlen(szDisplayText) - 1);
+            pszStatus = szDisplayText;
+        }
+        nRemap = pScreen->m_anPaletteRemaps414[5];
+    } else if (nStatus >= 7) {
+        nRemap = pScreen->m_anPaletteRemaps414[3];
+    }
+    if ((nStatus != 4 && nStatus < 7) || pScreen->m_fBlink3C0 != 0) {
+        SUBMIT_CENTERED_LOBBY_TEXT(
+            pszStatus, pScreen->m_pLayout42C[18],
+            pScreen->m_pLayout42C[19], nRemap);
+    }
     pBuffer = (GameBoundedTextBuffer *)pScreen->m_pTextBuffer398;
     if (pScreen->m_fTextPrompt39C != 0 && pBuffer != 0 &&
         pBuffer->m_pszText0C != 0) {
+        strncpy(szDisplayText, pBuffer->m_pszText0C,
+                sizeof(szDisplayText) - 2);
+        szDisplayText[sizeof(szDisplayText) - 2] = '\0';
+        if (pScreen->m_fBlink3C0 == 0) {
+            strcat(szDisplayText, "_");
+        }
         Point[0] = (short)pScreen->m_pLayout42C[22];
         Point[1] = (short)pScreen->m_pLayout42C[23];
         pMappedList->SubmitRenderEntry(
             pScreen->m_pRenderContext88, Point, Relative,
             pScreen->m_nMappedListRemapResourceId384,
-            pBuffer->m_pszText0C, 0x20, 0);
+            szDisplayText, 0x20, pScreen->m_anPaletteRemaps414[1]);
     }
     pScreen->m_nDrawnStatus3AC = pScreen->m_nStatus3A8;
+#undef SUBMIT_CENTERED_LOBBY_TEXT
 }
 
 static void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void *pObject) {
