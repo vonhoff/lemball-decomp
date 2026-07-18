@@ -138,6 +138,7 @@ extern void LEMBALL_FASTCALL PrepareLevelScreenRootHelperForRuntime(
     GamePrimaryContext *pPrimaryContext);
 extern void *LoadZrleResource(int nResourceId);
 extern void *LoadPalResource(int nResourceId);
+extern void *LoadBitmapResource(int nResourceId);
 extern void SetLevelScreenStatusIndicatorMode(int nMode, int nValue);
 void SetLevelScreenStatusIndicatorModeThunk(int nMode, int nValue);
 typedef void (LEMBALL_FASTCALL *GamePrimaryContextSetRectProc)(
@@ -1360,6 +1361,98 @@ static int g_fGAMELevelScreenRenderStatePopVtableInitialized;
 static void RegisterLevelScreenPaletteRemaps(char *pScreen);
 static void ReleaseLevelScreenPaletteRemaps(char *pScreen);
 
+static void *g_GAME_RegistrationInfoScreenVtableSlots[14];
+static int g_fGAMERegistrationInfoScreenVtableInitialized;
+static char g_GAME_RegistrationNameBuffer[0x40];
+
+static int LEMBALL_FASTCALL GetRegistrationInfoRequestedMode(void *pObject) {
+    return *(int *)((char *)pObject + 0x14);
+}
+
+static int LEMBALL_FASTCALL PollRegistrationInfoTimeout(void *pObject) {
+    char *pScreen;
+
+    pScreen = (char *)pObject;
+    if (*(DWORD *)(pScreen + 0x98) < timeGetTime()) {
+        *(int *)(pScreen + 0x38) = 1;
+        *(int *)(pScreen + 0x14) = 1;
+    }
+    return *(int *)(pScreen + 0x38);
+}
+
+static void LEMBALL_FASTCALL DrawRegistrationInfoScreen(void *pObject) {
+    char *pScreen;
+    MappedListResourceTable *pMappedList;
+    short Point[2];
+    short Relative[2];
+    const char *pszBuild;
+    const char *pszName;
+
+    pScreen = (char *)pObject;
+    pMappedList = *(MappedListResourceTable **)(pScreen + 0x90);
+    if (pMappedList == 0 || *(void **)(pScreen + 0x20) == 0) {
+        return;
+    }
+    pMappedList->ResetDrawEntryPool();
+    Relative[0] = 0;
+    Relative[1] = 0;
+    Point[0] = (short)(*(short *)(pScreen + 0x18) / 2 - 56);
+    Point[1] = (short)(*(short *)(pScreen + 0x1a) / 2 - 18);
+    pMappedList->SubmitRenderEntry(
+        *(void **)(pScreen + 0x20), Point, Relative,
+        0x32, (void *)"Registered to", 0x20, 0);
+    pszName = g_GAME_RegistrationNameBuffer[0] != 0
+        ? g_GAME_RegistrationNameBuffer : "Lemmings Paintball";
+    Point[0] = (short)(*(short *)(pScreen + 0x18) / 2 -
+                       (int)strlen(pszName) * 4);
+    Point[1] = (short)(*(short *)(pScreen + 0x1a) / 2 + 17);
+    pMappedList->SubmitRenderEntry(
+        *(void **)(pScreen + 0x20), Point, Relative,
+        0x32, (void *)pszName, 0x20, 0);
+    pszBuild = "ViSOS Build 201";
+    Point[0] = (short)(*(short *)(pScreen + 0x18) / 2 -
+                       (int)strlen(pszBuild) * 4);
+    Point[1] = (short)(*(short *)(pScreen + 0x1a) / 2 + 70);
+    pMappedList->SubmitRenderEntry(
+        *(void **)(pScreen + 0x20), Point, Relative,
+        0x32, (void *)pszBuild, 0x20, 0);
+}
+
+static void LEMBALL_FASTCALL DestroyRegistrationInfoScreen(void *pObject) {
+    char *pScreen;
+    MappedListResourceTable *pMappedList;
+
+    pScreen = (char *)pObject;
+    if (g_pSharedRenderDispatchQueue != 0) {
+        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+            ->UnregisterOrderedRenderDispatchClient(pScreen + 4, 0);
+    }
+    if (*(void **)(pScreen + 0x60) != 0) {
+        ReleaseTypedResourceObjectReference(*(void **)(pScreen + 0x60));
+        *(void **)(pScreen + 0x60) = 0;
+    }
+    pMappedList = *(MappedListResourceTable **)(pScreen + 0x90);
+    if (pMappedList != 0) {
+        pMappedList->ReleaseListResourceSlot(0x32);
+        pMappedList->Destroy();
+        FreeVSMemBlock(pMappedList);
+        *(void **)(pScreen + 0x90) = 0;
+    }
+    if (*(void **)(pScreen + 0x84) != 0) {
+        ReleaseTypedResourceObjectReference(*(void **)(pScreen + 0x84));
+        *(void **)(pScreen + 0x84) = 0;
+    }
+}
+
+static void *LEMBALL_FASTCALL DeleteRegistrationInfoScreen(
+    void *pObject, int, int fDelete) {
+    DestroyRegistrationInfoScreen(pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
 static int LEMBALL_FASTCALL GetLevelScreenRequestedMode(void *pObject) {
     return *(int *)((char *)pObject + 0x8fc);
 }
@@ -1898,13 +1991,75 @@ void *GameScreenObject::ConstructLevelScreen(void *pPrimaryContext,
 void *GameScreenObject::ConstructRegistrationInfoScreen(void *pPrimaryContext,
                                                          void *pWindowOwnerContext,
                                                          short *paRect) {
-    void *pScreenObject = this;
-    (void)pPrimaryContext;
-    (void)pWindowOwnerContext;
-    (void)paRect;
+    char *pScreenObject;
+    MappedListResourceTable *pMappedList;
+    MogLoadStringResourceObject *pStringResource;
+    const char *pszEncoded;
+    unsigned int i;
+
+    pScreenObject = (char *)this;
     InitializeGameStubVtables();
     memset(pScreenObject, 0, 0x9c);
-    *(void **)pScreenObject = g_GAME_GenericScreenVtableSlots;
+
+    if (g_fGAMERegistrationInfoScreenVtableInitialized == 0) {
+        for (i = 0; i < 14; ++i) {
+            g_GAME_RegistrationInfoScreenVtableSlots[i] =
+                g_GAME_GenericScreenVtableSlots[i];
+        }
+        g_GAME_RegistrationInfoScreenVtableSlots[0] =
+            (void *)DeleteRegistrationInfoScreen;
+        g_GAME_RegistrationInfoScreenVtableSlots[1] =
+            (void *)DestroyRegistrationInfoScreen;
+        g_GAME_RegistrationInfoScreenVtableSlots[2] =
+            (void *)DrawRegistrationInfoScreen;
+        g_GAME_RegistrationInfoScreenVtableSlots[10] =
+            (void *)GetRegistrationInfoRequestedMode;
+        g_GAME_RegistrationInfoScreenVtableSlots[11] =
+            (void *)PollRegistrationInfoTimeout;
+        g_fGAMERegistrationInfoScreenVtableInitialized = 1;
+    }
+    *(void ***)pScreenObject = g_GAME_RegistrationInfoScreenVtableSlots;
+    InitializeRenderQueueNodeBase(pScreenObject + 4);
+    *(void **)(pScreenObject + 0x1c) = pPrimaryContext;
+    *(void **)(pScreenObject + 0x20) = pWindowOwnerContext;
+    *(short *)(pScreenObject + 0x18) = paRect[0];
+    *(short *)(pScreenObject + 0x1a) = paRect[1];
+    *(void **)(pScreenObject + 0x60) = LoadBitmapResource(0x101);
+
+    pMappedList = (MappedListResourceTable *)
+        AllocateVSMemBlock(sizeof(MappedListResourceTable));
+    if (pMappedList != 0) {
+        pMappedList = new (pMappedList)
+            MappedListResourceTable(0x2b6, 1, 10, 0);
+        pMappedList->LoadListResourceIntoSlot(0x32);
+    }
+    *(MappedListResourceTable **)(pScreenObject + 0x90) = pMappedList;
+
+    g_GAME_RegistrationNameBuffer[0] = 0;
+    pStringResource = LoadStringResource(0x100);
+    *(MogLoadStringResourceObject **)(pScreenObject + 0x84) =
+        pStringResource;
+    pszEncoded = pStringResource == 0 ? 0 : pStringResource->m_pszText38;
+    if (pszEncoded != 0) {
+        for (i = 0;
+             pszEncoded[i] != 0 &&
+             i + 1 < sizeof(g_GAME_RegistrationNameBuffer) &&
+             g_GAME_ResourceSignatureKey[i] != 0;
+             ++i) {
+            g_GAME_RegistrationNameBuffer[i] =
+                (char)(((unsigned char)pszEncoded[i] - 1U) ^
+                       (unsigned char)g_GAME_ResourceSignatureKey[i]);
+        }
+        g_GAME_RegistrationNameBuffer[i] = 0;
+    }
+    *(char **)(pScreenObject + 0x88) = g_GAME_RegistrationNameBuffer;
+    *(DWORD *)(pScreenObject + 0x94) = timeGetTime();
+    *(DWORD *)(pScreenObject + 0x98) =
+        *(DWORD *)(pScreenObject + 0x94) + 5000U;
+    if (g_pSharedRenderDispatchQueue != 0) {
+        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+            ->RegisterOrderedRenderDispatchClient(pScreenObject + 4, 0);
+    }
     return pScreenObject;
 }
 
