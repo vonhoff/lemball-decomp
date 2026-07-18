@@ -2383,8 +2383,8 @@ VsSoundDirectSoundEffectBufferPool::ConstructDirectSoundEffectBufferPool(
     unsigned char WaveHeader[0x38];
     VsSoundWaveFormat WaveFormat;
     VsSoundDirectSoundBufferDesc BufferDesc;
-    unsigned int cbBuffer;
-    int fDownsample;
+    volatile unsigned int cbBuffer;
+    volatile int fDownsample;
     unsigned char *pSampleData;
     void *apvAudio[2];
     DWORD acbAudio[2];
@@ -2394,7 +2394,6 @@ VsSoundDirectSoundEffectBufferPool::ConstructDirectSoundEffectBufferPool(
     unsigned char *pSource;
     unsigned char *pDestination;
     const char *pszError;
-    VsInitFormattedOutputStream *pStream;
 
     pPool = this;
     pPool->m_nCurrentBuffer = 0;
@@ -2402,7 +2401,7 @@ VsSoundDirectSoundEffectBufferPool::ConstructDirectSoundEffectBufferPool(
     pPool->m_cBuffers = cBuffers;
     pPool->m_ppBuffers =
         (void **)AllocateVSMemBlock((unsigned int)cBuffers * sizeof(void *));
-    for (i = 0; i < cBuffers; ++i)
+    for (i = 0; i < pPool->m_cBuffers; ++i)
         pPool->m_ppBuffers[i] = 0;
 
     memcpy(PatchHeader, pPatchResource, sizeof(PatchHeader));
@@ -2413,15 +2412,12 @@ VsSoundDirectSoundEffectBufferPool::ConstructDirectSoundEffectBufferPool(
     pPool->m_fReady = 0;
     pPool->m_nCurrentBuffer = 0;
     if (*(unsigned short *)(PatchHeader + 0x18) != 1) {
-        pStream = AppendCStringToStream(
-            g_pErrorOutputStream, "Warning: Effect Patch ");
-        pStream = AppendCStringToStream(
-            pStream, (const char *)pPatchResource + 6);
-        pStream = AppendCStringToStream(
-            pStream, " has more than ");
-        AppendCStringToStream(
-            g_pErrorOutputStream,
-            "one Wave. Only one is supported.\n");
+        g_pErrorOutputStream
+            ->AppendCStringToStream("Warning! Effect Patch ")
+            ->AppendCStringToStream((const char *)pPatchResource + 6)
+            ->AppendCStringToStream(" has more than ");
+        g_pErrorOutputStream->AppendCStringToStream(
+            "one Wave. Only one is supported!\n");
     }
 
     memcpy(WaveHeader, (char *)pPatchResource + 0x1c,
@@ -2455,11 +2451,11 @@ VsSoundDirectSoundEffectBufferPool::ConstructDirectSoundEffectBufferPool(
     BufferDesc.dwFlags = 2;
     BufferDesc.dwBufferBytes = cbBuffer;
     BufferDesc.pWaveFormat = &WaveFormat;
-    if ((nFlags & 1) != 0)
+    if ((pPool->m_nFlags & 1) != 0)
         BufferDesc.dwFlags = 0x82;
-    if ((nFlags & 2) != 0)
+    if ((pPool->m_nFlags & 2) != 0)
         BufferDesc.dwFlags |= 0x40;
-    if ((nFlags & 4) != 0)
+    if ((pPool->m_nFlags & 4) != 0)
         BufferDesc.dwFlags |= 0x20;
 
     hResult = VsSoundDIRECTSOUND_METHOD(
@@ -2469,10 +2465,10 @@ VsSoundDirectSoundEffectBufferPool::ConstructDirectSoundEffectBufferPool(
             &pPool->m_ppBuffers[0], 0);
     if (hResult != 0) {
         pszError = LookupDirectSoundErrorString((unsigned int)hResult & 0xfff);
-        pStream = AppendCStringToStream(
-            g_pErrorOutputStream, "Effect Buffer Creation failed: ");
-        pStream = AppendCStringToStream(pStream, pszError);
-        AppendCStringToStream(pStream, "\n");
+        g_pErrorOutputStream
+            ->AppendCStringToStream("Effect Buffer Create failed: ")
+            ->AppendCStringToStream(pszError)
+            ->AppendCStringToStream("\n");
         return pPool;
     }
 
@@ -2484,10 +2480,10 @@ VsSoundDirectSoundEffectBufferPool::ConstructDirectSoundEffectBufferPool(
             &apvAudio[1], &acbAudio[1], 0);
     if (hResult != 0) {
         pszError = LookupDirectSoundErrorString((unsigned int)hResult & 0xfff);
-        pStream = AppendCStringToStream(
-            g_pErrorOutputStream, "Effect Buffer Lock failed: ");
-        pStream = AppendCStringToStream(pStream, pszError);
-        AppendCStringToStream(pStream, "\n");
+        g_pErrorOutputStream
+            ->AppendCStringToStream("Effect Buffer Lock failed: ")
+            ->AppendCStringToStream(pszError)
+            ->AppendCStringToStream("\n");
         return pPool;
     }
 
@@ -2497,13 +2493,13 @@ VsSoundDirectSoundEffectBufferPool::ConstructDirectSoundEffectBufferPool(
         if (acbAudio[i] != 0) {
             pDestination = (unsigned char *)apvAudio[i];
             if (fDownsample == 0) {
-                for (j = (int)(acbAudio[i] >> 1); j != 0; --j) {
+                for (j = (int)(cbBuffer >> 1); j != 0; --j) {
                     *pDestination++ = pSource[1];
                     *pDestination++ = (unsigned char)(pSource[0] ^ 0x80);
                     pSource += 2;
                 }
             } else {
-                for (j = (int)(acbAudio[i] >> 2); j != 0; --j) {
+                for (j = (int)(cbBuffer >> 2); j != 0; --j) {
                     *pDestination++ = pSource[1];
                     *pDestination++ = (unsigned char)(pSource[0] ^ 0x80);
                     pSource += 4;
@@ -2519,14 +2515,14 @@ VsSoundDirectSoundEffectBufferPool::ConstructDirectSoundEffectBufferPool(
             apvAudio[1], acbAudio[1]);
     if (hResult != 0) {
         pszError = LookupDirectSoundErrorString((unsigned int)hResult & 0xfff);
-        pStream = AppendCStringToStream(
-            g_pErrorOutputStream, "Effect Buffer Unlock failed: ");
-        pStream = AppendCStringToStream(pStream, pszError);
-        AppendCStringToStream(pStream, "\n");
+        g_pErrorOutputStream
+            ->AppendCStringToStream("Effect Buffer Unlock failed: ")
+            ->AppendCStringToStream(pszError)
+            ->AppendCStringToStream("\n");
         return pPool;
     }
 
-    for (i = 1; i < cBuffers; ++i) {
+    for (i = 1; i < pPool->m_cBuffers; ++i) {
         hResult = VsSoundDIRECTSOUND_METHOD(
             g_pDirectSoundDevice, 5,
             VsSoundDirectSoundDuplicateBufferProc)(
@@ -2535,11 +2531,11 @@ VsSoundDirectSoundEffectBufferPool::ConstructDirectSoundEffectBufferPool(
         if (hResult != 0) {
             pszError = LookupDirectSoundErrorString(
                 (unsigned int)hResult & 0xfff);
-            pStream = AppendCStringToStream(
-                g_pErrorOutputStream,
-                "Effect Buffer Duplication failed: ");
-            pStream = AppendCStringToStream(pStream, pszError);
-            AppendCStringToStream(pStream, "\n");
+            g_pErrorOutputStream
+                ->AppendCStringToStream(
+                    "Duplicate Effect Buffer Create failed: ")
+                ->AppendCStringToStream(pszError)
+                ->AppendCStringToStream("\n");
             return pPool;
         }
     }
