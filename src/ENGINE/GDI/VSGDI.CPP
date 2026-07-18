@@ -263,7 +263,8 @@ static const char g_VSGDI_DisplayDibGetAddress32[] = "DisplayDibGetAddress32";
 static const char g_VSGDI_DisplayDib32[] = "DisplayDib32";
 static const char g_VSGDI_ErrorNoValidDriver[] = "No valid driver selected to initialise\n";
 static const char g_VSGDI_ErrorNoValidDriverAvailable[] = "No valid driver available\n";
-static const char g_VSGDI_ErrorRegisterClass[] = "Unable to register DD base window class";
+static const char g_VSGDI_ErrorRegisterClass[] =
+    "Unable to register DD base window class\n";
 static const char g_VSGDI_ErrorSetCooperativeLevel[] =
     "Direct Draw Set Coorperative Level (DD object) failed : ";
 static const char g_VSGDI_ErrorSetDisplayMode[] = "Direct Draw Set Display Mode failed : ";
@@ -1793,6 +1794,8 @@ VsGdiDirectDrawDisplayState::VsGdiDirectDrawDisplayState(const unsigned short *p
         WindowClass.lpszMenuName = 0;
         WindowClass.lpszClassName = g_VSGDI_DirectDrawWindowClass;
         if (RegisterClassA(&WindowClass) == 0) {
+            g_pErrorOutputStream->AppendCStringToStream(
+                g_VSGDI_ErrorRegisterClass);
             return;
         }
         ShowCursor(0);
@@ -1814,12 +1817,22 @@ VsGdiDirectDrawDisplayState::VsGdiDirectDrawDisplayState(const unsigned short *p
         uResult = ((DIRECTDRAW_SET_COOPERATIVE_LEVEL)pDirectDrawVtable[0x50 / 4])(
             *ppDirectDrawObject, m_hDisplayWindow, uCooperativeFlags);
         if (uResult != 0) {
+            g_pErrorOutputStream
+                ->AppendCStringToStream(g_VSGDI_ErrorSetCooperativeLevel)
+                ->AppendCStringToStream(
+                    LookupDirectDrawErrorString(uResult & 0xfff))
+                ->AppendCStringToStream(g_VSGDI_ErrorLineEnd);
             return;
         }
         if ((uCooperativeFlags & 1) != 0) {
             uResult = ((DIRECTDRAW_SET_DISPLAY_MODE)pDirectDrawVtable[0x54 / 4])(
                 *ppDirectDrawObject, m_cxDisplay, m_cyDisplay, 8);
             if (uResult != 0) {
+                g_pErrorOutputStream
+                    ->AppendCStringToStream(g_VSGDI_ErrorSetDisplayMode)
+                    ->AppendCStringToStream(
+                        LookupDirectDrawErrorString(uResult & 0xfff))
+                    ->AppendCStringToStream(g_VSGDI_ErrorLineEnd);
                 return;
             }
         }
@@ -1830,6 +1843,12 @@ VsGdiDirectDrawDisplayState::VsGdiDirectDrawDisplayState(const unsigned short *p
             *ppDirectDrawObject, aSurfaceDescription, &m_pPrimarySurface, 0);
         if (uResult == 0) {
             m_fReady = 1;
+        } else {
+            g_pErrorOutputStream
+                ->AppendCStringToStream(g_VSGDI_ErrorCreatePrimarySurface)
+                ->AppendCStringToStream(
+                    LookupDirectDrawErrorString(uResult & 0xfff))
+                ->AppendCStringToStream(g_VSGDI_ErrorLineEnd);
         }
     }
 }
