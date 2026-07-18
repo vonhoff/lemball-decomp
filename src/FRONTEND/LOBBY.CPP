@@ -120,7 +120,7 @@ struct VsNetNetworkLobbyScreen {
     VsNetNetworkLobbyCursorOwner *m_pCursorOwner;
     char m_abUnknown33c[0x90];
     VsNetNetworkLobbyPlayerEntryTable *m_pEntryTable;
-    int m_nSelectedEntry;
+    int m_nCurrentSelectedEntry;
     int m_nResolvedSelection;
     int m_cVisibleEntries;
     char m_abUnknown3dc[0x50];
@@ -255,8 +255,8 @@ void ThunkActivateSelectedNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
     VsNetNetworkLobbyPlayerEntryChild *pEntryChild;
 
     pScreen = (VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen;
-    if (pScreen->m_nSelectedEntry != -1) {
-        pEntryChild = &pScreen->m_pEntryTable->m_aEntries[pScreen->m_nSelectedEntry];
+    if (pScreen->m_nResolvedSelection != -1) {
+        pEntryChild = &pScreen->m_pEntryTable->m_aEntries[pScreen->m_nResolvedSelection];
         if (pEntryChild->m_fEnabled == 0) {
             if (ThunkSelectPreviousNetworkLobbyPlayerEntry(nNetworkLobbyScreen) == 0) {
                 ThunkSelectNextNetworkLobbyPlayerEntry(nNetworkLobbyScreen);
@@ -279,18 +279,18 @@ int ThunkSelectNextNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
     pScreen = (VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen;
     pEntryTable = pScreen->m_pEntryTable;
     if (pScreen->m_cVisibleEntries == 0) {
-        if (pScreen->m_nSelectedEntry == -1) {
+        if (pScreen->m_nResolvedSelection == -1) {
             return 0;
         }
         pScreen->m_pCursorOwner->m_fWrapSelection = 1;
-        pScreen->m_nSelectedEntry = -1;
+        pScreen->m_nResolvedSelection = -1;
     }
 
-    if (pScreen->m_nSelectedEntry == -1) {
+    if (pScreen->m_nResolvedSelection == -1) {
         return 0;
     }
 
-    nSelectedEntry = pScreen->m_nSelectedEntry + 1;
+    nSelectedEntry = pScreen->m_nResolvedSelection + 1;
     if (nSelectedEntry < 10) {
         pnEntryState = (int *)((char *)pEntryTable + 4 + nSelectedEntry * 0x44);
         do {
@@ -302,7 +302,7 @@ int ThunkSelectNextNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
         } while (nSelectedEntry < 10);
     }
 
-    pScreen->m_nSelectedEntry = nSelectedEntry;
+    pScreen->m_nResolvedSelection = nSelectedEntry;
     nEntryOffset = 0;
     do {
         ((VsNetNetworkLobbyPlayerEntryChild *)((char *)pEntryTable + nEntryOffset))->m_fSelected = 0;
@@ -311,14 +311,14 @@ int ThunkSelectNextNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
         ((VsNetNetworkLobbyPlayerEntryChild *)pnEntryState)->Deactivate();
     } while (nEntryOffset < 0x2a8);
 
-    if (pScreen->m_nSelectedEntry == 10) {
+    if (pScreen->m_nResolvedSelection == 10) {
         pScreen->m_pCursorOwner->m_fWrapSelection = 1;
-        pScreen->m_nSelectedEntry = -1;
+        pScreen->m_nResolvedSelection = -1;
         return 1;
     }
 
-    pEntryTable->m_aEntries[pScreen->m_nSelectedEntry].m_fSelected = 1;
-    pEntryTable->m_aEntries[pScreen->m_nSelectedEntry].Activate();
+    pEntryTable->m_aEntries[pScreen->m_nResolvedSelection].m_fSelected = 1;
+    pEntryTable->m_aEntries[pScreen->m_nResolvedSelection].Activate();
     return 1;
 }
 
@@ -332,16 +332,16 @@ int ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
 
     pScreen = (VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen;
     pEntryTable = pScreen->m_pEntryTable;
-    if (pScreen->m_cVisibleEntries == 0 || pScreen->m_nSelectedEntry == 0) {
+    if (pScreen->m_cVisibleEntries == 0 || pScreen->m_nResolvedSelection == 0) {
         return 0;
     }
 
-    if (pScreen->m_nSelectedEntry == -1) {
+    if (pScreen->m_nResolvedSelection == -1) {
         pScreen->m_pCursorOwner->m_fWrapSelection = 0;
-        pScreen->m_nSelectedEntry = 10;
+        pScreen->m_nResolvedSelection = 10;
     }
 
-    nSelectedEntry = pScreen->m_nSelectedEntry - 1;
+    nSelectedEntry = pScreen->m_nResolvedSelection - 1;
     if (nSelectedEntry >= 0) {
         pnEntryState = (int *)((char *)pEntryTable + 4 + nSelectedEntry * 0x44);
         do {
@@ -357,7 +357,7 @@ int ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
         return 0;
     }
 
-    pScreen->m_nSelectedEntry = nSelectedEntry;
+    pScreen->m_nResolvedSelection = nSelectedEntry;
     nEntryOffset = 0;
     do {
         ((VsNetNetworkLobbyPlayerEntryChild *)((char *)pEntryTable + nEntryOffset))->m_fSelected = 0;
@@ -366,8 +366,8 @@ int ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
         ((VsNetNetworkLobbyPlayerEntryChild *)pnEntryState)->Deactivate();
     } while (nEntryOffset < 0x2a8);
 
-    pEntryTable->m_aEntries[pScreen->m_nSelectedEntry].m_fSelected = 1;
-    pEntryTable->m_aEntries[pScreen->m_nSelectedEntry].Activate();
+    pEntryTable->m_aEntries[pScreen->m_nResolvedSelection].m_fSelected = 1;
+    pEntryTable->m_aEntries[pScreen->m_nResolvedSelection].Activate();
     return 1;
 }
 

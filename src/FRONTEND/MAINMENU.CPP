@@ -101,6 +101,8 @@ extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(
 extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
     void *pOwner, int nUnusedEdx, void *pChild);
 extern void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen);
+extern int ThunkSelectNextNetworkLobbyPlayerEntry(int nNetworkLobbyScreen);
+extern int ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen);
 
 class VsGdiAnimWindowOwner {
 public:
@@ -3578,14 +3580,18 @@ static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(
     pScreen = (GameNetworkLobbyScreenView *)pObject;
     pInput = (GameMenuSelectorEvent *)pEvent;
     nCode = (unsigned int)pInput->m_nPayload08;
+    if (pScreen->m_fPendingText3E0 != 0 ||
+        pScreen->m_nStatus3A8 != pScreen->m_nDrawnStatus3AC) {
+        return 0;
+    }
     if (pInput->m_nType00 == 0x0c) {
         if (nCode == 0xacef000cU && pScreen->m_fTextPrompt39C == 0) {
             BeginNetworkLobbyTextPrompt(pScreen, 0);
-            return 1;
+            return 0;
         }
         if (nCode == 0xacef000dU && pScreen->m_fTextPrompt39C == 0) {
             BeginNetworkLobbyTextPrompt(pScreen, 1);
-            return 1;
+            return 0;
         }
         if (nCode == 0xacef000eU) {
             pScreen->m_nTransitionStatus378 = 1;
@@ -3617,8 +3623,28 @@ static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(
             ch = ' ';
         } else if (nCode == 0x20U) {
             ch = '.';
+        } else if (nCode == 0x23U) {
+            pScreen->m_nReserved3B8 = 0;
+            pScreen->m_fTextPrompt39C = 0;
+            pScreen->m_nDeferredStatus430 = 0;
+            SetNetworkLobbyStatus(pScreen, 1);
+            pScreen->m_fBlink3C0 = 0;
+            pScreen->m_dwBlinkStart3C8 = timeGetTime();
+            if (g_pVariantResourceEntryManager != 0) {
+                ((GameVariantResourceEntryManager *)
+                    g_pVariantResourceEntryManager)
+                        ->PlayVariantResourceEffect(0x25);
+            }
+            return 1;
         } else if (nCode == 0x4cU) {
             CommitNetworkLobbyTextPrompt(pScreen);
+            pScreen->m_fBlink3C0 = 0;
+            pScreen->m_dwBlinkStart3C8 = timeGetTime();
+            if (g_pVariantResourceEntryManager != 0) {
+                ((GameVariantResourceEntryManager *)
+                    g_pVariantResourceEntryManager)
+                        ->PlayVariantResourceEffect(0x25);
+            }
             return 1;
         } else if (nCode == 0x4dU || nCode == 0x4eU) {
             if (pBuffer->m_cLength04 != 0) {
@@ -3633,6 +3659,42 @@ static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(
             pScreen->m_fSelectorDirty360 = 1;
         }
         return 1;
+    }
+    if (pInput->m_nType00 == 4) {
+        int fMoved;
+
+        fMoved = 0;
+        if (nCode == 1U) {
+            fMoved = ThunkSelectPreviousNetworkLobbyPlayerEntry(
+                (int)(unsigned long)pScreen);
+        } else if (nCode == 2U) {
+            fMoved = ThunkSelectNextNetworkLobbyPlayerEntry(
+                (int)(unsigned long)pScreen);
+        }
+        if (fMoved != 0) {
+            if (g_pVariantResourceEntryManager != 0) {
+                ((GameVariantResourceEntryManager *)
+                    g_pVariantResourceEntryManager)
+                        ->PlayVariantResourceEffect(0x1b);
+            }
+            return 1;
+        }
+        if ((nCode == 0x1fU || nCode == 0x22U || nCode == 0x4cU) &&
+            pScreen->m_nResolvedPlayer3D4 != -1 &&
+            pScreen->m_pPlayerEntries3CC != 0) {
+            typedef int (LEMBALL_FASTCALL *DispatchEntryInputProc)(
+                void *, int, short *, int);
+            void *pEntry;
+            short Point[2];
+
+            Point[0] = 0;
+            Point[1] = 0;
+            pEntry = (char *)pScreen->m_pPlayerEntries3CC +
+                pScreen->m_nResolvedPlayer3D4 * 0x44;
+            ((DispatchEntryInputProc)(*(void ***)pEntry)[1])(
+                pEntry, 0, Point, 0);
+            return 1;
+        }
     }
     ++*(int *)((char *)pScreen + 0x10);
     return 0;
