@@ -1061,6 +1061,27 @@ static void *g_VSGDI_MetricsDisplayVtable[14];
 static void *g_VSGDI_DibDisplayVtable[14];
 static void *g_VSGDI_DirectDrawDisplayVtable[14];
 
+struct VsGdiDirectDrawBinding {
+    void **m_pVtable;
+    int m_nSurfaceSlot;
+};
+
+static void *LEMBALL_FASTCALL DeleteDirectDrawBinding(
+    void *pBinding, int nUnused, int fDelete) {
+    (void)nUnused;
+    *(void ***)pBinding =
+        (void **)((char *)&g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable + 8);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pBinding);
+    }
+    return pBinding;
+}
+
+static void *g_VSGDI_DirectDrawBindingVtable[2] = {
+    (void *)DeleteDirectDrawBinding,
+    (void *)NoopHelperTargetParamWrapperArgument,
+};
+
 static void *LEMBALL_FASTCALL VsGdiDeleteDisplayState(
     void *pDisplayState, int nUnused, int fDelete) {
     (void)nUnused;
@@ -1110,6 +1131,12 @@ static void InitializeDisplayStateVtables(void) {
         applyDirectDrawPaletteMethod;
     union { void *(VsGdiDirectDrawDisplayState::*p)(int); void *v; }
         deleteDirectDrawDisplayStateMethod;
+    union { void *(VsGdiDirectDrawDisplayState::*p)(void); void *v; }
+        createDirectDrawBindingMethod;
+    union { int (VsGdiDirectDrawDisplayState::*p)(void *); void *v; }
+        releaseDirectDrawBindingMethod;
+    union { int (VsGdiDirectDrawDisplayState::*p)(void *); void *v; }
+        initializeDirectDrawBitmapInfoMethod;
     union { void *(VsGdiDibDisplayState::*p)(int); void *v; }
         deleteDibDisplayStateMethod;
     union {
@@ -1150,15 +1177,21 @@ static void InitializeDisplayStateVtables(void) {
     applyDirectDrawPaletteMethod.p =
         &VsGdiDirectDrawDisplayState::ApplyDirectDrawPalette;
     readyMethod.p = &VsGdiDisplayState::IsReady;
+    createDirectDrawBindingMethod.p =
+        &VsGdiDirectDrawDisplayState::CreateDirectDrawDisplayBinding;
+    releaseDirectDrawBindingMethod.p =
+        &VsGdiDirectDrawDisplayState::ReleaseDirectDrawDisplayBinding;
+    initializeDirectDrawBitmapInfoMethod.p =
+        &VsGdiDirectDrawDisplayState::InitializeDirectDrawBitmapInfo;
     g_VSGDI_MetricsDisplayVtable[1] = createBindingMethod.v;
     g_VSGDI_DibDisplayVtable[1] = createBindingMethod.v;
-    g_VSGDI_DirectDrawDisplayVtable[1] = createBindingMethod.v;
+    g_VSGDI_DirectDrawDisplayVtable[1] = createDirectDrawBindingMethod.v;
     g_VSGDI_MetricsDisplayVtable[2] = releaseBindingMethod.v;
     g_VSGDI_DibDisplayVtable[2] = releaseBindingMethod.v;
-    g_VSGDI_DirectDrawDisplayVtable[2] = releaseBindingMethod.v;
+    g_VSGDI_DirectDrawDisplayVtable[2] = releaseDirectDrawBindingMethod.v;
     g_VSGDI_MetricsDisplayVtable[3] = bitmapInfoMethod.v;
     g_VSGDI_DibDisplayVtable[3] = bitmapInfoMethod.v;
-    g_VSGDI_DirectDrawDisplayVtable[3] = bitmapInfoMethod.v;
+    g_VSGDI_DirectDrawDisplayVtable[3] = initializeDirectDrawBitmapInfoMethod.v;
     g_VSGDI_MetricsDisplayVtable[4] = createBitmapMethod.v;
     g_VSGDI_DibDisplayVtable[4] = createBitmapMethod.v;
     g_VSGDI_DirectDrawDisplayVtable[4] = createBitmapMethod.v;
@@ -1883,6 +1916,53 @@ VsGdiDirectDrawDisplayState::~VsGdiDirectDrawDisplayState(void) {
     if (m_hDisplayWindow != 0) {
         m_hDisplayWindow = 0;
     }
+}
+
+// FUNCTION: LEMBALL 0x00457760
+void *VsGdiDirectDrawDisplayState::CreateDirectDrawDisplayBinding(void) {
+    VsGdiDirectDrawBinding *pBinding;
+    int nSurfaceSlot;
+    void **ppSurfaceSlots;
+
+    nSurfaceSlot = m_fWindowOwnershipInitialized;
+    ppSurfaceSlots = (void **)&m_pfnDirectDrawCreate;
+    ppSurfaceSlots[nSurfaceSlot] = 0;
+    ++m_fWindowOwnershipInitialized;
+    pBinding = (VsGdiDirectDrawBinding *)AllocateVSMemBlock(
+        sizeof(VsGdiDirectDrawBinding));
+    if (pBinding != 0) {
+        pBinding->m_pVtable = g_VSGDI_DirectDrawBindingVtable;
+        pBinding->m_nSurfaceSlot = nSurfaceSlot;
+        return pBinding;
+    }
+    return 0;
+}
+
+int VsGdiDirectDrawDisplayState::ReleaseDirectDrawDisplayBinding(
+    void *pBinding) {
+    if (pBinding != 0) {
+        ((void *(LEMBALL_FASTCALL *)(void *, int, int))
+             (*(void ***)pBinding)[0])(pBinding, 0, 1);
+    }
+    return 1;
+}
+
+int VsGdiDirectDrawDisplayState::InitializeDirectDrawBitmapInfo(
+    void *pBitmapInfo) {
+    unsigned char *pbInfo;
+
+    pbInfo = (unsigned char *)pBitmapInfo;
+    *(unsigned short *)(pbInfo + 0x0c) = 1;
+    *(unsigned int *)(pbInfo + 0x00) = 0x28;
+    *(unsigned int *)(pbInfo + 0x10) = 0;
+    *(unsigned int *)(pbInfo + 0x14) = 0;
+    *(unsigned int *)(pbInfo + 0x18) = 0;
+    *(unsigned int *)(pbInfo + 0x1c) = 0;
+    *(unsigned int *)(pbInfo + 0x20) = 0;
+    *(int *)(pbInfo + 0x08) = -1;
+    *(unsigned short *)(pbInfo + 0x0e) = 8;
+    *(unsigned int *)(pbInfo + 0x24) = 0;
+    return 1;
 }
 
 // FUNCTION: LEMBALL 0x004578c0

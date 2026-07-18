@@ -150,6 +150,9 @@ public:
     void *Delete(int fDelete);
 
     int Create(HWND hWnd);
+    void *CreateDirectDrawDisplayBinding(void);
+    int ReleaseDirectDrawDisplayBinding(void *pBinding);
+    int InitializeDirectDrawBitmapInfo(void *pBitmapInfo);
     int StretchDirectDrawSurfaceRect(void *pDestinationBinding,
                                      short *pDestinationRect,
                                      void *pSourceBinding,
