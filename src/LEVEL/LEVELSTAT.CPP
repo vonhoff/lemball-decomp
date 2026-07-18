@@ -2959,13 +2959,18 @@ void LevelScreenTerrainRenderView::DispatchDynamicRenderEntry(
     static const int s_anRotatedResources[8] =
         { 0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x5f };
     char *pScreen;
+    char *pRecord;
     unsigned short *pEntry;
     int nType;
     int nDirection;
+    int nSubtype;
+    int nFlags;
+    int nPalette;
 
     pScreen = (char *)this;
     pEntry = (unsigned short *)(*(char **)(pScreen + 0x95c) +
                                 iEntry * 0x4c);
+    pRecord = (char *)pEntry;
     *(unsigned short *)(*(char **)(pScreen + 0xa40) + 0x68) = nDepth;
     nType = *(int *)(pEntry + 0x14);
     switch (nType) {
@@ -2984,12 +2989,119 @@ void LevelScreenTerrainRenderView::DispatchDynamicRenderEntry(
             s_anRotatedResources[nDirection], 0,
             *(void **)(pEntry + 0x12), 0);
         break;
+    case 4:
+        nSubtype = *(int *)(pRecord + 0x18);
+        nFlags = *(int *)(pRecord + 0x20);
+        nPalette = *(short *)(pRecord + 0x1c) != 0 ?
+            *(int *)(pScreen + 0x968) : 0;
+        if (nSubtype >= 0x18 && nSubtype <= 0x1b) {
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x28),
+                (short)(*(int *)(pRecord + 8) - 0x3c),
+                g_nLevelScreenCompositeSequencePrimaryResourceId,
+                1, 0, 0);
+            if (nSubtype < 0x1a) {
+                EmitLevelScreenVariantEntry(
+                    *(void **)(pScreen + 0xa40),
+                    (short)(*(int *)(pRecord + 4) - 0x28),
+                    (short)(*(int *)(pRecord + 8) - 0x3c),
+                    g_nLevelScreenCompositeSequencePrimaryResourceId,
+                    0, 0, 0);
+            } else {
+                EmitLevelScreenVariantEntry(
+                    *(void **)(pScreen + 0xa40),
+                    (short)(*(int *)(pRecord + 4) - 0x28),
+                    (short)(*(int *)(pRecord + 8) - 0x3c),
+                    g_nLevelScreenCompositeSequenceSecondaryResourceId,
+                    nFlags + 0x640, *(void **)(pRecord + 0x24), 0);
+            }
+            if (nSubtype == 0x19 || nSubtype == 0x1a) {
+                EmitLevelScreenVariantEntry(
+                    *(void **)(pScreen + 0xa40),
+                    (short)(*(int *)(pRecord + 4) - 0x30),
+                    (short)(*(int *)(pRecord + 8) - 0x3c),
+                    0x74, nFlags, *(void **)(pRecord + 0x24), nPalette);
+            }
+        }
+        break;
+    case 5:
+        nSubtype = *(int *)(pRecord + 0x18);
+        if (nSubtype == 0x18 || nSubtype == 0x19) {
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 8),
+                (short)(*(int *)(pRecord + 8) - 0x10),
+                0x7c, 0, *(void **)(pRecord + 0x24), 0);
+        } else if (nSubtype == 0x1a) {
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x10),
+                (short)(*(int *)(pRecord + 8) - 0x10),
+                0x82, *(int *)(pRecord + 0x20),
+                *(void **)(pRecord + 0x24), 0);
+        }
+        break;
+    case 9:
+        nSubtype = *(int *)(pRecord + 0x18);
+        if (nSubtype == 0x25) {
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 10),
+                (short)(*(int *)(pRecord + 8) - 0x0f),
+                0x7d, 0, *(void **)(pRecord + 0x24), 0);
+        } else if (nSubtype == 0x26) {
+            nFlags = (*(int *)(pRecord + 0x24) -
+                      *(int *)(pRecord + 0x20)) / 0x40;
+            if (nFlags > 8) nFlags = 8;
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x0f),
+                (short)(*(int *)(pRecord + 8) - 0x11),
+                0x7e, nFlags, 0, 0);
+        }
+        break;
+    case 0x11:
+        nSubtype = *(int *)(pRecord + 0x18);
+        if (nSubtype == 0x18) {
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 8),
+                (short)(*(int *)(pRecord + 8) - 0x18),
+                0x86, *(int *)(pRecord + 0x20),
+                *(void **)(pRecord + 0x24), 0);
+        } else if (nSubtype == 0x19 || nSubtype == 0x1a) {
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x22),
+                (short)(*(int *)(pRecord + 8) - 0x32),
+                0x87, *(int *)(pRecord + 0x20),
+                *(void **)(pRecord + 0x24), 0);
+        }
+        break;
     case 0x12:
         EmitLevelScreenVariantEntry(
             *(void **)(pScreen + 0xa40),
             (short)(*(int *)(pEntry + 2) - 0x10),
             (short)(*(int *)(pEntry + 4) - 0x10),
             0x81, 0, *(void **)(pEntry + 0x12), 0);
+        break;
+    case 0x13:
+        nSubtype = *(int *)(pRecord + 0x18);
+        if (nSubtype >= 0x18 && nSubtype < 0x1b) {
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 2),
+                (short)(*(int *)(pRecord + 8) - 2),
+                0x84, 0, 0, 0);
+        } else if (nSubtype == 0x1b) {
+            EmitLevelScreenVariantEntry(
+                *(void **)(pScreen + 0xa40),
+                (short)(*(int *)(pRecord + 4) - 0x1e),
+                (short)(*(int *)(pRecord + 8) - 0x23),
+                0x83, *(int *)(pRecord + 0x20),
+                *(void **)(pRecord + 0x24), 0);
+        }
         break;
     }
 }
