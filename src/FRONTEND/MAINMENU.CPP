@@ -99,6 +99,9 @@ extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
     void *pOwner, int nUnusedEdx, void *pChild);
 extern void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen);
 
+// GLOBAL: LEMBALL 0x004a7b64
+static int g_nQueuedVariantChildSlotManagerModeSelectedResourceId;
+
 struct GameProgressiveSelectorVtableView {
     virtual int SelectFrame(void) = 0;
     virtual void SetProgressiveDuration(int nValue) = 0;
@@ -422,6 +425,38 @@ public:
     virtual void BeginFrame(void) = 0;
 };
 
+class GameUploadOwnerInterface {
+public:
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved01(void) = 0;
+    virtual int GetUploadState(void) = 0;
+};
+
+class GameFramedScreenVirtualInterface {
+public:
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved01(void) = 0;
+    virtual void Reserved02(void) = 0;
+    virtual void Reserved03(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void Reserved05(void) = 0;
+    virtual void Reserved06(void) = 0;
+    virtual void Reserved07(void) = 0;
+    virtual void Reserved08(void) = 0;
+    virtual void Reserved09(void) = 0;
+    virtual void Reserved10(void) = 0;
+    virtual void Reserved11(void) = 0;
+    virtual void Reserved12(void) = 0;
+    virtual void Reserved13(void) = 0;
+    virtual void Reserved14(void) = 0;
+    virtual void Reserved15(void) = 0;
+    virtual void Reserved16(void) = 0;
+    virtual void Reserved17(void) = 0;
+    virtual void DrawOverlayVariant(void) = 0;
+    virtual void DrawScreenContents(void) = 0;
+    virtual void FinishBuildingRenderEntries(void) = 0;
+};
+
 class GameNetworkRuntimeVirtualInterface {
 public:
     virtual void Reserved(void) = 0;
@@ -543,6 +578,10 @@ static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(
     void *pObject, int, void *);
 static void LEMBALL_FASTCALL DrawFramedScreenBase(void *pObject);
 static void LEMBALL_FASTCALL DrawFramedScreenFrameLayer(void *pObject);
+static void LEMBALL_FASTCALL EmitFramedScreenOverlayVariantEntry(
+    void *pObject);
+static void LEMBALL_FASTCALL EmitQueuedVariantChildSlotEntry(
+    void *pObject);
 static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(void *pObject);
 static void LEMBALL_FASTCALL LoadFramedScreenFrameResources(void *pObject);
 static void LEMBALL_FASTCALL ReleaseFramedScreenFrameResources(void *pObject);
@@ -1727,43 +1766,54 @@ static void LEMBALL_FASTCALL DrawFramedScreenBase(void *pObject) {
     GameFramedScreenBase *pScreen;
     void *pUploadOwner;
     int nUploadState;
-    unsigned char *pGroup;
     unsigned char *pEntry;
+    short Rect[4];
 
     pScreen = (GameFramedScreenBase *)pObject;
     pUploadOwner = *(void **)((char *)pScreen->m_pRenderContext88 + 0x0c);
-    nUploadState = ((GameIntNoArgVirtual)(*(void ***)pUploadOwner)[2])(
-        pUploadOwner, 0);
+    nUploadState = ((GameUploadOwnerInterface *)pUploadOwner)->GetUploadState();
     InitializeHelperUploadStatePending(nUploadState);
-    pGroup = pScreen->m_abRenderEntryGroupC8 +
-             pScreen->m_iRenderEntryGroup328 * 0x260;
-    AppendPointerQueueEntry(pScreen->m_pRenderContext88, pGroup + 0x1bc);
+    AppendPointerQueueEntry(
+        pScreen->m_pRenderContext88,
+        pScreen->m_abRenderEntryGroupC8 +
+            pScreen->m_iRenderEntryGroup328 * 0x260 + 0x1bc);
 
     if (pScreen->m_fBuildingRenderEntries364 != 0) {
         if (pScreen->m_fTileBackgroundAC == 0) {
-            pEntry = pGroup + 0x1c0 +
+            Rect[0] = pScreen->m_cxScreen37C;
+            Rect[1] = pScreen->m_cyScreen37E;
+            Rect[2] = 0;
+            Rect[3] = 0;
+            pEntry = pScreen->m_abRenderEntryGroupC8 +
+                     pScreen->m_iRenderEntryGroup328 * 0x260 + 0x1c0 +
                      pScreen->m_iPackagedEntry36C * 0x10;
-            *(short *)(pEntry + 4) = pScreen->m_cxScreen37C;
-            *(short *)(pEntry + 6) = pScreen->m_cyScreen37E;
-            *(short *)(pEntry + 8) = 0;
-            *(short *)(pEntry + 10) = 0;
+            *(short *)(pEntry + 4) = Rect[0];
+            *(short *)(pEntry + 6) = Rect[1];
+            *(short *)(pEntry + 8) = Rect[2];
+            *(short *)(pEntry + 10) = Rect[3];
             *(int *)(pEntry + 12) = 0;
             ((GameMainMenuRenderEntryInterface *)pEntry)
                 ->AppendToQueue(pScreen->m_pRenderContext88);
             ++pScreen->m_iPackagedEntry36C;
         }
         DrawFramedScreenFrameLayer(pScreen);
-        ((GameNoArgVirtual)pScreen->m_pVtable00[20])(pScreen, 0);
-    } else {
-        ((GameNoArgVirtual)pScreen->m_pVtable00[18])(pScreen, 0);
+        ((GameFramedScreenVirtualInterface *)pScreen)
+            ->FinishBuildingRenderEntries();
     }
-    ((GameNoArgVirtual)pScreen->m_pVtable00[19])(pScreen, 0);
-    if (pScreen->m_fBuildingRenderEntries364 == 0 &&
-        pScreen->m_pSelectorManager334 != 0) {
-        UpdateMenuSelectorAnimation(
-            (GameMenuSelectorManager *)pScreen->m_pSelectorManager334);
+    if (pScreen->m_fBuildingRenderEntries364 == 0) {
+        EmitFramedScreenOverlayVariantEntry(pScreen);
+        ((GameFramedScreenVirtualInterface *)pScreen)->DrawOverlayVariant();
+    }
+    ((GameFramedScreenVirtualInterface *)pScreen)->DrawScreenContents();
+    if (pScreen->m_fBuildingRenderEntries364 == 0) {
+        if (pScreen->m_pSelectorManager334 != 0) {
         EmitMenuSelectorResourceEntries(
             (GameMenuSelectorManager *)pScreen->m_pSelectorManager334);
+        }
+        if (pScreen->m_pQueuedVariantManager338 != 0) {
+            EmitQueuedVariantChildSlotEntry(
+                pScreen->m_pQueuedVariantManager338);
+        }
     }
 }
 
@@ -1895,6 +1945,25 @@ static void LEMBALL_FASTCALL ReleaseFramedScreenFrameResources(void *pObject) {
     pVariantManager->ReleaseVariantRenderResource(
         pScreen->m_nFrameResourceId390);
     pScreen->m_fFrameResourcesLoaded9C = 0;
+}
+
+// FUNCTION: LEMBALL 0x00446050
+static void LEMBALL_FASTCALL EmitFramedScreenOverlayVariantEntry(
+    void *pObject)
+{
+    GameFramedScreenBase *pScreen;
+    short Rect[4];
+
+    pScreen = (GameFramedScreenBase *)pObject;
+    if (pScreen->m_pTimedFrameSelector34C != 0) {
+        *(DWORD *)((char *)pScreen->m_pTimedFrameSelector34C + 0x14) =
+            timeGetTime();
+        EmitVariantRenderResourceEntry(
+            pScreen->m_abVariantRenderManager14, Rect,
+            &pScreen->m_xOverlay380,
+            pScreen->m_nTimedVariantResourceId394, 0,
+            pScreen->m_pTimedFrameSelector34C, 0);
+    }
 }
 
 // FUNCTION: LEMBALL 0x004460a0
@@ -4141,6 +4210,52 @@ static void SelectFunctionalLevel(
 }
 
 static void LEMBALL_FASTCALL NoopFunctionalLevelSelectionHook(void *) {
+}
+
+// FUNCTION: LEMBALL 0x0044fa00
+static void LEMBALL_FASTCALL EmitQueuedVariantChildSlotEntry(
+    void *pObject)
+{
+    char *pManager;
+    char *pGeometryOwner;
+    char *pGeometryDispatch;
+    void *pRenderContext;
+    void *pSavedOwner;
+    int nDispatchOffset;
+    int nPointBias;
+    short Point[2];
+    short Rect[4];
+
+    pManager = (char *)pObject;
+    if (*(int *)(pManager + 0x144) == 0) {
+        return;
+    }
+    pRenderContext = *(void **)(pManager + 0x12c);
+    nPointBias = *(int *)(pManager + 0x130) == 1 ? -1 : -2;
+    pGeometryOwner = *(char **)((char *)pRenderContext + 0x0c);
+    nDispatchOffset =
+        *(int *)((char *)*(void **)(pGeometryOwner + 0x40) + 4);
+    pGeometryDispatch = pGeometryOwner + 0x40 + nDispatchOffset;
+    *(short *)(pManager + 0x100) =
+        *(short *)(pGeometryDispatch + 0x14);
+    *(short *)(pManager + 0x102) =
+        *(short *)(pGeometryDispatch + 0x16);
+    *(short *)(pManager + 0x104) = 0;
+    *(short *)(pManager + 0x106) = 0;
+    *(int *)(pManager + 0x108) = 0x10000;
+    ((GameMainMenuRenderEntryInterface *)(pManager + 0xfc))
+        ->AppendToQueue(pRenderContext);
+    *(int *)(pManager + 0x124) = 0;
+    Point[0] = (short)(*(int *)(pManager + 0x98) + nPointBias);
+    Point[1] = (short)(*(int *)(pManager + 0x9c) + nPointBias);
+    pSavedOwner = *(void **)(pManager + 0x2c);
+    *(void **)(pManager + 0x2c) = pRenderContext;
+    EmitVariantRenderResourceEntry(
+        pManager + 0x10, Rect, Point,
+        g_nQueuedVariantChildSlotManagerModeSelectedResourceId, 0,
+        pManager + 0x118, 0);
+    *(void **)(pManager + 0x2c) = pSavedOwner;
+    ResetOrFlipVariantRenderBuffers((int)(unsigned long)(pManager + 0x10));
 }
 
 // FUNCTION: LEMBALL 0x0044fbd0
