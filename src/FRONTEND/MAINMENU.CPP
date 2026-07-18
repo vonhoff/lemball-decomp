@@ -3267,7 +3267,6 @@ static void LEMBALL_FASTCALL DrawPaintballSequencePromptText(void *pObject) {
         return;
     }
     pMappedList = (MappedListResourceTable *)pScreen->m_pMappedListResources98;
-    pMappedList->ResetDrawEntryPool();
     Relative[0] = 0;
     Relative[1] = 0;
     pMappedList->SubmitRenderEntry(
@@ -3666,6 +3665,7 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
         return;
     }
     pMappedList = (MappedListResourceTable *)pScreen->m_pMappedListResources98;
+    pMappedList->ResetDrawEntryPool();
     Relative[0] = 0;
     Relative[1] = 0;
     if (pScreen->m_fBuildingRenderEntries364 != 0) {
