@@ -2084,7 +2084,6 @@ void GameIntroSequenceMediaState::ConfigureOwner(
 static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject) {
     GameMainMenuScreenView *pScreen;
     unsigned char *pForegroundEntry;
-    const int *pResources;
     const int *pPlayResources;
     const int *pSinglePlayerResources;
     const int *pMultiPlayerResources;
@@ -2093,39 +2092,46 @@ static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject) {
     const int *pOptionsResources;
     GameMenuSelectorManager *pSelectorManager;
     short cxForeground;
+    int cRenderGroups;
 
     pScreen = (GameMainMenuScreenView *)pObject;
-    pScreen->m_panWidgetLayout39C =
-        pScreen->m_fCompactLayout32C == 0
-            ? g_GAME_MainMenuWidgetLayoutStandard
-            : g_GAME_MainMenuWidgetLayoutCompact;
+    if (pScreen->m_fCompactLayout32C != 0) {
+        pScreen->m_panWidgetLayout39C = g_GAME_MainMenuWidgetLayoutCompact;
+        pPlayResources = g_GAME_MainMenuWidgetResourcesCompact;
+        pMultiPlayerResources = g_GAME_MainMenuWidgetResourcesCompact + 1;
+        pDisplayResources = g_GAME_MainMenuWidgetResourcesCompact + 11;
+        pSinglePlayerResources = g_GAME_MainMenuWidgetResourcesCompact + 2;
+        pPackResources = g_GAME_MainMenuWidgetResourcesCompact + 6;
+        pOptionsResources = g_GAME_MainMenuWidgetResourcesCompact + 3;
+    } else {
+        pScreen->m_panWidgetLayout39C = g_GAME_MainMenuWidgetLayoutStandard;
+        pPlayResources = g_GAME_MainMenuWidgetResourcesStandard;
+        pMultiPlayerResources = g_GAME_MainMenuWidgetResourcesStandard + 1;
+        pDisplayResources = g_GAME_MainMenuWidgetResourcesStandard + 10;
+        pSinglePlayerResources = g_GAME_MainMenuWidgetResourcesStandard + 2;
+        pPackResources = g_GAME_MainMenuWidgetResourcesStandard + 5;
+        pOptionsResources = g_GAME_MainMenuWidgetResourcesStandard + 4;
+    }
 
+    cRenderGroups = 1;
     pForegroundEntry = pScreen->m_abRenderEntryGroupC8 + 0x14;
-    cxForeground = *(short *)((char *)pScreen->m_pForegroundBitmapC0 + 0x48);
-    *(short *)(pForegroundEntry + 0) =
-        (short)((pScreen->m_cxScreen37C - cxForeground) / 2);
-    *(short *)(pForegroundEntry + 2) = 0;
-    *(void **)(pForegroundEntry + 0x0c) = pScreen->m_pForegroundBitmapC0;
-    *(int *)(pForegroundEntry + 0x10) = 0x800;
-    *(int *)(pForegroundEntry + 0x14) = 0;
-
-    pResources = pScreen->m_fCompactLayout32C == 0
-        ? g_GAME_MainMenuWidgetResourcesStandard
-        : g_GAME_MainMenuWidgetResourcesCompact;
-    pPlayResources = pResources;
-    pSinglePlayerResources = pResources + 2;
-    pMultiPlayerResources = pResources + 1;
-    pDisplayResources = pResources +
-        (pScreen->m_fCompactLayout32C == 0 ? 10 : 11);
-    pPackResources = pResources +
-        (pScreen->m_fCompactLayout32C == 0 ? 5 : 6);
-    pOptionsResources = pResources +
-        (pScreen->m_fCompactLayout32C == 0 ? 4 : 3);
+    do {
+        cxForeground = *(short *)((char *)pScreen->m_pForegroundBitmapC0 + 0x48);
+        *(short *)(pForegroundEntry + 0) =
+            (short)((*(short *)((char *)pScreen->m_pPrimaryContext84 + 8) -
+                     cxForeground) / 2);
+        *(short *)(pForegroundEntry + 2) = 0;
+        *(void **)(pForegroundEntry + 0x0c) = pScreen->m_pForegroundBitmapC0;
+        *(int *)(pForegroundEntry + 0x10) = 0x800;
+        *(int *)(pForegroundEntry + 0x14) = 0;
+        pForegroundEntry += 0x260;
+        --cRenderGroups;
+    } while (cRenderGroups != 0);
 
     pSelectorManager = (GameMenuSelectorManager *)
         AllocateVSMemBlock(sizeof(GameMenuSelectorManager));
     if (pSelectorManager != 0) {
-        ConstructMenuSelectorManager(
+        pSelectorManager = ConstructMenuSelectorManager(
             pSelectorManager, 0, pScreen->m_pPrimaryContext84,
             pScreen->m_pRenderContext88, 6,
             pScreen->m_fCompactLayout32C);
