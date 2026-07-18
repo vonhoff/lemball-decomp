@@ -196,7 +196,7 @@ __declspec(dllimport) int WINAPI MessageBoxA(HWND hWnd, LPCSTR lpText, LPCSTR lp
 __declspec(dllimport) ATOM WINAPI RegisterClassA(const WNDCLASSA *lpWndClass);
 __declspec(dllimport) LONG WINAPI GetWindowLongA(HWND hWnd, int nIndex);
 LONG WINAPI SetWindowLongA(HWND hWnd, int nIndex, LONG dwNewLong);
-LRESULT WINAPI DefWindowProcA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+__declspec(dllimport) LRESULT WINAPI DefWindowProcA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 __declspec(dllimport) LRESULT WINAPI SendMessageA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 __declspec(dllimport) BOOL WINAPI PostMessageA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 __declspec(dllimport) BOOL WINAPI InvalidateRect(HWND hWnd, const void *lpRect, BOOL bErase);
