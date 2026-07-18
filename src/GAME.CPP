@@ -104,6 +104,12 @@ extern int g_fEffectsEnabled;
 extern void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntryThunk(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryThunk(void *pObject);
+extern void *LEMBALL_FASTCALL DeleteStatusPointSinkEntryThunk(
+    void *pEntry, int nUnused, unsigned char fDelete);
+extern void LEMBALL_FASTCALL QueueStatusPointPushThunk(
+    void *pEntry, int nUnused, void *pQueue);
+extern void LEMBALL_FASTCALL ExecuteStatusPointPushThunk(
+    void *pEntry, int nUnused, void *pContext);
 extern void *LEMBALL_FASTCALL InitializeRenderRectSinkEntryA(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeRenderRectSinkEntryB(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeLevelSurfaceRectSink(void *pObject);
@@ -1357,6 +1363,12 @@ static void *g_GAME_LevelScreenVtableSlots[14];
 static int g_fGAMELevelScreenVtableInitialized;
 static void *g_GAME_LevelScreenRenderStatePopVtable[4];
 static int g_fGAMELevelScreenRenderStatePopVtableInitialized;
+static void *g_GAME_LevelScreenRenderStatePushVtable[4] = {
+    (void *)DeleteStatusPointSinkEntryThunk,
+    (void *)QueueStatusPointPushThunk,
+    (void *)ExecuteStatusPointPushThunk,
+    0
+};
 static void RegisterLevelScreenPaletteRemaps(char *pScreen);
 static void ReleaseLevelScreenPaletteRemaps(char *pScreen);
 
@@ -1860,6 +1872,8 @@ void *GameScreenObject::ConstructLevelScreen(void *pPrimaryContext,
     }
     *(void **)(pScreenObject + 0x990) =
         g_pQueuedRenderPointSinkFinalizeThunk;
+    *(void ***)(pScreenObject + 0x900) =
+        g_GAME_LevelScreenRenderStatePushVtable;
     InitializePackagedSpriteRenderEntryThunk(pScreenObject + 0x998);
     InitializePackagedSpriteRenderEntryThunk(pScreenObject + 0x9a8);
     InitializeLevelSurfaceRectSink(pScreenObject + 0x21a0);
