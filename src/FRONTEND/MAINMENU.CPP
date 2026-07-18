@@ -77,6 +77,8 @@ extern int g_nSelectedNetworkLobbyPeerId;
 extern void *g_pSessionRandomState;
 extern void *g_pVariantResourceEntryManager;
 extern void SetVariantResourceEffectsEnabled(int fEnabled);
+extern void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pObject);
+extern void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(void *pObject);
 
 struct GameProgressiveSelectorVtableView {
     virtual int SelectFrame(void) = 0;
@@ -267,14 +269,17 @@ struct GameLevelSelectionScreenView : public GameFramedScreenBase {
 
 struct GamePasswordEntryScreenView : public GameFramedScreenBase {
     int m_nPanelResourceId398;
-    unsigned char m_abReserved39C[0x0c];
+    unsigned char m_abReserved39C[0x08];
+    void *m_pInputPanelOwner3A4;
     const int *m_pLayout3A8;
     const int *m_pKeyResourceIds3AC;
     char m_szPassword3B0[0x10];
     int m_aKeyPositions3C0[12][2];
     int m_cPassword420;
     void *m_apKeyOverlays424[12];
-    unsigned char m_abInputPanelContext454[0x24];
+    unsigned char m_abInputPanelPointSink454[0x10];
+    unsigned char m_abInputPanelFrameSelector464[0x10];
+    void *m_pInputPanelRenderContext474;
     int m_xSelected478;
     int m_ySelected47C;
     int m_nSelectedKey480;
@@ -432,7 +437,10 @@ static int LEMBALL_FASTCALL HandlePasswordEntryInput(
 static void LEMBALL_FASTCALL UpdatePasswordEntryScreen(void *pObject);
 static void LEMBALL_FASTCALL InitializePasswordEntryResources(void *pObject);
 static void LEMBALL_FASTCALL ReleasePasswordEntryResources(void *pObject);
+static void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void *pObject);
 static void LEMBALL_FASTCALL DrawPasswordEntryText(void *pObject);
+static void InitializePasswordEntryRenderContext(
+    GamePasswordEntryScreenView *pScreen);
 static void *LEMBALL_FASTCALL DeletePasswordEntryScreen(
     void *pObject, int nUnusedEdx, int fDelete);
 static void *LEMBALL_FASTCALL DeleteAdjustedPasswordEntryScreen(
@@ -676,6 +684,7 @@ static void InitializeFunctionalPasswordEntryVtables(void) {
     g_GAME_PasswordEntryScreenVtable[15] = (void *)HandlePasswordEntryInput;
     g_GAME_PasswordEntryScreenVtable[16] = (void *)InitializePasswordEntryResources;
     g_GAME_PasswordEntryScreenVtable[17] = (void *)ReleasePasswordEntryResources;
+    g_GAME_PasswordEntryScreenVtable[18] = (void *)DrawPasswordEntryInputArea;
     g_GAME_PasswordEntryScreenVtable[19] = (void *)DrawPasswordEntryText;
     g_GAME_PasswordEntryQueueVtable[0] =
         (void *)InitializeNonZrleVariantRenderEntry;
@@ -2185,7 +2194,7 @@ void *LEMBALL_FASTCALL ConstructFunctionalPasswordEntryScreen(
     memset((char *)pScreen + 0x398, 0, 0x494 - 0x398);
     strncpy(pScreen->m_szPassword3B0, FormatCurrentLevelPassword(), 10);
     pScreen->m_szPassword3B0[10] = '\0';
-    pScreen->m_cPassword420 = (int)strlen(pScreen->m_szPassword3B0);
+    pScreen->m_cPassword420 = 10;
     pScreen->m_nSelectedKey480 = 4;
     pScreen->m_fDrawFrameA8 = 1;
     pScreen->m_fTileBackgroundAC = 1;
@@ -2200,7 +2209,9 @@ static void LEMBALL_FASTCALL InitializePasswordEntryResources(void *pObject) {
     void *pOverlay;
     int nContext;
     int nRenderObject;
-    short cxForeground;
+    int iRow;
+    int iColumn;
+    int iAction;
     int i;
     VS_XYPair Point;
 
@@ -2219,52 +2230,94 @@ static void LEMBALL_FASTCALL InitializePasswordEntryResources(void *pObject) {
         pScreen->m_nPanelResourceId398);
     if (pScreen->m_pForegroundBitmapC0 != 0) {
         pForegroundEntry = pScreen->m_abRenderEntryGroupC8 + 0x14;
-        cxForeground = *(short *)((char *)pScreen->m_pForegroundBitmapC0 + 0x48);
         *(short *)(pForegroundEntry + 0) =
-            (short)((pScreen->m_cxScreen37C - cxForeground) / 2);
-        *(short *)(pForegroundEntry + 2) = 0;
+            (short)pScreen->m_pLayout3A8[0];
+        *(short *)(pForegroundEntry + 2) =
+            (short)pScreen->m_pLayout3A8[1];
         *(void **)(pForegroundEntry + 0x0c) = pScreen->m_pForegroundBitmapC0;
         *(int *)(pForegroundEntry + 0x10) = 0x800;
         *(int *)(pForegroundEntry + 0x14) = 0;
     }
-    Point.m_x = (short)pScreen->m_pLayout3A8[28];
-    Point.m_y = (short)pScreen->m_pLayout3A8[29];
-    for (i = 0; i < 12; ++i) {
-        pOverlay = AllocateVSMemBlock(0x130);
-        if (pOverlay != 0) {
-            ConstructAlignedZrleChildOverlayFromPoint(
-                pOverlay, 0, &Point, pScreen->m_pPrimaryContext84,
-                pScreen->m_pKeyResourceIds3AC[i], 3);
-            *(int *)((char *)pOverlay + 0xf8) = 0;
-            nContext = *(int *)(*(int *)((char *)pOverlay + 0x4c) + 0x0c);
-            nRenderObject = nContext +
-                *(int *)(*(int *)(nContext + 0x40) + 4) + 0x70;
-            *(int *)nRenderObject = 0;
-            *(void **)((char *)pOverlay + 0xf4) =
-                g_pSharedRenderDispatchQueue;
-            *(int *)((char *)pOverlay + 0xcc) =
-                (int)(0xabcd00b0U + i);
+    i = 0;
+    Point.m_y = (short)pScreen->m_pLayout3A8[3];
+    for (iRow = 0; iRow < 4; ++iRow) {
+        Point.m_x = (short)pScreen->m_pLayout3A8[2];
+        for (iColumn = 0; iColumn < 3; ++iColumn) {
+            iAction = g_GAME_PasswordKeyPermutation[i];
+            pOverlay = AllocateVSMemBlock(0x130);
+            if (pOverlay != 0) {
+                ConstructAlignedZrleChildOverlayFromPoint(
+                    pOverlay, 0, &Point, pScreen->m_pPrimaryContext84,
+                    pScreen->m_pKeyResourceIds3AC[iAction], 3);
+                *(int *)((char *)pOverlay + 0xf8) = 0;
+                nContext = *(int *)(*(int *)((char *)pOverlay + 0x4c) + 0x0c);
+                nRenderObject = nContext +
+                    *(int *)(*(int *)(nContext + 0x40) + 4) + 0x70;
+                *(int *)nRenderObject = 0;
+                *(void **)((char *)pOverlay + 0xf4) =
+                    g_pSharedRenderDispatchQueue;
+                *(int *)((char *)pOverlay + 0xcc) =
+                    (int)(0xabcd00b0U + iAction);
+            }
+            pScreen->m_apKeyOverlays424[iAction] = pOverlay;
             pScreen->m_aKeyPositions3C0[i][0] =
-                *(short *)((char *)pOverlay + 0xc0);
+                Point.m_x - (short)pScreen->m_pLayout3A8[2];
             pScreen->m_aKeyPositions3C0[i][1] =
-                *(short *)((char *)pOverlay + 0xc2);
+                Point.m_y - (short)pScreen->m_pLayout3A8[3];
+            Point.m_x = (short)(Point.m_x +
+                pScreen->m_pLayout3A8[24] + pScreen->m_pLayout3A8[4]);
+            ++i;
         }
-        pScreen->m_apKeyOverlays424[i] = pOverlay;
+        Point.m_y = (short)(Point.m_y +
+            pScreen->m_pLayout3A8[25] + pScreen->m_pLayout3A8[5]);
     }
-    i = g_GAME_PasswordKeyPermutation[pScreen->m_nSelectedKey480];
-    pScreen->m_xSelected478 = pScreen->m_aKeyPositions3C0[i][0];
-    pScreen->m_ySelected47C = pScreen->m_aKeyPositions3C0[i][1];
+    pScreen->m_xSelected478 =
+        pScreen->m_aKeyPositions3C0[pScreen->m_nSelectedKey480][0];
+    pScreen->m_ySelected47C =
+        pScreen->m_aKeyPositions3C0[pScreen->m_nSelectedKey480][1];
+    InitializePasswordEntryRenderContext(pScreen);
+}
+
+static void InitializePasswordEntryRenderContext(
+    GamePasswordEntryScreenView *pScreen) {
+    typedef void (LEMBALL_FASTCALL *InitializeContextVirtual)(
+        void *, int, short *, void *, int);
+    short Rect[4];
+    short nKeyStep;
+
+    nKeyStep = (short)(pScreen->m_pLayout3A8[24] +
+                       pScreen->m_pLayout3A8[4]);
+    pScreen->m_pInputPanelOwner3A4 = AllocateVSMemBlock(0x90);
+    if (pScreen->m_pInputPanelOwner3A4 == 0) {
+        pScreen->m_pInputPanelRenderContext474 = 0;
+        return;
+    }
+    ConstructWindowOwnerRenderContext(pScreen->m_pInputPanelOwner3A4);
+    *(int *)((char *)pScreen->m_pInputPanelOwner3A4 + 0x50) += 10;
+    Rect[0] = (short)(nKeyStep * 3);
+    Rect[1] = (short)(nKeyStep * 4);
+    Rect[2] = (short)(pScreen->m_pLayout3A8[2] - 1);
+    Rect[3] = (short)(pScreen->m_pLayout3A8[3] - 1);
+    ((InitializeContextVirtual)
+        (*(void ***)pScreen->m_pInputPanelOwner3A4)[1])(
+            pScreen->m_pInputPanelOwner3A4, 0, Rect,
+            pScreen->m_pPrimaryContext84, 0);
+    pScreen->m_pInputPanelRenderContext474 =
+        *(void **)((char *)pScreen->m_pInputPanelOwner3A4 + 0x4c);
 }
 
 static void LEMBALL_FASTCALL ReleasePasswordEntryResources(void *pObject) {
     GamePasswordEntryScreenView *pScreen;
+    typedef void *(LEMBALL_FASTCALL *DeleteOverlayVirtual)(
+        void *, int, int);
     int i;
     pScreen = (GamePasswordEntryScreenView *)pObject;
     for (i = 0; i < 12; ++i) {
         if (pScreen->m_apKeyOverlays424[i] != 0) {
-            DestroyAlignedZrleChildOverlay(
-                (char *)pScreen->m_apKeyOverlays424[i] + 0x90);
-            FreeVSMemBlock(pScreen->m_apKeyOverlays424[i]);
+            void *pDeleteInterface =
+                (char *)pScreen->m_apKeyOverlays424[i] + 0x90;
+            ((DeleteOverlayVirtual)(*(void ***)pDeleteInterface)[0])(
+                pDeleteInterface, 0, 1);
             pScreen->m_apKeyOverlays424[i] = 0;
         }
     }
@@ -2273,12 +2326,23 @@ static void LEMBALL_FASTCALL ReleasePasswordEntryResources(void *pObject) {
             ->ReleaseVariantRenderResource(pScreen->m_nPanelResourceId398);
         pScreen->m_nPanelResourceId398 = 0;
     }
+    if (pScreen->m_pInputPanelOwner3A4 != 0) {
+        typedef void (LEMBALL_FASTCALL *ReleaseContextVirtual)(void *, int);
+        if (*(int *)((char *)pScreen->m_pInputPanelOwner3A4 + 4) == 1) {
+            ((ReleaseContextVirtual)
+                (*(void ***)pScreen->m_pInputPanelOwner3A4)[29])(
+                    pScreen->m_pInputPanelOwner3A4, 0);
+        }
+        DestroyWindowOwnerRenderContext(pScreen->m_pInputPanelOwner3A4);
+        FreeVSMemBlock(pScreen->m_pInputPanelOwner3A4);
+        pScreen->m_pInputPanelOwner3A4 = 0;
+        pScreen->m_pInputPanelRenderContext474 = 0;
+    }
 }
 
 static void RotatePasswordEntrySelection(
     GamePasswordEntryScreenView *pScreen, int nDirection) {
     int nPosition;
-    int nAction;
 
     nPosition = pScreen->m_nSelectedKey480;
     switch (nDirection) {
@@ -2296,9 +2360,8 @@ static void RotatePasswordEntrySelection(
         break;
     }
     pScreen->m_nSelectedKey480 = nPosition;
-    nAction = g_GAME_PasswordKeyPermutation[nPosition];
-    pScreen->m_xSelected478 = pScreen->m_aKeyPositions3C0[nAction][0];
-    pScreen->m_ySelected47C = pScreen->m_aKeyPositions3C0[nAction][1];
+    pScreen->m_xSelected478 = pScreen->m_aKeyPositions3C0[nPosition][0];
+    pScreen->m_ySelected47C = pScreen->m_aKeyPositions3C0[nPosition][1];
     pScreen->m_fSelectorDirty360 = 1;
     pScreen->m_fFrameDirty330 = 1;
 }
@@ -2424,6 +2487,43 @@ static void LEMBALL_FASTCALL DrawPasswordEntryText(void *pObject) {
             pScreen->m_nMappedListRemapResourceId384,
             (void *)pszResult, 0x20, 0);
     }
+}
+
+static void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void *pObject) {
+    GamePasswordEntryScreenView *pScreen;
+    MappedListResourceTable *pMappedList;
+    short Point[2];
+    short Relative[2];
+    short Rect[4];
+    void *pSavedContext;
+
+    pScreen = (GamePasswordEntryScreenView *)pObject;
+    if (pScreen->m_pMappedListResources98 == 0 ||
+        pScreen->m_pLayout3A8 == 0) {
+        return;
+    }
+    pMappedList = (MappedListResourceTable *)pScreen->m_pMappedListResources98;
+    if (pScreen->m_pInputPanelRenderContext474 != 0) {
+        Point[0] = 0;
+        Point[1] = 0;
+        pSavedContext = *(void **)(pScreen->m_abVariantRenderManager14 + 0x1c);
+        *(void **)(pScreen->m_abVariantRenderManager14 + 0x1c) =
+            pScreen->m_pInputPanelRenderContext474;
+        EmitVariantRenderResourceEntry(
+            pScreen->m_abVariantRenderManager14, Rect, Point,
+            pScreen->m_nPanelResourceId398, 0, 0, 0);
+        *(void **)(pScreen->m_abVariantRenderManager14 + 0x1c) =
+            pSavedContext;
+    }
+    Relative[0] = 0;
+    Relative[1] = 0;
+    Point[0] = (short)(pScreen->m_cxScreen37C -
+        pScreen->m_pLayout3A8[22] - pScreen->m_cPassword420 * 8);
+    Point[1] = (short)pScreen->m_pLayout3A8[23];
+    pMappedList->SubmitRenderEntry(
+        pScreen->m_pRenderContext88, Point, Relative,
+        pScreen->m_nMappedListRemapResourceId384,
+        pScreen->m_szPassword3B0, 0x20, 0);
 }
 
 static void DestroyPasswordEntryScreen(GamePasswordEntryScreenView *pScreen) {
