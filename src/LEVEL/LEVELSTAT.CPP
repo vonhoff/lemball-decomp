@@ -1326,6 +1326,60 @@ int ReturnTrueVirtualHookBody(void) {
     return 1;
 }
 
+struct LevelViewRotationTransform {
+    void *m_pVtable00;
+    int m_nRotation04;
+
+    void TransformScreenToTile(int nScreenX, int nScreenY,
+                               int *pTileX, int *pTileY);
+    void TransformTileToScreen(int nTileX, int nTileY,
+                               int *pScreenX, int *pScreenY);
+    void TransformTileInPlace(int *pX, int *pY);
+};
+
+// FUNCTION: LEMBALL 0x00430a50
+void LevelViewRotationTransform::TransformScreenToTile(
+    int nScreenX, int nScreenY, int *pTileX, int *pTileY)
+{
+    switch (m_nRotation04) {
+    case 0: *pTileX = nScreenX / 2 + nScreenY - 8;
+            *pTileY = nScreenY - nScreenX / 2 + 8; break;
+    case 1: *pTileX = nScreenY - nScreenX / 2 + 8;
+            *pTileY = 0x18 - nScreenX / 2 - nScreenY; break;
+    case 2: *pTileX = 0x18 - nScreenX / 2 - nScreenY;
+            *pTileY = nScreenX / 2 - nScreenY + 8; break;
+    case 3: *pTileX = nScreenX / 2 - nScreenY + 8;
+            *pTileY = nScreenX / 2 + nScreenY - 8; break;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00430be0
+void LevelViewRotationTransform::TransformTileToScreen(
+    int nTileX, int nTileY, int *pScreenX, int *pScreenY)
+{
+    switch (m_nRotation04) {
+    case 0: *pScreenX = nTileX - nTileY + 0x10;
+            *pScreenY = nTileY / 2 + nTileX / 2; break;
+    case 1: *pScreenX = 0x20 - nTileY - nTileX;
+            *pScreenY = nTileX / 2 - nTileY / 2 + 8; break;
+    case 2: *pScreenX = nTileY - nTileX + 0x10;
+            *pScreenY = 0x10 - nTileY / 2 - nTileX / 2; break;
+    case 3: *pScreenX = nTileX + nTileY;
+            *pScreenY = nTileY / 2 - nTileX / 2 + 8; break;
+    }
+}
+
+// FUNCTION: LEMBALL 0x00430ce0
+void LevelViewRotationTransform::TransformTileInPlace(int *pX, int *pY)
+{
+    int nTileX;
+    int nTileY;
+
+    nTileX = *pX;
+    nTileY = *pY;
+    TransformTileToScreen(nTileX, nTileY, pX, pY);
+}
+
 // FUNCTION: LEMBALL 0x00432350
 static void *DeleteQueuedRenderPointSinkWrapper00432350(void *pObject, BYTE fDelete) {
     *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
@@ -1393,6 +1447,96 @@ static void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateEntry00432B20(
     pDispatchObject = (void *)(unsigned long)(pDispatchBase + 0x40 + pOwner);
     ((LevelOneArgVirtualProc)(*(void ***)pDispatchObject)[1])(
         pDispatchObject, 0, pObject);
+}
+
+static void EmitLevelScreenFixedVariantEntry(
+    void *pObject, short x, short y, int nResourceId,
+    int iFrame, int nValue)
+{
+    int *pManager;
+    short iSlot;
+    int *pSelector;
+    short Point[2];
+    short Rect[4];
+
+    if (nResourceId == 0) {
+        return;
+    }
+    pManager = (int *)pObject;
+    iSlot = *(short *)(unsigned long)(pManager[10] +
+                                      nResourceId * 2);
+    if ((unsigned short)iSlot >= (unsigned int)pManager[0xb]) {
+        return;
+    }
+    pSelector = *(int **)(unsigned long)(pManager[0x1d] +
+                                         iSlot * 4);
+    if (pSelector == 0) {
+        return;
+    }
+    pSelector[3] = iFrame;
+    Point[0] = (short)(x + *(short *)((char *)pManager + 0xb0));
+    Point[1] = (short)(y + *(short *)((char *)pManager + 0xb2));
+    EmitVariantRenderResourceEntry(
+        pManager, Rect, Point, nResourceId,
+        pManager[0x2b], pSelector, nValue);
+}
+
+void EmitMappedLevelScreenVariantRenderEntry(
+    void *pScreenObject, unsigned short x, short y,
+    int nTileResourceId, unsigned int nFrameValue)
+{
+    char *pScreen;
+    void *pManager;
+    int nResourceId;
+    short nXOffset;
+    short nYOffset;
+    int iFrame;
+
+    pScreen = (char *)pScreenObject;
+    pManager = *(void **)(pScreen + 0xa40);
+    if (pManager == 0) {
+        return;
+    }
+    nResourceId = 0;
+    nXOffset = -0x10;
+    nYOffset = -0x10;
+    iFrame = (int)(nFrameValue & 0xffff);
+    switch (nTileResourceId) {
+    case 0x202:
+        nResourceId = g_nLevelScreenMappedVariantResourceId0x202;
+        nXOffset = -0x20;
+        nYOffset = -0x30;
+        break;
+    case 0x206: nResourceId = g_nLevelScreenMappedVariantResourceId0x206; break;
+    case 0x207: nResourceId = g_nLevelScreenMappedVariantResourceId0x207; break;
+    case 0x208: nResourceId = g_nLevelScreenMappedVariantResourceId0x208; break;
+    case 0x209: nResourceId = g_nLevelScreenMappedVariantResourceId0x209; break;
+    case 0x20a: nResourceId = g_nLevelScreenMappedVariantResourceId0x20A; break;
+    case 0x20b: nResourceId = g_nLevelScreenMappedVariantResourceId0x20B; break;
+    case 0x20c: nResourceId = g_nLevelScreenMappedVariantResourceId0x20C; break;
+    case 0x20d: nResourceId = g_nLevelScreenMappedVariantResourceId0x20D; break;
+    case 0x20e: nResourceId = g_nLevelScreenMappedVariantResourceId0x20E; break;
+    case 0x20f: nResourceId = g_nLevelScreenMappedVariantResourceId0x20F; break;
+    case 0x210: nResourceId = 0xde; break;
+    case 0x215:
+        nResourceId = 0xdf;
+        nYOffset = -0x20;
+        iFrame = ((x >> 4) +
+                  *(unsigned short *)(pScreen + 0x166)) % 9;
+        break;
+    case 0x216:
+        nResourceId = 0xe0;
+        iFrame = *(unsigned short *)(pScreen + 0x166) & 3;
+        break;
+    case 0x217: nResourceId = 0xe1; break;
+    case 0x219:
+    case 0x21a:
+        nResourceId = 0xdd;
+        break;
+    }
+    EmitLevelScreenFixedVariantEntry(
+        pManager, (short)(x + nXOffset),
+        (short)(y + nYOffset), nResourceId, iFrame, 0);
 }
 
 static short GetLevelActionPanelListEntryDimension(
