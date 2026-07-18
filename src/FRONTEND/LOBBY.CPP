@@ -123,12 +123,16 @@ struct VsNetNetworkLobbyCursorOwner {
 struct VsNetNetworkLobbyScreen {
     char m_abUnknown00[0x338];
     VsNetNetworkLobbyCursorOwner *m_pCursorOwner;
-    char m_abUnknown33c[0x90];
+    char m_abUnknown33c[0x38];
+    int m_nRequestedMode374;
+    int m_nTransitionStatus378;
+    char m_abUnknown37c[0x50];
     VsNetNetworkLobbyPlayerEntryTable *m_pEntryTable;
     int m_nCurrentSelectedEntry;
     int m_nResolvedSelection;
     int m_cVisibleEntries;
-    char m_abUnknown3dc[0x50];
+    int m_fPlayerEntriesHidden3dc;
+    char m_abUnknown3e0[0x4c];
     VsNetNetworkLobbyOwnerTable *m_pEntryOwnerTable;
 
     void RemoveUnavailablePlayerEntries(void);
@@ -136,6 +140,9 @@ struct VsNetNetworkLobbyScreen {
     void ActivateSelectedPlayerEntry(void);
     int SelectNextPlayerEntry(void);
     int SelectPreviousPlayerEntry(void);
+    void HidePlayerEntries(void);
+    void ShowPlayerEntries(void);
+    int ConfirmSelectedPlayerEntry(void);
 };
 
 struct VsNetVsnetEventType3 {
@@ -184,6 +191,7 @@ extern int g_nSelectedNetworkLobbyPeerId;
 extern void *g_pNetworkLobbyTransportController;
 extern void *g_pActiveNetworkLobbyScreen;
 extern void *g_pNetworkLobbyVsnetRuntime;
+extern void *g_pLevelProgressState;
 
 extern void LEMBALL_FASTCALL MarkNetworkLobbySelectedPeerDisconnected(void *pVsnetRuntime);
 extern void SetGeometryChildEnabled(void *pGeometryChild, int fEnabled);
@@ -530,6 +538,52 @@ void VsNetNetworkLobbyScreen::RemoveUnavailablePlayerEntries(void) {
     }
 
     RefreshPlayerEntries();
+}
+
+// FUNCTION: LEMBALL 0x00454f80
+void VsNetNetworkLobbyScreen::HidePlayerEntries(void) {
+    int nEntryOffset;
+
+    m_fPlayerEntriesHidden3dc = 1;
+    nEntryOffset = 0;
+    do {
+        ((GameGeometryOwnerRectState *)
+            ((char *)m_pEntryTable + nEntryOffset))->SetEnabled(0);
+        nEntryOffset += 0x44;
+    } while (nEntryOffset < 0x2a8);
+}
+
+// FUNCTION: LEMBALL 0x00454fb0
+void VsNetNetworkLobbyScreen::ShowPlayerEntries(void) {
+    m_fPlayerEntriesHidden3dc = 0;
+    RefreshPlayerEntries();
+}
+
+// FUNCTION: LEMBALL 0x00454fc0
+int VsNetNetworkLobbyScreen::ConfirmSelectedPlayerEntry(void) {
+    int fEntriesWereVisible;
+    int *pnTrackedPeers;
+    char *pProgress;
+
+    fEntriesWereVisible = m_fPlayerEntriesHidden3dc == 0;
+    if (g_pNetworkLobbyVsnetRuntime != 0) {
+        pnTrackedPeers = (int *)((char *)g_pNetworkLobbyVsnetRuntime + 0x20);
+        if (m_nCurrentSelectedEntry != -1 &&
+            pnTrackedPeers[m_nCurrentSelectedEntry] != 0) {
+            HidePlayerEntries();
+            g_nSelectedNetworkLobbyPeerId =
+                pnTrackedPeers[m_nCurrentSelectedEntry];
+            m_nTransitionStatus378 = 1;
+            m_nRequestedMode374 = 4;
+            pProgress = (char *)g_pLevelProgressState;
+            *(int *)pProgress = *(int *)(pProgress + 0x4c);
+            *(int *)(pProgress + 8) = 4;
+            return fEntriesWereVisible;
+        }
+    }
+    m_fPlayerEntriesHidden3dc = 0;
+    ShowPlayerEntries();
+    return 0;
 }
 
 // Network-lobby player-entry virtual callbacks. These are logical lobby
