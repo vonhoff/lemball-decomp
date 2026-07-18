@@ -1879,12 +1879,15 @@ int VsGdiDirectDrawDisplayState::CopyDirectDrawSurfaceRect(void *, short *pDesti
     short cy;
     short x;
     short y;
+    short *pDestinationPoint;
     unsigned int uResult;
 
     cx = pDestinationRect[0];
     cy = pDestinationRect[1];
-    x = pDestinationRect[2];
-    y = pDestinationRect[3];
+    pDestinationPoint = pDestinationRect != 0
+        ? pDestinationRect + 2 : 0;
+    x = pDestinationPoint[0];
+    y = pDestinationPoint[1];
     if (x < 0) {
         cx = (short)(cx + x);
         x = 0;
@@ -1952,12 +1955,15 @@ int VsGdiDirectDrawDisplayState::StretchDirectDrawSurfaceRect(void *, short *pDe
     short cy;
     short x;
     short y;
+    short *pDestinationPoint;
     unsigned int uResult;
 
     cx = pDestinationRect[0];
     cy = pDestinationRect[1];
-    x = pDestinationRect[2];
-    y = pDestinationRect[3];
+    pDestinationPoint = pDestinationRect != 0
+        ? pDestinationRect + 2 : 0;
+    x = pDestinationPoint[0];
+    y = pDestinationPoint[1];
     if (x < 0) {
         cx = (short)(cx + x);
         x = 0;
