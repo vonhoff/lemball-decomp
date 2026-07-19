@@ -137,6 +137,7 @@ struct GameProgressiveSelectorVtableView {
     virtual int SelectFrame(void) = 0;
     virtual void SetProgressiveDuration(int nValue) = 0;
     virtual void SetDuration(int nValue) = 0;
+    virtual void SetStartTime(DWORD dwStartTime) = 0;
 };
 
 struct GameQueuedVariantChildView {
@@ -204,6 +205,7 @@ struct GameLevelProgressStateView {
 };
 
 struct GameFramedScreenBase {
+    void UpdateRuntime(void);
     void RecenterIfNeeded(void);
     void SetScreenSize(short *paSize);
 
@@ -511,7 +513,7 @@ public:
     virtual void Reserved11(void) = 0;
     virtual void Reserved12(void) = 0;
     virtual void Reserved13(void) = 0;
-    virtual void Reserved14(void) = 0;
+    virtual void UpdateDerivedScreen(void) = 0;
     virtual void Reserved15(void) = 0;
     virtual void LoadDerivedFrameResources(void) = 0;
     virtual void ReleaseDerivedFrameResources(void) = 0;
@@ -672,7 +674,7 @@ static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(
     void *pObject);
 static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
     void *pQueueNode, int, void *pEvent);
-static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject);
+
 
 
 
@@ -804,7 +806,7 @@ static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(
 static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(
     void *pObject, int nUnusedEdx, void *pFrameArgument);
 static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(void *pObject);
-static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject);
+
 
 
 
@@ -1690,7 +1692,7 @@ void GameQueuedVariantManagerView::SetChildrenEnabledThunk(int fEnabled) {
 
 // FUNCTION: LEMBALL 0x00401767
 static void LEMBALL_FASTCALL UpdateFramedScreenRuntimeThunk(void *pObject) {
-    UpdateFramedScreenRuntime(pObject);
+    ((GameFramedScreenBase *)pObject)->UpdateRuntime();
 }
 
 // FUNCTION: LEMBALL 0x004017ad
@@ -2548,12 +2550,12 @@ static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
 }
 
 // FUNCTION: LEMBALL 0x004464d0
-static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject) {
+void GameFramedScreenBase::UpdateRuntime(void) {
     GameFramedScreenBase *pScreen;
     VsNetRuntimeModeView *pNetworkRuntime;
     DWORD dwNow;
 
-    pScreen = (GameFramedScreenBase *)pObject;
+    pScreen = this;
     if (pScreen->m_fNetworkScreen8C != 0 &&
         pScreen->m_fNetworkReady94 == 0) {
         pNetworkRuntime =
@@ -2575,18 +2577,14 @@ static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject) {
         dwNow = timeGetTime();
         if (pScreen->m_dwRandomDelay33C + 1000U <
             dwNow - pScreen->m_dwRandomStart340) {
-            dwNow = timeGetTime();
-            pScreen->m_dwRandomStart340 = dwNow;
-            ((GameOneArgVirtual)
-                 (*(void ***)pScreen->m_pTimedFrameSelector34C)[3])(
-                pScreen->m_pTimedFrameSelector34C, 0,
-                (void *)(unsigned long)dwNow);
+            ((GameProgressiveSelectorVtableView *)
+                 pScreen->m_pTimedFrameSelector34C)->SetStartTime(
+                     pScreen->m_dwRandomStart340 = timeGetTime());
             {
-                unsigned int uRandom;
-                uRandom = (*(unsigned int *)g_pSessionRandomState * 0x29U +
-                           0x1fU) & 0x7fffffU;
-                *(unsigned int *)g_pSessionRandomState = uRandom;
-                pScreen->m_dwRandomDelay33C = uRandom % 6000U;
+                pScreen->m_dwRandomDelay33C =
+                    (*(int *)g_pSessionRandomState =
+                         (*(int *)g_pSessionRandomState * 0x29 + 0x1f) &
+                         0x7fffff) % 6000;
             }
         }
     }
@@ -2598,7 +2596,7 @@ static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject) {
         NoopQueuedVariantChildSlotManagerUpdate(
             pScreen->m_pQueuedVariantManager338);
     }
-    ((GameNoArgVirtual)pScreen->m_pVtable00[14])(pScreen, 0);
+    ((GameFramedScreenVirtualInterface *)pScreen)->UpdateDerivedScreen();
 }
 
 // FUNCTION: LEMBALL 0x004466e0
