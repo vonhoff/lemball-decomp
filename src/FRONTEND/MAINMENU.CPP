@@ -60,6 +60,7 @@ extern void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(
 extern void LEMBALL_FASTCALL NoopPackagedSpriteRenderEntryThunk00401B77(
     void *pUnusedThis, int nUnusedEdx, void *pArgument);
 extern void PASCAL noop_render_entry_callback_004393a0(void *pUnused);
+extern void noop_render_entry_callback_004393b0(void);
 extern void noop_render_entry_callback_004393d0(void);
 extern void noop_render_entry_callback_004393f0(void);
 extern int LEMBALL_FASTCALL get_intro_sequence_screen_requested_mode(
@@ -1726,10 +1727,10 @@ static void LEMBALL_FASTCALL InitializeMainMenuWidgetsThunk(void *pObject) {
     InitializeMainMenuWidgets(pObject);
 }
 
-// STUB: LEMBALL 0x00401dc5
+// FUNCTION: LEMBALL 0x00401dc5
 static void LEMBALL_FASTCALL MainMenuSlot06Thunk(void *pObject) {
     (void)pObject;
-    noop_main_menu_screen_hook();
+    noop_render_entry_callback_004393b0();
 }
 
 // FUNCTION: LEMBALL 0x00402081
