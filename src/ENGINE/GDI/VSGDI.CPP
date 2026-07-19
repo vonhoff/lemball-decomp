@@ -3686,6 +3686,7 @@ int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(
 {
     int *pState;
     unsigned int nType;
+    unsigned int dwEventTime;
     unsigned int dwCode;
     unsigned int dwNow;
     union {
@@ -3699,7 +3700,7 @@ int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(
     }
 
     nType = *(unsigned short *)&pEntry->m_awords[0];
-    dwCode = pEntry->m_awords[1];
+    dwEventTime = pEntry->m_awords[1];
     if (nType < 3) {
         goto done;
     }
@@ -3719,6 +3720,7 @@ keyboard_event:
     }
 
     dwNow = timeGetTime();
+    dwCode = pEntry->m_awords[2];
     if (pState[13] != 0) {
         if (dwCode == (unsigned int)pState[0x23]) {
             Scratch.m_OutputEntry.m_awords[3] = 0x43;
@@ -3734,7 +3736,7 @@ keyboard_event:
         if (*(unsigned short *)&pEntry->m_awords[0] != 4) {
             *(unsigned short *)&Scratch.m_OutputEntry.m_awords[0] = 9;
         }
-        Scratch.m_OutputEntry.m_awords[1] = pEntry->m_awords[1];
+        Scratch.m_OutputEntry.m_awords[1] = dwEventTime;
         Scratch.m_OutputEntry.m_awords[2] =
             PackEventXYWords(
                 (unsigned short)*(short *)((char *)pState + 0x10),
