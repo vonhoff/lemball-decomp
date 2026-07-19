@@ -510,8 +510,8 @@ public:
     virtual void Reserved13(void) = 0;
     virtual void Reserved14(void) = 0;
     virtual void Reserved15(void) = 0;
-    virtual void Reserved16(void) = 0;
-    virtual void Reserved17(void) = 0;
+    virtual void LoadDerivedFrameResources(void) = 0;
+    virtual void ReleaseDerivedFrameResources(void) = 0;
     virtual void DrawOverlayVariant(void) = 0;
     virtual void DrawScreenContents(void) = 0;
     virtual void FinishBuildingRenderEntries(void) = 0;
@@ -2316,13 +2316,15 @@ static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(void *pObject) {
     fWindowReady = IsPrimaryContextWindowReadyForPresent(
         (int *)pScreen->m_pPrimaryContext84);
     if (pScreen->m_fFrameResourcesLoaded9C != 0) {
-        ((GameNoArgVirtual)pScreen->m_pVtable00[17])(pScreen, 0);
+        ((GameFramedScreenVirtualInterface *)pScreen)
+            ->ReleaseDerivedFrameResources();
         ReleaseFramedScreenFrameResources(pScreen);
     }
     pScreen->m_fCompactLayout32C = g_fCompactPrimaryContextLayout;
     if (fWindowReady != 0) {
         LoadFramedScreenFrameResources(pScreen);
-        ((GameNoArgVirtual)pScreen->m_pVtable00[16])(pScreen, 0);
+        ((GameFramedScreenVirtualInterface *)pScreen)
+            ->LoadDerivedFrameResources();
         pScreen->m_fSelectorDirty360 = 1;
     }
 }
