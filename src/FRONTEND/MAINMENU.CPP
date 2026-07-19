@@ -5345,13 +5345,9 @@ static void LEMBALL_FASTCALL ReleaseFunctionalLevelSelectionResources(
         typedef void *(LEMBALL_FASTCALL *DeleteProc)(void *, int, int);
         ((DeleteProc)(*(void ***)pScreen->m_pQueuedVariantManager338)[1])(
             pScreen->m_pQueuedVariantManager338, 0, 1);
-        pScreen->m_pQueuedVariantManager338 = 0;
     }
-    if (*(void **)((char *)pScreen + 0x3bc) != 0) {
-        ReleaseTypedResourceObjectReference(
-            *(void **)((char *)pScreen + 0x3bc));
-        *(void **)((char *)pScreen + 0x3bc) = 0;
-    }
+    ReleaseTypedResourceObjectReference(
+        *(void **)((char *)pScreen + 0x3bc));
     pVariantManager->ReleaseVariantRenderResource(
         *(int *)((char *)pScreen + 0x3d8));
     pVariantManager->ReleaseVariantRenderResource(
@@ -5375,9 +5371,6 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionStatus(
 
     pScreen = (GameLevelSelectionScreenView *)pObject;
     pLayout = pScreen->m_pLayout3D4;
-    if (pLayout == 0) {
-        return;
-    }
     Point[0] = (short)pLayout[30];
     Point[1] = (short)pLayout[31];
     ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
@@ -5517,8 +5510,7 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(
     int nPack;
 
     pScreen = (GameLevelSelectionScreenView *)pObject;
-    if (pScreen->m_fBuildingRenderEntries364 == 0 ||
-        pScreen->m_pMappedListResources98 == 0) {
+    if (pScreen->m_fBuildingRenderEntries364 == 0) {
         return;
     }
     pMappedList = (MappedListResourceTable *)
@@ -5526,8 +5518,7 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(
     Relative[0] = 0;
     Relative[1] = 0;
     for (i = 0; i < 3; ++i) {
-        if (pScreen->m_aTitlePositions464[i][0] != -1 &&
-            pScreen->m_aszTitleLines3FC[i][0] != '\0') {
+        if (pScreen->m_aTitlePositions464[i][0] != -1) {
             Point[0] = (short)pScreen->m_aTitlePositions464[i][0];
             Point[1] = (short)pScreen->m_aTitlePositions464[i][1];
             pMappedList->SubmitRenderEntry(
@@ -5561,9 +5552,6 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(
         (void *)pszTime, 0x20, 0);
     nPack = ((GameLevelProgressStateView *)g_pLevelProgressState)
                 ->m_nCurrentPack08;
-    if (nPack < 0 || 4 < nPack) {
-        nPack = 0;
-    }
     pszSkill = s_apszSkillNames[nPack];
     pFontResource = pMappedList->GetMappedResource(
         pScreen->m_nMappedListRemapResourceId384);
