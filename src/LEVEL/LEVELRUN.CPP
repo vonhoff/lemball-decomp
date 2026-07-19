@@ -5,6 +5,7 @@
 #include "ENGINE/MEDIA/EFFSTRM.H"
 #include "LEVEL/LEVELRUN.H"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 extern "C" DWORD WINAPI timeGetTime(void);
@@ -80,6 +81,12 @@ LevelBallChunkManager *g_pBallChunkManager = 0;
 char *g_pszActiveLevelFilePath = 0;
 // GLOBAL: LEMBALL 0x004a6400
 void *g_pLoadedLevelFileBuffer;
+
+extern FILE *OpenFileWithMode(const char *pszPath, const char *pszMode);
+extern void CloseCrtFilePointer(FILE *pFile);
+extern unsigned int ReadFileBytes(
+    FILE *pFile, void *pBuffer, size_t cbBuffer);
+extern unsigned int SeekFile(FILE *pFile, long lOffset, int nOrigin);
 
 // GLOBAL: LEMBALL 0x0049e0d0
 static int g_LEVEL_ProjectileGeometryPairSeeds[3][8][2] = {
@@ -660,6 +667,48 @@ LevelChunkLoaderContext *LevelChunkLoaderContext::ConstructLevelChunkLoaderConte
     g_pszActiveLevelFilePath =
         (char *)GetLevelGameModeOwnerThunk(m_pLevelMode00);
     return this;
+}
+
+// FUNCTION: LEMBALL 0x004087b0
+int LoadOverrideLevelFileBuffer(void) {
+    FILE *pFile;
+    unsigned int cbFile;
+
+    pFile = OpenFileWithMode(g_pszActiveLevelFilePath, "rb");
+    if (pFile != 0) {
+        cbFile = SeekFile(pFile, 0, SEEK_END);
+        SeekFile(pFile, 0, SEEK_SET);
+        g_pLoadedLevelFileBuffer = AllocateVSMemBlock(cbFile);
+        ReadFileBytes(pFile, g_pLoadedLevelFileBuffer, cbFile);
+        CloseCrtFilePointer(pFile);
+        return 1;
+    }
+    MessageBoxA(
+        0,
+        "OK Smartarse,\n"
+        "How the hell do you expect me to load a level\n"
+        "when you can't even type the name\n"
+        " in correctly !\n"
+        " Quit out and try again...\n",
+        "You Stupid, Stupid Man !", 0);
+    return 0;
+}
+
+// FUNCTION: LEMBALL 0x00408830
+unsigned char *GetNextLevelChunk(unsigned char *pChunk) {
+    unsigned int cbRemainder;
+    unsigned int cbChunk;
+
+    if (pChunk == 0) {
+        return (unsigned char *)g_pLoadedLevelFileBuffer;
+    }
+    cbChunk = *(unsigned int *)(pChunk + 4);
+    cbRemainder = cbChunk & 3U;
+    if (cbRemainder != 0) {
+        cbChunk -= cbRemainder;
+        cbChunk += 4;
+    }
+    return pChunk + cbChunk;
 }
 
 // FUNCTION: LEMBALL 0x00409080

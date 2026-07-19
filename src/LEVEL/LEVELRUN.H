@@ -138,5 +138,7 @@ void LoadNodeChunkRecords(void *pManager, const unsigned short *pWords,
 extern LevelBallChunkManager *g_pBallChunkManager;
 extern char *g_pszActiveLevelFilePath;
 extern void *g_pLoadedLevelFileBuffer;
+int LoadOverrideLevelFileBuffer(void);
+unsigned char *GetNextLevelChunk(unsigned char *pChunk);
 
 #endif

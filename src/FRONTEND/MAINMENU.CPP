@@ -10,6 +10,7 @@
 #include "RESOURCE/MOGLOAD.H"
 #include "RESOURCE/VARMGR.H"
 #include "LEVEL/DRAWTEXT.H"
+#include "LEVEL/LEVELRUN.H"
 #include "FRONTEND/MENUSEL.H"
 #include "ENGINE/GDI/VSGEOM.H"
 
@@ -5804,22 +5805,41 @@ static int ReadFunctionalLevelMetadata(
     unsigned short cEntries;
     unsigned short nTotal;
     unsigned int i;
+    int fOverrideLevel;
 
-    pResource = LoadBinResource(
-        GetFunctionalLevelBinResourceId(nSkill, nLevel));
-    if (pResource == 0) {
-        return 0;
-    }
-    if (pResource[4] == 0) {
-        ((LoadProc)(*(void ***)pResource)[7])(pResource, 0);
+    fOverrideLevel =
+        g_fStartupEditLevelOverride != 0 ||
+        g_fStartupPlayLevelOverride != 0;
+    pResource = 0;
+    if (fOverrideLevel == 0) {
+        pResource = LoadBinResource(
+            GetFunctionalLevelBinResourceId(nSkill, nLevel));
+        if (pResource == 0) {
+            return 0;
+        }
+        if (pResource[4] == 0) {
+            ((LoadProc)(*(void ***)pResource)[7])(pResource, 0);
+        } else {
+            pResource[9] = 0;
+        }
+        ++pResource[2];
+        pChunk = ((GetDataProc)(*(void ***)pResource)[10])(pResource, 0);
     } else {
-        pResource[9] = 0;
+        g_pszActiveLevelFilePath =
+            (char *)g_abOverrideLevelFilePathBuffer;
+        if (LoadOverrideLevelFileBuffer() == 0) {
+            return 0;
+        }
+        pChunk = GetNextLevelChunk(0);
     }
-    ++pResource[2];
-    pChunk = ((GetDataProc)(*(void ***)pResource)[10])(pResource, 0);
     if (pChunk == 0) {
-        --pResource[2];
-        ReleaseTypedResourceObjectReference(pResource);
+        if (fOverrideLevel == 0) {
+            --pResource[2];
+            ReleaseTypedResourceObjectReference(pResource);
+        } else {
+            FreeVSMemBlock(g_pLoadedLevelFileBuffer);
+            g_pLoadedLevelFileBuffer = 0;
+        }
         return 0;
     }
 
@@ -5872,8 +5892,13 @@ static int ReadFunctionalLevelMetadata(
                 pMetadata->m_cNetworkPlayers04 = nTotal;
             }
         } else if (nChunkType == 0x454e443fU) {
-            --pResource[2];
-            ReleaseTypedResourceObjectReference(pResource);
+            if (fOverrideLevel == 0) {
+                --pResource[2];
+                ReleaseTypedResourceObjectReference(pResource);
+            } else {
+                FreeVSMemBlock(g_pLoadedLevelFileBuffer);
+                g_pLoadedLevelFileBuffer = 0;
+            }
             return 1;
         }
         cbAligned = cbChunk;
