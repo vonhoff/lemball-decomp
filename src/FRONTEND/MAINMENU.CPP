@@ -208,6 +208,7 @@ struct GameFramedScreenBase {
     void UpdateRuntime(void);
     void RecenterIfNeeded(void);
     void SetScreenSize(short *paSize);
+    void ReleaseFrameResources(void);
 
     void **m_pVtable00;
     unsigned char m_abRenderQueueNode04[0x10];
@@ -669,7 +670,7 @@ static void EmitTiledScreenFrameRect(GameFramedScreenBase *pScreen,
                                      const short *pRect);
 static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(void *pObject);
 static void LEMBALL_FASTCALL LoadFramedScreenFrameResources(void *pObject);
-static void LEMBALL_FASTCALL ReleaseFramedScreenFrameResources(void *pObject);
+
 static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(
     void *pObject);
 static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
@@ -2065,7 +2066,7 @@ static void LEMBALL_FASTCALL DestroyFramedScreenBase(void *pObject) {
         ->UnregisterOrderedRenderDispatchClient(
             pScreen->m_abRenderQueueNode04, 0);
     if (pScreen->m_fFrameResourcesLoaded9C != 0) {
-        ReleaseFramedScreenFrameResources(pScreen);
+        pScreen->ReleaseFrameResources();
     }
     pMappedListResources =
         (MappedListResourceTable *)pScreen->m_pMappedListResources98;
@@ -2325,7 +2326,7 @@ static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(void *pObject) {
     if (pScreen->m_fFrameResourcesLoaded9C != 0) {
         ((GameFramedScreenVirtualInterface *)pScreen)
             ->ReleaseDerivedFrameResources();
-        ReleaseFramedScreenFrameResources(pScreen);
+        pScreen->ReleaseFrameResources();
     }
     pScreen->m_fCompactLayout32C = g_fCompactPrimaryContextLayout;
     if (fWindowReady != 0) {
@@ -2372,13 +2373,10 @@ static void LEMBALL_FASTCALL LoadFramedScreenFrameResources(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x00445fe0
-static void LEMBALL_FASTCALL ReleaseFramedScreenFrameResources(void *pObject) {
+void GameFramedScreenBase::ReleaseFrameResources(void) {
     GameFramedScreenBase *pScreen;
-    LevelVariantRenderManagerView *pVariantManager;
 
-    pScreen = (GameFramedScreenBase *)pObject;
-    pVariantManager = (LevelVariantRenderManagerView *)
-        pScreen->m_abVariantRenderManager14;
+    pScreen = this;
     if (pScreen->m_pMappedListResources98 != 0) {
         ((MappedListResourceTable *)pScreen->m_pMappedListResources98)
             ->ReleaseListResourceSlot(
@@ -2386,11 +2384,14 @@ static void LEMBALL_FASTCALL ReleaseFramedScreenFrameResources(void *pObject) {
     }
     ReleaseTypedResourceObjectReference(pScreen->m_pForegroundBitmapC0);
     ReleaseTypedResourceObjectReference(pScreen->m_pBackgroundBitmapC4);
-    pVariantManager->ReleaseVariantRenderResource(
+    ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
+        ->ReleaseVariantRenderResource(
         pScreen->m_nFrameResourceId388);
-    pVariantManager->ReleaseVariantRenderResource(
+    ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
+        ->ReleaseVariantRenderResource(
         pScreen->m_nMappedListResourceId38C);
-    pVariantManager->ReleaseVariantRenderResource(
+    ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
+        ->ReleaseVariantRenderResource(
         pScreen->m_nFrameResourceId390);
     pScreen->m_fFrameResourcesLoaded9C = 0;
 }
@@ -4949,7 +4950,7 @@ static void DestroyPasswordEntryScreen(GamePasswordEntryScreenView *pScreen) {
                 pScreen->m_abRenderQueueNode04, 0);
     }
     if (pScreen->m_fFrameResourcesLoaded9C != 0)
-        ReleaseFramedScreenFrameResources(pScreen);
+        pScreen->ReleaseFrameResources();
     if (pScreen->m_pMappedListResources98 != 0) {
         ((MappedListResourceTable *)pScreen->m_pMappedListResources98)->Destroy();
         FreeVSMemBlock(pScreen->m_pMappedListResources98);
