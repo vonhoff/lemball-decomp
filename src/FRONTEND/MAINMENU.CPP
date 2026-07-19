@@ -120,6 +120,8 @@ extern int LEMBALL_FASTCALL ThunkSelectPreviousNetworkLobbyPlayerEntry(
 
 class VsGdiAnimWindowOwner {
 public:
+    void StartEmbeddedMciWindowPlaybackOnce(void);
+    void ResumeEmbeddedMciWindowPlayback(void);
     void UpdateMediaPathFromListResource(int nResourceId);
 };
 
@@ -859,6 +861,8 @@ void WINAPI IgnoreIntroSequenceMediaStateChange(int nState);
 void WINAPI IgnoreIntroSequenceMediaPositionChange(int nPosition);
 void IgnoreIntroSequenceMediaNotification(void);
 void LEMBALL_FASTCALL HandleIntroSequenceMediaCompletion(void *pOwner);
+void LEMBALL_FASTCALL RequestIntroSequenceScreenTransition(char *pScreen);
+void LEMBALL_FASTCALL RequestIntroSequenceScreenTransitionThunk(char *pScreen);
 
 
 
@@ -2010,6 +2014,13 @@ void WindowOwnerSlot17NoopThunk(void) {
     noop_window_owner_callback_0043a530();
 }
 
+// FUNCTION: LEMBALL 0x00402aa4
+void LEMBALL_FASTCALL RequestIntroSequenceScreenTransitionThunk(
+    char *pScreen)
+{
+    RequestIntroSequenceScreenTransition(pScreen);
+}
+
 // FUNCTION: LEMBALL 0x00402ac7
 static void LEMBALL_FASTCALL FramedScreenSlot20Thunk(void *pObject) {
     (void)pObject;
@@ -2941,13 +2952,13 @@ int GameIntroSequenceScreen::HandleInput(short *pEvent)
         case 0x22:
         case 0x23:
         case 0x4c:
-            RequestIntroSequenceScreenTransition((char *)this);
+            RequestIntroSequenceScreenTransitionThunk((char *)this);
             return 1;
         default:
             return 0;
         }
     case 6:
-        RequestIntroSequenceScreenTransition((char *)this);
+        RequestIntroSequenceScreenTransitionThunk((char *)this);
         return 1;
     default:
         ++*(int *)((char *)this + 0x10);
@@ -2959,36 +2970,44 @@ int GameIntroSequenceScreen::HandleInput(short *pEvent)
 void GameIntroSequenceScreen::UpdatePlayback(void) {
     char *pScreen;
     char *pMediaOwner;
+    short *pPrimarySize;
+    short nHeight;
     short aRect[4];
 
     pScreen = (char *)this;
     if (*(int *)(pScreen + 0x3b4) > 0)
         --*(int *)(pScreen + 0x3b4);
-    if (IsPrimaryContextWindowReadyForPresent(
+    if (IsPrimaryContextWindowReadyForPresentThunk(
             *(int **)(pScreen + 0x84)) == 0) {
-        RequestIntroSequenceScreenTransition(pScreen);
+        RequestIntroSequenceScreenTransitionThunk(pScreen);
         return;
     }
     if (*(int *)(pScreen + 0x3b4) != 0)
         return;
 
-    aRect[0] = *(short *)(*(char **)(pScreen + 0x84) + 8);
-    aRect[1] = *(short *)(*(char **)(pScreen + 0x84) + 10);
-    aRect[2] = (short)((aRect[0] - 0x140) / 2);
-    aRect[3] = (short)((aRect[1] - 0xf0) / 2);
+    pPrimarySize = (short *)(*(char **)(pScreen + 0x84) + 8);
+    aRect[0] = pPrimarySize[0];
+    aRect[1] = pPrimarySize[1];
+    aRect[2] = (short)(aRect[0] - 0x140);
+    aRect[2] = (short)(aRect[2] / 2);
+    nHeight = aRect[1];
     aRect[0] = 0x140;
     aRect[1] = 0xf0;
-    pMediaOwner = pScreen + 0x3bc;
+    aRect[3] = (short)(nHeight - 0xf0);
+    aRect[3] = (short)(aRect[3] / 2);
     if (*(int *)(pScreen + 0x3b8) == 0) {
+        pMediaOwner = pScreen + 0x3bc;
         ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
             ->SwitchVariantResourceEntryMode(1, 0);
         ((IntroMediaOwnerInterface *)pMediaOwner)->Initialize(
             aRect, *(void **)(pScreen + 0x84),
             "PaintBall Intro Sequence");
-        StartEmbeddedMciWindowPlaybackOnce(pMediaOwner);
+        ((VsGdiAnimWindowOwner *)pMediaOwner)
+            ->StartEmbeddedMciWindowPlaybackOnce();
         *(int *)(pScreen + 0x3b8) = 1;
     }
-    ResumeEmbeddedMciWindowPlayback(pMediaOwner);
+    ((VsGdiAnimWindowOwner *)(pScreen + 0x3bc))
+        ->ResumeEmbeddedMciWindowPlayback();
     *(int *)(pScreen + 0x3b4) = -1;
 }
 
