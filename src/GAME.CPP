@@ -2549,7 +2549,7 @@ GamePrimaryContext *GamePrimaryContext::ConstructPrimaryContextThunk(GameMainCon
 void VS_WindowOwnerBase::ReservedWindowOwnerSlot37(void) {
 }
 
-// FUNCTION: LEMBALL 0x004014b0
+// STUB: LEMBALL 0x004014b0
 void GameLevelProgressState::SetUnlockedPackCapThunk(int nPack, int nCap) {
     SetUnlockedPackCap(nPack, nCap);
 }
@@ -2621,7 +2621,7 @@ void InitializeBaseModeObject(void *pModeObject, GameMainContext *pMainContext) 
     g_pActiveNetworkLobbyTransportController = pMode;
 }
 
-// FUNCTION: LEMBALL 0x00401839
+// STUB: LEMBALL 0x00401839
 int RunMainGameSessionThunk(int cArgs, const char *const *ppszArgs) {
     return RunMainGameSession(cArgs, ppszArgs);
 }
@@ -2765,14 +2765,14 @@ static void *LEMBALL_FASTCALL DeleteLevelSelectionModeThunk(
 void VS_WindowOwnerBase::ReservedWindowOwnerSlot19(void) {
 }
 
-// FUNCTION: LEMBALL 0x00401fb4
+// STUB: LEMBALL 0x00401fb4
 void *LEMBALL_FASTCALL DeleteQueuedRenderPointSinkFinalizeThunk(
     void *pObject, int, int fDelete)
 {
     return DeleteQueuedRenderPointSinkFinalize(pObject, 0, fDelete);
 }
 
-// FUNCTION: LEMBALL 0x00402130
+// STUB: LEMBALL 0x00402130
 void GameLevelProgressState::ApplyPasswordValueThunk(unsigned int uValue) {
     ApplyPasswordValue(uValue);
 }
@@ -2801,7 +2801,7 @@ void *ConstructPaintballSequenceModeController(void *pModeObject,
     return pModeObject;
 }
 
-// FUNCTION: LEMBALL 0x00402630
+// STUB: LEMBALL 0x00402630
 int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresentThunk(int *pPrimaryContext) {
     return IsPrimaryContextWindowReadyForPresent(pPrimaryContext);
 }
@@ -2840,7 +2840,7 @@ void EnsureMainGameVariantResourceMode(GameMainContext *pMainContext, int nVaria
 void VS_WindowOwnerBase::ReservedWindowOwnerSlot39(void) {
 }
 
-// FUNCTION: LEMBALL 0x00402a7c
+// STUB: LEMBALL 0x00402a7c
 GameMainContext *GameMainContext::InitializeMainGameContextThunk(
     const char *pszCmdLine)
 
@@ -3040,12 +3040,12 @@ void VS_RootGeometryOwner::RemoveQueuedRenderSinkValueNode(void *pValue) {
     --*(unsigned int *)((char *)this + 0x2c);
 }
 
-// FUNCTION: LEMBALL 0x00403152
+// STUB: LEMBALL 0x00403152
 int __stdcall ValidateResourceFileSignatureThunk(void) {
     return ValidateResourceFileSignature();
 }
 
-// FUNCTION: LEMBALL 0x00403323
+// STUB: LEMBALL 0x00403323
 unsigned int GameLevelProgressState::ComputeLevelPasswordChecksumThunk(unsigned int uValue) {
     return ComputeLevelPasswordChecksum(uValue);
 }
@@ -3057,7 +3057,7 @@ void LEMBALL_FASTCALL NoopBaseModeThunk(void *) {
 void VS_WindowOwnerBase::ReservedWindowOwnerSlot20(void) {
 }
 
-// FUNCTION: LEMBALL 0x004034fe
+// STUB: LEMBALL 0x004034fe
 int GameLevelProgressState::ParsePasswordDigitsThunk(void) {
     return ParsePasswordDigits();
 }
@@ -3066,7 +3066,7 @@ void VS_RootGeometryOwner::SetWindowOwnerState(int nState) {
     m_nWindowOwnerState30 = nState;
 }
 
-// FUNCTION: LEMBALL 0x004036e3
+// STUB: LEMBALL 0x004036e3
 int PASCAL ComputePowerOfTwoThunk(int nExponent) {
     return ComputePowerOfTwo(nExponent);
 }
@@ -3076,7 +3076,7 @@ int LEMBALL_FASTCALL ReturnFalseBaseModeThunk(void *) {
     return 0;
 }
 
-// FUNCTION: LEMBALL 0x00403814
+// STUB: LEMBALL 0x00403814
 void LEMBALL_FASTCALL RequestFramedScreenTransitionMode2Thunk(void *pScreen) {
     RequestFramedScreenTransitionMode2(pScreen);
 }
