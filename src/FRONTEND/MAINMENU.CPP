@@ -174,6 +174,13 @@ private:
     int m_fSkipVariantC4;
 };
 
+class GamePaintballSequenceMediaState : public VsGdiAnimWindowOwner {
+public:
+    unsigned int InitializeVariant(
+        void *pScreen, void *pPrimaryContext, int fSecondVariant);
+    void LoadVariant(int fCompactLayout);
+};
+
 struct VsNetRuntimeModeView {
     char m_abReserved00[0x48];
     int m_nMode48;
@@ -2651,6 +2658,45 @@ void LEMBALL_FASTCALL SelectIntroSequenceMediaPath(void *pOwner) {
     }
 }
 
+unsigned int GamePaintballSequenceMediaState::InitializeVariant(
+    void *pScreen, void *pPrimaryContext, int fSecondVariant) {
+    unsigned int uRandom;
+    char *pOwner;
+
+    pOwner = (char *)this;
+    *(void **)(pOwner + 0xbc) = pScreen;
+    *(void **)(pOwner + 0xc0) = pPrimaryContext;
+    *(int *)(pOwner + 0xc4) = fSecondVariant;
+    *(int *)(pOwner + 0xd4) = 0;
+    *(int *)(pOwner + 0xd0) = 0;
+    if (fSecondVariant != 0) {
+        *(int *)(pOwner + 0xc8) = 0x11e;
+        *(int *)(pOwner + 0xcc) = 0x126;
+    } else {
+        *(int *)(pOwner + 0xc8) = 0x121;
+        *(int *)(pOwner + 0xcc) = 0x129;
+    }
+    uRandom = (*(unsigned int *)g_pSessionRandomState * 0x29U + 0x1fU) &
+              0x7fffffU;
+    *(unsigned int *)g_pSessionRandomState = uRandom;
+    *(unsigned int *)(pOwner + 0xd0) = uRandom % 3U;
+    return uRandom / 3U;
+}
+
+void GamePaintballSequenceMediaState::LoadVariant(int fCompactLayout) {
+    char *pOwner;
+    int nBaseResource;
+
+    pOwner = (char *)this;
+    if (fCompactLayout == 0) {
+        nBaseResource = *(int *)(pOwner + 0xcc);
+    } else {
+        nBaseResource = *(int *)(pOwner + 0xc8);
+    }
+    UpdateMediaPathFromListResource(
+        nBaseResource + *(int *)(pOwner + 0xd0));
+}
+
 // FUNCTION: LEMBALL 0x00448300
 static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject) {
     GameMainMenuScreenView *pScreen;
@@ -3162,7 +3208,6 @@ void *LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(
     void *pRenderContext, short *paSize, int fSecondVariant) {
     GamePaintballSequenceScreenView *pScreen;
     unsigned char *pMediaOwner;
-    unsigned int uRandom;
 
     pScreen = (GamePaintballSequenceScreenView *)pObject;
     ConstructFramedScreenBaseFields(
@@ -3192,18 +3237,8 @@ void *LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(
     *(void ***)pMediaOwner = g_GAME_PaintballSequenceMediaOwnerVtable;
     pScreen->m_fSecondVariant518 = fSecondVariant;
     pScreen->m_fMediaEnabled604 = g_fSkipStartupSequence == 0;
-    *(void **)(pMediaOwner + 0xbc) = pScreen;
-    *(void **)(pMediaOwner + 0xc0) = pPrimaryContext;
-    *(int *)(pMediaOwner + 0xc4) = fSecondVariant;
-    *(int *)(pMediaOwner + 0xc8) =
-        fSecondVariant != 0 ? 0x11e : 0x121;
-    *(int *)(pMediaOwner + 0xcc) =
-        fSecondVariant != 0 ? 0x126 : 0x129;
-    uRandom = (*(unsigned int *)g_pSessionRandomState * 0x29U + 0x1fU) &
-              0x7fffffU;
-    *(unsigned int *)g_pSessionRandomState = uRandom;
-    *(unsigned int *)(pMediaOwner + 0xd0) = uRandom % 3U;
-    *(int *)(pMediaOwner + 0xd4) = 0;
+    ((GamePaintballSequenceMediaState *)pMediaOwner)->InitializeVariant(
+        pScreen, pPrimaryContext, fSecondVariant);
     *(int *)(pMediaOwner + 0x94) = 1;
     ((GameDynamicCString *)(pMediaOwner + 0x98))
         ->AssignDynamicCString("lemball");
@@ -3329,13 +3364,8 @@ static void LEMBALL_FASTCALL InitializePaintballSequenceResources(
     }
     LayoutPaintballSequencePromptText(pScreen);
     if (pScreen->m_fMediaEnabled604 != 0) {
-        unsigned char *pMediaOwner = pScreen->m_abMediaOwner520;
-        int nBaseResource = pScreen->m_fCompactLayout32C == 0
-            ? *(int *)(pMediaOwner + 0xcc)
-            : *(int *)(pMediaOwner + 0xc8);
-        UpdateEmbeddedMciMediaPath(
-            pMediaOwner,
-            nBaseResource + *(int *)(pMediaOwner + 0xd0));
+        ((GamePaintballSequenceMediaState *)pScreen->m_abMediaOwner520)
+            ->LoadVariant(pScreen->m_fCompactLayout32C);
     }
 }
 
