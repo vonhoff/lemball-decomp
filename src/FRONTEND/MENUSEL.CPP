@@ -1844,8 +1844,7 @@ GameMenuSelectorManager::GameMenuSelectorManager(void *pRenderOwner, void *pRend
     pManager->m_pActionMiddleSelector254 =
         AllocateFrameSelector(pVariantManager, g_nMenuSelectorResourceId2);
     pManager->m_pActionMiddleSelector254->m_dwFixedTime = -1;
-    pManager->m_dwConstructionTimeD4 =
-        ((RenderDispatchQueue *)g_pSharedRenderDispatchQueue)->m_nReserved30;
+    pManager->m_dwConstructionTimeD4 = (int)timeGetTime();
 }
 
 /* FUNCTION: LEMBALL 0x00402432 */
