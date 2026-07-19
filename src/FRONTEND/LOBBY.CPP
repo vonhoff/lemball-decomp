@@ -146,6 +146,7 @@ struct VsNetNetworkLobbyScreen {
     int SelectPreviousPlayerEntry(void);
     void HidePlayerEntries(void);
     void ShowPlayerEntries(void);
+    void ClearPlayerEntryDirty(int iEntry);
     int ConfirmSelectedPlayerEntry(void);
 };
 
@@ -386,6 +387,16 @@ void VsNetNetworkLobbyPlayerEntryChild::ResetFlags(void) {
     m_fDirty40 = 0;
     m_fDirty3c = 0;
     m_fDirty38 = 0;
+}
+
+// FUNCTION: LEMBALL 0x00454b70
+void VsNetNetworkLobbyScreen::ClearPlayerEntryDirty(int iEntry) {
+    if (iEntry != -1 && iEntry < 10) {
+        m_pEntryTable->m_aEntries[iEntry].m_fDirty40 = 0;
+        if (m_nCurrentSelectedEntry == iEntry) {
+            ShowPlayerEntries();
+        }
+    }
 }
 
 // FUNCTION: LEMBALL 0x00454bb0
