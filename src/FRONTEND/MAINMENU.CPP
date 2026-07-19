@@ -218,8 +218,8 @@ struct GameFramedScreenBase {
     int m_fDrawFrameA8;
     int m_fTileBackgroundAC;
     int m_fDrawForegroundB0;
-    int m_nCursorResourceIdB4;
-    int m_nAppliedCursorResourceIdB8;
+    int m_nPaletteResourceIdB4;
+    int m_nAppliedPaletteResourceIdB8;
     int m_dwConstructionTimeBC;
     void *m_pForegroundBitmapC0;
     void *m_pBackgroundBitmapC4;
@@ -1924,9 +1924,9 @@ void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
     pScreen->m_fDrawFrameA8 = 1;
     pScreen->m_fTileBackgroundAC = 1;
     pScreen->m_fDrawForegroundB0 = 0;
-    pScreen->m_nAppliedCursorResourceIdB8 = 0;
+    pScreen->m_nAppliedPaletteResourceIdB8 = 0;
     pScreen->m_fFrameResourcesLoaded9C = 0;
-    pScreen->m_nCursorResourceIdB4 = 0x10a;
+    pScreen->m_nPaletteResourceIdB4 = 0x10a;
 
     if (g_pSharedRenderDispatchQueue != 0) {
         ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
@@ -2318,13 +2318,13 @@ static void LEMBALL_FASTCALL DrawFramedScreenFrameLayer(void *pObject) {
             pScreen->m_pQueuedVariantManager338, 0, 1);
     }
 
-    if (pScreen->m_nAppliedCursorResourceIdB8 !=
-        pScreen->m_nCursorResourceIdB4) {
+    if (pScreen->m_nAppliedPaletteResourceIdB8 !=
+        pScreen->m_nPaletteResourceIdB4) {
         ((GameOneArgVirtual)(*(void ***)pScreen->m_pPrimaryContext84)[43])(
             pScreen->m_pPrimaryContext84, 0,
-            (void *)pScreen->m_nCursorResourceIdB4);
-        pScreen->m_nAppliedCursorResourceIdB8 =
-            pScreen->m_nCursorResourceIdB4;
+            (void *)pScreen->m_nPaletteResourceIdB4);
+        pScreen->m_nAppliedPaletteResourceIdB8 =
+            pScreen->m_nPaletteResourceIdB4;
     }
 }
 

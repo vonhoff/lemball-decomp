@@ -5470,13 +5470,15 @@ void VS_RootGeometryOwner::SetWindowOwnerScaleFactor(int nScaleFactor) {
     }
 }
 
+struct GameCursorRenderEntryInterface {
+    virtual void Reserved00(void) = 0;
+    virtual void AppendToQueue(void *pQueue) = 0;
+};
+
 // FUNCTION: LEMBALL 0x0046b5c0
 void GameCursorRenderClient::UpdateForWindowOwner(void *pOwner)
 {
-    typedef int (LEMBALL_FASTCALL *IntProc)(void *, int);
-    typedef int (LEMBALL_FASTCALL *IntArgumentProc)(void *, int, void *);
     typedef void (LEMBALL_FASTCALL *VoidProc)(void *);
-    typedef void (LEMBALL_FASTCALL *EntryProc)(void *, int, void *);
     short aRect[4];
     short aRenderPosition[2];
     short *pOwnerClip;
@@ -5484,7 +5486,6 @@ void GameCursorRenderClient::UpdateForWindowOwner(void *pOwner)
     void *pGeometryContext;
     void *pCompactGeometry;
     void *pRenderEntry;
-    void **pCursorVtable;
     int nCompactOffset;
     int nScale;
 
@@ -5500,9 +5501,9 @@ void GameCursorRenderClient::UpdateForWindowOwner(void *pOwner)
         g_uCursorWindowOwnerState |= 1;
         g_pCursorWindowOwner = pOwner;
     }
-    if (((IntProc)(*(void ***)pOwner)[24])(pOwner, 0) == 0) {
+    if (((VS_WindowOwnerBase *)pOwner)->IsCurrentWindowOwnerContext() == 0) {
         if (pOwner == g_pCursorWindowOwner) {
-            ((VoidProc)(*(void ***)pCursor)[5])(pCursor);
+            pCursor->ShowNativeCursor();
             g_pCursorWindowOwner = 0;
         }
     } else {
@@ -5535,17 +5536,17 @@ void GameCursorRenderClient::UpdateForWindowOwner(void *pOwner)
         if (aRect[0] < 1 || aRect[1] < 1) {
             aRect[0] = 0;
             aRect[1] = 0;
+            aRect[2] = 0;
+            aRect[3] = 0;
         }
     }
 
-    pCursorVtable = *(void ***)pCursor;
-    if (((IntArgumentProc)pCursorVtable[3])(pCursor, 0, pOwner) == 0)
+    if (pCursor->PrepareForWindowOwner(pOwner) == 0)
         return;
     if (*(int *)((char *)pCursor + 0x3c) != 0)
-        ((VoidProc)pCursorVtable[4])(pCursor);
+        pCursor->HideNativeCursor();
     *(int *)((char *)pCursor + 0x38) = 1;
-    pRenderEntry = *(void **)((char *)pCursor + 0x20);
-    if (pRenderEntry == 0)
+    if (pCursor->m_pRenderResource20 == 0)
         return;
 
     nScale = *(int *)((char *)pOwner + 0x38);
@@ -5561,10 +5562,12 @@ void GameCursorRenderClient::UpdateForWindowOwner(void *pOwner)
     nCompactOffset = *(int *)((char *)*(void **)((char *)pGeometryContext + 0x40) + 4);
     pCompactGeometry = (char *)pGeometryContext + 0x40 + nCompactOffset;
     ((VoidProc)(*(void ***)pCompactGeometry)[14])(pCompactGeometry);
+    pRenderEntry = *(void **)((char *)pCursor + 0x1c);
     *(short *)((char *)pRenderEntry + 4) = aRenderPosition[0];
     *(short *)((char *)pRenderEntry + 6) = aRenderPosition[1];
     ((VoidProc)(*(void ***)pCompactGeometry)[14])(pCompactGeometry);
-    ((EntryProc)(*(void ***)pRenderEntry)[1])(pRenderEntry, 0, pGeometryQueue);
+    ((GameCursorRenderEntryInterface *)pRenderEntry)
+        ->AppendToQueue(pGeometryQueue);
 }
 
 // FUNCTION: LEMBALL 0x0046dcd0

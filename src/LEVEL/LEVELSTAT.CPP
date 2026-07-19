@@ -5112,7 +5112,7 @@ void GameCursorRenderClient::TickCursorRenderClientMotion(void) {
 
     if (m_fMotionPending38 == 0 &&
         m_fIdleRefreshPending3C == 0) {
-        RefreshIdleState();
+        ShowNativeCursor();
     }
 
     if (m_fPrimaryVisible2C == 0 ||
@@ -5124,7 +5124,7 @@ void GameCursorRenderClient::TickCursorRenderClientMotion(void) {
             return;
         }
     }
-    if (m_pRenderResource18 == 0) {
+    if (m_fActive18 == 0) {
         return;
     }
 
