@@ -394,7 +394,8 @@ void VsNetNetworkLobbyScreen::ClearPlayerEntryDirty(int iEntry) {
     if (iEntry != -1 && iEntry < 10) {
         m_pEntryTable->m_aEntries[iEntry].m_fDirty40 = 0;
         if (m_nCurrentSelectedEntry == iEntry) {
-            ShowPlayerEntries();
+            ThunkShowNetworkLobbyPlayerEntries(
+                (int)(unsigned long)this);
         }
     }
 }
