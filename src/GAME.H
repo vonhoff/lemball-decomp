@@ -76,10 +76,21 @@ public:
     void *m_pVariantMode;
 };
 
-struct GamePrimaryContext : public VS_WindowOwnerBase {
-    void *m_pWindowOwnerContext;
-    int m_nFrameInterval;
-    char m_Reserved54[0x3c];
+// SIZE 0x90
+// The original constructor installs the 46-slot vtables at 0x00499260 and
+// 0x00499318 while building this shared window/render state.
+struct GameWindowOwnerRenderContext : public VS_WindowOwnerBase {
+    void *m_pWindowOwnerContext;             // 0x4c
+    int m_nFrameInterval;                    // 0x50
+    int m_nPaletteResourceId54;              // 0x54
+    char m_PackagedSpriteRenderEntry58[0x10]; // 0x58
+    char m_RenderPointRectSinkEntry68[0x10]; // 0x68
+    char m_StatusPointSinkEntry78[0x10];     // 0x78
+    short m_aDirtyRect88[4];                 // 0x88
+};
+DECOMP_SIZE_ASSERT(GameWindowOwnerRenderContext, 0x90);
+
+struct GamePrimaryContext : public GameWindowOwnerRenderContext {
     void *m_pRenderQueueNodeVtable;
     char m_Reserved94[0xc];
     int m_fA0;
