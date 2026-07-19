@@ -7,6 +7,24 @@
 // GameMenuSelectorManager::InitializeCurrentState
 // STUB: LEMBALL 0x00402432
 // ConstructMenuSelectorManager
+// STUB: LEMBALL 0x00402a36
+// MoveMenuSelectorPreviousThunk
+// STUB: LEMBALL 0x004010e1
+// MoveMenuSelectorNextThunk
+// STUB: LEMBALL 0x004018f7
+// SelectMenuSelectorSide0Thunk
+// STUB: LEMBALL 0x00401ff5
+// SelectMenuSelectorSide1Thunk
+// STUB: LEMBALL 0x00402e28
+// StartMenuSelectorActionThunk
+// STUB: LEMBALL 0x004036c0
+// GetIntDirectionSignThunk
+// STUB: LEMBALL 0x004014ce
+// UpdateMenuSelectorAnimationThunk
+// STUB: LEMBALL 0x004012cb
+// RebuildMenuSelectorChildRectsThunk
+// STUB: LEMBALL 0x00401d43
+// SetMenuSelectorChildrenEnabledThunk
 
 #include "ENGINE/CORE/COMMON.H"
 
