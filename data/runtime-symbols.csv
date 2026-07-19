@@ -4,6 +4,7 @@ address,name,symbol,type
 0x0044CFB0,GameMenuSelectorManager::AppendChild,?AppendChild@GameMenuSelectorManager@@QAEXHHPBHHHHHPAHH@Z,function
 0x0044CEC0,GameMenuSelectorManager::HandleEvent,?HandleEvent@GameMenuSelectorManager@@QAEHPAUGameMenuSelectorEvent@@@Z,function
 0x0044C270,GameMenuSelectorEntry::GameMenuSelectorEntry,??0GameMenuSelectorEntry@@QAE@PAX0HHPBHHHHHHPAHH@Z,function
+0x0044C460,GameMenuSelectorEntry::HandleEvent,?HandleEvent@GameMenuSelectorEntry@@QAEHPAUGameMenuSelectorEvent@@@Z,function
 0x0044D150,GameMenuSelectorManager::RecordChildMetadata,?RecordChildMetadata@GameMenuSelectorManager@@QAEXHHHH@Z,function
 0x0044D830,GameMenuSelectorManager::MovePrevious,?MovePrevious@GameMenuSelectorManager@@QAEXXZ,function
 0x0044D8E0,GameMenuSelectorManager::MoveNext,?MoveNext@GameMenuSelectorManager@@QAEXXZ,function

@@ -74,6 +74,7 @@ struct GameMenuSelectorEntry {
         int nActivationMode, int nFirstResource,
         int nLastResource, int nReserved, int nToken,
         int *pSelection, int nCommand);
+    int HandleEvent(GameMenuSelectorEvent *pEvent);
 
     void **m_pVtable00;
     int m_nQueueTag04;
@@ -151,9 +152,6 @@ static void LEMBALL_FASTCALL ReloadMenuSelectorOverlayResource(
     void *pOverlay, int nUnusedEdx, int nResourceId);
 static void LEMBALL_FASTCALL SetMenuSelectorProgressPercent(
     void *pProgress, int nUnusedEdx, int nPercent);
-static int LEMBALL_FASTCALL HandleMenuSelectorEntryEvent(
-    GameMenuSelectorEntry *pEntry, int nUnusedEdx,
-    GameMenuSelectorEvent *pEvent);
 static void LEMBALL_FASTCALL DestroyMenuSelectorEntry(
     GameMenuSelectorEntry *pEntry);
 static void *LEMBALL_FASTCALL DeleteMenuSelectorEntry(
@@ -2187,9 +2185,7 @@ static void LEMBALL_FASTCALL SetMenuSelectorProgressPercent(
 }
 
 /* FUNCTION: LEMBALL 0x0044C460 */
-static int LEMBALL_FASTCALL HandleMenuSelectorEntryEvent(
-    GameMenuSelectorEntry *pEntry, int,
-    GameMenuSelectorEvent *pEvent) {
+int GameMenuSelectorEntry::HandleEvent(GameMenuSelectorEvent *pEvent) {
     struct CommandEvent {
         short m_nType00;
         short m_nReserved02;
@@ -2204,6 +2200,10 @@ static int LEMBALL_FASTCALL HandleMenuSelectorEntryEvent(
     void *pProgress;
     int nPercent;
     int nResourceId;
+    int nOverlayKind;
+    GameMenuSelectorEntry *pEntry;
+
+    pEntry = this;
 
     Event.m_nType00 = 0x0c;
     Event.m_dwTimestamp04 = (int)timeGetTime();
@@ -2211,11 +2211,12 @@ static int LEMBALL_FASTCALL HandleMenuSelectorEntryEvent(
     Event.m_nPayload0C = 0;
     Event.m_nPayload10 = 0;
 
-    if (pEvent->m_nType00 != 0x0c ||
-        pEvent->m_nPayload08 != pEntry->m_nToken30) {
+    if (pEvent->m_nPayload08 != pEntry->m_nToken30 ||
+        *(unsigned short *)pEvent != 0x0c) {
         return 0;
     }
-    if (pEntry->m_nOverlayKind10 == 0) {
+    nOverlayKind = pEntry->m_nOverlayKind10;
+    if (nOverlayKind == 0) {
         if (pEntry->m_nActivationMode2C == 1) {
             Event.m_nPayload08 = pEntry->m_nCommand34;
             ((QueueProc)(*(void ***)g_pSharedRenderDispatchQueue)[2])(
@@ -2229,8 +2230,11 @@ static int LEMBALL_FASTCALL HandleMenuSelectorEntryEvent(
         }
         if (pEntry->m_pSelection48 != 0) {
             if (pEntry->m_cResources38 == 1) {
-                *pEntry->m_pSelection48 =
-                    *pEntry->m_pSelection48 == 0 ? 1 : 0;
+                if (*pEntry->m_pSelection48 == 0) {
+                    *pEntry->m_pSelection48 = 1;
+                } else {
+                    *pEntry->m_pSelection48 = 0;
+                }
             } else {
                 *pEntry->m_pSelection48 = pEntry->m_nSelectedResource44;
             }
@@ -2247,7 +2251,7 @@ static int LEMBALL_FASTCALL HandleMenuSelectorEntryEvent(
         g_fLevelSelectionChanged = 1;
         return 0;
     }
-    if (pEntry->m_nOverlayKind10 != 1) {
+    if (nOverlayKind != 1) {
         return 0;
     }
 
@@ -2257,7 +2261,7 @@ static int LEMBALL_FASTCALL HandleMenuSelectorEntryEvent(
         nPercent = 0;
     } else {
         nPercent += (pEntry->m_nLastResource3C +
-                     (((unsigned int)pEntry->m_nLastResource3C >> 31) * 3)) / 4;
+                     ((pEntry->m_nLastResource3C >> 31) & 3)) / 4;
         if (nPercent > pEntry->m_nLastResource3C) {
             nPercent = pEntry->m_nLastResource3C;
         }
@@ -2271,7 +2275,7 @@ static int LEMBALL_FASTCALL HandleMenuSelectorEntryEvent(
 static int LEMBALL_FASTCALL HandleMenuSelectorEntryEventThunk(
     GameMenuSelectorEntry *pEntry, int nUnusedEdx,
     GameMenuSelectorEvent *pEvent) {
-    return HandleMenuSelectorEntryEvent(pEntry, nUnusedEdx, pEvent);
+    return pEntry->HandleEvent(pEvent);
 }
 
 /* FUNCTION: LEMBALL 0x0044C410 */
