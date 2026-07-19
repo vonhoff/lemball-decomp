@@ -5305,41 +5305,6 @@ LRESULT VsGdiAnimWindowOwner::DispatchEmbeddedMciWindowMessage(
     }
 }
 
-// FUNCTION: LEMBALL 0x0046e300
-void VsGdiAnimWindowOwner::StartEmbeddedMciWindowPlaybackOnce(void) {
-    if (m_nA4 == 0) {
-        SendMessageA(m_hMciWindowB8, 0x807, 0, -1);
-        SendMessageA(m_hMciWindowB8, 0x806, 0, 0);
-        m_nA4 = 1;
-    }
-}
-
-void LEMBALL_FASTCALL StartEmbeddedMciWindowPlaybackOnce(void *pOwner) {
-    ((VsGdiAnimWindowOwner *)pOwner)->StartEmbeddedMciWindowPlaybackOnce();
-}
-
-void VsGdiAnimWindowOwner::PauseEmbeddedMciWindowPlayback(void) {
-    if (m_nA8 == 0) {
-        SendMessageA(m_hMciWindowB8, 0x809, 0, 0);
-        m_nA8 = 1;
-    }
-}
-
-// FUNCTION: LEMBALL 0x0046e3c0
-void VsGdiAnimWindowOwner::ResumeEmbeddedMciWindowPlayback(void) {
-    if (m_nA8 != 0) {
-        SendMessageA(m_hMciWindowB8, 0x855, 0, 0);
-        m_nA8 = 0;
-    }
-}
-
-void LEMBALL_FASTCALL ResumeEmbeddedMciWindowPlayback(void *pOwner) {
-    ((VsGdiAnimWindowOwner *)pOwner)->ResumeEmbeddedMciWindowPlayback();
-}
-
-void VsGdiAnimWindowOwner::IgnoreEmbeddedMciNotification(void) {
-}
-
 struct VsGdiMediaListResourceView {
     void **m_pVtable00;
     int m_nReserved04;
@@ -5352,6 +5317,7 @@ struct VsGdiMediaListResourceView {
     char *m_pTextEntry78;
 };
 
+// FUNCTION: LEMBALL 0x0046e130
 void VsGdiAnimWindowOwner::UpdateMediaPathFromListResource(int nResourceId) {
     VsGdiMediaListResourceView *pResource;
     const char *pszMediaName;
@@ -5423,6 +5389,41 @@ void VsGdiAnimWindowOwner::UpdateMediaPathFromListResource(int nResourceId) {
     }
     m_nA0 = 1;
     MediaPath.DestroyDynamicCString();
+}
+
+// FUNCTION: LEMBALL 0x0046e300
+void VsGdiAnimWindowOwner::StartEmbeddedMciWindowPlaybackOnce(void) {
+    if (m_nA4 == 0) {
+        SendMessageA(m_hMciWindowB8, 0x807, 0, -1);
+        SendMessageA(m_hMciWindowB8, 0x806, 0, 0);
+        m_nA4 = 1;
+    }
+}
+
+void LEMBALL_FASTCALL StartEmbeddedMciWindowPlaybackOnce(void *pOwner) {
+    ((VsGdiAnimWindowOwner *)pOwner)->StartEmbeddedMciWindowPlaybackOnce();
+}
+
+void VsGdiAnimWindowOwner::PauseEmbeddedMciWindowPlayback(void) {
+    if (m_nA8 == 0) {
+        SendMessageA(m_hMciWindowB8, 0x809, 0, 0);
+        m_nA8 = 1;
+    }
+}
+
+void VsGdiAnimWindowOwner::IgnoreEmbeddedMciNotification(void) {
+}
+
+// FUNCTION: LEMBALL 0x0046e3c0
+void VsGdiAnimWindowOwner::ResumeEmbeddedMciWindowPlayback(void) {
+    if (m_nA8 != 0) {
+        SendMessageA(m_hMciWindowB8, 0x855, 0, 0);
+        m_nA8 = 0;
+    }
+}
+
+void LEMBALL_FASTCALL ResumeEmbeddedMciWindowPlayback(void *pOwner) {
+    ((VsGdiAnimWindowOwner *)pOwner)->ResumeEmbeddedMciWindowPlayback();
 }
 
 void LEMBALL_FASTCALL UpdateEmbeddedMciMediaPath(void *pOwner,
