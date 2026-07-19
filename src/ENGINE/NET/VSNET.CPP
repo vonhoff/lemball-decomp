@@ -50,7 +50,8 @@ extern void *DeleteEffStreamBaseWrapper004628B0(void *pObject, BYTE fDelete);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 extern void *g_pActiveNetworkRuntimeWindow;
 extern void *g_pEffTransportDispatchQueue;
-extern int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cEntries);
+extern int LEMBALL_FASTCALL DrainRenderDispatchQueueEntries(
+    void *pDispatchQueue, int nUnused, unsigned int cEntries);
 extern void *AllocateTcpipEffTransportRuntimeOwner(void);
 extern void *AllocateTcpipEffTransportComposite(void);
 
@@ -1110,7 +1111,8 @@ extern void *g_pEffTransportSecondaryDispatchQueue;
 extern void *LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode);
 extern void *ConstructRenderDispatchQueue(void *pQueue, int cEntries);
 extern void *g_pNonZrleVariantRenderEntryInitializeVtable[2];
-extern int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cEntries);
+extern int LEMBALL_FASTCALL DrainRenderDispatchQueueEntries(
+    void *pDispatchQueue, int nUnused, unsigned int cEntries);
 extern void CheckEffTransportIdleTimeout(void *pObject);
 
 struct VsNetAdjustedEffTransportPeerView {
@@ -3995,7 +3997,9 @@ DWORD FileBasedNetworkMessageThreadMain(void) {
 
             pDispatchQueue = (VsNetRenderDispatchQueue *)g_pEffTransportDispatchQueue;
             while (pDispatchQueue != 0 && pDispatchQueue->m_cQueuedEntries != 0) {
-                DrainRenderDispatchQueueEntries(g_pEffTransportDispatchQueue, (unsigned int)pDispatchQueue->m_cQueuedEntries);
+                DrainRenderDispatchQueueEntries(
+                    g_pEffTransportDispatchQueue, 0,
+                    (unsigned int)pDispatchQueue->m_cQueuedEntries);
             }
 
             fRuntimeStarted = pActiveRuntime->m_fRuntimeActive;
@@ -4182,7 +4186,7 @@ int VsNetFileRuntimeWindowVtableModel::HandleFileRuntimeWindowMessage(unsigned i
             if (g_pEffTransportDispatchQueue != 0 &&
                 *(int *)((char *)g_pEffTransportDispatchQueue + 0x28) != 0) {
                 DrainRenderDispatchQueueEntries(
-                    g_pEffTransportDispatchQueue,
+                    g_pEffTransportDispatchQueue, 0,
                     *(unsigned int *)((char *)g_pEffTransportDispatchQueue + 0x28));
             }
         }
@@ -4329,7 +4333,9 @@ DWORD TcpipNetworkMessageThreadMain(void) {
 
             pDispatchQueue = (VsNetRenderDispatchQueue *)g_pEffTransportDispatchQueue;
             while (pDispatchQueue != 0 && pDispatchQueue->m_cQueuedEntries != 0) {
-                DrainRenderDispatchQueueEntries(g_pEffTransportDispatchQueue, (unsigned int)pDispatchQueue->m_cQueuedEntries);
+                DrainRenderDispatchQueueEntries(
+                    g_pEffTransportDispatchQueue, 0,
+                    (unsigned int)pDispatchQueue->m_cQueuedEntries);
             }
 
             fRuntimeStarted = pActiveRuntime->m_fRuntimeActive;
@@ -4458,7 +4464,8 @@ int VsNetTcpipRuntimeWindowVtableModel::HandleTcpipRuntimeWindowMessage(unsigned
         pDispatchQueue = g_pEffTransportDispatchQueue;
         if (pDispatchQueue != 0 && *(int *)((char *)pDispatchQueue + 0x28) != 0) {
             DrainRenderDispatchQueueEntries(
-                pDispatchQueue, *(unsigned int *)((char *)pDispatchQueue + 0x28));
+                pDispatchQueue, 0,
+                *(unsigned int *)((char *)pDispatchQueue + 0x28));
         }
     }
     pState = (VsNetEffTransportRuntimeState *)((char *)this + 0x10);

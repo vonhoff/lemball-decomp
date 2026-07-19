@@ -10,12 +10,13 @@ struct RenderDispatchClientObject {
 
 int LEMBALL_FASTCALL DispatchRenderQueueEntryToClients(
     void *pDispatchQueue, int nUnused, void *pEntryWords);
-int DrainRenderDispatchQueueEntries(
-    void *pDispatchQueue, unsigned int cEntries);
-int CopyRenderDispatchQueueEntryAtIndex(
-    void *pDispatchQueue, unsigned int *paEntryWords, int nIndex);
-int RemoveRenderDispatchQueueEntryAtIndex(
-    void *pDispatchQueue, unsigned int nIndex);
+int LEMBALL_FASTCALL DrainRenderDispatchQueueEntries(
+    void *pDispatchQueue, int nUnused, unsigned int cEntries);
+int LEMBALL_FASTCALL CopyRenderDispatchQueueEntryAtIndex(
+    void *pDispatchQueue, int nUnused,
+    unsigned int *paEntryWords, int nIndex);
+int LEMBALL_FASTCALL RemoveRenderDispatchQueueEntryAtIndex(
+    void *pDispatchQueue, int nUnused, unsigned int nIndex);
 extern void *g_pSingletonAnimWindowOwner;
 extern "C" {
 __declspec(dllimport) void *WINAPI SelectObject(void *hDc, void *hObject);
@@ -164,7 +165,7 @@ int LEMBALL_FASTCALL AppendRenderDispatchQueueEntry(
 
     if (pQueue->m_cEntryCapacity == pQueue->m_cQueuedEntries) {
         ++pQueue->m_nReserved34;
-        DrainRenderDispatchQueueEntries(pDispatchQueue, 1);
+        DrainRenderDispatchQueueEntries(pDispatchQueue, 0, 1);
         nResult = ((int (LEMBALL_FASTCALL *)(void *, int,
                                              RenderDispatchQueueEntry *))
                        (*(void ***)pDispatchQueue)[2])(
@@ -193,7 +194,8 @@ int LEMBALL_FASTCALL DispatchRenderQueueEntryImmediately(
     int nResult;
 
     pQueue = (RenderDispatchQueue *)pDispatchQueue;
-    EnterObjectCriticalSection((char *)pDispatchQueue + 8);
+    ((void (LEMBALL_FASTCALL *)(void *))
+         (*(void ***)&pQueue->m_pLockVtable)[0])(&pQueue->m_pLockVtable);
     pEntry->m_awords[1] = (unsigned int)pQueue->m_nReserved30;
     ++pQueue->m_nReserved3C;
     ++pQueue->m_nReserved30;
@@ -203,21 +205,33 @@ int LEMBALL_FASTCALL DispatchRenderQueueEntryImmediately(
 }
 
 // FUNCTION: LEMBALL 0x00463570
-int TakeRenderDispatchQueueEntry(void *pDispatchQueue, unsigned int *paEntryWords, unsigned int nIndex) {
-    EnterObjectCriticalSection((char *)pDispatchQueue + 8);
-    CopyRenderDispatchQueueEntryAtIndex(pDispatchQueue, paEntryWords, (int)nIndex);
-    RemoveRenderDispatchQueueEntryAtIndex(pDispatchQueue, nIndex);
-    LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
+int LEMBALL_FASTCALL TakeRenderDispatchQueueEntry(
+    void *pDispatchQueue, int, unsigned int *paEntryWords,
+    unsigned int nIndex)
+{
+    RenderDispatchQueue *pQueue;
+
+    pQueue = (RenderDispatchQueue *)pDispatchQueue;
+    ((void (LEMBALL_FASTCALL *)(void *))
+         (*(void ***)&pQueue->m_pLockVtable)[0])(&pQueue->m_pLockVtable);
+    CopyRenderDispatchQueueEntryAtIndex(
+        pDispatchQueue, 0, paEntryWords, (int)nIndex);
+    RemoveRenderDispatchQueueEntryAtIndex(pDispatchQueue, 0, nIndex);
+    ((void (LEMBALL_FASTCALL *)(void *))
+         (*(void ***)&pQueue->m_pLockVtable)[1])(&pQueue->m_pLockVtable);
     return 1;
 }
 // FUNCTION: LEMBALL 0x004635b0
-int CopyRenderDispatchQueueEntryAtIndex(void *pDispatchQueue, unsigned int *paEntryWords, int nIndex) {
+int LEMBALL_FASTCALL CopyRenderDispatchQueueEntryAtIndex(
+    void *pDispatchQueue, int, unsigned int *paEntryWords, int nIndex)
+{
     RenderDispatchQueue *pQueue;
     RenderDispatchQueueEntry *pSource;
     int i;
 
     pQueue = (RenderDispatchQueue *)pDispatchQueue;
-    EnterObjectCriticalSection((char *)pDispatchQueue + 8);
+    ((void (LEMBALL_FASTCALL *)(void *))
+         (*(void ***)&pQueue->m_pLockVtable)[0])(&pQueue->m_pLockVtable);
 
     pSource = (RenderDispatchQueueEntry *)(unsigned long)((int)(unsigned long)pQueue->m_pHead + nIndex * sizeof(RenderDispatchQueueEntry));
     if (pQueue->m_pEntryBufferEnd <= pSource) {
@@ -232,11 +246,15 @@ int CopyRenderDispatchQueueEntryAtIndex(void *pDispatchQueue, unsigned int *paEn
         paEntryWords[i] = pSource->m_awords[i];
     }
 
-    LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
+    ((void (LEMBALL_FASTCALL *)(void *))
+         (*(void ***)&pQueue->m_pLockVtable)[1])(&pQueue->m_pLockVtable);
     return 1;
 }
+#pragma auto_inline(off)
 // FUNCTION: LEMBALL 0x004636e0
-int RemoveRenderDispatchQueueEntryAtIndex(void *pDispatchQueue, unsigned int nIndex) {
+int LEMBALL_FASTCALL RemoveRenderDispatchQueueEntryAtIndex(
+    void *pDispatchQueue, int, unsigned int nIndex)
+{
     RenderDispatchQueue *pQueue;
     RenderDispatchQueueEntry *pEntry;
     RenderDispatchQueueEntry *pNextEntry;
@@ -245,7 +263,8 @@ int RemoveRenderDispatchQueueEntryAtIndex(void *pDispatchQueue, unsigned int nIn
     int i;
 
     pQueue = (RenderDispatchQueue *)pDispatchQueue;
-    EnterObjectCriticalSection((char *)pDispatchQueue + 8);
+    ((void (LEMBALL_FASTCALL *)(void *))
+         (*(void ***)&pQueue->m_pLockVtable)[0])(&pQueue->m_pLockVtable);
 
     pQueueHead = pQueue->m_pHead;
     pEntry = pQueueHead + nIndex;
@@ -261,7 +280,9 @@ int RemoveRenderDispatchQueueEntryAtIndex(void *pDispatchQueue, unsigned int nIn
     if (cQueuedEntries == 1) {
         pQueue->m_cQueuedEntries = 0;
         pQueue->m_pHead = pQueue->m_pTail;
-        LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
+        ((void (LEMBALL_FASTCALL *)(void *))
+             (*(void ***)&pQueue->m_pLockVtable)[1])(
+                 &pQueue->m_pLockVtable);
         return 1;
     }
 
@@ -271,7 +292,9 @@ int RemoveRenderDispatchQueueEntryAtIndex(void *pDispatchQueue, unsigned int nIn
             pQueue->m_pHead = pQueue->m_pEntryBuffer;
         }
         pQueue->m_cQueuedEntries = (int)cQueuedEntries - 1;
-        LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
+        ((void (LEMBALL_FASTCALL *)(void *))
+             (*(void ***)&pQueue->m_pLockVtable)[1])(
+                 &pQueue->m_pLockVtable);
         return 1;
     }
 
@@ -314,12 +337,15 @@ int RemoveRenderDispatchQueueEntryAtIndex(void *pDispatchQueue, unsigned int nIn
     }
     pQueue->m_cQueuedEntries = pQueue->m_cQueuedEntries - 1;
 
-    LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
+    ((void (LEMBALL_FASTCALL *)(void *))
+         (*(void ***)&pQueue->m_pLockVtable)[1])(&pQueue->m_pLockVtable);
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x00463810
-int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cEntries) {
+int LEMBALL_FASTCALL DrainRenderDispatchQueueEntries(
+    void *pDispatchQueue, int, unsigned int cEntries)
+{
     RenderDispatchQueue *pQueue;
     unsigned int cQueuedEntries;
     unsigned int cDrained;
@@ -327,7 +353,8 @@ int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cEntries)
 
     pQueue = (RenderDispatchQueue *)pDispatchQueue;
     cDrained = 0;
-    EnterObjectCriticalSection((char *)pDispatchQueue + 8);
+    ((void (LEMBALL_FASTCALL *)(void *))
+         (*(void ***)&pQueue->m_pLockVtable)[0])(&pQueue->m_pLockVtable);
     cQueuedEntries = (unsigned int)pQueue->m_cQueuedEntries;
 
     if (cEntries != 0) {
@@ -335,19 +362,25 @@ int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cEntries)
             if (cQueuedEntries <= cDrained) {
                 break;
             }
-            if (TakeRenderDispatchQueueEntry(pDispatchQueue, auEntryWords, 0) == 0) {
-                LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
+            if (TakeRenderDispatchQueueEntry(
+                    pDispatchQueue, 0, auEntryWords, 0) == 0) {
+                ((void (LEMBALL_FASTCALL *)(void *))
+                     (*(void ***)&pQueue->m_pLockVtable)[1])(
+                         &pQueue->m_pLockVtable);
                 return 0;
             }
             if (DispatchRenderQueueEntryToClients(pDispatchQueue, 0, auEntryWords) == 0) {
-                LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
+                ((void (LEMBALL_FASTCALL *)(void *))
+                     (*(void ***)&pQueue->m_pLockVtable)[1])(
+                         &pQueue->m_pLockVtable);
                 return 0;
             }
             ++cDrained;
         } while (cDrained < cEntries);
     }
 
-    LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
+    ((void (LEMBALL_FASTCALL *)(void *))
+         (*(void ***)&pQueue->m_pLockVtable)[1])(&pQueue->m_pLockVtable);
     return 1;
 }
 // FUNCTION: LEMBALL 0x004638a0
@@ -380,9 +413,11 @@ int LEMBALL_FASTCALL DispatchRenderQueueEntryToClients(
     }
 
     pQueue->m_cEntriesDropped = pQueue->m_cEntriesDropped + 1;
-    LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
+    ((void (LEMBALL_FASTCALL *)(void *))
+         (*(void ***)&pQueue->m_pLockVtable)[1])(&pQueue->m_pLockVtable);
     return 1;
 }
+#pragma auto_inline(on)
 
 // FUNCTION: LEMBALL 0x00478fb0
 extern "C" unsigned long LEMBALL_STDCALL DispatchVisualSciencesWingDriverMessage(

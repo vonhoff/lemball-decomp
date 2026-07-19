@@ -500,7 +500,8 @@ int ShutdownDebugMessageThreadFromStartup(int fForceTerminate) {
 
 
 
-extern int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cEntries);
+extern int LEMBALL_FASTCALL DrainRenderDispatchQueueEntries(
+    void *pDispatchQueue, int nUnused, unsigned int cEntries);
 
 
 
@@ -1716,7 +1717,8 @@ void LEMBALL_FASTCALL DestroyRenderDispatchQueue(void *pQueue) {
     pDispatchQueue->m_pLockVtable = g_DeleteRenderDispatchQueueCriticalSectionHelperThunk;
 
     pClientNode = pDispatchQueue->m_pClientList;
-    if (DrainRenderDispatchQueueEntries(pQueue, pDispatchQueue->m_cQueuedEntries) == 1) {
+    if (DrainRenderDispatchQueueEntries(
+            pQueue, 0, pDispatchQueue->m_cQueuedEntries) == 1) {
         FreeVSMemBlock(pDispatchQueue->m_pEntryBuffer);
     }
 

@@ -168,7 +168,8 @@ extern void *g_pSharedRenderDispatchQueue;
 extern void *g_pSharedGeometryHelper;
 extern void *g_pEffTransportSecondaryDispatchQueue;
 extern int *g_pArrowCursorStatusIndicatorRenderClient;
-extern int DrainRenderDispatchQueueEntries(void *pDispatchQueue, unsigned int cEntries);
+extern int LEMBALL_FASTCALL DrainRenderDispatchQueueEntries(
+    void *pDispatchQueue, int nUnused, unsigned int cEntries);
 extern void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void *pQueue);
 extern "C" DWORD WINAPI timeGetTime(void);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
@@ -2689,7 +2690,8 @@ void LEMBALL_FASTCALL UpdateLevelModeActiveInterfaceThunk(
     if (*(void **)(pMode + 0x164) != 0) {
         void *pDispatchQueue = *(void **)(pMode + 0x164);
         DrainRenderDispatchQueueEntries(
-            pDispatchQueue, *(unsigned int *)((char *)pDispatchQueue + 0x28));
+            pDispatchQueue, 0,
+            *(unsigned int *)((char *)pDispatchQueue + 0x28));
     }
     if (*(int *)(pMode + 0xd8) != 0) {
         AdvanceLevelFrameClock();
@@ -4914,7 +4916,7 @@ int __stdcall PumpMessagesAndRunFrame(void) {
         g_pEffTransportSecondaryDispatchQueue != 0) {
         while (*(unsigned int *)((char *)g_pEffTransportSecondaryDispatchQueue + 0x28) != 0) {
             DrainRenderDispatchQueueEntries(
-                g_pEffTransportSecondaryDispatchQueue,
+                g_pEffTransportSecondaryDispatchQueue, 0,
                 *(unsigned int *)((char *)g_pEffTransportSecondaryDispatchQueue + 0x28));
         }
     }
@@ -4930,7 +4932,7 @@ int __stdcall PumpMessagesAndRunFrame(void) {
 
     if (g_pSharedRenderDispatchQueue != 0) {
         DrainRenderDispatchQueueEntries(
-            g_pSharedRenderDispatchQueue,
+            g_pSharedRenderDispatchQueue, 0,
             *(unsigned int *)((char *)g_pSharedRenderDispatchQueue + 0x28));
     }
     if (g_pMainResourceArchive != 0) {
