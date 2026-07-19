@@ -90,6 +90,7 @@ DECOMP_SIZE_ASSERT(GameWindowOwnerRenderContextBase, 0x8c);
 // SIZE 0x90
 // This layer installs the second 46-slot vtable at 0x00499318.
 struct GameWindowOwnerRenderContext : public GameWindowOwnerRenderContextBase {
+    void *ConstructWindowOwnerRenderContext(void);
     void ApplyWindowOwnerActivation(int nActivate);
     void InitializeWindowOwnerFromRectAndActivate(
         short *paRect, void *pWindowOwner, const char *pszTitle,

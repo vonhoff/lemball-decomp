@@ -112,7 +112,6 @@ extern void LEMBALL_FASTCALL ShutdownVariantResourceEntryManager(void *pManager)
 extern void PASCAL noop_embedded_mci_callback_0046e050(void *pUnused);
 extern int g_fMusicEnabled;
 extern int g_fEffectsEnabled;
-  extern void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pPrimaryContext);
   extern void RegisterVSBaseWindowClass(void);
 extern void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntryThunk(void *pObject);
@@ -748,7 +747,6 @@ void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile,
 int SetVisualSciencesRegistryRunningState(const char *pszProductName, int fRunning);
 char *__stdcall FindCdromFilePathBySuffix(const char *pszSuffix);
 void *LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode);
-void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pPrimaryContext);
 void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(void *pPrimaryContext);
 char *GetSrcDiskRegistryValueBuffer(void);
 void ShowReleaseAssertFailureAndAbort(const char *pszExpression, const char *pszFile, int nLine);
@@ -4216,7 +4214,7 @@ GamePrimaryContext *GamePrimaryContext::ConstructPrimaryContext(GameMainContext 
     pContext = this;
     InitializeGameStubVtables();
     pRenderQueueNode = (char *)pContext + 0x90;
-    ConstructWindowOwnerRenderContext(this);
+    ((GameWindowOwnerRenderContext *)this)->ConstructWindowOwnerRenderContext();
     InstallPrimaryContextInheritedWindowOwnerSlots(*(void ***)this);
     InitializeRenderQueueNodeBase(pRenderQueueNode);
 
@@ -5128,13 +5126,13 @@ int GameRenderDispatchQueue::UnregisterOrderedRenderDispatchClient(void *pClient
 }
 
 // FUNCTION: LEMBALL 0x00463b50
-void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pPrimaryContext) {
+void *GameWindowOwnerRenderContext::ConstructWindowOwnerRenderContext(void) {
     GameWindowOwnerRenderContext *pRenderContext;
     char *pEntry;
     void *pWindowOwnerBaseVtable;
     int i;
 
-    pRenderContext = (GameWindowOwnerRenderContext *)pPrimaryContext;
+    pRenderContext = this;
     InitializeGameStubVtables();
     new (pRenderContext) VS_WindowOwnerBase;
     pWindowOwnerBaseVtable = *(void **)pRenderContext;

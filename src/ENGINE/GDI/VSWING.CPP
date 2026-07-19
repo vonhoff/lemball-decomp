@@ -156,9 +156,10 @@ int LEMBALL_FASTCALL AppendRenderDispatchQueueEntry(
     int nResult;
 
     pQueue = (RenderDispatchQueue *)pDispatchQueue;
-    EnterObjectCriticalSection((char *)pDispatchQueue + 8);
-    pEntry->m_awords[1] = (unsigned int)pQueue->m_nReserved30;
+    ((void (LEMBALL_FASTCALL *)(void *))
+         (*(void ***)&pQueue->m_pLockVtable)[0])(&pQueue->m_pLockVtable);
     ++pQueue->m_nReserved38;
+    pEntry->m_awords[1] = (unsigned int)pQueue->m_nReserved30;
     ++pQueue->m_nReserved30;
 
     if (pQueue->m_cEntryCapacity == pQueue->m_cQueuedEntries) {
@@ -168,7 +169,9 @@ int LEMBALL_FASTCALL AppendRenderDispatchQueueEntry(
                                              RenderDispatchQueueEntry *))
                        (*(void ***)pDispatchQueue)[2])(
             pDispatchQueue, 0, pEntry);
-        LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
+        ((void (LEMBALL_FASTCALL *)(void *))
+             (*(void ***)&pQueue->m_pLockVtable)[1])(
+                 &pQueue->m_pLockVtable);
         return nResult;
     }
 
@@ -178,7 +181,8 @@ int LEMBALL_FASTCALL AppendRenderDispatchQueueEntry(
     if (pQueue->m_pEntryBufferEnd <= pQueue->m_pTail) {
         pQueue->m_pTail = pQueue->m_pEntryBuffer;
     }
-    LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
+    ((void (LEMBALL_FASTCALL *)(void *))
+         (*(void ***)&pQueue->m_pLockVtable)[1])(&pQueue->m_pLockVtable);
     return 1;
 }
 // FUNCTION: LEMBALL 0x00463230

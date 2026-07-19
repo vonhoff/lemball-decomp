@@ -43,8 +43,6 @@ extern void LEMBALL_FASTCALL QueueStatusPointPushThunk(
 extern void AppendPointerQueueEntry(void *pQueue, void *pEntry);
 extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
     void *pOwner, int nUnusedEdx, void *pChildOwner);
-extern void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(
-    void *pObject);
 extern void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(
     void *pObject);
 extern void *LEMBALL_FASTCALL InitializeEmptyGeometryOwnerRect(
@@ -863,7 +861,7 @@ void *LEMBALL_FASTCALL ConstructResourceGeometryChildBase(
     void **pGeometryOwnerVtable;
 
     (void)nUnusedEdx;
-    ConstructWindowOwnerRenderContext(pObject);
+    ((GameWindowOwnerRenderContext *)pObject)->ConstructWindowOwnerRenderContext();
     pWindowOwnerVtable = *(void ***)pObject;
     InitializeEmptyGeometryOwnerRect((char *)pObject + 0x90);
     pGeometryOwnerVtable = *(void ***)((char *)pObject + 0x90);
@@ -1102,7 +1100,7 @@ static void *ConstructMenuSelectorChildContextObject(void *pObject) {
     void **pBaseVtable;
     int i;
 
-    ConstructWindowOwnerRenderContext(pObject);
+    ((GameWindowOwnerRenderContext *)pObject)->ConstructWindowOwnerRenderContext();
     pBaseVtable = *(void ***)pObject;
     if (g_fMenuSelectorChildContextVtableInitialized == 0) {
         for (i = 0; i < 46; ++i) {
@@ -1472,7 +1470,7 @@ static void *ConstructQueuedVariantChildContextObject(void *pObject) {
     void **pBaseVtable;
     int i;
 
-    ConstructWindowOwnerRenderContext(pObject);
+    ((GameWindowOwnerRenderContext *)pObject)->ConstructWindowOwnerRenderContext();
     pBaseVtable = *(void ***)pObject;
     if (g_fQueuedVariantChildContextVtableInitialized == 0) {
         for (i = 0; i < 46; ++i) {

@@ -32,8 +32,6 @@ DECOMP_SIZE_ASSERT(VsGdiDirectDrawDisplayState, 0x4a8);
 extern LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 extern "C" DWORD WINAPI timeGetTime(void);
 extern void LEMBALL_FASTCALL EnsureHelperGroup0BackingBuffer(int nHelperGroup);
-extern void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(
-    void *pPrimaryContext);
 extern void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(
     void *pPrimaryContext);
 extern void PASCAL noop_embedded_mci_callback_0046e050(void *pUnused);
@@ -5235,7 +5233,7 @@ void *VsGdiAnimWindowOwner::ConstructResourceGeometryHelperWindowOwner(void) {
     } ignoreNotificationMethod;
     int i;
 
-    ConstructWindowOwnerRenderContext(this);
+    ((GameWindowOwnerRenderContext *)this)->ConstructWindowOwnerRenderContext();
     pBaseVtable = *(void ***)this;
     m_MediaName98.ConstructDynamicCString();
     m_nReserved94 = 0;

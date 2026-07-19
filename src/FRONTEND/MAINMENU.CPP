@@ -103,7 +103,6 @@ extern void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(
     void *pVsnetRuntime);
 extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableA(
     void *pObject);
-extern void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pObject);
 extern void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeEmptyGeometryOwnerRect(void *pObject);
 extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(
@@ -4985,7 +4984,7 @@ static void InitializePasswordEntryRenderContext(
         pScreen->m_pInputPanelRenderContext474 = 0;
         return;
     }
-    ConstructWindowOwnerRenderContext(pScreen->m_pInputPanelOwner3A4);
+    ((GameWindowOwnerRenderContext *)pScreen->m_pInputPanelOwner3A4)->ConstructWindowOwnerRenderContext();
     *(int *)((char *)pScreen->m_pInputPanelOwner3A4 + 0x50) += 10;
     Rect[0] = (short)(nKeyStep * 3);
     Rect[1] = (short)(nKeyStep * 4);
