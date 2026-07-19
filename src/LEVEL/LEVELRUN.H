@@ -138,7 +138,20 @@ void LoadNodeChunkRecords(void *pManager, const unsigned short *pWords,
 extern LevelBallChunkManager *g_pBallChunkManager;
 extern char *g_pszActiveLevelFilePath;
 extern void *g_pLoadedLevelFileBuffer;
+
+struct LevelMetadata {
+    unsigned short m_cSkill00;
+    unsigned short m_cPlayers02;
+    unsigned short m_cNetworkPlayers04;
+    unsigned short m_nTimeSeconds06;
+    char m_szTitle08[0x24];
+};
+
 int LoadOverrideLevelFileBuffer(void);
 unsigned char *GetNextLevelChunk(unsigned char *pChunk);
+void ReadLevelMetadataForSkillAndLevel(
+    unsigned int nSkill, unsigned int nLevel,
+    LevelMetadata *pMetadata);
+int GetLevelBinResourceIdForSkillAndLevel(int nSkill, int nLevel);
 
 #endif

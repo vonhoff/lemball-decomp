@@ -159,14 +159,6 @@ public:
     void QueueActiveBaseModeUserAction(int nAction, int nPhase);
 };
 
-struct GameLevelMetadataView {
-    unsigned short m_cSkill00;
-    unsigned short m_cPlayers02;
-    unsigned short m_cNetworkPlayers04;
-    unsigned short m_nTimeSeconds06;
-    char m_szTitle08[0x24];
-};
-
 class GameIntroSequenceMediaState {
 public:
     void ConfigureOwner(void *pScreen, void *pPrimaryContext, int fSkipVariant);
@@ -627,8 +619,6 @@ static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionNavigationLocks(
     GameLevelSelectionScreenView *pScreen);
 static void MeasureFunctionalLevelTitleExtent(
     void *pResource, short *pExtent, const char *pszText);
-static int ReadFunctionalLevelMetadata(
-    int nSkill, int nLevel, GameLevelMetadataView *pMetadata);
 static void LEMBALL_FASTCALL SelectNextFunctionalLevel(
     GameLevelSelectionScreenView *pScreen);
 static void LEMBALL_FASTCALL SelectPreviousFunctionalLevel(
@@ -5651,14 +5641,14 @@ static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(
     int y;
     int nPack;
     int nCurrentLevel;
-    GameLevelMetadataView Metadata;
+    LevelMetadata Metadata;
 
     pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
     nPack = pProgress->m_nCurrentPack08;
     nCurrentLevel = pProgress->m_anSnapshotPackCaps3C[nPack];
     memset(&Metadata, 0, sizeof(Metadata));
-    if (ReadFunctionalLevelMetadata(nPack, nCurrentLevel, &Metadata) == 0 ||
-        Metadata.m_szTitle08[0] == '\0') {
+    ReadLevelMetadataForSkillAndLevel(nPack, nCurrentLevel, &Metadata);
+    if (Metadata.m_szTitle08[0] == '\0') {
         strcpy(Metadata.m_szTitle08, "UN-NAMED LEVEL");
     }
     pScreen->m_fSelectorDirty360 = 1;
@@ -5778,135 +5768,6 @@ static void MeasureFunctionalLevelTitleExtent(
     }
     pExtent[0] = (short)cx;
     pExtent[1] = (short)cy;
-}
-
-static int GetFunctionalLevelBinResourceId(int nSkill, int nLevel) {
-    static const int s_anFirstResourceIds[5] = {
-        0x244, 0x25d, 0x277, 0x294, 0x2aa
-    };
-
-    if ((unsigned int)nSkill >= 5U) {
-        nSkill = 4;
-    }
-    return s_anFirstResourceIds[nSkill] + nLevel;
-}
-
-static int ReadFunctionalLevelMetadata(
-    int nSkill, int nLevel, GameLevelMetadataView *pMetadata) {
-    typedef void (LEMBALL_FASTCALL *LoadProc)(void *, int);
-    typedef unsigned char *(LEMBALL_FASTCALL *GetDataProc)(void *, int);
-    int *pResource;
-    unsigned char *pChunk;
-    unsigned char *pPayload;
-    unsigned int nChunkType;
-    unsigned int cbChunk;
-    unsigned int cbAligned;
-    unsigned short nVersion;
-    unsigned short cEntries;
-    unsigned short nTotal;
-    unsigned int i;
-    int fOverrideLevel;
-
-    fOverrideLevel =
-        g_fStartupEditLevelOverride != 0 ||
-        g_fStartupPlayLevelOverride != 0;
-    pResource = 0;
-    if (fOverrideLevel == 0) {
-        pResource = LoadBinResource(
-            GetFunctionalLevelBinResourceId(nSkill, nLevel));
-        if (pResource == 0) {
-            return 0;
-        }
-        if (pResource[4] == 0) {
-            ((LoadProc)(*(void ***)pResource)[7])(pResource, 0);
-        } else {
-            pResource[9] = 0;
-        }
-        ++pResource[2];
-        pChunk = ((GetDataProc)(*(void ***)pResource)[10])(pResource, 0);
-    } else {
-        g_pszActiveLevelFilePath =
-            (char *)g_abOverrideLevelFilePathBuffer;
-        if (LoadOverrideLevelFileBuffer() == 0) {
-            return 0;
-        }
-        pChunk = GetNextLevelChunk(0);
-    }
-    if (pChunk == 0) {
-        if (fOverrideLevel == 0) {
-            --pResource[2];
-            ReleaseTypedResourceObjectReference(pResource);
-        } else {
-            FreeVSMemBlock(g_pLoadedLevelFileBuffer);
-            g_pLoadedLevelFileBuffer = 0;
-        }
-        return 0;
-    }
-
-    for (;;) {
-        nChunkType = *(unsigned int *)(pChunk + 0);
-        cbChunk = *(unsigned int *)(pChunk + 4);
-        pPayload = pChunk + 8;
-        if (nChunkType == 0x41492020U) {
-            nVersion = 0;
-            if (4 < cbChunk - 8) {
-                nVersion = *(unsigned short *)pPayload;
-                pPayload += 2;
-            }
-            pMetadata->m_nTimeSeconds06 =
-                *(unsigned short *)(pPayload + 2);
-            if (nVersion < 4) {
-                pMetadata->m_cPlayers02 = 4;
-                pMetadata->m_cSkill00 = 1;
-            } else {
-                pMetadata->m_cPlayers02 =
-                    *(unsigned short *)(pPayload + 4);
-                pMetadata->m_cSkill00 =
-                    *(unsigned short *)(pPayload + 6);
-            }
-        } else if (nChunkType == 0x4e414d45U) {
-            strcpy(pMetadata->m_szTitle08, (const char *)pPayload);
-            pMetadata->m_szTitle08[0x20] = '\0';
-        } else if (nChunkType == 0x4e455457U ||
-                   nChunkType == 0x504c5331U) {
-            cEntries = *(unsigned short *)pPayload;
-            nTotal = 0;
-            pPayload += 2;
-            for (i = 0; i < cEntries; ++i) {
-                pPayload += 6;
-                nTotal = (unsigned short)(
-                    nTotal + *(unsigned short *)pPayload);
-                pPayload += 2;
-            }
-            if (nChunkType == 0x4e455457U) {
-                if (g_nSelectedNetworkLobbyPeerId == 0 ||
-                    *(int *)(g_nSelectedNetworkLobbyPeerId + 0x1c) == 1) {
-                    pMetadata->m_cNetworkPlayers04 = nTotal;
-                } else {
-                    pMetadata->m_cPlayers02 = nTotal;
-                }
-            } else if (g_nSelectedNetworkLobbyPeerId == 0 ||
-                       *(int *)(g_nSelectedNetworkLobbyPeerId + 0x1c) == 1) {
-                pMetadata->m_cPlayers02 = nTotal;
-            } else {
-                pMetadata->m_cNetworkPlayers04 = nTotal;
-            }
-        } else if (nChunkType == 0x454e443fU) {
-            if (fOverrideLevel == 0) {
-                --pResource[2];
-                ReleaseTypedResourceObjectReference(pResource);
-            } else {
-                FreeVSMemBlock(g_pLoadedLevelFileBuffer);
-                g_pLoadedLevelFileBuffer = 0;
-            }
-            return 1;
-        }
-        cbAligned = cbChunk;
-        if ((cbAligned & 3U) != 0) {
-            cbAligned = (cbAligned & ~3U) + 4;
-        }
-        pChunk += cbAligned;
-    }
 }
 
 static void LEMBALL_FASTCALL SelectNextFunctionalLevel(

@@ -3,10 +3,14 @@
 #include "ENGINE/MEDIA/VSSTRM.H"
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/MEDIA/EFFSTRM.H"
+#include "ENGINE/CORE/VSINIT.H"
 #include "LEVEL/LEVELRUN.H"
+#include "RESOURCE/MOGLOAD.H"
+#include "SHELL/OPTIONS.H"
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 extern "C" DWORD WINAPI timeGetTime(void);
 
@@ -87,6 +91,7 @@ extern void CloseCrtFilePointer(FILE *pFile);
 extern unsigned int ReadFileBytes(
     FILE *pFile, void *pBuffer, size_t cbBuffer);
 extern unsigned int SeekFile(FILE *pFile, long lOffset, int nOrigin);
+extern int *LoadBinResource(int nResourceId);
 
 // GLOBAL: LEMBALL 0x0049e0d0
 static int g_LEVEL_ProjectileGeometryPairSeeds[3][8][2] = {
@@ -709,6 +714,134 @@ unsigned char *GetNextLevelChunk(unsigned char *pChunk) {
         cbChunk += 4;
     }
     return pChunk + cbChunk;
+}
+
+void ReadLevelMetadataForSkillAndLevel(unsigned int nSkill,
+                                      unsigned int nLevel,
+                                      LevelMetadata *pMetadata) {
+    typedef void (LEMBALL_FASTCALL *LoadProc)(void *, int);
+    typedef unsigned char *(LEMBALL_FASTCALL *GetDataProc)(void *, int);
+    int *pResource;
+    unsigned char *pChunk;
+    unsigned char *pPayload;
+    unsigned int nChunkType;
+    unsigned int cbChunk;
+    unsigned short nVersion;
+    unsigned short cEntries;
+    unsigned short nTotal;
+    unsigned int i;
+    int fOverrideLevel;
+
+    pResource = 0;
+    fOverrideLevel =
+        g_fStartupEditLevelOverride != 0 ||
+        g_fStartupPlayLevelOverride != 0;
+    if (fOverrideLevel == 0) {
+        pResource = LoadBinResource(
+            GetLevelBinResourceIdForSkillAndLevel(nSkill, nLevel));
+        if (pResource == 0) {
+            return;
+        }
+        if (pResource[4] == 0) {
+            ((LoadProc)(*(void ***)pResource)[7])(pResource, 0);
+        } else {
+            pResource[9] = 0;
+        }
+        ++pResource[2];
+        g_pLoadedLevelFileBuffer =
+            ((GetDataProc)(*(void ***)pResource)[10])(pResource, 0);
+    } else {
+        g_pszActiveLevelFilePath =
+            (char *)g_abOverrideLevelFilePathBuffer;
+        if (LoadOverrideLevelFileBuffer() == 0) {
+            return;
+        }
+    }
+
+    pChunk = GetNextLevelChunk(0);
+    while (pChunk != 0) {
+        nChunkType = *(unsigned int *)(pChunk + 0);
+        cbChunk = *(unsigned int *)(pChunk + 4);
+        pPayload = pChunk + 8;
+        if (nChunkType == 0x41492020U) {
+            nVersion = 0;
+            if (4 < cbChunk - 8) {
+                nVersion = *(unsigned short *)pPayload;
+                pPayload += 2;
+            }
+            pMetadata->m_nTimeSeconds06 =
+                *(unsigned short *)(pPayload + 2);
+            if (nVersion < 4) {
+                pMetadata->m_cPlayers02 = 4;
+                pMetadata->m_cSkill00 = 1;
+            } else {
+                pMetadata->m_cPlayers02 =
+                    *(unsigned short *)(pPayload + 4);
+                pMetadata->m_cSkill00 =
+                    *(unsigned short *)(pPayload + 6);
+            }
+        } else if (nChunkType == 0x4e414d45U) {
+            strcpy(pMetadata->m_szTitle08, (const char *)pPayload);
+            pMetadata->m_szTitle08[0x20] = '\0';
+        } else if (nChunkType == 0x4e455457U ||
+                   nChunkType == 0x504c5331U) {
+            cEntries = *(unsigned short *)pPayload;
+            nTotal = 0;
+            pPayload += 2;
+            for (i = 0; i < cEntries; ++i) {
+                pPayload += 6;
+                nTotal = (unsigned short)(
+                    nTotal + *(unsigned short *)pPayload);
+                pPayload += 2;
+            }
+            if (nChunkType == 0x4e455457U) {
+                if (g_nSelectedNetworkLobbyPeerId == 0 ||
+                    *(int *)(g_nSelectedNetworkLobbyPeerId + 0x1c) == 1) {
+                    pMetadata->m_cNetworkPlayers04 = nTotal;
+                } else {
+                    pMetadata->m_cPlayers02 = nTotal;
+                }
+            } else if (g_nSelectedNetworkLobbyPeerId == 0 ||
+                       *(int *)(g_nSelectedNetworkLobbyPeerId + 0x1c) == 1) {
+                pMetadata->m_cPlayers02 = nTotal;
+            } else {
+                pMetadata->m_cNetworkPlayers04 = nTotal;
+            }
+        } else if (nChunkType == 0x454e443fU) {
+            if (fOverrideLevel == 0) {
+                --pResource[2];
+                ReleaseTypedResourceObjectReference(pResource);
+            } else {
+                FreeVSMemBlock(g_pLoadedLevelFileBuffer);
+                g_pLoadedLevelFileBuffer = 0;
+            }
+            AppendCStringToStream(g_pStatusOutputStream, "Skill ")
+                ->AppendIntToStream(nSkill)
+                ->AppendCStringToStream(" Level ")
+                ->AppendIntToStream(nLevel)
+                ->AppendCStringToStream(" Name <")
+                ->AppendCStringToStream(pMetadata->m_szTitle08)
+                ->AppendCStringToStream(">\n");
+            return;
+        }
+        pChunk = GetNextLevelChunk(pChunk);
+    }
+}
+
+// FUNCTION: LEMBALL 0x00408b00
+int GetLevelBinResourceIdForSkillAndLevel(int nSkill, int nLevel) {
+    switch (nSkill) {
+    case 0:
+        return nLevel + 0x244;
+    case 1:
+        return nLevel + 0x25d;
+    case 2:
+        return nLevel + 0x277;
+    case 3:
+        return nLevel + 0x294;
+    default:
+        return nLevel + 0x2aa;
+    }
 }
 
 // FUNCTION: LEMBALL 0x00409080
