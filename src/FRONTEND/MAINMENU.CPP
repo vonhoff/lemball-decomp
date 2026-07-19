@@ -204,6 +204,8 @@ struct GameLevelProgressStateView {
 };
 
 struct GameFramedScreenBase {
+    void SetScreenSize(short *paSize);
+
     void **m_pVtable00;
     unsigned char m_abRenderQueueNode04[0x10];
     unsigned char m_abVariantRenderManager14[0x70];
@@ -671,8 +673,8 @@ static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
     void *pQueueNode, int, void *pEvent);
 static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject);
 static void LEMBALL_FASTCALL RecenterFramedScreenIfNeeded(void *pObject);
-static void LEMBALL_FASTCALL SetFramedScreenSize(
-    void *pObject, int, short *paSize);
+
+
 static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject);
 static void LEMBALL_FASTCALL DestroyMainMenuWidgets(void *pObject);
 static void LEMBALL_FASTCALL DestroyMainMenuScreen(void *pObject);
@@ -803,8 +805,8 @@ static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(
 static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(void *pObject);
 static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject);
 static void LEMBALL_FASTCALL RecenterFramedScreenIfNeeded(void *pObject);
-static void LEMBALL_FASTCALL SetFramedScreenSize(
-    void *pObject, int nUnusedEdx, short *paSize);
+
+
 static void LEMBALL_FASTCALL UpdateMainMenuScreen(void *pObject);
 static int LEMBALL_FASTCALL HandleMainMenuInput(
     void *pObject, int nUnusedEdx, void *pEvent);
@@ -1838,7 +1840,7 @@ static void LEMBALL_FASTCALL SetFramedScreenSizeThunk(
     void *pObject, int nUnusedEdx, short *paSize)
 
 {
-    SetFramedScreenSize(pObject, nUnusedEdx, paSize);
+    ((GameFramedScreenBase *)pObject)->SetScreenSize(paSize);
 }
 
 // FUNCTION: LEMBALL 0x004035d0
@@ -2615,16 +2617,10 @@ static void LEMBALL_FASTCALL RecenterFramedScreenIfNeeded(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x00446fd0
-static void LEMBALL_FASTCALL SetFramedScreenSize(
-    void *pObject, int, short *paSize)
-
-{
-    GameFramedScreenBase *pScreen;
-
-    pScreen = (GameFramedScreenBase *)pObject;
-    pScreen->m_cxScreen37C = paSize[0];
-    pScreen->m_cyScreen37E = paSize[1];
-    RefreshFramedScreenFrameResourcesThunk(pScreen);
+void GameFramedScreenBase::SetScreenSize(short *paSize) {
+    m_cxScreen37C = paSize[0];
+    m_cyScreen37E = paSize[1];
+    RefreshFramedScreenFrameResourcesThunk(this);
 }
 
 // FUNCTION: LEMBALL 0x00447000
