@@ -7,10 +7,10 @@ int LEMBALL_FASTCALL DispatchStatusIndicatorRenderEntry(
     void *pRenderClient, int nUnused, void *pEntry)
 {
     short *pEntryWords = (short *)pEntry;
-    short x = pEntryWords[4];
-    short y = pEntryWords[5];
-    short width = pEntryWords[6];
-    short height = pEntryWords[7];
+    short width = pEntryWords[4];
+    short height = pEntryWords[5];
+    short x = pEntryWords[6];
+    short y = pEntryWords[7];
     short clipWidth = pEntryWords[8];
     short clipHeight = pEntryWords[9];
     short *pClipOrigin;
