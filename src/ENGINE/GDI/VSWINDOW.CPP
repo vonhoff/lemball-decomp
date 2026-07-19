@@ -6,6 +6,7 @@
 #include "ENGINE/GDI/VSGDI.H"
 #include "ENGINE/CORE/VSINIT.H"
 #include "SHELL/ENTRY.H"
+#include "SHELL/OPTIONS.H"
 #include "ENGINE/CORE/WIN32.H"
 
 DECOMP_SIZE_ASSERT(VS_XYPair, 0x04);
@@ -45,7 +46,7 @@ extern int g_fRootHelperGeometryDispatchSuppressed;
 extern FARPROC g_pApplyFullscreenDisplayModeThunk;
 extern void *g_pSharedRenderDispatchQueue;
 extern void *g_pSharedGeometryHelper;
-extern int RegisterVSBaseWindowClass(void);
+extern void RegisterVSBaseWindowClass(void);
 extern unsigned int MapWindowOwnerFlagsToWin32Style(unsigned int uFlags);
 int LEMBALL_FASTCALL IsDisplayModeWindowedRange(const int *pnDisplayMode);
 extern "C" DWORD WINAPI timeGetTime(void);
@@ -1366,9 +1367,8 @@ void LEMBALL_STDCALL PollCursorPositionEvent(void) {
 }
 
 // FUNCTION: LEMBALL 0x00465110
-int RegisterVSBaseWindowClass(void) {
+void RegisterVSBaseWindowClass(void) {
     WNDCLASSA WindowClass;
-    HICON hIcon;
     HCURSOR hCursor;
     ATOM nClass;
 
@@ -1377,11 +1377,12 @@ int RegisterVSBaseWindowClass(void) {
     WindowClass.cbClsExtra = 0;
     WindowClass.cbWndExtra = 4;
     WindowClass.hInstance = g_hApplicationInstance;
-    hIcon = g_hApplicationIcon;
-    if (hIcon == 0) {
-        hIcon = LoadIconA((HINSTANCE)0, (LPCSTR)0x7f00);
+    if (g_StartupGraphicsDriverConfig.m_hIcon == 0) {
+        WindowClass.hIcon = LoadIconA((HINSTANCE)0, (LPCSTR)0x7f00);
+    } else {
+        WindowClass.hIcon =
+            (HICON)g_StartupGraphicsDriverConfig.m_hIcon;
     }
-    WindowClass.hIcon = hIcon;
     WindowClass.hbrBackground = (HBRUSH)GetStockObject(4);
     WindowClass.lpszMenuName = 0;
     WindowClass.lpszClassName = g_pszVsBaseWindowClassName;
@@ -1394,7 +1395,6 @@ int RegisterVSBaseWindowClass(void) {
     if (nClass == 0) {
         ShowFatalGetLastErrorMessageAndExit(g_szUnableToRegisterVSBaseWindowClassError);
     }
-    return 1;
 }
 
 // FUNCTION: LEMBALL 0x004651d0

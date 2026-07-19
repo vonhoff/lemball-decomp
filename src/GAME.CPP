@@ -101,7 +101,7 @@ extern void PASCAL noop_embedded_mci_callback_0046e050(void *pUnused);
 extern int g_fMusicEnabled;
 extern int g_fEffectsEnabled;
   extern void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pPrimaryContext);
-  extern int RegisterVSBaseWindowClass(void);
+  extern void RegisterVSBaseWindowClass(void);
 extern void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntryThunk(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryThunk(void *pObject);
