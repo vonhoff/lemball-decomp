@@ -200,6 +200,7 @@ extern void *g_pLevelProgressState;
 
 extern void LEMBALL_FASTCALL MarkNetworkLobbySelectedPeerDisconnected(void *pVsnetRuntime);
 extern void SetGeometryChildEnabled(void *pGeometryChild, int fEnabled);
+void LEMBALL_STDCALL HandleNetworkLobbyTransportStatusEvent(int nEventType);
 void LEMBALL_FASTCALL ThunkRefreshNetworkLobbyPlayerEntries(
     int nNetworkLobbyScreen);
 void LEMBALL_FASTCALL ThunkActivateSelectedNetworkLobbyPlayerEntry(
@@ -215,63 +216,54 @@ void LEMBALL_FASTCALL ThunkShowNetworkLobbyPlayerEntries(
 void LEMBALL_FASTCALL ThunkRemoveUnavailableNetworkLobbyPlayerEntries(
     int nNetworkLobbyScreen);
 
-// STUB: LEMBALL 0x00401a87
+// FUNCTION: LEMBALL 0x00401a87
 int LEMBALL_FASTCALL ThunkConfirmSelectedNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
     return ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
         ->ConfirmSelectedPlayerEntry();
 }
 
 // STUB: LEMBALL 0x00401f23
-void ThunkHandleNetworkLobbyTransportStatusEvent(int nEventType) {
-    if (g_pActiveNetworkLobbyScreen != 0) {
-        if (nEventType == 10) {
-            ThunkRemoveUnavailableNetworkLobbyPlayerEntries(
-                (int)(unsigned long)g_pActiveNetworkLobbyScreen);
-            return;
-        }
-        if (nEventType == 0xd) {
-            *(int *)((char *)g_pActiveNetworkLobbyScreen + 0x430) = 7;
-        }
-    }
+void LEMBALL_STDCALL ThunkHandleNetworkLobbyTransportStatusEvent(int nEventType) {
+    HandleNetworkLobbyTransportStatusEvent(nEventType);
 }
 
-// STUB: LEMBALL 0x0040252c
+// FUNCTION: LEMBALL 0x0040252c
 void LEMBALL_FASTCALL ThunkShowNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
     ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
         ->ShowPlayerEntries();
 }
 
-// STUB: LEMBALL 0x0040260d
+// FUNCTION: LEMBALL 0x0040260d
 void LEMBALL_FASTCALL ThunkRemoveUnavailableNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
     ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
         ->RemoveUnavailablePlayerEntries();
 }
 
-// STUB: LEMBALL 0x004026a8
+// FUNCTION: LEMBALL 0x004026a8
 void LEMBALL_FASTCALL ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
     ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
         ->RefreshPlayerEntries();
 }
 
-// STUB: LEMBALL 0x0040296e
+// FUNCTION: LEMBALL 0x0040296e
 void LEMBALL_FASTCALL ThunkActivateSelectedNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
     ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
         ->ActivateSelectedPlayerEntry();
 }
 
-// STUB: LEMBALL 0x00402f4a
+// FUNCTION: LEMBALL 0x00402f4a
 int LEMBALL_FASTCALL ThunkSelectNextNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
     return ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
         ->SelectNextPlayerEntry();
 }
 
-// STUB: LEMBALL 0x0040325b
+// FUNCTION: LEMBALL 0x0040325b
 void LEMBALL_FASTCALL ThunkHideNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
     ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
         ->HidePlayerEntries();
 }
 
-// STUB: LEMBALL 0x0040346d
+// FUNCTION: LEMBALL 0x0040346d
 int LEMBALL_FASTCALL ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
     return ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
         ->SelectPreviousPlayerEntry();
@@ -642,6 +634,21 @@ int VsNetNetworkLobbyScreen::ConfirmSelectedPlayerEntry(void) {
     m_fPlayerEntriesHidden3dc = 0;
     ThunkShowNetworkLobbyPlayerEntries((int)(unsigned long)this);
     return 0;
+}
+
+// FUNCTION: LEMBALL 0x00455320
+void LEMBALL_STDCALL HandleNetworkLobbyTransportStatusEvent(int nEventType) {
+    if (g_pActiveNetworkLobbyScreen != 0) {
+        switch (nEventType) {
+        case 10:
+            ThunkRemoveUnavailableNetworkLobbyPlayerEntries(
+                (int)(unsigned long)g_pActiveNetworkLobbyScreen);
+            break;
+        case 0xd:
+            *(int *)((char *)g_pActiveNetworkLobbyScreen + 0x430) = 7;
+            break;
+        }
+    }
 }
 
 // Network-lobby player-entry virtual callbacks. These are logical lobby
