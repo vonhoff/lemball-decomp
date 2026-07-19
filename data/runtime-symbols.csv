@@ -2,8 +2,13 @@
 address,name,symbol,type
 0x00403062,DestroyBaseModeObject,?DestroyBaseModeObject@@YIXPAX@Z,library
 0x0044CFB0,GameMenuSelectorManager::AppendChild,?AppendChild@GameMenuSelectorManager@@QAEXHHPBHHHHHPAHH@Z,function
+0x0044CEC0,GameMenuSelectorManager::HandleEvent,?HandleEvent@GameMenuSelectorManager@@QAEHPAUGameMenuSelectorEvent@@@Z,function
 0x0044C270,GameMenuSelectorEntry::GameMenuSelectorEntry,??0GameMenuSelectorEntry@@QAE@PAX0HHPBHHHHHHPAHH@Z,function
 0x0044D150,GameMenuSelectorManager::RecordChildMetadata,?RecordChildMetadata@GameMenuSelectorManager@@QAEXHHHH@Z,function
+0x0044D830,GameMenuSelectorManager::MovePrevious,?MovePrevious@GameMenuSelectorManager@@QAEXXZ,function
+0x0044D8E0,GameMenuSelectorManager::MoveNext,?MoveNext@GameMenuSelectorManager@@QAEXXZ,function
+0x0044D990,GameMenuSelectorManager::SelectSide0,?SelectSide0@GameMenuSelectorManager@@QAEXXZ,function
+0x0044D9E0,GameMenuSelectorManager::SelectSide1,?SelectSide1@GameMenuSelectorManager@@QAEXXZ,function
 0x0044DA70,GameMenuSelectorManager::InitializeCurrentState,?InitializeCurrentState@GameMenuSelectorManager@@QAEXH@Z,function
 0x0045AF60,DeleteFixedBufferStreamReturnThis,?DeleteFixedBufferStreamReturnThis@@YIPAXPAUVsInitFixedBufferStream@@HH@Z,function
 0x00463280,ReturnStreamArgument,?ReturnStreamArgument@@YIPAXPAXH0@Z,function

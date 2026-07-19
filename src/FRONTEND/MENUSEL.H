@@ -151,6 +151,11 @@ struct GameMenuSelectorManager {
     void InitializeCurrentState(int iMetadata);
     void RecordChildMetadata(
         int x, int nPosition, int fAction, int nToken);
+    int HandleEvent(GameMenuSelectorEvent *pEvent);
+    void MovePrevious(void);
+    void MoveNext(void);
+    void SelectSide0(void);
+    void SelectSide1(void);
     void InitializeChildContext(void);
     void InitializeChildContextThunk(void);
 };

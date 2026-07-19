@@ -14,6 +14,7 @@
 #else
 #include <new>
 #endif
+#include <stdlib.h>
 #include <string.h>
 
 DECOMP_SIZE_ASSERT(GameMenuSelectorEvent, 0x1c);
@@ -122,25 +123,14 @@ static void *LEMBALL_FASTCALL DeleteMenuSelectorManager(
     GameMenuSelectorManager *pManager, int nUnusedEdx, int fDelete);
 static void *LEMBALL_FASTCALL DeleteMenuSelectorManagerThunk(
     GameMenuSelectorManager *pManager, int nUnusedEdx, int fDelete);
-static int LEMBALL_FASTCALL HandleMenuSelectorEvent(
-    GameMenuSelectorManager *pManager, int nUnusedEdx,
-    GameMenuSelectorEvent *pEvent);
 static int LEMBALL_FASTCALL HandleMenuSelectorEventThunk(
     GameMenuSelectorManager *pManager, int nUnusedEdx,
     GameMenuSelectorEvent *pEvent);
-static void LEMBALL_FASTCALL MoveMenuSelectorPrevious(
-    GameMenuSelectorManager *pManager);
 static void LEMBALL_FASTCALL MoveMenuSelectorPreviousThunk(
-    GameMenuSelectorManager *pManager);
-static void LEMBALL_FASTCALL MoveMenuSelectorNext(
     GameMenuSelectorManager *pManager);
 static void LEMBALL_FASTCALL MoveMenuSelectorNextThunk(
     GameMenuSelectorManager *pManager);
-static void LEMBALL_FASTCALL SelectMenuSelectorSide0(
-    GameMenuSelectorManager *pManager);
 static void LEMBALL_FASTCALL SelectMenuSelectorSide0Thunk(
-    GameMenuSelectorManager *pManager);
-static void LEMBALL_FASTCALL SelectMenuSelectorSide1(
     GameMenuSelectorManager *pManager);
 static void LEMBALL_FASTCALL SelectMenuSelectorSide1Thunk(
     GameMenuSelectorManager *pManager);
@@ -2451,11 +2441,8 @@ static inline void BeginMenuSelectorMovement(
     GameMenuSelectorManager *pManager) {
     int nDistance;
     pManager->m_dwMovementStart21C = (int)timeGetTime();
-    nDistance = pManager->m_nTargetPosition9C -
-                pManager->m_nCurrentPosition8C;
-    if (nDistance < 0) {
-        nDistance = -nDistance;
-    }
+    nDistance = abs(pManager->m_nTargetPosition9C -
+                    pManager->m_nCurrentPosition8C);
     pManager->m_nMovementStartPosition90 =
         pManager->m_nCurrentPosition8C;
     pManager->m_fMovementActiveDC = 1;
@@ -2464,88 +2451,91 @@ static inline void BeginMenuSelectorMovement(
 }
 
 /* FUNCTION: LEMBALL 0x0044D830 */
-static void LEMBALL_FASTCALL MoveMenuSelectorPrevious(
-    GameMenuSelectorManager *pManager) {
-    int i;
+void GameMenuSelectorManager::MovePrevious(void) {
+    int *pSide;
+    int cMetadata;
     int nBest;
     int nSelected;
 
+    pSide = &m_aMetadataE0[0].m_nSide;
+    cMetadata = 8;
     nBest = -1;
     nSelected = -1;
-    for (i = 0; i < 8; ++i) {
-        GameMenuSelectorMetadata *pMetadata =
-            &pManager->m_aMetadataE0[i];
-        if (pMetadata->m_nSide != 3 &&
-            pMetadata->m_nPosition < pManager->m_nTargetPosition9C &&
-            nBest < pMetadata->m_nPosition) {
-            if (pMetadata->m_nSide != 2) {
-                pManager->m_nSelectedSideA0 = pMetadata->m_nSide;
+    do {
+        if (*pSide != 3 &&
+            pSide[-2] < m_nTargetPosition9C &&
+            nBest < pSide[-2]) {
+            if (*pSide != 2) {
+                m_nSelectedSideA0 = *pSide;
             }
-            nSelected = pMetadata->m_nPosition;
+            nSelected = pSide[-2];
             ((GameVariantResourceEntryManager *)
-                g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x11);
+                g_pVariantResourceEntryManager)->PlayVariantResourceEffectThunk(0x11);
             nBest = nSelected;
         }
-    }
+        pSide += sizeof(GameMenuSelectorMetadata) / sizeof(int);
+        --cMetadata;
+    } while (cMetadata != 0);
     if (nSelected != -1) {
-        pManager->m_nTargetPosition9C = nSelected;
+        m_nTargetPosition9C = nSelected;
     }
-    BeginMenuSelectorMovement(pManager);
+    BeginMenuSelectorMovement(this);
 }
 
 /* FUNCTION: LEMBALL 0x00402A36 */
 static void LEMBALL_FASTCALL MoveMenuSelectorPreviousThunk(
     GameMenuSelectorManager *pManager) {
-    MoveMenuSelectorPrevious(pManager);
+    pManager->MovePrevious();
 }
 
 /* FUNCTION: LEMBALL 0x0044D8E0 */
-static void LEMBALL_FASTCALL MoveMenuSelectorNext(
-    GameMenuSelectorManager *pManager) {
-    int i;
+void GameMenuSelectorManager::MoveNext(void) {
+    int *pSide;
+    int cMetadata;
     int nBest;
     int nSelected;
 
     nBest = 999999;
     nSelected = -1;
-    for (i = 0; i < 8; ++i) {
-        GameMenuSelectorMetadata *pMetadata =
-            &pManager->m_aMetadataE0[i];
-        if (pMetadata->m_nSide != 3 &&
-            pManager->m_nTargetPosition9C < pMetadata->m_nPosition &&
-            pMetadata->m_nPosition < nBest) {
-            if (pMetadata->m_nSide != 2) {
-                pManager->m_nSelectedSideA0 = pMetadata->m_nSide;
+    pSide = &m_aMetadataE0[0].m_nSide;
+    cMetadata = 8;
+    do {
+        if (*pSide != 3 &&
+            m_nTargetPosition9C < pSide[-2] &&
+            pSide[-2] < nBest) {
+            if (*pSide != 2) {
+                m_nSelectedSideA0 = *pSide;
             }
-            nSelected = pMetadata->m_nPosition;
+            nSelected = pSide[-2];
             ((GameVariantResourceEntryManager *)
-                g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x11);
+                g_pVariantResourceEntryManager)->PlayVariantResourceEffectThunk(0x11);
             nBest = nSelected;
         }
-    }
+        pSide += sizeof(GameMenuSelectorMetadata) / sizeof(int);
+        --cMetadata;
+    } while (cMetadata != 0);
     if (nSelected != -1) {
-        pManager->m_nTargetPosition9C = nSelected;
+        m_nTargetPosition9C = nSelected;
     }
-    BeginMenuSelectorMovement(pManager);
+    BeginMenuSelectorMovement(this);
 }
 
 /* FUNCTION: LEMBALL 0x004010E1 */
 static void LEMBALL_FASTCALL MoveMenuSelectorNextThunk(
     GameMenuSelectorManager *pManager) {
-    MoveMenuSelectorNext(pManager);
+    pManager->MoveNext();
 }
 
 /* FUNCTION: LEMBALL 0x0044D990 */
-static void LEMBALL_FASTCALL SelectMenuSelectorSide0(
-    GameMenuSelectorManager *pManager) {
+void GameMenuSelectorManager::SelectSide0(void) {
     int i;
-    if (pManager->m_nCurrentSide94 == pManager->m_nSelectedSideA0) {
+    if (m_nCurrentSide94 == m_nSelectedSideA0) {
         for (i = 0; i < 8; ++i) {
             GameMenuSelectorMetadata *pMetadata =
-                &pManager->m_aMetadataE0[i];
-            if (pMetadata->m_nPosition == pManager->m_nTargetPosition9C &&
+                &m_aMetadataE0[i];
+            if (pMetadata->m_nPosition == m_nTargetPosition9C &&
                 (pMetadata->m_nSide == 0 || pMetadata->m_nSide == 2)) {
-                pManager->m_nSelectedSideA0 = 0;
+                m_nSelectedSideA0 = 0;
             }
         }
     }
@@ -2554,20 +2544,19 @@ static void LEMBALL_FASTCALL SelectMenuSelectorSide0(
 /* FUNCTION: LEMBALL 0x004018F7 */
 static void LEMBALL_FASTCALL SelectMenuSelectorSide0Thunk(
     GameMenuSelectorManager *pManager) {
-    SelectMenuSelectorSide0(pManager);
+    pManager->SelectSide0();
 }
 
 /* FUNCTION: LEMBALL 0x0044D9E0 */
-static void LEMBALL_FASTCALL SelectMenuSelectorSide1(
-    GameMenuSelectorManager *pManager) {
+void GameMenuSelectorManager::SelectSide1(void) {
     int i;
-    if (pManager->m_nCurrentSide94 == pManager->m_nSelectedSideA0) {
+    if (m_nCurrentSide94 == m_nSelectedSideA0) {
         for (i = 0; i < 8; ++i) {
             GameMenuSelectorMetadata *pMetadata =
-                &pManager->m_aMetadataE0[i];
-            if (pMetadata->m_nPosition == pManager->m_nTargetPosition9C &&
+                &m_aMetadataE0[i];
+            if (pMetadata->m_nPosition == m_nTargetPosition9C &&
                 (pMetadata->m_nSide == 1 || pMetadata->m_nSide == 2)) {
-                pManager->m_nSelectedSideA0 = 1;
+                m_nSelectedSideA0 = 1;
             }
         }
     }
@@ -2576,7 +2565,7 @@ static void LEMBALL_FASTCALL SelectMenuSelectorSide1(
 /* FUNCTION: LEMBALL 0x00401FF5 */
 static void LEMBALL_FASTCALL SelectMenuSelectorSide1Thunk(
     GameMenuSelectorManager *pManager) {
-    SelectMenuSelectorSide1(pManager);
+    pManager->SelectSide1();
 }
 
 static inline void SetFrameSelectorDuration(
@@ -2654,33 +2643,36 @@ static void LEMBALL_FASTCALL StartMenuSelectorActionThunk(
 }
 
 /* FUNCTION: LEMBALL 0x0044CEC0 */
-static int LEMBALL_FASTCALL HandleMenuSelectorEvent(
-    GameMenuSelectorManager *pManager, int,
-    GameMenuSelectorEvent *pEvent) {
-    if (pEvent->m_dwTimestamp04 - pManager->m_dwConstructionTimeD4 < 0) {
+int GameMenuSelectorManager::HandleEvent(GameMenuSelectorEvent *pEvent) {
+    int dwTimestamp;
+    int nType;
+
+    dwTimestamp = pEvent->m_dwTimestamp04;
+    if (dwTimestamp - m_dwConstructionTimeD4 < 0) {
         return 0;
     }
-    if (pEvent->m_nType00 != 4) {
-        ++pManager->m_cUnhandledEvents0C;
+    nType = *(unsigned short *)pEvent;
+    if (nType != 4) {
+        ++m_cUnhandledEvents0C;
         return 0;
     }
     switch (pEvent->m_nPayload08) {
     case 1:
-        MoveMenuSelectorPreviousThunk(pManager);
+        MoveMenuSelectorPreviousThunk(this);
         return 1;
     case 2:
-        MoveMenuSelectorNextThunk(pManager);
+        MoveMenuSelectorNextThunk(this);
         return 1;
     case 3:
-        SelectMenuSelectorSide0Thunk(pManager);
+        SelectMenuSelectorSide0Thunk(this);
         return 1;
     case 4:
-        SelectMenuSelectorSide1Thunk(pManager);
+        SelectMenuSelectorSide1Thunk(this);
         return 1;
     case 0x1f:
     case 0x22:
     case 0x4c:
-        StartMenuSelectorActionThunk(pManager);
+        StartMenuSelectorActionThunk(this);
         break;
     }
     return 0;
@@ -2690,7 +2682,7 @@ static int LEMBALL_FASTCALL HandleMenuSelectorEvent(
 static int LEMBALL_FASTCALL HandleMenuSelectorEventThunk(
     GameMenuSelectorManager *pManager, int nUnusedEdx,
     GameMenuSelectorEvent *pEvent) {
-    return HandleMenuSelectorEvent(pManager, nUnusedEdx, pEvent);
+    return pManager->HandleEvent(pEvent);
 }
 
 /* FUNCTION: LEMBALL 0x0044C1E0 */
