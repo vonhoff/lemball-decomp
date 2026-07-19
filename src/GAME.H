@@ -1,6 +1,25 @@
 #ifndef LEMBALL_GAME_APP_H
 #define LEMBALL_GAME_APP_H
 
+// STUB: LEMBALL 0x004010ff
+// GameScreenObject::ConstructLevelSelectionScreen
+// STUB: LEMBALL 0x0040132a
+// GameScreenObject::ConstructMainMenuScreen
+// STUB: LEMBALL 0x004015a0
+// GameScreenObject::ConstructNetworkLobbyScreen
+// STUB: LEMBALL 0x0040200e
+// GameScreenObject::ConstructPaintballSequenceScreen
+// STUB: LEMBALL 0x004020a4
+// GameScreenObject::ConstructLevelScreen
+// STUB: LEMBALL 0x00402315
+// GameScreenObject::ConstructOptionsScreen
+// STUB: LEMBALL 0x004029a0
+// GameScreenObject::ConstructPasswordEntryScreen
+// STUB: LEMBALL 0x00403026
+// GameScreenObject::ConstructRegistrationInfoScreen
+// STUB: LEMBALL 0x004030df
+// GameScreenObject::ConstructIntroSequenceScreen
+
 #include "ENGINE/CORE/WIN32.H"
 #include "ENGINE/GDI/VSWINDOW.H"
 
