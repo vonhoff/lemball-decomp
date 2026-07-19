@@ -75,6 +75,7 @@ struct GameMenuSelectorEntry {
         int nLastResource, int nReserved, int nToken,
         int *pSelection, int nCommand);
     int HandleEvent(GameMenuSelectorEvent *pEvent);
+    void RebuildRects(int fForce, int nUnused);
 
     void **m_pVtable00;
     int m_nQueueTag04;
@@ -116,6 +117,58 @@ public:
     virtual void SetDurationField(int nDuration) = 0;
     virtual void SetStartTime(int dwStartTime) = 0;
     virtual void SetDirection(int nDirection) = 0;
+};
+
+class GameCompactZrleOverlay {
+public:
+    void RebuildSourceRect(int fForce);
+};
+
+class GameCompactZrleOverlayGeometryInterface {
+public:
+    virtual void Reserved00(void) = 0;
+    virtual void Reserved01(void) = 0;
+    virtual void Reserved02(void) = 0;
+    virtual void Reserved03(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void Reserved05(void) = 0;
+    virtual void Reserved06(void) = 0;
+    virtual void Reserved07(void) = 0;
+    virtual void Reserved08(void) = 0;
+    virtual void Reserved09(void) = 0;
+    virtual void Reserved10(void) = 0;
+    virtual void Reserved11(void) = 0;
+    virtual void Reserved12(void) = 0;
+    virtual void Reserved13(void) = 0;
+    virtual void Reserved14(void) = 0;
+    virtual void Reserved15(void) = 0;
+    virtual void Reserved16(void) = 0;
+    virtual void Reserved17(void) = 0;
+    virtual void Reserved18(void) = 0;
+    virtual void Reserved19(void) = 0;
+    virtual void Reserved20(void) = 0;
+    virtual void Reserved21(void) = 0;
+    virtual void Reserved22(void) = 0;
+    virtual void Reserved23(void) = 0;
+    virtual void Reserved24(void) = 0;
+    virtual void Reserved25(void) = 0;
+    virtual void Reserved26(void) = 0;
+    virtual void Reserved27(void) = 0;
+    virtual void Reserved28(void) = 0;
+    virtual void Reserved29(void) = 0;
+    virtual void Reserved30(void) = 0;
+    virtual void Reserved31(void) = 0;
+    virtual void Reserved32(void) = 0;
+    virtual void Reserved33(void) = 0;
+    virtual void Reserved34(void) = 0;
+    virtual void Reserved35(void) = 0;
+    virtual void Reserved36(void) = 0;
+    virtual void Reserved37(void) = 0;
+    virtual void Reserved38(void) = 0;
+    virtual void Reserved39(void) = 0;
+    virtual void Reserved40(void) = 0;
+    virtual void Reserved41(void) = 0;
+    virtual void SetSourceRect(short *pRect) = 0;
 };
 
 typedef int (LEMBALL_FASTCALL *GameMenuSelectorEventProc)(
@@ -2808,51 +2861,60 @@ static void LEMBALL_FASTCALL SetMenuSelectorProgressPercent(
         g_pSharedRenderDispatchQueue)->QueueEvent(&Event);
 }
 
+/* FUNCTION: LEMBALL 0x00467F30 */
+void GameCompactZrleOverlay::RebuildSourceRect(int fForce) {
+    short Rect[4];
+    int fPrevious;
+    if (*(int *)((char *)this + 0xfc) == 0 || fForce != 0) {
+        Rect[0] = *(short *)((char *)this + 8);
+        fPrevious = *(int *)((char *)this + 0xf8);
+        *(int *)((char *)this + 0xf8) = 1;
+        Rect[1] = *(short *)((char *)this + 10);
+        Rect[2] = 0;
+        Rect[3] = 0;
+        ((GameCompactZrleOverlayGeometryInterface *)this)
+            ->SetSourceRect(Rect);
+        *(int *)((char *)this + 0xf8) = fPrevious;
+    }
+    *(int *)((char *)this + 0xfc) = 0;
+}
+
 /* FUNCTION: LEMBALL 0x0044C600 */
-static void LEMBALL_FASTCALL RebuildMenuSelectorEntryRects(
-    GameMenuSelectorEntry *pEntry, int, int fForce) {
-    void *apOverlays[2];
-    int i;
-    apOverlays[0] = pEntry->m_pAlignedOverlay50;
-    apOverlays[1] = pEntry->m_pProgressOverlay54;
-    for (i = 0; i < 2; ++i) {
-        if (apOverlays[i] != 0) {
-            int fPrevious;
-            short Rect[4];
-            if (*(int *)((char *)apOverlays[i] + 0xfc) == 0 || fForce != 0) {
-                Rect[0] = *(short *)((char *)apOverlays[i] + 8);
-                Rect[1] = *(short *)((char *)apOverlays[i] + 10);
-                Rect[2] = 0;
-                Rect[3] = 0;
-                fPrevious = *(int *)((char *)apOverlays[i] + 0xf8);
-                *(int *)((char *)apOverlays[i] + 0xf8) = 1;
-                typedef void (LEMBALL_FASTCALL *SetRectProc)(
-                    void *, int, short *);
-                ((SetRectProc)(*(void ***)apOverlays[i])[0x2a])(
-                    apOverlays[i], 0, Rect);
-                *(int *)((char *)apOverlays[i] + 0xf8) = fPrevious;
-            }
-            *(int *)((char *)apOverlays[i] + 0xfc) = 0;
-        }
+void GameMenuSelectorEntry::RebuildRects(int fForce, int) {
+    if (m_pAlignedOverlay50 != 0) {
+        ((GameCompactZrleOverlay *)m_pAlignedOverlay50)
+            ->RebuildSourceRect(fForce);
+    }
+    if (m_pProgressOverlay54 != 0) {
+        ((GameCompactZrleOverlay *)m_pProgressOverlay54)
+            ->RebuildSourceRect(fForce);
     }
 }
 
 /* FUNCTION: LEMBALL 0x0044D290 */
-void LEMBALL_FASTCALL RebuildMenuSelectorChildRects(
-    GameMenuSelectorManager *pManager, int, int fForce) {
-    int i;
-    for (i = 0; i < 8; ++i) {
-        if (pManager->m_apChildren1E0[i] != 0) {
-            RebuildMenuSelectorEntryRects(pManager->m_apChildren1E0[i],
-                                          0, fForce);
+void GameMenuSelectorManager::RebuildChildRects(
+    int fForce, int nUnused) {
+    int nFirst = fForce;
+    int nRemaining = 8;
+    GameMenuSelectorEntry **ppEntry = m_apChildren1E0;
+    do {
+        GameMenuSelectorEntry *pEntry = *ppEntry;
+        if (pEntry != 0) {
+            pEntry->RebuildRects(nFirst, nUnused);
         }
-    }
+        ++ppEntry;
+    } while (--nRemaining != 0);
 }
 
 /* FUNCTION: LEMBALL 0x004012CB */
 void LEMBALL_FASTCALL RebuildMenuSelectorChildRectsThunk(
     GameMenuSelectorManager *pManager, int nUnusedEdx, int fForce) {
-    RebuildMenuSelectorChildRects(pManager, nUnusedEdx, fForce);
+    pManager->RebuildChildRects(nUnusedEdx, fForce);
+}
+
+void LEMBALL_FASTCALL RebuildMenuSelectorChildRects(
+    GameMenuSelectorManager *pManager, int nUnusedEdx, int fForce) {
+    pManager->RebuildChildRects(nUnusedEdx, fForce);
 }
 
 /* FUNCTION: LEMBALL 0x0044CC90 */

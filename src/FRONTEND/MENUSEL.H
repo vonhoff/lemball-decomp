@@ -157,6 +157,7 @@ struct GameMenuSelectorManager {
     void SelectSide0(void);
     void SelectSide1(void);
     void StartAction(void);
+    void RebuildChildRects(int fForce, int nUnused);
     void InitializeChildContext(void);
     void InitializeChildContextThunk(void);
 };
