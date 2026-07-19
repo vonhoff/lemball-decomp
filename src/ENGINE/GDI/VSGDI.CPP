@@ -118,12 +118,15 @@ void LEMBALL_FASTCALL DestroyGeometryHelperPointerArray(void *pHelper);
 void AppendPointerQueueEntry(void *pQueue, void *pEntry);
 void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void *pQueue);
 void *LEMBALL_FASTCALL ConstructStatusIndicatorRenderClientBase(int *pRenderClient);
+void LEMBALL_FASTCALL DestroyStatusIndicatorRenderClientBase(
+    int *pRenderClient);
 void LEMBALL_FASTCALL InitializeStatusIndicatorRenderClientDefaults(int *pRenderClient);
 int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(
     void *pRenderClient, int, RenderDispatchQueueEntry *pEntry);
 int InitializeResourceGeometryHelperRuntime(void);
 int ShutdownResourceGeometryHelperRuntime(void);
-void DestroyResourceGeometryHelperSlotManager(void *pvSlotManager);
+void LEMBALL_FASTCALL DestroyResourceGeometryHelperSlotManager(
+    void *pvSlotManager);
 int FindFirstFreeResourceGeometryHelperSlotIndex(void *pvSlotManager);
 void BuildAndApplyLogPalette(unsigned int *paOutputColors,
                              void *pPaletteResource,
@@ -171,6 +174,7 @@ void LEMBALL_FASTCALL InitializeArrowCursorState(int *pState);
 void LEMBALL_FASTCALL InitializeArrowCursorPosition(void *pRenderClient);
 void LEMBALL_FASTCALL HideArrowCursor(void *pRenderClient);
 void LEMBALL_FASTCALL ShowArrowCursor(void *pRenderClient);
+void LEMBALL_FASTCALL DestroyArrowCursorState(void *pRenderClient);
 void *LEMBALL_FASTCALL DeleteStatusIndicatorRenderClientBaseThunk(
     void *pRenderClient, int nUnused, unsigned char fDelete);
 void LEMBALL_FASTCALL NoopStatusIndicatorRenderClientSlot(void *pRenderClient);
@@ -715,6 +719,8 @@ void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
 extern void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile, int nLine);
 extern int g_fRootHelperGeometryDispatchSuppressed;
 extern void *g_pQueuedRenderPointSinkFinalizeThunk;
+extern void *g_GAME_RenderQueueNodeVtableSlots[4];
+extern void *g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[8];
 static int GetHelperSurfaceVariableBlockOffset(const VsGdiHelperSurface *pSurface);
 
 
@@ -3592,6 +3598,30 @@ void *LEMBALL_FASTCALL ConstructStatusIndicatorRenderClientBase(int *pRenderClie
     return pRenderClient;
 }
 
+// FUNCTION: LEMBALL 0x0046af30
+void LEMBALL_FASTCALL DestroyStatusIndicatorRenderClientBase(int *pRenderClient) {
+    struct RenderEntryDeleteInterface {
+        virtual void Delete(int fDelete) = 0;
+    };
+
+    *(void **)pRenderClient = g_VSGDI_StatusIndicatorBaseVtable;
+    ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+        ->UnregisterOrderedRenderDispatchClient(pRenderClient, -0x19);
+    if (pRenderClient[8] != 0) {
+        ReleaseTypedResourceObjectReference(
+            (void *)(unsigned long)pRenderClient[8]);
+    }
+    if (pRenderClient[7] != 0) {
+        ((RenderEntryDeleteInterface *)(unsigned long)pRenderClient[7])
+            ->Delete(3);
+    }
+    *(void **)pRenderClient = g_GAME_RenderQueueNodeVtableSlots;
+    *(void **)(pRenderClient + 0x11) =
+        g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+    *(void **)(pRenderClient + 0x10) =
+        g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+}
+
 // FUNCTION: LEMBALL 0x0046afd0
 void LEMBALL_FASTCALL InitializeStatusIndicatorRenderClientDefaults(int *pRenderClient) {
     int *pEntryBlock;
@@ -3798,25 +3828,44 @@ int InitializeResourceGeometryHelperRuntime(void) {
 
 // FUNCTION: LEMBALL 0x0046bb70
 int ShutdownResourceGeometryHelperRuntime(void) {
-    if (g_pArrowCursorStatusIndicatorRenderClient != 0) {
-        CallDeleteVirtual(g_pArrowCursorStatusIndicatorRenderClient, 4, 1);
+    struct ArrowCursorDeleteInterface {
+        virtual void Reserved00(void) = 0;
+        virtual void Delete(int fDelete) = 0;
+    };
+    struct DisplayStateDeleteInterface {
+        virtual void Delete(int fDelete) = 0;
+    };
+    ArrowCursorDeleteInterface *pArrowCursor;
+    DisplayStateDeleteInterface *pDisplayState;
+    void *pTarget;
+    void *pSlotManager;
+    void *pSelectedGraphicsDriverRuntime;
+
+    pArrowCursor = (ArrowCursorDeleteInterface *)
+        g_pArrowCursorStatusIndicatorRenderClient;
+    if (pArrowCursor != 0) {
+        pArrowCursor->Delete(1);
     }
-    if (g_pResourceGeometryHelperTarget != 0) {
-        DestroyResourceGeometryHelperTarget(g_pResourceGeometryHelperTarget);
-        RestoreCompactResourceGeometryHelperVtable((char *)g_pResourceGeometryHelperTarget + 0x55c);
-        FreeVSMemBlock(g_pResourceGeometryHelperTarget);
+    pTarget = g_pResourceGeometryHelperTarget;
+    if (pTarget != 0) {
+        DestroyResourceGeometryHelperTarget(pTarget);
+        RestoreCompactResourceGeometryHelperVtable((char *)pTarget + 0x55c);
+        FreeVSMemBlock(pTarget);
     }
-    if (g_pResourceGeometryHelperSlotManager != 0) {
-        DestroyResourceGeometryHelperSlotManager(g_pResourceGeometryHelperSlotManager);
-        FreeVSMemBlock(g_pResourceGeometryHelperSlotManager);
+    pSlotManager = g_pResourceGeometryHelperSlotManager;
+    if (pSlotManager != 0) {
+        DestroyResourceGeometryHelperSlotManager(pSlotManager);
+        FreeVSMemBlock(pSlotManager);
     }
     g_pResourceGeometryHelperTarget = 0;
+    pSelectedGraphicsDriverRuntime = g_pSelectedGraphicsDriverRuntime;
     g_pResourceGeometryHelperSlotManager = 0;
-    if (g_pDisplayState != 0) {
-        CallDeleteVirtual(g_pDisplayState, 0, 1);
-    }
-    if (g_pSelectedGraphicsDriverRuntime != 0) {
-        FreeVSMemBlock(g_pSelectedGraphicsDriverRuntime);
+    if (pSelectedGraphicsDriverRuntime != 0) {
+        if (g_pDisplayState != 0) {
+            pDisplayState = (DisplayStateDeleteInterface *)g_pDisplayState;
+            pDisplayState->Delete(1);
+        }
+        FreeVSMemBlock(pSelectedGraphicsDriverRuntime);
     }
     return 1;
 }
@@ -3854,7 +3903,7 @@ VsGdiResourceGeometryHelperSlotManager *VsGdiResourceGeometryHelperSlotManager::
 }
 
 // FUNCTION: LEMBALL 0x0046bc90
-void DestroyResourceGeometryHelperSlotManager(void *pvSlotManager) {
+void LEMBALL_FASTCALL DestroyResourceGeometryHelperSlotManager(void *pvSlotManager) {
     VsGdiResourceGeometryHelperSlotManager *pSlotManager;
     VsGdiResourceGeometryHelperSlot *pSlot;
     int i;
@@ -5685,6 +5734,14 @@ void LEMBALL_FASTCALL InitializeArrowCursorPosition(void *pRenderClient) {
     GetCursorPos(&Point);
     *(short *)((char *)pRenderClient + 0x10) = (short)Point.x;
     *(short *)((char *)pRenderClient + 0x12) = (short)Point.y;
+}
+
+// FUNCTION: LEMBALL 0x00474bb0
+void LEMBALL_FASTCALL DestroyArrowCursorState(void *pRenderClient) {
+    *(void **)pRenderClient = g_VSGDI_ArrowCursorRuntimeVtable;
+    SetCursor(*(HCURSOR *)((char *)pRenderClient + 0x9c));
+    ShowArrowCursor(pRenderClient);
+    DestroyStatusIndicatorRenderClientBase((int *)pRenderClient);
 }
 
 // FUNCTION: LEMBALL 0x00474be0
