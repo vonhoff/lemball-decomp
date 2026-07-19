@@ -45,8 +45,25 @@ void *__fastcall clear_render_entry_word(void *pEntry) {
     *(unsigned short *)pEntry = 0;
     return pEntry;
 }
+
 // FUNCTION: LEMBALL 0x0043a1c0
 void noop_resource_window_owner_callback_0043a1c0(void) {
+}
+
+// FUNCTION: LEMBALL 0x0043a4f0
+void PASCAL noop_window_owner_callback_0043a4f0(void *) {
+}
+
+// FUNCTION: LEMBALL 0x0043a510
+void noop_window_owner_callback_0043a510(void) {
+}
+
+// FUNCTION: LEMBALL 0x0043a520
+void noop_window_owner_callback_0043a520(void) {
+}
+
+// FUNCTION: LEMBALL 0x0043a530
+void noop_window_owner_callback_0043a530(void) {
 }
 
 // FUNCTION: LEMBALL 0x0043a570
