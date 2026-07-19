@@ -17,6 +17,8 @@ struct GameDynamicCString {
         GameDynamicCString *pResult, const GameDynamicCString *pSuffix);
     GameDynamicCString *AppendDynamicCStringAndCopyResult(
         GameDynamicCString *pResult, const char *pszSuffix);
+    GameDynamicCString *LowercaseAndCopyDynamicCString(
+        GameDynamicCString *pResult);
     void DestroyDynamicCString(void);
 };
 

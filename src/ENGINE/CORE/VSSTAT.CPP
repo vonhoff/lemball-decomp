@@ -2,6 +2,7 @@
 #include "ENGINE/CORE/VSINIT.H"
 #include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/CORE/SAFEVT.H"
+#include <ctype.h>
 #include <string.h>
 
 void LEMBALL_FASTCALL DestroyNamedStatusEntry(void *pEntry);
@@ -273,4 +274,22 @@ void *AppendDynamicCStringToStream(void *pStream, const GameDynamicCString *pStr
 // FUNCTION: LEMBALL 0x0046ef00
 int LEMBALL_FASTCALL GetDynamicCStringLength(const GameDynamicCString *pString) {
     return (int)strlen(pString->m_pszText);
+}
+
+// FUNCTION: LEMBALL 0x0046efa0
+GameDynamicCString *GameDynamicCString::LowercaseAndCopyDynamicCString(GameDynamicCString *pResult) {
+    char *pszText;
+    int cchText;
+
+    pszText = m_pszText;
+    cchText = (int)strlen(pszText);
+    while (cchText != 0) {
+        if (isupper(*pszText)) {
+            *pszText = (char)tolower(*pszText);
+        }
+        ++pszText;
+        --cchText;
+    }
+    pResult->CopyConstructDynamicCString(this);
+    return pResult;
 }

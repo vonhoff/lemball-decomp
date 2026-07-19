@@ -4,15 +4,20 @@
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/MEDIA/EFFSTRM.H"
 #include "ENGINE/NET/VSNET_FORWARD.H"
+#include <string.h>
 
 extern int PASCAL ReturnTrueVtableCallbackThunk(void *pObject);
 extern void *g_pNetworkLobbyVsnetRuntime;
+extern char *g_pszPendingNetworkLobbyStatusText;
+extern char *g_pszFileBasedNetworkLocalHostName;
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
 extern int HandleNetworkLobbyVsnetRuntimeEvent(
     void *pVsnetRuntime, unsigned short *pEvent);
 extern void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void *pObject);
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void *pObject);
+void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryPayload(void *pObject);
+void LEMBALL_FASTCALL WriteNetworkLobbyPeerEntryPayload(void *pObject);
 void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStream(void *pObject);
 void *LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(
     void *pObject, void *pUnused, BYTE fDelete);
@@ -34,9 +39,9 @@ static void *g_EFF_NetworkLobbySelectedPeerStatusVtable[6] = {
 static void *g_EFF_NetworkLobbyPeerEntryVtable[6] = {
     (void *)ReturnTrueVtableCallbackThunk,
     (void *)ReturnTrueVtableCallbackSecondaryThunk,
-    (void *)ReadNetworkLobbyPeerEntryStream,
+    (void *)ReadNetworkLobbyPeerEntryPayload,
     (void *)NoopVtableCallbackThunk,
-    (void *)NoopVtableCallbackThunk,
+    (void *)WriteNetworkLobbyPeerEntryPayload,
     (void *)DeleteNetworkLobbyPeerEntryStream,
 };
 
@@ -150,8 +155,8 @@ struct GameNetworkLobbyPeerEntryStream {
     int m_pvReadCursor;
     int m_fHasPayload;
     int m_fWritePending;
-    unsigned char m_fAcceptedPeer;
-    char m_abUnknown2d[0x1f];
+    char m_szPlayerName[9];
+    char m_szHostName[23];
     int m_nPeerEntryState;
 };
 typedef char GameNetworkLobbyPeerEntryStream_size_must_be_0x50[
@@ -440,11 +445,41 @@ void *LEMBALL_FASTCALL ConstructNetworkLobbyPeerEntryStream(void *pObject) {
     pBaseStream->ResetStateFields();
     pStream->m_pVtable =
         (GameEffStreamVtable *)g_EFF_NetworkLobbyPeerEntryVtable;
-    pStream->m_fAcceptedPeer = 0;
+    pStream->m_szPlayerName[0] = '\0';
     pStream->m_nPeerEntryState = 0;
     pStream->m_cbSerializedLength += 0x1e;
     pStream->m_fHasPayload = 1;
     return pObject;
+}
+
+// FUNCTION: LEMBALL 0x00452420
+void LEMBALL_FASTCALL WriteNetworkLobbyPeerEntryPayload(void *pObject) {
+    VsNetEffStreamBase *pStream;
+    GameDynamicCString HostName;
+    GameDynamicCString LowercaseHostName;
+    char szHostName[21];
+
+    pStream = (VsNetEffStreamBase *)pObject;
+    pStream->WriteEffStreamCString(g_pszPendingNetworkLobbyStatusText);
+    strncpy(szHostName, g_pszFileBasedNetworkLocalHostName, 20);
+    szHostName[20] = '\0';
+    HostName.ConstructDynamicCStringFromCString(szHostName);
+    HostName.LowercaseAndCopyDynamicCString(&LowercaseHostName);
+    HostName.DestroyDynamicCString();
+    pStream->WriteEffStreamCString(LowercaseHostName.m_pszText);
+    LowercaseHostName.DestroyDynamicCString();
+}
+
+// FUNCTION: LEMBALL 0x00452490
+void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryPayload(void *pObject) {
+    GameNetworkLobbyPeerEntryStream *pEntry;
+    VsNetEffStreamBase *pStream;
+
+    pEntry = (GameNetworkLobbyPeerEntryStream *)pObject;
+    pStream = (VsNetEffStreamBase *)pObject;
+    pStream->ReadEffStreamCStringIntoBuffer(pEntry->m_szPlayerName);
+    pStream->ReadEffStreamCStringIntoBuffer(pEntry->m_szHostName);
+    pEntry->m_nPeerEntryState = 1;
 }
 
 // FUNCTION: LEMBALL 0x004524b0
