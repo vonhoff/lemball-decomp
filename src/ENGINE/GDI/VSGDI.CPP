@@ -233,6 +233,7 @@ void *g_pSingletonAnimWindowOwner = 0;
 int *g_pArrowCursorStatusIndicatorRenderClient;
 // GLOBAL: LEMBALL 0x004a9bf8
 unsigned int g_adwGlobalResourceGeometryPaletteTable[256];
+// GLOBAL: LEMBALL 0x004a076c
 VsGdiDisplayState *g_pDisplayState = 0;
 extern int g_fFullscreenDisplayModeSuspended;
 int g_nDebugPresentCount = 0;
