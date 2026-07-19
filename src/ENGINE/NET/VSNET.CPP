@@ -4423,14 +4423,14 @@ void VsNetEffTransportRuntimeState::InitializeTcpipNetworkTransport(void) {
 
     nWsaResult = WSAStartup(0x101, abWsaData);
     if (nWsaResult != 0) {
-        g_nTcpipWsaError = WSAGetLastError();
-        g_nEffTransportAsyncErrorStatus = 1;
+        g_nEffTransportAsyncErrorStatus = WSAGetLastError();
+
         return;
     }
 
-    nMaxUdpDatagram = *(int *)(abWsaData + 0x18c) & 0xffff;
-    if (g_nTcpipMaxUdpDatagram <= nMaxUdpDatagram) {
-        g_nTcpipMaxUdpDatagram = nMaxUdpDatagram;
+    nMaxUdpDatagram = *(int *)(abWsaData + 0x188) & 0xffff;
+    if (g_cbEffTransportMaxPacketBytes > nMaxUdpDatagram) {
+        g_cbEffTransportMaxPacketBytes = nMaxUdpDatagram;
     }
     m_nTimerId64 = SetTimer(*(HWND *)((char *)this - 0x0c),
                             0x12345678, 10, (void *)0);
