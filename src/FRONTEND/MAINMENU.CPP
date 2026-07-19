@@ -204,6 +204,7 @@ struct GameLevelProgressStateView {
 };
 
 struct GameFramedScreenBase {
+    void RecenterIfNeeded(void);
     void SetScreenSize(short *paSize);
 
     void **m_pVtable00;
@@ -672,7 +673,7 @@ static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(
 static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
     void *pQueueNode, int, void *pEvent);
 static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject);
-static void LEMBALL_FASTCALL RecenterFramedScreenIfNeeded(void *pObject);
+
 
 
 static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject);
@@ -804,7 +805,7 @@ static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(
     void *pObject, int nUnusedEdx, void *pFrameArgument);
 static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(void *pObject);
 static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject);
-static void LEMBALL_FASTCALL RecenterFramedScreenIfNeeded(void *pObject);
+
 
 
 static void LEMBALL_FASTCALL UpdateMainMenuScreen(void *pObject);
@@ -1739,7 +1740,7 @@ static void LEMBALL_FASTCALL RecenterFramedScreenIfNeededThunk(
     void *pObject)
 
 {
-    RecenterFramedScreenIfNeeded(pObject);
+    ((GameFramedScreenBase *)pObject)->RecenterIfNeeded();
 }
 
 // FUNCTION: LEMBALL 0x00402252
@@ -2601,18 +2602,17 @@ static void LEMBALL_FASTCALL UpdateFramedScreenRuntime(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x004466e0
-static void LEMBALL_FASTCALL RecenterFramedScreenIfNeeded(void *pObject) {
-    GameFramedScreenBase *pScreen;
+void GameFramedScreenBase::RecenterIfNeeded(void) {
     GamePrimaryContext *pPrimaryContext;
     short aRect[4];
 
-    pScreen = (GameFramedScreenBase *)pObject;
-    if (((GameIntNoArgVirtual)(*(void ***)pScreen->m_pPrimaryContext84)[26])(
-            pScreen->m_pPrimaryContext84, 0) != 0) {
-        pPrimaryContext = (GamePrimaryContext *)pScreen->m_pPrimaryContext84;
-        pPrimaryContext->ComputePrimaryContextCenteredScreenRect(aRect, -1, -1);
-        ((GameOneArgVirtual)(*(void ***)pPrimaryContext)[7])(
-            pPrimaryContext, 0, aRect);
+    if (((GamePrimaryContext *)m_pPrimaryContext84)
+            ->GetWindowOwnerState() != 0) {
+        pPrimaryContext = (GamePrimaryContext *)m_pPrimaryContext84;
+        pPrimaryContext->ApplyRootGeometryRect(
+            (VS_XYPair *)
+                pPrimaryContext->ComputePrimaryContextCenteredScreenRectThunk(
+                    aRect, -1, -1));
     }
 }
 
