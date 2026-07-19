@@ -9,15 +9,6 @@ extern "C" int WINAPI IsBadReadPtr(const void *pAddress,
 static const char *g_NETWORK_GameConnectionRequestDuringGameText;
 static const char *g_NETWORK_LobbyConnectionAcceptedText;
 
-struct VsNetGeometryChildVtable {
-    void (*m_pReserved00)(void);
-    void (*m_pReserved04)(void);
-    void (*m_pReserved08)(void);
-    void (*m_pReserved0c)(void);
-    void (*m_pActivate)(void);
-    void (*m_pDeactivate)(void);
-};
-
 struct VsNetNetworkLobbyPlayerEntryChild {
     void **m_pVtable;
     int m_fEnabled;
@@ -31,16 +22,29 @@ struct VsNetNetworkLobbyPlayerEntryChild {
     int m_fDirty3c;
     int m_fDirty40;
 
-    void Activate(void) {
-        ((VsNetGeometryChildVtable *)m_pVtable)->m_pActivate();
-    }
-
-    void Deactivate(void) {
-        ((VsNetGeometryChildVtable *)m_pVtable)->m_pDeactivate();
-    }
-
+    void Activate(void);
+    void Deactivate(void);
     void ResetFlags(void);
 };
+
+typedef void (VsNetNetworkLobbyPlayerEntryChild::*VsNetGeometryChildProc)(void);
+
+struct VsNetGeometryChildVtable {
+    void (*m_pReserved00)(void);
+    void (*m_pReserved04)(void);
+    void (*m_pReserved08)(void);
+    void (*m_pReserved0c)(void);
+    VsNetGeometryChildProc m_pActivate;
+    VsNetGeometryChildProc m_pDeactivate;
+};
+
+inline void VsNetNetworkLobbyPlayerEntryChild::Activate(void) {
+    (this->*((VsNetGeometryChildVtable *)m_pVtable)->m_pActivate)();
+}
+
+inline void VsNetNetworkLobbyPlayerEntryChild::Deactivate(void) {
+    (this->*((VsNetGeometryChildVtable *)m_pVtable)->m_pDeactivate)();
+}
 
 struct VsNetNetworkLobbyPlayerEntryTable {
     VsNetNetworkLobbyPlayerEntryChild m_aEntries[10];
@@ -222,29 +226,24 @@ void VsNetNetworkLobbyPlayerEntryChild::ResetFlags(void) {
 
 // FUNCTION: LEMBALL 0x00454bb0
 void VsNetNetworkLobbyScreen::ActivateSelectedPlayerEntry(void) {
-    VsNetNetworkLobbyPlayerEntryChild *pEntryChild;
-
     if (m_nResolvedSelection != -1) {
-        pEntryChild = &m_pEntryTable->m_aEntries[m_nResolvedSelection];
-        if (pEntryChild->m_fEnabled == 0) {
+        if (m_pEntryTable->m_aEntries[m_nResolvedSelection].m_fEnabled == 0) {
             if (SelectPreviousPlayerEntry() == 0) {
                 SelectNextPlayerEntry();
             }
         } else {
-            pEntryChild->m_fSelected = 1;
-            pEntryChild->Activate();
+            m_pEntryTable->m_aEntries[m_nResolvedSelection].m_fSelected = 1;
+            m_pEntryTable->m_aEntries[m_nResolvedSelection].Activate();
         }
     }
 }
 
 // FUNCTION: LEMBALL 0x00454c10
 int VsNetNetworkLobbyScreen::SelectPreviousPlayerEntry(void) {
-    VsNetNetworkLobbyPlayerEntryTable *pEntryTable;
     int *pnEntryState;
     int nSelectedEntry;
     int nEntryOffset;
 
-    pEntryTable = m_pEntryTable;
     if (m_cVisibleEntries == 0 || m_nResolvedSelection == 0) {
         return 0;
     }
@@ -256,7 +255,7 @@ int VsNetNetworkLobbyScreen::SelectPreviousPlayerEntry(void) {
 
     nSelectedEntry = m_nResolvedSelection - 1;
     if (nSelectedEntry >= 0) {
-        pnEntryState = (int *)((char *)pEntryTable + 4 + nSelectedEntry * 0x44);
+        pnEntryState = (int *)((char *)m_pEntryTable + 4 + nSelectedEntry * 0x44);
         do {
             if (*pnEntryState != 0) {
                 break;
@@ -274,25 +273,23 @@ int VsNetNetworkLobbyScreen::SelectPreviousPlayerEntry(void) {
     nEntryOffset = 0;
     do {
         ((VsNetNetworkLobbyPlayerEntryChild *)
-            ((char *)pEntryTable + nEntryOffset))->m_fSelected = 0;
-        pnEntryState = (int *)((char *)pEntryTable + nEntryOffset);
+            ((char *)m_pEntryTable + nEntryOffset))->m_fSelected = 0;
+        pnEntryState = (int *)((char *)m_pEntryTable + nEntryOffset);
         nEntryOffset += 0x44;
         ((VsNetNetworkLobbyPlayerEntryChild *)pnEntryState)->Deactivate();
     } while (nEntryOffset < 0x2a8);
 
-    pEntryTable->m_aEntries[m_nResolvedSelection].m_fSelected = 1;
-    pEntryTable->m_aEntries[m_nResolvedSelection].Activate();
+    m_pEntryTable->m_aEntries[m_nResolvedSelection].m_fSelected = 1;
+    m_pEntryTable->m_aEntries[m_nResolvedSelection].Activate();
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x00454cf0
 int VsNetNetworkLobbyScreen::SelectNextPlayerEntry(void) {
-    VsNetNetworkLobbyPlayerEntryTable *pEntryTable;
     int *pnEntryState;
     int nSelectedEntry;
     int nEntryOffset;
 
-    pEntryTable = m_pEntryTable;
     if (m_cVisibleEntries == 0) {
         if (m_nResolvedSelection == -1) {
             return 0;
@@ -307,7 +304,7 @@ int VsNetNetworkLobbyScreen::SelectNextPlayerEntry(void) {
 
     nSelectedEntry = m_nResolvedSelection + 1;
     if (nSelectedEntry < 10) {
-        pnEntryState = (int *)((char *)pEntryTable + 4 + nSelectedEntry * 0x44);
+        pnEntryState = (int *)((char *)m_pEntryTable + 4 + nSelectedEntry * 0x44);
         do {
             if (*pnEntryState != 0) {
                 break;
@@ -320,8 +317,8 @@ int VsNetNetworkLobbyScreen::SelectNextPlayerEntry(void) {
     m_nResolvedSelection = nSelectedEntry;
     nEntryOffset = 0;
     do {
-        ((VsNetNetworkLobbyPlayerEntryChild *)((char *)pEntryTable + nEntryOffset))->m_fSelected = 0;
-        pnEntryState = (int *)((char *)pEntryTable + nEntryOffset);
+        ((VsNetNetworkLobbyPlayerEntryChild *)((char *)m_pEntryTable + nEntryOffset))->m_fSelected = 0;
+        pnEntryState = (int *)((char *)m_pEntryTable + nEntryOffset);
         nEntryOffset += 0x44;
         ((VsNetNetworkLobbyPlayerEntryChild *)pnEntryState)->Deactivate();
     } while (nEntryOffset < 0x2a8);
@@ -332,8 +329,8 @@ int VsNetNetworkLobbyScreen::SelectNextPlayerEntry(void) {
         return 1;
     }
 
-    pEntryTable->m_aEntries[m_nResolvedSelection].m_fSelected = 1;
-    pEntryTable->m_aEntries[m_nResolvedSelection].Activate();
+    m_pEntryTable->m_aEntries[m_nResolvedSelection].m_fSelected = 1;
+    m_pEntryTable->m_aEntries[m_nResolvedSelection].Activate();
     return 1;
 }
 
