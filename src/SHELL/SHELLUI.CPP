@@ -14,7 +14,6 @@ extern "C" int WINAPI IsBadReadPtr(const void *pAddress,
 
 static const char g_SHELLUI_RegistryKey[] = "SOFTWARE\\Visual Sciences\\Lemmings Paintball";
 static const char g_SHELLUI_AboutBoxName[] = "AboutBox";
-static const char g_SHELLUI_HelpPath[] = "lemball\\lemball.hlp";
 static const char g_SHELLUI_HelpError[] = "Couldn't help ya!\n";
 static const char g_SHELLUI_WindowsNtFormat[] = "WindowsNT %u.%u (Build: %u)";
 static const char g_SHELLUI_Win32sFormat[] = "Win32s %u.%u (Build: %u)";
@@ -24,7 +23,7 @@ static const char g_SHELLUI_SystemInfoFormat[] =
     ": %lu%%\nAvail Memory Free : %lu bytes\n";
 static const char g_SHELLUI_SystemInfoBuffer[] = "System Information";
 
-void TogglePrimaryContextDisplayMode(ShellUiPrimaryContextShell *pShell);
+void LEMBALL_FASTCALL TogglePrimaryContextDisplayMode(void *pPrimaryContext);
 
 enum {
     ShellUiMENU_EVENT_DISPLAY = 4,
@@ -179,7 +178,7 @@ ShellUiPrimaryContextShell::ShellUiPrimaryContextShell(void) {
 }
 
 void ShellUiPrimaryContextShell::ToggleDisplayMode(void) {
-    TogglePrimaryContextDisplayMode(this);
+    TogglePrimaryContextDisplayMode(GetPrimaryContextFromShell(this));
 }
 
 void ShellUiPrimaryContextShell::RequestQuit(void) {
@@ -195,24 +194,30 @@ int LEMBALL_FASTCALL HandlePrimaryContextMenuCommandThunk(
     return HandlePrimaryContextMenuCommand(pShell, 0, pMessage);
 }
 // FUNCTION: LEMBALL 0x00431c90
-void TogglePrimaryContextDisplayMode(ShellUiPrimaryContextShell *pShell) {
-    char *pPrimaryContext;
+void LEMBALL_FASTCALL TogglePrimaryContextDisplayMode(void *pPrimaryContext) {
+    void *pScreen;
     int nDriver;
 
-    pPrimaryContext = GetPrimaryContextFromShell(pShell);
-    if (*(void **)(pPrimaryContext + 0xd4) != 0) {
-        CallNoArgVirtual(*(void **)(pPrimaryContext + 0xd4), 0x18);
+    pScreen = *(void **)((char *)pPrimaryContext + 0xd4);
+    if (pScreen != 0) {
+        ((void (LEMBALL_FASTCALL *)(void *))
+            (*(void ***)pScreen)[0x18 / sizeof(void *)])(pScreen);
     }
 
-    nDriver = GetSelectedGraphicsDriverId();
-    if (nDriver != VsGdiDRIVER_METRICS) {
-        if (nDriver != VsGdiDRIVER_DIB_640_480) {
-            return;
-        }
-        InitializeSelectedGraphicsDriver(VsGdiDRIVER_METRICS);
+    nDriver = ((VsGdiSelectedGraphicsDriverRuntime *)
+        g_pSelectedGraphicsDriverRuntime)->m_nSelectedDriver;
+    switch (nDriver) {
+    case VsGdiDRIVER_METRICS:
+        ((VsGdiSelectedGraphicsDriverRuntime *)
+            g_pSelectedGraphicsDriverRuntime)
+            ->InitializeSelectedGraphicsDriver(VsGdiDRIVER_DIB_640_480);
+        return;
+    case VsGdiDRIVER_DIB_640_480:
+        ((VsGdiSelectedGraphicsDriverRuntime *)
+            g_pSelectedGraphicsDriverRuntime)
+            ->InitializeSelectedGraphicsDriver(VsGdiDRIVER_METRICS);
         return;
     }
-    InitializeSelectedGraphicsDriver(VsGdiDRIVER_DIB_640_480);
 }
 
 void InitializePrimaryContextShell(ShellUiPrimaryContextShell *pShell) {
@@ -229,18 +234,13 @@ int LEMBALL_FASTCALL HandlePrimaryContextMenuCommand(
     const ShellUiMenuCommandMessage *pMessage)
 {
     char szHelpPath[256];
-    char *pszCdromPath;
-
-    if (pShell == 0 || pMessage == 0) {
-        return 0;
-    }
 
     if (pMessage->m_wMessage == ShellUiMENU_EVENT_DISPLAY) {
         if (pMessage->m_nCommand != 0x25) {
             return 0;
         }
 
-        TogglePrimaryContextDisplayMode(pShell);
+        TogglePrimaryContextDisplayMode(GetPrimaryContextFromShell(pShell));
         return 1;
     }
 
@@ -250,38 +250,39 @@ int LEMBALL_FASTCALL HandlePrimaryContextMenuCommand(
 
     switch (pMessage->m_nCommand) {
     case ShellUiMENU_COMMAND_EXIT:
-        pShell->RequestQuit();
+        *(int *)((char *)pShell + 0x38) = 1;
         return 0;
     case ShellUiMENU_COMMAND_HELP_INDEX:
         szHelpPath[0] = '\0';
-        pszCdromPath = FindCdromFilePathBySuffix(g_SHELLUI_HelpPath);
-        if (pszCdromPath != 0) {
-            CopyCString(szHelpPath, sizeof(szHelpPath), pszCdromPath);
-        }
-        if (!WinHelpA(GetPrimaryContextMainWindow(pShell), szHelpPath, 0x101, 0x49e7cc)) {
-            AppendErrorCString(g_SHELLUI_HelpError);
+        strcpy(szHelpPath,
+               FindCdromFilePathBySuffix("lemball\\lemball.hlp"));
+        strcat(szHelpPath, "lemball\\lemball.hlp");
+        if (!WinHelpA(*(HWND *)((char *)pShell - 0x4c),
+                      szHelpPath, 0x101, 0x49e7cc)) {
+            g_pErrorOutputStream->AppendCStringToStream(g_SHELLUI_HelpError);
         }
         return 0;
     case ShellUiMENU_COMMAND_HELP_TOPIC:
         szHelpPath[0] = '\0';
-        pszCdromPath = FindCdromFilePathBySuffix(g_SHELLUI_HelpPath);
-        if (pszCdromPath != 0) {
-            CopyCString(szHelpPath, sizeof(szHelpPath), pszCdromPath);
-        }
-        if (!WinHelpA(GetPrimaryContextMainWindow(pShell), szHelpPath, 0x105, 0x49e814)) {
-            AppendErrorCString(g_SHELLUI_HelpError);
+        strcpy(szHelpPath,
+               FindCdromFilePathBySuffix("lemball\\lemball.hlp"));
+        strcat(szHelpPath, "lemball\\lemball.hlp");
+        if (!WinHelpA(*(HWND *)((char *)pShell - 0x4c),
+                      szHelpPath, 0x105, 0x49e814)) {
+            g_pErrorOutputStream->AppendCStringToStream(g_SHELLUI_HelpError);
         }
         return 0;
     case ShellUiMENU_COMMAND_ABOUT:
         DialogBoxParamA(
-            g_hApplicationInstance, g_SHELLUI_AboutBoxName, GetPrimaryContextMainWindow(pShell), AboutBoxProc, 0);
+            g_hApplicationInstance, g_SHELLUI_AboutBoxName,
+            *(HWND *)((char *)pShell - 0x4c), AboutBoxProc, 0);
         return 0;
     case ShellUiMENU_COMMAND_DISPLAY_MODE:
-        TogglePrimaryContextDisplayMode(pShell);
+        TogglePrimaryContextDisplayMode(GetPrimaryContextFromShell(pShell));
         return 0;
     case ShellUiMENU_COMMAND_HELP_ON_HELP:
-        if (!WinHelpA(GetPrimaryContextMainWindow(pShell), 0, 4, 0)) {
-            AppendErrorCString(g_SHELLUI_HelpError);
+        if (!WinHelpA(*(HWND *)((char *)pShell - 0x4c), 0, 4, 0)) {
+            g_pErrorOutputStream->AppendCStringToStream(g_SHELLUI_HelpError);
         }
         return 0;
     default:

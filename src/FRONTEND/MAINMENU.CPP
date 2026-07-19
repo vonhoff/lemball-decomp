@@ -49,8 +49,8 @@ extern int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresent(
     int *pPrimaryContext);
 extern int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresentThunk(
     int *pPrimaryContext);
-extern void TogglePrimaryContextDisplayMode(
-    ShellUiPrimaryContextShell *pShell);
+extern void LEMBALL_FASTCALL TogglePrimaryContextDisplayMode(
+    void *pPrimaryContext);
 extern void PASCAL SetAudioMusicAndEffectVolumeByte(unsigned char nVolume);
 extern void PASCAL SetVariantResourceEffectMasterVolume(unsigned char nVolume);
 extern void LEMBALL_FASTCALL NoopPackagedSpriteRenderEntryThunk00402A22(
@@ -3268,7 +3268,8 @@ static int LEMBALL_FASTCALL HandleMainMenuInput(
                     g_fNextMainMenuTimeoutIsTitle = 1;
                     return 1;
                 case 0xacef00a5U:
-                    ((ShellUiPrimaryContextShell *)pScreen->m_pPrimaryContext84)->ToggleDisplayMode();
+                    TogglePrimaryContextDisplayMode(
+                        pScreen->m_pPrimaryContext84);
                     return 1;
                 case 0xacef00a6U:
                 case 0xacef00a7U: {
