@@ -67,6 +67,13 @@ extern int LEMBALL_FASTCALL return_object_field_0x0c_00435880(
     void *pObject);
 
 struct GameMenuSelectorEntry {
+    GameMenuSelectorEntry(
+        void *pRenderOwner, void *pRenderContext, int x,
+        int nPosition, const int *panResourceIds,
+        int nActivationMode, int nFirstResource,
+        int nLastResource, int nReserved, int nToken,
+        int *pSelection, int nCommand);
+
     void **m_pVtable00;
     int m_nQueueTag04;
     int m_nQueueReserved08;
@@ -2046,43 +2053,47 @@ static void LEMBALL_FASTCALL BuildMenuSelectorEntryOverlay(
     *(int *)((char *)pOverlay + 0xcc) = pEntry->m_nToken30;
 }
 
-static GameMenuSelectorEntry *LEMBALL_FASTCALL ConstructMenuSelectorEntry(
-    GameMenuSelectorEntry *pEntry, int, void *pRenderOwner,
-    void *pRenderContext, int x, int nPosition,
+GameMenuSelectorEntry::GameMenuSelectorEntry(
+    void *pRenderOwner, void *pRenderContext, int x, int nPosition,
     const int *panResourceIds, int nActivationMode,
     int nFirstResource, int nLastResource, int nReserved,
     int nToken, int *pSelection, int nCommand) {
     int cResources;
 
-    InitializeRenderQueueNodeBase(pEntry);
-    pEntry->m_pVtable00 = g_MenuSelectorEntryVtable;
-    pEntry->m_nOverlayKind10 = 0;
-    pEntry->m_nProgressX14 = 0;
-    pEntry->m_nProgressY16 = 0;
-    pEntry->m_nProgressWidth18 = 0;
-    pEntry->m_nProgressHeight1A = 0;
-    pEntry->m_pRenderOwner28 = pRenderOwner;
-    pEntry->m_pRenderContext24 = pRenderContext;
-    pEntry->m_fEnabled5C = 1;
+    InitializeRenderQueueNodeBase(this);
+    m_pVtable00 = g_MenuSelectorEntryVtable;
+    m_nProgressY16 = 0;
+    m_nOverlayKind10 = 0;
+    m_nProgressX14 = 0;
+    m_nProgressHeight1A = 0;
+    m_nProgressWidth18 = 0;
+    m_pRenderOwner28 = pRenderOwner;
+    m_pRenderContext24 = pRenderContext;
+    m_fEnabled5C = 1;
     cResources = nLastResource - nFirstResource + 1;
-    pEntry->m_cResources38 = cResources < 2 ? 1 : cResources;
-    pEntry->m_nFirstResource40 = nFirstResource;
-    pEntry->m_nLastResource3C = nLastResource;
-    pEntry->m_nToken30 = nToken;
-    pEntry->m_x1C = x;
-    pEntry->m_nPosition20 = nPosition;
-    pEntry->m_nSelectedResource44 =
-        pSelection == 0 ? 0 : *pSelection;
-    if (nCommand != -1) {
-        pEntry->m_nCommand34 = nCommand;
+    m_cResources38 = cResources;
+    if (cResources < 2) {
+        m_cResources38 = 1;
     }
-    pEntry->m_pSelection48 = pSelection;
-    pEntry->m_nActivationMode2C = nActivationMode;
+    m_nFirstResource40 = nFirstResource;
+    m_nToken30 = nToken;
+    m_nLastResource3C = nLastResource;
+    m_x1C = x;
+    m_nPosition20 = nPosition;
+    if (pSelection == 0) {
+        m_nSelectedResource44 = 0;
+    } else {
+        m_nSelectedResource44 = *pSelection;
+    }
+    if (nCommand != -1) {
+        m_nCommand34 = nCommand;
+    }
+    m_pSelection48 = pSelection;
+    m_nActivationMode2C = nActivationMode;
     (void)nReserved;
     ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
-        ->RegisterOrderedRenderDispatchClient(pEntry, 0);
-    BuildMenuSelectorEntryOverlay(pEntry, 0, panResourceIds);
-    return pEntry;
+        ->RegisterOrderedRenderDispatchClient(this, 0);
+    BuildMenuSelectorEntryOverlay(this, 0, panResourceIds);
 }
 
 void GameMenuSelectorManager::AppendChild(
@@ -2099,8 +2110,8 @@ void GameMenuSelectorManager::AppendChild(
     if (pEntry == 0) {
         m_apChildren1E0[m_cChildren80] = 0;
     } else {
-        m_apChildren1E0[m_cChildren80] = ConstructMenuSelectorEntry(
-            pEntry, 0, m_pRenderOwner214,
+        m_apChildren1E0[m_cChildren80] = new (pEntry) GameMenuSelectorEntry(
+            m_pRenderOwner214,
             m_pRenderContext210, x, nPosition,
             panResourceIds, nActivationMode, nFirstResource,
             nLastResource, nReserved, nToken, pSelection,
@@ -2381,13 +2392,13 @@ static void *LEMBALL_FASTCALL DeleteMenuSelectorManagerThunk(
 }
 
 /* FUNCTION: LEMBALL 0x00467570 */
-static short *LEMBALL_FASTCALL GetVariantFrameExtent(
-    void *pObject, int, short *pExtent, int nResourceId, int iFrame) {
+short *LevelVariantRenderManagerView::GetVariantFrameExtent(
+    short *pExtent, int nResourceId, int iFrame) {
     int *pManager;
     int *pResource;
     short *pFrame;
 
-    pManager = (int *)pObject;
+    pManager = (int *)this;
     pResource = *(int **)(unsigned long)(
         pManager[9] +
         (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2) * 4);
@@ -2409,8 +2420,9 @@ void GameMenuSelectorManager::InitializeCurrentState(int iMetadata) {
     short cxOwner;
     int nSide;
 
-    pExtent = GetVariantFrameExtent((char *)this + 0x10, 0, Extent,
-                                    g_nMenuSelectorResourceId6, 0);
+    pExtent = ((LevelVariantRenderManagerView *)((char *)this + 0x10))
+        ->GetVariantFrameExtent(
+            Extent, g_nMenuSelectorResourceId6, 0);
     cxOwner = *(short *)((char *)m_pRenderOwner214 + 8);
     m_xCenteredAction88 = cxOwner / 2 - pExtent[0] / 2;
     m_nCurrentPosition8C = m_aMetadataE0[iMetadata].m_nPosition;

@@ -12,6 +12,8 @@ public:
     void LoadVariantRenderResource(int nResourceId);
     void ReleaseVariantRenderResource(int nResourceId);
     int GetVariantRenderFrameCount(int nResourceId);
+    short *GetVariantFrameExtent(
+        short *pExtent, int nResourceId, int iFrame);
     void ReleaseLevelScreenVariantStateWrapperBody(int nResourceId);
     void ReleaseLevelScreenVariantStateWrapper(int nResourceId);
     void ReleaseLevelScreenVariantStateWrapperRangeBody(
