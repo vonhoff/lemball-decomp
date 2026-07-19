@@ -967,10 +967,8 @@ void DestroyVariantRenderManager(void *pObject);
 static void *DestroyStatusIndicatorPointSinkArray00467BB0(void *pObject, unsigned int fDelete);
 void LEMBALL_FASTCALL RestoreQueuedRenderPointSinkVtable(void *pObject);
 static void *DestroyPackagedSpriteRenderEntryArray00469930(void *pObject, unsigned int fDelete);
-void SetStatusIndicatorZrleResource(void *pObject, int nResourceId);
 void LEMBALL_FASTCALL SetStatusIndicatorActive(
     void *pObject, int, int fActive);
-void SetStatusIndicatorListResourceEntry(void *pObject, int nResourceId, int nEntryIndex);
 
 // STUB: LEMBALL 0x004011b8
 int LEMBALL_FASTCALL GetTimedVariantFrameStartTimeThunk(void *pObject) {
@@ -2562,16 +2560,17 @@ void SetLevelScreenStatusIndicatorMode(int nMode, int nValue) {
     case 0:
         SetStatusIndicatorActive(
             g_pArrowCursorStatusIndicatorRenderClient, 0, 0);
-        SetStatusIndicatorZrleResource(g_pArrowCursorStatusIndicatorRenderClient, g_LEVEL_StatusIndicatorModeResourceIds[0]);
+        ((GameCursorRenderClient *)g_pArrowCursorStatusIndicatorRenderClient)
+            ->SetZrleResource(g_LEVEL_StatusIndicatorModeResourceIds[0]);
         return;
 
     case 1:
         if (g_pLevelDemoPlaybackController != 0 && *(int *)((char *)g_pLevelDemoPlaybackController + 0x4c) != 0) {
             nValue = 0;
         }
-        SetStatusIndicatorListResourceEntry(g_pArrowCursorStatusIndicatorRenderClient,
-                                            g_LEVEL_StatusIndicatorModeResourceIds[1],
-                                            nValue);
+        ((GameCursorRenderClient *)g_pArrowCursorStatusIndicatorRenderClient)
+            ->SetListResourceEntry(
+                g_LEVEL_StatusIndicatorModeResourceIds[1], nValue);
         if (g_fLevelScreenStatusIndicatorConfigured == 0) {
             *(int *)((char *)g_pArrowCursorStatusIndicatorRenderClient + 0x2c) = 1;
             g_fLevelScreenStatusIndicatorConfigured = 1;
@@ -2585,7 +2584,8 @@ void SetLevelScreenStatusIndicatorMode(int nMode, int nValue) {
     case 2:
     case 3:
         nResourceId = g_LEVEL_StatusIndicatorModeResourceIds[nMode];
-        SetStatusIndicatorZrleResource(g_pArrowCursorStatusIndicatorRenderClient, nResourceId);
+        ((GameCursorRenderClient *)g_pArrowCursorStatusIndicatorRenderClient)
+            ->SetZrleResource(nResourceId);
         if (g_fLevelScreenStatusIndicatorConfigured == 0) {
             *(int *)((char *)g_pArrowCursorStatusIndicatorRenderClient + 0x2c) = 1;
             *(unsigned short *)((char *)g_pArrowCursorStatusIndicatorRenderClient + 0x14) = 3;
@@ -5023,11 +5023,11 @@ static void *DestroyPackagedSpriteRenderEntryArray00469930(void *pObject, unsign
 }
 
 // FUNCTION: LEMBALL 0x0046b310
-void SetStatusIndicatorZrleResource(void *pObject, int nResourceId) {
+void GameCursorRenderClient::SetZrleResource(int nResourceId) {
     int *pClient;
     int nOffset;
 
-    pClient = (int *)pObject;
+    pClient = (int *)this;
     if (nResourceId != pClient[0xa]) {
         if (pClient[0xa] != 0) {
             ReleaseTypedResourceObjectReference((void *)(unsigned long)pClient[8]);
@@ -5073,21 +5073,21 @@ void LEMBALL_FASTCALL SetStatusIndicatorActive(
 }
 
 // FUNCTION: LEMBALL 0x0046b3b0
-void SetStatusIndicatorListResourceEntry(void *pObject, int nResourceId, int nEntryIndex) {
+void GameCursorRenderClient::SetListResourceEntry(int nResourceId, int nEntryIndex) {
     int *pClient;
     int nOffset;
 
-    pClient = (int *)pObject;
+    pClient = (int *)this;
     if (nResourceId != pClient[0xa]) {
         if (pClient[0xa] != 0) {
             ReleaseTypedResourceObjectReference((void *)(unsigned long)pClient[8]);
         }
         pClient[0xa] = nResourceId;
         pClient[9] = -1;
-        if (nResourceId == 0) {
-            pClient[8] = 0;
-        } else {
+        if (nResourceId != 0) {
             pClient[8] = (int)(unsigned long)LoadZrleOnlyListResource(nResourceId);
+        } else {
+            pClient[8] = 0;
         }
     }
 

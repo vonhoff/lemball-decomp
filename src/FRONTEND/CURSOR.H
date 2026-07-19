@@ -40,6 +40,8 @@ struct GameCursorRenderClient : public GameCursorRenderClientInterface {
     void TickCursorRenderClientMotion(void);
     void UpdateForWindowOwner(void *pWindowOwner);
     void SetCursorPosition(const VsMathPoint2D *pPosition);
+    void SetZrleResource(int nResourceId);
+    void SetListResourceEntry(int nResourceId, int nEntryIndex);
 };
 
 #endif
