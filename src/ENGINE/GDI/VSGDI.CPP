@@ -33,6 +33,13 @@ extern "C" DWORD WINAPI timeGetTime(void);
 extern void LEMBALL_FASTCALL EnsureHelperGroup0BackingBuffer(int nHelperGroup);
 extern void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(
     void *pPrimaryContext);
+extern void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(
+    void *pPrimaryContext);
+extern void PASCAL noop_embedded_mci_callback_0046e050(void *pUnused);
+extern void PASCAL noop_embedded_mci_callback_0046e060(
+    void *pUnused1, void *pUnused2);
+extern void PASCAL noop_embedded_mci_callback_0046e070(
+    void *pUnused1, void *pUnused2);
 extern void *__fastcall get_draw_command_rect_payload(void *pCommand);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 extern void *LoadTwoArrayListResource(int nResourceId);
@@ -726,19 +733,27 @@ struct VsGdiCompactResourceGeometryHelper {
 extern "C" unsigned long LEMBALL_STDCALL DispatchVisualSciencesWingDriverMessage(
     void *pState, void *hDriver, unsigned int nMessage,
     void *pParam1, unsigned int nParam2);
-
 class VsGdiAnimWindowOwner {
 public:
     void *ConstructResourceGeometryHelperWindowOwner(void);
     void DestroyResourceGeometryHelperWindowOwner(void);
     void BindAsSingletonAnimWindow(void);
     void RebuildResourceGeometryHelperWindow(void);
+    void ReleaseResourceGeometryHelperWindow(void);
+    void IgnoreResourceGeometryHelperWindowUpdate(void *pUnused);
+    LRESULT DispatchEmbeddedMciWindowMessage(UINT uMessage,
+                                             WPARAM wParam,
+                                             LPARAM lParam);
     void InstallEmbeddedMciDrawCallback(void *pUnusedDispatchArgument);
     void StartEmbeddedMciWindowPlaybackOnce(void);
+    void PauseEmbeddedMciWindowPlayback(void);
     void ResumeEmbeddedMciWindowPlayback(void);
     void UpdateMediaPathFromListResource(int nResourceId);
 
 private:
+    void DispatchEmbeddedMciCommandId(unsigned int nCommandId);
+    void IgnoreEmbeddedMciNotification(void);
+
     unsigned char m_abReserved00[0x90];
     int m_nReserved90;
     int m_nReserved94;
@@ -5116,6 +5131,22 @@ void *VsGdiAnimWindowOwner::ConstructResourceGeometryHelperWindowOwner(void) {
         void (VsGdiAnimWindowOwner::*pMethod)(void);
         void *pAddress;
     } rebuildMethod;
+    union {
+        void (VsGdiAnimWindowOwner::*pMethod)(void);
+        void *pAddress;
+    } releaseMethod;
+    union {
+        void (VsGdiAnimWindowOwner::*pMethod)(void *);
+        void *pAddress;
+    } ignoreUpdateMethod;
+    union {
+        LRESULT (VsGdiAnimWindowOwner::*pMethod)(UINT, WPARAM, LPARAM);
+        void *pAddress;
+    } dispatchMessageMethod;
+    union {
+        void (VsGdiAnimWindowOwner::*pMethod)(void);
+        void *pAddress;
+    } ignoreNotificationMethod;
     int i;
 
     ConstructWindowOwnerRenderContext(this);
@@ -5131,6 +5162,19 @@ void *VsGdiAnimWindowOwner::ConstructResourceGeometryHelperWindowOwner(void) {
         rebuildMethod.pMethod =
             &VsGdiAnimWindowOwner::RebuildResourceGeometryHelperWindow;
         g_VSGDI_AnimWindowOwnerVtable[6] = rebuildMethod.pAddress;
+        releaseMethod.pMethod =
+            &VsGdiAnimWindowOwner::ReleaseResourceGeometryHelperWindow;
+        g_VSGDI_AnimWindowOwnerVtable[7] = releaseMethod.pAddress;
+        ignoreUpdateMethod.pMethod =
+            &VsGdiAnimWindowOwner::IgnoreResourceGeometryHelperWindowUpdate;
+        g_VSGDI_AnimWindowOwnerVtable[28] = ignoreUpdateMethod.pAddress;
+        dispatchMessageMethod.pMethod =
+            &VsGdiAnimWindowOwner::DispatchEmbeddedMciWindowMessage;
+        g_VSGDI_AnimWindowOwnerVtable[40] = dispatchMessageMethod.pAddress;
+        ignoreNotificationMethod.pMethod =
+            &VsGdiAnimWindowOwner::IgnoreEmbeddedMciNotification;
+        g_VSGDI_AnimWindowOwnerVtable[48] = ignoreNotificationMethod.pAddress;
+        g_VSGDI_AnimWindowOwnerVtable[49] = ignoreNotificationMethod.pAddress;
         g_fVSGDIAnimWindowOwnerVtableInitialized = 1;
     }
     *(void ***)this = g_VSGDI_AnimWindowOwnerVtable;
@@ -5147,9 +5191,10 @@ void *LEMBALL_FASTCALL ConstructResourceGeometryHelperWindowOwner(
 
 // FUNCTION: LEMBALL 0x0046de70
 void VsGdiAnimWindowOwner::DestroyResourceGeometryHelperWindowOwner(void) {
+    *(void ***)this = g_VSGDI_AnimWindowOwnerVtable;
     if (*(int *)((char *)this + 4) == 1) {
-        ((void (LEMBALL_FASTCALL *)(void *, int))(*(void ***)this)[29])(
-            this, 0);
+        ((VS_WindowOwnerBase *)this)->
+            VS_WindowOwnerBase::DestroyWindowOwnerHwnd();
     }
     g_pSingletonAnimWindowOwner = 0;
     if (m_hMciWindowB8 != 0) {
@@ -5158,7 +5203,7 @@ void VsGdiAnimWindowOwner::DestroyResourceGeometryHelperWindowOwner(void) {
     }
     m_MediaPathB0.DestroyDynamicCString();
     m_MediaName98.DestroyDynamicCString();
-    ((VS_WindowOwnerBase *)this)->~VS_WindowOwnerBase();
+    DestroyWindowOwnerRenderContext(this);
 }
 
 void LEMBALL_FASTCALL DestroyResourceGeometryHelperWindowOwner(
@@ -5169,26 +5214,43 @@ void LEMBALL_FASTCALL DestroyResourceGeometryHelperWindowOwner(
 
 // FUNCTION: LEMBALL 0x0046ded0
 void VsGdiAnimWindowOwner::RebuildResourceGeometryHelperWindow(void) {
-    typedef HWND (*MciWndCreateProc)(
-        HWND, HINSTANCE, DWORD, const char *);
-    HMODULE hMsvfw32;
-    MciWndCreateProc pMciWndCreate;
-
     BuildGeometryHelperFromRenderRect(this);
     if (m_hMciWindowB8 != 0) {
         SendMessageA(m_hMciWindowB8, 0x10, 0, 0);
         m_hMciWindowB8 = 0;
     }
-    hMsvfw32 = LoadLibraryA("MSVFW32.DLL");
-    pMciWndCreate = hMsvfw32 != 0
-        ? (MciWndCreateProc)GetProcAddress(hMsvfw32, "MCIWndCreateA")
-        : 0;
-    m_hMciWindowB8 = pMciWndCreate != 0
-        ? pMciWndCreate(*(HWND *)((char *)this + 0x44),
-                        g_hApplicationInstance, 0x50001f0a, 0)
-        : 0;
+    m_hMciWindowB8 = MCIWndCreateA(
+        *(HWND *)((char *)this + 0x44), g_hApplicationInstance,
+        0x50001f0a, 0);
     SendMessageA(m_hMciWindowB8, 0x499, 0,
                  (LPARAM)m_MediaPathB0.m_pszText);
+}
+
+void VsGdiAnimWindowOwner::ReleaseResourceGeometryHelperWindow(void) {
+    PauseEmbeddedMciWindowPlayback();
+    if (m_hMciWindowB8 != 0) {
+        SendMessageA(m_hMciWindowB8, 0x10, 0, 0);
+        m_hMciWindowB8 = 0;
+    }
+    ReleaseWindowOwnerRenderResources(this);
+    m_nA8 = 0;
+    m_nA4 = 0;
+}
+
+void VsGdiAnimWindowOwner::IgnoreResourceGeometryHelperWindowUpdate(
+    void *pUnused) {
+    (void)pUnused;
+}
+
+void VsGdiAnimWindowOwner::DispatchEmbeddedMciCommandId(
+    unsigned int nCommandId) {
+    if (nCommandId == 0x20d) {
+        m_nA4 = 0;
+        m_nA8 = 0;
+        ((void (LEMBALL_FASTCALL *)(void *))(*(void ***)this)[49])(this);
+    } else if (nCommandId == 0x20e) {
+        ((void (LEMBALL_FASTCALL *)(void *))(*(void ***)this)[48])(this);
+    }
 }
 
 struct VsGdiMciDrawCallbackParameters {
@@ -5216,6 +5278,33 @@ void VsGdiAnimWindowOwner::InstallEmbeddedMciDrawCallback(void *pUnusedDispatchA
     }
 }
 
+LRESULT VsGdiAnimWindowOwner::DispatchEmbeddedMciWindowMessage(
+    UINT uMessage, WPARAM wParam, LPARAM lParam) {
+    switch (uMessage) {
+    case 0x4c8:
+        DispatchEmbeddedMciCommandId((unsigned int)lParam);
+        return 0;
+    case 0x4c9:
+        noop_embedded_mci_callback_0046e060(0, 0);
+        return 0;
+    case 0x4ca:
+        noop_embedded_mci_callback_0046e070(0, 0);
+        return 0;
+    case 0x4cb:
+        InstallEmbeddedMciDrawCallback((void *)lParam);
+        return 0;
+    case 0x4cd:
+        noop_embedded_mci_callback_0046e050((void *)lParam);
+        return 0;
+    default:
+        if (*(HWND *)((char *)this + 0x44) != 0) {
+            return SendMessageA(*(HWND *)((char *)this + 0x44),
+                                uMessage, wParam, lParam);
+        }
+        return 0;
+    }
+}
+
 // FUNCTION: LEMBALL 0x0046e300
 void VsGdiAnimWindowOwner::StartEmbeddedMciWindowPlaybackOnce(void) {
     if (m_nA4 == 0) {
@@ -5229,6 +5318,13 @@ void LEMBALL_FASTCALL StartEmbeddedMciWindowPlaybackOnce(void *pOwner) {
     ((VsGdiAnimWindowOwner *)pOwner)->StartEmbeddedMciWindowPlaybackOnce();
 }
 
+void VsGdiAnimWindowOwner::PauseEmbeddedMciWindowPlayback(void) {
+    if (m_nA8 == 0) {
+        SendMessageA(m_hMciWindowB8, 0x809, 0, 0);
+        m_nA8 = 1;
+    }
+}
+
 // FUNCTION: LEMBALL 0x0046e3c0
 void VsGdiAnimWindowOwner::ResumeEmbeddedMciWindowPlayback(void) {
     if (m_nA8 != 0) {
@@ -5239,6 +5335,9 @@ void VsGdiAnimWindowOwner::ResumeEmbeddedMciWindowPlayback(void) {
 
 void LEMBALL_FASTCALL ResumeEmbeddedMciWindowPlayback(void *pOwner) {
     ((VsGdiAnimWindowOwner *)pOwner)->ResumeEmbeddedMciWindowPlayback();
+}
+
+void VsGdiAnimWindowOwner::IgnoreEmbeddedMciNotification(void) {
 }
 
 struct VsGdiMediaListResourceView {

@@ -1438,7 +1438,7 @@ static void InitializeFunctionalOptionsVtables(void) {
         g_GAME_OptionsScreenVtable[i] = g_GAME_MainMenuScreenVtable[i];
     }
     g_GAME_OptionsScreenVtable[0] = (void *)DeleteOptionsScreen;
-    g_GAME_OptionsScreenVtable[14] = (void *)MainMenuSlot13Thunk;
+    g_GAME_OptionsScreenVtable[14] = (void *)FramedScreenSlot14Thunk;
     g_GAME_OptionsScreenVtable[15] = (void *)HandleOptionsScreenInput;
     g_GAME_OptionsScreenVtable[16] = (void *)InitializeOptionsScreenWidgets;
     g_GAME_OptionsScreenVtable[17] = (void *)ReleaseOptionsScreenWidgets;

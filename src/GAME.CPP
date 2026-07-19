@@ -97,6 +97,7 @@ extern void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerThunk(void *pM
 extern void LEMBALL_FASTCALL DestroyMainGameVariantResourceMode(void *pVariantMode);
 extern void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(void *pVsnetRuntime);
 extern void LEMBALL_FASTCALL ShutdownVariantResourceEntryManager(void *pManager);
+extern void PASCAL noop_embedded_mci_callback_0046e050(void *pUnused);
 extern int g_fMusicEnabled;
 extern int g_fEffectsEnabled;
   extern void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pPrimaryContext);
@@ -501,7 +502,7 @@ void LEMBALL_FASTCALL ForwardPrimaryContextActiveScreenSlot0x30(
     void *pPrimaryContext);
 
 static void *g_GAME_PrimaryContextVtableSlots[46];
-static void *g_GAME_WindowOwnerRenderContextVtableSlots[46];
+static void *g_GAME_WindowOwnerRenderContextVtableSlots[50];
 static int g_fWindowOwnerRenderContextVtableInitialized;
 extern void *LEMBALL_FASTCALL DeleteRenderQueueNodeThunk(
     void *pObject, int nUnused, unsigned char fDelete);
@@ -633,6 +634,8 @@ static void *g_GAME_LevelSelectionModeVtable[6];
 static void *g_GAME_LevelSelectionModeEventClientVtable[4];
 static void *g_GAME_MainMenuModeVtable[6];
 static void *g_GAME_MainMenuModeEventClientVtable[4];
+static void *g_GAME_OptionsModeVtable[6];
+static void *g_GAME_OptionsModeEventClientVtable[4];
 static void *g_GAME_NetworkLobbyTransportControllerVtable[6];
 static void *g_GAME_NetworkLobbyTransportEventClientVtable[4];
 static void *g_GAME_LevelModeActiveInterfaceVtable[2];
@@ -640,8 +643,8 @@ void *g_pStartupModeVtable = g_GAME_StartupModeVtable;
 void *g_pStartupModeRenderThunk = g_GAME_StartupModeEventClientVtable;
 void *g_pMainMenuModeVtable = g_GAME_MainMenuModeVtable;
 void *g_pMainMenuModeRenderThunk = g_GAME_MainMenuModeEventClientVtable;
-void *g_pMode3Vtable = g_GAME_GenericModeVtableSlots;
-void *g_pMode3RenderThunk = g_GAME_LevelModeActiveInterfaceVtable;
+void *g_pMode3Vtable = g_GAME_OptionsModeVtable;
+void *g_pMode3RenderThunk = g_GAME_OptionsModeEventClientVtable;
 void *g_pSimpleModeDeleteVtable = g_GAME_GenericModeVtableSlots;
 void *g_pSimpleModeVtable = g_GAME_GenericModeVtableSlots;
 void *g_pMode16Vtable = g_GAME_GenericModeVtableSlots;
@@ -677,6 +680,10 @@ void *LEMBALL_FASTCALL DeleteStartupModeThunk(
 static void *LEMBALL_FASTCALL DeleteLevelSelectionModeThunk(
     void *pObject, int nUnusedEdx, BYTE fDelete);
 void *LEMBALL_FASTCALL DeleteMainMenuModeThunk(
+    void *pObject, int nUnusedEdx, BYTE fDelete);
+static void *LEMBALL_FASTCALL DeleteOptionsModeThunk(
+    void *pObject, int nUnusedEdx, BYTE fDelete);
+static void *LEMBALL_FASTCALL DeleteOptionsModeEventClientThunk(
     void *pObject, int nUnusedEdx, BYTE fDelete);
 void EnsureMainGameVariantResourceMode(GameMainContext *pMainContext, int nVariantMode);
 void *ConstructLevelGameMode(void *pModeObject, GameMainContext *pMainContext);
@@ -954,6 +961,20 @@ static void InitializeGameStubVtables(void) {
         (void *)HandleBaseModeActionButtonEventThunk;
     g_GAME_MainMenuModeEventClientVtable[3] = 0;
 
+    g_GAME_OptionsModeVtable[0] = (void *)DeleteOptionsModeThunk;
+    g_GAME_OptionsModeVtable[1] = (void *)UpdateBaseModeThunk;
+    g_GAME_OptionsModeVtable[2] = (void *)ReturnZeroBaseModeThunk;
+    g_GAME_OptionsModeVtable[3] = (void *)NoopBaseModeThunk;
+    g_GAME_OptionsModeVtable[4] = (void *)ReturnFalseBaseModeThunk;
+    g_GAME_OptionsModeVtable[5] = 0;
+    g_GAME_OptionsModeEventClientVtable[0] =
+        (void *)InitializeNonZrleVariantRenderEntry;
+    g_GAME_OptionsModeEventClientVtable[1] =
+        (void *)DeleteOptionsModeEventClientThunk;
+    g_GAME_OptionsModeEventClientVtable[2] =
+        (void *)HandleBaseModeActionButtonEventThunk;
+    g_GAME_OptionsModeEventClientVtable[3] = 0;
+
     g_GAME_NetworkLobbyTransportControllerVtable[0] =
         (void *)DeleteNetworkLobbyTransportController;
     g_GAME_NetworkLobbyTransportControllerVtable[1] =
@@ -1060,6 +1081,12 @@ static void InitializeWindowOwnerRenderContextVtable(
         g_GAME_PrimaryContextVtableSlots[44];
     g_GAME_WindowOwnerRenderContextVtableSlots[45] =
         g_GAME_PrimaryContextVtableSlots[45];
+    g_GAME_WindowOwnerRenderContextVtableSlots[46] =
+        (void *)noop_embedded_mci_callback_0046e050;
+    g_GAME_WindowOwnerRenderContextVtableSlots[47] =
+        (void *)noop_embedded_mci_callback_0046e050;
+    g_GAME_WindowOwnerRenderContextVtableSlots[48] = (void *)StubNoOpVoid;
+    g_GAME_WindowOwnerRenderContextVtableSlots[49] = (void *)StubNoOpVoid;
     g_fWindowOwnerRenderContextVtableInitialized = 1;
 }
 
@@ -3853,6 +3880,24 @@ void *LEMBALL_FASTCALL DeleteMainMenuMode(
         FreeVSMemBlock(pObject);
     }
     return pObject;
+}
+
+/* OptionsMode has the same base teardown as the startup and main-menu modes,
+ * but its two vtables use distinct scalar-delete entry points. */
+static void *LEMBALL_FASTCALL DeleteOptionsModeThunk(
+    void *pObject, int, BYTE fDelete)
+{
+    DestroyBaseModeObject(pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+static void *LEMBALL_FASTCALL DeleteOptionsModeEventClientThunk(
+    void *pObject, int, BYTE fDelete)
+{
+    return DeleteOptionsModeThunk((char *)pObject - 0x0c, 0, fDelete);
 }
 
 // FUNCTION: LEMBALL 0x00408080
