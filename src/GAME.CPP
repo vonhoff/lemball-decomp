@@ -626,6 +626,8 @@ extern int g_fLevelEndStateRequestLatched;
 int g_fLevelFrameClockPaused = 0;
 static void *g_GAME_StartupModeVtable[6];
 static void *g_GAME_StartupModeEventClientVtable[4];
+static void *g_GAME_LevelSelectionModeVtable[6];
+static void *g_GAME_LevelSelectionModeEventClientVtable[4];
 static void *g_GAME_MainMenuModeVtable[6];
 static void *g_GAME_MainMenuModeEventClientVtable[4];
 static void *g_GAME_NetworkLobbyTransportControllerVtable[6];
@@ -661,11 +663,15 @@ void *LEMBALL_FASTCALL DeleteQueuedRenderPointSinkFinalizeThunk(
     void *pObject, int, int fDelete);
 void *LEMBALL_FASTCALL DeleteStartupModeEventClientThunk(
     void *pObject, int, BYTE fDelete);
+static void *LEMBALL_FASTCALL DeleteLevelSelectionModeEventClientThunk(
+    void *pObject, int, BYTE fDelete);
 void *ConstructPaintballSequenceModeController(void *pModeObject,
                                                GameMainContext *pMainContext,
                                                int fSequenceVariant);
 int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresentThunk(int *pPrimaryContext);
 void *LEMBALL_FASTCALL DeleteStartupModeThunk(
+    void *pObject, int nUnusedEdx, BYTE fDelete);
+static void *LEMBALL_FASTCALL DeleteLevelSelectionModeThunk(
     void *pObject, int nUnusedEdx, BYTE fDelete);
 void *LEMBALL_FASTCALL DeleteMainMenuModeThunk(
     void *pObject, int nUnusedEdx, BYTE fDelete);
@@ -915,6 +921,21 @@ static void InitializeGameStubVtables(void) {
     g_GAME_StartupModeEventClientVtable[2] =
         (void *)HandleBaseModeActionButtonEventThunk;
     g_GAME_StartupModeEventClientVtable[3] = 0;
+
+    g_GAME_LevelSelectionModeVtable[0] =
+        (void *)DeleteLevelSelectionModeThunk;
+    g_GAME_LevelSelectionModeVtable[1] = (void *)UpdateBaseModeThunk;
+    g_GAME_LevelSelectionModeVtable[2] = (void *)ReturnZeroBaseModeThunk;
+    g_GAME_LevelSelectionModeVtable[3] = (void *)NoopBaseModeThunk;
+    g_GAME_LevelSelectionModeVtable[4] = (void *)ReturnFalseBaseModeThunk;
+    g_GAME_LevelSelectionModeVtable[5] = 0;
+    g_GAME_LevelSelectionModeEventClientVtable[0] =
+        (void *)InitializeNonZrleVariantRenderEntry;
+    g_GAME_LevelSelectionModeEventClientVtable[1] =
+        (void *)DeleteLevelSelectionModeEventClientThunk;
+    g_GAME_LevelSelectionModeEventClientVtable[2] =
+        (void *)HandleBaseModeActionButtonEventThunk;
+    g_GAME_LevelSelectionModeEventClientVtable[3] = 0;
 
     g_GAME_MainMenuModeVtable[0] = (void *)DeleteMainMenuModeThunk;
     g_GAME_MainMenuModeVtable[1] = (void *)UpdateBaseModeThunk;
@@ -2686,9 +2707,25 @@ void *ConstructLevelSelectionModeController(void *pModeObject, GameMainContext *
 
     pMode = (GameLevelSelectionModeController *)pModeObject;
     InitializeBaseModeObject(pMode, pMainContext);
-    pMode->m_pVtable = (void **)g_pStartupModeVtable;
-    pMode->m_pRenderQueueNodeVtable = (void **)g_pStartupModeRenderThunk;
+    pMode->m_pVtable = g_GAME_LevelSelectionModeVtable;
+    pMode->m_pRenderQueueNodeVtable =
+        g_GAME_LevelSelectionModeEventClientVtable;
     return pModeObject;
+}
+
+static void *LEMBALL_FASTCALL DeleteLevelSelectionModeEventClientThunk(
+    void *pObject, int, BYTE fDelete) {
+    return DeleteLevelSelectionModeThunk(
+        (char *)pObject - 0x0c, 0, fDelete);
+}
+
+static void *LEMBALL_FASTCALL DeleteLevelSelectionModeThunk(
+    void *pObject, int, BYTE fDelete) {
+    DestroyBaseModeObject(pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
 }
 
 void VS_WindowOwnerBase::ReservedWindowOwnerSlot19(void) {
