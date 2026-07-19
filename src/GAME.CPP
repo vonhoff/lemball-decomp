@@ -3954,7 +3954,7 @@ bool GameLevelProgressState::IsCurrentLevelAvailable(void) {
 
     if (m_nCurrentPack == 4) {
         fAvailable = true;
-        if (10 < m_nCurrentLevel) {
+        if (11 <= m_nCurrentLevel) {
             return false;
         }
     } else {
