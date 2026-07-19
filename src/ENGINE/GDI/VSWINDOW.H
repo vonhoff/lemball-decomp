@@ -177,6 +177,4 @@ void LEMBALL_FASTCALL ForwardNestedGeometryRectUpdate(
     void *pOwner, int nUnused, short *paRect);
 LRESULT LEMBALL_FASTCALL DispatchWindowOwnerRenderContextMessage(
     void *pOwner, int nUnused, UINT uMessage, WPARAM wParam, LPARAM lParam);
-void LEMBALL_FASTCALL PresentWindowOwnerRenderContext(void *pOwner);
-
 #endif

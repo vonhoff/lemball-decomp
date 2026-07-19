@@ -344,8 +344,8 @@ static void *GetPrimaryContextFlushWindowOwnerDirtyRectAddress(void) {
 }
 
 static void *GetPrimaryContextUpdateWindowOwnerRenderContextAddress(void) {
-    void (GamePrimaryContext::*pMethod)(void) =
-        &GamePrimaryContext::UpdateWindowOwnerRenderContext;
+    void (GameWindowOwnerRenderContext::*pMethod)(void) =
+        &GameWindowOwnerRenderContext::UpdateWindowOwnerRenderContext;
     return *(void **)&pMethod;
 }
 
@@ -368,14 +368,20 @@ static void *GetPrimaryContextDispatchActiveScreenFrameAddress(void) {
 }
 
 static void *GetPrimaryContextInitializeWindowOwnerFromRectAndActivateAddress(void) {
-    void (GamePrimaryContext::*pMethod)(short *, void *, const char *, int) =
-        &GamePrimaryContext::InitializeWindowOwnerFromRectAndActivate;
+    void (GameWindowOwnerRenderContext::*pMethod)(short *, void *, const char *, int) =
+        &GameWindowOwnerRenderContext::InitializeWindowOwnerFromRectAndActivate;
     return *(void **)&pMethod;
 }
 
 static void *GetPrimaryContextApplyWindowOwnerPaletteResourceAddress(void) {
-    void (GamePrimaryContext::*pMethod)(int) =
-        &GamePrimaryContext::ApplyWindowOwnerPaletteResource;
+    void (GameWindowOwnerRenderContext::*pMethod)(int) =
+        &GameWindowOwnerRenderContext::ApplyWindowOwnerPaletteResource;
+    return *(void **)&pMethod;
+}
+
+static void *GetWindowOwnerPresentAddress(void) {
+    void (GameWindowOwnerRenderContext::*pMethod)(void) =
+        &GameWindowOwnerRenderContext::PresentWindowOwnerRenderContext;
     return *(void **)&pMethod;
 }
 
@@ -916,7 +922,7 @@ static void InitializeGameStubVtables(void) {
     g_GAME_PrimaryContextVtableSlots[44] =
         GetPrimaryContextUpdateWindowOwnerRenderContextAddress();
     g_GAME_PrimaryContextVtableSlots[45] =
-        (void *)PresentWindowOwnerRenderContext;
+        GetWindowOwnerPresentAddress();
     g_GAME_GenericModeVtableSlots[0] = g_pGAME_ModeDeleteVtableSlot;
     g_GAME_GenericModeVtableSlots[1] = (void *)StubNoOpVoid;
     g_GAME_LevelModeActiveInterfaceVtable[0] =
@@ -5193,7 +5199,7 @@ void GameWindowOwnerRenderContext::ApplyWindowOwnerActivation(int nActivate) {
 }
 
 // FUNCTION: LEMBALL 0x00464190
-void GamePrimaryContext::UpdateWindowOwnerRenderContext(void) {
+void GameWindowOwnerRenderContext::UpdateWindowOwnerRenderContext(void) {
     short aRect[4];
 
     aRect[0] = 0;
@@ -5307,7 +5313,7 @@ void GamePrimaryContext::FlushWindowOwnerDirtyRect(int nUnused) {
 }
 
 // FUNCTION: LEMBALL 0x00464440
-void GamePrimaryContext::InitializeWindowOwnerFromRectAndActivate(
+void GameWindowOwnerRenderContext::InitializeWindowOwnerFromRectAndActivate(
     short *paRect, void *pWindowOwner, const char *pszTitle, int nActivate)
 
 {
@@ -5327,7 +5333,7 @@ void GamePrimaryContext::DispatchWindowOwnerRectInitialization(
 }
 
 // FUNCTION: LEMBALL 0x00464490
-void GamePrimaryContext::ApplyWindowOwnerPaletteResource(int nResourceId) {
+void GameWindowOwnerRenderContext::ApplyWindowOwnerPaletteResource(int nResourceId) {
     int *pPalette;
     int nBackendContext;
     VsGdiPaletteTargetVirtualInterface *pPaletteTarget;

@@ -91,6 +91,12 @@ DECOMP_SIZE_ASSERT(GameWindowOwnerRenderContextBase, 0x8c);
 // This layer installs the second 46-slot vtable at 0x00499318.
 struct GameWindowOwnerRenderContext : public GameWindowOwnerRenderContextBase {
     void ApplyWindowOwnerActivation(int nActivate);
+    void InitializeWindowOwnerFromRectAndActivate(
+        short *paRect, void *pWindowOwner, const char *pszTitle,
+        int nActivate);
+    void ApplyWindowOwnerPaletteResource(int nResourceId);
+    void UpdateWindowOwnerRenderContext(void);
+    void PresentWindowOwnerRenderContext(void);
 
     short m_aDirtyRectTail8C[2];             // 0x8c
 };
@@ -124,18 +130,12 @@ struct GamePrimaryContext : public GameWindowOwnerRenderContext {
     GamePrimaryContext *ConstructPrimaryContextThunk(GameMainContext *pMainContext);
     void SwitchPrimaryContextScreen(int nMode);
     void DestroyPrimaryContextActiveScreen(int nUnused);
-    void UpdateWindowOwnerRenderContext(void);
     void FlushWindowOwnerDirtyRect(int nUnused);
     void DispatchWindowOwnerRectInitialization(short *paRect,
                                                 void *pWindowOwner,
                                                 const char *pszTitle);
     void DispatchPrimaryContextActiveScreenFrame(void *pFrameArgument);
     void MarkNestedContextDirtyIfField20(void);
-    void InitializeWindowOwnerFromRectAndActivate(short *paRect,
-                                                   void *pWindowOwner,
-                                                   const char *pszTitle,
-                                                   int nActivate);
-    void ApplyWindowOwnerPaletteResource(int nResourceId);
     short *ComputePrimaryContextCenteredScreenRect(short *paRect,
                                                    int nLeftOverride,
                                                    int nTopOverride);

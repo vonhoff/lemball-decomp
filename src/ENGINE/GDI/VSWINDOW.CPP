@@ -850,11 +850,14 @@ LRESULT LEMBALL_FASTCALL DispatchWindowOwnerRenderContextMessage(
 }
 
 // FUNCTION: LEMBALL 0x00464220
-void LEMBALL_FASTCALL PresentWindowOwnerRenderContext(void *pOwner) {
+void GameWindowOwnerRenderContext::PresentWindowOwnerRenderContext(void) {
+    void *pOwner;
     VS_RootGeometryOwnerChildNode *pNode;
     void *pGeometryContext;
     void *hDc;
     void (LEMBALL_FASTCALL *pPresentChild)(void *);
+
+    pOwner = this;
 
     if (*(int *)((char *)pOwner + 4) == 0) {
         return;
