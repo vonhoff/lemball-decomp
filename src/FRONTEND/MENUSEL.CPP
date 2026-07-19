@@ -446,18 +446,16 @@ static int MapSpriteOwnerEventToFrameSlot(int nEvent) {
 static void QueueSpriteOwnerEvent(
     void *pObject, short nType, int nFrame) {
     GameMenuSelectorEvent Event;
+    void *pQueue;
 
     Event.m_nType00 = nType;
-    Event.m_nReserved02 = 0;
     Event.m_dwTimestamp04 = (int)timeGetTime();
     Event.m_nPayload08 = *(int *)((char *)pObject + 0xcc);
     Event.m_nPayload0C = (int)(unsigned long)pObject;
     Event.m_nPayload10 = nFrame;
-    Event.m_nPayload14 = 0;
-    Event.m_nPayload18 = 0;
+    pQueue = *(void **)((char *)pObject + 0xf4);
     ((void (LEMBALL_FASTCALL *)(void *, int, void *))
-         (*(void ***)g_pSharedRenderDispatchQueue)[2])(
-            g_pSharedRenderDispatchQueue, 0, &Event);
+         (*(void ***)pQueue)[2])(pQueue, 0, &Event);
 }
 
 static void NotifySpriteOwnerFrameEvent(
