@@ -858,6 +858,7 @@ static int LEMBALL_FASTCALL HandleIntroSequenceInputThunk(
     void *pObject, int nUnusedEdx, short *pEvent);
 static void LEMBALL_FASTCALL RefreshIntroSequenceMediaPathThunk(
     void *pObject);
+void LEMBALL_FASTCALL ActivateFramedScreenBaseThunk(void *pScreen);
 void LEMBALL_FASTCALL NoopIntroSequenceScreenHookThunk(void *pObject);
 void WINAPI IgnoreIntroSequenceMediaStateChange(int nState);
 void WINAPI IgnoreIntroSequenceMediaPositionChange(int nPosition);
@@ -1983,6 +1984,11 @@ static void *LEMBALL_FASTCALL DeleteMainMenuScreenThunk(
     return DeleteMainMenuScreen(pObject, nUnusedEdx, fDelete);
 }
 
+// FUNCTION: LEMBALL 0x004025c7
+void LEMBALL_FASTCALL ActivateFramedScreenBaseThunk(void *pScreen) {
+    ActivateFramedScreenBase(pScreen);
+}
+
 // FUNCTION: LEMBALL 0x0040264e
 static void LEMBALL_FASTCALL DrawFramedScreenBaseThunk(void *pObject) {
     DrawFramedScreenBase(pObject);
@@ -2159,6 +2165,8 @@ void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
 
 {
     GameFramedScreenBase *pScreen;
+    int iRenderEntryGroup;
+    unsigned char *pRenderEntryGroup;
 
     pScreen = (GameFramedScreenBase *)pObject;
     pScreen->m_pVtable00 = g_GAME_FramedScreenBaseVtable;
@@ -2168,7 +2176,13 @@ void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
                     cExtraPackagedEntries + 3,
                     cExtraActionEntries + 200,
                     nVariantStateCount, 0);
-    ConstructFramedScreenRenderEntryGroup(pScreen->m_abRenderEntryGroupC8);
+    pRenderEntryGroup = pScreen->m_abRenderEntryGroupC8;
+    iRenderEntryGroup = 0;
+    do {
+        ConstructFramedScreenRenderEntryGroup(pRenderEntryGroup);
+        pRenderEntryGroup += sizeof(pScreen->m_abRenderEntryGroupC8);
+        --iRenderEntryGroup;
+    } while (iRenderEntryGroup >= 0);
 
     pScreen->m_cyScreen37E = 0;
     pScreen->m_cFrameSelectorFrames354 = 1;

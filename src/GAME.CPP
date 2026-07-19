@@ -4797,7 +4797,7 @@ void *GameScreenObject::ConstructIntroSequenceScreen(void *pPrimaryContext, void
     *(int *)(pScreen + 0xa8) = 0;
     *(int *)(pScreen + 0xac) = 0;
     *(int *)(pScreen + 0xb0) = 0;
-    ActivateFramedScreenBase(pScreen);
+    ActivateFramedScreenBaseThunk(pScreen);
     return pScreen;
 }
 
@@ -4862,10 +4862,6 @@ void *GameScreenObject::ConstructMainMenuScreen(void *pPrimaryContext, void *pWi
     pProgress = (GameLevelProgressState *)g_pLevelProgressState;
     nPack = pProgress->m_nCurrentPack;
     switch (nPack) {
-    case 0:
-    case 4:
-        *(int *)(pScreen + 0x3b4) = 0;
-        break;
     case 1:
         *(int *)(pScreen + 0x3b4) = 1;
         break;
@@ -4875,12 +4871,18 @@ void *GameScreenObject::ConstructMainMenuScreen(void *pPrimaryContext, void *pWi
     case 3:
         *(int *)(pScreen + 0x3b4) = 3;
         break;
+    case 0:
+        *(int *)(pScreen + 0x3b4) = 0;
+        break;
+    case 4:
+        *(int *)(pScreen + 0x3b4) = 0;
+        break;
     }
     ((GameLevelProgressState *)g_pLevelProgressState)->m_nUnused4C = 0;
     *(int *)(pScreen + 0xa8) = 1;
     *(int *)(pScreen + 0xac) = 1;
     *(int *)(pScreen + 0xb0) = 1;
-    ActivateFramedScreenBase(pScreen);
+    ActivateFramedScreenBaseThunk(pScreen);
     return pScreen;
 }
 
