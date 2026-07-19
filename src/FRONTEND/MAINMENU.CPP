@@ -2767,8 +2767,8 @@ static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject) {
         pOptionsResources = g_GAME_MainMenuWidgetResourcesStandard + 4;
     }
 
-    cRenderGroups = 1;
     pForegroundEntry = pScreen->m_abRenderEntryGroupC8 + 0x14;
+    cRenderGroups = 1;
     do {
         pForegroundBitmap = pScreen->m_pForegroundBitmapC0;
         cxForeground = *(short *)((char *)pForegroundBitmap + 0x48);
