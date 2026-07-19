@@ -2182,12 +2182,26 @@ static void LEMBALL_FASTCALL SetMenuSelectorProgressPercent(
 static int LEMBALL_FASTCALL HandleMenuSelectorEntryEvent(
     GameMenuSelectorEntry *pEntry, int,
     GameMenuSelectorEvent *pEvent) {
+    struct CommandEvent {
+        short m_nType00;
+        short m_nReserved02;
+        int m_dwTimestamp04;
+        int m_nPayload08;
+        int m_nPayload0C;
+        int m_nPayload10;
+    };
     typedef void (LEMBALL_FASTCALL *QueueProc)(void *, int, void *);
-    GameMenuSelectorEvent Event;
+    CommandEvent Event;
     void *pOverlay;
     void *pProgress;
     int nPercent;
     int nResourceId;
+
+    Event.m_nType00 = 0x0c;
+    Event.m_dwTimestamp04 = (int)timeGetTime();
+    Event.m_nPayload08 = 0;
+    Event.m_nPayload0C = 0;
+    Event.m_nPayload10 = 0;
 
     if (pEvent->m_nType00 != 0x0c ||
         pEvent->m_nPayload08 != pEntry->m_nToken30) {
@@ -2195,14 +2209,7 @@ static int LEMBALL_FASTCALL HandleMenuSelectorEntryEvent(
     }
     if (pEntry->m_nOverlayKind10 == 0) {
         if (pEntry->m_nActivationMode2C == 1) {
-            Event.m_nType00 = 0x0c;
-            Event.m_nReserved02 = 0;
-            Event.m_dwTimestamp04 = (int)timeGetTime();
             Event.m_nPayload08 = pEntry->m_nCommand34;
-            Event.m_nPayload0C = 0;
-            Event.m_nPayload10 = 0;
-            Event.m_nPayload14 = 0;
-            Event.m_nPayload18 = 0;
             ((QueueProc)(*(void ***)g_pSharedRenderDispatchQueue)[2])(
                 g_pSharedRenderDispatchQueue, 0, &Event);
             return 0;
