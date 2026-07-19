@@ -221,7 +221,7 @@ int LEMBALL_FASTCALL ThunkConfirmSelectedNetworkLobbyPlayerEntry(int nNetworkLob
         ->ConfirmSelectedPlayerEntry();
 }
 
-// FUNCTION: LEMBALL 0x00401f23
+// STUB: LEMBALL 0x00401f23
 void ThunkHandleNetworkLobbyTransportStatusEvent(int nEventType) {
     if (g_pActiveNetworkLobbyScreen != 0) {
         if (nEventType == 10) {

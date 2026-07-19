@@ -990,7 +990,7 @@ void LEMBALL_FASTCALL RestoreStatusIndicatorPointSinkEntryVtable(void *pObject) 
     RestoreStatusIndicatorPointSinkEntryVtableBody(pObject);
 }
 
-// FUNCTION: LEMBALL 0x0040134d
+// STUB: LEMBALL 0x0040134d
 int LEMBALL_FASTCALL HandleBaseModeActionButtonEventThunk(void *pClient, int, void *pEvent) {
     return ((GameBaseModeEventClient *)pClient)
         ->GameBaseModeEventClient::HandleBaseModeActionButtonEvent(
@@ -1088,7 +1088,7 @@ void LEMBALL_FASTCALL DispatchRenderPointRectSinkThunk00401C71(
     DispatchRenderPointRectSinkEntry004398B0(pObject, 0, pContext);
 }
 
-// FUNCTION: LEMBALL 0x00401cd5
+// STUB: LEMBALL 0x00401cd5
 void LevelVariantRenderManagerView::ReleaseLevelScreenVariantStateWrapper(int nResourceId) {
     ReleaseLevelScreenVariantStateWrapperBody(nResourceId);
 }
@@ -1117,12 +1117,12 @@ static void LEMBALL_FASTCALL QueueHelperLocalRectUpdateThunk00401E6F(
     QueueHelperLocalRectUpdateEntry00432B10(pObject, 0, pQueue);
 }
 
-// FUNCTION: LEMBALL 0x00401faa
+// STUB: LEMBALL 0x00401faa
 void GameBaseModeScreen::QueueActiveBaseModeUserActionThunk(int nAction, int nPhase) {
     QueueActiveBaseModeUserAction(nAction, nPhase);
 }
 
-// FUNCTION: LEMBALL 0x0040213a
+// STUB: LEMBALL 0x0040213a
 static void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntryThunk(
     void *pObject, int, void *pManager)
 {
@@ -1162,12 +1162,12 @@ void *InitializeLevelSelectionPointRectSinkEntry(void *pObject) {
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x004029be
+// STUB: LEMBALL 0x004029be
 void GameBaseModeScreen::DispatchBaseModeUserActionThunk(int nAction, int nPhase) {
     DispatchBaseModeUserAction(nAction, nPhase);
 }
 
-// FUNCTION: LEMBALL 0x004029cd
+// STUB: LEMBALL 0x004029cd
 static void LEMBALL_FASTCALL QueueFramedScreenRenderEntryThunk(
     void *pObject, int, void *pQueue)
 {
@@ -1197,12 +1197,12 @@ static void LEMBALL_FASTCALL SetStatusIndicatorLoadProgressThunk00402BFD(
     SetStatusIndicatorLoadProgress0044B340(pObject, 0, nProgress);
 }
 
-// FUNCTION: LEMBALL 0x00402c20
+// STUB: LEMBALL 0x00402c20
 void *DeleteBaseModeObjectAdjustedThunk(void *pObject, BYTE fDelete) {
     return DeleteBaseModeObjectAdjusted(pObject, fDelete);
 }
 
-// FUNCTION: LEMBALL 0x00402d1a
+// STUB: LEMBALL 0x00402d1a
 void GameBaseModeObject::QueueBaseModeUserActionThunk(int nAction, int nPhase) {
     QueueBaseModeUserAction(nAction, nPhase);
 }
@@ -1219,7 +1219,7 @@ void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableC(void *pObject) {
     RestorePackagedSpriteRenderEntryVtableCBody(pObject);
 }
 
-// FUNCTION: LEMBALL 0x00402f1d
+// STUB: LEMBALL 0x00402f1d
 void LevelVariantRenderManagerView::ReleaseLevelScreenVariantStateWrapperRange(int nFirstResourceId, int nLastResourceId) {
     ReleaseLevelScreenVariantStateWrapperRangeBody(nFirstResourceId, nLastResourceId);
 }
@@ -1245,7 +1245,7 @@ void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntry(
     return InitializeHelperLocalRectUpdateEntryBody(pObject);
 }
 
-// FUNCTION: LEMBALL 0x00403166
+// STUB: LEMBALL 0x00403166
 static void *DeleteFramedScreenRenderChildEntryThunk(void *pObject, BYTE fDelete) {
     return DeleteFramedScreenRenderChildEntryB(pObject, fDelete);
 }
@@ -1269,7 +1269,7 @@ void *InitializeBaseModeActionButtonPointSink(void *pObject) {
     return pObject;
 }
 
-// FUNCTION: LEMBALL 0x004033fa
+// STUB: LEMBALL 0x004033fa
 static void *DeleteFramedScreenRenderChildEntryAThunk(void *pObject, BYTE fDelete) {
     return DeleteFramedScreenRenderChildEntryA(pObject, fDelete);
 }

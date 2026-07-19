@@ -2541,7 +2541,7 @@ int VS_RootGeometryOwner::GetWindowOwnerState(void) {
     return m_nWindowOwnerState30;
 }
 
-// FUNCTION: LEMBALL 0x004010f0
+// STUB: LEMBALL 0x004010f0
 GamePrimaryContext *GamePrimaryContext::ConstructPrimaryContextThunk(GameMainContext *pMainContext) {
     return ConstructPrimaryContext(pMainContext);
 }
@@ -2626,7 +2626,7 @@ int RunMainGameSessionThunk(int cArgs, const char *const *ppszArgs) {
     return RunMainGameSession(cArgs, ppszArgs);
 }
 
-// FUNCTION: LEMBALL 0x00401875
+// STUB: LEMBALL 0x00401875
 short *GamePrimaryContext::ComputePrimaryContextCenteredScreenRectThunk(short *paRect,
                                                                           int nLeftOverride,
                                                                           int nTopOverride)
@@ -2635,7 +2635,7 @@ short *GamePrimaryContext::ComputePrimaryContextCenteredScreenRectThunk(short *p
     return ComputePrimaryContextCenteredScreenRect(paRect, nLeftOverride, nTopOverride);
 }
 
-// FUNCTION: LEMBALL 0x00401884
+// STUB: LEMBALL 0x00401884
 int LEMBALL_FASTCALL ReturnZeroBaseModeThunk(void *) {
     return 0;
 }
@@ -2647,7 +2647,7 @@ int VS_WindowOwnerBase::IsCurrentWindowOwnerContext(void) {
            g_pCachedCurrentContextWindow;
 }
 
-// FUNCTION: LEMBALL 0x00401b72
+// STUB: LEMBALL 0x00401b72
 void SetLevelScreenStatusIndicatorModeThunk(int nMode, int nValue) {
     SetLevelScreenStatusIndicatorMode(nMode, nValue);
 }
@@ -2777,7 +2777,7 @@ void GameLevelProgressState::ApplyPasswordValueThunk(unsigned int uValue) {
     ApplyPasswordValue(uValue);
 }
 
-// FUNCTION: LEMBALL 0x0040227f
+// STUB: LEMBALL 0x0040227f
 void *LEMBALL_FASTCALL DeleteStartupModeEventClientThunk(
     void *pObject, int, BYTE fDelete)
 
@@ -2806,7 +2806,7 @@ int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresentThunk(int *pPrimaryCon
     return IsPrimaryContextWindowReadyForPresent(pPrimaryContext);
 }
 
-// FUNCTION: LEMBALL 0x004026f3
+// STUB: LEMBALL 0x004026f3
 void *LEMBALL_FASTCALL DeleteStartupModeThunk(
     void *pObject, int nUnusedEdx, BYTE fDelete)
 
@@ -2814,7 +2814,7 @@ void *LEMBALL_FASTCALL DeleteStartupModeThunk(
     return DeleteStartupMode(pObject, nUnusedEdx, fDelete);
 }
 
-// FUNCTION: LEMBALL 0x004027a2
+// STUB: LEMBALL 0x004027a2
 void *LEMBALL_FASTCALL DeleteMainMenuModeThunk(
     void *pObject, int nUnusedEdx, BYTE fDelete)
 
@@ -2986,7 +2986,7 @@ void RequestLocalLevelGameStateChange(void *pLevelMode, int nState) {
     }
 }
 
-// FUNCTION: LEMBALL 0x00402d24
+// STUB: LEMBALL 0x00402d24
 void LEMBALL_FASTCALL UpdateBaseModeThunk(int *pMode) {
     if (pMode[7] != 0 && g_nSelectedNetworkLobbyPeerId == 0 &&
         g_pActiveNetworkLobbyScreen != 0) {
@@ -2995,7 +2995,7 @@ void LEMBALL_FASTCALL UpdateBaseModeThunk(int *pMode) {
     ((void (LEMBALL_FASTCALL *)(void *))(*(void ***)pMode)[3])(pMode);
 }
 
-// FUNCTION: LEMBALL 0x00402d29
+// STUB: LEMBALL 0x00402d29
 void *LEMBALL_FASTCALL DeleteMainMenuModeEventClientThunk(
     void *pObject, int, BYTE fDelete)
 
@@ -3050,7 +3050,7 @@ unsigned int GameLevelProgressState::ComputeLevelPasswordChecksumThunk(unsigned 
     return ComputeLevelPasswordChecksum(uValue);
 }
 
-// FUNCTION: LEMBALL 0x00403378
+// STUB: LEMBALL 0x00403378
 void LEMBALL_FASTCALL NoopBaseModeThunk(void *) {
 }
 
@@ -3071,7 +3071,7 @@ int PASCAL ComputePowerOfTwoThunk(int nExponent) {
     return ComputePowerOfTwo(nExponent);
 }
 
-// FUNCTION: LEMBALL 0x00403774
+// STUB: LEMBALL 0x00403774
 int LEMBALL_FASTCALL ReturnFalseBaseModeThunk(void *) {
     return 0;
 }

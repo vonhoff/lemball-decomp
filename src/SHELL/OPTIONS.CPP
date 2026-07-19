@@ -65,7 +65,7 @@ StartupGraphicsWindowConfig g_StartupGraphicsDriverConfig = {
     0,
 };
 
-// FUNCTION: LEMBALL 0x004034c7
+// STUB: LEMBALL 0x004034c7
 StartupGraphicsWindowConfig *BuildStartupGraphicsWindowConfigThunk(const StartupGraphicsWindowConfig *pSeedConfig) {
     return BuildStartupGraphicsWindowConfig(pSeedConfig);
 }

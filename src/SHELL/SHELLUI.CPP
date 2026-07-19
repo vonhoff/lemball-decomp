@@ -186,7 +186,7 @@ void ShellUiPrimaryContextShell::RequestQuit(void) {
     *(int *)((char *)this + 0x38) = 1;
 }
 
-// FUNCTION: LEMBALL 0x0040292d
+// STUB: LEMBALL 0x0040292d
 int LEMBALL_FASTCALL HandlePrimaryContextMenuCommandThunk(
     ShellUiPrimaryContextShell *pShell, int,
     const ShellUiMenuCommandMessage *pMessage)
