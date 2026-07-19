@@ -1724,6 +1724,11 @@ static void LEMBALL_FASTCALL UpdateMainMenuScreenThunk(void *pObject) {
     UpdateMainMenuScreen(pObject);
 }
 
+// FUNCTION: LEMBALL 0x00401af0
+void GameMenuSelectorManager::InitializeChildContextThunk(void) {
+    InitializeChildContext();
+}
+
 // FUNCTION: LEMBALL 0x00401ba4
 static void LEMBALL_FASTCALL InitializeMainMenuWidgetsThunk(void *pObject) {
     InitializeMainMenuWidgets(pObject);
@@ -2791,44 +2796,38 @@ static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject) {
         *ppSelectorManager = 0;
     }
 
-    AppendMenuSelectorChild(
-        *ppSelectorManager, 0,
+    (*ppSelectorManager)->AppendChild(
         pScreen->m_panWidgetLayout39C[0],
         pScreen->m_panWidgetLayout39C[1],
         pPlayResources, 1, 0, 0, 0,
         &pScreen->m_nPlaySelection3A0, (int)0xacef00a6U);
-    AppendMenuSelectorChild(
-        *ppSelectorManager, 0,
+    (*ppSelectorManager)->AppendChild(
         pScreen->m_panWidgetLayout39C[2],
         pScreen->m_panWidgetLayout39C[3],
         pSinglePlayerResources, 1, 0, 0, 0,
         &pScreen->m_nSharedSelection3B8, (int)0xacef0001U);
-    AppendMenuSelectorChild(
-        *ppSelectorManager, 0,
+    (*ppSelectorManager)->AppendChild(
         pScreen->m_panWidgetLayout39C[4],
         pScreen->m_panWidgetLayout39C[5],
         pMultiPlayerResources, 1, 0, 0, 0,
         &pScreen->m_nMultiplayerSelection3A4, (int)0xacef00a7U);
-    AppendMenuSelectorChild(
-        *ppSelectorManager, 0,
+    (*ppSelectorManager)->AppendChild(
         pScreen->m_panWidgetLayout39C[8],
         pScreen->m_panWidgetLayout39C[9],
         pDisplayResources, 1, 0, 0, 0,
         &pScreen->m_nDisplayModeSelection3B0, (int)0xacef00a5U);
-    AppendMenuSelectorChild(
-        *ppSelectorManager, 0,
+    (*ppSelectorManager)->AppendChild(
         pScreen->m_panWidgetLayout39C[6],
         pScreen->m_panWidgetLayout39C[7],
         pPackResources, 0, 0, 3, 0,
         &pScreen->m_nPackSelection3B4, -1);
-    AppendMenuSelectorChild(
-        *ppSelectorManager, 0,
+    (*ppSelectorManager)->AppendChild(
         pScreen->m_panWidgetLayout39C[10],
         pScreen->m_panWidgetLayout39C[11],
         pOptionsResources, 1, 0, 0, 0,
         &pScreen->m_nSharedSelection3B8, (int)0xacef00a4U);
-    InitializeMenuSelectorCurrentState(*ppSelectorManager, 0, 0);
-    InitializeMenuSelectorChildContext(*ppSelectorManager);
+    (*ppSelectorManager)->InitializeCurrentState(0);
+    (*ppSelectorManager)->InitializeChildContextThunk();
 }
 
 // FUNCTION: LEMBALL 0x00448540
@@ -3100,33 +3099,33 @@ static void LEMBALL_FASTCALL InitializeOptionsScreenWidgets(void *pObject) {
         pScreen->m_pRenderContext88, 8, fCompact);
     pScreen->m_pSelectorManager334 = pManager;
 
-    AppendMenuSelectorChild(pManager, 0,
+    pManager->AppendChild(
         pScreen->m_panWidgetLayout3A8[0],
         pScreen->m_panWidgetLayout3A8[1], pZoomResources,
         0, fCompact, 1, 0, &pScreen->m_fZoomDisabled398,
         (int)0xacef0004U);
-    AppendMenuSelectorChild(pManager, 0,
+    pManager->AppendChild(
         pScreen->m_panWidgetLayout3A8[2],
         pScreen->m_panWidgetLayout3A8[3], pIntroResources,
         0, 0, 1, 0, &pScreen->m_fSkipStartupSequence3A4,
         (int)0xacef0007U);
-    AppendMenuSelectorChild(pManager, 0,
+    pManager->AppendChild(
         pScreen->m_panWidgetLayout3A8[4],
         pScreen->m_panWidgetLayout3A8[5], pEffectsResources,
         0, 0, 1, 0, &g_nOptionsEffectsSliderValue,
         (int)0xacef0005U);
-    AppendMenuSelectorChild(pManager, 0,
+    pManager->AppendChild(
         pScreen->m_panWidgetLayout3A8[6],
         pScreen->m_panWidgetLayout3A8[7], pMusicResources,
         0, 0, 1, 0, &g_nOptionsMusicSliderValue,
         (int)0xacef0006U);
-    AppendMenuSelectorChild(pManager, 0,
+    pManager->AppendChild(
         pScreen->m_panWidgetLayout3A8[10],
         pScreen->m_panWidgetLayout3A8[11], pBackResources,
         1, 0, 0, 0, &pScreen->m_nBackSelection39C,
         (int)0xacef0008U);
-    InitializeMenuSelectorCurrentState(pManager, 0, 0);
-    InitializeMenuSelectorChildContext(pManager);
+    pManager->InitializeCurrentState(0);
+    pManager->InitializeChildContextThunk();
 }
 
 // FUNCTION: LEMBALL 0x00448dc0

@@ -104,6 +104,14 @@ struct GameMenuSelectorManager {
     int m_nLayoutMode270;
     int m_fCompactLayout274;
     int m_fChildrenEnabled278;
+
+    void AppendChild(
+        int x, int nPosition, const int *panResourceIds,
+        int nActivationMode, int nFirstResource, int nLastResource,
+        int nReserved, int *pSelection, int nCommand);
+    void InitializeCurrentState(int iMetadata);
+    void InitializeChildContext(void);
+    void InitializeChildContextThunk(void);
 };
 
 struct GameMenuSelectorButtonConfig {
@@ -124,28 +132,6 @@ GameMenuSelectorManager *LEMBALL_FASTCALL ConstructMenuSelectorManager(
 GameMenuSelectorManager *LEMBALL_FASTCALL ConstructMenuSelectorManagerThunk(
     GameMenuSelectorManager *pManager, int nUnusedEdx, void *pRenderOwner,
     void *pRenderContext, int nChildCapacity, int nLayoutMode);
-void LEMBALL_FASTCALL AppendMenuSelectorChild(
-    GameMenuSelectorManager *pManager, int nUnusedEdx, int x,
-    int nPosition, const int *panResourceIds, int nActivationMode,
-    int nFirstResource, int nLastResource, int nReserved,
-    int *pSelection, int nCommand);
-void LEMBALL_FASTCALL AppendMenuSelectorChildThunk(
-    GameMenuSelectorManager *pManager, int nUnusedEdx, int x,
-    int nPosition, const int *panResourceIds, int nActivationMode,
-    int nFirstResource, int nLastResource, int nReserved,
-    int *pSelection, int nCommand);
-void LEMBALL_FASTCALL InitializeMenuSelectorCurrentState(
-    GameMenuSelectorManager *pManager, int nUnusedEdx, int iMetadata);
-void LEMBALL_FASTCALL InitializeMenuSelectorCurrentStateThunk(
-    GameMenuSelectorManager *pManager, int nUnusedEdx, int iMetadata);
-
-/* This boundary is implemented only after the exact 0x497e30 descendant
- * window-owner table is available. */
-void LEMBALL_FASTCALL InitializeMenuSelectorChildContext(
-    GameMenuSelectorManager *pManager);
-void LEMBALL_FASTCALL InitializeMenuSelectorChildContextThunk(
-    GameMenuSelectorManager *pManager);
-
 void LEMBALL_FASTCALL UpdateMenuSelectorAnimation(
     GameMenuSelectorManager *pManager);
 void LEMBALL_FASTCALL UpdateMenuSelectorAnimationThunk(

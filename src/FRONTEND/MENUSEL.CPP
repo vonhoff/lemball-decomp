@@ -1119,8 +1119,7 @@ static void *ConstructMenuSelectorChildContextObject(void *pObject) {
     return pObject;
 }
 
-void LEMBALL_FASTCALL InitializeMenuSelectorChildContext(
-    GameMenuSelectorManager *pManager) {
+void GameMenuSelectorManager::InitializeChildContext(void) {
     typedef void (LEMBALL_FASTCALL *InitializeRectProc)(
         void *pObject, int nUnusedEdx, short *pRect,
         void *pOwner, int nFlags);
@@ -1131,20 +1130,15 @@ void LEMBALL_FASTCALL InitializeMenuSelectorChildContext(
     if (pContextObject != 0) {
         ConstructMenuSelectorChildContextObject(pContextObject);
     }
-    pManager->m_pChildContext268 = pContextObject;
-    Rect[0] = *(short *)((char *)pManager->m_pRenderOwner214 + 8);
-    Rect[1] = *(short *)((char *)pManager->m_pRenderOwner214 + 10);
+    m_pChildContext268 = pContextObject;
+    Rect[0] = *(short *)((char *)m_pRenderOwner214 + 8);
+    Rect[1] = *(short *)((char *)m_pRenderOwner214 + 10);
     Rect[2] = 0;
     Rect[3] = 0;
     ((InitializeRectProc)(*(void ***)pContextObject)[1])(
-        pContextObject, 0, Rect, pManager->m_pRenderOwner214, 0);
-    pManager->m_pChildRenderContext26C =
+        pContextObject, 0, Rect, m_pRenderOwner214, 0);
+    m_pChildRenderContext26C =
         *(void **)((char *)pContextObject + 0x4c);
-}
-
-void LEMBALL_FASTCALL InitializeMenuSelectorChildContextThunk(
-    GameMenuSelectorManager *pManager) {
-    InitializeMenuSelectorChildContext(pManager);
 }
 
 struct GameQueuedVariantRangeEntry {
@@ -2094,8 +2088,8 @@ static GameMenuSelectorEntry *LEMBALL_FASTCALL ConstructMenuSelectorEntry(
     return pEntry;
 }
 
-void LEMBALL_FASTCALL AppendMenuSelectorChild(
-    GameMenuSelectorManager *pManager, int, int x,
+void GameMenuSelectorManager::AppendChild(
+    int x,
     int nPosition, const int *panResourceIds, int nActivationMode,
     int nFirstResource, int nLastResource, int nReserved,
     int *pSelection, int nCommand) {
@@ -2103,36 +2097,25 @@ void LEMBALL_FASTCALL AppendMenuSelectorChild(
     int nToken;
     int iChild;
 
-    nToken = ++pManager->m_nNextToken218;
-    iChild = pManager->m_cChildren80;
+    nToken = ++m_nNextToken218;
+    iChild = m_cChildren80;
     pEntry = (GameMenuSelectorEntry *)
         AllocateVSMemBlock(sizeof(GameMenuSelectorEntry));
     if (pEntry != 0) {
         pEntry = ConstructMenuSelectorEntry(
-            pEntry, 0, pManager->m_pRenderOwner214,
-            pManager->m_pRenderContext210, x, nPosition,
+            pEntry, 0, m_pRenderOwner214,
+            m_pRenderContext210, x, nPosition,
             panResourceIds, nActivationMode, nFirstResource,
             nLastResource, nReserved, nToken, pSelection,
             nCommand);
     }
-    pManager->m_apChildren1E0[iChild] = pEntry;
+    m_apChildren1E0[iChild] = pEntry;
     if (pEntry != 0) {
         RecordMenuSelectorChildMetadata(
-            pManager, 0, x, nPosition, nLastResource > 0,
+            this, 0, x, nPosition, nLastResource > 0,
             pEntry->m_nToken30);
     }
-    ++pManager->m_cChildren80;
-}
-
-void LEMBALL_FASTCALL AppendMenuSelectorChildThunk(
-    GameMenuSelectorManager *pManager, int nUnusedEdx, int x,
-    int nPosition, const int *panResourceIds, int nActivationMode,
-    int nFirstResource, int nLastResource, int nReserved,
-    int *pSelection, int nCommand) {
-    AppendMenuSelectorChild(
-        pManager, nUnusedEdx, x, nPosition, panResourceIds,
-        nActivationMode, nFirstResource, nLastResource, nReserved,
-        pSelection, nCommand);
+    ++m_cChildren80;
 }
 
 /* FUNCTION: LEMBALL 0x004688E0 */
@@ -2420,31 +2403,23 @@ static short *LEMBALL_FASTCALL GetVariantFrameExtent(
 }
 
 /* FUNCTION: LEMBALL 0x0044DA70 */
-void LEMBALL_FASTCALL InitializeMenuSelectorCurrentState(
-    GameMenuSelectorManager *pManager, int, int iMetadata) {
+void GameMenuSelectorManager::InitializeCurrentState(int iMetadata) {
     short Extent[2];
     short *pExtent;
     short cxOwner;
     int nSide;
 
-    pExtent = GetVariantFrameExtent((char *)pManager + 0x10, 0, Extent,
+    pExtent = GetVariantFrameExtent((char *)this + 0x10, 0, Extent,
                                     g_nMenuSelectorResourceId6, 0);
-    cxOwner = *(short *)((char *)pManager->m_pRenderOwner214 + 8);
-    pManager->m_xCenteredAction88 = cxOwner / 2 - pExtent[0] / 2;
-    pManager->m_nCurrentPosition8C =
-        pManager->m_aMetadataE0[iMetadata].m_nPosition;
-    nSide = pManager->m_aMetadataE0[iMetadata].m_nSide;
-    pManager->m_nCurrentSide94 = nSide == 1 ? 1 : 0;
-    pManager->m_xActionOrigin98 = pManager->m_xCenteredAction88;
-    pManager->m_nTargetPosition9C = pManager->m_nCurrentPosition8C;
-    pManager->m_nActionStateA4 = 0;
-    pManager->m_nSelectedSideA0 = pManager->m_nCurrentSide94;
-}
-
-/* FUNCTION: LEMBALL 0x004024F5 */
-void LEMBALL_FASTCALL InitializeMenuSelectorCurrentStateThunk(
-    GameMenuSelectorManager *pManager, int nUnusedEdx, int iMetadata) {
-    InitializeMenuSelectorCurrentState(pManager, nUnusedEdx, iMetadata);
+    cxOwner = *(short *)((char *)m_pRenderOwner214 + 8);
+    m_xCenteredAction88 = cxOwner / 2 - pExtent[0] / 2;
+    m_nCurrentPosition8C = m_aMetadataE0[iMetadata].m_nPosition;
+    nSide = m_aMetadataE0[iMetadata].m_nSide;
+    m_nCurrentSide94 = nSide == 1 ? 1 : 0;
+    m_xActionOrigin98 = m_xCenteredAction88;
+    m_nTargetPosition9C = m_nCurrentPosition8C;
+    m_nActionStateA4 = 0;
+    m_nSelectedSideA0 = m_nCurrentSide94;
 }
 
 static inline void BeginMenuSelectorMovement(
