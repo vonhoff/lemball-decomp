@@ -215,7 +215,7 @@ void LEMBALL_FASTCALL ThunkShowNetworkLobbyPlayerEntries(
 void LEMBALL_FASTCALL ThunkRemoveUnavailableNetworkLobbyPlayerEntries(
     int nNetworkLobbyScreen);
 
-// FUNCTION: LEMBALL 0x00401a87
+// STUB: LEMBALL 0x00401a87
 int LEMBALL_FASTCALL ThunkConfirmSelectedNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
     return ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
         ->ConfirmSelectedPlayerEntry();
@@ -235,43 +235,43 @@ void ThunkHandleNetworkLobbyTransportStatusEvent(int nEventType) {
     }
 }
 
-// FUNCTION: LEMBALL 0x0040252c
+// STUB: LEMBALL 0x0040252c
 void LEMBALL_FASTCALL ThunkShowNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
     ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
         ->ShowPlayerEntries();
 }
 
-// FUNCTION: LEMBALL 0x0040260d
+// STUB: LEMBALL 0x0040260d
 void LEMBALL_FASTCALL ThunkRemoveUnavailableNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
     ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
         ->RemoveUnavailablePlayerEntries();
 }
 
-// FUNCTION: LEMBALL 0x004026a8
+// STUB: LEMBALL 0x004026a8
 void LEMBALL_FASTCALL ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
     ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
         ->RefreshPlayerEntries();
 }
 
-// FUNCTION: LEMBALL 0x0040296e
+// STUB: LEMBALL 0x0040296e
 void LEMBALL_FASTCALL ThunkActivateSelectedNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
     ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
         ->ActivateSelectedPlayerEntry();
 }
 
-// FUNCTION: LEMBALL 0x00402f4a
+// STUB: LEMBALL 0x00402f4a
 int LEMBALL_FASTCALL ThunkSelectNextNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
     return ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
         ->SelectNextPlayerEntry();
 }
 
-// FUNCTION: LEMBALL 0x0040325b
+// STUB: LEMBALL 0x0040325b
 void LEMBALL_FASTCALL ThunkHideNetworkLobbyPlayerEntries(int nNetworkLobbyScreen) {
     ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
         ->HidePlayerEntries();
 }
 
-// FUNCTION: LEMBALL 0x0040346d
+// STUB: LEMBALL 0x0040346d
 int LEMBALL_FASTCALL ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
     return ((VsNetNetworkLobbyScreen *)(unsigned long)nNetworkLobbyScreen)
         ->SelectPreviousPlayerEntry();
