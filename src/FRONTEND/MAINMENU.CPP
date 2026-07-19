@@ -1648,6 +1648,12 @@ static void *g_GAME_FramedScreenBaseVtable[22] = {
     (void *)MainMenuSlot21Thunk
 };
 
+// FUNCTION: LEMBALL 0x0040110e
+static void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroupThunk(
+    void *pObject)
+{
+    RefreshFramedScreenRenderEntryGroup(pObject);
+}
 
 // FUNCTION: LEMBALL 0x00401190
 static void LEMBALL_FASTCALL DestroyMainMenuScreenThunk00401190(
@@ -1686,6 +1692,11 @@ static int LEMBALL_FASTCALL MainMenuSlot21Thunk(
 // FUNCTION: LEMBALL 0x00401735
 void GameQueuedVariantManagerView::SetChildrenEnabledThunk(int fEnabled) {
     SetChildrenEnabled(fEnabled);
+}
+
+// FUNCTION: LEMBALL 0x00401744
+static int ConsumeLevelSelectionChangedFlagThunk(void) {
+    return ConsumeLevelSelectionChangedFlag();
 }
 
 // FUNCTION: LEMBALL 0x00401767
@@ -1772,6 +1783,11 @@ static void *LEMBALL_FASTCALL DeleteMainMenuScreenThunk(
 
 {
     return DeleteMainMenuScreen(pObject, nUnusedEdx, fDelete);
+}
+
+// FUNCTION: LEMBALL 0x0040264e
+static void LEMBALL_FASTCALL DrawFramedScreenBaseThunk(void *pObject) {
+    DrawFramedScreenBase(pObject);
 }
 
 // FUNCTION: LEMBALL 0x004026bc
@@ -2176,7 +2192,7 @@ static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(
     ((GameGeometryDispatchInterface *)pGeometryDispatch)->BeginFrame();
     pScreen->m_iRenderEntryGroup328 = 0;
     if (pScreen->m_pSelectorManager334 != 0) {
-        if (ConsumeLevelSelectionChangedFlag() != 0 ||
+        if (ConsumeLevelSelectionChangedFlagThunk() != 0 ||
             pScreen->m_fSelectorDirty360 != 0) {
             pScreen->m_fSelectorDirty360 = 1;
         } else {
@@ -2184,9 +2200,9 @@ static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(
         }
     }
     if (pScreen->m_fSelectorDirty360 != 0) {
-        RefreshFramedScreenRenderEntryGroup(pScreen);
+        RefreshFramedScreenRenderEntryGroupThunk(pScreen);
     }
-    DrawFramedScreenBase(pScreen);
+    DrawFramedScreenBaseThunk(pScreen);
     pScreen->m_fFrameDirty330 = 0;
 }
 
@@ -3900,6 +3916,15 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
     return pScreen;
 }
 
+// FUNCTION: LEMBALL 0x0044c440
+static int ConsumeLevelSelectionChangedFlag(void) {
+    if (g_fLevelSelectionChanged != 0) {
+        g_fLevelSelectionChanged = 0;
+        return 1;
+    }
+    return 0;
+}
+
 // FUNCTION: LEMBALL 0x0044fbd0
 void GameQueuedVariantManagerView::SetChildrenEnabled(int fEnabled) {
     int i;
@@ -4970,14 +4995,6 @@ static void *LEMBALL_FASTCALL DeleteAdjustedPasswordEntryScreen(
     void *pObject, int nUnusedEdx, int fDelete) {
     return DeletePasswordEntryScreen((char *)pObject - 4,
                                      nUnusedEdx, fDelete);
-}
-
-static int ConsumeLevelSelectionChangedFlag(void) {
-    if (g_fLevelSelectionChanged != 0) {
-        g_fLevelSelectionChanged = 0;
-        return 1;
-    }
-    return 0;
 }
 
 static void InitializeFunctionalLevelSelectionVtable(void) {
