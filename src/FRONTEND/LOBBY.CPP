@@ -6,8 +6,9 @@
 extern "C" int WINAPI IsBadReadPtr(const void *pAddress,
                                     unsigned int cbAddress);
 
-static const char *g_NETWORK_GameConnectionRequestDuringGameText;
-static const char *g_NETWORK_LobbyConnectionAcceptedText;
+static const char g_NETWORK_GameConnectionRequestDuringGameText[] =
+    "Game connection request during game\n";
+extern char g_szNetworkLobbyLocalPlayerName[0x10];
 
 struct VsNetNetworkLobbyPlayerEntryChild {
     void **m_pVtable;
@@ -445,7 +446,9 @@ int HandleNetworkLobbyVsnetRuntimeEvent(void *pVsnetRuntime, unsigned short *pEv
                 pnTrackedPeer = &pRuntime->m_anTrackedPeers[nSlot];
                 *pnTrackedPeer = nPeer;
                 g_pszPendingNetworkLobbyStatusText =
-                    g_fNetworkLobbyScreenActive >= 1 ? (char *)g_NETWORK_LobbyConnectionAcceptedText : 0;
+                    g_fNetworkLobbyScreenActive >= 1
+                        ? g_szNetworkLobbyLocalPlayerName
+                        : 0;
                 ((GameEffStream *)(unsigned long)
                      ((int)(unsigned long)pRuntime->m_pPeerEntryTable +
                       nSlot * 0x50))

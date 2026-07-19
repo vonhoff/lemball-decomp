@@ -9,6 +9,8 @@ extern int PASCAL ReturnTrueVtableCallbackThunk(void *pObject);
 extern void *g_pNetworkLobbyVsnetRuntime;
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
+extern int HandleNetworkLobbyVsnetRuntimeEvent(
+    void *pVsnetRuntime, unsigned short *pEvent);
 extern void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void *pObject);
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void *pObject);
 void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStream(void *pObject);
@@ -42,7 +44,9 @@ static void *g_EFF_NetworkLobbyPeerEntryVtable[6] = {
 struct GameNetworkLobbyVsnetRuntimeVtableModel {
     virtual void Reserved00(void) {}
     virtual void Reserved04(void) {}
-    virtual void Reserved08(void) {}
+    virtual int HandleRuntimeEvent(unsigned short *pEvent) {
+        return HandleNetworkLobbyVsnetRuntimeEvent(this, pEvent);
+    }
     virtual void Reserved0c(void) {}
     virtual void Reserved10(void) {}
     virtual void Reserved14(void) {}
