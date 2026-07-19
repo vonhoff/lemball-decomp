@@ -116,7 +116,10 @@ struct GameBaseModeObject : public GameBaseModePrimaryBase,
 
     void QueueBaseModeUserAction(int nAction, int nPhase);
     void QueueBaseModeUserActionThunk(int nAction, int nPhase);
+    void *Delete(BYTE fDelete);
 };
+
+extern void LEMBALL_FASTCALL DestroyBaseModeObject(void *pObject);
 
 #define GameBASE_MODE_SCREEN_RESERVED(n) virtual void Reserved##n(void) = 0
 
@@ -4311,7 +4314,16 @@ void LEMBALL_FASTCALL RestoreFramedScreenRenderChildEntryVtableBody(void *pObjec
     *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
 
-// FUNCTION: LEMBALL 0x004472e0
+// FUNCTION: LEMBALL 0x004472b0
+void *GameBaseModeObject::Delete(BYTE fDelete) {
+    DestroyBaseModeObject(this);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(this);
+    }
+    return this;
+}
+
+// STUB: LEMBALL 0x004472e0
 static void *DeleteBaseModeObjectAdjusted(void *pObject, BYTE fDelete) {
     *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
     if ((fDelete & 1) != 0) {
