@@ -753,6 +753,7 @@ public:
     void PauseEmbeddedMciWindowPlayback(void);
     void ResumeEmbeddedMciWindowPlayback(void);
     void UpdateMediaPathFromListResource(int nResourceId);
+    unsigned int GetWindowOwnerFlags(void);
 
 private:
     void DispatchEmbeddedMciCommandId(unsigned int nCommandId);
@@ -5228,6 +5229,10 @@ void *VsGdiAnimWindowOwner::ConstructResourceGeometryHelperWindowOwner(void) {
         void *pAddress;
     } dispatchMessageMethod;
     union {
+        unsigned int (VsGdiAnimWindowOwner::*pMethod)(void);
+        void *pAddress;
+    } ownerFlagsMethod;
+    union {
         void (VsGdiAnimWindowOwner::*pMethod)(void);
         void *pAddress;
     } ignoreNotificationMethod;
@@ -5252,6 +5257,9 @@ void *VsGdiAnimWindowOwner::ConstructResourceGeometryHelperWindowOwner(void) {
         ignoreUpdateMethod.pMethod =
             &VsGdiAnimWindowOwner::IgnoreResourceGeometryHelperWindowUpdate;
         g_VSGDI_AnimWindowOwnerVtable[28] = ignoreUpdateMethod.pAddress;
+        ownerFlagsMethod.pMethod =
+            &VsGdiAnimWindowOwner::GetWindowOwnerFlags;
+        g_VSGDI_AnimWindowOwnerVtable[25] = ownerFlagsMethod.pAddress;
         dispatchMessageMethod.pMethod =
             &VsGdiAnimWindowOwner::DispatchEmbeddedMciWindowMessage;
         g_VSGDI_AnimWindowOwnerVtable[40] = dispatchMessageMethod.pAddress;
@@ -5510,15 +5518,21 @@ void VsGdiAnimWindowOwner::PauseEmbeddedMciWindowPlayback(void) {
     }
 }
 
-void VsGdiAnimWindowOwner::IgnoreEmbeddedMciNotification(void) {
-}
-
 // FUNCTION: LEMBALL 0x0046e3c0
 void VsGdiAnimWindowOwner::ResumeEmbeddedMciWindowPlayback(void) {
     if (m_nA8 != 0) {
         SendMessageA(m_hMciWindowB8, 0x855, 0, 0);
         m_nA8 = 0;
     }
+}
+
+// FUNCTION: LEMBALL 0x0046e3f0
+unsigned int VsGdiAnimWindowOwner::GetWindowOwnerFlags(void) {
+    return 0x40000000u;
+}
+
+// FUNCTION: LEMBALL 0x0046e400
+void VsGdiAnimWindowOwner::IgnoreEmbeddedMciNotification(void) {
 }
 
 void LEMBALL_FASTCALL ResumeEmbeddedMciWindowPlayback(void *pOwner) {
