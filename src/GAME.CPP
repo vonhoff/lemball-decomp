@@ -4660,8 +4660,8 @@ void GamePrimaryContext::SwitchPrimaryContextScreen(int nMode) {
     }
 
     pContext->SetWindowOwnerScaleFactor(1);
-    aRect[0] = *(short *)((char *)pContext + 8);
-    aRect[1] = *(short *)((char *)pContext + 10);
+    aRect[0] = pContext->m_Size08.m_x;
+    aRect[1] = pContext->m_Size08.m_y;
     aRect[3] = 0;
     aRect[2] = 0;
 
