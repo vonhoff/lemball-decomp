@@ -3695,100 +3695,111 @@ int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(
 
     pState = (int *)pRenderClient;
     if (pState[6] == 0) {
-        return 0;
+        goto done;
     }
 
     nType = *(unsigned short *)&pEntry->m_awords[0];
     dwCode = pEntry->m_awords[1];
     if (nType < 3) {
-        return 0;
+        goto done;
     }
     if (nType <= 4) {
-        if (pState[12] == 0) {
-            return 0;
-        }
-
-        dwNow = timeGetTime();
-        if (pState[13] != 0) {
-            if (dwCode == (unsigned int)pState[0x23]) {
-                Scratch.m_OutputEntry.m_awords[3] = 0x43;
-            } else if (dwCode == (unsigned int)pState[0x25]) {
-                Scratch.m_OutputEntry.m_awords[3] = 0x44;
-            } else if (dwCode == (unsigned int)pState[0x24]) {
-                Scratch.m_OutputEntry.m_awords[3] = 0x45;
-            } else {
-                return 0;
-            }
-
-            *(unsigned short *)&Scratch.m_OutputEntry.m_awords[0] = 8;
-            if (*(unsigned short *)&pEntry->m_awords[0] != 4) {
-                *(unsigned short *)&Scratch.m_OutputEntry.m_awords[0] = 9;
-            }
-            Scratch.m_OutputEntry.m_awords[1] = pEntry->m_awords[1];
-            Scratch.m_OutputEntry.m_awords[2] =
-                PackEventXYWords(
-                    (unsigned short)*(short *)((char *)pState + 0x10),
-                    *(short *)((char *)pState + 0x12));
-            Scratch.m_OutputEntry.m_awords[4] = 0;
-            ((int (LEMBALL_FASTCALL *)(void *, int, RenderDispatchQueueEntry *))
-                 (*(void ***)g_pSharedRenderDispatchQueue)[2])(
-                g_pSharedRenderDispatchQueue, 0, &Scratch.m_OutputEntry);
-            return 0;
-        }
-
-        if (*(unsigned short *)&pEntry->m_awords[0] == 3) {
-            if (dwCode == (unsigned int)pState[0x21] ||
-                dwCode == (unsigned int)pState[0x22]) {
-                pState[0x18] = 0;
-                pState[0x1a] = 0;
-            } else if (dwCode == (unsigned int)pState[0x1f] ||
-                       dwCode == (unsigned int)pState[0x20]) {
-                pState[0x17] = 0;
-                pState[0x19] = 0;
-            }
-            return 0;
-        }
-
-        if (dwCode == (unsigned int)pState[0x21]) {
-            pState[0x1c] = (int)dwNow;
-            pState[0x1a] = -pState[0x13];
-        } else if (dwCode == (unsigned int)pState[0x22]) {
-            pState[0x1c] = (int)dwNow;
-            pState[0x1a] = pState[0x13];
-        } else if (dwCode == (unsigned int)pState[0x1f]) {
-            pState[0x1b] = (int)dwNow;
-            pState[0x19] = -pState[0x13];
-        } else if (dwCode == (unsigned int)pState[0x20]) {
-            pState[0x1b] = (int)dwNow;
-            pState[0x19] = pState[0x13];
-        }
-        return 0;
+        goto keyboard_event;
+    }
+    if (nType == 7) {
+        goto position_event;
     }
 
-    if (nType == 7 && pState[0x0b] != 0 &&
-        pEntry->m_awords[4] == 0) {
-        Scratch.m_Position.m_nX =
-            (short)(pEntry->m_awords[2] & 0xffff);
-        Scratch.m_Position.m_nY =
-            (short)(pEntry->m_awords[2] >> 16);
-        ((GameCursorRenderClient *)pRenderClient)
-            ->SetCursorPosition(&Scratch.m_Position);
-    }
+done:
     return 0;
+
+keyboard_event:
+    if (pState[12] == 0) {
+        goto done;
+    }
+
+    dwNow = timeGetTime();
+    if (pState[13] != 0) {
+        if (dwCode == (unsigned int)pState[0x23]) {
+            Scratch.m_OutputEntry.m_awords[3] = 0x43;
+        } else if (dwCode == (unsigned int)pState[0x25]) {
+            Scratch.m_OutputEntry.m_awords[3] = 0x44;
+        } else if (dwCode == (unsigned int)pState[0x24]) {
+            Scratch.m_OutputEntry.m_awords[3] = 0x45;
+        } else {
+            goto done;
+        }
+
+        *(unsigned short *)&Scratch.m_OutputEntry.m_awords[0] = 8;
+        if (*(unsigned short *)&pEntry->m_awords[0] != 4) {
+            *(unsigned short *)&Scratch.m_OutputEntry.m_awords[0] = 9;
+        }
+        Scratch.m_OutputEntry.m_awords[1] = pEntry->m_awords[1];
+        Scratch.m_OutputEntry.m_awords[2] =
+            PackEventXYWords(
+                (unsigned short)*(short *)((char *)pState + 0x10),
+                *(short *)((char *)pState + 0x12));
+        Scratch.m_OutputEntry.m_awords[4] = 0;
+        ((int (LEMBALL_FASTCALL *)(void *, int, RenderDispatchQueueEntry *))
+             (*(void ***)g_pSharedRenderDispatchQueue)[2])(
+            g_pSharedRenderDispatchQueue, 0, &Scratch.m_OutputEntry);
+        goto done;
+    }
+
+    if (*(unsigned short *)&pEntry->m_awords[0] == 3) {
+        if (dwCode == (unsigned int)pState[0x21] ||
+            dwCode == (unsigned int)pState[0x22]) {
+            pState[0x18] = 0;
+            pState[0x1a] = 0;
+        } else if (dwCode == (unsigned int)pState[0x1f] ||
+                   dwCode == (unsigned int)pState[0x20]) {
+            pState[0x17] = 0;
+            pState[0x19] = 0;
+        }
+        goto done;
+    }
+
+    if (dwCode == (unsigned int)pState[0x21]) {
+        pState[0x1c] = (int)dwNow;
+        pState[0x1a] = -pState[0x13];
+    } else if (dwCode == (unsigned int)pState[0x22]) {
+        pState[0x1c] = (int)dwNow;
+        pState[0x1a] = pState[0x13];
+    } else if (dwCode == (unsigned int)pState[0x1f]) {
+        pState[0x1b] = (int)dwNow;
+        pState[0x19] = -pState[0x13];
+    } else if (dwCode == (unsigned int)pState[0x20]) {
+        pState[0x1b] = (int)dwNow;
+        pState[0x19] = pState[0x13];
+    }
+    goto done;
+
+position_event:
+    if (pState[0x0b] == 0 || pEntry->m_awords[4] != 0) {
+        goto done;
+    }
+    Scratch.m_Position.m_nX =
+        (short)(pEntry->m_awords[2] & 0xffff);
+    Scratch.m_Position.m_nY =
+        (short)(pEntry->m_awords[2] >> 16);
+    ((GameCursorRenderClient *)pRenderClient)
+        ->SetCursorPosition(&Scratch.m_Position);
+    goto done;
 }
 
 // FUNCTION: LEMBALL 0x0046b2c0
 void GameCursorRenderClient::SetCursorPosition(
     const VsMathPoint2D *pPosition)
 {
-    short coordinate;
+    short x;
+    short y;
 
-    coordinate = pPosition->m_nX;
-    m_Position10.m_nX = coordinate;
-    m_FixedPosition54.m_nX = (int)coordinate << 12;
-    coordinate = pPosition->m_nY;
-    m_Position10.m_nY = coordinate;
-    m_FixedPosition54.m_nY = (int)coordinate << 12;
+    x = pPosition->m_nX;
+    m_Position10.m_nX = x;
+    y = pPosition->m_nY;
+    m_Position10.m_nY = y;
+    m_FixedPosition54.m_nX = (int)x << 12;
+    m_FixedPosition54.m_nY = (int)y << 12;
 }
 
 // FUNCTION: LEMBALL 0x0046ba80
