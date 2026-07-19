@@ -5305,6 +5305,17 @@ LRESULT VsGdiAnimWindowOwner::DispatchEmbeddedMciWindowMessage(
     }
 }
 
+struct VsGdiMediaListResourceVirtualInterface {
+    virtual void ReservedSlot0(void);
+    virtual void ReservedSlot1(void);
+    virtual void ReservedSlot2(void);
+    virtual void ReservedSlot3(void);
+    virtual void ReservedSlot4(void);
+    virtual void ReservedSlot5(void);
+    virtual void ReservedSlot6(void);
+    virtual void PrepareLoadedResource(void);
+};
+
 struct VsGdiMediaListResourceView {
     void **m_pVtable00;
     int m_nReserved04;
@@ -5331,11 +5342,11 @@ void VsGdiAnimWindowOwner::UpdateMediaPathFromListResource(int nResourceId) {
         m_nAC = nResourceId;
         pResource = (VsGdiMediaListResourceView *)
             LoadTwoArrayListResource(nResourceId);
-        if (pResource->m_nLoadState10 == 0) {
-            ((void (LEMBALL_FASTCALL *)(void *, int))
-                pResource->m_pVtable00[7])(pResource, 0);
-        } else {
+        if (pResource->m_nLoadState10 != 0) {
             pResource->m_nReserved24 = 0;
+        } else {
+            ((VsGdiMediaListResourceVirtualInterface *)pResource)
+                ->PrepareLoadedResource();
         }
         ++pResource->m_cLocks08;
         pszMediaName = *(char **)(pResource->m_pTextEntry78 + 0x38);
@@ -5365,10 +5376,12 @@ void VsGdiAnimWindowOwner::UpdateMediaPathFromListResource(int nResourceId) {
         }
     } else {
         pszBasePath = FindCdromFilePathBySuffix(MediaPath.m_pszText);
-        if (pszBasePath == 0) {
-            pszBasePath = g_abProcessCurrentDirectoryBuffer;
+        if (pszBasePath != 0) {
+            m_MediaPathB0.AssignDynamicCString(pszBasePath);
+        } else {
+            m_MediaPathB0.AssignDynamicCString(
+                g_abProcessCurrentDirectoryBuffer);
         }
-        m_MediaPathB0.AssignDynamicCString(pszBasePath);
         if (m_MediaPathB0.m_pszText[
                 GetDynamicCStringLength(&m_MediaPathB0) - 1] != '\\') {
             m_MediaPathB0.AppendDynamicCStringAndCopyResult(
@@ -5379,7 +5392,7 @@ void VsGdiAnimWindowOwner::UpdateMediaPathFromListResource(int nResourceId) {
     m_MediaPathB0.AppendDynamicCStringObjectAndCopyResult(
         &TemporaryPath, &MediaPath);
     TemporaryPath.DestroyDynamicCString();
-    if (pResource != 0) {
+    if (nResourceId != 0) {
         --pResource->m_cLocks08;
         ReleaseTypedResourceObjectReference(pResource);
     }
