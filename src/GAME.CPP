@@ -163,9 +163,6 @@ extern "C" DWORD WINAPI timeGetTime(void);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 extern int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresent(
     int *pPrimaryContext);
-static void LEMBALL_FASTCALL UpdateIntroSequenceScreenPlaybackThunk(
-    void *pObject, int nUnusedEdx);
-
 struct GameScreenObject {
     void *ConstructIntroSequenceScreen(void *pPrimaryContext,
                                        void *pWindowOwnerContext,
@@ -1289,29 +1286,7 @@ static void LEMBALL_FASTCALL HandleIntroSequenceMediaCompletion(
         *(char **)((char *)pOwner + 0xbc));
 }
 
-static void LEMBALL_FASTCALL RefreshIntroSequenceMediaPath(
-    void *pObject, int)
-{
-    SelectIntroSequenceMediaPath((char *)pObject + 0x3bc);
-}
-
 static void LEMBALL_FASTCALL NoopIntroSequenceScreenHook(void *, int) {
-}
-
-static void LEMBALL_FASTCALL PollIntroSequenceScreenPlaybackCompletion(
-    void *pObject, int) {
-    char *pScreen;
-    char *pMediaOwner;
-
-    pScreen = (char *)pObject;
-    pMediaOwner = pScreen + 0x3bc;
-    if (*(int *)(pScreen + 0x3b8) != 0 &&
-        *(int *)(pMediaOwner + 4) == 1) {
-        ((void (LEMBALL_FASTCALL *)(void *, int))
-             (*(void ***)pMediaOwner)[29])(pMediaOwner, 0);
-        *(int *)(pScreen + 0x3b4) = 10;
-        *(int *)(pScreen + 0x3b8) = 0;
-    }
 }
 
 static void DestroyIntroSequenceScreen(void *pObject) {
@@ -1345,60 +1320,6 @@ static void *LEMBALL_FASTCALL DeleteAdjustedIntroSequenceScreen(
     void *pObject, int nUnusedEdx, int fDelete) {
     return DeleteIntroSequenceScreen(
         (char *)pObject - 4, nUnusedEdx, fDelete);
-}
-
-static void UpdateIntroSequenceScreenPlayback(char *pScreen) {
-    typedef void (LEMBALL_FASTCALL *InitializeMediaWindowProc)(
-        void *, int, short *, void *, const char *);
-    char *pMediaOwner;
-    short aRect[4];
-
-    if (*(int *)(pScreen + 0x3b4) > 0) {
-        --*(int *)(pScreen + 0x3b4);
-    }
-    if (IsPrimaryContextWindowReadyForPresent(
-            *(int **)(pScreen + 0x84)) == 0) {
-        RequestIntroSequenceScreenTransition(pScreen);
-        return;
-    }
-    if (*(int *)(pScreen + 0x3b4) != 0) {
-        return;
-    }
-
-    aRect[0] = 0x140;
-    aRect[1] = 0xf0;
-    aRect[2] = (short)(
-        (*(short *)(*(char **)(pScreen + 0x84) + 8) - 0x140) / 2);
-    aRect[3] = (short)(
-        (*(short *)(*(char **)(pScreen + 0x84) + 10) - 0xf0) / 2);
-    pMediaOwner = pScreen + 0x3bc;
-    if (*(int *)(pScreen + 0x3b8) == 0) {
-#if defined(LEMBALL_SKIP_CD_TEST)
-        FILE *pMediaFile = fopen(
-            *(char **)(pMediaOwner + 0xb0), "rb");
-        if (pMediaFile == 0) {
-            RequestIntroSequenceScreenTransition(pScreen);
-            *(int *)(pScreen + 0x3b4) = -1;
-            return;
-        }
-        fclose(pMediaFile);
-#endif
-        ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
-            ->SwitchVariantResourceEntryMode(1, 0);
-        ((InitializeMediaWindowProc)(*(void ***)pMediaOwner)[1])(
-            pMediaOwner, 0, aRect, *(void **)(pScreen + 0x84),
-            "PaintBall Intro Sequence");
-        StartEmbeddedMciWindowPlaybackOnce(pMediaOwner);
-        *(int *)(pScreen + 0x3b8) = 1;
-    }
-    ResumeEmbeddedMciWindowPlayback(pMediaOwner);
-    *(int *)(pScreen + 0x3b4) = -1;
-}
-
-static void LEMBALL_FASTCALL UpdateIntroSequenceScreenPlaybackThunk(
-    void *pObject, int)
-{
-    UpdateIntroSequenceScreenPlayback((char *)pObject);
 }
 
 void *GameScreenObject::ConstructIntroSequenceScreen(void *pPrimaryContext,
@@ -1439,6 +1360,10 @@ void *GameScreenObject::ConstructIntroSequenceScreen(void *pPrimaryContext,
             int (GameIntroSequenceScreen::*pMethod)(short *);
             void *pAddress;
         } inputMethod;
+        union {
+            void (GameIntroSequenceScreen::*pMethod)(void);
+            void *pAddress;
+        } screenMethod;
 
         int i;
         for (i = 0; i < 22; ++i) {
@@ -1450,14 +1375,15 @@ void *GameScreenObject::ConstructIntroSequenceScreen(void *pPrimaryContext,
         }
         g_GAME_IntroSequenceScreenVtable[0] =
             (void *)DeleteIntroSequenceScreen;
-        g_GAME_IntroSequenceScreenVtable[6] =
-            (void *)PollIntroSequenceScreenPlaybackCompletion;
-        g_GAME_IntroSequenceScreenVtable[14] =
-            (void *)UpdateIntroSequenceScreenPlaybackThunk;
+        screenMethod.pMethod =
+            &GameIntroSequenceScreen::PollPlaybackCompletion;
+        g_GAME_IntroSequenceScreenVtable[6] = screenMethod.pAddress;
+        screenMethod.pMethod = &GameIntroSequenceScreen::UpdatePlayback;
+        g_GAME_IntroSequenceScreenVtable[14] = screenMethod.pAddress;
         inputMethod.pMethod = &GameIntroSequenceScreen::HandleInput;
         g_GAME_IntroSequenceScreenVtable[15] = inputMethod.pAddress;
-        g_GAME_IntroSequenceScreenVtable[16] =
-            (void *)RefreshIntroSequenceMediaPath;
+        screenMethod.pMethod = &GameIntroSequenceScreen::RefreshMediaPath;
+        g_GAME_IntroSequenceScreenVtable[16] = screenMethod.pAddress;
         g_GAME_IntroSequenceScreenVtable[17] =
             (void *)NoopIntroSequenceScreenHook;
         g_GAME_IntroSequenceQueueVtable[1] =

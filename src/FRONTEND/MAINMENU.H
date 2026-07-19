@@ -13,6 +13,9 @@ extern void *g_GAME_MainMenuCallbackVtable[2];
 class GameIntroSequenceScreen {
 public:
     int HandleInput(short *pEvent);
+    void RefreshMediaPath(void);
+    void PollPlaybackCompletion(void);
+    void UpdatePlayback(void);
 };
 
 void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(

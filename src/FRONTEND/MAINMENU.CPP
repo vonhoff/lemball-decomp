@@ -974,6 +974,40 @@ static GameBoundedTextBuffer *ConstructBoundedTextBuffer(
     return pBuffer;
 }
 
+struct IntroMediaOwnerInterface {
+    virtual void Reserved00(void) = 0;
+    virtual void Initialize(short *pRect, void *pOwner,
+                            const char *pszTitle) = 0;
+    virtual void Reserved02(void) = 0;
+    virtual void Reserved03(void) = 0;
+    virtual void Reserved04(void) = 0;
+    virtual void Reserved05(void) = 0;
+    virtual void Reserved06(void) = 0;
+    virtual void Reserved07(void) = 0;
+    virtual void Reserved08(void) = 0;
+    virtual void Reserved09(void) = 0;
+    virtual void Reserved10(void) = 0;
+    virtual void Reserved11(void) = 0;
+    virtual void Reserved12(void) = 0;
+    virtual void Reserved13(void) = 0;
+    virtual void Reserved14(void) = 0;
+    virtual void Reserved15(void) = 0;
+    virtual void Reserved16(void) = 0;
+    virtual void Reserved17(void) = 0;
+    virtual void Reserved18(void) = 0;
+    virtual void Reserved19(void) = 0;
+    virtual void Reserved20(void) = 0;
+    virtual void Reserved21(void) = 0;
+    virtual void Reserved22(void) = 0;
+    virtual void Reserved23(void) = 0;
+    virtual void Reserved24(void) = 0;
+    virtual void Reserved25(void) = 0;
+    virtual void Reserved26(void) = 0;
+    virtual void Reserved27(void) = 0;
+    virtual void Reserved28(void) = 0;
+    virtual void Stop(void) = 0;
+};
+
 void LEMBALL_FASTCALL DestroyFunctionalFramedScreenBase(void *pScreen) {
     DestroyFramedScreenBaseThunk00402081(pScreen);
 }
@@ -2654,47 +2688,33 @@ static void *LEMBALL_FASTCALL DeleteAdjustedFramedScreenBase(
         (char *)pObject - 4, nUnusedEdx, fDelete);
 }
 
+// FUNCTION: LEMBALL 0x00447530
+void GameIntroSequenceScreen::RefreshMediaPath(void) {
+    SelectIntroSequenceMediaPath((char *)this + 0x3bc);
+}
+
+// FUNCTION: LEMBALL 0x004475a0
+void GameIntroSequenceScreen::PollPlaybackCompletion(void) {
+    char *pScreen;
+
+    pScreen = (char *)this;
+    if (*(int *)(pScreen + 0x3b8) != 0 &&
+        *(int *)(pScreen + 0x3c0) == 1) {
+        ((IntroMediaOwnerInterface *)(pScreen + 0x3bc))->Stop();
+        *(int *)(pScreen + 0x3b4) = 10;
+        *(int *)(pScreen + 0x3b8) = 0;
+    }
+}
+
 // FUNCTION: LEMBALL 0x004475e0
 void LEMBALL_FASTCALL RequestIntroSequenceScreenTransition(char *pScreen) {
-    struct MediaOwnerInterface {
-        virtual void Reserved00(void) = 0;
-        virtual void Reserved01(void) = 0;
-        virtual void Reserved02(void) = 0;
-        virtual void Reserved03(void) = 0;
-        virtual void Reserved04(void) = 0;
-        virtual void Reserved05(void) = 0;
-        virtual void Reserved06(void) = 0;
-        virtual void Reserved07(void) = 0;
-        virtual void Reserved08(void) = 0;
-        virtual void Reserved09(void) = 0;
-        virtual void Reserved10(void) = 0;
-        virtual void Reserved11(void) = 0;
-        virtual void Reserved12(void) = 0;
-        virtual void Reserved13(void) = 0;
-        virtual void Reserved14(void) = 0;
-        virtual void Reserved15(void) = 0;
-        virtual void Reserved16(void) = 0;
-        virtual void Reserved17(void) = 0;
-        virtual void Reserved18(void) = 0;
-        virtual void Reserved19(void) = 0;
-        virtual void Reserved20(void) = 0;
-        virtual void Reserved21(void) = 0;
-        virtual void Reserved22(void) = 0;
-        virtual void Reserved23(void) = 0;
-        virtual void Reserved24(void) = 0;
-        virtual void Reserved25(void) = 0;
-        virtual void Reserved26(void) = 0;
-        virtual void Reserved27(void) = 0;
-        virtual void Reserved28(void) = 0;
-        virtual void Stop(void) = 0;
-    };
     int fPlaying;
 
     *(int *)(pScreen + 0x378) = 1;
     fPlaying = *(int *)(pScreen + 0x3c0);
     *(int *)(pScreen + 0x374) = *(int *)(pScreen + 0x39c);
     if (fPlaying == 1) {
-        ((MediaOwnerInterface *)(pScreen + 0x3bc))->Stop();
+        ((IntroMediaOwnerInterface *)(pScreen + 0x3bc))->Stop();
     }
 }
 
@@ -2723,6 +2743,43 @@ int GameIntroSequenceScreen::HandleInput(short *pEvent)
         ++*(int *)((char *)this + 0x10);
         return 0;
     }
+}
+
+// FUNCTION: LEMBALL 0x004476b0
+void GameIntroSequenceScreen::UpdatePlayback(void) {
+    char *pScreen;
+    char *pMediaOwner;
+    short aRect[4];
+
+    pScreen = (char *)this;
+    if (*(int *)(pScreen + 0x3b4) > 0)
+        --*(int *)(pScreen + 0x3b4);
+    if (IsPrimaryContextWindowReadyForPresent(
+            *(int **)(pScreen + 0x84)) == 0) {
+        RequestIntroSequenceScreenTransition(pScreen);
+        return;
+    }
+    if (*(int *)(pScreen + 0x3b4) != 0)
+        return;
+
+    aRect[0] = 0x140;
+    aRect[1] = 0xf0;
+    aRect[2] = (short)((*(short *)(*(char **)(pScreen + 0x84) + 8) -
+                              0x140) / 2);
+    aRect[3] = (short)((*(short *)(*(char **)(pScreen + 0x84) + 10) -
+                              0xf0) / 2);
+    pMediaOwner = pScreen + 0x3bc;
+    if (*(int *)(pScreen + 0x3b8) == 0) {
+        ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
+            ->SwitchVariantResourceEntryMode(1, 0);
+        ((IntroMediaOwnerInterface *)pMediaOwner)->Initialize(
+            aRect, *(void **)(pScreen + 0x84),
+            "PaintBall Intro Sequence");
+        StartEmbeddedMciWindowPlaybackOnce(pMediaOwner);
+        *(int *)(pScreen + 0x3b8) = 1;
+    }
+    ResumeEmbeddedMciWindowPlayback(pMediaOwner);
+    *(int *)(pScreen + 0x3b4) = -1;
 }
 
 // FUNCTION: LEMBALL 0x004477b0
