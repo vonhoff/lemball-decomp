@@ -5191,6 +5191,18 @@ static int LEMBALL_FASTCALL HandleFunctionalLevelSelectionInput(
     }
 }
 
+static void LEMBALL_FASTCALL RequestFunctionalLevelSelectionTransitionMode5(
+    GameLevelSelectionScreenView *pScreen) {
+    pScreen->m_nTransitionStatus378 = 1;
+    pScreen->m_nRequestedMode374 = 5;
+}
+
+static void LEMBALL_FASTCALL RequestFunctionalLevelSelectionTransitionMode2(
+    GameLevelSelectionScreenView *pScreen) {
+    pScreen->m_nTransitionStatus378 = 1;
+    pScreen->m_nRequestedMode374 = 2;
+}
+
 static int LEMBALL_FASTCALL DispatchFunctionalLevelSelectionAction(
     void *pObject, int, int nAction) {
     GameLevelSelectionScreenView *pScreen;
@@ -5204,12 +5216,10 @@ static int LEMBALL_FASTCALL DispatchFunctionalLevelSelectionAction(
         SelectPreviousFunctionalLevel(pScreen);
         return 1;
     case 2:
-        pScreen->m_nRequestedMode374 = 2;
-        pScreen->m_nTransitionStatus378 = 1;
+        RequestFunctionalLevelSelectionTransitionMode2(pScreen);
         return 1;
     case 3:
-        pScreen->m_nRequestedMode374 = 5;
-        pScreen->m_nTransitionStatus378 = 1;
+        RequestFunctionalLevelSelectionTransitionMode5(pScreen);
         return 1;
     default:
         return 0;
