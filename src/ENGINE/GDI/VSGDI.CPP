@@ -7,6 +7,7 @@
 #include "ENGINE/CORE/COMMON.H"
 #include "GAME.H"
 #include "ENGINE/GDI/VSWINDOW.H"
+#include "FRONTEND/CURSOR.H"
 #include "LEVEL/DRAWTEXT.H"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
@@ -3684,19 +3685,25 @@ int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(
 
 {
     int *pState;
-    unsigned short wType;
+    unsigned int nType;
     unsigned int dwCode;
     unsigned int dwNow;
-    RenderDispatchQueueEntry OutputEntry;
+    union {
+        RenderDispatchQueueEntry m_OutputEntry;
+        VsMathPoint2D m_Position;
+    } Scratch;
 
     pState = (int *)pRenderClient;
     if (pState[6] == 0) {
         return 0;
     }
 
-    wType = *(unsigned short *)&pEntry->m_awords[0];
-    dwCode = pEntry->m_awords[2];
-    if (wType == 3 || wType == 4) {
+    nType = *(unsigned short *)&pEntry->m_awords[0];
+    dwCode = pEntry->m_awords[1];
+    if (nType < 3) {
+        return 0;
+    }
+    if (nType <= 4) {
         if (pState[12] == 0) {
             return 0;
         }
@@ -3704,29 +3711,32 @@ int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(
         dwNow = timeGetTime();
         if (pState[13] != 0) {
             if (dwCode == (unsigned int)pState[0x23]) {
-                OutputEntry.m_awords[3] = 0x43;
+                Scratch.m_OutputEntry.m_awords[3] = 0x43;
             } else if (dwCode == (unsigned int)pState[0x25]) {
-                OutputEntry.m_awords[3] = 0x44;
+                Scratch.m_OutputEntry.m_awords[3] = 0x44;
             } else if (dwCode == (unsigned int)pState[0x24]) {
-                OutputEntry.m_awords[3] = 0x45;
+                Scratch.m_OutputEntry.m_awords[3] = 0x45;
             } else {
                 return 0;
             }
 
-            *(unsigned short *)&OutputEntry.m_awords[0] =
-                wType == 4 ? 8 : 9;
-            OutputEntry.m_awords[1] = pEntry->m_awords[1];
-            OutputEntry.m_awords[2] =
-                ((unsigned int)(unsigned short)*(short *)((char *)pState + 0x12) << 16) |
-                (unsigned short)*(short *)((char *)pState + 0x10);
-            OutputEntry.m_awords[4] = 0;
+            *(unsigned short *)&Scratch.m_OutputEntry.m_awords[0] = 8;
+            if (*(unsigned short *)&pEntry->m_awords[0] != 4) {
+                *(unsigned short *)&Scratch.m_OutputEntry.m_awords[0] = 9;
+            }
+            Scratch.m_OutputEntry.m_awords[1] = pEntry->m_awords[1];
+            Scratch.m_OutputEntry.m_awords[2] =
+                PackEventXYWords(
+                    (unsigned short)*(short *)((char *)pState + 0x10),
+                    *(short *)((char *)pState + 0x12));
+            Scratch.m_OutputEntry.m_awords[4] = 0;
             ((int (LEMBALL_FASTCALL *)(void *, int, RenderDispatchQueueEntry *))
                  (*(void ***)g_pSharedRenderDispatchQueue)[2])(
-                g_pSharedRenderDispatchQueue, 0, &OutputEntry);
+                g_pSharedRenderDispatchQueue, 0, &Scratch.m_OutputEntry);
             return 0;
         }
 
-        if (wType == 3) {
+        if (*(unsigned short *)&pEntry->m_awords[0] == 3) {
             if (dwCode == (unsigned int)pState[0x21] ||
                 dwCode == (unsigned int)pState[0x22]) {
                 pState[0x18] = 0;
@@ -3755,18 +3765,30 @@ int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(
         return 0;
     }
 
-    if (wType == 7 && pState[0x0b] != 0 && pEntry->m_awords[4] == 0) {
-        short x;
-        short y;
-
-        x = (short)(pEntry->m_awords[2] & 0xffff);
-        y = (short)(pEntry->m_awords[2] >> 16);
-        *(short *)((char *)pState + 0x10) = x;
-        *(short *)((char *)pState + 0x12) = y;
-        pState[0x15] = (int)x << 12;
-        pState[0x16] = (int)y << 12;
+    if (nType == 7 && pState[0x0b] != 0 &&
+        pEntry->m_awords[4] == 0) {
+        Scratch.m_Position.m_nX =
+            (short)(pEntry->m_awords[2] & 0xffff);
+        Scratch.m_Position.m_nY =
+            (short)(pEntry->m_awords[2] >> 16);
+        ((GameCursorRenderClient *)pRenderClient)
+            ->SetCursorPosition(&Scratch.m_Position);
     }
     return 0;
+}
+
+// FUNCTION: LEMBALL 0x0046b2c0
+void GameCursorRenderClient::SetCursorPosition(
+    const VsMathPoint2D *pPosition)
+{
+    short coordinate;
+
+    coordinate = pPosition->m_nX;
+    m_Position10.m_nX = coordinate;
+    m_FixedPosition54.m_nX = (int)coordinate << 12;
+    coordinate = pPosition->m_nY;
+    m_Position10.m_nY = coordinate;
+    m_FixedPosition54.m_nY = (int)coordinate << 12;
 }
 
 // FUNCTION: LEMBALL 0x0046ba80

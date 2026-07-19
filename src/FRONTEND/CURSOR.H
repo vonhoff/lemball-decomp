@@ -39,6 +39,7 @@ struct GameCursorRenderClient : public GameCursorRenderClientInterface {
 
     void TickCursorRenderClientMotion(void);
     void UpdateForWindowOwner(void *pWindowOwner);
+    void SetCursorPosition(const VsMathPoint2D *pPosition);
 };
 
 #endif
