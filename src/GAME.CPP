@@ -2647,6 +2647,8 @@ void *ConstructNetworkLobbyTransportController(void *pModeObject, GameMainContex
 
 static void DestroyNetworkLobbyTransportController(void *pObject) {
     GameNetworkLobbyTransportController *pMode;
+    typedef int (LEMBALL_FASTCALL *GetLobbyScreenStateProc)(
+        void *, int);
     void *pStream;
 
     pMode = (GameNetworkLobbyTransportController *)pObject;
@@ -2655,7 +2657,9 @@ static void DestroyNetworkLobbyTransportController(void *pObject) {
         g_GAME_NetworkLobbyTransportEventClientVtable;
     g_pNetworkLobbyTransportController = 0;
     if (g_pActiveNetworkLobbyScreen != 0) {
-        if (*(int *)((char *)g_pActiveNetworkLobbyScreen + 0x374) == 0) {
+        if (((GetLobbyScreenStateProc)
+             (*(void ***)g_pActiveNetworkLobbyScreen)[10])(
+                g_pActiveNetworkLobbyScreen, 0) == 0) {
             StopNetworkLobbyTransportSession(pMode);
         } else {
             CloseNetworkLobbyTransportPeers(pMode);

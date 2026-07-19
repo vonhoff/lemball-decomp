@@ -422,6 +422,11 @@ public:
     void Close(void);
 };
 
+class VsNetChannelOwnerObject {
+public:
+    void ClearEffTransportSendGate(void);
+};
+
 typedef char GameFramedScreenBase_size_must_be_0x398[
     sizeof(GameFramedScreenBase) == 0x398 ? 1 : -1];
 typedef char GameMainMenuScreenView_size_must_be_0x3bc[
@@ -1252,24 +1257,30 @@ void LEMBALL_FASTCALL CloseNetworkLobbyTransportPeers(void *pController) {
     GameNetworkLobbyScreenView *pScreen;
     GameNetworkLobbyRuntimeView *pRuntime;
     GameEffStream *pCloseStream;
+    void *pChannelOwner;
+    typedef void (LEMBALL_FASTCALL *ServiceChannelOwnerProc)(
+        void *, int);
     DWORD dwStart;
     void *pPeer;
     int i;
 
-    if (pController == 0 || g_pNetworkLobbyVsnetRuntime == 0) {
+    if (g_pActiveNetworkRuntimeWindow != 0) {
+        pChannelOwner = *(void **)(
+            (char *)g_pActiveNetworkRuntimeWindow + 0x24);
+        ((VsNetChannelOwnerObject *)pChannelOwner)
+            ->ClearEffTransportSendGate();
+        ((ServiceChannelOwnerProc)(*(void ***)pChannelOwner)[6])(
+            pChannelOwner, 0);
+    }
+    if (g_pNetworkLobbyVsnetRuntime == 0) {
         return;
     }
     pScreen = (GameNetworkLobbyScreenView *)g_pActiveNetworkLobbyScreen;
     pRuntime = (GameNetworkLobbyRuntimeView *)g_pNetworkLobbyVsnetRuntime;
     pCloseStream = *(GameEffStream **)((char *)pController + 0x30);
-    if (pCloseStream == 0) {
-        return;
-    }
     pCloseStream->m_nU32Payload = 1;
     for (i = 0; i < 10; ++i) {
-        if (pScreen != 0) {
-            ClearNetworkLobbyPlayerEntryDirty(pScreen, i);
-        }
+        ClearNetworkLobbyPlayerEntryDirty(pScreen, i);
         pPeer = pRuntime->m_apTrackedPeers20[i];
         if (pPeer == 0 ||
             (int)(unsigned long)pPeer == g_nSelectedNetworkLobbyPeerId) {
