@@ -28,6 +28,11 @@
 
 extern "C" BOOL WINAPI SetCurrentDirectoryA(LPCSTR lpPathName);
 
+class VsGdiAnimWindowOwner {
+public:
+    void DestroyResourceGeometryHelperWindowOwner(void);
+};
+
 static void *g_pSignedTrigTable = 0;
 void *g_pSessionRandomState = 0;
 static char g_GAME_SrcDiskBuffer[0x100];
@@ -4802,7 +4807,8 @@ void LEMBALL_FASTCALL DestroyIntroSequenceScreen(void *pObject) {
     }
     ((GamePrimaryContext *)*(void **)(pScreen + 0x84))
         ->SampleRootHelperGeometryAndDispatchRenderGroups(-1);
-    DestroyResourceGeometryHelperWindowOwner(pScreen + 0x3bc);
+    ((VsGdiAnimWindowOwner *)(pScreen + 0x3bc))
+        ->DestroyResourceGeometryHelperWindowOwner();
     *(void **)(pScreen + 0x3a0) =
         g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
     DestroyFramedScreenBaseThunk00402081(pScreen);

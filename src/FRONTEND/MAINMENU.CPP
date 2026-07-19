@@ -3046,7 +3046,7 @@ void LEMBALL_FASTCALL SelectIntroSequenceMediaPath(void *pOwner) {
 // FUNCTION: LEMBALL 0x00447830
 void LEMBALL_FASTCALL HandleIntroSequenceMediaCompletion(void *pOwner) {
     ((IntroMediaOwnerInterface *)pOwner)->Stop();
-    RequestIntroSequenceScreenTransition(
+    RequestIntroSequenceScreenTransitionThunk(
         *(char **)((char *)pOwner + 0xbc));
 }
 
