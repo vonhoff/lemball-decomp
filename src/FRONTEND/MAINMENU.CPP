@@ -47,6 +47,8 @@ extern void LEMBALL_FASTCALL RestoreLevelSelectionRenderChildEntryVtable(
     void *pObject);
 extern void LEMBALL_FASTCALL RestoreCompositePointRectSinkFinalizeVtables(
     void *pObject);
+extern void *LEMBALL_FASTCALL InitializeCompositePointRectSinkEntries(
+    void *pObject);
 extern void SetLevelScreenStatusIndicatorMode(int nMode, int nValue);
 extern void LEMBALL_FASTCALL SetStatusIndicatorActive(
     void *pObject, int nUnused, int fActive);
@@ -3172,9 +3174,9 @@ void *LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(
         g_GAME_PaintballSequenceQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
         g_GAME_MainMenuCallbackVtable;
-    InitializePackagedSpriteRenderEntryThunk(
+    InitializeCompositePointRectSinkEntries(
         pScreen->m_abPrimaryBitmapEntry398);
-    InitializePackagedSpriteRenderEntryThunk(
+    InitializeCompositePointRectSinkEntries(
         pScreen->m_abSecondaryBitmapEntry3E0);
     *(short *)((char *)pScreen + 0x4e8) = 0;
     *(short *)((char *)pScreen + 0x4ea) = 0;

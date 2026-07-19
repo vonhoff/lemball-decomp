@@ -4594,6 +4594,38 @@ void LEMBALL_FASTCALL RestoreLevelSelectionPointSinkFinalizeVtableBody(void *pOb
     *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
 
+void *LEMBALL_FASTCALL InitializeCompositePointRectSinkEntries(
+    void *pObject) {
+    int *pEntry;
+
+    pEntry = (int *)pObject;
+    *(void **)pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+    *(unsigned short *)((char *)pEntry + 6) = 0;
+    *(unsigned short *)(pEntry + 1) = 0;
+    *(void **)pEntry = g_LEVEL_CompositePointRectSinkEntryInitVtable;
+    *(unsigned short *)((char *)pEntry + 10) = 0;
+    *(unsigned short *)(pEntry + 2) = 0;
+    *(void **)pEntry = g_LEVEL_FramedScreenRenderChildEntryVtable;
+    *(unsigned short *)((char *)pEntry + 0xe) = 0;
+    *(unsigned short *)(pEntry + 3) = 0;
+    *(unsigned short *)((char *)pEntry + 0x22) = 0;
+    *(unsigned short *)(pEntry + 8) = 0;
+
+    pEntry += 9;
+    *(void **)pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+    *(unsigned short *)((char *)pEntry + 6) = 0;
+    *(unsigned short *)(pEntry + 1) = 0;
+    *(void **)pEntry = g_LEVEL_CompositePointRectSinkEntryInitVtable;
+    *(unsigned short *)((char *)pEntry + 10) = 0;
+    *(unsigned short *)(pEntry + 2) = 0;
+    *(void **)pEntry = g_LEVEL_FramedScreenRenderChildEntryVtable;
+    *(unsigned short *)((char *)pEntry + 0xe) = 0;
+    *(unsigned short *)(pEntry + 3) = 0;
+    *(unsigned short *)((char *)pEntry + 0x22) = 0;
+    *(unsigned short *)(pEntry + 8) = 0;
+    return pObject;
+}
+
 // FUNCTION: LEMBALL 0x004511a0
 void LEMBALL_FASTCALL RestoreCompositePointRectSinkFinalizeVtablesBody(void *pObject) {
     *(void **)((char *)pObject + 0x24) =
