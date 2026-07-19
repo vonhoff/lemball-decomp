@@ -240,7 +240,7 @@ int LEMBALL_FASTCALL HandlePrimaryContextMenuCommand(
             return 0;
         }
 
-        TogglePrimaryContextDisplayMode(GetPrimaryContextFromShell(pShell));
+        TogglePrimaryContextDisplayMode((char *)pShell - 0x90);
         return 1;
     }
 
@@ -278,7 +278,7 @@ int LEMBALL_FASTCALL HandlePrimaryContextMenuCommand(
             *(HWND *)((char *)pShell - 0x4c), AboutBoxProc, 0);
         return 0;
     case ShellUiMENU_COMMAND_DISPLAY_MODE:
-        TogglePrimaryContextDisplayMode(GetPrimaryContextFromShell(pShell));
+        TogglePrimaryContextDisplayMode((char *)pShell - 0x90);
         return 0;
     case ShellUiMENU_COMMAND_HELP_ON_HELP:
         if (!WinHelpA(*(HWND *)((char *)pShell - 0x4c), 0, 4, 0)) {
