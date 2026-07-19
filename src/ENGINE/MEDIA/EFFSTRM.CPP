@@ -16,6 +16,8 @@ void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void *pObject);
 void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStream(void *pObject);
 void *LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(
     void *pObject, void *pUnused, BYTE fDelete);
+void *LEMBALL_FASTCALL DeleteNetworkLobbyPeerEntryStream(
+    void *pObject, void *pUnused, int fDelete);
 
 
 
@@ -35,7 +37,7 @@ static void *g_EFF_NetworkLobbyPeerEntryVtable[6] = {
     (void *)ReadNetworkLobbyPeerEntryStream,
     (void *)NoopVtableCallbackThunk,
     (void *)NoopVtableCallbackThunk,
-    (void *)DeleteNetworkLobbySelectedPeerStatusStream,
+    (void *)DeleteNetworkLobbyPeerEntryStream,
 };
 
 /* 004985F8 slot +20 is read_network_level_chunk_delta_stream.  Other
@@ -137,11 +139,23 @@ struct GameEffStreamVtable {
 };
 
 struct GameNetworkLobbyPeerEntryStream {
-    GameEffStream m_Base;
+    GameEffStreamVtable *m_pVtable;
+    int m_nEventCode;
+    int m_pvOwnedBuffer;
+    int m_pvBufferEnd;
+    int m_cWriteSessions;
+    int m_fOwnsBuffer;
+    int m_cbSerializedLength;
+    int m_pvWriteCursor;
+    int m_pvReadCursor;
+    int m_fHasPayload;
+    int m_fWritePending;
     unsigned char m_fAcceptedPeer;
     char m_abUnknown2d[0x1f];
     int m_nPeerEntryState;
 };
+typedef char GameNetworkLobbyPeerEntryStream_size_must_be_0x50[
+    sizeof(GameNetworkLobbyPeerEntryStream) == 0x50 ? 1 : -1];
 
 struct GameDeleteObject {
     GameEffStreamVtable *m_pVtable;
@@ -279,7 +293,7 @@ struct GamePeerEntryStreamTable {
 
 struct GameEffStreamDeleteVtable {
     void *m_pReserved00[5];
-    void (*m_pDelete)(int);
+    void *(LEMBALL_FASTCALL *m_pDelete)(void *, void *, int);
 };
 
 struct GameShiftedRecordSlot {
@@ -416,17 +430,20 @@ void *LEMBALL_FASTCALL ConstructNetworkLobbySelectedPeerStatusStream(void *pObje
 // FUNCTION: LEMBALL 0x004523e0
 void *LEMBALL_FASTCALL ConstructNetworkLobbyPeerEntryStream(void *pObject) {
     GameNetworkLobbyPeerEntryStream *pStream;
+    GameEffStream *pBaseStream;
 
     pStream = (GameNetworkLobbyPeerEntryStream *)pObject;
-    pStream->m_Base.m_pVtable =
+    pBaseStream = (GameEffStream *)pObject;
+    pStream->m_pVtable =
         (GameEffStreamVtable *)g_GAME_EffStreamConstructionVtable;
-    pStream->m_Base.m_nEventCode = 5;
-    pStream->m_Base.ResetStateFields();
-    pStream->m_Base.m_pVtable = (GameEffStreamVtable *)g_EFF_NetworkLobbyPeerEntryVtable;
+    pStream->m_nEventCode = 5;
+    pBaseStream->ResetStateFields();
+    pStream->m_pVtable =
+        (GameEffStreamVtable *)g_EFF_NetworkLobbyPeerEntryVtable;
     pStream->m_fAcceptedPeer = 0;
     pStream->m_nPeerEntryState = 0;
-    pStream->m_Base.m_cbSerializedLength += 0x1e;
-    pStream->m_Base.m_fHasPayload = 1;
+    pStream->m_cbSerializedLength += 0x1e;
+    pStream->m_fHasPayload = 1;
     return pObject;
 }
 
@@ -585,22 +602,26 @@ void DestroyNetworkLobbyVsnetRuntime(void *pObject) {
 
     pOwnedObject = pRuntime->m_pPeerClearCloseStream;
     if (pOwnedObject != 0) {
-        ((GameEffStreamDeleteVtable *)*(void **)pOwnedObject)->m_pDelete(1);
+        ((GameEffStreamDeleteVtable *)*(void **)pOwnedObject)
+            ->m_pDelete(pOwnedObject, 0, 1);
     }
 
     pOwnedObject = pRuntime->m_pSelectedPeerStatusStream;
     if (pOwnedObject != 0) {
-        ((GameEffStreamDeleteVtable *)*(void **)pOwnedObject)->m_pDelete(1);
+        ((GameEffStreamDeleteVtable *)*(void **)pOwnedObject)
+            ->m_pDelete(pOwnedObject, 0, 1);
     }
 
     pOwnedObject = pRuntime->m_pPeerEntryWriteStream;
     if (pOwnedObject != 0) {
-        ((GameEffStreamDeleteVtable *)*(void **)pOwnedObject)->m_pDelete(1);
+        ((GameEffStreamDeleteVtable *)*(void **)pOwnedObject)
+            ->m_pDelete(pOwnedObject, 0, 1);
     }
 
     pOwnedObject = pRuntime->m_pPeerEntryTable;
     if (pOwnedObject != 0) {
-        ((GameEffStreamDeleteVtable *)*(void **)pOwnedObject)->m_pDelete(3);
+        ((GameEffStreamDeleteVtable *)*(void **)pOwnedObject)
+            ->m_pDelete(pOwnedObject, 0, 3);
     }
 
     pRuntime->m_pVtable = g_pNonZrleVariantRenderEntryInitializeVtable;
@@ -740,6 +761,31 @@ void *LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void *pObject,
     pStream->DestroyEffStreamBase();
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x00452f50
+void *LEMBALL_FASTCALL DeleteNetworkLobbyPeerEntryStream(void *pObject, void *, int fDelete) {
+    char *pEntry;
+    char *pAllocation;
+    int cEntries;
+
+    if ((fDelete & 2) != 0) {
+        pAllocation = (char *)pObject - sizeof(int);
+        cEntries = *(int *)pAllocation;
+        pEntry = (char *)pObject + cEntries * 0x50;
+        while (0 < cEntries) {
+            pEntry -= 0x50;
+            ((VsNetEffStreamBase *)pEntry)->DestroyEffStreamBase();
+            --cEntries;
+        }
+        FreeVSMemBlock(pAllocation);
+    } else {
+        ((VsNetEffStreamBase *)pObject)->DestroyEffStreamBase();
+        if ((fDelete & 1) != 0) {
+            FreeVSMemBlock(pObject);
+        }
     }
     return pObject;
 }
