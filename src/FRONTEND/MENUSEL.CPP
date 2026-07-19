@@ -116,6 +116,7 @@ public:
     virtual void SetStartTime(int dwStartTime) = 0;
     virtual void SetDirection(int nDirection) = 0;
 };
+
 typedef int (LEMBALL_FASTCALL *GameMenuSelectorEventProc)(
     GameMenuSelectorManager *pManager, int nUnusedEdx,
     GameMenuSelectorEvent *pEvent);
@@ -2734,7 +2735,7 @@ void LEMBALL_FASTCALL UpdateMenuSelectorAnimation(
                     x + nDirection * ((int)(dwNow - dwPrevious) >> 1);
             } else {
                 ((GameVariantResourceEntryManager *)
-                    g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x0e);
+                    g_pVariantResourceEntryManager)->PlayVariantResourceEffectThunk(0x0e);
                 pManager->m_dwActionFrameStart23C = (int)dwNow;
                 pManager->m_dwActionFrameEnd240 = (int)dwNow + 500;
                 pManager->m_nActionStateA4 = 3;
@@ -2762,9 +2763,13 @@ void LEMBALL_FASTCALL UpdateMenuSelectorAnimation(
         pManager->m_dwSideTransitionEnd228 = (int)dwNow + 250;
         pManager->m_nActionStateA4 = 1;
         SetFrameSelectorDuration(pManager->m_pSideSelector244, 250);
-        ((GameProgressiveVariantFrameSelectorInterface *)
-            pManager->m_pSideSelector244)->SetDirection(
-                pManager->m_nSelectedSideA0 == 0 ? -1 : 1);
+        if (pManager->m_nSelectedSideA0 == 0) {
+            ((GameProgressiveVariantFrameSelectorInterface *)
+                pManager->m_pSideSelector244)->SetDirection(-1);
+        } else {
+            ((GameProgressiveVariantFrameSelectorInterface *)
+                pManager->m_pSideSelector244)->SetDirection(1);
+        }
     }
     if (pManager->m_fMovementActiveDC != 0) {
         if (dwNow < (unsigned int)pManager->m_dwMovementEnd220) {
