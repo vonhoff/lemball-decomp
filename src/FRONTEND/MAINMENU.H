@@ -9,6 +9,14 @@ void *LEMBALL_FASTCALL ConstructFunctionalLevelSelectionScreen(
     void *pRenderContext, short *paSize);
 extern void *g_GAME_MainMenuQueueVtable[4];
 extern void *g_GAME_MainMenuCallbackVtable[2];
+extern void *g_GAME_IntroSequenceScreenVtable[22];
+extern void *g_GAME_IntroSequenceQueueVtable[4];
+extern void *g_GAME_IntroSequenceCallbackVtable[2];
+int LEMBALL_FASTCALL GetIntroSequenceMediaNotifyFlags(void *pOwner);
+void LEMBALL_FASTCALL NoopIntroSequenceScreenHookThunk(void *pObject);
+void LEMBALL_FASTCALL DestroyFramedScreenBaseThunk00402081(
+    void *pObject);
+void LEMBALL_FASTCALL DestroyIntroSequenceScreenThunk(void *pObject);
 
 class GameIntroSequenceScreen {
 public:

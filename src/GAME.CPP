@@ -515,9 +515,6 @@ void *g_GAME_RenderQueueNodeVtableSlots[4] = {
 };
 static void *g_GAME_GenericModeVtableSlots[6];
 static void *g_GAME_GenericScreenVtableSlots[14];
-static void *g_GAME_IntroSequenceScreenVtable[22];
-static int g_fGAMEIntroSequenceScreenVtableInitialized;
-static void *g_GAME_IntroSequenceQueueVtable[4];
 static void *g_GAME_IntroSequenceMediaOwnerVtable[50];
 static int g_fGAMEIntroSequenceMediaOwnerVtableInitialized;
 struct GameSafeVtableInitializer {
@@ -1272,141 +1269,8 @@ struct GamePrimaryContextGeometryVirtualInterface {
 extern void LEMBALL_FASTCALL RequestIntroSequenceScreenTransition(
     char *pScreen);
 
-static int LEMBALL_FASTCALL GetIntroSequenceMediaNotifyFlags(void *) {
-    return 0x40000001;
-}
-
 extern void LEMBALL_FASTCALL HandleIntroSequenceMediaCompletion(
     void *pOwner);
-
-static void LEMBALL_FASTCALL NoopIntroSequenceScreenHook(void *, int) {
-}
-
-static void DestroyIntroSequenceScreen(void *pObject) {
-    char *pScreen;
-
-    pScreen = (char *)pObject;
-    *(void ***)pScreen = g_GAME_IntroSequenceScreenVtable;
-    *(void ***)(pScreen + 4) = g_GAME_IntroSequenceQueueVtable;
-    *(void ***)(pScreen + 0x14) = g_GAME_MainMenuCallbackVtable;
-    if (*(int *)(pScreen + 0x9c) != 0) {
-        NoopIntroSequenceScreenHook(pScreen, 0);
-    }
-    ((GamePrimaryContext *)*(void **)(pScreen + 0x84))
-        ->SampleRootHelperGeometryAndDispatchRenderGroups(-1);
-    DestroyResourceGeometryHelperWindowOwner(pScreen + 0x3bc);
-    *(void **)(pScreen + 0x3a0) =
-        g_pQueuedRenderPointSinkFinalizeThunk;
-    DestroyFunctionalFramedScreenBase(pScreen);
-}
-
-static void *LEMBALL_FASTCALL DeleteIntroSequenceScreen(
-    void *pObject, int, int fDelete) {
-    DestroyIntroSequenceScreen(pObject);
-    if ((fDelete & 1) != 0) {
-        FreeVSMemBlock(pObject);
-    }
-    return pObject;
-}
-
-static void *LEMBALL_FASTCALL DeleteAdjustedIntroSequenceScreen(
-    void *pObject, int nUnusedEdx, int fDelete) {
-    return DeleteIntroSequenceScreen(
-        (char *)pObject - 4, nUnusedEdx, fDelete);
-}
-
-void *GameScreenObject::ConstructIntroSequenceScreen(void *pPrimaryContext,
-                                                      void *pWindowOwnerContext,
-                                                      short *paRect,
-                                                      int fSkipVariant) {
-    char *pScreen;
-    char *pMediaOwner;
-
-    pScreen = (char *)this;
-    ConstructFramedScreenBaseFields(
-        pScreen, 0, pPrimaryContext, pWindowOwnerContext, paRect,
-        1, 0, 0, 0, 0, 0);
-    *(void ***)(pScreen + 0x3a0) =
-        g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage + 4;
-    *(unsigned short *)(pScreen + 0x3a4) = 0;
-    *(unsigned short *)(pScreen + 0x3a6) = 0;
-    *(unsigned short *)(pScreen + 0x3a8) = 0;
-    *(unsigned short *)(pScreen + 0x3aa) = 0;
-
-    pMediaOwner = pScreen + 0x3bc;
-    ConstructResourceGeometryHelperWindowOwner(pMediaOwner);
-    if (g_fGAMEIntroSequenceMediaOwnerVtableInitialized == 0) {
-        int i;
-        for (i = 0; i < 50; ++i) {
-            g_GAME_IntroSequenceMediaOwnerVtable[i] =
-                (*(void ***)pMediaOwner)[i];
-        }
-        g_GAME_IntroSequenceMediaOwnerVtable[25] =
-            (void *)GetIntroSequenceMediaNotifyFlags;
-        g_GAME_IntroSequenceMediaOwnerVtable[49] =
-            (void *)HandleIntroSequenceMediaCompletion;
-        g_fGAMEIntroSequenceMediaOwnerVtableInitialized = 1;
-    }
-    *(void ***)pMediaOwner = g_GAME_IntroSequenceMediaOwnerVtable;
-    if (g_fGAMEIntroSequenceScreenVtableInitialized == 0) {
-        union {
-            int (GameIntroSequenceScreen::*pMethod)(short *);
-            void *pAddress;
-        } inputMethod;
-        union {
-            void (GameIntroSequenceScreen::*pMethod)(void);
-            void *pAddress;
-        } screenMethod;
-
-        int i;
-        for (i = 0; i < 22; ++i) {
-            g_GAME_IntroSequenceScreenVtable[i] = (*(void ***)pScreen)[i];
-        }
-        for (i = 0; i < 4; ++i) {
-            g_GAME_IntroSequenceQueueVtable[i] =
-                g_GAME_MainMenuQueueVtable[i];
-        }
-        g_GAME_IntroSequenceScreenVtable[0] =
-            (void *)DeleteIntroSequenceScreen;
-        screenMethod.pMethod =
-            &GameIntroSequenceScreen::PollPlaybackCompletion;
-        g_GAME_IntroSequenceScreenVtable[6] = screenMethod.pAddress;
-        screenMethod.pMethod = &GameIntroSequenceScreen::UpdatePlayback;
-        g_GAME_IntroSequenceScreenVtable[14] = screenMethod.pAddress;
-        inputMethod.pMethod = &GameIntroSequenceScreen::HandleInput;
-        g_GAME_IntroSequenceScreenVtable[15] = inputMethod.pAddress;
-        screenMethod.pMethod = &GameIntroSequenceScreen::RefreshMediaPath;
-        g_GAME_IntroSequenceScreenVtable[16] = screenMethod.pAddress;
-        g_GAME_IntroSequenceScreenVtable[17] =
-            (void *)NoopIntroSequenceScreenHook;
-        g_GAME_IntroSequenceQueueVtable[1] =
-            (void *)DeleteAdjustedIntroSequenceScreen;
-        g_fGAMEIntroSequenceScreenVtableInitialized = 1;
-    }
-    *(void ***)pScreen = g_GAME_IntroSequenceScreenVtable;
-    *(void ***)(pScreen + 4) = g_GAME_IntroSequenceQueueVtable;
-    *(void ***)(pScreen + 0x14) = g_GAME_MainMenuCallbackVtable;
-    *(int *)(pScreen + 0x398) = fSkipVariant;
-    *(int *)(pScreen + 0x39c) = fSkipVariant != 0 ? 0xe : 2;
-    *(int *)(pScreen + 0x3b8) = 0;
-    *(int *)(pScreen + 0x3b4) = 10;
-
-    ((GamePrimaryContext *)pPrimaryContext)
-        ->SampleRootHelperGeometryAndDispatchRenderGroups(-1);
-    *(void **)(pMediaOwner + 0xbc) = pScreen;
-    *(void **)(pMediaOwner + 0xc0) = pPrimaryContext;
-    *(int *)(pMediaOwner + 0xc4) = fSkipVariant;
-    *(int *)(pScreen + 0x450) = 1;
-    ((GameDynamicCString *)(pScreen + 0x454))
-        ->AssignDynamicCString("lemball");
-    *(int *)(pScreen + 0x44c) = 1;
-    *(int *)(pScreen + 0xa8) = 0;
-    *(int *)(pScreen + 0xac) = 0;
-    *(int *)(pScreen + 0xb0) = 0;
-    ActivateFramedScreenBase(pScreen);
-    return pScreen;
-}
-
 
 void *GameScreenObject::ConstructOptionsScreen(void *pPrimaryContext, void *pWindowOwnerContext, short *paRect) {
     return ConstructFunctionalOptionsScreen(
@@ -4862,6 +4726,101 @@ void LEMBALL_FASTCALL DestroyBaseModeObject(void *pObject) {
     }
     pMode[3] = g_pNonZrleVariantRenderEntryInitializeVtable;
     pMode[0] = g_GAME_GenericModeVtableSlots;
+}
+
+static void InitializeIntroSequenceMediaOwnerVtable(void *pMediaOwner) {
+    int i;
+
+    if (g_fGAMEIntroSequenceMediaOwnerVtableInitialized != 0) {
+        return;
+    }
+    for (i = 0; i < 50; ++i) {
+        g_GAME_IntroSequenceMediaOwnerVtable[i] =
+            (*(void ***)pMediaOwner)[i];
+    }
+    g_GAME_IntroSequenceMediaOwnerVtable[25] =
+        (void *)GetIntroSequenceMediaNotifyFlags;
+    g_GAME_IntroSequenceMediaOwnerVtable[49] =
+        (void *)HandleIntroSequenceMediaCompletion;
+    g_fGAMEIntroSequenceMediaOwnerVtableInitialized = 1;
+}
+
+// FUNCTION: LEMBALL 0x00447410
+void *GameScreenObject::ConstructIntroSequenceScreen(void *pPrimaryContext, void *pWindowOwnerContext, short *paRect, int fSkipVariant) {
+    char *pScreen;
+    char *pMediaOwner;
+
+    pScreen = (char *)this;
+    ConstructFramedScreenBaseFields(
+        pScreen, 0, pPrimaryContext, pWindowOwnerContext, paRect,
+        1, 0, 0, 0, 0, 0);
+    *(void ***)(pScreen + 0x3a0) =
+        g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage + 4;
+    *(unsigned short *)(pScreen + 0x3a4) = 0;
+    *(unsigned short *)(pScreen + 0x3a6) = 0;
+    *(unsigned short *)(pScreen + 0x3a8) = 0;
+    *(unsigned short *)(pScreen + 0x3aa) = 0;
+
+    pMediaOwner = pScreen + 0x3bc;
+    ConstructResourceGeometryHelperWindowOwner(pMediaOwner);
+    InitializeIntroSequenceMediaOwnerVtable(pMediaOwner);
+    *(void ***)pMediaOwner = g_GAME_IntroSequenceMediaOwnerVtable;
+    *(void ***)pScreen = g_GAME_IntroSequenceScreenVtable;
+    *(void ***)(pScreen + 4) = g_GAME_IntroSequenceQueueVtable;
+    *(void ***)(pScreen + 0x14) = g_GAME_IntroSequenceCallbackVtable;
+    *(int *)(pScreen + 0x398) = fSkipVariant;
+    *(int *)(pScreen + 0x39c) = fSkipVariant != 0 ? 0xe : 2;
+    *(int *)(pScreen + 0x3b8) = 0;
+    *(int *)(pScreen + 0x3b4) = 10;
+
+    ((GamePrimaryContext *)pPrimaryContext)
+        ->SampleRootHelperGeometryAndDispatchRenderGroups(-1);
+    *(void **)(pMediaOwner + 0xbc) = pScreen;
+    *(void **)(pMediaOwner + 0xc0) = pPrimaryContext;
+    *(int *)(pMediaOwner + 0xc4) = fSkipVariant;
+    *(int *)(pScreen + 0x450) = 1;
+    ((GameDynamicCString *)(pScreen + 0x454))
+        ->AssignDynamicCString("lemball");
+    *(int *)(pScreen + 0x44c) = 1;
+    *(int *)(pScreen + 0xa8) = 0;
+    *(int *)(pScreen + 0xac) = 0;
+    *(int *)(pScreen + 0xb0) = 0;
+    ActivateFramedScreenBase(pScreen);
+    return pScreen;
+}
+
+// FUNCTION: LEMBALL 0x00447550
+void LEMBALL_FASTCALL DestroyIntroSequenceScreen(void *pObject) {
+    char *pScreen;
+
+    pScreen = (char *)pObject;
+    *(void ***)pScreen = g_GAME_IntroSequenceScreenVtable;
+    *(void ***)(pScreen + 4) = g_GAME_IntroSequenceQueueVtable;
+    *(void ***)(pScreen + 0x14) = g_GAME_IntroSequenceCallbackVtable;
+    if (*(int *)(pScreen + 0x9c) != 0) {
+        NoopIntroSequenceScreenHookThunk(pScreen);
+    }
+    ((GamePrimaryContext *)*(void **)(pScreen + 0x84))
+        ->SampleRootHelperGeometryAndDispatchRenderGroups(-1);
+    DestroyResourceGeometryHelperWindowOwner(pScreen + 0x3bc);
+    *(void **)(pScreen + 0x3a0) =
+        g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+    DestroyFramedScreenBaseThunk00402081(pScreen);
+}
+
+// FUNCTION: LEMBALL 0x004479a0
+void *LEMBALL_FASTCALL DeleteIntroSequenceScreen(void *pObject, int, int fDelete) {
+    DestroyIntroSequenceScreenThunk(pObject);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x004479d0
+void *LEMBALL_FASTCALL DeleteAdjustedIntroSequenceScreen(void *pObject, int nUnusedEdx, int fDelete) {
+    return DeleteIntroSequenceScreen(
+        (char *)pObject - 4, nUnusedEdx, fDelete);
 }
 
 // FUNCTION: LEMBALL 0x00448200

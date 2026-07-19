@@ -525,7 +525,7 @@ public:
     virtual void Reserved12(void) = 0;
     virtual void Reserved13(void) = 0;
     virtual void UpdateDerivedScreen(void) = 0;
-    virtual void Reserved15(void) = 0;
+    virtual int HandleInput(void *pEvent) = 0;
     virtual void LoadDerivedFrameResources(void) = 0;
     virtual void ReleaseDerivedFrameResources(void) = 0;
     virtual void DrawOverlayVariant(void) = 0;
@@ -572,7 +572,7 @@ typedef int (LEMBALL_FASTCALL *GameIntOneArgVirtual)(void *, int, void *);
 
 static void LEMBALL_FASTCALL DestroyMainMenuScreenThunk00401190(
     void *pObject);
-static void LEMBALL_FASTCALL DestroyFramedScreenBaseThunk00402081(
+void LEMBALL_FASTCALL DestroyFramedScreenBaseThunk00402081(
     void *pObject);
 static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffersThunk(
     void *pObject);
@@ -835,6 +835,23 @@ static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreen(
     void *pObject, int nUnusedEdx, int fDelete);
 static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
     void *pQueueNode, int nUnusedEdx, void *pEvent);
+extern void *LEMBALL_FASTCALL DeleteIntroSequenceScreen(
+    void *pObject, int nUnusedEdx, int fDelete);
+extern void LEMBALL_FASTCALL DestroyIntroSequenceScreen(void *pObject);
+extern void *LEMBALL_FASTCALL DeleteAdjustedIntroSequenceScreen(
+    void *pObject, int nUnusedEdx, int fDelete);
+extern void noop_intro_sequence_screen_hook(void);
+static void *LEMBALL_FASTCALL DeleteIntroSequenceScreenThunk(
+    void *pObject, int nUnusedEdx, int fDelete);
+static void *LEMBALL_FASTCALL DeleteAdjustedIntroSequenceScreenThunk(
+    void *pObject, int nUnusedEdx, int fDelete);
+static void LEMBALL_FASTCALL PollIntroSequencePlaybackThunk(void *pObject);
+static void LEMBALL_FASTCALL UpdateIntroSequencePlaybackThunk(void *pObject);
+static int LEMBALL_FASTCALL HandleIntroSequenceInputThunk(
+    void *pObject, int nUnusedEdx, short *pEvent);
+static void LEMBALL_FASTCALL RefreshIntroSequenceMediaPathThunk(
+    void *pObject);
+void LEMBALL_FASTCALL NoopIntroSequenceScreenHookThunk(void *pObject);
 
 
 
@@ -858,6 +875,46 @@ static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
 
 
 
+
+// GLOBAL: LEMBALL 0x00497a50
+void *g_GAME_IntroSequenceCallbackVtable[2] = {
+    (void *)VariantResourceBundleNoopThunk,
+    0
+};
+
+// GLOBAL: LEMBALL 0x00497a58
+void *g_GAME_IntroSequenceQueueVtable[4] = {
+    (void *)InitializeNonZrleVariantRenderEntry,
+    (void *)DeleteAdjustedIntroSequenceScreenThunk,
+    (void *)HandleFramedScreenQueueEventThunk,
+    0
+};
+
+// GLOBAL: LEMBALL 0x00497a68
+void *g_GAME_IntroSequenceScreenVtable[22] = {
+    (void *)DeleteIntroSequenceScreenThunk,
+    (void *)NoopPackagedSpriteRenderEntryThunk00402A22,
+    (void *)RefreshAndDrawFramedScreenBaseThunk,
+    (void *)NoopPackagedSpriteRenderEntryThunk00401B77,
+    (void *)SetFramedScreenSizeThunk,
+    (void *)MainMenuSlot05Thunk,
+    (void *)PollIntroSequencePlaybackThunk,
+    (void *)UpdateFramedScreenRuntimeThunk,
+    (void *)ResetFramedScreenVariantBuffersThunk,
+    (void *)MainMenuSlot09Thunk,
+    (void *)GetFramedScreenRequestedModeThunk,
+    (void *)GetFramedScreenTransitionStatusThunk,
+    (void *)RecenterFramedScreenIfNeededThunk,
+    (void *)MainMenuSlot13Thunk,
+    (void *)UpdateIntroSequencePlaybackThunk,
+    (void *)HandleIntroSequenceInputThunk,
+    (void *)RefreshIntroSequenceMediaPathThunk,
+    (void *)NoopIntroSequenceScreenHookThunk,
+    (void *)MainMenuSlot18Thunk,
+    (void *)MainMenuSlot19Thunk,
+    (void *)FramedScreenSlot20Thunk,
+    (void *)MainMenuSlot21Thunk
+};
 
 // GLOBAL: LEMBALL 0x00497af0
 void *g_GAME_MainMenuScreenVtable[22] = {
@@ -1738,6 +1795,13 @@ static void LEMBALL_FASTCALL RefreshFramedScreenFrameResourcesThunk(void *pObjec
     RefreshFramedScreenFrameResources(pObject);
 }
 
+// FUNCTION: LEMBALL 0x004017ee
+static void *LEMBALL_FASTCALL DeleteIntroSequenceScreenThunk(
+    void *pObject, int nUnusedEdx, int fDelete)
+{
+    return DeleteIntroSequenceScreen(pObject, nUnusedEdx, fDelete);
+}
+
 // FUNCTION: LEMBALL 0x00401889
 static int LEMBALL_FASTCALL HandleFramedScreenQueueEventThunk(
     void *pQueueNode, int nUnusedEdx, void *pEvent)
@@ -1749,6 +1813,11 @@ static int LEMBALL_FASTCALL HandleFramedScreenQueueEventThunk(
 // FUNCTION: LEMBALL 0x004018de
 static void LEMBALL_FASTCALL UpdateMainMenuScreenThunk(void *pObject) {
     UpdateMainMenuScreen(pObject);
+}
+
+// FUNCTION: LEMBALL 0x004019b5
+static void LEMBALL_FASTCALL PollIntroSequencePlaybackThunk(void *pObject) {
+    ((GameIntroSequenceScreen *)pObject)->PollPlaybackCompletion();
 }
 
 // FUNCTION: LEMBALL 0x00401af0
@@ -1767,8 +1836,21 @@ static void LEMBALL_FASTCALL MainMenuSlot06Thunk(void *pObject) {
     noop_render_entry_callback_004393b0();
 }
 
+// FUNCTION: LEMBALL 0x00401dd9
+static void LEMBALL_FASTCALL UpdateIntroSequencePlaybackThunk(void *pObject) {
+    ((GameIntroSequenceScreen *)pObject)->UpdatePlayback();
+}
+
+// FUNCTION: LEMBALL 0x00401e24
+static void *LEMBALL_FASTCALL DeleteAdjustedIntroSequenceScreenThunk(
+    void *pObject, int nUnusedEdx, int fDelete)
+{
+    return DeleteAdjustedIntroSequenceScreen(
+        pObject, nUnusedEdx, fDelete);
+}
+
 // FUNCTION: LEMBALL 0x00402081
-static void LEMBALL_FASTCALL DestroyFramedScreenBaseThunk00402081(
+void LEMBALL_FASTCALL DestroyFramedScreenBaseThunk00402081(
     void *pObject)
 {
     DestroyFramedScreenBase(pObject);
@@ -1801,6 +1883,13 @@ static void *LEMBALL_FASTCALL DeleteAdjustedFramedScreenBaseThunk(
     void *pObject, int nUnusedEdx, int fDelete)
 {
     return DeleteAdjustedFramedScreenBase(pObject, nUnusedEdx, fDelete);
+}
+
+// FUNCTION: LEMBALL 0x004023a1
+void LEMBALL_FASTCALL DestroyIntroSequenceScreenThunk(
+    void *pObject)
+{
+    DestroyIntroSequenceScreen(pObject);
 }
 
 // FUNCTION: LEMBALL 0x0040242d
@@ -1852,6 +1941,20 @@ static void LEMBALL_FASTCALL MainMenuSlot05Thunk(
     (void)pObject;
     (void)nUnusedEdx;
     noop_render_entry_callback_004393a0(pArgument);
+}
+
+// FUNCTION: LEMBALL 0x00402c3e
+static int LEMBALL_FASTCALL HandleIntroSequenceInputThunk(
+    void *pObject, int, short *pEvent)
+{
+    return ((GameIntroSequenceScreen *)pObject)->HandleInput(pEvent);
+}
+
+// FUNCTION: LEMBALL 0x00402e05
+static void LEMBALL_FASTCALL RefreshIntroSequenceMediaPathThunk(
+    void *pObject)
+{
+    ((GameIntroSequenceScreen *)pObject)->RefreshMediaPath();
 }
 
 // FUNCTION: LEMBALL 0x0040308a
@@ -1913,6 +2016,13 @@ static void *LEMBALL_FASTCALL DeleteFramedScreenBaseThunk(
     return DeleteFramedScreenBase(pObject, nUnusedEdx, fDelete);
 }
 
+// FUNCTION: LEMBALL 0x0040384b
+void LEMBALL_FASTCALL NoopIntroSequenceScreenHookThunk(void *pObject)
+{
+    (void)pObject;
+    noop_intro_sequence_screen_hook();
+}
+
 // FUNCTION: LEMBALL 0x00445420
 void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
     void *pObject, int, void *pPrimaryContext, void *pRenderContext,
@@ -1947,9 +2057,9 @@ void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
     pScreen->m_pFrameSelectorVtable350 =
         g_MenuSelectorCurrentFrameCallbackVtable;
     *(void ***)pScreen->m_abRenderQueueNode04 =
-        g_GAME_MainMenuQueueVtable;
+        g_GAME_FramedScreenQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
-        g_GAME_MainMenuCallbackVtable;
+        g_GAME_FramedScreenCallbackVtable;
     pScreen->m_cxScreen37C = paSize[0];
     pScreen->m_cyScreen37E = paSize[1];
     pScreen->m_cMappedListEntriesA0 = cMappedListEntries;
@@ -1962,17 +2072,14 @@ void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
     pScreen->m_fFrameResourcesLoaded9C = 0;
     pScreen->m_nPaletteResourceIdB4 = 0x10a;
 
-    if (g_pSharedRenderDispatchQueue != 0) {
-        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
-            ->RegisterOrderedRenderDispatchClient(
-                pScreen->m_abRenderQueueNode04, 0);
-    }
+    ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+        ->RegisterOrderedRenderDispatchClient(
+            pScreen != 0 ? pScreen->m_abRenderQueueNode04 : 0, 0);
 
     pScreen->m_nRequestedMode374 = 0;
     pScreen->m_nTransitionStatus378 = 0;
     pScreen->m_fRenderEntriesInitialized368 = 0;
     pScreen->m_fBuildingRenderEntries364 = 0;
-    pScreen->m_iRenderEntryGroup328 = 0;
     pScreen->m_fFrameDirty330 = 1;
     pScreen->m_fNetworkScreen8C =
         (((GameLevelProgressStateView *)g_pLevelProgressState)
@@ -2584,7 +2691,6 @@ static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
 {
     GameFramedScreenBase *pScreen;
 
-    pScreen = (GameFramedScreenBase *)((char *)pQueueNode - 4);
     if (*(int *)((char *)pQueueNode + 0x8c) != 0) {
         return 0;
     }
@@ -2593,8 +2699,12 @@ static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
         0) {
         return 0;
     }
-    return ((GameIntOneArgVirtual)pScreen->m_pVtable00[15])(
-               pScreen, 0, pEvent) != 0;
+    pScreen = (GameFramedScreenBase *)((char *)pQueueNode - 4);
+    if (((GameFramedScreenVirtualInterface *)pScreen)
+            ->HandleInput(pEvent) == 0) {
+        return 0;
+    }
+    return 1;
 }
 
 // FUNCTION: LEMBALL 0x004464d0
@@ -2762,12 +2872,12 @@ void GameIntroSequenceScreen::UpdatePlayback(void) {
     if (*(int *)(pScreen + 0x3b4) != 0)
         return;
 
+    aRect[0] = *(short *)(*(char **)(pScreen + 0x84) + 8);
+    aRect[1] = *(short *)(*(char **)(pScreen + 0x84) + 10);
+    aRect[2] = (short)((aRect[0] - 0x140) / 2);
+    aRect[3] = (short)((aRect[1] - 0xf0) / 2);
     aRect[0] = 0x140;
     aRect[1] = 0xf0;
-    aRect[2] = (short)((*(short *)(*(char **)(pScreen + 0x84) + 8) -
-                              0x140) / 2);
-    aRect[3] = (short)((*(short *)(*(char **)(pScreen + 0x84) + 10) -
-                              0xf0) / 2);
     pMediaOwner = pScreen + 0x3bc;
     if (*(int *)(pScreen + 0x3b8) == 0) {
         ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
@@ -2819,6 +2929,23 @@ void LEMBALL_FASTCALL HandleIntroSequenceMediaCompletion(void *pOwner) {
     ((IntroMediaOwnerInterface *)pOwner)->Stop();
     RequestIntroSequenceScreenTransition(
         *(char **)((char *)pOwner + 0xbc));
+}
+
+// FUNCTION: LEMBALL 0x00447960
+void WINAPI IgnoreIntroSequenceMediaStateChange(int) {
+}
+
+// FUNCTION: LEMBALL 0x00447970
+void WINAPI IgnoreIntroSequenceMediaPositionChange(int) {
+}
+
+// FUNCTION: LEMBALL 0x00447980
+void IgnoreIntroSequenceMediaNotification(void) {
+}
+
+// FUNCTION: LEMBALL 0x00447990
+int LEMBALL_FASTCALL GetIntroSequenceMediaNotifyFlags(void *) {
+    return 0x40000001;
 }
 
 unsigned int GamePaintballSequenceMediaState::InitializeVariant(

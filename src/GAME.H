@@ -17,9 +17,6 @@
 // GameScreenObject::ConstructPasswordEntryScreen
 // STUB: LEMBALL 0x00403026
 // GameScreenObject::ConstructRegistrationInfoScreen
-// STUB: LEMBALL 0x004030df
-// GameScreenObject::ConstructIntroSequenceScreen
-
 #include "ENGINE/CORE/WIN32.H"
 #include "ENGINE/GDI/VSWINDOW.H"
 
