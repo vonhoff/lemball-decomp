@@ -3073,6 +3073,8 @@ void GamePaintballSequenceMediaState::LoadVariant(int fCompactLayout) {
 // FUNCTION: LEMBALL 0x00448300
 static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject) {
     GameMainMenuScreenView *pScreen;
+    void *pForegroundBitmap;
+    int cRenderGroups;
     unsigned char *pForegroundEntry;
     const int *pPlayResources;
     const int *pSinglePlayerResources;
@@ -3081,9 +3083,7 @@ static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject) {
     const int *pPackResources;
     const int *pOptionsResources;
     GameMenuSelectorManager **ppSelectorManager;
-    int cRenderGroups;
-    void *pForegroundBitmap;
-    GameMenuSelectorManager *pSelectorAllocation;
+    void *pSelectorStorage;
     short cxForeground;
 
     pScreen = (GameMainMenuScreenView *)pObject;
@@ -3121,14 +3121,14 @@ static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject) {
         --cRenderGroups;
     } while (cRenderGroups != 0);
 
-    pSelectorAllocation = (GameMenuSelectorManager *)
+    pSelectorStorage =
         AllocateVSMemBlock(sizeof(GameMenuSelectorManager));
     ppSelectorManager =
         (GameMenuSelectorManager **)&pScreen->m_pSelectorManager334;
-    if (pSelectorAllocation == 0) {
+    if (pSelectorStorage == 0) {
         *ppSelectorManager = 0;
     } else {
-        *ppSelectorManager = new (pSelectorAllocation)
+        *ppSelectorManager = new (pSelectorStorage)
             GameMenuSelectorManager(
                 pScreen->m_pPrimaryContext84,
                 pScreen->m_pRenderContext88,

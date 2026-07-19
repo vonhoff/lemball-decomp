@@ -4426,7 +4426,7 @@ void GamePrimaryContext::SwitchPrimaryContextScreen(int nMode) {
     void *pScreenObject;
     short aRect[4];
     int nUploadState;
-    void **ppActiveLevelMode;
+    GameLevelModeActiveInterface **ppActiveLevelMode;
     GameLevelModeObjectView *pActiveLevelMode;
 
     pContext = this;
@@ -4493,14 +4493,14 @@ void GamePrimaryContext::SwitchPrimaryContextScreen(int nMode) {
 
     case 5:
     case 0x13:
-        ppActiveLevelMode = (void **)
+        ppActiveLevelMode = (GameLevelModeActiveInterface **)
             &pContext->m_pMainContext->m_pActiveMode;
         pContext->m_pActiveLevelMode =
             (GameLevelModeObjectView *)
-                (GameLevelModeActiveInterface *)*ppActiveLevelMode;
+                *ppActiveLevelMode;
         pActiveLevelMode =
             (GameLevelModeObjectView *)
-                (GameLevelModeActiveInterface *)*ppActiveLevelMode;
+                *ppActiveLevelMode;
         pContext->m_nLevelScreenStatusIndicatorMode =
             pActiveLevelMode->m_nStatusIndicatorMode110;
         pScreenObject = AllocateVSMemBlock(0x2428);
