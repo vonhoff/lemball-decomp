@@ -1257,7 +1257,7 @@ static void LEMBALL_FASTCALL RenderBitmapEntryViaContextThunk(
     RenderBitmapEntryViaContext(pObject, 0, pManager);
 }
 
-// FUNCTION: LEMBALL 0x00403265
+// STUB: LEMBALL 0x00403265
 void *InitializeBaseModeActionButtonPointSink(void *pObject) {
     int *pEntry;
 

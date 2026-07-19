@@ -2593,7 +2593,7 @@ void VS_RootGeometryOwner::AppendQueuedRenderSinkValueNode(void *pValue) {
     ++*(unsigned int *)((char *)this + 0x2c);
 }
 
-// FUNCTION: LEMBALL 0x004015e6
+// STUB: LEMBALL 0x004015e6
 void InitializeBaseModeObject(void *pModeObject, GameMainContext *pMainContext) {
     GameBaseModeObject *pMode;
 
@@ -2652,7 +2652,7 @@ void SetLevelScreenStatusIndicatorModeThunk(int nMode, int nValue) {
     SetLevelScreenStatusIndicatorMode(nMode, nValue);
 }
 
-// FUNCTION: LEMBALL 0x00401b90
+// STUB: LEMBALL 0x00401b90
 void *ConstructNetworkLobbyTransportController(void *pModeObject, GameMainContext *pMainContext) {
     GameNetworkLobbyTransportController *pMode;
 
@@ -2726,7 +2726,7 @@ DeleteNetworkLobbyTransportControllerEventClient(
         (char *)pObject - 0x0c, nUnusedEdx, fDelete);
 }
 
-// FUNCTION: LEMBALL 0x00401c6c
+// STUB: LEMBALL 0x00401c6c
 void ReleaseMainGameVariantResourceMode(GameMainContext *pMainContext) {
     if (pMainContext->m_pVariantMode != 0) {
         DestroyMainGameVariantResourceMode(pMainContext->m_pVariantMode);
@@ -2735,7 +2735,7 @@ void ReleaseMainGameVariantResourceMode(GameMainContext *pMainContext) {
     }
 }
 
-// FUNCTION: LEMBALL 0x00401d5c
+// STUB: LEMBALL 0x00401d5c
 void *ConstructLevelSelectionModeController(void *pModeObject, GameMainContext *pMainContext) {
     GameLevelSelectionModeController *pMode;
 
@@ -2785,7 +2785,7 @@ void *LEMBALL_FASTCALL DeleteStartupModeEventClientThunk(
     return DeleteStartupMode((char *)pObject - 0x0c, 0, fDelete);
 }
 
-// FUNCTION: LEMBALL 0x004022ac
+// STUB: LEMBALL 0x004022ac
 void *ConstructPaintballSequenceModeController(void *pModeObject,
                                                GameMainContext *pMainContext,
                                                int fSequenceVariant)
@@ -2822,7 +2822,7 @@ void *LEMBALL_FASTCALL DeleteMainMenuModeThunk(
     return DeleteMainMenuMode(pObject, nUnusedEdx, fDelete);
 }
 
-// FUNCTION: LEMBALL 0x004027a7
+// STUB: LEMBALL 0x004027a7
 void EnsureMainGameVariantResourceMode(GameMainContext *pMainContext, int nVariantMode) {
     if (pMainContext->m_pVariantMode == 0) {
         pMainContext->m_pVariantMode = AllocateVSMemBlock(0x58);
@@ -2848,7 +2848,7 @@ GameMainContext *GameMainContext::InitializeMainGameContextThunk(
     return InitializeMainGameContext(pszCmdLine);
 }
 
-// FUNCTION: LEMBALL 0x00402b8f
+// STUB: LEMBALL 0x00402b8f
 void *ConstructLevelGameMode(void *pModeObject, GameMainContext *pMainContext) {
     GameLevelGameMode *pMode;
     int i;
