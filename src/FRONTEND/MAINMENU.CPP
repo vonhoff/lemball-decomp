@@ -1673,7 +1673,7 @@ static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffersThunk(
     ResetFramedScreenVariantBuffers(pObject);
 }
 
-// FUNCTION: LEMBALL 0x00401505
+// STUB: LEMBALL 0x00401505
 static int LEMBALL_FASTCALL FramedScreenSlot15Thunk(
     void *pObject, int nUnusedEdx, void *pArgument)
 {
@@ -1682,7 +1682,7 @@ static int LEMBALL_FASTCALL FramedScreenSlot15Thunk(
     return return_zero_screen_callback_00446f60(pArgument);
 }
 
-// FUNCTION: LEMBALL 0x00401528
+// STUB: LEMBALL 0x00401528
 static int LEMBALL_FASTCALL MainMenuSlot21Thunk(
     void *pObject, int nUnusedEdx, void *pArgument)
 {
@@ -1711,7 +1711,7 @@ static void LEMBALL_FASTCALL RefreshFramedScreenFrameResourcesThunk(void *pObjec
     RefreshFramedScreenFrameResources(pObject);
 }
 
-// FUNCTION: LEMBALL 0x00401889
+// STUB: LEMBALL 0x00401889
 static int LEMBALL_FASTCALL HandleFramedScreenQueueEventThunk(
     void *pQueueNode, int nUnusedEdx, void *pEvent)
 
@@ -1724,7 +1724,7 @@ static void LEMBALL_FASTCALL UpdateMainMenuScreenThunk(void *pObject) {
     UpdateMainMenuScreen(pObject);
 }
 
-// FUNCTION: LEMBALL 0x00401af0
+// STUB: LEMBALL 0x00401af0
 void GameMenuSelectorManager::InitializeChildContextThunk(void) {
     InitializeChildContext();
 }
@@ -1734,7 +1734,7 @@ static void LEMBALL_FASTCALL InitializeMainMenuWidgetsThunk(void *pObject) {
     InitializeMainMenuWidgets(pObject);
 }
 
-// FUNCTION: LEMBALL 0x00401dc5
+// STUB: LEMBALL 0x00401dc5
 static void LEMBALL_FASTCALL MainMenuSlot06Thunk(void *pObject) {
     (void)pObject;
     noop_main_menu_screen_hook();
@@ -1761,7 +1761,7 @@ static void LEMBALL_FASTCALL RecenterFramedScreenIfNeededThunk(
     ((GameFramedScreenBase *)pObject)->RecenterIfNeeded();
 }
 
-// FUNCTION: LEMBALL 0x00402252
+// STUB: LEMBALL 0x00402252
 static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBaseThunk(
     void *pObject, int nUnusedEdx, void *pFrameArgument)
 
@@ -1769,14 +1769,14 @@ static void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBaseThunk(
     RefreshAndDrawFramedScreenBase(pObject, nUnusedEdx, pFrameArgument);
 }
 
-// FUNCTION: LEMBALL 0x004022de
+// STUB: LEMBALL 0x004022de
 static void *LEMBALL_FASTCALL DeleteAdjustedFramedScreenBaseThunk(
     void *pObject, int nUnusedEdx, int fDelete)
 {
     return DeleteAdjustedFramedScreenBase(pObject, nUnusedEdx, fDelete);
 }
 
-// FUNCTION: LEMBALL 0x0040242d
+// STUB: LEMBALL 0x0040242d
 static int LEMBALL_FASTCALL HandleMainMenuInputThunk(
     void *pObject, int nUnusedEdx, void *pEvent)
 
@@ -1784,7 +1784,7 @@ static int LEMBALL_FASTCALL HandleMainMenuInputThunk(
     return HandleMainMenuInput(pObject, nUnusedEdx, pEvent);
 }
 
-// FUNCTION: LEMBALL 0x00402595
+// STUB: LEMBALL 0x00402595
 static void *LEMBALL_FASTCALL DeleteMainMenuScreenThunk(
     void *pObject, int nUnusedEdx, int fDelete)
 
@@ -1817,7 +1817,7 @@ static void LEMBALL_FASTCALL FramedScreenSlot20Thunk(void *pObject) {
     noop_screen_callback_00446f90();
 }
 
-// FUNCTION: LEMBALL 0x00402c02
+// STUB: LEMBALL 0x00402c02
 static void LEMBALL_FASTCALL MainMenuSlot05Thunk(
     void *pObject, int nUnusedEdx, void *pArgument)
 
@@ -1859,7 +1859,7 @@ static void LEMBALL_FASTCALL FramedScreenSlot14Thunk(void *pObject) {
     update_options_screen();
 }
 
-// FUNCTION: LEMBALL 0x004032ec
+// STUB: LEMBALL 0x004032ec
 static void LEMBALL_FASTCALL SetFramedScreenSizeThunk(
     void *pObject, int nUnusedEdx, short *paSize)
 
@@ -1867,7 +1867,7 @@ static void LEMBALL_FASTCALL SetFramedScreenSizeThunk(
     ((GameFramedScreenBase *)pObject)->SetScreenSize(paSize);
 }
 
-// FUNCTION: LEMBALL 0x004035d0
+// STUB: LEMBALL 0x004035d0
 static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreenThunk(
     void *pObject, int nUnusedEdx, int fDelete)
 {
@@ -1879,7 +1879,7 @@ static void LEMBALL_FASTCALL DestroyMainMenuWidgetsThunk(void *pObject) {
     DestroyMainMenuWidgets(pObject);
 }
 
-// FUNCTION: LEMBALL 0x004037e7
+// STUB: LEMBALL 0x004037e7
 static void *LEMBALL_FASTCALL DeleteFramedScreenBaseThunk(
     void *pObject, int nUnusedEdx, int fDelete)
 {
