@@ -4970,7 +4970,6 @@ void *GameScreenObject::ConstructMainMenuScreen(void *pPrimaryContext, void *pWi
     *(void ***)(pScreen + 4) = g_GAME_MainMenuQueueVtable;
     *(void ***)(pScreen + 0x14) = g_GAME_MainMenuCallbackVtable;
     *(void ***)pScreen = g_GAME_MainMenuScreenVtable;
-
     dwNow = timeGetTime();
     *(int *)(pScreen + 0x3b0) = 0;
     *(DWORD *)(pScreen + 0x398) = dwNow + 20000U;
@@ -4983,6 +4982,10 @@ void *GameScreenObject::ConstructMainMenuScreen(void *pPrimaryContext, void *pWi
     pProgress = (GameLevelProgressState *)g_pLevelProgressState;
     nPack = pProgress->m_nCurrentPack;
     switch (nPack) {
+    case 0:
+    case 4:
+        *(int *)(pScreen + 0x3b4) = 0;
+        break;
     case 1:
         *(int *)(pScreen + 0x3b4) = 1;
         break;
@@ -4991,9 +4994,6 @@ void *GameScreenObject::ConstructMainMenuScreen(void *pPrimaryContext, void *pWi
         break;
     case 3:
         *(int *)(pScreen + 0x3b4) = 3;
-        break;
-    default:
-        *(int *)(pScreen + 0x3b4) = 0;
         break;
     }
     ((GameLevelProgressState *)g_pLevelProgressState)->m_nUnused4C = 0;
