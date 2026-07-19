@@ -506,20 +506,21 @@ int HandleNetworkLobbyVsnetRuntimeEvent(void *pVsnetRuntime, unsigned short *pEv
 }
 // FUNCTION: LEMBALL 0x00454f00
 void VsNetNetworkLobbyScreen::RemoveUnavailablePlayerEntries(void) {
-    VsNetNetworkLobbyVsnetRuntime *pRuntime;
-    int *pnPeerId;
-    VsNetEffTransportPeerStateSlot *pPeerState;
     int nEntryOffset;
+    int *pnPeerId;
+    int *pfPeerActive;
     int nEntryIndex;
 
     nEntryOffset = 0;
     if (g_pNetworkLobbyVsnetRuntime != 0) {
-        pRuntime = (VsNetNetworkLobbyVsnetRuntime *)g_pNetworkLobbyVsnetRuntime;
-        pnPeerId = pRuntime->m_anTrackedPeers;
-        pPeerState = pRuntime->m_pPeerEntryTable;
+        pnPeerId = ((VsNetNetworkLobbyVsnetRuntime *)
+            g_pNetworkLobbyVsnetRuntime)->m_anTrackedPeers;
+        pfPeerActive = (int *)((char *)
+            ((VsNetNetworkLobbyVsnetRuntime *)
+                g_pNetworkLobbyVsnetRuntime)->m_pPeerEntryTable + 0x4c);
         nEntryIndex = 0;
         do {
-            if (*pnPeerId == 0 || pPeerState->m_fActive == 0) {
+            if (*pnPeerId == 0 || *pfPeerActive == 0) {
                 ((VsNetNetworkLobbyPlayerEntryChild *)
                     ((char *)m_pEntryTable + nEntryOffset))->ResetFlags();
                 if (m_nCurrentSelectedEntry == nEntryIndex) {
@@ -527,7 +528,7 @@ void VsNetNetworkLobbyScreen::RemoveUnavailablePlayerEntries(void) {
                 }
             }
             nEntryOffset += 0x44;
-            ++pPeerState;
+            pfPeerActive += 0x14;
             ++pnPeerId;
             ++nEntryIndex;
         } while (nEntryOffset < 0x2a8);
