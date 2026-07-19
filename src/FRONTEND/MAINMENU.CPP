@@ -2877,29 +2877,25 @@ static int LEMBALL_FASTCALL HandleMainMenuInput(
     void *pObject, int, void *pEvent)
 
 {
+    ShellUiMenuCommandMessage *pMessage;
     GameMainMenuScreenView *pScreen;
-    GameLevelProgressStateView *pProgress;
     int nType;
     int nCommand;
 
+    pMessage = (ShellUiMenuCommandMessage *)pEvent;
     pScreen = (GameMainMenuScreenView *)pObject;
-    nType = *(unsigned short *)pEvent;
+    nType = *(unsigned short *)pMessage;
     if (nType < 3) {
-        ++*(int *)((char *)pScreen + 0x10);
-        return 0;
+        goto unhandled_event;
     }
     if (nType <= 4) {
         pScreen->m_dwTimeout398 = timeGetTime() + 20000U;
         return 0;
     }
-    if (nType != 12) {
-        ++*(int *)((char *)pScreen + 0x10);
-        return 0;
-    }
-    pScreen->m_dwTimeout398 = timeGetTime() + 20000U;
-    pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
-    nCommand = *(int *)((char *)pEvent + 8);
-    switch ((unsigned int)nCommand) {
+    if (nType == 12) {
+        pScreen->m_dwTimeout398 = timeGetTime() + 20000U;
+        nCommand = pMessage->m_nCommand;
+        switch ((unsigned int)nCommand) {
             case 0xacef0001U:
                 pScreen->m_nRequestedMode374 = 3;
                 pScreen->m_nTransitionStatus378 = 1;
@@ -2911,15 +2907,18 @@ static int LEMBALL_FASTCALL HandleMainMenuInput(
                 g_fNextMainMenuTimeoutIsTitle = 1;
                 return 1;
             case 0xacef00a5U:
-                TogglePrimaryContextDisplayMode(
-                    (ShellUiPrimaryContextShell *)pScreen->m_pPrimaryContext84);
+                ((ShellUiPrimaryContextShell *)pScreen->m_pPrimaryContext84)->ToggleDisplayMode();
                 return 1;
             case 0xacef00a6U:
-            case 0xacef00a7U:
+            case 0xacef00a7U: {
+                GameLevelProgressStateView *pProgress;
+                int nPackSelection;
+
+                pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
+                nPackSelection = pScreen->m_nPackSelection3B4;
                 pProgress->m_nCurrentLevel00 =
-                    pProgress->m_anSnapshotPackCaps3C[
-                        pScreen->m_nPackSelection3B4];
-                pProgress->m_nCurrentPack08 = pScreen->m_nPackSelection3B4;
+                    pProgress->m_anSnapshotPackCaps3C[nPackSelection];
+                pProgress->m_nCurrentPack08 = nPackSelection;
                 pScreen->m_nTransitionStatus378 = 1;
                 g_fNextMainMenuTimeoutIsTitle = 1;
                 if (nCommand == (int)0xacef00a6U) {
@@ -2928,7 +2927,12 @@ static int LEMBALL_FASTCALL HandleMainMenuInput(
                 }
                 pScreen->m_nRequestedMode374 = 0x0c;
                 return 1;
+            }
+        }
+        return 0;
     }
+unhandled_event:
+    ++*(int *)((char *)pScreen + 0x10);
     return 0;
 }
 
