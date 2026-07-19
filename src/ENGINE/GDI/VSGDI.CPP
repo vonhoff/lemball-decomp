@@ -5349,8 +5349,8 @@ LRESULT VsGdiAnimWindowOwner::DispatchEmbeddedMciWindowMessage(
         return 0;
     default:
         if (*(HWND *)((char *)this + 0x44) != 0) {
-            return SendMessageA(*(HWND *)((char *)this + 0x44),
-                                uMessage, wParam, lParam);
+            return DefWindowProcA(*(HWND *)((char *)this + 0x44),
+                                  uMessage, wParam, lParam);
         }
         return 0;
     }
