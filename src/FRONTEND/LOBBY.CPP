@@ -114,8 +114,7 @@ struct VsNetNetworkLobbyOwnerTable {
     short m_nEntryStartY74;
     char m_abUnknown76[0x16];
     int m_nEntryYStep8c;
-    unsigned short m_nSourceX90;
-    unsigned short m_nReserved92;
+    int m_nSourceX90;
     unsigned short m_nSourceY94;
 };
 
@@ -337,9 +336,9 @@ int VsNetNetworkLobbyScreen::SelectNextPlayerEntry(void) {
 // FUNCTION: LEMBALL 0x00454df0
 void VsNetNetworkLobbyScreen::RefreshPlayerEntries(void) {
     VsNetNetworkLobbyVsnetRuntime *pRuntime;
-    VsNetNetworkLobbyOwnerTable *pOwnerTable;
     void *pEntryChild;
     int *pnPeerIds;
+    int *pnPeerId;
     VsNetEffTransportPeerStateSlot *pPeerEntryTable;
     int *pfPeerActive;
     int nEntryOffset;
@@ -356,25 +355,25 @@ void VsNetNetworkLobbyScreen::RefreshPlayerEntries(void) {
         pPeerEntryTable = pRuntime->m_pPeerEntryTable;
     }
 
-    pOwnerTable = m_pEntryOwnerTable;
-    y = pOwnerTable->m_nEntryStartY74;
-    nSourceX = pOwnerTable->m_nSourceX90;
-    nSourceY = pOwnerTable->m_nSourceY94;
-    nSourceHeight = pOwnerTable->m_nSourceHeight70;
+    y = m_pEntryOwnerTable->m_nEntryStartY74;
+    nSourceX = m_pEntryOwnerTable->m_nSourceX90;
+    nSourceY = m_pEntryOwnerTable->m_nSourceY94;
+    nSourceHeight = m_pEntryOwnerTable->m_nSourceHeight70;
     nEntryOffset = 0;
     pfPeerActive = (int *)((char *)pPeerEntryTable + 0x4c);
     m_cVisibleEntries = 0;
+    pnPeerId = pnPeerIds;
 
     do {
         if (m_cVisibleEntries < 4 && pnPeerIds != 0 &&
-            *pnPeerIds != 0 && *pfPeerActive != 0) {
+            *pnPeerId != 0 && *pfPeerActive != 0) {
             pEntryChild = (void *)((char *)m_pEntryTable + nEntryOffset);
             *(unsigned short *)((char *)pEntryChild + 0x30) = nSourceX;
             *(unsigned short *)((char *)pEntryChild + 0x32) = nSourceY;
             *(unsigned short *)((char *)pEntryChild + 0x34) = nSourceHeight;
             *(short *)((char *)pEntryChild + 0x36) = y;
             ((GameGeometryOwnerRectState *)pEntryChild)->SetEnabled(1);
-            y = (short)(y + pOwnerTable->m_nEntryYStep8c);
+            y = (short)(y + m_pEntryOwnerTable->m_nEntryYStep8c);
             ++m_cVisibleEntries;
         } else {
             ((GameGeometryOwnerRectState *)
@@ -383,7 +382,7 @@ void VsNetNetworkLobbyScreen::RefreshPlayerEntries(void) {
 
         nEntryOffset += 0x44;
         pfPeerActive += 0x14;
-        ++pnPeerIds;
+        ++pnPeerId;
     } while (nEntryOffset < 0x2a8);
 
     ActivateSelectedPlayerEntry();
