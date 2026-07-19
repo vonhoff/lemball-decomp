@@ -2021,6 +2021,7 @@ void LEMBALL_FASTCALL ActivateFramedScreenBase(void *pObject) {
 // FUNCTION: LEMBALL 0x00445790
 static void LEMBALL_FASTCALL DestroyFramedScreenBase(void *pObject) {
     GameFramedScreenBase *pScreen;
+    MappedListResourceTable *pMappedListResources;
     DWORD dwStartTime;
     DWORD dwNow;
 
@@ -2061,10 +2062,11 @@ static void LEMBALL_FASTCALL DestroyFramedScreenBase(void *pObject) {
     if (pScreen->m_fFrameResourcesLoaded9C != 0) {
         ReleaseFramedScreenFrameResources(pScreen);
     }
-    if (pScreen->m_pMappedListResources98 != 0) {
-        ((MappedListResourceTable *)pScreen->m_pMappedListResources98)
-            ->Destroy();
-        FreeVSMemBlock(pScreen->m_pMappedListResources98);
+    pMappedListResources =
+        (MappedListResourceTable *)pScreen->m_pMappedListResources98;
+    if (pMappedListResources != 0) {
+        pMappedListResources->Destroy();
+        FreeVSMemBlock(pMappedListResources);
     }
     ((MogLoadResourceArchive *)g_pMainResourceArchive)
         ->PruneUnreferencedCachedResourceObjects();
