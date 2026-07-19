@@ -25,6 +25,14 @@
 // RebuildMenuSelectorChildRectsThunk
 // STUB: LEMBALL 0x00401d43
 // SetMenuSelectorChildrenEnabledThunk
+// STUB: LEMBALL 0x00402a59
+// GetMenuSelectorStartTimeThunk
+// STUB: LEMBALL 0x00402f3b
+// SetMenuSelectorDurationFieldThunk
+// STUB: LEMBALL 0x00402dd8
+// SetMenuSelectorStartTimeFieldThunk
+// STUB: LEMBALL 0x00402d5b
+// SetMenuSelectorDirectionFieldThunk
 
 #include "ENGINE/CORE/COMMON.H"
 
