@@ -45,6 +45,8 @@ extern void *LEMBALL_FASTCALL InitializeFramedScreenRenderChildEntry(
     void *pObject);
 extern void LEMBALL_FASTCALL RestoreLevelSelectionRenderChildEntryVtable(
     void *pObject);
+extern void LEMBALL_FASTCALL RestoreCompositePointRectSinkFinalizeVtables(
+    void *pObject);
 extern void SetLevelScreenStatusIndicatorMode(int nMode, int nValue);
 extern void LEMBALL_FASTCALL SetStatusIndicatorActive(
     void *pObject, int nUnused, int fActive);
@@ -3650,8 +3652,11 @@ static void DeactivatePaintballSequenceMedia(
     }
 }
 
-static void DestroyPaintballSequenceScreen(
+static void LEMBALL_FASTCALL DestroyPaintballSequenceScreen(
     GamePaintballSequenceScreenView *pScreen) {
+    unsigned char *pSink;
+    int i;
+
     pScreen->m_pVtable00 = g_GAME_PaintballSequenceScreenVtable;
     *(void ***)pScreen->m_abRenderQueueNode04 =
         g_GAME_PaintballSequenceQueueVtable;
@@ -3661,37 +3666,21 @@ static void DestroyPaintballSequenceScreen(
     if (pScreen->m_fFrameResourcesLoaded9C != 0) {
         ReleasePaintballSequenceResources(pScreen);
     }
-    if (*(int *)(pScreen->m_abMediaOwner520 + 0xd4) == 0 &&
-        g_pVariantResourceEntryManager != 0) {
+    if (*(int *)(pScreen->m_abMediaOwner520 + 0xd4) == 0) {
         ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
             ->SetVariantResourceMusicEnabled(1);
         *(int *)(pScreen->m_abMediaOwner520 + 0xd4) = 1;
     }
     DestroyResourceGeometryHelperWindowOwner(
         pScreen->m_abMediaOwner520);
-    g_pActiveNetworkLobbyScreen = 0;
-    if (pScreen->m_pTimedFrameSelector34C != 0) {
-        FreeVSMemBlock(pScreen->m_pTimedFrameSelector34C);
-        pScreen->m_pTimedFrameSelector34C = 0;
-    }
-    if (g_pSharedRenderDispatchQueue != 0) {
-        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
-            ->UnregisterOrderedRenderDispatchClient(
-                pScreen->m_abRenderQueueNode04, 0);
-    }
-    if (pScreen->m_fFrameResourcesLoaded9C != 0) {
-        ReleaseFramedScreenFrameResources(pScreen);
-    }
-    if (pScreen->m_pMappedListResources98 != 0) {
-        ((MappedListResourceTable *)pScreen->m_pMappedListResources98)
-            ->Destroy();
-        FreeVSMemBlock(pScreen->m_pMappedListResources98);
-        pScreen->m_pMappedListResources98 = 0;
-    }
-    ((MogLoadResourceArchive *)g_pMainResourceArchive)
-        ->PruneUnreferencedCachedResourceObjects();
-    DestroyFramedScreenRenderEntryGroup(pScreen->m_abRenderEntryGroupC8);
-    DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
+    pSink = (unsigned char *)pScreen + 0xf8;
+    i = 0;
+    do {
+        pSink -= 0x48;
+        RestoreCompositePointRectSinkFinalizeVtables(pSink);
+        --i;
+    } while (i >= 0);
+    DestroyFramedScreenBaseThunk00402081(pScreen);
 }
 
 static void *LEMBALL_FASTCALL DeletePaintballSequenceScreen(
