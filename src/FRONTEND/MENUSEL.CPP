@@ -1756,13 +1756,13 @@ static inline GameProgressiveVariantFrameSelector *AllocateFrameSelector(
     return pSelector;
 }
 
-/* FUNCTION: LEMBALL 0x0044C870 */
-GameMenuSelectorManager *LEMBALL_FASTCALL ConstructMenuSelectorManager(
-    GameMenuSelectorManager *pManager, int, void *pRenderOwner,
-    void *pRenderContext, int, int nLayoutMode) {
+// FUNCTION: LEMBALL 0x0044c870
+GameMenuSelectorManager *GameMenuSelectorManager::Construct(void *pRenderOwner, void *pRenderContext, int, int nLayoutMode) {
+    GameMenuSelectorManager *pManager;
     int i;
     void *pVariantManager;
 
+    pManager = this;
     InitializeRenderQueueNodeBase(pManager);
     pVariantManager = (char *)pManager + 0x10;
     ConstructVariantRenderManager(pVariantManager,
@@ -1854,9 +1854,9 @@ GameMenuSelectorManager *LEMBALL_FASTCALL ConstructMenuSelectorManager(
 GameMenuSelectorManager *LEMBALL_FASTCALL ConstructMenuSelectorManagerThunk(
     GameMenuSelectorManager *pManager, int nUnusedEdx, void *pRenderOwner,
     void *pRenderContext, int nChildCapacity, int nLayoutMode) {
-    return ConstructMenuSelectorManager(pManager, nUnusedEdx, pRenderOwner,
-                                        pRenderContext, nChildCapacity,
-                                        nLayoutMode);
+    (void)nUnusedEdx;
+    return pManager->Construct(pRenderOwner, pRenderContext,
+                               nChildCapacity, nLayoutMode);
 }
 
 /* FUNCTION: LEMBALL 0x0044D2D0 */

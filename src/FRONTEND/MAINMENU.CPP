@@ -2742,11 +2742,11 @@ static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject) {
     const int *pDisplayResources;
     const int *pPackResources;
     const int *pOptionsResources;
-    GameMenuSelectorManager *pSelectorManager;
     GameMenuSelectorManager **ppSelectorManager;
-    void *pForegroundBitmap;
-    short cxForeground;
     int cRenderGroups;
+    void *pForegroundBitmap;
+    void *pSelectorAllocation;
+    short cxForeground;
 
     pScreen = (GameMainMenuScreenView *)pObject;
     if (pScreen->m_fCompactLayout32C != 0) {
@@ -2783,15 +2783,15 @@ static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject) {
         --cRenderGroups;
     } while (cRenderGroups != 0);
 
+    pSelectorAllocation =
+        AllocateVSMemBlock(sizeof(GameMenuSelectorManager));
     ppSelectorManager =
         (GameMenuSelectorManager **)&pScreen->m_pSelectorManager334;
-    pSelectorManager = (GameMenuSelectorManager *)
-        AllocateVSMemBlock(sizeof(GameMenuSelectorManager));
-    if (pSelectorManager != 0) {
-        *ppSelectorManager = ConstructMenuSelectorManager(
-            pSelectorManager, 0, pScreen->m_pPrimaryContext84,
-            pScreen->m_pRenderContext88, 6,
-            pScreen->m_fCompactLayout32C);
+    if (pSelectorAllocation != 0) {
+        *ppSelectorManager =
+            ((GameMenuSelectorManager *)pSelectorAllocation)->Construct(
+            pScreen->m_pPrimaryContext84, pScreen->m_pRenderContext88,
+            6, pScreen->m_fCompactLayout32C);
     } else {
         *ppSelectorManager = 0;
     }
@@ -3094,9 +3094,8 @@ static void LEMBALL_FASTCALL InitializeOptionsScreenWidgets(void *pObject) {
         pScreen->m_pSelectorManager334 = 0;
         return;
     }
-    ConstructMenuSelectorManager(
-        pManager, 0, pScreen->m_pPrimaryContext84,
-        pScreen->m_pRenderContext88, 8, fCompact);
+    pManager->Construct(pScreen->m_pPrimaryContext84,
+                        pScreen->m_pRenderContext88, 8, fCompact);
     pScreen->m_pSelectorManager334 = pManager;
 
     pManager->AppendChild(
