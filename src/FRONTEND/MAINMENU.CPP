@@ -732,6 +732,7 @@ static void LEMBALL_FASTCALL InitializeNetworkLobbyActionButtons(void *pObject);
 static void LEMBALL_FASTCALL DestroyNetworkLobbyActionButtons(void *pObject);
 static void LEMBALL_FASTCALL NoopNetworkLobbyScreen(void *pObject);
 static void LEMBALL_FASTCALL DrawNetworkLobbyActionButtonFrames(void *pObject);
+void LEMBALL_FASTCALL CloseNetworkLobbyTransportPeers(void *pController);
 
 // GLOBAL: LEMBALL 0x0049f4f0
 int g_fNextMainMenuTimeoutIsTitle = 1;
@@ -1001,10 +1002,6 @@ static void ShowNetworkLobbyTextPrompt(
     GameBoundedTextBuffer *pBuffer;
 
     pBuffer = (GameBoundedTextBuffer *)pScreen->m_pTextBuffer398;
-    if (pBuffer == 0 || pBuffer->m_pszText0C == 0) {
-        SetTimedNetworkLobbyStatus(pScreen, 9, 6000);
-        return;
-    }
     pScreen->m_fTextPrompt39C = 0;
     if (nPrompt != 3) {
         pScreen->m_nReserved3A0 = nPrompt;
@@ -1015,8 +1012,7 @@ static void ShowNetworkLobbyTextPrompt(
     if (pScreen->m_nReserved3A0 == 2) {
         StartNetworkLobbyTransportSession(
             g_pActiveNetworkLobbyTransportController);
-        if (g_pActiveNetworkLobbyTransportController == 0 ||
-            *(int *)((char *)g_pActiveNetworkLobbyTransportController +
+        if (*(int *)((char *)g_pActiveNetworkLobbyTransportController +
                      0x2c) == 0 ||
             *(int *)((char *)g_pActiveNetworkLobbyTransportController +
                      0x28) != 0) {
@@ -1052,6 +1048,12 @@ static void CommitNetworkLobbyTextPrompt(
         } else {
             pScreen->m_nPendingPrompt3A4 = 2;
         }
+        if (*(int *)((char *)g_pActiveNetworkLobbyTransportController +
+                     0x2c) == 0 ||
+            *(int *)((char *)g_pActiveNetworkLobbyTransportController +
+                     0x28) != 0) {
+            SetNetworkLobbyStatus(pScreen, 6);
+        }
     } else if (pScreen->m_nReserved3A0 == 2) {
         strncpy(g_szNetworkLobbyJoinAddress,
                 pBuffer->m_pszText0C,
@@ -1077,6 +1079,8 @@ static void BeginNetworkLobbyTextPrompt(
     pScreen->m_nReserved3B8 = 0;
     pScreen->m_fTextPrompt39C = 0;
     pScreen->m_nDeferredStatus430 = 0;
+    CloseNetworkLobbyTransportPeers(
+        g_pActiveNetworkLobbyTransportController);
     if (g_szNetworkLobbyLocalPlayerName[0] == '\0') {
         ShowNetworkLobbyTextPrompt(pScreen, 1, 1);
     } else {
@@ -1090,8 +1094,7 @@ static void SubmitNetworkLobbyPendingText(
     pScreen->m_nReserved3B8 = 1;
     StartNetworkLobbyTransportSession(
         g_pActiveNetworkLobbyTransportController);
-    if (g_pActiveNetworkLobbyTransportController != 0 &&
-        *(int *)((char *)g_pActiveNetworkLobbyTransportController +
+    if (*(int *)((char *)g_pActiveNetworkLobbyTransportController +
                  0x2c) != 0 &&
         *(int *)((char *)g_pActiveNetworkLobbyTransportController +
                  0x28) == 0) {
@@ -1105,9 +1108,12 @@ static void SubmitNetworkLobbyPendingText(
 
 static void FlushNetworkLobbyDeferredStatus(
     GameNetworkLobbyScreenView *pScreen) {
-    if (pScreen->m_nDeferredStatus430 == 7 &&
-        pScreen->m_nReserved3B8 == 0) {
-        return;
+    if (pScreen->m_nDeferredStatus430 == 7) {
+        CloseNetworkLobbyTransportPeers(
+            g_pActiveNetworkLobbyTransportController);
+        if (pScreen->m_nReserved3B8 == 0) {
+            return;
+        }
     }
     SetTimedNetworkLobbyStatus(
         pScreen, pScreen->m_nDeferredStatus430, 6000);
@@ -1285,16 +1291,12 @@ void LEMBALL_FASTCALL CloseNetworkLobbyTransportPeers(void *pController) {
 
 static void CancelNetworkLobbyPrompt(
     GameNetworkLobbyScreenView *pScreen) {
-    if (g_pActiveNetworkLobbyTransportController != 0) {
-        CloseNetworkLobbyTransportPeers(
+    if (*(int *)((char *)g_pActiveNetworkLobbyTransportController +
+                 0x2c) != 0 &&
+        *(int *)((char *)g_pActiveNetworkLobbyTransportController +
+                 0x28) == 0) {
+        StopNetworkLobbyTransportSession(
             g_pActiveNetworkLobbyTransportController);
-        if (*(int *)((char *)g_pActiveNetworkLobbyTransportController +
-                     0x2c) != 0 &&
-            *(int *)((char *)g_pActiveNetworkLobbyTransportController +
-                     0x28) == 0) {
-            StopNetworkLobbyTransportSession(
-                g_pActiveNetworkLobbyTransportController);
-        }
     }
     SetNetworkLobbyStatus(pScreen, 0);
     pScreen->m_fTextPrompt39C = 0;
