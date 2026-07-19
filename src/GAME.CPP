@@ -1276,15 +1276,8 @@ static int LEMBALL_FASTCALL GetIntroSequenceMediaNotifyFlags(void *) {
     return 0x40000001;
 }
 
-static void LEMBALL_FASTCALL HandleIntroSequenceMediaCompletion(
-    void *pOwner)
-{
-    typedef void (LEMBALL_FASTCALL *StopMediaProc)(void *, int);
-
-    ((StopMediaProc)(*(void ***)pOwner)[29])(pOwner, 0);
-    RequestIntroSequenceScreenTransition(
-        *(char **)((char *)pOwner + 0xbc));
-}
+extern void LEMBALL_FASTCALL HandleIntroSequenceMediaCompletion(
+    void *pOwner);
 
 static void LEMBALL_FASTCALL NoopIntroSequenceScreenHook(void *, int) {
 }

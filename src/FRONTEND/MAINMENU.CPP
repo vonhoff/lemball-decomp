@@ -2814,6 +2814,13 @@ void LEMBALL_FASTCALL SelectIntroSequenceMediaPath(void *pOwner) {
     }
 }
 
+// FUNCTION: LEMBALL 0x00447830
+void LEMBALL_FASTCALL HandleIntroSequenceMediaCompletion(void *pOwner) {
+    ((IntroMediaOwnerInterface *)pOwner)->Stop();
+    RequestIntroSequenceScreenTransition(
+        *(char **)((char *)pOwner + 0xbc));
+}
+
 unsigned int GamePaintballSequenceMediaState::InitializeVariant(
     void *pScreen, void *pPrimaryContext, int fSecondVariant) {
     unsigned int uRandom;
