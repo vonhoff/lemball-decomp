@@ -5229,64 +5229,68 @@ int GameRenderDispatchQueue::UnregisterOrderedRenderDispatchClient(void *pClient
 
 // FUNCTION: LEMBALL 0x00463b50
 void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pPrimaryContext) {
+    GameWindowOwnerRenderContext *pRenderContext;
     char *pEntry;
     void *pWindowOwnerBaseVtable;
     int i;
 
+    pRenderContext = (GameWindowOwnerRenderContext *)pPrimaryContext;
     InitializeGameStubVtables();
-    new (pPrimaryContext) VS_WindowOwnerBase;
-    pWindowOwnerBaseVtable = *(void **)pPrimaryContext;
+    new (pRenderContext) VS_WindowOwnerBase;
+    pWindowOwnerBaseVtable = *(void **)pRenderContext;
     InitializeWindowOwnerRenderContextVtable(
         (void **)pWindowOwnerBaseVtable);
-    pEntry = (char *)pPrimaryContext + 0x58;
+    pEntry = pRenderContext->m_PackagedSpriteRenderEntry58;
     for (i = 0; i >= 0; --i) {
         InitializePackagedSpriteRenderEntryThunk(pEntry);
         pEntry += 0x10;
     }
-    pEntry = (char *)pPrimaryContext + 0x68;
+    pEntry = pRenderContext->m_RenderPointRectSinkEntry68;
     for (i = 0; i >= 0; --i) {
         InitializeRenderPointRectSinkEntryThunk(pEntry);
         pEntry += 0x10;
     }
-    pEntry = (char *)pPrimaryContext + 0x78;
+    pEntry = pRenderContext->m_StatusPointSinkEntry78;
     for (i = 0; i >= 0; --i) {
         InitializeStatusIndicatorPointSinkEntryThunk(pEntry);
         pEntry += 0x10;
     }
 
-    *(void **)pPrimaryContext = g_GAME_WindowOwnerRenderContextVtableSlots;
-    *(unsigned short *)((char *)pPrimaryContext + 0x8a) = 0;
-    *(void **)pPrimaryContext = g_GAME_WindowOwnerRenderContextVtableSlots;
-    *(unsigned short *)((char *)pPrimaryContext + 0x88) = 0;
-    *(int *)((char *)pPrimaryContext + 0x4c) = 0;
-    *(unsigned short *)((char *)pPrimaryContext + 0x8e) = 0;
-    *(int *)((char *)pPrimaryContext + 0x50) = 0;
-    *(unsigned short *)((char *)pPrimaryContext + 0x8c) = 0;
-    *(int *)((char *)pPrimaryContext + 0x54) = 0;
-    return pPrimaryContext;
+    *(void **)pRenderContext = g_GAME_WindowOwnerRenderContextVtableSlots;
+    pRenderContext->m_aDirtyRect88[1] = 0;
+    *(void **)pRenderContext = g_GAME_WindowOwnerRenderContextVtableSlots;
+    pRenderContext->m_aDirtyRect88[0] = 0;
+    pRenderContext->m_pWindowOwnerContext = 0;
+    pRenderContext->m_aDirtyRect88[3] = 0;
+    pRenderContext->m_nFrameInterval = 0;
+    pRenderContext->m_aDirtyRect88[2] = 0;
+    pRenderContext->m_nPaletteResourceId54 = 0;
+    return pRenderContext;
 }
 
 // FUNCTION: LEMBALL 0x00463bd0
 void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(void *pPrimaryContext) {
+    GameWindowOwnerRenderContext *pRenderContext;
     char *pEntry;
     int i;
 
-    pEntry = (char *)pPrimaryContext + 0x88;
+    pRenderContext = (GameWindowOwnerRenderContext *)pPrimaryContext;
+    pEntry = (char *)pRenderContext->m_aDirtyRect88;
     for (i = 0; i >= 0; --i) {
         pEntry -= 0x10;
         RestorePackagedSpriteRenderEntryVtableD(pEntry);
     }
-    pEntry = (char *)pPrimaryContext + 0x78;
+    pEntry = pRenderContext->m_StatusPointSinkEntry78;
     for (i = 0; i >= 0; --i) {
         pEntry -= 0x10;
         RestorePackagedSpriteRenderEntryVtableE(pEntry);
     }
-    pEntry = (char *)pPrimaryContext + 0x68;
+    pEntry = pRenderContext->m_RenderPointRectSinkEntry68;
     for (i = 0; i >= 0; --i) {
         pEntry -= 0x10;
         RestorePackagedSpriteRenderEntryVtableA(pEntry);
     }
-    ((VS_WindowOwnerBase *)pPrimaryContext)->~VS_WindowOwnerBase();
+    pRenderContext->VS_WindowOwnerBase::~VS_WindowOwnerBase();
 }
 
 // FUNCTION: LEMBALL 0x00464190
