@@ -2060,6 +2060,20 @@ void GameIntroSequenceMediaState::ConfigureOwnerThunk(
     ConfigureOwner(pScreen, pPrimaryContext, fSkipVariant);
 }
 
+// STUB: LEMBALL 0x004035a8
+void *LEMBALL_FASTCALL ConstructFramedScreenBaseFieldsThunk(
+    void *pObject, int, void *pPrimaryContext,
+    void *pWindowOwnerContext, short *paRect, int nFrameKind,
+    int nVariantBase, int nResourceBase, int nLayout,
+    int nOptionA, int nOptionB)
+{
+    return ((GameFramedScreenBase *)pObject)
+        ->ConstructFramedScreenBaseFields(
+            pPrimaryContext, pWindowOwnerContext, paRect,
+            nFrameKind, nVariantBase, nResourceBase, nLayout,
+            nOptionA, nOptionB);
+}
+
 // FUNCTION: LEMBALL 0x004035d0
 static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreenThunk(
     void *pObject, int nUnusedEdx, int fDelete)

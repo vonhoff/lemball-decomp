@@ -172,6 +172,11 @@ extern int LEMBALL_FASTCALL DrainRenderDispatchQueueEntries(
     void *pDispatchQueue, int nUnused, unsigned int cEntries);
 extern void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void *pQueue);
 extern "C" DWORD WINAPI timeGetTime(void);
+extern void *LEMBALL_FASTCALL ConstructFramedScreenBaseFieldsThunk(
+    void *pObject, int nUnusedEdx, void *pPrimaryContext,
+    void *pWindowOwnerContext, short *paRect, int nFrameKind,
+    int nVariantBase, int nResourceBase, int nLayout,
+    int nOptionA, int nOptionB);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 extern int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresent(
     int *pPrimaryContext);
@@ -4862,7 +4867,8 @@ void *GameScreenObject::ConstructMainMenuScreen(void *pPrimaryContext, void *pWi
     int nPack;
 
     pScreen = (char *)this;
-    ((GameFramedScreenBase *)pScreen)->ConstructFramedScreenBaseFields(
+    ConstructFramedScreenBaseFieldsThunk(
+        pScreen, (int)(unsigned long)pWindowOwnerContext,
         pPrimaryContext, pWindowOwnerContext, paRect,
         2, 0, 0, 0, 0, 0);
     *(void ***)(pScreen + 4) = g_GAME_MainMenuQueueVtable;
