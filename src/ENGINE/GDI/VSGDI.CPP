@@ -1195,8 +1195,13 @@ static VsGdiDirectDrawDisplayVtable g_VSGDI_DirectDrawDisplayVtable = {
     &VsGdiDirectDrawDisplayState::IsDirectDrawPaletteReady,
 };
 
+struct VsGdiDirectDrawBindingVtable {
+    void *(LEMBALL_FASTCALL *Delete)(void *, int, int);
+    void (LEMBALL_FASTCALL *SetTarget)(void *, int, void *);
+};
+
 struct VsGdiDirectDrawBinding {
-    void **m_pVtable;
+    VsGdiDirectDrawBindingVtable *m_pVtable;
     int m_nSurfaceSlot;
 };
 
@@ -1276,21 +1281,7 @@ static void *g_VSGDI_DirectDrawSurfaceBitmapVtable[6] = {
     0,
 };
 
-static void *LEMBALL_FASTCALL DeleteDirectDrawBinding(
-    void *pBinding, int nUnused, int fDelete) {
-    (void)nUnused;
-    *(void ***)pBinding =
-        (void **)((char *)&g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable + 8);
-    if ((fDelete & 1) != 0) {
-        FreeVSMemBlock(pBinding);
-    }
-    return pBinding;
-}
-
-static void *g_VSGDI_DirectDrawBindingVtable[2] = {
-    (void *)DeleteDirectDrawBinding,
-    (void *)NoopHelperTargetParamWrapperArgument,
-};
+extern VsGdiDirectDrawBindingVtable g_VSGDI_DirectDrawBindingVtable;
 
 static void *LEMBALL_FASTCALL VsGdiDeleteDisplayState(
     void *pDisplayState, int nUnused, int fDelete) {
@@ -2026,7 +2017,7 @@ void *VsGdiDirectDrawDisplayState::CreateDirectDrawDisplayBinding(void) {
     pBinding = (VsGdiDirectDrawBinding *)AllocateVSMemBlock(
         sizeof(VsGdiDirectDrawBinding));
     if (pBinding != 0) {
-        pBinding->m_pVtable = g_VSGDI_DirectDrawBindingVtable;
+        pBinding->m_pVtable = &g_VSGDI_DirectDrawBindingVtable;
         pBinding->m_nSurfaceSlot = nSurfaceSlot;
         return pBinding;
     }
@@ -2689,6 +2680,23 @@ void *VsGdiDirectDrawDisplayState::Delete(int fDelete) {
     }
     return pThis;
 }
+
+void *LEMBALL_FASTCALL DeleteDirectDrawBinding(
+    void *pBinding, int nUnused, int fDelete) {
+    (void)nUnused;
+    *(void ***)pBinding =
+        (void **)((char *)&g_VSGDI_ResourceGeometryHelperTargetParamWrapperVtable + 8);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pBinding);
+    }
+    return pBinding;
+}
+
+// GLOBAL: LEMBALL 0x00498820
+VsGdiDirectDrawBindingVtable g_VSGDI_DirectDrawBindingVtable = {
+    DeleteDirectDrawBinding,
+    NoopHelperTargetParamWrapperArgument,
+};
 
 // FUNCTION: LEMBALL 0x00463c30
 void LEMBALL_FASTCALL BuildGeometryHelperFromRenderRect(void *pOwner) {

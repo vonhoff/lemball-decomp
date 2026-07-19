@@ -1,6 +1,9 @@
 #ifndef LEMBALL_GRAPHICS_DRIVER_H
 #define LEMBALL_GRAPHICS_DRIVER_H
 
+// FUNCTION: LEMBALL 0x00458380
+// DeleteDirectDrawBinding
+
 #include "ENGINE/CORE/WIN32.H"
 
 enum {
