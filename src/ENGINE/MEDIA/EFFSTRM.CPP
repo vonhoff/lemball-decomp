@@ -96,6 +96,8 @@ static void *g_EFF_NetworkLobbyPeerDirtyConfirmVtable[6] = {
     (void *)DeleteNetworkLobbySelectedPeerStatusStream,
 };
 static const char g_EFF_DefaultNetworkPath[] = "t:\\network";
+// GLOBAL: LEMBALL 0x004a0138
+static const char g_EFF_NetworkRuntimeKey[] = "Paintball v0.1";
 void *ConstructEffStreamPayloadSize8(void *pObject);
 void *ConstructNetworkLobbySelectedPeerStatusStream(void *pObject);
 void *ConstructNetworkLobbyPeerEntryStream(void *pObject);
@@ -270,7 +272,7 @@ struct GameEffTransportRuntimeWindowVtable {
 
 struct GamePeerEntryStreamTable {
     int m_cEntries;
-    GameEffStream m_aEntries[10];
+    GameNetworkLobbyPeerEntryStream m_aEntries[10];
 };
 
 struct GameEffStreamDeleteVtable {
@@ -475,7 +477,8 @@ void *ConstructNetworkLobbyPeerDirtyConfirmStream(void *pObject) {
 GameNetworkLobbyVsnetRuntime *GameNetworkLobbyVsnetRuntime::Construct(char *pszFileBasedNetworkRoot) {
     GameNetworkLobbyVsnetRuntime *pRuntime;
     GamePeerEntryStreamTable *pPeerEntryTable;
-    GameEffStream *pPeerEntryStream;
+    GameNetworkLobbyPeerEntryStream *pPeerEntryStream;
+    GameEffStream *pStream;
     int i;
     int fStarted;
 
@@ -499,33 +502,36 @@ GameNetworkLobbyVsnetRuntime *GameNetworkLobbyVsnetRuntime::Construct(char *pszF
             ConstructNetworkLobbyPeerEntryStream(pPeerEntryStream);
             ++pPeerEntryStream;
         }
-        pRuntime->m_pPeerEntryTable = pPeerEntryTable->m_aEntries;
+        pRuntime->m_pPeerEntryTable =
+            (GameEffStream *)pPeerEntryTable->m_aEntries;
     }
 
-    pPeerEntryStream = (GameEffStream *)AllocateVSMemBlock(0x30);
-    if (pPeerEntryStream == 0) {
+    pStream = (GameEffStream *)AllocateVSMemBlock(0x30);
+    if (pStream == 0) {
         pRuntime->m_pSelectedPeerStatusStream = 0;
     } else {
         pRuntime->m_pSelectedPeerStatusStream =
-            (GameEffStream *)ConstructNetworkLobbySelectedPeerStatusStream(pPeerEntryStream);
+            (GameEffStream *)ConstructNetworkLobbySelectedPeerStatusStream(pStream);
     }
 
     pRuntime->m_dwSelectedPeerStatusTick = (int)(timeGetTime() - 2000);
     pRuntime->m_nObservedSelectedPeerStatus = 0;
     pRuntime->m_nDesiredSelectedPeerStatus = 0;
 
-    pPeerEntryStream = (GameEffStream *)AllocateVSMemBlock(0x50);
-    if (pPeerEntryStream == 0) {
+    pStream = (GameEffStream *)AllocateVSMemBlock(0x50);
+    if (pStream == 0) {
         pRuntime->m_pPeerEntryWriteStream = 0;
     } else {
-        pRuntime->m_pPeerEntryWriteStream = (GameEffStream *)ConstructNetworkLobbyPeerEntryStream(pPeerEntryStream);
+        pRuntime->m_pPeerEntryWriteStream =
+            (GameEffStream *)ConstructNetworkLobbyPeerEntryStream(pStream);
     }
 
-    pPeerEntryStream = (GameEffStream *)AllocateVSMemBlock(0x30);
-    if (pPeerEntryStream == 0) {
+    pStream = (GameEffStream *)AllocateVSMemBlock(0x30);
+    if (pStream == 0) {
         pRuntime->m_pPeerClearCloseStream = 0;
     } else {
-        pRuntime->m_pPeerClearCloseStream = (GameEffStream *)ConstructNetworkLobbyPeerClearCloseStream(pPeerEntryStream);
+        pRuntime->m_pPeerClearCloseStream =
+            (GameEffStream *)ConstructNetworkLobbyPeerClearCloseStream(pStream);
     }
 
     for (i = 0; i < 10; ++i) {
@@ -548,7 +554,9 @@ GameNetworkLobbyVsnetRuntime *GameNetworkLobbyVsnetRuntime::Construct(char *pszF
         }
 
         if (((VsNetRuntimeStartView *)g_pActiveNetworkRuntimeWindow)
-                ->StartEffTransportRuntimeAndWaitReady(0, 0x400) != 0) {
+                ->StartEffTransportRuntimeAndWaitReady(
+                    (int)(unsigned long)g_EFF_NetworkRuntimeKey,
+                    0x400) != 0) {
             SetEffTransportSecondaryHandleParams(g_pActiveNetworkRuntimeWindow, 100, 0x10);
             SetEffTransportPrimaryHandleParams(g_pActiveNetworkRuntimeWindow, 4, 4, 0);
             pRuntime->m_fSelectedPeerDisconnected = 0;
