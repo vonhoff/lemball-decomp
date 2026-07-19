@@ -2864,10 +2864,8 @@ void LEMBALL_FASTCALL SetMenuSelectorChildrenEnabled(
         GameMenuSelectorEntry *pEntry = pManager->m_apChildren1E0[i];
         if (pEntry != 0) {
             pEntry->m_fEnabled5C = fEnabled;
-            if (pEntry->m_pAlignedOverlay50 != 0) {
-                ((GameGeometryOwnerRectState *)((char *)
-                    pEntry->m_pAlignedOverlay50 + 0x90))->SetEnabled(fEnabled);
-            }
+            ((GameGeometryOwnerRectState *)((char *)
+                pEntry->m_pAlignedOverlay50 + 0x90))->SetEnabled(fEnabled);
         }
     }
 }

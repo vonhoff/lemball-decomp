@@ -5,8 +5,10 @@ address,name,symbol,type
 0x0044CEC0,GameMenuSelectorManager::HandleEvent,?HandleEvent@GameMenuSelectorManager@@QAEHPAUGameMenuSelectorEvent@@@Z,function
 0x0044C270,GameMenuSelectorEntry::GameMenuSelectorEntry,??0GameMenuSelectorEntry@@QAE@PAX0HHPBHHHHHHPAHH@Z,function
 0x0044C460,GameMenuSelectorEntry::HandleEvent,?HandleEvent@GameMenuSelectorEntry@@QAEHPAUGameMenuSelectorEvent@@@Z,function
+0x0044CC90,SetMenuSelectorChildrenEnabled,?SetMenuSelectorChildrenEnabled@@YIXPAUGameMenuSelectorManager@@HH@Z,function
 0x0044EB60,SetMenuSelectorProgressPercent,?SetMenuSelectorProgressPercent@@YIXPAXHH@Z,function
 0x0044D150,GameMenuSelectorManager::RecordChildMetadata,?RecordChildMetadata@GameMenuSelectorManager@@QAEXHHHH@Z,function
+0x0044D290,RebuildMenuSelectorChildRects,?RebuildMenuSelectorChildRects@@YIXPAUGameMenuSelectorManager@@HH@Z,function
 0x0044D830,GameMenuSelectorManager::MovePrevious,?MovePrevious@GameMenuSelectorManager@@QAEXXZ,function
 0x0044D8E0,GameMenuSelectorManager::MoveNext,?MoveNext@GameMenuSelectorManager@@QAEXXZ,function
 0x0044D990,GameMenuSelectorManager::SelectSide0,?SelectSide0@GameMenuSelectorManager@@QAEXXZ,function
