@@ -2092,26 +2092,23 @@ void GameMenuSelectorManager::AppendChild(
     int *pSelection, int nCommand) {
     GameMenuSelectorEntry *pEntry;
     int nToken;
-    int iChild;
 
     nToken = ++m_nNextToken218;
-    iChild = m_cChildren80;
     pEntry = (GameMenuSelectorEntry *)
         AllocateVSMemBlock(sizeof(GameMenuSelectorEntry));
-    if (pEntry != 0) {
-        pEntry = ConstructMenuSelectorEntry(
+    if (pEntry == 0) {
+        m_apChildren1E0[m_cChildren80] = 0;
+    } else {
+        m_apChildren1E0[m_cChildren80] = ConstructMenuSelectorEntry(
             pEntry, 0, m_pRenderOwner214,
             m_pRenderContext210, x, nPosition,
             panResourceIds, nActivationMode, nFirstResource,
             nLastResource, nReserved, nToken, pSelection,
             nCommand);
     }
-    m_apChildren1E0[iChild] = pEntry;
-    if (pEntry != 0) {
-        RecordMenuSelectorChildMetadata(
-            this, 0, x, nPosition, nLastResource > 0,
-            pEntry->m_nToken30);
-    }
+    RecordMenuSelectorChildMetadata(
+        this, 0, x, nPosition, nLastResource > 0,
+        m_apChildren1E0[m_cChildren80]->m_nToken30);
     ++m_cChildren80;
 }
 
@@ -2406,7 +2403,6 @@ static short *LEMBALL_FASTCALL GetVariantFrameExtent(
     return pExtent;
 }
 
-/* FUNCTION: LEMBALL 0x0044DA70 */
 void GameMenuSelectorManager::InitializeCurrentState(int iMetadata) {
     short Extent[2];
     short *pExtent;
@@ -2419,7 +2415,13 @@ void GameMenuSelectorManager::InitializeCurrentState(int iMetadata) {
     m_xCenteredAction88 = cxOwner / 2 - pExtent[0] / 2;
     m_nCurrentPosition8C = m_aMetadataE0[iMetadata].m_nPosition;
     nSide = m_aMetadataE0[iMetadata].m_nSide;
-    m_nCurrentSide94 = nSide == 1 ? 1 : 0;
+    if (nSide == 0) {
+        m_nCurrentSide94 = 0;
+    } else if (nSide == 1) {
+        m_nCurrentSide94 = 1;
+    } else {
+        m_nCurrentSide94 = 0;
+    }
     m_xActionOrigin98 = m_xCenteredAction88;
     m_nTargetPosition9C = m_nCurrentPosition8C;
     m_nActionStateA4 = 0;

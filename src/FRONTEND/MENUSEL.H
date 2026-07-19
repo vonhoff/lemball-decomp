@@ -1,10 +1,6 @@
 #ifndef LEMBALL_GAME_MENU_SELECTOR_H
 #define LEMBALL_GAME_MENU_SELECTOR_H
 
-// STUB: LEMBALL 0x00402009
-// GameMenuSelectorManager::AppendChild
-// STUB: LEMBALL 0x004024f5
-// GameMenuSelectorManager::InitializeCurrentState
 // STUB: LEMBALL 0x00402432
 // ConstructMenuSelectorManager
 // STUB: LEMBALL 0x00402a36
