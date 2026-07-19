@@ -108,9 +108,14 @@ typedef char GameMenuSelectorEntry_size_must_be_0x60[
 
 typedef int (LEMBALL_FASTCALL *GameFrameSelectorIndexProc)(
     GameProgressiveVariantFrameSelector *pSelector);
-typedef void (LEMBALL_FASTCALL *GameFrameSelectorSetProc)(
-    GameProgressiveVariantFrameSelector *pSelector, int nUnusedEdx,
-    int nValue);
+class GameProgressiveVariantFrameSelectorInterface {
+public:
+    virtual int SelectFrame(void) = 0;
+    virtual void SetDuration(int nDuration) = 0;
+    virtual void SetDurationField(int nDuration) = 0;
+    virtual void SetStartTime(int dwStartTime) = 0;
+    virtual void SetDirection(int nDirection) = 0;
+};
 typedef int (LEMBALL_FASTCALL *GameMenuSelectorEventProc)(
     GameMenuSelectorManager *pManager, int nUnusedEdx,
     GameMenuSelectorEvent *pEvent);
@@ -133,8 +138,6 @@ static void LEMBALL_FASTCALL MoveMenuSelectorNextThunk(
 static void LEMBALL_FASTCALL SelectMenuSelectorSide0Thunk(
     GameMenuSelectorManager *pManager);
 static void LEMBALL_FASTCALL SelectMenuSelectorSide1Thunk(
-    GameMenuSelectorManager *pManager);
-static void LEMBALL_FASTCALL StartMenuSelectorAction(
     GameMenuSelectorManager *pManager);
 static void LEMBALL_FASTCALL StartMenuSelectorActionThunk(
     GameMenuSelectorManager *pManager);
@@ -2570,76 +2573,73 @@ static void LEMBALL_FASTCALL SelectMenuSelectorSide1Thunk(
 
 static inline void SetFrameSelectorDuration(
     GameProgressiveVariantFrameSelector *pSelector, int dwDuration) {
-    GameFrameSelectorSetProc pSet =
-        (GameFrameSelectorSetProc)pSelector->m_pVtable[1];
-    pSet(pSelector, 0, dwDuration);
+    ((GameProgressiveVariantFrameSelectorInterface *)pSelector)
+        ->SetDuration(dwDuration);
 }
 
 /* FUNCTION: LEMBALL 0x0044DB20 */
-static void LEMBALL_FASTCALL StartMenuSelectorAction(
-    GameMenuSelectorManager *pManager) {
+void GameMenuSelectorManager::StartAction(void) {
     int i;
+    int *pPosition;
     int *panOffsets;
-    GameMenuSelectorMetadata *pMetadata;
     int nDistance;
 
-    pManager->m_ActionEventB8.m_nType00 = 0x0c;
-    if (pManager->m_nCurrentPosition8C != pManager->m_nTargetPosition9C ||
-        pManager->m_nActionStateA4 != 0) {
+    m_ActionEventB8.m_nType00 = 0x0c;
+    if (m_nCurrentPosition8C != m_nTargetPosition9C ||
+        m_nActionStateA4 != 0) {
         return;
     }
-    pMetadata = pManager->m_aMetadataE0;
-    for (i = 0; i < 8; ++i, ++pMetadata) {
-        if (pMetadata->m_nPosition == pManager->m_nTargetPosition9C) {
-            if (pManager->m_nSelectedSideA0 == 0) {
-                pManager->m_ActionEventB8.m_nPayload08 =
-                    pMetadata->m_nSide0Token;
-                pManager->m_fDelayedEventD8 =
-                    pMetadata->m_fSide0Action;
+    i = 0;
+    pPosition = &m_aMetadataE0[0].m_nPosition;
+    do {
+        if (*pPosition == m_nTargetPosition9C) {
+            if (m_nSelectedSideA0 == 0) {
+                m_ActionEventB8.m_nPayload08 =
+                    m_aMetadataE0[i].m_nSide0Token;
+                m_fDelayedEventD8 =
+                    m_aMetadataE0[i].m_fSide0Action;
             } else {
-                pManager->m_ActionEventB8.m_nPayload08 =
-                    pMetadata->m_nSide1Token;
-                pManager->m_fDelayedEventD8 =
-                    pMetadata->m_fSide1Action;
+                m_ActionEventB8.m_nPayload08 =
+                    m_aMetadataE0[i].m_nSide1Token;
+                m_fDelayedEventD8 =
+                    m_aMetadataE0[i].m_fSide1Action;
             }
             break;
         }
-    }
-    panOffsets = pManager->m_fCompactLayout274 == 1
+        pPosition += sizeof(GameMenuSelectorMetadata) / sizeof(int);
+        ++i;
+    } while (i < 8);
+    panOffsets = m_fCompactLayout274 == 1
                      ? g_anMenuSelectorActionOffsetsMode1
                      : g_anMenuSelectorActionOffsetsMode0;
-    SetFrameSelectorDuration(pManager->m_pActionLeadSelector24C, 250);
-    SetFrameSelectorDuration(pManager->m_pActionMiddleSelector254, 500);
-    SetFrameSelectorDuration(pManager->m_pActionTailSelector248, 500);
-    if (pManager->m_nSelectedSideA0 == 0) {
-        pManager->m_xActionA8 = pManager->m_xActionOrigin98 + panOffsets[6];
-        pManager->m_yActionAC = pManager->m_nTargetPosition9C + panOffsets[7];
-        pManager->m_xActionDestinationB0 = pMetadata->m_xSide0 + panOffsets[8];
-        pManager->m_ActionEventB8.m_nPayload14 = pMetadata->m_xSide0 + panOffsets[10];
-        pManager->m_ActionEventB8.m_nPayload18 = pMetadata->m_nPosition + panOffsets[11];
+    SetFrameSelectorDuration(m_pActionLeadSelector24C, 250);
+    SetFrameSelectorDuration(m_pActionMiddleSelector254, 500);
+    SetFrameSelectorDuration(m_pActionTailSelector248, 500);
+    if (m_nSelectedSideA0 == 0) {
+        m_xActionA8 = m_xActionOrigin98 + panOffsets[6];
+        m_yActionAC = m_nTargetPosition9C + panOffsets[7];
+        m_xActionDestinationB0 = m_aMetadataE0[i].m_xSide0 + panOffsets[8];
+        m_ActionEventB8.m_nPayload14 = m_aMetadataE0[i].m_xSide0 + panOffsets[10];
+        m_ActionEventB8.m_nPayload18 = m_aMetadataE0[i].m_nPosition + panOffsets[11];
     } else {
-        pManager->m_xActionA8 = pManager->m_xActionOrigin98 + panOffsets[12];
-        pManager->m_yActionAC = pManager->m_nTargetPosition9C + panOffsets[13];
-        pManager->m_xActionDestinationB0 = pMetadata->m_xSide1 + panOffsets[14];
-        pManager->m_ActionEventB8.m_nPayload14 = pMetadata->m_xSide1 + panOffsets[16];
-        pManager->m_ActionEventB8.m_nPayload18 = pMetadata->m_nPosition + panOffsets[17];
+        m_xActionA8 = m_xActionOrigin98 + panOffsets[12];
+        m_yActionAC = m_nTargetPosition9C + panOffsets[13];
+        m_xActionDestinationB0 = m_aMetadataE0[i].m_xSide1 + panOffsets[14];
+        m_ActionEventB8.m_nPayload14 = m_aMetadataE0[i].m_xSide1 + panOffsets[16];
+        m_ActionEventB8.m_nPayload18 = m_aMetadataE0[i].m_nPosition + panOffsets[17];
     }
-    pManager->m_dwActionLastTick22C = (int)timeGetTime();
-    nDistance = pManager->m_xActionDestinationB0 - pManager->m_xActionA8;
-    if (nDistance < 0) {
-        nDistance = -nDistance;
-    }
-    pManager->m_nActionStateA4 = 2;
-    pManager->m_dwActionMotionEnd230 =
-        pManager->m_dwActionLastTick22C + nDistance * 2;
+    m_dwActionLastTick22C = (int)timeGetTime();
+    nDistance = abs(m_xActionDestinationB0 - m_xActionA8);
+    m_nActionStateA4 = 2;
+    m_dwActionMotionEnd230 = m_dwActionLastTick22C + nDistance * 2;
     ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
-        ->PlayVariantResourceEffect(7);
+        ->PlayVariantResourceEffectThunk(7);
 }
 
 /* FUNCTION: LEMBALL 0x00402E28 */
 static void LEMBALL_FASTCALL StartMenuSelectorActionThunk(
     GameMenuSelectorManager *pManager) {
-    StartMenuSelectorAction(pManager);
+    pManager->StartAction();
 }
 
 /* FUNCTION: LEMBALL 0x0044CEC0 */
@@ -2758,15 +2758,13 @@ void LEMBALL_FASTCALL UpdateMenuSelectorAnimation(
             }
         }
     } else {
-        GameFrameSelectorSetProc pSetDirection;
         pManager->m_dwSideTransitionStart224 = (int)dwNow;
         pManager->m_dwSideTransitionEnd228 = (int)dwNow + 250;
         pManager->m_nActionStateA4 = 1;
         SetFrameSelectorDuration(pManager->m_pSideSelector244, 250);
-        pSetDirection = (GameFrameSelectorSetProc)
-            pManager->m_pSideSelector244->m_pVtable[4];
-        pSetDirection(pManager->m_pSideSelector244, 0,
-                      pManager->m_nSelectedSideA0 == 0 ? -1 : 1);
+        ((GameProgressiveVariantFrameSelectorInterface *)
+            pManager->m_pSideSelector244)->SetDirection(
+                pManager->m_nSelectedSideA0 == 0 ? -1 : 1);
     }
     if (pManager->m_fMovementActiveDC != 0) {
         if (dwNow < (unsigned int)pManager->m_dwMovementEnd220) {

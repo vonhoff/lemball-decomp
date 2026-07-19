@@ -10,6 +10,8 @@ address,name,symbol,type
 0x0044D990,GameMenuSelectorManager::SelectSide0,?SelectSide0@GameMenuSelectorManager@@QAEXXZ,function
 0x0044D9E0,GameMenuSelectorManager::SelectSide1,?SelectSide1@GameMenuSelectorManager@@QAEXXZ,function
 0x0044DA70,GameMenuSelectorManager::InitializeCurrentState,?InitializeCurrentState@GameMenuSelectorManager@@QAEXH@Z,function
+0x0044DB20,GameMenuSelectorManager::StartAction,?StartAction@GameMenuSelectorManager@@QAEXXZ,function
+0x0044DCE0,UpdateMenuSelectorAnimation,?UpdateMenuSelectorAnimation@@YIXPAUGameMenuSelectorManager@@@Z,function
 0x0045AF60,DeleteFixedBufferStreamReturnThis,?DeleteFixedBufferStreamReturnThis@@YIPAXPAUVsInitFixedBufferStream@@HH@Z,function
 0x00463280,ReturnStreamArgument,?ReturnStreamArgument@@YIPAXPAXH0@Z,function
 0x00467570,LevelVariantRenderManagerView::GetVariantFrameExtent,?GetVariantFrameExtent@LevelVariantRenderManagerView@@QAEPAFPAFHH@Z,function
