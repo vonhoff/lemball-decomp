@@ -4008,10 +4008,6 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
     } while (0)
 
     pScreen = (GameNetworkLobbyScreenView *)pObject;
-    if (pScreen->m_pMappedListResources98 == 0 ||
-        pScreen->m_pLayout42C == 0) {
-        return;
-    }
     pMappedList = (MappedListResourceTable *)pScreen->m_pMappedListResources98;
     pFontResource = pMappedList->GetMappedResource(
         pScreen->m_nMappedListRemapResourceId384);
@@ -4089,9 +4085,6 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
         return;
     }
     nStatus = pScreen->m_nStatus3A8;
-    if ((unsigned int)nStatus >= 10U) {
-        nStatus = 9;
-    }
     pszStatus = g_GAME_NetworkLobbyStatusText[nStatus];
     nRemap = 0;
     if (nStatus == 4) {
@@ -4114,8 +4107,7 @@ static void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject) {
             pScreen->m_pLayout42C[19], nRemap);
     }
     pRuntime = (GameNetworkLobbyRuntimeView *)g_pNetworkLobbyVsnetRuntime;
-    if (pRuntime != 0 && pRuntime->m_pPeerStates14 != 0 &&
-        pScreen->m_pPlayerEntries3CC != 0) {
+    if (pRuntime != 0) {
         iVisible = 0;
         for (iPeer = 0; iPeer < 10 && iVisible < 4; ++iPeer) {
             if (pRuntime->m_apTrackedPeers20[iPeer] == 0 ||
@@ -4184,6 +4176,14 @@ static void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void *pObject) {
         SubmitNetworkLobbyPendingText(pScreen);
         pScreen->m_fPendingText3E0 = 0;
     }
+    if (pScreen->m_nPendingPrompt3A4 != 0) {
+        ShowNetworkLobbyTextPrompt(
+            pScreen, pScreen->m_nPendingPrompt3A4, 1);
+        pScreen->m_nPendingPrompt3A4 = 0;
+    }
+    if (pScreen->m_nDeferredStatus430 != 0) {
+        FlushNetworkLobbyDeferredStatus(pScreen);
+    }
     dwNow = timeGetTime();
     if (dwNow - pScreen->m_dwBlinkStart3C8 > 499U) {
         pScreen->m_fBlink3C0 = pScreen->m_fBlink3C0 == 0;
@@ -4210,21 +4210,6 @@ static void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void *pObject) {
             pRuntime->m_fPlayerEntriesDirty54 = 0;
             pScreen->m_fRefreshPlayers3C4 = 1;
         }
-    }
-    if (pScreen->m_dwStatusDuration3B4 != 0 &&
-        dwNow - pScreen->m_dwStatusStart3B0 >
-            pScreen->m_dwStatusDuration3B4) {
-        pScreen->m_nStatus3A8 = 1;
-        pScreen->m_dwStatusDuration3B4 = 0;
-        pScreen->m_fSelectorDirty360 = 1;
-    }
-    if (pScreen->m_nPendingPrompt3A4 != 0) {
-        ShowNetworkLobbyTextPrompt(
-            pScreen, pScreen->m_nPendingPrompt3A4, 1);
-        pScreen->m_nPendingPrompt3A4 = 0;
-    }
-    if (pScreen->m_nDeferredStatus430 != 0) {
-        FlushNetworkLobbyDeferredStatus(pScreen);
     }
     if (pScreen->m_fRefreshPlayers3C4 != 0 &&
         pScreen->m_pPlayerEntries3CC != 0) {
@@ -4280,6 +4265,14 @@ static void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void *pObject) {
                      i * 0x44 + 0x3c) = 0;
         }
     }
+    if (pScreen->m_nStatus3A8 != 0 &&
+        pScreen->m_dwStatusDuration3B4 != 0 &&
+        timeGetTime() - pScreen->m_dwStatusStart3B0 >
+            pScreen->m_dwStatusDuration3B4) {
+        pScreen->m_nStatus3A8 = 1;
+        pScreen->m_fSelectorDirty360 = 1;
+        pScreen->m_dwStatusDuration3B4 = 0;
+    }
 }
 
 static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(
@@ -4314,12 +4307,6 @@ static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(
             return 1;
         }
     }
-    if ((pInput->m_nType00 == 3 || pInput->m_nType00 == 4) &&
-        nCode == 0x1bU) {
-        pScreen->m_nTransitionStatus378 = 1;
-        pScreen->m_nRequestedMode374 = 2;
-        return 1;
-    }
     if (pInput->m_nType00 == 4 && nCode == 0x49U) {
         g_fNetworkLobbyShiftPressed = 1;
         g_nNetworkLobbyModifierMask |= 1;
@@ -4340,9 +4327,6 @@ static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(
     }
     if (pScreen->m_fTextPrompt39C != 0 && pInput->m_nType00 == 4) {
         pBuffer = (GameBoundedTextBuffer *)pScreen->m_pTextBuffer398;
-        if (pBuffer == 0 || pBuffer->m_pszText0C == 0) {
-            return 1;
-        }
         ch = 0;
         fEdited = 0;
         if (nCode >= 5U && nCode <= 0x1eU) {
@@ -4367,7 +4351,6 @@ static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(
             if (pBuffer->m_cLength04 != 0) {
                 --pBuffer->m_cLength04;
                 pBuffer->m_pszText0C[pBuffer->m_cLength04] = '\0';
-                pScreen->m_fSelectorDirty360 = 1;
                 fEdited = 1;
             } else if (g_pVariantResourceEntryManager != 0) {
                 ((GameVariantResourceEntryManager *)
@@ -4378,7 +4361,6 @@ static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(
         if (ch != 0) {
             if (pBuffer->m_cLength04 != pBuffer->m_cCapacity00) {
                 AppendBoundedTextCharacter(pBuffer, ch);
-                pScreen->m_fSelectorDirty360 = 1;
                 fEdited = 1;
             } else if (g_pVariantResourceEntryManager != 0) {
                 ((GameVariantResourceEntryManager *)
@@ -4417,8 +4399,7 @@ static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(
             return 1;
         }
         if ((nCode == 0x1fU || nCode == 0x22U || nCode == 0x4cU) &&
-            pScreen->m_nResolvedPlayer3D4 != -1 &&
-            pScreen->m_pPlayerEntries3CC != 0) {
+            pScreen->m_nResolvedPlayer3D4 != -1) {
             typedef int (LEMBALL_FASTCALL *DispatchEntryInputProc)(
                 void *, int, short *, int);
             void *pEntry;
