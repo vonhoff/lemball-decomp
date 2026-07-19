@@ -118,9 +118,12 @@ extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(
 extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
     void *pOwner, int nUnusedEdx, void *pChild);
 extern void SetGeometryChildEnabled(void *pGeometryChild, int fEnabled);
-extern void ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen);
-extern int ThunkSelectNextNetworkLobbyPlayerEntry(int nNetworkLobbyScreen);
-extern int ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen);
+extern void LEMBALL_FASTCALL ThunkRefreshNetworkLobbyPlayerEntries(
+    int nNetworkLobbyScreen);
+extern int LEMBALL_FASTCALL ThunkSelectNextNetworkLobbyPlayerEntry(
+    int nNetworkLobbyScreen);
+extern int LEMBALL_FASTCALL ThunkSelectPreviousNetworkLobbyPlayerEntry(
+    int nNetworkLobbyScreen);
 
 class VsGdiAnimWindowOwner {
 public:

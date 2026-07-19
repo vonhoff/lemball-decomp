@@ -616,6 +616,7 @@ void *g_pLevelProgressState = 0;
 void *g_pMainResourceArchive = 0;
 // GLOBAL: LEMBALL 0x0049eb80
 void *g_pVariantResourceEntryManager = 0;
+// GLOBAL: LEMBALL 0x004a0120
 void *g_pNetworkLobbyVsnetRuntime = 0;
 // GLOBAL: LEMBALL 0x004a1e18
 void *g_pActiveNetworkRuntimeWindow = 0;
