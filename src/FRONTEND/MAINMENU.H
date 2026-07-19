@@ -10,6 +10,11 @@ void *LEMBALL_FASTCALL ConstructFunctionalLevelSelectionScreen(
 extern void *g_GAME_MainMenuQueueVtable[4];
 extern void *g_GAME_MainMenuCallbackVtable[2];
 
+class GameIntroSequenceScreen {
+public:
+    int HandleInput(short *pEvent);
+};
+
 void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
     void *pScreen, int nUnusedEdx, void *pPrimaryContext,
     void *pRenderContext, short *paSize, int nScreenType,

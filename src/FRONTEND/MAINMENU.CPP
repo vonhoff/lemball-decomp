@@ -2654,6 +2654,77 @@ static void *LEMBALL_FASTCALL DeleteAdjustedFramedScreenBase(
         (char *)pObject - 4, nUnusedEdx, fDelete);
 }
 
+// FUNCTION: LEMBALL 0x004475e0
+void LEMBALL_FASTCALL RequestIntroSequenceScreenTransition(char *pScreen) {
+    struct MediaOwnerInterface {
+        virtual void Reserved00(void) = 0;
+        virtual void Reserved01(void) = 0;
+        virtual void Reserved02(void) = 0;
+        virtual void Reserved03(void) = 0;
+        virtual void Reserved04(void) = 0;
+        virtual void Reserved05(void) = 0;
+        virtual void Reserved06(void) = 0;
+        virtual void Reserved07(void) = 0;
+        virtual void Reserved08(void) = 0;
+        virtual void Reserved09(void) = 0;
+        virtual void Reserved10(void) = 0;
+        virtual void Reserved11(void) = 0;
+        virtual void Reserved12(void) = 0;
+        virtual void Reserved13(void) = 0;
+        virtual void Reserved14(void) = 0;
+        virtual void Reserved15(void) = 0;
+        virtual void Reserved16(void) = 0;
+        virtual void Reserved17(void) = 0;
+        virtual void Reserved18(void) = 0;
+        virtual void Reserved19(void) = 0;
+        virtual void Reserved20(void) = 0;
+        virtual void Reserved21(void) = 0;
+        virtual void Reserved22(void) = 0;
+        virtual void Reserved23(void) = 0;
+        virtual void Reserved24(void) = 0;
+        virtual void Reserved25(void) = 0;
+        virtual void Reserved26(void) = 0;
+        virtual void Reserved27(void) = 0;
+        virtual void Reserved28(void) = 0;
+        virtual void Stop(void) = 0;
+    };
+    int fPlaying;
+
+    *(int *)(pScreen + 0x378) = 1;
+    fPlaying = *(int *)(pScreen + 0x3c0);
+    *(int *)(pScreen + 0x374) = *(int *)(pScreen + 0x39c);
+    if (fPlaying == 1) {
+        ((MediaOwnerInterface *)(pScreen + 0x3bc))->Stop();
+    }
+}
+
+// FUNCTION: LEMBALL 0x00447610
+int GameIntroSequenceScreen::HandleInput(short *pEvent)
+{
+    int nType;
+
+    nType = (unsigned short)pEvent[0];
+    switch (nType) {
+    case 4:
+        switch (*(int *)(pEvent + 4)) {
+        case 0x1f:
+        case 0x22:
+        case 0x23:
+        case 0x4c:
+            RequestIntroSequenceScreenTransition((char *)this);
+            return 1;
+        default:
+            return 0;
+        }
+    case 6:
+        RequestIntroSequenceScreenTransition((char *)this);
+        return 1;
+    default:
+        ++*(int *)((char *)this + 0x10);
+        return 0;
+    }
+}
+
 // FUNCTION: LEMBALL 0x004477b0
 void GameIntroSequenceMediaState::ConfigureOwner(
     void *pScreen, void *pPrimaryContext, int fSkipVariant)

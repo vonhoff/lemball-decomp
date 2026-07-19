@@ -1272,17 +1272,8 @@ struct GamePrimaryContextGeometryVirtualInterface {
     virtual void DispatchPrimaryContextActiveScreenFrame(void *pFrameArgument) = 0;
 };
 
-static void RequestIntroSequenceScreenTransition(char *pScreen) {
-    typedef void (LEMBALL_FASTCALL *StopMediaProc)(void *, int);
-    char *pMediaOwner;
-
-    *(int *)(pScreen + 0x378) = 1;
-    *(int *)(pScreen + 0x374) = *(int *)(pScreen + 0x39c);
-    pMediaOwner = pScreen + 0x3bc;
-    if (*(int *)(pMediaOwner + 4) == 1) {
-        ((StopMediaProc)(*(void ***)pMediaOwner)[29])(pMediaOwner, 0);
-    }
-}
+extern void LEMBALL_FASTCALL RequestIntroSequenceScreenTransition(
+    char *pScreen);
 
 static int LEMBALL_FASTCALL GetIntroSequenceMediaNotifyFlags(void *) {
     return 0x40000001;
@@ -1296,28 +1287,6 @@ static void LEMBALL_FASTCALL HandleIntroSequenceMediaCompletion(
     ((StopMediaProc)(*(void ***)pOwner)[29])(pOwner, 0);
     RequestIntroSequenceScreenTransition(
         *(char **)((char *)pOwner + 0xbc));
-}
-
-static int LEMBALL_FASTCALL HandleIntroSequenceScreenInput(
-    void *pObject, int, short *pEvent)
-{
-    int nAction;
-
-    if (pEvent[0] == 4) {
-        nAction = *(int *)(pEvent + 4);
-        if (nAction == 0x1f || nAction == 0x22 ||
-            nAction == 0x23 || nAction == 0x4c) {
-            RequestIntroSequenceScreenTransition((char *)pObject);
-            return 1;
-        }
-        return 0;
-    }
-    if (pEvent[0] == 6) {
-        RequestIntroSequenceScreenTransition((char *)pObject);
-        return 1;
-    }
-    ++*(int *)((char *)pObject + 0x10);
-    return 0;
 }
 
 static void LEMBALL_FASTCALL RefreshIntroSequenceMediaPath(
@@ -1466,6 +1435,11 @@ void *GameScreenObject::ConstructIntroSequenceScreen(void *pPrimaryContext,
     }
     *(void ***)pMediaOwner = g_GAME_IntroSequenceMediaOwnerVtable;
     if (g_fGAMEIntroSequenceScreenVtableInitialized == 0) {
+        union {
+            int (GameIntroSequenceScreen::*pMethod)(short *);
+            void *pAddress;
+        } inputMethod;
+
         int i;
         for (i = 0; i < 22; ++i) {
             g_GAME_IntroSequenceScreenVtable[i] = (*(void ***)pScreen)[i];
@@ -1480,8 +1454,8 @@ void *GameScreenObject::ConstructIntroSequenceScreen(void *pPrimaryContext,
             (void *)PollIntroSequenceScreenPlaybackCompletion;
         g_GAME_IntroSequenceScreenVtable[14] =
             (void *)UpdateIntroSequenceScreenPlaybackThunk;
-        g_GAME_IntroSequenceScreenVtable[15] =
-            (void *)HandleIntroSequenceScreenInput;
+        inputMethod.pMethod = &GameIntroSequenceScreen::HandleInput;
+        g_GAME_IntroSequenceScreenVtable[15] = inputMethod.pAddress;
         g_GAME_IntroSequenceScreenVtable[16] =
             (void *)RefreshIntroSequenceMediaPath;
         g_GAME_IntroSequenceScreenVtable[17] =
