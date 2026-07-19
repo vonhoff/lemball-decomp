@@ -5646,13 +5646,18 @@ static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(
     pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
     nPack = pProgress->m_nCurrentPack08;
     nCurrentLevel = pProgress->m_anSnapshotPackCaps3C[nPack];
-    memset(&Metadata, 0, sizeof(Metadata));
-    ReadLevelMetadataForSkillAndLevel(nPack, nCurrentLevel, &Metadata);
-    if (Metadata.m_szTitle08[0] == '\0') {
-        strcpy(Metadata.m_szTitle08, "UN-NAMED LEVEL");
-    }
     pScreen->m_fSelectorDirty360 = 1;
     pScreen->m_fFrameDirty330 = 1;
+    ReadLevelMetadataForSkillAndLevel(nPack, nCurrentLevel, &Metadata);
+    if (pScreen->m_fNetworkScreen8C != 0) {
+        pScreen->m_cNetworkStatus3F0 = Metadata.m_cNetworkPlayers04;
+    }
+    pScreen->m_cSkillStatus3F4 = Metadata.m_cSkill00;
+    pScreen->m_cStatus3EC = Metadata.m_cPlayers02;
+    pScreen->m_nLevelTime3F8 = Metadata.m_nTimeSeconds06;
+    pszTitle = Metadata.m_szTitle08[0] == '\0'
+        ? "UN-NAMED LEVEL"
+        : Metadata.m_szTitle08;
     memset(pScreen->m_aszTitleLines3FC, 0,
            sizeof(pScreen->m_aszTitleLines3FC));
     for (iLine = 0; iLine < 3; ++iLine) {
@@ -5660,7 +5665,6 @@ static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(
         pScreen->m_aTitlePositions464[iLine][1] = -1;
     }
 
-    pszTitle = Metadata.m_szTitle08;
     iSource = 0;
     y = pScreen->m_pLayout3D4[37];
     pFontResource = ((MappedListResourceTable *)
@@ -5698,7 +5702,6 @@ static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(
         pScreen->m_aTitlePositions464[iLine][1] = y;
         y += Extent[1];
     }
-    pScreen->m_nLevelTime3F8 = Metadata.m_nTimeSeconds06;
     pScreen->m_abTime45C[0] =
         (char)(Metadata.m_nTimeSeconds06 / 60 + '0');
     pScreen->m_abTime45C[1] = ':';
@@ -5707,22 +5710,24 @@ static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(
     pScreen->m_abTime45C[3] =
         (char)(Metadata.m_nTimeSeconds06 % 10 + '0');
     pScreen->m_abTime45C[4] = '\0';
-    pScreen->m_cSkillStatus3F4 = Metadata.m_cSkill00;
-    pScreen->m_cStatus3EC = Metadata.m_cPlayers02;
-    if (pScreen->m_fNetworkScreen8C != 0) {
-        pScreen->m_cNetworkStatus3F0 = Metadata.m_cNetworkPlayers04;
-    }
     RefreshFunctionalLevelSelectionNavigationLocks(pScreen);
 }
 
 static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionNavigationLocks(
     GameLevelSelectionScreenView *pScreen) {
+    int fNextAvailable;
+    int fPreviousAvailable;
+
+    fNextAvailable = IsCurrentLevelProgressAvailableThunk(
+        g_pLevelProgressState);
+    fPreviousAvailable = CanRetreatCurrentLevelProgressThunk(
+        g_pLevelProgressState);
     pScreen->m_fNextLocked480 = 0;
-    if (IsCurrentLevelProgressAvailableThunk(g_pLevelProgressState) != true) {
+    if (fNextAvailable != true) {
         pScreen->m_fNextLocked480 = 1;
     }
     pScreen->m_fPreviousLocked484 = 0;
-    if (CanRetreatCurrentLevelProgressThunk(g_pLevelProgressState) != true) {
+    if (fPreviousAvailable != true) {
         pScreen->m_fPreviousLocked484 = 1;
     }
     RefreshQueuedVariantChildByToken(
