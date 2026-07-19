@@ -165,6 +165,8 @@ public:
 class GameIntroSequenceMediaState {
 public:
     void ConfigureOwner(void *pScreen, void *pPrimaryContext, int fSkipVariant);
+    void ConfigureOwnerThunk(
+        void *pScreen, void *pPrimaryContext, int fSkipVariant);
 
 private:
     unsigned char m_abReserved00[0xbc];
@@ -2108,6 +2110,13 @@ void LEMBALL_FASTCALL WindowOwnerSlot20NoopThunk(
 // FUNCTION: LEMBALL 0x00403422
 void LEMBALL_FASTCALL SelectIntroSequenceMediaPathThunk(void *pOwner) {
     SelectIntroSequenceMediaPath(pOwner);
+}
+
+// FUNCTION: LEMBALL 0x0040359e
+void GameIntroSequenceMediaState::ConfigureOwnerThunk(
+    void *pScreen, void *pPrimaryContext, int fSkipVariant)
+{
+    ConfigureOwner(pScreen, pPrimaryContext, fSkipVariant);
 }
 
 // FUNCTION: LEMBALL 0x004035d0

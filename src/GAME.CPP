@@ -30,7 +30,14 @@ extern "C" BOOL WINAPI SetCurrentDirectoryA(LPCSTR lpPathName);
 
 class VsGdiAnimWindowOwner {
 public:
+    void *ConstructResourceGeometryHelperWindowOwner(void);
     void DestroyResourceGeometryHelperWindowOwner(void);
+};
+
+class GameIntroSequenceMediaState : public VsGdiAnimWindowOwner {
+public:
+    void ConfigureOwnerThunk(
+        void *pScreen, void *pPrimaryContext, int fSkipVariant);
 };
 
 static void *g_pSignedTrigTable = 0;
@@ -4767,7 +4774,8 @@ void *GameScreenObject::ConstructIntroSequenceScreen(void *pPrimaryContext, void
     *(unsigned short *)(pScreen + 0x3aa) = 0;
 
     pMediaOwner = pScreen + 0x3bc;
-    ConstructResourceGeometryHelperWindowOwner(pMediaOwner);
+    ((VsGdiAnimWindowOwner *)pMediaOwner)
+        ->ConstructResourceGeometryHelperWindowOwner();
     InitializeIntroSequenceMediaOwnerVtable(pMediaOwner);
     *(void ***)pMediaOwner = g_GAME_IntroSequenceMediaOwnerVtable;
     *(void ***)pScreen = g_GAME_IntroSequenceScreenVtable;
@@ -4780,9 +4788,8 @@ void *GameScreenObject::ConstructIntroSequenceScreen(void *pPrimaryContext, void
 
     ((GamePrimaryContext *)pPrimaryContext)
         ->SampleRootHelperGeometryAndDispatchRenderGroups(-1);
-    *(void **)(pMediaOwner + 0xbc) = pScreen;
-    *(void **)(pMediaOwner + 0xc0) = pPrimaryContext;
-    *(int *)(pMediaOwner + 0xc4) = fSkipVariant;
+    ((GameIntroSequenceMediaState *)pMediaOwner)
+        ->ConfigureOwnerThunk(pScreen, pPrimaryContext, fSkipVariant);
     *(int *)(pScreen + 0x450) = 1;
     ((GameDynamicCString *)(pScreen + 0x454))
         ->AssignDynamicCString("lemball");
