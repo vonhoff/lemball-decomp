@@ -454,7 +454,7 @@ static void *g_VSGDI_StatusIndicatorPointSinkVtable[12] = {
     0,
 };
 
-static void *LEMBALL_FASTCALL VsGdiDeleteDisplayState(
+void *LEMBALL_FASTCALL VsGdiDeleteDisplayState(
     void *pDisplayState, int nUnused, int fDelete);
 int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(
     void *pRenderClient, int nUnused, RenderDispatchQueueEntry *pEntry);
@@ -1101,6 +1101,36 @@ struct VsGdiMetricsDisplayVtable {
 };
 DECOMP_SIZE_ASSERT(VsGdiMetricsDisplayVtable, 0x38);
 
+struct VsGdiBaseDisplayVtable {
+    void *(LEMBALL_FASTCALL *m_pDelete)(void *, int, int);
+    void *m_pCreateDisplayBinding;
+    void *m_pReleaseDisplayBinding;
+    void *m_pInitializeDisplayBitmapInfo;
+    void *m_pCreateDisplayBitmap;
+    void *m_pReleaseDisplayBitmap;
+    void *m_pApplyPalette;
+    void *m_pStretchDisplayRect;
+    void *m_pCopyDisplayRect;
+    void *m_pBindDisplayBitmap;
+    void *m_pDeleteDisplayBitmap;
+    int (LEMBALL_FASTCALL *m_pCreatePalette)(void *, int, void *);
+    int (LEMBALL_FASTCALL *m_pSelectPalette)(void *, int, void *);
+    int (LEMBALL_FASTCALL *m_pIsPaletteReady)(void *, int);
+};
+DECOMP_SIZE_ASSERT(VsGdiBaseDisplayVtable, 0x38);
+
+// GLOBAL: LEMBALL 0x00498700
+static VsGdiBaseDisplayVtable g_VSGDI_BaseDisplayVtable = {
+    VsGdiDeleteDisplayState,
+    (void *)_purecall, (void *)_purecall, (void *)_purecall,
+    (void *)_purecall, (void *)_purecall, (void *)_purecall,
+    (void *)_purecall, (void *)_purecall, (void *)_purecall,
+    (void *)_purecall,
+    CreateAndStoreDisplayPalette,
+    SelectAndRealizeDisplayPalette,
+    UsesExistingDisplayPaletteAsFallback,
+};
+
 // GLOBAL: LEMBALL 0x00498738
 static VsGdiMetricsDisplayVtable g_VSGDI_MetricsDisplayVtable = {
     &VsGdiMetricsDisplayState::Delete,
@@ -1288,21 +1318,6 @@ static void *g_VSGDI_DirectDrawSurfaceBitmapVtable[6] = {
 
 extern VsGdiDirectDrawBindingVtable g_VSGDI_DirectDrawBindingVtable;
 
-static void *LEMBALL_FASTCALL VsGdiDeleteDisplayState(
-    void *pDisplayState, int nUnused, int fDelete) {
-    (void)nUnused;
-    if (fDelete != 0)
-        FreeVSMemBlock(pDisplayState);
-    return pDisplayState;
-}
-
-
-
-
-
-
-
-
 
 
 
@@ -1451,7 +1466,7 @@ void NoopDirectDrawCallback(unsigned int nResult, unsigned int nUnused) {
 
 // FUNCTION: LEMBALL 0x00456790
 VsGdiDisplayState::~VsGdiDisplayState(void) {
-    m_pVtable = &g_VSGDI_MetricsDisplayVtable;
+    m_pVtable = &g_VSGDI_BaseDisplayVtable;
     if (m_hGraphicsModule != 0) {
         FreeLibrary(m_hGraphicsModule);
         m_hGraphicsModule = 0;
@@ -2554,6 +2569,19 @@ int LEMBALL_FASTCALL UsesExistingDisplayPaletteAsFallback(
 
 {
     return ((VsGdiDisplayPaletteStateView *)pDisplayState)->m_hPalette != 0;
+}
+
+void *LEMBALL_FASTCALL VsGdiDeleteDisplayState(
+    void *pDisplayState, int nUnused, int fDelete) {
+    void *pThis;
+
+    (void)nUnused;
+    pThis = pDisplayState;
+    ((VsGdiDisplayState *)pDisplayState)->~VsGdiDisplayState();
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pThis);
+    }
+    return pThis;
 }
 
 // FUNCTION: LEMBALL 0x00458230

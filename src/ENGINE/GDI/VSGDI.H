@@ -3,6 +3,8 @@
 
 // FUNCTION: LEMBALL 0x00458380
 // DeleteDirectDrawBinding
+// FUNCTION: LEMBALL 0x00458210
+// VsGdiDeleteDisplayState
 
 #include "ENGINE/CORE/WIN32.H"
 
