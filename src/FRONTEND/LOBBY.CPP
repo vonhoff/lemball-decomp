@@ -188,7 +188,7 @@ struct VsNetVsnetStreamState {
     int m_fBusy;
 };
 
-int g_fNetworkLobbyScreenActive = 0;
+// GLOBAL: LEMBALL 0x004a0124
 char *g_pszPendingNetworkLobbyStatusText = 0;
 
 extern int g_nSelectedNetworkLobbyPeerId;
@@ -214,6 +214,111 @@ void ThunkHandleNetworkLobbyTransportStatusEvent(int nEventType) {
         if (nEventType == 0xd) {
             *(int *)((char *)g_pActiveNetworkLobbyScreen + 0x430) = 7;
         }
+    }
+}
+
+// FUNCTION: LEMBALL 0x00452850
+int LEMBALL_FASTCALL HandleNetworkLobbyVsnetRuntimeEvent(void *pVsnetRuntime, int, unsigned short *pEvent) {
+    VsNetNetworkLobbyVsnetRuntime *pRuntime;
+    VsNetVsnetEventType3 *pType3Event;
+    VsNetVsnetEventType5 *pType5Event;
+    VsNetVsnetEventType10 *pType10Event;
+    VsNetVsnetStreamState *pStreamState;
+    int nPeer;
+    int nStreamState;
+    int nSlot;
+    int *pnTrackedPeer;
+
+    pRuntime = (VsNetNetworkLobbyVsnetRuntime *)pVsnetRuntime;
+    pType3Event = (VsNetVsnetEventType3 *)pEvent;
+    pType5Event = (VsNetVsnetEventType5 *)pEvent;
+    pType10Event = (VsNetVsnetEventType10 *)pEvent;
+    switch (*pEvent) {
+    case 1:
+        return 1;
+
+    case 3:
+        if (pType3Event->m_nStatus0c == 0) {
+            nPeer = pType3Event->m_nPeer10;
+            if (g_nSelectedNetworkLobbyPeerId != 0) {
+                AppendCStringToStream(g_pStatusOutputStream, g_NETWORK_GameConnectionRequestDuringGameText);
+                ((VsNetEffTransportPeer *)(unsigned long)nPeer)->Close();
+                return 1;
+            }
+
+            nSlot = 0;
+            pnTrackedPeer = pRuntime->m_anTrackedPeers;
+            while (*pnTrackedPeer != 0) {
+                ++pnTrackedPeer;
+                ++nSlot;
+                if (nSlot >= 10) {
+                    break;
+                }
+            }
+
+            if (nSlot < 10) {
+                pnTrackedPeer = &pRuntime->m_anTrackedPeers[nSlot];
+                *pnTrackedPeer = nPeer;
+                g_pszPendingNetworkLobbyStatusText =
+                    g_pActiveNetworkLobbyScreen != 0
+                        ? g_szNetworkLobbyLocalPlayerName
+                        : 0;
+                ((GameEffStream *)(unsigned long)
+                     ((int)(unsigned long)pRuntime->m_pPeerEntryTable +
+                      nSlot * 0x50))
+                    ->QueueEffStreamWriteEvent(*pnTrackedPeer);
+                pRuntime->m_fSelectionNeedsReset = 1;
+            } else {
+                ((VsNetEffTransportPeer *)(unsigned long)nPeer)->Close();
+            }
+        }
+        return 1;
+
+    case 5:
+        nPeer = pType5Event->m_nPeer10;
+        nStreamState = pType5Event->m_nStreamState14;
+        pStreamState = (VsNetVsnetStreamState *)(unsigned long)nStreamState;
+        if (pType5Event->m_nStatus0c != 0) {
+            return 1;
+        }
+        if (pStreamState->m_pHeader->m_nEventCode08 != 6) {
+            pStreamState->m_fBusy = 0;
+            return 1;
+        }
+        ((GameEffStream *)pRuntime->m_pSelectedPeerStatusStream)
+            ->LoadEffStreamFromMemory((int)(unsigned long)((char *)pStreamState->m_pHeader + 0x10));
+        pStreamState->m_fBusy = 0;
+        if (pRuntime->m_pSelectedPeerStatusStream->m_nU32Payload != 0) {
+            ((VsNetEffTransportPeer *)(unsigned long)nPeer)->Close();
+        }
+        return 1;
+
+    case 10:
+        nPeer = pType10Event->m_nPeer0c;
+        for (nSlot = 0; nSlot < 10; ++nSlot) {
+            if (pRuntime->m_anTrackedPeers[nSlot] == nPeer) {
+                pRuntime->m_pPeerEntryTable[nSlot].m_fActive = 0;
+                pRuntime->m_anTrackedPeers[nSlot] = 0;
+                if (g_pNetworkLobbyTransportController != 0) {
+                    ThunkHandleNetworkLobbyTransportStatusEvent(*pEvent);
+                }
+                if (g_nSelectedNetworkLobbyPeerId == nPeer) {
+                    MarkNetworkLobbySelectedPeerDisconnected(pVsnetRuntime);
+                }
+                pRuntime->m_fSelectionNeedsReset = 1;
+                break;
+            }
+        }
+        return 1;
+
+    case 0xd:
+        if (g_pNetworkLobbyTransportController != 0) {
+            ThunkHandleNetworkLobbyTransportStatusEvent(*pEvent);
+        }
+        return 1;
+
+    default:
+        return 0;
     }
 }
 
@@ -404,109 +509,6 @@ int ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen) {
         ->SelectPreviousPlayerEntry();
 }
 
-int HandleNetworkLobbyVsnetRuntimeEvent(void *pVsnetRuntime, unsigned short *pEvent) {
-    VsNetNetworkLobbyVsnetRuntime *pRuntime;
-    VsNetVsnetEventType3 *pType3Event;
-    VsNetVsnetEventType5 *pType5Event;
-    VsNetVsnetEventType10 *pType10Event;
-    VsNetVsnetStreamState *pStreamState;
-    int nPeer;
-    int nStreamState;
-    int nSlot;
-    int *pnTrackedPeer;
-
-    pRuntime = (VsNetNetworkLobbyVsnetRuntime *)pVsnetRuntime;
-    pType3Event = (VsNetVsnetEventType3 *)pEvent;
-    pType5Event = (VsNetVsnetEventType5 *)pEvent;
-    pType10Event = (VsNetVsnetEventType10 *)pEvent;
-    switch (*pEvent) {
-    case 1:
-        return 1;
-
-    case 3:
-        if (pType3Event->m_nStatus0c == 0) {
-            nPeer = pType3Event->m_nPeer10;
-            if (g_nSelectedNetworkLobbyPeerId != 0) {
-                AppendCStringToStream(g_pStatusOutputStream, g_NETWORK_GameConnectionRequestDuringGameText);
-                ((VsNetEffTransportPeer *)(unsigned long)nPeer)->Close();
-                return 1;
-            }
-
-            nSlot = 0;
-            pnTrackedPeer = pRuntime->m_anTrackedPeers;
-            while (*pnTrackedPeer != 0) {
-                ++pnTrackedPeer;
-                ++nSlot;
-                if (nSlot >= 10) {
-                    break;
-                }
-            }
-
-            if (nSlot < 10) {
-                pnTrackedPeer = &pRuntime->m_anTrackedPeers[nSlot];
-                *pnTrackedPeer = nPeer;
-                g_pszPendingNetworkLobbyStatusText =
-                    g_fNetworkLobbyScreenActive >= 1
-                        ? g_szNetworkLobbyLocalPlayerName
-                        : 0;
-                ((GameEffStream *)(unsigned long)
-                     ((int)(unsigned long)pRuntime->m_pPeerEntryTable +
-                      nSlot * 0x50))
-                    ->QueueEffStreamWriteEvent(*pnTrackedPeer);
-                pRuntime->m_fSelectionNeedsReset = 1;
-            } else {
-                ((VsNetEffTransportPeer *)(unsigned long)nPeer)->Close();
-            }
-        }
-        return 1;
-
-    case 5:
-        nPeer = pType5Event->m_nPeer10;
-        nStreamState = pType5Event->m_nStreamState14;
-        pStreamState = (VsNetVsnetStreamState *)(unsigned long)nStreamState;
-        if (pType5Event->m_nStatus0c != 0) {
-            return 1;
-        }
-        if (pStreamState->m_pHeader->m_nEventCode08 != 6) {
-            pStreamState->m_fBusy = 0;
-            return 1;
-        }
-        ((GameEffStream *)pRuntime->m_pSelectedPeerStatusStream)
-            ->LoadEffStreamFromMemory((int)(unsigned long)((char *)pStreamState->m_pHeader + 0x10));
-        pStreamState->m_fBusy = 0;
-        if (pRuntime->m_pSelectedPeerStatusStream->m_nU32Payload != 0) {
-            ((VsNetEffTransportPeer *)(unsigned long)nPeer)->Close();
-        }
-        return 1;
-
-    case 10:
-        nPeer = pType10Event->m_nPeer0c;
-        for (nSlot = 0; nSlot < 10; ++nSlot) {
-            if (pRuntime->m_anTrackedPeers[nSlot] == nPeer) {
-                pRuntime->m_pPeerEntryTable[nSlot].m_fActive = 0;
-                pRuntime->m_anTrackedPeers[nSlot] = 0;
-                if (g_pNetworkLobbyTransportController != 0) {
-                    ThunkHandleNetworkLobbyTransportStatusEvent(*pEvent);
-                }
-                if (g_nSelectedNetworkLobbyPeerId == nPeer) {
-                    MarkNetworkLobbySelectedPeerDisconnected(pVsnetRuntime);
-                }
-                pRuntime->m_fSelectionNeedsReset = 1;
-                break;
-            }
-        }
-        return 1;
-
-    case 0xd:
-        if (g_pNetworkLobbyTransportController != 0) {
-            ThunkHandleNetworkLobbyTransportStatusEvent(*pEvent);
-        }
-        return 1;
-
-    default:
-        return 0;
-    }
-}
 // FUNCTION: LEMBALL 0x00454f00
 void VsNetNetworkLobbyScreen::RemoveUnavailablePlayerEntries(void) {
     int nEntryOffset;

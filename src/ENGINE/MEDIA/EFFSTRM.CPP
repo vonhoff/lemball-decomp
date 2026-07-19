@@ -12,8 +12,8 @@ extern char *g_pszPendingNetworkLobbyStatusText;
 extern char *g_pszFileBasedNetworkLocalHostName;
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
-extern int HandleNetworkLobbyVsnetRuntimeEvent(
-    void *pVsnetRuntime, unsigned short *pEvent);
+extern int LEMBALL_FASTCALL HandleNetworkLobbyVsnetRuntimeEvent(
+    void *pVsnetRuntime, int nUnusedEdx, unsigned short *pEvent);
 extern void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void *pObject);
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void *pObject);
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryPayload(void *pObject);
@@ -52,7 +52,7 @@ struct GameNetworkLobbyVsnetRuntimeVtableModel {
     virtual void Reserved00(void) {}
     virtual void Reserved04(void) {}
     virtual int HandleRuntimeEvent(unsigned short *pEvent) {
-        return HandleNetworkLobbyVsnetRuntimeEvent(this, pEvent);
+        return HandleNetworkLobbyVsnetRuntimeEvent(this, 0, pEvent);
     }
     virtual void Reserved0c(void) {}
     virtual void Reserved10(void) {}
