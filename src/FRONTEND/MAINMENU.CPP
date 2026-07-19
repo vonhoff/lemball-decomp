@@ -5593,6 +5593,49 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(
     }
 }
 
+static int CopyNextFunctionalLevelTitleWord(
+    const char *pszSource, char *pszLine,
+    int *piSource, int *piLine) {
+    while (pszSource[*piSource] != '\0' &&
+           pszSource[*piSource] != ' ') {
+        pszLine[*piLine] = pszSource[*piSource];
+        ++*piSource;
+        ++*piLine;
+    }
+    pszLine[*piLine] = '\0';
+    if (pszSource[*piSource] != '\0') {
+        ++*piSource;
+        return 0;
+    }
+    return 1;
+}
+
+static void TrimFunctionalLevelTitleToPreviousWord(
+    const char *pszSource, char *pszLine,
+    int *piSource, int *piLine) {
+    int cchBacktracked;
+    int cchSource;
+
+    cchBacktracked = 0;
+    *piSource -= 2;
+    cchSource = strlen(pszSource);
+    if (cchSource != 0) {
+        while (pszSource[*piSource] != ' ') {
+            ++cchBacktracked;
+            --*piSource;
+            pszLine[*piLine] = '\0';
+            --*piLine;
+            if (cchSource <= cchBacktracked) {
+                return;
+            }
+        }
+        pszLine[*piLine] = '\0';
+        --*piLine;
+        pszLine[*piLine] = '\0';
+        ++*piSource;
+    }
+}
+
 static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(
     GameLevelSelectionScreenView *pScreen) {
     GameLevelProgressStateView *pProgress;
@@ -5602,12 +5645,9 @@ static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(
     short Extent[2];
     int iLine;
     int iSource;
-    int iLineStart;
-    int iLastSpaceSource;
-    int iLastSpaceDest;
-    int cchLine;
+    int iDest;
+    int fEndOfTitle;
     int y;
-    int cchTitle;
     int nPack;
     int nCurrentLevel;
     GameLevelMetadataView Metadata;
@@ -5630,48 +5670,35 @@ static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(
     }
 
     pszTitle = Metadata.m_szTitle08;
-    cchTitle = strlen(pszTitle);
     iSource = 0;
     y = pScreen->m_pLayout3D4[37];
     pFontResource = ((MappedListResourceTable *)
         pScreen->m_pMappedListResources98)->GetMappedResource(
             pScreen->m_nMappedListRemapResourceId384);
-    for (iLine = 0; iLine < 3 && iSource < cchTitle; ++iLine) {
-        while (pszTitle[iSource] == ' ') {
-            ++iSource;
+    fEndOfTitle = 0;
+    for (iLine = 0; iLine < 3; ++iLine) {
+        if (fEndOfTitle == 1) {
+            break;
         }
-        iLineStart = iSource;
-        iLastSpaceSource = -1;
-        iLastSpaceDest = -1;
-        cchLine = 0;
-        szLine[0] = '\0';
-        while (iSource < cchTitle && cchLine < 0x1f) {
-            if (pszTitle[iSource] == ' ') {
-                iLastSpaceSource = iSource;
-                iLastSpaceDest = cchLine;
-            }
-            szLine[cchLine++] = pszTitle[iSource++];
-            szLine[cchLine] = '\0';
+        memset(szLine, 0, sizeof(szLine));
+        iDest = 0;
+        for (;;) {
+            fEndOfTitle = CopyNextFunctionalLevelTitleWord(
+                pszTitle, szLine, &iSource, &iDest);
             MeasureFunctionalLevelTitleExtent(
                 pFontResource, Extent, szLine);
-            if (pScreen->m_pLayout3D4[38] < Extent[0]) {
-                if (iLastSpaceDest >= 0) {
-                    cchLine = iLastSpaceDest;
-                    iSource = iLastSpaceSource + 1;
-                } else if (1 < cchLine) {
-                    --cchLine;
-                    --iSource;
-                }
+            if (pScreen->m_pLayout3D4[38] < Extent[0] ||
+                fEndOfTitle == 1) {
                 break;
             }
+            szLine[iDest++] = ' ';
+            szLine[iDest] = '\0';
         }
-        if (cchLine == 0 && iSource == iLineStart) {
-            szLine[cchLine++] = pszTitle[iSource++];
+        if (pScreen->m_pLayout3D4[38] < Extent[0]) {
+            fEndOfTitle = 0;
+            TrimFunctionalLevelTitleToPreviousWord(
+                pszTitle, szLine, &iSource, &iDest);
         }
-        while (0 < cchLine && szLine[cchLine - 1] == ' ') {
-            --cchLine;
-        }
-        szLine[cchLine] = '\0';
         strcpy(pScreen->m_aszTitleLines3FC[iLine], szLine);
         MeasureFunctionalLevelTitleExtent(pFontResource, Extent, szLine);
         pScreen->m_aTitlePositions464[iLine][0] =
