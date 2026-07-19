@@ -5,7 +5,9 @@
 #include <string.h>
 
 struct RenderDispatchClientObject {
-    void **m_pVtable;
+    virtual void ReservedSlot0(void) = 0;
+    virtual void ReservedSlot1(void) = 0;
+    virtual int DispatchRenderQueueEntry(void *pEntryWords) = 0;
 };
 
 int LEMBALL_FASTCALL DispatchRenderQueueEntryToClients(
@@ -394,17 +396,18 @@ int LEMBALL_FASTCALL DispatchRenderQueueEntryToClients(
     RenderDispatchClientNode *pClientNode;
 
     pQueue = (RenderDispatchQueue *)pDispatchQueue;
-    EnterObjectCriticalSection((char *)pDispatchQueue + 8);
+    ((void (LEMBALL_FASTCALL *)(void *))
+         (*(void ***)&pQueue->m_pLockVtable)[0])(&pQueue->m_pLockVtable);
 
     pClientNode = pQueue->m_pClientList;
     i = 0;
     if (pQueue->m_cClients != 0) {
         do {
             pClientObject = (RenderDispatchClientObject *)pClientNode->m_pClient;
-            if (((int (LEMBALL_FASTCALL *)(void *, int, void *))
-                     pClientObject->m_pVtable[2])(
-                    pClientNode->m_pClient, 0, pEntryWords) == 1) {
-                LeaveObjectCriticalSection((char *)pDispatchQueue + 8);
+            if (pClientObject->DispatchRenderQueueEntry(pEntryWords) == 1) {
+                ((void (LEMBALL_FASTCALL *)(void *))
+                     (*(void ***)&pQueue->m_pLockVtable)[1])(
+                         &pQueue->m_pLockVtable);
                 return 1;
             }
             pClientNode = pClientNode->m_pNext;

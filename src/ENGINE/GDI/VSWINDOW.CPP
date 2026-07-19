@@ -294,7 +294,7 @@ static void SetWindowOwnerState(void *pOwner, int nState) {
     ((WINDOW_OWNER_STATE_DISPATCH *)pOwner)->SetState(nState);
 }
 
-static void AppendWindowOwnerEvent(void *pEvent) {
+static inline void AppendWindowOwnerEvent(void *pEvent) {
     ((RENDER_DISPATCH_QUEUE_APPEND *)g_pSharedRenderDispatchQueue)->Append(pEvent);
 }
 
@@ -2447,24 +2447,23 @@ void VS_RootGeometryDispatchHelperDispatchView::DispatchNormalizedPointToGeometr
     VS_XYPair ScaledSize;
     VS_XYPair ScaledPosition;
     int nEventType;
-    int fInside;
 
     pHelper = (VS_RootGeometryDispatchHelperState *)this;
+    DefaultEvent.m_nType00 = 7;
+    DefaultEvent.m_nReserved02 = 0;
+    DefaultEvent.m_dwTime04 = 0;
+    DefaultEvent.m_nPackedPosition08 = 0;
+    DefaultEvent.m_nCommand0C = 0;
+    DefaultEvent.m_fHandled10 = 0;
     if (pEvent == 0) {
-        DefaultEvent.m_nType00 = 7;
-        DefaultEvent.m_nReserved02 = 0;
-        DefaultEvent.m_dwTime04 = 0;
-        DefaultEvent.m_nPackedPosition08 = 0;
-        DefaultEvent.m_nCommand0C = 0;
-        DefaultEvent.m_fHandled10 = 0;
         pEvent = &DefaultEvent;
     }
     nEventType = pEvent->m_nType00;
-    NormalizedPoint.m_x = (short)(
-        (pPoint->m_x - pHelper->m_Owner00.m_Position34.m_x) /
-        pHelper->m_nScaleFactor50);
     NormalizedPoint.m_y = (short)(
         (pPoint->m_y - pHelper->m_Owner00.m_Position34.m_y) /
+        pHelper->m_nScaleFactor50);
+    NormalizedPoint.m_x = (short)(
+        (pPoint->m_x - pHelper->m_Owner00.m_Position34.m_x) /
         pHelper->m_nScaleFactor50);
 
     pNode = pHelper->m_pChildrenTail4C;
@@ -2488,23 +2487,19 @@ void VS_RootGeometryDispatchHelperDispatchView::DispatchNormalizedPointToGeometr
         }
     }
 
-    ScaledSize.m_x = (short)(pHelper->m_Owner00.m_Size30.m_x *
-                              pHelper->m_nScaleFactor50);
-    ScaledSize.m_y = (short)(pHelper->m_Owner00.m_Size30.m_y *
-                              pHelper->m_nScaleFactor50);
+    ScaledSize = pHelper->m_Owner00.m_Size30;
     ScaledPosition.m_x = (short)(
         pHelper->m_Owner00.m_Position34.m_x +
         pHelper->m_Origin54.m_x * (pHelper->m_nScaleFactor50 - 1));
     ScaledPosition.m_y = (short)(
         pHelper->m_Owner00.m_Position34.m_y +
         pHelper->m_Origin54.m_y * (pHelper->m_nScaleFactor50 - 1));
-    fInside = ScaledPosition.m_x <= pPoint->m_x &&
-              pPoint->m_x <
-                  (short)(ScaledPosition.m_x + ScaledSize.m_x) &&
-              ScaledPosition.m_y <= pPoint->m_y &&
-              pPoint->m_y <
-                  (short)(ScaledPosition.m_y + ScaledSize.m_y);
-    if (!fInside) {
+    ScaledSize.m_x = (short)(ScaledSize.m_x * pHelper->m_nScaleFactor50);
+    ScaledSize.m_y = (short)(ScaledSize.m_y * pHelper->m_nScaleFactor50);
+    if (pPoint->m_x < ScaledPosition.m_x ||
+        (short)(ScaledPosition.m_x + ScaledSize.m_x) <= pPoint->m_x ||
+        pPoint->m_y < ScaledPosition.m_y ||
+        (short)(ScaledPosition.m_y + ScaledSize.m_y) <= pPoint->m_y) {
         if (pHelper->m_Owner00.m_fPointerActive08 != 0) {
             pHelper->m_Owner00.m_fPointerActive08 = 0;
             ((GameGeometryOwnerRectDispatch *)&pHelper->m_Owner00)
