@@ -2937,7 +2937,6 @@ void GameIntroSequenceScreen::UpdatePlayback(void) {
     char *pScreen;
     char *pMediaOwner;
     short *pPrimarySize;
-    short nHeight;
     short aRect[4];
 
     pScreen = (char *)this;
@@ -2956,15 +2955,14 @@ void GameIntroSequenceScreen::UpdatePlayback(void) {
     aRect[1] = pPrimarySize[1];
     aRect[2] = (short)(aRect[0] - 0x140);
     aRect[2] = (short)(aRect[2] / 2);
-    nHeight = aRect[1];
+    aRect[3] = (short)(aRect[1] - 0xf0);
+    aRect[3] = (short)(aRect[3] / 2);
     aRect[0] = 0x140;
     aRect[1] = 0xf0;
-    aRect[3] = (short)(nHeight - 0xf0);
-    aRect[3] = (short)(aRect[3] / 2);
     if (*(int *)(pScreen + 0x3b8) == 0) {
-        pMediaOwner = pScreen + 0x3bc;
         ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
             ->SwitchVariantResourceEntryMode(1, 0);
+        pMediaOwner = pScreen + 0x3bc;
         ((IntroMediaOwnerInterface *)pMediaOwner)->Initialize(
             aRect, *(void **)(pScreen + 0x84),
             "PaintBall Intro Sequence");
