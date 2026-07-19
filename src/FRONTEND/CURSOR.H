@@ -34,6 +34,7 @@ struct GameCursorRenderClient : public GameCursorRenderClientInterface {
     VsMathPoint2D m_BoundsOrigin78;
 
     void TickCursorRenderClientMotion(void);
+    void UpdateForWindowOwner(void *pWindowOwner);
 };
 
 #endif
