@@ -1753,6 +1753,8 @@ static inline GameProgressiveVariantFrameSelector *AllocateFrameSelector(
 GameMenuSelectorManager *GameMenuSelectorManager::Construct(void *pRenderOwner, void *pRenderContext, int, int nLayoutMode) {
     GameMenuSelectorManager *pManager;
     int i;
+    int iLocalRect;
+    unsigned char *pLocalRectEntry;
     void *pVariantManager;
 
     pManager = this;
@@ -1760,7 +1762,11 @@ GameMenuSelectorManager *GameMenuSelectorManager::Construct(void *pRenderOwner, 
     pVariantManager = (char *)pManager + 0x10;
     ((LevelVariantRenderManagerView *)pVariantManager)->Construct(
         (int)(unsigned long)pRenderContext, 0x2b6, 10, 5, 0, 0);
-    InitializeHelperLocalRectUpdateEntry(pManager->m_abLocalRectEntry200);
+    pLocalRectEntry = pManager->m_abLocalRectEntry200;
+    for (iLocalRect = 0; iLocalRect >= 0; --iLocalRect) {
+        InitializeHelperLocalRectUpdateEntry(pLocalRectEntry);
+        pLocalRectEntry += 0x10;
+    }
     pManager->m_pVtable00 = g_MenuSelectorManagerVtable;
     pManager->m_cCurrentFrameCallbackFrames25C = 1;
     *(void ***)pVariantManager = g_MenuSelectorVariantRenderManagerVtable;
@@ -1769,12 +1775,14 @@ GameMenuSelectorManager *GameMenuSelectorManager::Construct(void *pRenderOwner, 
     pManager->m_pRenderOwner214 = pRenderOwner;
     pManager->m_pRenderContext210 = pRenderContext;
     pManager->m_pCurrentFrameCallbackVtable258 =
+        g_MenuSelectorFrameSelectorCtorVtable;
+    pManager->m_pCurrentFrameCallbackVtable258 =
         g_MenuSelectorCurrentFrameCallbackVtable;
     pManager->m_nCurrentFrameCallbackFrame264 = 0;
     pManager->m_nNextToken218 = (int)0xabcd0000;
     for (i = 0; i < 8; ++i) {
-        pManager->m_aMetadataE0[i].m_xSide0 = -1;
         pManager->m_aMetadataE0[i].m_nPosition = -1;
+        pManager->m_aMetadataE0[i].m_xSide0 = -1;
         pManager->m_aMetadataE0[i].m_nSide = 3;
         pManager->m_apChildren1E0[i] = 0;
     }
@@ -1783,8 +1791,6 @@ GameMenuSelectorManager *GameMenuSelectorManager::Construct(void *pRenderOwner, 
     pManager->m_fMovementActiveDC = 0;
     pManager->m_nActionStateA4 = 0;
     pManager->m_fEventQueuedB4 = 0;
-    pManager->m_pChildContext268 = 0;
-    pManager->m_pChildRenderContext26C = 0;
     ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
         ->RegisterOrderedRenderDispatchClient(pManager, 0);
 
