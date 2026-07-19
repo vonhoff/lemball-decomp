@@ -146,10 +146,8 @@ struct GameMenuSelectorManager {
     int m_fCompactLayout274;
     int m_fChildrenEnabled278;
 
-    GameMenuSelectorManager *Construct(void *pRenderOwner,
-                                       void *pRenderContext,
-                                       int nChildCapacity,
-                                       int nLayoutMode);
+    GameMenuSelectorManager(void *pRenderOwner, void *pRenderContext,
+                            int nChildCapacity, int nLayoutMode);
     void AppendChild(
         int x, int nPosition, const int *panResourceIds,
         int nActivationMode, int nFirstResource, int nLastResource,

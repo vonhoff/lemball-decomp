@@ -9,6 +9,11 @@
 #include "ENGINE/GDI/VSGDI.H"
 #include "LEVEL/DRAWTEXT.H"
 
+#if defined(_MSC_VER) && (_MSC_VER < 1100)
+#include <new.h>
+#else
+#include <new>
+#endif
 #include <string.h>
 
 DECOMP_SIZE_ASSERT(GameMenuSelectorEvent, 0x1c);
@@ -1750,7 +1755,7 @@ static inline GameProgressiveVariantFrameSelector *AllocateFrameSelector(
 }
 
 // FUNCTION: LEMBALL 0x0044c870
-GameMenuSelectorManager *GameMenuSelectorManager::Construct(void *pRenderOwner, void *pRenderContext, int, int nLayoutMode) {
+GameMenuSelectorManager::GameMenuSelectorManager(void *pRenderOwner, void *pRenderContext, int, int nLayoutMode) {
     GameMenuSelectorManager *pManager;
     int i;
     int iLocalRect;
@@ -1845,7 +1850,6 @@ GameMenuSelectorManager *GameMenuSelectorManager::Construct(void *pRenderOwner, 
     pManager->m_pActionMiddleSelector254->m_dwFixedTime = -1;
     pManager->m_dwConstructionTimeD4 =
         ((RenderDispatchQueue *)g_pSharedRenderDispatchQueue)->m_nReserved30;
-    return pManager;
 }
 
 /* FUNCTION: LEMBALL 0x00402432 */
@@ -1853,8 +1857,8 @@ GameMenuSelectorManager *LEMBALL_FASTCALL ConstructMenuSelectorManagerThunk(
     GameMenuSelectorManager *pManager, int nUnusedEdx, void *pRenderOwner,
     void *pRenderContext, int nChildCapacity, int nLayoutMode) {
     (void)nUnusedEdx;
-    return pManager->Construct(pRenderOwner, pRenderContext,
-                               nChildCapacity, nLayoutMode);
+    return new (pManager) GameMenuSelectorManager(
+        pRenderOwner, pRenderContext, nChildCapacity, nLayoutMode);
 }
 
 /* FUNCTION: LEMBALL 0x0044D2D0 */
