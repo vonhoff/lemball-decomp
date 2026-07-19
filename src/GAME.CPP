@@ -4629,13 +4629,30 @@ void GamePrimaryContext::DestroyPrimaryContextActiveScreen(int) {
     }
 }
 
+struct GameLevelModePrefixInterface {
+    virtual void Reserved00(void) = 0;
+    char m_abReserved04[0x0c];
+};
+
+struct GameLevelModeActiveInterface {
+    virtual void Reserved00(void) = 0;
+};
+
+struct GameLevelModeObjectView : public GameLevelModePrefixInterface,
+                                 public GameLevelModeActiveInterface {
+    char m_abReserved14[0xfc];
+    int m_nStatusIndicatorMode110;
+};
+DECOMP_SIZE_ASSERT(GameLevelModeObjectView, 0x114);
+
 // FUNCTION: LEMBALL 0x00431990
 void GamePrimaryContext::SwitchPrimaryContextScreen(int nMode) {
     GamePrimaryContext *pContext;
     void *pScreenObject;
     short aRect[4];
     int nUploadState;
-    void *pActiveLevelMode;
+    void **ppActiveLevelMode;
+    GameLevelModeObjectView *pActiveLevelMode;
 
     pContext = this;
     if (pContext->m_nActiveScreenMode == nMode) {
@@ -4701,18 +4718,16 @@ void GamePrimaryContext::SwitchPrimaryContextScreen(int nMode) {
 
     case 5:
     case 0x13:
-        if (pContext->m_pMainContext->m_pActiveMode != 0) {
-            pContext->m_pActiveLevelMode =
-                (char *)pContext->m_pMainContext->m_pActiveMode - 0x10;
-        } else {
-            pContext->m_pActiveLevelMode = 0;
-        }
-        pActiveLevelMode = pContext->m_pMainContext->m_pActiveMode;
-        if (pActiveLevelMode != 0) {
-            pActiveLevelMode = (char *)pActiveLevelMode - 0x10;
-        }
+        ppActiveLevelMode = (void **)
+            &pContext->m_pMainContext->m_pActiveMode;
+        pContext->m_pActiveLevelMode =
+            (GameLevelModeObjectView *)
+                (GameLevelModeActiveInterface *)*ppActiveLevelMode;
+        pActiveLevelMode =
+            (GameLevelModeObjectView *)
+                (GameLevelModeActiveInterface *)*ppActiveLevelMode;
         pContext->m_nLevelScreenStatusIndicatorMode =
-            *(int *)((char *)pActiveLevelMode + 0x110);
+            pActiveLevelMode->m_nStatusIndicatorMode110;
         pScreenObject = AllocateVSMemBlock(0x2428);
         if (pScreenObject != 0) {
             pContext->m_pActiveScreen = ((GameScreenObject *)pScreenObject)->ConstructLevelScreen(
