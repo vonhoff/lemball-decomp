@@ -557,7 +557,6 @@ static VsGdiCompactHelperAdjustorTable g_VSGDI_CompactHelperTargetAdjustor = { -
 static VsGdiCompactHelperAdjustorTable g_VSGDI_HelperGroup1Adjustor = { -4, 0x514 };
 static VsGdiCompactHelperAdjustorTable g_VSGDI_HelperGroup0Adjustor = { -4, 0x4c0 };
 
-static int g_nResourceGeometryHelperSlotCount = 0;
 static void *g_pResourceGeometryListHead = 0;
 
 struct VsGdiHelperTargetParamWrapper {
@@ -3968,9 +3967,10 @@ void *VsGdiResourceGeometryHelperSlotManager::AllocateResourceGeometryHelperSlot
     pSlot->m_nOwnerOrStateC = 0;
     pSlot->m_nOwnerOrState10 = pWrappedTarget == g_pResourceGeometryHelperTarget;
     pSlot->m_fAvailable = 0;
-    pSlot->m_nOwnerOrState18 = 0;
     if (pSlot->m_nOwnerOrState10 != 0)
-        ++g_nResourceGeometryHelperSlotCount;
+        ++pSlotManager->m_nReserved0C;
+    pTarget = (VsGdiResourceGeometryHelperTargetView *)
+        (unsigned long)pSlot->m_nOwnerOrState0;
     return pTarget;
 }
 
