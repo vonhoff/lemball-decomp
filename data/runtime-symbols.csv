@@ -5,6 +5,7 @@ address,name,symbol,type
 0x0044CEC0,GameMenuSelectorManager::HandleEvent,?HandleEvent@GameMenuSelectorManager@@QAEHPAUGameMenuSelectorEvent@@@Z,function
 0x0044C270,GameMenuSelectorEntry::GameMenuSelectorEntry,??0GameMenuSelectorEntry@@QAE@PAX0HHPBHHHHHHPAHH@Z,function
 0x0044C460,GameMenuSelectorEntry::HandleEvent,?HandleEvent@GameMenuSelectorEntry@@QAEHPAUGameMenuSelectorEvent@@@Z,function
+0x0044EB60,SetMenuSelectorProgressPercent,?SetMenuSelectorProgressPercent@@YIXPAXHH@Z,function
 0x0044D150,GameMenuSelectorManager::RecordChildMetadata,?RecordChildMetadata@GameMenuSelectorManager@@QAEXHHHH@Z,function
 0x0044D830,GameMenuSelectorManager::MovePrevious,?MovePrevious@GameMenuSelectorManager@@QAEXXZ,function
 0x0044D8E0,GameMenuSelectorManager::MoveNext,?MoveNext@GameMenuSelectorManager@@QAEXXZ,function
@@ -15,6 +16,7 @@ address,name,symbol,type
 0x0044DCE0,UpdateMenuSelectorAnimation,?UpdateMenuSelectorAnimation@@YIXPAUGameMenuSelectorManager@@@Z,function
 0x0045AF60,DeleteFixedBufferStreamReturnThis,?DeleteFixedBufferStreamReturnThis@@YIPAXPAUVsInitFixedBufferStream@@HH@Z,function
 0x00463280,ReturnStreamArgument,?ReturnStreamArgument@@YIPAXPAXH0@Z,function
+0x004688E0,ReloadMenuSelectorOverlayResource,?ReloadMenuSelectorOverlayResource@@YIXPAXHH@Z,function
 0x00467570,LevelVariantRenderManagerView::GetVariantFrameExtent,?GetVariantFrameExtent@LevelVariantRenderManagerView@@QAEPAFPAFHH@Z,function
 0x0047FCA0,__purecall,_purecall,library
 0x00480198,__setjmp3,__setjmp3,library

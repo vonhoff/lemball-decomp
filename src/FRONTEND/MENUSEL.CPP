@@ -2162,28 +2162,6 @@ static void LEMBALL_FASTCALL ReleaseMenuSelectorEntryResources(
     pEntry->m_ppLoadedResources58 = 0;
 }
 
-/* FUNCTION: LEMBALL 0x0044EB60 */
-static void LEMBALL_FASTCALL SetMenuSelectorProgressPercent(
-    void *pProgress, int, int nPercent) {
-    typedef void (LEMBALL_FASTCALL *QueueProc)(void *, int, void *);
-    GameMenuSelectorEvent Event;
-
-    if (*(int *)((char *)pProgress + 0x120) == nPercent) {
-        return;
-    }
-    Event.m_nType00 = 0x0c;
-    Event.m_nReserved02 = 0;
-    *(int *)((char *)pProgress + 0x120) = nPercent;
-    Event.m_dwTimestamp04 = (int)timeGetTime();
-    Event.m_nPayload08 = *(int *)((char *)pProgress + 0x130);
-    Event.m_nPayload0C = nPercent;
-    Event.m_nPayload10 = 100;
-    Event.m_nPayload14 = 0;
-    Event.m_nPayload18 = 0;
-    ((QueueProc)(*(void ***)g_pSharedRenderDispatchQueue)[2])(
-        g_pSharedRenderDispatchQueue, 0, &Event);
-}
-
 /* FUNCTION: LEMBALL 0x0044C460 */
 int GameMenuSelectorEntry::HandleEvent(GameMenuSelectorEvent *pEvent) {
     struct CommandEvent {
@@ -2260,8 +2238,7 @@ int GameMenuSelectorEntry::HandleEvent(GameMenuSelectorEvent *pEvent) {
     if (nPercent == pEntry->m_nLastResource3C) {
         nPercent = 0;
     } else {
-        nPercent += (pEntry->m_nLastResource3C +
-                     ((pEntry->m_nLastResource3C >> 31) & 3)) / 4;
+        nPercent += pEntry->m_nLastResource3C / 4;
         if (nPercent > pEntry->m_nLastResource3C) {
             nPercent = pEntry->m_nLastResource3C;
         }
@@ -2796,6 +2773,39 @@ void LEMBALL_FASTCALL UpdateMenuSelectorAnimation(
 void LEMBALL_FASTCALL UpdateMenuSelectorAnimationThunk(
     GameMenuSelectorManager *pManager) {
     UpdateMenuSelectorAnimation(pManager);
+}
+
+class GameMenuSelectorEventQueueInterface {
+public:
+    virtual void Reserved0(void) = 0;
+    virtual void Reserved1(void) = 0;
+    virtual void QueueEvent(void *pEvent) = 0;
+};
+
+/* FUNCTION: LEMBALL 0x0044EB60 */
+static void LEMBALL_FASTCALL SetMenuSelectorProgressPercent(
+    void *pProgress, int, int nPercent) {
+    struct ProgressEvent {
+        short m_nType00;
+        short m_nReserved02;
+        int m_dwTimestamp04;
+        int m_nPayload08;
+        int m_nPayload0C;
+        int m_nPayload10;
+    };
+    ProgressEvent Event;
+
+    if (*(int *)((char *)pProgress + 0x120) == nPercent) {
+        return;
+    }
+    Event.m_nType00 = 0x0c;
+    *(int *)((char *)pProgress + 0x120) = nPercent;
+    Event.m_dwTimestamp04 = (int)timeGetTime();
+    Event.m_nPayload08 = *(int *)((char *)pProgress + 0x130);
+    Event.m_nPayload0C = *(int *)((char *)pProgress + 0x120);
+    Event.m_nPayload10 = 100;
+    ((GameMenuSelectorEventQueueInterface *)
+        g_pSharedRenderDispatchQueue)->QueueEvent(&Event);
 }
 
 /* FUNCTION: LEMBALL 0x0044C600 */
