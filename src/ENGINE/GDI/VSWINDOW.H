@@ -93,6 +93,8 @@ public:
     virtual void ReservedWindowOwnerSlot33(int nValue); // vtable+0x84
     virtual void ReservedWindowOwnerSlot34(int nValue); // vtable+0x88
 
+    void ApplyRootGeometryRect(const VS_XYPair *pRect);
+
 protected:
     int m_cRetains04;                                  // 0x04
     VS_XYPair m_Size08;                                // 0x08

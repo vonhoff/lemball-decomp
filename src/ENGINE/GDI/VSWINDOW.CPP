@@ -1899,6 +1899,11 @@ void VS_RootGeometryOwner::StoreRootGeometrySourceRect(const VS_XYPair *pRect) {
     CanonicalizeRootGeometrySubrect();
 }
 
+// FUNCTION: LEMBALL 0x00465df0
+void VS_RootGeometryOwner::ApplyRootGeometryRect(const VS_XYPair *pRect) {
+    SetRootGeometryRect(pRect);
+}
+
 // FUNCTION: LEMBALL 0x00465e60
 void VS_RootGeometryOwner::EnsureRootGeometryDispatchHelper(void) {
     VS_XYPair aRect[2];
