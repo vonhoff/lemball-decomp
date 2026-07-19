@@ -548,8 +548,10 @@ struct GameEffTransportRuntimeWindow {
     void RegisterEffTransportEventClient(void *pClient);
     void UnregisterEffTransportEventClient(void);
 };
-extern void *ConstructNetworkLobbyPeerClearCloseStream(void *pObject);
-extern void *ConstructNetworkLobbyPeerDirtyConfirmStream(void *pObject);
+extern void *LEMBALL_FASTCALL ConstructNetworkLobbyPeerClearCloseStream(
+    void *pObject);
+extern void *LEMBALL_FASTCALL ConstructNetworkLobbyPeerDirtyConfirmStream(
+    void *pObject);
 extern void LEMBALL_FASTCALL StopNetworkLobbyTransportSession(
     void *pController);
 struct GameNetworkLevelChunkDeltaStream {

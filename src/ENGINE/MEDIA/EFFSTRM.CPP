@@ -99,13 +99,15 @@ static const char g_EFF_DefaultNetworkPath[] = "t:\\network";
 // GLOBAL: LEMBALL 0x004a0138
 static const char g_EFF_NetworkRuntimeKey[] = "Paintball v0.1";
 void *ConstructEffStreamPayloadSize8(void *pObject);
-void *ConstructNetworkLobbySelectedPeerStatusStream(void *pObject);
-void *ConstructNetworkLobbyPeerEntryStream(void *pObject);
-void *ConstructNetworkLobbyU32PayloadStream(void *pObject, int nEventCode);
+void *LEMBALL_FASTCALL ConstructNetworkLobbySelectedPeerStatusStream(
+    void *pObject);
+void *LEMBALL_FASTCALL ConstructNetworkLobbyPeerEntryStream(void *pObject);
 void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStream(void *pObject);
 void LEMBALL_FASTCALL ReadNetworkLobbyU32PayloadStream(void *pObject);
-void *ConstructNetworkLobbyPeerClearCloseStream(void *pObject);
-void *ConstructNetworkLobbyPeerDirtyConfirmStream(void *pObject);
+void *LEMBALL_FASTCALL ConstructNetworkLobbyPeerClearCloseStream(
+    void *pObject);
+void *LEMBALL_FASTCALL ConstructNetworkLobbyPeerDirtyConfirmStream(
+    void *pObject);
 void DestroyNetworkLobbyVsnetRuntime(void *pObject);
 void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(void *pVsnetRuntime);
 void LEMBALL_FASTCALL MarkNetworkLobbySelectedPeerDisconnected(void *pVsnetRuntime);
@@ -352,7 +354,8 @@ extern int StartTcpipNetworkMessageThread(void);
 extern void WINAPI ConfigureFileBasedNetworkPathsWrapper(char *pszBasePath, char *pszNetworkPath);
 extern int StopFileBasedNetworkMessageThread(void);
 extern int StopTcpipNetworkMessageThread(void);
-void *ConstructNetworkLobbyPeerClearCloseStream(void *pObject);
+void *LEMBALL_FASTCALL ConstructNetworkLobbyPeerClearCloseStream(
+    void *pObject);
 
 
 
@@ -397,7 +400,7 @@ void *ConstructEffStreamPayloadSize8(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x004523b0
-void *ConstructNetworkLobbySelectedPeerStatusStream(void *pObject) {
+void *LEMBALL_FASTCALL ConstructNetworkLobbySelectedPeerStatusStream(void *pObject) {
     GameEffStream *pStream;
 
     pStream = (GameEffStream *)pObject;
@@ -411,7 +414,7 @@ void *ConstructNetworkLobbySelectedPeerStatusStream(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x004523e0
-void *ConstructNetworkLobbyPeerEntryStream(void *pObject) {
+void *LEMBALL_FASTCALL ConstructNetworkLobbyPeerEntryStream(void *pObject) {
     GameNetworkLobbyPeerEntryStream *pStream;
 
     pStream = (GameNetworkLobbyPeerEntryStream *)pObject;
@@ -428,19 +431,16 @@ void *ConstructNetworkLobbyPeerEntryStream(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x004524b0
-void *ConstructNetworkLobbyU32PayloadStream(void *pObject, int nEventCode) {
-    GameEffStream *pStream;
-
-    pStream = (GameEffStream *)pObject;
-    pStream->m_pVtable =
+GameEffStream *GameEffStream::ConstructNetworkLobbyU32PayloadStream(int nEventCode) {
+    m_pVtable =
         (GameEffStreamVtable *)g_GAME_EffStreamConstructionVtable;
-    pStream->m_nEventCode = nEventCode;
-    pStream->ResetStateFields();
-    pStream->m_pVtable = (GameEffStreamVtable *)g_EFF_NetworkLobbyU32PayloadVtable;
-    pStream->m_cbSerializedLength += 4;
-    pStream->m_fHasPayload = 1;
-    pStream->m_nU32Payload = 0;
-    return pObject;
+    m_nEventCode = nEventCode;
+    ResetStateFields();
+    m_pVtable = (GameEffStreamVtable *)g_EFF_NetworkLobbyU32PayloadVtable;
+    m_cbSerializedLength += 4;
+    m_fHasPayload = 1;
+    m_nU32Payload = 0;
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x004524f0
@@ -460,15 +460,15 @@ void LEMBALL_FASTCALL ReadNetworkLobbyU32PayloadStream(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x00452510
-void *ConstructNetworkLobbyPeerClearCloseStream(void *pObject) {
-    ConstructNetworkLobbyU32PayloadStream(pObject, 6);
+void *LEMBALL_FASTCALL ConstructNetworkLobbyPeerClearCloseStream(void *pObject) {
+    ((GameEffStream *)pObject)->ConstructNetworkLobbyU32PayloadStream(6);
     *(void **)pObject = g_EFF_NetworkLobbyPeerClearCloseVtable;
     return pObject;
 }
 
 // FUNCTION: LEMBALL 0x00452530
-void *ConstructNetworkLobbyPeerDirtyConfirmStream(void *pObject) {
-    ConstructNetworkLobbyU32PayloadStream(pObject, 7);
+void *LEMBALL_FASTCALL ConstructNetworkLobbyPeerDirtyConfirmStream(void *pObject) {
+    ((GameEffStream *)pObject)->ConstructNetworkLobbyU32PayloadStream(7);
     *(void **)pObject = g_EFF_NetworkLobbyPeerDirtyConfirmVtable;
     return pObject;
 }
