@@ -33,6 +33,14 @@
 // SetMenuSelectorStartTimeFieldThunk
 // STUB: LEMBALL 0x00402d5b
 // SetMenuSelectorDirectionFieldThunk
+// STUB: LEMBALL 0x00401f28
+// HandleMenuSelectorEntryEventThunk
+// STUB: LEMBALL 0x00401bc2
+// DeleteMenuSelectorEntryThunk
+// STUB: LEMBALL 0x00401c9e
+// DeleteMenuSelectorManagerThunk
+// STUB: LEMBALL 0x00401adc
+// HandleMenuSelectorEventThunk
 
 #include "ENGINE/CORE/COMMON.H"
 
