@@ -3786,7 +3786,6 @@ static void LEMBALL_FASTCALL DestroyNetworkLobbyActionButtons(
         typedef void *(LEMBALL_FASTCALL *DeleteProc)(void *, int, int);
         ((DeleteProc)(*(void ***)pScreen->m_pQueuedVariantManager338)[1])(
             pScreen->m_pQueuedVariantManager338, 0, 1);
-        pScreen->m_pQueuedVariantManager338 = 0;
     }
 }
 
@@ -3825,13 +3824,13 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
     ConstructFramedScreenBaseFields(
         pScreen, 0, pPrimaryContext, pRenderContext, paSize,
         0x0c, 0x32, 200, 0, 100, 0x28);
+    InitializeFramedScreenRenderChildEntry(pScreen->m_abPointSink3EC);
     InitializeFunctionalNetworkLobbyVtables();
     pScreen->m_pVtable00 = g_GAME_NetworkLobbyScreenVtable;
     *(void ***)pScreen->m_abRenderQueueNode04 =
         g_GAME_NetworkLobbyQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
         g_GAME_MainMenuCallbackVtable;
-    InitializeFramedScreenRenderChildEntry(pScreen->m_abPointSink3EC);
     pScreen->m_fTextPrompt39C = 0;
     pScreen->m_nPendingPrompt3A4 = 0;
     pScreen->m_nStatus3A8 = 1;
@@ -3846,14 +3845,12 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
     pScreen->m_pszLocalComputer3E8 = 0;
     pScreen->m_cVisiblePlayers3D8 = 0;
     pScreen->m_nDeferredStatus430 = 0;
+    pScreen->m_dwBlinkStart3C8 = timeGetTime();
     pScreen->m_pTextBuffer398 = AllocateVSMemBlock(0x10);
     if (pScreen->m_pTextBuffer398 != 0) {
         ConstructBoundedTextBuffer(
             (GameBoundedTextBuffer *)pScreen->m_pTextBuffer398, 0x28);
     }
-    pScreen->m_dwBlinkStart3C8 = timeGetTime();
-    pScreen->m_nSelectedPlayer3D0 = -1;
-    pScreen->m_nResolvedPlayer3D4 = -1;
     pEntryArray = (int *)AllocateVSMemBlock(0x2ac);
     if (pEntryArray != 0) {
         pEntryArray[0] = 10;
@@ -3865,6 +3862,8 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
     } else {
         pScreen->m_pPlayerEntries3CC = 0;
     }
+    pScreen->m_nSelectedPlayer3D0 = -1;
+    pScreen->m_nResolvedPlayer3D4 = -1;
     nPaletteResourceId =
         *(int *)((char *)pScreen->m_pPrimaryContext84 + 0x54);
     for (i = 0; i < 6; ++i) {
@@ -3873,12 +3872,10 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
                 nPaletteResourceId,
                 g_GAME_NetworkLobbyPaletteRemaps[i], 2);
     }
-    if (pScreen->m_pPlayerEntries3CC != 0) {
-        for (i = 0; i < 10; ++i) {
-            AppendGeometryOwnerChild(
-                *(void **)((char *)pScreen->m_pPrimaryContext84 + 0x1c),
-                0, (char *)pScreen->m_pPlayerEntries3CC + i * 0x44);
-        }
+    for (i = 0; i < 10; ++i) {
+        AppendGeometryOwnerChild(
+            *(void **)((char *)pScreen->m_pPrimaryContext84 + 0x1c),
+            0, (char *)pScreen->m_pPlayerEntries3CC + i * 0x44);
     }
     pScreen->m_fDrawFrameA8 = 1;
     pScreen->m_fTileBackgroundAC = 1;
@@ -4457,18 +4454,17 @@ static void DestroyNetworkLobbyScreen(
         CloseNetworkLobbyTransportPeers(
             g_pActiveNetworkLobbyTransportController);
     }
+    for (i = 0; i < 10; ++i) {
+        RemoveGeometryOwnerChild(
+            *(void **)((char *)pScreen->m_pPrimaryContext84 + 0x1c),
+            0, (char *)pScreen->m_pPlayerEntries3CC + i * 0x44);
+    }
     if (pScreen->m_pPlayerEntries3CC != 0) {
         typedef void *(LEMBALL_FASTCALL *DeleteArrayProc)(
             void *, int, int);
 
-        for (i = 0; i < 10; ++i) {
-            RemoveGeometryOwnerChild(
-                *(void **)((char *)pScreen->m_pPrimaryContext84 + 0x1c),
-                0, (char *)pScreen->m_pPlayerEntries3CC + i * 0x44);
-        }
         ((DeleteArrayProc)(*(void ***)pScreen->m_pPlayerEntries3CC)[0])(
             pScreen->m_pPlayerEntries3CC, 0, 3);
-        pScreen->m_pPlayerEntries3CC = 0;
     }
     if (pScreen->m_pTextBuffer398 != 0) {
         GameBoundedTextBuffer *pBuffer;
@@ -4478,12 +4474,10 @@ static void DestroyNetworkLobbyScreen(
             FreeVSMemBlock(pBuffer->m_pszText0C);
         }
         FreeVSMemBlock(pBuffer);
-        pScreen->m_pTextBuffer398 = 0;
     }
     for (i = 0; i < 6; ++i) {
         ReleasePaletteRemapVariant(
             (void *)(unsigned long)pScreen->m_anPaletteRemaps414[i]);
-        pScreen->m_anPaletteRemaps414[i] = 0;
     }
     if (pScreen->m_fFrameResourcesLoaded9C != 0) {
         DestroyNetworkLobbyActionButtons(pScreen);
