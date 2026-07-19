@@ -1200,6 +1200,11 @@ struct VsGdiDirectDrawBindingVtable {
     void (LEMBALL_FASTCALL *SetTarget)(void *, int, void *);
 };
 
+class VsGdiDeletableObject {
+public:
+    virtual void *Delete(int fDelete) = 0;
+};
+
 struct VsGdiDirectDrawBinding {
     VsGdiDirectDrawBindingVtable *m_pVtable;
     int m_nSurfaceSlot;
@@ -2029,8 +2034,7 @@ int VsGdiDirectDrawDisplayState::ReleaseDirectDrawDisplayBinding(
     void *pBinding)
 {
     if (pBinding != 0) {
-        ((void *(LEMBALL_FASTCALL *)(void *, int, int))
-             (*(void ***)pBinding)[0])(pBinding, 0, 1);
+        ((VsGdiDeletableObject *)pBinding)->Delete(1);
     }
     return 1;
 }
@@ -2115,10 +2119,11 @@ int VsGdiDirectDrawDisplayState::ReleaseDirectDrawDisplayBitmap(
     void *pBitmap)
 {
     if (pBitmap != 0) {
-        ((void *(LEMBALL_FASTCALL *)(void *, int, int))
-             (*(void ***)pBitmap)[0])(pBitmap, 0, 1);
+        ((VsGdiDeletableObject *)pBitmap)->Delete(1);
+        return 1;
+    } else {
+        return 1;
     }
-    return 1;
 }
 
 // FUNCTION: LEMBALL 0x004578c0
