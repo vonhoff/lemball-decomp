@@ -5032,13 +5032,13 @@ void *LEMBALL_FASTCALL ConstructFunctionalLevelSelectionScreen(
     InitializeFramedScreenRenderChildEntry(pScreen->m_abRenderChild398);
     InitializeFunctionalLevelSelectionVtable();
     pScreen->m_pVtable00 = g_GAME_FunctionalLevelSelectionVtable;
-    *(void ***)pScreen->m_abRenderQueueNode04 =
-        g_GAME_MainMenuQueueVtable;
+    pScreen->m_fDrawFrameA8 = 1;
     *(void ***)pScreen->m_abVariantRenderManager14 =
         g_GAME_MainMenuCallbackVtable;
-    pScreen->m_fDrawFrameA8 = 1;
     pScreen->m_fTileBackgroundAC = 1;
     pScreen->m_fDrawForegroundB0 = 1;
+    *(void ***)pScreen->m_abRenderQueueNode04 =
+        g_GAME_MainMenuQueueVtable;
     ActivateFramedScreenBase(pScreen);
     pScreen->m_pSelector3C4 = ConstructLevelSelectionFrameSelector(
         pScreen->m_abVariantRenderManager14, pScreen->m_nResourceId3D8);
@@ -5277,15 +5277,6 @@ static void LEMBALL_FASTCALL InitializeFunctionalLevelSelectionResources(
     *(int *)((char *)pScreen + 0x3e0) = nResource2;
     pScreen->m_xOverlay380 = (short)pLayout[16] + (short)pLayout[14];
     pScreen->m_yOverlay382 = (short)pLayout[15] + (short)pLayout[17];
-    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
-                              nResource0);
-    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
-                              nResource1);
-    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
-                              pScreen->m_nTimedVariantResourceId394);
-    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
-                              nResource2);
-
     pForegroundEntry = pScreen->m_abRenderEntryGroupC8 + 0x14;
     *(short *)(pForegroundEntry + 0) = (short)pLayout[8];
     *(short *)(pForegroundEntry + 2) = (short)pLayout[9];
@@ -5298,6 +5289,15 @@ static void LEMBALL_FASTCALL InitializeFunctionalLevelSelectionResources(
     *(void **)(pLevelEntry + 0x0c) = pBitmap;
     *(int *)(pLevelEntry + 0x10) = 0x800;
     *(int *)(pLevelEntry + 0x14) = 0;
+
+    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
+                              nResource0);
+    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
+                              nResource1);
+    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
+                              pScreen->m_nTimedVariantResourceId394);
+    LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
+                              nResource2);
 
     pScreen->m_nReserved47C = 0;
     pScreen->m_fNextLocked480 = 0;
