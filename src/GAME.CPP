@@ -770,8 +770,10 @@ void *g_pQueuedRenderPointSinkFinalizeThunk =
 void *g_pSharedRenderDispatchQueue;
 // GLOBAL: LEMBALL 0x004a279c
 void *g_pSharedGeometryHelper = 0;
-static void *g_pCursorWindowOwner = 0;
-static unsigned char g_uCursorWindowOwnerState = 0;
+// GLOBAL: LEMBALL 0x004a9bec
+static void *g_pCursorWindowOwner;
+// GLOBAL: LEMBALL 0x004a9bf0
+static int g_uCursorWindowOwnerState;
 void *g_pActiveLevelGameMode = 0;
 void *g_pLevelTileGrid = 0;
 void *g_pLevelTileReachabilityHelper = 0;
@@ -5409,7 +5411,7 @@ void GameCursorRenderClient::UpdateForWindowOwner(void *pOwner)
         return;
 
     if ((g_uCursorWindowOwnerState & 1) == 0) {
-        g_uCursorWindowOwnerState |= 1;
+        *(unsigned char *)&g_uCursorWindowOwnerState |= 1;
         g_pCursorWindowOwner = pOwner;
     }
     if (((VS_WindowOwnerBase *)pOwner)->IsCurrentWindowOwnerContext() == 0) {
