@@ -5310,6 +5310,7 @@ void VsGdiAnimWindowOwner::RebuildResourceGeometryHelperWindow(void) {
                  (LPARAM)m_MediaPathB0.m_pszText);
 }
 
+// FUNCTION: LEMBALL 0x0046df40
 void VsGdiAnimWindowOwner::ReleaseResourceGeometryHelperWindow(void) {
     PauseEmbeddedMciWindowPlayback();
     if (m_hMciWindowB8 != 0) {
@@ -5501,6 +5502,7 @@ void LEMBALL_FASTCALL StartEmbeddedMciWindowPlaybackOnce(void *pOwner) {
     ((VsGdiAnimWindowOwner *)pOwner)->StartEmbeddedMciWindowPlaybackOnce();
 }
 
+// FUNCTION: LEMBALL 0x0046e390
 void VsGdiAnimWindowOwner::PauseEmbeddedMciWindowPlayback(void) {
     if (m_nA8 == 0) {
         SendMessageA(m_hMciWindowB8, 0x809, 0, 0);
