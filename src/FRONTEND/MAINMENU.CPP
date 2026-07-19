@@ -2738,7 +2738,7 @@ static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject) {
     GameMenuSelectorManager **ppSelectorManager;
     int cRenderGroups;
     void *pForegroundBitmap;
-    void *pSelectorAllocation;
+    GameMenuSelectorManager *pSelectorAllocation;
     short cxForeground;
 
     pScreen = (GameMainMenuScreenView *)pObject;
@@ -2776,18 +2776,18 @@ static void LEMBALL_FASTCALL InitializeMainMenuWidgets(void *pObject) {
         --cRenderGroups;
     } while (cRenderGroups != 0);
 
-    pSelectorAllocation =
+    pSelectorAllocation = (GameMenuSelectorManager *)
         AllocateVSMemBlock(sizeof(GameMenuSelectorManager));
     ppSelectorManager =
         (GameMenuSelectorManager **)&pScreen->m_pSelectorManager334;
-    if (pSelectorAllocation != 0) {
+    if (pSelectorAllocation == 0) {
+        *ppSelectorManager = 0;
+    } else {
         *ppSelectorManager = new (pSelectorAllocation)
             GameMenuSelectorManager(
                 pScreen->m_pPrimaryContext84,
                 pScreen->m_pRenderContext88,
                 6, pScreen->m_fCompactLayout32C);
-    } else {
-        *ppSelectorManager = 0;
     }
 
     (*ppSelectorManager)->AppendChild(
@@ -2887,53 +2887,50 @@ static int LEMBALL_FASTCALL HandleMainMenuInput(
     ShellUiMenuCommandMessage *pMessage;
     GameMainMenuScreenView *pScreen;
     int nType;
-    int nCommand;
 
-    pMessage = (ShellUiMenuCommandMessage *)pEvent;
     pScreen = (GameMainMenuScreenView *)pObject;
+    pMessage = (ShellUiMenuCommandMessage *)pEvent;
     nType = *(unsigned short *)pMessage;
-    if (nType < 3) {
-        goto unhandled_event;
-    }
-    if (nType <= 4) {
-        pScreen->m_dwTimeout398 = timeGetTime() + 20000U;
-        return 0;
-    }
-    if (nType == 12) {
-        pScreen->m_dwTimeout398 = timeGetTime() + 20000U;
-        nCommand = pMessage->m_nCommand;
-        switch ((unsigned int)nCommand) {
-            case 0xacef0001U:
-                pScreen->m_nRequestedMode374 = 3;
-                pScreen->m_nTransitionStatus378 = 1;
-                g_fNextMainMenuTimeoutIsTitle = 1;
-                return 1;
-            case 0xacef00a4U:
-                pScreen->m_nRequestedMode374 = 0x10;
-                pScreen->m_nTransitionStatus378 = 1;
-                g_fNextMainMenuTimeoutIsTitle = 1;
-                return 1;
-            case 0xacef00a5U:
-                ((ShellUiPrimaryContextShell *)pScreen->m_pPrimaryContext84)->ToggleDisplayMode();
-                return 1;
-            case 0xacef00a6U:
-            case 0xacef00a7U: {
-                GameLevelProgressStateView *pProgress;
-                int nPackSelection;
+    if (nType >= 3) {
+        if (nType <= 4) {
+            pScreen->m_dwTimeout398 = timeGetTime() + 20000U;
+        } else {
+            if (nType != 12)
+                goto unhandled_event;
+            pScreen->m_dwTimeout398 = timeGetTime() + 20000U;
+            switch ((unsigned int)pMessage->m_nCommand) {
+                case 0xacef0001U:
+                    pScreen->m_nRequestedMode374 = 3;
+                    pScreen->m_nTransitionStatus378 = 1;
+                    g_fNextMainMenuTimeoutIsTitle = 1;
+                    return 1;
+                case 0xacef00a4U:
+                    pScreen->m_nRequestedMode374 = 0x10;
+                    pScreen->m_nTransitionStatus378 = 1;
+                    g_fNextMainMenuTimeoutIsTitle = 1;
+                    return 1;
+                case 0xacef00a5U:
+                    ((ShellUiPrimaryContextShell *)pScreen->m_pPrimaryContext84)->ToggleDisplayMode();
+                    return 1;
+                case 0xacef00a6U:
+                case 0xacef00a7U: {
+                    GameLevelProgressStateView *pProgress;
+                    int nPackSelection;
 
-                pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
-                nPackSelection = pScreen->m_nPackSelection3B4;
-                pProgress->m_nCurrentLevel00 =
-                    pProgress->m_anSnapshotPackCaps3C[nPackSelection];
-                pProgress->m_nCurrentPack08 = nPackSelection;
-                pScreen->m_nTransitionStatus378 = 1;
-                g_fNextMainMenuTimeoutIsTitle = 1;
-                if (nCommand == (int)0xacef00a6U) {
-                    pScreen->m_nRequestedMode374 = 4;
+                    pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
+                    nPackSelection = pScreen->m_nPackSelection3B4;
+                    pProgress->m_nCurrentLevel00 =
+                        pProgress->m_anSnapshotPackCaps3C[nPackSelection];
+                    pProgress->m_nCurrentPack08 = nPackSelection;
+                    pScreen->m_nTransitionStatus378 = 1;
+                    g_fNextMainMenuTimeoutIsTitle = 1;
+                    if (pMessage->m_nCommand == (int)0xacef00a6U) {
+                        pScreen->m_nRequestedMode374 = 4;
+                        return 1;
+                    }
+                    pScreen->m_nRequestedMode374 = 0x0c;
                     return 1;
                 }
-                pScreen->m_nRequestedMode374 = 0x0c;
-                return 1;
             }
         }
         return 0;
