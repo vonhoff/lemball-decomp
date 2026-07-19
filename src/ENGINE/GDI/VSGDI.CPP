@@ -3714,7 +3714,7 @@ int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(
             }
 
             *(unsigned short *)&OutputEntry.m_awords[0] =
-                wType == 4 ? 9 : 8;
+                wType == 4 ? 8 : 9;
             OutputEntry.m_awords[1] = pEntry->m_awords[1];
             OutputEntry.m_awords[2] =
                 ((unsigned int)(unsigned short)*(short *)((char *)pState + 0x12) << 16) |
