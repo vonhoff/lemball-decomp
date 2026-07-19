@@ -5261,9 +5261,9 @@ void *LEMBALL_FASTCALL ConstructWindowOwnerRenderContext(void *pPrimaryContext) 
     *(void **)pRenderContext = g_GAME_WindowOwnerRenderContextVtableSlots;
     pRenderContext->m_aDirtyRect88[0] = 0;
     pRenderContext->m_pWindowOwnerContext = 0;
-    pRenderContext->m_aDirtyRect88[3] = 0;
+    pRenderContext->m_aDirtyRectTail8C[1] = 0;
     pRenderContext->m_nFrameInterval = 0;
-    pRenderContext->m_aDirtyRect88[2] = 0;
+    pRenderContext->m_aDirtyRectTail8C[0] = 0;
     pRenderContext->m_nPaletteResourceId54 = 0;
     return pRenderContext;
 }
