@@ -6,6 +6,10 @@
 
 class LevelVariantRenderManagerView {
 public:
+    void *Construct(int nOwner, int cResourceIds,
+                    int cPackagedRectEntries, int cActionButtonEntries,
+                    int nUnknown58, int fDoubleBuffered);
+    void LoadVariantRenderResource(int nResourceId);
     void ReleaseVariantRenderResource(int nResourceId);
     int GetVariantRenderFrameCount(int nResourceId);
     void ReleaseLevelScreenVariantStateWrapperBody(int nResourceId);
@@ -26,6 +30,11 @@ public:
     int m_nReserved30;
     int m_cLoadedResources34;
 };
+
+inline void LoadVariantRenderResource(void *pManager, int nResourceId) {
+    ((LevelVariantRenderManagerView *)pManager)
+        ->LoadVariantRenderResource(nResourceId);
+}
 
 class LevelQueuedRenderPointSink {
 public:

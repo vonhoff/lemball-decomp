@@ -28,15 +28,7 @@ extern void VariantResourceBundleNoopThunk(void);
 extern void *LoadBitmapResource(int nResourceId);
 extern void *LoadPalResource(int nResourceId);
 extern int *LoadBinResource(int nResourceId);
-extern void LoadVariantRenderResource(void *pManager, int nResourceId);
 extern void DestroyVariantRenderManager(void *pManager);
-extern void *ConstructVariantRenderManager(void *pManager,
-                                           int nOwner,
-                                           int cResourceIds,
-                                           int cPackagedRectEntries,
-                                           int cActionButtonEntries,
-                                           int nVariantStateCount,
-                                           int fDoubleBuffered);
 extern void *LEMBALL_FASTCALL ConstructFramedScreenRenderEntryGroup(
     void *pGroup);
 extern void LEMBALL_FASTCALL DestroyFramedScreenRenderEntryGroup(
@@ -1899,11 +1891,11 @@ void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
     pScreen = (GameFramedScreenBase *)pObject;
     pScreen->m_pVtable00 = g_GAME_FramedScreenBaseVtable;
     InitializeRenderQueueNodeBase(pScreen->m_abRenderQueueNode04);
-    ConstructVariantRenderManager(
-        pScreen->m_abVariantRenderManager14,
-        (int)(unsigned long)pRenderContext, 0x2b6,
-        cExtraPackagedEntries + 3, cExtraActionEntries + 200,
-        nVariantStateCount, 0);
+    ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
+        ->Construct((int)(unsigned long)pRenderContext, 0x2b6,
+                    cExtraPackagedEntries + 3,
+                    cExtraActionEntries + 200,
+                    nVariantStateCount, 0);
     ConstructFramedScreenRenderEntryGroup(pScreen->m_abRenderEntryGroupC8);
 
     pScreen->m_cyScreen37E = 0;

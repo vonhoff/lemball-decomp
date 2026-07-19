@@ -19,13 +19,6 @@ DECOMP_SIZE_ASSERT(GameMenuSelectorManager, 0x27c);
 extern "C" DWORD WINAPI timeGetTime(void);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 extern void VariantResourceBundleNoopThunk(void);
-extern void *ConstructVariantRenderManager(void *pObject, int nOwner,
-                                           int cResourceIds,
-                                           int cPackagedRectEntries,
-                                           int cActionButtonEntries,
-                                           int nUnknown58,
-                                           int fDoubleBuffered);
-extern void LoadVariantRenderResource(void *pObject, int nResourceId);
 extern void DestroyVariantRenderManager(void *pObject);
 extern void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntry(
     void *pObject);
@@ -1387,9 +1380,9 @@ void *LEMBALL_FASTCALL ConstructQueuedVariantChildSlotManager(
     memset(pManager, 0, sizeof(*pManager));
     InitializeRenderQueueNodeBase(pManager);
     pManager->m_pVtable00 = g_QueuedVariantChildSlotManagerVtable;
-    ConstructVariantRenderManager(
-        pManager->m_abVariantRenderManager10,
-        (int)(unsigned long)pRenderContext, 0x2b6, 1, 1, 0, 0);
+    ((LevelVariantRenderManagerView *)pManager->m_abVariantRenderManager10)
+        ->Construct((int)(unsigned long)pRenderContext,
+                    0x2b6, 1, 1, 0, 0);
     *(void ***)pManager->m_abPointSinkFC =
         g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
     *(void ***)pManager->m_abPointSinkFC =
@@ -1416,9 +1409,9 @@ void *LEMBALL_FASTCALL ConstructQueuedVariantChildSlotManager(
         ->RegisterOrderedRenderDispatchClient(pManager, 0);
     g_nQueuedVariantChildSlotManagerModeSelectedResourceId =
         nLayoutMode == 1 ? 0x183 : 0x156;
-    LoadVariantRenderResource(
-        pManager->m_abVariantRenderManager10,
-        g_nQueuedVariantChildSlotManagerModeSelectedResourceId);
+    ((LevelVariantRenderManagerView *)pManager->m_abVariantRenderManager10)
+        ->LoadVariantRenderResource(
+            g_nQueuedVariantChildSlotManagerModeSelectedResourceId);
     return pManager;
 }
 
@@ -1765,9 +1758,8 @@ GameMenuSelectorManager *GameMenuSelectorManager::Construct(void *pRenderOwner, 
     pManager = this;
     InitializeRenderQueueNodeBase(pManager);
     pVariantManager = (char *)pManager + 0x10;
-    ConstructVariantRenderManager(pVariantManager,
-                                  (int)(unsigned long)pRenderContext,
-                                  0x2b6, 10, 5, 0, 0);
+    ((LevelVariantRenderManagerView *)pVariantManager)->Construct(
+        (int)(unsigned long)pRenderContext, 0x2b6, 10, 5, 0, 0);
     InitializeHelperLocalRectUpdateEntry(pManager->m_abLocalRectEntry200);
     pManager->m_pVtable00 = g_MenuSelectorManagerVtable;
     pManager->m_cCurrentFrameCallbackFrames25C = 1;
@@ -1820,15 +1812,15 @@ GameMenuSelectorManager *GameMenuSelectorManager::Construct(void *pRenderOwner, 
         g_nMenuSelectorResourceId8 = 0x14e;
     }
 
-    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId0);
-    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId1);
-    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId2);
-    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId3);
-    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId4);
-    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId5);
-    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId6);
-    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId7);
-    LoadVariantRenderResource(pVariantManager, g_nMenuSelectorResourceId8);
+    ((LevelVariantRenderManagerView *)pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId0);
+    ((LevelVariantRenderManagerView *)pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId1);
+    ((LevelVariantRenderManagerView *)pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId2);
+    ((LevelVariantRenderManagerView *)pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId3);
+    ((LevelVariantRenderManagerView *)pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId4);
+    ((LevelVariantRenderManagerView *)pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId5);
+    ((LevelVariantRenderManagerView *)pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId6);
+    ((LevelVariantRenderManagerView *)pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId7);
+    ((LevelVariantRenderManagerView *)pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId8);
 
     pManager->m_pSideSelector244 =
         AllocateFrameSelector(pVariantManager, g_nMenuSelectorResourceId6);

@@ -963,15 +963,7 @@ void LEMBALL_FASTCALL RestoreLevelSelectionPointSinkFinalizeVtableBody(void *pOb
 void LEMBALL_FASTCALL RestoreCompositePointRectSinkFinalizeVtablesBody(void *pObject);
 void LEMBALL_FASTCALL SetTimedVariantFrameDuration(
     void *pObject, int, int nFrameDuration);
-void *ConstructVariantRenderManager(void *pObject,
-                                    int nOwner,
-                                    int cResourceIds,
-                                    int cPackagedRectEntries,
-                                    int cActionButtonEntries,
-                                    int nUnknown58,
-                                    int fDoubleBuffered);
 void DestroyVariantRenderManager(void *pObject);
-void LoadVariantRenderResource(void *pObject, int nResourceId);
 static void *DestroyStatusIndicatorPointSinkArray00467BB0(void *pObject, unsigned int fDelete);
 void LEMBALL_FASTCALL RestoreQueuedRenderPointSinkVtable(void *pObject);
 static void *DestroyPackagedSpriteRenderEntryArray00469930(void *pObject, unsigned int fDelete);
@@ -1845,8 +1837,8 @@ void *ConstructLevelScreenVariantRenderManager(void *pObject,
     int i;
 
     pManager = (int *)pObject;
-    ConstructVariantRenderManager(
-        pObject, nRenderOwner, 0x2b6, 200, 0x28, 0x14, 1);
+    ((LevelVariantRenderManagerView *)pObject)->Construct(
+        nRenderOwner, 0x2b6, 200, 0x28, 0x14, 1);
     *(void ***)pManager = g_LEVEL_LevelScreenVariantManagerVtable;
     *(void ***)(pManager + 0x1c) =
         g_LEVEL_LevelScreenVariantProgressVtable;
@@ -1970,7 +1962,8 @@ static void LoadLevelScreenVariantState(void *pObject,
         ++pManager[0x24];
         return;
     }
-    LoadVariantRenderResource(pObject, nResourceId);
+    ((LevelVariantRenderManagerView *)pObject)
+        ->LoadVariantRenderResource(nResourceId);
     cFrames = 1;
     if (nSelectorMode == 1 || nSelectorMode == 3) {
         cFrames = ((LevelVariantRenderManagerView *)pObject)
@@ -4415,7 +4408,8 @@ void *ConstructLevelScreenStatusIndicatorManager(void *pObject, int nStatusMode,
 
     pManager = (int *)pObject;
 
-    ConstructVariantRenderManager(pObject, nStatusMode, 0x2b6, 1, 1, 0, 0);
+    ((LevelVariantRenderManagerView *)pObject)->Construct(
+        nStatusMode, 0x2b6, 1, 1, 0, 0);
     *(void **)(pManager + 0x1c) = g_LEVEL_StatusIndicatorManagerSlot70Vtable;
     *(void **)(pManager + 0x1d) = g_LEVEL_StatusIndicatorManagerSlot74Vtable;
     *(unsigned short *)((char *)pManager + 0x8a) = 0;
@@ -4472,7 +4466,8 @@ void *ConstructLevelScreenStatusIndicatorManager(void *pObject, int nStatusMode,
         pManager[0x21] = 0xf0;
     }
 
-    LoadVariantRenderResource(pManager, pManager[0x21]);
+    ((LevelVariantRenderManagerView *)pManager)
+        ->LoadVariantRenderResource(pManager[0x21]);
     {
         void *pPaletteObject;
 
@@ -4650,13 +4645,9 @@ void LEMBALL_FASTCALL SetTimedVariantFrameDuration(
 }
 
 // FUNCTION: LEMBALL 0x00467260
-void *ConstructVariantRenderManager(void *pObject,
-                                    int nOwner,
-                                    int cResourceIds,
-                                    int cPackagedRectEntries,
-                                    int cActionButtonEntries,
-                                    int nUnknown58,
-                                    int fDoubleBuffered)
+void *LevelVariantRenderManagerView::Construct(
+    int nOwner, int cResourceIds, int cPackagedRectEntries,
+    int cActionButtonEntries, int nUnknown58, int fDoubleBuffered)
 
 {
     int *pManager;
@@ -4664,7 +4655,7 @@ void *ConstructVariantRenderManager(void *pObject,
     int cEntries;
     int *pEntry;
 
-    pManager = (int *)pObject;
+    pManager = (int *)this;
     *(void **)pManager = g_LEVEL_VariantRenderManagerVtable;
     pManager[0x10] = 0;
     pManager[0x17] = 0;
@@ -4735,7 +4726,7 @@ void *ConstructVariantRenderManager(void *pObject,
     pManager[1] = 0;
     ((LevelVariantRenderManagerView *)pManager)
         ->ResetOrFlipVariantRenderBuffers();
-    return pObject;
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x004673d0
@@ -4791,13 +4782,13 @@ void DestroyVariantRenderManager(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x00467490
-void LoadVariantRenderResource(void *pObject, int nResourceId) {
+void LevelVariantRenderManagerView::LoadVariantRenderResource(int nResourceId) {
     int *pManager;
     short *pnResourceIndex;
     int iSlot;
     int *pnLoadedResource;
 
-    pManager = (int *)pObject;
+    pManager = (int *)this;
     iSlot = (int)*(short *)(unsigned long)(pManager[10] + nResourceId * 2);
     if (pManager[0xb] == iSlot) {
         pnLoadedResource = (int *)(unsigned long)pManager[9];
