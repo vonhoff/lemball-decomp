@@ -13,6 +13,10 @@ extern void *g_GAME_IntroSequenceScreenVtable[22];
 extern void *g_GAME_IntroSequenceQueueVtable[4];
 extern void *g_GAME_IntroSequenceCallbackVtable[2];
 int LEMBALL_FASTCALL GetIntroSequenceMediaNotifyFlags(void *pOwner);
+void LEMBALL_STDCALL IgnoreIntroSequenceMediaStateChange(int nState);
+void LEMBALL_STDCALL IgnoreIntroSequenceMediaPositionChange(int nPosition);
+void IgnoreIntroSequenceMediaNotificationThunk(void);
+void LEMBALL_FASTCALL HandleIntroSequenceMediaCompletionThunk(void *pOwner);
 void LEMBALL_FASTCALL NoopIntroSequenceScreenHookThunk(void *pObject);
 void LEMBALL_FASTCALL DestroyFramedScreenBaseThunk00402081(
     void *pObject);

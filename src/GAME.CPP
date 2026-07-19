@@ -1049,6 +1049,12 @@ static void InstallPrimaryContextInheritedWindowOwnerSlots(
     g_GAME_PrimaryContextVtableSlots[39] = pWindowOwnerVtable[39];
 }
 
+static void *GetWindowOwnerActivationHookAddress(void) {
+    void (GameWindowOwnerRenderContext::*pMethod)(int) =
+        &GameWindowOwnerRenderContext::ApplyWindowOwnerActivation;
+    return *(void **)&pMethod;
+}
+
 static void InitializeWindowOwnerRenderContextVtable(
     void **pWindowOwnerBaseVtable) {
     int i;
@@ -1080,7 +1086,7 @@ static void InitializeWindowOwnerRenderContextVtable(
     g_GAME_WindowOwnerRenderContextVtableSlots[41] =
         g_GAME_PrimaryContextVtableSlots[41];
     g_GAME_WindowOwnerRenderContextVtableSlots[42] =
-        (void *)StubNoOpObjectArgument;
+        GetWindowOwnerActivationHookAddress();
     g_GAME_WindowOwnerRenderContextVtableSlots[43] =
         g_GAME_PrimaryContextVtableSlots[43];
     g_GAME_WindowOwnerRenderContextVtableSlots[44] =
@@ -4752,8 +4758,14 @@ static void InitializeIntroSequenceMediaOwnerVtable(void *pMediaOwner) {
     }
     g_GAME_IntroSequenceMediaOwnerVtable[25] =
         (void *)GetIntroSequenceMediaNotifyFlags;
+    g_GAME_IntroSequenceMediaOwnerVtable[46] =
+        (void *)IgnoreIntroSequenceMediaStateChange;
+    g_GAME_IntroSequenceMediaOwnerVtable[47] =
+        (void *)IgnoreIntroSequenceMediaPositionChange;
+    g_GAME_IntroSequenceMediaOwnerVtable[48] =
+        (void *)IgnoreIntroSequenceMediaNotificationThunk;
     g_GAME_IntroSequenceMediaOwnerVtable[49] =
-        (void *)HandleIntroSequenceMediaCompletion;
+        (void *)HandleIntroSequenceMediaCompletionThunk;
     g_fGAMEIntroSequenceMediaOwnerVtableInitialized = 1;
 }
 
@@ -5173,6 +5185,11 @@ void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(void *pPrimaryContext) {
         RestorePackagedSpriteRenderEntryVtableA(pEntry);
     }
     pRenderContext->VS_WindowOwnerBase::~VS_WindowOwnerBase();
+}
+
+// FUNCTION: LEMBALL 0x00463f60
+void GameWindowOwnerRenderContext::ApplyWindowOwnerActivation(int nActivate) {
+    (void)nActivate;
 }
 
 // FUNCTION: LEMBALL 0x00464190
