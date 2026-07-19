@@ -913,6 +913,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
     tagPOINT Point;
     int nSelectedDisplayMode;
     int nEventCode;
+    int nPreviousMouseButtonCaptureRefCount;
     GameGeometryDispatchEvent MouseEvent;
     short xEvent;
     short yEvent;
@@ -1136,6 +1137,13 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         return 0;
     }
 
+    case 0x20: // WM_SETCURSOR
+        if ((short)lParam == 1) { // HTCLIENT
+            SetCursor(0);
+            return 1;
+        }
+        return DefWindowProcA(hWnd, uMessage, wParam, lParam);
+
     case 0x100:
     case 0x101: {
         WINDOW_OWNER_KEY_EVENT Event;
@@ -1214,10 +1222,11 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         MouseEvent.m_nCommand0C = nEventCode;
         MouseEvent.m_fHandled10 = 0;
         AppendWindowOwnerEvent(&MouseEvent);
-        if (g_nMouseButtonCaptureRefCount == 0) {
+        nPreviousMouseButtonCaptureRefCount = g_nMouseButtonCaptureRefCount;
+        ++g_nMouseButtonCaptureRefCount;
+        if (nPreviousMouseButtonCaptureRefCount == 0) {
             SetCapture(hWnd);
         }
-        ++g_nMouseButtonCaptureRefCount;
         return 0;
 
     case 0x202:
@@ -1225,10 +1234,9 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
     case 0x208:
         nEventCode = uMessage == 0x202 ? 0x43 :
                      (uMessage == 0x205 ? 0x44 : 0x45);
-        xEvent = (short)((short)lParam +
-                         (pOwner != 0 ? *(short *)((char *)pOwner + 0x0c) : 0));
+        xEvent = (short)((short)lParam + *(short *)((char *)pOwner + 0x0c));
         yEvent = (short)(((unsigned long)lParam >> 16) +
-                         (pOwner != 0 ? *(short *)((char *)pOwner + 0x0e) : 0));
+                         *(short *)((char *)pOwner + 0x0e));
         MouseEvent.m_nType00 = 5;
         MouseEvent.m_nReserved02 = 0;
         MouseEvent.m_dwTime04 = dwMessageTime;
@@ -1237,11 +1245,9 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
         MouseEvent.m_nCommand0C = nEventCode;
         MouseEvent.m_fHandled10 = 0;
         AppendWindowOwnerEvent(&MouseEvent);
-        if (g_nMouseButtonCaptureRefCount != 0) {
-            --g_nMouseButtonCaptureRefCount;
-            if (g_nMouseButtonCaptureRefCount == 0) {
-                ReleaseCapture();
-            }
+        --g_nMouseButtonCaptureRefCount;
+        if (g_nMouseButtonCaptureRefCount == 0) {
+            ReleaseCapture();
         }
         return 0;
 
