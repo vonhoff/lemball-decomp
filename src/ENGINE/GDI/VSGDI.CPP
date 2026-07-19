@@ -125,8 +125,6 @@ int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(
     void *pRenderClient, int, RenderDispatchQueueEntry *pEntry);
 int InitializeResourceGeometryHelperRuntime(void);
 int ShutdownResourceGeometryHelperRuntime(void);
-void LEMBALL_FASTCALL DestroyResourceGeometryHelperSlotManager(
-    void *pvSlotManager);
 int FindFirstFreeResourceGeometryHelperSlotIndex(void *pvSlotManager);
 void BuildAndApplyLogPalette(unsigned int *paOutputColors,
                              void *pPaletteResource,
@@ -409,6 +407,7 @@ static VsGdiTargetParamWrapperVtable g_VSGDI_ResourceGeometryHelperTargetParamWr
         GetHelperTargetParamWrapperReserved,
         0,
     };
+
 VsGdiSAFE_TABLE(g_VSGDI_ResourceGeometryHelperSlotManagerVtable);
 // GLOBAL: LEMBALL 0x00499d38
 static void *g_VSGDI_StatusIndicatorBaseVtable[8] = {
@@ -558,7 +557,6 @@ static VsGdiCompactHelperAdjustorTable g_VSGDI_CompactHelperTargetAdjustor = { -
 static VsGdiCompactHelperAdjustorTable g_VSGDI_HelperGroup1Adjustor = { -4, 0x514 };
 static VsGdiCompactHelperAdjustorTable g_VSGDI_HelperGroup0Adjustor = { -4, 0x4c0 };
 
-static const char g_VSGDI_UnallocatedHelperSlotMessage[] = "Unallocated helper slot found\n";
 static int g_nResourceGeometryHelperSlotCount = 0;
 static void *g_pResourceGeometryListHead = 0;
 
@@ -585,6 +583,7 @@ struct VsGdiResourceGeometryHelperSlotManager {
     int m_nReserved0C;
     int m_cSlots;
 
+    ~VsGdiResourceGeometryHelperSlotManager(void);
     VsGdiResourceGeometryHelperSlotManager *InitializeResourceGeometryHelperSlotManager(int cSlots);
     void *AllocateResourceGeometryHelperSlot(short *pRect, void *pWrappedTarget);
     void RemoveResourceGeometryHelperSlot(void *pTarget);
@@ -3854,7 +3853,8 @@ int ShutdownResourceGeometryHelperRuntime(void) {
     }
     pSlotManager = g_pResourceGeometryHelperSlotManager;
     if (pSlotManager != 0) {
-        DestroyResourceGeometryHelperSlotManager(pSlotManager);
+        ((VsGdiResourceGeometryHelperSlotManager *)pSlotManager)
+            ->~VsGdiResourceGeometryHelperSlotManager();
         FreeVSMemBlock(pSlotManager);
     }
     g_pResourceGeometryHelperTarget = 0;
@@ -3903,25 +3903,24 @@ VsGdiResourceGeometryHelperSlotManager *VsGdiResourceGeometryHelperSlotManager::
 }
 
 // FUNCTION: LEMBALL 0x0046bc90
-void LEMBALL_FASTCALL DestroyResourceGeometryHelperSlotManager(void *pvSlotManager) {
-    VsGdiResourceGeometryHelperSlotManager *pSlotManager;
-    VsGdiResourceGeometryHelperSlot *pSlot;
+VsGdiResourceGeometryHelperSlotManager::~VsGdiResourceGeometryHelperSlotManager(void) {
     int i;
+    int nByteOffset;
 
-    pSlotManager = (VsGdiResourceGeometryHelperSlotManager *)pvSlotManager;
-    pSlotManager->m_pVtable = &g_VSGDI_ResourceGeometryHelperSlotManagerVtable;
+    m_pVtable = &g_VSGDI_ResourceGeometryHelperSlotManagerVtable;
     i = 0;
-    if (0 < pSlotManager->m_cSlots) {
-        pSlot = pSlotManager->m_pSlots;
+    if (0 < m_cSlots) {
+        nByteOffset = 0;
         do {
-            if (pSlot->m_fAvailable == 0) {
-                AppendErrorCString(g_VSGDI_UnallocatedHelperSlotMessage);
+            if (*(int *)((char *)m_pSlots + nByteOffset + 0x14) == 0) {
+                g_pErrorOutputStream->AppendCStringToStream(
+                    "Trying to delete device when a surface has not been free'd\n");
             }
-            ++pSlot;
+            nByteOffset += sizeof(VsGdiResourceGeometryHelperSlot);
             ++i;
-        } while (i < pSlotManager->m_cSlots);
+        } while (i < m_cSlots);
     }
-    FreeVSMemBlock(pSlotManager->m_pSlots);
+    FreeVSMemBlock(m_pSlots);
 }
 
 // FUNCTION: LEMBALL 0x0046bce0
