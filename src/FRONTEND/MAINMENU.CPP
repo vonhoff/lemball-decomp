@@ -201,65 +201,6 @@ struct GameLevelProgressStateView {
     int m_nReserved4C;
 };
 
-struct GameFramedScreenBase {
-    void UpdateRuntime(void);
-    void RecenterIfNeeded(void);
-    void SetScreenSize(short *paSize);
-    void ReleaseFrameResources(void);
-
-    void **m_pVtable00;
-    unsigned char m_abRenderQueueNode04[0x10];
-    unsigned char m_abVariantRenderManager14[0x70];
-    void *m_pPrimaryContext84;
-    void *m_pRenderContext88;
-    int m_fNetworkScreen8C;
-    int m_nNetworkState90;
-    int m_fNetworkReady94;
-    void *m_pMappedListResources98;
-    int m_fFrameResourcesLoaded9C;
-    int m_cMappedListEntriesA0;
-    int m_nMappedListModeA4;
-    int m_fDrawFrameA8;
-    int m_fTileBackgroundAC;
-    int m_fDrawForegroundB0;
-    int m_nPaletteResourceIdB4;
-    int m_nAppliedPaletteResourceIdB8;
-    int m_dwConstructionTimeBC;
-    void *m_pForegroundBitmapC0;
-    void *m_pBackgroundBitmapC4;
-    unsigned char m_abRenderEntryGroupC8[0x260];
-    int m_iRenderEntryGroup328;
-    int m_fCompactLayout32C;
-    int m_fFrameDirty330;
-    void *m_pSelectorManager334;
-    void *m_pQueuedVariantManager338;
-    int m_dwRandomDelay33C;
-    int m_dwRandomStart340;
-    int m_nReserved344;
-    int m_nReserved348;
-    void *m_pTimedFrameSelector34C;
-    void **m_pFrameSelectorVtable350;
-    int m_cFrameSelectorFrames354;
-    int m_nFrameSelectorReserved358;
-    int m_nFrameSelectorFixedTime35C;
-    int m_fSelectorDirty360;
-    int m_fBuildingRenderEntries364;
-    int m_fRenderEntriesInitialized368;
-    int m_iPackagedEntry36C;
-    int m_nScreenType370;
-    int m_nRequestedMode374;
-    int m_nTransitionStatus378;
-    short m_cxScreen37C;
-    short m_cyScreen37E;
-    short m_xOverlay380;
-    short m_yOverlay382;
-    int m_nMappedListRemapResourceId384;
-    int m_nFrameResourceId388;
-    int m_nMappedListResourceId38C;
-    int m_nFrameResourceId390;
-    int m_nTimedVariantResourceId394;
-};
-
 struct GameMainMenuScreenView : public GameFramedScreenBase {
     DWORD m_dwTimeout398;
     const int *m_panWidgetLayout39C;
@@ -621,11 +562,6 @@ static void *LEMBALL_FASTCALL DeleteFramedScreenBaseThunk(
 static void *LEMBALL_FASTCALL DeleteAdjustedFramedScreenBaseThunk(
     void *pObject, int nUnusedEdx, int fDelete);
 static void LEMBALL_FASTCALL DestroyMainMenuWidgetsThunk(void *pObject);
-void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
-    void *pObject, int, void *pPrimaryContext, void *pRenderContext,
-    short *paSize, int nScreenType, int cExtraPackagedEntries,
-    int cExtraActionEntries, int nVariantStateCount,
-    int cMappedListEntries, int nMappedListMode);
 void LEMBALL_FASTCALL ActivateFramedScreenBase(void *pObject);
 static void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroup(
     void *pObject);
@@ -2157,8 +2093,8 @@ void LEMBALL_FASTCALL NoopIntroSequenceScreenHookThunk(void *pObject)
 }
 
 // FUNCTION: LEMBALL 0x00445420
-void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
-    void *pObject, int, void *pPrimaryContext, void *pRenderContext,
+void *GameFramedScreenBase::ConstructFramedScreenBaseFields(
+    void *pPrimaryContext, void *pRenderContext,
     short *paSize, int nScreenType, int cExtraPackagedEntries,
     int cExtraActionEntries, int nVariantStateCount,
     int cMappedListEntries, int nMappedListMode)
@@ -2168,7 +2104,7 @@ void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
     int iRenderEntryGroup;
     unsigned char *pRenderEntryGroup;
 
-    pScreen = (GameFramedScreenBase *)pObject;
+    pScreen = this;
     pScreen->m_pVtable00 = g_GAME_FramedScreenBaseVtable;
     InitializeRenderQueueNodeBase(pScreen->m_abRenderQueueNode04);
     ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
@@ -2234,7 +2170,7 @@ void *LEMBALL_FASTCALL ConstructFramedScreenBaseFields(
     pScreen->m_pTimedFrameSelector34C = 0;
     pScreen->m_pMappedListResources98 = 0;
     pScreen->m_dwConstructionTimeBC = timeGetTime();
-    return pObject;
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x004455f0
@@ -3415,8 +3351,8 @@ void *LEMBALL_FASTCALL ConstructFunctionalOptionsScreen(
     GameOptionsScreenView *pScreen;
 
     pScreen = (GameOptionsScreenView *)pObject;
-    ConstructFramedScreenBaseFields(
-        pScreen, 0, pPrimaryContext, pRenderContext, paSize,
+    pScreen->ConstructFramedScreenBaseFields(
+        pPrimaryContext, pRenderContext, paSize,
         3, 0, 0, 0, 0, 0);
     InitializeFunctionalOptionsVtables();
     pScreen->m_pVtable00 = g_GAME_OptionsScreenVtable;
@@ -3645,8 +3581,8 @@ void *LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(
     unsigned char *pMediaOwner;
 
     pScreen = (GamePaintballSequenceScreenView *)pObject;
-    ConstructFramedScreenBaseFields(
-        pScreen, 0, pPrimaryContext, pRenderContext, paSize,
+    pScreen->ConstructFramedScreenBaseFields(
+        pPrimaryContext, pRenderContext, paSize,
         0x0e, 0x32, 200, 0, 0x28, 0x30);
     InitializeFunctionalPaintballSequenceVtables();
     pScreen->m_pVtable00 = g_GAME_PaintballSequenceScreenVtable;
@@ -4256,8 +4192,8 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
     int i;
 
     pScreen = (GameNetworkLobbyScreenView *)pObject;
-    ConstructFramedScreenBaseFields(
-        pScreen, 0, pPrimaryContext, pRenderContext, paSize,
+    pScreen->ConstructFramedScreenBaseFields(
+        pPrimaryContext, pRenderContext, paSize,
         0x0c, 0x32, 200, 0, 100, 0x28);
     InitializeFramedScreenRenderChildEntry(pScreen->m_abPointSink3EC);
     InitializeFunctionalNetworkLobbyVtables();
@@ -4933,8 +4869,8 @@ void *LEMBALL_FASTCALL ConstructFunctionalPasswordEntryScreen(
     GamePasswordEntryScreenView *pScreen;
 
     pScreen = (GamePasswordEntryScreenView *)pObject;
-    ConstructFramedScreenBaseFields(
-        pScreen, 0, pPrimaryContext, pRenderContext, paSize,
+    pScreen->ConstructFramedScreenBaseFields(
+        pPrimaryContext, pRenderContext, paSize,
         0x10, 10, 10, 0, 0x28, 0x30);
     InitializeFunctionalPasswordEntryVtables();
     pScreen->m_pVtable00 = g_GAME_PasswordEntryScreenVtable;
@@ -5437,8 +5373,8 @@ void *LEMBALL_FASTCALL ConstructFunctionalLevelSelectionScreen(
     GameLevelSelectionScreenView *pScreen;
 
     pScreen = (GameLevelSelectionScreenView *)pObject;
-    ConstructFramedScreenBaseFields(
-        pScreen, 0, pPrimaryContext, pRenderContext, paSize,
+    pScreen->ConstructFramedScreenBaseFields(
+        pPrimaryContext, pRenderContext, paSize,
         4, 0x32, 200, 0, 0x28, 0x30);
     InitializeFramedScreenRenderChildEntry(pScreen->m_abRenderChild398);
     InitializeFunctionalLevelSelectionVtable();

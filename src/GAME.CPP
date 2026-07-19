@@ -4763,8 +4763,8 @@ void *GameScreenObject::ConstructIntroSequenceScreen(void *pPrimaryContext, void
     char *pMediaOwner;
 
     pScreen = (char *)this;
-    ConstructFramedScreenBaseFields(
-        pScreen, 0, pPrimaryContext, pWindowOwnerContext, paRect,
+    ((GameFramedScreenBase *)pScreen)->ConstructFramedScreenBaseFields(
+        pPrimaryContext, pWindowOwnerContext, paRect,
         1, 0, 0, 0, 0, 0);
     *(void ***)(pScreen + 0x3a0) =
         g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage + 4;
@@ -4844,8 +4844,8 @@ void *GameScreenObject::ConstructMainMenuScreen(void *pPrimaryContext, void *pWi
     int nPack;
 
     pScreen = (char *)this;
-    ConstructFramedScreenBaseFields(
-        pScreen, 0, pPrimaryContext, pWindowOwnerContext, paRect,
+    ((GameFramedScreenBase *)pScreen)->ConstructFramedScreenBaseFields(
+        pPrimaryContext, pWindowOwnerContext, paRect,
         2, 0, 0, 0, 0, 0);
     *(void ***)(pScreen + 4) = g_GAME_MainMenuQueueVtable;
     *(void ***)(pScreen + 0x14) = g_GAME_MainMenuCallbackVtable;
