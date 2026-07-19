@@ -148,9 +148,6 @@ static void LEMBALL_FASTCALL StartMenuSelectorAction(
     GameMenuSelectorManager *pManager);
 static void LEMBALL_FASTCALL StartMenuSelectorActionThunk(
     GameMenuSelectorManager *pManager);
-static void LEMBALL_FASTCALL RecordMenuSelectorChildMetadata(
-    GameMenuSelectorManager *pManager, int nUnusedEdx, int x,
-    int nPosition, int fAction, int nToken);
 static void LEMBALL_FASTCALL ReleaseMenuSelectorEntryResources(
     GameMenuSelectorEntry *pEntry);
 static void LEMBALL_FASTCALL BuildMenuSelectorEntryOverlay(
@@ -1957,50 +1954,60 @@ void LEMBALL_FASTCALL InitializeSharedSpriteOwnerState(void *pObject) {
 }
 
 /* FUNCTION: LEMBALL 0x0044D150 */
-static void LEMBALL_FASTCALL RecordMenuSelectorChildMetadata(
-    GameMenuSelectorManager *pManager, int, int x,
-    int nPosition, int fAction, int nToken) {
+void GameMenuSelectorManager::RecordChildMetadata(
+    int x, int nPosition, int fAction, int nToken) {
     GameMenuSelectorMetadata *pMetadata;
     int i;
     int iMetadata;
     int nSide;
+    int xMidpoint;
 
-    nSide = x < *(short *)((char *)pManager->m_pRenderOwner214 + 8) / 2
-                ? 0 : 1;
     iMetadata = -1;
+    xMidpoint = *(short *)((char *)m_pRenderOwner214 + 8) / 2;
+    if (x < xMidpoint) {
+        nSide = 0;
+    } else if (x > xMidpoint) {
+        nSide = 1;
+    }
     for (i = 0; i < 8; ++i) {
-        pMetadata = &pManager->m_aMetadataE0[i];
+        pMetadata = &m_aMetadataE0[i];
         if (pMetadata->m_nSide != 3 &&
             pMetadata->m_nPosition == nPosition) {
             iMetadata = i;
         }
     }
 
-    if (iMetadata == -1) {
-        for (i = 0; i < 8; ++i) {
-            if (pManager->m_aMetadataE0[i].m_nSide == 3) {
-                iMetadata = i;
-                pManager->m_aMetadataE0[i].m_nPosition = nPosition;
-                pManager->m_aMetadataE0[i].m_nSide = nSide;
-                break;
-            }
+    if (iMetadata != -1) {
+        m_aMetadataE0[iMetadata].m_nSide = 2;
+        pMetadata = &m_aMetadataE0[iMetadata];
+        if (nSide == 0) {
+            pMetadata->m_xSide0 = x;
+            pMetadata->m_fSide0Action = fAction;
+            pMetadata->m_nSide0Token = nToken;
+            return;
         }
-    } else {
-        pManager->m_aMetadataE0[iMetadata].m_nSide = 2;
-    }
-
-    if (iMetadata == -1) {
-        return;
-    }
-    pMetadata = &pManager->m_aMetadataE0[iMetadata];
-    if (nSide == 0) {
-        pMetadata->m_xSide0 = x;
-        pMetadata->m_fSide0Action = fAction;
-        pMetadata->m_nSide0Token = nToken;
-    } else {
         pMetadata->m_xSide1 = x;
         pMetadata->m_fSide1Action = fAction;
         pMetadata->m_nSide1Token = nToken;
+        return;
+    }
+
+    for (i = 0; i < 8; ++i) {
+        pMetadata = &m_aMetadataE0[i];
+        if (pMetadata->m_nSide == 3) {
+            pMetadata->m_nPosition = nPosition;
+            pMetadata->m_nSide = nSide;
+            if (nSide == 0) {
+                pMetadata->m_xSide0 = x;
+                pMetadata->m_fSide0Action = fAction;
+                pMetadata->m_nSide0Token = nToken;
+                return;
+            }
+            pMetadata->m_xSide1 = x;
+            pMetadata->m_fSide1Action = fAction;
+            pMetadata->m_nSide1Token = nToken;
+            return;
+        }
     }
 }
 
@@ -2117,8 +2124,8 @@ void GameMenuSelectorManager::AppendChild(
             nLastResource, nReserved, nToken, pSelection,
             nCommand);
     }
-    RecordMenuSelectorChildMetadata(
-        this, 0, x, nPosition, nLastResource > 0,
+    RecordChildMetadata(
+        x, nPosition, nLastResource > 0,
         m_apChildren1E0[m_cChildren80]->m_nToken30);
     ++m_cChildren80;
 }

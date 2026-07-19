@@ -149,6 +149,8 @@ struct GameMenuSelectorManager {
         int nActivationMode, int nFirstResource, int nLastResource,
         int nReserved, int *pSelection, int nCommand);
     void InitializeCurrentState(int iMetadata);
+    void RecordChildMetadata(
+        int x, int nPosition, int fAction, int nToken);
     void InitializeChildContext(void);
     void InitializeChildContextThunk(void);
 };
