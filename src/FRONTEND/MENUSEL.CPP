@@ -217,31 +217,31 @@ static int LEMBALL_FASTCALL HandleMenuSelectorEntryEventThunk(
 void LEMBALL_FASTCALL InitializeSharedSpriteOwnerState(void *pObject);
 void LEMBALL_FASTCALL ComputeAlignedZrleChildLayout(void *pObject);
 
-/* GLOBAL: LEMBALL 0x004a7b44 */
-int g_nMenuSelectorResourceId0 = 0;
-/* GLOBAL: LEMBALL 0x004a7b3c */
-int g_nMenuSelectorResourceId1 = 0;
-/* GLOBAL: LEMBALL 0x004a7b40 */
-int g_nMenuSelectorResourceId2 = 0;
-/* GLOBAL: LEMBALL 0x004a7b50 */
-int g_nMenuSelectorResourceId3 = 0;
-/* GLOBAL: LEMBALL 0x004a7b38 */
-int g_nMenuSelectorResourceId4 = 0;
-/* GLOBAL: LEMBALL 0x004a7b48 */
-int g_nMenuSelectorResourceId5 = 0;
-/* GLOBAL: LEMBALL 0x004a7b54 */
-int g_nMenuSelectorResourceId6 = 0;
-/* GLOBAL: LEMBALL 0x004a7b58 */
-int g_nMenuSelectorResourceId7 = 0;
-/* GLOBAL: LEMBALL 0x004a7b4c */
-int g_nMenuSelectorResourceId8 = 0;
+// GLOBAL: LEMBALL 0x004a7b44
+int g_nMenuSelectorResourceId0;
+// GLOBAL: LEMBALL 0x004a7b3c
+int g_nMenuSelectorResourceId1;
+// GLOBAL: LEMBALL 0x004a7b40
+int g_nMenuSelectorResourceId2;
+// GLOBAL: LEMBALL 0x004a7b50
+int g_nMenuSelectorResourceId3;
+// GLOBAL: LEMBALL 0x004a7b38
+int g_nMenuSelectorResourceId4;
+// GLOBAL: LEMBALL 0x004a7b48
+int g_nMenuSelectorResourceId5;
+// GLOBAL: LEMBALL 0x004a7b54
+int g_nMenuSelectorResourceId6;
+// GLOBAL: LEMBALL 0x004a7b58
+int g_nMenuSelectorResourceId7;
+// GLOBAL: LEMBALL 0x004a7b4c
+int g_nMenuSelectorResourceId8;
 
-/* GLOBAL: LEMBALL 0x0049fa70 */
+// GLOBAL: LEMBALL 0x0049fa70
 int g_anMenuSelectorActionOffsetsMode0[18] = {
     0, 12, -8, -2, 52, -2, -13, 28, 116,
     0, 0, -13, 19, 28, -16, 0, -24, -2
 };
-/* GLOBAL: LEMBALL 0x0049fab8 */
+// GLOBAL: LEMBALL 0x0049fab8
 int g_anMenuSelectorActionOffsetsMode1[18] = {
     0, 6, -4, -2, 26, -2, -7, 14, 58,
     0, 0, 0, 10, 14, -8, 0, -12, -2
