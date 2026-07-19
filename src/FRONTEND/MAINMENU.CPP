@@ -863,6 +863,8 @@ void IgnoreIntroSequenceMediaNotification(void);
 void LEMBALL_FASTCALL HandleIntroSequenceMediaCompletion(void *pOwner);
 void LEMBALL_FASTCALL RequestIntroSequenceScreenTransition(char *pScreen);
 void LEMBALL_FASTCALL RequestIntroSequenceScreenTransitionThunk(char *pScreen);
+void LEMBALL_FASTCALL SelectIntroSequenceMediaPath(void *pOwner);
+void LEMBALL_FASTCALL SelectIntroSequenceMediaPathThunk(void *pOwner);
 
 
 
@@ -2103,6 +2105,11 @@ void LEMBALL_FASTCALL WindowOwnerSlot20NoopThunk(
     pOwner->VS_WindowOwnerBase::ReservedWindowOwnerSlot20();
 }
 
+// FUNCTION: LEMBALL 0x00403422
+void LEMBALL_FASTCALL SelectIntroSequenceMediaPathThunk(void *pOwner) {
+    SelectIntroSequenceMediaPath(pOwner);
+}
+
 // FUNCTION: LEMBALL 0x004035d0
 static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreenThunk(
     void *pObject, int nUnusedEdx, int fDelete)
@@ -2911,7 +2918,7 @@ static void *LEMBALL_FASTCALL DeleteAdjustedFramedScreenBase(
 
 // FUNCTION: LEMBALL 0x00447530
 void GameIntroSequenceScreen::RefreshMediaPath(void) {
-    SelectIntroSequenceMediaPath((char *)this + 0x3bc);
+    SelectIntroSequenceMediaPathThunk((char *)this + 0x3bc);
 }
 
 // FUNCTION: LEMBALL 0x004475a0
