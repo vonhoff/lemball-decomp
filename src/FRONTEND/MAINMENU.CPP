@@ -3107,7 +3107,8 @@ static int LEMBALL_FASTCALL HandleOptionsScreenInput(
     return 0;
 }
 
-static void DestroyOptionsScreen(GameOptionsScreenView *pScreen) {
+static void LEMBALL_FASTCALL DestroyOptionsScreen(
+    GameOptionsScreenView *pScreen) {
     pScreen->m_pVtable00 = g_GAME_OptionsScreenVtable;
     *(void ***)pScreen->m_abRenderQueueNode04 = g_GAME_OptionsQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
@@ -3117,11 +3118,10 @@ static void DestroyOptionsScreen(GameOptionsScreenView *pScreen) {
     }
     g_fSkipStartupSequence = pScreen->m_fSkipStartupSequence3A4;
     ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
-        ->SetVariantResourceEffectsEnabled(g_nOptionsEffectsSliderValue);
-    if (g_pVariantResourceEntryManager != 0) {
-        ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
-            ->SetVariantResourceMusicEnabled(g_nOptionsMusicSliderValue);
-    }
+        ->SetVariantResourceEffectsEnabledThunk(
+            g_nOptionsEffectsSliderValue);
+    ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
+        ->SetVariantResourceMusicEnabled(g_nOptionsMusicSliderValue);
     g_fMusicEnabled = g_nOptionsMusicSliderValue;
     g_fEffectsEnabled = g_nOptionsEffectsSliderValue;
     if (g_fMusicOptionAvailable == 0) g_fMusicEnabled = 0;
@@ -3129,35 +3129,14 @@ static void DestroyOptionsScreen(GameOptionsScreenView *pScreen) {
     if (g_fZoomOptionAvailable == 0) g_fZoomedViewportEnabled = 0;
     if (g_fStartupAnimationsEnabled == 0) g_fSkipStartupSequence = 1;
     ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
-        ->SetVariantResourceEffectsEnabled(g_nOptionsEffectsSliderValue);
+        ->SetVariantResourceEffectsEnabledThunk(
+            g_nOptionsEffectsSliderValue);
     ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
         ->SetVariantResourceMusicEnabled(g_nOptionsMusicSliderValue);
     if (pScreen->m_fFrameResourcesLoaded9C != 0) {
         ReleaseOptionsScreenWidgets(pScreen);
     }
-    g_pActiveNetworkLobbyScreen = 0;
-    if (pScreen->m_pTimedFrameSelector34C != 0) {
-        FreeVSMemBlock(pScreen->m_pTimedFrameSelector34C);
-        pScreen->m_pTimedFrameSelector34C = 0;
-    }
-    if (g_pSharedRenderDispatchQueue != 0) {
-        ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
-            ->UnregisterOrderedRenderDispatchClient(
-                pScreen->m_abRenderQueueNode04, 0);
-    }
-    if (pScreen->m_fFrameResourcesLoaded9C != 0) {
-        ReleaseFramedScreenFrameResources(pScreen);
-    }
-    if (pScreen->m_pMappedListResources98 != 0) {
-        ((MappedListResourceTable *)pScreen->m_pMappedListResources98)
-            ->Destroy();
-        FreeVSMemBlock(pScreen->m_pMappedListResources98);
-        pScreen->m_pMappedListResources98 = 0;
-    }
-    ((MogLoadResourceArchive *)g_pMainResourceArchive)
-        ->PruneUnreferencedCachedResourceObjects();
-    DestroyFramedScreenRenderEntryGroup(pScreen->m_abRenderEntryGroupC8);
-    DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
+    DestroyFramedScreenBaseThunk00402081(pScreen);
 }
 
 static void *LEMBALL_FASTCALL DeleteOptionsScreen(
