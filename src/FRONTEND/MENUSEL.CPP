@@ -37,6 +37,10 @@ extern void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntry(
     void *pObject);
 extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableC(
     void *pObject);
+extern void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableA(
+    void *pObject);
+extern void LEMBALL_FASTCALL RestoreStatusIndicatorPointSinkEntryVtable(
+    void *pObject);
 extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(
     void *pResourceObject);
 extern void *LoadZrleOnlyListResource(int nResourceId);
@@ -73,6 +77,15 @@ extern void LEMBALL_FASTCALL set_object_field_0x18_004358b0(
     void *pObject, void *pUnusedEdx, int nValue);
 extern int LEMBALL_FASTCALL return_object_field_0x0c_00435880(
     void *pObject);
+extern void *LEMBALL_FASTCALL InitializeGeometryOwnerRect(
+    void *pObject, int nUnusedEdx, const VS_XYPair *pRect);
+extern void SetGeometryChildEnabled(void *pGeometryChild, int fEnabled);
+extern void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(
+    void *pObject);
+extern void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryThunk(
+    void *pObject);
+extern void LEMBALL_FASTCALL SetWindowOwnerRenderAnchorFromPoint(
+    void *pOwner, int nUnusedEdx, const VS_XYPair *pPoint);
 
 struct GameMenuSelectorEntry {
     GameMenuSelectorEntry(
@@ -139,6 +152,14 @@ public:
     void ReloadResource(int nResourceId);
 };
 
+class GameSelectorProgressOverlayOwner : public GameCompactZrleOverlay {
+public:
+    GameSelectorProgressOverlayOwner *Construct(
+        const VS_XYPair *pPoint, void *pRenderOwner, int nResourceId,
+        const short *pProgressRect, int nPercent);
+    void SetAnchorAndNotifyChild(const VS_XYPair *pPoint);
+};
+
 class GameSelectorProgressOverlayOwnerView {
 public:
     void SetChildPresentForModeA(int nMode);
@@ -173,6 +194,8 @@ struct GameProgressRenderEntry {
 class GameSelectorProgressOverlayChild :
     public GameWindowOwnerRenderContext {
 public:
+    GameSelectorProgressOverlayChild *Construct(
+        const short *pRect, int nPercent, void *pRenderOwner);
     virtual void InitializeWindowOwnerFromRect(
         short *pRect, void *pOwner, const char *pszWindowName);
     virtual void MoveWindowOwnerOrigin(const VS_XYPair *pPoint);
@@ -555,10 +578,26 @@ static int g_fResourceGeometryChildVtablesInitialized;
 static void *g_AlignedZrleChildOverlayVtable[52];
 static void *g_AlignedZrleChildOverlayDeleteVtable[8];
 static int g_fAlignedZrleChildOverlayVtablesInitialized;
+static void *g_SelectorProgressOverlayOwnerVtable[52];
+static void *g_SelectorProgressOverlayOwnerDeleteVtable[8];
+static int g_fSelectorProgressOverlayOwnerVtablesInitialized;
+static void *g_SelectorProgressOverlayChildVtable[46];
+static void *g_SelectorProgressGeometryVtable[8];
+static void **g_pSelectorProgressBaseWindowOwnerVtable;
+static int g_fSelectorProgressOverlayChildVtablesInitialized;
 static void *g_MenuSelectorChildContextVtable[46];
 static int g_fMenuSelectorChildContextVtableInitialized;
 static void *g_QueuedVariantChildContextVtable[46];
 static int g_fQueuedVariantChildContextVtableInitialized;
+
+static void LEMBALL_FASTCALL DestroySelectorProgressOverlayOwner(
+    void *pDeleteInterface);
+static void *LEMBALL_FASTCALL DeleteSelectorProgressOverlayOwnerAdjusted(
+    void *pDeleteInterface, int nUnusedEdx, unsigned int fDelete);
+static void LEMBALL_FASTCALL DestroySelectorProgressOverlayChild(
+    void *pGeometryInterface);
+static void *LEMBALL_FASTCALL DeleteSelectorProgressOverlayChildAdjusted(
+    void *pGeometryInterface, int nUnusedEdx, unsigned int fDelete);
 
 static int MapSpriteOwnerEventToFrameSlot(int nEvent) {
     switch (nEvent) {
@@ -2217,28 +2256,36 @@ void GameMenuSelectorEntry::BuildOverlay(const int *panResourceIds) {
             LoadZrleOnlyListResource(panResourceIds[i]);
     }
 
-    if (pEntry->m_nOverlayKind10 != 0) {
-        pEntry->m_pAlignedOverlay50 = 0;
+    if (pEntry->m_nOverlayKind10 == 0) {
+        pOverlay = AllocateVSMemBlock(0x130);
+        if (pOverlay != 0) {
+            Point.m_x = (short)pEntry->m_x1C;
+            Point.m_y = (short)pEntry->m_nPosition20;
+            ConstructAlignedZrleChildOverlayFromPoint(
+                pOverlay, 0, &Point, pEntry->m_pRenderOwner28,
+                panResourceIds[pEntry->m_nSelectedResource44 -
+                               pEntry->m_nFirstResource40],
+                3);
+        }
+        pEntry->m_pAlignedOverlay50 = pOverlay;
         pEntry->m_pProgressOverlay54 = 0;
-        return;
+    } else {
+        pOverlay = AllocateVSMemBlock(0x138);
+        if (pOverlay != 0) {
+            Point.m_x = (short)pEntry->m_x1C;
+            Point.m_y = (short)pEntry->m_nPosition20;
+            ((GameSelectorProgressOverlayOwner *)pOverlay)
+                ->Construct(
+                    &Point, pEntry->m_pRenderOwner28,
+                    panResourceIds[0],
+                    &pEntry->m_nProgressX14,
+                    pEntry->m_nSelectedResource44);
+        }
+        pEntry->m_pProgressOverlay54 = pOverlay;
+        pEntry->m_pAlignedOverlay50 = 0;
     }
 
-    pOverlay = AllocateVSMemBlock(0x130);
-    if (pOverlay != 0) {
-        Point.m_x = (short)pEntry->m_x1C;
-        Point.m_y = (short)pEntry->m_nPosition20;
-        ConstructAlignedZrleChildOverlayFromPoint(
-            pOverlay, 0, &Point, pEntry->m_pRenderOwner28,
-            panResourceIds[pEntry->m_nSelectedResource44 -
-                           pEntry->m_nFirstResource40],
-            3);
-    }
-    pEntry->m_pAlignedOverlay50 = pOverlay;
-    pEntry->m_pProgressOverlay54 = 0;
-    if (pOverlay == 0) {
-        return;
-    }
-
+    /* Both concrete overlay constructors expose the same owner prefix. */
     *(int *)((char *)pOverlay + 0xf8) = 0;
     nContext = *(int *)(*(int *)((char *)pOverlay + 0x4c) + 0x0c);
     nRenderObject = nContext +
@@ -2375,6 +2422,133 @@ void GameCompactZrleOverlay::ReloadResource(int nResourceId) {
     *(void **)((char *)this + 0x11c) =
         LoadZrleOnlyListResource(nResourceId);
     *(int *)((char *)this + 0xd8) = 1;
+}
+
+static void InitializeSelectorProgressOverlayOwnerVtables(
+    void **pOwnerVtable, void **pDeleteVtable) {
+    union PointMethod {
+        void (GameSelectorProgressOverlayOwner::*p)(const VS_XYPair *);
+        void *v;
+    } Point;
+    union ModeMethod {
+        void (GameSelectorProgressOverlayOwnerView::*p)(int);
+        void *v;
+    } Mode;
+    int i;
+
+    if (g_fSelectorProgressOverlayOwnerVtablesInitialized != 0) {
+        return;
+    }
+    for (i = 0; i < 52; ++i) {
+        g_SelectorProgressOverlayOwnerVtable[i] = pOwnerVtable[i];
+    }
+    for (i = 0; i < 8; ++i) {
+        g_SelectorProgressOverlayOwnerDeleteVtable[i] = pDeleteVtable[i];
+    }
+    Point.p =
+        &GameSelectorProgressOverlayOwner::SetAnchorAndNotifyChild;
+    g_SelectorProgressOverlayOwnerVtable[14] = Point.v;
+    Mode.p =
+        &GameSelectorProgressOverlayOwnerView::SetChildPresentForModeA;
+    g_SelectorProgressOverlayOwnerVtable[48] = Mode.v;
+    Mode.p =
+        &GameSelectorProgressOverlayOwnerView::SetChildPresentForModeB;
+    g_SelectorProgressOverlayOwnerVtable[49] = Mode.v;
+    g_SelectorProgressOverlayOwnerDeleteVtable[0] =
+        (void *)DeleteSelectorProgressOverlayOwnerAdjusted;
+    g_fSelectorProgressOverlayOwnerVtablesInitialized = 1;
+}
+
+GameSelectorProgressOverlayOwner *GameSelectorProgressOverlayOwner::Construct(
+    const VS_XYPair *pPoint, void *pRenderOwner, int nResourceId,
+    const short *pProgressRect, int nPercent) {
+    GameSelectorProgressOverlayChild *pChild;
+    void **pOwnerVtable;
+    void **pDeleteVtable;
+    short aRect[4];
+
+    ConstructAlignedZrleChildOverlayFromPoint(
+        this, 0, pPoint, pRenderOwner, nResourceId, 3);
+    pOwnerVtable = *(void ***)this;
+    pDeleteVtable = *(void ***)((char *)this + 0x90);
+    InitializeSelectorProgressOverlayOwnerVtables(
+        pOwnerVtable, pDeleteVtable);
+    *(void ***)this = g_SelectorProgressOverlayOwnerVtable;
+    *(void ***)((char *)this + 0x90) =
+        g_SelectorProgressOverlayOwnerDeleteVtable;
+    *(short *)((char *)this + 0x130) = 0;
+    *(short *)((char *)this + 0x132) = 0;
+    aRect[0] = pProgressRect[0];
+    aRect[1] = pProgressRect[1];
+    aRect[2] = pProgressRect[2] + pPoint->m_x;
+    aRect[3] = pProgressRect[3] + pPoint->m_y;
+    *(short *)((char *)this + 0x130) = pProgressRect[2];
+    *(short *)((char *)this + 0x132) = pProgressRect[3];
+    pChild = (GameSelectorProgressOverlayChild *)
+        AllocateVSMemBlock(sizeof(GameSelectorProgressOverlayChild));
+    if (pChild != 0) {
+        pChild = pChild->Construct(
+            pProgressRect, nPercent, pRenderOwner);
+    }
+    *(GameSelectorProgressOverlayChild **)((char *)this + 0x134) =
+        pChild;
+    pChild->InitializeWindowOwnerFromRect(aRect, pRenderOwner, 0);
+    return this;
+}
+
+void GameSelectorProgressOverlayOwner::SetAnchorAndNotifyChild(
+    const VS_XYPair *pPoint) {
+    GameSelectorProgressOverlayChild *pChild;
+    VS_XYPair Point;
+
+    *(short *)((char *)this + 0xc4) -= *(short *)((char *)this + 0x18);
+    *(int *)((char *)this + 0xd8) = 1;
+    *(short *)((char *)this + 0xc6) -= *(short *)((char *)this + 0x1a);
+    SetWindowOwnerRenderAnchorFromPoint(this, 0, pPoint);
+    *(short *)((char *)this + 0xc4) += *(short *)((char *)this + 0x18);
+    *(short *)((char *)this + 0xc6) += *(short *)((char *)this + 0x1a);
+    pChild = *(GameSelectorProgressOverlayChild **)((char *)this + 0x134);
+    Point.m_x = *(short *)((char *)this + 0xdc) +
+                *(short *)((char *)this + 0x130);
+    Point.m_y = *(short *)((char *)this + 0xde) +
+                *(short *)((char *)this + 0x132);
+    pChild->MoveWindowOwnerOrigin(&Point);
+    Point.m_x = pPoint->m_x + *(short *)((char *)this + 0x130);
+    Point.m_y = pPoint->m_y + *(short *)((char *)this + 0x132);
+    pChild->MoveWindowOwnerOrigin(&Point);
+}
+
+static void LEMBALL_FASTCALL DestroySelectorProgressOverlayOwner(void *pDeleteInterface) {
+    typedef void *(LEMBALL_FASTCALL *DeleteProc)(
+        void *pObject, int nUnusedEdx, unsigned int fDelete);
+    GameSelectorProgressOverlayChild *pChild;
+    void *pOwner;
+
+    pOwner = (char *)pDeleteInterface - 0x90;
+    *(void ***)pDeleteInterface =
+        g_SelectorProgressOverlayOwnerDeleteVtable;
+    *(void ***)pOwner = g_SelectorProgressOverlayOwnerVtable;
+    pChild = *(GameSelectorProgressOverlayChild **)((char *)pOwner + 0x134);
+    if (*(int *)((char *)pChild + 4) == 1) {
+        pChild->DestroyWindowOwnerHwnd();
+    }
+    if (pChild != 0) {
+        void *pChildDeleteInterface = (char *)pChild + 0x90;
+        ((DeleteProc)(*(void ***)pChildDeleteInterface)[0])(
+            pChildDeleteInterface, 0, 1);
+    }
+    DestroyAlignedZrleChildOverlay(pDeleteInterface);
+}
+
+static void *LEMBALL_FASTCALL DeleteSelectorProgressOverlayOwnerAdjusted(void *pDeleteInterface, int, unsigned int fDelete) {
+    void *pOwner;
+
+    pOwner = (char *)pDeleteInterface - 0x90;
+    DestroySelectorProgressOverlayOwner(pDeleteInterface);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pOwner);
+    }
+    return pOwner;
 }
 
 /* FUNCTION: LEMBALL 0x0044C7C0 */
@@ -3021,6 +3195,149 @@ void LEMBALL_FASTCALL UpdateMenuSelectorAnimation(
 void LEMBALL_FASTCALL UpdateMenuSelectorAnimationThunk(
     GameMenuSelectorManager *pManager) {
     UpdateMenuSelectorAnimation(pManager);
+}
+
+static void InitializeSelectorProgressOverlayChildVtables(
+    void **pWindowOwnerVtable, void **pGeometryVtable) {
+    union WindowRectMethod {
+        void (GameSelectorProgressOverlayChild::*p)(
+            short *, void *, const char *);
+        void *v;
+    } WindowRect;
+    union WindowPointMethod {
+        void (GameSelectorProgressOverlayChild::*p)(const VS_XYPair *);
+        void *v;
+    } WindowPoint;
+    union WindowVoidMethod {
+        void (GameSelectorProgressOverlayChild::*p)(void);
+        void *v;
+    } WindowVoid;
+    union WindowIntMethod {
+        void (GameSelectorProgressOverlayChild::*p)(int);
+        void *v;
+    } WindowInt;
+    union WindowFlagsMethod {
+        unsigned int (GameSelectorProgressOverlayChild::*p)(void);
+        void *v;
+    } WindowFlags;
+    union GeometryButtonMethod {
+        void (GameSelectorProgressGeometry::*p)(const VS_XYPair *, int);
+        void *v;
+    } GeometryButton;
+    union GeometryPointMethod {
+        void (GameSelectorProgressGeometry::*p)(const VS_XYPair *);
+        void *v;
+    } GeometryPoint;
+    int i;
+
+    if (g_fSelectorProgressOverlayChildVtablesInitialized != 0) {
+        return;
+    }
+    for (i = 0; i < 46; ++i) {
+        g_SelectorProgressOverlayChildVtable[i] = pWindowOwnerVtable[i];
+    }
+    for (i = 0; i < 8; ++i) {
+        g_SelectorProgressGeometryVtable[i] = pGeometryVtable[i];
+    }
+    g_pSelectorProgressBaseWindowOwnerVtable = pWindowOwnerVtable;
+    WindowRect.p =
+        &GameSelectorProgressOverlayChild::InitializeWindowOwnerFromRect;
+    g_SelectorProgressOverlayChildVtable[1] = WindowRect.v;
+    WindowPoint.p =
+        &GameSelectorProgressOverlayChild::MoveWindowOwnerOrigin;
+    g_SelectorProgressOverlayChildVtable[14] = WindowPoint.v;
+    WindowVoid.p =
+        &GameSelectorProgressOverlayChild::ReservedWindowOwnerSlot15;
+    g_SelectorProgressOverlayChildVtable[15] = WindowVoid.v;
+    WindowVoid.p =
+        &GameSelectorProgressOverlayChild::ReservedWindowOwnerSlot23;
+    g_SelectorProgressOverlayChildVtable[23] = WindowVoid.v;
+    WindowFlags.p =
+        &GameSelectorProgressOverlayChild::GetWindowOwnerFlags;
+    g_SelectorProgressOverlayChildVtable[25] = WindowFlags.v;
+    WindowInt.p =
+        &GameSelectorProgressOverlayChild::ApplyWindowOwnerActivation;
+    g_SelectorProgressOverlayChildVtable[42] = WindowInt.v;
+    GeometryButton.p =
+        &GameSelectorProgressGeometry::DispatchButtonTransition;
+    g_SelectorProgressGeometryVtable[0] =
+        (void *)DeleteSelectorProgressOverlayChildAdjusted;
+    g_SelectorProgressGeometryVtable[1] = GeometryButton.v;
+    GeometryPoint.p = &GameSelectorProgressGeometry::DispatchPointerMove;
+    g_SelectorProgressGeometryVtable[6] = GeometryPoint.v;
+    g_fSelectorProgressOverlayChildVtablesInitialized = 1;
+}
+
+GameSelectorProgressOverlayChild *GameSelectorProgressOverlayChild::Construct(
+    const short *pRect, int nPercent, void *pRenderOwner) {
+    void **pWindowOwnerVtable;
+    void **pGeometryVtable;
+    int i;
+
+    ConstructWindowOwnerRenderContext();
+    pWindowOwnerVtable = *(void ***)this;
+    InitializeGeometryOwnerRect(
+        &m_Geometry90, 0, (const VS_XYPair *)pRect);
+    pGeometryVtable = *(void ***)&m_Geometry90;
+    InitializePackagedSpriteRenderEntryThunk(&m_aRenderEntriesD0[0]);
+    for (i = 1; i < 5; ++i) {
+        InitializeStatusIndicatorPointSinkEntryThunk(
+            &m_aRenderEntriesD0[i]);
+    }
+    InitializeSelectorProgressOverlayChildVtables(
+        pWindowOwnerVtable, pGeometryVtable);
+    *(void ***)this = g_SelectorProgressOverlayChildVtable;
+    *(void ***)&m_Geometry90 = g_SelectorProgressGeometryVtable;
+    m_nReserved128 = 0;
+    m_cxProgress124 = pRect[0];
+    m_nPercent120 = nPercent;
+    m_RectC8.m_cx = pRect[0];
+    m_RectC8.m_cy = pRect[1];
+    m_RectC8.m_x = pRect[2];
+    m_RectC8.m_y = pRect[3];
+    m_nFrameInterval += 6;
+    m_pRenderOwner12C = pRenderOwner;
+    m_nToken130 = -1;
+    SetGeometryChildEnabled(&m_Geometry90, 1);
+    m_Geometry90.m_fDispatchPointerMove28 = 1;
+    m_Geometry90.m_fDispatchOutsideRelease2C = 1;
+    return this;
+}
+
+static void LEMBALL_FASTCALL DestroySelectorProgressOverlayChild(void *pGeometryInterface) {
+    GameSelectorProgressOverlayChild *pChild;
+    void *pRenderOwner;
+    int i;
+
+    pChild = (GameSelectorProgressOverlayChild *)
+        ((char *)pGeometryInterface - 0x90);
+    *(void ***)pGeometryInterface = g_SelectorProgressGeometryVtable;
+    *(void ***)pChild = g_SelectorProgressOverlayChildVtable;
+    pRenderOwner = pChild->m_pRenderOwner12C;
+    if (*(int *)((char *)pRenderOwner + 4) == 1) {
+        RemoveGeometryOwnerChild(
+            *(void **)((char *)pRenderOwner + 0x1c), 0,
+            pGeometryInterface);
+    }
+    for (i = 4; i > 0; --i) {
+        RestoreStatusIndicatorPointSinkEntryVtable(
+            &pChild->m_aRenderEntriesD0[i]);
+    }
+    RestorePackagedSpriteRenderEntryVtableA(
+        &pChild->m_aRenderEntriesD0[0]);
+    *(void ***)pChild = g_pSelectorProgressBaseWindowOwnerVtable;
+    DestroyWindowOwnerRenderContext(pChild);
+}
+
+static void *LEMBALL_FASTCALL DeleteSelectorProgressOverlayChildAdjusted(void *pGeometryInterface, int, unsigned int fDelete) {
+    void *pChild;
+
+    pChild = (char *)pGeometryInterface - 0x90;
+    DestroySelectorProgressOverlayChild(pGeometryInterface);
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pChild);
+    }
+    return pChild;
 }
 
 void GameSelectorProgressOverlayChild::ApplyWindowOwnerActivation(
