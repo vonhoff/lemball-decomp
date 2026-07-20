@@ -2875,12 +2875,17 @@ static int GetIntDirectionSignThunk(int nValue) {
     return GetIntDirectionSign(nValue);
 }
 
+class GameMenuSelectorEventQueueInterface {
+public:
+    virtual void Reserved0(void) = 0;
+    virtual void Reserved1(void) = 0;
+    virtual void QueueEvent(void *pEvent) = 0;
+};
+
 static inline void QueueMenuSelectorEvent(
     GameMenuSelectorEvent *pEvent) {
-    typedef void (LEMBALL_FASTCALL *QueueProc)(void *, int, void *);
-    QueueProc pQueue =
-        (QueueProc)(*(void ***)g_pSharedRenderDispatchQueue)[2];
-    pQueue(g_pSharedRenderDispatchQueue, 0, pEvent);
+    ((GameMenuSelectorEventQueueInterface *)
+        g_pSharedRenderDispatchQueue)->QueueEvent(pEvent);
 }
 
 /* FUNCTION: LEMBALL 0x0044DCE0 */
@@ -2966,13 +2971,6 @@ void LEMBALL_FASTCALL UpdateMenuSelectorAnimationThunk(
     GameMenuSelectorManager *pManager) {
     UpdateMenuSelectorAnimation(pManager);
 }
-
-class GameMenuSelectorEventQueueInterface {
-public:
-    virtual void Reserved0(void) = 0;
-    virtual void Reserved1(void) = 0;
-    virtual void QueueEvent(void *pEvent) = 0;
-};
 
 void GameSelectorProgressOverlayChild::ApplyWindowOwnerActivation(
     int nActivate) {
