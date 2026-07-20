@@ -21,8 +21,8 @@
 #pragma comment(linker, "/include:?CopyFrom@GameRectQuad@@QAEXPBF@Z")
 #pragma comment(linker, "/include:?DispatchButtonTransition@GameSelectorProgressGeometry@@QAEXPBUVS_XYPair@@H@Z")
 #pragma comment(linker, "/include:?DispatchPointerMove@GameSelectorProgressGeometry@@QAEXPBUVS_XYPair@@@Z")
-#pragma comment(linker, "/include:?SetChildPresentForModeA@GameOverlayChildPresenceView@@QAEXH@Z")
-#pragma comment(linker, "/include:?SetChildPresentForModeB@GameOverlayChildPresenceView@@QAEXH@Z")
+#pragma comment(linker, "/include:?SetChildPresentForModeA@GameSelectorProgressOverlayOwnerView@@QAEXH@Z")
+#pragma comment(linker, "/include:?SetChildPresentForModeB@GameSelectorProgressOverlayOwnerView@@QAEXH@Z")
 
 DECOMP_SIZE_ASSERT(GameMenuSelectorEvent, 0x1c);
 DECOMP_SIZE_ASSERT(GameMenuSelectorMetadata, 0x20);
@@ -138,7 +138,7 @@ public:
     void RebuildSourceRect(int fForce);
 };
 
-class GameOverlayChildPresenceView {
+class GameSelectorProgressOverlayOwnerView {
 public:
     void SetChildPresentForModeA(int nMode);
     void SetChildPresentForModeB(int nMode);
@@ -1078,27 +1078,71 @@ void GameAlignedZrleChildOverlayView::QueueAlignedFrame(void) {
         pFrameSink, 0, pQueueOwner);
 }
 
-static void SetAlignedZrleChildOverlayFrame(void *pObject, int iFrame) {
-    if (*(int *)((char *)pObject + 0x104) != iFrame) {
-        *(int *)((char *)pObject + 0x104) = iFrame;
-        *(int *)((char *)pObject + 0xd8) = 1;
+// FUNCTION: LEMBALL 0x0043a620
+void GameSelectorProgressOverlayOwnerView::SetChildPresentForModeA(int nMode) {
+    if (*(void **)((char *)this + 0xd0) != 0 &&
+        (nMode == 0 || nMode == 3)) {
+        *(int *)((char *)this + 0x104) = 1;
+        return;
     }
+    *(int *)((char *)this + 0x104) = 0;
 }
 
-void GameAlignedZrleChildOverlayView::HandleButtonRelease(int) {
-    SetAlignedZrleChildOverlayFrame(this, 1);
+// FUNCTION: LEMBALL 0x0043a660
+void GameSelectorProgressOverlayOwnerView::SetChildPresentForModeB(int nMode) {
+    if (*(void **)((char *)this + 0xd0) != 0 &&
+        (nMode == 0 || nMode == 3)) {
+        *(int *)((char *)this + 0x104) = 1;
+        return;
+    }
+    *(int *)((char *)this + 0x104) = 0;
 }
 
-void GameAlignedZrleChildOverlayView::HandleButtonPress(int) {
-    SetAlignedZrleChildOverlayFrame(this, 2);
-}
-
+// FUNCTION: LEMBALL 0x0043a6a0
 void GameAlignedZrleChildOverlayView::HandlePointerEnter(void) {
-    SetAlignedZrleChildOverlayFrame(this, 1);
+    if (*(void **)((char *)this + 0xd0) != 0 &&
+        (*(int *)((char *)this + 0xa0) != 0 ||
+         *(int *)((char *)this + 0xac) != 0)) {
+        *(int *)((char *)this + 0x104) = 1;
+        return;
+    }
+    *(int *)((char *)this + 0x104) = 0;
 }
 
+// FUNCTION: LEMBALL 0x0043a6e0
 void GameAlignedZrleChildOverlayView::HandlePointerLeave(void) {
-    SetAlignedZrleChildOverlayFrame(this, 0);
+    if (*(void **)((char *)this + 0xd0) != 0 &&
+        (*(int *)((char *)this + 0xa0) != 0 ||
+         *(int *)((char *)this + 0xac) != 0)) {
+        *(int *)((char *)this + 0x104) = 1;
+        return;
+    }
+    *(int *)((char *)this + 0x104) = 0;
+}
+
+// FUNCTION: LEMBALL 0x0044c200
+void GameAlignedZrleChildOverlayView::HandleButtonRelease(int nMode) {
+    if (*(void **)((char *)this + 0xd0) != 0 &&
+        (nMode == 0 || nMode == 3)) {
+        *(int *)((char *)this + 0x104) = 1;
+        return;
+    }
+    *(int *)((char *)this + 0x104) = 0;
+}
+
+// FUNCTION: LEMBALL 0x0044c230
+void GameAlignedZrleChildOverlayView::HandleButtonPress(int nMode) {
+    if (*(void **)((char *)this + 0xd0) == 0 ||
+        (nMode != 0 && nMode != 3)) {
+        *(int *)((char *)this + 0x104) = 0;
+    } else {
+        *(int *)((char *)this + 0x104) = 1;
+    }
+    if (nMode == 0) {
+        ((GameVariantResourceEntryManager *)
+            g_pVariantResourceEntryManager)
+            ->PlayVariantResourceEffectThunk(0x25);
+    }
 }
 
 static void InitializeAlignedZrleChildOverlayVtables(void) {
@@ -1896,26 +1940,6 @@ static inline GameProgressiveVariantFrameSelector *AllocateFrameSelector(
         pSelector->m_pVtable = g_MenuSelectorProgressiveFrameSelectorVtable;
     }
     return pSelector;
-}
-
-// FUNCTION: LEMBALL 0x0043a620
-void GameOverlayChildPresenceView::SetChildPresentForModeA(int nMode) {
-    if (*(void **)((char *)this + 0xd0) != 0 &&
-        (nMode == 0 || nMode == 3)) {
-        *(int *)((char *)this + 0x104) = 1;
-        return;
-    }
-    *(int *)((char *)this + 0x104) = 0;
-}
-
-// FUNCTION: LEMBALL 0x0043a660
-void GameOverlayChildPresenceView::SetChildPresentForModeB(int nMode) {
-    if (*(void **)((char *)this + 0xd0) != 0 &&
-        (nMode == 0 || nMode == 3)) {
-        *(int *)((char *)this + 0x104) = 1;
-        return;
-    }
-    *(int *)((char *)this + 0x104) = 0;
 }
 
 // FUNCTION: LEMBALL 0x0044c870
