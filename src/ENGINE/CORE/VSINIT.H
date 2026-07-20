@@ -42,7 +42,6 @@ void FormatSignedIntToRadixString(int nValue, char *pszBuffer, unsigned int nRad
 VsInitFormattedOutputStream *AppendCStringToStream(VsInitFormattedOutputStream *pStream,
                                                      const char *pszText);
 void AppendPointerToStreamVariant(VsInitFormattedOutputStream *pStream, unsigned int uValue);
-void AppendCharToFormattedStream(VsInitFormattedOutputStream *pStream, char ch);
 VsInitFormattedOutputStream *AppendUIntHexToStream(VsInitFormattedOutputStream *pStream, unsigned int uValue);
 VsInitFormattedOutputStream *AppendHexUIntToStream(VsInitFormattedOutputStream *pStream, unsigned int uValue);
 // FUNCTION: LEMBALL 0x0045abb0
@@ -190,6 +189,7 @@ struct VsInitFormattedOutputStream {
 
     VsInitFormattedOutputStream *AppendCStringToStream(const char *pszText);
     VsInitFormattedOutputStream *AppendCharToStreamVariant(char ch);
+    VsInitFormattedOutputStream *AppendCharToFormattedStream(char ch);
     VsInitFormattedOutputStream *AppendIntToStream(unsigned int uValue);
     VsInitFormattedOutputStream *AppendSignedIntToStreamVariant(int nValue);
     VsInitFormattedOutputStream *AppendUIntToStream(unsigned int uValue);

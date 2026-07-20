@@ -28,6 +28,9 @@
 
 extern "C" BOOL WINAPI SetCurrentDirectoryA(LPCSTR lpPathName);
 
+void PASCAL SetAudioMusicAndEffectVolumeByte(unsigned char nVolume);
+void PASCAL SetVariantResourceEffectMasterVolume(unsigned char nVolume);
+
 class VsGdiAnimWindowOwner {
 public:
     void *ConstructResourceGeometryHelperWindowOwner(void);
@@ -2580,6 +2583,10 @@ void *LEMBALL_FASTCALL DeleteStartupModeThunk(
     return DeleteStartupMode(pObject, nUnusedEdx, fDelete);
 }
 
+void GameVariantResourceEntryManager::SetVariantResourceEffectMasterVolumeThunk(unsigned char nVolume) {
+    SetVariantResourceEffectMasterVolume(nVolume);
+}
+
 // STUB: LEMBALL 0x004027a2
 void *LEMBALL_FASTCALL DeleteMainMenuModeThunk(
     void *pObject, int nUnusedEdx, BYTE fDelete)
@@ -2604,6 +2611,10 @@ void EnsureMainGameVariantResourceMode(GameMainContext *pMainContext, int nVaria
 }
 
 void VS_WindowOwnerBase::ReservedWindowOwnerSlot39(void) {
+}
+
+void GameVariantResourceEntryManager::SetAudioMusicAndEffectVolumeByteThunk(unsigned char nVolume) {
+    SetAudioMusicAndEffectVolumeByte(nVolume);
 }
 
 // STUB: LEMBALL 0x00402a7c

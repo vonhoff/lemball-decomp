@@ -3345,9 +3345,8 @@ static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreen(
     return DeleteMainMenuScreen((char *)pObject - 4, nUnusedEdx, fDelete);
 }
 
-void *LEMBALL_FASTCALL ConstructFunctionalOptionsScreen(
-    void *pObject, int, void *pPrimaryContext,
-    void *pRenderContext, short *paSize) {
+// FUNCTION: LEMBALL 0x00448ab0
+void *LEMBALL_FASTCALL ConstructFunctionalOptionsScreen(void *pObject, int, void *pPrimaryContext, void *pRenderContext, short *paSize) {
     GameOptionsScreenView *pScreen;
 
     pScreen = (GameOptionsScreenView *)pObject;
@@ -3386,6 +3385,7 @@ void *LEMBALL_FASTCALL ConstructFunctionalOptionsScreen(
     return pScreen;
 }
 
+// FUNCTION: LEMBALL 0x00448ba0
 static void LEMBALL_FASTCALL InitializeOptionsScreenWidgets(void *pObject) {
     GameOptionsScreenView *pScreen;
     GameMenuSelectorManager *pManager;
@@ -3477,53 +3477,57 @@ static void LEMBALL_FASTCALL ReleaseOptionsScreenWidgets(void *pObject) {
     }
 }
 
-static int LEMBALL_FASTCALL HandleOptionsScreenInput(
-    void *pObject, int, void *pEvent) {
+// FUNCTION: LEMBALL 0x00448ee0
+static int LEMBALL_FASTCALL HandleOptionsScreenInput(void *pObject, int, void *pEvent) {
     GameOptionsScreenView *pScreen;
     GameMenuSelectorEvent *pSelectorEvent;
+    int nType;
     unsigned int nCommand;
 
     pScreen = (GameOptionsScreenView *)pObject;
     pSelectorEvent = (GameMenuSelectorEvent *)pEvent;
-    if (pSelectorEvent->m_nType00 != 0x0c) {
+    nType = (unsigned short)pSelectorEvent->m_nType00;
+    if (nType != 0x0c) {
         ++*(int *)((char *)pScreen + 0x10);
         return 0;
     }
     nCommand = (unsigned int)pSelectorEvent->m_nPayload08;
-    if (nCommand == 0xacef0008U) {
+    switch (nCommand) {
+    case 0xacef0005U:
+    case 0xacef0006U:
+        return 1;
+    case 0xacef0008U:
         pScreen->m_nTransitionStatus378 = 1;
         pScreen->m_nRequestedMode374 = 2;
         return 1;
-    }
-    if (nCommand == 0xacef0009U) {
+    case 0xacef0009U:
         pScreen->m_nTransitionStatus378 = 1;
         pScreen->m_nRequestedMode374 = 0x11;
         return 1;
-    }
-    if (nCommand >= 0xacef0005U && nCommand <= 0xacef0006U) {
-        return 1;
-    }
-    if (nCommand == 0xacff0000U) {
+    case 0xacff0000U:
         g_nOptionsEffectsSliderValue = pSelectorEvent->m_nPayload0C;
-        SetAudioMusicAndEffectVolumeByte((unsigned char)(
-            (unsigned int)pSelectorEvent->m_nPayload0C * 0xffU /
-            (unsigned int)pSelectorEvent->m_nPayload10));
+        ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
+            ->SetAudioMusicAndEffectVolumeByteThunk((unsigned char)(
+                (unsigned int)pSelectorEvent->m_nPayload0C * 0xffU /
+                (unsigned int)pSelectorEvent->m_nPayload10));
         return 1;
-    }
-    if (nCommand == 0xacff0001U) {
+    case 0xacff0001U: {
         unsigned char nVolume;
 
         g_nOptionsMusicSliderValue = pSelectorEvent->m_nPayload0C;
         nVolume = (unsigned char)(
             (unsigned int)pSelectorEvent->m_nPayload0C * 0xffU /
             (unsigned int)pSelectorEvent->m_nPayload10);
-        AppendCStringToStream(g_pStartupOutputStream,
-                              "Setting music volume ");
-        AppendCharToFormattedStream(g_pStartupOutputStream,
-                                    (char)nVolume);
-        AppendCStringToStream(g_pStartupOutputStream, "\n");
-        SetVariantResourceEffectMasterVolume(nVolume);
+        g_pStartupOutputStream
+            ->AppendCStringToStream("Setting music volume ")
+            ->AppendCharToFormattedStream((char)nVolume)
+            ->AppendCStringToStream("\n");
+        ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
+            ->SetVariantResourceEffectMasterVolumeThunk(nVolume);
         return 1;
+    }
+    default:
+        break;
     }
     return 0;
 }

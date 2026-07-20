@@ -599,7 +599,6 @@ void LEMBALL_FASTCALL ConstructStreamFormatState(VsInitStreamFormatTargetState *
 void LEMBALL_FASTCALL RestoreStreamFormatSubobjectVtable(VsInitStreamFormatTargetState *pState);
 void LEMBALL_FASTCALL ApplyStreamIntegerWidthPadding(VsInitFormattedOutputStream *pStream);
 void AppendPointerToStreamVariant(VsInitFormattedOutputStream *pStream, unsigned int uValue);
-void AppendCharToFormattedStream(VsInitFormattedOutputStream *pStream, char ch);
 VsInitFormattedOutputStream *AppendUIntHexToStream(VsInitFormattedOutputStream *pStream, unsigned int uValue);
 VsInitFormattedOutputStream *AppendHexUIntToStream(VsInitFormattedOutputStream *pStream, unsigned int uValue);
 void FormatSignedIntToRadixString(int nValue, char *pszBuffer, unsigned int nRadix);
@@ -827,8 +826,8 @@ void AppendPointerToStreamVariant(VsInitFormattedOutputStream *pStream, unsigned
 }
 
 // FUNCTION: LEMBALL 0x004586d0
-void AppendCharToFormattedStream(VsInitFormattedOutputStream *pStream, char ch) {
-    pStream->AppendCharToStreamVariant(ch);
+VsInitFormattedOutputStream *VsInitFormattedOutputStream::AppendCharToFormattedStream(char ch) {
+    return AppendCharToStreamVariant(ch);
 }
 
 // FUNCTION: LEMBALL 0x004586e0
