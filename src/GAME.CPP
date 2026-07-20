@@ -721,8 +721,10 @@ void *LEMBALL_FASTCALL DeleteMainMenuModeEventClientThunk(
     void *pObject, int, BYTE fDelete);
 int __stdcall ValidateResourceFileSignatureThunk(void);
 void LEMBALL_FASTCALL NoopBaseModeThunk(void *);
+extern void noop_vtable_callback_00407f20(void);
 int PASCAL ComputePowerOfTwoThunk(int nExponent);
-int LEMBALL_FASTCALL ReturnFalseBaseModeThunk(void *);
+int PASCAL ReturnFalseBaseModeThunk(void *);
+extern int PASCAL return_false_vtable_callback_00407f30(void *);
 void LEMBALL_FASTCALL RequestFramedScreenTransitionMode2Thunk(void *pScreen);
 int RunMainGameSession(int cArgs, const char *const *ppszArgs);
 int PASCAL ComputePowerOfTwo(int nExponent);
@@ -947,8 +949,9 @@ static void InitializeGameStubVtables(void) {
     g_GAME_StartupModeVtable[1] = (void *)UpdateBaseModeThunk;
     g_GAME_StartupModeVtable[2] =
         (void *)return_zero_screen_callback_00446990;
-    g_GAME_StartupModeVtable[3] = (void *)NoopBaseModeThunk;
-    g_GAME_StartupModeVtable[4] = (void *)ReturnFalseBaseModeThunk;
+    g_GAME_StartupModeVtable[3] = (void *)noop_vtable_callback_00407f20;
+    g_GAME_StartupModeVtable[4] =
+        (void *)return_false_vtable_callback_00407f30;
     g_GAME_StartupModeVtable[5] = 0;
     g_GAME_StartupModeEventClientVtable[0] =
         (void *)InitializeNonZrleVariantRenderEntry;
@@ -963,8 +966,10 @@ static void InitializeGameStubVtables(void) {
     g_GAME_LevelSelectionModeVtable[1] = (void *)UpdateBaseModeThunk;
     g_GAME_LevelSelectionModeVtable[2] =
         (void *)return_zero_screen_callback_00446990;
-    g_GAME_LevelSelectionModeVtable[3] = (void *)NoopBaseModeThunk;
-    g_GAME_LevelSelectionModeVtable[4] = (void *)ReturnFalseBaseModeThunk;
+    g_GAME_LevelSelectionModeVtable[3] =
+        (void *)noop_vtable_callback_00407f20;
+    g_GAME_LevelSelectionModeVtable[4] =
+        (void *)return_false_vtable_callback_00407f30;
     g_GAME_LevelSelectionModeVtable[5] = 0;
     g_GAME_LevelSelectionModeEventClientVtable[0] =
         (void *)InitializeNonZrleVariantRenderEntry;
@@ -978,8 +983,9 @@ static void InitializeGameStubVtables(void) {
     g_GAME_MainMenuModeVtable[1] = (void *)UpdateBaseModeThunk;
     g_GAME_MainMenuModeVtable[2] =
         (void *)return_zero_screen_callback_00446990;
-    g_GAME_MainMenuModeVtable[3] = (void *)NoopBaseModeThunk;
-    g_GAME_MainMenuModeVtable[4] = (void *)ReturnFalseBaseModeThunk;
+    g_GAME_MainMenuModeVtable[3] = (void *)noop_vtable_callback_00407f20;
+    g_GAME_MainMenuModeVtable[4] =
+        (void *)return_false_vtable_callback_00407f30;
     g_GAME_MainMenuModeVtable[5] = 0;
     g_GAME_MainMenuModeEventClientVtable[0] =
         (void *)InitializeNonZrleVariantRenderEntry;
@@ -993,8 +999,9 @@ static void InitializeGameStubVtables(void) {
     g_GAME_OptionsModeVtable[1] = (void *)UpdateBaseModeThunk;
     g_GAME_OptionsModeVtable[2] =
         (void *)return_zero_screen_callback_00446990;
-    g_GAME_OptionsModeVtable[3] = (void *)NoopBaseModeThunk;
-    g_GAME_OptionsModeVtable[4] = (void *)ReturnFalseBaseModeThunk;
+    g_GAME_OptionsModeVtable[3] = (void *)noop_vtable_callback_00407f20;
+    g_GAME_OptionsModeVtable[4] =
+        (void *)return_false_vtable_callback_00407f30;
     g_GAME_OptionsModeVtable[5] = 0;
     g_GAME_OptionsModeEventClientVtable[0] =
         (void *)InitializeNonZrleVariantRenderEntry;
@@ -1011,9 +1018,9 @@ static void InitializeGameStubVtables(void) {
     g_GAME_NetworkLobbyTransportControllerVtable[2] =
         (*(void ***)&g_GAME_NetworkLobbyTransportControllerVtableModel)[2];
     g_GAME_NetworkLobbyTransportControllerVtable[3] =
-        (void *)NoopBaseModeThunk;
+        (void *)noop_vtable_callback_00407f20;
     g_GAME_NetworkLobbyTransportControllerVtable[4] =
-        (void *)ReturnFalseBaseModeThunk;
+        (void *)return_false_vtable_callback_00407f30;
     g_GAME_NetworkLobbyTransportControllerVtable[5] = 0;
     g_GAME_NetworkLobbyTransportEventClientVtable[0] =
         (void *)InitializeNonZrleVariantRenderEntry;
@@ -2855,8 +2862,8 @@ int PASCAL ComputePowerOfTwoThunk(int nExponent) {
 }
 
 // STUB: LEMBALL 0x00403774
-int LEMBALL_FASTCALL ReturnFalseBaseModeThunk(void *) {
-    return 0;
+int PASCAL ReturnFalseBaseModeThunk(void *pObject) {
+    return return_false_vtable_callback_00407f30(pObject);
 }
 
 // STUB: LEMBALL 0x00403814
