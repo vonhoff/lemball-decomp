@@ -2115,7 +2115,7 @@ void *GameFramedScreenBase::ConstructFramedScreenBaseFields(
     unsigned char *pRenderEntryGroup;
 
     pScreen = this;
-    pScreen->m_pVtable00 = g_GAME_FramedScreenBaseVtable;
+    pScreen->SetScreenVtable(g_GAME_FramedScreenBaseVtable);
     InitializeRenderQueueNodeBase(pScreen->m_abRenderQueueNode04);
     ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
         ->Construct((int)(unsigned long)pRenderContext, 0x2b6,
@@ -2273,7 +2273,7 @@ static void LEMBALL_FASTCALL DestroyFramedScreenBase(void *pObject) {
     DWORD dwNow;
 
     pScreen = (GameFramedScreenBase *)pObject;
-    pScreen->m_pVtable00 = g_GAME_FramedScreenBaseVtable;
+    pScreen->SetScreenVtable(g_GAME_FramedScreenBaseVtable);
     *(void ***)pScreen->m_abVariantRenderManager14 =
         g_GAME_FramedScreenCallbackVtable;
     *(void ***)pScreen->m_abRenderQueueNode04 =
@@ -3354,7 +3354,7 @@ void *LEMBALL_FASTCALL ConstructFunctionalOptionsScreen(void *pObject, int, void
         pPrimaryContext, pRenderContext, paSize,
         3, 0, 0, 0, 0, 0);
     InitializeFunctionalOptionsVtables();
-    pScreen->m_pVtable00 = g_GAME_OptionsScreenVtable;
+    pScreen->SetScreenVtable(g_GAME_OptionsScreenVtable);
     *(void ***)pScreen->m_abRenderQueueNode04 =
         g_GAME_OptionsQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
@@ -3534,7 +3534,7 @@ static int LEMBALL_FASTCALL HandleOptionsScreenInput(void *pObject, int, void *p
 
 static void LEMBALL_FASTCALL DestroyOptionsScreen(
     GameOptionsScreenView *pScreen) {
-    pScreen->m_pVtable00 = g_GAME_OptionsScreenVtable;
+    pScreen->SetScreenVtable(g_GAME_OptionsScreenVtable);
     *(void ***)pScreen->m_abRenderQueueNode04 = g_GAME_OptionsQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
         g_GAME_MainMenuCallbackVtable;
@@ -3589,7 +3589,7 @@ void *LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(
         pPrimaryContext, pRenderContext, paSize,
         0x0e, 0x32, 200, 0, 0x28, 0x30);
     InitializeFunctionalPaintballSequenceVtables();
-    pScreen->m_pVtable00 = g_GAME_PaintballSequenceScreenVtable;
+    pScreen->SetScreenVtable(g_GAME_PaintballSequenceScreenVtable);
     *(void ***)pScreen->m_abRenderQueueNode04 =
         g_GAME_PaintballSequenceQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
@@ -4064,7 +4064,7 @@ static void LEMBALL_FASTCALL DestroyPaintballSequenceScreen(
     unsigned char *pSink;
     int i;
 
-    pScreen->m_pVtable00 = g_GAME_PaintballSequenceScreenVtable;
+    pScreen->SetScreenVtable(g_GAME_PaintballSequenceScreenVtable);
     *(void ***)pScreen->m_abRenderQueueNode04 =
         g_GAME_PaintballSequenceQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
@@ -4201,7 +4201,7 @@ void *LEMBALL_FASTCALL ConstructFunctionalNetworkLobbyScreen(
         0x0c, 0x32, 200, 0, 100, 0x28);
     InitializeFramedScreenRenderChildEntry(pScreen->m_abPointSink3EC);
     InitializeFunctionalNetworkLobbyVtables();
-    pScreen->m_pVtable00 = g_GAME_NetworkLobbyScreenVtable;
+    pScreen->SetScreenVtable(g_GAME_NetworkLobbyScreenVtable);
     *(void ***)pScreen->m_abRenderQueueNode04 =
         g_GAME_NetworkLobbyQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
@@ -4806,7 +4806,7 @@ static void DestroyNetworkLobbyScreen(
     GameNetworkLobbyScreenView *pScreen) {
     int i;
 
-    pScreen->m_pVtable00 = g_GAME_NetworkLobbyScreenVtable;
+    pScreen->SetScreenVtable(g_GAME_NetworkLobbyScreenVtable);
     *(void ***)pScreen->m_abRenderQueueNode04 =
         g_GAME_NetworkLobbyQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
@@ -4877,7 +4877,7 @@ void *LEMBALL_FASTCALL ConstructFunctionalPasswordEntryScreen(
         pPrimaryContext, pRenderContext, paSize,
         0x10, 10, 10, 0, 0x28, 0x30);
     InitializeFunctionalPasswordEntryVtables();
-    pScreen->m_pVtable00 = g_GAME_PasswordEntryScreenVtable;
+    pScreen->SetScreenVtable(g_GAME_PasswordEntryScreenVtable);
     *(void ***)pScreen->m_abRenderQueueNode04 =
         g_GAME_PasswordEntryQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =
@@ -5089,7 +5089,7 @@ static void ApplyPasswordEntryAction(
     } else if (nAction == 11) {
         pScreen->m_fPasswordValid484 =
             ValidateCurrentLevelPassword(pScreen->m_szPassword3B0);
-        ((GameNoArgVirtual)pScreen->m_pVtable00[19])(pScreen, 0);
+        ((GameNoArgVirtual)pScreen->GetScreenVtable()[19])(pScreen, 0);
         SnapshotCurrentLevelProgress();
         nEffect = pScreen->m_fPasswordValid484 != 0 ? 0x13 : 0x22;
         if (g_pVariantResourceEntryManager != 0) {
@@ -5304,7 +5304,7 @@ static void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void *pObject) {
 }
 
 static void DestroyPasswordEntryScreen(GamePasswordEntryScreenView *pScreen) {
-    pScreen->m_pVtable00 = g_GAME_PasswordEntryScreenVtable;
+    pScreen->SetScreenVtable(g_GAME_PasswordEntryScreenVtable);
     *(void ***)pScreen->m_abRenderQueueNode04 = g_GAME_PasswordEntryQueueVtable;
     if (pScreen->m_fFrameResourcesLoaded9C != 0)
         ReleasePasswordEntryResources(pScreen);
@@ -5382,7 +5382,7 @@ void *LEMBALL_FASTCALL ConstructFunctionalLevelSelectionScreen(
         4, 0x32, 200, 0, 0x28, 0x30);
     InitializeFramedScreenRenderChildEntry(pScreen->m_abRenderChild398);
     InitializeFunctionalLevelSelectionVtable();
-    pScreen->m_pVtable00 = g_GAME_FunctionalLevelSelectionVtable;
+    pScreen->SetScreenVtable(g_GAME_FunctionalLevelSelectionVtable);
     pScreen->m_fDrawFrameA8 = 1;
     *(void ***)pScreen->m_abVariantRenderManager14 =
         g_GAME_MainMenuCallbackVtable;
@@ -5458,7 +5458,7 @@ static void *LEMBALL_FASTCALL DeleteFunctionalLevelSelectionScreen(
     GameLevelSelectionScreenView *pScreen;
 
     pScreen = (GameLevelSelectionScreenView *)pObject;
-    pScreen->m_pVtable00 = g_GAME_FunctionalLevelSelectionVtable;
+    pScreen->SetScreenVtable(g_GAME_FunctionalLevelSelectionVtable);
     *(void ***)pScreen->m_abRenderQueueNode04 =
         g_GAME_MainMenuQueueVtable;
     *(void ***)pScreen->m_abVariantRenderManager14 =

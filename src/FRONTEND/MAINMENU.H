@@ -33,6 +33,29 @@ public:
 };
 
 struct GameFramedScreenBase {
+    virtual ~GameFramedScreenBase(void) = 0;             // vtable+0x00
+    virtual void ReservedScreenSlot01(void) = 0;         // vtable+0x04
+    virtual void RefreshAndDraw(void) = 0;               // vtable+0x08
+    virtual void ReservedScreenSlot03(void) = 0;         // vtable+0x0c
+    virtual void SetSize(short *paSize) = 0;             // vtable+0x10
+    virtual void ReservedScreenSlot05(void) = 0;         // vtable+0x14
+    virtual void ReservedScreenSlot06(void) = 0;         // vtable+0x18
+    virtual void Update(void) = 0;                       // vtable+0x1c
+    virtual void ResetVariantBuffers(void) = 0;          // vtable+0x20
+    virtual void ReservedScreenSlot09(void) = 0;         // vtable+0x24
+    virtual int GetRequestedMode(void) = 0;              // vtable+0x28
+    virtual int GetTransitionStatus(void) = 0;           // vtable+0x2c
+    virtual void Recenter(void) = 0;                     // vtable+0x30
+    virtual void ReservedScreenSlot13(void) = 0;         // vtable+0x34
+    virtual void UpdateScreen(void) = 0;                 // vtable+0x38
+    virtual int HandleInput(void *pEvent) = 0;           // vtable+0x3c
+    virtual void InitializeWidgets(void) = 0;            // vtable+0x40
+    virtual void ReleaseWidgets(void) = 0;               // vtable+0x44
+    virtual void ReservedScreenSlot18(void) = 0;         // vtable+0x48
+    virtual void ReservedScreenSlot19(void) = 0;         // vtable+0x4c
+    virtual void ReservedScreenSlot20(void) = 0;         // vtable+0x50
+    virtual void ReservedScreenSlot21(void) = 0;         // vtable+0x54
+
     void *ConstructFramedScreenBaseFields(
         void *pPrimaryContext, void *pRenderContext, short *paSize,
         int nScreenType, int cExtraPackagedEntries,
@@ -45,7 +68,13 @@ struct GameFramedScreenBase {
     void EmitScreenFrameRect(short x, short y, short cx, short cy);
     void EmitTiledScreenFrameRect(GameScreenFrameRect Rect);
 
-    void **m_pVtable00;
+    void SetScreenVtable(void **pVtable) {
+        *(void ***)this = pVtable;
+    }
+    void **GetScreenVtable(void) const {
+        return *(void ***)this;
+    }
+
     unsigned char m_abRenderQueueNode04[0x10];
     unsigned char m_abVariantRenderManager14[0x70];
     void *m_pPrimaryContext84;
