@@ -2890,19 +2890,16 @@ static void *LEMBALL_FASTCALL DeleteAdjustedFramedScreenBase(
 
 // FUNCTION: LEMBALL 0x00447530
 void GameIntroSequenceScreen::RefreshMediaPath(void) {
-    SelectIntroSequenceMediaPathThunk((char *)this + 0x3bc);
+    SelectIntroSequenceMediaPathThunk(m_abMediaOwner3BC);
 }
 
 // FUNCTION: LEMBALL 0x004475a0
 void GameIntroSequenceScreen::PollPlaybackCompletion(void) {
-    char *pScreen;
-
-    pScreen = (char *)this;
-    if (*(int *)(pScreen + 0x3b8) != 0 &&
-        *(int *)(pScreen + 0x3c0) == 1) {
-        ((IntroMediaOwnerInterface *)(pScreen + 0x3bc))->Stop();
-        *(int *)(pScreen + 0x3b4) = 10;
-        *(int *)(pScreen + 0x3b8) = 0;
+    if (m_fPlaybackStarted3B8 != 0 &&
+        *(int *)(m_abMediaOwner3BC + 4) == 1) {
+        ((IntroMediaOwnerInterface *)m_abMediaOwner3BC)->Stop();
+        m_nPlaybackDelay3B4 = 10;
+        m_fPlaybackStarted3B8 = 0;
     }
 }
 
@@ -2947,23 +2944,23 @@ int GameIntroSequenceScreen::HandleInput(short *pEvent)
 
 // FUNCTION: LEMBALL 0x004476b0
 void GameIntroSequenceScreen::UpdatePlayback(void) {
-    char *pScreen;
+    GameIntroSequenceScreen *pScreen;
     char *pMediaOwner;
     short *pPrimarySize;
     short aRect[4];
 
-    pScreen = (char *)this;
-    if (*(int *)(pScreen + 0x3b4) > 0)
-        --*(int *)(pScreen + 0x3b4);
+    pScreen = this;
+    if (pScreen->m_nPlaybackDelay3B4 > 0)
+        --pScreen->m_nPlaybackDelay3B4;
     if (IsPrimaryContextWindowReadyForPresentThunk(
-            *(int **)(pScreen + 0x84)) == 0) {
-        RequestIntroSequenceScreenTransitionThunk(pScreen);
+            (int *)pScreen->m_pPrimaryContext84) == 0) {
+        RequestIntroSequenceScreenTransitionThunk((char *)pScreen);
         return;
     }
-    if (*(int *)(pScreen + 0x3b4) != 0)
+    if (pScreen->m_nPlaybackDelay3B4 != 0)
         return;
 
-    pPrimarySize = (short *)(*(char **)(pScreen + 0x84) + 8);
+    pPrimarySize = (short *)((char *)pScreen->m_pPrimaryContext84 + 8);
     aRect[0] = pPrimarySize[0];
     aRect[1] = pPrimarySize[1];
     aRect[2] = (short)(aRect[0] - 0x140);
@@ -2972,20 +2969,20 @@ void GameIntroSequenceScreen::UpdatePlayback(void) {
     aRect[3] = (short)(aRect[3] / 2);
     aRect[0] = 0x140;
     aRect[1] = 0xf0;
-    if (*(int *)(pScreen + 0x3b8) == 0) {
+    if (pScreen->m_fPlaybackStarted3B8 == 0) {
         ((GameVariantResourceEntryManager *)g_pVariantResourceEntryManager)
             ->SwitchVariantResourceEntryMode(1, 0);
-        pMediaOwner = pScreen + 0x3bc;
+        pMediaOwner = (char *)pScreen->m_abMediaOwner3BC;
         ((IntroMediaOwnerInterface *)pMediaOwner)->Initialize(
-            aRect, *(void **)(pScreen + 0x84),
+            aRect, pScreen->m_pPrimaryContext84,
             "PaintBall Intro Sequence");
         ((VsGdiAnimWindowOwner *)pMediaOwner)
             ->StartEmbeddedMciWindowPlaybackOnce();
-        *(int *)(pScreen + 0x3b8) = 1;
+        pScreen->m_fPlaybackStarted3B8 = 1;
     }
-    ((VsGdiAnimWindowOwner *)(pScreen + 0x3bc))
+    ((VsGdiAnimWindowOwner *)pScreen->m_abMediaOwner3BC)
         ->ResumeEmbeddedMciWindowPlayback();
-    *(int *)(pScreen + 0x3b4) = -1;
+    pScreen->m_nPlaybackDelay3B4 = -1;
 }
 
 // FUNCTION: LEMBALL 0x004477b0

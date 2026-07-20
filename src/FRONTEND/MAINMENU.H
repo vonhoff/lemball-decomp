@@ -22,14 +22,6 @@ void LEMBALL_FASTCALL DestroyFramedScreenBaseThunk00402081(
     void *pObject);
 void LEMBALL_FASTCALL DestroyIntroSequenceScreenThunk(void *pObject);
 
-class GameIntroSequenceScreen {
-public:
-    int HandleInput(short *pEvent);
-    void RefreshMediaPath(void);
-    void PollPlaybackCompletion(void);
-    void UpdatePlayback(void);
-};
-
 struct GameFramedScreenBase {
     void *ConstructFramedScreenBaseFields(
         void *pPrimaryContext, void *pRenderContext, short *paSize,
@@ -93,6 +85,25 @@ struct GameFramedScreenBase {
     int m_nFrameResourceId390;
     int m_nTimedVariantResourceId394;
 };
+
+class GameIntroSequenceScreen : public GameFramedScreenBase {
+public:
+    int HandleInput(short *pEvent);
+    void RefreshMediaPath(void);
+    void PollPlaybackCompletion(void);
+    void UpdatePlayback(void);
+
+private:
+    int m_fSkipVariant398;
+    int m_nRequestedMode39C;
+    unsigned char m_abPointSink3A0[0x10];
+    int m_nReserved3B0;
+    int m_nPlaybackDelay3B4;
+    int m_fPlaybackStarted3B8;
+    unsigned char m_abMediaOwner3BC[0xd8];
+};
+
+DECOMP_SIZE_ASSERT(GameIntroSequenceScreen, 0x494);
 
 void LEMBALL_FASTCALL ActivateFramedScreenBase(void *pScreen);
 void LEMBALL_FASTCALL ActivateFramedScreenBaseThunk(void *pScreen);
