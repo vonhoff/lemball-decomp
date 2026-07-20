@@ -2584,20 +2584,20 @@ static void LEMBALL_FASTCALL LoadFramedScreenFrameResources(void *pObject) {
 
     pScreen = (GameFramedScreenBase *)pObject;
     pScreen->m_fFrameResourcesLoaded9C = 1;
-    if (pScreen->m_fCompactLayout32C == 0) {
-        pScreen->m_pBackgroundBitmapC4 = LoadBitmapResource(0x131);
-        pScreen->m_pForegroundBitmapC0 = LoadBitmapResource(0x132);
-        pScreen->m_nMappedListResourceId38C = 0x151;
-        pScreen->m_nMappedListRemapResourceId384 = 0x113;
-        pScreen->m_nFrameResourceId388 = 0x150;
-        pScreen->m_nFrameResourceId390 = 0x152;
-    } else {
+    if (pScreen->m_fCompactLayout32C != 0) {
         pScreen->m_pBackgroundBitmapC4 = LoadBitmapResource(0x13c);
         pScreen->m_pForegroundBitmapC0 = LoadBitmapResource(0x13d);
         pScreen->m_nMappedListResourceId38C = 0x17e;
         pScreen->m_nMappedListRemapResourceId384 = 0x114;
         pScreen->m_nFrameResourceId388 = 0x17d;
         pScreen->m_nFrameResourceId390 = 0x17f;
+    } else {
+        pScreen->m_pBackgroundBitmapC4 = LoadBitmapResource(0x131);
+        pScreen->m_pForegroundBitmapC0 = LoadBitmapResource(0x132);
+        pScreen->m_nMappedListResourceId38C = 0x151;
+        pScreen->m_nMappedListRemapResourceId384 = 0x113;
+        pScreen->m_nFrameResourceId388 = 0x150;
+        pScreen->m_nFrameResourceId390 = 0x152;
     }
 
     LoadVariantRenderResource(pScreen->m_abVariantRenderManager14,
