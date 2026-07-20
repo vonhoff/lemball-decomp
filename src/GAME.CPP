@@ -5451,6 +5451,8 @@ void GameCursorRenderClient::UpdateForWindowOwner(void *pOwner)
     void *pRenderEntry;
     int nCompactOffset;
     int nScale;
+    short xCursorOffset;
+    short yCursorOffset;
 
     GameCursorRenderClient *pCursor = this;
 
@@ -5513,12 +5515,16 @@ void GameCursorRenderClient::UpdateForWindowOwner(void *pOwner)
         return;
 
     nScale = *(int *)((char *)pOwner + 0x38);
-    aRenderPosition[0] =
-        (short)((*(short *)((char *)pCursor + 0x10) - aRect[2]) / nScale) -
-        *(short *)((char *)pCursor + 0x14);
-    aRenderPosition[1] =
-        (short)((*(short *)((char *)pCursor + 0x12) - aRect[3]) / nScale) -
-        *(short *)((char *)pCursor + 0x16);
+    xCursorOffset = *(short *)((char *)pCursor + 0x10);
+    xCursorOffset = (short)(xCursorOffset - aRect[2]);
+    aRenderPosition[0] = (short)(xCursorOffset / nScale);
+    aRenderPosition[0] = (short)(aRenderPosition[0] -
+                                 *(short *)((char *)pCursor + 0x14));
+    yCursorOffset = *(short *)((char *)pCursor + 0x12);
+    yCursorOffset = (short)(yCursorOffset - aRect[3]);
+    aRenderPosition[1] = (short)(yCursorOffset / nScale);
+    aRenderPosition[1] = (short)(aRenderPosition[1] -
+                                 *(short *)((char *)pCursor + 0x16));
     pGeometryQueue = *(void **)((char *)pOwner + 0x4c);
     pGeometryContext = *(void **)((char *)pGeometryQueue + 0x0c);
     ((VoidProc)(*(void ***)pGeometryContext)[2])(pGeometryContext);
