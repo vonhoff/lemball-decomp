@@ -5,7 +5,8 @@
 
 extern "C" BOOL WINAPI SetCurrentDirectoryA(LPCSTR lpPathName);
 
-HINSTANCE g_hApplicationInstance = 0;
+// GLOBAL: LEMBALL 0x004a8188
+HINSTANCE g_hApplicationInstance;
 HICON g_hApplicationIcon = 0;
 
 #if defined(LEMBALL_SKIP_CD_TEST)
