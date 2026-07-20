@@ -5449,6 +5449,8 @@ void GameCursorRenderClient::UpdateForWindowOwner(void *pOwner)
         if (aRect[0] < 1 || aRect[1] < 1) {
             aRect[0] = 0;
             aRect[1] = 0;
+            aRect[2] = 0;
+            aRect[3] = 0;
         }
     }
 
