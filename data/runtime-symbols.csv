@@ -8,8 +8,11 @@ address,name,symbol,type
 0x0044C460,GameMenuSelectorEntry::HandleEvent,?HandleEvent@GameMenuSelectorEntry@@QAEHPAUGameMenuSelectorEvent@@@Z,function
 0x0044C600,GameMenuSelectorEntry::RebuildRects,?RebuildRects@GameMenuSelectorEntry@@QAEXHH@Z,function
 0x0044C630,GameMenuSelectorEntry::BuildOverlay,?BuildOverlay@GameMenuSelectorEntry@@QAEXPBH@Z,function
+0x0044E6C0,GameRectQuad::CopyFrom,?CopyFrom@GameRectQuad@@QAEXPBF@Z,function
+0x0044EA00,GameSelectorProgressOverlayChild::EmitEntries,?EmitEntries@GameSelectorProgressOverlayChild@@QAEXXZ,function
+0x0044EBC0,GameSelectorProgressGeometry::SetPercentFromPoint,?SetPercentFromPoint@GameSelectorProgressGeometry@@QAEXPBF@Z,function
 0x0044CC90,SetMenuSelectorChildrenEnabled,?SetMenuSelectorChildrenEnabled@@YIXPAUGameMenuSelectorManager@@HH@Z,function
-0x0044EB60,SetMenuSelectorProgressPercent,?SetMenuSelectorProgressPercent@@YIXPAXHH@Z,function
+0x0044EB60,GameSelectorProgressOverlayChild::SetPercent,?SetPercent@GameSelectorProgressOverlayChild@@QAEXH@Z,function
 0x0044D150,GameMenuSelectorManager::RecordChildMetadata,?RecordChildMetadata@GameMenuSelectorManager@@QAEXHHHH@Z,function
 0x0044D290,GameMenuSelectorManager::RebuildChildRects,?RebuildChildRects@GameMenuSelectorManager@@QAEXHH@Z,function
 0x0044D830,GameMenuSelectorManager::MovePrevious,?MovePrevious@GameMenuSelectorManager@@QAEXXZ,function

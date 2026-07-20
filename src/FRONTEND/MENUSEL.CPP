@@ -18,6 +18,9 @@
 #include <string.h>
 
 #pragma comment(linker, "/include:?ConstructProgressEntry@GameMenuSelectorEntry@@QAEPAU1@PBFPAX1HHPBHHHHPAHH@Z")
+#pragma comment(linker, "/include:?CopyFrom@GameRectQuad@@QAEXPBF@Z")
+#pragma comment(linker, "/include:?EmitEntries@GameSelectorProgressOverlayChild@@QAEXXZ")
+#pragma comment(linker, "/include:?SetPercentFromPoint@GameSelectorProgressGeometry@@QAEXPBF@Z")
 
 DECOMP_SIZE_ASSERT(GameMenuSelectorEvent, 0x1c);
 DECOMP_SIZE_ASSERT(GameMenuSelectorMetadata, 0x20);
@@ -133,6 +136,32 @@ public:
     void RebuildSourceRect(int fForce);
 };
 
+struct GameRectQuad {
+    short m_cx;
+    short m_cy;
+    short m_x;
+    short m_y;
+
+    void CopyFrom(const short *pRect);
+};
+
+class GameSelectorProgressOverlayChild {
+public:
+    void EmitEntries(void);
+    void SetPercent(int nPercent);
+};
+
+class GameSelectorProgressGeometry {
+public:
+    void SetPercentFromPoint(const short *pPoint);
+};
+
+class GameProgressRenderEntryInterface {
+public:
+    virtual void Delete(unsigned int fDelete) = 0;
+    virtual void Queue(void *pQueue) = 0;
+};
+
 class GameCompactZrleOverlayGeometryInterface {
 public:
     virtual void Reserved00(void) = 0;
@@ -209,8 +238,6 @@ static void LEMBALL_FASTCALL ReleaseMenuSelectorEntryResources(
     GameMenuSelectorEntry *pEntry);
 static void LEMBALL_FASTCALL ReloadMenuSelectorOverlayResource(
     void *pOverlay, int nUnusedEdx, int nResourceId);
-static void LEMBALL_FASTCALL SetMenuSelectorProgressPercent(
-    void *pProgress, int nUnusedEdx, int nPercent);
 static void LEMBALL_FASTCALL DestroyMenuSelectorEntry(
     GameMenuSelectorEntry *pEntry);
 static void *LEMBALL_FASTCALL DeleteMenuSelectorEntry(
@@ -496,6 +523,21 @@ static int MapSpriteOwnerEventToFrameSlot(int nEvent) {
         return 2;
     }
     return 6;
+}
+
+/* FUNCTION: LEMBALL 0x0044E6C0 */
+void GameRectQuad::CopyFrom(const short *pRect) {
+    const short *pPosition;
+
+    m_cx = pRect[0];
+    m_cy = pRect[1];
+    if (pRect == 0) {
+        pPosition = 0;
+    } else {
+        pPosition = pRect + 2;
+    }
+    m_x = pPosition[0];
+    m_y = pPosition[1];
 }
 
 static void QueueSpriteOwnerEvent(
@@ -2348,7 +2390,7 @@ int GameMenuSelectorEntry::HandleEvent(GameMenuSelectorEvent *pEvent) {
         }
     }
     *pEntry->m_pSelection48 = nPercent;
-    SetMenuSelectorProgressPercent(pProgress, 0, nPercent);
+    ((GameSelectorProgressOverlayChild *)pProgress)->SetPercent(nPercent);
     return 0;
 }
 
@@ -2886,9 +2928,83 @@ public:
     virtual void QueueEvent(void *pEvent) = 0;
 };
 
+/* FUNCTION: LEMBALL 0x0044EA00 */
+void GameSelectorProgressOverlayChild::EmitEntries(void) {
+    char *pObject;
+    short cxFill;
+    int cy;
+
+    pObject = (char *)this;
+    cy = (int)*(short *)(pObject + 0xca);
+    cxFill = (short)(((int)*(short *)(pObject + 0xc8) *
+                      *(int *)(pObject + 0x120)) / 100);
+    if (*(int *)(pObject + 0x120) == 0) {
+        return;
+    }
+
+    *(int *)(pObject + 0xdc) = 0xac;
+    *(short *)(pObject + 0xd4) = cxFill;
+    *(short *)(pObject + 0xd6) = (short)cy;
+    *(short *)(pObject + 0xd8) = 0;
+    *(short *)(pObject + 0xda) = 0;
+    ((GameProgressRenderEntryInterface *)(pObject + 0xd0))
+        ->Queue(*(void **)(pObject + 0x4c));
+
+    *(short *)(pObject + 0xe4) = 0;
+    *(short *)(pObject + 0xe6) = 0;
+    *(short *)(pObject + 0xe8) = cxFill;
+    *(short *)(pObject + 0xea) = 0;
+    *(int *)(pObject + 0xec) = 0xab;
+    ((GameProgressRenderEntryInterface *)(pObject + 0xe0))
+        ->Queue(*(void **)(pObject + 0x4c));
+
+    *(short *)(pObject + 0xf4) = 0;
+    *(short *)(pObject + 0xf6) = 0;
+    *(short *)(pObject + 0xf8) = 0;
+    *(short *)(pObject + 0xfa) = (short)cy;
+    *(int *)(pObject + 0xfc) = 0xab;
+    ((GameProgressRenderEntryInterface *)(pObject + 0xf0))
+        ->Queue(*(void **)(pObject + 0x4c));
+
+    *(short *)(pObject + 0x104) =
+        (short)*(int *)(pObject + 0x120);
+    *(short *)(pObject + 0x106) = (short)cy;
+    *(short *)(pObject + 0x108) = 0;
+    *(short *)(pObject + 0x10a) = (short)cy;
+    *(int *)(pObject + 0x10c) = 0xbc;
+    ((GameProgressRenderEntryInterface *)(pObject + 0x100))
+        ->Queue(*(void **)(pObject + 0x4c));
+
+    *(short *)(pObject + 0x114) =
+        (short)*(int *)(pObject + 0x120);
+    *(short *)(pObject + 0x116) = (short)cy;
+    *(short *)(pObject + 0x118) = cxFill;
+    *(short *)(pObject + 0x11a) = 0;
+    *(int *)(pObject + 0x11c) = 0xbc;
+    ((GameProgressRenderEntryInterface *)(pObject + 0x110))
+        ->Queue(*(void **)(pObject + 0x4c));
+}
+
+void GameSelectorProgressGeometry::SetPercentFromPoint(
+    const short *pPoint) {
+    int x;
+
+    if (*(int *)((char *)this + 0x10) == 0) {
+        return;
+    }
+    x = (int)pPoint[0] - (int)*(short *)((char *)this + 0x34);
+    if (x < 0) {
+        x = 0;
+    } else if (*(short *)((char *)this + 0x38) < x) {
+        x = (int)*(short *)((char *)this + 0x38);
+    }
+    ((GameSelectorProgressOverlayChild *)((char *)this - 0x90))
+        ->SetPercent(
+            (x * 100) / (int)*(short *)((char *)this + 0x30));
+}
+
 /* FUNCTION: LEMBALL 0x0044EB60 */
-static void LEMBALL_FASTCALL SetMenuSelectorProgressPercent(
-    void *pProgress, int, int nPercent) {
+void GameSelectorProgressOverlayChild::SetPercent(int nPercent) {
     struct ProgressEvent {
         short m_nType00;
         short m_nReserved02;
@@ -2899,14 +3015,14 @@ static void LEMBALL_FASTCALL SetMenuSelectorProgressPercent(
     };
     ProgressEvent Event;
 
-    if (*(int *)((char *)pProgress + 0x120) == nPercent) {
+    if (*(int *)((char *)this + 0x120) == nPercent) {
         return;
     }
     Event.m_nType00 = 0x0c;
-    *(int *)((char *)pProgress + 0x120) = nPercent;
+    *(int *)((char *)this + 0x120) = nPercent;
     Event.m_dwTimestamp04 = (int)timeGetTime();
-    Event.m_nPayload08 = *(int *)((char *)pProgress + 0x130);
-    Event.m_nPayload0C = *(int *)((char *)pProgress + 0x120);
+    Event.m_nPayload08 = *(int *)((char *)this + 0x130);
+    Event.m_nPayload0C = *(int *)((char *)this + 0x120);
     Event.m_nPayload10 = 100;
     ((GameMenuSelectorEventQueueInterface *)
         g_pSharedRenderDispatchQueue)->QueueEvent(&Event);
