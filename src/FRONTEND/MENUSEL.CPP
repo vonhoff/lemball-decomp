@@ -19,8 +19,8 @@
 
 #pragma comment(linker, "/include:?ConstructProgressEntry@GameMenuSelectorEntry@@QAEPAU1@PBFPAX1HHPBHHHHPAHH@Z")
 #pragma comment(linker, "/include:?CopyFrom@GameRectQuad@@QAEXPBF@Z")
-#pragma comment(linker, "/include:?SetPercentFromPoint@GameSelectorProgressGeometry@@QAEXPBF@Z")
-#pragma comment(linker, "/include:?ForwardSlot6@GameSelectorProgressOverlayChild@@QAEXPAX@Z")
+#pragma comment(linker, "/include:?DispatchButtonTransition@GameSelectorProgressGeometry@@QAEXPBUVS_XYPair@@H@Z")
+#pragma comment(linker, "/include:?DispatchPointerMove@GameSelectorProgressGeometry@@QAEXPBUVS_XYPair@@@Z")
 
 DECOMP_SIZE_ASSERT(GameMenuSelectorEvent, 0x1c);
 DECOMP_SIZE_ASSERT(GameMenuSelectorMetadata, 0x20);
@@ -147,7 +147,9 @@ struct GameRectQuad {
 
 class GameSelectorProgressGeometry : public GameGeometryOwnerRectState {
 public:
-    void SetPercentFromPoint(const short *pPoint);
+    void DispatchButtonTransition(
+        const VS_XYPair *pPoint, int nButton);
+    void DispatchPointerMove(const VS_XYPair *pPoint);
 };
 
 struct GameProgressRenderEntry {
@@ -170,7 +172,6 @@ public:
     virtual unsigned int GetWindowOwnerFlags(void);
     virtual void ApplyWindowOwnerActivation(int nActivate);
     void SetPercent(int nPercent);
-    void ForwardSlot6(void *pValue);
 
 public:
     GameSelectorProgressGeometry m_Geometry90;
@@ -193,7 +194,7 @@ public:
     virtual void Queue(void *pQueue) = 0;
 };
 
-class GameProgressOverlayForwardInterface {
+class GameSelectorProgressGeometryDispatchInterface {
 public:
     virtual void Reserved0(void) = 0;
     virtual void Reserved1(void) = 0;
@@ -201,7 +202,7 @@ public:
     virtual void Reserved3(void) = 0;
     virtual void Reserved4(void) = 0;
     virtual void Reserved5(void) = 0;
-    virtual void Forward(void *pValue) = 0;
+    virtual void DispatchPointerMove(const VS_XYPair *pPoint) = 0;
 };
 
 class GameCompactZrleOverlayGeometryInterface {
@@ -3078,18 +3079,20 @@ unsigned int GameSelectorProgressOverlayChild::GetWindowOwnerFlags(void) {
     return 0x80000801U;
 }
 
-void GameSelectorProgressOverlayChild::ForwardSlot6(void *pValue) {
-    ((GameProgressOverlayForwardInterface *)this)->Forward(pValue);
+void GameSelectorProgressGeometry::DispatchButtonTransition(
+    const VS_XYPair *pPoint, int) {
+    ((GameSelectorProgressGeometryDispatchInterface *)this)
+        ->DispatchPointerMove(pPoint);
 }
 
-void GameSelectorProgressGeometry::SetPercentFromPoint(
-    const short *pPoint) {
+void GameSelectorProgressGeometry::DispatchPointerMove(
+    const VS_XYPair *pPoint) {
     int x;
 
     if (*(int *)((char *)this + 0x10) == 0) {
         return;
     }
-    x = (int)pPoint[0] - (int)*(short *)((char *)this + 0x34);
+    x = (int)pPoint->m_x - (int)*(short *)((char *)this + 0x34);
     if (x < 0) {
         x = 0;
     } else if (*(short *)((char *)this + 0x38) < x) {
