@@ -17,8 +17,6 @@
 // GetIntDirectionSignThunk
 // STUB: LEMBALL 0x004014ce
 // UpdateMenuSelectorAnimationThunk
-// STUB: LEMBALL 0x004012cb
-// RebuildMenuSelectorChildRectsThunk
 // STUB: LEMBALL 0x00401d43
 // SetMenuSelectorChildrenEnabledThunk
 // STUB: LEMBALL 0x00402a59
@@ -37,10 +35,10 @@
 // DeleteMenuSelectorManagerThunk
 // STUB: LEMBALL 0x00401adc
 // HandleMenuSelectorEventThunk
-
 #include "ENGINE/CORE/COMMON.H"
 
 struct GameMenuSelectorEntry;
+struct GameQueuedVariantChildSlotManager;
 struct VS_XYPair;
 
 // SIZE 0x1c
@@ -185,16 +183,26 @@ void LEMBALL_FASTCALL SetMenuSelectorChildrenEnabled(
     GameMenuSelectorManager *pManager, int nUnusedEdx, int fEnabled);
 void LEMBALL_FASTCALL SetMenuSelectorChildrenEnabledThunk(
     GameMenuSelectorManager *pManager, int nUnusedEdx, int fEnabled);
-void LEMBALL_FASTCALL RebuildMenuSelectorChildRects(
-    GameMenuSelectorManager *pManager, int nUnusedEdx, int fForce);
-void LEMBALL_FASTCALL RebuildMenuSelectorChildRectsThunk(
-    GameMenuSelectorManager *pManager, int nUnusedEdx, int fForce);
 void LEMBALL_FASTCALL EmitMenuSelectorResourceEntries(
     GameMenuSelectorManager *pManager);
 void *LEMBALL_FASTCALL ConstructAlignedZrleChildOverlayFromPoint(
     void *pObject, int nUnusedEdx, const VS_XYPair *pPoint,
     void *pRenderOwner, int nResourceId, int fAlignment);
 void LEMBALL_FASTCALL DestroyAlignedZrleChildOverlay(void *pChildOwner);
+
+void *LEMBALL_FASTCALL DeleteSelectorProgressOverlayChildAdjusted(void *pGeometryInterface, int nUnusedEdx, unsigned int fDelete);
+int LEMBALL_FASTCALL HandleQueuedVariantChildSlotManagerEvent(GameQueuedVariantChildSlotManager *pManager, int nUnusedEdx, GameMenuSelectorEvent *pEvent);
+// FUNCTION: LEMBALL 0x0044fff0
+// DeleteQueuedVariantChildSlotManager
+void *LEMBALL_FASTCALL DeleteQueuedVariantChildSlotManager(GameQueuedVariantChildSlotManager *pManager, int nUnusedEdx, int fDelete);
+void *LEMBALL_FASTCALL ConstructResourceGeometryChildBase(void *pObject, int nUnusedEdx, void *pRenderOwner);
+void LEMBALL_FASTCALL InitializeSharedSpriteOwnerState(void *pObject);
+void LEMBALL_FASTCALL RefreshCompactZrleOwnerFromResourceHelper(void *pObject);
+// FUNCTION: LEMBALL 0x00468300
+// RefreshCompactZrleOwnerIfHelperDirty
+void LEMBALL_FASTCALL RefreshCompactZrleOwnerIfHelperDirty(void *pObject);
+void LEMBALL_FASTCALL QueueCompactZrleOwnerIfDirty(void *pObject);
+void LEMBALL_FASTCALL ComputeAlignedZrleChildLayout(void *pObject);
 
 void *LEMBALL_FASTCALL ConstructQueuedVariantChildSlotManager(
     void *pManager, int nUnusedEdx, void *pRenderOwner,

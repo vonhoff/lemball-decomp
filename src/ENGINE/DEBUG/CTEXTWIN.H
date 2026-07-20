@@ -7,7 +7,8 @@
 // SIZE 0x58
 class CTextWindow {
 public:
-    CTextWindow *Construct(const char *pszTitle, unsigned int cchBuffer);
+    void PostAllocatedTextControlString(const char *pszText,
+                                        unsigned int dwColour);
 
     // STRONG INFERENCE: preserved diagnostics identify these methods at the
     // listed executable addresses; implementations are not reconstructed yet.
@@ -24,6 +25,5 @@ public:
 };
 
 int __stdcall DebugMessageThreadMain(void);
-CTextWindow *GetDebugTextWindow(void);
 
 #endif

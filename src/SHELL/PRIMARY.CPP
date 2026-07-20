@@ -7,11 +7,64 @@ extern void LEMBALL_FASTCALL EnsureHelperGroup0BackingBuffer(int nHelperGroup);
 extern void LEMBALL_FASTCALL ReleaseHelperGroup0BackingBuffer(int nHelperGroup);
 extern void *g_GAME_PrimaryContextMenuDefinitionTable[];
 
+struct GameHelperGroup0 {
+    void SetBackingActive(int fActive);
+};
+
+// FUNCTION: LEMBALL 0x00431730
+unsigned int __stdcall ComputePrimaryContextWindowStyleFlags(void) {
+    unsigned int uStyle;
+
+    uStyle = 0x80001801;
+    if (g_fCompactPrimaryContextLayout == 0) {
+        if (GetSystemMetrics(0x3d) >= 0x281 &&
+            GetSystemMetrics(0x3e) >= 0x1f5) {
+            uStyle = 0x80001b83;
+        }
+    } else {
+        uStyle = 0x80001b83;
+    }
+
+    if (g_fStartupEditLevelOverride != 0) {
+        uStyle |= 0x404;
+    }
+    return uStyle;
+}
+
+// FUNCTION: LEMBALL 0x00431780
+void LEMBALL_FASTCALL PrepareLevelScreenRootHelperForRuntime(
+    GamePrimaryContext *pPrimaryContext)
+{
+    void *pHelperGroup;
+
+    pPrimaryContext->SetWindowOwnerScaleFactor(1);
+    pPrimaryContext->ApplyWindowOwnerPaletteResource(0x2e);
+
+    pHelperGroup = *(void **)((char *)pPrimaryContext + 0x4c);
+    pHelperGroup = (char *)*(void **)((char *)pHelperGroup + 0x0c) + 0x98;
+    ((GameHelperGroup0 *)pHelperGroup)->SetBackingActive(1);
+    *(int *)((char *)pPrimaryContext + 0xd4) = 0;
+}
+
 // FUNCTION: LEMBALL 0x00431eb0
 int __stdcall GetPrimaryContextMenuDefinition(unsigned int *pMenuId, void **ppMenuDefinition) {
     *pMenuId = 0x73;
     *ppMenuDefinition = g_GAME_PrimaryContextMenuDefinitionTable;
     return 1;
+}
+
+// FUNCTION: LEMBALL 0x00432530
+void GamePrimaryContext::MarkNestedContextDirtyIfField20(void) {
+    int nNestedContext;
+    int nDirtyTable;
+
+    if (*(int *)((char *)this + 0x20) == 0) {
+        return;
+    }
+
+    nNestedContext = *(int *)(*(int *)((char *)this + 0x4c) + 0x0c);
+    nDirtyTable = *(int *)(nNestedContext + 0x40);
+    *(int *)(*(int *)(nDirtyTable + 4) + nNestedContext + 0x78) = 1;
 }
 
 struct GameMenuDefinitionEntry {
@@ -55,7 +108,7 @@ void *g_GAME_PrimaryContextMenuDefinitionTable[] = {
     0,
 };
 
-/* FUNCTION: LEMBALL 0x004654F0 */
+// FUNCTION: LEMBALL 0x004654f0
 unsigned int MapWindowOwnerFlagsToWin32Style(unsigned int uFlags) {
     unsigned int uStyle;
 
@@ -71,27 +124,7 @@ unsigned int MapWindowOwnerFlagsToWin32Style(unsigned int uFlags) {
     return uStyle;
 }
 
-/* FUNCTION: LEMBALL 0x00431730 */
-unsigned int __stdcall ComputePrimaryContextWindowStyleFlags(void) {
-    unsigned int uStyle;
-
-    uStyle = 0x80001801;
-    if (g_fCompactPrimaryContextLayout == 0) {
-        if (GetSystemMetrics(0x3d) >= 0x281 &&
-            GetSystemMetrics(0x3e) >= 0x1f5) {
-            uStyle = 0x80001b83;
-        }
-    } else {
-        uStyle = 0x80001b83;
-    }
-
-    if (g_fStartupEditLevelOverride != 0) {
-        uStyle |= 0x404;
-    }
-    return uStyle;
-}
-
-/* FUNCTION: LEMBALL 0x00466540 */
+// FUNCTION: LEMBALL 0x00466540
 void LEMBALL_FASTCALL EnsureHelperGroup0BackingBuffer(int nHelperGroup) {
     unsigned short *pSize;
     short aDimensions[2];
@@ -136,11 +169,7 @@ void LEMBALL_FASTCALL EnsureHelperGroup0BackingBuffer(int nHelperGroup) {
     }
 }
 
-struct GameHelperGroup0 {
-    void SetBackingActive(int fActive);
-};
-
-/* FUNCTION: LEMBALL 0x00466630 */
+// FUNCTION: LEMBALL 0x00466630
 void GameHelperGroup0::SetBackingActive(int fActive) {
     if (fActive == 0) {
         ReleaseHelperGroup0BackingBuffer((int)(unsigned long)this);
@@ -149,32 +178,4 @@ void GameHelperGroup0::SetBackingActive(int fActive) {
         EnsureHelperGroup0BackingBuffer((int)(unsigned long)this);
         *(int *)((char *)this + 0x48) = 1;
     }
-}
-
-/* FUNCTION: LEMBALL 0x00431780 */
-void LEMBALL_FASTCALL PrepareLevelScreenRootHelperForRuntime(
-    GamePrimaryContext *pPrimaryContext) {
-    void *pHelperGroup;
-
-    pPrimaryContext->SetWindowOwnerScaleFactor(1);
-    pPrimaryContext->ApplyWindowOwnerPaletteResource(0x2e);
-
-    pHelperGroup = *(void **)((char *)pPrimaryContext + 0x4c);
-    pHelperGroup = (char *)*(void **)((char *)pHelperGroup + 0x0c) + 0x98;
-    ((GameHelperGroup0 *)pHelperGroup)->SetBackingActive(1);
-    *(int *)((char *)pPrimaryContext + 0xd4) = 0;
-}
-
-/* FUNCTION: LEMBALL 0x00432530 */
-void GamePrimaryContext::MarkNestedContextDirtyIfField20(void) {
-    int nNestedContext;
-    int nDirtyTable;
-
-    if (*(int *)((char *)this + 0x20) == 0) {
-        return;
-    }
-
-    nNestedContext = *(int *)(*(int *)((char *)this + 0x4c) + 0x0c);
-    nDirtyTable = *(int *)(nNestedContext + 0x40);
-    *(int *)(*(int *)(nDirtyTable + 4) + nNestedContext + 0x78) = 1;
 }

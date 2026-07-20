@@ -10,8 +10,8 @@ void LEMBALL_FASTCALL DestroyNamedStatusEntry(void *pEntry);
 struct GameStatusEntryInitialVtable {
     int (*m_pPurecall)(void);
     void *m_pReserved;
-    void (*m_pEnterCriticalSection)(void *);
-    void (*m_pLeaveCriticalSection)(void *);
+    void (LEMBALL_FASTCALL *m_pEnterCriticalSection)(void *);
+    void (LEMBALL_FASTCALL *m_pLeaveCriticalSection)(void *);
     void *(CArena::*m_pWriteMemoryArenaReport)(VsInitFormattedOutputStream *);
     void *(LEMBALL_FASTCALL *m_pDestroyMemoryArena)(void *, int, int);
     int (CArena::*m_pAllocate)(void **, unsigned int, const char *);

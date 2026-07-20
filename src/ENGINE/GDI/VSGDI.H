@@ -25,6 +25,18 @@ struct VsGdiRect {
     short m_cy; // 0x06
 };
 
+class VsGdiHelperSurface;
+
+// SIZE 0x10
+struct VsGdiHelperDispatchQueue {
+    void **m_ppEntries;
+    int m_cEntries;
+    int m_nReserved08;
+    VsGdiHelperSurface *m_pHelperTarget;
+
+    void AppendPointerQueueEntry(void *pEntry);
+};
+
 // SIZE 0x1c
 class VsGdiDisplayState {
 public:

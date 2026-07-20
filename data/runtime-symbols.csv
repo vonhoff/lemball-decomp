@@ -1,40 +1,5 @@
-# Additional call targets verified against the Ghidra program and rebuilt PDB.
+# External runtime-library symbols absent from reconstructed source.
 address,name,symbol,type
-0x004023EC,GameMenuSelectorEntry::RebuildRects call thunk,,stub
-0x00402DDD,GameSelectorProgressOverlayChild::SetPercent call thunk,,stub
-0x00403062,DestroyBaseModeObject,?DestroyBaseModeObject@@YIXPAX@Z,library
-0x0044CFB0,GameMenuSelectorManager::AppendChild,?AppendChild@GameMenuSelectorManager@@QAEXHHPBHHHHHPAHH@Z,function
-0x0044CEC0,GameMenuSelectorManager::HandleEvent,?HandleEvent@GameMenuSelectorManager@@QAEHPAUGameMenuSelectorEvent@@@Z,function
-0x0044C270,GameMenuSelectorEntry::GameMenuSelectorEntry,??0GameMenuSelectorEntry@@QAE@PAX0HHPBHHHHHHPAHH@Z,function
-0x0044C330,GameMenuSelectorEntry::ConstructProgressEntry,?ConstructProgressEntry@GameMenuSelectorEntry@@QAEPAU1@PBFPAX1HHPBHHHHPAHH@Z,function
-0x0044C460,GameMenuSelectorEntry::HandleEvent,?HandleEvent@GameMenuSelectorEntry@@QAEHPAUGameMenuSelectorEvent@@@Z,function
-0x0044C600,GameMenuSelectorEntry::RebuildRects,?RebuildRects@GameMenuSelectorEntry@@QAEXHH@Z,function
-0x0044C630,GameMenuSelectorEntry::BuildOverlay,?BuildOverlay@GameMenuSelectorEntry@@QAEXPBH@Z,function
-0x0044E6C0,GameRectQuad::CopyFrom,?CopyFrom@GameRectQuad@@QAEXPBF@Z,function
-0x0044E960,GameSelectorProgressOverlayChild::InitializeWindowOwnerFromRect,?InitializeWindowOwnerFromRect@GameSelectorProgressOverlayChild@@UAEXPAFPAXPBD@Z,function
-0x0044E940,GameSelectorProgressOverlayChild::ReservedWindowOwnerSlot15,?ReservedWindowOwnerSlot15@GameSelectorProgressOverlayChild@@UAEXXZ,function
-0x0044E9D0,GameSelectorProgressOverlayChild::MoveWindowOwnerOrigin,?MoveWindowOwnerOrigin@GameSelectorProgressOverlayChild@@UAEXPBUVS_XYPair@@@Z,function
-0x0044EA00,GameSelectorProgressOverlayChild::ApplyWindowOwnerActivation,?ApplyWindowOwnerActivation@GameSelectorProgressOverlayChild@@UAEXH@Z,function
-0x0044EBC0,GameSelectorProgressGeometry::DispatchPointerMove,?DispatchPointerMove@GameSelectorProgressGeometry@@QAEXPBUVS_XYPair@@@Z,function
-0x0044EC10,GameSelectorProgressGeometry::DispatchButtonTransition,?DispatchButtonTransition@GameSelectorProgressGeometry@@QAEXPBUVS_XYPair@@H@Z,function
-0x0044EC20,GameSelectorProgressOverlayChild::ReservedWindowOwnerSlot23,?ReservedWindowOwnerSlot23@GameSelectorProgressOverlayChild@@UAEXXZ,function
-0x0044EFE0,GameSelectorProgressOverlayChild::GetWindowOwnerFlags,?GetWindowOwnerFlags@GameSelectorProgressOverlayChild@@UAEIXZ,function
-0x0044CC90,SetMenuSelectorChildrenEnabled,?SetMenuSelectorChildrenEnabled@@YIXPAUGameMenuSelectorManager@@HH@Z,function
-0x0044EB60,GameSelectorProgressOverlayChild::SetPercent,?SetPercent@GameSelectorProgressOverlayChild@@QAEXH@Z,function
-0x0044D150,GameMenuSelectorManager::RecordChildMetadata,?RecordChildMetadata@GameMenuSelectorManager@@QAEXHHHH@Z,function
-0x0044D290,GameMenuSelectorManager::RebuildChildRects,?RebuildChildRects@GameMenuSelectorManager@@QAEXHH@Z,function
-0x0044D830,GameMenuSelectorManager::MovePrevious,?MovePrevious@GameMenuSelectorManager@@QAEXXZ,function
-0x0044D8E0,GameMenuSelectorManager::MoveNext,?MoveNext@GameMenuSelectorManager@@QAEXXZ,function
-0x0044D990,GameMenuSelectorManager::SelectSide0,?SelectSide0@GameMenuSelectorManager@@QAEXXZ,function
-0x0044D9E0,GameMenuSelectorManager::SelectSide1,?SelectSide1@GameMenuSelectorManager@@QAEXXZ,function
-0x0044DA70,GameMenuSelectorManager::InitializeCurrentState,?InitializeCurrentState@GameMenuSelectorManager@@QAEXH@Z,function
-0x0044DB20,GameMenuSelectorManager::StartAction,?StartAction@GameMenuSelectorManager@@QAEXXZ,function
-0x0044DCE0,UpdateMenuSelectorAnimation,?UpdateMenuSelectorAnimation@@YIXPAUGameMenuSelectorManager@@@Z,function
-0x0045AF60,DeleteFixedBufferStreamReturnThis,?DeleteFixedBufferStreamReturnThis@@YIPAXPAUVsInitFixedBufferStream@@HH@Z,function
-0x00463280,ReturnStreamArgument,?ReturnStreamArgument@@YIPAXPAXH0@Z,function
-0x004688E0,ReloadMenuSelectorOverlayResource,?ReloadMenuSelectorOverlayResource@@YIXPAXHH@Z,function
-0x00467F30,GameCompactZrleOverlay::RebuildSourceRect,?RebuildSourceRect@GameCompactZrleOverlay@@QAEXH@Z,function
-0x00467570,LevelVariantRenderManagerView::GetVariantFrameExtent,?GetVariantFrameExtent@LevelVariantRenderManagerView@@QAEPAFPAFHH@Z,function
 0x0047FCA0,__purecall,_purecall,library
 0x00480198,__setjmp3,__setjmp3,library
 0x00480290,_memcpy,_memcpy,library

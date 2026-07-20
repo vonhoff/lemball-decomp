@@ -197,45 +197,44 @@ static const char g_szUnknownUserActionReceived[] =
 void LEMBALL_FASTCALL ResetBaseModeActionButtonPointSink(void *pObject);
 void *LEMBALL_FASTCALL DestroyBaseModeActionButtonPointSinkArray(
     void *pObject, int nUnused, unsigned int fDelete);
-extern void AppendPointerQueueEntry(void *pQueue, void *pEntry);
 typedef void (LEMBALL_FASTCALL *LevelNoArgVirtualProc)(void *, int);
 typedef void (LEMBALL_FASTCALL *LevelOneArgVirtualProc)(void *, int, void *);
 typedef void (LEMBALL_FASTCALL *LevelTwoArgVirtualProc)(
     void *, int, void *, void *);
 typedef void *(LEMBALL_FASTCALL *LevelDeleteArrayVirtualProc)(
     void *, int, unsigned int);
-static void *DeleteQueuedRenderPointSinkWrapper00432350(void *pObject, BYTE fDelete);
-static void *DeleteQueuedRenderPointSinkThunk00403580(void *pObject, BYTE fDelete);
-static void *DeleteStatusIndicatorPointSinkEntry00432A90(void *pObject, BYTE fDelete);
-static void *DeleteStatusIndicatorPointSinkThunk00401834(void *pObject, BYTE fDelete);
+void *DeleteQueuedRenderPointSinkWrapper00432350(void *pObject, BYTE fDelete);
+void *DeleteQueuedRenderPointSinkThunk00403580(void *pObject, BYTE fDelete);
+void *DeleteStatusIndicatorPointSinkEntry00432A90(void *pObject, BYTE fDelete);
+void *DeleteStatusIndicatorPointSinkThunk00401834(void *pObject, BYTE fDelete);
 void LEMBALL_FASTCALL RestoreStatusIndicatorPointSinkEntryVtable(void *pObject);
 void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableA(void *pObject);
-static void *DestroyStatusIndicatorPointSinkArray00467BB0(void *pObject, unsigned int fDelete);
-static void LEMBALL_FASTCALL QueueStatusIndicatorPointSink00432AD0(
+void *DestroyStatusIndicatorPointSinkArray00467BB0(void *pObject, unsigned int fDelete);
+void LEMBALL_FASTCALL QueueStatusIndicatorPointSink00432AD0(
     void *pObject, int nUnusedEdx, void *pQueue);
-static void LEMBALL_FASTCALL QueueStatusIndicatorPointSinkThunk004018AC(
+void LEMBALL_FASTCALL QueueStatusIndicatorPointSinkThunk004018AC(
     void *pObject, int nUnusedEdx, void *pQueue);
-static void LEMBALL_FASTCALL DispatchStatusIndicatorPointSink00432AE0(
+void LEMBALL_FASTCALL DispatchStatusIndicatorPointSink00432AE0(
     void *pObject, int nUnusedEdx, void *pContext);
-static void LEMBALL_FASTCALL DispatchStatusIndicatorPointSinkThunk004025AE(
+void LEMBALL_FASTCALL DispatchStatusIndicatorPointSinkThunk004025AE(
     void *pObject, int nUnusedEdx, void *pContext);
-static void LEMBALL_FASTCALL UpdateStatusIndicatorLoadProgress00434D10(
+void LEMBALL_FASTCALL UpdateStatusIndicatorLoadProgress00434D10(
     void *pObject);
-static void LEMBALL_FASTCALL UpdateStatusIndicatorLoadProgressThunk00401DB1(
+void LEMBALL_FASTCALL UpdateStatusIndicatorLoadProgressThunk00401DB1(
     void *pObject);
-static void LEMBALL_FASTCALL SetStatusIndicatorLoadProgress0044B340(
+void LEMBALL_FASTCALL SetStatusIndicatorLoadProgress0044B340(
     void *pObject, int nUnusedEdx, int nProgress);
-static void LEMBALL_FASTCALL SetStatusIndicatorLoadProgressThunk00402BFD(
+void LEMBALL_FASTCALL SetStatusIndicatorLoadProgressThunk00402BFD(
     void *pObject, int nUnusedEdx, int nProgress);
 int LEMBALL_FASTCALL GetTimedVariantFrameStartTime(void *pObject);
 int LEMBALL_FASTCALL GetTimedVariantFrameStartTimeThunk(void *pObject);
-static void LEMBALL_FASTCALL QueueHelperLocalRectUpdateEntry00432B10(
+void LEMBALL_FASTCALL QueueHelperLocalRectUpdateEntry00432B10(
     void *pObject, int nUnusedEdx, void *pQueue);
-static void LEMBALL_FASTCALL QueueHelperLocalRectUpdateThunk00401E6F(
+void LEMBALL_FASTCALL QueueHelperLocalRectUpdateThunk00401E6F(
     void *pObject, int nUnusedEdx, void *pQueue);
-static void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateEntry00432B20(
+void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateEntry00432B20(
     void *pObject, int nUnusedEdx, void *pContext);
-static void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateThunk004037A1(
+void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateThunk004037A1(
     void *pObject, int nUnusedEdx, void *pContext);
 // GLOBAL: LEMBALL 0x496ca8
 void *g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[8] = {
@@ -250,17 +249,17 @@ void *g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[8] = {
 };
 static void *g_LEVEL_QueuedRenderPointSinkFinalizeVtable =
     g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
-static void *DeleteFramedScreenRenderChildEntryB(void *pObject, BYTE fDelete);
-static void *DeleteFramedScreenRenderChildEntryThunk(void *pObject, BYTE fDelete);
-static void LEMBALL_FASTCALL QueueFramedScreenRenderEntry(
+void *DeleteFramedScreenRenderChildEntryB(void *pObject, BYTE fDelete);
+void *DeleteFramedScreenRenderChildEntryThunk(void *pObject, BYTE fDelete);
+void LEMBALL_FASTCALL QueueFramedScreenRenderEntry(
     void *pObject, int nUnusedEdx, void *pQueue);
-static void LEMBALL_FASTCALL QueueFramedScreenRenderEntryThunk(
+void LEMBALL_FASTCALL QueueFramedScreenRenderEntryThunk(
     void *pObject, int nUnusedEdx, void *pQueue);
-static void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntry(
+void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntry(
     void *pObject, int nUnusedEdx, void *pManager);
-static void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntryThunk(
+void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntryThunk(
     void *pObject, int nUnusedEdx, void *pManager);
-static void *DeleteBaseModeObjectAdjusted(void *pObject, BYTE fDelete);
+void *DeleteBaseModeObjectAdjusted(void *pObject, BYTE fDelete);
 void *DeleteBaseModeObjectAdjustedThunk(void *pObject, BYTE fDelete);
 int LEMBALL_FASTCALL HandleBaseModeActionButtonEventThunk(
     void *pClient, int nUnused, void *pEvent);
@@ -276,15 +275,15 @@ static void *g_LEVEL_CompositePointRectSinkEntryInitVtableStorage[8] = {
 };
 static void *g_LEVEL_CompositePointRectSinkEntryInitVtable =
     g_LEVEL_CompositePointRectSinkEntryInitVtableStorage;
-static void *DeleteFramedScreenRenderChildEntryA(void *pObject, BYTE fDelete);
-static void *DeleteFramedScreenRenderChildEntryAThunk(void *pObject, BYTE fDelete);
-static void LEMBALL_FASTCALL QueueBitmapRenderEntry(
+void *DeleteFramedScreenRenderChildEntryA(void *pObject, BYTE fDelete);
+void *DeleteFramedScreenRenderChildEntryAThunk(void *pObject, BYTE fDelete);
+void LEMBALL_FASTCALL QueueBitmapRenderEntry(
     void *pObject, int nUnusedEdx, void *pQueue);
-static void LEMBALL_FASTCALL QueueBitmapRenderEntryThunk(
+void LEMBALL_FASTCALL QueueBitmapRenderEntryThunk(
     void *pObject, int nUnusedEdx, void *pQueue);
-static void LEMBALL_FASTCALL RenderBitmapEntryViaContext(
+void LEMBALL_FASTCALL RenderBitmapEntryViaContext(
     void *pObject, int nUnusedEdx, void *pManager);
-static void LEMBALL_FASTCALL RenderBitmapEntryViaContextThunk(
+void LEMBALL_FASTCALL RenderBitmapEntryViaContextThunk(
     void *pObject, int nUnusedEdx, void *pManager);
 static void *g_LEVEL_FramedScreenRenderChildEntryVtableStorage[8] = {
     (void *)DeleteFramedScreenRenderChildEntryAThunk,
@@ -306,17 +305,17 @@ void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntryBody(
     void *pObject);
 void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntry(
     void *pObject);
-static void *DestroyPackagedSpriteRenderEntryArray00469930(void *pObject, unsigned int fDelete);
-static void LEMBALL_FASTCALL QueuePackagedSpriteRenderEntry00439800(
+void *DestroyPackagedSpriteRenderEntryArray00469930(void *pObject, unsigned int fDelete);
+void LEMBALL_FASTCALL QueuePackagedSpriteRenderEntry00439800(
     void *pObject, int nUnusedEdx, void *pQueue);
-static void LEMBALL_FASTCALL QueuePackagedSpriteRenderEntryThunk00403846(
+void LEMBALL_FASTCALL QueuePackagedSpriteRenderEntryThunk00403846(
     void *pObject, int nUnusedEdx, void *pQueue);
-static void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntry00439810(
+void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntry00439810(
     void *pObject, int nUnusedEdx, void *pContext);
-static void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntryThunk00402A8B(
+void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntryThunk00402A8B(
     void *pObject, int nUnusedEdx, void *pContext);
-static void *DeletePackagedSpriteRenderEntry00439400(void *pObject, BYTE fDelete);
-static void *DeletePackagedSpriteRenderEntryThunk004016F9(void *pObject, BYTE fDelete);
+void *DeletePackagedSpriteRenderEntry00439400(void *pObject, BYTE fDelete);
+void *DeletePackagedSpriteRenderEntryThunk004016F9(void *pObject, BYTE fDelete);
 void NoopPackagedSpriteRenderEntry00439370(void);
 void LEMBALL_FASTCALL NoopPackagedSpriteRenderEntryThunk00402A22(
     void *pUnused);
@@ -335,13 +334,13 @@ static void *g_LEVEL_PackagedSpriteRenderEntryVtableStorage[8] = {
 };
 static void *g_LEVEL_PackagedSpriteRenderEntryVtable =
     g_LEVEL_PackagedSpriteRenderEntryVtableStorage;
-static void *DeleteRenderPointRectSinkEntry004396E0(void *pObject, BYTE fDelete);
+void *DeleteRenderPointRectSinkEntry004396E0(void *pObject, BYTE fDelete);
 void DeleteRenderPointRectSinkThunk00401898(void *pObject, BYTE fDelete);
-static void LEMBALL_FASTCALL QueueRenderPointRectSinkEntry004398A0(
+void LEMBALL_FASTCALL QueueRenderPointRectSinkEntry004398A0(
     void *pObject, int nUnusedEdx, void *pQueue);
 void LEMBALL_FASTCALL QueueRenderPointRectSinkThunk00402DD3(
     void *pObject, int nUnusedEdx, void *pQueue);
-static void LEMBALL_FASTCALL DispatchRenderPointRectSinkEntry004398B0(
+void LEMBALL_FASTCALL DispatchRenderPointRectSinkEntry004398B0(
     void *pObject, int nUnusedEdx, void *pContext);
 void LEMBALL_FASTCALL DispatchRenderPointRectSinkThunk00401C71(
     void *pObject, int nUnusedEdx, void *pContext);
@@ -385,7 +384,8 @@ static void *LEMBALL_FASTCALL DeleteLevelRenderRectSink(
 static void LEMBALL_FASTCALL QueueLevelRenderRectSink(
     void *pObject, int, void *pQueue)
 {
-    AppendPointerQueueEntry(pQueue, pObject);
+    ((VsGdiHelperDispatchQueue *)pQueue)
+        ->AppendPointerQueueEntry(pObject);
 }
 static void LEMBALL_FASTCALL DispatchLevelRenderRectSinkA(
     void *pObject, int, void *pContext)
@@ -717,7 +717,6 @@ int g_nLevelScreenMultiPhaseSequenceResourceId = 0;
 
 extern void *g_pQueuedRenderPointSinkFinalizeThunk;
 extern void *g_pMainResourceArchive;
-extern int g_fRootHelperGeometryDispatchSuppressed;
 extern void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
 extern void *LoadBitmapResource(int nResourceId);
 extern void *LoadPalResource(int nResourceId);
@@ -831,15 +830,15 @@ int LEMBALL_FASTCALL HandleBaseModeActionButtonEventThunk(void *pClient, int, vo
 void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntryThunk(void *pObject);
 void *LEMBALL_FASTCALL DeleteRenderPointRectContextThunk00401488(
     void *pObject, int, int fDelete);
-static void *DeletePackagedSpriteRenderEntryThunk004016F9(void *pObject, BYTE fDelete);
+void *DeletePackagedSpriteRenderEntryThunk004016F9(void *pObject, BYTE fDelete);
 void LEMBALL_FASTCALL ResetRenderPointRectEntryThunk00401703(
     void *pObject, int, const VS_XYPair *pPoint, int nButton);
 void LEMBALL_FASTCALL ReleaseStatusIndicatorPrimaryBitmapThunk(
     void *pObject);
-static void *DeleteStatusIndicatorPointSinkThunk00401834(void *pObject, BYTE fDelete);
+void *DeleteStatusIndicatorPointSinkThunk00401834(void *pObject, BYTE fDelete);
 void LEMBALL_FASTCALL RestoreCompositePointRectSinkFinalizeVtables(void *pObject);
 void DeleteRenderPointRectSinkThunk00401898(void *pObject, BYTE fDelete);
-static void LEMBALL_FASTCALL QueueStatusIndicatorPointSinkThunk004018AC(
+void LEMBALL_FASTCALL QueueStatusIndicatorPointSinkThunk004018AC(
     void *pObject, int, void *pQueue);
 void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableD(void *pObject);
 void LEMBALL_FASTCALL RestoreFramedScreenRenderChildEntryVtable(void *pObject);
@@ -850,25 +849,25 @@ void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableE(void *pObject);
 void LEMBALL_FASTCALL DispatchRenderPointRectSinkThunk00401C71(
     void *pObject, int, void *pContext);
 void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableB(void *pObject);
-static void LEMBALL_FASTCALL UpdateStatusIndicatorLoadProgressThunk00401DB1(
+void LEMBALL_FASTCALL UpdateStatusIndicatorLoadProgressThunk00401DB1(
     void *pObject);
 void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableA(void *pObject);
-static void LEMBALL_FASTCALL QueueHelperLocalRectUpdateThunk00401E6F(
+void LEMBALL_FASTCALL QueueHelperLocalRectUpdateThunk00401E6F(
     void *pObject, int, void *pQueue);
-static void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntryThunk(
+void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntryThunk(
     void *pObject, int, void *pManager);
 void LEMBALL_FASTCALL RestoreLevelSelectionPointSinkFinalizeVtable(void *pObject);
-static void LEMBALL_FASTCALL DispatchStatusIndicatorPointSinkThunk004025AE(
+void LEMBALL_FASTCALL DispatchStatusIndicatorPointSinkThunk004025AE(
     void *pObject, int, void *pContext);
 void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(void *pObject);
 void *InitializeLevelSelectionPointRectSinkEntry(void *pObject);
-static void LEMBALL_FASTCALL QueueFramedScreenRenderEntryThunk(
+void LEMBALL_FASTCALL QueueFramedScreenRenderEntryThunk(
     void *pObject, int, void *pQueue);
 void LEMBALL_FASTCALL NoopPackagedSpriteRenderEntryThunk00402A22(
     void *pUnused);
-static void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntryThunk00402A8B(
+void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntryThunk00402A8B(
     void *pObject, int, void *pContext);
-static void LEMBALL_FASTCALL SetStatusIndicatorLoadProgressThunk00402BFD(
+void LEMBALL_FASTCALL SetStatusIndicatorLoadProgressThunk00402BFD(
     void *pObject, int, int nProgress);
 void *DeleteBaseModeObjectAdjustedThunk(void *pObject, BYTE fDelete);
 void LEMBALL_FASTCALL QueueRenderPointRectSinkThunk00402DD3(
@@ -879,60 +878,60 @@ void *LEMBALL_FASTCALL InitializeFramedScreenRenderChildEntry(
     void *pObject);
 void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntry(
     void *pObject);
-static void *DeleteFramedScreenRenderChildEntryThunk(void *pObject, BYTE fDelete);
-static void LEMBALL_FASTCALL RenderBitmapEntryViaContextThunk(
+void *DeleteFramedScreenRenderChildEntryThunk(void *pObject, BYTE fDelete);
+void LEMBALL_FASTCALL RenderBitmapEntryViaContextThunk(
     void *pObject, int, void *pManager);
 void *InitializeBaseModeActionButtonPointSink(void *pObject);
-static void *DeleteFramedScreenRenderChildEntryAThunk(void *pObject, BYTE fDelete);
+void *DeleteFramedScreenRenderChildEntryAThunk(void *pObject, BYTE fDelete);
 void LEMBALL_FASTCALL RestoreLevelSelectionRenderChildEntryVtable(void *pObject);
 void LEMBALL_FASTCALL ResetRenderPointRectEntryThunk0040355D(
     void *pObject, int, const VS_XYPair *pPoint, int nButton);
-static void *DeleteQueuedRenderPointSinkThunk00403580(void *pObject, BYTE fDelete);
-static void LEMBALL_FASTCALL QueueBitmapRenderEntryThunk(
+void *DeleteQueuedRenderPointSinkThunk00403580(void *pObject, BYTE fDelete);
+void LEMBALL_FASTCALL QueueBitmapRenderEntryThunk(
     void *pObject, int, void *pQueue);
 void LEMBALL_FASTCALL ClearRenderPointRectEntryFieldsThunk00403724(
     void *pObject, int, const VS_XYPair *pPoint, int nButton);
-static void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateThunk004037A1(
+void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateThunk004037A1(
     void *pObject, int, void *pContext);
-static void LEMBALL_FASTCALL QueuePackagedSpriteRenderEntryThunk00403846(
+void LEMBALL_FASTCALL QueuePackagedSpriteRenderEntryThunk00403846(
     void *pObject, int, void *pQueue);
 int ReturnTrueVirtualHookBody(void);
-static void *DeleteQueuedRenderPointSinkWrapper00432350(void *pObject, BYTE fDelete);
-static void *DeleteStatusIndicatorPointSinkEntry00432A90(void *pObject, BYTE fDelete);
+void *DeleteQueuedRenderPointSinkWrapper00432350(void *pObject, BYTE fDelete);
+void *DeleteStatusIndicatorPointSinkEntry00432A90(void *pObject, BYTE fDelete);
 void LEMBALL_FASTCALL RestoreStatusIndicatorPointSinkEntryVtableBody(void *pObject);
-static void LEMBALL_FASTCALL QueueStatusIndicatorPointSink00432AD0(
+void LEMBALL_FASTCALL QueueStatusIndicatorPointSink00432AD0(
     void *pObject, int, void *pQueue);
-static void LEMBALL_FASTCALL DispatchStatusIndicatorPointSink00432AE0(
+void LEMBALL_FASTCALL DispatchStatusIndicatorPointSink00432AE0(
     void *pObject, int, void *pContext);
-static void LEMBALL_FASTCALL QueueHelperLocalRectUpdateEntry00432B10(
+void LEMBALL_FASTCALL QueueHelperLocalRectUpdateEntry00432B10(
     void *pObject, int, void *pQueue);
-static void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateEntry00432B20(
+void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateEntry00432B20(
     void *pObject, int, void *pContext);
 void LEMBALL_FASTCALL ReleaseLevelSelectionModeRenderStateResource(void *pObject);
-static void LEMBALL_FASTCALL UpdateStatusIndicatorLoadProgress00434D10(
+void LEMBALL_FASTCALL UpdateStatusIndicatorLoadProgress00434D10(
     void *pObject);
 int LEMBALL_FASTCALL GetTimedVariantFrameStartTime(void *pObject);
 void NoopPackagedSpriteRenderEntry00439370(void);
 void PASCAL NoopPackagedSpriteRenderEntry00439380(void *pUnused);
-static void *DeletePackagedSpriteRenderEntry00439400(void *pObject, BYTE fDelete);
+void *DeletePackagedSpriteRenderEntry00439400(void *pObject, BYTE fDelete);
 void *LEMBALL_FASTCALL InitializePackagedSpriteRenderEntry(void *pObject);
 void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntryBody(
     void *pObject);
 void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntry(void *pObject);
 void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntry(void *pObject);
-static void *DeleteRenderPointRectSinkEntry004396E0(void *pObject, BYTE fDelete);
+void *DeleteRenderPointRectSinkEntry004396E0(void *pObject, BYTE fDelete);
 void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableABody(void *pObject);
 void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableBBody(void *pObject);
 void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableCBody(void *pObject);
 void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableDBody(void *pObject);
 void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableEBody(void *pObject);
-static void LEMBALL_FASTCALL QueuePackagedSpriteRenderEntry00439800(
+void LEMBALL_FASTCALL QueuePackagedSpriteRenderEntry00439800(
     void *pObject, int, void *pQueue);
-static void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntry00439810(
+void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntry00439810(
     void *pObject, int, void *pContext);
-static void LEMBALL_FASTCALL QueueRenderPointRectSinkEntry004398A0(
+void LEMBALL_FASTCALL QueueRenderPointRectSinkEntry004398A0(
     void *pObject, int, void *pQueue);
-static void LEMBALL_FASTCALL DispatchRenderPointRectSinkEntry004398B0(
+void LEMBALL_FASTCALL DispatchRenderPointRectSinkEntry004398B0(
     void *pObject, int, void *pContext);
 void SetLevelScreenStatusIndicatorMode(int nMode, int nValue);
 void LEMBALL_FASTCALL ResetBaseModeActionButtonPointSink(void *pObject);
@@ -941,17 +940,17 @@ void *LEMBALL_FASTCALL DestroyBaseModeActionButtonPointSinkArray(
 void *LEMBALL_FASTCALL ConstructFramedScreenRenderEntryGroup(void *pObject);
 void *LEMBALL_FASTCALL InitializeFramedScreenRenderChildEntryBody(
     void *pObject);
-static void *DeleteFramedScreenRenderChildEntryA(void *pObject, BYTE fDelete);
-static void *DeleteFramedScreenRenderChildEntryB(void *pObject, BYTE fDelete);
+void *DeleteFramedScreenRenderChildEntryA(void *pObject, BYTE fDelete);
+void *DeleteFramedScreenRenderChildEntryB(void *pObject, BYTE fDelete);
 void LEMBALL_FASTCALL RestoreFramedScreenRenderChildEntryVtableBody(void *pObject);
-static void *DeleteBaseModeObjectAdjusted(void *pObject, BYTE fDelete);
-static void LEMBALL_FASTCALL QueueFramedScreenRenderEntry(
+void *DeleteBaseModeObjectAdjusted(void *pObject, BYTE fDelete);
+void LEMBALL_FASTCALL QueueFramedScreenRenderEntry(
     void *pObject, int, void *pQueue);
-static void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntry(
+void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntry(
     void *pObject, int, void *pManager);
-static void LEMBALL_FASTCALL QueueBitmapRenderEntry(
+void LEMBALL_FASTCALL QueueBitmapRenderEntry(
     void *pObject, int, void *pQueue);
-static void LEMBALL_FASTCALL RenderBitmapEntryViaContext(
+void LEMBALL_FASTCALL RenderBitmapEntryViaContext(
     void *pObject, int, void *pManager);
 void LEMBALL_FASTCALL RestoreLevelSelectionRenderChildEntryVtableBody(void *pObject);
 void *ConstructLevelScreenStatusIndicatorManager(void *pObject, int nStatusMode, void *pPrimaryContext);
@@ -960,16 +959,16 @@ void *ConstructLevelScreenVariantRenderManager(void *pObject,
     int nRenderOwner, void *pPrimaryContext, void *pLevelMode);
 void DestroyLevelScreenVariantRenderManager(void *pObject);
 void LEMBALL_FASTCALL ReleaseStatusIndicatorPrimaryBitmap(void *pObject);
-static void LEMBALL_FASTCALL SetStatusIndicatorLoadProgress0044B340(
+void LEMBALL_FASTCALL SetStatusIndicatorLoadProgress0044B340(
     void *pObject, int, int nProgress);
 void LEMBALL_FASTCALL RestoreLevelSelectionPointSinkFinalizeVtableBody(void *pObject);
 void LEMBALL_FASTCALL RestoreCompositePointRectSinkFinalizeVtablesBody(void *pObject);
 void LEMBALL_FASTCALL SetTimedVariantFrameDuration(
     void *pObject, int, int nFrameDuration);
 void DestroyVariantRenderManager(void *pObject);
-static void *DestroyStatusIndicatorPointSinkArray00467BB0(void *pObject, unsigned int fDelete);
+void *DestroyStatusIndicatorPointSinkArray00467BB0(void *pObject, unsigned int fDelete);
 void LEMBALL_FASTCALL RestoreQueuedRenderPointSinkVtable(void *pObject);
-static void *DestroyPackagedSpriteRenderEntryArray00469930(void *pObject, unsigned int fDelete);
+void *DestroyPackagedSpriteRenderEntryArray00469930(void *pObject, unsigned int fDelete);
 void LEMBALL_FASTCALL SetStatusIndicatorActive(
     void *pObject, int, int fActive);
 
@@ -1003,7 +1002,7 @@ void *LEMBALL_FASTCALL DeleteRenderPointRectContextThunk00401488(
 }
 
 // STUB: LEMBALL 0x004016f9
-static void *DeletePackagedSpriteRenderEntryThunk004016F9(void *pObject, BYTE fDelete) {
+void *DeletePackagedSpriteRenderEntryThunk004016F9(void *pObject, BYTE fDelete) {
     return DeletePackagedSpriteRenderEntry00439400(pObject, fDelete);
 }
 
@@ -1023,7 +1022,7 @@ void LEMBALL_FASTCALL ReleaseStatusIndicatorPrimaryBitmapThunk(
 }
 
 // STUB: LEMBALL 0x00401834
-static void *DeleteStatusIndicatorPointSinkThunk00401834(void *pObject, BYTE fDelete) {
+void *DeleteStatusIndicatorPointSinkThunk00401834(void *pObject, BYTE fDelete) {
     return DeleteStatusIndicatorPointSinkEntry00432A90(pObject, fDelete);
 }
 
@@ -1038,7 +1037,7 @@ void DeleteRenderPointRectSinkThunk00401898(void *pObject, BYTE fDelete) {
 }
 
 // STUB: LEMBALL 0x004018ac
-static void LEMBALL_FASTCALL QueueStatusIndicatorPointSinkThunk004018AC(
+void LEMBALL_FASTCALL QueueStatusIndicatorPointSinkThunk004018AC(
     void *pObject, int, void *pQueue)
 {
     QueueStatusIndicatorPointSink00432AD0(pObject, 0, pQueue);
@@ -1092,7 +1091,7 @@ void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableB(void *pObject) {
 }
 
 // STUB: LEMBALL 0x00401db1
-static void LEMBALL_FASTCALL UpdateStatusIndicatorLoadProgressThunk00401DB1(
+void LEMBALL_FASTCALL UpdateStatusIndicatorLoadProgressThunk00401DB1(
     void *pObject)
 {
     UpdateStatusIndicatorLoadProgress00434D10(pObject);
@@ -1104,7 +1103,7 @@ void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableA(void *pObject) {
 }
 
 // STUB: LEMBALL 0x00401e6f
-static void LEMBALL_FASTCALL QueueHelperLocalRectUpdateThunk00401E6F(
+void LEMBALL_FASTCALL QueueHelperLocalRectUpdateThunk00401E6F(
     void *pObject, int, void *pQueue)
 {
     QueueHelperLocalRectUpdateEntry00432B10(pObject, 0, pQueue);
@@ -1116,7 +1115,7 @@ void GameBaseModeScreen::QueueActiveBaseModeUserActionThunk(int nAction, int nPh
 }
 
 // STUB: LEMBALL 0x0040213a
-static void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntryThunk(
+void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntryThunk(
     void *pObject, int, void *pManager)
 {
     FinalizeFramedScreenRenderEntry(pObject, 0, pManager);
@@ -1128,7 +1127,7 @@ void LEMBALL_FASTCALL RestoreLevelSelectionPointSinkFinalizeVtable(void *pObject
 }
 
 // STUB: LEMBALL 0x004025ae
-static void LEMBALL_FASTCALL DispatchStatusIndicatorPointSinkThunk004025AE(
+void LEMBALL_FASTCALL DispatchStatusIndicatorPointSinkThunk004025AE(
     void *pObject, int, void *pContext)
 {
     DispatchStatusIndicatorPointSink00432AE0(pObject, 0, pContext);
@@ -1161,7 +1160,7 @@ void GameBaseModeScreen::DispatchBaseModeUserActionThunk(int nAction, int nPhase
 }
 
 // STUB: LEMBALL 0x004029cd
-static void LEMBALL_FASTCALL QueueFramedScreenRenderEntryThunk(
+void LEMBALL_FASTCALL QueueFramedScreenRenderEntryThunk(
     void *pObject, int, void *pQueue)
 {
     QueueFramedScreenRenderEntry(pObject, 0, pQueue);
@@ -1177,14 +1176,14 @@ void LEMBALL_FASTCALL NoopPackagedSpriteRenderEntryThunk00402A22(
 }
 
 // STUB: LEMBALL 0x00402a8b
-static void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntryThunk00402A8B(
+void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntryThunk00402A8B(
     void *pObject, int, void *pContext)
 {
     DispatchPackagedSpriteRenderEntry00439810(pObject, 0, pContext);
 }
 
 // STUB: LEMBALL 0x00402bfd
-static void LEMBALL_FASTCALL SetStatusIndicatorLoadProgressThunk00402BFD(
+void LEMBALL_FASTCALL SetStatusIndicatorLoadProgressThunk00402BFD(
     void *pObject, int, int nProgress)
 {
     SetStatusIndicatorLoadProgress0044B340(pObject, 0, nProgress);
@@ -1239,12 +1238,12 @@ void *LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntry(
 }
 
 // STUB: LEMBALL 0x00403166
-static void *DeleteFramedScreenRenderChildEntryThunk(void *pObject, BYTE fDelete) {
+void *DeleteFramedScreenRenderChildEntryThunk(void *pObject, BYTE fDelete) {
     return DeleteFramedScreenRenderChildEntryB(pObject, fDelete);
 }
 
 // STUB: LEMBALL 0x004031ac
-static void LEMBALL_FASTCALL RenderBitmapEntryViaContextThunk(
+void LEMBALL_FASTCALL RenderBitmapEntryViaContextThunk(
     void *pObject, int, void *pManager)
 {
     RenderBitmapEntryViaContext(pObject, 0, pManager);
@@ -1263,7 +1262,7 @@ void *InitializeBaseModeActionButtonPointSink(void *pObject) {
 }
 
 // STUB: LEMBALL 0x004033fa
-static void *DeleteFramedScreenRenderChildEntryAThunk(void *pObject, BYTE fDelete) {
+void *DeleteFramedScreenRenderChildEntryAThunk(void *pObject, BYTE fDelete) {
     return DeleteFramedScreenRenderChildEntryA(pObject, fDelete);
 }
 
@@ -1280,12 +1279,12 @@ void LEMBALL_FASTCALL ResetRenderPointRectEntryThunk0040355D(
 }
 
 // STUB: LEMBALL 0x00403580
-static void *DeleteQueuedRenderPointSinkThunk00403580(void *pObject, BYTE fDelete) {
+void *DeleteQueuedRenderPointSinkThunk00403580(void *pObject, BYTE fDelete) {
     return DeleteQueuedRenderPointSinkWrapper00432350(pObject, fDelete);
 }
 
 // STUB: LEMBALL 0x0040362f
-static void LEMBALL_FASTCALL QueueBitmapRenderEntryThunk(
+void LEMBALL_FASTCALL QueueBitmapRenderEntryThunk(
     void *pObject, int, void *pQueue)
 {
     QueueBitmapRenderEntry(pObject, 0, pQueue);
@@ -1299,14 +1298,14 @@ void LEMBALL_FASTCALL ClearRenderPointRectEntryFieldsThunk00403724(
 }
 
 // STUB: LEMBALL 0x004037a1
-static void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateThunk004037A1(
+void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateThunk004037A1(
     void *pObject, int, void *pContext)
 {
     DispatchHelperLocalRectUpdateEntry00432B20(pObject, 0, pContext);
 }
 
 // STUB: LEMBALL 0x00403846
-static void LEMBALL_FASTCALL QueuePackagedSpriteRenderEntryThunk00403846(
+void LEMBALL_FASTCALL QueuePackagedSpriteRenderEntryThunk00403846(
     void *pObject, int, void *pQueue)
 {
     QueuePackagedSpriteRenderEntry00439800(pObject, 0, pQueue);
@@ -1438,7 +1437,7 @@ void LevelViewRotationTransform::TransformTileInPlace(int *pX, int *pY)
 }
 
 // FUNCTION: LEMBALL 0x00432350
-static void *DeleteQueuedRenderPointSinkWrapper00432350(void *pObject, BYTE fDelete) {
+void *DeleteQueuedRenderPointSinkWrapper00432350(void *pObject, BYTE fDelete) {
     *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
@@ -1447,7 +1446,7 @@ static void *DeleteQueuedRenderPointSinkWrapper00432350(void *pObject, BYTE fDel
 }
 
 // FUNCTION: LEMBALL 0x00432a90
-static void *DeleteStatusIndicatorPointSinkEntry00432A90(void *pObject, BYTE fDelete) {
+void *DeleteStatusIndicatorPointSinkEntry00432A90(void *pObject, BYTE fDelete) {
     *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
@@ -1461,14 +1460,15 @@ void LEMBALL_FASTCALL RestoreStatusIndicatorPointSinkEntryVtableBody(void *pObje
 }
 
 // FUNCTION: LEMBALL 0x00432ad0
-static void LEMBALL_FASTCALL QueueStatusIndicatorPointSink00432AD0(
+void LEMBALL_FASTCALL QueueStatusIndicatorPointSink00432AD0(
     void *pObject, int, void *pQueue)
 {
-    AppendPointerQueueEntry(pQueue, pObject);
+    ((VsGdiHelperDispatchQueue *)pQueue)
+        ->AppendPointerQueueEntry(pObject);
 }
 
 // FUNCTION: LEMBALL 0x00432ae0
-static void LEMBALL_FASTCALL DispatchStatusIndicatorPointSink00432AE0(
+void LEMBALL_FASTCALL DispatchStatusIndicatorPointSink00432AE0(
     void *pObject, int, void *pContext)
 {
     int pOwner;
@@ -1483,14 +1483,15 @@ static void LEMBALL_FASTCALL DispatchStatusIndicatorPointSink00432AE0(
 }
 
 // FUNCTION: LEMBALL 0x00432b10
-static void LEMBALL_FASTCALL QueueHelperLocalRectUpdateEntry00432B10(
+void LEMBALL_FASTCALL QueueHelperLocalRectUpdateEntry00432B10(
     void *pObject, int, void *pQueue)
 {
-    AppendPointerQueueEntry(pQueue, pObject);
+    ((VsGdiHelperDispatchQueue *)pQueue)
+        ->AppendPointerQueueEntry(pObject);
 }
 
 // FUNCTION: LEMBALL 0x00432b20
-static void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateEntry00432B20(
+void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateEntry00432B20(
     void *pObject, int, void *pContext)
 {
     int pOwner;
@@ -1921,7 +1922,8 @@ static void LEMBALL_FASTCALL QueueVariantActionFramePointSink(
         pResource[9] = 0;
     }
     ++pResource[2];
-    AppendPointerQueueEntry(pQueue, pObject);
+    ((VsGdiHelperDispatchQueue *)pQueue)
+        ->AppendPointerQueueEntry(pObject);
 }
 
 static void LEMBALL_FASTCALL DispatchVariantActionFramePointSink(
@@ -2340,7 +2342,7 @@ void LEMBALL_FASTCALL ReleaseLevelSelectionModeRenderStateResource(void *pObject
 }
 
 // FUNCTION: LEMBALL 0x00434d10
-static void LEMBALL_FASTCALL UpdateStatusIndicatorLoadProgress00434D10(
+void LEMBALL_FASTCALL UpdateStatusIndicatorLoadProgress00434D10(
     void *pObject)
 {
     int nLoaded;
@@ -2408,7 +2410,7 @@ void PASCAL NoopPackagedSpriteRenderEntry00439380(void *pUnused) {
 }
 
 // FUNCTION: LEMBALL 0x00439400
-static void *DeletePackagedSpriteRenderEntry00439400(void *pObject, BYTE fDelete) {
+void *DeletePackagedSpriteRenderEntry00439400(void *pObject, BYTE fDelete) {
     *(void **)pObject = &g_LEVEL_PackagedSpriteRenderEntryVtableStorage[4];
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
@@ -2478,7 +2480,7 @@ void *LEMBALL_FASTCALL InitializeRenderPointRectSinkEntry(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x004396e0
-static void *DeleteRenderPointRectSinkEntry004396E0(void *pObject, BYTE fDelete) {
+void *DeleteRenderPointRectSinkEntry004396E0(void *pObject, BYTE fDelete) {
     *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
@@ -2512,14 +2514,15 @@ void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableEBody(void *pObject)
 }
 
 // FUNCTION: LEMBALL 0x00439800
-static void LEMBALL_FASTCALL QueuePackagedSpriteRenderEntry00439800(
+void LEMBALL_FASTCALL QueuePackagedSpriteRenderEntry00439800(
     void *pObject, int, void *pQueue)
 {
-    AppendPointerQueueEntry(pQueue, pObject);
+    ((VsGdiHelperDispatchQueue *)pQueue)
+        ->AppendPointerQueueEntry(pObject);
 }
 
 // FUNCTION: LEMBALL 0x00439810
-static void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntry00439810(
+void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntry00439810(
     void *pObject, int, void *pContext)
 {
     int pOwner;
@@ -2536,14 +2539,15 @@ static void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntry00439810(
 }
 
 // FUNCTION: LEMBALL 0x004398a0
-static void LEMBALL_FASTCALL QueueRenderPointRectSinkEntry004398A0(
+void LEMBALL_FASTCALL QueueRenderPointRectSinkEntry004398A0(
     void *pObject, int, void *pQueue)
 {
-    AppendPointerQueueEntry(pQueue, pObject);
+    ((VsGdiHelperDispatchQueue *)pQueue)
+        ->AppendPointerQueueEntry(pObject);
 }
 
 // FUNCTION: LEMBALL 0x004398b0
-static void LEMBALL_FASTCALL DispatchRenderPointRectSinkEntry004398B0(
+void LEMBALL_FASTCALL DispatchRenderPointRectSinkEntry004398B0(
     void *pObject, int, void *pContext)
 {
     int pOwner;
@@ -3667,7 +3671,7 @@ void LevelScreenTerrainRenderView::DispatchDynamicRenderEntry(
 }
 
 // FUNCTION: LEMBALL 0x0043ff60
-static int CompareLevelDynamicRenderEntryDepth(
+int CompareLevelDynamicRenderEntryDepth(
     const void *pLeft, const void *pRight)
 {
     return *(const int *)((const char *)pLeft + 0x48) -
@@ -4265,7 +4269,7 @@ void *LEMBALL_FASTCALL InitializeFramedScreenRenderChildEntryBody(
 }
 
 // FUNCTION: LEMBALL 0x00447170
-static void *DeleteFramedScreenRenderChildEntryA(void *pObject, BYTE fDelete) {
+void *DeleteFramedScreenRenderChildEntryA(void *pObject, BYTE fDelete) {
     *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
@@ -4274,7 +4278,7 @@ static void *DeleteFramedScreenRenderChildEntryA(void *pObject, BYTE fDelete) {
 }
 
 // FUNCTION: LEMBALL 0x004471a0
-static void *DeleteFramedScreenRenderChildEntryB(void *pObject, BYTE fDelete) {
+void *DeleteFramedScreenRenderChildEntryB(void *pObject, BYTE fDelete) {
     *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock(pObject);
@@ -4328,7 +4332,7 @@ void *GameBaseModeObject::Delete(BYTE fDelete) {
 }
 
 // STUB: LEMBALL 0x004472e0
-static void *DeleteBaseModeObjectAdjusted(void *pObject, BYTE fDelete) {
+void *DeleteBaseModeObjectAdjusted(void *pObject, BYTE fDelete) {
     *(void **)pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
     if ((fDelete & 1) != 0) {
         FreeVSMemBlock((char *)pObject - 0x0c);
@@ -4337,7 +4341,7 @@ static void *DeleteBaseModeObjectAdjusted(void *pObject, BYTE fDelete) {
 }
 
 // FUNCTION: LEMBALL 0x00447300
-static void LEMBALL_FASTCALL QueueFramedScreenRenderEntry(
+void LEMBALL_FASTCALL QueueFramedScreenRenderEntry(
     void *pObject, int, void *pQueue)
 {
     int *pOwner;
@@ -4349,11 +4353,12 @@ static void LEMBALL_FASTCALL QueueFramedScreenRenderEntry(
         pOwner[9] = 0;
     }
     ++pOwner[2];
-    AppendPointerQueueEntry(pQueue, pObject);
+    ((VsGdiHelperDispatchQueue *)pQueue)
+        ->AppendPointerQueueEntry(pObject);
 }
 
 // FUNCTION: LEMBALL 0x00447340
-static void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntry(
+void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntry(
     void *pObject, int, void *pManager)
 {
     int *pOwner;
@@ -4372,7 +4377,7 @@ static void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntry(
 }
 
 // FUNCTION: LEMBALL 0x00447380
-static void LEMBALL_FASTCALL QueueBitmapRenderEntry(
+void LEMBALL_FASTCALL QueueBitmapRenderEntry(
     void *pObject, int, void *pQueue)
 {
     int *pOwner;
@@ -4385,11 +4390,12 @@ static void LEMBALL_FASTCALL QueueBitmapRenderEntry(
     }
     ++pOwner[2];
     *(int *)((char *)pOwner + 0x50) = 1;
-    AppendPointerQueueEntry(pQueue, pObject);
+    ((VsGdiHelperDispatchQueue *)pQueue)
+        ->AppendPointerQueueEntry(pObject);
 }
 
 // FUNCTION: LEMBALL 0x004473d0
-static void LEMBALL_FASTCALL RenderBitmapEntryViaContext(
+void LEMBALL_FASTCALL RenderBitmapEntryViaContext(
     void *pObject, int, void *pManager)
 {
     int *pOwner;
@@ -4592,7 +4598,7 @@ void LEMBALL_FASTCALL ReleaseStatusIndicatorPrimaryBitmap(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x0044b340
-static void LEMBALL_FASTCALL SetStatusIndicatorLoadProgress0044B340(
+void LEMBALL_FASTCALL SetStatusIndicatorLoadProgress0044B340(
     void *pObject, int, int nProgress)
 {
     noop_callback_00456600();
@@ -4906,7 +4912,8 @@ void LevelVariantRenderManagerView::EmitVariantRenderResourceEntry(short *pRect,
             pResource[9] = 0;
         }
         ++pResource[2];
-        AppendPointerQueueEntry((void *)(unsigned long)pManager[7], pEntry);
+        ((VsGdiHelperDispatchQueue *)(unsigned long)pManager[7])
+            ->AppendPointerQueueEntry(pEntry);
         pFrame = pResource;
     } else {
         iFrame = 0;
@@ -4942,7 +4949,8 @@ void LevelVariantRenderManagerView::EmitVariantRenderResourceEntry(short *pRect,
             pResource[9] = 0;
         }
         ++pResource[2];
-        AppendPointerQueueEntry((void *)(unsigned long)pManager[7], pEntry);
+        ((VsGdiHelperDispatchQueue *)(unsigned long)pManager[7])
+            ->AppendPointerQueueEntry(pEntry);
     }
     pRect[0] = *(short *)((char *)pFrame + 0x4c);
     pRect[1] = *(short *)((char *)pFrame + 0x4e);
@@ -4988,7 +4996,7 @@ void LevelVariantRenderManagerView::ResetOrFlipVariantRenderBuffers(void) {
 }
 
 // FUNCTION: LEMBALL 0x00467bb0
-static void *DestroyStatusIndicatorPointSinkArray00467BB0(void *pObject, unsigned int fDelete) {
+void *DestroyStatusIndicatorPointSinkArray00467BB0(void *pObject, unsigned int fDelete) {
     int cEntries;
     char *pEntry;
 
@@ -5016,7 +5024,7 @@ void LEMBALL_FASTCALL RestoreQueuedRenderPointSinkVtable(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x00469930
-static void *DestroyPackagedSpriteRenderEntryArray00469930(void *pObject, unsigned int fDelete) {
+void *DestroyPackagedSpriteRenderEntryArray00469930(void *pObject, unsigned int fDelete) {
     int cEntries;
     char *pEntry;
 
@@ -5051,11 +5059,9 @@ void GameCursorRenderClient::SetZrleResource(int nResourceId) {
         pClient[0xa] = nResourceId;
         if (nResourceId != 0) {
             pClient[8] = (int)(unsigned long)LoadZrleResource(nResourceId);
-            nOffset = 0;
-            do {
-                nOffset += 0x18;
-                *(int *)(pClient[7] - 0x10 + nOffset) = pClient[8];
-            } while (nOffset < 0x18);
+            for (nOffset = 0; nOffset < 0x18; nOffset += 0x18) {
+                *(int *)(pClient[7] + 8 + nOffset) = pClient[8];
+            }
             return;
         }
         pClient[8] = 0;
@@ -5109,11 +5115,10 @@ void GameCursorRenderClient::SetListResourceEntry(int nResourceId, int nEntryInd
 
     if (pClient[9] != nEntryIndex && pClient[8] != 0) {
         pClient[9] = nEntryIndex;
-        nOffset = 0;
-        do {
-            nOffset += 0x18;
-            *(int *)(pClient[7] - 0x10 + nOffset) = *(int *)(pClient[8] + 0x78) + pClient[9] * 0x54;
-        } while (nOffset < 0x18);
+        for (nOffset = 0; nOffset < 0x18; nOffset += 0x18) {
+            *(int *)(pClient[7] + 8 + nOffset) =
+                *(int *)(pClient[8] + 0x78) + pClient[9] * 0x54;
+        }
     }
 }
 

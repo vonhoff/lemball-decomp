@@ -13,6 +13,7 @@ public:
     void ClearActiveVariantResourceEntries(void);
     void PopulateVariantResourceEntriesForFlagMask(unsigned short nMask);
     int CountVariantResourceEntriesWithFlagMask(unsigned short nMask);
+    void SwitchVariantResourceEntryModeThunk(unsigned short nMask, void *pBundle);
     void SwitchVariantResourceEntryMode(unsigned short nMask, void *pBundle);
 };
 

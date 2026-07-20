@@ -1,6 +1,13 @@
 #ifndef LEMBALL_GAME_APP_H
 #define LEMBALL_GAME_APP_H
 
+struct GameRootDispatchGlobals {
+    int m_fHelperGeometryDispatchSuppressed;
+    char m_szDirectDrawErrorText[64];
+};
+
+extern GameRootDispatchGlobals g_GAME_RootDispatchGlobals;
+
 // STUB: LEMBALL 0x004010ff
 // GameScreenObject::ConstructLevelSelectionScreen
 // STUB: LEMBALL 0x0040132a

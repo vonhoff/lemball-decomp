@@ -62,13 +62,13 @@ int LEMBALL_STDCALL ApplyDisplaySurfacePalette(
 int LEMBALL_STDCALL ApplyDibDisplayPalette(
     void *pSurface, int nFirstEntry, int cEntries,
     const unsigned int *paColors);
-static int LEMBALL_STDCALL CopyDisplaySurfaceRect(
+int LEMBALL_STDCALL CopyDisplaySurfaceRect(
     void *pBinding, short *pDestinationRect,
     void *pSourceBinding, short *pSourcePoint);
-static int LEMBALL_STDCALL StretchDisplaySurfaceRect(
+int LEMBALL_STDCALL StretchDisplaySurfaceRect(
     void *pDestinationBinding, short *pDestinationRect,
     void *pSourceBinding, short *pSourceRect);
-static int LEMBALL_FASTCALL ApplyDirectDrawSurfacePalette(
+int LEMBALL_FASTCALL ApplyDirectDrawSurfacePalette(
     void *, int, void *, int, int, const unsigned int *);
 int LEMBALL_FASTCALL UsesExistingDisplayPaletteAsFallback(
     void *pDisplayState, int);
@@ -91,7 +91,7 @@ void *LEMBALL_FASTCALL DeleteHelperTargetParamWrapperInterface(
 void *LEMBALL_FASTCALL VsGdiDeleteDisplayBitmap(
     void *pBitmap, int, int fDelete);
 void LEMBALL_FASTCALL BuildGeometryHelperFromRenderRect(void *pOwner);
-static void LEMBALL_FASTCALL RestoreCompactResourceGeometryHelperVtable(void *pvHelper);
+void LEMBALL_FASTCALL RestoreCompactResourceGeometryHelperVtable(void *pvHelper);
 void *ConstructHelperGroup0RowBuffer(void *pvHelperGroup, int fConstructCompactHelper);
 void LEMBALL_FASTCALL DestroyHelperGroup0RowBuffer(void *pvHelperGroup);
 int LEMBALL_FASTCALL GetHelperGroup0DirtyFlag(void *pGroupState, int);
@@ -114,7 +114,6 @@ void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
 void LEMBALL_FASTCALL ResetHelperUploadRectListAndStateMap(int nUploadState);
 void LEMBALL_FASTCALL PromoteHelperUploadStateToActive(int nUploadState);
 void LEMBALL_FASTCALL DestroyGeometryHelperPointerArray(void *pHelper);
-void AppendPointerQueueEntry(void *pQueue, void *pEntry);
 void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void *pQueue);
 void *LEMBALL_FASTCALL ConstructStatusIndicatorRenderClientBase(int *pRenderClient);
 void LEMBALL_FASTCALL DestroyStatusIndicatorRenderClientBase(
@@ -275,8 +274,6 @@ static const char g_VSGDI_DirectDrawWindowClass[] = "DirectDrawClass";
 static const char g_VSGDI_DirectDrawWindowTitle[] = "DirectDraw";
 // GLOBAL: LEMBALL 0x004a0aa8
 static const char *g_pVSGDI_UnknownDirectDrawError = "UNKNOWN DIRECT DRAW ERROR: ";
-// GLOBAL: LEMBALL 0x004a8190
-static char g_VSGDI_DirectDrawErrorText[64];
 // GLOBAL: LEMBALL 0x004a0ad8
 static const char g_VSGDI_DisplayDibStart32[] = "DisplayDibStart32";
 // GLOBAL: LEMBALL 0x004a0aec
@@ -675,13 +672,6 @@ struct VsGdiHelperSurfaceBindingSurface {
     short m_nOriginX;
 };
 
-struct VsGdiHelperDispatchQueue {
-    void **m_ppEntries;
-    int m_cEntries;
-    int m_nReserved08;
-    VsGdiHelperSurface *m_pHelperTarget;
-};
-
 struct VsGdiQuantizedHelperUploadRectTracker {
     int InitializeQuantizedHelperUploadRectTracker(
         int cRectEntries, int nTrackerExtent, int nCellExtent);
@@ -714,7 +704,6 @@ void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
 
 
 extern void TriggerReleaseAssertFailure(const char *pszExpression, const char *pszFile, int nLine);
-extern int g_fRootHelperGeometryDispatchSuppressed;
 extern void *g_pQueuedRenderPointSinkFinalizeThunk;
 extern void *g_GAME_RenderQueueNodeVtableSlots[4];
 extern void *g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[8];
@@ -1435,7 +1424,8 @@ void LEMBALL_FASTCALL QueueQueuedRenderPointSink(
     void *pPointSink, void *, void *pQueue)
 
 {
-    AppendPointerQueueEntry(pQueue, pPointSink);
+    ((VsGdiHelperDispatchQueue *)pQueue)
+        ->AppendPointerQueueEntry(pPointSink);
 }
 
 // FUNCTION: LEMBALL 0x00432390
@@ -1455,12 +1445,12 @@ void __stdcall PromoteQueuedRenderPointSinkTargetState(void *pPointSink) {
 char *LookupDirectDrawErrorString(unsigned int nError) {
     const char *pszPrefix = g_pVSGDI_UnknownDirectDrawError;
 
-    strcpy(g_VSGDI_DirectDrawErrorText, pszPrefix);
+    strcpy(g_GAME_RootDispatchGlobals.m_szDirectDrawErrorText, pszPrefix);
     FormatSignedIntToRadixString(
         (int)nError,
-        g_VSGDI_DirectDrawErrorText + strlen(pszPrefix),
+        g_GAME_RootDispatchGlobals.m_szDirectDrawErrorText + strlen(pszPrefix),
         10);
-    return g_VSGDI_DirectDrawErrorText;
+    return g_GAME_RootDispatchGlobals.m_szDirectDrawErrorText;
 }
 
 // FUNCTION: LEMBALL 0x00456780
@@ -1670,7 +1660,7 @@ int LEMBALL_STDCALL ApplyDisplaySurfacePalette(
 }
 
 // FUNCTION: LEMBALL 0x00456c70
-static int LEMBALL_STDCALL CopyDisplaySurfaceRect(
+int LEMBALL_STDCALL CopyDisplaySurfaceRect(
     void *pDestinationBinding, short *pDestinationRect,
     void *pSourceBinding, short *pSourcePoint)
 
@@ -1692,7 +1682,7 @@ static int LEMBALL_STDCALL CopyDisplaySurfaceRect(
 }
 
 // FUNCTION: LEMBALL 0x00456cc0
-static int LEMBALL_STDCALL StretchDisplaySurfaceRect(
+int LEMBALL_STDCALL StretchDisplaySurfaceRect(
     void *pDestinationBinding, short *pDestinationRect,
     void *pSourceBinding, short *pSourceRect)
 
@@ -2147,7 +2137,7 @@ int VsGdiDirectDrawDisplayState::ReleaseDirectDrawDisplayBitmap(
 }
 
 // FUNCTION: LEMBALL 0x004578c0
-static int LEMBALL_FASTCALL ApplyDirectDrawSurfacePalette(void *, int, void *, int, int, const unsigned int *) {
+int LEMBALL_FASTCALL ApplyDirectDrawSurfacePalette(void *, int, void *, int, int, const unsigned int *) {
     return 0x100;
 }
 
@@ -2848,7 +2838,7 @@ void GamePrimaryContext::SampleRootHelperGeometryAndDispatchRenderGroups(int nTo
     typedef void (LEMBALL_FASTCALL *DeleteVirtual)(void *, int, int);
 
     pContext = (int *)this;
-    if (g_fRootHelperGeometryDispatchSuppressed != 0 || pContext[1] != 1 || pContext[0x13] == 0) {
+    if (g_GAME_RootDispatchGlobals.m_fHelperGeometryDispatchSuppressed != 0 || pContext[1] != 1 || pContext[0x13] == 0) {
         return;
     }
 
@@ -2953,7 +2943,7 @@ void *VsGdiCompactResourceGeometryHelper::InitializeCompactResourceGeometryHelpe
 }
 
 // FUNCTION: LEMBALL 0x00466430
-static void LEMBALL_FASTCALL RestoreCompactResourceGeometryHelperVtable(void *pvHelper) {
+void LEMBALL_FASTCALL RestoreCompactResourceGeometryHelperVtable(void *pvHelper) {
     *(void **)pvHelper = g_VSGDI_CompactResourceGeometryHelperVtable;
 }
 
@@ -3532,12 +3522,9 @@ void LEMBALL_FASTCALL DestroyGeometryHelperPointerArray(void *pHelper) {
 }
 
 // FUNCTION: LEMBALL 0x004670f0
-void AppendPointerQueueEntry(void *pQueue, void *pEntry) {
-    VsGdiHelperDispatchQueue *pDispatchQueue;
-
-    pDispatchQueue = (VsGdiHelperDispatchQueue *)pQueue;
-    pDispatchQueue->m_ppEntries[pDispatchQueue->m_cEntries] = pEntry;
-    pDispatchQueue->m_cEntries = pDispatchQueue->m_cEntries + 1;
+void VsGdiHelperDispatchQueue::AppendPointerQueueEntry(void *pEntry) {
+    m_ppEntries[m_cEntries] = pEntry;
+    m_cEntries = m_cEntries + 1;
 }
 
 // FUNCTION: LEMBALL 0x00467110

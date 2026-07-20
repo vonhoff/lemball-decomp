@@ -50,8 +50,3 @@ int PASCAL noop_visual_sciences_wing_draw_end(void *pUnused) {
     (void)pUnused;
     return 0;
 }
-
-// Duplicate helper retained as an unannotated local reconstruction aid.
-int __fastcall get_helper_group_1_dirty_flag(void *pHelperGroup) {
-    return *(int *)((char *)pHelperGroup - 0x10);
-}

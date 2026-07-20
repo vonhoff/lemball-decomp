@@ -13,7 +13,7 @@ PYTHON ?= python
 GHIDRA_PROJECT ?=
 GHIDRA_HOME ?=
 
-.PHONY: pipeline verify validate-target ghidra-functions report audit analyze snapshot decomplint reccmp stackcmp roadmap vtable datacmp aggregate format tidy
+.PHONY: pipeline verify validate-target ghidra-functions report audit annotation-audit analyze snapshot decomplint reccmp stackcmp roadmap vtable datacmp aggregate format tidy
 
 pipeline: validate-target
 
@@ -31,7 +31,10 @@ verify:
 	@$(PYTHON) tools/compare_rebuilt_functions.py
 
 # Fast correctness checks suitable for local use and CI.
-audit: decomplint vtable datacmp
+audit: annotation-audit decomplint vtable datacmp
+
+annotation-audit:
+	@$(PYTHON) tools/audit_reccmp_annotations.py --target $(RECCMP_TARGET)
 
 # Full structural overview; roadmap is informative rather than an assertion.
 analyze: audit roadmap

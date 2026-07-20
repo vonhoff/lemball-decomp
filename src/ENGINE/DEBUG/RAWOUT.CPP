@@ -7,20 +7,16 @@ extern int g_fSubsystemsReady;
 extern int g_fDebugFileEnabled;
 extern CTextWindow *g_pDebugTextWindow;
 
-void PostAllocatedTextControlString(CTextWindow *pWindow,
-                                    const char *pszText,
-                                    unsigned int dwColour);
-
-static int RawOutputString(const char *pszText,
-                           const char *pszPreservedName,
-                           unsigned int dwColour) {
+static __inline int RawOutputString(const char *pszText,
+                                    const char *pszPreservedName,
+                                    unsigned int dwColour) {
     if (g_fSubsystemsReady == 0) {
         MessageBoxA(0, pszText, pszPreservedName, 0);
         return 1;
     }
 
     if (g_pDebugTextWindow != 0) {
-        PostAllocatedTextControlString(g_pDebugTextWindow, pszText, dwColour);
+        g_pDebugTextWindow->PostAllocatedTextControlString(pszText, dwColour);
         return g_pDebugTextWindow != 0;
     }
 

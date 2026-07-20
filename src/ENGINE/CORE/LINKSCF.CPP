@@ -71,24 +71,8 @@ static int ReturnFalseChunkStreamVirtual(void) {
     return 0;
 }
 
-static void *LEMBALL_FASTCALL GetFirstCachedChunkObject(void *pObject) {
-    *(int *)((char *)pObject + 0xa8) = 0;
-    if (*(int *)((char *)pObject + 0xa4) == 0) {
-        return 0;
-    }
-    return *(void **)((char *)pObject + 4);
-}
-
-static void *LEMBALL_FASTCALL GetNextCachedChunkObject(void *pObject) {
-    int nIndex;
-
-    nIndex = *(int *)((char *)pObject + 0xa8) + 1;
-    *(int *)((char *)pObject + 0xa8) = nIndex;
-    if (*(int *)((char *)pObject + 0xa4) <= nIndex) {
-        return 0;
-    }
-    return *(void **)((char *)pObject + 4 + nIndex * 4);
-}
+void *LEMBALL_FASTCALL GetFirstCachedChunkObject(void *pObject);
+void *LEMBALL_FASTCALL GetNextCachedChunkObject(void *pObject);
 
 /* These tables retain the recovered common EFF stream interface while the
  * type-specific load and reset methods are reconstructed.  Keeping distinct
@@ -510,10 +494,6 @@ static void *InitializeSimpleChunkManager(void *pObject,
     return pObject;
 }
 
-void InitializeNetworkPlayerPlasChunkObjectPoolThunk(void *pPlasManager) {
-    (void)pPlasManager;
-}
-
 void LoadLevelChunksForSkillAndLevelThunk(void *pLoaderContext, unsigned int nSkill, unsigned int nLevel, int fReuseState) {
     static const int anSkillResourceBases[5] = {
         0x244, 0x25d, 0x277, 0x294, 0x2aa
@@ -590,6 +570,26 @@ void LoadLevelChunksForSkillAndLevelThunk(void *pLoaderContext, unsigned int nSk
     --pResourceObject[2];
     ReleaseTypedResourceObjectReference(pResourceObject);
     (void)fReuseState;
+}
+
+// FUNCTION: LEMBALL 0x0040b020
+void *ConstructLevelChunkStreamDispatcherThunk(void *pObject, int nChunkTypeCount) {
+    int i;
+
+    InitializeLinkScfChunkVtables();
+    InitializeRenderQueueNodeBase(pObject);
+    *(void **)pObject = g_LINKSCF_LevelChunkStreamDispatcherVtable;
+    *(int *)((char *)pObject + 0x14) = nChunkTypeCount;
+    *(int *)((char *)pObject + 0x18) = 0;
+    *(void **)((char *)pObject + 0x10) =
+        AllocateVSMemBlock((unsigned int)(nChunkTypeCount * 4));
+    *(int **)((char *)pObject + 0x1c) =
+        (int *)AllocateVSMemBlock(0x60);
+    for (i = 0; i < 24; ++i) {
+        (*(int **)((char *)pObject + 0x1c))[i] = -1;
+    }
+    *(void **)((char *)pObject + 0x20) = 0;
+    return pObject;
 }
 
 void *ConstructInvsChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
@@ -721,6 +721,7 @@ void *ConstructShpgChunkManagerThunk(void *pObject, void *pLevelMode, void *pGmo
     return pObject;
 }
 
+// FUNCTION: LEMBALL 0x00414da0
 void *ConstructManagedEntityQueueCursorThunk(void *pObject, int nLevelMode, int nPrimaryCapacity, int nSecondaryCapacity) {
     void *pDispatchQueue;
 
@@ -736,6 +737,7 @@ void *ConstructManagedEntityQueueCursorThunk(void *pObject, int nLevelMode, int 
     return pObject;
 }
 
+// FUNCTION: LEMBALL 0x00417d80
 void *ConstructProjectilePoolThunk(void *pObject) {
     int i;
 
@@ -750,6 +752,7 @@ void *ConstructProjectilePoolThunk(void *pObject) {
     return pObject;
 }
 
+// FUNCTION: LEMBALL 0x00418400
 void *ConstructPlasChunkManagerThunk(void *pObject, void *pLevelMode, void *pGmobManager, void *pProjectileGeometryTable) {
     int i;
     char *pStream;
@@ -780,6 +783,11 @@ void *ConstructPlasChunkManagerThunk(void *pObject, void *pLevelMode, void *pGmo
     (void)pGmobManager;
     (void)pProjectileGeometryTable;
     return pObject;
+}
+
+// FUNCTION: LEMBALL 0x00418ca0
+void InitializeNetworkPlayerPlasChunkObjectPoolThunk(void *pPlasManager) {
+    (void)pPlasManager;
 }
 
 void *ConstructGmobChunkManagerThunk(void *pObject, void *pLevelMode) {
@@ -814,25 +822,23 @@ void *ConstructLiftChunkManagerThunk(void *pObject, void *pLevelMode, int nCapac
     return pObject;
 }
 
-void *ConstructLevelChunkStreamDispatcherThunk(void *pObject, int nChunkTypeCount) {
-    int i;
-
-    InitializeLinkScfChunkVtables();
-    InitializeRenderQueueNodeBase(pObject);
-    *(void **)pObject = g_LINKSCF_LevelChunkStreamDispatcherVtable;
-    *(int *)((char *)pObject + 0x14) = nChunkTypeCount;
-    *(int *)((char *)pObject + 0x18) = 0;
-    *(void **)((char *)pObject + 0x10) =
-        AllocateVSMemBlock((unsigned int)(nChunkTypeCount * 4));
-    *(int **)((char *)pObject + 0x1c) =
-        (int *)AllocateVSMemBlock(0x60);
-    for (i = 0; i < 24; ++i) {
-        (*(int **)((char *)pObject + 0x1c))[i] = -1;
+// FUNCTION: LEMBALL 0x0041ea30
+void *LEMBALL_FASTCALL GetFirstCachedChunkObject(void *pObject) {
+    *(int *)((char *)pObject + 0xa8) = 0;
+    if (*(int *)((char *)pObject + 0xa4) == 0) {
+        return 0;
     }
-    *(void **)((char *)pObject + 0x20) = 0;
-    return pObject;
+    return *(void **)((char *)pObject + 4);
 }
 
-void SetGeometryChildEnabled(void *pGeometryChild, int fEnabled) {
-    ((GameGeometryOwnerRectState *)pGeometryChild)->SetEnabled(fEnabled);
+// FUNCTION: LEMBALL 0x0041ea50
+void *LEMBALL_FASTCALL GetNextCachedChunkObject(void *pObject) {
+    int nIndex;
+
+    nIndex = *(int *)((char *)pObject + 0xa8) + 1;
+    *(int *)((char *)pObject + 0xa8) = nIndex;
+    if (*(int *)((char *)pObject + 0xa4) <= nIndex) {
+        return 0;
+    }
+    return *(void **)((char *)pObject + 4 + nIndex * 4);
 }

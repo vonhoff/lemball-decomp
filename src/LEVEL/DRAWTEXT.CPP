@@ -2,6 +2,7 @@
 
 #include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/CORE/VSINIT.H"
+#include "ENGINE/GDI/VSGDI.H"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>
@@ -10,7 +11,6 @@
 #endif
 #include <string.h>
 
-extern void AppendPointerQueueEntry(void *pQueue, void *pEntry);
 extern void *LoadListResource(int nResourceId);
 
 class LevelGlyphListView {
@@ -67,9 +67,6 @@ void *LevelScreenDrawOwnerView::LookupGlyph(unsigned int ch) {
     return m_pGlyphList78->FindGlyph(ch);
 }
 
-LevelQueuedRenderPointSink::~LevelQueuedRenderPointSink() {
-}
-
 // FUNCTION: LEMBALL 0x00467ac0
 LevelPackagedRectQueueEntry::LevelPackagedRectQueueEntry() {
     m_x04 = 0;
@@ -88,7 +85,8 @@ void LevelPackagedRectQueueEntry::AppendToQueue(void *pQueue) {
         pOwner[9] = 0;
     }
     ++pOwner[2];
-    AppendPointerQueueEntry(pQueue, this);
+    ((VsGdiHelperDispatchQueue *)pQueue)
+        ->AppendPointerQueueEntry(this);
 }
 
 // FUNCTION: LEMBALL 0x00467b10
@@ -135,11 +133,6 @@ void LevelScreenDrawEntry::InitializeFromPositionAndText(int x, int y, void *pOw
     m_pText08 = pText;
 }
 
-LevelResourceScreenDrawEntry::LevelResourceScreenDrawEntry(int cchText) {
-    m_cchOwnedText48 = cchText;
-    m_pszOwnedText44 = (char *)AllocateVSMemBlock(cchText + 1);
-}
-
 // FUNCTION: LEMBALL 0x00469a80
 void LevelScreenDrawEntry::InitializeFromPointAndText(const short *pPoint, void *pOwner, void *pText, int nDrawFlags, int nDrawValue) {
     m_xStart1C = pPoint[0];
@@ -175,7 +168,8 @@ void LevelScreenDrawEntry::InitializeFromPointAndDynamicText(const short *pPoint
 // FUNCTION: LEMBALL 0x00469b40
 void LevelScreenDrawEntry::AppendToQueue(void *pQueue) {
     m_nQueueState20 = 0;
-    AppendPointerQueueEntry(pQueue, this);
+    ((VsGdiHelperDispatchQueue *)pQueue)
+        ->AppendPointerQueueEntry(this);
 }
 
 // FUNCTION: LEMBALL 0x00469bf0

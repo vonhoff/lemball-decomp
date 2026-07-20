@@ -266,18 +266,14 @@ VsInitResourceTypeTable *g_pTertiaryResourceTypeTable = 0;
 static VsInitVSMemPointerTable *g_pPaletteRemapPointerTable = 0;
 static void *g_pSharedRenderQueueNode = 0;
 static void *g_RenderDispatchQueueDeleteThunkVtable[1] = { (void *)NetworkSafeVtableNoop };
-static void LEMBALL_FASTCALL EnterRenderDispatchQueueCriticalSection(
-    void *pObject);
-static void LEMBALL_FASTCALL LeaveRenderDispatchQueueCriticalSection(
-    void *pObject);
 static void *g_RenderDispatchQueueCriticalSectionHelperVtable[2] = {
-    (void *)EnterRenderDispatchQueueCriticalSection,
-    (void *)LeaveRenderDispatchQueueCriticalSection,
+    (void *)EnterObjectCriticalSection,
+    (void *)LeaveObjectCriticalSection,
 };
 static void *g_RenderDispatchQueueVtable[4];
 static void *g_DeleteRenderDispatchQueueCriticalSectionHelperThunk[2] = {
-    (void *)EnterRenderDispatchQueueCriticalSection,
-    (void *)LeaveRenderDispatchQueueCriticalSection,
+    (void *)EnterObjectCriticalSection,
+    (void *)LeaveObjectCriticalSection,
 };
 struct VsInitKeyCodeTranslation {
     unsigned int m_dwVirtualKey;
@@ -303,7 +299,7 @@ static const VsInitKeyCodeTranslation g_aKeyCodeTranslations[61] = {
     { 0xa0, 0x4a },
 };
 
-static int LEMBALL_FASTCALL TranslateKeyboardRenderQueueEntry(
+int LEMBALL_FASTCALL TranslateKeyboardRenderQueueEntry(
     void *pRenderQueueNode, int nUnused, RenderDispatchQueueEntry *pEntry);
 static void *g_SharedRenderQueueNodeVtable[4] = {
     (void *)NetworkSafeVtableNoop,
@@ -335,11 +331,11 @@ static jmp_buf g_GameStartupJumpBuffer;
 static jmp_buf g_DebugThreadJumpBuffer;
 
 
-void EnterObjectCriticalSection(void *pObject) {
+void LEMBALL_FASTCALL EnterObjectCriticalSection(void *pObject) {
     EnterCriticalSection((char *)pObject + 4);
 }
 
-void LeaveObjectCriticalSection(void *pObject) {
+void LEMBALL_FASTCALL LeaveObjectCriticalSection(void *pObject) {
     LeaveCriticalSection((char *)pObject + 4);
 }
 
@@ -364,40 +360,6 @@ void FlushErrorFixedBufferStream(char *pszText) {
 }
 
 
-
-
-
-static void LEMBALL_FASTCALL EnterRenderDispatchQueueCriticalSection(
-    void *pObject) {
-    EnterObjectCriticalSection(pObject);
-}
-
-static void LEMBALL_FASTCALL LeaveRenderDispatchQueueCriticalSection(
-    void *pObject) {
-    LeaveObjectCriticalSection(pObject);
-}
-
-VsInitStreamFormatTargetState *ConstructStreamFormatTargetState(VsInitStreamFormatTargetState *pState,
-                                                                 VsInitFixedBufferStream *pDownstream) {
-    return pState->ConstructStreamFormatTargetState(pDownstream);
-}
-
-
-
-VsInitFormattedOutputStream *ConstructFormattedOutputStream(VsInitFormattedOutputStream *pStream,
-                                                             VsInitFixedBufferStream *pDownstream,
-                                                             int fConstructTargetState) {
-    return pStream->ConstructFormattedOutputStream(pDownstream, fConstructTargetState);
-}
-
-
-
-VsInitFixedBufferStream *ConstructFixedBufferStream(VsInitFixedBufferStream *pStream,
-                                                     char *pszBuffer,
-                                                     unsigned int cbBuffer,
-                                                     void (*pfnFlush)(char *)) {
-    return pStream->ConstructFixedBufferStream(pszBuffer, cbBuffer, pfnFlush);
-}
 
 
 
@@ -490,16 +452,6 @@ void AppendErrorUInt(unsigned int uValue) {
 
 
 
-int ShutdownDebugMessageThread(int fForceTerminate);
-
-int ShutdownDebugMessageThreadFromStartup(int fForceTerminate) {
-    return ShutdownDebugMessageThread(fForceTerminate);
-}
-
-
-
-
-
 extern int LEMBALL_FASTCALL DrainRenderDispatchQueueEntries(
     void *pDispatchQueue, int nUnused, unsigned int cEntries);
 
@@ -508,7 +460,7 @@ extern int LEMBALL_FASTCALL DrainRenderDispatchQueueEntries(
 
 
 
-static void *LEMBALL_FASTCALL DeleteRenderDispatchQueueThunk00463940(
+void *LEMBALL_FASTCALL DeleteRenderDispatchQueueThunk00463940(
     void *pQueue, int, int fFreeMemory);
 
 struct RenderDispatchFinalVtableInitializer {
@@ -529,10 +481,6 @@ static RenderDispatchFinalVtableInitializer g_RDISPATCH_FinalVtableInitializer;
 
 
 
-
-VsInitStatusEntryPointerArray *ConstructStatusEntryPointerArray(void *pRegistry, int cEntriesMax) {
-    return ((VsInitStatusEntryPointerArray *)pRegistry)->ConstructStatusEntryPointerArray(cEntriesMax);
-}
 
 VsInitFormattedOutputStream *LEMBALL_FASTCALL WriteStatusEntryPointerArray(
     void *pRegistry, int nUnused, VsInitFormattedOutputStream *pStream) {
@@ -572,22 +520,6 @@ VsInitFormattedOutputStream *LEMBALL_FASTCALL WriteStatusEntryPointerArray(
 
 
 
-
-
-unsigned int GetParsedCommandLineArgumentCount(void) {
-    return g_cParsedArgs;
-}
-
-const char *const *GetParsedCommandLineArgs(void) {
-    return (const char *const *)g_apszParsedArgs;
-}
-
-const VsInitCommandLineOption *GetCommandLineOptions(size_t *pcOptions) {
-    if (pcOptions != 0) {
-        *pcOptions = LEMBALL_ARRAY_COUNT(g_aCommandLineOptions);
-    }
-    return g_aCommandLineOptions;
-}
 
 
 int SetSharedGeometryHelperFlags03(void);
@@ -633,13 +565,13 @@ int InitializeTimingSubsystemStub(void);
 int ShutdownTimingSubsystemStub(void);
 void *ConstructRenderDispatchQueue(void *pQueue, int cEntries);
 void LEMBALL_FASTCALL DestroyRenderDispatchQueue(void *pQueue);
-static void *LEMBALL_FASTCALL DeleteRenderDispatchQueueThunk00463940(
+void *LEMBALL_FASTCALL DeleteRenderDispatchQueueThunk00463940(
     void *pQueue, int, int fFreeMemory);
 void LEMBALL_FASTCALL ReleasePaletteRemapVariantFields(VsInitPaletteRemapVariant *pVariant);
 void DestroyPaletteRemapPointerTable(VsInitVSMemPointerTable *pPointerTable);
 void LEMBALL_FASTCALL DestroySharedGeometryHelper(VsInitSharedGeometryHelper *pHelper);
 void AppendStringToDebugOutFile(const char *pszText);
-static int LEMBALL_FASTCALL TranslateKeyboardRenderQueueEntry(void *pRenderQueueNode, int, RenderDispatchQueueEntry *pEntry);
+int LEMBALL_FASTCALL TranslateKeyboardRenderQueueEntry(void *pRenderQueueNode, int, RenderDispatchQueueEntry *pEntry);
 int InitializeDebugMessageThread(void);
 int ShutdownDebugMessageThread(int fForceTerminate);
 int CompareCommandLineOptionPrefix(const char *pszLeft, const char *pszRight, size_t cchMax);
@@ -1738,7 +1670,7 @@ void LEMBALL_FASTCALL DestroyRenderDispatchQueue(void *pQueue) {
 }
 
 // FUNCTION: LEMBALL 0x00463940
-static void *LEMBALL_FASTCALL DeleteRenderDispatchQueueThunk00463940(
+void *LEMBALL_FASTCALL DeleteRenderDispatchQueueThunk00463940(
     void *pQueue, int, int fFreeMemory)
 
 {
@@ -1939,7 +1871,7 @@ void AppendStringToDebugOutFile(const char *pszText) {
 }
 
 // FUNCTION: LEMBALL 0x00472a60
-static int LEMBALL_FASTCALL TranslateKeyboardRenderQueueEntry(void *pRenderQueueNode, int, RenderDispatchQueueEntry *pEntry) {
+int LEMBALL_FASTCALL TranslateKeyboardRenderQueueEntry(void *pRenderQueueNode, int, RenderDispatchQueueEntry *pEntry) {
     RenderDispatchQueueEntry TranslatedEntry;
     unsigned short wEntryType;
     unsigned int i;

@@ -199,7 +199,6 @@ extern void *g_pNetworkLobbyVsnetRuntime;
 extern void *g_pLevelProgressState;
 
 extern void LEMBALL_FASTCALL MarkNetworkLobbySelectedPeerDisconnected(void *pVsnetRuntime);
-extern void SetGeometryChildEnabled(void *pGeometryChild, int fEnabled);
 void LEMBALL_STDCALL HandleNetworkLobbyTransportStatusEvent(int nEventType);
 void LEMBALL_FASTCALL ThunkRefreshNetworkLobbyPlayerEntries(
     int nNetworkLobbyScreen);

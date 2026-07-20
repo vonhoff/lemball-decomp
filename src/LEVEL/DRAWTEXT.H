@@ -40,7 +40,7 @@ inline void LoadVariantRenderResource(void *pManager, int nResourceId) {
 
 class LevelQueuedRenderPointSink {
 public:
-    virtual ~LevelQueuedRenderPointSink();
+    virtual ~LevelQueuedRenderPointSink() {}
     virtual void AppendToQueue(void *pQueue) = 0;
     virtual void Process(void *pContext) = 0;
 };
@@ -110,7 +110,10 @@ public:
 // SIZE 0x4c
 class LevelResourceScreenDrawEntry : public LevelScreenDrawEntry {
 public:
-    LevelResourceScreenDrawEntry(int cchText);
+    LevelResourceScreenDrawEntry(int cchText) {
+        m_cchOwnedText48 = cchText;
+        m_pszOwnedText44 = (char *)AllocateVSMemBlock(cchText + 1);
+    }
     virtual ~LevelResourceScreenDrawEntry() {
         FreeVSMemBlock(m_pszOwnedText44);
     }

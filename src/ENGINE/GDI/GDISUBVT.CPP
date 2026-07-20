@@ -2,7 +2,7 @@
 #include "ENGINE/GDI/VSGDI.H"
 #include <string.h>
 
-static void MergeCompactHelperRect(short *pTarget, const short *pEntry) {
+static __inline void MergeCompactHelperRect(short *pTarget, const short *pEntry) {
     short nRight;
     short nBottom;
 

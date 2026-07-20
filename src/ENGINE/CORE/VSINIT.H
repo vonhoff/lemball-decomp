@@ -26,12 +26,8 @@ void InitializeCoreSubsystems(void);
 void ShutdownCoreSubsystems(void);
 int RunGameStartupSequence(char *pszCmdLine);
 void LongjmpStartupExceptionFrame(int nJumpResult);
-int ShutdownDebugMessageThreadFromStartup(int fForceTerminate);
 int ParseCommandLineOptionToken(char *pszToken);
 void TokenizeAndFilterCommandLineArgs(char *pszCmdLine);
-unsigned int GetParsedCommandLineArgumentCount(void);
-const char *const *GetParsedCommandLineArgs(void);
-const VsInitCommandLineOption *GetCommandLineOptions(size_t *pcOptions);
 void AppendStartupCString(const char *pszText);
 void AppendStartupUInt(unsigned int uValue);
 void AppendStatusCString(const char *pszText);
@@ -110,10 +106,10 @@ int LEMBALL_FASTCALL DispatchRenderQueueEntryImmediately(
     void *pQueue, int nUnused, RenderDispatchQueueEntry *pEntry);
 // FUNCTION: LEMBALL 0x00459990
 // EnterObjectCriticalSection
-void EnterObjectCriticalSection(void *pObject);
+void LEMBALL_FASTCALL EnterObjectCriticalSection(void *pObject);
 // FUNCTION: LEMBALL 0x004599a0
 // LeaveObjectCriticalSection
-void LeaveObjectCriticalSection(void *pObject);
+void LEMBALL_FASTCALL LeaveObjectCriticalSection(void *pObject);
 
 extern int g_fStartupNoWait;
 extern VsInitFormattedOutputStream *g_pStatusOutputStream;
@@ -174,14 +170,6 @@ struct VsInitEffFormattedOutputStream {
     VsInitEffStreamSubobject m_FormattedSubobject;
 };
 
-VsInitStreamFormatTargetState *ConstructStreamFormatTargetState(VsInitStreamFormatTargetState *pState,
-                                                                 VsInitFixedBufferStream *pDownstream);
-
-VsInitFixedBufferStream *ConstructFixedBufferStream(VsInitFixedBufferStream *pStream,
-                                                     char *pszBuffer,
-                                                     unsigned int cbBuffer,
-                                                     void (*pfnFlush)(char *));
-
 struct VsInitFormattedOutputStream {
     void *m_pVtable;
     char m_szFormatBuffer[0x124];
@@ -198,9 +186,5 @@ struct VsInitFormattedOutputStream {
     VsInitFormattedOutputStream *ConstructFormattedOutputStream(VsInitFixedBufferStream *pDownstream,
                                                                   int fConstructTargetState);
 };
-
-VsInitFormattedOutputStream *ConstructFormattedOutputStream(VsInitFormattedOutputStream *pStream,
-                                                             VsInitFixedBufferStream *pDownstream,
-                                                             int fConstructTargetState);
 
 #endif

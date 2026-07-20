@@ -14,8 +14,7 @@ extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
 void LEMBALL_FASTCALL ReadPayloadSize8Thunk(GameEffStreamPayloadSize8 *pStream);
 void LEMBALL_FASTCALL WritePayloadSize8Thunk(GameEffStreamPayloadSize8 *pStream);
-void *LEMBALL_FASTCALL DeletePayloadSize8Thunk(
-    GameEffStreamPayloadSize8 *pStream, int nUnusedEdx, BYTE fDelete);
+void *LEMBALL_FASTCALL DeletePayloadSize8Thunk(GameEffStreamPayloadSize8 *pStream, int nUnusedEdx, BYTE fDelete);
 extern int LEMBALL_FASTCALL HandleNetworkLobbyVsnetRuntimeEvent(
     void *pVsnetRuntime, int nUnusedEdx, unsigned short *pEvent);
 extern void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void *pObject);
@@ -23,6 +22,13 @@ void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void *pObject);
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryPayload(void *pObject);
 void LEMBALL_FASTCALL WriteNetworkLobbyPeerEntryPayload(void *pObject);
 void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStream(void *pObject);
+void LEMBALL_FASTCALL ReadNetworkLobbyU32PayloadStream(void *pObject);
+void *LEMBALL_FASTCALL DeleteNetworkLobbyU32PayloadStream(
+    void *pObject, void *pUnused, BYTE fDelete);
+void LEMBALL_FASTCALL ReadNetworkLobbyU32PayloadStreamThunk(void *pObject);
+void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStreamThunk(void *pObject);
+void *LEMBALL_FASTCALL DeleteNetworkLobbyU32PayloadStreamThunk(
+    void *pObject, void *pUnused, BYTE fDelete);
 void *LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(
     void *pObject, void *pUnused, BYTE fDelete);
 void *LEMBALL_FASTCALL DeleteNetworkLobbyPeerEntryStream(
@@ -53,28 +59,29 @@ static void *g_EFF_NetworkLobbyPeerEntryVtable[6] = {
  * inherited slots remain compiler-owned callable placeholders until their
  * targets are recovered. */
 struct GameNetworkLobbyVsnetRuntimeVtableModel {
-    virtual void Reserved00(void) {}
-    virtual void Reserved04(void) {}
-    virtual int HandleRuntimeEvent(unsigned short *pEvent) {
+    __inline virtual void Reserved00(void) {}
+    __inline virtual void Reserved04(void) {}
+    __inline virtual int HandleRuntimeEvent(unsigned short *pEvent) {
         return HandleNetworkLobbyVsnetRuntimeEvent(this, 0, pEvent);
     }
-    virtual void Reserved0c(void) {}
-    virtual void Reserved10(void) {}
-    virtual void Reserved14(void) {}
-    virtual void Reserved18(void) {}
-    virtual void Reserved1c(void) {}
-    virtual void ServiceRuntime(void) {
+    __inline virtual void Reserved0c(void) {}
+    __inline virtual void Reserved10(void) {}
+    __inline virtual void Reserved14(void) {}
+    __inline virtual void Reserved18(void) {}
+    __inline virtual void Reserved1c(void) {}
+    __inline virtual void ServiceRuntime(void) {
         ReadNetworkLevelChunkDeltaStream(this);
     }
-    virtual void Reserved24(void) {}
-    virtual void Reserved28(void) {}
-    virtual void Reserved2c(void) {}
+    __inline virtual void Reserved24(void) {}
+    __inline virtual void Reserved28(void) {}
+    __inline virtual void Reserved2c(void) {}
 };
 
 static GameNetworkLobbyVsnetRuntimeVtableModel g_EFF_NetworkLobbyVsnetRuntimeVtableModel;
 static void *g_EFF_NetworkLobbyVsnetRuntimeVtable =
     *(void ***)&g_EFF_NetworkLobbyVsnetRuntimeVtableModel;
-static void *g_EFF_PayloadSize8Vtable[6] = {
+// GLOBAL: LEMBALL 0x00497878
+void *g_EFF_PayloadSize8Vtable[6] = {
     (void *)ReturnTrueVtableCallbackThunk,
     (void *)ReturnTrueVtableCallbackSecondaryThunk,
     (void *)ReadPayloadSize8Thunk,
@@ -82,13 +89,14 @@ static void *g_EFF_PayloadSize8Vtable[6] = {
     (void *)WritePayloadSize8Thunk,
     (void *)DeletePayloadSize8Thunk,
 };
-static void *g_EFF_NetworkLobbyU32PayloadVtable[6] = {
+// GLOBAL: LEMBALL 0x00498598
+void *g_EFF_NetworkLobbyU32PayloadVtable[6] = {
     (void *)ReturnTrueVtableCallbackThunk,
     (void *)ReturnTrueVtableCallbackSecondaryThunk,
+    (void *)ReadNetworkLobbyU32PayloadStreamThunk,
     (void *)NoopVtableCallbackThunk,
-    (void *)NoopVtableCallbackThunk,
-    (void *)NoopVtableCallbackThunk,
-    (void *)DeleteNetworkLobbySelectedPeerStatusStream,
+    (void *)WriteNetworkLobbyU32PayloadStreamThunk,
+    (void *)DeleteNetworkLobbyU32PayloadStreamThunk,
 };
 static void *g_EFF_NetworkLobbyPeerClearCloseVtable[6] = {
     (void *)ReturnTrueVtableCallbackThunk,
@@ -411,13 +419,29 @@ GameEffStreamPayloadSize8 *GameEffStreamPayloadSize8::ConstructPayloadSize8Thunk
     return ConstructPayloadSize8();
 }
 
+// STUB: LEMBALL 0x00401f87
 void *LEMBALL_FASTCALL DeletePayloadSize8Thunk(GameEffStreamPayloadSize8 *pStream, int, BYTE fDelete) {
     return pStream->DeletePayloadSize8(fDelete);
+}
+
+// STUB: LEMBALL 0x0040286a
+void *LEMBALL_FASTCALL DeleteNetworkLobbyU32PayloadStreamThunk(void *pObject, void *pUnused, BYTE fDelete) {
+    return DeleteNetworkLobbyU32PayloadStream(pObject, pUnused, fDelete);
+}
+
+// FUNCTION: LEMBALL 0x00402b03
+void LEMBALL_FASTCALL ReadNetworkLobbyU32PayloadStreamThunk(void *pObject) {
+    ReadNetworkLobbyU32PayloadStream(pObject);
 }
 
 // FUNCTION: LEMBALL 0x00402c43
 void LEMBALL_FASTCALL ReadPayloadSize8Thunk(GameEffStreamPayloadSize8 *pStream) {
     pStream->ReadPayloadSize8();
+}
+
+// FUNCTION: LEMBALL 0x00403607
+void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStreamThunk(void *pObject) {
+    WriteNetworkLobbyU32PayloadStream(pObject);
 }
 
 // FUNCTION: LEMBALL 0x0040362a
@@ -724,8 +748,8 @@ int GameNetworkLobbyVsnetRuntime::RegisterWithTransport(void) {
     return 0;
 }
 
-void ConfigureNetworkLobbyTransportHostName(void *pRuntime,
-                                            char *pszHostName) {
+// FUNCTION: LEMBALL 0x00452780
+void ConfigureNetworkLobbyTransportHostName(void *pRuntime, char *pszHostName) {
     GameEffTransportRuntimeWindow *pWindow;
     void *pOwner;
     void **pOwnerVtable;
@@ -835,6 +859,19 @@ void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void *pObject) {
 
 // FUNCTION: LEMBALL 0x00452e60
 void *LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void *pObject, void *pUnused, BYTE fDelete) {
+    VsNetEffStreamBase *pStream;
+
+    (void)pUnused;
+    pStream = (VsNetEffStreamBase *)pObject;
+    pStream->DestroyEffStreamBase();
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pObject);
+    }
+    return pObject;
+}
+
+// FUNCTION: LEMBALL 0x00452e90
+void *LEMBALL_FASTCALL DeleteNetworkLobbyU32PayloadStream(void *pObject, void *pUnused, BYTE fDelete) {
     VsNetEffStreamBase *pStream;
 
     (void)pUnused;

@@ -260,8 +260,6 @@ extern void *g_pSmallMemoryBucketTable;
 extern unsigned int g_cbSmallMemoryBucketUpperBound;
 extern const char *g_pszSmallMemoryBucketAllocTag;
 extern void *g_pStatusEntryRegistry;
-extern void EnterObjectCriticalSection(void *pObject);
-extern void LeaveObjectCriticalSection(void *pObject);
 extern void CloseCrtFilePointer(FILE *pFile);
 extern FILE *OpenFileWithMode(const char *pszPath, const char *pszMode);
 extern unsigned int TellFile(FILE *pFile);

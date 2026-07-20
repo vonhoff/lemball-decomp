@@ -783,8 +783,8 @@ int PASCAL return_false_vtable_callback_0040aa70(void *pUnused1, void *pUnused2)
     return 0;
 }
 
-void PASCAL noop_vtable_callback_0040aa80(
-    void *pUnused1, void *pUnused2) {
+// FUNCTION: LEMBALL 0x0040aa80
+void PASCAL noop_vtable_callback_0040aa80(void *pUnused1, void *pUnused2) {
     (void)pUnused1;
     (void)pUnused2;
 }

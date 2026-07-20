@@ -42,7 +42,6 @@ static int g_nSavedMouseTrailsCount = 0;
 static const char g_szQuittingStatusMessage[] = "QUIT\n";
 static const char g_szQuitStatusMessage[] = "QUIT\n";
 
-extern int g_fRootHelperGeometryDispatchSuppressed;
 extern FARPROC g_pApplyFullscreenDisplayModeThunk;
 extern void *g_pSharedRenderDispatchQueue;
 extern void *g_pSharedGeometryHelper;
@@ -289,10 +288,6 @@ struct RENDER_DISPATCH_QUEUE_APPEND {
     virtual void Reserved01(void) = 0;
     virtual void Append(void *pEvent) = 0;
 };
-
-static void SetWindowOwnerState(void *pOwner, int nState) {
-    ((WINDOW_OWNER_STATE_DISPATCH *)pOwner)->SetState(nState);
-}
 
 static inline void AppendWindowOwnerEvent(void *pEvent) {
     ((RENDER_DISPATCH_QUEUE_APPEND *)g_pSharedRenderDispatchQueue)->Append(pEvent);
@@ -994,7 +989,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
             (*(void ***)pOwner)[0x74 / sizeof(void *)];
         pOwnerCallback(pOwner);
         if (g_nLiveRootZrleGeometryOwnerCount == 0) {
-            g_fRootHelperGeometryDispatchSuppressed = 1;
+            g_GAME_RootDispatchGlobals.m_fHelperGeometryDispatchSuppressed = 1;
             AppendStartupCString(g_szQuitStatusMessage);
         }
         return 0;
@@ -1017,7 +1012,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
             pOwnerState = (int (LEMBALL_FASTCALL *)(void *))
                 (*(void ***)pOwner)[0x68 / sizeof(void *)];
             if (pOwnerState(pOwner) != 2) {
-                SetWindowOwnerState(pOwner, 2);
+                ((WINDOW_OWNER_STATE_DISPATCH *)pOwner)->SetState(2);
                 pOwnerCallback = (void (LEMBALL_FASTCALL *)(void *))
                     (*(void ***)pOwner)[0x54 / sizeof(void *)];
                 pOwnerCallback(pOwner);
@@ -1026,7 +1021,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
             pOwnerState = (int (LEMBALL_FASTCALL *)(void *))
                 (*(void ***)pOwner)[0x68 / sizeof(void *)];
             if (pOwnerState(pOwner) != 0) {
-                SetWindowOwnerState(pOwner, 0);
+                ((WINDOW_OWNER_STATE_DISPATCH *)pOwner)->SetState(0);
                 pOwnerCallback = (void (LEMBALL_FASTCALL *)(void *))
                     (*(void ***)pOwner)[0x4c / sizeof(void *)];
                 pOwnerCallback(pOwner);
@@ -1035,7 +1030,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
             pOwnerState = (int (LEMBALL_FASTCALL *)(void *))
                 (*(void ***)pOwner)[0x68 / sizeof(void *)];
             if (pOwnerState(pOwner) != 1) {
-                SetWindowOwnerState(pOwner, 1);
+                ((WINDOW_OWNER_STATE_DISPATCH *)pOwner)->SetState(1);
                 pOwnerCallback = (void (LEMBALL_FASTCALL *)(void *))
                     (*(void ***)pOwner)[0x50 / sizeof(void *)];
                 pOwnerCallback(pOwner);
@@ -2628,8 +2623,8 @@ void __cdecl ShowFatalGetLastErrorMessageAndExit(const char *pszMessage) {
     unsigned int dwError;
 
     dwError = GetLastError();
-    ConstructFixedBufferStream(&Buffer, szBuffer, sizeof(szBuffer), 0);
-    ConstructFormattedOutputStream(&Message, &Buffer, 1);
+    Buffer.ConstructFixedBufferStream(szBuffer, sizeof(szBuffer), 0);
+    Message.ConstructFormattedOutputStream(&Buffer, 1);
     AppendCStringToStream(&Message, pszMessage);
     Message.AppendCharToStreamVariant('\n');
     AppendCStringToStream(&Message, g_szFatalGetLastErrorPrefix);

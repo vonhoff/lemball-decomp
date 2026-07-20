@@ -39,7 +39,7 @@ struct GameMainGameVariantResourceBundle {
 
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 
-static void LEMBALL_FASTCALL UpdateMainGameVariantResourceLoadProgressThunk(
+void LEMBALL_FASTCALL UpdateMainGameVariantResourceLoadProgressThunk(
     void *pObject);
 void VariantResourceBundleNoopThunk(void);
 
@@ -52,16 +52,16 @@ static void *g_GAME_MainGameVariantResourceBundleVtableStorage[4] = {
 static void *g_GAME_MainGameVariantResourceBundleVtable =
     g_GAME_MainGameVariantResourceBundleVtableStorage;
 
-static void LEMBALL_FASTCALL UpdateMainGameVariantResourceLoadProgressThunk(
+void LEMBALL_FASTCALL UpdateMainGameVariantResourceLoadProgressThunk(
     void *pObject);
 void VariantResourceBundleNoopThunk(void);
 void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerThunk(void *pManager);
-static void VariantResourceBundleNoop(void);
+void VariantResourceBundleNoop(void);
 void *LEMBALL_FASTCALL ConstructVariantResourceEntryManagerBody(void *pManager);
 void LEMBALL_FASTCALL ShutdownVariantResourceEntryManager(void *pManager);
 void *ConstructMainGameVariantResourceBundle(void *pBundle, void *pPrimaryContext, unsigned short nVariantMode);
 void LEMBALL_FASTCALL DestroyMainGameVariantResourceMode(void *pBundle);
-static void LEMBALL_FASTCALL UpdateMainGameVariantResourceLoadProgress(
+void LEMBALL_FASTCALL UpdateMainGameVariantResourceLoadProgress(
     void *pObject);
 void ReleaseMainGameVariantZrleListResource(void *pBundle, int nResourceId);
 void ReleaseMainGameVariantListResource(void *pBundle, int nResourceId);
@@ -149,7 +149,7 @@ extern void LoadMainGameVariantTwoArrayListResource(void *pBundle, int nResource
 
 
 // FUNCTION: LEMBALL 0x00401104
-static void LEMBALL_FASTCALL UpdateMainGameVariantResourceLoadProgressThunk(
+void LEMBALL_FASTCALL UpdateMainGameVariantResourceLoadProgressThunk(
     void *pObject)
 {
     UpdateMainGameVariantResourceLoadProgress(pObject);
@@ -176,7 +176,7 @@ void GameVariantResourceEntryManager::SetVariantResourceEffectsEnabledThunk(int 
 }
 
 // FUNCTION: LEMBALL 0x004358c0
-static void VariantResourceBundleNoop(void) {
+void VariantResourceBundleNoop(void) {
 }
 
 // FUNCTION: LEMBALL 0x00439a70
@@ -588,7 +588,7 @@ void LEMBALL_FASTCALL DestroyMainGameVariantResourceMode(void *pBundle) {
 }
 
 // FUNCTION: LEMBALL 0x00447d80
-static void LEMBALL_FASTCALL UpdateMainGameVariantResourceLoadProgress(
+void LEMBALL_FASTCALL UpdateMainGameVariantResourceLoadProgress(
     void *pObject)
 {
     int nLoaded;

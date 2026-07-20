@@ -147,6 +147,8 @@ struct VsNetRuntimeChannelStack {
     unsigned char m_abDualStreamTail128[0x2c];
 
     void *ConstructEffTransportRuntimeChannelStack(int fConstructEmbeddedObjects);
+    short ClaimRuntimeFlag(const char *pszFlags);
+    void ClearRuntimeFlag(short nFlag);
 };
 
 struct VsNetRuntimeChannelStackReleaseFront {

@@ -36,8 +36,6 @@ struct VsNetConstructionAdjustorVtable {
     int m_nOffset1c;
 };
 extern void *g_NETWORK_TcpipSocketStackDualRet8;
-extern void *g_NETWORK_RuntimeChannelStackVtable;
-extern void RuntimeDualUnusedCallback(void);
 extern "C" int WINAPI WSAAsyncGetHostByName(int nSocket, unsigned int nMessage,
                                                const char *pszHost, void *pBuffer,
                                                int cbBuffer);
@@ -279,11 +277,11 @@ struct VsNetTcpipEffTransportCompositeLayout {
 };
 
 struct VsNetTcpipCompositeControlVtableModel {
-    virtual void Reserved00(void) {}
-    virtual void Reserved04(void) {}
+    __inline virtual void Reserved00(void) {}
+    __inline virtual void Reserved04(void) {}
     virtual void ConfigureRemoteHost(const char *pszHost);
     virtual int StartLocalHostLookup(char *pszHost);
-    virtual void Reserved10(void) {}
+    __inline virtual void Reserved10(void) {}
     virtual void EnableAsyncSelect(void);
     virtual void DisableAsyncSelect(void);
 };
@@ -401,7 +399,7 @@ static int g_NETWORK_CompositeEffTransportDualThunkConstructionOffsets[4] = {
 void WriteEffTransportTaggedHeader(void *pObject);
 void ReverseEffTransportPayload(void *pObject);
 void RestoreCompositeEffTransportVtables(int nObjectBasePlus0x30);
-static void TcpipCompositeUnusedVtableSlot(void);
+void TcpipCompositeUnusedVtableSlot(void);
 void *DeleteCompositeEffTransportRuntimeAdjustedThunk(void *pObject, BYTE fFreeMemory);
 void WriteEffTransportGlobalSessionAdjustedThunk(void *pObject);
 void *DeleteCompositeEffTransportStackAdjustedThunk(void *pObject, BYTE fDelete);
@@ -410,10 +408,10 @@ void CompleteEffTransportPendingWriteAdjustedThunk(void *pObject, int fQueueEven
 void *DeleteCompositeEffTransportStackTimedAdjustedThunk(void *pObject, BYTE fFreeMemory);
 void DestroySocketWindowEffChannel(int nChannelStateBase);
 void DestroyTcpipEffTransportComposite(int nObjectBasePlus0x30);
-static void *AllocateTcpipInetAddressEntry(void);
+void *AllocateTcpipInetAddressEntry(void);
 void *AllocateTcpipEffTransportComposite(void);
 void *AllocateTcpipEffTransportRuntimeOwner(void);
-static void *DeleteTcpipRuntimeStateWindowAdjustedThunk(void *pObject,
+void *DeleteTcpipRuntimeStateWindowAdjustedThunk(void *pObject,
                                                           BYTE fFreeMemory);
 void CloseSocketHandleFromChannelAdjustedThunk(void *pObject);
 void *DeleteSocketWindowChannelStateAdjustedThunk(void *pObject, BYTE fFreeMemory);
@@ -429,23 +427,23 @@ void CompleteEffTransportPendingWriteAllocatedThunkBody(void *pObject,
 void *DeleteCompositeTcpipSocketChannelStackTimedAdjustedThunk(
     void *pObject, BYTE fFreeMemory);
 void LEMBALL_FASTCALL WriteCompositeTcpipGlobalSessionAdjustedThunk(void *pObject);
-static void LEMBALL_FASTCALL WriteCompositeTcpipGlobalSessionBody(void *pObject);
+void LEMBALL_FASTCALL WriteCompositeTcpipGlobalSessionBody(void *pObject);
 void *DispatchCompositeTcpipAckedPayloadAdjustedThunk(void *pObject);
-static void AllocatedTcpipCompositeCaptureLookupAdjustedThunk(
+void AllocatedTcpipCompositeCaptureLookupAdjustedThunk(
     void *pObject, void *pLookupResult);
-static int AllocatedTcpipCompositeSendUdpAdjustedThunk(void *pObject,
+int AllocatedTcpipCompositeSendUdpAdjustedThunk(void *pObject,
                                                         void *pBuffer,
                                                         int cbBuffer);
-static void AllocatedTcpipCompositeSetPortAdjustedThunk(void *pObject,
+void AllocatedTcpipCompositeSetPortAdjustedThunk(void *pObject,
                                                           short nPort);
-static void SetTcpipSocketChannelAssignedPort(void *pObject, short nPort);
+void SetTcpipSocketChannelAssignedPort(void *pObject, short nPort);
 void *DeleteAllocatedTcpipSocketChannelStackAdjustedThunk(void *pObject,
                                                             BYTE fFreeMemory);
 void QueueAllocatedEffTransportConnectEventAdjustedThunk(void *pObject);
 void WriteAllocatedEffTransportGlobalSessionAdjustedThunk(void *pObject);
 void *DispatchAllocatedAckedEffTransportPayloadAdjustedThunk(void *pObject);
 void QueueAllocatedEffTransportPayloadEventAdjustedThunk(
-    void *pObject, unsigned short nType, void *pPayload);
+    void *pObject, int nType, void *pPayload);
 int DispatchAllocatedTcpipHostPortAsyncMessageAdjustedThunk(
     void *pObject, int nMessage, void *pReserved, unsigned int nEvent);
 void *DeleteTcpipSocketStackPrimaryAdjustedThunk(void *pObject,
@@ -454,22 +452,22 @@ void ClearTcpipSocketStackPendingWriteAdjustedThunk(void *pObject,
                                                      void *pUnused);
 static void *DeleteTcpipSocketStackCompositeAdjustedThunk(void *pObject,
                                                             BYTE fFreeMemory);
-static void *LEMBALL_FASTCALL ClaimTcpipSocketStackCompositeAdjustedThunk(void *pObject);
-static void *LEMBALL_FASTCALL ClaimTcpipSocketStackCompositeBody(void *pObject);
+void *LEMBALL_FASTCALL ClaimTcpipSocketStackCompositeAdjustedThunk(void *pObject);
+void *LEMBALL_FASTCALL ClaimTcpipSocketStackCompositeBody(void *pObject);
 void *DeleteTcpipSocketStackDualAdjustedThunk(void *pObject, BYTE fFreeMemory);
 void *LEMBALL_FASTCALL ClaimTcpipSocketStackDualAdjustedThunk(void *pObject);
 static void TimedSocketBundleDispatchAsyncThunk(void *pObject, int nMessage,
                                                  void *pReserved, unsigned int nEvent);
-static void LEMBALL_FASTCALL TimedSocketBundlePrimaryCloseThunk(void *pObject);
+void LEMBALL_FASTCALL TimedSocketBundlePrimaryCloseThunk(void *pObject);
 static void *TimedSocketBundlePrimaryDeleteThunk(void *pObject, BYTE fDelete);
-static void LEMBALL_FASTCALL TimedSocketBundlePrimaryCaptureErrorThunk(void *pObject);
+void LEMBALL_FASTCALL TimedSocketBundlePrimaryCaptureErrorThunk(void *pObject);
 static void TimedSocketBundlePrimaryNoopThunk(void *pObject, BYTE fDelete);
-static void TimedSocketBundlePrimaryNoopBody(BYTE fDelete);
-static void LEMBALL_FASTCALL TimedSocketBundleCloseSocketThunk(void *pObject);
+void TimedSocketBundlePrimaryNoopBody(BYTE fDelete);
+void LEMBALL_FASTCALL TimedSocketBundleCloseSocketThunk(void *pObject);
 static void *TimedSocketBundleDeleteThunk(void *pObject, BYTE fDelete);
-static void LEMBALL_FASTCALL TimedSocketBundleCaptureErrorThunk(void *pObject);
+void LEMBALL_FASTCALL TimedSocketBundleCaptureErrorThunk(void *pObject);
 static void TimedSocketBundleClearPendingWriteThunk(void *pObject, void *pUnused);
-static void TimedSocketBundleClearPendingWriteBody(void *pObject, void *pUnused);
+void TimedSocketBundleClearPendingWriteBody(void *pObject, void *pUnused);
 static void *TimedSocketBundleDeleteAdjustedThunk(void *pObject, BYTE fDelete);
 static void TimedSocketBundleCaptureLookupAdjustedThunk(void *pObject, void *pLookupResult);
 static int TimedSocketBundleSendUdpAdjustedThunk(void *pObject, void *pBuffer, int cbBuffer);
@@ -561,20 +559,20 @@ struct VsNetDispatchAckedEffTransportPayloadView {
     void *DispatchAckedEffTransportPayloadEvent(void);
 };
 struct VsNetQueueEffTransportPayloadEventView {
-    void QueueEffTransportPayloadEvent(unsigned short nType, void *pPayload);
+    void QueueEffTransportPayloadEvent(int nType, void *pPayload);
 };
 struct VsNetAckedEffTransportRecordOwner {
     char m_abUnknown00[0x4c];
     void *m_pRecordTable4c;
     void *ClaimAckedEffTransportRecordPayload(void);
 };
-static void LEMBALL_FASTCALL WriteCompositeTcpipGlobalSessionBody(void *pObject);
-static void *LEMBALL_FASTCALL ClaimTcpipSocketStackCompositeBody(void *pObject);
-static void AllocatedTcpipCompositeCaptureLookupAdjustedThunk(
+void LEMBALL_FASTCALL WriteCompositeTcpipGlobalSessionBody(void *pObject);
+void *LEMBALL_FASTCALL ClaimTcpipSocketStackCompositeBody(void *pObject);
+void AllocatedTcpipCompositeCaptureLookupAdjustedThunk(
     void *pObject, void *pLookupResult);
-static int AllocatedTcpipCompositeSendUdpAdjustedThunk(
+int AllocatedTcpipCompositeSendUdpAdjustedThunk(
     void *pObject, void *pBuffer, int cbBuffer);
-static void AllocatedTcpipCompositeSetPortAdjustedThunk(void *pObject,
+void AllocatedTcpipCompositeSetPortAdjustedThunk(void *pObject,
                                                           short nPort);
 
 
@@ -632,14 +630,14 @@ static void *g_NETWORK_TimedSocketBundleChannelThunkVtable[4] = {
     (void *)TimedSocketBundleCaptureErrorThunk,
     (void *)TimedSocketBundleClearPendingWriteThunk,
 };
-static void SetTcpipSocketChannelAssignedPort(void *pObject, short nPort);
+void SetTcpipSocketChannelAssignedPort(void *pObject, short nPort);
 
 /* Raw table 0049a090: stream base slots, timed payload slots, then socket
  * adapter slots.  Compiler-owned storage keeps every dispatch target valid. */
 struct VsNetTimedSocketBundleTimedThunkVtableModel {
-    virtual int ReturnTrue(void) { return 1; }
-    virtual int ReturnTrueSecondary(void) { return 1; }
-    virtual void ReversePayload(void) {
+    __inline virtual int ReturnTrue(void) { return 1; }
+    __inline virtual int ReturnTrueSecondary(void) { return 1; }
+    __inline virtual void ReversePayload(void) {
         VsNetEffStreamBase *pStream = (VsNetEffStreamBase *)this;
         unsigned char *pb = (unsigned char *)(unsigned long)pStream->m_nReserved20;
         unsigned char b;
@@ -657,8 +655,8 @@ struct VsNetTimedSocketBundleTimedThunkVtableModel {
         }
         ++pStream->m_nReserved20;
     }
-    virtual void Noop(void) {}
-    virtual void WriteTaggedHeader(void) {
+    __inline virtual void Noop(void) {}
+    __inline virtual void WriteTaggedHeader(void) {
         VsNetEffStreamBase *pStream = (VsNetEffStreamBase *)this;
         unsigned char *pbTag = (unsigned char *)(unsigned long)pStream->m_pTagBuffer2c;
         pStream->WriteEffStreamU32BE(*(unsigned int *)pbTag);
@@ -669,23 +667,23 @@ struct VsNetTimedSocketBundleTimedThunkVtableModel {
         *(unsigned char *)(pStream->m_nReserved1c) = pbTag[0xe];
         ++pStream->m_nReserved1c;
     }
-    virtual void *Delete(BYTE fDelete) {
+    __inline virtual void *Delete(BYTE fDelete) {
         return TimedSocketBundleDeleteAdjustedThunk(this, fDelete);
     }
-    virtual void WriteGlobalSession(void) {
+    __inline virtual void WriteGlobalSession(void) {
         ((VsNetPeerPayloadSender *)this)->WriteEffStreamWithGlobalSession();
     }
-    virtual void *ClaimRecord(void) {
+    __inline virtual void *ClaimRecord(void) {
         return ((VsNetAckedEffTransportRecordOwner *)this)
             ->ClaimAckedEffTransportRecordPayload();
     }
-    virtual void CaptureLookup(void *pLookupResult) {
+    __inline virtual void CaptureLookup(void *pLookupResult) {
         TimedSocketBundleCaptureLookupAdjustedThunk(this, pLookupResult);
     }
-    virtual int SendUdp(void *pBuffer, int cbBuffer) {
+    __inline virtual int SendUdp(void *pBuffer, int cbBuffer) {
         return TimedSocketBundleSendUdpAdjustedThunk(this, pBuffer, cbBuffer);
     }
-    virtual void SetAssignedPort(short nPort) {
+    __inline virtual void SetAssignedPort(short nPort) {
         TimedSocketBundleSetAssignedPortThunk(this, nPort);
     }
 };
@@ -740,7 +738,7 @@ static void *g_NETWORK_TcpipCompositeSocketThunkVtable[12] = {
     (void *)NoopVtableCallbackThunk,
     (void *)WriteEffTransportTaggedHeader,
     (void *)DeleteCompositeTcpipEffTransportDualAdjustedThunk,
-    (void *)RuntimeDualUnusedCallback,
+    (void *)ReturnVoidVtableCallback,
     (void *)WriteCompositeTcpipEffTransportDualGlobalSessionAdjustedThunk,
     (void *)ClaimCompositeTcpipEffTransportDualRecordAdjustedThunk,
     (void *)DispatchCompositeTcpipPrefixedControlAdjustedThunk,
@@ -769,19 +767,19 @@ void *AllocateTcpipEffTransportRuntimeOwner(void);
    member functions: the binary calls them with the composite in ECX. */
 struct VsNetTcpipCompositeVtableModel {
     virtual int BeginRemoteServiceHostLookup(void *pUnused, const char *pszHost);
-    virtual void ServiceEffTransportPeerEntry(void)
+    __inline virtual void ServiceEffTransportPeerEntry(void)
     {
         ((VsNetCompositeEffTransportVtableModel *)this)
             ->ServiceEffTransportPeerEntry();
     }
     virtual void CreateTcpipCompositeSocket(void);
     virtual void BindTcpipCompositeAddress(void *pAddress);
-    virtual void BindUdpCompositeSocket(void) {
+    __inline virtual void BindUdpCompositeSocket(void) {
         ((VsNetUdpSocketBinder *)this)->BindUdpSocketAndEnableAsyncSelect();
     }
-    virtual void Reserved14(void) {
+    __inline virtual void Reserved14(void) {
     }
-    virtual void Reserved18(void) {
+    __inline virtual void Reserved18(void) {
     }
 };
 
@@ -790,7 +788,7 @@ struct VsNetTcpipCompositeVtableModel {
 
 static VsNetTcpipCompositeVtableModel g_NETWORK_TcpipCompositeVtableModel;
 struct VsNetTcpipCompositeReceiveVtableModel {
-    virtual int ReceiveAsyncMessage(int nMessage, void *pReserved, unsigned int nEvent) {
+    __inline virtual int ReceiveAsyncMessage(int nMessage, void *pReserved, unsigned int nEvent) {
         return ((VsNetSocketAsyncMessageAdapter *)this)
             ->HandleSocketReceiveAsyncSelectMessage(nMessage, pReserved, nEvent);
     }
@@ -819,9 +817,9 @@ static void *g_NETWORK_TimedSocketBundlePrimaryThunkVtable[5] = {
     (void *)TimedSocketBundleDispatchAsyncThunk,
 };
 struct VsNetCompositeTimedSocketSecondaryThunkVtableModel {
-    virtual int ReturnTrue(void) { return 1; }
-    virtual int ReturnTrueSecondary(void) { return 1; }
-    virtual void ReversePayload(void) {
+    __inline virtual int ReturnTrue(void) { return 1; }
+    __inline virtual int ReturnTrueSecondary(void) { return 1; }
+    __inline virtual void ReversePayload(void) {
         VsNetEffStreamBase *pStream = (VsNetEffStreamBase *)this;
         unsigned char *pb = (unsigned char *)(unsigned long)pStream->m_nReserved20;
         unsigned char b;
@@ -839,8 +837,8 @@ struct VsNetCompositeTimedSocketSecondaryThunkVtableModel {
         }
         ++pStream->m_nReserved20;
     }
-    virtual void Noop(void) {}
-    virtual void WriteTaggedHeader(void) {
+    __inline virtual void Noop(void) {}
+    __inline virtual void WriteTaggedHeader(void) {
         VsNetEffStreamBase *pStream = (VsNetEffStreamBase *)this;
         unsigned char *pbTag = (unsigned char *)(unsigned long)pStream->m_pTagBuffer2c;
         pStream->WriteEffStreamU32BE(*(unsigned int *)pbTag);
@@ -851,18 +849,18 @@ struct VsNetCompositeTimedSocketSecondaryThunkVtableModel {
         *(unsigned char *)pStream->m_nReserved1c = pbTag[0xe];
         ++pStream->m_nReserved1c;
     }
-    virtual void *Delete(BYTE fDelete) {
+    __inline virtual void *Delete(BYTE fDelete) {
         return ((VsNetDualSocketWindowChannelStackWrapperView *)((char *)this - 0x2c))
             ->DeleteDualSocketWindowChannelStackWrapper(fDelete);
     }
-    virtual void Ret(void) {}
-    virtual void Fatal0(void) { _purecall(); }
-    virtual void Fatal1(void) { _purecall(); }
-    virtual void Ret8(BYTE fDelete, BYTE fReserved) {
+    __inline virtual void Ret(void) {}
+    __inline virtual void Fatal0(void) { _purecall(); }
+    __inline virtual void Fatal1(void) { _purecall(); }
+    __inline virtual void Ret8(BYTE fDelete, BYTE fReserved) {
         (void)fDelete;
         (void)fReserved;
     }
-    virtual void CloseSocket(void) {
+    __inline virtual void CloseSocket(void) {
         ((VsNetSocketWindowChannelWrapper *)((char *)this + 0xa4))
             ->CloseSocketHandleFromChannel();
     }
@@ -872,12 +870,12 @@ static VsNetCompositeTimedSocketSecondaryThunkVtableModel g_NETWORK_CompositeTim
 /* Raw table 0049a1e4: receive adapter, shared stream prefix, dual-channel
  * methods, then socket-window methods. */
 struct VsNetTimedSocketBundleTertiaryThunkVtableModel {
-    virtual int HandleReceive(int nMessage, void *pReserved, unsigned int nEvent) {
+    __inline virtual int HandleReceive(int nMessage, void *pReserved, unsigned int nEvent) {
         return ((VsNetSocketAsyncMessageAdapter *)this)
             ->HandleSocketReceiveAsyncSelectMessage(nMessage, pReserved, nEvent);
     }
-    virtual int ReturnTrue(void) { return 1; }
-    virtual int ReturnTrueSecondary(void) { return 1; }
+    __inline virtual int ReturnTrue(void) { return 1; }
+    __inline virtual int ReturnTrueSecondary(void) { return 1; }
     void ReversePayloadBody(void) {
         VsNetEffStreamBase *pStream = (VsNetEffStreamBase *)this;
         unsigned char *pb = (unsigned char *)(unsigned long)pStream->m_nReserved20;
@@ -896,9 +894,9 @@ struct VsNetTimedSocketBundleTertiaryThunkVtableModel {
         }
         ++pStream->m_nReserved20;
     }
-    virtual void ReversePayload(void) { ReversePayloadBody(); }
-    virtual void Noop(void) {}
-    virtual void WriteTaggedHeader(void) { WriteTaggedHeaderBody(); }
+    __inline virtual void ReversePayload(void) { ReversePayloadBody(); }
+    __inline virtual void Noop(void) {}
+    __inline virtual void WriteTaggedHeader(void) { WriteTaggedHeaderBody(); }
     void WriteTaggedHeaderBody(void) {
         VsNetEffStreamBase *pStream = (VsNetEffStreamBase *)this;
         unsigned char *pbTag = (unsigned char *)(unsigned long)pStream->m_pTagBuffer2c;
@@ -910,31 +908,31 @@ struct VsNetTimedSocketBundleTertiaryThunkVtableModel {
         *(unsigned char *)pStream->m_nReserved1c = pbTag[0xe];
         ++pStream->m_nReserved1c;
     }
-    virtual void *DeleteDual(BYTE fDelete) {
+    __inline virtual void *DeleteDual(BYTE fDelete) {
         return ((VsNetDualSocketWindowChannelStackWrapperView *)((char *)this - 0x2c))
             ->DeleteDualSocketWindowChannelStackWrapper(fDelete);
     }
-    virtual void Ret(void) {}
-    virtual void Fatal0(void) { _purecall(); }
-    virtual void Fatal1(void) { _purecall(); }
-    virtual void Ret8(BYTE fDelete, BYTE fReserved) {
+    __inline virtual void Ret(void) {}
+    __inline virtual void Fatal0(void) { _purecall(); }
+    __inline virtual void Fatal1(void) { _purecall(); }
+    __inline virtual void Ret8(BYTE fDelete, BYTE fReserved) {
         (void)fDelete;
         (void)fReserved;
     }
-    virtual void CloseSocket(void) {
+    __inline virtual void CloseSocket(void) {
         ((VsNetSocketWindowChannelWrapper *)((char *)this + 0xa4))
             ->CloseSocketHandleFromChannel();
     }
-    virtual void *DeletePrimary(BYTE fDelete) {
+    __inline virtual void *DeletePrimary(BYTE fDelete) {
         return TimedSocketBundlePrimaryDeleteThunk(this, fDelete);
     }
-    virtual void CaptureError(void) {
+    __inline virtual void CaptureError(void) {
         TimedSocketBundlePrimaryCaptureErrorThunk(this);
     }
-    virtual void NoopRet4(BYTE fDelete) {
+    __inline virtual void NoopRet4(BYTE fDelete) {
         TimedSocketBundlePrimaryNoopBody(fDelete);
     }
-    virtual void DispatchAsync(int nMessage, void *pReserved, unsigned int nEvent) {
+    __inline virtual void DispatchAsync(int nMessage, void *pReserved, unsigned int nEvent) {
         TimedSocketBundleDispatchAsyncThunk(this, nMessage, pReserved, nEvent);
     }
 };
@@ -948,13 +946,13 @@ static void *g_NETWORK_TimedSocketBundleSecondaryThunkVtable =
 /* Temporary compiler-owned thunk storage.  The original target is the
  * runtime-stack fatal adjustor; never leave this dispatch pointer null. */
 struct VsNetSocketRuntimeFatalThunkVtableModel {
-    virtual void Fatal(void) { _purecall(); }
-    virtual void *Delete(BYTE fDelete) {
+    __inline virtual void Fatal(void) { _purecall(); }
+    __inline virtual void *Delete(BYTE fDelete) {
         (void)fDelete;
         return this;
     }
-    virtual void FatalSecondary(void) { _purecall(); }
-    virtual void Noop(BYTE fDelete) { (void)fDelete; }
+    __inline virtual void FatalSecondary(void) { _purecall(); }
+    __inline virtual void Noop(BYTE fDelete) { (void)fDelete; }
 };
 
 static VsNetSocketRuntimeFatalThunkVtableModel g_NETWORK_SocketRuntimeFatalThunkVtableModel;
@@ -985,9 +983,9 @@ static int g_NETWORK_TcpipSocketStackTimedSocketDataVtable[4] = {
 };
 
 struct VsNetTcpipSocketStackCommonThunkVtableModel {
-    virtual int ReturnTrue(void) { return 1; }
-    virtual int ReturnTrueSecondary(void) { return 1; }
-    virtual void ReversePayload(void) {
+    __inline virtual int ReturnTrue(void) { return 1; }
+    __inline virtual int ReturnTrueSecondary(void) { return 1; }
+    __inline virtual void ReversePayload(void) {
         VsNetEffStreamBase *pStream = (VsNetEffStreamBase *)this;
         unsigned char *pb = (unsigned char *)(unsigned long)pStream->m_nReserved20;
         unsigned char b;
@@ -1005,8 +1003,8 @@ struct VsNetTcpipSocketStackCommonThunkVtableModel {
         }
         ++pStream->m_nReserved20;
     }
-    virtual void Noop(void) {}
-    virtual void WriteTaggedHeader(void) {
+    __inline virtual void Noop(void) {}
+    __inline virtual void WriteTaggedHeader(void) {
         VsNetEffStreamBase *pStream = (VsNetEffStreamBase *)this;
         unsigned char *pbTag = (unsigned char *)(unsigned long)pStream->m_pTagBuffer2c;
         pStream->WriteEffStreamU32BE(*(unsigned int *)pbTag);
@@ -1021,7 +1019,7 @@ struct VsNetTcpipSocketStackCommonThunkVtableModel {
 
 struct VsNetTcpipSocketStackRuntimeThunkVtableModel
     : VsNetTcpipSocketStackCommonThunkVtableModel {
-    virtual void *Delete(BYTE fDelete) {
+    __inline virtual void *Delete(BYTE fDelete) {
         char *pAdjusted = (char *)this - *(int *)((char *)this - 4) - 0xa8;
         return ((VsNetTcpipSocketChannelStackWrapperView *)pAdjusted)
             ->DeleteCompositeTcpipSocketChannelStackWrapper(fDelete);
@@ -1032,7 +1030,7 @@ struct VsNetTcpipSocketStackRuntimeThunkVtableModel
                 ((char *)this - *(int *)((char *)this - 4) - 4);
         pCallback->QueueEffTransportConnectEvent();
     }
-    virtual void WriteGlobalSession(void) {
+    __inline virtual void WriteGlobalSession(void) {
         char *pAdjusted = (char *)this - *(int *)((char *)this - 4);
         int nOffsets = *(int *)(pAdjusted - 0x38);
         char *pCallback = pAdjusted + *(int *)(nOffsets + 0x10);
@@ -1040,7 +1038,7 @@ struct VsNetTcpipSocketStackRuntimeThunkVtableModel
         ((VsNetPeerPayloadSender *)(pCallback + *(int *)(nOffsets + 8) - 0x38))
             ->WriteEffStreamWithGlobalSession();
     }
-    virtual void *DispatchAcked(void) {
+    __inline virtual void *DispatchAcked(void) {
         char *pAdjusted = (char *)this - *(int *)((char *)this - 4) - 0x7c;
         return ((VsNetDispatchAckedEffTransportPayloadView *)(pAdjusted - 4))
             ->DispatchAckedEffTransportPayloadEvent();
@@ -1049,12 +1047,12 @@ struct VsNetTcpipSocketStackRuntimeThunkVtableModel
 
 struct VsNetTcpipSocketStackTimedThunkVtableModel
     : VsNetTcpipSocketStackCommonThunkVtableModel {
-    virtual void *Delete(BYTE fDelete) {
+    __inline virtual void *Delete(BYTE fDelete) {
         char *pAdjusted = (char *)this - *(int *)((char *)this - 4) - 0x30;
         return ((VsNetTcpipSocketChannelStackWrapperView *)pAdjusted)
             ->DeleteTcpipSocketChannelStackWrapper(fDelete);
     }
-    virtual void WriteGlobalSession(void) {
+    __inline virtual void WriteGlobalSession(void) {
         char *pAdjusted = (char *)this - *(int *)((char *)this - 4);
         int nOffsets = *(int *)(pAdjusted - 0x38);
         char *pCallback = pAdjusted + *(int *)(nOffsets + 0x10);
@@ -1067,24 +1065,24 @@ struct VsNetTcpipSocketStackTimedThunkVtableModel
         return ((VsNetDispatchAckedEffTransportPayloadView *)(pAdjusted - 4))
             ->DispatchAckedEffTransportPayloadEvent();
     }
-    virtual void CaptureLookup(void *pLookupResult) {
+    __inline virtual void CaptureLookup(void *pLookupResult) {
         ((VsNetTimedSocketAsyncLookupAdapter *)((char *)this + 0x140))
             ->CaptureAsyncLookupAddressForTimedStream(pLookupResult);
     }
-    virtual int SendUdp(void *pBuffer, int cbBuffer) {
+    __inline virtual int SendUdp(void *pBuffer, int cbBuffer) {
         return ((VsNetTimedSocketAsyncLookupAdapter *)((char *)this + 0x140))
             ->SendUdpPayloadToSocketAddress(pBuffer, cbBuffer);
     }
-    virtual void SetAssignedPort(short nPort) {
+    __inline virtual void SetAssignedPort(short nPort) {
         SetTcpipSocketChannelAssignedPort((char *)this + 0x140, nPort);
     }
 };
 
 /* Raw table 00499140.  This is the dual adjusted view. */
 struct VsNetTcpipSocketStackDualThunkVtableModel {
-    virtual int ReturnTrue(void) { return 1; }
-    virtual int ReturnTrueSecondary(void) { return 1; }
-    virtual void ReversePayload(void) {
+    __inline virtual int ReturnTrue(void) { return 1; }
+    __inline virtual int ReturnTrueSecondary(void) { return 1; }
+    __inline virtual void ReversePayload(void) {
         VsNetEffStreamBase *pStream = (VsNetEffStreamBase *)this;
         unsigned char *pb = (unsigned char *)(unsigned long)pStream->m_nReserved20;
         unsigned char b;
@@ -1102,8 +1100,8 @@ struct VsNetTcpipSocketStackDualThunkVtableModel {
         }
         ++pStream->m_nReserved20;
     }
-    virtual void Noop(void) {}
-    virtual void WriteTaggedHeader(void) {
+    __inline virtual void Noop(void) {}
+    __inline virtual void WriteTaggedHeader(void) {
         VsNetEffStreamBase *pStream = (VsNetEffStreamBase *)this;
         unsigned char *pbTag = (unsigned char *)(unsigned long)pStream->m_pTagBuffer2c;
         pStream->WriteEffStreamU32BE(*(unsigned int *)pbTag);
@@ -1114,7 +1112,7 @@ struct VsNetTcpipSocketStackDualThunkVtableModel {
         *(unsigned char *)pStream->m_nReserved1c = pbTag[0xe];
         ++pStream->m_nReserved1c;
     }
-    virtual void *Delete(BYTE fDelete) {
+    __inline virtual void *Delete(BYTE fDelete) {
         char *pAdjusted = (char *)this - *(int *)((char *)this - 4) - 0xa8;
         return DeleteCompositeEffTransportStackWrapper(pAdjusted, fDelete);
     }
@@ -1124,7 +1122,7 @@ struct VsNetTcpipSocketStackDualThunkVtableModel {
                 ((char *)this - *(int *)((char *)this - 4));
         pCallback->QueueEffTransportConnectEvent();
     }
-    virtual void WriteGlobalSession(void) {
+    __inline virtual void WriteGlobalSession(void) {
         char *pAdjusted = (char *)this - *(int *)((char *)this - 4) + 0x90;
         int *pOffsets = *(int **)(pAdjusted - 0x38);
         ((VsNetPeerPayloadSender *)(pAdjusted + pOffsets[2] - 0x38))
@@ -1135,7 +1133,7 @@ struct VsNetTcpipSocketStackDualThunkVtableModel {
         return ((VsNetDispatchAckedEffTransportPayloadView *)pObject)
             ->DispatchAckedEffTransportPayloadEvent();
     }
-    virtual void QueuePayload(unsigned short nType, void *pPayload) {
+    __inline virtual void QueuePayload(int nType, void *pPayload) {
         void *pObject = (char *)this - *(int *)((char *)this - 4);
         ((VsNetQueueEffTransportPayloadEventView *)pObject)
             ->QueueEffTransportPayloadEvent(nType, pPayload);
@@ -1147,7 +1145,7 @@ struct VsNetTcpipSocketStackDualThunkVtableModel {
  * the other runtime table. */
 struct VsNetTcpipSocketStackCompositeRuntimeThunkVtableModel
     : VsNetTcpipSocketStackCommonThunkVtableModel {
-    virtual void *Delete(BYTE fDelete) {
+    __inline virtual void *Delete(BYTE fDelete) {
         char *pAdjusted = (char *)this - *(int *)((char *)this - 4) - 0x30;
         return ((VsNetTcpipSocketChannelStackWrapperView *)pAdjusted)
             ->DeleteCompositeTcpipSocketChannelStackWrapper(fDelete);
@@ -1161,15 +1159,15 @@ struct VsNetTcpipSocketStackCompositeRuntimeThunkVtableModel
         return ((VsNetAckedEffTransportRecordOwner *)pAdjusted)
             ->ClaimAckedEffTransportRecordPayload();
     }
-    virtual void CaptureLookup(void *pLookupResult) {
+    __inline virtual void CaptureLookup(void *pLookupResult) {
         ((VsNetTimedSocketAsyncLookupAdapter *)((char *)this + 0x140))
             ->CaptureAsyncLookupAddressForTimedStream(pLookupResult);
     }
-    virtual int SendUdp(void *pBuffer, int cbBuffer) {
+    __inline virtual int SendUdp(void *pBuffer, int cbBuffer) {
         return ((VsNetTimedSocketAsyncLookupAdapter *)((char *)this + 0x140))
             ->SendUdpPayloadToSocketAddress(pBuffer, cbBuffer);
     }
-    virtual void SetAssignedPort(short nPort) {
+    __inline virtual void SetAssignedPort(short nPort) {
         SetTcpipSocketChannelAssignedPort((char *)this + 0x140, nPort);
     }
 };
@@ -1573,7 +1571,7 @@ void VsNetTcpipSocketStackDualRet8VtableModel::Ret8(BYTE fDelete, BYTE fReserved
 static VsNetTcpipSocketStackDualRet8VtableModel
     g_NETWORK_TcpipSocketStackDualRet8VtableModel;
 // FUNCTION: LEMBALL 0x004629d0
-static void TcpipCompositeUnusedVtableSlot(void)
+void TcpipCompositeUnusedVtableSlot(void)
 {
     (void)0;
 }
@@ -2794,7 +2792,7 @@ const char *VsNetInetAddressEntry::GetAddressString(void) {
 }
 
 // FUNCTION: LEMBALL 0x004715c0
-static void *AllocateTcpipInetAddressEntry(void) {
+void *AllocateTcpipInetAddressEntry(void) {
     VsNetInetAddressEntry *pObject;
 
     pObject = (VsNetInetAddressEntry *)AllocateVSMemBlock(0x18);
@@ -2973,7 +2971,7 @@ void *VsNetTcpipSocketChannelStackLayout::ConstructTcpipSocketChannelStack(
 }
 
 // FUNCTION: LEMBALL 0x00471a10
-static void *DeleteTcpipRuntimeStateWindowAdjustedThunk(void *pObject,
+void *DeleteTcpipRuntimeStateWindowAdjustedThunk(void *pObject,
                                                           BYTE fFreeMemory)
 
 {
@@ -3113,7 +3111,7 @@ void LEMBALL_FASTCALL WriteCompositeTcpipGlobalSessionAdjustedThunk(void *pObjec
 }
 
 // FUNCTION: LEMBALL 0x00471bb0
-static void LEMBALL_FASTCALL WriteCompositeTcpipGlobalSessionBody(void *pObject) {
+void LEMBALL_FASTCALL WriteCompositeTcpipGlobalSessionBody(void *pObject) {
     char *pAdjusted;
     int *pOffsets;
 
@@ -3133,7 +3131,7 @@ void *DispatchCompositeTcpipAckedPayloadAdjustedThunk(void *pObject) {
 }
 
 // FUNCTION: LEMBALL 0x00471bf0
-static void AllocatedTcpipCompositeCaptureLookupAdjustedThunk(
+void AllocatedTcpipCompositeCaptureLookupAdjustedThunk(
     void *pObject, void *pLookupResult)
 
 {
@@ -3142,7 +3140,7 @@ static void AllocatedTcpipCompositeCaptureLookupAdjustedThunk(
 }
 
 // FUNCTION: LEMBALL 0x00471c00
-static int AllocatedTcpipCompositeSendUdpAdjustedThunk(void *pObject,
+int AllocatedTcpipCompositeSendUdpAdjustedThunk(void *pObject,
                                                         void *pBuffer,
                                                         int cbBuffer)
 
@@ -3152,7 +3150,7 @@ static int AllocatedTcpipCompositeSendUdpAdjustedThunk(void *pObject,
 }
 
 // FUNCTION: LEMBALL 0x00471c10
-static void AllocatedTcpipCompositeSetPortAdjustedThunk(void *pObject,
+void AllocatedTcpipCompositeSetPortAdjustedThunk(void *pObject,
                                                           short nPort)
 
 {
@@ -3160,7 +3158,7 @@ static void AllocatedTcpipCompositeSetPortAdjustedThunk(void *pObject,
 }
 
 // FUNCTION: LEMBALL 0x00471c20
-static void SetTcpipSocketChannelAssignedPort(void *pObject, short nPort) {
+void SetTcpipSocketChannelAssignedPort(void *pObject, short nPort) {
     char *pbObject;
     int nOffsets;
     int nChannelDelta;
@@ -3214,7 +3212,7 @@ void *DispatchAllocatedAckedEffTransportPayloadAdjustedThunk(void *pObject) {
 }
 
 void QueueAllocatedEffTransportPayloadEventAdjustedThunk(
-    void *pObject, unsigned short nType, void *pPayload)
+    void *pObject, int nType, void *pPayload)
 
 {
     pObject = (char *)pObject - *(int *)((char *)pObject - 4) - 4;
@@ -3287,13 +3285,13 @@ static void *DeleteTcpipSocketStackCompositeAdjustedThunk(void *pObject,
 }
 
 // FUNCTION: LEMBALL 0x00471d60
-static void *LEMBALL_FASTCALL ClaimTcpipSocketStackCompositeAdjustedThunk(void *pObject) {
+void *LEMBALL_FASTCALL ClaimTcpipSocketStackCompositeAdjustedThunk(void *pObject) {
     pObject = (char *)pObject - *(int *)((char *)pObject - 4);
     return ClaimTcpipSocketStackCompositeBody(pObject);
 }
 
 // FUNCTION: LEMBALL 0x00471d70
-static void *LEMBALL_FASTCALL ClaimTcpipSocketStackCompositeBody(void *pObject) {
+void *LEMBALL_FASTCALL ClaimTcpipSocketStackCompositeBody(void *pObject) {
     char *pAdjusted;
     int *pOffsets;
 
@@ -3329,7 +3327,7 @@ static void TimedSocketBundleDispatchAsyncThunk(void *pObject, int nMessage,
 }
 
 // FUNCTION: LEMBALL 0x00471dc0
-static void LEMBALL_FASTCALL TimedSocketBundlePrimaryCloseThunk(void *pObject) {
+void LEMBALL_FASTCALL TimedSocketBundlePrimaryCloseThunk(void *pObject) {
     ((VsNetSocketWindowChannelWrapper *)((char *)pObject + 0xa4))
         ->CloseSocketHandleFromChannel();
 }
@@ -3362,7 +3360,7 @@ void *VsNetDualSocketWindowChannelStackWrapperView::DeleteDualSocketWindowChanne
 }
 
 // FUNCTION: LEMBALL 0x00471e20
-static void LEMBALL_FASTCALL TimedSocketBundlePrimaryCaptureErrorThunk(void *pObject) {
+void LEMBALL_FASTCALL TimedSocketBundlePrimaryCaptureErrorThunk(void *pObject) {
     ((VsNetSocketWindowChannelWrapper *)((char *)pObject + 0xa4))
         ->CaptureLastWinsockErrorStatus();
 }
@@ -3373,12 +3371,12 @@ static void TimedSocketBundlePrimaryNoopThunk(void *pObject, BYTE fDelete) {
 }
 
 // FUNCTION: LEMBALL 0x00471e40
-static void TimedSocketBundlePrimaryNoopBody(BYTE fDelete) {
+void TimedSocketBundlePrimaryNoopBody(BYTE fDelete) {
     (void)fDelete;
 }
 
 // FUNCTION: LEMBALL 0x00471e60
-static void LEMBALL_FASTCALL TimedSocketBundleCloseSocketThunk(void *pObject) {
+void LEMBALL_FASTCALL TimedSocketBundleCloseSocketThunk(void *pObject) {
     ((VsNetSocketWindowChannelWrapper *)((char *)pObject + 0xc8))
         ->CloseSocketHandleFromChannel();
 }
@@ -3411,7 +3409,7 @@ void *VsNetTimedSocketWindowChannelStackWrapperView::DeleteTimedSocketWindowChan
 }
 
 // FUNCTION: LEMBALL 0x00471ec0
-static void LEMBALL_FASTCALL TimedSocketBundleCaptureErrorThunk(void *pObject) {
+void LEMBALL_FASTCALL TimedSocketBundleCaptureErrorThunk(void *pObject) {
     ((VsNetSocketWindowChannelWrapper *)((char *)pObject + 0xc8))
         ->CaptureLastWinsockErrorStatus();
 }
@@ -3422,7 +3420,7 @@ static void TimedSocketBundleClearPendingWriteThunk(void *pObject, void *pUnused
 }
 
 // FUNCTION: LEMBALL 0x00471ee0
-static void TimedSocketBundleClearPendingWriteBody(void *pObject, void *pUnused) {
+void TimedSocketBundleClearPendingWriteBody(void *pObject, void *pUnused) {
     int nPendingDelta = *(int *)(*(int *)((char *)pObject - 0x18) + 8);
     ((VsNetEffTransportPendingWriteState *)((char *)pObject + nPendingDelta + 0x60))
         ->Clear(pUnused);

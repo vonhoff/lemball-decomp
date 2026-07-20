@@ -22,10 +22,9 @@ typedef void *(LEMBALL_FASTCALL *DemoDeleteProc)(
 extern void ReturnVoidVtableCallback(void);
 extern void *g_GAME_RenderQueueNodeVtableSlots[4];
 
-int DispatchLevelDemoEventsForFrameThunk(void *pPlaybackController, char nFrame);
-static void *LEMBALL_FASTCALL DeleteLevelDemoPlaybackControllerThunk(
+void *LEMBALL_FASTCALL DeleteLevelDemoPlaybackControllerThunk(
     void *pPlaybackController, int nUnused, int fDelete);
-static int LEMBALL_FASTCALL FilterLevelDemoPlaybackInputEventThunk(
+int LEMBALL_FASTCALL FilterLevelDemoPlaybackInputEventThunk(
     void *pPlaybackController, int nUnused, unsigned short *pEventId);
 
 static const char g_DEMO_OpenReadMode[] = "rb";
@@ -47,8 +46,8 @@ extern void NoopVfunc12(void);
 extern int LEMBALL_FASTCALL GetField28GetMemorySize(void *pObject);
 extern void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtable(void *pObject);
 
-static void LEMBALL_FASTCALL SetBinResourceTypeTag(void *pObject);
-static void *LEMBALL_FASTCALL DestroyBinResource(
+void LEMBALL_FASTCALL SetBinResourceTypeTag(void *pObject);
+void *LEMBALL_FASTCALL DestroyBinResource(
     void *pObject, int nUnused, int fDelete);
 
 static void *g_DEMO_BinResourceVtableStorage[15] = {
@@ -75,9 +74,9 @@ extern void *g_MOGLOAD_CachedResourceObjectBaseVtable[15];
 extern void InitializeResourceObjectFromId(void *pObject, int nResourceId);
 extern void *FinalizeLoadedResourceObjectResult(void *pObject);
 
-static void *LEMBALL_FASTCALL DeleteLevelDemoPlaybackControllerThunk(
+void *LEMBALL_FASTCALL DeleteLevelDemoPlaybackControllerThunk(
     void *pPlaybackController, int, int fDelete);
-static int LEMBALL_FASTCALL FilterLevelDemoPlaybackInputEventThunk(
+int LEMBALL_FASTCALL FilterLevelDemoPlaybackInputEventThunk(
     void *pPlaybackController, int, unsigned short *pEventId);
 void LEMBALL_FASTCALL ReleaseLevelDemoRecordBufferThunk(void *pPlaybackController);
 void CreateFrameTimerController(unsigned int uFrameInterval);
@@ -90,8 +89,8 @@ void StopLevelDemoPlayback(void *pPlaybackController);
 int FilterLevelDemoPlaybackInputEvent(void *pPlaybackController, unsigned short *pEventId);
 void *RestoreLevelDemoPlaybackBaseVtable(void *pPlaybackController, unsigned char fDelete);
 int *LoadBinResource(int nResourceId);
-static void LEMBALL_FASTCALL SetBinResourceTypeTag(void *pObject);
-static void *LEMBALL_FASTCALL DestroyBinResource(
+void LEMBALL_FASTCALL SetBinResourceTypeTag(void *pObject);
+void *LEMBALL_FASTCALL DestroyBinResource(
     void *pObject, int nUnused, int fDelete);
 FILE *OpenFileWithMode(const char *pszPath, const char *pszMode);
 void CloseCrtFilePointer(FILE *pFile);
@@ -114,7 +113,6 @@ void *g_pNonZrleVariantRenderEntryInitializeVtable[2] = {
 
 void *g_pLevelDemoPlaybackController = 0;
 void *g_pLevelDemoPlaybackDescriptor = 0;
-int g_nStoredLevelDemoModeEnabled = 0;
 
 
 
@@ -134,9 +132,6 @@ static DemoLevelDemoPlaybackConstructorAddress g_DEMO_LevelDemoPlaybackConstruct
 
 
 
-void LEMBALL_FASTCALL ServiceLevelDemoPlaybackThunk(void *pPlaybackController) {
-    ServiceLevelDemoPlayback(pPlaybackController);
-}
 
 
 
@@ -146,11 +141,6 @@ void LEMBALL_FASTCALL ServiceLevelDemoPlaybackThunk(void *pPlaybackController) {
 
 
 
-int DispatchLevelDemoEventsForFrameThunk(void *pPlaybackController, char nFrame) {
-    (void)pPlaybackController;
-    (void)nFrame;
-    return 0;
-}
 
 
 
@@ -164,12 +154,18 @@ int DispatchLevelDemoEventsForFrameThunk(void *pPlaybackController, char nFrame)
 
 
 // FUNCTION: LEMBALL 0x004016a4
-static void *LEMBALL_FASTCALL DeleteLevelDemoPlaybackControllerThunk(
+void *LEMBALL_FASTCALL DeleteLevelDemoPlaybackControllerThunk(
     void *pPlaybackController, int, int fDelete)
 
 {
-    return ((DemoLevelDemoPlaybackController *)pPlaybackController)
-        ->DeleteLevelDemoPlaybackController((unsigned char)fDelete);
+    DemoLevelDemoPlaybackController *pController;
+
+    pController = (DemoLevelDemoPlaybackController *)pPlaybackController;
+    pController->DestroyLevelDemoPlaybackController();
+    if ((fDelete & 1) != 0) {
+        FreeVSMemBlock(pPlaybackController);
+    }
+    return pPlaybackController;
 }
 
 // FUNCTION: LEMBALL 0x0040179e
@@ -186,7 +182,7 @@ DemoLevelDemoPlaybackController::ConstructLevelDemoPlaybackControllerThunk(unsig
 }
 
 // FUNCTION: LEMBALL 0x00401a28
-static int LEMBALL_FASTCALL FilterLevelDemoPlaybackInputEventThunk(
+int LEMBALL_FASTCALL FilterLevelDemoPlaybackInputEventThunk(
     void *pPlaybackController, int, unsigned short *pEventId)
 
 {
@@ -371,7 +367,6 @@ void DemoLevelDemoPlaybackController::SetLevelDemoPlaybackEnabled(int fEnabled) 
 void ServiceLevelDemoPlayback(void *pPlaybackController) {
     DWORD dwNow;
     DWORD dwElapsed;
-    int fDispatched;
 
     if (*(int *)((char *)pPlaybackController + 0x50) == 0 &&
         *(int *)((char *)pPlaybackController + 0x4c) != 0) {
@@ -383,10 +378,6 @@ void ServiceLevelDemoPlayback(void *pPlaybackController) {
             return;
         }
         ++*(int *)((char *)pPlaybackController + 0x44);
-        do {
-            fDispatched = DispatchLevelDemoEventsForFrameThunk(
-                pPlaybackController, (char)*(int *)((char *)pPlaybackController + 0x44));
-        } while (fDispatched != 0);
     }
 }
 
@@ -445,16 +436,6 @@ int FilterLevelDemoPlaybackInputEvent(void *pPlaybackController, unsigned short 
     return 0;
 }
 
-void *DemoLevelDemoPlaybackController::DeleteLevelDemoPlaybackController(
-    unsigned char fDelete) {
-    void *pPlaybackController = this;
-    DestroyLevelDemoPlaybackController();
-    if ((fDelete & 1) != 0) {
-        FreeVSMemBlock(pPlaybackController);
-    }
-    return pPlaybackController;
-}
-
 // FUNCTION: LEMBALL 0x004098e0
 void *RestoreLevelDemoPlaybackBaseVtable(void *pPlaybackController, unsigned char fDelete) {
     *(void ***)pPlaybackController = g_pNonZrleVariantRenderEntryInitializeVtable;
@@ -491,12 +472,12 @@ int *LoadBinResource(int nResourceId) {
 }
 
 // FUNCTION: LEMBALL 0x0045ec60
-static void LEMBALL_FASTCALL SetBinResourceTypeTag(void *pObject) {
+void LEMBALL_FASTCALL SetBinResourceTypeTag(void *pObject) {
     *(unsigned int *)((char *)pObject + 0x40) = g_DEMO_BinResourceTypeTag;
 }
 
 // FUNCTION: LEMBALL 0x0045ec70
-static void *LEMBALL_FASTCALL DestroyBinResource(
+void *LEMBALL_FASTCALL DestroyBinResource(
     void *pObject, int, int fDelete)
 
 {

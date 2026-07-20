@@ -3,6 +3,24 @@
 
 #include "ENGINE/CORE/COMMON.H"
 
+struct GameNetworkLobbyScreenView;
+
+void LEMBALL_FASTCALL DrawPaintballSequencePromptText(void *pObject);
+int LEMBALL_FASTCALL DispatchPaintballSequenceUserAction(void *pObject, int nUnusedEdx, int nAction);
+void LEMBALL_FASTCALL UpdatePaintballSequenceScreen(void *pObject);
+void LEMBALL_FASTCALL DrawPaintballSequenceFrame(void *pObject);
+void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void *pObject);
+int LEMBALL_FASTCALL HandlePasswordEntryInput(void *pObject, int nUnusedEdx, void *pEvent);
+void LEMBALL_FASTCALL InitializeNetworkLobbyActionButtons(void *pObject);
+void LEMBALL_FASTCALL DrawNetworkLobbyActionButtonFrames(void *pObject);
+void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void *pObject);
+void ShowNetworkLobbyTextPrompt(GameNetworkLobbyScreenView *pScreen, int nPrompt, int fClear);
+// FUNCTION: LEMBALL 0x004551d0
+// CloseNetworkLobbyTransportPeers
+void LEMBALL_FASTCALL CloseNetworkLobbyTransportPeers(void *pController);
+int LEMBALL_FASTCALL HandleNetworkLobbyTransportPayloadEvent(void *pController, int nUnusedEdx, unsigned short nEventType, void *pPayloadObject, void *pPeer);
+void *LEMBALL_FASTCALL DeleteNetworkLobbyScreen(void *pObject, int nUnusedEdx, int fDelete);
+
 extern void *g_GAME_MainMenuScreenVtable[22];
 void *LEMBALL_FASTCALL ConstructFunctionalLevelSelectionScreen(
     void *pObject, int nUnusedEdx, void *pPrimaryContext,

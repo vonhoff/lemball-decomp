@@ -8,6 +8,8 @@
 
 extern int g_nLastMainMenuPackSelection;
 
+// GLOBAL: LEMBALL 0x0049ca30
+int g_fStartupTestAllLevels = 0;
 // GLOBAL: LEMBALL 0x0049ca34
 static const char g_STARTUP_DefaultOverrideLevelPath[] = "level\\testlvl.lvl";
 static const char g_STARTUP_SwitchNoMusic[] = "/NOMUSIC";
@@ -48,7 +50,7 @@ int g_fStartupEditLevelOverride = 0;
 // GLOBAL: LEMBALL 0x004a6308
 int g_fStartupPlayLevelOverride = 0;
 // GLOBAL: LEMBALL 0x004a62a0
-int g_fStartupTestAllLevels = 0;
+int g_nStoredLevelDemoModeEnabled = 0;
 // GLOBAL: LEMBALL 0x004a629c
 int g_fStartupGraphicsDialogRequested = 0;
 // GLOBAL: LEMBALL 0x004a62a4
@@ -145,7 +147,7 @@ void InitializeStartupSwitchDefaults(void) {
     }
     g_fUnknownStartupFlag1 = 0;
     g_fUnknownStartupFlag0 = 0;
-    g_fStartupTestAllLevels = 0;
+    g_nStoredLevelDemoModeEnabled = 0;
     g_fLevelDemoModeEnabled = 0;
 
     strcpy((char *)g_abOverrideLevelFilePathBuffer,

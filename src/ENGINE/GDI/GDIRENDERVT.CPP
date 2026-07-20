@@ -1,6 +1,5 @@
 #include "ENGINE/CORE/VSMEM.H"
-
-extern void AppendPointerQueueEntry(void *pQueue, void *pEntry);
+#include "ENGINE/GDI/VSGDI.H"
 
 // FUNCTION: LEMBALL 0x00401073
 void LEMBALL_FASTCALL ExecuteStatusRenderPopThunk(
@@ -73,7 +72,8 @@ void LEMBALL_FASTCALL AppendStatusPointSinkToQueueThunk(
     void *pEntry, int nUnused, void *pQueue)
 {
     (void)nUnused;
-    AppendPointerQueueEntry(pQueue, pEntry);
+    ((VsGdiHelperDispatchQueue *)pQueue)
+        ->AppendPointerQueueEntry(pEntry);
 }
 
 // FUNCTION: LEMBALL 0x00403512
@@ -81,7 +81,8 @@ void LEMBALL_FASTCALL QueueStatusRenderPopThunk(
     void *pEntry, int nUnused, void *pQueue)
 {
     (void)nUnused;
-    AppendPointerQueueEntry(pQueue, pEntry);
+    ((VsGdiHelperDispatchQueue *)pQueue)
+        ->AppendPointerQueueEntry(pEntry);
 }
 
 // FUNCTION: LEMBALL 0x00403670
@@ -89,7 +90,8 @@ void LEMBALL_FASTCALL QueueStatusPointPushThunk(
     void *pEntry, int nUnused, void *pQueue)
 {
     (void)nUnused;
-    AppendPointerQueueEntry(pQueue, pEntry);
+    ((VsGdiHelperDispatchQueue *)pQueue)
+        ->AppendPointerQueueEntry(pEntry);
 }
 
 // FUNCTION: LEMBALL 0x004036a7

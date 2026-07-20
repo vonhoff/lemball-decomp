@@ -12,31 +12,19 @@ static const char g_PLATFORM_DebugWindowTitle[] = "Debug Window";
 
 CTextWindow *g_pDebugTextWindow = 0;
 static HACCEL g_hDebugWindowAccelerators = 0;
-static void *g_CTextWindowVTable[1] = { (void *)NetworkSafeVtableNoop };
+static void *g_CTextWindowVTable[2] = {
+    (void *)NetworkSafeVtableNoop,
+    (void *)NetworkSafeVtableNoop
+};
 extern HANDLE g_hDebugSyncEvent;
+extern void __cdecl ShowFatalGetLastErrorMessageAndExit(
+    const char *pszMessage);
 
-CTextWindow *CTextWindow::Construct(const char *pszTitle, unsigned int cchBuffer) {
-    m_pVTable = g_CTextWindowVTable;
-    m_pszTitle = pszTitle;
-    m_cchBuffer = cchBuffer;
-    return this;
-}
-
-void PostAllocatedTextControlString(CTextWindow *pWindow,
-                                    const char *pszText,
-                                    unsigned int dwColour) {
-    char *pszCopy;
-    unsigned int cchText;
-
-    cchText = (unsigned int)strlen(pszText) + 1;
-    pszCopy = (char *)AllocateVSMemBlock(cchText);
-    if (pszCopy == 0) {
-        return;
-    }
-    memcpy(pszCopy, pszText, cchText);
-    PostMessageA(*(HWND *)((char *)pWindow + 0x1c), 0x420, (WPARAM)pszCopy,
-                 (LPARAM)dwColour);
-}
+class CTextWindowSyncInterface {
+public:
+    virtual void BeginUpdate(void);
+    virtual void EndUpdate(void);
+};
 
 // FUNCTION: LEMBALL 0x00472b10
 int __stdcall DebugMessageThreadMain(void) {
@@ -48,8 +36,10 @@ int __stdcall DebugMessageThreadMain(void) {
     if (pvTextWindow == 0) {
         g_pDebugTextWindow = 0;
     } else {
-        g_pDebugTextWindow =
-            ((CTextWindow *)pvTextWindow)->Construct(g_PLATFORM_DebugWindowTitle, 0x2800);
+        g_pDebugTextWindow = (CTextWindow *)pvTextWindow;
+        g_pDebugTextWindow->m_pVTable = g_CTextWindowVTable;
+        g_pDebugTextWindow->m_pszTitle = g_PLATFORM_DebugWindowTitle;
+        g_pDebugTextWindow->m_cchBuffer = 0x2800;
     }
 
     SetEvent(g_hDebugSyncEvent);
@@ -67,6 +57,25 @@ int __stdcall DebugMessageThreadMain(void) {
     return 1;
 }
 
-CTextWindow *GetDebugTextWindow(void) {
-    return g_pDebugTextWindow;
+// FUNCTION: LEMBALL 0x00473d90
+void CTextWindow::PostAllocatedTextControlString(const char *pszText, unsigned int dwColour) {
+    char *pszCopy;
+    unsigned int cchText;
+
+    ((CTextWindowSyncInterface *)this)->BeginUpdate();
+    if (g_pDebugTextWindow == 0) {
+        return;
+    }
+    cchText = (unsigned int)strlen(pszText) + 1;
+    pszCopy = (char *)AllocateVSMemBlock(cchText);
+    if (pszCopy == 0) {
+        ShowFatalGetLastErrorMessageAndExit(
+            "Unable to allocate memory for string copy");
+    }
+    strcpy(pszCopy, pszText);
+    if (*(HWND *)((char *)this + 0x1c) != 0) {
+        PostMessageA(*(HWND *)((char *)this + 0x1c), 0x420,
+                     (WPARAM)pszCopy, (LPARAM)dwColour);
+    }
+    ((CTextWindowSyncInterface *)this)->EndUpdate();
 }

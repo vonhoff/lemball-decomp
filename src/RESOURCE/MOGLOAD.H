@@ -119,6 +119,7 @@ struct MogLoadStringResourceObject {
     int m_nReserved3C;
     unsigned int m_uTypeTag;
     int m_nResultCode44;
+
 };
 
 #endif

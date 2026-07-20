@@ -83,17 +83,15 @@ static const char g_VSMEM_HexPrefix[] = " : 0x";
 static const char g_VSMEM_FreeSizePrefix[] = " : Free Size is ";
 static const char g_VSMEM_LineBreak[] = "\n";
 
-static void LEMBALL_FASTCALL EnterMemoryArenaCriticalSection(void *pLockVtable);
-static void LEMBALL_FASTCALL LeaveMemoryArenaCriticalSection(void *pLockVtable);
 static void VSMEM_NoOpLock(void);
 void *LEMBALL_FASTCALL VSMEM_ReportBlockStub(
     void *pBlock, int nUnused, VsInitFormattedOutputStream *pOutputStream);
-static void *LEMBALL_FASTCALL VSMEM_DeleteBlockStub(
+void *LEMBALL_FASTCALL VSMEM_DeleteBlockStub(
     void *pBlock, int nUnused, int fDelete);
 void LEMBALL_FASTCALL RestoreMemoryBlockBaseVtable(void *pBlock);
 void *RestoreMemoryBlockBaseVtableReturnThis(void *pBlock);
 static void UpdateMainMemoryArenaFreeCounter(void);
-static SmallMemoryBucket *LEMBALL_FASTCALL AllocateSmallMemoryChildBucket(
+SmallMemoryBucket *LEMBALL_FASTCALL AllocateSmallMemoryChildBucket(
     SmallMemoryBucket *pParentBucket);
 
 union CArenaAllocateMethodAddress {
@@ -151,14 +149,14 @@ static void *g_aMemoryArenaInitialVtable[1] = {
     (void *)_purecall,
 };
 static void *g_aMemoryArenaInitialLockVtable[4] = {
-    (void *)EnterMemoryArenaCriticalSection,
-    (void *)LeaveMemoryArenaCriticalSection,
-    (void *)EnterMemoryArenaCriticalSection,
-    (void *)LeaveMemoryArenaCriticalSection,
+    (void *)EnterObjectCriticalSection,
+    (void *)LeaveObjectCriticalSection,
+    (void *)EnterObjectCriticalSection,
+    (void *)LeaveObjectCriticalSection,
 };
 static void *g_aMainMemoryArenaLockVtable[2] = {
-    (void *)EnterMemoryArenaCriticalSection,
-    (void *)LeaveMemoryArenaCriticalSection,
+    (void *)EnterObjectCriticalSection,
+    (void *)LeaveObjectCriticalSection,
 };
 // GLOBAL: LEMBALL 0x00498940
 static void *g_aMemoryBlockVtables[2][2] = {
@@ -168,8 +166,8 @@ static void *g_aMemoryBlockVtables[2][2] = {
       (void *)VSMEM_DeleteBlockStub },
 };
 static void *g_aSmallMemoryBucketVtable[2] = {
-    (void *)EnterMemoryArenaCriticalSection,
-    (void *)LeaveMemoryArenaCriticalSection,
+    (void *)EnterObjectCriticalSection,
+    (void *)LeaveObjectCriticalSection,
 };
 
 SmallMemoryBucketTable *LEMBALL_FASTCALL ConstructSmallMemoryBucketTable(
@@ -913,14 +911,6 @@ int IsPointerInsideManagedMemoryRegions(void *pvPointer) {
     return 0;
 }
 
-static void LEMBALL_FASTCALL EnterMemoryArenaCriticalSection(void *pLockVtable) {
-    EnterCriticalSection((char *)pLockVtable + 4);
-}
-
-static void LEMBALL_FASTCALL LeaveMemoryArenaCriticalSection(void *pLockVtable) {
-    LeaveCriticalSection((char *)pLockVtable + 4);
-}
-
 static void VSMEM_NoOpLock(void) {
 }
 
@@ -958,7 +948,7 @@ void *RestoreMemoryBlockBaseVtableReturnThis(void *pBlock) {
 }
 
 // FUNCTION: LEMBALL 0x0045a900
-static void *LEMBALL_FASTCALL VSMEM_DeleteBlockStub(void *pBlock, int nUnused, int fDelete) {
+void *LEMBALL_FASTCALL VSMEM_DeleteBlockStub(void *pBlock, int nUnused, int fDelete) {
     (void)nUnused;
     (void)fDelete;
     *(void ***)pBlock = g_aMemoryBlockVtables[1];
@@ -1088,7 +1078,7 @@ SmallMemoryBucket *SmallMemoryBucket::ConstructSmallMemoryBucket(
 }
 
 // FUNCTION: LEMBALL 0x00472dc0
-static void LEMBALL_FASTCALL DestroySmallMemoryBucket(SmallMemoryBucket *pBucket) {
+void LEMBALL_FASTCALL DestroySmallMemoryBucket(SmallMemoryBucket *pBucket) {
     int fSmallBuckets;
 
     pBucket->m_pVtable = g_aSmallMemoryBucketVtable;
@@ -1114,12 +1104,12 @@ int SmallMemoryBucket::AllocateSlot(void **ppvSlot) {
 
     pBucket = this;
     for (;;) {
-        EnterMemoryArenaCriticalSection(pBucket);
+        EnterObjectCriticalSection(pBucket);
         if ((pBucket->m_wFlags & 4) == 0)
             break;
         if (pBucket->m_pChildBucket == 0)
             AllocateSmallMemoryChildBucket(pBucket);
-        LeaveMemoryArenaCriticalSection(pBucket);
+        LeaveObjectCriticalSection(pBucket);
         pBucket = pBucket->m_pChildBucket;
         if (pBucket == 0) {
             *ppvSlot = 0;
@@ -1146,7 +1136,7 @@ int SmallMemoryBucket::AllocateSlot(void **ppvSlot) {
                     if (pBucket->m_cbStorageAvailable == 0)
                         pBucket->m_wFlags |= 4;
                     *ppvSlot = (char *)pBucket->m_pStorage + nSlot * pBucket->m_cbSlot;
-                    LeaveMemoryArenaCriticalSection(pBucket);
+                    LeaveObjectCriticalSection(pBucket);
                     return 1;
                 }
             }
@@ -1154,7 +1144,7 @@ int SmallMemoryBucket::AllocateSlot(void **ppvSlot) {
     }
     *ppvSlot = 0;
     pBucket->m_wFlags |= 4;
-    LeaveMemoryArenaCriticalSection(pBucket);
+    LeaveObjectCriticalSection(pBucket);
     return 0;
 }
 
@@ -1168,11 +1158,11 @@ int SmallMemoryBucket::FreeSlot(void *pvSlot) {
 
     pBucket = this;
     for (;;) {
-        EnterMemoryArenaCriticalSection(pBucket);
+        EnterObjectCriticalSection(pBucket);
         if (pvSlot >= pBucket->m_pStorage &&
             (char *)pvSlot < (char *)pBucket->m_pStorage + pBucket->m_cbStorage)
             break;
-        LeaveMemoryArenaCriticalSection(pBucket);
+        LeaveObjectCriticalSection(pBucket);
         if (pBucket->m_pChildBucket == 0)
             return 0;
         pBucket = pBucket->m_pChildBucket;
@@ -1180,7 +1170,7 @@ int SmallMemoryBucket::FreeSlot(void *pvSlot) {
     if (pvSlot < pBucket->m_pStorage ||
         (char *)pvSlot >= (char *)pBucket->m_pStorage + pBucket->m_cbStorage)
     {
-        LeaveMemoryArenaCriticalSection(pBucket);
+        LeaveObjectCriticalSection(pBucket);
         return 0;
     }
     nSlot = (unsigned int)(((char *)pvSlot - (char *)pBucket->m_pStorage) / pBucket->m_cbSlot);
@@ -1188,19 +1178,19 @@ int SmallMemoryBucket::FreeSlot(void *pvSlot) {
     j = nSlot & 31;
     dwMask = 1U << j;
     if ((((unsigned int *)pBucket->m_pBitmap)[i] & dwMask) == 0) {
-        LeaveMemoryArenaCriticalSection(pBucket);
+        LeaveObjectCriticalSection(pBucket);
         return 0;
     }
     ((unsigned int *)pBucket->m_pBitmap)[i] &= ~dwMask;
     pBucket->m_cbStorageAvailable += pBucket->m_cbSlot;
     pBucket->m_cAllocations -= 1;
     pBucket->m_wFlags &= (unsigned short)~4;
-    LeaveMemoryArenaCriticalSection(pBucket);
+    LeaveObjectCriticalSection(pBucket);
     return 1;
 }
 
 // FUNCTION: LEMBALL 0x00473050
-static SmallMemoryBucket *LEMBALL_FASTCALL AllocateSmallMemoryChildBucket(
+SmallMemoryBucket *LEMBALL_FASTCALL AllocateSmallMemoryChildBucket(
     SmallMemoryBucket *pParentBucket)
 
 {
