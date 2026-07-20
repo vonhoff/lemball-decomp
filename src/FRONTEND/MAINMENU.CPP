@@ -747,10 +747,10 @@ static const int g_GAME_OptionsLayoutCompact[12] = {
     0xe8, 0x74, 0x20, 0xae, 0xd0, 0xae
 };
 
-// GLOBAL: LEMBALL 0x004a7770
-int g_nOptionsEffectsSliderValue;
-// GLOBAL: LEMBALL 0x004a7774
-int g_nOptionsMusicSliderValue;
+// GLOBAL: LEMBALL 0x0049f628
+int g_nOptionsEffectsSliderValue = 100;
+// GLOBAL: LEMBALL 0x0049f62c
+int g_nOptionsMusicSliderValue = 100;
 
 
 static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(
