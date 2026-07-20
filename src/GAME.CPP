@@ -246,6 +246,8 @@ struct GameLevelProgressState {
 };
 
 struct GameBaseModeObject {
+    void Update(void);
+
     void **m_pVtable;
     int m_nRequestedMode;
     int m_nStatus;
@@ -709,7 +711,7 @@ void *LEMBALL_FASTCALL DeleteLevelModeActiveInterfaceThunk(
 void LEMBALL_FASTCALL UpdateLevelModeActiveInterfaceThunk(
     void *pActiveInterface);
 void RequestLocalLevelGameStateChange(void *pLevelMode, int nState);
-void LEMBALL_FASTCALL UpdateBaseModeThunk(int *pMode);
+void LEMBALL_FASTCALL UpdateBaseModeThunk(GameBaseModeObject *pMode);
 void *LEMBALL_FASTCALL DeleteMainMenuModeEventClientThunk(
     void *pObject, int, BYTE fDelete);
 int __stdcall ValidateResourceFileSignatureThunk(void);
@@ -2775,12 +2777,8 @@ void RequestLocalLevelGameStateChange(void *pLevelMode, int nState) {
 }
 
 // STUB: LEMBALL 0x00402d24
-void LEMBALL_FASTCALL UpdateBaseModeThunk(int *pMode) {
-    if (pMode[7] != 0 && g_nSelectedNetworkLobbyPeerId == 0 &&
-        g_pActiveNetworkLobbyScreen != 0) {
-        RequestFramedScreenTransitionMode2Thunk(g_pActiveNetworkLobbyScreen);
-    }
-    ((void (LEMBALL_FASTCALL *)(void *))(*(void ***)pMode)[3])(pMode);
+void LEMBALL_FASTCALL UpdateBaseModeThunk(GameBaseModeObject *pMode) {
+    pMode->Update();
 }
 
 // STUB: LEMBALL 0x00402d29
@@ -4757,6 +4755,16 @@ void LEMBALL_FASTCALL DestroyBaseModeObject(void *pObject) {
     }
     pMode[3] = g_pNonZrleVariantRenderEntryInitializeVtable;
     pMode[0] = g_GAME_GenericModeVtableSlots;
+}
+
+// FUNCTION: LEMBALL 0x00446830
+void GameBaseModeObject::Update(void) {
+    if (m_fNetworkLobbyActive != 0 &&
+        g_nSelectedNetworkLobbyPeerId == 0) {
+        RequestFramedScreenTransitionMode2Thunk(
+            g_pActiveNetworkLobbyScreen);
+    }
+    ((void (LEMBALL_FASTCALL *)(void *))m_pVtable[3])(this);
 }
 
 static void InitializeIntroSequenceMediaOwnerVtable(void *pMediaOwner) {
