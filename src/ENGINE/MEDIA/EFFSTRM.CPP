@@ -105,7 +105,6 @@ static void *g_EFF_NetworkLobbyPeerDirtyConfirmVtable[6] = {
 static const char g_EFF_DefaultNetworkPath[] = "t:\\network";
 // GLOBAL: LEMBALL 0x004a0138
 static const char g_EFF_NetworkRuntimeKey[] = "Paintball v0.1";
-void *ConstructEffStreamPayloadSize8(void *pObject);
 void *LEMBALL_FASTCALL ConstructNetworkLobbySelectedPeerStatusStream(
     void *pObject);
 void *LEMBALL_FASTCALL ConstructNetworkLobbyPeerEntryStream(void *pObject);
@@ -403,19 +402,21 @@ void *LEMBALL_FASTCALL ConstructNetworkLobbyPeerClearCloseStream(
 #include "ENGINE/CORE/SAFEVT.H"
 
 
-// FUNCTION: LEMBALL 0x004453b0
-void *ConstructEffStreamPayloadSize8(void *pObject) {
-    GameEffStream *pStream;
+// FUNCTION: LEMBALL 0x004013c0
+GameEffStream *GameEffStream::ConstructPayloadSize8Thunk(void) {
+    return ConstructPayloadSize8();
+}
 
-    pStream = (GameEffStream *)pObject;
-    pStream->m_pVtable =
+// FUNCTION: LEMBALL 0x004453b0
+GameEffStream *GameEffStream::ConstructPayloadSize8(void) {
+    m_pVtable =
         (GameEffStreamVtable *)g_GAME_EffStreamConstructionVtable;
-    pStream->m_nEventCode = 8;
-    pStream->ResetStateFields();
-    pStream->m_pVtable = (GameEffStreamVtable *)g_EFF_PayloadSize8Vtable;
-    pStream->m_cbSerializedLength += 8;
-    pStream->m_fHasPayload = 1;
-    return pObject;
+    m_nEventCode = 8;
+    ResetStateFields();
+    m_pVtable = (GameEffStreamVtable *)g_EFF_PayloadSize8Vtable;
+    m_cbSerializedLength += 8;
+    m_fHasPayload = 1;
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x004523b0

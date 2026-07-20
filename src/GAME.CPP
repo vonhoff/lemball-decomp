@@ -246,6 +246,8 @@ struct GameLevelProgressState {
 };
 
 struct GameBaseModeObject {
+    GameBaseModeObject *InitializeThunk(GameMainContext *pMainContext);
+    GameBaseModeObject *Initialize(GameMainContext *pMainContext);
     void Update(void);
 
     void **m_pVtable;
@@ -563,7 +565,6 @@ void *g_pNetworkLobbyTransportController = 0;
 // GLOBAL: LEMBALL 0x0049f144
 void *g_pActiveNetworkLobbyScreen = 0;
 
-extern void *ConstructEffStreamPayloadSize8(void *pObject);
 struct GameEffTransportRuntimeWindow {
     void RegisterEffTransportEventClient(void *pClient);
     void UnregisterEffTransportEventClient(void);
@@ -678,7 +679,6 @@ extern void __stdcall PromoteQueuedRenderPointSinkTargetStateThunk(
 
 
 
-void InitializeBaseModeObject(void *pModeObject, GameMainContext *pMainContext);
 int RunMainGameSessionThunk(int cArgs, const char *const *ppszArgs);
 int LEMBALL_FASTCALL ReturnZeroBaseModeThunk(void *);
 void *ConstructNetworkLobbyTransportController(void *pModeObject, GameMainContext *pMainContext);
@@ -2383,31 +2383,8 @@ void VS_RootGeometryOwner::AppendQueuedRenderSinkValueNode(void *pValue) {
 }
 
 // STUB: LEMBALL 0x004015e6
-void InitializeBaseModeObject(void *pModeObject, GameMainContext *pMainContext) {
-    GameBaseModeObject *pMode;
-
-    pMode = (GameBaseModeObject *)pModeObject;
-    pMode->m_pVtable = (void **)g_pSimpleModeDeleteVtable;
-    pMode->m_nRequestedMode = 0;
-    pMode->m_nStatus = 0;
-    InitializeRenderQueueNodeBase(&pMode->m_pRenderQueueNodeVtable);
-    pMode->m_pVtable = g_GAME_GenericModeVtableSlots;
-    pMode->m_pRenderQueueNodeVtable = (void **)g_pStartupModeRenderThunk;
-    pMode->m_pMainContext = pMainContext;
-    pMode->m_pTransportClient = AllocateVSMemBlock(0x34);
-    if (pMode->m_pTransportClient != 0) {
-        pMode->m_pTransportClient = ConstructEffStreamPayloadSize8(pMode->m_pTransportClient);
-    }
-    if (((GameLevelProgressState *)g_pLevelProgressState)->m_nCurrentPack == 4 && g_nSelectedNetworkLobbyPeerId != 0) {
-        pMode->m_fNetworkLobbyActive = 1;
-    } else {
-        pMode->m_fNetworkLobbyActive = 0;
-    }
-    if (g_pActiveNetworkRuntimeWindow != 0) {
-        ((GameEffTransportRuntimeWindow *)g_pActiveNetworkRuntimeWindow)
-            ->RegisterEffTransportEventClient(&pMode->m_pRenderQueueNodeVtable);
-    }
-    g_pActiveNetworkLobbyTransportController = pMode;
+GameBaseModeObject *GameBaseModeObject::InitializeThunk(GameMainContext *pMainContext) {
+    return Initialize(pMainContext);
 }
 
 // STUB: LEMBALL 0x00401839
@@ -2446,7 +2423,7 @@ void *ConstructNetworkLobbyTransportController(void *pModeObject, GameMainContex
     GameNetworkLobbyTransportController *pMode;
 
     pMode = (GameNetworkLobbyTransportController *)pModeObject;
-    InitializeBaseModeObject(pMode, pMainContext);
+    pMode->InitializeThunk(pMainContext);
     pMode->m_pVtable = g_GAME_NetworkLobbyTransportControllerVtable;
     pMode->m_pRenderQueueNodeVtable =
         g_GAME_NetworkLobbyTransportEventClientVtable;
@@ -2529,7 +2506,7 @@ void *ConstructLevelSelectionModeController(void *pModeObject, GameMainContext *
     GameLevelSelectionModeController *pMode;
 
     pMode = (GameLevelSelectionModeController *)pModeObject;
-    InitializeBaseModeObject(pMode, pMainContext);
+    pMode->InitializeThunk(pMainContext);
     pMode->m_pVtable = g_GAME_LevelSelectionModeVtable;
     pMode->m_pRenderQueueNodeVtable =
         g_GAME_LevelSelectionModeEventClientVtable;
@@ -2583,7 +2560,7 @@ void *ConstructPaintballSequenceModeController(void *pModeObject,
     GamePaintballSequenceModeController *pMode;
 
     pMode = (GamePaintballSequenceModeController *)pModeObject;
-    InitializeBaseModeObject(pMode, pMainContext);
+    pMode->InitializeThunk(pMainContext);
     pMode->m_pVtable = (void **)g_pMainMenuModeVtable;
     pMode->m_pRenderQueueNodeVtable = (void **)g_pMainMenuModeRenderThunk;
     pMode->m_fFirstSequenceVariant = fSequenceVariant;
@@ -3368,7 +3345,7 @@ void GameMainContext::SwitchMainGameMode(int nMode) {
         if (pModeObject == 0) {
             pMainContext->m_pActiveMode = 0;
         } else {
-            InitializeBaseModeObject(pModeObject, pMainContext);
+            ((GameBaseModeObject *)pModeObject)->InitializeThunk(pMainContext);
             *(void **)pModeObject = g_pStartupModeVtable;
             *(void **)((char *)pModeObject + 0xc) = g_pStartupModeRenderThunk;
             pMainContext->m_pActiveMode = pModeObject;
@@ -3388,7 +3365,7 @@ void GameMainContext::SwitchMainGameMode(int nMode) {
         if (pModeObject == 0) {
             pMainContext->m_pActiveMode = 0;
         } else {
-            InitializeBaseModeObject(pModeObject, pMainContext);
+            ((GameBaseModeObject *)pModeObject)->InitializeThunk(pMainContext);
             *(void **)pModeObject = g_pMainMenuModeVtable;
             *(void **)((char *)pModeObject + 0xc) = g_pMainMenuModeRenderThunk;
             pMainContext->m_pActiveMode = pModeObject;
@@ -3403,7 +3380,7 @@ void GameMainContext::SwitchMainGameMode(int nMode) {
         if (pModeObject == 0) {
             pMainContext->m_pActiveMode = 0;
         } else {
-            InitializeBaseModeObject(pModeObject, pMainContext);
+            ((GameBaseModeObject *)pModeObject)->InitializeThunk(pMainContext);
             *(void **)pModeObject = g_pMode3Vtable;
             *(void **)((char *)pModeObject + 0xc) = g_pMode3RenderThunk;
             pMainContext->m_pActiveMode = pModeObject;
@@ -3472,7 +3449,7 @@ void GameMainContext::SwitchMainGameMode(int nMode) {
         if (pModeObject == 0) {
             pMainContext->m_pActiveMode = 0;
         } else {
-            InitializeBaseModeObject(pModeObject, pMainContext);
+            ((GameBaseModeObject *)pModeObject)->InitializeThunk(pMainContext);
             *(void **)pModeObject = g_pMode16Vtable;
             *(void **)((char *)pModeObject + 0xc) = g_pMode16RenderThunk;
             pMainContext->m_pActiveMode = pModeObject;
@@ -4735,6 +4712,35 @@ void PASCAL SetVariantResourceEffectMasterVolume(unsigned char nVolume) {
 void LEMBALL_FASTCALL RequestFramedScreenTransitionMode2(void *pScreen) {
     *(int *)((char *)pScreen + 0x378) = 1;
     *(int *)((char *)pScreen + 0x374) = 2;
+}
+
+// FUNCTION: LEMBALL 0x00446720
+GameBaseModeObject *GameBaseModeObject::Initialize(GameMainContext *pMainContext) {
+    void *pTransportClient;
+
+    m_pVtable = g_GAME_GenericModeVtableSlots;
+    m_nStatus = 0;
+    m_nRequestedMode = 0;
+    InitializeRenderQueueNodeBase(&m_pRenderQueueNodeVtable);
+    m_pVtable = g_GAME_GenericModeVtableSlots;
+    m_pRenderQueueNodeVtable = g_GAME_StartupModeEventClientVtable;
+    m_pMainContext = pMainContext;
+    pTransportClient = AllocateVSMemBlock(0x34);
+    m_pTransportClient = pTransportClient == 0
+        ? 0
+        : ((GameEffStream *)pTransportClient)->ConstructPayloadSize8Thunk();
+    if (((GameLevelProgressState *)g_pLevelProgressState)->m_nCurrentPack == 4 &&
+        g_nSelectedNetworkLobbyPeerId != 0) {
+        m_fNetworkLobbyActive = 1;
+    } else {
+        m_fNetworkLobbyActive = 0;
+    }
+    if (g_pActiveNetworkRuntimeWindow != 0) {
+        ((GameEffTransportRuntimeWindow *)g_pActiveNetworkRuntimeWindow)
+            ->RegisterEffTransportEventClient(&m_pRenderQueueNodeVtable);
+    }
+    g_pActiveNetworkLobbyTransportController = this;
+    return this;
 }
 
 // FUNCTION: LEMBALL 0x004467d0
