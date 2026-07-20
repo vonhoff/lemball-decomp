@@ -4782,6 +4782,14 @@ static void InitializeIntroSequenceMediaOwnerVtable(void *pMediaOwner) {
     g_fGAMEIntroSequenceMediaOwnerVtableInitialized = 1;
 }
 
+// FUNCTION: LEMBALL 0x00447270
+GameScreenFrameRect::GameScreenFrameRect(short x, short y, short cx, short cy) {
+    m_cx = cx;
+    m_cy = cy;
+    m_x = x;
+    m_y = y;
+}
+
 // FUNCTION: LEMBALL 0x00447410
 void *GameScreenObject::ConstructIntroSequenceScreen(void *pPrimaryContext, void *pWindowOwnerContext, short *paRect, int fSkipVariant) {
     char *pScreen;

@@ -613,10 +613,6 @@ static void LEMBALL_FASTCALL EmitQueuedVariantChildSlotEntry(
     void *pObject);
 static void LEMBALL_FASTCALL NoopQueuedVariantChildSlotManagerUpdate(
     void *pObject);
-static void EmitScreenFrameRect(GameFramedScreenBase *pScreen,
-                                short x, short y, short cx, short cy);
-static void EmitTiledScreenFrameRect(GameFramedScreenBase *pScreen,
-                                     const short *pRect);
 static void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(void *pObject);
 static void LEMBALL_FASTCALL LoadFramedScreenFrameResources(void *pObject);
 
@@ -2674,19 +2670,13 @@ static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(
     pScreen->m_iPackagedEntry36C = 0;
 }
 
-static void EmitScreenFrameRect(GameFramedScreenBase *pScreen,
-                                short x, short y, short cx, short cy) {
-    short Rect[4];
-
-    Rect[0] = x;
-    Rect[1] = y;
-    Rect[2] = cx;
-    Rect[3] = cy;
-    EmitTiledScreenFrameRect(pScreen, Rect);
+void GameFramedScreenBase::EmitScreenFrameRect(short x, short y, short cx, short cy) {
+    EmitTiledScreenFrameRect(GameScreenFrameRect(x, y, cx, cy));
 }
 
-static void EmitTiledScreenFrameRect(GameFramedScreenBase *pScreen,
-                                     const short *pRect) {
+void GameFramedScreenBase::EmitTiledScreenFrameRect(GameScreenFrameRect Rect) {
+    GameFramedScreenBase *pScreen;
+    const short *pRect;
     LevelVariantRenderManagerView *pManager;
     unsigned char *pEntry;
     short Extent[2];
@@ -2699,6 +2689,8 @@ static void EmitTiledScreenFrameRect(GameFramedScreenBase *pScreen,
     int x;
     int y;
 
+    pScreen = this;
+    pRect = (const short *)&Rect;
     pManager = (LevelVariantRenderManagerView *)
         pScreen->m_abVariantRenderManager14;
     GetFunctionalVariantFrameExtent(
@@ -3774,8 +3766,8 @@ static void LEMBALL_FASTCALL DrawPaintballSequenceFrame(void *pObject) {
     unsigned char *pEntry;
 
     pScreen = (GamePaintballSequenceScreenView *)pObject;
-    EmitScreenFrameRect(
-        pScreen, (short)pScreen->m_pLayout510[14],
+    pScreen->EmitScreenFrameRect(
+        (short)pScreen->m_pLayout510[14],
         (short)pScreen->m_pLayout510[15],
         (short)pScreen->m_pLayout510[16],
         (short)pScreen->m_pLayout510[17]);
@@ -4176,8 +4168,8 @@ static void DrawNetworkLobbyActionButtonFrame(
     const int *pRect;
 
     pRect = pScreen->m_pLayout42C + iLayoutRect * 2;
-    EmitScreenFrameRect(
-        pScreen, (short)pRect[0], (short)pRect[1],
+    pScreen->EmitScreenFrameRect(
+        (short)pRect[0], (short)pRect[1],
         (short)pRect[2], (short)pRect[3]);
 }
 
@@ -5816,8 +5808,7 @@ static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionFrame(
         ->AppendToQueue(pScreen->m_pRenderContext88);
     pFramePoint = pScreen->m_pLayout3D4 +
         (pScreen->m_fNetworkScreen8C == 0 ? 12 : 48);
-    EmitScreenFrameRect(
-        pScreen,
+    pScreen->EmitScreenFrameRect(
         (short)pScreen->m_pLayout3D4[10],
         (short)pScreen->m_pLayout3D4[11],
         (short)pFramePoint[0],

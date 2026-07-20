@@ -22,6 +22,16 @@ void LEMBALL_FASTCALL DestroyFramedScreenBaseThunk00402081(
     void *pObject);
 void LEMBALL_FASTCALL DestroyIntroSequenceScreenThunk(void *pObject);
 
+class GameScreenFrameRect {
+public:
+    GameScreenFrameRect(short x, short y, short cx, short cy);
+
+    short m_cx;
+    short m_cy;
+    short m_x;
+    short m_y;
+};
+
 struct GameFramedScreenBase {
     void *ConstructFramedScreenBaseFields(
         void *pPrimaryContext, void *pRenderContext, short *paSize,
@@ -32,6 +42,8 @@ struct GameFramedScreenBase {
     void RecenterIfNeeded(void);
     void SetScreenSize(short *paSize);
     void ReleaseFrameResources(void);
+    void EmitScreenFrameRect(short x, short y, short cx, short cy);
+    void EmitTiledScreenFrameRect(GameScreenFrameRect Rect);
 
     void **m_pVtable00;
     unsigned char m_abRenderQueueNode04[0x10];
