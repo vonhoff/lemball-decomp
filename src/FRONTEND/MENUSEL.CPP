@@ -2416,13 +2416,9 @@ int GameMenuSelectorEntry::HandleEvent(GameMenuSelectorEvent *pEvent) {
     typedef void (LEMBALL_FASTCALL *QueueProc)(void *, int, void *);
     CommandEvent Event;
     void *pOverlay;
-    void *pProgress;
     int nPercent;
     int nResourceId;
     int nOverlayKind;
-    GameMenuSelectorEntry *pEntry;
-
-    pEntry = this;
 
     Event.m_nType00 = 0x0c;
     Event.m_dwTimestamp04 = (int)timeGetTime();
@@ -2430,62 +2426,66 @@ int GameMenuSelectorEntry::HandleEvent(GameMenuSelectorEvent *pEvent) {
     Event.m_nPayload0C = 0;
     Event.m_nPayload10 = 0;
 
-    if (pEvent->m_nPayload08 != pEntry->m_nToken30 ||
+    if (pEvent->m_nPayload08 != m_nToken30 ||
         *(unsigned short *)pEvent != 0x0c) {
         return 0;
     }
-    nOverlayKind = pEntry->m_nOverlayKind10;
-    if (nOverlayKind == 0) {
-        if (pEntry->m_nActivationMode2C == 1) {
-            Event.m_nPayload08 = pEntry->m_nCommand34;
+    nOverlayKind = m_nOverlayKind10;
+    switch (nOverlayKind) {
+    case 0:
+        if (m_nActivationMode2C == 1) {
+            Event.m_nPayload08 = m_nCommand34;
             ((QueueProc)(*(void ***)g_pSharedRenderDispatchQueue)[2])(
                 g_pSharedRenderDispatchQueue, 0, &Event);
             return 0;
         }
 
-        ++pEntry->m_nSelectedResource44;
-        if (pEntry->m_nSelectedResource44 > pEntry->m_nLastResource3C) {
-            pEntry->m_nSelectedResource44 = pEntry->m_nFirstResource40;
+        ++m_nSelectedResource44;
+        if (m_nSelectedResource44 > m_nLastResource3C) {
+            m_nSelectedResource44 = m_nFirstResource40;
         }
-        if (pEntry->m_pSelection48 != 0) {
-            if (pEntry->m_cResources38 == 1) {
-                if (*pEntry->m_pSelection48 == 0) {
-                    *pEntry->m_pSelection48 = 1;
+        if (m_pSelection48 != 0) {
+            if (m_cResources38 == 1) {
+                if (*m_pSelection48 == 0) {
+                    *m_pSelection48 = 1;
                 } else {
-                    *pEntry->m_pSelection48 = 0;
+                    *m_pSelection48 = 0;
                 }
             } else {
-                *pEntry->m_pSelection48 = pEntry->m_nSelectedResource44;
+                *m_pSelection48 = m_nSelectedResource44;
             }
         }
-        if (pEntry->m_pAlignedOverlay50 != 0) {
-            nResourceId = pEntry->m_panResourceIds4C[
-                pEntry->m_nSelectedResource44 - pEntry->m_nFirstResource40];
-            pOverlay = pEntry->m_pAlignedOverlay50;
+        if (m_pAlignedOverlay50 != 0) {
+            nResourceId = m_panResourceIds4C[
+                m_nSelectedResource44 - m_nFirstResource40];
+            pOverlay = m_pAlignedOverlay50;
         } else {
-            nResourceId = pEntry->m_panResourceIds4C[0];
-            pOverlay = pEntry->m_pProgressOverlay54;
+            nResourceId = m_panResourceIds4C[0];
+            pOverlay = m_pProgressOverlay54;
         }
         ReloadMenuSelectorOverlayResource(pOverlay, 0, nResourceId);
         g_fLevelSelectionChanged = 1;
         return 0;
-    }
-    if (nOverlayKind != 1) {
+    case 1:
+        break;
+    default:
         return 0;
     }
 
-    pProgress = *(void **)((char *)pEntry->m_pProgressOverlay54 + 0x134);
-    nPercent = *(int *)((char *)pProgress + 0x120);
-    if (nPercent == pEntry->m_nLastResource3C) {
+    nPercent = *(int *)(*(int *)((char *)m_pProgressOverlay54 +
+                                 0x134) + 0x120);
+    if (nPercent == m_nLastResource3C) {
         nPercent = 0;
     } else {
-        nPercent += pEntry->m_nLastResource3C / 4;
-        if (nPercent > pEntry->m_nLastResource3C) {
-            nPercent = pEntry->m_nLastResource3C;
+        nPercent += m_nLastResource3C / 4;
+        if (nPercent > m_nLastResource3C) {
+            nPercent = m_nLastResource3C;
         }
     }
-    *pEntry->m_pSelection48 = nPercent;
-    ((GameSelectorProgressOverlayChild *)pProgress)->SetPercent(nPercent);
+    *m_pSelection48 = nPercent;
+    ((GameSelectorProgressOverlayChild *)
+         *(void **)((char *)m_pProgressOverlay54 + 0x134))
+        ->SetPercent(nPercent);
     return 0;
 }
 
