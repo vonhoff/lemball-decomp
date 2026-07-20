@@ -17,6 +17,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#pragma comment(linker, "/include:?ConstructProgressEntry@GameMenuSelectorEntry@@QAEPAU1@PBFPAX1HHPBHHHHPAHH@Z")
+
 DECOMP_SIZE_ASSERT(GameMenuSelectorEvent, 0x1c);
 DECOMP_SIZE_ASSERT(GameMenuSelectorMetadata, 0x20);
 DECOMP_SIZE_ASSERT(GameProgressiveVariantFrameSelector, 0x1c);
@@ -74,6 +76,13 @@ struct GameMenuSelectorEntry {
         int nActivationMode, int nFirstResource,
         int nLastResource, int nReserved, int nToken,
         int *pSelection, int nCommand);
+    GameMenuSelectorEntry *ConstructProgressEntry(
+        const short *paProgressRect, void *pRenderOwner,
+        void *pRenderContext, int x, int nPosition,
+        const int *panResourceIds, int nActivationMode,
+        int nSelectedResource, int nToken, int *pSelection,
+        int nCommand);
+    void BuildOverlay(const int *panResourceIds);
     int HandleEvent(GameMenuSelectorEvent *pEvent);
     void RebuildRects(int fForce, int nUnused);
 
@@ -198,9 +207,6 @@ static void LEMBALL_FASTCALL StartMenuSelectorActionThunk(
     GameMenuSelectorManager *pManager);
 static void LEMBALL_FASTCALL ReleaseMenuSelectorEntryResources(
     GameMenuSelectorEntry *pEntry);
-static void LEMBALL_FASTCALL BuildMenuSelectorEntryOverlay(
-    GameMenuSelectorEntry *pEntry, int nUnusedEdx,
-    const int *panResourceIds);
 static void LEMBALL_FASTCALL ReloadMenuSelectorOverlayResource(
     void *pOverlay, int nUnusedEdx, int nResourceId);
 static void LEMBALL_FASTCALL SetMenuSelectorProgressPercent(
@@ -2056,14 +2062,15 @@ void GameMenuSelectorManager::RecordChildMetadata(
     }
 }
 
-static void LEMBALL_FASTCALL BuildMenuSelectorEntryOverlay(
-    GameMenuSelectorEntry *pEntry, int,
-    const int *panResourceIds) {
+void GameMenuSelectorEntry::BuildOverlay(const int *panResourceIds) {
+    GameMenuSelectorEntry *pEntry;
     void *pOverlay;
     int nContext;
     int nRenderObject;
     int i;
     VS_XYPair Point;
+
+    pEntry = this;
 
     pEntry->m_panResourceIds4C = panResourceIds;
     pEntry->m_ppLoadedResources58 = (void **)AllocateVSMemBlock(
@@ -2145,7 +2152,51 @@ GameMenuSelectorEntry::GameMenuSelectorEntry(
     (void)nReserved;
     ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
         ->RegisterOrderedRenderDispatchClient(this, 0);
-    BuildMenuSelectorEntryOverlay(this, 0, panResourceIds);
+    BuildOverlay(panResourceIds);
+}
+
+/* FUNCTION: LEMBALL 0x0044C330 */
+GameMenuSelectorEntry *GameMenuSelectorEntry::ConstructProgressEntry(
+    const short *paProgressRect, void *pRenderOwner,
+    void *pRenderContext, int x, int nPosition,
+    const int *panResourceIds, int nActivationMode,
+    int nSelectedResource, int nToken, int *pSelection,
+    int nCommand) {
+    const short *pExtent;
+
+    InitializeRenderQueueNodeBase(this);
+    m_nProgressY16 = 0;
+    m_nOverlayKind10 = 1;
+    m_pVtable00 = g_MenuSelectorEntryVtable;
+    m_nProgressX14 = 0;
+    m_nProgressHeight1A = 0;
+    m_nProgressWidth18 = 0;
+    m_nProgressX14 = paProgressRect[0];
+    m_nProgressY16 = paProgressRect[1];
+    pExtent = paProgressRect;
+    if (pExtent != 0) {
+        pExtent += 2;
+    }
+    m_nProgressWidth18 = pExtent[0];
+    m_nProgressHeight1A = pExtent[1];
+    m_pRenderOwner28 = pRenderOwner;
+    m_pRenderContext24 = pRenderContext;
+    m_nToken30 = nToken;
+    m_x1C = x;
+    m_nPosition20 = nPosition;
+    m_nSelectedResource44 = nSelectedResource;
+    m_cResources38 = 1;
+    m_nFirstResource40 = 0;
+    m_nLastResource3C = 100;
+    if (nCommand != -1) {
+        m_nCommand34 = nCommand;
+    }
+    m_pSelection48 = pSelection;
+    m_nActivationMode2C = nActivationMode;
+    ((GameRenderDispatchQueue *)g_pSharedRenderDispatchQueue)
+        ->RegisterOrderedRenderDispatchClient(this, 0);
+    BuildOverlay(panResourceIds);
+    return this;
 }
 
 void GameMenuSelectorManager::AppendChild(
