@@ -110,6 +110,8 @@ extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(
 extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(
     void *pOwner, int nUnusedEdx, void *pChild);
 extern void SetGeometryChildEnabled(void *pGeometryChild, int fEnabled);
+extern void LEMBALL_FASTCALL clear_mapped_list_resource_table_pending_flag(
+    void *pTable);
 extern void LEMBALL_FASTCALL ThunkRefreshNetworkLobbyPlayerEntries(
     int nNetworkLobbyScreen);
 extern int LEMBALL_FASTCALL ThunkSelectNextNetworkLobbyPlayerEntry(
@@ -2667,6 +2669,10 @@ static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(
     pScreen = (GameFramedScreenBase *)pObject;
     ((LevelVariantRenderManagerView *)pScreen->m_abVariantRenderManager14)
         ->ResetOrFlipVariantRenderBuffers();
+    if (pScreen->m_pMappedListResources98 != 0) {
+        clear_mapped_list_resource_table_pending_flag(
+            pScreen->m_pMappedListResources98);
+    }
     pScreen->m_iPackagedEntry36C = 0;
 }
 
