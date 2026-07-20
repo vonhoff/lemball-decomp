@@ -2599,6 +2599,7 @@ void *LEMBALL_FASTCALL DeleteStartupModeThunk(
     return DeleteStartupMode(pObject, nUnusedEdx, fDelete);
 }
 
+// STUB: LEMBALL 0x0040277a
 void GameVariantResourceEntryManager::SetVariantResourceEffectMasterVolumeThunk(unsigned char nVolume) {
     SetVariantResourceEffectMasterVolume(nVolume);
 }
@@ -2629,6 +2630,7 @@ void EnsureMainGameVariantResourceMode(GameMainContext *pMainContext, int nVaria
 void VS_WindowOwnerBase::ReservedWindowOwnerSlot39(void) {
 }
 
+// STUB: LEMBALL 0x004028ec
 void GameVariantResourceEntryManager::SetAudioMusicAndEffectVolumeByteThunk(unsigned char nVolume) {
     SetAudioMusicAndEffectVolumeByte(nVolume);
 }
