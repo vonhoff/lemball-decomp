@@ -19,10 +19,7 @@
 
 #pragma comment(linker, "/include:?ConstructProgressEntry@GameMenuSelectorEntry@@QAEPAU1@PBFPAX1HHPBHHHHPAHH@Z")
 #pragma comment(linker, "/include:?CopyFrom@GameRectQuad@@QAEXPBF@Z")
-#pragma comment(linker, "/include:?EmitEntries@GameSelectorProgressOverlayChild@@QAEXXZ")
 #pragma comment(linker, "/include:?SetPercentFromPoint@GameSelectorProgressGeometry@@QAEXPBF@Z")
-#pragma comment(linker, "/include:?AttachGeometry@GameSelectorProgressOverlayChild@@QAEXPAFPAX1@Z")
-#pragma comment(linker, "/include:?SetAnchor@GameSelectorProgressOverlayChild@@QAEXPAF@Z")
 #pragma comment(linker, "/include:?ForwardSlot6@GameSelectorProgressOverlayChild@@QAEXPAX@Z")
 
 DECOMP_SIZE_ASSERT(GameMenuSelectorEvent, 0x1c);
@@ -148,20 +145,47 @@ struct GameRectQuad {
     void CopyFrom(const short *pRect);
 };
 
-class GameSelectorProgressOverlayChild {
-public:
-    void AttachGeometry(short *pRect, void *pOwner,
-                        void *pWindowName);
-    void SetAnchor(short *pPoint);
-    void EmitEntries(void);
-    void SetPercent(int nPercent);
-    void ForwardSlot6(void *pValue);
-};
-
-class GameSelectorProgressGeometry {
+class GameSelectorProgressGeometry : public GameGeometryOwnerRectState {
 public:
     void SetPercentFromPoint(const short *pPoint);
 };
+
+struct GameProgressRenderEntry {
+    void **m_pVtable00;
+    short m_cx04;
+    short m_cy06;
+    short m_x08;
+    short m_y0A;
+    int m_nResourceId0C;
+};
+
+class GameSelectorProgressOverlayChild :
+    public GameWindowOwnerRenderContext {
+public:
+    virtual void InitializeWindowOwnerFromRect(
+        short *pRect, void *pOwner, const char *pszWindowName);
+    virtual void MoveWindowOwnerOrigin(const VS_XYPair *pPoint);
+    virtual void ReservedWindowOwnerSlot15(void);
+    virtual void ReservedWindowOwnerSlot23(void);
+    virtual unsigned int GetWindowOwnerFlags(void);
+    virtual void ApplyWindowOwnerActivation(int nActivate);
+    void SetPercent(int nPercent);
+    void ForwardSlot6(void *pValue);
+
+public:
+    GameSelectorProgressGeometry m_Geometry90;
+    GameRectQuad m_RectC8;
+    GameProgressRenderEntry m_aRenderEntriesD0[5];
+    int m_nPercent120;
+    int m_cxProgress124;
+    int m_nReserved128;
+    void *m_pRenderOwner12C;
+    int m_nToken130;
+};
+
+DECOMP_SIZE_ASSERT(GameProgressRenderEntry, 0x10);
+DECOMP_SIZE_ASSERT(GameSelectorProgressGeometry, 0x38);
+DECOMP_SIZE_ASSERT(GameSelectorProgressOverlayChild, 0x134);
 
 class GameProgressRenderEntryInterface {
 public:
@@ -2946,12 +2970,14 @@ public:
     virtual void QueueEvent(void *pEvent) = 0;
 };
 
-void GameSelectorProgressOverlayChild::EmitEntries(void) {
+void GameSelectorProgressOverlayChild::ApplyWindowOwnerActivation(
+    int nActivate) {
     char *pObject;
     short cxFill;
     int cy;
 
     pObject = (char *)this;
+    (void)nActivate;
     cy = (int)*(short *)(pObject + 0xca);
     cxFill = (short)(((int)*(short *)(pObject + 0xc8) *
                       *(int *)(pObject + 0x120)) / 100);
@@ -3002,13 +3028,13 @@ void GameSelectorProgressOverlayChild::EmitEntries(void) {
         ->Queue(*(void **)(pObject + 0x4c));
 }
 
-void GameSelectorProgressOverlayChild::AttachGeometry(
-    short *pRect, void *pOwner, void *pWindowName) {
+void GameSelectorProgressOverlayChild::InitializeWindowOwnerFromRect(
+    short *pRect, void *pOwner, const char *pszWindowName) {
     short *pPosition;
     void *pGeometryOwner;
 
     ((GamePrimaryContext *)this)->DispatchWindowOwnerRectInitialization(
-        pRect, pOwner, (const char *)pWindowName);
+        pRect, pOwner, pszWindowName);
     *(short *)((char *)this + 0xc0) = pRect[0];
     *(short *)((char *)this + 0xc2) = pRect[1];
     if (pRect == 0) {
@@ -3027,11 +3053,29 @@ void GameSelectorProgressOverlayChild::AttachGeometry(
         0, pGeometryOwner);
 }
 
-void GameSelectorProgressOverlayChild::SetAnchor(short *pPoint) {
+void GameSelectorProgressOverlayChild::MoveWindowOwnerOrigin(
+    const VS_XYPair *pPoint) {
     SetWindowOwnerRenderAnchorFromPoint(
-        this, 0, (const VS_XYPair *)pPoint);
-    *(short *)((char *)this + 0xcc) = pPoint[0];
-    *(short *)((char *)this + 0xce) = pPoint[1];
+        this, 0, pPoint);
+    *(short *)((char *)this + 0xcc) = pPoint->m_x;
+    *(short *)((char *)this + 0xce) = pPoint->m_y;
+}
+
+void GameSelectorProgressOverlayChild::ReservedWindowOwnerSlot15(void) {
+    int nContext;
+    int nRenderObject;
+
+    nContext = *(int *)(*(int *)((char *)this + 0x4c) + 0x0c);
+    nRenderObject = nContext +
+        *(int *)(*(int *)(nContext + 0x40) + 4) + 0x74;
+    *(int *)nRenderObject = 1;
+}
+
+void GameSelectorProgressOverlayChild::ReservedWindowOwnerSlot23(void) {
+}
+
+unsigned int GameSelectorProgressOverlayChild::GetWindowOwnerFlags(void) {
+    return 0x80000801U;
 }
 
 void GameSelectorProgressOverlayChild::ForwardSlot6(void *pValue) {
