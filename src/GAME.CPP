@@ -4728,7 +4728,8 @@ GameBaseModeObject *GameBaseModeObject::Initialize(GameMainContext *pMainContext
     pTransportClient = AllocateVSMemBlock(0x34);
     m_pTransportClient = pTransportClient == 0
         ? 0
-        : ((GameEffStream *)pTransportClient)->ConstructPayloadSize8Thunk();
+        : ((GameEffStreamPayloadSize8 *)pTransportClient)
+              ->ConstructPayloadSize8Thunk();
     if (((GameLevelProgressState *)g_pLevelProgressState)->m_nCurrentPack == 4 &&
         g_nSelectedNetworkLobbyPeerId != 0) {
         m_fNetworkLobbyActive = 1;

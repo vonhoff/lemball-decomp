@@ -26,8 +26,16 @@ struct GameEffStream {
     void EndEffStreamWriteSession(void);
     void QueueEffStreamWriteEvent(int nPayload);
     GameEffStream *ConstructNetworkLobbyU32PayloadStream(int nEventCode);
-    GameEffStream *ConstructPayloadSize8Thunk(void);
-    GameEffStream *ConstructPayloadSize8(void);
+};
+
+struct GameEffStreamPayloadSize8 : public GameEffStream {
+    int m_nSecondaryU32Payload;
+
+    GameEffStreamPayloadSize8 *ConstructPayloadSize8Thunk(void);
+    GameEffStreamPayloadSize8 *ConstructPayloadSize8(void);
+    void WritePayloadSize8(void);
+    void ReadPayloadSize8(void);
+    GameEffStreamPayloadSize8 *DeletePayloadSize8(unsigned char fDelete);
 };
 
 void LEMBALL_FASTCALL StartNetworkLobbyTransportSession(void *pController);
