@@ -2800,6 +2800,7 @@ void GameFramedScreenBase::UpdateRuntime(void) {
     GameFramedScreenBase *pScreen;
     VsNetRuntimeModeView *pNetworkRuntime;
     DWORD dwNow;
+    unsigned int uRandom;
 
     pScreen = this;
     if (pScreen->m_fNetworkScreen8C != 0 &&
@@ -2826,12 +2827,11 @@ void GameFramedScreenBase::UpdateRuntime(void) {
             ((GameProgressiveSelectorVtableView *)
                  pScreen->m_pTimedFrameSelector34C)->SetStartTime(
                      pScreen->m_dwRandomStart340 = timeGetTime());
-            {
-                pScreen->m_dwRandomDelay33C =
-                    (*(int *)g_pSessionRandomState =
-                         (*(int *)g_pSessionRandomState * 0x29 + 0x1f) &
-                         0x7fffff) % 6000;
-            }
+            uRandom =
+                (*(unsigned int *)g_pSessionRandomState * 0x29U + 0x1fU) &
+                0x7fffffU;
+            *(unsigned int *)g_pSessionRandomState = uRandom;
+            pScreen->m_dwRandomDelay33C = uRandom % 6000U;
         }
     }
     if (pScreen->m_pSelectorManager334 != 0) {
