@@ -21,6 +21,8 @@
 #pragma comment(linker, "/include:?CopyFrom@GameRectQuad@@QAEXPBF@Z")
 #pragma comment(linker, "/include:?DispatchButtonTransition@GameSelectorProgressGeometry@@QAEXPBUVS_XYPair@@H@Z")
 #pragma comment(linker, "/include:?DispatchPointerMove@GameSelectorProgressGeometry@@QAEXPBUVS_XYPair@@@Z")
+#pragma comment(linker, "/include:?SetChildPresentForModeA@GameOverlayChildPresenceView@@QAEXH@Z")
+#pragma comment(linker, "/include:?SetChildPresentForModeB@GameOverlayChildPresenceView@@QAEXH@Z")
 
 DECOMP_SIZE_ASSERT(GameMenuSelectorEvent, 0x1c);
 DECOMP_SIZE_ASSERT(GameMenuSelectorMetadata, 0x20);
@@ -134,6 +136,12 @@ public:
 class GameCompactZrleOverlay {
 public:
     void RebuildSourceRect(int fForce);
+};
+
+class GameOverlayChildPresenceView {
+public:
+    void SetChildPresentForModeA(int nMode);
+    void SetChildPresentForModeB(int nMode);
 };
 
 struct GameRectQuad {
@@ -1890,6 +1898,26 @@ static inline GameProgressiveVariantFrameSelector *AllocateFrameSelector(
     return pSelector;
 }
 
+// FUNCTION: LEMBALL 0x0043a620
+void GameOverlayChildPresenceView::SetChildPresentForModeA(int nMode) {
+    if (*(void **)((char *)this + 0xd0) != 0 &&
+        (nMode == 0 || nMode == 3)) {
+        *(int *)((char *)this + 0x104) = 1;
+        return;
+    }
+    *(int *)((char *)this + 0x104) = 0;
+}
+
+// FUNCTION: LEMBALL 0x0043a660
+void GameOverlayChildPresenceView::SetChildPresentForModeB(int nMode) {
+    if (*(void **)((char *)this + 0xd0) != 0 &&
+        (nMode == 0 || nMode == 3)) {
+        *(int *)((char *)this + 0x104) = 1;
+        return;
+    }
+    *(int *)((char *)this + 0x104) = 0;
+}
+
 // FUNCTION: LEMBALL 0x0044c870
 GameMenuSelectorManager::GameMenuSelectorManager(void *pRenderOwner, void *pRenderContext, int, int nLayoutMode) {
     GameMenuSelectorManager *pManager;
@@ -3116,14 +3144,14 @@ void GameSelectorProgressOverlayChild::SetPercent(int nPercent) {
     };
     ProgressEvent Event;
 
-    if (*(int *)((char *)this + 0x120) == nPercent) {
+    if (m_nPercent120 == nPercent) {
         return;
     }
     Event.m_nType00 = 0x0c;
-    *(int *)((char *)this + 0x120) = nPercent;
+    m_nPercent120 = nPercent;
     Event.m_dwTimestamp04 = (int)timeGetTime();
-    Event.m_nPayload08 = *(int *)((char *)this + 0x130);
-    Event.m_nPayload0C = *(int *)((char *)this + 0x120);
+    Event.m_nPayload08 = m_nToken130;
+    Event.m_nPayload0C = m_nPercent120;
     Event.m_nPayload10 = 100;
     ((GameMenuSelectorEventQueueInterface *)
         g_pSharedRenderDispatchQueue)->QueueEvent(&Event);
