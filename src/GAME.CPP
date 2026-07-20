@@ -683,7 +683,9 @@ extern void __stdcall PromoteQueuedRenderPointSinkTargetStateThunk(
 
 
 int RunMainGameSessionThunk(int cArgs, const char *const *ppszArgs);
-int LEMBALL_FASTCALL ReturnZeroBaseModeThunk(void *);
+int PASCAL ReturnZeroBaseModeThunk(void *, void *, void *);
+extern int PASCAL return_zero_screen_callback_00446990(
+    void *, void *, void *);
 void *ConstructNetworkLobbyTransportController(void *pModeObject, GameMainContext *pMainContext);
 void ReleaseMainGameVariantResourceMode(GameMainContext *pMainContext);
 void *ConstructLevelSelectionModeController(void *pModeObject, GameMainContext *pMainContext);
@@ -943,7 +945,8 @@ static void InitializeGameStubVtables(void) {
 
     g_GAME_StartupModeVtable[0] = (void *)DeleteStartupModeThunk;
     g_GAME_StartupModeVtable[1] = (void *)UpdateBaseModeThunk;
-    g_GAME_StartupModeVtable[2] = (void *)ReturnZeroBaseModeThunk;
+    g_GAME_StartupModeVtable[2] =
+        (void *)return_zero_screen_callback_00446990;
     g_GAME_StartupModeVtable[3] = (void *)NoopBaseModeThunk;
     g_GAME_StartupModeVtable[4] = (void *)ReturnFalseBaseModeThunk;
     g_GAME_StartupModeVtable[5] = 0;
@@ -958,7 +961,8 @@ static void InitializeGameStubVtables(void) {
     g_GAME_LevelSelectionModeVtable[0] =
         (void *)DeleteLevelSelectionModeThunk;
     g_GAME_LevelSelectionModeVtable[1] = (void *)UpdateBaseModeThunk;
-    g_GAME_LevelSelectionModeVtable[2] = (void *)ReturnZeroBaseModeThunk;
+    g_GAME_LevelSelectionModeVtable[2] =
+        (void *)return_zero_screen_callback_00446990;
     g_GAME_LevelSelectionModeVtable[3] = (void *)NoopBaseModeThunk;
     g_GAME_LevelSelectionModeVtable[4] = (void *)ReturnFalseBaseModeThunk;
     g_GAME_LevelSelectionModeVtable[5] = 0;
@@ -972,7 +976,8 @@ static void InitializeGameStubVtables(void) {
 
     g_GAME_MainMenuModeVtable[0] = (void *)DeleteMainMenuModeThunk;
     g_GAME_MainMenuModeVtable[1] = (void *)UpdateBaseModeThunk;
-    g_GAME_MainMenuModeVtable[2] = (void *)ReturnZeroBaseModeThunk;
+    g_GAME_MainMenuModeVtable[2] =
+        (void *)return_zero_screen_callback_00446990;
     g_GAME_MainMenuModeVtable[3] = (void *)NoopBaseModeThunk;
     g_GAME_MainMenuModeVtable[4] = (void *)ReturnFalseBaseModeThunk;
     g_GAME_MainMenuModeVtable[5] = 0;
@@ -986,7 +991,8 @@ static void InitializeGameStubVtables(void) {
 
     g_GAME_OptionsModeVtable[0] = (void *)DeleteOptionsModeThunk;
     g_GAME_OptionsModeVtable[1] = (void *)UpdateBaseModeThunk;
-    g_GAME_OptionsModeVtable[2] = (void *)ReturnZeroBaseModeThunk;
+    g_GAME_OptionsModeVtable[2] =
+        (void *)return_zero_screen_callback_00446990;
     g_GAME_OptionsModeVtable[3] = (void *)NoopBaseModeThunk;
     g_GAME_OptionsModeVtable[4] = (void *)ReturnFalseBaseModeThunk;
     g_GAME_OptionsModeVtable[5] = 0;
@@ -2405,8 +2411,11 @@ short *GamePrimaryContext::ComputePrimaryContextCenteredScreenRectThunk(short *p
 }
 
 // STUB: LEMBALL 0x00401884
-int LEMBALL_FASTCALL ReturnZeroBaseModeThunk(void *) {
-    return 0;
+int PASCAL ReturnZeroBaseModeThunk(
+    void *pObject, void *pArgument1, void *pArgument2)
+{
+    return return_zero_screen_callback_00446990(
+        pObject, pArgument1, pArgument2);
 }
 
 int VS_WindowOwnerBase::IsCurrentWindowOwnerContext(void) {
