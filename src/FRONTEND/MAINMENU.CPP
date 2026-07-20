@@ -622,8 +622,10 @@ static void LEMBALL_FASTCALL LoadFramedScreenFrameResources(void *pObject);
 
 static void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(
     void *pObject);
-static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
-    void *pQueueNode, int, void *pEvent);
+class GameFramedScreenQueueNode {
+public:
+    int HandleEvent(void *pEvent);
+};
 
 
 
@@ -772,8 +774,6 @@ static void *LEMBALL_FASTCALL DeleteMainMenuScreen(
     void *pObject, int nUnusedEdx, int fDelete);
 static void *LEMBALL_FASTCALL DeleteAdjustedMainMenuScreen(
     void *pObject, int nUnusedEdx, int fDelete);
-static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
-    void *pQueueNode, int nUnusedEdx, void *pEvent);
 extern void *LEMBALL_FASTCALL DeleteIntroSequenceScreen(
     void *pObject, int nUnusedEdx, int fDelete);
 extern void LEMBALL_FASTCALL DestroyIntroSequenceScreen(void *pObject);
@@ -1788,7 +1788,8 @@ static int LEMBALL_FASTCALL HandleFramedScreenQueueEventThunk(
     void *pQueueNode, int nUnusedEdx, void *pEvent)
 
 {
-    return HandleFramedScreenQueueEvent(pQueueNode, nUnusedEdx, pEvent);
+    (void)nUnusedEdx;
+    return ((GameFramedScreenQueueNode *)pQueueNode)->HandleEvent(pEvent);
 }
 
 int LEMBALL_FASTCALL IsCurrentWindowOwnerContextThunk(
@@ -2775,21 +2776,20 @@ static void EmitTiledScreenFrameRect(GameFramedScreenBase *pScreen,
 }
 
 // FUNCTION: LEMBALL 0x00446480
-static int LEMBALL_FASTCALL HandleFramedScreenQueueEvent(
-    void *pQueueNode, int, void *pEvent)
+int GameFramedScreenQueueNode::HandleEvent(void *pEvent)
 
 {
     GameFramedScreenBase *pScreen;
 
-    if (*(int *)((char *)pQueueNode + 0x8c) != 0) {
+    if (*(int *)((char *)this + 0x8c) != 0) {
         return 0;
     }
     if (*(int *)((char *)pEvent + 4) -
-            *(int *)((char *)pQueueNode + 0xb8) <
+            *(int *)((char *)this + 0xb8) <
         0) {
         return 0;
     }
-    pScreen = (GameFramedScreenBase *)((char *)pQueueNode - 4);
+    pScreen = (GameFramedScreenBase *)((char *)this - 4);
     if (((GameFramedScreenVirtualInterface *)pScreen)
             ->HandleInput(pEvent) == 0) {
         return 0;

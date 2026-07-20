@@ -2754,6 +2754,7 @@ void GameMenuSelectorManager::StartAction(void) {
     int *pPosition;
     int *panOffsets;
     int nDistance;
+    int nPositionOffset;
 
     m_ActionEventB8.m_nType00 = 0x0c;
     if (m_nCurrentPosition8C != m_nTargetPosition9C ||
@@ -2791,14 +2792,16 @@ void GameMenuSelectorManager::StartAction(void) {
         m_yActionAC = m_nTargetPosition9C + panOffsets[7];
         m_xActionDestinationB0 = m_aMetadataE0[i].m_xSide0 + panOffsets[8];
         m_ActionEventB8.m_nPayload14 = m_aMetadataE0[i].m_xSide0 + panOffsets[10];
-        m_ActionEventB8.m_nPayload18 = m_aMetadataE0[i].m_nPosition + panOffsets[11];
+        nPositionOffset = panOffsets[11];
     } else {
         m_xActionA8 = m_xActionOrigin98 + panOffsets[12];
         m_yActionAC = m_nTargetPosition9C + panOffsets[13];
         m_xActionDestinationB0 = m_aMetadataE0[i].m_xSide1 + panOffsets[14];
         m_ActionEventB8.m_nPayload14 = m_aMetadataE0[i].m_xSide1 + panOffsets[16];
-        m_ActionEventB8.m_nPayload18 = m_aMetadataE0[i].m_nPosition + panOffsets[17];
+        nPositionOffset = panOffsets[17];
     }
+    m_ActionEventB8.m_nPayload18 =
+        m_aMetadataE0[i].m_nPosition + nPositionOffset;
     m_dwActionLastTick22C = (int)timeGetTime();
     nDistance = abs(m_xActionDestinationB0 - m_xActionA8);
     m_nActionStateA4 = 2;
