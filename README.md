@@ -1,12 +1,10 @@
 # Lemmings Paintball Decompilation
 
-Work-in-progress reconstruction of the original 1996 Windows C++ codebase behind
-`LEMBALL.EXE`.
+Work-in-progress reconstruction of the original 1996 Windows C++ codebase behind `LEMBALL.EXE`. The project is not yet functional and remains under active development.
 
-The goal of this project is to create a fully functional decompilation of Lemmings Paintball. The goal is to be as accurate as possible by matching the recompiled instructions to the original machine code. The goal is to provide a workable codebase that can be modified, improved, and later ported to other platforms.
+The aim is to produce a fully functional decompilation of *Lemmings Paintball* that matches the original machine code as closely as possible. The completed codebase is intended to serve as a faithful reference for re-implementations.
 
-> Note: This repository is for decompilation only and its code is true to the original release.
-> The reconstructed game target will not compile for targets other than 32-bit Windows.
+> **Note:** This repository is focused exclusively on decompilation, and the reconstructed code is kept faithful to the original release. The game target is designed for 32-bit Windows and is not expected to compile for other platforms.
 
 ## Objdiff
 

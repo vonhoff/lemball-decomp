@@ -6,6 +6,9 @@
 #include <ctype.h>
 #include <string.h>
 
+extern int g_nLastMainMenuPackSelection;
+
+// GLOBAL: LEMBALL 0x0049ca34
 static const char g_STARTUP_DefaultOverrideLevelPath[] = "level\\testlvl.lvl";
 static const char g_STARTUP_SwitchNoMusic[] = "/NOMUSIC";
 static const char g_STARTUP_SwitchNoEffects[] = "/NOEFFECTS";
@@ -22,32 +25,47 @@ static const char g_STARTUP_SwitchEditPrefix[] = "/EDIT@";
 static const char g_STARTUP_SwitchPlayPrefix[] = "/PLAY@";
 static const char g_STARTUP_SwitchGraphics[] = "/GRAPHICS";
 
+// GLOBAL: LEMBALL 0x004a6294
 int g_fStartupAnimationsEnabled = 0;
 // GLOBAL: LEMBALL 0x004a6284
 int g_fSkipStartupSequence = 0;
+// GLOBAL: LEMBALL 0x004a628c
 int g_fMusicOptionAvailable = 0;
 // GLOBAL: LEMBALL 0x004a6278
 int g_fMusicEnabled = 0;
 // GLOBAL: LEMBALL 0x004a6290
 int g_fEffectsOptionAvailable = 0;
+// GLOBAL: LEMBALL 0x004a627c
 int g_fEffectsEnabled = 0;
+// GLOBAL: LEMBALL 0x004a6298
 int g_fZoomOptionAvailable = 0;
+// GLOBAL: LEMBALL 0x004a6288
 int g_fZoomedViewportEnabled = 0;
+// GLOBAL: LEMBALL 0x004a630c
 int g_fCompactPrimaryContextLayout = 0;
+// GLOBAL: LEMBALL 0x004a6304
 int g_fStartupEditLevelOverride = 0;
+// GLOBAL: LEMBALL 0x004a6308
 int g_fStartupPlayLevelOverride = 0;
-// GLOBAL: LEMBALL 0x0049ca30
+// GLOBAL: LEMBALL 0x004a62a0
 int g_fStartupTestAllLevels = 0;
+// GLOBAL: LEMBALL 0x004a629c
 int g_fStartupGraphicsDialogRequested = 0;
+// GLOBAL: LEMBALL 0x004a62a4
 int g_fLevelDemoModeEnabled = 0;
+// GLOBAL: LEMBALL 0x004a6314
 unsigned char g_abOverrideLevelFilePathBuffer[260];
 
+// GLOBAL: LEMBALL 0x004a6280
 static int g_fSoundDebugRequested = 0;
+// GLOBAL: LEMBALL 0x004a62f8
 static int g_fStatusDebugRequested = 0;
+// GLOBAL: LEMBALL 0x004a62fc
 static int g_fMemoryDebugRequested = 0;
+// GLOBAL: LEMBALL 0x004a6312
 static short g_fUnknownStartupFlag0 = 0;
+// GLOBAL: LEMBALL 0x004a6310
 static short g_fUnknownStartupFlag1 = 0;
-static int g_fUnknownStartupFlag2 = 0;
 
 // GLOBAL: LEMBALL 0x004a6258
 static StartupGraphicsWindowConfig g_StartupGraphicsWindowConfig;
@@ -112,14 +130,18 @@ void InitializeStartupSwitchDefaults(void) {
     g_fSoundDebugRequested = 0;
     g_fZoomOptionAvailable = 1;
     g_fZoomedViewportEnabled = 0;
-    g_fUnknownStartupFlag2 = 0;
+    g_nLastMainMenuPackSelection = 0;
     g_fStartupEditLevelOverride = 0;
     g_fStartupPlayLevelOverride = 0;
     nSelectedDriver = *(int *)g_pSelectedGraphicsDriverRuntime;
-    if (nSelectedDriver < VsGdiDRIVER_DIB_320_200 || nSelectedDriver > VsGdiDRIVER_DIB_640_480) {
-        g_fCompactPrimaryContextLayout = 0;
-    } else {
+    switch (nSelectedDriver) {
+    case VsGdiDRIVER_DIB_320_200:
+    case VsGdiDRIVER_DIB_640_480:
         g_fCompactPrimaryContextLayout = 1;
+        break;
+    default:
+        g_fCompactPrimaryContextLayout = 0;
+        break;
     }
     g_fUnknownStartupFlag1 = 0;
     g_fUnknownStartupFlag0 = 0;
