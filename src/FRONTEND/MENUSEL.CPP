@@ -86,6 +86,8 @@ extern void *LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryThunk(
     void *pObject);
 extern void LEMBALL_FASTCALL SetWindowOwnerRenderAnchorFromPoint(
     void *pOwner, int nUnusedEdx, const VS_XYPair *pPoint);
+extern void LEMBALL_FASTCALL set_overlay_owner_field_0xf8(
+    void *pOwner, void *pUnusedEdx, int nValue);
 
 struct GameMenuSelectorEntry {
     GameMenuSelectorEntry(
@@ -2241,6 +2243,7 @@ void GameMenuSelectorManager::RecordChildMetadata(
 void GameMenuSelectorEntry::BuildOverlay(const int *panResourceIds) {
     GameMenuSelectorEntry *pEntry;
     void *pOverlay;
+    void **ppOverlay;
     int nContext;
     int nRenderObject;
     int i;
@@ -2253,7 +2256,7 @@ void GameMenuSelectorEntry::BuildOverlay(const int *panResourceIds) {
         pEntry->m_cResources38 * sizeof(void *));
     for (i = 0; i < pEntry->m_cResources38; ++i) {
         pEntry->m_ppLoadedResources58[i] =
-            LoadZrleOnlyListResource(panResourceIds[i]);
+            LoadZrleOnlyListResource(pEntry->m_panResourceIds4C[i]);
     }
 
     if (pEntry->m_nOverlayKind10 == 0) {
@@ -2263,37 +2266,47 @@ void GameMenuSelectorEntry::BuildOverlay(const int *panResourceIds) {
             Point.m_y = (short)pEntry->m_nPosition20;
             ConstructAlignedZrleChildOverlayFromPoint(
                 pOverlay, 0, &Point, pEntry->m_pRenderOwner28,
-                panResourceIds[pEntry->m_nSelectedResource44 -
-                               pEntry->m_nFirstResource40],
+                pEntry->m_panResourceIds4C[
+                    pEntry->m_nSelectedResource44 -
+                    pEntry->m_nFirstResource40],
                 3);
         }
         pEntry->m_pAlignedOverlay50 = pOverlay;
+        ppOverlay = &pEntry->m_pAlignedOverlay50;
+        nContext = *(int *)(*(int *)((char *)*ppOverlay + 0x4c) + 0x0c);
+        set_overlay_owner_field_0xf8(*ppOverlay, 0, 0);
+        nRenderObject = nContext +
+            *(int *)(*(int *)(nContext + 0x40) + 4) + 0x70;
+        *(int *)nRenderObject = 0;
+        *(void **)((char *)*ppOverlay + 0xf4) =
+            g_pSharedRenderDispatchQueue;
+        *(int *)((char *)*ppOverlay + 0xcc) = pEntry->m_nToken30;
         pEntry->m_pProgressOverlay54 = 0;
-    } else {
-        pOverlay = AllocateVSMemBlock(0x138);
-        if (pOverlay != 0) {
-            Point.m_x = (short)pEntry->m_x1C;
-            Point.m_y = (short)pEntry->m_nPosition20;
-            ((GameSelectorProgressOverlayOwner *)pOverlay)
-                ->Construct(
-                    &Point, pEntry->m_pRenderOwner28,
-                    panResourceIds[0],
-                    &pEntry->m_nProgressX14,
-                    pEntry->m_nSelectedResource44);
-        }
-        pEntry->m_pProgressOverlay54 = pOverlay;
-        pEntry->m_pAlignedOverlay50 = 0;
+        return;
     }
 
-    /* Both concrete overlay constructors expose the same owner prefix. */
-    *(int *)((char *)pOverlay + 0xf8) = 0;
-    nContext = *(int *)(*(int *)((char *)pOverlay + 0x4c) + 0x0c);
+    pOverlay = AllocateVSMemBlock(0x138);
+    if (pOverlay != 0) {
+        Point.m_x = (short)pEntry->m_x1C;
+        Point.m_y = (short)pEntry->m_nPosition20;
+        pOverlay = ((GameSelectorProgressOverlayOwner *)pOverlay)
+            ->Construct(
+                &Point, pEntry->m_pRenderOwner28,
+                pEntry->m_panResourceIds4C[0],
+                &pEntry->m_nProgressX14,
+                pEntry->m_nSelectedResource44);
+    }
+    pEntry->m_pProgressOverlay54 = pOverlay;
+    ppOverlay = &pEntry->m_pProgressOverlay54;
+    nContext = *(int *)(*(int *)((char *)*ppOverlay + 0x4c) + 0x0c);
+    set_overlay_owner_field_0xf8(*ppOverlay, 0, 0);
     nRenderObject = nContext +
         *(int *)(*(int *)(nContext + 0x40) + 4) + 0x70;
     *(int *)nRenderObject = 0;
-    *(void **)((char *)pOverlay + 0xf4) =
+    *(void **)((char *)*ppOverlay + 0xf4) =
         g_pSharedRenderDispatchQueue;
-    *(int *)((char *)pOverlay + 0xcc) = pEntry->m_nToken30;
+    *(int *)((char *)*ppOverlay + 0xcc) = pEntry->m_nToken30;
+    pEntry->m_pAlignedOverlay50 = 0;
 }
 
 GameMenuSelectorEntry::GameMenuSelectorEntry(
