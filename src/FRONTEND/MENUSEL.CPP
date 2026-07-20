@@ -136,6 +136,7 @@ public:
 class GameCompactZrleOverlay {
 public:
     void RebuildSourceRect(int fForce);
+    void ReloadResource(int nResourceId);
 };
 
 class GameSelectorProgressOverlayOwnerView {
@@ -287,8 +288,6 @@ static void LEMBALL_FASTCALL StartMenuSelectorActionThunk(
     GameMenuSelectorManager *pManager);
 static void LEMBALL_FASTCALL ReleaseMenuSelectorEntryResources(
     GameMenuSelectorEntry *pEntry);
-static void LEMBALL_FASTCALL ReloadMenuSelectorOverlayResource(
-    void *pOverlay, int nUnusedEdx, int nResourceId);
 static void LEMBALL_FASTCALL DestroyMenuSelectorEntry(
     GameMenuSelectorEntry *pEntry);
 static void *LEMBALL_FASTCALL DeleteMenuSelectorEntry(
@@ -1559,7 +1558,8 @@ static void LEMBALL_FASTCALL RefreshQueuedVariantRangeSelection(
     }
     nResourceId = pEntry->m_panResourceIds48[
         pEntry->m_nSelectedResource40 - pEntry->m_nFirstResource3C];
-    ReloadMenuSelectorOverlayResource(pEntry->m_pOverlay4C, 0, nResourceId);
+    ((GameCompactZrleOverlay *)pEntry->m_pOverlay4C)
+        ->ReloadResource(nResourceId);
 }
 
 void *LEMBALL_FASTCALL ConstructQueuedVariantChildSlotManager(
@@ -2363,19 +2363,18 @@ void GameMenuSelectorManager::AppendChild(
     ++m_cChildren80;
 }
 
-/* FUNCTION: LEMBALL 0x004688E0 */
-static void LEMBALL_FASTCALL ReloadMenuSelectorOverlayResource(
-    void *pOverlay, int, int nResourceId) {
+// FUNCTION: LEMBALL 0x004688e0
+void GameCompactZrleOverlay::ReloadResource(int nResourceId) {
     void *pResource;
 
-    pResource = *(void **)((char *)pOverlay + 0x11c);
+    pResource = *(void **)((char *)this + 0x11c);
     if (pResource != 0) {
         ReleaseTypedResourceObjectReference(pResource);
     }
-    *(int *)((char *)pOverlay + 0x10c) = nResourceId;
-    *(void **)((char *)pOverlay + 0x11c) =
+    *(int *)((char *)this + 0x10c) = nResourceId;
+    *(void **)((char *)this + 0x11c) =
         LoadZrleOnlyListResource(nResourceId);
-    *(int *)((char *)pOverlay + 0xd8) = 1;
+    *(int *)((char *)this + 0xd8) = 1;
 }
 
 /* FUNCTION: LEMBALL 0x0044C7C0 */
@@ -2463,7 +2462,7 @@ int GameMenuSelectorEntry::HandleEvent(GameMenuSelectorEvent *pEvent) {
             nResourceId = m_panResourceIds4C[0];
             pOverlay = m_pProgressOverlay54;
         }
-        ReloadMenuSelectorOverlayResource(pOverlay, 0, nResourceId);
+        ((GameCompactZrleOverlay *)pOverlay)->ReloadResource(nResourceId);
         g_fLevelSelectionChanged = 1;
         return 0;
     case 1:
