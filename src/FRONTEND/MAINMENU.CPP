@@ -3488,7 +3488,10 @@ static int LEMBALL_FASTCALL HandleOptionsScreenInput(void *pObject, int, void *p
     pScreen = (GameOptionsScreenView *)pObject;
     pSelectorEvent = (GameMenuSelectorEvent *)pEvent;
     nType = (unsigned short)pSelectorEvent->m_nType00;
-    if (nType != 0x0c) {
+    switch (nType) {
+    case 0x0c:
+        break;
+    default:
         ++*(int *)((char *)pScreen + 0x10);
         return 0;
     }
