@@ -3242,7 +3242,7 @@ static int LEMBALL_FASTCALL HandleMainMenuInput(
     case 3:
     case 4:
         pScreen->m_dwTimeout398 = timeGetTime() + 20000U;
-        return 0;
+        break;
     case 12:
         pScreen->m_dwTimeout398 = timeGetTime() + 20000U;
         switch ((unsigned int)pMessage->m_nCommand) {
@@ -3262,11 +3262,11 @@ static int LEMBALL_FASTCALL HandleMainMenuInput(
                     return 1;
                 case 0xacef00a6U:
                 case 0xacef00a7U: {
-                    GameLevelProgressStateView *pProgress;
                     int nPackSelection;
+                    GameLevelProgressStateView *pProgress;
 
-                    pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
                     nPackSelection = pScreen->m_nPackSelection3B4;
+                    pProgress = (GameLevelProgressStateView *)g_pLevelProgressState;
                     pProgress->m_nCurrentLevel00 =
                         pProgress->m_anSnapshotPackCaps3C[nPackSelection];
                     pProgress->m_nCurrentPack08 = nPackSelection;
@@ -3280,11 +3280,12 @@ static int LEMBALL_FASTCALL HandleMainMenuInput(
                     return 1;
                 }
         }
-        return 0;
+        break;
     default:
         ++*(int *)((char *)pScreen + 0x10);
         return 0;
     }
+    return 0;
 }
 
 // FUNCTION: LEMBALL 0x00448800
