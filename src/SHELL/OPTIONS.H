@@ -4,13 +4,13 @@
 #include "ENGINE/CORE/COMMON.H"
 
 struct StartupGraphicsWindowConfig {
-    u32 m_cbSize;
-    u32 m_dwStyle;
-    u32 m_dwReserved0;
-    u32 m_cItems;
-    int *m_pItemDataEnd;
-    u32 m_dwReserved1;
-    void *m_hIcon;
+	u32 m_cbSize;
+	u32 m_dwStyle;
+	u32 m_dwReserved0;
+	u32 m_cItems;
+	int* m_pItemDataEnd;
+	u32 m_dwReserved1;
+	void* m_hIcon;
 };
 
 extern int g_fStartupAnimationsEnabled;
@@ -32,10 +32,10 @@ extern StartupGraphicsWindowConfig g_StartupGraphicsDriverConfig;
 extern int g_fSmallMemoryBucketTableEnabled;
 extern int g_adwStartupGraphicsBucketSizeTable[7];
 
-StartupGraphicsWindowConfig *BuildStartupGraphicsWindowConfig(const StartupGraphicsWindowConfig *pSeedConfig);
+StartupGraphicsWindowConfig* BuildStartupGraphicsWindowConfig(const StartupGraphicsWindowConfig* pSeedConfig);
 void InitializeStartupSwitchDefaults(void);
-int ApplyStartupCommandLineSwitches(int cArgs, const char *const *ppszArgs);
-int CompareSwitchNameCaseInsensitive(const char *pszLeft, const char *pszRight, int cchMax);
+int ApplyStartupCommandLineSwitches(int cArgs, const char* const* ppszArgs);
+int CompareSwitchNameCaseInsensitive(const char* pszLeft, const char* pszRight, int cchMax);
 void FinalizeStartupGraphicsDriverConfig(void);
 
 #endif

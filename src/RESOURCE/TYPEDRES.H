@@ -4,10 +4,8 @@
 #include "RESOURCE/MOGLOAD.H"
 
 struct MogLoadTypedResourceObject : MogLoadStringResourceObject {
-    int LoadTypedResourceObjectFromStreamDescriptor(
-        int *pDataCursor, void *pOwner);
-    int LoadTypedResourceObjectFromBufferDescriptor(
-        int *pDescriptorCursor, int *pDataCursor, void *pOwner);
+	int LoadTypedResourceObjectFromStreamDescriptor(int* pDataCursor, void* pOwner);
+	int LoadTypedResourceObjectFromBufferDescriptor(int* pDescriptorCursor, int* pDataCursor, void* pOwner);
 };
 
 #endif

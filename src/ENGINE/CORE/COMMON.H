@@ -7,11 +7,11 @@
 
 #define DECOMP_JOIN2(A, B) A##B
 #define DECOMP_JOIN(A, B) DECOMP_JOIN2(A, B)
-#define DECOMP_STATIC_ASSERT(V)                                              \
-    namespace                                                               \
-    {                                                                       \
-    typedef int DECOMP_JOIN(decomp_static_assert_, __LINE__)[(V) ? 1 : -1]; \
-    }
+#define DECOMP_STATIC_ASSERT(V)                                                                                        \
+	namespace                                                                                                          \
+	{                                                                                                                  \
+	typedef int DECOMP_JOIN(decomp_static_assert_, __LINE__)[(V) ? 1 : -1];                                            \
+	}
 #define DECOMP_SIZE_ASSERT(T, S) DECOMP_STATIC_ASSERT(sizeof(T) == S)
 
 // Unknown-width scalars retain their signedness ambiguity until codegen or

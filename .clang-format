@@ -1,21 +1,37 @@
 BasedOnStyle: Microsoft
-IndentWidth: 4
-TabWidth: 4
-UseTab: Never
-ColumnLimit: 120
-BreakBeforeBraces: Attach
-AllowShortFunctionsOnASingleLine: None
-AllowShortIfStatementsOnASingleLine: Never
-AllowShortLoopsOnASingleLine: false
+
 AccessModifierOffset: -4
-PointerAlignment: Right
-ReferenceAlignment: Pointer
-SpaceBeforeParens: ControlStatements
-Cpp11BracedListStyle: false
-SortIncludes: false
-BinPackParameters: false
+AlignAfterOpenBracket: true
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortFunctionsOnASingleLine: InlineOnly
+AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: false
-AlignConsecutiveAssignments: false
-AlignConsecutiveDeclarations: false
-KeepEmptyLinesAtTheStartOfBlocks: false
-IndentCaseLabels: false
+BinPackParameters: false
+BracedInitializerIndentWidth: 4
+BraceWrapping:
+  AfterClass: false
+  AfterControlStatement: Never
+  AfterEnum: false
+  AfterStruct: false
+ConstructorInitializerIndentWidth: 4
+ContinuationIndentWidth: 4
+EmptyLineBeforeAccessModifier: Always
+IncludeBlocks: Regroup
+IndentAccessModifiers: false
+IndentWidth: 4
+InsertBraces: true
+InsertNewlineAtEOF: true
+PointerAlignment: Left
+QualifierAlignment: Custom
+QualifierOrder:
+  - inline
+  - static
+  - friend
+  - const
+  - volatile
+  - type
+RemoveSemicolon: true
+SpaceAfterCStyleCast: true
+TabWidth: 4
+UseTab: ForContinuationAndIndentation

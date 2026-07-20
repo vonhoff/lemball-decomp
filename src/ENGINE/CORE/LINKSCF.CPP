@@ -1,5 +1,5 @@
-#include "ENGINE/CORE/WIN32.H"
 #include "ENGINE/CORE/VSMEM.H"
+#include "ENGINE/CORE/WIN32.H"
 #include "ENGINE/GDI/VSGEOM.H"
 #include "ENGINE/MEDIA/EFFSTRM.H"
 #include "GAME.H"
@@ -12,833 +12,817 @@ struct LevelBoundsPoint;
 struct LevelThreeDwordBounds;
 struct LevelBoundedRenderObjectView;
 
-extern void *g_pActiveNetworkRuntimeWindow;
+extern void* g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
-extern void *g_pActiveLevelGameMode;
-extern void *g_pActiveManagedEntityOwner;
+extern void* g_pActiveLevelGameMode;
+extern void* g_pActiveManagedEntityOwner;
 extern int g_nLevelFrameClockTick;
 extern int g_nLevelFrameClockTimeMs;
 extern int g_GAME_ManagedEntityRegistryTable[1000];
 extern unsigned short g_GAME_ManagedEntityRegistryCount;
-extern int *LoadBinResource(int nResourceId);
-extern void PASCAL noop_vtable_callback_0040a7f0(void *pUnused);
-extern int PASCAL return_true_vtable_callback_0040a800(void *pUnused);
-extern void *LEMBALL_FASTCALL get_object_field_0xf0(void *pObject);
+extern int* LoadBinResource(int nResourceId);
+extern void PASCAL noop_vtable_callback_0040a7f0(void* pUnused);
+extern int PASCAL return_true_vtable_callback_0040a800(void* pUnused);
+extern void* LEMBALL_FASTCALL get_object_field_0xf0(void* pObject);
 extern int return_false_vtable_callback_0040a820(void);
-extern void LEMBALL_FASTCALL copy_object_fields_0x9c_triplet(
-    void *pObject, void *pUnused, LevelBoundsPoint *pPoint);
-extern void LEMBALL_FASTCALL set_object_field_0x98(
-    void *pObject, void *pUnused, int nValue);
-extern int LEMBALL_FASTCALL get_object_field_0x98(void *pObject);
-extern int LEMBALL_FASTCALL is_point_inside_3d_bounds(
-    LevelBoundedRenderObjectView *pObject,
-    void *pUnused,
-    const LevelBoundsPoint *pPoint);
-extern int LEMBALL_FASTCALL do_3d_bounds_intersect(
-    LevelBoundedRenderObjectView *pObject,
-    void *pUnused,
-    const LevelThreeDwordBounds *pBounds);
+extern void LEMBALL_FASTCALL copy_object_fields_0x9c_triplet(void* pObject, void* pUnused, LevelBoundsPoint* pPoint);
+extern void LEMBALL_FASTCALL set_object_field_0x98(void* pObject, void* pUnused, int nValue);
+extern int LEMBALL_FASTCALL get_object_field_0x98(void* pObject);
+extern int LEMBALL_FASTCALL is_point_inside_3d_bounds(LevelBoundedRenderObjectView* pObject,
+													  void* pUnused,
+													  const LevelBoundsPoint* pPoint);
+extern int LEMBALL_FASTCALL do_3d_bounds_intersect(LevelBoundedRenderObjectView* pObject,
+												   void* pUnused,
+												   const LevelThreeDwordBounds* pBounds);
 extern void noop_vtable_callback_0040a990(void);
 extern int return_true_vtable_callback_0040aa50(void);
-extern int PASCAL return_false_vtable_callback_0040aa90(void *pUnused);
-extern void PASCAL noop_vtable_callback_0040aa80(
-    void *pUnused1, void *pUnused2);
+extern int PASCAL return_false_vtable_callback_0040aa90(void* pUnused);
+extern void PASCAL noop_vtable_callback_0040aa80(void* pUnused1, void* pUnused2);
 extern void noop_vtable_callback_0040aaa0(void);
 extern void noop_vtable_callback_0040aab0(void);
 extern int PASCAL IsManagedEntityState18(int nState);
-extern void LEMBALL_FASTCALL MarkObjectField178AndSetTimer3C(
-    void *pObject);
-extern void *LEMBALL_FASTCALL get_level_mode_chunk_loader_context(
-    void *pLevelMode);
-extern int LEMBALL_FASTCALL has_door_chunk_object_target_tile_latched(
-    void *pObject);
-extern void LEMBALL_FASTCALL schedule_door_chunk_object_update_in_10_ticks(
-    void *pObject);
-extern void LEMBALL_FASTCALL clear_door_chunk_object_target_tile_latch(
-    void *pObject);
-extern void *LEMBALL_FASTCALL get_object_field_0x30(void *pObject);
-extern void *LEMBALL_FASTCALL get_level_mode_mine_chunk_manager(
-    void *pLevelMode);
-extern void *LEMBALL_FASTCALL get_level_mode_lift_chunk_manager(
-    void *pLevelMode);
-extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(
-    void *pResourceObject);
+extern void LEMBALL_FASTCALL MarkObjectField178AndSetTimer3C(void* pObject);
+extern void* LEMBALL_FASTCALL get_level_mode_chunk_loader_context(void* pLevelMode);
+extern int LEMBALL_FASTCALL has_door_chunk_object_target_tile_latched(void* pObject);
+extern void LEMBALL_FASTCALL schedule_door_chunk_object_update_in_10_ticks(void* pObject);
+extern void LEMBALL_FASTCALL clear_door_chunk_object_target_tile_latch(void* pObject);
+extern void* LEMBALL_FASTCALL get_object_field_0x30(void* pObject);
+extern void* LEMBALL_FASTCALL get_level_mode_mine_chunk_manager(void* pLevelMode);
+extern void* LEMBALL_FASTCALL get_level_mode_lift_chunk_manager(void* pLevelMode);
+extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void* pResourceObject);
 
-static void NoopChunkStreamVirtual(void) {
+static void NoopChunkStreamVirtual(void)
+{
 }
 
-static int ReturnFalseChunkStreamVirtual(void) {
-    return 0;
+static int ReturnFalseChunkStreamVirtual(void)
+{
+	return 0;
 }
 
-void *LEMBALL_FASTCALL GetFirstCachedChunkObject(void *pObject);
-void *LEMBALL_FASTCALL GetNextCachedChunkObject(void *pObject);
+void* LEMBALL_FASTCALL GetFirstCachedChunkObject(void* pObject);
+void* LEMBALL_FASTCALL GetNextCachedChunkObject(void* pObject);
 
 /* These tables retain the recovered common EFF stream interface while the
  * type-specific load and reset methods are reconstructed.  Keeping distinct
  * tables is important: constructors install concrete stream types, and later
  * recovery can replace individual slots without changing object layout. */
-static void *g_LINKSCF_LiftChunkManagerVtable[10];
-static void *g_LINKSCF_MoveChunkManagerVtable[10];
-static void *g_LINKSCF_GmobChunkManagerVtable[10];
-static void *g_LINKSCF_PlasChunkManagerVtable[10];
-static void *g_LINKSCF_PlasChunkStreamVtable[10];
-static void *g_LINKSCF_PlasChunkObjectVtable[66];
-static void *g_LINKSCF_ProjectilePoolVtable[10];
-static void *g_LINKSCF_ManagedEntityQueueCursorVtable[4];
-static void *g_LINKSCF_ShpgChunkManagerVtable[8];
-static void *g_LINKSCF_EnmyChunkManagerVtable[8];
-static void *g_LINKSCF_CollChunkManagerVtable[10];
-static void *g_LINKSCF_MineChunkManagerVtable[10];
-static void *g_LINKSCF_DoorChunkManagerVtable[10];
-static void *g_LINKSCF_RockChunkManagerVtable[10];
-static void *g_LINKSCF_CaptureChunkManagerVtable[10];
-static void *g_LINKSCF_LasrChunkManagerVtable[10];
-static void *g_LINKSCF_TramChunkManagerVtable[10];
-static void *g_LINKSCF_PgunChunkManagerVtable[10];
-static void *g_LINKSCF_IceChunkManagerVtable[10];
-static void *g_LINKSCF_InvsChunkManagerVtable[10];
-static void *g_LINKSCF_BoonChunkObjectVtable[66];
-static void *g_LINKSCF_LevelChunkStreamDispatcherVtable[10];
+static void* g_LINKSCF_LiftChunkManagerVtable[10];
+static void* g_LINKSCF_MoveChunkManagerVtable[10];
+static void* g_LINKSCF_GmobChunkManagerVtable[10];
+static void* g_LINKSCF_PlasChunkManagerVtable[10];
+static void* g_LINKSCF_PlasChunkStreamVtable[10];
+static void* g_LINKSCF_PlasChunkObjectVtable[66];
+static void* g_LINKSCF_ProjectilePoolVtable[10];
+static void* g_LINKSCF_ManagedEntityQueueCursorVtable[4];
+static void* g_LINKSCF_ShpgChunkManagerVtable[8];
+static void* g_LINKSCF_EnmyChunkManagerVtable[8];
+static void* g_LINKSCF_CollChunkManagerVtable[10];
+static void* g_LINKSCF_MineChunkManagerVtable[10];
+static void* g_LINKSCF_DoorChunkManagerVtable[10];
+static void* g_LINKSCF_RockChunkManagerVtable[10];
+static void* g_LINKSCF_CaptureChunkManagerVtable[10];
+static void* g_LINKSCF_LasrChunkManagerVtable[10];
+static void* g_LINKSCF_TramChunkManagerVtable[10];
+static void* g_LINKSCF_PgunChunkManagerVtable[10];
+static void* g_LINKSCF_IceChunkManagerVtable[10];
+static void* g_LINKSCF_InvsChunkManagerVtable[10];
+static void* g_LINKSCF_BoonChunkObjectVtable[66];
+static void* g_LINKSCF_LevelChunkStreamDispatcherVtable[10];
 static int g_fLinkScfChunkVtablesInitialized;
-static char *g_pLINKSCF_PlasLevelMode;
+static char* g_pLINKSCF_PlasLevelMode;
 static unsigned short g_nLINKSCF_LocalPlasOrdinal;
 
-static void LEMBALL_FASTCALL ActivateOrStagePlasChunkObject(void *pObject);
+static void LEMBALL_FASTCALL ActivateOrStagePlasChunkObject(void* pObject);
 
-static void InitializeLinkScfChunkVtables(void) {
-    int i;
+static void InitializeLinkScfChunkVtables(void)
+{
+	int i;
 
-    if (g_fLinkScfChunkVtablesInitialized != 0) {
-        return;
-    }
-    for (i = 0; i < 10; ++i) {
-        g_LINKSCF_LiftChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
-        g_LINKSCF_MoveChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
-        g_LINKSCF_GmobChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
-        g_LINKSCF_PlasChunkStreamVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
-        g_LINKSCF_ProjectilePoolVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
-        g_LINKSCF_CollChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
-        g_LINKSCF_MineChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
-        g_LINKSCF_DoorChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
-        g_LINKSCF_RockChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
-        g_LINKSCF_CaptureChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
-        g_LINKSCF_LasrChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
-        g_LINKSCF_TramChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
-        g_LINKSCF_PgunChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
-        g_LINKSCF_IceChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
-        g_LINKSCF_InvsChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
-        g_LINKSCF_LevelChunkStreamDispatcherVtable[i] = 0;
-    }
-    for (i = 0; i < 8; ++i) {
-        g_LINKSCF_ShpgChunkManagerVtable[i] = 0;
-        g_LINKSCF_EnmyChunkManagerVtable[i] = 0;
-    }
-    for (i = 0; i < 66; ++i) {
-        g_LINKSCF_PlasChunkObjectVtable[i] =
-            (void *)NoopChunkStreamVirtual;
-    }
-    g_LINKSCF_PlasChunkObjectVtable[65] =
-        (void *)ActivateOrStagePlasChunkObject;
-    g_LINKSCF_PlasChunkObjectVtable[4] =
-        (void *)noop_vtable_callback_0040a7f0;
-    g_LINKSCF_PlasChunkObjectVtable[6] =
-        (void *)return_true_vtable_callback_0040a800;
-    g_LINKSCF_PlasChunkObjectVtable[7] =
-        (void *)get_object_field_0xf0;
-    g_LINKSCF_PlasChunkObjectVtable[10] =
-        (void *)return_false_vtable_callback_0040a820;
-    g_LINKSCF_PlasChunkObjectVtable[11] =
-        (void *)copy_object_fields_0x9c_triplet;
-    g_LINKSCF_PlasChunkObjectVtable[13] =
-        (void *)set_object_field_0x98;
-    g_LINKSCF_PlasChunkObjectVtable[14] =
-        (void *)get_object_field_0x98;
-    g_LINKSCF_PlasChunkObjectVtable[19] =
-        (void *)do_3d_bounds_intersect;
-    g_LINKSCF_PlasChunkObjectVtable[20] =
-        (void *)is_point_inside_3d_bounds;
-    g_LINKSCF_PlasChunkObjectVtable[22] =
-        (void *)MarkObjectField178AndSetTimer3C;
-    g_LINKSCF_PlasChunkObjectVtable[23] =
-        (void *)get_level_mode_chunk_loader_context;
-    g_LINKSCF_PlasChunkObjectVtable[27] =
-        (void *)noop_vtable_callback_0040a990;
-    g_LINKSCF_PlasChunkObjectVtable[31] =
-        (void *)has_door_chunk_object_target_tile_latched;
-    g_LINKSCF_PlasChunkObjectVtable[35] =
-        (void *)schedule_door_chunk_object_update_in_10_ticks;
-    g_LINKSCF_PlasChunkObjectVtable[36] =
-        (void *)clear_door_chunk_object_target_tile_latch;
-    g_LINKSCF_PlasChunkObjectVtable[44] =
-        (void *)return_true_vtable_callback_0040aa50;
-    g_LINKSCF_PlasChunkObjectVtable[47] =
-        (void *)noop_vtable_callback_0040aa80;
-    g_LINKSCF_PlasChunkObjectVtable[48] =
-        (void *)return_false_vtable_callback_0040aa90;
-    g_LINKSCF_PlasChunkObjectVtable[49] =
-        (void *)noop_vtable_callback_0040aaa0;
-    g_LINKSCF_PlasChunkObjectVtable[50] =
-        (void *)noop_vtable_callback_0040aab0;
-    g_LINKSCF_PlasChunkObjectVtable[56] =
-        (void *)get_object_field_0x30;
-    g_LINKSCF_PlasChunkObjectVtable[57] =
-        (void *)get_level_mode_mine_chunk_manager;
-    g_LINKSCF_PlasChunkObjectVtable[59] =
-        (void *)get_level_mode_lift_chunk_manager;
-    g_LINKSCF_PlasChunkObjectVtable[64] =
-        (void *)IsManagedEntityState18;
-    g_LINKSCF_ShpgChunkManagerVtable[1] =
-        (void *)GetFirstCachedChunkObject;
-    g_LINKSCF_ShpgChunkManagerVtable[2] =
-        (void *)GetNextCachedChunkObject;
-    g_LINKSCF_EnmyChunkManagerVtable[1] =
-        (void *)GetFirstCachedChunkObject;
-    g_LINKSCF_EnmyChunkManagerVtable[2] =
-        (void *)GetNextCachedChunkObject;
-    g_LINKSCF_LiftChunkManagerVtable[6] = (void *)NoopChunkStreamVirtual;
-    g_LINKSCF_LiftChunkManagerVtable[7] = (void *)NoopChunkStreamVirtual;
-    g_LINKSCF_LiftChunkManagerVtable[9] = (void *)ReturnFalseChunkStreamVirtual;
-    g_LINKSCF_MoveChunkManagerVtable[6] = (void *)NoopChunkStreamVirtual;
-    g_LINKSCF_MoveChunkManagerVtable[7] = (void *)NoopChunkStreamVirtual;
-    g_LINKSCF_MoveChunkManagerVtable[9] = (void *)ReturnFalseChunkStreamVirtual;
-    g_LINKSCF_GmobChunkManagerVtable[6] = (void *)NoopChunkStreamVirtual;
-    g_LINKSCF_GmobChunkManagerVtable[7] = (void *)NoopChunkStreamVirtual;
-    g_LINKSCF_GmobChunkManagerVtable[9] = (void *)ReturnFalseChunkStreamVirtual;
-    g_LINKSCF_PlasChunkStreamVtable[6] = (void *)NoopChunkStreamVirtual;
-    g_LINKSCF_PlasChunkStreamVtable[7] = (void *)NoopChunkStreamVirtual;
-    g_LINKSCF_PlasChunkStreamVtable[9] = (void *)ReturnFalseChunkStreamVirtual;
-    g_LINKSCF_ProjectilePoolVtable[6] = (void *)NoopChunkStreamVirtual;
-    g_LINKSCF_ProjectilePoolVtable[7] = (void *)NoopChunkStreamVirtual;
-    g_LINKSCF_ProjectilePoolVtable[9] = (void *)ReturnFalseChunkStreamVirtual;
-    for (i = 0; i < 10; ++i) {
-        void **pTable;
-        int j;
-        void **apTables[10];
-        apTables[0] = g_LINKSCF_CollChunkManagerVtable;
-        apTables[1] = g_LINKSCF_MineChunkManagerVtable;
-        apTables[2] = g_LINKSCF_DoorChunkManagerVtable;
-        apTables[3] = g_LINKSCF_RockChunkManagerVtable;
-        apTables[4] = g_LINKSCF_CaptureChunkManagerVtable;
-        apTables[5] = g_LINKSCF_LasrChunkManagerVtable;
-        apTables[6] = g_LINKSCF_TramChunkManagerVtable;
-        apTables[7] = g_LINKSCF_PgunChunkManagerVtable;
-        apTables[8] = g_LINKSCF_IceChunkManagerVtable;
-        apTables[9] = g_LINKSCF_InvsChunkManagerVtable;
-        pTable = apTables[i];
-        for (j = 6; j < 8; ++j) {
-            pTable[j] = (void *)NoopChunkStreamVirtual;
-        }
-        pTable[9] = (void *)ReturnFalseChunkStreamVirtual;
-    }
-    g_fLinkScfChunkVtablesInitialized = 1;
+	if (g_fLinkScfChunkVtablesInitialized != 0) {
+		return;
+	}
+	for (i = 0; i < 10; ++i) {
+		g_LINKSCF_LiftChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
+		g_LINKSCF_MoveChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
+		g_LINKSCF_GmobChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
+		g_LINKSCF_PlasChunkStreamVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
+		g_LINKSCF_ProjectilePoolVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
+		g_LINKSCF_CollChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
+		g_LINKSCF_MineChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
+		g_LINKSCF_DoorChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
+		g_LINKSCF_RockChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
+		g_LINKSCF_CaptureChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
+		g_LINKSCF_LasrChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
+		g_LINKSCF_TramChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
+		g_LINKSCF_PgunChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
+		g_LINKSCF_IceChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
+		g_LINKSCF_InvsChunkManagerVtable[i] = g_LEVEL_EffChunkStreamBaseVtable[i];
+		g_LINKSCF_LevelChunkStreamDispatcherVtable[i] = 0;
+	}
+	for (i = 0; i < 8; ++i) {
+		g_LINKSCF_ShpgChunkManagerVtable[i] = 0;
+		g_LINKSCF_EnmyChunkManagerVtable[i] = 0;
+	}
+	for (i = 0; i < 66; ++i) {
+		g_LINKSCF_PlasChunkObjectVtable[i] = (void*) NoopChunkStreamVirtual;
+	}
+	g_LINKSCF_PlasChunkObjectVtable[65] = (void*) ActivateOrStagePlasChunkObject;
+	g_LINKSCF_PlasChunkObjectVtable[4] = (void*) noop_vtable_callback_0040a7f0;
+	g_LINKSCF_PlasChunkObjectVtable[6] = (void*) return_true_vtable_callback_0040a800;
+	g_LINKSCF_PlasChunkObjectVtable[7] = (void*) get_object_field_0xf0;
+	g_LINKSCF_PlasChunkObjectVtable[10] = (void*) return_false_vtable_callback_0040a820;
+	g_LINKSCF_PlasChunkObjectVtable[11] = (void*) copy_object_fields_0x9c_triplet;
+	g_LINKSCF_PlasChunkObjectVtable[13] = (void*) set_object_field_0x98;
+	g_LINKSCF_PlasChunkObjectVtable[14] = (void*) get_object_field_0x98;
+	g_LINKSCF_PlasChunkObjectVtable[19] = (void*) do_3d_bounds_intersect;
+	g_LINKSCF_PlasChunkObjectVtable[20] = (void*) is_point_inside_3d_bounds;
+	g_LINKSCF_PlasChunkObjectVtable[22] = (void*) MarkObjectField178AndSetTimer3C;
+	g_LINKSCF_PlasChunkObjectVtable[23] = (void*) get_level_mode_chunk_loader_context;
+	g_LINKSCF_PlasChunkObjectVtable[27] = (void*) noop_vtable_callback_0040a990;
+	g_LINKSCF_PlasChunkObjectVtable[31] = (void*) has_door_chunk_object_target_tile_latched;
+	g_LINKSCF_PlasChunkObjectVtable[35] = (void*) schedule_door_chunk_object_update_in_10_ticks;
+	g_LINKSCF_PlasChunkObjectVtable[36] = (void*) clear_door_chunk_object_target_tile_latch;
+	g_LINKSCF_PlasChunkObjectVtable[44] = (void*) return_true_vtable_callback_0040aa50;
+	g_LINKSCF_PlasChunkObjectVtable[47] = (void*) noop_vtable_callback_0040aa80;
+	g_LINKSCF_PlasChunkObjectVtable[48] = (void*) return_false_vtable_callback_0040aa90;
+	g_LINKSCF_PlasChunkObjectVtable[49] = (void*) noop_vtable_callback_0040aaa0;
+	g_LINKSCF_PlasChunkObjectVtable[50] = (void*) noop_vtable_callback_0040aab0;
+	g_LINKSCF_PlasChunkObjectVtable[56] = (void*) get_object_field_0x30;
+	g_LINKSCF_PlasChunkObjectVtable[57] = (void*) get_level_mode_mine_chunk_manager;
+	g_LINKSCF_PlasChunkObjectVtable[59] = (void*) get_level_mode_lift_chunk_manager;
+	g_LINKSCF_PlasChunkObjectVtable[64] = (void*) IsManagedEntityState18;
+	g_LINKSCF_ShpgChunkManagerVtable[1] = (void*) GetFirstCachedChunkObject;
+	g_LINKSCF_ShpgChunkManagerVtable[2] = (void*) GetNextCachedChunkObject;
+	g_LINKSCF_EnmyChunkManagerVtable[1] = (void*) GetFirstCachedChunkObject;
+	g_LINKSCF_EnmyChunkManagerVtable[2] = (void*) GetNextCachedChunkObject;
+	g_LINKSCF_LiftChunkManagerVtable[6] = (void*) NoopChunkStreamVirtual;
+	g_LINKSCF_LiftChunkManagerVtable[7] = (void*) NoopChunkStreamVirtual;
+	g_LINKSCF_LiftChunkManagerVtable[9] = (void*) ReturnFalseChunkStreamVirtual;
+	g_LINKSCF_MoveChunkManagerVtable[6] = (void*) NoopChunkStreamVirtual;
+	g_LINKSCF_MoveChunkManagerVtable[7] = (void*) NoopChunkStreamVirtual;
+	g_LINKSCF_MoveChunkManagerVtable[9] = (void*) ReturnFalseChunkStreamVirtual;
+	g_LINKSCF_GmobChunkManagerVtable[6] = (void*) NoopChunkStreamVirtual;
+	g_LINKSCF_GmobChunkManagerVtable[7] = (void*) NoopChunkStreamVirtual;
+	g_LINKSCF_GmobChunkManagerVtable[9] = (void*) ReturnFalseChunkStreamVirtual;
+	g_LINKSCF_PlasChunkStreamVtable[6] = (void*) NoopChunkStreamVirtual;
+	g_LINKSCF_PlasChunkStreamVtable[7] = (void*) NoopChunkStreamVirtual;
+	g_LINKSCF_PlasChunkStreamVtable[9] = (void*) ReturnFalseChunkStreamVirtual;
+	g_LINKSCF_ProjectilePoolVtable[6] = (void*) NoopChunkStreamVirtual;
+	g_LINKSCF_ProjectilePoolVtable[7] = (void*) NoopChunkStreamVirtual;
+	g_LINKSCF_ProjectilePoolVtable[9] = (void*) ReturnFalseChunkStreamVirtual;
+	for (i = 0; i < 10; ++i) {
+		void** pTable;
+		int j;
+		void** apTables[10];
+		apTables[0] = g_LINKSCF_CollChunkManagerVtable;
+		apTables[1] = g_LINKSCF_MineChunkManagerVtable;
+		apTables[2] = g_LINKSCF_DoorChunkManagerVtable;
+		apTables[3] = g_LINKSCF_RockChunkManagerVtable;
+		apTables[4] = g_LINKSCF_CaptureChunkManagerVtable;
+		apTables[5] = g_LINKSCF_LasrChunkManagerVtable;
+		apTables[6] = g_LINKSCF_TramChunkManagerVtable;
+		apTables[7] = g_LINKSCF_PgunChunkManagerVtable;
+		apTables[8] = g_LINKSCF_IceChunkManagerVtable;
+		apTables[9] = g_LINKSCF_InvsChunkManagerVtable;
+		pTable = apTables[i];
+		for (j = 6; j < 8; ++j) {
+			pTable[j] = (void*) NoopChunkStreamVirtual;
+		}
+		pTable[9] = (void*) ReturnFalseChunkStreamVirtual;
+	}
+	g_fLinkScfChunkVtablesInitialized = 1;
 }
 
-static void *LEMBALL_FASTCALL ConstructPlasChunkObjectForLevel(
-    void *pObject,
-    int nUnusedEdx,
-    int nX,
-    int nY,
-    int nZ,
-    unsigned short nVariant,
-    int nNetworkPlayer,
-    int nStartDelay) {
-    int i;
-    int nRegistryIndex;
-    unsigned short *pChildSlots;
-    int *pChildRecords;
+static void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevel(void* pObject,
+															   int nUnusedEdx,
+															   int nX,
+															   int nY,
+															   int nZ,
+															   unsigned short nVariant,
+															   int nNetworkPlayer,
+															   int nStartDelay)
+{
+	int i;
+	int nRegistryIndex;
+	unsigned short* pChildSlots;
+	int* pChildRecords;
 
-    (void)nUnusedEdx;
+	(void) nUnusedEdx;
 
-    for (i = 0; i < 0x22c / 4; ++i) {
-        ((int *)pObject)[i] = 0;
-    }
-    *(void **)pObject = g_LINKSCF_PlasChunkObjectVtable;
-    *(int *)((char *)pObject + 0x20) = -1;
-    *(int *)((char *)pObject + 0x24) = -1;
-    *(int *)((char *)pObject + 0x28) = -1;
-    for (i = 0x40; i <= 0x54; i += 4) {
-        *(int *)((char *)pObject + i) = 0xaa55aa55;
-    }
-    for (i = 0x78; i <= 0x84; i += 4) {
-        *(int *)((char *)pObject + i) = 0xaa55aa55;
-    }
-    for (i = 0x9c; i <= 0xb0; i += 4) {
-        *(int *)((char *)pObject + i) = 0xaa55aa55;
-    }
-    for (i = 0xd8; i <= 0xec; i += 4) {
-        *(int *)((char *)pObject + i) = 0xaa55aa55;
-    }
-    for (i = 0xf4; i <= 0xfc; i += 4) {
-        *(int *)((char *)pObject + i) = 0xaa55aa55;
-    }
-    *(int *)((char *)pObject + 0x64) = nNetworkPlayer == 0 ? 2 : 1;
-    *(unsigned short *)((char *)pObject + 0x68) = 0x17f;
-    *(unsigned short *)((char *)pObject + 0x6c) = 0xffff;
-    pChildSlots = (unsigned short *)AllocateVSMemBlock(8);
-    if (pChildSlots != 0) {
-        pChildSlots[0] = 0;
-        pChildSlots[1] = 0x14;
-        pChildRecords = (int *)AllocateVSMemBlock(0x14 * 0x14);
-        *(int **)(pChildSlots + 2) = pChildRecords;
-        if (pChildRecords != 0) {
-            for (i = 0; i < 0x14; ++i) {
-                pChildRecords[i * 5] = 0;
-                pChildRecords[i * 5 + 1] = 0xaa55aa55;
-                pChildRecords[i * 5 + 2] = 0xaa55aa55;
-                pChildRecords[i * 5 + 3] = 0xaa55aa55;
-            }
-        }
-    }
-    *(unsigned short **)((char *)pObject + 0x70) = pChildSlots;
-    nRegistryIndex = 0;
-    while (nRegistryIndex < g_GAME_ManagedEntityRegistryCount &&
-           g_GAME_ManagedEntityRegistryTable[nRegistryIndex] != 0) {
-        ++nRegistryIndex;
-    }
-    if (nRegistryIndex == g_GAME_ManagedEntityRegistryCount) {
-        ++g_GAME_ManagedEntityRegistryCount;
-    }
-    *(unsigned short *)((char *)pObject + 0x6a) =
-        (unsigned short)nRegistryIndex;
-    g_GAME_ManagedEntityRegistryTable[nRegistryIndex] =
-        (int)(unsigned long)pObject;
-    *(int *)((char *)pObject + 0x40) = nX << 12;
-    *(int *)((char *)pObject + 0x44) = nY << 12;
-    *(int *)((char *)pObject + 0x48) = nZ << 12;
-    *(unsigned short *)((char *)pObject + 0xb6) = nVariant;
-    *(int *)((char *)pObject + 0x170) = nNetworkPlayer;
-    *(int *)((char *)pObject + 0x174) = nStartDelay;
-    *(int *)((char *)pObject + 0x194) = 0xaa55aa55;
-    *(int *)((char *)pObject + 0x198) = 0xaa55aa55;
-    *(int *)((char *)pObject + 0x19c) = 0xaa55aa55;
-    *(int *)((char *)pObject + 0x1b4) = 0xaa55aa55;
-    *(int *)((char *)pObject + 0x1b8) = 0xaa55aa55;
-    *(int *)((char *)pObject + 0x1bc) = 0xaa55aa55;
-    return pObject;
+	for (i = 0; i < 0x22c / 4; ++i) {
+		((int*) pObject)[i] = 0;
+	}
+	*(void**) pObject = g_LINKSCF_PlasChunkObjectVtable;
+	*(int*) ((char*) pObject + 0x20) = -1;
+	*(int*) ((char*) pObject + 0x24) = -1;
+	*(int*) ((char*) pObject + 0x28) = -1;
+	for (i = 0x40; i <= 0x54; i += 4) {
+		*(int*) ((char*) pObject + i) = 0xaa55aa55;
+	}
+	for (i = 0x78; i <= 0x84; i += 4) {
+		*(int*) ((char*) pObject + i) = 0xaa55aa55;
+	}
+	for (i = 0x9c; i <= 0xb0; i += 4) {
+		*(int*) ((char*) pObject + i) = 0xaa55aa55;
+	}
+	for (i = 0xd8; i <= 0xec; i += 4) {
+		*(int*) ((char*) pObject + i) = 0xaa55aa55;
+	}
+	for (i = 0xf4; i <= 0xfc; i += 4) {
+		*(int*) ((char*) pObject + i) = 0xaa55aa55;
+	}
+	*(int*) ((char*) pObject + 0x64) = nNetworkPlayer == 0 ? 2 : 1;
+	*(unsigned short*) ((char*) pObject + 0x68) = 0x17f;
+	*(unsigned short*) ((char*) pObject + 0x6c) = 0xffff;
+	pChildSlots = (unsigned short*) AllocateVSMemBlock(8);
+	if (pChildSlots != 0) {
+		pChildSlots[0] = 0;
+		pChildSlots[1] = 0x14;
+		pChildRecords = (int*) AllocateVSMemBlock(0x14 * 0x14);
+		*(int**) (pChildSlots + 2) = pChildRecords;
+		if (pChildRecords != 0) {
+			for (i = 0; i < 0x14; ++i) {
+				pChildRecords[i * 5] = 0;
+				pChildRecords[i * 5 + 1] = 0xaa55aa55;
+				pChildRecords[i * 5 + 2] = 0xaa55aa55;
+				pChildRecords[i * 5 + 3] = 0xaa55aa55;
+			}
+		}
+	}
+	*(unsigned short**) ((char*) pObject + 0x70) = pChildSlots;
+	nRegistryIndex = 0;
+	while (nRegistryIndex < g_GAME_ManagedEntityRegistryCount &&
+		   g_GAME_ManagedEntityRegistryTable[nRegistryIndex] != 0) {
+		++nRegistryIndex;
+	}
+	if (nRegistryIndex == g_GAME_ManagedEntityRegistryCount) {
+		++g_GAME_ManagedEntityRegistryCount;
+	}
+	*(unsigned short*) ((char*) pObject + 0x6a) = (unsigned short) nRegistryIndex;
+	g_GAME_ManagedEntityRegistryTable[nRegistryIndex] = (int) (unsigned long) pObject;
+	*(int*) ((char*) pObject + 0x40) = nX << 12;
+	*(int*) ((char*) pObject + 0x44) = nY << 12;
+	*(int*) ((char*) pObject + 0x48) = nZ << 12;
+	*(unsigned short*) ((char*) pObject + 0xb6) = nVariant;
+	*(int*) ((char*) pObject + 0x170) = nNetworkPlayer;
+	*(int*) ((char*) pObject + 0x174) = nStartDelay;
+	*(int*) ((char*) pObject + 0x194) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x198) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x19c) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x1b4) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x1b8) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x1bc) = 0xaa55aa55;
+	return pObject;
 }
 
-static void LEMBALL_FASTCALL ActivateOrStagePlasChunkObject(void *pObject) {
-    char *pPlayer;
-    char *pOwner;
-    unsigned short nOrdinal;
-    int nX;
-    int nY;
-    int nZ;
-    int nManagedCount;
+static void LEMBALL_FASTCALL ActivateOrStagePlasChunkObject(void* pObject)
+{
+	char* pPlayer;
+	char* pOwner;
+	unsigned short nOrdinal;
+	int nX;
+	int nY;
+	int nZ;
+	int nManagedCount;
 
-    pPlayer = (char *)pObject;
-    pOwner = (char *)g_pActiveManagedEntityOwner;
-    if (*(int *)(pPlayer + 0x170) != 0) {
-        *(int *)(pPlayer + 0x114) = 1;
-        *(int *)(pPlayer + 0xb8) = 8;
-        return;
-    }
+	pPlayer = (char*) pObject;
+	pOwner = (char*) g_pActiveManagedEntityOwner;
+	if (*(int*) (pPlayer + 0x170) != 0) {
+		*(int*) (pPlayer + 0x114) = 1;
+		*(int*) (pPlayer + 0xb8) = 8;
+		return;
+	}
 
-    nOrdinal = g_nLINKSCF_LocalPlasOrdinal++;
-    *(unsigned short *)(pPlayer + 0x168) = nOrdinal;
-    if (pOwner != 0 && nOrdinal < 4) {
-        *(void **)(pOwner + 0x1d0 + nOrdinal * 4) = pObject;
-    }
-    *(int *)(pPlayer + 0xb8) = 0x0c;
-    *(int *)(pPlayer + 0x94) = g_nLevelFrameClockTimeMs;
-    *(int *)(pPlayer + 0xcc) =
-        *(int *)(pPlayer + 0x174) + g_nLevelFrameClockTick;
+	nOrdinal = g_nLINKSCF_LocalPlasOrdinal++;
+	*(unsigned short*) (pPlayer + 0x168) = nOrdinal;
+	if (pOwner != 0 && nOrdinal < 4) {
+		*(void**) (pOwner + 0x1d0 + nOrdinal * 4) = pObject;
+	}
+	*(int*) (pPlayer + 0xb8) = 0x0c;
+	*(int*) (pPlayer + 0x94) = g_nLevelFrameClockTimeMs;
+	*(int*) (pPlayer + 0xcc) = *(int*) (pPlayer + 0x174) + g_nLevelFrameClockTick;
 
-    nX = *(int *)(pPlayer + 0x40) >> 12;
-    nY = *(int *)(pPlayer + 0x44) >> 12;
-    nZ = *(int *)(pPlayer + 0x48) >> 12;
-    *(int *)(pPlayer + 0x14) = nX - 8;
-    *(int *)(pPlayer + 0x18) = nY - 8;
-    *(int *)(pPlayer + 0x1c) = nZ;
-    *(int *)(pPlayer + 0x20) = nX + 7;
-    *(int *)(pPlayer + 0x24) = nY + 7;
-    *(int *)(pPlayer + 0x28) = nZ + 0x0f;
+	nX = *(int*) (pPlayer + 0x40) >> 12;
+	nY = *(int*) (pPlayer + 0x44) >> 12;
+	nZ = *(int*) (pPlayer + 0x48) >> 12;
+	*(int*) (pPlayer + 0x14) = nX - 8;
+	*(int*) (pPlayer + 0x18) = nY - 8;
+	*(int*) (pPlayer + 0x1c) = nZ;
+	*(int*) (pPlayer + 0x20) = nX + 7;
+	*(int*) (pPlayer + 0x24) = nY + 7;
+	*(int*) (pPlayer + 0x28) = nZ + 0x0f;
 
-    if (pOwner != 0 && *(void **)(pOwner + 0x120) != 0) {
-        nManagedCount = *(int *)(pOwner + 0x118);
-        if (nManagedCount < *(int *)(pOwner + 0x11c)) {
-            *(void **)(*(char **)(pOwner + 0x120) + nManagedCount * 4) =
-                pObject;
-            *(int *)(pOwner + 0x118) = nManagedCount + 1;
-        }
-    }
-    *(int *)(pPlayer + 0x4c) = 0x3000;
-    *(int *)(pPlayer + 0x50) = 0;
-    *(int *)(pPlayer + 0x54) = 0xa000;
-    *(int *)(pPlayer + 0x7c) = 0;
-    *(unsigned short *)(pPlayer + 0x6e) =
-        *(unsigned short *)(pPlayer + 0xb6);
-    *(int *)(pPlayer + 0x78) = 0;
-    *(int *)(pPlayer + 0x74) = 0;
-    *(int *)(pPlayer + 0x84) = 0;
-    *(int *)(pPlayer + 0x9c) = *(int *)(pPlayer + 0x40);
-    *(int *)(pPlayer + 0xa0) = *(int *)(pPlayer + 0x44);
-    *(int *)(pPlayer + 0xa4) = *(int *)(pPlayer + 0x48) + 0x44000;
-    *(int *)(pPlayer + 0x2c) = 0;
-    *(int *)(pPlayer + 0x164) = 1;
-    *(int *)(pPlayer + 0x224) = 0;
-    *(int *)(pPlayer + 0x18c) = 0;
-    *(int *)(pPlayer + 0x188) = 0;
-    *(int *)(pPlayer + 0x218) = 0;
-    *(unsigned short *)(pPlayer + 0x228) = 0x19;
-    *(unsigned short *)(pPlayer + 0xb4) =
-        *(unsigned short *)(pPlayer + 0xb6);
-    *(int *)(pPlayer + 0x220) = 0;
+	if (pOwner != 0 && *(void**) (pOwner + 0x120) != 0) {
+		nManagedCount = *(int*) (pOwner + 0x118);
+		if (nManagedCount < *(int*) (pOwner + 0x11c)) {
+			*(void**) (*(char**) (pOwner + 0x120) + nManagedCount * 4) = pObject;
+			*(int*) (pOwner + 0x118) = nManagedCount + 1;
+		}
+	}
+	*(int*) (pPlayer + 0x4c) = 0x3000;
+	*(int*) (pPlayer + 0x50) = 0;
+	*(int*) (pPlayer + 0x54) = 0xa000;
+	*(int*) (pPlayer + 0x7c) = 0;
+	*(unsigned short*) (pPlayer + 0x6e) = *(unsigned short*) (pPlayer + 0xb6);
+	*(int*) (pPlayer + 0x78) = 0;
+	*(int*) (pPlayer + 0x74) = 0;
+	*(int*) (pPlayer + 0x84) = 0;
+	*(int*) (pPlayer + 0x9c) = *(int*) (pPlayer + 0x40);
+	*(int*) (pPlayer + 0xa0) = *(int*) (pPlayer + 0x44);
+	*(int*) (pPlayer + 0xa4) = *(int*) (pPlayer + 0x48) + 0x44000;
+	*(int*) (pPlayer + 0x2c) = 0;
+	*(int*) (pPlayer + 0x164) = 1;
+	*(int*) (pPlayer + 0x224) = 0;
+	*(int*) (pPlayer + 0x18c) = 0;
+	*(int*) (pPlayer + 0x188) = 0;
+	*(int*) (pPlayer + 0x218) = 0;
+	*(unsigned short*) (pPlayer + 0x228) = 0x19;
+	*(unsigned short*) (pPlayer + 0xb4) = *(unsigned short*) (pPlayer + 0xb6);
+	*(int*) (pPlayer + 0x220) = 0;
 }
 
-static void LEMBALL_FASTCALL LoadPlasChunkObjects(
-    void *pManager,
-    int nUnusedEdx,
-    const unsigned short *pChunk,
-    unsigned int cbChunk,
-    int fReuseState) {
-    char *pManagerBytes;
-    int nPlayerCount;
-    int nPlayerIndex;
+static void LEMBALL_FASTCALL LoadPlasChunkObjects(void* pManager,
+												  int nUnusedEdx,
+												  const unsigned short* pChunk,
+												  unsigned int cbChunk,
+												  int fReuseState)
+{
+	char* pManagerBytes;
+	int nPlayerCount;
+	int nPlayerIndex;
 
-    (void)nUnusedEdx;
-    (void)cbChunk;
+	(void) nUnusedEdx;
+	(void) cbChunk;
 
-    pManagerBytes = (char *)pManager;
-    *(int *)(pManagerBytes + 0x124) = 1;
-    *(int *)(pManagerBytes + 0xe0) = pChunk[0];
-    *(int *)(pManagerBytes + 0xf0) = pChunk[1];
-    *(int *)(pManagerBytes + 0x100) = pChunk[2];
-    for (nPlayerIndex = 0; nPlayerIndex < 3; ++nPlayerIndex) {
-        *(int *)(pManagerBytes + 0xe4 + nPlayerIndex * 4) =
-            *(int *)(pManagerBytes + 0xe0);
-        *(int *)(pManagerBytes + 0xf4 + nPlayerIndex * 4) =
-            *(int *)(pManagerBytes + 0xf0);
-        *(int *)(pManagerBytes + 0x104 + nPlayerIndex * 4) =
-            *(int *)(pManagerBytes + 0x100);
-    }
+	pManagerBytes = (char*) pManager;
+	*(int*) (pManagerBytes + 0x124) = 1;
+	*(int*) (pManagerBytes + 0xe0) = pChunk[0];
+	*(int*) (pManagerBytes + 0xf0) = pChunk[1];
+	*(int*) (pManagerBytes + 0x100) = pChunk[2];
+	for (nPlayerIndex = 0; nPlayerIndex < 3; ++nPlayerIndex) {
+		*(int*) (pManagerBytes + 0xe4 + nPlayerIndex * 4) = *(int*) (pManagerBytes + 0xe0);
+		*(int*) (pManagerBytes + 0xf4 + nPlayerIndex * 4) = *(int*) (pManagerBytes + 0xf0);
+		*(int*) (pManagerBytes + 0x104 + nPlayerIndex * 4) = *(int*) (pManagerBytes + 0x100);
+	}
 
-    nPlayerCount = 4 - *(int *)(g_pLINKSCF_PlasLevelMode + 0xf8);
-    if (nPlayerCount < 0) {
-        nPlayerCount = 0;
-    } else if (nPlayerCount > 4) {
-        nPlayerCount = 4;
-    }
-    *(int *)(pManagerBytes + 0x128) = nPlayerCount;
-    g_nLINKSCF_LocalPlasOrdinal = 0;
-    for (nPlayerIndex = 0; nPlayerIndex < 4; ++nPlayerIndex) {
-        void *pPlayer;
+	nPlayerCount = 4 - *(int*) (g_pLINKSCF_PlasLevelMode + 0xf8);
+	if (nPlayerCount < 0) {
+		nPlayerCount = 0;
+	}
+	else if (nPlayerCount > 4) {
+		nPlayerCount = 4;
+	}
+	*(int*) (pManagerBytes + 0x128) = nPlayerCount;
+	g_nLINKSCF_LocalPlasOrdinal = 0;
+	for (nPlayerIndex = 0; nPlayerIndex < 4; ++nPlayerIndex) {
+		void* pPlayer;
 
-        pPlayer = 0;
-        if (fReuseState != 0) {
-            pPlayer = *(void **)(g_pLINKSCF_PlasLevelMode +
-                                 0x1d0 + nPlayerIndex * 4);
-        }
-        if (pPlayer == 0) {
-            pPlayer = AllocateVSMemBlock(0x22c);
-            if (pPlayer != 0) {
-                ConstructPlasChunkObjectForLevel(
-                    pPlayer, 0,
-                    *(int *)(pManagerBytes + 0xe0 + nPlayerIndex * 4),
-                    *(int *)(pManagerBytes + 0xf0 + nPlayerIndex * 4),
-                    *(int *)(pManagerBytes + 0x100 + nPlayerIndex * 4),
-                    0, 0,
-                    nPlayerIndex < nPlayerCount ? 0 :
-                    (0xf3c + (nPlayerIndex - nPlayerCount) * 800) / 0x32);
-            }
-        }
-        if (pPlayer != 0) {
-            ActivateOrStagePlasChunkObject(pPlayer);
-        }
-        if (nPlayerIndex < nPlayerCount) {
-            *(void **)(pManagerBytes + 0x12c + nPlayerIndex * 4) = pPlayer;
-        }
-        *(void **)(g_pLINKSCF_PlasLevelMode +
-                   0x1d0 + nPlayerIndex * 4) = pPlayer;
-    }
-    *(int *)(pManagerBytes + 0x110) =
-        *(int *)(g_pLINKSCF_PlasLevelMode + 0xf8);
-    *(int *)(pManagerBytes + 0x114) = 0;
-    *(int *)(pManagerBytes + 0x118) = 0;
-    *(int *)(pManagerBytes + 0x11c) = 0;
+		pPlayer = 0;
+		if (fReuseState != 0) {
+			pPlayer = *(void**) (g_pLINKSCF_PlasLevelMode + 0x1d0 + nPlayerIndex * 4);
+		}
+		if (pPlayer == 0) {
+			pPlayer = AllocateVSMemBlock(0x22c);
+			if (pPlayer != 0) {
+				ConstructPlasChunkObjectForLevel(
+					pPlayer,
+					0,
+					*(int*) (pManagerBytes + 0xe0 + nPlayerIndex * 4),
+					*(int*) (pManagerBytes + 0xf0 + nPlayerIndex * 4),
+					*(int*) (pManagerBytes + 0x100 + nPlayerIndex * 4),
+					0,
+					0,
+					nPlayerIndex < nPlayerCount ? 0 : (0xf3c + (nPlayerIndex - nPlayerCount) * 800) / 0x32);
+			}
+		}
+		if (pPlayer != 0) {
+			ActivateOrStagePlasChunkObject(pPlayer);
+		}
+		if (nPlayerIndex < nPlayerCount) {
+			*(void**) (pManagerBytes + 0x12c + nPlayerIndex * 4) = pPlayer;
+		}
+		*(void**) (g_pLINKSCF_PlasLevelMode + 0x1d0 + nPlayerIndex * 4) = pPlayer;
+	}
+	*(int*) (pManagerBytes + 0x110) = *(int*) (g_pLINKSCF_PlasLevelMode + 0xf8);
+	*(int*) (pManagerBytes + 0x114) = 0;
+	*(int*) (pManagerBytes + 0x118) = 0;
+	*(int*) (pManagerBytes + 0x11c) = 0;
 }
 
-static void InitializeEffChunkStreamBase(void *pObject,
-                                         int nEventCode,
-                                         int nPayloadType) {
-    *(void **)pObject = g_GAME_EffStreamConstructionVtable;
-    *(int *)((char *)pObject + 4) = nEventCode;
-    ((GameEffStream *)pObject)->ResetStateFields();
-    *(int *)((char *)pObject + 0x2c) = nPayloadType;
-    *(void **)pObject = g_LEVEL_EffChunkStreamBaseVtable;
-    if (g_pActiveNetworkRuntimeWindow != 0) {
-        *(int *)((char *)pObject + 0x24) = 1;
-        *(int *)((char *)pObject + 0x18) += g_cbEffTransportMaxPacketBytes;
-    }
+static void InitializeEffChunkStreamBase(void* pObject, int nEventCode, int nPayloadType)
+{
+	*(void**) pObject = g_GAME_EffStreamConstructionVtable;
+	*(int*) ((char*) pObject + 4) = nEventCode;
+	((GameEffStream*) pObject)->ResetStateFields();
+	*(int*) ((char*) pObject + 0x2c) = nPayloadType;
+	*(void**) pObject = g_LEVEL_EffChunkStreamBaseVtable;
+	if (g_pActiveNetworkRuntimeWindow != 0) {
+		*(int*) ((char*) pObject + 0x24) = 1;
+		*(int*) ((char*) pObject + 0x18) += g_cbEffTransportMaxPacketBytes;
+	}
 }
 
-static void InitializeCachedChunkObjectManagerBase(void *pObject) {
-    int i;
+static void InitializeCachedChunkObjectManagerBase(void* pObject)
+{
+	int i;
 
-    for (i = 0; i < 40; ++i) {
-        ((int *)pObject)[i] = 0;
-    }
-    *(int *)((char *)pObject + 0xa4) = 0;
-    *(int *)((char *)pObject + 0xa8) = 0;
-    *(int *)((char *)pObject + 0xac) = 1;
+	for (i = 0; i < 40; ++i) {
+		((int*) pObject)[i] = 0;
+	}
+	*(int*) ((char*) pObject + 0xa4) = 0;
+	*(int*) ((char*) pObject + 0xa8) = 0;
+	*(int*) ((char*) pObject + 0xac) = 1;
 }
 
-static void *InitializeSimpleChunkManager(void *pObject,
-                                         void **pVtable,
-                                         int nEventCode,
-                                         int nPayloadType) {
-    InitializeLinkScfChunkVtables();
-    InitializeEffChunkStreamBase(pObject, nEventCode, nPayloadType);
-    *(void **)pObject = pVtable;
-    return pObject;
+static void* InitializeSimpleChunkManager(void* pObject, void** pVtable, int nEventCode, int nPayloadType)
+{
+	InitializeLinkScfChunkVtables();
+	InitializeEffChunkStreamBase(pObject, nEventCode, nPayloadType);
+	*(void**) pObject = pVtable;
+	return pObject;
 }
 
-void LoadLevelChunksForSkillAndLevelThunk(void *pLoaderContext, unsigned int nSkill, unsigned int nLevel, int fReuseState) {
-    static const int anSkillResourceBases[5] = {
-        0x244, 0x25d, 0x277, 0x294, 0x2aa
-    };
-    int *pResourceObject;
-    unsigned char *pChunk;
-    unsigned char *pEnd;
-    char *pLevelMode;
-    int nResourceId;
+void LoadLevelChunksForSkillAndLevelThunk(void* pLoaderContext,
+										  unsigned int nSkill,
+										  unsigned int nLevel,
+										  int fReuseState)
+{
+	static const int anSkillResourceBases[5] = {0x244, 0x25d, 0x277, 0x294, 0x2aa};
+	int* pResourceObject;
+	unsigned char* pChunk;
+	unsigned char* pEnd;
+	char* pLevelMode;
+	int nResourceId;
 
-    if (nSkill > 4) {
-        nSkill = 4;
-    }
-    if (nLevel == 9999) {
-        nLevel = *(unsigned int *)((char *)pLoaderContext + 4);
-    }
-    nResourceId = anSkillResourceBases[nSkill] + (int)nLevel;
-    pResourceObject = LoadBinResource(nResourceId);
-    if (pResourceObject == 0) {
-        return;
-    }
-    if (pResourceObject[4] == 0) {
-        ((void (*)(void))*(void **)(*pResourceObject + 0x1c))();
-    } else {
-        pResourceObject[9] = 0;
-    }
-    ++pResourceObject[2];
-    g_pLoadedLevelFileBuffer =
-        ((void *(*)(void))*(void **)(*pResourceObject + 0x28))();
-    pChunk = (unsigned char *)g_pLoadedLevelFileBuffer;
-    pEnd = pChunk + pResourceObject[10];
-    pLevelMode = *(char **)pLoaderContext;
-    while (pChunk + 8 <= pEnd) {
-        unsigned int nTag = *(unsigned int *)pChunk;
-        unsigned int cbChunk = *(unsigned int *)(pChunk + 4);
-        if (cbChunk < 8 || pChunk + cbChunk > pEnd) {
-            break;
-        }
-        if (nTag == 0x47445346) {
-            LoadLevelTileGridChunk(
-                *(void **)(pLevelMode + 0x110),
-                (const unsigned short *)(pChunk + 8));
-        } else if (nTag == 0x41492020) {
-            LoadLevelAiChunk(pLevelMode,
-                (const unsigned short *)(pChunk + 8), cbChunk - 8);
-        } else if (nTag == 0x464c4147) {
-            LoadLevelFlagChunk(pLevelMode,
-                (const unsigned short *)(pChunk + 8));
-        } else if (nTag == 0x44454654) {
-            SetLevelTileGridDefaultVariantIds(
-                *(void **)(pLevelMode + 0x110),
-                (const unsigned short *)(pChunk + 8));
-        } else if (nTag == 0x4e414d45) {
-            SetLevelTileGridName(*(void **)(pLevelMode + 0x110),
-                                 (const char *)(pChunk + 8));
-        } else if (nTag == 0x414e494d) {
-            LoadAnimChunkRecords(*(void **)(pLevelMode + 0x194),
-                                 (const unsigned short *)(pChunk + 8));
-        } else if (nTag == 0x4e4f4445) {
-            LoadNodeChunkRecords(*(void **)(pLevelMode + 0x17c),
-                (const unsigned short *)(pChunk + 8), cbChunk - 8,
-                fReuseState);
-        } else if (nTag == 0x504c4153) {
-            LoadPlasChunkObjects(*(void **)(pLevelMode + 0x15c), 0,
-                                 (const unsigned short *)(pChunk + 8),
-                                 cbChunk - 8,
-                                 fReuseState);
-        }
-        if (nTag == 0x454e443f) {
-            break;
-        }
-        pChunk += (cbChunk + 3) & ~3U;
-    }
-    --pResourceObject[2];
-    ReleaseTypedResourceObjectReference(pResourceObject);
-    (void)fReuseState;
+	if (nSkill > 4) {
+		nSkill = 4;
+	}
+	if (nLevel == 9999) {
+		nLevel = *(unsigned int*) ((char*) pLoaderContext + 4);
+	}
+	nResourceId = anSkillResourceBases[nSkill] + (int) nLevel;
+	pResourceObject = LoadBinResource(nResourceId);
+	if (pResourceObject == 0) {
+		return;
+	}
+	if (pResourceObject[4] == 0) {
+		((void (*)(void)) * (void**) (*pResourceObject + 0x1c))();
+	}
+	else {
+		pResourceObject[9] = 0;
+	}
+	++pResourceObject[2];
+	g_pLoadedLevelFileBuffer = ((void* (*) (void) ) * (void**) (*pResourceObject + 0x28))();
+	pChunk = (unsigned char*) g_pLoadedLevelFileBuffer;
+	pEnd = pChunk + pResourceObject[10];
+	pLevelMode = *(char**) pLoaderContext;
+	while (pChunk + 8 <= pEnd) {
+		unsigned int nTag = *(unsigned int*) pChunk;
+		unsigned int cbChunk = *(unsigned int*) (pChunk + 4);
+		if (cbChunk < 8 || pChunk + cbChunk > pEnd) {
+			break;
+		}
+		if (nTag == 0x47445346) {
+			LoadLevelTileGridChunk(*(void**) (pLevelMode + 0x110), (const unsigned short*) (pChunk + 8));
+		}
+		else if (nTag == 0x41492020) {
+			LoadLevelAiChunk(pLevelMode, (const unsigned short*) (pChunk + 8), cbChunk - 8);
+		}
+		else if (nTag == 0x464c4147) {
+			LoadLevelFlagChunk(pLevelMode, (const unsigned short*) (pChunk + 8));
+		}
+		else if (nTag == 0x44454654) {
+			SetLevelTileGridDefaultVariantIds(*(void**) (pLevelMode + 0x110), (const unsigned short*) (pChunk + 8));
+		}
+		else if (nTag == 0x4e414d45) {
+			SetLevelTileGridName(*(void**) (pLevelMode + 0x110), (const char*) (pChunk + 8));
+		}
+		else if (nTag == 0x414e494d) {
+			LoadAnimChunkRecords(*(void**) (pLevelMode + 0x194), (const unsigned short*) (pChunk + 8));
+		}
+		else if (nTag == 0x4e4f4445) {
+			LoadNodeChunkRecords(*(void**) (pLevelMode + 0x17c),
+								 (const unsigned short*) (pChunk + 8),
+								 cbChunk - 8,
+								 fReuseState);
+		}
+		else if (nTag == 0x504c4153) {
+			LoadPlasChunkObjects(*(void**) (pLevelMode + 0x15c),
+								 0,
+								 (const unsigned short*) (pChunk + 8),
+								 cbChunk - 8,
+								 fReuseState);
+		}
+		if (nTag == 0x454e443f) {
+			break;
+		}
+		pChunk += (cbChunk + 3) & ~3U;
+	}
+	--pResourceObject[2];
+	ReleaseTypedResourceObjectReference(pResourceObject);
+	(void) fReuseState;
 }
 
 // FUNCTION: LEMBALL 0x0040b020
-void *ConstructLevelChunkStreamDispatcherThunk(void *pObject, int nChunkTypeCount) {
-    int i;
+void* ConstructLevelChunkStreamDispatcherThunk(void* pObject, int nChunkTypeCount)
+{
+	int i;
 
-    InitializeLinkScfChunkVtables();
-    InitializeRenderQueueNodeBase(pObject);
-    *(void **)pObject = g_LINKSCF_LevelChunkStreamDispatcherVtable;
-    *(int *)((char *)pObject + 0x14) = nChunkTypeCount;
-    *(int *)((char *)pObject + 0x18) = 0;
-    *(void **)((char *)pObject + 0x10) =
-        AllocateVSMemBlock((unsigned int)(nChunkTypeCount * 4));
-    *(int **)((char *)pObject + 0x1c) =
-        (int *)AllocateVSMemBlock(0x60);
-    for (i = 0; i < 24; ++i) {
-        (*(int **)((char *)pObject + 0x1c))[i] = -1;
-    }
-    *(void **)((char *)pObject + 0x20) = 0;
-    return pObject;
+	InitializeLinkScfChunkVtables();
+	InitializeRenderQueueNodeBase(pObject);
+	*(void**) pObject = g_LINKSCF_LevelChunkStreamDispatcherVtable;
+	*(int*) ((char*) pObject + 0x14) = nChunkTypeCount;
+	*(int*) ((char*) pObject + 0x18) = 0;
+	*(void**) ((char*) pObject + 0x10) = AllocateVSMemBlock((unsigned int) (nChunkTypeCount * 4));
+	*(int**) ((char*) pObject + 0x1c) = (int*) AllocateVSMemBlock(0x60);
+	for (i = 0; i < 24; ++i) {
+		(*(int**) ((char*) pObject + 0x1c))[i] = -1;
+	}
+	*(void**) ((char*) pObject + 0x20) = 0;
+	return pObject;
 }
 
-void *ConstructInvsChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
-    InitializeSimpleChunkManager(pObject, g_LINKSCF_InvsChunkManagerVtable, 0x20, 0x15);
-    *(void **)((char *)pObject + 0x38) = pLevelMode;
-    *(int *)((char *)pObject + 0x30) = nCapacity;
-    *(int *)((char *)pObject + 0x3c) = 0;
-    return pObject;
+void* ConstructInvsChunkManagerThunk(void* pObject, void* pLevelMode, int nCapacity)
+{
+	InitializeSimpleChunkManager(pObject, g_LINKSCF_InvsChunkManagerVtable, 0x20, 0x15);
+	*(void**) ((char*) pObject + 0x38) = pLevelMode;
+	*(int*) ((char*) pObject + 0x30) = nCapacity;
+	*(int*) ((char*) pObject + 0x3c) = 0;
+	return pObject;
 }
 
-void *ConstructIceChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
-    InitializeSimpleChunkManager(pObject, g_LINKSCF_IceChunkManagerVtable, 0x19, 0x0e);
-    *(void **)((char *)pObject + 0x3c) = pLevelMode;
-    *(int *)((char *)pObject + 0x30) = nCapacity;
-    *(int *)((char *)pObject + 0x38) = 0;
-    return pObject;
+void* ConstructIceChunkManagerThunk(void* pObject, void* pLevelMode, int nCapacity)
+{
+	InitializeSimpleChunkManager(pObject, g_LINKSCF_IceChunkManagerVtable, 0x19, 0x0e);
+	*(void**) ((char*) pObject + 0x3c) = pLevelMode;
+	*(int*) ((char*) pObject + 0x30) = nCapacity;
+	*(int*) ((char*) pObject + 0x38) = 0;
+	return pObject;
 }
 
-void *ConstructPgunChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
-    InitializeSimpleChunkManager(pObject, g_LINKSCF_PgunChunkManagerVtable, 0x1f, 0x14);
-    *(void **)((char *)pObject + 0x3c) = pLevelMode;
-    *(int *)((char *)pObject + 0x30) = nCapacity;
-    *(int *)((char *)pObject + 0x38) = 0;
-    return pObject;
+void* ConstructPgunChunkManagerThunk(void* pObject, void* pLevelMode, int nCapacity)
+{
+	InitializeSimpleChunkManager(pObject, g_LINKSCF_PgunChunkManagerVtable, 0x1f, 0x14);
+	*(void**) ((char*) pObject + 0x3c) = pLevelMode;
+	*(int*) ((char*) pObject + 0x30) = nCapacity;
+	*(int*) ((char*) pObject + 0x38) = 0;
+	return pObject;
 }
 
-void *ConstructTramChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
-    InitializeSimpleChunkManager(pObject, g_LINKSCF_TramChunkManagerVtable, 0x18, 0x0d);
-    *(void **)((char *)pObject + 0x3c) = pLevelMode;
-    *(int *)((char *)pObject + 0x30) = nCapacity;
-    *(int *)((char *)pObject + 0x38) = 0;
-    return pObject;
+void* ConstructTramChunkManagerThunk(void* pObject, void* pLevelMode, int nCapacity)
+{
+	InitializeSimpleChunkManager(pObject, g_LINKSCF_TramChunkManagerVtable, 0x18, 0x0d);
+	*(void**) ((char*) pObject + 0x3c) = pLevelMode;
+	*(int*) ((char*) pObject + 0x30) = nCapacity;
+	*(int*) ((char*) pObject + 0x38) = 0;
+	return pObject;
 }
 
-void *ConstructBoonChunkManagerThunk(void *pObject, void *pLevelMode, void *pTileGrid) {
-    int i;
-    int j;
+void* ConstructBoonChunkManagerThunk(void* pObject, void* pLevelMode, void* pTileGrid)
+{
+	int i;
+	int j;
 
-    for (i = 0; i < 4; ++i) {
-        int *pPoint = (int *)((char *)pObject + 4 + i * 0x0c);
-        pPoint[0] = 0xaa55aa55;
-        pPoint[1] = 0xaa55aa55;
-        pPoint[2] = 0xaa55aa55;
-    }
-    *(void **)((char *)pObject + 0x44) = pLevelMode;
-    *(void **)((char *)pObject + 0x48) = pTileGrid;
-    g_LINKSCF_BoonChunkObjectVtable[65] = (void *)NoopChunkStreamVirtual;
-    for (i = 0; i < 4; ++i) {
-        void *pChild = AllocateVSMemBlock(0x128);
-        if (pChild != 0) {
-            for (j = 0; j < 0x128 / 4; ++j) {
-                ((int *)pChild)[j] = 0;
-            }
-            *(void **)pChild = g_LINKSCF_BoonChunkObjectVtable;
-            *(int *)((char *)pChild + 4) = 0x28 + i * 2;
-        }
-        *(void **)((char *)pObject + 0x34 + i * 4) = pChild;
-    }
-    return pObject;
+	for (i = 0; i < 4; ++i) {
+		int* pPoint = (int*) ((char*) pObject + 4 + i * 0x0c);
+		pPoint[0] = 0xaa55aa55;
+		pPoint[1] = 0xaa55aa55;
+		pPoint[2] = 0xaa55aa55;
+	}
+	*(void**) ((char*) pObject + 0x44) = pLevelMode;
+	*(void**) ((char*) pObject + 0x48) = pTileGrid;
+	g_LINKSCF_BoonChunkObjectVtable[65] = (void*) NoopChunkStreamVirtual;
+	for (i = 0; i < 4; ++i) {
+		void* pChild = AllocateVSMemBlock(0x128);
+		if (pChild != 0) {
+			for (j = 0; j < 0x128 / 4; ++j) {
+				((int*) pChild)[j] = 0;
+			}
+			*(void**) pChild = g_LINKSCF_BoonChunkObjectVtable;
+			*(int*) ((char*) pChild + 4) = 0x28 + i * 2;
+		}
+		*(void**) ((char*) pObject + 0x34 + i * 4) = pChild;
+	}
+	return pObject;
 }
 
-void *ConstructLasrChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
-    InitializeSimpleChunkManager(pObject, g_LINKSCF_LasrChunkManagerVtable, 0x15, 10);
-    *(void **)((char *)pObject + 0x3c) = pLevelMode;
-    *(int *)((char *)pObject + 0x30) = nCapacity;
-    *(int *)((char *)pObject + 0x38) = 0;
-    return pObject;
+void* ConstructLasrChunkManagerThunk(void* pObject, void* pLevelMode, int nCapacity)
+{
+	InitializeSimpleChunkManager(pObject, g_LINKSCF_LasrChunkManagerVtable, 0x15, 10);
+	*(void**) ((char*) pObject + 0x3c) = pLevelMode;
+	*(int*) ((char*) pObject + 0x30) = nCapacity;
+	*(int*) ((char*) pObject + 0x38) = 0;
+	return pObject;
 }
 
-void *ConstructCaptureTriggerChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
-    InitializeSimpleChunkManager(pObject, g_LINKSCF_CaptureChunkManagerVtable, 0x16, 0x0b);
-    *(void **)((char *)pObject + 0x3c) = pLevelMode;
-    *(int *)((char *)pObject + 0x30) = nCapacity;
-    *(int *)((char *)pObject + 0x38) = 0;
-    return pObject;
+void* ConstructCaptureTriggerChunkManagerThunk(void* pObject, void* pLevelMode, int nCapacity)
+{
+	InitializeSimpleChunkManager(pObject, g_LINKSCF_CaptureChunkManagerVtable, 0x16, 0x0b);
+	*(void**) ((char*) pObject + 0x3c) = pLevelMode;
+	*(int*) ((char*) pObject + 0x30) = nCapacity;
+	*(int*) ((char*) pObject + 0x38) = 0;
+	return pObject;
 }
 
-void *ConstructRockChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
-    InitializeSimpleChunkManager(pObject, g_LINKSCF_RockChunkManagerVtable, 0x14, 9);
-    *(void **)((char *)pObject + 0x3c) = pLevelMode;
-    *(int *)((char *)pObject + 0x30) = nCapacity;
-    *(int *)((char *)pObject + 0x38) = 0;
-    return pObject;
+void* ConstructRockChunkManagerThunk(void* pObject, void* pLevelMode, int nCapacity)
+{
+	InitializeSimpleChunkManager(pObject, g_LINKSCF_RockChunkManagerVtable, 0x14, 9);
+	*(void**) ((char*) pObject + 0x3c) = pLevelMode;
+	*(int*) ((char*) pObject + 0x30) = nCapacity;
+	*(int*) ((char*) pObject + 0x38) = 0;
+	return pObject;
 }
 
-void *ConstructDoorChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
-    InitializeSimpleChunkManager(pObject, g_LINKSCF_DoorChunkManagerVtable, 0x13, 8);
-    *(void **)((char *)pObject + 0x30) = pLevelMode;
-    *(int *)((char *)pObject + 0x38) = nCapacity;
-    *(int *)((char *)pObject + 0x3c) = 0;
-    return pObject;
+void* ConstructDoorChunkManagerThunk(void* pObject, void* pLevelMode, int nCapacity)
+{
+	InitializeSimpleChunkManager(pObject, g_LINKSCF_DoorChunkManagerVtable, 0x13, 8);
+	*(void**) ((char*) pObject + 0x30) = pLevelMode;
+	*(int*) ((char*) pObject + 0x38) = nCapacity;
+	*(int*) ((char*) pObject + 0x3c) = 0;
+	return pObject;
 }
 
-void *ConstructMineChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
-    InitializeSimpleChunkManager(pObject, g_LINKSCF_MineChunkManagerVtable, 0x0d, 2);
-    *(void **)((char *)pObject + 0x30) = pLevelMode;
-    *(int *)((char *)pObject + 0x40) = nCapacity;
-    *(int *)((char *)pObject + 0x34) = 0;
-    *(int *)((char *)pObject + 0x38) = 0;
-    return pObject;
+void* ConstructMineChunkManagerThunk(void* pObject, void* pLevelMode, int nCapacity)
+{
+	InitializeSimpleChunkManager(pObject, g_LINKSCF_MineChunkManagerVtable, 0x0d, 2);
+	*(void**) ((char*) pObject + 0x30) = pLevelMode;
+	*(int*) ((char*) pObject + 0x40) = nCapacity;
+	*(int*) ((char*) pObject + 0x34) = 0;
+	*(int*) ((char*) pObject + 0x38) = 0;
+	return pObject;
 }
 
-void *ConstructCollChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
-    InitializeSimpleChunkManager(pObject, g_LINKSCF_CollChunkManagerVtable, 0x11, 6);
-    *(void **)((char *)pObject + 0x30) = pLevelMode;
-    *(int *)((char *)pObject + 0x34) = 0;
-    *(int *)((char *)pObject + 0x38) = nCapacity;
-    *(int *)((char *)pObject + 0x3c) = 0;
-    return pObject;
+void* ConstructCollChunkManagerThunk(void* pObject, void* pLevelMode, int nCapacity)
+{
+	InitializeSimpleChunkManager(pObject, g_LINKSCF_CollChunkManagerVtable, 0x11, 6);
+	*(void**) ((char*) pObject + 0x30) = pLevelMode;
+	*(int*) ((char*) pObject + 0x34) = 0;
+	*(int*) ((char*) pObject + 0x38) = nCapacity;
+	*(int*) ((char*) pObject + 0x3c) = 0;
+	return pObject;
 }
 
-void *ConstructEnmyChunkManagerThunk(void *pObject, void *pLevelMode, void *pGmobManager, void *pProjectileGeometryTable) {
-    InitializeLinkScfChunkVtables();
-    InitializeCachedChunkObjectManagerBase(pObject);
-    *(void **)pObject = g_LINKSCF_EnmyChunkManagerVtable;
-    (void)pLevelMode;
-    (void)pGmobManager;
-    (void)pProjectileGeometryTable;
-    return pObject;
+void* ConstructEnmyChunkManagerThunk(void* pObject,
+									 void* pLevelMode,
+									 void* pGmobManager,
+									 void* pProjectileGeometryTable)
+{
+	InitializeLinkScfChunkVtables();
+	InitializeCachedChunkObjectManagerBase(pObject);
+	*(void**) pObject = g_LINKSCF_EnmyChunkManagerVtable;
+	(void) pLevelMode;
+	(void) pGmobManager;
+	(void) pProjectileGeometryTable;
+	return pObject;
 }
 
-void *ConstructShpgChunkManagerThunk(void *pObject, void *pLevelMode, void *pGmobManager, void *pProjectileGeometryTable) {
-    InitializeLinkScfChunkVtables();
-    InitializeCachedChunkObjectManagerBase(pObject);
-    *(void **)pObject = g_LINKSCF_ShpgChunkManagerVtable;
-    (void)pLevelMode;
-    (void)pGmobManager;
-    (void)pProjectileGeometryTable;
-    return pObject;
+void* ConstructShpgChunkManagerThunk(void* pObject,
+									 void* pLevelMode,
+									 void* pGmobManager,
+									 void* pProjectileGeometryTable)
+{
+	InitializeLinkScfChunkVtables();
+	InitializeCachedChunkObjectManagerBase(pObject);
+	*(void**) pObject = g_LINKSCF_ShpgChunkManagerVtable;
+	(void) pLevelMode;
+	(void) pGmobManager;
+	(void) pProjectileGeometryTable;
+	return pObject;
 }
 
 // FUNCTION: LEMBALL 0x00414da0
-void *ConstructManagedEntityQueueCursorThunk(void *pObject, int nLevelMode, int nPrimaryCapacity, int nSecondaryCapacity) {
-    void *pDispatchQueue;
+void* ConstructManagedEntityQueueCursorThunk(void* pObject,
+											 int nLevelMode,
+											 int nPrimaryCapacity,
+											 int nSecondaryCapacity)
+{
+	void* pDispatchQueue;
 
-    InitializeRenderQueueNodeBase(pObject);
-    *(void **)pObject = g_LINKSCF_ManagedEntityQueueCursorVtable;
-    *(int *)((char *)pObject + 0x20) = nLevelMode;
-    *(int *)((char *)pObject + 0x18) = nPrimaryCapacity;
-    *(int *)((char *)pObject + 0x1c) = nSecondaryCapacity;
-    pDispatchQueue = *(void **)(nLevelMode + 0x164);
-    *(void **)((char *)pObject + 0x24) = pDispatchQueue;
-    ((GameRenderDispatchQueue *)pDispatchQueue)
-        ->RegisterOrderedRenderDispatchClient(pObject, 0);
-    return pObject;
+	InitializeRenderQueueNodeBase(pObject);
+	*(void**) pObject = g_LINKSCF_ManagedEntityQueueCursorVtable;
+	*(int*) ((char*) pObject + 0x20) = nLevelMode;
+	*(int*) ((char*) pObject + 0x18) = nPrimaryCapacity;
+	*(int*) ((char*) pObject + 0x1c) = nSecondaryCapacity;
+	pDispatchQueue = *(void**) (nLevelMode + 0x164);
+	*(void**) ((char*) pObject + 0x24) = pDispatchQueue;
+	((GameRenderDispatchQueue*) pDispatchQueue)->RegisterOrderedRenderDispatchClient(pObject, 0);
+	return pObject;
 }
 
 // FUNCTION: LEMBALL 0x00417d80
-void *ConstructProjectilePoolThunk(void *pObject) {
-    int i;
+void* ConstructProjectilePoolThunk(void* pObject)
+{
+	int i;
 
-    InitializeLinkScfChunkVtables();
-    InitializeEffChunkStreamBase(pObject, 0x21, 0x16);
-    *(void **)pObject = g_LINKSCF_ProjectilePoolVtable;
-    *(void **)((char *)pObject + 0x30) = 0;
-    for (i = 0; i < 40; ++i) {
-        *(void **)((char *)pObject + 0x34 + i * 4) = 0;
-    }
-    *(int *)((char *)pObject + 0xdc) = 0;
-    return pObject;
+	InitializeLinkScfChunkVtables();
+	InitializeEffChunkStreamBase(pObject, 0x21, 0x16);
+	*(void**) pObject = g_LINKSCF_ProjectilePoolVtable;
+	*(void**) ((char*) pObject + 0x30) = 0;
+	for (i = 0; i < 40; ++i) {
+		*(void**) ((char*) pObject + 0x34 + i * 4) = 0;
+	}
+	*(int*) ((char*) pObject + 0xdc) = 0;
+	return pObject;
 }
 
 // FUNCTION: LEMBALL 0x00418400
-void *ConstructPlasChunkManagerThunk(void *pObject, void *pLevelMode, void *pGmobManager, void *pProjectileGeometryTable) {
-    int i;
-    char *pStream;
+void* ConstructPlasChunkManagerThunk(void* pObject,
+									 void* pLevelMode,
+									 void* pGmobManager,
+									 void* pProjectileGeometryTable)
+{
+	int i;
+	char* pStream;
 
-    InitializeLinkScfChunkVtables();
-    g_pLINKSCF_PlasLevelMode = (char *)pLevelMode;
-    for (i = 0; i < 40; ++i) {
-        ((int *)pObject)[i] = 0;
-    }
-    *(void **)pObject = g_LINKSCF_PlasChunkManagerVtable;
-    *(void **)((char *)pObject + 0xa4) = 0;
-    *(void **)((char *)pObject + 0xa8) = 0;
-    *(int *)((char *)pObject + 0xac) = 0;
-    pStream = (char *)pObject + 0xb0;
-    InitializeEffChunkStreamBase(pStream, 0x22, 0x17);
-    *(void **)pStream = g_LINKSCF_PlasChunkStreamVtable;
-    *(int *)((char *)pObject + 0x128) = 0;
-    *(int *)((char *)pObject + 0xe0) = 0x112;
-    *(int *)((char *)pObject + 0xf0) = 0x34a;
-    *(int *)((char *)pObject + 0x100) = 0;
-    *(int *)((char *)pObject + 0x110) = 4;
-    *(int *)((char *)pObject + 0x114) = 0;
-    *(int *)((char *)pObject + 0x118) = 0;
-    *(int *)((char *)pObject + 0x11c) = 0;
-    *(int *)((char *)pObject + 0x124) = 1;
-    *(int *)((char *)pObject + 0x14c) = 0;
-    (void)pLevelMode;
-    (void)pGmobManager;
-    (void)pProjectileGeometryTable;
-    return pObject;
+	InitializeLinkScfChunkVtables();
+	g_pLINKSCF_PlasLevelMode = (char*) pLevelMode;
+	for (i = 0; i < 40; ++i) {
+		((int*) pObject)[i] = 0;
+	}
+	*(void**) pObject = g_LINKSCF_PlasChunkManagerVtable;
+	*(void**) ((char*) pObject + 0xa4) = 0;
+	*(void**) ((char*) pObject + 0xa8) = 0;
+	*(int*) ((char*) pObject + 0xac) = 0;
+	pStream = (char*) pObject + 0xb0;
+	InitializeEffChunkStreamBase(pStream, 0x22, 0x17);
+	*(void**) pStream = g_LINKSCF_PlasChunkStreamVtable;
+	*(int*) ((char*) pObject + 0x128) = 0;
+	*(int*) ((char*) pObject + 0xe0) = 0x112;
+	*(int*) ((char*) pObject + 0xf0) = 0x34a;
+	*(int*) ((char*) pObject + 0x100) = 0;
+	*(int*) ((char*) pObject + 0x110) = 4;
+	*(int*) ((char*) pObject + 0x114) = 0;
+	*(int*) ((char*) pObject + 0x118) = 0;
+	*(int*) ((char*) pObject + 0x11c) = 0;
+	*(int*) ((char*) pObject + 0x124) = 1;
+	*(int*) ((char*) pObject + 0x14c) = 0;
+	(void) pLevelMode;
+	(void) pGmobManager;
+	(void) pProjectileGeometryTable;
+	return pObject;
 }
 
 // FUNCTION: LEMBALL 0x00418ca0
-void InitializeNetworkPlayerPlasChunkObjectPoolThunk(void *pPlasManager) {
-    (void)pPlasManager;
+void InitializeNetworkPlayerPlasChunkObjectPoolThunk(void* pPlasManager)
+{
+	(void) pPlasManager;
 }
 
-void *ConstructGmobChunkManagerThunk(void *pObject, void *pLevelMode) {
-    InitializeLinkScfChunkVtables();
-    InitializeEffChunkStreamBase(pObject, 0x0c, 1);
-    *(void **)pObject = g_LINKSCF_GmobChunkManagerVtable;
-    *(void **)((char *)pObject + 0x30) = pLevelMode;
-    *(short *)((char *)pObject + 0x34) = 0;
-    *(short *)((char *)pObject + 0x36) = 0;
-    *(short *)((char *)pObject + 0x38) = 0;
-    *(int *)((char *)pObject + 0x3c) = 0;
-    return pObject;
+void* ConstructGmobChunkManagerThunk(void* pObject, void* pLevelMode)
+{
+	InitializeLinkScfChunkVtables();
+	InitializeEffChunkStreamBase(pObject, 0x0c, 1);
+	*(void**) pObject = g_LINKSCF_GmobChunkManagerVtable;
+	*(void**) ((char*) pObject + 0x30) = pLevelMode;
+	*(short*) ((char*) pObject + 0x34) = 0;
+	*(short*) ((char*) pObject + 0x36) = 0;
+	*(short*) ((char*) pObject + 0x38) = 0;
+	*(int*) ((char*) pObject + 0x3c) = 0;
+	return pObject;
 }
 
-void *ConstructMoveChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
-    InitializeLinkScfChunkVtables();
-    InitializeEffChunkStreamBase(pObject, 0x1a, 0x0f);
-    *(void **)pObject = g_LINKSCF_MoveChunkManagerVtable;
-    *(void **)((char *)pObject + 0x3c) = pLevelMode;
-    *(int *)((char *)pObject + 0x30) = nCapacity;
-    *(int *)((char *)pObject + 0x38) = 0;
-    return pObject;
+void* ConstructMoveChunkManagerThunk(void* pObject, void* pLevelMode, int nCapacity)
+{
+	InitializeLinkScfChunkVtables();
+	InitializeEffChunkStreamBase(pObject, 0x1a, 0x0f);
+	*(void**) pObject = g_LINKSCF_MoveChunkManagerVtable;
+	*(void**) ((char*) pObject + 0x3c) = pLevelMode;
+	*(int*) ((char*) pObject + 0x30) = nCapacity;
+	*(int*) ((char*) pObject + 0x38) = 0;
+	return pObject;
 }
 
-void *ConstructLiftChunkManagerThunk(void *pObject, void *pLevelMode, int nCapacity) {
-    InitializeLinkScfChunkVtables();
-    InitializeEffChunkStreamBase(pObject, 0x12, 7);
-    *(void **)pObject = g_LINKSCF_LiftChunkManagerVtable;
-    *(void **)((char *)pObject + 0x30) = pLevelMode;
-    *(int *)((char *)pObject + 0x38) = nCapacity;
-    *(int *)((char *)pObject + 0x3c) = 0;
-    return pObject;
+void* ConstructLiftChunkManagerThunk(void* pObject, void* pLevelMode, int nCapacity)
+{
+	InitializeLinkScfChunkVtables();
+	InitializeEffChunkStreamBase(pObject, 0x12, 7);
+	*(void**) pObject = g_LINKSCF_LiftChunkManagerVtable;
+	*(void**) ((char*) pObject + 0x30) = pLevelMode;
+	*(int*) ((char*) pObject + 0x38) = nCapacity;
+	*(int*) ((char*) pObject + 0x3c) = 0;
+	return pObject;
 }
 
 // FUNCTION: LEMBALL 0x0041ea30
-void *LEMBALL_FASTCALL GetFirstCachedChunkObject(void *pObject) {
-    *(int *)((char *)pObject + 0xa8) = 0;
-    if (*(int *)((char *)pObject + 0xa4) == 0) {
-        return 0;
-    }
-    return *(void **)((char *)pObject + 4);
+void* LEMBALL_FASTCALL GetFirstCachedChunkObject(void* pObject)
+{
+	*(int*) ((char*) pObject + 0xa8) = 0;
+	if (*(int*) ((char*) pObject + 0xa4) == 0) {
+		return 0;
+	}
+	return *(void**) ((char*) pObject + 4);
 }
 
 // FUNCTION: LEMBALL 0x0041ea50
-void *LEMBALL_FASTCALL GetNextCachedChunkObject(void *pObject) {
-    int nIndex;
+void* LEMBALL_FASTCALL GetNextCachedChunkObject(void* pObject)
+{
+	int nIndex;
 
-    nIndex = *(int *)((char *)pObject + 0xa8) + 1;
-    *(int *)((char *)pObject + 0xa8) = nIndex;
-    if (*(int *)((char *)pObject + 0xa4) <= nIndex) {
-        return 0;
-    }
-    return *(void **)((char *)pObject + 4 + nIndex * 4);
+	nIndex = *(int*) ((char*) pObject + 0xa8) + 1;
+	*(int*) ((char*) pObject + 0xa8) = nIndex;
+	if (*(int*) ((char*) pObject + 0xa4) <= nIndex) {
+		return 0;
+	}
+	return *(void**) ((char*) pObject + 4 + nIndex * 4);
 }

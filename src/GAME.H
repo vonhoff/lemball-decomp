@@ -2,8 +2,8 @@
 #define LEMBALL_GAME_APP_H
 
 struct GameRootDispatchGlobals {
-    int m_fHelperGeometryDispatchSuppressed;
-    char m_szDirectDrawErrorText[64];
+	int m_fHelperGeometryDispatchSuppressed;
+	char m_szDirectDrawErrorText[64];
 };
 
 extern GameRootDispatchGlobals g_GAME_RootDispatchGlobals;
@@ -28,176 +28,166 @@ extern GameRootDispatchGlobals g_GAME_RootDispatchGlobals;
 #include "ENGINE/GDI/VSWINDOW.H"
 
 struct GameDynamicCString {
-    char *m_pszText;
-    int m_cchCapacity;
+	char* m_pszText;
+	int m_cchCapacity;
 
-    GameDynamicCString *ConstructDynamicCString(void);
-    GameDynamicCString *ConstructDynamicCStringFromCString(const char *pszText);
-    GameDynamicCString *CopyConstructDynamicCString(const GameDynamicCString *pSource);
-    GameDynamicCString *AssignDynamicCString(const char *pszText);
-    GameDynamicCString *AssignDynamicCStringFromDynamic(const GameDynamicCString *pSource);
-    GameDynamicCString *AppendDynamicCStringObjectAndCopyResult(
-        GameDynamicCString *pResult, const GameDynamicCString *pSuffix);
-    GameDynamicCString *AppendDynamicCStringAndCopyResult(
-        GameDynamicCString *pResult, const char *pszSuffix);
-    GameDynamicCString *LowercaseAndCopyDynamicCString(
-        GameDynamicCString *pResult);
-    void DestroyDynamicCString(void);
+	GameDynamicCString* ConstructDynamicCString(void);
+	GameDynamicCString* ConstructDynamicCStringFromCString(const char* pszText);
+	GameDynamicCString* CopyConstructDynamicCString(const GameDynamicCString* pSource);
+	GameDynamicCString* AssignDynamicCString(const char* pszText);
+	GameDynamicCString* AssignDynamicCStringFromDynamic(const GameDynamicCString* pSource);
+	GameDynamicCString* AppendDynamicCStringObjectAndCopyResult(GameDynamicCString* pResult,
+																const GameDynamicCString* pSuffix);
+	GameDynamicCString* AppendDynamicCStringAndCopyResult(GameDynamicCString* pResult, const char* pszSuffix);
+	GameDynamicCString* LowercaseAndCopyDynamicCString(GameDynamicCString* pResult);
+	void DestroyDynamicCString(void);
 };
 
 struct VsInitFormattedOutputStream;
 
 class GameStatusEntry {
 public:
-    GameStatusEntry(const char *pszName);
+	GameStatusEntry(const char* pszName);
 
 public:
-    void *m_pVtable;
-    int m_nReserved04;
-    int m_nMaximumValue;
-    int m_nMinimumValue;
-    int m_nTotalValue;
-    int m_cSamples;
-    GameDynamicCString m_Name;
+	void* m_pVtable;
+	int m_nReserved04;
+	int m_nMaximumValue;
+	int m_nMinimumValue;
+	int m_nTotalValue;
+	int m_cSamples;
+	GameDynamicCString m_Name;
 };
 
 class GameMainContext {
 public:
-    GameMainContext(void);
-    GameMainContext *InitializeMainGameContext(const char *pszCmdLine);
-    GameMainContext *InitializeMainGameContextThunk(const char *pszCmdLine);
-    void SwitchMainGameMode(int nMode);
+	GameMainContext(void);
+	GameMainContext* InitializeMainGameContext(const char* pszCmdLine);
+	GameMainContext* InitializeMainGameContextThunk(const char* pszCmdLine);
+	void SwitchMainGameMode(int nMode);
 
 public:
-    char m_szLevelPath[0x50];
-    GameStatusEntry *m_pProcessingStatus;
-    GameStatusEntry *m_pRefreshingStatus;
-    int m_nModeTicks;
-    void *m_pActiveMode;
-    int m_fQuitRequested;
-    void *m_pPrimaryContext;
-    int m_nActiveMode;
-    void *m_pVariantMode;
+	char m_szLevelPath[0x50];
+	GameStatusEntry* m_pProcessingStatus;
+	GameStatusEntry* m_pRefreshingStatus;
+	int m_nModeTicks;
+	void* m_pActiveMode;
+	int m_fQuitRequested;
+	void* m_pPrimaryContext;
+	int m_nActiveMode;
+	void* m_pVariantMode;
 };
 
 // SIZE 0x8c
 // The original constructor installs the 46-slot vtable at 0x00499260 for
 // this layer before initializing the final word at 0x8a.
 struct GameWindowOwnerRenderContextBase : public VS_WindowOwnerBase {
-    void *m_pWindowOwnerContext;             // 0x4c
-    int m_nFrameInterval;                    // 0x50
-    int m_nPaletteResourceId54;              // 0x54
-    char m_PackagedSpriteRenderEntry58[0x10]; // 0x58
-    char m_RenderPointRectSinkEntry68[0x10]; // 0x68
-    char m_StatusPointSinkEntry78[0x10];     // 0x78
-    short m_aDirtyRect88[2];                 // 0x88
+	void* m_pWindowOwnerContext;              // 0x4c
+	int m_nFrameInterval;                     // 0x50
+	int m_nPaletteResourceId54;               // 0x54
+	char m_PackagedSpriteRenderEntry58[0x10]; // 0x58
+	char m_RenderPointRectSinkEntry68[0x10];  // 0x68
+	char m_StatusPointSinkEntry78[0x10];      // 0x78
+	short m_aDirtyRect88[2];                  // 0x88
 };
 DECOMP_SIZE_ASSERT(GameWindowOwnerRenderContextBase, 0x8c);
 
 // SIZE 0x90
 // This layer installs the second 46-slot vtable at 0x00499318.
 struct GameWindowOwnerRenderContext : public GameWindowOwnerRenderContextBase {
-    void *ConstructWindowOwnerRenderContext(void);
-    virtual void ApplyWindowOwnerActivation(int nActivate);
-    void InitializeWindowOwnerFromRectAndActivate(
-        short *paRect, void *pWindowOwner, const char *pszTitle,
-        int nActivate);
-    void ApplyWindowOwnerPaletteResource(int nResourceId);
-    void UpdateWindowOwnerRenderContext(void);
-    void PresentWindowOwnerRenderContext(void);
+	void* ConstructWindowOwnerRenderContext(void);
+	virtual void ApplyWindowOwnerActivation(int nActivate);
+	void InitializeWindowOwnerFromRectAndActivate(short* paRect,
+												  void* pWindowOwner,
+												  const char* pszTitle,
+												  int nActivate);
+	void ApplyWindowOwnerPaletteResource(int nResourceId);
+	void UpdateWindowOwnerRenderContext(void);
+	void PresentWindowOwnerRenderContext(void);
 
-    short m_aDirtyRectTail8C[2];             // 0x8c
+	short m_aDirtyRectTail8C[2]; // 0x8c
 };
 DECOMP_SIZE_ASSERT(GameWindowOwnerRenderContext, 0x90);
 
 struct GamePrimaryContext : public GameWindowOwnerRenderContext {
-    void *m_pRenderQueueNodeVtable;
-    char m_Reserved94[0xc];
-    int m_fA0;
-    int m_nA4;
-    void *m_pBackgroundZrle;
-    void *m_pPalette2E;
-    void *m_pPalette2F;
-    int m_nLevelScreenStatusIndicatorMode;
-    int m_nB8;
-    int m_fScreenLayoutDirty;
-    GameMainContext *m_pMainContext;
-    void *m_pActiveLevelMode;
-    char m_ReservedC8[4];
-    int m_nActiveScreenMode;
-    void *m_pFinalizeThunk;
-    void *m_pActiveScreen;
-    int m_fCompactLayout;
-    short m_cxCompactLayout;
-    short m_cyCompactLayout;
-    short m_cxWideLayout;
-    short m_cyWideLayout;
+	void* m_pRenderQueueNodeVtable;
+	char m_Reserved94[0xc];
+	int m_fA0;
+	int m_nA4;
+	void* m_pBackgroundZrle;
+	void* m_pPalette2E;
+	void* m_pPalette2F;
+	int m_nLevelScreenStatusIndicatorMode;
+	int m_nB8;
+	int m_fScreenLayoutDirty;
+	GameMainContext* m_pMainContext;
+	void* m_pActiveLevelMode;
+	char m_ReservedC8[4];
+	int m_nActiveScreenMode;
+	void* m_pFinalizeThunk;
+	void* m_pActiveScreen;
+	int m_fCompactLayout;
+	short m_cxCompactLayout;
+	short m_cyCompactLayout;
+	short m_cxWideLayout;
+	short m_cyWideLayout;
 
-    void SampleRootHelperGeometryAndDispatchRenderGroups(int nToken);
-    GamePrimaryContext *ConstructPrimaryContext(GameMainContext *pMainContext);
-    GamePrimaryContext *ConstructPrimaryContextThunk(GameMainContext *pMainContext);
-    void SwitchPrimaryContextScreen(int nMode);
-    void DestroyPrimaryContextActiveScreen(int nUnused);
-    void FlushWindowOwnerDirtyRect(int nUnused);
-    void DispatchWindowOwnerRectInitialization(short *paRect,
-                                                void *pWindowOwner,
-                                                const char *pszTitle);
-    void DispatchPrimaryContextActiveScreenFrame(void *pFrameArgument);
-    void MarkNestedContextDirtyIfField20(void);
-    short *ComputePrimaryContextCenteredScreenRect(short *paRect,
-                                                   int nLeftOverride,
-                                                   int nTopOverride);
-    short *ComputePrimaryContextCenteredScreenRectThunk(short *paRect,
-                                                        int nLeftOverride,
-                                                        int nTopOverride);
+	void SampleRootHelperGeometryAndDispatchRenderGroups(int nToken);
+	GamePrimaryContext* ConstructPrimaryContext(GameMainContext* pMainContext);
+	GamePrimaryContext* ConstructPrimaryContextThunk(GameMainContext* pMainContext);
+	void SwitchPrimaryContextScreen(int nMode);
+	void DestroyPrimaryContextActiveScreen(int nUnused);
+	void FlushWindowOwnerDirtyRect(int nUnused);
+	void DispatchWindowOwnerRectInitialization(short* paRect, void* pWindowOwner, const char* pszTitle);
+	void DispatchPrimaryContextActiveScreenFrame(void* pFrameArgument);
+	void MarkNestedContextDirtyIfField20(void);
+	short* ComputePrimaryContextCenteredScreenRect(short* paRect, int nLeftOverride, int nTopOverride);
+	short* ComputePrimaryContextCenteredScreenRectThunk(short* paRect, int nLeftOverride, int nTopOverride);
 };
 
-void LEMBALL_FASTCALL ShutdownMainGameContext(GameMainContext *pMainContext);
-int RunMainGameSession(int cArgs, const char *const *ppszArgs);
-int RunMainGameSessionThunk(int cArgs, const char *const *ppszArgs);
-char *__stdcall FindCdromFilePathBySuffix(const char *pszSuffix);
-void *AppendDynamicCStringToStream(void *pStream, const GameDynamicCString *pString);
-int LEMBALL_FASTCALL GetDynamicCStringLength(const GameDynamicCString *pString);
-void LEMBALL_FASTCALL DestroyNamedStatusEntry(void *pEntry);
-void UpdateNamedStatusEntry(void *pEntry, unsigned int nValue);
-VsInitFormattedOutputStream *LEMBALL_FASTCALL WriteNamedStatusEntry(
-    void *pEntry, int nUnused, VsInitFormattedOutputStream *pStream);
-void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void *pResourceObject);
-void *LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void *pRenderQueueNode);
+void LEMBALL_FASTCALL ShutdownMainGameContext(GameMainContext* pMainContext);
+int RunMainGameSession(int cArgs, const char* const* ppszArgs);
+int RunMainGameSessionThunk(int cArgs, const char* const* ppszArgs);
+char* __stdcall FindCdromFilePathBySuffix(const char* pszSuffix);
+void* AppendDynamicCStringToStream(void* pStream, const GameDynamicCString* pString);
+int LEMBALL_FASTCALL GetDynamicCStringLength(const GameDynamicCString* pString);
+void LEMBALL_FASTCALL DestroyNamedStatusEntry(void* pEntry);
+void UpdateNamedStatusEntry(void* pEntry, unsigned int nValue);
+VsInitFormattedOutputStream* LEMBALL_FASTCALL WriteNamedStatusEntry(void* pEntry,
+																	int nUnused,
+																	VsInitFormattedOutputStream* pStream);
+void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void* pResourceObject);
+void* LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void* pRenderQueueNode);
 struct GameRenderDispatchQueue {
-    void *m_pVtable;
-    int m_nReserved04;
-    void *m_pLockVtable;
-    char m_abCriticalSection[0x18];
-    int m_cEntryCapacity;
-    int m_cQueuedEntries;
-    int m_cClients;
-    int m_nReserved30;
-    int m_nReserved34;
-    int m_nReserved38;
-    int m_nReserved3C;
-    int m_cEntriesDropped;
-    void *m_pEntryBuffer;
-    void *m_pEntryBufferEnd;
-    void *m_pHead;
-    void *m_pTail;
-    void *m_pClientList;
+	void* m_pVtable;
+	int m_nReserved04;
+	void* m_pLockVtable;
+	char m_abCriticalSection[0x18];
+	int m_cEntryCapacity;
+	int m_cQueuedEntries;
+	int m_cClients;
+	int m_nReserved30;
+	int m_nReserved34;
+	int m_nReserved38;
+	int m_nReserved3C;
+	int m_cEntriesDropped;
+	void* m_pEntryBuffer;
+	void* m_pEntryBufferEnd;
+	void* m_pHead;
+	void* m_pTail;
+	void* m_pClientList;
 
-    int RegisterOrderedRenderDispatchClient(void *pClient, int nOrder);
-    int UnregisterOrderedRenderDispatchClient(void *pClient, int nOrder);
+	int RegisterOrderedRenderDispatchClient(void* pClient, int nOrder);
+	int UnregisterOrderedRenderDispatchClient(void* pClient, int nOrder);
 
-    void LockDispatchQueue(void) {
-        ((void (__fastcall *)(void *))(*(void ***)&m_pLockVtable)[0])(&m_pLockVtable);
-    }
-    void UnlockDispatchQueue(void) {
-        ((void (__fastcall *)(void *))(*(void ***)&m_pLockVtable)[1])(&m_pLockVtable);
-    }
+	void LockDispatchQueue(void) { ((void(__fastcall*)(void*))(*(void***) &m_pLockVtable)[0])(&m_pLockVtable); }
+	void UnlockDispatchQueue(void) { ((void(__fastcall*)(void*))(*(void***) &m_pLockVtable)[1])(&m_pLockVtable); }
 };
 
-extern void *g_pSharedRenderDispatchQueue;
+extern void* g_pSharedRenderDispatchQueue;
 
-char *FormatCurrentLevelPassword(void);
-int ValidateCurrentLevelPassword(char *pszPassword);
+char* FormatCurrentLevelPassword(void);
+int ValidateCurrentLevelPassword(char* pszPassword);
 void SnapshotCurrentLevelProgress(void);
 
 #endif
