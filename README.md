@@ -11,7 +11,7 @@ The game is not yet functional and remains under active development. The primary
 
 This project is still highly experimental and is currently developed largely with the assistance of AI tools. Expect frequent changes, incomplete implementations, rough edges, and code that still requires manual review and verification.
 
-The GitHub issue tracker is temporarily disabled while the project remains in this early stage. I plan to reopen it once the codebase is more stable and I have established a better workflow for handling contributions, bug reports, and technical discussion.
+The issue tracker and pull requests are temporarily disabled while the project is still in this early stage. I plan to reopen them once the codebase is more stable and I have a better established workflow for handling contributions, bug reports, and technical discussions.
 
 ## Legal
 
