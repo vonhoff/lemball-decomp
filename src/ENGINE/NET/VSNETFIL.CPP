@@ -1766,7 +1766,7 @@ extern void* ConstructDualHandleEffStream(void* pStream, int fConstructChannelSt
 struct VsNetCompositeEffTransportStackLayout {
 	void* ConstructCompositeEffTransportStack(int fConstructEmbeddedObjects);
 };
-extern void RestoreCompositeEffTransportVtables(int nObjectBasePlus0x30);
+extern void LEMBALL_FASTCALL RestoreCompositeEffTransportVtables(int nObjectBasePlus0x30);
 struct VsNetFileBackedLockedWriterView {
 	DWORD WriteEffStreamToLockedFile(int* pStream, int fKeepLock, int fFlush);
 };

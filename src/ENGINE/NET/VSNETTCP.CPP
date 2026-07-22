@@ -397,12 +397,14 @@ static int g_NETWORK_CompositeEffTransportDualThunkConstructionOffsets[4] = {
 };
 void WriteEffTransportTaggedHeader(void* pObject);
 void ReverseEffTransportPayload(void* pObject);
-void RestoreCompositeEffTransportVtables(int nObjectBasePlus0x30);
+void LEMBALL_FASTCALL RestoreCompositeEffTransportVtables(int nObjectBasePlus0x30);
 void TcpipCompositeUnusedVtableSlot(void);
 void* DeleteCompositeEffTransportRuntimeAdjustedThunk(void* pObject, BYTE fFreeMemory);
 void WriteEffTransportGlobalSessionAdjustedThunk(void* pObject);
 void* DeleteCompositeEffTransportStackAdjustedThunk(void* pObject, BYTE fDelete);
-void* DeleteCompositeEffTransportStackWrapper(void* pObject, BYTE fFreeMemory);
+void* LEMBALL_FASTCALL DeleteCompositeEffTransportStackWrapper(void* pObject,
+																void* pUnusedEdx,
+																BYTE fFreeMemory);
 void CompleteEffTransportPendingWriteAdjustedThunk(void* pObject, int fQueueEvent);
 void* DeleteCompositeEffTransportStackTimedAdjustedThunk(void* pObject, BYTE fFreeMemory);
 void DestroySocketWindowEffChannel(int nChannelStateBase);
@@ -543,7 +545,9 @@ static int g_NETWORK_TimedSocketBundleSocketChannelConstructionOffsets[4] = {
 void* DeleteTimedSocketWindowChannelStackWrapper(void* pObject, BYTE fDelete);
 void* DeleteTcpipEffTransportCompositeWrapper(void* pObject, BYTE fDelete);
 void* DeleteCompositeTcpipSocketChannelStackWrapper(void* pObject, BYTE fDelete);
-void* DeleteCompositeEffTransportStackWrapper(void* pObject, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteCompositeEffTransportStackWrapper(void* pObject,
+																void* pUnusedEdx,
+																BYTE fDelete);
 struct VsNetCompleteEffTransportPendingWriteView;
 struct VsNetDispatchAckedEffTransportPayloadView {
 	void* DispatchAckedEffTransportPayloadEvent(void);
@@ -1314,7 +1318,7 @@ void* VsNetCompositeEffTransportStackLayout::ConstructCompositeEffTransportStack
 	return this;
 }
 // FUNCTION: LEMBALL 0x00460c00
-void RestoreCompositeEffTransportVtables(int nObjectBasePlus0x30)
+void LEMBALL_FASTCALL RestoreCompositeEffTransportVtables(int nObjectBasePlus0x30)
 {
 	VsNetCompositeEffTransportStackLayout* pComposite;
 	VsNetConstructionAdjustorVtable* pOffsets;
@@ -1355,17 +1359,15 @@ void* LEMBALL_FASTCALL DeleteCompositeEffTransportRuntimeWrapper(void* pObject, 
 
 {
 	VsNetCompositeEffTransportStackWrapperView* pView;
-	char* pbAllocationBase;
 	pView = (VsNetCompositeEffTransportStackWrapperView*) pObject;
-	pbAllocationBase = (char*) pObject - 0x24;
 	((VsNetRuntimeChannelStackReleaseFront*) pObject)->Release();
 	((VsNetDualHandleEffStream*) pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
 	((VsNetTimedEffStream*) pView->m_abTimedStream30)->DestroyTimedEffStream();
 	pView->m_ChannelState00.DestroyEffStreamChannelState();
 	if ((fFreeMemory & 1) != 0) {
-		FreeVSMemBlock(pbAllocationBase);
+		FreeVSMemBlock((char*) pObject - 0x24);
 	}
-	return pbAllocationBase;
+	return (char*) pObject - 0x24;
 }
 // FUNCTION: LEMBALL 0x00462c20
 void WriteEffTransportGlobalSessionAdjustedThunk(void* pObject)
@@ -1381,24 +1383,22 @@ void WriteEffTransportGlobalSessionAdjustedThunk(void* pObject)
 void* DeleteCompositeEffTransportStackAdjustedThunk(void* pObject, BYTE fDelete)
 {
 	pObject = (char*) pObject - *(int*) ((char*) pObject - 4);
-	return DeleteCompositeEffTransportStackWrapper(pObject, fDelete);
+	return DeleteCompositeEffTransportStackWrapper(pObject, 0, fDelete);
 }
 // FUNCTION: LEMBALL 0x00462db0
-void* DeleteCompositeEffTransportStackWrapper(void* pObject, BYTE fFreeMemory)
+void* LEMBALL_FASTCALL DeleteCompositeEffTransportStackWrapper(void* pObject, void*, BYTE fFreeMemory)
 {
 	VsNetCompositeEffTransportStackWrapperView* pView;
-	char* pbAllocationBase;
 
 	pView = (VsNetCompositeEffTransportStackWrapperView*) pObject;
-	pbAllocationBase = (char*) pObject - 0x30;
 	RestoreCompositeEffTransportVtables((int) (unsigned long) pObject);
 	((VsNetDualHandleEffStream*) pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
 	((VsNetTimedEffStream*) pView->m_abTimedStream30)->DestroyTimedEffStream();
 	pView->m_ChannelState00.DestroyEffStreamChannelState();
 	if ((fFreeMemory & 1) != 0) {
-		FreeVSMemBlock(pbAllocationBase);
+		FreeVSMemBlock((char*) pObject - 0x30);
 	}
-	return pbAllocationBase;
+	return (char*) pObject - 0x30;
 }
 // FUNCTION: LEMBALL 0x00462df0
 void CompleteEffTransportPendingWriteAdjustedThunk(void* pObject, int fQueueEvent)
@@ -1410,7 +1410,7 @@ void CompleteEffTransportPendingWriteAdjustedThunk(void* pObject, int fQueueEven
 void* DeleteCompositeEffTransportStackTimedAdjustedThunk(void* pObject, BYTE fFreeMemory)
 {
 	pObject = (char*) pObject - *(int*) ((char*) pObject - 4) - 0x30;
-	return DeleteCompositeEffTransportStackWrapper(pObject, fFreeMemory);
+	return DeleteCompositeEffTransportStackWrapper(pObject, 0, fFreeMemory);
 }
 // FUNCTION: LEMBALL 0x00462e10
 void* DeleteCompositeEffTransportRuntimeAdjustedThunk(void* pObject, BYTE fFreeMemory)
