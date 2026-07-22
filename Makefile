@@ -13,13 +13,17 @@ PYTHON ?= python
 GHIDRA_PROJECT ?=
 GHIDRA_HOME ?=
 
-.PHONY: pipeline verify validate-target ghidra-functions report audit annotation-audit analyze snapshot decomplint reccmp stackcmp roadmap vtable datacmp aggregate format tidy
+.PHONY: pipeline verify validate-target ghidra-functions reconcile report audit annotation-audit analyze snapshot decomplint reccmp stackcmp roadmap vtable datacmp aggregate format tidy
 
 pipeline: validate-target
 
-report:
+reconcile:
+	@$(PYTHON) tools/compare_rebuilt_functions.py --json $(RECCMP_REPORT) --silent $(RECCMP_ARGS)
 	@reccmp-roadmap --target $(RECCMP_TARGET) --csv $(RECCMP_ROADMAP) $(RECCMP_ARGS)
-	@$(PYTHON) tools/generate_reccmp_report.py --roadmap $(RECCMP_ROADMAP)
+	@$(PYTHON) tools/reconcile_function_inventory.py --target $(RECCMP_TARGET) --reccmp-report $(RECCMP_REPORT) --roadmap $(RECCMP_ROADMAP)
+
+report: reconcile
+	@$(PYTHON) tools/generate_reccmp_report.py --reccmp-report $(RECCMP_REPORT) --roadmap $(RECCMP_ROADMAP)
 
 ghidra-functions:
 	@$(PYTHON) tools/generate_ghidra_manifest.py $(if $(GHIDRA_PROJECT),--project "$(GHIDRA_PROJECT)",) $(if $(GHIDRA_HOME),--ghidra-home "$(GHIDRA_HOME)",)
@@ -31,7 +35,7 @@ verify:
 	@$(PYTHON) tools/compare_rebuilt_functions.py
 
 # Fast correctness checks suitable for local use and CI.
-audit: annotation-audit decomplint vtable datacmp
+audit: reconcile annotation-audit decomplint vtable datacmp
 
 annotation-audit:
 	@$(PYTHON) tools/audit_reccmp_annotations.py --target $(RECCMP_TARGET)

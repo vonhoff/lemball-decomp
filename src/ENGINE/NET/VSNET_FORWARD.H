@@ -29,7 +29,6 @@ void CheckEffTransportIdleTimeout(void* pObject);
 int RetryPendingEffTransportRecord(void* pObject, int nRecord);
 void WINAPI LoadEffStreamFromGlobalRange(void* pStream);
 void QueueEffTransportErrorEvent(int nError);
-void ConfigureActiveEffTransportConnectHost(void* pRuntime, char* pszHostName);
 void* ConstructShiftedLockedRecordSlotTable(void* pObject, int cPacketIds, unsigned int cbRecord);
 void* ConstructRangeEffTransportRecordBufferTable(void* pObject,
 												  int nFirstPacket,
@@ -42,7 +41,6 @@ int LEMBALL_FASTCALL AllocateEffTransportPeerEntry(void* pRuntimeState);
 void* LEMBALL_FASTCALL DeleteEffTransportRecordBufferBaseWrapper(VsNetEffTransportRecordBuffer* pObject,
 																 int,
 																 BYTE fFreeMemory);
-void* DeleteLockedEffTransportRecordSlotWrapper(void* pObject, BYTE fFreeMemory);
 void* DeleteSimpleEffTransportRecordSlotWrapper(void* pObject, BYTE fFreeMemory);
 void* DeleteEffTransportRecordBufferWrapper(void* pObject, BYTE fFreeMemory);
 void* LEMBALL_FASTCALL DeleteRangeEffTransportRecordBufferTableWrapper(VsNetEffTransportRecordBuffer* pObject,
@@ -57,9 +55,14 @@ int StartFileBasedNetworkMessageThread(void);
 int StopFileBasedNetworkMessageThread(void);
 void ConfigureFileBasedNetworkPaths(char* pszLocalHost, char* pszBasePath);
 void WINAPI ConfigureFileBasedNetworkPathsWrapper(char* pszLocalHost, char* pszBasePath);
-static void* AllocateFileNetworkAddress(void);
+void* AllocateFileNetworkAddress(void);
+void* LEMBALL_FASTCALL DeleteLockedEffTransportRecordSlotWrapper(void* pObject, void* pUnused, BYTE fFreeMemory);
 DWORD TcpipNetworkMessageThreadMain(void);
 int StartTcpipNetworkMessageThread(void);
 int StopTcpipNetworkMessageThread(void);
+
+struct GameNetworkLobbyVsnetRuntimeConnectView {
+	void ConfigureActiveEffTransportConnectHost(char* pszHostName);
+};
 
 #endif

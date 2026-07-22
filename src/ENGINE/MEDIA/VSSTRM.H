@@ -155,7 +155,20 @@ struct VsNetRuntimeChannelStackReleaseFront {
 	void Release(void);
 };
 
+struct VsNetRuntimeChannelStackDualStreamVtableData {
+	void* m_pReturnTrue;
+	void* m_pReturnTrueSecondary;
+	void* m_pReversePayload;
+	void* m_pNoop;
+	void* m_pWriteTaggedHeader;
+	void* m_pDelete;
+	void* m_pDeleteRet;
+	void* m_pWriteGlobalSession;
+	void* m_pClaimRecord;
+	void* m_pDeleteRet8;
+};
+
 extern void* g_NETWORK_RuntimeChannelStackTimedStreamVtable[10];
-extern void* g_NETWORK_RuntimeChannelStackDualStreamVtable[10];
+extern VsNetRuntimeChannelStackDualStreamVtableData g_NETWORK_RuntimeChannelStackDualStreamVtable;
 
 #endif

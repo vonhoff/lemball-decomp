@@ -17,6 +17,7 @@ def inventory(path: Path) -> tuple[dict[str, object], list[tuple[object, ...]]]:
             function["name"],
             int(function["size"]),
             bool(function["is_thunk"]),
+            function.get("thunk_target"),
             bool(function["is_external"]),
         )
         for function in manifest["functions"]

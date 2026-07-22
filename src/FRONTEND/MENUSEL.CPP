@@ -63,6 +63,24 @@ extern void* LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(void* pOb
 extern void* LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryThunk(void* pObject);
 extern void LEMBALL_FASTCALL SetWindowOwnerRenderAnchorFromPoint(void* pOwner, int nUnusedEdx, const VS_XYPair* pPoint);
 extern void LEMBALL_FASTCALL set_overlay_owner_field_0xf8(void* pOwner, void* pUnusedEdx, int nValue);
+void LEMBALL_FASTCALL DetachGeometryChildAndDestroyWindowOwner(void* pObject);
+int GetIntDirectionSign(int nValue);
+void LEMBALL_FASTCALL RefreshCompactZrleOwnerAfterFrameChange(void* pObject);
+void LEMBALL_FASTCALL HandleSpriteOwnerPointerEnter(void* pGeometryOwner);
+void LEMBALL_FASTCALL HandleSpriteOwnerPointerLeave(void* pGeometryOwner);
+void LEMBALL_FASTCALL HandleSpriteOwnerButtonTransition(void* pGeometryOwner,
+														int nUnused,
+														const VS_XYPair* pPoint,
+														int nButton);
+void LEMBALL_FASTCALL HandleSpriteOwnerButtonInside(void* pGeometryOwner,
+													int nUnused,
+													const VS_XYPair* pPoint,
+													int nButton);
+void LEMBALL_FASTCALL ResetSpriteOwnerButtonState(void* pGeometryOwner,
+												  int nUnused,
+												  const VS_XYPair* pPoint,
+												  int nButton);
+void* LEMBALL_FASTCALL InitializeTinyPointSinkHelper(void* pObject);
 
 struct GameMenuSelectorEntry {
 	GameMenuSelectorEntry(void* pRenderOwner,
@@ -178,14 +196,22 @@ struct GameProgressRenderEntry {
 	int m_nResourceId0C;
 };
 
+// These entries replace inherited GameWindowOwnerRenderContext slots in the
+// original hand-built table. Keeping the slot owners in a non-virtual view
+// makes address-of-member resolve to each concrete body instead of an
+// MSVC-generated vcall stub; the view receives the same this pointer.
+class GameSelectorProgressOverlayWindowSlots {
+public:
+	void InitializeWindowOwnerFromRect(short* pRect, void* pOwner, const char* pszWindowName);
+	void MoveWindowOwnerOrigin(const VS_XYPair* pPoint);
+	void ReservedWindowOwnerSlot15(void);
+	void ReservedWindowOwnerSlot23(void);
+	void ApplyWindowOwnerActivation(int nActivate);
+};
+
 class GameSelectorProgressOverlayChild : public GameWindowOwnerRenderContext {
 public:
 	GameSelectorProgressOverlayChild* Construct(const short* pRect, int nPercent, void* pRenderOwner);
-	virtual void InitializeWindowOwnerFromRect(short* pRect, void* pOwner, const char* pszWindowName);
-	virtual void MoveWindowOwnerOrigin(const VS_XYPair* pPoint);
-	virtual void ReservedWindowOwnerSlot15(void);
-	virtual void ReservedWindowOwnerSlot23(void);
-	virtual void ApplyWindowOwnerActivation(int nActivate);
 	void SetPercent(int nPercent);
 
 public:
@@ -321,7 +347,7 @@ int g_anMenuSelectorActionOffsetsMode0[18] = {0, 12, -8, -2, 52, -2, -13, 28, 11
 // GLOBAL: LEMBALL 0x0049fab8
 int g_anMenuSelectorActionOffsetsMode1[18] = {0, 6, -4, -2, 26, -2, -7, 14, 58, 0, 0, 0, 10, 14, -8, 0, -12, -2};
 
-static int LEMBALL_FASTCALL GetMenuSelectorStartTimeThunk(GameProgressiveVariantFrameSelector* pSelector)
+int LEMBALL_FASTCALL GetMenuSelectorStartTimeThunk(GameProgressiveVariantFrameSelector* pSelector)
 {
 	return return_object_field_0x0c_00435880(pSelector);
 }
@@ -405,11 +431,7 @@ struct GameMenuActionFramePointSink {
 class GameResourceGeometryChildView {
 public:
 	void SetRenderAnchorWithOriginCompensation(const VS_XYPair* pPoint);
-	int GetQueuedRenderPointSinkState(void);
-	void DetachAndDestroyWindowOwner(void);
-	void ForwardNestedRectUpdate(short* pRect);
-	void QueueIfDirty(void);
-	void RefreshIfHelperDirty(void);
+	void NoopWindowOwnerSlot42(int nValue);
 };
 
 class GameResourceGeometryChildDeleteView {
@@ -437,6 +459,11 @@ public:
 	void MarkRenderObjectDirty(void);
 };
 
+class GameQueuedVariantChildContextView {
+public:
+	void MarkRenderObjectDirty(void);
+};
+
 typedef char GameMenuActionFramePointSink_size_must_be_0x20[sizeof(GameMenuActionFramePointSink) == 0x20 ? 1 : -1];
 
 /* VTABLE: LEMBALL 0x00497CF8 */
@@ -448,30 +475,17 @@ static void* g_MenuSelectorEntryVtable[3] = {(void*) InitializeNonZrleVariantRen
 static void* g_MenuSelectorTinyPointSinkVtable[2] = {(void*) DeleteStatusPointSinkEntryThunk,
 													 (void*) QueueStatusPointPushThunk};
 
-static void* g_MenuActionFramePointSinkVtable[3];
-
-struct GameMenuActionFramePointSinkVtableFixup {
-	GameMenuActionFramePointSinkVtableFixup(void)
-	{
-		union DeleteMethod {
-			void* (GameMenuActionFramePointSink::*p)(unsigned int);
-			void* v;
-		} Delete;
-		union BindMethod {
-			void (GameMenuActionFramePointSink::*p)(void*);
-			void* v;
-		} Bind;
-
-		Delete.p = &GameMenuActionFramePointSink::Delete;
-		Bind.p = &GameMenuActionFramePointSink::BindToContext;
-		g_MenuActionFramePointSinkVtable[0] = Delete.v;
-		g_MenuActionFramePointSinkVtable[1] = Bind.v;
-		Bind.p = &GameMenuActionFramePointSink::DispatchToRenderObject;
-		g_MenuActionFramePointSinkVtable[2] = Bind.v;
-	}
+struct GameMenuActionFramePointSinkVtableData {
+	void* (GameMenuActionFramePointSink::*m_pDelete)(unsigned int);
+	void (GameMenuActionFramePointSink::*m_pBindToContext)(void*);
+	void (GameMenuActionFramePointSink::*m_pDispatchToRenderObject)(void*);
 };
 
-static GameMenuActionFramePointSinkVtableFixup g_MenuActionFramePointSinkVtableFixup;
+static GameMenuActionFramePointSinkVtableData g_MenuActionFramePointSinkVtable = {
+	&GameMenuActionFramePointSink::Delete,
+	&GameMenuActionFramePointSink::BindToContext,
+	&GameMenuActionFramePointSink::DispatchToRenderObject,
+};
 
 static void* g_ResourceGeometryChildVtable[52];
 static void* g_ResourceGeometryChildDeleteVtable[8];
@@ -492,11 +506,11 @@ static int g_fMenuSelectorChildContextVtableInitialized;
 static void* g_QueuedVariantChildContextVtable[46];
 static int g_fQueuedVariantChildContextVtableInitialized;
 
-static void LEMBALL_FASTCALL DestroySelectorProgressOverlayOwner(void* pDeleteInterface);
-static void* LEMBALL_FASTCALL DeleteSelectorProgressOverlayOwnerAdjusted(void* pDeleteInterface,
-																		 int nUnusedEdx,
-																		 unsigned int fDelete);
-static void LEMBALL_FASTCALL DestroySelectorProgressOverlayChild(void* pGeometryInterface);
+void LEMBALL_FASTCALL DestroySelectorProgressOverlayOwner(void* pDeleteInterface);
+void* LEMBALL_FASTCALL DeleteSelectorProgressOverlayOwnerAdjusted(void* pDeleteInterface,
+																  int nUnusedEdx,
+																  unsigned int fDelete);
+void LEMBALL_FASTCALL DestroySelectorProgressOverlayChild(void* pGeometryInterface);
 void* LEMBALL_FASTCALL DeleteSelectorProgressOverlayChildAdjusted(void* pGeometryInterface,
 																  int nUnusedEdx,
 																  unsigned int fDelete);
@@ -554,82 +568,728 @@ __inline static void StoreSpriteOwnerLocalPoint(void* pGeometryOwner, const VS_X
 	*(short*) ((char*) pGeometryOwner + 0x72) = (short) (pPoint->m_y - *(short*) ((char*) pGeometryOwner - 0x76));
 }
 
-static void LEMBALL_FASTCALL HandleSpriteOwnerPointerEnter(void* pGeometryOwner)
+inline static int ResolveResourceGeometryRenderObject(void* pObject)
 {
-	void* pObject;
+	int nContext;
 
-	pObject = (char*) pGeometryOwner - 0x90;
-	if (*(int*) ((char*) pGeometryOwner + 0x10) != 0 || *(int*) ((char*) pGeometryOwner + 0x1c) != 0) {
-		*(int*) ((char*) pGeometryOwner + 0x40) = 1;
+	nContext = *(int*) (*(int*) ((char*) pObject + 0x4c) + 0x0c);
+	return *(int*) (*(int*) (nContext + 0x40) + 4) + 0x40 + nContext;
+}
+
+struct GameResourceGeometryChildContext {
+	virtual void ReservedContextSlot0(void) = 0;
+	virtual void BindResourceContext(void* pContext) = 0;
+};
+
+void LEMBALL_FASTCALL RefreshCompactZrleOwnerIfHelperDirty(void* pObject)
+{
+	typedef int(LEMBALL_FASTCALL * QueryProc)(void* pObject);
+	int nRenderObject;
+
+	if (*(int*) ((char*) pObject + 0x104) == *(int*) ((char*) pObject + 0x108)) {
+		nRenderObject = ResolveResourceGeometryRenderObject(pObject);
+		if (((QueryProc) (*(void***) nRenderObject)[15])((void*) nRenderObject) == 0) {
+			goto refresh;
+		}
 	}
-	NotifySpriteOwnerStateEvent(pObject, 0x0d);
-	((void(LEMBALL_FASTCALL*)(void*))(*(void***) pObject)[50])(pObject);
+	nRenderObject = ResolveResourceGeometryRenderObject(pObject);
+	*(int*) (nRenderObject + 0x38) = 1;
+refresh:
+	*(int*) ((char*) pObject + 0x108) = *(int*) ((char*) pObject + 0x104);
+	RefreshCompactZrleOwnerFromResourceHelper(pObject);
 }
 
-static void LEMBALL_FASTCALL HandleSpriteOwnerPointerLeave(void* pGeometryOwner)
+__inline static void InitializeResourceGeometryChildVtables(void** pWindowOwnerVtable, void** pGeometryOwnerVtable)
 {
-	void* pObject;
-
-	pObject = (char*) pGeometryOwner - 0x90;
-	*(int*) ((char*) pGeometryOwner + 0x40) = 0;
-	NotifySpriteOwnerStateEvent(pObject, 0x0e);
-	((void(LEMBALL_FASTCALL*)(void*))(*(void***) pObject)[51])(pObject);
-}
-
-static void LEMBALL_FASTCALL HandleSpriteOwnerButtonTransition(void* pGeometryOwner,
-															   int,
-															   const VS_XYPair* pPoint,
-															   int nButton)
-{
-	void* pObject;
-	int nFrame;
-
-	pObject = (char*) pGeometryOwner - 0x90;
-	if (nButton == 0 || nButton == 3) {
-		*(int*) ((char*) pGeometryOwner + 0x40) = 1;
-	}
-	nFrame = MapSpriteOwnerEventToFrameSlot(nButton);
-	StoreSpriteOwnerLocalPoint(pGeometryOwner, pPoint);
-	NotifySpriteOwnerFrameEvent(pObject, 0x0b, nFrame);
-	((void(LEMBALL_FASTCALL*)(void*, int, int))(*(void***) pObject)[49])(pObject, 0, nFrame);
-}
-
-static void LEMBALL_FASTCALL HandleSpriteOwnerButtonInside(void* pGeometryOwner,
-														   int,
-														   const VS_XYPair* pPoint,
-														   int nButton)
-{
-	void* pObject;
-	int nFrame;
-
-	if (*(int*) ((char*) pGeometryOwner + 0x40) == 0) {
-		return;
-	}
-	pObject = (char*) pGeometryOwner - 0x90;
-	nFrame = MapSpriteOwnerEventToFrameSlot(nButton);
-	*(int*) ((char*) pGeometryOwner + 0x40) = 0;
-	StoreSpriteOwnerLocalPoint(pGeometryOwner, pPoint);
-	NotifySpriteOwnerFrameEvent(pObject, 0x0c, nFrame);
-	((void(LEMBALL_FASTCALL*)(void*, int, int))(*(void***) pObject)[48])(pObject, 0, nFrame);
-}
-
-static void LEMBALL_FASTCALL ResetSpriteOwnerButtonState(void* pGeometryOwner, int, const VS_XYPair* pPoint, int)
-{
+	union PointMethod {
+		void (GameResourceGeometryChildView::*p)(const VS_XYPair*);
+		void* v;
+	} Point;
+	union DeleteMethod {
+		void* (GameResourceGeometryChildDeleteView::*p)(unsigned int);
+		void* v;
+	} Delete;
+	union IntMethod {
+		void (GameResourceGeometryChildView::*p)(int);
+		void* v;
+	} Int;
 	int i;
 
-	StoreSpriteOwnerLocalPoint(pGeometryOwner, pPoint);
-	for (i = 0; i < 6; ++i) {
-		*(int*) ((char*) pGeometryOwner + 0x10 + i * 4) = 0;
+	if (g_fResourceGeometryChildVtablesInitialized != 0) {
+		return;
 	}
+	for (i = 0; i < 46; ++i) {
+		g_ResourceGeometryChildVtable[i] = pWindowOwnerVtable[i];
+	}
+	for (i = 0; i < 8; ++i) {
+		g_ResourceGeometryChildDeleteVtable[i] = pGeometryOwnerVtable[i];
+	}
+	g_pWindowOwnerRenderContextVtable = pWindowOwnerVtable;
+
+	Point.p = &GameResourceGeometryChildView::SetRenderAnchorWithOriginCompensation;
+	g_ResourceGeometryChildVtable[14] = Point.v;
+	g_ResourceGeometryChildVtable[29] = (void*) DetachGeometryChildAndDestroyWindowOwner;
+	Int.p = &GameResourceGeometryChildView::NoopWindowOwnerSlot42;
+	g_ResourceGeometryChildVtable[42] = Int.v;
+	g_ResourceGeometryChildVtable[46] = (void*) RefreshCompactZrleOwnerAfterFrameChange;
+	g_ResourceGeometryChildVtable[47] = (void*) _purecall;
+	g_ResourceGeometryChildVtable[48] = (void*) _purecall;
+	g_ResourceGeometryChildVtable[49] = (void*) _purecall;
+	g_ResourceGeometryChildVtable[50] = (void*) _purecall;
+	g_ResourceGeometryChildVtable[51] = (void*) _purecall;
+
+	Delete.p = &GameResourceGeometryChildDeleteView::Delete;
+	g_ResourceGeometryChildDeleteVtable[0] = Delete.v;
+	g_ResourceGeometryChildDeleteVtable[1] = (void*) HandleSpriteOwnerButtonTransition;
+	g_ResourceGeometryChildDeleteVtable[2] = (void*) HandleSpriteOwnerButtonInside;
+	g_ResourceGeometryChildDeleteVtable[3] = (void*) ResetSpriteOwnerButtonState;
+	g_ResourceGeometryChildDeleteVtable[4] = (void*) HandleSpriteOwnerPointerEnter;
+	g_ResourceGeometryChildDeleteVtable[5] = (void*) HandleSpriteOwnerPointerLeave;
+	g_fResourceGeometryChildVtablesInitialized = 1;
 }
 
-void* LEMBALL_FASTCALL InitializeTinyPointSinkHelper(void* pObject)
+__inline static void InitializeAlignedZrleChildOverlayVtables(void)
 {
-	*(void***) pObject = g_MenuSelectorTinyPointSinkVtable;
-	*(int*) ((char*) pObject + 4) = 0;
+	union VoidMethod {
+		void (GameAlignedZrleChildOverlayView::*p)(void);
+		void* v;
+	} Void;
+	union DeleteMethod {
+		void* (GameAlignedZrleChildOverlayDeleteView::*p)(unsigned int);
+		void* v;
+	} Delete;
+	union IntMethod {
+		void (GameSelectorProgressOverlayOwnerView::*p)(int);
+		void* v;
+	} Int;
+	int i;
+
+	if (g_fAlignedZrleChildOverlayVtablesInitialized != 0) {
+		return;
+	}
+	for (i = 0; i < 52; ++i) {
+		g_AlignedZrleChildOverlayVtable[i] = g_ResourceGeometryChildVtable[i];
+	}
+	for (i = 0; i < 8; ++i) {
+		g_AlignedZrleChildOverlayDeleteVtable[i] = g_ResourceGeometryChildDeleteVtable[i];
+	}
+	Void.p = &GameAlignedZrleChildOverlayView::ReleaseFrameResource;
+	g_AlignedZrleChildOverlayVtable[16] = Void.v;
+	g_AlignedZrleChildOverlayVtable[42] = (void*) QueueCompactZrleOwnerIfDirty;
+	g_AlignedZrleChildOverlayVtable[46] = (void*) RefreshCompactZrleOwnerIfHelperDirty;
+	Void.p = &GameAlignedZrleChildOverlayView::QueueAlignedFrame;
+	g_AlignedZrleChildOverlayVtable[47] = Void.v;
+	Int.p = &GameSelectorProgressOverlayOwnerView::SetChildPresentForModeA;
+	g_AlignedZrleChildOverlayVtable[48] = Int.v;
+	Int.p = &GameSelectorProgressOverlayOwnerView::SetChildPresentForModeB;
+	g_AlignedZrleChildOverlayVtable[49] = Int.v;
+	Void.p = &GameAlignedZrleChildOverlayView::HandlePointerEnter;
+	g_AlignedZrleChildOverlayVtable[50] = Void.v;
+	Void.p = &GameAlignedZrleChildOverlayView::HandlePointerLeave;
+	g_AlignedZrleChildOverlayVtable[51] = Void.v;
+	g_AlignedZrleChildOverlayDeleteVtable[1] = (void*) HandleSpriteOwnerButtonTransition;
+	g_AlignedZrleChildOverlayDeleteVtable[2] = (void*) HandleSpriteOwnerButtonInside;
+	g_AlignedZrleChildOverlayDeleteVtable[3] = (void*) ResetSpriteOwnerButtonState;
+	g_AlignedZrleChildOverlayDeleteVtable[4] = (void*) HandleSpriteOwnerPointerEnter;
+	g_AlignedZrleChildOverlayDeleteVtable[5] = (void*) HandleSpriteOwnerPointerLeave;
+	Delete.p = &GameAlignedZrleChildOverlayDeleteView::Delete;
+	g_AlignedZrleChildOverlayDeleteVtable[0] = Delete.v;
+	g_fAlignedZrleChildOverlayVtablesInitialized = 1;
+}
+
+__inline static void* ConstructMenuSelectorChildContextObject(void* pObject)
+{
+	union VoidMethod {
+		void (GameMenuSelectorChildContextView::*p)(void);
+		void* v;
+	} Void;
+	void** pBaseVtable;
+	int i;
+
+	((GameWindowOwnerRenderContext*) pObject)->ConstructWindowOwnerRenderContext();
+	pBaseVtable = *(void***) pObject;
+	if (g_fMenuSelectorChildContextVtableInitialized == 0) {
+		for (i = 0; i < 46; ++i) {
+			g_MenuSelectorChildContextVtable[i] = pBaseVtable[i];
+		}
+		Void.p = &GameMenuSelectorChildContextView::MarkRenderObjectDirty;
+		g_MenuSelectorChildContextVtable[15] = Void.v;
+		g_fMenuSelectorChildContextVtableInitialized = 1;
+	}
+	*(void***) pObject = g_MenuSelectorChildContextVtable;
+	*(int*) ((char*) pObject + 0x50) += 5;
 	return pObject;
 }
 
+struct GameQueuedVariantRangeEntry {
+	void** m_pVtable00;
+	int m_nQueueTag04;
+	int m_nQueueReserved08;
+	int m_cUnhandledEvents0C;
+	short m_nReserved10;
+	short m_nReserved12;
+	short m_nReserved14;
+	short m_nReserved16;
+	int m_x18;
+	int m_y1C;
+	void* m_pRenderContext20;
+	void* m_pRenderOwner24;
+	int m_nActivationMode28;
+	int m_nToken2C;
+	int m_nCommand30;
+	int m_cResources34;
+	int m_nLastResource38;
+	int m_nFirstResource3C;
+	int m_nSelectedResource40;
+	int* m_pSelection44;
+	const int* m_panResourceIds48;
+	void* m_pOverlay4C;
+	void** m_ppLoadedResources50;
+	int m_fEnabled54;
+};
+
+struct GameQueuedVariantSlotRecord {
+	int m_fActive00;
+	int m_x04;
+	int m_y08;
+	int m_nToken0C;
+};
+
+struct GameQueuedVariantChildSlotManager {
+	void** m_pVtable00;
+	int m_nQueueTag04;
+	int m_nQueueReserved08;
+	int m_cUnhandledEvents0C;
+	unsigned char m_abVariantRenderManager10[0x70];
+	int m_cChildren80;
+	GameMenuSelectorEvent m_ActionEvent84;
+	int m_nCurrentChildA0;
+	int m_nReservedA4;
+	int m_iSelectedChildA8;
+	GameQueuedVariantRangeEntry* m_apChildrenAC[4];
+	GameQueuedVariantSlotRecord m_aSlotsBC[4];
+	unsigned char m_abPointSinkFC[0x10];
+	void* m_pRenderContext10C;
+	void* m_pRenderOwner110;
+	int m_nNextToken114;
+	unsigned char m_abCallback118[0x0c];
+	int m_nReserved124;
+	void* m_pChildContext128;
+	void* m_pChildRenderContext12C;
+	int m_nLayoutMode130;
+	int m_nNavigationMode134;
+	int m_fCompactLayout138;
+	int m_dwSelectionStart13C;
+	int m_dwSelectionEnd140;
+	int m_fInputEnabled144;
+	int m_fChildrenEnabled148;
+};
+
+typedef char GameQueuedVariantRangeEntry_size_must_be_0x58[sizeof(GameQueuedVariantRangeEntry) == 0x58 ? 1 : -1];
+typedef char
+	GameQueuedVariantChildSlotManager_size_must_be_0x14c[sizeof(GameQueuedVariantChildSlotManager) == 0x14c ? 1 : -1];
+
+int LEMBALL_FASTCALL HandleQueuedVariantRangeEntryEvent(GameQueuedVariantRangeEntry* pEntry,
+														int,
+														GameMenuSelectorEvent* pEvent);
+int LEMBALL_FASTCALL HandleQueuedVariantChildSlotManagerEvent(GameQueuedVariantChildSlotManager* pManager,
+															  int,
+															  GameMenuSelectorEvent* pEvent);
+void* LEMBALL_FASTCALL DeleteQueuedVariantRangeEntry(GameQueuedVariantRangeEntry* pEntry, int, int fDelete);
+void* LEMBALL_FASTCALL DeleteQueuedVariantChildSlotManager(GameQueuedVariantChildSlotManager* pManager,
+														   int,
+														   int fDelete);
+
+static void* g_QueuedVariantRangeEntryVtable[3] = {(void*) InitializeNonZrleVariantRenderEntry,
+												   (void*) DeleteQueuedVariantRangeEntry,
+												   (void*) HandleQueuedVariantRangeEntryEvent};
+/* VTABLE: LEMBALL 0x0049823C */
+static void* g_QueuedVariantChildSlotManagerRenderManagerVtable[1] = {(void*) VariantResourceBundleNoopThunk};
+/* VTABLE: LEMBALL 0x00498240 */
+static void* g_QueuedVariantChildSlotManagerVtable[3] = {(void*) InitializeNonZrleVariantRenderEntry,
+														 (void*) DeleteQueuedVariantChildSlotManager,
+														 (void*) HandleQueuedVariantChildSlotManagerEvent};
+
+__inline static void QueueQueuedVariantCommand(int nCommand)
+{
+	typedef void(LEMBALL_FASTCALL * QueueProc)(void*, int, void*);
+	GameMenuSelectorEvent Event;
+
+	Event.m_nType00 = 0x0c;
+	Event.m_nReserved02 = 0;
+	Event.m_dwTimestamp04 = (int) timeGetTime();
+	Event.m_nPayload08 = nCommand;
+	Event.m_nPayload0C = 0;
+	Event.m_nPayload10 = 0;
+	Event.m_nPayload14 = 0;
+	Event.m_nPayload18 = 0;
+	((QueueProc) (*(void***) g_pSharedRenderDispatchQueue)[2])(g_pSharedRenderDispatchQueue, 0, &Event);
+}
+
+__inline static void DestroyQueuedVariantRangeEntryResources(GameQueuedVariantRangeEntry* pEntry)
+{
+	typedef void(LEMBALL_FASTCALL * DeleteOverlayProc)(void*, int, int);
+	int i;
+
+	if (pEntry->m_pOverlay4C != 0) {
+		void* pDelete = (char*) pEntry->m_pOverlay4C + 0x90;
+		((DeleteOverlayProc) (*(void***) pDelete)[0])(pDelete, 0, 1);
+		pEntry->m_pOverlay4C = 0;
+	}
+	if (pEntry->m_ppLoadedResources50 != 0) {
+		for (i = 0; i < pEntry->m_cResources34; ++i) {
+			ReleaseTypedResourceObjectReference(pEntry->m_ppLoadedResources50[i]);
+		}
+		FreeVSMemBlock(pEntry->m_ppLoadedResources50);
+		pEntry->m_ppLoadedResources50 = 0;
+	}
+}
+
+__inline static void DestroyQueuedVariantRangeEntry(GameQueuedVariantRangeEntry* pEntry)
+{
+	pEntry->m_pVtable00 = g_QueuedVariantRangeEntryVtable;
+	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->UnregisterOrderedRenderDispatchClient(pEntry, 0);
+	DestroyQueuedVariantRangeEntryResources(pEntry);
+	pEntry->m_pVtable00 = g_pNonZrleVariantRenderEntryInitializeVtable;
+}
+
+__inline static GameQueuedVariantRangeEntry* ConstructQueuedVariantRangeEntry(GameQueuedVariantRangeEntry* pEntry,
+																			  void* pRenderOwner,
+																			  void* pRenderContext,
+																			  int x,
+																			  int y,
+																			  const int* panResourceIds,
+																			  int nActivationMode,
+																			  int nFirstResource,
+																			  int nLastResource,
+																			  int nToken,
+																			  int* pSelection,
+																			  int nCommand)
+{
+	VS_XYPair Point;
+	int i;
+
+	InitializeRenderQueueNodeBase(pEntry);
+	pEntry->m_pVtable00 = g_QueuedVariantRangeEntryVtable;
+	pEntry->m_nReserved10 = 0;
+	pEntry->m_nReserved12 = 0;
+	pEntry->m_nReserved14 = 0;
+	pEntry->m_nReserved16 = 0;
+	pEntry->m_x18 = x;
+	pEntry->m_y1C = y;
+	pEntry->m_pRenderContext20 = pRenderContext;
+	pEntry->m_pRenderOwner24 = pRenderOwner;
+	pEntry->m_nActivationMode28 = nActivationMode;
+	pEntry->m_nToken2C = nToken;
+	pEntry->m_nCommand30 = nCommand;
+	pEntry->m_cResources34 = nLastResource - nFirstResource + 1;
+	if (pEntry->m_cResources34 < 2) {
+		pEntry->m_cResources34 = 1;
+	}
+	pEntry->m_nLastResource38 = nLastResource;
+	pEntry->m_nFirstResource3C = nFirstResource;
+	pEntry->m_nSelectedResource40 = pSelection == 0 ? 0 : *pSelection;
+	pEntry->m_pSelection44 = pSelection;
+	pEntry->m_panResourceIds48 = panResourceIds;
+	pEntry->m_fEnabled54 = 1;
+	pEntry->m_ppLoadedResources50 = (void**) AllocateVSMemBlock(pEntry->m_cResources34 * sizeof(void*));
+	for (i = 0; i < pEntry->m_cResources34; ++i) {
+		pEntry->m_ppLoadedResources50[i] = LoadZrleOnlyListResource(panResourceIds[i]);
+	}
+	pEntry->m_pOverlay4C = AllocateVSMemBlock(0x130);
+	if (pEntry->m_pOverlay4C != 0) {
+		Point.m_x = (short) x;
+		Point.m_y = (short) y;
+		ConstructAlignedZrleChildOverlayFromPoint(pEntry->m_pOverlay4C,
+												  0,
+												  &Point,
+												  pRenderOwner,
+												  panResourceIds[pEntry->m_nSelectedResource40 - nFirstResource],
+												  3);
+		*(int*) ((char*) pEntry->m_pOverlay4C + 0xf8) = 0;
+		*(void**) ((char*) pEntry->m_pOverlay4C + 0xf4) = g_pSharedRenderDispatchQueue;
+		*(int*) ((char*) pEntry->m_pOverlay4C + 0xcc) = nToken;
+	}
+	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->RegisterOrderedRenderDispatchClient(pEntry, 0);
+	return pEntry;
+}
+
+__inline static void LEMBALL_FASTCALL RefreshQueuedVariantRangeSelection(GameQueuedVariantRangeEntry* pEntry)
+{
+	int nResourceId;
+
+	if (pEntry->m_pSelection44 != 0) {
+		pEntry->m_nSelectedResource40 = *pEntry->m_pSelection44;
+	}
+	nResourceId = pEntry->m_panResourceIds48[pEntry->m_nSelectedResource40 - pEntry->m_nFirstResource3C];
+	((GameCompactZrleOverlay*) pEntry->m_pOverlay4C)->ReloadResource(nResourceId);
+}
+
+__inline static void* ConstructQueuedVariantChildContextObject(void* pObject)
+{
+	union VoidMethod {
+		void (GameQueuedVariantChildContextView::*p)(void);
+		void* v;
+	} Void;
+	void** pBaseVtable;
+	int i;
+
+	((GameWindowOwnerRenderContext*) pObject)->ConstructWindowOwnerRenderContext();
+	pBaseVtable = *(void***) pObject;
+	if (g_fQueuedVariantChildContextVtableInitialized == 0) {
+		for (i = 0; i < 46; ++i) {
+			g_QueuedVariantChildContextVtable[i] = pBaseVtable[i];
+		}
+		Void.p = &GameQueuedVariantChildContextView::MarkRenderObjectDirty;
+		g_QueuedVariantChildContextVtable[15] = Void.v;
+		g_fQueuedVariantChildContextVtableInitialized = 1;
+	}
+	*(void***) pObject = g_QueuedVariantChildContextVtable;
+	++*(int*) ((char*) pObject + 0x50);
+	return pObject;
+}
+
+__inline static void LEMBALL_FASTCALL RebuildCompactZrleOwnerSourceRectIfNeeded(void* pOverlay, int, int fForce)
+{
+	int fPrevious;
+	short Rect[4];
+	typedef void(LEMBALL_FASTCALL * SetRectProc)(void*, int, short*);
+
+	if (*(int*) ((char*) pOverlay + 0xfc) == 0 || fForce != 0) {
+		Rect[0] = *(short*) ((char*) pOverlay + 8);
+		Rect[1] = *(short*) ((char*) pOverlay + 10);
+		Rect[2] = 0;
+		Rect[3] = 0;
+		fPrevious = *(int*) ((char*) pOverlay + 0xf8);
+		*(int*) ((char*) pOverlay + 0xf8) = 1;
+		((SetRectProc) (*(void***) pOverlay)[42])(pOverlay, 0, Rect);
+		*(int*) ((char*) pOverlay + 0xf8) = fPrevious;
+	}
+	*(int*) ((char*) pOverlay + 0xfc) = 0;
+}
+
+__inline static void LEMBALL_FASTCALL RebuildQueuedVariantChildSourceRect(GameQueuedVariantRangeEntry* pEntry,
+																		  int,
+																		  int fForce)
+{
+	if (pEntry->m_pOverlay4C != 0) {
+		RebuildCompactZrleOwnerSourceRectIfNeeded(pEntry->m_pOverlay4C, 0, fForce);
+	}
+}
+
+void* LEMBALL_FASTCALL DeleteQueuedVariantChildSlotManager(GameQueuedVariantChildSlotManager* pManager,
+														   int,
+														   int fDelete)
+{
+	DestroyQueuedVariantChildSlotManager(pManager);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pManager);
+	}
+	return pManager;
+}
+
+inline static GameProgressiveVariantFrameSelector* AllocateFrameSelector(void* pVariantManager, int nResourceId)
+{
+	GameProgressiveVariantFrameSelector* pSelector;
+
+	pSelector = (GameProgressiveVariantFrameSelector*) AllocateVSMemBlock(0x1c);
+	if (pSelector != 0) {
+		pSelector->m_pVtable = g_MenuSelectorFrameSelectorCtorVtable;
+		pSelector->m_cFrames =
+			((LevelVariantRenderManagerView*) pVariantManager)->GetVariantRenderFrameCount(nResourceId);
+		pSelector->m_pVtable = g_MenuSelectorTimedFrameSelectorVtable;
+		pSelector->m_nDirection = 1;
+		pSelector->m_pVtable = g_MenuSelectorProgressiveFrameSelectorVtable;
+	}
+	return pSelector;
+}
+
+inline static void ReleaseMenuSelectorVariantResource(void* pObject, int nResourceId)
+{
+	int* pManager;
+	void** ppResources;
+	short* pnResourceIds;
+	int iResource;
+
+	pManager = (int*) pObject;
+	ppResources = (void**) (unsigned long) pManager[9];
+	pnResourceIds = (short*) (unsigned long) pManager[10];
+	iResource = pnResourceIds[nResourceId];
+	ReleaseTypedResourceObjectReference(ppResources[iResource]);
+	ppResources[iResource] = 0;
+	pnResourceIds[nResourceId] = (short) pManager[11];
+	--pManager[13];
+}
+
+__inline static void InitializeSelectorProgressOverlayOwnerVtables(void** pOwnerVtable, void** pDeleteVtable)
+{
+	union PointMethod {
+		void (GameSelectorProgressOverlayOwner::*p)(const VS_XYPair*);
+		void* v;
+	} Point;
+	union ModeMethod {
+		void (GameSelectorProgressOverlayOwnerView::*p)(int);
+		void* v;
+	} Mode;
+	int i;
+
+	if (g_fSelectorProgressOverlayOwnerVtablesInitialized != 0) {
+		return;
+	}
+	for (i = 0; i < 52; ++i) {
+		g_SelectorProgressOverlayOwnerVtable[i] = pOwnerVtable[i];
+	}
+	for (i = 0; i < 8; ++i) {
+		g_SelectorProgressOverlayOwnerDeleteVtable[i] = pDeleteVtable[i];
+	}
+	Point.p = &GameSelectorProgressOverlayOwner::SetAnchorAndNotifyChild;
+	g_SelectorProgressOverlayOwnerVtable[14] = Point.v;
+	Mode.p = &GameSelectorProgressOverlayOwnerView::SetChildPresentForModeA;
+	g_SelectorProgressOverlayOwnerVtable[48] = Mode.v;
+	Mode.p = &GameSelectorProgressOverlayOwnerView::SetChildPresentForModeB;
+	g_SelectorProgressOverlayOwnerVtable[49] = Mode.v;
+	g_SelectorProgressOverlayOwnerDeleteVtable[0] = (void*) DeleteSelectorProgressOverlayOwnerAdjusted;
+	g_fSelectorProgressOverlayOwnerVtablesInitialized = 1;
+}
+
+static int LEMBALL_FASTCALL HandleMenuSelectorEntryEventThunk(GameMenuSelectorEntry* pEntry,
+															  int nUnusedEdx,
+															  GameMenuSelectorEvent* pEvent)
+{
+	return pEntry->HandleEvent(pEvent);
+}
+
+static void* LEMBALL_FASTCALL DeleteMenuSelectorEntryThunk(GameMenuSelectorEntry* pEntry, int nUnusedEdx, int fDelete)
+{
+	return DeleteMenuSelectorEntry(pEntry, nUnusedEdx, fDelete);
+}
+
+static void* LEMBALL_FASTCALL DeleteMenuSelectorManagerThunk(GameMenuSelectorManager* pManager,
+															 int nUnusedEdx,
+															 int fDelete)
+{
+	return DeleteMenuSelectorManager(pManager, nUnusedEdx, fDelete);
+}
+
+inline static void BeginMenuSelectorMovement(GameMenuSelectorManager* pManager)
+{
+	int nDistance;
+	pManager->m_dwMovementStart21C = (int) timeGetTime();
+	nDistance = abs(pManager->m_nTargetPosition9C - pManager->m_nCurrentPosition8C);
+	pManager->m_nMovementStartPosition90 = pManager->m_nCurrentPosition8C;
+	pManager->m_fMovementActiveDC = 1;
+	pManager->m_dwMovementEnd220 = pManager->m_dwMovementStart21C + nDistance * 3;
+}
+
+static void LEMBALL_FASTCALL MoveMenuSelectorPreviousThunk(GameMenuSelectorManager* pManager)
+{
+	pManager->MovePrevious();
+}
+
+static void LEMBALL_FASTCALL MoveMenuSelectorNextThunk(GameMenuSelectorManager* pManager)
+{
+	pManager->MoveNext();
+}
+
+static void LEMBALL_FASTCALL SelectMenuSelectorSide0Thunk(GameMenuSelectorManager* pManager)
+{
+	pManager->SelectSide0();
+}
+
+static void LEMBALL_FASTCALL SelectMenuSelectorSide1Thunk(GameMenuSelectorManager* pManager)
+{
+	pManager->SelectSide1();
+}
+
+inline static void SetFrameSelectorDuration(GameProgressiveVariantFrameSelector* pSelector, int dwDuration)
+{
+	((GameProgressiveVariantFrameSelectorInterface*) pSelector)->SetDuration(dwDuration);
+}
+
+static void LEMBALL_FASTCALL StartMenuSelectorActionThunk(GameMenuSelectorManager* pManager)
+{
+	pManager->StartAction();
+}
+
+static int LEMBALL_FASTCALL HandleMenuSelectorEventThunk(GameMenuSelectorManager* pManager,
+														 int nUnusedEdx,
+														 GameMenuSelectorEvent* pEvent)
+{
+	return pManager->HandleEvent(pEvent);
+}
+
+static int GetIntDirectionSignThunk(int nValue)
+{
+	return GetIntDirectionSign(nValue);
+}
+
+class GameMenuSelectorEventQueueInterface {
+public:
+	virtual void Reserved0(void) = 0;
+	virtual void Reserved1(void) = 0;
+	virtual void QueueEvent(void* pEvent) = 0;
+};
+
+inline static void QueueMenuSelectorEvent(GameMenuSelectorEvent* pEvent)
+{
+	((GameMenuSelectorEventQueueInterface*) g_pSharedRenderDispatchQueue)->QueueEvent(pEvent);
+}
+
+void LEMBALL_FASTCALL UpdateMenuSelectorAnimationThunk(GameMenuSelectorManager* pManager)
+{
+	UpdateMenuSelectorAnimation(pManager);
+}
+
+__inline static void InitializeSelectorProgressOverlayChildVtables(void** pWindowOwnerVtable, void** pGeometryVtable)
+{
+	union WindowRectMethod {
+		void (GameSelectorProgressOverlayWindowSlots::*p)(short*, void*, const char*);
+		void* v;
+	} WindowRect;
+	union WindowPointMethod {
+		void (GameSelectorProgressOverlayWindowSlots::*p)(const VS_XYPair*);
+		void* v;
+	} WindowPoint;
+	union WindowVoidMethod {
+		void (GameSelectorProgressOverlayWindowSlots::*p)(void);
+		void* v;
+	} WindowVoid;
+	union WindowIntMethod {
+		void (GameSelectorProgressOverlayWindowSlots::*p)(int);
+		void* v;
+	} WindowInt;
+	union GeometryButtonMethod {
+		void (GameSelectorProgressGeometry::*p)(const VS_XYPair*, int);
+		void* v;
+	} GeometryButton;
+	union GeometryPointMethod {
+		void (GameSelectorProgressGeometry::*p)(const VS_XYPair*);
+		void* v;
+	} GeometryPoint;
+	int i;
+
+	if (g_fSelectorProgressOverlayChildVtablesInitialized != 0) {
+		return;
+	}
+	for (i = 0; i < 46; ++i) {
+		g_SelectorProgressOverlayChildVtable[i] = pWindowOwnerVtable[i];
+	}
+	for (i = 0; i < 8; ++i) {
+		g_SelectorProgressGeometryVtable[i] = pGeometryVtable[i];
+	}
+	g_pSelectorProgressBaseWindowOwnerVtable = pWindowOwnerVtable;
+	WindowRect.p = &GameSelectorProgressOverlayWindowSlots::InitializeWindowOwnerFromRect;
+	g_SelectorProgressOverlayChildVtable[1] = WindowRect.v;
+	WindowPoint.p = &GameSelectorProgressOverlayWindowSlots::MoveWindowOwnerOrigin;
+	g_SelectorProgressOverlayChildVtable[14] = WindowPoint.v;
+	WindowVoid.p = &GameSelectorProgressOverlayWindowSlots::ReservedWindowOwnerSlot15;
+	g_SelectorProgressOverlayChildVtable[15] = WindowVoid.v;
+	WindowVoid.p = &GameSelectorProgressOverlayWindowSlots::ReservedWindowOwnerSlot23;
+	g_SelectorProgressOverlayChildVtable[23] = WindowVoid.v;
+	g_SelectorProgressOverlayChildVtable[25] = (void*) return_hresult_80000801_progress_overlay;
+	WindowInt.p = &GameSelectorProgressOverlayWindowSlots::ApplyWindowOwnerActivation;
+	g_SelectorProgressOverlayChildVtable[42] = WindowInt.v;
+	GeometryButton.p = &GameSelectorProgressGeometry::DispatchButtonTransition;
+	g_SelectorProgressGeometryVtable[0] = (void*) DeleteSelectorProgressOverlayChildAdjusted;
+	g_SelectorProgressGeometryVtable[1] = GeometryButton.v;
+	GeometryPoint.p = &GameSelectorProgressGeometry::DispatchPointerMove;
+	g_SelectorProgressGeometryVtable[6] = GeometryPoint.v;
+	g_fSelectorProgressOverlayChildVtablesInitialized = 1;
+}
+
+void LEMBALL_FASTCALL SetMenuSelectorChildrenEnabledThunk(GameMenuSelectorManager* pManager,
+														  int nUnusedEdx,
+														  int fEnabled)
+{
+	SetMenuSelectorChildrenEnabled(pManager, nUnusedEdx, fEnabled);
+}
+
+// FUNCTION: LEMBALL 0x00402432
+GameMenuSelectorManager* LEMBALL_FASTCALL ConstructMenuSelectorManagerThunk(GameMenuSelectorManager* pManager,
+																			int nUnusedEdx,
+																			void* pRenderOwner,
+																			void* pRenderContext,
+																			int nChildCapacity,
+																			int nLayoutMode)
+{
+	(void) nUnusedEdx;
+	return new (pManager) GameMenuSelectorManager(pRenderOwner, pRenderContext, nChildCapacity, nLayoutMode);
+}
+// FUNCTION: LEMBALL 0x0043a540
+void LEMBALL_FASTCALL DetachGeometryChildAndDestroyWindowOwner(void* pObject)
+{
+	void* pChildOwner;
+	void* pRenderOwner;
+
+	pChildOwner = pObject == 0 ? 0 : (char*) pObject + 0x90;
+	pRenderOwner = *(void**) ((char*) pObject + 0xc8);
+	RemoveGeometryOwnerChild(*(void**) ((char*) pRenderOwner + 0x1c), 0, pChildOwner);
+	((VS_WindowOwnerBase*) pObject)->VS_WindowOwnerBase::DestroyWindowOwnerHwnd();
+}
+// FUNCTION: LEMBALL 0x0043a580
+void GameResourceGeometryChildView::SetRenderAnchorWithOriginCompensation(const VS_XYPair* pPoint)
+{
+	char* pObject;
+
+	pObject = (char*) this;
+	*(int*) (pObject + 0xd8) = 1;
+	*(short*) (pObject + 0xc4) -= *(short*) (pObject + 0x18);
+	*(short*) (pObject + 0xc6) -= *(short*) (pObject + 0x1a);
+	SetWindowOwnerRenderAnchorFromPoint(this, 0, pPoint);
+	*(short*) (pObject + 0xc4) += *(short*) (pObject + 0x18);
+	*(short*) (pObject + 0xc6) += *(short*) (pObject + 0x1a);
+}
+// FUNCTION: LEMBALL 0x0043a620
+void GameSelectorProgressOverlayOwnerView::SetChildPresentForModeA(int nMode)
+{
+	if (*(void**) ((char*) this + 0xd0) != 0 && (nMode == 0 || nMode == 3)) {
+		*(int*) ((char*) this + 0x104) = 1;
+		return;
+	}
+	*(int*) ((char*) this + 0x104) = 0;
+}
+// FUNCTION: LEMBALL 0x0043a660
+void GameSelectorProgressOverlayOwnerView::SetChildPresentForModeB(int nMode)
+{
+	if (*(void**) ((char*) this + 0xd0) != 0 && (nMode == 0 || nMode == 3)) {
+		*(int*) ((char*) this + 0x104) = 1;
+		return;
+	}
+	*(int*) ((char*) this + 0x104) = 0;
+}
+// FUNCTION: LEMBALL 0x0043a6a0
+void GameAlignedZrleChildOverlayView::HandlePointerEnter(void)
+{
+	if (*(void**) ((char*) this + 0xd0) != 0 &&
+		(*(int*) ((char*) this + 0xa0) != 0 || *(int*) ((char*) this + 0xac) != 0)) {
+		*(int*) ((char*) this + 0x104) = 1;
+		return;
+	}
+	*(int*) ((char*) this + 0x104) = 0;
+}
+// FUNCTION: LEMBALL 0x0043a6e0
+void GameAlignedZrleChildOverlayView::HandlePointerLeave(void)
+{
+	if (*(void**) ((char*) this + 0xd0) != 0 &&
+		(*(int*) ((char*) this + 0xa0) != 0 || *(int*) ((char*) this + 0xac) != 0)) {
+		*(int*) ((char*) this + 0x104) = 1;
+		return;
+	}
+	*(int*) ((char*) this + 0x104) = 0;
+}
+// FUNCTION: LEMBALL 0x00443990
+void* LEMBALL_FASTCALL InitializeMenuActionFramePointSink(void* pObject)
+{
+	GameMenuActionFramePointSink* pEntry;
+
+	pEntry = (GameMenuActionFramePointSink*) pObject;
+	pEntry->m_pVtable00 = (void**) g_pQueuedRenderPointSinkFinalizeThunk;
+	pEntry->m_nReserved06 = 0;
+	pEntry->m_pVtable00 = (void**) &g_MenuActionFramePointSinkVtable;
+	pEntry->m_nReserved04 = 0;
+	return pEntry;
+}
+// FUNCTION: LEMBALL 0x004439b0
 void* GameMenuActionFramePointSink::Delete(unsigned int fDelete)
 {
 	GameMenuActionFramePointSink* pEntry;
@@ -652,7 +1312,7 @@ void* GameMenuActionFramePointSink::Delete(unsigned int fDelete)
 	FreeVSMemBlock((char*) this - 4);
 	return this;
 }
-
+// FUNCTION: LEMBALL 0x00443a20
 void GameMenuActionFramePointSink::BindToContext(void* pContext)
 {
 	typedef void(LEMBALL_FASTCALL * LoadProc)(void* pObject);
@@ -666,7 +1326,7 @@ void GameMenuActionFramePointSink::BindToContext(void* pContext)
 	++m_pResource1C[2];
 	((VsGdiHelperDispatchQueue*) pContext)->AppendPointerQueueEntry(this);
 }
-
+// FUNCTION: LEMBALL 0x00443a60
 void GameMenuActionFramePointSink::DispatchToRenderObject(void* pContext)
 {
 	typedef void(LEMBALL_FASTCALL * RenderProc)(void* pRenderObject, int nUnusedEdx, void* pEntry, void* pFrame);
@@ -680,359 +1340,6 @@ void GameMenuActionFramePointSink::DispatchToRenderObject(void* pContext)
 	((RenderProc) (*(void***) nRenderObject)[9])((void*) nRenderObject, 0, this, pFrame);
 	--m_pResource1C[2];
 }
-
-void* LEMBALL_FASTCALL InitializeMenuActionFramePointSink(void* pObject)
-{
-	GameMenuActionFramePointSink* pEntry;
-
-	pEntry = (GameMenuActionFramePointSink*) pObject;
-	pEntry->m_pVtable00 = (void**) g_pQueuedRenderPointSinkFinalizeThunk;
-	pEntry->m_nReserved06 = 0;
-	pEntry->m_pVtable00 = g_MenuActionFramePointSinkVtable;
-	pEntry->m_nReserved04 = 0;
-	return pEntry;
-}
-
-void LEMBALL_FASTCALL DetachGeometryChildAndDestroyWindowOwner(void* pObject)
-{
-	void* pChildOwner;
-	void* pRenderOwner;
-
-	pChildOwner = pObject == 0 ? 0 : (char*) pObject + 0x90;
-	pRenderOwner = *(void**) ((char*) pObject + 0xc8);
-	RemoveGeometryOwnerChild(*(void**) ((char*) pRenderOwner + 0x1c), 0, pChildOwner);
-	((VS_WindowOwnerBase*) pObject)->VS_WindowOwnerBase::DestroyWindowOwnerHwnd();
-}
-
-inline static int ResolveResourceGeometryRenderObject(void* pObject)
-{
-	int nContext;
-
-	nContext = *(int*) (*(int*) ((char*) pObject + 0x4c) + 0x0c);
-	return *(int*) (*(int*) (nContext + 0x40) + 4) + 0x40 + nContext;
-}
-
-struct GameResourceGeometryChildContext {
-	virtual void ReservedContextSlot0(void) = 0;
-	virtual void BindResourceContext(void* pContext) = 0;
-};
-
-void LEMBALL_FASTCALL RefreshCompactZrleOwnerFromResourceHelper(void* pObject)
-{
-	typedef void(LEMBALL_FASTCALL * VoidProc)(void* pObject);
-	int nRenderObject;
-	int nZero;
-
-	nRenderObject = ResolveResourceGeometryRenderObject(pObject);
-	((VoidProc) (*(void***) nRenderObject)[14])((void*) nRenderObject);
-	nZero = 0;
-	if (*(int*) ((char*) pObject + 0xd8) == 0) {
-		*(int*) ((char*) pObject + 0xf0) = nZero;
-	}
-	else {
-		--*(int*) ((char*) pObject + 0xd8);
-		nRenderObject = ResolveResourceGeometryRenderObject(pObject);
-		*(short*) ((char*) pObject + 0xe8) = *(short*) (nRenderObject + 0x14);
-		*(short*) ((char*) pObject + 0xea) = *(short*) (nRenderObject + 0x16);
-		*(short*) ((char*) pObject + 0xec) = (short) nZero;
-		*(short*) ((char*) pObject + 0xee) = (short) nZero;
-		*(int*) ((char*) pObject + 0xf0) = 0x10000;
-		nRenderObject = ResolveResourceGeometryRenderObject(pObject);
-		*(int*) (nRenderObject + 0x38) = 1;
-	}
-	((GameResourceGeometryChildContext*) ((char*) pObject + 0xe4))
-		->BindResourceContext(*(void**) ((char*) pObject + 0x4c));
-}
-
-void LEMBALL_FASTCALL RefreshCompactZrleOwnerIfHelperDirty(void* pObject)
-{
-	typedef int(LEMBALL_FASTCALL * QueryProc)(void* pObject);
-	int nRenderObject;
-
-	if (*(int*) ((char*) pObject + 0x104) == *(int*) ((char*) pObject + 0x108)) {
-		nRenderObject = ResolveResourceGeometryRenderObject(pObject);
-		if (((QueryProc) (*(void***) nRenderObject)[15])((void*) nRenderObject) == 0) {
-			goto refresh;
-		}
-	}
-	nRenderObject = ResolveResourceGeometryRenderObject(pObject);
-	*(int*) (nRenderObject + 0x38) = 1;
-refresh:
-	*(int*) ((char*) pObject + 0x108) = *(int*) ((char*) pObject + 0x104);
-	RefreshCompactZrleOwnerFromResourceHelper(pObject);
-}
-
-void LEMBALL_FASTCALL QueueCompactZrleOwnerIfDirty(void* pObject)
-{
-	typedef int(LEMBALL_FASTCALL * QueryProc)(void* pObject);
-	typedef void(LEMBALL_FASTCALL * VoidProc)(void* pObject);
-	void* pRenderContext;
-	void* pOwner;
-	int nRenderObject;
-	int fHelperDirty;
-	int nUploadState;
-
-	nRenderObject = ResolveResourceGeometryRenderObject(pObject);
-	fHelperDirty = ((QueryProc) (*(void***) nRenderObject)[15])((void*) nRenderObject);
-	pRenderContext = *(void**) ((char*) pObject + 0x4c);
-	if (!((fHelperDirty != 0 && (*(int*) ((char*) pObject + 0xd0) != 0 ||
-								 *(int*) ((char*) pObject + 0x104) != *(int*) ((char*) pObject + 0x108))) ||
-		  (*(int*) ((char*) pRenderContext + 4) == 0 &&
-		   (*(int*) ((char*) pObject + 0xf8) != 0 || *(int*) ((char*) pObject + 0xd8) != 0 ||
-			*(int*) ((char*) pObject + 0xd0) != *(int*) ((char*) pObject + 0xd4))))) {
-		return;
-	}
-
-	if (((QueryProc) (*(void***) pObject)[26])(pObject) != 0) {
-		((VoidProc) (*(void***) pObject)[46])(pObject);
-		((VoidProc) (*(void***) pObject)[47])(pObject);
-	}
-	pOwner = *(void**) ((char*) pRenderContext + 0x0c);
-	nUploadState = ((QueryProc) (*(void***) pOwner)[2])(pOwner);
-	((VsGdiHelperDispatchQueue*) pRenderContext)->AppendPointerQueueEntry(*(void**) ((char*) pObject + 0xe0));
-	InitializeHelperUploadStatePending(nUploadState);
-	*(int*) ((char*) pObject + 0xfc) = 1;
-}
-
-void GameResourceGeometryChildView::SetRenderAnchorWithOriginCompensation(const VS_XYPair* pPoint)
-{
-	char* pObject;
-
-	pObject = (char*) this;
-	*(int*) (pObject + 0xd8) = 1;
-	*(short*) (pObject + 0xc4) -= *(short*) (pObject + 0x18);
-	*(short*) (pObject + 0xc6) -= *(short*) (pObject + 0x1a);
-	SetWindowOwnerRenderAnchorFromPoint(this, 0, pPoint);
-	*(short*) (pObject + 0xc4) += *(short*) (pObject + 0x18);
-	*(short*) (pObject + 0xc6) += *(short*) (pObject + 0x1a);
-}
-
-int GameResourceGeometryChildView::GetQueuedRenderPointSinkState(void)
-{
-	return *(int*) ((char*) this + 0x30);
-}
-
-void GameResourceGeometryChildView::DetachAndDestroyWindowOwner(void)
-{
-	DetachGeometryChildAndDestroyWindowOwner(this);
-}
-
-void GameResourceGeometryChildView::ForwardNestedRectUpdate(short* pRect)
-{
-	ForwardNestedGeometryRectUpdate(this, 0, pRect);
-}
-
-void GameResourceGeometryChildView::QueueIfDirty(void)
-{
-	QueueCompactZrleOwnerIfDirty(this);
-}
-
-void GameResourceGeometryChildView::RefreshIfHelperDirty(void)
-{
-	RefreshCompactZrleOwnerIfHelperDirty(this);
-}
-
-__inline static void InitializeResourceGeometryChildVtables(void** pWindowOwnerVtable, void** pGeometryOwnerVtable)
-{
-	union PointMethod {
-		void (GameResourceGeometryChildView::*p)(const VS_XYPair*);
-		void* v;
-	} Point;
-	union RectMethod {
-		void (GameResourceGeometryChildView::*p)(short*);
-		void* v;
-	} Rect;
-	union VoidMethod {
-		void (GameResourceGeometryChildView::*p)(void);
-		void* v;
-	} Void;
-	union IntMethod {
-		int (GameResourceGeometryChildView::*p)(void);
-		void* v;
-	} Int;
-	union DeleteMethod {
-		void* (GameResourceGeometryChildDeleteView::*p)(unsigned int);
-		void* v;
-	} Delete;
-	int i;
-
-	if (g_fResourceGeometryChildVtablesInitialized != 0) {
-		return;
-	}
-	for (i = 0; i < 46; ++i) {
-		g_ResourceGeometryChildVtable[i] = pWindowOwnerVtable[i];
-	}
-	for (i = 0; i < 8; ++i) {
-		g_ResourceGeometryChildDeleteVtable[i] = pGeometryOwnerVtable[i];
-	}
-	g_pWindowOwnerRenderContextVtable = pWindowOwnerVtable;
-
-	Point.p = &GameResourceGeometryChildView::SetRenderAnchorWithOriginCompensation;
-	g_ResourceGeometryChildVtable[14] = Point.v;
-	Int.p = &GameResourceGeometryChildView::GetQueuedRenderPointSinkState;
-	g_ResourceGeometryChildVtable[26] = Int.v;
-	Void.p = &GameResourceGeometryChildView::DetachAndDestroyWindowOwner;
-	g_ResourceGeometryChildVtable[29] = Void.v;
-	Rect.p = &GameResourceGeometryChildView::ForwardNestedRectUpdate;
-	g_ResourceGeometryChildVtable[33] = Rect.v;
-	Void.p = &GameResourceGeometryChildView::RefreshIfHelperDirty;
-	g_ResourceGeometryChildVtable[46] = Void.v;
-	g_ResourceGeometryChildVtable[47] = (void*) _purecall;
-	g_ResourceGeometryChildVtable[48] = (void*) _purecall;
-	g_ResourceGeometryChildVtable[49] = (void*) _purecall;
-	g_ResourceGeometryChildVtable[50] = (void*) _purecall;
-	g_ResourceGeometryChildVtable[51] = (void*) _purecall;
-
-	Delete.p = &GameResourceGeometryChildDeleteView::Delete;
-	g_ResourceGeometryChildDeleteVtable[0] = Delete.v;
-	g_fResourceGeometryChildVtablesInitialized = 1;
-}
-
-void LEMBALL_FASTCALL DestroyResourceGeometryChild(void* pChildOwner)
-{
-	typedef void(LEMBALL_FASTCALL * DeleteProc)(void* pObject, int nUnusedEdx, unsigned int fDelete);
-	char* pObject;
-	void* pOwnedEntry;
-
-	pObject = (char*) pChildOwner - 0x90;
-	*(void***) pObject = g_ResourceGeometryChildVtable;
-	*(void***) pChildOwner = g_ResourceGeometryChildDeleteVtable;
-	if (*(int*) (*(int*) (pObject + 0xc8) + 4) == 1) {
-		DetachGeometryChildAndDestroyWindowOwner(pObject);
-	}
-	pOwnedEntry = *(void**) (pObject + 0xe0);
-	if (pOwnedEntry != 0) {
-		((DeleteProc) (*(void***) pOwnedEntry)[0])(pOwnedEntry, 0, 1);
-	}
-	RestorePackagedSpriteRenderEntryVtableC(pObject + 0xe4);
-	*(void***) pObject = g_pWindowOwnerRenderContextVtable;
-	DestroyWindowOwnerRenderContext(pObject);
-}
-
-void* GameResourceGeometryChildDeleteView::Delete(unsigned int fDelete)
-{
-	char* pObject;
-
-	pObject = (char*) this - 0x90;
-	DestroyResourceGeometryChild(this);
-	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pObject);
-	}
-	return pObject;
-}
-
-void* LEMBALL_FASTCALL ConstructResourceGeometryChildBase(void* pObject, int nUnusedEdx, void* pRenderOwner)
-{
-	void** pWindowOwnerVtable;
-	void** pGeometryOwnerVtable;
-
-	(void) nUnusedEdx;
-	((GameWindowOwnerRenderContext*) pObject)->ConstructWindowOwnerRenderContext();
-	pWindowOwnerVtable = *(void***) pObject;
-	InitializeEmptyGeometryOwnerRect((char*) pObject + 0x90);
-	pGeometryOwnerVtable = *(void***) ((char*) pObject + 0x90);
-	InitializeResourceGeometryChildVtables(pWindowOwnerVtable, pGeometryOwnerVtable);
-	*(short*) ((char*) pObject + 0xdc) = 0;
-	*(short*) ((char*) pObject + 0xde) = 0;
-	InitializeHelperLocalRectUpdateEntry((char*) pObject + 0xe4);
-	*(short*) ((char*) pObject + 0x100) = 0;
-	*(short*) ((char*) pObject + 0x102) = 0;
-	*(void***) pObject = g_ResourceGeometryChildVtable;
-	*(void***) ((char*) pObject + 0x90) = g_ResourceGeometryChildDeleteVtable;
-	*(void**) ((char*) pObject + 0xc8) = pRenderOwner;
-	InitializeSharedSpriteOwnerState(pObject);
-	return pObject;
-}
-
-void GameAlignedZrleChildOverlayView::ReleaseFrameResource(void)
-{
-	void* pResource;
-
-	pResource = *(void**) ((char*) this + 0x11c);
-	if (pResource != 0) {
-		ReleaseTypedResourceObjectReference(pResource);
-		*(void**) ((char*) this + 0x11c) = 0;
-	}
-}
-
-void GameAlignedZrleChildOverlayView::QueueAlignedFrame(void)
-{
-	typedef void(LEMBALL_FASTCALL * RefreshProc)(void* pObject, int nUnusedEdx);
-	typedef void(LEMBALL_FASTCALL * QueueProc)(void* pObject, int nUnusedEdx, void* pQueueOwner);
-	char* pObject;
-	char* pFrameSink;
-	void* pGeometryContext;
-	void* pQueueOwner;
-	short x;
-	short y;
-	int fResourceReady;
-
-	pObject = (char*) this;
-	x = *(short*) (pObject + 0x118);
-	y = *(short*) (pObject + 0x11a);
-	fResourceReady = *(int*) (pObject + 0x104) != 0 && *(int*) (pObject + 0x94) != 0;
-	if ((*(unsigned int*) (pObject + 0x110) & 0x40) != 0 && fResourceReady) {
-		++x;
-		++y;
-	}
-
-	pQueueOwner = *(void**) (pObject + 0x4c);
-	pGeometryContext = *(void**) ((char*) pQueueOwner + 0x0c);
-	pGeometryContext = (char*) pGeometryContext + *(int*) (*(int*) ((char*) pGeometryContext + 0x40) + 4) + 0x40;
-	((RefreshProc) (*(void***) pGeometryContext)[14])(pGeometryContext, 0);
-
-	pFrameSink = *(char**) (pObject + 0x124);
-	*(short*) (pFrameSink + 4) = x;
-	*(short*) (pFrameSink + 6) = y;
-	*(void**) (pFrameSink + 0x1c) = *(void**) (pObject + 0x11c);
-	*(int*) (pFrameSink + 0x18) = *(int*) (pObject + 0x104);
-	*(int*) (pFrameSink + 0x0c) = 0;
-	*(void**) (pFrameSink + 0x10) = *(void**) (pObject + 0x120);
-	((QueueProc) (*(void***) pFrameSink)[1])(pFrameSink, 0, pQueueOwner);
-}
-
-// FUNCTION: LEMBALL 0x0043a620
-void GameSelectorProgressOverlayOwnerView::SetChildPresentForModeA(int nMode)
-{
-	if (*(void**) ((char*) this + 0xd0) != 0 && (nMode == 0 || nMode == 3)) {
-		*(int*) ((char*) this + 0x104) = 1;
-		return;
-	}
-	*(int*) ((char*) this + 0x104) = 0;
-}
-
-// FUNCTION: LEMBALL 0x0043a660
-void GameSelectorProgressOverlayOwnerView::SetChildPresentForModeB(int nMode)
-{
-	if (*(void**) ((char*) this + 0xd0) != 0 && (nMode == 0 || nMode == 3)) {
-		*(int*) ((char*) this + 0x104) = 1;
-		return;
-	}
-	*(int*) ((char*) this + 0x104) = 0;
-}
-
-// FUNCTION: LEMBALL 0x0043a6a0
-void GameAlignedZrleChildOverlayView::HandlePointerEnter(void)
-{
-	if (*(void**) ((char*) this + 0xd0) != 0 &&
-		(*(int*) ((char*) this + 0xa0) != 0 || *(int*) ((char*) this + 0xac) != 0)) {
-		*(int*) ((char*) this + 0x104) = 1;
-		return;
-	}
-	*(int*) ((char*) this + 0x104) = 0;
-}
-
-// FUNCTION: LEMBALL 0x0043a6e0
-void GameAlignedZrleChildOverlayView::HandlePointerLeave(void)
-{
-	if (*(void**) ((char*) this + 0xd0) != 0 &&
-		(*(int*) ((char*) this + 0xa0) != 0 || *(int*) ((char*) this + 0xac) != 0)) {
-		*(int*) ((char*) this + 0x104) = 1;
-		return;
-	}
-	*(int*) ((char*) this + 0x104) = 0;
-}
-
 // FUNCTION: LEMBALL 0x0044c1e0
 int GetIntDirectionSign(int nValue)
 {
@@ -1044,7 +1351,6 @@ int GetIntDirectionSign(int nValue)
 	}
 	return 0;
 }
-
 // FUNCTION: LEMBALL 0x0044c200
 void GameAlignedZrleChildOverlayView::HandleButtonRelease(int nMode)
 {
@@ -1054,7 +1360,6 @@ void GameAlignedZrleChildOverlayView::HandleButtonRelease(int nMode)
 	}
 	*(int*) ((char*) this + 0x104) = 0;
 }
-
 // FUNCTION: LEMBALL 0x0044c230
 void GameAlignedZrleChildOverlayView::HandleButtonPress(int nMode)
 {
@@ -1068,7 +1373,6 @@ void GameAlignedZrleChildOverlayView::HandleButtonPress(int nMode)
 		((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffectThunk(0x25);
 	}
 }
-
 // FUNCTION: LEMBALL 0x0044c270
 GameMenuSelectorEntry::GameMenuSelectorEntry(void* pRenderOwner,
 											 void* pRenderContext,
@@ -1120,7 +1424,6 @@ GameMenuSelectorEntry::GameMenuSelectorEntry(void* pRenderOwner,
 	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->RegisterOrderedRenderDispatchClient(this, 0);
 	BuildOverlay(panResourceIds);
 }
-
 // FUNCTION: LEMBALL 0x0044c330
 GameMenuSelectorEntry* GameMenuSelectorEntry::ConstructProgressEntry(const short* paProgressRect,
 																	 void* pRenderOwner,
@@ -1169,7 +1472,6 @@ GameMenuSelectorEntry* GameMenuSelectorEntry::ConstructProgressEntry(const short
 	BuildOverlay(panResourceIds);
 	return this;
 }
-
 // FUNCTION: LEMBALL 0x0044c410
 void LEMBALL_FASTCALL DestroyMenuSelectorEntry(GameMenuSelectorEntry* pEntry)
 {
@@ -1178,7 +1480,6 @@ void LEMBALL_FASTCALL DestroyMenuSelectorEntry(GameMenuSelectorEntry* pEntry)
 	ReleaseMenuSelectorEntryResources(pEntry);
 	pEntry->m_pVtable00 = g_pNonZrleVariantRenderEntryInitializeVtable;
 }
-
 // FUNCTION: LEMBALL 0x0044c460
 int GameMenuSelectorEntry::HandleEvent(GameMenuSelectorEvent* pEvent)
 {
@@ -1263,7 +1564,6 @@ int GameMenuSelectorEntry::HandleEvent(GameMenuSelectorEvent* pEvent)
 	((GameSelectorProgressOverlayChild*) *(void**) ((char*) m_pProgressOverlay54 + 0x134))->SetPercent(nPercent);
 	return 0;
 }
-
 // FUNCTION: LEMBALL 0x0044c600
 void GameMenuSelectorEntry::RebuildRects(int fForce, int)
 {
@@ -1274,7 +1574,6 @@ void GameMenuSelectorEntry::RebuildRects(int fForce, int)
 		((GameCompactZrleOverlay*) m_pProgressOverlay54)->RebuildSourceRect(fForce);
 	}
 }
-
 // FUNCTION: LEMBALL 0x0044c630
 void GameMenuSelectorEntry::BuildOverlay(const int* panResourceIds)
 {
@@ -1340,7 +1639,6 @@ void GameMenuSelectorEntry::BuildOverlay(const int* panResourceIds)
 	*(int*) ((char*) *ppOverlay + 0xcc) = pEntry->m_nToken30;
 	pEntry->m_pAlignedOverlay50 = 0;
 }
-
 // FUNCTION: LEMBALL 0x0044c7c0
 void LEMBALL_FASTCALL ReleaseMenuSelectorEntryResources(GameMenuSelectorEntry* pEntry)
 {
@@ -1362,126 +1660,7 @@ void LEMBALL_FASTCALL ReleaseMenuSelectorEntryResources(GameMenuSelectorEntry* p
 	FreeVSMemBlock(pEntry->m_ppLoadedResources58);
 	pEntry->m_ppLoadedResources58 = 0;
 }
-
-__inline static void InitializeAlignedZrleChildOverlayVtables(void)
-{
-	union VoidMethod {
-		void (GameAlignedZrleChildOverlayView::*p)(void);
-		void* v;
-	} Void;
-	union DeleteMethod {
-		void* (GameAlignedZrleChildOverlayDeleteView::*p)(unsigned int);
-		void* v;
-	} Delete;
-	union IntMethod {
-		void (GameAlignedZrleChildOverlayView::*p)(int);
-		void* v;
-	} Int;
-	int i;
-
-	if (g_fAlignedZrleChildOverlayVtablesInitialized != 0) {
-		return;
-	}
-	for (i = 0; i < 52; ++i) {
-		g_AlignedZrleChildOverlayVtable[i] = g_ResourceGeometryChildVtable[i];
-	}
-	for (i = 0; i < 8; ++i) {
-		g_AlignedZrleChildOverlayDeleteVtable[i] = g_ResourceGeometryChildDeleteVtable[i];
-	}
-	Void.p = &GameAlignedZrleChildOverlayView::ReleaseFrameResource;
-	g_AlignedZrleChildOverlayVtable[16] = Void.v;
-	Void.p = &GameAlignedZrleChildOverlayView::QueueAlignedFrame;
-	g_AlignedZrleChildOverlayVtable[47] = Void.v;
-	Int.p = &GameAlignedZrleChildOverlayView::HandleButtonRelease;
-	g_AlignedZrleChildOverlayVtable[48] = Int.v;
-	Int.p = &GameAlignedZrleChildOverlayView::HandleButtonPress;
-	g_AlignedZrleChildOverlayVtable[49] = Int.v;
-	Void.p = &GameAlignedZrleChildOverlayView::HandlePointerEnter;
-	g_AlignedZrleChildOverlayVtable[50] = Void.v;
-	Void.p = &GameAlignedZrleChildOverlayView::HandlePointerLeave;
-	g_AlignedZrleChildOverlayVtable[51] = Void.v;
-	g_AlignedZrleChildOverlayDeleteVtable[1] = (void*) HandleSpriteOwnerButtonTransition;
-	g_AlignedZrleChildOverlayDeleteVtable[2] = (void*) HandleSpriteOwnerButtonInside;
-	g_AlignedZrleChildOverlayDeleteVtable[3] = (void*) ResetSpriteOwnerButtonState;
-	g_AlignedZrleChildOverlayDeleteVtable[4] = (void*) HandleSpriteOwnerPointerEnter;
-	g_AlignedZrleChildOverlayDeleteVtable[5] = (void*) HandleSpriteOwnerPointerLeave;
-	Delete.p = &GameAlignedZrleChildOverlayDeleteView::Delete;
-	g_AlignedZrleChildOverlayDeleteVtable[0] = Delete.v;
-	g_fAlignedZrleChildOverlayVtablesInitialized = 1;
-}
-
-void LEMBALL_FASTCALL DestroyAlignedZrleChildOverlay(void* pChildOwner)
-{
-	typedef void(LEMBALL_FASTCALL * DeleteProc)(void* pObject, int nUnusedEdx, unsigned int fDelete);
-	char* pObject;
-	void* pFrameSink;
-
-	pObject = (char*) pChildOwner - 0x90;
-	*(void***) pChildOwner = g_AlignedZrleChildOverlayDeleteVtable;
-	*(void***) pObject = g_AlignedZrleChildOverlayVtable;
-	if (*(int*) (pObject + 4) == 1) {
-		DetachGeometryChildAndDestroyWindowOwner(pObject);
-	}
-	pFrameSink = *(void**) (pObject + 0x124);
-	if (pFrameSink != 0) {
-		((DeleteProc) (*(void***) pFrameSink)[0])(pFrameSink, 0, 3);
-	}
-	RestoreQueuedRenderPointSinkVtable(pObject + 0x128);
-	DestroyResourceGeometryChild(pChildOwner);
-}
-
-void* GameAlignedZrleChildOverlayDeleteView::Delete(unsigned int fDelete)
-{
-	char* pObject;
-
-	pObject = (char*) this - 0x90;
-	DestroyAlignedZrleChildOverlay(this);
-	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pObject);
-	}
-	return pObject;
-}
-
-void* LEMBALL_FASTCALL ConstructAlignedZrleChildOverlayFromPoint(void* pObject,
-																 int nUnusedEdx,
-																 const VS_XYPair* pPoint,
-																 void* pRenderOwner,
-																 int nResourceId,
-																 int fAlignment)
-{
-	typedef void(LEMBALL_FASTCALL *
-				 InitializeRectProc)(void* pObject, int nUnusedEdx, short* pRect, void* pOwner, const char* pszName);
-	short aRect[4];
-
-	(void) nUnusedEdx;
-	ConstructResourceGeometryChildBase(pObject, 0, pRenderOwner);
-	*(short*) ((char*) pObject + 0x114) = 0;
-	*(short*) ((char*) pObject + 0x116) = 0;
-	*(int*) ((char*) pObject + 0x104) = 0;
-	*(int*) ((char*) pObject + 0x108) = 0;
-	*(short*) ((char*) pObject + 0x118) = 0;
-	*(short*) ((char*) pObject + 0x11a) = 0;
-	InitializeTinyPointSinkHelper((char*) pObject + 0x128);
-	InitializeAlignedZrleChildOverlayVtables();
-	*(void***) pObject = g_AlignedZrleChildOverlayVtable;
-	*(void***) ((char*) pObject + 0x90) = g_AlignedZrleChildOverlayDeleteVtable;
-	*(int*) ((char*) pObject + 0x10c) = nResourceId;
-	*(int*) ((char*) pObject + 0x110) = fAlignment;
-	ComputeAlignedZrleChildLayout(pObject);
-
-	*(short*) ((char*) pObject + 0xdc) = pPoint->m_x;
-	*(short*) ((char*) pObject + 0xde) = pPoint->m_y;
-	aRect[0] = *(short*) ((char*) pObject + 0xc0);
-	aRect[1] = *(short*) ((char*) pObject + 0xc2);
-	aRect[2] = pPoint->m_x;
-	aRect[3] = pPoint->m_y;
-	((InitializeRectProc) (*(void***) pObject)[1])(pObject, 0, aRect, pRenderOwner, "Button");
-	*(short*) ((char*) pObject + 0xc4) += *(short*) ((char*) pObject + 0x18);
-	*(short*) ((char*) pObject + 0xc6) += *(short*) ((char*) pObject + 0x1a);
-	AppendGeometryOwnerChild(*(void**) ((char*) pRenderOwner + 0x1c), 0, (char*) pObject + 0x90);
-	return pObject;
-}
-
+// FUNCTION: LEMBALL 0x0044c850
 void GameMenuSelectorChildContextView::MarkRenderObjectDirty(void)
 {
 	int nContext;
@@ -1491,666 +1670,6 @@ void GameMenuSelectorChildContextView::MarkRenderObjectDirty(void)
 	nRenderObject = nContext + *(int*) (*(int*) (nContext + 0x40) + 4) + 0x74;
 	*(int*) nRenderObject = 1;
 }
-
-__inline static void* ConstructMenuSelectorChildContextObject(void* pObject)
-{
-	union VoidMethod {
-		void (GameMenuSelectorChildContextView::*p)(void);
-		void* v;
-	} Void;
-	void** pBaseVtable;
-	int i;
-
-	((GameWindowOwnerRenderContext*) pObject)->ConstructWindowOwnerRenderContext();
-	pBaseVtable = *(void***) pObject;
-	if (g_fMenuSelectorChildContextVtableInitialized == 0) {
-		for (i = 0; i < 46; ++i) {
-			g_MenuSelectorChildContextVtable[i] = pBaseVtable[i];
-		}
-		Void.p = &GameMenuSelectorChildContextView::MarkRenderObjectDirty;
-		g_MenuSelectorChildContextVtable[15] = Void.v;
-		g_fMenuSelectorChildContextVtableInitialized = 1;
-	}
-	*(void***) pObject = g_MenuSelectorChildContextVtable;
-	*(int*) ((char*) pObject + 0x50) += 5;
-	return pObject;
-}
-
-void GameMenuSelectorManager::InitializeChildContext(void)
-{
-	typedef void(LEMBALL_FASTCALL *
-				 InitializeRectProc)(void* pObject, int nUnusedEdx, short* pRect, void* pOwner, int nFlags);
-	short Rect[4];
-	void* pContextObject;
-
-	pContextObject = AllocateVSMemBlock(0x90);
-	if (pContextObject != 0) {
-		ConstructMenuSelectorChildContextObject(pContextObject);
-	}
-	m_pChildContext268 = pContextObject;
-	Rect[0] = *(short*) ((char*) m_pRenderOwner214 + 8);
-	Rect[1] = *(short*) ((char*) m_pRenderOwner214 + 10);
-	Rect[2] = 0;
-	Rect[3] = 0;
-	((InitializeRectProc) (*(void***) pContextObject)[1])(pContextObject, 0, Rect, m_pRenderOwner214, 0);
-	m_pChildRenderContext26C = *(void**) ((char*) pContextObject + 0x4c);
-}
-
-struct GameQueuedVariantRangeEntry {
-	void** m_pVtable00;
-	int m_nQueueTag04;
-	int m_nQueueReserved08;
-	int m_cUnhandledEvents0C;
-	short m_nReserved10;
-	short m_nReserved12;
-	short m_nReserved14;
-	short m_nReserved16;
-	int m_x18;
-	int m_y1C;
-	void* m_pRenderContext20;
-	void* m_pRenderOwner24;
-	int m_nActivationMode28;
-	int m_nToken2C;
-	int m_nCommand30;
-	int m_cResources34;
-	int m_nLastResource38;
-	int m_nFirstResource3C;
-	int m_nSelectedResource40;
-	int* m_pSelection44;
-	const int* m_panResourceIds48;
-	void* m_pOverlay4C;
-	void** m_ppLoadedResources50;
-	int m_fEnabled54;
-};
-
-struct GameQueuedVariantSlotRecord {
-	int m_fActive00;
-	int m_x04;
-	int m_y08;
-	int m_nToken0C;
-};
-
-struct GameQueuedVariantChildSlotManager {
-	void** m_pVtable00;
-	int m_nQueueTag04;
-	int m_nQueueReserved08;
-	int m_cUnhandledEvents0C;
-	unsigned char m_abVariantRenderManager10[0x70];
-	int m_cChildren80;
-	GameMenuSelectorEvent m_ActionEvent84;
-	int m_nCurrentChildA0;
-	int m_nReservedA4;
-	int m_iSelectedChildA8;
-	GameQueuedVariantRangeEntry* m_apChildrenAC[4];
-	GameQueuedVariantSlotRecord m_aSlotsBC[4];
-	unsigned char m_abPointSinkFC[0x10];
-	void* m_pRenderContext10C;
-	void* m_pRenderOwner110;
-	int m_nNextToken114;
-	unsigned char m_abCallback118[0x0c];
-	int m_nReserved124;
-	void* m_pChildContext128;
-	void* m_pChildRenderContext12C;
-	int m_nLayoutMode130;
-	int m_nNavigationMode134;
-	int m_fCompactLayout138;
-	int m_dwSelectionStart13C;
-	int m_dwSelectionEnd140;
-	int m_fInputEnabled144;
-	int m_fChildrenEnabled148;
-};
-
-typedef char GameQueuedVariantRangeEntry_size_must_be_0x58[sizeof(GameQueuedVariantRangeEntry) == 0x58 ? 1 : -1];
-typedef char
-	GameQueuedVariantChildSlotManager_size_must_be_0x14c[sizeof(GameQueuedVariantChildSlotManager) == 0x14c ? 1 : -1];
-
-static int LEMBALL_FASTCALL HandleQueuedVariantRangeEntryEvent(GameQueuedVariantRangeEntry* pEntry,
-															   int,
-															   GameMenuSelectorEvent* pEvent);
-int LEMBALL_FASTCALL HandleQueuedVariantChildSlotManagerEvent(GameQueuedVariantChildSlotManager* pManager,
-															  int,
-															  GameMenuSelectorEvent* pEvent);
-static void* LEMBALL_FASTCALL DeleteQueuedVariantRangeEntry(GameQueuedVariantRangeEntry* pEntry, int, int fDelete);
-void* LEMBALL_FASTCALL DeleteQueuedVariantChildSlotManager(GameQueuedVariantChildSlotManager* pManager,
-														   int,
-														   int fDelete);
-
-static void* g_QueuedVariantRangeEntryVtable[3] = {(void*) InitializeNonZrleVariantRenderEntry,
-												   (void*) DeleteQueuedVariantRangeEntry,
-												   (void*) HandleQueuedVariantRangeEntryEvent};
-/* VTABLE: LEMBALL 0x0049823C */
-static void* g_QueuedVariantChildSlotManagerRenderManagerVtable[1] = {(void*) VariantResourceBundleNoopThunk};
-/* VTABLE: LEMBALL 0x00498240 */
-static void* g_QueuedVariantChildSlotManagerVtable[3] = {(void*) InitializeNonZrleVariantRenderEntry,
-														 (void*) DeleteQueuedVariantChildSlotManager,
-														 (void*) HandleQueuedVariantChildSlotManagerEvent};
-
-__inline static void QueueQueuedVariantCommand(int nCommand)
-{
-	typedef void(LEMBALL_FASTCALL * QueueProc)(void*, int, void*);
-	GameMenuSelectorEvent Event;
-
-	Event.m_nType00 = 0x0c;
-	Event.m_nReserved02 = 0;
-	Event.m_dwTimestamp04 = (int) timeGetTime();
-	Event.m_nPayload08 = nCommand;
-	Event.m_nPayload0C = 0;
-	Event.m_nPayload10 = 0;
-	Event.m_nPayload14 = 0;
-	Event.m_nPayload18 = 0;
-	((QueueProc) (*(void***) g_pSharedRenderDispatchQueue)[2])(g_pSharedRenderDispatchQueue, 0, &Event);
-}
-
-__inline static void DestroyQueuedVariantRangeEntryResources(GameQueuedVariantRangeEntry* pEntry)
-{
-	typedef void(LEMBALL_FASTCALL * DeleteOverlayProc)(void*, int, int);
-	int i;
-
-	if (pEntry->m_pOverlay4C != 0) {
-		void* pDelete = (char*) pEntry->m_pOverlay4C + 0x90;
-		((DeleteOverlayProc) (*(void***) pDelete)[0])(pDelete, 0, 1);
-		pEntry->m_pOverlay4C = 0;
-	}
-	if (pEntry->m_ppLoadedResources50 != 0) {
-		for (i = 0; i < pEntry->m_cResources34; ++i) {
-			ReleaseTypedResourceObjectReference(pEntry->m_ppLoadedResources50[i]);
-		}
-		FreeVSMemBlock(pEntry->m_ppLoadedResources50);
-		pEntry->m_ppLoadedResources50 = 0;
-	}
-}
-
-__inline static void DestroyQueuedVariantRangeEntry(GameQueuedVariantRangeEntry* pEntry)
-{
-	pEntry->m_pVtable00 = g_QueuedVariantRangeEntryVtable;
-	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->UnregisterOrderedRenderDispatchClient(pEntry, 0);
-	DestroyQueuedVariantRangeEntryResources(pEntry);
-	pEntry->m_pVtable00 = g_pNonZrleVariantRenderEntryInitializeVtable;
-}
-
-static void* LEMBALL_FASTCALL DeleteQueuedVariantRangeEntry(GameQueuedVariantRangeEntry* pEntry, int, int fDelete)
-{
-	DestroyQueuedVariantRangeEntry(pEntry);
-	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pEntry);
-	}
-	return pEntry;
-}
-
-static int LEMBALL_FASTCALL HandleQueuedVariantRangeEntryEvent(GameQueuedVariantRangeEntry* pEntry,
-															   int,
-															   GameMenuSelectorEvent* pEvent)
-{
-	if (pEvent->m_nPayload08 != pEntry->m_nToken2C) {
-		return 0;
-	}
-	if (pEvent->m_nType00 == 0x0b) {
-		((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x25);
-		return 0;
-	}
-	if (pEvent->m_nType00 == 0x0c && pEntry->m_nActivationMode28 == 1) {
-		QueueQueuedVariantCommand(pEntry->m_nCommand30);
-	}
-	return 0;
-}
-
-__inline static GameQueuedVariantRangeEntry* ConstructQueuedVariantRangeEntry(GameQueuedVariantRangeEntry* pEntry,
-																			  void* pRenderOwner,
-																			  void* pRenderContext,
-																			  int x,
-																			  int y,
-																			  const int* panResourceIds,
-																			  int nActivationMode,
-																			  int nFirstResource,
-																			  int nLastResource,
-																			  int nToken,
-																			  int* pSelection,
-																			  int nCommand)
-{
-	VS_XYPair Point;
-	int i;
-
-	InitializeRenderQueueNodeBase(pEntry);
-	pEntry->m_pVtable00 = g_QueuedVariantRangeEntryVtable;
-	pEntry->m_nReserved10 = 0;
-	pEntry->m_nReserved12 = 0;
-	pEntry->m_nReserved14 = 0;
-	pEntry->m_nReserved16 = 0;
-	pEntry->m_x18 = x;
-	pEntry->m_y1C = y;
-	pEntry->m_pRenderContext20 = pRenderContext;
-	pEntry->m_pRenderOwner24 = pRenderOwner;
-	pEntry->m_nActivationMode28 = nActivationMode;
-	pEntry->m_nToken2C = nToken;
-	pEntry->m_nCommand30 = nCommand;
-	pEntry->m_cResources34 = nLastResource - nFirstResource + 1;
-	if (pEntry->m_cResources34 < 2) {
-		pEntry->m_cResources34 = 1;
-	}
-	pEntry->m_nLastResource38 = nLastResource;
-	pEntry->m_nFirstResource3C = nFirstResource;
-	pEntry->m_nSelectedResource40 = pSelection == 0 ? 0 : *pSelection;
-	pEntry->m_pSelection44 = pSelection;
-	pEntry->m_panResourceIds48 = panResourceIds;
-	pEntry->m_fEnabled54 = 1;
-	pEntry->m_ppLoadedResources50 = (void**) AllocateVSMemBlock(pEntry->m_cResources34 * sizeof(void*));
-	for (i = 0; i < pEntry->m_cResources34; ++i) {
-		pEntry->m_ppLoadedResources50[i] = LoadZrleOnlyListResource(panResourceIds[i]);
-	}
-	pEntry->m_pOverlay4C = AllocateVSMemBlock(0x130);
-	if (pEntry->m_pOverlay4C != 0) {
-		Point.m_x = (short) x;
-		Point.m_y = (short) y;
-		ConstructAlignedZrleChildOverlayFromPoint(pEntry->m_pOverlay4C,
-												  0,
-												  &Point,
-												  pRenderOwner,
-												  panResourceIds[pEntry->m_nSelectedResource40 - nFirstResource],
-												  3);
-		*(int*) ((char*) pEntry->m_pOverlay4C + 0xf8) = 0;
-		*(void**) ((char*) pEntry->m_pOverlay4C + 0xf4) = g_pSharedRenderDispatchQueue;
-		*(int*) ((char*) pEntry->m_pOverlay4C + 0xcc) = nToken;
-	}
-	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->RegisterOrderedRenderDispatchClient(pEntry, 0);
-	return pEntry;
-}
-
-__inline static void LEMBALL_FASTCALL RefreshQueuedVariantRangeSelection(GameQueuedVariantRangeEntry* pEntry)
-{
-	int nResourceId;
-
-	if (pEntry->m_pSelection44 != 0) {
-		pEntry->m_nSelectedResource40 = *pEntry->m_pSelection44;
-	}
-	nResourceId = pEntry->m_panResourceIds48[pEntry->m_nSelectedResource40 - pEntry->m_nFirstResource3C];
-	((GameCompactZrleOverlay*) pEntry->m_pOverlay4C)->ReloadResource(nResourceId);
-}
-
-void* LEMBALL_FASTCALL ConstructQueuedVariantChildSlotManager(void* pObject,
-															  int,
-															  void* pRenderOwner,
-															  void* pRenderContext,
-															  int,
-															  int nLayoutMode,
-															  int nNavigationMode)
-{
-	GameQueuedVariantChildSlotManager* pManager;
-	int i;
-
-	pManager = (GameQueuedVariantChildSlotManager*) pObject;
-	memset(pManager, 0, sizeof(*pManager));
-	InitializeRenderQueueNodeBase(pManager);
-	pManager->m_pVtable00 = g_QueuedVariantChildSlotManagerVtable;
-	((LevelVariantRenderManagerView*) pManager->m_abVariantRenderManager10)
-		->Construct((int) (unsigned long) pRenderContext, 0x2b6, 1, 1, 0, 0);
-	*(void***) pManager->m_abPointSinkFC = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
-	*(void***) pManager->m_abPointSinkFC = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage + 4;
-	*(void***) pManager->m_abCallback118 = g_MenuSelectorFrameSelectorCtorVtable;
-	*(int*) (pManager->m_abCallback118 + 4) = 1;
-	*(void***) pManager->m_abCallback118 = g_MenuSelectorCurrentFrameCallbackVtable;
-	*(void***) pManager->m_abVariantRenderManager10 = g_QueuedVariantChildSlotManagerRenderManagerVtable;
-	pManager->m_pRenderContext10C = pRenderContext;
-	pManager->m_pRenderOwner110 = pRenderOwner;
-	pManager->m_nNextToken114 = (int) 0xabcd0000U;
-	pManager->m_nLayoutMode130 = nLayoutMode;
-	pManager->m_nNavigationMode134 = nNavigationMode;
-	pManager->m_fCompactLayout138 = nLayoutMode == 1;
-	pManager->m_fInputEnabled144 = 1;
-	for (i = 0; i < 4; ++i) {
-		pManager->m_apChildrenAC[i] = 0;
-		pManager->m_aSlotsBC[i].m_fActive00 = 0;
-	}
-	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->RegisterOrderedRenderDispatchClient(pManager, 0);
-	g_nQueuedVariantChildSlotManagerModeSelectedResourceId = nLayoutMode == 1 ? 0x183 : 0x156;
-	((LevelVariantRenderManagerView*) pManager->m_abVariantRenderManager10)
-		->LoadVariantRenderResource(g_nQueuedVariantChildSlotManagerModeSelectedResourceId);
-	return pManager;
-}
-
-void LEMBALL_FASTCALL AppendQueuedVariantChildSlot(void* pObject,
-												   int,
-												   int x,
-												   int y,
-												   const int* panResourceIds,
-												   int nActivationMode,
-												   int nFirstResource,
-												   int nLastResource,
-												   int,
-												   int* pSelection,
-												   int nCommand)
-{
-	GameQueuedVariantChildSlotManager* pManager;
-	GameQueuedVariantRangeEntry* pEntry;
-	int iChild;
-	int nToken;
-
-	pManager = (GameQueuedVariantChildSlotManager*) pObject;
-	iChild = pManager->m_cChildren80;
-	if (iChild >= 4) {
-		return;
-	}
-	nToken = ++pManager->m_nNextToken114;
-	pEntry = (GameQueuedVariantRangeEntry*) AllocateVSMemBlock(sizeof(GameQueuedVariantRangeEntry));
-	if (pEntry != 0) {
-		ConstructQueuedVariantRangeEntry(pEntry,
-										 pManager->m_pRenderOwner110,
-										 pManager->m_pRenderContext10C,
-										 x,
-										 y,
-										 panResourceIds,
-										 nActivationMode,
-										 nFirstResource,
-										 nLastResource,
-										 nToken,
-										 pSelection,
-										 nCommand);
-	}
-	pManager->m_apChildrenAC[iChild] = pEntry;
-	pManager->m_aSlotsBC[iChild].m_fActive00 = pEntry != 0;
-	pManager->m_aSlotsBC[iChild].m_x04 = x;
-	pManager->m_aSlotsBC[iChild].m_y08 = y;
-	pManager->m_aSlotsBC[iChild].m_nToken0C = nToken;
-	++pManager->m_cChildren80;
-}
-
-void LEMBALL_FASTCALL SelectQueuedVariantChildSlot(void* pObject, int, int iChild)
-{
-	GameQueuedVariantChildSlotManager* pManager;
-	DWORD dwNow;
-
-	pManager = (GameQueuedVariantChildSlotManager*) pObject;
-	if (iChild < 0 || iChild >= pManager->m_cChildren80) {
-		return;
-	}
-	pManager->m_iSelectedChildA8 = iChild;
-	dwNow = timeGetTime();
-	pManager->m_dwSelectionStart13C = (int) dwNow;
-	pManager->m_dwSelectionEnd140 = (int) dwNow;
-}
-
-__inline static void* ConstructQueuedVariantChildContextObject(void* pObject)
-{
-	union VoidMethod {
-		void (GameMenuSelectorChildContextView::*p)(void);
-		void* v;
-	} Void;
-	void** pBaseVtable;
-	int i;
-
-	((GameWindowOwnerRenderContext*) pObject)->ConstructWindowOwnerRenderContext();
-	pBaseVtable = *(void***) pObject;
-	if (g_fQueuedVariantChildContextVtableInitialized == 0) {
-		for (i = 0; i < 46; ++i) {
-			g_QueuedVariantChildContextVtable[i] = pBaseVtable[i];
-		}
-		Void.p = &GameMenuSelectorChildContextView::MarkRenderObjectDirty;
-		g_QueuedVariantChildContextVtable[15] = Void.v;
-		g_fQueuedVariantChildContextVtableInitialized = 1;
-	}
-	*(void***) pObject = g_QueuedVariantChildContextVtable;
-	++*(int*) ((char*) pObject + 0x50);
-	return pObject;
-}
-
-void LEMBALL_FASTCALL InitializeQueuedVariantChildContext(void* pObject)
-{
-	typedef void(LEMBALL_FASTCALL * InitializeRectProc)(void*, int, short*, void*, int);
-	GameQueuedVariantChildSlotManager* pManager;
-	short Rect[4];
-	void* pContext;
-
-	pManager = (GameQueuedVariantChildSlotManager*) pObject;
-	pContext = AllocateVSMemBlock(0x90);
-	if (pContext == 0) {
-		pManager->m_pChildContext128 = 0;
-		pManager->m_pChildRenderContext12C = 0;
-		return;
-	}
-	ConstructQueuedVariantChildContextObject(pContext);
-	pManager->m_pChildContext128 = pContext;
-	Rect[0] = *(short*) ((char*) pManager->m_pRenderOwner110 + 8);
-	Rect[1] = *(short*) ((char*) pManager->m_pRenderOwner110 + 10);
-	Rect[2] = 0;
-	Rect[3] = 0;
-	((InitializeRectProc) (*(void***) pContext)[1])(pContext, 0, Rect, pManager->m_pRenderOwner110, 0);
-	pManager->m_pChildRenderContext12C = *(void**) ((char*) pContext + 0x4c);
-}
-
-void LEMBALL_FASTCALL RefreshQueuedVariantChildByToken(void* pObject, int, int nToken)
-{
-	GameQueuedVariantChildSlotManager* pManager;
-	GameQueuedVariantRangeEntry* pEntry;
-	int i;
-
-	pManager = (GameQueuedVariantChildSlotManager*) pObject;
-	for (i = 0; i < pManager->m_cChildren80; ++i) {
-		pEntry = pManager->m_apChildrenAC[i];
-		if (pEntry != 0 && pEntry->m_nCommand30 == nToken) {
-			RefreshQueuedVariantRangeSelection(pEntry);
-			return;
-		}
-	}
-}
-
-__inline static void LEMBALL_FASTCALL RebuildCompactZrleOwnerSourceRectIfNeeded(void* pOverlay, int, int fForce)
-{
-	int fPrevious;
-	short Rect[4];
-	typedef void(LEMBALL_FASTCALL * SetRectProc)(void*, int, short*);
-
-	if (*(int*) ((char*) pOverlay + 0xfc) == 0 || fForce != 0) {
-		Rect[0] = *(short*) ((char*) pOverlay + 8);
-		Rect[1] = *(short*) ((char*) pOverlay + 10);
-		Rect[2] = 0;
-		Rect[3] = 0;
-		fPrevious = *(int*) ((char*) pOverlay + 0xf8);
-		*(int*) ((char*) pOverlay + 0xf8) = 1;
-		((SetRectProc) (*(void***) pOverlay)[42])(pOverlay, 0, Rect);
-		*(int*) ((char*) pOverlay + 0xf8) = fPrevious;
-	}
-	*(int*) ((char*) pOverlay + 0xfc) = 0;
-}
-
-__inline static void LEMBALL_FASTCALL RebuildQueuedVariantChildSourceRect(GameQueuedVariantRangeEntry* pEntry,
-																		  int,
-																		  int fForce)
-{
-	if (pEntry->m_pOverlay4C != 0) {
-		RebuildCompactZrleOwnerSourceRectIfNeeded(pEntry->m_pOverlay4C, 0, fForce);
-	}
-}
-
-void LEMBALL_FASTCALL RebuildQueuedVariantChildSlotSourceRects(void* pObject, int, int fForce)
-{
-	GameQueuedVariantChildSlotManager* pManager;
-	int i;
-
-	pManager = (GameQueuedVariantChildSlotManager*) pObject;
-	for (i = 0; i < 4; ++i) {
-		if (pManager->m_apChildrenAC[i] != 0) {
-			RebuildQueuedVariantChildSourceRect(pManager->m_apChildrenAC[i], 0, fForce);
-		}
-	}
-}
-
-int LEMBALL_FASTCALL HandleQueuedVariantChildSlotManagerEvent(GameQueuedVariantChildSlotManager* pManager,
-															  int,
-															  GameMenuSelectorEvent* pEvent)
-{
-	int iChild;
-
-	if (pManager->m_fInputEnabled144 == 0) {
-		return 0;
-	}
-	if (pEvent->m_nType00 != 4) {
-		++pManager->m_cUnhandledEvents0C;
-		return 0;
-	}
-	iChild = pManager->m_iSelectedChildA8;
-	if (pEvent->m_nPayload08 == 1 || pEvent->m_nPayload08 == 3) {
-		if (iChild > 0) {
-			SelectQueuedVariantChildSlot(pManager, 0, iChild - 1);
-		}
-		((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x1b);
-		return 1;
-	}
-	if (pEvent->m_nPayload08 == 2 || pEvent->m_nPayload08 == 4) {
-		if (iChild + 1 < pManager->m_cChildren80) {
-			SelectQueuedVariantChildSlot(pManager, 0, iChild + 1);
-		}
-		((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x1b);
-		return 1;
-	}
-	if (pEvent->m_nPayload08 == 0x1f || pEvent->m_nPayload08 == 0x22 || pEvent->m_nPayload08 == 0x4c) {
-		QueueQueuedVariantCommand(pManager->m_aSlotsBC[pManager->m_iSelectedChildA8].m_nToken0C == 0
-									  ? 0
-									  : pManager->m_apChildrenAC[pManager->m_iSelectedChildA8]->m_nCommand30);
-	}
-	return 0;
-}
-
-void LEMBALL_FASTCALL DestroyQueuedVariantChildSlotManager(void* pObject)
-{
-	GameQueuedVariantChildSlotManager* pManager;
-	int i;
-	int nResourceId;
-
-	pManager = (GameQueuedVariantChildSlotManager*) pObject;
-	pManager->m_pVtable00 = g_QueuedVariantChildSlotManagerVtable;
-	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->UnregisterOrderedRenderDispatchClient(pManager, 0);
-	for (i = 0; i < 4; ++i) {
-		if (pManager->m_apChildrenAC[i] != 0) {
-			DeleteQueuedVariantRangeEntry(pManager->m_apChildrenAC[i], 0, 1);
-			pManager->m_apChildrenAC[i] = 0;
-		}
-	}
-	nResourceId = pManager->m_nLayoutMode130 == 1 ? 0x183 : 0x156;
-	((LevelVariantRenderManagerView*) pManager->m_abVariantRenderManager10)->ReleaseVariantRenderResource(nResourceId);
-	if (pManager->m_pChildContext128 != 0) {
-		typedef void(LEMBALL_FASTCALL * DetachProc)(void*, int);
-		if (*(int*) ((char*) pManager->m_pChildContext128 + 4) == 1) {
-			((DetachProc) (*(void***) pManager->m_pChildContext128)[29])(pManager->m_pChildContext128, 0);
-		}
-		DestroyWindowOwnerRenderContext(pManager->m_pChildContext128);
-		FreeVSMemBlock(pManager->m_pChildContext128);
-		pManager->m_pChildContext128 = 0;
-		pManager->m_pChildRenderContext12C = 0;
-	}
-	DestroyVariantRenderManager(pManager->m_abVariantRenderManager10);
-	pManager->m_pVtable00 = g_pNonZrleVariantRenderEntryInitializeVtable;
-}
-
-void* LEMBALL_FASTCALL DeleteQueuedVariantChildSlotManager(GameQueuedVariantChildSlotManager* pManager,
-														   int,
-														   int fDelete)
-{
-	DestroyQueuedVariantChildSlotManager(pManager);
-	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pManager);
-	}
-	return pManager;
-}
-
-void LEMBALL_FASTCALL ComputeAlignedZrleChildLayout(void* pObject)
-{
-	typedef void(LEMBALL_FASTCALL * LoadProc)(void* pResource);
-	GameMenuActionFramePointSink* pFrameSink;
-	int* pListResource;
-	char* pFrame;
-	short cxFrame;
-	short cyFrame;
-	short cxOwner;
-	short cyOwner;
-	short nAlignment;
-
-	*(int*) ((char*) pObject + 0x120) = 0;
-	pFrameSink = (GameMenuActionFramePointSink*) AllocateVSMemBlock(sizeof(int) + sizeof(GameMenuActionFramePointSink));
-	if (pFrameSink != 0) {
-		*(int*) pFrameSink = 1;
-		pFrameSink = (GameMenuActionFramePointSink*) ((char*) pFrameSink + sizeof(int));
-		InitializeMenuActionFramePointSink(pFrameSink);
-	}
-	*(GameMenuActionFramePointSink**) ((char*) pObject + 0x124) = pFrameSink;
-	++*(int*) ((char*) pObject + 0x50);
-
-	pListResource = (int*) LoadZrleOnlyListResource(*(int*) ((char*) pObject + 0x10c));
-	*(int**) ((char*) pObject + 0x11c) = pListResource;
-	if (pListResource[4] == 0) {
-		((LoadProc) (*(void***) pListResource)[7])(pListResource);
-	}
-	else {
-		pListResource[9] = 0;
-	}
-	++pListResource[2];
-
-	pFrame = (char*) pListResource[0x1e];
-	cxFrame = *(short*) (pFrame + 0x4c);
-	cyFrame = *(short*) (pFrame + 0x4e);
-	if (cxFrame < *(short*) (pFrame + 0xa0)) {
-		cxFrame = *(short*) (pFrame + 0xa0);
-	}
-	if (cyFrame < *(short*) (pFrame + 0xa2)) {
-		cyFrame = *(short*) (pFrame + 0xa2);
-	}
-	*(short*) ((char*) pObject + 0x114) = cxFrame;
-	*(short*) ((char*) pObject + 0x116) = cyFrame;
-	--pListResource[2];
-
-	*(short*) ((char*) pObject + 0x118) = *(short*) ((char*) pObject + 0xc4);
-	*(short*) ((char*) pObject + 0x11a) = *(short*) ((char*) pObject + 0xc6);
-	cxOwner = *(short*) ((char*) pObject + 0xc0);
-	cyOwner = *(short*) ((char*) pObject + 0xc2);
-	if (cxOwner < 0) {
-		cxOwner = (short) (-cxFrame * cxOwner);
-	}
-	else if (cxOwner == 0) {
-		cxOwner = cxFrame;
-	}
-	if (cyOwner < 0) {
-		cyOwner = (short) (-cyFrame * cyOwner);
-	}
-	else if (cyOwner == 0) {
-		cyOwner = cyFrame;
-	}
-	*(short*) ((char*) pObject + 0xc0) = cxOwner;
-	*(short*) ((char*) pObject + 0xc2) = cyOwner;
-	if ((int) cxOwner * (int) cyOwner != 0) {
-		((GameGeometryOwnerRectState*) ((char*) pObject + 0x90))->SetEnabled(1);
-	}
-
-	nAlignment = *(short*) ((char*) pObject + 0x118);
-	if ((*(unsigned int*) ((char*) pObject + 0x110) & 4) != 0) {
-		nAlignment = (short) ((cxOwner - cxFrame) / 2);
-	}
-	else if ((*(unsigned int*) ((char*) pObject + 0x110) & 0x10) != 0) {
-		nAlignment = (short) (cxOwner - cxFrame);
-	}
-	*(short*) ((char*) pObject + 0x118) = nAlignment;
-
-	if ((*(unsigned int*) ((char*) pObject + 0x110) & 8) != 0) {
-		*(short*) ((char*) pObject + 0x11a) = (short) ((cyOwner - cyFrame) / 2);
-	}
-	else if ((*(unsigned int*) ((char*) pObject + 0x110) & 0x20) != 0) {
-		*(short*) ((char*) pObject + 0x11a) = (short) (cyOwner - cyFrame);
-	}
-}
-
-inline static GameProgressiveVariantFrameSelector* AllocateFrameSelector(void* pVariantManager, int nResourceId)
-{
-	GameProgressiveVariantFrameSelector* pSelector;
-
-	pSelector = (GameProgressiveVariantFrameSelector*) AllocateVSMemBlock(0x1c);
-	if (pSelector != 0) {
-		pSelector->m_pVtable = g_MenuSelectorFrameSelectorCtorVtable;
-		pSelector->m_cFrames =
-			((LevelVariantRenderManagerView*) pVariantManager)->GetVariantRenderFrameCount(nResourceId);
-		pSelector->m_pVtable = g_MenuSelectorTimedFrameSelectorVtable;
-		pSelector->m_nDirection = 1;
-		pSelector->m_pVtable = g_MenuSelectorProgressiveFrameSelectorVtable;
-	}
-	return pSelector;
-}
-
 // FUNCTION: LEMBALL 0x0044c870
 GameMenuSelectorManager::GameMenuSelectorManager(void* pRenderOwner, void* pRenderContext, int, int nLayoutMode)
 {
@@ -2241,18 +1760,6 @@ GameMenuSelectorManager::GameMenuSelectorManager(void* pRenderOwner, void* pRend
 	pManager->m_pActionMiddleSelector254->m_dwFixedTime = -1;
 	pManager->m_dwConstructionTimeD4 = (int) timeGetTime();
 }
-
-GameMenuSelectorManager* LEMBALL_FASTCALL ConstructMenuSelectorManagerThunk(GameMenuSelectorManager* pManager,
-																			int nUnusedEdx,
-																			void* pRenderOwner,
-																			void* pRenderContext,
-																			int nChildCapacity,
-																			int nLayoutMode)
-{
-	(void) nUnusedEdx;
-	return new (pManager) GameMenuSelectorManager(pRenderOwner, pRenderContext, nChildCapacity, nLayoutMode);
-}
-
 // FUNCTION: LEMBALL 0x0044cc90
 void LEMBALL_FASTCALL SetMenuSelectorChildrenEnabled(GameMenuSelectorManager* pManager, int, int fEnabled)
 {
@@ -2266,24 +1773,26 @@ void LEMBALL_FASTCALL SetMenuSelectorChildrenEnabled(GameMenuSelectorManager* pM
 		}
 	}
 }
-
-inline static void ReleaseMenuSelectorVariantResource(void* pObject, int nResourceId)
+// FUNCTION: LEMBALL 0x0044cce0
+void GameMenuSelectorManager::InitializeChildContext(void)
 {
-	int* pManager;
-	void** ppResources;
-	short* pnResourceIds;
-	int iResource;
+	typedef void(LEMBALL_FASTCALL *
+				 InitializeRectProc)(void* pObject, int nUnusedEdx, short* pRect, void* pOwner, int nFlags);
+	short Rect[4];
+	void* pContextObject;
 
-	pManager = (int*) pObject;
-	ppResources = (void**) (unsigned long) pManager[9];
-	pnResourceIds = (short*) (unsigned long) pManager[10];
-	iResource = pnResourceIds[nResourceId];
-	ReleaseTypedResourceObjectReference(ppResources[iResource]);
-	ppResources[iResource] = 0;
-	pnResourceIds[nResourceId] = (short) pManager[11];
-	--pManager[13];
+	pContextObject = AllocateVSMemBlock(0x90);
+	if (pContextObject != 0) {
+		ConstructMenuSelectorChildContextObject(pContextObject);
+	}
+	m_pChildContext268 = pContextObject;
+	Rect[0] = *(short*) ((char*) m_pRenderOwner214 + 8);
+	Rect[1] = *(short*) ((char*) m_pRenderOwner214 + 10);
+	Rect[2] = 0;
+	Rect[3] = 0;
+	((InitializeRectProc) (*(void***) pContextObject)[1])(pContextObject, 0, Rect, m_pRenderOwner214, 0);
+	m_pChildRenderContext26C = *(void**) ((char*) pContextObject + 0x4c);
 }
-
 // FUNCTION: LEMBALL 0x0044cd60
 void LEMBALL_FASTCALL DestroyMenuSelectorManager(GameMenuSelectorManager* pManager)
 {
@@ -2327,7 +1836,6 @@ void LEMBALL_FASTCALL DestroyMenuSelectorManager(GameMenuSelectorManager* pManag
 	DestroyVariantRenderManager(pVariantManager);
 	pManager->m_pVtable00 = g_pNonZrleVariantRenderEntryInitializeVtable;
 }
-
 // FUNCTION: LEMBALL 0x0044cec0
 int GameMenuSelectorManager::HandleEvent(GameMenuSelectorEvent* pEvent)
 {
@@ -2364,7 +1872,6 @@ int GameMenuSelectorManager::HandleEvent(GameMenuSelectorEvent* pEvent)
 	}
 	return 0;
 }
-
 // FUNCTION: LEMBALL 0x0044cfb0
 void GameMenuSelectorManager::AppendChild(int x,
 										  int nPosition,
@@ -2401,7 +1908,6 @@ void GameMenuSelectorManager::AppendChild(int x,
 	RecordChildMetadata(x, nPosition, nLastResource > 0, m_apChildren1E0[m_cChildren80]->m_nToken30);
 	++m_cChildren80;
 }
-
 // FUNCTION: LEMBALL 0x0044d150
 void GameMenuSelectorManager::RecordChildMetadata(int x, int nPosition, int fAction, int nToken)
 {
@@ -2459,7 +1965,6 @@ void GameMenuSelectorManager::RecordChildMetadata(int x, int nPosition, int fAct
 		}
 	}
 }
-
 // FUNCTION: LEMBALL 0x0044d290
 void GameMenuSelectorManager::RebuildChildRects(int fForce, int nUnused)
 {
@@ -2475,7 +1980,6 @@ void GameMenuSelectorManager::RebuildChildRects(int fForce, int nUnused)
 		++ppEntry;
 	} while (--nRemaining != 0);
 }
-
 // FUNCTION: LEMBALL 0x0044d2d0
 void LEMBALL_FASTCALL EmitMenuSelectorResourceEntries(GameMenuSelectorManager* pManager)
 {
@@ -2539,175 +2043,6 @@ void LEMBALL_FASTCALL EmitMenuSelectorResourceEntries(GameMenuSelectorManager* p
 	}
 	((LevelVariantRenderManagerView*) pManager->m_abVariantRenderManager10)->ResetOrFlipVariantRenderBuffers();
 }
-
-void LEMBALL_FASTCALL InitializeSharedSpriteOwnerState(void* pObject)
-{
-	void** ppFinalize;
-
-	*(int*) ((char*) pObject + 0xd8) = 1;
-	*(int*) ((char*) pObject + 0xf8) = 1;
-	*(int*) ((char*) pObject + 0xbc) = 1;
-	*(int*) ((char*) pObject + 0xd0) = 0;
-	*(int*) ((char*) pObject + 0xd4) = 0;
-	*(int*) ((char*) pObject + 0xfc) = 0;
-	ppFinalize = (void**) AllocateVSMemBlock(sizeof(void*));
-	if (ppFinalize != 0) {
-		*ppFinalize = g_pQueuedRenderPointSinkFinalizeThunk;
-	}
-	*(void**) ((char*) pObject + 0xe0) = ppFinalize;
-	*(int*) ((char*) pObject + 0x50) = 2;
-	*(int*) ((char*) pObject + 0xf4) = 0;
-	*(int*) ((char*) pObject + 0xcc) = 0;
-}
-
-__inline static void InitializeSelectorProgressOverlayOwnerVtables(void** pOwnerVtable, void** pDeleteVtable)
-{
-	union PointMethod {
-		void (GameSelectorProgressOverlayOwner::*p)(const VS_XYPair*);
-		void* v;
-	} Point;
-	union ModeMethod {
-		void (GameSelectorProgressOverlayOwnerView::*p)(int);
-		void* v;
-	} Mode;
-	int i;
-
-	if (g_fSelectorProgressOverlayOwnerVtablesInitialized != 0) {
-		return;
-	}
-	for (i = 0; i < 52; ++i) {
-		g_SelectorProgressOverlayOwnerVtable[i] = pOwnerVtable[i];
-	}
-	for (i = 0; i < 8; ++i) {
-		g_SelectorProgressOverlayOwnerDeleteVtable[i] = pDeleteVtable[i];
-	}
-	Point.p = &GameSelectorProgressOverlayOwner::SetAnchorAndNotifyChild;
-	g_SelectorProgressOverlayOwnerVtable[14] = Point.v;
-	Mode.p = &GameSelectorProgressOverlayOwnerView::SetChildPresentForModeA;
-	g_SelectorProgressOverlayOwnerVtable[48] = Mode.v;
-	Mode.p = &GameSelectorProgressOverlayOwnerView::SetChildPresentForModeB;
-	g_SelectorProgressOverlayOwnerVtable[49] = Mode.v;
-	g_SelectorProgressOverlayOwnerDeleteVtable[0] = (void*) DeleteSelectorProgressOverlayOwnerAdjusted;
-	g_fSelectorProgressOverlayOwnerVtablesInitialized = 1;
-}
-
-GameSelectorProgressOverlayOwner* GameSelectorProgressOverlayOwner::Construct(const VS_XYPair* pPoint,
-																			  void* pRenderOwner,
-																			  int nResourceId,
-																			  const short* pProgressRect,
-																			  int nPercent)
-{
-	GameSelectorProgressOverlayChild* pChild;
-	void** pOwnerVtable;
-	void** pDeleteVtable;
-	short aRect[4];
-
-	ConstructAlignedZrleChildOverlayFromPoint(this, 0, pPoint, pRenderOwner, nResourceId, 3);
-	pOwnerVtable = *(void***) this;
-	pDeleteVtable = *(void***) ((char*) this + 0x90);
-	InitializeSelectorProgressOverlayOwnerVtables(pOwnerVtable, pDeleteVtable);
-	*(void***) this = g_SelectorProgressOverlayOwnerVtable;
-	*(void***) ((char*) this + 0x90) = g_SelectorProgressOverlayOwnerDeleteVtable;
-	*(short*) ((char*) this + 0x130) = 0;
-	*(short*) ((char*) this + 0x132) = 0;
-	aRect[0] = pProgressRect[0];
-	aRect[1] = pProgressRect[1];
-	aRect[2] = pProgressRect[2] + pPoint->m_x;
-	aRect[3] = pProgressRect[3] + pPoint->m_y;
-	*(short*) ((char*) this + 0x130) = pProgressRect[2];
-	*(short*) ((char*) this + 0x132) = pProgressRect[3];
-	pChild = (GameSelectorProgressOverlayChild*) AllocateVSMemBlock(sizeof(GameSelectorProgressOverlayChild));
-	if (pChild != 0) {
-		pChild = pChild->Construct(pProgressRect, nPercent, pRenderOwner);
-	}
-	*(GameSelectorProgressOverlayChild**) ((char*) this + 0x134) = pChild;
-	pChild->InitializeWindowOwnerFromRect(aRect, pRenderOwner, 0);
-	return this;
-}
-
-void GameSelectorProgressOverlayOwner::SetAnchorAndNotifyChild(const VS_XYPair* pPoint)
-{
-	GameSelectorProgressOverlayChild* pChild;
-	VS_XYPair Point;
-
-	*(short*) ((char*) this + 0xc4) -= *(short*) ((char*) this + 0x18);
-	*(int*) ((char*) this + 0xd8) = 1;
-	*(short*) ((char*) this + 0xc6) -= *(short*) ((char*) this + 0x1a);
-	SetWindowOwnerRenderAnchorFromPoint(this, 0, pPoint);
-	*(short*) ((char*) this + 0xc4) += *(short*) ((char*) this + 0x18);
-	*(short*) ((char*) this + 0xc6) += *(short*) ((char*) this + 0x1a);
-	pChild = *(GameSelectorProgressOverlayChild**) ((char*) this + 0x134);
-	Point.m_x = *(short*) ((char*) this + 0xdc) + *(short*) ((char*) this + 0x130);
-	Point.m_y = *(short*) ((char*) this + 0xde) + *(short*) ((char*) this + 0x132);
-	pChild->MoveWindowOwnerOrigin(&Point);
-	Point.m_x = pPoint->m_x + *(short*) ((char*) this + 0x130);
-	Point.m_y = pPoint->m_y + *(short*) ((char*) this + 0x132);
-	pChild->MoveWindowOwnerOrigin(&Point);
-}
-
-__inline static void LEMBALL_FASTCALL DestroySelectorProgressOverlayOwner(void* pDeleteInterface)
-{
-	typedef void*(LEMBALL_FASTCALL * DeleteProc)(void* pObject, int nUnusedEdx, unsigned int fDelete);
-	GameSelectorProgressOverlayChild* pChild;
-	void* pOwner;
-
-	pOwner = (char*) pDeleteInterface - 0x90;
-	*(void***) pDeleteInterface = g_SelectorProgressOverlayOwnerDeleteVtable;
-	*(void***) pOwner = g_SelectorProgressOverlayOwnerVtable;
-	pChild = *(GameSelectorProgressOverlayChild**) ((char*) pOwner + 0x134);
-	if (*(int*) ((char*) pChild + 4) == 1) {
-		pChild->DestroyWindowOwnerHwnd();
-	}
-	if (pChild != 0) {
-		void* pChildDeleteInterface = (char*) pChild + 0x90;
-		((DeleteProc) (*(void***) pChildDeleteInterface)[0])(pChildDeleteInterface, 0, 1);
-	}
-	DestroyAlignedZrleChildOverlay(pDeleteInterface);
-}
-
-static void* LEMBALL_FASTCALL DeleteSelectorProgressOverlayOwnerAdjusted(void* pDeleteInterface,
-																		 int,
-																		 unsigned int fDelete)
-{
-	void* pOwner;
-
-	pOwner = (char*) pDeleteInterface - 0x90;
-	DestroySelectorProgressOverlayOwner(pDeleteInterface);
-	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pOwner);
-	}
-	return pOwner;
-}
-
-static int LEMBALL_FASTCALL HandleMenuSelectorEntryEventThunk(GameMenuSelectorEntry* pEntry,
-															  int nUnusedEdx,
-															  GameMenuSelectorEvent* pEvent)
-{
-	return pEntry->HandleEvent(pEvent);
-}
-
-static void* LEMBALL_FASTCALL DeleteMenuSelectorEntryThunk(GameMenuSelectorEntry* pEntry, int nUnusedEdx, int fDelete)
-{
-	return DeleteMenuSelectorEntry(pEntry, nUnusedEdx, fDelete);
-}
-
-static void* LEMBALL_FASTCALL DeleteMenuSelectorManagerThunk(GameMenuSelectorManager* pManager,
-															 int nUnusedEdx,
-															 int fDelete)
-{
-	return DeleteMenuSelectorManager(pManager, nUnusedEdx, fDelete);
-}
-
-inline static void BeginMenuSelectorMovement(GameMenuSelectorManager* pManager)
-{
-	int nDistance;
-	pManager->m_dwMovementStart21C = (int) timeGetTime();
-	nDistance = abs(pManager->m_nTargetPosition9C - pManager->m_nCurrentPosition8C);
-	pManager->m_nMovementStartPosition90 = pManager->m_nCurrentPosition8C;
-	pManager->m_fMovementActiveDC = 1;
-	pManager->m_dwMovementEnd220 = pManager->m_dwMovementStart21C + nDistance * 3;
-}
-
 // FUNCTION: LEMBALL 0x0044d830
 void GameMenuSelectorManager::MovePrevious(void)
 {
@@ -2737,12 +2072,6 @@ void GameMenuSelectorManager::MovePrevious(void)
 	}
 	BeginMenuSelectorMovement(this);
 }
-
-static void LEMBALL_FASTCALL MoveMenuSelectorPreviousThunk(GameMenuSelectorManager* pManager)
-{
-	pManager->MovePrevious();
-}
-
 // FUNCTION: LEMBALL 0x0044d8e0
 void GameMenuSelectorManager::MoveNext(void)
 {
@@ -2772,12 +2101,6 @@ void GameMenuSelectorManager::MoveNext(void)
 	}
 	BeginMenuSelectorMovement(this);
 }
-
-static void LEMBALL_FASTCALL MoveMenuSelectorNextThunk(GameMenuSelectorManager* pManager)
-{
-	pManager->MoveNext();
-}
-
 // FUNCTION: LEMBALL 0x0044d990
 void GameMenuSelectorManager::SelectSide0(void)
 {
@@ -2791,12 +2114,6 @@ void GameMenuSelectorManager::SelectSide0(void)
 		}
 	}
 }
-
-static void LEMBALL_FASTCALL SelectMenuSelectorSide0Thunk(GameMenuSelectorManager* pManager)
-{
-	pManager->SelectSide0();
-}
-
 // FUNCTION: LEMBALL 0x0044d9e0
 void GameMenuSelectorManager::SelectSide1(void)
 {
@@ -2810,17 +2127,6 @@ void GameMenuSelectorManager::SelectSide1(void)
 		}
 	}
 }
-
-static void LEMBALL_FASTCALL SelectMenuSelectorSide1Thunk(GameMenuSelectorManager* pManager)
-{
-	pManager->SelectSide1();
-}
-
-inline static void SetFrameSelectorDuration(GameProgressiveVariantFrameSelector* pSelector, int dwDuration)
-{
-	((GameProgressiveVariantFrameSelectorInterface*) pSelector)->SetDuration(dwDuration);
-}
-
 // FUNCTION: LEMBALL 0x0044da70
 void GameMenuSelectorManager::InitializeCurrentState(int iMetadata)
 {
@@ -2849,7 +2155,6 @@ void GameMenuSelectorManager::InitializeCurrentState(int iMetadata)
 	m_nActionStateA4 = 0;
 	m_nSelectedSideA0 = m_nCurrentSide94;
 }
-
 // FUNCTION: LEMBALL 0x0044db20
 void GameMenuSelectorManager::StartAction(void)
 {
@@ -2905,36 +2210,6 @@ void GameMenuSelectorManager::StartAction(void)
 	m_dwActionMotionEnd230 = m_dwActionLastTick22C + nDistance * 2;
 	((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffectThunk(7);
 }
-
-static void LEMBALL_FASTCALL StartMenuSelectorActionThunk(GameMenuSelectorManager* pManager)
-{
-	pManager->StartAction();
-}
-
-static int LEMBALL_FASTCALL HandleMenuSelectorEventThunk(GameMenuSelectorManager* pManager,
-														 int nUnusedEdx,
-														 GameMenuSelectorEvent* pEvent)
-{
-	return pManager->HandleEvent(pEvent);
-}
-
-static int GetIntDirectionSignThunk(int nValue)
-{
-	return GetIntDirectionSign(nValue);
-}
-
-class GameMenuSelectorEventQueueInterface {
-public:
-	virtual void Reserved0(void) = 0;
-	virtual void Reserved1(void) = 0;
-	virtual void QueueEvent(void* pEvent) = 0;
-};
-
-inline static void QueueMenuSelectorEvent(GameMenuSelectorEvent* pEvent)
-{
-	((GameMenuSelectorEventQueueInterface*) g_pSharedRenderDispatchQueue)->QueueEvent(pEvent);
-}
-
 // FUNCTION: LEMBALL 0x0044dce0
 void LEMBALL_FASTCALL UpdateMenuSelectorAnimation(GameMenuSelectorManager* pManager)
 {
@@ -3007,7 +2282,6 @@ void LEMBALL_FASTCALL UpdateMenuSelectorAnimation(GameMenuSelectorManager* pMana
 		}
 	}
 }
-
 // FUNCTION: LEMBALL 0x0044e620
 void* LEMBALL_FASTCALL DeleteMenuSelectorEntry(GameMenuSelectorEntry* pEntry, int, int fDelete)
 {
@@ -3017,7 +2291,6 @@ void* LEMBALL_FASTCALL DeleteMenuSelectorEntry(GameMenuSelectorEntry* pEntry, in
 	}
 	return pEntry;
 }
-
 // FUNCTION: LEMBALL 0x0044e690
 void* LEMBALL_FASTCALL DeleteMenuSelectorManager(GameMenuSelectorManager* pManager, int, int fDelete)
 {
@@ -3027,7 +2300,6 @@ void* LEMBALL_FASTCALL DeleteMenuSelectorManager(GameMenuSelectorManager* pManag
 	}
 	return pManager;
 }
-
 // FUNCTION: LEMBALL 0x0044e6c0
 void GameRectQuad::CopyFrom(const short* pRect)
 {
@@ -3044,69 +2316,7 @@ void GameRectQuad::CopyFrom(const short* pRect)
 	m_x = pPosition[0];
 	m_y = pPosition[1];
 }
-
-void LEMBALL_FASTCALL UpdateMenuSelectorAnimationThunk(GameMenuSelectorManager* pManager)
-{
-	UpdateMenuSelectorAnimation(pManager);
-}
-
-__inline static void InitializeSelectorProgressOverlayChildVtables(void** pWindowOwnerVtable, void** pGeometryVtable)
-{
-	union WindowRectMethod {
-		void (GameSelectorProgressOverlayChild::*p)(short*, void*, const char*);
-		void* v;
-	} WindowRect;
-	union WindowPointMethod {
-		void (GameSelectorProgressOverlayChild::*p)(const VS_XYPair*);
-		void* v;
-	} WindowPoint;
-	union WindowVoidMethod {
-		void (GameSelectorProgressOverlayChild::*p)(void);
-		void* v;
-	} WindowVoid;
-	union WindowIntMethod {
-		void (GameSelectorProgressOverlayChild::*p)(int);
-		void* v;
-	} WindowInt;
-	union GeometryButtonMethod {
-		void (GameSelectorProgressGeometry::*p)(const VS_XYPair*, int);
-		void* v;
-	} GeometryButton;
-	union GeometryPointMethod {
-		void (GameSelectorProgressGeometry::*p)(const VS_XYPair*);
-		void* v;
-	} GeometryPoint;
-	int i;
-
-	if (g_fSelectorProgressOverlayChildVtablesInitialized != 0) {
-		return;
-	}
-	for (i = 0; i < 46; ++i) {
-		g_SelectorProgressOverlayChildVtable[i] = pWindowOwnerVtable[i];
-	}
-	for (i = 0; i < 8; ++i) {
-		g_SelectorProgressGeometryVtable[i] = pGeometryVtable[i];
-	}
-	g_pSelectorProgressBaseWindowOwnerVtable = pWindowOwnerVtable;
-	WindowRect.p = &GameSelectorProgressOverlayChild::InitializeWindowOwnerFromRect;
-	g_SelectorProgressOverlayChildVtable[1] = WindowRect.v;
-	WindowPoint.p = &GameSelectorProgressOverlayChild::MoveWindowOwnerOrigin;
-	g_SelectorProgressOverlayChildVtable[14] = WindowPoint.v;
-	WindowVoid.p = &GameSelectorProgressOverlayChild::ReservedWindowOwnerSlot15;
-	g_SelectorProgressOverlayChildVtable[15] = WindowVoid.v;
-	WindowVoid.p = &GameSelectorProgressOverlayChild::ReservedWindowOwnerSlot23;
-	g_SelectorProgressOverlayChildVtable[23] = WindowVoid.v;
-	g_SelectorProgressOverlayChildVtable[25] = (void*) return_hresult_80000801_progress_overlay;
-	WindowInt.p = &GameSelectorProgressOverlayChild::ApplyWindowOwnerActivation;
-	g_SelectorProgressOverlayChildVtable[42] = WindowInt.v;
-	GeometryButton.p = &GameSelectorProgressGeometry::DispatchButtonTransition;
-	g_SelectorProgressGeometryVtable[0] = (void*) DeleteSelectorProgressOverlayChildAdjusted;
-	g_SelectorProgressGeometryVtable[1] = GeometryButton.v;
-	GeometryPoint.p = &GameSelectorProgressGeometry::DispatchPointerMove;
-	g_SelectorProgressGeometryVtable[6] = GeometryPoint.v;
-	g_fSelectorProgressOverlayChildVtablesInitialized = 1;
-}
-
+// FUNCTION: LEMBALL 0x0044e790
 GameSelectorProgressOverlayChild* GameSelectorProgressOverlayChild::Construct(const short* pRect,
 																			  int nPercent,
 																			  void* pRenderOwner)
@@ -3141,8 +2351,8 @@ GameSelectorProgressOverlayChild* GameSelectorProgressOverlayChild::Construct(co
 	m_Geometry90.m_fDispatchOutsideRelease2C = 1;
 	return this;
 }
-
-__inline static void LEMBALL_FASTCALL DestroySelectorProgressOverlayChild(void* pGeometryInterface)
+// FUNCTION: LEMBALL 0x0044e8c0
+void LEMBALL_FASTCALL DestroySelectorProgressOverlayChild(void* pGeometryInterface)
 {
 	GameSelectorProgressOverlayChild* pChild;
 	void* pRenderOwner;
@@ -3162,21 +2372,8 @@ __inline static void LEMBALL_FASTCALL DestroySelectorProgressOverlayChild(void* 
 	*(void***) pChild = g_pSelectorProgressBaseWindowOwnerVtable;
 	DestroyWindowOwnerRenderContext(pChild);
 }
-
-void* LEMBALL_FASTCALL DeleteSelectorProgressOverlayChildAdjusted(void* pGeometryInterface, int, unsigned int fDelete)
-{
-	void* pChild;
-
-	pChild = (char*) pGeometryInterface - 0x90;
-	DestroySelectorProgressOverlayChild(pGeometryInterface);
-	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pChild);
-	}
-	return pChild;
-}
-
 // FUNCTION: LEMBALL 0x0044e940
-void GameSelectorProgressOverlayChild::ReservedWindowOwnerSlot15(void)
+void GameSelectorProgressOverlayWindowSlots::ReservedWindowOwnerSlot15(void)
 {
 	int nContext;
 	int nRenderObject;
@@ -3185,16 +2382,15 @@ void GameSelectorProgressOverlayChild::ReservedWindowOwnerSlot15(void)
 	nRenderObject = nContext + *(int*) (*(int*) (nContext + 0x40) + 4) + 0x74;
 	*(int*) nRenderObject = 1;
 }
-
 // FUNCTION: LEMBALL 0x0044e960
-void GameSelectorProgressOverlayChild::InitializeWindowOwnerFromRect(short* pRect,
-																	 void* pOwner,
-																	 const char* pszWindowName)
+void GameSelectorProgressOverlayWindowSlots::InitializeWindowOwnerFromRect(short* pRect,
+																		   void* pOwner,
+																		   const char* pszWindowName)
 {
 	short* pPosition;
 	void* pGeometryOwner;
 
-	((GamePrimaryContext*) this)->DispatchWindowOwnerRectInitialization(pRect, pOwner, pszWindowName);
+	DispatchWindowOwnerRectInitialization((GamePrimaryContext*) this, 0, pRect, pOwner, pszWindowName);
 	*(short*) ((char*) this + 0xc0) = pRect[0];
 	*(short*) ((char*) this + 0xc2) = pRect[1];
 	if (pRect == 0) {
@@ -3211,17 +2407,15 @@ void GameSelectorProgressOverlayChild::InitializeWindowOwnerFromRect(short* pRec
 	}
 	AppendGeometryOwnerChild(*(void**) (*(int*) ((char*) this + 0x12c) + 0x1c), 0, pGeometryOwner);
 }
-
 // FUNCTION: LEMBALL 0x0044e9d0
-void GameSelectorProgressOverlayChild::MoveWindowOwnerOrigin(const VS_XYPair* pPoint)
+void GameSelectorProgressOverlayWindowSlots::MoveWindowOwnerOrigin(const VS_XYPair* pPoint)
 {
 	SetWindowOwnerRenderAnchorFromPoint(this, 0, pPoint);
 	*(short*) ((char*) this + 0xcc) = pPoint->m_x;
 	*(short*) ((char*) this + 0xce) = pPoint->m_y;
 }
-
 // FUNCTION: LEMBALL 0x0044ea00
-void GameSelectorProgressOverlayChild::ApplyWindowOwnerActivation(int nActivate)
+void GameSelectorProgressOverlayWindowSlots::ApplyWindowOwnerActivation(int nActivate)
 {
 	char* pObject;
 	short cxFill;
@@ -3270,7 +2464,6 @@ void GameSelectorProgressOverlayChild::ApplyWindowOwnerActivation(int nActivate)
 	*(int*) (pObject + 0x11c) = 0xbc;
 	((GameProgressRenderEntryInterface*) (pObject + 0x110))->Queue(*(void**) (pObject + 0x4c));
 }
-
 // FUNCTION: LEMBALL 0x0044eb60
 void GameSelectorProgressOverlayChild::SetPercent(int nPercent)
 {
@@ -3295,7 +2488,6 @@ void GameSelectorProgressOverlayChild::SetPercent(int nPercent)
 	Event.m_nPayload10 = 100;
 	((GameMenuSelectorEventQueueInterface*) g_pSharedRenderDispatchQueue)->QueueEvent(&Event);
 }
-
 // FUNCTION: LEMBALL 0x0044ebc0
 void GameSelectorProgressGeometry::DispatchPointerMove(const VS_XYPair* pPoint)
 {
@@ -3314,18 +2506,371 @@ void GameSelectorProgressGeometry::DispatchPointerMove(const VS_XYPair* pPoint)
 	((GameSelectorProgressOverlayChild*) ((char*) this - 0x90))
 		->SetPercent((x * 100) / (int) *(short*) ((char*) this + 0x30));
 }
-
 // FUNCTION: LEMBALL 0x0044ec10
 void GameSelectorProgressGeometry::DispatchButtonTransition(const VS_XYPair* pPoint, int)
 {
 	((GameSelectorProgressGeometryDispatchInterface*) this)->DispatchPointerMove(pPoint);
 }
-
 // FUNCTION: LEMBALL 0x0044ec20
-void GameSelectorProgressOverlayChild::ReservedWindowOwnerSlot23(void)
+void GameSelectorProgressOverlayWindowSlots::ReservedWindowOwnerSlot23(void)
 {
 }
+// FUNCTION: LEMBALL 0x0044ec30
+GameSelectorProgressOverlayOwner* GameSelectorProgressOverlayOwner::Construct(const VS_XYPair* pPoint,
+																			  void* pRenderOwner,
+																			  int nResourceId,
+																			  const short* pProgressRect,
+																			  int nPercent)
+{
+	GameSelectorProgressOverlayChild* pChild;
+	void** pOwnerVtable;
+	void** pDeleteVtable;
+	short aRect[4];
 
+	ConstructAlignedZrleChildOverlayFromPoint(this, 0, pPoint, pRenderOwner, nResourceId, 3);
+	pOwnerVtable = *(void***) this;
+	pDeleteVtable = *(void***) ((char*) this + 0x90);
+	InitializeSelectorProgressOverlayOwnerVtables(pOwnerVtable, pDeleteVtable);
+	*(void***) this = g_SelectorProgressOverlayOwnerVtable;
+	*(void***) ((char*) this + 0x90) = g_SelectorProgressOverlayOwnerDeleteVtable;
+	*(short*) ((char*) this + 0x130) = 0;
+	*(short*) ((char*) this + 0x132) = 0;
+	aRect[0] = pProgressRect[0];
+	aRect[1] = pProgressRect[1];
+	aRect[2] = pProgressRect[2] + pPoint->m_x;
+	aRect[3] = pProgressRect[3] + pPoint->m_y;
+	*(short*) ((char*) this + 0x130) = pProgressRect[2];
+	*(short*) ((char*) this + 0x132) = pProgressRect[3];
+	pChild = (GameSelectorProgressOverlayChild*) AllocateVSMemBlock(sizeof(GameSelectorProgressOverlayChild));
+	if (pChild != 0) {
+		pChild = pChild->Construct(pProgressRect, nPercent, pRenderOwner);
+	}
+	*(GameSelectorProgressOverlayChild**) ((char*) this + 0x134) = pChild;
+	((GameSelectorProgressOverlayWindowSlots*) pChild)->InitializeWindowOwnerFromRect(aRect, pRenderOwner, 0);
+	return this;
+}
+// FUNCTION: LEMBALL 0x0044ed20
+void LEMBALL_FASTCALL DestroySelectorProgressOverlayOwner(void* pDeleteInterface)
+{
+	typedef void*(LEMBALL_FASTCALL * DeleteProc)(void* pObject, int nUnusedEdx, unsigned int fDelete);
+	GameSelectorProgressOverlayChild* pChild;
+	void* pOwner;
+
+	pOwner = (char*) pDeleteInterface - 0x90;
+	*(void***) pDeleteInterface = g_SelectorProgressOverlayOwnerDeleteVtable;
+	*(void***) pOwner = g_SelectorProgressOverlayOwnerVtable;
+	pChild = *(GameSelectorProgressOverlayChild**) ((char*) pOwner + 0x134);
+	if (*(int*) ((char*) pChild + 4) == 1) {
+		pChild->DestroyWindowOwnerHwnd();
+	}
+	if (pChild != 0) {
+		void* pChildDeleteInterface = (char*) pChild + 0x90;
+		((DeleteProc) (*(void***) pChildDeleteInterface)[0])(pChildDeleteInterface, 0, 1);
+	}
+	DestroyAlignedZrleChildOverlay(pDeleteInterface);
+}
+// FUNCTION: LEMBALL 0x0044ed70
+void GameSelectorProgressOverlayOwner::SetAnchorAndNotifyChild(const VS_XYPair* pPoint)
+{
+	GameSelectorProgressOverlayChild* pChild;
+	VS_XYPair Point;
+
+	*(short*) ((char*) this + 0xc4) -= *(short*) ((char*) this + 0x18);
+	*(int*) ((char*) this + 0xd8) = 1;
+	*(short*) ((char*) this + 0xc6) -= *(short*) ((char*) this + 0x1a);
+	SetWindowOwnerRenderAnchorFromPoint(this, 0, pPoint);
+	*(short*) ((char*) this + 0xc4) += *(short*) ((char*) this + 0x18);
+	*(short*) ((char*) this + 0xc6) += *(short*) ((char*) this + 0x1a);
+	pChild = *(GameSelectorProgressOverlayChild**) ((char*) this + 0x134);
+	Point.m_x = *(short*) ((char*) this + 0xdc) + *(short*) ((char*) this + 0x130);
+	Point.m_y = *(short*) ((char*) this + 0xde) + *(short*) ((char*) this + 0x132);
+	((GameSelectorProgressOverlayWindowSlots*) pChild)->MoveWindowOwnerOrigin(&Point);
+	Point.m_x = pPoint->m_x + *(short*) ((char*) this + 0x130);
+	Point.m_y = pPoint->m_y + *(short*) ((char*) this + 0x132);
+	((GameSelectorProgressOverlayWindowSlots*) pChild)->MoveWindowOwnerOrigin(&Point);
+}
+// FUNCTION: LEMBALL 0x0044eff0
+void* LEMBALL_FASTCALL DeleteSelectorProgressOverlayChildAdjusted(void* pGeometryInterface, int, unsigned int fDelete)
+{
+	void* pChild;
+
+	pChild = (char*) pGeometryInterface - 0x90;
+	DestroySelectorProgressOverlayChild(pGeometryInterface);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pChild);
+	}
+	return pChild;
+}
+// FUNCTION: LEMBALL 0x0044f030
+void* LEMBALL_FASTCALL DeleteSelectorProgressOverlayOwnerAdjusted(void* pDeleteInterface, int, unsigned int fDelete)
+{
+	void* pOwner;
+
+	pOwner = (char*) pDeleteInterface - 0x90;
+	DestroySelectorProgressOverlayOwner(pDeleteInterface);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pOwner);
+	}
+	return pOwner;
+}
+// FUNCTION: LEMBALL 0x0044f160
+int LEMBALL_FASTCALL HandleQueuedVariantRangeEntryEvent(GameQueuedVariantRangeEntry* pEntry,
+														int,
+														GameMenuSelectorEvent* pEvent)
+{
+	if (pEvent->m_nPayload08 != pEntry->m_nToken2C) {
+		return 0;
+	}
+	if (pEvent->m_nType00 == 0x0b) {
+		((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x25);
+		return 0;
+	}
+	if (pEvent->m_nType00 == 0x0c && pEntry->m_nActivationMode28 == 1) {
+		QueueQueuedVariantCommand(pEntry->m_nCommand30);
+	}
+	return 0;
+}
+// FUNCTION: LEMBALL 0x0044f420
+void GameQueuedVariantChildContextView::MarkRenderObjectDirty(void)
+{
+	int nContext;
+	int nRenderObject;
+
+	nContext = *(int*) (*(int*) ((char*) this + 0x4c) + 0x0c);
+	nRenderObject = nContext + *(int*) (*(int*) (nContext + 0x40) + 4) + 0x74;
+	*(int*) nRenderObject = 1;
+}
+// FUNCTION: LEMBALL 0x0044f440
+void* LEMBALL_FASTCALL ConstructQueuedVariantChildSlotManager(void* pObject,
+															  int,
+															  void* pRenderOwner,
+															  void* pRenderContext,
+															  int,
+															  int nLayoutMode,
+															  int nNavigationMode)
+{
+	GameQueuedVariantChildSlotManager* pManager;
+	int i;
+
+	pManager = (GameQueuedVariantChildSlotManager*) pObject;
+	memset(pManager, 0, sizeof(*pManager));
+	InitializeRenderQueueNodeBase(pManager);
+	pManager->m_pVtable00 = g_QueuedVariantChildSlotManagerVtable;
+	((LevelVariantRenderManagerView*) pManager->m_abVariantRenderManager10)
+		->Construct((int) (unsigned long) pRenderContext, 0x2b6, 1, 1, 0, 0);
+	*(void***) pManager->m_abPointSinkFC = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+	*(void***) pManager->m_abPointSinkFC = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage + 4;
+	*(void***) pManager->m_abCallback118 = g_MenuSelectorFrameSelectorCtorVtable;
+	*(int*) (pManager->m_abCallback118 + 4) = 1;
+	*(void***) pManager->m_abCallback118 = g_MenuSelectorCurrentFrameCallbackVtable;
+	*(void***) pManager->m_abVariantRenderManager10 = g_QueuedVariantChildSlotManagerRenderManagerVtable;
+	pManager->m_pRenderContext10C = pRenderContext;
+	pManager->m_pRenderOwner110 = pRenderOwner;
+	pManager->m_nNextToken114 = (int) 0xabcd0000U;
+	pManager->m_nLayoutMode130 = nLayoutMode;
+	pManager->m_nNavigationMode134 = nNavigationMode;
+	pManager->m_fCompactLayout138 = nLayoutMode == 1;
+	pManager->m_fInputEnabled144 = 1;
+	for (i = 0; i < 4; ++i) {
+		pManager->m_apChildrenAC[i] = 0;
+		pManager->m_aSlotsBC[i].m_fActive00 = 0;
+	}
+	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->RegisterOrderedRenderDispatchClient(pManager, 0);
+	g_nQueuedVariantChildSlotManagerModeSelectedResourceId = nLayoutMode == 1 ? 0x183 : 0x156;
+	((LevelVariantRenderManagerView*) pManager->m_abVariantRenderManager10)
+		->LoadVariantRenderResource(g_nQueuedVariantChildSlotManagerModeSelectedResourceId);
+	return pManager;
+}
+// FUNCTION: LEMBALL 0x0044f590
+void LEMBALL_FASTCALL InitializeQueuedVariantChildContext(void* pObject)
+{
+	typedef void(LEMBALL_FASTCALL * InitializeRectProc)(void*, int, short*, void*, int);
+	GameQueuedVariantChildSlotManager* pManager;
+	short Rect[4];
+	void* pContext;
+
+	pManager = (GameQueuedVariantChildSlotManager*) pObject;
+	pContext = AllocateVSMemBlock(0x90);
+	if (pContext == 0) {
+		pManager->m_pChildContext128 = 0;
+		pManager->m_pChildRenderContext12C = 0;
+		return;
+	}
+	ConstructQueuedVariantChildContextObject(pContext);
+	pManager->m_pChildContext128 = pContext;
+	Rect[0] = *(short*) ((char*) pManager->m_pRenderOwner110 + 8);
+	Rect[1] = *(short*) ((char*) pManager->m_pRenderOwner110 + 10);
+	Rect[2] = 0;
+	Rect[3] = 0;
+	((InitializeRectProc) (*(void***) pContext)[1])(pContext, 0, Rect, pManager->m_pRenderOwner110, 0);
+	pManager->m_pChildRenderContext12C = *(void**) ((char*) pContext + 0x4c);
+}
+// FUNCTION: LEMBALL 0x0044f610
+void LEMBALL_FASTCALL DestroyQueuedVariantChildSlotManager(void* pObject)
+{
+	GameQueuedVariantChildSlotManager* pManager;
+	int i;
+	int nResourceId;
+
+	pManager = (GameQueuedVariantChildSlotManager*) pObject;
+	pManager->m_pVtable00 = g_QueuedVariantChildSlotManagerVtable;
+	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->UnregisterOrderedRenderDispatchClient(pManager, 0);
+	for (i = 0; i < 4; ++i) {
+		if (pManager->m_apChildrenAC[i] != 0) {
+			DeleteQueuedVariantRangeEntry(pManager->m_apChildrenAC[i], 0, 1);
+			pManager->m_apChildrenAC[i] = 0;
+		}
+	}
+	nResourceId = pManager->m_nLayoutMode130 == 1 ? 0x183 : 0x156;
+	((LevelVariantRenderManagerView*) pManager->m_abVariantRenderManager10)->ReleaseVariantRenderResource(nResourceId);
+	if (pManager->m_pChildContext128 != 0) {
+		typedef void(LEMBALL_FASTCALL * DetachProc)(void*, int);
+		if (*(int*) ((char*) pManager->m_pChildContext128 + 4) == 1) {
+			((DetachProc) (*(void***) pManager->m_pChildContext128)[29])(pManager->m_pChildContext128, 0);
+		}
+		DestroyWindowOwnerRenderContext(pManager->m_pChildContext128);
+		FreeVSMemBlock(pManager->m_pChildContext128);
+		pManager->m_pChildContext128 = 0;
+		pManager->m_pChildRenderContext12C = 0;
+	}
+	DestroyVariantRenderManager(pManager->m_abVariantRenderManager10);
+	pManager->m_pVtable00 = g_pNonZrleVariantRenderEntryInitializeVtable;
+}
+// FUNCTION: LEMBALL 0x0044f6c0
+int LEMBALL_FASTCALL HandleQueuedVariantChildSlotManagerEvent(GameQueuedVariantChildSlotManager* pManager,
+															  int,
+															  GameMenuSelectorEvent* pEvent)
+{
+	int iChild;
+
+	if (pManager->m_fInputEnabled144 == 0) {
+		return 0;
+	}
+	if (pEvent->m_nType00 != 4) {
+		++pManager->m_cUnhandledEvents0C;
+		return 0;
+	}
+	iChild = pManager->m_iSelectedChildA8;
+	if (pEvent->m_nPayload08 == 1 || pEvent->m_nPayload08 == 3) {
+		if (iChild > 0) {
+			SelectQueuedVariantChildSlot(pManager, 0, iChild - 1);
+		}
+		((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x1b);
+		return 1;
+	}
+	if (pEvent->m_nPayload08 == 2 || pEvent->m_nPayload08 == 4) {
+		if (iChild + 1 < pManager->m_cChildren80) {
+			SelectQueuedVariantChildSlot(pManager, 0, iChild + 1);
+		}
+		((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x1b);
+		return 1;
+	}
+	if (pEvent->m_nPayload08 == 0x1f || pEvent->m_nPayload08 == 0x22 || pEvent->m_nPayload08 == 0x4c) {
+		QueueQueuedVariantCommand(pManager->m_aSlotsBC[pManager->m_iSelectedChildA8].m_nToken0C == 0
+									  ? 0
+									  : pManager->m_apChildrenAC[pManager->m_iSelectedChildA8]->m_nCommand30);
+	}
+	return 0;
+}
+// FUNCTION: LEMBALL 0x0044f8c0
+void LEMBALL_FASTCALL AppendQueuedVariantChildSlot(void* pObject,
+												   int,
+												   int x,
+												   int y,
+												   const int* panResourceIds,
+												   int nActivationMode,
+												   int nFirstResource,
+												   int nLastResource,
+												   int,
+												   int* pSelection,
+												   int nCommand)
+{
+	GameQueuedVariantChildSlotManager* pManager;
+	GameQueuedVariantRangeEntry* pEntry;
+	int iChild;
+	int nToken;
+
+	pManager = (GameQueuedVariantChildSlotManager*) pObject;
+	iChild = pManager->m_cChildren80;
+	if (iChild >= 4) {
+		return;
+	}
+	nToken = ++pManager->m_nNextToken114;
+	pEntry = (GameQueuedVariantRangeEntry*) AllocateVSMemBlock(sizeof(GameQueuedVariantRangeEntry));
+	if (pEntry != 0) {
+		ConstructQueuedVariantRangeEntry(pEntry,
+										 pManager->m_pRenderOwner110,
+										 pManager->m_pRenderContext10C,
+										 x,
+										 y,
+										 panResourceIds,
+										 nActivationMode,
+										 nFirstResource,
+										 nLastResource,
+										 nToken,
+										 pSelection,
+										 nCommand);
+	}
+	pManager->m_apChildrenAC[iChild] = pEntry;
+	pManager->m_aSlotsBC[iChild].m_fActive00 = pEntry != 0;
+	pManager->m_aSlotsBC[iChild].m_x04 = x;
+	pManager->m_aSlotsBC[iChild].m_y08 = y;
+	pManager->m_aSlotsBC[iChild].m_nToken0C = nToken;
+	++pManager->m_cChildren80;
+}
+// FUNCTION: LEMBALL 0x0044f9d0
+void LEMBALL_FASTCALL RebuildQueuedVariantChildSlotSourceRects(void* pObject, int, int fForce)
+{
+	GameQueuedVariantChildSlotManager* pManager;
+	int i;
+
+	pManager = (GameQueuedVariantChildSlotManager*) pObject;
+	for (i = 0; i < 4; ++i) {
+		if (pManager->m_apChildrenAC[i] != 0) {
+			RebuildQueuedVariantChildSourceRect(pManager->m_apChildrenAC[i], 0, fForce);
+		}
+	}
+}
+// FUNCTION: LEMBALL 0x0044fb20
+void LEMBALL_FASTCALL SelectQueuedVariantChildSlot(void* pObject, int, int iChild)
+{
+	GameQueuedVariantChildSlotManager* pManager;
+	DWORD dwNow;
+
+	pManager = (GameQueuedVariantChildSlotManager*) pObject;
+	if (iChild < 0 || iChild >= pManager->m_cChildren80) {
+		return;
+	}
+	pManager->m_iSelectedChildA8 = iChild;
+	dwNow = timeGetTime();
+	pManager->m_dwSelectionStart13C = (int) dwNow;
+	pManager->m_dwSelectionEnd140 = (int) dwNow;
+}
+// FUNCTION: LEMBALL 0x0044fc50
+void LEMBALL_FASTCALL RefreshQueuedVariantChildByToken(void* pObject, int, int nToken)
+{
+	GameQueuedVariantChildSlotManager* pManager;
+	GameQueuedVariantRangeEntry* pEntry;
+	int i;
+
+	pManager = (GameQueuedVariantChildSlotManager*) pObject;
+	for (i = 0; i < pManager->m_cChildren80; ++i) {
+		pEntry = pManager->m_apChildrenAC[i];
+		if (pEntry != 0 && pEntry->m_nCommand30 == nToken) {
+			RefreshQueuedVariantRangeSelection(pEntry);
+			return;
+		}
+	}
+}
+// FUNCTION: LEMBALL 0x0044ffc0
+void* LEMBALL_FASTCALL DeleteQueuedVariantRangeEntry(GameQueuedVariantRangeEntry* pEntry, int, int fDelete)
+{
+	DestroyQueuedVariantRangeEntry(pEntry);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pEntry);
+	}
+	return pEntry;
+}
 // FUNCTION: LEMBALL 0x00467170
 int LEMBALL_FASTCALL SelectTimedVariantFrameIndex(GameProgressiveVariantFrameSelector* pSelector)
 {
@@ -3344,7 +2889,6 @@ int LEMBALL_FASTCALL SelectTimedVariantFrameIndex(GameProgressiveVariantFrameSel
 	}
 	return (int) iFrame;
 }
-
 // FUNCTION: LEMBALL 0x004671e0
 void LEMBALL_FASTCALL SetProgressiveVariantFrameDuration(GameProgressiveVariantFrameSelector* pSelector,
 														 int,
@@ -3358,7 +2902,6 @@ void LEMBALL_FASTCALL SetProgressiveVariantFrameDuration(GameProgressiveVariantF
 		pSelector->m_dwStartTime = pSelector->m_dwFixedTime;
 	}
 }
-
 // FUNCTION: LEMBALL 0x00467210
 int LEMBALL_FASTCALL SelectProgressiveVariantFrameIndex(GameProgressiveVariantFrameSelector* pSelector)
 {
@@ -3382,7 +2925,6 @@ int LEMBALL_FASTCALL SelectProgressiveVariantFrameIndex(GameProgressiveVariantFr
 	}
 	return (int) iFrame;
 }
-
 // FUNCTION: LEMBALL 0x00467570
 short* LevelVariantRenderManagerView::GetVariantFrameExtent(short* pExtent, int nResourceId, int iFrame)
 {
@@ -3401,7 +2943,106 @@ short* LevelVariantRenderManagerView::GetVariantFrameExtent(short* pExtent, int 
 	}
 	return pExtent;
 }
+// FUNCTION: LEMBALL 0x00467cd0
+void* LEMBALL_FASTCALL ConstructResourceGeometryChildBase(void* pObject, int nUnusedEdx, void* pRenderOwner)
+{
+	void** pWindowOwnerVtable;
+	void** pGeometryOwnerVtable;
 
+	(void) nUnusedEdx;
+	((GameWindowOwnerRenderContext*) pObject)->ConstructWindowOwnerRenderContext();
+	pWindowOwnerVtable = *(void***) pObject;
+	InitializeEmptyGeometryOwnerRect((char*) pObject + 0x90);
+	pGeometryOwnerVtable = *(void***) ((char*) pObject + 0x90);
+	InitializeResourceGeometryChildVtables(pWindowOwnerVtable, pGeometryOwnerVtable);
+	*(short*) ((char*) pObject + 0xdc) = 0;
+	*(short*) ((char*) pObject + 0xde) = 0;
+	InitializeHelperLocalRectUpdateEntry((char*) pObject + 0xe4);
+	*(short*) ((char*) pObject + 0x100) = 0;
+	*(short*) ((char*) pObject + 0x102) = 0;
+	*(void***) pObject = g_ResourceGeometryChildVtable;
+	*(void***) ((char*) pObject + 0x90) = g_ResourceGeometryChildDeleteVtable;
+	*(void**) ((char*) pObject + 0xc8) = pRenderOwner;
+	InitializeSharedSpriteOwnerState(pObject);
+	return pObject;
+}
+// FUNCTION: LEMBALL 0x00467d50
+void LEMBALL_FASTCALL InitializeSharedSpriteOwnerState(void* pObject)
+{
+	void** ppFinalize;
+
+	*(int*) ((char*) pObject + 0xd8) = 1;
+	*(int*) ((char*) pObject + 0xf8) = 1;
+	*(int*) ((char*) pObject + 0xbc) = 1;
+	*(int*) ((char*) pObject + 0xd0) = 0;
+	*(int*) ((char*) pObject + 0xd4) = 0;
+	*(int*) ((char*) pObject + 0xfc) = 0;
+	ppFinalize = (void**) AllocateVSMemBlock(sizeof(void*));
+	if (ppFinalize != 0) {
+		*ppFinalize = g_pQueuedRenderPointSinkFinalizeThunk;
+	}
+	*(void**) ((char*) pObject + 0xe0) = ppFinalize;
+	*(int*) ((char*) pObject + 0x50) = 2;
+	*(int*) ((char*) pObject + 0xf4) = 0;
+	*(int*) ((char*) pObject + 0xcc) = 0;
+}
+// FUNCTION: LEMBALL 0x00467dd0
+void LEMBALL_FASTCALL DestroyResourceGeometryChild(void* pChildOwner)
+{
+	typedef void(LEMBALL_FASTCALL * DeleteProc)(void* pObject, int nUnusedEdx, unsigned int fDelete);
+	char* pObject;
+	void* pOwnedEntry;
+
+	pObject = (char*) pChildOwner - 0x90;
+	*(void***) pObject = g_ResourceGeometryChildVtable;
+	*(void***) pChildOwner = g_ResourceGeometryChildDeleteVtable;
+	if (*(int*) (*(int*) (pObject + 0xc8) + 4) == 1) {
+		DetachGeometryChildAndDestroyWindowOwner(pObject);
+	}
+	pOwnedEntry = *(void**) (pObject + 0xe0);
+	if (pOwnedEntry != 0) {
+		((DeleteProc) (*(void***) pOwnedEntry)[0])(pOwnedEntry, 0, 1);
+	}
+	RestorePackagedSpriteRenderEntryVtableC(pObject + 0xe4);
+	*(void***) pObject = g_pWindowOwnerRenderContextVtable;
+	DestroyWindowOwnerRenderContext(pObject);
+}
+// FUNCTION: LEMBALL 0x00467e50
+void LEMBALL_FASTCALL RefreshCompactZrleOwnerFromResourceHelper(void* pObject)
+{
+	typedef void(LEMBALL_FASTCALL * VoidProc)(void* pObject);
+	int nRenderObject;
+	int nZero;
+
+	nRenderObject = ResolveResourceGeometryRenderObject(pObject);
+	((VoidProc) (*(void***) nRenderObject)[14])((void*) nRenderObject);
+	nZero = 0;
+	if (*(int*) ((char*) pObject + 0xd8) == 0) {
+		*(int*) ((char*) pObject + 0xf0) = nZero;
+	}
+	else {
+		--*(int*) ((char*) pObject + 0xd8);
+		nRenderObject = ResolveResourceGeometryRenderObject(pObject);
+		*(short*) ((char*) pObject + 0xe8) = *(short*) (nRenderObject + 0x14);
+		*(short*) ((char*) pObject + 0xea) = *(short*) (nRenderObject + 0x16);
+		*(short*) ((char*) pObject + 0xec) = (short) nZero;
+		*(short*) ((char*) pObject + 0xee) = (short) nZero;
+		*(int*) ((char*) pObject + 0xf0) = 0x10000;
+		nRenderObject = ResolveResourceGeometryRenderObject(pObject);
+		*(int*) (nRenderObject + 0x38) = 1;
+	}
+	((GameResourceGeometryChildContext*) ((char*) pObject + 0xe4))
+		->BindResourceContext(*(void**) ((char*) pObject + 0x4c));
+}
+// FUNCTION: LEMBALL 0x00467ef0
+void LEMBALL_FASTCALL RefreshCompactZrleOwnerAfterFrameChange(void* pObject)
+{
+	if (*(int*) ((char*) pObject + 0xd0) != *(int*) ((char*) pObject + 0xd4)) {
+		*(int*) ((char*) ResolveResourceGeometryRenderObject(pObject) + 0x38) = 1;
+		*(int*) ((char*) pObject + 0xd4) = *(int*) ((char*) pObject + 0xd0);
+	}
+	RefreshCompactZrleOwnerFromResourceHelper(pObject);
+}
 // FUNCTION: LEMBALL 0x00467f30
 void GameCompactZrleOverlay::RebuildSourceRect(int fForce)
 {
@@ -3419,7 +3060,228 @@ void GameCompactZrleOverlay::RebuildSourceRect(int fForce)
 	}
 	*(int*) ((char*) this + 0xfc) = 0;
 }
+// FUNCTION: LEMBALL 0x00467fa0
+void LEMBALL_FASTCALL HandleSpriteOwnerPointerEnter(void* pGeometryOwner)
+{
+	void* pObject;
 
+	pObject = (char*) pGeometryOwner - 0x90;
+	if (*(int*) ((char*) pGeometryOwner + 0x10) != 0 || *(int*) ((char*) pGeometryOwner + 0x1c) != 0) {
+		*(int*) ((char*) pGeometryOwner + 0x40) = 1;
+	}
+	NotifySpriteOwnerStateEvent(pObject, 0x0d);
+	((void(LEMBALL_FASTCALL*)(void*))(*(void***) pObject)[50])(pObject);
+}
+// FUNCTION: LEMBALL 0x00467fd0
+void LEMBALL_FASTCALL HandleSpriteOwnerPointerLeave(void* pGeometryOwner)
+{
+	void* pObject;
+
+	pObject = (char*) pGeometryOwner - 0x90;
+	*(int*) ((char*) pGeometryOwner + 0x40) = 0;
+	NotifySpriteOwnerStateEvent(pObject, 0x0e);
+	((void(LEMBALL_FASTCALL*)(void*))(*(void***) pObject)[51])(pObject);
+}
+// FUNCTION: LEMBALL 0x00468050
+void LEMBALL_FASTCALL HandleSpriteOwnerButtonTransition(void* pGeometryOwner, int, const VS_XYPair* pPoint, int nButton)
+{
+	void* pObject;
+	int nFrame;
+
+	pObject = (char*) pGeometryOwner - 0x90;
+	if (nButton == 0 || nButton == 3) {
+		*(int*) ((char*) pGeometryOwner + 0x40) = 1;
+	}
+	nFrame = MapSpriteOwnerEventToFrameSlot(nButton);
+	StoreSpriteOwnerLocalPoint(pGeometryOwner, pPoint);
+	NotifySpriteOwnerFrameEvent(pObject, 0x0b, nFrame);
+	((void(LEMBALL_FASTCALL*)(void*, int, int))(*(void***) pObject)[49])(pObject, 0, nFrame);
+}
+// FUNCTION: LEMBALL 0x004680c0
+void LEMBALL_FASTCALL HandleSpriteOwnerButtonInside(void* pGeometryOwner, int, const VS_XYPair* pPoint, int nButton)
+{
+	void* pObject;
+	int nFrame;
+
+	if (*(int*) ((char*) pGeometryOwner + 0x40) == 0) {
+		return;
+	}
+	pObject = (char*) pGeometryOwner - 0x90;
+	nFrame = MapSpriteOwnerEventToFrameSlot(nButton);
+	*(int*) ((char*) pGeometryOwner + 0x40) = 0;
+	StoreSpriteOwnerLocalPoint(pGeometryOwner, pPoint);
+	NotifySpriteOwnerFrameEvent(pObject, 0x0c, nFrame);
+	((void(LEMBALL_FASTCALL*)(void*, int, int))(*(void***) pObject)[48])(pObject, 0, nFrame);
+}
+// FUNCTION: LEMBALL 0x00468130
+void LEMBALL_FASTCALL ResetSpriteOwnerButtonState(void* pGeometryOwner, int, const VS_XYPair* pPoint, int)
+{
+	int i;
+
+	StoreSpriteOwnerLocalPoint(pGeometryOwner, pPoint);
+	for (i = 0; i < 6; ++i) {
+		*(int*) ((char*) pGeometryOwner + 0x10 + i * 4) = 0;
+	}
+}
+// FUNCTION: LEMBALL 0x00468360
+void LEMBALL_FASTCALL QueueCompactZrleOwnerIfDirty(void* pObject, void* pUnusedEdx, const short* pRect)
+{
+	typedef int(LEMBALL_FASTCALL * QueryProc)(void* pObject);
+	typedef void(LEMBALL_FASTCALL * VoidProc)(void* pObject);
+	void* pRenderContext;
+	void* pOwner;
+	int nRenderObject;
+	int fHelperDirty;
+	int nUploadState;
+
+	(void) pUnusedEdx;
+	(void) pRect;
+
+	nRenderObject = ResolveResourceGeometryRenderObject(pObject);
+	fHelperDirty = ((QueryProc) (*(void***) nRenderObject)[15])((void*) nRenderObject);
+	pRenderContext = *(void**) ((char*) pObject + 0x4c);
+	if (!((fHelperDirty != 0 && (*(int*) ((char*) pObject + 0xd0) != 0 ||
+								 *(int*) ((char*) pObject + 0x104) != *(int*) ((char*) pObject + 0x108))) ||
+		  (*(int*) ((char*) pRenderContext + 4) == 0 &&
+		   (*(int*) ((char*) pObject + 0xf8) != 0 || *(int*) ((char*) pObject + 0xd8) != 0 ||
+			*(int*) ((char*) pObject + 0xd0) != *(int*) ((char*) pObject + 0xd4))))) {
+		return;
+	}
+
+	if (((QueryProc) (*(void***) pObject)[26])(pObject) != 0) {
+		((VoidProc) (*(void***) pObject)[46])(pObject);
+		((VoidProc) (*(void***) pObject)[47])(pObject);
+	}
+	pOwner = *(void**) ((char*) pRenderContext + 0x0c);
+	nUploadState = ((QueryProc) (*(void***) pOwner)[2])(pOwner);
+	((VsGdiHelperDispatchQueue*) pRenderContext)->AppendPointerQueueEntry(*(void**) ((char*) pObject + 0xe0));
+	InitializeHelperUploadStatePending(nUploadState);
+	*(int*) ((char*) pObject + 0xfc) = 1;
+}
+// FUNCTION: LEMBALL 0x00468530
+void* LEMBALL_FASTCALL ConstructAlignedZrleChildOverlayFromPoint(void* pObject,
+																 int nUnusedEdx,
+																 const VS_XYPair* pPoint,
+																 void* pRenderOwner,
+																 int nResourceId,
+																 int fAlignment)
+{
+	typedef void(LEMBALL_FASTCALL *
+				 InitializeRectProc)(void* pObject, int nUnusedEdx, short* pRect, void* pOwner, const char* pszName);
+	short aRect[4];
+
+	(void) nUnusedEdx;
+	ConstructResourceGeometryChildBase(pObject, 0, pRenderOwner);
+	*(short*) ((char*) pObject + 0x114) = 0;
+	*(short*) ((char*) pObject + 0x116) = 0;
+	*(int*) ((char*) pObject + 0x104) = 0;
+	*(int*) ((char*) pObject + 0x108) = 0;
+	*(short*) ((char*) pObject + 0x118) = 0;
+	*(short*) ((char*) pObject + 0x11a) = 0;
+	InitializeTinyPointSinkHelper((char*) pObject + 0x128);
+	InitializeAlignedZrleChildOverlayVtables();
+	*(void***) pObject = g_AlignedZrleChildOverlayVtable;
+	*(void***) ((char*) pObject + 0x90) = g_AlignedZrleChildOverlayDeleteVtable;
+	*(int*) ((char*) pObject + 0x10c) = nResourceId;
+	*(int*) ((char*) pObject + 0x110) = fAlignment;
+	ComputeAlignedZrleChildLayout(pObject);
+
+	*(short*) ((char*) pObject + 0xdc) = pPoint->m_x;
+	*(short*) ((char*) pObject + 0xde) = pPoint->m_y;
+	aRect[0] = *(short*) ((char*) pObject + 0xc0);
+	aRect[1] = *(short*) ((char*) pObject + 0xc2);
+	aRect[2] = pPoint->m_x;
+	aRect[3] = pPoint->m_y;
+	((InitializeRectProc) (*(void***) pObject)[1])(pObject, 0, aRect, pRenderOwner, "Button");
+	*(short*) ((char*) pObject + 0xc4) += *(short*) ((char*) pObject + 0x18);
+	*(short*) ((char*) pObject + 0xc6) += *(short*) ((char*) pObject + 0x1a);
+	AppendGeometryOwnerChild(*(void**) ((char*) pRenderOwner + 0x1c), 0, (char*) pObject + 0x90);
+	return pObject;
+}
+// FUNCTION: LEMBALL 0x004686e0
+void LEMBALL_FASTCALL ComputeAlignedZrleChildLayout(void* pObject)
+{
+	typedef void(LEMBALL_FASTCALL * LoadProc)(void* pResource);
+	GameMenuActionFramePointSink* pFrameSink;
+	int* pListResource;
+	char* pFrame;
+	short cxFrame;
+	short cyFrame;
+	short cxOwner;
+	short cyOwner;
+	short nAlignment;
+
+	*(int*) ((char*) pObject + 0x120) = 0;
+	pFrameSink = (GameMenuActionFramePointSink*) AllocateVSMemBlock(sizeof(int) + sizeof(GameMenuActionFramePointSink));
+	if (pFrameSink != 0) {
+		*(int*) pFrameSink = 1;
+		pFrameSink = (GameMenuActionFramePointSink*) ((char*) pFrameSink + sizeof(int));
+		InitializeMenuActionFramePointSink(pFrameSink);
+	}
+	*(GameMenuActionFramePointSink**) ((char*) pObject + 0x124) = pFrameSink;
+	++*(int*) ((char*) pObject + 0x50);
+
+	pListResource = (int*) LoadZrleOnlyListResource(*(int*) ((char*) pObject + 0x10c));
+	*(int**) ((char*) pObject + 0x11c) = pListResource;
+	if (pListResource[4] == 0) {
+		((LoadProc) (*(void***) pListResource)[7])(pListResource);
+	}
+	else {
+		pListResource[9] = 0;
+	}
+	++pListResource[2];
+
+	pFrame = (char*) pListResource[0x1e];
+	cxFrame = *(short*) (pFrame + 0x4c);
+	cyFrame = *(short*) (pFrame + 0x4e);
+	if (cxFrame < *(short*) (pFrame + 0xa0)) {
+		cxFrame = *(short*) (pFrame + 0xa0);
+	}
+	if (cyFrame < *(short*) (pFrame + 0xa2)) {
+		cyFrame = *(short*) (pFrame + 0xa2);
+	}
+	*(short*) ((char*) pObject + 0x114) = cxFrame;
+	*(short*) ((char*) pObject + 0x116) = cyFrame;
+	--pListResource[2];
+
+	*(short*) ((char*) pObject + 0x118) = *(short*) ((char*) pObject + 0xc4);
+	*(short*) ((char*) pObject + 0x11a) = *(short*) ((char*) pObject + 0xc6);
+	cxOwner = *(short*) ((char*) pObject + 0xc0);
+	cyOwner = *(short*) ((char*) pObject + 0xc2);
+	if (cxOwner < 0) {
+		cxOwner = (short) (-cxFrame * cxOwner);
+	}
+	else if (cxOwner == 0) {
+		cxOwner = cxFrame;
+	}
+	if (cyOwner < 0) {
+		cyOwner = (short) (-cyFrame * cyOwner);
+	}
+	else if (cyOwner == 0) {
+		cyOwner = cyFrame;
+	}
+	*(short*) ((char*) pObject + 0xc0) = cxOwner;
+	*(short*) ((char*) pObject + 0xc2) = cyOwner;
+	if ((int) cxOwner * (int) cyOwner != 0) {
+		((GameGeometryOwnerRectState*) ((char*) pObject + 0x90))->SetEnabled(1);
+	}
+
+	nAlignment = *(short*) ((char*) pObject + 0x118);
+	if ((*(unsigned int*) ((char*) pObject + 0x110) & 4) != 0) {
+		nAlignment = (short) ((cxOwner - cxFrame) / 2);
+	}
+	else if ((*(unsigned int*) ((char*) pObject + 0x110) & 0x10) != 0) {
+		nAlignment = (short) (cxOwner - cxFrame);
+	}
+	*(short*) ((char*) pObject + 0x118) = nAlignment;
+
+	if ((*(unsigned int*) ((char*) pObject + 0x110) & 8) != 0) {
+		*(short*) ((char*) pObject + 0x11a) = (short) ((cyOwner - cyFrame) / 2);
+	}
+	else if ((*(unsigned int*) ((char*) pObject + 0x110) & 0x20) != 0) {
+		*(short*) ((char*) pObject + 0x11a) = (short) (cyOwner - cyFrame);
+	}
+}
 // FUNCTION: LEMBALL 0x004688e0
 void GameCompactZrleOverlay::ReloadResource(int nResourceId)
 {
@@ -3433,10 +3295,105 @@ void GameCompactZrleOverlay::ReloadResource(int nResourceId)
 	*(void**) ((char*) this + 0x11c) = LoadZrleOnlyListResource(nResourceId);
 	*(int*) ((char*) this + 0xd8) = 1;
 }
-
-void LEMBALL_FASTCALL SetMenuSelectorChildrenEnabledThunk(GameMenuSelectorManager* pManager,
-														  int nUnusedEdx,
-														  int fEnabled)
+// FUNCTION: LEMBALL 0x00468920
+void LEMBALL_FASTCALL DestroyAlignedZrleChildOverlay(void* pChildOwner)
 {
-	SetMenuSelectorChildrenEnabled(pManager, nUnusedEdx, fEnabled);
+	typedef void(LEMBALL_FASTCALL * DeleteProc)(void* pObject, int nUnusedEdx, unsigned int fDelete);
+	char* pObject;
+	void* pFrameSink;
+
+	pObject = (char*) pChildOwner - 0x90;
+	*(void***) pChildOwner = g_AlignedZrleChildOverlayDeleteVtable;
+	*(void***) pObject = g_AlignedZrleChildOverlayVtable;
+	if (*(int*) (pObject + 4) == 1) {
+		DetachGeometryChildAndDestroyWindowOwner(pObject);
+	}
+	pFrameSink = *(void**) (pObject + 0x124);
+	if (pFrameSink != 0) {
+		((DeleteProc) (*(void***) pFrameSink)[0])(pFrameSink, 0, 3);
+	}
+	RestoreQueuedRenderPointSinkVtable(pObject + 0x128);
+	DestroyResourceGeometryChild(pChildOwner);
+}
+// FUNCTION: LEMBALL 0x00468980
+void GameAlignedZrleChildOverlayView::ReleaseFrameResource(void)
+{
+	void* pResource;
+
+	pResource = *(void**) ((char*) this + 0x11c);
+	if (pResource != 0) {
+		ReleaseTypedResourceObjectReference(pResource);
+		*(void**) ((char*) this + 0x11c) = 0;
+	}
+}
+// FUNCTION: LEMBALL 0x004689a0
+void GameAlignedZrleChildOverlayView::QueueAlignedFrame(void)
+{
+	typedef void(LEMBALL_FASTCALL * RefreshProc)(void* pObject, int nUnusedEdx);
+	typedef void(LEMBALL_FASTCALL * QueueProc)(void* pObject, int nUnusedEdx, void* pQueueOwner);
+	char* pObject;
+	char* pFrameSink;
+	void* pGeometryContext;
+	void* pQueueOwner;
+	short x;
+	short y;
+	int fResourceReady;
+
+	pObject = (char*) this;
+	x = *(short*) (pObject + 0x118);
+	y = *(short*) (pObject + 0x11a);
+	fResourceReady = *(int*) (pObject + 0x104) != 0 && *(int*) (pObject + 0x94) != 0;
+	if ((*(unsigned int*) (pObject + 0x110) & 0x40) != 0 && fResourceReady) {
+		++x;
+		++y;
+	}
+
+	pQueueOwner = *(void**) (pObject + 0x4c);
+	pGeometryContext = *(void**) ((char*) pQueueOwner + 0x0c);
+	pGeometryContext = (char*) pGeometryContext + *(int*) (*(int*) ((char*) pGeometryContext + 0x40) + 4) + 0x40;
+	((RefreshProc) (*(void***) pGeometryContext)[14])(pGeometryContext, 0);
+
+	pFrameSink = *(char**) (pObject + 0x124);
+	*(short*) (pFrameSink + 4) = x;
+	*(short*) (pFrameSink + 6) = y;
+	*(void**) (pFrameSink + 0x1c) = *(void**) (pObject + 0x11c);
+	*(int*) (pFrameSink + 0x18) = *(int*) (pObject + 0x104);
+	*(int*) (pFrameSink + 0x0c) = 0;
+	*(void**) (pFrameSink + 0x10) = *(void**) (pObject + 0x120);
+	((QueueProc) (*(void***) pFrameSink)[1])(pFrameSink, 0, pQueueOwner);
+}
+// FUNCTION: LEMBALL 0x00469870
+void GameResourceGeometryChildView::NoopWindowOwnerSlot42(int)
+{
+}
+// FUNCTION: LEMBALL 0x00469880
+void* GameResourceGeometryChildDeleteView::Delete(unsigned int fDelete)
+{
+	char* pObject;
+
+	pObject = (char*) this - 0x90;
+	DestroyResourceGeometryChild(this);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
+// FUNCTION: LEMBALL 0x004698b0
+void* LEMBALL_FASTCALL InitializeTinyPointSinkHelper(void* pObject)
+{
+	*(void***) pObject = g_MenuSelectorTinyPointSinkVtable;
+	*(int*) ((char*) pObject + 4) = 0;
+	return pObject;
+}
+// FUNCTION: LEMBALL 0x004698c0
+void* GameAlignedZrleChildOverlayDeleteView::Delete(unsigned int fDelete)
+{
+	char* pObject;
+
+	pObject = (char*) this - 0x90;
+	DestroyAlignedZrleChildOverlay(this);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
 }

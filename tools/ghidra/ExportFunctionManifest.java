@@ -66,6 +66,17 @@ public class ExportFunctionManifest extends GhidraScript {
         return ownership(function);
     }
 
+    private static String thunkTarget(Function function) {
+        if (!function.isThunk()) return null;
+        Function target = function.getThunkedFunction(true);
+        if (target == null) {
+            throw new IllegalStateException(
+                "unresolved thunk target for " + function.getName() + " at " + function.getEntryPoint());
+        }
+        if (target.isExternal()) return target.getName();
+        return String.format("%08X", target.getEntryPoint().getOffset());
+    }
+
     @Override
     protected void run() throws Exception {
         String[] args = getScriptArgs();
@@ -98,6 +109,8 @@ public class ExportFunctionManifest extends GhidraScript {
                 out.write("      \"size\": " + function.getBody().getNumAddresses() + ",\n");
                 out.write("      \"category\": " + jsonString(type) + ",\n");
                 out.write("      \"is_thunk\": " + function.isThunk() + ",\n");
+                String target = thunkTarget(function);
+                out.write("      \"thunk_target\": " + (target == null ? "null" : jsonString(target)) + ",\n");
                 out.write("      \"is_external\": " + function.isExternal() + ",\n");
                 out.write("      \"provenance\": \"ghidra\"\n    }");
                 out.write(i + 1 == functions.size() ? "\n" : ",\n");

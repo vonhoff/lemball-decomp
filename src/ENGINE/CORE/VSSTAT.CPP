@@ -277,7 +277,7 @@ GameDynamicCString* GameDynamicCString::AppendDynamicCStringAndCopyResult(GameDy
 // FUNCTION: LEMBALL 0x0046e7f0
 void* AppendDynamicCStringToStream(void* pStream, const GameDynamicCString* pString)
 {
-	AppendCStringToStream((VsInitFormattedOutputStream*) pStream, pString->m_pszText);
+	((VsInitFormattedOutputStream*) pStream)->AppendCStringToStream(pString->m_pszText);
 	return pStream;
 }
 

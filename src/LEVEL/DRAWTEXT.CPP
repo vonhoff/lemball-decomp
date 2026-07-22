@@ -11,6 +11,7 @@
 #include <string.h>
 
 extern void* LoadListResource(int nResourceId);
+extern void* g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[];
 
 class LevelGlyphListView {
 public:
@@ -68,9 +69,7 @@ void* LevelScreenDrawOwnerView::LookupGlyph(unsigned int ch)
 }
 
 // FUNCTION: LEMBALL 0x0045db30
-short* LevelScreenDrawOwnerView::MeasureGlyphStringExtent(short* pExtent,
-														 const char* pszText,
-														 unsigned int nFlags)
+short* LevelScreenDrawOwnerView::MeasureGlyphStringExtent(short* pExtent, const char* pszText, unsigned int nFlags)
 {
 	int i;
 	short cx;
@@ -89,22 +88,30 @@ short* LevelScreenDrawOwnerView::MeasureGlyphStringExtent(short* pExtent,
 		}
 		if ((nFlags & 0x60) == 0) {
 			int nWidth = *(short*) (pGlyph + 0x48) + *(short*) (pGlyph + 0x4c);
-			if (cx < nWidth) cx = (short) nWidth;
+			if (cx < nWidth) {
+				cx = (short) nWidth;
+			}
 		}
 		else {
 			cx = (short) (cx + *(short*) (pGlyph + 0x4c) + 1);
 		}
 		if ((nFlags & 0x180) == 0) {
 			int nHeight = *(short*) (pGlyph + 0x4a) + *(short*) (pGlyph + 0x4e);
-			if (cy < nHeight) cy = (short) nHeight;
+			if (cy < nHeight) {
+				cy = (short) nHeight;
+			}
 		}
 		else {
 			cy = (short) (cy + *(short*) (pGlyph + 0x4e) + 1);
 		}
 		++i;
 	}
-	if ((nFlags & 0x60) != 0) --cx;
-	if ((nFlags & 0x180) != 0) --cy;
+	if ((nFlags & 0x60) != 0) {
+		--cx;
+	}
+	if ((nFlags & 0x180) != 0) {
+		--cy;
+	}
 	pExtent[0] = cx;
 	pExtent[1] = cy;
 	return pExtent;
@@ -150,9 +157,35 @@ void LevelPackagedRectQueueEntry::Process(void* pContext)
 	--pOwner[2];
 }
 
-// FUNCTION: LEMBALL 0x00467ba0
-LevelPackagedRectQueueEntry::~LevelPackagedRectQueueEntry()
+// FUNCTION: LEMBALL 0x00467b40
+void* LevelPackagedRectQueueEntry::Delete(unsigned int fDelete)
 {
+	if ((fDelete & 2) != 0) {
+		int i;
+		char* pAllocation;
+		LevelPackagedRectQueueEntry* pEntry;
+
+		pAllocation = (char*) this - 4;
+		i = *(int*) pAllocation;
+		pEntry = this + i;
+		while (--i >= 0) {
+			(--pEntry)->ResetVtableAfterDestruction();
+		}
+		FreeVSMemBlock(pAllocation);
+		return this;
+	}
+
+	*(void**) this = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(this);
+	}
+	return this;
+}
+
+// FUNCTION: LEMBALL 0x00467ba0
+void LevelPackagedRectQueueEntry::ResetVtableAfterDestruction()
+{
+	*(void**) this = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
 
 // FUNCTION: LEMBALL 0x00469a00
@@ -239,9 +272,37 @@ void LevelScreenDrawEntry::AppendToQueue(void* pQueue)
 	((VsGdiHelperDispatchQueue*) pQueue)->AppendPointerQueueEntry(this);
 }
 
-// FUNCTION: LEMBALL 0x00469bf0
-LevelScreenDrawEntry::~LevelScreenDrawEntry()
+// FUNCTION: LEMBALL 0x00469b80
+void* LevelScreenDrawEntry::Delete(unsigned int fDelete)
 {
+	if ((fDelete & 2) != 0) {
+		int i;
+		char* pAllocation;
+		LevelScreenDrawEntry* pEntry;
+
+		pAllocation = (char*) this - 4;
+		i = *(int*) pAllocation;
+		pEntry = this + i;
+		while (--i >= 0) {
+			(--pEntry)->ResetVtablesAfterDestruction();
+		}
+		FreeVSMemBlock(pAllocation);
+		return this;
+	}
+
+	*(void**) this = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+	*(void**) ((char*) this + 0x2c) = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(this);
+	}
+	return this;
+}
+
+// FUNCTION: LEMBALL 0x00469bf0
+void LevelScreenDrawEntry::ResetVtablesAfterDestruction()
+{
+	*(void**) ((char*) this + 0x2c) = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+	*(void**) this = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
 
 // FUNCTION: LEMBALL 0x00469c60
@@ -414,6 +475,18 @@ void LevelResourceScreenDrawEntry::InitializeFromPointAndDynamicText(const short
 	strcpy(m_pszOwnedText44, Text.m_pszText);
 	LevelScreenDrawEntry::InitializeFromPointAndText(pPoint, pOwner, m_pszOwnedText44, nDrawFlags, nDrawValue);
 	Text.DestroyDynamicCString();
+}
+
+// FUNCTION: LEMBALL 0x0046a220
+void* LevelResourceScreenDrawEntry::Delete(unsigned int fDelete)
+{
+	FreeVSMemBlock(m_pszOwnedText44);
+	*(void**) this = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+	*(void**) ((char*) this + 0x2c) = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(this);
+	}
+	return this;
 }
 
 // FUNCTION: LEMBALL 0x004749c0

@@ -171,7 +171,6 @@ DECOMP_SIZE_ASSERT(GameIntroSequenceScreen, 0x494);
 
 void LEMBALL_FASTCALL ActivateFramedScreenBase(void* pScreen);
 void LEMBALL_FASTCALL ActivateFramedScreenBaseThunk(void* pScreen);
-void LEMBALL_FASTCALL DestroyFunctionalFramedScreenBase(void* pScreen);
 void* LEMBALL_FASTCALL ConstructFunctionalOptionsScreen(void* pObject,
 														int nUnusedEdx,
 														void* pPrimaryContext,

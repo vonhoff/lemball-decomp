@@ -1,12 +1,16 @@
 # External runtime-library symbols absent from reconstructed source.
-address,name,symbol,type
-0x0047FCA0,__purecall,_purecall,library
-0x00480198,__setjmp3,__setjmp3,library
-0x00480290,_memcpy,_memcpy,library
-0x00480420,_fopen,_fopen,library
-0x00480440,_fclose,_fclose,library
-0x004804E0,_fread,_fread,library
-0x00480670,_fflush,_fflush,library
-0x00480830,_fwrite,_fwrite,library
-0x004809F0,_ftell,_ftell,library
-0x00480BD0,_fseek,_fseek,library
+address,name,symbol,type,manifest_category
+0x0047B8D0,WSAGetLastError,_WSAGetLastError@0,library,import
+0x0047FCA0,__purecall,_purecall,library,runtime
+0x0047FE00,_strchr,_strchr,library,runtime
+0x0047FE20,_WinMainCRTStartup,_WinMainCRTStartup,library,runtime
+0x00480010,_strncmp,_strncmp,library,runtime
+0x00480198,__setjmp3,__setjmp3,library,runtime
+0x00480290,_memcpy,_memcpy,library,runtime
+0x00480420,_fopen,_fopen,library,runtime
+0x00480440,_fclose,_fclose,library,runtime
+0x004804E0,_fread,_fread,library,runtime
+0x00480670,_fflush,_fflush,library,runtime
+0x00480830,_fwrite,_fwrite,library,runtime
+0x004809F0,_ftell,_ftell,library,runtime
+0x00480BD0,_fseek,_fseek,library,runtime

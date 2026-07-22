@@ -1,7 +1,6 @@
 #ifndef LEMBALL_GAME_MENU_SELECTOR_H
 #define LEMBALL_GAME_MENU_SELECTOR_H
 
-// STUB: LEMBALL 0x00402432
 // ConstructMenuSelectorManager
 // STUB: LEMBALL 0x00402a36
 // MoveMenuSelectorPreviousThunk
@@ -75,6 +74,10 @@ struct GameProgressiveVariantFrameSelector {
 	int m_dwFixedTime; // 0x14
 	int m_nDirection;  // 0x18
 };
+
+int LEMBALL_FASTCALL GetMenuSelectorStartTimeThunk(GameProgressiveVariantFrameSelector* pSelector);
+int LEMBALL_FASTCALL SelectTimedVariantFrameIndex(GameProgressiveVariantFrameSelector* pSelector);
+int LEMBALL_FASTCALL SelectProgressiveVariantFrameIndex(GameProgressiveVariantFrameSelector* pSelector);
 
 extern void* g_MenuSelectorFrameSelectorCtorVtable[2];
 extern void* g_MenuSelectorTimedFrameSelectorVtable[6];
@@ -213,7 +216,7 @@ void LEMBALL_FASTCALL RefreshCompactZrleOwnerFromResourceHelper(void* pObject);
 // FUNCTION: LEMBALL 0x00468300
 // RefreshCompactZrleOwnerIfHelperDirty
 void LEMBALL_FASTCALL RefreshCompactZrleOwnerIfHelperDirty(void* pObject);
-void LEMBALL_FASTCALL QueueCompactZrleOwnerIfDirty(void* pObject);
+void LEMBALL_FASTCALL QueueCompactZrleOwnerIfDirty(void* pObject, void* pUnusedEdx, const short* pRect);
 void LEMBALL_FASTCALL ComputeAlignedZrleChildLayout(void* pObject);
 
 void* LEMBALL_FASTCALL ConstructQueuedVariantChildSlotManager(void* pManager,

@@ -2,6 +2,7 @@
 #include "ENGINE/CORE/VSINIT.H"
 #include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/DEBUG/CTEXTWIN.H"
+#include "ENGINE/DEBUG/VSDBG.H"
 #include "ENGINE/GDI/VSGDI.H"
 #include "ENGINE/GDI/VSINVIS.H"
 #include "GAME.H"
@@ -20,7 +21,6 @@
 extern "C" int __cdecl _isctype(int nCharacter, int nType);
 #undef _tolower
 extern "C" int __cdecl _tolower(int nCharacter);
-extern char* FindCharInCString0047FE00(char* pszText, char ch);
 
 #define LEMBALL_CRT_ISCTYPE(nCharacter, nType)                                                                         \
 	(MB_CUR_MAX > 1 ? _isctype((nCharacter), (nType)) : (_pctype[(nCharacter)] & (nType)))
@@ -37,16 +37,15 @@ extern void* g_pSharedGeometryHelper;
 #define VsInitFORMAT_TARGET(pStream)                                                                                   \
 	((VsInitStreamFormatTargetState*) ((char*) (pStream) + (unsigned long) ((void**) ((pStream)->m_pVtable))[1]))
 
-void FlushStatusFixedBufferStream(char* pszText);
-void FlushStartupFixedBufferStream(char* pszText);
-void FlushErrorFixedBufferStream(char* pszText);
-static void DestroyFormattedOutputStream(VsInitFormattedOutputStream* pStream, int fFreeMemory);
 static void DeleteFixedBufferStream(VsInitFixedBufferStream* pStream, int fFreeMemory);
 void FormatSignedIntToRadixString(int nValue, char* pszBuffer, unsigned int nRadix);
 char* FormatUnsignedIntToRadixString(unsigned int uValue, char* pszBuffer, unsigned int nRadix);
 void LEMBALL_FASTCALL ApplyStreamIntegerWidthPadding(VsInitFormattedOutputStream* pStream);
 
 typedef void*(LEMBALL_FASTCALL* VsInitDeleteProc)(void* pStream, int nUnused, int fFreeMemory);
+struct VsInitDeletingStreamView {
+	virtual void* Delete(int fFreeMemory);
+};
 void* LEMBALL_FASTCALL DeleteStreamBase(void* pStream, int nUnused, int fFreeMemory);
 void LEMBALL_FASTCALL DestroyStreamBaseVtable(void* pStream);
 // GLOBAL: LEMBALL 0x00498888
@@ -75,11 +74,6 @@ static const char g_VSINIT_NullPointerText[] = "(null)";
 static const char g_VSINIT_HexPointerPrefix[] = "0x";
 static int g_fRadixPowerTableInitialized = 0;
 static unsigned int g_adwRadixPowerTable[17];
-
-VsInitFormattedOutputStream* AppendCStringToStream(VsInitFormattedOutputStream* pStream, const char* pszText)
-{
-	return pStream->AppendCStringToStream(pszText);
-}
 
 static const char g_VSINIT_SyncDebugName[] = "Sync_Debug";
 static const char g_VSINIT_DebugOutPath[] = "debug.out";
@@ -170,16 +164,21 @@ struct VsInitSharedGeometryHelper {
 	int m_dwFlags;
 	VsInitSharedGeometryHelper* ConstructSharedGeometryHelper(void* pRenderDispatchQueue);
 };
-extern void* g_pSharedGeometryHelperVtable;
 void LEMBALL_FASTCALL DestroySharedGeometryHelper(VsInitSharedGeometryHelper* pHelper);
+void* LEMBALL_FASTCALL ReturnSharedGeometryHelperArgument(VsInitSharedGeometryHelper* pHelper,
+														  int nUnused,
+														  void* pArgument);
+void* LEMBALL_FASTCALL DeleteSharedGeometryHelper(VsInitSharedGeometryHelper* pHelper, int nUnused, BYTE fDelete);
 
-struct VsInitSharedGeometryHelperVtableModel {
-	virtual void* ReturnArgument(void* pArgument);
-	virtual void* Delete(BYTE fDelete);
+struct VsInitSharedGeometryHelperVtable {
+	void*(LEMBALL_FASTCALL* m_pReturnArgument)(VsInitSharedGeometryHelper*, int, void*);
+	void*(LEMBALL_FASTCALL* m_pDelete)(VsInitSharedGeometryHelper*, int, BYTE);
 };
-static VsInitSharedGeometryHelperVtableModel g_SharedGeometryHelperVtableModel;
-
-void* g_pSharedGeometryHelperVtable = *(void***) &g_SharedGeometryHelperVtableModel;
+// GLOBAL: LEMBALL 0x0049a468
+static VsInitSharedGeometryHelperVtable g_SharedGeometryHelperVtable = {
+	ReturnSharedGeometryHelperArgument,
+	DeleteSharedGeometryHelper,
+};
 
 // GLOBAL: LEMBALL 0x004a0eb0
 static VsInitCommandLineOption g_aCommandLineOptions[] = {
@@ -242,12 +241,18 @@ VsInitResourceTypeTable* g_pTertiaryResourceTypeTable = 0;
 // GLOBAL: LEMBALL 0x004a2000
 static VsInitVSMemPointerTable* g_pPaletteRemapPointerTable = 0;
 static void* g_pSharedRenderQueueNode = 0;
+void* LEMBALL_FASTCALL DeleteRenderDispatchQueueThunk00463940(void* pQueue, int nUnused, int fFreeMemory);
 static void* g_RenderDispatchQueueDeleteThunkVtable[1] = {(void*) NetworkSafeVtableNoop};
 static void* g_RenderDispatchQueueCriticalSectionHelperVtable[2] = {
 	(void*) EnterObjectCriticalSection,
 	(void*) LeaveObjectCriticalSection,
 };
-static void* g_RenderDispatchQueueVtable[4];
+static void* g_RenderDispatchQueueVtable[4] = {
+	(void*) ReturnStreamArgument,
+	(void*) DeleteRenderDispatchQueueThunk00463940,
+	(void*) AppendRenderDispatchQueueEntry,
+	(void*) DispatchRenderQueueEntryImmediately,
+};
 static void* g_DeleteRenderDispatchQueueCriticalSectionHelperThunk[2] = {
 	(void*) EnterObjectCriticalSection,
 	(void*) LeaveObjectCriticalSection,
@@ -312,39 +317,10 @@ void LEMBALL_FASTCALL LeaveObjectCriticalSection(void* pObject)
 
 extern int __stdcall DebugMessageThreadMain(void);
 
-void FlushStatusFixedBufferStream(char* pszText)
-{
-	if (g_fDebugFileEnabled != 0) {
-		AppendStringToDebugOutFile(pszText);
-	}
-}
-
-void FlushStartupFixedBufferStream(char* pszText)
-{
-	if (g_fDebugFileEnabled != 0) {
-		AppendStringToDebugOutFile(pszText);
-	}
-}
-
-void FlushErrorFixedBufferStream(char* pszText)
-{
-	if (g_fDebugFileEnabled != 0) {
-		AppendStringToDebugOutFile(pszText);
-	}
-}
-
 static void DeleteFixedBufferStream(VsInitFixedBufferStream* pStream, int fFreeMemory)
 {
 	ResetFixedBufferStream(pStream);
 	DestroyFixedBufferStream(pStream);
-	if (fFreeMemory != 0) {
-		FreeVSMemBlock(pStream);
-	}
-}
-
-static void DestroyFormattedOutputStream(VsInitFormattedOutputStream* pStream, int fFreeMemory)
-{
-	RestoreStreamFormatSubobjectVtable(&pStream->m_TargetState);
 	if (fFreeMemory != 0) {
 		FreeVSMemBlock(pStream);
 	}
@@ -400,45 +376,9 @@ void LEMBALL_FASTCALL AppendCStringToFixedBufferStream(VsInitFixedBufferStream* 
 	}
 }
 
-void AppendStartupCString(const char* pszText)
-{
-	AppendCStringToStream(g_pStartupOutputStream, pszText);
-}
-
-void AppendStartupUInt(unsigned int uValue)
-{
-	g_pStartupOutputStream->AppendIntToStream(uValue);
-}
-
-void AppendStatusCString(const char* pszText)
-{
-	AppendCStringToStream(g_pStatusOutputStream, pszText);
-}
-
-void AppendErrorCString(const char* pszText)
-{
-	AppendCStringToStream(g_pErrorOutputStream, pszText);
-}
-
-void AppendErrorUInt(unsigned int uValue)
-{
-	g_pErrorOutputStream->AppendIntToStream(uValue);
-}
-
 extern int LEMBALL_FASTCALL DrainRenderDispatchQueueEntries(void* pDispatchQueue, int nUnused, unsigned int cEntries);
 
 void* LEMBALL_FASTCALL DeleteRenderDispatchQueueThunk00463940(void* pQueue, int, int fFreeMemory);
-
-struct RenderDispatchFinalVtableInitializer {
-	RenderDispatchFinalVtableInitializer(void)
-	{
-		g_RenderDispatchQueueVtable[0] = (void*) ReturnStreamArgument;
-		g_RenderDispatchQueueVtable[1] = (void*) DeleteRenderDispatchQueueThunk00463940;
-		g_RenderDispatchQueueVtable[2] = (void*) AppendRenderDispatchQueueEntry;
-		g_RenderDispatchQueueVtable[3] = (void*) DispatchRenderQueueEntryImmediately;
-	}
-};
-static RenderDispatchFinalVtableInitializer g_RDISPATCH_FinalVtableInitializer;
 
 VsInitFormattedOutputStream* LEMBALL_FASTCALL WriteStatusEntryPointerArray(void* pRegistry,
 																		   int nUnused,
@@ -449,15 +389,15 @@ VsInitFormattedOutputStream* LEMBALL_FASTCALL WriteStatusEntryPointerArray(void*
 	int i;
 
 	pPointerArray = (VsInitStatusEntryPointerArray*) pRegistry;
-	AppendCStringToStream(pStream, g_VSINIT_StatusOutputHeader);
-	AppendCStringToStream(pStream, g_VSINIT_StatusOutputRule);
-	AppendCStringToStream(pStream, g_VSINIT_StatusOutputColumns);
+	pStream->AppendCStringToStream(g_VSINIT_StatusOutputHeader);
+	pStream->AppendCStringToStream(g_VSINIT_StatusOutputRule);
+	pStream->AppendCStringToStream(g_VSINIT_StatusOutputColumns);
 	for (i = 0; i < pPointerArray->m_cEntries; ++i) {
 		pfnWriteEntry = (VsInitFormattedOutputStream * (LEMBALL_FASTCALL*) (void*, int, VsInitFormattedOutputStream*) )(
 			*(void***) pPointerArray->m_ppEntries[i])[0];
 		pfnWriteEntry(pPointerArray->m_ppEntries[i], 0, pStream);
 	}
-	AppendCStringToStream(pStream, g_VSINIT_StatusOutputRule);
+	pStream->AppendCStringToStream(g_VSINIT_StatusOutputRule);
 	return pStream;
 }
 
@@ -512,7 +452,6 @@ void AppendStringToDebugOutFile(const char* pszText);
 int LEMBALL_FASTCALL TranslateKeyboardRenderQueueEntry(void* pRenderQueueNode, int, RenderDispatchQueueEntry* pEntry);
 int InitializeDebugMessageThread(void);
 int ShutdownDebugMessageThread(int fForceTerminate);
-int CompareCommandLineOptionPrefix(const char* pszLeft, const char* pszRight, size_t cchMax);
 
 // FUNCTION: LEMBALL 0x00456660
 int SetSharedGeometryHelperFlags03(void)
@@ -705,12 +644,12 @@ VsInitFormattedOutputStream* VsInitFormattedOutputStream::AppendIntToStream(unsi
 void AppendPointerToStreamVariant(VsInitFormattedOutputStream* pStream, unsigned int uValue)
 {
 	if (uValue == 0) {
-		AppendCStringToStream(pStream, g_VSINIT_NullPointerText);
+		pStream->AppendCStringToStream(g_VSINIT_NullPointerText);
 		return;
 	}
 	FormatUnsignedIntToRadixString(uValue, pStream->m_szFormatBuffer, 0x10);
 	ApplyStreamIntegerWidthPadding(pStream);
-	AppendCStringToStream(AppendCStringToStream(pStream, g_VSINIT_HexPointerPrefix), pStream->m_pszFormattedText);
+	pStream->AppendCStringToStream(g_VSINIT_HexPointerPrefix)->AppendCStringToStream(pStream->m_pszFormattedText);
 }
 
 // FUNCTION: LEMBALL 0x004586d0
@@ -891,60 +830,58 @@ int InitializeStreamChannels(void)
 	void* pStream;
 
 	pStream = AllocateVSMemBlock(0x1c);
-	if (pStream == 0) {
-		g_pStatusFixedBufferStream = 0;
-	}
-	else {
+	if (pStream != 0) {
 		g_pStatusFixedBufferStream =
 			((VsInitFixedBufferStream*) pStream)
-				->ConstructFixedBufferStream(g_abStreamFixedBuffer, 0x400, FlushStatusFixedBufferStream);
+				->ConstructFixedBufferStream(g_abStreamFixedBuffer, 0x400, _RAWOUT_DebugString);
+	}
+	else {
+		g_pStatusFixedBufferStream = 0;
 	}
 
 	pStream = AllocateVSMemBlock(0x1c);
-	if (pStream == 0) {
+	if (pStream != 0) {
+		g_pStartupFixedBufferStream = ((VsInitFixedBufferStream*) pStream)
+										  ->ConstructFixedBufferStream(g_abStreamFixedBuffer, 0x400, _RAWOUT_SysString);
+	}
+	else {
 		g_pStartupFixedBufferStream = 0;
 	}
-	else {
-		g_pStartupFixedBufferStream =
-			((VsInitFixedBufferStream*) pStream)
-				->ConstructFixedBufferStream(g_abStreamFixedBuffer, 0x400, FlushStartupFixedBufferStream);
-	}
 
 	pStream = AllocateVSMemBlock(0x1c);
-	if (pStream == 0) {
-		g_pErrorFixedBufferStream = 0;
+	if (pStream != 0) {
+		g_pErrorFixedBufferStream = ((VsInitFixedBufferStream*) pStream)
+										->ConstructFixedBufferStream(g_abStreamFixedBuffer, 0x400, _RAWOUT_ErrorString);
 	}
 	else {
-		g_pErrorFixedBufferStream =
-			((VsInitFixedBufferStream*) pStream)
-				->ConstructFixedBufferStream(g_abStreamFixedBuffer, 0x400, FlushErrorFixedBufferStream);
+		g_pErrorFixedBufferStream = 0;
 	}
 
 	pStream = AllocateVSMemBlock(0x14c);
-	if (pStream == 0) {
-		g_pStatusOutputStream = 0;
-	}
-	else {
+	if (pStream != 0) {
 		g_pStatusOutputStream =
 			((VsInitFormattedOutputStream*) pStream)->ConstructFormattedOutputStream(g_pStatusFixedBufferStream, 1);
 	}
+	else {
+		g_pStatusOutputStream = 0;
+	}
 
 	pStream = AllocateVSMemBlock(0x14c);
-	if (pStream == 0) {
-		g_pStartupOutputStream = 0;
-	}
-	else {
+	if (pStream != 0) {
 		g_pStartupOutputStream =
 			((VsInitFormattedOutputStream*) pStream)->ConstructFormattedOutputStream(g_pStartupFixedBufferStream, 1);
 	}
+	else {
+		g_pStartupOutputStream = 0;
+	}
 
 	pStream = AllocateVSMemBlock(0x14c);
-	if (pStream == 0) {
-		g_pErrorOutputStream = 0;
-	}
-	else {
+	if (pStream != 0) {
 		g_pErrorOutputStream =
 			((VsInitFormattedOutputStream*) pStream)->ConstructFormattedOutputStream(g_pErrorFixedBufferStream, 1);
+	}
+	else {
+		g_pErrorOutputStream = 0;
 	}
 
 	return 1;
@@ -953,23 +890,36 @@ int InitializeStreamChannels(void)
 // FUNCTION: LEMBALL 0x004590b0
 int ShutdownStreamChannels(void)
 {
-	if (g_pErrorOutputStream != 0) {
-		DestroyFormattedOutputStream(g_pErrorOutputStream, 1);
+	VsInitFormattedOutputStream* pOutputStream;
+	VsInitFixedBufferStream* pFixedBufferStream;
+	VsInitStreamFormatTargetState* pTargetState;
+
+	pOutputStream = g_pErrorOutputStream;
+	if (pOutputStream != 0) {
+		pTargetState = VsInitFORMAT_TARGET(pOutputStream);
+		((VsInitDeletingStreamView*) pTargetState)->Delete(1);
 	}
-	if (g_pStartupOutputStream != 0) {
-		DestroyFormattedOutputStream(g_pStartupOutputStream, 1);
+	pOutputStream = g_pStartupOutputStream;
+	if (pOutputStream != 0) {
+		pTargetState = VsInitFORMAT_TARGET(pOutputStream);
+		((VsInitDeletingStreamView*) pTargetState)->Delete(1);
 	}
-	if (g_pStatusOutputStream != 0) {
-		DestroyFormattedOutputStream(g_pStatusOutputStream, 1);
+	pOutputStream = g_pStatusOutputStream;
+	if (pOutputStream != 0) {
+		pTargetState = VsInitFORMAT_TARGET(pOutputStream);
+		((VsInitDeletingStreamView*) pTargetState)->Delete(1);
 	}
-	if (g_pErrorFixedBufferStream != 0) {
-		((VsInitDeleteProc) * *(void***) g_pErrorFixedBufferStream)(g_pErrorFixedBufferStream, 0, 1);
+	pFixedBufferStream = g_pErrorFixedBufferStream;
+	if (pFixedBufferStream != 0) {
+		((VsInitDeletingStreamView*) pFixedBufferStream)->Delete(1);
 	}
-	if (g_pStartupFixedBufferStream != 0) {
-		((VsInitDeleteProc) * *(void***) g_pStartupFixedBufferStream)(g_pStartupFixedBufferStream, 0, 1);
+	pFixedBufferStream = g_pStartupFixedBufferStream;
+	if (pFixedBufferStream != 0) {
+		((VsInitDeletingStreamView*) pFixedBufferStream)->Delete(1);
 	}
-	if (g_pStatusFixedBufferStream != 0) {
-		((VsInitDeleteProc) * *(void***) g_pStatusFixedBufferStream)(g_pStatusFixedBufferStream, 0, 1);
+	pFixedBufferStream = g_pStatusFixedBufferStream;
+	if (pFixedBufferStream != 0) {
+		((VsInitDeletingStreamView*) pFixedBufferStream)->Delete(1);
 	}
 
 	return 1;
@@ -1137,9 +1087,9 @@ void ShutdownCoreSubsystems(void)
 {
 	long cbAvailableNow;
 
-	AppendStartupCString(g_VSINIT_LineBreak);
-	AppendStatusCString(g_VSINIT_LineBreak);
-	AppendErrorCString(g_VSINIT_LineBreak);
+	g_pStartupOutputStream->AppendCStringToStream(g_VSINIT_LineBreak);
+	g_pStatusOutputStream->AppendCStringToStream(g_VSINIT_LineBreak);
+	g_pErrorOutputStream->AppendCStringToStream(g_VSINIT_LineBreak);
 
 	ShutdownResourceTypeTables();
 	ShutdownStatusEntryRegistry();
@@ -1149,9 +1099,9 @@ void ShutdownCoreSubsystems(void)
 
 	cbAvailableNow = CalculateMemoryArenaAvailableBytes(g_pMainMemoryArena);
 	if (cbAvailableNow != g_cbMainArenaAvailableAfterInit) {
-		AppendErrorCString(g_VSINIT_MemoryLeakMessage);
+		g_pErrorOutputStream->AppendCStringToStream(g_VSINIT_MemoryLeakMessage);
 		((CArena*) g_pMainMemoryArena)->WriteMemoryArenaReport(g_pErrorOutputStream);
-		AppendErrorCString(g_VSINIT_LineBreak);
+		g_pErrorOutputStream->AppendCStringToStream(g_VSINIT_LineBreak);
 	}
 
 	ShutdownProcessCurrentDirectoryState();
@@ -1171,7 +1121,7 @@ int ParseCommandLineOptionToken(char* pszToken)
 			const char* pszColon;
 			size_t cchOption;
 
-			pszColon = FindCharInCString0047FE00((char*) g_aCommandLineOptions[i].m_pszName, ':');
+			pszColon = strchr((char*) g_aCommandLineOptions[i].m_pszName, ':');
 			if (pszColon != 0) {
 				cchOption = (size_t) (pszColon - g_aCommandLineOptions[i].m_pszName);
 			}
@@ -1179,7 +1129,7 @@ int ParseCommandLineOptionToken(char* pszToken)
 				cchOption = strlen(g_aCommandLineOptions[i].m_pszName);
 			}
 
-			if (CompareCommandLineOptionPrefix(pszToken, g_aCommandLineOptions[i].m_pszName, cchOption) == 0) {
+			if (strncmp(pszToken, g_aCommandLineOptions[i].m_pszName, cchOption) == 0) {
 				if (strlen(g_aCommandLineOptions[i].m_pszName) != cchOption) {
 					char* pszEnd;
 
@@ -1409,7 +1359,7 @@ void VsInitStatusEntryPointerArray::AppendStatusEntry(void* pEntry)
 // FUNCTION: LEMBALL 0x0045ad70
 VsInitFixedBufferStream* VsInitFixedBufferStream::ConstructFixedBufferStream(char* pszBuffer,
 																			 unsigned int cbBuffer,
-																			 void (*pfnFlush)(char*))
+																			 int (*pfnFlush)(const char*))
 {
 	ConstructStreamBaseVtable(pszBuffer, cbBuffer);
 	m_pVtable = g_FixedBufferStreamVtable;
@@ -1789,7 +1739,7 @@ void ReleasePaletteRemapVariant(void* pVariant)
 // FUNCTION: LEMBALL 0x00472070
 VsInitSharedGeometryHelper* VsInitSharedGeometryHelper::ConstructSharedGeometryHelper(void* pRenderDispatchQueue)
 {
-	m_pVtable = g_pSharedGeometryHelperVtable;
+	m_pVtable = &g_SharedGeometryHelperVtable;
 	m_nReserved08 = 0;
 	m_nReserved10 = 0;
 	m_pRenderDispatchQueue = pRenderDispatchQueue;
@@ -1804,7 +1754,7 @@ void LEMBALL_FASTCALL DestroySharedGeometryHelper(VsInitSharedGeometryHelper* pH
 	void* pNode;
 	void* pNext;
 
-	pHelper->m_pVtable = g_pSharedGeometryHelperVtable;
+	pHelper->m_pVtable = &g_SharedGeometryHelperVtable;
 	pNode = *(void**) ((char*) pHelper + 0x10);
 	i = 0;
 	while (i < (unsigned int) pHelper->m_nReserved08) {
@@ -1816,16 +1766,19 @@ void LEMBALL_FASTCALL DestroySharedGeometryHelper(VsInitSharedGeometryHelper* pH
 }
 
 // FUNCTION: LEMBALL 0x00472210
-void* VsInitSharedGeometryHelperVtableModel::ReturnArgument(void* pArgument)
+void* LEMBALL_FASTCALL ReturnSharedGeometryHelperArgument(VsInitSharedGeometryHelper* pHelper,
+														  int nUnused,
+														  void* pArgument)
 {
+	(void) pHelper;
+	(void) nUnused;
 	return pArgument;
 }
 
 // FUNCTION: LEMBALL 0x00472270
-void* VsInitSharedGeometryHelperVtableModel::Delete(BYTE fDelete)
+void* LEMBALL_FASTCALL DeleteSharedGeometryHelper(VsInitSharedGeometryHelper* pHelper, int nUnused, BYTE fDelete)
 {
-	VsInitSharedGeometryHelper* pHelper = (VsInitSharedGeometryHelper*) this;
-
+	(void) nUnused;
 	DestroySharedGeometryHelper(pHelper);
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pHelper);
@@ -1940,18 +1893,4 @@ int ShutdownDebugMessageThread(int fForceTerminate)
 VsInitVSMemPointerTable::VsInitVSMemPointerTable(int cItems)
 {
 	ConstructVSMemPointerTable(cItems);
-}
-
-// FUNCTION: LEMBALL 0x00480010
-int CompareCommandLineOptionPrefix(const char* pszLeft, const char* pszRight, size_t cchMax)
-{
-	while (cchMax != 0 && *pszLeft == *pszRight) {
-		++pszLeft;
-		++pszRight;
-		--cchMax;
-	}
-	if (cchMax == 0) {
-		return 0;
-	}
-	return (unsigned char) *pszLeft < (unsigned char) *pszRight ? -1 : 1;
 }

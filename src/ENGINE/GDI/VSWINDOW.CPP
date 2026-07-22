@@ -644,7 +644,7 @@ DispatchWindowOwnerRenderContextMessage(void* pOwner, int, UINT uMessage, WPARAM
 	if (uMessage == 0x0f) {
 		nSelectedDriver = *(int*) g_pSelectedGraphicsDriverRuntime;
 		if (nSelectedDriver >= 4 && nSelectedDriver <= 5) {
-			return DefWindowProcA(*(HWND*) ((char*) GetDisplayState() + 0x10), uMessage, wParam, lParam);
+			return DefWindowProcA(*(HWND*) ((char*) g_pDisplayState + 0x10), uMessage, wParam, lParam);
 		}
 
 		BeginPaint(*(HWND*) ((char*) pOwner + 0x44), &Paint);
@@ -840,7 +840,7 @@ LRESULT CALLBACK WindowOwnerWindowProc(HWND hWnd, UINT uMessage, WPARAM wParam, 
 		pOwnerCallback(pOwner);
 		if (g_nLiveRootZrleGeometryOwnerCount == 0) {
 			g_GAME_RootDispatchGlobals.m_fHelperGeometryDispatchSuppressed = 1;
-			AppendStartupCString(g_szQuitStatusMessage);
+			g_pStartupOutputStream->AppendCStringToStream(g_szQuitStatusMessage);
 		}
 		return 0;
 
@@ -1287,7 +1287,7 @@ void VS_WindowOwnerBase::InitializeWindowOwnerFromRect(short* paRect, void* pWin
 		m_Origin18.m_x = paRect[2];
 		m_Origin18.m_y = paRect[3];
 		((VsGdiSelectedGraphicsDriverRuntime*) g_pSelectedGraphicsDriverRuntime)->m_pWindowOwner = this;
-		m_hWindow44 = *(HWND*) ((char*) GetDisplayState() + 0x10);
+		m_hWindow44 = *(HWND*) ((char*) g_pDisplayState + 0x10);
 
 		CacheCurrentContextWindow();
 		ReservedWindowOwnerSlot38();
@@ -1479,7 +1479,7 @@ void VS_WindowOwnerBase::SetRootGeometryScaleFactor(int nScaleFactor)
 	WINDOW_OWNER_RECT ClientRect;
 
 	VS_RootGeometryOwner::SetRootGeometryScaleFactor(nScaleFactor);
-	if (m_hWindow44 != 0 && *(HWND*) ((char*) GetDisplayState() + 0x10) != m_hWindow44) {
+	if (m_hWindow44 != 0 && *(HWND*) ((char*) g_pDisplayState + 0x10) != m_hWindow44) {
 		GetWindowRect(m_hWindow44, &WindowRect);
 		GetClientRect(m_hWindow44, &ClientRect);
 		WindowRect.right -= WindowRect.left;
@@ -1512,7 +1512,7 @@ void VS_WindowOwnerBase::SetRootGeometryRect(const VS_XYPair* pRect)
 	position.m_x = pRect[1].m_x;
 	position.m_y = pRect[1].m_y;
 
-	if (m_hWindow44 != 0 && *(HWND*) ((char*) GetDisplayState() + 0x10) != m_hWindow44) {
+	if (m_hWindow44 != 0 && *(HWND*) ((char*) g_pDisplayState + 0x10) != m_hWindow44) {
 		if (IsDisplayModeWindowedRange((const int*) g_pSelectedGraphicsDriverRuntime)) {
 			position.m_x = 0;
 			position.m_y = 0;
@@ -1714,8 +1714,8 @@ void VS_RootGeometryOwner::ApplyRootGeometryRect(const VS_XYPair* pRect)
 
 // FUNCTION: LEMBALL 0x00465e00
 void VS_RootGeometryOwner::SetRootGeometryQuadAndScale(const VS_XYPair* pRect,
-													  const VS_XYPair* pSourceRect,
-													  int nScaleFactor)
+													   const VS_XYPair* pSourceRect,
+													   int nScaleFactor)
 {
 	int nPreviousScaleFactor;
 	const VS_XYPair* pNextSourceRect;
@@ -2438,11 +2438,11 @@ void __cdecl ShowFatalGetLastErrorMessageAndExit(const char* pszMessage)
 	dwError = GetLastError();
 	Buffer.ConstructFixedBufferStream(szBuffer, sizeof(szBuffer), 0);
 	Message.ConstructFormattedOutputStream(&Buffer, 1);
-	AppendCStringToStream(&Message, pszMessage);
+	Message.AppendCStringToStream(pszMessage);
 	Message.AppendCharToStreamVariant('\n');
-	AppendCStringToStream(&Message, g_szFatalGetLastErrorPrefix);
+	Message.AppendCStringToStream(g_szFatalGetLastErrorPrefix);
 	Message.AppendSignedIntToStreamVariant((int) dwError);
-	AppendCStringToStream(&Message, g_szFatalGetLastErrorSeparator);
+	Message.AppendCStringToStream(g_szFatalGetLastErrorSeparator);
 	AppendHexUIntToStream(&Message, dwError);
 	RestoreStreamFormatSubobjectVtable(&Message.m_TargetState);
 	DestroyFixedBufferStream(&Buffer);

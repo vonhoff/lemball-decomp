@@ -19,7 +19,16 @@ void* LEMBALL_FASTCALL DeletePayloadSize8Thunk(GameEffStreamPayloadSize8* pStrea
 extern int LEMBALL_FASTCALL HandleNetworkLobbyVsnetRuntimeEvent(void* pVsnetRuntime,
 																int nUnusedEdx,
 																unsigned short* pEvent);
-extern void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void* pObject);
+extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
+extern void noop_callback_00452b80(void);
+extern void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStreamThunk(void* pObject);
+extern void LEMBALL_FASTCALL WriteNetworkLevelChunkDeltaStreamThunk(void* pObject);
+extern void* LEMBALL_FASTCALL DeleteNetworkLevelChunkDeltaStreamThunk(void* pObject,
+																	  int nUnused,
+																	  unsigned char fDelete);
+void* LEMBALL_FASTCALL DeleteNetworkLobbyVsnetRuntimeThunk(void* pObject, int nUnused, BYTE fDelete);
+int LEMBALL_FASTCALL HandleNetworkLobbyVsnetRuntimeEventThunk(void* pObject, int nUnused, unsigned short* pEvent);
+void NoopNetworkLobbyVsnetRuntimeCallbackThunk(void);
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void* pObject);
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryPayload(void* pObject);
 void LEMBALL_FASTCALL WriteNetworkLobbyPeerEntryPayload(void* pObject);
@@ -49,29 +58,21 @@ static void* g_EFF_NetworkLobbyPeerEntryVtable[6] = {
 	(void*) DeleteNetworkLobbyPeerEntryStream,
 };
 
-/* 004985F8 slot +20 is read_network_level_chunk_delta_stream.  Other
- * inherited slots remain compiler-owned callable placeholders until their
- * targets are recovered. */
-struct GameNetworkLobbyVsnetRuntimeVtableModel {
-	__inline virtual void Reserved00(void) {}
-	__inline virtual void Reserved04(void) {}
-	__inline virtual int HandleRuntimeEvent(unsigned short* pEvent)
-	{
-		return HandleNetworkLobbyVsnetRuntimeEvent(this, 0, pEvent);
-	}
-	__inline virtual void Reserved0c(void) {}
-	__inline virtual void Reserved10(void) {}
-	__inline virtual void Reserved14(void) {}
-	__inline virtual void Reserved18(void) {}
-	__inline virtual void Reserved1c(void) {}
-	__inline virtual void ServiceRuntime(void) { ReadNetworkLevelChunkDeltaStream(this); }
-	__inline virtual void Reserved24(void) {}
-	__inline virtual void Reserved28(void) {}
-	__inline virtual void Reserved2c(void) {}
+// GLOBAL: LEMBALL 0x004985f8
+static void* g_EFF_NetworkLobbyVsnetRuntimeVtable[12] = {
+	(void*) InitializeNonZrleVariantRenderEntry,
+	(void*) DeleteNetworkLobbyVsnetRuntimeThunk,
+	(void*) HandleNetworkLobbyVsnetRuntimeEventThunk,
+	(void*) NoopNetworkLobbyVsnetRuntimeCallbackThunk,
+	0,
+	0,
+	(void*) ReturnTrueVtableCallbackThunk,
+	(void*) ReturnTrueVtableCallbackSecondaryThunk,
+	(void*) ReadNetworkLevelChunkDeltaStreamThunk,
+	(void*) NoopVtableCallbackThunk,
+	(void*) WriteNetworkLevelChunkDeltaStreamThunk,
+	(void*) DeleteNetworkLevelChunkDeltaStreamThunk,
 };
-
-static GameNetworkLobbyVsnetRuntimeVtableModel g_EFF_NetworkLobbyVsnetRuntimeVtableModel;
-static void* g_EFF_NetworkLobbyVsnetRuntimeVtable = *(void***) &g_EFF_NetworkLobbyVsnetRuntimeVtableModel;
 // GLOBAL: LEMBALL 0x00497878
 void* g_EFF_PayloadSize8Vtable[6] = {
 	(void*) ReturnTrueVtableCallbackThunk,
@@ -115,7 +116,8 @@ void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStream(void* pObject);
 void LEMBALL_FASTCALL ReadNetworkLobbyU32PayloadStream(void* pObject);
 void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerClearCloseStream(void* pObject);
 void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerDirtyConfirmStream(void* pObject);
-void DestroyNetworkLobbyVsnetRuntime(void* pObject);
+void LEMBALL_FASTCALL DestroyNetworkLobbyVsnetRuntime(void* pObject);
+void* LEMBALL_FASTCALL DeleteNetworkLobbyVsnetRuntime(void* pObject, int nUnused, BYTE fDelete);
 void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(void* pVsnetRuntime);
 void LEMBALL_FASTCALL MarkNetworkLobbySelectedPeerDisconnected(void* pVsnetRuntime);
 void LEMBALL_FASTCALL ServiceNetworkLobbySelectedPeerUpdates(void* pVsnetRuntime);
@@ -380,48 +382,53 @@ void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerClearCloseStream(void* pObject);
 
 #include "ENGINE/CORE/SAFEVT.H"
 
+struct NetworkLobbyVsnetRuntimeDeleteView {
+	virtual void Reserved00(void) = 0;
+	virtual void Delete(int fDelete) = 0;
+};
+
+extern void LEMBALL_FASTCALL CloseNetworkLobbyTransportPeers(void* pController);
+
 // FUNCTION: LEMBALL 0x004013c0
 GameEffStreamPayloadSize8* GameEffStreamPayloadSize8::ConstructPayloadSize8Thunk(void)
 {
 	return ConstructPayloadSize8();
 }
-
 // STUB: LEMBALL 0x00401f87
 void* LEMBALL_FASTCALL DeletePayloadSize8Thunk(GameEffStreamPayloadSize8* pStream, int, BYTE fDelete)
 {
 	return pStream->DeletePayloadSize8(fDelete);
 }
-
+// FUNCTION: LEMBALL 0x004027c0
+void NoopNetworkLobbyVsnetRuntimeCallbackThunk(void)
+{
+	noop_callback_00452b80();
+}
 // STUB: LEMBALL 0x0040286a
 void* LEMBALL_FASTCALL DeleteNetworkLobbyU32PayloadStreamThunk(void* pObject, void* pUnused, BYTE fDelete)
 {
 	return DeleteNetworkLobbyU32PayloadStream(pObject, pUnused, fDelete);
 }
-
 // FUNCTION: LEMBALL 0x00402b03
 void LEMBALL_FASTCALL ReadNetworkLobbyU32PayloadStreamThunk(void* pObject)
 {
 	ReadNetworkLobbyU32PayloadStream(pObject);
 }
-
 // FUNCTION: LEMBALL 0x00402c43
 void LEMBALL_FASTCALL ReadPayloadSize8Thunk(GameEffStreamPayloadSize8* pStream)
 {
 	pStream->ReadPayloadSize8();
 }
-
 // FUNCTION: LEMBALL 0x00403607
 void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStreamThunk(void* pObject)
 {
 	WriteNetworkLobbyU32PayloadStream(pObject);
 }
-
 // FUNCTION: LEMBALL 0x0040362a
 void LEMBALL_FASTCALL WritePayloadSize8Thunk(GameEffStreamPayloadSize8* pStream)
 {
 	pStream->WritePayloadSize8();
 }
-
 // FUNCTION: LEMBALL 0x004453b0
 GameEffStreamPayloadSize8* GameEffStreamPayloadSize8::ConstructPayloadSize8(void)
 {
@@ -433,7 +440,6 @@ GameEffStreamPayloadSize8* GameEffStreamPayloadSize8::ConstructPayloadSize8(void
 	m_fHasPayload = 1;
 	return this;
 }
-
 // FUNCTION: LEMBALL 0x004453e0
 void GameEffStreamPayloadSize8::WritePayloadSize8(void)
 {
@@ -443,7 +449,6 @@ void GameEffStreamPayloadSize8::WritePayloadSize8(void)
 	pStream->WriteEffStreamU32BE(m_nU32Payload);
 	pStream->WriteEffStreamU32BE(m_nSecondaryU32Payload);
 }
-
 // FUNCTION: LEMBALL 0x00445400
 void GameEffStreamPayloadSize8::ReadPayloadSize8(void)
 {
@@ -453,7 +458,6 @@ void GameEffStreamPayloadSize8::ReadPayloadSize8(void)
 	m_nU32Payload = pStream->ReadEffStreamU32BEValue();
 	m_nSecondaryU32Payload = pStream->ReadEffStreamU32BEValue();
 }
-
 // FUNCTION: LEMBALL 0x00446f20
 GameEffStreamPayloadSize8* GameEffStreamPayloadSize8::DeletePayloadSize8(unsigned char fDelete)
 {
@@ -463,7 +467,6 @@ GameEffStreamPayloadSize8* GameEffStreamPayloadSize8::DeletePayloadSize8(unsigne
 	}
 	return this;
 }
-
 // FUNCTION: LEMBALL 0x004523b0
 void* LEMBALL_FASTCALL ConstructNetworkLobbySelectedPeerStatusStream(void* pObject)
 {
@@ -477,7 +480,6 @@ void* LEMBALL_FASTCALL ConstructNetworkLobbySelectedPeerStatusStream(void* pObje
 	pStream->m_cbSerializedLength += 4;
 	return pObject;
 }
-
 // FUNCTION: LEMBALL 0x004523e0
 void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerEntryStream(void* pObject)
 {
@@ -496,7 +498,6 @@ void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerEntryStream(void* pObject)
 	pStream->m_fHasPayload = 1;
 	return pObject;
 }
-
 // FUNCTION: LEMBALL 0x00452420
 void LEMBALL_FASTCALL WriteNetworkLobbyPeerEntryPayload(void* pObject)
 {
@@ -515,7 +516,6 @@ void LEMBALL_FASTCALL WriteNetworkLobbyPeerEntryPayload(void* pObject)
 	pStream->WriteEffStreamCString(LowercaseHostName.m_pszText);
 	LowercaseHostName.DestroyDynamicCString();
 }
-
 // FUNCTION: LEMBALL 0x00452490
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryPayload(void* pObject)
 {
@@ -528,7 +528,6 @@ void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryPayload(void* pObject)
 	pStream->ReadEffStreamCStringIntoBuffer(pEntry->m_szHostName);
 	pEntry->m_nPeerEntryState = 1;
 }
-
 // FUNCTION: LEMBALL 0x004524b0
 GameEffStream* GameEffStream::ConstructNetworkLobbyU32PayloadStream(int nEventCode)
 {
@@ -541,7 +540,6 @@ GameEffStream* GameEffStream::ConstructNetworkLobbyU32PayloadStream(int nEventCo
 	m_nU32Payload = 0;
 	return this;
 }
-
 // FUNCTION: LEMBALL 0x004524f0
 void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStream(void* pObject)
 {
@@ -550,7 +548,6 @@ void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStream(void* pObject)
 	pStream = (VsNetEffStreamBase*) pObject;
 	pStream->WriteEffStreamU32BE(*(unsigned int*) ((char*) pObject + 0x2c));
 }
-
 // FUNCTION: LEMBALL 0x00452500
 void LEMBALL_FASTCALL ReadNetworkLobbyU32PayloadStream(void* pObject)
 {
@@ -559,7 +556,6 @@ void LEMBALL_FASTCALL ReadNetworkLobbyU32PayloadStream(void* pObject)
 	pStream = (VsNetEffStreamBase*) pObject;
 	*(unsigned int*) ((char*) pObject + 0x2c) = pStream->ReadEffStreamU32BEValue();
 }
-
 // FUNCTION: LEMBALL 0x00452510
 void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerClearCloseStream(void* pObject)
 {
@@ -567,7 +563,6 @@ void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerClearCloseStream(void* pObject)
 	*(void**) pObject = g_EFF_NetworkLobbyPeerClearCloseVtable;
 	return pObject;
 }
-
 // FUNCTION: LEMBALL 0x00452530
 void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerDirtyConfirmStream(void* pObject)
 {
@@ -575,7 +570,6 @@ void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerDirtyConfirmStream(void* pObject
 	*(void**) pObject = g_EFF_NetworkLobbyPeerDirtyConfirmVtable;
 	return pObject;
 }
-
 // FUNCTION: LEMBALL 0x00452550
 GameNetworkLobbyVsnetRuntime* GameNetworkLobbyVsnetRuntime::Construct(char* pszFileBasedNetworkRoot)
 {
@@ -670,9 +664,8 @@ GameNetworkLobbyVsnetRuntime* GameNetworkLobbyVsnetRuntime::Construct(char* pszF
 
 	return this;
 }
-
 // FUNCTION: LEMBALL 0x004526e0
-void DestroyNetworkLobbyVsnetRuntime(void* pObject)
+void LEMBALL_FASTCALL DestroyNetworkLobbyVsnetRuntime(void* pObject)
 {
 	GameNetworkLobbyVsnetRuntime* pRuntime;
 	void* pOwnedObject;
@@ -709,7 +702,6 @@ void DestroyNetworkLobbyVsnetRuntime(void* pObject)
 
 	pRuntime->m_pVtable = g_pNonZrleVariantRenderEntryInitializeVtable;
 }
-
 // FUNCTION: LEMBALL 0x00452740
 int GameNetworkLobbyVsnetRuntime::RegisterWithTransport(void)
 {
@@ -725,7 +717,6 @@ int GameNetworkLobbyVsnetRuntime::RegisterWithTransport(void)
 	}
 	return 0;
 }
-
 // FUNCTION: LEMBALL 0x00452780
 void ConfigureNetworkLobbyTransportHostName(void* pRuntime, char* pszHostName)
 {
@@ -743,11 +734,10 @@ void ConfigureNetworkLobbyTransportHostName(void* pRuntime, char* pszHostName)
 	}
 	pOwnerVtable = *(void***) pOwner;
 	((void (*)(void*)) pOwnerVtable[6])(pOwner);
-	ConfigureActiveEffTransportConnectHost(pRuntime, pszHostName);
+	((GameNetworkLobbyVsnetRuntimeConnectView*) pRuntime)->ConfigureActiveEffTransportConnectHost(pszHostName);
 	*(int*) ((char*) pWindow + 0x34) = 1;
 	((void (*)(void*)) pOwnerVtable[5])(pOwner);
 }
-
 // FUNCTION: LEMBALL 0x004527c0
 void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(void* pVsnetRuntime)
 {
@@ -777,13 +767,11 @@ void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(void* pVsn
 		((GameEffTransportRuntimeWindowVtable*) pWindow->m_pVtable)->m_pServiceRuntime(pWindow, 0);
 	}
 }
-
 // FUNCTION: LEMBALL 0x00452ab0
 void LEMBALL_FASTCALL MarkNetworkLobbySelectedPeerDisconnected(void* pVsnetRuntime)
 {
 	((GameNetworkLobbyVsnetRuntime*) pVsnetRuntime)->m_fSelectionNeedsReset = 1;
 }
-
 // FUNCTION: LEMBALL 0x00452ac0
 void LEMBALL_FASTCALL ServiceNetworkLobbySelectedPeerUpdates(void* pVsnetRuntime)
 {
@@ -823,7 +811,6 @@ void LEMBALL_FASTCALL ServiceNetworkLobbySelectedPeerUpdates(void* pVsnetRuntime
 		}
 	}
 }
-
 // FUNCTION: LEMBALL 0x00452e50
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void* pObject)
 {
@@ -832,7 +819,6 @@ void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void* pObject)
 	pStream = (VsNetEffStreamBase*) pObject;
 	*(unsigned int*) ((char*) pObject + 0x2c) = pStream->ReadEffStreamU32BEValue();
 }
-
 // FUNCTION: LEMBALL 0x00452e60
 void* LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void* pObject, void* pUnused, BYTE fDelete)
 {
@@ -846,7 +832,6 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void* pObject,
 	}
 	return pObject;
 }
-
 // FUNCTION: LEMBALL 0x00452e90
 void* LEMBALL_FASTCALL DeleteNetworkLobbyU32PayloadStream(void* pObject, void* pUnused, BYTE fDelete)
 {
@@ -860,7 +845,16 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbyU32PayloadStream(void* pObject, void* p
 	}
 	return pObject;
 }
-
+// FUNCTION: LEMBALL 0x00452f20
+void* LEMBALL_FASTCALL DeleteNetworkLobbyVsnetRuntime(void* pObject, int nUnused, BYTE fDelete)
+{
+	(void) nUnused;
+	DestroyNetworkLobbyVsnetRuntime(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
 // FUNCTION: LEMBALL 0x00452f50
 void* LEMBALL_FASTCALL DeleteNetworkLobbyPeerEntryStream(void* pObject, void*, int fDelete)
 {
@@ -887,14 +881,6 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbyPeerEntryStream(void* pObject, void*, i
 	}
 	return pObject;
 }
-
-struct NetworkLobbyVsnetRuntimeDeleteView {
-	virtual void Reserved00(void) = 0;
-	virtual void Delete(int fDelete) = 0;
-};
-
-extern void LEMBALL_FASTCALL CloseNetworkLobbyTransportPeers(void* pController);
-
 // FUNCTION: LEMBALL 0x00455130
 void LEMBALL_FASTCALL StartNetworkLobbyTransportSession(void* pController)
 {
@@ -929,7 +915,6 @@ void LEMBALL_FASTCALL StartNetworkLobbyTransportSession(void* pController)
 	((GameEffTransportRuntimeWindow*) g_pActiveNetworkRuntimeWindow)->RegisterEffTransportEventClient(pEventClient);
 	pnControllerFields[0x2c / 4] = 1;
 }
-
 // FUNCTION: LEMBALL 0x004552a0
 void LEMBALL_FASTCALL StopNetworkLobbyTransportSession(void* pController)
 {
@@ -958,7 +943,6 @@ void LEMBALL_FASTCALL StopNetworkLobbyTransportSession(void* pController)
 	pnControllerFields[0x28 / 4] = 0;
 	pnControllerFields[0x2c / 4] = 0;
 }
-
 // FUNCTION: LEMBALL 0x0045ee80
 void GameEffStream::ResetStateFields(void)
 {
@@ -969,7 +953,6 @@ void GameEffStream::ResetStateFields(void)
 	m_cbSerializedLength = 0;
 	m_cWriteSessions = 0;
 }
-
 // FUNCTION: LEMBALL 0x0045f1e0
 void GameEffStream::BeginEffStreamWriteSession(void)
 {
@@ -992,13 +975,11 @@ void GameEffStream::BeginEffStreamWriteSession(void)
 		m_pVtable->m_pBeginWriteBody(this);
 	}
 }
-
 // FUNCTION: LEMBALL 0x0045f240
 void GameEffStream::EndEffStreamWriteSession(void)
 {
 	--m_cWriteSessions;
 }
-
 // FUNCTION: LEMBALL 0x0045f280
 int GameEffStream::LoadEffStreamFromMemory(int nSourceBuffer)
 {
@@ -1012,7 +993,6 @@ int GameEffStream::LoadEffStreamFromMemory(int nSourceBuffer)
 	}
 	return 0;
 }
-
 // FUNCTION: LEMBALL 0x0045f2b0
 void GameEffStream::QueueEffStreamWriteEvent(int nPayload)
 {
@@ -1029,7 +1009,6 @@ void GameEffStream::QueueEffStreamWriteEvent(int nPayload)
 		((GameEffTransportRuntimeServiceInterface*) g_pActiveNetworkRuntimeWindow)->ServiceRuntime();
 	}
 }
-
 // FUNCTION: LEMBALL 0x0045f720
 void GameEffTransportHandleGroup::Reset(void)
 {
@@ -1044,7 +1023,6 @@ void GameEffTransportHandleGroup::Reset(void)
 		}
 	}
 }
-
 // FUNCTION: LEMBALL 0x0045fc30
 int HasShiftedRecordSlotPayloadForStream(void* pTransportPeer, void* pStream)
 {
@@ -1056,7 +1034,6 @@ int HasShiftedRecordSlotPayloadForStream(void* pTransportPeer, void* pStream)
 				->GetShiftedRecordSlotByPacketId(((GameEffStream*) pStream)->m_nEventCode);
 	return pSlot->m_fHasPayload;
 }
-
 // FUNCTION: LEMBALL 0x0045fc50
 void LoadStreamFromShiftedRecordSlotAndClear(void* pTransportPeer, void* pStream)
 {
@@ -1073,7 +1050,6 @@ void LoadStreamFromShiftedRecordSlotAndClear(void* pTransportPeer, void* pStream
 	pLockVtable->m_pUnlock();
 	pSlot->m_fHasPayload = 0;
 }
-
 // FUNCTION: LEMBALL 0x004615f0
 void* GameRecordSlotTable::GetShiftedRecordSlotByPacketId(int nPacketId)
 {
@@ -1082,7 +1058,6 @@ void* GameRecordSlotTable::GetShiftedRecordSlotByPacketId(int nPacketId)
 	}
 	return m_apSlots08[nPacketId];
 }
-
 // FUNCTION: LEMBALL 0x00462550
 void SetEffTransportPrimaryHandleParams(void* pRuntimeWindow,
 										int nPrimaryHandleCount,
@@ -1096,7 +1071,6 @@ void SetEffTransportPrimaryHandleParams(void* pRuntimeWindow,
 	pWindow->m_nPrimaryHandleStride = nPrimaryHandleStride;
 	pWindow->m_nPrimaryHandleFlags = nFlags;
 }
-
 // FUNCTION: LEMBALL 0x00462570
 void SetEffTransportSecondaryHandleParams(void* pRuntimeWindow, int nSecondaryHandleCount, int nSecondaryHandleStride)
 {
@@ -1106,14 +1080,12 @@ void SetEffTransportSecondaryHandleParams(void* pRuntimeWindow, int nSecondaryHa
 	pWindow->m_nSecondaryHandleCount = nSecondaryHandleCount;
 	pWindow->m_nSecondaryHandleStride = nSecondaryHandleStride;
 }
-
 // FUNCTION: LEMBALL 0x00462590
 void GameEffTransportRuntimeWindow::RegisterEffTransportEventClient(void* pClient)
 {
 	m_pSecondaryDispatchClient = pClient;
 	((GameRenderDispatchQueue*) g_pEffTransportSecondaryDispatchQueue)->RegisterOrderedRenderDispatchClient(pClient, 0);
 }
-
 // FUNCTION: LEMBALL 0x004625b0
 void GameEffTransportRuntimeWindow::UnregisterEffTransportEventClient(void)
 {

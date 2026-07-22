@@ -33,7 +33,7 @@ extern void LEMBALL_FASTCALL DestroyFramedScreenRenderEntryGroup(void* pGroup);
 extern void* LEMBALL_FASTCALL InitializeFramedScreenRenderChildEntry(void* pObject);
 extern void LEMBALL_FASTCALL RestoreLevelSelectionRenderChildEntryVtable(void* pObject);
 extern void LEMBALL_FASTCALL RestoreCompositePointRectSinkFinalizeVtables(void* pObject);
-extern void* LEMBALL_FASTCALL InitializeCompositePointRectSinkEntries(void* pObject);
+extern void* LEMBALL_FASTCALL InitializeCompositePointRectSinkEntriesThunk(void* pObject);
 extern void SetLevelScreenStatusIndicatorMode(int nMode, int nValue);
 extern void LEMBALL_FASTCALL SetStatusIndicatorActive(void* pObject, int nUnused, int fActive);
 extern int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresent(int* pPrimaryContext);
@@ -78,6 +78,8 @@ extern void* g_pVariantResourceEntryManager;
 extern void* g_pEffTransportRuntimeService;
 extern char* g_pszFileBasedNetworkLocalHostName;
 extern void* g_GAME_RenderQueueNodeVtableSlots[4];
+extern void __fastcall mark_network_lobby_player_entry_child_active(void* pEntry);
+extern void __fastcall clear_network_lobby_player_entry_child_active(void* pEntry);
 extern void* g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[8];
 extern void* g_pQueuedRenderPointSinkFinalizeThunk;
 extern void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransport(void* pVsnetRuntime);
@@ -90,9 +92,18 @@ extern void LEMBALL_FASTCALL clear_mapped_list_resource_table_pending_flag(void*
 extern void LEMBALL_FASTCALL ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen);
 extern int LEMBALL_FASTCALL ThunkSelectNextNetworkLobbyPlayerEntry(int nNetworkLobbyScreen);
 extern int LEMBALL_FASTCALL ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen);
+struct GameNetworkLobbyScreenView;
+void SetNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus);
+void SetTimedNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus, DWORD dwDuration);
+void LEMBALL_FASTCALL MarkNetworkLobbyPlayerEntryEventDirty(void* pEntry,
+															int nUnused,
+															const VS_XYPair* pPoint,
+															int nEvent);
 
 class VsGdiAnimWindowOwner {
 public:
+	void* ConstructResourceGeometryHelperWindowOwner(void);
+	void DestroyResourceGeometryHelperWindowOwner(void);
 	void StartEmbeddedMciWindowPlaybackOnce(void);
 	void ResumeEmbeddedMciWindowPlayback(void);
 	void UpdateMediaPathFromListResource(int nResourceId);
@@ -384,10 +395,9 @@ public:
 	virtual void AppendToQueue(void* pRenderContext) = 0;
 };
 
-class GameLevelTitleGlyphListInterface {
+class LevelScreenDrawOwnerView {
 public:
-	virtual void* GetGlyphListResource(void) = 0;
-	virtual void* FindGlyph(unsigned int ch) = 0;
+	short* MeasureGlyphStringExtent(short* pExtent, const char* pszText, unsigned int nFlags);
 };
 
 class GameGeometryDispatchInterface {
@@ -511,20 +521,18 @@ void LEMBALL_FASTCALL DestroyMainMenuWidgetsThunk(void* pObject);
 void LEMBALL_FASTCALL ActivateFramedScreenBase(void* pObject);
 void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroup(void* pObject);
 int ConsumeLevelSelectionChangedFlag(void);
-static void* LEMBALL_FASTCALL DeleteFunctionalLevelSelectionScreen(void* pObject, int nUnusedEdx, int fDelete);
-static int LEMBALL_FASTCALL HandleFunctionalLevelSelectionInput(void* pObject, int nUnusedEdx, void* pEvent);
-static void LEMBALL_FASTCALL UpdateFunctionalLevelSelectionScreen(void* pObject);
-static void LEMBALL_FASTCALL InitializeFunctionalLevelSelectionResources(void* pObject);
-static void LEMBALL_FASTCALL ReleaseFunctionalLevelSelectionResources(void* pObject);
-static void LEMBALL_FASTCALL NoopFunctionalLevelSelectionHook(void* pObject);
-static int LEMBALL_FASTCALL DispatchFunctionalLevelSelectionAction(void* pObject, int nUnusedEdx, int nAction);
-static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionStatus(void* pObject);
+void* LEMBALL_FASTCALL DeleteFunctionalLevelSelectionScreen(void* pObject, int nUnusedEdx, int fDelete);
+int LEMBALL_FASTCALL HandleFunctionalLevelSelectionInput(void* pObject, int nUnusedEdx, void* pEvent);
+void LEMBALL_FASTCALL UpdateFunctionalLevelSelectionScreen(void* pObject);
+void LEMBALL_FASTCALL InitializeFunctionalLevelSelectionResources(void* pObject);
+void LEMBALL_FASTCALL ReleaseFunctionalLevelSelectionResources(void* pObject);
+int LEMBALL_FASTCALL DispatchFunctionalLevelSelectionAction(void* pObject, int nUnusedEdx, int nAction);
+void LEMBALL_FASTCALL DrawFunctionalLevelSelectionStatus(void* pObject);
 static short* GetFunctionalVariantFrameExtent(void* pManager, short* pExtent, int nResourceId, int iFrame);
-static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(void* pObject);
-static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionFrame(void* pObject);
-static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(GameLevelSelectionScreenView* pScreen);
+void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(void* pObject);
+void LEMBALL_FASTCALL DrawFunctionalLevelSelectionFrame(void* pObject);
+void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(GameLevelSelectionScreenView* pScreen);
 static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionNavigationLocks(GameLevelSelectionScreenView* pScreen);
-static void MeasureFunctionalLevelTitleExtent(void* pResource, short* pExtent, const char* pszText);
 static void LEMBALL_FASTCALL SelectNextFunctionalLevel(GameLevelSelectionScreenView* pScreen);
 static void LEMBALL_FASTCALL SelectPreviousFunctionalLevel(GameLevelSelectionScreenView* pScreen);
 static GameProgressiveVariantFrameSelector* ConstructLevelSelectionFrameSelector(void* pManager, int nResourceId);
@@ -558,37 +566,38 @@ void* LEMBALL_FASTCALL DeleteAdjustedFramedScreenBase(void* pObject, int nUnused
 void LEMBALL_FASTCALL InitializeOptionsScreenWidgets(void* pObject);
 void LEMBALL_FASTCALL ReleaseOptionsScreenWidgets(void* pObject);
 int LEMBALL_FASTCALL HandleOptionsScreenInput(void* pObject, int nUnusedEdx, void* pEvent);
-static void* LEMBALL_FASTCALL DeleteOptionsScreen(void* pObject, int nUnusedEdx, int fDelete);
-static void* LEMBALL_FASTCALL DeleteAdjustedOptionsScreen(void* pObject, int nUnusedEdx, int fDelete);
+void* LEMBALL_FASTCALL DeleteOptionsScreen(void* pObject, int nUnusedEdx, int fDelete);
+void* LEMBALL_FASTCALL DeleteAdjustedOptionsScreen(void* pObject, int nUnusedEdx, int fDelete);
 static void LEMBALL_FASTCALL InitializePaintballSequenceResources(void* pObject);
-static void LEMBALL_FASTCALL ReleasePaintballSequenceResources(void* pObject);
+void LEMBALL_FASTCALL ReleasePaintballSequenceResources(void* pObject);
 void LEMBALL_FASTCALL DrawPaintballSequenceFrame(void* pObject);
 void LEMBALL_FASTCALL DrawPaintballSequencePromptText(void* pObject);
 static void LayoutPaintballSequencePromptText(GamePaintballSequenceScreenView* pScreen);
 void LEMBALL_FASTCALL UpdatePaintballSequenceScreen(void* pObject);
 int LEMBALL_FASTCALL DispatchPaintballSequenceUserAction(void* pObject, int nUnusedEdx, int nAction);
-static void LEMBALL_FASTCALL ActivatePaintballSequenceMedia(void* pObject, int nUnused);
+void LEMBALL_FASTCALL ActivatePaintballSequenceMedia(void* pObject, int nUnused);
 static void DeactivatePaintballSequenceMedia(GamePaintballSequenceScreenView* pScreen);
-static int LEMBALL_FASTCALL HandlePaintballSequenceInput(void* pObject, int nUnusedEdx, void* pEvent);
-static void* LEMBALL_FASTCALL DeletePaintballSequenceScreen(void* pObject, int nUnusedEdx, int fDelete);
-static void* LEMBALL_FASTCALL DeleteAdjustedPaintballSequenceScreen(void* pObject, int nUnusedEdx, int fDelete);
+int LEMBALL_FASTCALL HandlePaintballSequenceInput(void* pObject, int nUnusedEdx, void* pEvent);
+void* LEMBALL_FASTCALL DeletePaintballSequenceScreen(void* pObject, int nUnusedEdx, int fDelete);
+void* LEMBALL_FASTCALL DeleteAdjustedPaintballSequenceScreen(void* pObject, int nUnusedEdx, int fDelete);
 int LEMBALL_FASTCALL HandlePasswordEntryInput(void* pObject, int nUnusedEdx, void* pEvent);
-static void LEMBALL_FASTCALL UpdatePasswordEntryScreen(void* pObject);
-static void LEMBALL_FASTCALL InitializePasswordEntryResources(void* pObject);
-static void LEMBALL_FASTCALL ReleasePasswordEntryResources(void* pObject);
+void LEMBALL_FASTCALL UpdatePasswordEntryScreen(void* pObject);
+void LEMBALL_FASTCALL InitializePasswordEntryResources(void* pObject);
+void LEMBALL_FASTCALL ReleasePasswordEntryResources(void* pObject);
 void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void* pObject);
-static void LEMBALL_FASTCALL DrawPasswordEntryText(void* pObject);
+void LEMBALL_FASTCALL DrawPasswordEntryText(void* pObject);
 static void InitializePasswordEntryRenderContext(GamePasswordEntryScreenView* pScreen);
-static void* LEMBALL_FASTCALL DeletePasswordEntryScreen(void* pObject, int nUnusedEdx, int fDelete);
-static void* LEMBALL_FASTCALL DeleteAdjustedPasswordEntryScreen(void* pObject, int nUnusedEdx, int fDelete);
+void* LEMBALL_FASTCALL DeletePasswordEntryScreen(void* pObject, int nUnusedEdx, int fDelete);
+void* LEMBALL_FASTCALL DeleteAdjustedPasswordEntryScreen(void* pObject, int nUnusedEdx, int fDelete);
 void* LEMBALL_FASTCALL DeleteNetworkLobbyScreen(void* pObject, int nUnusedEdx, int fDelete);
-static void* LEMBALL_FASTCALL DeleteAdjustedNetworkLobbyScreen(void* pObject, int nUnusedEdx, int fDelete);
-static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(void* pObject, int nUnusedEdx, void* pEvent);
-static void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void* pObject);
+void* LEMBALL_FASTCALL DeleteAdjustedNetworkLobbyScreen(void* pObject, int nUnusedEdx, int fDelete);
+int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(void* pObject, int nUnusedEdx, void* pEvent);
+void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void* pObject);
 void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void* pObject);
 void LEMBALL_FASTCALL InitializeNetworkLobbyActionButtons(void* pObject);
-static void LEMBALL_FASTCALL DestroyNetworkLobbyActionButtons(void* pObject);
-static void LEMBALL_FASTCALL NoopNetworkLobbyScreen(void* pObject);
+void LEMBALL_FASTCALL DestroyNetworkLobbyActionButtons(void* pObject);
+void LEMBALL_FASTCALL NoopNetworkLobbyScreen(void* pObject);
+void LEMBALL_FASTCALL NoopNetworkLobbyScreenThunk(void* pObject);
 void LEMBALL_FASTCALL DrawNetworkLobbyActionButtonFrames(void* pObject);
 void LEMBALL_FASTCALL CloseNetworkLobbyTransportPeers(void* pController);
 
@@ -827,11 +836,6 @@ struct IntroMediaOwnerInterface {
 	virtual void Stop(void) = 0;
 };
 
-void LEMBALL_FASTCALL DestroyFunctionalFramedScreenBase(void* pScreen)
-{
-	DestroyFramedScreenBaseThunk00402081(pScreen);
-}
-
 __inline static void ClearBoundedTextBuffer(GameBoundedTextBuffer* pBuffer)
 {
 	if (pBuffer == 0 || pBuffer->m_pszText0C == 0) {
@@ -857,50 +861,6 @@ __inline static void CopyBoundedText(GameBoundedTextBuffer* pBuffer, const char*
 	strncpy(pBuffer->m_pszText0C, pszText, pBuffer->m_cAllocated08);
 	pBuffer->m_pszText0C[pBuffer->m_cAllocated08] = '\0';
 	pBuffer->m_cLength04 = (int) strlen(pBuffer->m_pszText0C);
-}
-
-static void SetNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus)
-{
-	pScreen->m_nStatus3A8 = nStatus;
-	pScreen->m_dwStatusDuration3B4 = 0;
-	pScreen->m_fSelectorDirty360 = 1;
-	pScreen->m_fBlink3C0 = 1;
-	pScreen->m_dwBlinkStart3C8 = timeGetTime();
-}
-
-static void SetTimedNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus, DWORD dwDuration)
-{
-	pScreen->m_nStatus3A8 = nStatus;
-	pScreen->m_dwStatusStart3B0 = timeGetTime();
-	pScreen->m_dwStatusDuration3B4 = dwDuration;
-	pScreen->m_fSelectorDirty360 = 1;
-	pScreen->m_fBlink3C0 = 1;
-	pScreen->m_dwBlinkStart3C8 = timeGetTime();
-}
-
-void ShowNetworkLobbyTextPrompt(GameNetworkLobbyScreenView* pScreen, int nPrompt, int fClear)
-{
-	GameBoundedTextBuffer* pBuffer;
-
-	pBuffer = (GameBoundedTextBuffer*) pScreen->m_pTextBuffer398;
-	pScreen->m_fTextPrompt39C = 0;
-	if (nPrompt != 3) {
-		pScreen->m_nReserved3A0 = nPrompt;
-	}
-	if (fClear != 0) {
-		ClearBoundedTextBuffer(pBuffer);
-	}
-	if (pScreen->m_nReserved3A0 == 2) {
-		StartNetworkLobbyTransportSession(g_pActiveNetworkLobbyTransportController);
-		if (*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x2c) == 0 ||
-			*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x28) != 0) {
-			SetTimedNetworkLobbyStatus(pScreen, 9, 6000);
-			return;
-		}
-	}
-	pBuffer->m_cCapacity00 = pScreen->m_nReserved3A0 == 1 ? 8 : 20;
-	SetNetworkLobbyStatus(pScreen, pScreen->m_nReserved3A0 + 1);
-	pScreen->m_fTextPrompt39C = 1;
 }
 
 __inline static void CommitNetworkLobbyTextPrompt(GameNetworkLobbyScreenView* pScreen)
@@ -1034,64 +994,6 @@ __inline static int ConfirmSelectedNetworkLobbyPlayerEntry(GameNetworkLobbyScree
 	return 0;
 }
 
-int LEMBALL_FASTCALL HandleNetworkLobbyTransportPayloadEvent(void* pController,
-															 int,
-															 unsigned short nEventType,
-															 void* pPayloadObject,
-															 void* pPeer)
-{
-	GameNetworkLobbyScreenView* pScreen;
-	GameNetworkLobbyRuntimeView* pRuntime;
-	GameEffStream* pStream;
-	int nPeerSlot;
-	int nSerializedStream;
-
-	pScreen = (GameNetworkLobbyScreenView*) g_pActiveNetworkLobbyScreen;
-	pRuntime = (GameNetworkLobbyRuntimeView*) g_pNetworkLobbyVsnetRuntime;
-	if (pScreen == 0 || pRuntime == 0 || pPayloadObject == 0) {
-		return 0;
-	}
-	nSerializedStream = *(int*) ((char*) pPayloadObject + 4) + 0x10;
-	nPeerSlot = FindNetworkLobbyPeerSlot(pRuntime, pPeer);
-	if (nEventType == 5) {
-		if (nPeerSlot != -1 && pRuntime->m_pPeerStates14 != 0) {
-			pStream = (GameEffStream*) ((char*) pRuntime->m_pPeerStates14 + nPeerSlot * 0x50);
-			pStream->LoadEffStreamFromMemory(nSerializedStream);
-		}
-		*(int*) ((char*) pPayloadObject + 0x24) = 0;
-		pScreen->m_fRefreshPlayers3C4 = 1;
-		return 1;
-	}
-	if (nEventType == 6) {
-		pStream = *(GameEffStream**) ((char*) pController + 0x30);
-		if (pStream != 0) {
-			pStream->LoadEffStreamFromMemory(nSerializedStream);
-		}
-		*(int*) ((char*) pPayloadObject + 0x24) = 0;
-		((VsNetNetworkLobbyScreen*) pScreen)->ClearPlayerEntryDirty(nPeerSlot);
-		if (pStream != 0 && pStream->m_nU32Payload != 0) {
-			((VsNetEffTransportPeer*) pPeer)->Close();
-		}
-		pScreen->m_fRefreshPlayers3C4 = 1;
-		return 1;
-	}
-	if (nEventType == 7) {
-		pStream = *(GameEffStream**) ((char*) pController + 0x34);
-		if (pStream != 0) {
-			pStream->LoadEffStreamFromMemory(nSerializedStream);
-		}
-		*(int*) ((char*) pPayloadObject + 0x24) = 0;
-		if (nPeerSlot != -1 && pScreen->m_pPlayerEntries3CC != 0) {
-			*(int*) ((char*) pScreen->m_pPlayerEntries3CC + nPeerSlot * 0x44 + 0x40) = 1;
-		}
-		if (pStream != 0 && pStream->m_nU32Payload != 0 && ConfirmSelectedNetworkLobbyPlayerEntry(pScreen) != 0) {
-			pStream->QueueEffStreamWriteEvent((int) (unsigned long) pPeer);
-		}
-		return 1;
-	}
-	return 0;
-}
-
 void LEMBALL_FASTCALL CloseNetworkLobbyTransportPeers(void* pController)
 {
 	DWORD dwStart;
@@ -1149,23 +1051,6 @@ static void* g_GAME_NetworkLobbyPlayerEntryVtable[8];
 static void** g_pNetworkLobbyPlayerEntryBaseVtable;
 static int g_fNetworkLobbyPlayerEntryVtableInitialized;
 
-static void LEMBALL_FASTCALL MarkNetworkLobbyPlayerEntryActive(void* pEntry)
-{
-	*(int*) ((char*) pEntry + 0x38) = 1;
-}
-
-static void LEMBALL_FASTCALL ClearNetworkLobbyPlayerEntryActive(void* pEntry)
-{
-	*(int*) ((char*) pEntry + 0x38) = 0;
-}
-
-static void LEMBALL_FASTCALL MarkNetworkLobbyPlayerEntryEventDirty(void* pEntry, int, const VS_XYPair*, int nEvent)
-{
-	if (nEvent == 0 || nEvent == 3) {
-		*(int*) ((char*) pEntry + 0x3c) = 1;
-	}
-}
-
 __inline static void InitializeNetworkLobbyPlayerEntryVtable(void** pBaseVtable)
 {
 	int i;
@@ -1177,8 +1062,8 @@ __inline static void InitializeNetworkLobbyPlayerEntryVtable(void** pBaseVtable)
 	for (i = 0; i < 8; ++i) {
 		g_GAME_NetworkLobbyPlayerEntryVtable[i] = pBaseVtable[i];
 	}
-	g_GAME_NetworkLobbyPlayerEntryVtable[4] = (void*) MarkNetworkLobbyPlayerEntryActive;
-	g_GAME_NetworkLobbyPlayerEntryVtable[5] = (void*) ClearNetworkLobbyPlayerEntryActive;
+	g_GAME_NetworkLobbyPlayerEntryVtable[4] = (void*) mark_network_lobby_player_entry_child_active;
+	g_GAME_NetworkLobbyPlayerEntryVtable[5] = (void*) clear_network_lobby_player_entry_child_active;
 	g_GAME_NetworkLobbyPlayerEntryVtable[6] = (void*) MarkNetworkLobbyPlayerEntryEventDirty;
 	g_fNetworkLobbyPlayerEntryVtableInitialized = 1;
 }
@@ -1268,9 +1153,9 @@ __inline static void InitializeFunctionalPaintballSequenceVtables(void)
 	g_GAME_PaintballSequenceScreenVtable[0] = (void*) DeletePaintballSequenceScreen;
 	g_GAME_PaintballSequenceScreenVtable[14] = (void*) UpdatePaintballSequenceScreen;
 	g_GAME_PaintballSequenceScreenVtable[15] = (void*) HandlePaintballSequenceInput;
-	g_GAME_PaintballSequenceScreenVtable[16] = (void*) InitializePaintballSequenceResources;
+	g_GAME_PaintballSequenceScreenVtable[16] = (void*) ActivatePaintballSequenceMedia;
 	g_GAME_PaintballSequenceScreenVtable[17] = (void*) ReleasePaintballSequenceResources;
-	g_GAME_PaintballSequenceScreenVtable[18] = (void*) NoopFunctionalLevelSelectionHook;
+	g_GAME_PaintballSequenceScreenVtable[18] = (void*) MainMenuSlot18Thunk;
 	g_GAME_PaintballSequenceScreenVtable[19] = (void*) DrawPaintballSequencePromptText;
 	g_GAME_PaintballSequenceScreenVtable[20] = (void*) DrawPaintballSequenceFrame;
 	g_GAME_PaintballSequenceScreenVtable[21] = (void*) DispatchPaintballSequenceUserAction;
@@ -1333,7 +1218,7 @@ __inline static void InitializeFunctionalNetworkLobbyVtables(void)
 	g_GAME_NetworkLobbyScreenVtable[15] = (void*) HandleNetworkLobbyScreenInput;
 	g_GAME_NetworkLobbyScreenVtable[16] = (void*) InitializeNetworkLobbyActionButtons;
 	g_GAME_NetworkLobbyScreenVtable[17] = (void*) DestroyNetworkLobbyActionButtons;
-	g_GAME_NetworkLobbyScreenVtable[18] = (void*) NoopNetworkLobbyScreen;
+	g_GAME_NetworkLobbyScreenVtable[18] = (void*) NoopNetworkLobbyScreenThunk;
 	g_GAME_NetworkLobbyScreenVtable[19] = (void*) DrawNetworkLobbyScreen;
 	g_GAME_NetworkLobbyScreenVtable[20] = (void*) DrawNetworkLobbyActionButtonFrames;
 	g_GAME_NetworkLobbyScreenVtable[21] = (void*) MainMenuSlot21Thunk;
@@ -1404,14 +1289,709 @@ static void* g_GAME_FramedScreenBaseVtable[22] = {(void*) DeleteFramedScreenBase
 												  (void*) FramedScreenSlot20Thunk,
 												  (void*) MainMenuSlot21Thunk};
 
-void LEMBALL_FASTCALL WindowOwnerSlot23NoopThunk(void* pOwner)
+__inline static void LEMBALL_FASTCALL DestroyOptionsScreen(GameOptionsScreenView* pScreen)
 {
-	((VS_WindowOwnerBase*) pOwner)->VS_WindowOwnerBase::ReservedWindowOwnerSlot23();
+	pScreen->SetScreenVtable(g_GAME_OptionsScreenVtable);
+	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_OptionsQueueVtable;
+	*(void***) pScreen->m_abVariantRenderManager14 = g_GAME_MainMenuCallbackVtable;
+	if (pScreen->m_fCompactLayout32C == 0) {
+		g_fZoomedViewportEnabled = pScreen->m_fZoomDisabled398 == 0;
+	}
+	g_fSkipStartupSequence = pScreen->m_fSkipStartupSequence3A4;
+	((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)
+		->SetVariantResourceEffectsEnabledThunk(g_nOptionsEffectsSliderValue);
+	((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)
+		->SetVariantResourceMusicEnabled(g_nOptionsMusicSliderValue);
+	g_fMusicEnabled = g_nOptionsMusicSliderValue;
+	g_fEffectsEnabled = g_nOptionsEffectsSliderValue;
+	if (g_fMusicOptionAvailable == 0) {
+		g_fMusicEnabled = 0;
+	}
+	if (g_fEffectsOptionAvailable == 0) {
+		g_fEffectsEnabled = 0;
+	}
+	if (g_fZoomOptionAvailable == 0) {
+		g_fZoomedViewportEnabled = 0;
+	}
+	if (g_fStartupAnimationsEnabled == 0) {
+		g_fSkipStartupSequence = 1;
+	}
+	((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)
+		->SetVariantResourceEffectsEnabledThunk(g_nOptionsEffectsSliderValue);
+	((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)
+		->SetVariantResourceMusicEnabled(g_nOptionsMusicSliderValue);
+	if (pScreen->m_fFrameResourcesLoaded9C != 0) {
+		ReleaseOptionsScreenWidgets(pScreen);
+	}
+	DestroyFramedScreenBaseThunk00402081(pScreen);
 }
 
-int LEMBALL_FASTCALL GetWindowOwnerStateThunk(VS_RootGeometryOwner* pOwner)
+__inline static void ConfigurePaintballBitmapEntry(unsigned char* pEntry, void* pBitmap, short x, short y)
 {
-	return pOwner->VS_RootGeometryOwner::GetWindowOwnerState();
+	*(short*) (pEntry + 4) = x;
+	*(short*) (pEntry + 6) = y;
+	*(void**) (pEntry + 0x10) = pBitmap;
+	*(int*) (pEntry + 0x14) = 0x800;
+	*(int*) (pEntry + 0x18) = 0;
+}
+
+static void LEMBALL_FASTCALL InitializePaintballSequenceResources(void* pObject)
+{
+	GamePaintballSequenceScreenView* pScreen;
+	const int* panBackResources;
+	const int* panPlayResources;
+	void* pButtonManager;
+	unsigned char* pForegroundEntry;
+	int nPrimaryResource;
+	int nSecondaryResource;
+	short x;
+
+	pScreen = (GamePaintballSequenceScreenView*) pObject;
+	if (pScreen->m_fCompactLayout32C == 0) {
+		pScreen->m_pLayout510 = g_GAME_PaintballSequenceLayoutStandard;
+		panBackResources = g_GAME_PaintballSequenceBackStandard;
+		panPlayResources = g_GAME_PaintballSequencePlayStandard;
+		nPrimaryResource = pScreen->m_fSecondVariant518 == 0 ? 0x135 : 0x134;
+		nSecondaryResource = pScreen->m_fSecondVariant518 == 0 ? 0x137 : 0x138;
+		pScreen->m_nButtonResourceId508 = pScreen->m_fSecondVariant518 == 0 ? 0x157 : 0x158;
+	}
+	else {
+		pScreen->m_pLayout510 = g_GAME_PaintballSequenceLayoutCompact;
+		panBackResources = g_GAME_PaintballSequenceBackCompact;
+		panPlayResources = g_GAME_PaintballSequencePlayCompact;
+		nPrimaryResource = pScreen->m_fSecondVariant518 == 0 ? 0x140 : 0x13f;
+		nSecondaryResource = pScreen->m_fSecondVariant518 == 0 ? 0x142 : 0x143;
+		pScreen->m_nButtonResourceId508 = pScreen->m_fSecondVariant518 == 0 ? 0x184 : 0x185;
+	}
+	pScreen->m_nPrimaryBitmapResourceId504 = nPrimaryResource;
+	pScreen->m_nSecondaryBitmapResourceId50C = nSecondaryResource;
+	pScreen->m_pPrimaryBitmap4FC = LoadBitmapResource(nPrimaryResource);
+	pScreen->m_pSecondaryBitmap500 = pScreen->m_fMediaEnabled604 == 0 ? LoadBitmapResource(nSecondaryResource) : 0;
+	pForegroundEntry = pScreen->m_abRenderEntryGroupC8 + 0x14;
+	ConfigurePaintballBitmapEntry(
+		pForegroundEntry,
+		pScreen->m_pForegroundBitmapC0,
+		(short) (pScreen->m_cxScreen37C - *(short*) ((char*) pScreen->m_pForegroundBitmapC0 + 0x48)),
+		(short) pScreen->m_pLayout510[5]);
+	if (pScreen->m_pPrimaryBitmap4FC != 0) {
+		x = (short) (pScreen->m_cxScreen37C - *(short*) ((char*) pScreen->m_pPrimaryBitmap4FC + 0x48));
+		ConfigurePaintballBitmapEntry(pScreen->m_abPrimaryBitmapEntry398,
+									  pScreen->m_pPrimaryBitmap4FC,
+									  x,
+									  (short) pScreen->m_pLayout510[7]);
+		((int*) pScreen->m_pLayout510)[6] = x;
+		((int*) pScreen->m_pLayout510)[10] = x;
+	}
+	if (pScreen->m_pSecondaryBitmap500 != 0) {
+		ConfigurePaintballBitmapEntry(pScreen->m_abSecondaryBitmapEntry3E0,
+									  pScreen->m_pSecondaryBitmap500,
+									  (short) pScreen->m_pLayout510[20],
+									  (short) pScreen->m_pLayout510[21]);
+	}
+	pScreen->m_nActionSelection514 = 0;
+	pButtonManager = AllocateVSMemBlock(0x14c);
+	if (pButtonManager != 0) {
+		pScreen->m_pQueuedVariantManager338 = ConstructQueuedVariantChildSlotManager(pButtonManager,
+																					 0,
+																					 pScreen->m_pPrimaryContext84,
+																					 pScreen->m_pRenderContext88,
+																					 2,
+																					 pScreen->m_fCompactLayout32C,
+																					 0);
+	}
+	else {
+		pScreen->m_pQueuedVariantManager338 = 0;
+	}
+	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
+								 0,
+								 pScreen->m_pLayout510[0],
+								 pScreen->m_pLayout510[1],
+								 panPlayResources,
+								 1,
+								 0,
+								 0,
+								 0,
+								 &pScreen->m_nActionSelection514,
+								 (int) 0xacef0010U);
+	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
+								 0,
+								 pScreen->m_pLayout510[2],
+								 pScreen->m_pLayout510[3],
+								 panBackResources,
+								 1,
+								 0,
+								 0,
+								 0,
+								 &pScreen->m_nActionSelection514,
+								 (int) 0xacef0011U);
+	SelectQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338, 0, 0);
+	InitializeQueuedVariantChildContext(pScreen->m_pQueuedVariantManager338);
+	if (pScreen->m_fSecondVariant518 == 0) {
+		pScreen->m_xOverlay380 = (short) (pScreen->m_pLayout510[10] + pScreen->m_pLayout510[12]);
+		pScreen->m_yOverlay382 = (short) (pScreen->m_pLayout510[11] + pScreen->m_pLayout510[13]);
+	}
+	else {
+		pScreen->m_xOverlay380 = (short) (pScreen->m_pLayout510[6] + pScreen->m_pLayout510[8]);
+		pScreen->m_yOverlay382 = (short) (pScreen->m_pLayout510[7] + pScreen->m_pLayout510[9]);
+	}
+	LayoutPaintballSequencePromptText(pScreen);
+	if (pScreen->m_fMediaEnabled604 != 0) {
+		((GamePaintballSequenceMediaState*) pScreen->m_abMediaOwner520)->LoadVariant(pScreen->m_fCompactLayout32C);
+	}
+}
+
+__inline static const char* GetPaintballSequencePeerName(void)
+{
+	GameNetworkLobbyRuntimeView* pRuntime;
+	int i;
+
+	if (g_pNetworkLobbyVsnetRuntime == 0 || g_nSelectedNetworkLobbyPeerId == 0) {
+		return 0;
+	}
+	pRuntime = (GameNetworkLobbyRuntimeView*) g_pNetworkLobbyVsnetRuntime;
+	for (i = 0; i < 10; ++i) {
+		if ((int) (unsigned long) pRuntime->m_apTrackedPeers20[i] == g_nSelectedNetworkLobbyPeerId) {
+			return pRuntime->m_pPeerStates14[i].m_szName2C;
+		}
+	}
+	return 0;
+}
+
+__inline static void LayoutPaintballSequencePromptText(GamePaintballSequenceScreenView* pScreen)
+{
+	const char* const* papszPrompts;
+	const char* pszPrompt;
+	const char* pszPeerName;
+	char* pszBuffer;
+	char* pszMarker;
+	char* pszSecondLine;
+	char* pszPreviousSplit;
+	void* pFontResource;
+	short Extent[2];
+	int nPrompt;
+	int cyFirstLine;
+	int x;
+
+	if (pScreen->m_fNetworkScreen8C == 0) {
+		papszPrompts = pScreen->m_fSecondVariant518 != 0 ? g_GAME_PaintballSequenceSoloWinPrompts
+														 : g_GAME_PaintballSequenceSoloLossPrompts;
+	}
+	else {
+		papszPrompts = pScreen->m_fSecondVariant518 != 0 ? g_GAME_PaintballSequenceNetworkWinPrompts
+														 : g_GAME_PaintballSequenceNetworkLossPrompts;
+	}
+	nPrompt = ((GameLevelProgressStateView*) g_pLevelProgressState)->m_nReserved0C;
+	pszPrompt = (0 <= nPrompt && nPrompt < 8) ? papszPrompts[nPrompt] : 0;
+	if (pszPrompt == 0) {
+		pszPrompt = "";
+	}
+	pszBuffer = (char*) pScreen + 0x3e0;
+	pszMarker = strchr(pszPrompt, '#');
+	if (pszMarker == 0) {
+		strcpy(pszBuffer, pszPrompt);
+	}
+	else {
+		memcpy(pszBuffer, pszPrompt, pszMarker - pszPrompt);
+		pszBuffer[pszMarker - pszPrompt] = '\0';
+		pszPeerName = GetPaintballSequencePeerName();
+		if (pszPeerName != 0) {
+			strcat(pszBuffer, pszPeerName);
+		}
+		strcat(pszBuffer, pszMarker + 1);
+	}
+	*(char**) ((char*) pScreen + 0x4e0) = pszBuffer;
+	*(char**) ((char*) pScreen + 0x4e4) = 0;
+	pFontResource = ((MappedListResourceTable*) pScreen->m_pMappedListResources98)
+						->GetMappedResource(pScreen->m_nMappedListRemapResourceId384);
+	pszSecondLine = 0;
+	do {
+		((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, pszBuffer, 0x20);
+		x = pScreen->m_pLayout510[14] + (pScreen->m_pLayout510[16] - Extent[0]) / 2;
+		pszPreviousSplit = pszSecondLine != 0 ? pszSecondLine - 1 : 0;
+		if (x < pScreen->m_pLayout510[18]) {
+			pszSecondLine = strrchr(pszBuffer, ' ');
+			if (pszSecondLine == 0) {
+				break;
+			}
+			*pszSecondLine++ = '\0';
+			if (pszPreviousSplit != 0) {
+				*pszPreviousSplit = ' ';
+			}
+		}
+	} while (x < pScreen->m_pLayout510[18]);
+	cyFirstLine = Extent[1];
+	*(char**) ((char*) pScreen + 0x4e4) = pszSecondLine;
+	*(short*) ((char*) pScreen + 0x4e8) = (short) x;
+	*(short*) ((char*) pScreen + 0x4ea) = (short) pScreen->m_pLayout510[19];
+	if (pszSecondLine == 0) {
+		*(short*) ((char*) pScreen + 0x4ea) += Extent[1] / 2;
+	}
+	else {
+		((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, pszSecondLine, 0x20);
+		*(short*) ((char*) pScreen + 0x4ec) =
+			(short) (pScreen->m_pLayout510[14] + (pScreen->m_pLayout510[16] - Extent[0]) / 2);
+		*(short*) ((char*) pScreen + 0x4ee) = (short) (pScreen->m_pLayout510[19] + cyFirstLine);
+	}
+	((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, "Password:", 0x20);
+	*(short*) ((char*) pScreen + 0x4f0) =
+		(short) (pScreen->m_pLayout510[14] + (pScreen->m_pLayout510[16] - Extent[0]) / 2);
+	*(short*) ((char*) pScreen + 0x4f2) = (short) pScreen->m_pLayout510[25];
+	x = Extent[1];
+	((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, pScreen->m_pszPassword4F8, 0x20);
+	*(short*) ((char*) pScreen + 0x4f4) =
+		(short) (pScreen->m_pLayout510[14] + (pScreen->m_pLayout510[16] - Extent[0]) / 2);
+	*(short*) ((char*) pScreen + 0x4f6) = (short) (pScreen->m_pLayout510[25] + x);
+}
+
+__inline static void FinishPaintballSequence(GamePaintballSequenceScreenView* pScreen, int nMode)
+{
+	pScreen->m_nTransitionStatus378 = 1;
+	pScreen->m_nRequestedMode374 = nMode;
+}
+
+__inline static void DeactivatePaintballSequenceMedia(GamePaintballSequenceScreenView* pScreen)
+{
+	if (pScreen->m_fMediaStarted5FC != 0 && *(int*) (pScreen->m_abMediaOwner520 + 4) == 1) {
+		((void(LEMBALL_FASTCALL*)(void*, int))(*(void***) pScreen->m_abMediaOwner520)[29])(pScreen->m_abMediaOwner520,
+																						   0);
+		pScreen->m_fMediaStarted5FC = 0;
+		pScreen->m_dwMediaStart5F8 = timeGetTime() + 40U;
+	}
+}
+
+__inline static void LEMBALL_FASTCALL DestroyPaintballSequenceScreen(GamePaintballSequenceScreenView* pScreen)
+{
+	unsigned char* pSink;
+	int i;
+
+	pScreen->SetScreenVtable(g_GAME_PaintballSequenceScreenVtable);
+	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_PaintballSequenceQueueVtable;
+	*(void***) pScreen->m_abVariantRenderManager14 = g_GAME_MainMenuCallbackVtable;
+	DeactivatePaintballSequenceMedia(pScreen);
+	if (pScreen->m_fFrameResourcesLoaded9C != 0) {
+		ReleasePaintballSequenceResources(pScreen);
+	}
+	if (*(int*) (pScreen->m_abMediaOwner520 + 0xd4) == 0) {
+		((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->SetVariantResourceMusicEnabled(1);
+		*(int*) (pScreen->m_abMediaOwner520 + 0xd4) = 1;
+	}
+	((VsGdiAnimWindowOwner*) pScreen->m_abMediaOwner520)->DestroyResourceGeometryHelperWindowOwner();
+	pSink = (unsigned char*) pScreen + 0xf8;
+	i = 0;
+	do {
+		pSink -= 0x48;
+		RestoreCompositePointRectSinkFinalizeVtables(pSink);
+		--i;
+	} while (i >= 0);
+	DestroyFramedScreenBaseThunk00402081(pScreen);
+}
+
+__inline static void DrawNetworkLobbyActionButtonFrame(GameNetworkLobbyScreenView* pScreen, int iLayoutRect)
+{
+	const int* pRect;
+
+	pRect = pScreen->m_pLayout42C + iLayoutRect * 2;
+	pScreen->EmitScreenFrameRect((short) pRect[0], (short) pRect[1], (short) pRect[2], (short) pRect[3]);
+}
+
+__inline static void DestroyNetworkLobbyScreen(GameNetworkLobbyScreenView* pScreen)
+{
+	int i;
+
+	pScreen->SetScreenVtable(g_GAME_NetworkLobbyScreenVtable);
+	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_NetworkLobbyQueueVtable;
+	*(void***) pScreen->m_abVariantRenderManager14 = g_GAME_MainMenuCallbackVtable;
+	if (pScreen->m_nRequestedMode374 == 0) {
+		if (g_pActiveNetworkLobbyTransportController != 0) {
+			CancelNetworkLobbyPrompt(pScreen);
+		}
+	}
+	else if (g_pActiveNetworkLobbyTransportController != 0) {
+		CloseNetworkLobbyTransportPeers(g_pActiveNetworkLobbyTransportController);
+	}
+	for (i = 0; i < 10; ++i) {
+		RemoveGeometryOwnerChild(*(void**) ((char*) pScreen->m_pPrimaryContext84 + 0x1c),
+								 0,
+								 (char*) pScreen->m_pPlayerEntries3CC + i * 0x44);
+	}
+	if (pScreen->m_pPlayerEntries3CC != 0) {
+		typedef void*(LEMBALL_FASTCALL * DeleteArrayProc)(void*, int, int);
+
+		((DeleteArrayProc) (*(void***) pScreen->m_pPlayerEntries3CC)[0])(pScreen->m_pPlayerEntries3CC, 0, 3);
+	}
+	if (pScreen->m_pTextBuffer398 != 0) {
+		GameBoundedTextBuffer* pBuffer;
+
+		pBuffer = (GameBoundedTextBuffer*) pScreen->m_pTextBuffer398;
+		if (pBuffer->m_pszText0C != 0) {
+			FreeVSMemBlock(pBuffer->m_pszText0C);
+		}
+		FreeVSMemBlock(pBuffer);
+	}
+	for (i = 0; i < 6; ++i) {
+		ReleasePaletteRemapVariant((void*) (unsigned long) pScreen->m_anPaletteRemaps414[i]);
+	}
+	if (pScreen->m_fFrameResourcesLoaded9C != 0) {
+		DestroyNetworkLobbyActionButtons(pScreen);
+	}
+	*(void**) pScreen->m_abPointSink3EC = g_pQueuedRenderPointSinkFinalizeThunk;
+	DestroyFramedScreenBaseThunk00402081(pScreen);
+}
+
+__inline static void InitializePasswordEntryRenderContext(GamePasswordEntryScreenView* pScreen)
+{
+	typedef void(LEMBALL_FASTCALL * InitializeContextVirtual)(void*, int, short*, void*, int);
+	short Rect[4];
+	short nKeyStep;
+
+	nKeyStep = (short) (pScreen->m_pLayout3A8[24] + pScreen->m_pLayout3A8[4]);
+	pScreen->m_pInputPanelOwner3A4 = AllocateVSMemBlock(0x90);
+	if (pScreen->m_pInputPanelOwner3A4 == 0) {
+		pScreen->m_pInputPanelRenderContext474 = 0;
+		return;
+	}
+	((GameWindowOwnerRenderContext*) pScreen->m_pInputPanelOwner3A4)->ConstructWindowOwnerRenderContext();
+	*(int*) ((char*) pScreen->m_pInputPanelOwner3A4 + 0x50) += 10;
+	Rect[0] = (short) (nKeyStep * 3);
+	Rect[1] = (short) (nKeyStep * 4);
+	Rect[2] = (short) (pScreen->m_pLayout3A8[2] - 1);
+	Rect[3] = (short) (pScreen->m_pLayout3A8[3] - 1);
+	((InitializeContextVirtual) (*(void***) pScreen->m_pInputPanelOwner3A4)[1])(pScreen->m_pInputPanelOwner3A4,
+																				0,
+																				Rect,
+																				pScreen->m_pPrimaryContext84,
+																				0);
+	pScreen->m_pInputPanelRenderContext474 = *(void**) ((char*) pScreen->m_pInputPanelOwner3A4 + 0x4c);
+}
+
+__inline static void RotatePasswordEntrySelection(GamePasswordEntryScreenView* pScreen, int nDirection)
+{
+	int nPosition;
+
+	nPosition = pScreen->m_nSelectedKey480;
+	switch (nDirection) {
+	case 1:
+		nPosition = (nPosition + 9) % 12;
+		break;
+	case 2:
+		nPosition = (nPosition + 3) % 12;
+		break;
+	case 3:
+		nPosition = (nPosition % 3 == 0) ? nPosition + 2 : nPosition - 1;
+		break;
+	case 4:
+		nPosition = (nPosition % 3 == 2) ? nPosition - 2 : nPosition + 1;
+		break;
+	}
+	pScreen->m_nSelectedKey480 = nPosition;
+	pScreen->m_xSelected478 = pScreen->m_aKeyPositions3C0[nPosition][0];
+	pScreen->m_ySelected47C = pScreen->m_aKeyPositions3C0[nPosition][1];
+	pScreen->m_fSelectorDirty360 = 1;
+	pScreen->m_fFrameDirty330 = 1;
+}
+
+__inline static void ApplyPasswordEntryAction(GamePasswordEntryScreenView* pScreen, int nAction)
+{
+	int nEffect;
+
+	if (pScreen->m_nResultState488 == 1) {
+		return;
+	}
+	if (nAction < 10) {
+		if (pScreen->m_cPassword420 < 10) {
+			pScreen->m_szPassword3B0[pScreen->m_cPassword420++] = (char) ('0' + nAction);
+		}
+		else if (g_pVariantResourceEntryManager != 0) {
+			((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x19);
+		}
+	}
+	else if (nAction == 10) {
+		if (pScreen->m_cPassword420 != 0) {
+			--pScreen->m_cPassword420;
+			pScreen->m_szPassword3B0[pScreen->m_cPassword420] = '-';
+		}
+		else if (g_pVariantResourceEntryManager != 0) {
+			((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x19);
+		}
+	}
+	else if (nAction == 11) {
+		pScreen->m_fPasswordValid484 = ValidateCurrentLevelPassword(pScreen->m_szPassword3B0);
+		((GameNoArgVirtual) pScreen->GetScreenVtable()[19])(pScreen, 0);
+		SnapshotCurrentLevelProgress();
+		nEffect = pScreen->m_fPasswordValid484 != 0 ? 0x13 : 0x22;
+		if (g_pVariantResourceEntryManager != 0) {
+			((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(nEffect);
+		}
+		pScreen->m_nResultState488 = 1;
+		pScreen->m_dwResultStart48C = timeGetTime();
+		pScreen->m_dwResultDeadline490 = pScreen->m_dwResultStart48C + 1000U;
+	}
+	pScreen->m_fSelectorDirty360 = 1;
+	pScreen->m_fFrameDirty330 = 1;
+}
+
+__inline static void DispatchPasswordOverlayInput(void* pOverlay, int iSlot)
+{
+	typedef void(LEMBALL_FASTCALL * DispatchOverlayInputProc)(void*, int, short*, int);
+	short Point[2];
+	void* pInputInterface;
+
+	if (pOverlay == 0) {
+		return;
+	}
+	Point[0] = 0;
+	Point[1] = 0;
+	pInputInterface = (char*) pOverlay + 0x90;
+	((DispatchOverlayInputProc) (*(void***) pInputInterface)[iSlot])(pInputInterface, 0, Point, 0);
+}
+
+__inline static void DestroyPasswordEntryScreen(GamePasswordEntryScreenView* pScreen)
+{
+	pScreen->SetScreenVtable(g_GAME_PasswordEntryScreenVtable);
+	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_PasswordEntryQueueVtable;
+	if (pScreen->m_fFrameResourcesLoaded9C != 0) {
+		ReleasePasswordEntryResources(pScreen);
+	}
+	g_pActiveNetworkLobbyScreen = 0;
+	if (g_pSharedRenderDispatchQueue != 0) {
+		((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)
+			->UnregisterOrderedRenderDispatchClient(pScreen->m_abRenderQueueNode04, 0);
+	}
+	if (pScreen->m_fFrameResourcesLoaded9C != 0) {
+		pScreen->ReleaseFrameResources();
+	}
+	if (pScreen->m_pMappedListResources98 != 0) {
+		((MappedListResourceTable*) pScreen->m_pMappedListResources98)->Destroy();
+		FreeVSMemBlock(pScreen->m_pMappedListResources98);
+		pScreen->m_pMappedListResources98 = 0;
+	}
+	((MogLoadResourceArchive*) g_pMainResourceArchive)->PruneUnreferencedCachedResourceObjects();
+	DestroyFramedScreenRenderEntryGroup(pScreen->m_abRenderEntryGroupC8);
+	DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
+}
+
+__inline static void InitializeFunctionalLevelSelectionVtable(void)
+{
+	int i;
+
+	if (g_fFunctionalLevelSelectionVtableInitialized != 0) {
+		return;
+	}
+	for (i = 0; i < 22; ++i) {
+		g_GAME_FunctionalLevelSelectionVtable[i] = g_GAME_MainMenuScreenVtable[i];
+	}
+	g_GAME_FunctionalLevelSelectionVtable[0] = (void*) DeleteFunctionalLevelSelectionScreen;
+	g_GAME_FunctionalLevelSelectionVtable[14] = (void*) UpdateFunctionalLevelSelectionScreen;
+	g_GAME_FunctionalLevelSelectionVtable[15] = (void*) HandleFunctionalLevelSelectionInput;
+	g_GAME_FunctionalLevelSelectionVtable[16] = (void*) InitializeFunctionalLevelSelectionResources;
+	g_GAME_FunctionalLevelSelectionVtable[17] = (void*) ReleaseFunctionalLevelSelectionResources;
+	g_GAME_FunctionalLevelSelectionVtable[18] = (void*) DrawFunctionalLevelSelectionStatus;
+	g_GAME_FunctionalLevelSelectionVtable[19] = (void*) DrawFunctionalLevelSelectionText;
+	g_GAME_FunctionalLevelSelectionVtable[20] = (void*) DrawFunctionalLevelSelectionFrame;
+	g_GAME_FunctionalLevelSelectionVtable[21] = (void*) DispatchFunctionalLevelSelectionAction;
+	g_fFunctionalLevelSelectionVtableInitialized = 1;
+}
+
+__inline static void InitializeFunctionalLevelSelectionPaletteRemap(GameLevelSelectionScreenView* pScreen)
+{
+	void* pPalette;
+	int i;
+
+	pPalette = LoadPalResource(0x10a);
+	pScreen->m_pPaletteRemap3CC = (unsigned char*) AllocateVSMemBlock(0x100);
+	for (i = 0; i < 0x100; ++i) {
+		pScreen->m_pPaletteRemap3CC[i] = (unsigned char) i;
+	}
+	for (i = 0; i < 10; ++i) {
+		if (g_GAME_LevelSelectionPaletteTargetIndices[i] != 0) {
+			pScreen->m_pPaletteRemap3CC[g_GAME_LevelSelectionPaletteSourceIndices[i]] =
+				(unsigned char) g_GAME_LevelSelectionPaletteTargetIndices[i];
+		}
+	}
+	pScreen->m_nPaletteRemap3D0 =
+		(int) (unsigned long) RegisterPaletteRemapVariant(0x10a, pScreen->m_pPaletteRemap3CC, 0);
+	ReleaseTypedResourceObjectReference(pPalette);
+}
+
+__inline static void ReleaseFunctionalLevelSelectionPaletteRemap(GameLevelSelectionScreenView* pScreen)
+{
+	ReleasePaletteRemapVariant((void*) (unsigned long) pScreen->m_nPaletteRemap3D0);
+}
+
+__inline static GameProgressiveVariantFrameSelector* ConstructLevelSelectionFrameSelector(void* pManager,
+																						  int nResourceId)
+{
+	GameProgressiveVariantFrameSelector* pSelector;
+
+	pSelector = (GameProgressiveVariantFrameSelector*) AllocateVSMemBlock(sizeof(GameProgressiveVariantFrameSelector));
+	if (pSelector == 0) {
+		return 0;
+	}
+	pSelector->m_pVtable = g_MenuSelectorFrameSelectorCtorVtable;
+	pSelector->m_cFrames = ((LevelVariantRenderManagerView*) pManager)->GetVariantRenderFrameCount(nResourceId);
+	pSelector->m_pVtable = g_MenuSelectorTimedFrameSelectorVtable;
+	pSelector->m_nDirection = 1;
+	pSelector->m_pVtable = g_MenuSelectorCurrentFrameCallbackVtable + 1;
+	((GameProgressiveSelectorVtableView*) pSelector)->SetDuration(500);
+	pSelector->m_dwFixedTime = -1;
+	return pSelector;
+}
+
+__inline static void LEMBALL_FASTCALL
+RequestFunctionalLevelSelectionTransitionMode5(GameLevelSelectionScreenView* pScreen)
+{
+	pScreen->m_nTransitionStatus378 = 1;
+	pScreen->m_nRequestedMode374 = 5;
+}
+
+__inline static void LEMBALL_FASTCALL
+RequestFunctionalLevelSelectionTransitionMode2(GameLevelSelectionScreenView* pScreen)
+{
+	pScreen->m_nTransitionStatus378 = 1;
+	pScreen->m_nRequestedMode374 = 2;
+}
+
+__inline static short* GetFunctionalVariantFrameExtent(void* pObject, short* pExtent, int nResourceId, int iFrame)
+{
+	int* pManager;
+	int* pResource;
+	short* pFrame;
+
+	pManager = (int*) pObject;
+	pResource =
+		*(int**) (unsigned long) (pManager[9] + (int) *(short*) (unsigned long) (pManager[10] + nResourceId * 2) * 4);
+	if (pResource[0x10] != 0x5a524c45) {
+		pFrame = (short*) (unsigned long) (pResource[0x1e] + 0x4c + iFrame * 0x54);
+		pExtent[0] = pFrame[0];
+		pExtent[1] = pFrame[1];
+	}
+	else {
+		pExtent[0] = *(short*) ((char*) pResource + 0x4c);
+		pExtent[1] = *(short*) ((char*) pResource + 0x4e);
+	}
+	return pExtent;
+}
+
+__inline static int CopyNextFunctionalLevelTitleWord(const char* pszSource, char* pszLine, int* piSource, int* piLine)
+{
+	while (pszSource[*piSource] != '\0' && pszSource[*piSource] != ' ') {
+		pszLine[*piLine] = pszSource[*piSource];
+		++*piSource;
+		++*piLine;
+	}
+	pszLine[*piLine] = '\0';
+	if (pszSource[*piSource] != '\0') {
+		++*piSource;
+		return 0;
+	}
+	return 1;
+}
+
+__inline static void TrimFunctionalLevelTitleToPreviousWord(const char* pszSource,
+															char* pszLine,
+															int* piSource,
+															int* piLine)
+{
+	int cchBacktracked;
+	int cchSource;
+
+	cchBacktracked = 0;
+	*piSource -= 2;
+	cchSource = strlen(pszSource);
+	if (cchSource != 0) {
+		while (pszSource[*piSource] != ' ') {
+			++cchBacktracked;
+			--*piSource;
+			pszLine[*piLine] = '\0';
+			--*piLine;
+			if (cchSource <= cchBacktracked) {
+				return;
+			}
+		}
+		pszLine[*piLine] = '\0';
+		--*piLine;
+		pszLine[*piLine] = '\0';
+		++*piSource;
+	}
+}
+
+__inline static void LEMBALL_FASTCALL
+RefreshFunctionalLevelSelectionNavigationLocks(GameLevelSelectionScreenView* pScreen)
+{
+	int fNextAvailable;
+	int fPreviousAvailable;
+
+	fNextAvailable = IsCurrentLevelProgressAvailableThunk(g_pLevelProgressState);
+	fPreviousAvailable = CanRetreatCurrentLevelProgressThunk(g_pLevelProgressState);
+	pScreen->m_fNextLocked480 = 0;
+	if (fNextAvailable != true) {
+		pScreen->m_fNextLocked480 = 1;
+	}
+	pScreen->m_fPreviousLocked484 = 0;
+	if (fPreviousAvailable != true) {
+		pScreen->m_fPreviousLocked484 = 1;
+	}
+	RefreshQueuedVariantChildByToken(pScreen->m_pQueuedVariantManager338, 0, (int) 0xacef000eU);
+	RefreshQueuedVariantChildByToken(pScreen->m_pQueuedVariantManager338, 0, (int) 0xacef000fU);
+}
+
+__inline static void LEMBALL_FASTCALL SelectNextFunctionalLevel(GameLevelSelectionScreenView* pScreen)
+{
+	AdvanceCurrentLevelProgressThunk(g_pLevelProgressState);
+	RefreshFunctionalLevelSelectionMetadata(pScreen);
+}
+
+__inline static void LEMBALL_FASTCALL SelectPreviousFunctionalLevel(GameLevelSelectionScreenView* pScreen)
+{
+	RetreatCurrentLevelProgressThunk(g_pLevelProgressState);
+	RefreshFunctionalLevelSelectionMetadata(pScreen);
+}
+
+__inline static void LEMBALL_FASTCALL EmitQueuedVariantChildSlotEntry(void* pObject)
+{
+	char* pManager;
+	char* pGeometryOwner;
+	char* pGeometryDispatch;
+	void* pRenderContext;
+	void* pSavedOwner;
+	int nDispatchOffset;
+	int nPointBias;
+	short Point[2];
+	short Rect[4];
+
+	pManager = (char*) pObject;
+	if (*(int*) (pManager + 0x144) == 0) {
+		return;
+	}
+	pRenderContext = *(void**) (pManager + 0x12c);
+	nPointBias = *(int*) (pManager + 0x130) == 1 ? -1 : -2;
+	pGeometryOwner = *(char**) ((char*) pRenderContext + 0x0c);
+	nDispatchOffset = *(int*) ((char*) *(void**) (pGeometryOwner + 0x40) + 4);
+	pGeometryDispatch = pGeometryOwner + 0x40 + nDispatchOffset;
+	*(short*) (pManager + 0x100) = *(short*) (pGeometryDispatch + 0x14);
+	*(short*) (pManager + 0x102) = *(short*) (pGeometryDispatch + 0x16);
+	*(short*) (pManager + 0x104) = 0;
+	*(short*) (pManager + 0x106) = 0;
+	*(int*) (pManager + 0x108) = 0x10000;
+	((GameMainMenuRenderEntryInterface*) (pManager + 0xfc))->AppendToQueue(pRenderContext);
+	*(int*) (pManager + 0x124) = 0;
+	Point[0] = (short) (*(int*) (pManager + 0x98) + nPointBias);
+	Point[1] = (short) (*(int*) (pManager + 0x9c) + nPointBias);
+	pSavedOwner = *(void**) (pManager + 0x2c);
+	*(void**) (pManager + 0x2c) = pRenderContext;
+	((LevelVariantRenderManagerView*) (pManager + 0x10))
+		->EmitVariantRenderResourceEntry(Rect,
+										 Point,
+										 g_nQueuedVariantChildSlotManagerModeSelectedResourceId,
+										 0,
+										 pManager + 0x118,
+										 0);
+	*(void**) (pManager + 0x2c) = pSavedOwner;
+	((LevelVariantRenderManagerView*) (pManager + 0x10))->ResetOrFlipVariantRenderBuffers();
+}
+
+__inline static void LEMBALL_FASTCALL NoopQueuedVariantChildSlotManagerUpdate(void*)
+{
 }
 
 // FUNCTION: LEMBALL 0x0040110e
@@ -1419,38 +1999,28 @@ void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroupThunk(void* pObject)
 {
 	RefreshFramedScreenRenderEntryGroup(pObject);
 }
-
 // FUNCTION: LEMBALL 0x00401190
 void LEMBALL_FASTCALL DestroyMainMenuScreenThunk00401190(void* pObject)
 
 {
 	DestroyMainMenuScreen(pObject);
 }
-
 // FUNCTION: LEMBALL 0x00401195
 void WindowOwnerSlot15NoopThunk(void)
 {
 	noop_window_owner_callback_0043a510();
 }
-
-void LEMBALL_FASTCALL WindowOwnerSlot37NoopThunk(VS_WindowOwnerBase* pOwner)
-{
-	pOwner->VS_WindowOwnerBase::ReservedWindowOwnerSlot37();
-}
-
 // FUNCTION: LEMBALL 0x0040122b
 void WindowOwnerSlot16NoopThunk(void)
 {
 	noop_window_owner_callback_0043a520();
 }
-
 // FUNCTION: LEMBALL 0x004012ad
 void LEMBALL_FASTCALL ResetFramedScreenVariantBuffersThunk(void* pObject)
 
 {
 	ResetFramedScreenVariantBuffers(pObject);
 }
-
 // FUNCTION: LEMBALL 0x00401505
 int LEMBALL_FASTCALL FramedScreenSlot15Thunk(void* pObject, int nUnusedEdx, void* pArgument)
 {
@@ -1458,12 +2028,6 @@ int LEMBALL_FASTCALL FramedScreenSlot15Thunk(void* pObject, int nUnusedEdx, void
 	(void) nUnusedEdx;
 	return return_zero_screen_callback_00446f60(pArgument);
 }
-
-void LEMBALL_FASTCALL WindowOwnerSlot21NoopThunk(void* pOwner)
-{
-	((VS_WindowOwnerBase*) pOwner)->VS_WindowOwnerBase::ReservedWindowOwnerSlot21();
-}
-
 // FUNCTION: LEMBALL 0x00401528
 int LEMBALL_FASTCALL MainMenuSlot21Thunk(void* pObject, int nUnusedEdx, void* pArgument)
 {
@@ -1471,37 +2035,31 @@ int LEMBALL_FASTCALL MainMenuSlot21Thunk(void* pObject, int nUnusedEdx, void* pA
 	(void) nUnusedEdx;
 	return return_zero_screen_callback_00446fa0(pArgument);
 }
-
 // FUNCTION: LEMBALL 0x00401735
 void GameQueuedVariantManagerView::SetChildrenEnabledThunk(int fEnabled)
 {
 	SetChildrenEnabled(fEnabled);
 }
-
 // FUNCTION: LEMBALL 0x00401744
 int ConsumeLevelSelectionChangedFlagThunk(void)
 {
 	return ConsumeLevelSelectionChangedFlag();
 }
-
 // FUNCTION: LEMBALL 0x00401767
 void LEMBALL_FASTCALL UpdateFramedScreenRuntimeThunk(void* pObject)
 {
 	((GameFramedScreenBase*) pObject)->UpdateRuntime();
 }
-
 // FUNCTION: LEMBALL 0x004017ad
 void LEMBALL_FASTCALL RefreshFramedScreenFrameResourcesThunk(void* pObject)
 {
 	RefreshFramedScreenFrameResources(pObject);
 }
-
 // FUNCTION: LEMBALL 0x004017ee
 void* LEMBALL_FASTCALL DeleteIntroSequenceScreenThunk(void* pObject, int nUnusedEdx, int fDelete)
 {
 	return DeleteIntroSequenceScreen(pObject, nUnusedEdx, fDelete);
 }
-
 // FUNCTION: LEMBALL 0x00401889
 int LEMBALL_FASTCALL HandleFramedScreenQueueEventThunk(void* pQueueNode, int nUnusedEdx, void* pEvent)
 
@@ -1509,191 +2067,145 @@ int LEMBALL_FASTCALL HandleFramedScreenQueueEventThunk(void* pQueueNode, int nUn
 	(void) nUnusedEdx;
 	return ((GameFramedScreenQueueNode*) pQueueNode)->HandleEvent(pEvent);
 }
-
-int LEMBALL_FASTCALL IsCurrentWindowOwnerContextThunk(VS_WindowOwnerBase* pOwner)
-{
-	return pOwner->VS_WindowOwnerBase::IsCurrentWindowOwnerContext();
-}
-
 // FUNCTION: LEMBALL 0x004018de
 void LEMBALL_FASTCALL UpdateMainMenuScreenThunk(void* pObject)
 {
 	UpdateMainMenuScreen(pObject);
 }
-
 // FUNCTION: LEMBALL 0x004019b5
 void LEMBALL_FASTCALL PollIntroSequencePlaybackThunk(void* pObject)
 {
 	((GameIntroSequenceScreen*) pObject)->PollPlaybackCompletion();
 }
-
 // FUNCTION: LEMBALL 0x00401a8c
 void LEMBALL_FASTCALL HandleIntroSequenceMediaCompletionThunk(void* pOwner)
 {
 	HandleIntroSequenceMediaCompletion(pOwner);
 }
-
 // FUNCTION: LEMBALL 0x00401af0
 void GameMenuSelectorManager::InitializeChildContextThunk(void)
 {
 	InitializeChildContext();
 }
-
 // FUNCTION: LEMBALL 0x00401ba4
 void LEMBALL_FASTCALL InitializeMainMenuWidgetsThunk(void* pObject)
 {
 	InitializeMainMenuWidgets(pObject);
 }
-
+// FUNCTION: LEMBALL 0x00401dac
+void LEMBALL_FASTCALL NoopNetworkLobbyScreenThunk(void* pObject)
+{
+	NoopNetworkLobbyScreen(pObject);
+}
 // FUNCTION: LEMBALL 0x00401dc5
 void LEMBALL_FASTCALL MainMenuSlot06Thunk(void* pObject)
 {
 	(void) pObject;
 	noop_render_entry_callback_004393b0();
 }
-
 // FUNCTION: LEMBALL 0x00401dd9
 void LEMBALL_FASTCALL UpdateIntroSequencePlaybackThunk(void* pObject)
 {
 	((GameIntroSequenceScreen*) pObject)->UpdatePlayback();
 }
-
 // FUNCTION: LEMBALL 0x00401e24
 void* LEMBALL_FASTCALL DeleteAdjustedIntroSequenceScreenThunk(void* pObject, int nUnusedEdx, int fDelete)
 {
 	return DeleteAdjustedIntroSequenceScreen(pObject, nUnusedEdx, fDelete);
 }
-
-void LEMBALL_FASTCALL WindowOwnerSlot19NoopThunk(VS_WindowOwnerBase* pOwner)
-{
-	pOwner->VS_WindowOwnerBase::ReservedWindowOwnerSlot19();
-}
-
 // FUNCTION: LEMBALL 0x00402081
 void LEMBALL_FASTCALL DestroyFramedScreenBaseThunk00402081(void* pObject)
 {
 	DestroyFramedScreenBase(pObject);
 }
-
 // FUNCTION: LEMBALL 0x0040209a
 int LEMBALL_FASTCALL GetIntroSequenceMediaNotifyFlagsThunk(void* pOwner)
 {
 	return GetIntroSequenceMediaNotifyFlags(pOwner);
 }
-
 // FUNCTION: LEMBALL 0x00402185
 void LEMBALL_FASTCALL MainMenuSlot19Thunk(void* pObject)
 {
 	(void) pObject;
 	noop_screen_callback_00446f80();
 }
-
 // FUNCTION: LEMBALL 0x004021a3
 void LEMBALL_FASTCALL RecenterFramedScreenIfNeededThunk(void* pObject)
 
 {
 	((GameFramedScreenBase*) pObject)->RecenterIfNeeded();
 }
-
 // FUNCTION: LEMBALL 0x00402252
 void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBaseThunk(void* pObject, int nUnusedEdx, void* pFrameArgument)
 
 {
 	RefreshAndDrawFramedScreenBase(pObject, nUnusedEdx, pFrameArgument);
 }
-
 // FUNCTION: LEMBALL 0x004022de
 void* LEMBALL_FASTCALL DeleteAdjustedFramedScreenBaseThunk(void* pObject, int nUnusedEdx, int fDelete)
 {
 	return DeleteAdjustedFramedScreenBase(pObject, nUnusedEdx, fDelete);
 }
-
 // FUNCTION: LEMBALL 0x004023a1
 void LEMBALL_FASTCALL DestroyIntroSequenceScreenThunk(void* pObject)
 {
 	DestroyIntroSequenceScreen(pObject);
 }
-
 // FUNCTION: LEMBALL 0x0040242d
 int LEMBALL_FASTCALL HandleMainMenuInputThunk(void* pObject, int nUnusedEdx, void* pEvent)
 
 {
 	return HandleMainMenuInput(pObject, nUnusedEdx, pEvent);
 }
-
-void LEMBALL_FASTCALL WindowOwnerSlot38NoopThunk(VS_WindowOwnerBase* pOwner)
-{
-	pOwner->VS_WindowOwnerBase::ReservedWindowOwnerSlot38();
-}
-
 // FUNCTION: LEMBALL 0x00402595
 void* LEMBALL_FASTCALL DeleteMainMenuScreenThunk(void* pObject, int nUnusedEdx, int fDelete)
 
 {
 	return DeleteMainMenuScreen(pObject, nUnusedEdx, fDelete);
 }
-
 // FUNCTION: LEMBALL 0x004025c7
 void LEMBALL_FASTCALL ActivateFramedScreenBaseThunk(void* pScreen)
 {
 	ActivateFramedScreenBase(pScreen);
 }
-
 // FUNCTION: LEMBALL 0x0040264e
 void LEMBALL_FASTCALL DrawFramedScreenBaseThunk(void* pObject)
 {
 	DrawFramedScreenBase(pObject);
 }
-
 // FUNCTION: LEMBALL 0x004026bc
 void LEMBALL_FASTCALL MainMenuSlot18Thunk(void* pObject)
 {
 	(void) pObject;
 	noop_screen_callback_00446f70();
 }
-
-void LEMBALL_FASTCALL WindowOwnerSlot18NoopThunk(void* pOwner)
-{
-	((VS_WindowOwnerBase*) pOwner)->VS_WindowOwnerBase::ReservedWindowOwnerSlot18();
-}
-
-void LEMBALL_FASTCALL WindowOwnerSlot39NoopThunk(VS_WindowOwnerBase* pOwner)
-{
-	pOwner->VS_WindowOwnerBase::ReservedWindowOwnerSlot39();
-}
-
 // STUB: LEMBALL 0x00402838
 void GameVariantResourceEntryManager::SwitchVariantResourceEntryModeThunk(unsigned short nMask, void* pBundle)
 {
 	SwitchVariantResourceEntryMode(nMask, pBundle);
 }
-
 // FUNCTION: LEMBALL 0x00402a68
 int LEMBALL_FASTCALL GetFramedScreenTransitionStatusThunk(void* pObject)
 
 {
 	return poll_intro_sequence_screen_transition_status(pObject);
 }
-
 // FUNCTION: LEMBALL 0x00402a9f
 void WindowOwnerSlot17NoopThunk(void)
 {
 	noop_window_owner_callback_0043a530();
 }
-
 // FUNCTION: LEMBALL 0x00402aa4
 void LEMBALL_FASTCALL RequestIntroSequenceScreenTransitionThunk(char* pScreen)
 {
 	RequestIntroSequenceScreenTransition(pScreen);
 }
-
 // FUNCTION: LEMBALL 0x00402ac7
 void LEMBALL_FASTCALL FramedScreenSlot20Thunk(void* pObject)
 {
 	(void) pObject;
 	noop_screen_callback_00446f90();
 }
-
 // FUNCTION: LEMBALL 0x00402c02
 void LEMBALL_FASTCALL MainMenuSlot05Thunk(void* pObject, int nUnusedEdx, void* pArgument)
 
@@ -1702,83 +2214,62 @@ void LEMBALL_FASTCALL MainMenuSlot05Thunk(void* pObject, int nUnusedEdx, void* p
 	(void) nUnusedEdx;
 	noop_render_entry_callback_004393a0(pArgument);
 }
-
 // FUNCTION: LEMBALL 0x00402c3e
 int LEMBALL_FASTCALL HandleIntroSequenceInputThunk(void* pObject, int, short* pEvent)
 {
 	return ((GameIntroSequenceScreen*) pObject)->HandleInput(pEvent);
 }
-
 // FUNCTION: LEMBALL 0x00402e05
 void LEMBALL_FASTCALL RefreshIntroSequenceMediaPathThunk(void* pObject)
 {
 	((GameIntroSequenceScreen*) pObject)->RefreshMediaPath();
 }
-
-void LEMBALL_FASTCALL CacheCurrentContextWindowThunk(VS_WindowOwnerBase* pOwner)
-{
-	pOwner->VS_WindowOwnerBase::CacheCurrentContextWindow();
-}
-
 // FUNCTION: LEMBALL 0x0040308a
 void LEMBALL_FASTCALL MainMenuSlot20Thunk(void* pObject)
 {
 	(void) pObject;
 	noop_main_menu_screen_hook();
 }
-
 // FUNCTION: LEMBALL 0x0040310c
 int LEMBALL_FASTCALL GetFramedScreenRequestedModeThunk(void* pObject)
 
 {
 	return get_intro_sequence_screen_requested_mode(pObject);
 }
-
 // FUNCTION: LEMBALL 0x0040313e
 void LEMBALL_FASTCALL MainMenuSlot09Thunk(void* pObject)
 {
 	(void) pObject;
 	noop_render_entry_callback_004393d0();
 }
-
 // FUNCTION: LEMBALL 0x0040321f
 void LEMBALL_FASTCALL MainMenuSlot13Thunk(void* pObject)
 {
 	(void) pObject;
 	noop_render_entry_callback_004393f0();
 }
-
 // FUNCTION: LEMBALL 0x00403247
 void LEMBALL_FASTCALL FramedScreenSlot14Thunk(void* pObject)
 {
 	(void) pObject;
 	update_options_screen();
 }
-
 // FUNCTION: LEMBALL 0x004032ec
 void LEMBALL_FASTCALL SetFramedScreenSizeThunk(void* pObject, int nUnusedEdx, short* paSize)
 
 {
 	((GameFramedScreenBase*) pObject)->SetScreenSize(paSize);
 }
-
-void LEMBALL_FASTCALL WindowOwnerSlot20NoopThunk(VS_WindowOwnerBase* pOwner)
-{
-	pOwner->VS_WindowOwnerBase::ReservedWindowOwnerSlot20();
-}
-
 // FUNCTION: LEMBALL 0x00403422
 void LEMBALL_FASTCALL SelectIntroSequenceMediaPathThunk(void* pOwner)
 {
 	SelectIntroSequenceMediaPath(pOwner);
 }
-
 // FUNCTION: LEMBALL 0x0040359e
 void GameIntroSequenceMediaState::ConfigureOwnerThunk(void* pScreen, void* pPrimaryContext, int fSkipVariant)
 {
 	ConfigureOwner(pScreen, pPrimaryContext, fSkipVariant);
 }
-
 // STUB: LEMBALL 0x004035a8
 void* LEMBALL_FASTCALL ConstructFramedScreenBaseFieldsThunk(void* pObject,
 															int,
@@ -1803,38 +2294,32 @@ void* LEMBALL_FASTCALL ConstructFramedScreenBaseFieldsThunk(void* pObject,
 										  nOptionA,
 										  nOptionB);
 }
-
 // FUNCTION: LEMBALL 0x004035d0
 void* LEMBALL_FASTCALL DeleteAdjustedMainMenuScreenThunk(void* pObject, int nUnusedEdx, int fDelete)
 {
 	return DeleteAdjustedMainMenuScreen(pObject, nUnusedEdx, fDelete);
 }
-
 // FUNCTION: LEMBALL 0x0040367f
 void LEMBALL_FASTCALL DestroyMainMenuWidgetsThunk(void* pObject)
 {
 	DestroyMainMenuWidgets(pObject);
 }
-
 // FUNCTION: LEMBALL 0x004037ab
 void IgnoreIntroSequenceMediaNotificationThunk(void)
 {
 	IgnoreIntroSequenceMediaNotification();
 }
-
 // FUNCTION: LEMBALL 0x004037e7
 void* LEMBALL_FASTCALL DeleteFramedScreenBaseThunk(void* pObject, int nUnusedEdx, int fDelete)
 {
 	return DeleteFramedScreenBase(pObject, nUnusedEdx, fDelete);
 }
-
 // FUNCTION: LEMBALL 0x0040384b
 void LEMBALL_FASTCALL NoopIntroSequenceScreenHookThunk(void* pObject)
 {
 	(void) pObject;
 	noop_intro_sequence_screen_hook();
 }
-
 // FUNCTION: LEMBALL 0x00445420
 void* GameFramedScreenBase::ConstructFramedScreenBaseFields(void* pPrimaryContext,
 															void* pRenderContext,
@@ -1914,7 +2399,6 @@ void* GameFramedScreenBase::ConstructFramedScreenBaseFields(void* pPrimaryContex
 	pScreen->m_dwConstructionTimeBC = timeGetTime();
 	return this;
 }
-
 // FUNCTION: LEMBALL 0x004455f0
 void LEMBALL_FASTCALL ActivateFramedScreenBase(void* pObject)
 {
@@ -1992,7 +2476,6 @@ void LEMBALL_FASTCALL ActivateFramedScreenBase(void* pObject)
 		}
 	}
 }
-
 // FUNCTION: LEMBALL 0x00445790
 void LEMBALL_FASTCALL DestroyFramedScreenBase(void* pObject)
 {
@@ -2043,7 +2526,6 @@ void LEMBALL_FASTCALL DestroyFramedScreenBase(void* pObject)
 	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_RenderQueueNodeVtableSlots;
 	RestorePackagedSpriteRenderEntryVtableA(pScreen);
 }
-
 // FUNCTION: LEMBALL 0x004458e0
 void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroup(void* pObject)
 
@@ -2096,7 +2578,6 @@ void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroup(void* pObject)
 	}
 	SetStatusIndicatorActive(g_pArrowCursorStatusIndicatorRenderClient, 0, 1);
 }
-
 // FUNCTION: LEMBALL 0x00445a40
 void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(void* pObject, int, void*)
 
@@ -2129,7 +2610,6 @@ void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(void* pObject, int, void*)
 	DrawFramedScreenBaseThunk(pScreen);
 	pScreen->m_fFrameDirty330 = 0;
 }
-
 // FUNCTION: LEMBALL 0x00445ac0
 void LEMBALL_FASTCALL DrawFramedScreenBase(void* pObject)
 {
@@ -2179,7 +2659,6 @@ void LEMBALL_FASTCALL DrawFramedScreenBase(void* pObject)
 		}
 	}
 }
-
 // FUNCTION: LEMBALL 0x00445c10
 void LEMBALL_FASTCALL DrawFramedScreenFrameLayer(void* pObject)
 {
@@ -2236,7 +2715,6 @@ void LEMBALL_FASTCALL DrawFramedScreenFrameLayer(void* pObject)
 		pScreen->m_nAppliedPaletteResourceIdB8 = pScreen->m_nPaletteResourceIdB4;
 	}
 }
-
 // FUNCTION: LEMBALL 0x00445e70
 void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(void* pObject)
 {
@@ -2256,7 +2734,6 @@ void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(void* pObject)
 		pScreen->m_fSelectorDirty360 = 1;
 	}
 }
-
 // FUNCTION: LEMBALL 0x00445ed0
 void LEMBALL_FASTCALL LoadFramedScreenFrameResources(void* pObject)
 {
@@ -2289,7 +2766,6 @@ void LEMBALL_FASTCALL LoadFramedScreenFrameResources(void* pObject)
 			->LoadListResourceIntoSlot(pScreen->m_nMappedListRemapResourceId384);
 	}
 }
-
 // FUNCTION: LEMBALL 0x00445fe0
 void GameFramedScreenBase::ReleaseFrameResources(void)
 {
@@ -2310,7 +2786,6 @@ void GameFramedScreenBase::ReleaseFrameResources(void)
 		->ReleaseVariantRenderResource(pScreen->m_nFrameResourceId390);
 	pScreen->m_fFrameResourcesLoaded9C = 0;
 }
-
 // FUNCTION: LEMBALL 0x00446050
 void LEMBALL_FASTCALL EmitFramedScreenOverlayVariantEntry(void* pObject)
 {
@@ -2329,7 +2804,6 @@ void LEMBALL_FASTCALL EmitFramedScreenOverlayVariantEntry(void* pObject)
 											 0);
 	}
 }
-
 // FUNCTION: LEMBALL 0x004460a0
 void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(void* pObject)
 
@@ -2343,12 +2817,12 @@ void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(void* pObject)
 	}
 	pScreen->m_iPackagedEntry36C = 0;
 }
-
+// FUNCTION: LEMBALL 0x004460d0
 void GameFramedScreenBase::EmitScreenFrameRect(short x, short y, short cx, short cy)
 {
 	EmitTiledScreenFrameRect(GameScreenFrameRect(x, y, cx, cy));
 }
-
+// FUNCTION: LEMBALL 0x00446110
 void GameFramedScreenBase::EmitTiledScreenFrameRect(GameScreenFrameRect Rect)
 {
 	GameFramedScreenBase* pScreen;
@@ -2462,7 +2936,6 @@ void GameFramedScreenBase::EmitTiledScreenFrameRect(GameScreenFrameRect Rect)
 											 &pScreen->m_pFrameSelectorVtable350,
 											 0);
 }
-
 // FUNCTION: LEMBALL 0x00446480
 int GameFramedScreenQueueNode::HandleEvent(void* pEvent)
 
@@ -2481,7 +2954,6 @@ int GameFramedScreenQueueNode::HandleEvent(void* pEvent)
 	}
 	return 1;
 }
-
 // FUNCTION: LEMBALL 0x004464d0
 void GameFramedScreenBase::UpdateRuntime(void)
 {
@@ -2520,7 +2992,6 @@ void GameFramedScreenBase::UpdateRuntime(void)
 	}
 	((GameFramedScreenVirtualInterface*) pScreen)->UpdateDerivedScreen();
 }
-
 // FUNCTION: LEMBALL 0x004466e0
 void GameFramedScreenBase::RecenterIfNeeded(void)
 {
@@ -2533,7 +3004,6 @@ void GameFramedScreenBase::RecenterIfNeeded(void)
 			(VS_XYPair*) pPrimaryContext->ComputePrimaryContextCenteredScreenRectThunk(aRect, -1, -1));
 	}
 }
-
 // FUNCTION: LEMBALL 0x00446fd0
 void GameFramedScreenBase::SetScreenSize(short* paSize)
 {
@@ -2541,7 +3011,6 @@ void GameFramedScreenBase::SetScreenSize(short* paSize)
 	m_cyScreen37E = paSize[1];
 	RefreshFramedScreenFrameResourcesThunk(this);
 }
-
 // FUNCTION: LEMBALL 0x00447000
 void* LEMBALL_FASTCALL DeleteFramedScreenBase(void* pObject, int, int fDelete)
 {
@@ -2551,19 +3020,16 @@ void* LEMBALL_FASTCALL DeleteFramedScreenBase(void* pObject, int, int fDelete)
 	}
 	return pObject;
 }
-
 // FUNCTION: LEMBALL 0x004472f0
 void* LEMBALL_FASTCALL DeleteAdjustedFramedScreenBase(void* pObject, int nUnusedEdx, int fDelete)
 {
 	return DeleteFramedScreenBase((char*) pObject - 4, nUnusedEdx, fDelete);
 }
-
 // FUNCTION: LEMBALL 0x00447530
 void GameIntroSequenceScreen::RefreshMediaPath(void)
 {
 	SelectIntroSequenceMediaPathThunk(m_abMediaOwner3BC);
 }
-
 // FUNCTION: LEMBALL 0x004475a0
 void GameIntroSequenceScreen::PollPlaybackCompletion(void)
 {
@@ -2573,7 +3039,6 @@ void GameIntroSequenceScreen::PollPlaybackCompletion(void)
 		m_fPlaybackStarted3B8 = 0;
 	}
 }
-
 // FUNCTION: LEMBALL 0x004475e0
 void LEMBALL_FASTCALL RequestIntroSequenceScreenTransition(char* pScreen)
 {
@@ -2586,7 +3051,6 @@ void LEMBALL_FASTCALL RequestIntroSequenceScreenTransition(char* pScreen)
 		((IntroMediaOwnerInterface*) (pScreen + 0x3bc))->Stop();
 	}
 }
-
 // FUNCTION: LEMBALL 0x00447610
 int GameIntroSequenceScreen::HandleInput(short* pEvent)
 {
@@ -2610,7 +3074,6 @@ int GameIntroSequenceScreen::HandleInput(short* pEvent)
 		return 0;
 	}
 }
-
 // FUNCTION: LEMBALL 0x004476b0
 void GameIntroSequenceScreen::UpdatePlayback(void)
 {
@@ -2651,7 +3114,6 @@ void GameIntroSequenceScreen::UpdatePlayback(void)
 	((VsGdiAnimWindowOwner*) pScreen->m_abMediaOwner3BC)->ResumeEmbeddedMciWindowPlayback();
 	pScreen->m_nPlaybackDelay3B4 = -1;
 }
-
 // FUNCTION: LEMBALL 0x004477b0
 void GameIntroSequenceMediaState::ConfigureOwner(void* pScreen, void* pPrimaryContext, int fSkipVariant)
 {
@@ -2659,7 +3121,6 @@ void GameIntroSequenceMediaState::ConfigureOwner(void* pScreen, void* pPrimaryCo
 	m_pScreenBC = pScreen;
 	m_pPrimaryContextC0 = pPrimaryContext;
 }
-
 // FUNCTION: LEMBALL 0x004477e0
 void LEMBALL_FASTCALL SelectIntroSequenceMediaPath(void* pOwner)
 {
@@ -2683,77 +3144,29 @@ void LEMBALL_FASTCALL SelectIntroSequenceMediaPath(void* pOwner)
 		break;
 	}
 }
-
 // FUNCTION: LEMBALL 0x00447830
 void LEMBALL_FASTCALL HandleIntroSequenceMediaCompletion(void* pOwner)
 {
 	((IntroMediaOwnerInterface*) pOwner)->Stop();
 	RequestIntroSequenceScreenTransitionThunk(*(char**) ((char*) pOwner + 0xbc));
 }
-
 // FUNCTION: LEMBALL 0x00447960
 void WINAPI IgnoreIntroSequenceMediaStateChange(int)
 {
 }
-
 // FUNCTION: LEMBALL 0x00447970
 void WINAPI IgnoreIntroSequenceMediaPositionChange(int)
 {
 }
-
 // FUNCTION: LEMBALL 0x00447980
 void IgnoreIntroSequenceMediaNotification(void)
 {
 }
-
 // FUNCTION: LEMBALL 0x00447990
 int LEMBALL_FASTCALL GetIntroSequenceMediaNotifyFlags(void*)
 {
 	return 0x40000001;
 }
-
-unsigned int GamePaintballSequenceMediaState::InitializeVariant(void* pScreen,
-																void* pPrimaryContext,
-																int fSecondVariant)
-{
-	unsigned int uRandom;
-	char* pOwner;
-
-	pOwner = (char*) this;
-	*(void**) (pOwner + 0xbc) = pScreen;
-	*(void**) (pOwner + 0xc0) = pPrimaryContext;
-	*(int*) (pOwner + 0xc4) = fSecondVariant;
-	*(int*) (pOwner + 0xd4) = 0;
-	*(int*) (pOwner + 0xd0) = 0;
-	if (fSecondVariant != 0) {
-		*(int*) (pOwner + 0xc8) = 0x11e;
-		*(int*) (pOwner + 0xcc) = 0x126;
-	}
-	else {
-		*(int*) (pOwner + 0xc8) = 0x121;
-		*(int*) (pOwner + 0xcc) = 0x129;
-	}
-	uRandom = (*(unsigned int*) g_pSessionRandomState * 0x29U + 0x1fU) & 0x7fffffU;
-	*(unsigned int*) g_pSessionRandomState = uRandom;
-	*(unsigned int*) (pOwner + 0xd0) = uRandom % 3U;
-	return uRandom / 3U;
-}
-
-void GamePaintballSequenceMediaState::LoadVariant(int fCompactLayout)
-{
-	char* pOwner;
-	int nBaseResource;
-
-	pOwner = (char*) this;
-	if (fCompactLayout == 0) {
-		nBaseResource = *(int*) (pOwner + 0xcc);
-	}
-	else {
-		nBaseResource = *(int*) (pOwner + 0xc8);
-	}
-	UpdateMediaPathFromListResource(nBaseResource + *(int*) (pOwner + 0xd0));
-}
-
 // FUNCTION: LEMBALL 0x00448300
 void LEMBALL_FASTCALL InitializeMainMenuWidgets(void* pObject)
 {
@@ -2881,7 +3294,6 @@ void LEMBALL_FASTCALL InitializeMainMenuWidgets(void* pObject)
 	(*ppSelectorManager)->InitializeCurrentState(0);
 	(*ppSelectorManager)->InitializeChildContextThunk();
 }
-
 // FUNCTION: LEMBALL 0x00448540
 void LEMBALL_FASTCALL DestroyMainMenuWidgets(void* pObject)
 {
@@ -2892,7 +3304,6 @@ void LEMBALL_FASTCALL DestroyMainMenuWidgets(void* pObject)
 		((GameMainMenuSelectorManagerInterface*) pScreen->m_pSelectorManager334)->Delete((void*) 1);
 	}
 }
-
 // FUNCTION: LEMBALL 0x00448560
 void LEMBALL_FASTCALL DestroyMainMenuScreen(void* pObject)
 {
@@ -2933,7 +3344,6 @@ void LEMBALL_FASTCALL DestroyMainMenuScreen(void* pObject)
 	}
 	DestroyFramedScreenBaseThunk00402081(pScreen);
 }
-
 // FUNCTION: LEMBALL 0x00448620
 int LEMBALL_FASTCALL HandleMainMenuInput(void* pObject, int, void* pEvent)
 
@@ -2992,7 +3402,6 @@ int LEMBALL_FASTCALL HandleMainMenuInput(void* pObject, int, void* pEvent)
 	}
 	return 0;
 }
-
 // FUNCTION: LEMBALL 0x00448800
 void LEMBALL_FASTCALL UpdateMainMenuScreen(void* pObject)
 {
@@ -3029,7 +3438,6 @@ void LEMBALL_FASTCALL UpdateMainMenuScreen(void* pObject)
 		g_fNextMainMenuTimeoutIsTitle = 0;
 	}
 }
-
 // FUNCTION: LEMBALL 0x00448a70
 void* LEMBALL_FASTCALL DeleteMainMenuScreen(void* pObject, int, int fDelete)
 
@@ -3040,13 +3448,11 @@ void* LEMBALL_FASTCALL DeleteMainMenuScreen(void* pObject, int, int fDelete)
 	}
 	return pObject;
 }
-
 // FUNCTION: LEMBALL 0x00448aa0
 void* LEMBALL_FASTCALL DeleteAdjustedMainMenuScreen(void* pObject, int nUnusedEdx, int fDelete)
 {
 	return DeleteMainMenuScreen((char*) pObject - 4, nUnusedEdx, fDelete);
 }
-
 // FUNCTION: LEMBALL 0x00448ab0
 void* LEMBALL_FASTCALL
 ConstructFunctionalOptionsScreen(void* pObject, int, void* pPrimaryContext, void* pRenderContext, short* paSize)
@@ -3084,7 +3490,6 @@ ConstructFunctionalOptionsScreen(void* pObject, int, void* pPrimaryContext, void
 	ActivateFramedScreenBase(pScreen);
 	return pScreen;
 }
-
 // FUNCTION: LEMBALL 0x00448ba0
 void LEMBALL_FASTCALL InitializeOptionsScreenWidgets(void* pObject)
 {
@@ -3183,7 +3588,6 @@ void LEMBALL_FASTCALL InitializeOptionsScreenWidgets(void* pObject)
 	pManager->InitializeCurrentState(0);
 	pManager->InitializeChildContextThunk();
 }
-
 // FUNCTION: LEMBALL 0x00448dc0
 void LEMBALL_FASTCALL ReleaseOptionsScreenWidgets(void* pObject)
 {
@@ -3194,7 +3598,6 @@ void LEMBALL_FASTCALL ReleaseOptionsScreenWidgets(void* pObject)
 		((GameMainMenuSelectorManagerInterface*) pScreen->m_pSelectorManager334)->Delete((void*) 1);
 	}
 }
-
 // FUNCTION: LEMBALL 0x00448ee0
 int LEMBALL_FASTCALL HandleOptionsScreenInput(void* pObject, int, void* pEvent)
 {
@@ -3251,45 +3654,8 @@ int LEMBALL_FASTCALL HandleOptionsScreenInput(void* pObject, int, void* pEvent)
 	}
 	return 0;
 }
-
-__inline static void LEMBALL_FASTCALL DestroyOptionsScreen(GameOptionsScreenView* pScreen)
-{
-	pScreen->SetScreenVtable(g_GAME_OptionsScreenVtable);
-	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_OptionsQueueVtable;
-	*(void***) pScreen->m_abVariantRenderManager14 = g_GAME_MainMenuCallbackVtable;
-	if (pScreen->m_fCompactLayout32C == 0) {
-		g_fZoomedViewportEnabled = pScreen->m_fZoomDisabled398 == 0;
-	}
-	g_fSkipStartupSequence = pScreen->m_fSkipStartupSequence3A4;
-	((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)
-		->SetVariantResourceEffectsEnabledThunk(g_nOptionsEffectsSliderValue);
-	((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)
-		->SetVariantResourceMusicEnabled(g_nOptionsMusicSliderValue);
-	g_fMusicEnabled = g_nOptionsMusicSliderValue;
-	g_fEffectsEnabled = g_nOptionsEffectsSliderValue;
-	if (g_fMusicOptionAvailable == 0) {
-		g_fMusicEnabled = 0;
-	}
-	if (g_fEffectsOptionAvailable == 0) {
-		g_fEffectsEnabled = 0;
-	}
-	if (g_fZoomOptionAvailable == 0) {
-		g_fZoomedViewportEnabled = 0;
-	}
-	if (g_fStartupAnimationsEnabled == 0) {
-		g_fSkipStartupSequence = 1;
-	}
-	((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)
-		->SetVariantResourceEffectsEnabledThunk(g_nOptionsEffectsSliderValue);
-	((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)
-		->SetVariantResourceMusicEnabled(g_nOptionsMusicSliderValue);
-	if (pScreen->m_fFrameResourcesLoaded9C != 0) {
-		ReleaseOptionsScreenWidgets(pScreen);
-	}
-	DestroyFramedScreenBaseThunk00402081(pScreen);
-}
-
-static void* LEMBALL_FASTCALL DeleteOptionsScreen(void* pObject, int, int fDelete)
+// FUNCTION: LEMBALL 0x00449170
+void* LEMBALL_FASTCALL DeleteOptionsScreen(void* pObject, int, int fDelete)
 {
 	DestroyOptionsScreen((GameOptionsScreenView*) pObject);
 	if ((fDelete & 1) != 0) {
@@ -3297,12 +3663,584 @@ static void* LEMBALL_FASTCALL DeleteOptionsScreen(void* pObject, int, int fDelet
 	}
 	return pObject;
 }
-
-static void* LEMBALL_FASTCALL DeleteAdjustedOptionsScreen(void* pObject, int nUnusedEdx, int fDelete)
+// FUNCTION: LEMBALL 0x004491a0
+void* LEMBALL_FASTCALL DeleteAdjustedOptionsScreen(void* pObject, int nUnusedEdx, int fDelete)
 {
 	return DeleteOptionsScreen((char*) pObject - 4, nUnusedEdx, fDelete);
 }
+// FUNCTION: LEMBALL 0x004491b0
+void* LEMBALL_FASTCALL
+ConstructFunctionalLevelSelectionScreen(void* pObject, int, void* pPrimaryContext, void* pRenderContext, short* paSize)
+{
+	GameLevelSelectionScreenView* pScreen;
 
+	pScreen = (GameLevelSelectionScreenView*) pObject;
+	pScreen->ConstructFramedScreenBaseFields(pPrimaryContext, pRenderContext, paSize, 4, 0x32, 200, 0, 0x28, 0x30);
+	InitializeFramedScreenRenderChildEntry(pScreen->m_abRenderChild398);
+	InitializeFunctionalLevelSelectionVtable();
+	pScreen->SetScreenVtable(g_GAME_FunctionalLevelSelectionVtable);
+	pScreen->m_fDrawFrameA8 = 1;
+	*(void***) pScreen->m_abVariantRenderManager14 = g_GAME_MainMenuCallbackVtable;
+	pScreen->m_fTileBackgroundAC = 1;
+	pScreen->m_fDrawForegroundB0 = 1;
+	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_MainMenuQueueVtable;
+	ActivateFramedScreenBase(pScreen);
+	pScreen->m_pSelector3C4 =
+		ConstructLevelSelectionFrameSelector(pScreen->m_abVariantRenderManager14, pScreen->m_nResourceId3D8);
+	pScreen->m_pSelector3C0 =
+		ConstructLevelSelectionFrameSelector(pScreen->m_abVariantRenderManager14, pScreen->m_nResourceId3DC);
+	pScreen->m_pSelector3C8 =
+		ConstructLevelSelectionFrameSelector(pScreen->m_abVariantRenderManager14, pScreen->m_nResourceId3E0);
+	InitializeFunctionalLevelSelectionPaletteRemap(pScreen);
+	return pScreen;
+}
+// FUNCTION: LEMBALL 0x00449370
+void LEMBALL_FASTCALL InitializeFunctionalLevelSelectionResources(void* pObject)
+{
+	GameLevelSelectionScreenView* pScreen;
+	const int* pLayout;
+	const int* pBackResources;
+	const int* pPlayResources;
+	unsigned char* pForegroundEntry;
+	unsigned char* pLevelEntry;
+	void* pBitmap;
+	void* pButtonManager;
+	int nResource0;
+	int nResource1;
+	int nResource2;
+
+	pScreen = (GameLevelSelectionScreenView*) pObject;
+	if (pScreen->m_fCompactLayout32C == 1) {
+		pLayout = g_GAME_LevelSelectionLayoutCompact;
+		pBackResources = g_GAME_LevelSelectionBackResourcesCompact;
+		pPlayResources = g_GAME_LevelSelectionPlayResourcesCompact;
+		pBitmap = LoadBitmapResource(0x13e);
+		nResource0 = 0x180;
+		nResource1 = 0x181;
+		nResource2 = 0x182;
+		pScreen->m_nTimedVariantResourceId394 = 0x17c;
+		pScreen->m_pPreviousResourceIds3E8 = g_GAME_LevelSelectionPreviousResourcesCompact;
+		pScreen->m_pNextResourceIds3E4 = g_GAME_LevelSelectionNextResourcesCompact;
+	}
+	else {
+		pLayout = g_GAME_LevelSelectionLayoutStandard;
+		pBackResources = g_GAME_LevelSelectionBackResourcesStandard;
+		pPlayResources = g_GAME_LevelSelectionPlayResourcesStandard;
+		pBitmap = LoadBitmapResource(0x133);
+		nResource0 = 0x153;
+		nResource1 = 0x154;
+		nResource2 = 0x155;
+		pScreen->m_nTimedVariantResourceId394 = 0x14f;
+		pScreen->m_pPreviousResourceIds3E8 = g_GAME_LevelSelectionPreviousResourcesStandard;
+		pScreen->m_pNextResourceIds3E4 = g_GAME_LevelSelectionNextResourcesStandard;
+	}
+	*(void**) ((char*) pScreen + 0x3bc) = pBitmap;
+	*(const int**) ((char*) pScreen + 0x3d4) = pLayout;
+	*(int*) ((char*) pScreen + 0x3d8) = nResource0;
+	*(int*) ((char*) pScreen + 0x3dc) = nResource1;
+	*(int*) ((char*) pScreen + 0x3e0) = nResource2;
+	pScreen->m_xOverlay380 = (short) pLayout[16] + (short) pLayout[14];
+	pScreen->m_yOverlay382 = (short) pLayout[15] + (short) pLayout[17];
+	pForegroundEntry = pScreen->m_abRenderEntryGroupC8 + 0x14;
+	*(short*) (pForegroundEntry + 0) = (short) pLayout[8];
+	*(short*) (pForegroundEntry + 2) = (short) pLayout[9];
+	*(void**) (pForegroundEntry + 0x0c) = pScreen->m_pForegroundBitmapC0;
+	*(int*) (pForegroundEntry + 0x10) = 0x800;
+	*(int*) (pForegroundEntry + 0x14) = 0;
+	pLevelEntry = pScreen->m_abRenderChild398 + 4;
+	*(short*) (pLevelEntry + 0) = (short) pLayout[14];
+	*(short*) (pLevelEntry + 2) = (short) pLayout[15];
+	*(void**) (pLevelEntry + 0x0c) = pBitmap;
+	*(int*) (pLevelEntry + 0x10) = 0x800;
+	*(int*) (pLevelEntry + 0x14) = 0;
+
+	LoadVariantRenderResource(pScreen->m_abVariantRenderManager14, nResource0);
+	LoadVariantRenderResource(pScreen->m_abVariantRenderManager14, nResource1);
+	LoadVariantRenderResource(pScreen->m_abVariantRenderManager14, pScreen->m_nTimedVariantResourceId394);
+	LoadVariantRenderResource(pScreen->m_abVariantRenderManager14, nResource2);
+
+	pScreen->m_nReserved47C = 0;
+	pScreen->m_fNextLocked480 = 0;
+	pScreen->m_fPreviousLocked484 = 0;
+	pButtonManager = AllocateVSMemBlock(0x14c);
+	if (pButtonManager != 0) {
+		pScreen->m_pQueuedVariantManager338 = ConstructQueuedVariantChildSlotManager(pButtonManager,
+																					 0,
+																					 pScreen->m_pPrimaryContext84,
+																					 pScreen->m_pRenderContext88,
+																					 4,
+																					 pScreen->m_fCompactLayout32C,
+																					 0);
+	}
+	else {
+		pScreen->m_pQueuedVariantManager338 = 0;
+	}
+	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
+								 0,
+								 pLayout[0],
+								 pLayout[1],
+								 pPlayResources,
+								 1,
+								 0,
+								 0,
+								 0,
+								 &pScreen->m_nReserved47C,
+								 (int) 0xacef000dU);
+	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
+								 0,
+								 pLayout[2],
+								 pLayout[3],
+								 pBackResources,
+								 1,
+								 0,
+								 0,
+								 0,
+								 &pScreen->m_nReserved47C,
+								 (int) 0xacef000cU);
+	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
+								 0,
+								 pLayout[4],
+								 pLayout[5],
+								 pScreen->m_pPreviousResourceIds3E8,
+								 1,
+								 0,
+								 1,
+								 0,
+								 &pScreen->m_fPreviousLocked484,
+								 (int) 0xacef000fU);
+	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
+								 0,
+								 pLayout[6],
+								 pLayout[7],
+								 pScreen->m_pNextResourceIds3E4,
+								 1,
+								 0,
+								 1,
+								 0,
+								 &pScreen->m_fNextLocked480,
+								 (int) 0xacef000eU);
+	SelectQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338, 0, 0);
+	InitializeQueuedVariantChildContext(pScreen->m_pQueuedVariantManager338);
+	RefreshFunctionalLevelSelectionMetadata(pScreen);
+}
+// FUNCTION: LEMBALL 0x00449670
+void LEMBALL_FASTCALL ReleaseFunctionalLevelSelectionResources(void* pObject)
+{
+	GameFramedScreenBase* pScreen;
+	LevelVariantRenderManagerView* pVariantManager;
+
+	pScreen = (GameFramedScreenBase*) pObject;
+	pVariantManager = (LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14;
+	if (pScreen->m_pQueuedVariantManager338 != 0) {
+		typedef void*(LEMBALL_FASTCALL * DeleteProc)(void*, int, int);
+		((DeleteProc) (*(void***) pScreen->m_pQueuedVariantManager338)[1])(pScreen->m_pQueuedVariantManager338, 0, 1);
+	}
+	ReleaseTypedResourceObjectReference(*(void**) ((char*) pScreen + 0x3bc));
+	pVariantManager->ReleaseVariantRenderResource(*(int*) ((char*) pScreen + 0x3d8));
+	pVariantManager->ReleaseVariantRenderResource(*(int*) ((char*) pScreen + 0x3dc));
+	pVariantManager->ReleaseVariantRenderResource(pScreen->m_nTimedVariantResourceId394);
+	pVariantManager->ReleaseVariantRenderResource(*(int*) ((char*) pScreen + 0x3e0));
+}
+// FUNCTION: LEMBALL 0x00449750
+void LEMBALL_FASTCALL DrawFunctionalLevelSelectionFrame(void* pObject)
+{
+	GameLevelSelectionScreenView* pScreen;
+	const int* pFramePoint;
+
+	pScreen = (GameLevelSelectionScreenView*) pObject;
+	((GameMainMenuRenderEntryInterface*) pScreen->m_abRenderChild398)->AppendToQueue(pScreen->m_pRenderContext88);
+	pFramePoint = pScreen->m_pLayout3D4 + (pScreen->m_fNetworkScreen8C == 0 ? 12 : 48);
+	pScreen->EmitScreenFrameRect((short) pScreen->m_pLayout3D4[10],
+								 (short) pScreen->m_pLayout3D4[11],
+								 (short) pFramePoint[0],
+								 (short) pFramePoint[1]);
+}
+// FUNCTION: LEMBALL 0x004497b0
+void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(void* pObject)
+{
+	static const char* s_apszSkillNames[5] = {"Fun", " Tricky", "Taxing", "Mayhem", "Network"};
+	static const int s_anStatusLabelPoints[4] = {10, 13, 16, 22};
+	GameLevelSelectionScreenView* pScreen;
+	MappedListResourceTable* pMappedList;
+	void* pFontResource;
+	const char* pszTime;
+	const char* pszSkill;
+	short Point[2];
+	short Relative[2];
+	short Extent[2];
+	int cStatusLabels;
+	int i;
+	int nPack;
+
+	pScreen = (GameLevelSelectionScreenView*) pObject;
+	if (pScreen->m_fBuildingRenderEntries364 == 0) {
+		return;
+	}
+	pMappedList = (MappedListResourceTable*) pScreen->m_pMappedListResources98;
+	Relative[0] = 0;
+	Relative[1] = 0;
+	for (i = 0; i < 3; ++i) {
+		if (pScreen->m_aTitlePositions464[i][0] != -1) {
+			Point[0] = (short) pScreen->m_aTitlePositions464[i][0];
+			Point[1] = (short) pScreen->m_aTitlePositions464[i][1];
+			pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+										   Point,
+										   Relative,
+										   pScreen->m_nMappedListRemapResourceId384,
+										   pScreen->m_aszTitleLines3FC[i],
+										   0x20,
+										   0);
+		}
+	}
+
+	cStatusLabels = pScreen->m_fNetworkScreen8C != 0 ? 4 : 3;
+	for (i = 0; i < cStatusLabels; ++i) {
+		Point[0] = (short) pScreen->m_pLayout3D4[s_anStatusLabelPoints[i] * 2];
+		Point[1] = (short) pScreen->m_pLayout3D4[s_anStatusLabelPoints[i] * 2 + 1];
+		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+									   Point,
+									   Relative,
+									   pScreen->m_nMappedListRemapResourceId384,
+									   (void*) "x",
+									   0x20,
+									   0);
+	}
+
+	pszTime = pScreen->m_abTime45C;
+	if (pScreen->m_abTime45C[0] >= ':') {
+		pszTime = "Infinite";
+	}
+	Point[0] = (short) pScreen->m_pLayout3D4[22];
+	Point[1] = (short) pScreen->m_pLayout3D4[23];
+	pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+								   Point,
+								   Relative,
+								   pScreen->m_nMappedListRemapResourceId384,
+								   (void*) pszTime,
+								   0x20,
+								   0);
+	nPack = ((GameLevelProgressStateView*) g_pLevelProgressState)->m_nCurrentPack08;
+	pszSkill = s_apszSkillNames[nPack];
+	pFontResource = pMappedList->GetMappedResource(pScreen->m_nMappedListRemapResourceId384);
+	((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, pszSkill, 0x20);
+	Point[0] = (short) (pScreen->m_pLayout3D4[40] - Extent[0] / 2);
+	Point[1] = (short) pScreen->m_pLayout3D4[41];
+	pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+								   Point,
+								   Relative,
+								   pScreen->m_nMappedListRemapResourceId384,
+								   (void*) pszSkill,
+								   0x20,
+								   0);
+	if (4 < pScreen->m_cSkillStatus3F4) {
+		Point[0] = (short) pScreen->m_pLayout3D4[22];
+		Point[1] = (short) pScreen->m_pLayout3D4[53];
+		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+									   Point,
+									   Relative,
+									   pScreen->m_nMappedListRemapResourceId384,
+									   (void*) "None",
+									   0x20,
+									   0);
+	}
+}
+// FUNCTION: LEMBALL 0x00449a40
+void LEMBALL_FASTCALL DrawFunctionalLevelSelectionStatus(void* pObject)
+{
+	GameLevelSelectionScreenView* pScreen;
+	const int* pLayout;
+	short Extent[2];
+	short Point[2];
+	short Rect[4];
+	int cxFrame;
+	int x;
+	int i;
+
+	pScreen = (GameLevelSelectionScreenView*) pObject;
+	pLayout = pScreen->m_pLayout3D4;
+	Point[0] = (short) pLayout[30];
+	Point[1] = (short) pLayout[31];
+	((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
+		->EmitVariantRenderResourceEntry(Rect, Point, pScreen->m_nResourceId3D8, 0, pScreen->m_pSelector3C4, 0);
+	Point[0] = (short) pLayout[18];
+	Point[1] = (short) pLayout[19];
+	((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
+		->EmitVariantRenderResourceEntry(Rect, Point, pScreen->m_nResourceId3E0, 0, pScreen->m_pSelector3C8, 0);
+	Point[0] = (short) pLayout[24];
+	Point[1] = (short) pLayout[25];
+	((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
+		->EmitVariantRenderResourceEntry(Rect, Point, pScreen->m_nResourceId3DC, 0, pScreen->m_pSelector3C0, 0);
+
+	if (pScreen->m_fNetworkScreen8C != 0) {
+		Point[0] = (short) pLayout[42];
+		Point[1] = (short) pLayout[43];
+		((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
+			->EmitVariantRenderResourceEntry(Rect,
+											 Point,
+											 pScreen->m_nResourceId3D8,
+											 0,
+											 pScreen->m_pSelector3C4,
+											 pScreen->m_nPaletteRemap3D0);
+		GetFunctionalVariantFrameExtent(pScreen->m_abVariantRenderManager14, Extent, pScreen->m_nResourceId3D8, 0);
+		cxFrame = Extent[0];
+		x = pLayout[10] - cxFrame / 4 + pLayout[12];
+		for (i = 0; i < pScreen->m_cNetworkStatus3F0; ++i) {
+			x -= cxFrame + cxFrame / 8;
+			Point[0] = (short) x;
+			Point[1] = (short) pLayout[47];
+			((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
+				->EmitVariantRenderResourceEntry(Rect,
+												 Point,
+												 pScreen->m_nResourceId3D8,
+												 0,
+												 pScreen->m_pSelector3C4,
+												 pScreen->m_nPaletteRemap3D0);
+		}
+	}
+
+	GetFunctionalVariantFrameExtent(pScreen->m_abVariantRenderManager14, Extent, pScreen->m_nResourceId3D8, 0);
+	cxFrame = Extent[0];
+	x = pLayout[10] - cxFrame / 4 + pLayout[12];
+	for (i = 0; i < pScreen->m_cStatus3EC; ++i) {
+		x -= cxFrame + cxFrame / 8;
+		Point[0] = (short) x;
+		Point[1] = (short) pLayout[35];
+		((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
+			->EmitVariantRenderResourceEntry(Rect, Point, pScreen->m_nResourceId3D8, 0, pScreen->m_pSelector3C4, 0);
+	}
+
+	GetFunctionalVariantFrameExtent(pScreen->m_abVariantRenderManager14, Extent, pScreen->m_nResourceId3DC, 0);
+	x = pLayout[10] - pLayout[50] + pLayout[12];
+	if (pScreen->m_cSkillStatus3F4 < 5) {
+		for (i = 0; i < pScreen->m_cSkillStatus3F4; ++i) {
+			x -= Extent[0];
+			Point[0] = (short) x;
+			Point[1] = (short) pLayout[29];
+			((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
+				->EmitVariantRenderResourceEntry(Rect, Point, pScreen->m_nResourceId3DC, 0, pScreen->m_pSelector3C0, 0);
+		}
+	}
+}
+// FUNCTION: LEMBALL 0x00449d30
+int LEMBALL_FASTCALL HandleFunctionalLevelSelectionInput(void* pObject, int, void* pEvent)
+{
+	GameLevelSelectionScreenView* pScreen;
+	int nCode;
+
+	pScreen = (GameLevelSelectionScreenView*) pObject;
+	if (*(unsigned short*) pEvent != 0x0c) {
+		++*(int*) ((char*) pScreen + 0x10);
+		return 0;
+	}
+	nCode = *(int*) ((char*) pEvent + 8);
+	switch ((unsigned int) nCode) {
+	case 0xacef000cU:
+		if (pScreen->m_fNetworkScreen8C == 0) {
+			pScreen->m_nRequestedMode374 = 2;
+			pScreen->m_nTransitionStatus378 = 1;
+		}
+		else {
+			((GameBaseModeScreen*) pScreen)->QueueActiveBaseModeUserAction(2, 0);
+		}
+		return 1;
+	case 0xacef000dU:
+		if (pScreen->m_fNetworkScreen8C == 0) {
+			pScreen->m_nRequestedMode374 = 5;
+			pScreen->m_nTransitionStatus378 = 1;
+		}
+		else {
+			((GameBaseModeScreen*) pScreen)->QueueActiveBaseModeUserAction(3, 0);
+		}
+		return 1;
+	case 0xacef000eU:
+		if (pScreen->m_fNextLocked480 == 1) {
+			pScreen->m_fFrameDirty330 = 1;
+		}
+		else if (pScreen->m_fNetworkScreen8C == 0) {
+			SelectNextFunctionalLevel(pScreen);
+		}
+		else {
+			((GameBaseModeScreen*) pScreen)->QueueActiveBaseModeUserAction(0, 0);
+		}
+		return 1;
+	case 0xacef000fU:
+		if (pScreen->m_fPreviousLocked484 == 1) {
+			pScreen->m_fFrameDirty330 = 1;
+		}
+		else if (pScreen->m_fNetworkScreen8C == 0) {
+			SelectPreviousFunctionalLevel(pScreen);
+		}
+		else {
+			((GameBaseModeScreen*) pScreen)->QueueActiveBaseModeUserAction(1, 0);
+		}
+		return 1;
+	default:
+		return 0;
+	}
+}
+// FUNCTION: LEMBALL 0x00449ee0
+int LEMBALL_FASTCALL DispatchFunctionalLevelSelectionAction(void* pObject, int, int nAction)
+{
+	GameLevelSelectionScreenView* pScreen;
+
+	pScreen = (GameLevelSelectionScreenView*) pObject;
+	switch (nAction) {
+	case 0:
+		SelectNextFunctionalLevel(pScreen);
+		return 1;
+	case 1:
+		SelectPreviousFunctionalLevel(pScreen);
+		return 1;
+	case 2:
+		RequestFunctionalLevelSelectionTransitionMode2(pScreen);
+		return 1;
+	case 3:
+		RequestFunctionalLevelSelectionTransitionMode5(pScreen);
+		return 1;
+	default:
+		return 0;
+	}
+}
+// FUNCTION: LEMBALL 0x00449f40
+void LEMBALL_FASTCALL UpdateFunctionalLevelSelectionScreen(void* pObject)
+{
+	GameFramedScreenBase* pScreen;
+
+	pScreen = (GameFramedScreenBase*) pObject;
+	if (g_fStartupTestAllLevels != 0) {
+		pScreen->m_nTransitionStatus378 = 1;
+		pScreen->m_nRequestedMode374 = 5;
+	}
+}
+// FUNCTION: LEMBALL 0x00449f60
+void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(GameLevelSelectionScreenView* pScreen)
+{
+	GameLevelProgressStateView* pProgress;
+	const char* pszTitle;
+	void* pFontResource;
+	char szLine[0x20];
+	short Extent[2];
+	int iLine;
+	int iSource;
+	int iDest;
+	int fEndOfTitle;
+	int y;
+	int nPack;
+	int nCurrentLevel;
+	LevelMetadata Metadata;
+
+	pProgress = (GameLevelProgressStateView*) g_pLevelProgressState;
+	nPack = pProgress->m_nCurrentPack08;
+	nCurrentLevel = pProgress->m_anSnapshotPackCaps3C[nPack];
+	pScreen->m_fSelectorDirty360 = 1;
+	pScreen->m_fFrameDirty330 = 1;
+	ReadLevelMetadataForSkillAndLevel(nPack, nCurrentLevel, &Metadata);
+	if (pScreen->m_fNetworkScreen8C != 0) {
+		pScreen->m_cNetworkStatus3F0 = Metadata.m_cNetworkPlayers04;
+	}
+	pScreen->m_cSkillStatus3F4 = Metadata.m_cSkill00;
+	pScreen->m_cStatus3EC = Metadata.m_cPlayers02;
+	pScreen->m_nLevelTime3F8 = Metadata.m_nTimeSeconds06;
+	pszTitle = Metadata.m_szTitle08[0] == '\0' ? "UN-NAMED LEVEL" : Metadata.m_szTitle08;
+	memset(pScreen->m_aszTitleLines3FC, 0, sizeof(pScreen->m_aszTitleLines3FC));
+	for (iLine = 0; iLine < 3; ++iLine) {
+		pScreen->m_aTitlePositions464[iLine][0] = -1;
+		pScreen->m_aTitlePositions464[iLine][1] = -1;
+	}
+
+	iSource = 0;
+	y = pScreen->m_pLayout3D4[37];
+	pFontResource = ((MappedListResourceTable*) pScreen->m_pMappedListResources98)
+						->GetMappedResource(pScreen->m_nMappedListRemapResourceId384);
+	fEndOfTitle = 0;
+	for (iLine = 0; iLine < 3; ++iLine) {
+		if (fEndOfTitle == 1) {
+			break;
+		}
+		memset(szLine, 0, sizeof(szLine));
+		iDest = 0;
+		for (;;) {
+			fEndOfTitle = CopyNextFunctionalLevelTitleWord(pszTitle, szLine, &iSource, &iDest);
+			((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, szLine, 0x20);
+			if (pScreen->m_pLayout3D4[38] < Extent[0] || fEndOfTitle == 1) {
+				break;
+			}
+			szLine[iDest++] = ' ';
+			szLine[iDest] = '\0';
+		}
+		if (pScreen->m_pLayout3D4[38] < Extent[0]) {
+			fEndOfTitle = 0;
+			TrimFunctionalLevelTitleToPreviousWord(pszTitle, szLine, &iSource, &iDest);
+		}
+		strcpy(pScreen->m_aszTitleLines3FC[iLine], szLine);
+		((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, szLine, 0x20);
+		pScreen->m_aTitlePositions464[iLine][0] =
+			pScreen->m_pLayout3D4[36] + (pScreen->m_pLayout3D4[38] - Extent[0]) / 2;
+		pScreen->m_aTitlePositions464[iLine][1] = y;
+		y += Extent[1];
+	}
+	pScreen->m_abTime45C[0] = (char) (Metadata.m_nTimeSeconds06 / 60 + '0');
+	pScreen->m_abTime45C[1] = ':';
+	pScreen->m_abTime45C[2] = (char) ((Metadata.m_nTimeSeconds06 % 60) / 10 + '0');
+	pScreen->m_abTime45C[3] = (char) (Metadata.m_nTimeSeconds06 % 10 + '0');
+	pScreen->m_abTime45C[4] = '\0';
+	RefreshFunctionalLevelSelectionNavigationLocks(pScreen);
+}
+// FUNCTION: LEMBALL 0x0044a940
+void* LEMBALL_FASTCALL DeleteFunctionalLevelSelectionScreen(void* pObject, int, int fDelete)
+{
+	GameLevelSelectionScreenView* pScreen;
+
+	pScreen = (GameLevelSelectionScreenView*) pObject;
+	pScreen->SetScreenVtable(g_GAME_FunctionalLevelSelectionVtable);
+	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_MainMenuQueueVtable;
+	*(void***) pScreen->m_abVariantRenderManager14 = g_GAME_MainMenuCallbackVtable;
+	FreeVSMemBlock(pScreen->m_pSelector3C4);
+	FreeVSMemBlock(pScreen->m_pSelector3C0);
+	FreeVSMemBlock(pScreen->m_pSelector3C8);
+	ReleaseFunctionalLevelSelectionPaletteRemap(pScreen);
+	if (pScreen->m_fFrameResourcesLoaded9C != 0) {
+		ReleaseFunctionalLevelSelectionResources(pScreen);
+	}
+	RestoreLevelSelectionRenderChildEntryVtable(pScreen->m_abRenderChild398);
+	DestroyFramedScreenBaseThunk00402081(pScreen);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pScreen);
+	}
+	return pObject;
+}
+// FUNCTION: LEMBALL 0x0044c440
+int ConsumeLevelSelectionChangedFlag(void)
+{
+	if (g_fLevelSelectionChanged != 0) {
+		g_fLevelSelectionChanged = 0;
+		return 1;
+	}
+	return 0;
+}
+// FUNCTION: LEMBALL 0x0044fbd0
+void GameQueuedVariantManagerView::SetChildrenEnabled(int fEnabled)
+{
+	int i;
+	GameQueuedVariantChildView* pChild;
+	GameQueuedVariantChildView** ppChild;
+
+	m_fChildrenEnabled148 = fEnabled;
+	i = 0;
+	if (m_cChildren80 > 0) {
+		ppChild = m_apChildrenAC;
+		do {
+			pChild = *ppChild;
+			if (pChild != 0) {
+				pChild->m_fEnabled54 = fEnabled;
+				((GameGeometryOwnerRectState*) ((char*) pChild->m_pOverlay4C + 0x90))->SetEnabled(fEnabled);
+			}
+			++ppChild;
+			++i;
+		} while (i < m_cChildren80);
+	}
+}
+// FUNCTION: LEMBALL 0x00450020
 void* LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(void* pObject,
 																  int,
 																  void* pPrimaryContext,
@@ -3319,8 +4257,8 @@ void* LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(void* pObject,
 	pScreen->SetScreenVtable(g_GAME_PaintballSequenceScreenVtable);
 	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_PaintballSequenceQueueVtable;
 	*(void***) pScreen->m_abVariantRenderManager14 = g_GAME_MainMenuCallbackVtable;
-	InitializeCompositePointRectSinkEntries(pScreen->m_abPrimaryBitmapEntry398);
-	InitializeCompositePointRectSinkEntries(pScreen->m_abSecondaryBitmapEntry3E0);
+	InitializeCompositePointRectSinkEntriesThunk(pScreen->m_abPrimaryBitmapEntry398);
+	InitializeCompositePointRectSinkEntriesThunk(pScreen->m_abSecondaryBitmapEntry3E0);
 	*(short*) ((char*) pScreen + 0x4e8) = 0;
 	*(short*) ((char*) pScreen + 0x4ea) = 0;
 	*(short*) ((char*) pScreen + 0x4ec) = 0;
@@ -3330,7 +4268,7 @@ void* LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(void* pObject,
 	*(short*) ((char*) pScreen + 0x4f4) = 0;
 	*(short*) ((char*) pScreen + 0x4f6) = 0;
 	pMediaOwner = pScreen->m_abMediaOwner520;
-	ConstructResourceGeometryHelperWindowOwner(pMediaOwner);
+	((VsGdiAnimWindowOwner*) pMediaOwner)->ConstructResourceGeometryHelperWindowOwner();
 	InitializePaintballSequenceMediaOwnerVtable(pMediaOwner);
 	*(void***) pMediaOwner = g_GAME_PaintballSequenceMediaOwnerVtable;
 	pScreen->m_fSecondVariant518 = fSecondVariant;
@@ -3351,122 +4289,24 @@ void* LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(void* pObject,
 	ActivateFramedScreenBase(pScreen);
 	return pScreen;
 }
-
-__inline static void ConfigurePaintballBitmapEntry(unsigned char* pEntry, void* pBitmap, short x, short y)
+// FUNCTION: LEMBALL 0x00450460
+void LEMBALL_FASTCALL ActivatePaintballSequenceMedia(void* pObject, int)
 {
-	*(short*) (pEntry + 4) = x;
-	*(short*) (pEntry + 6) = y;
-	*(void**) (pEntry + 0x10) = pBitmap;
-	*(int*) (pEntry + 0x14) = 0x800;
-	*(int*) (pEntry + 0x18) = 0;
-}
+	unsigned char* pMediaOwner;
 
-static void LEMBALL_FASTCALL InitializePaintballSequenceResources(void* pObject)
-{
-	GamePaintballSequenceScreenView* pScreen;
-	const int* panBackResources;
-	const int* panPlayResources;
-	void* pButtonManager;
-	unsigned char* pForegroundEntry;
-	int nPrimaryResource;
-	int nSecondaryResource;
-	short x;
-
-	pScreen = (GamePaintballSequenceScreenView*) pObject;
-	if (pScreen->m_fCompactLayout32C == 0) {
-		pScreen->m_pLayout510 = g_GAME_PaintballSequenceLayoutStandard;
-		panBackResources = g_GAME_PaintballSequenceBackStandard;
-		panPlayResources = g_GAME_PaintballSequencePlayStandard;
-		nPrimaryResource = pScreen->m_fSecondVariant518 == 0 ? 0x135 : 0x134;
-		nSecondaryResource = pScreen->m_fSecondVariant518 == 0 ? 0x137 : 0x138;
-		pScreen->m_nButtonResourceId508 = pScreen->m_fSecondVariant518 == 0 ? 0x157 : 0x158;
+	pMediaOwner = (unsigned char*) pObject;
+	if (g_fSkipStartupSequence == 0) {
+		((VsGdiAnimWindowOwner*) pMediaOwner)->StartEmbeddedMciWindowPlaybackOnce();
 	}
-	else {
-		pScreen->m_pLayout510 = g_GAME_PaintballSequenceLayoutCompact;
-		panBackResources = g_GAME_PaintballSequenceBackCompact;
-		panPlayResources = g_GAME_PaintballSequencePlayCompact;
-		nPrimaryResource = pScreen->m_fSecondVariant518 == 0 ? 0x140 : 0x13f;
-		nSecondaryResource = pScreen->m_fSecondVariant518 == 0 ? 0x142 : 0x143;
-		pScreen->m_nButtonResourceId508 = pScreen->m_fSecondVariant518 == 0 ? 0x184 : 0x185;
-	}
-	pScreen->m_nPrimaryBitmapResourceId504 = nPrimaryResource;
-	pScreen->m_nSecondaryBitmapResourceId50C = nSecondaryResource;
-	pScreen->m_pPrimaryBitmap4FC = LoadBitmapResource(nPrimaryResource);
-	pScreen->m_pSecondaryBitmap500 = pScreen->m_fMediaEnabled604 == 0 ? LoadBitmapResource(nSecondaryResource) : 0;
-	pForegroundEntry = pScreen->m_abRenderEntryGroupC8 + 0x14;
-	ConfigurePaintballBitmapEntry(
-		pForegroundEntry,
-		pScreen->m_pForegroundBitmapC0,
-		(short) (pScreen->m_cxScreen37C - *(short*) ((char*) pScreen->m_pForegroundBitmapC0 + 0x48)),
-		(short) pScreen->m_pLayout510[5]);
-	if (pScreen->m_pPrimaryBitmap4FC != 0) {
-		x = (short) (pScreen->m_cxScreen37C - *(short*) ((char*) pScreen->m_pPrimaryBitmap4FC + 0x48));
-		ConfigurePaintballBitmapEntry(pScreen->m_abPrimaryBitmapEntry398,
-									  pScreen->m_pPrimaryBitmap4FC,
-									  x,
-									  (short) pScreen->m_pLayout510[7]);
-		((int*) pScreen->m_pLayout510)[6] = x;
-		((int*) pScreen->m_pLayout510)[10] = x;
-	}
-	if (pScreen->m_pSecondaryBitmap500 != 0) {
-		ConfigurePaintballBitmapEntry(pScreen->m_abSecondaryBitmapEntry3E0,
-									  pScreen->m_pSecondaryBitmap500,
-									  (short) pScreen->m_pLayout510[20],
-									  (short) pScreen->m_pLayout510[21]);
-	}
-	pScreen->m_nActionSelection514 = 0;
-	pButtonManager = AllocateVSMemBlock(0x14c);
-	if (pButtonManager != 0) {
-		pScreen->m_pQueuedVariantManager338 = ConstructQueuedVariantChildSlotManager(pButtonManager,
-																					 0,
-																					 pScreen->m_pPrimaryContext84,
-																					 pScreen->m_pRenderContext88,
-																					 2,
-																					 pScreen->m_fCompactLayout32C,
-																					 0);
-	}
-	else {
-		pScreen->m_pQueuedVariantManager338 = 0;
-	}
-	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
-								 0,
-								 pScreen->m_pLayout510[0],
-								 pScreen->m_pLayout510[1],
-								 panPlayResources,
-								 1,
-								 0,
-								 0,
-								 0,
-								 &pScreen->m_nActionSelection514,
-								 (int) 0xacef0010U);
-	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
-								 0,
-								 pScreen->m_pLayout510[2],
-								 pScreen->m_pLayout510[3],
-								 panBackResources,
-								 1,
-								 0,
-								 0,
-								 0,
-								 &pScreen->m_nActionSelection514,
-								 (int) 0xacef0011U);
-	SelectQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338, 0, 0);
-	InitializeQueuedVariantChildContext(pScreen->m_pQueuedVariantManager338);
-	if (pScreen->m_fSecondVariant518 == 0) {
-		pScreen->m_xOverlay380 = (short) (pScreen->m_pLayout510[10] + pScreen->m_pLayout510[12]);
-		pScreen->m_yOverlay382 = (short) (pScreen->m_pLayout510[11] + pScreen->m_pLayout510[13]);
-	}
-	else {
-		pScreen->m_xOverlay380 = (short) (pScreen->m_pLayout510[6] + pScreen->m_pLayout510[8]);
-		pScreen->m_yOverlay382 = (short) (pScreen->m_pLayout510[7] + pScreen->m_pLayout510[9]);
-	}
-	LayoutPaintballSequencePromptText(pScreen);
-	if (pScreen->m_fMediaEnabled604 != 0) {
-		((GamePaintballSequenceMediaState*) pScreen->m_abMediaOwner520)->LoadVariant(pScreen->m_fCompactLayout32C);
+	if (*(int*) (pMediaOwner + 0xd4) == 0) {
+		if (g_pVariantResourceEntryManager != 0) {
+			((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->SetVariantResourceMusicEnabled(1);
+		}
+		*(int*) (pMediaOwner + 0xd4) = 1;
 	}
 }
-
-static void LEMBALL_FASTCALL ReleasePaintballSequenceResources(void* pObject)
+// FUNCTION: LEMBALL 0x00450770
+void LEMBALL_FASTCALL ReleasePaintballSequenceResources(void* pObject)
 {
 	GamePaintballSequenceScreenView* pScreen;
 
@@ -3484,127 +4324,7 @@ static void LEMBALL_FASTCALL ReleasePaintballSequenceResources(void* pObject)
 		pScreen->m_pSecondaryBitmap500 = 0;
 	}
 }
-
-void LEMBALL_FASTCALL DrawPaintballSequenceFrame(void* pObject)
-{
-	GamePaintballSequenceScreenView* pScreen;
-	unsigned char* pEntry;
-
-	pScreen = (GamePaintballSequenceScreenView*) pObject;
-	pScreen->EmitScreenFrameRect((short) pScreen->m_pLayout510[14],
-								 (short) pScreen->m_pLayout510[15],
-								 (short) pScreen->m_pLayout510[16],
-								 (short) pScreen->m_pLayout510[17]);
-	pEntry = (unsigned char*) pScreen + 0x398 + pScreen->m_iRenderEntryGroup328 * 0x48;
-	((GameMainMenuRenderEntryInterface*) pEntry)->AppendToQueue(pScreen->m_pRenderContext88);
-	if (pScreen->m_pSecondaryBitmap500 != 0) {
-		((GameMainMenuRenderEntryInterface*) (pEntry + 0x24))->AppendToQueue(pScreen->m_pRenderContext88);
-	}
-}
-
-__inline static const char* GetPaintballSequencePeerName(void)
-{
-	GameNetworkLobbyRuntimeView* pRuntime;
-	int i;
-
-	if (g_pNetworkLobbyVsnetRuntime == 0 || g_nSelectedNetworkLobbyPeerId == 0) {
-		return 0;
-	}
-	pRuntime = (GameNetworkLobbyRuntimeView*) g_pNetworkLobbyVsnetRuntime;
-	for (i = 0; i < 10; ++i) {
-		if ((int) (unsigned long) pRuntime->m_apTrackedPeers20[i] == g_nSelectedNetworkLobbyPeerId) {
-			return pRuntime->m_pPeerStates14[i].m_szName2C;
-		}
-	}
-	return 0;
-}
-
-__inline static void LayoutPaintballSequencePromptText(GamePaintballSequenceScreenView* pScreen)
-{
-	const char* const* papszPrompts;
-	const char* pszPrompt;
-	const char* pszPeerName;
-	char* pszBuffer;
-	char* pszMarker;
-	char* pszSecondLine;
-	char* pszPreviousSplit;
-	void* pFontResource;
-	short Extent[2];
-	int nPrompt;
-	int cyFirstLine;
-	int x;
-
-	if (pScreen->m_fNetworkScreen8C == 0) {
-		papszPrompts = pScreen->m_fSecondVariant518 != 0 ? g_GAME_PaintballSequenceSoloWinPrompts
-														 : g_GAME_PaintballSequenceSoloLossPrompts;
-	}
-	else {
-		papszPrompts = pScreen->m_fSecondVariant518 != 0 ? g_GAME_PaintballSequenceNetworkWinPrompts
-														 : g_GAME_PaintballSequenceNetworkLossPrompts;
-	}
-	nPrompt = ((GameLevelProgressStateView*) g_pLevelProgressState)->m_nReserved0C;
-	pszPrompt = (0 <= nPrompt && nPrompt < 8) ? papszPrompts[nPrompt] : 0;
-	if (pszPrompt == 0) {
-		pszPrompt = "";
-	}
-	pszBuffer = (char*) pScreen + 0x3e0;
-	pszMarker = strchr(pszPrompt, '#');
-	if (pszMarker == 0) {
-		strcpy(pszBuffer, pszPrompt);
-	}
-	else {
-		memcpy(pszBuffer, pszPrompt, pszMarker - pszPrompt);
-		pszBuffer[pszMarker - pszPrompt] = '\0';
-		pszPeerName = GetPaintballSequencePeerName();
-		if (pszPeerName != 0) {
-			strcat(pszBuffer, pszPeerName);
-		}
-		strcat(pszBuffer, pszMarker + 1);
-	}
-	*(char**) ((char*) pScreen + 0x4e0) = pszBuffer;
-	*(char**) ((char*) pScreen + 0x4e4) = 0;
-	pFontResource = ((MappedListResourceTable*) pScreen->m_pMappedListResources98)
-						->GetMappedResource(pScreen->m_nMappedListRemapResourceId384);
-	pszSecondLine = 0;
-	do {
-		MeasureFunctionalLevelTitleExtent(pFontResource, Extent, pszBuffer);
-		x = pScreen->m_pLayout510[14] + (pScreen->m_pLayout510[16] - Extent[0]) / 2;
-		pszPreviousSplit = pszSecondLine != 0 ? pszSecondLine - 1 : 0;
-		if (x < pScreen->m_pLayout510[18]) {
-			pszSecondLine = strrchr(pszBuffer, ' ');
-			if (pszSecondLine == 0) {
-				break;
-			}
-			*pszSecondLine++ = '\0';
-			if (pszPreviousSplit != 0) {
-				*pszPreviousSplit = ' ';
-			}
-		}
-	} while (x < pScreen->m_pLayout510[18]);
-	cyFirstLine = Extent[1];
-	*(char**) ((char*) pScreen + 0x4e4) = pszSecondLine;
-	*(short*) ((char*) pScreen + 0x4e8) = (short) x;
-	*(short*) ((char*) pScreen + 0x4ea) = (short) pScreen->m_pLayout510[19];
-	if (pszSecondLine == 0) {
-		*(short*) ((char*) pScreen + 0x4ea) += Extent[1] / 2;
-	}
-	else {
-		MeasureFunctionalLevelTitleExtent(pFontResource, Extent, pszSecondLine);
-		*(short*) ((char*) pScreen + 0x4ec) =
-			(short) (pScreen->m_pLayout510[14] + (pScreen->m_pLayout510[16] - Extent[0]) / 2);
-		*(short*) ((char*) pScreen + 0x4ee) = (short) (pScreen->m_pLayout510[19] + cyFirstLine);
-	}
-	MeasureFunctionalLevelTitleExtent(pFontResource, Extent, "Password:");
-	*(short*) ((char*) pScreen + 0x4f0) =
-		(short) (pScreen->m_pLayout510[14] + (pScreen->m_pLayout510[16] - Extent[0]) / 2);
-	*(short*) ((char*) pScreen + 0x4f2) = (short) pScreen->m_pLayout510[25];
-	x = Extent[1];
-	MeasureFunctionalLevelTitleExtent(pFontResource, Extent, pScreen->m_pszPassword4F8);
-	*(short*) ((char*) pScreen + 0x4f4) =
-		(short) (pScreen->m_pLayout510[14] + (pScreen->m_pLayout510[16] - Extent[0]) / 2);
-	*(short*) ((char*) pScreen + 0x4f6) = (short) (pScreen->m_pLayout510[25] + x);
-}
-
+// FUNCTION: LEMBALL 0x00450860
 void LEMBALL_FASTCALL DrawPaintballSequencePromptText(void* pObject)
 {
 	GamePaintballSequenceScreenView* pScreen;
@@ -3649,14 +4369,8 @@ void LEMBALL_FASTCALL DrawPaintballSequencePromptText(void* pObject)
 								   0x20,
 								   0);
 }
-
-__inline static void FinishPaintballSequence(GamePaintballSequenceScreenView* pScreen, int nMode)
-{
-	pScreen->m_nTransitionStatus378 = 1;
-	pScreen->m_nRequestedMode374 = nMode;
-}
-
-static int LEMBALL_FASTCALL HandlePaintballSequenceInput(void* pObject, int, void* pEvent)
+// FUNCTION: LEMBALL 0x00450970
+int LEMBALL_FASTCALL HandlePaintballSequenceInput(void* pObject, int, void* pEvent)
 {
 	GamePaintballSequenceScreenView* pScreen;
 	GameMenuSelectorEvent* pSelectorEvent;
@@ -3687,7 +4401,7 @@ static int LEMBALL_FASTCALL HandlePaintballSequenceInput(void* pObject, int, voi
 	++*(int*) ((char*) pScreen + 0x10);
 	return 0;
 }
-
+// FUNCTION: LEMBALL 0x00450a60
 int LEMBALL_FASTCALL DispatchPaintballSequenceUserAction(void* pObject, int, int nAction)
 {
 	GamePaintballSequenceScreenView* pScreen;
@@ -3703,7 +4417,7 @@ int LEMBALL_FASTCALL DispatchPaintballSequenceUserAction(void* pObject, int, int
 	}
 	return 0;
 }
-
+// FUNCTION: LEMBALL 0x00450a90
 void LEMBALL_FASTCALL UpdatePaintballSequenceScreen(void* pObject)
 {
 	GamePaintballSequenceScreenView* pScreen;
@@ -3723,7 +4437,7 @@ void LEMBALL_FASTCALL UpdatePaintballSequenceScreen(void* pObject)
 			aRect,
 			pScreen->m_pPrimaryContext84,
 			"Paintball Sequence");
-		StartEmbeddedMciWindowPlaybackOnce(pScreen->m_abMediaOwner520);
+		((VsGdiAnimWindowOwner*) pScreen->m_abMediaOwner520)->StartEmbeddedMciWindowPlaybackOnce();
 		pScreen->m_fMediaStarted5FC = 1;
 	}
 	if ((pScreen->m_fMediaStarted5FC != 0 || g_fSkipStartupSequence != 0) && g_fStartupTestAllLevels != 0 &&
@@ -3739,61 +4453,67 @@ void LEMBALL_FASTCALL UpdatePaintballSequenceScreen(void* pObject)
 		pScreen->m_dwEffectStart600 = timeGetTime();
 	}
 }
-
-static void LEMBALL_FASTCALL ActivatePaintballSequenceMedia(void* pObject, int)
+// FUNCTION: LEMBALL 0x00450ba0
+void LEMBALL_FASTCALL DrawPaintballSequenceFrame(void* pObject)
 {
-	unsigned char* pMediaOwner;
+	GamePaintballSequenceScreenView* pScreen;
+	unsigned char* pEntry;
 
-	pMediaOwner = (unsigned char*) pObject;
-	if (g_fSkipStartupSequence == 0) {
-		StartEmbeddedMciWindowPlaybackOnce(pMediaOwner);
-	}
-	if (*(int*) (pMediaOwner + 0xd4) == 0) {
-		if (g_pVariantResourceEntryManager != 0) {
-			((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->SetVariantResourceMusicEnabled(1);
-		}
-		*(int*) (pMediaOwner + 0xd4) = 1;
+	pScreen = (GamePaintballSequenceScreenView*) pObject;
+	pScreen->EmitScreenFrameRect((short) pScreen->m_pLayout510[14],
+								 (short) pScreen->m_pLayout510[15],
+								 (short) pScreen->m_pLayout510[16],
+								 (short) pScreen->m_pLayout510[17]);
+	pEntry = (unsigned char*) pScreen + 0x398 + pScreen->m_iRenderEntryGroup328 * 0x48;
+	((GameMainMenuRenderEntryInterface*) pEntry)->AppendToQueue(pScreen->m_pRenderContext88);
+	if (pScreen->m_pSecondaryBitmap500 != 0) {
+		((GameMainMenuRenderEntryInterface*) (pEntry + 0x24))->AppendToQueue(pScreen->m_pRenderContext88);
 	}
 }
-
-__inline static void DeactivatePaintballSequenceMedia(GamePaintballSequenceScreenView* pScreen)
+// FUNCTION: LEMBALL 0x00450c40
+unsigned int GamePaintballSequenceMediaState::InitializeVariant(void* pScreen,
+																void* pPrimaryContext,
+																int fSecondVariant)
 {
-	if (pScreen->m_fMediaStarted5FC != 0 && *(int*) (pScreen->m_abMediaOwner520 + 4) == 1) {
-		((void(LEMBALL_FASTCALL*)(void*, int))(*(void***) pScreen->m_abMediaOwner520)[29])(pScreen->m_abMediaOwner520,
-																						   0);
-		pScreen->m_fMediaStarted5FC = 0;
-		pScreen->m_dwMediaStart5F8 = timeGetTime() + 40U;
-	}
-}
+	unsigned int uRandom;
+	char* pOwner;
 
-__inline static void LEMBALL_FASTCALL DestroyPaintballSequenceScreen(GamePaintballSequenceScreenView* pScreen)
+	pOwner = (char*) this;
+	*(void**) (pOwner + 0xbc) = pScreen;
+	*(void**) (pOwner + 0xc0) = pPrimaryContext;
+	*(int*) (pOwner + 0xc4) = fSecondVariant;
+	*(int*) (pOwner + 0xd4) = 0;
+	*(int*) (pOwner + 0xd0) = 0;
+	if (fSecondVariant != 0) {
+		*(int*) (pOwner + 0xc8) = 0x11e;
+		*(int*) (pOwner + 0xcc) = 0x126;
+	}
+	else {
+		*(int*) (pOwner + 0xc8) = 0x121;
+		*(int*) (pOwner + 0xcc) = 0x129;
+	}
+	uRandom = (*(unsigned int*) g_pSessionRandomState * 0x29U + 0x1fU) & 0x7fffffU;
+	*(unsigned int*) g_pSessionRandomState = uRandom;
+	*(unsigned int*) (pOwner + 0xd0) = uRandom % 3U;
+	return uRandom / 3U;
+}
+// FUNCTION: LEMBALL 0x00450d00
+void GamePaintballSequenceMediaState::LoadVariant(int fCompactLayout)
 {
-	unsigned char* pSink;
-	int i;
+	char* pOwner;
+	int nBaseResource;
 
-	pScreen->SetScreenVtable(g_GAME_PaintballSequenceScreenVtable);
-	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_PaintballSequenceQueueVtable;
-	*(void***) pScreen->m_abVariantRenderManager14 = g_GAME_MainMenuCallbackVtable;
-	DeactivatePaintballSequenceMedia(pScreen);
-	if (pScreen->m_fFrameResourcesLoaded9C != 0) {
-		ReleasePaintballSequenceResources(pScreen);
+	pOwner = (char*) this;
+	if (fCompactLayout == 0) {
+		nBaseResource = *(int*) (pOwner + 0xcc);
 	}
-	if (*(int*) (pScreen->m_abMediaOwner520 + 0xd4) == 0) {
-		((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->SetVariantResourceMusicEnabled(1);
-		*(int*) (pScreen->m_abMediaOwner520 + 0xd4) = 1;
+	else {
+		nBaseResource = *(int*) (pOwner + 0xc8);
 	}
-	DestroyResourceGeometryHelperWindowOwner(pScreen->m_abMediaOwner520);
-	pSink = (unsigned char*) pScreen + 0xf8;
-	i = 0;
-	do {
-		pSink -= 0x48;
-		RestoreCompositePointRectSinkFinalizeVtables(pSink);
-		--i;
-	} while (i >= 0);
-	DestroyFramedScreenBaseThunk00402081(pScreen);
+	UpdateMediaPathFromListResource(nBaseResource + *(int*) (pOwner + 0xd0));
 }
-
-static void* LEMBALL_FASTCALL DeletePaintballSequenceScreen(void* pObject, int, int fDelete)
+// FUNCTION: LEMBALL 0x004510e0
+void* LEMBALL_FASTCALL DeletePaintballSequenceScreen(void* pObject, int, int fDelete)
 {
 	DestroyPaintballSequenceScreen((GamePaintballSequenceScreenView*) pObject);
 	if ((fDelete & 1) != 0) {
@@ -3801,108 +4521,344 @@ static void* LEMBALL_FASTCALL DeletePaintballSequenceScreen(void* pObject, int, 
 	}
 	return pObject;
 }
-
-static void* LEMBALL_FASTCALL DeleteAdjustedPaintballSequenceScreen(void* pObject, int nUnusedEdx, int fDelete)
+// FUNCTION: LEMBALL 0x00451200
+void* LEMBALL_FASTCALL DeleteAdjustedPaintballSequenceScreen(void* pObject, int nUnusedEdx, int fDelete)
 {
 	return DeletePaintballSequenceScreen((char*) pObject - 4, nUnusedEdx, fDelete);
 }
-
-void LEMBALL_FASTCALL InitializeNetworkLobbyActionButtons(void* pObject)
+// FUNCTION: LEMBALL 0x00451210
+void* LEMBALL_FASTCALL
+ConstructFunctionalPasswordEntryScreen(void* pObject, int, void* pPrimaryContext, void* pRenderContext, short* paSize)
 {
-	GameNetworkLobbyScreenView* pScreen;
-	const int* panButtonResources;
-	void* pButtonManager;
+	GamePasswordEntryScreenView* pScreen;
 
-	pScreen = (GameNetworkLobbyScreenView*) pObject;
-	pScreen->m_pLayout42C =
-		pScreen->m_fCompactLayout32C != 0 ? g_GAME_NetworkLobbyLayoutCompact : g_GAME_NetworkLobbyLayoutStandard;
-	panButtonResources = pScreen->m_fCompactLayout32C != 0 ? g_GAME_NetworkLobbyButtonResourcesCompact
-														   : g_GAME_NetworkLobbyButtonResourcesStandard;
-	pScreen->m_nButtonSelection434 = 0;
-	pButtonManager = AllocateVSMemBlock(0x14c);
-	if (pButtonManager != 0) {
-		pScreen->m_pQueuedVariantManager338 = ConstructQueuedVariantChildSlotManager(pButtonManager,
-																					 0,
-																					 pScreen->m_pPrimaryContext84,
-																					 pScreen->m_pRenderContext88,
-																					 4,
-																					 pScreen->m_fCompactLayout32C,
-																					 0);
+	pScreen = (GamePasswordEntryScreenView*) pObject;
+	pScreen->ConstructFramedScreenBaseFields(pPrimaryContext, pRenderContext, paSize, 0x10, 10, 10, 0, 0x28, 0x30);
+	InitializeFunctionalPasswordEntryVtables();
+	pScreen->SetScreenVtable(g_GAME_PasswordEntryScreenVtable);
+	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_PasswordEntryQueueVtable;
+	*(void***) pScreen->m_abVariantRenderManager14 = g_GAME_MainMenuCallbackVtable;
+	*(void***) pScreen->m_abInputPanelPointSink454 = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage + 4;
+	*(short*) (pScreen->m_abInputPanelPointSink454 + 4) = 0;
+	*(short*) (pScreen->m_abInputPanelPointSink454 + 6) = 0;
+	*(short*) (pScreen->m_abInputPanelPointSink454 + 8) = 0;
+	*(short*) (pScreen->m_abInputPanelPointSink454 + 10) = 0;
+	*(void***) pScreen->m_abInputPanelFrameSelector464 = g_MenuSelectorCurrentFrameCallbackVtable;
+	*(int*) (pScreen->m_abInputPanelFrameSelector464 + 4) = 1;
+	*(int*) (pScreen->m_abInputPanelFrameSelector464 + 12) = 0;
+	strcpy(pScreen->m_szPassword3B0, FormatCurrentLevelPassword());
+	pScreen->m_cPassword420 = 10;
+	pScreen->m_nSelectedKey480 = 4;
+	pScreen->m_fDrawFrameA8 = 1;
+	pScreen->m_fTileBackgroundAC = 1;
+	pScreen->m_fDrawForegroundB0 = 1;
+	ActivateFramedScreenBase(pScreen);
+	return pScreen;
+}
+// FUNCTION: LEMBALL 0x00451320
+void LEMBALL_FASTCALL InitializePasswordEntryResources(void* pObject)
+{
+	GamePasswordEntryScreenView* pScreen;
+	unsigned char* pForegroundEntry;
+	void* pOverlay;
+	int nContext;
+	int nRenderObject;
+	int iRow;
+	int iColumn;
+	int iAction;
+	int i;
+	VS_XYPair Point;
+
+	pScreen = (GamePasswordEntryScreenView*) pObject;
+	if (pScreen->m_fCompactLayout32C != 0) {
+		pScreen->m_pLayout3A8 = g_GAME_PasswordLayoutCompact;
+		pScreen->m_pKeyResourceIds3AC = g_GAME_PasswordResourcesCompact;
+		pScreen->m_nPanelResourceId398 = 0x192;
 	}
 	else {
-		pScreen->m_pQueuedVariantManager338 = 0;
+		pScreen->m_pLayout3A8 = g_GAME_PasswordLayoutStandard;
+		pScreen->m_pKeyResourceIds3AC = g_GAME_PasswordResourcesStandard;
+		pScreen->m_nPanelResourceId398 = 0x165;
 	}
-	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
-								 0,
-								 pScreen->m_pLayout42C[0],
-								 pScreen->m_pLayout42C[1],
-								 panButtonResources,
-								 1,
-								 0,
-								 0,
-								 0,
-								 &pScreen->m_nButtonSelection434,
-								 (int) 0xacef000cU);
-	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
-								 0,
-								 pScreen->m_pLayout42C[2],
-								 pScreen->m_pLayout42C[3],
-								 panButtonResources + 1,
-								 1,
-								 0,
-								 0,
-								 0,
-								 &pScreen->m_nButtonSelection434,
-								 (int) 0xacef000dU);
-	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
-								 0,
-								 pScreen->m_pLayout42C[4],
-								 pScreen->m_pLayout42C[5],
-								 panButtonResources + 2,
-								 1,
-								 0,
-								 0,
-								 0,
-								 &pScreen->m_nButtonSelection434,
-								 (int) 0xacef000eU);
-	SelectQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338, 0, 0);
-	InitializeQueuedVariantChildContext(pScreen->m_pQueuedVariantManager338);
-	ThunkRefreshNetworkLobbyPlayerEntries((int) (unsigned long) pScreen);
+	LoadVariantRenderResource(pScreen->m_abVariantRenderManager14, pScreen->m_nPanelResourceId398);
+	if (pScreen->m_pForegroundBitmapC0 != 0) {
+		pForegroundEntry = pScreen->m_abRenderEntryGroupC8 + 0x14;
+		*(short*) (pForegroundEntry + 0) = (short) pScreen->m_pLayout3A8[0];
+		*(short*) (pForegroundEntry + 2) = (short) pScreen->m_pLayout3A8[1];
+		*(void**) (pForegroundEntry + 0x0c) = pScreen->m_pForegroundBitmapC0;
+		*(int*) (pForegroundEntry + 0x10) = 0x800;
+		*(int*) (pForegroundEntry + 0x14) = 0;
+	}
+	i = 0;
+	Point.m_y = (short) pScreen->m_pLayout3A8[3];
+	for (iRow = 0; iRow < 4; ++iRow) {
+		Point.m_x = (short) pScreen->m_pLayout3A8[2];
+		for (iColumn = 0; iColumn < 3; ++iColumn) {
+			iAction = g_GAME_PasswordKeyPermutation[i];
+			pOverlay = AllocateVSMemBlock(0x130);
+			if (pOverlay != 0) {
+				ConstructAlignedZrleChildOverlayFromPoint(pOverlay,
+														  0,
+														  &Point,
+														  pScreen->m_pPrimaryContext84,
+														  pScreen->m_pKeyResourceIds3AC[iAction],
+														  3);
+				*(int*) ((char*) pOverlay + 0xf8) = 0;
+				nContext = *(int*) (*(int*) ((char*) pOverlay + 0x4c) + 0x0c);
+				nRenderObject = nContext + *(int*) (*(int*) (nContext + 0x40) + 4) + 0x70;
+				*(int*) nRenderObject = 0;
+				*(void**) ((char*) pOverlay + 0xf4) = g_pSharedRenderDispatchQueue;
+				*(int*) ((char*) pOverlay + 0xcc) = (int) (0xabcd00b0U + iAction);
+			}
+			pScreen->m_apKeyOverlays424[iAction] = pOverlay;
+			pScreen->m_aKeyPositions3C0[i][0] = Point.m_x - (short) pScreen->m_pLayout3A8[2];
+			pScreen->m_aKeyPositions3C0[i][1] = Point.m_y - (short) pScreen->m_pLayout3A8[3];
+			Point.m_x = (short) (Point.m_x + pScreen->m_pLayout3A8[24] + pScreen->m_pLayout3A8[4]);
+			++i;
+		}
+		Point.m_y = (short) (Point.m_y + pScreen->m_pLayout3A8[25] + pScreen->m_pLayout3A8[5]);
+	}
+	pScreen->m_xSelected478 = pScreen->m_aKeyPositions3C0[pScreen->m_nSelectedKey480][0];
+	pScreen->m_ySelected47C = pScreen->m_aKeyPositions3C0[pScreen->m_nSelectedKey480][1];
+	InitializePasswordEntryRenderContext(pScreen);
 }
-
-static void LEMBALL_FASTCALL DestroyNetworkLobbyActionButtons(void* pObject)
+// FUNCTION: LEMBALL 0x00451550
+void LEMBALL_FASTCALL ReleasePasswordEntryResources(void* pObject)
 {
-	GameNetworkLobbyScreenView* pScreen;
-
-	pScreen = (GameNetworkLobbyScreenView*) pObject;
-	if (pScreen->m_pQueuedVariantManager338 != 0) {
-		typedef void*(LEMBALL_FASTCALL * DeleteProc)(void*, int, int);
-		((DeleteProc) (*(void***) pScreen->m_pQueuedVariantManager338)[1])(pScreen->m_pQueuedVariantManager338, 0, 1);
+	GamePasswordEntryScreenView* pScreen;
+	typedef void*(LEMBALL_FASTCALL * DeleteOverlayVirtual)(void*, int, int);
+	int i;
+	pScreen = (GamePasswordEntryScreenView*) pObject;
+	for (i = 0; i < 12; ++i) {
+		if (pScreen->m_apKeyOverlays424[i] != 0) {
+			void* pDeleteInterface = (char*) pScreen->m_apKeyOverlays424[i] + 0x90;
+			((DeleteOverlayVirtual) (*(void***) pDeleteInterface)[0])(pDeleteInterface, 0, 1);
+			pScreen->m_apKeyOverlays424[i] = 0;
+		}
+	}
+	if (pScreen->m_nPanelResourceId398 != 0) {
+		((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
+			->ReleaseVariantRenderResource(pScreen->m_nPanelResourceId398);
+		pScreen->m_nPanelResourceId398 = 0;
+	}
+	if (pScreen->m_pInputPanelOwner3A4 != 0) {
+		typedef void(LEMBALL_FASTCALL * ReleaseContextVirtual)(void*, int);
+		if (*(int*) ((char*) pScreen->m_pInputPanelOwner3A4 + 4) == 1) {
+			((ReleaseContextVirtual) (*(void***) pScreen->m_pInputPanelOwner3A4)[29])(pScreen->m_pInputPanelOwner3A4,
+																					  0);
+		}
+		DestroyWindowOwnerRenderContext(pScreen->m_pInputPanelOwner3A4);
+		FreeVSMemBlock(pScreen->m_pInputPanelOwner3A4);
+		pScreen->m_pInputPanelOwner3A4 = 0;
+		pScreen->m_pInputPanelRenderContext474 = 0;
 	}
 }
-
-static void LEMBALL_FASTCALL NoopNetworkLobbyScreen(void*)
+// FUNCTION: LEMBALL 0x004516f0
+int LEMBALL_FASTCALL HandlePasswordEntryInput(void* pObject, int, void* pEvent)
 {
-}
+	GamePasswordEntryScreenView* pScreen;
+	GameMenuSelectorEvent* pSelectorEvent;
+	unsigned int nCode;
+	int nAction;
 
-__inline static void DrawNetworkLobbyActionButtonFrame(GameNetworkLobbyScreenView* pScreen, int iLayoutRect)
+	pScreen = (GamePasswordEntryScreenView*) pObject;
+	pSelectorEvent = (GameMenuSelectorEvent*) pEvent;
+	nCode = (unsigned int) pSelectorEvent->m_nPayload08;
+	nAction = -1;
+	if (pSelectorEvent->m_nType00 == 3 || pSelectorEvent->m_nType00 == 4) {
+		void* pOverlay;
+		int iSlot;
+
+		pOverlay = 0;
+		iSlot = pSelectorEvent->m_nType00 == 3 ? 2 : 1;
+		if (nCode == 0x1fU || nCode == 0x22U) {
+			pOverlay = pScreen->m_apKeyOverlays424[g_GAME_PasswordKeyPermutation[pScreen->m_nSelectedKey480]];
+		}
+		else if (nCode == 0x4cU) {
+			pOverlay = pScreen->m_apKeyOverlays424[11];
+		}
+		else if (nCode == 0x4dU || nCode == 0x4eU) {
+			pOverlay = pScreen->m_apKeyOverlays424[10];
+		}
+		else if (nCode > 0x38U && nCode < 0x43U) {
+			pOverlay = pScreen->m_apKeyOverlays424[nCode - 0x39U];
+		}
+		else if (pSelectorEvent->m_nType00 == 4 && nCode >= 1U && nCode <= 4U) {
+			RotatePasswordEntrySelection(pScreen, (int) nCode);
+			return 1;
+		}
+		if (pOverlay != 0) {
+			DispatchPasswordOverlayInput(pOverlay, iSlot);
+			return 1;
+		}
+		return 0;
+	}
+	if (pSelectorEvent->m_nType00 == 0x0b) {
+		if (g_pVariantResourceEntryManager != 0) {
+			((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x25);
+		}
+		return 0;
+	}
+	if (pSelectorEvent->m_nType00 == 0x0c && nCode >= 0xabcd00b0U && nCode <= 0xabcd00bbU) {
+		nAction = (int) (nCode - 0xabcd00b0U);
+	}
+	if (nAction >= 0) {
+		ApplyPasswordEntryAction(pScreen, nAction);
+		return 1;
+	}
+	if (pSelectorEvent->m_nType00 == 0x0c) {
+		return 0;
+	}
+	++*(int*) ((char*) pScreen + 0x10);
+	return 0;
+}
+// FUNCTION: LEMBALL 0x00451a70
+void LEMBALL_FASTCALL UpdatePasswordEntryScreen(void* pObject)
 {
-	const int* pRect;
-
-	pRect = pScreen->m_pLayout42C + iLayoutRect * 2;
-	pScreen->EmitScreenFrameRect((short) pRect[0], (short) pRect[1], (short) pRect[2], (short) pRect[3]);
+	GamePasswordEntryScreenView* pScreen;
+	pScreen = (GamePasswordEntryScreenView*) pObject;
+	if (pScreen->m_nResultState488 == 1 && (int) (timeGetTime() - pScreen->m_dwResultDeadline490) >= 0) {
+		pScreen->m_nTransitionStatus378 = 1;
+		pScreen->m_nRequestedMode374 = 2;
+	}
 }
-
-void LEMBALL_FASTCALL DrawNetworkLobbyActionButtonFrames(void* pObject)
+// FUNCTION: LEMBALL 0x00451aa0
+void LEMBALL_FASTCALL DrawPasswordEntryText(void* pObject)
 {
-	GameNetworkLobbyScreenView* pScreen;
+	static const char* s_apszSkillNames[4] = {"Fun", "Tricky", "Taxing", "Mayhem"};
+	GamePasswordEntryScreenView* pScreen;
+	MappedListResourceTable* pMappedList;
+	GameLevelProgressStateView* pProgress;
+	short Point[2];
+	short Relative[2];
+	char aszLevelCounts[4][6];
+	const char* pszResult;
+	int i;
 
-	pScreen = (GameNetworkLobbyScreenView*) pObject;
-	DrawNetworkLobbyActionButtonFrame(pScreen, 3);
-	DrawNetworkLobbyActionButtonFrame(pScreen, 5);
-	DrawNetworkLobbyActionButtonFrame(pScreen, 7);
+	pScreen = (GamePasswordEntryScreenView*) pObject;
+	if (pScreen->m_pMappedListResources98 == 0 || pScreen->m_pLayout3A8 == 0) {
+		return;
+	}
+	pMappedList = (MappedListResourceTable*) pScreen->m_pMappedListResources98;
+	pProgress = (GameLevelProgressStateView*) g_pLevelProgressState;
+	Relative[0] = 0;
+	Relative[1] = 0;
+	for (i = 0; i < 4; ++i) {
+		Point[0] = (short) pScreen->m_pLayout3A8[6 + i * 2];
+		Point[1] = (short) pScreen->m_pLayout3A8[7 + i * 2];
+		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+									   Point,
+									   Relative,
+									   pScreen->m_nMappedListRemapResourceId384,
+									   (void*) s_apszSkillNames[i],
+									   0x20,
+									   0);
+		strcpy(aszLevelCounts[i], ": ");
+		FormatSignedIntToRadixString(pProgress->m_anUnlockedPackCaps28[i] + 1, aszLevelCounts[i] + 2, 10);
+		Point[0] = (short) pScreen->m_pLayout3A8[14 + i * 2];
+		Point[1] = (short) pScreen->m_pLayout3A8[15 + i * 2];
+		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+									   Point,
+									   Relative,
+									   pScreen->m_nMappedListRemapResourceId384,
+									   aszLevelCounts[i],
+									   0x20,
+									   0);
+	}
+	if (pScreen->m_nResultState488 == 1) {
+		pszResult = pScreen->m_fPasswordValid484 != 0 ? "Password OK!" : "Invalid Password!";
+		Point[0] = (short) pScreen->m_pLayout3A8[30];
+		Point[1] = (short) pScreen->m_pLayout3A8[31];
+		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+									   Point,
+									   Relative,
+									   pScreen->m_nMappedListRemapResourceId384,
+									   (void*) pszResult,
+									   0x20,
+									   0);
+	}
 }
+// FUNCTION: LEMBALL 0x00451e60
+void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void* pObject)
+{
+	GamePasswordEntryScreenView* pScreen;
+	MappedListResourceTable* pMappedList;
+	typedef void(LEMBALL_FASTCALL * QueuePointSinkVirtual)(void*, int, void*);
+	int nContext;
+	int nExtent;
+	short Point[2];
+	short Relative[2];
+	short Extent[2];
+	short Rect[4];
+	void* pSavedContext;
 
+	pScreen = (GamePasswordEntryScreenView*) pObject;
+	if (pScreen->m_pInputPanelRenderContext474 != 0) {
+		nContext = *(int*) ((char*) pScreen->m_pInputPanelRenderContext474 + 0x0c);
+		nExtent = nContext + *(int*) (*(int*) (nContext + 0x40) + 4) + 0x40;
+		*(int*) (pScreen->m_abInputPanelPointSink454 + 12) = 0x10000;
+		*(short*) (pScreen->m_abInputPanelPointSink454 + 4) = *(short*) (nExtent + 0x14);
+		*(short*) (pScreen->m_abInputPanelPointSink454 + 6) = *(short*) (nExtent + 0x16);
+		*(short*) (pScreen->m_abInputPanelPointSink454 + 8) = 0;
+		*(short*) (pScreen->m_abInputPanelPointSink454 + 10) = 0;
+		((QueuePointSinkVirtual) (*(void***) pScreen->m_abInputPanelPointSink454)[1])(
+			pScreen->m_abInputPanelPointSink454,
+			0,
+			pScreen->m_pInputPanelRenderContext474);
+		Point[0] = (short) pScreen->m_xSelected478;
+		Point[1] = (short) pScreen->m_ySelected47C;
+		pSavedContext = *(void**) (pScreen->m_abVariantRenderManager14 + 0x1c);
+		*(int*) (pScreen->m_abInputPanelFrameSelector464 + 12) = 0;
+		*(void**) (pScreen->m_abVariantRenderManager14 + 0x1c) = pScreen->m_pInputPanelRenderContext474;
+		((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
+			->EmitVariantRenderResourceEntry(Rect,
+											 Point,
+											 pScreen->m_nPanelResourceId398,
+											 0,
+											 pScreen->m_abInputPanelFrameSelector464,
+											 0);
+		*(void**) (pScreen->m_abVariantRenderManager14 + 0x1c) = pSavedContext;
+	}
+	if (pScreen->m_pMappedListResources98 == 0 || pScreen->m_pLayout3A8 == 0) {
+		return;
+	}
+	pMappedList = (MappedListResourceTable*) pScreen->m_pMappedListResources98;
+	Relative[0] = 0;
+	Relative[1] = 0;
+	((LevelScreenDrawOwnerView*) pMappedList->GetMappedResource(pScreen->m_nMappedListRemapResourceId384))
+		->MeasureGlyphStringExtent(Extent, pScreen->m_szPassword3B0, 0x20);
+	Point[0] = (short) (pScreen->m_cxScreen37C - pScreen->m_pLayout3A8[22] - Extent[0]);
+	Point[1] = (short) pScreen->m_pLayout3A8[23];
+	pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+								   Point,
+								   Relative,
+								   pScreen->m_nMappedListRemapResourceId384,
+								   pScreen->m_szPassword3B0,
+								   0x20,
+								   0);
+}
+// FUNCTION: LEMBALL 0x00452370
+void* LEMBALL_FASTCALL DeletePasswordEntryScreen(void* pObject, int, int fDelete)
+{
+	DestroyPasswordEntryScreen((GamePasswordEntryScreenView*) pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
+// FUNCTION: LEMBALL 0x004523a0
+void* LEMBALL_FASTCALL DeleteAdjustedPasswordEntryScreen(void* pObject, int nUnusedEdx, int fDelete)
+{
+	return DeletePasswordEntryScreen((char*) pObject - 4, nUnusedEdx, fDelete);
+}
+// FUNCTION: LEMBALL 0x00453260
+void LEMBALL_FASTCALL MarkNetworkLobbyPlayerEntryEventDirty(void* pEntry, int, const VS_XYPair*, int nEvent)
+{
+	if (nEvent == 0 || nEvent == 3) {
+		*(int*) ((char*) pEntry + 0x3c) = 1;
+	}
+}
+// FUNCTION: LEMBALL 0x00453280
 void* LEMBALL_FASTCALL
 ConstructFunctionalNetworkLobbyScreen(void* pObject, int, void* pPrimaryContext, void* pRenderContext, short* paSize)
 {
@@ -3968,40 +4924,91 @@ ConstructFunctionalNetworkLobbyScreen(void* pObject, int, void* pPrimaryContext,
 	ActivateFramedScreenBase(pScreen);
 	return pScreen;
 }
-
-// FUNCTION: LEMBALL 0x0044c440
-int ConsumeLevelSelectionChangedFlag(void)
+// FUNCTION: LEMBALL 0x00453450
+void LEMBALL_FASTCALL InitializeNetworkLobbyActionButtons(void* pObject)
 {
-	if (g_fLevelSelectionChanged != 0) {
-		g_fLevelSelectionChanged = 0;
-		return 1;
-	}
-	return 0;
-}
+	GameNetworkLobbyScreenView* pScreen;
+	const int* panButtonResources;
+	void* pButtonManager;
 
-// FUNCTION: LEMBALL 0x0044fbd0
-void GameQueuedVariantManagerView::SetChildrenEnabled(int fEnabled)
+	pScreen = (GameNetworkLobbyScreenView*) pObject;
+	pScreen->m_pLayout42C =
+		pScreen->m_fCompactLayout32C != 0 ? g_GAME_NetworkLobbyLayoutCompact : g_GAME_NetworkLobbyLayoutStandard;
+	panButtonResources = pScreen->m_fCompactLayout32C != 0 ? g_GAME_NetworkLobbyButtonResourcesCompact
+														   : g_GAME_NetworkLobbyButtonResourcesStandard;
+	pScreen->m_nButtonSelection434 = 0;
+	pButtonManager = AllocateVSMemBlock(0x14c);
+	if (pButtonManager != 0) {
+		pScreen->m_pQueuedVariantManager338 = ConstructQueuedVariantChildSlotManager(pButtonManager,
+																					 0,
+																					 pScreen->m_pPrimaryContext84,
+																					 pScreen->m_pRenderContext88,
+																					 4,
+																					 pScreen->m_fCompactLayout32C,
+																					 0);
+	}
+	else {
+		pScreen->m_pQueuedVariantManager338 = 0;
+	}
+	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
+								 0,
+								 pScreen->m_pLayout42C[0],
+								 pScreen->m_pLayout42C[1],
+								 panButtonResources,
+								 1,
+								 0,
+								 0,
+								 0,
+								 &pScreen->m_nButtonSelection434,
+								 (int) 0xacef000cU);
+	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
+								 0,
+								 pScreen->m_pLayout42C[2],
+								 pScreen->m_pLayout42C[3],
+								 panButtonResources + 1,
+								 1,
+								 0,
+								 0,
+								 0,
+								 &pScreen->m_nButtonSelection434,
+								 (int) 0xacef000dU);
+	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
+								 0,
+								 pScreen->m_pLayout42C[4],
+								 pScreen->m_pLayout42C[5],
+								 panButtonResources + 2,
+								 1,
+								 0,
+								 0,
+								 0,
+								 &pScreen->m_nButtonSelection434,
+								 (int) 0xacef000eU);
+	SelectQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338, 0, 0);
+	InitializeQueuedVariantChildContext(pScreen->m_pQueuedVariantManager338);
+	ThunkRefreshNetworkLobbyPlayerEntries((int) (unsigned long) pScreen);
+}
+// FUNCTION: LEMBALL 0x004535a0
+void LEMBALL_FASTCALL DestroyNetworkLobbyActionButtons(void* pObject)
 {
-	int i;
-	GameQueuedVariantChildView* pChild;
-	GameQueuedVariantChildView** ppChild;
+	GameNetworkLobbyScreenView* pScreen;
 
-	m_fChildrenEnabled148 = fEnabled;
-	i = 0;
-	if (m_cChildren80 > 0) {
-		ppChild = m_apChildrenAC;
-		do {
-			pChild = *ppChild;
-			if (pChild != 0) {
-				pChild->m_fEnabled54 = fEnabled;
-				((GameGeometryOwnerRectState*) ((char*) pChild->m_pOverlay4C + 0x90))->SetEnabled(fEnabled);
-			}
-			++ppChild;
-			++i;
-		} while (i < m_cChildren80);
+	pScreen = (GameNetworkLobbyScreenView*) pObject;
+	if (pScreen->m_pQueuedVariantManager338 != 0) {
+		typedef void*(LEMBALL_FASTCALL * DeleteProc)(void*, int, int);
+		((DeleteProc) (*(void***) pScreen->m_pQueuedVariantManager338)[1])(pScreen->m_pQueuedVariantManager338, 0, 1);
 	}
 }
+// FUNCTION: LEMBALL 0x00453690
+void LEMBALL_FASTCALL DrawNetworkLobbyActionButtonFrames(void* pObject)
+{
+	GameNetworkLobbyScreenView* pScreen;
 
+	pScreen = (GameNetworkLobbyScreenView*) pObject;
+	DrawNetworkLobbyActionButtonFrame(pScreen, 3);
+	DrawNetworkLobbyActionButtonFrame(pScreen, 5);
+	DrawNetworkLobbyActionButtonFrame(pScreen, 7);
+}
+// FUNCTION: LEMBALL 0x004536f0
 void GameNetworkLobbyScreenView::DrawPlayerEntry(int iPeer, int* piVisible, int nColor)
 {
 	GameNetworkLobbyRuntimeView* pRuntime;
@@ -4044,15 +5051,15 @@ void GameNetworkLobbyScreenView::DrawPlayerEntry(int iPeer, int* piVisible, int 
 	cchComputer = 20;
 	do {
 		szComputer[cchComputer] = '\0';
-		MeasureFunctionalLevelTitleExtent(pFontResource, Extent, szComputer);
+		((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, szComputer, 0x20);
 		--cchComputer;
 	} while (m_pLayout42C[38] < Extent[0]);
 
-	MeasureFunctionalLevelTitleExtent(pFontResource, Extent, pPeerState->m_szName2C);
+	((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, pPeerState->m_szName2C, 0x20);
 	NamePoint[0] = (short) (NamePoint[0] - Extent[0] / 2);
-	MeasureFunctionalLevelTitleExtent(pFontResource, Extent, pszAddress);
+	((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, pszAddress, 0x20);
 	AddressPoint[0] = (short) (AddressPoint[0] - Extent[0] / 2);
-	MeasureFunctionalLevelTitleExtent(pFontResource, Extent, pPeerState->m_szComputer35);
+	((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, pPeerState->m_szComputer35, 0x20);
 	ComputerPoint[0] = (short) (ComputerPoint[0] - Extent[0] / 2);
 
 	pMappedList->SubmitRenderEntry(m_pRenderContext88,
@@ -4078,7 +5085,7 @@ void GameNetworkLobbyScreenView::DrawPlayerEntry(int iPeer, int* piVisible, int 
 								   nRemap);
 	++*piVisible;
 }
-
+// FUNCTION: LEMBALL 0x00453940
 void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void* pObject)
 {
 	GameNetworkLobbyScreenView* pScreen;
@@ -4102,7 +5109,7 @@ void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void* pObject)
 
 #define SUBMIT_CENTERED_LOBBY_TEXT(text, x, y, remap)                                                                  \
 	do {                                                                                                               \
-		MeasureFunctionalLevelTitleExtent(pFontResource, Extent, (text));                                              \
+		((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, (text), 0x20);                   \
 		Point[0] = (short) ((x) - Extent[0] / 2);                                                                      \
 		Point[1] = (short) (y);                                                                                        \
 		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,                                                    \
@@ -4122,7 +5129,7 @@ void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void* pObject)
 	if (pScreen->m_fBuildingRenderEntries364 != 0) {
 		pszStatus =
 			pScreen->m_fCompactLayout32C != 0 ? g_szNetworkLobbyDividerCompact : g_szNetworkLobbyDividerStandard;
-		MeasureFunctionalLevelTitleExtent(pFontResource, Extent, pszStatus);
+		((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, pszStatus, 0x20);
 		Point[0] = (short) ((pScreen->m_cxScreen37C - Extent[0]) / 2);
 		Point[1] = (short) pScreen->m_pLayout42C[20];
 		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
@@ -4150,10 +5157,10 @@ void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void* pObject)
 				strncpy(szDisplayText, pScreen->m_pszLocalComputer3E8, 20);
 				szDisplayText[20] = '\0';
 				cchDisplay = (int) strlen(szDisplayText);
-				MeasureFunctionalLevelTitleExtent(pFontResource, Extent, szDisplayText);
+				((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, szDisplayText, 0x20);
 				while (0 < cchDisplay && pScreen->m_pLayout42C[38] < Extent[0]) {
 					szDisplayText[--cchDisplay] = '\0';
-					MeasureFunctionalLevelTitleExtent(pFontResource, Extent, szDisplayText);
+					((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, szDisplayText, 0x20);
 				}
 				for (i = 0; szDisplayText[i] != '\0'; ++i) {
 					if (szDisplayText[i] >= 'A' && szDisplayText[i] <= 'Z') {
@@ -4245,106 +5252,12 @@ void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void* pObject)
 	pScreen->m_nDrawnStatus3AC = pScreen->m_nStatus3A8;
 #undef SUBMIT_CENTERED_LOBBY_TEXT
 }
-
-static void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void* pObject)
+// FUNCTION: LEMBALL 0x00454050
+void LEMBALL_FASTCALL NoopNetworkLobbyScreen(void*)
 {
-	GameNetworkLobbyScreenView* pScreen;
-	GameNetworkLobbyRuntimeView* pRuntime;
-	const char* pszLocalAddress;
-	const char* pszLocalComputer;
-	GameEffStream* pStream;
-	void* pPeer;
-	int i;
-	DWORD dwNow;
-
-	pScreen = (GameNetworkLobbyScreenView*) pObject;
-	if (pScreen->m_nDrawnStatus3AC != pScreen->m_nStatus3A8) {
-		return;
-	}
-	if (pScreen->m_fPendingText3E0 != 0) {
-		SubmitNetworkLobbyPendingText(pScreen);
-		pScreen->m_fPendingText3E0 = 0;
-	}
-	if (pScreen->m_nPendingPrompt3A4 != 0) {
-		ShowNetworkLobbyTextPrompt(pScreen, pScreen->m_nPendingPrompt3A4, 1);
-		pScreen->m_nPendingPrompt3A4 = 0;
-	}
-	if (pScreen->m_nDeferredStatus430 != 0) {
-		FlushNetworkLobbyDeferredStatus(pScreen);
-	}
-	dwNow = timeGetTime();
-	if (dwNow - pScreen->m_dwBlinkStart3C8 > 499U) {
-		pScreen->m_fBlink3C0 = pScreen->m_fBlink3C0 == 0;
-		pScreen->m_dwBlinkStart3C8 = timeGetTime();
-	}
-	pRuntime = (GameNetworkLobbyRuntimeView*) g_pNetworkLobbyVsnetRuntime;
-	if (pRuntime != 0) {
-		pszLocalAddress = 0;
-		if (g_pEffTransportRuntimeService != 0) {
-			pszLocalAddress = ((GameNetworkRuntimeServiceView*) g_pEffTransportRuntimeService)->GetLocalHostName();
-		}
-		pszLocalComputer = g_pszFileBasedNetworkLocalHostName;
-		if (pScreen->m_pszLocalAddress3E4 != pszLocalAddress) {
-			pScreen->m_pszLocalAddress3E4 = pszLocalAddress;
-			pScreen->m_fSelectorDirty360 = 1;
-		}
-		if (pScreen->m_pszLocalComputer3E8 != pszLocalComputer) {
-			pScreen->m_pszLocalComputer3E8 = pszLocalComputer;
-			pScreen->m_fSelectorDirty360 = 1;
-		}
-		if (pRuntime->m_fPlayerEntriesDirty54 != 0) {
-			pRuntime->m_fPlayerEntriesDirty54 = 0;
-			pScreen->m_fRefreshPlayers3C4 = 1;
-		}
-	}
-	if (pScreen->m_fRefreshPlayers3C4 != 0 && pScreen->m_pPlayerEntries3CC != 0) {
-		ThunkRefreshNetworkLobbyPlayerEntries((int) (unsigned long) pScreen);
-		pScreen->m_fRefreshPlayers3C4 = 0;
-		pScreen->m_fSelectorDirty360 = 1;
-	}
-	if (pRuntime != 0 && pScreen->m_pPlayerEntries3CC != 0 && g_pActiveNetworkLobbyTransportController != 0) {
-		for (i = 0; i < 10; ++i) {
-			if (*(int*) ((char*) pScreen->m_pPlayerEntries3CC + i * 0x44 + 0x3c) != 0 &&
-				pScreen->m_nSelectedPlayer3D0 != i) {
-				if (g_pVariantResourceEntryManager != 0) {
-					((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)
-						->PlayVariantResourceEffect(0x25);
-				}
-				if (pScreen->m_nSelectedPlayer3D0 != -1) {
-					pPeer = pRuntime->m_apTrackedPeers20[pScreen->m_nSelectedPlayer3D0];
-					if (pPeer != 0) {
-						pStream = *(GameEffStream**) ((char*) g_pActiveNetworkLobbyTransportController + 0x30);
-						if (pStream != 0) {
-							pStream->m_nU32Payload = 0;
-							pStream->QueueEffStreamWriteEvent((int) (unsigned long) pPeer);
-						}
-					}
-				}
-				pScreen->m_nSelectedPlayer3D0 = i;
-				pPeer = pRuntime->m_apTrackedPeers20[i];
-				if (pPeer != 0) {
-					pStream = *(GameEffStream**) ((char*) g_pActiveNetworkLobbyTransportController + 0x34);
-					if (pStream != 0) {
-						pStream->m_nU32Payload = *(int*) ((char*) pScreen->m_pPlayerEntries3CC + i * 0x44 + 0x40);
-						if (pStream->m_nU32Payload != 0) {
-							HideNetworkLobbyPlayerEntries(pScreen);
-						}
-						pStream->QueueEffStreamWriteEvent((int) (unsigned long) pPeer);
-					}
-				}
-			}
-			*(int*) ((char*) pScreen->m_pPlayerEntries3CC + i * 0x44 + 0x3c) = 0;
-		}
-	}
-	if (pScreen->m_nStatus3A8 != 0 && pScreen->m_dwStatusDuration3B4 != 0 &&
-		timeGetTime() - pScreen->m_dwStatusStart3B0 > pScreen->m_dwStatusDuration3B4) {
-		pScreen->m_nStatus3A8 = 1;
-		pScreen->m_fSelectorDirty360 = 1;
-		pScreen->m_dwStatusDuration3B4 = 0;
-	}
 }
-
-static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(void* pObject, int, void* pEvent)
+// FUNCTION: LEMBALL 0x00454060
+int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(void* pObject, int, void* pEvent)
 {
 	GameNetworkLobbyScreenView* pScreen;
 	GameMenuSelectorEvent* pInput;
@@ -4478,51 +5391,207 @@ static int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(void* pObject, int, vo
 	++*(int*) ((char*) pScreen + 0x10);
 	return 0;
 }
-
-__inline static void DestroyNetworkLobbyScreen(GameNetworkLobbyScreenView* pScreen)
+// FUNCTION: LEMBALL 0x00454650
+void SetNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus)
 {
-	int i;
-
-	pScreen->SetScreenVtable(g_GAME_NetworkLobbyScreenVtable);
-	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_NetworkLobbyQueueVtable;
-	*(void***) pScreen->m_abVariantRenderManager14 = g_GAME_MainMenuCallbackVtable;
-	if (pScreen->m_nRequestedMode374 == 0) {
-		if (g_pActiveNetworkLobbyTransportController != 0) {
-			CancelNetworkLobbyPrompt(pScreen);
-		}
-	}
-	else if (g_pActiveNetworkLobbyTransportController != 0) {
-		CloseNetworkLobbyTransportPeers(g_pActiveNetworkLobbyTransportController);
-	}
-	for (i = 0; i < 10; ++i) {
-		RemoveGeometryOwnerChild(*(void**) ((char*) pScreen->m_pPrimaryContext84 + 0x1c),
-								 0,
-								 (char*) pScreen->m_pPlayerEntries3CC + i * 0x44);
-	}
-	if (pScreen->m_pPlayerEntries3CC != 0) {
-		typedef void*(LEMBALL_FASTCALL * DeleteArrayProc)(void*, int, int);
-
-		((DeleteArrayProc) (*(void***) pScreen->m_pPlayerEntries3CC)[0])(pScreen->m_pPlayerEntries3CC, 0, 3);
-	}
-	if (pScreen->m_pTextBuffer398 != 0) {
-		GameBoundedTextBuffer* pBuffer;
-
-		pBuffer = (GameBoundedTextBuffer*) pScreen->m_pTextBuffer398;
-		if (pBuffer->m_pszText0C != 0) {
-			FreeVSMemBlock(pBuffer->m_pszText0C);
-		}
-		FreeVSMemBlock(pBuffer);
-	}
-	for (i = 0; i < 6; ++i) {
-		ReleasePaletteRemapVariant((void*) (unsigned long) pScreen->m_anPaletteRemaps414[i]);
-	}
-	if (pScreen->m_fFrameResourcesLoaded9C != 0) {
-		DestroyNetworkLobbyActionButtons(pScreen);
-	}
-	*(void**) pScreen->m_abPointSink3EC = g_pQueuedRenderPointSinkFinalizeThunk;
-	DestroyFunctionalFramedScreenBase(pScreen);
+	pScreen->m_nStatus3A8 = nStatus;
+	pScreen->m_dwStatusDuration3B4 = 0;
+	pScreen->m_fSelectorDirty360 = 1;
+	pScreen->m_fBlink3C0 = 1;
+	pScreen->m_dwBlinkStart3C8 = timeGetTime();
 }
+// FUNCTION: LEMBALL 0x00454690
+void ShowNetworkLobbyTextPrompt(GameNetworkLobbyScreenView* pScreen, int nPrompt, int fClear)
+{
+	GameBoundedTextBuffer* pBuffer;
 
+	pBuffer = (GameBoundedTextBuffer*) pScreen->m_pTextBuffer398;
+	pScreen->m_fTextPrompt39C = 0;
+	if (nPrompt != 3) {
+		pScreen->m_nReserved3A0 = nPrompt;
+	}
+	if (fClear != 0) {
+		ClearBoundedTextBuffer(pBuffer);
+	}
+	if (pScreen->m_nReserved3A0 == 2) {
+		StartNetworkLobbyTransportSession(g_pActiveNetworkLobbyTransportController);
+		if (*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x2c) == 0 ||
+			*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x28) != 0) {
+			SetTimedNetworkLobbyStatus(pScreen, 9, 6000);
+			return;
+		}
+	}
+	pBuffer->m_cCapacity00 = pScreen->m_nReserved3A0 == 1 ? 8 : 20;
+	SetNetworkLobbyStatus(pScreen, pScreen->m_nReserved3A0 + 1);
+	pScreen->m_fTextPrompt39C = 1;
+}
+// FUNCTION: LEMBALL 0x00454870
+void SetTimedNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus, DWORD dwDuration)
+{
+	pScreen->m_nStatus3A8 = nStatus;
+	pScreen->m_dwStatusStart3B0 = timeGetTime();
+	pScreen->m_dwStatusDuration3B4 = dwDuration;
+	pScreen->m_fSelectorDirty360 = 1;
+	pScreen->m_fBlink3C0 = 1;
+	pScreen->m_dwBlinkStart3C8 = timeGetTime();
+}
+// FUNCTION: LEMBALL 0x004548c0
+void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void* pObject)
+{
+	GameNetworkLobbyScreenView* pScreen;
+	GameNetworkLobbyRuntimeView* pRuntime;
+	const char* pszLocalAddress;
+	const char* pszLocalComputer;
+	GameEffStream* pStream;
+	void* pPeer;
+	int i;
+	DWORD dwNow;
+
+	pScreen = (GameNetworkLobbyScreenView*) pObject;
+	if (pScreen->m_nDrawnStatus3AC != pScreen->m_nStatus3A8) {
+		return;
+	}
+	if (pScreen->m_fPendingText3E0 != 0) {
+		SubmitNetworkLobbyPendingText(pScreen);
+		pScreen->m_fPendingText3E0 = 0;
+	}
+	if (pScreen->m_nPendingPrompt3A4 != 0) {
+		ShowNetworkLobbyTextPrompt(pScreen, pScreen->m_nPendingPrompt3A4, 1);
+		pScreen->m_nPendingPrompt3A4 = 0;
+	}
+	if (pScreen->m_nDeferredStatus430 != 0) {
+		FlushNetworkLobbyDeferredStatus(pScreen);
+	}
+	dwNow = timeGetTime();
+	if (dwNow - pScreen->m_dwBlinkStart3C8 > 499U) {
+		pScreen->m_fBlink3C0 = pScreen->m_fBlink3C0 == 0;
+		pScreen->m_dwBlinkStart3C8 = timeGetTime();
+	}
+	pRuntime = (GameNetworkLobbyRuntimeView*) g_pNetworkLobbyVsnetRuntime;
+	if (pRuntime != 0) {
+		pszLocalAddress = 0;
+		if (g_pEffTransportRuntimeService != 0) {
+			pszLocalAddress = ((GameNetworkRuntimeServiceView*) g_pEffTransportRuntimeService)->GetLocalHostName();
+		}
+		pszLocalComputer = g_pszFileBasedNetworkLocalHostName;
+		if (pScreen->m_pszLocalAddress3E4 != pszLocalAddress) {
+			pScreen->m_pszLocalAddress3E4 = pszLocalAddress;
+			pScreen->m_fSelectorDirty360 = 1;
+		}
+		if (pScreen->m_pszLocalComputer3E8 != pszLocalComputer) {
+			pScreen->m_pszLocalComputer3E8 = pszLocalComputer;
+			pScreen->m_fSelectorDirty360 = 1;
+		}
+		if (pRuntime->m_fPlayerEntriesDirty54 != 0) {
+			pRuntime->m_fPlayerEntriesDirty54 = 0;
+			pScreen->m_fRefreshPlayers3C4 = 1;
+		}
+	}
+	if (pScreen->m_fRefreshPlayers3C4 != 0 && pScreen->m_pPlayerEntries3CC != 0) {
+		ThunkRefreshNetworkLobbyPlayerEntries((int) (unsigned long) pScreen);
+		pScreen->m_fRefreshPlayers3C4 = 0;
+		pScreen->m_fSelectorDirty360 = 1;
+	}
+	if (pRuntime != 0 && pScreen->m_pPlayerEntries3CC != 0 && g_pActiveNetworkLobbyTransportController != 0) {
+		for (i = 0; i < 10; ++i) {
+			if (*(int*) ((char*) pScreen->m_pPlayerEntries3CC + i * 0x44 + 0x3c) != 0 &&
+				pScreen->m_nSelectedPlayer3D0 != i) {
+				if (g_pVariantResourceEntryManager != 0) {
+					((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)
+						->PlayVariantResourceEffect(0x25);
+				}
+				if (pScreen->m_nSelectedPlayer3D0 != -1) {
+					pPeer = pRuntime->m_apTrackedPeers20[pScreen->m_nSelectedPlayer3D0];
+					if (pPeer != 0) {
+						pStream = *(GameEffStream**) ((char*) g_pActiveNetworkLobbyTransportController + 0x30);
+						if (pStream != 0) {
+							pStream->m_nU32Payload = 0;
+							pStream->QueueEffStreamWriteEvent((int) (unsigned long) pPeer);
+						}
+					}
+				}
+				pScreen->m_nSelectedPlayer3D0 = i;
+				pPeer = pRuntime->m_apTrackedPeers20[i];
+				if (pPeer != 0) {
+					pStream = *(GameEffStream**) ((char*) g_pActiveNetworkLobbyTransportController + 0x34);
+					if (pStream != 0) {
+						pStream->m_nU32Payload = *(int*) ((char*) pScreen->m_pPlayerEntries3CC + i * 0x44 + 0x40);
+						if (pStream->m_nU32Payload != 0) {
+							HideNetworkLobbyPlayerEntries(pScreen);
+						}
+						pStream->QueueEffStreamWriteEvent((int) (unsigned long) pPeer);
+					}
+				}
+			}
+			*(int*) ((char*) pScreen->m_pPlayerEntries3CC + i * 0x44 + 0x3c) = 0;
+		}
+	}
+	if (pScreen->m_nStatus3A8 != 0 && pScreen->m_dwStatusDuration3B4 != 0 &&
+		timeGetTime() - pScreen->m_dwStatusStart3B0 > pScreen->m_dwStatusDuration3B4) {
+		pScreen->m_nStatus3A8 = 1;
+		pScreen->m_fSelectorDirty360 = 1;
+		pScreen->m_dwStatusDuration3B4 = 0;
+	}
+}
+// FUNCTION: LEMBALL 0x00455360
+int LEMBALL_FASTCALL HandleNetworkLobbyTransportPayloadEvent(void* pController,
+															 int,
+															 unsigned short nEventType,
+															 void* pPayloadObject,
+															 void* pPeer)
+{
+	GameNetworkLobbyScreenView* pScreen;
+	GameNetworkLobbyRuntimeView* pRuntime;
+	GameEffStream* pStream;
+	int nPeerSlot;
+	int nSerializedStream;
+
+	pScreen = (GameNetworkLobbyScreenView*) g_pActiveNetworkLobbyScreen;
+	pRuntime = (GameNetworkLobbyRuntimeView*) g_pNetworkLobbyVsnetRuntime;
+	if (pScreen == 0 || pRuntime == 0 || pPayloadObject == 0) {
+		return 0;
+	}
+	nSerializedStream = *(int*) ((char*) pPayloadObject + 4) + 0x10;
+	nPeerSlot = FindNetworkLobbyPeerSlot(pRuntime, pPeer);
+	if (nEventType == 5) {
+		if (nPeerSlot != -1 && pRuntime->m_pPeerStates14 != 0) {
+			pStream = (GameEffStream*) ((char*) pRuntime->m_pPeerStates14 + nPeerSlot * 0x50);
+			pStream->LoadEffStreamFromMemory(nSerializedStream);
+		}
+		*(int*) ((char*) pPayloadObject + 0x24) = 0;
+		pScreen->m_fRefreshPlayers3C4 = 1;
+		return 1;
+	}
+	if (nEventType == 6) {
+		pStream = *(GameEffStream**) ((char*) pController + 0x30);
+		if (pStream != 0) {
+			pStream->LoadEffStreamFromMemory(nSerializedStream);
+		}
+		*(int*) ((char*) pPayloadObject + 0x24) = 0;
+		((VsNetNetworkLobbyScreen*) pScreen)->ClearPlayerEntryDirty(nPeerSlot);
+		if (pStream != 0 && pStream->m_nU32Payload != 0) {
+			((VsNetEffTransportPeer*) pPeer)->Close();
+		}
+		pScreen->m_fRefreshPlayers3C4 = 1;
+		return 1;
+	}
+	if (nEventType == 7) {
+		pStream = *(GameEffStream**) ((char*) pController + 0x34);
+		if (pStream != 0) {
+			pStream->LoadEffStreamFromMemory(nSerializedStream);
+		}
+		*(int*) ((char*) pPayloadObject + 0x24) = 0;
+		if (nPeerSlot != -1 && pScreen->m_pPlayerEntries3CC != 0) {
+			*(int*) ((char*) pScreen->m_pPlayerEntries3CC + nPeerSlot * 0x44 + 0x40) = 1;
+		}
+		if (pStream != 0 && pStream->m_nU32Payload != 0 && ConfirmSelectedNetworkLobbyPlayerEntry(pScreen) != 0) {
+			pStream->QueueEffStreamWriteEvent((int) (unsigned long) pPeer);
+		}
+		return 1;
+	}
+	return 0;
+}
+// FUNCTION: LEMBALL 0x00455de0
 void* LEMBALL_FASTCALL DeleteNetworkLobbyScreen(void* pObject, int, int fDelete)
 {
 	DestroyNetworkLobbyScreen((GameNetworkLobbyScreenView*) pObject);
@@ -4531,1270 +5600,8 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbyScreen(void* pObject, int, int fDelete)
 	}
 	return pObject;
 }
-
-static void* LEMBALL_FASTCALL DeleteAdjustedNetworkLobbyScreen(void* pObject, int nUnusedEdx, int fDelete)
+// FUNCTION: LEMBALL 0x00455ee0
+void* LEMBALL_FASTCALL DeleteAdjustedNetworkLobbyScreen(void* pObject, int nUnusedEdx, int fDelete)
 {
 	return DeleteNetworkLobbyScreen((char*) pObject - 4, nUnusedEdx, fDelete);
-}
-
-void* LEMBALL_FASTCALL
-ConstructFunctionalPasswordEntryScreen(void* pObject, int, void* pPrimaryContext, void* pRenderContext, short* paSize)
-{
-	GamePasswordEntryScreenView* pScreen;
-
-	pScreen = (GamePasswordEntryScreenView*) pObject;
-	pScreen->ConstructFramedScreenBaseFields(pPrimaryContext, pRenderContext, paSize, 0x10, 10, 10, 0, 0x28, 0x30);
-	InitializeFunctionalPasswordEntryVtables();
-	pScreen->SetScreenVtable(g_GAME_PasswordEntryScreenVtable);
-	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_PasswordEntryQueueVtable;
-	*(void***) pScreen->m_abVariantRenderManager14 = g_GAME_MainMenuCallbackVtable;
-	*(void***) pScreen->m_abInputPanelPointSink454 = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage + 4;
-	*(short*) (pScreen->m_abInputPanelPointSink454 + 4) = 0;
-	*(short*) (pScreen->m_abInputPanelPointSink454 + 6) = 0;
-	*(short*) (pScreen->m_abInputPanelPointSink454 + 8) = 0;
-	*(short*) (pScreen->m_abInputPanelPointSink454 + 10) = 0;
-	*(void***) pScreen->m_abInputPanelFrameSelector464 = g_MenuSelectorCurrentFrameCallbackVtable;
-	*(int*) (pScreen->m_abInputPanelFrameSelector464 + 4) = 1;
-	*(int*) (pScreen->m_abInputPanelFrameSelector464 + 12) = 0;
-	strcpy(pScreen->m_szPassword3B0, FormatCurrentLevelPassword());
-	pScreen->m_cPassword420 = 10;
-	pScreen->m_nSelectedKey480 = 4;
-	pScreen->m_fDrawFrameA8 = 1;
-	pScreen->m_fTileBackgroundAC = 1;
-	pScreen->m_fDrawForegroundB0 = 1;
-	ActivateFramedScreenBase(pScreen);
-	return pScreen;
-}
-
-static void LEMBALL_FASTCALL InitializePasswordEntryResources(void* pObject)
-{
-	GamePasswordEntryScreenView* pScreen;
-	unsigned char* pForegroundEntry;
-	void* pOverlay;
-	int nContext;
-	int nRenderObject;
-	int iRow;
-	int iColumn;
-	int iAction;
-	int i;
-	VS_XYPair Point;
-
-	pScreen = (GamePasswordEntryScreenView*) pObject;
-	if (pScreen->m_fCompactLayout32C != 0) {
-		pScreen->m_pLayout3A8 = g_GAME_PasswordLayoutCompact;
-		pScreen->m_pKeyResourceIds3AC = g_GAME_PasswordResourcesCompact;
-		pScreen->m_nPanelResourceId398 = 0x192;
-	}
-	else {
-		pScreen->m_pLayout3A8 = g_GAME_PasswordLayoutStandard;
-		pScreen->m_pKeyResourceIds3AC = g_GAME_PasswordResourcesStandard;
-		pScreen->m_nPanelResourceId398 = 0x165;
-	}
-	LoadVariantRenderResource(pScreen->m_abVariantRenderManager14, pScreen->m_nPanelResourceId398);
-	if (pScreen->m_pForegroundBitmapC0 != 0) {
-		pForegroundEntry = pScreen->m_abRenderEntryGroupC8 + 0x14;
-		*(short*) (pForegroundEntry + 0) = (short) pScreen->m_pLayout3A8[0];
-		*(short*) (pForegroundEntry + 2) = (short) pScreen->m_pLayout3A8[1];
-		*(void**) (pForegroundEntry + 0x0c) = pScreen->m_pForegroundBitmapC0;
-		*(int*) (pForegroundEntry + 0x10) = 0x800;
-		*(int*) (pForegroundEntry + 0x14) = 0;
-	}
-	i = 0;
-	Point.m_y = (short) pScreen->m_pLayout3A8[3];
-	for (iRow = 0; iRow < 4; ++iRow) {
-		Point.m_x = (short) pScreen->m_pLayout3A8[2];
-		for (iColumn = 0; iColumn < 3; ++iColumn) {
-			iAction = g_GAME_PasswordKeyPermutation[i];
-			pOverlay = AllocateVSMemBlock(0x130);
-			if (pOverlay != 0) {
-				ConstructAlignedZrleChildOverlayFromPoint(pOverlay,
-														  0,
-														  &Point,
-														  pScreen->m_pPrimaryContext84,
-														  pScreen->m_pKeyResourceIds3AC[iAction],
-														  3);
-				*(int*) ((char*) pOverlay + 0xf8) = 0;
-				nContext = *(int*) (*(int*) ((char*) pOverlay + 0x4c) + 0x0c);
-				nRenderObject = nContext + *(int*) (*(int*) (nContext + 0x40) + 4) + 0x70;
-				*(int*) nRenderObject = 0;
-				*(void**) ((char*) pOverlay + 0xf4) = g_pSharedRenderDispatchQueue;
-				*(int*) ((char*) pOverlay + 0xcc) = (int) (0xabcd00b0U + iAction);
-			}
-			pScreen->m_apKeyOverlays424[iAction] = pOverlay;
-			pScreen->m_aKeyPositions3C0[i][0] = Point.m_x - (short) pScreen->m_pLayout3A8[2];
-			pScreen->m_aKeyPositions3C0[i][1] = Point.m_y - (short) pScreen->m_pLayout3A8[3];
-			Point.m_x = (short) (Point.m_x + pScreen->m_pLayout3A8[24] + pScreen->m_pLayout3A8[4]);
-			++i;
-		}
-		Point.m_y = (short) (Point.m_y + pScreen->m_pLayout3A8[25] + pScreen->m_pLayout3A8[5]);
-	}
-	pScreen->m_xSelected478 = pScreen->m_aKeyPositions3C0[pScreen->m_nSelectedKey480][0];
-	pScreen->m_ySelected47C = pScreen->m_aKeyPositions3C0[pScreen->m_nSelectedKey480][1];
-	InitializePasswordEntryRenderContext(pScreen);
-}
-
-__inline static void InitializePasswordEntryRenderContext(GamePasswordEntryScreenView* pScreen)
-{
-	typedef void(LEMBALL_FASTCALL * InitializeContextVirtual)(void*, int, short*, void*, int);
-	short Rect[4];
-	short nKeyStep;
-
-	nKeyStep = (short) (pScreen->m_pLayout3A8[24] + pScreen->m_pLayout3A8[4]);
-	pScreen->m_pInputPanelOwner3A4 = AllocateVSMemBlock(0x90);
-	if (pScreen->m_pInputPanelOwner3A4 == 0) {
-		pScreen->m_pInputPanelRenderContext474 = 0;
-		return;
-	}
-	((GameWindowOwnerRenderContext*) pScreen->m_pInputPanelOwner3A4)->ConstructWindowOwnerRenderContext();
-	*(int*) ((char*) pScreen->m_pInputPanelOwner3A4 + 0x50) += 10;
-	Rect[0] = (short) (nKeyStep * 3);
-	Rect[1] = (short) (nKeyStep * 4);
-	Rect[2] = (short) (pScreen->m_pLayout3A8[2] - 1);
-	Rect[3] = (short) (pScreen->m_pLayout3A8[3] - 1);
-	((InitializeContextVirtual) (*(void***) pScreen->m_pInputPanelOwner3A4)[1])(pScreen->m_pInputPanelOwner3A4,
-																				0,
-																				Rect,
-																				pScreen->m_pPrimaryContext84,
-																				0);
-	pScreen->m_pInputPanelRenderContext474 = *(void**) ((char*) pScreen->m_pInputPanelOwner3A4 + 0x4c);
-}
-
-static void LEMBALL_FASTCALL ReleasePasswordEntryResources(void* pObject)
-{
-	GamePasswordEntryScreenView* pScreen;
-	typedef void*(LEMBALL_FASTCALL * DeleteOverlayVirtual)(void*, int, int);
-	int i;
-	pScreen = (GamePasswordEntryScreenView*) pObject;
-	for (i = 0; i < 12; ++i) {
-		if (pScreen->m_apKeyOverlays424[i] != 0) {
-			void* pDeleteInterface = (char*) pScreen->m_apKeyOverlays424[i] + 0x90;
-			((DeleteOverlayVirtual) (*(void***) pDeleteInterface)[0])(pDeleteInterface, 0, 1);
-			pScreen->m_apKeyOverlays424[i] = 0;
-		}
-	}
-	if (pScreen->m_nPanelResourceId398 != 0) {
-		((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
-			->ReleaseVariantRenderResource(pScreen->m_nPanelResourceId398);
-		pScreen->m_nPanelResourceId398 = 0;
-	}
-	if (pScreen->m_pInputPanelOwner3A4 != 0) {
-		typedef void(LEMBALL_FASTCALL * ReleaseContextVirtual)(void*, int);
-		if (*(int*) ((char*) pScreen->m_pInputPanelOwner3A4 + 4) == 1) {
-			((ReleaseContextVirtual) (*(void***) pScreen->m_pInputPanelOwner3A4)[29])(pScreen->m_pInputPanelOwner3A4,
-																					  0);
-		}
-		DestroyWindowOwnerRenderContext(pScreen->m_pInputPanelOwner3A4);
-		FreeVSMemBlock(pScreen->m_pInputPanelOwner3A4);
-		pScreen->m_pInputPanelOwner3A4 = 0;
-		pScreen->m_pInputPanelRenderContext474 = 0;
-	}
-}
-
-__inline static void RotatePasswordEntrySelection(GamePasswordEntryScreenView* pScreen, int nDirection)
-{
-	int nPosition;
-
-	nPosition = pScreen->m_nSelectedKey480;
-	switch (nDirection) {
-	case 1:
-		nPosition = (nPosition + 9) % 12;
-		break;
-	case 2:
-		nPosition = (nPosition + 3) % 12;
-		break;
-	case 3:
-		nPosition = (nPosition % 3 == 0) ? nPosition + 2 : nPosition - 1;
-		break;
-	case 4:
-		nPosition = (nPosition % 3 == 2) ? nPosition - 2 : nPosition + 1;
-		break;
-	}
-	pScreen->m_nSelectedKey480 = nPosition;
-	pScreen->m_xSelected478 = pScreen->m_aKeyPositions3C0[nPosition][0];
-	pScreen->m_ySelected47C = pScreen->m_aKeyPositions3C0[nPosition][1];
-	pScreen->m_fSelectorDirty360 = 1;
-	pScreen->m_fFrameDirty330 = 1;
-}
-
-__inline static void ApplyPasswordEntryAction(GamePasswordEntryScreenView* pScreen, int nAction)
-{
-	int nEffect;
-
-	if (pScreen->m_nResultState488 == 1) {
-		return;
-	}
-	if (nAction < 10) {
-		if (pScreen->m_cPassword420 < 10) {
-			pScreen->m_szPassword3B0[pScreen->m_cPassword420++] = (char) ('0' + nAction);
-		}
-		else if (g_pVariantResourceEntryManager != 0) {
-			((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x19);
-		}
-	}
-	else if (nAction == 10) {
-		if (pScreen->m_cPassword420 != 0) {
-			--pScreen->m_cPassword420;
-			pScreen->m_szPassword3B0[pScreen->m_cPassword420] = '-';
-		}
-		else if (g_pVariantResourceEntryManager != 0) {
-			((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x19);
-		}
-	}
-	else if (nAction == 11) {
-		pScreen->m_fPasswordValid484 = ValidateCurrentLevelPassword(pScreen->m_szPassword3B0);
-		((GameNoArgVirtual) pScreen->GetScreenVtable()[19])(pScreen, 0);
-		SnapshotCurrentLevelProgress();
-		nEffect = pScreen->m_fPasswordValid484 != 0 ? 0x13 : 0x22;
-		if (g_pVariantResourceEntryManager != 0) {
-			((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(nEffect);
-		}
-		pScreen->m_nResultState488 = 1;
-		pScreen->m_dwResultStart48C = timeGetTime();
-		pScreen->m_dwResultDeadline490 = pScreen->m_dwResultStart48C + 1000U;
-	}
-	pScreen->m_fSelectorDirty360 = 1;
-	pScreen->m_fFrameDirty330 = 1;
-}
-
-__inline static void DispatchPasswordOverlayInput(void* pOverlay, int iSlot)
-{
-	typedef void(LEMBALL_FASTCALL * DispatchOverlayInputProc)(void*, int, short*, int);
-	short Point[2];
-	void* pInputInterface;
-
-	if (pOverlay == 0) {
-		return;
-	}
-	Point[0] = 0;
-	Point[1] = 0;
-	pInputInterface = (char*) pOverlay + 0x90;
-	((DispatchOverlayInputProc) (*(void***) pInputInterface)[iSlot])(pInputInterface, 0, Point, 0);
-}
-
-int LEMBALL_FASTCALL HandlePasswordEntryInput(void* pObject, int, void* pEvent)
-{
-	GamePasswordEntryScreenView* pScreen;
-	GameMenuSelectorEvent* pSelectorEvent;
-	unsigned int nCode;
-	int nAction;
-
-	pScreen = (GamePasswordEntryScreenView*) pObject;
-	pSelectorEvent = (GameMenuSelectorEvent*) pEvent;
-	nCode = (unsigned int) pSelectorEvent->m_nPayload08;
-	nAction = -1;
-	if (pSelectorEvent->m_nType00 == 3 || pSelectorEvent->m_nType00 == 4) {
-		void* pOverlay;
-		int iSlot;
-
-		pOverlay = 0;
-		iSlot = pSelectorEvent->m_nType00 == 3 ? 2 : 1;
-		if (nCode == 0x1fU || nCode == 0x22U) {
-			pOverlay = pScreen->m_apKeyOverlays424[g_GAME_PasswordKeyPermutation[pScreen->m_nSelectedKey480]];
-		}
-		else if (nCode == 0x4cU) {
-			pOverlay = pScreen->m_apKeyOverlays424[11];
-		}
-		else if (nCode == 0x4dU || nCode == 0x4eU) {
-			pOverlay = pScreen->m_apKeyOverlays424[10];
-		}
-		else if (nCode > 0x38U && nCode < 0x43U) {
-			pOverlay = pScreen->m_apKeyOverlays424[nCode - 0x39U];
-		}
-		else if (pSelectorEvent->m_nType00 == 4 && nCode >= 1U && nCode <= 4U) {
-			RotatePasswordEntrySelection(pScreen, (int) nCode);
-			return 1;
-		}
-		if (pOverlay != 0) {
-			DispatchPasswordOverlayInput(pOverlay, iSlot);
-			return 1;
-		}
-		return 0;
-	}
-	if (pSelectorEvent->m_nType00 == 0x0b) {
-		if (g_pVariantResourceEntryManager != 0) {
-			((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x25);
-		}
-		return 0;
-	}
-	if (pSelectorEvent->m_nType00 == 0x0c && nCode >= 0xabcd00b0U && nCode <= 0xabcd00bbU) {
-		nAction = (int) (nCode - 0xabcd00b0U);
-	}
-	if (nAction >= 0) {
-		ApplyPasswordEntryAction(pScreen, nAction);
-		return 1;
-	}
-	if (pSelectorEvent->m_nType00 == 0x0c) {
-		return 0;
-	}
-	++*(int*) ((char*) pScreen + 0x10);
-	return 0;
-}
-
-static void LEMBALL_FASTCALL UpdatePasswordEntryScreen(void* pObject)
-{
-	GamePasswordEntryScreenView* pScreen;
-	pScreen = (GamePasswordEntryScreenView*) pObject;
-	if (pScreen->m_nResultState488 == 1 && (int) (timeGetTime() - pScreen->m_dwResultDeadline490) >= 0) {
-		pScreen->m_nTransitionStatus378 = 1;
-		pScreen->m_nRequestedMode374 = 2;
-	}
-}
-
-static void LEMBALL_FASTCALL DrawPasswordEntryText(void* pObject)
-{
-	static const char* s_apszSkillNames[4] = {"Fun", "Tricky", "Taxing", "Mayhem"};
-	GamePasswordEntryScreenView* pScreen;
-	MappedListResourceTable* pMappedList;
-	GameLevelProgressStateView* pProgress;
-	short Point[2];
-	short Relative[2];
-	char aszLevelCounts[4][6];
-	const char* pszResult;
-	int i;
-
-	pScreen = (GamePasswordEntryScreenView*) pObject;
-	if (pScreen->m_pMappedListResources98 == 0 || pScreen->m_pLayout3A8 == 0) {
-		return;
-	}
-	pMappedList = (MappedListResourceTable*) pScreen->m_pMappedListResources98;
-	pProgress = (GameLevelProgressStateView*) g_pLevelProgressState;
-	Relative[0] = 0;
-	Relative[1] = 0;
-	for (i = 0; i < 4; ++i) {
-		Point[0] = (short) pScreen->m_pLayout3A8[6 + i * 2];
-		Point[1] = (short) pScreen->m_pLayout3A8[7 + i * 2];
-		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
-									   Point,
-									   Relative,
-									   pScreen->m_nMappedListRemapResourceId384,
-									   (void*) s_apszSkillNames[i],
-									   0x20,
-									   0);
-		strcpy(aszLevelCounts[i], ": ");
-		FormatSignedIntToRadixString(pProgress->m_anUnlockedPackCaps28[i] + 1, aszLevelCounts[i] + 2, 10);
-		Point[0] = (short) pScreen->m_pLayout3A8[14 + i * 2];
-		Point[1] = (short) pScreen->m_pLayout3A8[15 + i * 2];
-		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
-									   Point,
-									   Relative,
-									   pScreen->m_nMappedListRemapResourceId384,
-									   aszLevelCounts[i],
-									   0x20,
-									   0);
-	}
-	if (pScreen->m_nResultState488 == 1) {
-		pszResult = pScreen->m_fPasswordValid484 != 0 ? "Password OK!" : "Invalid Password!";
-		Point[0] = (short) pScreen->m_pLayout3A8[30];
-		Point[1] = (short) pScreen->m_pLayout3A8[31];
-		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
-									   Point,
-									   Relative,
-									   pScreen->m_nMappedListRemapResourceId384,
-									   (void*) pszResult,
-									   0x20,
-									   0);
-	}
-}
-
-void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void* pObject)
-{
-	GamePasswordEntryScreenView* pScreen;
-	MappedListResourceTable* pMappedList;
-	typedef void(LEMBALL_FASTCALL * QueuePointSinkVirtual)(void*, int, void*);
-	int nContext;
-	int nExtent;
-	short Point[2];
-	short Relative[2];
-	short Extent[2];
-	short Rect[4];
-	void* pSavedContext;
-
-	pScreen = (GamePasswordEntryScreenView*) pObject;
-	if (pScreen->m_pInputPanelRenderContext474 != 0) {
-		nContext = *(int*) ((char*) pScreen->m_pInputPanelRenderContext474 + 0x0c);
-		nExtent = nContext + *(int*) (*(int*) (nContext + 0x40) + 4) + 0x40;
-		*(int*) (pScreen->m_abInputPanelPointSink454 + 12) = 0x10000;
-		*(short*) (pScreen->m_abInputPanelPointSink454 + 4) = *(short*) (nExtent + 0x14);
-		*(short*) (pScreen->m_abInputPanelPointSink454 + 6) = *(short*) (nExtent + 0x16);
-		*(short*) (pScreen->m_abInputPanelPointSink454 + 8) = 0;
-		*(short*) (pScreen->m_abInputPanelPointSink454 + 10) = 0;
-		((QueuePointSinkVirtual) (*(void***) pScreen->m_abInputPanelPointSink454)[1])(
-			pScreen->m_abInputPanelPointSink454,
-			0,
-			pScreen->m_pInputPanelRenderContext474);
-		Point[0] = (short) pScreen->m_xSelected478;
-		Point[1] = (short) pScreen->m_ySelected47C;
-		pSavedContext = *(void**) (pScreen->m_abVariantRenderManager14 + 0x1c);
-		*(int*) (pScreen->m_abInputPanelFrameSelector464 + 12) = 0;
-		*(void**) (pScreen->m_abVariantRenderManager14 + 0x1c) = pScreen->m_pInputPanelRenderContext474;
-		((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
-			->EmitVariantRenderResourceEntry(Rect,
-											 Point,
-											 pScreen->m_nPanelResourceId398,
-											 0,
-											 pScreen->m_abInputPanelFrameSelector464,
-											 0);
-		*(void**) (pScreen->m_abVariantRenderManager14 + 0x1c) = pSavedContext;
-	}
-	if (pScreen->m_pMappedListResources98 == 0 || pScreen->m_pLayout3A8 == 0) {
-		return;
-	}
-	pMappedList = (MappedListResourceTable*) pScreen->m_pMappedListResources98;
-	Relative[0] = 0;
-	Relative[1] = 0;
-	MeasureFunctionalLevelTitleExtent(pMappedList->GetMappedResource(pScreen->m_nMappedListRemapResourceId384),
-									  Extent,
-									  pScreen->m_szPassword3B0);
-	Point[0] = (short) (pScreen->m_cxScreen37C - pScreen->m_pLayout3A8[22] - Extent[0]);
-	Point[1] = (short) pScreen->m_pLayout3A8[23];
-	pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
-								   Point,
-								   Relative,
-								   pScreen->m_nMappedListRemapResourceId384,
-								   pScreen->m_szPassword3B0,
-								   0x20,
-								   0);
-}
-
-__inline static void DestroyPasswordEntryScreen(GamePasswordEntryScreenView* pScreen)
-{
-	pScreen->SetScreenVtable(g_GAME_PasswordEntryScreenVtable);
-	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_PasswordEntryQueueVtable;
-	if (pScreen->m_fFrameResourcesLoaded9C != 0) {
-		ReleasePasswordEntryResources(pScreen);
-	}
-	g_pActiveNetworkLobbyScreen = 0;
-	if (g_pSharedRenderDispatchQueue != 0) {
-		((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)
-			->UnregisterOrderedRenderDispatchClient(pScreen->m_abRenderQueueNode04, 0);
-	}
-	if (pScreen->m_fFrameResourcesLoaded9C != 0) {
-		pScreen->ReleaseFrameResources();
-	}
-	if (pScreen->m_pMappedListResources98 != 0) {
-		((MappedListResourceTable*) pScreen->m_pMappedListResources98)->Destroy();
-		FreeVSMemBlock(pScreen->m_pMappedListResources98);
-		pScreen->m_pMappedListResources98 = 0;
-	}
-	((MogLoadResourceArchive*) g_pMainResourceArchive)->PruneUnreferencedCachedResourceObjects();
-	DestroyFramedScreenRenderEntryGroup(pScreen->m_abRenderEntryGroupC8);
-	DestroyVariantRenderManager(pScreen->m_abVariantRenderManager14);
-}
-
-static void* LEMBALL_FASTCALL DeletePasswordEntryScreen(void* pObject, int, int fDelete)
-{
-	DestroyPasswordEntryScreen((GamePasswordEntryScreenView*) pObject);
-	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pObject);
-	}
-	return pObject;
-}
-
-static void* LEMBALL_FASTCALL DeleteAdjustedPasswordEntryScreen(void* pObject, int nUnusedEdx, int fDelete)
-{
-	return DeletePasswordEntryScreen((char*) pObject - 4, nUnusedEdx, fDelete);
-}
-
-__inline static void InitializeFunctionalLevelSelectionVtable(void)
-{
-	int i;
-
-	if (g_fFunctionalLevelSelectionVtableInitialized != 0) {
-		return;
-	}
-	for (i = 0; i < 22; ++i) {
-		g_GAME_FunctionalLevelSelectionVtable[i] = g_GAME_MainMenuScreenVtable[i];
-	}
-	g_GAME_FunctionalLevelSelectionVtable[0] = (void*) DeleteFunctionalLevelSelectionScreen;
-	g_GAME_FunctionalLevelSelectionVtable[14] = (void*) UpdateFunctionalLevelSelectionScreen;
-	g_GAME_FunctionalLevelSelectionVtable[15] = (void*) HandleFunctionalLevelSelectionInput;
-	g_GAME_FunctionalLevelSelectionVtable[16] = (void*) InitializeFunctionalLevelSelectionResources;
-	g_GAME_FunctionalLevelSelectionVtable[17] = (void*) ReleaseFunctionalLevelSelectionResources;
-	g_GAME_FunctionalLevelSelectionVtable[18] = (void*) DrawFunctionalLevelSelectionStatus;
-	g_GAME_FunctionalLevelSelectionVtable[19] = (void*) DrawFunctionalLevelSelectionText;
-	g_GAME_FunctionalLevelSelectionVtable[20] = (void*) DrawFunctionalLevelSelectionFrame;
-	g_GAME_FunctionalLevelSelectionVtable[21] = (void*) DispatchFunctionalLevelSelectionAction;
-	g_fFunctionalLevelSelectionVtableInitialized = 1;
-}
-
-void* LEMBALL_FASTCALL
-ConstructFunctionalLevelSelectionScreen(void* pObject, int, void* pPrimaryContext, void* pRenderContext, short* paSize)
-{
-	GameLevelSelectionScreenView* pScreen;
-
-	pScreen = (GameLevelSelectionScreenView*) pObject;
-	pScreen->ConstructFramedScreenBaseFields(pPrimaryContext, pRenderContext, paSize, 4, 0x32, 200, 0, 0x28, 0x30);
-	InitializeFramedScreenRenderChildEntry(pScreen->m_abRenderChild398);
-	InitializeFunctionalLevelSelectionVtable();
-	pScreen->SetScreenVtable(g_GAME_FunctionalLevelSelectionVtable);
-	pScreen->m_fDrawFrameA8 = 1;
-	*(void***) pScreen->m_abVariantRenderManager14 = g_GAME_MainMenuCallbackVtable;
-	pScreen->m_fTileBackgroundAC = 1;
-	pScreen->m_fDrawForegroundB0 = 1;
-	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_MainMenuQueueVtable;
-	ActivateFramedScreenBase(pScreen);
-	pScreen->m_pSelector3C4 =
-		ConstructLevelSelectionFrameSelector(pScreen->m_abVariantRenderManager14, pScreen->m_nResourceId3D8);
-	pScreen->m_pSelector3C0 =
-		ConstructLevelSelectionFrameSelector(pScreen->m_abVariantRenderManager14, pScreen->m_nResourceId3DC);
-	pScreen->m_pSelector3C8 =
-		ConstructLevelSelectionFrameSelector(pScreen->m_abVariantRenderManager14, pScreen->m_nResourceId3E0);
-	InitializeFunctionalLevelSelectionPaletteRemap(pScreen);
-	return pScreen;
-}
-
-__inline static void InitializeFunctionalLevelSelectionPaletteRemap(GameLevelSelectionScreenView* pScreen)
-{
-	void* pPalette;
-	int i;
-
-	pPalette = LoadPalResource(0x10a);
-	pScreen->m_pPaletteRemap3CC = (unsigned char*) AllocateVSMemBlock(0x100);
-	for (i = 0; i < 0x100; ++i) {
-		pScreen->m_pPaletteRemap3CC[i] = (unsigned char) i;
-	}
-	for (i = 0; i < 10; ++i) {
-		if (g_GAME_LevelSelectionPaletteTargetIndices[i] != 0) {
-			pScreen->m_pPaletteRemap3CC[g_GAME_LevelSelectionPaletteSourceIndices[i]] =
-				(unsigned char) g_GAME_LevelSelectionPaletteTargetIndices[i];
-		}
-	}
-	pScreen->m_nPaletteRemap3D0 =
-		(int) (unsigned long) RegisterPaletteRemapVariant(0x10a, pScreen->m_pPaletteRemap3CC, 0);
-	ReleaseTypedResourceObjectReference(pPalette);
-}
-
-__inline static void ReleaseFunctionalLevelSelectionPaletteRemap(GameLevelSelectionScreenView* pScreen)
-{
-	ReleasePaletteRemapVariant((void*) (unsigned long) pScreen->m_nPaletteRemap3D0);
-}
-
-__inline static GameProgressiveVariantFrameSelector* ConstructLevelSelectionFrameSelector(void* pManager,
-																						  int nResourceId)
-{
-	GameProgressiveVariantFrameSelector* pSelector;
-
-	pSelector = (GameProgressiveVariantFrameSelector*) AllocateVSMemBlock(sizeof(GameProgressiveVariantFrameSelector));
-	if (pSelector == 0) {
-		return 0;
-	}
-	pSelector->m_pVtable = g_MenuSelectorFrameSelectorCtorVtable;
-	pSelector->m_cFrames = ((LevelVariantRenderManagerView*) pManager)->GetVariantRenderFrameCount(nResourceId);
-	pSelector->m_pVtable = g_MenuSelectorTimedFrameSelectorVtable;
-	pSelector->m_nDirection = 1;
-	pSelector->m_pVtable = g_MenuSelectorCurrentFrameCallbackVtable + 1;
-	((GameProgressiveSelectorVtableView*) pSelector)->SetDuration(500);
-	pSelector->m_dwFixedTime = -1;
-	return pSelector;
-}
-
-static void* LEMBALL_FASTCALL DeleteFunctionalLevelSelectionScreen(void* pObject, int, int fDelete)
-{
-	GameLevelSelectionScreenView* pScreen;
-
-	pScreen = (GameLevelSelectionScreenView*) pObject;
-	pScreen->SetScreenVtable(g_GAME_FunctionalLevelSelectionVtable);
-	*(void***) pScreen->m_abRenderQueueNode04 = g_GAME_MainMenuQueueVtable;
-	*(void***) pScreen->m_abVariantRenderManager14 = g_GAME_MainMenuCallbackVtable;
-	FreeVSMemBlock(pScreen->m_pSelector3C4);
-	FreeVSMemBlock(pScreen->m_pSelector3C0);
-	FreeVSMemBlock(pScreen->m_pSelector3C8);
-	ReleaseFunctionalLevelSelectionPaletteRemap(pScreen);
-	if (pScreen->m_fFrameResourcesLoaded9C != 0) {
-		ReleaseFunctionalLevelSelectionResources(pScreen);
-	}
-	RestoreLevelSelectionRenderChildEntryVtable(pScreen->m_abRenderChild398);
-	DestroyFunctionalFramedScreenBase(pScreen);
-	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pScreen);
-	}
-	return pObject;
-}
-
-static int LEMBALL_FASTCALL HandleFunctionalLevelSelectionInput(void* pObject, int, void* pEvent)
-{
-	GameLevelSelectionScreenView* pScreen;
-	int nCode;
-
-	pScreen = (GameLevelSelectionScreenView*) pObject;
-	if (*(unsigned short*) pEvent != 0x0c) {
-		++*(int*) ((char*) pScreen + 0x10);
-		return 0;
-	}
-	nCode = *(int*) ((char*) pEvent + 8);
-	switch ((unsigned int) nCode) {
-	case 0xacef000cU:
-		if (pScreen->m_fNetworkScreen8C == 0) {
-			pScreen->m_nRequestedMode374 = 2;
-			pScreen->m_nTransitionStatus378 = 1;
-		}
-		else {
-			((GameBaseModeScreen*) pScreen)->QueueActiveBaseModeUserAction(2, 0);
-		}
-		return 1;
-	case 0xacef000dU:
-		if (pScreen->m_fNetworkScreen8C == 0) {
-			pScreen->m_nRequestedMode374 = 5;
-			pScreen->m_nTransitionStatus378 = 1;
-		}
-		else {
-			((GameBaseModeScreen*) pScreen)->QueueActiveBaseModeUserAction(3, 0);
-		}
-		return 1;
-	case 0xacef000eU:
-		if (pScreen->m_fNextLocked480 == 1) {
-			pScreen->m_fFrameDirty330 = 1;
-		}
-		else if (pScreen->m_fNetworkScreen8C == 0) {
-			SelectNextFunctionalLevel(pScreen);
-		}
-		else {
-			((GameBaseModeScreen*) pScreen)->QueueActiveBaseModeUserAction(0, 0);
-		}
-		return 1;
-	case 0xacef000fU:
-		if (pScreen->m_fPreviousLocked484 == 1) {
-			pScreen->m_fFrameDirty330 = 1;
-		}
-		else if (pScreen->m_fNetworkScreen8C == 0) {
-			SelectPreviousFunctionalLevel(pScreen);
-		}
-		else {
-			((GameBaseModeScreen*) pScreen)->QueueActiveBaseModeUserAction(1, 0);
-		}
-		return 1;
-	default:
-		return 0;
-	}
-}
-
-__inline static void LEMBALL_FASTCALL
-RequestFunctionalLevelSelectionTransitionMode5(GameLevelSelectionScreenView* pScreen)
-{
-	pScreen->m_nTransitionStatus378 = 1;
-	pScreen->m_nRequestedMode374 = 5;
-}
-
-__inline static void LEMBALL_FASTCALL
-RequestFunctionalLevelSelectionTransitionMode2(GameLevelSelectionScreenView* pScreen)
-{
-	pScreen->m_nTransitionStatus378 = 1;
-	pScreen->m_nRequestedMode374 = 2;
-}
-
-static int LEMBALL_FASTCALL DispatchFunctionalLevelSelectionAction(void* pObject, int, int nAction)
-{
-	GameLevelSelectionScreenView* pScreen;
-
-	pScreen = (GameLevelSelectionScreenView*) pObject;
-	switch (nAction) {
-	case 0:
-		SelectNextFunctionalLevel(pScreen);
-		return 1;
-	case 1:
-		SelectPreviousFunctionalLevel(pScreen);
-		return 1;
-	case 2:
-		RequestFunctionalLevelSelectionTransitionMode2(pScreen);
-		return 1;
-	case 3:
-		RequestFunctionalLevelSelectionTransitionMode5(pScreen);
-		return 1;
-	default:
-		return 0;
-	}
-}
-
-static void LEMBALL_FASTCALL UpdateFunctionalLevelSelectionScreen(void* pObject)
-{
-	GameFramedScreenBase* pScreen;
-
-	pScreen = (GameFramedScreenBase*) pObject;
-	if (g_fStartupTestAllLevels != 0) {
-		pScreen->m_nTransitionStatus378 = 1;
-		pScreen->m_nRequestedMode374 = 5;
-	}
-}
-
-static void LEMBALL_FASTCALL InitializeFunctionalLevelSelectionResources(void* pObject)
-{
-	GameLevelSelectionScreenView* pScreen;
-	const int* pLayout;
-	const int* pBackResources;
-	const int* pPlayResources;
-	unsigned char* pForegroundEntry;
-	unsigned char* pLevelEntry;
-	void* pBitmap;
-	void* pButtonManager;
-	int nResource0;
-	int nResource1;
-	int nResource2;
-
-	pScreen = (GameLevelSelectionScreenView*) pObject;
-	if (pScreen->m_fCompactLayout32C == 1) {
-		pLayout = g_GAME_LevelSelectionLayoutCompact;
-		pBackResources = g_GAME_LevelSelectionBackResourcesCompact;
-		pPlayResources = g_GAME_LevelSelectionPlayResourcesCompact;
-		pBitmap = LoadBitmapResource(0x13e);
-		nResource0 = 0x180;
-		nResource1 = 0x181;
-		nResource2 = 0x182;
-		pScreen->m_nTimedVariantResourceId394 = 0x17c;
-		pScreen->m_pPreviousResourceIds3E8 = g_GAME_LevelSelectionPreviousResourcesCompact;
-		pScreen->m_pNextResourceIds3E4 = g_GAME_LevelSelectionNextResourcesCompact;
-	}
-	else {
-		pLayout = g_GAME_LevelSelectionLayoutStandard;
-		pBackResources = g_GAME_LevelSelectionBackResourcesStandard;
-		pPlayResources = g_GAME_LevelSelectionPlayResourcesStandard;
-		pBitmap = LoadBitmapResource(0x133);
-		nResource0 = 0x153;
-		nResource1 = 0x154;
-		nResource2 = 0x155;
-		pScreen->m_nTimedVariantResourceId394 = 0x14f;
-		pScreen->m_pPreviousResourceIds3E8 = g_GAME_LevelSelectionPreviousResourcesStandard;
-		pScreen->m_pNextResourceIds3E4 = g_GAME_LevelSelectionNextResourcesStandard;
-	}
-	*(void**) ((char*) pScreen + 0x3bc) = pBitmap;
-	*(const int**) ((char*) pScreen + 0x3d4) = pLayout;
-	*(int*) ((char*) pScreen + 0x3d8) = nResource0;
-	*(int*) ((char*) pScreen + 0x3dc) = nResource1;
-	*(int*) ((char*) pScreen + 0x3e0) = nResource2;
-	pScreen->m_xOverlay380 = (short) pLayout[16] + (short) pLayout[14];
-	pScreen->m_yOverlay382 = (short) pLayout[15] + (short) pLayout[17];
-	pForegroundEntry = pScreen->m_abRenderEntryGroupC8 + 0x14;
-	*(short*) (pForegroundEntry + 0) = (short) pLayout[8];
-	*(short*) (pForegroundEntry + 2) = (short) pLayout[9];
-	*(void**) (pForegroundEntry + 0x0c) = pScreen->m_pForegroundBitmapC0;
-	*(int*) (pForegroundEntry + 0x10) = 0x800;
-	*(int*) (pForegroundEntry + 0x14) = 0;
-	pLevelEntry = pScreen->m_abRenderChild398 + 4;
-	*(short*) (pLevelEntry + 0) = (short) pLayout[14];
-	*(short*) (pLevelEntry + 2) = (short) pLayout[15];
-	*(void**) (pLevelEntry + 0x0c) = pBitmap;
-	*(int*) (pLevelEntry + 0x10) = 0x800;
-	*(int*) (pLevelEntry + 0x14) = 0;
-
-	LoadVariantRenderResource(pScreen->m_abVariantRenderManager14, nResource0);
-	LoadVariantRenderResource(pScreen->m_abVariantRenderManager14, nResource1);
-	LoadVariantRenderResource(pScreen->m_abVariantRenderManager14, pScreen->m_nTimedVariantResourceId394);
-	LoadVariantRenderResource(pScreen->m_abVariantRenderManager14, nResource2);
-
-	pScreen->m_nReserved47C = 0;
-	pScreen->m_fNextLocked480 = 0;
-	pScreen->m_fPreviousLocked484 = 0;
-	pButtonManager = AllocateVSMemBlock(0x14c);
-	if (pButtonManager != 0) {
-		pScreen->m_pQueuedVariantManager338 = ConstructQueuedVariantChildSlotManager(pButtonManager,
-																					 0,
-																					 pScreen->m_pPrimaryContext84,
-																					 pScreen->m_pRenderContext88,
-																					 4,
-																					 pScreen->m_fCompactLayout32C,
-																					 0);
-	}
-	else {
-		pScreen->m_pQueuedVariantManager338 = 0;
-	}
-	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
-								 0,
-								 pLayout[0],
-								 pLayout[1],
-								 pPlayResources,
-								 1,
-								 0,
-								 0,
-								 0,
-								 &pScreen->m_nReserved47C,
-								 (int) 0xacef000dU);
-	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
-								 0,
-								 pLayout[2],
-								 pLayout[3],
-								 pBackResources,
-								 1,
-								 0,
-								 0,
-								 0,
-								 &pScreen->m_nReserved47C,
-								 (int) 0xacef000cU);
-	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
-								 0,
-								 pLayout[4],
-								 pLayout[5],
-								 pScreen->m_pPreviousResourceIds3E8,
-								 1,
-								 0,
-								 1,
-								 0,
-								 &pScreen->m_fPreviousLocked484,
-								 (int) 0xacef000fU);
-	AppendQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338,
-								 0,
-								 pLayout[6],
-								 pLayout[7],
-								 pScreen->m_pNextResourceIds3E4,
-								 1,
-								 0,
-								 1,
-								 0,
-								 &pScreen->m_fNextLocked480,
-								 (int) 0xacef000eU);
-	SelectQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338, 0, 0);
-	InitializeQueuedVariantChildContext(pScreen->m_pQueuedVariantManager338);
-	RefreshFunctionalLevelSelectionMetadata(pScreen);
-}
-
-static void LEMBALL_FASTCALL ReleaseFunctionalLevelSelectionResources(void* pObject)
-{
-	GameFramedScreenBase* pScreen;
-	LevelVariantRenderManagerView* pVariantManager;
-
-	pScreen = (GameFramedScreenBase*) pObject;
-	pVariantManager = (LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14;
-	if (pScreen->m_pQueuedVariantManager338 != 0) {
-		typedef void*(LEMBALL_FASTCALL * DeleteProc)(void*, int, int);
-		((DeleteProc) (*(void***) pScreen->m_pQueuedVariantManager338)[1])(pScreen->m_pQueuedVariantManager338, 0, 1);
-	}
-	ReleaseTypedResourceObjectReference(*(void**) ((char*) pScreen + 0x3bc));
-	pVariantManager->ReleaseVariantRenderResource(*(int*) ((char*) pScreen + 0x3d8));
-	pVariantManager->ReleaseVariantRenderResource(*(int*) ((char*) pScreen + 0x3dc));
-	pVariantManager->ReleaseVariantRenderResource(pScreen->m_nTimedVariantResourceId394);
-	pVariantManager->ReleaseVariantRenderResource(*(int*) ((char*) pScreen + 0x3e0));
-}
-
-static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionStatus(void* pObject)
-{
-	GameLevelSelectionScreenView* pScreen;
-	const int* pLayout;
-	short Extent[2];
-	short Point[2];
-	short Rect[4];
-	int cxFrame;
-	int x;
-	int i;
-
-	pScreen = (GameLevelSelectionScreenView*) pObject;
-	pLayout = pScreen->m_pLayout3D4;
-	Point[0] = (short) pLayout[30];
-	Point[1] = (short) pLayout[31];
-	((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
-		->EmitVariantRenderResourceEntry(Rect, Point, pScreen->m_nResourceId3D8, 0, pScreen->m_pSelector3C4, 0);
-	Point[0] = (short) pLayout[18];
-	Point[1] = (short) pLayout[19];
-	((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
-		->EmitVariantRenderResourceEntry(Rect, Point, pScreen->m_nResourceId3E0, 0, pScreen->m_pSelector3C8, 0);
-	Point[0] = (short) pLayout[24];
-	Point[1] = (short) pLayout[25];
-	((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
-		->EmitVariantRenderResourceEntry(Rect, Point, pScreen->m_nResourceId3DC, 0, pScreen->m_pSelector3C0, 0);
-
-	if (pScreen->m_fNetworkScreen8C != 0) {
-		Point[0] = (short) pLayout[42];
-		Point[1] = (short) pLayout[43];
-		((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
-			->EmitVariantRenderResourceEntry(Rect,
-											 Point,
-											 pScreen->m_nResourceId3D8,
-											 0,
-											 pScreen->m_pSelector3C4,
-											 pScreen->m_nPaletteRemap3D0);
-		GetFunctionalVariantFrameExtent(pScreen->m_abVariantRenderManager14, Extent, pScreen->m_nResourceId3D8, 0);
-		cxFrame = Extent[0];
-		x = pLayout[10] - cxFrame / 4 + pLayout[12];
-		for (i = 0; i < pScreen->m_cNetworkStatus3F0; ++i) {
-			x -= cxFrame + cxFrame / 8;
-			Point[0] = (short) x;
-			Point[1] = (short) pLayout[47];
-			((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
-				->EmitVariantRenderResourceEntry(Rect,
-												 Point,
-												 pScreen->m_nResourceId3D8,
-												 0,
-												 pScreen->m_pSelector3C4,
-												 pScreen->m_nPaletteRemap3D0);
-		}
-	}
-
-	GetFunctionalVariantFrameExtent(pScreen->m_abVariantRenderManager14, Extent, pScreen->m_nResourceId3D8, 0);
-	cxFrame = Extent[0];
-	x = pLayout[10] - cxFrame / 4 + pLayout[12];
-	for (i = 0; i < pScreen->m_cStatus3EC; ++i) {
-		x -= cxFrame + cxFrame / 8;
-		Point[0] = (short) x;
-		Point[1] = (short) pLayout[35];
-		((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
-			->EmitVariantRenderResourceEntry(Rect, Point, pScreen->m_nResourceId3D8, 0, pScreen->m_pSelector3C4, 0);
-	}
-
-	GetFunctionalVariantFrameExtent(pScreen->m_abVariantRenderManager14, Extent, pScreen->m_nResourceId3DC, 0);
-	x = pLayout[10] - pLayout[50] + pLayout[12];
-	if (pScreen->m_cSkillStatus3F4 < 5) {
-		for (i = 0; i < pScreen->m_cSkillStatus3F4; ++i) {
-			x -= Extent[0];
-			Point[0] = (short) x;
-			Point[1] = (short) pLayout[29];
-			((LevelVariantRenderManagerView*) pScreen->m_abVariantRenderManager14)
-				->EmitVariantRenderResourceEntry(Rect, Point, pScreen->m_nResourceId3DC, 0, pScreen->m_pSelector3C0, 0);
-		}
-	}
-}
-
-static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionFrame(void* pObject)
-{
-	GameLevelSelectionScreenView* pScreen;
-	const int* pFramePoint;
-
-	pScreen = (GameLevelSelectionScreenView*) pObject;
-	((GameMainMenuRenderEntryInterface*) pScreen->m_abRenderChild398)->AppendToQueue(pScreen->m_pRenderContext88);
-	pFramePoint = pScreen->m_pLayout3D4 + (pScreen->m_fNetworkScreen8C == 0 ? 12 : 48);
-	pScreen->EmitScreenFrameRect((short) pScreen->m_pLayout3D4[10],
-								 (short) pScreen->m_pLayout3D4[11],
-								 (short) pFramePoint[0],
-								 (short) pFramePoint[1]);
-}
-
-__inline static short* GetFunctionalVariantFrameExtent(void* pObject, short* pExtent, int nResourceId, int iFrame)
-{
-	int* pManager;
-	int* pResource;
-	short* pFrame;
-
-	pManager = (int*) pObject;
-	pResource =
-		*(int**) (unsigned long) (pManager[9] + (int) *(short*) (unsigned long) (pManager[10] + nResourceId * 2) * 4);
-	if (pResource[0x10] != 0x5a524c45) {
-		pFrame = (short*) (unsigned long) (pResource[0x1e] + 0x4c + iFrame * 0x54);
-		pExtent[0] = pFrame[0];
-		pExtent[1] = pFrame[1];
-	}
-	else {
-		pExtent[0] = *(short*) ((char*) pResource + 0x4c);
-		pExtent[1] = *(short*) ((char*) pResource + 0x4e);
-	}
-	return pExtent;
-}
-
-static void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(void* pObject)
-{
-	static const char* s_apszSkillNames[5] = {"Fun", " Tricky", "Taxing", "Mayhem", "Network"};
-	static const int s_anStatusLabelPoints[4] = {10, 13, 16, 22};
-	GameLevelSelectionScreenView* pScreen;
-	MappedListResourceTable* pMappedList;
-	void* pFontResource;
-	const char* pszTime;
-	const char* pszSkill;
-	short Point[2];
-	short Relative[2];
-	short Extent[2];
-	int cStatusLabels;
-	int i;
-	int nPack;
-
-	pScreen = (GameLevelSelectionScreenView*) pObject;
-	if (pScreen->m_fBuildingRenderEntries364 == 0) {
-		return;
-	}
-	pMappedList = (MappedListResourceTable*) pScreen->m_pMappedListResources98;
-	Relative[0] = 0;
-	Relative[1] = 0;
-	for (i = 0; i < 3; ++i) {
-		if (pScreen->m_aTitlePositions464[i][0] != -1) {
-			Point[0] = (short) pScreen->m_aTitlePositions464[i][0];
-			Point[1] = (short) pScreen->m_aTitlePositions464[i][1];
-			pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
-										   Point,
-										   Relative,
-										   pScreen->m_nMappedListRemapResourceId384,
-										   pScreen->m_aszTitleLines3FC[i],
-										   0x20,
-										   0);
-		}
-	}
-
-	cStatusLabels = pScreen->m_fNetworkScreen8C != 0 ? 4 : 3;
-	for (i = 0; i < cStatusLabels; ++i) {
-		Point[0] = (short) pScreen->m_pLayout3D4[s_anStatusLabelPoints[i] * 2];
-		Point[1] = (short) pScreen->m_pLayout3D4[s_anStatusLabelPoints[i] * 2 + 1];
-		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
-									   Point,
-									   Relative,
-									   pScreen->m_nMappedListRemapResourceId384,
-									   (void*) "x",
-									   0x20,
-									   0);
-	}
-
-	pszTime = pScreen->m_abTime45C;
-	if (pScreen->m_abTime45C[0] >= ':') {
-		pszTime = "Infinite";
-	}
-	Point[0] = (short) pScreen->m_pLayout3D4[22];
-	Point[1] = (short) pScreen->m_pLayout3D4[23];
-	pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
-								   Point,
-								   Relative,
-								   pScreen->m_nMappedListRemapResourceId384,
-								   (void*) pszTime,
-								   0x20,
-								   0);
-	nPack = ((GameLevelProgressStateView*) g_pLevelProgressState)->m_nCurrentPack08;
-	pszSkill = s_apszSkillNames[nPack];
-	pFontResource = pMappedList->GetMappedResource(pScreen->m_nMappedListRemapResourceId384);
-	MeasureFunctionalLevelTitleExtent(pFontResource, Extent, pszSkill);
-	Point[0] = (short) (pScreen->m_pLayout3D4[40] - Extent[0] / 2);
-	Point[1] = (short) pScreen->m_pLayout3D4[41];
-	pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
-								   Point,
-								   Relative,
-								   pScreen->m_nMappedListRemapResourceId384,
-								   (void*) pszSkill,
-								   0x20,
-								   0);
-	if (4 < pScreen->m_cSkillStatus3F4) {
-		Point[0] = (short) pScreen->m_pLayout3D4[22];
-		Point[1] = (short) pScreen->m_pLayout3D4[53];
-		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
-									   Point,
-									   Relative,
-									   pScreen->m_nMappedListRemapResourceId384,
-									   (void*) "None",
-									   0x20,
-									   0);
-	}
-}
-
-__inline static int CopyNextFunctionalLevelTitleWord(const char* pszSource, char* pszLine, int* piSource, int* piLine)
-{
-	while (pszSource[*piSource] != '\0' && pszSource[*piSource] != ' ') {
-		pszLine[*piLine] = pszSource[*piSource];
-		++*piSource;
-		++*piLine;
-	}
-	pszLine[*piLine] = '\0';
-	if (pszSource[*piSource] != '\0') {
-		++*piSource;
-		return 0;
-	}
-	return 1;
-}
-
-__inline static void TrimFunctionalLevelTitleToPreviousWord(const char* pszSource,
-															char* pszLine,
-															int* piSource,
-															int* piLine)
-{
-	int cchBacktracked;
-	int cchSource;
-
-	cchBacktracked = 0;
-	*piSource -= 2;
-	cchSource = strlen(pszSource);
-	if (cchSource != 0) {
-		while (pszSource[*piSource] != ' ') {
-			++cchBacktracked;
-			--*piSource;
-			pszLine[*piLine] = '\0';
-			--*piLine;
-			if (cchSource <= cchBacktracked) {
-				return;
-			}
-		}
-		pszLine[*piLine] = '\0';
-		--*piLine;
-		pszLine[*piLine] = '\0';
-		++*piSource;
-	}
-}
-
-static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(GameLevelSelectionScreenView* pScreen)
-{
-	GameLevelProgressStateView* pProgress;
-	const char* pszTitle;
-	void* pFontResource;
-	char szLine[0x20];
-	short Extent[2];
-	int iLine;
-	int iSource;
-	int iDest;
-	int fEndOfTitle;
-	int y;
-	int nPack;
-	int nCurrentLevel;
-	LevelMetadata Metadata;
-
-	pProgress = (GameLevelProgressStateView*) g_pLevelProgressState;
-	nPack = pProgress->m_nCurrentPack08;
-	nCurrentLevel = pProgress->m_anSnapshotPackCaps3C[nPack];
-	pScreen->m_fSelectorDirty360 = 1;
-	pScreen->m_fFrameDirty330 = 1;
-	ReadLevelMetadataForSkillAndLevel(nPack, nCurrentLevel, &Metadata);
-	if (pScreen->m_fNetworkScreen8C != 0) {
-		pScreen->m_cNetworkStatus3F0 = Metadata.m_cNetworkPlayers04;
-	}
-	pScreen->m_cSkillStatus3F4 = Metadata.m_cSkill00;
-	pScreen->m_cStatus3EC = Metadata.m_cPlayers02;
-	pScreen->m_nLevelTime3F8 = Metadata.m_nTimeSeconds06;
-	pszTitle = Metadata.m_szTitle08[0] == '\0' ? "UN-NAMED LEVEL" : Metadata.m_szTitle08;
-	memset(pScreen->m_aszTitleLines3FC, 0, sizeof(pScreen->m_aszTitleLines3FC));
-	for (iLine = 0; iLine < 3; ++iLine) {
-		pScreen->m_aTitlePositions464[iLine][0] = -1;
-		pScreen->m_aTitlePositions464[iLine][1] = -1;
-	}
-
-	iSource = 0;
-	y = pScreen->m_pLayout3D4[37];
-	pFontResource = ((MappedListResourceTable*) pScreen->m_pMappedListResources98)
-						->GetMappedResource(pScreen->m_nMappedListRemapResourceId384);
-	fEndOfTitle = 0;
-	for (iLine = 0; iLine < 3; ++iLine) {
-		if (fEndOfTitle == 1) {
-			break;
-		}
-		memset(szLine, 0, sizeof(szLine));
-		iDest = 0;
-		for (;;) {
-			fEndOfTitle = CopyNextFunctionalLevelTitleWord(pszTitle, szLine, &iSource, &iDest);
-			MeasureFunctionalLevelTitleExtent(pFontResource, Extent, szLine);
-			if (pScreen->m_pLayout3D4[38] < Extent[0] || fEndOfTitle == 1) {
-				break;
-			}
-			szLine[iDest++] = ' ';
-			szLine[iDest] = '\0';
-		}
-		if (pScreen->m_pLayout3D4[38] < Extent[0]) {
-			fEndOfTitle = 0;
-			TrimFunctionalLevelTitleToPreviousWord(pszTitle, szLine, &iSource, &iDest);
-		}
-		strcpy(pScreen->m_aszTitleLines3FC[iLine], szLine);
-		MeasureFunctionalLevelTitleExtent(pFontResource, Extent, szLine);
-		pScreen->m_aTitlePositions464[iLine][0] =
-			pScreen->m_pLayout3D4[36] + (pScreen->m_pLayout3D4[38] - Extent[0]) / 2;
-		pScreen->m_aTitlePositions464[iLine][1] = y;
-		y += Extent[1];
-	}
-	pScreen->m_abTime45C[0] = (char) (Metadata.m_nTimeSeconds06 / 60 + '0');
-	pScreen->m_abTime45C[1] = ':';
-	pScreen->m_abTime45C[2] = (char) ((Metadata.m_nTimeSeconds06 % 60) / 10 + '0');
-	pScreen->m_abTime45C[3] = (char) (Metadata.m_nTimeSeconds06 % 10 + '0');
-	pScreen->m_abTime45C[4] = '\0';
-	RefreshFunctionalLevelSelectionNavigationLocks(pScreen);
-}
-
-__inline static void LEMBALL_FASTCALL
-RefreshFunctionalLevelSelectionNavigationLocks(GameLevelSelectionScreenView* pScreen)
-{
-	int fNextAvailable;
-	int fPreviousAvailable;
-
-	fNextAvailable = IsCurrentLevelProgressAvailableThunk(g_pLevelProgressState);
-	fPreviousAvailable = CanRetreatCurrentLevelProgressThunk(g_pLevelProgressState);
-	pScreen->m_fNextLocked480 = 0;
-	if (fNextAvailable != true) {
-		pScreen->m_fNextLocked480 = 1;
-	}
-	pScreen->m_fPreviousLocked484 = 0;
-	if (fPreviousAvailable != true) {
-		pScreen->m_fPreviousLocked484 = 1;
-	}
-	RefreshQueuedVariantChildByToken(pScreen->m_pQueuedVariantManager338, 0, (int) 0xacef000eU);
-	RefreshQueuedVariantChildByToken(pScreen->m_pQueuedVariantManager338, 0, (int) 0xacef000fU);
-}
-
-static void MeasureFunctionalLevelTitleExtent(void* pResource, short* pExtent, const char* pszText)
-{
-	void* pGlyph;
-	void* pGlyphList;
-	int i;
-	int cx;
-	int cy;
-
-	cx = 0;
-	cy = 0;
-	if (pResource != 0) {
-		pGlyphList = *(void**) ((char*) pResource + 0x78);
-		for (i = 0; pszText[i] != '\0'; ++i) {
-			pGlyph = ((GameLevelTitleGlyphListInterface*) pGlyphList)->FindGlyph((unsigned char) pszText[i]);
-			if (pGlyph == 0) {
-				pGlyph = ((GameLevelTitleGlyphListInterface*) pGlyphList)->FindGlyph('I');
-				if (pGlyph == 0) {
-					pGlyph = *(void**) ((char*) pResource + 0x7c);
-				}
-			}
-			if (pGlyph != 0) {
-				cx += *(short*) ((char*) pGlyph + 0x4c) + 1;
-				if (cy < *(short*) ((char*) pGlyph + 0x4a) + *(short*) ((char*) pGlyph + 0x4e)) {
-					cy = *(short*) ((char*) pGlyph + 0x4a) + *(short*) ((char*) pGlyph + 0x4e);
-				}
-			}
-		}
-		if (0 < cx) {
-			--cx;
-		}
-	}
-	pExtent[0] = (short) cx;
-	pExtent[1] = (short) cy;
-}
-
-__inline static void LEMBALL_FASTCALL SelectNextFunctionalLevel(GameLevelSelectionScreenView* pScreen)
-{
-	AdvanceCurrentLevelProgressThunk(g_pLevelProgressState);
-	RefreshFunctionalLevelSelectionMetadata(pScreen);
-}
-
-__inline static void LEMBALL_FASTCALL SelectPreviousFunctionalLevel(GameLevelSelectionScreenView* pScreen)
-{
-	RetreatCurrentLevelProgressThunk(g_pLevelProgressState);
-	RefreshFunctionalLevelSelectionMetadata(pScreen);
-}
-
-static void LEMBALL_FASTCALL NoopFunctionalLevelSelectionHook(void*)
-{
-}
-
-__inline static void LEMBALL_FASTCALL EmitQueuedVariantChildSlotEntry(void* pObject)
-{
-	char* pManager;
-	char* pGeometryOwner;
-	char* pGeometryDispatch;
-	void* pRenderContext;
-	void* pSavedOwner;
-	int nDispatchOffset;
-	int nPointBias;
-	short Point[2];
-	short Rect[4];
-
-	pManager = (char*) pObject;
-	if (*(int*) (pManager + 0x144) == 0) {
-		return;
-	}
-	pRenderContext = *(void**) (pManager + 0x12c);
-	nPointBias = *(int*) (pManager + 0x130) == 1 ? -1 : -2;
-	pGeometryOwner = *(char**) ((char*) pRenderContext + 0x0c);
-	nDispatchOffset = *(int*) ((char*) *(void**) (pGeometryOwner + 0x40) + 4);
-	pGeometryDispatch = pGeometryOwner + 0x40 + nDispatchOffset;
-	*(short*) (pManager + 0x100) = *(short*) (pGeometryDispatch + 0x14);
-	*(short*) (pManager + 0x102) = *(short*) (pGeometryDispatch + 0x16);
-	*(short*) (pManager + 0x104) = 0;
-	*(short*) (pManager + 0x106) = 0;
-	*(int*) (pManager + 0x108) = 0x10000;
-	((GameMainMenuRenderEntryInterface*) (pManager + 0xfc))->AppendToQueue(pRenderContext);
-	*(int*) (pManager + 0x124) = 0;
-	Point[0] = (short) (*(int*) (pManager + 0x98) + nPointBias);
-	Point[1] = (short) (*(int*) (pManager + 0x9c) + nPointBias);
-	pSavedOwner = *(void**) (pManager + 0x2c);
-	*(void**) (pManager + 0x2c) = pRenderContext;
-	((LevelVariantRenderManagerView*) (pManager + 0x10))
-		->EmitVariantRenderResourceEntry(Rect,
-										 Point,
-										 g_nQueuedVariantChildSlotManagerModeSelectedResourceId,
-										 0,
-										 pManager + 0x118,
-										 0);
-	*(void**) (pManager + 0x2c) = pSavedOwner;
-	((LevelVariantRenderManagerView*) (pManager + 0x10))->ResetOrFlipVariantRenderBuffers();
-}
-
-__inline static void LEMBALL_FASTCALL NoopQueuedVariantChildSlotManagerUpdate(void*)
-{
 }

@@ -4,6 +4,47 @@
 #include "ENGINE/CORE/COMMON.H"
 
 struct LevelLevelTileGridStaticView;
+struct LevelLevelTileCell;
+
+struct LevelCachedChunkChildView {
+	virtual void Reserved00(void) = 0;
+	virtual void Reserved01(void) = 0;
+	virtual void Reserved02(void) = 0;
+	virtual void Reserved03(void) = 0;
+	virtual void Reserved04(void) = 0;
+	virtual void ServiceCachedChunkObject(void) = 0;
+};
+
+struct LevelCachedChunkManagerAView {
+	virtual void Reserved00(void) = 0;
+	virtual LevelCachedChunkChildView* GetFirstCachedChunkObject(void) = 0;
+	virtual LevelCachedChunkChildView* GetNextCachedChunkObject(void) = 0;
+
+	int ServiceCachedChunkObjects(void);
+	int ServiceCachedChunkObjectsThunk(void);
+};
+
+struct LevelCachedChunkManagerBView {
+	virtual void Reserved00(void) = 0;
+	virtual LevelCachedChunkChildView* GetFirstCachedChunkObject(void) = 0;
+	virtual LevelCachedChunkChildView* GetNextCachedChunkObject(void) = 0;
+
+	int ServiceCachedChunkObjects(void);
+	int ServiceCachedChunkObjectsThunk(void);
+};
+
+struct LevelTileGridRuntimeView {
+	void ReleaseLevelTileGridBuffers(void);
+	void ResizeLevelTileGrid(int cColumns, int cRows);
+	void ResizeLevelTileGridThunk(int cColumns, int cRows);
+	void LoadLevelTileGridChunk(const unsigned short* pWords, unsigned int cbPayload, int fReuseState);
+	void SetLevelTileGridDefaultVariantIds(const unsigned short* pWords, unsigned int cbPayload);
+	void SetLevelTileGridName(const char* pszName, unsigned int cbPayload);
+	void CopyLevelTileGridName(const char* pszName);
+	void CopyLevelTileGridNameThunk(const char* pszName);
+	void ComputeLevelTileGridRepeatedColumnCounts(void);
+	void ComputeLevelTileGridRepeatedColumnCountsThunk(void);
+};
 
 struct LevelTileGridStaticRenderEntry {
 	short m_nTileX00;
@@ -46,6 +87,8 @@ struct LevelCachedChunkObjectManagerBase {
 	int m_cObjectsA4;
 	int m_nReservedA8;
 	int m_fEnabledAC;
+
+	void DestroyCachedChunkObjects(void);
 };
 
 struct LevelShpgChunkManager : public LevelCachedChunkObjectManagerBase {
@@ -67,9 +110,18 @@ struct LevelChunkLoaderContext {
 };
 
 struct LevelNodeChunkRecord {
-	char m_abReserved00[0x10];
+	int m_nX00;
+	int m_nY04;
+	int m_cExpectedLinks08;
+	int* m_pLinks0C;
 	int m_cLinks10;
 
+	LevelNodeChunkRecord* InitializeNodeChunkRecord(void);
+	LevelNodeChunkRecord* InitializeNodeChunkRecordThunk(void);
+	void InitializeNodeChunkRecordFromLevelData(int nX, int nY, int cLinks);
+	void InitializeNodeChunkRecordFromLevelDataThunk(int nX, int nY, int cLinks);
+	void AppendNodeChunkRecordLink(int nFirst, int nSecond);
+	void AppendNodeChunkRecordLinkThunk(int nFirst, int nSecond);
 	void ResetNodeChunkRecordLinkCount(void);
 	void ResetNodeChunkRecordLinkCountThunk(void);
 };
@@ -81,8 +133,13 @@ struct LevelNodeChunkManager {
 
 	LevelNodeChunkManager* ConstructNodeChunkManager(int cCapacity);
 	LevelNodeChunkManager* ConstructNodeChunkManagerThunk(int cCapacity);
+	void AllocateNodeChunkRecordArray(int cRecords);
+	void AllocateNodeChunkRecordArrayThunk(int cRecords);
+	void LoadNodeChunkRecords(const unsigned short* pWords, unsigned int cbPayload, int fReuseState);
+	void LoadNodeChunkRecordsThunk(const unsigned short* pWords, unsigned int cbPayload, int fReuseState);
 	void ResetNodeChunkRecords(void);
 	void ResetNodeChunkRecordsThunk(void);
+	void DestroyNodeChunkManagerRecords(void);
 };
 
 struct LevelSlnkChunkManager {
@@ -94,6 +151,7 @@ struct LevelSlnkChunkManager {
 	LevelSlnkChunkManager* ConstructSlnkChunkManagerThunk(void* pLevelMode, int cCapacity);
 	void ResetType35ChunkObjects(void);
 	void ResetType35ChunkObjectsThunk(void);
+	void DeleteType35ChunkObjectArray(void);
 };
 
 struct LevelBallChunkManager {
@@ -104,6 +162,7 @@ struct LevelBallChunkManager {
 
 	LevelBallChunkManager* ConstructBallChunkManager(void* pLevelMode, int cCapacity);
 	LevelBallChunkManager* ConstructBallChunkManagerThunk(void* pLevelMode, int cCapacity);
+	void DestroyBallChunkManagerEntries(void);
 };
 
 struct LevelField194TimerBlock {
@@ -120,15 +179,11 @@ void* LEMBALL_FASTCALL GetLevelGameModeOwner(void* pLevelMode);
 void* LEMBALL_FASTCALL GetLevelGameModeOwnerThunk(void* pLevelMode);
 void AdvanceLevelFrameClock(void);
 void LEMBALL_FASTCALL ServiceRegisteredLevelChunkStreams(void* pDispatcher);
-void LEMBALL_FASTCALL ServiceCachedChunkObjects(void* pManager);
-void LoadLevelTileGridChunk(void* pTileGrid, const unsigned short* pWords);
 void LoadLevelAiChunk(void* pLevelMode, const unsigned short* pWords, unsigned int cbPayload);
 void LoadLevelFlagChunk(void* pLevelMode, const unsigned short* pWords);
-void SetLevelTileGridDefaultVariantIds(void* pTileGrid, const unsigned short* pWords);
-void SetLevelTileGridName(void* pTileGrid, const char* pszName);
 void LoadAnimChunkRecords(void* pTimerBlock, const unsigned short* pWords);
 void LEMBALL_FASTCALL AdvanceAnimChunkFrames(void* pTimerBlock);
-void LoadNodeChunkRecords(void* pManager, const unsigned short* pWords, unsigned int cbPayload, int fReuseState);
+void LEMBALL_FASTCALL DestroyLevelTileReachabilityHelper(void* pReachabilityHelper);
 
 extern LevelBallChunkManager* g_pBallChunkManager;
 extern char* g_pszActiveLevelFilePath;

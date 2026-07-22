@@ -60,9 +60,9 @@ int VS_InvisibleWindow::Construct(LPCSTR pszClassName, int* pfClassRegistered)
 							 this);
 
 	if (m_hWnd == 0) {
-		AppendErrorCString(g_PLATFORM_InvisibleWindowCreateError);
-		AppendErrorUInt(GetLastError());
-		AppendErrorCString(g_PLATFORM_ErrorSuffix);
+		g_pErrorOutputStream->AppendCStringToStream(g_PLATFORM_InvisibleWindowCreateError);
+		g_pErrorOutputStream->AppendIntToStream(GetLastError());
+		g_pErrorOutputStream->AppendCStringToStream(g_PLATFORM_ErrorSuffix);
 	}
 
 	return (int) (unsigned long) this;

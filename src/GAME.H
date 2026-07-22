@@ -67,7 +67,6 @@ public:
 
 class GameMainContext {
 public:
-	GameMainContext(void);
 	GameMainContext* InitializeMainGameContext(const char* pszCmdLine);
 	GameMainContext* InitializeMainGameContextThunk(const char* pszCmdLine);
 	void SwitchMainGameMode(int nMode);
@@ -144,12 +143,17 @@ struct GamePrimaryContext : public GameWindowOwnerRenderContext {
 	void SwitchPrimaryContextScreen(int nMode);
 	void DestroyPrimaryContextActiveScreen(int nUnused);
 	void FlushWindowOwnerDirtyRect(int nUnused);
-	void DispatchWindowOwnerRectInitialization(short* paRect, void* pWindowOwner, const char* pszTitle);
 	void DispatchPrimaryContextActiveScreenFrame(void* pFrameArgument);
 	void MarkNestedContextDirtyIfField20(void);
 	short* ComputePrimaryContextCenteredScreenRect(short* paRect, int nLeftOverride, int nTopOverride);
 	short* ComputePrimaryContextCenteredScreenRectThunk(short* paRect, int nLeftOverride, int nTopOverride);
 };
+
+void LEMBALL_FASTCALL DispatchWindowOwnerRectInitialization(GamePrimaryContext* pPrimaryContext,
+															int nUnusedEdx,
+															short* paRect,
+															void* pWindowOwner,
+															const char* pszTitle);
 
 void LEMBALL_FASTCALL ShutdownMainGameContext(GameMainContext* pMainContext);
 int RunMainGameSession(int cArgs, const char* const* ppszArgs);

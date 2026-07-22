@@ -115,19 +115,21 @@ void* LEMBALL_FASTCALL DestroyEffResource(void* pObject, int nUnused, int fDelet
 extern void LEMBALL_FASTCALL SetPalResourceType(void* pObject);
 extern void LEMBALL_FASTCALL SetBitmapResourceType(void* pObject);
 extern void LEMBALL_FASTCALL SetEffResourceTypeTag(void* pObject);
-union MogLoadArenaReportMethodAddress {
-	void* (CArena::*m_pMethod)(VsInitFormattedOutputStream*);
-	void* m_pAddress;
+struct MogLoadMemoryArenaStatusEntryVtable {
+	void* m_apPrefix[6];
+	void* (CArena::*m_pWriteReport)(VsInitFormattedOutputStream*);
+	void* m_pDestroy;
 };
-static MogLoadArenaReportMethodAddress g_MogLoadArenaReportMethodAddress = {&CArena::WriteMemoryArenaReport};
-static void* g_MOGLOAD_MemoryArenaStatusEntryVtable[8] = {
-	(void*) WriteNamedStatusEntry,
-	(void*) UpdateNamedStatusEntry,
-	(void*) EnterObjectCriticalSection,
-	(void*) LeaveObjectCriticalSection,
-	(void*) EnterObjectCriticalSection,
-	(void*) LeaveObjectCriticalSection,
-	g_MogLoadArenaReportMethodAddress.m_pAddress,
+static MogLoadMemoryArenaStatusEntryVtable g_MOGLOAD_MemoryArenaStatusEntryVtable = {
+	{
+		(void*) WriteNamedStatusEntry,
+		(void*) UpdateNamedStatusEntry,
+		(void*) EnterObjectCriticalSection,
+		(void*) LeaveObjectCriticalSection,
+		(void*) EnterObjectCriticalSection,
+		(void*) LeaveObjectCriticalSection,
+	},
+	&CArena::WriteMemoryArenaReport,
 	(void*) DestroyMemoryArenaBaseStateReturnThis,
 };
 // GLOBAL: LEMBALL 0x00498980
@@ -811,7 +813,7 @@ void* MogLoadResourceArchive::ConstructResourceArchive(const char* pszArchiveNam
 	}
 	else {
 		pStatusEntry = new (pStatusEntry) GameStatusEntry(g_MOGLOAD_StatusName);
-		pStatusEntry->m_pVtable = g_MOGLOAD_MemoryArenaStatusEntryVtable;
+		pStatusEntry->m_pVtable = (void**) &g_MOGLOAD_MemoryArenaStatusEntryVtable;
 	}
 	((VsInitStatusEntryPointerArray*) g_pStatusEntryRegistry)->AppendStatusEntry(pStatusEntry);
 	((MogLoadResourceArenaStatusOwner*) g_pResourceArchiveMemoryArena)->m_pStatusEntry = pStatusEntry;

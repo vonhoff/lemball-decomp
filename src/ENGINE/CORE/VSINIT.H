@@ -28,14 +28,8 @@ int RunGameStartupSequence(char* pszCmdLine);
 void LongjmpStartupExceptionFrame(int nJumpResult);
 int ParseCommandLineOptionToken(char* pszToken);
 void TokenizeAndFilterCommandLineArgs(char* pszCmdLine);
-void AppendStartupCString(const char* pszText);
-void AppendStartupUInt(unsigned int uValue);
-void AppendStatusCString(const char* pszText);
-void AppendErrorCString(const char* pszText);
-void AppendErrorUInt(unsigned int uValue);
 void AppendStringToDebugOutFile(const char* pszText);
 void FormatSignedIntToRadixString(int nValue, char* pszBuffer, unsigned int nRadix);
-VsInitFormattedOutputStream* AppendCStringToStream(VsInitFormattedOutputStream* pStream, const char* pszText);
 void AppendPointerToStreamVariant(VsInitFormattedOutputStream* pStream, unsigned int uValue);
 VsInitFormattedOutputStream* AppendUIntHexToStream(VsInitFormattedOutputStream* pStream, unsigned int uValue);
 VsInitFormattedOutputStream* AppendHexUIntToStream(VsInitFormattedOutputStream* pStream, unsigned int uValue);
@@ -128,12 +122,12 @@ struct VsInitFixedBufferStream {
 	char* m_pszCursor;
 	unsigned int m_cchWritten;
 	int m_nTabWidth;
-	void (*m_pfnFlush)(char*);
+	int (*m_pfnFlush)(const char*);
 
 	void* ConstructStreamBaseVtable(char* pszBuffer, unsigned int cbBuffer);
 	VsInitFixedBufferStream* ConstructFixedBufferStream(char* pszBuffer,
 														unsigned int cbBuffer,
-														void (*pfnFlush)(char*));
+														int (*pfnFlush)(const char*));
 };
 
 struct VsInitStreamFormatTargetState {

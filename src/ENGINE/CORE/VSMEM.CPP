@@ -87,50 +87,43 @@ void* RestoreMemoryBlockBaseVtableReturnThis(void* pBlock);
 static void UpdateMainMemoryArenaFreeCounter(void);
 SmallMemoryBucket* LEMBALL_FASTCALL AllocateSmallMemoryChildBucket(SmallMemoryBucket* pParentBucket);
 
-union CArenaAllocateMethodAddress {
-	int (CArena::*m_pMethod)(void**, unsigned int, const char*);
-	void* m_pAddress;
+struct CArenaVtable {
+	void* (CArena::*m_pWriteReport)(VsInitFormattedOutputStream*);
+	void* m_pDelete;
+	int (CArena::*m_pAllocate)(void**, unsigned int, const char*);
+	int (CArena::*m_pFree)(void*);
+	void* m_apRemaining[7];
 };
 
-union CArenaFreeMethodAddress {
-	int (CArena::*m_pMethod)(void*);
-	void* m_pAddress;
-};
-
-union CArenaReportMethodAddress {
-	void* (CArena::*m_pMethod)(VsInitFormattedOutputStream*);
-	void* m_pAddress;
-};
-
-static CArenaAllocateMethodAddress g_CArenaAllocateMethodAddress = {&CArena::Allocate};
-static CArenaFreeMethodAddress g_CArenaFreeMethodAddress = {&CArena::FreeMemoryArenaBlock};
-static CArenaReportMethodAddress g_CArenaReportMethodAddress = {&CArena::WriteMemoryArenaReport};
-
-static void* g_aMemoryArenaBaseStateVtable[11] = {
-	g_CArenaReportMethodAddress.m_pAddress,
+static CArenaVtable g_MemoryArenaBaseStateVtable = {
+	&CArena::WriteMemoryArenaReport,
 	(void*) DestroyMemoryArenaBaseStateReturnThis,
-	(void*) g_CArenaAllocateMethodAddress.m_pAddress,
-	g_CArenaFreeMethodAddress.m_pAddress,
-	(void*) FillMemoryByte,
-	(void*) CopyMemoryBytes,
-	(void*) _purecall,
-	(void*) _purecall,
-	(void*) _purecall,
-	(void*) _purecall,
-	(void*) _purecall,
+	&CArena::Allocate,
+	&CArena::FreeMemoryArenaBlock,
+	{
+		(void*) FillMemoryByte,
+		(void*) CopyMemoryBytes,
+		(void*) _purecall,
+		(void*) _purecall,
+		(void*) _purecall,
+		(void*) _purecall,
+		(void*) _purecall,
+	},
 };
-static void* g_aMainMemoryArenaVtable[11] = {
-	g_CArenaReportMethodAddress.m_pAddress,
+static CArenaVtable g_MainMemoryArenaVtable = {
+	&CArena::WriteMemoryArenaReport,
 	(void*) DestroyMemoryArenaReturnThis,
-	(void*) g_CArenaAllocateMethodAddress.m_pAddress,
-	g_CArenaFreeMethodAddress.m_pAddress,
-	(void*) FillMemoryByte,
-	(void*) CopyMemoryBytes,
-	(void*) GetMemoryArenaHeaderSize,
-	(void*) GetMemoryBlockHeaderSize,
-	(void*) PlacementConstructMemoryArenaWithStorage,
-	(void*) PlacementConstructMemoryArenaBlock,
-	(void*) _purecall,
+	&CArena::Allocate,
+	&CArena::FreeMemoryArenaBlock,
+	{
+		(void*) FillMemoryByte,
+		(void*) CopyMemoryBytes,
+		(void*) GetMemoryArenaHeaderSize,
+		(void*) GetMemoryBlockHeaderSize,
+		(void*) PlacementConstructMemoryArenaWithStorage,
+		(void*) PlacementConstructMemoryArenaBlock,
+		(void*) _purecall,
+	},
 };
 static void* g_aMemoryArenaInitialVtable[1] = {
 	(void*) _purecall,
@@ -170,7 +163,7 @@ CArena* CArena::ConstructMemoryArenaBaseState(unsigned int cbStorage,
 	m_pVtable = g_aMemoryArenaInitialVtable;
 	m_pLockVtable = g_aMemoryArenaInitialLockVtable;
 	InitializeCriticalSection(m_abCriticalSection);
-	m_pVtable = g_aMemoryArenaBaseStateVtable;
+	m_pVtable = (void**) &g_MemoryArenaBaseStateVtable;
 	m_pLockVtable = g_aMainMemoryArenaLockVtable;
 	m_pszName = pszName;
 	m_pParentArena = (CArena*) pParentArena;
@@ -213,7 +206,7 @@ void LEMBALL_FASTCALL ReleaseMemoryArenaBlockLists(void* pArena)
 // FUNCTION: LEMBALL 0x00459aa0
 void LEMBALL_FASTCALL DestroyMemoryArenaBaseState(void* pArena)
 {
-	((CArena*) pArena)->m_pVtable = g_aMemoryArenaBaseStateVtable;
+	((CArena*) pArena)->m_pVtable = (void**) &g_MemoryArenaBaseStateVtable;
 	((CArena*) pArena)->m_pLockVtable = g_aMainMemoryArenaLockVtable;
 	DeleteCriticalSection(((CArena*) pArena)->m_abCriticalSection);
 }
@@ -428,26 +421,26 @@ int CArena::Allocate(void** ppvBlock, unsigned int cbBlock, const char* pszDescr
 	cbBlockHeader = pfnGetBlockHeaderSize();
 	cbFree = pMemoryArena->m_cbFree;
 	if (cbFree < cbAligned) {
-		AppendCStringToStream(g_pErrorOutputStream, g_VSMEM_AllocateNoMemoryPrefix);
-		AppendCStringToStream(g_pErrorOutputStream, pszDescription);
-		AppendCStringToStream(g_pErrorOutputStream, g_VSMEM_HexPrefix);
+		g_pErrorOutputStream->AppendCStringToStream(g_VSMEM_AllocateNoMemoryPrefix);
+		g_pErrorOutputStream->AppendCStringToStream(pszDescription);
+		g_pErrorOutputStream->AppendCStringToStream(g_VSMEM_HexPrefix);
 		AppendHexUIntToStream(g_pErrorOutputStream, cbAligned);
-		AppendCStringToStream(g_pErrorOutputStream, g_VSMEM_FreeSizePrefix);
+		g_pErrorOutputStream->AppendCStringToStream(g_VSMEM_FreeSizePrefix);
 		g_pErrorOutputStream->AppendUIntToStream(cbFree);
-		AppendCStringToStream(g_pErrorOutputStream, g_VSMEM_LineBreak);
+		g_pErrorOutputStream->AppendCStringToStream(g_VSMEM_LineBreak);
 		((VSMEM_LockProc) pLockVtable[1])((char*) pMemoryArena + 8);
 		return 0;
 	}
 
 	pMemoryBlock = (CMemoryBlock*) pMemoryArena->FindSmallestFreeMemoryBlockAtLeast(cbAligned + cbBlockHeader);
 	if (pMemoryBlock == 0) {
-		AppendCStringToStream(g_pErrorOutputStream, g_VSMEM_AllocateFragmentedPrefix);
-		AppendCStringToStream(g_pErrorOutputStream, pszDescription);
-		AppendCStringToStream(g_pErrorOutputStream, g_VSMEM_HexPrefix);
+		g_pErrorOutputStream->AppendCStringToStream(g_VSMEM_AllocateFragmentedPrefix);
+		g_pErrorOutputStream->AppendCStringToStream(pszDescription);
+		g_pErrorOutputStream->AppendCStringToStream(g_VSMEM_HexPrefix);
 		AppendHexUIntToStream(g_pErrorOutputStream, cbAligned);
-		AppendCStringToStream(g_pErrorOutputStream, g_VSMEM_FreeSizePrefix);
+		g_pErrorOutputStream->AppendCStringToStream(g_VSMEM_FreeSizePrefix);
 		g_pErrorOutputStream->AppendUIntToStream(pMemoryArena->m_cbFree);
-		AppendCStringToStream(g_pErrorOutputStream, g_VSMEM_LineBreak);
+		g_pErrorOutputStream->AppendCStringToStream(g_VSMEM_LineBreak);
 		((CArena*) g_pMainMemoryArena)->WriteMemoryArenaReport(g_pErrorOutputStream);
 		((VSMEM_LockProc) pLockVtable[1])((char*) pMemoryArena + 8);
 		return 0;
@@ -624,25 +617,25 @@ void* CArena::WriteMemoryArenaReport(VsInitFormattedOutputStream* pOutputStream)
 	pMemoryArena = this;
 	pLockVtable = pMemoryArena->m_pLockVtable;
 	((VSMEM_LockProc) pLockVtable[0])((char*) pMemoryArena + 8);
-	AppendCStringToStream(pOutputStream, g_VSMEM_ReportSeparator);
-	AppendCStringToStream(pOutputStream, g_VSMEM_ReportFreeSizePrefix);
+	pOutputStream->AppendCStringToStream(g_VSMEM_ReportSeparator);
+	pOutputStream->AppendCStringToStream(g_VSMEM_ReportFreeSizePrefix);
 	pOutputStream->AppendUIntToStream(GetMemoryArenaPayloadByteCounter(this));
-	AppendCStringToStream(pOutputStream, g_VSMEM_ReportLineBreak);
-	AppendCStringToStream(pOutputStream, g_VSMEM_ReportHeaderRule);
-	AppendCStringToStream(pOutputStream, g_VSMEM_ReportColumns);
-	AppendCStringToStream(pOutputStream, g_VSMEM_ReportEntryRule);
+	pOutputStream->AppendCStringToStream(g_VSMEM_ReportLineBreak);
+	pOutputStream->AppendCStringToStream(g_VSMEM_ReportHeaderRule);
+	pOutputStream->AppendCStringToStream(g_VSMEM_ReportColumns);
+	pOutputStream->AppendCStringToStream(g_VSMEM_ReportEntryRule);
 	for (pMemoryBlock = pMemoryArena->m_pFirstFreeBlock; pMemoryBlock != 0; pMemoryBlock = pMemoryBlock->m_pNextFree) {
 		((VSMEM_ReportProc) pMemoryBlock->m_pVtable[0])(pMemoryBlock, 0, pOutputStream);
 	}
 	if (pMemoryArena->m_pFirstChildArena != 0) {
-		AppendCStringToStream(pOutputStream, g_VSMEM_ReportChildArenaList);
-		AppendCStringToStream(pOutputStream, g_VSMEM_ReportChildArenaRule);
+		pOutputStream->AppendCStringToStream(g_VSMEM_ReportChildArenaList);
+		pOutputStream->AppendCStringToStream(g_VSMEM_ReportChildArenaRule);
 		for (pChildArena = pMemoryArena->m_pFirstChildArena; pChildArena != 0;
 			 pChildArena = pChildArena->m_pFirstChildArena) {
 			((VSMEM_ReportProc) pChildArena->m_pVtable[0])(pChildArena, 0, pOutputStream);
 		}
 	}
-	AppendCStringToStream(pOutputStream, g_VSMEM_ReportSeparator);
+	pOutputStream->AppendCStringToStream(g_VSMEM_ReportSeparator);
 	((VSMEM_LockProc) pLockVtable[1])((char*) pMemoryArena + 8);
 	return pOutputStream;
 }
@@ -700,7 +693,7 @@ CArena* CArena::ConstructMemoryArena(unsigned int cbStorage, const char* pszName
 
 	pMemoryArena = this;
 	pMemoryArena->ConstructMemoryArenaBaseState(cbStorage, pszName, pParentArena, pReserved);
-	pMemoryArena->m_pVtable = g_aMainMemoryArenaVtable;
+	pMemoryArena->m_pVtable = (void**) &g_MainMemoryArenaVtable;
 	pMemoryArena->m_pLockVtable = g_aMainMemoryArenaLockVtable;
 	pMemoryArena->m_nMagic = 0x5241524e;
 	cbArenaHeader = GetMemoryArenaHeaderSize();
@@ -724,7 +717,7 @@ CArena* CArena::ConstructMemoryArena(unsigned int cbStorage, const char* pszName
 // FUNCTION: LEMBALL 0x0045a480
 void LEMBALL_FASTCALL DestroyMemoryArena(void* pArena)
 {
-	((CArena*) pArena)->m_pVtable = g_aMainMemoryArenaVtable;
+	((CArena*) pArena)->m_pVtable = (void**) &g_MainMemoryArenaVtable;
 	((CArena*) pArena)->m_pLockVtable = g_aMainMemoryArenaLockVtable;
 	ReleaseMemoryArenaBlockLists(pArena);
 	DestroyMemoryArenaBaseState(pArena);

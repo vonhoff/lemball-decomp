@@ -15,6 +15,11 @@ from pathlib import Path, PurePosixPath
 from reccmp.compare.report import deserialize_reccmp_report
 from reccmp.types import EntityType
 
+try:
+    from function_inventory import reconcile_inventory, write_inventory_csv
+except ModuleNotFoundError:
+    from tools.function_inventory import reconcile_inventory, write_inventory_csv
+
 
 TARGET_NAME = "LEMBALL"
 INCLUDED_CATEGORIES = {"internal", "thunk"}
@@ -22,6 +27,9 @@ DEFAULT_MANIFEST = Path("data/manifest.json")
 DEFAULT_RECCMP_REPORT = Path("build/reccmp-sample.json")
 DEFAULT_ROADMAP = Path("build/reccmp-roadmap.csv")
 DEFAULT_OUTPUT = Path("build/report.json")
+DEFAULT_SOURCE_ROOT = Path("src")
+DEFAULT_RUNTIME_SYMBOLS = Path("data/runtime-symbols.csv")
+DEFAULT_INVENTORY_OUTPUT = Path("build/function-inventory.csv")
 TEXT_VIRTUAL_ADDRESS = 0x401000
 
 
@@ -49,9 +57,17 @@ def measures(
         if float(function["raw_accuracy"]) == 1.0
     ]
     matched_code = sum(int(function["size"]) for function in matched)
-    fuzzy_weight = sum(
-        float(function["raw_accuracy"]) * 100.0 * int(function["size"])
+    # Report functions carry protobuf float fields.  Aggregate the same
+    # float32 values that are serialized on those function records; weighting
+    # the original Python doubles can differ by one float32 ULP when objdiff
+    # (or our semantic validator) recomputes the unit/report measure.
+    serialized_ratios = [
+        objdiff_f32(float(function["raw_accuracy"]) * 100.0)
         for function in functions
+    ]
+    fuzzy_weight = sum(
+        ratio * int(function["size"])
+        for ratio, function in zip(serialized_ratios, functions)
     )
     result: dict[str, object] = {"total_units": total_units}
     if total_code:
@@ -146,13 +162,40 @@ def load_modules(roadmap_path: Path) -> dict[int, str]:
 
 
 def load_functions(
-    manifest_path: Path, reccmp_path: Path, roadmap_path: Path
+    manifest_path: Path,
+    reccmp_path: Path,
+    roadmap_path: Path,
+    source_root: Path = DEFAULT_SOURCE_ROOT,
+    runtime_symbols_path: Path = DEFAULT_RUNTIME_SYMBOLS,
+    inventory_output: Path | None = None,
 ) -> list[dict[str, object]]:
+    native = deserialize_reccmp_report(reccmp_path.read_text(encoding="utf-8"))
+    inventory, unresolved = reconcile_inventory(
+        manifest_path,
+        reccmp_path,
+        roadmap_path,
+        source_root,
+        runtime_symbols_path,
+        TARGET_NAME,
+        native,
+    )
+    if inventory_output is not None:
+        write_inventory_csv(inventory_output, inventory)
+    if unresolved:
+        examples = ", ".join(
+            f"{row['address']} ({row['resolution_reason']})"
+            for row in unresolved[:8]
+        )
+        suffix = "" if len(unresolved) <= 8 else ", ..."
+        raise SystemExit(
+            f"{len(unresolved)} unresolved function-inventory entities: "
+            f"{examples}{suffix}"
+        )
+
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest.get("version") != TARGET_NAME:
         raise SystemExit(f"{manifest_path} is not a {TARGET_NAME} manifest")
 
-    native = deserialize_reccmp_report(reccmp_path.read_text(encoding="utf-8"))
     if native.filename.casefold() != str(manifest["program"]).casefold():
         raise SystemExit(
             f"report is for {native.filename}, manifest is for {manifest['program']}"
@@ -195,14 +238,6 @@ def load_functions(
                 "module": modules.get(address, "Unassigned"),
             }
         )
-    outside_manifest = sorted(set(matches) - seen)
-    if outside_manifest:
-        examples = ", ".join(f"0x{address:08X}" for address in outside_manifest[:8])
-        suffix = "" if len(outside_manifest) <= 8 else ", ..."
-        raise SystemExit(
-            f"{len(outside_manifest)} reccmp function entities are not reportable "
-            f"Ghidra function starts: {examples}{suffix}"
-        )
     expected_total = sum(
         entry["category"] in INCLUDED_CATEGORIES
         for entry in manifest["functions"]
@@ -216,9 +251,21 @@ def load_functions(
 
 
 def build_report(
-    manifest_path: Path, reccmp_path: Path, roadmap_path: Path
+    manifest_path: Path,
+    reccmp_path: Path,
+    roadmap_path: Path,
+    source_root: Path = DEFAULT_SOURCE_ROOT,
+    runtime_symbols_path: Path = DEFAULT_RUNTIME_SYMBOLS,
+    inventory_output: Path | None = None,
 ) -> dict[str, object]:
-    functions = load_functions(manifest_path, reccmp_path, roadmap_path)
+    functions = load_functions(
+        manifest_path,
+        reccmp_path,
+        roadmap_path,
+        source_root,
+        runtime_symbols_path,
+        inventory_output,
+    )
     grouped: dict[str, list[dict[str, object]]] = defaultdict(list)
     for function in functions:
         grouped[str(function["module"])].append(function)
@@ -248,15 +295,31 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--reccmp-report", type=Path, default=DEFAULT_RECCMP_REPORT)
     parser.add_argument("--roadmap", type=Path, default=DEFAULT_ROADMAP)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--source-root", type=Path, default=DEFAULT_SOURCE_ROOT)
+    parser.add_argument("--runtime-symbols", type=Path, default=DEFAULT_RUNTIME_SYMBOLS)
+    parser.add_argument("--inventory-output", type=Path, default=DEFAULT_INVENTORY_OUTPUT)
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    for path in (args.manifest, args.reccmp_report, args.roadmap):
-        if not path.is_file():
+    for path in (
+        args.manifest,
+        args.reccmp_report,
+        args.roadmap,
+        args.source_root,
+        args.runtime_symbols,
+    ):
+        if not path.exists():
             raise SystemExit(f"required input does not exist: {path}")
-    report = build_report(args.manifest, args.reccmp_report, args.roadmap)
+    report = build_report(
+        args.manifest,
+        args.reccmp_report,
+        args.roadmap,
+        args.source_root,
+        args.runtime_symbols,
+        args.inventory_output,
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     subprocess.run(
@@ -271,7 +334,11 @@ def main() -> int:
     effective_only = sum(
         bool(function["effective_only"])
         for function in load_functions(
-            args.manifest, args.reccmp_report, args.roadmap
+            args.manifest,
+            args.reccmp_report,
+            args.roadmap,
+            args.source_root,
+            args.runtime_symbols,
         )
     )
     print(

@@ -30,7 +30,7 @@
       "binaryDir": "${sourceDir}/build-msvc420-runtime",
       "cacheVariables": {
         "LEMBALL_SKIP_CD_TEST": "OFF",
-        "LEMBALL_SKIP_REGISTRY_RUNNING_STATE": "OFF"
+        "LEMBALL_SKIP_REGISTRY_RUNNING_STATE": "ON"
       }
     }
   ]

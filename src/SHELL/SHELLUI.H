@@ -5,12 +5,6 @@
 
 class ShellUiPrimaryContextShell {
 public:
-	ShellUiPrimaryContextShell(void);
-
-	void ToggleDisplayMode(void);
-	void RequestQuit(void);
-
-public:
 	HWND m_hMainWindow;
 	int m_fQuitRequested;
 	int m_fWideDisplay;
@@ -24,7 +18,6 @@ struct ShellUiMenuCommandMessage {
 	int m_nCommand;
 };
 
-void InitializePrimaryContextShell(ShellUiPrimaryContextShell* pShell);
 char* LEMBALL_STDCALL BuildSystemInformationReportString(void);
 int LEMBALL_FASTCALL HandlePrimaryContextMenuCommand(ShellUiPrimaryContextShell* pShell,
 													 int nUnused,

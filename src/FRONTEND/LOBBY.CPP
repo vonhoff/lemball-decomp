@@ -287,7 +287,7 @@ int LEMBALL_FASTCALL HandleNetworkLobbyVsnetRuntimeEvent(void* pVsnetRuntime, in
 		if (pType3Event->m_nStatus0c == 0) {
 			nPeer = pType3Event->m_nPeer10;
 			if (g_nSelectedNetworkLobbyPeerId != 0) {
-				AppendCStringToStream(g_pStatusOutputStream, g_NETWORK_GameConnectionRequestDuringGameText);
+				g_pStatusOutputStream->AppendCStringToStream(g_NETWORK_GameConnectionRequestDuringGameText);
 				((VsNetEffTransportPeer*) (unsigned long) nPeer)->Close();
 				return 1;
 			}

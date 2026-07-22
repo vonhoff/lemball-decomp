@@ -22,15 +22,13 @@ struct VsNetPeerPayloadSenderRaw {
 	void* m_pVtable;
 };
 
-struct VsNetEffTransportPendingWriteState {
-	void Clear(void* pUnused);
-};
+struct VsNetEffTransportPendingWriteState {};
 
-struct VsNetCompositeEffTransportVtableModel {
-	virtual void FatalSlot00(void);
-	virtual void ServiceEffTransportPeerEntry(void);
-	virtual void FatalSlot02(void);
-	virtual void FatalSlot03(void);
-};
+void LEMBALL_FASTCALL ClearEffTransportPendingWriteState(void* pObject, void* pUnusedEdx, void* pUnused);
+void LEMBALL_FASTCALL CloseAdjustedEffTransportPeerByKey(void* pObject, void* pUnusedEdx, void* pUnused);
+void* LEMBALL_FASTCALL DeleteCompositeEffTransportRuntimeWrapper(void* pObject, void* pUnusedEdx, BYTE fFreeMemory);
+
+void LEMBALL_FASTCALL ServiceEffTransportPeerEntry(void* pObject);
+extern void* g_NETWORK_CompositeEffTransportVtable[4];
 
 #endif

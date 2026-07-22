@@ -26,6 +26,7 @@ public:
 										int nFlags,
 										void* pFrameSelector,
 										int nValue);
+	void LoadLevelScreenVariantState(int nResourceId, int nSelectorMode);
 	void ResetOrFlipVariantRenderBuffers(void);
 
 	char m_abReserved00[0x24];
@@ -43,21 +44,22 @@ inline void LoadVariantRenderResource(void* pManager, int nResourceId)
 
 class LevelQueuedRenderPointSink {
 public:
-	virtual ~LevelQueuedRenderPointSink() {}
+	~LevelQueuedRenderPointSink() {}
+	virtual void* Delete(unsigned int fDelete) = 0;
 	virtual void AppendToQueue(void* pQueue) = 0;
 	virtual void Process(void* pContext) = 0;
 };
 
-// SYNTHETIC: LEMBALL 0x00467b40
-// LevelPackagedRectQueueEntry::`scalar deleting destructor'
 // VTABLE: LEMBALL 0x00499628
 // SIZE 0x18
 class LevelPackagedRectQueueEntry : public LevelQueuedRenderPointSink {
 public:
 	LevelPackagedRectQueueEntry();
-	virtual ~LevelPackagedRectQueueEntry();
+	~LevelPackagedRectQueueEntry() {}
+	virtual void* Delete(unsigned int fDelete);
 	virtual void AppendToQueue(void* pQueue);
 	virtual void Process(void* pContext);
+	void ResetVtableAfterDestruction();
 
 	short m_x04;
 	short m_y06;
@@ -67,16 +69,16 @@ public:
 	int m_nReserved14;
 };
 
-// SYNTHETIC: LEMBALL 0x00469b80
-// LevelScreenDrawEntry::`scalar deleting destructor'
 // VTABLE: LEMBALL 0x00499ae8
 // SIZE 0x44
 class LevelScreenDrawEntry : public LevelQueuedRenderPointSink {
 public:
 	LevelScreenDrawEntry();
-	virtual ~LevelScreenDrawEntry();
+	~LevelScreenDrawEntry() {}
+	virtual void* Delete(unsigned int fDelete);
 	virtual void AppendToQueue(void* pQueue);
 	virtual void Process(void* pRenderContext);
+	void ResetVtablesAfterDestruction();
 	virtual void InitializeFromPointAndDynamicText(const short* pPoint,
 												   void* pOwner,
 												   GameDynamicCString Text,
@@ -114,8 +116,6 @@ public:
 	LevelPackagedRectQueueEntry m_DrawSink2C;
 };
 
-// SYNTHETIC: LEMBALL 0x0046a220
-// LevelResourceScreenDrawEntry::`scalar deleting destructor'
 // VTABLE: LEMBALL 0x00499ce8
 // SIZE 0x4c
 class LevelResourceScreenDrawEntry : public LevelScreenDrawEntry {
@@ -125,7 +125,8 @@ public:
 		m_cchOwnedText48 = cchText;
 		m_pszOwnedText44 = (char*) AllocateVSMemBlock(cchText + 1);
 	}
-	virtual ~LevelResourceScreenDrawEntry() { FreeVSMemBlock(m_pszOwnedText44); }
+	~LevelResourceScreenDrawEntry() { FreeVSMemBlock(m_pszOwnedText44); }
+	virtual void* Delete(unsigned int fDelete);
 	virtual void InitializeFromPointAndDynamicText(const short* pPoint,
 												   void* pOwner,
 												   GameDynamicCString Text,

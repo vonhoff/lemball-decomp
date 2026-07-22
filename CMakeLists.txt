@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project(lemball_decomp CXX)
 
 option(LEMBALL_ENABLE_WIN32 "Build the reconstructed Win32 executable" ON)
+option(LEMBALL_SKIP_REGISTRY_RUNNING_STATE "Skip updating the registry running state in runtime smoke builds" OFF)
 
 set(LEMBALL_SOURCES
     src/GAME.H
@@ -59,6 +60,7 @@ set(LEMBALL_SOURCES
     src/ENGINE/MEDIA/EFFSTRM.H
     src/ENGINE/MEDIA/VSSTRM.H
     src/ENGINE/MEDIA/EFFSTRM.CPP
+    src/ENGINE/MEDIA/EFFVT.CPP
     src/ENGINE/GDI/WINDOWSLOT38.CPP
     src/ENGINE/GDI/GDIVT.CPP
     src/ENGINE/DEBUG/DEBUGVT.CPP
@@ -110,6 +112,9 @@ if(LEMBALL_ENABLE_WIN32)
     add_executable(LEMBALL WIN32 ${LEMBALL_SOURCES} ${LEMBALL_RESOURCE_OBJECTS})
     target_include_directories(LEMBALL PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
     target_compile_definitions(LEMBALL PRIVATE LEMBALL_1996_CXX=1)
+    if(LEMBALL_SKIP_REGISTRY_RUNNING_STATE)
+        target_compile_definitions(LEMBALL PRIVATE LEMBALL_SKIP_REGISTRY_RUNNING_STATE=1)
+    endif()
     if(APPLE)
         target_compile_definitions(LEMBALL PRIVATE LEMBALL_HOST_MACOS=1)
     endif()
@@ -130,7 +135,11 @@ if(LEMBALL_ENABLE_WIN32)
         )
     endif()
     set(LEMBALL_DEPLOY_COMMANDS)
-    foreach(LEMBALL_DEPENDENCY DSPDIB16.DLL DSPDIB32.DLL PBAIMOG.VSR)
+    # PBAIMOG.VSR remains distribution media: runtime validation launches
+    # with D:\LEMBALL as the working directory, matching the original bare
+    # fopen("pbaimog.vsr", "rb") path instead of copying the archive beside
+    # the reconstructed executable.
+    foreach(LEMBALL_DEPENDENCY DSPDIB16.DLL DSPDIB32.DLL)
         if(EXISTS "${CMAKE_SOURCE_DIR}/data/${LEMBALL_DEPENDENCY}")
             list(APPEND LEMBALL_DEPLOY_COMMANDS
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different

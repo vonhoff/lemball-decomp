@@ -87,6 +87,7 @@ def main() -> int:
             or len(addresses) != len(set(addresses))
             or any(category not in OWNERSHIP_CATEGORIES for category in categories)
             or any(int(function.get("size", 0)) <= 0 for function in functions if not function.get("is_external"))
+            or any(function.get("is_thunk") and not function.get("thunk_target") for function in functions)
             or any(summary.get(category) != categories.count(category) for category in OWNERSHIP_CATEGORIES)
         ):
             raise SystemExit("Ghidra produced an invalid function manifest")
