@@ -744,11 +744,29 @@ void* DestroyStatusIndicatorPointSinkArray00467BB0(void* pObject, unsigned int f
 void LEMBALL_FASTCALL RestoreQueuedRenderPointSinkVtable(void* pObject);
 void* DestroyPackagedSpriteRenderEntryArray00469930(void* pObject, unsigned int fDelete);
 void LEMBALL_FASTCALL SetStatusIndicatorActive(void* pObject, int, int fActive);
+struct LevelScreenActionButtonLayout {
+	void PositionLevelScreenActionButton(const VS_XYPair* pPanelOrigin);
+	void PositionLevelScreenActionButtonThunk(const VS_XYPair* pPanelOrigin);
+};
+
+struct LevelScreenActionPanelLayout {
+	VS_XYPair* ComputeLevelScreenActionPanelOrigin(VS_XYPair* pOrigin);
+	VS_XYPair* ComputeLevelScreenActionPanelOriginThunk(VS_XYPair* pOrigin);
+};
+
+void LEMBALL_FASTCALL RelayoutLevelScreenActionPanel(void* pPanel);
+void LEMBALL_FASTCALL RelayoutLevelScreenActionPanelThunk(void* pPanel);
 
 // STUB: LEMBALL 0x004011b8
 int LEMBALL_FASTCALL GetTimedVariantFrameStartTimeThunk(void* pObject)
 {
 	return GetTimedVariantFrameStartTime(pObject);
+}
+
+// FUNCTION: LEMBALL 0x004012ee
+VS_XYPair* LevelScreenActionPanelLayout::ComputeLevelScreenActionPanelOriginThunk(VS_XYPair* pOrigin)
+{
+	return ComputeLevelScreenActionPanelOrigin(pOrigin);
 }
 
 // STUB: LEMBALL 0x00401307
@@ -900,10 +918,23 @@ void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntryThunk(void* pObject, int, v
 	FinalizeFramedScreenRenderEntry(pObject, 0, pManager);
 }
 
+// FUNCTION: LEMBALL 0x00402257
+void LevelScreenActionButtonLayout::PositionLevelScreenActionButtonThunk(
+	const VS_XYPair* pPanelOrigin)
+{
+	PositionLevelScreenActionButton(pPanelOrigin);
+}
+
 // STUB: LEMBALL 0x004022a2
 void LEMBALL_FASTCALL RestoreLevelSelectionPointSinkFinalizeVtable(void* pObject)
 {
 	RestoreLevelSelectionPointSinkFinalizeVtableBody(pObject);
+}
+
+// FUNCTION: LEMBALL 0x0040238d
+void LEMBALL_FASTCALL RelayoutLevelScreenActionPanelThunk(void* pPanel)
+{
+	RelayoutLevelScreenActionPanel(pPanel);
 }
 
 // STUB: LEMBALL 0x004025ae
@@ -3958,6 +3989,80 @@ void DrawReconstructedLevelScreenStatusText(void* pObject)
 								   szCounter,
 								   0x20,
 								   0);
+}
+
+// FUNCTION: LEMBALL 0x00442ca0
+void LevelScreenActionButtonLayout::PositionLevelScreenActionButton(
+	const VS_XYPair* pPanelOrigin)
+{
+	char* pButtonBytes;
+	char* pPanel;
+	VS_XYPair Point;
+
+	pButtonBytes = (char*) this;
+	Point.m_x = pPanelOrigin->m_x;
+	Point.m_y = pPanelOrigin->m_y;
+	pPanel = *(char**) (pButtonBytes + 0x0c);
+	Point.m_x = (short) (Point.m_x +
+		(*(short*) (pPanel + 0x48) + *(short*) (pPanel + 0x44)) *
+			*(short*) (pButtonBytes + 0x14));
+	((VS_RootGeometryOwner*) *(void**) (pButtonBytes + 4))->MoveWindowOwnerOrigin(&Point);
+}
+
+// FUNCTION: LEMBALL 0x00442f00
+VS_XYPair* LevelScreenActionPanelLayout::ComputeLevelScreenActionPanelOrigin(VS_XYPair* pOrigin)
+{
+	char* pPanelBytes;
+	char* pPrimaryContext;
+	VS_XYPair ViewportSize;
+	int nScale;
+
+	pPanelBytes = (char*) this;
+	pPrimaryContext = *(char**) (pPanelBytes + 0x14);
+	ViewportSize.m_y = 0;
+	ViewportSize.m_x = *(short*) (pPrimaryContext + 0x10);
+	nScale = *(int*) (pPrimaryContext + 0x38);
+	if ((int) ViewportSize.m_x * (int) *(short*) (pPrimaryContext + 0x12) == 0) {
+		ViewportSize.m_x = *(short*) (pPrimaryContext + 8);
+		ViewportSize.m_y = *(short*) (pPrimaryContext + 10);
+	}
+	else {
+		ViewportSize.m_y = *(short*) (pPrimaryContext + 0x12);
+	}
+	ViewportSize.m_x = (short) ((int) ViewportSize.m_x / nScale);
+	ViewportSize.m_y = (short) ((int) ViewportSize.m_y / nScale - *(short*) (pPanelBytes + 0x4e));
+	pOrigin->m_x = (short) (((int) ViewportSize.m_x - *(short*) (pPanelBytes + 0x50)) / 2);
+	pOrigin->m_y = ViewportSize.m_y;
+	return pOrigin;
+}
+
+// FUNCTION: LEMBALL 0x004431f0
+void LEMBALL_FASTCALL RelayoutLevelScreenActionPanel(void* pPanel)
+{
+	char* pPanelBytes;
+	VS_XYPair PanelOrigin;
+	VS_XYPair ButtonOrigin;
+	VS_XYPair* pComputedOrigin;
+	void* pOverlay;
+	void** ppButton;
+	int i;
+
+	pPanelBytes = (char*) pPanel;
+	pComputedOrigin = ((LevelScreenActionPanelLayout*) pPanel)
+		->ComputeLevelScreenActionPanelOriginThunk(&PanelOrigin);
+	*(short*) (pPanelBytes + 0x54) = pComputedOrigin->m_x;
+	*(short*) (pPanelBytes + 0x56) = pComputedOrigin->m_y;
+	ButtonOrigin.m_x = pComputedOrigin->m_x;
+	ButtonOrigin.m_y = pComputedOrigin->m_y;
+	pOverlay = *(void**) (pPanelBytes + 0x2c);
+	((VS_RootGeometryOwner*) pOverlay)->MoveWindowOwnerOrigin(&ButtonOrigin);
+	ButtonOrigin.m_x = (short) (ButtonOrigin.m_x + *(short*) (pPanelBytes + 0x4c));
+	ppButton = (void**) (pPanelBytes + 0x1c);
+	for (i = 4; i != 0; --i) {
+		((LevelScreenActionButtonLayout*) *ppButton)
+			->PositionLevelScreenActionButtonThunk(&ButtonOrigin);
+		++ppButton;
+	}
 }
 
 // FUNCTION: LEMBALL 0x004439e0

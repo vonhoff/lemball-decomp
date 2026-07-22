@@ -5225,7 +5225,7 @@ void VsGdiAnimWindowOwner::UpdateMediaPathFromListResource(int nResourceId)
 		}
 	}
 	else {
-		pszBasePath = FindCdromFilePathBySuffix(MediaPath.m_pszText);
+		pszBasePath = g_pProcessCurrentDirectoryState->FindCdromFilePathBySuffix(MediaPath.m_pszText);
 		if (pszBasePath != 0) {
 			m_MediaPathB0.AssignDynamicCString(pszBasePath);
 		}

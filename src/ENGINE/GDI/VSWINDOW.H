@@ -53,6 +53,9 @@ public:
 	VS_RootGeometryOwner(void);
 	~VS_RootGeometryOwner(void);
 	void SetWindowOwnerScaleFactor(int nScaleFactor);
+	void SetRootGeometryQuadAndScale(const VS_XYPair* pRect,
+								 const VS_XYPair* pSourceRect,
+								 int nScaleFactor);
 
 	virtual void RefreshWindowOwnerMenuState(void); // vtable+0x00
 	virtual void InitializeWindowOwnerFromRect(short* paRect,

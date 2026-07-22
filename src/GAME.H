@@ -8,6 +8,12 @@ struct GameRootDispatchGlobals {
 
 extern GameRootDispatchGlobals g_GAME_RootDispatchGlobals;
 
+struct GameProcessCurrentDirectoryState {
+	char* FindCdromFilePathBySuffix(const char* pszSuffix);
+};
+
+extern GameProcessCurrentDirectoryState* g_pProcessCurrentDirectoryState;
+
 // STUB: LEMBALL 0x004010ff
 // GameScreenObject::ConstructLevelSelectionScreen
 // STUB: LEMBALL 0x0040132a
@@ -96,7 +102,7 @@ DECOMP_SIZE_ASSERT(GameWindowOwnerRenderContextBase, 0x8c);
 // This layer installs the second 46-slot vtable at 0x00499318.
 struct GameWindowOwnerRenderContext : public GameWindowOwnerRenderContextBase {
 	void* ConstructWindowOwnerRenderContext(void);
-	virtual void ApplyWindowOwnerActivation(int nActivate);
+	void ApplyWindowOwnerActivationSlot(int nActivate);
 	void InitializeWindowOwnerFromRectAndActivate(short* paRect,
 												  void* pWindowOwner,
 												  const char* pszTitle,
@@ -148,7 +154,6 @@ struct GamePrimaryContext : public GameWindowOwnerRenderContext {
 void LEMBALL_FASTCALL ShutdownMainGameContext(GameMainContext* pMainContext);
 int RunMainGameSession(int cArgs, const char* const* ppszArgs);
 int RunMainGameSessionThunk(int cArgs, const char* const* ppszArgs);
-char* __stdcall FindCdromFilePathBySuffix(const char* pszSuffix);
 void* AppendDynamicCStringToStream(void* pStream, const GameDynamicCString* pString);
 int LEMBALL_FASTCALL GetDynamicCStringLength(const GameDynamicCString* pString);
 void LEMBALL_FASTCALL DestroyNamedStatusEntry(void* pEntry);

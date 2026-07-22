@@ -7,6 +7,8 @@ import argparse
 import csv
 import json
 import struct
+import subprocess
+import sys
 from collections import defaultdict
 from pathlib import Path, PurePosixPath
 
@@ -38,21 +40,20 @@ def objdiff_f32(value: int | float) -> float:
 
 
 def measures(
-    functions: list[dict[str, object]], total_units: int = 1,
-    complete_units: int | None = None
+    functions: list[dict[str, object]], total_units: int = 1
 ) -> dict[str, object]:
     total_code = sum(int(function["size"]) for function in functions)
-    matched = [function for function in functions if float(function["ratio"]) == 1.0]
+    matched = [
+        function
+        for function in functions
+        if float(function["raw_accuracy"]) == 1.0
+    ]
     matched_code = sum(int(function["size"]) for function in matched)
     fuzzy_weight = sum(
-        float(function["ratio"]) * 100.0 * int(function["size"])
+        float(function["raw_accuracy"]) * 100.0 * int(function["size"])
         for function in functions
     )
-    result: dict[str, object] = {
-        "matched_data_percent": 100.0,
-        "complete_data_percent": 100.0,
-        "total_units": total_units,
-    }
+    result: dict[str, object] = {"total_units": total_units}
     if total_code:
         result.update(
             {
@@ -72,16 +73,12 @@ def measures(
                 ),
             }
         )
-    if complete_units is None:
-        complete_units = total_units if functions and len(matched) == len(functions) else 0
-    if complete_units:
-        result["complete_units"] = complete_units
     return result
 
 
 def objdiff_item(function: dict[str, object]) -> dict[str, object]:
     address = int(function["address"])
-    ratio = float(function["ratio"]) * 100.0
+    ratio = float(function["raw_accuracy"]) * 100.0
     item: dict[str, object] = {
         "name": str(function["name"]),
         "size": objdiff_u64(int(function["size"])),
@@ -164,7 +161,7 @@ def load_functions(
     matches = {
         int(entity.orig_addr, 16): entity
         for entity in native.entities.values()
-        if entity.type in (None, EntityType.FUNCTION)
+        if entity.orig_addr and entity.type in (None, EntityType.FUNCTION)
     }
     modules = load_modules(roadmap_path)
     functions: list[dict[str, object]] = []
@@ -176,19 +173,44 @@ def load_functions(
         if address in seen:
             raise SystemExit(f"duplicate manifest address 0x{address:08X}")
         seen.add(address)
+        if int(entry["size"]) <= 0:
+            raise SystemExit(f"invalid manifest size at 0x{address:08X}")
         match = matches.get(address)
-        if match is not None and match.is_stub:
-            continue
         functions.append(
             {
                 "address": address,
                 "name": entry["name"] if match is None else match.name,
                 "size": int(entry["size"]),
-                "ratio": (
-                    0.0 if match is None else float(match.effective_accuracy)
+                "raw_accuracy": (
+                    0.0
+                    if match is None or match.is_stub
+                    else float(match.accuracy)
+                ),
+                "effective_only": bool(
+                    match is not None
+                    and not match.is_stub
+                    and match.is_effective_match
+                    and float(match.accuracy) != 1.0
                 ),
                 "module": modules.get(address, "Unassigned"),
             }
+        )
+    outside_manifest = sorted(set(matches) - seen)
+    if outside_manifest:
+        examples = ", ".join(f"0x{address:08X}" for address in outside_manifest[:8])
+        suffix = "" if len(outside_manifest) <= 8 else ", ..."
+        raise SystemExit(
+            f"{len(outside_manifest)} reccmp function entities are not reportable "
+            f"Ghidra function starts: {examples}{suffix}"
+        )
+    expected_total = sum(
+        entry["category"] in INCLUDED_CATEGORIES
+        for entry in manifest["functions"]
+    )
+    if len(functions) != expected_total:
+        raise SystemExit(
+            f"report total {len(functions)} does not equal manifest reportable "
+            f"total {expected_total}"
         )
     return functions
 
@@ -216,11 +238,7 @@ def build_report(
                 },
             }
         )
-    complete_units = sum(
-        all(float(function["ratio"]) == 1.0 for function in module_functions)
-        for module_functions in grouped.values()
-    )
-    report_measures = measures(functions, len(units), complete_units)
+    report_measures = measures(functions, len(units))
     return {"measures": report_measures, "units": units, "version": 2}
 
 
@@ -241,10 +259,26 @@ def main() -> int:
     report = build_report(args.manifest, args.reccmp_report, args.roadmap)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    subprocess.run(
+        [
+            sys.executable,
+            str(Path(__file__).with_name("validate_objdiff_report.py")),
+            str(args.output),
+        ],
+        check=True,
+    )
     values = report["measures"]
+    effective_only = sum(
+        bool(function["effective_only"])
+        for function in load_functions(
+            args.manifest, args.reccmp_report, args.roadmap
+        )
+    )
     print(
         f"{values.get('matched_functions', 0)}/{values.get('total_functions', 0)} "
-        f"functions matched; fuzzy {values.get('fuzzy_match_percent', 0.0):.1f}%"
+        f"functions matched; raw fuzzy "
+        f"{values.get('fuzzy_match_percent', 0.0):.1f}%; "
+        f"{effective_only} additional effective-only matches"
     )
     return 0
 

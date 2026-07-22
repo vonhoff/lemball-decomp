@@ -27,6 +27,8 @@ extern int g_fStartupPlayLevelOverride;
 extern int g_fStartupTestAllLevels;
 extern int g_fStartupGraphicsDialogRequested;
 extern int g_fLevelDemoModeEnabled;
+extern short g_nLevelViewportHorizontalRemainder;
+extern short g_nLevelViewportVerticalRemainder;
 extern unsigned char g_abOverrideLevelFilePathBuffer[260];
 extern StartupGraphicsWindowConfig g_StartupGraphicsDriverConfig;
 extern int g_fSmallMemoryBucketTableEnabled;

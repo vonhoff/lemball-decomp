@@ -19,8 +19,18 @@
       },
       "cacheVariables": {
         "LEMBALL_ENABLE_WIN32": "ON",
-        "LEMBALL_SKIP_CD_TEST": "ON",
-        "LEMBALL_SKIP_REGISTRY_RUNNING_STATE": "ON"
+        "LEMBALL_SKIP_CD_TEST": "OFF",
+        "LEMBALL_SKIP_REGISTRY_RUNNING_STATE": "OFF"
+      }
+    },
+    {
+      "name": "msvc420-runtime",
+      "displayName": "MSVC 4.20 Runtime Smoke Test",
+      "inherits": "msvc420",
+      "binaryDir": "${sourceDir}/build-msvc420-runtime",
+      "cacheVariables": {
+        "LEMBALL_SKIP_CD_TEST": "OFF",
+        "LEMBALL_SKIP_REGISTRY_RUNNING_STATE": "OFF"
       }
     }
   ]

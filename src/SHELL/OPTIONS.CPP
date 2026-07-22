@@ -64,9 +64,9 @@ static int g_fStatusDebugRequested = 0;
 // GLOBAL: LEMBALL 0x004a62fc
 static int g_fMemoryDebugRequested = 0;
 // GLOBAL: LEMBALL 0x004a6312
-static short g_fUnknownStartupFlag0 = 0;
+short g_nLevelViewportVerticalRemainder = 0;
 // GLOBAL: LEMBALL 0x004a6310
-static short g_fUnknownStartupFlag1 = 0;
+short g_nLevelViewportHorizontalRemainder = 0;
 
 // GLOBAL: LEMBALL 0x004a6258
 static StartupGraphicsWindowConfig g_StartupGraphicsWindowConfig;
@@ -139,8 +139,8 @@ void InitializeStartupSwitchDefaults(void)
 		g_fCompactPrimaryContextLayout = 0;
 		break;
 	}
-	g_fUnknownStartupFlag1 = 0;
-	g_fUnknownStartupFlag0 = 0;
+	g_nLevelViewportHorizontalRemainder = 0;
+	g_nLevelViewportVerticalRemainder = 0;
 	g_nStoredLevelDemoModeEnabled = 0;
 	g_fLevelDemoModeEnabled = 0;
 

@@ -163,8 +163,8 @@ extern "C"
 	LSTATUS WINAPI
 	RegQueryValueExA(HKEY hKey, LPCSTR lpValueName, LPDWORD lpReserved, LPDWORD lpType, BYTE* lpData, LPDWORD lpcbData);
 	LSTATUS WINAPI RegCloseKey(HKEY hKey);
-	DWORD WINAPI GetLogicalDrives(void);
-	UINT WINAPI GetDriveTypeA(LPCSTR lpRootPathName);
+	__declspec(dllimport) DWORD WINAPI GetLogicalDrives(void);
+	__declspec(dllimport) UINT WINAPI GetDriveTypeA(LPCSTR lpRootPathName);
 	UINT WINAPI GetModuleFileNameA(HINSTANCE hModule, LPSTR lpFilename, UINT nSize);
 	DWORD WINAPI GetCurrentDirectoryA(DWORD nBufferLength, LPSTR lpBuffer);
 	DWORD WINAPI GetVersion(void);

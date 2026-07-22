@@ -262,7 +262,8 @@ int LEMBALL_FASTCALL HandlePrimaryContextMenuCommand(ShellUiPrimaryContextShell*
 		return 0;
 	case ShellUiMENU_COMMAND_HELP_INDEX:
 		szHelpPath[0] = '\0';
-		strcpy(szHelpPath, FindCdromFilePathBySuffix("lemball\\lemball.hlp"));
+		strcpy(szHelpPath,
+			   g_pProcessCurrentDirectoryState->FindCdromFilePathBySuffix("lemball\\lemball.hlp"));
 		strcat(szHelpPath, "lemball\\lemball.hlp");
 		if (!WinHelpA(*(HWND*) ((char*) pShell - 0x4c), szHelpPath, 0x101, 0x49e7cc)) {
 			g_pErrorOutputStream->AppendCStringToStream(g_SHELLUI_HelpError);
@@ -270,7 +271,8 @@ int LEMBALL_FASTCALL HandlePrimaryContextMenuCommand(ShellUiPrimaryContextShell*
 		return 0;
 	case ShellUiMENU_COMMAND_HELP_TOPIC:
 		szHelpPath[0] = '\0';
-		strcpy(szHelpPath, FindCdromFilePathBySuffix("lemball\\lemball.hlp"));
+		strcpy(szHelpPath,
+			   g_pProcessCurrentDirectoryState->FindCdromFilePathBySuffix("lemball\\lemball.hlp"));
 		strcat(szHelpPath, "lemball\\lemball.hlp");
 		if (!WinHelpA(*(HWND*) ((char*) pShell - 0x4c), szHelpPath, 0x105, 0x49e814)) {
 			g_pErrorOutputStream->AppendCStringToStream(g_SHELLUI_HelpError);

@@ -1712,6 +1712,33 @@ void VS_RootGeometryOwner::ApplyRootGeometryRect(const VS_XYPair* pRect)
 	SetRootGeometryRect(pRect);
 }
 
+// FUNCTION: LEMBALL 0x00465e00
+void VS_RootGeometryOwner::SetRootGeometryQuadAndScale(const VS_XYPair* pRect,
+													  const VS_XYPair* pSourceRect,
+													  int nScaleFactor)
+{
+	int nPreviousScaleFactor;
+	const VS_XYPair* pNextSourceRect;
+
+	nPreviousScaleFactor = m_nScaleFactor38;
+	if (nScaleFactor != nPreviousScaleFactor) {
+		m_nScaleFactor38 = nScaleFactor;
+		SetRootGeometryScaleFactor(nPreviousScaleFactor);
+		ReservedWindowOwnerSlot22(nPreviousScaleFactor);
+	}
+	m_SourceSize10.m_x = pSourceRect->m_x;
+	m_SourceSize10.m_y = pSourceRect->m_y;
+	if (pSourceRect != 0) {
+		pNextSourceRect = pSourceRect + 1;
+	}
+	else {
+		pNextSourceRect = 0;
+	}
+	m_SourcePosition14.m_x = pNextSourceRect->m_x;
+	m_SourcePosition14.m_y = pNextSourceRect->m_y;
+	SetRootGeometryRect(pRect);
+}
+
 // FUNCTION: LEMBALL 0x00465e60
 void VS_RootGeometryOwner::EnsureRootGeometryDispatchHelper(void)
 {

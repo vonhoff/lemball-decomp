@@ -12,6 +12,10 @@ import tempfile
 from pathlib import Path
 
 
+TARGET_SHA256 = "d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63"
+OWNERSHIP_CATEGORIES = {"internal", "runtime", "thunk", "import", "external"}
+
+
 def find_headless(ghidra_home: Path | None) -> Path:
     names = ("analyzeHeadless.bat", "analyzeHeadless")
     if ghidra_home is not None:
@@ -72,13 +76,18 @@ def main() -> int:
         functions = manifest.get("functions", [])
         addresses = [int(function["address"], 16) for function in functions]
         summary = manifest.get("summary", {})
+        categories = [function.get("category") for function in functions]
         if (
             manifest.get("version") != args.target
             or manifest.get("program") != args.program
+            or str(manifest.get("sha256", "")).casefold() != TARGET_SHA256
             or manifest.get("function_count") != len(functions)
             or summary.get("total") != len(functions)
             or addresses != sorted(addresses)
             or len(addresses) != len(set(addresses))
+            or any(category not in OWNERSHIP_CATEGORIES for category in categories)
+            or any(int(function.get("size", 0)) <= 0 for function in functions if not function.get("is_external"))
+            or any(summary.get(category) != categories.count(category) for category in OWNERSHIP_CATEGORIES)
         ):
             raise SystemExit("Ghidra produced an invalid function manifest")
         temporary.replace(output)

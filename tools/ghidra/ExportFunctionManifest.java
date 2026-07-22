@@ -3,7 +3,7 @@
 
 import ghidra.app.script.GhidraScript;
 import ghidra.program.model.listing.Function;
-import ghidra.program.model.symbol.SourceType;
+import ghidra.program.model.listing.FunctionTag;
 
 import java.io.BufferedWriter;
 import java.nio.charset.StandardCharsets;
@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 public class ExportFunctionManifest extends GhidraScript {
+    private static final String INTERNAL_TAG = "LEMBALL_INTERNAL";
+    private static final String RUNTIME_TAG = "LEMBALL_RUNTIME";
+
     private static String jsonString(String value) {
         StringBuilder out = new StringBuilder("\"");
         for (int i = 0; i < value.length(); i++) {
@@ -33,13 +36,34 @@ public class ExportFunctionManifest extends GhidraScript {
         return out.append('"').toString();
     }
 
+    private static String ownership(Function function) {
+        boolean internal = false;
+        boolean runtime = false;
+        for (FunctionTag tag : function.getTags()) {
+            if (INTERNAL_TAG.equals(tag.getName())) internal = true;
+            if (RUNTIME_TAG.equals(tag.getName())) runtime = true;
+        }
+        if (internal == runtime) {
+            throw new IllegalStateException(
+                String.format(
+                    "%s at %s must have exactly one of %s or %s",
+                    function.getName(), function.getEntryPoint(), INTERNAL_TAG, RUNTIME_TAG));
+        }
+        return internal ? "internal" : "runtime";
+    }
+
     private static String category(Function function) {
+        if (function.isExternal()) return "external";
         if (function.isThunk()) {
             Function target = function.getThunkedFunction(true);
-            return target != null && target.isExternal() ? "import" : "thunk";
+            if (target == null) {
+                throw new IllegalStateException(
+                    "unresolved thunk target for " + function.getName() + " at " + function.getEntryPoint());
+            }
+            if (target.isExternal()) return "import";
+            return "internal".equals(ownership(target)) ? "thunk" : "runtime";
         }
-        return function.getSymbol().getSource() == SourceType.USER_DEFINED
-            ? "internal" : "runtime";
+        return ownership(function);
     }
 
     @Override
@@ -59,6 +83,7 @@ public class ExportFunctionManifest extends GhidraScript {
         try (BufferedWriter out = Files.newBufferedWriter(Path.of(args[0]), StandardCharsets.UTF_8)) {
             out.write("{\n  \"version\": " + jsonString(args[1]) + ",\n");
             out.write("  \"program\": " + jsonString(currentProgram.getName()) + ",\n");
+            out.write("  \"sha256\": " + jsonString(currentProgram.getExecutableSHA256()) + ",\n");
             out.write("  \"function_count\": " + functions.size() + ",\n  \"summary\": {\n");
             out.write("    \"total\": " + functions.size());
             for (Map.Entry<String, Integer> entry : counts.entrySet())

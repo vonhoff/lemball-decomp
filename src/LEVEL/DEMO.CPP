@@ -77,7 +77,8 @@ int LoadNextLevelDemoRecordBuffer(void* pPlaybackController);
 void ReadLevelDemoLengthPrefixedRecordThunk(void* pPlaybackController, void* pRecordBuffer, unsigned int* pcbRecord);
 void ServiceLevelDemoPlayback(void* pPlaybackController);
 void LEMBALL_FASTCALL ReleaseLevelDemoRecordBuffer(void* pPlaybackController);
-void StopLevelDemoPlayback(void* pPlaybackController);
+void LEMBALL_FASTCALL StopLevelDemoPlayback(void* pPlaybackController);
+void LEMBALL_FASTCALL StopLevelDemoPlaybackThunk(void* pPlaybackController);
 int FilterLevelDemoPlaybackInputEvent(void* pPlaybackController, unsigned short* pEventId);
 void* RestoreLevelDemoPlaybackBaseVtable(void* pPlaybackController, unsigned char fDelete);
 int* LoadBinResource(int nResourceId);
@@ -152,6 +153,12 @@ int LEMBALL_FASTCALL FilterLevelDemoPlaybackInputEventThunk(void* pPlaybackContr
 void LEMBALL_FASTCALL ReleaseLevelDemoRecordBufferThunk(void* pPlaybackController)
 {
 	ReleaseLevelDemoRecordBuffer(pPlaybackController);
+}
+
+// FUNCTION: LEMBALL 0x00402eaa
+void LEMBALL_FASTCALL StopLevelDemoPlaybackThunk(void* pPlaybackController)
+{
+	StopLevelDemoPlayback(pPlaybackController);
 }
 
 // FUNCTION: LEMBALL 0x00409150
@@ -373,10 +380,10 @@ void LEMBALL_FASTCALL ReleaseLevelDemoRecordBuffer(void* pPlaybackController)
 }
 
 // FUNCTION: LEMBALL 0x004096a0
-void StopLevelDemoPlayback(void* pPlaybackController)
+void LEMBALL_FASTCALL StopLevelDemoPlayback(void* pPlaybackController)
 {
 	*(int*) ((char*) pPlaybackController + 0x50) = 1;
-	ReleaseLevelDemoRecordBuffer(pPlaybackController);
+	ReleaseLevelDemoRecordBufferThunk(pPlaybackController);
 }
 
 // FUNCTION: LEMBALL 0x004096b0

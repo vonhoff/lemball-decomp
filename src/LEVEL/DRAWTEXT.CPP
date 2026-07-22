@@ -47,6 +47,7 @@ struct LevelScreenDrawOwnerView {
 	void* m_pFallbackGlyph7C;
 
 	void* LookupGlyph(unsigned int ch);
+	short* MeasureGlyphStringExtent(short* pExtent, const char* pszText, unsigned int nFlags);
 };
 
 struct LevelDrawContextView {
@@ -64,6 +65,49 @@ VsInitFormattedOutputStream* AppendUIntToStreamAsInt(VsInitFormattedOutputStream
 void* LevelScreenDrawOwnerView::LookupGlyph(unsigned int ch)
 {
 	return m_pGlyphList78->FindGlyph(ch);
+}
+
+// FUNCTION: LEMBALL 0x0045db30
+short* LevelScreenDrawOwnerView::MeasureGlyphStringExtent(short* pExtent,
+														 const char* pszText,
+														 unsigned int nFlags)
+{
+	int i;
+	short cx;
+	short cy;
+
+	i = 0;
+	cx = 0;
+	cy = 0;
+	while (pszText[i] != '\0') {
+		char* pGlyph = (char*) LookupGlyph((unsigned char) pszText[i]);
+		if (pGlyph == 0) {
+			pGlyph = (char*) LookupGlyph(0x49);
+			if (pGlyph == 0) {
+				pGlyph = (char*) m_pFallbackGlyph7C;
+			}
+		}
+		if ((nFlags & 0x60) == 0) {
+			int nWidth = *(short*) (pGlyph + 0x48) + *(short*) (pGlyph + 0x4c);
+			if (cx < nWidth) cx = (short) nWidth;
+		}
+		else {
+			cx = (short) (cx + *(short*) (pGlyph + 0x4c) + 1);
+		}
+		if ((nFlags & 0x180) == 0) {
+			int nHeight = *(short*) (pGlyph + 0x4a) + *(short*) (pGlyph + 0x4e);
+			if (cy < nHeight) cy = (short) nHeight;
+		}
+		else {
+			cy = (short) (cy + *(short*) (pGlyph + 0x4e) + 1);
+		}
+		++i;
+	}
+	if ((nFlags & 0x60) != 0) --cx;
+	if ((nFlags & 0x180) != 0) --cy;
+	pExtent[0] = cx;
+	pExtent[1] = cy;
+	return pExtent;
 }
 
 // FUNCTION: LEMBALL 0x00467ac0

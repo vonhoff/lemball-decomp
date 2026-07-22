@@ -13,6 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ROADMAP = ROOT / "build" / "reccmp-annotation-audit-roadmap.csv"
+MANIFEST = ROOT / "data" / "manifest.json"
 RUNTIME_SYMBOLS = ROOT / "data" / "runtime-symbols.csv"
 SOURCE_SUFFIXES = {".cpp", ".h", ".hpp"}
 EXTERNAL_LIBRARIES = {
@@ -97,7 +98,7 @@ def marker_signature(lines: list[str], marker_index: int) -> str:
     return " ".join(parts)
 
 
-def scan_sources(target: str) -> list[str]:
+def scan_sources(target: str, reportable_addresses: set[int]) -> list[str]:
     errors: list[str] = []
     seen_addresses: dict[int, tuple[Path, int]] = {}
     for path in sorted((ROOT / "src").rglob("*")):
@@ -122,6 +123,11 @@ def scan_sources(target: str) -> list[str]:
                     )
                 else:
                     seen_addresses[address] = path, line_number
+                if address not in reportable_addresses:
+                    errors.append(
+                        f"{path}:{line_number}: 0x{address:08x} is not a "
+                        "reportable Ghidra function start"
+                    )
 
                 signature = marker_signature(lines, index)
                 if re.search(r"(?:^|\s)static\s", signature):
@@ -180,7 +186,21 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--target", default="LEMBALL")
     parser.add_argument("--roadmap", type=Path, default=ROADMAP)
+    parser.add_argument("--manifest", type=Path, default=MANIFEST)
     return parser.parse_args()
+
+
+def load_reportable_addresses(path: Path, target: str) -> set[int]:
+    import json
+
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    if manifest.get("version") != target:
+        raise SystemExit(f"{path} is not a {target} manifest")
+    return {
+        int(function["address"], 16)
+        for function in manifest["functions"]
+        if function["category"] in {"internal", "thunk"}
+    }
 
 
 def main() -> int:
@@ -191,11 +211,17 @@ def main() -> int:
     generated = [row for row in rebuilt_only if compiler_generated(row["symbol"])]
     source_authored = [row for row in rebuilt_only if not compiler_generated(row["symbol"])]
 
-    errors = scan_sources(args.target)
+    reportable_addresses = load_reportable_addresses(args.manifest.resolve(), args.target)
+    errors = scan_sources(args.target, reportable_addresses)
     errors.extend(scan_runtime_symbols())
     for row in source_authored:
         errors.append(
             "unmapped source function: "
+            f"{row['module']}::{row['symbol']} ({row['recomp_addr']})"
+        )
+    for row in generated:
+        errors.append(
+            "unmapped compiler-generated function: "
             f"{row['module']}::{row['symbol']} ({row['recomp_addr']})"
         )
 
@@ -209,10 +235,7 @@ def main() -> int:
         )
         return 1
 
-    print(
-        f"annotation audit clean: 0 source-authored; "
-        f"{len(generated)} compiler-generated"
-    )
+    print("annotation audit clean: 0 source-authored; 0 compiler-generated")
     return 0
 
 

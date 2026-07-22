@@ -218,7 +218,7 @@ int g_fSubsystemsReady = 0;
 static const char* g_pszDebugOutPath = g_VSINIT_DebugOutPath;
 static FILE* g_pDebugOutFile = 0;
 // GLOBAL: LEMBALL 0x004a1dcc
-void* g_pProcessCurrentDirectoryState = 0;
+GameProcessCurrentDirectoryState* g_pProcessCurrentDirectoryState = 0;
 // GLOBAL: LEMBALL 0x004a8088
 char g_abProcessCurrentDirectoryBuffer[0x100];
 HANDLE g_hDebugSyncEvent = 0;
@@ -539,7 +539,8 @@ int InitializeProcessCurrentDirectoryState(void)
 		g_pProcessCurrentDirectoryState = 0;
 	}
 	else {
-		g_pProcessCurrentDirectoryState = ConstructProcessCurrentDirectoryMarker(pMarker);
+		g_pProcessCurrentDirectoryState =
+			(GameProcessCurrentDirectoryState*) ConstructProcessCurrentDirectoryMarker(pMarker);
 	}
 
 	GetCurrentDirectoryA(sizeof(g_abProcessCurrentDirectoryBuffer), g_abProcessCurrentDirectoryBuffer);

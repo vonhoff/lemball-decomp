@@ -1,13 +1,14 @@
 {
   "version": "LEMBALL",
   "program": "LEMBALL.EXE",
-  "function_count": 4093,
+  "sha256": "d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63",
+  "function_count": 4378,
   "summary": {
-    "total": 4093,
-    "internal": 2764,
-    "runtime": 90,
-    "thunk": 1212,
-    "import": 27,
+    "total": 4378,
+    "internal": 2970,
+    "runtime": 136,
+    "thunk": 1244,
+    "import": 28,
     "external": 0
   },
   "functions": [
@@ -237,6 +238,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00401104",
+      "name": "UpdateMainGameVariantResourceLoadProgressThunk",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0040110E",
       "name": "refresh_framed_screen_render_entry_group",
       "size": 5,
@@ -390,6 +400,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00401195",
+      "name": "WindowOwnerSlot15NoopThunk",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0040119A",
       "name": "copy_two_dword_pair_variant",
       "size": 5,
@@ -536,6 +555,15 @@
     {
       "address": "00401226",
       "name": "construct_enmy_chunk_owner",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0040122B",
+      "name": "WindowOwnerSlot16NoopThunk",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -984,6 +1012,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "004013BB",
+      "name": "ThunkGetLevelScreenRequestedMode",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "004013C0",
       "name": "construct_eff_stream_payload_size_8",
       "size": 5,
@@ -1273,7 +1310,7 @@
     },
     {
       "address": "004014CE",
-      "name": "update_selector_manager_animation_state",
+      "name": "UpdateMenuSelectorAnimation",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -1481,6 +1518,15 @@
     {
       "address": "004015B4",
       "name": "get_level_tile_grid_cell_pointer",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004015B9",
+      "name": "VariantResourceBundleNoopThunk",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -2604,6 +2650,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "004019B5",
+      "name": "PollIntroSequencePlaybackThunk",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "004019C9",
       "name": "initialize_render_rect_sink_entry_a",
       "size": 5,
@@ -2768,6 +2823,15 @@
     {
       "address": "00401A87",
       "name": "thunk_confirm_selected_network_lobby_player_entry",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00401A8C",
+      "name": "HandleIntroSequenceMediaCompletionThunk",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -3360,6 +3424,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00401D1B",
+      "name": "mark_level_screen_update_grid_rect",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00401D25",
       "name": "configure_level_mode_profile_ranges_thunk",
       "size": 5,
@@ -3515,6 +3588,15 @@
     {
       "address": "00401DD4",
       "name": "read_level_metadata_for_skill_and_level",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00401DD9",
+      "name": "UpdateIntroSequencePlaybackThunk",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -4126,7 +4208,7 @@
     },
     {
       "address": "00402009",
-      "name": "append_queued_zrle_overlay_selector_child",
+      "name": "AppendMenuSelectorChildThunk",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -4244,6 +4326,15 @@
     {
       "address": "0040208B",
       "name": "set_level_tile_grid_cell_type_variant",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0040209A",
+      "name": "GetIntroSequenceMediaNotifyFlagsThunk",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -4397,6 +4488,15 @@
     {
       "address": "00402130",
       "name": "thunk_apply_level_progress_password_value",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00402135",
+      "name": "ThunkDispatchSelectedQueuedVariantChildSlotEvent",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -4755,6 +4855,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0040227F",
+      "name": "DeleteStartupModeEventClientThunk",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0040228E",
       "name": "construct_managed_entity_state_request_packet",
       "size": 5,
@@ -5009,6 +5118,15 @@
     {
       "address": "004023A1",
       "name": "destroy_intro_sequence_screen",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004023A6",
+      "name": "GeometryOwnerPointerEnterThunk",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -5682,6 +5800,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00402617",
+      "name": "construct_non_zrle_variant_render_entry",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0040262B",
       "name": "thunk_start_network_lobby_transport_session",
       "size": 5,
@@ -5855,6 +5982,15 @@
     {
       "address": "004026C6",
       "name": "initialize_enmy_chunk_object_behavior_fields",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004026D5",
+      "name": "thunk_FUN_00416510",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -6260,7 +6396,7 @@
     {
       "address": "00402847",
       "name": "thunk_mark_object_field_0x178_and_set_timer_0x3c",
-      "size": 0,
+      "size": 5,
       "category": "thunk",
       "is_thunk": true,
       "is_external": false,
@@ -6618,6 +6754,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0040298C",
+      "name": "DeleteRenderQueueNodeThunk",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00402991",
       "name": "thunk_delete_simple_vtable_object_00408010",
       "size": 5,
@@ -6924,6 +7069,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00402A9F",
+      "name": "WindowOwnerSlot17NoopThunk",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00402AA4",
       "name": "request_intro_sequence_screen_transition",
       "size": 5,
@@ -6969,6 +7123,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00402AC7",
+      "name": "FramedScreenSlot20Thunk",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00402AD6",
       "name": "thunk_noop_callback_0040ab20",
       "size": 5,
@@ -6998,6 +7161,15 @@
     {
       "address": "00402AE5",
       "name": "dispatch_level_screen_point_command",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00402AEA",
+      "name": "ThunkGetLevelScreenTransitionStatus",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -7088,6 +7260,15 @@
     {
       "address": "00402B3A",
       "name": "load_capture_trigger_chunk_objects",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00402B3F",
+      "name": "ThunkRefreshLevelScreenViewportLayout",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -7367,6 +7548,15 @@
     {
       "address": "00402C6B",
       "name": "append_type_0x35_chunk_object",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00402C75",
+      "name": "thunk_FUN_0042eec0",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -7662,6 +7852,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00402D83",
+      "name": "thunk_FUN_0044b360",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00402D8D",
       "name": "service_type_0x35_chunk_objects",
       "size": 5,
@@ -7833,6 +8032,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00402E05",
+      "name": "RefreshIntroSequenceMediaPathThunk",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00402E0A",
       "name": "thunk_noop_projectile_geometry_callback",
       "size": 5,
@@ -7870,7 +8078,7 @@
     },
     {
       "address": "00402E28",
-      "name": "start_selector_manager_current_action_animation",
+      "name": "StartMenuSelectorAction",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -7961,6 +8169,15 @@
     {
       "address": "00402E64",
       "name": "emit_level_screen_object_variant_render_entries",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00402E6E",
+      "name": "ThunkHandleLevelScreenViewportResize",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -8175,6 +8392,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00402F36",
+      "name": "ThunkDrawLevelScreen",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00402F3B",
       "name": "set_object_field_0x10_00435890",
       "size": 5,
@@ -8267,6 +8493,15 @@
     {
       "address": "00402F8B",
       "name": "thunk_validate_and_apply_level_password",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00402F90",
+      "name": "ThunkUpdateLevelScreen",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -9084,6 +9319,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00403247",
+      "name": "FramedScreenSlot14Thunk",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00403251",
       "name": "thunk_delete_simple_vtable_object_00407ef0",
       "size": 5,
@@ -9813,6 +10057,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "004034F4",
+      "name": "ThunkDestroyLevelScreen",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "004034F9",
       "name": "thunk_route_level_chunk_stream_payload",
       "size": 5,
@@ -9941,6 +10194,15 @@
     {
       "address": "00403558",
       "name": "restore_level_selection_render_child_entry_vtable",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00403562",
+      "name": "ThunkNoopLevelScreenScaleChanged",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -10479,6 +10741,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00403751",
+      "name": "ResetGeometryOwnerButtonsOutsideThunk",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00403756",
       "name": "queue_managed_entity_followup_move_commands",
       "size": 5,
@@ -10562,6 +10833,15 @@
     {
       "address": "004037A6",
       "name": "thunk_return_true_vtable_callback_0041c3f0",
+      "size": 5,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004037AB",
+      "name": "IgnoreIntroSequenceMediaNotificationThunk",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
@@ -11163,6 +11443,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00408070",
+      "name": "DeleteStartupModeEventClientAdjustorThunk",
+      "size": 8,
+      "category": "thunk",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00408080",
       "name": "set_level_frame_clock_pause_flag",
       "size": 10,
@@ -11461,7 +11750,7 @@
     },
     {
       "address": "004098E0",
-      "name": "restore_level_demo_playback_base_vtable",
+      "name": "RestoreLevelDemoPlaybackBaseVtable",
       "size": 31,
       "category": "internal",
       "is_thunk": false,
@@ -11685,6 +11974,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0040A820",
+      "name": "return_false_vtable_callback_0040a820",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0040A830",
       "name": "copy_object_fields_0x9c_triplet",
       "size": 33,
@@ -11883,9 +12181,27 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0040AA80",
+      "name": "noop_vtable_callback_0040aa80",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0040AA90",
       "name": "return_false_vtable_callback_0040aa90",
       "size": 5,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0040AAA0",
+      "name": "noop_vtable_callback_0040aaa0",
+      "size": 1,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -11967,6 +12283,15 @@
       "address": "0040AB50",
       "name": "is_managed_entity_state_0x18",
       "size": 17,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0040AB70",
+      "name": "NoopLevelEffChunkStreamVirtual",
+      "size": 1,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -14331,6 +14656,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00416510",
+      "name": "FUN_00416510",
+      "size": 84,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00416570",
       "name": "is_managed_entity_state_not_7_8_or_0x15",
       "size": 30,
@@ -15234,7 +15568,7 @@
       "address": "00418C90",
       "name": "FUN_00418c90",
       "size": 14,
-      "category": "runtime",
+      "category": "internal",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -15351,6 +15685,15 @@
       "address": "00419B00",
       "name": "forward_managed_entity_vslot_0x7c",
       "size": 9,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00419BC0",
+      "name": "FUN_00419bc0",
+      "size": 31,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -15744,6 +16087,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0041B160",
+      "name": "FUN_0041b160",
+      "size": 77,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0041B1B0",
       "name": "remove_counted_child_pointer_recursive",
       "size": 238,
@@ -15816,10 +16168,19 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0041B940",
+      "name": "FUN_0041b940",
+      "size": 77,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0041B990",
       "name": "FUN_0041b990",
       "size": 20,
-      "category": "runtime",
+      "category": "internal",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -15855,7 +16216,7 @@
       "address": "0041BB10",
       "name": "FUN_0041bb10",
       "size": 169,
-      "category": "runtime",
+      "category": "internal",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -15945,6 +16306,15 @@
       "address": "0041C470",
       "name": "construct_linked_type_0x11_chunk_object",
       "size": 143,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0041C530",
+      "name": "FUN_0041c530",
+      "size": 6,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -16224,6 +16594,15 @@
       "address": "0041D650",
       "name": "advance_gmob_state_machine_action_0x2a",
       "size": 233,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0041D740",
+      "name": "FUN_0041d740",
+      "size": 50,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -16581,6 +16960,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0041EA90",
+      "name": "FUN_0041ea90",
+      "size": 22,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0041EAB0",
       "name": "count_nested_iterated_child_entries",
       "size": 45,
@@ -16629,6 +17017,15 @@
       "address": "0041EB90",
       "name": "find_managed_entity_by_pointer",
       "size": 66,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0041EBE0",
+      "name": "FUN_0041ebe0",
+      "size": 150,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -16926,7 +17323,7 @@
       "address": "0042001D",
       "name": "caseD_2",
       "size": 8,
-      "category": "runtime",
+      "category": "internal",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -16935,7 +17332,7 @@
       "address": "00420034",
       "name": "caseD_4",
       "size": 8,
-      "category": "runtime",
+      "category": "internal",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -16944,7 +17341,7 @@
       "address": "0042003C",
       "name": "caseD_5",
       "size": 15,
-      "category": "runtime",
+      "category": "internal",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -18714,6 +19111,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00427FC0",
+      "name": "FUN_00427fc0",
+      "size": 8,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00428360",
       "name": "dispatch_hand_chunk_contacts_for_entity",
       "size": 95,
@@ -19353,6 +19759,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0042C150",
+      "name": "FUN_0042c150",
+      "size": 879,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0042C4D0",
       "name": "refresh_active_pgun_chunk_objects",
       "size": 66,
@@ -19749,6 +20164,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0042EEC0",
+      "name": "FUN_0042eec0",
+      "size": 5,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0042EEE0",
       "name": "is_point_inside_move_chunk_bounds",
       "size": 83,
@@ -20136,6 +20560,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "004317C0",
+      "name": "DestroyPrimaryContextActiveScreenForVtable",
+      "size": 69,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00431810",
       "name": "dispatch_primary_context_active_screen_frame",
       "size": 77,
@@ -20148,6 +20581,15 @@
       "address": "00431860",
       "name": "forward_primary_context_active_screen_slot_0x10",
       "size": 22,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00431880",
+      "name": "ForwardPrimaryContextActiveScreenSlot0x0C",
+      "size": 24,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -20235,6 +20677,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00431ED0",
+      "name": "ForwardPrimaryContextActiveScreenSlot0x30",
+      "size": 16,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00431EE0",
       "name": "poll_primary_context_screen_status",
       "size": 33,
@@ -20256,6 +20707,15 @@
       "address": "00431F30",
       "name": "compute_primary_context_centered_screen_rect",
       "size": 228,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004322D0",
+      "name": "DispatchPrimaryContextSlot23Thunk",
+      "size": 5,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -20391,6 +20851,15 @@
       "address": "004326E0",
       "name": "integrate_inertial_coordinate_event_source",
       "size": 194,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00432870",
+      "name": "FUN_00432870",
+      "size": 12,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -20595,6 +21064,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00434F50",
+      "name": "FUN_00434f50",
+      "size": 13,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00435870",
       "name": "return_object_field_0x0c_00435870",
       "size": 4,
@@ -20634,6 +21112,15 @@
       "address": "004358B0",
       "name": "set_object_field_0x18_004358b0",
       "size": 10,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004358C0",
+      "name": "VariantResourceBundleNoop",
+      "size": 1,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -20706,6 +21193,15 @@
       "address": "00436690",
       "name": "noop_render_entry_callback_00436690",
       "size": 1,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004366A0",
+      "name": "NoopLevelScreenScaleChanged",
+      "size": 3,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -21012,6 +21508,15 @@
       "address": "00438380",
       "name": "select_single_entity_and_dispatch_selection",
       "size": 62,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004383C0",
+      "name": "RefreshLevelScreenViewportLayout",
+      "size": 313,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -21441,6 +21946,42 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00439960",
+      "name": "GeometryOwnerButtonTransitionNoop",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00439970",
+      "name": "GeometryOwnerButtonInsideNoop",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00439980",
+      "name": "ClearGeometryOwnerButtonState",
+      "size": 18,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004399A0",
+      "name": "GeometryOwnerPointerEnterNoop",
+      "size": 1,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "004399B0",
       "name": "clear_render_entry_state_if_unlatched",
       "size": 21,
@@ -21660,6 +22201,42 @@
       "address": "0043A4C0",
       "name": "return_zero_screen_hook",
       "size": 5,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0043A4F0",
+      "name": "noop_window_owner_callback_0043a4f0",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0043A510",
+      "name": "noop_window_owner_callback_0043a510",
+      "size": 1,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0043A520",
+      "name": "noop_window_owner_callback_0043a520",
+      "size": 1,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0043A530",
+      "name": "noop_window_owner_callback_0043a530",
+      "size": 1,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -22109,7 +22686,7 @@
     {
       "address": "0043E220",
       "name": "rasterize_level_screen_dynamic_entry_terrain_markers_and_occupancy_masks",
-      "size": 1,
+      "size": 2509,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -22341,6 +22918,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00442240",
+      "name": "FUN_00442240",
+      "size": 20,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00442270",
       "name": "queue_aligned_zrle_child_overlay_if_dirty",
       "size": 13,
@@ -22371,6 +22957,15 @@
       "address": "004425E0",
       "name": "destroy_base_mode_action_button_adjusted",
       "size": 140,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00442690",
+      "name": "FUN_00442690",
+      "size": 787,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -22836,6 +23431,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "004453E0",
+      "name": "write_eff_stream_two_u32_fields",
+      "size": 25,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00445400",
       "name": "load_eff_stream_two_u32_fields",
       "size": 23,
@@ -22972,7 +23576,7 @@
     },
     {
       "address": "00446480",
-      "name": "handle_base_mode_runtime_event",
+      "name": "HandleFramedScreenQueueEvent",
       "size": 66,
       "category": "internal",
       "is_thunk": false,
@@ -23117,6 +23721,15 @@
     {
       "address": "00446F80",
       "name": "noop_screen_callback_00446f80",
+      "size": 1,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00446F90",
+      "name": "noop_screen_callback_00446f90",
       "size": 1,
       "category": "internal",
       "is_thunk": false,
@@ -23388,6 +24001,42 @@
       "address": "00447830",
       "name": "handle_intro_sequence_media_completion",
       "size": 21,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00447960",
+      "name": "IgnoreIntroSequenceMediaStateChange",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00447970",
+      "name": "IgnoreIntroSequenceMediaPositionChange",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00447980",
+      "name": "IgnoreIntroSequenceMediaNotification",
+      "size": 1,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00447990",
+      "name": "GetIntroSequenceMediaNotifyFlags",
+      "size": 6,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -23970,6 +24619,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0044B360",
+      "name": "FUN_0044b360",
+      "size": 1,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0044B5D0",
       "name": "clear_two_word_point",
       "size": 14,
@@ -24205,7 +24863,7 @@
     },
     {
       "address": "0044C460",
-      "name": "handle_queued_zrle_overlay_selector_event",
+      "name": "HandleMenuSelectorEntryEvent",
       "size": 322,
       "category": "internal",
       "is_thunk": false,
@@ -24259,7 +24917,7 @@
     },
     {
       "address": "0044C870",
-      "name": "construct_queued_zrle_overlay_selector_manager",
+      "name": "GameMenuSelectorManager__GameMenuSelectorManager",
       "size": 1043,
       "category": "internal",
       "is_thunk": false,
@@ -24295,7 +24953,7 @@
     },
     {
       "address": "0044CEC0",
-      "name": "handle_queued_zrle_overlay_selector_manager_event",
+      "name": "HandleMenuSelectorEvent",
       "size": 124,
       "category": "internal",
       "is_thunk": false,
@@ -24304,7 +24962,7 @@
     },
     {
       "address": "0044CFB0",
-      "name": "append_queued_zrle_overlay_selector_child",
+      "name": "AppendMenuSelectorChild",
       "size": 201,
       "category": "internal",
       "is_thunk": false,
@@ -24385,7 +25043,7 @@
     },
     {
       "address": "0044DB20",
-      "name": "start_selector_manager_current_action_animation",
+      "name": "StartMenuSelectorAction",
       "size": 438,
       "category": "internal",
       "is_thunk": false,
@@ -24394,7 +25052,7 @@
     },
     {
       "address": "0044DCE0",
-      "name": "update_selector_manager_animation_state",
+      "name": "UpdateMenuSelectorAnimation",
       "size": 494,
       "category": "internal",
       "is_thunk": false,
@@ -25014,6 +25672,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00451320",
+      "name": "initialize_password_entry_screen_resources",
+      "size": 96,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00451380",
       "name": "initialize_password_entry_overlay_grid",
       "size": 455,
@@ -25323,6 +25990,15 @@
       "address": "00452BF0",
       "name": "find_network_lobby_peer_slot_by_peer",
       "size": 37,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00452E40",
+      "name": "FUN_00452e40",
+      "size": 10,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -26004,6 +26680,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "004567C0",
+      "name": "CreateAndStoreDisplayPalette",
+      "size": 41,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "004567F0",
       "name": "select_and_realize_display_palette",
       "size": 44,
@@ -26031,6 +26716,87 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00456AE0",
+      "name": "VsGdiDisplayState::CreateDisplayBinding",
+      "size": 55,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00456B50",
+      "name": "VsGdiDisplayState::InitializeDisplayBitmapInfo",
+      "size": 57,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00456B90",
+      "name": "VsGdiDisplayState::CreateDisplayBitmap",
+      "size": 119,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00456C10",
+      "name": "VsGdiDisplayState::ReleaseDisplayBitmap",
+      "size": 51,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00456C50",
+      "name": "apply_display_surface_palette",
+      "size": 32,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00456C70",
+      "name": "copy_display_surface_rect",
+      "size": 66,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00456CC0",
+      "name": "stretch_display_surface_rect",
+      "size": 76,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00456D10",
+      "name": "VsGdiDisplayState::BindDisplayBitmap",
+      "size": 42,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00456D40",
+      "name": "VsGdiDisplayState::DeleteDisplayBitmap",
+      "size": 40,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00456D70",
       "name": "construct_dspdib32_display_state",
       "size": 174,
@@ -26043,6 +26809,24 @@
       "address": "00456E20",
       "name": "destroy_dspdib32_display_state",
       "size": 42,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00456EB0",
+      "name": "VsGdiDibDisplayState_CopyDisplayRect",
+      "size": 368,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00457020",
+      "name": "VsGdiDibDisplayState_StretchDisplayRect",
+      "size": 66,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -26067,6 +26851,24 @@
       "provenance": "ghidra"
     },
     {
+      "address": "004570B0",
+      "name": "VsGdiDib240DisplayState_CopyDisplayRect",
+      "size": 514,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004572C0",
+      "name": "VsGdiDib240DisplayState_StretchDisplayRect",
+      "size": 66,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00457310",
       "name": "get_directdraw_primary_surface_desc",
       "size": 76,
@@ -26078,6 +26880,15 @@
     {
       "address": "00457360",
       "name": "get_cached_directdraw_surface_pixels",
+      "size": 26,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00457380",
+      "name": "GetDirectDrawSurfaceBitmapPitch",
       "size": 26,
       "category": "internal",
       "is_thunk": false,
@@ -26121,9 +26932,81 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00457760",
+      "name": "VsGdiDirectDrawDisplayState::CreateDirectDrawDisplayBinding",
+      "size": 53,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004577A0",
+      "name": "VsGdiDirectDrawDisplayState::ReleaseDirectDrawDisplayBinding",
+      "size": 22,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004577C0",
+      "name": "VsGdiDirectDrawDisplayState::InitializeDirectDrawBitmapInfo",
+      "size": 57,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004578A0",
+      "name": "VsGdiDirectDrawDisplayState::ReleaseDirectDrawDisplayBitmap",
+      "size": 30,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004578C0",
+      "name": "directdraw_palette_entry_count",
+      "size": 8,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004578D0",
+      "name": "stretch_directdraw_surface_rect",
+      "size": 396,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00457A60",
       "name": "blit_directdraw_surface_rect",
       "size": 487,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00457C50",
+      "name": "bind_directdraw_surface",
+      "size": 21,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00457C70",
+      "name": "release_directdraw_surface",
+      "size": 7,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -26193,6 +27076,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00458200",
+      "name": "UsesExistingDisplayPaletteAsFallback",
+      "size": 8,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00458210",
       "name": "delete_display_module_gdi_state_a",
       "size": 30,
@@ -26211,6 +27103,96 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00458250",
+      "name": "SetHelperTargetParamWrapperDisplayDc",
+      "size": 10,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00458260",
+      "name": "DeleteHelperTargetParamWrapper",
+      "size": 31,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00458280",
+      "name": "NoopHelperTargetParamWrapperArgument",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00458290",
+      "name": "DeleteHelperTargetParamWrapperBase",
+      "size": 31,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004582B0",
+      "name": "ReturnTrueHelperTargetParamWrapperA",
+      "size": 6,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004582C0",
+      "name": "ReturnTrueHelperTargetParamWrapperB",
+      "size": 6,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004582D0",
+      "name": "GetHelperTargetParamWrapperDisplayDc",
+      "size": 4,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004582E0",
+      "name": "GetHelperTargetParamWrapperReserved",
+      "size": 4,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004582F0",
+      "name": "DeleteHelperTargetParamWrapperInterface",
+      "size": 31,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00458310",
+      "name": "VsGdiDeleteDisplayBitmap",
+      "size": 31,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00458330",
       "name": "delete_dspdib32_display_state",
       "size": 30,
@@ -26220,9 +27202,36 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00458350",
+      "name": "VsGdiDirectDrawDisplayState::IsDirectDrawPaletteReady",
+      "size": 8,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00458360",
       "name": "delete_directdraw_display_state",
       "size": 30,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00458380",
+      "name": "DeleteDirectDrawBinding",
+      "size": 31,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004583A0",
+      "name": "DeleteDirectDrawSurfaceBitmap",
+      "size": 31,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -26565,7 +27574,7 @@
       "address": "00459B90",
       "name": "FUN_00459b90",
       "size": 51,
-      "category": "runtime",
+      "category": "internal",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -26913,6 +27922,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0045A8D0",
+      "name": "DestroyMemoryArenaBaseStateReturnThis",
+      "size": 14,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0045A8E0",
       "name": "destroy_memory_arena_return_this",
       "size": 14,
@@ -27022,9 +28040,9 @@
     },
     {
       "address": "0045AC60",
-      "name": "FUN_0045ac60",
+      "name": "UpdateNamedStatusEntry",
       "size": 47,
-      "category": "runtime",
+      "category": "internal",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -28947,6 +29965,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0045F360",
+      "name": "WriteEffTransportRequestStreamName",
+      "size": 10,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0045F3D0",
       "name": "construct_request_connect_control_stream",
       "size": 87,
@@ -28983,6 +30010,24 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0045F4B0",
+      "name": "LoadEffTransportRequestNewPortStream",
+      "size": 20,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0045F4D0",
+      "name": "WriteEffTransportRequestNewPortStream",
+      "size": 21,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0045F4F0",
       "name": "construct_authorise_connect_control_stream",
       "size": 79,
@@ -28995,6 +30040,15 @@
       "address": "0045F540",
       "name": "load_authorise_connect_control_stream_fields",
       "size": 24,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0045F560",
+      "name": "WriteEffTransportAuthoriseConnectStream",
+      "size": 26,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -29019,9 +30073,36 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0045F5F0",
+      "name": "WriteEffTransportGoAheadConnectStream",
+      "size": 26,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0045F610",
       "name": "construct_failed_connect_control_stream",
       "size": 69,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0045F660",
+      "name": "LoadEffTransportFailedConnectStream",
+      "size": 10,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0045F670",
+      "name": "WriteEffTransportFailedConnectStream",
+      "size": 10,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -30081,6 +31162,24 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00462920",
+      "name": "VsNetFileBackedDualSecondaryThunkVtableModel::ReservedRet",
+      "size": 1,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00462930",
+      "name": "VsNetTcpipSocketStackDualRet8VtableModel::Ret8",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00462940",
       "name": "delete_dual_eff_stream_with_channel_state_wrapper",
       "size": 38,
@@ -30093,6 +31192,33 @@
       "address": "00462990",
       "name": "delete_timed_eff_stream_with_channel_state_wrapper",
       "size": 38,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004629C0",
+      "name": "VsNetRuntimeChannelStack::ClearRuntimeFlag",
+      "size": 15,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004629D0",
+      "name": "TcpipCompositeUnusedVtableSlot",
+      "size": 1,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004629E0",
+      "name": "DeleteEffTransportRecordBufferBaseWrapper",
+      "size": 31,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -30144,6 +31270,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00462AC0",
+      "name": "VsNetEffTransportRuntimeState::WaitForFileBasedNetworkMessage",
+      "size": 1,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00462AD0",
       "name": "delete_eff_transport_runtime_globals_wrapper",
       "size": 30,
@@ -30153,9 +31288,27 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00462B00",
+      "name": "ReturnVoidVtableCallback",
+      "size": 1,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00462B40",
       "name": "write_eff_stream_two_u16_fields",
       "size": 27,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00462B60",
+      "name": "ReadEffStreamTwoU16Fields",
+      "size": 25,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -30237,6 +31390,15 @@
       "address": "00462EA0",
       "name": "initialize_render_queue_node_base",
       "size": 24,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00462EC0",
+      "name": "IncrementRenderQueueNodeCounterThunk",
+      "size": 8,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -30351,6 +31513,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "004631A0",
+      "name": "append_render_dispatch_queue_entry",
+      "size": 132,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00463280",
       "name": "ReturnStreamArgument",
       "size": 7,
@@ -30453,7 +31624,7 @@
       "address": "00463B20",
       "name": "swap",
       "size": 45,
-      "category": "runtime",
+      "category": "internal",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -30522,6 +31693,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00463F60",
+      "name": "ApplyWindowOwnerActivationSlot",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00464190",
       "name": "update_window_owner_render_context",
       "size": 139,
@@ -30570,6 +31750,33 @@
       "address": "00464490",
       "name": "apply_window_owner_palette_resource",
       "size": 90,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004644F0",
+      "name": "VS_WindowOwnerBase::ReservedWindowOwnerSlot15",
+      "size": 1,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00464500",
+      "name": "VS_WindowOwnerBase::ReservedWindowOwnerSlot16",
+      "size": 1,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00464510",
+      "name": "VS_WindowOwnerBase::ReservedWindowOwnerSlot17",
+      "size": 1,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -30657,6 +31864,24 @@
       "provenance": "ghidra"
     },
     {
+      "address": "004655F0",
+      "name": "VS_WindowOwnerBase::InvalidateWindowOwnerRect",
+      "size": 74,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00465640",
+      "name": "VS_WindowOwnerBase::DispatchWindowMessage",
+      "size": 28,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "004656F0",
       "name": "parse_zrle_resource_descriptor",
       "size": 86,
@@ -30702,9 +31927,45 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00465A40",
+      "name": "VS_WindowOwnerBase::ReservedWindowOwnerSlot34",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00465A50",
       "name": "copy_xy_word_pair",
       "size": 23,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00465A70",
+      "name": "VS_RootGeometryOwner::ReservedWindowOwnerSlot32",
+      "size": 1,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00465A80",
+      "name": "VS_RootGeometryOwner::ReservedWindowOwnerSlot33",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00465A90",
+      "name": "VS_WindowOwnerBase::GetWindowOwnerFlags",
+      "size": 3,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -30873,6 +32134,42 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00466330",
+      "name": "VS_RootGeometryOwner::FinalizeRootGeometryRect",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00466340",
+      "name": "VS_RootGeometryOwner::ReservedWindowOwnerSlot23",
+      "size": 1,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00466350",
+      "name": "VS_RootGeometryOwner::IsCurrentWindowOwnerContext",
+      "size": 6,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00466360",
+      "name": "VS_RootGeometryOwner::ReservedWindowOwnerSlot34",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00466370",
       "name": "store_root_geometry_subrect_payload",
       "size": 85,
@@ -31029,6 +32326,51 @@
       "address": "004668D0",
       "name": "set_helper_group_0_dirty_flag_and_propagate",
       "size": 77,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00466920",
+      "name": "CompactHelperReservedArgumentSlot",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00466930",
+      "name": "CompactHelperReturnZeroSlot15",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00466940",
+      "name": "CompactHelperReturnZeroSlot16",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00466950",
+      "name": "CompactHelperReservedArgumentSlot17",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00466960",
+      "name": "CompactHelperReturnZeroSlot18",
+      "size": 3,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -32295,6 +33637,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0046AA30",
+      "name": "ResetRootGeometryOwnerButtons",
+      "size": 21,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0046AA50",
       "name": "destroy_geometry_owner",
       "size": 30,
@@ -32448,6 +33799,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0046B460",
+      "name": "dispatch_status_indicator_render_entry",
+      "size": 339,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0046B5C0",
       "name": "update_cursor_render_client_for_window_owner",
       "size": 579,
@@ -32460,6 +33820,15 @@
       "address": "0046B810",
       "name": "tick_cursor_render_client_motion",
       "size": 525,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0046BA20",
+      "name": "NoopStatusIndicatorRenderClientSlot",
+      "size": 1,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -32637,6 +34006,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0046CBD0",
+      "name": "GetResourceGeometryHelperTargetActiveUploadState",
+      "size": 7,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0046CBE0",
       "name": "update_helper_local_rect_from_packaged_entry",
       "size": 439,
@@ -32754,6 +34132,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0046DAD0",
+      "name": "DeleteArrowCursorRenderClientThunk",
+      "size": 30,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0046DAF0",
       "name": "set_point2d",
       "size": 22,
@@ -32784,6 +34171,42 @@
       "address": "0046DBC0",
       "name": "forward_bitmap_entry_to_scanline_blitter",
       "size": 34,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0046DC50",
+      "name": "PresentCompactResourceGeometryHelper",
+      "size": 24,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0046DC80",
+      "name": "GetHelperTargetToken",
+      "size": 4,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0046DC90",
+      "name": "GetHelperGroup0DirtyFlagAdjustmentThunk",
+      "size": 11,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0046DCA0",
+      "name": "GetHelperGroup1DirtyFlagAdjustmentThunk",
+      "size": 11,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -32835,6 +34258,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0046DF40",
+      "name": "ReleaseResourceGeometryHelperWindow",
+      "size": 64,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0046DF80",
       "name": "dispatch_embedded_mci_command_id",
       "size": 57,
@@ -32880,6 +34312,24 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0046E080",
+      "name": "DispatchEmbeddedMciWindowMessage",
+      "size": 128,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0046E120",
+      "name": "IgnoreResourceGeometryHelperWindowUpdate",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0046E130",
       "name": "update_media_path_from_list_resource",
       "size": 452,
@@ -32910,6 +34360,24 @@
       "address": "0046E3C0",
       "name": "resume_embedded_mci_window_playback",
       "size": 46,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0046E3F0",
+      "name": "GetAnimWindowOwnerFlags",
+      "size": 6,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0046E400",
+      "name": "IgnoreEmbeddedMciNotification",
+      "size": 1,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -33090,6 +34558,69 @@
       "address": "0046F7A0",
       "name": "configure_file_based_network_paths_wrapper",
       "size": 21,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0046F7C0",
+      "name": "VsNetEffTransportRuntimeState::LoadActiveFileRange",
+      "size": 8,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0046F7D0",
+      "name": "VsNetEffTransportRuntimeState::WriteActiveFileRange",
+      "size": 8,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0046F840",
+      "name": "VsNetEffTransportRuntimeState::ServiceFileBasedNetworkTransport",
+      "size": 20,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0046F880",
+      "name": "CFileNetworkAddress::CopyAddressObject",
+      "size": 48,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0046F8B0",
+      "name": "CFileNetworkAddress::CopyAddressFromString",
+      "size": 45,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0046F8E0",
+      "name": "CFileNetworkAddress::CompareAddress",
+      "size": 61,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0046F920",
+      "name": "CFileNetworkAddress::GetAddressString",
+      "size": 4,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -33321,6 +34852,24 @@
       "provenance": "ghidra"
     },
     {
+      "address": "004714D0",
+      "name": "VsNetEffTransportRuntimeState::ServiceTcpipNetworkTransport",
+      "size": 20,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "004714F0",
+      "name": "VsNetSocketWindowEffChannelVtableModel::HandleAsyncMessage",
+      "size": 8,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00471550",
       "name": "store_inet_addr_string_entry",
       "size": 56,
@@ -33393,9 +34942,45 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00471B60",
+      "name": "CaptureLastWinsockErrorStatusOuterAdjustedThunk",
+      "size": 11,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00471BB0",
+      "name": "WriteCompositeTcpipGlobalSessionBody",
+      "size": 21,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00471CD0",
       "name": "delete_tcpip_socket_channel_stack_wrapper",
       "size": 66,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00471D70",
+      "name": "ClaimTcpipSocketStackCompositeBody",
+      "size": 21,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00471DC0",
+      "name": "TimedSocketBundlePrimaryCloseThunk",
+      "size": 11,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -33411,9 +34996,36 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00471E20",
+      "name": "TimedSocketBundlePrimaryCaptureErrorThunk",
+      "size": 11,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00471E60",
+      "name": "TimedSocketBundleCloseSocketThunk",
+      "size": 11,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00471E80",
       "name": "delete_timed_socket_window_channel_stack_wrapper",
       "size": 55,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00471EC0",
+      "name": "TimedSocketBundleCaptureErrorThunk",
+      "size": 11,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -34005,9 +35617,27 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00474B80",
+      "name": "InitializeArrowCursorPosition",
+      "size": 38,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00474BB0",
       "name": "destroy_cursor_state_render_client",
       "size": 38,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00474BE0",
+      "name": "HideArrowCursor",
+      "size": 28,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -34365,6 +35995,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00478FB0",
+      "name": "DispatchVisualSciencesWingDriverMessage",
+      "size": 437,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00479190",
       "name": "open_visual_sciences_wing_draw_handler",
       "size": 120,
@@ -34449,6 +36088,15 @@
       "address": "00479540",
       "name": "initialize_eff_stream_record_slot",
       "size": 54,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00479580",
+      "name": "VsNetEffStreamRecordSlot::Save",
+      "size": 66,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -34734,11 +36382,65 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0047B7D0",
+      "name": "VsNetEffStreamRecordSlotTable::Delete",
+      "size": 30,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0047B860",
       "name": "destroy_eff_stream_base",
       "size": 5,
       "category": "thunk",
       "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047B870",
+      "name": "VsNetEff512ByteStateStream::Save",
+      "size": 15,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047B880",
+      "name": "VsNetEff512ByteStateStream::Load",
+      "size": 15,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047B890",
+      "name": "VsNetEff512ByteStateStream::Delete",
+      "size": 50,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047B8D0",
+      "name": "WSAGetLastErrorThunk0047B8D0",
+      "size": 5,
+      "category": "import",
+      "is_thunk": true,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047B8E0",
+      "name": "VsNetWin32FileWrapper::GetOwnedPath",
+      "size": 4,
+      "category": "internal",
+      "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
     },
@@ -34773,6 +36475,15 @@
       "address": "0047B9D0",
       "name": "delete_composite_file_backed_eff_channel_wrapper",
       "size": 103,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047BA40",
+      "name": "AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus",
+      "size": 11,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -34815,9 +36526,63 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0047BBD0",
+      "name": "AdjustAndClearEmbeddedEffChannelAsyncStatus13c",
+      "size": 11,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047BCA0",
+      "name": "AdjustAndMapGlobalStateFileBackedEffCallbackFailure",
+      "size": 11,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0047BCC0",
       "name": "delete_timed_file_backed_eff_channel_wrapper",
       "size": 78,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047BD10",
+      "name": "AdjustAndClearTimedFileBackedEffChannelAsyncStatus",
+      "size": 11,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047BD80",
+      "name": "AdjustAndMapNestedEffCallbackFailureFromB8",
+      "size": 11,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047BDF0",
+      "name": "AdjustAndClearNestedEffChannelAsyncStatusFromB8",
+      "size": 11,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047BE30",
+      "name": "AdjustAndMapEmbeddedFileBackedEffCallbackFailure",
+      "size": 11,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -34842,6 +36607,24 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0047BFF0",
+      "name": "DispatchAdjustedAckedEffTransportPayloadEvent",
+      "size": 8,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047C010",
+      "name": "QueueAdjustedEffTransportConnectEvent",
+      "size": 8,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0047C050",
       "name": "construct_invisible_message_window",
       "size": 236,
@@ -34854,6 +36637,15 @@
       "address": "0047C140",
       "name": "destroy_invisible_message_window",
       "size": 17,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047C160",
+      "name": "InvisibleMessageWindowWndProc",
+      "size": 162,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -34941,9 +36733,99 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0047CBF0",
+      "name": "ReturnFalseWaveOutEffectSlot11",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047CC00",
+      "name": "ReturnTrueWaveOutEffectSlot12",
+      "size": 6,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047CC10",
+      "name": "GetWaveOutEffectBackendStatus0047CC10",
+      "size": 4,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0047CC20",
       "name": "reset_and_close_waveout_effect_device",
       "size": 425,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047CDD0",
+      "name": "IsWaveOutEffectInstanceAvailable0047CDD0",
+      "size": 26,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047CDF0",
+      "name": "ReturnOneWaveOutBackendValue0047CDF0",
+      "size": 6,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047CE00",
+      "name": "StopWaveOutPlayback",
+      "size": 207,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047CED0",
+      "name": "GetWaveOutEffectReserved08",
+      "size": 4,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047CEE0",
+      "name": "GetWaveOutEffectAvailability",
+      "size": 4,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047CEF0",
+      "name": "ReturnFalseWaveOutEffectSlot13",
+      "size": 5,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047CF00",
+      "name": "ReturnFalseWaveOutEffectSlot14",
+      "size": 5,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -34959,6 +36841,33 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0047CFE0",
+      "name": "ReturnFalseWaveOutEffectSlot16",
+      "size": 5,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047CFF0",
+      "name": "ReturnFalseWaveOutEffectSlot17",
+      "size": 5,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047D000",
+      "name": "ReturnFalseWaveOutEffectSlot19",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0047D010",
       "name": "free_waveout_effect_instance",
       "size": 103,
@@ -34968,9 +36877,108 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0047D080",
+      "name": "ReleaseAllWaveOutEffectInstances",
+      "size": 98,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047D0F0",
+      "name": "ReturnInvalidWaveOutEffectSlot21",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047D100",
+      "name": "NoOpWaveOutEffectSlot22",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047D110",
+      "name": "ReturnInvalidWaveOutEffectSlot23",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047D120",
+      "name": "NoOpWaveOutEffectSlot24",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047D130",
+      "name": "ReturnInvalidWaveOutEffectSlot25",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047D140",
+      "name": "NoOpWaveOutEffectSlot26",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047D150",
+      "name": "ReturnFalseWaveOutEffectSlot27",
+      "size": 5,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0047D160",
       "name": "play_waveout_effect_instance",
       "size": 32,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047D220",
+      "name": "DispatchWaveOutEffectVolume",
+      "size": 26,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047D240",
+      "name": "RestartWaveOutPlayback",
+      "size": 18,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047D260",
+      "name": "CaptureWaveOutBackendContext0047D260",
+      "size": 3,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -35130,6 +37138,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0047DD20",
+      "name": "SetDirectSoundEffectBufferSlotFrequency",
+      "size": 88,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0047DD80",
       "name": "construct_directsound_effect_backend",
       "size": 573,
@@ -35166,9 +37183,144 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0047E350",
+      "name": "AcceptDirectSoundBackendResources",
+      "size": 8,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E360",
+      "name": "ReturnDirectSoundBackendUnavailable",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E370",
+      "name": "GetDirectSoundBackendBufferCount",
+      "size": 4,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E380",
+      "name": "GetDirectSoundEffectAvailability",
+      "size": 4,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E390",
+      "name": "ReleaseDirectSoundEffectDevice",
+      "size": 180,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E450",
+      "name": "IsAnyDirectSoundEffectInstancePlaying",
+      "size": 63,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E490",
+      "name": "ReturnTrueDirectSoundEffectSlot07",
+      "size": 6,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E4A0",
+      "name": "StopAllDirectSoundEffectInstances",
+      "size": 53,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E4E0",
+      "name": "GetDirectSoundBackendReservedValue1c",
+      "size": 4,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E4F0",
+      "name": "GetDirectSoundBackendAvailability",
+      "size": 4,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E500",
+      "name": "ReturnFalseDirectSoundEffectSlot13",
+      "size": 5,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E510",
+      "name": "ReturnFalseDirectSoundEffectSlot14",
+      "size": 5,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0047E520",
       "name": "create_directsound_effect_instance",
       "size": 134,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E5B0",
+      "name": "ReturnFalseDirectSoundEffectSlot16",
+      "size": 5,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E5C0",
+      "name": "ReturnFalseDirectSoundEffectSlot17",
+      "size": 5,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E5D0",
+      "name": "ReturnFalseDirectSoundEffectSlot19",
+      "size": 3,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -35187,6 +37339,60 @@
       "address": "0047E620",
       "name": "release_all_directsound_effect_instances",
       "size": 76,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E670",
+      "name": "ReturnInvalidDirectSoundEffectSlot21",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E680",
+      "name": "NoOpDirectSoundEffectSlot22",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E690",
+      "name": "ReturnInvalidDirectSoundEffectSlot23",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E6A0",
+      "name": "NoOpDirectSoundEffectSlot24",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E6B0",
+      "name": "ReturnInvalidDirectSoundEffectSlot25",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E6C0",
+      "name": "NoOpDirectSoundEffectSlot26",
+      "size": 3,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -35229,6 +37435,15 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0047E7C0",
+      "name": "PlayDirectSoundEffectInstanceLooped",
+      "size": 23,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0047E7E0",
       "name": "play_directsound_effect_instance_with_mapped_volume",
       "size": 60,
@@ -35256,9 +37471,45 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0047E860",
+      "name": "ReturnFalseDirectSoundEffectSlot37",
+      "size": 5,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E8B0",
+      "name": "CaptureDirectSoundBackendWindow",
+      "size": 13,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E8C0",
+      "name": "CreateDirectSoundEffectInstanceWithDefaultFlags",
+      "size": 20,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0047E8E0",
       "name": "delete_directsound_effect_backend",
       "size": 30,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047E900",
+      "name": "MciMusicWindowProc",
+      "size": 63,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -35328,6 +37579,87 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0047F250",
+      "name": "ResumeMciMusicTrack",
+      "size": 319,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F390",
+      "name": "GetMciMusicBackendAvailability",
+      "size": 4,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F3A0",
+      "name": "GetMciMusicBackendDescription",
+      "size": 361,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F510",
+      "name": "InitializeAudioDynamicStringEntry",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F520",
+      "name": "SetAudioDynamicStringEntryFlag",
+      "size": 10,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F530",
+      "name": "GetAudioDynamicStringEntryFlag",
+      "size": 4,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F540",
+      "name": "ReservedAudioDynamicStringEntrySlot10",
+      "size": 1,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F550",
+      "name": "ReturnNullAudioDynamicStringEntryName",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F560",
+      "name": "DeleteAudioDynamicStringEntryBase",
+      "size": 39,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0047F590",
       "name": "delete_audio_dynamic_string_entry",
       "size": 30,
@@ -35346,6 +37678,42 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0047F640",
+      "name": "OpenWin32FileWrapperCreateNew",
+      "size": 26,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F660",
+      "name": "FreeWin32FileWrapperOwnedPath",
+      "size": 11,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F670",
+      "name": "FreeWin32FileWrapperPath",
+      "size": 14,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F680",
+      "name": "ProbeWin32FileWrapperAccess",
+      "size": 62,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0047F6C0",
       "name": "write_win32_file_wrapper",
       "size": 185,
@@ -35358,6 +37726,42 @@
       "address": "0047F780",
       "name": "read_win32_file_wrapper",
       "size": 260,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F890",
+      "name": "SeekWin32FileWrapper",
+      "size": 32,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F8B0",
+      "name": "GetWin32FileWrapperOffset",
+      "size": 4,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F8C0",
+      "name": "CloseWin32FileWrapperIfOpen",
+      "size": 37,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F8F0",
+      "name": "GetWin32FileWrapperLength",
+      "size": 13,
       "category": "internal",
       "is_thunk": false,
       "is_external": false,
@@ -35400,6 +37804,168 @@
       "provenance": "ghidra"
     },
     {
+      "address": "0047F980",
+      "name": "ReturnInvalidAudioEffectByte21",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F990",
+      "name": "NoOpAudioEffectSlot22",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F9A0",
+      "name": "ReturnInvalidAudioEffectByte23",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F9B0",
+      "name": "NoOpAudioEffectSlot24",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F9C0",
+      "name": "ReturnInvalidAudioEffectByte25",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F9D0",
+      "name": "NoOpAudioEffectSlot26",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F9E0",
+      "name": "ReturnFalseAudioEffectSlot27",
+      "size": 5,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047F9F0",
+      "name": "NoOpAudioEffectSlot28",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047FA00",
+      "name": "NoOpAudioEffectSlot29",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047FA10",
+      "name": "NoOpAudioEffectSlot30",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047FA20",
+      "name": "ReturnFalseAudioEffectSlot31",
+      "size": 5,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047FA30",
+      "name": "NoOpAudioEffectSlot32",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047FA40",
+      "name": "NoOpAudioEffectSlot33",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047FA50",
+      "name": "NoOpAudioEffectSlot34",
+      "size": 3,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047FA60",
+      "name": "ReturnFalseAudioEffectSlot36",
+      "size": 5,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047FA70",
+      "name": "ReturnFalseAudioEffectSlot35",
+      "size": 5,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047FA80",
+      "name": "ReturnTrueAudioEffectSlot37",
+      "size": 8,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "0047FA90",
+      "name": "DeleteAudioEffectBackendBase",
+      "size": 30,
+      "category": "internal",
+      "is_thunk": false,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "0047FAC0",
       "name": "crt_toupper_with_locale_lock",
       "size": 68,
@@ -35430,7 +37996,7 @@
       "address": "0047FCA0",
       "name": "crt_fatal_runtime_error_0x19",
       "size": 11,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35439,7 +38005,7 @@
       "address": "0047FCB0",
       "name": "register_onexit_function",
       "size": 140,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35448,7 +38014,7 @@
       "address": "0047FD40",
       "name": "atexit",
       "size": 19,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35466,7 +38032,7 @@
       "address": "0047FDD0",
       "name": "copy_c_string_with_nul_padding",
       "size": 36,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35475,7 +38041,7 @@
       "address": "0047FE00",
       "name": "find_char_in_c_string",
       "size": 24,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35502,7 +38068,7 @@
       "address": "0047FFF0",
       "name": "free_crt_heap_block",
       "size": 24,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35520,7 +38086,7 @@
       "address": "00480060",
       "name": "crt_tolower_with_locale_lock",
       "size": 68,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35646,7 +38212,7 @@
       "address": "00480770",
       "name": "crt_flush_all_streams",
       "size": 185,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35682,7 +38248,7 @@
       "address": "00480A20",
       "name": "crt_compute_stream_write_adjustment",
       "size": 417,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35727,7 +38293,7 @@
       "address": "00480D70",
       "name": "crt_malloc_with_default_new_handler",
       "size": 20,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35736,7 +38302,7 @@
       "address": "00480D90",
       "name": "crt_malloc_with_optional_new_handler",
       "size": 64,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35745,7 +38311,7 @@
       "address": "00480DD0",
       "name": "allocate_from_crt_heap",
       "size": 21,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35781,7 +38347,7 @@
       "address": "00480F00",
       "name": "leave_crt_lock_by_index",
       "size": 23,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35835,7 +38401,7 @@
       "address": "004814A0",
       "name": "crt_strnlen",
       "size": 44,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35871,7 +38437,7 @@
       "address": "004817F0",
       "name": "exit",
       "size": 18,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35889,7 +38455,7 @@
       "address": "00481850",
       "name": "common_crt_exit",
       "size": 138,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35898,7 +38464,7 @@
       "address": "004818E0",
       "name": "lock_crt_exit",
       "size": 11,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35907,7 +38473,7 @@
       "address": "004818F0",
       "name": "unlock_crt_exit",
       "size": 11,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35925,7 +38491,7 @@
       "address": "00481920",
       "name": "reallocate_crt_heap_block",
       "size": 111,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35934,7 +38500,7 @@
       "address": "00481990",
       "name": "get_crt_heap_block_size",
       "size": 21,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -35961,7 +38527,7 @@
       "address": "00481A7E",
       "name": "crt_nlg_notify_unwind_target",
       "size": 24,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36006,7 +38572,7 @@
       "address": "00481DD0",
       "name": "initialize_environment_pointer_array",
       "size": 219,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36042,7 +38608,7 @@
       "address": "00482330",
       "name": "build_multibyte_environment_block",
       "size": 411,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36051,7 +38617,7 @@
       "address": "004824D0",
       "name": "configure_crt_multibyte_char_tables",
       "size": 547,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36087,7 +38653,7 @@
       "address": "004827F0",
       "name": "initialize_crt_multibyte_char_tables",
       "size": 11,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36096,7 +38662,7 @@
       "address": "00482800",
       "name": "initialize_crt_lowio_handle_table",
       "size": 475,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36141,7 +38707,7 @@
       "address": "00482C30",
       "name": "initialize_crt_heap",
       "size": 21,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36150,7 +38716,7 @@
       "address": "00482D25",
       "name": "crt_local_unwind2_frame_adapter",
       "size": 27,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36168,7 +38734,7 @@
       "address": "00482D80",
       "name": "show_crt_runtime_error_message",
       "size": 494,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36249,7 +38815,7 @@
       "address": "004835F0",
       "name": "crt_read_nolock_text_mode",
       "size": 556,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36258,7 +38824,7 @@
       "address": "00483820",
       "name": "crt_commit_file_descriptor",
       "size": 162,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36285,7 +38851,7 @@
       "address": "00483C40",
       "name": "crt_fputc_nolock",
       "size": 333,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36321,7 +38887,7 @@
       "address": "00483F20",
       "name": "get_thread_errno_pointer",
       "size": 9,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36330,7 +38896,7 @@
       "address": "00483F30",
       "name": "get_thread_doserrno_pointer",
       "size": 9,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36348,7 +38914,7 @@
       "address": "00483FF0",
       "name": "crt_calloc_with_default_new_handler",
       "size": 82,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36357,7 +38923,7 @@
       "address": "00484050",
       "name": "crt_wcslen",
       "size": 24,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36375,7 +38941,7 @@
       "address": "00484130",
       "name": "crt_sopen_dispatch",
       "size": 1047,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36384,7 +38950,7 @@
       "address": "00484590",
       "name": "crt_allocate_file_descriptor",
       "size": 326,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36411,7 +38977,7 @@
       "address": "00484830",
       "name": "get_os_handle_from_crt_fd",
       "size": 74,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36447,7 +39013,7 @@
       "address": "00484A30",
       "name": "crt_close_all_streams",
       "size": 152,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36456,7 +39022,7 @@
       "address": "00484AD0",
       "name": "crt_fd_is_device",
       "size": 48,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36501,7 +39067,7 @@
       "address": "004857F0",
       "name": "crt_strncat",
       "size": 49,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36510,7 +39076,7 @@
       "address": "00485990",
       "name": "crt_set_file_translation_mode",
       "size": 108,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36519,7 +39085,7 @@
       "address": "00485A00",
       "name": "crt_alloca_probe",
       "size": 47,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36528,7 +39094,7 @@
       "address": "004864F0",
       "name": "putc_and_update_output_count",
       "size": 65,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36537,7 +39103,7 @@
       "address": "00486540",
       "name": "write_repeated_char_to_file_counted",
       "size": 49,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36546,7 +39112,7 @@
       "address": "00486580",
       "name": "write_buffer_to_file_counted",
       "size": 55,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36555,7 +39121,7 @@
       "address": "004865C0",
       "name": "read_next_vararg_dword",
       "size": 15,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36564,7 +39130,7 @@
       "address": "004865D0",
       "name": "crt_va_arg_8byte",
       "size": 21,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36573,7 +39139,7 @@
       "address": "004865F0",
       "name": "crt_va_arg_2byte_aligned4",
       "size": 16,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36582,7 +39148,7 @@
       "address": "00486600",
       "name": "wctomb_with_locale_lock",
       "size": 46,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36591,7 +39157,7 @@
       "address": "00486630",
       "name": "wctomb_nolock",
       "size": 148,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36600,7 +39166,7 @@
       "address": "004866D0",
       "name": "crt_unsigned_64_divide",
       "size": 104,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36609,7 +39175,7 @@
       "address": "00486740",
       "name": "crt_unsigned_64_remainder",
       "size": 117,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"
@@ -36618,7 +39184,7 @@
       "address": "004867C0",
       "name": "abort_with_crt_runtime_error_2",
       "size": 11,
-      "category": "internal",
+      "category": "runtime",
       "is_thunk": false,
       "is_external": false,
       "provenance": "ghidra"

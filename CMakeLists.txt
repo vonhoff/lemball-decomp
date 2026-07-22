@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.15)
 project(lemball_decomp CXX)
 
 option(LEMBALL_ENABLE_WIN32 "Build the reconstructed Win32 executable" ON)
-option(LEMBALL_SKIP_CD_TEST "Skip CD probing and use the current directory" OFF)
-option(LEMBALL_SKIP_REGISTRY_RUNNING_STATE "Skip updating the registry running state" OFF)
 
 set(LEMBALL_SOURCES
     src/GAME.H
@@ -112,12 +110,6 @@ if(LEMBALL_ENABLE_WIN32)
     add_executable(LEMBALL WIN32 ${LEMBALL_SOURCES} ${LEMBALL_RESOURCE_OBJECTS})
     target_include_directories(LEMBALL PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
     target_compile_definitions(LEMBALL PRIVATE LEMBALL_1996_CXX=1)
-    if(LEMBALL_SKIP_CD_TEST)
-        target_compile_definitions(LEMBALL PRIVATE LEMBALL_SKIP_CD_TEST=1)
-    endif()
-    if(LEMBALL_SKIP_REGISTRY_RUNNING_STATE)
-        target_compile_definitions(LEMBALL PRIVATE LEMBALL_SKIP_REGISTRY_RUNNING_STATE=1)
-    endif()
     if(APPLE)
         target_compile_definitions(LEMBALL PRIVATE LEMBALL_HOST_MACOS=1)
     endif()
