@@ -5,13 +5,8 @@ Work-in-progress reconstruction of 1996 Win32 `LEMBALL.EXE`, built with MSVC
 
 ## Concurrent agents
 
-Shared tools live once per host:
-
-```text
-C:\lemball-tools\msvc420
-C:\lemball-tools\.decomp-venv
-C:\lemball-tools\LEMBALL.EXE
-```
+Primary integration checkout holds `msvc420`, `.decomp-venv`, and original
+`data\LEMBALL.EXE`. Worker setup points at those files; build output is private.
 
 Coordinator provisions workers sequentially from clean integration checkout:
 

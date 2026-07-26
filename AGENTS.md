@@ -8,10 +8,11 @@ MSVC 4.20, Ghidra, and reccmp.
 Coordinator only: run `python tools\claims.py OWNER`, commit `CLAIMS.md`, then
 create `worker/OWNER` worktree from primary checkout. Run
 `python tools\setup_worker.py WORKTREE_PATH` once after creation. It links
-shared `C:\lemball-tools` dependencies; build output remains local. Give path
-and range to worker. Workers never run `tools\claims.py`; they work only in
-assigned worktree. Keep claim until coordinator merges worker commit, verifies
-integration build, then releases claim with `python tools\claims.py release OWNER`.
+MSVC and reccmp environment from primary checkout; build output remains local.
+Give path and range to worker. Workers never run `tools\claims.py`; they work
+only in assigned worktree. Keep claim until coordinator merges worker commit,
+verifies integration build, then releases claim with
+`python tools\claims.py release OWNER`.
 
 Original entry address owns function. Inspect callers and callees anywhere,
 but do not edit an out-of-range function. If local match needs such an edit,
@@ -42,7 +43,8 @@ From repository root:
 
 ```powershell
 python tools/build_msvc420.py
-.decomp-venv\Scripts\reccmp-project.exe detect --search-path data
+$primary = (git worktree list --porcelain | Where-Object { $_ -like "worktree *" } | Select-Object -First 1).Substring(9)
+.decomp-venv\Scripts\reccmp-project.exe detect --search-path "$primary\data"
 Push-Location build-msvc420
 ..\.decomp-venv\Scripts\reccmp-reccmp.exe --target LEMBALL --json reccmp.json --json-diet
 ..\.decomp-venv\Scripts\reccmp-decomplint.exe --target LEMBALL
