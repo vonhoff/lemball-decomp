@@ -5,18 +5,13 @@ MSVC 4.20, Ghidra, and reccmp.
 
 ## Start
 
-Coordinator only: run `python tools\worker.py start OWNER` from clean primary
-integration checkout. This claims range, commits `CLAIMS.md`, creates
-`codex/OWNER` worktree, prints assigned range. Give path and range to worker.
-Workers never run `tools\worker.py`; they work only in assigned worktree. Keep
-claim until coordinator merges worker commit, verifies integration build, then
-runs `python tools\worker.py release OWNER`.
-
-Run `python tools\worker.py configure --toolchain-root PATH` once per host from
-primary checkout. It moves local MSVC, Python/reccmp environment, and original
-executable to shared external cache. Worker worktrees junction toolchain and
-hard-link original executable; build output remains local. Repair old worktree
-with `python tools\worker.py setup --root WORKTREE_PATH` from primary checkout.
+Coordinator only: run `python tools\claims.py OWNER`, commit `CLAIMS.md`, then
+create `worker/OWNER` worktree from primary checkout. Run
+`python tools\setup_worker.py WORKTREE_PATH` once after creation. It links
+shared `C:\lemball-tools` dependencies; build output remains local. Give path
+and range to worker. Workers never run `tools\claims.py`; they work only in
+assigned worktree. Keep claim until coordinator merges worker commit, verifies
+integration build, then releases claim with `python tools\claims.py release OWNER`.
 
 Original entry address owns function. Inspect callers and callees anywhere,
 but do not edit an out-of-range function. If local match needs such an edit,

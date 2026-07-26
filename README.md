@@ -5,50 +5,49 @@ Work-in-progress reconstruction of 1996 Win32 `LEMBALL.EXE`, built with MSVC
 
 ## Concurrent agents
 
-### One-time host setup
+Shared tools live once per host:
 
-From primary integration checkout, move local compiler, Python tools, and
-original executable into one shared host cache:
-
-```powershell
-python tools\worker.py configure --toolchain-root C:\lemball-tools
+```text
+C:\lemball-tools\msvc420
+C:\lemball-tools\.decomp-venv
+C:\lemball-tools\LEMBALL.EXE
 ```
 
-The cache is outside repository and contains `msvc420`, `.decomp-venv`, and
-`LEMBALL.EXE`. Worker worktrees use cheap junctions/hard links to it; only their
-`build-msvc420` output is private.
-
-### Provision workers
-
-Coordinator runs this sequentially from clean primary integration checkout:
+Coordinator provisions workers sequentially from clean integration checkout:
 
 ```powershell
-python tools\worker.py start codex-01
-python tools\worker.py start deepseek-01
+python tools\claims.py codex-01
+git add CLAIMS.md
+git commit -m "Claim codex-01"
+git worktree add -b worker/codex-01 ..\lemball-decomp-codex-01 HEAD
+python tools\setup_worker.py ..\lemball-decomp-codex-01
 ```
 
-Each command creates an exclusive claim, branch, and worktree. Give the printed
-worktree path and claim to that agent. Agents do not create worktrees or claims.
+Repeat with another owner only after prior claim command and commit complete.
+Give each agent its worktree path and claim. Agents do not create claims.
 
-Coordinator reviews and merges each worker branch, runs full build/reccmp, then:
+Coordinator merges one worker branch at a time, runs full build/reccmp, then:
 
 ```powershell
-python tools\worker.py release codex-01
+python tools\claims.py release codex-01
+git add CLAIMS.md
+git commit -m "Release codex-01 claim"
+git worktree remove ..\lemball-decomp-codex-01
+git branch -d worker/codex-01
 ```
 
-`python tools\worker.py check` validates ledger before integration.
+`python tools\claims.py check` validates ledger before integration.
 
 ### Worker starter prompt
 
 Copy this into an already-provisioned worker task, replacing both values:
 
 ```text
-Set OWNER=codex-01.
 Workspace: C:\path\to\lemball-decomp-codex-01
 Claim: text-001.
 
 Read AGENTS.md. Work only in assigned workspace and claim. Do not run
-tools\worker.py or edit another workspace.
+tools\claims.py or edit another workspace.
 
 Use Ghidra MCP and reccmp to make as many functions 100% as practical. Use
 C/C++ only; no assembly. Follow build, measurement, dependency, and handoff
@@ -58,8 +57,7 @@ commit source and notes. Keep claim active when handing off.
 
 ## Setup
 
-Run shared toolchain setup above before creating workers. Use commands in
-`AGENTS.md` for normal work.
+Run commands in `AGENTS.md` for normal work.
 
 ## Legal
 
