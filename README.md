@@ -5,10 +5,10 @@ Work-in-progress reconstruction of 1996 Win32 `LEMBALL.EXE`, built with MSVC
 
 ## Concurrent workers
 
-Coordinator creates isolated worker checkout from clean integration branch:
+Worker starts from clean integration checkout:
 
 ```powershell
-python tools\create_worker_worktree.py codex-01
+python tools\coordinator.py start codex-01
 ```
 
 Worker changes into printed worktree, reads `AGENTS.md`, works only claimed
@@ -18,24 +18,21 @@ worker's checkout or run full shared-worktree builds.
 Coordinator reviews and merges worker branch, runs full build/reccmp, then:
 
 ```powershell
-python tools\claims.py release codex-01
-git add CLAIMS.md
-git commit -m "Release codex-01 claim"
+python tools\coordinator.py release codex-01
 ```
 
-`python tools\claims.py check` validates ledger in CI and before coordinator
-integration. `claims.py OWNER` remains available for one-off local work.
+`python tools\coordinator.py check` validates ledger before integration.
 
 ### Worker starter prompt
 
-Copy this after coordinator creates worker worktree and gives worker its path:
+Copy this into a new worker task from clean integration checkout:
 
 ```text
 Set OWNER=codex-01.
 
-Work only in assigned isolated worktree. Read AGENTS.md. Do not run
-`python tools\claims.py %OWNER%`: coordinator already created and owns active
-claim. Work only returned range recorded in CLAIMS.md.
+Run `python tools\coordinator.py start codex-01`, substituting OWNER. Change
+into printed worker worktree. Read AGENTS.md. Work only returned range recorded
+in CLAIMS.md.
 
 Use Ghidra MCP and reccmp to make as many functions 100% as practical. Use
 C/C++ only; no assembly. Follow build, measurement, dependency, and handoff
