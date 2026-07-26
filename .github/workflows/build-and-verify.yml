@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Check out portable MSVC 4.20
         uses: actions/checkout@v4
@@ -28,16 +30,23 @@ jobs:
         with:
           python-version: "3.x"
           cache: pip
-          cache-dependency-path: |
-            requirements.txt
-            requirements-ci.txt
+          cache-dependency-path: requirements.txt
 
       - name: Install Python tools
         shell: pwsh
         run: |
-          python -m pip install --requirement requirements-ci.txt
+          python -m pip install --requirement requirements.txt
           $cmakeBin = python -c "import cmake; print(cmake.CMAKE_BIN_DIR)"
           "CMAKE_BIN=$cmakeBin" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Check claims and tools
+        shell: pwsh
+        run: |
+          python tools/claims.py check
+          if ("${{ github.event_name }}" -eq "pull_request") {
+            python tools/claims.py check --base "${{ github.event.pull_request.base.sha }}"
+          }
+          python -m unittest discover -s tools/tests
 
       - name: Prepare target binary
         shell: bash

@@ -19,6 +19,7 @@ compile_commands.json
 # Local tools and settings
 .idea/
 .venv/
+msvc420/
 *.iml
 *.tmp
 *.bak
@@ -32,7 +33,13 @@ reccmp-user.yml
 objdiff.json
 data/*
 !data/LEMBALL.EXE.gpg
+!data/function-status/
+!data/function-status/**
+!data/dependencies/
+!data/dependencies/**
+!data/function-edges.csv
 !data/objdiff-functions.csv
 !data/README.md
 !data/runtime-symbols.csv
+!data/work-ranges.csv
 .gnupg-local/
