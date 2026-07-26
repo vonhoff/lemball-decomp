@@ -5,21 +5,11 @@ MSVC 4.20, Ghidra, and reccmp.
 
 ## Start
 
-1. Run:
-
-   ```powershell
-   if (!(Test-Path .decomp-venv\Scripts\python.exe)) {
-     python -m venv .decomp-venv
-   }
-   .decomp-venv\Scripts\python.exe -m pip install --requirement requirements.txt
-   ```
-
-   This creates missing environment only and aligns installed tools with pinned
-   requirements. Run again after `requirements.txt` changes.
-2. Run `python tools\coordinator.py`.
-3. Pick first viable target it prints. Before editing, state: `Target:
+1. Run `python tools\coordinator.py`. It creates missing `.decomp-venv` and
+   repairs missing reccmp packages from pinned `requirements.txt`.
+2. Pick first viable target it prints. Before editing, state: `Target:
    <address>; <source file>; <binary evidence>; <intended change>.`
-4. You own this checkout while working. No other agent may edit or build until
+3. You own this checkout while working. No other agent may edit or build until
    your commit completes.
 
 Original entry address owns function. Inspect callers and callees anywhere. If

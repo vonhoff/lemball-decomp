@@ -33,17 +33,8 @@ rules in AGENTS.md. Update status CSV, run checks, and commit source and notes.
 
 ## Setup
 
-Run once after cloning, and again after `requirements.txt` changes:
-
-```powershell
-if (!(Test-Path .decomp-venv\Scripts\python.exe)) {
-  python -m venv .decomp-venv
-}
-.decomp-venv\Scripts\python.exe -m pip install --requirement requirements.txt
-```
-
-This creates missing environment only and installs exact pinned tool versions.
-`AGENTS.md` requires this preflight for workers.
+No separate setup command. `python tools\coordinator.py` creates missing
+`.decomp-venv` and repairs missing pinned packages before printing targets.
 
 ## Legal
 

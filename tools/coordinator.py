@@ -3,10 +3,36 @@
 
 import csv
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def ensure_tools(root):
+    python = root / ".decomp-venv" / "Scripts" / "python.exe"
+    if not python.exists():
+        subprocess.run([sys.executable, "-m", "venv", python.parent.parent], check=True)
+    healthy = subprocess.run(
+        [python, "-c", "import pydantic_core, reccmp"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    ).returncode == 0
+    if not healthy:
+        subprocess.run(
+            [
+                python,
+                "-m",
+                "pip",
+                "install",
+                "--disable-pip-version-check",
+                "--requirement",
+                root / "requirements.txt",
+            ],
+            check=True,
+        )
 
 
 def rows(path):
@@ -33,6 +59,7 @@ def rank(functions, ratios):
 
 
 def main():
+    ensure_tools(ROOT)
     ratios = matches(ROOT)
     notes = {}
     for path in (ROOT / "data" / "function-status").glob("*.csv"):
