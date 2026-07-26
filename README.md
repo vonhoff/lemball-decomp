@@ -33,7 +33,15 @@ rules in AGENTS.md. Update status CSV, run checks, and commit source and notes.
 
 ## Setup
 
-Run commands in `AGENTS.md` for normal work.
+Run once after cloning, and again after `requirements.txt` changes:
+
+```powershell
+python -m venv .decomp-venv
+.decomp-venv\Scripts\python.exe -m pip install --requirement requirements.txt
+```
+
+Both commands are safe to repeat. They create missing environment and install
+exact pinned tool versions. `AGENTS.md` requires this preflight for workers.
 
 ## Legal
 
