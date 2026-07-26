@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Print next unfinished decompilation range."""
 
-import argparse
 import csv
 import json
 from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def rows(path):
@@ -24,14 +26,11 @@ def matches(root):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Print next decompilation targets")
-    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
-    root = parser.parse_args().root.resolve()
-    ratios = matches(root)
-    functions = rows(root / "data" / "objdiff-functions.csv")
-    for work_range in rows(root / "data" / "work-ranges.csv"):
+    ratios = matches(ROOT)
+    functions = rows(ROOT / "data" / "objdiff-functions.csv")
+    for work_range in rows(ROOT / "data" / "work-ranges.csv"):
         start, end = int(work_range["start"], 16), int(work_range["end"], 16)
-        status = root / "data" / "function-status" / f"{work_range['id']}.csv"
+        status = ROOT / "data" / "function-status" / f"{work_range['id']}.csv"
         notes = {row["address"]: row.get("notes", "") for row in rows(status)} if status.exists() else {}
         pending = [
             row for row in functions
