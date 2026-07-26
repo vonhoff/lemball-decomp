@@ -14,8 +14,6 @@ struct GameProcessCurrentDirectoryState {
 
 extern GameProcessCurrentDirectoryState* g_pProcessCurrentDirectoryState;
 
-// STUB: LEMBALL 0x004010ff
-// GameScreenObject::ConstructLevelSelectionScreen
 // STUB: LEMBALL 0x0040132a
 // GameScreenObject::ConstructMainMenuScreen
 // STUB: LEMBALL 0x004015a0
@@ -70,6 +68,7 @@ public:
 	GameMainContext* InitializeMainGameContext(const char* pszCmdLine);
 	GameMainContext* InitializeMainGameContextThunk(const char* pszCmdLine);
 	void SwitchMainGameMode(int nMode);
+	void SwitchMainGameModeForwardThunk(int nMode);
 
 public:
 	char m_szLevelPath[0x50];

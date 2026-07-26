@@ -203,6 +203,7 @@ extern int* g_pArrowCursorStatusIndicatorRenderClient;
 extern int LEMBALL_FASTCALL DrainRenderDispatchQueueEntries(void* pDispatchQueue, int nUnused, unsigned int cEntries);
 extern void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void* pQueue);
 extern "C" DWORD WINAPI timeGetTime(void);
+extern void* LEMBALL_FASTCALL get_object_field_0x30(void* pObject);
 extern void* LEMBALL_FASTCALL ConstructFramedScreenBaseFieldsThunk(void* pObject,
 																   int nUnusedEdx,
 																   void* pPrimaryContext,
@@ -226,6 +227,7 @@ struct GameScreenObject {
 	void* ConstructMainMenuScreen(void* pPrimaryContext, void* pWindowOwnerContext, short* paRect);
 	void* ConstructOptionsScreen(void* pPrimaryContext, void* pWindowOwnerContext, short* paRect);
 	void* ConstructLevelSelectionScreen(void* pPrimaryContext, void* pWindowOwnerContext, short* paRect);
+	int* ConstructLevelSelectionScreenForwardThunk(unsigned int nParam1, unsigned int nParam2, unsigned short* pParam3);
 	void* ConstructLevelScreen(void* pPrimaryContext,
 							   void* pLevelModeObject,
 							   void* pWindowOwnerContext,
@@ -1870,10 +1872,28 @@ struct GameCursorRenderEntryInterface {
 	virtual void AppendToQueue(void* pQueue) = 0;
 };
 
-// STUB: LEMBALL 0x004010f0
+// FUNCTION: LEMBALL 0x004010a0
+unsigned int LEMBALL_FASTCALL GetQueuedRenderPointSinkField0x30ForwardThunk(int nParam)
+{
+	return (unsigned int) get_object_field_0x30((void*) nParam);
+}
+
+// FUNCTION: LEMBALL 0x004010f0
 GamePrimaryContext* GamePrimaryContext::ConstructPrimaryContextThunk(GameMainContext* pMainContext)
 {
 	return ConstructPrimaryContext(pMainContext);
+}
+
+// FUNCTION: LEMBALL 0x004010fa
+void GameMainContext::SwitchMainGameModeForwardThunk(int nMode)
+{
+	SwitchMainGameMode(nMode);
+}
+
+// FUNCTION: LEMBALL 0x004010ff
+int* GameScreenObject::ConstructLevelSelectionScreenForwardThunk(unsigned int nParam1, unsigned int nParam2, unsigned short* pParam3)
+{
+	return (int*)ConstructLevelSelectionScreen((void*)nParam1, (void*)nParam2, (short*)pParam3);
 }
 // STUB: LEMBALL 0x004014b0
 void GameLevelProgressState::SetUnlockedPackCapThunk(int nPack, int nCap)

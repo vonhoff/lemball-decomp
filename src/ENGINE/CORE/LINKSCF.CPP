@@ -63,6 +63,10 @@ extern void* LEMBALL_FASTCALL DeleteLevelEffChunkStreamBaseThunk(void* pObject, 
 extern int PASCAL ReturnFalseChunkStreamCommandThunk(void* pUnused1, void* pUnused2, void* pUnused3);
 extern int PASCAL ReturnFalseChunkStreamRenderThunk(void* pUnused);
 void LEMBALL_FASTCALL ActivateOrStagePlasChunkObject(void* pObject);
+void* ConstructManagedEntityQueueCursorThunk(void* pObject,
+												 int nLevelMode,
+												 int nPrimaryCapacity,
+												 int nSecondaryCapacity);
 
 void* LEMBALL_FASTCALL GetFirstCachedChunkObject(void* pObject);
 void* LEMBALL_FASTCALL GetNextCachedChunkObject(void* pObject);
@@ -265,6 +269,16 @@ void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevelThunk(void* pObject,
 															 unsigned short nVariant,
 															 int nNetworkPlayer,
 															 int nStartDelay);
+
+struct ManagedEntityQueueCursorForwardThunks {
+	void* ConstructManagedEntityQueueCursorForwardThunk(int nLevelMode, unsigned int nPrimaryCapacity, unsigned int nSecondaryCapacity);
+};
+
+// FUNCTION: LEMBALL 0x004010aa
+void* ManagedEntityQueueCursorForwardThunks::ConstructManagedEntityQueueCursorForwardThunk(int nLevelMode, unsigned int nPrimaryCapacity, unsigned int nSecondaryCapacity)
+{
+	return ConstructManagedEntityQueueCursorThunk(this, nLevelMode, nPrimaryCapacity, nSecondaryCapacity);
+}
 
 // FUNCTION: LEMBALL 0x00401604
 LinkScfCachedChunkObjectManagerBaseView* LinkScfCachedChunkObjectManagerBaseView::
