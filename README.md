@@ -3,45 +3,52 @@
 Work-in-progress reconstruction of 1996 Win32 `LEMBALL.EXE`, built with MSVC
 4.20 and compared against original binary with reccmp.
 
-## Concurrent workers
+## Concurrent agents
 
-Worker starts from clean integration checkout:
+### One-time host setup
 
-```powershell
-python tools\coordinator.py start codex-01
-```
-
-Worker changes into printed worktree, reads `AGENTS.md`, works only claimed
-range, commits source and `data/function-status` notes. Do not edit another
-worker's checkout or run full shared-worktree builds.
-
-New worktrees automatically junction shared `msvc420` and `.decomp-venv`
-dependencies, and copy ignored reccmp target files from primary checkout;
-their `build-msvc420` directories remain separate. To repair a pre-existing
-worker checkout, run from primary checkout:
+From primary integration checkout, move local compiler, Python tools, and
+original executable into one shared host cache:
 
 ```powershell
-python tools\coordinator.py setup --root ..\lemball-decomp-codex-01
+python tools\worker.py configure --toolchain-root "$env:LOCALAPPDATA\lemball-decomp\toolchain"
 ```
 
-Coordinator reviews and merges worker branch, runs full build/reccmp, then:
+The cache is outside repository and contains `msvc420`, `.decomp-venv`, and
+`LEMBALL.EXE`. Worker worktrees use cheap junctions/hard links to it; only their
+`build-msvc420` output is private.
+
+### Provision workers
+
+Coordinator runs this sequentially from clean primary integration checkout:
 
 ```powershell
-python tools\coordinator.py release codex-01
+python tools\worker.py start codex-01
+python tools\worker.py start deepseek-01
 ```
 
-`python tools\coordinator.py check` validates ledger before integration.
+Each command creates an exclusive claim, branch, and worktree. Give the printed
+worktree path and claim to that agent. Agents do not create worktrees or claims.
+
+Coordinator reviews and merges each worker branch, runs full build/reccmp, then:
+
+```powershell
+python tools\worker.py release codex-01
+```
+
+`python tools\worker.py check` validates ledger before integration.
 
 ### Worker starter prompt
 
-Copy this into a new worker task from clean integration checkout:
+Copy this into an already-provisioned worker task, replacing both values:
 
 ```text
 Set OWNER=codex-01.
+Workspace: C:\path\to\lemball-decomp-codex-01
+Claim: text-001.
 
-Run `python tools\coordinator.py start %OWNER%`, substituting OWNER. Change
-into printed worker worktree. Read AGENTS.md. Work only returned range recorded
-in CLAIMS.md.
+Read AGENTS.md. Work only in assigned workspace and claim. Do not run
+tools\worker.py or edit another workspace.
 
 Use Ghidra MCP and reccmp to make as many functions 100% as practical. Use
 C/C++ only; no assembly. Follow build, measurement, dependency, and handoff
@@ -51,9 +58,8 @@ commit source and notes. Keep claim active when handing off.
 
 ## Setup
 
-Install `requirements.txt` into `.decomp-venv`. Original compiler must exist in
-ignored `msvc420/`; comparison target is configured through reccmp project
-files. Use commands in `AGENTS.md` for normal work.
+Run shared toolchain setup above before creating workers. Use commands in
+`AGENTS.md` for normal work.
 
 ## Legal
 

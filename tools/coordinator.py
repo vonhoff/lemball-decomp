@@ -2,6 +2,7 @@
 """Coordinate isolated decompilation worker worktrees and claims."""
 
 import argparse
+import os
 import re
 import shutil
 import subprocess
@@ -12,7 +13,7 @@ import claims
 
 OWNER = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 SHARED_DIRECTORIES = ("msvc420", ".decomp-venv")
-COPIED_FILES = ("reccmp-user.yml", "data/LEMBALL.EXE")
+TOOLCHAIN_CONFIG = ".worker-toolchain"
 
 
 def run(root, *command):
@@ -42,27 +43,85 @@ def make_junction(target, source):
     )
 
 
-def setup(root, primary=None):
+def toolchain_root(primary):
+    configured = os.environ.get("LEMBALL_TOOLCHAIN_ROOT")
+    if configured:
+        return Path(configured).resolve()
+    path = primary / TOOLCHAIN_CONFIG
+    if path.is_file():
+        return Path(path.read_text(encoding="utf-8").strip()).resolve()
+    raise SystemExit(
+        "toolchain is not configured; run python tools\\worker.py configure from primary checkout"
+    )
+
+
+def write_reccmp_user(root, tools):
+    (root / "reccmp-user.yml").write_text(
+        "targets:\n  LEMBALL:\n    path: " + str(tools / "LEMBALL.EXE") + "\n",
+        encoding="utf-8",
+    )
+
+
+def setup(root, primary=None, tools=None):
     primary = primary or primary_worktree(root)
+    tools = tools or toolchain_root(primary)
     for name in SHARED_DIRECTORIES:
-        source = primary / name
+        source = tools / name
         target = root / name
         if not source.is_dir():
             raise SystemExit(f"missing shared dependency: {source}")
         if not target.exists():
             make_junction(target, source)
-    for name in COPIED_FILES:
-        source = primary / name
-        target = root / name
-        if not source.is_file():
-            raise SystemExit(f"missing shared dependency: {source}")
-        if not target.exists():
+    source = tools / "LEMBALL.EXE"
+    target = root / "data" / "LEMBALL.EXE"
+    if not source.is_file():
+        raise SystemExit(f"missing shared dependency: {source}")
+    if not target.exists():
+        try:
+            os.link(source, target)
+        except OSError:
             shutil.copy2(source, target)
+    write_reccmp_user(root, tools)
     print(f"worker dependencies ready: {root}")
+
+
+def configure(root, tools):
+    require_primary_worktree(root)
+    tools = tools.resolve()
+    if tools.exists():
+        raise SystemExit(f"toolchain path already exists: {tools}")
+    sources = {
+        "msvc420": root / "msvc420",
+        ".decomp-venv": root / ".decomp-venv",
+        "LEMBALL.EXE": root / "data" / "LEMBALL.EXE",
+    }
+    for source in sources.values():
+        if not source.exists():
+            raise SystemExit(f"missing local dependency: {source}")
+    tools.mkdir(parents=True)
+    moved = []
+    try:
+        for name, source in sources.items():
+            destination = tools / name
+            shutil.move(str(source), str(destination))
+            moved.append((source, destination))
+        (root / TOOLCHAIN_CONFIG).write_text(str(tools) + "\n", encoding="utf-8")
+        setup(root, root, tools)
+    except BaseException as error:
+        for source, destination in reversed(moved):
+            if destination.exists() and not source.exists():
+                shutil.move(str(destination), str(source))
+        if tools.exists() and not any(tools.iterdir()):
+            tools.rmdir()
+        if (root / TOOLCHAIN_CONFIG).exists():
+            (root / TOOLCHAIN_CONFIG).unlink()
+        raise SystemExit(f"toolchain migration stopped: {error}")
+    print(f"shared toolchain configured: {tools}")
 
 
 def start(root, owner, path=None):
     require_primary_worktree(root)
+    tools = toolchain_root(root)
     if not OWNER.fullmatch(owner):
         raise SystemExit("owner must use lowercase letters, digits, and hyphens")
     if output(root, "git", "status", "--porcelain"):
@@ -81,7 +140,7 @@ def start(root, owner, path=None):
         run(root, "git", "worktree", "add", "-b", branch, str(destination), "HEAD")
     except subprocess.CalledProcessError:
         raise SystemExit("claim committed but worktree creation failed; run coordinator release before retrying")
-    setup(destination, root)
+    setup(destination, root, tools)
     print(f"worker worktree: {destination}")
     print(f"worker branch: {branch}")
 
@@ -106,6 +165,14 @@ def main(argv=None):
     check.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     setup_command = commands.add_parser("setup")
     setup_command.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    configure_command = commands.add_parser("configure")
+    configure_command.add_argument(
+        "--toolchain-root",
+        type=Path,
+        required=True,
+        help="new shared directory for msvc420, decomp-venv, and LEMBALL.EXE",
+    )
+    configure_command.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args(argv)
     root = args.root.resolve()
     if args.command == "start":
@@ -114,6 +181,8 @@ def main(argv=None):
         release(root, args.owner)
     elif args.command == "setup":
         setup(root)
+    elif args.command == "configure":
+        configure(root, args.toolchain_root)
     else:
         claims.check(root)
 

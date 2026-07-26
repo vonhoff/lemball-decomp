@@ -21,6 +21,7 @@ compile_commands.json
 .venv/
 .decomp-venv/
 msvc420/
+.worker-toolchain
 *.iml
 *.tmp
 *.bak
