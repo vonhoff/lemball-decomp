@@ -23,8 +23,12 @@ measures, updates status CSV, and commits before next editing agent starts.
 Copy this into next editing task:
 
 ```text
-Read AGENTS.md. Run `python tools\coordinator.py`; start with first viable target.
-You are sole editing agent. Do not run another build or edit concurrently.
+Read AGENTS.md. First run `python tools\coordinator.py`. It prepares missing
+`.decomp-venv` dependencies and prints targets. If it fails, report shortest
+error and stop. Do not edit before it succeeds.
+
+Work first viable target. You are sole editing agent. Do not run another build
+or edit concurrently.
 
 Use Ghidra MCP and reccmp to make as many functions 100% as practical. Use
 C/C++ only; no assembly. Follow build, measurement, dependency, and handoff
