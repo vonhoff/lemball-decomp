@@ -708,6 +708,12 @@ struct LevelVariantResourceLoadSpec {
 	unsigned short m_nSelectorMode;
 };
 
+// FUNCTION: LEMBALL 0x0040103c
+void LEMBALL_FASTCALL restore_base_mode_action_button_point_sink_vtable(void* pObject)
+{
+	ResetBaseModeActionButtonPointSink(pObject);
+}
+
 // STUB: LEMBALL 0x004011b8
 int LEMBALL_FASTCALL GetTimedVariantFrameStartTimeThunk(void* pObject)
 {

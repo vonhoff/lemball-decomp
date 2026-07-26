@@ -1,12 +1,12 @@
 #include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/GDI/VSGDI.H"
 
+extern void LEMBALL_FASTCALL DispatchLevelScreenRenderStatePop(void* pEntry, int nUnused, void* pContext);
+
 // FUNCTION: LEMBALL 0x00401073
 void LEMBALL_FASTCALL ExecuteStatusRenderPopThunk(void* pEntry, int nUnused, void* pContext)
 {
-	(void) pEntry;
-	(void) nUnused;
-	(void) pContext;
+	DispatchLevelScreenRenderStatePop(pEntry, nUnused, pContext);
 }
 
 // FUNCTION: LEMBALL 0x00401334

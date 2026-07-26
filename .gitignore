@@ -19,6 +19,7 @@ compile_commands.json
 # Local tools and settings
 .idea/
 .venv/
+.decomp-venv/
 msvc420/
 *.iml
 *.tmp
@@ -35,8 +36,6 @@ data/*
 !data/LEMBALL.EXE.gpg
 !data/function-status/
 !data/function-status/**
-!data/dependencies/
-!data/dependencies/**
 !data/objdiff-functions.csv
 !data/README.md
 !data/runtime-symbols.csv

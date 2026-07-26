@@ -1,17 +1,17 @@
-address,state,baseline_percent,match_percent,updated,notes
-0x00401005,unseen,,,2026-07-26T13:08:32+00:00,
-0x00401019,unseen,,,2026-07-26T13:08:32+00:00,
-0x0040101E,unseen,,,2026-07-26T13:08:32+00:00,
-0x00401028,unseen,0.000000,0.000000,2026-07-26T13:08:32+00:00,
-0x00401032,unseen,,,2026-07-26T13:08:32+00:00,
-0x00401037,unseen,,,2026-07-26T13:08:32+00:00,
-0x0040103C,unseen,,,2026-07-26T13:08:32+00:00,
-0x00401046,unseen,0.000000,0.000000,2026-07-26T13:08:32+00:00,
-0x00401050,unseen,,,2026-07-26T13:08:32+00:00,
-0x00401055,unseen,,,2026-07-26T13:08:32+00:00,
-0x00401073,blocked,0.000000,0.000000,2026-07-26T13:17:06+00:00,Ghidra original is E9 jump to 0x004397e0. Inline assembly attempt rejected; recover compiler-generated C/C++ tail jump.
-0x00401078,unseen,,,2026-07-26T13:08:32+00:00,
-0x0040107D,unseen,,,2026-07-26T13:08:32+00:00,
-0x00401087,unseen,,,2026-07-26T13:08:32+00:00,
-0x0040108C,unseen,,,2026-07-26T13:08:32+00:00,
-0x00401091,matched,100.000000,100.000000,2026-07-26T13:08:32+00:00,
+address,notes
+0x00401005,"100%; fastcall wrapper forwards to existing 0x0044F610 body."
+0x00401019,"Ghidra body 0x00418040 iterates projectile pool; source helpers for next/remove object are not recovered."
+0x0040101E,"Recovered 0x00451C90 body from Ghidra into MAINMENU.CPP; build blocked by unrelated GAME.CPP __thiscall syntax before reccmp."
+0x00401028,"Ghidra body 0x0043A500 is no-op; original symbol is VS_WindowOwnerBase::ReservedWindowOwnerSlot23 and needs ordered thunk recovery."
+0x00401032,"Ghidra body 0x0042F680 parses MOVE records; source-side allocator/append helpers are not recovered."
+0x00401037,"Ghidra body 0x0042A7A0 destroys LASR base, conditionally frees object; source body not recovered."
+0x0040103C,"Recovered E9 wrapper to ResetBaseModeActionButtonPointSink; LEVELSTAT.CPP object compiles. Full build remains blocked by unrelated GAME.CPP __thiscall syntax."
+0x00401046,"Existing LevelThreeDwordPointVariant::Copy body at 0x0040C2B0; compiler emits nonmatching thunk."
+0x00401050,"Existing return-false callback body at 0x0040AA70; compiler emits nonmatching thunk."
+0x00401055,"100%; no-op wrapper forwards to existing 0x0040A960 body."
+0x00401073,"Recovered E9 target 0x004397E0; wrapper now forwards DispatchLevelScreenRenderStatePop. Build blocked by unrelated GAME.CPP __thiscall syntax before reccmp."
+0x00401078,"Existing GetFirstCachedChunkObject body at 0x0041EA30; ordered wrapper still needed."
+0x0040107D,"Ghidra body 0x00413180 stores three indexed fields; source setter not recovered."
+0x00401087,"Ghidra body 0x00416DE0 stores variant then dispatches vtable slot 2; source setter not recovered."
+0x0040108C,"Ghidra body 0x0043D7E0 emits level-screen variant entry; source body not recovered."
+0x00401091,"100%; existing ReadNetworkLevelChunkDeltaStreamThunk forwards to 0x00453070 body."

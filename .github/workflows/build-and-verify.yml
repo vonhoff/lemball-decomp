@@ -57,10 +57,8 @@ jobs:
             data/LEMBALL.EXE.gpg
 
       - name: Configure and build
-        shell: cmd
-        run: |
-          call .\msvc420\bin\VCVARS32.BAT x86
-          python tools\build_msvc420.py
+        shell: pwsh
+        run: python tools/build_msvc420.py
 
       - name: Verify against original
         shell: pwsh

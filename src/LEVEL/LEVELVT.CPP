@@ -345,6 +345,18 @@ LevelThreeDwordPointVariant* LevelThreeDwordPointVariant::CopyThunk(const LevelT
 	return Copy(pSource);
 }
 
+// FUNCTION: LEMBALL 0x00401050
+int thunk_return_false_vtable_callback_0040aa70(void* pUnused1, void* pUnused2)
+{
+	return return_false_vtable_callback_0040aa70(pUnused1, pUnused2);
+}
+
+// FUNCTION: LEMBALL 0x00401055
+void thunk_noop_vtable_callback_0040a960(void)
+{
+	noop_vtable_callback_0040a960();
+}
+
 // FUNCTION: LEMBALL 0x004010be
 LevelThreeDwordPoint* LevelManagedEntityPositionView::CopyWorldPositionThunk(LevelThreeDwordPoint* pPosition)
 {

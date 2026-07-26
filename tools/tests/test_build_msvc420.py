@@ -13,6 +13,17 @@ SPEC.loader.exec_module(build)
 
 
 class BuildMsvc420Test(unittest.TestCase):
+    def test_project_cmake_wins_over_caller_environment(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            cmake = root / ".decomp-venv" / "Scripts" / "cmake.exe"
+            cmake.parent.mkdir(parents=True)
+            cmake.write_bytes(b"")
+            self.assertEqual(
+                build.find_cmake(root, root / "other" / "python.exe"),
+                cmake,
+            )
+
     def test_build_rule_requires_matching_flags(self):
         with tempfile.TemporaryDirectory() as temporary:
             rule = Path(temporary) / "build.make"

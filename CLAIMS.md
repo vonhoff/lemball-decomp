@@ -1,12 +1,9 @@
 # Active claims
 
-Claim one range with `python tools/claims.py take RANGE OWNER`. Available
-ranges come from `data/work-ranges.csv`; list them with
-`python tools/claims.py list --available`.
-
-Function ownership follows original entry address. Cross-range blockers use
-`claims.py dependency`. Shared class, vtable, inheritance, or global changes
-require `claims.py take-abi`.
+`python tools/claims.py OWNER` claims or resumes one unfinished disjoint range.
+Claim stays active until merged. Coordinator removes completed row.
 
 | Range | Addresses | Functions | Who | Claimed |
 |---|---|---:|---|---|
+| text-001 | 0x00401005..0x0040109B | 16 | codex-01 | 2026-07-26 |
+| text-002 | 0x0040109B..0x00401118 | 16 | deepseek-01 | 2026-07-26 |

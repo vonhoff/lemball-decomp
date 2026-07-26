@@ -724,6 +724,12 @@ __inline static void* ConstructMenuSelectorChildContextObject(void* pObject)
 	return pObject;
 }
 
+// FUNCTION: LEMBALL 0x00401005
+void LEMBALL_FASTCALL destroy_queued_variant_child_slot_manager(void* pObject)
+{
+	DestroyQueuedVariantChildSlotManager((GameQueuedVariantChildSlotManager*) pObject);
+}
+
 struct GameQueuedVariantRangeEntry {
 	void** m_pVtable00;
 	int m_nQueueTag04;

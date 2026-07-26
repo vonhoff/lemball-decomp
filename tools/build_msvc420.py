@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import shutil
 import subprocess
 import sys
@@ -30,13 +31,53 @@ def run(command, cwd=ROOT):
     subprocess.run(command, cwd=cwd, check=True)
 
 
+def bootstrap_command(vcvars, python, script):
+    return (
+        f'call "{vcvars}" x86 && '
+        f'set "LEMBALL_MSVC420_READY=1" && '
+        f'"{python}" "{script}"'
+    )
+
+
+def short_path(path):
+    if os.name != "nt" or " " not in str(path):
+        return path
+    from ctypes import WinDLL, create_unicode_buffer
+
+    buffer = create_unicode_buffer(32768)
+    if not WinDLL("kernel32", use_last_error=True).GetShortPathNameW(
+        str(path), buffer, len(buffer)
+    ):
+        raise SystemExit(f"CMake path contains spaces and has no short form: {path}")
+    return Path(buffer.value)
+
+
+def find_cmake(root, python):
+    candidates = [
+        root / ".decomp-venv" / "Scripts" / "cmake.exe",
+        root / ".venv" / "Scripts" / "cmake.exe",
+        Path(python).with_name("cmake.exe"),
+    ]
+    found = shutil.which("cmake")
+    if found:
+        candidates.append(Path(found))
+    for candidate in candidates:
+        if candidate.exists():
+            return short_path(candidate)
+    raise SystemExit("cmake not found; install requirements.txt")
+
+
 def main():
-    cmake = Path(sys.executable).with_name("cmake.exe")
-    if not cmake.exists():
-        found = shutil.which("cmake")
-        if not found:
-            raise SystemExit("cmake not found")
-        cmake = Path(found)
+    if os.environ.get("LEMBALL_MSVC420_READY") != "1":
+        vcvars = ROOT / "msvc420" / "bin" / "VCVARS32.BAT"
+        if not vcvars.exists():
+            raise SystemExit(f"missing {vcvars.relative_to(ROOT)}")
+        command = bootstrap_command(vcvars, sys.executable, Path(__file__).resolve())
+        raise SystemExit(
+            subprocess.call(f"cmd.exe /d /c {command}", cwd=ROOT)
+        )
+
+    cmake = find_cmake(ROOT, sys.executable)
 
     run([cmake, "--preset", "msvc420"])
     if not valid_build_rule(RULE):
@@ -51,8 +92,6 @@ def main():
         raise SystemExit("build produced no object files")
     if stale_output(OUTPUT, objects):
         nmake = shutil.which("nmake")
-        if not nmake:
-            raise SystemExit("stale LEMBALL.EXE; run after VCVARS32.BAT")
         print("stale LEMBALL.EXE; forcing relink")
         run(
             [

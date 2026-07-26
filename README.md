@@ -1,28 +1,29 @@
 # Lemmings Paintball Decompilation
 
-This repository contains a work-in-progress reconstruction of the original 1996 Windows C++ codebase behind `LEMBALL.EXE`.
+Work-in-progress reconstruction of 1996 Win32 `LEMBALL.EXE`, built with MSVC
+4.20 and compared against original binary with reccmp.
 
-The game is not yet functional and remains under active development. The primary goal is to produce a complete decompilation of *Lemmings Paintball* that matches the original machine code as closely as reasonably possible. Once complete, the reconstructed codebase may also serve as a useful technical reference for future ports, reimplementations, and preservation work.
+## Start agent
 
-> [!WARNING]
-> The reconstructed source code is intentionally kept close to the behavior and structure of the original release, including its platform-specific assumptions. The game targets 32-bit Windows and is not expected to build or run on other platforms without substantial additional work.
-
-## Start an AI worker
-
-Coordinator assigns an available range. Edit only first two lines:
+Change only owner:
 
 ```text
-set OWNER=vonhoff
-set RANGE=text-042
+set OWNER=codex-01
 
-Read AGENTS.md and execute its workflow for %RANGE% as %OWNER%. Range is
-assigned; never choose or edit another. Use Ghidra MCP and reccmp. Make at
-least one previously non-exact function 100% using C/C++ only. Record every
-attempt and blocker. Keep claim active for handoff. Communicate tersely.
+Read AGENTS.md. Run `python tools\claims.py %OWNER%`, then work only returned
+range. Use Ghidra MCP and reccmp to make as many functions 100% as practical.
+Use C/C++ only; no assembly. Follow build, measurement, dependency, and handoff
+rules in AGENTS.md. Keep claim active when handing off.
 ```
+
+## Setup
+
+Install `requirements.txt` into `.decomp-venv`. Original compiler must exist in
+ignored `msvc420/`; comparison target is configured through reccmp project
+files. Use commands in `AGENTS.md` for normal work.
 
 ## Legal
 
-This repository contains an encrypted, non-working copy of the original *Lemmings Paintball* executable, which is used solely to support automated binary comparison and verification during development. It is not intended to provide a playable version of the game or replace the original software. No game data, artwork, audio, or other proprietary assets required for normal gameplay are included. Users are responsible for supplying any required game files from a copy they are legally entitled to use.
-
-All copyrights, trademarks, and other intellectual property rights relating to *Lemmings Paintball* and the original software remain the property of their respective rights holders. This is an unofficial preservation and research project. It is not affiliated with, authorized by, sponsored by, or endorsed by any current or former rights holder.
+Encrypted non-working original executable is included only for automated
+comparison. No game assets required for play are included. This unofficial
+preservation project is not affiliated with any rights holder.

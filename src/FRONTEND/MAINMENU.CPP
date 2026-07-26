@@ -1994,6 +1994,32 @@ __inline static void LEMBALL_FASTCALL NoopQueuedVariantChildSlotManagerUpdate(vo
 {
 }
 
+// FUNCTION: LEMBALL 0x0040101E
+void LEMBALL_FASTCALL draw_entered_password_text(void* pObject)
+{
+	GamePasswordEntryScreenView* pScreen;
+	MappedListResourceTable* pMappedList;
+	short Point[2];
+	short Relative[2];
+	short Extent[2];
+
+	pScreen = (GamePasswordEntryScreenView*) pObject;
+	pMappedList = (MappedListResourceTable*) pScreen->m_pMappedListResources98;
+	Relative[0] = 0;
+	Relative[1] = 0;
+	((LevelScreenDrawOwnerView*) pMappedList->GetMappedResource(pScreen->m_nMappedListRemapResourceId384))
+		->MeasureGlyphStringExtent(Extent, pScreen->m_szPassword3B0, 0x20);
+	Point[0] = (short) (pScreen->m_cxScreen37C - pScreen->m_pLayout3A8[22] - Extent[0]);
+	Point[1] = (short) pScreen->m_pLayout3A8[23];
+	pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+								   Point,
+								   Relative,
+								   pScreen->m_nMappedListRemapResourceId384,
+								   pScreen->m_szPassword3B0,
+								   0x20,
+								   0);
+}
+
 // FUNCTION: LEMBALL 0x0040110e
 void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroupThunk(void* pObject)
 {

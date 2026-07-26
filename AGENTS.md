@@ -1,76 +1,51 @@
-# Range worker
+# Decompilation worker
 
-Goal: byte-match one claimed original-address range with MSVC 4.20, Ghidra,
-and reccmp. Never grind or edit another range.
+Goal: improve byte matching inside one exclusive original-address range using
+MSVC 4.20, Ghidra, and reccmp.
 
-## Communication
+## Start
 
-Always terse. Fragments allowed. Drop filler, pleasantries, repeated facts,
-decorative formatting, and long logs. Quote shortest decisive error. Use exact
-technical terms; never invent prose abbreviations or use arrows. Progress
-update contains candidate address, measured percentage, blocker, next step.
-Final contains new exact matches, changed files, checks, unresolved blockers.
+Run `python tools\claims.py OWNER`. It claims or resumes one range and prints
+every unfinished function. Work anywhere inside that range. Keep claim until
+work is merged; coordinator removes completed claim from `CLAIMS.md`.
 
-1. In cmd, run:
-   `call msvc420\bin\VCVARS32.BAT x86`
-   `python tools\build_msvc420.py`
-   `reccmp-project detect --search-path data`
-   `pushd build-msvc420`
-   `reccmp-reccmp --target LEMBALL --json reccmp.json --json-diet --silent`
-   `popd`
-   Never call CMake build directly. Then run
-   `python tools\claims.py take <range> <owner>`. Commit `CLAIMS.md` and
-   generated baseline status CSV alone.
-2. Run `claims.py brief <range>`. In Ghidra MCP inspect decompilation,
-   disassembly, callers, callees, references, strings, vtables, and thunks.
-   Claims contain at most 16 functions or about 1 KiB. Work one candidate at a
-   time; never batch-decompile or survey whole range first.
-3. Make at least one previously non-exact function 100%. Continue only when
-   next candidate is trivial. A thunk belongs to range containing its entry,
-   not target.
-4. After each attempt rebuild and refresh reccmp, then run
-   `python tools\claims.py status <range> <owner> <address> <state> "<notes>"`.
-   Use `matching` for measured partial work and `blocked` only with evidence,
-   blocker, and next step. `matched` requires current reccmp result of 100%.
-5. Preserve annotations, translation units, link order, compiler constraints,
-   and uncertain evidence. Do not perform cleanup unrelated to byte matching.
-   Write compiler-generated C/C++ only. Never use `__asm`, `_asm`,
-   `__declspec(naked)`, opcode bytes, or external assembly. Assembly-produced
-   100% is invalid. Existing assembly is debt, not precedent.
-6. Before changing shared class, vtable, inheritance declaration, or global,
-   take and commit address-anchored ABI lease.
-7. Rebuild and refresh reccmp with commands from step 1. Before handoff run:
-   `python tools\claims.py verify <range> <owner>`
-   `python tools\claims.py check --base HEAD`
-   `python -m unittest discover -s tools\tests`
-   In `build-msvc420`, run:
-   `reccmp-decomplint --target LEMBALL`
-   `reccmp-datacmp --target LEMBALL --no-color`
-   Wrapper detects objects newer than executable and forces relink. Never
-   compare after failed build.
-8. Merge while claims remain active. Release code and ABI claims afterward.
+Original entry address owns function. Inspect callers and callees anywhere,
+but do not edit an out-of-range function. If local match needs such an edit,
+record address and evidence in range CSV under `data/function-status/`, then
+tell coordinator. Coordinate before changing shared class layouts, inheritance,
+vtables, or globals.
 
-## Cross-range work
+## Work
 
-Address claim controls edits. Call graph only routes dependencies. Worker may
-inspect any callee but must not edit out-of-range body.
+- Use Ghidra MCP for disassembly, decompilation, xrefs, types, vtables, and
+  thunks. Treat Ghidra output as evidence, not source.
+- Preserve file placement, annotations, calling conventions, class layout,
+  and link order when binary evidence requires them.
+- `// FUNCTION: LEMBALL 0x...` must directly precede declaration. Put other
+  comments above annotation.
+- Write compiler-generated C/C++ only. Never use inline or external assembly,
+  naked functions, or opcode bytes.
+- For five-byte `E9` thunk, write annotated wrapper with matching signature and
+  only target call. Rebuilt address may differ. Use existing `/include:` pragma
+  pattern only when MAP/PDB proves linker discarded unreferenced wrapper; it
+  retains symbol and must not be used to control placement.
+- Cross-range target already present is not dependency unless target must
+  change.
 
-When out-of-range correction blocks local match, run:
+## Measure
 
-`claims.py dependency <range> <owner> <caller> <callee> "<evidence and need>"`
+From repository root:
 
-Continue other local functions. Coordinator assigns target range to another
-worker. Pull merged target change, validate local range, then run
-`claims.py resolve-dependency` with resolution evidence. Never duplicate target
-body or silently widen claim.
+```powershell
+python tools/build_msvc420.py
+.decomp-venv\Scripts\reccmp-project.exe detect --search-path data
+Push-Location build-msvc420
+..\.decomp-venv\Scripts\reccmp-reccmp.exe --target LEMBALL --json reccmp.json --json-diet
+..\.decomp-venv\Scripts\reccmp-decomplint.exe --target LEMBALL
+..\.decomp-venv\Scripts\reccmp-datacmp.exe --target LEMBALL --no-color
+Pop-Location
+```
 
-For dependency cycle, coordinator may stage target stub or integrate both
-branches. Each worker still edits only owned bodies. Shared type or ABI change
-uses ABI lease.
-
-Progress source of truth is `data/function-status/<range>.csv`. Dependency
-source of truth is `data/dependencies/<range>.csv`. Commit both with work so
-another worker can resume from percentages, evidence, blocker, and next step.
-
-Never edit `data/objdiff-functions.csv` manually; Ghidra export owns it. Never
-infer original filenames from address proximity.
+100% reccmp result is only completion evidence. Before handoff, update useful
+blocker or next-step notes in `data/function-status/<range>.csv`, rerun checks,
+and commit source, notes, and claim together.
