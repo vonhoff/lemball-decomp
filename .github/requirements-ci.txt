@@ -1,2 +1,2 @@
-cmake
-reccmp
+cmake==4.4.0
+reccmp==0.1.6

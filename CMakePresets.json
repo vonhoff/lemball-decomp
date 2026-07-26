@@ -16,22 +16,14 @@
         "jetbrains.com/clion": {
           "toolchain": "MSVC 4.20"
         }
-      },
-      "cacheVariables": {
-        "LEMBALL_ENABLE_WIN32": "ON",
-        "LEMBALL_SKIP_CD_TEST": "OFF",
-        "LEMBALL_SKIP_REGISTRY_RUNNING_STATE": "OFF"
       }
-    },
+    }
+  ],
+  "buildPresets": [
     {
-      "name": "msvc420-runtime",
-      "displayName": "MSVC 4.20 Runtime Smoke Test",
-      "inherits": "msvc420",
-      "binaryDir": "${sourceDir}/build-msvc420-runtime",
-      "cacheVariables": {
-        "LEMBALL_SKIP_CD_TEST": "OFF",
-        "LEMBALL_SKIP_REGISTRY_RUNNING_STATE": "ON"
-      }
+      "name": "msvc420",
+      "configurePreset": "msvc420",
+      "targets": ["LEMBALL"]
     }
   ]
 }

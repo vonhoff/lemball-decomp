@@ -7,6 +7,30 @@ The game is not yet functional and remains under active development. The primary
 > [!WARNING]
 > This is a decompilation project. The reconstructed source code is intentionally kept close to the behavior and structure of the original release, including its platform-specific assumptions. The game targets 32-bit Windows and is not expected to build or run on other platforms without substantial additional work.
 
+## Development
+
+Install [MSVC 4.20](https://github.com/itsmattkc/msvc420) in `msvc420`, create a Python virtual environment, then install `.github/requirements-ci.txt`. Place the original `LEMBALL.EXE` in `data` and register it:
+
+```bat
+reccmp-project detect --search-path data
+call msvc420\bin\VCVARS32.BAT x86
+cmake --preset msvc420
+cmake --build --preset msvc420
+```
+
+Run comparison tools from the build directory:
+
+```bat
+cd build-msvc420
+reccmp-decomplint --target LEMBALL
+reccmp-reccmp --target LEMBALL --json reccmp.json --json-diet
+reccmp-datacmp --target LEMBALL
+cd ..
+python tools\generate_objdiff_report.py
+```
+
+`reccmp-roadmap`, `reccmp-vtable`, and `reccmp-stackcmp` remain available for focused investigation.
+
 ## Development Status
 
 This project is still highly experimental and is currently developed largely with the assistance of AI tools. Expect frequent changes, incomplete implementations, rough edges, and code that still requires manual review and verification.

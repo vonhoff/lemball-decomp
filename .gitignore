@@ -1,84 +1,38 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Linker files
-*.ilk
-
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-*.so.*
-
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
-# Build directories
+# Build outputs
 build/
-Build/
 build-*/
-
-
-# CMake generated files
+cmake-build-*/
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
-install_manifest.txt
 compile_commands.json
-
-# Temporary files
-*.tmp
+*.dll
+*.exe
+*.ilk
+*.lib
 *.log
+*.map
+*.obj
+*.pdb
+*.res
+
+# Local tools and settings
+.idea/
+.venv/
+*.iml
+*.tmp
 *.bak
 *.swp
+__pycache__/
+.DS_Store
 
-# vcpkg
-vcpkg_installed/
-
-# debug information files
-*.dwo
-
-# test output & cache
-Testing/
-.cache/
-.venv/
-tools/bin/
-cmake-build-*/
-objdiff.json
+# User-specific reccmp and target data
 reccmp-build.yml
 reccmp-user.yml
-.idea/
+objdiff.json
 data/*
 !data/LEMBALL.EXE.gpg
+!data/functions.csv
 !data/README.md
 !data/runtime-symbols.csv
 .gnupg-local/
-__pycache__/
-.DS_Store
-*.iml

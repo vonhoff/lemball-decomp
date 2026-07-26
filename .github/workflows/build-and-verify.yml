@@ -36,38 +36,39 @@ jobs:
           python -m pip install --requirement .github/requirements-ci.txt
           $cmakeBin = python -c "import cmake; print(cmake.CMAKE_BIN_DIR)"
           "CMAKE_BIN=$cmakeBin" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          python -c "from reccmp.compare.core import Compare"
 
       - name: Prepare target binary
         shell: bash
         env:
           LEMBALL_GPG_PASSPHRASE: ${{ secrets.LEMBALL_GPG_PASSPHRASE }}
         run: |
-          python tools/silence_c4786_in_c2.py msvc420/bin/C2.EXE
-          mkdir -p data
           gpg --quiet --batch --yes \
             --decrypt \
             --passphrase "$LEMBALL_GPG_PASSPHRASE" \
             --output data/LEMBALL.EXE \
             data/LEMBALL.EXE.gpg
-          make validate-target
 
       - name: Configure and build
         shell: cmd
         run: |
           call .\msvc420\bin\VCVARS32.BAT x86
-          "%CMAKE_BIN%\cmake.exe" -S . -B build-msvc420 -G "NMake Makefiles" -DLEMBALL_ENABLE_WIN32=ON -DCMAKE_TOOLCHAIN_FILE=cmake/msvc420-toolchain.cmake
-          "%CMAKE_BIN%\cmake.exe" --build build-msvc420 --target LEMBALL --verbose > build-msvc420\build.log 2>&1
+          "%CMAKE_BIN%\cmake.exe" --preset msvc420
+          "%CMAKE_BIN%\cmake.exe" --build --preset msvc420 --verbose > build-msvc420\build.log 2>&1
           if errorlevel 1 (
             type build-msvc420\build.log
             exit /b 1
           )
 
       - name: Verify against original
-        run: python tools/compare_rebuilt_functions.py --json build/reccmp-sample.json --silent
-
-      - name: Generate progress report
-        run: make report
+        shell: pwsh
+        run: |
+          reccmp-project detect --search-path data
+          Push-Location build-msvc420
+          reccmp-decomplint --target LEMBALL
+          reccmp-reccmp --target LEMBALL --json reccmp.json --json-diet --silent
+          reccmp-datacmp --target LEMBALL --no-color
+          Pop-Location
+          python tools/generate_objdiff_report.py
 
       - name: Upload progress report
         uses: actions/upload-artifact@v4
@@ -75,5 +76,5 @@ jobs:
           name: LEMBALL_report
           if-no-files-found: error
           path: |
-            build/report.json
-            build/reccmp-sample.json
+            build-msvc420/report.json
+            build-msvc420/reccmp.json
