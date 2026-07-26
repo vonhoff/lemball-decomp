@@ -9,33 +9,17 @@ The game is not yet functional and remains under active development. The primary
 
 ## Start an AI worker
 
-Choose an available claim. Edit only first two lines:
+Coordinator assigns an available range. Edit only first two lines:
 
 ```text
-OWNER: deepseek-01
-RANGE: text-042
+set OWNER=vonhoff
+set RANGE=text-042
 
-Read AGENTS.md. Treat values above as assignment; never choose another range.
-Build and run reccmp, claim assigned range, commit claim plus baseline alone,
-then view brief.
-Use Ghidra MCP plus reccmp to make at least one previously non-exact function
-100%, then continue other assigned functions. Edit only bodies whose original
-entry lies in assigned range. Record every attempt with claims.py status.
-Never mark matched below 100%.
-
-Inspect out-of-range callees, but never edit them. Record blocking cross-range
-work with claims.py dependency. Use ABI lease for shared declarations, vtables,
-inheritance, or globals. Before handoff, rebuild, refresh reccmp.json, run
-claims.py verify for assigned claim, claims.py check, and unit tests. Leave
-notes precise enough for another worker to resume. Keep claim active until
-merge; release it afterward.
+Read AGENTS.md and execute its workflow for %RANGE% as %OWNER%. Range is
+assigned; never choose or edit another. Use Ghidra MCP and reccmp. Make at
+least one previously non-exact function 100% using C/C++ only. Record every
+attempt and blocker. Keep claim active for handoff. Communicate tersely.
 ```
-
-## Development Status
-
-This project is still highly experimental and is currently developed largely with the assistance of AI tools. Expect frequent changes, incomplete implementations, rough edges, and code that still requires manual review and verification.
-
-The issue tracker and pull requests are temporarily disabled while the project is still in this early stage. I plan to reopen them once the codebase is more stable and I have a better established workflow for handling contributions, bug reports, and technical discussions.
 
 ## Legal
 

@@ -1,0 +1,8 @@
+* text=auto eol=lf
+*.cpp text eol=crlf
+*.h text eol=crlf
+*.rc text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.md text eol=crlf
+*.gpg binary

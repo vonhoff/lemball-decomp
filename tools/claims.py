@@ -30,6 +30,7 @@ CLAIM_ROW = re.compile(r"^\| (text-\d{3}) \|")
 ANNOTATION = re.compile(
     r"^\s*// (FUNCTION|STUB|GLOBAL|VTABLE): LEMBALL (0x[0-9a-fA-F]{8})"
 )
+ASSEMBLY = re.compile(r"\b(?:__asm|_asm)\b|__declspec\s*\(\s*naked\s*\)")
 
 
 def address(value):
@@ -48,7 +49,6 @@ def paths(root):
         "ranges": root / "data" / "work-ranges.csv",
         "status": root / "data" / "function-status",
         "dependencies": root / "data" / "dependencies",
-        "edges": root / "data" / "function-edges.csv",
         "claims": root / "CLAIMS.md",
         "abi": root / "claims" / "abi",
     }
@@ -74,40 +74,6 @@ def read_ranges(path):
     return rows
 
 
-def build_ranges(inventory, functions_per_range=64, bytes_per_range=4096):
-    result = []
-    index = 0
-    while index < len(inventory):
-        functions = []
-        byte_count = 0
-        while index + len(functions) < len(inventory):
-            function = inventory[index + len(functions)]
-            functions.append(function)
-            byte_count += function["size_int"]
-            if (
-                len(functions) >= functions_per_range
-                or byte_count >= bytes_per_range
-            ):
-                break
-        next_index = index + len(functions)
-        end = (
-            inventory[next_index]["address_int"]
-            if next_index < len(inventory)
-            else functions[-1]["address_int"] + functions[-1]["size_int"]
-        )
-        result.append(
-            {
-                "id": f"text-{len(result) + 1:03d}",
-                "start": hex_address(functions[0]["address_int"]),
-                "end": hex_address(end),
-                "function_count": len(functions),
-                "code_bytes": sum(row["size_int"] for row in functions),
-            }
-        )
-        index = next_index
-    return result
-
-
 def write_csv(path, fieldnames, rows):
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as stream:
@@ -116,66 +82,15 @@ def write_csv(path, fieldnames, rows):
         writer.writerows(rows)
 
 
-def create_catalog(root, functions_per_range, bytes_per_range, force=False):
-    project = paths(root)
-    if not force and (project["ranges"].exists() or project["claims"].exists()):
-        raise SystemExit("range catalog exists; pass --force to replace it")
-    rows = build_ranges(
-        read_inventory(project["inventory"]), functions_per_range, bytes_per_range
-    )
-    write_csv(
-        project["ranges"],
-        ["id", "start", "end", "function_count", "code_bytes"],
-        rows,
-    )
-    write_claims_page(project["claims"], rows)
-    print(f"wrote {len(rows)} ranges")
-
-
-def write_claims_page(path, ranges):
-    lines = [
-        "# Active claims",
-        "",
-        "Claim a range before starting so two people or AI sessions do not grind",
-        "the same functions. Keep one active code range per worker. Commit a claim",
-        "alone before source work. Mark it released when done or stopped.",
-        "",
-        "Ranges are stable half-open intervals. Function ownership follows entry",
-        "address. Shared class, vtable, inheritance, and global edits also require",
-        "an address-anchored ABI lease through `tools/claims.py take-abi`.",
-        "Cross-range calls never widen ownership; record blockers through",
-        "`tools/claims.py dependency` for coordinator routing.",
-        "",
-        "## Code ranges",
-        "",
-        "| Range | Addresses | Functions | Who | Claimed | Status |",
-        "|---|---|---:|---|---|---|",
-    ]
-    lines.extend(
-        f"| {row['id']} | {row['start']}..{row['end']} | "
-        f"{row['function_count']} |  |  | available |"
-        for row in ranges
-    )
-    lines.extend(
-        [
-            "",
-            "Statuses: `available`, `active`, `released`. Git history preserves old",
-            "claims. Contact listed worker before taking over a stale active row.",
-            "",
-        ]
-    )
-    path.write_text("\n".join(lines), encoding="utf-8")
-
-
 def read_code_claims(path):
     claims = []
     for number, line in enumerate(path.read_text(encoding="utf-8").splitlines()):
         if not CLAIM_ROW.match(line):
             continue
         fields = [field.strip() for field in line.strip().strip("|").split("|")]
-        if len(fields) != 6:
+        if len(fields) != 5:
             raise SystemExit(f"{path}:{number + 1}: invalid claim row")
-        range_id, addresses, functions, owner, claimed, status = fields
+        range_id, addresses, functions, owner, claimed = fields
         claims.append(
             {
                 "range": range_id,
@@ -183,26 +98,47 @@ def read_code_claims(path):
                 "functions": functions,
                 "owner": owner,
                 "claimed": claimed,
-                "status": status,
                 "line": number,
             }
         )
     return claims
 
 
-def update_code_claim(path, range_id, owner, status):
-    lines = path.read_text(encoding="utf-8").splitlines()
-    claims = {claim["range"]: claim for claim in read_code_claims(path)}
-    if range_id not in claims:
-        raise SystemExit(f"unknown range: {range_id}")
-    claim = claims[range_id]
-    date = now().date().isoformat() if status == "active" else claim["claimed"]
-    who = owner if status == "active" else claim["owner"]
-    lines[claim["line"]] = (
-        f"| {range_id} | {claim['addresses']} | {claim['functions']} | "
-        f"{who} | {date} | {status} |"
+def write_claim_lines(path, lines):
+    path.write_text(
+        "\r\n".join(lines) + "\r\n",
+        encoding="utf-8",
+        newline="",
     )
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def add_code_claim(path, row, owner):
+    lines = path.read_text(encoding="utf-8").splitlines()
+    marker = "|---|---|---:|---|---|"
+    index = lines.index(marker) + 1
+    while index < len(lines) and CLAIM_ROW.match(lines[index]):
+        index += 1
+    lines.insert(
+        index,
+        f"| {row['id']} | {row['start']}..{row['end']} | "
+        f"{row['function_count']} | {owner} | {now().date().isoformat()} |",
+    )
+    write_claim_lines(path, lines)
+
+
+def remove_code_claim(path, range_id, owner):
+    lines = path.read_text(encoding="utf-8").splitlines()
+    claim = next(
+        (item for item in read_code_claims(path) if item["range"] == range_id),
+        None,
+    )
+    if not claim:
+        raise SystemExit(f"not claimed: {range_id}")
+    if claim["owner"] != owner:
+        raise SystemExit(f"claim belongs to {claim['owner']}")
+    lines.pop(claim["line"])
+    write_claim_lines(path, lines)
+    print(f"released {range_id}")
 
 
 def load_abi_claims(directory):
@@ -232,18 +168,14 @@ def git_head(root):
     return result.stdout.strip() if result.returncode == 0 else "unknown"
 
 
-def write_claim(path, kind, owner, root, range_id=None, anchor=None):
-    created = now()
+def write_abi_claim(path, owner, root, anchor):
     claim = {
-        "kind": kind,
+        "kind": "abi",
         "owner": owner,
-        "created": created.isoformat(),
+        "created": now().isoformat(),
         "base": git_head(root),
+        "anchor": anchor,
     }
-    if range_id:
-        claim["range"] = range_id
-    if anchor:
-        claim["anchor"] = anchor
     path.parent.mkdir(parents=True, exist_ok=True)
     try:
         with path.open("x", encoding="utf-8") as stream:
@@ -256,29 +188,31 @@ def write_claim(path, kind, owner, root, range_id=None, anchor=None):
 
 def take(root, range_id, owner):
     project = paths(root)
-    ranges = {row["id"] for row in read_ranges(project["ranges"])}
+    ranges = {row["id"]: row for row in read_ranges(project["ranges"])}
     if range_id not in ranges:
         raise SystemExit(f"unknown range: {range_id}")
     claims = read_code_claims(project["claims"])
-    selected = next(claim for claim in claims if claim["range"] == range_id)
-    if selected["status"] == "active":
+    selected = next(
+        (claim for claim in claims if claim["range"] == range_id),
+        None,
+    )
+    if selected:
         raise SystemExit(f"already claimed by {selected['owner']}")
     for claim in claims:
-        if claim["status"] == "active" and claim["owner"] == owner:
+        if claim["owner"] == owner:
             raise SystemExit(f"{owner} already holds {claim['range']}")
     snapshot_status(root, range_id)
-    update_code_claim(project["claims"], range_id, owner, "active")
+    add_code_claim(project["claims"], ranges[range_id], owner)
     print(f"claimed {range_id}")
 
 
 def take_abi(root, anchor, owner):
     normalized = hex_address(address(anchor))
-    write_claim(
+    write_abi_claim(
         paths(root)["abi"] / f"{normalized[2:]}.json",
-        "abi",
         owner,
         root,
-        anchor=normalized,
+        normalized,
     )
 
 
@@ -316,7 +250,7 @@ def claimed_range(root, range_id, owner):
         ),
         None,
     )
-    if not claim or claim["status"] != "active":
+    if not claim:
         raise SystemExit(f"range is not claimed: {range_id}")
     if claim["owner"] != owner:
         raise SystemExit(f"claim belongs to {claim['owner']}")
@@ -383,6 +317,19 @@ def source_states(root):
 
 def match_percentages(root):
     path = root / "build-msvc420" / "reccmp.json"
+    output = root / "build-msvc420" / "LEMBALL.EXE"
+    objects = list(
+        (root / "build-msvc420" / "CMakeFiles" / "LEMBALL.dir").rglob("*.obj")
+    )
+    if objects and (
+        not output.exists()
+        or any(item.stat().st_mtime_ns > output.stat().st_mtime_ns for item in objects)
+    ):
+        raise SystemExit("stale LEMBALL.EXE; run python tools/build_msvc420.py")
+    if output.exists() and (
+        not path.exists() or path.stat().st_mtime_ns < output.stat().st_mtime_ns
+    ):
+        raise SystemExit("stale reccmp.json; rerun reccmp")
     if not path.exists():
         return {}
     try:
@@ -500,13 +447,6 @@ def list_dependencies(root, range_id=None):
         print("no recorded cross-range dependencies")
 
 
-def read_edges(path):
-    if not path.exists():
-        return []
-    with path.open(newline="", encoding="utf-8") as stream:
-        return list(csv.DictReader(stream))
-
-
 def verify_scope(root, range_id, owner):
     project = paths(root)
     claimed_range(root, range_id, owner)
@@ -579,7 +519,6 @@ def brief(root, range_id):
     statuses = read_status(project["status"] / f"{range_id}.csv")
     sources = source_states(root)
     matches = match_percentages(root)
-    ranges = read_ranges(project["ranges"])
     print(
         f"{range_id} {selected['start']}..{selected['end']} "
         f"({selected['function_count']} functions, {selected['code_bytes']} bytes)"
@@ -602,15 +541,6 @@ def brief(root, range_id):
                 f"{row['address']} {row['size']:>5} {ratio} {state:<13} "
                 f"{row['unit']} {row['name']}"
             )
-    outgoing = [
-        edge
-        for edge in read_edges(project["edges"])
-        if owner_range(ranges, edge["from_address"]) == range_id
-        and owner_range(ranges, edge["to_address"]) != range_id
-    ]
-    if outgoing:
-        targets = {owner_range(ranges, edge["to_address"]) for edge in outgoing}
-        print(f"{len(outgoing)} Ghidra cross-range calls into {len(targets)} ranges")
     open_dependencies = [
         row
         for row in read_dependencies(
@@ -629,10 +559,9 @@ def list_work(root, available_only):
     }
     for row in read_ranges(project["ranges"]):
         claim = claims.get(row["id"])
-        active = claim and claim["status"] == "active"
-        if available_only and active:
+        if available_only and claim:
             continue
-        state = f"claimed by {claim['owner']}" if active else "available"
+        state = f"claimed by {claim['owner']}" if claim else "available"
         print(
             f"{row['id']} {row['start']}..{row['end']} "
             f"{row['function_count']:>3} functions {state}"
@@ -698,6 +627,27 @@ def changed_functions(root, base):
     return changed
 
 
+def added_assembly(root, base):
+    result = subprocess.run(
+        ["git", "diff", "--unified=0", base, "--", "src"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode:
+        raise SystemExit(result.stderr.strip() or f"cannot diff {base}")
+    errors = []
+    for line in result.stdout.splitlines():
+        if line.startswith("+++ b/"):
+            suffix = Path(line[6:]).suffix.lower()
+            if suffix in {".asm", ".s"}:
+                errors.append(f"{line[6:]}: external assembly is forbidden")
+        elif line.startswith("+") and not line.startswith("+++") and ASSEMBLY.search(line[1:]):
+            errors.append("new inline assembly is forbidden")
+    return errors
+
+
 def validate(root, base=None):
     project = paths(root)
     inventory = read_inventory(project["inventory"])
@@ -733,8 +683,8 @@ def validate(root, base=None):
     owners = {}
     code_claims = read_code_claims(project["claims"])
     claim_ids = {claim["range"] for claim in code_claims}
-    if claim_ids != ids:
-        errors.append("CLAIMS.md range rows differ from work-ranges.csv")
+    if not claim_ids <= ids:
+        errors.append("CLAIMS.md contains unknown range")
     range_map = {row["id"]: row for row in ranges}
     for claim in code_claims:
         row = range_map.get(claim["range"])
@@ -743,10 +693,6 @@ def validate(root, base=None):
             errors.append(f"{claim['range']}: address text changed")
         if row and claim["functions"] != str(row["function_count_int"]):
             errors.append(f"{claim['range']}: function count text changed")
-        if claim["status"] not in {"available", "active", "released"}:
-            errors.append(f"{claim['range']}: invalid claim status")
-        if claim["status"] != "active":
-            continue
         owner = claim["owner"]
         if not owner or not claim["claimed"]:
             errors.append(f"{claim['range']}: active claim lacks owner or date")
@@ -755,16 +701,12 @@ def validate(root, base=None):
         owners[owner] = claim["range"]
 
     if base:
-        active_ids = {
-            claim["range"]
-            for claim in code_claims
-            if claim["status"] == "active"
-        }
-        active = [row for row in ranges if row["id"] in active_ids]
+        active = [row for row in ranges if row["id"] in claim_ids]
         for function in changed_functions(root, base):
             value = address(function)
             if not any(row["start_int"] <= value < row["end_int"] for row in active):
                 errors.append(f"{function}: changed outside active code claim")
+        errors.extend(added_assembly(root, base))
 
     for claim in load_abi_claims(project["abi"]):
         try:
@@ -830,23 +772,6 @@ def validate(root, base=None):
             if not item.get("notes", "").strip():
                 errors.append(f"{item['from_address']}: dependency lacks notes")
 
-    edge_keys = set()
-    for edge in read_edges(project["edges"]):
-        try:
-            source = hex_address(address(edge["from_address"]))
-            target = hex_address(address(edge["to_address"]))
-        except (KeyError, SystemExit):
-            errors.append(f"{project['edges']}: invalid edge")
-            continue
-        if source not in inventory_addresses or target not in inventory_addresses:
-            errors.append(f"{source}..{target}: edge endpoint absent from inventory")
-        key = (source, target, edge.get("kind"))
-        if key in edge_keys:
-            errors.append(f"{source}..{target}: duplicate edge")
-        edge_keys.add(key)
-        if edge.get("kind") != "call":
-            errors.append(f"{source}..{target}: invalid edge kind")
-
     if errors:
         for error in errors:
             print(error)
@@ -864,17 +789,11 @@ def parser():
     )
     commands = result.add_subparsers(dest="command", required=True)
 
-    create = commands.add_parser("make-ranges")
-    create.add_argument("--functions", type=int, default=64)
-    create.add_argument("--bytes", type=int, default=4096)
-    create.add_argument("--force", action="store_true")
-
     listing = commands.add_parser("list")
     listing.add_argument("--available", action="store_true")
 
-    for name in ("brief",):
-        command = commands.add_parser(name)
-        command.add_argument("range")
+    brief_command = commands.add_parser("brief")
+    brief_command.add_argument("range")
 
     claim = commands.add_parser("take")
     claim.add_argument("range")
@@ -929,9 +848,7 @@ def main():
     args = parser().parse_args()
     root = args.root.resolve()
     project = paths(root)
-    if args.command == "make-ranges":
-        create_catalog(root, args.functions, args.bytes, args.force)
-    elif args.command == "list":
+    if args.command == "list":
         list_work(root, args.available)
     elif args.command == "brief":
         brief(root, args.range)
@@ -940,17 +857,7 @@ def main():
     elif args.command == "take-abi":
         take_abi(root, args.anchor, args.owner)
     elif args.command == "release":
-        claim = next(
-            item
-            for item in read_code_claims(project["claims"])
-            if item["range"] == args.range
-        )
-        if claim["status"] != "active":
-            raise SystemExit(f"not claimed: {args.range}")
-        if claim["owner"] != args.owner:
-            raise SystemExit(f"claim belongs to {claim['owner']}")
-        update_code_claim(project["claims"], args.range, args.owner, "released")
-        print(f"released {args.range}")
+        remove_code_claim(project["claims"], args.range, args.owner)
     elif args.command == "release-abi":
         anchor = hex_address(address(args.anchor))
         release_abi(project["abi"] / f"{anchor[2:]}.json", args.owner)

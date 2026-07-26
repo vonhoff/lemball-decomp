@@ -37,7 +37,6 @@ data/*
 !data/function-status/**
 !data/dependencies/
 !data/dependencies/**
-!data/function-edges.csv
 !data/objdiff-functions.csv
 !data/README.md
 !data/runtime-symbols.csv

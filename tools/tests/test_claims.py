@@ -1,7 +1,11 @@
 import importlib.util
 import json
+import os
 import tempfile
+import time
 import unittest
+from contextlib import redirect_stdout
+from io import StringIO
 from pathlib import Path
 
 
@@ -12,6 +16,11 @@ SPEC.loader.exec_module(claims)
 
 
 class ClaimsTest(unittest.TestCase):
+    def setUp(self):
+        self.redirect = redirect_stdout(StringIO())
+        self.redirect.__enter__()
+        self.addCleanup(self.redirect.__exit__, None, None, None)
+
     def make_project(self):
         temporary = tempfile.TemporaryDirectory()
         root = Path(temporary.name)
@@ -28,14 +37,33 @@ class ClaimsTest(unittest.TestCase):
             encoding="utf-8",
         )
         self.write_matches(root, {"0x00401000": 50, "0x00401004": 100})
-        inventory = claims.read_inventory(root / "data" / "objdiff-functions.csv")
-        ranges = claims.build_ranges(inventory, 2, 100)
+        ranges = [
+            {
+                "id": "text-001",
+                "start": "0x00401000",
+                "end": "0x0040100A",
+                "function_count": 2,
+                "code_bytes": 10,
+            },
+            {
+                "id": "text-002",
+                "start": "0x0040100A",
+                "end": "0x00401014",
+                "function_count": 1,
+                "code_bytes": 10,
+            },
+        ]
         claims.write_csv(
             root / "data" / "work-ranges.csv",
             ["id", "start", "end", "function_count", "code_bytes"],
             ranges,
         )
-        claims.write_claims_page(root / "CLAIMS.md", ranges)
+        (root / "CLAIMS.md").write_text(
+            "# Active claims\n\n"
+            "| Range | Addresses | Functions | Who | Claimed |\n"
+            "|---|---|---:|---|---|\n",
+            encoding="utf-8",
+        )
         return temporary, root
 
     def write_matches(self, root, matches):
@@ -52,7 +80,7 @@ class ClaimsTest(unittest.TestCase):
             encoding="utf-8",
         )
 
-    def test_range_generation_and_validation(self):
+    def test_range_catalog_validation(self):
         temporary, root = self.make_project()
         with temporary:
             ranges = claims.read_ranges(root / "data" / "work-ranges.csv")
@@ -70,6 +98,11 @@ class ClaimsTest(unittest.TestCase):
         ]
         self.assertEqual(claims.annotation_at(lines, 3), "0x00401000")
         self.assertIsNone(claims.annotation_at(lines, 4))
+
+    def test_assembly_patterns_are_forbidden(self):
+        self.assertIsNotNone(claims.ASSEMBLY.search("__asm jmp target"))
+        self.assertIsNotNone(claims.ASSEMBLY.search("__declspec(naked) void f()"))
+        self.assertIsNone(claims.ASSEMBLY.search("return target();"))
 
     def test_source_states_distinguish_work_already_present(self):
         temporary, root = self.make_project()
@@ -119,8 +152,9 @@ class ClaimsTest(unittest.TestCase):
             claims.take(root, "text-001", "worker")
             active = claims.read_code_claims(root / "CLAIMS.md")[0]
             self.assertEqual(active["owner"], "worker")
-            self.assertEqual(active["status"], "active")
             claims.validate(root)
+            claims.remove_code_claim(root / "CLAIMS.md", "text-001", "worker")
+            self.assertEqual(claims.read_code_claims(root / "CLAIMS.md"), [])
 
     def test_verify_requires_new_exact_without_regression(self):
         temporary, root = self.make_project()
@@ -174,6 +208,26 @@ class ClaimsTest(unittest.TestCase):
                 "merged target correction",
             )
             claims.validate(root)
+
+    def test_comparison_rejects_stale_executable(self):
+        temporary, root = self.make_project()
+        with temporary:
+            output = root / "build-msvc420" / "LEMBALL.EXE"
+            obj = (
+                root
+                / "build-msvc420"
+                / "CMakeFiles"
+                / "LEMBALL.dir"
+                / "GAME.CPP.obj"
+            )
+            obj.parent.mkdir(parents=True)
+            output.write_bytes(b"exe")
+            obj.write_bytes(b"obj")
+            timestamp = time.time_ns()
+            os.utime(output, ns=(timestamp, timestamp))
+            os.utime(obj, ns=(timestamp + 2_000_000_000,) * 2)
+            with self.assertRaises(SystemExit):
+                claims.match_percentages(root)
 
 
 if __name__ == "__main__":
