@@ -130,7 +130,37 @@ class ObjdiffReportTests(unittest.TestCase):
         )
         thunk = next(row for row in rows if row["address"] == "0x00401000")
         self.assertEqual(thunk["module"], "ENGINE/NET/OWNER.CPP")
+        self.assertEqual(thunk["ownership_basis"], "thunk_target:0x00402000")
         self.assertFalse(unresolved)
+
+    def test_unimplemented_bodies_use_layout_ownership_evidence(self) -> None:
+        manifest = {
+            0x1000: {"category": "internal", "size": 0x10},
+            0x1020: {"category": "internal", "size": 0x10},
+            0x1080: {"category": "internal", "size": 0x10},
+            0x10A0: {"category": "internal", "size": 0x10},
+        }
+        roadmap = {
+            0x1000: {
+                "module": "A.CPP",
+                "rebuilt_address": "0x2000",
+                "roadmap_name": "Lower",
+                "ownership_basis": "roadmap",
+            },
+            0x10A0: {
+                "module": "B.CPP",
+                "rebuilt_address": "0x2100",
+                "roadmap_name": "Upper",
+                "ownership_basis": "roadmap",
+            },
+        }
+        mappings = inventory.infer_module_ownership(
+            manifest, roadmap, {}, self.source_root, {}
+        )
+        self.assertEqual(mappings[0x1020]["module"], "A.CPP")
+        self.assertEqual(mappings[0x1080]["module"], "B.CPP")
+        self.assertIn("layout_gap_lower", mappings[0x1020]["ownership_basis"])
+        self.assertIn("layout_gap_upper", mappings[0x1080]["ownership_basis"])
 
     def write_manifest(self, functions: list[dict[str, object]]) -> None:
         self.manifest.write_text(
@@ -149,7 +179,14 @@ class ObjdiffReportTests(unittest.TestCase):
             [
                 {"address": "00401000", "name": "Exact", "size": 10, "category": "internal"},
                 {"address": "00401010", "name": "EffectiveOnly", "size": 20, "category": "internal"},
-                {"address": "00401020", "name": "Stub", "size": 30, "category": "thunk"},
+                {
+                    "address": "00401020",
+                    "name": "Stub",
+                    "size": 30,
+                    "category": "thunk",
+                    "is_thunk": True,
+                    "thunk_target": "00401000",
+                },
                 {"address": "00401030", "name": "Unimplemented", "size": 40, "category": "internal"},
                 {"address": "00402000", "name": "Runtime", "size": 50, "category": "runtime"},
                 {"address": "00403000", "name": "Import", "size": 60, "category": "import"},
@@ -192,6 +229,9 @@ class ObjdiffReportTests(unittest.TestCase):
         self.assertEqual(items["EffectiveOnly"]["fuzzy_match_percent"], 50.0)
         self.assertNotIn("fuzzy_match_percent", items["Stub"])
         self.assertNotIn("fuzzy_match_percent", items["Unimplemented"])
+        self.assertFalse(
+            any(unit["metadata"]["module_name"] == "Unassigned" for unit in report["units"])
+        )
 
     def test_aggregate_fuzzy_measure_uses_serialized_function_float32_values(self) -> None:
         functions = [

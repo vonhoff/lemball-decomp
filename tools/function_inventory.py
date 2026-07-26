@@ -6,6 +6,7 @@ from __future__ import annotations
 import csv
 import json
 import re
+from copy import deepcopy
 from pathlib import Path
 
 from reccmp.compare.report import deserialize_reccmp_report
@@ -23,6 +24,9 @@ NETWORK_ADDRESS_RANGES = (
     (0x0045F3B0, 0x00462E5F),
     (0x0046F210, 0x0047204F),
     (0x004794E0, 0x0047C04F),
+)
+DEFAULT_OWNERSHIP_OVERRIDES = (
+    Path(__file__).resolve().parent / "function-ownership-overrides.json"
 )
 
 
@@ -88,8 +92,192 @@ def load_roadmap(path: Path) -> dict[int, dict[str, str]]:
             "module": source_path_from_module(row.get("module", "")) or "Unassigned",
             "rebuilt_address": row.get("recomp_addr", ""),
             "roadmap_name": row.get("name", ""),
+            "ownership_basis": "roadmap",
         }
     return functions
+
+
+def load_ownership_overrides(path: Path | None) -> dict[int, dict[str, str]]:
+    if path is None or not path.exists():
+        return {}
+    document = json.loads(path.read_text(encoding="utf-8"))
+    if document.get("schema_version") != 1:
+        raise SystemExit(f"unsupported ownership override schema: {path}")
+    overrides: dict[int, dict[str, str]] = {}
+    for index, row in enumerate(document.get("entries", []), start=1):
+        address = int(row["address"], 16)
+        module = source_path_from_module(row.get("module", ""))
+        evidence = row.get("evidence", "").strip()
+        if address in overrides:
+            raise SystemExit(f"duplicate ownership override {path}: entry {index}")
+        if not module.upper().endswith(".CPP") or not evidence:
+            raise SystemExit(f"incomplete ownership override {path}: entry {index}")
+        overrides[address] = {
+            "module": module,
+            "rebuilt_address": "",
+            "roadmap_name": "",
+            "ownership_basis": f"override:{evidence}",
+        }
+    return overrides
+
+
+def source_marker_module(
+    markers: list[dict[str, object]], source_root: Path
+) -> str | None:
+    modules = {
+        Path(str(marker["path"])).resolve().relative_to(source_root.resolve()).as_posix()
+        for marker in markers
+        if marker["kind"] != "LIBRARY"
+    }
+    if len(modules) > 1:
+        raise SystemExit(f"conflicting source-marker modules: {sorted(modules)}")
+    return next(iter(modules), None)
+
+
+def infer_module_ownership(
+    manifest_functions: dict[int, dict[str, object]],
+    roadmap: dict[int, dict[str, str]],
+    source_markers: dict[int, list[dict[str, object]]],
+    source_root: Path,
+    overrides: dict[int, dict[str, str]],
+) -> dict[int, dict[str, str]]:
+    """Fill original module ownership from explicit anchors and code layout."""
+
+    mappings = deepcopy(roadmap)
+    for address, markers in source_markers.items():
+        module = source_marker_module(markers, source_root)
+        if module is None:
+            continue
+        mapping = mappings.get(address)
+        if mapping is None or mapping.get("module") == "Unassigned":
+            mappings[address] = {
+                "module": module,
+                "rebuilt_address": "",
+                "roadmap_name": "",
+                "ownership_basis": "source_marker",
+            }
+
+    for address, override in overrides.items():
+        function = manifest_functions.get(address)
+        if function is None or function.get("category") not in REPORTABLE_CATEGORIES:
+            raise SystemExit(f"ownership override has no reportable entity 0x{address:08X}")
+        existing = mappings.get(address)
+        if existing is not None and existing.get("module") not in {
+            "Unassigned",
+            override["module"],
+        }:
+            raise SystemExit(f"ownership override conflicts at 0x{address:08X}")
+        mappings[address] = override
+
+    internal_addresses = sorted(
+        address
+        for address, function in manifest_functions.items()
+        if function.get("category") == "internal"
+    )
+    anchors = [
+        address
+        for address in internal_addresses
+        if mappings.get(address, {}).get("module", "Unassigned") != "Unassigned"
+    ]
+    if internal_addresses and not anchors:
+        return mappings
+
+    anchor_set = set(anchors)
+    unresolved_bodies = [
+        address for address in internal_addresses if address not in anchor_set
+    ]
+    for address in unresolved_bodies:
+        lower = next((anchor for anchor in reversed(anchors) if anchor < address), None)
+        upper = next((anchor for anchor in anchors if anchor > address), None)
+        if lower is None or upper is None:
+            anchor = upper if lower is None else lower
+            assert anchor is not None
+            mappings[address] = {
+                "module": mappings[anchor]["module"],
+                "rebuilt_address": "",
+                "roadmap_name": "",
+                "ownership_basis": f"layout_one_sided:0x{anchor:08X}",
+            }
+
+    bounded = [
+        address
+        for address in unresolved_bodies
+        if mappings.get(address, {}).get("module", "Unassigned") == "Unassigned"
+    ]
+    by_gap: dict[tuple[int, int], list[int]] = {}
+    for address in bounded:
+        lower = next(anchor for anchor in reversed(anchors) if anchor < address)
+        upper = next(anchor for anchor in anchors if anchor > address)
+        by_gap.setdefault((lower, upper), []).append(address)
+
+    for (lower, upper), addresses in by_gap.items():
+        lower_module = mappings[lower]["module"]
+        upper_module = mappings[upper]["module"]
+        if lower_module == upper_module:
+            for address in addresses:
+                mappings[address] = {
+                    "module": lower_module,
+                    "rebuilt_address": "",
+                    "roadmap_name": "",
+                    "ownership_basis": (
+                        f"layout_same_flanks:0x{lower:08X}/0x{upper:08X}"
+                    ),
+                }
+            continue
+
+        sequence = [lower, *addresses, upper]
+        gaps: list[tuple[int, int, int]] = []
+        midpoint = (lower + upper) // 2
+        for index, (left, right) in enumerate(zip(sequence, sequence[1:])):
+            left_size = int(manifest_functions[left]["size"])
+            padding = max(0, right - (left + left_size))
+            boundary_distance = abs(((left + right) // 2) - midpoint)
+            gaps.append((padding, -boundary_distance, index))
+        _, _, split_index = max(gaps)
+        split_after = sequence[split_index]
+        for address in addresses:
+            use_lower = address <= split_after
+            mappings[address] = {
+                "module": lower_module if use_lower else upper_module,
+                "rebuilt_address": "",
+                "roadmap_name": "",
+                "ownership_basis": (
+                    f"layout_gap_{'lower' if use_lower else 'upper'}:"
+                    f"0x{lower:08X}/0x{upper:08X}@0x{split_after:08X}"
+                ),
+            }
+
+    unresolved_thunks = {
+        address
+        for address, function in manifest_functions.items()
+        if function.get("category") == "thunk"
+        and mappings.get(address, {}).get("module", "Unassigned") == "Unassigned"
+    }
+    while unresolved_thunks:
+        progress = False
+        for address in list(unresolved_thunks):
+            function = manifest_functions[address]
+            target_value = function.get("thunk_target")
+            if not target_value:
+                continue
+            target = int(str(target_value), 16)
+            target_mapping = mappings.get(target)
+            if (
+                target_mapping is None
+                or target_mapping.get("module", "Unassigned") == "Unassigned"
+            ):
+                continue
+            mappings[address] = {
+                "module": target_mapping["module"],
+                "rebuilt_address": "",
+                "roadmap_name": "",
+                "ownership_basis": f"thunk_target:0x{target:08X}",
+            }
+            unresolved_thunks.remove(address)
+            progress = True
+        if not progress:
+            break
+    return mappings
 
 
 def scan_source_markers(source_root: Path, target: str) -> dict[int, list[dict[str, object]]]:
@@ -166,6 +354,7 @@ def reconcile_inventory(
     runtime_symbols_path: Path,
     target: str = "LEMBALL",
     native_report: object | None = None,
+    ownership_overrides_path: Path | None = None,
 ) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
     manifest, manifest_functions = load_manifest(manifest_path, target)
     native = (
@@ -185,6 +374,13 @@ def reconcile_inventory(
     roadmap = load_roadmap(roadmap_path)
     source_markers = scan_source_markers(source_root, target)
     runtime_symbols = load_runtime_symbols(runtime_symbols_path)
+    roadmap = infer_module_ownership(
+        manifest_functions,
+        roadmap,
+        source_markers,
+        source_root,
+        load_ownership_overrides(ownership_overrides_path),
+    )
 
     rows: list[dict[str, object]] = []
     unresolved: list[dict[str, object]] = []
@@ -194,32 +390,6 @@ def reconcile_inventory(
         mapping = roadmap.get(address, {})
         markers = source_markers.get(address, [])
         category = "" if function is None else str(function.get("category", ""))
-        if (
-            category == "thunk"
-            and str(mapping.get("module", "Unassigned")) == "Unassigned"
-            and function is not None
-            and function.get("thunk_target")
-        ):
-            target = int(str(function["thunk_target"]), 16)
-            visited = {address}
-            while target not in visited:
-                visited.add(target)
-                target_mapping = roadmap.get(target, {})
-                if str(target_mapping.get("module", "Unassigned")) != "Unassigned":
-                    mapping = {
-                        "module": target_mapping["module"],
-                        "rebuilt_address": "",
-                        "roadmap_name": target_mapping.get("roadmap_name", ""),
-                    }
-                    break
-                target_function = manifest_functions.get(target)
-                if (
-                    target_function is None
-                    or target_function.get("category") != "thunk"
-                    or not target_function.get("thunk_target")
-                ):
-                    break
-                target = int(str(target_function["thunk_target"]), 16)
         runtime_symbol = runtime_symbols.get(address)
         resolution = ""
         problem = False
@@ -253,12 +423,14 @@ def reconcile_inventory(
             resolution = "unknown_manifest_category"
             problem = True
 
-        if (
-            category in REPORTABLE_CATEGORIES
-            and str(mapping.get("module", "Unassigned")) == "Unassigned"
-            and network_owned(address, function, markers)
-        ):
-            resolution = "network_entity_unassigned"
+        if category in REPORTABLE_CATEGORIES and str(
+            mapping.get("module", "Unassigned")
+        ) == "Unassigned":
+            resolution = (
+                "network_entity_unassigned"
+                if network_owned(address, function, markers)
+                else "reportable_entity_unassigned"
+            )
             problem = True
 
         row = {
@@ -276,6 +448,7 @@ def reconcile_inventory(
                 "" if match is None else f"{float(match.accuracy):.9g}"
             ),
             "module": str(mapping.get("module", "Unassigned")),
+            "ownership_basis": str(mapping.get("ownership_basis", "")),
             "rebuilt_address": str(mapping.get("rebuilt_address", "")),
             "resolution_reason": resolution,
         }
@@ -296,6 +469,7 @@ def write_inventory_csv(path: Path, rows: list[dict[str, object]]) -> None:
         "is_stub",
         "raw_accuracy",
         "module",
+        "ownership_basis",
         "rebuilt_address",
         "resolution_reason",
     ]

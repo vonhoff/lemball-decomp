@@ -7,7 +7,11 @@ import argparse
 from collections import Counter
 from pathlib import Path
 
-from function_inventory import reconcile_inventory, write_inventory_csv
+from function_inventory import (
+    DEFAULT_OWNERSHIP_OVERRIDES,
+    reconcile_inventory,
+    write_inventory_csv,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,6 +25,9 @@ def main() -> int:
     parser.add_argument("--roadmap", type=Path, default=ROOT / "build" / "reccmp-roadmap.csv")
     parser.add_argument("--source-root", type=Path, default=ROOT / "src")
     parser.add_argument("--runtime-symbols", type=Path, default=ROOT / "data" / "runtime-symbols.csv")
+    parser.add_argument(
+        "--ownership-overrides", type=Path, default=DEFAULT_OWNERSHIP_OVERRIDES
+    )
     parser.add_argument("--output", type=Path, default=ROOT / "build" / "function-inventory.csv")
     args = parser.parse_args()
 
@@ -42,6 +49,7 @@ def main() -> int:
         args.source_root,
         args.runtime_symbols,
         args.target,
+        ownership_overrides_path=args.ownership_overrides,
     )
     write_inventory_csv(args.output, rows)
     reasons = Counter(str(row["resolution_reason"]) for row in unresolved)

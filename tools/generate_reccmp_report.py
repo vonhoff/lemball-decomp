@@ -29,6 +29,7 @@ DEFAULT_ROADMAP = Path("build/reccmp-roadmap.csv")
 DEFAULT_OUTPUT = Path("build/report.json")
 DEFAULT_SOURCE_ROOT = Path("src")
 DEFAULT_RUNTIME_SYMBOLS = Path("data/runtime-symbols.csv")
+DEFAULT_OWNERSHIP_OVERRIDES = Path("tools/function-ownership-overrides.json")
 DEFAULT_INVENTORY_OUTPUT = Path("build/function-inventory.csv")
 TEXT_VIRTUAL_ADDRESS = 0x401000
 
@@ -168,6 +169,7 @@ def load_functions(
     source_root: Path = DEFAULT_SOURCE_ROOT,
     runtime_symbols_path: Path = DEFAULT_RUNTIME_SYMBOLS,
     inventory_output: Path | None = None,
+    ownership_overrides_path: Path | None = None,
 ) -> list[dict[str, object]]:
     native = deserialize_reccmp_report(reccmp_path.read_text(encoding="utf-8"))
     inventory, unresolved = reconcile_inventory(
@@ -178,6 +180,7 @@ def load_functions(
         runtime_symbols_path,
         TARGET_NAME,
         native,
+        ownership_overrides_path,
     )
     if inventory_output is not None:
         write_inventory_csv(inventory_output, inventory)
@@ -206,7 +209,11 @@ def load_functions(
         for entity in native.entities.values()
         if entity.orig_addr and entity.type in (None, EntityType.FUNCTION)
     }
-    modules = load_modules(roadmap_path)
+    modules = {
+        int(str(row["address"]), 16): str(row["module"])
+        for row in inventory
+        if str(row["manifest_category"]) in INCLUDED_CATEGORIES
+    }
     functions: list[dict[str, object]] = []
     seen: set[int] = set()
     for entry in manifest["functions"]:
@@ -257,6 +264,7 @@ def build_report(
     source_root: Path = DEFAULT_SOURCE_ROOT,
     runtime_symbols_path: Path = DEFAULT_RUNTIME_SYMBOLS,
     inventory_output: Path | None = None,
+    ownership_overrides_path: Path | None = None,
 ) -> dict[str, object]:
     functions = load_functions(
         manifest_path,
@@ -265,6 +273,7 @@ def build_report(
         source_root,
         runtime_symbols_path,
         inventory_output,
+        ownership_overrides_path,
     )
     grouped: dict[str, list[dict[str, object]]] = defaultdict(list)
     for function in functions:
@@ -297,6 +306,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--source-root", type=Path, default=DEFAULT_SOURCE_ROOT)
     parser.add_argument("--runtime-symbols", type=Path, default=DEFAULT_RUNTIME_SYMBOLS)
+    parser.add_argument(
+        "--ownership-overrides", type=Path, default=DEFAULT_OWNERSHIP_OVERRIDES
+    )
     parser.add_argument("--inventory-output", type=Path, default=DEFAULT_INVENTORY_OUTPUT)
     return parser.parse_args()
 
@@ -319,6 +331,7 @@ def main() -> int:
         args.source_root,
         args.runtime_symbols,
         args.inventory_output,
+        args.ownership_overrides,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
@@ -339,6 +352,7 @@ def main() -> int:
             args.roadmap,
             args.source_root,
             args.runtime_symbols,
+            ownership_overrides_path=args.ownership_overrides,
         )
     )
     print(

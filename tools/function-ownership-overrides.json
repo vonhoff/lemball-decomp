@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "address": "004015CD",
+      "module": "LEVEL/LEVELVT.CPP",
+      "evidence": "sole original xref at 0x00413110 lies in level-mode function cluster"
+    }
+  ]
+}
