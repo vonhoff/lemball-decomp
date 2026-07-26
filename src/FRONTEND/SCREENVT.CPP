@@ -60,8 +60,23 @@ void noop_resource_window_owner_callback_0043a1c0(void)
 {
 }
 
+// FUNCTION: LEMBALL 0x0043a4d0
+void noop_window_owner_slot_18(void)
+{
+}
+
+// FUNCTION: LEMBALL 0x0043a4e0
+void noop_window_owner_slot_21(void)
+{
+}
+
 // FUNCTION: LEMBALL 0x0043a4f0
 void PASCAL noop_frontend_window_owner_slot_22(void*)
+{
+}
+
+// FUNCTION: LEMBALL 0x0043a500
+void noop_window_owner_slot_23(void)
 {
 }
 

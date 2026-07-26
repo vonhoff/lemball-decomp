@@ -155,6 +155,7 @@ struct LevelModeChunkEntryArrayView {
 	int m_anArray100[4];
 
 	void CopyTripletToFixedPoint(int* pOutput, int nIndex);
+	void CopyTripletToFixedPointThunk(int* pOutput, int nIndex);
 };
 
 struct LevelManagedEntityPositionView {
@@ -385,10 +386,9 @@ int LevelManagedEntityDirtyStateView::PollChildDirtyFlagThunk(void)
 }
 
 // FUNCTION: LEMBALL 0x004015CD
-void __fastcall CopyTripletToFixedPointThunk(LevelModeChunkEntryArrayView* pThis, void* pUnused, int* pOutput, int nIndex)
+void LevelModeChunkEntryArrayView::CopyTripletToFixedPointThunk(int* pOutput, int nIndex)
 {
-	(void)pUnused;
-	pThis->CopyTripletToFixedPoint(pOutput, nIndex);
+	CopyTripletToFixedPoint(pOutput, nIndex);
 }
 
 // FUNCTION: LEMBALL 0x0040161d

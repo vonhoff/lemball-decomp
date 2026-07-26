@@ -54,6 +54,31 @@ int __stdcall GetPrimaryContextMenuDefinition(unsigned int* pMenuId, void** ppMe
 	return 1;
 }
 
+// FUNCTION: LEMBALL 0x004324C0
+void noop_window_owner_slot_37(void)
+{
+}
+
+// FUNCTION: LEMBALL 0x004324F0
+void noop_window_owner_slot_19(void)
+{
+}
+
+// FUNCTION: LEMBALL 0x00432500
+void noop_window_owner_slot_20(void)
+{
+}
+
+// FUNCTION: LEMBALL 0x00432510
+void noop_window_owner_slot_38(void)
+{
+}
+
+// FUNCTION: LEMBALL 0x00432520
+void noop_window_owner_slot_39(void)
+{
+}
+
 // FUNCTION: LEMBALL 0x00432530
 void GamePrimaryContext::MarkNestedContextDirtyIfField20(void)
 {
