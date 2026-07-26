@@ -148,6 +148,15 @@ struct LevelThreeDwordPointVariantB {
 	LevelThreeDwordPointVariantB* CopyThunk(const LevelThreeDwordPointVariantB* pSource);
 };
 
+struct LevelModeChunkEntryArrayView {
+	char m_abReserved00[0xE0];
+	int m_anArrayE0[4];
+	int m_anArrayF0[4];
+	int m_anArray100[4];
+
+	void CopyTripletToFixedPoint(int* pOutput, int nIndex);
+};
+
 struct LevelManagedEntityPositionView {
 	void* m_pVtable00;
 	LevelThreeDwordPoint m_WorldPosition04;
@@ -373,6 +382,13 @@ void __fastcall ClearManagedEntityMoveCommandsThunk(void* pEntity)
 int LevelManagedEntityDirtyStateView::PollChildDirtyFlagThunk(void)
 {
 	return PollChildDirtyFlag();
+}
+
+// FUNCTION: LEMBALL 0x004015CD
+void __fastcall CopyTripletToFixedPointThunk(LevelModeChunkEntryArrayView* pThis, void* pUnused, int* pOutput, int nIndex)
+{
+	(void)pUnused;
+	pThis->CopyTripletToFixedPoint(pOutput, nIndex);
 }
 
 // FUNCTION: LEMBALL 0x0040161d
@@ -1295,6 +1311,14 @@ LevelManagedEntityChildIterator* LevelManagedEntityActiveGroupView::GetFirstActi
 		}
 	}
 	return 0;
+}
+
+// FUNCTION: LEMBALL 0x00418BA0
+void LevelModeChunkEntryArrayView::CopyTripletToFixedPoint(int* pOutput, int nIndex)
+{
+	pOutput[0] = m_anArrayE0[nIndex] << 12;
+	pOutput[1] = m_anArrayF0[nIndex] << 12;
+	pOutput[2] = m_anArray100[nIndex] << 12;
 }
 
 // FUNCTION: LEMBALL 0x00419b00
