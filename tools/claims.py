@@ -42,6 +42,22 @@ def write_claim(path, selected, owner):
     path.write_text("\r\n".join(lines) + "\r\n", encoding="utf-8", newline="")
 
 
+def remove_claim(path, owner):
+    lines = path.read_text(encoding="utf-8").splitlines()
+    retained = []
+    removed = False
+    for line in lines:
+        if CLAIM_ROW.match(line):
+            fields = [field.strip() for field in line.strip("|").split("|")]
+            if len(fields) == 5 and fields[3] == owner:
+                removed = True
+                continue
+        retained.append(line)
+    if not removed:
+        raise SystemExit(f"{owner} has no active claim")
+    path.write_text("\r\n".join(retained) + "\r\n", encoding="utf-8", newline="")
+
+
 @contextmanager
 def claim_lock(root):
     path = root / "build-msvc420" / "claims.lock"
@@ -145,12 +161,53 @@ def start(root, owner):
             print(f"  {notes[row['address']]}")
 
 
+def check(root, base=None):
+    del base
+    ranges = {row["id"] for row in read_csv(root / "data" / "work-ranges.csv")}
+    active = claims(root / "CLAIMS.md")
+    seen_ranges = set()
+    seen_owners = set()
+    for claim in active:
+        if claim["range"] not in ranges:
+            raise SystemExit(f"unknown claimed range: {claim['range']}")
+        if claim["range"] in seen_ranges:
+            raise SystemExit(f"range claimed more than once: {claim['range']}")
+        if claim["owner"] in seen_owners:
+            raise SystemExit(f"owner has multiple claims: {claim['owner']}")
+        seen_ranges.add(claim["range"])
+        seen_owners.add(claim["owner"])
+    print(f"claims valid ({len(active)} active)")
+
+
+def release(root, owner):
+    owner = owner.strip()
+    if not owner:
+        raise SystemExit("owner is required")
+    with claim_lock(root):
+        remove_claim(root / "CLAIMS.md", owner)
+    print(f"released claim for {owner}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Claim or resume one decompilation range")
-    parser.add_argument("owner")
+    parser.add_argument("command_or_owner")
+    parser.add_argument("owner", nargs="?")
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument("--base")
     args = parser.parse_args()
-    start(args.root.resolve(), args.owner)
+    root = args.root.resolve()
+    if args.command_or_owner == "check":
+        if args.owner:
+            raise SystemExit("check does not accept an owner")
+        check(root, args.base)
+    elif args.command_or_owner == "release":
+        if not args.owner:
+            raise SystemExit("release requires an owner")
+        release(root, args.owner)
+    elif args.owner:
+        raise SystemExit("unexpected extra argument")
+    else:
+        start(root, args.command_or_owner)
 
 
 if __name__ == "__main__":

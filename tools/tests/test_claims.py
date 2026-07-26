@@ -100,6 +100,14 @@ class ClaimsTest(unittest.TestCase):
             active = claims.claims(root / "CLAIMS.md")
             self.assertEqual({row["range"] for row in active}, {"text-001", "text-002"})
 
+    def test_check_and_release(self):
+        temporary, root = self.make_project()
+        with temporary, redirect_stdout(StringIO()):
+            claims.start(root, "worker")
+            claims.check(root)
+            claims.release(root, "worker")
+            self.assertEqual(claims.claims(root / "CLAIMS.md"), [])
+
 
 if __name__ == "__main__":
     unittest.main()

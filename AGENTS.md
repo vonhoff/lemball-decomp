@@ -5,9 +5,15 @@ MSVC 4.20, Ghidra, and reccmp.
 
 ## Start
 
-Run `python tools\claims.py OWNER`. It claims or resumes one range and prints
-every unfinished function. Work anywhere inside that range. Keep claim until
-work is merged; coordinator removes completed claim from `CLAIMS.md`.
+Coordinator creates each worker with `python tools\create_worker_worktree.py OWNER`
+from clean integration checkout. This claims range, commits `CLAIMS.md`, creates
+`codex/OWNER` worktree beside repository, prints assigned range. Agent works only
+in that worktree; do not run `claims.py OWNER` from worker checkout. Keep claim
+until coordinator merges worker commit, verifies integration build, then runs
+`python tools\claims.py release OWNER` and commits release.
+
+For single-worker local work only, `python tools\claims.py OWNER` claims or
+resumes one range and prints unfinished functions.
 
 Original entry address owns function. Inspect callers and callees anywhere,
 but do not edit an out-of-range function. If local match needs such an edit,
@@ -47,5 +53,7 @@ Pop-Location
 ```
 
 100% reccmp result is only completion evidence. Before handoff, update useful
-blocker or next-step notes in `data/function-status/<range>.csv`, rerun checks,
-and commit source, notes, and claim together.
+blocker or next-step notes in `data/function-status/<range>.csv`, rerun checks
+available in worker worktree, commit source and notes. Coordinator runs full
+integration build/reccmp before releasing claim. Never share uncommitted edits
+between worker worktrees.

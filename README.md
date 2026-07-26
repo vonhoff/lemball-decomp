@@ -3,18 +3,28 @@
 Work-in-progress reconstruction of 1996 Win32 `LEMBALL.EXE`, built with MSVC
 4.20 and compared against original binary with reccmp.
 
-## Start agent
+## Concurrent workers
 
-Change only owner:
+Coordinator creates isolated worker checkout from clean integration branch:
 
-```text
-set OWNER=codex-01
-
-Read AGENTS.md. Run `python tools\claims.py %OWNER%`, then work only returned
-range. Use Ghidra MCP and reccmp to make as many functions 100% as practical.
-Use C/C++ only; no assembly. Follow build, measurement, dependency, and handoff
-rules in AGENTS.md. Keep claim active when handing off.
+```powershell
+python tools\create_worker_worktree.py codex-01
 ```
+
+Worker changes into printed worktree, reads `AGENTS.md`, works only claimed
+range, commits source and `data/function-status` notes. Do not edit another
+worker's checkout or run full shared-worktree builds.
+
+Coordinator reviews and merges worker branch, runs full build/reccmp, then:
+
+```powershell
+python tools\claims.py release codex-01
+git add CLAIMS.md
+git commit -m "Release codex-01 claim"
+```
+
+`python tools\claims.py check` validates ledger in CI and before coordinator
+integration. `claims.py OWNER` remains available for one-off local work.
 
 ## Setup
 
