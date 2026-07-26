@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Print next unfinished decompilation range."""
+"""Print next likely decompilation targets."""
 
 import csv
 import json
@@ -25,26 +25,28 @@ def matches(root):
     }
 
 
+def rank(functions, ratios):
+    return sorted(
+        (row for row in functions if ratios.get(row["address"], 0) != 100),
+        key=lambda row: (int(row["size"]) > 5, int(row["size"]), ratios.get(row["address"], 0), row["address"]),
+    )
+
+
 def main():
     ratios = matches(ROOT)
-    functions = rows(ROOT / "data" / "objdiff-functions.csv")
-    for work_range in rows(ROOT / "data" / "work-ranges.csv"):
-        start, end = int(work_range["start"], 16), int(work_range["end"], 16)
-        status = ROOT / "data" / "function-status" / f"{work_range['id']}.csv"
-        notes = {row["address"]: row.get("notes", "") for row in rows(status)} if status.exists() else {}
-        pending = [
-            row for row in functions
-            if start <= int(row["address"], 16) < end and ratios.get(row["address"]) != 100
-        ]
-        if pending:
-            print(f"next {work_range['id']} {work_range['start']}..{work_range['end']}")
-            for row in pending:
-                ratio = ratios.get(row["address"])
-                print(f"{row['address']} {'-' if ratio is None else f'{ratio:.2f}%'} {row['unit']} {row['name']}")
-                if notes.get(row["address"]):
-                    print(f"  {notes[row['address']]}")
-            return
-    print("all ranges complete")
+    notes = {}
+    for path in (ROOT / "data" / "function-status").glob("*.csv"):
+        notes.update({row["address"]: row.get("notes", "") for row in rows(path)})
+    targets = rank(rows(ROOT / "data" / "objdiff-functions.csv"), ratios)[:10]
+    if not targets:
+        print("all functions complete")
+        return
+    print("next targets")
+    for row in targets:
+        ratio = ratios.get(row["address"])
+        print(f"{row['address']} {row['size']}B {'-' if ratio is None else f'{ratio:.2f}%'} {row['unit']} {row['name']}")
+        if notes.get(row["address"]):
+            print(f"  {notes[row['address']]}")
 
 
 if __name__ == "__main__":

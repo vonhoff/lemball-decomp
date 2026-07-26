@@ -5,13 +5,12 @@ MSVC 4.20, Ghidra, and reccmp.
 
 ## Start
 
-Run `python tools\coordinator.py` to select next range. One agent edits and
-builds in this checkout at a time. Commit source and status notes before next
-editing agent begins.
+Run `python tools\coordinator.py` to select next targets. Work first viable
+target. One agent edits and builds in this checkout at a time. Commit source and
+status notes before next editing agent begins.
 
-Original entry address owns function. Inspect callers and callees anywhere,
-but do not edit outside coordinator range. If local match needs such an edit,
-record address and evidence in range CSV under `data/function-status/`, then
+Original entry address owns function. Inspect callers and callees anywhere. If
+local match needs another edit, record address and evidence in status CSV, then
 leave it for later. Coordinate before changing shared class layouts,
 inheritance, vtables, or globals.
 
