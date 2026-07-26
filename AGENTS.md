@@ -5,16 +5,30 @@ MSVC 4.20, Ghidra, and reccmp.
 
 ## Start
 
-Run `python tools\coordinator.py` to select next targets. Work first viable
-target. One agent edits and builds in this checkout at a time. Commit source and
-status notes before next editing agent begins.
+1. Run `python tools\coordinator.py`.
+2. Pick first viable target it prints. Before editing, state: `Target:
+   <address>; <source file>; <binary evidence>; <intended change>.`
+3. You own this checkout while working. No other agent may edit or build until
+   your commit completes.
 
 Original entry address owns function. Inspect callers and callees anywhere. If
 local match needs another edit, record address and evidence in status CSV, then
 leave it for later. Coordinate before changing shared class layouts,
 inheritance, vtables, or globals.
 
-## Work
+## Loop
+
+1. Inspect Ghidra and local source before inferring code. Establish signature,
+   calling convention, control flow, xrefs, and relevant bytes.
+2. Change one target only. Never use an unverified decompilation as source.
+3. Run build and measurements below. Reinspect evidence after each mismatch.
+4. If an error is outside target or source of failure is unclear, record exact
+   blocker in status CSV and stop. Do not repair unrelated code.
+5. Commit intentional source and status-note changes before releasing checkout.
+
+Report only target, evidence, result, and blocker. Keep reasoning private.
+
+## Constraints
 
 - Use Ghidra MCP for disassembly, decompilation, xrefs, types, vtables, and
   thunks. Treat Ghidra output as evidence, not source.
@@ -47,4 +61,5 @@ Pop-Location
 
 100% reccmp result is only completion evidence. Before handoff, update useful
 blocker or next-step notes in `data/function-status/<range>.csv`, rerun checks
-available in this checkout, commit source and notes.
+available in this checkout, verify `git status` contains only intentional
+files, then commit source and notes.
