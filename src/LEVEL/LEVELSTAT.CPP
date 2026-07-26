@@ -4247,6 +4247,12 @@ void LEMBALL_FASTCALL SetStatusIndicatorLoadProgress0044B340(void* pObject, int,
 	*(short*) ((char*) pObject + 0x20) = (short) nProgress;
 	PresentPrimaryContextScreen(*(void**) ((char*) pObject + 0x0c));
 }
+
+// FUNCTION: LEMBALL 0x0044b360
+void __stdcall noop_level_status_callback(void)
+{
+}
+
 // FUNCTION: LEMBALL 0x0044b630
 void LEMBALL_FASTCALL RestoreLevelSelectionPointSinkFinalizeVtableBody(void* pObject)
 {
