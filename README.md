@@ -23,16 +23,17 @@ measures, and commits before next editing agent starts.
 Copy this into next editing task:
 
 ```text
-Read AGENTS.md. First run `python tools\coordinator.py`. It prepares missing
-`.decomp-venv` dependencies and prints targets. If it fails, report shortest
-error and stop. Do not edit before it succeeds.
+Work through every target printed by `python tools\coordinator.py` in
+this session. Make every viable target 100% with C/C++ only; no assembly.
 
-Work first viable target. You are sole editing agent. Do not run another build
-or edit concurrently.
+Read AGENTS.md, then run coordinator. It prepares missing `.decomp-venv`
+dependencies and prints targets. Do not edit before it succeeds. Work targets
+in order, using Ghidra MCP and reccmp. For each target, either reach 100% or
+report exact evidence that blocks it.
 
-Use Ghidra MCP and reccmp to make as many functions 100% as practical. Use
-C/C++ only; no assembly. Follow build, measurement, dependency, and handoff
-rules in AGENTS.md. Once goal is achieved: run checks, commit and push.
+You are sole editing agent. Do not run another build or edit concurrently.
+Follow AGENTS.md build, measurement, dependency, and handoff rules. When done,
+run checks, commit, and push.
 ```
 
 ## Setup
