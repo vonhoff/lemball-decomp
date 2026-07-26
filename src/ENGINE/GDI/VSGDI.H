@@ -29,10 +29,10 @@ class VsGdiHelperSurface;
 
 // SIZE 0x10
 struct VsGdiHelperDispatchQueue {
-	void** m_ppEntries;
-	int m_cEntries;
-	int m_nReserved08;
-	VsGdiHelperSurface* m_pHelperTarget;
+	void** m_ppEntries; // 0x00
+	int m_cEntries; // 0x04
+	int m_nReserved08; // 0x08
+	VsGdiHelperSurface* m_pHelperTarget; // 0x0c
 
 	void AppendPointerQueueEntry(void* pEntry);
 };

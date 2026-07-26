@@ -4,12 +4,14 @@
 import argparse
 import csv
 import json
+import re
 import struct
 from collections import defaultdict
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 
 
-TEXT_ADDRESS = 0x401000
+FUNCTION_NAME = re.compile(r"[a-z][a-z0-9_]{0,63}")
+VAGUE_NAME = re.compile(r"(?:^|_)(?:fun|unknown|method|reserved[0-9a-f]*)(?:_|$)")
 
 
 def f32(value):
@@ -38,25 +40,6 @@ def measures(functions, total_units=1):
     return result
 
 
-def metadata(module):
-    path = PurePosixPath(module)
-    if path.parts[:1] == ("ENGINE",) and len(path.parts) > 2:
-        names = {"CORE": "Core", "DEBUG": "Debug", "GDI": "GDI", "MEDIA": "Media", "NET": "Net"}
-        group = f"Engine/{names.get(path.parts[1], path.parts[1].title())}"
-    elif path.parts[:1] and path.parts[0] in {"FRONTEND", "LEVEL", "RESOURCE", "SHELL"}:
-        group = path.parts[0].title()
-    elif module == "GAME.CPP":
-        group = "Game"
-    elif path.parts[:1] == ("build",):
-        group = "Runtime"
-    else:
-        group = "Other"
-    result = {"module_name": group}
-    if module.upper().endswith(".CPP"):
-        result["source_path"] = f"src/{module}"
-    return path.name, result
-
-
 def build_report(inventory_path, reccmp_path):
     native = json.loads(reccmp_path.read_text(encoding="utf-8"))
     matches = {
@@ -71,38 +54,40 @@ def build_report(inventory_path, reccmp_path):
             address = int(row["address"], 16)
             if address in seen:
                 raise SystemExit(f"duplicate inventory address 0x{address:08X}")
+            if not FUNCTION_NAME.fullmatch(row["name"]):
+                raise SystemExit(f"invalid function name at 0x{address:08X}: {row['name']}")
+            if VAGUE_NAME.search(row["name"]):
+                raise SystemExit(f"vague function name at 0x{address:08X}: {row['name']}")
             seen.add(address)
             match = matches.get(address)
             ratio = 0.0 if match is None or match.get("stub") else float(match["matching"]) * 100
             function = {
-                "name": row["name"] if match is None else match["name"],
+                "name": row["name"],
                 "size": int(row["size"]),
                 "address": address,
                 "ratio": ratio,
             }
-            groups[row["module"]].append(function)
+            groups[row["unit"]].append(function)
 
     units = []
     for module, functions in sorted(groups.items()):
-        name, unit_metadata = metadata(module)
         items = []
         for function in functions:
             item = {
                 "name": function["name"],
                 "size": str(function["size"]),
                 "metadata": {"virtual_address": str(function["address"])},
-                "address": str(function["address"] - TEXT_ADDRESS),
             }
             if function["ratio"]:
                 item["fuzzy_match_percent"] = f32(function["ratio"])
             items.append(item)
         units.append(
             {
-                "name": name,
+                "name": module,
                 "measures": measures(functions),
                 "sections": [],
                 "functions": items,
-                "metadata": unit_metadata,
+                "metadata": {"source_path": f"src/{module}"},
             }
         )
     functions = [function for group in groups.values() for function in group]
@@ -111,7 +96,7 @@ def build_report(inventory_path, reccmp_path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--inventory", type=Path, default=Path("data/functions.csv"))
+    parser.add_argument("--inventory", type=Path, default=Path("data/objdiff-functions.csv"))
     parser.add_argument("--reccmp", type=Path, default=Path("build-msvc420/reccmp.json"))
     parser.add_argument("--output", type=Path, default=Path("build-msvc420/report.json"))
     args = parser.parse_args()

@@ -151,7 +151,7 @@ struct GameGeometryDispatchEvent {
 	int m_fHandled10;
 };
 
-typedef char GameGeometryOwnerRectState_size_must_be_0x38[sizeof(GameGeometryOwnerRectState) == 0x38 ? 1 : -1];
+DECOMP_SIZE_ASSERT(GameGeometryOwnerRectState, 0x38);
 typedef char
 	VS_RootGeometryDispatchHelperState_size_must_be_0x60[sizeof(VS_RootGeometryDispatchHelperState) == 0x60 ? 1 : -1];
 

@@ -20,7 +20,7 @@ extern int LEMBALL_FASTCALL HandleNetworkLobbyVsnetRuntimeEvent(void* pVsnetRunt
 																int nUnusedEdx,
 																unsigned short* pEvent);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
-extern void noop_callback_00452b80(void);
+extern void noop_network_lobby_vsnet_runtime_slot_3(void);
 extern void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStreamThunk(void* pObject);
 extern void LEMBALL_FASTCALL WriteNetworkLevelChunkDeltaStreamThunk(void* pObject);
 extern void* LEMBALL_FASTCALL DeleteNetworkLevelChunkDeltaStreamThunk(void* pObject,
@@ -402,7 +402,7 @@ void* LEMBALL_FASTCALL DeletePayloadSize8Thunk(GameEffStreamPayloadSize8* pStrea
 // FUNCTION: LEMBALL 0x004027c0
 void NoopNetworkLobbyVsnetRuntimeCallbackThunk(void)
 {
-	noop_callback_00452b80();
+	noop_network_lobby_vsnet_runtime_slot_3();
 }
 // STUB: LEMBALL 0x0040286a
 void* LEMBALL_FASTCALL DeleteNetworkLobbyU32PayloadStreamThunk(void* pObject, void* pUnused, BYTE fDelete)

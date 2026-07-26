@@ -61,22 +61,22 @@ void noop_resource_window_owner_callback_0043a1c0(void)
 }
 
 // FUNCTION: LEMBALL 0x0043a4f0
-void PASCAL noop_window_owner_callback_0043a4f0(void*)
+void PASCAL noop_frontend_window_owner_slot_22(void*)
 {
 }
 
 // FUNCTION: LEMBALL 0x0043a510
-void noop_window_owner_callback_0043a510(void)
+void noop_frontend_window_owner_slot_15(void)
 {
 }
 
 // FUNCTION: LEMBALL 0x0043a520
-void noop_window_owner_callback_0043a520(void)
+void noop_frontend_window_owner_slot_16(void)
 {
 }
 
 // FUNCTION: LEMBALL 0x0043a530
-void noop_window_owner_callback_0043a530(void)
+void noop_frontend_window_owner_slot_17(void)
 {
 }
 
@@ -110,7 +110,7 @@ void update_options_screen(void)
 }
 
 // FUNCTION: LEMBALL 0x00446f60
-int PASCAL return_zero_screen_callback_00446f60(void* pUnused)
+int PASCAL return_zero_framed_screen_base_slot_15(void* pUnused)
 {
 	(void) pUnused;
 	return 0;

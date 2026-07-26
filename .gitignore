@@ -32,7 +32,7 @@ reccmp-user.yml
 objdiff.json
 data/*
 !data/LEMBALL.EXE.gpg
-!data/functions.csv
+!data/objdiff-functions.csv
 !data/README.md
 !data/runtime-symbols.csv
 .gnupg-local/

@@ -42,6 +42,7 @@ inline void LoadVariantRenderResource(void* pManager, int nResourceId)
 	((LevelVariantRenderManagerView*) pManager)->LoadVariantRenderResource(nResourceId);
 }
 
+// SIZE 0x04
 class LevelQueuedRenderPointSink {
 public:
 	~LevelQueuedRenderPointSink() {}
@@ -56,17 +57,17 @@ class LevelPackagedRectQueueEntry : public LevelQueuedRenderPointSink {
 public:
 	LevelPackagedRectQueueEntry();
 	~LevelPackagedRectQueueEntry() {}
-	virtual void* Delete(unsigned int fDelete);
-	virtual void AppendToQueue(void* pQueue);
-	virtual void Process(void* pContext);
+	virtual void* Delete(unsigned int fDelete); // vtable+0x00
+	virtual void AppendToQueue(void* pQueue); // vtable+0x04
+	virtual void Process(void* pContext); // vtable+0x08
 	void ResetVtableAfterDestruction();
 
-	short m_x04;
-	short m_y06;
-	void* m_pOwner08;
-	int m_nFlags0C;
-	int m_nValue10;
-	int m_nReserved14;
+	short m_x04; // 0x04
+	short m_y06; // 0x06
+	void* m_pOwner08; // 0x08
+	int m_nFlags0C; // 0x0c
+	int m_nValue10; // 0x10
+	int m_nReserved14; // 0x14
 };
 
 // VTABLE: LEMBALL 0x00499ae8
@@ -75,45 +76,45 @@ class LevelScreenDrawEntry : public LevelQueuedRenderPointSink {
 public:
 	LevelScreenDrawEntry();
 	~LevelScreenDrawEntry() {}
-	virtual void* Delete(unsigned int fDelete);
-	virtual void AppendToQueue(void* pQueue);
-	virtual void Process(void* pRenderContext);
+	virtual void* Delete(unsigned int fDelete); // vtable+0x00
+	virtual void AppendToQueue(void* pQueue); // vtable+0x04
+	virtual void Process(void* pRenderContext); // vtable+0x08
 	void ResetVtablesAfterDestruction();
 	virtual void InitializeFromPointAndDynamicText(const short* pPoint,
 												   void* pOwner,
 												   GameDynamicCString Text,
 												   int nDrawFlags,
-												   int nDrawValue);
+												   int nDrawValue); // vtable+0x0c
 	virtual void InitializeFromPositionAndDynamicText(int x,
 													  int y,
 													  void* pOwner,
 													  GameDynamicCString Text,
 													  int nDrawFlags,
-													  int nDrawValue);
+													  int nDrawValue); // vtable+0x10
 	virtual void InitializeFromPointAndText(const short* pPoint,
 											void* pOwner,
 											void* pText,
 											int nDrawFlags,
-											int nDrawValue);
-	virtual void InitializeFromPositionAndText(int x, int y, void* pOwner, void* pText, int nDrawFlags, int nDrawValue);
+											int nDrawValue); // vtable+0x14
+	virtual void InitializeFromPositionAndText(int x, int y, void* pOwner, void* pText, int nDrawFlags, int nDrawValue); // vtable+0x18
 
 	void AdvanceCursor();
 
-	void* m_pOwner04;
-	void* m_pText08;
-	short m_xCurrent0C;
-	short m_yCurrent0E;
-	int m_nDrawFlags10;
-	int m_nDrawValue14;
-	short m_nReserved18;
-	short m_nReserved1A;
-	short m_xStart1C;
-	short m_yStart1E;
-	int m_nQueueState20;
-	short m_nReserved24;
-	short m_nReserved26;
-	void* m_pGlyph28;
-	LevelPackagedRectQueueEntry m_DrawSink2C;
+	void* m_pOwner04; // 0x04
+	void* m_pText08; // 0x08
+	short m_xCurrent0C; // 0x0c
+	short m_yCurrent0E; // 0x0e
+	int m_nDrawFlags10; // 0x10
+	int m_nDrawValue14; // 0x14
+	short m_nReserved18; // 0x18
+	short m_nReserved1A; // 0x1a
+	short m_xStart1C; // 0x1c
+	short m_yStart1E; // 0x1e
+	int m_nQueueState20; // 0x20
+	short m_nReserved24; // 0x24
+	short m_nReserved26; // 0x26
+	void* m_pGlyph28; // 0x28
+	LevelPackagedRectQueueEntry m_DrawSink2C; // 0x2c
 };
 
 // VTABLE: LEMBALL 0x00499ce8
@@ -126,29 +127,30 @@ public:
 		m_pszOwnedText44 = (char*) AllocateVSMemBlock(cchText + 1);
 	}
 	~LevelResourceScreenDrawEntry() { FreeVSMemBlock(m_pszOwnedText44); }
-	virtual void* Delete(unsigned int fDelete);
+	virtual void* Delete(unsigned int fDelete); // vtable+0x00
 	virtual void InitializeFromPointAndDynamicText(const short* pPoint,
 												   void* pOwner,
 												   GameDynamicCString Text,
 												   int nDrawFlags,
-												   int nDrawValue);
+												   int nDrawValue); // vtable+0x0c
 	virtual void InitializeFromPositionAndDynamicText(int x,
 													  int y,
 													  void* pOwner,
 													  GameDynamicCString Text,
 													  int nDrawFlags,
-													  int nDrawValue);
+													  int nDrawValue); // vtable+0x10
 	virtual void InitializeFromPointAndText(const short* pPoint,
 											void* pOwner,
 											void* pText,
 											int nDrawFlags,
-											int nDrawValue);
-	virtual void InitializeFromPositionAndText(int x, int y, void* pOwner, void* pText, int nDrawFlags, int nDrawValue);
+											int nDrawValue); // vtable+0x14
+	virtual void InitializeFromPositionAndText(int x, int y, void* pOwner, void* pText, int nDrawFlags, int nDrawValue); // vtable+0x18
 
-	char* m_pszOwnedText44;
-	int m_cchOwnedText48;
+	char* m_pszOwnedText44; // 0x44
+	int m_cchOwnedText48; // 0x48
 };
 
+// SIZE 0x24
 class MappedListResourceTable {
 public:
 	MappedListResourceTable(int cResourceIds, int cSlots, int cDrawEntries, int cchOwnedText);
@@ -165,15 +167,15 @@ public:
 	void Destroy(void);
 	void ResetDrawEntryPool(void) { m_nCurrentSlot18 = 0; }
 
-	void** m_apResources00;
-	short* m_aiResourceSlots04;
-	int m_cSlots08;
-	int m_cResourceIds0C;
-	int m_nReserved10;
-	int m_cDrawEntries14;
-	int m_nCurrentSlot18;
-	int m_nReserved1C;
-	LevelScreenDrawEntry** m_apDrawEntries20;
+	void** m_apResources00; // 0x00
+	short* m_aiResourceSlots04; // 0x04
+	int m_cSlots08; // 0x08
+	int m_cResourceIds0C; // 0x0c
+	int m_nReserved10; // 0x10
+	int m_cDrawEntries14; // 0x14
+	int m_nCurrentSlot18; // 0x18
+	int m_nReserved1C; // 0x1c
+	LevelScreenDrawEntry** m_apDrawEntries20; // 0x20
 };
 
 #endif

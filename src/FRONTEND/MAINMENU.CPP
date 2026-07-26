@@ -56,7 +56,7 @@ extern void noop_screen_callback_00446f70(void);
 extern void noop_screen_callback_00446f80(void);
 extern void noop_screen_callback_00446f90(void);
 extern void update_options_screen(void);
-extern int PASCAL return_zero_screen_callback_00446f60(void* pUnused);
+extern int PASCAL return_zero_framed_screen_base_slot_15(void* pUnused);
 extern int PASCAL return_zero_screen_callback_00446fa0(void* pUnused);
 extern void noop_main_menu_screen_hook(void);
 extern "C" int __cdecl _purecall(void);
@@ -659,9 +659,9 @@ extern void* LEMBALL_FASTCALL DeleteIntroSequenceScreen(void* pObject, int nUnus
 extern void LEMBALL_FASTCALL DestroyIntroSequenceScreen(void* pObject);
 extern void* LEMBALL_FASTCALL DeleteAdjustedIntroSequenceScreen(void* pObject, int nUnusedEdx, int fDelete);
 extern void noop_intro_sequence_screen_hook(void);
-extern void noop_window_owner_callback_0043a510(void);
-extern void noop_window_owner_callback_0043a520(void);
-extern void noop_window_owner_callback_0043a530(void);
+extern void noop_frontend_window_owner_slot_15(void);
+extern void noop_frontend_window_owner_slot_16(void);
+extern void noop_frontend_window_owner_slot_17(void);
 void* LEMBALL_FASTCALL DeleteIntroSequenceScreenThunk(void* pObject, int nUnusedEdx, int fDelete);
 void* LEMBALL_FASTCALL DeleteAdjustedIntroSequenceScreenThunk(void* pObject, int nUnusedEdx, int fDelete);
 void LEMBALL_FASTCALL PollIntroSequencePlaybackThunk(void* pObject);
@@ -2006,14 +2006,14 @@ void LEMBALL_FASTCALL DestroyMainMenuScreenThunk00401190(void* pObject)
 	DestroyMainMenuScreen(pObject);
 }
 // FUNCTION: LEMBALL 0x00401195
-void WindowOwnerSlot15NoopThunk(void)
+void thunk_noop_frontend_window_owner_slot_15(void)
 {
-	noop_window_owner_callback_0043a510();
+	noop_frontend_window_owner_slot_15();
 }
 // FUNCTION: LEMBALL 0x0040122b
-void WindowOwnerSlot16NoopThunk(void)
+void thunk_noop_frontend_window_owner_slot_16(void)
 {
-	noop_window_owner_callback_0043a520();
+	noop_frontend_window_owner_slot_16();
 }
 // FUNCTION: LEMBALL 0x004012ad
 void LEMBALL_FASTCALL ResetFramedScreenVariantBuffersThunk(void* pObject)
@@ -2026,7 +2026,7 @@ int LEMBALL_FASTCALL FramedScreenSlot15Thunk(void* pObject, int nUnusedEdx, void
 {
 	(void) pObject;
 	(void) nUnusedEdx;
-	return return_zero_screen_callback_00446f60(pArgument);
+	return return_zero_framed_screen_base_slot_15(pArgument);
 }
 // FUNCTION: LEMBALL 0x00401528
 int LEMBALL_FASTCALL MainMenuSlot21Thunk(void* pObject, int nUnusedEdx, void* pArgument)
@@ -2191,9 +2191,9 @@ int LEMBALL_FASTCALL GetFramedScreenTransitionStatusThunk(void* pObject)
 	return poll_intro_sequence_screen_transition_status(pObject);
 }
 // FUNCTION: LEMBALL 0x00402a9f
-void WindowOwnerSlot17NoopThunk(void)
+void thunk_noop_frontend_window_owner_slot_17(void)
 {
-	noop_window_owner_callback_0043a530();
+	noop_frontend_window_owner_slot_17();
 }
 // FUNCTION: LEMBALL 0x00402aa4
 void LEMBALL_FASTCALL RequestIntroSequenceScreenTransitionThunk(char* pScreen)

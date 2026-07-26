@@ -70,7 +70,7 @@ static const char g_GAME_InstallPrompt[] =
 static const char g_GAME_CdromErrorTitle[] = "Unable to find CD";
 static const char g_GAME_CdromErrorText[] = "Please insert the Paintball CD in a local CD Drive";
 static const char g_GAME_ClosedDownText[] = "GAME CLOSED DOWN\n";
-static const char g_GAME_IsValidResourceFileAssert[] = "IsValidResourceFile()";
+static const char g_GAME_IsValidResourceFileAssert[] = "IsValidResourceFile";
 static const char g_GAME_SourceFileName[] = "GAME.CPP";
 static const char g_GAME_StartingDemoModePrefix[] = "Starting demo mode for level ";
 static const char g_GAME_OnSkillText[] = " on skill ";
@@ -111,7 +111,7 @@ struct GameResourceSignatureStringObject {
 
 extern void LEMBALL_FASTCALL ServiceNetworkLobbySelectedPeerUpdates(void* pVsnetRuntime);
 extern int __stdcall PumpMessagesAndRunFrame(void);
-extern int __stdcall ValidateResourceFileSignatureThunk(void);
+extern int __stdcall IsValidResourceFileThunk(void);
 extern void TriggerReleaseAssertFailure(const char* pszExpression, const char* pszFile, int nLine);
 extern void* LEMBALL_FASTCALL ConstructVariantResourceEntryManagerThunk(void* pManager);
 extern void LEMBALL_FASTCALL DestroyMainGameVariantResourceMode(void* pVariantMode);
@@ -708,7 +708,7 @@ void LEMBALL_FASTCALL ServiceLevelGameModeFrame(void* pMode, int nUnusedEdx, int
 void RequestLocalLevelGameStateChange(void* pLevelMode, int nState);
 void LEMBALL_FASTCALL UpdateBaseModeThunk(GameBaseModeObject* pMode);
 void* LEMBALL_FASTCALL DeleteMainMenuModeEventClientThunk(void* pObject, int, BYTE fDelete);
-int __stdcall ValidateResourceFileSignatureThunk(void);
+int __stdcall IsValidResourceFileThunk(void);
 void LEMBALL_FASTCALL NoopBaseModeThunk(void*);
 extern void noop_vtable_callback_00407f20(void);
 extern int return_zero_vtable_callback_0041f870(void);
@@ -719,7 +719,7 @@ void LEMBALL_FASTCALL RequestFramedScreenTransitionMode2Thunk(void* pScreen);
 int RunMainGameSession(int cArgs, const char* const* ppszArgs);
 int PASCAL ComputePowerOfTwo(int nExponent);
 void LEMBALL_FASTCALL ShutdownMainGameContext(GameMainContext* pMainContext);
-int __stdcall ValidateResourceFileSignature(void);
+int __stdcall IsValidResourceFile(void);
 void LEMBALL_FASTCALL UpdateMainGameActiveMode(void* pMainGameContext);
 void LEMBALL_FASTCALL PresentMainGameFrame(void* pMainGameContext);
 void LEMBALL_FASTCALL RunMainGameLoop(GameMainContext* pMainContext);
@@ -1840,9 +1840,10 @@ struct GameLevelModeActiveInterface {
 	virtual void Reserved00(void) = 0;
 };
 
+// SIZE 0x114
 struct GameLevelModeObjectView : public GameLevelModePrefixInterface, public GameLevelModeActiveInterface {
-	char m_abReserved14[0xfc];
-	int m_nStatusIndicatorMode110;
+	char m_abReserved14[0xfc]; // 0x14
+	int m_nStatusIndicatorMode110; // 0x110
 };
 DECOMP_SIZE_ASSERT(GameLevelModeObjectView, 0x114);
 
@@ -2157,9 +2158,9 @@ char* FormatCurrentLevelPassword(void)
 	return ((GameLevelProgressState*) g_pLevelProgressState)->FormatPassword();
 }
 // STUB: LEMBALL 0x00403152
-int __stdcall ValidateResourceFileSignatureThunk(void)
+int __stdcall IsValidResourceFileThunk(void)
 {
-	return ValidateResourceFileSignature();
+	return IsValidResourceFile();
 }
 // STUB: LEMBALL 0x00403323
 unsigned int GameLevelProgressState::ComputeLevelPasswordChecksumThunk(unsigned int uValue)
@@ -2482,7 +2483,7 @@ GameMainContext* GameMainContext::InitializeMainGameContext(const char* pszCmdLi
 	else {
 		g_pMainResourceArchive = 0;
 	}
-	if (!ValidateResourceFileSignatureThunk()) {
+	if (!IsValidResourceFileThunk()) {
 		TriggerReleaseAssertFailure(g_GAME_IsValidResourceFileAssert, g_GAME_SourceFileName, 0x16e);
 	}
 
@@ -2611,7 +2612,7 @@ void LEMBALL_FASTCALL ShutdownMainGameContext(GameMainContext* pMainContext)
 	SetVisualSciencesRegistryRunningState(g_GAME_WindowTitle, 0);
 }
 // FUNCTION: LEMBALL 0x00407300
-int __stdcall ValidateResourceFileSignature(void)
+int __stdcall IsValidResourceFile(void)
 {
 	const unsigned char* pszKey;
 	GameResourceSignatureStringObject* pStringResource;

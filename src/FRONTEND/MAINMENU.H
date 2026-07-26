@@ -150,6 +150,7 @@ struct GameFramedScreenBase {
 	int m_nTimedVariantResourceId394;
 };
 
+// SIZE 0x494
 class GameIntroSequenceScreen : public GameFramedScreenBase {
 public:
 	int HandleInput(short* pEvent);
@@ -158,13 +159,13 @@ public:
 	void UpdatePlayback(void);
 
 private:
-	int m_fSkipVariant398;
-	int m_nRequestedMode39C;
-	unsigned char m_abPointSink3A0[0x10];
-	int m_nReserved3B0;
-	int m_nPlaybackDelay3B4;
-	int m_fPlaybackStarted3B8;
-	unsigned char m_abMediaOwner3BC[0xd8];
+	int m_fSkipVariant398; // 0x398
+	int m_nRequestedMode39C; // 0x39c
+	unsigned char m_abPointSink3A0[0x10]; // 0x3a0
+	int m_nReserved3B0; // 0x3b0
+	int m_nPlaybackDelay3B4; // 0x3b4
+	int m_fPlaybackStarted3B8; // 0x3b8
+	unsigned char m_abMediaOwner3BC[0xd8]; // 0x3bc
 };
 
 DECOMP_SIZE_ASSERT(GameIntroSequenceScreen, 0x494);

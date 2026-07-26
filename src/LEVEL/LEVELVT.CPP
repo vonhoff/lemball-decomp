@@ -336,7 +336,7 @@ unsigned int return_hresult_80000000_callback(void);
 void* __fastcall clear_two_word_point(void* pPoint);
 void noop_queued_variant_child_slot_manager_update(void);
 unsigned int return_hresult_40000001_callback(void);
-void noop_callback_00452b80(void);
+void noop_network_lobby_vsnet_runtime_slot_3(void);
 void noop_callback_00456600(void);
 
 // FUNCTION: LEMBALL 0x00401046
@@ -1750,7 +1750,7 @@ unsigned int return_hresult_40000001_callback(void)
 }
 
 // FUNCTION: LEMBALL 0x00452b80
-void noop_callback_00452b80(void)
+void noop_network_lobby_vsnet_runtime_slot_3(void)
 {
 }
 

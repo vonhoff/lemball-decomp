@@ -110,7 +110,7 @@ struct GameMenuSelectorEntry {
 	int HandleEvent(GameMenuSelectorEvent* pEvent);
 	void RebuildRects(int fForce, int nUnused);
 
-	void** m_pVtable00;
+	void** m_pVtable00; // 0x00
 	int m_nQueueTag04;
 	int m_nQueueReserved08;
 	int m_cUnhandledEvents0C;
@@ -181,19 +181,21 @@ struct GameRectQuad {
 	void CopyFrom(const short* pRect);
 };
 
+// SIZE 0x38
 class GameSelectorProgressGeometry : public GameGeometryOwnerRectState {
 public:
 	void DispatchButtonTransition(const VS_XYPair* pPoint, int nButton);
 	void DispatchPointerMove(const VS_XYPair* pPoint);
 };
 
+// SIZE 0x10
 struct GameProgressRenderEntry {
-	void** m_pVtable00;
-	short m_cx04;
-	short m_cy06;
-	short m_x08;
-	short m_y0A;
-	int m_nResourceId0C;
+	void** m_pVtable00; // 0x00
+	short m_cx04; // 0x04
+	short m_cy06; // 0x06
+	short m_x08; // 0x08
+	short m_y0A; // 0x0a
+	int m_nResourceId0C; // 0x0c
 };
 
 // These entries replace inherited GameWindowOwnerRenderContext slots in the
@@ -209,20 +211,21 @@ public:
 	void ApplyWindowOwnerActivation(int nActivate);
 };
 
+// SIZE 0x134
 class GameSelectorProgressOverlayChild : public GameWindowOwnerRenderContext {
 public:
 	GameSelectorProgressOverlayChild* Construct(const short* pRect, int nPercent, void* pRenderOwner);
 	void SetPercent(int nPercent);
 
 public:
-	GameSelectorProgressGeometry m_Geometry90;
-	GameRectQuad m_RectC8;
-	GameProgressRenderEntry m_aRenderEntriesD0[5];
-	int m_nPercent120;
-	int m_cxProgress124;
-	int m_nReserved128;
-	void* m_pRenderOwner12C;
-	int m_nToken130;
+	GameSelectorProgressGeometry m_Geometry90; // 0x90
+	GameRectQuad m_RectC8; // 0xc8
+	GameProgressRenderEntry m_aRenderEntriesD0[5]; // 0xd0
+	int m_nPercent120; // 0x120
+	int m_cxProgress124; // 0x124
+	int m_nReserved128; // 0x128
+	void* m_pRenderOwner12C; // 0x12c
+	int m_nToken130; // 0x130
 };
 
 DECOMP_SIZE_ASSERT(GameProgressRenderEntry, 0x10);

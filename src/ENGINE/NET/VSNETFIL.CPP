@@ -994,8 +994,8 @@ public:
 
 	VsNetEffStreamRecordSlotTable(int cSlots);
 	virtual ~VsNetEffStreamRecordSlotTable();
-	virtual void ReverseEffStreamPayload(void);
-	virtual void WriteEffStreamTaggedHeader(void);
+	virtual void ReverseEffStreamPayload(void); // vtable+0x08
+	virtual void WriteEffStreamTaggedHeader(void); // vtable+0x10
 	VsNetEffStreamRecordSlot* FindNextChangedSlot(void);
 };
 
@@ -4367,43 +4367,6 @@ void* VsNetDualSlotTableFileBackedEffComposite::ClaimRecord(void)
 {
 	return ((VsNetDispatchAckedEffTransportPayloadView*) ((char*) this - 0x34))
 		->DispatchAckedEffTransportPayloadEvent();
-}
-
-// FUNCTION: LEMBALL 0x0047ce00
-int StopWaveOutPlayback(void* pBackend)
-{
-	HWAVEOUT* pWaveOut;
-	MMRESULT nResult;
-	unsigned int i;
-	char szErrorText[0x100];
-
-	pWaveOut = (HWAVEOUT*) ((char*) pBackend + 0x8c);
-	if (*pWaveOut == 0) {
-		return 1;
-	}
-
-	nResult = (MMRESULT) -1;
-	i = 0;
-	do {
-		if (i >= 500) {
-			break;
-		}
-		++i;
-		nResult = waveOutReset(*pWaveOut);
-	} while (nResult != 0);
-
-	if (i != 500) {
-		return 1;
-	}
-
-	g_pErrorOutputStream->AppendCStringToStream("Error stopping playback in device : ");
-	g_pErrorOutputStream->AppendCStringToStream(
-		GetWaveOutEffectBackendDescription((VsSoundWaveOutEffectBackend*) pBackend));
-	g_pErrorOutputStream->AppendCStringToStream(".\nSystem may be unstable!\n");
-	waveOutGetErrorTextA(nResult, szErrorText, sizeof(szErrorText));
-	g_pErrorOutputStream->AppendCStringToStream(szErrorText);
-	g_pErrorOutputStream->AppendCStringToStream("\n");
-	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047f5b0

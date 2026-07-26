@@ -31,7 +31,7 @@ static const char g_MOGLOAD_OpenMode[] = "rb";
 static const char g_MOGLOAD_StatusName[] = "Mogload memory";
 static char g_MOGLOAD_RootPath[] = "/";
 static const char g_MOGLOAD_SourceFileName[] = "MOGLOAD.CPP";
-static const char g_MOGLOAD_IsValidResourceFileAssert[] = "IsValidResourceFile()";
+static const char g_MOGLOAD_IsValidResourceFileAssert[] = "IsValidResourceFile";
 
 struct MogLoadResourceArenaStatusOwner {
 	char m_abReserved00[0x30];
@@ -428,7 +428,6 @@ MogLoadDirectoryNode* MogLoadDirectoryNode::Construct(long lFileOffset)
 {
 	long lNameDataSize;
 	long lCurrentFileOffset;
-	unsigned int uFormatVersion;
 	MogLoadEntryRecord* pEntry;
 
 	m_iSubdirectorySavedIndex = -1;
@@ -461,8 +460,7 @@ MogLoadDirectoryNode* MogLoadDirectoryNode::Construct(long lFileOffset)
 	(void) MogLoadReadU32();
 	(void) MogLoadReadU32();
 	m_cEntries = MogLoadReadU32();
-	uFormatVersion = MogLoadReadU32();
-	if (uFormatVersion != 3) {
+	if (MogLoadReadU32() != 3) {
 		TriggerReleaseAssertFailure(g_MOGLOAD_IsValidResourceFileAssert, g_MOGLOAD_SourceFileName, 0x1a2);
 	}
 

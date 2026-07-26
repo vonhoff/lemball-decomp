@@ -89,59 +89,59 @@ extern void* g_MenuSelectorCurrentFrameCallbackVtable[7];
  * class is reconstructed in LevelStatus.cpp. */
 // SIZE 0x27c
 struct GameMenuSelectorManager {
-	void** m_pVtable00;
-	int m_nQueueTag04;
-	int m_nQueueReserved08;
-	int m_cUnhandledEvents0C;
-	unsigned char m_abVariantRenderManager10[0x70];
-	int m_cChildren80;
-	int m_nReserved84;
-	int m_xCenteredAction88;
-	int m_nCurrentPosition8C;
-	int m_nMovementStartPosition90;
-	int m_nCurrentSide94;
-	int m_xActionOrigin98;
-	int m_nTargetPosition9C;
-	int m_nSelectedSideA0;
-	int m_nActionStateA4;
-	int m_xActionA8;
-	int m_yActionAC;
-	int m_xActionDestinationB0;
-	int m_fEventQueuedB4;
-	GameMenuSelectorEvent m_ActionEventB8;
-	int m_dwConstructionTimeD4;
-	int m_fDelayedEventD8;
-	int m_fMovementActiveDC;
-	GameMenuSelectorMetadata m_aMetadataE0[8];
-	GameMenuSelectorEntry* m_apChildren1E0[8];
-	unsigned char m_abLocalRectEntry200[0x10];
-	void* m_pRenderContext210;
-	void* m_pRenderOwner214;
-	int m_nNextToken218;
-	int m_dwMovementStart21C;
-	int m_dwMovementEnd220;
-	int m_dwSideTransitionStart224;
-	int m_dwSideTransitionEnd228;
-	int m_dwActionLastTick22C;
-	int m_dwActionMotionEnd230;
-	int m_nReserved234;
-	int m_nReserved238;
-	int m_dwActionFrameStart23C;
-	int m_dwActionFrameEnd240;
-	GameProgressiveVariantFrameSelector* m_pSideSelector244;
-	GameProgressiveVariantFrameSelector* m_pActionTailSelector248;
-	GameProgressiveVariantFrameSelector* m_pActionLeadSelector24C;
-	GameProgressiveVariantFrameSelector* m_pCompletionSelector250;
-	GameProgressiveVariantFrameSelector* m_pActionMiddleSelector254;
-	void** m_pCurrentFrameCallbackVtable258;
-	int m_cCurrentFrameCallbackFrames25C;
-	int m_nCurrentFrameCallbackStart260;
-	int m_nCurrentFrameCallbackFrame264;
-	void* m_pChildContext268;
-	void* m_pChildRenderContext26C;
-	int m_nLayoutMode270;
-	int m_fCompactLayout274;
-	int m_fChildrenEnabled278;
+	void** m_pVtable00; // 0x00
+	int m_nQueueTag04; // 0x04
+	int m_nQueueReserved08; // 0x08
+	int m_cUnhandledEvents0C; // 0x0c
+	unsigned char m_abVariantRenderManager10[0x70]; // 0x10
+	int m_cChildren80; // 0x80
+	int m_nReserved84; // 0x84
+	int m_xCenteredAction88; // 0x88
+	int m_nCurrentPosition8C; // 0x8c
+	int m_nMovementStartPosition90; // 0x90
+	int m_nCurrentSide94; // 0x94
+	int m_xActionOrigin98; // 0x98
+	int m_nTargetPosition9C; // 0x9c
+	int m_nSelectedSideA0; // 0xa0
+	int m_nActionStateA4; // 0xa4
+	int m_xActionA8; // 0xa8
+	int m_yActionAC; // 0xac
+	int m_xActionDestinationB0; // 0xb0
+	int m_fEventQueuedB4; // 0xb4
+	GameMenuSelectorEvent m_ActionEventB8; // 0xb8
+	int m_dwConstructionTimeD4; // 0xd4
+	int m_fDelayedEventD8; // 0xd8
+	int m_fMovementActiveDC; // 0xdc
+	GameMenuSelectorMetadata m_aMetadataE0[8]; // 0xe0
+	GameMenuSelectorEntry* m_apChildren1E0[8]; // 0x1e0
+	unsigned char m_abLocalRectEntry200[0x10]; // 0x200
+	void* m_pRenderContext210; // 0x210
+	void* m_pRenderOwner214; // 0x214
+	int m_nNextToken218; // 0x218
+	int m_dwMovementStart21C; // 0x21c
+	int m_dwMovementEnd220; // 0x220
+	int m_dwSideTransitionStart224; // 0x224
+	int m_dwSideTransitionEnd228; // 0x228
+	int m_dwActionLastTick22C; // 0x22c
+	int m_dwActionMotionEnd230; // 0x230
+	int m_nReserved234; // 0x234
+	int m_nReserved238; // 0x238
+	int m_dwActionFrameStart23C; // 0x23c
+	int m_dwActionFrameEnd240; // 0x240
+	GameProgressiveVariantFrameSelector* m_pSideSelector244; // 0x244
+	GameProgressiveVariantFrameSelector* m_pActionTailSelector248; // 0x248
+	GameProgressiveVariantFrameSelector* m_pActionLeadSelector24C; // 0x24c
+	GameProgressiveVariantFrameSelector* m_pCompletionSelector250; // 0x250
+	GameProgressiveVariantFrameSelector* m_pActionMiddleSelector254; // 0x254
+	void** m_pCurrentFrameCallbackVtable258; // 0x258
+	int m_cCurrentFrameCallbackFrames25C; // 0x25c
+	int m_nCurrentFrameCallbackStart260; // 0x260
+	int m_nCurrentFrameCallbackFrame264; // 0x264
+	void* m_pChildContext268; // 0x268
+	void* m_pChildRenderContext26C; // 0x26c
+	int m_nLayoutMode270; // 0x270
+	int m_fCompactLayout274; // 0x274
+	int m_fChildrenEnabled278; // 0x278
 
 	GameMenuSelectorManager(void* pRenderOwner, void* pRenderContext, int nChildCapacity, int nLayoutMode);
 	void AppendChild(int x,

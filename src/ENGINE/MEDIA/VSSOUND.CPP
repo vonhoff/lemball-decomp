@@ -1858,6 +1858,43 @@ int LEMBALL_FASTCALL ReturnOneWaveOutBackendValue0047CDF0(void* pBackend)
 	return 1;
 }
 
+// FUNCTION: LEMBALL 0x0047ce00
+int StopWaveOutPlayback(void* pBackend)
+{
+	HWAVEOUT* pWaveOut;
+	MMRESULT nResult;
+	unsigned int i;
+	char szErrorText[0x100];
+
+	pWaveOut = (HWAVEOUT*) ((char*) pBackend + 0x8c);
+	if (*pWaveOut == 0) {
+		return 1;
+	}
+
+	nResult = (MMRESULT) -1;
+	i = 0;
+	do {
+		if (i >= 500) {
+			break;
+		}
+		++i;
+		nResult = waveOutReset(*pWaveOut);
+	} while (nResult != 0);
+
+	if (i != 500) {
+		return 1;
+	}
+
+	g_pErrorOutputStream->AppendCStringToStream("Error stopping playback in device : ");
+	g_pErrorOutputStream->AppendCStringToStream(
+		GetWaveOutEffectBackendDescription((VsSoundWaveOutEffectBackend*) pBackend));
+	g_pErrorOutputStream->AppendCStringToStream(".\nSystem may be unstable!\n");
+	waveOutGetErrorTextA(nResult, szErrorText, sizeof(szErrorText));
+	g_pErrorOutputStream->AppendCStringToStream(szErrorText);
+	g_pErrorOutputStream->AppendCStringToStream("\n");
+	return 0;
+}
+
 // FUNCTION: LEMBALL 0x0047ced0
 int LEMBALL_FASTCALL GetWaveOutEffectReserved08(void* pBackend)
 {
