@@ -26,6 +26,23 @@ git commit -m "Release codex-01 claim"
 `python tools\claims.py check` validates ledger in CI and before coordinator
 integration. `claims.py OWNER` remains available for one-off local work.
 
+### Worker starter prompt
+
+Copy this after coordinator creates worker worktree and gives worker its path:
+
+```text
+Set OWNER=codex-01.
+
+Work only in assigned isolated worktree. Read AGENTS.md. Do not run
+`python tools\claims.py %OWNER%`: coordinator already created and owns active
+claim. Work only returned range recorded in CLAIMS.md.
+
+Use Ghidra MCP and reccmp to make as many functions 100% as practical. Use
+C/C++ only; no assembly. Follow build, measurement, dependency, and handoff
+rules in AGENTS.md. Update range CSV, run checks available in worktree, and
+commit source and notes. Keep claim active when handing off.
+```
+
 ## Setup
 
 Install `requirements.txt` into `.decomp-venv`. Original compiler must exist in
