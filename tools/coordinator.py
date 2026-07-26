@@ -61,9 +61,6 @@ def rank(functions, ratios):
 def main():
     ensure_tools(ROOT)
     ratios = matches(ROOT)
-    notes = {}
-    for path in (ROOT / "data" / "function-status").glob("*.csv"):
-        notes.update({row["address"]: row.get("notes", "") for row in rows(path)})
     targets = rank(rows(ROOT / "data" / "objdiff-functions.csv"), ratios)[:10]
     if not targets:
         print("all functions complete")
@@ -72,8 +69,6 @@ def main():
     for row in targets:
         ratio = ratios.get(row["address"])
         print(f"{row['address']} {row['size']}B {'-' if ratio is None else f'{ratio:.2f}%'} {row['unit']} {row['name']}")
-        if notes.get(row["address"]):
-            print(f"  {notes[row['address']]}")
 
 
 if __name__ == "__main__":

@@ -16,7 +16,7 @@ python tools\coordinator.py
 
 Coordinator prints ten unmatched functions: five bytes or fewer first, then
 increasing size, match percentage, and address. Agent works first viable target,
-measures, updates status CSV, and commits before next editing agent starts.
+measures, and commits before next editing agent starts.
 
 ### Worker starter prompt
 
@@ -32,7 +32,7 @@ or edit concurrently.
 
 Use Ghidra MCP and reccmp to make as many functions 100% as practical. Use
 C/C++ only; no assembly. Follow build, measurement, dependency, and handoff
-rules in AGENTS.md. Update status CSV, run checks, and commit source and notes.
+rules in AGENTS.md. Once goal is achieved: run checks, commit and push.
 ```
 
 ## Setup

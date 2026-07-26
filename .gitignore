@@ -34,10 +34,7 @@ reccmp-user.yml
 objdiff.json
 data/*
 !data/LEMBALL.EXE.gpg
-!data/function-status/
-!data/function-status/**
 !data/objdiff-functions.csv
 !data/README.md
 !data/runtime-symbols.csv
-!data/work-ranges.csv
 .gnupg-local/
