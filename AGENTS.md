@@ -10,6 +10,10 @@ integration checkout. This claims range, commits `CLAIMS.md`, creates
 `codex/OWNER` worktree beside repository, prints assigned range. Agent changes
 to that worktree before work. Keep claim until coordinator merges worker commit,
 verifies integration build, then runs `python tools\coordinator.py release OWNER`.
+Worker worktrees share primary checkout's `msvc420` and `.decomp-venv` through
+junctions, and copy ignored reccmp target files; build output remains local to
+each worktree. To repair a worker created before this support, run
+`python tools\coordinator.py setup --root WORKTREE_PATH` from primary checkout.
 
 Original entry address owns function. Inspect callers and callees anywhere,
 but do not edit an out-of-range function. If local match needs such an edit,

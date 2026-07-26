@@ -15,6 +15,15 @@ Worker changes into printed worktree, reads `AGENTS.md`, works only claimed
 range, commits source and `data/function-status` notes. Do not edit another
 worker's checkout or run full shared-worktree builds.
 
+New worktrees automatically junction shared `msvc420` and `.decomp-venv`
+dependencies, and copy ignored reccmp target files from primary checkout;
+their `build-msvc420` directories remain separate. To repair a pre-existing
+worker checkout, run from primary checkout:
+
+```powershell
+python tools\coordinator.py setup --root ..\lemball-decomp-codex-01
+```
+
 Coordinator reviews and merges worker branch, runs full build/reccmp, then:
 
 ```powershell
