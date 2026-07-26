@@ -30,7 +30,7 @@ Copy this into a new worker task from clean integration checkout:
 ```text
 Set OWNER=codex-01.
 
-Run `python tools\coordinator.py start codex-01`, substituting OWNER. Change
+Run `python tools\coordinator.py start %OWNER%`, substituting OWNER. Change
 into printed worker worktree. Read AGENTS.md. Work only returned range recorded
 in CLAIMS.md.
 
