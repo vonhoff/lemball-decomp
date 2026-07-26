@@ -461,7 +461,7 @@ void GameEffStreamPayloadSize8::ReadPayloadSize8(void)
 // FUNCTION: LEMBALL 0x00446f20
 GameEffStreamPayloadSize8* GameEffStreamPayloadSize8::DeletePayloadSize8(unsigned char fDelete)
 {
-	((VsNetEffStreamBase*) this)->DestroyEffStreamBase();
+	((VsNetEffStreamBase*) this)->VsNetEffStreamBase::~VsNetEffStreamBase();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(this);
 	}

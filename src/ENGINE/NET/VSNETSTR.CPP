@@ -75,8 +75,6 @@ struct VsNetRuntimeWindowInterface {
 void EffStreamChannelStateRet4Thunk(BYTE fDelete);
 
 struct VsNetAckedEffTransportRecordOwner {};
-extern int PASCAL ReturnTrueVtableCallback(void* pObject);
-extern int ReturnTrueVtableCallbackSecondary(void);
 extern int PASCAL ReturnTrueVtableCallbackThunk(void* pObject);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void ReturnVoidVtableCallback(void);
@@ -88,9 +86,6 @@ void* DeleteEffStreamBaseWrapper00462900(void* pObject, BYTE fDelete);
 void NoopVtableCallbackThunk(void);
 int PASCAL ReturnTrueVtableCallbackThunk(void* pObject);
 int ReturnTrueVtableCallbackSecondaryThunk(void);
-int PASCAL ReturnTrueVtableCallback(void*);
-int ReturnTrueVtableCallbackSecondary(void);
-void NoopVtableCallback(void);
 void* DeleteEffStreamBaseWrapper00462810(void* pObject, BYTE fDelete);
 void* DeleteEffStreamBaseWrapper00462830(void* pObject, BYTE fDelete);
 void* DeleteEffStreamBaseWrapper00462850(void* pObject, BYTE fDelete);
@@ -145,35 +140,35 @@ struct VsNetVSMemObjectPointerArray {
 // FUNCTION: LEMBALL 0x00401451
 void NoopVtableCallbackThunk(void)
 {
-	NoopVtableCallback();
 }
 
 // FUNCTION: LEMBALL 0x00401564
 int PASCAL ReturnTrueVtableCallbackThunk(void* pObject)
 {
-	return ReturnTrueVtableCallback(pObject);
+	(void) pObject;
+	return 1;
 }
 
 // FUNCTION: LEMBALL 0x004026ad
 int ReturnTrueVtableCallbackSecondaryThunk(void)
 {
-	return ReturnTrueVtableCallbackSecondary();
+	return 1;
 }
 
 // FUNCTION: LEMBALL 0x0040abd0
-int PASCAL ReturnTrueVtableCallback(void*)
+int VsNetEffStreamCommon::AcceptEffStreamArgument(void*)
 {
 	return 1;
 }
 
 // FUNCTION: LEMBALL 0x0040abe0
-int ReturnTrueVtableCallbackSecondary(void)
+int VsNetEffStreamCommon::AcceptEffStream(void)
 {
 	return 1;
 }
 
 // FUNCTION: LEMBALL 0x0040abf0
-void NoopVtableCallback(void)
+void VsNetEffStreamCommon::NoopEffStream(void)
 {
 }
 

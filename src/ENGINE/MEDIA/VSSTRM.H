@@ -5,10 +5,10 @@
 
 #pragma vtordisp(on)
 
-// Compiler-generated deleting destructors and vtordisp entries proven by the
-// original vtables.  Keeping these by-name annotations in the declaration
-// unit lets reccmp follow the compiler-owned functions without introducing
-// source wrappers.
+// SYNTHETIC: LEMBALL 0x00462e20 symbol
+// ??_EVsNetCompositeEffTransportStack@@$4PPPPPPPM@KI@AEPAXI@Z
+// SYNTHETIC: LEMBALL 0x00462e50 symbol
+// ?DualStreamRet8@VsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEXHPAX@Z
 // SYNTHETIC: LEMBALL 0x004628e0 symbol
 // ??_GVsNetEffStreamChannelState@@UAEPAXI@Z
 // SYNTHETIC: LEMBALL 0x00462b80 symbol
@@ -132,6 +132,8 @@ struct VsNetEffStreamTag {
 	unsigned char m_bByte0e;
 };
 
+struct VsNetFileBackedDispatchOffsets;
+
 struct VsNetEffStreamCommon {
 	virtual int AcceptEffStreamArgument(void* pArgument);
 	virtual int AcceptEffStream(void);
@@ -140,14 +142,35 @@ struct VsNetEffStreamCommon {
 	virtual void WriteEffStreamTaggedHeader(void) = 0;
 	virtual ~VsNetEffStreamCommon();
 
-	int m_nReserved04;
-	int m_pPayloadBuffer08;
-	int m_fOwnsPayload0c;
-	int m_nReserved10;
+	union {
+		int m_nReserved04;
+		int m_nRecordHeaderOffset04;
+	};
+	union {
+		int m_pPayloadBuffer08;
+		int m_nPayloadBaseOffset08;
+	};
+	union {
+		int m_fOwnsPayload0c;
+		VsNetFileBackedDispatchOffsets* m_pChannelThunk0c;
+	};
+	union {
+		int m_nReserved10;
+		int m_nPendingSlot10;
+	};
 	int m_nReserved14;
-	int m_nBufferEnd18;
-	unsigned char* m_nReserved1c;
-	unsigned char* m_nReserved20;
+	union {
+		int m_nBufferEnd18;
+		int m_nAccumulatedStreamLength18;
+	};
+	union {
+		unsigned char* m_nReserved1c;
+		int m_nSaveRangeCursor1c;
+	};
+	union {
+		unsigned char* m_nReserved20;
+		int m_nLoadSourceCursor20;
+	};
 	int m_nReserved24;
 	int m_fBusy28;
 
@@ -282,9 +305,6 @@ struct VsNetRuntimeChannelCore :
 };
 
 struct VsNetRuntimeChannelStack :
-	virtual VsNetEffStreamChannelState,
-	virtual VsNetTimedEffStream,
-	virtual VsNetDualHandleEffStream,
 	virtual VsNetRuntimeChannelCore {
 	VsNetRuntimeChannelStack();
 	inline void* ConstructEffTransportRuntimeChannelStack(int) { return this; }
@@ -308,12 +328,9 @@ struct VsNetRuntimeChannelStack :
 };
 
 struct VsNetCompositeEffTransportStack :
-	virtual VsNetEffStreamChannelState,
-	virtual VsNetTimedEffStream,
-	virtual VsNetDualHandleEffStream,
 	virtual VsNetRuntimeChannelCore {
-	VsNetCompositeEffTransportStack();
-	inline void* ConstructCompositeEffTransportStack(int) { return this; }
+protected: VsNetCompositeEffTransportStack();
+	inline void* ConstructCompositeEffTransportStack(int) { return this; } public:
 	virtual int CompositeReserved00(const char* pszValue0, const char* pszValue1) = 0;
 	virtual void ServicePeer(void);
 	virtual void CompositeReserved08(void) = 0;

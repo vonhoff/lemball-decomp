@@ -19,6 +19,11 @@ STRICT_MARKER = re.compile(
     r"(?P<target>[A-Z0-9_]+) 0x(?P<address>[0-9a-f]{8})(?: .*)?$"
 )
 SOURCE_SUFFIXES = {".cpp", ".h", ".hpp"}
+NETWORK_ADDRESS_RANGES = (
+    (0x0045F3B0, 0x00462E5F),
+    (0x0046F210, 0x0047204F),
+    (0x004794E0, 0x0047C04F),
+)
 
 
 def source_path_from_module(module: str) -> str:
@@ -29,6 +34,35 @@ def source_path_from_module(module: str) -> str:
         if normalized.lower().endswith(".obj"):
             normalized = normalized[:-4]
     return normalized
+
+
+def read_roadmap_rows(path: Path) -> list[dict[str, str]]:
+    """Read roadmap CSV despite pinned reccmp leaving name commas unquoted."""
+    with path.open(encoding="utf-8-sig") as stream:
+        header_line = stream.readline().rstrip("\r\n")
+        header = header_line.split(",")
+        if header == [
+            "orig_sect_ofs",
+            "recomp_sect_ofs",
+            "orig_addr",
+            "recomp_addr",
+            "displacement",
+            "row_type",
+            "size",
+            "name",
+            "module",
+        ]:
+            rows: list[dict[str, str]] = []
+            for line_number, line in enumerate(stream, start=2):
+                fields = line.rstrip("\r\n").split(",", 7)
+                if len(fields) != 8 or "," not in fields[7]:
+                    raise SystemExit(f"malformed roadmap row {path}:{line_number}")
+                name, module = fields[7].rsplit(",", 1)
+                rows.append(dict(zip(header, [*fields[:7], name, module])))
+            return rows
+
+    with path.open(newline="", encoding="utf-8-sig") as stream:
+        return list(csv.DictReader(stream))
 
 
 def load_manifest(path: Path, target: str) -> tuple[dict[str, object], dict[int, dict[str, object]]]:
@@ -46,16 +80,15 @@ def load_manifest(path: Path, target: str) -> tuple[dict[str, object], dict[int,
 
 def load_roadmap(path: Path) -> dict[int, dict[str, str]]:
     functions: dict[int, dict[str, str]] = {}
-    with path.open(newline="", encoding="utf-8-sig") as stream:
-        for row in csv.DictReader(stream):
-            if row.get("row_type") != "fun" or not row.get("orig_addr"):
-                continue
-            address = int(row["orig_addr"], 16)
-            functions[address] = {
-                "module": source_path_from_module(row.get("module", "")) or "Unassigned",
-                "rebuilt_address": row.get("recomp_addr", ""),
-                "roadmap_name": row.get("name", ""),
-            }
+    for row in read_roadmap_rows(path):
+        if row.get("row_type") not in {"fun", "vto"} or not row.get("orig_addr"):
+            continue
+        address = int(row["orig_addr"], 16)
+        functions[address] = {
+            "module": source_path_from_module(row.get("module", "")) or "Unassigned",
+            "rebuilt_address": row.get("recomp_addr", ""),
+            "roadmap_name": row.get("name", ""),
+        }
     return functions
 
 
@@ -109,6 +142,22 @@ def marker_text(markers: list[dict[str, object]]) -> str:
     )
 
 
+def network_owned(
+    address: int,
+    function: dict[str, object] | None,
+    markers: list[dict[str, object]],
+) -> bool:
+    if any(start <= address <= end for start, end in NETWORK_ADDRESS_RANGES):
+        return True
+    name = "" if function is None else str(function.get("name", "")).casefold()
+    if any(token in name for token in ("vsnet", "tcpip", "efftransport", "socket")):
+        return True
+    return any(
+        "/engine/net/" in str(marker["path"]).replace("\\", "/").casefold()
+        for marker in markers
+    )
+
+
 def reconcile_inventory(
     manifest_path: Path,
     reccmp_path: Path,
@@ -145,6 +194,32 @@ def reconcile_inventory(
         mapping = roadmap.get(address, {})
         markers = source_markers.get(address, [])
         category = "" if function is None else str(function.get("category", ""))
+        if (
+            category == "thunk"
+            and str(mapping.get("module", "Unassigned")) == "Unassigned"
+            and function is not None
+            and function.get("thunk_target")
+        ):
+            target = int(str(function["thunk_target"]), 16)
+            visited = {address}
+            while target not in visited:
+                visited.add(target)
+                target_mapping = roadmap.get(target, {})
+                if str(target_mapping.get("module", "Unassigned")) != "Unassigned":
+                    mapping = {
+                        "module": target_mapping["module"],
+                        "rebuilt_address": "",
+                        "roadmap_name": target_mapping.get("roadmap_name", ""),
+                    }
+                    break
+                target_function = manifest_functions.get(target)
+                if (
+                    target_function is None
+                    or target_function.get("category") != "thunk"
+                    or not target_function.get("thunk_target")
+                ):
+                    break
+                target = int(str(target_function["thunk_target"]), 16)
         runtime_symbol = runtime_symbols.get(address)
         resolution = ""
         problem = False
@@ -176,6 +251,14 @@ def reconcile_inventory(
                 resolution = f"explicit_{category}_exclusion"
         else:
             resolution = "unknown_manifest_category"
+            problem = True
+
+        if (
+            category in REPORTABLE_CATEGORIES
+            and str(mapping.get("module", "Unassigned")) == "Unassigned"
+            and network_owned(address, function, markers)
+        ):
+            resolution = "network_entity_unassigned"
             problem = True
 
         row = {

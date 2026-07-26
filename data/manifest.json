@@ -36526,9 +36526,9 @@
       "address": "00462C30",
       "name": "WriteRuntimeChannelGlobalSessionVirtualBaseThunkBody",
       "size": 15,
-      "category": "internal",
-      "is_thunk": false,
-      "thunk_target": null,
+      "category": "thunk",
+      "is_thunk": true,
+      "thunk_target": "004601B0",
       "is_external": false,
       "provenance": "ghidra"
     },
@@ -36546,9 +36546,9 @@
       "address": "00462C50",
       "name": "ClaimRuntimeChannelRecordVirtualBaseThunkBody",
       "size": 15,
-      "category": "internal",
-      "is_thunk": false,
-      "thunk_target": null,
+      "category": "thunk",
+      "is_thunk": true,
+      "thunk_target": "004601E0",
       "is_external": false,
       "provenance": "ghidra"
     },
@@ -36626,9 +36626,9 @@
       "address": "00462D00",
       "name": "ClearRuntimeChannelPendingWriteVirtualBaseThunkBody",
       "size": 23,
-      "category": "internal",
-      "is_thunk": false,
-      "thunk_target": null,
+      "category": "thunk",
+      "is_thunk": true,
+      "thunk_target": "004605B0",
       "is_external": false,
       "provenance": "ghidra"
     },
@@ -36763,6 +36763,16 @@
       "provenance": "ghidra"
     },
     {
+      "address": "00462E20",
+      "name": "DeleteCompositeEffTransportStackDualAdjustedThunk",
+      "size": 14,
+      "category": "internal",
+      "is_thunk": false,
+      "thunk_target": null,
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
       "address": "00462E30",
       "name": "queue_eff_transport_connect_event",
       "size": 8,
@@ -36779,6 +36789,16 @@
       "category": "thunk",
       "is_thunk": true,
       "thunk_target": "00460F60",
+      "is_external": false,
+      "provenance": "ghidra"
+    },
+    {
+      "address": "00462E50",
+      "name": "DispatchCompositeEffTransportDualRet8AdjustedThunk",
+      "size": 8,
+      "category": "thunk",
+      "is_thunk": true,
+      "thunk_target": "00460FF0",
       "is_external": false,
       "provenance": "ghidra"
     },
@@ -41614,11 +41634,11 @@
     },
     {
       "address": "00471D90",
-      "name": "FUN_00471d90",
+      "name": "DeleteTcpipSocketStackDualAdjustedThunk",
       "size": 14,
-      "category": "internal",
-      "is_thunk": false,
-      "thunk_target": null,
+      "category": "thunk",
+      "is_thunk": true,
+      "thunk_target": "00471CD0",
       "is_external": false,
       "provenance": "ghidra"
     },

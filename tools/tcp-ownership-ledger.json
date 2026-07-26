@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "description": "Proven TCP construction-view and complete-owner address ledger",
+  "construction_views": [
+    "VsNetCompositeEffTransportStack",
+    "VsNetTcpipSocketChannelStackLayout"
+  ],
+  "complete_object_owners": [
+    "VsNetAllocatedTcpipEffTransportComposite",
+    "VsNetTcpipEffTransportComposite"
+  ],
+  "shared_virtual_interfaces": [
+    "VsNetEffStreamChannelState",
+    "VsNetTimedEffStream",
+    "VsNetDualHandleEffStream",
+    "VsNetRuntimeChannelCore",
+    "VsNetSocketWindowEffChannel",
+    "VsNetDualSocketWindowEffChannelBundle",
+    "VsNetTimedSocketEffChannelBundleLayout",
+    "VsNetTcpipClientAsyncDispatcher"
+  ],
+  "entities": {
+    "composite_construction_bodies": [
+      "00460A90",
+      "00460C00",
+      "00460D70",
+      "00460F00",
+      "00460F60",
+      "00460FF0",
+      "00461030",
+      "004629D0",
+      "00462DB0"
+    ],
+    "tcp_construction_and_owner_bodies": [
+      "004700F0",
+      "00470120",
+      "004701A0",
+      "00470220",
+      "00470270",
+      "004704E0",
+      "00470B90",
+      "00470DD0",
+      "00471090",
+      "00471110",
+      "00471210",
+      "004712E0",
+      "004715E0",
+      "00471810",
+      "00471830"
+    ],
+    "late_virtual_and_destruction_bodies": [
+      "00471A60",
+      "00471A90",
+      "00471AD0",
+      "00471AF0",
+      "00471B10",
+      "00471B60",
+      "00471B80",
+      "00471BB0",
+      "00471BF0",
+      "00471C00",
+      "00471C10",
+      "00471C20",
+      "00471CD0",
+      "00471D30",
+      "00471D70",
+      "00471DE0",
+      "00471E40",
+      "00471E80",
+      "00471EE0",
+      "00471F60",
+      "00471FC0"
+    ],
+    "composite_generated_thunks": [
+      "00462DA0",
+      "00462DF0",
+      "00462E00",
+      "00462E10",
+      "00462E20",
+      "00462E30",
+      "00462E40",
+      "00462E50"
+    ],
+    "tcp_generated_and_adjusted_entries": [
+      "00471A50",
+      "00471B00",
+      "00471B70",
+      "00471B90",
+      "00471BA0",
+      "00471BD0",
+      "00471BE0",
+      "00471C70",
+      "00471C80",
+      "00471C90",
+      "00471CA0",
+      "00471CB0",
+      "00471CC0",
+      "00471D20",
+      "00471D50",
+      "00471D60",
+      "00471D90",
+      "00471DA0",
+      "00471DB0",
+      "00471DD0",
+      "00471E30",
+      "00471E50",
+      "00471E70",
+      "00471ED0",
+      "00471F00",
+      "00471F10",
+      "00471F20",
+      "00471F30",
+      "00471F40",
+      "00471F50",
+      "00471FB0",
+      "00471FD0",
+      "00471FE0",
+      "00471FF0",
+      "00472000",
+      "00472010",
+      "00472020",
+      "00472030",
+      "00472040"
+    ]
+  },
+  "boundary_proofs": {
+    "00462E20": {
+      "instruction_bytes": "2b49fc81e9a8000000e982ffffff",
+      "instruction_size": 14,
+      "manifest_size": 14,
+      "target": "00462DB0",
+      "original_vtable_xrefs": [
+        "00499154"
+      ],
+      "source_authored": false
+    },
+    "00462E50": {
+      "instruction_bytes": "2b49fce998e1ffff",
+      "instruction_size": 8,
+      "manifest_size": 8,
+      "target": "00460FF0",
+      "original_vtable_xrefs": [
+        "00499164"
+      ],
+      "source_authored": false
+    },
+    "00471D90": {
+      "instruction_bytes": "2b49fc81e9a8000000e932ffffff",
+      "instruction_size": 14,
+      "manifest_size": 14,
+      "target": "00471CD0",
+      "original_vtable_xrefs": [
+        "0049A23C"
+      ],
+      "source_authored": false
+    }
+  },
+  "layout_invariants": {
+    "allocated_size": 368,
+    "standalone_size": 364,
+    "allocated_construction_view_offsets": [
+      0,
+      44
+    ],
+    "vbptr_offsets": [
+      4,
+      32,
+      44,
+      164,
+      168,
+      284,
+      288,
+      304,
+      308,
+      328,
+      332,
+      340,
+      344
+    ]
+  }
+}

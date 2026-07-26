@@ -11,9 +11,9 @@ import sys
 from pathlib import Path
 
 try:
-    from function_inventory import load_runtime_symbols, symbol_category
+    from function_inventory import load_runtime_symbols, read_roadmap_rows, symbol_category
 except ModuleNotFoundError:
-    from tools.function_inventory import load_runtime_symbols, symbol_category
+    from tools.function_inventory import load_runtime_symbols, read_roadmap_rows, symbol_category
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -78,19 +78,18 @@ def generate_roadmap(target: str, roadmap: Path) -> None:
 
 def read_rebuilt_only(roadmap: Path) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
-    with roadmap.open(newline="", encoding="utf-8-sig") as stream:
-        for row in csv.DictReader(stream):
-            if row.get("row_type") != "fun":
-                continue
-            if row.get("orig_addr") or not row.get("recomp_addr"):
-                continue
-            rows.append(
-                {
-                    "module": normalize_module(row.get("module", "")),
-                    "symbol": row.get("name", "").strip(),
-                    "recomp_addr": row.get("recomp_addr", "").strip(),
-                }
-            )
+    for row in read_roadmap_rows(roadmap):
+        if row.get("row_type") != "fun":
+            continue
+        if row.get("orig_addr") or not row.get("recomp_addr"):
+            continue
+        rows.append(
+            {
+                "module": normalize_module(row.get("module", "")),
+                "symbol": row.get("name", "").strip(),
+                "recomp_addr": row.get("recomp_addr", "").strip(),
+            }
+        )
     return rows
 
 

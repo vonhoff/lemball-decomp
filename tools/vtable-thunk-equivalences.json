@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "description": "Original linker jump thunks proven equivalent to rebuilt direct vtable targets",
+  "entries": [
+    {
+      "original_thunk": "00401564",
+      "size": 5,
+      "instruction_bytes": "e967960000",
+      "target": "0040ABD0",
+      "original_vtable": "0049A4C0",
+      "slot_offset": 0,
+      "owner": "VsNetEffStreamRecordSlotTable::AcceptEffStreamArgument"
+    },
+    {
+      "original_thunk": "004026AD",
+      "size": 5,
+      "instruction_bytes": "e92e850000",
+      "target": "0040ABE0",
+      "original_vtable": "0049A4C0",
+      "slot_offset": 4,
+      "owner": "VsNetEffStreamRecordSlotTable::AcceptEffStream"
+    },
+    {
+      "original_thunk": "00401451",
+      "size": 5,
+      "instruction_bytes": "e99a970000",
+      "target": "0040ABF0",
+      "original_vtable": "0049A4C0",
+      "slot_offset": 12,
+      "owner": "VsNetEffStreamRecordSlotTable::NoopEffStream"
+    }
+  ]
+}

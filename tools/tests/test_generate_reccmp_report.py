@@ -17,6 +17,14 @@ assert SPEC is not None and SPEC.loader is not None
 reporter = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(reporter)
 
+INVENTORY_SCRIPT = Path(__file__).resolve().parents[1] / "function_inventory.py"
+INVENTORY_SPEC = importlib.util.spec_from_file_location(
+    "function_inventory_under_test", INVENTORY_SCRIPT
+)
+assert INVENTORY_SPEC is not None and INVENTORY_SPEC.loader is not None
+inventory = importlib.util.module_from_spec(INVENTORY_SPEC)
+INVENTORY_SPEC.loader.exec_module(inventory)
+
 
 def entity(
     address: int,
@@ -58,6 +66,71 @@ class ObjdiffReportTests(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.temporary.cleanup()
+
+    def test_roadmap_reader_preserves_unquoted_commas_in_name(self) -> None:
+        self.roadmap.write_text(
+            "orig_sect_ofs,recomp_sect_ofs,orig_addr,recomp_addr,displacement,"
+            "row_type,size,name,module\n"
+            "0001:1,0001:2,0x471ba0,0x42e880,-1,vto,0x8,"
+            "Body`vtordisp{-4, 0}',CMakeFiles/LEMBALL.dir/src/ENGINE/NET/VSNETTCP.CPP.obj\n",
+            encoding="utf-8",
+        )
+        rows = inventory.read_roadmap_rows(self.roadmap)
+        self.assertEqual(rows[0]["name"], "Body`vtordisp{-4, 0}'")
+        self.assertEqual(
+            rows[0]["module"],
+            "CMakeFiles/LEMBALL.dir/src/ENGINE/NET/VSNETTCP.CPP.obj",
+        )
+
+    def test_network_ownership_includes_address_range_and_source_markers(self) -> None:
+        self.assertTrue(inventory.network_owned(0x00470000, None, []))
+        self.assertTrue(
+            inventory.network_owned(
+                0x00401000,
+                None,
+                [{"path": Path("src/ENGINE/NET/A.CPP")}],
+            )
+        )
+        self.assertFalse(inventory.network_owned(0x00401000, None, []))
+
+    def test_unimplemented_thunk_inherits_proven_target_module(self) -> None:
+        self.write_manifest(
+            [
+                {
+                    "address": "00401000",
+                    "name": "NetworkThunk",
+                    "size": 5,
+                    "category": "thunk",
+                    "is_thunk": True,
+                    "thunk_target": "00402000",
+                },
+                {
+                    "address": "00402000",
+                    "name": "NetworkBody",
+                    "size": 10,
+                    "category": "internal",
+                },
+            ]
+        )
+        self.roadmap.write_text(
+            "orig_sect_ofs,recomp_sect_ofs,orig_addr,recomp_addr,displacement,"
+            "row_type,size,name,module\n"
+            "1:0,1:0,0x00402000,0x00502000,0,fun,10,NetworkBody,"
+            "CMakeFiles/LEMBALL.dir/src/ENGINE/NET/OWNER.CPP.obj\n",
+            encoding="utf-8",
+        )
+        native = SimpleNamespace(filename="LEMBALL.EXE", entities={})
+        rows, unresolved = inventory.reconcile_inventory(
+            self.manifest,
+            self.reccmp,
+            self.roadmap,
+            self.source_root,
+            self.runtime_symbols,
+            native_report=native,
+        )
+        thunk = next(row for row in rows if row["address"] == "0x00401000")
+        self.assertEqual(thunk["module"], "ENGINE/NET/OWNER.CPP")
+        self.assertFalse(unresolved)
 
     def write_manifest(self, functions: list[dict[str, object]]) -> None:
         self.manifest.write_text(

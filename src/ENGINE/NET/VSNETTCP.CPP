@@ -14,76 +14,6 @@
 #include <new>
 #endif
 
-// FUNCTION: LEMBALL 0x00462cb0
-// VsNetRuntimeChannelCore::`scalar deleting destructor'
-// SYNTHETIC: LEMBALL 0x00471b00 symbol
-// ??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXI@Z
-// FUNCTION: LEMBALL 0x00471b10
-// VsNetAllocatedTcpipEffTransportComposite::`scalar deleting destructor'
-// SYNTHETIC: LEMBALL 0x00471b90 symbol
-// ??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@DA@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00471b70 symbol
-// ?ClearPendingWrite@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEXPAX@Z
-// SYNTHETIC: LEMBALL 0x00471cb0 symbol
-// ?HandleAsyncMessage@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEHHPAXI@Z
-// SYNTHETIC: LEMBALL 0x00471ca0 symbol
-// ?DualStreamRet8@VsNetCompositeEffTransportStack@@$4PPPPPPPM@3AEXHPAX@Z
-// SYNTHETIC: LEMBALL 0x00471e30 symbol
-// ?ClearPendingWrite@VsNetDualSocketWindowEffChannelBundle@@$4PPPPPPPM@A@AEXPAX@Z
-// SYNTHETIC: LEMBALL 0x00471dd0 symbol
-// ??_EVsNetDualSocketWindowEffChannelBundle@@$4PPPPPPPM@A@AEPAXI@Z
-// FUNCTION: LEMBALL 0x00471de0
-// VsNetDualSocketWindowEffChannelBundle::`scalar deleting destructor'
-
-// SYNTHETIC: LEMBALL 0x00471a80 symbol
-// ??_EVsNetSocketWindowEffChannel@@$4PPPPPPPM@A@AEPAXI@Z
-// FUNCTION: LEMBALL 0x00471a90
-// VsNetSocketWindowEffChannel::`scalar deleting destructor'
-// SYNTHETIC: LEMBALL 0x00471cc0 symbol
-// ??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@A@AEPAXI@Z
-// FUNCTION: LEMBALL 0x00471cd0
-// VsNetTcpipSocketChannelStackLayout::`scalar deleting destructor'
-// SYNTHETIC: LEMBALL 0x00471d50 symbol
-// ??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@DA@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00471e70 symbol
-// ??_EVsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEPAXI@Z
-// FUNCTION: LEMBALL 0x00471e80
-// VsNetTimedSocketEffChannelBundleLayout::`scalar deleting destructor'
-// SYNTHETIC: LEMBALL 0x00471f00 symbol
-// ??_EVsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@DA@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00471f50 symbol
-// ??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXI@Z
-// FUNCTION: LEMBALL 0x00471f60
-// VsNetTcpipEffTransportComposite::`scalar deleting destructor'
-// SYNTHETIC: LEMBALL 0x00471fd0 symbol
-// ??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@DA@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00471dc0 symbol
-// ?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPPFM@AEHXZ
-// SYNTHETIC: LEMBALL 0x00471e20 symbol
-// ?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPPFM@AEXXZ
-// SYNTHETIC: LEMBALL 0x00471fb0 symbol
-// ?ClearPendingWrite@VsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEXPAX@Z
-// SYNTHETIC: LEMBALL 0x00471e50 symbol
-// ??_EVsNetDualSocketWindowEffChannelBundle@@WCM@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00471bf0 symbol
-// ?CaptureTimedSocketLookup@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEXPAX@Z
-// SYNTHETIC: LEMBALL 0x00471c00 symbol
-// ?SendTimedSocketPayload@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEHPAXH@Z
-// SYNTHETIC: LEMBALL 0x00471c10 symbol
-// ?SetTimedChannelWord@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEXG@Z
-// SYNTHETIC: LEMBALL 0x00471af0 symbol
-// ?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPONI@AEHXZ
-// SYNTHETIC: LEMBALL 0x00471b60 symbol
-// ?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPONI@AEXXZ
-// SYNTHETIC: LEMBALL 0x00471c60 symbol
-// ??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@KI@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00471e60 symbol
-// ?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPPDI@AEHXZ
-// SYNTHETIC: LEMBALL 0x00471ec0 symbol
-// ?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPPDI@AEXXZ
-// SYNTHETIC: LEMBALL 0x00472000 symbol
-// ??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@KI@AEPAXI@Z
-
 #ifdef ntohs
 #undef ntohs
 #endif
@@ -187,7 +117,7 @@ public:
 
 class VsNetTcpipClientAsyncDispatcher {
 public:
-	virtual int DispatchTcpipClientAsyncMessage(int nMessage, void* pReserved, unsigned int nEvent) = 0;
+	virtual int HandleAsyncMessage(int nMessage, void* pReserved, unsigned int nEvent) = 0;
 };
 
 class VsNetTcpipHostPortAsyncDispatcher {
@@ -282,7 +212,6 @@ public:
 };
 
 class VsNetTimedSocketEffChannelBundleLayout :
-	virtual public VsNetEffStreamChannelState,
 	virtual public VsNetTimedEffStream,
 	virtual public VsNetSocketWindowEffChannel {
 public:
@@ -366,22 +295,18 @@ struct VsNetAllocatedTcpipEffTransportCompositeLayout {
 typedef VsNetRuntimeChannelCore VsNetTcpipRuntimeChannelFacet;
 
 struct VsNetDualSocketWindowEffChannelBundle :
-	virtual VsNetEffStreamChannelState,
 	virtual VsNetDualHandleEffStream,
 	virtual VsNetSocketWindowEffChannel {
 	virtual void ClearPendingWrite(void* pArgument);
 };
 
 struct VsNetTcpipSocketChannelStackLayout :
-	virtual VsNetEffStreamChannelState,
-	virtual VsNetTimedEffStream,
-	virtual VsNetDualHandleEffStream,
 	virtual VsNetRuntimeChannelCore,
 	virtual VsNetSocketWindowEffChannel,
 	virtual VsNetDualSocketWindowEffChannelBundle,
 	virtual VsNetTimedSocketEffChannelBundleLayout {
-	VsNetTcpipSocketChannelStackLayout();
-	inline void* ConstructTcpipSocketChannelStack(int) { return this; }
+protected: VsNetTcpipSocketChannelStackLayout();
+	inline void* ConstructTcpipSocketChannelStack(int) { return this; } public:
 	virtual void ClearPendingWrite(void* pArgument);
 	virtual int HandleAsyncMessage(int nMessage, void* pReserved, unsigned int nEvent);
 };
@@ -390,15 +315,13 @@ struct VsNetTcpipSocketChannelStackLayout :
  * occupy +0x24/+0x28 and its seven virtual-base entries mirror the socket
  * stack construction view. */
 struct VsNetTcpipEffTransportOwnershipPath :
-	virtual VsNetEffStreamChannelState,
-	virtual VsNetTimedEffStream,
-	virtual VsNetDualHandleEffStream,
 	virtual VsNetRuntimeChannelCore,
 	virtual VsNetSocketWindowEffChannel,
 	virtual VsNetDualSocketWindowEffChannelBundle,
 	virtual VsNetTimedSocketEffChannelBundleLayout {
 	virtual ~VsNetTcpipEffTransportOwnershipPath() = 0;
 	virtual void ClearPendingWrite(void* pArgument) = 0;
+	virtual int HandleAsyncMessage(int nMessage, void* pReserved, unsigned int nEvent) = 0;
 	int m_nSocketHandle24;
 	int m_nLookupHandle28;
 };
@@ -419,6 +342,7 @@ struct VsNetAllocatedTcpipEffTransportComposite :
 	virtual void CompositeReserved10(void);
 	virtual void CompositeReserved14(void);
 	virtual void ClearPendingWrite(void* pArgument);
+	virtual void* ClaimRecord(void);
 	virtual int HandleAsyncMessage(int nMessage, void* pReserved, unsigned int nEvent);
 };
 
@@ -432,7 +356,7 @@ struct VsNetTcpipEffTransportComposite :
 	VsNetTcpipEffTransportComposite();
 	~VsNetTcpipEffTransportComposite();
 	virtual void ClearPendingWrite(void* pArgument);
-	virtual int DispatchTcpipClientAsyncMessage(int nMessage, void* pReserved, unsigned int nEvent);
+	virtual int HandleAsyncMessage(int nMessage, void* pReserved, unsigned int nEvent);
 };
 
 typedef VsNetCompositeEffTransportStack VsNetCompositeEffTransportStackLayout;
@@ -506,7 +430,6 @@ void CompleteEffTransportPendingWriteAllocatedThunkBody(void* pObject, int fQueu
 void* DeleteCompositeTcpipSocketChannelStackTimedAdjustedThunk(void* pObject, BYTE fFreeMemory);
 void LEMBALL_FASTCALL WriteCompositeTcpipGlobalSessionBody(void* pObject);
 void LEMBALL_FASTCALL WriteCompositeTcpipGlobalSessionAdjustedThunk(void* pObject);
-void* DispatchCompositeTcpipAckedPayloadAdjustedThunk(void* pObject);
 void AllocatedTcpipCompositeCaptureLookupAdjustedThunk(void* pObject, void* pLookupResult);
 int AllocatedTcpipCompositeSendUdpAdjustedThunk(void* pObject, void* pBuffer, int cbBuffer);
 void AllocatedTcpipCompositeSetPortAdjustedThunk(void* pObject, short nPort);
@@ -514,7 +437,6 @@ void SetTcpipSocketChannelAssignedPort(void* pObject, short nPort);
 void* DeleteAllocatedTcpipSocketChannelStackAdjustedThunk(void* pObject, BYTE fFreeMemory);
 void LEMBALL_FASTCALL QueueAllocatedEffTransportConnectEventAdjustedThunk(void* pObject);
 void LEMBALL_FASTCALL WriteAllocatedEffTransportGlobalSessionAdjustedThunk(void* pObject);
-void* DispatchAllocatedAckedEffTransportPayloadAdjustedThunk(void* pObject);
 void QueueAllocatedEffTransportPayloadEventAdjustedThunk(void* pObject, int nType, void* pPayload);
 int DispatchAllocatedTcpipHostPortAsyncMessageAdjustedThunk(void* pObject,
 															int nMessage,
@@ -1546,6 +1468,21 @@ void DestroyTcpipEffTransportComposite(int nObjectBasePlus0x30)
 	((VsNetRuntimeChannelStackReleaseFront*) (unsigned long) (nObjectBasePlus0x30 - 0xc))->Release();
 }
 #endif
+// FUNCTION: LEMBALL 0x00470270
+VsNetTcpipEffTransportComposite::VsNetTcpipEffTransportComposite()
+{
+	m_nSocketHandle24 = 0;
+	m_nLookupHandle28 = 0;
+}
+
+// FUNCTION: LEMBALL 0x004704e0
+VsNetTcpipEffTransportComposite::~VsNetTcpipEffTransportComposite()
+{
+	if (m_nSocketHandle24 != 0) {
+		FreeVSMemBlock((void*) (unsigned long) m_nSocketHandle24);
+	}
+}
+
 // FUNCTION: LEMBALL 0x00470580
 void VsNetTcpipCompositeControlVtableModel::ConfigureRemoteHost(const char* pszHost)
 
@@ -1800,7 +1737,7 @@ void VsNetHostLookupCompletionAdapter::HandleServicePortLookupComplete(int nErro
 	pDispatchQueue->QueueEvent(abEvent);
 }
 // FUNCTION: LEMBALL 0x00470b90
-int VsNetTcpipEffTransportComposite::DispatchTcpipClientAsyncMessage(int nMessage,
+int VsNetTcpipEffTransportComposite::HandleAsyncMessage(int nMessage,
 	void* pReserved,
 	unsigned int nEvent)
 
@@ -2328,27 +2265,6 @@ VsNetTcpipSocketChannelStackLayout::VsNetTcpipSocketChannelStackLayout()
 {
 }
 
-// FUNCTION: LEMBALL 0x00470270
-VsNetTcpipEffTransportComposite::VsNetTcpipEffTransportComposite()
-{
-	m_nSocketHandle24 = 0;
-	m_nLookupHandle28 = 0;
-}
-
-// FUNCTION: LEMBALL 0x004704e0
-VsNetTcpipEffTransportComposite::~VsNetTcpipEffTransportComposite()
-{
-	if (m_nSocketHandle24 != 0) {
-		FreeVSMemBlock((void*) (unsigned long) m_nSocketHandle24);
-	}
-}
-
-// FUNCTION: LEMBALL 0x00471fc0
-void VsNetTcpipEffTransportComposite::ClearPendingWrite(void* pArgument)
-{
-	VsNetRuntimeChannelStack::ClearPendingWrite(pArgument);
-}
-
 #if 0
 void* VsNetTcpipSocketChannelStackLayout::ConstructTcpipSocketChannelStack(int fConstructEmbeddedObjects)
 
@@ -2529,11 +2445,11 @@ void LEMBALL_FASTCALL WriteCompositeTcpipGlobalSessionBody(void* pObject)
 	((VsNetRuntimeChannelCore*) (pAdjusted + pOffsets[2] - 0x38))
 		->VsNetRuntimeChannelCore::WriteGlobalSession();
 }
-// FUNCTION: LEMBALL 0x00471bd0
-void* DispatchCompositeTcpipAckedPayloadAdjustedThunk(void* pObject)
+
+// FUNCTION: LEMBALL 0x00471be0
+void* VsNetAllocatedTcpipEffTransportComposite::ClaimRecord(void)
 {
-	pObject = (char*) pObject - *(int*) ((char*) pObject - 4) - 4;
-	return ((VsNetDispatchAckedEffTransportPayloadView*) pObject)->DispatchAckedEffTransportPayloadEvent();
+	return VsNetCompositeEffTransportStack::ClaimRecord();
 }
 // LEGACY THUNK: LEMBALL 0x00471bf0
 #if 0
@@ -2606,12 +2522,6 @@ void LEMBALL_FASTCALL WriteAllocatedEffTransportGlobalSessionAdjustedThunk(void*
 	WriteCompositeTcpipGlobalSessionBody(pObject);
 }
 #pragma optimize("", on)
-// FUNCTION: LEMBALL 0x00471c90
-void* DispatchAllocatedAckedEffTransportPayloadAdjustedThunk(void* pObject)
-{
-	pObject = (char*) pObject - *(int*) ((char*) pObject - 4) - 0x7c;
-	return ((VsNetDispatchAckedEffTransportPayloadView*) pObject)->DispatchAckedEffTransportPayloadEvent();
-}
 // DISABLED FUNCTION: LEMBALL 0x00471ca0
 #if 0
 void QueueAllocatedEffTransportPayloadEventAdjustedThunk(void* pObject, int nType, void* pPayload)
@@ -2705,14 +2615,6 @@ void* LEMBALL_FASTCALL ClaimTcpipSocketStackCompositeBody(void* pObject)
 	return ((VsNetRuntimeChannelCore*) (pAdjusted + pOffsets[2] - 0x38))
 		->VsNetRuntimeChannelCore::ClaimRecord();
 }
-// DISABLED FUNCTION: LEMBALL 0x00471d90
-#if 0
-void* DeleteTcpipSocketStackDualAdjustedThunk(void* pObject, BYTE fFreeMemory)
-{
-	pObject = (char*) pObject - *(int*) ((char*) pObject - 4) - 0xa8;
-	return ((VsNetTcpipSocketChannelStackWrapperView*) pObject)->DeleteTcpipSocketChannelStackWrapper(fFreeMemory);
-}
-#endif
 // FUNCTION: LEMBALL 0x00471da0
 #pragma optimize("g", on)
 void* LEMBALL_FASTCALL ClaimTcpipSocketStackDualAdjustedThunk(void* pObject)
@@ -2803,6 +2705,11 @@ void VsNetTimedSocketEffChannelBundleLayout::ClearPendingWrite(void* pUnused)
 	((VsNetTimedEffStream*) ((char*) this + nPendingDelta + 0x60))
 		->VsNetTimedEffStream::ClearPendingWrite(pUnused);
 }
+// FUNCTION: LEMBALL 0x00471fc0
+void VsNetTcpipEffTransportComposite::ClearPendingWrite(void* pArgument)
+{
+	VsNetRuntimeChannelStack::ClearPendingWrite(pArgument);
+}
 // DISABLED FUNCTION: LEMBALL 0x00471f50
 #if 0
 void* TimedSocketBundleCompositeDeleteAdjustedThunk(void* pObject, BYTE fDelete)
@@ -2853,7 +2760,8 @@ void LEMBALL_FASTCALL WriteCompositeTcpipEffTransportGlobalSessionAdjustedThunk(
 #pragma optimize("g", on)
 void* LEMBALL_FASTCALL ClaimCompositeTcpipEffTransportRecordAdjustedThunk(void* pObject)
 {
-	return ClaimTcpipSocketStackCompositeBody((char*) pObject - *(int*) ((char*) pObject - 4) - 8);
+	return ClaimTcpipSocketStackCompositeBody(
+		(char*) pObject - *(int*) ((char*) pObject - 4) - 8);
 }
 #pragma optimize("", on)
 // DISABLED FUNCTION: LEMBALL 0x00472000
@@ -2896,6 +2804,6 @@ int DispatchTcpipClientAsyncMessageAdjustedThunk(void* pObject, int nMessage, vo
 
 {
 	pObject = (char*) pObject - *(int*) ((char*) pObject - 4);
-	return ((VsNetTcpipClientAsyncDispatcher*) pObject)->DispatchTcpipClientAsyncMessage(nMessage, pReserved, nEvent);
+	return ((VsNetTcpipClientAsyncDispatcher*) pObject)->HandleAsyncMessage(nMessage, pReserved, nEvent);
 }
 #endif
