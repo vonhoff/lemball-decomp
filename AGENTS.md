@@ -5,20 +5,15 @@ MSVC 4.20, Ghidra, and reccmp.
 
 ## Start
 
-Coordinator only: run `python tools\claims.py OWNER`, commit `CLAIMS.md`, then
-create `worker/OWNER` worktree from primary checkout. Run
-`python tools\setup_worker.py WORKTREE_PATH` once after creation. It links
-MSVC and reccmp environment from primary checkout; build output remains local.
-Give path and range to worker. Workers never run `tools\claims.py`; they work
-only in assigned worktree. Keep claim until coordinator merges worker commit,
-verifies integration build, then releases claim with
-`python tools\claims.py release OWNER`.
+Run `python tools\coordinator.py` to select next range. One agent edits and
+builds in this checkout at a time. Commit source and status notes before next
+editing agent begins.
 
 Original entry address owns function. Inspect callers and callees anywhere,
-but do not edit an out-of-range function. If local match needs such an edit,
+but do not edit outside coordinator range. If local match needs such an edit,
 record address and evidence in range CSV under `data/function-status/`, then
-tell coordinator. Coordinate before changing shared class layouts, inheritance,
-vtables, or globals.
+leave it for later. Coordinate before changing shared class layouts,
+inheritance, vtables, or globals.
 
 ## Work
 
@@ -43,8 +38,7 @@ From repository root:
 
 ```powershell
 python tools/build_msvc420.py
-$primary = (git worktree list --porcelain | Where-Object { $_ -like "worktree *" } | Select-Object -First 1).Substring(9)
-.decomp-venv\Scripts\reccmp-project.exe detect --search-path "$primary\data"
+.decomp-venv\Scripts\reccmp-project.exe detect --search-path data
 Push-Location build-msvc420
 ..\.decomp-venv\Scripts\reccmp-reccmp.exe --target LEMBALL --json reccmp.json --json-diet
 ..\.decomp-venv\Scripts\reccmp-decomplint.exe --target LEMBALL
@@ -54,6 +48,4 @@ Pop-Location
 
 100% reccmp result is only completion evidence. Before handoff, update useful
 blocker or next-step notes in `data/function-status/<range>.csv`, rerun checks
-available in worker worktree, commit source and notes. Coordinator runs full
-integration build/reccmp before releasing claim. Never share uncommitted edits
-between worker worktrees.
+available in this checkout, commit source and notes.
