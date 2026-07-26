@@ -119,6 +119,35 @@ def configure(root, tools):
     print(f"shared toolchain configured: {tools}")
 
 
+def remove_local_dependencies(root):
+    for name in SHARED_DIRECTORIES:
+        path = root / name
+        if os.path.lexists(path):
+            os.rmdir(path)
+    path = root / "data" / "LEMBALL.EXE"
+    if os.path.lexists(path):
+        path.unlink()
+
+
+def relocate(root, tools):
+    require_primary_worktree(root)
+    current = toolchain_root(root)
+    tools = tools.resolve()
+    if current == tools:
+        print(f"shared toolchain already configured: {tools}")
+        return
+    if tools.exists():
+        raise SystemExit(f"toolchain path already exists: {tools}")
+    for name in (*SHARED_DIRECTORIES, "LEMBALL.EXE"):
+        if not (current / name).exists():
+            raise SystemExit(f"missing shared dependency: {current / name}")
+    remove_local_dependencies(root)
+    shutil.move(str(current), str(tools))
+    (root / TOOLCHAIN_CONFIG).write_text(str(tools) + "\n", encoding="utf-8")
+    setup(root, root, tools)
+    print(f"shared toolchain moved: {tools}")
+
+
 def start(root, owner, path=None):
     require_primary_worktree(root)
     tools = toolchain_root(root)
@@ -165,6 +194,7 @@ def main(argv=None):
     check.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     setup_command = commands.add_parser("setup")
     setup_command.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    setup_command.add_argument("--refresh", action="store_true")
     configure_command = commands.add_parser("configure")
     configure_command.add_argument(
         "--toolchain-root",
@@ -173,6 +203,9 @@ def main(argv=None):
         help="new shared directory for msvc420, decomp-venv, and LEMBALL.EXE",
     )
     configure_command.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    relocate_command = commands.add_parser("relocate")
+    relocate_command.add_argument("--toolchain-root", type=Path, required=True)
+    relocate_command.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args(argv)
     root = args.root.resolve()
     if args.command == "start":
@@ -180,9 +213,13 @@ def main(argv=None):
     elif args.command == "release":
         release(root, args.owner)
     elif args.command == "setup":
+        if args.refresh:
+            remove_local_dependencies(root)
         setup(root)
     elif args.command == "configure":
         configure(root, args.toolchain_root)
+    elif args.command == "relocate":
+        relocate(root, args.toolchain_root)
     else:
         claims.check(root)
 

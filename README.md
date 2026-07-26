@@ -11,7 +11,7 @@ From primary integration checkout, move local compiler, Python tools, and
 original executable into one shared host cache:
 
 ```powershell
-python tools\worker.py configure --toolchain-root "$env:LOCALAPPDATA\lemball-decomp\toolchain"
+python tools\worker.py configure --toolchain-root C:\lemball-tools
 ```
 
 The cache is outside repository and contains `msvc420`, `.decomp-venv`, and
