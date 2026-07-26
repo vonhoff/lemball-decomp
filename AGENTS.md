@@ -8,11 +8,13 @@ MSVC 4.20, Ghidra, and reccmp.
 1. Run:
 
    ```powershell
-   python -m venv .decomp-venv
+   if (!(Test-Path .decomp-venv\Scripts\python.exe)) {
+     python -m venv .decomp-venv
+   }
    .decomp-venv\Scripts\python.exe -m pip install --requirement requirements.txt
    ```
 
-   This creates missing environment and aligns installed tools with pinned
+   This creates missing environment only and aligns installed tools with pinned
    requirements. Run again after `requirements.txt` changes.
 2. Run `python tools\coordinator.py`.
 3. Pick first viable target it prints. Before editing, state: `Target:

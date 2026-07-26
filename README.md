@@ -36,12 +36,14 @@ rules in AGENTS.md. Update status CSV, run checks, and commit source and notes.
 Run once after cloning, and again after `requirements.txt` changes:
 
 ```powershell
-python -m venv .decomp-venv
+if (!(Test-Path .decomp-venv\Scripts\python.exe)) {
+  python -m venv .decomp-venv
+}
 .decomp-venv\Scripts\python.exe -m pip install --requirement requirements.txt
 ```
 
-Both commands are safe to repeat. They create missing environment and install
-exact pinned tool versions. `AGENTS.md` requires this preflight for workers.
+This creates missing environment only and installs exact pinned tool versions.
+`AGENTS.md` requires this preflight for workers.
 
 ## Legal
 
