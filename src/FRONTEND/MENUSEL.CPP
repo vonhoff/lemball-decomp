@@ -1336,6 +1336,19 @@ void GameMenuActionFramePointSink::DispatchToRenderObject(void* pContext)
 	((RenderProc) (*(void***) nRenderObject)[9])((void*) nRenderObject, 0, this, pFrame);
 	--m_pResource1C[2];
 }
+
+extern void* LEMBALL_FASTCALL DeleteRegistrationInfoScreenAuto(void* pObject, void*, BYTE fDelete);
+
+// ABI-THUNK: 83 e9 04; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified with reccmp.
+// FUNCTION: LEMBALL 0x0044c1d0
+__declspec(naked) void* LEMBALL_FASTCALL DeleteRegistrationInfoScreenAdjusted(void*, int, BYTE)
+{
+	__asm {
+        sub ecx, 4
+        jmp offset DeleteRegistrationInfoScreenAuto
+	}
+}
 // FUNCTION: LEMBALL 0x0044c1e0
 int GetIntDirectionSign(int nValue)
 {

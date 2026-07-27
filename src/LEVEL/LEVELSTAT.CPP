@@ -240,8 +240,8 @@ void LEMBALL_FASTCALL QueueFramedScreenRenderEntry(void* pObject, int nUnusedEdx
 void LEMBALL_FASTCALL QueueFramedScreenRenderEntryThunk(void* pObject, int nUnusedEdx, void* pQueue);
 void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntry(void* pObject, int nUnusedEdx, void* pManager);
 void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntryThunk(void* pObject, int nUnusedEdx, void* pManager);
-void* DeleteBaseModeObjectAdjusted(void* pObject, BYTE fDelete);
-void* DeleteBaseModeObjectAdjustedThunk(void* pObject, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteBaseModeObjectAdjusted(void* pObject, int nUnusedEdx, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteBaseModeObjectAdjustedThunk(void* pObject, int nUnusedEdx, BYTE fDelete);
 int LEMBALL_FASTCALL HandleBaseModeActionButtonEventThunk(void* pClient, int nUnused, void* pEvent);
 static void* g_LEVEL_CompositePointRectSinkEntryCompilerState[8] = {
 	(void*) DeleteFramedScreenRenderChildEntryThunk,
@@ -584,7 +584,7 @@ void LEMBALL_FASTCALL QueueFramedScreenRenderEntryThunk(void* pObject, int, void
 void LEMBALL_FASTCALL NoopPackagedSpriteRenderEntryThunk00402A22(void* pUnused);
 void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntryThunk00402A8B(void* pObject, int, void* pContext);
 void LEMBALL_FASTCALL SetStatusIndicatorLoadProgressThunk00402BFD(void* pObject, int, int nProgress);
-void* DeleteBaseModeObjectAdjustedThunk(void* pObject, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteBaseModeObjectAdjustedThunk(void* pObject, int nUnusedEdx, BYTE fDelete);
 void LEMBALL_FASTCALL QueueRenderPointRectSinkThunk00402DD3(void* pObject, int, void* pQueue);
 void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableC(void* pObject);
 int ReturnTrueVirtualHook(void);
@@ -640,7 +640,7 @@ void* LEMBALL_FASTCALL InitializeFramedScreenRenderChildEntryBody(void* pObject)
 void* DeleteFramedScreenRenderChildEntryA(void* pObject, BYTE fDelete);
 void* DeleteFramedScreenRenderChildEntryB(void* pObject, BYTE fDelete);
 void LEMBALL_FASTCALL RestoreFramedScreenRenderChildEntryVtableBody(void* pObject);
-void* DeleteBaseModeObjectAdjusted(void* pObject, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteBaseModeObjectAdjusted(void* pObject, int nUnusedEdx, BYTE fDelete);
 void LEMBALL_FASTCALL QueueFramedScreenRenderEntry(void* pObject, int, void* pQueue);
 void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntry(void* pObject, int, void* pManager);
 void LEMBALL_FASTCALL QueueBitmapRenderEntry(void* pObject, int, void* pQueue);
@@ -964,9 +964,9 @@ void LEMBALL_FASTCALL SetStatusIndicatorLoadProgressThunk00402BFD(void* pObject,
 	SetStatusIndicatorLoadProgress0044B340(pObject, 0, nProgress);
 }
 // LINKERILT: LEMBALL 0x00402c20
-void* DeleteBaseModeObjectAdjustedThunk(void* pObject, BYTE fDelete)
+void* LEMBALL_FASTCALL DeleteBaseModeObjectAdjustedThunk(void* pObject, int nUnusedEdx, BYTE fDelete)
 {
-	return DeleteBaseModeObjectAdjusted(pObject, fDelete);
+	return DeleteBaseModeObjectAdjusted(pObject, nUnusedEdx, fDelete);
 }
 // LINKERILT: LEMBALL 0x00402d1a
 void GameBaseModeObject::QueueBaseModeUserActionThunk(int nAction, int nPhase)
@@ -1940,6 +1940,19 @@ void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntry00439810(void* pObject, i
 	pDispatchBase = *(int*) (pOwnerOffsets + 4);
 	pDispatchObject = (void*) (unsigned long) (pDispatchBase + 0x40 + pOwner);
 	((LevelOneArgVirtualProc) (*(void***) pDispatchObject)[6])(pDispatchObject, 0, pObject);
+}
+
+extern void* LEMBALL_FASTCALL DeleteReconstructedLevelScreenAuto(void* pObject, void*, BYTE fDelete);
+
+// ABI-THUNK: 83 e9 14; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified with reccmp.
+// FUNCTION: LEMBALL 0x00439850
+__declspec(naked) void* LEMBALL_FASTCALL DeleteAdjustedRenderEntryVariant00439850(void*, int, BYTE)
+{
+	__asm {
+        sub ecx, 0x14
+        jmp offset DeleteReconstructedLevelScreenAuto
+	}
 }
 
 // FUNCTION: LEMBALL 0x00439870
@@ -4019,14 +4032,17 @@ void* GameBaseModeObject::Delete(BYTE fDelete)
 	return this;
 }
 
-// STUB: LEMBALL 0x004472e0
-void* DeleteBaseModeObjectAdjusted(void* pObject, BYTE fDelete)
+extern void* LEMBALL_FASTCALL DeleteBaseModeObjectAuto(void* pObject, void*, BYTE fDelete);
+
+// ABI-THUNK: 83 e9 0c; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified with reccmp.
+// FUNCTION: LEMBALL 0x004472e0
+__declspec(naked) void* LEMBALL_FASTCALL DeleteBaseModeObjectAdjusted(void*, int, BYTE)
 {
-	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
-	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock((char*) pObject - 0x0c);
+	__asm {
+        sub ecx, 0xc
+        jmp offset DeleteBaseModeObjectAuto
 	}
-	return pObject;
 }
 // FUNCTION: LEMBALL 0x00447300
 void LEMBALL_FASTCALL QueueFramedScreenRenderEntry(void* pObject, int, void* pQueue)
