@@ -73,6 +73,12 @@ void* LEMBALL_FASTCALL GetNextCachedChunkObject(void* pObject);
 int LEMBALL_FASTCALL EmitCachedChunkManagerRenderEntries(void* pObject, void* pUnused, char* pEntries);
 int LEMBALL_FASTCALL EmitCachedChunkManagerRenderEntriesThunk(void* pObject, void* pUnused, char* pEntries);
 
+// FUNCTION: LEMBALL 0x00401078
+void* LEMBALL_FASTCALL GetFirstCachedChunkObjectThunk(void* pObject)
+{
+	return GetFirstCachedChunkObject(pObject);
+}
+
 /* These tables retain the recovered common EFF stream interface while the
  * type-specific load and reset methods are reconstructed.  Keeping distinct
  * tables is important: constructors install concrete stream types, and later
