@@ -266,9 +266,6 @@ void* LEMBALL_FASTCALL DeleteBoolResource(void* pObject, int nUnused, int fDelet
 	return pObject;
 }
 
-// SYNTHETIC: LEMBALL 0x004679e0
-// PackagedRectQueueAllocatorView::AllocateNextPackagedRectQueueEntry
-
 // FUNCTION: LEMBALL 0x00467ac0
 LevelPackagedRectQueueEntry::LevelPackagedRectQueueEntry()
 {

@@ -155,9 +155,6 @@ void LEMBALL_FASTCALL ReleaseLevelDemoRecordBufferThunk(void* pPlaybackControlle
 	ReleaseLevelDemoRecordBuffer(pPlaybackController);
 }
 
-// LINKERILT: LEMBALL 0x00402770
-// DemoLevelDemoPlaybackController::DestroyLevelDemoPlaybackControllerThunk
-
 // LINKERILT: LEMBALL 0x00402eaa
 void LEMBALL_FASTCALL StopLevelDemoPlaybackThunk(void* pPlaybackController)
 {
@@ -232,8 +229,6 @@ void DemoLevelDemoPlaybackController::DestroyLevelDemoPlaybackControllerThunk(vo
 	DestroyLevelDemoPlaybackController();
 }
 
-// SYNTHETIC: LEMBALL 0x004098b0
-// DeleteLevelDemoPlaybackControllerAuto
 void* LEMBALL_FASTCALL DeleteLevelDemoPlaybackControllerAuto(void* pObject, void*, BYTE fDelete)
 {
 	((DemoLevelDemoPlaybackController*) pObject)->DestroyLevelDemoPlaybackControllerThunk();
@@ -488,8 +483,6 @@ void* LEMBALL_FASTCALL DestroyBinResource(void* pObject, int, int fDelete)
 	return pObject;
 }
 
-// SYNTHETIC: LEMBALL 0x0045ec40
-// DestroyPresResourceAuto
 void* LEMBALL_FASTCALL DestroyPresResourceAuto(void* pObject, void*, BYTE fDelete)
 {
 	InitializeTypedResourceObjectBaseVtable(pObject);

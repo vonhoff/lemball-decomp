@@ -1895,8 +1895,6 @@ VsInitVSMemPointerTable::VsInitVSMemPointerTable(int cItems)
 	ConstructVSMemPointerTable(cItems);
 }
 
-// SYNTHETIC: LEMBALL 0x004599b0
-// DeleteRenderDispatchQueueAuto
 void* LEMBALL_FASTCALL DeleteRenderDispatchQueueAuto(void* pObject, void*, BYTE fDelete)
 {
 	DestroyRenderDispatchQueue(pObject);

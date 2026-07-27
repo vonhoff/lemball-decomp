@@ -27,9 +27,6 @@ void lookup_resource_geometry_helper_slot(void)
 {
 }
 
-// SYNTHETIC: LEMBALL 0x0046db10
-// GdiPoint2DView::Copy
-
 // FUNCTION: LEMBALL 0x0046db30
 int __fastcall get_helper_group_0_dirty_flag_local(void* pHelperGroup)
 {

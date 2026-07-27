@@ -978,8 +978,6 @@ void LEMBALL_FASTCALL QueueRenderPointRectSinkThunk00402DD3(void* pObject, int, 
 {
 	QueueRenderPointRectSinkEntry004398A0(pObject, 0, pQueue);
 }
-// LINKERILT: LEMBALL 0x00402d83
-// NoopLevelStatusCallbackIlt
 // LINKERILT: LEMBALL 0x00402e19
 void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableC(void* pObject)
 {
@@ -996,11 +994,6 @@ int ReturnTrueVirtualHook(void)
 {
 	return ReturnTrueVirtualHookBody();
 }
-// LINKERILT: LEMBALL 0x00402ffe
-// DestroyLevelScreenActionPanelResourcesThunk
-
-// LINKERILT: LEMBALL 0x0040301c
-// DestroyMoveChunkManagerAutoThunk
 
 // LINKERILT: LEMBALL 0x004030bc
 void* LEMBALL_FASTCALL InitializeFramedScreenRenderChildEntry(void* pObject)
@@ -1089,8 +1082,6 @@ void LEMBALL_FASTCALL QueuePackagedSpriteRenderEntryThunk00403846(void* pObject,
 {
 	QueuePackagedSpriteRenderEntry00439800(pObject, 0, pQueue);
 }
-// SYNTHETIC: LEMBALL 0x00413090
-// ReturnTrueVirtualHookBodyStdcall
 int ReturnTrueVirtualHookBody(void)
 {
 	return 1;
@@ -1799,8 +1790,6 @@ void LevelVariantRenderManagerView::ReleaseLevelScreenVariantStateWrapperRangeBo
 		++nResourceId;
 	}
 }
-// SYNTHETIC: LEMBALL 0x00434f50
-// DispatchLevelStatusCallbackIfActive
 
 // FUNCTION: LEMBALL 0x00435870
 int LEMBALL_FASTCALL GetTimedVariantFrameStartTime(void* pObject)
@@ -1932,8 +1921,6 @@ void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableEBody(void* pObject)
 {
 	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
-// SYNTHETIC: LEMBALL 0x00439760
-// QueueRenderStatePushHelper
 
 // FUNCTION: LEMBALL 0x00439800
 void LEMBALL_FASTCALL QueuePackagedSpriteRenderEntry00439800(void* pObject, int, void* pQueue)
@@ -1954,8 +1941,6 @@ void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntry00439810(void* pObject, i
 	pDispatchObject = (void*) (unsigned long) (pDispatchBase + 0x40 + pOwner);
 	((LevelOneArgVirtualProc) (*(void***) pDispatchObject)[6])(pDispatchObject, 0, pObject);
 }
-// SYNTHETIC: LEMBALL 0x00439860
-// QueueSurfaceRectHelperSlot00
 
 // FUNCTION: LEMBALL 0x00439870
 void LEMBALL_FASTCALL DispatchLevelSurfaceRectSinkBody(void* pObject, int, void* pContext)
@@ -1982,10 +1967,6 @@ void LEMBALL_FASTCALL DispatchRenderPointRectSinkEntry004398B0(void* pObject, in
 	pDispatchObject = (void*) (unsigned long) (pOwner + 0x98);
 	((LevelOneArgVirtualProc) (*(void***) pDispatchObject)[1])(pDispatchObject, 0, pObject);
 }
-// SYNTHETIC: LEMBALL 0x004398d0
-// AppendThisToPointerQueue
-// SYNTHETIC: LEMBALL 0x00439900
-// AppendRenderEntryToPointerQueueB
 
 // FUNCTION: LEMBALL 0x00439910
 void LEMBALL_FASTCALL DispatchLevelStatusRectSinkBody(void* pObject, int, void* pContext)
@@ -1995,8 +1976,6 @@ void LEMBALL_FASTCALL DispatchLevelStatusRectSinkBody(void* pObject, int, void* 
 	pTarget = (char*) *(void**) ((char*) pContext + 0x0c) + 0x44;
 	((LevelOneArgVirtualProc) (*(void***) pTarget)[0])(pTarget, 0, pObject);
 }
-// SYNTHETIC: LEMBALL 0x00439930
-// AppendRenderEntryToPointerQueueC
 
 // FUNCTION: LEMBALL 0x00439940
 void LEMBALL_FASTCALL DispatchLevelNestedRectSinkBody(void* pObject, int, void* pContext)
@@ -3545,14 +3524,6 @@ short LevelScreenTerrainRenderView::ComputeDynamicRenderEntrySortKey(int iEntry)
 	}
 	return (short) (nDepth + nHeight + 1);
 }
-// SYNTHETIC: LEMBALL 0x00442130
-// LevelTwoShortPointView::CopyTwoShortPoint
-// SYNTHETIC: LEMBALL 0x00442150
-// LevelTwoShortPointView::CopyTwoShortPointVariant
-// SYNTHETIC: LEMBALL 0x00442170
-// LevelFourShortRectView::ClearFourShortRect
-// SYNTHETIC: LEMBALL 0x00442270
-// QueueAlignedZrleChildOverlayIfDirty
 
 // Compatibility shim preserving MSVC 4.20 compiler state.
 void LevelScreenActionButtonLayout::PositionLevelScreenActionButton(const VS_XYPair* pPanelOrigin)
@@ -3797,18 +3768,12 @@ void LEMBALL_FASTCALL RelayoutLevelScreenActionPanel(void* pPanel)
 		++ppButton;
 	}
 }
-// SYNTHETIC: LEMBALL 0x004432a0
-// LevelActionPanelCodeView::MapActionPanelCode14To8
 
 // FUNCTION: LEMBALL 0x004439e0
 void LEMBALL_FASTCALL ResetBaseModeActionButtonPointSink(void* pObject)
 {
 	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
-// SYNTHETIC: LEMBALL 0x004452a0
-// LevelTwoShortPointView::AddTwoShortPointInPlace
-// SYNTHETIC: LEMBALL 0x004452c0
-// LevelTwoShortPointView::SubtractTwoShortPointInPlace
 
 // FUNCTION: LEMBALL 0x004452e0
 void* LEMBALL_FASTCALL DestroyBaseModeActionButtonPointSinkArray(void* pObject, int, unsigned int fDelete)
@@ -4130,8 +4095,6 @@ void LEMBALL_FASTCALL RestoreLevelSelectionRenderChildEntryVtableBody(void* pObj
 {
 	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
-// SYNTHETIC: LEMBALL 0x0044aa70
-// ResetLevelStatusChildCursor
 
 // FUNCTION: LEMBALL 0x0044aa80
 void* ConstructLevelScreenStatusIndicatorManager(void* pObject, int nStatusMode, void* pPrimaryContext)
@@ -5063,17 +5026,6 @@ void* LevelTwoShortPointView::SubtractTwoShortPointInPlace(const LevelTwoShortPo
 	return this;
 }
 
-// SYNTHETIC: LEMBALL 0x004395c0
-// DeleteQueuedRenderSinkEntryA
-// SYNTHETIC: LEMBALL 0x004395f0
-// DeleteQueuedRenderPointSinkFinalizeAuto
-// SYNTHETIC: LEMBALL 0x00439620
-// DeleteQueuedRenderSinkEntryB
-// SYNTHETIC: LEMBALL 0x00439680
-// DeleteQueuedRenderSinkEntryC
-// SYNTHETIC: LEMBALL 0x004396b0
-// DeleteQueuedRenderSinkEntryD
-
 #define DEFINE_LEVELSTAT_POINT_SINK_DELETE(name)                                                                       \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
 	{                                                                                                                  \
@@ -5092,8 +5044,6 @@ DEFINE_LEVELSTAT_POINT_SINK_DELETE(DeleteQueuedRenderSinkEntryD)
 
 #undef DEFINE_LEVELSTAT_POINT_SINK_DELETE
 
-// SYNTHETIC: LEMBALL 0x00432a30
-// InitializeStatusIndicatorPointSinkEntryAuto
 void* LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryAuto(void* pObject)
 {
 	int* pEntry;
@@ -5122,11 +5072,6 @@ void LEMBALL_FASTCALL DestroyLevelScreenActionPanelResourcesThunk(void* pObject)
 	DestroyLevelScreenActionPanelResources(pObject);
 }
 
-// SYNTHETIC: LEMBALL 0x0042fba0
-// DeleteMoveChunkManagerAuto
-// SYNTHETIC: LEMBALL 0x004439f0
-// DeleteLevelScreenActionPanelAuto
-
 #define DEFINE_LEVELSTAT_NAMED_SCALAR_DELETE(name, destroy)                                                            \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
 	{                                                                                                                  \
@@ -5141,17 +5086,6 @@ DEFINE_LEVELSTAT_NAMED_SCALAR_DELETE(DeleteMoveChunkManagerAuto, DestroyMoveChun
 DEFINE_LEVELSTAT_NAMED_SCALAR_DELETE(DeleteLevelScreenActionPanelAuto, DestroyLevelScreenActionPanelResourcesThunk)
 
 #undef DEFINE_LEVELSTAT_NAMED_SCALAR_DELETE
-
-// SYNTHETIC: LEMBALL 0x00432350
-// DeleteQueuedRenderPointSinkWrapperAuto
-// SYNTHETIC: LEMBALL 0x00432a90
-// DeleteStatusIndicatorPointSinkEntryAuto
-// SYNTHETIC: LEMBALL 0x004396e0
-// DeleteRenderPointRectSinkEntryAuto
-// SYNTHETIC: LEMBALL 0x00447170
-// DeleteFramedScreenRenderChildEntryAAuto
-// SYNTHETIC: LEMBALL 0x004471a0
-// DeleteFramedScreenRenderChildEntryBAuto
 
 #define DEFINE_LEVELSTAT_COMPAT_DELETE(name)                                                                           \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
@@ -5171,8 +5105,6 @@ DEFINE_LEVELSTAT_COMPAT_DELETE(DeleteFramedScreenRenderChildEntryBAuto)
 
 #undef DEFINE_LEVELSTAT_COMPAT_DELETE
 
-// SYNTHETIC: LEMBALL 0x00439400
-// DeletePackagedSpriteRenderEntryAuto
 void* LEMBALL_FASTCALL DeletePackagedSpriteRenderEntryAuto(void* pObject, void*, BYTE fDelete)
 {
 	*(void**) pObject = &g_LEVEL_PackagedSpriteRenderEntryVtableStorage[4];
@@ -5182,8 +5114,6 @@ void* LEMBALL_FASTCALL DeletePackagedSpriteRenderEntryAuto(void* pObject, void*,
 	return pObject;
 }
 
-// SYNTHETIC: LEMBALL 0x00442ca0
-// LevelScreenActionButtonLayoutAuto::Position
 struct LevelScreenActionButtonLayoutAuto {
 	void Position(const VS_XYPair* pPanelOrigin);
 };
@@ -5203,8 +5133,6 @@ void LevelScreenActionButtonLayoutAuto::Position(const VS_XYPair* pPanelOrigin)
 	((VS_RootGeometryOwner*) *(void**) (pButtonBytes + 4))->MoveWindowOwnerOrigin(&Point);
 }
 
-// SYNTHETIC: LEMBALL 0x0046b3b0
-// GameCursorRenderClientAuto::SetListResourceEntry
 struct GameCursorRenderClientAuto {
 	void SetListResourceEntry(int nResourceId, int nEntryIndex);
 };
@@ -5239,8 +5167,6 @@ void GameCursorRenderClientAuto::SetListResourceEntry(int nResourceId, int nEntr
 
 extern void LEMBALL_FASTCALL DestroyBaseModeObjectAutoThunk(void* pObject);
 
-// SYNTHETIC: LEMBALL 0x004472b0
-// DeleteBaseModeObjectAuto
 void* LEMBALL_FASTCALL DeleteBaseModeObjectAuto(void* pObject, void*, BYTE fDelete)
 {
 	DestroyBaseModeObjectAutoThunk(pObject);
@@ -5250,8 +5176,6 @@ void* LEMBALL_FASTCALL DeleteBaseModeObjectAuto(void* pObject, void*, BYTE fDele
 	return pObject;
 }
 
-// SYNTHETIC: LEMBALL 0x00430a50
-// LevelViewRotationTransformAuto::TransformScreenToTile
 struct LevelViewRotationTransformAuto {
 	void* m_pVtable00;
 	int m_nRotation04;
@@ -5281,8 +5205,6 @@ void LevelViewRotationTransformAuto::TransformScreenToTile(int nScreenX, int nSc
 	}
 }
 
-// SYNTHETIC: LEMBALL 0x004511c0
-// DeleteBaseModeObjectVariantAuto
 void* LEMBALL_FASTCALL DeleteBaseModeObjectVariantAuto(void* pObject, void*, BYTE fDelete)
 {
 	DestroyBaseModeObjectAutoThunk(pObject);

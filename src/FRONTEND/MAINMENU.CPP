@@ -2028,8 +2028,6 @@ void LEMBALL_FASTCALL ResetFramedScreenVariantBuffersThunk(void* pObject)
 {
 	ResetFramedScreenVariantBuffers(pObject);
 }
-// LINKERILT: LEMBALL 0x0040143d
-// DestroyPaintballSequenceScreenAutoThunk
 
 // LINKERILT: LEMBALL 0x00401505
 int LEMBALL_FASTCALL FramedScreenSlot15Thunk(void* pObject, int nUnusedEdx, void* pArgument)
@@ -2070,8 +2068,6 @@ void* LEMBALL_FASTCALL DeleteIntroSequenceScreenThunk(void* pObject, int nUnused
 {
 	return DeleteIntroSequenceScreen(pObject, nUnusedEdx, fDelete);
 }
-// LINKERILT: LEMBALL 0x00401843
-// DestroyNetworkLobbyScreenAutoThunk
 
 // LINKERILT: LEMBALL 0x00401889
 int LEMBALL_FASTCALL HandleFramedScreenQueueEventThunk(void* pQueueNode, int nUnusedEdx, void* pEvent)
@@ -2105,8 +2101,6 @@ void LEMBALL_FASTCALL InitializeMainMenuWidgetsThunk(void* pObject)
 {
 	InitializeMainMenuWidgets(pObject);
 }
-// LINKERILT: LEMBALL 0x00401da2
-// DestroyOptionsScreenAutoThunk
 
 // LINKERILT: LEMBALL 0x00401dac
 void LEMBALL_FASTCALL NoopNetworkLobbyScreenThunk(void* pObject)
@@ -2281,11 +2275,6 @@ void LEMBALL_FASTCALL SelectIntroSequenceMediaPathThunk(void* pOwner)
 {
 	SelectIntroSequenceMediaPath(pOwner);
 }
-// LINKERILT: LEMBALL 0x00403463
-// DestroyLevelSelectionScreenAutoThunk
-
-// LINKERILT: LEMBALL 0x00403530
-// DestroyPasswordEntryScreenAutoThunk
 
 // LINKERILT: LEMBALL 0x0040359e
 void GameIntroSequenceMediaState::ConfigureOwnerThunk(void* pScreen, void* pPrimaryContext, int fSkipVariant)
@@ -2342,8 +2331,6 @@ void LEMBALL_FASTCALL NoopIntroSequenceScreenHookThunk(void* pObject)
 	(void) pObject;
 	noop_intro_sequence_screen_hook();
 }
-// STUB: LEMBALL 0x00407ee0
-// ForwardUpdateNamedStatusEntry
 
 // FUNCTION: LEMBALL 0x00445420
 void* GameFramedScreenBase::ConstructFramedScreenBaseFields(void* pPrimaryContext,
@@ -3689,8 +3676,6 @@ int LEMBALL_FASTCALL HandleOptionsScreenInput(void* pObject, int, void* pEvent)
 	}
 	return 0;
 }
-// STUB: LEMBALL 0x00448de0
-// DestroyOptionsScreenAuto
 
 // Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteOptionsScreen(void* pObject, int, int fDelete)
@@ -4122,10 +4107,6 @@ int LEMBALL_FASTCALL HandleFunctionalLevelSelectionInput(void* pObject, int, voi
 		return 0;
 	}
 }
-// SYNTHETIC: LEMBALL 0x00449ea0
-// RequestLevelSelectionTransitionMode5
-// SYNTHETIC: LEMBALL 0x00449ec0
-// RequestLevelSelectionTransitionMode2
 
 // FUNCTION: LEMBALL 0x00449ee0
 int LEMBALL_FASTCALL DispatchFunctionalLevelSelectionAction(void* pObject, int, int nAction)
@@ -4235,8 +4216,6 @@ void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(GameLevelSelection
 	pScreen->m_abTime45C[4] = '\0';
 	RefreshFunctionalLevelSelectionNavigationLocks(pScreen);
 }
-// STUB: LEMBALL 0x004496d0
-// DestroyLevelSelectionScreenAuto
 
 // Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteFunctionalLevelSelectionScreen(void* pObject, int, int fDelete)
@@ -4453,8 +4432,6 @@ int LEMBALL_FASTCALL HandlePaintballSequenceInput(void* pObject, int, void* pEve
 	++*(int*) ((char*) pScreen + 0x10);
 	return 0;
 }
-// SYNTHETIC: LEMBALL 0x004509f0
-// FinishPaintballSequenceToMainMenu
 
 // FUNCTION: LEMBALL 0x00450a60
 int LEMBALL_FASTCALL DispatchPaintballSequenceUserAction(void* pObject, int, int nAction)
@@ -4567,8 +4544,6 @@ void GamePaintballSequenceMediaState::LoadVariant(int fCompactLayout)
 	}
 	UpdateMediaPathFromListResource(nBaseResource + *(int*) (pOwner + 0xd0));
 }
-// STUB: LEMBALL 0x004507a0
-// DestroyPaintballSequenceScreenAuto
 
 // Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeletePaintballSequenceScreen(void* pObject, int, int fDelete)
@@ -4926,8 +4901,6 @@ void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void* pObject)
 								   0x20,
 								   0);
 }
-// STUB: LEMBALL 0x004515c0
-// DestroyPasswordEntryScreenAuto
 
 // Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeletePasswordEntryScreen(void* pObject, int, int fDelete)
@@ -5694,8 +5667,6 @@ int LEMBALL_FASTCALL HandleNetworkLobbyTransportPayloadEvent(void* pController,
 	}
 	return 0;
 }
-// STUB: LEMBALL 0x004535c0
-// DestroyNetworkLobbyScreenAuto
 
 // Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteNetworkLobbyScreen(void* pObject, int, int fDelete)
@@ -5790,17 +5761,6 @@ void LEMBALL_FASTCALL DestroyNetworkLobbyScreenAutoThunk(void* pObject)
 {
 	DestroyNetworkLobbyScreenAuto(pObject);
 }
-
-// SYNTHETIC: LEMBALL 0x00449170
-// DeleteOptionsScreenAuto
-// SYNTHETIC: LEMBALL 0x0044a940
-// DeleteLevelSelectionScreenAuto
-// SYNTHETIC: LEMBALL 0x004510e0
-// DeletePaintballSequenceScreenAuto
-// SYNTHETIC: LEMBALL 0x00452370
-// DeletePasswordEntryScreenAuto
-// SYNTHETIC: LEMBALL 0x00455de0
-// DeleteNetworkLobbyScreenAuto
 
 #define DEFINE_MAINMENU_NAMED_SCALAR_DELETE(name, destroy)                                                             \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \

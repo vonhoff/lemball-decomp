@@ -1174,8 +1174,6 @@ int LEMBALL_FASTCALL get_queued_render_point_sink_field_0x30(void* pPointSink)
 {
 	return *(int*) ((char*) pPointSink + 0x30);
 }
-// SYNTHETIC: LEMBALL 0x004323c0
-// set_queued_render_point_sink_field_0x30
 
 // FUNCTION: LEMBALL 0x00456720
 char* LookupDirectDrawErrorString(unsigned int nError)
@@ -2416,8 +2414,6 @@ void* VsGdiDibDisplayState::Delete(int fDelete)
 	return pThis;
 }
 
-// SYNTHETIC: LEMBALL 0x004583c0
-// DeleteDibDisplayStateVariantAuto
 void* LEMBALL_FASTCALL DeleteDibDisplayStateVariantAuto(void* pObject, void*, BYTE fDelete)
 {
 	((VsGdiDibDisplayState*) pObject)->~VsGdiDibDisplayState();
@@ -2999,10 +2995,6 @@ void LEMBALL_FASTCALL ResetHelperUploadRectListAndStateMap(int nUploadState)
 	}
 	ResetHelperUploadStateMap((void*) (unsigned long) nUploadState);
 }
-// SYNTHETIC: LEMBALL 0x00466bc0
-// HelperUploadStateMarkerView::PushHelperUploadStateMarker
-// SYNTHETIC: LEMBALL 0x00466bd0
-// PopHelperUploadStateMarker
 
 // FUNCTION: LEMBALL 0x00466be0
 void VsGdiQuantizedHelperUploadRectTracker::MarkHelperUploadCellsForRect(short* pRect)
@@ -3205,8 +3197,6 @@ int VsGdiQuantizedHelperUploadRectTracker::GetHelperUploadActiveRectStartIndex(v
 	}
 	return *(int*) ((char*) this + 8);
 }
-// SYNTHETIC: LEMBALL 0x00467040
-// HelperUploadRectEntryView::Clear
 
 // FUNCTION: LEMBALL 0x00467060
 VsGdiGeometryHelperPointerArray* VsGdiGeometryHelperPointerArray::InitializeGeometryHelperPointerArray(

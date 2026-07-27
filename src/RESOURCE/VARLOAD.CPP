@@ -685,9 +685,6 @@ void* ConstructIntZrleListResourceFromId(void* pObject, int nResourceId)
 	return pObject;
 }
 
-// STUB: LEMBALL 0x0045d810
-// DestroyIntZrleListResourceAuto
-
 // FUNCTION: LEMBALL 0x0045d850
 void* LoadListResource(int nResourceId)
 {
@@ -1187,8 +1184,6 @@ void LEMBALL_FASTCALL SetPresResourceTypeTag(void* pResource)
 	*(unsigned int*) ((char*) pResource + 0x40) = 0x50524553;
 }
 
-// SYNTHETIC: LEMBALL 0x00447db0
-// LoadMainGameVariantZrleListResourceAuto
 void LEMBALL_FASTCALL LoadMainGameVariantZrleListResourceAuto(void* pBundle, void*, int nResourceId)
 {
 	GameMainGameVariantResourceBundleLoader* pResourceBundle;
@@ -1200,8 +1195,6 @@ void LEMBALL_FASTCALL LoadMainGameVariantZrleListResourceAuto(void* pBundle, voi
 	++pResourceBundle->m_cLoadedZrleListResources;
 }
 
-// SYNTHETIC: LEMBALL 0x00447e30
-// LoadMainGameVariantListResourceAuto
 void LEMBALL_FASTCALL LoadMainGameVariantListResourceAuto(void* pBundle, void*, int nResourceId)
 {
 	GameMainGameVariantResourceBundleLoader* pResourceBundle;
@@ -1212,8 +1205,6 @@ void LEMBALL_FASTCALL LoadMainGameVariantListResourceAuto(void* pBundle, void*, 
 	++pResourceBundle->m_cLoadedListResources;
 }
 
-// SYNTHETIC: LEMBALL 0x00447eb0
-// LoadMainGameVariantBitmapResourceAuto
 void LEMBALL_FASTCALL LoadMainGameVariantBitmapResourceAuto(void* pBundle, void*, int nResourceId)
 {
 	GameMainGameVariantResourceBundleLoader* pResourceBundle;
@@ -1224,8 +1215,6 @@ void LEMBALL_FASTCALL LoadMainGameVariantBitmapResourceAuto(void* pBundle, void*
 	++pResourceBundle->m_cLoadedBitmapResources;
 }
 
-// SYNTHETIC: LEMBALL 0x00447f30
-// LoadMainGameVariantPaletteResourceAuto
 void LEMBALL_FASTCALL LoadMainGameVariantPaletteResourceAuto(void* pBundle, void*, int nResourceId)
 {
 	GameMainGameVariantResourceBundleLoader* pResourceBundle;
@@ -1236,8 +1225,6 @@ void LEMBALL_FASTCALL LoadMainGameVariantPaletteResourceAuto(void* pBundle, void
 	++pResourceBundle->m_cPaletteResources;
 }
 
-// SYNTHETIC: LEMBALL 0x00448030
-// LoadMainGameVariantTwoArrayListResourceAuto
 void LEMBALL_FASTCALL LoadMainGameVariantTwoArrayListResourceAuto(void* pBundle, void*, int nResourceId)
 {
 	GameMainGameVariantResourceBundleLoader* pResourceBundle;
@@ -1254,8 +1241,6 @@ void LEMBALL_FASTCALL DestroyIntZrleListResourceAuto(void*)
 {
 }
 
-// SYNTHETIC: LEMBALL 0x0045e8d0
-// DestroyIntZrleListResourceAndFreeAuto
 void* LEMBALL_FASTCALL DestroyIntZrleListResourceAndFreeAuto(void* pObject, void*, BYTE fDelete)
 {
 	DestroyIntZrleListResourceAuto(pObject);
@@ -1264,15 +1249,6 @@ void* LEMBALL_FASTCALL DestroyIntZrleListResourceAndFreeAuto(void* pObject, void
 	}
 	return pObject;
 }
-
-// SYNTHETIC: LEMBALL 0x0045ea10
-// DeleteColResourceAuto
-// SYNTHETIC: LEMBALL 0x0045eb50
-// DeleteGamiResourceAuto
-// SYNTHETIC: LEMBALL 0x0045ebe0
-// DestroyPtchResourceAuto
-// SYNTHETIC: LEMBALL 0x0045ec10
-// DestroyTuneResourceAuto
 
 #define DEFINE_VARLOAD_RESOURCE_DELETE(name)                                                                           \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \

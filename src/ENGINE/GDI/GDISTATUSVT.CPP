@@ -79,9 +79,6 @@ void* LEMBALL_FASTCALL DeleteArrowCursorRenderClientThunk(void* pRenderClient, i
 	return pRenderClient;
 }
 
-// SYNTHETIC: LEMBALL 0x0046daf0
-// StatusPoint2DView::Set
-
 struct StatusPoint2DView {
 	short m_x;
 	short m_y;

@@ -4363,13 +4363,6 @@ int LEMBALL_FASTCALL InitializeFileNetworkAddress(void*, void*, int nUnused)
 	return 0;
 }
 
-// SYNTHETIC: LEMBALL 0x00462a20
-// DeleteSimpleEffTransportRecordSlotAuto
-// SYNTHETIC: LEMBALL 0x00462a40
-// DeleteEffTransportRecordBufferAuto
-// SYNTHETIC: LEMBALL 0x00462ad0
-// DeleteEffTransportRuntimeGlobalsAuto
-
 #define DEFINE_VSNET_NAMED_SCALAR_DELETE(name, type, destroy)                                                          \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
 	{                                                                                                                  \

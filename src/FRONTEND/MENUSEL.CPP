@@ -1213,15 +1213,6 @@ void LEMBALL_FASTCALL SetMenuSelectorChildrenEnabledThunk(GameMenuSelectorManage
 	SetMenuSelectorChildrenEnabled(pManager, nUnusedEdx, fEnabled);
 }
 
-// LINKERILT: LEMBALL 0x00401154
-// DestroyQueuedVariantRangeEntryAutoThunk
-
-// LINKERILT: LEMBALL 0x00401406
-// DestroyMenuSelectorManagerAutoThunk
-
-// LINKERILT: LEMBALL 0x00402329
-// DestroyMenuSelectorEntryAutoThunk
-
 // LINKERILT: LEMBALL 0x00402432
 GameMenuSelectorManager* LEMBALL_FASTCALL ConstructMenuSelectorManagerThunk(GameMenuSelectorManager* pManager,
 																			int nUnusedEdx,
@@ -1295,11 +1286,6 @@ void GameAlignedZrleChildOverlayView::HandlePointerLeave(void)
 	}
 	*(int*) ((char*) this + 0x104) = 0;
 }
-
-// SYNTHETIC: LEMBALL 0x00443850
-// MenuSelectorXorFieldView::RecomputeField104FromXor
-// SYNTHETIC: LEMBALL 0x00443870
-// update_action_button_field_0x104_from_fields_0x130_xor_0xd0
 
 // FUNCTION: LEMBALL 0x00443990
 void* LEMBALL_FASTCALL InitializeMenuActionFramePointSink(void* pObject)
@@ -2872,8 +2858,6 @@ void LEMBALL_FASTCALL RefreshQueuedVariantChildByToken(void* pObject, int, int n
 		}
 	}
 }
-// STUB: LEMBALL 0x0044f130
-// DestroyQueuedVariantRangeEntryAuto
 
 // Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteQueuedVariantRangeEntry(GameQueuedVariantRangeEntry* pEntry, int, int fDelete)
@@ -3446,13 +3430,6 @@ void LEMBALL_FASTCALL DestroyMenuSelectorManagerAutoThunk(void* pObject)
 	DestroyMenuSelectorManager((GameMenuSelectorManager*) pObject);
 }
 
-// SYNTHETIC: LEMBALL 0x0044fff0
-// DeleteQueuedVariantChildSlotManagerAuto
-// SYNTHETIC: LEMBALL 0x0044e620
-// DeleteMenuSelectorEntryAuto
-// SYNTHETIC: LEMBALL 0x0044e690
-// DeleteMenuSelectorManagerAuto
-
 #define DEFINE_MENUSEL_NAMED_SCALAR_DELETE(name, destroy)                                                              \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
 	{                                                                                                                  \
@@ -3480,8 +3457,6 @@ void LEMBALL_FASTCALL DestroyQueuedVariantRangeEntryAutoThunk(void* pObject)
 	DestroyQueuedVariantRangeEntryAuto(pObject);
 }
 
-// SYNTHETIC: LEMBALL 0x0044ffc0
-// DeleteQueuedVariantRangeEntryAuto
 void* LEMBALL_FASTCALL DeleteQueuedVariantRangeEntryAuto(void* pObject, void*, BYTE fDelete)
 {
 	DestroyQueuedVariantRangeEntryAutoThunk(pObject);

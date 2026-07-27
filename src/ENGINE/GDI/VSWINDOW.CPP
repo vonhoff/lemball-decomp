@@ -431,9 +431,6 @@ void LEMBALL_FASTCALL ForwardNestedGeometryRectUpdate(void* pOwner, int, short* 
 	}
 }
 
-// SYNTHETIC: LEMBALL 0x00432870
-// ClearWindowOwnerRuntimeFields
-
 // FUNCTION: LEMBALL 0x00439960
 void LEMBALL_FASTCALL GeometryOwnerButtonTransitionNoop(void*, int, const VS_XYPair*, int)
 {

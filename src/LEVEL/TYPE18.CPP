@@ -463,8 +463,6 @@ void* LEMBALL_FASTCALL DeleteType18ChunkStream(LevelType18ChunkStream* pStream, 
 
 extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 
-// SYNTHETIC: LEMBALL 0x0040cea0
-// DeleteLevelChunkObjectBaseScalarB
 void* LEMBALL_FASTCALL DeleteLevelChunkObjectBaseScalarB(void* pObject, void*, BYTE fDelete)
 {
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
@@ -476,8 +474,6 @@ void* LEMBALL_FASTCALL DeleteLevelChunkObjectBaseScalarB(void* pObject, void*, B
 
 extern void LEMBALL_FASTCALL DestroyLevelChunkStreamAutoThunk(void* pObject);
 
-// SYNTHETIC: LEMBALL 0x0040ac30
-// DeleteLevelChunkStreamAuto
 void* LEMBALL_FASTCALL DeleteLevelChunkStreamAuto(void* pObject, void*, BYTE fDelete)
 {
 	DestroyLevelChunkStreamAutoThunk(pObject);

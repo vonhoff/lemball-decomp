@@ -2080,8 +2080,6 @@ VsNetEffStreamRecordSlotTable::~VsNetEffStreamRecordSlotTable()
 	}
 }
 
-// SYNTHETIC: LEMBALL 0x0047b7d0
-// DeleteEffStreamRecordSlotTableAuto
 void* LEMBALL_FASTCALL DeleteEffStreamRecordSlotTableAuto(void* pObject, void*, BYTE fDelete)
 {
 	((VsNetEffStreamRecordSlotTable*) pObject)->VsNetEffStreamRecordSlotTable::~VsNetEffStreamRecordSlotTable();
@@ -2091,8 +2089,6 @@ void* LEMBALL_FASTCALL DeleteEffStreamRecordSlotTableAuto(void* pObject, void*, 
 	return pObject;
 }
 
-// SYNTHETIC: LEMBALL 0x0047b970
-// DeleteFileBackedEffStreamAuto
 void* LEMBALL_FASTCALL DeleteFileBackedEffStreamAuto(void* pObject, void*, BYTE fDelete)
 {
 	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();

@@ -67,6 +67,22 @@ extern void NoopType18ChunkStreamWriteThunk(void);
 extern void* LEMBALL_FASTCALL DeleteLevelEffChunkStreamBaseThunk(void* pObject, void* pUnused, BYTE fDelete);
 extern int PASCAL ReturnFalseChunkStreamCommandThunk(void* pUnused1, void* pUnused2, void* pUnused3);
 extern int PASCAL ReturnFalseChunkStreamRenderThunk(void* pUnused);
+extern void* LEMBALL_FASTCALL DeleteLevelChunkStreamAuto(void* pObject, void* pUnused, BYTE fDelete);
+extern void* LEMBALL_FASTCALL DeleteCollChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
+extern void* LEMBALL_FASTCALL DeleteCountedChildTableStreamAuto(void* pObject, void* pUnused, BYTE fDelete);
+extern void* LEMBALL_FASTCALL DeleteRockChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
+extern void* LEMBALL_FASTCALL DeletePgunChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
+extern void* LEMBALL_FASTCALL DeleteIceChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
+extern void* LEMBALL_FASTCALL DeleteMoveChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
+extern void LEMBALL_FASTCALL update_projectile_pool_real(void* pPool);
+extern int PASCAL return_zero_vtable_callback_0042dd30(void* pUnused);
+void* LEMBALL_FASTCALL DeleteDoorChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteProjectilePoolAuto(void* pObject, void* pUnused, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteMineChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteLiftChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteCaptureTriggerChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteLasrChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteTramChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
 void LEMBALL_FASTCALL ActivateOrStagePlasChunkObject(void* pObject);
 void* ConstructManagedEntityQueueCursorThunk(void* pObject,
 											 int nLevelMode,
@@ -75,10 +91,103 @@ void* ConstructManagedEntityQueueCursorThunk(void* pObject,
 
 void* LEMBALL_FASTCALL GetFirstCachedChunkObject(void* pObject);
 void* LEMBALL_FASTCALL GetNextCachedChunkObject(void* pObject);
+void* LEMBALL_FASTCALL GetCachedChunkObjectByIndex(void* pObject, void* pUnused, int nIndex);
+void* LEMBALL_FASTCALL GetNextManagedEntityGroup(void* pObject);
+void LEMBALL_FASTCALL AppendCachedChunkObject(void* pObject, void* pUnused, void* pChunkObject);
 int LEMBALL_FASTCALL EmitCachedChunkManagerRenderEntries(void* pObject, void* pUnused, char* pEntries);
 int LEMBALL_FASTCALL EmitCachedChunkManagerRenderEntriesThunk(void* pObject, void* pUnused, char* pEntries);
+int LEMBALL_FASTCALL GetManagedEntityGroupCount(void* pObject);
 
-// LINKERILT: LEMBALL 0x00401078
+#define DEFINE_LINKSCF_VTABLE_STUB_0(name)                                                                             \
+	int LEMBALL_FASTCALL name(void* pObject)                                                                           \
+	{                                                                                                                  \
+		(void) pObject;                                                                                                \
+		return 0;                                                                                                      \
+	}
+
+#define DEFINE_LINKSCF_VTABLE_STUB_1(name)                                                                             \
+	int LEMBALL_FASTCALL name(void* pObject, void* pUnused, void* pArg0)                                               \
+	{                                                                                                                  \
+		(void) pObject;                                                                                                \
+		(void) pUnused;                                                                                                \
+		(void) pArg0;                                                                                                  \
+		return 0;                                                                                                      \
+	}
+
+#define DEFINE_LINKSCF_VTABLE_STUB_2(name)                                                                             \
+	int LEMBALL_FASTCALL name(void* pObject, void* pUnused, void* pArg0, void* pArg1)                                  \
+	{                                                                                                                  \
+		(void) pObject;                                                                                                \
+		(void) pUnused;                                                                                                \
+		(void) pArg0;                                                                                                  \
+		(void) pArg1;                                                                                                  \
+		return 0;                                                                                                      \
+	}
+
+DEFINE_LINKSCF_VTABLE_STUB_0(ResetAllInvsChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_0(AdvanceInvsChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_0(DispatchDoorChildArrayVirtual104)
+DEFINE_LINKSCF_VTABLE_STUB_0(ServiceActiveDoorChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_1(EmitDoorChunkRenderEntries)
+DEFINE_LINKSCF_VTABLE_STUB_0(ResetProjectilePool)
+DEFINE_LINKSCF_VTABLE_STUB_1(EmitProjectilePoolRenderEntries)
+DEFINE_LINKSCF_VTABLE_STUB_0(ActivateManagedEntityGroupChildren)
+DEFINE_LINKSCF_VTABLE_STUB_0(ServiceCountedChildPointerTable)
+DEFINE_LINKSCF_VTABLE_STUB_2(ClearCountedChildBackReference)
+DEFINE_LINKSCF_VTABLE_STUB_1(EmitGmobChunkManagerRenderEntries)
+DEFINE_LINKSCF_VTABLE_STUB_1(RemoveCachedChunkObjectAndDestroy)
+DEFINE_LINKSCF_VTABLE_STUB_0(CountNestedIteratedChildEntries)
+DEFINE_LINKSCF_VTABLE_STUB_0(GetFirstManagedEntityChildFromCachedGroup)
+DEFINE_LINKSCF_VTABLE_STUB_0(GetNextManagedEntityChildFromCachedGroup)
+DEFINE_LINKSCF_VTABLE_STUB_0(GetFirstIteratedChildStatus11C)
+DEFINE_LINKSCF_VTABLE_STUB_1(AdvanceCachedGroupManagedEntityChildIterator)
+DEFINE_LINKSCF_VTABLE_STUB_1(FindManagedEntityByPointer)
+DEFINE_LINKSCF_VTABLE_STUB_2(AppendManagedEntityGroupFromIds)
+DEFINE_LINKSCF_VTABLE_STUB_1(AttachAndActivateChunkObject)
+DEFINE_LINKSCF_VTABLE_STUB_2(RemoveOwnerChildIfNoNestedEntries)
+DEFINE_LINKSCF_VTABLE_STUB_1(ForwardOwnerChildCommandValue)
+DEFINE_LINKSCF_VTABLE_STUB_1(EmitIteratedChildBoundsRecords)
+DEFINE_LINKSCF_VTABLE_STUB_0(ActivateCollChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveCollChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_1(EmitCollChunkManagerRenderEntries)
+DEFINE_LINKSCF_VTABLE_STUB_0(ActivateMineChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveMineChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_1(EmitMineChunkManagerRenderEntries)
+DEFINE_LINKSCF_VTABLE_STUB_0(InitializeLiftChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_0(ActivateLiftChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_1(EmitLiftChunkManagerRenderEntries)
+DEFINE_LINKSCF_VTABLE_STUB_0(ActivateRockChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveRockChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_1(EmitRockChunkManagerRenderEntries)
+DEFINE_LINKSCF_VTABLE_STUB_0(ActivateCaptureTriggerChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveCaptureTriggerChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_1(EmitCaptureTriggerChunkManagerRenderEntries)
+DEFINE_LINKSCF_VTABLE_STUB_0(ActivateLasrChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveLasrChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_1(EmitLasrChunkManagerRenderEntries)
+DEFINE_LINKSCF_VTABLE_STUB_0(InitializeTramChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_0(ActivateTramChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_1(EmitTramChunkManagerRenderEntries)
+DEFINE_LINKSCF_VTABLE_STUB_0(ActivatePgunChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActivePgunChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_1(EmitActivePgunChunkManagerRenderEntries)
+DEFINE_LINKSCF_VTABLE_STUB_0(ActivateIceChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_0(AdvanceIceChunkManagerObjects)
+DEFINE_LINKSCF_VTABLE_STUB_0(ActivateMoveChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_0(AdvanceActiveMoveChunkObjects)
+DEFINE_LINKSCF_VTABLE_STUB_1(EmitMoveChunkManagerRenderEntries)
+
+#undef DEFINE_LINKSCF_VTABLE_STUB_0
+#undef DEFINE_LINKSCF_VTABLE_STUB_1
+#undef DEFINE_LINKSCF_VTABLE_STUB_2
+
+int ResetCachedChunkManagerScratch(void)
+{
+	return 0;
+}
+
+// Compatibility shim retained for compiler-generated callers; original ILT slot
+// 0x00401078 targets GetFirstCachedChunkObject directly.
 void* LEMBALL_FASTCALL GetFirstCachedChunkObjectThunk(void* pObject)
 {
 	return GetFirstCachedChunkObject(pObject);
@@ -88,26 +197,42 @@ void* LEMBALL_FASTCALL GetFirstCachedChunkObjectThunk(void* pObject)
  * type-specific load and reset methods are reconstructed.  Keeping distinct
  * tables is important: constructors install concrete stream types, and later
  * recovery can replace individual slots without changing object layout. */
-#define LINKSCF_SIMPLE_EFF_CHUNK_VTABLE                                                                                \
+#define LINKSCF_EFF_CHUNK_VTABLE(deleteProc, activateProc, updateProc, commandProc, renderProc)                        \
 	{(void*) ReturnTrueVtableCallbackThunk,                                                                            \
 	 (void*) ReturnTrueVtableCallbackSecondaryThunk,                                                                   \
 	 (void*) DispatchType18ChunkStreamCommandsThunk,                                                                   \
 	 (void*) NoopVtableCallbackThunk,                                                                                  \
 	 (void*) NoopType18ChunkStreamWriteThunk,                                                                          \
-	 (void*) DeleteLevelEffChunkStreamBaseThunk,                                                                       \
-	 (void*) noop_vtable_callback_0040a990,                                                                            \
-	 (void*) noop_vtable_callback_0040a990,                                                                            \
-	 (void*) ReturnFalseChunkStreamCommandThunk,                                                                       \
-	 (void*) ReturnFalseChunkStreamRenderThunk}
+	 (void*) deleteProc,                                                                                               \
+	 (void*) activateProc,                                                                                             \
+	 (void*) updateProc,                                                                                               \
+	 (void*) commandProc,                                                                                              \
+	 (void*) renderProc}
 
 // GLOBAL: LEMBALL 0x00495ea8
-static void* g_LINKSCF_LiftChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+static void* g_LINKSCF_LiftChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteLiftChunkManagerAuto,
+																			 InitializeLiftChunkObjects,
+																			 ActivateLiftChunkObjects,
+																			 ReturnFalseChunkStreamCommandThunk,
+																			 EmitLiftChunkManagerRenderEntries);
 // GLOBAL: LEMBALL 0x00496b78
-void* g_LINKSCF_MoveChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+void* g_LINKSCF_MoveChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteMoveChunkManagerAuto,
+																	  ActivateMoveChunkObjects,
+																	  AdvanceActiveMoveChunkObjects,
+																	  ReturnFalseChunkStreamCommandThunk,
+																	  EmitMoveChunkManagerRenderEntries);
 // GLOBAL: LEMBALL 0x00494238
-static void* g_LINKSCF_GmobChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+static void* g_LINKSCF_GmobChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteCountedChildTableStreamAuto,
+																			 ActivateManagedEntityGroupChildren,
+																			 ServiceCountedChildPointerTable,
+																			 ClearCountedChildBackReference,
+																			 EmitGmobChunkManagerRenderEntries);
 static void* g_LINKSCF_PlasChunkManagerVtable[10];
-static void* g_LINKSCF_PlasChunkStreamVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+static void* g_LINKSCF_PlasChunkStreamVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteLevelEffChunkStreamBaseThunk,
+																			noop_vtable_callback_0040a990,
+																			noop_vtable_callback_0040a990,
+																			ReturnFalseChunkStreamCommandThunk,
+																			ReturnFalseChunkStreamRenderThunk);
 static void* g_LINKSCF_PlasChunkObjectVtable[66] = {
 	(void*) noop_vtable_callback_0040a990,
 	(void*) noop_vtable_callback_0040a990,
@@ -177,70 +302,113 @@ static void* g_LINKSCF_PlasChunkObjectVtable[66] = {
 	(void*) ActivateOrStagePlasChunkObject,
 };
 // GLOBAL: LEMBALL 0x00494008
-static void* g_LINKSCF_ProjectilePoolVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+static void* g_LINKSCF_ProjectilePoolVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteProjectilePoolAuto,
+																		   ResetProjectilePool,
+																		   update_projectile_pool_real,
+																		   ReturnFalseChunkStreamCommandThunk,
+																		   EmitProjectilePoolRenderEntries);
 static void* g_LINKSCF_ManagedEntityQueueCursorVtable[4];
 // GLOBAL: LEMBALL 0x00494d70
-static void* g_LINKSCF_ShpgChunkManagerVtable[20] = {0,
+static void* g_LINKSCF_ShpgChunkManagerVtable[19] = {(void*) GetManagedEntityGroupCount,
 													 (void*) GetFirstCachedChunkObject,
 													 (void*) GetNextCachedChunkObject,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 (void*) EmitCachedChunkManagerRenderEntriesThunk};
+													 (void*) GetCachedChunkObjectByIndex,
+													 (void*) GetNextManagedEntityGroup,
+													 (void*) RemoveCachedChunkObjectAndDestroy,
+													 (void*) CountNestedIteratedChildEntries,
+													 (void*) GetFirstManagedEntityChildFromCachedGroup,
+													 (void*) GetNextManagedEntityChildFromCachedGroup,
+													 (void*) GetFirstIteratedChildStatus11C,
+													 (void*) AdvanceCachedGroupManagedEntityChildIterator,
+													 (void*) FindManagedEntityByPointer,
+													 (void*) AppendCachedChunkObject,
+													 (void*) AppendManagedEntityGroupFromIds,
+													 (void*) ResetCachedChunkManagerScratch,
+													 (void*) AttachAndActivateChunkObject,
+													 (void*) RemoveOwnerChildIfNoNestedEntries,
+													 (void*) ForwardOwnerChildCommandValue,
+													 (void*) EmitIteratedChildBoundsRecords};
 // GLOBAL: LEMBALL 0x004953f8
-static void* g_LINKSCF_EnmyChunkManagerVtable[20] = {0,
+static void* g_LINKSCF_EnmyChunkManagerVtable[19] = {(void*) GetManagedEntityGroupCount,
 													 (void*) GetFirstCachedChunkObject,
 													 (void*) GetNextCachedChunkObject,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 0,
-													 (void*) EmitCachedChunkManagerRenderEntriesThunk};
+													 (void*) GetCachedChunkObjectByIndex,
+													 (void*) GetNextManagedEntityGroup,
+													 (void*) RemoveCachedChunkObjectAndDestroy,
+													 (void*) CountNestedIteratedChildEntries,
+													 (void*) GetFirstManagedEntityChildFromCachedGroup,
+													 (void*) GetNextManagedEntityChildFromCachedGroup,
+													 (void*) GetFirstIteratedChildStatus11C,
+													 (void*) AdvanceCachedGroupManagedEntityChildIterator,
+													 (void*) FindManagedEntityByPointer,
+													 (void*) AppendCachedChunkObject,
+													 (void*) AppendManagedEntityGroupFromIds,
+													 (void*) ResetCachedChunkManagerScratch,
+													 (void*) AttachAndActivateChunkObject,
+													 (void*) RemoveOwnerChildIfNoNestedEntries,
+													 (void*) ForwardOwnerChildCommandValue,
+													 (void*) EmitIteratedChildBoundsRecords};
 // GLOBAL: LEMBALL 0x004955a0
-void* g_LINKSCF_CollChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+void* g_LINKSCF_CollChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteCollChunkManagerAuto,
+																	  ActivateCollChunkObjects,
+																	  RefreshActiveCollChunkObjects,
+																	  ReturnFalseChunkStreamCommandThunk,
+																	  EmitCollChunkManagerRenderEntries);
 // GLOBAL: LEMBALL 0x00495d30
-static void* g_LINKSCF_MineChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+static void* g_LINKSCF_MineChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteMineChunkManagerAuto,
+																			 ActivateMineChunkObjects,
+																			 RefreshActiveMineChunkObjects,
+																			 ReturnFalseChunkStreamCommandThunk,
+																			 EmitMineChunkManagerRenderEntries);
 // GLOBAL: LEMBALL 0x00493840
-static void* g_LINKSCF_DoorChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+static void* g_LINKSCF_DoorChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteDoorChunkManagerAuto,
+																			 DispatchDoorChildArrayVirtual104,
+																			 ServiceActiveDoorChunkObjects,
+																			 ReturnFalseChunkStreamCommandThunk,
+																			 EmitDoorChunkRenderEntries);
 // GLOBAL: LEMBALL 0x00496020
-void* g_LINKSCF_RockChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+void* g_LINKSCF_RockChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteRockChunkManagerAuto,
+																	  ActivateRockChunkObjects,
+																	  RefreshActiveRockChunkObjects,
+																	  ReturnFalseChunkStreamCommandThunk,
+																	  EmitRockChunkManagerRenderEntries);
 // GLOBAL: LEMBALL 0x004962e0
-static void* g_LINKSCF_CaptureChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+static void* g_LINKSCF_CaptureChunkManagerVtable[10] =
+	LINKSCF_EFF_CHUNK_VTABLE(DeleteCaptureTriggerChunkManagerAuto,
+							 ActivateCaptureTriggerChunkObjects,
+							 RefreshActiveCaptureTriggerChunkObjects,
+							 ReturnFalseChunkStreamCommandThunk,
+							 EmitCaptureTriggerChunkManagerRenderEntries);
 // GLOBAL: LEMBALL 0x00496458
-static void* g_LINKSCF_LasrChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+static void* g_LINKSCF_LasrChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteLasrChunkManagerAuto,
+																			 ActivateLasrChunkObjects,
+																			 RefreshActiveLasrChunkObjects,
+																			 ReturnFalseChunkStreamCommandThunk,
+																			 EmitLasrChunkManagerRenderEntries);
 // GLOBAL: LEMBALL 0x00496710
-static void* g_LINKSCF_TramChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+static void* g_LINKSCF_TramChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteTramChunkManagerAuto,
+																			 InitializeTramChunkObjects,
+																			 ActivateTramChunkObjects,
+																			 ReturnFalseChunkStreamCommandThunk,
+																			 EmitTramChunkManagerRenderEntries);
 // GLOBAL: LEMBALL 0x00496888
-void* g_LINKSCF_PgunChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+void* g_LINKSCF_PgunChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeletePgunChunkManagerAuto,
+																	  ActivatePgunChunkObjects,
+																	  RefreshActivePgunChunkObjects,
+																	  ReturnFalseChunkStreamCommandThunk,
+																	  EmitActivePgunChunkManagerRenderEntries);
 // GLOBAL: LEMBALL 0x00496a00
-void* g_LINKSCF_IceChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+void* g_LINKSCF_IceChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteIceChunkManagerAuto,
+																	 ActivateIceChunkObjects,
+																	 AdvanceIceChunkManagerObjects,
+																	 ReturnFalseChunkStreamCommandThunk,
+																	 return_zero_vtable_callback_0042dd30);
 // GLOBAL: LEMBALL 0x00493298
-static void* g_LINKSCF_InvsChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+static void* g_LINKSCF_InvsChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteLevelChunkStreamAuto,
+																			 ResetAllInvsChunkObjects,
+																			 AdvanceInvsChunkObjects,
+																			 ReturnFalseChunkStreamCommandThunk,
+																			 ReturnFalseChunkStreamRenderThunk);
 static void* g_LINKSCF_BoonChunkObjectVtable[66];
 static void* g_LINKSCF_LevelChunkStreamDispatcherVtable[10];
 static char* g_pLINKSCF_PlasLevelMode;
@@ -311,9 +479,6 @@ void* ManagedEntityQueueCursorForwardThunks::ConstructManagedEntityQueueCursorFo
 {
 	return ConstructManagedEntityQueueCursorThunk(this, nLevelMode, nPrimaryCapacity, nSecondaryCapacity);
 }
-
-// LINKERILT: LEMBALL 0x004011db
-// DestroyDoorChunkObjectAutoThunk
 
 // LINKERILT: LEMBALL 0x00401604
 LinkScfCachedChunkObjectManagerBaseView* LinkScfCachedChunkObjectManagerBaseView::
@@ -401,8 +566,6 @@ LinkScfBoonChunkManagerView* LinkScfBoonChunkManagerView::ConstructBoonChunkMana
 {
 	return ConstructBoonChunkManager(pLevelMode, pTileGrid);
 }
-// LINKERILT: LEMBALL 0x00402180
-// DestroyLevelChunkStreamAutoThunk
 
 // LINKERILT: LEMBALL 0x00402af4
 LinkScfMineChunkManagerView* LinkScfMineChunkManagerView::ConstructMineChunkManagerThunk(void* pLevelMode,
@@ -569,8 +732,6 @@ LinkScfDoorChunkManagerView* LinkScfDoorChunkManagerView::ConstructDoorChunkMana
 	*(int*) ((char*) this + 0x3c) = 0;
 	return this;
 }
-// FUNCTION: LEMBALL 0x0040a350
-// DestroyLevelChunkStreamAuto
 void LEMBALL_FASTCALL DestroyLevelChunkStreamAuto(void* pObject)
 {
 	void* pChild;
@@ -582,9 +743,6 @@ void LEMBALL_FASTCALL DestroyLevelChunkStreamAuto(void* pObject)
 	}
 	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 }
-
-// SYNTHETIC: LEMBALL 0x0040eb70
-// LinkScfSmallFunctionView::GetLevelTileGridCellPointer
 
 // FUNCTION: LEMBALL 0x0040ecb0
 void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevel(void* pObject,
@@ -734,8 +892,6 @@ void LEMBALL_FASTCALL ActivateOrStagePlasChunkObject(void* pObject)
 	*(unsigned short*) (pPlayer + 0xb4) = *(unsigned short*) (pPlayer + 0xb6);
 	*(int*) (pPlayer + 0x220) = 0;
 }
-// STUB: LEMBALL 0x0040efd0
-// DestroyDoorChunkObjectAuto
 
 // FUNCTION: LEMBALL 0x00414da0
 void* ConstructManagedEntityQueueCursorThunk(void* pObject,
@@ -755,18 +911,6 @@ void* ConstructManagedEntityQueueCursorThunk(void* pObject,
 	((GameRenderDispatchQueue*) pDispatchQueue)->RegisterOrderedRenderDispatchClient(pObject, 0);
 	return pObject;
 }
-// SYNTHETIC: LEMBALL 0x00417c40
-// LinkScfAutoEffDeleteView::Delete17C40
-// SYNTHETIC: LEMBALL 0x00417c70
-// LinkScfAutoEffDeleteView::Delete17C70
-// SYNTHETIC: LEMBALL 0x00417ca0
-// LinkScfAutoEffDeleteView::Delete17CA0
-// SYNTHETIC: LEMBALL 0x00417cd0
-// LinkScfAutoEffDeleteView::Delete17CD0
-// SYNTHETIC: LEMBALL 0x00417d30
-// ReadEffStreamU16ToField30
-// SYNTHETIC: LEMBALL 0x00417d50
-// LinkScfAutoEffDeleteView::Delete17D50
 
 // FUNCTION: LEMBALL 0x00417d80
 void* ConstructProjectilePoolThunk(void* pObject)
@@ -817,8 +961,6 @@ void* ConstructPlasChunkManagerThunk(void* pObject,
 	(void) pProjectileGeometryTable;
 	return pObject;
 }
-// SYNTHETIC: LEMBALL 0x00418c90
-// GetIndexedLevelModeValue110
 
 // FUNCTION: LEMBALL 0x00418ca0
 void InitializeNetworkPlayerPlasChunkObjectPoolThunk(void* pPlasManager)
@@ -914,8 +1056,6 @@ LinkScfGmobChunkManagerView* LinkScfGmobChunkManagerView::ConstructGmobChunkMana
 	g_nLINKSCF_GmobObjectCount = 0;
 	return this;
 }
-// SYNTHETIC: LEMBALL 0x0041b990
-// LinkScfSmallFunctionView::ClearManagedEntityGroupChildActiveFlag
 
 // FUNCTION: LEMBALL 0x0041e8f0
 LinkScfCachedChunkObjectManagerBaseView* LinkScfCachedChunkObjectManagerBaseView::ConstructCachedChunkObjectManagerBase(
@@ -959,13 +1099,37 @@ void* LEMBALL_FASTCALL GetNextCachedChunkObject(void* pObject)
 	}
 	return *(void**) ((char*) pObject + 4 + nIndex * 4);
 }
-// SYNTHETIC: LEMBALL 0x0041ea70
-// LinkScfSmallFunctionView::GetCachedChunkObjectByIndex
-// SYNTHETIC: LEMBALL 0x0041ea90
-// LinkScfSmallFunctionView::GetNextManagedEntityGroup
-// SYNTHETIC: LEMBALL 0x0041ec80
-// LinkScfSmallFunctionView::AppendCachedChunkObject
+// FUNCTION: LEMBALL 0x0041ea70
+void* LEMBALL_FASTCALL GetCachedChunkObjectByIndex(void* pObject, void*, int nIndex)
+{
+	*(int*) ((char*) pObject + 0xa8) = nIndex;
+	if (*(int*) ((char*) pObject + 0xa4) <= nIndex) {
+		return 0;
+	}
+	return *(void**) ((char*) pObject + 4 + nIndex * 4);
+}
+// FUNCTION: LEMBALL 0x0041ea90
+void* LEMBALL_FASTCALL GetNextManagedEntityGroup(void* pObject)
+{
+	int nIndex;
 
+	nIndex = *(int*) ((char*) pObject + 0xa8);
+	if (*(int*) ((char*) pObject + 0xa4) <= nIndex) {
+		return 0;
+	}
+	return *(void**) ((char*) pObject + 4 + nIndex * 4);
+}
+// FUNCTION: LEMBALL 0x0041ec80
+void LEMBALL_FASTCALL AppendCachedChunkObject(void* pObject, void*, void* pChunkObject)
+{
+	int nIndex;
+
+	nIndex = *(int*) ((char*) pObject + 0xa4);
+	if (nIndex < 40) {
+		*(void**) ((char*) pObject + 4 + nIndex * 4) = pChunkObject;
+		++*(int*) ((char*) pObject + 0xa4);
+	}
+}
 // FUNCTION: LEMBALL 0x0041ee90
 int LEMBALL_FASTCALL EmitCachedChunkManagerRenderEntries(void* pObject, void*, char* pEntries)
 {
@@ -1000,8 +1164,6 @@ LinkScfShpgChunkManagerView* LinkScfShpgChunkManagerView::ConstructShpgChunkMana
 	*(void**) this = g_LINKSCF_ShpgChunkManagerVtable;
 	return this;
 }
-// SYNTHETIC: LEMBALL 0x00420b50
-// ReadLittleEndianU32FromBytes
 
 // FUNCTION: LEMBALL 0x00420b80
 LinkScfEnmyChunkManagerView* LinkScfEnmyChunkManagerView::ConstructEnmyChunkManager(void* pLevelMode,
@@ -1045,10 +1207,6 @@ LinkScfLiftChunkManagerView* LinkScfLiftChunkManagerView::ConstructLiftChunkMana
 	*(int*) ((char*) this + 0x3c) = 0;
 	return this;
 }
-// SYNTHETIC: LEMBALL 0x004267a0
-// LinkScfSmallFunctionView::CopyFourDwordBlock
-// SYNTHETIC: LEMBALL 0x004267f0
-// LinkScfSmallFunctionView::ResetRockChunkObjectRuntimeState
 
 // FUNCTION: LEMBALL 0x00426ac0
 LinkScfRockChunkManagerView* LinkScfRockChunkManagerView::ConstructRockChunkManager(void* pLevelMode, int nCapacity)
@@ -1060,8 +1218,6 @@ LinkScfRockChunkManagerView* LinkScfRockChunkManagerView::ConstructRockChunkMana
 	*(int*) ((char*) this + 0x38) = 0;
 	return this;
 }
-// SYNTHETIC: LEMBALL 0x00427af0
-// LinkScfSmallFunctionView::ResetCaptureTriggerChunkObjectRuntimeState
 
 // FUNCTION: LEMBALL 0x00427e60
 LinkScfCaptureChunkManagerView* LinkScfCaptureChunkManagerView::ConstructCaptureTriggerChunkManager(void* pLevelMode,
@@ -1079,8 +1235,6 @@ void LEMBALL_FASTCALL ClearManagedEntityArrayCount(void* pObject)
 {
 	*(int*) ((char*) pObject + 0x34) = 0;
 }
-// SYNTHETIC: LEMBALL 0x004288d0
-// LinkScfSmallFunctionView::ResetLasrChunkObjectRuntimeState
 
 // FUNCTION: LEMBALL 0x00429320
 LinkScfLasrChunkManagerView* LinkScfLasrChunkManagerView::ConstructLasrChunkManager(void* pLevelMode, int nCapacity)
@@ -1092,10 +1246,6 @@ LinkScfLasrChunkManagerView* LinkScfLasrChunkManagerView::ConstructLasrChunkMana
 	*(int*) ((char*) this + 0x38) = 0;
 	return this;
 }
-// SYNTHETIC: LEMBALL 0x00429e50
-// LinkScfSmallFunctionView::CopyFixedPointPointToPixelPoint
-// SYNTHETIC: LEMBALL 0x00429e80
-// LinkScfSmallFunctionView::SetObjectFields18_1c_20
 
 // FUNCTION: LEMBALL 0x00429f50
 LinkScfBoonChunkManagerView* LinkScfBoonChunkManagerView::ConstructBoonChunkManager(void* pLevelMode, void* pTileGrid)
@@ -1151,11 +1301,6 @@ LinkScfTramChunkManagerView* LinkScfTramChunkManagerView::ConstructTramChunkMana
 	return this;
 }
 
-// SYNTHETIC: LEMBALL 0x0042b9c0
-// add_two_dword_values
-// SYNTHETIC: LEMBALL 0x0042b9e0
-// LinkScfSmallFunctionView::InitializeThreeDwordPointFromValues
-
 // FUNCTION: LEMBALL 0x0042bfe0
 LinkScfPgunChunkManagerView* LinkScfPgunChunkManagerView::ConstructPgunChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -1205,9 +1350,6 @@ void add_two_dword_values(int* pDestination, const int* pLeft, const int* pRight
 struct LinkScfSmallFunctionView {
 	void* GetLevelTileGridCellPointer(int x, int y);
 	void ClearManagedEntityGroupChildActiveFlag(int iChild);
-	void* GetCachedChunkObjectByIndex(int nIndex);
-	void* GetNextManagedEntityGroup(void);
-	void AppendCachedChunkObject(void* pObject);
 	void* CopyFourDwordBlock(const int* pSource);
 	void ResetRockChunkObjectRuntimeState(void);
 	void ResetCaptureTriggerChunkObjectRuntimeState(void);
@@ -1230,37 +1372,6 @@ void LinkScfSmallFunctionView::ClearManagedEntityGroupChildActiveFlag(int iChild
 	ppChildren = *(void***) ((char*) this + 0x3c);
 	pChild = ppChildren[iChild];
 	*(int*) ((char*) pChild + 0x38) = 0;
-}
-
-void* LinkScfSmallFunctionView::GetCachedChunkObjectByIndex(int nIndex)
-{
-	*(int*) ((char*) this + 0xa8) = nIndex;
-	if (*(int*) ((char*) this + 0xa4) <= nIndex) {
-		return 0;
-	}
-	return *(void**) ((char*) this + 4 + nIndex * 4);
-}
-
-void* LinkScfSmallFunctionView::GetNextManagedEntityGroup(void)
-{
-	int nIndex;
-
-	nIndex = *(int*) ((char*) this + 0xa8);
-	if (*(int*) ((char*) this + 0xa4) <= nIndex) {
-		return 0;
-	}
-	return *(void**) ((char*) this + 4 + nIndex * 4);
-}
-
-void LinkScfSmallFunctionView::AppendCachedChunkObject(void* pObject)
-{
-	int nIndex;
-
-	nIndex = *(int*) ((char*) this + 0xa4);
-	if (nIndex < 40) {
-		*(void**) ((char*) this + 4 + nIndex * 4) = pObject;
-		++*(int*) ((char*) this + 0xa4);
-	}
 }
 
 unsigned int ReadLittleEndianU32FromBytes(const unsigned char* pBytes)
@@ -1371,13 +1482,6 @@ DEFINE_LINKSCF_EFF_DELETE(Delete17D50)
 
 extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 
-// SYNTHETIC: LEMBALL 0x00417d00
-// DeleteLevelChunkObjectBaseWrapper17D00
-// SYNTHETIC: LEMBALL 0x00422350
-// DeleteBallChunkEntryAuto
-// SYNTHETIC: LEMBALL 0x0042a7a0
-// DestroyLasrChunkObjectAuto
-
 #define DEFINE_LINKSCF_CHUNK_BASE_DELETE(name)                                                                         \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
 	{                                                                                                                  \
@@ -1395,11 +1499,6 @@ DEFINE_LINKSCF_CHUNK_BASE_DELETE(DestroyLasrChunkObjectAuto)
 #undef DEFINE_LINKSCF_CHUNK_BASE_DELETE
 
 extern void LEMBALL_FASTCALL DestroyCompositeLevelChunkChildrenAutoThunk(void* pObject);
-
-// SYNTHETIC: LEMBALL 0x0041e8c0
-// DeleteCompositeLevelChunkChildrenWrapper1E8C0
-// SYNTHETIC: LEMBALL 0x00420b20
-// DeleteCompositeLevelChunkChildrenWrapper20B20
 
 #define DEFINE_LINKSCF_COMPOSITE_CHILDREN_DELETE(name)                                                                 \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
@@ -1441,28 +1540,16 @@ DEFINE_LINKSCF_COMPOSITE_CHILDREN_DELETE(DeleteCompositeLevelChunkChildrenWrappe
 		realName(pObject);                                                                                             \
 	}
 
-// FUNCTION: LEMBALL 0x0040e060
-// DestroyDoorChunkManagerAuto
-// LINKERILT: LEMBALL 0x004021f3
-// DestroyDoorChunkManagerAutoThunk
 DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyDoorChunkManagerAuto,
 									DestroyDoorChunkManagerAutoThunk,
 									g_LINKSCF_DoorChunkManagerVtable,
 									0x3c)
 
-// FUNCTION: LEMBALL 0x00417ec0
-// DestroyProjectilePoolAuto
-// LINKERILT: LEMBALL 0x00401d16
-// DestroyProjectilePoolAutoThunk
 DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyProjectilePoolAuto,
 									DestroyProjectilePoolAutoThunk,
 									g_LINKSCF_ProjectilePoolVtable,
 									0x30)
 
-// FUNCTION: LEMBALL 0x00424170
-// DestroyMineChunkManagerAuto
-// LINKERILT: LEMBALL 0x00402374
-// DestroyMineChunkManagerAutoThunk
 void LEMBALL_FASTCALL DestroyMineChunkManagerAuto(void* pObject)
 {
 	void* pChild;
@@ -1480,37 +1567,21 @@ void LEMBALL_FASTCALL DestroyMineChunkManagerAutoThunk(void* pObject)
 	DestroyMineChunkManagerAuto(pObject);
 }
 
-// FUNCTION: LEMBALL 0x004257c0
-// DestroyLiftChunkManagerAuto
-// LINKERILT: LEMBALL 0x00401fe1
-// DestroyLiftChunkManagerAutoThunk
 DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyLiftChunkManagerAuto,
 									DestroyLiftChunkManagerAutoThunk,
 									g_LINKSCF_LiftChunkManagerVtable,
 									0x3c)
 
-// FUNCTION: LEMBALL 0x00427fa0
-// DestroyCaptureTriggerChunkManagerAuto
-// LINKERILT: LEMBALL 0x00402ca2
-// DestroyCaptureTriggerChunkManagerAutoThunk
 DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyCaptureTriggerChunkManagerAuto,
 									DestroyCaptureTriggerChunkManagerAutoThunk,
 									g_LINKSCF_CaptureChunkManagerVtable,
 									0x38)
 
-// FUNCTION: LEMBALL 0x00429450
-// DestroyLasrChunkManagerAuto
-// LINKERILT: LEMBALL 0x0040354e
-// DestroyLasrChunkManagerAutoThunk
 DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyLasrChunkManagerAuto,
 									DestroyLasrChunkManagerAutoThunk,
 									g_LINKSCF_LasrChunkManagerVtable,
 									0x38)
 
-// FUNCTION: LEMBALL 0x0042b090
-// DestroyTramChunkManagerAuto
-// LINKERILT: LEMBALL 0x00401212
-// DestroyTramChunkManagerAutoThunk
 DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyTramChunkManagerAuto,
 									DestroyTramChunkManagerAutoThunk,
 									g_LINKSCF_TramChunkManagerVtable,
@@ -1518,21 +1589,6 @@ DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyTramChunkManagerAuto,
 
 #undef DEFINE_LINKSCF_MANAGER_DESTROY_PAIR
 #undef DEFINE_LINKSCF_DESTROY_PAIR
-
-// SYNTHETIC: LEMBALL 0x0040ebe0
-// DeleteDoorChunkManagerAuto
-// SYNTHETIC: LEMBALL 0x00418300
-// DeleteProjectilePoolAuto
-// SYNTHETIC: LEMBALL 0x00424c30
-// DeleteMineChunkManagerAuto
-// SYNTHETIC: LEMBALL 0x004266e0
-// DeleteLiftChunkManagerAuto
-// SYNTHETIC: LEMBALL 0x004287d0
-// DeleteCaptureTriggerChunkManagerAuto
-// SYNTHETIC: LEMBALL 0x00429ea0
-// DeleteLasrChunkManagerAuto
-// SYNTHETIC: LEMBALL 0x0042ba10
-// DeleteTramChunkManagerAuto
 
 #define DEFINE_LINKSCF_NAMED_SCALAR_DELETE(name, destroy)                                                              \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \

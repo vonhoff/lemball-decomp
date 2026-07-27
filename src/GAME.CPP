@@ -1901,8 +1901,6 @@ int* GameScreenObject::ConstructLevelSelectionScreenForwardThunk(unsigned int nP
 {
 	return (int*) ConstructLevelSelectionScreen((void*) nParam1, (void*) nParam2, (short*) pParam3);
 }
-// LINKERILT: LEMBALL 0x00401271
-// DestroyLevelGameModeAutoThunk
 
 // LINKERILT: LEMBALL 0x004014b0
 void GameLevelProgressState::SetUnlockedPackCapThunk(int nPack, int nCap)
@@ -2103,8 +2101,6 @@ void* LEMBALL_FASTCALL DeleteOptionsModeEventClientThunk(void* pObject, int nUnu
 {
 	return DeleteOptionsModeEventClient(pObject, nUnusedEdx, fDelete);
 }
-// LINKERILT: LEMBALL 0x00402b1c
-// RestoreReconstructedLevelScreenVtablesAutoThunk
 
 // LINKERILT: LEMBALL 0x00402b3f
 void LEMBALL_FASTCALL RefreshLevelScreenViewportLayoutThunk(void* pScreen)
@@ -2184,11 +2180,6 @@ int ValidateCurrentLevelPassword(char* pszPassword)
 {
 	return ((GameLevelProgressState*) g_pLevelProgressState)->ValidateAndApplyPassword(pszPassword);
 }
-// LINKERILT: LEMBALL 0x00403012
-// DestroyRegistrationInfoScreenAutoThunk
-
-// LINKERILT: LEMBALL 0x00403062
-// DestroyBaseModeObjectAutoThunk
 
 // LINKERILT: LEMBALL 0x0040307b
 char* FormatCurrentLevelPassword(void)
@@ -2219,8 +2210,6 @@ int PASCAL ComputePowerOfTwoThunk(int nExponent)
 {
 	return ComputePowerOfTwo(nExponent);
 }
-// LINKERILT: LEMBALL 0x004036f2
-// DestroyNetworkLobbyTransportControllerAutoThunk
 
 // LINKERILT: LEMBALL 0x00403774
 int PASCAL ReturnFalseBaseModeThunk(void* pObject)
@@ -4589,8 +4578,6 @@ void* LEMBALL_FASTCALL DeleteReconstructedLevelScreen(void* pObject, int, int fD
 	}
 	return pObject;
 }
-// SYNTHETIC: LEMBALL 0x004397d0
-// QueueRenderStatePopHelper
 
 // FUNCTION: LEMBALL 0x004397e0
 void LEMBALL_FASTCALL DispatchLevelScreenRenderStatePop(void*, int, void* pContext)
@@ -5831,8 +5818,6 @@ void LEMBALL_FASTCALL QueueRenderStatePopHelper(void* pObject, int, void* pQueue
 	((VsGdiHelperDispatchQueue*) pQueue)->AppendPointerQueueEntry(pObject);
 }
 
-// SYNTHETIC: LEMBALL 0x00406ba0
-// ComputeLevelPasswordChecksumAuto
 unsigned int PASCAL ComputeLevelPasswordChecksumAuto(unsigned int uValue)
 {
 	return ((uValue >> 16) + (uValue >> 8) + uValue) & 0x1f;
@@ -5862,23 +5847,6 @@ void LEMBALL_FASTCALL DestroyRegistrationInfoScreenAutoThunk(void* pObject)
 	DestroyRegistrationInfoScreen(pObject);
 }
 
-// SYNTHETIC: LEMBALL 0x00407f40
-// DeleteStartupModeAuto
-// SYNTHETIC: LEMBALL 0x00407f70
-// DeleteMainMenuModeAuto
-// SYNTHETIC: LEMBALL 0x00407fa0
-// DeleteOptionsModeAuto
-// SYNTHETIC: LEMBALL 0x00407fd0
-// DeleteDerivedBaseModeWrapperAuto
-// SYNTHETIC: LEMBALL 0x00413e30
-// DeleteLevelGameModeAuto
-// SYNTHETIC: LEMBALL 0x00439490
-// DeleteReconstructedLevelScreenAuto
-// SYNTHETIC: LEMBALL 0x0044a9d0
-// DeleteLevelSelectionModeAuto
-// SYNTHETIC: LEMBALL 0x0044c0d0
-// DeleteRegistrationInfoScreenAuto
-
 #define DEFINE_GAME_NAMED_SCALAR_DELETE(name, destroy)                                                                 \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
 	{                                                                                                                  \
@@ -5900,8 +5868,6 @@ DEFINE_GAME_NAMED_SCALAR_DELETE(DeleteRegistrationInfoScreenAuto, DestroyRegistr
 
 #undef DEFINE_GAME_NAMED_SCALAR_DELETE
 
-// SYNTHETIC: LEMBALL 0x00413df0
-// DeleteEffStreamBaseWrapperAuto
 void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapperAuto(void* pObject, void*, BYTE fDelete)
 {
 	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
@@ -5919,8 +5885,6 @@ void LEMBALL_FASTCALL DestroyNetworkLobbyTransportControllerAutoThunk(void* pObj
 	DestroyNetworkLobbyTransportControllerRealAuto(pObject);
 }
 
-// SYNTHETIC: LEMBALL 0x00455eb0
-// DeleteNetworkLobbyTransportControllerAuto
 void* LEMBALL_FASTCALL DeleteNetworkLobbyTransportControllerAuto(void* pObject, void*, BYTE fDelete)
 {
 	DestroyNetworkLobbyTransportControllerAutoThunk(pObject);

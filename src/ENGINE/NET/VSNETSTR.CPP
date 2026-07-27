@@ -822,8 +822,6 @@ void VsNetEffStreamBase::DestroyEffStreamBaseThunk(void)
 	this->~VsNetEffStreamBase();
 }
 
-// SYNTHETIC: LEMBALL 0x004628e0
-// DeleteEffStreamChannelStateAuto
 void* LEMBALL_FASTCALL DeleteEffStreamChannelStateAuto(void* pObject, void*, BYTE fDelete)
 {
 	((VsNetEffStreamChannelState*) pObject)->VsNetEffStreamChannelState::~VsNetEffStreamChannelState();
@@ -833,8 +831,6 @@ void* LEMBALL_FASTCALL DeleteEffStreamChannelStateAuto(void* pObject, void*, BYT
 	return pObject;
 }
 
-// SYNTHETIC: LEMBALL 0x00462b80
-// DeleteEffStreamBaseAuto
 void* LEMBALL_FASTCALL DeleteEffStreamBaseAuto(void* pObject, void*, BYTE fDelete)
 {
 	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();

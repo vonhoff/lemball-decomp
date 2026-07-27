@@ -67,6 +67,31 @@ def find_cmake(root, python):
     raise SystemExit("cmake not found; install requirements.txt")
 
 
+def find_reccmp_python(root):
+    candidates = [
+        root / ".decomp-venv" / "Scripts" / "python.exe",
+        root / ".venv" / "Scripts" / "python.exe",
+    ]
+    reccmp = shutil.which("reccmp-datacmp")
+    if reccmp:
+        scripts = Path(reccmp).parent
+        candidates.extend([scripts / "python.exe", scripts.parent / "python.exe"])
+    candidates.append(Path(sys.executable))
+
+    for candidate in candidates:
+        if not candidate.exists():
+            continue
+        result = subprocess.run(
+            [candidate, "-c", "import reccmp"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        if result.returncode == 0:
+            return candidate
+    raise SystemExit("reccmp not found; install requirements.txt")
+
+
 def main():
     if os.environ.get("LEMBALL_MSVC420_READY") != "1":
         vcvars = ROOT / "msvc420" / "bin" / "VCVARS32.BAT"
@@ -78,6 +103,8 @@ def main():
         )
 
     cmake = find_cmake(ROOT, sys.executable)
+    reccmp_python = find_reccmp_python(ROOT)
+    run([reccmp_python, ROOT / "tools" / "install_reccmp_compat.py"])
 
     run([cmake, "--preset", "msvc420"])
     if not valid_build_rule(RULE):

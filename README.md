@@ -71,6 +71,10 @@ py -m venv .decomp-venv
 .decomp-venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
+The canonical build installs a narrow reccmp 0.1.6 compatibility hook. For
+data comparison only, original pointers to verified `E9` entries in the
+documented linker ILT are resolved to their real destinations.
+
 ## Legal
 
 Encrypted non-working original executable is included only for automated

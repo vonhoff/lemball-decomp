@@ -385,8 +385,6 @@ LevelNodeChunkRecord* LevelNodeChunkRecord::InitializeNodeChunkRecordThunk(void)
 {
 	return InitializeNodeChunkRecord();
 }
-// LINKERILT: LEMBALL 0x004014f1
-// DestroyLevelChunkStreamDispatcherAutoThunk
 
 // LINKERILT: LEMBALL 0x004015e1
 LevelNodeChunkManager* LevelNodeChunkManager::ConstructNodeChunkManagerThunk(int cCapacity)
@@ -904,8 +902,6 @@ void LevelSpecialTileGridStaticRenderList::BuildSpecialLevelTileGridStaticRender
 		  sizeof(LevelTileGridStaticRenderEntry),
 		  CompareLevelTileGridStaticRenderEntrySortKeys);
 }
-// STUB: LEMBALL 0x0040b0d0
-// DestroyLevelChunkStreamDispatcherAuto
 
 // FUNCTION: LEMBALL 0x0040b120
 void ResetRegisteredLevelChunkStreamsThunk(void* pDispatcher)
@@ -1451,10 +1447,6 @@ void ClaimManagedEntitySlotId(int nManagedEntityObject)
 		g_GAME_ManagedEntitySlotClaimBitset[nSlotId >> 3] = g_GAME_ManagedEntitySlotBitMasks[nSlotId & 7] | bClaimByte;
 	}
 }
-// SYNTHETIC: LEMBALL 0x00416d90
-// LevelRunSmallFunctionView::ClearObjectField134
-// SYNTHETIC: LEMBALL 0x00416e70
-// LevelRunSmallFunctionView::ApplyManagedEntityStateResetPacket
 
 // FUNCTION: LEMBALL 0x0041a140
 LevelProjectileGeometryPairTable* LevelProjectileGeometryPairTable::InitializeProjectileGeometryPairTable(void)
@@ -1671,13 +1663,6 @@ void LevelNodeChunkRecord::AppendNodeChunkRecordLink(int nFirst, int nSecond)
 	m_pLinks0C[m_cLinks10 * 2 + 1] = nSecond;
 	++m_cLinks10;
 }
-
-// SYNTHETIC: LEMBALL 0x004213d0
-// LevelRunSmallFunctionView::CopyNodeChunkRecordFixedPointPosition
-// SYNTHETIC: LEMBALL 0x004213f0
-// LevelRunSmallFunctionView::CopyNodeChunkRecordTileXY
-// SYNTHETIC: LEMBALL 0x00421410
-// LevelTwoDwordPairSourceView::copy_two_dword_pair_from_this
 
 // FUNCTION: LEMBALL 0x00421470
 void LevelNodeChunkManager::LoadNodeChunkRecords(const unsigned short* pWords, unsigned int cbPayload, int fReuseState)
@@ -2159,8 +2144,6 @@ void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void* pObject)
 		*(int*) (pbObject + 0x20) = nSourceBuffer + 2;
 	}
 }
-// SYNTHETIC: LEMBALL 0x00453120
-// DeleteNetworkLevelChunkDeltaStreamAuto
 
 // FUNCTION: LEMBALL 0x0045fcc0
 void LEMBALL_FASTCALL ClearPrimaryLockedRecordTablePayloadFlags(void* pPayload)
@@ -2268,8 +2251,6 @@ void LEMBALL_FASTCALL DestroyLevelChunkStreamDispatcherAutoThunk(void* pObject)
 	DestroyLevelChunkStreamDispatcherAuto(pObject);
 }
 
-// SYNTHETIC: LEMBALL 0x0040b450
-// DeleteLevelChunkStreamDispatcherAuto
 void* LEMBALL_FASTCALL DeleteLevelChunkStreamDispatcherAuto(void* pObject, void*, BYTE fDelete)
 {
 	DestroyLevelChunkStreamDispatcherAutoThunk(pObject);

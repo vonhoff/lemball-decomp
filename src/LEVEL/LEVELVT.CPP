@@ -16,8 +16,6 @@ struct LevelVtDeletableChild {
 	virtual void Delete(BYTE fDelete);
 };
 
-// SYNTHETIC: LEMBALL 0x00407e10
-// DeleteStreamFormatStateAuto
 void* LEMBALL_FASTCALL DeleteStreamFormatStateAuto(void* pObject, void*, BYTE fDelete)
 {
 	ConstructStreamFormatState((VsInitStreamFormatTargetState*) pObject);
@@ -394,7 +392,8 @@ unsigned int return_hresult_40000001_callback(void);
 void noop_network_lobby_vsnet_runtime_slot_3(void);
 void noop_callback_00456600(void);
 
-// LINKERILT: LEMBALL 0x00401019
+// Compatibility shim retained for compiler-generated callers; original ILT slot
+// 0x00401019 targets update_projectile_pool_real directly.
 void __fastcall update_projectile_pool(void* pPool)
 {
 	update_projectile_pool_real(pPool);
@@ -515,9 +514,6 @@ void NoopManagedEntityGroupDetachHookThunk(void)
 	noop_managed_entity_group_detach_hook();
 }
 
-// LINKERILT: LEMBALL 0x004021d0
-// DestroyLevelChunkObjectBaseAutoThunk
-
 // LINKERILT: LEMBALL 0x004021df
 LevelManagedEntityChildIterator* LevelManagedEntityActiveGroupView::GetFirstActiveEntityThunk(void)
 {
@@ -535,9 +531,6 @@ void LevelManagedEntityStateFields::SetStateIdWithVariantLocalThunk(int nStateId
 {
 	SetStateIdWithVariantLocal(nStateId, nVariant);
 }
-
-// LINKERILT: LEMBALL 0x00402676
-// DestroyCollChunkObjectAutoThunk
 
 // LINKERILT: LEMBALL 0x0040269e
 int LevelQueuedProjectileRequestTable::GetRequestCodeThunk(int nIndex)
@@ -580,9 +573,6 @@ int LevelManagedEntityStateFields::IsStateNotInactiveThunk(void)
 {
 	return IsStateNotInactive();
 }
-
-// LINKERILT: LEMBALL 0x004037c4
-// DestroyCompositeLevelChunkChildrenAutoThunk
 
 // LINKERILT: LEMBALL 0x0040380a
 int LevelManagedEntityChildIterator::HasDirtyChildrenThunk(void)
@@ -1056,9 +1046,6 @@ void LEMBALL_FASTCALL MarkObjectField178AndSetTimer3C(void* pObject)
 	*(int*) ((char*) pObject + 0xcc) = g_nLevelFrameClockTick + 0x3c;
 }
 
-// SYNTHETIC: LEMBALL 0x00410ac0
-// LevelVtSmallFunctionView::AddClampedU16Field228
-
 // FUNCTION: LEMBALL 0x00410af0
 void* __fastcall get_level_mode_mine_chunk_manager(void* pLevelMode)
 {
@@ -1106,9 +1093,6 @@ int __fastcall has_level_plas_history_entries(void* pLevelMode)
 	void* pPlasManager = *(void**) ((char*) pLevelMode + 0x15c);
 	return *(int*) ((char*) pPlasManager + 0x128);
 }
-
-// SYNTHETIC: LEMBALL 0x00413390
-// LevelVtSmallFunctionView::AddLevelScoreClamped
 
 // FUNCTION: LEMBALL 0x00414880
 int LevelManagedEntityChildIterator::GetActiveState(void)
@@ -1273,9 +1257,6 @@ void LevelManagedEntityQueueCursor::GetPosition(int* pnX, int* pnY)
 	*pnY = m_nY14;
 }
 
-// STUB: LEMBALL 0x00415160
-// DestroyLevelChunkObjectBaseAuto
-
 // FUNCTION: LEMBALL 0x00415520
 void LevelManagedEntityStateFields::IncrementHeadingOctant(void)
 {
@@ -1347,23 +1328,6 @@ int return_false_virtual_hook(void)
 	return 0;
 }
 
-// SYNTHETIC: LEMBALL 0x00417ab0
-// LevelVtSmallFunctionView::InitializeManagedEntityChildSlotRecord
-// SYNTHETIC: LEMBALL 0x00417b00
-// LevelVtSmallFunctionView::SetRectFromBounds
-// SYNTHETIC: LEMBALL 0x00417b30
-// LevelTwoDwordPairVariantView::copy_two_dword_pair_variant
-// SYNTHETIC: LEMBALL 0x00417b50
-// LevelVtAutoEffDeleteView::Delete17B50
-// SYNTHETIC: LEMBALL 0x00417b80
-// LevelVtAutoEffDeleteView::Delete17B80
-// SYNTHETIC: LEMBALL 0x00417bb0
-// LevelVtAutoEffDeleteView::Delete17BB0
-// SYNTHETIC: LEMBALL 0x00417be0
-// LevelVtAutoEffDeleteView::Delete17BE0
-// SYNTHETIC: LEMBALL 0x00417c10
-// LevelVtAutoEffDeleteView::Delete17C10
-
 // FUNCTION: LEMBALL 0x00417f40
 void* __fastcall get_first_projectile_pool_object(void* pPool)
 {
@@ -1386,9 +1350,6 @@ void* __fastcall get_next_projectile_pool_object(void* pPool)
 	}
 	return *(void**) ((char*) pPool + nIndex * 4 + 0x34);
 }
-
-// SYNTHETIC: LEMBALL 0x00417f80
-// LevelVtSmallFunctionView::AppendProjectilePoolObject
 
 // FUNCTION: LEMBALL 0x00418040
 void __fastcall update_projectile_pool_real(void* pPool)
@@ -1480,7 +1441,7 @@ LevelManagedEntityChildIterator* LevelManagedEntityActiveGroupView::GetFirstActi
 	return 0;
 }
 
-// FUNCTION: LEMBALL 0x00418BA0
+// FUNCTION: LEMBALL 0x00418ba0
 void LevelModeChunkEntryArrayView::CopyTripletToFixedPoint(int* pOutput, int nIndex)
 {
 	pOutput[0] = m_anArrayE0[nIndex] << 12;
@@ -1640,9 +1601,6 @@ void noop_projectile_geometry_callback(void)
 {
 }
 
-// SYNTHETIC: LEMBALL 0x0041a320
-// LevelVtSmallFunctionView::GetProjectileGeometryRotatedPair
-
 // FUNCTION: LEMBALL 0x0041ac70
 void __fastcall deactivate_projectile_object(void* pObject)
 {
@@ -1693,21 +1651,11 @@ int return_two_vtable_callback_0041c630(void)
 	return 2;
 }
 
-// SYNTHETIC: LEMBALL 0x0041cc70
-// LevelVtSmallFunctionView::CopyGmobChunkObjectCurrentPosition
-// SYNTHETIC: LEMBALL 0x0041d010
-// LevelVtSmallFunctionView::GetManagedEntityInteractionPoint
-// SYNTHETIC: LEMBALL 0x0041d7b0
-// LevelVtSmallFunctionView::CopyGmobChunkObjectCurrentPositionVariant
-
 // FUNCTION: LEMBALL 0x0041dc40
 int return_two_vtable_callback_0041dc40(void)
 {
 	return 2;
 }
-
-// STUB: LEMBALL 0x0041de40
-// DestroyCompositeLevelChunkChildrenAuto
 
 // FUNCTION: LEMBALL 0x0041def0
 int LevelManagedEntityChildIterator::GetChildCount(void)
@@ -1750,9 +1698,6 @@ void* LevelManagedEntityChildIterator::GetChildAt(int iChild)
 	}
 	return m_apChildren128[iChild];
 }
-
-// SYNTHETIC: LEMBALL 0x0041df90
-// LevelVtSmallFunctionView::SwapObjectChildSlots128
 
 // FUNCTION: LEMBALL 0x0041e020
 void LevelManagedEntityChildIterator::AppendChild(void* pChild)
@@ -1838,9 +1783,6 @@ void LEMBALL_FASTCALL CallBallChunkEntryVfuncC8(void* pEntry, void* pUnused, int
 	((LevelManagedEntityNoArgVirtualProc) pVtable[0xc8 / sizeof(void*)])(pEntry);
 }
 
-// STUB: LEMBALL 0x004228f0
-// DestroyCollChunkObjectAuto
-
 // FUNCTION: LEMBALL 0x00422b30
 void LEMBALL_FASTCALL DispatchVtableSlot34WithValue2(void* pObject, void* pUnused)
 {
@@ -1899,9 +1841,6 @@ void __fastcall clear_rock_chunk_object_count(void* pManager)
 	*(int*) ((char*) pManager + 0x34) = 0;
 }
 
-// SYNTHETIC: LEMBALL 0x00427890
-// LevelVtSmallFunctionView::GetTileFlag1cObjectRenderPoint
-
 // FUNCTION: LEMBALL 0x00427a90
 int PASCAL get_tile_flag_0x1c_object_render_entry_count(void)
 {
@@ -1931,9 +1870,6 @@ void __fastcall set_move_chunk_object_trigger_latch(void* pObject)
 {
 	*(int*) ((char*) pObject + 0x148) = 1;
 }
-
-// SYNTHETIC: LEMBALL 0x0042eec0
-// return_zero_level_callback_0042eec0
 
 // FUNCTION: LEMBALL 0x0042f2e0
 void __fastcall reset_move_chunk_object_count(void* pManager)
@@ -2185,23 +2121,6 @@ void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject)
 	DestroyLevelChunkObjectBaseAuto(pObject);
 }
 
-// SYNTHETIC: LEMBALL 0x0040ce50
-// DeleteLevelChunkObjectBaseScalarA
-// SYNTHETIC: LEMBALL 0x00417ad0
-// DeleteLevelChunkObjectBaseWrapper17AD0
-// SYNTHETIC: LEMBALL 0x0041c400
-// DeleteLevelChunkObjectBaseWrapper1C400
-// SYNTHETIC: LEMBALL 0x0041c440
-// DeleteLevelChunkObjectBaseWrapper1C440
-// SYNTHETIC: LEMBALL 0x0041c5c0
-// DeleteLevelChunkObjectBaseWrapper1C5C0
-// SYNTHETIC: LEMBALL 0x0041c600
-// DeleteLevelChunkObjectBaseWrapper1C600
-// SYNTHETIC: LEMBALL 0x0041c640
-// DeleteLevelChunkObjectBaseWrapper1C640
-// SYNTHETIC: LEMBALL 0x0041fb70
-// DeleteLevelChunkObjectBaseWrapper1FB70
-
 #define DEFINE_LEVELVT_CHUNK_BASE_DELETE(name)                                                                         \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
 	{                                                                                                                  \
@@ -2244,17 +2163,6 @@ void LEMBALL_FASTCALL DestroyCollChunkObjectAutoThunk(void* pObject)
 {
 	DestroyCollChunkObjectAuto(pObject);
 }
-
-// SYNTHETIC: LEMBALL 0x0041f960
-// DeleteCompositeLevelChunkChildrenWrapper1F960
-// SYNTHETIC: LEMBALL 0x00422fb0
-// DeleteCollChunkObject0B0C
-// SYNTHETIC: LEMBALL 0x00422fe0
-// DeleteCollChunkObject12
-// SYNTHETIC: LEMBALL 0x00423010
-// DeleteCollChunkObject1B
-// SYNTHETIC: LEMBALL 0x00423060
-// DeleteCollChunkObjectWrapper23060
 
 #define DEFINE_LEVELVT_SCALAR_DELETE(name, destroy)                                                                    \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
@@ -2299,40 +2207,16 @@ DEFINE_LEVELVT_SCALAR_DELETE(DeleteCollChunkObjectWrapper23060, DestroyCollChunk
 		realName(pObject);                                                                                             \
 	}
 
-// STUB: LEMBALL 0x00414070
-// DestroyLevelChunkObjectChildrenVariantAuto
-// LINKERILT: LEMBALL 0x004020ef
-// DestroyLevelChunkObjectChildrenVariantAutoThunk
 DEFINE_LEVELVT_DESTROY_PAIR(DestroyLevelChunkObjectChildrenVariantAuto, DestroyLevelChunkObjectChildrenVariantAutoThunk)
 
-// STUB: LEMBALL 0x00414de0
-// DestroyManagedEntityQueueCursorAuto
-// LINKERILT: LEMBALL 0x00402f09
-// DestroyManagedEntityQueueCursorAutoThunk
 DEFINE_LEVELVT_DESTROY_PAIR(DestroyManagedEntityQueueCursorAuto, DestroyManagedEntityQueueCursorAutoThunk)
 
-// STUB: LEMBALL 0x0041b110
-// DestroyCountedChildTableStreamAuto
-// LINKERILT: LEMBALL 0x004025fe
-// DestroyCountedChildTableStreamAutoThunk
 DEFINE_LEVELVT_DESTROY_PAIR(DestroyCountedChildTableStreamAuto, DestroyCountedChildTableStreamAutoThunk)
 
-// STUB: LEMBALL 0x0041d120
-// DestroyGmobChunkType14ObjectAuto
-// LINKERILT: LEMBALL 0x00402be9
-// DestroyGmobChunkType14ObjectAutoThunk
 DEFINE_LEVELVT_DESTROY_PAIR(DestroyGmobChunkType14ObjectAuto, DestroyGmobChunkType14ObjectAutoThunk)
 
-// STUB: LEMBALL 0x0041fda0
-// DestroyThreeOptionalRecordChunkObjectAuto
-// LINKERILT: LEMBALL 0x00403472
-// DestroyThreeOptionalRecordChunkObjectAutoThunk
 DEFINE_LEVELVT_DESTROY_PAIR(DestroyThreeOptionalRecordChunkObjectAuto, DestroyThreeOptionalRecordChunkObjectAutoThunk)
 
-// FUNCTION: LEMBALL 0x004224c0
-// DestroyCollChunkManagerAuto
-// LINKERILT: LEMBALL 0x004026e9
-// DestroyCollChunkManagerAutoThunk
 void LEMBALL_FASTCALL DestroyCollChunkManagerAuto(void* pObject)
 {
 	int i;
@@ -2357,41 +2241,23 @@ void LEMBALL_FASTCALL DestroyCollChunkManagerAutoThunk(void* pObject)
 	DestroyCollChunkManagerAuto(pObject);
 }
 
-// FUNCTION: LEMBALL 0x00426c00
-// DestroyRockChunkManagerAuto
-// LINKERILT: LEMBALL 0x00401cc1
-// DestroyRockChunkManagerAutoThunk
 DEFINE_LEVELVT_MANAGER_DESTROY_PAIR(DestroyRockChunkManagerAuto,
 									DestroyRockChunkManagerAutoThunk,
 									g_LINKSCF_RockChunkManagerVtable,
 									0x38)
 
-// STUB: LEMBALL 0x004275e0
-// DestroyTileFlag1CChunkObjectAuto
-// LINKERILT: LEMBALL 0x00402df1
-// DestroyTileFlag1CChunkObjectAutoThunk
 DEFINE_LEVELVT_DESTROY_PAIR(DestroyTileFlag1CChunkObjectAuto, DestroyTileFlag1CChunkObjectAutoThunk)
 
-// FUNCTION: LEMBALL 0x0042c120
-// DestroyPgunChunkManagerAuto
-// LINKERILT: LEMBALL 0x0040363e
-// DestroyPgunChunkManagerAutoThunk
 DEFINE_LEVELVT_MANAGER_DESTROY_PAIR(DestroyPgunChunkManagerAuto,
 									DestroyPgunChunkManagerAutoThunk,
 									g_LINKSCF_PgunChunkManagerVtable,
 									0x38)
 
-// FUNCTION: LEMBALL 0x0042d8e0
-// DestroyIceChunkManagerAuto
-// LINKERILT: LEMBALL 0x00402743
-// DestroyIceChunkManagerAutoThunk
 DEFINE_LEVELVT_MANAGER_DESTROY_PAIR(DestroyIceChunkManagerAuto,
 									DestroyIceChunkManagerAutoThunk,
 									g_LINKSCF_IceChunkManagerVtable,
 									0x38)
 
-// FUNCTION: LEMBALL 0x0042f2c0
-// DestroyMoveChunkManagerAuto
 void LEMBALL_FASTCALL DestroyMoveChunkManagerAuto(void* pObject)
 {
 	void* pChild;
@@ -2406,27 +2272,6 @@ void LEMBALL_FASTCALL DestroyMoveChunkManagerAuto(void* pObject)
 
 #undef DEFINE_LEVELVT_MANAGER_DESTROY_PAIR
 #undef DEFINE_LEVELVT_DESTROY_PAIR
-
-// SYNTHETIC: LEMBALL 0x00414c80
-// DeleteLevelChunkObjectChildrenVariant14C80
-// SYNTHETIC: LEMBALL 0x00414f00
-// DeleteManagedEntityQueueCursorAuto
-// SYNTHETIC: LEMBALL 0x0041c330
-// DeleteCountedChildTableStreamAuto
-// SYNTHETIC: LEMBALL 0x0041dd70
-// DeleteGmobChunkType14ObjectAuto
-// SYNTHETIC: LEMBALL 0x00420ab0
-// DeleteThreeOptionalRecordChunkObjectAuto
-// SYNTHETIC: LEMBALL 0x00422f70
-// DeleteCollChunkManagerAuto
-// SYNTHETIC: LEMBALL 0x004274f0
-// DeleteRockChunkManagerAuto
-// SYNTHETIC: LEMBALL 0x00427aa0
-// DeleteTileFlag1CChunkObjectAuto
-// SYNTHETIC: LEMBALL 0x0042c9b0
-// DeletePgunChunkManagerAuto
-// SYNTHETIC: LEMBALL 0x0042e4d0
-// DeleteIceChunkManagerAuto
 
 #define DEFINE_LEVELVT_NAMED_SCALAR_DELETE(name, destroy)                                                              \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
@@ -2455,8 +2300,6 @@ DEFINE_LEVELVT_NAMED_SCALAR_DELETE(DeleteIceChunkManagerAuto, DestroyIceChunkMan
 
 extern void LEMBALL_FASTCALL DestroyDoorChunkObjectAutoThunk(void* pObject);
 
-// SYNTHETIC: LEMBALL 0x00410b20
-// DeleteDoorChunkObjectAuto
 void* LEMBALL_FASTCALL DeleteDoorChunkObjectAuto(void* pObject, void*, BYTE fDelete)
 {
 	DestroyDoorChunkObjectAutoThunk(pObject);
@@ -2475,11 +2318,6 @@ static void* g_LEVEL_SimpleVtableObjectVtable[4] = {
 	0,
 	0,
 };
-
-// SYNTHETIC: LEMBALL 0x00407ef0
-// DeleteSimpleVtableObject407EF0
-// SYNTHETIC: LEMBALL 0x00408010
-// DeleteSimpleVtableObject408010
 
 #define DEFINE_LEVELVT_SIMPLE_VTABLE_DELETE(name)                                                                      \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \

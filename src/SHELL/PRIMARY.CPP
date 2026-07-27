@@ -54,18 +54,12 @@ int __stdcall GetPrimaryContextMenuDefinition(unsigned int* pMenuId, void** ppMe
 	return 1;
 }
 
-// SYNTHETIC: LEMBALL 0x004324a0
-// CacheObjectField44AsCurrentContext
-
-// FUNCTION: LEMBALL 0x004324C0
+// FUNCTION: LEMBALL 0x004324c0
 void noop_window_owner_slot_37(void)
 {
 }
 
-// SYNTHETIC: LEMBALL 0x004324d0
-// is_object_field_0x44_current_context
-
-// FUNCTION: LEMBALL 0x004324F0
+// FUNCTION: LEMBALL 0x004324f0
 void noop_window_owner_slot_19(void)
 {
 }

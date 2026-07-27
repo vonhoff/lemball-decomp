@@ -1,6 +1,12 @@
 #ifndef LEMBALL_GAME_APP_H
 #define LEMBALL_GAME_APP_H
 
+// Original registered-render-slot vtable entries use these linker ILT slots.
+// LINKERILT: LEMBALL 0x00401c49
+// DeleteRegisteredRenderSlotArrayAuto
+// LINKERILT: LEMBALL 0x00403008
+// FUN_0043a2e0
+
 struct GameRootDispatchGlobals {
 	int m_fHelperGeometryDispatchSuppressed;
 	char m_szDirectDrawErrorText[64];

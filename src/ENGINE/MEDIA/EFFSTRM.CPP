@@ -7,9 +7,6 @@
 
 #include <string.h>
 
-// LINKERILT: LEMBALL 0x004035f3
-// DestroyNetworkLobbyVsnetRuntimeAutoThunk
-
 extern int PASCAL ReturnTrueVtableCallbackThunk(void* pObject);
 extern void* g_pNetworkLobbyVsnetRuntime;
 extern char* g_pszPendingNetworkLobbyStatusText;
@@ -33,6 +30,7 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbyVsnetRuntimeThunk(void* pObject, int nU
 int LEMBALL_FASTCALL HandleNetworkLobbyVsnetRuntimeEventThunk(void* pObject, int nUnused, unsigned short* pEvent);
 void NoopNetworkLobbyVsnetRuntimeCallbackThunk(void);
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void* pObject);
+void LEMBALL_FASTCALL WriteEffStreamU32Field2C(void* pObject);
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryPayload(void* pObject);
 void LEMBALL_FASTCALL WriteNetworkLobbyPeerEntryPayload(void* pObject);
 void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStream(void* pObject);
@@ -51,7 +49,7 @@ static void* g_EFF_NetworkLobbySelectedPeerStatusVtable[6] = {
 	(void*) ReturnTrueVtableCallbackSecondaryThunk,
 	(void*) ReadNetworkLobbyPeerEntryStream,
 	(void*) NoopVtableCallbackThunk,
-	(void*) WriteNetworkLobbyU32PayloadStream,
+	(void*) WriteEffStreamU32Field2C,
 	(void*) DeleteNetworkLobbySelectedPeerStatusStream,
 };
 static void* g_EFF_NetworkLobbyPeerEntryVtable[6] = {
@@ -856,10 +854,6 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbyU32PayloadStream(void* pObject, void* p
 	}
 	return pObject;
 }
-// SYNTHETIC: LEMBALL 0x00452ec0
-// DeleteNetworkLobbyPeerClearCloseStream
-// SYNTHETIC: LEMBALL 0x00452ef0
-// DeleteNetworkLobbyPeerDirtyConfirmStream
 
 // Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteNetworkLobbyVsnetRuntime(void* pObject, int nUnused, BYTE fDelete)
@@ -1050,8 +1044,6 @@ int HasShiftedRecordSlotPayloadForStream(void* pTransportPeer, void* pStream)
 				->GetShiftedRecordSlotByPacketId(((GameEffStream*) pStream)->m_nEventCode);
 	return pSlot->m_fHasPayload;
 }
-// STUB: LEMBALL 0x004550c0
-// DestroyNetworkLobbyTransportControllerRealAuto
 
 // FUNCTION: LEMBALL 0x0045fc50
 void LoadStreamFromShiftedRecordSlotAndClear(void* pTransportPeer, void* pStream)
@@ -1139,8 +1131,6 @@ void LEMBALL_FASTCALL DestroyNetworkLobbyVsnetRuntimeAutoThunk(void* pObject)
 	DestroyNetworkLobbyVsnetRuntime(pObject);
 }
 
-// SYNTHETIC: LEMBALL 0x00452f20
-// DeleteNetworkLobbyVsnetRuntimeAuto
 void* LEMBALL_FASTCALL DeleteNetworkLobbyVsnetRuntimeAuto(void* pObject, void*, BYTE fDelete)
 {
 	DestroyNetworkLobbyVsnetRuntimeAutoThunk(pObject);

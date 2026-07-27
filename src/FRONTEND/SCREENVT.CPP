@@ -3,9 +3,6 @@
 #include "ENGINE/GDI/VSWINDOW.H"
 #include "GAME.H"
 
-// LINKERILT: LEMBALL 0x0040225c
-// DestroyRegisteredRenderSlotArrayAutoThunk
-
 // STRONG INFERENCE: callbacks relocated from the artificial aggregate by
 // vtable owner, semantic role, and neighboring address/call-graph cluster.
 
@@ -96,8 +93,6 @@ void LEMBALL_FASTCALL DestroyRegisteredRenderSlotArrayAuto(void* pObject)
 	*(void***) pObject = g_GAME_RenderQueueNodeVtableSlots;
 }
 
-// STUB: LEMBALL 0x0043a2e0
-// FUN_0043a2e0
 void LEMBALL_FASTCALL FUN_0043a2e0(void*, int, unsigned short*)
 {
 }
@@ -108,8 +103,7 @@ void LEMBALL_FASTCALL DestroyRegisteredRenderSlotArrayAutoThunk(void* pObject)
 	DestroyRegisteredRenderSlotArrayAuto(pObject);
 }
 
-// SYNTHETIC: LEMBALL 0x0043a490
-// DeleteRegisteredRenderSlotArrayAuto
+// FUNCTION: LEMBALL 0x0043a490
 void* LEMBALL_FASTCALL DeleteRegisteredRenderSlotArrayAuto(void* pObject, void*, BYTE fDelete)
 {
 	DestroyRegisteredRenderSlotArrayAutoThunk(pObject);

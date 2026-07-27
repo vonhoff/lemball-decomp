@@ -1755,8 +1755,6 @@ int LEMBALL_FASTCALL InitializeWaveOutEffectDevice0047CB00(void* pBackend,
 	return 1;
 }
 
-// SYNTHETIC: LEMBALL 0x0047cbe0
-// IsWaveOutEffectBackendAvailableStdcall
 int LEMBALL_FASTCALL IsWaveOutEffectBackendAvailable(void*)
 {
 	return 1;
