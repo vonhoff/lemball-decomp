@@ -90,6 +90,8 @@ Pop-Location
 
 ## Measurement
 
+Use only the canonical project checks below. Never create or run ad-hoc verification scripts.
+
 ```powershell
 python tools/build_msvc420.py
 .decomp-venv\Scripts\reccmp-project.exe detect --search-path data
