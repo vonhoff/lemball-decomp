@@ -2,11 +2,10 @@
 #include "ENGINE/CORE/VSINIT.H"
 #include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/MEDIA/VSSTRM.H"
-#include <new>
 #include "ENGINE/NET/VSNET.H"
-
 #include "GAME.H"
 
+#include <new>
 #include <stdio.h>
 #include <string.h>
 
@@ -183,8 +182,7 @@ struct VsNetPrefixedEffTransportControlView {
 struct VsNetQueueEffTransportPayloadEventView {
 	inline void QueueEffTransportPayloadEvent(int nType, void* pPayload)
 	{
-		((VsNetCompositeEffTransportStack*) this)
-			->VsNetCompositeEffTransportStack::DualStreamRet8(nType, pPayload);
+		((VsNetCompositeEffTransportStack*) this)->VsNetCompositeEffTransportStack::DualStreamRet8(nType, pPayload);
 	}
 };
 extern void PASCAL EffStreamChannelStateRet4Thunk(BYTE fDelete);
@@ -994,7 +992,7 @@ public:
 
 	VsNetEffStreamRecordSlotTable(int cSlots);
 	virtual ~VsNetEffStreamRecordSlotTable();
-	virtual void ReverseEffStreamPayload(void); // vtable+0x08
+	virtual void ReverseEffStreamPayload(void);    // vtable+0x08
 	virtual void WriteEffStreamTaggedHeader(void); // vtable+0x10
 	VsNetEffStreamRecordSlot* FindNextChangedSlot(void);
 };
@@ -1724,7 +1722,9 @@ extern int g_cbEffTransportMaxPacketBytes;
 struct VsNetCompositeEffTransportStackLayout {
 	inline void* ConstructCompositeEffTransportStack(int) { return this; }
 };
-inline void LEMBALL_FASTCALL RestoreCompositeEffTransportVtables(int) {}
+inline void LEMBALL_FASTCALL RestoreCompositeEffTransportVtables(int)
+{
+}
 struct VsNetFileBackedLockedWriterView {
 	DWORD WriteEffStreamToLockedFile(int* pStream, int fKeepLock, int fFlush);
 };
@@ -1931,8 +1931,7 @@ void VsNetEffStreamRecordSlot::Load(void)
 
 inline void VsNetAdjustedTimedEffStreamServiceView::InvokeAdjustedTimedEffStreamServiceCallback(void* pArgument)
 {
-	((VsNetTimedFileBackedEffChannel*) this)
-		->VsNetTimedFileBackedEffChannel::CaptureTimedSocketLookup(pArgument);
+	((VsNetTimedFileBackedEffChannel*) this)->VsNetTimedFileBackedEffChannel::CaptureTimedSocketLookup(pArgument);
 }
 
 inline void VsNetFileBackedPendingWriteAdjustedView::ClearAdjustedPendingWriteState(void* pUnused)
@@ -1952,9 +1951,8 @@ inline void VsNetAdjustedEffTransportPendingWriteState::ClearPendingWrite(void* 
 		->VsNetEmbeddedFileBackedEffChannelStack::ClearPendingWrite(pUnused);
 }
 
-inline int VsNetFileBackedRecordWriterView::AppendAdjustedFileBackedEffRecordSlot(
-	const void* pvPayload,
-	DWORD cbPayload)
+inline int VsNetFileBackedRecordWriterView::AppendAdjustedFileBackedEffRecordSlot(const void* pvPayload,
+																				  DWORD cbPayload)
 {
 	return ((VsNetFileBackedCompositeEffChannelAdapter*) this)
 		->VsNetEmbeddedFileBackedEffChannelStack::SendTimedSocketPayload((void*) pvPayload, cbPayload);
@@ -2079,6 +2077,28 @@ VsNetEffStreamRecordSlotTable::~VsNetEffStreamRecordSlotTable()
 	if (m_pSlots != 0) {
 		((VsNetDeleteObject*) m_pSlots)->m_pVtable->m_pDelete(m_pSlots, 3);
 	}
+}
+
+// SYNTHETIC: LEMBALL 0x0047b7d0
+// DeleteEffStreamRecordSlotTableAuto
+void* LEMBALL_FASTCALL DeleteEffStreamRecordSlotTableAuto(void* pObject, void*, BYTE fDelete)
+{
+	((VsNetEffStreamRecordSlotTable*) pObject)->VsNetEffStreamRecordSlotTable::~VsNetEffStreamRecordSlotTable();
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
+
+// SYNTHETIC: LEMBALL 0x0047b970
+// DeleteFileBackedEffStreamAuto
+void* LEMBALL_FASTCALL DeleteFileBackedEffStreamAuto(void* pObject, void*, BYTE fDelete)
+{
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
 }
 
 // FUNCTION: LEMBALL 0x00479720
@@ -3210,8 +3230,8 @@ VsNetGlobalStateFileBackedEffComposite::VsNetGlobalStateFileBackedEffComposite()
 		*(int*) (pbObjectBase + 0x20 + pCompositeOffsets->m_nRecordTableCOffset20) = 0;
 	}
 	else {
-		pRecordSlotTable = new (pStorage) VsNetEffStreamRecordSlotTable(
-			*(int*) (pbObjectBase + pCompositeOffsets->m_nRecordTableAOffset18 + 0x28));
+		pRecordSlotTable = new (pStorage)
+			VsNetEffStreamRecordSlotTable(*(int*) (pbObjectBase + pCompositeOffsets->m_nRecordTableAOffset18 + 0x28));
 		*(VsNetEffStreamRecordSlotTable**) (pbObjectBase + 0x20 + pCompositeOffsets->m_nRecordTableCOffset20) =
 			pRecordSlotTable;
 	}
@@ -3746,8 +3766,8 @@ VsNetDualSlotTableFileBackedEffComposite::VsNetDualSlotTableFileBackedEffComposi
 		*(int*) (pbObjectBase + 0x2c + pCompositeOffsets->m_nRecordTableBOffset1c) = 0;
 	}
 	else {
-		pRecordSlotTable = new (pStorage) VsNetEffStreamRecordSlotTable(
-			*(int*) (pbObjectBase + pCompositeOffsets->m_nRecordTableAOffset18 + 0x34));
+		pRecordSlotTable = new (pStorage)
+			VsNetEffStreamRecordSlotTable(*(int*) (pbObjectBase + pCompositeOffsets->m_nRecordTableAOffset18 + 0x34));
 		*(VsNetEffStreamRecordSlotTable**) (pbObjectBase + 0x2c + pCompositeOffsets->m_nRecordTableBOffset1c) =
 			pRecordSlotTable;
 	}
@@ -3757,8 +3777,8 @@ VsNetDualSlotTableFileBackedEffComposite::VsNetDualSlotTableFileBackedEffComposi
 		*(int*) (pbObjectBase + 0x2c + pCompositeOffsets->m_nRecordTableCOffset20) = 0;
 	}
 	else {
-		pRecordSlotTable = new (pStorage) VsNetEffStreamRecordSlotTable(
-			*(int*) (pbObjectBase + pCompositeOffsets->m_nRecordTableAOffset18 + 0x34));
+		pRecordSlotTable = new (pStorage)
+			VsNetEffStreamRecordSlotTable(*(int*) (pbObjectBase + pCompositeOffsets->m_nRecordTableAOffset18 + 0x34));
 		*(VsNetEffStreamRecordSlotTable**) (pbObjectBase + 0x2c + pCompositeOffsets->m_nRecordTableCOffset20) =
 			pRecordSlotTable;
 	}
@@ -4167,9 +4187,9 @@ void VsNetGlobalSessionAdjustorFront::WriteAdjustedEffStreamWithGlobalSession(vo
 	pbTransportView =
 		(char*) this + ((VsNetGlobalSessionAdjustorFront*) ((char*) this - 0x38))->m_pOffsets->m_nTransportViewOffset10;
 	((VsNetRuntimeChannelCore*) (pbTransportView +
-								((VsNetGlobalSessionAdjustorFront*) (pbTransportView - 0x38))
-									->m_pOffsets->m_nEmbeddedStreamViewOffset08 -
-								0x38))
+								 ((VsNetGlobalSessionAdjustorFront*) (pbTransportView - 0x38))
+									 ->m_pOffsets->m_nEmbeddedStreamViewOffset08 -
+								 0x38))
 		->VsNetRuntimeChannelCore::WriteGlobalSession();
 }
 
@@ -4191,9 +4211,9 @@ void LEMBALL_FASTCALL ClaimAdjustedEffTransportRecordPayload(void* pObject)
 		(char*) pObject +
 		((VsNetGlobalSessionAdjustorFront*) ((char*) pObject - 0x38))->m_pOffsets->m_nTransportViewOffset10;
 	((VsNetRuntimeChannelCore*) (pbTransportView +
-										   ((VsNetGlobalSessionAdjustorFront*) (pbTransportView - 0x38))
-											   ->m_pOffsets->m_nEmbeddedStreamViewOffset08 -
-										   0x38))
+								 ((VsNetGlobalSessionAdjustorFront*) (pbTransportView - 0x38))
+									 ->m_pOffsets->m_nEmbeddedStreamViewOffset08 -
+								 0x38))
 		->VsNetRuntimeChannelCore::ClaimRecord();
 }
 
@@ -4226,8 +4246,7 @@ void LEMBALL_FASTCALL AdjustAndClearEmbeddedEffChannelAsyncStatus13c(void* pObje
 // FUNCTION: LEMBALL 0x0047bbf0
 void VsNetGlobalStateFileBackedEffComposite::ClearPendingWrite(void* pUnused)
 {
-	((VsNetRuntimeChannelStack*) ((char*) this - 0x3c))
-		->VsNetRuntimeChannelStack::ClearPendingWrite(pUnused);
+	((VsNetRuntimeChannelStack*) ((char*) this - 0x3c))->VsNetRuntimeChannelStack::ClearPendingWrite(pUnused);
 }
 
 // FUNCTION: LEMBALL 0x0047bc10

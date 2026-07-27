@@ -2414,6 +2414,17 @@ void* VsGdiDibDisplayState::Delete(int fDelete)
 	}
 	return pThis;
 }
+
+// SYNTHETIC: LEMBALL 0x004583c0
+// DeleteDibDisplayStateVariantAuto
+void* LEMBALL_FASTCALL DeleteDibDisplayStateVariantAuto(void* pObject, void*, BYTE fDelete)
+{
+	((VsGdiDibDisplayState*) pObject)->~VsGdiDibDisplayState();
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
 // FUNCTION: LEMBALL 0x00458350
 int VsGdiDirectDrawDisplayState::IsDirectDrawPaletteReady(void) const
 {

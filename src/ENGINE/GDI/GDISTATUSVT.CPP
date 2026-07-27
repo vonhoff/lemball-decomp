@@ -1,6 +1,7 @@
 #include "ENGINE/CORE/VSMEM.H"
 
 extern void LEMBALL_FASTCALL DestroyArrowCursorState(void* pRenderClient);
+extern void LEMBALL_FASTCALL DestroyStatusIndicatorRenderClientBase(int* pRenderClient);
 
 // FUNCTION: LEMBALL 0x0046b460
 int LEMBALL_FASTCALL DispatchStatusIndicatorRenderEntry(void* pRenderClient, int nUnused, void* pEntry)
@@ -60,6 +61,7 @@ void* LEMBALL_FASTCALL DeleteStatusIndicatorRenderClientBaseThunk(void* pRenderC
 																  unsigned char fDelete)
 {
 	(void) nUnused;
+	DestroyStatusIndicatorRenderClientBase((int*) pRenderClient);
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pRenderClient);
 	}

@@ -17,6 +17,10 @@ struct LevelThreeDwordBounds;
 struct LevelBoundedRenderObjectView;
 struct LevelType18ChunkStream;
 
+struct LinkScfDeletableChild {
+	virtual void Delete(BYTE fDelete);
+};
+
 extern void* g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
 extern void* g_pActiveLevelGameMode;
@@ -96,8 +100,11 @@ void* LEMBALL_FASTCALL GetFirstCachedChunkObjectThunk(void* pObject)
 	 (void*) ReturnFalseChunkStreamCommandThunk,                                                                       \
 	 (void*) ReturnFalseChunkStreamRenderThunk}
 
+// GLOBAL: LEMBALL 0x00495ea8
 static void* g_LINKSCF_LiftChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
-static void* g_LINKSCF_MoveChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+// GLOBAL: LEMBALL 0x00496b78
+void* g_LINKSCF_MoveChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+// GLOBAL: LEMBALL 0x00494238
 static void* g_LINKSCF_GmobChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
 static void* g_LINKSCF_PlasChunkManagerVtable[10];
 static void* g_LINKSCF_PlasChunkStreamVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
@@ -169,8 +176,10 @@ static void* g_LINKSCF_PlasChunkObjectVtable[66] = {
 	(void*) IsManagedEntityState18,
 	(void*) ActivateOrStagePlasChunkObject,
 };
+// GLOBAL: LEMBALL 0x00494008
 static void* g_LINKSCF_ProjectilePoolVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
 static void* g_LINKSCF_ManagedEntityQueueCursorVtable[4];
+// GLOBAL: LEMBALL 0x00494d70
 static void* g_LINKSCF_ShpgChunkManagerVtable[20] = {0,
 													 (void*) GetFirstCachedChunkObject,
 													 (void*) GetNextCachedChunkObject,
@@ -191,6 +200,7 @@ static void* g_LINKSCF_ShpgChunkManagerVtable[20] = {0,
 													 0,
 													 0,
 													 (void*) EmitCachedChunkManagerRenderEntriesThunk};
+// GLOBAL: LEMBALL 0x004953f8
 static void* g_LINKSCF_EnmyChunkManagerVtable[20] = {0,
 													 (void*) GetFirstCachedChunkObject,
 													 (void*) GetNextCachedChunkObject,
@@ -211,15 +221,25 @@ static void* g_LINKSCF_EnmyChunkManagerVtable[20] = {0,
 													 0,
 													 0,
 													 (void*) EmitCachedChunkManagerRenderEntriesThunk};
-static void* g_LINKSCF_CollChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+// GLOBAL: LEMBALL 0x004955a0
+void* g_LINKSCF_CollChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+// GLOBAL: LEMBALL 0x00495d30
 static void* g_LINKSCF_MineChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+// GLOBAL: LEMBALL 0x00493840
 static void* g_LINKSCF_DoorChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
-static void* g_LINKSCF_RockChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+// GLOBAL: LEMBALL 0x00496020
+void* g_LINKSCF_RockChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+// GLOBAL: LEMBALL 0x004962e0
 static void* g_LINKSCF_CaptureChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+// GLOBAL: LEMBALL 0x00496458
 static void* g_LINKSCF_LasrChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+// GLOBAL: LEMBALL 0x00496710
 static void* g_LINKSCF_TramChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
-static void* g_LINKSCF_PgunChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
-static void* g_LINKSCF_IceChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+// GLOBAL: LEMBALL 0x00496888
+void* g_LINKSCF_PgunChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+// GLOBAL: LEMBALL 0x00496a00
+void* g_LINKSCF_IceChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
+// GLOBAL: LEMBALL 0x00493298
 static void* g_LINKSCF_InvsChunkManagerVtable[10] = LINKSCF_SIMPLE_EFF_CHUNK_VTABLE;
 static void* g_LINKSCF_BoonChunkObjectVtable[66];
 static void* g_LINKSCF_LevelChunkStreamDispatcherVtable[10];
@@ -549,8 +569,19 @@ LinkScfDoorChunkManagerView* LinkScfDoorChunkManagerView::ConstructDoorChunkMana
 	*(int*) ((char*) this + 0x3c) = 0;
 	return this;
 }
-// STUB: LEMBALL 0x0040a350
+// FUNCTION: LEMBALL 0x0040a350
 // DestroyLevelChunkStreamAuto
+void LEMBALL_FASTCALL DestroyLevelChunkStreamAuto(void* pObject)
+{
+	void* pChild;
+
+	*(void**) pObject = g_LINKSCF_InvsChunkManagerVtable;
+	pChild = *(void**) ((char*) pObject + 0x3c);
+	if (pChild != 0) {
+		((LinkScfDeletableChild*) pChild)->Delete(3);
+	}
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+}
 
 // SYNTHETIC: LEMBALL 0x0040eb70
 // LinkScfSmallFunctionView::GetLevelTileGridCellPointer
@@ -1394,48 +1425,98 @@ DEFINE_LINKSCF_COMPOSITE_CHILDREN_DELETE(DeleteCompositeLevelChunkChildrenWrappe
 		realName(pObject);                                                                                             \
 	}
 
-// STUB: LEMBALL 0x0040e060
+#define DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(realName, thunkName, vtable, childOffset)                                  \
+	void LEMBALL_FASTCALL realName(void* pObject)                                                                      \
+	{                                                                                                                  \
+		void* pChild;                                                                                                  \
+		*(void**) pObject = vtable;                                                                                    \
+		pChild = *(void**) ((char*) pObject + childOffset);                                                            \
+		if (pChild != 0) {                                                                                             \
+			((LinkScfDeletableChild*) pChild)->Delete(3);                                                              \
+		}                                                                                                              \
+		((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();                              \
+	}                                                                                                                  \
+	void LEMBALL_FASTCALL thunkName(void* pObject)                                                                     \
+	{                                                                                                                  \
+		realName(pObject);                                                                                             \
+	}
+
+// FUNCTION: LEMBALL 0x0040e060
 // DestroyDoorChunkManagerAuto
 // LINKERILT: LEMBALL 0x004021f3
 // DestroyDoorChunkManagerAutoThunk
-DEFINE_LINKSCF_DESTROY_PAIR(DestroyDoorChunkManagerAuto, DestroyDoorChunkManagerAutoThunk)
+DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyDoorChunkManagerAuto,
+									DestroyDoorChunkManagerAutoThunk,
+									g_LINKSCF_DoorChunkManagerVtable,
+									0x3c)
 
-// STUB: LEMBALL 0x00417ec0
+// FUNCTION: LEMBALL 0x00417ec0
 // DestroyProjectilePoolAuto
 // LINKERILT: LEMBALL 0x00401d16
 // DestroyProjectilePoolAutoThunk
-DEFINE_LINKSCF_DESTROY_PAIR(DestroyProjectilePoolAuto, DestroyProjectilePoolAutoThunk)
+DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyProjectilePoolAuto,
+									DestroyProjectilePoolAutoThunk,
+									g_LINKSCF_ProjectilePoolVtable,
+									0x30)
 
-// STUB: LEMBALL 0x00424170
+// FUNCTION: LEMBALL 0x00424170
 // DestroyMineChunkManagerAuto
 // LINKERILT: LEMBALL 0x00402374
 // DestroyMineChunkManagerAutoThunk
-DEFINE_LINKSCF_DESTROY_PAIR(DestroyMineChunkManagerAuto, DestroyMineChunkManagerAutoThunk)
+void LEMBALL_FASTCALL DestroyMineChunkManagerAuto(void* pObject)
+{
+	void* pChild;
 
-// STUB: LEMBALL 0x004257c0
+	*(void**) pObject = g_LINKSCF_MineChunkManagerVtable;
+	pChild = *(void**) ((char*) pObject + 0x34);
+	if (pChild != 0) {
+		((LinkScfDeletableChild*) pChild)->Delete(3);
+		FreeVSMemBlock(*(void**) ((char*) pObject + 0x38));
+	}
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+}
+void LEMBALL_FASTCALL DestroyMineChunkManagerAutoThunk(void* pObject)
+{
+	DestroyMineChunkManagerAuto(pObject);
+}
+
+// FUNCTION: LEMBALL 0x004257c0
 // DestroyLiftChunkManagerAuto
 // LINKERILT: LEMBALL 0x00401fe1
 // DestroyLiftChunkManagerAutoThunk
-DEFINE_LINKSCF_DESTROY_PAIR(DestroyLiftChunkManagerAuto, DestroyLiftChunkManagerAutoThunk)
+DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyLiftChunkManagerAuto,
+									DestroyLiftChunkManagerAutoThunk,
+									g_LINKSCF_LiftChunkManagerVtable,
+									0x3c)
 
-// STUB: LEMBALL 0x00427fa0
+// FUNCTION: LEMBALL 0x00427fa0
 // DestroyCaptureTriggerChunkManagerAuto
 // LINKERILT: LEMBALL 0x00402ca2
 // DestroyCaptureTriggerChunkManagerAutoThunk
-DEFINE_LINKSCF_DESTROY_PAIR(DestroyCaptureTriggerChunkManagerAuto, DestroyCaptureTriggerChunkManagerAutoThunk)
+DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyCaptureTriggerChunkManagerAuto,
+									DestroyCaptureTriggerChunkManagerAutoThunk,
+									g_LINKSCF_CaptureChunkManagerVtable,
+									0x38)
 
-// STUB: LEMBALL 0x00429450
+// FUNCTION: LEMBALL 0x00429450
 // DestroyLasrChunkManagerAuto
 // LINKERILT: LEMBALL 0x0040354e
 // DestroyLasrChunkManagerAutoThunk
-DEFINE_LINKSCF_DESTROY_PAIR(DestroyLasrChunkManagerAuto, DestroyLasrChunkManagerAutoThunk)
+DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyLasrChunkManagerAuto,
+									DestroyLasrChunkManagerAutoThunk,
+									g_LINKSCF_LasrChunkManagerVtable,
+									0x38)
 
-// STUB: LEMBALL 0x0042b090
+// FUNCTION: LEMBALL 0x0042b090
 // DestroyTramChunkManagerAuto
 // LINKERILT: LEMBALL 0x00401212
 // DestroyTramChunkManagerAutoThunk
-DEFINE_LINKSCF_DESTROY_PAIR(DestroyTramChunkManagerAuto, DestroyTramChunkManagerAutoThunk)
+DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyTramChunkManagerAuto,
+									DestroyTramChunkManagerAutoThunk,
+									g_LINKSCF_TramChunkManagerVtable,
+									0x38)
 
+#undef DEFINE_LINKSCF_MANAGER_DESTROY_PAIR
 #undef DEFINE_LINKSCF_DESTROY_PAIR
 
 // SYNTHETIC: LEMBALL 0x0040ebe0
@@ -1472,11 +1553,6 @@ DEFINE_LINKSCF_NAMED_SCALAR_DELETE(DeleteLasrChunkManagerAuto, DestroyLasrChunkM
 DEFINE_LINKSCF_NAMED_SCALAR_DELETE(DeleteTramChunkManagerAuto, DestroyTramChunkManagerAutoThunk)
 
 #undef DEFINE_LINKSCF_NAMED_SCALAR_DELETE
-
-// Comparison-only compatibility stub.
-void LEMBALL_FASTCALL DestroyLevelChunkStreamAuto(void*)
-{
-}
 
 // Compatibility shim for original ILT call site.
 void LEMBALL_FASTCALL DestroyLevelChunkStreamAutoThunk(void* pObject)

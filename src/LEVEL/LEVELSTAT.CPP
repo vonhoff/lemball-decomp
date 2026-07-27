@@ -1096,9 +1096,6 @@ int ReturnTrueVirtualHookBody(void)
 	return 1;
 }
 
-// STUB: LEMBALL 0x0042f2c0
-// DestroyMoveChunkManagerAuto
-
 // FUNCTION: LEMBALL 0x0042ffe0
 short LevelTileRenderDescriptor::SampleHeightOffset(int nLocalX, int nLocalY)
 {
@@ -5111,10 +5108,7 @@ void* LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryAuto(void* pObject
 	return pObject;
 }
 
-// Comparison-only compatibility stub.
-void LEMBALL_FASTCALL DestroyMoveChunkManagerAuto(void*)
-{
-}
+extern void LEMBALL_FASTCALL DestroyMoveChunkManagerAuto(void* pObject);
 
 // Compatibility shim for original ILT call site.
 void LEMBALL_FASTCALL DestroyMoveChunkManagerAutoThunk(void* pObject)
@@ -5285,4 +5279,15 @@ void LevelViewRotationTransformAuto::TransformScreenToTile(int nScreenX, int nSc
 		*pTileY = nScreenX / 2 + nScreenY - 8;
 		break;
 	}
+}
+
+// SYNTHETIC: LEMBALL 0x004511c0
+// DeleteBaseModeObjectVariantAuto
+void* LEMBALL_FASTCALL DeleteBaseModeObjectVariantAuto(void* pObject, void*, BYTE fDelete)
+{
+	DestroyBaseModeObjectAutoThunk(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
 }

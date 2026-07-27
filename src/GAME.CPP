@@ -5783,6 +5783,8 @@ void LEMBALL_FASTCALL DestroyRegistrationInfoScreenAutoThunk(void* pObject)
 // DeleteMainMenuModeAuto
 // SYNTHETIC: LEMBALL 0x00407fa0
 // DeleteOptionsModeAuto
+// SYNTHETIC: LEMBALL 0x00407fd0
+// DeleteDerivedBaseModeWrapperAuto
 // SYNTHETIC: LEMBALL 0x00413e30
 // DeleteLevelGameModeAuto
 // SYNTHETIC: LEMBALL 0x00439490
@@ -5805,12 +5807,24 @@ void LEMBALL_FASTCALL DestroyRegistrationInfoScreenAutoThunk(void* pObject)
 DEFINE_GAME_NAMED_SCALAR_DELETE(DeleteStartupModeAuto, DestroyBaseModeObjectAutoThunk)
 DEFINE_GAME_NAMED_SCALAR_DELETE(DeleteMainMenuModeAuto, DestroyBaseModeObjectAutoThunk)
 DEFINE_GAME_NAMED_SCALAR_DELETE(DeleteOptionsModeAuto, DestroyBaseModeObjectAutoThunk)
+DEFINE_GAME_NAMED_SCALAR_DELETE(DeleteDerivedBaseModeWrapperAuto, DestroyBaseModeObjectAutoThunk)
 DEFINE_GAME_NAMED_SCALAR_DELETE(DeleteLevelGameModeAuto, DestroyLevelGameModeAutoThunk)
 DEFINE_GAME_NAMED_SCALAR_DELETE(DeleteReconstructedLevelScreenAuto, RestoreReconstructedLevelScreenVtablesAutoThunk)
 DEFINE_GAME_NAMED_SCALAR_DELETE(DeleteLevelSelectionModeAuto, DestroyBaseModeObjectAutoThunk)
 DEFINE_GAME_NAMED_SCALAR_DELETE(DeleteRegistrationInfoScreenAuto, DestroyRegistrationInfoScreenAutoThunk)
 
 #undef DEFINE_GAME_NAMED_SCALAR_DELETE
+
+// SYNTHETIC: LEMBALL 0x00413df0
+// DeleteEffStreamBaseWrapperAuto
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapperAuto(void* pObject, void*, BYTE fDelete)
+{
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
 
 extern void LEMBALL_FASTCALL DestroyNetworkLobbyTransportControllerRealAuto(void* pObject);
 

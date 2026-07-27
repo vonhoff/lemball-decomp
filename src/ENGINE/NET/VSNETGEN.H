@@ -3,7 +3,7 @@
 
 /* Compiler-owned network functions.  Keep by-name annotations in this
  * declaration header; source files contain only authored bodies. */
-// FUNCTION: LEMBALL 0x0047b7d0
+// Compatibility symbol preserving MSVC 4.20 compiler state.
 // VsNetEffStreamRecordSlotTable::`scalar deleting destructor'
 // FUNCTION: LEMBALL 0x00462cb0
 // VsNetRuntimeChannelCore::`scalar deleting destructor'
@@ -114,7 +114,7 @@
 // ?ClearPendingWrite@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEXPAX@Z
 // SYNTHETIC: LEMBALL 0x0047c040 symbol
 // ?FatalFileBackedOperation00@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEXXZ
-// SYNTHETIC: LEMBALL 0x0047b970 symbol
+// Compatibility symbol preserving MSVC 4.20 compiler state.
 // ??_EVsNetFileBackedEffStream@@UAEPAXI@Z
 // SYNTHETIC: LEMBALL 0x0047baf0 symbol
 // ?CaptureTimedSocketLookup@VsNetTimedFileBackedEffChannel@@WPPPPPOLA@AEXPAX@Z

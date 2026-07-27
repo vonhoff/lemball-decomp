@@ -3,12 +3,14 @@
 #include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/DEBUG/CTEXTWIN.H"
 
+#include <stdlib.h>
 #include <string.h>
 
 DECOMP_SIZE_ASSERT(CTextWindow, 0x58);
 
 static const char g_PLATFORM_DebugWindowTitle[] = "Debug Window";
 
+// GLOBAL: LEMBALL 0x004a2b7c
 CTextWindow* g_pDebugTextWindow = 0;
 static HACCEL g_hDebugWindowAccelerators = 0;
 static void* g_CTextWindowVTable[2] = {(void*) NetworkSafeVtableNoop, (void*) NetworkSafeVtableNoop};
@@ -65,7 +67,7 @@ void CTextWindow::PostAllocatedTextControlString(const char* pszText, unsigned i
 		return;
 	}
 	cchText = (unsigned int) strlen(pszText) + 1;
-	pszCopy = (char*) AllocateVSMemBlock(cchText);
+	pszCopy = (char*) malloc(cchText);
 	if (pszCopy == 0) {
 		ShowFatalGetLastErrorMessageAndExit("Unable to allocate memory for string copy");
 	}

@@ -1,9 +1,31 @@
+#include "ENGINE/CORE/VSINIT.H"
 #include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/CORE/WIN32.H"
 #include "ENGINE/GDI/VSWINDOW.H"
 #include "ENGINE/MEDIA/VSSTRM.H"
 
 void* LEMBALL_FASTCALL DeleteSimpleVtableObject407EF0(void* pObject, void*, BYTE fDelete);
+
+extern void* g_LINKSCF_RockChunkManagerVtable[10];
+extern void* g_LINKSCF_CollChunkManagerVtable[10];
+extern void* g_LINKSCF_PgunChunkManagerVtable[10];
+extern void* g_LINKSCF_IceChunkManagerVtable[10];
+extern void* g_LINKSCF_MoveChunkManagerVtable[10];
+
+struct LevelVtDeletableChild {
+	virtual void Delete(BYTE fDelete);
+};
+
+// SYNTHETIC: LEMBALL 0x00407e10
+// DeleteStreamFormatStateAuto
+void* LEMBALL_FASTCALL DeleteStreamFormatStateAuto(void* pObject, void*, BYTE fDelete)
+{
+	ConstructStreamFormatState((VsInitStreamFormatTargetState*) pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
 
 // STRONG INFERENCE: callbacks relocated from the artificial aggregate by
 // vtable owner, semantic role, and neighboring address/call-graph cluster.
@@ -2261,6 +2283,22 @@ DEFINE_LEVELVT_SCALAR_DELETE(DeleteCollChunkObjectWrapper23060, DestroyCollChunk
 		realName(pObject);                                                                                             \
 	}
 
+#define DEFINE_LEVELVT_MANAGER_DESTROY_PAIR(realName, thunkName, vtable, childOffset)                                  \
+	void LEMBALL_FASTCALL realName(void* pObject)                                                                      \
+	{                                                                                                                  \
+		void* pChild;                                                                                                  \
+		*(void**) pObject = vtable;                                                                                    \
+		pChild = *(void**) ((char*) pObject + childOffset);                                                            \
+		if (pChild != 0) {                                                                                             \
+			((LevelVtDeletableChild*) pChild)->Delete(3);                                                              \
+		}                                                                                                              \
+		((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();                              \
+	}                                                                                                                  \
+	void LEMBALL_FASTCALL thunkName(void* pObject)                                                                     \
+	{                                                                                                                  \
+		realName(pObject);                                                                                             \
+	}
+
 // STUB: LEMBALL 0x00414070
 // DestroyLevelChunkObjectChildrenVariantAuto
 // LINKERILT: LEMBALL 0x004020ef
@@ -2291,17 +2329,42 @@ DEFINE_LEVELVT_DESTROY_PAIR(DestroyGmobChunkType14ObjectAuto, DestroyGmobChunkTy
 // DestroyThreeOptionalRecordChunkObjectAutoThunk
 DEFINE_LEVELVT_DESTROY_PAIR(DestroyThreeOptionalRecordChunkObjectAuto, DestroyThreeOptionalRecordChunkObjectAutoThunk)
 
-// STUB: LEMBALL 0x004224c0
+// FUNCTION: LEMBALL 0x004224c0
 // DestroyCollChunkManagerAuto
 // LINKERILT: LEMBALL 0x004026e9
 // DestroyCollChunkManagerAutoThunk
-DEFINE_LEVELVT_DESTROY_PAIR(DestroyCollChunkManagerAuto, DestroyCollChunkManagerAutoThunk)
+void LEMBALL_FASTCALL DestroyCollChunkManagerAuto(void* pObject)
+{
+	int i;
+	int nOffset;
 
-// STUB: LEMBALL 0x00426c00
+	*(void**) pObject = g_LINKSCF_CollChunkManagerVtable;
+	if (*(void**) ((char*) pObject + 0x34) != 0) {
+		i = 0;
+		for (nOffset = 0; nOffset < *(int*) ((char*) pObject + 0x3c); ++nOffset) {
+			void* pChild = *(void**) ((char*) *(void**) ((char*) pObject + 0x34) + i);
+			if (pChild != 0) {
+				((LevelVtDeletableChild*) pChild)->Delete(1);
+			}
+			i += 4;
+		}
+		FreeVSMemBlock(*(void**) ((char*) pObject + 0x34));
+	}
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+}
+void LEMBALL_FASTCALL DestroyCollChunkManagerAutoThunk(void* pObject)
+{
+	DestroyCollChunkManagerAuto(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00426c00
 // DestroyRockChunkManagerAuto
 // LINKERILT: LEMBALL 0x00401cc1
 // DestroyRockChunkManagerAutoThunk
-DEFINE_LEVELVT_DESTROY_PAIR(DestroyRockChunkManagerAuto, DestroyRockChunkManagerAutoThunk)
+DEFINE_LEVELVT_MANAGER_DESTROY_PAIR(DestroyRockChunkManagerAuto,
+									DestroyRockChunkManagerAutoThunk,
+									g_LINKSCF_RockChunkManagerVtable,
+									0x38)
 
 // STUB: LEMBALL 0x004275e0
 // DestroyTileFlag1CChunkObjectAuto
@@ -2309,18 +2372,39 @@ DEFINE_LEVELVT_DESTROY_PAIR(DestroyRockChunkManagerAuto, DestroyRockChunkManager
 // DestroyTileFlag1CChunkObjectAutoThunk
 DEFINE_LEVELVT_DESTROY_PAIR(DestroyTileFlag1CChunkObjectAuto, DestroyTileFlag1CChunkObjectAutoThunk)
 
-// STUB: LEMBALL 0x0042c120
+// FUNCTION: LEMBALL 0x0042c120
 // DestroyPgunChunkManagerAuto
 // LINKERILT: LEMBALL 0x0040363e
 // DestroyPgunChunkManagerAutoThunk
-DEFINE_LEVELVT_DESTROY_PAIR(DestroyPgunChunkManagerAuto, DestroyPgunChunkManagerAutoThunk)
+DEFINE_LEVELVT_MANAGER_DESTROY_PAIR(DestroyPgunChunkManagerAuto,
+									DestroyPgunChunkManagerAutoThunk,
+									g_LINKSCF_PgunChunkManagerVtable,
+									0x38)
 
-// STUB: LEMBALL 0x0042d8e0
+// FUNCTION: LEMBALL 0x0042d8e0
 // DestroyIceChunkManagerAuto
 // LINKERILT: LEMBALL 0x00402743
 // DestroyIceChunkManagerAutoThunk
-DEFINE_LEVELVT_DESTROY_PAIR(DestroyIceChunkManagerAuto, DestroyIceChunkManagerAutoThunk)
+DEFINE_LEVELVT_MANAGER_DESTROY_PAIR(DestroyIceChunkManagerAuto,
+									DestroyIceChunkManagerAutoThunk,
+									g_LINKSCF_IceChunkManagerVtable,
+									0x38)
 
+// FUNCTION: LEMBALL 0x0042f2c0
+// DestroyMoveChunkManagerAuto
+void LEMBALL_FASTCALL DestroyMoveChunkManagerAuto(void* pObject)
+{
+	void* pChild;
+
+	*(void**) pObject = g_LINKSCF_MoveChunkManagerVtable;
+	pChild = *(void**) ((char*) pObject + 0x38);
+	if (pChild != 0) {
+		((LevelVtDeletableChild*) pChild)->Delete(3);
+	}
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+}
+
+#undef DEFINE_LEVELVT_MANAGER_DESTROY_PAIR
 #undef DEFINE_LEVELVT_DESTROY_PAIR
 
 // SYNTHETIC: LEMBALL 0x00414c80
