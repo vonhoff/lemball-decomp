@@ -238,7 +238,7 @@ static void* g_MOGLOAD_PaletteResourceVtable[15] = {
 
 // GLOBAL: LEMBALL 0x004a1d5c
 void* g_pResourceArchive = 0;
-extern void* FinalizeLoadedResourceObjectResult(void* pObject);
+extern void* __fastcall FinalizeLoadedResourceObjectResult(void* pObject, void* pUnusedEdx);
 extern void ResetTypedResourceObjectState(void* pObject);
 extern void* g_pSmallMemoryBucketTable;
 extern unsigned int g_cbSmallMemoryBucketUpperBound;
@@ -292,7 +292,7 @@ int LEMBALL_STDCALL AttachResourceEntryToObject(MogLoadStringResourceObject* pOb
 												int iEntryIndex,
 												MogLoadEntryRecord* pEntry);
 int LEMBALL_FASTCALL AreAllCachedResourceObjectsUnreferenced(void* pArchive);
-void InitializeResourceObjectFromId(void* pObject, int nResourceId);
+void __fastcall InitializeResourceObjectFromId(void* pObject, void* pUnusedEdx, int nResourceId);
 void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtable(void* pObject);
 void ResetTypedResourceObjectState(void* pObject);
 void LEMBALL_FASTCALL CopyBufferIntoTypedResourceObjectAndParse(void* pObject,
@@ -304,7 +304,7 @@ void LEMBALL_FASTCALL EnsureTypedResourceObjectLoaded(void* pObject);
 void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void* pResourceObject);
 void LEMBALL_FASTCALL UnloadTypedResourceObject(void* pObject, void* pUnusedEcx, int fReleaseMode);
 void LEMBALL_FASTCALL ReleaseTypedResourceObjectIfLoaded(void* pObject, void* pUnusedEdx, int fReleaseMode);
-void* FinalizeLoadedResourceObjectResult(void* pObject);
+void* __fastcall FinalizeLoadedResourceObjectResult(void* pObject, void* pUnusedEdx);
 MogLoadStringResourceObject* LoadStringResource(int nResourceId);
 void LEMBALL_FASTCALL ParseBitmapResourceDescriptor(void* pObject);
 void* LoadEffResource(int nResourceId);
@@ -1302,7 +1302,7 @@ void MogLoadResourceArchive::FreeResourceObjectDataBuffer(unsigned int pBuffer, 
 }
 
 // FUNCTION: LEMBALL 0x0045cf20
-void InitializeResourceObjectFromId(void* pObject, int nResourceId)
+void __fastcall InitializeResourceObjectFromId(void* pObject, void* pUnusedEdx, int nResourceId)
 {
 	MogLoadStringResourceObject* pResourceObject;
 	MogLoadTypedResourceObjectVtable* pVtable;
@@ -1489,7 +1489,7 @@ void LEMBALL_FASTCALL ReleaseTypedResourceObjectIfLoaded(void* pObject, void* pU
 }
 
 // FUNCTION: LEMBALL 0x0045d250
-void* FinalizeLoadedResourceObjectResult(void* pObject)
+void* __fastcall FinalizeLoadedResourceObjectResult(void* pObject, void* pUnusedEdx)
 {
 	MogLoadStringResourceObject* pResourceObject;
 
@@ -1528,12 +1528,12 @@ MogLoadStringResourceObject* LoadStringResource(int nResourceId)
 		pResourceObject->m_pVtable = g_MOGLOAD_CachedResourceObjectBaseVtable;
 		pResourceObject->m_nReserved18 = 0;
 		pResourceObject->m_pVtable = (void**) g_pStringResourceVtable;
-		InitializeResourceObjectFromId(pResourceObject, nResourceId);
-		pLoadedObject = (MogLoadStringResourceObject*) FinalizeLoadedResourceObjectResult(pResourceObject);
+		InitializeResourceObjectFromId(pResourceObject, 0, nResourceId);
+		pLoadedObject = (MogLoadStringResourceObject*) FinalizeLoadedResourceObjectResult(pResourceObject, 0);
 		return pLoadedObject;
 	}
 
-	pLoadedObject = (MogLoadStringResourceObject*) FinalizeLoadedResourceObjectResult(0);
+	pLoadedObject = (MogLoadStringResourceObject*) FinalizeLoadedResourceObjectResult(0, 0);
 	return pLoadedObject;
 }
 
@@ -1570,12 +1570,12 @@ void* LoadEffResource(int nResourceId)
 		pResourceObject->m_pVtable = g_MOGLOAD_CachedResourceObjectBaseVtable;
 		pResourceObject->m_nReserved18 = 0;
 		pResourceObject->m_pVtable = (void**) g_pDestroyEffResourceAndFreeThunk;
-		InitializeResourceObjectFromId(pResourceObject, nResourceId);
-		pLoadedObject = (MogLoadStringResourceObject*) FinalizeLoadedResourceObjectResult(pResourceObject);
+		InitializeResourceObjectFromId(pResourceObject, 0, nResourceId);
+		pLoadedObject = (MogLoadStringResourceObject*) FinalizeLoadedResourceObjectResult(pResourceObject, 0);
 		return pLoadedObject;
 	}
 
-	pLoadedObject = (MogLoadStringResourceObject*) FinalizeLoadedResourceObjectResult(0);
+	pLoadedObject = (MogLoadStringResourceObject*) FinalizeLoadedResourceObjectResult(0, 0);
 	return pLoadedObject;
 }
 

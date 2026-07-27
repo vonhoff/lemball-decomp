@@ -16,8 +16,8 @@ extern void* LoadListResource(int nResourceId);
 extern void* g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[];
 
 extern void* g_MOGLOAD_CachedResourceObjectBaseVtable[15];
-extern void InitializeResourceObjectFromId(void* pObject, int nResourceId);
-extern void* FinalizeLoadedResourceObjectResult(void* pObject);
+extern void __fastcall InitializeResourceObjectFromId(void* pObject, void* pUnusedEdx, int nResourceId);
+extern void* __fastcall FinalizeLoadedResourceObjectResult(void* pObject, void* pUnusedEdx);
 extern void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtable(void* pObject);
 extern void ParseIntResourceDescriptor(void);
 extern int LEMBALL_FASTCALL GetField14NeedsAgeIncrement(void* pObject);
@@ -207,10 +207,10 @@ int* load_bool_resource(int nResourceId)
 		*(void**) pResourceObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
 		pResourceObject[6] = 0;
 		*(void**) pResourceObject = g_DRAWTEXT_BoolResourceVtableStorage;
-		InitializeResourceObjectFromId(pResourceObject, nResourceId);
-		return (int*) FinalizeLoadedResourceObjectResult(pResourceObject);
+		InitializeResourceObjectFromId(pResourceObject, 0, nResourceId);
+		return (int*) FinalizeLoadedResourceObjectResult(pResourceObject, 0);
 	}
-	return (int*) FinalizeLoadedResourceObjectResult(0);
+	return (int*) FinalizeLoadedResourceObjectResult(0, 0);
 }
 
 // Int resource
@@ -260,10 +260,10 @@ int* load_int_resource(int nResourceId)
 		*(void**) pResourceObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
 		pResourceObject[6] = 0;
 		*(void**) pResourceObject = g_pIntResourceVtable;
-		InitializeResourceObjectFromId(pResourceObject, nResourceId);
-		return (int*) FinalizeLoadedResourceObjectResult(pResourceObject);
+		InitializeResourceObjectFromId(pResourceObject, 0, nResourceId);
+		return (int*) FinalizeLoadedResourceObjectResult(pResourceObject, 0);
 	}
-	return (int*) FinalizeLoadedResourceObjectResult(0);
+	return (int*) FinalizeLoadedResourceObjectResult(0, 0);
 }
 
 // FUNCTION: LEMBALL 0x00467ac0

@@ -254,8 +254,8 @@ static void* g_GAME_TwoArrayListResourceVtable = g_GAME_TwoArrayListResourceVtab
 
 extern void* g_pMainResourceArchive;
 extern void* g_pResourceArchive;
-extern void InitializeResourceObjectFromId(void* pObject, int nResourceId);
-extern void* FinalizeLoadedResourceObjectResult(void* pObject);
+extern void __fastcall InitializeResourceObjectFromId(void* pObject, void* pUnusedEdx, int nResourceId);
+extern void* __fastcall FinalizeLoadedResourceObjectResult(void* pObject, void* pUnusedEdx);
 
 struct GameListResourceStreamInterface {
 	virtual void Reserved00(void) = 0;
@@ -612,11 +612,11 @@ void* LoadZrleOnlyListResource(int nResourceId)
 		pResourceObject[0x18] = 0;
 		*(void**) pResourceObject = g_GAME_ZrleOnlyListResourceVtable;
 		pResourceObject[0x1e] = 0;
-		InitializeResourceObjectFromId(pResourceObject, nResourceId);
+		InitializeResourceObjectFromId(pResourceObject, 0, nResourceId);
 		pResourceObject[6] = 1;
-		return FinalizeLoadedResourceObjectResult(pResourceObject);
+		return FinalizeLoadedResourceObjectResult(pResourceObject, 0);
 	}
-	return FinalizeLoadedResourceObjectResult(0);
+	return FinalizeLoadedResourceObjectResult(0, 0);
 }
 
 // FUNCTION: LEMBALL 0x0045d6a0
@@ -680,7 +680,7 @@ void* ConstructIntZrleListResourceFromId(void* pObject, int nResourceId)
 	pListResource[0x1f] = 0;
 	pListResource[0x20] = 0;
 	pListResource[0x1e] = 0;
-	InitializeResourceObjectFromId(pListResource, nResourceId);
+	InitializeResourceObjectFromId(pListResource, 0, nResourceId);
 	pListResource[6] = 1;
 	return pObject;
 }
@@ -702,9 +702,9 @@ void* LoadListResource(int nResourceId)
 
 	pResourceObject = (int*) AllocateVSMemBlock(0x84);
 	if (pResourceObject != 0) {
-		return FinalizeLoadedResourceObjectResult(ConstructIntZrleListResourceFromId(pResourceObject, nResourceId));
+		return FinalizeLoadedResourceObjectResult(ConstructIntZrleListResourceFromId(pResourceObject, nResourceId), 0);
 	}
-	return FinalizeLoadedResourceObjectResult(0);
+	return FinalizeLoadedResourceObjectResult(0, 0);
 }
 
 // FUNCTION: LEMBALL 0x0045dd90
@@ -727,10 +727,10 @@ void* LoadPalResource(int nResourceId)
 		*(void**) pResourceObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
 		pResourceObject[6] = 0;
 		*(void**) pResourceObject = g_pPaletteResourceVtable;
-		InitializeResourceObjectFromId(pResourceObject, nResourceId);
-		return FinalizeLoadedResourceObjectResult(pResourceObject);
+		InitializeResourceObjectFromId(pResourceObject, 0, nResourceId);
+		return FinalizeLoadedResourceObjectResult(pResourceObject, 0);
 	}
-	return FinalizeLoadedResourceObjectResult(0);
+	return FinalizeLoadedResourceObjectResult(0, 0);
 }
 
 // FUNCTION: LEMBALL 0x0045de70
@@ -750,9 +750,9 @@ void* LoadTwoArrayListResource(int nResourceId)
 
 	pResourceObject = (int*) AllocateVSMemBlock(0x80);
 	if (pResourceObject != 0) {
-		return FinalizeLoadedResourceObjectResult(ConstructTwoArrayListResourceFromId(pResourceObject, nResourceId));
+		return FinalizeLoadedResourceObjectResult(ConstructTwoArrayListResourceFromId(pResourceObject, nResourceId), 0);
 	}
-	return FinalizeLoadedResourceObjectResult(0);
+	return FinalizeLoadedResourceObjectResult(0, 0);
 }
 
 // FUNCTION: LEMBALL 0x0045df20
@@ -772,7 +772,7 @@ void* ConstructTwoArrayListResourceFromId(void* pObject, int nResourceId)
 	*(void**) pListResource = g_GAME_TwoArrayListResourceVtable;
 	pListResource[0x1e] = 0;
 	pListResource[0x1f] = 0;
-	InitializeResourceObjectFromId(pListResource, nResourceId);
+	InitializeResourceObjectFromId(pListResource, 0, nResourceId);
 	pListResource[6] = 0;
 	return pObject;
 }
@@ -893,10 +893,10 @@ void* LoadBitmapResource(int nResourceId)
 		*(unsigned short*) ((char*) pResourceObject + 0x4a) = 0;
 		*(unsigned short*) (pResourceObject + 0x12) = 0;
 		*(void**) pResourceObject = g_pBitmapResourceVtable;
-		InitializeResourceObjectFromId(pResourceObject, nResourceId);
-		return FinalizeLoadedResourceObjectResult(pResourceObject);
+		InitializeResourceObjectFromId(pResourceObject, 0, nResourceId);
+		return FinalizeLoadedResourceObjectResult(pResourceObject, 0);
 	}
-	return FinalizeLoadedResourceObjectResult(0);
+	return FinalizeLoadedResourceObjectResult(0, 0);
 }
 
 // FUNCTION: LEMBALL 0x0045e2b0
@@ -926,10 +926,10 @@ void* LoadZrleResource(int nResourceId)
 		*(unsigned short*) ((char*) pResourceObject + 0x52) = 0;
 		*(unsigned short*) (pResourceObject + 0x14) = 0;
 		*(void**) pResourceObject = g_GAME_ZrleResourceVtable;
-		InitializeResourceObjectFromId(pResourceObject, nResourceId);
-		return FinalizeLoadedResourceObjectResult(pResourceObject);
+		InitializeResourceObjectFromId(pResourceObject, 0, nResourceId);
+		return FinalizeLoadedResourceObjectResult(pResourceObject, 0);
 	}
-	return FinalizeLoadedResourceObjectResult(0);
+	return FinalizeLoadedResourceObjectResult(0, 0);
 }
 
 // FUNCTION: LEMBALL 0x0045e340

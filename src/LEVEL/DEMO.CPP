@@ -65,8 +65,8 @@ static void* g_DEMO_BinResourceVtable = g_DEMO_BinResourceVtableStorage;
 
 extern void* g_pMainResourceArchive;
 extern void* g_MOGLOAD_CachedResourceObjectBaseVtable[15];
-extern void InitializeResourceObjectFromId(void* pObject, int nResourceId);
-extern void* FinalizeLoadedResourceObjectResult(void* pObject);
+extern void __fastcall InitializeResourceObjectFromId(void* pObject, void* pUnusedEdx, int nResourceId);
+extern void* __fastcall FinalizeLoadedResourceObjectResult(void* pObject, void* pUnusedEdx);
 
 void* LEMBALL_FASTCALL DeleteLevelDemoPlaybackControllerThunk(void* pPlaybackController, int, int fDelete);
 int LEMBALL_FASTCALL FilterLevelDemoPlaybackInputEventThunk(void* pPlaybackController, int, unsigned short* pEventId);
@@ -445,10 +445,10 @@ int* LoadBinResource(int nResourceId)
 		*(void**) pObjectWords = g_MOGLOAD_CachedResourceObjectBaseVtable;
 		pObjectWords[6] = 0;
 		*(void**) pObjectWords = g_DEMO_BinResourceVtable;
-		InitializeResourceObjectFromId(pObjectWords, nResourceId);
-		return (int*) FinalizeLoadedResourceObjectResult(pObjectWords);
+		InitializeResourceObjectFromId(pObjectWords, 0, nResourceId);
+		return (int*) FinalizeLoadedResourceObjectResult(pObjectWords, 0);
 	}
-	return (int*) FinalizeLoadedResourceObjectResult(0);
+	return (int*) FinalizeLoadedResourceObjectResult(0, 0);
 }
 
 // FUNCTION: LEMBALL 0x0045ec60
