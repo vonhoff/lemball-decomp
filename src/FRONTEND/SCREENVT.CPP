@@ -71,6 +71,54 @@ void noop_resource_window_owner_callback_0043a1c0(void)
 {
 }
 
+extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
+extern void* g_pSharedRenderDispatchQueue;
+extern void* g_GAME_RenderQueueNodeVtableSlots[4];
+
+// Forward declarations for vtable reference.
+void* LEMBALL_FASTCALL DeleteRegisteredRenderSlotArrayAuto(void* pObject, void*, BYTE fDelete);
+void LEMBALL_FASTCALL FUN_0043a2e0(void*, int, unsigned short*);
+
+// GLOBAL: LEMBALL 0x00497208
+static void* g_RegisteredRenderSlotArrayVtable[4] = {
+	(void*) InitializeNonZrleVariantRenderEntry,
+	(void*) DeleteRegisteredRenderSlotArrayAuto,
+	(void*) FUN_0043a2e0,
+	0,
+};
+
+// FUNCTION: LEMBALL 0x0043a2b0
+void LEMBALL_FASTCALL DestroyRegisteredRenderSlotArrayAuto(void* pObject)
+{
+	*(void***) pObject = g_RegisteredRenderSlotArrayVtable;
+	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->UnregisterOrderedRenderDispatchClient(pObject, -0x19);
+	FreeVSMemBlock(*(void**) ((char*) pObject + 0x10));
+	*(void***) pObject = g_GAME_RenderQueueNodeVtableSlots;
+}
+
+// STUB: LEMBALL 0x0043a2e0
+// FUN_0043a2e0
+void LEMBALL_FASTCALL FUN_0043a2e0(void*, int, unsigned short*)
+{
+}
+
+// Compatibility shim for original ILT call site.
+void LEMBALL_FASTCALL DestroyRegisteredRenderSlotArrayAutoThunk(void* pObject)
+{
+	DestroyRegisteredRenderSlotArrayAuto(pObject);
+}
+
+// SYNTHETIC: LEMBALL 0x0043a490
+// DeleteRegisteredRenderSlotArrayAuto
+void* LEMBALL_FASTCALL DeleteRegisteredRenderSlotArrayAuto(void* pObject, void*, BYTE fDelete)
+{
+	DestroyRegisteredRenderSlotArrayAutoThunk(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
+
 // FUNCTION: LEMBALL 0x0043a4d0
 void noop_window_owner_slot_18(void)
 {
@@ -181,36 +229,6 @@ void noop_intro_sequence_screen_hook(void)
 {
 }
 
-// STUB: LEMBALL 0x0043a2e0
-// FUN_0043a2e0
-void LEMBALL_FASTCALL FUN_0043a2e0(void*, int, unsigned short*)
-{
-}
-
-extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
-extern void* g_pSharedRenderDispatchQueue;
-extern void* g_GAME_RenderQueueNodeVtableSlots[4];
-
-// Forward declaration for vtable reference.
-void* LEMBALL_FASTCALL DeleteRegisteredRenderSlotArrayAuto(void* pObject, void*, BYTE fDelete);
-
-// GLOBAL: LEMBALL 0x00497208
-static void* g_RegisteredRenderSlotArrayVtable[4] = {
-	(void*) InitializeNonZrleVariantRenderEntry,
-	(void*) DeleteRegisteredRenderSlotArrayAuto,
-	(void*) FUN_0043a2e0,
-	0,
-};
-
-// FUNCTION: LEMBALL 0x0043a2b0
-void LEMBALL_FASTCALL DestroyRegisteredRenderSlotArrayAuto(void* pObject)
-{
-	*(void***) pObject = g_RegisteredRenderSlotArrayVtable;
-	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->UnregisterOrderedRenderDispatchClient(pObject, -0x19);
-	FreeVSMemBlock(*(void**) ((char*) pObject + 0x10));
-	*(void***) pObject = g_GAME_RenderQueueNodeVtableSlots;
-}
-
 // FUNCTION: LEMBALL 0x00448610
 void noop_main_menu_screen_hook(void)
 {
@@ -226,21 +244,4 @@ int __fastcall get_registration_info_screen_requested_mode(void* pScreen)
 unsigned int return_hresult_80000801_progress_overlay(void)
 {
 	return 0x80000801U;
-}
-
-// Compatibility shim for original ILT call site.
-void LEMBALL_FASTCALL DestroyRegisteredRenderSlotArrayAutoThunk(void* pObject)
-{
-	DestroyRegisteredRenderSlotArrayAuto(pObject);
-}
-
-// SYNTHETIC: LEMBALL 0x0043a490
-// DeleteRegisteredRenderSlotArrayAuto
-void* LEMBALL_FASTCALL DeleteRegisteredRenderSlotArrayAuto(void* pObject, void*, BYTE fDelete)
-{
-	DestroyRegisteredRenderSlotArrayAutoThunk(pObject);
-	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pObject);
-	}
-	return pObject;
 }
