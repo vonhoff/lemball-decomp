@@ -1168,6 +1168,11 @@ void __stdcall PromoteQueuedRenderPointSinkTargetState(void* pPointSink)
 	nUploadState = ((TargetState*) *(void***) ((char*) pPointSink + 0x0c))->GetUploadState();
 	PromoteHelperUploadStateToActive(nUploadState);
 }
+// FUNCTION: LEMBALL 0x004323b0
+int LEMBALL_FASTCALL get_queued_render_point_sink_field_0x30(void* pPointSink)
+{
+	return *(int*) ((char*) pPointSink + 0x30);
+}
 // FUNCTION: LEMBALL 0x00456720
 char* LookupDirectDrawErrorString(unsigned int nError)
 {

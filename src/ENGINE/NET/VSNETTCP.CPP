@@ -2149,7 +2149,7 @@ int VsNetInetAddressEntry::IsAddressLessOrEqual(const VsNetInetAddressEntry* pSo
 // FUNCTION: LEMBALL 0x004715b0
 const char* VsNetInetAddressEntry::GetAddressString(void)
 {
-	return m_szAddress;
+	return (const char*) this + 4;
 }
 // FUNCTION: LEMBALL 0x004715c0
 void* AllocateTcpipInetAddressEntry(void)
