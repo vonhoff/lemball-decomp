@@ -13,7 +13,8 @@ Make verified decompilation progress while preserving compiler behavior. Treat t
 5. Identify the owning source file and implement one target in C or C++.
 6. Build and compare the target with verbose reccmp. After a mismatch, use the assembly diff and binary evidence to revise the implementation.
 7. If a target is already complete or cannot progress independently, remove speculative edits and continue with the next coordinator target.
-8. Stop only for a repository-wide blocker.
+8. Fix discovered issues immediately. If a fix cannot be completed in the current run, leave a minimal compiling stub with a `// STUB:` marker for the next run.
+9. Stop only for a repository-wide blocker.
 
 Verified progress includes a new 100% match, measurable similarity improvement, corrected inventory or Ghidra data, compiler-accurate infrastructure, or removal of an incorrect implementation.
 
@@ -23,6 +24,7 @@ Verified progress includes a new 100% match, measurable similarity improvement, 
 - Use compiler-generated C or C++ only. Do not use assembly, naked functions, embedded opcodes, or binary patches.
 - Represent five-byte `E9` thunks with annotated C or C++ wrappers matching the original ABI.
 - Repair incorrect inventory and regenerate its CSV; do not hide entries with denylists or broad filters.
+- Use `"/c/Program Files/LLVM/bin/clang-format.exe" -i <paths>` to fix formatting in modified C or C++ files.
 - Use only the project commands below for verification. Do not create verification scripts.
 
 ## Commands
