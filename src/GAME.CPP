@@ -534,8 +534,8 @@ extern void InitializeLevelTileGridThunk(void* pTileGrid);
 struct LevelTileReachabilityHelper {
 	void* ConstructLevelTileReachabilityHelperThunk(void* pTileGrid);
 };
-extern void ClearPrimaryLockedRecordTablePayloadFlags(void* pPayload);
-extern void ClearSecondaryLockedRecordTablePayloadFlags(void* pPayload);
+extern void LEMBALL_FASTCALL ClearPrimaryLockedRecordTablePayloadFlags(void* pPayload);
+extern void LEMBALL_FASTCALL ClearSecondaryLockedRecordTablePayloadFlags(void* pPayload);
 extern void* ConstructLevelChunkStreamDispatcherThunk(void* pObject, int nChunkTypeCount);
 extern void ResetRegisteredLevelChunkStreamsThunk(void* pDispatcher);
 extern void RegisterLevelChunkStreamThunk(void* pDispatcher, void* pStream);
@@ -588,6 +588,9 @@ void* LEMBALL_FASTCALL DeleteStartupModeThunk(void* pObject, int nUnusedEdx, BYT
 void* LEMBALL_FASTCALL DeleteLevelSelectionModeThunk(void* pObject, int nUnusedEdx, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteMainMenuModeThunk(void* pObject, int nUnusedEdx, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteOptionsModeThunk(void* pObject, int nUnusedEdx, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteDerivedBaseModeWrapperAuto(void*, void*, BYTE);
+void* LEMBALL_FASTCALL DeleteLevelGameModeAuto(void*, void*, BYTE);
+void* LEMBALL_FASTCALL DeleteLevelSelectionScreenAuto(void*, void*, BYTE);
 void* LEMBALL_FASTCALL DeleteStartupModeEventClientThunk(void* pObject, int nUnusedEdx, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteLevelSelectionModeEventClientThunk(void* pObject, int nUnusedEdx, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteMainMenuModeEventClientThunk(void* pObject, int nUnusedEdx, BYTE fDelete);
@@ -3021,10 +3024,46 @@ void* LEMBALL_FASTCALL DeleteOptionsMode(void* pObject, int, BYTE fDelete)
 	}
 	return pObject;
 }
-// FUNCTION: LEMBALL 0x00408050
-void* LEMBALL_FASTCALL DeleteOptionsModeEventClient(void* pObject, int nUnusedEdx, BYTE fDelete)
+// ABI-THUNK: 83 e9 0c; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 50% with reccmp; remaining relocation is
+// original ILT slot versus direct implementation.
+// FUNCTION: LEMBALL 0x00408040
+__declspec(naked) void* LEMBALL_FASTCALL DeleteDerivedBaseModeWrapperEventClient(void*, int, BYTE)
 {
-	return DeleteOptionsModeThunk((char*) pObject - 0x0c, nUnusedEdx, fDelete);
+	__asm {
+        sub ecx, 0x0c
+        jmp offset DeleteDerivedBaseModeWrapperAuto
+	}
+}
+// ABI-THUNK: 83 e9 0c; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
+// FUNCTION: LEMBALL 0x00408050
+__declspec(naked) void* LEMBALL_FASTCALL DeleteOptionsModeEventClient(void*, int, BYTE)
+{
+	__asm {
+        sub ecx, 0x0c
+		jmp offset DeleteOptionsModeThunk
+	}
+}
+// ABI-THUNK: 83 e9 0c; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
+// FUNCTION: LEMBALL 0x00408060
+__declspec(naked) void* LEMBALL_FASTCALL DeleteMainMenuModeEventClientAdjusted(void*, int, BYTE)
+{
+	__asm {
+        sub ecx, 0x0c
+        jmp offset DeleteMainMenuModeThunk
+	}
+}
+// ABI-THUNK: 83 e9 0c; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
+// FUNCTION: LEMBALL 0x00408070
+__declspec(naked) void* LEMBALL_FASTCALL DeleteStartupModeEventClientAdjusted(void*, int, BYTE)
+{
+	__asm {
+        sub ecx, 0x0c
+        jmp offset DeleteStartupModeThunk
+	}
 }
 // FUNCTION: LEMBALL 0x00408080
 void SetLevelFrameClockPauseFlag(int fPaused)
@@ -3807,10 +3846,27 @@ void* LEMBALL_FASTCALL DeleteLevelGameMode(void* pModeObject, int, BYTE fDelete)
 	}
 	return pModeObject;
 }
+// ABI-THUNK: 83 e9 10; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 50% with reccmp; remaining relocation is
+// original ILT slot versus direct implementation.
 // FUNCTION: LEMBALL 0x00413e60
-void* LEMBALL_FASTCALL DeleteLevelModeActiveInterfaceThunk(void* pActiveInterface, int, BYTE fDelete)
+__declspec(naked) void* LEMBALL_FASTCALL DeleteLevelModeActiveInterfaceThunk(void*, int, BYTE)
 {
-	return DeleteLevelGameMode((char*) pActiveInterface - 0x10, 0, fDelete);
+	__asm {
+        sub ecx, 0x10
+		jmp offset DeleteLevelGameMode
+	}
+}
+// ABI-THUNK: 83 e9 1c; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 50% with reccmp; remaining relocation is
+// original ILT slot versus direct implementation.
+// FUNCTION: LEMBALL 0x00413e70
+__declspec(naked) void* LEMBALL_FASTCALL DeleteLevelGameModeAdjusted(void*, int, BYTE)
+{
+	__asm {
+        sub ecx, 0x1c
+        jmp offset DeleteLevelGameModeAuto
+	}
 }
 // FUNCTION: LEMBALL 0x00431590
 GamePrimaryContext* GamePrimaryContext::ConstructPrimaryContext(GameMainContext* pMainContext)
@@ -4956,10 +5012,16 @@ void* LEMBALL_FASTCALL DeleteIntroSequenceScreen(void* pObject, int, int fDelete
 	}
 	return pObject;
 }
+void* LEMBALL_FASTCALL DeleteIntroSequenceScreenThunk(void*, int, int);
+// ABI-THUNK: 83 e9 04; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
 // FUNCTION: LEMBALL 0x004479d0
-void* LEMBALL_FASTCALL DeleteAdjustedIntroSequenceScreen(void* pObject, int nUnusedEdx, int fDelete)
+__declspec(naked) void* LEMBALL_FASTCALL DeleteAdjustedIntroSequenceScreen(void*, int, int)
 {
-	return DeleteIntroSequenceScreen((char*) pObject - 4, nUnusedEdx, fDelete);
+	__asm {
+        sub ecx, 4
+        jmp offset DeleteIntroSequenceScreenThunk
+	}
 }
 // FUNCTION: LEMBALL 0x00448200
 void* GameScreenObject::ConstructMainMenuScreen(void* pPrimaryContext, void* pWindowOwnerContext, short* paRect)
@@ -5028,10 +5090,27 @@ void* LEMBALL_FASTCALL DeleteLevelSelectionModeThunk(void* pObject, int, BYTE fD
 	}
 	return pObject;
 }
+// ABI-THUNK: 83 e9 0c; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 50% with reccmp; remaining relocation is
+// original ILT slot versus direct implementation.
 // FUNCTION: LEMBALL 0x0044aa00
-void* LEMBALL_FASTCALL DeleteLevelSelectionModeEventClientThunk(void* pObject, int, BYTE fDelete)
+__declspec(naked) void* LEMBALL_FASTCALL DeleteLevelSelectionModeEventClientThunk(void*, int, BYTE)
 {
-	return DeleteLevelSelectionModeThunk((char*) pObject - 0x0c, 0, fDelete);
+	__asm {
+        sub ecx, 0x0c
+		jmp offset DeleteLevelSelectionModeThunk
+	}
+}
+// ABI-THUNK: 83 e9 04; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 50% with reccmp; remaining relocation is
+// original ILT slot versus direct implementation.
+// FUNCTION: LEMBALL 0x0044aa10
+__declspec(naked) void* LEMBALL_FASTCALL DeleteLevelSelectionScreenAdjusted(void*, int, BYTE)
+{
+	__asm {
+        sub ecx, 4
+        jmp offset DeleteLevelSelectionScreenAuto
+	}
 }
 // FUNCTION: LEMBALL 0x0044b8f0
 void LEMBALL_FASTCALL DestroyRegistrationInfoScreen(void* pObject)
@@ -5125,10 +5204,16 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbyTransportController(void* pObject, int,
 	}
 	return pObject;
 }
+// ABI-THUNK: 83 e9 0c; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 50% with reccmp; remaining relocation is
+// original ILT slot versus direct implementation.
 // FUNCTION: LEMBALL 0x00455ef0
-void* LEMBALL_FASTCALL DeleteNetworkLobbyTransportControllerEventClient(void* pObject, int nUnusedEdx, BYTE fDelete)
+__declspec(naked) void* LEMBALL_FASTCALL DeleteNetworkLobbyTransportControllerEventClient(void*, int, BYTE)
 {
-	return DeleteNetworkLobbyTransportController((char*) pObject - 0x0c, nUnusedEdx, fDelete);
+	__asm {
+        sub ecx, 0x0c
+        jmp offset DeleteNetworkLobbyTransportController
+	}
 }
 // FUNCTION: LEMBALL 0x00456500
 int __stdcall PumpMessagesAndRunFrame(void)

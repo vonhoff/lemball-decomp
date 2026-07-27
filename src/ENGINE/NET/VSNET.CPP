@@ -1668,7 +1668,7 @@ int VsNetPeerPayloadSender::SendEffStreamPayloadWithTransportHeader(int nStream)
 void VsNetRuntimeChannelCore::WriteGlobalSession(void)
 {
 	((GameEffStream*) g_pEffTransportGlobalReadStream)->BeginEffStreamWriteSession();
-	((VsNetPeerPayloadSender*) this)
+	((VsNetPeerPayloadSender*) ((char*) this + 0x38))
 		->SendEffStreamPayloadWithTransportHeader((int) (unsigned long) g_pEffTransportGlobalReadStream);
 	((GameEffStream*) g_pEffTransportGlobalReadStream)->EndEffStreamWriteSession();
 }
@@ -1709,7 +1709,7 @@ void* VsNetRuntimeChannelCore::ClaimRecord(void)
 void VsNetTimedEffStream::ClearPendingWrite(void*)
 {
 	int* pnOwnerBusy;
-	void* pObject = this;
+	void* pObject = (char*) this + 0x78;
 
 	if (*(int*) ((char*) pObject - 0x1c) != -1) {
 		pnOwnerBusy = *(int**) ((char*) pObject - 0x24);
@@ -2238,7 +2238,7 @@ void* VsNetCompositeEffTransportStack::ClaimRecord(void)
 	pPayload = ((VsNetRuntimeChannelCore*) (pTimedStream +
 											((VsNetEffTransportAckDispatchOwner*) (pTimedStream - 0x60))
 												->m_pOffsets04->m_nAckRecordOwnerViewOffset08 -
-											0x5c))
+											0x94))
 				   ->VsNetRuntimeChannelCore::ClaimRecord();
 	if (pPayload != 0) {
 		pOwner = (VsNetEffTransportAckDispatchOwner*) (pTimedStream - 0x60);
@@ -4358,7 +4358,7 @@ int LEMBALL_FASTCALL InitializeFileNetworkAddress(void*, void*, int nUnused)
 {
 	(void) nUnused;
 	g_pErrorOutputStream->AppendCStringToStream(
-		"You haven't implemented major/minor distinction in 'CFileNetworkAddress'es\n");
+		"You haven't implemented major/minor destinction in 'CFileNetworkAddress'es\n");
 	g_pErrorOutputStream->AppendCStringToStream("use count entry in broadcast file\n");
 	return 0;
 }

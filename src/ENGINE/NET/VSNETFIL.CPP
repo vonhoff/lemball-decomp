@@ -62,6 +62,7 @@ extern "C"
 													DWORD dwCreationDisposition,
 													DWORD dwFlagsAndAttributes,
 													HANDLE hTemplateFile);
+	__declspec(dllimport) BOOL WINAPI DeleteFileA(LPCSTR lpFileName);
 	__declspec(dllimport) BOOL WINAPI CloseHandle(HANDLE hObject);
 	__declspec(dllimport) BOOL WINAPI WriteFile(HANDLE hFile,
 												const void* lpBuffer,
@@ -4049,7 +4050,7 @@ void* VsNetEffStreamRecordSlot::Delete(int fDeleteFlags)
 		return this;
 	}
 
-	((VsNetEffStreamBase*) pSlot)->DestroyEffStreamBase();
+	((VsNetEffStreamCommon*) pSlot)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 	if ((fDeleteFlags & 1) != 0) {
 		FreeVSMemBlock(pSlot);
 	}
@@ -4151,7 +4152,7 @@ void VsNetDualSlotTableFileBackedEffComposite::ServicePeer(void)
 // FUNCTION: LEMBALL 0x0047ba40
 void LEMBALL_FASTCALL AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(void* pObject)
 {
-	((VsNetEmbeddedFileBackedEffChannelStack*) ((char*) pObject + 0x138))
+	((VsNetEmbeddedFileBackedEffChannelStack*) ((char*) pObject + 0x130))
 		->VsNetEmbeddedFileBackedEffChannelStack::ClearNestedEffChannelAsyncStatus();
 }
 
@@ -4239,14 +4240,14 @@ void LEMBALL_FASTCALL AdjustAndClaimGlobalStateDualEffTransportRecordPayload(voi
 // FUNCTION: LEMBALL 0x0047bbd0
 void LEMBALL_FASTCALL AdjustAndClearEmbeddedEffChannelAsyncStatus13c(void* pObject)
 {
-	((VsNetEmbeddedFileBackedEffChannelStack*) ((char*) pObject + 0x13c))
+	((VsNetEmbeddedFileBackedEffChannelStack*) ((char*) pObject + 0x134))
 		->VsNetEmbeddedFileBackedEffChannelStack::ClearNestedEffChannelAsyncStatus();
 }
 
 // FUNCTION: LEMBALL 0x0047bbf0
 void VsNetGlobalStateFileBackedEffComposite::ClearPendingWrite(void* pUnused)
 {
-	((VsNetRuntimeChannelStack*) ((char*) this - 0x3c))->VsNetRuntimeChannelStack::ClearPendingWrite(pUnused);
+	VsNetRuntimeChannelStack::ClearPendingWrite(pUnused);
 }
 
 // FUNCTION: LEMBALL 0x0047bc10
@@ -4294,7 +4295,7 @@ BYTE LEMBALL_FASTCALL AdjustAndMapGlobalStateFileBackedEffCallbackFailure(void* 
 // FUNCTION: LEMBALL 0x0047bd10
 void LEMBALL_FASTCALL AdjustAndClearTimedFileBackedEffChannelAsyncStatus(void* pObject)
 {
-	((VsNetEmbeddedFileBackedEffChannelStack*) ((char*) pObject + 0xd8))
+	((VsNetEmbeddedFileBackedEffChannelStack*) ((char*) pObject + 0xd0))
 		->VsNetEmbeddedFileBackedEffChannelStack::ClearNestedEffChannelAsyncStatus();
 }
 
@@ -4318,7 +4319,7 @@ BYTE LEMBALL_FASTCALL AdjustAndMapNestedEffCallbackFailureFromB8(void* pObject)
 // FUNCTION: LEMBALL 0x0047bdf0
 void LEMBALL_FASTCALL AdjustAndClearNestedEffChannelAsyncStatusFromB8(void* pObject)
 {
-	((VsNetEmbeddedFileBackedEffChannelStack*) ((char*) pObject + 0xb8))
+	((VsNetEmbeddedFileBackedEffChannelStack*) ((char*) pObject + 0xb0))
 		->VsNetEmbeddedFileBackedEffChannelStack::ClearNestedEffChannelAsyncStatus();
 }
 
@@ -4375,18 +4376,13 @@ void LEMBALL_FASTCALL AdjustAndClaimEmbeddedDualEffTransportRecordPayload(void* 
 // FUNCTION: LEMBALL 0x0047bfc0
 void VsNetDualSlotTableFileBackedEffComposite::ClearPendingWrite(void* pArgument)
 {
-	void* pObject;
-	int fQueueEvent;
-	fQueueEvent = (int) pArgument;
-	pObject = (char*) this - 0x34;
-	((VsNetCompleteEffTransportPendingWriteView*) pObject)->CompleteEffTransportPendingWrite(fQueueEvent);
+	VsNetCompositeEffTransportStack::ClearPendingWrite(pArgument);
 }
 
 // FUNCTION: LEMBALL 0x0047bff0
 void* VsNetDualSlotTableFileBackedEffComposite::ClaimRecord(void)
 {
-	return ((VsNetDispatchAckedEffTransportPayloadView*) ((char*) this - 0x34))
-		->DispatchAckedEffTransportPayloadEvent();
+	return VsNetCompositeEffTransportStack::ClaimRecord();
 }
 
 // FUNCTION: LEMBALL 0x0047f5b0
@@ -4432,7 +4428,7 @@ void VsNetWin32FileWrapper::FreeOwnedPath(void)
 	VsNetInlineOpenWin32FileWrapper* pWrapper;
 
 	pWrapper = (VsNetInlineOpenWin32FileWrapper*) this;
-	FreeVSMemBlock((void*) (unsigned long) pWrapper->m_nReserved04);
+	DeleteFileA((LPCSTR) (unsigned long) pWrapper->m_nReserved04);
 }
 
 // FUNCTION: LEMBALL 0x0047f670

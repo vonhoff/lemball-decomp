@@ -119,6 +119,12 @@ void* LEMBALL_FASTCALL DeleteRegisteredRenderSlotArrayAuto(void* pObject, void*,
 	return pObject;
 }
 
+// FUNCTION: LEMBALL 0x0043a4c0
+int PASCAL return_zero_screen_hook(void*, void*)
+{
+	return 0;
+}
+
 // FUNCTION: LEMBALL 0x0043a4d0
 void noop_window_owner_slot_18(void)
 {

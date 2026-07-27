@@ -2430,11 +2430,16 @@ void* LEMBALL_FASTCALL DeleteRootGeometryDispatchHelper(void* pHelper, int, int 
 	return pHelper;
 }
 
+// ABI-THUNK: 83 e9 38; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
 // FUNCTION: LEMBALL 0x0046aa70
-void* LEMBALL_FASTCALL DeleteRootGeometryDispatchHelperAdjusted(void* pDispatchClient, int, int nDeleteFlag)
+__declspec(naked) void* LEMBALL_FASTCALL DeleteRootGeometryDispatchHelperAdjusted(void*, int, int)
 
 {
-	return DeleteRootGeometryDispatchHelper((char*) pDispatchClient - 0x38, 0, nDeleteFlag);
+	__asm {
+        sub ecx, 0x38
+        jmp offset DeleteRootGeometryDispatchHelper
+	}
 }
 
 // FUNCTION: LEMBALL 0x00473790

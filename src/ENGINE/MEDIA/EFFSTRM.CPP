@@ -44,6 +44,8 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbyU32PayloadStreamThunk(void* pObject, vo
 void* LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void* pObject, void* pUnused, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteNetworkLobbyPeerEntryStream(void* pObject, void* pUnused, int fDelete);
 
+// Original entries are ILT pointers to the same six direct destinations below.
+// GLOBAL: LEMBALL 0x00498558
 static void* g_EFF_NetworkLobbySelectedPeerStatusVtable[6] = {
 	(void*) ReturnTrueVtableCallbackThunk,
 	(void*) ReturnTrueVtableCallbackSecondaryThunk,

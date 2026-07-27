@@ -3045,10 +3045,15 @@ void* LEMBALL_FASTCALL DeleteFramedScreenBase(void* pObject, int, int fDelete)
 	}
 	return pObject;
 }
+// ABI-THUNK: 83 e9 04; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
 // FUNCTION: LEMBALL 0x004472f0
-void* LEMBALL_FASTCALL DeleteAdjustedFramedScreenBase(void* pObject, int nUnusedEdx, int fDelete)
+__declspec(naked) void* LEMBALL_FASTCALL DeleteAdjustedFramedScreenBase(void*, int, int)
 {
-	return DeleteFramedScreenBase((char*) pObject - 4, nUnusedEdx, fDelete);
+	__asm {
+        sub ecx, 4
+        jmp offset DeleteFramedScreenBaseThunk
+	}
 }
 // FUNCTION: LEMBALL 0x00447530
 void GameIntroSequenceScreen::RefreshMediaPath(void)
@@ -3473,10 +3478,15 @@ void* LEMBALL_FASTCALL DeleteMainMenuScreen(void* pObject, int, int fDelete)
 	}
 	return pObject;
 }
+// ABI-THUNK: 83 e9 04; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
 // FUNCTION: LEMBALL 0x00448aa0
-void* LEMBALL_FASTCALL DeleteAdjustedMainMenuScreen(void* pObject, int nUnusedEdx, int fDelete)
+__declspec(naked) void* LEMBALL_FASTCALL DeleteAdjustedMainMenuScreen(void*, int, int)
 {
-	return DeleteMainMenuScreen((char*) pObject - 4, nUnusedEdx, fDelete);
+	__asm {
+        sub ecx, 4
+        jmp offset DeleteMainMenuScreenThunk
+	}
 }
 // FUNCTION: LEMBALL 0x00448ab0
 void* LEMBALL_FASTCALL
@@ -3691,10 +3701,16 @@ void* LEMBALL_FASTCALL DeleteOptionsScreen(void* pObject, int, int fDelete)
 	}
 	return pObject;
 }
+// ABI-THUNK: 83 e9 04; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 50% with reccmp; remaining relocation is
+// original ILT slot versus direct implementation.
 // FUNCTION: LEMBALL 0x004491a0
-void* LEMBALL_FASTCALL DeleteAdjustedOptionsScreen(void* pObject, int nUnusedEdx, int fDelete)
+__declspec(naked) void* LEMBALL_FASTCALL DeleteAdjustedOptionsScreen(void*, int, int)
 {
-	return DeleteOptionsScreen((char*) pObject - 4, nUnusedEdx, fDelete);
+	__asm {
+        sub ecx, 4
+        jmp offset DeleteOptionsScreen
+	}
 }
 // FUNCTION: LEMBALL 0x004491b0
 void* LEMBALL_FASTCALL
@@ -4563,10 +4579,16 @@ void* LEMBALL_FASTCALL DeletePaintballSequenceScreen(void* pObject, int, int fDe
 	}
 	return pObject;
 }
+// ABI-THUNK: 83 e9 04; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 50% with reccmp; remaining relocation is
+// original ILT slot versus direct implementation.
 // FUNCTION: LEMBALL 0x00451200
-void* LEMBALL_FASTCALL DeleteAdjustedPaintballSequenceScreen(void* pObject, int nUnusedEdx, int fDelete)
+__declspec(naked) void* LEMBALL_FASTCALL DeleteAdjustedPaintballSequenceScreen(void*, int, int)
 {
-	return DeletePaintballSequenceScreen((char*) pObject - 4, nUnusedEdx, fDelete);
+	__asm {
+        sub ecx, 4
+        jmp offset DeletePaintballSequenceScreen
+	}
 }
 // FUNCTION: LEMBALL 0x00451210
 void* LEMBALL_FASTCALL
@@ -4916,10 +4938,16 @@ void* LEMBALL_FASTCALL DeletePasswordEntryScreen(void* pObject, int, int fDelete
 	}
 	return pObject;
 }
+// ABI-THUNK: 83 e9 04; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 50% with reccmp; remaining relocation is
+// original ILT slot versus direct implementation.
 // FUNCTION: LEMBALL 0x004523a0
-void* LEMBALL_FASTCALL DeleteAdjustedPasswordEntryScreen(void* pObject, int nUnusedEdx, int fDelete)
+__declspec(naked) void* LEMBALL_FASTCALL DeleteAdjustedPasswordEntryScreen(void*, int, int)
 {
-	return DeletePasswordEntryScreen((char*) pObject - 4, nUnusedEdx, fDelete);
+	__asm {
+        sub ecx, 4
+        jmp offset DeletePasswordEntryScreen
+	}
 }
 // FUNCTION: LEMBALL 0x00453260
 void LEMBALL_FASTCALL MarkNetworkLobbyPlayerEntryEventDirty(void* pEntry, int, const VS_XYPair*, int nEvent)
@@ -5057,6 +5085,12 @@ void LEMBALL_FASTCALL InitializeNetworkLobbyActionButtons(void* pObject)
 	InitializeQueuedVariantChildContext(pScreen->m_pQueuedVariantManager338);
 	ThunkRefreshNetworkLobbyPlayerEntries((int) (unsigned long) pScreen);
 }
+
+struct NetworkLobbyQueuedVariantManagerDeleteInterface {
+	virtual void Reserved00(void);
+	virtual void* Delete(int fDelete);
+};
+
 // FUNCTION: LEMBALL 0x004535a0
 void LEMBALL_FASTCALL DestroyNetworkLobbyActionButtons(void* pObject)
 {
@@ -5064,8 +5098,7 @@ void LEMBALL_FASTCALL DestroyNetworkLobbyActionButtons(void* pObject)
 
 	pScreen = (GameNetworkLobbyScreenView*) pObject;
 	if (pScreen->m_pQueuedVariantManager338 != 0) {
-		typedef void*(LEMBALL_FASTCALL * DeleteProc)(void*, int, int);
-		((DeleteProc) (*(void***) pScreen->m_pQueuedVariantManager338)[1])(pScreen->m_pQueuedVariantManager338, 0, 1);
+		((NetworkLobbyQueuedVariantManagerDeleteInterface*) pScreen->m_pQueuedVariantManager338)->Delete(1);
 	}
 }
 // FUNCTION: LEMBALL 0x00453690
@@ -5673,10 +5706,16 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbyScreen(void* pObject, int, int fDelete)
 	}
 	return pObject;
 }
+// ABI-THUNK: 83 e9 04; e9 rel32. __fastcall this adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 50% with reccmp; remaining relocation is
+// original ILT slot versus direct implementation.
 // FUNCTION: LEMBALL 0x00455ee0
-void* LEMBALL_FASTCALL DeleteAdjustedNetworkLobbyScreen(void* pObject, int nUnusedEdx, int fDelete)
+__declspec(naked) void* LEMBALL_FASTCALL DeleteAdjustedNetworkLobbyScreen(void*, int, int)
 {
-	return DeleteNetworkLobbyScreen((char*) pObject - 4, nUnusedEdx, fDelete);
+	__asm {
+        sub ecx, 4
+        jmp offset DeleteNetworkLobbyScreen
+	}
 }
 
 void LEMBALL_FASTCALL RequestLevelSelectionTransitionMode5(void* pObject)

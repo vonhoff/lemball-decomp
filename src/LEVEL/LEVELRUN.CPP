@@ -65,8 +65,8 @@ void ClearLevelTileGridCells(int nTileGridCells);
 void* LEMBALL_FASTCALL ConstructLevelTileGridThunk(void* pObject);
 void InitializeLevelTileGridThunk(void* pTileGrid);
 void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void* pObject);
-void ClearPrimaryLockedRecordTablePayloadFlags(void* pPayload);
-void ClearSecondaryLockedRecordTablePayloadFlags(void* pPayload);
+void LEMBALL_FASTCALL ClearPrimaryLockedRecordTablePayloadFlags(void* pPayload);
+void LEMBALL_FASTCALL ClearSecondaryLockedRecordTablePayloadFlags(void* pPayload);
 
 // GLOBAL: LEMBALL 0x0049e1bc
 LevelBallChunkManager* g_pBallChunkManager = 0;
@@ -110,6 +110,11 @@ struct LevelLevelTileCell {
 	void InitializeLevelTileGridCellRenderFlagsThunk(void);
 };
 
+class LevelManagedEntityHistoryView {
+public:
+	int PopHistoryIdThunk(void);
+};
+
 struct LevelLevelTileGridStaticView {
 	char m_abReserved00[0x0c];
 	LevelLevelTileCell* m_pCells0C;
@@ -127,7 +132,9 @@ struct LevelLevelTileGridStaticView {
 
 extern int g_nSelectedNetworkLobbyPeerId;
 
+// GLOBAL: LEMBALL 0x0049e4e0
 void* g_pLiftTileGrid = 0;
+// GLOBAL: LEMBALL 0x0049e4e4
 void* g_pAnimChunkTileGrid = 0;
 
 #define LevelRESERVED_VIRTUAL(n) virtual void Reserved##n(void) = 0
@@ -1314,6 +1321,13 @@ void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode)
 	}
 	DispatchType14CountedChildSlotC4Thunk(*(int*) (nLevelMode + 0x158));
 }
+
+// FUNCTION: LEMBALL 0x00413040
+int LEMBALL_FASTCALL PopLevelPlasHistoryChild(void* pObject)
+{
+	return ((LevelManagedEntityHistoryView*) *(void**) ((char*) pObject + 0x15c))->PopHistoryIdThunk();
+}
+
 // FUNCTION: LEMBALL 0x004130a0
 void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEnabled)
 {
@@ -2149,12 +2163,12 @@ void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void* pObject)
 // DeleteNetworkLevelChunkDeltaStreamAuto
 
 // FUNCTION: LEMBALL 0x0045fcc0
-void ClearPrimaryLockedRecordTablePayloadFlags(void* pPayload)
+void LEMBALL_FASTCALL ClearPrimaryLockedRecordTablePayloadFlags(void* pPayload)
 {
 	((GameLockedRecordSlotTableView*) *(int**) ((char*) pPayload + 0x48))->ClearLockedRecordSlotPayloadFlags();
 }
 // FUNCTION: LEMBALL 0x0045fcd0
-void ClearSecondaryLockedRecordTablePayloadFlags(void* pPayload)
+void LEMBALL_FASTCALL ClearSecondaryLockedRecordTablePayloadFlags(void* pPayload)
 {
 	((GameLockedRecordSlotTableView*) *(int**) ((char*) pPayload + 0x50))->ClearLockedRecordSlotPayloadFlags();
 }
