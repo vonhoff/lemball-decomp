@@ -4,7 +4,7 @@ Goal: maximize verified decompilation progress while preserving correctness.
 
 ## Start
 
-1. If `git status` contains unexpected changes, report them and stop.
+1. Inspect `git status` and take responsibility for every existing change. Never stop merely because the worktree is dirty.
 2. Run `python tools\coordinator.py`.
 3. Select the first viable coordinator target.
 4. Before editing, report:
@@ -33,8 +33,8 @@ For every target:
 6. Reinspect binary evidence after every mismatch.
 7. Continue while producing verified progress.
 
-Do not edit unrelated code unless binary evidence proves the selected target
-depends on it.
+Treat all worktree changes as worker-owned. Inspect, verify, complete, revert, or
+commit them as appropriate; never leave them for the user to resolve.
 
 ## Progress
 
@@ -103,7 +103,7 @@ Pop-Location
 Before every commit:
 
 * rerun available verification;
-* ensure `git status` is clean except for intended changes;
+* account for every worktree change and leave `git status` clean;
 * run `git diff --check`;
 * stage files explicitly;
 * commit with a descriptive message;
