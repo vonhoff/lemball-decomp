@@ -164,29 +164,6 @@ static void* g_DRAWTEXT_BoolResourceVtableStorage[15] = {
 };
 static void* g_pBoolResourceVtable = g_DRAWTEXT_BoolResourceVtableStorage;
 
-// FUNCTION: LEMBALL 0x0045e9b0
-void LEMBALL_FASTCALL SetBoolResourceTypeTag(void* pObject)
-{
-	*(unsigned int*) ((char*) pObject + 0x40) = g_DRAWTEXT_BoolResourceTypeTag;
-}
-
-// FUNCTION: LEMBALL 0x0045e9c0
-void LEMBALL_FASTCALL ReadBoolResourcePayloadFromStream(void* pObject)
-{
-	*(int*) ((char*) pObject + 0x48) = **(int**) ((char*) pObject + 0x38);
-}
-
-// FUNCTION: LEMBALL 0x0045e9d0
-void* LEMBALL_FASTCALL DeleteBoolResource(void* pObject, int nUnused, int fDelete)
-{
-	(void) nUnused;
-	InitializeTypedResourceObjectBaseVtable(pObject);
-	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pObject);
-	}
-	return pObject;
-}
-
 // FUNCTION: LEMBALL 0x0045dc40
 int* load_bool_resource(int nResourceId)
 {
@@ -263,6 +240,29 @@ int* load_int_resource(int nResourceId)
 		return (int*) FinalizeLoadedResourceObjectResult(pResourceObject, 0);
 	}
 	return (int*) FinalizeLoadedResourceObjectResult(0, 0);
+}
+
+// FUNCTION: LEMBALL 0x0045e9b0
+void LEMBALL_FASTCALL SetBoolResourceTypeTag(void* pObject)
+{
+	*(unsigned int*) ((char*) pObject + 0x40) = g_DRAWTEXT_BoolResourceTypeTag;
+}
+
+// FUNCTION: LEMBALL 0x0045e9c0
+void LEMBALL_FASTCALL ReadBoolResourcePayloadFromStream(void* pObject)
+{
+	*(int*) ((char*) pObject + 0x48) = **(int**) ((char*) pObject + 0x38);
+}
+
+// FUNCTION: LEMBALL 0x0045e9d0
+void* LEMBALL_FASTCALL DeleteBoolResource(void* pObject, int nUnused, int fDelete)
+{
+	(void) nUnused;
+	InitializeTypedResourceObjectBaseVtable(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
 }
 
 // FUNCTION: LEMBALL 0x00467ac0
