@@ -1,7 +1,9 @@
 #include "ENGINE/CORE/VSINIT.H"
 #include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/GDI/VSGDI.H"
+#include "GAME.H"
 #include "LEVEL/DRAWTEXT.H"
+#include "RESOURCE/MOGLOAD.H"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>
@@ -12,6 +14,31 @@
 
 extern void* LoadListResource(int nResourceId);
 extern void* g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[];
+
+extern void* g_MOGLOAD_CachedResourceObjectBaseVtable[15];
+extern void InitializeResourceObjectFromId(void* pObject, int nResourceId);
+extern void* FinalizeLoadedResourceObjectResult(void* pObject);
+extern void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtable(void* pObject);
+extern void ParseIntResourceDescriptor(void);
+extern int LEMBALL_FASTCALL GetField14NeedsAgeIncrement(void* pObject);
+extern int LEMBALL_FASTCALL GetField1CVfunc04(void* pObject);
+extern int LEMBALL_FASTCALL GetField14Vfunc05(void* pObject);
+extern int ReturnZeroVfunc06(void);
+extern void LEMBALL_FASTCALL EnsureTypedResourceObjectLoaded(void* pObject);
+extern void LEMBALL_FASTCALL UnloadTypedResourceObject(void* pObject, void* pUnusedEcx, int fReleaseMode);
+extern void LEMBALL_FASTCALL NoopVfunc09(void* pObject, void* pUnusedEdx, int nArgument);
+extern void* LEMBALL_FASTCALL GetEffResourceDataPointer(void* pObject);
+extern void LEMBALL_FASTCALL CopyBufferIntoTypedResourceObjectAndParse(void* pObject,
+	void* pUnusedEdx, unsigned int* pSource, unsigned int nUnused, unsigned int cbBuffer);
+extern void NoopOnLoadVfunc11(void);
+extern void NoopVfunc12(void);
+extern int LEMBALL_FASTCALL GetField28GetMemorySize(void* pObject);
+
+void LEMBALL_FASTCALL SetBoolResourceTypeTag(void* pObject);
+void LEMBALL_FASTCALL ReadBoolResourcePayloadFromStream(void* pObject);
+void* LEMBALL_FASTCALL DeleteBoolResource(void* pObject, int nUnused, int fDelete);
+
+static const unsigned int g_DRAWTEXT_BoolResourceTypeTag = 0x424f4f4c;
 
 class LevelGlyphListView {
 public:
@@ -115,6 +142,128 @@ short* LevelScreenDrawOwnerView::MeasureGlyphStringExtent(short* pExtent, const 
 	pExtent[0] = cx;
 	pExtent[1] = cy;
 	return pExtent;
+}
+
+// GLOBAL: LEMBALL 0x00498b88
+static void* g_DRAWTEXT_BoolResourceVtableStorage[15] = {
+	(void*) DeleteBoolResource,
+	(void*) CopyBufferIntoTypedResourceObjectAndParse,
+	(void*) ParseIntResourceDescriptor,
+	(void*) GetField14NeedsAgeIncrement,
+	(void*) GetField1CVfunc04,
+	(void*) GetField14Vfunc05,
+	(void*) ReturnZeroVfunc06,
+	(void*) EnsureTypedResourceObjectLoaded,
+	(void*) UnloadTypedResourceObject,
+	(void*) NoopVfunc09,
+	(void*) GetEffResourceDataPointer,
+	(void*) ReadBoolResourcePayloadFromStream,
+	(void*) NoopVfunc12,
+	(void*) SetBoolResourceTypeTag,
+	(void*) GetField28GetMemorySize,
+};
+static void* g_pBoolResourceVtable = g_DRAWTEXT_BoolResourceVtableStorage;
+
+// FUNCTION: LEMBALL 0x0045e9b0
+void LEMBALL_FASTCALL SetBoolResourceTypeTag(void* pObject)
+{
+	*(unsigned int*) ((char*) pObject + 0x40) = g_DRAWTEXT_BoolResourceTypeTag;
+}
+
+// FUNCTION: LEMBALL 0x0045e9c0
+void LEMBALL_FASTCALL ReadBoolResourcePayloadFromStream(void* pObject)
+{
+	*(int*) ((char*) pObject + 0x48) = **(int**) ((char*) pObject + 0x38);
+}
+
+// FUNCTION: LEMBALL 0x0045e9d0
+void* LEMBALL_FASTCALL DeleteBoolResource(void* pObject, int nUnused, int fDelete)
+{
+	(void) nUnused;
+	InitializeTypedResourceObjectBaseVtable(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
+
+// FUNCTION: LEMBALL 0x0045dc40
+int* load_bool_resource(int nResourceId)
+{
+	int* pResourceObject;
+
+	pResourceObject =
+		(int*) ((MogLoadResourceArchive*) g_pResourceArchive)->FindCachedResourceObjectById(nResourceId);
+	if (pResourceObject != 0) {
+		if ((unsigned int) pResourceObject[0x10] != g_DRAWTEXT_BoolResourceTypeTag) {
+			ReleaseTypedResourceObjectReference(pResourceObject);
+			pResourceObject = 0;
+		}
+		return pResourceObject;
+	}
+
+	pResourceObject = (int*) AllocateVSMemBlock(0x4c);
+	if (pResourceObject != 0) {
+		*(void**) pResourceObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
+		pResourceObject[6] = 0;
+		*(void**) pResourceObject = g_DRAWTEXT_BoolResourceVtableStorage;
+		InitializeResourceObjectFromId(pResourceObject, nResourceId);
+		return (int*) FinalizeLoadedResourceObjectResult(pResourceObject);
+	}
+	return (int*) FinalizeLoadedResourceObjectResult(0);
+}
+
+// Int resource
+static const unsigned int g_DRAWTEXT_IntResourceTypeTag = 0x494e5420;
+
+extern void LEMBALL_FASTCALL SetIntResourceTypeTag(void* pResource);
+extern void LEMBALL_FASTCALL ReadIntResourcePayloadFromStream(void* pResource);
+extern void* LEMBALL_FASTCALL DestroyIntResourceEntryArray(void* pObject, int nUnused, unsigned int fDelete);
+
+// GLOBAL: LEMBALL 0x00498b48
+static void* g_DRAWTEXT_IntResourceVtableStorage[15] = {
+	(void*) DestroyIntResourceEntryArray,
+	(void*) CopyBufferIntoTypedResourceObjectAndParse,
+	(void*) ParseIntResourceDescriptor,
+	(void*) GetField14NeedsAgeIncrement,
+	(void*) GetField1CVfunc04,
+	(void*) GetField14Vfunc05,
+	(void*) ReturnZeroVfunc06,
+	(void*) EnsureTypedResourceObjectLoaded,
+	(void*) UnloadTypedResourceObject,
+	(void*) NoopVfunc09,
+	(void*) GetEffResourceDataPointer,
+	(void*) ReadIntResourcePayloadFromStream,
+	(void*) NoopVfunc12,
+	(void*) SetIntResourceTypeTag,
+	(void*) GetField28GetMemorySize,
+};
+static void* g_pIntResourceVtable = g_DRAWTEXT_IntResourceVtableStorage;
+
+// FUNCTION: LEMBALL 0x0045dcb0
+int* load_int_resource(int nResourceId)
+{
+	int* pResourceObject;
+
+	pResourceObject =
+		(int*) ((MogLoadResourceArchive*) g_pResourceArchive)->FindCachedResourceObjectById(nResourceId);
+	if (pResourceObject != 0) {
+		if ((unsigned int) pResourceObject[0x10] != g_DRAWTEXT_IntResourceTypeTag) {
+			ReleaseTypedResourceObjectReference(pResourceObject);
+			pResourceObject = 0;
+		}
+		return pResourceObject;
+	}
+
+	pResourceObject = (int*) AllocateVSMemBlock(0x4c);
+	if (pResourceObject != 0) {
+		*(void**) pResourceObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
+		pResourceObject[6] = 0;
+		*(void**) pResourceObject = g_pIntResourceVtable;
+		InitializeResourceObjectFromId(pResourceObject, nResourceId);
+		return (int*) FinalizeLoadedResourceObjectResult(pResourceObject);
+	}
+	return (int*) FinalizeLoadedResourceObjectResult(0);
 }
 
 // FUNCTION: LEMBALL 0x00467ac0
