@@ -36,6 +36,12 @@ void __fastcall set_render_entry_field_0x04(void* pEntry, void* pUnused, int nVa
 	*(int*) ((char*) pEntry + 4) = nValue;
 }
 
+// FUNCTION: LEMBALL 0x00439440
+int PASCAL return_zero_status_render_callback(void)
+{
+	return 0;
+}
+
 // FUNCTION: LEMBALL 0x00439450
 int __fastcall get_level_screen_transition_status(void* pScreen)
 {
