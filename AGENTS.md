@@ -109,13 +109,4 @@ Before every commit:
 * commit with a descriptive message;
 * push.
 
-Report only:
-
-```
-Target:
-Evidence:
-Progress:
-Commit:
-Next:
-Blocker:
-```
+End with a concise plain-English summary of one or two sentences. State what changed and whether it was committed and pushed. Mention a blocker only when one prevented progress. Do not use a rigid report template, repeat command output, or describe routine verification steps.
