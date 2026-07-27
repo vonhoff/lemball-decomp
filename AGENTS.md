@@ -1,66 +1,86 @@
 # Decompilation worker
 
-Goal: improve byte matching for one original-entry target at a time using MSVC
-4.20, Ghidra, and reccmp.
+Goal: maximize verified decompilation progress while preserving correctness.
 
 ## Start
 
-1. Check `git status`. If checkout contains changes not owned by this task, do
-   not edit or build.
-2. Run `python tools\coordinator.py`. It creates missing `.decomp-venv` and
-   repairs missing reccmp packages from pinned `requirements.txt`.
-   Do not edit before it succeeds.
-3. Pick first viable target it prints. Before editing, state: `Target:
-   <address>; <source file>; <binary evidence>; <intended change>.`
-4. You own this checkout while working. No other agent may edit or build until
-   your commit completes.
+1. If `git status` contains unexpected changes, report them and stop.
+2. Run `python tools\coordinator.py`.
+3. Select the first viable coordinator target.
+4. Before editing, report:
 
-Original entry address owns function. Inspect callers and callees anywhere. If
-target cannot match without another edit, establish that dependency from binary
-evidence first. Otherwise leave it for later. Coordinate before changing shared
-class layouts, inheritance, vtables, or globals.
+```
+Target: <address>; <source>; <binary evidence>; <planned change>
+```
 
-## Loop
+## Workflow
 
-1. Inspect Ghidra and local source before inferring code. Select original
-   program and pass its path explicitly when multiple programs are open.
-   Establish instruction boundary, body, signature, calling convention,
-   control flow, xrefs, and relevant bytes.
-2. Change one target only. Never use an unverified decompilation as source.
-3. Run build and measurements below. Reinspect evidence after each mismatch.
-4. If an error is outside target or source of failure is unclear, report exact
-   blocker and stop. Do not repair unrelated code.
-5. If blocked, remove own unsuccessful experiments and leave checkout clean.
-6. Commit intentional changes before releasing checkout.
+Treat the original binary as authoritative.
 
-Report only target, evidence, result, and blocker. Keep reasoning private.
+For every target:
+
+1. Inspect Ghidra before editing.
+2. Verify:
+    * raw bytes
+    * disassembly
+    * function boundaries
+    * calling convention
+    * control flow
+    * xrefs
+3. Treat decompiler output only as supporting evidence.
+4. Modify only C/C++ source.
+5. Build and measure.
+6. Reinspect binary evidence after every mismatch.
+7. Continue while producing verified progress.
+
+Do not edit unrelated code unless binary evidence proves the selected target
+depends on it.
+
+## Progress
+
+Progress includes:
+
+* a new 100% reccmp match;
+* a measurable improvement toward a match;
+* verified inventory corrections;
+* verified Ghidra/export corrections;
+* reusable compiler-accurate infrastructure;
+* cleanup that removes incorrect implementations.
+
+Commit any verified progress that leaves the repository in a better state.
+
+Prefer small, self-contained commits.
+
+## Blockers
+
+If progress stops:
+
+1. Remove speculative edits.
+2. Restore a clean worktree.
+3. Record exact binary evidence.
+4. Continue with the next coordinator target whenever possible.
+
+Stop only when a repository-wide blocker prevents further work.
 
 ## Constraints
 
-- Use Ghidra MCP for disassembly, decompilation, xrefs, types, vtables, and
-  thunks. Treat Ghidra output as evidence, not source. A rebuilt program
-  imported into Ghidra is stale after a rebuild until reloaded.
-- Preserve file placement, annotations, calling conventions, class layout,
-  and link order when binary evidence requires them.
-- `// FUNCTION: LEMBALL 0x...` must directly precede declaration. Put other
-  comments above annotation.
-- Write compiler-generated C/C++ only. Never use inline or external assembly,
-  naked functions, or opcode bytes.
-- For five-byte `E9` thunk, write annotated wrapper with matching original
-  machine ABI and only target call. Do not infer viability from member/free or
-  parameter-count rules; build evidence decides. Rebuilt address may differ.
-  Use existing `/include:` pragma pattern only when MAP/PDB proves linker
-  discarded unreferenced wrapper; it retains symbol and must not control
-  placement.
-- Cross-range target already present is not dependency unless target must
-  change.
-- Coordinator inventory is expected to be valid. If raw bytes, boundaries,
-  body, and xrefs prove otherwise, repair Ghidra/export inventory and regenerate
-  CSV. Do not add denylist or blanket size filter.
+* Use Ghidra MCP for analysis.
+* Treat Ghidra as evidence, not source.
+* Reload rebuilt programs before using them.
+* Preserve binary-required layout, ABI, annotations, and link order.
+* Write compiler-generated C/C++ only.
+* Never use:
+    * assembly
+    * naked functions
+    * embedded opcode bytes
+    * binary patching
+* Handle five-byte `E9` thunks with normal annotated C/C++ wrappers matching the original ABI.
+* If inventory data is incorrect, repair it and regenerate the CSV.
+* Never hide invalid entries using denylists or blanket filters.
 
-## Diagnose
+## Diagnosis
 
-After mismatch, use original virtual address, not PE file offset:
+Use the original virtual address.
 
 ```powershell
 Push-Location build-msvc420
@@ -68,9 +88,7 @@ Push-Location build-msvc420
 Pop-Location
 ```
 
-## Measure
-
-From repository root:
+## Measurement
 
 ```powershell
 python tools/build_msvc420.py
@@ -82,7 +100,22 @@ Push-Location build-msvc420
 Pop-Location
 ```
 
-100% reccmp result is only completion evidence. Before handoff, rerun checks
-available in this checkout, verify `git status` contains only intentional
-files, run `git diff --check`, then stage explicit files and commit. Push only
-when task requires it.
+Before every commit:
+
+* rerun available verification;
+* ensure `git status` is clean except for intended changes;
+* run `git diff --check`;
+* stage files explicitly;
+* commit with a descriptive message;
+* push.
+
+Report only:
+
+```
+Target:
+Evidence:
+Progress:
+Commit:
+Next:
+Blocker:
+```
