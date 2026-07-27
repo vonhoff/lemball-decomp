@@ -311,6 +311,19 @@ void __cdecl ForwardManagedEntityVslot88(void* pUnused, void* pEntity);
 void __cdecl ForwardManagedEntityVslot90(void* pUnused, void* pEntity);
 void noop_projectile_geometry_callback(void);
 void* __fastcall initialize_three_dword_point_sentinel(void* pPoint);
+void __fastcall deactivate_projectile_object(void* pObject);
+void* __fastcall get_next_projectile_pool_object(void* pPool);
+void __fastcall update_projectile_pool_real(void* pPool);
+
+struct ProjectilePool {
+	char m_abReserved00[0x34];
+	void* m_apObjects[20];
+	char m_abReserved84[0x50];
+	int m_nCountD4;
+	int m_nIndexD8;
+
+	void RemoveObject(void* pObject);
+};
 int return_true_vtable_callback_0041c3f0(void);
 int return_two_vtable_callback_0041c430(void);
 int return_true_vtable_callback_0041c5b0(void);
@@ -348,6 +361,12 @@ void noop_queued_variant_child_slot_manager_update(void);
 unsigned int return_hresult_40000001_callback(void);
 void noop_network_lobby_vsnet_runtime_slot_3(void);
 void noop_callback_00456600(void);
+
+// FUNCTION: LEMBALL 0x00401019
+void __fastcall update_projectile_pool(void* pPool)
+{
+	update_projectile_pool_real(pPool);
+}
 
 // FUNCTION: LEMBALL 0x00401046
 LevelThreeDwordPointVariant* LevelThreeDwordPointVariant::CopyThunk(const LevelThreeDwordPointVariant* pSource)
@@ -1270,6 +1289,74 @@ void* __fastcall get_first_projectile_pool_object(void* pPool)
 {
 	*(int*) ((char*) pPool + 0xd8) = 0;
 	return *(void**) ((char*) pPool + 0x34);
+}
+
+// STUB: implement original function at 0x0041ac70.
+void __fastcall deactivate_projectile_object(void* pObject)
+{
+	(void) pObject;
+}
+
+// FUNCTION: LEMBALL 0x00417f50
+void* __fastcall get_next_projectile_pool_object(void* pPool)
+{
+	int nIndex;
+
+	nIndex = *(int*) ((char*) pPool + 0xd8) + 1;
+	*(int*) ((char*) pPool + 0xd8) = nIndex;
+	if (*(int*) ((char*) pPool + 0xd4) > nIndex) {
+		return *(void**) ((char*) pPool + nIndex * 4 + 0x34);
+	}
+	return NULL;
+}
+
+// FUNCTION: LEMBALL 0x00418040
+void __fastcall update_projectile_pool_real(void* pPool)
+{
+	void* pObj;
+	void** vtable;
+	int (*vfunc)(void*);
+	int fKeep;
+
+	pObj = get_first_projectile_pool_object(pPool);
+	while (pObj != NULL) {
+		vtable = *(void***) pObj;
+		vfunc = (int (*)(void*)) vtable[5];
+		fKeep = vfunc(pObj);
+		if (fKeep == 0) {
+			((ProjectilePool*) pPool)->RemoveObject(pObj);
+		}
+		pObj = get_next_projectile_pool_object(pPool);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00418080
+void ProjectilePool::RemoveObject(void* pObject)
+{
+	void** pArray;
+	int i;
+	void** pEntry;
+	int nRemaining;
+
+	pArray = m_apObjects;
+	for (i = 0; i < 20; i++) {
+		if (pArray[i] == pObject) {
+			pEntry = &pArray[i];
+			deactivate_projectile_object(pEntry[0]);
+			if (i < 19) {
+				nRemaining = 19 - i;
+				i = 19;
+				do {
+					pEntry[0] = pEntry[1];
+					pEntry++;
+					nRemaining--;
+				} while (nRemaining != 0);
+			}
+			pArray[i] = NULL;
+			m_nCountD4--;
+			return;
+		}
+	}
 }
 
 // FUNCTION: LEMBALL 0x004185d0
