@@ -586,6 +586,7 @@ void LEMBALL_FASTCALL InitializePasswordEntryResources(void* pObject);
 void LEMBALL_FASTCALL ReleasePasswordEntryResources(void* pObject);
 void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void* pObject);
 void LEMBALL_FASTCALL DrawPasswordEntryText(void* pObject);
+void LEMBALL_FASTCALL DrawEnteredPasswordText(void* pObject);
 static void InitializePasswordEntryRenderContext(GamePasswordEntryScreenView* pScreen);
 void* LEMBALL_FASTCALL DeletePasswordEntryScreen(void* pObject, int nUnusedEdx, int fDelete);
 void* LEMBALL_FASTCALL DeleteAdjustedPasswordEntryScreen(void* pObject, int nUnusedEdx, int fDelete);
@@ -1994,30 +1995,10 @@ __inline static void LEMBALL_FASTCALL NoopQueuedVariantChildSlotManagerUpdate(vo
 {
 }
 
-// FUNCTION: LEMBALL 0x0040101E
+// FUNCTION: LEMBALL 0x0040101e
 void LEMBALL_FASTCALL draw_entered_password_text(void* pObject)
 {
-	GamePasswordEntryScreenView* pScreen;
-	MappedListResourceTable* pMappedList;
-	short Point[2];
-	short Relative[2];
-	short Extent[2];
-
-	pScreen = (GamePasswordEntryScreenView*) pObject;
-	pMappedList = (MappedListResourceTable*) pScreen->m_pMappedListResources98;
-	Relative[0] = 0;
-	Relative[1] = 0;
-	((LevelScreenDrawOwnerView*) pMappedList->GetMappedResource(pScreen->m_nMappedListRemapResourceId384))
-		->MeasureGlyphStringExtent(Extent, pScreen->m_szPassword3B0, 0x20);
-	Point[0] = (short) (pScreen->m_cxScreen37C - pScreen->m_pLayout3A8[22] - Extent[0]);
-	Point[1] = (short) pScreen->m_pLayout3A8[23];
-	pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
-								   Point,
-								   Relative,
-								   pScreen->m_nMappedListRemapResourceId384,
-								   pScreen->m_szPassword3B0,
-								   0x20,
-								   0);
+	DrawEnteredPasswordText(pObject);
 }
 
 // FUNCTION: LEMBALL 0x0040110e
@@ -4803,6 +4784,31 @@ void LEMBALL_FASTCALL DrawPasswordEntryText(void* pObject)
 									   0x20,
 									   0);
 	}
+}
+// FUNCTION: LEMBALL 0x00451c90
+void LEMBALL_FASTCALL DrawEnteredPasswordText(void* pObject)
+{
+	GamePasswordEntryScreenView* pScreen;
+	MappedListResourceTable* pMappedList;
+	short Point[2];
+	short Relative[2];
+	short Extent[2];
+
+	pScreen = (GamePasswordEntryScreenView*) pObject;
+	pMappedList = (MappedListResourceTable*) pScreen->m_pMappedListResources98;
+	Relative[0] = 0;
+	Relative[1] = 0;
+	((LevelScreenDrawOwnerView*) pMappedList->GetMappedResource(pScreen->m_nMappedListRemapResourceId384))
+		->MeasureGlyphStringExtent(Extent, pScreen->m_szPassword3B0, 0x20);
+	Point[0] = (short) (pScreen->m_cxScreen37C - pScreen->m_pLayout3A8[22] - Extent[0]);
+	Point[1] = (short) pScreen->m_pLayout3A8[23];
+	pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+								   Point,
+								   Relative,
+								   pScreen->m_nMappedListRemapResourceId384,
+								   pScreen->m_szPassword3B0,
+								   0x20,
+								   0);
 }
 // FUNCTION: LEMBALL 0x00451e60
 void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void* pObject)
