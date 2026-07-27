@@ -16,13 +16,14 @@ Ghidra or suggest work, but do not edit or build concurrently.
 
 Start with a shape-first batch:
 
-1. Save current non-stub 100% address set from `build-msvc420/reccmp.json`.
-2. Group unmatched real functions by normalized original instruction shape.
-3. Prefer largest cluster with exact exemplar or simple compiler-owned C++
+1. Run candidate miner with `--save-baseline` to save current non-stub 100%
+   address set and group unmatched real functions by normalized original
+   instruction shape.
+2. Prefer largest cluster with exact exemplar or simple compiler-owned C++
    pattern.
-4. Inspect every member in Ghidra, recover one parameterized C/C++ form, and
+3. Inspect every member in Ghidra, recover one parameterized C/C++ form, and
    implement all proven members.
-5. Compare every member and run full JSON. Keep zero-loss exact gains, then
+4. Compare every member and run full JSON. Keep zero-loss exact gains, then
    continue next cluster.
 
 This turns repeated constructors, destructors, scalar deletes, vtable restores,
@@ -31,11 +32,13 @@ many verified matches. Shape similarity is candidate generation, never proof:
 ABI, stack cleanup, offsets, constants, xrefs, and source ownership still need
 per-member confirmation.
 
-After high-yield families are exhausted, select a source-owned singleton
-directly from `data/objdiff-functions.csv` and `build-msvc420/reccmp.json`.
-Prefer fewest estimated mismatched bytes; investigate five-byte functions last.
-Ghidra inventory export validates all 2,077 ILT entries and excludes them from
-the CSV.
+```powershell
+.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py `
+  --save-baseline
+```
+
+After high-yield families are exhausted, use miner's `singleton fallback`.
+Ghidra inventory export validates all 2,077 ILT entries and excludes them.
 
 ### Cron worker prompt
 
@@ -45,15 +48,16 @@ Copy this into next editing task:
 Work autonomously on Lemmings Paintball decompilation project in
 C:\Users\Simon\CLionProjects\lemball-decomp. Follow AGENTS.md.
 
-Continue unfinished work. If none remains, refresh reccmp results when stale
-and run shape-first batch workflow: group unmatched source-owned real functions
-by normalized original instruction shape, prioritize highest-yield proven
-family, inspect every member in Ghidra, recover one minimal C/C++ template, and
-verify every member. Preserve all previous 100% addresses with before/after
-exact-set gate. Continue through additional viable clusters; do not stop after
-one tiny function. After batch candidates are exhausted, choose a source-owned
-singleton directly from objdiff inventory and reccmp results, preferring fewest
-estimated mismatched bytes and investigating five-byte functions last.
+Continue unfinished work. If none remains, refresh reccmp results when stale,
+then run:
+`.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --save-baseline`
+Prioritize highest-yield proven shape cluster, inspect every member in Ghidra,
+recover one minimal C/C++ template, and verify every member. After each full
+reccmp run, run:
+`.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --check-baseline`
+Keep zero-loss gains.
+Continue additional viable clusters; do not stop after one tiny function.
+After batch candidates are exhausted, work first viable singleton fallback.
 
 Run canonical checks, review all diffs, commit verified progress, push, and
 leave clean worktree. Finish only after successful commit and push or

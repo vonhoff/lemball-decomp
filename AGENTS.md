@@ -7,15 +7,15 @@ Make verified decompilation progress while preserving compiler behavior. Treat t
 ## Workflow
 
 1. Inspect `git status`, every existing diff, and `// STUB:` markers. Continue unfinished work before selecting a new target; complete, commit, or revert it rather than leaving it for the user.
-2. Record the current set of non-stub 100% matches from `build-msvc420/reccmp.json`. Refresh the build and JSON first when missing or stale. This exact-address set is the no-regression baseline for the run.
-3. Mine unmatched source-owned functions for repeated normalized instruction shapes before choosing a singleton. Preserve instruction order, branches, stack cleanup, calling convention, object offsets, and function size; normalize only concrete addresses, relocations, and per-member constants.
-4. Rank clusters by expected exact-match yield. Prefer clusters with an existing 100% exemplar and compiler-owned C++ patterns such as constructors, destructors, scalar deletes, vtable restores, accessors, and forwarding or adjustment thunks.
+2. Refresh build and reccmp JSON when missing or stale, then run `.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --save-baseline`. This records non-stub 100% addresses as no-regression baseline and prints candidates.
+3. Use printed repeated normalized instruction shapes before choosing a singleton. Preserve instruction order, branches, stack cleanup, calling convention, object offsets, and function size; normalization covers only concrete addresses, relocations, and per-member constants.
+4. Work highest-ranked viable cluster. Prefer existing 100% exemplars and compiler-owned C++ patterns such as constructors, destructors, scalar deletes, vtable restores, accessors, and forwarding or adjustment thunks.
 5. Inspect every proposed cluster member in original `/LEMBALL.EXE` with Ghidra MCP. Establish raw bytes, boundaries, ABI, control flow, xrefs, owning source file, and all per-member variations. Use decompiler output only as supporting evidence. ILT entries never become targets.
 6. Recover one minimal C or C++ template from binary evidence and compiler probes. Parameterize only proven variations. Never mass-generate speculative bodies from shape similarity alone.
 7. Implement complete viable cluster, build once, compare representative member, then compare every member with verbose reccmp. Revise from assembly diffs and binary evidence.
-8. Run full reccmp JSON after each batch. Keep batch only if it preserves every baseline 100% address and adds verified matches or another form of verified progress. Revert speculative or regressing edits.
+8. Run full reccmp JSON after each batch, then run `.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --check-baseline`. Keep batch only if exact-set gate passes and it adds verified matches or another form of verified progress. Revert speculative or regressing edits.
 9. Repeat next viable high-yield cluster. Do not stop after one tiny function while safe members of same proven family remain.
-10. When no viable repeated family remains, select a source-owned singleton directly from `data/objdiff-functions.csv` and `build-msvc420/reccmp.json`. Prefer fewest estimated mismatched bytes; investigate five-byte functions last.
+10. When no viable repeated family remains, work first viable entry under miner's `singleton fallback`. It prefers fewest estimated mismatched bytes and investigates five-byte functions last.
 11. Fix discovered issues immediately. If fix cannot be completed in current run, leave minimal compiling stub with `// STUB:` marker for next run.
 12. Stop only for repository-wide blocker.
 
@@ -28,7 +28,7 @@ Verified progress includes a new 100% match, measurable similarity improvement, 
 - Never use assembly or source wrappers to recreate the linker ILT. Analyze five-byte `E9` functions outside the ILT normally.
 - Repair incorrect inventory and regenerate its CSV; do not hide entries with denylists or broad filters.
 - Add `GLOBAL`, `FUNCTION`, or `STUB` ownership only after confirming original address and source owner in Ghidra. Never add annotations merely to make relocation comparison pass. Investigate every new datacmp issue; direct-function versus original ILT-pointer differences are acceptable only when binary evidence proves same destination and no ILT recreation is introduced.
-- Temporary shape-mining scripts may live only under ignored `build-msvc420/`, may use standard library and already-installed dependencies, and must be removed before commit. Do not create permanent verification scripts.
+- Use maintained candidate miner; do not create one-off target-selection or verification scripts. Temporary compiler probes may live only under ignored `build-msvc420/` and must be removed before commit.
 - Use `"/c/Program Files/LLVM/bin/clang-format.exe" -i <paths>` to fix formatting in modified C or C++ files.
 - Use only project commands below for verification.
 
@@ -40,6 +40,13 @@ Verified progress includes a new 100% match, measurable similarity improvement, 
 - Whole-image parity is deferred: original LINK is 3.00, current LINK is 4.20; original `.rsrc` virtual size is `0x55A4`, current is `0x160`; CRT and imports also differ.
 
 ## Commands
+
+Candidate mining, from repository root:
+
+```powershell
+.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --save-baseline
+.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --check-baseline
+```
 
 Focused diagnosis, from `build-msvc420`:
 
