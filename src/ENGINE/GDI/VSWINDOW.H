@@ -3,8 +3,6 @@
 
 #include "ENGINE/CORE/WIN32.H"
 
-// FUNCTION: LEMBALL 0x00401028
-// VS_WindowOwnerBase::ReservedWindowOwnerSlot23
 // FUNCTION: LEMBALL 0x0040119f
 // VS_WindowOwnerBase::ReservedWindowOwnerSlot37
 // FUNCTION: LEMBALL 0x0040150f

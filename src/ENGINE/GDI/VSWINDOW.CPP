@@ -44,6 +44,7 @@ extern void* g_pSharedRenderDispatchQueue;
 extern void* g_pSharedGeometryHelper;
 extern void RegisterVSBaseWindowClass(void);
 extern unsigned int MapWindowOwnerFlagsToWin32Style(unsigned int uFlags);
+extern void noop_window_owner_slot_23(void);
 int LEMBALL_FASTCALL IsDisplayModeWindowedRange(const int* pnDisplayMode);
 extern "C" DWORD WINAPI timeGetTime(void);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
@@ -405,6 +406,12 @@ void* LEMBALL_FASTCALL ConstructRootGeometryDispatchHelper(void* pObject,
 														   const VS_XYPair* pSourcePosition);
 void LEMBALL_FASTCALL UnlinkAndFreeGeometryOwnerChildNode(void* pOwner, int, GameGeometryOwnerChildNode* pNode);
 void __cdecl ShowFatalGetLastErrorMessageAndExit(const char* pszMessage);
+
+// FUNCTION: LEMBALL 0x00401028
+void VS_WindowOwnerBase::ReservedWindowOwnerSlot23(void)
+{
+	noop_window_owner_slot_23();
+}
 
 // FUNCTION: LEMBALL 0x00432560
 void LEMBALL_FASTCALL ForwardNestedGeometryRectUpdate(void* pOwner, int, short* paRect)
@@ -2452,10 +2459,6 @@ void __cdecl ShowFatalGetLastErrorMessageAndExit(const char* pszMessage)
 }
 
 // Ordinary window-owner methods formerly isolated in an artificial vtable file.
-
-void VS_WindowOwnerBase::ReservedWindowOwnerSlot23(void)
-{
-}
 
 void VS_WindowOwnerBase::ReservedWindowOwnerSlot21(void)
 {
