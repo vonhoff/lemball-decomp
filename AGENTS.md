@@ -15,7 +15,7 @@ Make verified decompilation progress while preserving compiler behavior. Treat t
 7. Implement complete viable cluster, build once, compare representative member, then compare every member with verbose reccmp. Revise from assembly diffs and binary evidence.
 8. Run full reccmp JSON after each batch. Keep batch only if it preserves every baseline 100% address and adds verified matches or another form of verified progress. Revert speculative or regressing edits.
 9. Repeat next viable high-yield cluster. Do not stop after one tiny function while safe members of same proven family remain.
-10. When no viable repeated family remains, run `python tools\coordinator.py` and work its first viable fallback target. Coordinator bootstraps dependencies, validates ILT-free inventory, and ranks singleton candidates; it is not primary scheduler.
+10. When no viable repeated family remains, select a source-owned singleton directly from `data/objdiff-functions.csv` and `build-msvc420/reccmp.json`. Prefer fewest estimated mismatched bytes; investigate five-byte functions last.
 11. Fix discovered issues immediately. If fix cannot be completed in current run, leave minimal compiling stub with `// STUB:` marker for next run.
 12. Stop only for repository-wide blocker.
 

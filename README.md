@@ -31,16 +31,11 @@ many verified matches. Shape similarity is candidate generation, never proof:
 ABI, stack cleanup, offsets, constants, xrefs, and source ownership still need
 per-member confirmation.
 
-Use coordinator only after high-yield families are exhausted:
-
-```powershell
-python tools\coordinator.py
-```
-
-Coordinator remains useful for dependency bootstrap, ILT inventory validation,
-and fallback singleton ranking. It deliberately deprioritizes five-byte
-functions and untouched stubs, then estimates remaining mismatched bytes to
-favor cheap, nearly complete targets.
+After high-yield families are exhausted, select a source-owned singleton
+directly from `data/objdiff-functions.csv` and `build-msvc420/reccmp.json`.
+Prefer fewest estimated mismatched bytes; investigate five-byte functions last.
+Ghidra inventory export validates all 2,077 ILT entries and excludes them from
+the CSV.
 
 ### Cron worker prompt
 
@@ -56,8 +51,9 @@ by normalized original instruction shape, prioritize highest-yield proven
 family, inspect every member in Ghidra, recover one minimal C/C++ template, and
 verify every member. Preserve all previous 100% addresses with before/after
 exact-set gate. Continue through additional viable clusters; do not stop after
-one tiny function. Use coordinator only after batch candidates are exhausted,
-as dependency, inventory, and fallback singleton helper.
+one tiny function. After batch candidates are exhausted, choose a source-owned
+singleton directly from objdiff inventory and reccmp results, preferring fewest
+estimated mismatched bytes and investigating five-byte functions last.
 
 Run canonical checks, review all diffs, commit verified progress, push, and
 leave clean worktree. Finish only after successful commit and push or
@@ -66,8 +62,10 @@ repository-wide blocker. Return one or two plain-English result sentences.
 
 ## Setup
 
-No separate setup command. `python tools\coordinator.py` creates missing
-`.decomp-venv` and repairs missing pinned packages before printing targets.
+```powershell
+py -m venv .decomp-venv
+.decomp-venv\Scripts\python.exe -m pip install -r requirements.txt
+```
 
 ## Legal
 
