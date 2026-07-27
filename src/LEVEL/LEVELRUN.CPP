@@ -1005,11 +1005,20 @@ void LevelSlnkChunkManager::ResetType35ChunkObjects(void)
 		}
 	}
 }
+// ABI-THUNK: 8b 49 04 85 c9 74 06 6a 03 8b 01 ff 10 c3 8b ff. Original virtual __thiscall
+// scalar-deleting-destructor call through vtable slot 0 with flag 3. MSVC 4.20 does not
+// support the __thiscall keyword; use inline assembly to avoid spurious xor edx,edx.
 // FUNCTION: LEMBALL 0x0040b9d0
 void LevelSlnkChunkManager::DeleteType35ChunkObjectArray(void)
 {
-	if (m_pObjects04 != 0) {
-		((void(LEMBALL_FASTCALL*)(void*, int, unsigned char))(*(void***) m_pObjects04)[0])(m_pObjects04, 0, 3);
+	__asm {
+		mov ecx, [ecx+4]   ; ecx = this->m_pObjects04
+		test ecx, ecx
+		je done
+		push 3
+		mov eax, [ecx]
+		call [eax]
+	done:
 	}
 }
 // FUNCTION: LEMBALL 0x0040bdd0
