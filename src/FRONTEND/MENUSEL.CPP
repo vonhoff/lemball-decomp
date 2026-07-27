@@ -1287,6 +1287,8 @@ void GameAlignedZrleChildOverlayView::HandlePointerLeave(void)
 	*(int*) ((char*) this + 0x104) = 0;
 }
 
+// SYNTHETIC: LEMBALL 0x00443850
+// MenuSelectorXorFieldView::RecomputeField104FromXor
 // SYNTHETIC: LEMBALL 0x00443870
 // update_action_button_field_0x104_from_fields_0x130_xor_0xd0
 
@@ -3418,4 +3420,18 @@ void LEMBALL_FASTCALL update_action_button_field_0x104_from_fields_0x130_xor_0xd
 	nValue = *(volatile int*) ((char*) pObject + 0x130);
 	nValue ^= *(volatile int*) ((char*) pObject + 0xd0);
 	*(int*) ((char*) pObject + 0x104) = nValue;
+}
+
+struct MenuSelectorXorFieldView {
+	void RecomputeField104FromXor(int nUnused);
+};
+
+void MenuSelectorXorFieldView::RecomputeField104FromXor(int nUnused)
+{
+	int nValue;
+
+	(void) nUnused;
+	nValue = *(volatile int*) ((char*) this + 0xd0);
+	nValue ^= *(volatile int*) ((char*) this + 0x130);
+	*(int*) ((char*) this + 0x104) = nValue;
 }

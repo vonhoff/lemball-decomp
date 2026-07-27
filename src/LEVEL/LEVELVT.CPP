@@ -1015,6 +1015,9 @@ void LEMBALL_FASTCALL MarkObjectField178AndSetTimer3C(void* pObject)
 	*(int*) ((char*) pObject + 0xcc) = g_nLevelFrameClockTick + 0x3c;
 }
 
+// SYNTHETIC: LEMBALL 0x00410ac0
+// LevelVtSmallFunctionView::AddClampedU16Field228
+
 // FUNCTION: LEMBALL 0x00410af0
 void* __fastcall get_level_mode_mine_chunk_manager(void* pLevelMode)
 {
@@ -1062,6 +1065,9 @@ int __fastcall has_level_plas_history_entries(void* pLevelMode)
 	void* pPlasManager = *(void**) ((char*) pLevelMode + 0x15c);
 	return *(int*) ((char*) pPlasManager + 0x128);
 }
+
+// SYNTHETIC: LEMBALL 0x00413390
+// LevelVtSmallFunctionView::AddLevelScoreClamped
 
 // FUNCTION: LEMBALL 0x00414880
 int LevelManagedEntityChildIterator::GetActiveState(void)
@@ -1297,6 +1303,10 @@ int return_false_virtual_hook(void)
 	return 0;
 }
 
+// SYNTHETIC: LEMBALL 0x00417ab0
+// LevelVtSmallFunctionView::InitializeManagedEntityChildSlotRecord
+// SYNTHETIC: LEMBALL 0x00417b00
+// LevelVtSmallFunctionView::SetRectFromBounds
 // SYNTHETIC: LEMBALL 0x00417b30
 // LevelTwoDwordPairVariantView::copy_two_dword_pair_variant
 
@@ -1322,6 +1332,9 @@ void* __fastcall get_next_projectile_pool_object(void* pPool)
 	}
 	return *(void**) ((char*) pPool + nIndex * 4 + 0x34);
 }
+
+// SYNTHETIC: LEMBALL 0x00417f80
+// LevelVtSmallFunctionView::AppendProjectilePoolObject
 
 // FUNCTION: LEMBALL 0x00418040
 void __fastcall update_projectile_pool_real(void* pPool)
@@ -1573,6 +1586,9 @@ void noop_projectile_geometry_callback(void)
 {
 }
 
+// SYNTHETIC: LEMBALL 0x0041a320
+// LevelVtSmallFunctionView::GetProjectileGeometryRotatedPair
+
 // FUNCTION: LEMBALL 0x0041ac70
 void __fastcall deactivate_projectile_object(void* pObject)
 {
@@ -1623,6 +1639,13 @@ int return_two_vtable_callback_0041c630(void)
 	return 2;
 }
 
+// SYNTHETIC: LEMBALL 0x0041cc70
+// LevelVtSmallFunctionView::CopyGmobChunkObjectCurrentPosition
+// SYNTHETIC: LEMBALL 0x0041d010
+// LevelVtSmallFunctionView::GetManagedEntityInteractionPoint
+// SYNTHETIC: LEMBALL 0x0041d7b0
+// LevelVtSmallFunctionView::CopyGmobChunkObjectCurrentPositionVariant
+
 // FUNCTION: LEMBALL 0x0041dc40
 int return_two_vtable_callback_0041dc40(void)
 {
@@ -1670,6 +1693,9 @@ void* LevelManagedEntityChildIterator::GetChildAt(int iChild)
 	}
 	return m_apChildren128[iChild];
 }
+
+// SYNTHETIC: LEMBALL 0x0041df90
+// LevelVtSmallFunctionView::SwapObjectChildSlots128
 
 // FUNCTION: LEMBALL 0x0041e020
 void LevelManagedEntityChildIterator::AppendChild(void* pChild)
@@ -1813,6 +1839,9 @@ void __fastcall clear_rock_chunk_object_count(void* pManager)
 	*(int*) ((char*) pManager + 0x34) = 0;
 }
 
+// SYNTHETIC: LEMBALL 0x00427890
+// LevelVtSmallFunctionView::GetTileFlag1cObjectRenderPoint
+
 // FUNCTION: LEMBALL 0x00427a90
 int PASCAL get_tile_flag_0x1c_object_render_entry_count(void)
 {
@@ -1932,4 +1961,129 @@ void* LevelTwoDwordPairVariantView::copy_two_dword_pair_variant(const int* pSour
 	m_anValues[0] = pSource[0];
 	m_anValues[1] = pSource[1];
 	return this;
+}
+
+struct LevelVtSmallFunctionView {
+	void AddClampedU16Field228(unsigned short nValue);
+	void AddLevelScoreClamped(int nValue);
+	void* InitializeManagedEntityChildSlotRecord(void);
+	void SetRectFromBounds(int nLeft, int nTop, int nRight, int nBottom);
+	void AppendProjectilePoolObject(void* pObject);
+	void* GetProjectileGeometryRotatedPair(int nIndex);
+	void CopyGmobChunkObjectCurrentPosition(int* pPoint);
+	void GetManagedEntityInteractionPoint(int* pPoint);
+	void CopyGmobChunkObjectCurrentPositionVariant(int* pPoint);
+	void SwapObjectChildSlots128(int iFirst, int iSecond);
+	void GetTileFlag1cObjectRenderPoint(int* pPoint);
+};
+
+void LevelVtSmallFunctionView::AddClampedU16Field228(unsigned short nValue)
+{
+	unsigned short nResult;
+
+	nResult = (unsigned short) (*(unsigned short*) ((char*) this + 0x228) + nValue);
+	*(unsigned short*) ((char*) this + 0x228) = nResult;
+	if (nResult > 0x32) {
+		*(unsigned short*) ((char*) this + 0x228) = 0x32;
+	}
+}
+
+void LevelVtSmallFunctionView::AddLevelScoreClamped(int nValue)
+{
+	int nResult;
+
+	nResult = *(int*) ((char*) this + 0xf0) + nValue;
+	*(int*) ((char*) this + 0xf0) = nResult;
+	if (nResult > 9999999) {
+		*(int*) ((char*) this + 0xf0) = 9999999;
+	}
+}
+
+void* LevelVtSmallFunctionView::InitializeManagedEntityChildSlotRecord(void)
+{
+	int nSentinel;
+
+	nSentinel = (int) 0xaa55aa55;
+	*(int*) this = 0;
+	*(int*) ((char*) this + 4) = nSentinel;
+	*(int*) ((char*) this + 8) = nSentinel;
+	*(int*) ((char*) this + 0x0c) = nSentinel;
+	return this;
+}
+
+void LevelVtSmallFunctionView::SetRectFromBounds(int nLeft, int nTop, int nRight, int nBottom)
+{
+	int nLeftValue;
+	int nTopValue;
+	int nWidth;
+	int nHeight;
+
+	nWidth = *(volatile int*) &nRight;
+	nLeftValue = *(volatile int*) &nLeft;
+	nHeight = *(volatile int*) &nBottom;
+	nWidth -= nLeftValue;
+	*(int*) this = nLeftValue;
+	*(int*) ((char*) this + 8) = nWidth;
+	nTopValue = *(volatile int*) &nTop;
+	nHeight -= nTopValue;
+	*(int*) ((char*) this + 0x0c) = nHeight;
+	*(int*) ((char*) this + 4) = nTopValue;
+}
+
+void LevelVtSmallFunctionView::AppendProjectilePoolObject(void* pObject)
+{
+	int nIndex;
+
+	nIndex = *(int*) ((char*) this + 0xd4);
+	*(void**) ((char*) this + 0x34 + nIndex * 4) = pObject;
+	++*(int*) ((char*) this + 0xd4);
+}
+
+void* LevelVtSmallFunctionView::GetProjectileGeometryRotatedPair(int nIndex)
+{
+	if (nIndex >= 8) {
+		nIndex -= 8;
+	}
+	return (char*) this + 0xc0 + nIndex * 8;
+}
+
+void LevelVtSmallFunctionView::CopyGmobChunkObjectCurrentPosition(int* pPoint)
+{
+	pPoint[0] = *(int*) ((char*) this + 0x9c);
+	pPoint[1] = *(int*) ((char*) this + 0xa0);
+	pPoint[2] = *(int*) ((char*) this + 0xa4);
+}
+
+void LevelVtSmallFunctionView::GetManagedEntityInteractionPoint(int* pPoint)
+{
+	pPoint[1] = *(int*) ((char*) this + 0xa0) - 0x8000;
+	pPoint[0] = *(int*) ((char*) this + 0x9c) - 0x30000;
+	pPoint[2] = *(int*) ((char*) this + 0xa4);
+}
+
+void LevelVtSmallFunctionView::CopyGmobChunkObjectCurrentPositionVariant(int* pPoint)
+{
+	pPoint[0] = *(int*) ((char*) this + 0x9c);
+	pPoint[1] = *(int*) ((char*) this + 0xa0);
+	pPoint[2] = *(int*) ((char*) this + 0xa4);
+}
+
+void LevelVtSmallFunctionView::SwapObjectChildSlots128(int iFirst, int iSecond)
+{
+	void** ppFirst;
+	void** ppSecond;
+	void* pValue;
+
+	ppSecond = (void**) ((char*) this + 0x128 + iSecond * 4);
+	ppFirst = (void**) ((char*) this + 0x128 + iFirst * 4);
+	pValue = *ppSecond;
+	*ppSecond = *ppFirst;
+	*ppFirst = pValue;
+}
+
+void LevelVtSmallFunctionView::GetTileFlag1cObjectRenderPoint(int* pPoint)
+{
+	pPoint[0] = *(int*) ((char*) this + 0x9c);
+	pPoint[1] = *(int*) ((char*) this + 0xa0) + 0x8000;
+	pPoint[2] = *(int*) ((char*) this + 0xa4);
 }

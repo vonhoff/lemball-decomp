@@ -3181,6 +3181,9 @@ int VsGdiQuantizedHelperUploadRectTracker::GetHelperUploadActiveRectStartIndex(v
 	}
 	return *(int*) ((char*) this + 8);
 }
+// SYNTHETIC: LEMBALL 0x00467040
+// HelperUploadRectEntryView::Clear
+
 // FUNCTION: LEMBALL 0x00467060
 VsGdiGeometryHelperPointerArray* VsGdiGeometryHelperPointerArray::InitializeGeometryHelperPointerArray(
 	short* pRect,
@@ -5665,4 +5668,25 @@ void LEMBALL_FASTCALL PopHelperUploadStateMarker(void* pObject)
 	char* pBytes = (char*) pObject;
 	int nIndex = --*(int*) (pBytes + 0x44);
 	pBytes[0x48] = pBytes[0x38 + nIndex];
+}
+
+struct HelperUploadRectEntryView {
+	short m_left;
+	short m_top;
+	short m_right;
+	short m_bottom;
+
+	void* Clear(void);
+};
+
+void* HelperUploadRectEntryView::Clear(void)
+{
+	short nZero;
+
+	nZero = 0;
+	m_top = nZero;
+	m_left = nZero;
+	m_bottom = nZero;
+	m_right = nZero;
+	return this;
 }

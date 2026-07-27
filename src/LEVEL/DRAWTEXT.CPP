@@ -29,7 +29,10 @@ extern void LEMBALL_FASTCALL UnloadTypedResourceObject(void* pObject, void* pUnu
 extern void LEMBALL_FASTCALL NoopVfunc09(void* pObject, void* pUnusedEdx, int nArgument);
 extern void* LEMBALL_FASTCALL GetEffResourceDataPointer(void* pObject);
 extern void LEMBALL_FASTCALL CopyBufferIntoTypedResourceObjectAndParse(void* pObject,
-	void* pUnusedEdx, unsigned int* pSource, unsigned int nUnused, unsigned int cbBuffer);
+																	   void* pUnusedEdx,
+																	   unsigned int* pSource,
+																	   unsigned int nUnused,
+																	   unsigned int cbBuffer);
 extern void NoopOnLoadVfunc11(void);
 extern void NoopVfunc12(void);
 extern int LEMBALL_FASTCALL GetField28GetMemorySize(void* pObject);
@@ -169,8 +172,7 @@ int* load_bool_resource(int nResourceId)
 {
 	int* pResourceObject;
 
-	pResourceObject =
-		(int*) ((MogLoadResourceArchive*) g_pResourceArchive)->FindCachedResourceObjectById(nResourceId);
+	pResourceObject = (int*) ((MogLoadResourceArchive*) g_pResourceArchive)->FindCachedResourceObjectById(nResourceId);
 	if (pResourceObject != 0) {
 		if ((unsigned int) pResourceObject[0x10] != g_DRAWTEXT_BoolResourceTypeTag) {
 			ReleaseTypedResourceObjectReference(pResourceObject);
@@ -221,8 +223,7 @@ int* load_int_resource(int nResourceId)
 {
 	int* pResourceObject;
 
-	pResourceObject =
-		(int*) ((MogLoadResourceArchive*) g_pResourceArchive)->FindCachedResourceObjectById(nResourceId);
+	pResourceObject = (int*) ((MogLoadResourceArchive*) g_pResourceArchive)->FindCachedResourceObjectById(nResourceId);
 	if (pResourceObject != 0) {
 		if ((unsigned int) pResourceObject[0x10] != g_DRAWTEXT_IntResourceTypeTag) {
 			ReleaseTypedResourceObjectReference(pResourceObject);
@@ -264,6 +265,9 @@ void* LEMBALL_FASTCALL DeleteBoolResource(void* pObject, int nUnused, int fDelet
 	}
 	return pObject;
 }
+
+// SYNTHETIC: LEMBALL 0x004679e0
+// PackagedRectQueueAllocatorView::AllocateNextPackagedRectQueueEntry
 
 // FUNCTION: LEMBALL 0x00467ac0
 LevelPackagedRectQueueEntry::LevelPackagedRectQueueEntry()
@@ -725,4 +729,20 @@ void LevelScreenDrawEntry::Process(void* pRenderContext)
 		++pch;
 	}
 	--((LevelScreenDrawOwnerView*) m_pOwner04)->m_cQueuedEntries08;
+}
+
+struct PackagedRectQueueAllocatorView {
+	void* AllocateNextPackagedRectQueueEntry(void);
+};
+
+void* PackagedRectQueueAllocatorView::AllocateNextPackagedRectQueueEntry(void)
+{
+	int nIndex;
+	void* pEntry;
+
+	nIndex = *(int*) ((char*) this + 0x0c);
+	pEntry = (char*) *(void**) ((char*) this + 4) + (*(int*) ((char*) this + 0x50) + nIndex) * 0x10;
+	nIndex += 2;
+	*(int*) ((char*) this + 0x0c) = nIndex;
+	return pEntry;
 }

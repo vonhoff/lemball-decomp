@@ -1431,6 +1431,11 @@ void ClaimManagedEntitySlotId(int nManagedEntityObject)
 		g_GAME_ManagedEntitySlotClaimBitset[nSlotId >> 3] = g_GAME_ManagedEntitySlotBitMasks[nSlotId & 7] | bClaimByte;
 	}
 }
+// SYNTHETIC: LEMBALL 0x00416d90
+// LevelRunSmallFunctionView::ClearObjectField134
+// SYNTHETIC: LEMBALL 0x00416e70
+// LevelRunSmallFunctionView::ApplyManagedEntityStateResetPacket
+
 // FUNCTION: LEMBALL 0x0041a140
 LevelProjectileGeometryPairTable* LevelProjectileGeometryPairTable::InitializeProjectileGeometryPairTable(void)
 {
@@ -1647,6 +1652,10 @@ void LevelNodeChunkRecord::AppendNodeChunkRecordLink(int nFirst, int nSecond)
 	++m_cLinks10;
 }
 
+// SYNTHETIC: LEMBALL 0x004213d0
+// LevelRunSmallFunctionView::CopyNodeChunkRecordFixedPointPosition
+// SYNTHETIC: LEMBALL 0x004213f0
+// LevelRunSmallFunctionView::CopyNodeChunkRecordTileXY
 // SYNTHETIC: LEMBALL 0x00421410
 // LevelTwoDwordPairSourceView::copy_two_dword_pair_from_this
 
@@ -2170,4 +2179,48 @@ void LevelTwoDwordPairSourceView::copy_two_dword_pair_from_this(int* pDestinatio
 {
 	pDestination[0] = m_anValues[0];
 	pDestination[1] = m_anValues[1];
+}
+
+struct LevelRunSmallFunctionView {
+	void ClearObjectField134(void);
+	void ApplyManagedEntityStateResetPacket(void);
+	void CopyNodeChunkRecordFixedPointPosition(int* pDestination);
+	void CopyNodeChunkRecordTileXY(int* pX, int* pY);
+};
+
+void LevelRunSmallFunctionView::ClearObjectField134(void)
+{
+	int nValue;
+
+	nValue = *(int*) ((char*) this + 0x134);
+	if (nValue != 0) {
+		*(int*) ((char*) this + 0x134) = nValue - nValue;
+	}
+}
+
+void LevelRunSmallFunctionView::ApplyManagedEntityStateResetPacket(void)
+{
+	if (*(int*) ((char*) this + 0x130) != 0) {
+		*(int*) ((char*) this + 0x114) = 0;
+		*(int*) ((char*) this + 0x130) = 0;
+		*(int*) ((char*) this + 0x8c) = 0;
+	}
+}
+
+void LevelRunSmallFunctionView::CopyNodeChunkRecordFixedPointPosition(int* pDestination)
+{
+	int x;
+	int y;
+
+	y = *(volatile int*) ((char*) this + 4);
+	x = *(volatile int*) this;
+	pDestination[0] = x;
+	pDestination[1] = y;
+	pDestination[2] = (int) 0xaa55aa55;
+}
+
+void LevelRunSmallFunctionView::CopyNodeChunkRecordTileXY(int* pX, int* pY)
+{
+	*pX = *(int*) this >> 12;
+	*pY = *(int*) ((char*) this + 4) >> 12;
 }

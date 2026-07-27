@@ -3527,6 +3527,12 @@ short LevelScreenTerrainRenderView::ComputeDynamicRenderEntrySortKey(int iEntry)
 	}
 	return (short) (nDepth + nHeight + 1);
 }
+// SYNTHETIC: LEMBALL 0x00442130
+// LevelTwoShortPointView::CopyTwoShortPoint
+// SYNTHETIC: LEMBALL 0x00442150
+// LevelTwoShortPointView::CopyTwoShortPointVariant
+// SYNTHETIC: LEMBALL 0x00442170
+// LevelFourShortRectView::ClearFourShortRect
 // SYNTHETIC: LEMBALL 0x00442270
 // QueueAlignedZrleChildOverlayIfDirty
 
@@ -3771,11 +3777,19 @@ void LEMBALL_FASTCALL RelayoutLevelScreenActionPanel(void* pPanel)
 		++ppButton;
 	}
 }
+// SYNTHETIC: LEMBALL 0x004432a0
+// LevelActionPanelCodeView::MapActionPanelCode14To8
+
 // FUNCTION: LEMBALL 0x004439e0
 void LEMBALL_FASTCALL ResetBaseModeActionButtonPointSink(void* pObject)
 {
 	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
+// SYNTHETIC: LEMBALL 0x004452a0
+// LevelTwoShortPointView::AddTwoShortPointInPlace
+// SYNTHETIC: LEMBALL 0x004452c0
+// LevelTwoShortPointView::SubtractTwoShortPointInPlace
+
 // FUNCTION: LEMBALL 0x004452e0
 void* LEMBALL_FASTCALL DestroyBaseModeActionButtonPointSinkArray(void* pObject, int, unsigned int fDelete)
 
@@ -4953,4 +4967,77 @@ void LEMBALL_FASTCALL DispatchLevelStatusCallbackIfActive(void* pObject)
 void LEMBALL_FASTCALL NoopLevelStatusCallbackIlt(void* pCallback)
 {
 	noop_level_status_callback(pCallback);
+}
+
+struct LevelTwoShortPointView {
+	short m_x;
+	short m_y;
+
+	void* CopyTwoShortPoint(const LevelTwoShortPointView* pSource);
+	void* CopyTwoShortPointVariant(const LevelTwoShortPointView* pSource);
+	void* AddTwoShortPointInPlace(const LevelTwoShortPointView* pSource);
+	void* SubtractTwoShortPointInPlace(const LevelTwoShortPointView* pSource);
+};
+
+struct LevelFourShortRectView {
+	short m_left;
+	short m_top;
+	short m_right;
+	short m_bottom;
+
+	void* ClearFourShortRect(void);
+};
+
+struct LevelActionPanelCodeView {
+	int MapActionPanelCode14To8(int nCode);
+};
+
+void* LevelTwoShortPointView::CopyTwoShortPoint(const LevelTwoShortPointView* pSource)
+{
+	m_x = pSource->m_x;
+	m_y = pSource->m_y;
+	return this;
+}
+
+void* LevelTwoShortPointView::CopyTwoShortPointVariant(const LevelTwoShortPointView* pSource)
+{
+	m_x = pSource->m_x;
+	m_y = pSource->m_y;
+	return this;
+}
+
+void* LevelFourShortRectView::ClearFourShortRect(void)
+{
+	short nZero;
+
+	nZero = 0;
+	m_top = nZero;
+	m_left = nZero;
+	m_bottom = nZero;
+	m_right = nZero;
+	return this;
+}
+
+int LevelActionPanelCodeView::MapActionPanelCode14To8(int nCode)
+{
+	switch (nCode) {
+	case 0x14:
+		return 8;
+	default:
+		return 0;
+	}
+}
+
+void* LevelTwoShortPointView::AddTwoShortPointInPlace(const LevelTwoShortPointView* pSource)
+{
+	m_x += pSource->m_x;
+	m_y += pSource->m_y;
+	return this;
+}
+
+void* LevelTwoShortPointView::SubtractTwoShortPointInPlace(const LevelTwoShortPointView* pSource)
+{
+	m_x -= pSource->m_x;
+	m_y -= pSource->m_y;
+	return this;
 }

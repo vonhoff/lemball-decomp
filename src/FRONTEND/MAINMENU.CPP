@@ -4085,6 +4085,11 @@ int LEMBALL_FASTCALL HandleFunctionalLevelSelectionInput(void* pObject, int, voi
 		return 0;
 	}
 }
+// SYNTHETIC: LEMBALL 0x00449ea0
+// RequestLevelSelectionTransitionMode5
+// SYNTHETIC: LEMBALL 0x00449ec0
+// RequestLevelSelectionTransitionMode2
+
 // FUNCTION: LEMBALL 0x00449ee0
 int LEMBALL_FASTCALL DispatchFunctionalLevelSelectionAction(void* pObject, int, int nAction)
 {
@@ -4408,6 +4413,9 @@ int LEMBALL_FASTCALL HandlePaintballSequenceInput(void* pObject, int, void* pEve
 	++*(int*) ((char*) pScreen + 0x10);
 	return 0;
 }
+// SYNTHETIC: LEMBALL 0x004509f0
+// FinishPaintballSequenceToMainMenu
+
 // FUNCTION: LEMBALL 0x00450a60
 int LEMBALL_FASTCALL DispatchPaintballSequenceUserAction(void* pObject, int, int nAction)
 {
@@ -5636,4 +5644,22 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbyScreen(void* pObject, int, int fDelete)
 void* LEMBALL_FASTCALL DeleteAdjustedNetworkLobbyScreen(void* pObject, int nUnusedEdx, int fDelete)
 {
 	return DeleteNetworkLobbyScreen((char*) pObject - 4, nUnusedEdx, fDelete);
+}
+
+void LEMBALL_FASTCALL RequestLevelSelectionTransitionMode5(void* pObject)
+{
+	*(int*) ((char*) pObject + 0x378) = 1;
+	*(int*) ((char*) pObject + 0x374) = 5;
+}
+
+void LEMBALL_FASTCALL RequestLevelSelectionTransitionMode2(void* pObject)
+{
+	*(int*) ((char*) pObject + 0x378) = 1;
+	*(int*) ((char*) pObject + 0x374) = 2;
+}
+
+void LEMBALL_FASTCALL FinishPaintballSequenceToMainMenu(void* pObject)
+{
+	*(int*) ((char*) pObject + 0x378) = 1;
+	*(int*) ((char*) pObject + 0x374) = 2;
 }

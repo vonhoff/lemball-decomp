@@ -543,6 +543,9 @@ LinkScfDoorChunkManagerView* LinkScfDoorChunkManagerView::ConstructDoorChunkMana
 	*(int*) ((char*) this + 0x3c) = 0;
 	return this;
 }
+// SYNTHETIC: LEMBALL 0x0040eb70
+// LinkScfSmallFunctionView::GetLevelTileGridCellPointer
+
 // FUNCTION: LEMBALL 0x0040ecb0
 void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevel(void* pObject,
 														int nUnusedEdx,
@@ -858,6 +861,9 @@ LinkScfGmobChunkManagerView* LinkScfGmobChunkManagerView::ConstructGmobChunkMana
 	g_nLINKSCF_GmobObjectCount = 0;
 	return this;
 }
+// SYNTHETIC: LEMBALL 0x0041b990
+// LinkScfSmallFunctionView::ClearManagedEntityGroupChildActiveFlag
+
 // FUNCTION: LEMBALL 0x0041e8f0
 LinkScfCachedChunkObjectManagerBaseView* LinkScfCachedChunkObjectManagerBaseView::ConstructCachedChunkObjectManagerBase(
 	void* pLevelMode,
@@ -900,6 +906,13 @@ void* LEMBALL_FASTCALL GetNextCachedChunkObject(void* pObject)
 	}
 	return *(void**) ((char*) pObject + 4 + nIndex * 4);
 }
+// SYNTHETIC: LEMBALL 0x0041ea70
+// LinkScfSmallFunctionView::GetCachedChunkObjectByIndex
+// SYNTHETIC: LEMBALL 0x0041ea90
+// LinkScfSmallFunctionView::GetNextManagedEntityGroup
+// SYNTHETIC: LEMBALL 0x0041ec80
+// LinkScfSmallFunctionView::AppendCachedChunkObject
+
 // FUNCTION: LEMBALL 0x0041ee90
 int LEMBALL_FASTCALL EmitCachedChunkManagerRenderEntries(void* pObject, void*, char* pEntries)
 {
@@ -934,6 +947,9 @@ LinkScfShpgChunkManagerView* LinkScfShpgChunkManagerView::ConstructShpgChunkMana
 	*(void**) this = g_LINKSCF_ShpgChunkManagerVtable;
 	return this;
 }
+// SYNTHETIC: LEMBALL 0x00420b50
+// ReadLittleEndianU32FromBytes
+
 // FUNCTION: LEMBALL 0x00420b80
 LinkScfEnmyChunkManagerView* LinkScfEnmyChunkManagerView::ConstructEnmyChunkManager(void* pLevelMode,
 																					void* pGmobManager,
@@ -976,6 +992,11 @@ LinkScfLiftChunkManagerView* LinkScfLiftChunkManagerView::ConstructLiftChunkMana
 	*(int*) ((char*) this + 0x3c) = 0;
 	return this;
 }
+// SYNTHETIC: LEMBALL 0x004267a0
+// LinkScfSmallFunctionView::CopyFourDwordBlock
+// SYNTHETIC: LEMBALL 0x004267f0
+// LinkScfSmallFunctionView::ResetRockChunkObjectRuntimeState
+
 // FUNCTION: LEMBALL 0x00426ac0
 LinkScfRockChunkManagerView* LinkScfRockChunkManagerView::ConstructRockChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -986,6 +1007,9 @@ LinkScfRockChunkManagerView* LinkScfRockChunkManagerView::ConstructRockChunkMana
 	*(int*) ((char*) this + 0x38) = 0;
 	return this;
 }
+// SYNTHETIC: LEMBALL 0x00427af0
+// LinkScfSmallFunctionView::ResetCaptureTriggerChunkObjectRuntimeState
+
 // FUNCTION: LEMBALL 0x00427e60
 LinkScfCaptureChunkManagerView* LinkScfCaptureChunkManagerView::ConstructCaptureTriggerChunkManager(void* pLevelMode,
 																									int nCapacity)
@@ -1002,6 +1026,9 @@ void LEMBALL_FASTCALL ClearManagedEntityArrayCount(void* pObject)
 {
 	*(int*) ((char*) pObject + 0x34) = 0;
 }
+// SYNTHETIC: LEMBALL 0x004288d0
+// LinkScfSmallFunctionView::ResetLasrChunkObjectRuntimeState
+
 // FUNCTION: LEMBALL 0x00429320
 LinkScfLasrChunkManagerView* LinkScfLasrChunkManagerView::ConstructLasrChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -1012,6 +1039,11 @@ LinkScfLasrChunkManagerView* LinkScfLasrChunkManagerView::ConstructLasrChunkMana
 	*(int*) ((char*) this + 0x38) = 0;
 	return this;
 }
+// SYNTHETIC: LEMBALL 0x00429e50
+// LinkScfSmallFunctionView::CopyFixedPointPointToPixelPoint
+// SYNTHETIC: LEMBALL 0x00429e80
+// LinkScfSmallFunctionView::SetObjectFields18_1c_20
+
 // FUNCTION: LEMBALL 0x00429f50
 LinkScfBoonChunkManagerView* LinkScfBoonChunkManagerView::ConstructBoonChunkManager(void* pLevelMode, void* pTileGrid)
 {
@@ -1068,6 +1100,8 @@ LinkScfTramChunkManagerView* LinkScfTramChunkManagerView::ConstructTramChunkMana
 
 // SYNTHETIC: LEMBALL 0x0042b9c0
 // add_two_dword_values
+// SYNTHETIC: LEMBALL 0x0042b9e0
+// LinkScfSmallFunctionView::InitializeThreeDwordPointFromValues
 
 // FUNCTION: LEMBALL 0x0042bfe0
 LinkScfPgunChunkManagerView* LinkScfPgunChunkManagerView::ConstructPgunChunkManager(void* pLevelMode, int nCapacity)
@@ -1113,4 +1147,145 @@ int LEMBALL_FASTCALL GetIndexedLevelModeValue110(void* pObject, int, int nIndex)
 void add_two_dword_values(int* pDestination, const int* pLeft, const int* pRight)
 {
 	*pDestination = *pLeft + *pRight;
+}
+
+struct LinkScfSmallFunctionView {
+	void* GetLevelTileGridCellPointer(int x, int y);
+	void ClearManagedEntityGroupChildActiveFlag(int iChild);
+	void* GetCachedChunkObjectByIndex(int nIndex);
+	void* GetNextManagedEntityGroup(void);
+	void AppendCachedChunkObject(void* pObject);
+	void* CopyFourDwordBlock(const int* pSource);
+	void ResetRockChunkObjectRuntimeState(void);
+	void ResetCaptureTriggerChunkObjectRuntimeState(void);
+	void ResetLasrChunkObjectRuntimeState(void);
+	void CopyFixedPointPointToPixelPoint(const int* pSource);
+	void SetObjectFields18_1c_20(int nField18, int nField1c, int nField20);
+	void* InitializeThreeDwordPointFromValues(const int* pX, const int* pY, const int* pZ);
+};
+
+void* LinkScfSmallFunctionView::GetLevelTileGridCellPointer(int x, int y)
+{
+	return (char*) *(void**) ((char*) this + 4) + (x + *(int*) ((char*) this + 8) * y) * 12;
+}
+
+void LinkScfSmallFunctionView::ClearManagedEntityGroupChildActiveFlag(int iChild)
+{
+	void** ppChildren;
+	void* pChild;
+
+	ppChildren = *(void***) ((char*) this + 0x3c);
+	pChild = ppChildren[iChild];
+	*(int*) ((char*) pChild + 0x38) = 0;
+}
+
+void* LinkScfSmallFunctionView::GetCachedChunkObjectByIndex(int nIndex)
+{
+	*(int*) ((char*) this + 0xa8) = nIndex;
+	if (*(int*) ((char*) this + 0xa4) <= nIndex) {
+		return 0;
+	}
+	return *(void**) ((char*) this + 4 + nIndex * 4);
+}
+
+void* LinkScfSmallFunctionView::GetNextManagedEntityGroup(void)
+{
+	int nIndex;
+
+	nIndex = *(int*) ((char*) this + 0xa8);
+	if (*(int*) ((char*) this + 0xa4) <= nIndex) {
+		return 0;
+	}
+	return *(void**) ((char*) this + 4 + nIndex * 4);
+}
+
+void LinkScfSmallFunctionView::AppendCachedChunkObject(void* pObject)
+{
+	int nIndex;
+
+	nIndex = *(int*) ((char*) this + 0xa4);
+	if (nIndex < 40) {
+		*(void**) ((char*) this + 4 + nIndex * 4) = pObject;
+		++*(int*) ((char*) this + 0xa4);
+	}
+}
+
+unsigned int ReadLittleEndianU32FromBytes(const unsigned char* pBytes)
+{
+	unsigned int nValue;
+
+	nValue = pBytes[3];
+	nValue <<= 16;
+	nValue |= pBytes[1];
+	nValue <<= 8;
+	nValue |= (unsigned int) pBytes[2] << 16;
+	nValue |= pBytes[0];
+	return nValue;
+}
+
+void* LinkScfSmallFunctionView::CopyFourDwordBlock(const int* pSource)
+{
+	*(int*) this = pSource[0];
+	*(int*) ((char*) this + 4) = pSource[1];
+	*(int*) ((char*) this + 8) = pSource[2];
+	*(int*) ((char*) this + 0x0c) = pSource[3];
+	return this;
+}
+
+void LinkScfSmallFunctionView::ResetRockChunkObjectRuntimeState(void)
+{
+	int nZero;
+
+	nZero = 0;
+	*(int*) ((char*) this + 0x94) = nZero;
+	*(int*) ((char*) this + 0x138) = nZero;
+	*(int*) ((char*) this + 0x13c) = nZero;
+}
+
+void LinkScfSmallFunctionView::ResetCaptureTriggerChunkObjectRuntimeState(void)
+{
+	int nZero;
+
+	nZero = 0;
+	*(int*) ((char*) this + 0x94) = nZero;
+	*(int*) ((char*) this + 0x138) = nZero;
+	*(int*) ((char*) this + 0x13c) = nZero;
+}
+
+void LinkScfSmallFunctionView::ResetLasrChunkObjectRuntimeState(void)
+{
+	int nZero;
+
+	*(int*) ((char*) this + 0xb8) = 0x18;
+	nZero = 0;
+	*(int*) ((char*) this + 0x94) = nZero;
+	*(int*) ((char*) this + 0x138) = nZero;
+	*(int*) ((char*) this + 0x13c) = nZero;
+}
+
+void LinkScfSmallFunctionView::CopyFixedPointPointToPixelPoint(const int* pSource)
+{
+	*(int*) this = pSource[0] >> 12;
+	*(int*) ((char*) this + 4) = pSource[1] >> 12;
+	*(int*) ((char*) this + 8) = pSource[2] >> 12;
+}
+
+void LinkScfSmallFunctionView::SetObjectFields18_1c_20(int nField18, int nField1c, int nField20)
+{
+	int nValue18;
+	int nValue1c;
+
+	nValue18 = *(volatile int*) &nField18;
+	nValue1c = *(volatile int*) &nField1c;
+	*(short*) ((char*) this + 0x1c) = (short) nValue1c;
+	*(int*) ((char*) this + 0x18) = nValue18;
+	*(int*) ((char*) this + 0x20) = nField20;
+}
+
+void* LinkScfSmallFunctionView::InitializeThreeDwordPointFromValues(const int* pX, const int* pY, const int* pZ)
+{
+	*(int*) this = *pX;
+	*(int*) ((char*) this + 4) = *pY;
+	*(int*) ((char*) this + 8) = *pZ;
+	return this;
 }

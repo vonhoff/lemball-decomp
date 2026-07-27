@@ -27,6 +27,9 @@ void lookup_resource_geometry_helper_slot(void)
 {
 }
 
+// SYNTHETIC: LEMBALL 0x0046db10
+// GdiPoint2DView::Copy
+
 // FUNCTION: LEMBALL 0x0046db30
 int __fastcall get_helper_group_0_dirty_flag_local(void* pHelperGroup)
 {
@@ -57,4 +60,18 @@ int PASCAL noop_visual_sciences_wing_draw_end(void* pUnused)
 {
 	(void) pUnused;
 	return 0;
+}
+
+struct GdiPoint2DView {
+	short m_x;
+	short m_y;
+
+	void* Copy(const GdiPoint2DView* pSource);
+};
+
+void* GdiPoint2DView::Copy(const GdiPoint2DView* pSource)
+{
+	m_x = pSource->m_x;
+	m_y = pSource->m_y;
+	return this;
 }
