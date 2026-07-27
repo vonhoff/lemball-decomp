@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Print next likely decompilation targets."""
+"""Print fallback singleton decompilation targets."""
 
 import csv
 import json
@@ -61,20 +61,31 @@ def matches(root):
 
 
 def rank(functions, ratios):
+    def key(row):
+        size = int(row["size"])
+        ratio = ratios.get(row["address"], 0)
+        return (
+            size <= 5,
+            ratio == 0,
+            size * (100 - ratio),
+            size,
+            row["address"],
+        )
+
     return sorted(
         (row for row in functions if ratios.get(row["address"], 0) != 100),
-        key=lambda row: (int(row["size"]) > 5, int(row["size"]), ratios.get(row["address"], 0), row["address"]),
+        key=key,
     )
 
 
 def main():
     ensure_tools(ROOT)
     ratios = matches(ROOT)
-    targets = rank(rows(ROOT / "data" / "objdiff-functions.csv"), ratios)[:10]
+    targets = rank(rows(ROOT / "data" / "objdiff-functions.csv"), ratios)[:25]
     if not targets:
         print("all functions complete")
         return
-    print("next targets")
+    print("fallback singleton targets")
     for row in targets:
         ratio = ratios.get(row["address"])
         print(f"{row['address']} {row['size']}B {'-' if ratio is None else f'{ratio:.2f}%'} {row['unit']} {row['name']}")

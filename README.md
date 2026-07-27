@@ -14,34 +14,54 @@ and imports differ.
 Use one checkout and one editing agent at a time. Other agents may inspect
 Ghidra or suggest work, but do not edit or build concurrently.
 
-Get next targets:
+Start with a shape-first batch:
+
+1. Save current non-stub 100% address set from `build-msvc420/reccmp.json`.
+2. Group unmatched real functions by normalized original instruction shape.
+3. Prefer largest cluster with exact exemplar or simple compiler-owned C++
+   pattern.
+4. Inspect every member in Ghidra, recover one parameterized C/C++ form, and
+   implement all proven members.
+5. Compare every member and run full JSON. Keep zero-loss exact gains, then
+   continue next cluster.
+
+This turns repeated constructors, destructors, scalar deletes, vtable restores,
+accessors, and small forwarding bodies into one compiler investigation plus
+many verified matches. Shape similarity is candidate generation, never proof:
+ABI, stack cleanup, offsets, constants, xrefs, and source ownership still need
+per-member confirmation.
+
+Use coordinator only after high-yield families are exhausted:
 
 ```powershell
 python tools\coordinator.py
 ```
 
-Coordinator prints ten unmatched source-owned functions: five bytes or fewer
-first, then increasing size, match percentage, and address. Linker ILT entries
-are excluded at inventory source. Agent works first viable target, measures,
-and commits before next editing agent starts.
+Coordinator remains useful for dependency bootstrap, ILT inventory validation,
+and fallback singleton ranking. It deliberately deprioritizes five-byte
+functions and untouched stubs, then estimates remaining mismatched bytes to
+favor cheap, nearly complete targets.
 
-### Worker starter prompt
+### Cron worker prompt
 
 Copy this into next editing task:
 
 ```text
-Work through every target printed by `python tools\coordinator.py` in
-this session. Make every viable target 100% with C/C++ except documented
-real ABI/vtordisp thunks allowed by AGENTS.md.
+Work autonomously on Lemmings Paintball decompilation project in
+C:\Users\Simon\CLionProjects\lemball-decomp. Follow AGENTS.md.
 
-Read AGENTS.md, then run coordinator. It prepares missing `.decomp-venv`
-dependencies and prints targets. Do not edit before it succeeds. Work targets
-in order, using Ghidra MCP and reccmp. For each target, either reach 100% or
-report exact evidence that blocks it.
+Continue unfinished work. If none remains, refresh reccmp results when stale
+and run shape-first batch workflow: group unmatched source-owned real functions
+by normalized original instruction shape, prioritize highest-yield proven
+family, inspect every member in Ghidra, recover one minimal C/C++ template, and
+verify every member. Preserve all previous 100% addresses with before/after
+exact-set gate. Continue through additional viable clusters; do not stop after
+one tiny function. Use coordinator only after batch candidates are exhausted,
+as dependency, inventory, and fallback singleton helper.
 
-You are sole editing agent. Do not run another build or edit concurrently.
-Follow AGENTS.md build, measurement, dependency, and handoff rules. When done,
-run checks, commit, and push.
+Run canonical checks, review all diffs, commit verified progress, push, and
+leave clean worktree. Finish only after successful commit and push or
+repository-wide blocker. Return one or two plain-English result sentences.
 ```
 
 ## Setup
