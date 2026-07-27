@@ -54,10 +54,16 @@ int __stdcall GetPrimaryContextMenuDefinition(unsigned int* pMenuId, void** ppMe
 	return 1;
 }
 
+// SYNTHETIC: LEMBALL 0x004324a0
+// CacheObjectField44AsCurrentContext
+
 // FUNCTION: LEMBALL 0x004324C0
 void noop_window_owner_slot_37(void)
 {
 }
+
+// SYNTHETIC: LEMBALL 0x004324d0
+// is_object_field_0x44_current_context
 
 // FUNCTION: LEMBALL 0x004324F0
 void noop_window_owner_slot_19(void)
@@ -203,4 +209,20 @@ void GameHelperGroup0::SetBackingActive(int fActive)
 		EnsureHelperGroup0BackingBuffer((int) (unsigned long) this);
 		*(int*) ((char*) this + 0x48) = 1;
 	}
+}
+
+void LEMBALL_FASTCALL CacheObjectField44AsCurrentContext(void* pObject)
+{
+	extern void* g_pCachedCurrentContextWindow;
+	extern void* g_pCachedCurrentContextOwner;
+
+	g_pCachedCurrentContextWindow = *(void**) ((char*) pObject + 0x44);
+	g_pCachedCurrentContextOwner = pObject;
+}
+
+int LEMBALL_FASTCALL is_object_field_0x44_current_context(void* pObject)
+{
+	extern void* g_pCachedCurrentContextWindow;
+
+	return *(void**) ((char*) pObject + 0x44) == g_pCachedCurrentContextWindow;
 }

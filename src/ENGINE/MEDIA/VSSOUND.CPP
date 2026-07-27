@@ -603,7 +603,7 @@ void LEMBALL_FASTCALL DestroyAudioDynamicStringEntry(VsSoundDynamicStringEntry* 
 void* LEMBALL_FASTCALL DeleteAudioDynamicStringEntry(VsSoundDynamicStringEntry* pEntry, int nUnused, int fDelete);
 void LEMBALL_FASTCALL DestroyWaveOutEffectBackend(void* pBackend);
 char* LEMBALL_FASTCALL GetWaveOutEffectBackendDescription(VsSoundWaveOutEffectBackend* pBackend);
-int LEMBALL_FASTCALL IsWaveOutEffectBackendAvailable(void* pBackend);
+int LEMBALL_STDCALL IsWaveOutEffectBackendAvailableStdcall(void*, void*, void*);
 int LEMBALL_FASTCALL CreateWaveOutEffectInstance(void* pBackend,
 												 int nUnusedEdx,
 												 void* pPatchResource,
@@ -750,7 +750,7 @@ static void* g_WaveOutEffectBackendVtable[39] = {
 	(void*) GetWaveOutEffectBackendDescription,
 	(void*) GetWaveOutEffectBackendStatus0047CC10,
 	(void*) InitializeWaveOutEffectDevice0047CB00,
-	(void*) IsWaveOutEffectBackendAvailable,
+	(void*) IsWaveOutEffectBackendAvailableStdcall,
 	(void*) ResetAndCloseWaveOutEffectDevice0047CC20,
 	(void*) IsWaveOutEffectInstanceAvailable0047CDD0,
 	(void*) ReturnOneWaveOutBackendValue0047CDF0,
@@ -1757,7 +1757,8 @@ int LEMBALL_FASTCALL InitializeWaveOutEffectDevice0047CB00(void* pBackend,
 	return 1;
 }
 
-// FUNCTION: LEMBALL 0x0047cbe0
+// SYNTHETIC: LEMBALL 0x0047cbe0
+// IsWaveOutEffectBackendAvailableStdcall
 int LEMBALL_FASTCALL IsWaveOutEffectBackendAvailable(void*)
 {
 	return 1;
@@ -2551,20 +2552,29 @@ void VsSoundDirectSoundEffectBufferPool::StopDirectSoundEffectBufferSlot(int nBu
 // FUNCTION: LEMBALL 0x0047dad0
 void VsSoundDirectSoundEffectBufferPool::StopAllDirectSoundEffectBufferSlots(void)
 {
+	char* pPool;
 	int i;
+	int nBufferOffset;
 	LONG hResult;
 
+	pPool = (char*) this;
+	nBufferOffset = 0;
 	i = 0;
-	while (i < m_cBuffers) {
-		hResult = VsSoundDIRECTSOUND_METHOD(m_ppBuffers[i], 18, VsSoundPauseDirectSoundBufferProc)(m_ppBuffers[i]);
+	if (*(int*) (pPool + 0x10) <= nBufferOffset) {
+		return;
+	}
+	do {
+		void* pBuffer = *(void**) (*(int*) (pPool + 8) + nBufferOffset);
+		hResult = VsSoundDIRECTSOUND_METHOD(pBuffer, 18, VsSoundPauseDirectSoundBufferProc)(pBuffer);
 		if (hResult != 0) {
 			g_pErrorOutputStream->AppendCStringToStream("Effect Stop failed: ")
 				->AppendCStringToStream(LookupDirectSoundErrorString((unsigned int) hResult & 0xfff))
 				->AppendCStringToStream("\n");
 			return;
 		}
+		nBufferOffset += 4;
 		++i;
-	}
+	} while (i < *(int*) (pPool + 0x10));
 }
 
 // FUNCTION: LEMBALL 0x0047db40
@@ -3054,7 +3064,10 @@ int VsSoundDirectSoundEffectBackend::CreateDirectSoundEffectInstance(void* pPatc
 			}
 			++pEffectInstanceSlot;
 			++nEffectInstanceId;
-		} while (nEffectInstanceId <= cEffectInstances);
+			if (nEffectInstanceId > cEffectInstances) {
+				break;
+			}
+		} while (1);
 	}
 	return 0;
 }
@@ -3875,4 +3888,12 @@ void* LEMBALL_FASTCALL DeleteAudioEffectBackendBase(void* pBackend, int, int fDe
 		FreeVSMemBlock(pBackend);
 	}
 	return pBackend;
+}
+
+int LEMBALL_STDCALL IsWaveOutEffectBackendAvailableStdcall(void* pBackend, void* pUnused1, void* pUnused2)
+{
+	(void) pBackend;
+	(void) pUnused1;
+	(void) pUnused2;
+	return 1;
 }

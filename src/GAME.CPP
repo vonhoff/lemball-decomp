@@ -468,6 +468,7 @@ static void* g_GAME_PrimaryContextVtableSlots[46] = {
 };
 static void* g_GAME_WindowOwnerRenderContextVtableSlots[50];
 static int g_fWindowOwnerRenderContextVtableInitialized;
+extern void* g_GAME_GeometryOwnerRectVtable[8];
 extern void* LEMBALL_FASTCALL DeleteRenderQueueNodeThunk(void* pObject, int nUnused, unsigned char fDelete);
 extern int LEMBALL_FASTCALL IncrementRenderQueueNodeCounterThunk(void* pRenderQueueNode, int nUnused, void* pEntry);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
@@ -4517,6 +4518,9 @@ void* LEMBALL_FASTCALL DeleteReconstructedLevelScreen(void* pObject, int, int fD
 	}
 	return pObject;
 }
+// SYNTHETIC: LEMBALL 0x004397d0
+// QueueRenderStatePopHelper
+
 // FUNCTION: LEMBALL 0x004397e0
 void LEMBALL_FASTCALL DispatchLevelScreenRenderStatePop(void*, int, void* pContext)
 {
@@ -5091,6 +5095,11 @@ void* LEMBALL_FASTCALL DeleteRegistrationInfoScreen(void* pObject, int, int fDel
 		FreeVSMemBlock(pObject);
 	}
 	return pObject;
+}
+// FUNCTION: LEMBALL 0x00455e90
+void LEMBALL_FASTCALL DestroyNetworkLobbyPlayerEntryChild(void* pObject)
+{
+	*(void**) pObject = g_GAME_GeometryOwnerRectVtable;
 }
 // FUNCTION: LEMBALL 0x00455eb0
 void* LEMBALL_FASTCALL DeleteNetworkLobbyTransportController(void* pObject, int, BYTE fDelete)
@@ -5715,4 +5724,9 @@ void ShowReleaseAssertFailureAndAbort(const char* pszExpression, const char* psz
 	MessageBoxA(0, Message.m_pszText, "Error", 0);
 	LongjmpStartupExceptionFrame(0xaaaa);
 	Message.DestroyDynamicCString();
+}
+
+void LEMBALL_FASTCALL QueueRenderStatePopHelper(void* pObject, int, void* pQueue)
+{
+	((VsGdiHelperDispatchQueue*) pQueue)->AppendPointerQueueEntry(pObject);
 }

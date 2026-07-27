@@ -966,6 +966,8 @@ void LEMBALL_FASTCALL QueueRenderPointRectSinkThunk00402DD3(void* pObject, int, 
 {
 	QueueRenderPointRectSinkEntry004398A0(pObject, 0, pQueue);
 }
+// LINKERILT: LEMBALL 0x00402d83
+// NoopLevelStatusCallbackIlt
 // LINKERILT: LEMBALL 0x00402e19
 void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableC(void* pObject)
 {
@@ -1069,11 +1071,13 @@ void LEMBALL_FASTCALL QueuePackagedSpriteRenderEntryThunk00403846(void* pObject,
 {
 	QueuePackagedSpriteRenderEntry00439800(pObject, 0, pQueue);
 }
-// FUNCTION: LEMBALL 0x00413090
+// SYNTHETIC: LEMBALL 0x00413090
+// ReturnTrueVirtualHookBodyStdcall
 int ReturnTrueVirtualHookBody(void)
 {
 	return 1;
 }
+
 // FUNCTION: LEMBALL 0x0042ffe0
 short LevelTileRenderDescriptor::SampleHeightOffset(int nLocalX, int nLocalY)
 {
@@ -1777,6 +1781,9 @@ void LevelVariantRenderManagerView::ReleaseLevelScreenVariantStateWrapperRangeBo
 		++nResourceId;
 	}
 }
+// SYNTHETIC: LEMBALL 0x00434f50
+// DispatchLevelStatusCallbackIfActive
+
 // FUNCTION: LEMBALL 0x00435870
 int LEMBALL_FASTCALL GetTimedVariantFrameStartTime(void* pObject)
 {
@@ -1907,6 +1914,9 @@ void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableEBody(void* pObject)
 {
 	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
+// SYNTHETIC: LEMBALL 0x00439760
+// QueueRenderStatePushHelper
+
 // FUNCTION: LEMBALL 0x00439800
 void LEMBALL_FASTCALL QueuePackagedSpriteRenderEntry00439800(void* pObject, int, void* pQueue)
 {
@@ -1926,6 +1936,9 @@ void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntry00439810(void* pObject, i
 	pDispatchObject = (void*) (unsigned long) (pDispatchBase + 0x40 + pOwner);
 	((LevelOneArgVirtualProc) (*(void***) pDispatchObject)[6])(pDispatchObject, 0, pObject);
 }
+// SYNTHETIC: LEMBALL 0x00439860
+// QueueSurfaceRectHelperSlot00
+
 // FUNCTION: LEMBALL 0x00439870
 void LEMBALL_FASTCALL DispatchLevelSurfaceRectSinkBody(void* pObject, int, void* pContext)
 {
@@ -1951,6 +1964,11 @@ void LEMBALL_FASTCALL DispatchRenderPointRectSinkEntry004398B0(void* pObject, in
 	pDispatchObject = (void*) (unsigned long) (pOwner + 0x98);
 	((LevelOneArgVirtualProc) (*(void***) pDispatchObject)[1])(pDispatchObject, 0, pObject);
 }
+// SYNTHETIC: LEMBALL 0x004398d0
+// AppendThisToPointerQueue
+// SYNTHETIC: LEMBALL 0x00439900
+// AppendRenderEntryToPointerQueueB
+
 // FUNCTION: LEMBALL 0x00439910
 void LEMBALL_FASTCALL DispatchLevelStatusRectSinkBody(void* pObject, int, void* pContext)
 {
@@ -1959,6 +1977,9 @@ void LEMBALL_FASTCALL DispatchLevelStatusRectSinkBody(void* pObject, int, void* 
 	pTarget = (char*) *(void**) ((char*) pContext + 0x0c) + 0x44;
 	((LevelOneArgVirtualProc) (*(void***) pTarget)[0])(pTarget, 0, pObject);
 }
+// SYNTHETIC: LEMBALL 0x00439930
+// AppendRenderEntryToPointerQueueC
+
 // FUNCTION: LEMBALL 0x00439940
 void LEMBALL_FASTCALL DispatchLevelNestedRectSinkBody(void* pObject, int, void* pContext)
 {
@@ -3506,6 +3527,9 @@ short LevelScreenTerrainRenderView::ComputeDynamicRenderEntrySortKey(int iEntry)
 	}
 	return (short) (nDepth + nHeight + 1);
 }
+// SYNTHETIC: LEMBALL 0x00442270
+// QueueAlignedZrleChildOverlayIfDirty
+
 // FUNCTION: LEMBALL 0x00442ca0
 void LevelScreenActionButtonLayout::PositionLevelScreenActionButton(const VS_XYPair* pPanelOrigin)
 {
@@ -4071,6 +4095,9 @@ void LEMBALL_FASTCALL RestoreLevelSelectionRenderChildEntryVtableBody(void* pObj
 {
 	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
+// SYNTHETIC: LEMBALL 0x0044aa70
+// ResetLevelStatusChildCursor
+
 // FUNCTION: LEMBALL 0x0044aa80
 void* ConstructLevelScreenStatusIndicatorManager(void* pObject, int nStatusMode, void* pPrimaryContext)
 {
@@ -4249,7 +4276,7 @@ void LEMBALL_FASTCALL SetStatusIndicatorLoadProgress0044B340(void* pObject, int,
 }
 
 // FUNCTION: LEMBALL 0x0044b360
-void __stdcall noop_level_status_callback(void)
+void LEMBALL_FASTCALL noop_level_status_callback(void*)
 {
 }
 
@@ -4867,4 +4894,63 @@ int VsMathPoint2D::Equals(const VsMathPoint2D* pOther)
 		return 1;
 	}
 	return 0;
+}
+
+int LEMBALL_STDCALL ReturnTrueVirtualHookBodyStdcall(void* pUnused)
+{
+	(void) pUnused;
+	return 1;
+}
+
+void LEMBALL_FASTCALL QueueRenderStatePushHelper(void* pObject, int, void* pQueue)
+{
+	((VsGdiHelperDispatchQueue*) pQueue)->AppendPointerQueueEntry(pObject);
+}
+
+void LEMBALL_FASTCALL QueueSurfaceRectHelperSlot00(void* pObject, int, void* pQueue)
+{
+	((VsGdiHelperDispatchQueue*) pQueue)->AppendPointerQueueEntry(pObject);
+}
+
+void LEMBALL_FASTCALL AppendThisToPointerQueue(void* pObject, int, void* pQueue)
+{
+	((VsGdiHelperDispatchQueue*) pQueue)->AppendPointerQueueEntry(pObject);
+}
+
+void LEMBALL_FASTCALL AppendRenderEntryToPointerQueueB(void* pObject, int, void* pQueue)
+{
+	((VsGdiHelperDispatchQueue*) pQueue)->AppendPointerQueueEntry(pObject);
+}
+
+void LEMBALL_FASTCALL AppendRenderEntryToPointerQueueC(void* pObject, int, void* pQueue)
+{
+	((VsGdiHelperDispatchQueue*) pQueue)->AppendPointerQueueEntry(pObject);
+}
+
+extern void LEMBALL_FASTCALL QueueCompactZrleOwnerIfDirty(void* pObject, void* pUnusedEdx, const short* pRect);
+
+void LEMBALL_FASTCALL QueueAlignedZrleChildOverlayIfDirty(void* pObject, void* pUnusedEdx, const short* pRect)
+{
+	QueueCompactZrleOwnerIfDirty(pObject, pUnusedEdx, pRect);
+}
+
+void LEMBALL_FASTCALL ResetLevelStatusChildCursor(void* pObject, int, int nUnused)
+{
+	(void) nUnused;
+	*(int*) ((char*) pObject + 0x1c) = 0;
+	*(int*) ((char*) pObject + 0x0c) = *(int*) ((char*) pObject + 0x14);
+}
+
+void LEMBALL_FASTCALL DispatchLevelStatusCallbackIfActive(void* pObject)
+{
+	extern void LEMBALL_FASTCALL NoopLevelStatusCallbackIlt(void* pCallback);
+	void* pCallback = *(void**) ((char*) pObject + 0x78);
+	if (pCallback != 0) {
+		NoopLevelStatusCallbackIlt(pCallback);
+	}
+}
+
+void LEMBALL_FASTCALL NoopLevelStatusCallbackIlt(void* pCallback)
+{
+	noop_level_status_callback(pCallback);
 }

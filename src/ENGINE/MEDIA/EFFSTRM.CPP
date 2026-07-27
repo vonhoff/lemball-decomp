@@ -811,6 +811,12 @@ void LEMBALL_FASTCALL ServiceNetworkLobbySelectedPeerUpdates(void* pVsnetRuntime
 		}
 	}
 }
+// FUNCTION: LEMBALL 0x00452e40
+void LEMBALL_FASTCALL WriteEffStreamU32Field2C(void* pObject)
+{
+	VsNetEffStreamBase* pStream = (VsNetEffStreamBase*) pObject;
+	pStream->WriteEffStreamU32BE(*(unsigned int*) ((char*) pObject + 0x2c));
+}
 // FUNCTION: LEMBALL 0x00452e50
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void* pObject)
 {

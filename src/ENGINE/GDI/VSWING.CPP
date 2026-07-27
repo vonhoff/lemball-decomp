@@ -195,6 +195,12 @@ int LEMBALL_FASTCALL DispatchRenderQueueEntryImmediately(void* pDispatchQueue, i
 	return nResult;
 }
 
+// FUNCTION: LEMBALL 0x00463280
+void* LEMBALL_STDCALL ReturnStreamArgumentStdcall(void* pStream)
+{
+	return pStream;
+}
+
 // FUNCTION: LEMBALL 0x00463570
 int LEMBALL_FASTCALL TakeRenderDispatchQueueEntry(void* pDispatchQueue,
 												  int,

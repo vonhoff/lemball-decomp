@@ -934,6 +934,12 @@ void __fastcall set_managed_entity_secondary_active_flag(void* pEntity, void* pU
 	*(int*) ((char*) pEntity + 0x180) = fActive;
 }
 
+// FUNCTION: LEMBALL 0x0040f110
+int __fastcall get_level_mode_field_0x17c(void* pLevelMode)
+{
+	return *(int*) ((char*) pLevelMode + 0x17c);
+}
+
 // FUNCTION: LEMBALL 0x0040f2b0
 int __fastcall has_door_chunk_object_target_tile_latched(void* pObject)
 {
@@ -1291,6 +1297,9 @@ int return_false_virtual_hook(void)
 	return 0;
 }
 
+// SYNTHETIC: LEMBALL 0x00417b30
+// LevelTwoDwordPairVariantView::copy_two_dword_pair_variant
+
 // FUNCTION: LEMBALL 0x00417f40
 void* __fastcall get_first_projectile_pool_object(void* pPool)
 {
@@ -1592,6 +1601,12 @@ int return_true_vtable_callback_0041c3f0(void)
 
 // FUNCTION: LEMBALL 0x0041c430
 int return_two_vtable_callback_0041c430(void)
+{
+	return 2;
+}
+
+// FUNCTION: LEMBALL 0x0041c530
+int return_two_linked_type_0x11_slot_10(void)
 {
 	return 2;
 }
@@ -1904,4 +1919,17 @@ int PASCAL return_zero_level_callback_0042eec0(void* pUnused1, void* pUnused2)
 	(void) pUnused1;
 	(void) pUnused2;
 	return 0;
+}
+
+struct LevelTwoDwordPairVariantView {
+	int m_anValues[2];
+
+	void* copy_two_dword_pair_variant(const int* pSource);
+};
+
+void* LevelTwoDwordPairVariantView::copy_two_dword_pair_variant(const int* pSource)
+{
+	m_anValues[0] = pSource[0];
+	m_anValues[1] = pSource[1];
+	return this;
 }

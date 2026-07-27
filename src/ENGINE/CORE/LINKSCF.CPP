@@ -3,6 +3,7 @@
 #include "ENGINE/CORE/WIN32.H"
 #include "ENGINE/GDI/VSGEOM.H"
 #include "ENGINE/MEDIA/EFFSTRM.H"
+#include "ENGINE/MEDIA/VSSTRM.H"
 #include "GAME.H"
 #include "LEVEL/LEVELRUN.H"
 
@@ -708,6 +709,9 @@ void* ConstructManagedEntityQueueCursorThunk(void* pObject,
 	((GameRenderDispatchQueue*) pDispatchQueue)->RegisterOrderedRenderDispatchClient(pObject, 0);
 	return pObject;
 }
+// SYNTHETIC: LEMBALL 0x00417d30
+// ReadEffStreamU16ToField30
+
 // FUNCTION: LEMBALL 0x00417d80
 void* ConstructProjectilePoolThunk(void* pObject)
 {
@@ -757,6 +761,9 @@ void* ConstructPlasChunkManagerThunk(void* pObject,
 	(void) pProjectileGeometryTable;
 	return pObject;
 }
+// SYNTHETIC: LEMBALL 0x00418c90
+// GetIndexedLevelModeValue110
+
 // FUNCTION: LEMBALL 0x00418ca0
 void InitializeNetworkPlayerPlasChunkObjectPoolThunk(void* pPlasManager)
 {
@@ -866,6 +873,11 @@ LinkScfCachedChunkObjectManagerBaseView* LinkScfCachedChunkObjectManagerBaseView
 	*(int*) ((char*) this + 0xac) = 1;
 	memset((char*) this + 4, 0, 40 * sizeof(int));
 	return this;
+}
+// FUNCTION: LEMBALL 0x0041ea20
+int LEMBALL_FASTCALL GetManagedEntityGroupCount(void* pObject)
+{
+	return *(int*) ((char*) pObject + 0xa4);
 }
 // FUNCTION: LEMBALL 0x0041ea30
 void* LEMBALL_FASTCALL GetFirstCachedChunkObject(void* pObject)
@@ -985,6 +997,11 @@ LinkScfCaptureChunkManagerView* LinkScfCaptureChunkManagerView::ConstructCapture
 	*(int*) ((char*) this + 0x38) = 0;
 	return this;
 }
+// FUNCTION: LEMBALL 0x00427fc0
+void LEMBALL_FASTCALL ClearManagedEntityArrayCount(void* pObject)
+{
+	*(int*) ((char*) pObject + 0x34) = 0;
+}
 // FUNCTION: LEMBALL 0x00429320
 LinkScfLasrChunkManagerView* LinkScfLasrChunkManagerView::ConstructLasrChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -1048,6 +1065,10 @@ LinkScfTramChunkManagerView* LinkScfTramChunkManagerView::ConstructTramChunkMana
 	*(int*) ((char*) this + 0x38) = 0;
 	return this;
 }
+
+// SYNTHETIC: LEMBALL 0x0042b9c0
+// add_two_dword_values
+
 // FUNCTION: LEMBALL 0x0042bfe0
 LinkScfPgunChunkManagerView* LinkScfPgunChunkManagerView::ConstructPgunChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -1077,4 +1098,19 @@ LinkScfMoveChunkManagerView* LinkScfMoveChunkManagerView::ConstructMoveChunkMana
 	*(int*) ((char*) this + 0x30) = nCapacity;
 	*(int*) ((char*) this + 0x38) = 0;
 	return this;
+}
+
+void LEMBALL_FASTCALL ReadEffStreamU16ToField30(void* pObject)
+{
+	*(unsigned short*) ((char*) pObject + 0x30) = ((VsNetEffStreamBase*) pObject)->ReadEffStreamU16BEValue();
+}
+
+int LEMBALL_FASTCALL GetIndexedLevelModeValue110(void* pObject, int, int nIndex)
+{
+	return *(int*) ((char*) pObject + 0x110 + nIndex * 4);
+}
+
+void add_two_dword_values(int* pDestination, const int* pLeft, const int* pRight)
+{
+	*pDestination = *pLeft + *pRight;
 }

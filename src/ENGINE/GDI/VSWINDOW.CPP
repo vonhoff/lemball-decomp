@@ -183,7 +183,7 @@ void LEMBALL_FASTCALL GeometryOwnerPointerMoveThunk(void*, int, const VS_XYPair*
 int LEMBALL_FASTCALL GeometryOwnerContainsPointThunk(void*, int, const VS_XYPair*);
 
 // GLOBAL: LEMBALL 0x496ea0
-static void* g_GAME_GeometryOwnerRectVtable[8] = {
+void* g_GAME_GeometryOwnerRectVtable[8] = {
 	(void*) DeleteRenderPointRectContextThunk00401488,
 	(void*) ResetRenderPointRectEntryThunk00401703,
 	(void*) ResetRenderPointRectEntryThunk0040355D,
@@ -430,6 +430,9 @@ void LEMBALL_FASTCALL ForwardNestedGeometryRectUpdate(void* pOwner, int, short* 
 		}
 	}
 }
+
+// SYNTHETIC: LEMBALL 0x00432870
+// ClearWindowOwnerRuntimeFields
 
 // FUNCTION: LEMBALL 0x00439960
 void LEMBALL_FASTCALL GeometryOwnerButtonTransitionNoop(void*, int, const VS_XYPair*, int)
@@ -2475,4 +2478,11 @@ int VS_RootGeometryOwner::QueryRootGeometryState(void*, void*)
 
 void VS_WindowOwnerBase::ReservedWindowOwnerSlot22(int)
 {
+}
+
+void LEMBALL_FASTCALL ClearWindowOwnerRuntimeFields(void* pObject)
+{
+	*(int*) ((char*) pObject + 0x44) = 0;
+	*(int*) ((char*) pObject + 0x3c) = 0;
+	*(int*) ((char*) pObject + 0x54) = 0;
 }

@@ -1646,6 +1646,10 @@ void LevelNodeChunkRecord::AppendNodeChunkRecordLink(int nFirst, int nSecond)
 	m_pLinks0C[m_cLinks10 * 2 + 1] = nSecond;
 	++m_cLinks10;
 }
+
+// SYNTHETIC: LEMBALL 0x00421410
+// LevelTwoDwordPairSourceView::copy_two_dword_pair_from_this
+
 // FUNCTION: LEMBALL 0x00421470
 void LevelNodeChunkManager::LoadNodeChunkRecords(const unsigned short* pWords, unsigned int cbPayload, int fReuseState)
 {
@@ -2154,4 +2158,16 @@ void GameLockedRecordSlotTableView::ClearLockedRecordSlotPayloadFlags(void)
 			*(int*) ((char*) pRecordSlot + 0x24) = 0;
 		} while (nSlots < m_cRecords);
 	}
+}
+
+struct LevelTwoDwordPairSourceView {
+	int m_anValues[2];
+
+	void copy_two_dword_pair_from_this(int* pDestination);
+};
+
+void LevelTwoDwordPairSourceView::copy_two_dword_pair_from_this(int* pDestination)
+{
+	pDestination[0] = m_anValues[0];
+	pDestination[1] = m_anValues[1];
 }
