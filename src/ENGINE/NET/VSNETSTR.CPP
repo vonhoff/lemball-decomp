@@ -81,19 +81,19 @@ extern void ReturnVoidVtableCallback(void);
 extern void ReverseEffTransportPayload(void* pObject);
 extern void NoopVtableCallbackThunk(void);
 extern void WriteEffTransportTaggedHeader(void* pObject);
-void* DeleteEffStreamBaseWrapper00462900(void* pObject, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462900(void* pObject, void*, BYTE fDelete);
 
 void NoopVtableCallbackThunk(void);
 int PASCAL ReturnTrueVtableCallbackThunk(void* pObject);
 int ReturnTrueVtableCallbackSecondaryThunk(void);
-void* DeleteEffStreamBaseWrapper00462810(void* pObject, BYTE fDelete);
-void* DeleteEffStreamBaseWrapper00462830(void* pObject, BYTE fDelete);
-void* DeleteEffStreamBaseWrapper00462850(void* pObject, BYTE fDelete);
-void* DeleteEffStreamBaseWrapper00462870(void* pObject, BYTE fDelete);
-void* DeleteEffStreamBaseWrapper00462890(void* pObject, BYTE fDelete);
-void* DeleteEffStreamBaseWrapper004628B0(void* pObject, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462810(void* pObject, void*, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462830(void* pObject, void*, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462850(void* pObject, void*, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462870(void* pObject, void*, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462890(void* pObject, void*, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper004628B0(void* pObject, void*, BYTE fDelete);
 void PASCAL EffStreamChannelStateRet4Thunk(BYTE fDelete);
-void* DeleteEffStreamBaseWrapper00462900(void* pObject, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462900(void* pObject, void*, BYTE fDelete);
 void ReturnVoidVtableCallback(void);
 void LEMBALL_FASTCALL WriteEffStreamTwoU16Fields(void* pObject);
 void LEMBALL_FASTCALL ReadEffStreamTwoU16Fields(void* pObject);
@@ -710,9 +710,9 @@ short VsNetRuntimeChannelStack::ClaimRuntimeFlag(const char* pszFlags)
 }
 
 // FUNCTION: LEMBALL 0x00462810
-void* DeleteEffStreamBaseWrapper00462810(void* pObject, BYTE fDelete)
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462810(void* pObject, void*, BYTE fDelete)
 {
-	((VsNetEffStreamBase*) pObject)->~VsNetEffStreamBase();
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}
@@ -720,9 +720,9 @@ void* DeleteEffStreamBaseWrapper00462810(void* pObject, BYTE fDelete)
 }
 
 // FUNCTION: LEMBALL 0x00462830
-void* DeleteEffStreamBaseWrapper00462830(void* pObject, BYTE fDelete)
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462830(void* pObject, void*, BYTE fDelete)
 {
-	((VsNetEffStreamBase*) pObject)->~VsNetEffStreamBase();
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}
@@ -730,9 +730,9 @@ void* DeleteEffStreamBaseWrapper00462830(void* pObject, BYTE fDelete)
 }
 
 // FUNCTION: LEMBALL 0x00462850
-void* DeleteEffStreamBaseWrapper00462850(void* pObject, BYTE fDelete)
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462850(void* pObject, void*, BYTE fDelete)
 {
-	((VsNetEffStreamBase*) pObject)->~VsNetEffStreamBase();
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}
@@ -740,9 +740,9 @@ void* DeleteEffStreamBaseWrapper00462850(void* pObject, BYTE fDelete)
 }
 
 // FUNCTION: LEMBALL 0x00462870
-void* DeleteEffStreamBaseWrapper00462870(void* pObject, BYTE fDelete)
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462870(void* pObject, void*, BYTE fDelete)
 {
-	((VsNetEffStreamBase*) pObject)->~VsNetEffStreamBase();
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}
@@ -750,9 +750,9 @@ void* DeleteEffStreamBaseWrapper00462870(void* pObject, BYTE fDelete)
 }
 
 // FUNCTION: LEMBALL 0x00462890
-void* DeleteEffStreamBaseWrapper00462890(void* pObject, BYTE fDelete)
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462890(void* pObject, void*, BYTE fDelete)
 {
-	((VsNetEffStreamBase*) pObject)->~VsNetEffStreamBase();
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}
@@ -760,9 +760,9 @@ void* DeleteEffStreamBaseWrapper00462890(void* pObject, BYTE fDelete)
 }
 
 // FUNCTION: LEMBALL 0x004628b0
-void* DeleteEffStreamBaseWrapper004628B0(void* pObject, BYTE fDelete)
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper004628B0(void* pObject, void*, BYTE fDelete)
 {
-	((VsNetEffStreamBase*) pObject)->~VsNetEffStreamBase();
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}
@@ -776,9 +776,9 @@ void PASCAL EffStreamChannelStateRet4Thunk(BYTE fDelete)
 }
 
 // FUNCTION: LEMBALL 0x00462900
-void* DeleteEffStreamBaseWrapper00462900(void* pObject, BYTE fDelete)
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462900(void* pObject, void*, BYTE fDelete)
 {
-	((VsNetEffStreamBase*) pObject)->~VsNetEffStreamBase();
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}
@@ -820,4 +820,26 @@ int WINAPI InitializeNonZrleVariantRenderEntry(int nValue)
 void VsNetEffStreamBase::DestroyEffStreamBaseThunk(void)
 {
 	this->~VsNetEffStreamBase();
+}
+
+// SYNTHETIC: LEMBALL 0x004628e0
+// DeleteEffStreamChannelStateAuto
+void* LEMBALL_FASTCALL DeleteEffStreamChannelStateAuto(void* pObject, void*, BYTE fDelete)
+{
+	((VsNetEffStreamChannelState*) pObject)->VsNetEffStreamChannelState::~VsNetEffStreamChannelState();
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
+
+// SYNTHETIC: LEMBALL 0x00462b80
+// DeleteEffStreamBaseAuto
+void* LEMBALL_FASTCALL DeleteEffStreamBaseAuto(void* pObject, void*, BYTE fDelete)
+{
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
 }

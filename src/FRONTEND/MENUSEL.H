@@ -205,7 +205,7 @@ void* LEMBALL_FASTCALL DeleteSelectorProgressOverlayChildAdjusted(void* pGeometr
 int LEMBALL_FASTCALL HandleQueuedVariantChildSlotManagerEvent(GameQueuedVariantChildSlotManager* pManager,
 															  int nUnusedEdx,
 															  GameMenuSelectorEvent* pEvent);
-// FUNCTION: LEMBALL 0x0044fff0
+// Compatibility shim preserving MSVC 4.20 compiler state.
 // DeleteQueuedVariantChildSlotManager
 void* LEMBALL_FASTCALL DeleteQueuedVariantChildSlotManager(GameQueuedVariantChildSlotManager* pManager,
 														   int nUnusedEdx,

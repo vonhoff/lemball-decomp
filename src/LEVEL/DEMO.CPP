@@ -80,7 +80,7 @@ void LEMBALL_FASTCALL ReleaseLevelDemoRecordBuffer(void* pPlaybackController);
 void LEMBALL_FASTCALL StopLevelDemoPlayback(void* pPlaybackController);
 void LEMBALL_FASTCALL StopLevelDemoPlaybackThunk(void* pPlaybackController);
 int FilterLevelDemoPlaybackInputEvent(void* pPlaybackController, unsigned short* pEventId);
-void* RestoreLevelDemoPlaybackBaseVtable(void* pPlaybackController, unsigned char fDelete);
+void* LEMBALL_FASTCALL RestoreLevelDemoPlaybackBaseVtable(void* pPlaybackController, void*, unsigned char fDelete);
 int* LoadBinResource(int nResourceId);
 void LEMBALL_FASTCALL SetBinResourceTypeTag(void* pObject);
 void* LEMBALL_FASTCALL DestroyBinResource(void* pObject, int nUnused, int fDelete);
@@ -155,6 +155,9 @@ void LEMBALL_FASTCALL ReleaseLevelDemoRecordBufferThunk(void* pPlaybackControlle
 	ReleaseLevelDemoRecordBuffer(pPlaybackController);
 }
 
+// LINKERILT: LEMBALL 0x00402770
+// DemoLevelDemoPlaybackController::DestroyLevelDemoPlaybackControllerThunk
+
 // LINKERILT: LEMBALL 0x00402eaa
 void LEMBALL_FASTCALL StopLevelDemoPlaybackThunk(void* pPlaybackController)
 {
@@ -221,6 +224,23 @@ void DemoLevelDemoPlaybackController::DestroyLevelDemoPlaybackController(void)
 	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)
 		->UnregisterOrderedRenderDispatchClient(pPlaybackController, -100);
 	*(void***) pPlaybackController = g_GAME_RenderQueueNodeVtableSlots;
+}
+
+// Compatibility shim for original ILT call site.
+void DemoLevelDemoPlaybackController::DestroyLevelDemoPlaybackControllerThunk(void)
+{
+	DestroyLevelDemoPlaybackController();
+}
+
+// SYNTHETIC: LEMBALL 0x004098b0
+// DeleteLevelDemoPlaybackControllerAuto
+void* LEMBALL_FASTCALL DeleteLevelDemoPlaybackControllerAuto(void* pObject, void*, BYTE fDelete)
+{
+	((DemoLevelDemoPlaybackController*) pObject)->DestroyLevelDemoPlaybackControllerThunk();
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
 }
 
 // FUNCTION: LEMBALL 0x00409460
@@ -415,9 +435,9 @@ int FilterLevelDemoPlaybackInputEvent(void* pPlaybackController, unsigned short*
 }
 
 // FUNCTION: LEMBALL 0x004098e0
-void* RestoreLevelDemoPlaybackBaseVtable(void* pPlaybackController, unsigned char fDelete)
+void* LEMBALL_FASTCALL RestoreLevelDemoPlaybackBaseVtable(void* pPlaybackController, void*, unsigned char fDelete)
 {
-	*(void***) pPlaybackController = g_pNonZrleVariantRenderEntryInitializeVtable;
+	*(void***) pPlaybackController = g_GAME_RenderQueueNodeVtableSlots;
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pPlaybackController);
 	}
@@ -460,6 +480,17 @@ void LEMBALL_FASTCALL SetBinResourceTypeTag(void* pObject)
 // FUNCTION: LEMBALL 0x0045ec70
 void* LEMBALL_FASTCALL DestroyBinResource(void* pObject, int, int fDelete)
 
+{
+	InitializeTypedResourceObjectBaseVtable(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
+
+// SYNTHETIC: LEMBALL 0x0045ec40
+// DestroyPresResourceAuto
+void* LEMBALL_FASTCALL DestroyPresResourceAuto(void* pObject, void*, BYTE fDelete)
 {
 	InitializeTypedResourceObjectBaseVtable(pObject);
 	if ((fDelete & 1) != 0) {

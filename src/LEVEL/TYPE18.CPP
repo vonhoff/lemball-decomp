@@ -290,7 +290,7 @@ void* LEMBALL_FASTCALL DeleteLevelEffChunkStreamBase(void* pObject, void* pUnuse
 
 {
 	(void) pUnused;
-	((VsNetEffStreamBase*) pObject)->DestroyEffStreamBase();
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}
@@ -302,7 +302,7 @@ void* LEMBALL_FASTCALL DeleteEffStreamConstructionBase(void* pObject, void* pUnu
 
 {
 	(void) pUnused;
-	((VsNetEffStreamBase*) pObject)->DestroyEffStreamBase();
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}
@@ -459,4 +459,30 @@ void* LEMBALL_FASTCALL DeleteType18ChunkStream(LevelType18ChunkStream* pStream, 
 		FreeVSMemBlock(pStream);
 	}
 	return pStream;
+}
+
+extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
+
+// SYNTHETIC: LEMBALL 0x0040cea0
+// DeleteLevelChunkObjectBaseScalarB
+void* LEMBALL_FASTCALL DeleteLevelChunkObjectBaseScalarB(void* pObject, void*, BYTE fDelete)
+{
+	DestroyLevelChunkObjectBaseAutoThunk(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
+
+extern void LEMBALL_FASTCALL DestroyLevelChunkStreamAutoThunk(void* pObject);
+
+// SYNTHETIC: LEMBALL 0x0040ac30
+// DeleteLevelChunkStreamAuto
+void* LEMBALL_FASTCALL DeleteLevelChunkStreamAuto(void* pObject, void*, BYTE fDelete)
+{
+	DestroyLevelChunkStreamAutoThunk(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
 }

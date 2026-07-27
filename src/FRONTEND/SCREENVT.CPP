@@ -1,5 +1,9 @@
+#include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/CORE/WIN32.H"
 #include "ENGINE/GDI/VSWINDOW.H"
+
+// LINKERILT: LEMBALL 0x0040225c
+// DestroyRegisteredRenderSlotArrayAutoThunk
 
 // STRONG INFERENCE: callbacks relocated from the artificial aggregate by
 // vtable owner, semantic role, and neighboring address/call-graph cluster.
@@ -176,6 +180,9 @@ void noop_intro_sequence_screen_hook(void)
 {
 }
 
+// STUB: LEMBALL 0x0043a2b0
+// DestroyRegisteredRenderSlotArrayAuto
+
 // FUNCTION: LEMBALL 0x00448610
 void noop_main_menu_screen_hook(void)
 {
@@ -191,4 +198,26 @@ int __fastcall get_registration_info_screen_requested_mode(void* pScreen)
 unsigned int return_hresult_80000801_progress_overlay(void)
 {
 	return 0x80000801U;
+}
+
+// Comparison-only compatibility stub.
+void LEMBALL_FASTCALL DestroyRegisteredRenderSlotArrayAuto(void*)
+{
+}
+
+// Compatibility shim for original ILT call site.
+void LEMBALL_FASTCALL DestroyRegisteredRenderSlotArrayAutoThunk(void* pObject)
+{
+	DestroyRegisteredRenderSlotArrayAuto(pObject);
+}
+
+// SYNTHETIC: LEMBALL 0x0043a490
+// DeleteRegisteredRenderSlotArrayAuto
+void* LEMBALL_FASTCALL DeleteRegisteredRenderSlotArrayAuto(void* pObject, void*, BYTE fDelete)
+{
+	DestroyRegisteredRenderSlotArrayAutoThunk(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
 }

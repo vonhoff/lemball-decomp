@@ -243,7 +243,7 @@ void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntryThunk(void* pObject, int nU
 void* DeleteBaseModeObjectAdjusted(void* pObject, BYTE fDelete);
 void* DeleteBaseModeObjectAdjustedThunk(void* pObject, BYTE fDelete);
 int LEMBALL_FASTCALL HandleBaseModeActionButtonEventThunk(void* pClient, int nUnused, void* pEvent);
-static void* g_LEVEL_CompositePointRectSinkEntryInitVtableStorage[8] = {
+static void* g_LEVEL_CompositePointRectSinkEntryCompilerState[8] = {
 	(void*) DeleteFramedScreenRenderChildEntryThunk,
 	(void*) QueueFramedScreenRenderEntryThunk,
 	(void*) FinalizeFramedScreenRenderEntryThunk,
@@ -252,6 +252,17 @@ static void* g_LEVEL_CompositePointRectSinkEntryInitVtableStorage[8] = {
 	(void*) DeleteBaseModeObjectAdjustedThunk,
 	(void*) HandleBaseModeActionButtonEventThunk,
 	0,
+};
+// GLOBAL: LEMBALL 0x00496cc8
+static void* g_LEVEL_CompositePointRectSinkEntryInitVtableStorage[8] = {
+	(void*) DestroyStatusIndicatorPointSinkArray00467BB0,
+	(void*) QueueStatusIndicatorPointSinkThunk004018AC,
+	(void*) DispatchStatusIndicatorPointSinkThunk004025AE,
+	0,
+	(void*) _purecall,
+	(void*) UpdateStatusIndicatorLoadProgressThunk00401DB1,
+	(void*) VariantResourceBundleNoopThunk,
+	(void*) GetTimedVariantFrameStartTimeThunk,
 };
 static void* g_LEVEL_CompositePointRectSinkEntryInitVtable = g_LEVEL_CompositePointRectSinkEntryInitVtableStorage;
 void* DeleteFramedScreenRenderChildEntryA(void* pObject, BYTE fDelete);
@@ -286,6 +297,7 @@ void NoopPackagedSpriteRenderEntry00439370(void);
 void LEMBALL_FASTCALL NoopPackagedSpriteRenderEntryThunk00402A22(void* pUnused);
 void PASCAL NoopPackagedSpriteRenderEntry00439380(void* pUnused);
 void LEMBALL_FASTCALL NoopPackagedSpriteRenderEntryThunk00401B77(void* pUnusedThis, int nUnusedEdx, void* pArgument);
+// GLOBAL: LEMBALL 0x00496d38
 static void* g_LEVEL_PackagedSpriteRenderEntryVtableStorage[8] = {
 	(void*) DestroyPackagedSpriteRenderEntryArray00469930,
 	(void*) QueuePackagedSpriteRenderEntryThunk00403846,
@@ -909,7 +921,7 @@ void* InitializeLevelSelectionPointRectSinkEntry(void* pObject)
 	int* pEntry;
 
 	pEntry = (int*) pObject;
-	*(void**) pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+	*(void**) pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 	*(unsigned short*) ((char*) pEntry + 6) = 0;
 	*(unsigned short*) (pEntry + 1) = 0;
 	*(void**) pEntry = g_LEVEL_CompositePointRectSinkEntryInitVtable;
@@ -984,6 +996,12 @@ int ReturnTrueVirtualHook(void)
 {
 	return ReturnTrueVirtualHookBody();
 }
+// LINKERILT: LEMBALL 0x00402ffe
+// DestroyLevelScreenActionPanelResourcesThunk
+
+// LINKERILT: LEMBALL 0x0040301c
+// DestroyMoveChunkManagerAutoThunk
+
 // LINKERILT: LEMBALL 0x004030bc
 void* LEMBALL_FASTCALL InitializeFramedScreenRenderChildEntry(void* pObject)
 
@@ -1078,6 +1096,9 @@ int ReturnTrueVirtualHookBody(void)
 	return 1;
 }
 
+// STUB: LEMBALL 0x0042f2c0
+// DestroyMoveChunkManagerAuto
+
 // FUNCTION: LEMBALL 0x0042ffe0
 short LevelTileRenderDescriptor::SampleHeightOffset(int nLocalX, int nLocalY)
 {
@@ -1117,12 +1138,12 @@ short LevelTileRenderDescriptor::SampleHeightOffset(int nLocalX, int nLocalY)
 	}
 	return 0;
 }
-// FUNCTION: LEMBALL 0x00430a50
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void LevelViewRotationTransform::TransformScreenToTile(int nScreenX, int nScreenY, int* pTileX, int* pTileY)
 {
 	switch (m_nRotation04) {
 	case 0:
-		*pTileX = nScreenX / 2 + nScreenY - 8;
+		*pTileX = nScreenY + nScreenX / 2 - 8;
 		*pTileY = nScreenY - nScreenX / 2 + 8;
 		break;
 	case 1:
@@ -1171,7 +1192,7 @@ void LevelViewRotationTransform::TransformTileInPlace(int* pX, int* pY)
 	nTileY = *pY;
 	TransformTileToScreen(nTileX, nTileY, pX, pY);
 }
-// FUNCTION: LEMBALL 0x00432350
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* DeleteQueuedRenderPointSinkWrapper00432350(void* pObject, BYTE fDelete)
 {
 	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
@@ -1180,7 +1201,7 @@ void* DeleteQueuedRenderPointSinkWrapper00432350(void* pObject, BYTE fDelete)
 	}
 	return pObject;
 }
-// FUNCTION: LEMBALL 0x00432a90
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* DeleteStatusIndicatorPointSinkEntry00432A90(void* pObject, BYTE fDelete)
 {
 	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
@@ -1798,7 +1819,7 @@ void PASCAL NoopPackagedSpriteRenderEntry00439380(void* pUnused)
 {
 	(void) pUnused;
 }
-// FUNCTION: LEMBALL 0x00439400
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* DeletePackagedSpriteRenderEntry00439400(void* pObject, BYTE fDelete)
 {
 	*(void**) pObject = &g_LEVEL_PackagedSpriteRenderEntryVtableStorage[4];
@@ -1813,9 +1834,9 @@ void* LEMBALL_FASTCALL InitializePackagedSpriteRenderEntry(void* pObject)
 	int* pEntry;
 
 	pEntry = (int*) pObject;
-	*(void**) pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+	*(void**) pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 	*(unsigned short*) ((char*) pEntry + 6) = 0;
-	*(void**) pEntry = g_LEVEL_PackagedSpriteRenderEntryVtable;
+	*(void**) pEntry = g_LEVEL_PackagedSpriteRenderEntryVtableStorage;
 	*(unsigned short*) (pEntry + 1) = 0;
 	*(unsigned short*) ((char*) pEntry + 10) = 0;
 	*(unsigned short*) (pEntry + 2) = 0;
@@ -1880,10 +1901,10 @@ void* LEMBALL_FASTCALL InitializeRenderPointRectSinkEntry(void* pObject)
 	*(unsigned short*) (pEntry + 3) = 0;
 	return pObject;
 }
-// FUNCTION: LEMBALL 0x004396e0
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* DeleteRenderPointRectSinkEntry004396E0(void* pObject, BYTE fDelete)
 {
-	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}
@@ -3536,19 +3557,21 @@ short LevelScreenTerrainRenderView::ComputeDynamicRenderEntrySortKey(int iEntry)
 // SYNTHETIC: LEMBALL 0x00442270
 // QueueAlignedZrleChildOverlayIfDirty
 
-// FUNCTION: LEMBALL 0x00442ca0
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void LevelScreenActionButtonLayout::PositionLevelScreenActionButton(const VS_XYPair* pPanelOrigin)
 {
 	char* pButtonBytes;
 	char* pPanel;
 	VS_XYPair Point;
+	short nPanelWidth;
 
 	pButtonBytes = (char*) this;
 	Point.m_x = pPanelOrigin->m_x;
 	Point.m_y = pPanelOrigin->m_y;
 	pPanel = *(char**) (pButtonBytes + 0x0c);
-	Point.m_x =
-		(short) (Point.m_x + (*(short*) (pPanel + 0x48) + *(short*) (pPanel + 0x44)) * *(short*) (pButtonBytes + 0x14));
+	nPanelWidth = *(short*) (pPanel + 0x48);
+	nPanelWidth = (short) (nPanelWidth + *(short*) (pPanel + 0x44));
+	Point.m_x = (short) (Point.m_x + nPanelWidth * *(short*) (pButtonBytes + 0x14));
 	((VS_RootGeometryOwner*) *(void**) (pButtonBytes + 4))->MoveWindowOwnerOrigin(&Point);
 }
 // FUNCTION: LEMBALL 0x00442ce0
@@ -3973,7 +3996,7 @@ void* LEMBALL_FASTCALL InitializeFramedScreenRenderChildEntryBody(void* pObject)
 	*(unsigned short*) (pEntry + 8) = 0;
 	return pObject;
 }
-// FUNCTION: LEMBALL 0x00447170
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* DeleteFramedScreenRenderChildEntryA(void* pObject, BYTE fDelete)
 {
 	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
@@ -3982,7 +4005,7 @@ void* DeleteFramedScreenRenderChildEntryA(void* pObject, BYTE fDelete)
 	}
 	return pObject;
 }
-// FUNCTION: LEMBALL 0x004471a0
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* DeleteFramedScreenRenderChildEntryB(void* pObject, BYTE fDelete)
 {
 	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
@@ -4024,7 +4047,7 @@ void LEMBALL_FASTCALL RestoreFramedScreenRenderChildEntryVtableBody(void* pObjec
 {
 	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
-// FUNCTION: LEMBALL 0x004472b0
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* GameBaseModeObject::Delete(BYTE fDelete)
 {
 	DestroyBaseModeObject(this);
@@ -4033,6 +4056,7 @@ void* GameBaseModeObject::Delete(BYTE fDelete)
 	}
 	return this;
 }
+
 // STUB: LEMBALL 0x004472e0
 void* DeleteBaseModeObjectAdjusted(void* pObject, BYTE fDelete)
 {
@@ -4775,14 +4799,14 @@ void LEMBALL_FASTCALL SetStatusIndicatorActive(void* pObject, int, int fActive)
 		pClient[0x1c] = (int) dwNow;
 	}
 }
-// FUNCTION: LEMBALL 0x0046b3b0
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void GameCursorRenderClient::SetListResourceEntry(int nResourceId, int nEntryIndex)
 {
 	int* pClient;
 	int nOffset;
 
 	pClient = (int*) this;
-	if (nResourceId != pClient[0xa]) {
+	if (pClient[0xa] != nResourceId) {
 		if (pClient[0xa] != 0) {
 			ReleaseTypedResourceObjectReference((void*) (unsigned long) pClient[8]);
 		}
@@ -5040,4 +5064,225 @@ void* LevelTwoShortPointView::SubtractTwoShortPointInPlace(const LevelTwoShortPo
 	m_x -= pSource->m_x;
 	m_y -= pSource->m_y;
 	return this;
+}
+
+// SYNTHETIC: LEMBALL 0x004395c0
+// DeleteQueuedRenderSinkEntryA
+// SYNTHETIC: LEMBALL 0x004395f0
+// DeleteQueuedRenderPointSinkFinalizeAuto
+// SYNTHETIC: LEMBALL 0x00439620
+// DeleteQueuedRenderSinkEntryB
+// SYNTHETIC: LEMBALL 0x00439680
+// DeleteQueuedRenderSinkEntryC
+// SYNTHETIC: LEMBALL 0x004396b0
+// DeleteQueuedRenderSinkEntryD
+
+#define DEFINE_LEVELSTAT_POINT_SINK_DELETE(name)                                                                       \
+	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
+	{                                                                                                                  \
+		*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;                                        \
+		if ((fDelete & 1) != 0) {                                                                                      \
+			FreeVSMemBlock(pObject);                                                                                   \
+		}                                                                                                              \
+		return pObject;                                                                                                \
+	}
+
+DEFINE_LEVELSTAT_POINT_SINK_DELETE(DeleteQueuedRenderSinkEntryA)
+DEFINE_LEVELSTAT_POINT_SINK_DELETE(DeleteQueuedRenderPointSinkFinalizeAuto)
+DEFINE_LEVELSTAT_POINT_SINK_DELETE(DeleteQueuedRenderSinkEntryB)
+DEFINE_LEVELSTAT_POINT_SINK_DELETE(DeleteQueuedRenderSinkEntryC)
+DEFINE_LEVELSTAT_POINT_SINK_DELETE(DeleteQueuedRenderSinkEntryD)
+
+#undef DEFINE_LEVELSTAT_POINT_SINK_DELETE
+
+// SYNTHETIC: LEMBALL 0x00432a30
+// InitializeStatusIndicatorPointSinkEntryAuto
+void* LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryAuto(void* pObject)
+{
+	int* pEntry;
+
+	pEntry = (int*) pObject;
+	*(void**) pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+	*(unsigned short*) ((char*) pEntry + 6) = 0;
+	*(void**) pEntry = g_LEVEL_CompositePointRectSinkEntryInitVtableStorage;
+	*(unsigned short*) (pEntry + 1) = 0;
+	*(unsigned short*) ((char*) pEntry + 10) = 0;
+	*(unsigned short*) (pEntry + 2) = 0;
+	return pObject;
+}
+
+// Comparison-only compatibility stub.
+void LEMBALL_FASTCALL DestroyMoveChunkManagerAuto(void*)
+{
+}
+
+// Compatibility shim for original ILT call site.
+void LEMBALL_FASTCALL DestroyMoveChunkManagerAutoThunk(void* pObject)
+{
+	DestroyMoveChunkManagerAuto(pObject);
+}
+
+// Compatibility shim for original ILT call site.
+void LEMBALL_FASTCALL DestroyLevelScreenActionPanelResourcesThunk(void* pObject)
+{
+	DestroyLevelScreenActionPanelResources(pObject);
+}
+
+// SYNTHETIC: LEMBALL 0x0042fba0
+// DeleteMoveChunkManagerAuto
+// SYNTHETIC: LEMBALL 0x004439f0
+// DeleteLevelScreenActionPanelAuto
+
+#define DEFINE_LEVELSTAT_NAMED_SCALAR_DELETE(name, destroy)                                                            \
+	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
+	{                                                                                                                  \
+		destroy(pObject);                                                                                              \
+		if ((fDelete & 1) != 0) {                                                                                      \
+			FreeVSMemBlock(pObject);                                                                                   \
+		}                                                                                                              \
+		return pObject;                                                                                                \
+	}
+
+DEFINE_LEVELSTAT_NAMED_SCALAR_DELETE(DeleteMoveChunkManagerAuto, DestroyMoveChunkManagerAutoThunk)
+DEFINE_LEVELSTAT_NAMED_SCALAR_DELETE(DeleteLevelScreenActionPanelAuto, DestroyLevelScreenActionPanelResourcesThunk)
+
+#undef DEFINE_LEVELSTAT_NAMED_SCALAR_DELETE
+
+// SYNTHETIC: LEMBALL 0x00432350
+// DeleteQueuedRenderPointSinkWrapperAuto
+// SYNTHETIC: LEMBALL 0x00432a90
+// DeleteStatusIndicatorPointSinkEntryAuto
+// SYNTHETIC: LEMBALL 0x004396e0
+// DeleteRenderPointRectSinkEntryAuto
+// SYNTHETIC: LEMBALL 0x00447170
+// DeleteFramedScreenRenderChildEntryAAuto
+// SYNTHETIC: LEMBALL 0x004471a0
+// DeleteFramedScreenRenderChildEntryBAuto
+
+#define DEFINE_LEVELSTAT_COMPAT_DELETE(name)                                                                           \
+	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
+	{                                                                                                                  \
+		*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;                                        \
+		if ((fDelete & 1) != 0) {                                                                                      \
+			FreeVSMemBlock(pObject);                                                                                   \
+		}                                                                                                              \
+		return pObject;                                                                                                \
+	}
+
+DEFINE_LEVELSTAT_COMPAT_DELETE(DeleteQueuedRenderPointSinkWrapperAuto)
+DEFINE_LEVELSTAT_COMPAT_DELETE(DeleteStatusIndicatorPointSinkEntryAuto)
+DEFINE_LEVELSTAT_COMPAT_DELETE(DeleteRenderPointRectSinkEntryAuto)
+DEFINE_LEVELSTAT_COMPAT_DELETE(DeleteFramedScreenRenderChildEntryAAuto)
+DEFINE_LEVELSTAT_COMPAT_DELETE(DeleteFramedScreenRenderChildEntryBAuto)
+
+#undef DEFINE_LEVELSTAT_COMPAT_DELETE
+
+// SYNTHETIC: LEMBALL 0x00439400
+// DeletePackagedSpriteRenderEntryAuto
+void* LEMBALL_FASTCALL DeletePackagedSpriteRenderEntryAuto(void* pObject, void*, BYTE fDelete)
+{
+	*(void**) pObject = &g_LEVEL_PackagedSpriteRenderEntryVtableStorage[4];
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
+
+// SYNTHETIC: LEMBALL 0x00442ca0
+// LevelScreenActionButtonLayoutAuto::Position
+struct LevelScreenActionButtonLayoutAuto {
+	void Position(const VS_XYPair* pPanelOrigin);
+};
+
+void LevelScreenActionButtonLayoutAuto::Position(const VS_XYPair* pPanelOrigin)
+{
+	char* pButtonBytes;
+	char* pPanel;
+	VS_XYPair Point;
+
+	pButtonBytes = (char*) this;
+	Point.m_x = pPanelOrigin->m_x;
+	Point.m_y = pPanelOrigin->m_y;
+	pPanel = *(char**) (pButtonBytes + 0x0c);
+	Point.m_x =
+		(short) (Point.m_x + (*(short*) (pPanel + 0x48) + *(short*) (pPanel + 0x44)) * *(short*) (pButtonBytes + 0x14));
+	((VS_RootGeometryOwner*) *(void**) (pButtonBytes + 4))->MoveWindowOwnerOrigin(&Point);
+}
+
+// SYNTHETIC: LEMBALL 0x0046b3b0
+// GameCursorRenderClientAuto::SetListResourceEntry
+struct GameCursorRenderClientAuto {
+	void SetListResourceEntry(int nResourceId, int nEntryIndex);
+};
+
+void GameCursorRenderClientAuto::SetListResourceEntry(int nResourceId, int nEntryIndex)
+{
+	int* pClient;
+	int nOffset;
+
+	pClient = (int*) this;
+	if (nResourceId != pClient[0xa]) {
+		if (pClient[0xa] != 0) {
+			ReleaseTypedResourceObjectReference((void*) (unsigned long) pClient[8]);
+		}
+		pClient[0xa] = nResourceId;
+		pClient[9] = -1;
+		if (nResourceId != 0) {
+			pClient[8] = (int) (unsigned long) LoadZrleOnlyListResource(nResourceId);
+		}
+		else {
+			pClient[8] = 0;
+		}
+	}
+
+	if (pClient[9] != nEntryIndex && pClient[8] != 0) {
+		pClient[9] = nEntryIndex;
+		for (nOffset = 0; nOffset < 0x18; nOffset += 0x18) {
+			*(int*) (pClient[7] + 8 + nOffset) = *(int*) (pClient[8] + 0x78) + pClient[9] * 0x54;
+		}
+	}
+}
+
+extern void LEMBALL_FASTCALL DestroyBaseModeObjectAutoThunk(void* pObject);
+
+// SYNTHETIC: LEMBALL 0x004472b0
+// DeleteBaseModeObjectAuto
+void* LEMBALL_FASTCALL DeleteBaseModeObjectAuto(void* pObject, void*, BYTE fDelete)
+{
+	DestroyBaseModeObjectAutoThunk(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
+
+// SYNTHETIC: LEMBALL 0x00430a50
+// LevelViewRotationTransformAuto::TransformScreenToTile
+struct LevelViewRotationTransformAuto {
+	void* m_pVtable00;
+	int m_nRotation04;
+
+	void TransformScreenToTile(int nScreenX, int nScreenY, int* pTileX, int* pTileY);
+};
+
+void LevelViewRotationTransformAuto::TransformScreenToTile(int nScreenX, int nScreenY, int* pTileX, int* pTileY)
+{
+	switch (m_nRotation04) {
+	case 0:
+		*pTileX = nScreenX / 2 + nScreenY - 8;
+		*pTileY = nScreenY - nScreenX / 2 + 8;
+		break;
+	case 1:
+		*pTileX = nScreenY - nScreenX / 2 + 8;
+		*pTileY = 0x18 - nScreenX / 2 - nScreenY;
+		break;
+	case 2:
+		*pTileX = 0x18 - nScreenX / 2 - nScreenY;
+		*pTileY = nScreenX / 2 - nScreenY + 8;
+		break;
+	case 3:
+		*pTileX = nScreenX / 2 - nScreenY + 8;
+		*pTileY = nScreenX / 2 + nScreenY - 8;
+		break;
+	}
 }

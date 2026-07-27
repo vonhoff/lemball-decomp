@@ -26,6 +26,7 @@ address,size,name,unit
 0x00407E10,30,delete_stream_format_state,LEVEL/LEVELVT.CPP
 0x00407E40,47,delete_formatted_output_stream,LEVEL/LEVELVT.CPP
 0x00407E80,69,delete_fixed_buffer_formatted_output_stream,LEVEL/LEVELVT.CPP
+0x00407EE0,13,forward_update_named_status_entry_00407ee0,FRONTEND/MAINMENU.CPP
 0x00407EF0,31,delete_simple_vtable_object_00407ef0,LEVEL/LEVELVT.CPP
 0x00407F20,1,noop_vtable_callback_00407f20,LEVEL/LEVELVT.CPP
 0x00407F30,5,return_false_vtable_callback_00407f30,LEVEL/LEVELVT.CPP

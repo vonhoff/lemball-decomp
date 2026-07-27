@@ -1213,6 +1213,15 @@ void LEMBALL_FASTCALL SetMenuSelectorChildrenEnabledThunk(GameMenuSelectorManage
 	SetMenuSelectorChildrenEnabled(pManager, nUnusedEdx, fEnabled);
 }
 
+// LINKERILT: LEMBALL 0x00401154
+// DestroyQueuedVariantRangeEntryAutoThunk
+
+// LINKERILT: LEMBALL 0x00401406
+// DestroyMenuSelectorManagerAutoThunk
+
+// LINKERILT: LEMBALL 0x00402329
+// DestroyMenuSelectorEntryAutoThunk
+
 // LINKERILT: LEMBALL 0x00402432
 GameMenuSelectorManager* LEMBALL_FASTCALL ConstructMenuSelectorManagerThunk(GameMenuSelectorManager* pManager,
 																			int nUnusedEdx,
@@ -1307,24 +1316,10 @@ void* LEMBALL_FASTCALL InitializeMenuActionFramePointSink(void* pObject)
 // FUNCTION: LEMBALL 0x004439b0
 void* GameMenuActionFramePointSink::Delete(unsigned int fDelete)
 {
-	GameMenuActionFramePointSink* pEntry;
-	int cEntries;
-
-	if ((fDelete & 2) == 0) {
-		m_pVtable00 = (void**) g_pQueuedRenderPointSinkFinalizeThunk;
-		if ((fDelete & 1) != 0) {
-			FreeVSMemBlock(this);
-		}
-		return this;
+	m_pVtable00 = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(this);
 	}
-
-	cEntries = *(int*) ((char*) this - 4);
-	pEntry = this + cEntries;
-	while (--cEntries >= 0) {
-		--pEntry;
-		pEntry->m_pVtable00 = (void**) g_pQueuedRenderPointSinkFinalizeThunk;
-	}
-	FreeVSMemBlock((char*) this - 4);
 	return this;
 }
 // FUNCTION: LEMBALL 0x00443a20
@@ -2297,7 +2292,7 @@ void LEMBALL_FASTCALL UpdateMenuSelectorAnimation(GameMenuSelectorManager* pMana
 		}
 	}
 }
-// FUNCTION: LEMBALL 0x0044e620
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteMenuSelectorEntry(GameMenuSelectorEntry* pEntry, int, int fDelete)
 {
 	DestroyMenuSelectorEntry(pEntry);
@@ -2306,7 +2301,7 @@ void* LEMBALL_FASTCALL DeleteMenuSelectorEntry(GameMenuSelectorEntry* pEntry, in
 	}
 	return pEntry;
 }
-// FUNCTION: LEMBALL 0x0044e690
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteMenuSelectorManager(GameMenuSelectorManager* pManager, int, int fDelete)
 {
 	DestroyMenuSelectorManager(pManager);
@@ -2877,7 +2872,10 @@ void LEMBALL_FASTCALL RefreshQueuedVariantChildByToken(void* pObject, int, int n
 		}
 	}
 }
-// FUNCTION: LEMBALL 0x0044ffc0
+// STUB: LEMBALL 0x0044f130
+// DestroyQueuedVariantRangeEntryAuto
+
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteQueuedVariantRangeEntry(GameQueuedVariantRangeEntry* pEntry, int, int fDelete)
 {
 	DestroyQueuedVariantRangeEntry(pEntry);
@@ -3434,4 +3432,61 @@ void MenuSelectorXorFieldView::RecomputeField104FromXor(int nUnused)
 	nValue = *(volatile int*) ((char*) this + 0xd0);
 	nValue ^= *(volatile int*) ((char*) this + 0x130);
 	*(int*) ((char*) this + 0x104) = nValue;
+}
+
+// Compatibility shim for original ILT call site.
+void LEMBALL_FASTCALL DestroyMenuSelectorEntryAutoThunk(void* pObject)
+{
+	DestroyMenuSelectorEntry((GameMenuSelectorEntry*) pObject);
+}
+
+// Compatibility shim for original ILT call site.
+void LEMBALL_FASTCALL DestroyMenuSelectorManagerAutoThunk(void* pObject)
+{
+	DestroyMenuSelectorManager((GameMenuSelectorManager*) pObject);
+}
+
+// SYNTHETIC: LEMBALL 0x0044fff0
+// DeleteQueuedVariantChildSlotManagerAuto
+// SYNTHETIC: LEMBALL 0x0044e620
+// DeleteMenuSelectorEntryAuto
+// SYNTHETIC: LEMBALL 0x0044e690
+// DeleteMenuSelectorManagerAuto
+
+#define DEFINE_MENUSEL_NAMED_SCALAR_DELETE(name, destroy)                                                              \
+	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
+	{                                                                                                                  \
+		destroy(pObject);                                                                                              \
+		if ((fDelete & 1) != 0) {                                                                                      \
+			FreeVSMemBlock(pObject);                                                                                   \
+		}                                                                                                              \
+		return pObject;                                                                                                \
+	}
+
+DEFINE_MENUSEL_NAMED_SCALAR_DELETE(DeleteQueuedVariantChildSlotManagerAuto, destroy_queued_variant_child_slot_manager)
+DEFINE_MENUSEL_NAMED_SCALAR_DELETE(DeleteMenuSelectorEntryAuto, DestroyMenuSelectorEntryAutoThunk)
+DEFINE_MENUSEL_NAMED_SCALAR_DELETE(DeleteMenuSelectorManagerAuto, DestroyMenuSelectorManagerAutoThunk)
+
+#undef DEFINE_MENUSEL_NAMED_SCALAR_DELETE
+
+// Comparison-only compatibility stub.
+void LEMBALL_FASTCALL DestroyQueuedVariantRangeEntryAuto(void*)
+{
+}
+
+// Compatibility shim for original ILT call site.
+void LEMBALL_FASTCALL DestroyQueuedVariantRangeEntryAutoThunk(void* pObject)
+{
+	DestroyQueuedVariantRangeEntryAuto(pObject);
+}
+
+// SYNTHETIC: LEMBALL 0x0044ffc0
+// DeleteQueuedVariantRangeEntryAuto
+void* LEMBALL_FASTCALL DeleteQueuedVariantRangeEntryAuto(void* pObject, void*, BYTE fDelete)
+{
+	DestroyQueuedVariantRangeEntryAutoThunk(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
 }

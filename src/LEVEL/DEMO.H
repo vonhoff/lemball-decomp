@@ -12,13 +12,14 @@ struct DemoLevelDemoPlaybackController {
 	void ResetLevelDemoPlaybackCursorThunk(void);
 	void SetLevelDemoPlaybackEnabled(int fEnabled);
 	void DestroyLevelDemoPlaybackController(void);
+	void DestroyLevelDemoPlaybackControllerThunk(void);
 };
 void LEMBALL_FASTCALL ReleaseLevelDemoRecordBufferThunk(void* pPlaybackController);
 void ServiceLevelDemoPlayback(void* pPlaybackController);
 void LEMBALL_FASTCALL ReleaseLevelDemoRecordBuffer(void* pPlaybackController);
 void LEMBALL_FASTCALL StopLevelDemoPlayback(void* pPlaybackController);
 int FilterLevelDemoPlaybackInputEvent(void* pPlaybackController, unsigned short* pEventId);
-void* RestoreLevelDemoPlaybackBaseVtable(void* pPlaybackController, unsigned char fDelete);
+void* LEMBALL_FASTCALL RestoreLevelDemoPlaybackBaseVtable(void* pPlaybackController, void*, unsigned char fDelete);
 
 extern void* g_pLevelDemoPlaybackController;
 extern void* g_pLevelDemoPlaybackDescriptor;

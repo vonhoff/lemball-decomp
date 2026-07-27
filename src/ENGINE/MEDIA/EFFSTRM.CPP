@@ -7,6 +7,9 @@
 
 #include <string.h>
 
+// LINKERILT: LEMBALL 0x004035f3
+// DestroyNetworkLobbyVsnetRuntimeAutoThunk
+
 extern int PASCAL ReturnTrueVtableCallbackThunk(void* pObject);
 extern void* g_pNetworkLobbyVsnetRuntime;
 extern char* g_pszPendingNetworkLobbyStatusText;
@@ -832,7 +835,7 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void* pObject,
 
 	(void) pUnused;
 	pStream = (VsNetEffStreamBase*) pObject;
-	pStream->DestroyEffStreamBase();
+	pStream->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}
@@ -845,13 +848,18 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbyU32PayloadStream(void* pObject, void* p
 
 	(void) pUnused;
 	pStream = (VsNetEffStreamBase*) pObject;
-	pStream->DestroyEffStreamBase();
+	pStream->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}
 	return pObject;
 }
-// FUNCTION: LEMBALL 0x00452f20
+// SYNTHETIC: LEMBALL 0x00452ec0
+// DeleteNetworkLobbyPeerClearCloseStream
+// SYNTHETIC: LEMBALL 0x00452ef0
+// DeleteNetworkLobbyPeerDirtyConfirmStream
+
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteNetworkLobbyVsnetRuntime(void* pObject, int nUnused, BYTE fDelete)
 {
 	(void) nUnused;
@@ -1040,6 +1048,9 @@ int HasShiftedRecordSlotPayloadForStream(void* pTransportPeer, void* pStream)
 				->GetShiftedRecordSlotByPacketId(((GameEffStream*) pStream)->m_nEventCode);
 	return pSlot->m_fHasPayload;
 }
+// STUB: LEMBALL 0x004550c0
+// DestroyNetworkLobbyTransportControllerRealAuto
+
 // FUNCTION: LEMBALL 0x0045fc50
 void LoadStreamFromShiftedRecordSlotAndClear(void* pTransportPeer, void* pStream)
 {
@@ -1103,4 +1114,41 @@ void GameEffTransportRuntimeWindow::UnregisterEffTransportEventClient(void)
 			->UnregisterOrderedRenderDispatchClient(pClient, 0);
 		m_pSecondaryDispatchClient = 0;
 	}
+}
+
+#define DEFINE_EFFSTRM_AUTO_DELETE(name)                                                                               \
+	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
+	{                                                                                                                  \
+		((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();                              \
+		if ((fDelete & 1) != 0) {                                                                                      \
+			FreeVSMemBlock(pObject);                                                                                   \
+		}                                                                                                              \
+		return pObject;                                                                                                \
+	}
+
+DEFINE_EFFSTRM_AUTO_DELETE(DeleteNetworkLobbyPeerClearCloseStream)
+DEFINE_EFFSTRM_AUTO_DELETE(DeleteNetworkLobbyPeerDirtyConfirmStream)
+
+#undef DEFINE_EFFSTRM_AUTO_DELETE
+
+// Compatibility shim for original ILT call site.
+void LEMBALL_FASTCALL DestroyNetworkLobbyVsnetRuntimeAutoThunk(void* pObject)
+{
+	DestroyNetworkLobbyVsnetRuntime(pObject);
+}
+
+// SYNTHETIC: LEMBALL 0x00452f20
+// DeleteNetworkLobbyVsnetRuntimeAuto
+void* LEMBALL_FASTCALL DeleteNetworkLobbyVsnetRuntimeAuto(void* pObject, void*, BYTE fDelete)
+{
+	DestroyNetworkLobbyVsnetRuntimeAutoThunk(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
+
+// Compatibility stub for comparison-only scalar wrapper.
+void LEMBALL_FASTCALL DestroyNetworkLobbyTransportControllerRealAuto(void*)
+{
 }

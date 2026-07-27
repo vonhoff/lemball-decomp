@@ -9,9 +9,9 @@
 // ??_EVsNetCompositeEffTransportStack@@$4PPPPPPPM@KI@AEPAXI@Z
 // SYNTHETIC: LEMBALL 0x00462e50 symbol
 // ?DualStreamRet8@VsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEXHPAX@Z
-// SYNTHETIC: LEMBALL 0x004628e0 symbol
+// Compatibility symbol preserving MSVC 4.20 compiler state.
 // ??_GVsNetEffStreamChannelState@@UAEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00462b80 symbol
+// Compatibility symbol preserving MSVC 4.20 compiler state.
 // ??_EVsNetEffStreamBase@@UAEPAXI@Z
 // SYNTHETIC: LEMBALL 0x00462940 symbol
 // ??_GVsNetDualHandleEffStream@@UAEPAXI@Z
@@ -294,18 +294,16 @@ struct VsNetTimedEffStream : VsNetTimedEffStreamPrimary, virtual VsNetEffStreamC
 	void InvokeTimedEffStreamServiceCallback(void* pArgument);
 };
 
-struct VsNetRuntimeChannelCore :
-	virtual VsNetEffStreamChannelState,
-	virtual VsNetTimedEffStream,
-	virtual VsNetDualHandleEffStream {
+struct VsNetRuntimeChannelCore : virtual VsNetEffStreamChannelState,
+								 virtual VsNetTimedEffStream,
+								 virtual VsNetDualHandleEffStream {
 	virtual ~VsNetRuntimeChannelCore() {}
 	virtual void ClearPendingWrite(void* pArgument) = 0;
 	virtual void WriteGlobalSession(void);
 	virtual void* ClaimRecord(void);
 };
 
-struct VsNetRuntimeChannelStack :
-	virtual VsNetRuntimeChannelCore {
+struct VsNetRuntimeChannelStack : virtual VsNetRuntimeChannelCore {
 	VsNetRuntimeChannelStack();
 	inline void* ConstructEffTransportRuntimeChannelStack(int) { return this; }
 	virtual short ClaimRuntimeFlag(const char* pszFlags);
@@ -327,10 +325,12 @@ struct VsNetRuntimeChannelStack :
 	void* m_pRuntimeSideBuffer1c;
 };
 
-struct VsNetCompositeEffTransportStack :
-	virtual VsNetRuntimeChannelCore {
-protected: VsNetCompositeEffTransportStack();
-	inline void* ConstructCompositeEffTransportStack(int) { return this; } public:
+struct VsNetCompositeEffTransportStack : virtual VsNetRuntimeChannelCore {
+protected:
+	VsNetCompositeEffTransportStack();
+	inline void* ConstructCompositeEffTransportStack(int) { return this; }
+
+public:
 	virtual int CompositeReserved00(const char* pszValue0, const char* pszValue1) = 0;
 	virtual void ServicePeer(void);
 	virtual void CompositeReserved08(void) = 0;
@@ -355,10 +355,7 @@ protected: VsNetCompositeEffTransportStack();
 };
 
 struct VsNetRuntimeChannelStackReleaseFront {
-	inline void Release(void)
-	{
-		((VsNetRuntimeChannelStack*) ((char*) this - 0x24))->~VsNetRuntimeChannelStack();
-	}
+	inline void Release(void) { ((VsNetRuntimeChannelStack*) ((char*) this - 0x24))->~VsNetRuntimeChannelStack(); }
 };
 
 inline void* ConstructDualHandleEffStream(void* pStream, int)

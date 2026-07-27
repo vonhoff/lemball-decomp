@@ -279,7 +279,7 @@ struct GameListResourceStreamInterface {
 
 #include "ENGINE/CORE/SAFEVT.H"
 
-// FUNCTION: LEMBALL 0x00447db0
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void LoadMainGameVariantZrleListResource(void* pBundle, int nResourceId)
 {
 	GameMainGameVariantResourceBundleLoader* pResourceBundle;
@@ -291,7 +291,7 @@ void LoadMainGameVariantZrleListResource(void* pBundle, int nResourceId)
 	++pResourceBundle->m_cLoadedZrleListResources;
 }
 
-// FUNCTION: LEMBALL 0x00447e30
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void LoadMainGameVariantListResource(void* pBundle, int nResourceId)
 {
 	GameMainGameVariantResourceBundleLoader* pResourceBundle;
@@ -302,7 +302,7 @@ void LoadMainGameVariantListResource(void* pBundle, int nResourceId)
 	++pResourceBundle->m_cLoadedListResources;
 }
 
-// FUNCTION: LEMBALL 0x00447eb0
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void LoadMainGameVariantBitmapResource(void* pBundle, int nResourceId)
 {
 	GameMainGameVariantResourceBundleLoader* pResourceBundle;
@@ -313,7 +313,7 @@ void LoadMainGameVariantBitmapResource(void* pBundle, int nResourceId)
 	++pResourceBundle->m_cLoadedBitmapResources;
 }
 
-// FUNCTION: LEMBALL 0x00447f30
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void LoadMainGameVariantPaletteResource(void* pBundle, int nResourceId)
 {
 	GameMainGameVariantResourceBundleLoader* pResourceBundle;
@@ -332,7 +332,7 @@ void GameMainGameVariantResourceBundleLoader::LoadMainGameVariantStringResource(
 	++m_cStringResources;
 }
 
-// FUNCTION: LEMBALL 0x00448030
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void LoadMainGameVariantTwoArrayListResource(void* pBundle, int nResourceId)
 {
 	GameMainGameVariantResourceBundleLoader* pResourceBundle;
@@ -684,6 +684,9 @@ void* ConstructIntZrleListResourceFromId(void* pObject, int nResourceId)
 	pListResource[6] = 1;
 	return pObject;
 }
+
+// STUB: LEMBALL 0x0045d810
+// DestroyIntZrleListResourceAuto
 
 // FUNCTION: LEMBALL 0x0045d850
 void* LoadListResource(int nResourceId)
@@ -1183,3 +1186,107 @@ void LEMBALL_FASTCALL SetPresResourceTypeTag(void* pResource)
 {
 	*(unsigned int*) ((char*) pResource + 0x40) = 0x50524553;
 }
+
+// SYNTHETIC: LEMBALL 0x00447db0
+// LoadMainGameVariantZrleListResourceAuto
+void LEMBALL_FASTCALL LoadMainGameVariantZrleListResourceAuto(void* pBundle, void*, int nResourceId)
+{
+	GameMainGameVariantResourceBundleLoader* pResourceBundle;
+
+	pResourceBundle = (GameMainGameVariantResourceBundleLoader*) pBundle;
+	((GameVariantResourceBundleLoadInterface*) pBundle)->PrepareNextResourceLoad();
+	pResourceBundle->m_ppZrleListResources[pResourceBundle->m_cLoadedZrleListResources] =
+		LoadZrleOnlyListResource(nResourceId);
+	++pResourceBundle->m_cLoadedZrleListResources;
+}
+
+// SYNTHETIC: LEMBALL 0x00447e30
+// LoadMainGameVariantListResourceAuto
+void LEMBALL_FASTCALL LoadMainGameVariantListResourceAuto(void* pBundle, void*, int nResourceId)
+{
+	GameMainGameVariantResourceBundleLoader* pResourceBundle;
+
+	pResourceBundle = (GameMainGameVariantResourceBundleLoader*) pBundle;
+	((GameVariantResourceBundleLoadInterface*) pBundle)->PrepareNextResourceLoad();
+	pResourceBundle->m_ppListResources[pResourceBundle->m_cLoadedListResources] = LoadListResource(nResourceId);
+	++pResourceBundle->m_cLoadedListResources;
+}
+
+// SYNTHETIC: LEMBALL 0x00447eb0
+// LoadMainGameVariantBitmapResourceAuto
+void LEMBALL_FASTCALL LoadMainGameVariantBitmapResourceAuto(void* pBundle, void*, int nResourceId)
+{
+	GameMainGameVariantResourceBundleLoader* pResourceBundle;
+
+	pResourceBundle = (GameMainGameVariantResourceBundleLoader*) pBundle;
+	((GameVariantResourceBundleLoadInterface*) pBundle)->PrepareNextResourceLoad();
+	pResourceBundle->m_ppBitmapResources[pResourceBundle->m_cLoadedBitmapResources] = LoadBitmapResource(nResourceId);
+	++pResourceBundle->m_cLoadedBitmapResources;
+}
+
+// SYNTHETIC: LEMBALL 0x00447f30
+// LoadMainGameVariantPaletteResourceAuto
+void LEMBALL_FASTCALL LoadMainGameVariantPaletteResourceAuto(void* pBundle, void*, int nResourceId)
+{
+	GameMainGameVariantResourceBundleLoader* pResourceBundle;
+
+	pResourceBundle = (GameMainGameVariantResourceBundleLoader*) pBundle;
+	((GameVariantResourceBundleLoadInterface*) pBundle)->PrepareNextResourceLoad();
+	pResourceBundle->m_ppPaletteResources[pResourceBundle->m_cPaletteResources] = LoadPalResource(nResourceId);
+	++pResourceBundle->m_cPaletteResources;
+}
+
+// SYNTHETIC: LEMBALL 0x00448030
+// LoadMainGameVariantTwoArrayListResourceAuto
+void LEMBALL_FASTCALL LoadMainGameVariantTwoArrayListResourceAuto(void* pBundle, void*, int nResourceId)
+{
+	GameMainGameVariantResourceBundleLoader* pResourceBundle;
+
+	pResourceBundle = (GameMainGameVariantResourceBundleLoader*) pBundle;
+	((GameVariantResourceBundleLoadInterface*) pBundle)->PrepareNextResourceLoad();
+	pResourceBundle->m_ppTwoArrayListResources[pResourceBundle->m_cTwoArrayListResources] =
+		LoadTwoArrayListResource(nResourceId);
+	++pResourceBundle->m_cTwoArrayListResources;
+}
+
+// Comparison-only compatibility stub.
+void LEMBALL_FASTCALL DestroyIntZrleListResourceAuto(void*)
+{
+}
+
+// SYNTHETIC: LEMBALL 0x0045e8d0
+// DestroyIntZrleListResourceAndFreeAuto
+void* LEMBALL_FASTCALL DestroyIntZrleListResourceAndFreeAuto(void* pObject, void*, BYTE fDelete)
+{
+	DestroyIntZrleListResourceAuto(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
+
+// SYNTHETIC: LEMBALL 0x0045ea10
+// DeleteColResourceAuto
+// SYNTHETIC: LEMBALL 0x0045eb50
+// DeleteGamiResourceAuto
+// SYNTHETIC: LEMBALL 0x0045ebe0
+// DestroyPtchResourceAuto
+// SYNTHETIC: LEMBALL 0x0045ec10
+// DestroyTuneResourceAuto
+
+#define DEFINE_VARLOAD_RESOURCE_DELETE(name)                                                                           \
+	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
+	{                                                                                                                  \
+		InitializeTypedResourceObjectBaseVtable(pObject);                                                              \
+		if ((fDelete & 1) != 0) {                                                                                      \
+			FreeVSMemBlock(pObject);                                                                                   \
+		}                                                                                                              \
+		return pObject;                                                                                                \
+	}
+
+DEFINE_VARLOAD_RESOURCE_DELETE(DeleteColResourceAuto)
+DEFINE_VARLOAD_RESOURCE_DELETE(DeleteGamiResourceAuto)
+DEFINE_VARLOAD_RESOURCE_DELETE(DestroyPtchResourceAuto)
+DEFINE_VARLOAD_RESOURCE_DELETE(DestroyTuneResourceAuto)
+
+#undef DEFINE_VARLOAD_RESOURCE_DELETE

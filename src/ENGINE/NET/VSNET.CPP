@@ -8,6 +8,12 @@
 #include "GAME.H"
 
 extern void* g_GAME_EffStreamConstructionVtable[6];
+void* LEMBALL_FASTCALL DeleteSimpleEffTransportRecordSlotAuto(void*, void*, BYTE);
+void* LEMBALL_FASTCALL DeleteEffTransportRecordBufferAuto(void*, void*, BYTE);
+static void* g_NETWORK_EffTransportDeleteCompilerState[2] = {
+	(void*) DeleteSimpleEffTransportRecordSlotWrapper,
+	(void*) DeleteEffTransportRecordBufferWrapper,
+};
 
 // GLOBAL: LEMBALL 0x004991c0
 void* g_NETWORK_LockedEffTransportRecordCriticalSectionVtable[2] = {
@@ -24,11 +30,11 @@ void* g_NETWORK_EffTransportRecordBufferVtable[1] = {
 };
 // GLOBAL: LEMBALL 0x004991d0
 void* g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable[1] = {
-	(void*) DeleteSimpleEffTransportRecordSlotWrapper,
+	(void*) DeleteSimpleEffTransportRecordSlotAuto,
 };
 // GLOBAL: LEMBALL 0x004991d4
 void* g_NETWORK_DeleteEffTransportRecordBufferVtable[1] = {
-	(void*) DeleteEffTransportRecordBufferWrapper,
+	(void*) DeleteEffTransportRecordBufferAuto,
 };
 // GLOBAL: LEMBALL 0x004991d8
 void* g_NETWORK_DeleteRangeEffTransportRecordBufferTableVtable[1] = {
@@ -49,12 +55,12 @@ extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
 extern void ReturnVoidVtableCallback(void);
 extern void LEMBALL_FASTCALL ReadEffStreamTwoU16Fields(void* pObject);
-extern void* DeleteEffStreamBaseWrapper00462810(void* pObject, BYTE fDelete);
-extern void* DeleteEffStreamBaseWrapper00462830(void* pObject, BYTE fDelete);
-extern void* DeleteEffStreamBaseWrapper00462850(void* pObject, BYTE fDelete);
-extern void* DeleteEffStreamBaseWrapper00462870(void* pObject, BYTE fDelete);
-extern void* DeleteEffStreamBaseWrapper00462890(void* pObject, BYTE fDelete);
-extern void* DeleteEffStreamBaseWrapper004628B0(void* pObject, BYTE fDelete);
+extern void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462810(void* pObject, void*, BYTE fDelete);
+extern void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462830(void* pObject, void*, BYTE fDelete);
+extern void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462850(void* pObject, void*, BYTE fDelete);
+extern void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462870(void* pObject, void*, BYTE fDelete);
+extern void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462890(void* pObject, void*, BYTE fDelete);
+extern void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper004628B0(void* pObject, void*, BYTE fDelete);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 extern void* g_pActiveNetworkRuntimeWindow;
 extern void* g_pEffTransportDispatchQueue;
@@ -1081,8 +1087,7 @@ struct VsNetDispatchAckedEffTransportPayloadView {
 struct VsNetQueueEffTransportPayloadEventView {
 	inline void QueueEffTransportPayloadEvent(int nType, void* pPayload)
 	{
-		((VsNetCompositeEffTransportStack*) this)
-			->VsNetCompositeEffTransportStack::DualStreamRet8(nType, pPayload);
+		((VsNetCompositeEffTransportStack*) this)->VsNetCompositeEffTransportStack::DualStreamRet8(nType, pPayload);
 	}
 };
 
@@ -1954,8 +1959,8 @@ void VsNetRuntimeChannelStack::ServiceRuntimeConnect(void)
 		pPeerKey->SetConnectionMode(*(int*) (pbObject + 0x0c));
 	}
 	if (fSend != 0) {
-		((VsNetChannelOwnerObject*) this)->SendLoadedEffEventToPeer(pPeerKey,
-													 g_pEffTransportRequestConnectControlStream);
+		((VsNetChannelOwnerObject*) this)
+			->SendLoadedEffEventToPeer(pPeerKey, g_pEffTransportRequestConnectControlStream);
 	}
 	FreeVSMemBlock(pPeerKey);
 	*(DWORD*) (pbObject + 0x18) = dwNow;
@@ -2231,9 +2236,9 @@ void* VsNetCompositeEffTransportStack::ClaimRecord(void)
 	char* pTimedStream = (char*) this + 0x60;
 
 	pPayload = ((VsNetRuntimeChannelCore*) (pTimedStream +
-												  ((VsNetEffTransportAckDispatchOwner*) (pTimedStream - 0x60))
-														  ->m_pOffsets04->m_nAckRecordOwnerViewOffset08 -
-													  0x5c))
+											((VsNetEffTransportAckDispatchOwner*) (pTimedStream - 0x60))
+												->m_pOffsets04->m_nAckRecordOwnerViewOffset08 -
+											0x5c))
 				   ->VsNetRuntimeChannelCore::ClaimRecord();
 	if (pPayload != 0) {
 		pOwner = (VsNetEffTransportAckDispatchOwner*) (pTimedStream - 0x60);
@@ -3640,15 +3645,15 @@ void VsNetEffTransportRuntimeState::CleanupEffTransportRuntimeState(void)
 // FUNCTION: LEMBALL 0x00462720
 int VsNetEffTransportRuntimeState::BroadcastEffStreamToActivePeers(int* pStream)
 {
-	VsNetEffTransportRuntimeState* pState;
 	VsNetEffTransportPeer* pPeer;
-	int fSendBlocked;
 	int cActivePeers;
+	int* pActiveStream;
+	int fSendBlocked;
 
-	pState = this;
-	fSendBlocked = 0;
 	cActivePeers = 0;
-	pPeer = (VsNetEffTransportPeer*) pState->m_pFirstPeer;
+	pActiveStream = pStream;
+	pPeer = (VsNetEffTransportPeer*) m_pFirstPeer;
+	fSendBlocked = 0;
 
 	while (1) {
 		if (pPeer == 0) {
@@ -3661,7 +3666,7 @@ int VsNetEffTransportRuntimeState::BroadcastEffStreamToActivePeers(int* pStream)
 		if (pPeer->m_fClosed == 0) {
 			++cActivePeers;
 			if (fSendBlocked == 0) {
-				if (pPeer->SendEffStreamToActivePeer(pStream) != 0) {
+				if (pPeer->SendEffStreamToActivePeer(pActiveStream) != 0) {
 					fSendBlocked = 0;
 					pPeer = pPeer->m_pNext;
 					continue;
@@ -3716,7 +3721,7 @@ void* LEMBALL_FASTCALL DeleteLockedEffTransportRecordSlotWrapper(void* pObject, 
 	return pObject;
 }
 
-// FUNCTION: LEMBALL 0x00462a20
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* DeleteSimpleEffTransportRecordSlotWrapper(void* pObject, BYTE fFreeMemory)
 {
 	((VsNetSimpleEffTransportRecordSlot*) pObject)->DestroySimpleEffTransportRecordSlot();
@@ -3726,7 +3731,7 @@ void* DeleteSimpleEffTransportRecordSlotWrapper(void* pObject, BYTE fFreeMemory)
 	return pObject;
 }
 
-// FUNCTION: LEMBALL 0x00462a40
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* DeleteEffTransportRecordBufferWrapper(void* pObject, BYTE fFreeMemory)
 {
 	((VsNetEffTransportRecordBuffer*) pObject)->DestroyEffTransportRecordBuffer();
@@ -3775,7 +3780,7 @@ void VsNetEffTransportRuntimeState::WaitForFileBasedNetworkMessage(void)
 {
 }
 
-// FUNCTION: LEMBALL 0x00462ad0
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* DeleteEffTransportRuntimeGlobalsWrapper(void* pObject, BYTE fFreeMemory)
 {
 	((VsNetEffTransportRuntimeState*) pObject)->DestroyEffTransportRuntimeGlobals();
@@ -4357,3 +4362,32 @@ int LEMBALL_FASTCALL InitializeFileNetworkAddress(void*, void*, int nUnused)
 	g_pErrorOutputStream->AppendCStringToStream("use count entry in broadcast file\n");
 	return 0;
 }
+
+// SYNTHETIC: LEMBALL 0x00462a20
+// DeleteSimpleEffTransportRecordSlotAuto
+// SYNTHETIC: LEMBALL 0x00462a40
+// DeleteEffTransportRecordBufferAuto
+// SYNTHETIC: LEMBALL 0x00462ad0
+// DeleteEffTransportRuntimeGlobalsAuto
+
+#define DEFINE_VSNET_NAMED_SCALAR_DELETE(name, type, destroy)                                                          \
+	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
+	{                                                                                                                  \
+		((type*) pObject)->destroy();                                                                                  \
+		if ((fDelete & 1) != 0) {                                                                                      \
+			FreeVSMemBlock(pObject);                                                                                   \
+		}                                                                                                              \
+		return pObject;                                                                                                \
+	}
+
+DEFINE_VSNET_NAMED_SCALAR_DELETE(DeleteSimpleEffTransportRecordSlotAuto,
+								 VsNetSimpleEffTransportRecordSlot,
+								 DestroySimpleEffTransportRecordSlot)
+DEFINE_VSNET_NAMED_SCALAR_DELETE(DeleteEffTransportRecordBufferAuto,
+								 VsNetEffTransportRecordBuffer,
+								 DestroyEffTransportRecordBuffer)
+DEFINE_VSNET_NAMED_SCALAR_DELETE(DeleteEffTransportRuntimeGlobalsAuto,
+								 VsNetEffTransportRuntimeState,
+								 DestroyEffTransportRuntimeGlobals)
+
+#undef DEFINE_VSNET_NAMED_SCALAR_DELETE

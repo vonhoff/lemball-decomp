@@ -378,6 +378,9 @@ LevelNodeChunkRecord* LevelNodeChunkRecord::InitializeNodeChunkRecordThunk(void)
 {
 	return InitializeNodeChunkRecord();
 }
+// LINKERILT: LEMBALL 0x004014f1
+// DestroyLevelChunkStreamDispatcherAutoThunk
+
 // LINKERILT: LEMBALL 0x004015e1
 LevelNodeChunkManager* LevelNodeChunkManager::ConstructNodeChunkManagerThunk(int cCapacity)
 {
@@ -894,6 +897,9 @@ void LevelSpecialTileGridStaticRenderList::BuildSpecialLevelTileGridStaticRender
 		  sizeof(LevelTileGridStaticRenderEntry),
 		  CompareLevelTileGridStaticRenderEntrySortKeys);
 }
+// STUB: LEMBALL 0x0040b0d0
+// DestroyLevelChunkStreamDispatcherAuto
+
 // FUNCTION: LEMBALL 0x0040b120
 void ResetRegisteredLevelChunkStreamsThunk(void* pDispatcher)
 {
@@ -2139,6 +2145,9 @@ void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void* pObject)
 		*(int*) (pbObject + 0x20) = nSourceBuffer + 2;
 	}
 }
+// SYNTHETIC: LEMBALL 0x00453120
+// DeleteNetworkLevelChunkDeltaStreamAuto
+
 // FUNCTION: LEMBALL 0x0045fcc0
 void ClearPrimaryLockedRecordTablePayloadFlags(void* pPayload)
 {
@@ -2223,4 +2232,35 @@ void LevelRunSmallFunctionView::CopyNodeChunkRecordTileXY(int* pX, int* pY)
 {
 	*pX = *(int*) this >> 12;
 	*pY = *(int*) ((char*) this + 4) >> 12;
+}
+
+void* LEMBALL_FASTCALL DeleteNetworkLevelChunkDeltaStreamAuto(void* pObject, void*, BYTE fDelete)
+{
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
+
+// Comparison-only compatibility stub.
+void LEMBALL_FASTCALL DestroyLevelChunkStreamDispatcherAuto(void*)
+{
+}
+
+// Compatibility shim for original ILT call site.
+void LEMBALL_FASTCALL DestroyLevelChunkStreamDispatcherAutoThunk(void* pObject)
+{
+	DestroyLevelChunkStreamDispatcherAuto(pObject);
+}
+
+// SYNTHETIC: LEMBALL 0x0040b450
+// DeleteLevelChunkStreamDispatcherAuto
+void* LEMBALL_FASTCALL DeleteLevelChunkStreamDispatcherAuto(void* pObject, void*, BYTE fDelete)
+{
+	DestroyLevelChunkStreamDispatcherAutoThunk(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
 }

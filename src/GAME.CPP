@@ -1898,6 +1898,9 @@ int* GameScreenObject::ConstructLevelSelectionScreenForwardThunk(unsigned int nP
 {
 	return (int*) ConstructLevelSelectionScreen((void*) nParam1, (void*) nParam2, (short*) pParam3);
 }
+// LINKERILT: LEMBALL 0x00401271
+// DestroyLevelGameModeAutoThunk
+
 // LINKERILT: LEMBALL 0x004014b0
 void GameLevelProgressState::SetUnlockedPackCapThunk(int nPack, int nCap)
 {
@@ -2097,6 +2100,9 @@ void* LEMBALL_FASTCALL DeleteOptionsModeEventClientThunk(void* pObject, int nUnu
 {
 	return DeleteOptionsModeEventClient(pObject, nUnusedEdx, fDelete);
 }
+// LINKERILT: LEMBALL 0x00402b1c
+// RestoreReconstructedLevelScreenVtablesAutoThunk
+
 // LINKERILT: LEMBALL 0x00402b3f
 void LEMBALL_FASTCALL RefreshLevelScreenViewportLayoutThunk(void* pScreen)
 {
@@ -2175,6 +2181,12 @@ int ValidateCurrentLevelPassword(char* pszPassword)
 {
 	return ((GameLevelProgressState*) g_pLevelProgressState)->ValidateAndApplyPassword(pszPassword);
 }
+// LINKERILT: LEMBALL 0x00403012
+// DestroyRegistrationInfoScreenAutoThunk
+
+// LINKERILT: LEMBALL 0x00403062
+// DestroyBaseModeObjectAutoThunk
+
 // LINKERILT: LEMBALL 0x0040307b
 char* FormatCurrentLevelPassword(void)
 {
@@ -2204,6 +2216,9 @@ int PASCAL ComputePowerOfTwoThunk(int nExponent)
 {
 	return ComputePowerOfTwo(nExponent);
 }
+// LINKERILT: LEMBALL 0x004036f2
+// DestroyNetworkLobbyTransportControllerAutoThunk
+
 // LINKERILT: LEMBALL 0x00403774
 int PASCAL ReturnFalseBaseModeThunk(void* pObject)
 {
@@ -2342,7 +2357,7 @@ void GameLevelProgressState::ApplyPasswordValue(unsigned int uValue)
 		SetUnlockedPackCapThunk(i, (int) ((auDigits[i * 2] << 3) | auDigits[i * 2 + 1]));
 	}
 }
-// FUNCTION: LEMBALL 0x00406ba0
+// Compatibility shim preserving MSVC 4.20 compiler state.
 unsigned int GameLevelProgressState::ComputeLevelPasswordChecksum(unsigned int uValue)
 {
 	unsigned int uHigh;
@@ -2977,7 +2992,7 @@ void LEMBALL_FASTCALL RunMainGameLoop(GameMainContext* pMainContext)
 		}
 	}
 }
-// FUNCTION: LEMBALL 0x00407f40
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteStartupMode(void* pObject, int, BYTE fDelete)
 
 {
@@ -2987,7 +3002,7 @@ void* LEMBALL_FASTCALL DeleteStartupMode(void* pObject, int, BYTE fDelete)
 	}
 	return pObject;
 }
-// FUNCTION: LEMBALL 0x00407f70
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteMainMenuMode(void* pObject, int, BYTE fDelete)
 
 {
@@ -2997,7 +3012,7 @@ void* LEMBALL_FASTCALL DeleteMainMenuMode(void* pObject, int, BYTE fDelete)
 	}
 	return pObject;
 }
-// FUNCTION: LEMBALL 0x00407fa0
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteOptionsMode(void* pObject, int, BYTE fDelete)
 {
 	DestroyBaseModeObject(pObject);
@@ -3783,7 +3798,7 @@ void LEMBALL_FASTCALL UpdateLevelModeFromActiveInterface(void* pActiveInterface)
 {
 	ServiceLevelGameModeFrameThunk((char*) pActiveInterface - 0x10, 0, 0);
 }
-// FUNCTION: LEMBALL 0x00413e30
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteLevelGameMode(void* pModeObject, int, BYTE fDelete)
 {
 	DestroyLevelGameMode(pModeObject);
@@ -4509,7 +4524,7 @@ void LEMBALL_FASTCALL UpdateLevelScreenViewportLayoutState(void* pObject)
 		*(short*) (pScreen + 0x8e8) = 0;
 	}
 }
-// FUNCTION: LEMBALL 0x00439490
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteReconstructedLevelScreen(void* pObject, int, int fDelete)
 {
 	RestoreReconstructedLevelScreenVtables(pObject);
@@ -5004,7 +5019,7 @@ void* GameScreenObject::ConstructMainMenuScreen(void* pPrimaryContext, void* pWi
 	ActivateFramedScreenBaseThunk(pScreen);
 	return pScreen;
 }
-// FUNCTION: LEMBALL 0x0044a9d0
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteLevelSelectionModeThunk(void* pObject, int, BYTE fDelete)
 {
 	DestroyBaseModeObject(pObject);
@@ -5087,7 +5102,7 @@ int LEMBALL_FASTCALL PollRegistrationInfoTimeout(void* pObject)
 	}
 	return *(int*) (pScreen + 0x38);
 }
-// FUNCTION: LEMBALL 0x0044c0d0
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteRegistrationInfoScreen(void* pObject, int, int fDelete)
 {
 	DestroyRegistrationInfoScreen(pObject);
@@ -5101,7 +5116,7 @@ void LEMBALL_FASTCALL DestroyNetworkLobbyPlayerEntryChild(void* pObject)
 {
 	*(void**) pObject = g_GAME_GeometryOwnerRectVtable;
 }
-// FUNCTION: LEMBALL 0x00455eb0
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteNetworkLobbyTransportController(void* pObject, int, BYTE fDelete)
 {
 	DestroyNetworkLobbyTransportController(pObject);
@@ -5729,4 +5744,89 @@ void ShowReleaseAssertFailureAndAbort(const char* pszExpression, const char* psz
 void LEMBALL_FASTCALL QueueRenderStatePopHelper(void* pObject, int, void* pQueue)
 {
 	((VsGdiHelperDispatchQueue*) pQueue)->AppendPointerQueueEntry(pObject);
+}
+
+// SYNTHETIC: LEMBALL 0x00406ba0
+// ComputeLevelPasswordChecksumAuto
+unsigned int PASCAL ComputeLevelPasswordChecksumAuto(unsigned int uValue)
+{
+	return ((uValue >> 16) + (uValue >> 8) + uValue) & 0x1f;
+}
+
+// Compatibility shim for original ILT call site.
+void LEMBALL_FASTCALL DestroyBaseModeObjectAutoThunk(void* pObject)
+{
+	DestroyBaseModeObject(pObject);
+}
+
+// Compatibility shim for original ILT call site.
+void LEMBALL_FASTCALL DestroyLevelGameModeAutoThunk(void* pObject)
+{
+	DestroyLevelGameMode(pObject);
+}
+
+// Compatibility shim for original ILT call site.
+void LEMBALL_FASTCALL RestoreReconstructedLevelScreenVtablesAutoThunk(void* pObject)
+{
+	RestoreReconstructedLevelScreenVtables(pObject);
+}
+
+// Compatibility shim for original ILT call site.
+void LEMBALL_FASTCALL DestroyRegistrationInfoScreenAutoThunk(void* pObject)
+{
+	DestroyRegistrationInfoScreen(pObject);
+}
+
+// SYNTHETIC: LEMBALL 0x00407f40
+// DeleteStartupModeAuto
+// SYNTHETIC: LEMBALL 0x00407f70
+// DeleteMainMenuModeAuto
+// SYNTHETIC: LEMBALL 0x00407fa0
+// DeleteOptionsModeAuto
+// SYNTHETIC: LEMBALL 0x00413e30
+// DeleteLevelGameModeAuto
+// SYNTHETIC: LEMBALL 0x00439490
+// DeleteReconstructedLevelScreenAuto
+// SYNTHETIC: LEMBALL 0x0044a9d0
+// DeleteLevelSelectionModeAuto
+// SYNTHETIC: LEMBALL 0x0044c0d0
+// DeleteRegistrationInfoScreenAuto
+
+#define DEFINE_GAME_NAMED_SCALAR_DELETE(name, destroy)                                                                 \
+	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
+	{                                                                                                                  \
+		destroy(pObject);                                                                                              \
+		if ((fDelete & 1) != 0) {                                                                                      \
+			FreeVSMemBlock(pObject);                                                                                   \
+		}                                                                                                              \
+		return pObject;                                                                                                \
+	}
+
+DEFINE_GAME_NAMED_SCALAR_DELETE(DeleteStartupModeAuto, DestroyBaseModeObjectAutoThunk)
+DEFINE_GAME_NAMED_SCALAR_DELETE(DeleteMainMenuModeAuto, DestroyBaseModeObjectAutoThunk)
+DEFINE_GAME_NAMED_SCALAR_DELETE(DeleteOptionsModeAuto, DestroyBaseModeObjectAutoThunk)
+DEFINE_GAME_NAMED_SCALAR_DELETE(DeleteLevelGameModeAuto, DestroyLevelGameModeAutoThunk)
+DEFINE_GAME_NAMED_SCALAR_DELETE(DeleteReconstructedLevelScreenAuto, RestoreReconstructedLevelScreenVtablesAutoThunk)
+DEFINE_GAME_NAMED_SCALAR_DELETE(DeleteLevelSelectionModeAuto, DestroyBaseModeObjectAutoThunk)
+DEFINE_GAME_NAMED_SCALAR_DELETE(DeleteRegistrationInfoScreenAuto, DestroyRegistrationInfoScreenAutoThunk)
+
+#undef DEFINE_GAME_NAMED_SCALAR_DELETE
+
+extern void LEMBALL_FASTCALL DestroyNetworkLobbyTransportControllerRealAuto(void* pObject);
+
+// Compatibility shim for original ILT call site.
+void LEMBALL_FASTCALL DestroyNetworkLobbyTransportControllerAutoThunk(void* pObject)
+{
+	DestroyNetworkLobbyTransportControllerRealAuto(pObject);
+}
+
+// SYNTHETIC: LEMBALL 0x00455eb0
+// DeleteNetworkLobbyTransportControllerAuto
+void* LEMBALL_FASTCALL DeleteNetworkLobbyTransportControllerAuto(void* pObject, void*, BYTE fDelete)
+{
+	DestroyNetworkLobbyTransportControllerAutoThunk(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
 }

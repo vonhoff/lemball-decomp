@@ -1266,7 +1266,7 @@ void LongjmpStartupExceptionFrame(int nJumpResult)
 	longjmp(g_GameStartupJumpBuffer, nJumpResult);
 }
 
-// FUNCTION: LEMBALL 0x004599b0
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* DeleteRenderDispatchQueue(void* pQueue, unsigned char fFreeMemory)
 {
 	DestroyRenderDispatchQueue(pQueue);
@@ -1893,4 +1893,15 @@ int ShutdownDebugMessageThread(int fForceTerminate)
 VsInitVSMemPointerTable::VsInitVSMemPointerTable(int cItems)
 {
 	ConstructVSMemPointerTable(cItems);
+}
+
+// SYNTHETIC: LEMBALL 0x004599b0
+// DeleteRenderDispatchQueueAuto
+void* LEMBALL_FASTCALL DeleteRenderDispatchQueueAuto(void* pObject, void*, BYTE fDelete)
+{
+	DestroyRenderDispatchQueue(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
 }
