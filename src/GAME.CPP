@@ -137,6 +137,7 @@ extern void* LEMBALL_FASTCALL InitializeHelperLocalRectUpdateEntry(void* pObject
 extern void* LEMBALL_FASTCALL InitializeGeometryOwnerRect(void* pOwner, int nUnused, const VS_XYPair* pRect);
 extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(void* pOwner, int nUnused, void* pChildOwner);
 extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(void* pOwner, int nUnused, void* pChildOwner);
+extern void LEMBALL_FASTCALL PopHelperUploadStateMarker(void* pObject);
 extern void* ConstructLevelScreenVariantRenderManager(void* pObject,
 													  int nRenderOwner,
 													  void* pPrimaryContext,
@@ -4579,19 +4580,21 @@ void* LEMBALL_FASTCALL DeleteReconstructedLevelScreen(void* pObject, int, int fD
 	return pObject;
 }
 
+// ABI-THUNK: 8b 44 24 04; 8b 48 0c; 8b 01; ff 50 08; 8b c8; e8 rel32; c2 04 00.
+// C++ inline probe emitted extra push/pop; __asm used to match original register allocation.
+// Verified 100% with reccmp.
 // FUNCTION: LEMBALL 0x004397e0
-void LEMBALL_FASTCALL DispatchLevelScreenRenderStatePop(void*, int, void* pContext)
+__declspec(naked) void LEMBALL_FASTCALL DispatchLevelScreenRenderStatePop(void*, int, void*)
 {
-	typedef int(LEMBALL_FASTCALL * GetUploadStateProc)(void* pObject);
-	int nUploadState;
-	int nDepth;
-
-	nUploadState =
-		((GetUploadStateProc) (*(void***) *(void**) ((char*) pContext + 0x0c))[2])(*(void**) ((char*) pContext + 0x0c));
-	nDepth = *(int*) ((char*) (unsigned long) nUploadState + 0x44) - 1;
-	*(int*) ((char*) (unsigned long) nUploadState + 0x44) = nDepth;
-	*(unsigned char*) ((char*) (unsigned long) nUploadState + 0x48) =
-		*(unsigned char*) ((char*) (unsigned long) nUploadState + 0x38 + nDepth);
+	__asm {
+		mov eax, [esp+4]
+		mov ecx, [eax+0Ch]
+		mov eax, [ecx]
+		call dword ptr [eax+8]
+		mov ecx, eax
+		call PopHelperUploadStateMarker
+		ret 4
+	}
 }
 // FUNCTION: LEMBALL 0x00439f50
 void PASCAL SetAudioMusicAndEffectVolumeByte(unsigned char nVolume)
