@@ -1402,6 +1402,11 @@ unsigned int FindLastFreeManagedEntitySlotIdThunk(void)
 	} while (0 < (int) iByte);
 	return iByte & 0xffff0000;
 }
+// FUNCTION: LEMBALL 0x00416730
+int PASCAL ReturnZeroLevelCallback00416730(void)
+{
+	return 0;
+}
 // FUNCTION: LEMBALL 0x00416740
 void ClaimManagedEntitySlotId(int nManagedEntityObject)
 {
