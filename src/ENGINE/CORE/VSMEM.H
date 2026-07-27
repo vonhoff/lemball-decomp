@@ -129,7 +129,7 @@ void* ConstructMemoryArenaBlock(void* pBlock,
 								unsigned int cbBlock);
 void* LEMBALL_FASTCALL DestroyMemoryArenaBaseStateReturnThis(void* pArena, int nUnused, int fDelete);
 void* LEMBALL_FASTCALL DestroyMemoryArenaReturnThis(void* pArena, int nUnused, int fDelete);
-void* RestoreMemoryBlockBaseVtableReturnThis(void* pBlock);
+void* LEMBALL_FASTCALL RestoreMemoryBlockBaseVtableReturnThis(void* pBlock, int nUnused, int fDelete);
 int IsPointerInsideManagedMemoryRegions(void* pvPointer);
 unsigned int GetMemoryArenaHeaderSize(void);
 unsigned int GetMemoryBlockHeaderSize(void);

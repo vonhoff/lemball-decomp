@@ -85,9 +85,10 @@ void LEMBALL_FASTCALL ReleaseHelperGroup0BackingBuffer(int nHelperGroup);
 void LEMBALL_FASTCALL EnsureHelperGroup0BackingBufferThunk(void* pHelperGroup);
 void* ConstructHelperGroup1RowBuffer(void* pvHelperGroup, int fConstructCompactHelper);
 void LEMBALL_FASTCALL DestroyHelperGroup1RowBuffer(void* pvHelperGroup);
-void ReleaseHelperGroup1BackingBuffer(int nHelperGroup);
+void LEMBALL_FASTCALL ReleaseHelperGroup1BackingBuffer(int nHelperGroup);
 void LEMBALL_FASTCALL EnsureHelperGroup1BackingBufferBody(void* pHelperGroup);
 void LEMBALL_FASTCALL EnsureHelperGroup1BackingBuffer(void* pHelperGroup);
+void LEMBALL_FASTCALL SetHelperGroup1BackingActive(int nHelperGroup, int nUnused, int fActive);
 void LEMBALL_FASTCALL CopyRectTupleIfExtentEmpty(void* pTarget, int, short* paRect);
 int LEMBALL_FASTCALL GetHelperGroup1DirtyFlag(void* pGroupState, int);
 void LEMBALL_FASTCALL ResetHelperUploadStateMap(void* pTracker);
@@ -2772,7 +2773,7 @@ void LEMBALL_FASTCALL DestroyHelperGroup1RowBuffer(void* pvHelperGroup)
 	DestroyResourceGeometryRowBuffer(pHelperGroup);
 }
 // FUNCTION: LEMBALL 0x00466710
-void ReleaseHelperGroup1BackingBuffer(int nHelperGroup)
+void LEMBALL_FASTCALL ReleaseHelperGroup1BackingBuffer(int nHelperGroup)
 {
 	if (*(int*) (unsigned long) (nHelperGroup + 0x4c) != 0) {
 		FreeVSMemBlock((void*) (unsigned long) *(int*) (unsigned long) (nHelperGroup + 0x4c));
@@ -2823,6 +2824,18 @@ void LEMBALL_FASTCALL EnsureHelperGroup1BackingBufferBody(void* pHelperGroup)
 		}
 		pSurface->ConfigureBackingStrideAndOrigin((int) (unsigned long) *(void**) ((char*) pHelperGroup + 0x4c),
 												  (int) aBackingSize[0]);
+	}
+}
+// FUNCTION: LEMBALL 0x00466840
+void LEMBALL_FASTCALL SetHelperGroup1BackingActive(int nHelperGroup, int nUnused, int fActive)
+{
+	if (fActive == 0) {
+		ReleaseHelperGroup1BackingBuffer(nHelperGroup);
+		*(int*) (nHelperGroup + 0x48) = 0;
+	}
+	else {
+		EnsureHelperGroup1BackingBufferBody((void*) (unsigned long) nHelperGroup);
+		*(int*) (nHelperGroup + 0x48) = 1;
 	}
 }
 // FUNCTION: LEMBALL 0x00466870
