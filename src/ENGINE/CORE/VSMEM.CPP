@@ -449,13 +449,13 @@ int CArena::Allocate(void** ppvBlock, unsigned int cbBlock, const char* pszDescr
 	if (pMemoryBlock->m_cbPayload < pfnGetBlockHeaderSize() + cbAligned + cbBlockHeader + 4) {
 		pMemoryBlock->m_dwFlags &= 0xfffffffe;
 		pMemoryArena->UnlinkMemoryBlockFromAddressListLinks(pMemoryBlock);
-		NoOpCallback0045A610();
+		pMemoryBlock->SetMemoryBlockDescription(pszDescription);
 		pMemoryArena->m_cbFree -= pMemoryBlock->m_cbPayload;
 	}
 	else {
 		cbOldBlockPayload = pMemoryBlock->m_cbPayload;
 		pMemoryBlock->m_cbPayload = cbAligned;
-		NoOpCallback0045A610();
+		pMemoryBlock->SetMemoryBlockDescription(pszDescription);
 		pMemoryBlock->m_dwFlags &= 0xfffffffe;
 		cbRemainingBlock = cbOldBlockPayload - cbAligned;
 		pMemoryArena->UnlinkMemoryBlockFromAddressListLinks(pMemoryBlock);
@@ -808,8 +808,9 @@ int IsPointerInsideMemoryBlock(void* pBlock, void* pvPointer)
 }
 
 // FUNCTION: LEMBALL 0x0045a610
-void NoOpCallback0045A610(void)
+void CMemoryBlock::SetMemoryBlockDescription(const char* pszDescription)
 {
+	(void) pszDescription;
 }
 
 // FUNCTION: LEMBALL 0x0045a630

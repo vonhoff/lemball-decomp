@@ -115,7 +115,7 @@ struct VsNetGlobalStateFileBackedEffComposite :
 	virtual ~VsNetGlobalStateFileBackedEffComposite();
 	virtual short ClaimRuntimeFlag(const char* pszFlags);
 	virtual void ClearRuntimeFlag(short nFlag);
-	virtual void RuntimeReserved08(void);
+	virtual void RuntimeReserved08(void* pUnused);
 	virtual int RuntimeReserved0c(char* pszValue);
 	virtual void ServiceRuntimeConnect(void);
 	virtual void RuntimeReserved14(void);

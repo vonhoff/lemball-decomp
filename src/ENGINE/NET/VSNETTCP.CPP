@@ -26,7 +26,7 @@ extern int PASCAL ReturnTrueVtableCallbackThunk(void* pObject);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
 extern void ReturnVoidVtableCallback(void);
-extern void EffStreamChannelStateRet4Thunk(BYTE fDelete);
+extern void PASCAL EffStreamChannelStateRet4Thunk(BYTE fDelete);
 
 struct VsNetConstructionAdjustorVtable {
 	void* m_pReserved00;

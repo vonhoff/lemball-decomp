@@ -27,6 +27,7 @@ struct CMemoryBlock {
 											CMemoryBlock* pPreviousBlock,
 											const char* pszName,
 											unsigned int cbBlock);
+	void SetMemoryBlockDescription(const char* pszDescription);
 };
 
 // SIZE 0x50
@@ -120,7 +121,6 @@ int IsPointerInsideMemoryBlock(void* pBlock, void* pvPointer);
 // FUNCTION: LEMBALL 0x0045a5b0
 // VSMEM_ReportBlockStub
 void* LEMBALL_FASTCALL VSMEM_ReportBlockStub(void* pBlock, int nUnused, VsInitFormattedOutputStream* pOutputStream);
-void NoOpCallback0045A610(void);
 void* ReturnPlacementBlockStorage(unsigned int cbStorage, void* pvStorage);
 void* ConstructMemoryArenaBlock(void* pBlock,
 								void* pArena,

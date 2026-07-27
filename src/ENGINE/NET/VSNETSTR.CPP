@@ -72,7 +72,7 @@ struct VsNetRuntimeWindowInterface {
 	virtual void PumpMessages(void) = 0;
 };
 
-void EffStreamChannelStateRet4Thunk(BYTE fDelete);
+void PASCAL EffStreamChannelStateRet4Thunk(BYTE fDelete);
 
 struct VsNetAckedEffTransportRecordOwner {};
 extern int PASCAL ReturnTrueVtableCallbackThunk(void* pObject);
@@ -92,7 +92,7 @@ void* DeleteEffStreamBaseWrapper00462850(void* pObject, BYTE fDelete);
 void* DeleteEffStreamBaseWrapper00462870(void* pObject, BYTE fDelete);
 void* DeleteEffStreamBaseWrapper00462890(void* pObject, BYTE fDelete);
 void* DeleteEffStreamBaseWrapper004628B0(void* pObject, BYTE fDelete);
-void EffStreamChannelStateRet4Thunk(BYTE fDelete);
+void PASCAL EffStreamChannelStateRet4Thunk(BYTE fDelete);
 void* DeleteEffStreamBaseWrapper00462900(void* pObject, BYTE fDelete);
 void ReturnVoidVtableCallback(void);
 void LEMBALL_FASTCALL WriteEffStreamTwoU16Fields(void* pObject);
@@ -774,7 +774,7 @@ void* DeleteEffStreamBaseWrapper004628B0(void* pObject, BYTE fDelete)
 }
 
 // FUNCTION: LEMBALL 0x004628d0
-void EffStreamChannelStateRet4Thunk(BYTE fDelete)
+void PASCAL EffStreamChannelStateRet4Thunk(BYTE fDelete)
 {
 	(void) fDelete;
 }

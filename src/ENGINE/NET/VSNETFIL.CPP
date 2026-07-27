@@ -187,7 +187,7 @@ struct VsNetQueueEffTransportPayloadEventView {
 			->VsNetCompositeEffTransportStack::DualStreamRet8(nType, pPayload);
 	}
 };
-extern void EffStreamChannelStateRet4Thunk(BYTE fDelete);
+extern void PASCAL EffStreamChannelStateRet4Thunk(BYTE fDelete);
 BYTE LEMBALL_FASTCALL AdjustAndMapNestedEffCallbackFailureFromB8(void* pObject);
 void* AdjustAndDeleteDualFileBackedEffChannelWrapper(void* pObject, BYTE fFreeMemory);
 void* AdjustAndDeleteDualFileBackedEffChannelWrapper2c(void* pObject, BYTE fFreeMemory);
@@ -3303,8 +3303,9 @@ void VsNetGlobalStateFileBackedEffComposite::FatalFileBackedOperation00(void)
 }
 
 // FUNCTION: LEMBALL 0x0047ab10
-void VsNetGlobalStateFileBackedEffComposite::RuntimeReserved08(void)
+void VsNetGlobalStateFileBackedEffComposite::RuntimeReserved08(void* pUnused)
 {
+	(void) pUnused;
 }
 
 // FUNCTION: LEMBALL 0x0047ab20

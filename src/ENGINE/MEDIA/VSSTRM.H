@@ -310,7 +310,7 @@ struct VsNetRuntimeChannelStack :
 	inline void* ConstructEffTransportRuntimeChannelStack(int) { return this; }
 	virtual short ClaimRuntimeFlag(const char* pszFlags);
 	virtual void ClearRuntimeFlag(short nFlag);
-	virtual void RuntimeReserved08(void) = 0;
+	virtual void RuntimeReserved08(void* pUnused) = 0;
 	virtual int RuntimeReserved0c(char* pszValue) = 0;
 	virtual void ServiceRuntimeConnect(void);
 	virtual void RuntimeReserved14(void) = 0;
