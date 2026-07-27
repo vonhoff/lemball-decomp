@@ -1995,225 +1995,225 @@ __inline static void LEMBALL_FASTCALL NoopQueuedVariantChildSlotManagerUpdate(vo
 {
 }
 
-// FUNCTION: LEMBALL 0x0040101e
+// LINKERILT: LEMBALL 0x0040101e
 void LEMBALL_FASTCALL draw_entered_password_text(void* pObject)
 {
 	DrawEnteredPasswordText(pObject);
 }
 
-// FUNCTION: LEMBALL 0x0040110e
+// LINKERILT: LEMBALL 0x0040110e
 void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroupThunk(void* pObject)
 {
 	RefreshFramedScreenRenderEntryGroup(pObject);
 }
-// FUNCTION: LEMBALL 0x00401190
+// LINKERILT: LEMBALL 0x00401190
 void LEMBALL_FASTCALL DestroyMainMenuScreenThunk00401190(void* pObject)
 
 {
 	DestroyMainMenuScreen(pObject);
 }
-// FUNCTION: LEMBALL 0x00401195
+// LINKERILT: LEMBALL 0x00401195
 void thunk_noop_frontend_window_owner_slot_15(void)
 {
 	noop_frontend_window_owner_slot_15();
 }
-// FUNCTION: LEMBALL 0x0040122b
+// LINKERILT: LEMBALL 0x0040122b
 void thunk_noop_frontend_window_owner_slot_16(void)
 {
 	noop_frontend_window_owner_slot_16();
 }
-// FUNCTION: LEMBALL 0x004012ad
+// LINKERILT: LEMBALL 0x004012ad
 void LEMBALL_FASTCALL ResetFramedScreenVariantBuffersThunk(void* pObject)
 
 {
 	ResetFramedScreenVariantBuffers(pObject);
 }
-// FUNCTION: LEMBALL 0x00401505
+// LINKERILT: LEMBALL 0x00401505
 int LEMBALL_FASTCALL FramedScreenSlot15Thunk(void* pObject, int nUnusedEdx, void* pArgument)
 {
 	(void) pObject;
 	(void) nUnusedEdx;
 	return return_zero_framed_screen_base_slot_15(pArgument);
 }
-// FUNCTION: LEMBALL 0x00401528
+// LINKERILT: LEMBALL 0x00401528
 int LEMBALL_FASTCALL MainMenuSlot21Thunk(void* pObject, int nUnusedEdx, void* pArgument)
 {
 	(void) pObject;
 	(void) nUnusedEdx;
 	return return_zero_screen_callback_00446fa0(pArgument);
 }
-// FUNCTION: LEMBALL 0x00401735
+// LINKERILT: LEMBALL 0x00401735
 void GameQueuedVariantManagerView::SetChildrenEnabledThunk(int fEnabled)
 {
 	SetChildrenEnabled(fEnabled);
 }
-// FUNCTION: LEMBALL 0x00401744
+// LINKERILT: LEMBALL 0x00401744
 int ConsumeLevelSelectionChangedFlagThunk(void)
 {
 	return ConsumeLevelSelectionChangedFlag();
 }
-// FUNCTION: LEMBALL 0x00401767
+// LINKERILT: LEMBALL 0x00401767
 void LEMBALL_FASTCALL UpdateFramedScreenRuntimeThunk(void* pObject)
 {
 	((GameFramedScreenBase*) pObject)->UpdateRuntime();
 }
-// FUNCTION: LEMBALL 0x004017ad
+// LINKERILT: LEMBALL 0x004017ad
 void LEMBALL_FASTCALL RefreshFramedScreenFrameResourcesThunk(void* pObject)
 {
 	RefreshFramedScreenFrameResources(pObject);
 }
-// FUNCTION: LEMBALL 0x004017ee
+// LINKERILT: LEMBALL 0x004017ee
 void* LEMBALL_FASTCALL DeleteIntroSequenceScreenThunk(void* pObject, int nUnusedEdx, int fDelete)
 {
 	return DeleteIntroSequenceScreen(pObject, nUnusedEdx, fDelete);
 }
-// FUNCTION: LEMBALL 0x00401889
+// LINKERILT: LEMBALL 0x00401889
 int LEMBALL_FASTCALL HandleFramedScreenQueueEventThunk(void* pQueueNode, int nUnusedEdx, void* pEvent)
 
 {
 	(void) nUnusedEdx;
 	return ((GameFramedScreenQueueNode*) pQueueNode)->HandleEvent(pEvent);
 }
-// FUNCTION: LEMBALL 0x004018de
+// LINKERILT: LEMBALL 0x004018de
 void LEMBALL_FASTCALL UpdateMainMenuScreenThunk(void* pObject)
 {
 	UpdateMainMenuScreen(pObject);
 }
-// FUNCTION: LEMBALL 0x004019b5
+// LINKERILT: LEMBALL 0x004019b5
 void LEMBALL_FASTCALL PollIntroSequencePlaybackThunk(void* pObject)
 {
 	((GameIntroSequenceScreen*) pObject)->PollPlaybackCompletion();
 }
-// FUNCTION: LEMBALL 0x00401a8c
+// LINKERILT: LEMBALL 0x00401a8c
 void LEMBALL_FASTCALL HandleIntroSequenceMediaCompletionThunk(void* pOwner)
 {
 	HandleIntroSequenceMediaCompletion(pOwner);
 }
-// FUNCTION: LEMBALL 0x00401af0
+// LINKERILT: LEMBALL 0x00401af0
 void GameMenuSelectorManager::InitializeChildContextThunk(void)
 {
 	InitializeChildContext();
 }
-// FUNCTION: LEMBALL 0x00401ba4
+// LINKERILT: LEMBALL 0x00401ba4
 void LEMBALL_FASTCALL InitializeMainMenuWidgetsThunk(void* pObject)
 {
 	InitializeMainMenuWidgets(pObject);
 }
-// FUNCTION: LEMBALL 0x00401dac
+// LINKERILT: LEMBALL 0x00401dac
 void LEMBALL_FASTCALL NoopNetworkLobbyScreenThunk(void* pObject)
 {
 	NoopNetworkLobbyScreen(pObject);
 }
-// FUNCTION: LEMBALL 0x00401dc5
+// LINKERILT: LEMBALL 0x00401dc5
 void LEMBALL_FASTCALL MainMenuSlot06Thunk(void* pObject)
 {
 	(void) pObject;
 	noop_render_entry_callback_004393b0();
 }
-// FUNCTION: LEMBALL 0x00401dd9
+// LINKERILT: LEMBALL 0x00401dd9
 void LEMBALL_FASTCALL UpdateIntroSequencePlaybackThunk(void* pObject)
 {
 	((GameIntroSequenceScreen*) pObject)->UpdatePlayback();
 }
-// FUNCTION: LEMBALL 0x00401e24
+// LINKERILT: LEMBALL 0x00401e24
 void* LEMBALL_FASTCALL DeleteAdjustedIntroSequenceScreenThunk(void* pObject, int nUnusedEdx, int fDelete)
 {
 	return DeleteAdjustedIntroSequenceScreen(pObject, nUnusedEdx, fDelete);
 }
-// FUNCTION: LEMBALL 0x00402081
+// LINKERILT: LEMBALL 0x00402081
 void LEMBALL_FASTCALL DestroyFramedScreenBaseThunk00402081(void* pObject)
 {
 	DestroyFramedScreenBase(pObject);
 }
-// FUNCTION: LEMBALL 0x0040209a
+// LINKERILT: LEMBALL 0x0040209a
 int LEMBALL_FASTCALL GetIntroSequenceMediaNotifyFlagsThunk(void* pOwner)
 {
 	return GetIntroSequenceMediaNotifyFlags(pOwner);
 }
-// FUNCTION: LEMBALL 0x00402185
+// LINKERILT: LEMBALL 0x00402185
 void LEMBALL_FASTCALL MainMenuSlot19Thunk(void* pObject)
 {
 	(void) pObject;
 	noop_screen_callback_00446f80();
 }
-// FUNCTION: LEMBALL 0x004021a3
+// LINKERILT: LEMBALL 0x004021a3
 void LEMBALL_FASTCALL RecenterFramedScreenIfNeededThunk(void* pObject)
 
 {
 	((GameFramedScreenBase*) pObject)->RecenterIfNeeded();
 }
-// FUNCTION: LEMBALL 0x00402252
+// LINKERILT: LEMBALL 0x00402252
 void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBaseThunk(void* pObject, int nUnusedEdx, void* pFrameArgument)
 
 {
 	RefreshAndDrawFramedScreenBase(pObject, nUnusedEdx, pFrameArgument);
 }
-// FUNCTION: LEMBALL 0x004022de
+// LINKERILT: LEMBALL 0x004022de
 void* LEMBALL_FASTCALL DeleteAdjustedFramedScreenBaseThunk(void* pObject, int nUnusedEdx, int fDelete)
 {
 	return DeleteAdjustedFramedScreenBase(pObject, nUnusedEdx, fDelete);
 }
-// FUNCTION: LEMBALL 0x004023a1
+// LINKERILT: LEMBALL 0x004023a1
 void LEMBALL_FASTCALL DestroyIntroSequenceScreenThunk(void* pObject)
 {
 	DestroyIntroSequenceScreen(pObject);
 }
-// FUNCTION: LEMBALL 0x0040242d
+// LINKERILT: LEMBALL 0x0040242d
 int LEMBALL_FASTCALL HandleMainMenuInputThunk(void* pObject, int nUnusedEdx, void* pEvent)
 
 {
 	return HandleMainMenuInput(pObject, nUnusedEdx, pEvent);
 }
-// FUNCTION: LEMBALL 0x00402595
+// LINKERILT: LEMBALL 0x00402595
 void* LEMBALL_FASTCALL DeleteMainMenuScreenThunk(void* pObject, int nUnusedEdx, int fDelete)
 
 {
 	return DeleteMainMenuScreen(pObject, nUnusedEdx, fDelete);
 }
-// FUNCTION: LEMBALL 0x004025c7
+// LINKERILT: LEMBALL 0x004025c7
 void LEMBALL_FASTCALL ActivateFramedScreenBaseThunk(void* pScreen)
 {
 	ActivateFramedScreenBase(pScreen);
 }
-// FUNCTION: LEMBALL 0x0040264e
+// LINKERILT: LEMBALL 0x0040264e
 void LEMBALL_FASTCALL DrawFramedScreenBaseThunk(void* pObject)
 {
 	DrawFramedScreenBase(pObject);
 }
-// FUNCTION: LEMBALL 0x004026bc
+// LINKERILT: LEMBALL 0x004026bc
 void LEMBALL_FASTCALL MainMenuSlot18Thunk(void* pObject)
 {
 	(void) pObject;
 	noop_screen_callback_00446f70();
 }
-// STUB: LEMBALL 0x00402838
+// LINKERILT: LEMBALL 0x00402838
 void GameVariantResourceEntryManager::SwitchVariantResourceEntryModeThunk(unsigned short nMask, void* pBundle)
 {
 	SwitchVariantResourceEntryMode(nMask, pBundle);
 }
-// FUNCTION: LEMBALL 0x00402a68
+// LINKERILT: LEMBALL 0x00402a68
 int LEMBALL_FASTCALL GetFramedScreenTransitionStatusThunk(void* pObject)
 
 {
 	return poll_intro_sequence_screen_transition_status(pObject);
 }
-// FUNCTION: LEMBALL 0x00402a9f
+// LINKERILT: LEMBALL 0x00402a9f
 void thunk_noop_frontend_window_owner_slot_17(void)
 {
 	noop_frontend_window_owner_slot_17();
 }
-// FUNCTION: LEMBALL 0x00402aa4
+// LINKERILT: LEMBALL 0x00402aa4
 void LEMBALL_FASTCALL RequestIntroSequenceScreenTransitionThunk(char* pScreen)
 {
 	RequestIntroSequenceScreenTransition(pScreen);
 }
-// FUNCTION: LEMBALL 0x00402ac7
+// LINKERILT: LEMBALL 0x00402ac7
 void LEMBALL_FASTCALL FramedScreenSlot20Thunk(void* pObject)
 {
 	(void) pObject;
 	noop_screen_callback_00446f90();
 }
-// FUNCTION: LEMBALL 0x00402c02
+// LINKERILT: LEMBALL 0x00402c02
 void LEMBALL_FASTCALL MainMenuSlot05Thunk(void* pObject, int nUnusedEdx, void* pArgument)
 
 {
@@ -2221,63 +2221,63 @@ void LEMBALL_FASTCALL MainMenuSlot05Thunk(void* pObject, int nUnusedEdx, void* p
 	(void) nUnusedEdx;
 	noop_render_entry_callback_004393a0(pArgument);
 }
-// FUNCTION: LEMBALL 0x00402c3e
+// LINKERILT: LEMBALL 0x00402c3e
 int LEMBALL_FASTCALL HandleIntroSequenceInputThunk(void* pObject, int, short* pEvent)
 {
 	return ((GameIntroSequenceScreen*) pObject)->HandleInput(pEvent);
 }
-// FUNCTION: LEMBALL 0x00402e05
+// LINKERILT: LEMBALL 0x00402e05
 void LEMBALL_FASTCALL RefreshIntroSequenceMediaPathThunk(void* pObject)
 {
 	((GameIntroSequenceScreen*) pObject)->RefreshMediaPath();
 }
-// FUNCTION: LEMBALL 0x0040308a
+// LINKERILT: LEMBALL 0x0040308a
 void LEMBALL_FASTCALL MainMenuSlot20Thunk(void* pObject)
 {
 	(void) pObject;
 	noop_main_menu_screen_hook();
 }
-// FUNCTION: LEMBALL 0x0040310c
+// LINKERILT: LEMBALL 0x0040310c
 int LEMBALL_FASTCALL GetFramedScreenRequestedModeThunk(void* pObject)
 
 {
 	return get_intro_sequence_screen_requested_mode(pObject);
 }
-// FUNCTION: LEMBALL 0x0040313e
+// LINKERILT: LEMBALL 0x0040313e
 void LEMBALL_FASTCALL MainMenuSlot09Thunk(void* pObject)
 {
 	(void) pObject;
 	noop_render_entry_callback_004393d0();
 }
-// FUNCTION: LEMBALL 0x0040321f
+// LINKERILT: LEMBALL 0x0040321f
 void LEMBALL_FASTCALL MainMenuSlot13Thunk(void* pObject)
 {
 	(void) pObject;
 	noop_render_entry_callback_004393f0();
 }
-// FUNCTION: LEMBALL 0x00403247
+// LINKERILT: LEMBALL 0x00403247
 void LEMBALL_FASTCALL FramedScreenSlot14Thunk(void* pObject)
 {
 	(void) pObject;
 	update_options_screen();
 }
-// FUNCTION: LEMBALL 0x004032ec
+// LINKERILT: LEMBALL 0x004032ec
 void LEMBALL_FASTCALL SetFramedScreenSizeThunk(void* pObject, int nUnusedEdx, short* paSize)
 
 {
 	((GameFramedScreenBase*) pObject)->SetScreenSize(paSize);
 }
-// FUNCTION: LEMBALL 0x00403422
+// LINKERILT: LEMBALL 0x00403422
 void LEMBALL_FASTCALL SelectIntroSequenceMediaPathThunk(void* pOwner)
 {
 	SelectIntroSequenceMediaPath(pOwner);
 }
-// FUNCTION: LEMBALL 0x0040359e
+// LINKERILT: LEMBALL 0x0040359e
 void GameIntroSequenceMediaState::ConfigureOwnerThunk(void* pScreen, void* pPrimaryContext, int fSkipVariant)
 {
 	ConfigureOwner(pScreen, pPrimaryContext, fSkipVariant);
 }
-// STUB: LEMBALL 0x004035a8
+// LINKERILT: LEMBALL 0x004035a8
 void* LEMBALL_FASTCALL ConstructFramedScreenBaseFieldsThunk(void* pObject,
 															int,
 															void* pPrimaryContext,
@@ -2301,27 +2301,27 @@ void* LEMBALL_FASTCALL ConstructFramedScreenBaseFieldsThunk(void* pObject,
 										  nOptionA,
 										  nOptionB);
 }
-// FUNCTION: LEMBALL 0x004035d0
+// LINKERILT: LEMBALL 0x004035d0
 void* LEMBALL_FASTCALL DeleteAdjustedMainMenuScreenThunk(void* pObject, int nUnusedEdx, int fDelete)
 {
 	return DeleteAdjustedMainMenuScreen(pObject, nUnusedEdx, fDelete);
 }
-// FUNCTION: LEMBALL 0x0040367f
+// LINKERILT: LEMBALL 0x0040367f
 void LEMBALL_FASTCALL DestroyMainMenuWidgetsThunk(void* pObject)
 {
 	DestroyMainMenuWidgets(pObject);
 }
-// FUNCTION: LEMBALL 0x004037ab
+// LINKERILT: LEMBALL 0x004037ab
 void IgnoreIntroSequenceMediaNotificationThunk(void)
 {
 	IgnoreIntroSequenceMediaNotification();
 }
-// FUNCTION: LEMBALL 0x004037e7
+// LINKERILT: LEMBALL 0x004037e7
 void* LEMBALL_FASTCALL DeleteFramedScreenBaseThunk(void* pObject, int nUnusedEdx, int fDelete)
 {
 	return DeleteFramedScreenBase(pObject, nUnusedEdx, fDelete);
 }
-// FUNCTION: LEMBALL 0x0040384b
+// LINKERILT: LEMBALL 0x0040384b
 void LEMBALL_FASTCALL NoopIntroSequenceScreenHookThunk(void* pObject)
 {
 	(void) pObject;

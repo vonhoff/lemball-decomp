@@ -2,7 +2,7 @@
 
 extern void* RestoreLevelDemoPlaybackBaseVtable(void* pPlaybackController, unsigned char fDelete);
 
-// FUNCTION: LEMBALL 0x0040298c
+// LINKERILT: LEMBALL 0x0040298c
 void* LEMBALL_FASTCALL DeleteRenderQueueNodeThunk(void* pObject, int nUnused, unsigned char fDelete)
 {
 	(void) nUnused;

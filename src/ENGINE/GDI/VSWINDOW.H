@@ -3,31 +3,31 @@
 
 #include "ENGINE/CORE/WIN32.H"
 
-// FUNCTION: LEMBALL 0x0040119f
+// LINKERILT: LEMBALL 0x0040119f
 // VS_WindowOwnerBase::ReservedWindowOwnerSlot37
-// FUNCTION: LEMBALL 0x0040150f
+// LINKERILT: LEMBALL 0x0040150f
 // VS_RootGeometryOwner::AppendQueuedRenderSinkValueNode
-// FUNCTION: LEMBALL 0x00401514
+// LINKERILT: LEMBALL 0x00401514
 // VS_WindowOwnerBase::ReservedWindowOwnerSlot21
-// FUNCTION: LEMBALL 0x004018cf
+// LINKERILT: LEMBALL 0x004018cf
 // VS_WindowOwnerBase::IsCurrentWindowOwnerContext
-// FUNCTION: LEMBALL 0x00401e29
+// LINKERILT: LEMBALL 0x00401e29
 // VS_WindowOwnerBase::ReservedWindowOwnerSlot19
-// FUNCTION: LEMBALL 0x004028bf
+// LINKERILT: LEMBALL 0x004028bf
 // VS_WindowOwnerBase::ReservedWindowOwnerSlot18
-// FUNCTION: LEMBALL 0x004029b4
+// LINKERILT: LEMBALL 0x004029b4
 // VS_WindowOwnerBase::ReservedWindowOwnerSlot39
-// FUNCTION: LEMBALL 0x00402e1e
+// LINKERILT: LEMBALL 0x00402e1e
 // VS_WindowOwnerBase::CacheCurrentContextWindow
-// FUNCTION: LEMBALL 0x004030c1
+// LINKERILT: LEMBALL 0x004030c1
 // VS_RootGeometryOwner::RemoveQueuedRenderSinkValueNode
-// FUNCTION: LEMBALL 0x00403440
+// LINKERILT: LEMBALL 0x00403440
 // VS_WindowOwnerBase::ReservedWindowOwnerSlot20
-// FUNCTION: LEMBALL 0x004034a9
+// LINKERILT: LEMBALL 0x004034a9
 // VS_RootGeometryOwner::QueryRootGeometryState
-// FUNCTION: LEMBALL 0x00403657
+// LINKERILT: LEMBALL 0x00403657
 // VS_RootGeometryOwner::SetWindowOwnerState
-// FUNCTION: LEMBALL 0x00403693
+// LINKERILT: LEMBALL 0x00403693
 // VS_WindowOwnerBase::ReservedWindowOwnerSlot22
 
 extern int g_fWindowMessagePassthroughMode;
@@ -116,33 +116,33 @@ public:
 	VS_WindowOwnerBase(void);
 	~VS_WindowOwnerBase(void);
 
-	virtual void RefreshWindowOwnerMenuState(void); // vtable+0x00
+	virtual void RefreshWindowOwnerMenuState(void);                                                      // vtable+0x00
 	virtual void InitializeWindowOwnerFromRect(short* paRect, void* pWindowOwner, const char* pszTitle); // vtable+0x04
-	virtual void SetWindowOwnerMenuDefinition(const unsigned int* pnMenuId, void* pMenuDefinition); // vtable+0x10
-	virtual void SetRootGeometryScaleFactor(int nScaleFactor); // vtable+0x2c
-	virtual void SetRootGeometryRect(const VS_XYPair* pRect); // vtable+0x30
-	virtual void FinalizeRootGeometryRect(const VS_XYPair* pPoint); // vtable+0x34
-	virtual void MoveWindowOwnerOrigin(const VS_XYPair* pPoint); // vtable+0x38
-	virtual void ReservedWindowOwnerSlot15(void); // vtable+0x3c
-	virtual void ReservedWindowOwnerSlot16(void); // vtable+0x40
-	virtual void ReservedWindowOwnerSlot17(void); // vtable+0x44
-	virtual void ReservedWindowOwnerSlot18(void); // vtable+0x48
-	virtual void ReservedWindowOwnerSlot19(void); // vtable+0x4c
-	virtual void ReservedWindowOwnerSlot20(void); // vtable+0x50
-	virtual void ReservedWindowOwnerSlot21(void); // vtable+0x54
-	virtual void ReservedWindowOwnerSlot22(int nValue); // vtable+0x58
-	virtual void ReservedWindowOwnerSlot23(void); // vtable+0x5c
-	virtual int IsCurrentWindowOwnerContext(void); // vtable+0x60
-	virtual unsigned int GetWindowOwnerFlags(void); // vtable+0x64
-	virtual void InvalidateWindowOwnerRect(const VS_XYPair* pExtent); // vtable+0x70
-	virtual void DestroyWindowOwnerHwnd(void); // vtable+0x74
-	virtual void ReservedWindowOwnerSlot34(int nValue); // vtable+0x88
-	virtual void PropagateWindowOwnerPosition(const VS_XYPair* pPoint); // vtable+0x8c
-	virtual void CacheCurrentContextWindow(void); // vtable+0x90
-	virtual void ReservedWindowOwnerSlot37(void); // vtable+0x94
-	virtual void ReservedWindowOwnerSlot38(void); // vtable+0x98
-	virtual void ReservedWindowOwnerSlot39(void); // vtable+0x9c
-	virtual LRESULT DispatchWindowMessage(UINT uMessage, WPARAM wParam, LPARAM lParam); // vtable+0xa0
+	virtual void SetWindowOwnerMenuDefinition(const unsigned int* pnMenuId, void* pMenuDefinition);      // vtable+0x10
+	virtual void SetRootGeometryScaleFactor(int nScaleFactor);                                           // vtable+0x2c
+	virtual void SetRootGeometryRect(const VS_XYPair* pRect);                                            // vtable+0x30
+	virtual void FinalizeRootGeometryRect(const VS_XYPair* pPoint);                                      // vtable+0x34
+	virtual void MoveWindowOwnerOrigin(const VS_XYPair* pPoint);                                         // vtable+0x38
+	virtual void ReservedWindowOwnerSlot15(void);                                                        // vtable+0x3c
+	virtual void ReservedWindowOwnerSlot16(void);                                                        // vtable+0x40
+	virtual void ReservedWindowOwnerSlot17(void);                                                        // vtable+0x44
+	virtual void ReservedWindowOwnerSlot18(void);                                                        // vtable+0x48
+	virtual void ReservedWindowOwnerSlot19(void);                                                        // vtable+0x4c
+	virtual void ReservedWindowOwnerSlot20(void);                                                        // vtable+0x50
+	virtual void ReservedWindowOwnerSlot21(void);                                                        // vtable+0x54
+	virtual void ReservedWindowOwnerSlot22(int nValue);                                                  // vtable+0x58
+	virtual void ReservedWindowOwnerSlot23(void);                                                        // vtable+0x5c
+	virtual int IsCurrentWindowOwnerContext(void);                                                       // vtable+0x60
+	virtual unsigned int GetWindowOwnerFlags(void);                                                      // vtable+0x64
+	virtual void InvalidateWindowOwnerRect(const VS_XYPair* pExtent);                                    // vtable+0x70
+	virtual void DestroyWindowOwnerHwnd(void);                                                           // vtable+0x74
+	virtual void ReservedWindowOwnerSlot34(int nValue);                                                  // vtable+0x88
+	virtual void PropagateWindowOwnerPosition(const VS_XYPair* pPoint);                                  // vtable+0x8c
+	virtual void CacheCurrentContextWindow(void);                                                        // vtable+0x90
+	virtual void ReservedWindowOwnerSlot37(void);                                                        // vtable+0x94
+	virtual void ReservedWindowOwnerSlot38(void);                                                        // vtable+0x98
+	virtual void ReservedWindowOwnerSlot39(void);                                                        // vtable+0x9c
+	virtual LRESULT DispatchWindowMessage(UINT uMessage, WPARAM wParam, LPARAM lParam);                  // vtable+0xa0
 
 protected:
 	void* m_pMenuDefinition3C;        // 0x3c

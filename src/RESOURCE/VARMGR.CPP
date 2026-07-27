@@ -131,31 +131,31 @@ extern void LoadMainGameVariantBitmapResource(void* pBundle, int nResourceId);
 extern void LoadMainGameVariantPaletteResource(void* pBundle, int nResourceId);
 extern void LoadMainGameVariantTwoArrayListResource(void* pBundle, int nResourceId);
 
-// FUNCTION: LEMBALL 0x00401104
+// LINKERILT: LEMBALL 0x00401104
 void LEMBALL_FASTCALL UpdateMainGameVariantResourceLoadProgressThunk(void* pObject)
 {
 	UpdateMainGameVariantResourceLoadProgress(pObject);
 }
 
-// FUNCTION: LEMBALL 0x00401479
+// LINKERILT: LEMBALL 0x00401479
 void GameVariantResourceEntryManager::PlayVariantResourceEffectThunk(int nEffectSlot)
 {
 	PlayVariantResourceEffect(nEffectSlot);
 }
 
-// FUNCTION: LEMBALL 0x004015b9
+// LINKERILT: LEMBALL 0x004015b9
 void VariantResourceBundleNoopThunk(void)
 {
 	VariantResourceBundleNoop();
 }
 
-// FUNCTION: LEMBALL 0x0040295a
+// LINKERILT: LEMBALL 0x0040295a
 void* LEMBALL_FASTCALL ConstructVariantResourceEntryManagerThunk(void* pManager)
 {
 	return ConstructVariantResourceEntryManagerBody(pManager);
 }
 
-// FUNCTION: LEMBALL 0x00403873
+// LINKERILT: LEMBALL 0x00403873
 void GameVariantResourceEntryManager::SetVariantResourceEffectsEnabledThunk(int fEnabled)
 {
 	SetVariantResourceEffectsEnabled(fEnabled);

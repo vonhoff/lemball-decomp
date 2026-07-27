@@ -407,7 +407,7 @@ void* LEMBALL_FASTCALL ConstructRootGeometryDispatchHelper(void* pObject,
 void LEMBALL_FASTCALL UnlinkAndFreeGeometryOwnerChildNode(void* pOwner, int, GameGeometryOwnerChildNode* pNode);
 void __cdecl ShowFatalGetLastErrorMessageAndExit(const char* pszMessage);
 
-// FUNCTION: LEMBALL 0x00401028
+// LINKERILT: LEMBALL 0x00401028
 void VS_WindowOwnerBase::ReservedWindowOwnerSlot23(void)
 {
 	noop_window_owner_slot_23();

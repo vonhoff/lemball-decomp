@@ -64,16 +64,16 @@ extern int PASCAL ReturnFalseChunkStreamCommandThunk(void* pUnused1, void* pUnus
 extern int PASCAL ReturnFalseChunkStreamRenderThunk(void* pUnused);
 void LEMBALL_FASTCALL ActivateOrStagePlasChunkObject(void* pObject);
 void* ConstructManagedEntityQueueCursorThunk(void* pObject,
-												 int nLevelMode,
-												 int nPrimaryCapacity,
-												 int nSecondaryCapacity);
+											 int nLevelMode,
+											 int nPrimaryCapacity,
+											 int nSecondaryCapacity);
 
 void* LEMBALL_FASTCALL GetFirstCachedChunkObject(void* pObject);
 void* LEMBALL_FASTCALL GetNextCachedChunkObject(void* pObject);
 int LEMBALL_FASTCALL EmitCachedChunkManagerRenderEntries(void* pObject, void* pUnused, char* pEntries);
 int LEMBALL_FASTCALL EmitCachedChunkManagerRenderEntriesThunk(void* pObject, void* pUnused, char* pEntries);
 
-// FUNCTION: LEMBALL 0x00401078
+// LINKERILT: LEMBALL 0x00401078
 void* LEMBALL_FASTCALL GetFirstCachedChunkObjectThunk(void* pObject)
 {
 	return GetFirstCachedChunkObject(pObject);
@@ -277,60 +277,65 @@ void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevelThunk(void* pObject,
 															 int nStartDelay);
 
 struct ManagedEntityQueueCursorForwardThunks {
-	void* ConstructManagedEntityQueueCursorForwardThunk(int nLevelMode, unsigned int nPrimaryCapacity, unsigned int nSecondaryCapacity);
+	void* ConstructManagedEntityQueueCursorForwardThunk(int nLevelMode,
+														unsigned int nPrimaryCapacity,
+														unsigned int nSecondaryCapacity);
 };
 
-// FUNCTION: LEMBALL 0x004010aa
-void* ManagedEntityQueueCursorForwardThunks::ConstructManagedEntityQueueCursorForwardThunk(int nLevelMode, unsigned int nPrimaryCapacity, unsigned int nSecondaryCapacity)
+// LINKERILT: LEMBALL 0x004010aa
+void* ManagedEntityQueueCursorForwardThunks::ConstructManagedEntityQueueCursorForwardThunk(
+	int nLevelMode,
+	unsigned int nPrimaryCapacity,
+	unsigned int nSecondaryCapacity)
 {
 	return ConstructManagedEntityQueueCursorThunk(this, nLevelMode, nPrimaryCapacity, nSecondaryCapacity);
 }
 
-// FUNCTION: LEMBALL 0x00401604
+// LINKERILT: LEMBALL 0x00401604
 LinkScfCachedChunkObjectManagerBaseView* LinkScfCachedChunkObjectManagerBaseView::
 	ConstructCachedChunkObjectManagerBaseThunk(void* pLevelMode, void* pEntityLookup, void* pProjectileGeometryTable)
 {
 	return ConstructCachedChunkObjectManagerBase(pLevelMode, pEntityLookup, pProjectileGeometryTable);
 }
-// FUNCTION: LEMBALL 0x00401677
+// LINKERILT: LEMBALL 0x00401677
 LinkScfIceChunkManagerView* LinkScfIceChunkManagerView::ConstructIceChunkManagerThunk(void* pLevelMode, int nCapacity)
 {
 	return ConstructIceChunkManager(pLevelMode, nCapacity);
 }
-// FUNCTION: LEMBALL 0x00401799
+// LINKERILT: LEMBALL 0x00401799
 LinkScfShpgChunkManagerView* LinkScfShpgChunkManagerView::ConstructShpgChunkManagerThunk(void* pLevelMode,
 																						 void* pGmobManager,
 																						 void* pProjectileGeometryTable)
 {
 	return ConstructShpgChunkManager(pLevelMode, pGmobManager, pProjectileGeometryTable);
 }
-// FUNCTION: LEMBALL 0x004017b2
+// LINKERILT: LEMBALL 0x004017b2
 void LinkScfLevelChunkLoaderView::LoadLevelChunksForSkillAndLevelThunk(unsigned int nSkill,
 																	   unsigned int nLevel,
 																	   int fReuseState)
 {
 	LoadLevelChunksForSkillAndLevel(nSkill, nLevel, fReuseState);
 }
-// FUNCTION: LEMBALL 0x0040196a
+// LINKERILT: LEMBALL 0x0040196a
 LinkScfDoorChunkManagerView* LinkScfDoorChunkManagerView::ConstructDoorChunkManagerThunk(void* pLevelMode,
 																						 int nCapacity)
 {
 	return ConstructDoorChunkManager(pLevelMode, nCapacity);
 }
-// FUNCTION: LEMBALL 0x00401a0f
+// LINKERILT: LEMBALL 0x00401a0f
 LinkScfMoveChunkManagerView* LinkScfMoveChunkManagerView::ConstructMoveChunkManagerThunk(void* pLevelMode,
 																						 int nCapacity)
 {
 	return ConstructMoveChunkManager(pLevelMode, nCapacity);
 }
-// FUNCTION: LEMBALL 0x00401e10
+// LINKERILT: LEMBALL 0x00401e10
 LinkScfCaptureChunkManagerView* LinkScfCaptureChunkManagerView::ConstructCaptureTriggerChunkManagerThunk(
 	void* pLevelMode,
 	int nCapacity)
 {
 	return ConstructCaptureTriggerChunkManager(pLevelMode, nCapacity);
 }
-// FUNCTION: LEMBALL 0x00401e88
+// LINKERILT: LEMBALL 0x00401e88
 void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevelThunk(void* pObject,
 															 int nUnusedEdx,
 															 int nX,
@@ -342,80 +347,80 @@ void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevelThunk(void* pObject,
 {
 	return ConstructPlasChunkObjectForLevel(pObject, nUnusedEdx, nX, nY, nZ, nVariant, nNetworkPlayer, nStartDelay);
 }
-// FUNCTION: LEMBALL 0x00401ea6
+// LINKERILT: LEMBALL 0x00401ea6
 LinkScfLiftChunkManagerView* LinkScfLiftChunkManagerView::ConstructLiftChunkManagerThunk(void* pLevelMode,
 																						 int nCapacity)
 {
 	return ConstructLiftChunkManager(pLevelMode, nCapacity);
 }
-// FUNCTION: LEMBALL 0x00401ece
+// LINKERILT: LEMBALL 0x00401ece
 LinkScfEnmyChunkManagerView* LinkScfEnmyChunkManagerView::ConstructEnmyChunkManagerThunk(void* pLevelMode,
 																						 void* pGmobManager,
 																						 void* pProjectileGeometryTable)
 {
 	return ConstructEnmyChunkManager(pLevelMode, pGmobManager, pProjectileGeometryTable);
 }
-// FUNCTION: LEMBALL 0x00401f64
+// LINKERILT: LEMBALL 0x00401f64
 int LEMBALL_FASTCALL EmitCachedChunkManagerRenderEntriesThunk(void* pObject, void* pUnused, char* pEntries)
 {
 	return EmitCachedChunkManagerRenderEntries(pObject, pUnused, pEntries);
 }
-// FUNCTION: LEMBALL 0x0040204a
+// LINKERILT: LEMBALL 0x0040204a
 LinkScfLasrChunkManagerView* LinkScfLasrChunkManagerView::ConstructLasrChunkManagerThunk(void* pLevelMode,
 																						 int nCapacity)
 {
 	return ConstructLasrChunkManager(pLevelMode, nCapacity);
 }
-// FUNCTION: LEMBALL 0x0040204f
+// LINKERILT: LEMBALL 0x0040204f
 LinkScfBoonChunkManagerView* LinkScfBoonChunkManagerView::ConstructBoonChunkManagerThunk(void* pLevelMode,
 																						 void* pTileGrid)
 {
 	return ConstructBoonChunkManager(pLevelMode, pTileGrid);
 }
-// FUNCTION: LEMBALL 0x00402af4
+// LINKERILT: LEMBALL 0x00402af4
 LinkScfMineChunkManagerView* LinkScfMineChunkManagerView::ConstructMineChunkManagerThunk(void* pLevelMode,
 																						 int nCapacity)
 {
 	return ConstructMineChunkManager(pLevelMode, nCapacity);
 }
-// FUNCTION: LEMBALL 0x00402f95
+// LINKERILT: LEMBALL 0x00402f95
 LinkScfPgunChunkManagerView* LinkScfPgunChunkManagerView::ConstructPgunChunkManagerThunk(void* pLevelMode,
 																						 int nCapacity)
 {
 	return ConstructPgunChunkManager(pLevelMode, nCapacity);
 }
-// FUNCTION: LEMBALL 0x00402fdb
+// LINKERILT: LEMBALL 0x00402fdb
 LinkScfCollChunkManagerView* LinkScfCollChunkManagerView::ConstructCollChunkManagerThunk(void* pLevelMode,
 																						 int nCapacity)
 {
 	return ConstructCollChunkManager(pLevelMode, nCapacity);
 }
-// FUNCTION: LEMBALL 0x004030e9
+// LINKERILT: LEMBALL 0x004030e9
 LinkScfRockChunkManagerView* LinkScfRockChunkManagerView::ConstructRockChunkManagerThunk(void* pLevelMode,
 																						 int nCapacity)
 {
 	return ConstructRockChunkManager(pLevelMode, nCapacity);
 }
-// FUNCTION: LEMBALL 0x004031a7
+// LINKERILT: LEMBALL 0x004031a7
 LinkScfTramChunkManagerView* LinkScfTramChunkManagerView::ConstructTramChunkManagerThunk(void* pLevelMode,
 																						 int nCapacity)
 {
 	return ConstructTramChunkManager(pLevelMode, nCapacity);
 }
-// FUNCTION: LEMBALL 0x004032d8
+// LINKERILT: LEMBALL 0x004032d8
 void LinkScfPlasChunkManagerView::LoadPlasChunkObjectsThunk(const unsigned short* pChunk,
 															unsigned int cbChunk,
 															int fReuseState)
 {
 	LoadPlasChunkObjects(pChunk, cbChunk, fReuseState);
 }
-// FUNCTION: LEMBALL 0x0040349f
+// LINKERILT: LEMBALL 0x0040349f
 LinkScfInvsChunkManagerView* LinkScfInvsChunkManagerView::ConstructInvsChunkManagerThunk(void* pLevelMode,
 																						 int nCapacity)
 {
 	return ConstructInvsChunkManager(pLevelMode, nCapacity);
 }
-// FUNCTION: LEMBALL 0x004034b8
+// LINKERILT: LEMBALL 0x004034b8
 LinkScfGmobChunkManagerView* LinkScfGmobChunkManagerView::ConstructGmobChunkManagerThunk(void* pLevelMode)
 {
 	return ConstructGmobChunkManager(pLevelMode);

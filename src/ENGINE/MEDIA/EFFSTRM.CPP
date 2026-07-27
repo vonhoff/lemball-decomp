@@ -389,42 +389,42 @@ struct NetworkLobbyVsnetRuntimeDeleteView {
 
 extern void LEMBALL_FASTCALL CloseNetworkLobbyTransportPeers(void* pController);
 
-// FUNCTION: LEMBALL 0x004013c0
+// LINKERILT: LEMBALL 0x004013c0
 GameEffStreamPayloadSize8* GameEffStreamPayloadSize8::ConstructPayloadSize8Thunk(void)
 {
 	return ConstructPayloadSize8();
 }
-// STUB: LEMBALL 0x00401f87
+// LINKERILT: LEMBALL 0x00401f87
 void* LEMBALL_FASTCALL DeletePayloadSize8Thunk(GameEffStreamPayloadSize8* pStream, int, BYTE fDelete)
 {
 	return pStream->DeletePayloadSize8(fDelete);
 }
-// FUNCTION: LEMBALL 0x004027c0
+// LINKERILT: LEMBALL 0x004027c0
 void NoopNetworkLobbyVsnetRuntimeCallbackThunk(void)
 {
 	noop_network_lobby_vsnet_runtime_slot_3();
 }
-// STUB: LEMBALL 0x0040286a
+// LINKERILT: LEMBALL 0x0040286a
 void* LEMBALL_FASTCALL DeleteNetworkLobbyU32PayloadStreamThunk(void* pObject, void* pUnused, BYTE fDelete)
 {
 	return DeleteNetworkLobbyU32PayloadStream(pObject, pUnused, fDelete);
 }
-// FUNCTION: LEMBALL 0x00402b03
+// LINKERILT: LEMBALL 0x00402b03
 void LEMBALL_FASTCALL ReadNetworkLobbyU32PayloadStreamThunk(void* pObject)
 {
 	ReadNetworkLobbyU32PayloadStream(pObject);
 }
-// FUNCTION: LEMBALL 0x00402c43
+// LINKERILT: LEMBALL 0x00402c43
 void LEMBALL_FASTCALL ReadPayloadSize8Thunk(GameEffStreamPayloadSize8* pStream)
 {
 	pStream->ReadPayloadSize8();
 }
-// FUNCTION: LEMBALL 0x00403607
+// LINKERILT: LEMBALL 0x00403607
 void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStreamThunk(void* pObject)
 {
 	WriteNetworkLobbyU32PayloadStream(pObject);
 }
-// FUNCTION: LEMBALL 0x0040362a
+// LINKERILT: LEMBALL 0x0040362a
 void LEMBALL_FASTCALL WritePayloadSize8Thunk(GameEffStreamPayloadSize8* pStream)
 {
 	pStream->WritePayloadSize8();

@@ -857,39 +857,39 @@ static VsGdiDisplayBitmapVtable g_VSGDI_DisplayBitmapVtable = {
 };
 // SIZE 0x38
 struct VsGdiMetricsDisplayVtable {
-	void* (VsGdiMetricsDisplayState::*m_pDelete)(int); // 0x00
-	void* (VsGdiDisplayState::*m_pCreateDisplayBinding)(void); // 0x04
-	int (VsGdiDisplayState::*m_pReleaseDisplayBinding)(void*); // 0x08
-	int (VsGdiDisplayState::*m_pInitializeDisplayBitmapInfo)(void*); // 0x0c
-	void* (VsGdiDisplayState::*m_pCreateDisplayBitmap)(int, void*); // 0x10
-	int (VsGdiDisplayState::*m_pReleaseDisplayBitmap)(void*); // 0x14
+	void* (VsGdiMetricsDisplayState::*m_pDelete)(int);                           // 0x00
+	void* (VsGdiDisplayState::*m_pCreateDisplayBinding)(void);                   // 0x04
+	int (VsGdiDisplayState::*m_pReleaseDisplayBinding)(void*);                   // 0x08
+	int (VsGdiDisplayState::*m_pInitializeDisplayBitmapInfo)(void*);             // 0x0c
+	void* (VsGdiDisplayState::*m_pCreateDisplayBitmap)(int, void*);              // 0x10
+	int (VsGdiDisplayState::*m_pReleaseDisplayBitmap)(void*);                    // 0x14
 	int(LEMBALL_STDCALL* m_pApplyPalette)(void*, int, int, const unsigned int*); // 0x18
-	int(LEMBALL_STDCALL* m_pStretchDisplayRect)(void*, short*, void*, short*); // 0x1c
-	int(LEMBALL_STDCALL* m_pCopyDisplayRect)(void*, short*, void*, short*); // 0x20
-	void* (VsGdiDisplayState::*m_pBindDisplayBitmap)(int, void*); // 0x24
-	void* (VsGdiDisplayState::*m_pDeleteDisplayBitmap)(int, void*); // 0x28
-	int(LEMBALL_FASTCALL* m_pCreatePalette)(void*, int, void*); // 0x2c
-	int(LEMBALL_FASTCALL* m_pSelectPalette)(void*, int, void*); // 0x30
-	int(LEMBALL_FASTCALL* m_pIsPaletteReady)(void*, int); // 0x34
+	int(LEMBALL_STDCALL* m_pStretchDisplayRect)(void*, short*, void*, short*);   // 0x1c
+	int(LEMBALL_STDCALL* m_pCopyDisplayRect)(void*, short*, void*, short*);      // 0x20
+	void* (VsGdiDisplayState::*m_pBindDisplayBitmap)(int, void*);                // 0x24
+	void* (VsGdiDisplayState::*m_pDeleteDisplayBitmap)(int, void*);              // 0x28
+	int(LEMBALL_FASTCALL* m_pCreatePalette)(void*, int, void*);                  // 0x2c
+	int(LEMBALL_FASTCALL* m_pSelectPalette)(void*, int, void*);                  // 0x30
+	int(LEMBALL_FASTCALL* m_pIsPaletteReady)(void*, int);                        // 0x34
 };
 DECOMP_SIZE_ASSERT(VsGdiMetricsDisplayVtable, 0x38);
 
 // SIZE 0x38
 struct VsGdiBaseDisplayVtable {
-	void*(LEMBALL_FASTCALL* m_pDelete)(void*, int, int); // 0x00
-	void* m_pCreateDisplayBinding; // 0x04
-	void* m_pReleaseDisplayBinding; // 0x08
-	void* m_pInitializeDisplayBitmapInfo; // 0x0c
-	void* m_pCreateDisplayBitmap; // 0x10
-	void* m_pReleaseDisplayBitmap; // 0x14
-	void* m_pApplyPalette; // 0x18
-	void* m_pStretchDisplayRect; // 0x1c
-	void* m_pCopyDisplayRect; // 0x20
-	void* m_pBindDisplayBitmap; // 0x24
-	void* m_pDeleteDisplayBitmap; // 0x28
+	void*(LEMBALL_FASTCALL* m_pDelete)(void*, int, int);        // 0x00
+	void* m_pCreateDisplayBinding;                              // 0x04
+	void* m_pReleaseDisplayBinding;                             // 0x08
+	void* m_pInitializeDisplayBitmapInfo;                       // 0x0c
+	void* m_pCreateDisplayBitmap;                               // 0x10
+	void* m_pReleaseDisplayBitmap;                              // 0x14
+	void* m_pApplyPalette;                                      // 0x18
+	void* m_pStretchDisplayRect;                                // 0x1c
+	void* m_pCopyDisplayRect;                                   // 0x20
+	void* m_pBindDisplayBitmap;                                 // 0x24
+	void* m_pDeleteDisplayBitmap;                               // 0x28
 	int(LEMBALL_FASTCALL* m_pCreatePalette)(void*, int, void*); // 0x2c
 	int(LEMBALL_FASTCALL* m_pSelectPalette)(void*, int, void*); // 0x30
-	int(LEMBALL_FASTCALL* m_pIsPaletteReady)(void*, int); // 0x34
+	int(LEMBALL_FASTCALL* m_pIsPaletteReady)(void*, int);       // 0x34
 };
 DECOMP_SIZE_ASSERT(VsGdiBaseDisplayVtable, 0x38);
 
@@ -930,20 +930,20 @@ static VsGdiMetricsDisplayVtable g_VSGDI_MetricsDisplayVtable = {
 };
 // SIZE 0x38
 struct VsGdiDibDisplayVtable {
-	void* (VsGdiDibDisplayState::*m_pDelete)(int); // 0x00
-	void* (VsGdiDisplayState::*m_pCreateDisplayBinding)(void); // 0x04
-	int (VsGdiDisplayState::*m_pReleaseDisplayBinding)(void*); // 0x08
-	int (VsGdiDisplayState::*m_pInitializeDisplayBitmapInfo)(void*); // 0x0c
-	void* (VsGdiDisplayState::*m_pCreateDisplayBitmap)(int, void*); // 0x10
-	int (VsGdiDisplayState::*m_pReleaseDisplayBitmap)(void*); // 0x14
-	int(LEMBALL_STDCALL* m_pApplyPalette)(void*, int, int, const unsigned int*); // 0x18
+	void* (VsGdiDibDisplayState::*m_pDelete)(int);                                    // 0x00
+	void* (VsGdiDisplayState::*m_pCreateDisplayBinding)(void);                        // 0x04
+	int (VsGdiDisplayState::*m_pReleaseDisplayBinding)(void*);                        // 0x08
+	int (VsGdiDisplayState::*m_pInitializeDisplayBitmapInfo)(void*);                  // 0x0c
+	void* (VsGdiDisplayState::*m_pCreateDisplayBitmap)(int, void*);                   // 0x10
+	int (VsGdiDisplayState::*m_pReleaseDisplayBitmap)(void*);                         // 0x14
+	int(LEMBALL_STDCALL* m_pApplyPalette)(void*, int, int, const unsigned int*);      // 0x18
 	int (VsGdiDibDisplayState::*m_pStretchDisplayRect)(void*, short*, void*, short*); // 0x1c
-	int (VsGdiDibDisplayState::*m_pCopyDisplayRect)(void*, short*, void*, short*); // 0x20
-	void* (VsGdiDisplayState::*m_pBindDisplayBitmap)(int, void*); // 0x24
-	void* (VsGdiDisplayState::*m_pDeleteDisplayBitmap)(int, void*); // 0x28
-	int(LEMBALL_FASTCALL* m_pCreatePalette)(void*, int, void*); // 0x2c
-	int(LEMBALL_FASTCALL* m_pSelectPalette)(void*, int, void*); // 0x30
-	int(LEMBALL_FASTCALL* m_pIsPaletteReady)(void*, int); // 0x34
+	int (VsGdiDibDisplayState::*m_pCopyDisplayRect)(void*, short*, void*, short*);    // 0x20
+	void* (VsGdiDisplayState::*m_pBindDisplayBitmap)(int, void*);                     // 0x24
+	void* (VsGdiDisplayState::*m_pDeleteDisplayBitmap)(int, void*);                   // 0x28
+	int(LEMBALL_FASTCALL* m_pCreatePalette)(void*, int, void*);                       // 0x2c
+	int(LEMBALL_FASTCALL* m_pSelectPalette)(void*, int, void*);                       // 0x30
+	int(LEMBALL_FASTCALL* m_pIsPaletteReady)(void*, int);                             // 0x34
 };
 DECOMP_SIZE_ASSERT(VsGdiDibDisplayVtable, 0x38);
 
@@ -966,20 +966,20 @@ static VsGdiDibDisplayVtable g_VSGDI_DibDisplayVtable = {
 };
 // SIZE 0x38
 struct VsGdiDirectDrawDisplayVtable {
-	void* (VsGdiDirectDrawDisplayState::*m_pDelete)(int); // 0x00
-	void* (VsGdiDirectDrawDisplayState::*m_pCreateDisplayBinding)(void); // 0x04
-	int (VsGdiDirectDrawDisplayState::*m_pReleaseDisplayBinding)(void*); // 0x08
-	int (VsGdiDirectDrawDisplayState::*m_pInitializeDisplayBitmapInfo)(void*); // 0x0c
-	void* (VsGdiDirectDrawDisplayState::*m_pCreateDisplayBitmap)(int, void*); // 0x10
-	int (VsGdiDirectDrawDisplayState::*m_pReleaseDisplayBitmap)(void*); // 0x14
+	void* (VsGdiDirectDrawDisplayState::*m_pDelete)(int);                                     // 0x00
+	void* (VsGdiDirectDrawDisplayState::*m_pCreateDisplayBinding)(void);                      // 0x04
+	int (VsGdiDirectDrawDisplayState::*m_pReleaseDisplayBinding)(void*);                      // 0x08
+	int (VsGdiDirectDrawDisplayState::*m_pInitializeDisplayBitmapInfo)(void*);                // 0x0c
+	void* (VsGdiDirectDrawDisplayState::*m_pCreateDisplayBitmap)(int, void*);                 // 0x10
+	int (VsGdiDirectDrawDisplayState::*m_pReleaseDisplayBitmap)(void*);                       // 0x14
 	int(LEMBALL_FASTCALL* m_pApplyPalette)(void*, int, void*, int, int, const unsigned int*); // 0x18
-	int (VsGdiDirectDrawDisplayState::*m_pStretchDisplayRect)(void*, short*, void*, short*); // 0x1c
-	int (VsGdiDirectDrawDisplayState::*m_pCopyDisplayRect)(void*, short*, void*, short*); // 0x20
-	int (VsGdiDirectDrawDisplayState::*m_pBindDisplayBitmap)(int, void*); // 0x24
-	int (VsGdiDirectDrawDisplayState::*m_pDeleteDisplayBitmap)(int, void*); // 0x28
-	int (VsGdiDirectDrawDisplayState::*m_pCreatePalette)(void*); // 0x2c
-	int(LEMBALL_FASTCALL* m_pSelectPalette)(void*, int, void*); // 0x30
-	int (VsGdiDirectDrawDisplayState::*m_pIsPaletteReady)(void) const; // 0x34
+	int (VsGdiDirectDrawDisplayState::*m_pStretchDisplayRect)(void*, short*, void*, short*);  // 0x1c
+	int (VsGdiDirectDrawDisplayState::*m_pCopyDisplayRect)(void*, short*, void*, short*);     // 0x20
+	int (VsGdiDirectDrawDisplayState::*m_pBindDisplayBitmap)(int, void*);                     // 0x24
+	int (VsGdiDirectDrawDisplayState::*m_pDeleteDisplayBitmap)(int, void*);                   // 0x28
+	int (VsGdiDirectDrawDisplayState::*m_pCreatePalette)(void*);                              // 0x2c
+	int(LEMBALL_FASTCALL* m_pSelectPalette)(void*, int, void*);                               // 0x30
+	int (VsGdiDirectDrawDisplayState::*m_pIsPaletteReady)(void) const;                        // 0x34
 };
 DECOMP_SIZE_ASSERT(VsGdiDirectDrawDisplayVtable, 0x38);
 
@@ -1138,12 +1138,12 @@ struct VsGdiMediaListResourceView {
 	char* m_pTextEntry78;
 };
 
-// FUNCTION: LEMBALL 0x00402fea
+// LINKERILT: LEMBALL 0x00402fea
 void __stdcall PromoteQueuedRenderPointSinkTargetStateThunk(void* pPointSink)
 {
 	PromoteQueuedRenderPointSinkTargetState(pPointSink);
 }
-// FUNCTION: LEMBALL 0x0040381e
+// LINKERILT: LEMBALL 0x0040381e
 void LEMBALL_FASTCALL QueueQueuedRenderPointSinkThunk(void* pPointSink, void*, void* pQueue)
 
 {
@@ -4668,6 +4668,8 @@ void InvokeRootHelperTargetPostQueueCallback(int nTarget)
 	pBindingSource = *(void**) ((char*) pRootTarget + 0xf0);
 	((PostQueueProc) (*(void***) pBindingSource)[2])(pBindingSource);
 }
+// ABI-THUNK: 2b 49 fc; e9 rel32. __fastcall vtordisp adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
 // FUNCTION: LEMBALL 0x0046dba0
 __declspec(naked) void LEMBALL_FASTCALL FillHelperSurfaceRectCommandAdjustmentThunk(void* pCompactTarget,
 																					int nUnused,
@@ -4678,6 +4680,8 @@ __declspec(naked) void LEMBALL_FASTCALL FillHelperSurfaceRectCommandAdjustmentTh
         jmp FillHelperSurfaceRectCommand
 	}
 }
+// ABI-THUNK: 2b 49 fc; e9 rel32. __fastcall vtordisp adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
 // FUNCTION: LEMBALL 0x0046dbb0
 __declspec(naked) void LEMBALL_FASTCALL ForwardBitmapCommandToAdjustedSurfaceThunk(void)
 {
@@ -4699,6 +4703,8 @@ void LEMBALL_FASTCALL ForwardBitmapCommandToAdjustedSurface(void* pCompactTarget
 	pSurface = (char*) pCompactTarget + nSurfaceOffset - 0x51c;
 	((BitmapCommandVirtual) (*(void***) pSurface)[8])(pSurface, 0, pCommand, pBitmap);
 }
+// ABI-THUNK: 2b 49 fc; e9 rel32. __fastcall vtordisp adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
 // FUNCTION: LEMBALL 0x0046dbf0
 __declspec(naked) void LEMBALL_FASTCALL BlitBitmapRowsToScanlinesAdjustmentThunk(void* pCompactTarget,
 																				 int nUnused,
@@ -4710,6 +4716,8 @@ __declspec(naked) void LEMBALL_FASTCALL BlitBitmapRowsToScanlinesAdjustmentThunk
         jmp offset BlitBitmapRowsToScanlines
 	}
 }
+// ABI-THUNK: 2b 49 fc; e9 rel32. __fastcall vtordisp adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
 // FUNCTION: LEMBALL 0x0046dc10
 __declspec(naked) void LEMBALL_FASTCALL SetHelperTargetRenderExtentAdjustmentThunk(void* pCompactTarget,
 																				   int nUnused,
@@ -4720,6 +4728,8 @@ __declspec(naked) void LEMBALL_FASTCALL SetHelperTargetRenderExtentAdjustmentThu
         jmp offset SetHelperTargetRenderExtent
 	}
 }
+// ABI-THUNK: 2b 49 fc; e9 rel32. __fastcall vtordisp adjustment followed by tail jump;
+// MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
 // FUNCTION: LEMBALL 0x0046dc30
 __declspec(naked) void LEMBALL_FASTCALL ApplyHelperTargetPaletteAdjustmentThunk(void* pCompactTarget,
 																				int nUnused,

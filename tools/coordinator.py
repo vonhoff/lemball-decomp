@@ -9,6 +9,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+ILT_START = 0x00401000
+ILT_END = 0x00403891
 
 
 def ensure_tools(root):
@@ -37,7 +39,14 @@ def ensure_tools(root):
 
 def rows(path):
     with path.open(newline="", encoding="utf-8") as stream:
-        return list(csv.DictReader(stream))
+        functions = list(csv.DictReader(stream))
+    invalid = [row["address"] for row in functions if ILT_START <= int(row["address"], 16) < ILT_END]
+    if invalid:
+        raise SystemExit(
+            f"inventory contains linker ILT entry {invalid[0]}; "
+            "retag it in Ghidra and regenerate data/objdiff-functions.csv"
+        )
+    return functions
 
 
 def matches(root):

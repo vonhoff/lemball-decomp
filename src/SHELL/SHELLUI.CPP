@@ -157,7 +157,7 @@ static void AppendCString(char* pszTarget, unsigned int cchTarget, const char* p
 	}
 }
 
-// STUB: LEMBALL 0x0040292d
+// LINKERILT: LEMBALL 0x0040292d
 int LEMBALL_FASTCALL HandlePrimaryContextMenuCommandThunk(ShellUiPrimaryContextShell* pShell,
 														  int,
 														  const ShellUiMenuCommandMessage* pMessage)

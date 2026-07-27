@@ -100,7 +100,6 @@ void LEMBALL_FASTCALL ReadEffStreamTwoU16Fields(void* pObject);
 void LEMBALL_FASTCALL TcpipSocketStackDualRet8(void* pObject, void* pUnused, BYTE fDelete, BYTE fReserved);
 int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 
-
 // GLOBAL: LEMBALL 0x004a1e30
 void* g_pEffTransportPeerAddressState = 0;
 extern int g_nEffTransportAsyncErrorStatus;
@@ -137,19 +136,19 @@ struct VsNetVSMemObjectPointerArray {
 	void DestroyVSMemObjectPointerArray(void);
 };
 
-// FUNCTION: LEMBALL 0x00401451
+// LINKERILT: LEMBALL 0x00401451
 void NoopVtableCallbackThunk(void)
 {
 }
 
-// FUNCTION: LEMBALL 0x00401564
+// LINKERILT: LEMBALL 0x00401564
 int PASCAL ReturnTrueVtableCallbackThunk(void* pObject)
 {
 	(void) pObject;
 	return 1;
 }
 
-// FUNCTION: LEMBALL 0x004026ad
+// LINKERILT: LEMBALL 0x004026ad
 int ReturnTrueVtableCallbackSecondaryThunk(void)
 {
 	return 1;
@@ -447,7 +446,6 @@ VsNetDualHandleEffStream::VsNetDualHandleEffStream()
 		g_pEffTransportPeerAddressState =
 			((VsNetRuntimeWindowInterface*) g_pActiveNetworkRuntimeWindow)->CreateServiceObject();
 	}
-
 }
 
 // FUNCTION: LEMBALL 0x0045f8a0
@@ -578,8 +576,7 @@ VsNetTimedEffStream::VsNetTimedEffStream()
 	m_pTertiaryHandleArray50 = 0;
 	m_nReserved54 = 0;
 	m_nHandleIndex5c = -1;
-	m_pRuntimeService70 =
-		((VsNetRuntimeWindowInterface*) g_pActiveNetworkRuntimeWindow)->CreateServiceObject();
+	m_pRuntimeService70 = ((VsNetRuntimeWindowInterface*) g_pActiveNetworkRuntimeWindow)->CreateServiceObject();
 }
 
 // FUNCTION: LEMBALL 0x0045fd80
@@ -673,7 +670,6 @@ VsNetRuntimeChannelStack::VsNetRuntimeChannelStack()
 		++i;
 		m_pbRuntimeFlags10[i - 1] = 0;
 	} while (i < 0x200);
-
 }
 
 // FUNCTION: LEMBALL 0x004604e0

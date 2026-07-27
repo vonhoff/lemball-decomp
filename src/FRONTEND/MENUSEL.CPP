@@ -190,11 +190,11 @@ public:
 
 // SIZE 0x10
 struct GameProgressRenderEntry {
-	void** m_pVtable00; // 0x00
-	short m_cx04; // 0x04
-	short m_cy06; // 0x06
-	short m_x08; // 0x08
-	short m_y0A; // 0x0a
+	void** m_pVtable00;  // 0x00
+	short m_cx04;        // 0x04
+	short m_cy06;        // 0x06
+	short m_x08;         // 0x08
+	short m_y0A;         // 0x0a
 	int m_nResourceId0C; // 0x0c
 };
 
@@ -218,14 +218,14 @@ public:
 	void SetPercent(int nPercent);
 
 public:
-	GameSelectorProgressGeometry m_Geometry90; // 0x90
-	GameRectQuad m_RectC8; // 0xc8
+	GameSelectorProgressGeometry m_Geometry90;     // 0x90
+	GameRectQuad m_RectC8;                         // 0xc8
 	GameProgressRenderEntry m_aRenderEntriesD0[5]; // 0xd0
-	int m_nPercent120; // 0x120
-	int m_cxProgress124; // 0x124
-	int m_nReserved128; // 0x128
-	void* m_pRenderOwner12C; // 0x12c
-	int m_nToken130; // 0x130
+	int m_nPercent120;                             // 0x120
+	int m_cxProgress124;                           // 0x124
+	int m_nReserved128;                            // 0x128
+	void* m_pRenderOwner12C;                       // 0x12c
+	int m_nToken130;                               // 0x130
 };
 
 DECOMP_SIZE_ASSERT(GameProgressRenderEntry, 0x10);
@@ -724,7 +724,7 @@ __inline static void* ConstructMenuSelectorChildContextObject(void* pObject)
 	return pObject;
 }
 
-// FUNCTION: LEMBALL 0x00401005
+// LINKERILT: LEMBALL 0x00401005
 void LEMBALL_FASTCALL destroy_queued_variant_child_slot_manager(void* pObject)
 {
 	DestroyQueuedVariantChildSlotManager((GameQueuedVariantChildSlotManager*) pObject);
@@ -1213,7 +1213,7 @@ void LEMBALL_FASTCALL SetMenuSelectorChildrenEnabledThunk(GameMenuSelectorManage
 	SetMenuSelectorChildrenEnabled(pManager, nUnusedEdx, fEnabled);
 }
 
-// FUNCTION: LEMBALL 0x00402432
+// LINKERILT: LEMBALL 0x00402432
 GameMenuSelectorManager* LEMBALL_FASTCALL ConstructMenuSelectorManagerThunk(GameMenuSelectorManager* pManager,
 																			int nUnusedEdx,
 																			void* pRenderOwner,

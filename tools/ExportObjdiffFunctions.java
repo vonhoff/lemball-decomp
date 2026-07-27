@@ -13,20 +13,31 @@ import java.util.List;
 
 public class ExportObjdiffFunctions extends GhidraScript {
 	private static final String UNIT_TAG = "objdiff-unit:";
+	private static final String ILT_TAG = "linker-ilt";
+	private static final int ILT_FUNCTION_COUNT = 2077;
 
 	public void run() throws Exception {
 		String[] args = getScriptArgs();
 		File output = args.length == 0 ? askFile("Save objdiff-functions.csv", "Save") : new File(args[0]);
 		List<String> lines = new ArrayList<>();
 		lines.add("address,size,name,unit");
+		int iltCount = 0;
 
 		FunctionIterator functions = currentProgram.getFunctionManager().getFunctions(true);
 		while (functions.hasNext()) {
 			Function function = functions.next();
+			boolean isIlt = function.getTags().stream().anyMatch(tag -> ILT_TAG.equals(tag.getName()));
 			List<String> units = function.getTags().stream()
 				.map(tag -> tag.getName())
 				.filter(name -> name.startsWith(UNIT_TAG))
 				.toList();
+			if (isIlt) {
+				iltCount++;
+				if (!units.isEmpty()) {
+					throw new IllegalArgumentException(function.getName() + " has linker ILT and objdiff unit tags");
+				}
+				continue;
+			}
 			if (units.isEmpty()) {
 				continue;
 			}
@@ -57,7 +68,12 @@ public class ExportObjdiffFunctions extends GhidraScript {
 			));
 		}
 
+		if (iltCount != ILT_FUNCTION_COUNT) {
+			throw new IllegalArgumentException(
+				"Expected " + ILT_FUNCTION_COUNT + " linker ILT functions, found " + iltCount
+			);
+		}
 		Files.write(output.toPath(), lines);
-		println("Exported " + (lines.size() - 1) + " functions to " + output);
+		println("Exported " + (lines.size() - 1) + " functions to " + output + "; linker ILT=" + iltCount);
 	}
 }

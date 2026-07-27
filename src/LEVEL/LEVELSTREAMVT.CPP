@@ -8,13 +8,13 @@ extern void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void* pObject);
 // ABI-only translation unit: moving these distinct binary entry points changes
 // linker layout and breaks the reconstructed vtable addresses.
 
-// FUNCTION: LEMBALL 0x00401091
+// LINKERILT: LEMBALL 0x00401091
 void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStreamThunk(void* pObject)
 {
 	ReadNetworkLevelChunkDeltaStream(pObject);
 }
 
-// FUNCTION: LEMBALL 0x004019fb
+// LINKERILT: LEMBALL 0x004019fb
 void* LEMBALL_FASTCALL DeleteNetworkLevelChunkDeltaStreamThunk(void* pObject, int nUnused, unsigned char fDelete)
 {
 	(void) nUnused;
@@ -25,7 +25,7 @@ void* LEMBALL_FASTCALL DeleteNetworkLevelChunkDeltaStreamThunk(void* pObject, in
 	return pObject;
 }
 
-// FUNCTION: LEMBALL 0x00401ae6
+// LINKERILT: LEMBALL 0x00401ae6
 void LEMBALL_FASTCALL WriteNetworkLevelChunkDeltaStreamThunk(void* pObject)
 {
 	VsNetEffStreamBase* pStream = (VsNetEffStreamBase*) pObject;

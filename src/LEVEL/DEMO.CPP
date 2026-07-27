@@ -114,7 +114,7 @@ static DemoLevelDemoPlaybackConstructorAddress g_DEMO_LevelDemoPlaybackConstruct
 
 #include "ENGINE/CORE/SAFEVT.H"
 
-// FUNCTION: LEMBALL 0x004016a4
+// LINKERILT: LEMBALL 0x004016a4
 void* LEMBALL_FASTCALL DeleteLevelDemoPlaybackControllerThunk(void* pPlaybackController, int, int fDelete)
 
 {
@@ -128,13 +128,13 @@ void* LEMBALL_FASTCALL DeleteLevelDemoPlaybackControllerThunk(void* pPlaybackCon
 	return pPlaybackController;
 }
 
-// FUNCTION: LEMBALL 0x0040179e
+// LINKERILT: LEMBALL 0x0040179e
 void DemoLevelDemoPlaybackController::ResetLevelDemoPlaybackCursorThunk(void)
 {
 	ResetLevelDemoPlaybackCursor();
 }
 
-// FUNCTION: LEMBALL 0x004017a3
+// LINKERILT: LEMBALL 0x004017a3
 DemoLevelDemoPlaybackController* DemoLevelDemoPlaybackController::ConstructLevelDemoPlaybackControllerThunk(
 	unsigned int uFrameInterval)
 
@@ -142,20 +142,20 @@ DemoLevelDemoPlaybackController* DemoLevelDemoPlaybackController::ConstructLevel
 	return (this->*g_DEMO_LevelDemoPlaybackConstructorAddress.m_pMethod)(uFrameInterval);
 }
 
-// FUNCTION: LEMBALL 0x00401a28
+// LINKERILT: LEMBALL 0x00401a28
 int LEMBALL_FASTCALL FilterLevelDemoPlaybackInputEventThunk(void* pPlaybackController, int, unsigned short* pEventId)
 
 {
 	return FilterLevelDemoPlaybackInputEvent(pPlaybackController, pEventId);
 }
 
-// FUNCTION: LEMBALL 0x00401a55
+// LINKERILT: LEMBALL 0x00401a55
 void LEMBALL_FASTCALL ReleaseLevelDemoRecordBufferThunk(void* pPlaybackController)
 {
 	ReleaseLevelDemoRecordBuffer(pPlaybackController);
 }
 
-// FUNCTION: LEMBALL 0x00402eaa
+// LINKERILT: LEMBALL 0x00402eaa
 void LEMBALL_FASTCALL StopLevelDemoPlaybackThunk(void* pPlaybackController)
 {
 	StopLevelDemoPlayback(pPlaybackController);

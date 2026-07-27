@@ -368,181 +368,182 @@ unsigned int return_hresult_40000001_callback(void);
 void noop_network_lobby_vsnet_runtime_slot_3(void);
 void noop_callback_00456600(void);
 
-// FUNCTION: LEMBALL 0x00401019
+// LINKERILT: LEMBALL 0x00401019
 void __fastcall update_projectile_pool(void* pPool)
 {
 	update_projectile_pool_real(pPool);
 }
 
-// FUNCTION: LEMBALL 0x00401046
+// LINKERILT: LEMBALL 0x00401046
 LevelThreeDwordPointVariant* LevelThreeDwordPointVariant::CopyThunk(const LevelThreeDwordPointVariant* pSource)
 {
 	return Copy(pSource);
 }
 
-// FUNCTION: LEMBALL 0x00401050
+// LINKERILT: LEMBALL 0x00401050
 int thunk_return_false_vtable_callback_0040aa70(void* pUnused1, void* pUnused2)
 {
 	return return_false_vtable_callback_0040aa70(pUnused1, pUnused2);
 }
 
-// FUNCTION: LEMBALL 0x00401055
+// Compatibility shim for ILT slot 0x00401055 targeting 0x0040a960.
+// Removing it perturbs MSVC 4.20 code generation and regresses 0x00414e20.
 void thunk_noop_vtable_callback_0040a960(void)
 {
 	noop_vtable_callback_0040a960();
 }
 
-// FUNCTION: LEMBALL 0x004010be
+// LINKERILT: LEMBALL 0x004010be
 LevelThreeDwordPoint* LevelManagedEntityPositionView::CopyWorldPositionThunk(LevelThreeDwordPoint* pPosition)
 {
 	return CopyWorldPosition(pPosition);
 }
 
-// FUNCTION: LEMBALL 0x004011ef
+// LINKERILT: LEMBALL 0x004011ef
 void __fastcall ClearManagedEntityMoveCommandsThunk(void* pEntity)
 {
 	clear_managed_entity_move_commands(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x0040142e
+// LINKERILT: LEMBALL 0x0040142e
 int LevelManagedEntityDirtyStateView::PollChildDirtyFlagThunk(void)
 {
 	return PollChildDirtyFlag();
 }
 
-// FUNCTION: LEMBALL 0x004015CD
+// LINKERILT: LEMBALL 0x004015cd
 void LevelModeChunkEntryArrayView::CopyTripletToFixedPointThunk(int* pOutput, int nIndex)
 {
 	CopyTripletToFixedPoint(pOutput, nIndex);
 }
 
-// FUNCTION: LEMBALL 0x0040161d
+// LINKERILT: LEMBALL 0x0040161d
 LevelThreeDwordPointVariantB* LevelThreeDwordPointVariantB::CopyThunk(const LevelThreeDwordPointVariantB* pSource)
 {
 	return Copy(pSource);
 }
 
-// FUNCTION: LEMBALL 0x0040173f
+// LINKERILT: LEMBALL 0x0040173f
 void* LevelManagedEntityChildIterator::GetChildWithState8Thunk(void)
 {
 	return GetChildWithState8();
 }
 
-// FUNCTION: LEMBALL 0x00401816
+// LINKERILT: LEMBALL 0x00401816
 void* LevelManagedEntityChildIterator::GetNextChildThunk(void)
 {
 	return GetNextChild();
 }
 
-// FUNCTION: LEMBALL 0x0040185c
+// LINKERILT: LEMBALL 0x0040185c
 int __fastcall GetManagedEntityGroupCommandStateThunk(void* pEntity)
 {
 	return get_managed_entity_group_command_state(pEntity);
 }
 
-// FUNCTION: LEMBALL 0x004018a7
+// LINKERILT: LEMBALL 0x004018a7
 LevelThreeDwordPoint* LevelThreeDwordPoint::CopyThunk(const LevelThreeDwordPoint* pSource)
 {
 	return Copy(pSource);
 }
 
-// FUNCTION: LEMBALL 0x00401bf4
+// LINKERILT: LEMBALL 0x00401bf4
 void LevelManagedEntityCommandQueue::PopFrontThunk(void)
 {
 	PopFront();
 }
 
-// FUNCTION: LEMBALL 0x00401e65
+// LINKERILT: LEMBALL 0x00401e65
 void LevelManagedEntityQueueCursor::GetPositionThunk(int* pnX, int* pnY)
 {
 	GetPosition(pnX, pnY);
 }
 
-// FUNCTION: LEMBALL 0x00401eab
+// LINKERILT: LEMBALL 0x00401eab
 void* LevelManagedEntityChildIterator::GetCurrentChildThunk(void)
 {
 	return GetCurrentChild();
 }
 
-// FUNCTION: LEMBALL 0x00401ed3
+// LINKERILT: LEMBALL 0x00401ed3
 LevelTwoDwordPair* LevelTwoDwordPair::CopyThunk(const LevelTwoDwordPair* pSource)
 {
 	return Copy(pSource);
 }
 
-// FUNCTION: LEMBALL 0x00401f37
+// LINKERILT: LEMBALL 0x00401f37
 int LevelManagedEntityCommandQueueView::HasPendingCommandsThunk(void)
 {
 	return HasPendingCommands();
 }
 
-// FUNCTION: LEMBALL 0x0040202c
+// LINKERILT: LEMBALL 0x0040202c
 void LevelManagedEntityCommandQueue::PushFrontThunk(void)
 {
 	PushFront();
 }
 
-// FUNCTION: LEMBALL 0x004020c2
+// LINKERILT: LEMBALL 0x004020c2
 void NoopManagedEntityGroupDetachHookThunk(void)
 {
 	noop_managed_entity_group_detach_hook();
 }
 
-// FUNCTION: LEMBALL 0x004021df
+// LINKERILT: LEMBALL 0x004021df
 LevelManagedEntityChildIterator* LevelManagedEntityActiveGroupView::GetFirstActiveEntityThunk(void)
 {
 	return GetFirstActiveEntity();
 }
 
-// FUNCTION: LEMBALL 0x0040241e
+// LINKERILT: LEMBALL 0x0040241e
 void* LevelManagedEntityChildIterator::GetFirstChildThunk(void)
 {
 	return GetFirstChild();
 }
 
-// FUNCTION: LEMBALL 0x004024be
+// LINKERILT: LEMBALL 0x004024be
 void LevelManagedEntityStateFields::SetStateIdWithVariantLocalThunk(int nStateId, int nVariant)
 {
 	SetStateIdWithVariantLocal(nStateId, nVariant);
 }
 
-// FUNCTION: LEMBALL 0x0040269e
+// LINKERILT: LEMBALL 0x0040269e
 int LevelQueuedProjectileRequestTable::GetRequestCodeThunk(int nIndex)
 {
 	return GetRequestCode(nIndex);
 }
 
-// FUNCTION: LEMBALL 0x00402833
+// LINKERILT: LEMBALL 0x00402833
 int LevelManagedEntityHistoryView::PopHistoryIdThunk(void)
 {
 	return PopHistoryId();
 }
 
-// FUNCTION: LEMBALL 0x00403215
+// LINKERILT: LEMBALL 0x00403215
 void LevelManagedEntityQueueCursor::ClampPositionThunk(void)
 {
 	ClampPosition();
 }
 
-// FUNCTION: LEMBALL 0x0040335f
+// LINKERILT: LEMBALL 0x0040335f
 int PASCAL IsManagedEntityState18Thunk(int nState)
 {
 	return IsManagedEntityState18(nState);
 }
 
-// FUNCTION: LEMBALL 0x00403477
+// LINKERILT: LEMBALL 0x00403477
 int LevelManagedEntityChildIterator::GetActiveStateThunk(void)
 {
 	return GetActiveState();
 }
 
-// FUNCTION: LEMBALL 0x0040367a
+// LINKERILT: LEMBALL 0x0040367a
 int LevelManagedEntityStateFields::IsStateNotInactiveThunk(void)
 {
 	return IsStateNotInactive();
 }
 
-// FUNCTION: LEMBALL 0x0040380a
+// LINKERILT: LEMBALL 0x0040380a
 int LevelManagedEntityChildIterator::HasDirtyChildrenThunk(void)
 {
 	return HasDirtyChildren();
@@ -1827,6 +1828,9 @@ void __fastcall set_move_chunk_object_trigger_latch(void* pObject)
 	*(int*) ((char*) pObject + 0x148) = 1;
 }
 
+// SYNTHETIC: LEMBALL 0x0042eec0
+// return_zero_level_callback_0042eec0
+
 // FUNCTION: LEMBALL 0x0042f2e0
 void __fastcall reset_move_chunk_object_count(void* pManager)
 {
@@ -1893,4 +1897,11 @@ void noop_network_lobby_vsnet_runtime_slot_3(void)
 // FUNCTION: LEMBALL 0x00456600
 void noop_callback_00456600(void)
 {
+}
+
+int PASCAL return_zero_level_callback_0042eec0(void* pUnused1, void* pUnused2)
+{
+	(void) pUnused1;
+	(void) pUnused2;
+	return 0;
 }

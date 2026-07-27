@@ -14,19 +14,19 @@ struct GameProcessCurrentDirectoryState {
 
 extern GameProcessCurrentDirectoryState* g_pProcessCurrentDirectoryState;
 
-// STUB: LEMBALL 0x0040132a
+// LINKERILT: LEMBALL 0x0040132a
 // GameScreenObject::ConstructMainMenuScreen
-// STUB: LEMBALL 0x004015a0
+// LINKERILT: LEMBALL 0x004015a0
 // GameScreenObject::ConstructNetworkLobbyScreen
-// STUB: LEMBALL 0x0040200e
+// LINKERILT: LEMBALL 0x0040200e
 // GameScreenObject::ConstructPaintballSequenceScreen
-// STUB: LEMBALL 0x004020a4
+// LINKERILT: LEMBALL 0x004020a4
 // GameScreenObject::ConstructLevelScreen
-// STUB: LEMBALL 0x00402315
+// LINKERILT: LEMBALL 0x00402315
 // GameScreenObject::ConstructOptionsScreen
-// STUB: LEMBALL 0x004029a0
+// LINKERILT: LEMBALL 0x004029a0
 // GameScreenObject::ConstructPasswordEntryScreen
-// STUB: LEMBALL 0x00403026
+// LINKERILT: LEMBALL 0x00403026
 // GameScreenObject::ConstructRegistrationInfoScreen
 #include "ENGINE/CORE/WIN32.H"
 #include "ENGINE/GDI/VSWINDOW.H"

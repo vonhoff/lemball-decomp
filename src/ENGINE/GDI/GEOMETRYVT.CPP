@@ -12,25 +12,25 @@ extern int LEMBALL_FASTCALL GeometryOwnerContainsPoint(void*, int, const VS_XYPa
 // ABI-only translation unit: moving these forwarding entries changes linker
 // layout and breaks the reconstructed vtable addresses.
 
-// FUNCTION: LEMBALL 0x004023a6
+// LINKERILT: LEMBALL 0x004023a6
 void LEMBALL_FASTCALL GeometryOwnerPointerEnterThunk(void* pOwner)
 {
 	GeometryOwnerPointerEnterNoop(pOwner);
 }
 
-// FUNCTION: LEMBALL 0x00402ad1
+// LINKERILT: LEMBALL 0x00402ad1
 int LEMBALL_FASTCALL GeometryOwnerContainsPointThunk(void* pOwner, int nUnused, const VS_XYPair* pPoint)
 {
 	return GeometryOwnerContainsPoint(pOwner, nUnused, pPoint);
 }
 
-// FUNCTION: LEMBALL 0x00403300
+// LINKERILT: LEMBALL 0x00403300
 void LEMBALL_FASTCALL GeometryOwnerPointerMoveThunk(void* pOwner, int nUnused, const VS_XYPair* pPoint)
 {
 	GeometryOwnerPointerMoveNoop(pOwner, nUnused, pPoint);
 }
 
-// FUNCTION: LEMBALL 0x00403751
+// LINKERILT: LEMBALL 0x00403751
 void LEMBALL_FASTCALL ResetGeometryOwnerButtonsOutsideThunk(void* pOwner)
 {
 	ResetGeometryOwnerButtonsIfOutsideDispatchDisabled(pOwner);

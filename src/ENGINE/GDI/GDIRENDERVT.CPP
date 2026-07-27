@@ -3,13 +3,13 @@
 
 extern void LEMBALL_FASTCALL DispatchLevelScreenRenderStatePop(void* pEntry, int nUnused, void* pContext);
 
-// FUNCTION: LEMBALL 0x00401073
+// LINKERILT: LEMBALL 0x00401073
 void LEMBALL_FASTCALL ExecuteStatusRenderPopThunk(void* pEntry, int nUnused, void* pContext)
 {
 	DispatchLevelScreenRenderStatePop(pEntry, nUnused, pContext);
 }
 
-// FUNCTION: LEMBALL 0x00401334
+// LINKERILT: LEMBALL 0x00401334
 void LEMBALL_FASTCALL ExecuteStatusPointPushThunk(void* pEntry, int nUnused, void* pContext)
 {
 	(void) pEntry;
@@ -17,7 +17,7 @@ void LEMBALL_FASTCALL ExecuteStatusPointPushThunk(void* pEntry, int nUnused, voi
 	(void) pContext;
 }
 
-// FUNCTION: LEMBALL 0x0040189d
+// LINKERILT: LEMBALL 0x0040189d
 void* LEMBALL_FASTCALL DeleteStatusPointSinkEntryThunk(void* pEntry, int nUnused, unsigned char fDelete)
 {
 	(void) nUnused;
@@ -27,7 +27,7 @@ void* LEMBALL_FASTCALL DeleteStatusPointSinkEntryThunk(void* pEntry, int nUnused
 	return pEntry;
 }
 
-// FUNCTION: LEMBALL 0x004021b2
+// LINKERILT: LEMBALL 0x004021b2
 void* LEMBALL_FASTCALL DeleteStatusRenderEntryThunk(void* pEntry, int nUnused, unsigned char fDelete)
 {
 	(void) nUnused;
@@ -37,7 +37,7 @@ void* LEMBALL_FASTCALL DeleteStatusRenderEntryThunk(void* pEntry, int nUnused, u
 	return pEntry;
 }
 
-// FUNCTION: LEMBALL 0x004022c5
+// LINKERILT: LEMBALL 0x004022c5
 void* LEMBALL_FASTCALL DeleteStatusPointSinkVariantThunk(void* pEntry, int nUnused, unsigned char fDelete)
 {
 	(void) nUnused;
@@ -47,14 +47,14 @@ void* LEMBALL_FASTCALL DeleteStatusPointSinkVariantThunk(void* pEntry, int nUnus
 	return pEntry;
 }
 
-// FUNCTION: LEMBALL 0x004023fb
+// LINKERILT: LEMBALL 0x004023fb
 void LEMBALL_FASTCALL SetStatusRenderEntryFieldThunk(void* pEntry, int nUnused, int nValue)
 {
 	(void) nUnused;
 	*(int*) ((char*) pEntry + 4) = nValue;
 }
 
-// FUNCTION: LEMBALL 0x00402b35
+// LINKERILT: LEMBALL 0x00402b35
 void LEMBALL_FASTCALL DispatchStatusPointSinkOwnerThunk(void* pEntry, int nUnused, void* pContext)
 {
 	typedef void(LEMBALL_FASTCALL * DispatchProc)(void*, int, void*);
@@ -63,28 +63,28 @@ void LEMBALL_FASTCALL DispatchStatusPointSinkOwnerThunk(void* pEntry, int nUnuse
 	((DispatchProc) (*(void***) pOwner)[38])(pOwner, 0, pEntry);
 }
 
-// FUNCTION: LEMBALL 0x0040309e
+// LINKERILT: LEMBALL 0x0040309e
 void LEMBALL_FASTCALL AppendStatusPointSinkToQueueThunk(void* pEntry, int nUnused, void* pQueue)
 {
 	(void) nUnused;
 	((VsGdiHelperDispatchQueue*) pQueue)->AppendPointerQueueEntry(pEntry);
 }
 
-// FUNCTION: LEMBALL 0x00403512
+// LINKERILT: LEMBALL 0x00403512
 void LEMBALL_FASTCALL QueueStatusRenderPopThunk(void* pEntry, int nUnused, void* pQueue)
 {
 	(void) nUnused;
 	((VsGdiHelperDispatchQueue*) pQueue)->AppendPointerQueueEntry(pEntry);
 }
 
-// FUNCTION: LEMBALL 0x00403670
+// LINKERILT: LEMBALL 0x00403670
 void LEMBALL_FASTCALL QueueStatusPointPushThunk(void* pEntry, int nUnused, void* pQueue)
 {
 	(void) nUnused;
 	((VsGdiHelperDispatchQueue*) pQueue)->AppendPointerQueueEntry(pEntry);
 }
 
-// FUNCTION: LEMBALL 0x004036a7
+// LINKERILT: LEMBALL 0x004036a7
 int LEMBALL_FASTCALL ReturnZeroStatusRenderThunk(void* pEntry)
 {
 	(void) pEntry;

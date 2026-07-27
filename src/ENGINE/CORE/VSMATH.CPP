@@ -36,7 +36,7 @@ static int g_anSignedTrigTable[512] = {
 };
 static int g_fSignedTrigTableInitialized = 0;
 
-// FUNCTION: LEMBALL 0x004035ad
+// LINKERILT: LEMBALL 0x004035ad
 VsMathFixed12Vector2D* VsMathFixed12Vector2D::InitializeFromPixelsThunk(int nX, int nY)
 {
 	return InitializeFromPixels(nX, nY);

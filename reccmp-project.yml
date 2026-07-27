@@ -2,6 +2,8 @@ targets:
   LEMBALL:
     filename: LEMBALL.EXE
     source_root: src
+    marker-aliases:
+      LINKERILT: STUB
     data-sources:
       - data/runtime-symbols.csv
     hash:

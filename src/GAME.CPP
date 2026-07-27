@@ -1844,7 +1844,7 @@ struct GameLevelModeActiveInterface {
 
 // SIZE 0x114
 struct GameLevelModeObjectView : public GameLevelModePrefixInterface, public GameLevelModeActiveInterface {
-	char m_abReserved14[0xfc]; // 0x14
+	char m_abReserved14[0xfc];     // 0x14
 	int m_nStatusIndicatorMode110; // 0x110
 };
 DECOMP_SIZE_ASSERT(GameLevelModeObjectView, 0x114);
@@ -1872,50 +1872,52 @@ struct GameCursorRenderEntryInterface {
 	virtual void AppendToQueue(void* pQueue) = 0;
 };
 
-// FUNCTION: LEMBALL 0x004010a0
+// LINKERILT: LEMBALL 0x004010a0
 unsigned int LEMBALL_FASTCALL GetQueuedRenderPointSinkField0x30ForwardThunk(int nParam)
 {
 	return (unsigned int) get_object_field_0x30((void*) nParam);
 }
 
-// FUNCTION: LEMBALL 0x004010f0
+// LINKERILT: LEMBALL 0x004010f0
 GamePrimaryContext* GamePrimaryContext::ConstructPrimaryContextThunk(GameMainContext* pMainContext)
 {
 	return ConstructPrimaryContext(pMainContext);
 }
 
-// FUNCTION: LEMBALL 0x004010fa
+// LINKERILT: LEMBALL 0x004010fa
 void GameMainContext::SwitchMainGameModeForwardThunk(int nMode)
 {
 	SwitchMainGameMode(nMode);
 }
 
-// FUNCTION: LEMBALL 0x004010ff
-int* GameScreenObject::ConstructLevelSelectionScreenForwardThunk(unsigned int nParam1, unsigned int nParam2, unsigned short* pParam3)
+// LINKERILT: LEMBALL 0x004010ff
+int* GameScreenObject::ConstructLevelSelectionScreenForwardThunk(unsigned int nParam1,
+																 unsigned int nParam2,
+																 unsigned short* pParam3)
 {
-	return (int*)ConstructLevelSelectionScreen((void*)nParam1, (void*)nParam2, (short*)pParam3);
+	return (int*) ConstructLevelSelectionScreen((void*) nParam1, (void*) nParam2, (short*) pParam3);
 }
-// STUB: LEMBALL 0x004014b0
+// LINKERILT: LEMBALL 0x004014b0
 void GameLevelProgressState::SetUnlockedPackCapThunk(int nPack, int nCap)
 {
 	SetUnlockedPackCap(nPack, nCap);
 }
-// STUB: LEMBALL 0x004015e6
+// LINKERILT: LEMBALL 0x004015e6
 GameBaseModeObject* GameBaseModeObject::InitializeThunk(GameMainContext* pMainContext)
 {
 	return Initialize(pMainContext);
 }
-// FUNCTION: LEMBALL 0x00401820
+// LINKERILT: LEMBALL 0x00401820
 void LEMBALL_FASTCALL UpdateLevelModeActiveInterfaceThunk(void* pActiveInterface)
 {
 	UpdateLevelModeFromActiveInterface(pActiveInterface);
 }
-// STUB: LEMBALL 0x00401839
+// LINKERILT: LEMBALL 0x00401839
 int RunMainGameSessionThunk(int cArgs, const char* const* ppszArgs)
 {
 	return RunMainGameSession(cArgs, ppszArgs);
 }
-// STUB: LEMBALL 0x00401875
+// LINKERILT: LEMBALL 0x00401875
 short* GamePrimaryContext::ComputePrimaryContextCenteredScreenRectThunk(short* paRect,
 																		int nLeftOverride,
 																		int nTopOverride)
@@ -1923,17 +1925,17 @@ short* GamePrimaryContext::ComputePrimaryContextCenteredScreenRectThunk(short* p
 {
 	return ComputePrimaryContextCenteredScreenRect(paRect, nLeftOverride, nTopOverride);
 }
-// STUB: LEMBALL 0x00401884
+// LINKERILT: LEMBALL 0x00401884
 int PASCAL ReturnZeroBaseModeThunk(void* pObject, void* pArgument1, void* pArgument2)
 {
 	return return_zero_screen_callback_00446990(pObject, pArgument1, pArgument2);
 }
-// STUB: LEMBALL 0x00401b72
+// LINKERILT: LEMBALL 0x00401b72
 void SetLevelScreenStatusIndicatorModeThunk(int nMode, int nValue)
 {
 	SetLevelScreenStatusIndicatorMode(nMode, nValue);
 }
-// STUB: LEMBALL 0x00401b90
+// LINKERILT: LEMBALL 0x00401b90
 void* ConstructNetworkLobbyTransportController(void* pModeObject, GameMainContext* pMainContext)
 {
 	GameNetworkLobbyTransportController* pMode;
@@ -1956,7 +1958,7 @@ void* ConstructNetworkLobbyTransportController(void* pModeObject, GameMainContex
 	g_pNetworkLobbyTransportController = pMode;
 	return pModeObject;
 }
-// STUB: LEMBALL 0x00401c6c
+// LINKERILT: LEMBALL 0x00401c6c
 void ReleaseMainGameVariantResourceMode(GameMainContext* pMainContext)
 {
 	if (pMainContext->m_pVariantMode != 0) {
@@ -1965,7 +1967,7 @@ void ReleaseMainGameVariantResourceMode(GameMainContext* pMainContext)
 		pMainContext->m_pVariantMode = 0;
 	}
 }
-// STUB: LEMBALL 0x00401d5c
+// LINKERILT: LEMBALL 0x00401d5c
 void* ConstructLevelSelectionModeController(void* pModeObject, GameMainContext* pMainContext)
 {
 	GameLevelSelectionModeController* pMode;
@@ -1976,33 +1978,33 @@ void* ConstructLevelSelectionModeController(void* pModeObject, GameMainContext* 
 	pMode->m_pRenderQueueNodeVtable = g_GAME_LevelSelectionModeEventClientVtable;
 	return pModeObject;
 }
-// FUNCTION: LEMBALL 0x00401df7
+// LINKERILT: LEMBALL 0x00401df7
 void LEMBALL_FASTCALL NoopLevelScreenViewportRefreshThunk(void*)
 {
 	noop_render_entry_callback_00436690();
 }
-// FUNCTION: LEMBALL 0x00401f82
+// LINKERILT: LEMBALL 0x00401f82
 extern "C" bool LEMBALL_FASTCALL CanRetreatCurrentLevelProgressThunk(void* pProgress)
 {
 	return ((GameLevelProgressState*) pProgress)->CanRetreat();
 }
-// STUB: LEMBALL 0x00401fb4
+// LINKERILT: LEMBALL 0x00401fb4
 void* LEMBALL_FASTCALL DeleteQueuedRenderPointSinkFinalizeThunk(void* pObject, int, int fDelete)
 {
 	return DeleteQueuedRenderPointSinkFinalize(pObject, 0, fDelete);
 }
-// STUB: LEMBALL 0x00402130
+// LINKERILT: LEMBALL 0x00402130
 void GameLevelProgressState::ApplyPasswordValueThunk(unsigned int uValue)
 {
 	ApplyPasswordValue(uValue);
 }
-// STUB: LEMBALL 0x0040227f
+// LINKERILT: LEMBALL 0x0040227f
 void* LEMBALL_FASTCALL DeleteStartupModeEventClientThunk(void* pObject, int, BYTE fDelete)
 
 {
 	return DeleteStartupMode((char*) pObject - 0x0c, 0, fDelete);
 }
-// STUB: LEMBALL 0x004022ac
+// LINKERILT: LEMBALL 0x004022ac
 void* ConstructPaintballSequenceModeController(void* pModeObject, GameMainContext* pMainContext, int fSequenceVariant)
 
 {
@@ -2015,44 +2017,44 @@ void* ConstructPaintballSequenceModeController(void* pModeObject, GameMainContex
 	pMode->m_fFirstSequenceVariant = fSequenceVariant;
 	return pModeObject;
 }
-// FUNCTION: LEMBALL 0x004023b5
+// LINKERILT: LEMBALL 0x004023b5
 void SnapshotCurrentLevelProgress(void)
 {
 	((GameLevelProgressState*) g_pLevelProgressState)->Snapshot();
 }
-// FUNCTION: LEMBALL 0x004025c2
+// LINKERILT: LEMBALL 0x004025c2
 extern "C" void LEMBALL_FASTCALL AdvanceCurrentLevelProgressThunk(void* pProgress)
 {
 	((GameLevelProgressState*) pProgress)->Advance();
 }
-// STUB: LEMBALL 0x00402630
+// LINKERILT: LEMBALL 0x00402630
 int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresentThunk(int* pPrimaryContext)
 {
 	return IsPrimaryContextWindowReadyForPresent(pPrimaryContext);
 }
-// STUB: LEMBALL 0x004026f3
+// LINKERILT: LEMBALL 0x004026f3
 void* LEMBALL_FASTCALL DeleteStartupModeThunk(void* pObject, int nUnusedEdx, BYTE fDelete)
 
 {
 	return DeleteStartupMode(pObject, nUnusedEdx, fDelete);
 }
-// STUB: LEMBALL 0x0040277a
+// LINKERILT: LEMBALL 0x0040277a
 void GameVariantResourceEntryManager::SetVariantResourceEffectMasterVolumeThunk(unsigned char nVolume)
 {
 	SetVariantResourceEffectMasterVolume(nVolume);
 }
-// FUNCTION: LEMBALL 0x00402793
+// LINKERILT: LEMBALL 0x00402793
 extern "C" bool LEMBALL_FASTCALL IsCurrentLevelProgressAvailableThunk(void* pProgress)
 {
 	return ((GameLevelProgressState*) pProgress)->IsCurrentLevelAvailable();
 }
-// STUB: LEMBALL 0x004027a2
+// LINKERILT: LEMBALL 0x004027a2
 void* LEMBALL_FASTCALL DeleteMainMenuModeThunk(void* pObject, int nUnusedEdx, BYTE fDelete)
 
 {
 	return DeleteMainMenuMode(pObject, nUnusedEdx, fDelete);
 }
-// STUB: LEMBALL 0x004027a7
+// LINKERILT: LEMBALL 0x004027a7
 void EnsureMainGameVariantResourceMode(GameMainContext* pMainContext, int nVariantMode)
 {
 	if (pMainContext->m_pVariantMode == 0) {
@@ -2066,40 +2068,40 @@ void EnsureMainGameVariantResourceMode(GameMainContext* pMainContext, int nVaria
 		pMainContext->m_pVariantMode = 0;
 	}
 }
-// FUNCTION: LEMBALL 0x004027ac
+// LINKERILT: LEMBALL 0x004027ac
 void* LEMBALL_FASTCALL DeleteNetworkLobbyTransportControllerEventClientThunk(void* pObject,
 																			 int nUnusedEdx,
 																			 BYTE fDelete)
 {
 	return DeleteNetworkLobbyTransportControllerEventClient(pObject, nUnusedEdx, fDelete);
 }
-// STUB: LEMBALL 0x004028ec
+// LINKERILT: LEMBALL 0x004028ec
 void GameVariantResourceEntryManager::SetAudioMusicAndEffectVolumeByteThunk(unsigned char nVolume)
 {
 	SetAudioMusicAndEffectVolumeByte(nVolume);
 }
-// FUNCTION: LEMBALL 0x0040290f
+// LINKERILT: LEMBALL 0x0040290f
 extern "C" bool LEMBALL_FASTCALL RetreatCurrentLevelProgressThunk(void* pProgress)
 {
 	return ((GameLevelProgressState*) pProgress)->Retreat();
 }
-// STUB: LEMBALL 0x00402a7c
+// LINKERILT: LEMBALL 0x00402a7c
 GameMainContext* GameMainContext::InitializeMainGameContextThunk(const char* pszCmdLine)
 
 {
 	return InitializeMainGameContext(pszCmdLine);
 }
-// FUNCTION: LEMBALL 0x00402adb
+// LINKERILT: LEMBALL 0x00402adb
 void* LEMBALL_FASTCALL DeleteOptionsModeEventClientThunk(void* pObject, int nUnusedEdx, BYTE fDelete)
 {
 	return DeleteOptionsModeEventClient(pObject, nUnusedEdx, fDelete);
 }
-// FUNCTION: LEMBALL 0x00402b3f
+// LINKERILT: LEMBALL 0x00402b3f
 void LEMBALL_FASTCALL RefreshLevelScreenViewportLayoutThunk(void* pScreen)
 {
 	RefreshLevelScreenViewportLayout(pScreen);
 }
-// STUB: LEMBALL 0x00402b8f
+// LINKERILT: LEMBALL 0x00402b8f
 void* ConstructLevelGameMode(void* pModeObject, GameMainContext* pMainContext)
 {
 	GameLevelGameMode* pMode;
@@ -2141,72 +2143,72 @@ void* ConstructLevelGameMode(void* pModeObject, GameMainContext* pMainContext)
 	((LevelGameMode*) pMode)->InitializeLevelGameMode();
 	return pModeObject;
 }
-// FUNCTION: LEMBALL 0x00402c61
+// LINKERILT: LEMBALL 0x00402c61
 void LEMBALL_FASTCALL ServiceLevelGameModeFrameThunk(void* pMode, int nUnusedEdx, int nModeVariant)
 {
 	ServiceLevelGameModeFrame(pMode, nUnusedEdx, nModeVariant);
 }
-// STUB: LEMBALL 0x00402d24
+// LINKERILT: LEMBALL 0x00402d24
 void LEMBALL_FASTCALL UpdateBaseModeThunk(GameBaseModeObject* pMode)
 {
 	pMode->Update();
 }
-// STUB: LEMBALL 0x00402d29
+// LINKERILT: LEMBALL 0x00402d29
 void* LEMBALL_FASTCALL DeleteMainMenuModeEventClientThunk(void* pObject, int, BYTE fDelete)
 
 {
 	return DeleteMainMenuMode((char*) pObject - 0x0c, 0, fDelete);
 }
-// FUNCTION: LEMBALL 0x00402ec8
+// LINKERILT: LEMBALL 0x00402ec8
 void LEMBALL_FASTCALL InitializeLevelScreenRenderSupportStateThunk(void* pScreen)
 {
 	InitializeLevelScreenRenderSupportState(pScreen);
 }
-// FUNCTION: LEMBALL 0x00402f5e
+// LINKERILT: LEMBALL 0x00402f5e
 void* LEMBALL_FASTCALL DeleteOptionsModeThunk(void* pObject, int nUnusedEdx, BYTE fDelete)
 {
 	return DeleteOptionsMode(pObject, nUnusedEdx, fDelete);
 }
-// FUNCTION: LEMBALL 0x00402f8b
+// LINKERILT: LEMBALL 0x00402f8b
 int ValidateCurrentLevelPassword(char* pszPassword)
 {
 	return ((GameLevelProgressState*) g_pLevelProgressState)->ValidateAndApplyPassword(pszPassword);
 }
-// FUNCTION: LEMBALL 0x0040307b
+// LINKERILT: LEMBALL 0x0040307b
 char* FormatCurrentLevelPassword(void)
 {
 	return ((GameLevelProgressState*) g_pLevelProgressState)->FormatPassword();
 }
-// STUB: LEMBALL 0x00403152
+// LINKERILT: LEMBALL 0x00403152
 int __stdcall IsValidResourceFileThunk(void)
 {
 	return IsValidResourceFile();
 }
-// STUB: LEMBALL 0x00403323
+// LINKERILT: LEMBALL 0x00403323
 unsigned int GameLevelProgressState::ComputeLevelPasswordChecksumThunk(unsigned int uValue)
 {
 	return ComputeLevelPasswordChecksum(uValue);
 }
-// STUB: LEMBALL 0x00403378
+// LINKERILT: LEMBALL 0x00403378
 void LEMBALL_FASTCALL NoopBaseModeThunk(void*)
 {
 }
-// STUB: LEMBALL 0x004034fe
+// LINKERILT: LEMBALL 0x004034fe
 int GameLevelProgressState::ParsePasswordDigitsThunk(void)
 {
 	return ParsePasswordDigits();
 }
-// STUB: LEMBALL 0x004036e3
+// LINKERILT: LEMBALL 0x004036e3
 int PASCAL ComputePowerOfTwoThunk(int nExponent)
 {
 	return ComputePowerOfTwo(nExponent);
 }
-// STUB: LEMBALL 0x00403774
+// LINKERILT: LEMBALL 0x00403774
 int PASCAL ReturnFalseBaseModeThunk(void* pObject)
 {
 	return return_false_vtable_callback_00407f30(pObject);
 }
-// STUB: LEMBALL 0x00403814
+// LINKERILT: LEMBALL 0x00403814
 void LEMBALL_FASTCALL RequestFramedScreenTransitionMode2Thunk(void* pScreen)
 {
 	RequestFramedScreenTransitionMode2(pScreen);

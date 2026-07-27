@@ -184,62 +184,62 @@ static void* g_LEVEL_Type18ChunkStreamVtable[10] = {
 	(void*) EmitType18ChunkStreamEntriesThunk,
 };
 
-// FUNCTION: LEMBALL 0x0040114a
+// LINKERILT: LEMBALL 0x0040114a
 void* LEMBALL_FASTCALL DeleteType18ChunkStreamThunk(LevelType18ChunkStream* pStream, void* pUnused, BYTE fDelete)
 
 {
 	return DeleteType18ChunkStream(pStream, pUnused, fDelete);
 }
 
-// FUNCTION: LEMBALL 0x004012b7
+// LINKERILT: LEMBALL 0x004012b7
 int PASCAL ReturnFalseChunkStreamRenderThunk(void* pUnused)
 {
 	return return_false_vtable_callback_0040ab90(pUnused);
 }
 
-// FUNCTION: LEMBALL 0x00401645
+// LINKERILT: LEMBALL 0x00401645
 void* LEMBALL_FASTCALL DeleteLevelEffChunkStreamBaseThunk(void* pObject, void* pUnused, BYTE fDelete)
 
 {
 	return DeleteLevelEffChunkStreamBase(pObject, pUnused, fDelete);
 }
 
-// FUNCTION: LEMBALL 0x00401794
+// LINKERILT: LEMBALL 0x00401794
 unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject)
 
 {
 	return GetManagedEntitySlotId(nManagedEntityObject);
 }
 
-// FUNCTION: LEMBALL 0x00401aaa
+// LINKERILT: LEMBALL 0x00401aaa
 void* LEMBALL_FASTCALL DeleteEffStreamConstructionBaseThunk(void* pObject, void* pUnused, BYTE fDelete)
 
 {
 	return DeleteEffStreamConstructionBase(pObject, pUnused, fDelete);
 }
 
-// FUNCTION: LEMBALL 0x0040222a
+// LINKERILT: LEMBALL 0x0040222a
 void LEMBALL_FASTCALL DestroyType18ChunkStreamThunk(LevelType18ChunkStream* pStream)
 
 {
 	DestroyType18ChunkStream(pStream);
 }
 
-// FUNCTION: LEMBALL 0x00402586
+// LINKERILT: LEMBALL 0x00402586
 void LEMBALL_FASTCALL DispatchType18ChunkStreamCommandsThunk(LevelType18ChunkStream* pStream)
 
 {
 	DispatchType18ChunkStreamCommands(pStream);
 }
 
-// FUNCTION: LEMBALL 0x00402734
+// LINKERILT: LEMBALL 0x00402734
 LevelType18ChunkStream* LEMBALL_FASTCALL ConstructType18ChunkStreamThunk(LevelType18ChunkStream* pStream)
 
 {
 	return ConstructType18ChunkStream(pStream);
 }
 
-// FUNCTION: LEMBALL 0x0040280b
+// LINKERILT: LEMBALL 0x0040280b
 int LEMBALL_FASTCALL EmitType18ChunkStreamEntriesThunk(LevelType18ChunkStream* pStream, void* pUnused, void* pOutput)
 
 {
@@ -247,34 +247,34 @@ int LEMBALL_FASTCALL EmitType18ChunkStreamEntriesThunk(LevelType18ChunkStream* p
 	return pStream->EmitEntries((LevelType18ChunkStreamEntry*) pOutput);
 }
 
-// FUNCTION: LEMBALL 0x00402a90
+// LINKERILT: LEMBALL 0x00402a90
 void LEMBALL_FASTCALL PrepareType18ChunkStreamObjectsThunk(LevelType18ChunkStream* pStream)
 
 {
 	PrepareType18ChunkStreamObjects(pStream);
 }
 
-// FUNCTION: LEMBALL 0x00402bf8
+// LINKERILT: LEMBALL 0x00402bf8
 void LEMBALL_FASTCALL ResetType18ChunkStreamObjectsThunk(LevelType18ChunkStream* pStream)
 
 {
 	ResetType18ChunkStreamObjects(pStream);
 }
 
-// FUNCTION: LEMBALL 0x00402dfb
+// LINKERILT: LEMBALL 0x00402dfb
 int PASCAL ReturnFalseChunkStreamCommandThunk(void* pUnused1, void* pUnused2, void* pUnused3)
 
 {
 	return return_false_vtable_callback_0040ab80(pUnused1, pUnused2, pUnused3);
 }
 
-// FUNCTION: LEMBALL 0x00402e23
+// LINKERILT: LEMBALL 0x00402e23
 void NoopType18ChunkStreamWriteThunk(void)
 {
 	noop_vtable_callback_0040adc0();
 }
 
-// FUNCTION: LEMBALL 0x00403427
+// LINKERILT: LEMBALL 0x00403427
 void NoopLevelEffChunkStreamVirtualThunk(void)
 {
 	NoopLevelEffChunkStreamVirtual();
