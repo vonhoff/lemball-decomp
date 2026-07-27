@@ -597,7 +597,7 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbyTransportControllerEventClientThunk(voi
 																			 int nUnusedEdx,
 																			 BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteLevelModeActiveInterfaceThunk(void* pActiveInterface, int nUnusedEdx, BYTE fDelete);
-void LEMBALL_FASTCALL UpdateLevelModeActiveInterfaceThunk(void* pActiveInterface);
+void LEMBALL_FASTCALL UpdateLevelModeActiveInterfaceThunk(void* pActiveInterface, int nEdxPassthrough);
 void LEMBALL_FASTCALL UpdateBaseModeThunk(GameBaseModeObject* pMode);
 extern int PASCAL return_zero_screen_callback_00446990(void*, void*, void*);
 extern int PASCAL return_false_vtable_callback_00407f30(void*);
@@ -704,8 +704,8 @@ void* LEMBALL_FASTCALL DeleteOptionsModeEventClientThunk(void* pObject, int nUnu
 void EnsureMainGameVariantResourceMode(GameMainContext* pMainContext, int nVariantMode);
 void* ConstructLevelGameMode(void* pModeObject, GameMainContext* pMainContext);
 void* LEMBALL_FASTCALL DeleteLevelModeActiveInterfaceThunk(void* pActiveInterface, int nUnusedEdx, BYTE fDelete);
-void LEMBALL_FASTCALL UpdateLevelModeActiveInterfaceThunk(void* pActiveInterface);
-void LEMBALL_FASTCALL UpdateLevelModeFromActiveInterface(void* pActiveInterface);
+void LEMBALL_FASTCALL UpdateLevelModeActiveInterfaceThunk(void* pActiveInterface, int nEdxPassthrough);
+void LEMBALL_FASTCALL UpdateLevelModeFromActiveInterface(void* pActiveInterface, int nEdxPassthrough);
 void LEMBALL_FASTCALL ServiceLevelGameModeFrameThunk(void* pMode, int nUnusedEdx, int nModeVariant);
 void LEMBALL_FASTCALL ServiceLevelGameModeFrame(void* pMode, int nUnusedEdx, int nModeVariant);
 void RequestLocalLevelGameStateChange(void* pLevelMode, int nState);
@@ -1912,9 +1912,9 @@ GameBaseModeObject* GameBaseModeObject::InitializeThunk(GameMainContext* pMainCo
 	return Initialize(pMainContext);
 }
 // LINKERILT: LEMBALL 0x00401820
-void LEMBALL_FASTCALL UpdateLevelModeActiveInterfaceThunk(void* pActiveInterface)
+void LEMBALL_FASTCALL UpdateLevelModeActiveInterfaceThunk(void* pActiveInterface, int nEdxPassthrough)
 {
-	UpdateLevelModeFromActiveInterface(pActiveInterface);
+	UpdateLevelModeFromActiveInterface(pActiveInterface, nEdxPassthrough);
 }
 // LINKERILT: LEMBALL 0x00401839
 int RunMainGameSessionThunk(int cArgs, const char* const* ppszArgs)
@@ -3794,9 +3794,9 @@ void LEMBALL_FASTCALL ServiceLevelGameModeFrame(void* pModeObject, int, int nMod
 	}
 }
 // FUNCTION: LEMBALL 0x00413e20
-void LEMBALL_FASTCALL UpdateLevelModeFromActiveInterface(void* pActiveInterface)
+void LEMBALL_FASTCALL UpdateLevelModeFromActiveInterface(void* pActiveInterface, int nEdxPassthrough)
 {
-	ServiceLevelGameModeFrameThunk((char*) pActiveInterface - 0x10, 0, 0);
+	ServiceLevelGameModeFrameThunk((char*) pActiveInterface - 0x10, nEdxPassthrough, 0);
 }
 // Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteLevelGameMode(void* pModeObject, int, BYTE fDelete)
