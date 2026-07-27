@@ -324,6 +324,12 @@ struct ProjectilePool {
 
 	void RemoveObject(void* pObject);
 };
+
+struct ProjectileObjectProxy {
+	virtual void vf0(void);
+	virtual void vf1(void);
+	virtual void SetState(int nState);
+};
 int return_true_vtable_callback_0041c3f0(void);
 int return_two_vtable_callback_0041c430(void);
 int return_true_vtable_callback_0041c5b0(void);
@@ -1291,23 +1297,20 @@ void* __fastcall get_first_projectile_pool_object(void* pPool)
 	return *(void**) ((char*) pPool + 0x34);
 }
 
-// STUB: implement original function at 0x0041ac70.
-void __fastcall deactivate_projectile_object(void* pObject)
-{
-	(void) pObject;
-}
-
 // FUNCTION: LEMBALL 0x00417f50
 void* __fastcall get_next_projectile_pool_object(void* pPool)
 {
 	int nIndex;
+	int nLimit;
 
-	nIndex = *(int*) ((char*) pPool + 0xd8) + 1;
+	nIndex = *(int*) ((char*) pPool + 0xd8);
+	nIndex++;
 	*(int*) ((char*) pPool + 0xd8) = nIndex;
-	if (*(int*) ((char*) pPool + 0xd4) > nIndex) {
-		return *(void**) ((char*) pPool + nIndex * 4 + 0x34);
+	nLimit = *(int*) ((char*) pPool + 0xd4);
+	if (nLimit <= nIndex) {
+		return NULL;
 	}
-	return NULL;
+	return *(void**) ((char*) pPool + nIndex * 4 + 0x34);
 }
 
 // FUNCTION: LEMBALL 0x00418040
@@ -1558,6 +1561,16 @@ void __cdecl ForwardManagedEntityVslot90(void* pUnused, void* pEntity)
 // FUNCTION: LEMBALL 0x0041a1c0
 void noop_projectile_geometry_callback(void)
 {
+}
+
+// FUNCTION: LEMBALL 0x0041ac70
+void __fastcall deactivate_projectile_object(void* pObject)
+{
+	*(int*) ((char*) pObject + 0x164) = 0;
+	if (*(int*) ((char*) pObject + 0xb8) != 8) {
+		((ProjectileObjectProxy*) pObject)->SetState(8);
+	}
+	*(int*) ((char*) pObject + 0x114) = 0;
 }
 
 // FUNCTION: LEMBALL 0x0041c360
