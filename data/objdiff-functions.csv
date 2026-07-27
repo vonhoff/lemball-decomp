@@ -138,7 +138,7 @@ address,size,name,unit
 0x00401456,5,thunk_begin_network_lobby_text_prompt,FRONTEND/MAINMENU.CPP
 0x00401460,5,sample_level_height_with_move_chunk_override,LEVEL/LEVELRUN.CPP
 0x00401465,5,handle_door_chunk_object_target_tile_projectile_result,ENGINE/CORE/LINKSCF.CPP
-0x0040146A,4,reset_mine_chunk_object_runtime_state,LEVEL/LEVELVT.CPP
+0x0040146A,5,reset_mine_chunk_object_runtime_state,LEVEL/LEVELVT.CPP
 0x0040146F,5,rotate_password_keypad_selection,FRONTEND/MAINMENU.CPP
 0x00401474,5,add_selected_entity_id,GAME.CPP
 0x00401479,5,play_variant_resource_effect,RESOURCE/VARMGR.CPP
@@ -184,7 +184,7 @@ address,size,name,unit
 0x004015B9,5,variant_resource_bundle_noop_thunk,RESOURCE/VARMGR.CPP
 0x004015BE,5,release_main_game_variant_list_resource,RESOURCE/VARMGR.CPP
 0x004015C8,5,construct_ball_chunk_entry,LEVEL/LEVELVT.CPP
-0x004015CD,1,copy_indexed_triplet_arrays_to_fixed_point_vector,LEVEL/LEVELVT.CPP
+0x004015CD,5,copy_indexed_triplet_arrays_to_fixed_point_vector,LEVEL/LEVELVT.CPP
 0x004015D2,5,get_last_queued_projectile_request_code,LEVEL/LEVELVT.CPP
 0x004015E1,5,construct_node_chunk_manager_thunk,LEVEL/LEVELRUN.CPP
 0x004015E6,5,initialize_base_mode_object,GAME.CPP
@@ -234,7 +234,7 @@ address,size,name,unit
 0x00401749,5,thunk_reset_invs_chunk_object_state,ENGINE/CORE/LINKSCF.CPP
 0x00401758,5,reinitialize_level_screen_after_restart,GAME.CPP
 0x0040175D,5,find_shpg_chunk_object_position_in_rect,LEVEL/LEVELRUN.CPP
-0x00401762,4,set_variant_resource_music_enabled,RESOURCE/VARMGR.CPP
+0x00401762,5,set_variant_resource_music_enabled,RESOURCE/VARMGR.CPP
 0x00401767,5,update_base_mode_runtime_state,FRONTEND/MAINMENU.CPP
 0x00401771,5,thunk_encode_level_progress_password_value,GAME.CPP
 0x00401776,5,dispatch_selected_entity_list,GAME.CPP
@@ -756,7 +756,7 @@ address,size,name,unit
 0x00402810,5,construct_network_lobby_u32_payload_stream,ENGINE/MEDIA/EFFSTRM.CPP
 0x00402815,5,release_screen_frame_skin_resources,FRONTEND/MAINMENU.CPP
 0x0040281A,5,reset_managed_entity_group_state,LEVEL/LEVELVT.CPP
-0x0040281F,4,set_managed_entity_queue_cursor,LEVEL/LEVELVT.CPP
+0x0040281F,5,set_managed_entity_queue_cursor,LEVEL/LEVELVT.CPP
 0x00402824,5,construct_text_aligned_zrle_child_overlay,LEVEL/LEVELSTAT.CPP
 0x00402829,5,begin_lasr_plas_reacquire_delay,ENGINE/CORE/LINKSCF.CPP
 0x00402833,5,pop_managed_entity_history_id,LEVEL/LEVELVT.CPP
@@ -2551,7 +2551,6 @@ address,size,name,unit
 0x00439850,8,delete_adjusted_render_entry_variant_00439850,LEVEL/LEVELSTAT.CPP
 0x00439860,13,queue_surface_rect_helper_slot_0x00,LEVEL/LEVELSTAT.CPP
 0x00439870,27,execute_surface_rect_helper_slot_0x00,LEVEL/LEVELSTAT.CPP
-0x00439890,1,queue_render_helper_for_surface_resource_stack,LEVEL/LEVELSTAT.CPP
 0x004398A0,13,append_render_entry_to_pointer_queue_a,LEVEL/LEVELSTAT.CPP
 0x004398B0,23,dispatch_level_screen_hotspot_handler_slot_4,LEVEL/LEVELSTAT.CPP
 0x004398D0,13,append_this_to_pointer_queue,LEVEL/LEVELSTAT.CPP
@@ -2667,7 +2666,6 @@ address,size,name,unit
 0x004407E0,91,compute_level_screen_render_entry_sort_key,LEVEL/LEVELSTAT.CPP
 0x00440840,903,calculate_level_screen_render_entry_depth_bias,LEVEL/LEVELSTAT.CPP
 0x00440C00,1,noop_level_screen_constructor_hook,FRONTEND/SCREENVT.CPP
-0x004416F9,1,destroy_non_zrle_variant_render_entry,LEVEL/LEVELSTAT.CPP
 0x00441FE0,260,mark_level_screen_update_grid_rect,LEVEL/LEVELSTAT.CPP
 0x00442130,23,copy_two_short_point,LEVEL/LEVELSTAT.CPP
 0x00442150,23,copy_two_short_point_variant,LEVEL/LEVELSTAT.CPP
@@ -3368,8 +3366,8 @@ address,size,name,unit
 0x0045DAF0,45,ensure_list_glyph_lookup_table,LEVEL/DRAWTEXT.CPP
 0x0045DB20,16,lookup_list_glyph_entry,LEVEL/DRAWTEXT.CPP
 0x0045DB30,264,measure_list_glyph_string_extent,LEVEL/DRAWTEXT.CPP
-0x0045DC40,1,load_bool_resource,LEVEL/DRAWTEXT.CPP
-0x0045DCB0,1,load_int_resource,LEVEL/DRAWTEXT.CPP
+0x0045DC40,106,load_bool_resource,LEVEL/DRAWTEXT.CPP
+0x0045DCB0,106,load_int_resource,LEVEL/DRAWTEXT.CPP
 0x0045DD90,106,load_pal_resource,RESOURCE/VARLOAD.CPP
 0x0045DE00,106,load_string_resource,RESOURCE/MOGLOAD.CPP
 0x0045DE70,84,load_two_array_list_resource,RESOURCE/VARLOAD.CPP
@@ -3387,9 +3385,9 @@ address,size,name,unit
 0x0045E2B0,138,load_zrle_resource,RESOURCE/VARLOAD.CPP
 0x0045E340,53,populate_zrle_resource_descriptor_fields,RESOURCE/VARLOAD.CPP
 0x0045E380,106,load_eff_resource,RESOURCE/MOGLOAD.CPP
-0x0045E3F0,1,load_ptch_resource,RESOURCE/MOGLOAD.CPP
-0x0045E460,1,load_tune_resource,RESOURCE/MOGLOAD.CPP
-0x0045E4D0,1,load_pres_resource,LEVEL/DEMO.CPP
+0x0045E3F0,106,load_ptch_resource,RESOURCE/MOGLOAD.CPP
+0x0045E460,106,load_tune_resource,RESOURCE/MOGLOAD.CPP
+0x0045E4D0,106,load_pres_resource,LEVEL/DEMO.CPP
 0x0045E540,106,load_bin_resource,LEVEL/DEMO.CPP
 0x0045E5B0,4,get_field14_needs_age_increment,RESOURCE/MOGLOAD.CPP
 0x0045E5C0,4,get_field1c_vfunc04,RESOURCE/MOGLOAD.CPP
@@ -3849,7 +3847,6 @@ address,size,name,unit
 0x00467E50,160,refresh_compact_zrle_owner_from_resource_helper,FRONTEND/MENUSEL.CPP
 0x00467EF0,51,refresh_compact_zrle_owner_after_frame_change,FRONTEND/MENUSEL.CPP
 0x00467F30,108,rebuild_compact_zrle_owner_source_rect_if_needed,FRONTEND/MENUSEL.CPP
-0x00467F9C,4,noop_zrle_variant_render_entry_virtual,FRONTEND/MENUSEL.CPP
 0x00467FA0,45,update_resource_sprite_window_owner_variant_c_state,FRONTEND/MENUSEL.CPP
 0x00467FD0,33,update_resource_sprite_window_owner_variant_c_state_alt,FRONTEND/MENUSEL.CPP
 0x00468000,45,map_sprite_owner_event_to_frame_slot,FRONTEND/MENUSEL.CPP
@@ -3862,14 +3859,14 @@ address,size,name,unit
 0x004682B0,66,notify_sprite_owner_variant_c_event_0x0e,FRONTEND/MENUSEL.CPP
 0x00468300,83,refresh_compact_zrle_owner_if_helper_dirty,FRONTEND/MENUSEL.CPP
 0x00468360,170,queue_compact_zrle_owner_if_dirty,FRONTEND/MENUSEL.CPP
-0x00468410,1,construct_aligned_zrle_child_overlay_from_rect,FRONTEND/MENUSEL.CPP
+0x00468410,276,construct_aligned_zrle_child_overlay_from_rect,FRONTEND/MENUSEL.CPP
 0x00468530,282,construct_aligned_zrle_child_overlay_from_point,FRONTEND/MENUSEL.CPP
 0x004686E0,506,compute_aligned_zrle_child_layout,FRONTEND/MENUSEL.CPP
 0x004688E0,57,reload_zrle_overlay_owner_resource,FRONTEND/MENUSEL.CPP
 0x00468920,90,destroy_aligned_zrle_child_overlay_from_point,FRONTEND/MENUSEL.CPP
 0x00468980,30,release_aligned_zrle_child_frame_resource,FRONTEND/MENUSEL.CPP
 0x004689A0,151,queue_aligned_zrle_child_draw_entry,FRONTEND/MENUSEL.CPP
-0x00468A40,1,construct_buffered_geometry_child_overlay,FRONTEND/MENUSEL.CPP
+0x00468A40,215,construct_buffered_geometry_child_overlay,FRONTEND/MENUSEL.CPP
 0x00468B20,82,construct_buffered_resource_geometry_child,FRONTEND/MENUSEL.CPP
 0x00468B80,144,initialize_buffered_geometry_child_storage,FRONTEND/MENUSEL.CPP
 0x00468C10,57,destroy_buffered_resource_geometry_child,FRONTEND/MENUSEL.CPP
@@ -4194,7 +4191,7 @@ address,size,name,unit
 0x00472070,29,construct_shared_geometry_helper,ENGINE/CORE/VSINIT.CPP
 0x00472090,45,destroy_shared_geometry_helper,ENGINE/CORE/VSINIT.CPP
 0x00472210,7,return_shared_geometry_helper_argument,ENGINE/CORE/VSINIT.CPP
-0x00472270,1,delete_shared_geometry_helper,ENGINE/CORE/VSINIT.CPP
+0x00472270,30,delete_shared_geometry_helper,ENGINE/CORE/VSINIT.CPP
 0x00472290,60,initialize_resource_geometry_row_buffer,ENGINE/GDI/VSGDI.CPP
 0x004722D0,11,destroy_resource_geometry_row_buffer,ENGINE/GDI/VSGDI.CPP
 0x004722E0,43,release_resource_geometry_row_buffer_storage,ENGINE/GDI/VSGDI.CPP

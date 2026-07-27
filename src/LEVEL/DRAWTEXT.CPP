@@ -238,7 +238,6 @@ static void* g_DRAWTEXT_IntResourceVtableStorage[15] = {
 	(void*) SetIntResourceTypeTag,
 	(void*) GetField28GetMemorySize,
 };
-static void* g_pIntResourceVtable = g_DRAWTEXT_IntResourceVtableStorage;
 
 // FUNCTION: LEMBALL 0x0045dcb0
 int* load_int_resource(int nResourceId)
@@ -259,7 +258,7 @@ int* load_int_resource(int nResourceId)
 	if (pResourceObject != 0) {
 		*(void**) pResourceObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
 		pResourceObject[6] = 0;
-		*(void**) pResourceObject = g_pIntResourceVtable;
+		*(void**) pResourceObject = g_DRAWTEXT_IntResourceVtableStorage;
 		InitializeResourceObjectFromId(pResourceObject, 0, nResourceId);
 		return (int*) FinalizeLoadedResourceObjectResult(pResourceObject, 0);
 	}

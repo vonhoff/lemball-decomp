@@ -4,6 +4,7 @@
 import ghidra.app.script.GhidraScript;
 import ghidra.program.model.listing.Function;
 import ghidra.program.model.listing.FunctionIterator;
+import ghidra.program.model.listing.Instruction;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -31,6 +32,14 @@ public class ExportObjdiffFunctions extends GhidraScript {
 			}
 			if (units.size() != 1) {
 				throw new IllegalArgumentException(function.getName() + " has multiple objdiff unit tags");
+			}
+			Instruction instruction = currentProgram.getListing().getInstructionAt(function.getEntryPoint());
+			if (instruction == null ||
+				"INT3".equals(instruction.getMnemonicString()) ||
+				!function.getBody().contains(instruction.getMinAddress(), instruction.getMaxAddress()) ||
+				(instruction.getFallThrough() != null &&
+					!function.getBody().contains(instruction.getFallThrough()))) {
+				throw new IllegalArgumentException("Invalid function body: " + function.getName());
 			}
 			String name = function.getName();
 			if (!name.matches("[a-z][a-z0-9_]{0,63}")) {
