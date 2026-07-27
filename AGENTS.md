@@ -6,8 +6,8 @@ Make verified decompilation progress while preserving compiler behavior. Treat t
 
 ## Workflow
 
-1. Inspect `git status` and every existing diff. Complete, commit, or revert all worktree changes; do not leave them for the user.
-2. Run `python tools\coordinator.py` and select the first viable target.
+1. Inspect `git status`, every existing diff, and `// STUB:` markers. Continue unfinished work before selecting a new target; complete, commit, or revert it rather than leaving it for the user.
+2. If no unfinished work remains, run `python tools\coordinator.py` and select the first viable target.
 3. Inspect the target in the original `/LEMBALL.EXE` program with Ghidra MCP. Coordinator addresses are original virtual addresses; pass them unchanged.
 4. Establish raw bytes, disassembly, function boundaries, calling convention, control flow, and xrefs. Use decompiler output only as supporting evidence.
 5. Identify the owning source file and implement one target in C or C++.
