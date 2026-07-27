@@ -140,6 +140,7 @@ struct VsSoundDirectSoundEffectBackend {
 	void SetDirectSoundEffectInstancePan(int nEffectInstanceId, int nBufferSlot, int nPan);
 	int PlayDirectSoundEffectInstanceLooped(int nEffectInstanceId, int nReserved, int fLoopEnabled);
 	void PlayDirectSoundEffectInstance(int nEffectInstanceId, int nBufferSlot);
+	void PauseDirectSoundEffectInstance(int nEffectInstanceId, int nBufferSlot);
 	int CreateDirectSoundEffectInstance(void* pPatchResource, int* pnEffectInstanceId, int nFlags);
 	int CreateDirectSoundEffectInstanceWithDefaultFlags(void* pPatchResource, int* pnEffectInstanceId);
 };
@@ -388,7 +389,7 @@ void LEMBALL_FASTCALL PlayDirectSoundEffectInstanceWithMappedVolume(void* pBacke
 																	int nEffectInstanceId,
 																	unsigned char nVolume,
 																	int fLoopEnabled);
-void LEMBALL_FASTCALL PauseDirectSoundEffectInstance(void* pBackend, int, int nEffectInstanceId, int nBufferSlot);
+void PauseDirectSoundEffectInstance(int nEffectInstanceId, int nBufferSlot);
 int LEMBALL_FASTCALL ReturnFalseDirectSoundEffectSlot37(void*, int, int, int);
 void LEMBALL_FASTCALL CaptureDirectSoundBackendWindow(void* pBackend, int, void* pPrimaryContext);
 void* LEMBALL_FASTCALL DeleteDirectSoundEffectBackend(VsSoundDirectSoundEffectBackend* pBackend,
@@ -645,10 +646,7 @@ void LEMBALL_FASTCALL PlayDirectSoundEffectInstanceWithMappedVolume(void* pBacke
 																	int nEffectInstanceId,
 																	unsigned char nVolume,
 																	int fLoopEnabled);
-void LEMBALL_FASTCALL PauseDirectSoundEffectInstance(void* pBackend,
-													 int nUnusedEdx,
-													 int nEffectInstanceId,
-													 int nBufferSlot);
+void PauseDirectSoundEffectInstance(int nEffectInstanceId, int nBufferSlot);
 void* LEMBALL_FASTCALL DeleteDirectSoundEffectBackend(VsSoundDirectSoundEffectBackend* pBackend,
 													  int nUnused,
 													  int fDelete);
@@ -899,7 +897,7 @@ static const VsSoundDirectSoundErrorEntry g_AUDIO_DirectSoundErrors[] = {{"DSERR
 																		 {"DSERR_BUFFERLOST", 0x00000096},
 																		 {"DSERR_OTHERAPPHASPRIO", 0x000000a0},
 																		 {0, 0}};
-static const char g_AUDIO_NoEffectsBackendName[] = "ERROR: No Effects Device for Windows";
+static const char g_AUDIO_NoEffectsBackendName[] = "ERROR! No Effects Device for WinEff!\n";
 static const char g_AUDIO_HlMidiNotFoundPrefix[] = "Error: HL Midi Device Not Found. ";
 static const char g_AUDIO_MciErrorPrefix[] = "MCI Error: ";
 static const char g_AUDIO_ErrorSuffix[] = "\n";
@@ -1717,7 +1715,7 @@ char* LEMBALL_FASTCALL GetWaveOutEffectBackendDescription(VsSoundWaveOutEffectBa
 	if (pBackend->m_fDeviceAvailable == 1) {
 		return pBackend->m_szDeviceDescription;
 	}
-	return (char*) g_AUDIO_NoEffectsBackendName;
+	return (char*) "ERROR! No Effects Device for WinEff!\n";
 }
 
 // FUNCTION: LEMBALL 0x0047cb00
@@ -3222,9 +3220,9 @@ void LEMBALL_FASTCALL PlayDirectSoundEffectInstanceWithMappedVolume(void* pBacke
 }
 
 // FUNCTION: LEMBALL 0x0047e820
-void LEMBALL_FASTCALL PauseDirectSoundEffectInstance(void* pBackend, int, int nEffectInstanceId, int nBufferSlot)
+void VsSoundDirectSoundEffectBackend::PauseDirectSoundEffectInstance(int nEffectInstanceId, int nBufferSlot)
 {
-	((VsSoundDirectSoundEffectBufferPool*) *(void**) (*(int*) ((char*) pBackend + 0x50) + nEffectInstanceId * 4))
+	((VsSoundDirectSoundEffectBufferPool*) *(void**) (*(int*) ((char*) this + 0x50) + nEffectInstanceId * 4))
 		->PauseDirectSoundEffectBufferSlot(nBufferSlot);
 }
 
