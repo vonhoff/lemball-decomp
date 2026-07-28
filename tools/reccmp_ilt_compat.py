@@ -48,6 +48,11 @@ THUNK_ILT_REFERENCES = {
         "DestroySelectorProgressOverlayOwner",
         "deleting wrapper target 0044ed20",
     ),
+    0x004551D0: (
+        0x0040148D,
+        "VsNetNetworkLobbyScreen::ClearPlayerEntryDirty",
+        "lobby entry update target 00454b70",
+    ),
     0x004491A0: (0x0040386E, "DeleteOptionsScreen", "adjustor target 00449170"),
     0x0044AA00: (0x00401BE5, "DeleteLevelSelectionModeThunk", "adjustor target 0044a9d0"),
     0x0044AA10: (0x004019B0, "DeleteLevelSelectionScreenAuto", "adjustor target 0044a940"),
