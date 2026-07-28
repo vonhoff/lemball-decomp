@@ -66,8 +66,7 @@
 // DeleteLevelChunkObjectBaseWrapper17D00
 // SYNTHETIC: LEMBALL 0x00422350
 // DeleteBallChunkEntryAuto
-// SYNTHETIC: LEMBALL 0x0042a7a0
-// DestroyLasrChunkObjectAuto
+
 // SYNTHETIC: LEMBALL 0x0041e8c0
 // DeleteCompositeLevelChunkChildrenWrapper1E8C0
 // SYNTHETIC: LEMBALL 0x00420b20
@@ -432,8 +431,7 @@
 // DestroyCompositeLevelChunkChildrenAuto
 // SYNTHETIC: LEMBALL 0x0041df90
 // LevelVtSmallFunctionView::SwapObjectChildSlots128
-// STUB: LEMBALL 0x004228f0
-// DestroyCollChunkObjectAuto
+
 // SYNTHETIC: LEMBALL 0x00427890
 // LevelVtSmallFunctionView::GetTileFlag1cObjectRenderPoint
 // SYNTHETIC: LEMBALL 0x0042eec0
@@ -464,8 +462,7 @@
 // DeleteCollChunkObject1B
 // SYNTHETIC: LEMBALL 0x00423060
 // DeleteCollChunkObjectWrapper23060
-// STUB: LEMBALL 0x00414070
-// DestroyLevelChunkObjectChildrenVariantAuto
+
 // LINKERILT: LEMBALL 0x004020ef
 // DestroyLevelChunkObjectChildrenVariantAutoThunk
 // STUB: LEMBALL 0x00414de0
@@ -476,7 +473,7 @@
 // DestroyCountedChildTableStreamAuto
 // LINKERILT: LEMBALL 0x004025fe
 // DestroyCountedChildTableStreamAutoThunk
-// STUB: LEMBALL 0x0041d120
+
 // DestroyGmobChunkType14ObjectAuto
 // LINKERILT: LEMBALL 0x00402be9
 // DestroyGmobChunkType14ObjectAutoThunk
@@ -492,8 +489,7 @@
 // DestroyRockChunkManagerAuto
 // LINKERILT: LEMBALL 0x00401cc1
 // DestroyRockChunkManagerAutoThunk
-// STUB: LEMBALL 0x004275e0
-// DestroyTileFlag1CChunkObjectAuto
+
 // LINKERILT: LEMBALL 0x00402df1
 // DestroyTileFlag1CChunkObjectAutoThunk
 // FUNCTION: LEMBALL 0x0042c120
