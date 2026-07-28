@@ -557,6 +557,10 @@
 // SYNTHETIC: LEMBALL 0x004324d0
 // is_object_field_0x44_current_context
 
+// LIBCMT:longjmp.obj
+// SYNTHETIC: LEMBALL 0x00480214
+// _longjmp
+
 // LIBCMT:malloc.obj
 // SYNTHETIC: LEMBALL 0x00480d70
 // _malloc
