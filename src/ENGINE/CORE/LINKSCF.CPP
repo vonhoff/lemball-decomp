@@ -1887,10 +1887,15 @@ void LEMBALL_FASTCALL ResetRockChunkObject(void* pObject)
 	ResetRockChunkObjectRuntimeStateThunk(pObject);
 }
 
+void LEMBALL_FASTCALL ResetIceChunkObjectRuntimeStateThunk(void* pObject)
+{
+	ResetIceChunkObjectRuntimeState(pObject);
+}
+
 void LEMBALL_FASTCALL ResetIceChunkObject(void* pObject)
 {
 	ResetManagedEntityRuntimeStateThunk(pObject);
-	ResetRockChunkObjectRuntimeStateThunk(pObject);
+	ResetIceChunkObjectRuntimeStateThunk(pObject);
 }
 
 void LEMBALL_FASTCALL ResetCaptureTriggerChunkObjectRuntimeStateThunk(void* pObject)

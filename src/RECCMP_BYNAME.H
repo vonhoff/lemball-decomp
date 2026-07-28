@@ -16,6 +16,8 @@
 // ResetRockChunkObjectRuntimeStateThunk
 // FUNCTION: LEMBALL 0x00426810
 // ResetRockChunkObject
+// LINKERILT: LEMBALL 0x004020f9
+// ResetIceChunkObjectRuntimeStateThunk
 // FUNCTION: LEMBALL 0x0042ca90
 // ResetIceChunkObject
 // LINKERILT: LEMBALL 0x004029fa
