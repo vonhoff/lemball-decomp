@@ -1,5 +1,5 @@
 #include "ENGINE/CORE/VSINIT.H"
-#include "ENGINE/CORE/WIN32.H"
+#include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/MEDIA/VSSTRM.H"
 
 void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
@@ -17,6 +17,8 @@ struct ProjectilePoolOwnerView {
 };
 
 typedef void(LEMBALL_FASTCALL* ResetProjectileObjectProc)(void* pObject);
+
+void LEMBALL_FASTCALL DestroyProjectileObject(void* pObject);
 
 // Split from the original LINKSCF source group to preserve MSVC 4.20 code generation in LINKSCF.CPP.
 
@@ -60,6 +62,35 @@ void* ProjectilePoolOwnerView::GetFreeProjectilePoolObject(void)
 		++iProjectile;
 	}
 	return m_pProjectilePool30 + (m_iProjectilePoolSearchStartDC + iProjectile) * 0x1a4;
+}
+
+// FUNCTION: LEMBALL 0x00418330
+void* LEMBALL_FASTCALL DeleteProjectileObject(void* pObject, void* pUnused, unsigned int fDelete)
+{
+	char* pAllocation;
+	char* pCursor;
+	VsNetEffStreamBase* pStream;
+
+	(void) pUnused;
+	if ((fDelete & 2) != 0) {
+		pAllocation = (char*) pObject - sizeof(int);
+		fDelete = *(unsigned int*) pAllocation;
+		pCursor = (char*) pObject + fDelete * 0x1a4;
+		while ((int) --fDelete >= 0) {
+			pCursor -= 0x1a4;
+			DestroyProjectileObject(pCursor);
+		}
+		FreeVSMemBlock(pAllocation);
+		return pObject;
+	}
+
+	pStream = pObject != NULL ? (VsNetEffStreamBase*) ((char*) pObject + 0x138) : NULL;
+	pStream->VsNetEffStreamBase::~VsNetEffStreamBase();
+	DestroyLevelChunkObjectBaseAutoThunk(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
 }
 
 // FUNCTION: LEMBALL 0x004183d0
