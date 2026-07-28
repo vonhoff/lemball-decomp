@@ -310,8 +310,6 @@ struct LinkScfBoonChunkManagerView {
 // RefreshActivePgunChunkObjects
 // STUB: LEMBALL 0x0042c520
 // EmitActivePgunChunkManagerRenderEntries
-// STUB: LEMBALL 0x0042d800
-// ActivateIceChunkObjects
 // STUB: LEMBALL 0x0042dd00
 // AdvanceIceChunkManagerObjects
 // STUB: LEMBALL 0x0042f1f0
