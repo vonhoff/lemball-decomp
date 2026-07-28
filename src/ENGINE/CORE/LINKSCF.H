@@ -294,8 +294,6 @@ struct LinkScfBoonChunkManagerView {
 // RefreshActiveRockChunkObjects
 // STUB: LEMBALL 0x00427050
 // EmitRockChunkManagerRenderEntries
-// STUB: LEMBALL 0x00427ec0
-// ActivateCaptureTriggerChunkObjects
 // STUB: LEMBALL 0x004283c0
 // RefreshActiveCaptureTriggerChunkObjects
 // STUB: LEMBALL 0x00428410
