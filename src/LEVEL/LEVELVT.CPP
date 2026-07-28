@@ -2475,6 +2475,11 @@ void LEMBALL_FASTCALL ClearLevelChunkObjectStateFields(void* pObject)
 struct LevelChunkObjectRuntimeStateView {
 	void ClearStateFieldsThunk(void);
 	void ResetRuntimeState(void);
+	void ResetRuntimeStateThunk(void);
+};
+
+struct ManagedEntityRuntimeStateView : LevelChunkObjectRuntimeStateView {
+	void ResetManagedEntityRuntimeState(void);
 };
 
 void LevelChunkObjectRuntimeStateView::ClearStateFieldsThunk(void)
@@ -2514,4 +2519,22 @@ void LevelChunkObjectRuntimeStateView::ResetRuntimeState(void)
 		*(unsigned short*) (pObjectBytes + 4) = 0x100;
 		break;
 	}
+}
+
+void LevelChunkObjectRuntimeStateView::ResetRuntimeStateThunk(void)
+{
+	ResetRuntimeState();
+}
+
+void ManagedEntityRuntimeStateView::ResetManagedEntityRuntimeState(void)
+{
+	char* pObjectBytes;
+
+	ResetRuntimeStateThunk();
+	pObjectBytes = (char*) this;
+	*(int*) (pObjectBytes + 0x130) = 0;
+	*(int*) (pObjectBytes + 0x12c) = 0x18;
+	*(int*) (pObjectBytes + 0x128) = 0x18;
+	*(int*) (pObjectBytes + 0x134) = 0;
+	*(int*) (pObjectBytes + 0x124) = 1;
 }

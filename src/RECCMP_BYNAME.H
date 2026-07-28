@@ -401,6 +401,10 @@
 // LevelChunkObjectRuntimeStateView::ClearStateFieldsThunk
 // FUNCTION: LEMBALL 0x004150d0
 // LevelChunkObjectRuntimeStateView::ResetRuntimeState
+// LINKERILT: LEMBALL 0x0040209f
+// LevelChunkObjectRuntimeStateView::ResetRuntimeStateThunk
+// FUNCTION: LEMBALL 0x00416d50
+// ManagedEntityRuntimeStateView::ResetManagedEntityRuntimeState
 // FUNCTION: LEMBALL 0x0042e600
 // ResetMoveChunkObjectRuntimeState
 // SYNTHETIC: LEMBALL 0x0041c330
