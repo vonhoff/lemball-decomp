@@ -695,6 +695,18 @@ void LinkScfLevelChunkLoaderView::LoadLevelChunksForSkillAndLevel(unsigned int n
 	ReleaseTypedResourceObjectReference(pResourceObject);
 	(void) fReuseState;
 }
+extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
+
+// GLOBAL: LEMBALL 0x00493120
+static void* g_LINKSCF_InvsChunkObjectVtable[16] = {0};
+
+// FUNCTION: LEMBALL 0x00409d10
+void LEMBALL_FASTCALL destroy_invs_chunk_object(void* pObject)
+{
+	*(void**) pObject = g_LINKSCF_InvsChunkObjectVtable;
+	DestroyLevelChunkObjectBaseAutoThunk(pObject);
+}
+
 // FUNCTION: LEMBALL 0x0040a210
 LinkScfInvsChunkManagerView* LinkScfInvsChunkManagerView::ConstructInvsChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -1197,6 +1209,17 @@ LinkScfMineChunkManagerView* LinkScfMineChunkManagerView::ConstructMineChunkMana
 	*(int*) ((char*) this + 0x38) = 0;
 	return this;
 }
+
+// GLOBAL: LEMBALL 0x00495d60
+static void* g_LINKSCF_LiftChunkObjectVtable[16] = {0};
+
+// FUNCTION: LEMBALL 0x00424d20
+void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject)
+{
+	*(void**) pObject = g_LINKSCF_LiftChunkObjectVtable;
+	DestroyLevelChunkObjectBaseAutoThunk(pObject);
+}
+
 // FUNCTION: LEMBALL 0x00425680
 LinkScfLiftChunkManagerView* LinkScfLiftChunkManagerView::ConstructLiftChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -1208,6 +1231,16 @@ LinkScfLiftChunkManagerView* LinkScfLiftChunkManagerView::ConstructLiftChunkMana
 	return this;
 }
 
+// GLOBAL: LEMBALL 0x00495ed8
+static void* g_LINKSCF_RockChunkObjectVtable[16] = {0};
+
+// FUNCTION: LEMBALL 0x00426830
+void LEMBALL_FASTCALL destroy_rock_chunk_object(void* pObject)
+{
+	*(void**) pObject = g_LINKSCF_RockChunkObjectVtable;
+	DestroyLevelChunkObjectBaseAutoThunk(pObject);
+}
+
 // FUNCTION: LEMBALL 0x00426ac0
 LinkScfRockChunkManagerView* LinkScfRockChunkManagerView::ConstructRockChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -1217,6 +1250,16 @@ LinkScfRockChunkManagerView* LinkScfRockChunkManagerView::ConstructRockChunkMana
 	*(int*) ((char*) this + 0x30) = nCapacity;
 	*(int*) ((char*) this + 0x38) = 0;
 	return this;
+}
+
+// GLOBAL: LEMBALL 0x00496198
+static void* g_LINKSCF_CaptureChunkObjectVtable[16] = {0};
+
+// FUNCTION: LEMBALL 0x00427b40
+void LEMBALL_FASTCALL destroy_capture_trigger_chunk_object(void* pObject)
+{
+	*(void**) pObject = g_LINKSCF_CaptureChunkObjectVtable;
+	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 }
 
 // FUNCTION: LEMBALL 0x00427e60
@@ -1234,6 +1277,16 @@ LinkScfCaptureChunkManagerView* LinkScfCaptureChunkManagerView::ConstructCapture
 void LEMBALL_FASTCALL ClearManagedEntityArrayCount(void* pObject)
 {
 	*(int*) ((char*) pObject + 0x34) = 0;
+}
+
+// GLOBAL: LEMBALL 0x00496310
+static void* g_LINKSCF_LasrChunkObjectVtable[16] = {0};
+
+// FUNCTION: LEMBALL 0x004288f0
+void LEMBALL_FASTCALL destroy_lasr_chunk_object_vtable_thunk(void* pObject)
+{
+	*(void**) pObject = g_LINKSCF_LasrChunkObjectVtable;
+	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 }
 
 // FUNCTION: LEMBALL 0x00429320
@@ -1290,6 +1343,27 @@ void LinkScfBoonChunkManagerView::DestroyBoonChunkManagerChildren(void)
 		}
 	}
 }
+
+// FUNCTION: LEMBALL 0x0042a7a0
+void* LEMBALL_FASTCALL destroy_lasr_chunk_object(void* pObject, void*, BYTE fDelete)
+{
+	DestroyLevelChunkObjectBaseAutoThunk(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
+
+// GLOBAL: LEMBALL 0x004965c8
+static void* g_LINKSCF_TramChunkObjectVtable[16] = {0};
+
+// FUNCTION: LEMBALL 0x0042a9d0
+void LEMBALL_FASTCALL destroy_tram_chunk_object(void* pObject)
+{
+	*(void**) pObject = g_LINKSCF_TramChunkObjectVtable;
+	DestroyLevelChunkObjectBaseAutoThunk(pObject);
+}
+
 // FUNCTION: LEMBALL 0x0042af60
 LinkScfTramChunkManagerView* LinkScfTramChunkManagerView::ConstructTramChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -1299,6 +1373,16 @@ LinkScfTramChunkManagerView* LinkScfTramChunkManagerView::ConstructTramChunkMana
 	*(int*) ((char*) this + 0x30) = nCapacity;
 	*(int*) ((char*) this + 0x38) = 0;
 	return this;
+}
+
+// GLOBAL: LEMBALL 0x00496740
+static void* g_LINKSCF_PgunChunkObjectVtable[16] = {0};
+
+// FUNCTION: LEMBALL 0x0042bb20
+void LEMBALL_FASTCALL destroy_pgun_chunk_object_vtable_thunk(void* pObject)
+{
+	*(void**) pObject = g_LINKSCF_PgunChunkObjectVtable;
+	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 }
 
 // FUNCTION: LEMBALL 0x0042bfe0
@@ -1311,6 +1395,17 @@ LinkScfPgunChunkManagerView* LinkScfPgunChunkManagerView::ConstructPgunChunkMana
 	*(int*) ((char*) this + 0x38) = 0;
 	return this;
 }
+
+// GLOBAL: LEMBALL 0x004968b8
+static void* g_LINKSCF_IceChunkObjectVtable[16] = {0};
+
+// FUNCTION: LEMBALL 0x0042caf0
+void LEMBALL_FASTCALL destroy_ice_chunk_object(void* pObject)
+{
+	*(void**) pObject = g_LINKSCF_IceChunkObjectVtable;
+	DestroyLevelChunkObjectBaseAutoThunk(pObject);
+}
+
 // FUNCTION: LEMBALL 0x0042d7a0
 LinkScfIceChunkManagerView* LinkScfIceChunkManagerView::ConstructIceChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -1479,91 +1574,6 @@ DEFINE_LINKSCF_EFF_DELETE(Delete17CD0)
 DEFINE_LINKSCF_EFF_DELETE(Delete17D50)
 
 #undef DEFINE_LINKSCF_EFF_DELETE
-
-extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
-
-// GLOBAL: LEMBALL 0x00493120
-static void* g_LINKSCF_InvsChunkObjectVtable[16] = {0};
-// GLOBAL: LEMBALL 0x00495d60
-static void* g_LINKSCF_LiftChunkObjectVtable[16] = {0};
-// GLOBAL: LEMBALL 0x00495ed8
-static void* g_LINKSCF_RockChunkObjectVtable[16] = {0};
-// GLOBAL: LEMBALL 0x00496198
-static void* g_LINKSCF_CaptureChunkObjectVtable[16] = {0};
-// GLOBAL: LEMBALL 0x00496310
-static void* g_LINKSCF_LasrChunkObjectVtable[16] = {0};
-// GLOBAL: LEMBALL 0x004965c8
-static void* g_LINKSCF_TramChunkObjectVtable[16] = {0};
-// GLOBAL: LEMBALL 0x00496740
-static void* g_LINKSCF_PgunChunkObjectVtable[16] = {0};
-// GLOBAL: LEMBALL 0x004968b8
-static void* g_LINKSCF_IceChunkObjectVtable[16] = {0};
-
-// FUNCTION: LEMBALL 0x00409d10
-void LEMBALL_FASTCALL destroy_invs_chunk_object(void* pObject)
-{
-	*(void**) pObject = g_LINKSCF_InvsChunkObjectVtable;
-	DestroyLevelChunkObjectBaseAutoThunk(pObject);
-}
-
-// FUNCTION: LEMBALL 0x00424d20
-void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject)
-{
-	*(void**) pObject = g_LINKSCF_LiftChunkObjectVtable;
-	DestroyLevelChunkObjectBaseAutoThunk(pObject);
-}
-
-// FUNCTION: LEMBALL 0x00426830
-void LEMBALL_FASTCALL destroy_rock_chunk_object(void* pObject)
-{
-	*(void**) pObject = g_LINKSCF_RockChunkObjectVtable;
-	DestroyLevelChunkObjectBaseAutoThunk(pObject);
-}
-
-// FUNCTION: LEMBALL 0x00427b40
-void LEMBALL_FASTCALL destroy_capture_trigger_chunk_object(void* pObject)
-{
-	*(void**) pObject = g_LINKSCF_CaptureChunkObjectVtable;
-	DestroyLevelChunkObjectBaseAutoThunk(pObject);
-}
-
-// FUNCTION: LEMBALL 0x004288f0
-void LEMBALL_FASTCALL destroy_lasr_chunk_object_vtable_thunk(void* pObject)
-{
-	*(void**) pObject = g_LINKSCF_LasrChunkObjectVtable;
-	DestroyLevelChunkObjectBaseAutoThunk(pObject);
-}
-
-// FUNCTION: LEMBALL 0x0042a7a0
-void* LEMBALL_FASTCALL destroy_lasr_chunk_object(void* pObject, void*, BYTE fDelete)
-{
-	DestroyLevelChunkObjectBaseAutoThunk(pObject);
-	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pObject);
-	}
-	return pObject;
-}
-
-// FUNCTION: LEMBALL 0x0042a9d0
-void LEMBALL_FASTCALL destroy_tram_chunk_object(void* pObject)
-{
-	*(void**) pObject = g_LINKSCF_TramChunkObjectVtable;
-	DestroyLevelChunkObjectBaseAutoThunk(pObject);
-}
-
-// FUNCTION: LEMBALL 0x0042bb20
-void LEMBALL_FASTCALL destroy_pgun_chunk_object_vtable_thunk(void* pObject)
-{
-	*(void**) pObject = g_LINKSCF_PgunChunkObjectVtable;
-	DestroyLevelChunkObjectBaseAutoThunk(pObject);
-}
-
-// FUNCTION: LEMBALL 0x0042caf0
-void LEMBALL_FASTCALL destroy_ice_chunk_object(void* pObject)
-{
-	*(void**) pObject = g_LINKSCF_IceChunkObjectVtable;
-	DestroyLevelChunkObjectBaseAutoThunk(pObject);
-}
 
 #define DEFINE_LINKSCF_CHUNK_BASE_DELETE(name)                                                                         \
 	void* LEMBALL_FASTCALL name(void* pObject, void*, BYTE fDelete)                                                    \
