@@ -425,7 +425,7 @@ void DestroyTcpipEffTransportComposite(int nObjectBasePlus0x30);
 void* AllocateTcpipInetAddressEntry(void);
 void* AllocateTcpipEffTransportComposite(void);
 void* AllocateTcpipEffTransportRuntimeOwner(void);
-void* DeleteTcpipRuntimeStateWindowAdjustedThunk(void* pObject, BYTE fFreeMemory);
+void* LEMBALL_FASTCALL DeleteTcpipRuntimeStateWindowAdjustedThunk(void* pObject, int, BYTE fFreeMemory);
 void* DeleteCompositeTcpipSocketChannelStackAdjustedThunk(void* pObject, BYTE fFreeMemory);
 void CompleteEffTransportPendingWriteAllocatedAdjustedThunk(void* pObject, int fQueueEvent);
 void CompleteEffTransportPendingWriteAllocatedThunkBody(void* pObject, int fQueueEvent);
@@ -2340,13 +2340,15 @@ void* VsNetTcpipSocketChannelStackLayout::ConstructTcpipSocketChannelStack(int f
 }
 #endif
 // FUNCTION: LEMBALL 0x00471a10
-void* DeleteTcpipRuntimeStateWindowAdjustedThunk(void* pObject, BYTE fFreeMemory)
+void* LEMBALL_FASTCALL DeleteTcpipRuntimeStateWindowAdjustedThunk(void* pObject, int, BYTE fFreeMemory)
 
 {
 	char* pWindowBase;
+	VsNetEffTransportRuntimeState* pRuntimeState;
 
 	pWindowBase = (char*) pObject - 0x10;
-	((VsNetEffTransportRuntimeState*) pWindowBase)->DestroyEffTransportRuntimeGlobals();
+	pRuntimeState = pWindowBase != 0 ? (VsNetEffTransportRuntimeState*) pObject : 0;
+	pRuntimeState->DestroyEffTransportRuntimeGlobals();
 	DestroyInvisibleMessageWindow((VS_InvisibleWindow*) pWindowBase);
 	if ((fFreeMemory & 1) != 0) {
 		FreeVSMemBlock(pWindowBase);
