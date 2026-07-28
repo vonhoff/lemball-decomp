@@ -4652,18 +4652,14 @@ void LevelVariantRenderManagerView::ResetOrFlipVariantRenderBuffers(void)
 		int m_cEntries;
 		int m_nToken;
 	};
-	VariantRenderBufferCounts* pActiveCounts;
-	VariantRenderBufferCounts* pAvailableCounts;
 	int nTarget;
 	unsigned char* pbToken;
 	VsGdiCompactGeometryTokenDispatch* pCompactTarget;
 
 	*(int*) ((char*) this + 0x0c) = 0;
 	if (*(int*) ((char*) this + 0x38) == 0) {
-		pAvailableCounts = (VariantRenderBufferCounts*) ((char*) this + 0x5c);
-		pActiveCounts = (VariantRenderBufferCounts*) ((char*) this + 0x40);
-		pAvailableCounts->m_cEntries = 0;
-		*pActiveCounts = *pAvailableCounts;
+		((VariantRenderBufferCounts*) ((char*) this + 0x5c))->m_cEntries = 0;
+		*(VariantRenderBufferCounts*) ((char*) this + 0x40) = *(VariantRenderBufferCounts*) ((char*) this + 0x5c);
 		nTarget = *(int*) (*(int*) ((char*) this + 0x1c) + 0x0c);
 		pCompactTarget = (VsGdiCompactGeometryTokenDispatch*) (*(int*) (*(int*) (unsigned long) (nTarget + 0x40) + 4) +
 															   0x40 + nTarget);
