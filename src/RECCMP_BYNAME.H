@@ -225,6 +225,10 @@
 // DeleteMenuSelectorManagerAuto
 // SYNTHETIC: LEMBALL 0x0044ffc0
 // DeleteQueuedVariantRangeEntryAuto
+// FUNCTION: LEMBALL 0x00468dd0
+// QueueSingleChildOverlayOwnerIfDirtyBody
+// FUNCTION: LEMBALL 0x00468f80
+// QueueSingleChildOverlayOwnerIfDirty
 
 // src/FRONTEND/SCREENVT.CPP
 // LINKERILT: LEMBALL 0x0040225c

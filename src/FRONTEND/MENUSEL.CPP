@@ -3476,3 +3476,42 @@ void* LEMBALL_FASTCALL DeleteQueuedVariantRangeEntryAuto(void* pObject, void*, B
 	}
 	return pObject;
 }
+
+void LEMBALL_FASTCALL QueueSingleChildOverlayOwnerIfDirtyBody(void* pObject, void* pUnusedEdx, const short* pUnusedRect)
+{
+	typedef int(LEMBALL_FASTCALL * QueryProc)(void* pObject);
+	typedef void(LEMBALL_FASTCALL * VoidProc)(void* pObject);
+	void** pVtable;
+	void* pRenderContext;
+	void* pOwner;
+	int nUploadState;
+
+	(void) pUnusedEdx;
+	(void) pUnusedRect;
+	pRenderContext = *(void**) ((char*) pObject + 0x4c);
+	if (*(int*) ((char*) pRenderContext + 4) != 0) {
+		return;
+	}
+	if (*(int*) ((char*) pObject + 0xf8) == 0 && *(int*) ((char*) pObject + 0xd8) == 0 &&
+		*(int*) ((char*) pObject + 0xd0) == *(int*) ((char*) pObject + 0xd4)) {
+		return;
+	}
+	pVtable = *(void***) pObject;
+	if (((QueryProc) pVtable[26])(pObject) != 0) {
+		((VoidProc) pVtable[46])(pObject);
+		((VoidProc) pVtable[47])(pObject);
+	}
+	pOwner = *(void**) ((char*) *(void**) ((char*) pObject + 0x4c) + 0x0c);
+	nUploadState = ((QueryProc) (*(void***) pOwner)[2])(pOwner);
+	((VsGdiHelperDispatchQueue*) *(void**) ((char*) pObject + 0x4c))
+		->AppendPointerQueueEntry(*(void**) ((char*) pObject + 0xe0));
+	InitializeHelperUploadStatePending(nUploadState);
+	*(int*) ((char*) pObject + 0xfc) = 1;
+}
+
+void LEMBALL_FASTCALL QueueSingleChildOverlayOwnerIfDirty(void* pObject, void* pUnusedEdx, const short* pRect)
+{
+	(void) pObject;
+	(void) pUnusedEdx;
+	((void(PASCAL*)(const short*)) QueueSingleChildOverlayOwnerIfDirtyBody)(pRect);
+}
