@@ -1886,3 +1886,9 @@ void LEMBALL_FASTCALL ResetRockChunkObject(void* pObject)
 	ResetManagedEntityRuntimeStateThunk(pObject);
 	ResetRockChunkObjectRuntimeStateThunk(pObject);
 }
+
+void LEMBALL_FASTCALL ResetIceChunkObject(void* pObject)
+{
+	ResetManagedEntityRuntimeStateThunk(pObject);
+	ResetRockChunkObjectRuntimeStateThunk(pObject);
+}
