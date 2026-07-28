@@ -57,8 +57,10 @@ extern void* g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
 extern void* g_pActiveLevelGameMode;
 extern void* g_pActiveManagedEntityOwner;
+extern void* g_pLevelTileGrid;
 extern int g_nLevelFrameClockTick;
 extern int g_nLevelFrameClockTimeMs;
+extern int g_nSelectedNetworkLobbyPeerId;
 extern int g_GAME_ManagedEntityRegistryTable[1000];
 extern unsigned short g_GAME_ManagedEntityRegistryCount;
 extern int* LoadBinResource(int nResourceId);
@@ -1410,6 +1412,114 @@ void LEMBALL_FASTCALL destroy_lasr_chunk_object_vtable_thunk(void* pObject)
 {
 	*(void**) pObject = g_LINKSCF_LasrChunkObjectVtable;
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
+}
+
+struct LevelTileRenderDescriptor {
+	short SampleHeightOffset(int nLocalX, int nLocalY);
+};
+
+typedef int(LEMBALL_FASTCALL* LinkScfPointSlotProc)(void*, void*, const int*);
+typedef void(LEMBALL_FASTCALL* LinkScfIntSlotProc)(void*, void*, int);
+
+// FUNCTION: LEMBALL 0x00428ab0
+int LEMBALL_FASTCALL AcquireLasrPlasTarget(void* pObject)
+{
+	int* pFields = (int*) pObject;
+	int nX = pFields[0x27] >> 12;
+	int nY = pFields[0x28] >> 12;
+	int nZ = pFields[0x29] >> 12;
+	int nStepX;
+	int nStepY;
+	int nSteps;
+	void* pCandidate = 0;
+
+	switch (pFields[0x19]) {
+	case 0x1e:
+	case 0x30:
+		nStepX = 0x10;
+		nStepY = 0;
+		nX += 8;
+		break;
+	case 0x2f:
+	case 0x31:
+		nStepX = 0;
+		nStepY = 0x10;
+		nY += 8;
+		break;
+	default:
+		return 0;
+	}
+
+	for (nSteps = 0; nSteps < 8; ++nSteps) {
+		char* pGrid;
+		char* pOwner;
+		unsigned short nTerrain;
+
+		nX += nStepX;
+		nY += nStepY;
+		pGrid = (char*) g_pLevelTileGrid;
+		if (nX < 0 || nY < 0 || (nX >> 4) >= *(int*) (pGrid + 0x10) || (nY >> 4) >= *(int*) (pGrid + 0x14)) {
+			nTerrain = 0;
+		}
+		else {
+			LevelTileRenderDescriptor* pTile =
+				(LevelTileRenderDescriptor*) (*(char**) (pGrid + 0x0c) +
+											  (((nY >> 4) * *(int*) (pGrid + 0x10)) + (nX >> 4)) * 12);
+			nTerrain = (unsigned short) pTile->SampleHeightOffset(nX & 15, nY & 15);
+		}
+		if ((int) nTerrain > nZ) {
+			break;
+		}
+
+		pOwner = (char*) g_pActiveManagedEntityOwner;
+		*(void**) (pOwner + 0x150) = 0;
+		*(int*) (pOwner + 0x124) = nX;
+		*(int*) (pOwner + 0x128) = nY;
+		*(int*) (pOwner + 0x12c) = nZ;
+		*(int*) (pOwner + 0x130) = 0;
+		pCandidate = 0;
+		while (*(int*) (pOwner + 0x130) < *(int*) (pOwner + 0x118)) {
+			pCandidate = (*(void***) (pOwner + 0x120))[*(int*) (pOwner + 0x130)];
+			if (pCandidate != *(void**) (pOwner + 0x150) &&
+				((LinkScfPointSlotProc) (*(void***) pCandidate)[20])(pCandidate, 0, (int*) (pOwner + 0x124)) != 0) {
+				++*(int*) (pOwner + 0x130);
+				break;
+			}
+			pCandidate = 0;
+			++*(int*) (pOwner + 0x130);
+		}
+		if (pCandidate != 0 && *(int*) ((char*) pCandidate + 0x64) == 2) {
+			break;
+		}
+		pCandidate = 0;
+	}
+
+	if (pCandidate == 0) {
+		return 0;
+	}
+	*(void**) ((char*) pObject + 0x144) = pCandidate;
+	*(int*) ((char*) pCandidate + 0xb8) = 0x0f;
+	*(short*) ((char*) pCandidate + 0xbc) = 1;
+	*(int*) ((char*) pCandidate + 0xcc) = g_nLevelFrameClockTick + 0x1a;
+	((LinkScfIntSlotProc) (*(void***) pObject)[13])(pObject, 0, 0x22);
+	return 1;
+}
+
+// FUNCTION: LEMBALL 0x00428ec0
+int LEMBALL_FASTCALL BeginLasrPlasReacquireDelay(void* pObject)
+{
+	int* pFields = (int*) pObject;
+	pFields[0x4e] = 1;
+	if (g_nSelectedNetworkLobbyPeerId != 0 && *(int*) (g_nSelectedNetworkLobbyPeerId + 0x1c) != 0) {
+		return 0;
+	}
+	pFields[0x32] = g_nLevelFrameClockTick;
+	pFields[0x34] = g_nLevelFrameClockTick + 6;
+	pFields[0x33] = g_nLevelFrameClockTick + 0x18;
+	*(void**) ((char*) pObject + 0x144) = 0;
+	pFields[0x25] = g_nLevelFrameClockTimeMs;
+	((LinkScfIntSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x19);
+	return 1;
 }
 
 // FUNCTION: LEMBALL 0x00429320
