@@ -691,10 +691,9 @@ void LEMBALL_FASTCALL GetTileFlag1CObjectRenderPoint(void* pObject, void* pUnuse
 	pCoordinates[2] = *(int*) ((char*) pObject + 0xa4);
 }
 
-// STUB: LEMBALL 0x004278c0
+// FUNCTION: LEMBALL 0x004278c0
 int LEMBALL_FASTCALL RequestRockHistoryChildSwapState(void* pObject, void* pUnused, void* pEntity)
 {
-	typedef void(PASCAL * SetStateProc)(int);
 	char* pObjectBytes = (char*) pObject;
 	char* pEntityBytes = (char*) pEntity;
 
@@ -707,7 +706,7 @@ int LEMBALL_FASTCALL RequestRockHistoryChildSwapState(void* pObject, void* pUnus
 	}
 	*(int*) (pObjectBytes + 0xcc) = 0x52;
 	*(void**) (pObjectBytes + 0x5c) = pEntity;
-	((SetStateProc) (*(void***) pObject)[2])(0x1a);
+	((ManagedEntityStateView*) pObject)->RequestManagedEntityStateId(0x1a);
 	return 1;
 }
 
