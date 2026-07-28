@@ -10,6 +10,7 @@ address,name,symbol,type,source
 0x00401177,RefreshActiveCaptureTriggerChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040119F,VS_WindowOwnerBase::ReservedWindowOwnerSlot37,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x004011A9,GetManagedEntityGroupCount,,stub,src/ENGINE/CORE/LINKSCF.H
+0x004011AE,ManagedEntityChildView::SetManagedEntityOwnerGroup,?SetManagedEntityOwnerGroup@ManagedEntityChildView@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004011DB,DestroyDoorChunkObjectAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00401212,DestroyTramChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x0040126C,LevelChunkStreamWriteView::AppendLevelChunkStreamPayload,?AppendLevelChunkStreamPayload@LevelChunkStreamWriteView@@QAEXPAUVsNetEffStreamBase@@@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
@@ -39,6 +40,7 @@ address,name,symbol,type,source
 0x00401942,RefreshActiveLasrChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401956,EmitCollChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004019C4,WriteEffStreamU32Field2C,,stub,src/ENGINE/MEDIA/EFFSTRM.H
+0x00401AC3,LevelManagedEntityChildIterator::AppendChild,?AppendChild@LevelManagedEntityChildIterator@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00401ADC,HandleMenuSelectorEventThunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401B31,DoorChunkObjectActionView::RequestDoorChunkObjectTriggerTransition,?RequestDoorChunkObjectTriggerTransition@DoorChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFDOORACTION.CPP
 0x00401B95,ResetAllInvsChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
@@ -90,6 +92,7 @@ address,name,symbol,type,source
 0x004025FE,DestroyCountedChildTableStreamAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402608,InvsChunkObjectActionView::AddInvsTrackedEntity,?AddInvsTrackedEntity@InvsChunkObjectActionView@@QAEXPAX@Z,stub,src/ENGINE/CORE/LINKSCFINVS.CPP
 0x00402658,MarkNetworkLobbySelectedPeerDisconnected,?MarkNetworkLobbySelectedPeerDisconnected@@YIXPAX@Z,stub,src/ENGINE/MEDIA/EFFSTRM.CPP
+0x00402667,ManagedEntityChildView::SetManagedEntityPrimaryActiveFlag,?SetManagedEntityPrimaryActiveFlag@ManagedEntityChildView@@QAEXH@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402676,DestroyCollChunkObjectAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x0040268A,FindManagedEntityByPointer,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040268F,LevelSlotActionDispatcherView::DispatchLevelSlotActionByType,?DispatchLevelSlotActionByType@LevelSlotActionDispatcherView@@QAEXHIHH@Z,stub,src/LEVEL/LEVELVTACTIONDISPATCH.CPP
@@ -176,5 +179,6 @@ address,name,symbol,type,source
 0x004036D4,InitializeTramChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004036F2,DestroyNetworkLobbyTransportControllerAutoThunk,,stub,src/GAME.CPP
 0x0040372E,has_level_plas_history_entries,?has_level_plas_history_entries@@YIHPAX@Z,stub,src/LEVEL/LEVELVT.CPP
+0x00403779,LevelManagedEntityChildIterator::AttachManagedEntityChild,?AttachManagedEntityChild@LevelManagedEntityChildIterator@@QAEHPAUManagedEntityChildView@@@Z,stub,src/LEVEL/LEVELVTCHILD.CPP
 0x00403797,EmitCaptureTriggerChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004037C4,DestroyCompositeLevelChunkChildrenAutoThunk,,stub,src/LEVEL/LEVELVT.CPP

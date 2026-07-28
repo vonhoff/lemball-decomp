@@ -80,6 +80,7 @@ struct LevelManagedEntityHistoryView {
 };
 
 struct LevelManagedEntityChildIterator;
+struct ManagedEntityChildView;
 
 struct LevelManagedEntityActiveGroupView {
 	void* m_pReserved00;
@@ -117,6 +118,7 @@ struct LevelManagedEntityChildIterator {
 	int HasDirtyChildren(void);
 	int HasDirtyChildrenThunk(void);
 	int HasStreamDirtyChildren(void);
+	int AttachManagedEntityChild(ManagedEntityChildView* pChild);
 };
 
 extern int g_nLevelFrameClockTick;
@@ -306,9 +308,11 @@ void noop_vtable_callback_0040ce40(void);
 int return_two_callback(void);
 void noop_vtable_callback_0040cf30(void);
 int PASCAL IsDoorChunkIdleOrClosedState(int nState);
-void __fastcall set_managed_entity_owner_group(void* pEntity, void* pUnused, void* pOwnerGroup);
+struct ManagedEntityChildView {
+	void SetManagedEntityOwnerGroup(void* pOwnerGroup);
+	void SetManagedEntityPrimaryActiveFlag(int fActive);
+};
 void* __fastcall get_managed_entity_owner_group(void* pEntity);
-void __fastcall set_managed_entity_primary_active_flag(void* pEntity, void* pUnused, int fActive);
 void __fastcall set_managed_entity_secondary_active_flag(void* pEntity, void* pUnused, int fActive);
 int __fastcall has_door_chunk_object_target_tile_latched(void* pObject);
 void __fastcall schedule_door_chunk_object_update_in_10_ticks(void* pObject);
@@ -960,10 +964,9 @@ int PASCAL IsDoorChunkIdleOrClosedState(int nState)
 }
 
 // FUNCTION: LEMBALL 0x0040f0d0
-void __fastcall set_managed_entity_owner_group(void* pEntity, void* pUnused, void* pOwnerGroup)
+void ManagedEntityChildView::SetManagedEntityOwnerGroup(void* pOwnerGroup)
 {
-	(void) pUnused;
-	*(void**) ((char*) pEntity + 0x224) = pOwnerGroup;
+	*(void**) ((char*) this + 0x224) = pOwnerGroup;
 }
 
 // FUNCTION: LEMBALL 0x0040f0e0
@@ -973,10 +976,9 @@ void* __fastcall get_managed_entity_owner_group(void* pEntity)
 }
 
 // FUNCTION: LEMBALL 0x0040f0f0
-void __fastcall set_managed_entity_primary_active_flag(void* pEntity, void* pUnused, int fActive)
+void ManagedEntityChildView::SetManagedEntityPrimaryActiveFlag(int fActive)
 {
-	(void) pUnused;
-	*(int*) ((char*) pEntity + 0x17c) = fActive;
+	*(int*) ((char*) this + 0x17c) = fActive;
 }
 
 // FUNCTION: LEMBALL 0x0040f100
