@@ -1,4 +1,8 @@
 #include "ENGINE/CORE/VSINIT.H"
+#include "ENGINE/CORE/WIN32.H"
+#include "ENGINE/MEDIA/VSSTRM.H"
+
+void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 
 struct ProjectilePoolOwnerView {
 	char m_abReserved00[0x30];
@@ -56,4 +60,14 @@ void* ProjectilePoolOwnerView::GetFreeProjectilePoolObject(void)
 		++iProjectile;
 	}
 	return m_pProjectilePool30 + (m_iProjectilePoolSearchStartDC + iProjectile) * 0x1a4;
+}
+
+// FUNCTION: LEMBALL 0x004183d0
+void LEMBALL_FASTCALL DestroyProjectileObject(void* pObject)
+{
+	VsNetEffStreamBase* pStream;
+
+	pStream = pObject != NULL ? (VsNetEffStreamBase*) ((char*) pObject + 0x138) : NULL;
+	pStream->VsNetEffStreamBase::~VsNetEffStreamBase();
+	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 }
