@@ -9,6 +9,9 @@ extern void* g_pLiftTileGrid;
 extern void* g_pLevelTileGrid;
 extern void* g_pActiveManagedEntityOwner;
 extern int __fastcall has_level_plas_history_entries(void* pLevelMode);
+extern int LEMBALL_FASTCALL PopLevelPlasHistoryChild(void* pLevelMode);
+extern void LEMBALL_FASTCALL clear_managed_entity_child_pending_state_if_interruptible(void* pEntity);
+extern void* LEMBALL_FASTCALL get_managed_entity_owner_group(void* pEntity);
 extern int LEMBALL_FASTCALL AcquireLasrPlasTarget(void* pObject);
 extern int LEMBALL_FASTCALL BeginLasrPlasReacquireDelay(void* pObject);
 extern void LEMBALL_FASTCALL destroy_invs_chunk_object(void* pObject);
@@ -28,6 +31,45 @@ struct ManagedEntityPacketStreamView {
 
 struct ManagedEntityStateView {
 	void RequestManagedEntityStateId(int nStateId);
+};
+
+struct ManagedEntityLocalStateView {
+	virtual void ReservedSlot0(int nValue);
+	virtual void ReservedSlot1(int nValue);
+	virtual void SetManagedEntityStateIdLocal(int nStateId);
+};
+
+struct LevelPoint3 {
+	int m_nX;
+	int m_nY;
+	int m_nZ;
+};
+
+struct ManagedProjectileObjectView {
+	void ActivateAtPosition(const LevelPoint3* pPosition);
+};
+
+struct ManagedEntityChildView;
+
+struct LevelManagedEntityChildIterator {
+	int AttachManagedEntityChild(ManagedEntityChildView* pChild);
+};
+
+struct RockChunkObjectStateView {
+	virtual void ReservedSlot0(int nValue);
+	virtual void ReservedSlot1(int nValue);
+	virtual void SetManagedEntityStateIdLocal(int nStateId);
+	virtual void ReservedSlot3(int nValue);
+	virtual void ReservedSlot4(int nValue);
+	virtual void ReservedSlot5(int nValue);
+	virtual void ReservedSlot6(int nValue);
+	virtual void ReservedSlot7(int nValue);
+	virtual void ReservedSlot8(int nValue);
+	virtual void ReservedSlot9(int nValue);
+	virtual void ReservedSlot10(int nValue);
+	virtual void ReservedSlot11(int nValue);
+	virtual void ReservedSlot12(int nValue);
+	virtual void SetActionState(int nStateId);
 };
 
 struct LevelTileRenderDescriptor {
@@ -674,10 +716,45 @@ void* LEMBALL_FASTCALL DeleteRockChunkObjectAuto(void* pObject, void* pUnused, u
 	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x144, destroy_rock_chunk_object);
 }
 
-// STUB: LEMBALL 0x00427780
+// FUNCTION: LEMBALL 0x00427780
 int LEMBALL_FASTCALL UpdateRockHistoryChildSwapState(void* pObject)
 {
-	(void) pObject;
+	char* pObjectBytes = (char*) pObject;
+	char* pChildBytes;
+	ManagedProjectileObjectView* pProjectile;
+	LevelPoint3 activationPoint;
+	int nState;
+
+	if (*(int*) (pObjectBytes + 0x114) != 0) {
+		*(unsigned short*) (pObjectBytes + 0xbc) = 1;
+		if (*(int*) (pObjectBytes + 0x128) != *(int*) (pObjectBytes + 0xb8)) {
+			if (*(int*) (pObjectBytes + 0xb8) == 0x1a) {
+				((RockChunkObjectStateView*) pObject)->SetActionState(0x0c);
+			}
+			*(int*) (pObjectBytes + 0x128) = *(int*) (pObjectBytes + 0xb8);
+		}
+		return 1;
+	}
+
+	nState = *(int*) (pObjectBytes + 0xb8);
+	*(unsigned short*) (pObjectBytes + 0xbc) = 0;
+	if (nState == 0x1a && *(unsigned int*) (pObjectBytes + 0xcc) < (unsigned int) g_nLevelFrameClockTick) {
+		pChildBytes = (char*) *(void**) (pObjectBytes + 0x140);
+		*(int*) (pChildBytes + 0xc0) = 0;
+		*(int*) (pChildBytes + 0xb8) = 0;
+		((ManagedEntityLocalStateView*) *(void**) (pObjectBytes + 0x140))->SetManagedEntityStateIdLocal(0);
+		clear_managed_entity_child_pending_state_if_interruptible(*(void**) (pObjectBytes + 0x140));
+		pProjectile = (ManagedProjectileObjectView*) PopLevelPlasHistoryChild(g_pActiveManagedEntityOwner);
+		if (pProjectile != 0) {
+			activationPoint.m_nX = *(int*) (pObjectBytes + 0x9c);
+			activationPoint.m_nY = *(int*) (pObjectBytes + 0xa0) - 0x34000;
+			activationPoint.m_nZ = *(int*) (pObjectBytes + 0xa4);
+			pProjectile->ActivateAtPosition(&activationPoint);
+			((LevelManagedEntityChildIterator*) get_managed_entity_owner_group(*(void**) (pObjectBytes + 0x140)))
+				->AttachManagedEntityChild((ManagedEntityChildView*) pProjectile);
+		}
+		((RockChunkObjectStateView*) pObject)->SetManagedEntityStateIdLocal(0x18);
+	}
 	return 1;
 }
 

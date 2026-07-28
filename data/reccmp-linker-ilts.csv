@@ -20,6 +20,7 @@ address,name,symbol,type,source
 0x00401406,DestroyMenuSelectorManagerAutoThunk,,stub,src/FRONTEND/MENUSEL.CPP
 0x00401433,LevelChunkStreamWriteView::FlushLevelChunkStreamWrite,?FlushLevelChunkStreamWrite@LevelChunkStreamWriteView@@QAEXXZ,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x0040143D,DestroyPaintballSequenceScreenAutoThunk,,stub,src/FRONTEND/MAINMENU.CPP
+0x004014AB,PopLevelPlasHistoryChild,?PopLevelPlasHistoryChild@@YIHPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
 0x004014CE,UpdateMenuSelectorAnimationThunk,,stub,src/FRONTEND/MENUSEL.H
 0x004014F1,DestroyLevelChunkStreamDispatcherAutoThunk,,stub,src/LEVEL/LEVELRUN.CPP
 0x004014FB,ActivateLasrChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
@@ -84,6 +85,7 @@ address,name,symbol,type,source
 0x00402374,DestroyMineChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x0040240A,ActivateManagedEntityGroupChildren,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040243C,LevelChunkObjectRuntimeStateView::ClearStateFieldsThunk,,stub,src/LEVEL/LEVELVT.CPP
+0x00402446,clear_managed_entity_child_pending_state_if_interruptible,?clear_managed_entity_child_pending_state_if_interruptible@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
 0x00402518,ActivateLiftChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040253B,RefreshActivePgunChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402559,ActivateIceChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
@@ -135,6 +137,7 @@ address,name,symbol,type,source
 0x00402E1E,VS_WindowOwnerBase::CacheCurrentContextWindow,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00402E28,StartMenuSelectorActionThunk,,stub,src/FRONTEND/MENUSEL.H
 0x00402E4B,DispatchDoorChunkObjectTriggerBySlot,?DispatchDoorChunkObjectTriggerBySlot@@YIXPAX0HI@Z,stub,src/ENGINE/CORE/LINKSCFDOORACTION.CPP
+0x00402E91,ManagedProjectileObjectView::ActivateAtPosition,?ActivateAtPosition@ManagedProjectileObjectView@@QAEXPBULevelPoint3@@@Z,stub,src/LEVEL/LEVELVTPROJECTILE.CPP
 0x00402E9B,DispatchLiftChunkObjectActionBySlot,?DispatchLiftChunkObjectActionBySlot@@YIXPAX0HIHH@Z,stub,src/ENGINE/CORE/LINKSCFLIFTACTION.CPP
 0x00402EB9,GetCachedChunkObjectByIndex,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402F09,DestroyManagedEntityQueueCursorAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
@@ -181,4 +184,5 @@ address,name,symbol,type,source
 0x0040372E,has_level_plas_history_entries,?has_level_plas_history_entries@@YIHPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00403779,LevelManagedEntityChildIterator::AttachManagedEntityChild,?AttachManagedEntityChild@LevelManagedEntityChildIterator@@QAEHPAUManagedEntityChildView@@@Z,stub,src/LEVEL/LEVELVTCHILD.CPP
 0x00403797,EmitCaptureTriggerChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
+0x004037BA,get_managed_entity_owner_group,?get_managed_entity_owner_group@@YIPAXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004037C4,DestroyCompositeLevelChunkChildrenAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
