@@ -90,6 +90,7 @@ class VsNetSocketWindowEffChannel :
 	public VsNetSocketWindowPrimary,
 	virtual public VsNetEffStreamChannelState {
 public:
+	static void operator delete(void* pObject) { FreeVSMemBlock(pObject); }
 	virtual int HandleAsyncMessage(int nMessage, void* pReserved, unsigned int nEvent);
 	virtual ~VsNetSocketWindowEffChannel();
 	virtual int ReleaseFileBackedEffMarker(void);
