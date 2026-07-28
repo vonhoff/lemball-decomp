@@ -3,6 +3,9 @@
 
 #include <string.h>
 
+extern void* g_VSGDI_ResourceGeometryRowBufferVtable[14];
+extern void FreeResourceArchiveMemory(void* pMemoryBlock);
+
 __inline static void MergeCompactHelperRect(short* pTarget, const short* pEntry)
 {
 	short nRight;
@@ -214,6 +217,11 @@ void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot4(void*)
 }
 
 // FUNCTION: LEMBALL 0x00473770
-void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot8(void*)
+void* LEMBALL_FASTCALL ResourceGeometryRowBufferSlot8(void* pObject, int, BYTE fDelete)
 {
+	*(void**) pObject = &g_VSGDI_ResourceGeometryRowBufferVtable[8];
+	if ((fDelete & 1) != 0) {
+		FreeResourceArchiveMemory(pObject);
+	}
+	return pObject;
 }

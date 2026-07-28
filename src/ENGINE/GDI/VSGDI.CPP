@@ -289,10 +289,10 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot18(void*);
 void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot4(void*);
 void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot5(void*);
 void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot6(void*);
-void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot8(void*);
+void* LEMBALL_FASTCALL ResourceGeometryRowBufferSlot8(void*, int, BYTE);
 
 // GLOBAL: LEMBALL 0x0049a470
-static void* g_VSGDI_ResourceGeometryRowBufferVtable[14] = {
+void* g_VSGDI_ResourceGeometryRowBufferVtable[14] = {
 	(void*) RebuildResourceGeometryRowPointerTable,
 	0,
 	(void*) EnterObjectCriticalSection,

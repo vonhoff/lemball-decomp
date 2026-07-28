@@ -4571,6 +4571,16 @@ void LEMBALL_FASTCALL UpdateLevelScreenViewportLayoutState(void* pObject)
 	}
 }
 // Compatibility shim preserving MSVC 4.20 compiler state.
+// FUNCTION: LEMBALL 0x004397a0
+void* LEMBALL_FASTCALL delete_queued_render_point_sink_entry(void* pObject, int, BYTE fDelete)
+{
+	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
+// Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteReconstructedLevelScreen(void* pObject, int, int fDelete)
 {
 	RestoreReconstructedLevelScreenVtables(pObject);
