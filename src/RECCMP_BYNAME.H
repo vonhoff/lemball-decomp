@@ -18,6 +18,14 @@
 // ResetRockChunkObject
 // FUNCTION: LEMBALL 0x0042ca90
 // ResetIceChunkObject
+// LINKERILT: LEMBALL 0x004029fa
+// ResetCaptureTriggerChunkObjectRuntimeStateThunk
+// FUNCTION: LEMBALL 0x00427b10
+// ResetCaptureTriggerChunkObject
+// LINKERILT: LEMBALL 0x0040289c
+// ResetLasrChunkObjectRuntimeStateThunk
+// FUNCTION: LEMBALL 0x004288b0
+// ResetLasrChunkObject
 // LINKERILT: LEMBALL 0x0040153c
 // LevelChunkObjectBaseView::InitializeLevelChunkObjectBase
 // SYNTHETIC: LEMBALL 0x0040ebe0

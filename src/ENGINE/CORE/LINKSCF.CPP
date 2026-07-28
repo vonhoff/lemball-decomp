@@ -1892,3 +1892,37 @@ void LEMBALL_FASTCALL ResetIceChunkObject(void* pObject)
 	ResetManagedEntityRuntimeStateThunk(pObject);
 	ResetRockChunkObjectRuntimeStateThunk(pObject);
 }
+
+void LEMBALL_FASTCALL ResetCaptureTriggerChunkObjectRuntimeStateThunk(void* pObject)
+{
+	((LinkScfSmallFunctionView*) pObject)->ResetCaptureTriggerChunkObjectRuntimeState();
+}
+
+void LEMBALL_FASTCALL ResetCaptureTriggerChunkObject(void* pObject)
+{
+	char* pObjectBytes;
+	int nX;
+	int nY;
+	int nZ;
+
+	ResetManagedEntityRuntimeStateThunk(pObject);
+	ResetCaptureTriggerChunkObjectRuntimeStateThunk(pObject);
+	pObjectBytes = (char*) pObject;
+	nZ = *(int*) (pObjectBytes + 0x48);
+	nX = *(int*) (pObjectBytes + 0x40);
+	nY = *(int*) (pObjectBytes + 0x44);
+	*(int*) (pObjectBytes + 0x9c) = nX;
+	*(int*) (pObjectBytes + 0xa0) = nY;
+	*(int*) (pObjectBytes + 0xa4) = nZ;
+}
+
+void LEMBALL_FASTCALL ResetLasrChunkObjectRuntimeStateThunk(void* pObject)
+{
+	((LinkScfSmallFunctionView*) pObject)->ResetLasrChunkObjectRuntimeState();
+}
+
+void LEMBALL_FASTCALL ResetLasrChunkObject(void* pObject)
+{
+	ResetManagedEntityRuntimeStateThunk(pObject);
+	ResetLasrChunkObjectRuntimeStateThunk(pObject);
+}
