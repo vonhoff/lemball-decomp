@@ -4,6 +4,7 @@
 /* Compiler-owned network functions.  Keep by-name annotations in this
  * declaration header; source files contain only authored bodies. */
 // Compatibility symbol preserving MSVC 4.20 compiler state.
+// FUNCTION: LEMBALL 0x0047b7d0
 // VsNetEffStreamRecordSlotTable::`scalar deleting destructor'
 // FUNCTION: LEMBALL 0x00462cb0
 // VsNetRuntimeChannelCore::`scalar deleting destructor'

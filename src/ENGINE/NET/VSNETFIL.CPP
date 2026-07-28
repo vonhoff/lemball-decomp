@@ -993,6 +993,9 @@ public:
 
 	VsNetEffStreamRecordSlotTable(int cSlots);
 	virtual ~VsNetEffStreamRecordSlotTable();
+
+	void operator delete(void* pObject);
+
 	virtual void ReverseEffStreamPayload(void);    // vtable+0x08
 	virtual void WriteEffStreamTaggedHeader(void); // vtable+0x10
 	VsNetEffStreamRecordSlot* FindNextChangedSlot(void);
@@ -2071,6 +2074,11 @@ VsNetEffStreamRecordSlotTable::VsNetEffStreamRecordSlotTable(int cSlots)
 	m_nAccumulatedStreamLength18 += m_pSlots->m_nBufferEnd18 * cSlots;
 }
 
+inline void VsNetEffStreamRecordSlotTable::operator delete(void* pObject)
+{
+	FreeVSMemBlock(pObject);
+}
+
 // FUNCTION: LEMBALL 0x004796e0
 VsNetEffStreamRecordSlotTable::~VsNetEffStreamRecordSlotTable()
 {
@@ -2080,6 +2088,8 @@ VsNetEffStreamRecordSlotTable::~VsNetEffStreamRecordSlotTable()
 	}
 }
 
+// Compatibility shim retained for VSNETFIL.CPP compiler state; original
+// 0x0047b7d0 is compiler-generated scalar deleting destructor.
 void* LEMBALL_FASTCALL DeleteEffStreamRecordSlotTableAuto(void* pObject, void*, BYTE fDelete)
 {
 	((VsNetEffStreamRecordSlotTable*) pObject)->VsNetEffStreamRecordSlotTable::~VsNetEffStreamRecordSlotTable();
@@ -4033,16 +4043,18 @@ void* VsNetEffStreamRecordSlot::Delete(int fDeleteFlags)
 	VsNetEffStreamRecordSlot* pSlot;
 	VsNetEffStreamRecordSlot* pCurrent;
 	int cSlots;
+	int* pAllocation;
 
 	pSlot = (VsNetEffStreamRecordSlot*) this;
 	if ((fDeleteFlags & 2) != 0) {
-		cSlots = *((int*) pSlot - 1);
+		pAllocation = (int*) pSlot - 1;
+		cSlots = *pAllocation;
 		pCurrent = pSlot + cSlots;
 		while (--cSlots >= 0) {
 			--pCurrent;
 			((VsNetEffStreamBase*) pCurrent)->DestroyEffStreamBaseThunk();
 		}
-		FreeVSMemBlock((int*) pSlot - 1);
+		FreeVSMemBlock(pAllocation);
 		return this;
 	}
 

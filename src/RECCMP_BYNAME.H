@@ -155,8 +155,6 @@
 // DeleteEffTransportRuntimeGlobalsAuto
 
 // src/ENGINE/NET/VSNETFIL.CPP
-// SYNTHETIC: LEMBALL 0x0047b7d0
-// DeleteEffStreamRecordSlotTableAuto
 // SYNTHETIC: LEMBALL 0x0047b970
 // DeleteFileBackedEffStreamAuto
 
