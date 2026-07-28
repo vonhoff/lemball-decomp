@@ -2,6 +2,10 @@
 
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
 
+struct InvsChunkObjectActionView {
+	void AddInvsTrackedEntity(void* pEntity);
+};
+
 // Split from the original LINKSCF source group to preserve MSVC 4.20 code generation in LINKSCF.CPP.
 
 // FUNCTION: LEMBALL 0x00409ec0
@@ -28,14 +32,13 @@ void LEMBALL_FASTCALL RemoveInvsTrackedEntitiesOutsideBounds(void* pObject)
 }
 
 // FUNCTION: LEMBALL 0x00409f70
-void LEMBALL_FASTCALL AddInvsTrackedEntity(void* pObject, void* pUnused, void* pEntity)
+void InvsChunkObjectActionView::AddInvsTrackedEntity(void* pEntity)
 {
-	char* pObjectBytes = (char*) pObject;
+	char* pObjectBytes = (char*) this;
 	int cEntities = *(int*) (pObjectBytes + 0x254);
-	(void) pUnused;
 	if (cEntities < 0x18) {
 		*(void**) (pObjectBytes + 0x258 + cEntities * 4) = pEntity;
 		++*(int*) (pObjectBytes + 0x254);
-		*(unsigned short*) ((char*) pEntity + 0x120) = GetManagedEntitySlotIdThunk((int) (unsigned long) pObject);
+		*(unsigned short*) ((char*) pEntity + 0x120) = GetManagedEntitySlotIdThunk((int) (unsigned long) this);
 	}
 }

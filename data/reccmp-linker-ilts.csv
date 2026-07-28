@@ -88,6 +88,7 @@ address,name,symbol,type,source
 0x0040258B,AdvanceCachedGroupManagedEntityChildIterator,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004025EA,IceChunkObjectActionView::RequestIceChunkObjectToggleActivation,?RequestIceChunkObjectToggleActivation@IceChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFICEACTION.CPP
 0x004025FE,DestroyCountedChildTableStreamAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
+0x00402608,InvsChunkObjectActionView::AddInvsTrackedEntity,?AddInvsTrackedEntity@InvsChunkObjectActionView@@QAEXPAX@Z,stub,src/ENGINE/CORE/LINKSCFINVS.CPP
 0x00402658,MarkNetworkLobbySelectedPeerDisconnected,?MarkNetworkLobbySelectedPeerDisconnected@@YIXPAX@Z,stub,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x00402676,DestroyCollChunkObjectAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x0040268A,FindManagedEntityByPointer,,stub,src/ENGINE/CORE/LINKSCF.H
@@ -121,6 +122,7 @@ address,name,symbol,type,source
 0x00402BE9,DestroyGmobChunkType14ObjectAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402CA2,DestroyCaptureTriggerChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402CD4,RemoveCachedChunkObjectAndDestroy,,stub,src/ENGINE/CORE/LINKSCF.H
+0x00402D42,RemoveInvsTrackedEntitiesOutsideBounds,?RemoveInvsTrackedEntitiesOutsideBounds@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCFINVS.CPP
 0x00402D5B,SetMenuSelectorDirectionFieldThunk,,stub,src/FRONTEND/MENUSEL.H
 0x00402D83,NoopLevelStatusCallbackIlt,,stub,src/LEVEL/LEVELSTAT.CPP
 0x00402DA1,EmitMoveChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H

@@ -20,6 +20,7 @@ extern void LEMBALL_FASTCALL destroy_tram_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_pgun_chunk_object_vtable_thunk(void* pObject);
 extern void LEMBALL_FASTCALL destroy_ice_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_move_chunk_object(void* pObject);
+extern void LEMBALL_FASTCALL RemoveInvsTrackedEntitiesOutsideBounds(void* pObject);
 
 struct ManagedEntityPacketStreamView {
 	void BindManagedEntityPacketTarget(void* pEntity);
@@ -49,6 +50,34 @@ struct GmobChunkType14ActionView {
 	virtual void ReservedSlot12(int nValue);
 	virtual void SetActionState(int nStateId);
 	void DispatchGmobChunkType14Actions(void);
+};
+
+struct LevelSlotActionDispatcherView {
+	void DispatchLevelSlotActionByType(int nAction, unsigned int nSlotId, int nRangeEnd, int nUnused4);
+};
+
+struct InvsChunkObjectActionView {
+	virtual void ReservedSlot0(int nValue);
+	virtual void ReservedSlot1(int nValue);
+	virtual void SetManagedEntityStateId(int nStateId);
+	virtual void ReservedSlot3(int nValue);
+	virtual void ReservedSlot4(int nValue);
+	virtual void ReservedSlot5(int nValue);
+	virtual void ReservedSlot6(int nValue);
+	virtual void ReservedSlot7(int nValue);
+	virtual void ReservedSlot8(int nValue);
+	virtual void ReservedSlot9(int nValue);
+	virtual void ReservedSlot10(int nValue);
+	virtual void ReservedSlot11(int nValue);
+	virtual void ReservedSlot12(int nValue);
+	virtual void SetActionState(int nStateId);
+	void AddInvsTrackedEntity(void* pEntity);
+};
+
+struct InvsChunkActionRecord {
+	int m_nAction;
+	unsigned short m_nSlotId;
+	unsigned short m_nReserved;
 };
 
 extern ManagedEntityPacketStreamView* g_pManagedEntityPacketBindStream;
@@ -172,10 +201,44 @@ int g_nNetworkFrameClockTick = 0;
 // GLOBAL: LEMBALL 0x0049ce10
 int g_nNetworkFrameClockTimeMs = 0;
 
-// STUB: LEMBALL 0x0040a050
+// FUNCTION: LEMBALL 0x0040a050
 int LEMBALL_FASTCALL ServiceInvsChunkObject(void* pObject)
 {
-	(void) pObject;
+	char* pObjectBytes = (char*) pObject;
+	int nStateId;
+
+	RemoveInvsTrackedEntitiesOutsideBounds(pObject);
+	if (*(int*) (pObjectBytes + 0x114) != 0) {
+		nStateId = *(int*) (pObjectBytes + 0xb8);
+		if (*(int*) (pObjectBytes + 0x128) != nStateId && nStateId != 0x1a) {
+			return 1;
+		}
+	}
+
+	if (*(int*) (pObjectBytes + 0xb8) == 0x1a) {
+		if (*(int*) (pObjectBytes + 0x144) == 0) {
+			*(int*) (pObjectBytes + 0x148) = 1;
+		}
+		if (*(void**) (pObjectBytes + 0x5c) != 0) {
+			((InvsChunkObjectActionView*) pObject)->AddInvsTrackedEntity(*(void**) (pObjectBytes + 0x5c));
+			*(void**) (pObjectBytes + 0x5c) = 0;
+		}
+		{
+			InvsChunkActionRecord* pAction;
+			int iAction = 0;
+			if (*(unsigned short*) (pObjectBytes + 0x150) > iAction) {
+				pAction = (InvsChunkActionRecord*) (pObjectBytes + 0x154);
+				do {
+					((LevelSlotActionDispatcherView*) g_pActiveManagedEntityOwner)
+						->DispatchLevelSlotActionByType(pAction->m_nAction, pAction->m_nSlotId, 0, 0);
+					++pAction;
+					++iAction;
+				} while (*(unsigned short*) (pObjectBytes + 0x150) > iAction);
+			}
+		}
+		((InvsChunkObjectActionView*) pObject)->SetActionState(0x15);
+		((InvsChunkObjectActionView*) pObject)->SetManagedEntityStateId(0x18);
+	}
 	return 1;
 }
 
