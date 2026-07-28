@@ -117,6 +117,18 @@ public:
 	int PopHistoryIdThunk(void);
 };
 
+class LevelManagedEntityActiveGroupView {
+public:
+	int HasDirtyChildren(void);
+	int HasDirtyChildrenThunk(void);
+};
+
+// Compatibility body for original 0x00419440; full reconstruction remains pending.
+int LevelManagedEntityActiveGroupView::HasDirtyChildren(void)
+{
+	return 0;
+}
+
 struct LevelLevelTileGridStaticView {
 	char m_abReserved00[0x0c];
 	LevelLevelTileCell* m_pCells0C;
@@ -533,6 +545,11 @@ void LevelTileGridRuntimeView::ComputeLevelTileGridRepeatedColumnCountsThunk(voi
 void LEMBALL_FASTCALL FillReachabilityGridFromTileFlagsThunk(void* pReachabilityHelper)
 {
 	FillReachabilityGridFromTileFlags(pReachabilityHelper);
+}
+// LINKERILT: LEMBALL 0x00403391
+int LevelManagedEntityActiveGroupView::HasDirtyChildrenThunk(void)
+{
+	return HasDirtyChildren();
 }
 // LINKERILT: LEMBALL 0x00403454
 LevelSlnkChunkManager* LevelSlnkChunkManager::ConstructSlnkChunkManagerThunk(void* pLevelMode, int cCapacity)
@@ -1281,6 +1298,12 @@ int EmitLevelGameModeDynamicRenderEntries(void* pObject, void* pOutputEntries)
 	cEntries += EmitSlnkChunkManagerRenderEntries(*(void**) (pLevelMode + 0x1c8), pEntries + cEntries * 0x4c);
 	return cEntries;
 }
+// FUNCTION: LEMBALL 0x00412c50
+int LEMBALL_FASTCALL HasPlasChunkDirtyManagedChildren(void* pObject)
+{
+	return ((LevelManagedEntityActiveGroupView*) *(void**) ((char*) pObject + 0x15c))->HasDirtyChildrenThunk();
+}
+
 // FUNCTION: LEMBALL 0x00412f00
 void* LEMBALL_FASTCALL GetLevelGameModeOwner(void* pLevelMode)
 {
