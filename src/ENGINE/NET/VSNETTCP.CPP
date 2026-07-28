@@ -2132,8 +2132,7 @@ void VsNetInetAddressEntry::CopyAddressEntry(const VsNetInetAddressEntry* pSourc
 {
 	char* pszAddress;
 
-	pszAddress = (char*) inet_ntoa((unsigned long) pSource->m_nAddress);
-	m_nAddress = pSource->m_nAddress;
+	pszAddress = (char*) inet_ntoa((unsigned long) (m_nAddress = pSource->m_nAddress));
 	strcpy(m_szAddress, pszAddress);
 }
 // FUNCTION: LEMBALL 0x00471550
@@ -2262,7 +2261,6 @@ void* AllocateTcpipEffTransportRuntimeOwner(void)
 	}
 	return pStorage;
 }
-// FUNCTION: LEMBALL 0x00471830
 VsNetTcpipSocketChannelStackLayout::VsNetTcpipSocketChannelStackLayout()
 {
 }
