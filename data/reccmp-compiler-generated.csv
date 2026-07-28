@@ -175,7 +175,7 @@ address,name,symbol,type,source
 0x00462BC0,,??_GVsNetRuntimeChannelStack@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462C60,,??_EVsNetRuntimeChannelStack@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462CA0,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462CB0,VsNetRuntimeChannelCore::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETGEN.H
+0x00462CB0,VsNetRuntimeChannelCore::`scalar deleting destructor',,function,src/ENGINE/MEDIA/VSSTRM.H
 0x00462D20,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462D50,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462D80,,??_EVsNetTimedEffStream@@$4PPPPPPPM@HI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
@@ -191,83 +191,81 @@ address,name,symbol,type,source
 0x0046B3B0,GameCursorRenderClientAuto::SetListResourceEntry,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x0046DAF0,StatusPoint2DView::Set,,synthetic,src/ENGINE/GDI/GDISTATUSVT.CPP
 0x0046DB10,GdiPoint2DView::Copy,,synthetic,src/ENGINE/GDI/GDIVT.CPP
-0x00471A80,,??_EVsNetSocketWindowEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471A90,VsNetSocketWindowEffChannel::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETGEN.H
-0x00471AF0,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPONI@AEHXZ,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471B00,,??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471B10,VsNetAllocatedTcpipEffTransportComposite::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETGEN.H
-0x00471B60,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPONI@AEXXZ,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471B70,,?ClearPendingWrite@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471B90,,??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471BD0,,?ClaimRecord@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXXZ,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471BF0,,?CaptureTimedSocketLookup@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471C00,,?SendTimedSocketPayload@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEHPAXH@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471C10,,?SetTimedChannelWord@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEXG@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471C60,,??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471C90,,?ClaimRecord@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@HI@AEPAXXZ,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471CA0,,?DualStreamRet8@VsNetCompositeEffTransportStack@@$4PPPPPPPM@3AEXHPAX@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471CB0,,?HandleAsyncMessage@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471CC0,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471CD0,VsNetTcpipSocketChannelStackLayout::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETGEN.H
-0x00471D50,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471D90,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471DC0,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPPFM@AEHXZ,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471DD0,,??_EVsNetDualSocketWindowEffChannelBundle@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471DE0,VsNetDualSocketWindowEffChannelBundle::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETGEN.H
-0x00471E20,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPPFM@AEXXZ,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471E30,,?ClearPendingWrite@VsNetDualSocketWindowEffChannelBundle@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471E50,,??_EVsNetDualSocketWindowEffChannelBundle@@WCM@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471E60,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPPDI@AEHXZ,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471E70,,??_EVsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471E80,VsNetTimedSocketEffChannelBundleLayout::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETGEN.H
-0x00471EC0,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPPDI@AEXXZ,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471F00,,??_EVsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471F50,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471F60,VsNetTcpipEffTransportComposite::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETGEN.H
-0x00471FB0,,?ClearPendingWrite@VsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00471FD0,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x00472000,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x0047B7D0,VsNetEffStreamRecordSlotTable::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETGEN.H
+0x00471A80,,??_EVsNetSocketWindowEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471A90,VsNetSocketWindowEffChannel::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
+0x00471AF0,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPONI@AEHXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471B00,,??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471B10,VsNetAllocatedTcpipEffTransportComposite::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
+0x00471B60,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPONI@AEXXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471B70,,?ClearPendingWrite@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471B90,,??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471BD0,,?ClaimRecord@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471BF0,,?CaptureTimedSocketLookup@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471C00,,?SendTimedSocketPayload@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEHPAXH@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471C10,,?SetTimedChannelWord@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEXG@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471C60,,??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471C90,,?ClaimRecord@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@HI@AEPAXXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471CA0,,?DualStreamRet8@VsNetCompositeEffTransportStack@@$4PPPPPPPM@3AEXHPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471CB0,,?HandleAsyncMessage@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471CC0,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471CD0,VsNetTcpipSocketChannelStackLayout::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
+0x00471D50,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471D90,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471DC0,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPPFM@AEHXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471DD0,,??_EVsNetDualSocketWindowEffChannelBundle@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471DE0,VsNetDualSocketWindowEffChannelBundle::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
+0x00471E20,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPPFM@AEXXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471E30,,?ClearPendingWrite@VsNetDualSocketWindowEffChannelBundle@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471E50,,??_EVsNetDualSocketWindowEffChannelBundle@@WCM@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471E60,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPPDI@AEHXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471E70,,??_EVsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471E80,VsNetTimedSocketEffChannelBundleLayout::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
+0x00471EC0,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPPDI@AEXXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471F00,,??_EVsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471F50,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471F60,VsNetTcpipEffTransportComposite::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
+0x00471FB0,,?ClearPendingWrite@VsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471FD0,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00472000,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x0047B7D0,VsNetEffStreamRecordSlotTable::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETFIL.CPP
 0x0047B970,DeleteFileBackedEffStreamAuto,,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047B9B0,,?ReleaseFileBackedEffMarker@VsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@A@AEHXZ,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x0047B9C0,,??_EVsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x0047B9D0,,??_GVsNetFileBackedCompositeEffChannelAdapter@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x0047BA50,,?ClearPendingWrite@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@PPPPPOKM@AEXPAX@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x0047BA80,,??_EVsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BAF0,,?CaptureTimedSocketLookup@VsNetTimedFileBackedEffChannel@@WPPPPPOLA@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
+0x0047BAF0,,?CaptureTimedSocketLookup@VsNetTimedFileBackedEffChannel@@WPPPPPOLA@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BB00,,?SendTimedSocketPayload@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@PPPPPOKM@AEHPAXH@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x0047BB10,,??_EVsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x0047BB40,,?ReleaseFileBackedEffMarker@VsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@7AEHXZ,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BB50,,??_EVsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
+0x0047BB50,,??_EVsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BB60,,??_GVsNetGlobalStateFileBackedEffComposite@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BBE0,,?ClearPendingWrite@VsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x0047BC00,,??_EVsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x0047BC30,,?CaptureTimedSocketLookup@VsNetTimedFileBackedEffChannel@@WPPPPPOKM@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
+0x0047BBE0,,?ClearPendingWrite@VsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
+0x0047BC00,,??_EVsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
+0x0047BC30,,?CaptureTimedSocketLookup@VsNetTimedFileBackedEffChannel@@WPPPPPOKM@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BC40,,?SendTimedSocketPayload@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@PPPPPOKI@AEHPAXH@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x0047BC50,,??_EVsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BC80,,?DualStreamRet8@VsNetRuntimeChannelStack@@WDM@AEXHPAX@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x0047BC90,,?FatalFileBackedOperation00@VsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@A@AEXXZ,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x0047BCB0,,??_EVsNetTimedFileBackedEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x0047BCC0,VsNetTimedFileBackedEffChannel::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETGEN.H
-0x0047BD50,,??_EVsNetTimedFileBackedEffChannel@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x0047BD90,,??_EVsNetDualFileBackedEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x0047BDA0,VsNetDualFileBackedEffChannel::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETGEN.H
-0x0047BE00,,?ClearPendingWrite@VsNetDualFileBackedEffChannel@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
+0x0047BC80,,?DualStreamRet8@VsNetRuntimeChannelStack@@WDM@AEXHPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
+0x0047BC90,,?FatalFileBackedOperation00@VsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@A@AEXXZ,synthetic,src/ENGINE/NET/VSNETFIL.CPP
+0x0047BCB0,,??_EVsNetTimedFileBackedEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
+0x0047BCC0,VsNetTimedFileBackedEffChannel::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETFIL.CPP
+0x0047BD50,,??_EVsNetTimedFileBackedEffChannel@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
+0x0047BD90,,??_EVsNetDualFileBackedEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
+0x0047BDA0,VsNetDualFileBackedEffChannel::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETFIL.CPP
+0x0047BE00,,?ClearPendingWrite@VsNetDualFileBackedEffChannel@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BE20,,??_EVsNetDualFileBackedEffChannel@@WCM@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BE40,,??_EVsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
+0x0047BE40,,??_EVsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BE50,,??_GVsNetEmbeddedFileBackedEffChannelStack@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BEC0,,??_EVsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
+0x0047BEC0,,??_EVsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BF00,,??_EVsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BF30,,??_EVsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
+0x0047BF30,,??_EVsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BF40,,??_GVsNetDualSlotTableFileBackedEffComposite@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BFB0,,?ClearPendingWrite@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x0047BFD0,,??_EVsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x0047BFE0,,?ClaimRecord@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEPAXXZ,synthetic,src/ENGINE/NET/VSNETGEN.H
+0x0047BFB0,,?ClearPendingWrite@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
+0x0047BFD0,,??_EVsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
+0x0047BFE0,,?ClaimRecord@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEPAXXZ,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047C000,,??_EVsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047C010,,?DualStreamNoop@VsNetCompositeEffTransportStack@@WDE@AEXXZ,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x0047C020,,?ClaimRecord@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@HI@AEPAXXZ,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x0047C030,,?DualStreamRet8@VsNetCompositeEffTransportStack@@WDE@AEXHPAX@Z,synthetic,src/ENGINE/NET/VSNETGEN.H
-0x0047C040,,?FatalFileBackedOperation00@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEXXZ,synthetic,src/ENGINE/NET/VSNETGEN.H
+0x0047C010,,?DualStreamNoop@VsNetCompositeEffTransportStack@@WDE@AEXXZ,synthetic,src/ENGINE/NET/VSNETFIL.CPP
+0x0047C020,,?ClaimRecord@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@HI@AEPAXXZ,synthetic,src/ENGINE/NET/VSNETFIL.CPP
+0x0047C030,,?DualStreamRet8@VsNetCompositeEffTransportStack@@WDE@AEXHPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
+0x0047C040,,?FatalFileBackedOperation00@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEXXZ,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047CBE0,IsWaveOutEffectBackendAvailableStdcall,,synthetic,src/ENGINE/MEDIA/VSSOUND.CPP
-0x00480214,_longjmp,,synthetic,src/SHELL/PRIMARY.CPP
-0x00480D70,_malloc,,synthetic,src/SHELL/PRIMARY.CPP

@@ -57,6 +57,7 @@ Focused diagnosis, from `build-msvc420`:
 Canonical verification, from repository root:
 
 ```powershell
+.decomp-venv\Scripts\python.exe tools\lint_reccmp_metadata.py
 python tools/build_msvc420.py
 .decomp-venv\Scripts\reccmp-project.exe detect --search-path data
 Push-Location build-msvc420

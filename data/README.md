@@ -10,3 +10,5 @@ These CSV files contain symbol metadata that cannot be represented by a normal s
 Real source implementations should use direct `FUNCTION`, `STUB`, or `LINKERILT` annotations whenever source placement and reccmp ordering permit it. Do not move difficult programmer-written functions into these inventories merely to exclude them from reconstruction progress.
 
 Every CSV is configured under `data-sources` in `reccmp-project.yml`. The optional `source` column documents ownership and is ignored by reccmp 0.1.6.
+
+Run `.decomp-venv\Scripts\python.exe tools\lint_reccmp_metadata.py` before building. It validates inventory type policies, configured files, owner paths, duplicate CSV addresses, duplicate source annotations, and CSV/source collisions.

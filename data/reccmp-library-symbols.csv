@@ -6,6 +6,7 @@ address,name,symbol,type,source
 0x0047FE20,_WinMainCRTStartup,_WinMainCRTStartup,library,external/runtime library
 0x00480010,_strncmp,_strncmp,library,external/runtime library
 0x00480198,__setjmp3,__setjmp3,library,external/runtime library
+0x00480214,_longjmp,_longjmp,library,external/runtime library
 0x00480290,_memcpy,_memcpy,library,external/runtime library
 0x00480420,_fopen,_fopen,library,external/runtime library
 0x00480440,_fclose,_fclose,library,external/runtime library
@@ -14,3 +15,4 @@ address,name,symbol,type,source
 0x00480830,_fwrite,_fwrite,library,external/runtime library
 0x004809F0,_ftell,_ftell,library,external/runtime library
 0x00480BD0,_fseek,_fseek,library,external/runtime library
+0x00480D70,_malloc,_malloc,library,external/runtime library
