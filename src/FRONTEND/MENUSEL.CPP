@@ -2599,26 +2599,26 @@ void GameSelectorProgressOverlayOwner::SetAnchorAndNotifyChild(const VS_XYPair* 
 // FUNCTION: LEMBALL 0x0044eff0
 void* LEMBALL_FASTCALL DeleteSelectorProgressOverlayChildAdjusted(void* pGeometryInterface, int, unsigned int fDelete)
 {
-	void* pChild;
+	char* pChild;
 
-	pChild = (char*) pGeometryInterface - 0x90;
+	pChild = (char*) pGeometryInterface;
 	DestroySelectorProgressOverlayChild(pGeometryInterface);
 	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pChild);
+		FreeVSMemBlock(pChild - 0x90);
 	}
-	return pChild;
+	return pChild - 0x90;
 }
 // FUNCTION: LEMBALL 0x0044f030
 void* LEMBALL_FASTCALL DeleteSelectorProgressOverlayOwnerAdjusted(void* pDeleteInterface, int, unsigned int fDelete)
 {
-	void* pOwner;
+	char* pOwner;
 
-	pOwner = (char*) pDeleteInterface - 0x90;
+	pOwner = (char*) pDeleteInterface;
 	DestroySelectorProgressOverlayOwner(pDeleteInterface);
 	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pOwner);
+		FreeVSMemBlock(pOwner - 0x90);
 	}
-	return pOwner;
+	return pOwner - 0x90;
 }
 // FUNCTION: LEMBALL 0x0044f160
 int LEMBALL_FASTCALL HandleQueuedVariantRangeEntryEvent(GameQueuedVariantRangeEntry* pEntry,
@@ -3379,12 +3379,12 @@ void* GameResourceGeometryChildDeleteView::Delete(unsigned int fDelete)
 {
 	char* pObject;
 
-	pObject = (char*) this - 0x90;
+	pObject = (char*) this;
 	DestroyResourceGeometryChild(this);
 	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pObject);
+		FreeVSMemBlock(pObject - 0x90);
 	}
-	return pObject;
+	return pObject - 0x90;
 }
 // FUNCTION: LEMBALL 0x004698b0
 void* LEMBALL_FASTCALL InitializeTinyPointSinkHelper(void* pObject)
@@ -3398,12 +3398,12 @@ void* GameAlignedZrleChildOverlayDeleteView::Delete(unsigned int fDelete)
 {
 	char* pObject;
 
-	pObject = (char*) this - 0x90;
+	pObject = (char*) this;
 	DestroyAlignedZrleChildOverlay(this);
 	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pObject);
+		FreeVSMemBlock(pObject - 0x90);
 	}
-	return pObject;
+	return pObject - 0x90;
 }
 
 void LEMBALL_FASTCALL update_action_button_field_0x104_from_fields_0x130_xor_0xd0(void* pObject)

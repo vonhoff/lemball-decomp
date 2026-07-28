@@ -38,6 +38,16 @@ THUNK_ILT_REFERENCES = {
     0x00413E70: (0x00403616, "DeleteLevelGameModeAuto", "adjustor target 00413e30"),
     0x00439850: (0x00403521, "DeleteReconstructedLevelScreenAuto", "adjustor target 00439490"),
     0x004472E0: (0x00401E1F, "DeleteBaseModeObjectAuto", "adjustor target 004472b0"),
+    0x0044EFF0: (
+        0x00401181,
+        "DestroySelectorProgressOverlayChild",
+        "deleting wrapper target 0044e8c0",
+    ),
+    0x0044F030: (
+        0x00402AAE,
+        "DestroySelectorProgressOverlayOwner",
+        "deleting wrapper target 0044ed20",
+    ),
     0x004491A0: (0x0040386E, "DeleteOptionsScreen", "adjustor target 00449170"),
     0x0044AA00: (0x00401BE5, "DeleteLevelSelectionModeThunk", "adjustor target 0044a9d0"),
     0x0044AA10: (0x004019B0, "DeleteLevelSelectionScreenAuto", "adjustor target 0044a940"),
