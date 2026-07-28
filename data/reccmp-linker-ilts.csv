@@ -12,10 +12,12 @@ address,name,symbol,type,source
 0x004011A9,GetManagedEntityGroupCount,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004011DB,DestroyDoorChunkObjectAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00401212,DestroyTramChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
+0x0040126C,LevelChunkStreamWriteView::AppendLevelChunkStreamPayload,?AppendLevelChunkStreamPayload@LevelChunkStreamWriteView@@QAEXPAUVsNetEffStreamBase@@@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x00401271,DestroyLevelGameModeAutoThunk,,stub,src/GAME.CPP
 0x0040132A,GameScreenObject::ConstructMainMenuScreen,,stub,src/GAME.H
 0x004013DE,ActivateTramChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401406,DestroyMenuSelectorManagerAutoThunk,,stub,src/FRONTEND/MENUSEL.CPP
+0x00401433,LevelChunkStreamWriteView::FlushLevelChunkStreamWrite,?FlushLevelChunkStreamWrite@LevelChunkStreamWriteView@@QAEXXZ,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x0040143D,DestroyPaintballSequenceScreenAutoThunk,,stub,src/FRONTEND/MAINMENU.CPP
 0x004014CE,UpdateMenuSelectorAnimationThunk,,stub,src/FRONTEND/MENUSEL.H
 0x004014F1,DestroyLevelChunkStreamDispatcherAutoThunk,,stub,src/LEVEL/LEVELRUN.CPP
@@ -38,6 +40,7 @@ address,name,symbol,type,source
 0x00401956,EmitCollChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004019C4,WriteEffStreamU32Field2C,,stub,src/ENGINE/MEDIA/EFFSTRM.H
 0x00401ADC,HandleMenuSelectorEventThunk,,stub,src/FRONTEND/MENUSEL.H
+0x00401B31,DoorChunkObjectActionView::RequestDoorChunkObjectTriggerTransition,?RequestDoorChunkObjectTriggerTransition@DoorChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFDOORACTION.CPP
 0x00401B95,ResetAllInvsChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401BC2,DeleteMenuSelectorEntryThunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401BEA,ResetProjectilePool,,stub,src/ENGINE/CORE/LINKSCF.H
@@ -54,6 +57,7 @@ address,name,symbol,type,source
 0x00401E9C,DispatchDoorChildArrayVirtual104,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401F28,HandleMenuSelectorEntryEventThunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401F2D,RefreshActiveRockChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
+0x00401F3C,ManagedEntityStateView::RequestManagedEntityStateId,?RequestManagedEntityStateId@ManagedEntityStateView@@QAEXH@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x00401FAF,CountNestedIteratedChildEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401FBE,ActivateRockChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401FE1,DestroyLiftChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
@@ -82,7 +86,9 @@ address,name,symbol,type,source
 0x0040253B,RefreshActivePgunChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402559,ActivateIceChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040258B,AdvanceCachedGroupManagedEntityChildIterator,,stub,src/ENGINE/CORE/LINKSCF.H
+0x004025EA,IceChunkObjectActionView::RequestIceChunkObjectToggleActivation,?RequestIceChunkObjectToggleActivation@IceChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFICEACTION.CPP
 0x004025FE,DestroyCountedChildTableStreamAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
+0x00402658,MarkNetworkLobbySelectedPeerDisconnected,?MarkNetworkLobbySelectedPeerDisconnected@@YIXPAX@Z,stub,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x00402676,DestroyCollChunkObjectAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x0040268A,FindManagedEntityByPointer,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004026CB,AppendManagedEntityGroupFromIds,,stub,src/ENGINE/CORE/LINKSCF.H
@@ -138,6 +144,7 @@ address,name,symbol,type,source
 0x004032AB,set_move_chunk_object_trigger_latch,?set_move_chunk_object_trigger_latch@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004032C4,ActivateCollChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004032D3,InitializeLiftChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
+0x004032DD,ManagedEntityPacketStreamView::BindManagedEntityPacketTarget,?BindManagedEntityPacketTarget@ManagedEntityPacketStreamView@@QAEXPAX@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x0040333C,AdvanceInvsChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040336E,LevelManagedEntityMoveCommandView::CopyFirstMoveCommandPositionOrCurrent,?CopyFirstMoveCommandPositionOrCurrent@LevelManagedEntityMoveCommandView@@QAEPAULevelThreeDwordPoint@@PAU2@@Z,stub,src/LEVEL/LEVELVTMOVE.CPP
 0x00403404,EmitMineChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
