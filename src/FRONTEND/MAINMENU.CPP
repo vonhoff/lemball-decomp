@@ -5785,3 +5785,14 @@ void LEMBALL_FASTCALL ForwardUpdateNamedStatusEntry(void* pEntry, void* pUnusedE
 	(void) pUnusedEdx;
 	((void(PASCAL*)(unsigned int)) UpdateNamedStatusEntry)(nValue);
 }
+
+void LEMBALL_FASTCALL DrawPasswordEntryInputPanelThunk(void* pObject)
+{
+	DrawPasswordEntryInputArea(pObject);
+}
+
+void LEMBALL_FASTCALL DrawPasswordEntryScreenContents(void* pObject)
+{
+	DrawPasswordEntryInputPanelThunk(pObject);
+	draw_entered_password_text(pObject);
+}

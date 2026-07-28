@@ -171,6 +171,8 @@
 // DestroyNetworkLobbyScreenAutoThunk
 // LINKERILT: LEMBALL 0x00401da2
 // DestroyOptionsScreenAutoThunk
+// LINKERILT: LEMBALL 0x00402dab
+// DrawPasswordEntryInputPanelThunk
 // LINKERILT: LEMBALL 0x00403463
 // DestroyLevelSelectionScreenAutoThunk
 // LINKERILT: LEMBALL 0x00403530
@@ -191,6 +193,8 @@
 // DestroyPaintballSequenceScreenAuto
 // STUB: LEMBALL 0x004515c0
 // DestroyPasswordEntryScreenAuto
+// FUNCTION: LEMBALL 0x00451610
+// DrawPasswordEntryScreenContents
 // STUB: LEMBALL 0x004535c0
 // DestroyNetworkLobbyScreenAuto
 // SYNTHETIC: LEMBALL 0x00449170
