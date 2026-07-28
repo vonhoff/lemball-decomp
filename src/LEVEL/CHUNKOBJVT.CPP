@@ -25,6 +25,10 @@ struct ManagedEntityPacketStreamView {
 	void BindManagedEntityPacketTarget(void* pEntity);
 };
 
+struct ManagedEntityStateView {
+	void RequestManagedEntityStateId(int nStateId);
+};
+
 extern ManagedEntityPacketStreamView* g_pManagedEntityPacketBindStream;
 
 #define DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, objectSize, destroyProc)                                 \
@@ -258,22 +262,28 @@ int LEMBALL_FASTCALL AdvanceGmobChunkType14StateMachine(void* pObject)
 	return 1;
 }
 
-// STUB: LEMBALL 0x0041d280
+// FUNCTION: LEMBALL 0x0041d280
 int LEMBALL_FASTCALL ActivateGmobChunkType14Variant(void* pObject, void* pUnused, void* pEntity)
 {
-	typedef void(PASCAL * SetStateProc)(int);
 	char* pObjectBytes = (char*) pObject;
-	unsigned short nVariant = *(unsigned short*) (pObjectBytes + 0xbc);
+	unsigned int nVariant = *(unsigned short*) (pObjectBytes + 0xbc);
 
 	(void) pUnused;
 	(void) pEntity;
-	if (nVariant > 1) {
+	switch (nVariant) {
+	case 0:
+		*(int*) (pObjectBytes + 0xd4) = 0x14;
+		*(unsigned short*) (pObjectBytes + 0xbc) = 1;
+		((ManagedEntityStateView*) pObject)->RequestManagedEntityStateId(0x1a);
+		return 1;
+	case 1:
+		*(int*) (pObjectBytes + 0xd4) = 0x14;
+		*(unsigned short*) (pObjectBytes + 0xbc) = 0;
+		((ManagedEntityStateView*) pObject)->RequestManagedEntityStateId(0x1a);
+		return 1;
+	default:
 		return 1;
 	}
-	*(int*) (pObjectBytes + 0xd4) = 0x14;
-	*(unsigned short*) (pObjectBytes + 0xbc) = nVariant == 0 ? 1 : 0;
-	((SetStateProc) (*(void***) pObject)[2])(0x1a);
-	return 1;
 }
 
 // FUNCTION: LEMBALL 0x0041d320
