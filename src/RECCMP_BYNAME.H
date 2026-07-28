@@ -6,6 +6,8 @@
 // src/ENGINE/CORE/LINKSCF.CPP
 // FUNCTION: LEMBALL 0x00409ce0
 // ResetInvsChunkObjectState
+// FUNCTION: LEMBALL 0x0042cab0
+// ResetIceChunkObjectRuntimeState
 // LINKERILT: LEMBALL 0x0040153c
 // LevelChunkObjectBaseView::InitializeLevelChunkObjectBase
 // SYNTHETIC: LEMBALL 0x0040ebe0
@@ -393,6 +395,8 @@
 // src/LEVEL/LEVELVT.CPP
 // FUNCTION: LEMBALL 0x0040a860
 // noop_vtable_callback_0040a860
+// FUNCTION: LEMBALL 0x0042e600
+// ResetMoveChunkObjectRuntimeState
 // SYNTHETIC: LEMBALL 0x0041c330
 // DeleteCountedChildTableStreamAuto
 // SYNTHETIC: LEMBALL 0x00422f70

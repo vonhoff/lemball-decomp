@@ -1847,3 +1847,18 @@ void LEMBALL_FASTCALL ResetInvsChunkObjectState(void* pObject)
 	*(int*) (pObjectBytes + 0x5c) = 0;
 	*(int*) (pObjectBytes + 0x14c) = 0;
 }
+
+void LEMBALL_FASTCALL ResetIceChunkObjectRuntimeState(void* pObject)
+{
+	char* pObjectBytes;
+	int nFrameClockTick;
+
+	pObjectBytes = (char*) pObject;
+	*(int*) (pObjectBytes + 0x94) = 0;
+	*(int*) (pObjectBytes + 0x138) = 0;
+	*(int*) (pObjectBytes + 0x13c) = 0;
+	*(int*) (pObjectBytes + 0x150) = 0;
+	nFrameClockTick = g_nLevelFrameClockTick;
+	*(int*) (pObjectBytes + 0xb8) = 0x18;
+	*(int*) (pObjectBytes + 0xc8) = nFrameClockTick;
+}

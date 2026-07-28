@@ -2419,3 +2419,18 @@ DEFINE_LEVELVT_SIMPLE_VTABLE_DELETE(DeleteSimpleVtableObject408010)
 void noop_vtable_callback_0040a860(void)
 {
 }
+
+void LEMBALL_FASTCALL ResetMoveChunkObjectRuntimeState(void* pObject)
+{
+	char* pObjectBytes;
+
+	pObjectBytes = (char*) pObject;
+	*(int*) (pObjectBytes + 0x94) = 0;
+	*(int*) (pObjectBytes + 0x138) = 0;
+	*(int*) (pObjectBytes + 0x13c) = 0;
+	*(int*) (pObjectBytes + 0x144) = 0;
+	*(int*) (pObjectBytes + 0x148) = 0;
+	*(int*) (pObjectBytes + 0x174) = 0;
+	*(int*) (pObjectBytes + 0x140) = 1;
+	*(int*) (pObjectBytes + 0xb8) = 0x18;
+}
