@@ -297,6 +297,7 @@ typedef VsNetRuntimeChannelCore VsNetTcpipRuntimeChannelFacet;
 struct VsNetDualSocketWindowEffChannelBundle :
 	virtual VsNetDualHandleEffStream,
 	virtual VsNetSocketWindowEffChannel {
+	static void operator delete(void* pObject) { FreeVSMemBlock(pObject); }
 	virtual void ClearPendingWrite(void* pArgument);
 };
 
