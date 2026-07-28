@@ -3091,7 +3091,7 @@ void GameLevelProgressState::Advance(void)
 		m_anUnlockedPackCaps[nPack] = m_nCurrentLevel;
 	}
 	m_anSnapshotPackCaps[m_nCurrentPack] = m_nCurrentLevel;
-	IsCurrentLevelAvailable();
+	IsCurrentLevelProgressAvailableThunk(this);
 }
 // FUNCTION: LEMBALL 0x00408e40
 bool GameLevelProgressState::Retreat(void)
