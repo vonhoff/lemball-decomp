@@ -1507,7 +1507,7 @@ void LoadLevelFlagChunk(void* pLevelMode, const unsigned short* pWords)
 	}
 }
 extern int g_nLevelFrameClockTick;
-extern void* g_pLevelTileReachabilityHelper;
+extern void* g_pManagedEntityReachabilityHelper;
 
 // FUNCTION: LEMBALL 0x00416590
 void LEMBALL_FASTCALL clear_managed_entity_child_pending_state_if_interruptible(void* pEntity)
@@ -1527,7 +1527,7 @@ void LEMBALL_FASTCALL clear_managed_entity_child_pending_state_if_interruptible(
 	}
 	*(unsigned short*) *(void**) (pBytes + 0x70) = 0;
 	if (*(void**) (pBytes + 0x0c) != 0) {
-		*(int*) ((char*) g_pLevelTileReachabilityHelper + 8) = 0;
+		*(int*) ((char*) g_pManagedEntityReachabilityHelper + 8) = 0;
 	}
 	*(void**) (pBytes + 8) = 0;
 }

@@ -18,6 +18,9 @@ struct LevelManagedEntityBoundsView {
 	int m_nPositionZA4;
 };
 
+// GLOBAL: LEMBALL 0x0049cf58
+void* g_pManagedEntityReachabilityHelper = NULL;
+
 // Split from LEVELRUN.CPP to preserve compiler state in the original translation unit.
 
 // FUNCTION: LEMBALL 0x004167c0
