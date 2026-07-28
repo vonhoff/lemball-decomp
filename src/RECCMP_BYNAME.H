@@ -397,6 +397,10 @@
 // noop_vtable_callback_0040a860
 // FUNCTION: LEMBALL 0x004151b0
 // ClearLevelChunkObjectStateFields
+// LINKERILT: LEMBALL 0x0040243c
+// LevelChunkObjectRuntimeStateView::ClearStateFieldsThunk
+// FUNCTION: LEMBALL 0x004150d0
+// LevelChunkObjectRuntimeStateView::ResetRuntimeState
 // FUNCTION: LEMBALL 0x0042e600
 // ResetMoveChunkObjectRuntimeState
 // SYNTHETIC: LEMBALL 0x0041c330

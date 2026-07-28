@@ -2471,3 +2471,47 @@ void LEMBALL_FASTCALL ClearLevelChunkObjectStateFields(void* pObject)
 	*(int*) (pObjectBytes + 0x98) = 0;
 	*(int*) (pObjectBytes + 0x10) = 0;
 }
+
+struct LevelChunkObjectRuntimeStateView {
+	void ClearStateFieldsThunk(void);
+	void ResetRuntimeState(void);
+};
+
+void LevelChunkObjectRuntimeStateView::ClearStateFieldsThunk(void)
+{
+	ClearLevelChunkObjectStateFields(this);
+}
+
+void LevelChunkObjectRuntimeStateView::ResetRuntimeState(void)
+{
+	char* pObjectBytes;
+	unsigned short* pPendingEntryCount;
+	int nObjectType;
+
+	*(int*) ((char*) this + 0x9c) = *(int*) ((char*) this + 0x40);
+	*(int*) ((char*) this + 0xa4) = *(int*) ((char*) this + 0x48);
+	pObjectBytes = (char*) this;
+	*(int*) (pObjectBytes + 0xe4) = 0;
+	*(int*) (pObjectBytes + 0xa0) = *(int*) (pObjectBytes + 0x44);
+	*(int*) (pObjectBytes + 0xe8) = 0;
+	*(int*) (pObjectBytes + 0xec) = 0;
+	ClearStateFieldsThunk();
+	*(int*) (pObjectBytes + 0xa4) = 0;
+	*(unsigned short*) (pObjectBytes + 0x120) = 0xffff;
+	*(int*) (pObjectBytes + 0x110) = 0xffff;
+	*(int*) (pObjectBytes + 0xa0) = 0;
+	*(int*) (pObjectBytes + 0x9c) = 0;
+	pPendingEntryCount = *(unsigned short**) (pObjectBytes + 0x70);
+	if (pPendingEntryCount != 0) {
+		*pPendingEntryCount = 0;
+	}
+	nObjectType = *(int*) (pObjectBytes + 0x64);
+	switch (nObjectType) {
+	case 1:
+		*(unsigned short*) (pObjectBytes + 4) = 0x200;
+		break;
+	case 2:
+		*(unsigned short*) (pObjectBytes + 4) = 0x100;
+		break;
+	}
+}
