@@ -1833,3 +1833,17 @@ void* LevelChunkObjectBaseView::InitializeLevelChunkObjectBase(int nType,
 	(void) nFlags;
 	return this;
 }
+
+void LEMBALL_FASTCALL ResetInvsChunkObjectState(void* pObject)
+{
+	char* pObjectBytes;
+
+	pObjectBytes = (char*) pObject;
+	*(int*) (pObjectBytes + 0xb8) = 0x18;
+	*(unsigned short*) (pObjectBytes + 0x150) = 0;
+	*(int*) (pObjectBytes + 0x148) = 0;
+	*(int*) (pObjectBytes + 0x254) = 0;
+	*(int*) (pObjectBytes + 0x144) = 0;
+	*(int*) (pObjectBytes + 0x5c) = 0;
+	*(int*) (pObjectBytes + 0x14c) = 0;
+}

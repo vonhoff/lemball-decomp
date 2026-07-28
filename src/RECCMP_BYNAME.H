@@ -4,6 +4,8 @@
 // By-name annotations belong in headers. Sections retain source ownership.
 
 // src/ENGINE/CORE/LINKSCF.CPP
+// FUNCTION: LEMBALL 0x00409ce0
+// ResetInvsChunkObjectState
 // LINKERILT: LEMBALL 0x0040153c
 // LevelChunkObjectBaseView::InitializeLevelChunkObjectBase
 // SYNTHETIC: LEMBALL 0x0040ebe0
