@@ -79,7 +79,7 @@ struct CFileNetworkAddress {};
 
 extern "C" BOOL WINAPI WaitMessage(void);
 extern "C" BOOL WINAPI KillTimer(HWND hWnd, unsigned int uIDEvent);
-extern "C" unsigned int WINAPI SetTimer(HWND hWnd, unsigned int uIDEvent, UINT uElapse, void* lpTimerFunc);
+extern "C" __declspec(dllimport) unsigned int WINAPI SetTimer(HWND hWnd, unsigned int uIDEvent, UINT uElapse, void* lpTimerFunc);
 extern "C" int WINAPI WSAStartup(unsigned short nVersion, void* pData);
 extern "C" int WINAPI WSAGetLastError(void);
 extern "C" int WINAPI WSACleanup(void);
