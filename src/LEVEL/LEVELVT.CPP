@@ -354,6 +354,19 @@ void __fastcall deactivate_projectile_object(void* pObject);
 void* __fastcall get_next_projectile_pool_object(void* pPool);
 void __fastcall update_projectile_pool_real(void* pPool);
 
+struct LevelShortRect {
+	short m_nX;
+	short m_nY;
+	short m_nWidth;
+	short m_nHeight;
+};
+
+struct LevelProjectilePosition {
+	int m_nX;
+	int m_nY;
+	int m_nZ;
+};
+
 struct ProjectilePool {
 	char m_abReserved00[0x34];
 	void* m_apObjects[20];
@@ -362,6 +375,7 @@ struct ProjectilePool {
 	int m_nIndexD8;
 
 	void RemoveObject(void* pObject);
+	int FindProjectilePositionInRect(const LevelShortRect* pRect, LevelProjectilePosition* pPosition);
 };
 
 struct ProjectileObjectProxy {
@@ -1482,6 +1496,43 @@ int LEMBALL_FASTCALL EmitProjectilePoolRenderEntries(void* pPool, void* pUnused,
 		pObject = get_next_projectile_pool_object(pOwner);
 	}
 	return cEntries;
+}
+
+// FUNCTION: LEMBALL 0x00418120
+int ProjectilePool::FindProjectilePositionInRect(const LevelShortRect* pRect, LevelProjectilePosition* pPosition)
+{
+	ProjectileObjectProxy* pProjectile;
+	volatile int nProjectileX;
+	volatile int nProjectileY;
+	int nProjectileRight;
+	int nProjectileBottom;
+	int nRight;
+	int nBottom;
+	short nHeight;
+	short nWidth;
+
+	nWidth = pRect->m_nWidth;
+	nRight = pRect->m_nX + nWidth;
+	nHeight = pRect->m_nHeight;
+	nBottom = pRect->m_nY + nHeight;
+	pProjectile = (ProjectileObjectProxy*) get_first_projectile_pool_object(this);
+	while (pProjectile != NULL) {
+		nProjectileX = *(int*) ((char*) pProjectile + 0x9c) >> 12;
+		nProjectileY = *(int*) ((char*) pProjectile + 0xa0) >> 12;
+		nProjectileRight = nProjectileX + 8;
+		nProjectileBottom = nProjectileY + 8;
+		nProjectileX -= 8;
+		nProjectileY -= 8;
+		if (!(nRight <= nProjectileX) && nProjectileRight > nWidth && !(nBottom <= nProjectileY) &&
+			nProjectileBottom > nHeight) {
+			pPosition->m_nX = *(int*) ((char*) pProjectile + 0x9c);
+			pPosition->m_nY = *(int*) ((char*) pProjectile + 0xa0);
+			pPosition->m_nZ = *(int*) ((char*) pProjectile + 0xa4);
+			return 1;
+		}
+		pProjectile = (ProjectileObjectProxy*) get_next_projectile_pool_object(this);
+	}
+	return 0;
 }
 
 // FUNCTION: LEMBALL 0x004185d0
