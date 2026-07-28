@@ -154,12 +154,12 @@ public:
 
 class VsNetInetAddressEntry {
 public:
-	const char* GetAddressString(void);
-	void SetAddressMode(int nMode);
-	void StoreAddressString(const char* pszAddress);
-	void CopyAddressEntry(const VsNetInetAddressEntry* pSource);
-	int IsAddressLessOrEqual(const VsNetInetAddressEntry* pSource);
-	int IsAddressGreaterOrEqual(const VsNetInetAddressEntry* pSource);
+	virtual const char* GetAddressString(void);
+	virtual void SetAddressMode(int nMode);
+	virtual void StoreAddressString(const char* pszAddress);
+	virtual void CopyAddressEntry(const VsNetInetAddressEntry* pSource);
+	virtual int IsAddressLessOrEqual(const VsNetInetAddressEntry* pSource);
+	virtual int IsAddressGreaterOrEqual(const VsNetInetAddressEntry* pSource);
 	char m_szAddress[16];
 	int m_nAddress;
 };
