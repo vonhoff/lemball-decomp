@@ -9,7 +9,7 @@ extern void* g_pNetworkLobbyVsnetRuntime;
 extern void LEMBALL_FASTCALL MarkNetworkLobbySelectedPeerDisconnected(void* pVsnetRuntime);
 
 struct VsNetSimpleEffTransportRecordSlotTable {
-	unsigned char GetNextEffTransportRecordClaimFlag(unsigned int nSequence);
+	int GetNextEffTransportRecordClaimFlag(unsigned short nSequence);
 };
 
 struct VsNetEffStreamBase {
@@ -105,26 +105,22 @@ void LevelChunkStreamWriteView::FlushLevelChunkStreamWrite(void)
 {
 	typedef void(LEMBALL_FASTCALL * ServiceRuntimeProc)(void*);
 	LevelChunkStreamWriteView* pTarget = this;
-	char* pPeer;
 	char* pRecordOwner;
-	int nPeerTableOffset;
 	unsigned long dwStart;
 
 	if (pTarget->m_cWriteSessions <= 0 || pTarget->m_fWritePending != 0 || g_nSelectedNetworkLobbyPeerId == 0) {
 		return;
 	}
 	((VsNetEffStreamBase*) pTarget)->WriteEffStreamU16BE(0x2f);
-	pPeer = (char*) (unsigned long) g_nSelectedNetworkLobbyPeerId;
-	nPeerTableOffset = *(int*) (*(int*) (pPeer + 4) + 8);
-	pRecordOwner = pPeer + nPeerTableOffset + 4;
+	pRecordOwner = (char*) (unsigned long) g_nSelectedNetworkLobbyPeerId +
+				   *(int*) (*(int*) ((char*) (unsigned long) g_nSelectedNetworkLobbyPeerId + 4) + 8) + 4;
 	if (*(int*) (pRecordOwner + 0x5c) != -1 ||
 		((VsNetSimpleEffTransportRecordSlotTable*) *(void**) (pRecordOwner + 0x4c))
 				->GetNextEffTransportRecordClaimFlag(*(unsigned short*) (pRecordOwner + 0x30)) == 0) {
 		dwStart = timeGetTime();
 		do {
-			pPeer = (char*) (unsigned long) g_nSelectedNetworkLobbyPeerId;
-			nPeerTableOffset = *(int*) (*(int*) (pPeer + 4) + 8);
-			pRecordOwner = pPeer + nPeerTableOffset + 4;
+			pRecordOwner = (char*) (unsigned long) g_nSelectedNetworkLobbyPeerId +
+						   *(int*) (*(int*) ((char*) (unsigned long) g_nSelectedNetworkLobbyPeerId + 4) + 8) + 4;
 			if (*(int*) (pRecordOwner + 0x5c) == -1 &&
 				((VsNetSimpleEffTransportRecordSlotTable*) *(void**) (pRecordOwner + 0x4c))
 						->GetNextEffTransportRecordClaimFlag(*(unsigned short*) (pRecordOwner + 0x30)) != 0) {
@@ -137,9 +133,8 @@ void LevelChunkStreamWriteView::FlushLevelChunkStreamWrite(void)
 		} while (1);
 	}
 
-	pPeer = (char*) (unsigned long) g_nSelectedNetworkLobbyPeerId;
-	nPeerTableOffset = *(int*) (*(int*) (pPeer + 4) + 8);
-	pRecordOwner = pPeer + nPeerTableOffset + 4;
+	pRecordOwner = (char*) (unsigned long) g_nSelectedNetworkLobbyPeerId +
+				   *(int*) (*(int*) ((char*) (unsigned long) g_nSelectedNetworkLobbyPeerId + 4) + 8) + 4;
 	if (*(int*) (pRecordOwner + 0x5c) == -1 &&
 		((VsNetSimpleEffTransportRecordSlotTable*) *(void**) (pRecordOwner + 0x4c))
 				->GetNextEffTransportRecordClaimFlag(*(unsigned short*) (pRecordOwner + 0x30)) != 0) {

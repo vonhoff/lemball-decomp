@@ -79,7 +79,10 @@ struct CFileNetworkAddress {};
 
 extern "C" BOOL WINAPI WaitMessage(void);
 extern "C" BOOL WINAPI KillTimer(HWND hWnd, unsigned int uIDEvent);
-extern "C" __declspec(dllimport) unsigned int WINAPI SetTimer(HWND hWnd, unsigned int uIDEvent, UINT uElapse, void* lpTimerFunc);
+extern "C" __declspec(dllimport) unsigned int WINAPI SetTimer(HWND hWnd,
+															  unsigned int uIDEvent,
+															  UINT uElapse,
+															  void* lpTimerFunc);
 extern "C" int WINAPI WSAStartup(unsigned short nVersion, void* pData);
 extern "C" int WINAPI WSAGetLastError(void);
 extern "C" int WINAPI WSACleanup(void);
@@ -606,7 +609,7 @@ struct VsNetSimpleEffTransportRecordSlotTable {
 	void* ConstructSimpleEffTransportRecordSlotTable(int cRecords, unsigned int cbRecord);
 	void* ConstructSimpleRecordSlotTableWrapper(int cRecords, unsigned int cbRecord);
 	void CopyPayloadIntoSimpleRecordSlot(int nIndex, const void* pvSource, unsigned int cbSource, void* pPayload);
-	unsigned char GetNextEffTransportRecordClaimFlag(unsigned int nSequence);
+	int GetNextEffTransportRecordClaimFlag(unsigned short nSequence);
 	void* ClaimSimpleRecordSlotForPacketId(unsigned int nPacketId,
 										   const void* pvSource,
 										   unsigned int cbSource,
@@ -2842,7 +2845,7 @@ void* VsNetSimpleEffTransportRecordSlotTable::ClaimSimpleRecordSlotForPacketId(u
 }
 
 // FUNCTION: LEMBALL 0x004619d0
-unsigned char VsNetSimpleEffTransportRecordSlotTable::GetNextEffTransportRecordClaimFlag(unsigned int nSequence)
+int VsNetSimpleEffTransportRecordSlotTable::GetNextEffTransportRecordClaimFlag(unsigned short nSequence)
 
 {
 	int nIndex;
