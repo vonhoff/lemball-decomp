@@ -290,8 +290,6 @@ struct LinkScfBoonChunkManagerView {
 // ActivateLiftChunkObjects
 // STUB: LEMBALL 0x00425df0
 // EmitLiftChunkManagerRenderEntries
-// STUB: LEMBALL 0x00426b20
-// ActivateRockChunkObjects
 // STUB: LEMBALL 0x00427010
 // RefreshActiveRockChunkObjects
 // STUB: LEMBALL 0x00427050

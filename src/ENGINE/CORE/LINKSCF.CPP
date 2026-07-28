@@ -156,6 +156,10 @@ int LEMBALL_FASTCALL GetManagedEntityGroupCount(void* pObject);
 		return 0;                                                                                                      \
 	}
 
+typedef void(LEMBALL_FASTCALL* ActivateChunkObjectProc)(void* pObject);
+
+void LEMBALL_FASTCALL ActivateRockChunkObjects(void* pManager);
+
 DEFINE_LINKSCF_VTABLE_STUB_0(ResetAllInvsChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(AdvanceInvsChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(DispatchDoorChildArrayVirtual104)
@@ -188,7 +192,6 @@ DEFINE_LINKSCF_VTABLE_STUB_1(EmitMineChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(InitializeLiftChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(ActivateLiftChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitLiftChunkManagerRenderEntries)
-DEFINE_LINKSCF_VTABLE_STUB_0(ActivateRockChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveRockChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitRockChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(ActivateCaptureTriggerChunkObjects)
@@ -1313,6 +1316,29 @@ LinkScfRockChunkManagerView* LinkScfRockChunkManagerView::ConstructRockChunkMana
 	*(int*) ((char*) this + 0x30) = nCapacity;
 	*(int*) ((char*) this + 0x38) = 0;
 	return this;
+}
+
+// FUNCTION: LEMBALL 0x00426b20
+void LEMBALL_FASTCALL ActivateRockChunkObjects(void* pManager)
+{
+	char* pManagerBytes;
+	void* pChunkObject;
+	int i;
+	int nOffset;
+
+	pManagerBytes = (char*) pManager;
+	nOffset = 0;
+	if (*(char**) (pManagerBytes + 0x38) != 0) {
+		if (*(int*) (pManagerBytes + 0x30) > 0) {
+			i = 0;
+			do {
+				pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
+				++i;
+				nOffset += 0x144;
+				((ActivateChunkObjectProc) (*(void***) pChunkObject)[65])(pChunkObject);
+			} while (*(int*) (pManagerBytes + 0x30) > i);
+		}
+	}
 }
 
 // GLOBAL: LEMBALL 0x00496198
