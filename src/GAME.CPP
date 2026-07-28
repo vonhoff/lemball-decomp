@@ -529,7 +529,7 @@ extern void* ConstructMainGameVariantResourceBundle(void* pBundle, void* pPrimar
 extern void InitializeManagedEntitySlotTablesEntryThunk(void* pLevelGameMode);
 extern unsigned short g_GAME_ManagedEntityRegistryCount;
 extern void ResetLevelFrameClockEntryThunk(void);
-extern void* ConstructLevelGameStateStreamThunk(void* pObject);
+extern void* LEMBALL_FASTCALL ConstructLevelGameStateStreamThunk(void* pObject);
 extern void* LEMBALL_FASTCALL ConstructLevelTileGridThunk(void* pObject);
 extern void InitializeLevelTileGridThunk(void* pTileGrid);
 struct LevelTileReachabilityHelper {

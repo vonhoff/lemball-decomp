@@ -44,8 +44,10 @@ int __cdecl CompareLevelTileGridStaticRenderEntrySortKeys(const void* pLeft, con
 void ResetRegisteredLevelChunkStreamsThunk(void* pDispatcher);
 void RegisterLevelChunkStreamThunk(void* pDispatcher, void* pStreamObject);
 void* LEMBALL_FASTCALL ReturnArgumentVtableCallback(void* pObject);
-void* ConstructLevelGameStateStreamThunk(void* pObject);
+void* LEMBALL_FASTCALL ConstructLevelGameStateStreamThunk(void* pObject);
 void LEMBALL_FASTCALL LoadLevelGameStateStreamPayload(void* pObject);
+void LEMBALL_FASTCALL WriteLevelGameStateStreamPayload(void* pObject);
+void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapperAuto(void* pObject, void*, BYTE fDelete);
 void AssignNetworkPlayerManagedEntitySlotIdsThunk(int nLevelMode);
 void InitializeLevelChunkTypeEnabledFlagsThunk(void* pLevelMode);
 void* LEMBALL_FASTCALL GetLevelGameModeOwner(void* pLevelMode);
@@ -251,13 +253,14 @@ static void* g_GAME_NetworkLevelChunkDeltaStreamVtable[6] = {
 	(void*) WriteNetworkLevelChunkDeltaStreamThunk,
 	(void*) DeleteNetworkLevelChunkDeltaStreamThunk,
 };
+// GLOBAL: LEMBALL 0x00493a00
 static void* g_GAME_LevelGameStateStreamVtable[6] = {
 	(void*) ReturnTrueVtableCallbackThunk,
 	(void*) ReturnTrueVtableCallbackSecondaryThunk,
 	(void*) LoadLevelGameStateStreamPayload,
 	(void*) NoopVtableCallbackThunk,
-	(void*) NoopVtableCallbackThunk,
-	(void*) NoopVtableCallbackThunk,
+	(void*) WriteLevelGameStateStreamPayload,
+	(void*) DeleteEffStreamBaseWrapperAuto,
 };
 static void* g_pLevelGameStateStreamVtable = g_GAME_LevelGameStateStreamVtable;
 
@@ -1132,7 +1135,7 @@ void LoadAnimChunkRecords(void* pTimerBlock, const unsigned short* pWords)
 	}
 }
 // FUNCTION: LEMBALL 0x00410b80
-void* ConstructLevelGameStateStreamThunk(void* pObject)
+void* LEMBALL_FASTCALL ConstructLevelGameStateStreamThunk(void* pObject)
 {
 	int* pStream;
 
@@ -1140,10 +1143,19 @@ void* ConstructLevelGameStateStreamThunk(void* pObject)
 	*(void**) pStream = g_GAME_EffStreamConstructionVtable;
 	pStream[1] = 10;
 	((GameEffStream*) pStream)->ResetStateFields();
-	*(void**) pStream = g_pLevelGameStateStreamVtable;
+	*(void**) pStream = g_GAME_LevelGameStateStreamVtable;
 	pStream[6] += 0x10;
 	pStream[9] = 1;
 	return pObject;
+}
+// FUNCTION: LEMBALL 0x00410bb0
+void LEMBALL_FASTCALL WriteLevelGameStateStreamPayload(void* pObject)
+{
+	VsNetEffStreamBase* pStream = (VsNetEffStreamBase*) pObject;
+	pStream->WriteEffStreamU32BE(*(unsigned int*) ((char*) pObject + 0x2c));
+	pStream->WriteEffStreamU32BE(*(unsigned int*) ((char*) pObject + 0x30));
+	pStream->WriteEffStreamU32BE(*(unsigned int*) ((char*) pObject + 0x34));
+	pStream->WriteEffStreamU32BE(*(unsigned int*) ((char*) pObject + 0x38));
 }
 // FUNCTION: LEMBALL 0x00410be0
 void LEMBALL_FASTCALL LoadLevelGameStateStreamPayload(void* pObject)
