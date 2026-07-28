@@ -21,6 +21,12 @@ extern void LEMBALL_FASTCALL destroy_pgun_chunk_object_vtable_thunk(void* pObjec
 extern void LEMBALL_FASTCALL destroy_ice_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_move_chunk_object(void* pObject);
 
+struct ManagedEntityPacketStreamView {
+	void BindManagedEntityPacketTarget(void* pEntity);
+};
+
+extern ManagedEntityPacketStreamView* g_pManagedEntityPacketBindStream;
+
 #define DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, objectSize, destroyProc)                                 \
 	char* pAllocation;                                                                                                 \
 	char* pCursor;                                                                                                     \
@@ -215,11 +221,15 @@ int LEMBALL_FASTCALL BeginManagedEntityReachablePathSearch(void* pObject)
 	return 0;
 }
 
-// STUB: LEMBALL 0x00416db0
+// FUNCTION: LEMBALL 0x00416db0
 void LEMBALL_FASTCALL SetManagedEntityStateId(void* pObject, void* pUnused, int nStateId)
 {
+	char* pObjectBytes = (char*) pObject;
 	(void) pUnused;
-	*(int*) ((char*) pObject + 0xb8) = nStateId;
+	*(int*) (pObjectBytes + 0xb8) = nStateId;
+	if (g_nSelectedNetworkLobbyPeerId != 0) {
+		g_pManagedEntityPacketBindStream->BindManagedEntityPacketTarget(pObject);
+	}
 }
 
 void LEMBALL_FASTCALL SetManagedEntityStateIdWithVariantLocal(void* pObject,
