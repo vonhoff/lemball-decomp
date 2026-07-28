@@ -1862,3 +1862,27 @@ void LEMBALL_FASTCALL ResetIceChunkObjectRuntimeState(void* pObject)
 	*(int*) (pObjectBytes + 0xb8) = 0x18;
 	*(int*) (pObjectBytes + 0xc8) = nFrameClockTick;
 }
+
+extern void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
+
+void LEMBALL_FASTCALL ResetInvsChunkObjectStateThunk(void* pObject)
+{
+	ResetInvsChunkObjectState(pObject);
+}
+
+void LEMBALL_FASTCALL ResetInvsChunkObject(void* pObject)
+{
+	ResetManagedEntityRuntimeStateThunk(pObject);
+	ResetInvsChunkObjectStateThunk(pObject);
+}
+
+void LEMBALL_FASTCALL ResetRockChunkObjectRuntimeStateThunk(void* pObject)
+{
+	((LinkScfSmallFunctionView*) pObject)->ResetRockChunkObjectRuntimeState();
+}
+
+void LEMBALL_FASTCALL ResetRockChunkObject(void* pObject)
+{
+	ResetManagedEntityRuntimeStateThunk(pObject);
+	ResetRockChunkObjectRuntimeStateThunk(pObject);
+}

@@ -6,8 +6,16 @@
 // src/ENGINE/CORE/LINKSCF.CPP
 // FUNCTION: LEMBALL 0x00409ce0
 // ResetInvsChunkObjectState
+// LINKERILT: LEMBALL 0x00401749
+// ResetInvsChunkObjectStateThunk
+// FUNCTION: LEMBALL 0x00409cc0
+// ResetInvsChunkObject
 // FUNCTION: LEMBALL 0x0042cab0
 // ResetIceChunkObjectRuntimeState
+// LINKERILT: LEMBALL 0x00402275
+// ResetRockChunkObjectRuntimeStateThunk
+// FUNCTION: LEMBALL 0x0042ca90
+// ResetRockChunkObject
 // LINKERILT: LEMBALL 0x0040153c
 // LevelChunkObjectBaseView::InitializeLevelChunkObjectBase
 // SYNTHETIC: LEMBALL 0x0040ebe0
@@ -405,8 +413,14 @@
 // LevelChunkObjectRuntimeStateView::ResetRuntimeStateThunk
 // FUNCTION: LEMBALL 0x00416d50
 // ManagedEntityRuntimeStateView::ResetManagedEntityRuntimeState
+// LINKERILT: LEMBALL 0x0040180c
+// ResetManagedEntityRuntimeStateThunk
 // FUNCTION: LEMBALL 0x0042e600
 // ResetMoveChunkObjectRuntimeState
+// LINKERILT: LEMBALL 0x00403076
+// ResetMoveChunkObjectRuntimeStateThunk
+// FUNCTION: LEMBALL 0x0042e5e0
+// ResetMoveChunkObject
 // SYNTHETIC: LEMBALL 0x0041c330
 // DeleteCountedChildTableStreamAuto
 // SYNTHETIC: LEMBALL 0x00422f70

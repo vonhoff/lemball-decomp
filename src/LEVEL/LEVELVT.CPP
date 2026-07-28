@@ -2538,3 +2538,19 @@ void ManagedEntityRuntimeStateView::ResetManagedEntityRuntimeState(void)
 	*(int*) (pObjectBytes + 0x134) = 0;
 	*(int*) (pObjectBytes + 0x124) = 1;
 }
+
+void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject)
+{
+	((ManagedEntityRuntimeStateView*) pObject)->ResetManagedEntityRuntimeState();
+}
+
+void LEMBALL_FASTCALL ResetMoveChunkObjectRuntimeStateThunk(void* pObject)
+{
+	ResetMoveChunkObjectRuntimeState(pObject);
+}
+
+void LEMBALL_FASTCALL ResetMoveChunkObject(void* pObject)
+{
+	ResetManagedEntityRuntimeStateThunk(pObject);
+	ResetMoveChunkObjectRuntimeStateThunk(pObject);
+}
