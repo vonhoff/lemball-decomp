@@ -260,7 +260,7 @@ extern "C"
 														  DWORD_PTR dwParam);
 	__declspec(dllimport) BOOL WINAPI mciGetErrorStringA(MCIERROR mcierr, LPSTR pszText, UINT cchText);
 	/* MCIWndCreateA is declared cdecl in the MSVC 4.20 VFW32 import library. */
-	__declspec(dllimport) HWND MCIWndCreateA(HWND hWndParent, HINSTANCE hInstance, DWORD dwStyle, LPCSTR pszFile);
+	HWND MCIWndCreateA(HWND hWndParent, HINSTANCE hInstance, DWORD dwStyle, LPCSTR pszFile);
 	MMRESULT WINAPI waveOutReset(HWAVEOUT hWaveOut);
 	MMRESULT WINAPI waveOutClose(HWAVEOUT hWaveOut);
 	MMRESULT WINAPI waveOutWrite(HWAVEOUT hWaveOut, LPWAVEHDR pWaveOutHdr, UINT cbWaveOutHdr);
