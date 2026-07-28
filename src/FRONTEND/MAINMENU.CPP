@@ -3094,24 +3094,22 @@ int GameIntroSequenceScreen::HandleInput(short* pEvent)
 // FUNCTION: LEMBALL 0x004476b0
 void GameIntroSequenceScreen::UpdatePlayback(void)
 {
-	GameIntroSequenceScreen* pScreen;
 	char* pMediaOwner;
 	short* pPrimarySize;
 	short aRect[4];
 
-	pScreen = this;
-	if (pScreen->m_nPlaybackDelay3B4 > 0) {
-		--pScreen->m_nPlaybackDelay3B4;
+	if (m_nPlaybackDelay3B4 > 0) {
+		--m_nPlaybackDelay3B4;
 	}
-	if (IsPrimaryContextWindowReadyForPresentThunk((int*) pScreen->m_pPrimaryContext84) == 0) {
-		RequestIntroSequenceScreenTransitionThunk((char*) pScreen);
+	if (IsPrimaryContextWindowReadyForPresentThunk((int*) m_pPrimaryContext84) == 0) {
+		RequestIntroSequenceScreenTransitionThunk((char*) this);
 		return;
 	}
-	if (pScreen->m_nPlaybackDelay3B4 != 0) {
+	if (m_nPlaybackDelay3B4 != 0) {
 		return;
 	}
 
-	pPrimarySize = (short*) ((char*) pScreen->m_pPrimaryContext84 + 8);
+	pPrimarySize = (short*) ((char*) m_pPrimaryContext84 + 8);
 	aRect[0] = pPrimarySize[0];
 	aRect[1] = pPrimarySize[1];
 	aRect[2] = (short) (aRect[0] - 0x140);
@@ -3120,16 +3118,15 @@ void GameIntroSequenceScreen::UpdatePlayback(void)
 	aRect[3] = (short) (aRect[3] / 2);
 	aRect[0] = 0x140;
 	aRect[1] = 0xf0;
-	if (pScreen->m_fPlaybackStarted3B8 == 0) {
+	if (m_fPlaybackStarted3B8 == 0) {
 		((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->SwitchVariantResourceEntryModeThunk(1, 0);
-		pMediaOwner = (char*) pScreen->m_abMediaOwner3BC;
-		((IntroMediaOwnerInterface*) pMediaOwner)
-			->Initialize(aRect, pScreen->m_pPrimaryContext84, "PaintBall Intro Sequence");
+		pMediaOwner = (char*) m_abMediaOwner3BC;
+		((IntroMediaOwnerInterface*) pMediaOwner)->Initialize(aRect, m_pPrimaryContext84, "PaintBall Intro Sequence");
 		((VsGdiAnimWindowOwner*) pMediaOwner)->StartEmbeddedMciWindowPlaybackOnce();
-		pScreen->m_fPlaybackStarted3B8 = 1;
+		m_fPlaybackStarted3B8 = 1;
 	}
-	((VsGdiAnimWindowOwner*) pScreen->m_abMediaOwner3BC)->ResumeEmbeddedMciWindowPlayback();
-	pScreen->m_nPlaybackDelay3B4 = -1;
+	((VsGdiAnimWindowOwner*) m_abMediaOwner3BC)->ResumeEmbeddedMciWindowPlayback();
+	m_nPlaybackDelay3B4 = -1;
 }
 // FUNCTION: LEMBALL 0x004477b0
 void GameIntroSequenceMediaState::ConfigureOwner(void* pScreen, void* pPrimaryContext, int fSkipVariant)
