@@ -245,3 +245,10 @@ unsigned int return_hresult_80000801_progress_overlay(void)
 {
 	return 0x80000801U;
 }
+
+extern void SetLevelScreenStatusIndicatorModeThunk(int nMode, int nValue);
+
+void PASCAL ForwardLevelScreenStatusIndicatorMode(int nMode, int nValue)
+{
+	SetLevelScreenStatusIndicatorModeThunk(nMode, nValue);
+}

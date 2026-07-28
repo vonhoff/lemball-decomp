@@ -229,6 +229,8 @@
 // src/FRONTEND/SCREENVT.CPP
 // LINKERILT: LEMBALL 0x0040225c
 // DestroyRegisteredRenderSlotArrayAutoThunk
+// FUNCTION: LEMBALL 0x004364b0
+// ForwardLevelScreenStatusIndicatorMode
 // STUB: LEMBALL 0x0043a2e0
 // FUN_0043a2e0
 
