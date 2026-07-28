@@ -1,5 +1,6 @@
-"""Teach reccmp 0.1.6 data and vtable comparison about original linker ILTs."""
+"""Project-specific comparison compatibility for reccmp 0.1.6."""
 
+from reccmp.compare import functions
 from reccmp.compare.core import Compare
 from reccmp.compare.db import EntityDb
 from reccmp.compare.variables import VariableComparator
@@ -15,6 +16,17 @@ VTABLE_METHOD_ILTS = {
     0x00401451,  # VsNetEffStreamCommon::NoopEffStream
     0x00401564,  # VsNetEffStreamCommon::AcceptEffStreamArgument
     0x004026AD,  # VsNetEffStreamCommon::AcceptEffStream
+}
+# Original and rebuilt binaries place different unrelated symbols at these
+# one-past array addresses. Limit normalization to independently verified
+# functions that compare against those boundaries.
+ONE_PAST_REFERENCES = {
+    # function: (original boundary, rebuilt successor, shared identity)
+    0x004595D0: (
+        0x004A0F20,
+        "g_pStartupFixedBufferStream",
+        "g_aCommandLineOptions+112 (OFFSET)",
+    ),
 }
 
 
@@ -32,6 +44,42 @@ def _ilt_destination(comparator, address):
 
     displacement = int.from_bytes(instruction[1:5], byteorder="little", signed=True)
     return address + 5 + displacement
+
+
+if not getattr(functions.FunctionComparator, "_lemball_one_past_aware", False):
+    _reccmp_compare_function = functions.FunctionComparator.compare_function
+
+    def _compare_function(self, match):
+        reference = ONE_PAST_REFERENCES.get(match.orig_addr)
+        if reference is None:
+            return _reccmp_compare_function(self, match)
+
+        orig_boundary, recomp_successor, shared_name = reference
+        orig_lookup = self.orig_sanitize.name_lookup
+        recomp_lookup = self.recomp_sanitize.name_lookup
+
+        def _orig_lookup(address, exact=False, indirect=False):
+            if not exact and not indirect and address == orig_boundary:
+                return shared_name
+            return orig_lookup(address, exact=exact, indirect=indirect)
+
+        def _recomp_lookup(address, exact=False, indirect=False):
+            name = recomp_lookup(address, exact=exact, indirect=indirect)
+            if not exact and not indirect and name is not None:
+                if recomp_successor in name:
+                    return shared_name
+            return name
+
+        self.orig_sanitize.name_lookup = _orig_lookup
+        self.recomp_sanitize.name_lookup = _recomp_lookup
+        try:
+            return _reccmp_compare_function(self, match)
+        finally:
+            self.orig_sanitize.name_lookup = orig_lookup
+            self.recomp_sanitize.name_lookup = recomp_lookup
+
+    functions.FunctionComparator.compare_function = _compare_function
+    functions.FunctionComparator._lemball_one_past_aware = True
 
 
 if not getattr(VariableComparator, "_lemball_ilt_aware", False):
