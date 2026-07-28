@@ -368,6 +368,9 @@ struct ProjectileObjectProxy {
 	virtual void vf0(void);
 	virtual void vf1(void);
 	virtual void SetState(int nState);
+	virtual void vf3(void);
+	virtual void vf4(void);
+	virtual int ServiceProjectile(void);
 };
 int return_true_vtable_callback_0041c3f0(void);
 int return_two_vtable_callback_0041c430(void);
@@ -1413,15 +1416,11 @@ void* __fastcall get_next_projectile_pool_object(void* pPool)
 void __fastcall update_projectile_pool_real(void* pPool)
 {
 	void* pObj;
-	void** vtable;
-	int (*vfunc)(void*);
 	int fKeep;
 
 	pObj = get_first_projectile_pool_object(pPool);
 	while (pObj != NULL) {
-		vtable = *(void***) pObj;
-		vfunc = (int (*)(void*)) vtable[5];
-		fKeep = vfunc(pObj);
+		fKeep = ((ProjectileObjectProxy*) pObj)->ServiceProjectile();
 		if (fKeep == 0) {
 			((ProjectilePool*) pPool)->RemoveObject(pObj);
 		}
@@ -1432,30 +1431,37 @@ void __fastcall update_projectile_pool_real(void* pPool)
 // FUNCTION: LEMBALL 0x00418080
 void ProjectilePool::RemoveObject(void* pObject)
 {
-	void** pArray;
-	int i;
-	void** pEntry;
+	void* pNext;
 	int nRemaining;
+	int i;
+	void** pSearch;
+	void** pEntry;
 
-	pArray = m_apObjects;
-	for (i = 0; i < 20; i++) {
-		if (pArray[i] == pObject) {
-			pEntry = &pArray[i];
-			deactivate_projectile_object(pEntry[0]);
-			if (i < 19) {
-				nRemaining = 19 - i;
-				i = 19;
-				do {
-					pEntry[0] = pEntry[1];
-					pEntry++;
-					nRemaining--;
-				} while (nRemaining != 0);
-			}
-			pArray[i] = NULL;
-			m_nCountD4--;
+	i = 0;
+	pSearch = m_apObjects;
+	while (*pSearch != pObject) {
+		pSearch++;
+		i++;
+		if (i >= 20) {
 			return;
 		}
 	}
+
+	pEntry = &m_apObjects[i];
+	deactivate_projectile_object(*pEntry);
+	if (i < 19) {
+		nRemaining = 19;
+		nRemaining -= i;
+		i += nRemaining;
+		do {
+			pNext = pEntry[1];
+			pEntry++;
+			nRemaining--;
+			pEntry[-1] = pNext;
+		} while (nRemaining != 0);
+	}
+	m_apObjects[i] = NULL;
+	m_nCountD4--;
 }
 
 // FUNCTION: LEMBALL 0x004185d0

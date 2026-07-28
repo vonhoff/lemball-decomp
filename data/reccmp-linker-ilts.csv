@@ -15,6 +15,7 @@ address,name,symbol,type,source
 0x00401212,DestroyTramChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x0040126C,LevelChunkStreamWriteView::AppendLevelChunkStreamPayload,?AppendLevelChunkStreamPayload@LevelChunkStreamWriteView@@QAEXPAUVsNetEffStreamBase@@@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x00401271,DestroyLevelGameModeAutoThunk,,stub,src/GAME.CPP
+0x004012A3,ProjectilePool::RemoveObject,?RemoveObject@ProjectilePool@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x0040132A,GameScreenObject::ConstructMainMenuScreen,,stub,src/GAME.H
 0x004013DE,ActivateTramChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401406,DestroyMenuSelectorManagerAutoThunk,,stub,src/FRONTEND/MENUSEL.CPP
@@ -41,6 +42,7 @@ address,name,symbol,type,source
 0x00401942,RefreshActiveLasrChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401956,EmitCollChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004019C4,WriteEffStreamU32Field2C,,stub,src/ENGINE/MEDIA/EFFSTRM.H
+0x00401A0A,get_first_projectile_pool_object,?get_first_projectile_pool_object@@YIPAXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00401AC3,LevelManagedEntityChildIterator::AppendChild,?AppendChild@LevelManagedEntityChildIterator@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00401ADC,HandleMenuSelectorEventThunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401B31,DoorChunkObjectActionView::RequestDoorChunkObjectTriggerTransition,?RequestDoorChunkObjectTriggerTransition@DoorChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFDOORACTION.CPP
@@ -93,6 +95,7 @@ address,name,symbol,type,source
 0x004025EA,IceChunkObjectActionView::RequestIceChunkObjectToggleActivation,?RequestIceChunkObjectToggleActivation@IceChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFICEACTION.CPP
 0x004025FE,DestroyCountedChildTableStreamAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402608,InvsChunkObjectActionView::AddInvsTrackedEntity,?AddInvsTrackedEntity@InvsChunkObjectActionView@@QAEXPAX@Z,stub,src/ENGINE/CORE/LINKSCFINVS.CPP
+0x0040263A,get_next_projectile_pool_object,?get_next_projectile_pool_object@@YIPAXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402658,MarkNetworkLobbySelectedPeerDisconnected,?MarkNetworkLobbySelectedPeerDisconnected@@YIXPAX@Z,stub,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x00402667,ManagedEntityChildView::SetManagedEntityPrimaryActiveFlag,?SetManagedEntityPrimaryActiveFlag@ManagedEntityChildView@@QAEXH@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402676,DestroyCollChunkObjectAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
@@ -160,6 +163,7 @@ address,name,symbol,type,source
 0x004032DD,ManagedEntityPacketStreamView::BindManagedEntityPacketTarget,?BindManagedEntityPacketTarget@ManagedEntityPacketStreamView@@QAEXPAX@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x0040333C,AdvanceInvsChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040336E,LevelManagedEntityMoveCommandView::CopyFirstMoveCommandPositionOrCurrent,?CopyFirstMoveCommandPositionOrCurrent@LevelManagedEntityMoveCommandView@@QAEPAULevelThreeDwordPoint@@PAU2@@Z,stub,src/LEVEL/LEVELVTMOVE.CPP
+0x0040339B,deactivate_projectile_object,?deactivate_projectile_object@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00403404,EmitMineChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040340E,EmitLiftChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00403431,EmitTramChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
