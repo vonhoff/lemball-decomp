@@ -306,8 +306,6 @@ struct LinkScfBoonChunkManagerView {
 // InitializeTramChunkObjects
 // STUB: LEMBALL 0x0042b4f0
 // EmitTramChunkManagerRenderEntries
-// STUB: LEMBALL 0x0042c040
-// ActivatePgunChunkObjects
 // STUB: LEMBALL 0x0042c4d0
 // RefreshActivePgunChunkObjects
 // STUB: LEMBALL 0x0042c520
