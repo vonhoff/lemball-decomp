@@ -88,7 +88,7 @@ void LevelChunkStreamWriteView::AppendLevelChunkStreamPayload(VsNetEffStreamBase
 		if (pTarget->m_cWriteSessions <= 0) {
 			pTarget->BeginEffStreamWriteSession();
 		}
-		cbRequired = pTarget->m_pvWriteCursor - pTarget->m_pvOwnedBuffer;
+		cbRequired = (unsigned char*) pTarget->m_pvWriteCursor - (unsigned char*) pTarget->m_pvOwnedBuffer;
 		cbRequired += pSource->m_cbSerializedLength;
 		cbRequired += 2;
 		if ((unsigned int) cbRequired <= (unsigned int) pTarget->m_cbSerializedLength) {
