@@ -368,7 +368,7 @@ struct ProjectileObjectProxy {
 	virtual void vf0(void);
 	virtual void vf1(void);
 	virtual void SetState(int nState);
-	virtual void vf3(void);
+	virtual void EmitProjectileRenderEntry(void* pRenderEntry);
 	virtual void vf4(void);
 	virtual int ServiceProjectile(void);
 };
@@ -1462,6 +1462,26 @@ void ProjectilePool::RemoveObject(void* pObject)
 	}
 	m_apObjects[i] = NULL;
 	m_nCountD4--;
+}
+
+// FUNCTION: LEMBALL 0x004180e0
+int LEMBALL_FASTCALL EmitProjectilePoolRenderEntries(void* pPool, void* pUnused, void* pRenderEntry)
+{
+	void* pObject;
+	void* pOwner;
+	int cEntries;
+
+	(void) pUnused;
+	cEntries = 0;
+	pOwner = pPool;
+	pObject = get_first_projectile_pool_object(pOwner);
+	while (pObject != NULL) {
+		((ProjectileObjectProxy*) pObject)->EmitProjectileRenderEntry(pRenderEntry);
+		pRenderEntry = (char*) pRenderEntry + 0x4c;
+		cEntries++;
+		pObject = get_next_projectile_pool_object(pOwner);
+	}
+	return cEntries;
 }
 
 // FUNCTION: LEMBALL 0x004185d0

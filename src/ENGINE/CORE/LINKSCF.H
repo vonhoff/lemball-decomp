@@ -112,8 +112,6 @@ struct LinkScfBoonChunkManagerView {
 // EmitDoorChunkRenderEntries
 // STUB: LEMBALL 0x00417e80
 // ResetProjectilePool
-// STUB: LEMBALL 0x004180e0
-// EmitProjectilePoolRenderEntries
 // STUB: LEMBALL 0x0041afd0
 // ActivateManagedEntityGroupChildren
 // STUB: LEMBALL 0x0041b7d0
