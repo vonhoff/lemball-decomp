@@ -474,9 +474,7 @@ static void* g_MenuSelectorEntryVtable[3] = {(void*) InitializeNonZrleVariantRen
 											 (void*) DeleteMenuSelectorEntryThunk,
 											 (void*) HandleMenuSelectorEntryEventThunk};
 
-/* VTABLE: LEMBALL 0x00496e70 */
-static void* g_MenuSelectorTinyPointSinkVtable[2] = {(void*) DeleteStatusPointSinkEntryThunk,
-													 (void*) QueueStatusPointPushThunk};
+extern void* g_VSGDI_StatusIndicatorPointSinkVtable[12];
 
 struct GameMenuActionFramePointSinkVtableData {
 	void* (GameMenuActionFramePointSink::*m_pDelete)(unsigned int);
@@ -3391,7 +3389,7 @@ void* GameResourceGeometryChildDeleteView::Delete(unsigned int fDelete)
 // FUNCTION: LEMBALL 0x004698b0
 void* LEMBALL_FASTCALL InitializeTinyPointSinkHelper(void* pObject)
 {
-	*(void***) pObject = g_MenuSelectorTinyPointSinkVtable;
+	*(void***) pObject = g_VSGDI_StatusIndicatorPointSinkVtable;
 	*(int*) ((char*) pObject + 4) = 0;
 	return pObject;
 }

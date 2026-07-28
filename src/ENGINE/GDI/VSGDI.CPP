@@ -405,7 +405,7 @@ static void* g_VSGDI_StatusIndicatorRenderClientVtable[8] = {
 	0,
 };
 // GLOBAL: LEMBALL 0x00496e70
-static void* g_VSGDI_StatusIndicatorPointSinkVtable[12] = {
+void* g_VSGDI_StatusIndicatorPointSinkVtable[12] = {
 	(void*) DeleteStatusPointSinkEntryThunk,
 	(void*) QueueStatusPointPushThunk,
 	(void*) ExecuteStatusPointPushThunk,
