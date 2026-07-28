@@ -340,6 +340,26 @@ static void* g_LINKSCF_ProjectilePoolVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(Delet
 																		   ReturnFalseChunkStreamCommandThunk,
 																		   EmitProjectilePoolRenderEntries);
 static void* g_LINKSCF_ManagedEntityQueueCursorVtable[4];
+// GLOBAL: LEMBALL 0x00494d08
+static void* g_LINKSCF_CachedChunkObjectManagerBaseVtable[19] = {(void*) GetManagedEntityGroupCount,
+																 (void*) GetFirstCachedChunkObject,
+																 (void*) GetNextCachedChunkObject,
+																 (void*) GetCachedChunkObjectByIndex,
+																 (void*) GetNextManagedEntityGroup,
+																 (void*) RemoveCachedChunkObjectAndDestroy,
+																 (void*) CountNestedIteratedChildEntries,
+																 (void*) GetFirstManagedEntityChildFromCachedGroup,
+																 (void*) GetNextManagedEntityChildFromCachedGroup,
+																 (void*) GetFirstIteratedChildStatus11C,
+																 (void*) AdvanceCachedGroupManagedEntityChildIterator,
+																 (void*) FindManagedEntityByPointer,
+																 (void*) AppendCachedChunkObject,
+																 (void*) AppendManagedEntityGroupFromIds,
+																 (void*) ResetCachedChunkManagerScratch,
+																 (void*) AttachAndActivateChunkObject,
+																 (void*) RemoveOwnerChildIfNoNestedEntries,
+																 (void*) ForwardOwnerChildCommandValue,
+																 (void*) EmitIteratedChildBoundsRecords};
 // GLOBAL: LEMBALL 0x00494d70
 static void* g_LINKSCF_ShpgChunkManagerVtable[19] = {(void*) GetManagedEntityGroupCount,
 													 (void*) GetFirstCachedChunkObject,
@@ -1110,7 +1130,7 @@ LinkScfCachedChunkObjectManagerBaseView* LinkScfCachedChunkObjectManagerBaseView
 	void* pEntityLookup,
 	void* pProjectileGeometryTable)
 {
-	*(void**) this = g_LINKSCF_ShpgChunkManagerVtable;
+	*(void**) this = g_LINKSCF_CachedChunkObjectManagerBaseVtable;
 	g_pCachedChunkManagerLevelMode = pLevelMode;
 	g_pCachedChunkManagerEntityLookup = pEntityLookup;
 	g_pCachedChunkManagerProjectileGeometryTable = pProjectileGeometryTable;
