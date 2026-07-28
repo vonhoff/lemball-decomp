@@ -417,10 +417,20 @@ void LEMBALL_FASTCALL ReadNetworkLobbyU32PayloadStreamThunk(void* pObject)
 {
 	ReadNetworkLobbyU32PayloadStream(pObject);
 }
+// LINKERILT: LEMBALL 0x00402c11
+static void LEMBALL_FASTCALL CloseNetworkLobbyTransportPeersThunk(void* pController)
+{
+	CloseNetworkLobbyTransportPeers(pController);
+}
 // LINKERILT: LEMBALL 0x00402c43
 void LEMBALL_FASTCALL ReadPayloadSize8Thunk(GameEffStreamPayloadSize8* pStream)
 {
 	pStream->ReadPayloadSize8();
+}
+// LINKERILT: LEMBALL 0x00402db5
+static void LEMBALL_FASTCALL UnregisterNetworkLobbyVsnetRuntimeFromTransportThunk(void* pVsnetRuntime)
+{
+	UnregisterNetworkLobbyVsnetRuntimeFromTransport(pVsnetRuntime);
 }
 // LINKERILT: LEMBALL 0x00403607
 void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStreamThunk(void* pObject)
@@ -933,9 +943,9 @@ void LEMBALL_FASTCALL StopNetworkLobbyTransportSession(void* pController)
 	DWORD dwStartTime;
 
 	pnControllerFields = (int*) pController;
-	CloseNetworkLobbyTransportPeers(pController);
+	CloseNetworkLobbyTransportPeersThunk(pController);
 	if (g_pNetworkLobbyVsnetRuntime != 0) {
-		UnregisterNetworkLobbyVsnetRuntimeFromTransport(g_pNetworkLobbyVsnetRuntime);
+		UnregisterNetworkLobbyVsnetRuntimeFromTransportThunk(g_pNetworkLobbyVsnetRuntime);
 	}
 	if (g_pActiveNetworkRuntimeWindow != 0) {
 		dwStartTime = timeGetTime();
