@@ -2434,3 +2434,40 @@ void LEMBALL_FASTCALL ResetMoveChunkObjectRuntimeState(void* pObject)
 	*(int*) (pObjectBytes + 0x140) = 1;
 	*(int*) (pObjectBytes + 0xb8) = 0x18;
 }
+
+void LEMBALL_FASTCALL ClearLevelChunkObjectStateFields(void* pObject)
+{
+	char* pObjectBytes;
+	int nFrameClockTick;
+
+	pObjectBytes = (char*) pObject;
+	*(unsigned short*) (pObjectBytes + 0xbc) = 0;
+	*(int*) (pObjectBytes + 0x2c) = 0;
+	*(int*) (pObjectBytes + 0xb8) = 0;
+	*(int*) (pObjectBytes + 0x114) = 0;
+	*(unsigned short*) (pObjectBytes + 0xb4) = 0;
+	*(int*) (pObjectBytes + 0x38) = 0;
+	*(unsigned short*) (pObjectBytes + 0xc4) = 0;
+	*(int*) (pObjectBytes + 0x3c) = 0;
+	*(int*) (pObjectBytes + 0xf0) = 0;
+	*(int*) (pObjectBytes + 0xc0) = 0;
+	*(int*) (pObjectBytes + 0x8c) = 0;
+	*(int*) (pObjectBytes + 0x08) = 0;
+	*(int*) (pObjectBytes + 0x0c) = 0;
+	*(int*) (pObjectBytes + 0x104) = 0;
+	*(int*) (pObjectBytes + 0x108) = 0;
+	*(int*) (pObjectBytes + 0x10c) = 0;
+	*(int*) (pObjectBytes + 0x30) = 0;
+	*(int*) (pObjectBytes + 0x34) = 0;
+	*(int*) (pObjectBytes + 0x4c) = 0;
+	*(int*) (pObjectBytes + 0x50) = 0;
+	*(unsigned short*) (pObjectBytes + 0x6e) = 0;
+	*(int*) (pObjectBytes + 0x54) = 0;
+	*(int*) (pObjectBytes + 0x58) = 0;
+	*(int*) (pObjectBytes + 0x11c) = 0;
+	*(int*) (pObjectBytes + 0x74) = 0;
+	nFrameClockTick = g_nLevelFrameClockTick;
+	*(int*) (pObjectBytes + 0xcc) = nFrameClockTick;
+	*(int*) (pObjectBytes + 0x98) = 0;
+	*(int*) (pObjectBytes + 0x10) = 0;
+}

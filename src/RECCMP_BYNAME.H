@@ -395,6 +395,8 @@
 // src/LEVEL/LEVELVT.CPP
 // FUNCTION: LEMBALL 0x0040a860
 // noop_vtable_callback_0040a860
+// FUNCTION: LEMBALL 0x004151b0
+// ClearLevelChunkObjectStateFields
 // FUNCTION: LEMBALL 0x0042e600
 // ResetMoveChunkObjectRuntimeState
 // SYNTHETIC: LEMBALL 0x0041c330
