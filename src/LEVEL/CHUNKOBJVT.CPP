@@ -434,10 +434,92 @@ void LEMBALL_FASTCALL EmitGmobChunkType14RenderEntry(void* pObject, void* pUnuse
 	*(unsigned short*) ((char*) pRenderEntry + 0x2e) = *(unsigned short*) ((char*) pObject + 0x148);
 }
 
-// STUB: LEMBALL 0x00422900
+// FUNCTION: LEMBALL 0x00422900
 int LEMBALL_FASTCALL AdvanceCollChunkObjectStateMachine(void* pObject)
 {
-	(void) pObject;
+	typedef void(LEMBALL_FASTCALL * ObjectSlotProc)(void*, void*, int);
+	typedef void(LEMBALL_FASTCALL * ObjectNoArgSlotProc)(void*);
+	typedef int(LEMBALL_FASTCALL * CollisionTestProc)(void*, void*, const int*);
+	typedef int(LEMBALL_FASTCALL * EntityTypeTestProc)(void*, void*, int);
+	char* pObjectBytes = (char*) pObject;
+	char* pOwnerBytes = (char*) g_pActiveManagedEntityOwner;
+	int nStateId;
+
+	if (*(int*) (pObjectBytes + 0x114) != 0) {
+		nStateId = *(int*) (pObjectBytes + 0xb8);
+		if (*(int*) (pObjectBytes + 0x128) != nStateId) {
+			if (nStateId == 8) {
+				*(int*) (pObjectBytes + 0x138) = 0;
+			}
+			else if (nStateId == 0x1a) {
+				((ObjectNoArgSlotProc) (*(void***) pObject)[68])(pObject);
+			}
+			*(int*) (pObjectBytes + 0x128) = *(int*) (pObjectBytes + 0xb8);
+		}
+		return 1;
+	}
+
+	if (*(int*) (pObjectBytes + 0x138) == 0) {
+		return 1;
+	}
+
+	switch (*(int*) (pObjectBytes + 0xb8)) {
+	case 8:
+		*(int*) (pObjectBytes + 0x138) = 0;
+		break;
+	case 0x18:
+		if (g_nSelectedNetworkLobbyPeerId != 0 && *(int*) (pObjectBytes + 0x12c) != 0x18) {
+			break;
+		}
+		if (*(int*) (pObjectBytes + 0x11c) == 0) {
+			char* pGrid = (char*) g_pLevelTileGrid;
+			int nLocalX = *(int*) (pObjectBytes + 0x9c) >> 12;
+			int nLocalY = *(int*) (pObjectBytes + 0xa0) >> 12;
+			short nHeight = 0;
+			int nTileX = nLocalX >> 4;
+			int nTileY = nLocalY >> 4;
+			if (nLocalX >= 0 && nLocalY >= 0 && nTileX < *(int*) (pGrid + 0x10) && nTileY < *(int*) (pGrid + 0x14)) {
+				LevelTileRenderDescriptor* pTile =
+					(LevelTileRenderDescriptor*) (*(char**) (pGrid + 0x0c) +
+												  (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 12);
+				nHeight = pTile->SampleHeightOffset(nLocalX & 0x0f, nLocalY & 0x0f);
+			}
+			*(int*) (pObjectBytes + 0xa4) = (unsigned short) nHeight << 12;
+		}
+		{
+			int* pPoint = (int*) (pOwnerBytes + 0x124);
+			int iCandidate;
+			void* pCandidate = 0;
+			pPoint[0] = *(int*) (pObjectBytes + 0x9c) >> 12;
+			pPoint[1] = *(int*) (pObjectBytes + 0xa0) >> 12;
+			pPoint[2] = *(int*) (pObjectBytes + 0xa4) >> 12;
+			*(void**) (pOwnerBytes + 0x150) = 0;
+			*(int*) (pOwnerBytes + 0x130) = 0;
+			while (*(int*) (pOwnerBytes + 0x130) < *(int*) (pOwnerBytes + 0x118)) {
+				iCandidate = *(int*) (pOwnerBytes + 0x130);
+				void* pCurrent = (*(void***) (pOwnerBytes + 0x120))[iCandidate];
+				if (*(void**) (pOwnerBytes + 0x150) != pCurrent &&
+					((CollisionTestProc) (*(void***) pCurrent)[20])(pCurrent, 0, pPoint) != 0) {
+					pCandidate = pCurrent;
+					*(void**) (pOwnerBytes + 0x150) = pCurrent;
+					++*(int*) (pOwnerBytes + 0x130);
+					break;
+				}
+				++*(int*) (pOwnerBytes + 0x130);
+			}
+			if (pCandidate != 0 && *(int*) ((char*) pCandidate + 0x64) == 2 &&
+				((EntityTypeTestProc) (*(void***) pCandidate)[45])(pCandidate, 0, *(int*) (pObjectBytes + 0x64)) == 0) {
+				*(void**) (pObjectBytes + 0x5c) = pCandidate;
+				((ManagedEntityStateView*) pObject)->RequestManagedEntityStateId(0x1a);
+			}
+		}
+		break;
+	case 0x1a:
+		((ObjectNoArgSlotProc) (*(void***) pObject)[69])(pObject);
+		((ObjectNoArgSlotProc) (*(void***) pObject)[68])(pObject);
+		((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 8);
+		break;
+	}
 	return 1;
 }
 
