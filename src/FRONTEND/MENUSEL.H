@@ -1,39 +1,6 @@
 #ifndef LEMBALL_GAME_MENU_SELECTOR_H
 #define LEMBALL_GAME_MENU_SELECTOR_H
 
-// ConstructMenuSelectorManager
-// LINKERILT: LEMBALL 0x00402a36
-// MoveMenuSelectorPreviousThunk
-// LINKERILT: LEMBALL 0x004010e1
-// MoveMenuSelectorNextThunk
-// LINKERILT: LEMBALL 0x004018f7
-// SelectMenuSelectorSide0Thunk
-// LINKERILT: LEMBALL 0x00401ff5
-// SelectMenuSelectorSide1Thunk
-// LINKERILT: LEMBALL 0x00402e28
-// StartMenuSelectorActionThunk
-// LINKERILT: LEMBALL 0x004036c0
-// GetIntDirectionSignThunk
-// LINKERILT: LEMBALL 0x004014ce
-// UpdateMenuSelectorAnimationThunk
-// LINKERILT: LEMBALL 0x00401d43
-// SetMenuSelectorChildrenEnabledThunk
-// LINKERILT: LEMBALL 0x00402a59
-// GetMenuSelectorStartTimeThunk
-// LINKERILT: LEMBALL 0x00402f3b
-// SetMenuSelectorDurationFieldThunk
-// LINKERILT: LEMBALL 0x00402dd8
-// SetMenuSelectorStartTimeFieldThunk
-// LINKERILT: LEMBALL 0x00402d5b
-// SetMenuSelectorDirectionFieldThunk
-// LINKERILT: LEMBALL 0x00401f28
-// HandleMenuSelectorEntryEventThunk
-// LINKERILT: LEMBALL 0x00401bc2
-// DeleteMenuSelectorEntryThunk
-// LINKERILT: LEMBALL 0x00401c9e
-// DeleteMenuSelectorManagerThunk
-// LINKERILT: LEMBALL 0x00401adc
-// HandleMenuSelectorEventThunk
 #include "ENGINE/CORE/COMMON.H"
 
 struct GameMenuSelectorEntry;

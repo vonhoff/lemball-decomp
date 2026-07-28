@@ -35,7 +35,7 @@ Verified progress includes a new 100% match, measurable similarity improvement, 
 ## Binary layout
 
 - Original LINK 3.00 incremental link table occupies `0x00401000` through `0x00403890`: 2,077 five-byte `E9` entries through `0x0040388C`, then padding. Real code begins at `0x00406160`.
-- Ghidra marks every ILT entry `linker-ilt`; none may retain an `objdiff-unit:*` tag. ILT relocation mappings use `// LINKERILT:` rather than `FUNCTION` or `STUB`; reccmp aliases this marker to non-progress `STUB` only for relocation normalization. Compiler-state shims may remain unannotated only when comments identify slot, destination, and verified regression caused by removal.
+- Ghidra marks every ILT entry `linker-ilt`; none may retain an `objdiff-unit:*` tag. Source-emitted ILT wrappers use `// LINKERILT:` rather than `FUNCTION` or `STUB`; reccmp aliases this marker to non-progress `STUB` only for relocation normalization. By-name ILT inventory belongs in `data/reccmp-linker-ilts.csv`, while compiler-generated symbols without standalone implementations belong in `data/reccmp-compiler-generated.csv`. Compiler-state shims may remain unannotated only when comments identify slot, destination, and verified regression caused by removal.
 - Keep MSVC 4.20 and `/INCREMENTAL:NO` for function-level comparison. `/INCREMENTAL:YES` changes generated thunk calls and lowers useful reccmp accuracy.
 - Whole-image parity is deferred: original LINK is 3.00, current LINK is 4.20; original `.rsrc` virtual size is `0x55A4`, current is `0x160`; CRT and imports also differ.
 

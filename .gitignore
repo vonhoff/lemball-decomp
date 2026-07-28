@@ -36,5 +36,8 @@ data/*
 !data/LEMBALL.EXE.gpg
 !data/objdiff-functions.csv
 !data/README.md
-!data/runtime-symbols.csv
+!data/reccmp-source-symbols.csv
+!data/reccmp-compiler-generated.csv
+!data/reccmp-linker-ilts.csv
+!data/reccmp-library-symbols.csv
 .gnupg-local/

@@ -3,33 +3,6 @@
 
 #include "ENGINE/CORE/WIN32.H"
 
-// LINKERILT: LEMBALL 0x0040119f
-// VS_WindowOwnerBase::ReservedWindowOwnerSlot37
-// LINKERILT: LEMBALL 0x0040150f
-// VS_RootGeometryOwner::AppendQueuedRenderSinkValueNode
-// LINKERILT: LEMBALL 0x00401514
-// VS_WindowOwnerBase::ReservedWindowOwnerSlot21
-// LINKERILT: LEMBALL 0x004018cf
-// VS_WindowOwnerBase::IsCurrentWindowOwnerContext
-// LINKERILT: LEMBALL 0x00401e29
-// VS_WindowOwnerBase::ReservedWindowOwnerSlot19
-// LINKERILT: LEMBALL 0x004028bf
-// VS_WindowOwnerBase::ReservedWindowOwnerSlot18
-// LINKERILT: LEMBALL 0x004029b4
-// VS_WindowOwnerBase::ReservedWindowOwnerSlot39
-// LINKERILT: LEMBALL 0x00402e1e
-// VS_WindowOwnerBase::CacheCurrentContextWindow
-// LINKERILT: LEMBALL 0x004030c1
-// VS_RootGeometryOwner::RemoveQueuedRenderSinkValueNode
-// LINKERILT: LEMBALL 0x00403440
-// VS_WindowOwnerBase::ReservedWindowOwnerSlot20
-// LINKERILT: LEMBALL 0x004034a9
-// VS_RootGeometryOwner::QueryRootGeometryState
-// LINKERILT: LEMBALL 0x00403657
-// VS_RootGeometryOwner::SetWindowOwnerState
-// LINKERILT: LEMBALL 0x00403693
-// VS_WindowOwnerBase::ReservedWindowOwnerSlot22
-
 extern int g_fWindowMessagePassthroughMode;
 
 // SIZE 0x04

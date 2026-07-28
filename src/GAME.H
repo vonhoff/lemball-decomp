@@ -1,12 +1,6 @@
 #ifndef LEMBALL_GAME_APP_H
 #define LEMBALL_GAME_APP_H
 
-// Original registered-render-slot vtable entries use these linker ILT slots.
-// LINKERILT: LEMBALL 0x00401c49
-// DeleteRegisteredRenderSlotArrayAuto
-// LINKERILT: LEMBALL 0x00403008
-// FUN_0043a2e0
-
 struct GameRootDispatchGlobals {
 	int m_fHelperGeometryDispatchSuppressed;
 	char m_szDirectDrawErrorText[64];
@@ -20,20 +14,6 @@ struct GameProcessCurrentDirectoryState {
 
 extern GameProcessCurrentDirectoryState* g_pProcessCurrentDirectoryState;
 
-// LINKERILT: LEMBALL 0x0040132a
-// GameScreenObject::ConstructMainMenuScreen
-// LINKERILT: LEMBALL 0x004015a0
-// GameScreenObject::ConstructNetworkLobbyScreen
-// LINKERILT: LEMBALL 0x0040200e
-// GameScreenObject::ConstructPaintballSequenceScreen
-// LINKERILT: LEMBALL 0x004020a4
-// GameScreenObject::ConstructLevelScreen
-// LINKERILT: LEMBALL 0x00402315
-// GameScreenObject::ConstructOptionsScreen
-// LINKERILT: LEMBALL 0x004029a0
-// GameScreenObject::ConstructPasswordEntryScreen
-// LINKERILT: LEMBALL 0x00403026
-// GameScreenObject::ConstructRegistrationInfoScreen
 #include "ENGINE/CORE/WIN32.H"
 #include "ENGINE/GDI/VSWINDOW.H"
 

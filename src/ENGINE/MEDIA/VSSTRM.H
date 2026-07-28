@@ -5,72 +5,10 @@
 
 #pragma vtordisp(on)
 
-// SYNTHETIC: LEMBALL 0x00462e20 symbol
-// ??_EVsNetCompositeEffTransportStack@@$4PPPPPPPM@KI@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00462e50 symbol
-// ?DualStreamRet8@VsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEXHPAX@Z
 // Compatibility symbol preserving MSVC 4.20 compiler state.
 // ??_GVsNetEffStreamChannelState@@UAEPAXI@Z
 // Compatibility symbol preserving MSVC 4.20 compiler state.
 // ??_EVsNetEffStreamBase@@UAEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00462940 symbol
-// ??_GVsNetDualHandleEffStream@@UAEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00462990 symbol
-// ??_EVsNetTimedEffStream@@UAEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00462bc0 symbol
-// ??_GVsNetRuntimeChannelStack@@UAEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00462db0 symbol
-// ??_EVsNetCompositeEffTransportStack@@UAEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00462bb0 symbol
-// ??_EVsNetRuntimeChannelStack@@$4PPPPPPPM@A@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00462ba0 symbol
-// ??_EVsNetDualHandleEffStream@@WFI@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00462ca0 symbol
-// ??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@A@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00462d20 symbol
-// ??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@DA@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00462d50 symbol
-// ??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@KI@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00462c60 symbol
-// ??_EVsNetRuntimeChannelStack@@$4PPPPPPPM@KI@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00462d80 symbol
-// ??_EVsNetTimedEffStream@@$4PPPPPPPM@HI@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00462da0 symbol
-// ??_EVsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x00462e00 symbol
-// ??_EVsNetCompositeEffTransportStack@@$4PPPPPPPM@DA@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x0047be50 symbol
-// ??_GVsNetEmbeddedFileBackedEffChannelStack@@UAEPAXI@Z
-// SYNTHETIC: LEMBALL 0x0047bf00 symbol
-// ??_EVsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@KI@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x0047b9d0 symbol
-// ??_GVsNetFileBackedCompositeEffChannelAdapter@@UAEPAXI@Z
-// SYNTHETIC: LEMBALL 0x0047b9c0 symbol
-// ??_EVsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@A@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x0047ba50 symbol
-// ?ClearPendingWrite@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@PPPPPOKM@AEXPAX@Z
-// SYNTHETIC: LEMBALL 0x0047ba80 symbol
-// ??_EVsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@DA@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x0047bb00 symbol
-// ?SendTimedSocketPayload@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@PPPPPOKM@AEHPAXH@Z
-// SYNTHETIC: LEMBALL 0x0047b9b0 symbol
-// ?ReleaseFileBackedEffMarker@VsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@A@AEHXZ
-// SYNTHETIC: LEMBALL 0x0047bb40 symbol
-// ?ReleaseFileBackedEffMarker@VsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@7AEHXZ
-// SYNTHETIC: LEMBALL 0x0047bc40 symbol
-// ?SendTimedSocketPayload@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@PPPPPOKI@AEHPAXH@Z
-// SYNTHETIC: LEMBALL 0x0047bb60 symbol
-// ??_GVsNetGlobalStateFileBackedEffComposite@@UAEPAXI@Z
-// SYNTHETIC: LEMBALL 0x0047bf40 symbol
-// ??_GVsNetDualSlotTableFileBackedEffComposite@@UAEPAXI@Z
-// SYNTHETIC: LEMBALL 0x0047bb10 symbol
-// ??_EVsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@KI@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x0047bc50 symbol
-// ??_EVsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@KI@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x0047be20 symbol
-// ??_EVsNetDualFileBackedEffChannel@@WCM@AEPAXI@Z
-// SYNTHETIC: LEMBALL 0x0047c000 symbol
-// ??_EVsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@KI@AEPAXI@Z
 struct VsNetEffStreamChannelState {
 	virtual int ReleaseFileBackedEffMarker(void) = 0;
 	virtual ~VsNetEffStreamChannelState();

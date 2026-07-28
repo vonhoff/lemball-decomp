@@ -1,13 +1,6 @@
 #ifndef LEMBALL_GAME_EFF_STREAMS_H
 #define LEMBALL_GAME_EFF_STREAMS_H
 
-// Original selected-peer-status vtable entries use these linker ILT slots.
-// LINKERILT: LEMBALL 0x004027fc
-// ReadNetworkLobbyPeerEntryStream
-// LINKERILT: LEMBALL 0x004019c4
-// WriteEffStreamU32Field2C
-// LINKERILT: LEMBALL 0x00402b76
-// DeleteNetworkLobbySelectedPeerStatusStream
 struct GameEffStreamVtable;
 
 extern void* g_GAME_EffStreamConstructionVtable[6];

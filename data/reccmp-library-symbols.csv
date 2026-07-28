@@ -1,0 +1,16 @@
+# CRT, runtime, and external library functions.
+address,name,symbol,type,source
+0x0047B8D0,WSAGetLastError,_WSAGetLastError@0,library,external/runtime library
+0x0047FCA0,__purecall,_purecall,library,external/runtime library
+0x0047FE00,_strchr,_strchr,library,external/runtime library
+0x0047FE20,_WinMainCRTStartup,_WinMainCRTStartup,library,external/runtime library
+0x00480010,_strncmp,_strncmp,library,external/runtime library
+0x00480198,__setjmp3,__setjmp3,library,external/runtime library
+0x00480290,_memcpy,_memcpy,library,external/runtime library
+0x00480420,_fopen,_fopen,library,external/runtime library
+0x00480440,_fclose,_fclose,library,external/runtime library
+0x004804E0,_fread,_fread,library,external/runtime library
+0x00480670,_fflush,_fflush,library,external/runtime library
+0x00480830,_fwrite,_fwrite,library,external/runtime library
+0x004809F0,_ftell,_ftell,library,external/runtime library
+0x00480BD0,_fseek,_fseek,library,external/runtime library
