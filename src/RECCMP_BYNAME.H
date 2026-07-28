@@ -4,6 +4,8 @@
 // By-name annotations belong in headers. Sections retain source ownership.
 
 // src/ENGINE/CORE/LINKSCF.CPP
+// LINKERILT: LEMBALL 0x0040153c
+// LevelChunkObjectBaseView::InitializeLevelChunkObjectBase
 // SYNTHETIC: LEMBALL 0x0040ebe0
 // DeleteDoorChunkManagerAuto
 // SYNTHETIC: LEMBALL 0x00418300

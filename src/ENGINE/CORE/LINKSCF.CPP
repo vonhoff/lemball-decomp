@@ -9,6 +9,14 @@
 
 #include <string.h>
 
+struct LevelChunkObjectBaseView {
+	void* InitializeLevelChunkObjectBase(int nType, unsigned short nChildType, unsigned short nFlags);
+};
+
+struct InvsChunkObjectView : LevelChunkObjectBaseView {
+	InvsChunkObjectView* ConstructInvsChunkObject(void);
+};
+
 // Recovered constructor and loader boundaries that are still being split into
 // their original level modules.  Keep unverified addresses free of markers.
 
@@ -699,6 +707,14 @@ extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject)
 
 // GLOBAL: LEMBALL 0x00493120
 static void* g_LINKSCF_InvsChunkObjectVtable[16] = {0};
+
+// FUNCTION: LEMBALL 0x00409ca0
+InvsChunkObjectView* InvsChunkObjectView::ConstructInvsChunkObject(void)
+{
+	InitializeLevelChunkObjectBase(0x36, 0, 0);
+	*(void**) this = g_LINKSCF_InvsChunkObjectVtable;
+	return this;
+}
 
 // FUNCTION: LEMBALL 0x00409d10
 void LEMBALL_FASTCALL destroy_invs_chunk_object(void* pObject)
@@ -1717,4 +1733,16 @@ void LEMBALL_FASTCALL DestroyDoorChunkObjectAuto(void*)
 void LEMBALL_FASTCALL DestroyDoorChunkObjectAutoThunk(void* pObject)
 {
 	DestroyDoorChunkObjectAuto(pObject);
+}
+
+// Compatibility shim for original ILT 0x0040153c while the base initializer
+// body at 0x00416d20 remains unreconstructed.
+void* LevelChunkObjectBaseView::InitializeLevelChunkObjectBase(int nType,
+															   unsigned short nChildType,
+															   unsigned short nFlags)
+{
+	(void) nType;
+	(void) nChildType;
+	(void) nFlags;
+	return this;
 }
