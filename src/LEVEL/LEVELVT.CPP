@@ -1741,18 +1741,11 @@ void LevelManagedEntityChildIterator::AppendChild(void* pChild)
 int LevelManagedEntityChildIterator::ContainsChild(void* pChild)
 {
 	int i;
-	void** ppChild;
 
-	i = 0;
-	if (0 < m_cChildren124) {
-		ppChild = m_apChildren128;
-		do {
-			if (*ppChild == pChild) {
-				return 1;
-			}
-			++ppChild;
-			++i;
-		} while (i < m_cChildren124);
+	for (i = 0; i < m_cChildren124; ++i) {
+		if (m_apChildren128[i] == pChild) {
+			return 1;
+		}
 	}
 	return 0;
 }
