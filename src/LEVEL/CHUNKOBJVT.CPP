@@ -29,6 +29,28 @@ struct ManagedEntityStateView {
 	void RequestManagedEntityStateId(int nStateId);
 };
 
+struct LevelTileRenderDescriptor {
+	short SampleHeightOffset(int nLocalX, int nLocalY);
+};
+
+struct GmobChunkType14ActionView {
+	virtual void ReservedSlot0(int nValue);
+	virtual void ReservedSlot1(int nValue);
+	virtual void SetManagedEntityStateId(int nStateId);
+	virtual void ReservedSlot3(int nValue);
+	virtual void ReservedSlot4(int nValue);
+	virtual void ReservedSlot5(int nValue);
+	virtual void ReservedSlot6(int nValue);
+	virtual void ReservedSlot7(int nValue);
+	virtual void ReservedSlot8(int nValue);
+	virtual void ReservedSlot9(int nValue);
+	virtual void ReservedSlot10(int nValue);
+	virtual void ReservedSlot11(int nValue);
+	virtual void ReservedSlot12(int nValue);
+	virtual void SetActionState(int nStateId);
+	void DispatchGmobChunkType14Actions(void);
+};
+
 extern ManagedEntityPacketStreamView* g_pManagedEntityPacketBindStream;
 
 #define DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, objectSize, destroyProc)                                 \
@@ -255,10 +277,56 @@ void LEMBALL_FASTCALL SetManagedEntityStateIdWithVariant(void* pObject, void* pU
 	((SetStateProc) (*(void***) pObject)[2])(nStateId);
 }
 
-// STUB: LEMBALL 0x0041d180
+// FUNCTION: LEMBALL 0x0041d180
 int LEMBALL_FASTCALL AdvanceGmobChunkType14StateMachine(void* pObject)
 {
-	(void) pObject;
+	char* pObjectBytes = (char*) pObject;
+	char* pGrid = (char*) g_pLevelTileGrid;
+	int nLocalY = *(int*) (pObjectBytes + 0xa0) >> 12;
+	int nLocalX = *(int*) (pObjectBytes + 0x9c) >> 12;
+	int nTileX = nLocalX >> 4;
+	int nTileY = nLocalY >> 4;
+	unsigned short nHeightOffset;
+	int nStateId;
+
+	if (nLocalX < 0 || nLocalY < 0 || nTileX >= *(int*) (pGrid + 0x10) || nTileY >= *(int*) (pGrid + 0x14)) {
+		nHeightOffset = 0;
+	}
+	else {
+		LevelTileRenderDescriptor* pTile =
+			(LevelTileRenderDescriptor*) (*(char**) (pGrid + 0x0c) + (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 12);
+		nHeightOffset = (unsigned short) pTile->SampleHeightOffset(nLocalX & 15, nLocalY & 15);
+	}
+	*(int*) (pObjectBytes + 0xa4) = nHeightOffset << 12;
+	nStateId = *(int*) (pObjectBytes + 0xb8);
+
+	if (*(int*) (pObjectBytes + 0x114) != 0) {
+		if (*(int*) (pObjectBytes + 0x128) != nStateId) {
+			if (nStateId == 7) {
+				((GmobChunkType14ActionView*) pObject)->SetActionState(0x15);
+			}
+			*(int*) (pObjectBytes + 0x128) = *(int*) (pObjectBytes + 0xb8);
+		}
+		return 1;
+	}
+
+	switch (nStateId) {
+	case 7:
+		((GmobChunkType14ActionView*) pObject)->DispatchGmobChunkType14Actions();
+		nStateId = 0x18;
+		break;
+	case 0x19:
+		return 1;
+	case 0x1a:
+		if ((unsigned int) g_nLevelFrameClockTick <= *(unsigned int*) (pObjectBytes + 0xd4)) {
+			return 1;
+		}
+		nStateId = 7;
+		break;
+	default:
+		return 1;
+	}
+	((GmobChunkType14ActionView*) pObject)->SetManagedEntityStateId(nStateId);
 	return 1;
 }
 

@@ -91,6 +91,7 @@ address,name,symbol,type,source
 0x00402658,MarkNetworkLobbySelectedPeerDisconnected,?MarkNetworkLobbySelectedPeerDisconnected@@YIXPAX@Z,stub,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x00402676,DestroyCollChunkObjectAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x0040268A,FindManagedEntityByPointer,,stub,src/ENGINE/CORE/LINKSCF.H
+0x0040268F,LevelSlotActionDispatcherView::DispatchLevelSlotActionByType,?DispatchLevelSlotActionByType@LevelSlotActionDispatcherView@@QAEXHIHH@Z,stub,src/LEVEL/LEVELVTACTIONDISPATCH.CPP
 0x004026CB,AppendManagedEntityGroupFromIds,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004026E9,DestroyCollChunkManagerAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402743,DestroyIceChunkManagerAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
@@ -103,6 +104,7 @@ address,name,symbol,type,source
 0x0040289C,ResetLasrChunkObjectRuntimeStateThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x004028BF,VS_WindowOwnerBase::ReservedWindowOwnerSlot18,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00402900,EmitProjectilePoolRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
+0x00402946,DispatchMoveChunkObjectActionBySlot,?DispatchMoveChunkObjectActionBySlot@@YIXPAX0HI@Z,stub,src/LEVEL/LEVELVTMOVEACTION.CPP
 0x0040295F,ClearCountedChildBackReference,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004029A0,GameScreenObject::ConstructPasswordEntryScreen,,stub,src/GAME.H
 0x004029B4,VS_WindowOwnerBase::ReservedWindowOwnerSlot39,,stub,src/ENGINE/GDI/VSWINDOW.H
@@ -127,6 +129,8 @@ address,name,symbol,type,source
 0x00402DF1,DestroyTileFlag1CChunkObjectAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402E1E,VS_WindowOwnerBase::CacheCurrentContextWindow,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00402E28,StartMenuSelectorActionThunk,,stub,src/FRONTEND/MENUSEL.H
+0x00402E4B,DispatchDoorChunkObjectTriggerBySlot,?DispatchDoorChunkObjectTriggerBySlot@@YIXPAX0HI@Z,stub,src/ENGINE/CORE/LINKSCFDOORACTION.CPP
+0x00402E9B,DispatchLiftChunkObjectActionBySlot,?DispatchLiftChunkObjectActionBySlot@@YIXPAX0HIHH@Z,stub,src/ENGINE/CORE/LINKSCFLIFTACTION.CPP
 0x00402EB9,GetCachedChunkObjectByIndex,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402F09,DestroyManagedEntityQueueCursorAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402F3B,SetMenuSelectorDurationFieldThunk,,stub,src/FRONTEND/MENUSEL.H
@@ -140,6 +144,7 @@ address,name,symbol,type,source
 0x00403062,DestroyBaseModeObjectAutoThunk,,stub,src/GAME.CPP
 0x00403076,ResetMoveChunkObjectRuntimeStateThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x004030C1,VS_RootGeometryOwner::RemoveQueuedRenderSinkValueNode,,stub,src/ENGINE/GDI/VSWINDOW.H
+0x004031CF,GmobChunkType14ActionView::DispatchGmobChunkType14Actions,?DispatchGmobChunkType14Actions@GmobChunkType14ActionView@@QAEXXZ,stub,src/LEVEL/LEVELVTACTIONDISPATCH.CPP
 0x00403201,GetFirstManagedEntityChildFromCachedGroup,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004032AB,set_move_chunk_object_trigger_latch,?set_move_chunk_object_trigger_latch@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004032C4,ActivateCollChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
@@ -154,6 +159,7 @@ address,name,symbol,type,source
 0x0040345E,ActivateMoveChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00403463,DestroyLevelSelectionScreenAutoThunk,,stub,src/FRONTEND/MAINMENU.CPP
 0x00403472,DestroyThreeOptionalRecordChunkObjectAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
+0x0040349A,DispatchIceChunkObjectActionBySlot,?DispatchIceChunkObjectActionBySlot@@YIXPAX0HI@Z,stub,src/ENGINE/CORE/LINKSCFICEACTION.CPP
 0x004034A9,VS_RootGeometryOwner::QueryRootGeometryState,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00403530,DestroyPasswordEntryScreenAutoThunk,,stub,src/FRONTEND/MAINMENU.CPP
 0x00403549,GetNextCachedChunkObject,,stub,src/ENGINE/CORE/LINKSCF.H
