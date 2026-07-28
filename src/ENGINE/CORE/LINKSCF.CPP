@@ -17,6 +17,30 @@ struct InvsChunkObjectView : LevelChunkObjectBaseView {
 	InvsChunkObjectView* ConstructInvsChunkObject(void);
 };
 
+struct RockChunkObjectView : LevelChunkObjectBaseView {
+	RockChunkObjectView* ConstructRockChunkObject(void);
+};
+
+struct CaptureTriggerChunkObjectView : LevelChunkObjectBaseView {
+	CaptureTriggerChunkObjectView* ConstructCaptureTriggerChunkObject(void);
+};
+
+struct LasrChunkObjectView : LevelChunkObjectBaseView {
+	LasrChunkObjectView* ConstructLasrChunkObject(void);
+};
+
+struct TramChunkObjectView : LevelChunkObjectBaseView {
+	TramChunkObjectView* ConstructTramChunkObject(void);
+};
+
+struct PgunChunkObjectView : LevelChunkObjectBaseView {
+	PgunChunkObjectView* ConstructPgunChunkObject(void);
+};
+
+struct IceChunkObjectView : LevelChunkObjectBaseView {
+	IceChunkObjectView* ConstructIceChunkObject(void);
+};
+
 // Recovered constructor and loader boundaries that are still being split into
 // their original level modules.  Keep unverified addresses free of markers.
 
@@ -1250,6 +1274,14 @@ LinkScfLiftChunkManagerView* LinkScfLiftChunkManagerView::ConstructLiftChunkMana
 // GLOBAL: LEMBALL 0x00495ed8
 static void* g_LINKSCF_RockChunkObjectVtable[16] = {0};
 
+// FUNCTION: LEMBALL 0x004267d0
+RockChunkObjectView* RockChunkObjectView::ConstructRockChunkObject(void)
+{
+	InitializeLevelChunkObjectBase(0x20, 0, 0);
+	*(void**) this = g_LINKSCF_RockChunkObjectVtable;
+	return this;
+}
+
 // FUNCTION: LEMBALL 0x00426830
 void LEMBALL_FASTCALL destroy_rock_chunk_object(void* pObject)
 {
@@ -1270,6 +1302,14 @@ LinkScfRockChunkManagerView* LinkScfRockChunkManagerView::ConstructRockChunkMana
 
 // GLOBAL: LEMBALL 0x00496198
 static void* g_LINKSCF_CaptureChunkObjectVtable[16] = {0};
+
+// FUNCTION: LEMBALL 0x00427ad0
+CaptureTriggerChunkObjectView* CaptureTriggerChunkObjectView::ConstructCaptureTriggerChunkObject(void)
+{
+	InitializeLevelChunkObjectBase(0x1f, 0, 0);
+	*(void**) this = g_LINKSCF_CaptureChunkObjectVtable;
+	return this;
+}
 
 // FUNCTION: LEMBALL 0x00427b40
 void LEMBALL_FASTCALL destroy_capture_trigger_chunk_object(void* pObject)
@@ -1297,6 +1337,14 @@ void LEMBALL_FASTCALL ClearManagedEntityArrayCount(void* pObject)
 
 // GLOBAL: LEMBALL 0x00496310
 static void* g_LINKSCF_LasrChunkObjectVtable[16] = {0};
+
+// FUNCTION: LEMBALL 0x00428890
+LasrChunkObjectView* LasrChunkObjectView::ConstructLasrChunkObject(void)
+{
+	InitializeLevelChunkObjectBase(0x2f, 0, 0);
+	*(void**) this = g_LINKSCF_LasrChunkObjectVtable;
+	return this;
+}
 
 // FUNCTION: LEMBALL 0x004288f0
 void LEMBALL_FASTCALL destroy_lasr_chunk_object_vtable_thunk(void* pObject)
@@ -1373,6 +1421,14 @@ void* LEMBALL_FASTCALL destroy_lasr_chunk_object(void* pObject, void*, BYTE fDel
 // GLOBAL: LEMBALL 0x004965c8
 static void* g_LINKSCF_TramChunkObjectVtable[16] = {0};
 
+// FUNCTION: LEMBALL 0x0042a990
+TramChunkObjectView* TramChunkObjectView::ConstructTramChunkObject(void)
+{
+	InitializeLevelChunkObjectBase(0x22, 0, 0);
+	*(void**) this = g_LINKSCF_TramChunkObjectVtable;
+	return this;
+}
+
 // FUNCTION: LEMBALL 0x0042a9d0
 void LEMBALL_FASTCALL destroy_tram_chunk_object(void* pObject)
 {
@@ -1394,6 +1450,14 @@ LinkScfTramChunkManagerView* LinkScfTramChunkManagerView::ConstructTramChunkMana
 // GLOBAL: LEMBALL 0x00496740
 static void* g_LINKSCF_PgunChunkObjectVtable[16] = {0};
 
+// FUNCTION: LEMBALL 0x0042bad0
+PgunChunkObjectView* PgunChunkObjectView::ConstructPgunChunkObject(void)
+{
+	InitializeLevelChunkObjectBase(0x21, 0, 0);
+	*(void**) this = g_LINKSCF_PgunChunkObjectVtable;
+	return this;
+}
+
 // FUNCTION: LEMBALL 0x0042bb20
 void LEMBALL_FASTCALL destroy_pgun_chunk_object_vtable_thunk(void* pObject)
 {
@@ -1414,6 +1478,14 @@ LinkScfPgunChunkManagerView* LinkScfPgunChunkManagerView::ConstructPgunChunkMana
 
 // GLOBAL: LEMBALL 0x004968b8
 static void* g_LINKSCF_IceChunkObjectVtable[16] = {0};
+
+// FUNCTION: LEMBALL 0x0042ca70
+IceChunkObjectView* IceChunkObjectView::ConstructIceChunkObject(void)
+{
+	InitializeLevelChunkObjectBase(0x33, 0, 0);
+	*(void**) this = g_LINKSCF_IceChunkObjectVtable;
+	return this;
+}
 
 // FUNCTION: LEMBALL 0x0042caf0
 void LEMBALL_FASTCALL destroy_ice_chunk_object(void* pObject)
