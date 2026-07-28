@@ -147,6 +147,103 @@ int LevelManagedEntityActiveGroupView::HasDirtyChildren(void)
 	return fDirty;
 }
 
+class LevelManagedEntityDirtyStateRecoveredView {
+	char m_abReserved00[0x94];
+	int m_nDirtyAuxValue94;
+	int m_nCurrentDirtyValue98;
+	int m_nPositionX9C;
+	int m_nPositionYA0;
+	int m_nPositionZA4;
+	char m_abReservedA8[0x0c];
+	short m_nHeadingB4;
+	char m_abReservedB6[2];
+	int m_nStateIdB8;
+	unsigned short m_nVariantBC;
+	char m_abReservedBE[0xa6];
+	int m_fChildDirty164;
+	char m_abReserved168[0x2c];
+	int m_nCachedPositionX194;
+	int m_nCachedPositionY198;
+	int m_nCachedPositionZ19C;
+	short m_nCachedHeading1A0;
+	char m_abReserved1A2[2];
+	int m_nCachedStateId1A4;
+	unsigned short m_nCachedVariant1A8;
+	char m_abReserved1AA[2];
+	int m_nCachedDirtyAuxValue1AC;
+	int m_nCachedDirtyValue1B0;
+
+public:
+	int PollStreamDirtyFlag(void);
+};
+
+// Original body: LEMBALL 0x0040f7e0. Kept outside LEVELVT to preserve exact iterator code generation.
+int LevelManagedEntityDirtyStateRecoveredView::PollStreamDirtyFlag(void)
+{
+	int* pfDirty;
+	int nStateId;
+
+	pfDirty = &m_fChildDirty164;
+	if (((m_nCachedPositionX194 ^ m_nPositionX9C) & 0xfffff000) == 0 && *pfDirty == 0) {
+		*pfDirty = 0;
+	}
+	else {
+		*pfDirty = 1;
+	}
+	if (((m_nCachedPositionY198 ^ m_nPositionYA0) & 0xfffff000) == 0 && *pfDirty == 0) {
+		*pfDirty = 0;
+	}
+	else {
+		*pfDirty = 1;
+	}
+	if (((m_nCachedPositionZ19C ^ m_nPositionZA4) & 0xfffff000) == 0 && *pfDirty == 0) {
+		*pfDirty = 0;
+	}
+	else {
+		*pfDirty = 1;
+	}
+
+	nStateId = m_nStateIdB8;
+	if (nStateId != 1) {
+		if (m_nCachedStateId1A4 == nStateId && *pfDirty == 0) {
+			*pfDirty = 0;
+		}
+		else {
+			*pfDirty = 1;
+		}
+		if (nStateId != 0) {
+			if (m_nCachedVariant1A8 == m_nVariantBC && *pfDirty == 0) {
+				*pfDirty = 0;
+			}
+			else {
+				*pfDirty = 1;
+			}
+			if (m_nDirtyAuxValue94 == m_nCachedDirtyAuxValue1AC && *pfDirty == 0) {
+				*pfDirty = 0;
+			}
+			else {
+				*pfDirty = 1;
+			}
+		}
+		m_nCachedStateId1A4 = nStateId;
+	}
+
+	if (m_nCachedDirtyValue1B0 == m_nCurrentDirtyValue98 && *pfDirty == 0) {
+		*pfDirty = 0;
+	}
+	else {
+		*pfDirty = 1;
+	}
+	m_nCachedPositionX194 = m_nPositionX9C;
+	m_nCachedHeading1A0 = m_nHeadingB4;
+	m_nCachedPositionY198 = m_nPositionYA0;
+	m_nCachedPositionZ19C = m_nPositionZA4;
+	m_nCachedDirtyValue1B0 = m_nCurrentDirtyValue98;
+	m_nCachedVariant1A8 = m_nVariantBC;
+	m_nCachedDirtyAuxValue1AC = m_nDirtyAuxValue94;
+	return *pfDirty;
+}
+
 struct LevelLevelTileGridStaticView {
 	char m_abReserved00[0x0c];
 	LevelLevelTileCell* m_pCells0C;
@@ -690,7 +787,8 @@ unsigned char* GetNextLevelChunk(unsigned char* pChunk)
 		cbChunk -= cbRemainder;
 		cbChunk += 4;
 	}
-	return pChunk + cbChunk;
+	pChunk += cbChunk;
+	return pChunk;
 }
 // FUNCTION: LEMBALL 0x00408850
 void ReadLevelMetadataForSkillAndLevel(unsigned int nSkill, unsigned int nLevel, LevelMetadata* pMetadata)

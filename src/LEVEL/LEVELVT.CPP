@@ -51,6 +51,11 @@ struct LevelManagedEntityStateIdView {
 	int m_nStateIdB8;
 };
 
+class LevelManagedEntityDirtyStateRecoveredView {
+public:
+	int PollStreamDirtyFlag(void);
+};
+
 struct LevelManagedEntityDirtyStateView {
 	char m_abReserved00[0x98];
 	int m_nCurrentDirtyValue98;
@@ -552,7 +557,7 @@ int LevelManagedEntityHistoryView::PopHistoryIdThunk(void)
 // LINKERILT: LEMBALL 0x00402b99
 int LevelManagedEntityDirtyStateView::PollStreamDirtyFlagThunk(void)
 {
-	return PollStreamDirtyFlag();
+	return ((LevelManagedEntityDirtyStateRecoveredView*) this)->PollStreamDirtyFlag();
 }
 
 // LINKERILT: LEMBALL 0x00403215
@@ -1018,7 +1023,8 @@ int LevelManagedEntityDirtyStateView::PollChildDirtyFlag(void)
 	return *pfDirty;
 }
 
-// STUB: LEMBALL 0x0040f7e0
+// Compiler-state shim for recovered PollStreamDirtyFlag at 0x0040f7e0; removal regresses exact 0x00408830 and
+// 0x0041e0c0.
 int LevelManagedEntityDirtyStateView::PollStreamDirtyFlag(void)
 {
 	return m_fChildDirty164;
