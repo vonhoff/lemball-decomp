@@ -642,11 +642,6 @@ LinkScfInvsChunkManagerView* LinkScfInvsChunkManagerView::ConstructInvsChunkMana
 {
 	return ConstructInvsChunkManager(pLevelMode, nCapacity);
 }
-// LINKERILT: LEMBALL 0x004034b8
-LinkScfGmobChunkManagerView* LinkScfGmobChunkManagerView::ConstructGmobChunkManagerThunk(void* pLevelMode)
-{
-	return ConstructGmobChunkManager(pLevelMode);
-}
 // FUNCTION: LEMBALL 0x00408240
 void LinkScfLevelChunkLoaderView::LoadLevelChunksForSkillAndLevel(unsigned int nSkill,
 																  unsigned int nLevel,
@@ -1087,7 +1082,7 @@ void LinkScfPlasChunkManagerView::LoadPlasChunkObjects(const unsigned short* pCh
 	*(int*) (pManagerBytes + 0x11c) = 0;
 }
 // FUNCTION: LEMBALL 0x0041af60
-LinkScfGmobChunkManagerView* LinkScfGmobChunkManagerView::ConstructGmobChunkManager(void* pLevelMode)
+LinkScfGmobChunkManagerView* LinkScfGmobChunkManagerView::ConstructGmobChunkManager(void* pLevelMode, int nCapacity)
 {
 	*(void**) this = g_GAME_EffStreamConstructionVtable;
 	*(int*) ((char*) this + 4) = 0x0c;

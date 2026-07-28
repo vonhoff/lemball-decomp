@@ -3064,6 +3064,7 @@ void SetLevelFrameClockPauseFlag(int fPaused)
 // FUNCTION: LEMBALL 0x00408dc0
 void GameLevelProgressState::Advance(void)
 {
+	int nCurrentLevel;
 	int nPack;
 	int nLevelCount;
 
@@ -3085,8 +3086,9 @@ void GameLevelProgressState::Advance(void)
 		nLevelCount = 0x0b;
 		break;
 	}
-	if (m_nCurrentLevel < nLevelCount) {
-		++m_nCurrentLevel;
+	nCurrentLevel = m_nCurrentLevel;
+	if (nCurrentLevel < nLevelCount) {
+		m_nCurrentLevel = nCurrentLevel + 1;
 	}
 	if (nPack != 4 && m_anUnlockedPackCaps[nPack] < m_nCurrentLevel) {
 		m_anUnlockedPackCaps[nPack] = m_nCurrentLevel;
@@ -3325,7 +3327,7 @@ void LevelGameMode::InitializeLevelGameMode(void)
 	if (*(int*) (pModeBytes + 0x4c) == 0) {
 		pObject = AllocateVSMemBlock(0x40);
 		if (pObject != 0) {
-			pObject = ((LinkScfGmobChunkManagerView*) pObject)->ConstructGmobChunkManagerThunk(pLevelGameMode);
+			pObject = ((LinkScfGmobChunkManagerView*) pObject)->ConstructGmobChunkManager(pLevelGameMode, 0x3c);
 		}
 		*(void**) (pModeBytes + 0x158) = pObject;
 		RegisterLevelChunkStreamThunk(g_pLevelChunkStreamDispatcher, *(void**) (pModeBytes + 0x158));

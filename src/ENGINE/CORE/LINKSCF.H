@@ -52,8 +52,7 @@ struct LinkScfCollChunkManagerView {
 };
 
 struct LinkScfGmobChunkManagerView {
-	LinkScfGmobChunkManagerView* ConstructGmobChunkManager(void* pLevelMode);
-	LinkScfGmobChunkManagerView* ConstructGmobChunkManagerThunk(void* pLevelMode);
+	LinkScfGmobChunkManagerView* ConstructGmobChunkManager(void* pLevelMode, int nCapacity);
 };
 
 struct LinkScfMoveChunkManagerView {
