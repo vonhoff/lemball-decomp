@@ -3,13 +3,42 @@
 struct ProjectilePoolOwnerView {
 	char m_abReserved00[0x30];
 	char* volatile m_pProjectilePool30;
-	char m_abReserved34[0xa8];
+	void* m_apActiveProjectiles34[20];
+	char m_abReserved84[0x50];
+	int m_cActiveProjectilesD4;
+	int m_iActiveProjectileD8;
 	volatile int m_iProjectilePoolSearchStartDC;
 
 	void* GetFreeProjectilePoolObject(void);
 };
 
+typedef void(LEMBALL_FASTCALL* ResetProjectileObjectProc)(void* pObject);
+
 // Split from the original LINKSCF source group to preserve MSVC 4.20 code generation in LINKSCF.CPP.
+
+// FUNCTION: LEMBALL 0x00417e80
+void LEMBALL_FASTCALL ResetProjectilePool(void* pPool)
+{
+	void** ppActiveProjectile;
+	ProjectilePoolOwnerView* pOwner;
+	int cbProjectile;
+	void* pProjectile;
+	ResetProjectileObjectProc pReset;
+
+	cbProjectile = 0;
+	ppActiveProjectile = ((ProjectilePoolOwnerView*) pPool)->m_apActiveProjectiles34;
+	((ProjectilePoolOwnerView*) pPool)->m_iActiveProjectileD8 = 0;
+	((ProjectilePoolOwnerView*) pPool)->m_cActiveProjectilesD4 = 0;
+	pOwner = (ProjectilePoolOwnerView*) ((char*) ppActiveProjectile - 0x34);
+	do {
+		*ppActiveProjectile = NULL;
+		ppActiveProjectile++;
+		pProjectile = pOwner->m_pProjectilePool30 + cbProjectile;
+		cbProjectile += 0x1a4;
+		pReset = (ResetProjectileObjectProc) (*(void***) pProjectile)[65];
+		pReset(pProjectile);
+	} while (cbProjectile < 0x41a0);
+}
 
 // FUNCTION: LEMBALL 0x00417ee0
 void* ProjectilePoolOwnerView::GetFreeProjectilePoolObject(void)

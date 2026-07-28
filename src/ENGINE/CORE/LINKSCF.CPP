@@ -175,7 +175,7 @@ DEFINE_LINKSCF_VTABLE_STUB_0(AdvanceInvsChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(DispatchDoorChildArrayVirtual104)
 DEFINE_LINKSCF_VTABLE_STUB_0(ServiceActiveDoorChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitDoorChunkRenderEntries)
-DEFINE_LINKSCF_VTABLE_STUB_0(ResetProjectilePool)
+void LEMBALL_FASTCALL ResetProjectilePool(void* pPool);
 int LEMBALL_FASTCALL EmitProjectilePoolRenderEntries(void* pPool, void* pUnused, void* pRenderEntry);
 DEFINE_LINKSCF_VTABLE_STUB_0(ActivateManagedEntityGroupChildren)
 DEFINE_LINKSCF_VTABLE_STUB_0(ServiceCountedChildPointerTable)
