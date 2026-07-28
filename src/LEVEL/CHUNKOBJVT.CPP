@@ -6,6 +6,7 @@ extern int g_nLevelFrameClockTimeMs;
 extern int g_nLevelFrameClockTick;
 extern int g_nSelectedNetworkLobbyPeerId;
 extern void* g_pLiftTileGrid;
+extern void* g_pLevelTileGrid;
 extern void* g_pActiveManagedEntityOwner;
 extern int __fastcall has_level_plas_history_entries(void* pLevelMode);
 extern int LEMBALL_FASTCALL AcquireLasrPlasTarget(void* pObject);
@@ -673,6 +674,46 @@ void* LEMBALL_FASTCALL DeleteIceChunkObjectAuto(void* pObject, void* pUnused, un
 {
 	(void) pUnused;
 	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x188, destroy_ice_chunk_object);
+}
+
+// FUNCTION: LEMBALL 0x0042e650
+void LEMBALL_FASTCALL mark_move_chunk_tiles_occupied(void* pObject)
+{
+	char* pGrid = (char*) g_pLevelTileGrid;
+	int nMinX = (*(int*) ((char*) pObject + 0x9c) >> 12) - 8;
+	int nMaxX = nMinX + 15;
+	int nMinY = (*(int*) ((char*) pObject + 0xa0) >> 12) - 8;
+	int nMaxY = nMinY + 15;
+	int nTileX;
+	int nTileY;
+
+	nMinX = (nMinX + ((nMinX >> 31) & 15)) >> 4;
+	nMaxX = (nMaxX + ((nMaxX >> 31) & 15)) >> 4;
+	nMinY = (nMinY + ((nMinY >> 31) & 15)) >> 4;
+	nMaxY = (nMaxY + ((nMaxY >> 31) & 15)) >> 4;
+
+	for (nTileY = nMinY; nTileY <= nMaxY; ++nTileY) {
+		for (nTileX = nMinX; nTileX <= nMaxX; ++nTileX) {
+			if (nTileX >= 0 && nTileY >= 0 && nTileX < *(int*) (pGrid + 0x10) && nTileY < *(int*) (pGrid + 0x14)) {
+				char* pTile = *(char**) (pGrid + 0x0c) + (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 12;
+				*(unsigned char*) (pTile + 6) |= 0x10;
+			}
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x0042ea40
+void LEMBALL_FASTCALL
+translate_attached_move_chunk_objects(void* pObject, void* pUnused, int nDeltaX, int nDeltaY, int nDeltaZ)
+{
+	int i;
+	(void) pUnused;
+	for (i = 0; i < *(int*) ((char*) pObject + 0x174); ++i) {
+		char* pEntity = *(char**) ((char*) pObject + 0x178 + i * 4);
+		*(int*) (pEntity + 0x9c) += nDeltaX << 12;
+		*(int*) (pEntity + 0xa0) += nDeltaY << 12;
+		*(int*) (pEntity + 0xa4) += nDeltaZ << 12;
+	}
 }
 
 // STUB: LEMBALL 0x0042eb00

@@ -1506,6 +1506,32 @@ void LoadLevelFlagChunk(void* pLevelMode, const unsigned short* pWords)
 		*(int*) (pMode + 0x100) = pWords[1];
 	}
 }
+extern int g_nLevelFrameClockTick;
+extern void* g_pLevelTileReachabilityHelper;
+
+// FUNCTION: LEMBALL 0x00416590
+void LEMBALL_FASTCALL clear_managed_entity_child_pending_state_if_interruptible(void* pEntity)
+{
+	typedef int(LEMBALL_FASTCALL * NoArgIntSlotProc)(void*);
+	char* pBytes = (char*) pEntity;
+	int nState = *(int*) (pBytes + 0xb8);
+
+	if (nState == 4 || nState == 0x0c) {
+		return;
+	}
+	if (*(void**) (pBytes + 0x70) == 0) {
+		return;
+	}
+	if (((NoArgIntSlotProc) (*(void***) pEntity)[28])(pEntity) != 0) {
+		*(int*) (pBytes + 0xcc) = g_nLevelFrameClockTick;
+	}
+	*(unsigned short*) *(void**) (pBytes + 0x70) = 0;
+	if (*(void**) (pBytes + 0x0c) != 0) {
+		*(int*) ((char*) g_pLevelTileReachabilityHelper + 8) = 0;
+	}
+	*(void**) (pBytes + 8) = 0;
+}
+
 // FUNCTION: LEMBALL 0x004165e0
 void InitializeManagedEntitySlotTablesThunk(void* pLevelGameMode)
 {

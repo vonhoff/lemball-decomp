@@ -1784,6 +1784,65 @@ void LEMBALL_FASTCALL AdvanceIceChunkManagerObjects(void* pManager)
 		} while (*(int*) (pManagerBytes + 0x34) > i);
 	}
 }
+
+// FUNCTION: LEMBALL 0x0042eee0
+int LEMBALL_FASTCALL is_point_inside_move_chunk_bounds(void* pObject, void* pUnused, const int* pPoint)
+{
+	int nMinX = (*(int*) ((char*) pObject + 0x9c) >> 12) - 8;
+	int nMinY = (*(int*) ((char*) pObject + 0xa0) >> 12) - 8;
+	int nX = pPoint[0] >> 12;
+	int nY = pPoint[1] >> 12;
+	(void) pUnused;
+	return nMinX <= nX && nX <= nMinX + 15 && nMinY <= nY && nY <= nMinY + 15;
+}
+
+// FUNCTION: LEMBALL 0x0042ef40
+void LEMBALL_FASTCALL detach_entities_outside_move_chunk_bounds(void* pObject)
+{
+	char* pBytes = (char*) pObject;
+	int nMinX = (*(int*) (pBytes + 0x9c) >> 12) - 8;
+	int nMinY = (*(int*) (pBytes + 0xa0) >> 12) - 8;
+	int i = 0;
+
+	while (i < *(int*) (pBytes + 0x174)) {
+		char* pEntity = *(char**) (pBytes + 0x178 + i * 4);
+		int nX = *(int*) (pEntity + 0x9c) >> 12;
+		int nY = *(int*) (pEntity + 0xa0) >> 12;
+		if (nX < nMinX || nMinX + 15 < nX || nY < nMinY || nMinY + 15 < nY) {
+			int j;
+			*(int*) (pEntity + 0x11c) = 0;
+			for (j = i + 1; j < *(int*) (pBytes + 0x174); ++j) {
+				*(void**) (pBytes + 0x178 + (j - 1) * 4) = *(void**) (pBytes + 0x178 + j * 4);
+			}
+			--i;
+			--*(int*) (pBytes + 0x174);
+		}
+		++i;
+	}
+}
+
+extern void* LEMBALL_FASTCALL get_managed_entity_owner_group(void* pEntity);
+extern void LEMBALL_FASTCALL clear_managed_entity_child_pending_state_if_interruptible(void* pEntity);
+
+// FUNCTION: LEMBALL 0x0042f140
+void LEMBALL_FASTCALL release_attached_move_chunk_entities(void* pObject)
+{
+	typedef void(LEMBALL_FASTCALL * OwnerResetSlotProc)(void*);
+	char* pBytes = (char*) pObject;
+	int i;
+
+	for (i = 0; i < *(int*) (pBytes + 0x174); ++i) {
+		void* pEntity = *(void**) (pBytes + 0x178 + i * 4);
+		if (*(int*) ((char*) pEntity + 0x64) == 2) {
+			void* pOwnerGroup = get_managed_entity_owner_group(pEntity);
+			((OwnerResetSlotProc) (*(void***) pOwnerGroup)[84])(pOwnerGroup);
+		}
+		else {
+			clear_managed_entity_child_pending_state_if_interruptible(pEntity);
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x0042f190
 LinkScfMoveChunkManagerView* LinkScfMoveChunkManagerView::ConstructMoveChunkManager(void* pLevelMode, int nCapacity)
 {
