@@ -555,4 +555,8 @@
 // SYNTHETIC: LEMBALL 0x004324d0
 // is_object_field_0x44_current_context
 
+// LIBCMT:malloc.obj
+// SYNTHETIC: LEMBALL 0x00480d70
+// _malloc
+
 #endif
