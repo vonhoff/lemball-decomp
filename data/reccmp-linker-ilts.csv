@@ -187,6 +187,7 @@ address,name,symbol,type,source
 0x0040369D,EmitDoorChunkRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004036C0,GetIntDirectionSignThunk,,stub,src/FRONTEND/MENUSEL.H
 0x004036D4,InitializeTramChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
+0x004036D9,DispatchPlasChildStateTable,?DispatchPlasChildStateTable@@YAXPAPAUPlasChildStateDispatchEntry@@PAXPAUPlasChildStateEntityView@@@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004036F2,DestroyNetworkLobbyTransportControllerAutoThunk,,stub,src/GAME.CPP
 0x0040372E,has_level_plas_history_entries,?has_level_plas_history_entries@@YIHPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00403779,LevelManagedEntityChildIterator::AttachManagedEntityChild,?AttachManagedEntityChild@LevelManagedEntityChildIterator@@QAEHPAUManagedEntityChildView@@@Z,stub,src/LEVEL/LEVELVTCHILD.CPP
