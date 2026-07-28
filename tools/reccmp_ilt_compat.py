@@ -28,6 +28,29 @@ ONE_PAST_REFERENCES = {
         "g_aCommandLineOptions+112 (OFFSET)",
     ),
 }
+# These real, source-owned adjustor thunks jump through original LINK 3.00
+# ILT entries while rebuilt naked thunks jump directly to the same bodies.
+# Normalize only the proven relocation in each listed function.
+THUNK_ILT_REFERENCES = {
+    # function: (original ILT entry, rebuilt destination, shared identity)
+    0x00408040: (0x00401370, "DeleteDerivedBaseModeWrapperAuto", "adjustor target 00407fd0"),
+    0x00413E60: (0x00403616, "DeleteLevelGameMode", "adjustor target 00413e30"),
+    0x00413E70: (0x00403616, "DeleteLevelGameModeAuto", "adjustor target 00413e30"),
+    0x00439850: (0x00403521, "DeleteReconstructedLevelScreenAuto", "adjustor target 00439490"),
+    0x004472E0: (0x00401E1F, "DeleteBaseModeObjectAuto", "adjustor target 004472b0"),
+    0x004491A0: (0x0040386E, "DeleteOptionsScreen", "adjustor target 00449170"),
+    0x0044AA00: (0x00401BE5, "DeleteLevelSelectionModeThunk", "adjustor target 0044a9d0"),
+    0x0044AA10: (0x004019B0, "DeleteLevelSelectionScreenAuto", "adjustor target 0044a940"),
+    0x0044C1D0: (0x004023F1, "DeleteRegistrationInfoScreenAuto", "adjustor target 0044c0d0"),
+    0x00451200: (0x00401B40, "DeletePaintballSequenceScreen", "adjustor target 004510e0"),
+    0x004523A0: (0x00401122, "DeletePasswordEntryScreen", "adjustor target 00452370"),
+    0x00455EE0: (0x004037C9, "DeleteNetworkLobbyScreen", "adjustor target 00455de0"),
+    0x00455EF0: (
+        0x004027E3,
+        "DeleteNetworkLobbyTransportController",
+        "adjustor target 00455eb0",
+    ),
+}
 
 
 def _ilt_destination(comparator, address):
@@ -46,28 +69,34 @@ def _ilt_destination(comparator, address):
     return address + 5 + displacement
 
 
-if not getattr(functions.FunctionComparator, "_lemball_one_past_aware", False):
+if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False):
     _reccmp_compare_function = functions.FunctionComparator.compare_function
 
     def _compare_function(self, match):
         reference = ONE_PAST_REFERENCES.get(match.orig_addr)
-        if reference is None:
+        ilt_reference = THUNK_ILT_REFERENCES.get(match.orig_addr)
+        if reference is None and ilt_reference is None:
             return _reccmp_compare_function(self, match)
 
-        orig_boundary, recomp_successor, shared_name = reference
         orig_lookup = self.orig_sanitize.name_lookup
         recomp_lookup = self.recomp_sanitize.name_lookup
 
         def _orig_lookup(address, exact=False, indirect=False):
-            if not exact and not indirect and address == orig_boundary:
-                return shared_name
+            if ilt_reference is not None and address == ilt_reference[0]:
+                return ilt_reference[2]
+            if not exact and not indirect:
+                if reference is not None and address == reference[0]:
+                    return reference[2]
             return orig_lookup(address, exact=exact, indirect=indirect)
 
         def _recomp_lookup(address, exact=False, indirect=False):
             name = recomp_lookup(address, exact=exact, indirect=indirect)
-            if not exact and not indirect and name is not None:
-                if recomp_successor in name:
-                    return shared_name
+            if reference is not None and not exact and not indirect and name is not None:
+                if reference[1] in name:
+                    return reference[2]
+            if ilt_reference is not None and name is not None:
+                if ilt_reference[1] in name:
+                    return ilt_reference[2]
             return name
 
         self.orig_sanitize.name_lookup = _orig_lookup
@@ -79,7 +108,7 @@ if not getattr(functions.FunctionComparator, "_lemball_one_past_aware", False):
             self.recomp_sanitize.name_lookup = recomp_lookup
 
     functions.FunctionComparator.compare_function = _compare_function
-    functions.FunctionComparator._lemball_one_past_aware = True
+    functions.FunctionComparator._lemball_relocation_aware = True
 
 
 if not getattr(VariableComparator, "_lemball_ilt_aware", False):
