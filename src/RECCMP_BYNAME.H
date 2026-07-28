@@ -419,6 +419,8 @@
 // LevelChunkObjectRuntimeStateView::ClearStateFieldsThunk
 // FUNCTION: LEMBALL 0x004150d0
 // LevelChunkObjectRuntimeStateView::ResetRuntimeState
+// FUNCTION: LEMBALL 0x00415240
+// LevelChunkObjectRuntimeStateView::SetMotionVector
 // LINKERILT: LEMBALL 0x0040209f
 // LevelChunkObjectRuntimeStateView::ResetRuntimeStateThunk
 // FUNCTION: LEMBALL 0x00416d50

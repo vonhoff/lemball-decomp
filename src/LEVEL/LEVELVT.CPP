@@ -120,6 +120,7 @@ struct LevelManagedEntityChildIterator {
 };
 
 extern int g_nLevelFrameClockTick;
+extern int g_nLevelFrameClockTimeMs;
 extern void* g_pSharedRenderDispatchQueue;
 
 struct LevelManagedEntityStateFields {
@@ -2476,6 +2477,7 @@ struct LevelChunkObjectRuntimeStateView {
 	void ClearStateFieldsThunk(void);
 	void ResetRuntimeState(void);
 	void ResetRuntimeStateThunk(void);
+	void SetMotionVector(const LevelBoundsPoint* pMotionVector, const LevelBoundsPoint* pInitialPosition);
 };
 
 struct ManagedEntityRuntimeStateView : LevelChunkObjectRuntimeStateView {
@@ -2553,4 +2555,45 @@ void LEMBALL_FASTCALL ResetMoveChunkObject(void* pObject)
 {
 	ResetManagedEntityRuntimeStateThunk(pObject);
 	ResetMoveChunkObjectRuntimeStateThunk(pObject);
+}
+
+void LevelChunkObjectRuntimeStateView::SetMotionVector(const LevelBoundsPoint* pMotionVector,
+													   const LevelBoundsPoint* pInitialPosition)
+{
+	char* pObjectBytes;
+	int nX;
+	int nY;
+	int nZ;
+
+	pObjectBytes = (char*) this;
+	*(int*) (pObjectBytes + 0x104) = 0;
+	*(int*) (pObjectBytes + 0x108) = 0;
+	*(int*) (pObjectBytes + 0x30) = 0;
+	*(int*) (pObjectBytes + 0x34) = 0;
+	if (pInitialPosition != 0) {
+		nX = pInitialPosition->m_nX;
+		*(int*) (pObjectBytes + 0xd8) = nX;
+		nY = pInitialPosition->m_nY;
+		*(int*) (pObjectBytes + 0xdc) = nY;
+		nZ = pInitialPosition->m_nZ;
+		*(int*) (pObjectBytes + 0xe0) = nZ;
+		*(int*) (pObjectBytes + 0x9c) = nX;
+		*(int*) (pObjectBytes + 0xa0) = nY;
+		*(int*) (pObjectBytes + 0xa4) = nZ;
+	}
+	else {
+		nX = *(int*) (pObjectBytes + 0x9c);
+		nY = *(int*) (pObjectBytes + 0xa0);
+		nZ = *(int*) (pObjectBytes + 0xa4);
+		*(int*) (pObjectBytes + 0xd8) = nX;
+		*(int*) (pObjectBytes + 0xdc) = nY;
+		*(int*) (pObjectBytes + 0xe0) = nZ;
+	}
+	*(int*) (pObjectBytes + 0xf0) = 1;
+	*(int*) (pObjectBytes + 0x4c) = pMotionVector->m_nX;
+	*(int*) (pObjectBytes + 0x50) = pMotionVector->m_nY;
+	*(int*) (pObjectBytes + 0x54) = pMotionVector->m_nZ;
+	*(int*) (pObjectBytes + 0x94) = g_nLevelFrameClockTimeMs;
+	*(int*) (pObjectBytes + 0xc8) = g_nLevelFrameClockTick;
+	*(int*) (pObjectBytes + 0xcc) = g_nLevelFrameClockTick + 10;
 }
