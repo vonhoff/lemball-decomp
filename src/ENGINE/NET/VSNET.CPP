@@ -4124,9 +4124,11 @@ void* VsNetEffTransportRuntimeState::CreateFileBasedChannelOwner(void)
 void* VsNetEffTransportRuntimeState::DeleteEffTransportRuntimeWindow(BYTE fFreeMemory)
 {
 	char* pWindowBase;
+	VsNetEffTransportRuntimeState* pRuntimeState;
 
 	pWindowBase = (char*) this - 0x10;
-	DestroyEffTransportRuntimeGlobals();
+	pRuntimeState = pWindowBase != 0 ? this : 0;
+	pRuntimeState->DestroyEffTransportRuntimeGlobals();
 	DestroyInvisibleMessageWindow((VS_InvisibleWindow*) pWindowBase);
 	if ((fFreeMemory & 1) != 0) {
 		FreeVSMemBlock(pWindowBase);
