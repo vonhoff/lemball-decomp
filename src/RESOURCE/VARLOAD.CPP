@@ -368,8 +368,6 @@ int MogLoadTypedResourceObject::LoadTypedResourceObjectFromBufferDescriptor(int*
 																			void* pOwner)
 {
 	int* pEntry;
-	int cbResourceData;
-	unsigned int* pResourceDescriptor;
 	void** pVtable;
 
 	m_nReserved04 = (int) pOwner;
@@ -378,11 +376,9 @@ int MogLoadTypedResourceObject::LoadTypedResourceObjectFromBufferDescriptor(int*
 		m_nResultCode44 = 1;
 		return 1;
 	}
-	cbResourceData = pEntry[1];
-	pResourceDescriptor = (unsigned int*) (pEntry + 2);
+	m_cbResourceData28 = pEntry[1];
+	m_padwResourceDescriptor34 = (unsigned int*) (pEntry + 2);
 	pVtable = m_pVtable;
-	m_cbResourceData28 = cbResourceData;
-	m_padwResourceDescriptor34 = pResourceDescriptor;
 	((void(LEMBALL_FASTCALL*)(void*)) pVtable[2])(this);
 	*pDescriptorCursor = (int) pEntry + m_nReserved3C + 8;
 	m_pszText38 = (char*) *pDataCursor;
