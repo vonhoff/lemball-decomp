@@ -61,6 +61,8 @@ struct LevelManagedEntityDirtyStateView {
 
 	int PollChildDirtyFlag(void);
 	int PollChildDirtyFlagThunk(void);
+	int PollStreamDirtyFlag(void);
+	int PollStreamDirtyFlagThunk(void);
 };
 
 struct LevelManagedEntityHistoryView {
@@ -109,6 +111,7 @@ struct LevelManagedEntityChildIterator {
 	void* GetCurrentChildWithState8(void);
 	int HasDirtyChildren(void);
 	int HasDirtyChildrenThunk(void);
+	int HasStreamDirtyChildren(void);
 };
 
 extern int g_nLevelFrameClockTick;
@@ -544,6 +547,12 @@ int LevelQueuedProjectileRequestTable::GetRequestCodeThunk(int nIndex)
 int LevelManagedEntityHistoryView::PopHistoryIdThunk(void)
 {
 	return PopHistoryId();
+}
+
+// LINKERILT: LEMBALL 0x00402b99
+int LevelManagedEntityDirtyStateView::PollStreamDirtyFlagThunk(void)
+{
+	return PollStreamDirtyFlag();
 }
 
 // LINKERILT: LEMBALL 0x00403215
@@ -1009,6 +1018,12 @@ int LevelManagedEntityDirtyStateView::PollChildDirtyFlag(void)
 	return *pfDirty;
 }
 
+// STUB: LEMBALL 0x0040f7e0
+int LevelManagedEntityDirtyStateView::PollStreamDirtyFlag(void)
+{
+	return m_fChildDirty164;
+}
+
 // FUNCTION: LEMBALL 0x0040fcb0
 int LevelQueuedProjectileRequestTable::GetRequestCode(int nIndex)
 {
@@ -1152,6 +1167,21 @@ void* LevelManagedEntityChildIterator::GetCurrentChildWithState8(void)
 		}
 		pChild = (LevelManagedEntityStateIdView*) GetNextChildThunk();
 	}
+}
+
+// FUNCTION: LEMBALL 0x00414960
+int LevelManagedEntityChildIterator::HasStreamDirtyChildren(void)
+{
+	LevelManagedEntityDirtyStateView* pChild;
+	int fDirty;
+
+	fDirty = 0;
+	pChild = (LevelManagedEntityDirtyStateView*) GetFirstChildThunk();
+	while (pChild != 0) {
+		fDirty = pChild->PollStreamDirtyFlagThunk() || fDirty;
+		pChild = (LevelManagedEntityDirtyStateView*) GetNextChildThunk();
+	}
+	return fDirty;
 }
 
 // FUNCTION: LEMBALL 0x004149a0
