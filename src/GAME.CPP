@@ -1877,7 +1877,8 @@ struct GameCursorRenderEntryInterface {
 	virtual void AppendToQueue(void* pQueue) = 0;
 };
 
-// LINKERILT: LEMBALL 0x004010a0
+// Compatibility shim retained for GAME.CPP compiler state; original ILT
+// 0x004010a0 belongs to VS_RootGeometryOwner::GetWindowOwnerState.
 unsigned int LEMBALL_FASTCALL GetQueuedRenderPointSinkField0x30ForwardThunk(int nParam)
 {
 	return (unsigned int) get_object_field_0x30((void*) nParam);

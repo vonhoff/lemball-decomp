@@ -235,6 +235,8 @@
 // FUN_0043a2e0
 
 // src/GAME.CPP
+// LINKERILT: LEMBALL 0x004010a0
+// VS_RootGeometryOwner::GetWindowOwnerState
 // LINKERILT: LEMBALL 0x00401271
 // DestroyLevelGameModeAutoThunk
 // LINKERILT: LEMBALL 0x00402b1c
