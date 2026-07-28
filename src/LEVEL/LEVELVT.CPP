@@ -538,9 +538,13 @@ void* LevelManagedEntityChildIterator::GetFirstChildThunk(void)
 }
 
 // LINKERILT: LEMBALL 0x004024be
-void LevelManagedEntityStateFields::SetStateIdWithVariantLocalThunk(int nStateId, int nVariant)
+void LEMBALL_FASTCALL SetManagedEntityStateIdWithVariantLocalThunk(void* pObject,
+																   void* pUnused,
+																   int nStateId,
+																   int nVariant)
 {
-	SetStateIdWithVariantLocal(nStateId, nVariant);
+	(void) pUnused;
+	((LevelManagedEntityStateFields*) pObject)->SetStateIdWithVariantLocal(nStateId, nVariant);
 }
 
 // LINKERILT: LEMBALL 0x0040269e
@@ -1118,8 +1122,7 @@ int __fastcall has_level_plas_history_entries(void* pLevelMode)
 	return *(int*) ((char*) pPlasManager + 0x128);
 }
 
-// GLOBAL: LEMBALL 0x00493a60
-static void* g_LEVELVT_LevelChunkObjectChildrenVariantVtable[16] = {0};
+extern void* g_LEVELVT_LevelChunkObjectChildrenVariantVtable[16];
 
 // FUNCTION: LEMBALL 0x00414070
 void LEMBALL_FASTCALL DestroyLevelChunkObjectChildrenVariantAuto(void* pObject)
@@ -1704,8 +1707,7 @@ int return_two_vtable_callback_0041c630(void)
 	return 2;
 }
 
-// GLOBAL: LEMBALL 0x00494a18
-static void* g_LEVELVT_GmobChunkType14ObjectVtable[16] = {0};
+extern void* g_LEVELVT_GmobChunkType14ObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x0041d120
 void LEMBALL_FASTCALL DestroyGmobChunkType14ObjectAuto(void* pObject)
@@ -1843,8 +1845,7 @@ void LEMBALL_FASTCALL CallBallChunkEntryVfuncC8(void* pEntry, void* pUnused, int
 	((LevelManagedEntityNoArgVirtualProc) pVtable[0xc8 / sizeof(void*)])(pEntry);
 }
 
-// GLOBAL: LEMBALL 0x004959c0
-static void* g_LEVELVT_CollChunkObjectVtable[16] = {0};
+extern void* g_LEVELVT_CollChunkObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x004228f0
 void LEMBALL_FASTCALL DestroyCollChunkObjectAuto(void* pObject)
@@ -1917,8 +1918,7 @@ void __fastcall clear_rock_chunk_object_count(void* pManager)
 	*(int*) ((char*) pManager + 0x34) = 0;
 }
 
-// GLOBAL: LEMBALL 0x00496050
-static void* g_LEVELVT_TileFlag1CChunkObjectVtable[16] = {0};
+extern void* g_LEVELVT_TileFlag1CChunkObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x004275e0
 void LEMBALL_FASTCALL DestroyTileFlag1CChunkObjectAuto(void* pObject)
@@ -1955,8 +1955,7 @@ int PASCAL return_zero_vtable_callback_0042dd30(void* pUnused)
 	return 0;
 }
 
-// GLOBAL: LEMBALL 0x00496a30
-static void* g_LEVELVT_MoveChunkObjectVtable[16] = {0};
+extern void* g_LEVELVT_MoveChunkObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x0042e640
 void LEMBALL_FASTCALL destroy_move_chunk_object(void* pObject)
@@ -2477,7 +2476,6 @@ struct LevelChunkObjectRuntimeStateView {
 	void ClearStateFieldsThunk(void);
 	void ResetRuntimeState(void);
 	void ResetRuntimeStateThunk(void);
-	void SetMotionVector(const LevelBoundsPoint* pMotionVector, const LevelBoundsPoint* pInitialPosition);
 };
 
 struct ManagedEntityRuntimeStateView : LevelChunkObjectRuntimeStateView {
@@ -2557,15 +2555,18 @@ void LEMBALL_FASTCALL ResetMoveChunkObject(void* pObject)
 	ResetMoveChunkObjectRuntimeStateThunk(pObject);
 }
 
-void LevelChunkObjectRuntimeStateView::SetMotionVector(const LevelBoundsPoint* pMotionVector,
-													   const LevelBoundsPoint* pInitialPosition)
+void LEMBALL_FASTCALL SetLevelChunkObjectMotionVector(void* pObject,
+													  void* pUnused,
+													  const LevelBoundsPoint* pMotionVector,
+													  const LevelBoundsPoint* pInitialPosition)
 {
 	char* pObjectBytes;
 	int nX;
 	int nY;
 	int nZ;
 
-	pObjectBytes = (char*) this;
+	(void) pUnused;
+	pObjectBytes = (char*) pObject;
 	*(int*) (pObjectBytes + 0x104) = 0;
 	*(int*) (pObjectBytes + 0x108) = 0;
 	*(int*) (pObjectBytes + 0x30) = 0;

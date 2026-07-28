@@ -77,7 +77,6 @@ address,name,symbol,type,source
 0x004267A0,LinkScfSmallFunctionView::CopyFourDwordBlock,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x004267F0,LinkScfSmallFunctionView::ResetRockChunkObjectRuntimeState,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x004274F0,DeleteRockChunkManagerAuto,,synthetic,src/LEVEL/LEVELVT.CPP
-0x00427890,LevelVtSmallFunctionView::GetTileFlag1cObjectRenderPoint,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00427AA0,DeleteTileFlag1CChunkObjectAuto,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00427AF0,LinkScfSmallFunctionView::ResetCaptureTriggerChunkObjectRuntimeState,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x004287D0,DeleteCaptureTriggerChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP

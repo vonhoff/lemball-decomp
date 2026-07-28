@@ -747,8 +747,7 @@ void LinkScfLevelChunkLoaderView::LoadLevelChunksForSkillAndLevel(unsigned int n
 }
 extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 
-// GLOBAL: LEMBALL 0x00493120
-static void* g_LINKSCF_InvsChunkObjectVtable[16] = {0};
+extern void* g_LINKSCF_InvsChunkObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x00409ca0
 InvsChunkObjectView* InvsChunkObjectView::ConstructInvsChunkObject(void)
@@ -1268,8 +1267,7 @@ LinkScfMineChunkManagerView* LinkScfMineChunkManagerView::ConstructMineChunkMana
 	return this;
 }
 
-// GLOBAL: LEMBALL 0x00495d60
-static void* g_LINKSCF_LiftChunkObjectVtable[16] = {0};
+extern void* g_LINKSCF_LiftChunkObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x00424d20
 void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject)
@@ -1289,8 +1287,7 @@ LinkScfLiftChunkManagerView* LinkScfLiftChunkManagerView::ConstructLiftChunkMana
 	return this;
 }
 
-// GLOBAL: LEMBALL 0x00495ed8
-static void* g_LINKSCF_RockChunkObjectVtable[16] = {0};
+extern void* g_LINKSCF_RockChunkObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x004267d0
 RockChunkObjectView* RockChunkObjectView::ConstructRockChunkObject(void)
@@ -1341,8 +1338,7 @@ void LEMBALL_FASTCALL ActivateRockChunkObjects(void* pManager)
 	}
 }
 
-// GLOBAL: LEMBALL 0x00496198
-static void* g_LINKSCF_CaptureChunkObjectVtable[16] = {0};
+extern void* g_LINKSCF_CaptureChunkObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x00427ad0
 CaptureTriggerChunkObjectView* CaptureTriggerChunkObjectView::ConstructCaptureTriggerChunkObject(void)
@@ -1399,8 +1395,7 @@ void LEMBALL_FASTCALL ClearManagedEntityArrayCount(void* pObject)
 	*(int*) ((char*) pObject + 0x34) = 0;
 }
 
-// GLOBAL: LEMBALL 0x00496310
-static void* g_LINKSCF_LasrChunkObjectVtable[16] = {0};
+extern void* g_LINKSCF_LasrChunkObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x00428890
 LasrChunkObjectView* LasrChunkObjectView::ConstructLasrChunkObject(void)
@@ -1505,8 +1500,7 @@ void* LEMBALL_FASTCALL destroy_lasr_chunk_object(void* pObject, void*, BYTE fDel
 	return pObject;
 }
 
-// GLOBAL: LEMBALL 0x004965c8
-static void* g_LINKSCF_TramChunkObjectVtable[16] = {0};
+extern void* g_LINKSCF_TramChunkObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x0042a990
 TramChunkObjectView* TramChunkObjectView::ConstructTramChunkObject(void)
@@ -1558,8 +1552,7 @@ void LEMBALL_FASTCALL ActivateTramChunkObjects(void* pManager)
 	}
 }
 
-// GLOBAL: LEMBALL 0x00496740
-static void* g_LINKSCF_PgunChunkObjectVtable[16] = {0};
+extern void* g_LINKSCF_PgunChunkObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x0042bad0
 PgunChunkObjectView* PgunChunkObjectView::ConstructPgunChunkObject(void)
@@ -1610,8 +1603,7 @@ void LEMBALL_FASTCALL ActivatePgunChunkObjects(void* pManager)
 	}
 }
 
-// GLOBAL: LEMBALL 0x004968b8
-static void* g_LINKSCF_IceChunkObjectVtable[16] = {0};
+extern void* g_LINKSCF_IceChunkObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x0042ca70
 IceChunkObjectView* IceChunkObjectView::ConstructIceChunkObject(void)
