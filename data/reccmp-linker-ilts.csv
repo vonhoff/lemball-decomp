@@ -133,6 +133,7 @@ address,name,symbol,type,source
 0x00403076,ResetMoveChunkObjectRuntimeStateThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x004030C1,VS_RootGeometryOwner::RemoveQueuedRenderSinkValueNode,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00403201,GetFirstManagedEntityChildFromCachedGroup,,stub,src/ENGINE/CORE/LINKSCF.H
+0x004032AB,set_move_chunk_object_trigger_latch,?set_move_chunk_object_trigger_latch@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004032C4,ActivateCollChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004032D3,InitializeLiftChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040333C,AdvanceInvsChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
