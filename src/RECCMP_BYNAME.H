@@ -389,6 +389,8 @@
 // DeleteBaseModeObjectVariantAuto
 
 // src/LEVEL/LEVELVT.CPP
+// FUNCTION: LEMBALL 0x0040a860
+// noop_vtable_callback_0040a860
 // SYNTHETIC: LEMBALL 0x0041c330
 // DeleteCountedChildTableStreamAuto
 // SYNTHETIC: LEMBALL 0x00422f70
