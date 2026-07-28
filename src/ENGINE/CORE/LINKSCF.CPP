@@ -165,6 +165,7 @@ void LEMBALL_FASTCALL ActivateTramChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivatePgunChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateIceChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateMoveChunkObjects(void* pManager);
+void LEMBALL_FASTCALL AdvanceIceChunkManagerObjects(void* pManager);
 
 DEFINE_LINKSCF_VTABLE_STUB_0(ResetAllInvsChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(AdvanceInvsChunkObjects)
@@ -208,7 +209,6 @@ DEFINE_LINKSCF_VTABLE_STUB_0(InitializeTramChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitTramChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActivePgunChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitActivePgunChunkManagerRenderEntries)
-DEFINE_LINKSCF_VTABLE_STUB_0(AdvanceIceChunkManagerObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(AdvanceActiveMoveChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitMoveChunkManagerRenderEntries)
 
@@ -1659,6 +1659,27 @@ void LEMBALL_FASTCALL ActivateIceChunkObjects(void* pManager)
 				((ActivateChunkObjectProc) (*(void***) pChunkObject)[65])(pChunkObject);
 			} while (*(int*) (pManagerBytes + 0x30) > i);
 		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x0042dd00
+void LEMBALL_FASTCALL AdvanceIceChunkManagerObjects(void* pManager)
+{
+	char* pManagerBytes;
+	void* pChunkObject;
+	int i;
+	int nOffset;
+
+	pManagerBytes = (char*) pManager;
+	nOffset = 0;
+	i = 0;
+	if (*(int*) (pManagerBytes + 0x34) > 0) {
+		do {
+			pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
+			++i;
+			nOffset += 0x188;
+			((ActivateChunkObjectProc) (*(void***) pChunkObject)[5])(pChunkObject);
+		} while (*(int*) (pManagerBytes + 0x34) > i);
 	}
 }
 // FUNCTION: LEMBALL 0x0042f190
