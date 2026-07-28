@@ -28,6 +28,21 @@ ONE_PAST_REFERENCES = {
         "g_aCommandLineOptions+112 (OFFSET)",
     ),
 }
+# Constructor vtable stores whose original and rebuilt data objects have
+# independently proven identities but no shared source annotation.
+FUNCTION_DATA_REFERENCES = {
+    # function: (original data, rebuilt symbol, shared identity)
+    0x00452510: (
+        0x004985B8,
+        "g_EFF_NetworkLobbyPeerClearCloseVtable",
+        "network lobby peer clear-close vtable 004985b8",
+    ),
+    0x00452530: (
+        0x004985D8,
+        "g_EFF_NetworkLobbyPeerDirtyConfirmVtable",
+        "network lobby peer dirty-confirm vtable 004985d8",
+    ),
+}
 # These real, source-owned adjustor thunks jump through original LINK 3.00
 # ILT entries while rebuilt naked thunks jump directly to the same bodies.
 # Normalize only the proven relocation in each listed function.
@@ -47,6 +62,16 @@ THUNK_ILT_REFERENCES = {
         0x00402AAE,
         "DestroySelectorProgressOverlayOwner",
         "deleting wrapper target 0044ed20",
+    ),
+    0x00452510: (
+        0x00402810,
+        "GameEffStream::ConstructNetworkLobbyU32PayloadStream",
+        "network lobby U32 stream constructor 004524b0",
+    ),
+    0x00452530: (
+        0x00402810,
+        "GameEffStream::ConstructNetworkLobbyU32PayloadStream",
+        "network lobby U32 stream constructor 004524b0",
     ),
     0x004551D0: (
         0x0040148D,
@@ -90,7 +115,8 @@ if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False)
     def _compare_function(self, match):
         reference = ONE_PAST_REFERENCES.get(match.orig_addr)
         ilt_reference = THUNK_ILT_REFERENCES.get(match.orig_addr)
-        if reference is None and ilt_reference is None:
+        data_reference = FUNCTION_DATA_REFERENCES.get(match.orig_addr)
+        if reference is None and ilt_reference is None and data_reference is None:
             return _reccmp_compare_function(self, match)
 
         orig_lookup = self.orig_sanitize.name_lookup
@@ -99,6 +125,8 @@ if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False)
         def _orig_lookup(address, exact=False, indirect=False):
             if ilt_reference is not None and address == ilt_reference[0]:
                 return ilt_reference[2]
+            if data_reference is not None and address == data_reference[0]:
+                return data_reference[2]
             if not exact and not indirect:
                 if reference is not None and address == reference[0]:
                     return reference[2]
@@ -112,6 +140,9 @@ if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False)
             if ilt_reference is not None and name is not None:
                 if ilt_reference[1] in name:
                     return ilt_reference[2]
+            if data_reference is not None and name is not None:
+                if data_reference[1] in name:
+                    return data_reference[2]
             return name
 
         self.orig_sanitize.name_lookup = _orig_lookup

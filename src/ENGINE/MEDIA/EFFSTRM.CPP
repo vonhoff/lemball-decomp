@@ -97,17 +97,17 @@ void* g_EFF_NetworkLobbyU32PayloadVtable[6] = {
 static void* g_EFF_NetworkLobbyPeerClearCloseVtable[6] = {
 	(void*) ReturnTrueVtableCallbackThunk,
 	(void*) ReturnTrueVtableCallbackSecondaryThunk,
+	(void*) ReadNetworkLobbyU32PayloadStreamThunk,
 	(void*) NoopVtableCallbackThunk,
-	(void*) NoopVtableCallbackThunk,
-	(void*) NoopVtableCallbackThunk,
+	(void*) WriteNetworkLobbyU32PayloadStreamThunk,
 	(void*) DeleteNetworkLobbySelectedPeerStatusStream,
 };
 static void* g_EFF_NetworkLobbyPeerDirtyConfirmVtable[6] = {
 	(void*) ReturnTrueVtableCallbackThunk,
 	(void*) ReturnTrueVtableCallbackSecondaryThunk,
+	(void*) ReadNetworkLobbyU32PayloadStreamThunk,
 	(void*) NoopVtableCallbackThunk,
-	(void*) NoopVtableCallbackThunk,
-	(void*) NoopVtableCallbackThunk,
+	(void*) WriteNetworkLobbyU32PayloadStreamThunk,
 	(void*) DeleteNetworkLobbySelectedPeerStatusStream,
 };
 static const char g_EFF_DefaultNetworkPath[] = "t:\\network";
