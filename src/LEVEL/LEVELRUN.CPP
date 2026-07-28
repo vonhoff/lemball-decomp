@@ -117,16 +117,34 @@ public:
 	int PopHistoryIdThunk(void);
 };
 
+class LevelManagedEntityChildIterator {
+public:
+	int HasDirtyChildrenThunk(void);
+};
+
 class LevelManagedEntityActiveGroupView {
+	void* m_pReserved00;
+	LevelManagedEntityChildIterator* m_apManagedEntities04[40];
+	int m_cManagedEntitiesA4;
+
 public:
 	int HasDirtyChildren(void);
 	int HasDirtyChildrenThunk(void);
 };
 
-// Compatibility body for original 0x00419440; full reconstruction remains pending.
+// Original body: LEMBALL 0x00419440. Kept beside its required compatibility ILT owner.
 int LevelManagedEntityActiveGroupView::HasDirtyChildren(void)
 {
-	return 0;
+	LevelManagedEntityChildIterator* pEntity;
+	int fDirty;
+	int iEntity;
+
+	fDirty = 0;
+	for (iEntity = 0; iEntity < m_cManagedEntitiesA4; ++iEntity) {
+		pEntity = m_apManagedEntities04[iEntity];
+		fDirty = pEntity->HasDirtyChildrenThunk() || fDirty;
+	}
+	return fDirty;
 }
 
 struct LevelLevelTileGridStaticView {
