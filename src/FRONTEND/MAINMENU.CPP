@@ -5778,3 +5778,10 @@ DEFINE_MAINMENU_NAMED_SCALAR_DELETE(DeletePasswordEntryScreenAuto, DestroyPasswo
 DEFINE_MAINMENU_NAMED_SCALAR_DELETE(DeleteNetworkLobbyScreenAuto, DestroyNetworkLobbyScreenAutoThunk)
 
 #undef DEFINE_MAINMENU_NAMED_SCALAR_DELETE
+
+void LEMBALL_FASTCALL ForwardUpdateNamedStatusEntry(void* pEntry, void* pUnusedEdx, unsigned int nValue)
+{
+	(void) pEntry;
+	(void) pUnusedEdx;
+	((void(PASCAL*)(unsigned int)) UpdateNamedStatusEntry)(nValue);
+}

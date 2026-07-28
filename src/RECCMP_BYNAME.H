@@ -175,7 +175,7 @@
 // DestroyLevelSelectionScreenAutoThunk
 // LINKERILT: LEMBALL 0x00403530
 // DestroyPasswordEntryScreenAutoThunk
-// STUB: LEMBALL 0x00407ee0
+// FUNCTION: LEMBALL 0x00407ee0
 // ForwardUpdateNamedStatusEntry
 // STUB: LEMBALL 0x00448de0
 // DestroyOptionsScreenAuto
