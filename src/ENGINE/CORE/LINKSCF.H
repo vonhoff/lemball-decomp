@@ -304,8 +304,6 @@ struct LinkScfBoonChunkManagerView {
 // EmitLasrChunkManagerRenderEntries
 // STUB: LEMBALL 0x0042afc0
 // InitializeTramChunkObjects
-// STUB: LEMBALL 0x0042b4a0
-// ActivateTramChunkObjects
 // STUB: LEMBALL 0x0042b4f0
 // EmitTramChunkManagerRenderEntries
 // STUB: LEMBALL 0x0042c040

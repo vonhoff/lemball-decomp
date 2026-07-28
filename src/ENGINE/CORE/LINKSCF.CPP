@@ -161,6 +161,7 @@ typedef void(LEMBALL_FASTCALL* ActivateChunkObjectProc)(void* pObject);
 void LEMBALL_FASTCALL ActivateRockChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateCaptureTriggerChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateLasrChunkObjects(void* pManager);
+void LEMBALL_FASTCALL ActivateTramChunkObjects(void* pManager);
 
 DEFINE_LINKSCF_VTABLE_STUB_0(ResetAllInvsChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(AdvanceInvsChunkObjects)
@@ -201,7 +202,6 @@ DEFINE_LINKSCF_VTABLE_STUB_1(EmitCaptureTriggerChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveLasrChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitLasrChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(InitializeTramChunkObjects)
-DEFINE_LINKSCF_VTABLE_STUB_0(ActivateTramChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitTramChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(ActivatePgunChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActivePgunChunkObjects)
@@ -1534,6 +1534,30 @@ LinkScfTramChunkManagerView* LinkScfTramChunkManagerView::ConstructTramChunkMana
 	return this;
 }
 
+// FUNCTION: LEMBALL 0x0042b4a0
+void LEMBALL_FASTCALL ActivateTramChunkObjects(void* pManager)
+{
+	char* pManagerBytes;
+	char* pChunkObject;
+	int nOffset;
+	int i;
+
+	pManagerBytes = (char*) pManager;
+	i = 0;
+	if (*(int*) (pManagerBytes + 0x34) > 0) {
+		nOffset = 0;
+		do {
+			*(int*) (*(char**) (pManagerBytes + 0x38) + nOffset + 0x124) = 1;
+			pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
+			if (*(int*) (pChunkObject + 0x138) != 0) {
+				((ActivateChunkObjectProc) (*(void***) pChunkObject)[5])(pChunkObject);
+			}
+			nOffset += 0x144;
+			++i;
+		} while (*(int*) (pManagerBytes + 0x34) > i);
+	}
+}
+
 // GLOBAL: LEMBALL 0x00496740
 static void* g_LINKSCF_PgunChunkObjectVtable[16] = {0};
 
@@ -1614,7 +1638,7 @@ int LEMBALL_FASTCALL GetIndexedLevelModeValue110(void* pObject, int, int nIndex)
 
 void add_two_dword_values(int* pDestination, const int* pLeft, const int* pRight)
 {
-	*pDestination = *pLeft + *pRight;
+	*pDestination = *pRight + *pLeft;
 }
 
 struct LinkScfSmallFunctionView {
