@@ -1014,7 +1014,9 @@ void LEMBALL_FASTCALL CloseNetworkLobbyTransportPeers(void* pController)
 	(*(GameEffStream**) ((char*) pController + 0x30))->m_nU32Payload = 1;
 	ppPeer += 8;
 	for (i = 0; i < 10; ++i) {
-		((VsNetNetworkLobbyScreen*) g_pActiveNetworkLobbyScreen)->ClearPlayerEntryDirty(i);
+		if (i < 10) {
+			((VsNetNetworkLobbyScreen*) g_pActiveNetworkLobbyScreen)->ClearPlayerEntryDirty(i);
+		}
 		if (*ppPeer != 0 && g_nSelectedNetworkLobbyPeerId != (int) (unsigned long) *ppPeer) {
 			dwStart = timeGetTime();
 			while ((*(GameEffStream**) ((char*) pController + 0x30))->m_fWritePending != 0 &&
