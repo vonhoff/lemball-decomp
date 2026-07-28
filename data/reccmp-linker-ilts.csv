@@ -26,6 +26,7 @@ address,name,symbol,type,source
 0x004014CE,UpdateMenuSelectorAnimationThunk,,stub,src/FRONTEND/MENUSEL.H
 0x004014F1,DestroyLevelChunkStreamDispatcherAutoThunk,,stub,src/LEVEL/LEVELRUN.CPP
 0x004014FB,ActivateLasrChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
+0x00401500,UpdateManagedEntityBoundsFromPosition,?UpdateManagedEntityBoundsFromPosition@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
 0x0040150F,VS_RootGeometryOwner::AppendQueuedRenderSinkValueNode,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00401514,VS_WindowOwnerBase::ReservedWindowOwnerSlot21,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x0040153C,LevelChunkObjectBaseView::InitializeLevelChunkObjectBase,,stub,src/ENGINE/CORE/LINKSCF.CPP
