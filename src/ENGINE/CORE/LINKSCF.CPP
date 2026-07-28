@@ -160,6 +160,7 @@ typedef void(LEMBALL_FASTCALL* ActivateChunkObjectProc)(void* pObject);
 
 void LEMBALL_FASTCALL ActivateRockChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateCaptureTriggerChunkObjects(void* pManager);
+void LEMBALL_FASTCALL ActivateLasrChunkObjects(void* pManager);
 
 DEFINE_LINKSCF_VTABLE_STUB_0(ResetAllInvsChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(AdvanceInvsChunkObjects)
@@ -197,7 +198,6 @@ DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveRockChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitRockChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveCaptureTriggerChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitCaptureTriggerChunkManagerRenderEntries)
-DEFINE_LINKSCF_VTABLE_STUB_0(ActivateLasrChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveLasrChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitLasrChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(InitializeTramChunkObjects)
@@ -1426,6 +1426,29 @@ LinkScfLasrChunkManagerView* LinkScfLasrChunkManagerView::ConstructLasrChunkMana
 	*(int*) ((char*) this + 0x30) = nCapacity;
 	*(int*) ((char*) this + 0x38) = 0;
 	return this;
+}
+
+// FUNCTION: LEMBALL 0x00429380
+void LEMBALL_FASTCALL ActivateLasrChunkObjects(void* pManager)
+{
+	char* pManagerBytes;
+	void* pChunkObject;
+	int i;
+	int nOffset;
+
+	pManagerBytes = (char*) pManager;
+	nOffset = 0;
+	if (*(char**) (pManagerBytes + 0x38) != 0) {
+		if (*(int*) (pManagerBytes + 0x30) > 0) {
+			i = 0;
+			do {
+				pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
+				++i;
+				nOffset += 0x148;
+				((ActivateChunkObjectProc) (*(void***) pChunkObject)[65])(pChunkObject);
+			} while (*(int*) (pManagerBytes + 0x30) > i);
+		}
+	}
 }
 
 // FUNCTION: LEMBALL 0x00429f50

@@ -298,8 +298,6 @@ struct LinkScfBoonChunkManagerView {
 // RefreshActiveCaptureTriggerChunkObjects
 // STUB: LEMBALL 0x00428410
 // EmitCaptureTriggerChunkManagerRenderEntries
-// STUB: LEMBALL 0x00429380
-// ActivateLasrChunkObjects
 // STUB: LEMBALL 0x00429850
 // RefreshActiveLasrChunkObjects
 // STUB: LEMBALL 0x004298a0
