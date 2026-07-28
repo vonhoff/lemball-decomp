@@ -4093,7 +4093,7 @@ void* VsNetEff512ByteStateStream::Delete(BYTE fDeleteFlags)
 	pbStateBytes = pStateStream->m_pbStateBytes2c;
 	pStateStream->m_pVtable = (void**) &g_NETWORK_EffStateStreamVtable;
 	FreeVSMemBlock((void*) (unsigned long) pbStateBytes);
-	((VsNetEffStreamBase*) pStateStream)->DestroyEffStreamBase();
+	((VsNetEffStreamBase*) pStateStream)->VsNetEffStreamBase::~VsNetEffStreamBase();
 	if ((fDeleteFlags & 1) != 0) {
 		FreeVSMemBlock(pStateStream);
 	}
