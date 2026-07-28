@@ -161,7 +161,7 @@ public:
 	virtual int IsAddressLessOrEqual(const VsNetInetAddressEntry* pSource);
 	virtual int IsAddressGreaterOrEqual(const VsNetInetAddressEntry* pSource);
 	char m_szAddress[16];
-	int m_nAddress;
+	unsigned int m_nAddress;
 };
 
 struct VsNetEffDispatchQueue {
@@ -2146,7 +2146,7 @@ void VsNetInetAddressEntry::StoreAddressString(const char* pszAddress)
 int VsNetInetAddressEntry::IsAddressLessOrEqual(const VsNetInetAddressEntry* pSource)
 
 {
-	return m_nAddress <= pSource->m_nAddress;
+	return m_nAddress == pSource->m_nAddress;
 }
 // FUNCTION: LEMBALL 0x004715b0
 const char* VsNetInetAddressEntry::GetAddressString(void)
