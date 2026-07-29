@@ -2293,8 +2293,6 @@ address,size,name,unit
 0x00462BC0,60,delete_eff_transport_runtime_channel_stack_wrapper,ENGINE/NET/VSNETSTR.CPP
 0x00462C00,8,thunk_close_runtime_outer_peer_004605_b0,ENGINE/NET/VSNETSTR.CPP
 0x00462C10,11,delete_runtime_timed_channel_stack_thunk,ENGINE/NET/VSNETSTR.CPP
-0x00462C30,15,write_runtime_channel_global_session_virtual_base_thunk_body,ENGINE/NET/VSNET.CPP
-0x00462C50,15,claim_runtime_channel_record_virtual_base_thunk_body,ENGINE/NET/VSNET.CPP
 0x00462C60,14,delete_runtime_outer_dual_adjusted,ENGINE/NET/VSNETSTR.CPP
 0x00462CA0,8,thunk_delete_eff_channel_stream_stack_00462_cb0,ENGINE/NET/VSNETFIL.CPP
 0x00462CB0,55,delete_eff_channel_stream_stack_wrapper,ENGINE/NET/VSNETFIL.CPP
