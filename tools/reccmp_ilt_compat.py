@@ -15,7 +15,12 @@ ILT_LAST_ENTRY = 0x0040388C
 VTABLE_METHOD_ILTS = {
     0x00401451,  # VsNetEffStreamCommon::NoopEffStream
     0x00401564,  # VsNetEffStreamCommon::AcceptEffStreamArgument
+    0x00401730,  # ManagedEntityPacketBase::WriteEffStreamTaggedHeader
+    0x004018C5,  # ManagedEntityStateResetPacket scalar deleting destructor
+    0x0040217B,  # ManagedEntityPacketBase::ReverseEffStreamPayload
     0x004026AD,  # VsNetEffStreamCommon::AcceptEffStream
+    0x004030E4,  # ManagedEntityPacketBase scalar deleting destructor
+    0x00403288,  # ManagedEntityPacket2A scalar deleting destructor
 }
 # Original and rebuilt binaries place different unrelated symbols at these
 # one-past array addresses. Limit normalization to independently verified

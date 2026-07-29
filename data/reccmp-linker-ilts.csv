@@ -34,12 +34,13 @@ address,name,symbol,type,source
 0x004015DC,EmitActivePgunChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401672,EmitLasrChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004016B3,RequestLiftChunkObjectActivationState,?RequestLiftChunkObjectActivationState@@YIHPAX@Z,stub,src/ENGINE/CORE/LINKSCFLIFTACTION.CPP
-0x00401730,SerializeManagedEntityTypeAndSlotId,?SerializeManagedEntityTypeAndSlotId@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
+0x00401730,ManagedEntityPacketBase::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacketBase@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00401749,ResetInvsChunkObjectStateThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x004017DF,AttachAndActivateChunkObject,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040180C,ResetManagedEntityRuntimeStateThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00401843,DestroyNetworkLobbyScreenAutoThunk,,stub,src/FRONTEND/MAINMENU.CPP
 0x004018CF,VS_WindowOwnerBase::IsCurrentWindowOwnerContext,,stub,src/ENGINE/GDI/VSWINDOW.H
+0x004018D4,ManagedEntityPacketBase::ManagedEntityPacketBase,??0ManagedEntityPacketBase@@QAE@H@Z,stub,src/LEVEL/LEVELRUN.CPP
 0x004018D9,AdvanceIceChunkManagerObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004018F7,SelectMenuSelectorSide0Thunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401942,RefreshActiveLasrChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
@@ -79,7 +80,7 @@ address,name,symbol,type,source
 0x004020EF,DestroyLevelChunkObjectChildrenVariantAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x004020F9,ResetIceChunkObjectRuntimeStateThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402167,ActivateMineChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
-0x0040217B,NoopManagedEntityPacketPayload,?NoopManagedEntityPacketPayload@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
+0x0040217B,ManagedEntityPacketBase::ReverseEffStreamPayload,?ReverseEffStreamPayload@ManagedEntityPacketBase@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00402180,DestroyLevelChunkStreamAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x004021D0,DestroyLevelChunkObjectBaseAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x004021F3,DestroyDoorChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP

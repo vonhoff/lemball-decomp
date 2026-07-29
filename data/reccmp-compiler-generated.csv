@@ -30,12 +30,12 @@ address,name,symbol,type,source
 0x00417AD0,DeleteLevelChunkObjectBaseWrapper17AD0,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00417B00,LevelVtSmallFunctionView::SetRectFromBounds,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00417B30,LevelTwoDwordPairVariantView::copy_two_dword_pair_variant,,synthetic,src/LEVEL/LEVELVT.CPP
-0x00417B50,LevelVtAutoEffDeleteView::Delete17B50,,synthetic,src/LEVEL/LEVELVT.CPP
+0x00417B50,,??_GManagedEntityPacketBase@@UAEPAXI@Z,synthetic,src/LEVEL/LEVELRUNPACKET.H
 0x00417B80,LevelVtAutoEffDeleteView::Delete17B80,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00417BB0,LevelVtAutoEffDeleteView::Delete17BB0,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00417BE0,LevelVtAutoEffDeleteView::Delete17BE0,,synthetic,src/LEVEL/LEVELVT.CPP
-0x00417C10,LevelVtAutoEffDeleteView::Delete17C10,,synthetic,src/LEVEL/LEVELVT.CPP
-0x00417C40,LinkScfAutoEffDeleteView::Delete17C40,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
+0x00417C10,,??_EManagedEntityStateResetPacket@@UAEPAXI@Z,synthetic,src/LEVEL/LEVELRUNPACKET.H
+0x00417C40,,??_EManagedEntityPacket2A@@UAEPAXI@Z,synthetic,src/LEVEL/LEVELRUNPACKET.H
 0x00417C70,LinkScfAutoEffDeleteView::Delete17C70,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00417CA0,LinkScfAutoEffDeleteView::Delete17CA0,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00417CD0,LinkScfAutoEffDeleteView::Delete17CD0,,synthetic,src/ENGINE/CORE/LINKSCF.CPP

@@ -125,6 +125,14 @@ struct VsNetEffStreamCommon {
 		pStream->m_nEventCode = 0;
 		pStream->ResetStateFields();
 	}
+#ifdef LEMBALL_DEFINE_MANAGED_ENTITY_PACKET_CLASSES
+	inline VsNetEffStreamCommon(int nEventCode)
+	{
+		*(void**) this = g_GAME_EffStreamConstructionVtable;
+		m_nReserved04 = nEventCode;
+		((GameEffStream*) this)->ResetStateFields();
+	}
+#endif
 };
 
 struct VsNetEffStreamCore {

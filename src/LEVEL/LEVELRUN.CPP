@@ -1,3 +1,5 @@
+#define LEMBALL_DEFINE_MANAGED_ENTITY_PACKET_CLASSES
+
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/CORE/VSINIT.H"
 #include "ENGINE/CORE/VSMEM.H"
@@ -5,6 +7,7 @@
 #include "ENGINE/MEDIA/VSSTRM.H"
 #include "GAME.H"
 #include "LEVEL/LEVELRUN.H"
+#include "LEVEL/LEVELRUNPACKET.H"
 #include "RESOURCE/MOGLOAD.H"
 #include "SHELL/OPTIONS.H"
 
@@ -1632,6 +1635,28 @@ void ClaimManagedEntitySlotId(int nManagedEntityObject)
 		}
 		g_GAME_ManagedEntitySlotClaimBitset[nSlotId >> 3] = g_GAME_ManagedEntitySlotBitMasks[nSlotId & 7] | bClaimByte;
 	}
+}
+
+inline void ManagedEntityPacketBase::operator delete(void* pObject)
+{
+	FreeVSMemBlock(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00416850
+ManagedEntityPacketBase::ManagedEntityPacketBase(int nPacketType) : VsNetEffStreamCommon(nPacketType)
+{
+	m_nReserved24 = 1;
+	m_nBufferEnd18 += 4;
+}
+
+// FUNCTION: LEMBALL 0x00416b70
+ManagedEntityStateResetPacket::ManagedEntityStateResetPacket() : ManagedEntityPacketBase(0x29)
+{
+}
+
+// FUNCTION: LEMBALL 0x00416b90
+ManagedEntityPacket2A::ManagedEntityPacket2A() : ManagedEntityPacketBase(0x2a)
+{
 }
 
 // FUNCTION: LEMBALL 0x0041a140
