@@ -2171,9 +2171,7 @@ address,size,name,unit
 0x0045FF20,69,retry_pending_eff_transport_record,ENGINE/NET/VSNET.CPP
 0x0045FF70,337,send_fragmented_eff_transport_payload,ENGINE/NET/VSNET.CPP
 0x004600D0,210,send_eff_stream_payload_with_transport_header,ENGINE/NET/VSNET.CPP
-0x004601B0,40,write_eff_stream_with_global_session,ENGINE/NET/VSNET.CPP
 0x004601E0,118,claim_acked_eff_transport_record_payload,ENGINE/NET/VSNET.CPP
-0x00460260,26,clear_eff_transport_pending_write_state,ENGINE/NET/VSNET.CPP
 0x00460280,206,service_eff_transport_retries,ENGINE/NET/VSNET.CPP
 0x00460350,399,construct_eff_transport_runtime_channel_stack,ENGINE/NET/VSNETSTR.CPP
 0x004604E0,207,release_eff_transport_runtime_buffers,ENGINE/NET/VSNETSTR.CPP
