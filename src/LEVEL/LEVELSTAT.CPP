@@ -243,7 +243,7 @@ void* LEMBALL_FASTCALL DeleteBaseModeObjectAdjusted(void* pObject, int nUnusedEd
 void* LEMBALL_FASTCALL DeleteBaseModeObjectAdjustedThunk(void* pObject, int nUnusedEdx, BYTE fDelete);
 int LEMBALL_FASTCALL HandleBaseModeActionButtonEventThunk(void* pClient, int nUnused, void* pEvent);
 // GLOBAL: LEMBALL 0x00497928
-static void* g_LEVEL_CompositePointRectSinkEntryVtable[8] = {
+void* g_LEVEL_CompositePointRectSinkEntryVtable[8] = {
 	(void*) DeleteFramedScreenRenderChildEntryThunk,
 	(void*) QueueFramedScreenRenderEntryThunk,
 	(void*) FinalizeFramedScreenRenderEntryThunk,
@@ -272,7 +272,7 @@ void LEMBALL_FASTCALL QueueBitmapRenderEntryThunk(void* pObject, int nUnusedEdx,
 void LEMBALL_FASTCALL RenderBitmapEntryViaContext(void* pObject, int nUnusedEdx, void* pManager);
 void LEMBALL_FASTCALL RenderBitmapEntryViaContextThunk(void* pObject, int nUnusedEdx, void* pManager);
 // GLOBAL: LEMBALL 0x00497918
-static void* g_LEVEL_FramedScreenRenderChildEntryVtableStorage[8] = {
+void* g_LEVEL_FramedScreenRenderChildEntryVtableStorage[8] = {
 	(void*) DeleteFramedScreenRenderChildEntryAThunk,
 	(void*) QueueBitmapRenderEntryThunk,
 	(void*) RenderBitmapEntryViaContextThunk,
