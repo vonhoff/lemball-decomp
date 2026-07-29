@@ -17,7 +17,7 @@
 #include <string.h>
 
 #pragma comment(linker, "/include:?ConstructProgressEntry@GameMenuSelectorEntry@@QAEPAU1@PBFPAX1HHPBHHHHPAHH@Z")
-#pragma comment(linker, "/include:?CopyFrom@GameRectQuad@@QAEXPBF@Z")
+#pragma comment(linker, "/include:?CopyFrom@GameRectQuad@@QAEPAU1@PBF@Z")
 #pragma comment(linker, "/include:?DispatchButtonTransition@GameSelectorProgressGeometry@@QAEXPBUVS_XYPair@@H@Z")
 #pragma comment(linker, "/include:?DispatchPointerMove@GameSelectorProgressGeometry@@QAEXPBUVS_XYPair@@@Z")
 #pragma comment(linker, "/include:?SetChildPresentForModeA@GameSelectorProgressOverlayOwnerView@@QAEXH@Z")
@@ -178,7 +178,7 @@ struct GameRectQuad {
 	short m_x;
 	short m_y;
 
-	void CopyFrom(const short* pRect);
+	GameRectQuad* CopyFrom(const short* pRect);
 };
 
 // SIZE 0x38
@@ -2308,20 +2308,21 @@ void* LEMBALL_FASTCALL DeleteMenuSelectorManager(GameMenuSelectorManager* pManag
 	return pManager;
 }
 // FUNCTION: LEMBALL 0x0044e6c0
-void GameRectQuad::CopyFrom(const short* pRect)
+GameRectQuad* GameRectQuad::CopyFrom(const short* pRect)
 {
 	const short* pPosition;
 
 	m_cx = pRect[0];
 	m_cy = pRect[1];
-	if (pRect == 0) {
-		pPosition = 0;
+	if (pRect != 0) {
+		pPosition = pRect + 2;
 	}
 	else {
-		pPosition = pRect + 2;
+		pPosition = 0;
 	}
 	m_x = pPosition[0];
 	m_y = pPosition[1];
+	return this;
 }
 // FUNCTION: LEMBALL 0x0044e790
 GameSelectorProgressOverlayChild* GameSelectorProgressOverlayChild::Construct(const short* pRect,
