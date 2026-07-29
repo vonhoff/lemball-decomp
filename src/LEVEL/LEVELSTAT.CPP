@@ -271,6 +271,7 @@ void LEMBALL_FASTCALL QueueBitmapRenderEntry(void* pObject, int nUnusedEdx, void
 void LEMBALL_FASTCALL QueueBitmapRenderEntryThunk(void* pObject, int nUnusedEdx, void* pQueue);
 void LEMBALL_FASTCALL RenderBitmapEntryViaContext(void* pObject, int nUnusedEdx, void* pManager);
 void LEMBALL_FASTCALL RenderBitmapEntryViaContextThunk(void* pObject, int nUnusedEdx, void* pManager);
+// GLOBAL: LEMBALL 0x00497918
 static void* g_LEVEL_FramedScreenRenderChildEntryVtableStorage[8] = {
 	(void*) DeleteFramedScreenRenderChildEntryAThunk,
 	(void*) QueueBitmapRenderEntryThunk,
@@ -3981,13 +3982,13 @@ void* LEMBALL_FASTCALL InitializeFramedScreenRenderChildEntryBody(void* pObject)
 	int* pEntry;
 
 	pEntry = (int*) pObject;
-	*(void**) pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+	*(void**) pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 	*(unsigned short*) ((char*) pEntry + 6) = 0;
 	*(unsigned short*) (pEntry + 1) = 0;
-	*(void**) pEntry = g_LEVEL_CompositePointRectSinkEntryInitVtable;
+	*(void**) pEntry = g_LEVEL_CompositePointRectSinkEntryVtable;
 	*(unsigned short*) ((char*) pEntry + 10) = 0;
 	*(unsigned short*) (pEntry + 2) = 0;
-	*(void**) pEntry = g_LEVEL_FramedScreenRenderChildEntryVtable;
+	*(void**) pEntry = g_LEVEL_FramedScreenRenderChildEntryVtableStorage;
 	*(unsigned short*) ((char*) pEntry + 0xe) = 0;
 	*(unsigned short*) (pEntry + 3) = 0;
 	*(unsigned short*) ((char*) pEntry + 0x22) = 0;
