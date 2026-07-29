@@ -34,6 +34,7 @@ address,name,symbol,type,source
 0x004015DC,EmitActivePgunChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401672,EmitLasrChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004016B3,RequestLiftChunkObjectActivationState,?RequestLiftChunkObjectActivationState@@YIHPAX@Z,stub,src/ENGINE/CORE/LINKSCFLIFTACTION.CPP
+0x00401730,SerializeManagedEntityTypeAndSlotId,?SerializeManagedEntityTypeAndSlotId@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
 0x00401749,ResetInvsChunkObjectStateThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x004017DF,AttachAndActivateChunkObject,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040180C,ResetManagedEntityRuntimeStateThunk,,stub,src/LEVEL/LEVELVT.CPP
