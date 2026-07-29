@@ -1361,8 +1361,8 @@ void LEMBALL_FASTCALL CopyBufferIntoTypedResourceObjectAndParse(void* pObject,
 
 {
 	MogLoadStringResourceObject* pResourceObject = (MogLoadStringResourceObject*) pObject;
+	MogLoadTypedResourceObjectVtable* pVtable;
 	unsigned int* pTarget;
-	unsigned int i;
 
 	(void) pUnusedEdx;
 	(void) nUnused;
@@ -1370,16 +1370,12 @@ void LEMBALL_FASTCALL CopyBufferIntoTypedResourceObjectAndParse(void* pObject,
 		pTarget = (unsigned int*) ((MogLoadResourceArchive*) g_pResourceArchive)
 					  ->AllocateResourceDataBufferWithEviction(cbBuffer);
 		pResourceObject->m_pszText38 = (char*) pTarget;
-		for (i = cbBuffer >> 2; i != 0; --i) {
-			*pTarget++ = *pSource++;
-		}
-		for (i = cbBuffer & 3; i != 0; --i) {
-			*(unsigned char*) pTarget++ = *(unsigned char*) pSource++;
-		}
+		memcpy(pTarget, pSource, cbBuffer);
 	}
 	if (pResourceObject->m_padwResourceDescriptor34 != 0) {
+		pVtable = (MogLoadTypedResourceObjectVtable*) pResourceObject->m_pVtable;
 		pResourceObject->m_nLoadState10 = 1;
-		((MogLoadTypedResourceObjectVtable*) pResourceObject->m_pVtable)->m_pOnLoad(pResourceObject);
+		pVtable->m_pOnLoad(pResourceObject);
 	}
 }
 
