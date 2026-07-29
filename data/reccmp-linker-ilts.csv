@@ -2,6 +2,7 @@
 address,name,symbol,type,source
 0x0040100F,EmitIteratedChildBoundsRecords,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401019,update_projectile_pool_real,,stub,src/ENGINE/CORE/LINKSCF.H
+0x00401069,ManagedEntityPacket23::ReverseEffStreamPayload,?ReverseEffStreamPayload@ManagedEntityPacket23@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00401078,GetFirstCachedChunkObject,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004010A0,VS_RootGeometryOwner::GetWindowOwnerState,,stub,src/GAME.CPP
 0x004010E1,MoveMenuSelectorNextThunk,,stub,src/FRONTEND/MENUSEL.H
@@ -31,6 +32,7 @@ address,name,symbol,type,source
 0x0040150F,VS_RootGeometryOwner::AppendQueuedRenderSinkValueNode,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00401514,VS_WindowOwnerBase::ReservedWindowOwnerSlot21,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x0040153C,LevelChunkObjectBaseView::InitializeLevelChunkObjectBase,,stub,src/ENGINE/CORE/LINKSCF.CPP
+0x00401573,ManagedEntityPacket23::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacket23@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x004015A0,GameScreenObject::ConstructNetworkLobbyScreen,,stub,src/GAME.H
 0x004015DC,EmitActivePgunChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401672,EmitLasrChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H

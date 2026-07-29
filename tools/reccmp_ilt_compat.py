@@ -13,14 +13,17 @@ ILT_LAST_ENTRY = 0x0040388C
 # These original vtable entries are linker thunks to reconstructed virtual
 # methods, while manual compatibility tables still need the thunk identities.
 VTABLE_METHOD_ILTS = {
+    0x00401069,  # ManagedEntityPacket23::ReverseEffStreamPayload
     0x00401217,  # ManagedEntityPacket25::ReverseEffStreamPayload
     0x00401316,  # ManagedEntityPacket28 scalar deleting destructor
     0x00401451,  # VsNetEffStreamCommon::NoopEffStream
     0x00401564,  # VsNetEffStreamCommon::AcceptEffStreamArgument
+    0x00401573,  # ManagedEntityPacket23::WriteEffStreamTaggedHeader
     0x00401730,  # ManagedEntityPacketBase::WriteEffStreamTaggedHeader
     0x00401852,  # ManagedEntityPacket25 scalar deleting destructor
     0x004018C5,  # ManagedEntityStateResetPacket scalar deleting destructor
     0x00401C94,  # ManagedEntityPacket25::WriteEffStreamTaggedHeader
+    0x00401DB6,  # ManagedEntityPacket23 scalar deleting destructor
     0x00401E15,  # ManagedEntityPacket24::ReverseEffStreamPayload
     0x00401E7E,  # ManagedEntityPacket28::WriteEffStreamTaggedHeader
     0x0040217B,  # ManagedEntityPacketBase::ReverseEffStreamPayload
@@ -52,6 +55,11 @@ ONE_PAST_REFERENCES = {
 # independently proven identities but no shared source annotation.
 FUNCTION_DATA_REFERENCES = {
     # function: (original data, rebuilt symbol, shared identity)
+    0x004168F0: (
+        0x0049CE08,
+        "g_nLevelFrameClockTimeMs",
+        "level frame clock time 0049ce08",
+    ),
     0x00452510: (
         0x004985B8,
         "g_EFF_NetworkLobbyPeerClearCloseVtable",
@@ -73,6 +81,11 @@ FUNCTION_DATA_REFERENCES = {
 # Normalize only the proven relocation in each listed function.
 THUNK_ILT_REFERENCES = {
     # function: (original ILT entry, rebuilt destination, shared identity)
+    0x00416940: (
+        0x00403107,
+        "UpdateNetworkFrameClockFromNetworkTime",
+        "network frame clock update target 00408190",
+    ),
     0x00408040: (0x00401370, "DeleteDerivedBaseModeWrapperAuto", "adjustor target 00407fd0"),
     0x00413E60: (0x00403616, "DeleteLevelGameMode", "adjustor target 00413e30"),
     0x00413E70: (0x00403616, "DeleteLevelGameModeAuto", "adjustor target 00413e30"),

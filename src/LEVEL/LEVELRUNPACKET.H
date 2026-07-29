@@ -15,6 +15,14 @@ struct ManagedEntityPacketBase : VsNetEffStreamCommon {
 	void* m_pManagedEntity2c;
 };
 
+// VTABLE: LEMBALL 0x00493da0
+struct ManagedEntityPacket23 : ManagedEntityPacketBase {
+	ManagedEntityPacket23();
+
+	virtual void ReverseEffStreamPayload(void);
+	virtual void WriteEffStreamTaggedHeader(void);
+};
+
 // VTABLE: LEMBALL 0x00493dc0
 struct ManagedEntityPacket27 : ManagedEntityPacketBase {
 	ManagedEntityPacket27();
