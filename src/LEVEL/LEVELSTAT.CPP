@@ -3530,6 +3530,34 @@ short LevelScreenTerrainRenderView::ComputeDynamicRenderEntrySortKey(int iEntry)
 	return (short) (nDepth + nHeight + 1);
 }
 
+struct LevelFourShortRectView {
+	short m_left;
+	short m_top;
+	short m_right;
+	short m_bottom;
+
+	LevelFourShortRectView* CopyFrom(const short* pRect);
+	void* ClearFourShortRect(void);
+};
+
+// FUNCTION: LEMBALL 0x00442190
+LevelFourShortRectView* LevelFourShortRectView::CopyFrom(const short* pRect)
+{
+	const short* pPosition;
+
+	m_left = pRect[0];
+	m_top = pRect[1];
+	if (pRect != 0) {
+		pPosition = pRect + 2;
+	}
+	else {
+		pPosition = 0;
+	}
+	m_right = pPosition[0];
+	m_bottom = pPosition[1];
+	return this;
+}
+
 // Compatibility shim preserving MSVC 4.20 compiler state.
 void LevelScreenActionButtonLayout::PositionLevelScreenActionButton(const VS_XYPair* pPanelOrigin)
 {
@@ -4985,15 +5013,6 @@ struct LevelTwoShortPointView {
 	void* CopyTwoShortPointVariant(const LevelTwoShortPointView* pSource);
 	void* AddTwoShortPointInPlace(const LevelTwoShortPointView* pSource);
 	void* SubtractTwoShortPointInPlace(const LevelTwoShortPointView* pSource);
-};
-
-struct LevelFourShortRectView {
-	short m_left;
-	short m_top;
-	short m_right;
-	short m_bottom;
-
-	void* ClearFourShortRect(void);
 };
 
 struct LevelActionPanelCodeView {
