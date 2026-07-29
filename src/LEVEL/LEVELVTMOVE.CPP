@@ -1,6 +1,13 @@
 #include "ENGINE/CORE/VSINIT.H"
 
 extern int g_nLevelFrameClockTick;
+extern unsigned int __cdecl compute_direction_octant_between_points(int nX1, int nY1, int nX2, int nY2);
+
+// GLOBAL: LEMBALL 0x0049d020
+static const int g_LEVEL_HeadingTurnDirections[8] = {0, 1, 1, 1, 1, -1, -1, -1};
+
+// GLOBAL: LEMBALL 0x0049d0b0
+static const int g_LEVEL_ManagedEntityUpdatePeriods[9] = {0, 87, 75, 0, 0, 0, 0, 75, 75};
 
 struct LevelThreeDwordPoint {
 	int m_nX;
@@ -24,20 +31,34 @@ struct LevelManagedEntityCommandQueue {
 };
 
 struct LevelManagedEntityMoveCommandView {
-	char m_abReserved00[0x70];
+	char m_abReserved00[0x64];
+	int m_nEntityType64;
+	char m_abReserved68[8];
 	LevelManagedEntityCommandQueue* m_pCommandQueue70;
 	int m_fHasCommands74;
 	char m_abReserved78[0x10];
 	int m_nMotionDuration88;
 	char m_abReserved8C[0x10];
 	LevelThreeDwordPoint m_WorldPosition9C;
-	char m_abReservedA8[0x20];
+	char m_abReservedA8[0xc];
+	short m_nHeadingOctantB4;
+	char m_abReservedB6[0x12];
 	int m_nMotionStartTickC8;
 	int m_nNextUpdateTickCC;
 
 	void PopFirstMoveCommand(void);
 	void PopFirstMoveCommandAndResetMotion(void);
+	void UpdateFacingTowardFirstMoveCommand(void);
+	int IsFacingTowardFirstMoveCommand(void);
 	LevelThreeDwordPoint* CopyFirstMoveCommandPositionOrCurrent(LevelThreeDwordPoint* pPosition);
+};
+
+struct LevelManagedEntityStateFields {
+	char m_abReserved00[0xb4];
+	short m_nHeadingOctantB4;
+
+	void IncrementHeadingOctant(void);
+	void DecrementHeadingOctant(void);
 };
 
 // Split from the original LEVELVT source group to preserve MSVC 4.20 code generation in LEVELVT.CPP.
@@ -51,6 +72,43 @@ void LevelManagedEntityMoveCommandView::PopFirstMoveCommandAndResetMotion(void)
 	nFrameClockTick = g_nLevelFrameClockTick;
 	m_nNextUpdateTickCC = nFrameClockTick;
 	m_nMotionStartTickC8 = nFrameClockTick;
+}
+
+// FUNCTION: LEMBALL 0x00415d90
+void LevelManagedEntityMoveCommandView::UpdateFacingTowardFirstMoveCommand(void)
+{
+	LevelThreeDwordPoint targetPosition;
+	int nDirection;
+
+	CopyFirstMoveCommandPositionOrCurrent(&targetPosition);
+	nDirection = compute_direction_octant_between_points(m_WorldPosition9C.m_nX >> 12,
+														 m_WorldPosition9C.m_nY >> 12,
+														 targetPosition.m_nX >> 12,
+														 targetPosition.m_nY >> 12);
+	if (nDirection != m_nHeadingOctantB4) {
+		LevelManagedEntityStateFields* pState = (LevelManagedEntityStateFields*) this;
+		if (g_LEVEL_HeadingTurnDirections[(nDirection - m_nHeadingOctantB4) & 7] < 0) {
+			pState->DecrementHeadingOctant();
+		}
+		else {
+			pState->IncrementHeadingOctant();
+		}
+	}
+	m_nNextUpdateTickCC = g_nLevelFrameClockTick + g_LEVEL_ManagedEntityUpdatePeriods[m_nEntityType64] / 50;
+}
+
+// FUNCTION: LEMBALL 0x00415e20
+int LevelManagedEntityMoveCommandView::IsFacingTowardFirstMoveCommand(void)
+{
+	LevelThreeDwordPoint targetPosition;
+	int nDirection;
+
+	CopyFirstMoveCommandPositionOrCurrent(&targetPosition);
+	nDirection = compute_direction_octant_between_points(m_WorldPosition9C.m_nX >> 12,
+														 m_WorldPosition9C.m_nY >> 12,
+														 targetPosition.m_nX >> 12,
+														 targetPosition.m_nY >> 12);
+	return m_nHeadingOctantB4 == nDirection;
 }
 
 // FUNCTION: LEMBALL 0x00415e80
@@ -108,4 +166,12 @@ void __cdecl ThunkPopFirstManagedEntityMoveCommandAndResetMotion(void* pUnused,
 {
 	(void) pUnused;
 	pEntity->PopFirstMoveCommandAndResetMotion();
+}
+
+// FUNCTION: LEMBALL 0x00419ec0
+void __cdecl ThunkUpdateManagedEntityFacingTowardFirstMoveCommand(void* pUnused,
+																  LevelManagedEntityMoveCommandView* pEntity)
+{
+	(void) pUnused;
+	pEntity->UpdateFacingTowardFirstMoveCommand();
 }

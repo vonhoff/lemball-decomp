@@ -387,8 +387,8 @@ address,size,name,unit
 0x004158B0,368,service_managed_entity_reachable_path_search,LEVEL/LEVELVT.CPP
 0x00415A20,14,set_entity_field_0x08_if_flags_bit0,LEVEL/LEVELVT.CPP
 0x00415A30,853,advance_managed_entity_path_motion_with_height_checks,LEVEL/LEVELVT.CPP
-0x00415D90,137,update_managed_entity_facing_toward_first_move_command,LEVEL/LEVELVT.CPP
-0x00415E20,81,is_managed_entity_facing_toward_first_move_command,LEVEL/LEVELVT.CPP
+0x00415D90,137,update_managed_entity_facing_toward_first_move_command,LEVEL/LEVELVTMOVE.CPP
+0x00415E20,81,is_managed_entity_facing_toward_first_move_command,LEVEL/LEVELVTMOVE.CPP
 0x00415E80,107,pop_first_managed_entity_move_command,LEVEL/LEVELVT.CPP
 0x00415EF0,64,append_managed_entity_move_command,LEVEL/LEVELVT.CPP
 0x00415F30,195,prepend_managed_entity_move_command_and_advance,LEVEL/LEVELVT.CPP
@@ -520,7 +520,7 @@ address,size,name,unit
 0x00419E90,9,thunk_advance_managed_entity_move_command_path,LEVEL/LEVELVT.CPP
 0x00419EA0,9,thunk_pop_first_managed_entity_move_command_and_reset_motion,LEVEL/LEVELVT.CPP
 0x00419EB0,9,forward_managed_entity_vslot_0x44,LEVEL/LEVELVT.CPP
-0x00419EC0,9,thunk_update_managed_entity_facing_toward_first_move_command,LEVEL/LEVELVT.CPP
+0x00419EC0,9,thunk_update_managed_entity_facing_toward_first_move_command,LEVEL/LEVELVTMOVE.CPP
 0x00419ED0,42,reset_then_forward_managed_entity_vslot_0x60,LEVEL/LEVELVT.CPP
 0x00419F00,9,thunk_advance_managed_entity_drop_to_saved_point,LEVEL/LEVELVT.CPP
 0x00419F10,9,thunk_advance_managed_entity_drop_to_tile_center,LEVEL/LEVELVT.CPP

@@ -5,6 +5,7 @@ address,name,symbol,type,source
 0x00401069,ManagedEntityPacket23::ReverseEffStreamPayload,?ReverseEffStreamPayload@ManagedEntityPacket23@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00401078,GetFirstCachedChunkObject,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004010A0,VS_RootGeometryOwner::GetWindowOwnerState,,stub,src/GAME.CPP
+0x004010B9,LevelManagedEntityMoveCommandView::UpdateFacingTowardFirstMoveCommand,?UpdateFacingTowardFirstMoveCommand@LevelManagedEntityMoveCommandView@@QAEXXZ,stub,src/LEVEL/LEVELVTMOVE.CPP
 0x004010E1,MoveMenuSelectorNextThunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401154,DestroyQueuedVariantRangeEntryAutoThunk,,stub,src/FRONTEND/MENUSEL.CPP
 0x00401159,ActivatePgunChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
@@ -31,6 +32,7 @@ address,name,symbol,type,source
 0x00401500,UpdateManagedEntityBoundsFromPosition,?UpdateManagedEntityBoundsFromPosition@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
 0x0040150F,VS_RootGeometryOwner::AppendQueuedRenderSinkValueNode,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00401514,VS_WindowOwnerBase::ReservedWindowOwnerSlot21,,stub,src/ENGINE/GDI/VSWINDOW.H
+0x00401532,compute_direction_octant_between_points,?compute_direction_octant_between_points@@YAIHHHH@Z,stub,src/GAMEHELPERS.CPP
 0x0040153C,LevelChunkObjectBaseView::InitializeLevelChunkObjectBase,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00401573,ManagedEntityPacket23::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacket23@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x004015A0,GameScreenObject::ConstructNetworkLobbyScreen,,stub,src/GAME.H
@@ -81,6 +83,7 @@ address,name,symbol,type,source
 0x00401FF5,SelectMenuSelectorSide1Thunk,,stub,src/FRONTEND/MENUSEL.H
 0x0040200E,GameScreenObject::ConstructPaintballSequenceScreen,,stub,src/GAME.H
 0x00402054,DeleteDoorChunkObjectArrayVtableThunk,?DeleteDoorChunkObjectArrayVtableThunk@@YIPAXPAX0E@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
+0x00402068,LevelManagedEntityStateFields::IncrementHeadingOctant,?IncrementHeadingOctant@LevelManagedEntityStateFields@@QAEXXZ,stub,src/LEVEL/LEVELVT.CPP
 0x0040207C,LevelManagedEntityMoveCommandView::PopFirstMoveCommandAndResetMotion,?PopFirstMoveCommandAndResetMotion@LevelManagedEntityMoveCommandView@@QAEXXZ,stub,src/LEVEL/LEVELVTMOVE.CPP
 0x00402090,GetNextManagedEntityGroup,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040209F,LevelChunkObjectRuntimeStateView::ResetRuntimeStateThunk,,stub,src/LEVEL/LEVELVT.CPP
@@ -102,6 +105,7 @@ address,name,symbol,type,source
 0x00402351,LevelManagedEntityMoveCommandView::PopFirstMoveCommand,?PopFirstMoveCommand@LevelManagedEntityMoveCommandView@@QAEXXZ,stub,src/LEVEL/LEVELVTMOVE.CPP
 0x00402360,ActivateCaptureTriggerChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402374,DestroyMineChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
+0x004023E7,LevelManagedEntityStateFields::DecrementHeadingOctant,?DecrementHeadingOctant@LevelManagedEntityStateFields@@QAEXXZ,stub,src/LEVEL/LEVELVT.CPP
 0x0040240A,ActivateManagedEntityGroupChildren,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040243C,LevelChunkObjectRuntimeStateView::ClearStateFieldsThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402446,clear_managed_entity_child_pending_state_if_interruptible,?clear_managed_entity_child_pending_state_if_interruptible@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
