@@ -805,12 +805,14 @@ int LEMBALL_FASTCALL HandleQueuedVariantChildSlotManagerEvent(GameQueuedVariantC
 															  int,
 															  GameMenuSelectorEvent* pEvent);
 void* LEMBALL_FASTCALL DeleteQueuedVariantRangeEntry(GameQueuedVariantRangeEntry* pEntry, int, int fDelete);
+void* LEMBALL_FASTCALL DeleteQueuedVariantRangeEntryAuto(void* pObject, void*, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteQueuedVariantChildSlotManager(GameQueuedVariantChildSlotManager* pManager,
 														   int,
 														   int fDelete);
 
+// GLOBAL: LEMBALL 0x00498150
 static void* g_QueuedVariantRangeEntryVtable[3] = {(void*) InitializeNonZrleVariantRenderEntry,
-												   (void*) DeleteQueuedVariantRangeEntry,
+												   (void*) DeleteQueuedVariantRangeEntryAuto,
 												   (void*) HandleQueuedVariantRangeEntryEvent};
 /* VTABLE: LEMBALL 0x0049823C */
 static void* g_QueuedVariantChildSlotManagerRenderManagerVtable[1] = {(void*) VariantResourceBundleNoopThunk};
@@ -835,32 +837,8 @@ __inline static void QueueQueuedVariantCommand(int nCommand)
 	((QueueProc) (*(void***) g_pSharedRenderDispatchQueue)[2])(g_pSharedRenderDispatchQueue, 0, &Event);
 }
 
-__inline static void DestroyQueuedVariantRangeEntryResources(GameQueuedVariantRangeEntry* pEntry)
-{
-	typedef void(LEMBALL_FASTCALL * DeleteOverlayProc)(void*, int, int);
-	int i;
-
-	if (pEntry->m_pOverlay4C != 0) {
-		void* pDelete = (char*) pEntry->m_pOverlay4C + 0x90;
-		((DeleteOverlayProc) (*(void***) pDelete)[0])(pDelete, 0, 1);
-		pEntry->m_pOverlay4C = 0;
-	}
-	if (pEntry->m_ppLoadedResources50 != 0) {
-		for (i = 0; i < pEntry->m_cResources34; ++i) {
-			ReleaseTypedResourceObjectReference(pEntry->m_ppLoadedResources50[i]);
-		}
-		FreeVSMemBlock(pEntry->m_ppLoadedResources50);
-		pEntry->m_ppLoadedResources50 = 0;
-	}
-}
-
-__inline static void DestroyQueuedVariantRangeEntry(GameQueuedVariantRangeEntry* pEntry)
-{
-	pEntry->m_pVtable00 = g_QueuedVariantRangeEntryVtable;
-	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->UnregisterOrderedRenderDispatchClient(pEntry, 0);
-	DestroyQueuedVariantRangeEntryResources(pEntry);
-	pEntry->m_pVtable00 = g_pNonZrleVariantRenderEntryInitializeVtable;
-}
+void LEMBALL_FASTCALL ReleaseQueuedVariantRangeResources(GameQueuedVariantRangeEntry* pEntry);
+void LEMBALL_FASTCALL DestroyQueuedVariantRangeEntryAuto(void* pObject);
 
 __inline static GameQueuedVariantRangeEntry* ConstructQueuedVariantRangeEntry(GameQueuedVariantRangeEntry* pEntry,
 																			  void* pRenderOwner,
@@ -2622,6 +2600,17 @@ void* LEMBALL_FASTCALL DeleteSelectorProgressOverlayOwnerAdjusted(void* pDeleteI
 	}
 	return pOwner - 0x90;
 }
+// FUNCTION: LEMBALL 0x0044f130
+void LEMBALL_FASTCALL DestroyQueuedVariantRangeEntryAuto(void* pObject)
+{
+	GameQueuedVariantRangeEntry* pEntry;
+
+	pEntry = (GameQueuedVariantRangeEntry*) pObject;
+	pEntry->m_pVtable00 = g_QueuedVariantRangeEntryVtable;
+	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->UnregisterOrderedRenderDispatchClient(pEntry, 0);
+	ReleaseQueuedVariantRangeResources(pEntry);
+	pEntry->m_pVtable00 = g_GAME_RenderQueueNodeVtableSlots;
+}
 // FUNCTION: LEMBALL 0x0044f160
 int LEMBALL_FASTCALL HandleQueuedVariantRangeEntryEvent(GameQueuedVariantRangeEntry* pEntry,
 														int,
@@ -2638,6 +2627,33 @@ int LEMBALL_FASTCALL HandleQueuedVariantRangeEntryEvent(GameQueuedVariantRangeEn
 		QueueQueuedVariantCommand(pEntry->m_nCommand30);
 	}
 	return 0;
+}
+struct QueuedVariantOverlayDeleteInterface {
+	virtual void Delete(int fDelete) = 0;
+};
+
+// FUNCTION: LEMBALL 0x0044f370
+void LEMBALL_FASTCALL ReleaseQueuedVariantRangeResources(GameQueuedVariantRangeEntry* pEntry)
+{
+	int nOffset;
+	int i;
+
+	if (pEntry->m_pOverlay4C != 0) {
+		QueuedVariantOverlayDeleteInterface* pDelete =
+			(QueuedVariantOverlayDeleteInterface*) ((char*) pEntry->m_pOverlay4C + 0x90);
+		pDelete->Delete(1);
+	}
+	nOffset = 0;
+	i = 0;
+	if (pEntry->m_cResources34 > nOffset) {
+		do {
+			ReleaseTypedResourceObjectReference(*(void**) ((char*) pEntry->m_ppLoadedResources50 + nOffset));
+			nOffset += sizeof(void*);
+			++i;
+		} while (i < pEntry->m_cResources34);
+	}
+	FreeVSMemBlock(pEntry->m_ppLoadedResources50);
+	pEntry->m_ppLoadedResources50 = 0;
 }
 // FUNCTION: LEMBALL 0x0044f420
 void GameQueuedVariantChildContextView::MarkRenderObjectDirty(void)
@@ -2875,7 +2891,7 @@ void LEMBALL_FASTCALL RefreshQueuedVariantChildByToken(void* pObject, int, int n
 // Compatibility shim preserving MSVC 4.20 compiler state.
 void* LEMBALL_FASTCALL DeleteQueuedVariantRangeEntry(GameQueuedVariantRangeEntry* pEntry, int, int fDelete)
 {
-	DestroyQueuedVariantRangeEntry(pEntry);
+	DestroyQueuedVariantRangeEntryAuto(pEntry);
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pEntry);
 	}
@@ -3464,11 +3480,6 @@ DEFINE_MENUSEL_NAMED_SCALAR_DELETE(DeleteMenuSelectorManagerAuto, DestroyMenuSel
 
 #undef DEFINE_MENUSEL_NAMED_SCALAR_DELETE
 
-// Comparison-only compatibility stub.
-void LEMBALL_FASTCALL DestroyQueuedVariantRangeEntryAuto(void*)
-{
-}
-
 // Compatibility shim for original ILT call site.
 void LEMBALL_FASTCALL DestroyQueuedVariantRangeEntryAutoThunk(void* pObject)
 {
@@ -3477,7 +3488,7 @@ void LEMBALL_FASTCALL DestroyQueuedVariantRangeEntryAutoThunk(void* pObject)
 
 void* LEMBALL_FASTCALL DeleteQueuedVariantRangeEntryAuto(void* pObject, void*, BYTE fDelete)
 {
-	DestroyQueuedVariantRangeEntryAutoThunk(pObject);
+	DestroyQueuedVariantRangeEntryAuto(pObject);
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}

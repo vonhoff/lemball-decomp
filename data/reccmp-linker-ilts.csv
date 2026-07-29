@@ -7,7 +7,7 @@ address,name,symbol,type,source
 0x004010A0,VS_RootGeometryOwner::GetWindowOwnerState,,stub,src/GAME.CPP
 0x004010B9,LevelManagedEntityMoveCommandView::UpdateFacingTowardFirstMoveCommand,?UpdateFacingTowardFirstMoveCommand@LevelManagedEntityMoveCommandView@@QAEXXZ,stub,src/LEVEL/LEVELVTMOVE.CPP
 0x004010E1,MoveMenuSelectorNextThunk,,stub,src/FRONTEND/MENUSEL.H
-0x00401154,DestroyQueuedVariantRangeEntryAutoThunk,,stub,src/FRONTEND/MENUSEL.CPP
+0x00401154,DestroyQueuedVariantRangeEntryAuto,?DestroyQueuedVariantRangeEntryAuto@@YIXPAX@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00401159,ActivatePgunChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401177,RefreshActiveCaptureTriggerChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040119F,VS_WindowOwnerBase::ReservedWindowOwnerSlot37,,stub,src/ENGINE/GDI/VSWINDOW.H
@@ -125,6 +125,7 @@ address,name,symbol,type,source
 0x0040263A,get_next_projectile_pool_object,?get_next_projectile_pool_object@@YIPAXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402658,MarkNetworkLobbySelectedPeerDisconnected,?MarkNetworkLobbySelectedPeerDisconnected@@YIXPAX@Z,stub,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x00402667,ManagedEntityChildView::SetManagedEntityPrimaryActiveFlag,?SetManagedEntityPrimaryActiveFlag@ManagedEntityChildView@@QAEXH@Z,stub,src/LEVEL/LEVELVT.CPP
+0x0040266C,HandleQueuedVariantRangeEntryEvent,?HandleQueuedVariantRangeEntryEvent@@YIHPAUGameQueuedVariantRangeEntry@@HPAUGameMenuSelectorEvent@@@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00402676,DestroyCollChunkObjectAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x0040268A,FindManagedEntityByPointer,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040268F,LevelSlotActionDispatcherView::DispatchLevelSlotActionByType,?DispatchLevelSlotActionByType@LevelSlotActionDispatcherView@@QAEXHIHH@Z,stub,src/LEVEL/LEVELVTACTIONDISPATCH.CPP
@@ -222,6 +223,7 @@ address,name,symbol,type,source
 0x0040354E,DestroyLasrChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x004035F3,DestroyNetworkLobbyVsnetRuntimeAutoThunk,,stub,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x0040363E,DestroyPgunChunkManagerAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
+0x0040364D,DeleteQueuedVariantRangeEntryAuto,,stub,src/FRONTEND/MENUSEL.CPP
 0x00403657,VS_RootGeometryOwner::SetWindowOwnerState,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00403675,EmitGmobChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00403693,VS_WindowOwnerBase::ReservedWindowOwnerSlot22,,stub,src/ENGINE/GDI/VSWINDOW.H
@@ -230,6 +232,7 @@ address,name,symbol,type,source
 0x004036D4,InitializeTramChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004036D9,DispatchPlasChildStateTable,?DispatchPlasChildStateTable@@YAXPAPAUPlasChildStateDispatchEntry@@PAXPAUPlasChildStateEntityView@@@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004036F2,DestroyNetworkLobbyTransportControllerAutoThunk,,stub,src/GAME.CPP
+0x00403729,ReleaseQueuedVariantRangeResources,?ReleaseQueuedVariantRangeResources@@YIXPAUGameQueuedVariantRangeEntry@@@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x0040372E,has_level_plas_history_entries,?has_level_plas_history_entries@@YIHPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00403779,LevelManagedEntityChildIterator::AttachManagedEntityChild,?AttachManagedEntityChild@LevelManagedEntityChildIterator@@QAEHPAUManagedEntityChildView@@@Z,stub,src/LEVEL/LEVELVTCHILD.CPP
 0x00403797,EmitCaptureTriggerChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H

@@ -151,7 +151,7 @@ address,name,symbol,type,source
 0x0044E620,DeleteMenuSelectorEntryAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x0044E650,delete_aligned_zrle_child_overlay_adjusted_c `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
 0x0044E690,DeleteMenuSelectorManagerAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
-0x0044FFC0,DeleteQueuedVariantRangeEntryAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
+0x0044FFC0,DeleteQueuedVariantRangeEntryAuto,?DeleteQueuedVariantRangeEntryAuto@@YIPAXPAX0E@Z,synthetic,src/FRONTEND/MENUSEL.CPP
 0x0044FFF0,DeleteQueuedVariantChildSlotManagerAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x004509F0,FinishPaintballSequenceToMainMenu,,synthetic,src/FRONTEND/MAINMENU.CPP
 0x004510E0,DeletePaintballSequenceScreenAuto,,synthetic,src/FRONTEND/MAINMENU.CPP

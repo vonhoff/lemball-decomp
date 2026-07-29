@@ -39,7 +39,6 @@ address,name,symbol,type,source
 0x0043A2E0,FUN_0043a2e0,,stub,src/FRONTEND/SCREENVT.CPP
 0x00448DE0,DestroyOptionsScreenAuto,,stub,src/FRONTEND/MAINMENU.CPP
 0x004496D0,DestroyLevelSelectionScreenAuto,,stub,src/FRONTEND/MAINMENU.CPP
-0x0044F130,DestroyQueuedVariantRangeEntryAuto,,stub,src/FRONTEND/MENUSEL.CPP
 0x004507A0,DestroyPaintballSequenceScreenAuto,,stub,src/FRONTEND/MAINMENU.CPP
 0x004515C0,DestroyPasswordEntryScreenAuto,,stub,src/FRONTEND/MAINMENU.CPP
 0x00451610,DrawPasswordEntryScreenContents,,function,src/FRONTEND/MAINMENU.CPP
