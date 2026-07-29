@@ -1,3 +1,5 @@
+#define LEMBALL_DEFINE_TIMED_EFF_STREAM_SECONDARY_HANDLE_ABI
+
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/CORE/VSINIT.H"
 #include "ENGINE/CORE/VSMEM.H"
@@ -1823,13 +1825,13 @@ void VsNetEffTransportPeer::PrepareEffTransportBroadcastStatusPayload(char* pszH
 	((VsNetDualHandleEffStream*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nHandleStreamOffset))
 		->ConfigureEffStreamPrimaryHandleGroup(3, 3, 0);
 	((VsNetTimedEffStream*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nTimedStreamOffset))
-		->ReleaseTimedEffStreamPrimaryHandle();
+		->ReleaseTimedEffStreamPrimaryHandleThunk(3, 3, 0);
 
 	pAdjustor = (VsNetHandleGroupAdjustor*) ((char*) this + m_pOffsets->m_nHandleGroupAdjustorSlotOffset + 4);
 	((VsNetDualHandleEffStream*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nHandleStreamOffset))
 		->ConfigureEffStreamSecondaryHandleGroup(1, 0);
 	((VsNetTimedEffStream*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nTimedStreamOffset))
-		->ConfigureTimedEffStreamSecondaryHandle(1);
+		->ConfigureTimedEffStreamSecondaryHandle(1, 0);
 
 	if (g_pszEffTransportBroadcastStatusPayload == 0) {
 		g_pszEffTransportBroadcastStatusPayload = (char*) AllocateVSMemBlock(0x410);
@@ -3325,7 +3327,9 @@ int LEMBALL_FASTCALL AllocateEffTransportPeerEntry(void* pRuntimeState)
 											   pState->m_nPrimaryHandleGroupBytes,
 											   pState->m_nPrimaryHandleGroupMode);
 	((VsNetTimedEffStream*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nTimedStreamOffset))
-		->ReleaseTimedEffStreamPrimaryHandle();
+		->ReleaseTimedEffStreamPrimaryHandleThunk(pState->m_nPrimaryHandleGroupCount,
+												  pState->m_nPrimaryHandleGroupBytes,
+												  pState->m_nPrimaryHandleGroupMode);
 
 	nSecondaryHandleBytes = pState->m_nSecondaryHandleGroupBytes;
 	pAdjustorSlot =
@@ -3334,7 +3338,7 @@ int LEMBALL_FASTCALL AllocateEffTransportPeerEntry(void* pRuntimeState)
 	((VsNetDualHandleEffStream*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nHandleStreamOffset))
 		->ConfigureEffStreamSecondaryHandleGroup(nSecondaryHandleBytes, pState->m_nPrimaryHandleGroupMode);
 	((VsNetTimedEffStream*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nTimedStreamOffset))
-		->ConfigureTimedEffStreamSecondaryHandle(nSecondaryHandleBytes);
+		->ConfigureTimedEffStreamSecondaryHandle(nSecondaryHandleBytes, pState->m_nPrimaryHandleGroupMode);
 	return (int) (unsigned long) pPeer;
 }
 

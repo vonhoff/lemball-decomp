@@ -1,5 +1,6 @@
 #define LEMBALL_DEFINE_EFF_STREAM_CHANNEL_STATE_VTABLE
 #define LEMBALL_DEFINE_EFF_STREAM_BASE_VTABLE
+#define LEMBALL_DEFINE_TIMED_EFF_STREAM_SECONDARY_HANDLE_ABI
 
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/CORE/VSMEM.H"
@@ -661,20 +662,20 @@ void VsNetTimedEffStream::ReleaseTimedEffStreamPrimaryHandleThunk(int nUnused0, 
 }
 
 // FUNCTION: LEMBALL 0x0045fe60
-void VsNetTimedEffStream::ConfigureTimedEffStreamSecondaryHandle(int nPacketCount)
+void VsNetTimedEffStream::ConfigureTimedEffStreamSecondaryHandle(int nPacketCount, int nMode)
 {
 	void* pHandleArray;
 
+	(void) nMode;
 	ReleaseTimedEffStreamSecondaryHandles();
 	pHandleArray = AllocateVSMemBlock(0x0c);
-	if (pHandleArray == 0) {
-		m_pSecondaryHandleArray4c = 0;
-	}
-	else {
+	if (pHandleArray != 0) {
 		m_pSecondaryHandleArray4c =
 			((VsNetSimpleEffTransportRecordSlotTable*) pHandleArray)
 				->ConstructSimpleRecordSlotTableWrapper(nPacketCount, (unsigned int) g_cbEffTransportMaxPacketBytes);
+		return;
 	}
+	m_pSecondaryHandleArray4c = 0;
 }
 
 // FUNCTION: LEMBALL 0x00460350

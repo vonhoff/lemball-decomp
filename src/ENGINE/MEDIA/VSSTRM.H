@@ -255,7 +255,11 @@ struct VsNetTimedEffStream : VsNetTimedEffStreamPrimary, virtual VsNetEffStreamC
 	void ReleaseTimedEffStreamPrimaryHandle(void);
 	void ReleaseTimedEffStreamPrimaryHandleThunk(int nUnused0, int nUnused1, int nUnused2);
 	void ReleaseTimedEffStreamSecondaryHandles(void);
+#ifdef LEMBALL_DEFINE_TIMED_EFF_STREAM_SECONDARY_HANDLE_ABI
+	void ConfigureTimedEffStreamSecondaryHandle(int nPacketCount, int nMode);
+#else
 	void ConfigureTimedEffStreamSecondaryHandle(int nPacketCount);
+#endif
 	void InvokeTimedEffStreamServiceCallback(void* pArgument);
 };
 
