@@ -2323,16 +2323,13 @@ int VsNetSocketWindowEffChannel::ReleaseFileBackedEffMarker(void)
 {
 	int nDelta;
 
-	nDelta = *(int*) (*(int*) ((char*) this - 0x10) + 4);
-	return closesocket(*(int*) ((char*) this + nDelta - 8));
+	nDelta = *(int*) (*(int*) ((char*) this + 0x10) + 4);
+	return closesocket(*(int*) ((char*) this + nDelta + 0x18));
 }
 // FUNCTION: LEMBALL 0x00471ad0
 void VsNetSocketWindowEffChannel::ClearNestedEffChannelAsyncStatus(void)
 {
-	int nDelta;
-
-	nDelta = *(int*) (*(int*) ((char*) this - 0x10) + 4);
-	((VsNetEffStreamChannelState*) ((char*) this + nDelta - 0x10))
+	((VsNetEffStreamChannelState*) ((char*) this + *(int*) (*(int*) ((char*) this + 0x10) + 4) + 0x10))
 		->SetEffStreamChannelAsyncErrorStatus(WSAGetLastError());
 }
 // DISABLED FUNCTION: LEMBALL 0x00471b00
