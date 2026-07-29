@@ -211,6 +211,25 @@ public:
 	void ApplyWindowOwnerActivation(int nActivate);
 };
 
+class GameSelectorProgressOverlayWindowVirtualView {
+public:
+	virtual void ReservedWindowSlot00(void) = 0;
+	virtual void ReservedWindowSlot04(void) = 0;
+	virtual void ReservedWindowSlot08(void) = 0;
+	virtual void ReservedWindowSlot0C(void) = 0;
+	virtual void ReservedWindowSlot10(void) = 0;
+	virtual void ReservedWindowSlot14(void) = 0;
+	virtual void ReservedWindowSlot18(void) = 0;
+	virtual void ReservedWindowSlot1C(void) = 0;
+	virtual void ReservedWindowSlot20(void) = 0;
+	virtual void ReservedWindowSlot24(void) = 0;
+	virtual void ReservedWindowSlot28(void) = 0;
+	virtual void ReservedWindowSlot2C(void) = 0;
+	virtual void ReservedWindowSlot30(void) = 0;
+	virtual void ReservedWindowSlot34(void) = 0;
+	virtual void MoveWindowOwnerOrigin(const VS_XYPair* pPoint) = 0;
+};
+
 // SIZE 0x134
 class GameSelectorProgressOverlayChild : public GameWindowOwnerRenderContext {
 public:
@@ -2581,7 +2600,6 @@ void LEMBALL_FASTCALL DestroySelectorProgressOverlayOwner(void* pDeleteInterface
 // FUNCTION: LEMBALL 0x0044ed70
 void GameSelectorProgressOverlayOwner::SetAnchorAndNotifyChild(const VS_XYPair* pPoint)
 {
-	GameSelectorProgressOverlayChild* pChild;
 	VS_XYPair Point;
 
 	*(short*) ((char*) this + 0xc4) -= *(short*) ((char*) this + 0x18);
@@ -2590,13 +2608,12 @@ void GameSelectorProgressOverlayOwner::SetAnchorAndNotifyChild(const VS_XYPair* 
 	SetWindowOwnerRenderAnchorFromPoint(this, 0, pPoint);
 	*(short*) ((char*) this + 0xc4) += *(short*) ((char*) this + 0x18);
 	*(short*) ((char*) this + 0xc6) += *(short*) ((char*) this + 0x1a);
-	pChild = *(GameSelectorProgressOverlayChild**) ((char*) this + 0x134);
 	Point.m_x = *(short*) ((char*) this + 0xdc) + *(short*) ((char*) this + 0x130);
 	Point.m_y = *(short*) ((char*) this + 0xde) + *(short*) ((char*) this + 0x132);
-	((GameSelectorProgressOverlayWindowSlots*) pChild)->MoveWindowOwnerOrigin(&Point);
-	Point.m_x = pPoint->m_x + *(short*) ((char*) this + 0x130);
+	((GameSelectorProgressOverlayWindowVirtualView*) *(void**) ((char*) this + 0x134))->MoveWindowOwnerOrigin(&Point);
+	Point.m_x = *(short*) ((char*) this + 0x130) + pPoint->m_x;
 	Point.m_y = pPoint->m_y + *(short*) ((char*) this + 0x132);
-	((GameSelectorProgressOverlayWindowSlots*) pChild)->MoveWindowOwnerOrigin(&Point);
+	((GameSelectorProgressOverlayWindowVirtualView*) *(void**) ((char*) this + 0x134))->MoveWindowOwnerOrigin(&Point);
 }
 // FUNCTION: LEMBALL 0x0044eff0
 void* LEMBALL_FASTCALL DeleteSelectorProgressOverlayChildAdjusted(void* pGeometryInterface, int, unsigned int fDelete)
