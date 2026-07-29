@@ -56,7 +56,7 @@ void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEn
 void InitializeManagedEntitySlotTablesThunk(void* pLevelGameMode);
 unsigned short LEMBALL_FASTCALL GetManagedEntitySlotId(int nManagedEntityObject);
 void SetManagedEntitySlotId(void* pManagedEntityObject, unsigned short nSlotId);
-unsigned int FindFirstFreeManagedEntitySlotIdForwardThunk(void);
+unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void);
 unsigned int FindLastFreeManagedEntitySlotIdThunk(void);
 void ClaimManagedEntitySlotId(int nManagedEntityObject);
 void LEMBALL_FASTCALL ResetBallChunkEntries(void* pBallManager);
@@ -433,7 +433,7 @@ struct GameLevelTileGrid {
 void ClaimManagedEntitySlotId(int nManagedEntityObject);
 unsigned short LEMBALL_FASTCALL GetManagedEntitySlotId(int nManagedEntityObject);
 void SetManagedEntitySlotId(void* pManagedEntityObject, unsigned short nSlotId);
-unsigned int FindFirstFreeManagedEntitySlotIdForwardThunk(void);
+unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void);
 unsigned int FindLastFreeManagedEntitySlotIdThunk(void);
 void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEnabled);
 void DispatchType14CountedChildSlotC4Thunk(int nChunkManager);
@@ -1563,7 +1563,7 @@ void SetManagedEntitySlotId(void* pManagedEntityObject, unsigned short nSlotId)
 	ClaimManagedEntitySlotId((int) (unsigned long) pManagedEntityObject);
 }
 // FUNCTION: LEMBALL 0x00416670
-unsigned int FindFirstFreeManagedEntitySlotIdForwardThunk(void)
+unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void)
 {
 	unsigned int iByte;
 	int iBit;
