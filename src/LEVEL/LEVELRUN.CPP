@@ -2435,20 +2435,21 @@ void LevelTwoDwordPairSourceView::copy_two_dword_pair_from_this(int* pDestinatio
 }
 
 struct LevelRunSmallFunctionView {
-	void ClearObjectField134(void);
+	int ClearObjectField134(void);
 	void ApplyManagedEntityStateResetPacket(void);
 	void CopyNodeChunkRecordFixedPointPosition(int* pDestination);
 	void CopyNodeChunkRecordTileXY(int* pX, int* pY);
 };
 
-void LevelRunSmallFunctionView::ClearObjectField134(void)
+int LevelRunSmallFunctionView::ClearObjectField134(void)
 {
 	int nValue;
 
 	nValue = *(int*) ((char*) this + 0x134);
 	if (nValue != 0) {
-		*(int*) ((char*) this + 0x134) = nValue - nValue;
+		*(int*) ((char*) this + 0x134) = 0;
 	}
+	return nValue;
 }
 
 void LevelRunSmallFunctionView::ApplyManagedEntityStateResetPacket(void)
