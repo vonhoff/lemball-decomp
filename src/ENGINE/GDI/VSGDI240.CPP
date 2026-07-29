@@ -1,4 +1,7 @@
+#include "ENGINE/CORE/VSINIT.H"
 #include "ENGINE/GDI/VSGDI.H"
+
+char* LookupDirectDrawErrorString(unsigned int nError);
 
 struct VsGdiDibRectDispatch240 {
 	virtual void Reserved0(void) = 0;
@@ -37,4 +40,30 @@ int VsGdiDib240DisplayState::StretchDisplayRect(void* pDestinationBinding,
 	aSourcePoint[1] = pAdjustedSourceRect[1];
 	return ((VsGdiDibRectDispatch240*) this)
 		->CopyDisplayRect(pDestinationBinding, pDestinationRect, pSourceBinding, aSourcePoint);
+}
+
+struct VsGdiDirectDrawSurfaceBitmapView {
+	void** m_pVtable;
+	void* m_pCachedPixels;
+	int m_nCachedPitch;
+	void* m_pSurface;
+	unsigned char m_abSurfaceDesc[0x6c];
+
+	void* GetSurfaceDescription(void);
+};
+
+// FUNCTION: LEMBALL 0x00457310
+void* VsGdiDirectDrawSurfaceBitmapView::GetSurfaceDescription(void)
+{
+	typedef unsigned int(__stdcall * DIRECTDRAW_GET_SURFACE_DESC)(void*, void*);
+	unsigned int uResult;
+
+	uResult = ((DIRECTDRAW_GET_SURFACE_DESC) (*(void***) m_pSurface)[22])(m_pSurface, m_abSurfaceDesc);
+	if (uResult != 0) {
+		g_pErrorOutputStream->AppendCStringToStream("Direct Draw Surface Get Description failed: ")
+			->AppendCStringToStream(LookupDirectDrawErrorString(uResult & 0xfff))
+			->AppendCStringToStream("\n");
+		return 0;
+	}
+	return m_abSurfaceDesc;
 }
