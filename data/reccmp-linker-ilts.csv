@@ -91,6 +91,7 @@ address,name,symbol,type,source
 0x00402275,ResetRockChunkObjectRuntimeStateThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402315,GameScreenObject::ConstructOptionsScreen,,stub,src/GAME.H
 0x00402329,DestroyMenuSelectorEntryAutoThunk,,stub,src/FRONTEND/MENUSEL.CPP
+0x00402338,ManagedEntityPacket27::ReverseEffStreamPayload,?ReverseEffStreamPayload@ManagedEntityPacket27@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00402351,LevelManagedEntityMoveCommandView::PopFirstMoveCommand,?PopFirstMoveCommand@LevelManagedEntityMoveCommandView@@QAEXXZ,stub,src/LEVEL/LEVELVTMOVE.CPP
 0x00402360,ActivateCaptureTriggerChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402374,DestroyMineChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
@@ -141,6 +142,7 @@ address,name,symbol,type,source
 0x00402C75,return_zero_level_callback_0042eec0,?return_zero_level_callback_0042eec0@@YGHPAX0@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402CA2,DestroyCaptureTriggerChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402CD4,RemoveCachedChunkObjectAndDestroy,,stub,src/ENGINE/CORE/LINKSCF.H
+0x00402CE3,ManagedEntityPacket27::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacket27@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00402D42,RemoveInvsTrackedEntitiesOutsideBounds,?RemoveInvsTrackedEntitiesOutsideBounds@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCFINVS.CPP
 0x00402D5B,SetMenuSelectorDirectionFieldThunk,,stub,src/FRONTEND/MENUSEL.H
 0x00402D83,NoopLevelStatusCallbackIlt,,stub,src/LEVEL/LEVELSTAT.CPP

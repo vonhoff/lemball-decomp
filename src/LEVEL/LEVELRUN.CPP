@@ -1649,6 +1649,12 @@ ManagedEntityPacketBase::ManagedEntityPacketBase(int nPacketType) : VsNetEffStre
 	m_nBufferEnd18 += 4;
 }
 
+// FUNCTION: LEMBALL 0x00416a10
+ManagedEntityPacket27::ManagedEntityPacket27() : ManagedEntityPacketBase(0x27)
+{
+	m_nBufferEnd18 += 4;
+}
+
 // FUNCTION: LEMBALL 0x00416b70
 ManagedEntityStateResetPacket::ManagedEntityStateResetPacket() : ManagedEntityPacketBase(0x29)
 {
