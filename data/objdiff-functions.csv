@@ -2605,7 +2605,6 @@ address,size,name,unit
 0x0046BCE0,34,find_free_resource_geometry_helper_slot,ENGINE/GDI/VSGDI.CPP
 0x0046BD10,433,allocate_resource_geometry_helper_slot,ENGINE/GDI/VSGDI.CPP
 0x0046BED0,131,remove_resource_geometry_helper_slot_by_resource_owner,ENGINE/GDI/VSGDI.CPP
-0x0046BF60,1,lookup_resource_geometry_helper_slot,ENGINE/GDI/GDIVT.CPP
 0x0046BF70,38,find_resource_geometry_helper_slot_by_helper,ENGINE/GDI/VSGDI.CPP
 0x0046BFA0,41,find_resource_geometry_helper_slot_by_resource_owner,ENGINE/GDI/VSGDI.CPP
 0x0046BFD0,127,deactivate_resource_geometry_helper_slot_by_helper,ENGINE/GDI/VSGDI.CPP
