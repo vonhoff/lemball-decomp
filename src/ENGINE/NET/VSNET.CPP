@@ -4106,10 +4106,10 @@ void* VsNetEffTransportRuntimeState::CreateGlobalStateFileBackedComposite(void)
 	void* pObject;
 
 	pObject = AllocateVSMemBlock(0x1b8);
-	if (pObject == 0) {
-		return 0;
+	if (pObject != 0) {
+		return new (pObject) VsNetDualSlotTableFileBackedEffComposite;
 	}
-	return new (pObject) VsNetDualSlotTableFileBackedEffComposite;
+	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0046f950
@@ -4118,10 +4118,10 @@ void* VsNetEffTransportRuntimeState::CreateFileBasedChannelOwner(void)
 	void* pObject;
 
 	pObject = AllocateVSMemBlock(0x1b4);
-	if (pObject == 0) {
-		return 0;
+	if (pObject != 0) {
+		return new (pObject) VsNetGlobalStateFileBackedEffComposite;
 	}
-	return new (pObject) VsNetGlobalStateFileBackedEffComposite;
+	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0046f970
