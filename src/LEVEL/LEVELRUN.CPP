@@ -101,6 +101,17 @@ void* g_pActiveManagedEntityOwner;
 unsigned short g_GAME_ManagedEntityRegistryCount;
 // GLOBAL: LEMBALL 0x0049d108
 static unsigned char g_GAME_ManagedEntitySlotBitMasks[8] = {1, 2, 4, 8, 0x10, 0x20, 0x40, 0x80};
+
+struct ManagedEntityPacketStreamView {
+	void BindManagedEntityPacketTarget(void* pEntity);
+};
+
+// GLOBAL: LEMBALL 0x0049d118
+ManagedEntityPacketStreamView* g_pManagedEntityPacket2ATargetStream = 0;
+
+// GLOBAL: LEMBALL 0x0049d124
+ManagedEntityPacketStreamView* g_pManagedEntityStateResetPacketStream = 0;
+
 // GLOBAL: LEMBALL 0x004a6410
 static unsigned char g_GAME_ManagedEntitySlotClaimBitset[0x100];
 
@@ -1693,6 +1704,18 @@ ManagedEntityPacket25::ManagedEntityPacket25() : ManagedEntityPacketBase(0x25)
 ManagedEntityPacket26::ManagedEntityPacket26() : ManagedEntityPacketBase(0x26)
 {
 	m_nBufferEnd18 += 4;
+}
+
+// FUNCTION: LEMBALL 0x00416fc0
+void LEMBALL_FASTCALL BindManagedEntityPacket2ATarget(void* pEntity)
+{
+	g_pManagedEntityPacket2ATargetStream->BindManagedEntityPacketTarget(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x00416fd0
+void LEMBALL_FASTCALL BindManagedEntityStateResetPacketTarget(void* pEntity)
+{
+	g_pManagedEntityStateResetPacketStream->BindManagedEntityPacketTarget(pEntity);
 }
 
 // FUNCTION: LEMBALL 0x0041a140
