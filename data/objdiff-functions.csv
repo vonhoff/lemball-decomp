@@ -2279,7 +2279,6 @@ address,size,name,unit
 0x004628B0,30,delete_eff_stream_base_wrapper_004628b0,ENGINE/NET/VSNETSTR.CPP
 0x004628D0,3,eff_stream_channel_state_ret4_thunk,ENGINE/NET/VSNETSTR.CPP
 0x004628E0,30,delete_eff_stream_channel_state_wrapper_004628e0,ENGINE/NET/VSNETSTR.CPP
-0x00462900,30,delete_eff_stream_base_wrapper_00462900,ENGINE/NET/VSNETSTR.CPP
 0x00462920,1,noop_file_transport_secondary_callback,ENGINE/NET/VSNETFIL.CPP
 0x00462930,3,vs_net_tcpip_socket_stack_dual_ret8_vtable_model_ret8,ENGINE/NET/VSNETTCP.CPP
 0x00462940,38,delete_dual_eff_stream_with_channel_state_wrapper,ENGINE/NET/VSNETSTR.CPP

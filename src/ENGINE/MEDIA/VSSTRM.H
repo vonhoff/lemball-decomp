@@ -143,11 +143,15 @@ struct VsNetEffStreamCore {
 
 /* Tagged and file-backed streams share the 0x2c-byte polymorphic prefix.
  * Tagged streams append the 0x0c-byte serialization tag tail. */
+// VTABLE: LEMBALL 0x00498f40
 struct VsNetEffStreamBase : VsNetEffStreamCommon {
 	VsNetEffStreamBase();
 	virtual void ReverseEffStreamPayload(void);
 	virtual void WriteEffStreamTaggedHeader(void);
 	inline void DestroyEffStreamBase(void) { this->~VsNetEffStreamBase(); }
+#ifdef LEMBALL_DEFINE_EFF_STREAM_BASE_VTABLE
+	static void operator delete(void* pObject);
+#endif
 
 	VsNetEffStreamTag* m_pTagBuffer2c;
 	unsigned short m_nWord30;
@@ -189,6 +193,9 @@ struct VsNetDualHandleEffStream : VsNetDualHandleEffStreamPrimary, virtual VsNet
 	virtual void WriteGlobalSession(void) = 0;
 	virtual void* ClaimRecord(void) = 0;
 	virtual void DualStreamRet8(int nArgument0, void* pArgument1) = 0;
+#ifdef LEMBALL_DEFINE_EFF_STREAM_BASE_VTABLE
+	static void operator delete(void* pObject);
+#endif
 
 	void* m_pPrimaryHandleArray48;
 	void* m_pPrimaryHandleObject4c;
@@ -218,6 +225,9 @@ struct VsNetTimedEffStream : VsNetTimedEffStreamPrimary, virtual VsNetEffStreamC
 	virtual void CaptureTimedSocketLookup(void* pLookupResult) = 0;
 	virtual int SendTimedSocketPayload(void* pBuffer, int cbBuffer) = 0;
 	virtual void SetTimedChannelWord(unsigned short nValue);
+#ifdef LEMBALL_DEFINE_EFF_STREAM_BASE_VTABLE
+	static void operator delete(void* pObject);
+#endif
 
 	void* m_pPrimaryHandleArray48;
 	void* m_pSecondaryHandleArray4c;
@@ -245,6 +255,9 @@ struct VsNetRuntimeChannelCore : virtual VsNetEffStreamChannelState,
 	virtual void ClearPendingWrite(void* pArgument) = 0;
 	virtual void WriteGlobalSession(void);
 	virtual void* ClaimRecord(void);
+#ifdef LEMBALL_DEFINE_EFF_STREAM_BASE_VTABLE
+	static void operator delete(void* pObject);
+#endif
 };
 
 struct VsNetRuntimeChannelStack : virtual VsNetRuntimeChannelCore {

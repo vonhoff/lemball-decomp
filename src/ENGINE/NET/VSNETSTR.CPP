@@ -1,4 +1,5 @@
 #define LEMBALL_DEFINE_EFF_STREAM_CHANNEL_STATE_VTABLE
+#define LEMBALL_DEFINE_EFF_STREAM_BASE_VTABLE
 
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/CORE/VSMEM.H"
@@ -427,6 +428,26 @@ void VsNetEffStreamChannelState::SetEffStreamChannelAsyncErrorStatus(int nStatus
 	}
 }
 
+inline void VsNetEffStreamBase::operator delete(void* pObject)
+{
+	FreeVSMemBlock(pObject);
+}
+
+inline void VsNetRuntimeChannelCore::operator delete(void* pObject)
+{
+	FreeVSMemBlock(pObject);
+}
+
+inline void VsNetDualHandleEffStream::operator delete(void* pObject)
+{
+	FreeVSMemBlock(pObject);
+}
+
+inline void VsNetTimedEffStream::operator delete(void* pObject)
+{
+	FreeVSMemBlock(pObject);
+}
+
 // FUNCTION: LEMBALL 0x0045f750
 VsNetEffStreamBase::VsNetEffStreamBase()
 {
@@ -782,7 +803,7 @@ void PASCAL EffStreamChannelStateRet4Thunk(BYTE)
 {
 }
 
-// FUNCTION: LEMBALL 0x00462900
+// Unannotated compatibility body retained to preserve translation-unit compiler state.
 void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462900(void* pObject, void*, BYTE fDelete)
 {
 	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();

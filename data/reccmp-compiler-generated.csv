@@ -175,6 +175,7 @@ address,name,symbol,type,source
 0x0045EC10,DestroyTuneResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
 0x0045EC40,DestroyPresResourceAuto,,synthetic,src/LEVEL/DEMO.CPP
 0x004628E0,,??_GVsNetEffStreamChannelState@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
+0x00462900,,??_EVsNetEffStreamBase@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462940,,??_GVsNetDualHandleEffStream@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462990,,??_EVsNetTimedEffStream@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462A20,DeleteSimpleEffTransportRecordSlotAuto,,synthetic,src/ENGINE/NET/VSNET.CPP
