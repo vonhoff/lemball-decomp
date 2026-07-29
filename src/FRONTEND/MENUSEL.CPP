@@ -2418,7 +2418,8 @@ void GameSelectorProgressOverlayWindowSlots::InitializeWindowOwnerFromRect(short
 // FUNCTION: LEMBALL 0x0044e9d0
 void GameSelectorProgressOverlayWindowSlots::MoveWindowOwnerOrigin(const VS_XYPair* pPoint)
 {
-	SetWindowOwnerRenderAnchorFromPoint(this, 0, pPoint);
+	typedef void(LEMBALL_STDCALL * SetAnchorProc)(const VS_XYPair*);
+	((SetAnchorProc) SetWindowOwnerRenderAnchorFromPoint)(pPoint);
 	*(short*) ((char*) this + 0xcc) = pPoint->m_x;
 	*(short*) ((char*) this + 0xce) = pPoint->m_y;
 }
@@ -2915,7 +2916,9 @@ void LEMBALL_FASTCALL SetProgressiveVariantFrameDuration(GameProgressiveVariantF
 int LEMBALL_FASTCALL SelectProgressiveVariantFrameIndex(GameProgressiveVariantFrameSelector* pSelector)
 {
 	unsigned int dwElapsed;
+	int* pFrames;
 	unsigned int iFrame;
+	unsigned int dwDuration;
 
 	if (pSelector->m_dwFixedTime == -1) {
 		dwElapsed = (unsigned int) timeGetTime() - (unsigned int) pSelector->m_dwStartTime;
@@ -2923,14 +2926,16 @@ int LEMBALL_FASTCALL SelectProgressiveVariantFrameIndex(GameProgressiveVariantFr
 	else {
 		dwElapsed = (unsigned int) (pSelector->m_dwFixedTime - pSelector->m_dwStartTime);
 	}
-	if (dwElapsed < (unsigned int) pSelector->m_dwDuration) {
-		iFrame = ((unsigned int) pSelector->m_cFrames * dwElapsed) / (unsigned int) pSelector->m_dwDuration;
+	dwDuration = (unsigned int) pSelector->m_dwDuration;
+	pFrames = &pSelector->m_cFrames;
+	if (dwElapsed < dwDuration) {
+		iFrame = ((unsigned int) *pFrames * dwElapsed) / dwDuration;
 	}
 	else {
-		iFrame = (unsigned int) pSelector->m_cFrames - 1;
+		iFrame = (unsigned int) *pFrames - 1;
 	}
 	if (pSelector->m_nDirection != 1) {
-		iFrame = (unsigned int) pSelector->m_cFrames - iFrame - 1;
+		iFrame = (unsigned int) *pFrames - iFrame - 1;
 	}
 	return (int) iFrame;
 }
