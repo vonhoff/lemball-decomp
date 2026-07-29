@@ -70,6 +70,11 @@ FUNCTION_DATA_REFERENCES = {
         "g_EFF_NetworkLobbyPeerDirtyConfirmVtable",
         "network lobby peer dirty-confirm vtable 004985d8",
     ),
+    0x0045FCE0: (
+        0x00498FB0,
+        "vftable'{for `VsNetTimedEffStreamPrimary",
+        "timed EFF stream primary vtable 00498fb0",
+    ),
     0x0046DE70: (
         0x00499F30,
         "g_VSGDI_AnimWindowOwnerVtable",

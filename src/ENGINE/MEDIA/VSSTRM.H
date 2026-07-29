@@ -222,6 +222,9 @@ struct VsNetTimedEffStreamPrimary : VsNetEffStreamBase {
 	int m_nReserved40;
 };
 
+// GLOBAL: LEMBALL 0x00498f98
+// VsNetTimedEffStream::`vbtable'
+// VTABLE: LEMBALL 0x00498fa0 VsNetEffStreamChannelState
 struct VsNetTimedEffStream : VsNetTimedEffStreamPrimary, virtual VsNetEffStreamChannelState {
 	VsNetTimedEffStream();
 	inline VsNetTimedEffStream* ConstructTimedEffStream(int) { return this; }
