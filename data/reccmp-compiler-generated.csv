@@ -172,10 +172,13 @@ address,name,symbol,type,source
 0x00462BB0,,??_EVsNetRuntimeChannelStack@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462BC0,,??_GVsNetRuntimeChannelStack@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462C60,,??_EVsNetRuntimeChannelStack@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
+0x00462C90,VsNetRuntimeChannelStack::DualStreamRet8 `vtordisp adjustor',,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462CA0,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462CB0,VsNetRuntimeChannelCore::`scalar deleting destructor',,function,src/ENGINE/MEDIA/VSSTRM.H
 0x00462CF0,VsNetRuntimeChannelCore::ClearPendingWrite `vtordisp adjustor',,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462D20,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
+0x00462D30,VsNetRuntimeChannelCore::WriteGlobalSession `vtordisp adjustor',,synthetic,src/ENGINE/MEDIA/VSSTRM.H
+0x00462D40,VsNetRuntimeChannelCore::ClaimRecord `vtordisp adjustor',,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462D50,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462D80,,??_EVsNetTimedEffStream@@$4PPPPPPPM@HI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462DA0,,??_EVsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
