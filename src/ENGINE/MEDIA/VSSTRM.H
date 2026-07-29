@@ -11,9 +11,9 @@
 // ??_EVsNetEffStreamBase@@UAEPAXI@Z
 // VTABLE: LEMBALL 0x00498f30
 struct VsNetEffStreamChannelState {
-	virtual int ReleaseFileBackedEffMarker(void) = 0;
+	virtual int ReleaseFileBackedEffMarker(void) = 0; // vtable+0x0
 	virtual ~VsNetEffStreamChannelState();
-	virtual void ClearNestedEffChannelAsyncStatus(void) = 0;
+	virtual void ClearNestedEffChannelAsyncStatus(void) = 0; // vtable+0x8
 #ifdef LEMBALL_DEFINE_EFF_STREAM_CHANNEL_STATE_VTABLE
 	virtual void ClearPendingWrite(void* pArgument);
 	static void operator delete(void* pObject);
@@ -154,8 +154,8 @@ struct VsNetEffStreamCore {
 // VTABLE: LEMBALL 0x00498f40
 struct VsNetEffStreamBase : VsNetEffStreamCommon {
 	VsNetEffStreamBase();
-	virtual void ReverseEffStreamPayload(void);
-	virtual void WriteEffStreamTaggedHeader(void);
+	virtual void ReverseEffStreamPayload(void);    // vtable+0x8
+	virtual void WriteEffStreamTaggedHeader(void); // vtable+0x10
 	inline void DestroyEffStreamBase(void) { this->~VsNetEffStreamBase(); }
 #ifdef LEMBALL_DEFINE_EFF_STREAM_BASE_VTABLE
 	static void operator delete(void* pObject);
@@ -230,12 +230,12 @@ struct VsNetTimedEffStream : VsNetTimedEffStreamPrimary, virtual VsNetEffStreamC
 	inline VsNetTimedEffStream* ConstructTimedEffStream(int) { return this; }
 	virtual ~VsNetTimedEffStream();
 	inline void DestroyTimedEffStream(void) { this->~VsNetTimedEffStream(); }
-	virtual void ClearPendingWrite(void* pArgument);
-	virtual void WriteGlobalSession(void) = 0;
-	virtual void* ClaimRecord(void) = 0;
-	virtual void CaptureTimedSocketLookup(void* pLookupResult) = 0;
-	virtual int SendTimedSocketPayload(void* pBuffer, int cbBuffer) = 0;
-	virtual void SetTimedChannelWord(unsigned short nValue);
+	virtual void ClearPendingWrite(void* pArgument);                     // vtable+0xc
+	virtual void WriteGlobalSession(void) = 0;                           // vtable+0x10
+	virtual void* ClaimRecord(void) = 0;                                 // vtable+0x14
+	virtual void CaptureTimedSocketLookup(void* pLookupResult) = 0;      // vtable+0x18
+	virtual int SendTimedSocketPayload(void* pBuffer, int cbBuffer) = 0; // vtable+0x1c
+	virtual void SetTimedChannelWord(unsigned short nValue);             // vtable+0x20
 #ifdef LEMBALL_DEFINE_EFF_STREAM_BASE_VTABLE
 	static void operator delete(void* pObject);
 #endif

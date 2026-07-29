@@ -156,12 +156,12 @@ class VsNetInetAddressEntry {
 public:
 	VsNetInetAddressEntry() { m_szAddress[0] = 0; }
 
-	virtual const char* GetAddressString(void);
-	virtual void SetAddressMode(int nMode);
-	virtual void StoreAddressString(const char* pszAddress);
-	virtual void CopyAddressEntry(const VsNetInetAddressEntry* pSource);
-	virtual int IsAddressLessOrEqual(const VsNetInetAddressEntry* pSource);
-	virtual int IsAddressGreaterOrEqual(const VsNetInetAddressEntry* pSource);
+	virtual const char* GetAddressString(void);                                // vtable+0x0
+	virtual void SetAddressMode(int nMode);                                    // vtable+0x4
+	virtual void StoreAddressString(const char* pszAddress);                   // vtable+0x8
+	virtual void CopyAddressEntry(const VsNetInetAddressEntry* pSource);       // vtable+0xc
+	virtual int IsAddressLessOrEqual(const VsNetInetAddressEntry* pSource);    // vtable+0x10
+	virtual int IsAddressGreaterOrEqual(const VsNetInetAddressEntry* pSource); // vtable+0x14
 	char m_szAddress[16];
 	unsigned int m_nAddress;
 };

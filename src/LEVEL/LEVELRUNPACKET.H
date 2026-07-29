@@ -8,8 +8,8 @@
 // VTABLE: LEMBALL 0x00493d80
 struct ManagedEntityPacketBase : VsNetEffStreamCommon {
 	ManagedEntityPacketBase(int nPacketType);
-	virtual void ReverseEffStreamPayload(void);
-	virtual void WriteEffStreamTaggedHeader(void);
+	virtual void ReverseEffStreamPayload(void);    // vtable+0x8
+	virtual void WriteEffStreamTaggedHeader(void); // vtable+0x10
 	static void operator delete(void* pObject);
 
 	void* m_pManagedEntity2c;
@@ -19,24 +19,24 @@ struct ManagedEntityPacketBase : VsNetEffStreamCommon {
 struct ManagedEntityPacket23 : ManagedEntityPacketBase {
 	ManagedEntityPacket23();
 
-	virtual void ReverseEffStreamPayload(void);
-	virtual void WriteEffStreamTaggedHeader(void);
+	virtual void ReverseEffStreamPayload(void);    // vtable+0x8
+	virtual void WriteEffStreamTaggedHeader(void); // vtable+0x10
 };
 
 // VTABLE: LEMBALL 0x00493dc0
 struct ManagedEntityPacket27 : ManagedEntityPacketBase {
 	ManagedEntityPacket27();
 
-	virtual void ReverseEffStreamPayload(void);
-	virtual void WriteEffStreamTaggedHeader(void);
+	virtual void ReverseEffStreamPayload(void);    // vtable+0x8
+	virtual void WriteEffStreamTaggedHeader(void); // vtable+0x10
 };
 
 // VTABLE: LEMBALL 0x00493de0
 struct ManagedEntityPacket28 : ManagedEntityPacketBase {
 	ManagedEntityPacket28();
 
-	virtual void ReverseEffStreamPayload(void);
-	virtual void WriteEffStreamTaggedHeader(void);
+	virtual void ReverseEffStreamPayload(void);    // vtable+0x8
+	virtual void WriteEffStreamTaggedHeader(void); // vtable+0x10
 };
 
 // VTABLE: LEMBALL 0x00493e00
@@ -53,24 +53,24 @@ struct ManagedEntityPacket2A : ManagedEntityPacketBase {
 struct ManagedEntityPacket24 : ManagedEntityPacketBase {
 	ManagedEntityPacket24();
 
-	virtual void ReverseEffStreamPayload(void);
-	virtual void WriteEffStreamTaggedHeader(void);
+	virtual void ReverseEffStreamPayload(void);    // vtable+0x8
+	virtual void WriteEffStreamTaggedHeader(void); // vtable+0x10
 };
 
 // VTABLE: LEMBALL 0x00493e60
 struct ManagedEntityPacket25 : ManagedEntityPacketBase {
 	ManagedEntityPacket25();
 
-	virtual void ReverseEffStreamPayload(void);
-	virtual void WriteEffStreamTaggedHeader(void);
+	virtual void ReverseEffStreamPayload(void);    // vtable+0x8
+	virtual void WriteEffStreamTaggedHeader(void); // vtable+0x10
 };
 
 // VTABLE: LEMBALL 0x00493e80
 struct ManagedEntityPacket26 : ManagedEntityPacketBase {
 	ManagedEntityPacket26();
 
-	virtual void ReverseEffStreamPayload(void);
-	virtual void WriteEffStreamTaggedHeader(void);
+	virtual void ReverseEffStreamPayload(void);    // vtable+0x8
+	virtual void WriteEffStreamTaggedHeader(void); // vtable+0x10
 };
 
 #endif

@@ -25,14 +25,14 @@ class LevelPackagedRectQueueEntry : public LevelQueuedRenderRectSink {
 public:
 	LevelPackagedRectQueueEntry();
 	~LevelPackagedRectQueueEntry() {}
-	virtual void* Delete(unsigned int fDelete);
-	virtual void AppendToQueue(void* pQueue);
-	virtual void Process(void* pContext);
+	virtual void* Delete(unsigned int fDelete); // vtable+0x0
+	virtual void AppendToQueue(void* pQueue);   // vtable+0x4
+	virtual void Process(void* pContext);       // vtable+0x8
 
-	void* m_pOwner08;
-	int m_nFlags0C;
-	int m_nValue10;
-	int m_nReserved14;
+	void* m_pOwner08;  // 0x8
+	int m_nFlags0C;    // 0xc
+	int m_nValue10;    // 0x10
+	int m_nReserved14; // 0x14
 };
 
 // FUNCTION: LEMBALL 0x00467ac0
