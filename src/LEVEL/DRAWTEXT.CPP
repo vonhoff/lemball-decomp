@@ -266,13 +266,6 @@ void* LEMBALL_FASTCALL DeleteBoolResource(void* pObject, int nUnused, int fDelet
 	return pObject;
 }
 
-// FUNCTION: LEMBALL 0x00467ac0
-LevelPackagedRectQueueEntry::LevelPackagedRectQueueEntry()
-{
-	m_x04 = 0;
-	m_y06 = 0;
-}
-
 // FUNCTION: LEMBALL 0x00467ae0
 void LevelPackagedRectQueueEntry::AppendToQueue(void* pQueue)
 {
