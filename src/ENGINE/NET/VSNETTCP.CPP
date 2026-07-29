@@ -2408,7 +2408,8 @@ void LEMBALL_FASTCALL WriteCompositeTcpipGlobalSessionBody(void* pObject)
 	pOffsets = *(int**) (pAdjusted - 0x38);
 	pAdjusted += pOffsets[4];
 	pOffsets = *(int**) (pAdjusted - 0x38);
-	((VsNetRuntimeChannelCore*) (pAdjusted + pOffsets[2] - 0x38))->VsNetRuntimeChannelCore::WriteGlobalSession();
+	// Qualified virtual-base call adds 0x38; compensate while locating complete object.
+	((VsNetRuntimeChannelCore*) (pAdjusted + pOffsets[2] - 0x70))->VsNetRuntimeChannelCore::WriteGlobalSession();
 }
 
 // FUNCTION: LEMBALL 0x00471be0
@@ -2577,7 +2578,8 @@ void* LEMBALL_FASTCALL ClaimTcpipSocketStackCompositeBody(void* pObject)
 	pOffsets = *(int**) (pAdjusted - 0x38);
 	pAdjusted += pOffsets[4];
 	pOffsets = *(int**) (pAdjusted - 0x38);
-	return ((VsNetRuntimeChannelCore*) (pAdjusted + pOffsets[2] - 0x38))->VsNetRuntimeChannelCore::ClaimRecord();
+	// Qualified virtual-base call adds 0x38; compensate while locating complete object.
+	return ((VsNetRuntimeChannelCore*) (pAdjusted + pOffsets[2] - 0x70))->VsNetRuntimeChannelCore::ClaimRecord();
 }
 // FUNCTION: LEMBALL 0x00471da0
 #pragma optimize("g", on)

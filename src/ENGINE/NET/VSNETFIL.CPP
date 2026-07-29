@@ -4202,10 +4202,11 @@ void VsNetGlobalSessionAdjustorFront::WriteAdjustedEffStreamWithGlobalSession(vo
 
 	pbTransportView =
 		(char*) this + ((VsNetGlobalSessionAdjustorFront*) ((char*) this - 0x38))->m_pOffsets->m_nTransportViewOffset10;
+	// Qualified virtual-base call adds 0x38; compensate while locating complete object.
 	((VsNetRuntimeChannelCore*) (pbTransportView +
 								 ((VsNetGlobalSessionAdjustorFront*) (pbTransportView - 0x38))
 									 ->m_pOffsets->m_nEmbeddedStreamViewOffset08 -
-								 0x38))
+								 0x70))
 		->VsNetRuntimeChannelCore::WriteGlobalSession();
 }
 
@@ -4226,10 +4227,11 @@ void LEMBALL_FASTCALL ClaimAdjustedEffTransportRecordPayload(void* pObject)
 	pbTransportView =
 		(char*) pObject +
 		((VsNetGlobalSessionAdjustorFront*) ((char*) pObject - 0x38))->m_pOffsets->m_nTransportViewOffset10;
+	// Qualified virtual-base call adds 0x38; compensate while locating complete object.
 	((VsNetRuntimeChannelCore*) (pbTransportView +
 								 ((VsNetGlobalSessionAdjustorFront*) (pbTransportView - 0x38))
 									 ->m_pOffsets->m_nEmbeddedStreamViewOffset08 -
-								 0x38))
+								 0x70))
 		->VsNetRuntimeChannelCore::ClaimRecord();
 }
 
