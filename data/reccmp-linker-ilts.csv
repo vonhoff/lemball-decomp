@@ -42,6 +42,7 @@ address,name,symbol,type,source
 0x00401730,ManagedEntityPacketBase::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacketBase@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00401749,ResetInvsChunkObjectStateThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00401762,GameVariantResourceEntryManager::SetVariantResourceMusicEnabled,?SetVariantResourceMusicEnabled@GameVariantResourceEntryManager@@QAEXH@Z,stub,src/RESOURCE/VARMGR.CPP
+0x004017C1,ReleaseMenuSelectorEntryResources,?ReleaseMenuSelectorEntryResources@@YIXPAUGameMenuSelectorEntry@@@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x004017DF,AttachAndActivateChunkObject,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040180C,ResetManagedEntityRuntimeStateThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00401843,DestroyNetworkLobbyScreenAutoThunk,,stub,src/FRONTEND/MAINMENU.CPP

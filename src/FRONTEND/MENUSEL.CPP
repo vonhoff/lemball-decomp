@@ -39,6 +39,7 @@ extern void LEMBALL_FASTCALL RestoreStatusIndicatorPointSinkEntryVtable(void* pO
 extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void* pResourceObject);
 extern void* LoadZrleOnlyListResource(int nResourceId);
 extern void* g_pNonZrleVariantRenderEntryInitializeVtable[2];
+extern void* g_GAME_RenderQueueNodeVtableSlots[4];
 extern void* g_pQueuedRenderPointSinkFinalizeThunk;
 extern unsigned int return_hresult_80000801_progress_overlay(void);
 extern void* g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage[8];
@@ -470,6 +471,7 @@ public:
 typedef char GameMenuActionFramePointSink_size_must_be_0x20[sizeof(GameMenuActionFramePointSink) == 0x20 ? 1 : -1];
 
 /* VTABLE: LEMBALL 0x00497CF8 */
+// GLOBAL: LEMBALL 0x00497cf8
 static void* g_MenuSelectorEntryVtable[3] = {(void*) InitializeNonZrleVariantRenderEntry,
 											 (void*) DeleteMenuSelectorEntryThunk,
 											 (void*) HandleMenuSelectorEntryEventThunk};
@@ -1485,7 +1487,7 @@ void LEMBALL_FASTCALL DestroyMenuSelectorEntry(GameMenuSelectorEntry* pEntry)
 	pEntry->m_pVtable00 = g_MenuSelectorEntryVtable;
 	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->UnregisterOrderedRenderDispatchClient(pEntry, 0);
 	ReleaseMenuSelectorEntryResources(pEntry);
-	pEntry->m_pVtable00 = g_pNonZrleVariantRenderEntryInitializeVtable;
+	pEntry->m_pVtable00 = g_GAME_RenderQueueNodeVtableSlots;
 }
 // FUNCTION: LEMBALL 0x0044c460
 int GameMenuSelectorEntry::HandleEvent(GameMenuSelectorEvent* pEvent)
