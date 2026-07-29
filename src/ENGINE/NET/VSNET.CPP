@@ -78,7 +78,7 @@ struct VsNetLockedEffStreamFileRangeView {
 struct CFileNetworkAddress {};
 
 extern "C" BOOL WINAPI WaitMessage(void);
-extern "C" BOOL WINAPI KillTimer(HWND hWnd, unsigned int uIDEvent);
+extern "C" __declspec(dllimport) BOOL WINAPI KillTimer(HWND hWnd, unsigned int uIDEvent);
 extern "C" __declspec(dllimport) unsigned int WINAPI SetTimer(HWND hWnd,
 															  unsigned int uIDEvent,
 															  UINT uElapse,
