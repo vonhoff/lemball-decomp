@@ -23,6 +23,14 @@ struct ManagedEntityPacket27 : ManagedEntityPacketBase {
 	virtual void WriteEffStreamTaggedHeader(void);
 };
 
+// VTABLE: LEMBALL 0x00493de0
+struct ManagedEntityPacket28 : ManagedEntityPacketBase {
+	ManagedEntityPacket28();
+
+	virtual void ReverseEffStreamPayload(void);
+	virtual void WriteEffStreamTaggedHeader(void);
+};
+
 // VTABLE: LEMBALL 0x00493e00
 struct ManagedEntityStateResetPacket : ManagedEntityPacketBase {
 	ManagedEntityStateResetPacket();

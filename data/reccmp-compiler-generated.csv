@@ -33,7 +33,7 @@ address,name,symbol,type,source
 0x00417B50,,??_GManagedEntityPacketBase@@UAEPAXI@Z,synthetic,src/LEVEL/LEVELRUNPACKET.H
 0x00417B80,LevelVtAutoEffDeleteView::Delete17B80,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00417BB0,,??_EManagedEntityPacket27@@UAEPAXI@Z,synthetic,src/LEVEL/LEVELRUNPACKET.H
-0x00417BE0,LevelVtAutoEffDeleteView::Delete17BE0,,synthetic,src/LEVEL/LEVELVT.CPP
+0x00417BE0,,??_EManagedEntityPacket28@@UAEPAXI@Z,synthetic,src/LEVEL/LEVELRUNPACKET.H
 0x00417C10,,??_EManagedEntityStateResetPacket@@UAEPAXI@Z,synthetic,src/LEVEL/LEVELRUNPACKET.H
 0x00417C40,,??_EManagedEntityPacket2A@@UAEPAXI@Z,synthetic,src/LEVEL/LEVELRUNPACKET.H
 0x00417C70,LinkScfAutoEffDeleteView::Delete17C70,,synthetic,src/ENGINE/CORE/LINKSCF.CPP

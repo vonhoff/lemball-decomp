@@ -20,7 +20,7 @@ struct ManagedEntityPacketStreamView {
 struct ManagedEntityStateRequestTargetView {
 	virtual void ReservedSlot0(void) = 0;
 	virtual void ReservedSlot1(void) = 0;
-	virtual void ReservedSlot2(void) = 0;
+	virtual void ApplyManagedEntityStateId(int nStateId) = 0;
 	virtual void ReservedSlot3(void) = 0;
 	virtual void ReservedSlot4(void) = 0;
 	virtual void ReservedSlot5(void) = 0;
@@ -83,6 +83,9 @@ struct ManagedEntityStateRequestTargetView {
 	virtual void ReservedSlot62(void) = 0;
 	virtual void ReservedSlot63(void) = 0;
 	virtual int CanApplyRequestedState(int nStateId) = 0;
+	virtual void ReservedSlot65(void) = 0;
+	virtual void ReservedSlot66(void) = 0;
+	virtual void CommitManagedEntityState(void) = 0;
 
 	char m_abReserved04[0x88];
 	int m_fStateUpdatePending8c;
@@ -93,6 +96,7 @@ struct ManagedEntityStateRequestTargetView {
 	char m_abReserved118[0x14];
 	unsigned int m_nSerializedState12c;
 	int m_fStateRequestAccepted130;
+	int m_fStateTransitionStatus134;
 };
 
 // GLOBAL: LEMBALL 0x0049d120
@@ -143,6 +147,34 @@ void ManagedEntityPacket27::ReverseEffStreamPayload(void)
 		((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_fStateUpdatePending8c = 1;
 	}
 	g_pManagedEntityStateResponseStream->BindManagedEntityPacketTarget(m_pManagedEntity2c);
+}
+
+// FUNCTION: LEMBALL 0x00416ae0
+void ManagedEntityPacket28::WriteEffStreamTaggedHeader(void)
+{
+	ManagedEntityPacketBase::WriteEffStreamTaggedHeader();
+	((VsNetEffStreamBase*) this)
+		->WriteEffStreamU32BE(((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_fStateRequestAccepted130);
+}
+
+// FUNCTION: LEMBALL 0x00416b00
+void ManagedEntityPacket28::ReverseEffStreamPayload(void)
+{
+	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_fStateRequestAccepted130 =
+		((VsNetEffStreamBase*) this)->ReadEffStreamU32BEValue();
+	if (((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_fStateRequestAccepted130 != 0) {
+		((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nRequestedStateIdb8 =
+			((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nSerializedState12c;
+		((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->CommitManagedEntityState();
+		((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)
+			->ApplyManagedEntityStateId(
+				((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nSerializedState12c);
+		((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_fStateTransitionStatus134 = 2;
+	}
+	else {
+		((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_fStateTransitionStatus134 = 1;
+	}
+	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nSerializedState12c = 0x18;
 }
 
 // FUNCTION: LEMBALL 0x00416ca0

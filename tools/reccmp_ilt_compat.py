@@ -14,12 +14,14 @@ ILT_LAST_ENTRY = 0x0040388C
 # methods, while manual compatibility tables still need the thunk identities.
 VTABLE_METHOD_ILTS = {
     0x00401217,  # ManagedEntityPacket25::ReverseEffStreamPayload
+    0x00401316,  # ManagedEntityPacket28 scalar deleting destructor
     0x00401451,  # VsNetEffStreamCommon::NoopEffStream
     0x00401564,  # VsNetEffStreamCommon::AcceptEffStreamArgument
     0x00401730,  # ManagedEntityPacketBase::WriteEffStreamTaggedHeader
     0x00401852,  # ManagedEntityPacket25 scalar deleting destructor
     0x004018C5,  # ManagedEntityStateResetPacket scalar deleting destructor
     0x00401C94,  # ManagedEntityPacket25::WriteEffStreamTaggedHeader
+    0x00401E7E,  # ManagedEntityPacket28::WriteEffStreamTaggedHeader
     0x0040217B,  # ManagedEntityPacketBase::ReverseEffStreamPayload
     0x00402338,  # ManagedEntityPacket27::ReverseEffStreamPayload
     0x004025B3,  # ManagedEntityPacket26::ReverseEffStreamPayload
@@ -30,6 +32,7 @@ VTABLE_METHOD_ILTS = {
     0x0040308F,  # ManagedEntityPacket27 scalar deleting destructor
     0x004030E4,  # ManagedEntityPacketBase scalar deleting destructor
     0x00403288,  # ManagedEntityPacket2A scalar deleting destructor
+    0x0040335A,  # ManagedEntityPacket28::ReverseEffStreamPayload
 }
 # Original and rebuilt binaries place different unrelated symbols at these
 # one-past array addresses. Limit normalization to independently verified

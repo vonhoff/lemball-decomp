@@ -65,6 +65,7 @@ address,name,symbol,type,source
 0x00401DA2,DestroyOptionsScreenAutoThunk,,stub,src/FRONTEND/MAINMENU.CPP
 0x00401DC0,RefreshActiveMineChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401E29,VS_WindowOwnerBase::ReservedWindowOwnerSlot19,,stub,src/ENGINE/GDI/VSWINDOW.H
+0x00401E7E,ManagedEntityPacket28::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacket28@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00401E9C,DispatchDoorChildArrayVirtual104,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401F28,HandleMenuSelectorEntryEventThunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401F2D,RefreshActiveRockChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
@@ -177,6 +178,7 @@ address,name,symbol,type,source
 0x004032D3,InitializeLiftChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004032DD,ManagedEntityPacketStreamView::BindManagedEntityPacketTarget,?BindManagedEntityPacketTarget@ManagedEntityPacketStreamView@@QAEXPAX@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x0040333C,AdvanceInvsChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
+0x0040335A,ManagedEntityPacket28::ReverseEffStreamPayload,?ReverseEffStreamPayload@ManagedEntityPacket28@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x0040336E,LevelManagedEntityMoveCommandView::CopyFirstMoveCommandPositionOrCurrent,?CopyFirstMoveCommandPositionOrCurrent@LevelManagedEntityMoveCommandView@@QAEPAULevelThreeDwordPoint@@PAU2@@Z,stub,src/LEVEL/LEVELVTMOVE.CPP
 0x0040339B,deactivate_projectile_object,?deactivate_projectile_object@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00403404,EmitMineChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
