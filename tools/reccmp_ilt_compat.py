@@ -51,6 +51,11 @@ THUNK_ILT_REFERENCES = {
     0x00408040: (0x00401370, "DeleteDerivedBaseModeWrapperAuto", "adjustor target 00407fd0"),
     0x00413E60: (0x00403616, "DeleteLevelGameMode", "adjustor target 00413e30"),
     0x00413E70: (0x00403616, "DeleteLevelGameModeAuto", "adjustor target 00413e30"),
+    0x00414010: (
+        0x00402103,
+        "LevelChunkObjectBaseView::InitializeLevelChunkObjectBase",
+        "level chunk object base initializer 0041dda0",
+    ),
     0x00439850: (0x00403521, "DeleteReconstructedLevelScreenAuto", "adjustor target 00439490"),
     0x004472E0: (0x00401E1F, "DeleteBaseModeObjectAuto", "adjustor target 004472b0"),
     0x0044EFF0: (
