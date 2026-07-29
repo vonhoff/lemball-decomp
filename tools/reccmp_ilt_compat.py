@@ -80,6 +80,11 @@ FUNCTION_DATA_REFERENCES = {
         "vftable'{for `VsNetTimedEffStreamPrimary",
         "timed EFF stream primary vtable 00498fb0",
     ),
+    0x0046BC90: (
+        0x00499D78,
+        "g_VSGDI_ResourceGeometryHelperSlotManagerVtable",
+        "resource geometry helper slot-manager vtable 00499d78",
+    ),
     0x0046DE70: (
         0x00499F30,
         "g_VSGDI_AnimWindowOwnerVtable",
