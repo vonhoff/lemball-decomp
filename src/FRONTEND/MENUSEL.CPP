@@ -482,7 +482,7 @@ struct GameMenuActionFramePointSinkVtableData {
 	void (GameMenuActionFramePointSink::*m_pDispatchToRenderObject)(void*);
 };
 
-static GameMenuActionFramePointSinkVtableData g_MenuActionFramePointSinkVtable = {
+static GameMenuActionFramePointSinkVtableData g_MenuActionFramePointSinkVtableCompilerStateShim = {
 	&GameMenuActionFramePointSink::Delete,
 	&GameMenuActionFramePointSink::BindToContext,
 	&GameMenuActionFramePointSink::DispatchToRenderObject,
@@ -1285,15 +1285,15 @@ void GameAlignedZrleChildOverlayView::HandlePointerLeave(void)
 	*(int*) ((char*) this + 0x104) = 0;
 }
 
-// FUNCTION: LEMBALL 0x00443990
-void* LEMBALL_FASTCALL InitializeMenuActionFramePointSink(void* pObject)
+// Unreferenced compatibility body preserves original MENUSEL.CPP compiler state.
+void* LEMBALL_FASTCALL InitializeMenuActionFramePointSinkCompilerStateShim(void* pObject)
 {
 	GameMenuActionFramePointSink* pEntry;
 
 	pEntry = (GameMenuActionFramePointSink*) pObject;
 	pEntry->m_pVtable00 = (void**) g_pQueuedRenderPointSinkFinalizeThunk;
 	pEntry->m_nReserved06 = 0;
-	pEntry->m_pVtable00 = (void**) &g_MenuActionFramePointSinkVtable;
+	pEntry->m_pVtable00 = (void**) &g_MenuActionFramePointSinkVtableCompilerStateShim;
 	pEntry->m_nReserved04 = 0;
 	return pEntry;
 }
@@ -3207,6 +3207,7 @@ void* LEMBALL_FASTCALL ConstructAlignedZrleChildOverlayFromPoint(void* pObject,
 	AppendGeometryOwnerChild(*(void**) ((char*) pRenderOwner + 0x1c), 0, (char*) pObject + 0x90);
 	return pObject;
 }
+void* LEMBALL_FASTCALL InitializeMenuActionFramePointSink(void* pObject);
 // FUNCTION: LEMBALL 0x004686e0
 void LEMBALL_FASTCALL ComputeAlignedZrleChildLayout(void* pObject)
 {
@@ -3485,6 +3486,7 @@ void LEMBALL_FASTCALL QueueSingleChildOverlayOwnerIfDirtyBody(void* pObject, voi
 	void** pVtable;
 	void* pRenderContext;
 	void* pOwner;
+	int nChildEnd;
 	int nUploadState;
 
 	(void) pUnusedEdx;
@@ -3493,9 +3495,11 @@ void LEMBALL_FASTCALL QueueSingleChildOverlayOwnerIfDirtyBody(void* pObject, voi
 	if (*(int*) ((char*) pRenderContext + 4) != 0) {
 		return;
 	}
-	if (*(int*) ((char*) pObject + 0xf8) == 0 && *(int*) ((char*) pObject + 0xd8) == 0 &&
-		*(int*) ((char*) pObject + 0xd0) == *(int*) ((char*) pObject + 0xd4)) {
-		return;
+	if (*(int*) ((char*) pObject + 0xf8) == 0 && *(int*) ((char*) pObject + 0xd8) == 0) {
+		nChildEnd = *(volatile int*) ((char*) pObject + 0xd4);
+		if (nChildEnd == *(int*) ((char*) pObject + 0xd0)) {
+			return;
+		}
 	}
 	pVtable = *(void***) pObject;
 	if (((QueryProc) pVtable[26])(pObject) != 0) {
