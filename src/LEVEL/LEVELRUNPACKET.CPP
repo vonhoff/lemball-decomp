@@ -17,6 +17,12 @@ struct ManagedEntityPacketStreamView {
 	void BindManagedEntityPacketTarget(void* pEntity);
 };
 
+struct ManagedEntityPacketPosition {
+	int m_nX;
+	int m_nY;
+	int m_nZ;
+};
+
 struct ManagedEntityStateRequestTargetView {
 	virtual void ReservedSlot0(void) = 0;
 	virtual void ReservedSlot1(void) = 0;
@@ -87,9 +93,15 @@ struct ManagedEntityStateRequestTargetView {
 	virtual void ReservedSlot66(void) = 0;
 	virtual void CommitManagedEntityState(void) = 0;
 
-	char m_abReserved04[0x88];
+	char m_abReserved04[0x34];
+	unsigned int m_nPositionSequence38;
+	char m_abReserved3c[0x50];
 	int m_fStateUpdatePending8c;
-	char m_abReserved90[0x28];
+	char m_abReserved90[0x0c];
+	int m_nPositionX9c;
+	int m_nPositionYa0;
+	int m_nPositionZa4;
+	char m_abReserveda8[0x10];
 	int m_nRequestedStateIdb8;
 	char m_abReservedbc[0x58];
 	int m_fStateTransitionActive114;
@@ -175,6 +187,35 @@ void ManagedEntityPacket28::ReverseEffStreamPayload(void)
 		((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_fStateTransitionStatus134 = 1;
 	}
 	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nSerializedState12c = 0x18;
+}
+
+// FUNCTION: LEMBALL 0x00416bd0
+void ManagedEntityPacket24::WriteEffStreamTaggedHeader(void)
+{
+	ManagedEntityPacketBase::WriteEffStreamTaggedHeader();
+	((VsNetEffStreamBase*) this)
+		->WriteEffStreamU32BE(((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nPositionX9c >> 12);
+	((VsNetEffStreamBase*) this)
+		->WriteEffStreamU32BE(((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nPositionYa0 >> 12);
+	((VsNetEffStreamBase*) this)
+		->WriteEffStreamU32BE(((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nPositionZa4 >> 12);
+	((VsNetEffStreamBase*) this)
+		->WriteEffStreamU32BE(((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nPositionSequence38);
+}
+
+// FUNCTION: LEMBALL 0x00416c30
+void ManagedEntityPacket24::ReverseEffStreamPayload(void)
+{
+	ManagedEntityPacketPosition position;
+
+	position.m_nX = ((VsNetEffStreamBase*) this)->ReadEffStreamU32BEValue() << 12;
+	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nPositionX9c = position.m_nX;
+	position.m_nY = ((VsNetEffStreamBase*) this)->ReadEffStreamU32BEValue() << 12;
+	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nPositionYa0 = position.m_nY;
+	position.m_nZ = ((VsNetEffStreamBase*) this)->ReadEffStreamU32BEValue() << 12;
+	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nPositionZa4 = position.m_nZ;
+	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nPositionSequence38 =
+		((VsNetEffStreamBase*) this)->ReadEffStreamU32BEValue();
 }
 
 // FUNCTION: LEMBALL 0x00416ca0

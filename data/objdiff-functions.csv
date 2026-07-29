@@ -455,7 +455,6 @@ address,size,name,unit
 0x00417B00,36,set_rect_from_bounds,LEVEL/LEVELVT.CPP
 0x00417B30,19,copy_two_dword_pair_variant,LEVEL/LEVELVT.CPP
 0x00417B80,30,delete_eff_stream_base_wrapper_00417b80,LEVEL/LEVELVT.CPP
-0x00417C70,30,delete_eff_stream_base_wrapper_00417c70,ENGINE/CORE/LINKSCF.CPP
 0x00417D00,30,delete_level_chunk_object_base_wrapper_00417d00,ENGINE/CORE/LINKSCF.CPP
 0x00417D30,14,read_eff_stream_u16_to_field_0x30,ENGINE/CORE/LINKSCF.CPP
 0x00417D50,30,delete_eff_stream_base_wrapper_00417d50,ENGINE/CORE/LINKSCF.CPP

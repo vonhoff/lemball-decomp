@@ -21,11 +21,13 @@ VTABLE_METHOD_ILTS = {
     0x00401852,  # ManagedEntityPacket25 scalar deleting destructor
     0x004018C5,  # ManagedEntityStateResetPacket scalar deleting destructor
     0x00401C94,  # ManagedEntityPacket25::WriteEffStreamTaggedHeader
+    0x00401E15,  # ManagedEntityPacket24::ReverseEffStreamPayload
     0x00401E7E,  # ManagedEntityPacket28::WriteEffStreamTaggedHeader
     0x0040217B,  # ManagedEntityPacketBase::ReverseEffStreamPayload
     0x00402338,  # ManagedEntityPacket27::ReverseEffStreamPayload
     0x004025B3,  # ManagedEntityPacket26::ReverseEffStreamPayload
     0x004026AD,  # VsNetEffStreamCommon::AcceptEffStream
+    0x00402A3B,  # ManagedEntityPacket24::WriteEffStreamTaggedHeader
     0x00402CE3,  # ManagedEntityPacket27::WriteEffStreamTaggedHeader
     0x00402DB0,  # ManagedEntityPacket26 scalar deleting destructor
     0x00402E41,  # ManagedEntityPacket26::WriteEffStreamTaggedHeader
@@ -33,6 +35,7 @@ VTABLE_METHOD_ILTS = {
     0x004030E4,  # ManagedEntityPacketBase scalar deleting destructor
     0x00403288,  # ManagedEntityPacket2A scalar deleting destructor
     0x0040335A,  # ManagedEntityPacket28::ReverseEffStreamPayload
+    0x00403553,  # ManagedEntityPacket24 scalar deleting destructor
 }
 # Original and rebuilt binaries place different unrelated symbols at these
 # one-past array addresses. Limit normalization to independently verified

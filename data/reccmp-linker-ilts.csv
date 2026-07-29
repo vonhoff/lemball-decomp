@@ -64,6 +64,7 @@ address,name,symbol,type,source
 0x00401D43,SetMenuSelectorChildrenEnabledThunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401DA2,DestroyOptionsScreenAutoThunk,,stub,src/FRONTEND/MAINMENU.CPP
 0x00401DC0,RefreshActiveMineChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
+0x00401E15,ManagedEntityPacket24::ReverseEffStreamPayload,?ReverseEffStreamPayload@ManagedEntityPacket24@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00401E29,VS_WindowOwnerBase::ReservedWindowOwnerSlot19,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00401E7E,ManagedEntityPacket28::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacket28@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00401E9C,DispatchDoorChildArrayVirtual104,,stub,src/ENGINE/CORE/LINKSCF.H
@@ -132,6 +133,7 @@ address,name,symbol,type,source
 0x004029FA,ResetCaptureTriggerChunkObjectRuntimeStateThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402A09,ServiceActiveDoorChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402A36,MoveMenuSelectorPreviousThunk,,stub,src/FRONTEND/MENUSEL.H
+0x00402A3B,ManagedEntityPacket24::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacket24@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00402A45,ServiceCountedChildPointerTable,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402A59,GetMenuSelectorStartTimeThunk,,stub,src/FRONTEND/MENUSEL.H
 0x00402A72,RefreshActiveCollChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H

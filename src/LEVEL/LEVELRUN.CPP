@@ -1671,6 +1671,12 @@ ManagedEntityPacket2A::ManagedEntityPacket2A() : ManagedEntityPacketBase(0x2a)
 {
 }
 
+// FUNCTION: LEMBALL 0x00416bb0
+ManagedEntityPacket24::ManagedEntityPacket24() : ManagedEntityPacketBase(0x24)
+{
+	m_nBufferEnd18 += 0x10;
+}
+
 // FUNCTION: LEMBALL 0x00416c80
 ManagedEntityPacket25::ManagedEntityPacket25() : ManagedEntityPacketBase(0x25)
 {
