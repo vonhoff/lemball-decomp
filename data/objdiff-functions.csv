@@ -1085,7 +1085,6 @@ address,size,name,unit
 0x00431F10,27,get_primary_context_requested_screen,GAME.CPP
 0x00431F30,228,compute_primary_context_centered_screen_rect,GAME.CPP
 0x004322D0,5,dispatch_primary_context_slot23_thunk,GAME.CPP
-0x004322E0,40,delete_primary_context_adjusted,GAME.CPP
 0x00432320,31,delete_queued_render_point_sink_wrapper_00432320,GAME.CPP
 0x00432350,31,delete_queued_render_point_sink_wrapper_00432350,LEVEL/LEVELSTAT.CPP
 0x00432380,13,queue_queued_render_point_sink,ENGINE/GDI/VSGDI.CPP
@@ -1256,7 +1255,6 @@ address,size,name,unit
 0x0043A250,88,construct_registered_render_slot_array,FRONTEND/SCREENVT.CPP
 0x0043A2B0,43,destroy_registered_render_slot_array,FRONTEND/SCREENVT.CPP
 0x0043A380,35,append_two_dword_pair_to_array,FRONTEND/SCREENVT.CPP
-0x0043A450,40,delete_adjusted_resource_window_owner_buffer_0043a450,FRONTEND/SCREENVT.CPP
 0x0043A490,30,delete_registered_render_slot_array,FRONTEND/SCREENVT.CPP
 0x0043A4C0,5,return_zero_screen_hook,FRONTEND/SCREENVT.CPP
 0x0043A4D0,1,noop_window_owner_slot_18,FRONTEND/SCREENVT.CPP
@@ -1368,16 +1366,12 @@ address,size,name,unit
 0x00443360,75,is_point_inside_level_screen_action_panel,LEVEL/LEVELSTAT.CPP
 0x00443850,21,recompute_field_0x104_from_xor,FRONTEND/MENUSEL.CPP
 0x00443870,19,update_action_button_field_0x104_from_fields_0x130_xor_0xd0,FRONTEND/MENUSEL.CPP
-0x004438B0,40,delete_aligned_zrle_child_overlay_adjusted_a,FRONTEND/MENUSEL.CPP
-0x004438F0,40,delete_aligned_zrle_child_overlay_adjusted_b,FRONTEND/MENUSEL.CPP
-0x00443950,40,delete_base_mode_action_button_adjusted,FRONTEND/MENUSEL.CPP
 0x00443990,25,initialize_base_mode_action_button_point_sink,FRONTEND/MENUSEL.CPP
 0x004439B0,31,delete_base_mode_action_button_point_sink_array_or_scalar,FRONTEND/MENUSEL.CPP
 0x004439E0,7,restore_base_mode_action_button_point_sink_vtable,LEVEL/LEVELSTAT.CPP
 0x004439F0,30,delete_level_screen_action_panel,LEVEL/LEVELSTAT.CPP
 0x00443A20,47,bind_variant_frame_entry_to_context,FRONTEND/MENUSEL.CPP
 0x00443A60,55,dispatch_variant_frame_to_render_object,FRONTEND/MENUSEL.CPP
-0x00443AB0,40,delete_resource_geometry_child_from_rect_adjusted,FRONTEND/MENUSEL.CPP
 0x00443AF0,355,configure_level_screen_pause_dialog_options,FRONTEND/MENUSEL.CPP
 0x00443C70,199,load_level_screen_pause_dialog_resources,FRONTEND/MENUSEL.CPP
 0x00443D40,64,release_level_screen_pause_dialog_resources,FRONTEND/MENUSEL.CPP
@@ -1398,8 +1392,6 @@ address,size,name,unit
 0x004452A0,23,add_two_short_point_in_place,LEVEL/LEVELSTAT.CPP
 0x004452C0,23,subtract_two_short_point_in_place,LEVEL/LEVELSTAT.CPP
 0x004452E0,89,delete_action_button_point_sink_array_or_scalar,LEVEL/LEVELSTAT.CPP
-0x00445350,40,delete_level_screen_pause_dialog,LEVEL/LEVELSTAT.CPP
-0x00445390,8,delete_level_screen_pause_dialog_adjusted,LEVEL/LEVELVT.CPP
 0x004453A0,6,return_hresult_80000000_callback,LEVEL/LEVELVT.CPP
 0x004453B0,42,construct_eff_stream_payload_size_8,ENGINE/MEDIA/EFFSTRM.CPP
 0x004453E0,25,write_eff_stream_two_u32_fields,ENGINE/MEDIA/EFFSTRM.CPP
@@ -1586,7 +1578,6 @@ address,size,name,unit
 0x0044DB20,438,start_menu_selector_action,FRONTEND/MENUSEL.CPP
 0x0044DCE0,494,update_menu_selector_animation,FRONTEND/MENUSEL.CPP
 0x0044E620,30,delete_queued_zrle_overlay_selector_entry,FRONTEND/MENUSEL.CPP
-0x0044E650,40,delete_aligned_zrle_child_overlay_adjusted_c,FRONTEND/MENUSEL.CPP
 0x0044E690,30,delete_queued_zrle_overlay_selector_manager,FRONTEND/MENUSEL.CPP
 0x0044E6C0,49,copy_rect_quad_words,FRONTEND/MENUSEL.CPP
 0x0044E700,104,emit_variant_render_entry_with_temporary_context,FRONTEND/MENUSEL.CPP
@@ -2556,10 +2547,7 @@ address,size,name,unit
 0x004698B0,16,initialize_tiny_point_sink_helper_004698b0,FRONTEND/MENUSEL.CPP
 0x004698C0,40,delete_aligned_zrle_child_overlay_from_point,FRONTEND/MENUSEL.CPP
 0x004698F0,7,restore_queued_render_point_sink_vtable_004698f0,LEVEL/LEVELSTAT.CPP
-0x00469900,40,delete_buffered_resource_geometry_child,LEVEL/LEVELSTAT.CPP
 0x00469930,89,destroy_packaged_sprite_render_entry_array_00469930,LEVEL/LEVELSTAT.CPP
-0x004699A0,40,delete_single_child_overlay_owner,LEVEL/DRAWTEXT.CPP
-0x004699D0,40,delete_resource_sprite_geometry_child,LEVEL/DRAWTEXT.CPP
 0x00469A00,71,construct_level_screen_draw_entry,LEVEL/DRAWTEXT.CPP
 0x00469A50,47,init_level_screen_draw_entry_with_text_key,LEVEL/DRAWTEXT.CPP
 0x00469A80,50,init_level_screen_draw_entry_from_xy_pair_with_text_key,LEVEL/DRAWTEXT.CPP
@@ -2568,8 +2556,6 @@ address,size,name,unit
 0x00469B40,20,append_level_screen_draw_entry,LEVEL/DRAWTEXT.CPP
 0x00469B80,98,destroy_level_screen_draw_entry,LEVEL/DRAWTEXT.CPP
 0x00469BF0,14,reset_level_screen_draw_entry_vtables,LEVEL/DRAWTEXT.CPP
-0x00469C00,40,delete_resource_sprite_geometry_child_adjusted_a,LEVEL/DRAWTEXT.CPP
-0x00469C30,40,delete_resource_sprite_geometry_child_adjusted_b,LEVEL/DRAWTEXT.CPP
 0x00469C60,438,construct_mapped_list_resource_table,LEVEL/DRAWTEXT.CPP
 0x00469E20,141,destroy_mapped_list_resource_table,LEVEL/DRAWTEXT.CPP
 0x00469EB0,58,load_list_resource_into_remap_slot,LEVEL/DRAWTEXT.CPP

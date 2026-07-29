@@ -94,6 +94,7 @@ address,name,symbol,type,source
 0x0042E4D0,DeleteIceChunkManagerAuto,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0042FBA0,DeleteMoveChunkManagerAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00430A50,LevelViewRotationTransformAuto::TransformScreenToTile,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x004322E0,delete_primary_context_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/GAME.CPP
 0x00432350,DeleteQueuedRenderPointSinkWrapperAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x004323C0,set_queued_render_point_sink_field_0x30,,synthetic,src/ENGINE/GDI/VSGDI.CPP
 0x004324A0,CacheObjectField44AsCurrentContext,,synthetic,src/SHELL/PRIMARY.CPP
@@ -116,6 +117,7 @@ address,name,symbol,type,source
 0x004398D0,AppendThisToPointerQueue,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00439900,AppendRenderEntryToPointerQueueB,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00439930,AppendRenderEntryToPointerQueueC,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x0043A450,delete_adjusted_resource_window_owner_buffer_0043a450 `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/SCREENVT.CPP
 0x00442130,LevelTwoShortPointView::CopyTwoShortPoint,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00442150,LevelTwoShortPointView::CopyTwoShortPointVariant,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00442170,LevelFourShortRectView::ClearFourShortRect,,synthetic,src/LEVEL/LEVELSTAT.CPP
@@ -124,9 +126,15 @@ address,name,symbol,type,source
 0x004432A0,LevelActionPanelCodeView::MapActionPanelCode14To8,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00443850,MenuSelectorXorFieldView::RecomputeField104FromXor,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x00443870,update_action_button_field_0x104_from_fields_0x130_xor_0xd0,,synthetic,src/FRONTEND/MENUSEL.CPP
+0x004438B0,delete_aligned_zrle_child_overlay_adjusted_a `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
+0x004438F0,delete_aligned_zrle_child_overlay_adjusted_b `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
+0x00443950,delete_base_mode_action_button_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
 0x004439F0,DeleteLevelScreenActionPanelAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x00443AB0,delete_resource_geometry_child_from_rect_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
 0x004452A0,LevelTwoShortPointView::AddTwoShortPointInPlace,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x004452C0,LevelTwoShortPointView::SubtractTwoShortPointInPlace,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x00445350,delete_level_screen_pause_dialog `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x00445390,Pause-dialog deleting-destructor `adjustor thunk' (-0x14),,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00447170,DeleteFramedScreenRenderChildEntryAAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x004471A0,DeleteFramedScreenRenderChildEntryBAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x004472B0,DeleteBaseModeObjectAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
@@ -143,6 +151,7 @@ address,name,symbol,type,source
 0x0044AA70,ResetLevelStatusChildCursor,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x0044C0D0,DeleteRegistrationInfoScreenAuto,,synthetic,src/GAME.CPP
 0x0044E620,DeleteMenuSelectorEntryAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
+0x0044E650,delete_aligned_zrle_child_overlay_adjusted_c `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
 0x0044E690,DeleteMenuSelectorManagerAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x0044FFC0,DeleteQueuedVariantRangeEntryAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x0044FFF0,DeleteQueuedVariantChildSlotManagerAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
@@ -199,6 +208,11 @@ address,name,symbol,type,source
 0x00466BD0,PopHelperUploadStateMarker,,synthetic,src/ENGINE/GDI/VSGDI.CPP
 0x00467040,HelperUploadRectEntryView::Clear,,synthetic,src/ENGINE/GDI/VSGDI.CPP
 0x004679E0,PackagedRectQueueAllocatorView::AllocateNextPackagedRectQueueEntry,,synthetic,src/LEVEL/DRAWTEXT.CPP
+0x00469900,delete_buffered_resource_geometry_child `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x004699A0,delete_single_child_overlay_owner `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/DRAWTEXT.CPP
+0x004699D0,delete_resource_sprite_geometry_child `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/DRAWTEXT.CPP
+0x00469C00,delete_resource_sprite_geometry_child_adjusted_a `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/DRAWTEXT.CPP
+0x00469C30,delete_resource_sprite_geometry_child_adjusted_b `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/DRAWTEXT.CPP
 0x0046B3B0,GameCursorRenderClientAuto::SetListResourceEntry,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x0046DAF0,StatusPoint2DView::Set,,synthetic,src/ENGINE/GDI/GDISTATUSVT.CPP
 0x0046DB10,GdiPoint2DView::Copy,,synthetic,src/ENGINE/GDI/GDIVT.CPP
