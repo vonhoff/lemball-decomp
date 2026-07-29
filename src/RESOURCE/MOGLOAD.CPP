@@ -239,7 +239,7 @@ static void* g_MOGLOAD_PaletteResourceVtable[15] = {
 // GLOBAL: LEMBALL 0x004a1d5c
 void* g_pResourceArchive = 0;
 extern void* __fastcall FinalizeLoadedResourceObjectResult(void* pObject, void* pUnusedEdx);
-extern void ResetTypedResourceObjectState(void* pObject);
+extern void LEMBALL_FASTCALL ResetTypedResourceObjectState(void* pObject);
 extern void* g_pSmallMemoryBucketTable;
 extern unsigned int g_cbSmallMemoryBucketUpperBound;
 extern const char* g_pszSmallMemoryBucketAllocTag;
@@ -294,7 +294,7 @@ int LEMBALL_STDCALL AttachResourceEntryToObject(MogLoadStringResourceObject* pOb
 int LEMBALL_FASTCALL AreAllCachedResourceObjectsUnreferenced(void* pArchive);
 void __fastcall InitializeResourceObjectFromId(void* pObject, void* pUnusedEdx, int nResourceId);
 void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtable(void* pObject);
-void ResetTypedResourceObjectState(void* pObject);
+void LEMBALL_FASTCALL ResetTypedResourceObjectState(void* pObject);
 void LEMBALL_FASTCALL CopyBufferIntoTypedResourceObjectAndParse(void* pObject,
 																void* pUnusedEdx,
 																unsigned int* pSource,
@@ -1327,25 +1327,25 @@ void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtable(void* pObject)
 }
 
 // FUNCTION: LEMBALL 0x0045d050
-void ResetTypedResourceObjectState(void* pObject)
+void LEMBALL_FASTCALL ResetTypedResourceObjectState(void* pObject)
 {
 	MogLoadStringResourceObject* pResourceObject;
 	MogLoadTypedResourceObjectVtable* pVtable;
 
 	pResourceObject = (MogLoadStringResourceObject*) pObject;
-	pVtable = (MogLoadTypedResourceObjectVtable*) pResourceObject->m_pVtable;
-	pResourceObject->m_nReserved04 = 0;
 	pResourceObject->m_nLockCount08 = 0;
 	pResourceObject->m_cReferences = 0;
-	pResourceObject->m_nLoadState10 = 0;
 	pResourceObject->m_nReserved14 = 0;
+	pResourceObject->m_nLoadState10 = 0;
 	pResourceObject->m_cbResourceData28 = 0;
 	pResourceObject->m_lResourceOffset2C = 0;
-	pResourceObject->m_nResourceId30 = 0;
 	pResourceObject->m_padwResourceDescriptor34 = 0;
 	pResourceObject->m_pszText38 = 0;
+	pResourceObject->m_nReserved04 = 0;
 	pResourceObject->m_nReserved3C = 0;
+	pVtable = (MogLoadTypedResourceObjectVtable*) pResourceObject->m_pVtable;
 	pResourceObject->m_uTypeTag = 0;
+	pResourceObject->m_nResourceId30 = 0;
 	pResourceObject->m_nResultCode44 = 0;
 	pVtable->m_pClearTypeTag(pResourceObject);
 	((MogLoadResourceArchive*) g_pResourceArchive)->AdvanceCachedResourceObjectFrameCounters();

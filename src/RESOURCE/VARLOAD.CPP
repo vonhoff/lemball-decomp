@@ -21,7 +21,7 @@ static const unsigned int g_GAME_PaletteResourceTypeTag = 0x50414c20;
 static const unsigned int g_GAME_ZrleResourceTypeTag = 0x5a524c45;
 
 extern void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtable(void* pObject);
-extern void ResetTypedResourceObjectState(void* pObject);
+extern void LEMBALL_FASTCALL ResetTypedResourceObjectState(void* pObject);
 extern void ParseIntResourceDescriptor(void);
 extern void LEMBALL_FASTCALL UnloadTypedResourceObject(void* pObject, void* pUnusedEcx, int fReleaseMode);
 extern void LEMBALL_FASTCALL EnsureTypedResourceObjectLoaded(void* pObject);
