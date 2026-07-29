@@ -1865,12 +1865,12 @@ void* LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntry(void* pObject)
 	int* pEntry;
 
 	pEntry = (int*) pObject;
-	*(void**) pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
-	*(unsigned short*) ((char*) pEntry + 6) = 0;
-	*(void**) pEntry = g_LEVEL_LevelStatusRectSinkVtable;
-	*(unsigned short*) (pEntry + 1) = 0;
+	*(void**) pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 	*(unsigned short*) ((char*) pEntry + 10) = 0;
+	*(void**) pEntry = g_LEVEL_LevelStatusRectSinkVtable;
 	*(unsigned short*) (pEntry + 2) = 0;
+	*(unsigned short*) ((char*) pEntry + 14) = 0;
+	*(unsigned short*) (pEntry + 3) = 0;
 	return pObject;
 }
 // FUNCTION: LEMBALL 0x00439580
