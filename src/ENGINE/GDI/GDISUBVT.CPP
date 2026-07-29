@@ -29,6 +29,29 @@ __inline static void MergeCompactHelperRect(short* pTarget, const short* pEntry)
 	}
 }
 
+struct CompactHelperPoint {
+	short m_nX;
+	short m_nY;
+};
+
+struct CompactHelperDirtyPointSink {
+	virtual void ReservedSlot0(void) = 0;
+	virtual void ReservedSlot1(void) = 0;
+	virtual void ReservedSlot2(void) = 0;
+	virtual void ReservedSlot3(void) = 0;
+	virtual void ReservedSlot4(void) = 0;
+	virtual void ReservedSlot5(void) = 0;
+	virtual void ReservedSlot6(void) = 0;
+	virtual void ReservedSlot7(void) = 0;
+	virtual void ReservedSlot8(void) = 0;
+	virtual void ReservedSlot9(void) = 0;
+	virtual void PropagateDirtyPoint(const CompactHelperPoint* pPoint) = 0;
+};
+
+struct CompactHelperGroup0DirtyStateView {
+	void SetDirtyFlagAndPropagate(int fDirty);
+};
+
 // These small entries are compiler-generated adjustor and interface thunks.
 
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot0(void*)
@@ -183,7 +206,31 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot11(void*)
 {
 }
 
-// FUNCTION: LEMBALL 0x0046dcb0
+// FUNCTION: LEMBALL 0x004668d0
+void CompactHelperGroup0DirtyStateView::SetDirtyFlagAndPropagate(int fDirty)
+{
+	char* pGroup;
+	int* pOffsetEntry;
+	int* pfCurrentDirty;
+	CompactHelperPoint* pSourcePoint;
+	CompactHelperPoint Point;
+	CompactHelperDirtyPointSink* pSink;
+
+	pGroup = (char*) this;
+	pfCurrentDirty = (int*) (pGroup + (*(int**) (pGroup - sizeof(void*)))[1] + 0x3c);
+	if (*pfCurrentDirty != fDirty) {
+		*pfCurrentDirty = fDirty;
+		pOffsetEntry = *(int**) (pGroup - sizeof(void*)) + 1;
+		pSourcePoint = (CompactHelperPoint*) (pGroup + *pOffsetEntry + 8);
+		Point.m_nX = pSourcePoint->m_nX;
+		Point.m_nY = pSourcePoint->m_nY;
+		pSink = (CompactHelperDirtyPointSink*) (pGroup + *pOffsetEntry - sizeof(void*));
+		pSink->PropagateDirtyPoint(&Point);
+	}
+}
+
+// Compiler-state shim retained for manual table slot 17. Original 0x0046dcb0 is a
+// generated -0x518 adjustor to CompactHelperGroup0DirtyStateView::SetDirtyFlagAndPropagate.
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot17(void*)
 {
 }

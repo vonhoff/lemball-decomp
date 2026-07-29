@@ -2425,7 +2425,7 @@ address,size,name,unit
 0x00466840,43,set_helper_group_1_backing_active,ENGINE/GDI/VSGDI.CPP
 0x00466870,5,ensure_helper_group_1_backing_buffer,ENGINE/GDI/VSGDI.CPP
 0x00466880,79,copy_rect_tuple_if_extent_empty,ENGINE/GDI/VSGDI.CPP
-0x004668D0,77,set_helper_group_0_dirty_flag_and_propagate,ENGINE/GDI/VSGDI.CPP
+0x004668D0,77,set_helper_group_0_dirty_flag_and_propagate,ENGINE/GDI/GDISUBVT.CPP
 0x00466920,3,noop_compact_helper_argument_slot,ENGINE/GDI/GDICOMPACTVT.CPP
 0x00466930,3,compact_helper_return_zero_slot15,ENGINE/GDI/GDICOMPACTVT.CPP
 0x00466940,3,compact_helper_return_zero_slot16,ENGINE/GDI/GDICOMPACTVT.CPP
@@ -2635,7 +2635,6 @@ address,size,name,unit
 0x0046DC80,4,get_helper_target_token,ENGINE/GDI/VSGDI.CPP
 0x0046DC90,11,get_helper_group0_dirty_flag_adjustment_thunk,ENGINE/GDI/VSGDI.CPP
 0x0046DCA0,11,get_helper_group1_dirty_flag_adjustment_thunk,ENGINE/GDI/VSGDI.CPP
-0x0046DCB0,11,set_helper_group_0_dirty_flag_and_propagate,ENGINE/GDI/GDISUBVT.CPP
 0x0046DCC0,11,get_helper_group_0_dirty_flag_local,ENGINE/GDI/GDISUBVT.CPP
 0x0046DCD0,144,get_srcdisk_registry_value_buffer,GAME.CPP
 0x0046DD60,86,bind_as_singleton_anim_window,ENGINE/GDI/VSGDI.CPP
