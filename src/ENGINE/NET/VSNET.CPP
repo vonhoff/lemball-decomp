@@ -840,9 +840,11 @@ static VsNetEffTransportRuntimeStateVtable g_NETWORK_FileBasedRuntimeStateVtable
 };
 
 /* Raw table 0049A2A8: TCPIP state dispatch. */
+void* LEMBALL_FASTCALL DeleteTcpipRuntimeStateWindowAdjustedThunk(void* pObject, int, BYTE fFreeMemory);
+
 struct VsNetTcpipRuntimeStateVtable {
 	void* m_pReserved00;
-	void* (VsNetEffTransportRuntimeState::*m_pDelete)(BYTE);
+	void* m_pDelete;
 	int (VsNetEffTransportRuntimeState::*m_pProcess)(VsNetEffDispatchEvent*);
 	void (VsNetEffTransportRuntimeState::*m_pInitializeTransport)(void);
 	void (VsNetEffTransportRuntimeState::*m_pShutdownTransport)(void);
@@ -856,9 +858,10 @@ struct VsNetTcpipRuntimeStateVtable {
 	void (VsNetEffTransportRuntimeState::*m_pWaitForTransportMessage)(void);
 };
 
+// GLOBAL: LEMBALL 0x0049a2a8
 VsNetTcpipRuntimeStateVtable g_NETWORK_TcpipRuntimeStateVtable = {
 	(void*) InitializeNonZrleVariantRenderEntry,
-	&VsNetEffTransportRuntimeState::DeleteEffTransportRuntimeWindow,
+	(void*) DeleteTcpipRuntimeStateWindowAdjustedThunk,
 	&VsNetEffTransportRuntimeState::ProcessEffTransportDispatchEvent,
 	&VsNetEffTransportRuntimeState::InitializeTcpipNetworkTransport,
 	&VsNetEffTransportRuntimeState::ShutdownTcpipNetworkTransport,
@@ -922,6 +925,7 @@ static void* g_NETWORK_FileBasedRuntimeWindowVtable[7] = {
 	(void*) InitializeFileNetworkAddress,
 };
 
+// GLOBAL: LEMBALL 0x0049a2dc
 void* g_NETWORK_TcpipRuntimeWindowVtable[1] = {
 	(void*) HandleTcpipRuntimeWindowMessage,
 };
