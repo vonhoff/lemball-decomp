@@ -4109,7 +4109,7 @@ void* VsNetWin32FileWrapper::GetOwnedPath(void)
 // FUNCTION: LEMBALL 0x0047b8f0
 void VsNetEmbeddedFileBackedEffChannelStack::ClearNestedEffChannelAsyncStatus(void)
 {
-	void* pObject = this;
+	void* pObject = (char*) this + 8;
 	((VsNetEffStreamChannelState*) ((char*) pObject +
 									(*(VsNetConstructionAdjustorVtable**) ((char*) pObject - 0x1c))
 										->m_nSecondaryOffset -
