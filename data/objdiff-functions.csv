@@ -1142,9 +1142,9 @@ address,size,name,unit
 0x00437130,54,add_selected_entity_id,GAME.CPP
 0x00437170,111,dispatch_selected_entity_list,GAME.CPP
 0x004371E0,100,dispatch_level_screen_point_command,GAME.CPP
-0x00437250,79,clear_active_entity_children_pending,GAME.CPP
-0x004372A0,79,select_next_ready_managed_entity_from_level_screen,GAME.CPP
-0x004372F0,79,select_previous_ready_managed_entity_from_level_screen,GAME.CPP
+0x00437250,79,clear_active_entity_children_pending,GAMELEVELSCREEN.CPP
+0x004372A0,79,select_next_ready_managed_entity_from_level_screen,GAMELEVELSCREEN.CPP
+0x004372F0,79,select_previous_ready_managed_entity_from_level_screen,GAMELEVELSCREEN.CPP
 0x00437340,106,activate_or_queue_level_screen_entity_by_index,GAME.CPP
 0x004373B0,106,dispatch_level_screen_entity_id_command,GAME.CPP
 0x00437420,63,is_entity_id_selected,GAME.CPP
