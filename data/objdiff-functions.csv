@@ -2329,7 +2329,6 @@ address,size,name,unit
 0x00462C90,8,dispatch_prefixed_runtime_outer_dual_control_thunk,ENGINE/NET/VSNETSTR.CPP
 0x00462CA0,8,thunk_delete_eff_channel_stream_stack_00462_cb0,ENGINE/NET/VSNETFIL.CPP
 0x00462CB0,55,delete_eff_channel_stream_stack_wrapper,ENGINE/NET/VSNETFIL.CPP
-0x00462CF0,8,clear_runtime_channel_pending_write_virtual_base_thunk_body,ENGINE/NET/VSNET.CPP
 0x00462D00,23,clear_runtime_channel_pending_write_virtual_base_thunk_body,ENGINE/NET/VSNET.CPP
 0x00462D20,11,thunk_delete_runtime_timed_channel_stack_00462_cb0,ENGINE/NET/VSNETFIL.CPP
 0x00462D30,8,write_runtime_channel_global_session_virtual_base_thunk_body,ENGINE/NET/VSNET.CPP
