@@ -172,6 +172,10 @@ struct ShellUiWindowRect {
 	LONG m_nBottom;
 };
 
+struct VsGdiSelectedGraphicsDriverSwitchView {
+	int SwitchSelectedGraphicsDriver(int nRequestedDriver);
+};
+
 // FUNCTION: LEMBALL 0x00431c90
 void LEMBALL_FASTCALL TogglePrimaryContextDisplayMode(void* pPrimaryContext)
 {
@@ -186,12 +190,12 @@ void LEMBALL_FASTCALL TogglePrimaryContextDisplayMode(void* pPrimaryContext)
 	nDriver = ((VsGdiSelectedGraphicsDriverRuntime*) g_pSelectedGraphicsDriverRuntime)->m_nSelectedDriver;
 	switch (nDriver) {
 	case VsGdiDRIVER_METRICS:
-		((VsGdiSelectedGraphicsDriverRuntime*) g_pSelectedGraphicsDriverRuntime)
-			->InitializeSelectedGraphicsDriver(VsGdiDRIVER_DIB_640_480);
+		((VsGdiSelectedGraphicsDriverSwitchView*) g_pSelectedGraphicsDriverRuntime)
+			->SwitchSelectedGraphicsDriver(VsGdiDRIVER_DIB_640_480);
 		return;
 	case VsGdiDRIVER_DIB_640_480:
-		((VsGdiSelectedGraphicsDriverRuntime*) g_pSelectedGraphicsDriverRuntime)
-			->InitializeSelectedGraphicsDriver(VsGdiDRIVER_METRICS);
+		((VsGdiSelectedGraphicsDriverSwitchView*) g_pSelectedGraphicsDriverRuntime)
+			->SwitchSelectedGraphicsDriver(VsGdiDRIVER_METRICS);
 		return;
 	}
 }
