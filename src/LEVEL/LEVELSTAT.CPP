@@ -4346,30 +4346,28 @@ void* LEMBALL_FASTCALL InitializeCompositePointRectSinkEntries(void* pObject)
 	int* pEntry;
 
 	pEntry = (int*) pObject;
-	*(void**) pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+	*(void**) pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 	*(unsigned short*) ((char*) pEntry + 6) = 0;
 	*(unsigned short*) (pEntry + 1) = 0;
-	*(void**) pEntry = g_LEVEL_CompositePointRectSinkEntryInitVtable;
+	*(void**) pEntry = g_LEVEL_CompositePointRectSinkEntryVtable;
 	*(unsigned short*) ((char*) pEntry + 10) = 0;
 	*(unsigned short*) (pEntry + 2) = 0;
-	*(void**) pEntry = g_LEVEL_FramedScreenRenderChildEntryVtable;
+	*(void**) pEntry = g_LEVEL_FramedScreenRenderChildEntryVtableStorage;
+	*(void**) (pEntry + 9) = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 	*(unsigned short*) ((char*) pEntry + 0xe) = 0;
 	*(unsigned short*) (pEntry + 3) = 0;
 	*(unsigned short*) ((char*) pEntry + 0x22) = 0;
 	*(unsigned short*) (pEntry + 8) = 0;
-
-	pEntry += 9;
-	*(void**) pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
-	*(unsigned short*) ((char*) pEntry + 6) = 0;
-	*(unsigned short*) (pEntry + 1) = 0;
-	*(void**) pEntry = g_LEVEL_CompositePointRectSinkEntryInitVtable;
-	*(unsigned short*) ((char*) pEntry + 10) = 0;
-	*(unsigned short*) (pEntry + 2) = 0;
-	*(void**) pEntry = g_LEVEL_FramedScreenRenderChildEntryVtable;
-	*(unsigned short*) ((char*) pEntry + 0xe) = 0;
-	*(unsigned short*) (pEntry + 3) = 0;
-	*(unsigned short*) ((char*) pEntry + 0x22) = 0;
-	*(unsigned short*) (pEntry + 8) = 0;
+	*(unsigned short*) ((char*) pEntry + 0x2a) = 0;
+	*(unsigned short*) (pEntry + 10) = 0;
+	*(void**) (pEntry + 9) = g_LEVEL_CompositePointRectSinkEntryVtable;
+	*(unsigned short*) ((char*) pEntry + 0x2e) = 0;
+	*(unsigned short*) (pEntry + 11) = 0;
+	*(void**) (pEntry + 9) = g_LEVEL_FramedScreenRenderChildEntryVtableStorage;
+	*(unsigned short*) ((char*) pEntry + 0x32) = 0;
+	*(unsigned short*) (pEntry + 12) = 0;
+	*(unsigned short*) ((char*) pEntry + 0x46) = 0;
+	*(unsigned short*) (pEntry + 17) = 0;
 	return pObject;
 }
 // FUNCTION: LEMBALL 0x004511a0
