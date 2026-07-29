@@ -167,7 +167,8 @@ static void* g_MOGLOAD_TypedResourceObjectVtable[15] = {
 	(void*) ClearResourceTypeTag,
 	(void*) GetField28GetMemorySize,
 };
-static void* g_MOGLOAD_StringResourceVtable[15] = {
+// GLOBAL: LEMBALL 0x00498c48
+void* g_MOGLOAD_StringResourceVtable[15] = {
 	(void*) DestroyGRTSResourceAndFree,
 	(void*) CopyBufferIntoTypedResourceObjectAndParse,
 	(void*) ParseIntResourceDescriptor,
@@ -184,6 +185,7 @@ static void* g_MOGLOAD_StringResourceVtable[15] = {
 	(void*) SetGRTSResourceTypeTag,
 	(void*) GetField28GetMemorySize,
 };
+
 static void* g_MOGLOAD_EffResourceObjectVtable[15] = {
 	(void*) DestroyEffResource,
 	(void*) CopyBufferIntoTypedResourceObjectAndParse,

@@ -198,6 +198,7 @@ static const unsigned int g_DRAWTEXT_IntResourceTypeTag = 0x494e5420;
 extern void LEMBALL_FASTCALL SetIntResourceTypeTag(void* pResource);
 extern void LEMBALL_FASTCALL ReadIntResourcePayloadFromStream(void* pResource);
 extern void* LEMBALL_FASTCALL DestroyIntResourceEntryArray(void* pObject, int nUnused, unsigned int fDelete);
+extern void LEMBALL_FASTCALL ResetTypedResourceObjectState(void* pObject);
 
 // GLOBAL: LEMBALL 0x00498b48
 static void* g_DRAWTEXT_IntResourceVtableStorage[15] = {
@@ -241,6 +242,16 @@ int* load_int_resource(int nResourceId)
 		return (int*) FinalizeLoadedResourceObjectResult(pResourceObject, 0);
 	}
 	return (int*) FinalizeLoadedResourceObjectResult(0, 0);
+}
+
+// FUNCTION: LEMBALL 0x0045e8f0
+void* LEMBALL_FASTCALL ConstructListIntEntryBase(void* pObject)
+{
+	*(void* volatile*) pObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
+	*(void* volatile*) pObject = g_DRAWTEXT_IntResourceVtableStorage;
+	*(int*) ((char*) pObject + 0x18) = 0;
+	ResetTypedResourceObjectState(pObject);
+	return pObject;
 }
 
 // FUNCTION: LEMBALL 0x0045e9b0
