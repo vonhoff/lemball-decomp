@@ -17,6 +17,7 @@ address,name,symbol,type,source
 0x0040EBE0,DeleteDoorChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00410AC0,LevelVtSmallFunctionView::AddClampedU16Field228,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00410B20,DeleteDoorChunkObjectAuto,,synthetic,src/LEVEL/LEVELVT.CPP
+0x00410B70,Door chunk-object deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/LEVEL/LEVELVTDOOR.CPP
 0x00413090,ReturnTrueVirtualHookBodyStdcall,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00413390,LevelVtSmallFunctionView::AddLevelScoreClamped,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00413DF0,DeleteEffStreamBaseWrapperAuto,,synthetic,src/GAME.CPP
@@ -44,7 +45,9 @@ address,name,symbol,type,source
 0x00417F80,LevelVtSmallFunctionView::AppendProjectilePoolObject,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00418300,DeleteProjectilePoolAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00418C90,GetIndexedLevelModeValue110,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
+0x00419970,PLAS manager render-entry `adjustor thunk' (-0xb0),,synthetic,src/LEVEL/LEVELVTPLAS.CPP
 0x0041A320,LevelVtSmallFunctionView::GetProjectileGeometryRotatedPair,,synthetic,src/LEVEL/LEVELVT.CPP
+0x0041AF50,Projectile deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/ENGINE/CORE/LINKSCFPROJECTILE.CPP
 0x0041B990,LinkScfSmallFunctionView::ClearManagedEntityGroupChildActiveFlag,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x0041C330,DeleteCountedChildTableStreamAuto,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0041C400,DeleteLevelChunkObjectBaseWrapper1C400,,synthetic,src/LEVEL/LEVELVT.CPP
