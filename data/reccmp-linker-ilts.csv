@@ -82,6 +82,7 @@ address,name,symbol,type,source
 0x00402180,DestroyLevelChunkStreamAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x004021D0,DestroyLevelChunkObjectBaseAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x004021F3,DestroyDoorChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
+0x00402239,DestroyLevelChunkObjectBase24CF0,?DestroyLevelChunkObjectBase24CF0@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x0040225C,DestroyRegisteredRenderSlotArrayAutoThunk,,stub,src/FRONTEND/SCREENVT.CPP
 0x00402275,ResetRockChunkObjectRuntimeStateThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402315,GameScreenObject::ConstructOptionsScreen,,stub,src/GAME.H
