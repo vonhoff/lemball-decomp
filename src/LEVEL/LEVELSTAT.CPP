@@ -3598,8 +3598,11 @@ void LEMBALL_FASTCALL DeleteLevelScreenActionButtonChild(void* pObject)
 	pButton = (char*) pObject;
 	pChild = *(void**) (pButton + 4);
 	if (pChild != 0) {
-		typedef void(LEMBALL_FASTCALL * DeleteProc)(void* pObject, int nUnusedEdx, unsigned int fDelete);
-		((DeleteProc) (*(void***) ((char*) pChild + 0x90))[0])((char*) pChild + 0x90, 0, 1);
+		struct LevelScreenActionButtonChildDeleteInterface {
+			virtual void Delete(unsigned int fDelete) = 0;
+		};
+
+		((LevelScreenActionButtonChildDeleteInterface*) ((char*) pChild + 0x90))->Delete(1);
 	}
 }
 // FUNCTION: LEMBALL 0x00442f00
