@@ -33,6 +33,10 @@ struct ManagedEntityStateView {
 	void RequestManagedEntityStateId(int nStateId);
 };
 
+struct DoorChunkObjectActionView {
+	void RequestDoorChunkObjectTriggerTransition(void);
+};
+
 struct ManagedEntityLocalStateView {
 	virtual void ReservedSlot0(int nValue);
 	virtual void ReservedSlot1(int nValue);
@@ -150,6 +154,11 @@ extern ManagedEntityPacketStreamView* g_pManagedEntityPacketBindStream;
 // GLOBAL: LEMBALL 0x00493120
 void* g_LINKSCF_InvsChunkObjectVtable[16] =
 	COMMON_LEVEL_CHUNK_OBJECT_VTABLE(DeleteInvsChunkObjectAuto, ServiceInvsChunkObject);
+
+// GLOBAL: LEMBALL 0x004936f8
+void* g_LEVELVT_DoorChunkObjectVtable[16] =
+	COMMON_LEVEL_CHUNK_OBJECT_VTABLE(DeleteDoorChunkObjectArrayVtableThunk,
+									 RequestDoorChunkObjectTriggerTransitionThunk);
 
 // GLOBAL: LEMBALL 0x00493a60
 void* g_LEVELVT_LevelChunkObjectChildrenVariantVtable[16] =

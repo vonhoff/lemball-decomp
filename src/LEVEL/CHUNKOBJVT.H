@@ -4,6 +4,8 @@
 struct LevelBoundsPoint;
 
 void* LEMBALL_FASTCALL DeleteInvsChunkObjectAuto(void* pObject, void* pUnused, unsigned int fDelete);
+void* LEMBALL_FASTCALL DeleteDoorChunkObjectAuto(void* pObject, void* pUnused, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteDoorChunkObjectArrayVtableThunk(void* pObject, void* pUnused, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteLevelChunkObjectChildrenVariant14C80(void* pObject, void* pUnused, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteGmobChunkType14ObjectAuto(void* pObject, void* pUnused, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteCollChunkObjectWrapper23060(void* pObject, void* pUnused, BYTE fDelete);
@@ -45,6 +47,7 @@ int LEMBALL_FASTCALL get_object_field_0x98(void* pObject);
 int LEMBALL_FASTCALL BeginManagedEntityReachablePathSearch(void* pObject);
 
 int LEMBALL_FASTCALL ServiceInvsChunkObject(void* pObject);
+void LEMBALL_FASTCALL RequestDoorChunkObjectTriggerTransitionThunk(void* pObject);
 int LEMBALL_FASTCALL UpdateManagedEntityGroupCommandState(void* pObject);
 int LEMBALL_FASTCALL AdvanceGmobChunkType14StateMachine(void* pObject);
 int LEMBALL_FASTCALL AdvanceCollChunkObjectStateMachine(void* pObject);
