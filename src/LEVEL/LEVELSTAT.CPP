@@ -219,7 +219,6 @@ void LEMBALL_FASTCALL DispatchHelperLocalRectUpdateThunk004037A1(void* pObject, 
 extern void* LEMBALL_FASTCALL DeleteStatusPointSinkVariantThunk(void* pEntry, int nUnused, unsigned char fDelete);
 extern void LEMBALL_FASTCALL AppendStatusPointSinkToQueueThunk(void* pEntry, int nUnused, void* pQueue);
 extern void LEMBALL_FASTCALL DispatchStatusPointSinkOwnerThunk(void* pEntry, int nUnused, void* pContext);
-
 void LEMBALL_FASTCALL DispatchLevelSurfaceRectSinkThunk(void* pObject, int nUnusedEdx, void* pContext);
 void LEMBALL_FASTCALL DispatchLevelNestedRectSinkThunk(void* pObject, int nUnusedEdx, void* pContext);
 void LEMBALL_FASTCALL DispatchLevelStatusRectSinkThunk(void* pObject, int nUnusedEdx, void* pContext);
@@ -342,6 +341,7 @@ void LEMBALL_FASTCALL ClearRenderPointRectEntryFieldsThunk00403724(void* pObject
 																   int nUnused,
 																   const VS_XYPair* pPoint,
 																   int nButton);
+// GLOBAL: LEMBALL 0x00496e90
 static void* g_LEVEL_RenderPointRectSinkEntryVtableStorage[8] = {
 	(void*) DeleteRenderPointRectSinkThunk00401898,
 	(void*) QueueRenderPointRectSinkThunk00402DD3,
@@ -1879,10 +1879,10 @@ void* LEMBALL_FASTCALL InitializeRenderPointRectSinkEntry(void* pObject)
 	int* pEntry;
 
 	pEntry = (int*) pObject;
-	*(void**) pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtable;
+	*(void**) pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 	*(unsigned short*) ((char*) pEntry + 6) = 0;
 	*(unsigned short*) (pEntry + 1) = 0;
-	*(void**) pEntry = g_LEVEL_RenderPointRectSinkEntryVtable;
+	*(void**) pEntry = g_LEVEL_RenderPointRectSinkEntryVtableStorage;
 	*(unsigned short*) ((char*) pEntry + 10) = 0;
 	*(unsigned short*) (pEntry + 2) = 0;
 	*(unsigned short*) ((char*) pEntry + 0xe) = 0;
