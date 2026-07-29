@@ -42,6 +42,11 @@ FUNCTION_DATA_REFERENCES = {
         "g_EFF_NetworkLobbyPeerDirtyConfirmVtable",
         "network lobby peer dirty-confirm vtable 004985d8",
     ),
+    0x0046DE70: (
+        0x00499F30,
+        "g_VSGDI_AnimWindowOwnerVtable",
+        "animation window-owner vtable 00499f30",
+    ),
 }
 # These real, source-owned adjustor thunks jump through original LINK 3.00
 # ILT entries while rebuilt naked thunks jump directly to the same bodies.
