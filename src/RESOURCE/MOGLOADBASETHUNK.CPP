@@ -15,3 +15,9 @@ void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtableE9A0(void* pObject)
 {
 	InitializeTypedResourceObjectBaseVtable(pObject);
 }
+
+// FUNCTION: LEMBALL 0x0045eb30
+void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtableEB30(void* pObject)
+{
+	InitializeTypedResourceObjectBaseVtable(pObject);
+}
