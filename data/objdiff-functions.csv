@@ -2429,11 +2429,6 @@ address,size,name,unit
 0x00466870,5,ensure_helper_group_1_backing_buffer,ENGINE/GDI/VSGDI.CPP
 0x00466880,79,copy_rect_tuple_if_extent_empty,ENGINE/GDI/VSGDI.CPP
 0x004668D0,77,set_helper_group_0_dirty_flag_and_propagate,ENGINE/GDI/VSGDI.CPP
-0x00466920,3,noop_compact_helper_argument_slot,ENGINE/GDI/GDICOMPACTVT.CPP
-0x00466930,3,compact_helper_return_zero_slot15,ENGINE/GDI/GDICOMPACTVT.CPP
-0x00466940,3,compact_helper_return_zero_slot16,ENGINE/GDI/GDICOMPACTVT.CPP
-0x00466950,3,noop_compact_helper_argument_slot_17,ENGINE/GDI/GDICOMPACTVT.CPP
-0x00466960,3,compact_helper_return_zero_slot18,ENGINE/GDI/GDICOMPACTVT.CPP
 0x00466990,4,get_helper_group_1_dirty_flag,ENGINE/GDI/VSGDI.CPP
 0x004669A0,238,initialize_quantized_helper_upload_rect_tracker,ENGINE/GDI/VSGDI.CPP
 0x00466A90,35,reset_helper_upload_state_map,ENGINE/GDI/VSGDI.CPP
