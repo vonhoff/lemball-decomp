@@ -354,7 +354,7 @@ void LEMBALL_FASTCALL NoOpWaveOutEffectSlot26(void*, int, int);
 int LEMBALL_FASTCALL ReturnFalseWaveOutEffectSlot27(void*, int, int, int, int);
 unsigned char LEMBALL_FASTCALL PlayWaveOutEffectInstance(void* pBackend, int, int nEffectInstanceId, int, int);
 int LEMBALL_FASTCALL DispatchWaveOutEffectVolume(void* pBackend, int, int nEffectInstanceId, int nUnused, int nVolume);
-int LEMBALL_FASTCALL RestartWaveOutPlayback(void* pBackend, int, int);
+int LEMBALL_FASTCALL ResetWaveOutPlayback(void* pBackend, int, int, int);
 void LEMBALL_FASTCALL CaptureWaveOutBackendContext0047D260(void*, int, void*);
 void* LEMBALL_FASTCALL DeleteWaveOutEffectBackend(VsSoundWaveOutEffectBackend* pBackend, int nUnused, int fDelete);
 const char* LookupDirectSoundErrorString(unsigned int uError);
@@ -781,7 +781,7 @@ static void* g_WaveOutEffectBackendVtable[39] = {
 	(void*) NoOpAudioEffectSlot34,
 	(void*) DispatchWaveOutEffectVolume,
 	(void*) PlayWaveOutEffectInstance,
-	(void*) RestartWaveOutPlayback,
+	(void*) ResetWaveOutPlayback,
 	(void*) CaptureWaveOutBackendContext0047D260,
 };
 
@@ -2112,9 +2112,9 @@ int LEMBALL_FASTCALL DispatchWaveOutEffectVolume(void* pBackend, int, int nEffec
 }
 
 // FUNCTION: LEMBALL 0x0047d240
-int LEMBALL_FASTCALL RestartWaveOutPlayback(void* pBackend, int, int)
+int LEMBALL_FASTCALL ResetWaveOutPlayback(void* pBackend, int, int, int)
 {
-	waveOutRestart(*(HWAVEOUT*) ((char*) pBackend + 0x8c));
+	waveOutReset(*(HWAVEOUT*) ((char*) pBackend + 0x8c));
 	return 0;
 }
 
