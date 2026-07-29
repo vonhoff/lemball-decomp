@@ -694,9 +694,6 @@ address,size,name,unit
 0x0041FEC0,153,advance_managed_entity_probe_descriptor_state,LEVEL/LEVELVT.CPP
 0x0041FF60,142,apply_managed_entity_probe_descriptor_action,LEVEL/LEVELVT.CPP
 0x00420000,44,evaluate_managed_entity_probe_condition_code,LEVEL/LEVELVT.CPP
-0x0042001D,8,case_d_2,LEVEL/LEVELVT.CPP
-0x00420034,8,case_d_4,LEVEL/LEVELVT.CPP
-0x0042003C,15,case_d_5,LEVEL/LEVELVT.CPP
 0x00420070,22,is_saved_target_within_probe_boxes,LEVEL/LEVELVT.CPP
 0x00420090,89,is_saved_target_within_probe_boxes_and_directional_band,LEVEL/LEVELVT.CPP
 0x004200F0,174,append_indexed_move_command_from_descriptor,LEVEL/LEVELVT.CPP
