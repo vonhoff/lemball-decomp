@@ -2167,10 +2167,6 @@ address,size,name,unit
 0x0045FCC0,8,clear_primary_locked_record_table_payload_flags,LEVEL/LEVELRUN.CPP
 0x0045FCD0,8,clear_secondary_locked_record_table_payload_flags,LEVEL/LEVELRUN.CPP
 0x0045FCE0,157,construct_timed_eff_stream,ENGINE/NET/VSNETSTR.CPP
-0x0045FDE0,16,invoke_timed_eff_stream_service_callback,ENGINE/NET/VSNETSTR.CPP
-0x0045FDF0,26,release_timed_eff_stream_primary_handle,ENGINE/NET/VSNETSTR.CPP
-0x0045FE10,53,release_timed_eff_stream_secondary_handles,ENGINE/NET/VSNETSTR.CPP
-0x0045FE50,8,release_timed_eff_stream_primary_handle_wrapper,ENGINE/NET/VSNETSTR.CPP
 0x0045FE60,59,configure_timed_eff_stream_secondary_handle,ENGINE/NET/VSNETSTR.CPP
 0x0045FEA0,126,send_reliable_eff_transport_payload,ENGINE/NET/VSNET.CPP
 0x0045FF20,69,retry_pending_eff_transport_record,ENGINE/NET/VSNET.CPP
