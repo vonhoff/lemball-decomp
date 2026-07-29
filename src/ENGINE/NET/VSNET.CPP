@@ -911,6 +911,7 @@ void LEMBALL_FASTCALL CopyFileNetworkAddressObject(void* pObject, void* pUnused,
 int LEMBALL_FASTCALL CompareFileNetworkAddress(void* pObject, void* pUnused, CFileNetworkAddress* pOther);
 int LEMBALL_FASTCALL InitializeFileNetworkAddress(void* pObject, void* pUnused, int nUnused);
 
+// GLOBAL: LEMBALL 0x0049a02c
 static void* g_NETWORK_FileBasedRuntimeWindowVtable[7] = {
 	(void*) HandleFileRuntimeWindowMessage,
 	(void*) GetFileNetworkAddressString,
@@ -4068,12 +4069,12 @@ void* AllocateFileNetworkAddress(void)
 	CFileNetworkAddress* pObject;
 
 	pObject = (CFileNetworkAddress*) AllocateVSMemBlock(0x20);
-	if (pObject == 0) {
-		return 0;
+	if (pObject != 0) {
+		*(void***) pObject = &g_NETWORK_FileBasedRuntimeWindowVtable[1];
+		*((char*) pObject + 4) = 0;
+		return pObject;
 	}
-	*(void***) pObject = &g_NETWORK_FileBasedRuntimeWindowVtable[1];
-	*((char*) pObject + 4) = 0;
-	return pObject;
+	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0046f880
