@@ -162,6 +162,7 @@ address,name,symbol,type,source
 0x00402DAB,DrawPasswordEntryInputPanelThunk,,stub,src/FRONTEND/MAINMENU.CPP
 0x00402DC4,DestroyLevelChunkObjectBaseECA0,?DestroyLevelChunkObjectBaseECA0@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402DD8,SetMenuSelectorStartTimeFieldThunk,,stub,src/FRONTEND/MENUSEL.H
+0x00402DDD,GameSelectorProgressOverlayChild::SetPercent,?SetPercent@GameSelectorProgressOverlayChild@@QAEXH@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00402DF1,DestroyTileFlag1CChunkObjectAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402E1E,VS_WindowOwnerBase::CacheCurrentContextWindow,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00402E28,StartMenuSelectorActionThunk,,stub,src/FRONTEND/MENUSEL.H

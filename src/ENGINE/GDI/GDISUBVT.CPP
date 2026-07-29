@@ -223,8 +223,13 @@ void LEMBALL_FASTCALL DestroyListCharEntryTable(void* pObject)
 }
 
 // FUNCTION: LEMBALL 0x00473750
-void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot4(void*)
+void* LEMBALL_FASTCALL ResourceGeometryRowBufferSlot4(void* pObject, int, BYTE fDelete)
 {
+	DestroyListCharEntryTable(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeResourceArchiveMemory(pObject);
+	}
+	return pObject;
 }
 
 // FUNCTION: LEMBALL 0x00473770
