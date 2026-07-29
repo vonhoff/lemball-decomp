@@ -1100,12 +1100,10 @@ void __fastcall RefreshAudioManagerBackendHandles(void* pAudioManager)
 		nMusicResourceBase = pManager->m_nMusicResourceBase14;
 		pManager->m_fBackendsStopped08 = 0;
 		pMusicBackend = pManager->m_pMusicBackend74;
+		cEffectResources = 0;
 		if (pManager->m_pEffectBackend78 == pMusicBackend) {
-			pManager->m_pEffectBackend78 = 0;
 			cEffectResources = pManager->m_cEffectResources18;
-		}
-		else {
-			cEffectResources = 0;
+			pManager->m_pEffectBackend78 = 0;
 		}
 		if (pManager->m_fMusicBackendDisabled1C == 0 && pMusicBackend != 0) {
 			fAccepted = pMusicBackend->Open(nMusicResourceBase, cEffectResources, pManager->m_pPrimaryContext70);
