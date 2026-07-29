@@ -44,6 +44,7 @@ void* LEMBALL_FASTCALL DestroyIntResourceEntryArray(void* pObject, int nUnused, 
 void LEMBALL_FASTCALL ReadIntResourcePayloadFromStream(void* pResource);
 void LEMBALL_FASTCALL SetIntResourceTypeTag(void* pResource);
 
+// GLOBAL: LEMBALL 0x00498a70
 static void* g_GAME_ZrleResourceVtableStorage[15] = {
 	(void*) DestroyZrleResourceEntryArray,
 	(void*) CopyBufferIntoTypedResourceObjectAndParse,
@@ -66,6 +67,7 @@ extern void* g_pDestroyGRTSResourceAndFreeThunk;
 extern void* LEMBALL_FASTCALL DestroyGRTSResourceAndFree(void* pObject, int nUnusedEdx, int fDelete);
 extern void* g_pStringResourceVtable;
 extern void* g_MOGLOAD_CachedResourceObjectBaseVtable[15];
+extern void* g_MOGLOAD_TypedResourceObjectVtable[15];
 extern void* g_pBitmapResourceVtable;
 extern void* g_pPaletteResourceVtable;
 
@@ -142,7 +144,7 @@ void* LoadZrleResource(int nResourceId);
 void LEMBALL_FASTCALL PopulateZrleResourceDescriptorFields(void* pObject);
 void LEMBALL_FASTCALL SetListResourceTypeList(void* pObject);
 int LEMBALL_FASTCALL GetListEntryArrayCursor(void* pObject);
-void InitializeZrleOnlyListEntry(void* pEntry);
+void* LEMBALL_FASTCALL InitializeZrleOnlyListEntry(void* pEntry);
 void LEMBALL_FASTCALL AllocateZrleOnlyListEntryArray(void* pObject, int, int cEntries);
 void LEMBALL_FASTCALL DispatchZrleOnlyListEntryMethod(void* pObject, int, int iEntry, int nArgument);
 int LEMBALL_FASTCALL HasZrleOnlyListEntryDescriptor(void* pObject, int, int iEntry);
@@ -1037,21 +1039,20 @@ void* LEMBALL_FASTCALL DestroyZrleOnlyListResource(void* pObject, int, int fDele
 }
 
 // FUNCTION: LEMBALL 0x0045e7e0
-void InitializeZrleOnlyListEntry(void* pEntry)
+void* LEMBALL_FASTCALL InitializeZrleOnlyListEntry(void* pEntry)
 {
-	char* pBytes;
-
-	pBytes = (char*) pEntry;
-	*(short*) (pBytes + 0x4a) = 0;
-	InitializeTypedResourceObjectBaseVtable(pEntry);
-	*(short*) (pBytes + 0x48) = 0;
-	*(int*) (pBytes + 0x18) = 0;
-	*(short*) (pBytes + 0x4e) = 0;
-	*(void**) pEntry = g_GAME_ZrleResourceVtableStorage;
-	*(short*) (pBytes + 0x4c) = 0;
-	*(short*) (pBytes + 0x52) = 0;
-	*(short*) (pBytes + 0x50) = 0;
+	*(short*) ((char*) pEntry + 0x4a) = 0;
+	*(void* volatile*) pEntry = g_MOGLOAD_CachedResourceObjectBaseVtable;
+	*(short*) ((char*) pEntry + 0x48) = 0;
+	*(int*) ((char*) pEntry + 0x18) = 0;
+	*(short*) ((char*) pEntry + 0x4e) = 0;
+	*(void* volatile*) pEntry = g_MOGLOAD_TypedResourceObjectVtable;
+	*(short*) ((char*) pEntry + 0x4c) = 0;
+	*(void* volatile*) pEntry = g_GAME_ZrleResourceVtableStorage;
+	*(short*) ((char*) pEntry + 0x52) = 0;
+	*(short*) ((char*) pEntry + 0x50) = 0;
 	ResetTypedResourceObjectState(pEntry);
+	return pEntry;
 }
 
 // FUNCTION: LEMBALL 0x0045e840

@@ -150,7 +150,8 @@ void* g_MOGLOAD_CachedResourceObjectBaseVtable[15] = {
 	(void*) ClearResourceTypeTag,
 	(void*) GetField28GetMemorySize,
 };
-static void* g_MOGLOAD_TypedResourceObjectVtable[15] = {
+// GLOBAL: LEMBALL 0x00498ab0
+void* g_MOGLOAD_TypedResourceObjectVtable[15] = {
 	(void*) DeleteTypedResourceObject,
 	(void*) CopyBufferIntoTypedResourceObjectAndParse,
 	(void*) ParseIntResourceDescriptor,
