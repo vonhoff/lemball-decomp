@@ -731,7 +731,7 @@ struct VsNetEffTransportRuntimeState {
 
 	void* ConstructEffTransportRuntimeState(void);
 	void InitializeFileBasedNetworkTransport(void);
-	unsigned int GetNetworkRuntimeTimerId(void);
+	void ShutdownFileBasedNetworkTransport(void);
 	void ServiceFileBasedNetworkTransport(void);
 	void WaitForFileBasedNetworkMessage(void);
 	void* CreateFileBasedChannelOwner(void);
@@ -790,7 +790,7 @@ struct VsNetEffTransportRuntimeStateVtable {
 	void* (VsNetEffTransportRuntimeState::*m_pDelete)(BYTE);
 	int (VsNetEffTransportRuntimeState::*m_pProcess)(VsNetEffDispatchEvent*);
 	void (VsNetEffTransportRuntimeState::*m_pInitializeTransport)(void);
-	unsigned int (VsNetEffTransportRuntimeState::*m_pGetTimerId)(void);
+	void (VsNetEffTransportRuntimeState::*m_pShutdownTransport)(void);
 	void (VsNetEffTransportRuntimeState::*m_pCleanupRuntimeState)(void);
 	int (VsNetEffTransportRuntimeState::*m_pLoadFileRange)(void);
 	int (VsNetEffTransportRuntimeState::*m_pWriteFileRange)(void);
@@ -826,7 +826,7 @@ static VsNetEffTransportRuntimeStateVtable g_NETWORK_FileBasedRuntimeStateVtable
 	&VsNetEffTransportRuntimeState::DeleteEffTransportRuntimeWindow,
 	&VsNetEffTransportRuntimeState::ProcessEffTransportDispatchEvent,
 	&VsNetEffTransportRuntimeState::InitializeFileBasedNetworkTransport,
-	&VsNetEffTransportRuntimeState::GetNetworkRuntimeTimerId,
+	&VsNetEffTransportRuntimeState::ShutdownFileBasedNetworkTransport,
 	&VsNetEffTransportRuntimeState::CleanupEffTransportRuntimeState,
 	&VsNetEffTransportRuntimeState::LoadActiveFileRange,
 	&VsNetEffTransportRuntimeState::WriteActiveFileRange,
@@ -837,8 +837,7 @@ static VsNetEffTransportRuntimeStateVtable g_NETWORK_FileBasedRuntimeStateVtable
 	&VsNetEffTransportRuntimeState::WaitForFileBasedNetworkMessage,
 };
 
-/* Raw table 0049A2A8: TCPIP state dispatch.  Slot +10 is teardown, whereas
- * the file table's slot +10 returns the timer id. */
+/* Raw table 0049A2A8: TCPIP state dispatch. */
 struct VsNetTcpipRuntimeStateVtable {
 	void* m_pReserved00;
 	void* (VsNetEffTransportRuntimeState::*m_pDelete)(BYTE);
@@ -3988,9 +3987,9 @@ void VsNetEffTransportRuntimeState::InitializeFileBasedNetworkTransport(void)
 }
 
 // FUNCTION: LEMBALL 0x0046f730
-unsigned int VsNetEffTransportRuntimeState::GetNetworkRuntimeTimerId(void)
+void VsNetEffTransportRuntimeState::ShutdownFileBasedNetworkTransport(void)
 {
-	return m_nTimerId64;
+	KillTimer(*(HWND*) ((char*) this - 0x0c), m_nTimerId64);
 }
 
 // FUNCTION: LEMBALL 0x0046f740
