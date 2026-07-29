@@ -823,6 +823,7 @@ static void* g_NETWORK_RuntimeConstructionStateVtable[14] = {
 	(void*) NetworkSafeVtableNoop,
 };
 
+// GLOBAL: LEMBALL 0x00499ff8
 static VsNetEffTransportRuntimeStateVtable g_NETWORK_FileBasedRuntimeStateVtable = {
 	(void*) InitializeNonZrleVariantRenderEntry,
 	&VsNetEffTransportRuntimeState::DeleteEffTransportRuntimeWindow,
