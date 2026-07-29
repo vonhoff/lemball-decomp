@@ -3996,11 +3996,9 @@ unsigned int VsNetEffTransportRuntimeState::GetNetworkRuntimeTimerId(void)
 // FUNCTION: LEMBALL 0x0046f740
 void VsNetRuntimeWindowBase::ScheduleNetworkRuntimeTimerEvent(UINT nMilliseconds)
 {
-	VsInitFormattedOutputStream* pStream;
-
-	pStream = g_pStatusOutputStream->AppendCStringToStream("Setting next timer event to ");
-	pStream->AppendUnsignedIntToStreamVariant(nMilliseconds);
-	pStream->AppendCStringToStream("ms from now\n");
+	g_pStatusOutputStream->AppendCStringToStream("Setting next timer event to ")
+		->AppendUIntToStream(nMilliseconds)
+		->AppendCStringToStream("ms from now\n");
 
 	KillTimer(*(HWND*) ((char*) this + 4), *(unsigned int*) ((char*) this + 0x74));
 	*(unsigned int*) ((char*) this + 0x74) =
