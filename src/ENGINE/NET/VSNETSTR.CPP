@@ -819,7 +819,7 @@ int WINAPI InitializeNonZrleVariantRenderEntry(int nValue)
 // FUNCTION: LEMBALL 0x0047b860
 void VsNetEffStreamBase::DestroyEffStreamBaseThunk(void)
 {
-	this->~VsNetEffStreamBase();
+	this->VsNetEffStreamBase::~VsNetEffStreamBase();
 }
 
 void* LEMBALL_FASTCALL DeleteEffStreamChannelStateAuto(void* pObject, void*, BYTE fDelete)
