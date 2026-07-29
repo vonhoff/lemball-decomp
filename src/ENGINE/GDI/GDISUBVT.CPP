@@ -214,6 +214,14 @@ void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot6(void*)
 {
 }
 
+// FUNCTION: LEMBALL 0x00473730
+void LEMBALL_FASTCALL DestroyListCharEntryTable(void* pObject)
+{
+	*(void**) pObject = &g_VSGDI_ResourceGeometryRowBufferVtable[4];
+	FreeVSMemBlock(*(void**) ((char*) pObject + 4));
+	*(void**) pObject = &g_VSGDI_ResourceGeometryRowBufferVtable[8];
+}
+
 // FUNCTION: LEMBALL 0x00473750
 void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot4(void*)
 {
