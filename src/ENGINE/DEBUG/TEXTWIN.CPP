@@ -10,12 +10,15 @@ DECOMP_SIZE_ASSERT(CTextWindow, 0x58);
 
 static const char g_PLATFORM_DebugWindowTitle[] = "Debug Window";
 
-// GLOBAL: LEMBALL 0x004a2b7c
+// GLOBAL: LEMBALL 0x004a29f0
 CTextWindow* g_pDebugTextWindow = 0;
 static HACCEL g_hDebugWindowAccelerators = 0;
 static void* g_CTextWindowVTable[2] = {(void*) NetworkSafeVtableNoop, (void*) NetworkSafeVtableNoop};
 extern HANDLE g_hDebugSyncEvent;
 extern void __cdecl ShowFatalGetLastErrorMessageAndExit(const char* pszMessage);
+
+// GLOBAL: LEMBALL 0x004a2b7c
+int g_fDebugTextWindowActive = 0;
 
 class CTextWindowSyncInterface {
 public:
@@ -63,7 +66,7 @@ void CTextWindow::PostAllocatedTextControlString(const char* pszText, unsigned i
 	unsigned int cchText;
 
 	((CTextWindowSyncInterface*) this)->BeginUpdate();
-	if (g_pDebugTextWindow == 0) {
+	if (g_fDebugTextWindowActive == 0) {
 		return;
 	}
 	cchText = (unsigned int) strlen(pszText) + 1;

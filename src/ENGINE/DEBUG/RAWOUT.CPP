@@ -8,20 +8,22 @@ extern CTextWindow* g_pDebugTextWindow;
 
 __inline static int RawOutputString(const char* pszText, const char* pszPreservedName, unsigned int dwColour)
 {
+	CTextWindow* pTextWindow;
+
 	if (g_fSubsystemsReady == 0) {
 		MessageBoxA(0, pszText, pszPreservedName, 0);
 		return 1;
 	}
 
-	if (g_pDebugTextWindow != 0) {
-		g_pDebugTextWindow->PostAllocatedTextControlString(pszText, dwColour);
-		return g_pDebugTextWindow != 0;
+	pTextWindow = g_pDebugTextWindow;
+	if (pTextWindow != 0) {
+		pTextWindow->PostAllocatedTextControlString(pszText, dwColour);
 	}
-
-	if (g_fDebugFileEnabled != 0) {
+	else if (g_fDebugFileEnabled != 0) {
 		AppendStringToDebugOutFile(pszText);
 	}
-	return g_pDebugTextWindow != 0;
+	pTextWindow = g_pDebugTextWindow;
+	return pTextWindow != 0;
 }
 
 // FUNCTION: LEMBALL 0x00472910

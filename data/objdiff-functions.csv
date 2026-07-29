@@ -2826,9 +2826,6 @@ address,size,name,unit
 0x00472760,5,clear_helper_backing_border_rows,ENGINE/GDI/VSGDI.CPP
 0x004727B0,245,finalize_startup_graphics_driver_config,SHELL/OPTIONS.CPP
 0x004728B0,96,append_string_to_debug_out_file,ENGINE/CORE/VSINIT.CPP
-0x00472910,108,rawout_debug_string,ENGINE/DEBUG/RAWOUT.CPP
-0x00472980,108,rawout_error_string,ENGINE/DEBUG/RAWOUT.CPP
-0x004729F0,108,rawout_sys_string,ENGINE/DEBUG/RAWOUT.CPP
 0x00472A60,163,translate_keyboard_render_queue_entry,ENGINE/CORE/VSINIT.CPP
 0x00472B10,195,debug_message_thread_main,ENGINE/DEBUG/TEXTWIN.CPP
 0x00472BE0,129,initialize_debug_message_thread,ENGINE/CORE/VSINIT.CPP
