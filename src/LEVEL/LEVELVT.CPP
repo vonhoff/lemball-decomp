@@ -2145,9 +2145,7 @@ struct LevelVtSmallFunctionView {
 	void SetRectFromBounds(int nLeft, int nTop, int nRight, int nBottom);
 	void AppendProjectilePoolObject(void* pObject);
 	void* GetProjectileGeometryRotatedPair(int nIndex);
-	void CopyGmobChunkObjectCurrentPosition(int* pPoint);
 	void GetManagedEntityInteractionPoint(int* pPoint);
-	void CopyGmobChunkObjectCurrentPositionVariant(int* pPoint);
 	void SwapObjectChildSlots128(int iFirst, int iSecond);
 	void GetTileFlag1cObjectRenderPoint(int* pPoint);
 };
@@ -2222,24 +2220,10 @@ void* LevelVtSmallFunctionView::GetProjectileGeometryRotatedPair(int nIndex)
 	return (char*) this + 0xc0 + nIndex * 8;
 }
 
-void LevelVtSmallFunctionView::CopyGmobChunkObjectCurrentPosition(int* pPoint)
-{
-	pPoint[0] = *(int*) ((char*) this + 0x9c);
-	pPoint[1] = *(int*) ((char*) this + 0xa0);
-	pPoint[2] = *(int*) ((char*) this + 0xa4);
-}
-
 void LevelVtSmallFunctionView::GetManagedEntityInteractionPoint(int* pPoint)
 {
 	pPoint[1] = *(int*) ((char*) this + 0xa0) - 0x8000;
 	pPoint[0] = *(int*) ((char*) this + 0x9c) - 0x30000;
-	pPoint[2] = *(int*) ((char*) this + 0xa4);
-}
-
-void LevelVtSmallFunctionView::CopyGmobChunkObjectCurrentPositionVariant(int* pPoint)
-{
-	pPoint[0] = *(int*) ((char*) this + 0x9c);
-	pPoint[1] = *(int*) ((char*) this + 0xa0);
 	pPoint[2] = *(int*) ((char*) this + 0xa4);
 }
 
