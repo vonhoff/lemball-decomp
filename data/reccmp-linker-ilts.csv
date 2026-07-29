@@ -105,6 +105,7 @@ address,name,symbol,type,source
 0x0040240A,ActivateManagedEntityGroupChildren,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040243C,LevelChunkObjectRuntimeStateView::ClearStateFieldsThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402446,clear_managed_entity_child_pending_state_if_interruptible,?clear_managed_entity_child_pending_state_if_interruptible@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
+0x00402496,LiftChunkManagerSerializationView::SerializeLiftChunkEndpointPairs,?SerializeLiftChunkEndpointPairs@LiftChunkManagerSerializationView@@QAEHPAULiftChunkEndpointPair@@@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402518,ActivateLiftChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040252C,VsNetNetworkLobbyScreen::ShowPlayerEntries,?ShowPlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
 0x0040253B,RefreshActivePgunChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
@@ -151,6 +152,7 @@ address,name,symbol,type,source
 0x00402B1C,RestoreReconstructedLevelScreenVtablesAutoThunk,,stub,src/GAME.CPP
 0x00402B76,DeleteNetworkLobbySelectedPeerStatusStream,,stub,src/ENGINE/MEDIA/EFFSTRM.H
 0x00402BE9,DestroyGmobChunkType14ObjectAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
+0x00402C5C,LiftChunkManagerSerializationView::GetLiftChunkObjectSlotIdByIndex,?GetLiftChunkObjectSlotIdByIndex@LiftChunkManagerSerializationView@@QAEGH@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402C75,return_zero_level_callback_0042eec0,?return_zero_level_callback_0042eec0@@YGHPAX0@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402CA2,DestroyCaptureTriggerChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402CD4,RemoveCachedChunkObjectAndDestroy,,stub,src/ENGINE/CORE/LINKSCF.H

@@ -17,6 +17,27 @@
 
 extern "C" DWORD WINAPI timeGetTime(void);
 
+struct LiftChunkEndpointPoint {
+	short m_x;
+	short m_y;
+	short m_z;
+};
+
+struct LiftChunkEndpointPair {
+	LiftChunkEndpointPoint m_Start;
+	LiftChunkEndpointPoint m_End;
+};
+
+struct LiftChunkManagerSerializationView {
+	int SerializeLiftChunkEndpointPairs(LiftChunkEndpointPair* pPairs);
+	unsigned short GetLiftChunkObjectSlotIdByIndex(int iObject);
+};
+
+struct LevelModeLiftManagerOwnerView {
+	int SerializeLiftChunkEndpointPairs(LiftChunkEndpointPair* pPairs);
+	unsigned short GetLiftChunkObjectSlotIdByIndex(int iObject);
+};
+
 extern int g_nLevelFrameClockTick;
 int g_nNetworkFrameClockLatestTimeMs = 0;
 int g_nLevelFrameClockLastSampleMs = 0;
@@ -1434,6 +1455,13 @@ int LEMBALL_FASTCALL HasPlasChunkDirtyManagedChildren(void* pObject)
 	return ((LevelManagedEntityActiveGroupView*) *(void**) ((char*) pObject + 0x15c))->HasDirtyChildrenThunk();
 }
 
+// FUNCTION: LEMBALL 0x00412e60
+int LevelModeLiftManagerOwnerView::SerializeLiftChunkEndpointPairs(LiftChunkEndpointPair* pPairs)
+{
+	return ((LiftChunkManagerSerializationView*) *(void**) ((char*) this + 0x18c))
+		->SerializeLiftChunkEndpointPairs(pPairs);
+}
+
 // FUNCTION: LEMBALL 0x00412f00
 void* LEMBALL_FASTCALL GetLevelGameModeOwner(void* pLevelMode)
 {
@@ -1490,6 +1518,13 @@ void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode)
 		} while ((int) i < (int) cManagedEntities);
 	}
 	DispatchType14CountedChildSlotC4Thunk(*(int*) (nLevelMode + 0x158));
+}
+
+// FUNCTION: LEMBALL 0x00413020
+unsigned short LevelModeLiftManagerOwnerView::GetLiftChunkObjectSlotIdByIndex(int iObject)
+{
+	return ((LiftChunkManagerSerializationView*) *(void**) ((char*) this + 0x18c))
+		->GetLiftChunkObjectSlotIdByIndex(iObject);
 }
 
 // FUNCTION: LEMBALL 0x00413040

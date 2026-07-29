@@ -1289,6 +1289,61 @@ LinkScfLiftChunkManagerView* LinkScfLiftChunkManagerView::ConstructLiftChunkMana
 	return this;
 }
 
+extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
+
+struct LiftChunkEndpointPoint {
+	short m_x;
+	short m_y;
+	short m_z;
+};
+
+struct LiftChunkEndpointPair {
+	LiftChunkEndpointPoint m_Start;
+	LiftChunkEndpointPoint m_End;
+};
+
+struct LiftChunkManagerSerializationView {
+	int SerializeLiftChunkEndpointPairs(LiftChunkEndpointPair* pPairs);
+	unsigned short GetLiftChunkObjectSlotIdByIndex(int iObject);
+};
+
+struct LiftManagedEntitySlotView {
+	inline unsigned short GetManagedEntitySlotId(void)
+	{
+		return GetManagedEntitySlotIdThunk((int) (unsigned long) this);
+	}
+};
+
+// FUNCTION: LEMBALL 0x00425830
+int LiftChunkManagerSerializationView::SerializeLiftChunkEndpointPairs(LiftChunkEndpointPair* pPairs)
+{
+	int nObjectOffset;
+	int i;
+	char* pObject;
+
+	nObjectOffset = 0;
+	i = 0;
+	if (*(int*) ((char*) this + 0x34) > 0) {
+		do {
+			pObject = *(char**) ((char*) this + 0x3c) + nObjectOffset;
+			++i;
+			nObjectOffset += 0x190;
+			pPairs->m_Start = *(LiftChunkEndpointPoint*) (pObject + 0x13a);
+			pPairs->m_End = *(LiftChunkEndpointPoint*) (pObject + 0x140);
+			++pPairs;
+		} while (i < *(int*) ((char*) this + 0x34));
+	}
+	return *(int*) ((char*) this + 0x34);
+}
+
+// FUNCTION: LEMBALL 0x00425f90
+unsigned short LiftChunkManagerSerializationView::GetLiftChunkObjectSlotIdByIndex(int iObject)
+{
+	if (*(int*) ((char*) this + 0x34) <= iObject) {
+		return 0xffff;
+	}
+	return ((LiftManagedEntitySlotView*) (*(char**) ((char*) this + 0x3c) + iObject * 0x190))->GetManagedEntitySlotId();
+}
 extern void* g_LINKSCF_RockChunkObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x004267d0
