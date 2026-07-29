@@ -2049,6 +2049,14 @@ void __fastcall set_move_chunk_object_trigger_latch(void* pObject)
 	*(int*) ((char*) pObject + 0x148) = 1;
 }
 
+// FUNCTION: LEMBALL 0x0042eec0
+int PASCAL return_zero_level_callback_0042eec0(void* pUnused1, void* pUnused2)
+{
+	(void) pUnused1;
+	(void) pUnused2;
+	return 0;
+}
+
 // FUNCTION: LEMBALL 0x0042f2e0
 void __fastcall reset_move_chunk_object_count(void* pManager)
 {
@@ -2115,13 +2123,6 @@ void noop_network_lobby_vsnet_runtime_slot_3(void)
 // FUNCTION: LEMBALL 0x00456600
 void noop_callback_00456600(void)
 {
-}
-
-int PASCAL return_zero_level_callback_0042eec0(void* pUnused1, void* pUnused2)
-{
-	(void) pUnused1;
-	(void) pUnused2;
-	return 0;
 }
 
 struct LevelTwoDwordPairVariantView {

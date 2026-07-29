@@ -134,6 +134,7 @@ address,name,symbol,type,source
 0x00402B1C,RestoreReconstructedLevelScreenVtablesAutoThunk,,stub,src/GAME.CPP
 0x00402B76,DeleteNetworkLobbySelectedPeerStatusStream,,stub,src/ENGINE/MEDIA/EFFSTRM.H
 0x00402BE9,DestroyGmobChunkType14ObjectAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
+0x00402C75,return_zero_level_callback_0042eec0,?return_zero_level_callback_0042eec0@@YGHPAX0@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402CA2,DestroyCaptureTriggerChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402CD4,RemoveCachedChunkObjectAndDestroy,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402D42,RemoveInvsTrackedEntitiesOutsideBounds,?RemoveInvsTrackedEntitiesOutsideBounds@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCFINVS.CPP

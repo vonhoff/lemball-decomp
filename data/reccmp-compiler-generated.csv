@@ -89,7 +89,6 @@ address,name,symbol,type,source
 0x0042BA10,DeleteTramChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x0042C9B0,DeletePgunChunkManagerAuto,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0042E4D0,DeleteIceChunkManagerAuto,,synthetic,src/LEVEL/LEVELVT.CPP
-0x0042EEC0,return_zero_level_callback_0042eec0,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0042FBA0,DeleteMoveChunkManagerAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00430A50,LevelViewRotationTransformAuto::TransformScreenToTile,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00432350,DeleteQueuedRenderPointSinkWrapperAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
