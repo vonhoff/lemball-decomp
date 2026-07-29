@@ -195,10 +195,13 @@ VsNetEffStreamCommon::~VsNetEffStreamCommon()
 // FUNCTION: LEMBALL 0x0045ef10
 void VsNetEffStreamBase::WriteEffStreamU32BE(unsigned int nValue)
 {
-	*(unsigned char*) (m_nReserved1c + 3) = (unsigned char) nValue;
-	*(unsigned char*) (m_nReserved1c + 2) = (unsigned char) (nValue >> 8);
-	*(unsigned char*) (m_nReserved1c + 1) = (unsigned char) (nValue >> 16);
-	*(unsigned char*) m_nReserved1c = (unsigned char) (nValue >> 24);
+	const unsigned char* pValue;
+
+	pValue = (const unsigned char*) &nValue;
+	*(unsigned char*) (m_nReserved1c + 3) = pValue[0];
+	*(unsigned char*) (m_nReserved1c + 2) = pValue[1];
+	*(unsigned char*) (m_nReserved1c + 1) = pValue[2];
+	*(unsigned char*) m_nReserved1c = pValue[3];
 	m_nReserved1c += 4;
 }
 
