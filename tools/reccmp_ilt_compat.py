@@ -13,10 +13,13 @@ ILT_LAST_ENTRY = 0x0040388C
 # These original vtable entries are linker thunks to reconstructed virtual
 # methods, while manual compatibility tables still need the thunk identities.
 VTABLE_METHOD_ILTS = {
+    0x00401217,  # ManagedEntityPacket25::ReverseEffStreamPayload
     0x00401451,  # VsNetEffStreamCommon::NoopEffStream
     0x00401564,  # VsNetEffStreamCommon::AcceptEffStreamArgument
     0x00401730,  # ManagedEntityPacketBase::WriteEffStreamTaggedHeader
+    0x00401852,  # ManagedEntityPacket25 scalar deleting destructor
     0x004018C5,  # ManagedEntityStateResetPacket scalar deleting destructor
+    0x00401C94,  # ManagedEntityPacket25::WriteEffStreamTaggedHeader
     0x0040217B,  # ManagedEntityPacketBase::ReverseEffStreamPayload
     0x004025B3,  # ManagedEntityPacket26::ReverseEffStreamPayload
     0x004026AD,  # VsNetEffStreamCommon::AcceptEffStream
@@ -68,6 +71,11 @@ THUNK_ILT_REFERENCES = {
         0x00402103,
         "LevelChunkObjectBaseView::InitializeLevelChunkObjectBase",
         "level chunk object base initializer 0041dda0",
+    ),
+    0x00416CC0: (
+        0x00402F22,
+        "LevelVtSmallFunctionView::AddLevelScoreClamped",
+        "level score clamp target 00413390",
     ),
     0x0040AC60: (
         0x004016FE,

@@ -13,6 +13,7 @@ address,name,symbol,type,source
 0x004011AE,ManagedEntityChildView::SetManagedEntityOwnerGroup,?SetManagedEntityOwnerGroup@ManagedEntityChildView@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004011DB,DestroyDoorChunkObjectAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00401212,DestroyTramChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
+0x00401217,ManagedEntityPacket25::ReverseEffStreamPayload,?ReverseEffStreamPayload@ManagedEntityPacket25@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x0040126C,LevelChunkStreamWriteView::AppendLevelChunkStreamPayload,?AppendLevelChunkStreamPayload@LevelChunkStreamWriteView@@QAEXPAUVsNetEffStreamBase@@@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x00401271,DestroyLevelGameModeAutoThunk,,stub,src/GAME.CPP
 0x004012A3,ProjectilePool::RemoveObject,?RemoveObject@ProjectilePool@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
@@ -54,6 +55,7 @@ address,name,symbol,type,source
 0x00401BC2,DeleteMenuSelectorEntryThunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401BEA,ResetProjectilePool,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401C49,DeleteRegisteredRenderSlotArrayAuto,,stub,src/GAME.H
+0x00401C94,ManagedEntityPacket25::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacket25@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00401C9E,DeleteMenuSelectorManagerThunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401CAD,EmitRockChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401CBC,RemoveOwnerChildIfNoNestedEntries,,stub,src/ENGINE/CORE/LINKSCF.H
