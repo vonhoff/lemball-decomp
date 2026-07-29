@@ -243,7 +243,8 @@ void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntryThunk(void* pObject, int nU
 void* LEMBALL_FASTCALL DeleteBaseModeObjectAdjusted(void* pObject, int nUnusedEdx, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteBaseModeObjectAdjustedThunk(void* pObject, int nUnusedEdx, BYTE fDelete);
 int LEMBALL_FASTCALL HandleBaseModeActionButtonEventThunk(void* pClient, int nUnused, void* pEvent);
-static void* g_LEVEL_CompositePointRectSinkEntryCompilerState[8] = {
+// GLOBAL: LEMBALL 0x00497928
+static void* g_LEVEL_CompositePointRectSinkEntryVtable[8] = {
 	(void*) DeleteFramedScreenRenderChildEntryThunk,
 	(void*) QueueFramedScreenRenderEntryThunk,
 	(void*) FinalizeFramedScreenRenderEntryThunk,
@@ -581,7 +582,8 @@ void LEMBALL_FASTCALL FinalizeFramedScreenRenderEntryThunk(void* pObject, int, v
 void LEMBALL_FASTCALL RestoreLevelSelectionPointSinkFinalizeVtable(void* pObject);
 void LEMBALL_FASTCALL DispatchStatusIndicatorPointSinkThunk004025AE(void* pObject, int, void* pContext);
 void* LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(void* pObject);
-void* InitializeLevelSelectionPointRectSinkEntry(void* pObject);
+void* LEMBALL_FASTCALL InitializeLevelSelectionPointRectSinkEntry(void* pObject);
+void* LEMBALL_FASTCALL InitializeLevelSelectionPointRectSinkEntryThunk(void* pObject);
 void LEMBALL_FASTCALL QueueFramedScreenRenderEntryThunk(void* pObject, int, void* pQueue);
 void LEMBALL_FASTCALL NoopPackagedSpriteRenderEntryThunk00402A22(void* pUnused);
 void LEMBALL_FASTCALL DispatchPackagedSpriteRenderEntryThunk00402A8B(void* pObject, int, void* pContext);
@@ -917,21 +919,9 @@ void* LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(void* pObject)
 {
 	return InitializePackagedSpriteRenderEntry(pObject);
 }
-// LINKERILT: LEMBALL 0x00402784
-void* InitializeLevelSelectionPointRectSinkEntry(void* pObject)
+void* LEMBALL_FASTCALL InitializeLevelSelectionPointRectSinkEntryThunk(void* pObject)
 {
-	int* pEntry;
-
-	pEntry = (int*) pObject;
-	*(void**) pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
-	*(unsigned short*) ((char*) pEntry + 6) = 0;
-	*(unsigned short*) (pEntry + 1) = 0;
-	*(void**) pEntry = g_LEVEL_CompositePointRectSinkEntryInitVtable;
-	*(unsigned short*) ((char*) pEntry + 10) = 0;
-	*(unsigned short*) (pEntry + 2) = 0;
-	*(unsigned short*) ((char*) pEntry + 0xe) = 0;
-	*(unsigned short*) (pEntry + 3) = 0;
-	return pObject;
+	return InitializeLevelSelectionPointRectSinkEntry(pObject);
 }
 // LINKERILT: LEMBALL 0x004029a5
 short LevelTileRenderDescriptor::SampleHeightOffsetThunk(int nLocalX, int nLocalY)
@@ -4136,7 +4126,7 @@ void* ConstructLevelScreenStatusIndicatorManager(void* pObject, int nStatusMode,
 		InitializeFramedScreenRenderChildEntry((char*) pManager + 0x9c + i * 0x24);
 	}
 	for (i = 0; i < 1; ++i) {
-		InitializeLevelSelectionPointRectSinkEntry((char*) pManager + 0xc0 + i * 0x1c);
+		InitializeLevelSelectionPointRectSinkEntryThunk((char*) pManager + 0xc0 + i * 0x1c);
 	}
 	for (i = 0; i < 1; ++i) {
 		InitializePackagedSpriteRenderEntry((char*) pManager + 0xe0 + i * 0x10);
@@ -4294,6 +4284,23 @@ void LEMBALL_FASTCALL SetStatusIndicatorLoadProgress0044B340(void* pObject, int,
 // FUNCTION: LEMBALL 0x0044b360
 void LEMBALL_FASTCALL noop_level_status_callback(void*)
 {
+}
+
+// FUNCTION: LEMBALL 0x0044b5f0
+void* LEMBALL_FASTCALL InitializeLevelSelectionPointRectSinkEntry(void* pObject)
+{
+	int* pEntry;
+
+	pEntry = (int*) pObject;
+	*(void**) pEntry = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
+	*(unsigned short*) ((char*) pEntry + 6) = 0;
+	*(unsigned short*) (pEntry + 1) = 0;
+	*(void**) pEntry = g_LEVEL_CompositePointRectSinkEntryVtable;
+	*(unsigned short*) ((char*) pEntry + 10) = 0;
+	*(unsigned short*) (pEntry + 2) = 0;
+	*(unsigned short*) ((char*) pEntry + 0xe) = 0;
+	*(unsigned short*) (pEntry + 3) = 0;
+	return pObject;
 }
 
 // FUNCTION: LEMBALL 0x0044b630

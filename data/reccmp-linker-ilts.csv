@@ -128,6 +128,7 @@ address,name,symbol,type,source
 0x00402743,DestroyIceChunkManagerAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x0040275C,GetFirstIteratedChildStatus11C,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402770,DemoLevelDemoPlaybackController::DestroyLevelDemoPlaybackControllerThunk,,stub,src/LEVEL/DEMO.CPP
+0x00402784,InitializeLevelSelectionPointRectSinkEntryThunk,?InitializeLevelSelectionPointRectSinkEntryThunk@@YIPAXPAX@Z,stub,src/LEVEL/LEVELSTAT.CPP
 0x004027E8,AppendCachedChunkObject,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004027FC,ReadNetworkLobbyPeerEntryStream,,stub,src/ENGINE/MEDIA/EFFSTRM.H
 0x00402856,return_zero_vtable_callback_0042dd30,,stub,src/ENGINE/CORE/LINKSCF.H

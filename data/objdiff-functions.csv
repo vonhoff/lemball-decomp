@@ -1516,7 +1516,7 @@ address,size,name,unit
 0x0044B340,29,set_level_selection_mode_field_0x20_and_present,LEVEL/LEVELSTAT.CPP
 0x0044B360,1,noop_level_status_callback,LEVEL/LEVELSTAT.CPP
 0x0044B5D0,14,clear_two_word_point,LEVEL/LEVELVT.CPP
-0x0044B5F0,41,initialize_level_selection_point_rect_sink_entry,LEVEL/LEVELVT.CPP
+0x0044B5F0,41,initialize_level_selection_point_rect_sink_entry,LEVEL/LEVELSTAT.CPP
 0x0044B630,7,restore_level_selection_point_sink_finalize_vtable,LEVEL/LEVELSTAT.CPP
 0x0044B640,24,initialize_fixed12_2d_vector_from_pixels,ENGINE/CORE/VSMATH.CPP
 0x0044B660,42,add_fixed12_2d_vectors,ENGINE/CORE/VSMATH.CPP
