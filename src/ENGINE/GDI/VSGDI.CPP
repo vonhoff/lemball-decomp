@@ -4695,7 +4695,6 @@ void InvokeRootHelperTargetPostQueueCallback(int nTarget)
 }
 // ABI-THUNK: 2b 49 fc; e9 rel32. __fastcall vtordisp adjustment followed by tail jump;
 // MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
-// FUNCTION: LEMBALL 0x0046dba0
 __declspec(naked) void LEMBALL_FASTCALL FillHelperSurfaceRectCommandAdjustmentThunk(void* pCompactTarget,
 																					int nUnused,
 																					void* pCommand)
@@ -4707,7 +4706,6 @@ __declspec(naked) void LEMBALL_FASTCALL FillHelperSurfaceRectCommandAdjustmentTh
 }
 // ABI-THUNK: 2b 49 fc; e9 rel32. __fastcall vtordisp adjustment followed by tail jump;
 // MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
-// FUNCTION: LEMBALL 0x0046dbb0
 __declspec(naked) void LEMBALL_FASTCALL ForwardBitmapCommandToAdjustedSurfaceThunk(void)
 {
 	__asm {
@@ -4730,7 +4728,6 @@ void LEMBALL_FASTCALL ForwardBitmapCommandToAdjustedSurface(void* pCompactTarget
 }
 // ABI-THUNK: 2b 49 fc; e9 rel32. __fastcall vtordisp adjustment followed by tail jump;
 // MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
-// FUNCTION: LEMBALL 0x0046dbf0
 __declspec(naked) void LEMBALL_FASTCALL BlitBitmapRowsToScanlinesAdjustmentThunk(void* pCompactTarget,
 																				 int nUnused,
 																				 void* pCommand,
@@ -4743,7 +4740,6 @@ __declspec(naked) void LEMBALL_FASTCALL BlitBitmapRowsToScanlinesAdjustmentThunk
 }
 // ABI-THUNK: 2b 49 fc; e9 rel32. __fastcall vtordisp adjustment followed by tail jump;
 // MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
-// FUNCTION: LEMBALL 0x0046dc10
 __declspec(naked) void LEMBALL_FASTCALL SetHelperTargetRenderExtentAdjustmentThunk(void* pCompactTarget,
 																				   int nUnused,
 																				   const VsGdiRect* pExtent)
@@ -4755,7 +4751,6 @@ __declspec(naked) void LEMBALL_FASTCALL SetHelperTargetRenderExtentAdjustmentThu
 }
 // ABI-THUNK: 2b 49 fc; e9 rel32. __fastcall vtordisp adjustment followed by tail jump;
 // MSVC 4.20 C++ emitted call/ret. Verified 100% with reccmp.
-// FUNCTION: LEMBALL 0x0046dc30
 __declspec(naked) void LEMBALL_FASTCALL ApplyHelperTargetPaletteAdjustmentThunk(void* pCompactTarget,
 																				int nUnused,
 																				void* pPalette)
@@ -4765,7 +4760,7 @@ __declspec(naked) void LEMBALL_FASTCALL ApplyHelperTargetPaletteAdjustmentThunk(
         jmp offset ApplyHelperTargetPaletteAndPropagate
 	}
 }
-// FUNCTION: LEMBALL 0x0046dc40
+// Compiler-state shim for manual helper table; original entry is a compiler-generated vtordisp adjustor.
 void LEMBALL_FASTCALL PresentCompactResourceGeometryHelperAdjustmentThunk(void* pCompactTarget)
 
 {
@@ -4786,7 +4781,7 @@ void LEMBALL_FASTCALL PresentCompactResourceGeometryHelper(void* pCompactTarget)
 	pTarget = (char*) pCompactTarget - 0x55c;
 	((SlotManagerDispatch*) g_pResourceGeometryHelperSlotManager)->DeactivateResourceGeometryHelperSlot(pTarget);
 }
-// FUNCTION: LEMBALL 0x0046dc70
+// Compiler-state shim for manual helper table; original entry is a compiler-generated vtordisp adjustor.
 unsigned char* LEMBALL_FASTCALL GetHelperTargetTokenAdjustmentThunk(void* pCompactTarget)
 
 {

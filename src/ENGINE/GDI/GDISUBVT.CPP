@@ -31,12 +31,10 @@ __inline static void MergeCompactHelperRect(short* pTarget, const short* pEntry)
 
 // These small entries are compiler-generated adjustor and interface thunks.
 
-// FUNCTION: LEMBALL 0x0046db40
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot0(void*)
 {
 }
 
-// FUNCTION: LEMBALL 0x0046db50
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot1(void* pObject, int, void* pEntryObject)
 {
 	char* pCompactTarget;
@@ -77,27 +75,22 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot1(void* pObject, int, void* pEnt
 	}
 }
 
-// FUNCTION: LEMBALL 0x0046db60
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot2(void*)
 {
 }
 
-// FUNCTION: LEMBALL 0x0046db70
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot3(void*)
 {
 }
 
-// FUNCTION: LEMBALL 0x0046db80
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot4(void*)
 {
 }
 
-// FUNCTION: LEMBALL 0x0046db90
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot5(void*)
 {
 }
 
-// FUNCTION: LEMBALL 0x0046dc00
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot9(void* pObject, int, void* pEntryObject, void* pFrameObject)
 {
 	typedef unsigned char*(LEMBALL_FASTCALL * GetDataProc)(void*, int);
@@ -186,7 +179,6 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot9(void* pObject, int, void* pEnt
 	}
 }
 
-// FUNCTION: LEMBALL 0x0046dc20
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot11(void*)
 {
 }

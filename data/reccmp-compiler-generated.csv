@@ -218,6 +218,21 @@ address,name,symbol,type,source
 0x0046B3B0,GameCursorRenderClientAuto::SetListResourceEntry,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x0046DAF0,StatusPoint2DView::Set,,synthetic,src/ENGINE/GDI/GDISTATUSVT.CPP
 0x0046DB10,GdiPoint2DView::Copy,,synthetic,src/ENGINE/GDI/GDIVT.CPP
+0x0046DB40,CompactHelperSubobjectSlot0,,synthetic,src/ENGINE/GDI/VSGDI.CPP
+0x0046DB50,CompactHelperSubobjectSlot1,,synthetic,src/ENGINE/GDI/VSGDI.CPP
+0x0046DB60,CompactHelperSubobjectSlot2,,synthetic,src/ENGINE/GDI/VSGDI.CPP
+0x0046DB70,CompactHelperSubobjectSlot3,,synthetic,src/ENGINE/GDI/VSGDI.CPP
+0x0046DB80,CompactHelperSubobjectSlot4,,synthetic,src/ENGINE/GDI/VSGDI.CPP
+0x0046DB90,CompactHelperSubobjectSlot5,,synthetic,src/ENGINE/GDI/VSGDI.CPP
+0x0046DBA0,FillHelperSurfaceRectCommandAdjustmentThunk,,synthetic,src/ENGINE/GDI/VSGDI.CPP
+0x0046DBB0,ForwardBitmapCommandToAdjustedSurfaceThunk,,synthetic,src/ENGINE/GDI/VSGDI.CPP
+0x0046DBF0,BlitBitmapRowsToScanlinesAdjustmentThunk,,synthetic,src/ENGINE/GDI/VSGDI.CPP
+0x0046DC00,CompactHelperSubobjectSlot9,,synthetic,src/ENGINE/GDI/VSGDI.CPP
+0x0046DC10,SetHelperTargetRenderExtentAdjustmentThunk,,synthetic,src/ENGINE/GDI/VSGDI.CPP
+0x0046DC20,CompactHelperSubobjectSlot11,,synthetic,src/ENGINE/GDI/VSGDI.CPP
+0x0046DC30,ApplyHelperTargetPaletteAdjustmentThunk,,synthetic,src/ENGINE/GDI/VSGDI.CPP
+0x0046DC40,PresentCompactResourceGeometryHelperAdjustmentThunk,,synthetic,src/ENGINE/GDI/VSGDI.CPP
+0x0046DC70,GetHelperTargetTokenAdjustmentThunk,,synthetic,src/ENGINE/GDI/VSGDI.CPP
 0x00471A80,,??_EVsNetSocketWindowEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471A90,VsNetSocketWindowEffChannel::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
 0x00471AF0,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPONI@AEHXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
