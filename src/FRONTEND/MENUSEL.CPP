@@ -2907,8 +2907,9 @@ int LEMBALL_FASTCALL SelectTimedVariantFrameIndex(GameProgressiveVariantFrameSel
 	if (dwNow == 0xffffffffU) {
 		dwNow = (unsigned int) timeGetTime();
 	}
-	iFrame = (dwNow - (unsigned int) pSelector->m_dwStartTime) % (unsigned int) pSelector->m_dwDuration;
-	iFrame = (unsigned int) pSelector->m_cFrames * iFrame;
+	dwNow -= (unsigned int) pSelector->m_dwStartTime;
+	iFrame = dwNow % (unsigned int) pSelector->m_dwDuration;
+	iFrame = iFrame * (unsigned int) pSelector->m_cFrames;
 	iFrame /= (unsigned int) pSelector->m_dwDuration;
 	if (pSelector->m_nDirection != 1) {
 		iFrame = (unsigned int) pSelector->m_cFrames - iFrame - 1;
