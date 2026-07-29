@@ -1174,6 +1174,21 @@ struct VsNetGlobalSessionAdjustorOffsets {
 	int m_nTransportViewOffset10;
 };
 
+struct VsNetEmbeddedPendingWriteFacet {
+	inline void ClearPendingWrite(void* pUnused)
+	{
+		char* pTransportView;
+
+		pTransportView =
+			(char*) this + (*(VsNetGlobalSessionAdjustorOffsets**) ((char*) this - 8))->m_nTransportViewOffset10;
+		((VsNetTimedEffStream*) (pTransportView +
+								 (*(VsNetGlobalSessionAdjustorOffsets**) (pTransportView - 8))
+									 ->m_nEmbeddedStreamViewOffset08 -
+								 8))
+			->VsNetTimedEffStream::ClearPendingWrite(pUnused);
+	}
+};
+
 struct VsNetGlobalSessionAdjustorFront {
 	VsNetGlobalSessionAdjustorOffsets* m_pOffsets;
 	char m_abReserved04[0x34];
@@ -4167,15 +4182,7 @@ void LEMBALL_FASTCALL AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus
 // FUNCTION: LEMBALL 0x0047ba60
 void VsNetEmbeddedFileBackedEffChannelStack::ClearPendingWrite(void* pUnused)
 {
-	char* pbTransportView;
-	char* pPendingWrite;
-
-	pbTransportView =
-		(char*) this + (*(VsNetGlobalSessionAdjustorOffsets**) ((char*) this - 8))->m_nTransportViewOffset10;
-	pPendingWrite = pbTransportView +
-					(*(VsNetGlobalSessionAdjustorOffsets**) (pbTransportView - 8))->m_nEmbeddedStreamViewOffset08 +
-					0x70;
-	((VsNetTimedEffStream*) pPendingWrite)->VsNetTimedEffStream::ClearPendingWrite(pUnused);
+	((VsNetEmbeddedPendingWriteFacet*) ((char*) this + 8))->ClearPendingWrite(pUnused);
 }
 
 // FUNCTION: LEMBALL 0x0047ba90
