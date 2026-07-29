@@ -1938,18 +1938,6 @@ RefreshFunctionalLevelSelectionNavigationLocks(GameLevelSelectionScreenView* pSc
 	RefreshQueuedVariantChildByToken(pScreen->m_pQueuedVariantManager338, 0, (int) 0xacef000fU);
 }
 
-__inline static void LEMBALL_FASTCALL SelectNextFunctionalLevel(GameLevelSelectionScreenView* pScreen)
-{
-	AdvanceCurrentLevelProgressThunk(g_pLevelProgressState);
-	RefreshFunctionalLevelSelectionMetadata(pScreen);
-}
-
-__inline static void LEMBALL_FASTCALL SelectPreviousFunctionalLevel(GameLevelSelectionScreenView* pScreen)
-{
-	RetreatCurrentLevelProgressThunk(g_pLevelProgressState);
-	RefreshFunctionalLevelSelectionMetadata(pScreen);
-}
-
 __inline static void LEMBALL_FASTCALL EmitQueuedVariantChildSlotEntry(void* pObject)
 {
 	char* pManager;
@@ -4105,6 +4093,20 @@ int LEMBALL_FASTCALL HandleFunctionalLevelSelectionInput(void* pObject, int, voi
 	default:
 		return 0;
 	}
+}
+
+// FUNCTION: LEMBALL 0x00449e60
+static void LEMBALL_FASTCALL SelectNextFunctionalLevel(GameLevelSelectionScreenView* pScreen)
+{
+	AdvanceCurrentLevelProgressThunk(g_pLevelProgressState);
+	RefreshFunctionalLevelSelectionMetadata(pScreen);
+}
+
+// FUNCTION: LEMBALL 0x00449e80
+static void LEMBALL_FASTCALL SelectPreviousFunctionalLevel(GameLevelSelectionScreenView* pScreen)
+{
+	RetreatCurrentLevelProgressThunk(g_pLevelProgressState);
+	RefreshFunctionalLevelSelectionMetadata(pScreen);
 }
 
 // FUNCTION: LEMBALL 0x00449ee0
