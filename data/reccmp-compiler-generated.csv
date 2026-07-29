@@ -171,7 +171,11 @@ address,name,symbol,type,source
 0x00462BA0,,??_EVsNetDualHandleEffStream@@WFI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462BB0,,??_EVsNetRuntimeChannelStack@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462BC0,,??_GVsNetRuntimeChannelStack@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
+0x00462C20,WriteGlobalSession virtual-base `vtordisp adjustor' (+0x108),,synthetic,src/ENGINE/MEDIA/VSSTRM.H
+0x00462C40,ClaimRecord virtual-base `vtordisp adjustor' (+0x108),,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462C60,,??_EVsNetRuntimeChannelStack@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
+0x00462C70,WriteGlobalSession virtual-base `vtordisp adjustor' (+0x90),,synthetic,src/ENGINE/MEDIA/VSSTRM.H
+0x00462C80,ClaimRecord virtual-base `vtordisp adjustor' (+0x90),,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462C90,VsNetRuntimeChannelStack::DualStreamRet8 `vtordisp adjustor',,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462CA0,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462CB0,VsNetRuntimeChannelCore::`scalar deleting destructor',,function,src/ENGINE/MEDIA/VSSTRM.H
@@ -180,6 +184,8 @@ address,name,symbol,type,source
 0x00462D30,VsNetRuntimeChannelCore::WriteGlobalSession `vtordisp adjustor',,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462D40,VsNetRuntimeChannelCore::ClaimRecord `vtordisp adjustor',,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462D50,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
+0x00462D60,WriteGlobalSession virtual-base `vtordisp adjustor' (-0x78),,synthetic,src/ENGINE/MEDIA/VSSTRM.H
+0x00462D70,ClaimRecord virtual-base `vtordisp adjustor' (-0x78),,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462D80,,??_EVsNetTimedEffStream@@$4PPPPPPPM@HI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462DA0,,??_EVsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462DB0,,??_EVsNetCompositeEffTransportStack@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
