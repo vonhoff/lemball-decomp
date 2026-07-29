@@ -3105,7 +3105,7 @@ address,size,name,unit
 0x0047D150,5,return_false_wave_out_effect_slot27,ENGINE/MEDIA/VSSOUND.CPP
 0x0047D160,32,play_waveout_effect_instance,ENGINE/MEDIA/VSSOUND.CPP
 0x0047D220,26,dispatch_wave_out_effect_volume,ENGINE/MEDIA/VSSOUND.CPP
-0x0047D240,18,restart_wave_out_playback,ENGINE/MEDIA/VSSOUND.CPP
+0x0047D240,18,reset_wave_out_playback,ENGINE/MEDIA/VSSOUND.CPP
 0x0047D260,3,capture_wave_out_backend_context_0047_d260,ENGINE/MEDIA/VSSOUND.CPP
 0x0047D270,30,delete_waveout_effect_backend,ENGINE/MEDIA/VSSOUND.CPP
 0x0047D290,121,lookup_directsound_error_string,ENGINE/MEDIA/VSSOUND.CPP
