@@ -1388,7 +1388,6 @@ address,size,name,unit
 0x00444BF0,22,clear_pause_dialog_hovered_option_variant,FRONTEND/MENUSEL.CPP
 0x00444C10,267,handle_pause_dialog_option_event,FRONTEND/MENUSEL.CPP
 0x00444DA0,37,dispatch_pause_dialog_callback_and_clear_queue,FRONTEND/MENUSEL.CPP
-0x00444DD0,5,rebuild_level_screen_pause_dialog_layout,FRONTEND/MENUSEL.CPP
 0x004452A0,23,add_two_short_point_in_place,LEVEL/LEVELSTAT.CPP
 0x004452C0,23,subtract_two_short_point_in_place,LEVEL/LEVELSTAT.CPP
 0x004452E0,89,delete_action_button_point_sink_array_or_scalar,LEVEL/LEVELSTAT.CPP

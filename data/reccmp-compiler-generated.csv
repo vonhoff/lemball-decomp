@@ -131,6 +131,7 @@ address,name,symbol,type,source
 0x00443950,delete_base_mode_action_button_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
 0x004439F0,DeleteLevelScreenActionPanelAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00443AB0,delete_resource_geometry_child_from_rect_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
+0x00444DD0,Pause-dialog layout forwarding thunk,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x004452A0,LevelTwoShortPointView::AddTwoShortPointInPlace,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x004452C0,LevelTwoShortPointView::SubtractTwoShortPointInPlace,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00445350,delete_level_screen_pause_dialog `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/LEVELSTAT.CPP
