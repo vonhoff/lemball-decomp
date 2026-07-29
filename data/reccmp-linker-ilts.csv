@@ -41,6 +41,7 @@ address,name,symbol,type,source
 0x004016B3,RequestLiftChunkObjectActivationState,?RequestLiftChunkObjectActivationState@@YIHPAX@Z,stub,src/ENGINE/CORE/LINKSCFLIFTACTION.CPP
 0x00401730,ManagedEntityPacketBase::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacketBase@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00401749,ResetInvsChunkObjectStateThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
+0x00401762,GameVariantResourceEntryManager::SetVariantResourceMusicEnabled,?SetVariantResourceMusicEnabled@GameVariantResourceEntryManager@@QAEXH@Z,stub,src/RESOURCE/VARMGR.CPP
 0x004017DF,AttachAndActivateChunkObject,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040180C,ResetManagedEntityRuntimeStateThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00401843,DestroyNetworkLobbyScreenAutoThunk,,stub,src/FRONTEND/MAINMENU.CPP
@@ -201,6 +202,7 @@ address,name,symbol,type,source
 0x004032DD,ManagedEntityPacketStreamView::BindManagedEntityPacketTarget,?BindManagedEntityPacketTarget@ManagedEntityPacketStreamView@@QAEXPAX@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x0040333C,AdvanceInvsChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040335A,ManagedEntityPacket28::ReverseEffStreamPayload,?ReverseEffStreamPayload@ManagedEntityPacket28@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
+0x00403369,GameVariantResourceEntryManager::ClearActiveVariantResourceEntries,?ClearActiveVariantResourceEntries@GameVariantResourceEntryManager@@QAEXXZ,stub,src/RESOURCE/VARMGR.CPP
 0x0040336E,LevelManagedEntityMoveCommandView::CopyFirstMoveCommandPositionOrCurrent,?CopyFirstMoveCommandPositionOrCurrent@LevelManagedEntityMoveCommandView@@QAEPAULevelThreeDwordPoint@@PAU2@@Z,stub,src/LEVEL/LEVELVTMOVE.CPP
 0x0040339B,deactivate_projectile_object,?deactivate_projectile_object@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00403404,EmitMineChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
