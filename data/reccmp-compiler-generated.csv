@@ -38,7 +38,7 @@ address,name,symbol,type,source
 0x00417C40,,??_EManagedEntityPacket2A@@UAEPAXI@Z,synthetic,src/LEVEL/LEVELRUNPACKET.H
 0x00417C70,LinkScfAutoEffDeleteView::Delete17C70,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00417CA0,LinkScfAutoEffDeleteView::Delete17CA0,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x00417CD0,LinkScfAutoEffDeleteView::Delete17CD0,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
+0x00417CD0,,??_EManagedEntityPacket26@@UAEPAXI@Z,synthetic,src/LEVEL/LEVELRUNPACKET.H
 0x00417D00,DeleteLevelChunkObjectBaseWrapper17D00,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00417D30,ReadEffStreamU16ToField30,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00417D50,LinkScfAutoEffDeleteView::Delete17D50,,synthetic,src/ENGINE/CORE/LINKSCF.CPP

@@ -99,6 +99,7 @@ address,name,symbol,type,source
 0x0040253B,RefreshActivePgunChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402559,ActivateIceChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040258B,AdvanceCachedGroupManagedEntityChildIterator,,stub,src/ENGINE/CORE/LINKSCF.H
+0x004025B3,ManagedEntityPacket26::ReverseEffStreamPayload,?ReverseEffStreamPayload@ManagedEntityPacket26@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKETTHUNK.CPP
 0x004025EA,IceChunkObjectActionView::RequestIceChunkObjectToggleActivation,?RequestIceChunkObjectToggleActivation@IceChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFICEACTION.CPP
 0x004025FE,DestroyCountedChildTableStreamAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402608,InvsChunkObjectActionView::AddInvsTrackedEntity,?AddInvsTrackedEntity@InvsChunkObjectActionView@@QAEXPAX@Z,stub,src/ENGINE/CORE/LINKSCFINVS.CPP
@@ -148,6 +149,7 @@ address,name,symbol,type,source
 0x00402DF1,DestroyTileFlag1CChunkObjectAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402E1E,VS_WindowOwnerBase::CacheCurrentContextWindow,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00402E28,StartMenuSelectorActionThunk,,stub,src/FRONTEND/MENUSEL.H
+0x00402E41,ManagedEntityPacket26::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacket26@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKETTHUNK.CPP
 0x00402E4B,DispatchDoorChunkObjectTriggerBySlot,?DispatchDoorChunkObjectTriggerBySlot@@YIXPAX0HI@Z,stub,src/ENGINE/CORE/LINKSCFDOORACTION.CPP
 0x00402E91,ManagedProjectileObjectView::ActivateAtPosition,?ActivateAtPosition@ManagedProjectileObjectView@@QAEXPBULevelPoint3@@@Z,stub,src/LEVEL/LEVELVTPROJECTILE.CPP
 0x00402E9B,DispatchLiftChunkObjectActionBySlot,?DispatchLiftChunkObjectActionBySlot@@YIXPAX0HIHH@Z,stub,src/ENGINE/CORE/LINKSCFLIFTACTION.CPP

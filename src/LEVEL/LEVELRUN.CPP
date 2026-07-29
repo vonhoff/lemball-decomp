@@ -1659,6 +1659,12 @@ ManagedEntityPacket2A::ManagedEntityPacket2A() : ManagedEntityPacketBase(0x2a)
 {
 }
 
+// FUNCTION: LEMBALL 0x00416ce0
+ManagedEntityPacket26::ManagedEntityPacket26() : ManagedEntityPacketBase(0x26)
+{
+	m_nBufferEnd18 += 4;
+}
+
 // FUNCTION: LEMBALL 0x0041a140
 LevelProjectileGeometryPairTable* LevelProjectileGeometryPairTable::InitializeProjectileGeometryPairTable(void)
 {

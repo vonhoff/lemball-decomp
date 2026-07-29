@@ -18,7 +18,10 @@ VTABLE_METHOD_ILTS = {
     0x00401730,  # ManagedEntityPacketBase::WriteEffStreamTaggedHeader
     0x004018C5,  # ManagedEntityStateResetPacket scalar deleting destructor
     0x0040217B,  # ManagedEntityPacketBase::ReverseEffStreamPayload
+    0x004025B3,  # ManagedEntityPacket26::ReverseEffStreamPayload
     0x004026AD,  # VsNetEffStreamCommon::AcceptEffStream
+    0x00402DB0,  # ManagedEntityPacket26 scalar deleting destructor
+    0x00402E41,  # ManagedEntityPacket26::WriteEffStreamTaggedHeader
     0x004030E4,  # ManagedEntityPacketBase scalar deleting destructor
     0x00403288,  # ManagedEntityPacket2A scalar deleting destructor
 }
