@@ -196,9 +196,12 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot17(void*)
 {
 }
 
+int LEMBALL_FASTCALL get_helper_group_0_dirty_flag_local(void* pHelperGroup);
+
 // FUNCTION: LEMBALL 0x0046dcc0
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot18(void*)
+int LEMBALL_FASTCALL CompactHelperSubobjectSlot18(void* pSubobject)
 {
+	return get_helper_group_0_dirty_flag_local((char*) pSubobject - 0x518);
 }
 
 // FUNCTION: LEMBALL 0x00473700
