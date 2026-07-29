@@ -21,3 +21,8 @@ void LEMBALL_FASTCALL SerializeManagedEntityTypeAndSlotId(void* pObject)
 	pStream->WriteEffStreamU16BE(pStream->m_nManagedEntityType04);
 	pStream->WriteEffStreamU16BE(GetManagedEntitySlotIdThunk((int) (unsigned long) pStream->m_pManagedEntity2C));
 }
+
+// FUNCTION: LEMBALL 0x004168c0
+void LEMBALL_FASTCALL NoopManagedEntityPacketPayload(void*)
+{
+}

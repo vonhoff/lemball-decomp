@@ -78,6 +78,7 @@ address,name,symbol,type,source
 0x004020EF,DestroyLevelChunkObjectChildrenVariantAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x004020F9,ResetIceChunkObjectRuntimeStateThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402167,ActivateMineChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
+0x0040217B,NoopManagedEntityPacketPayload,?NoopManagedEntityPacketPayload@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
 0x00402180,DestroyLevelChunkStreamAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x004021D0,DestroyLevelChunkObjectBaseAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x004021F3,DestroyDoorChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
