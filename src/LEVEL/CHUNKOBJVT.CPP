@@ -982,8 +982,27 @@ int LEMBALL_FASTCALL AdvanceTramChunkObjectStateMachine(void* pObject)
 // FUNCTION: LEMBALL 0x0042ba40
 void* LEMBALL_FASTCALL DeleteTramChunkObjectAuto(void* pObject, void* pUnused, unsigned int fDelete)
 {
+	char* pAllocation;
+	char* pCursor;
+	unsigned int cObjects;
+
 	(void) pUnused;
-	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x144, destroy_tram_chunk_object);
+	if ((fDelete & 2) != 0) {
+		pAllocation = (char*) pObject - sizeof(int);
+		cObjects = *(unsigned int*) pAllocation;
+		pCursor = (char*) pObject + cObjects * 0x144;
+		while ((int) --cObjects >= 0) {
+			pCursor -= 0x144;
+			destroy_tram_chunk_object(pCursor);
+		}
+		FreeVSMemBlock(pAllocation);
+		return pObject;
+	}
+	destroy_tram_chunk_object(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
 }
 
 // STUB: LEMBALL 0x0042bbe0

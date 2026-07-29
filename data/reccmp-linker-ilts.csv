@@ -148,6 +148,7 @@ address,name,symbol,type,source
 0x00402CA2,DestroyCaptureTriggerChunkManagerAutoThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402CD4,RemoveCachedChunkObjectAndDestroy,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402CE3,ManagedEntityPacket27::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacket27@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
+0x00402D10,destroy_tram_chunk_object,?destroy_tram_chunk_object@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402D42,RemoveInvsTrackedEntitiesOutsideBounds,?RemoveInvsTrackedEntitiesOutsideBounds@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCFINVS.CPP
 0x00402D5B,SetMenuSelectorDirectionFieldThunk,,stub,src/FRONTEND/MENUSEL.H
 0x00402D83,NoopLevelStatusCallbackIlt,,stub,src/LEVEL/LEVELSTAT.CPP

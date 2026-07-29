@@ -958,7 +958,6 @@ address,size,name,unit
 0x0042B9C0,19,add_two_dword_values,ENGINE/CORE/LINKSCF.CPP
 0x0042B9E0,31,initialize_three_dword_point_from_values,ENGINE/CORE/LINKSCF.CPP
 0x0042BA10,30,delete_tram_chunk_manager,ENGINE/CORE/LINKSCF.CPP
-0x0042BA40,109,delete_tram_chunk_object_array_or_scalar,ENGINE/CORE/LINKSCF.CPP
 0x0042BAD0,24,construct_pgun_chunk_object,ENGINE/CORE/LINKSCF.CPP
 0x0042BAF0,36,activate_pgun_chunk_object,ENGINE/CORE/LINKSCF.CPP
 0x0042BB20,11,destroy_pgun_chunk_object,ENGINE/CORE/LINKSCF.CPP
