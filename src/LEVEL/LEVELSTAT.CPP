@@ -20,7 +20,6 @@
 #endif
 #include <stdlib.h>
 #include <string.h>
-
 extern "C" DWORD WINAPI timeGetTime(void);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 extern void NoopVtableCallbackThunk(void);
@@ -384,6 +383,7 @@ void* g_LEVEL_LevelNestedRectSinkVtable[4] = {
 	(void*) DispatchLevelNestedRectSinkThunk,
 	0,
 };
+// GLOBAL: LEMBALL 0x00496da0
 void* g_LEVEL_LevelStatusRectSinkVtable[4] = {
 	(void*) DeleteStatusPointSinkVariantThunk,
 	(void*) AppendStatusPointSinkToQueueThunk,
@@ -1118,7 +1118,7 @@ short LevelTileRenderDescriptor::SampleHeightOffset(int nLocalX, int nLocalY)
 	}
 	return 0;
 }
-// Compatibility shim preserving MSVC 4.20 compiler state.
+// FUNCTION: LEMBALL 0x00430a50
 void LevelViewRotationTransform::TransformScreenToTile(int nScreenX, int nScreenY, int* pTileX, int* pTileY)
 {
 	switch (m_nRotation04) {

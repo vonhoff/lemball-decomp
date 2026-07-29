@@ -93,7 +93,6 @@ address,name,symbol,type,source
 0x0042C9B0,DeletePgunChunkManagerAuto,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0042E4D0,DeleteIceChunkManagerAuto,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0042FBA0,DeleteMoveChunkManagerAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00430A50,LevelViewRotationTransformAuto::TransformScreenToTile,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x004322E0,delete_primary_context_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/GAME.CPP
 0x00432350,DeleteQueuedRenderPointSinkWrapperAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x004323C0,set_queued_render_point_sink_field_0x30,,synthetic,src/ENGINE/GDI/VSGDI.CPP

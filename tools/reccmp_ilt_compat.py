@@ -40,6 +40,13 @@ VTABLE_METHOD_ILTS = {
     0x0040335A,  # ManagedEntityPacket28::ReverseEffStreamPayload
     0x00403553,  # ManagedEntityPacket24 scalar deleting destructor
 }
+# These table-specific ILTs target byte-identical callback implementations.
+# Keep aliases restricted to independently verified original ILT addresses and
+# rebuilt callback symbols rather than conflating their function identities.
+VARIABLE_ILT_DESTINATION_ALIASES = {
+    0x0040150A: "DeleteStatusPointSinkVariantThunk",
+    0x0040353A: "AppendStatusPointSinkToQueueThunk",
+}
 # Original and rebuilt binaries place different unrelated symbols at these
 # one-past array addresses. Limit normalization to independently verified
 # functions that compare against those boundaries.
@@ -261,6 +268,12 @@ if not getattr(VariableComparator, "_lemball_ilt_aware", False):
     def _is_pointer_match(self, orig_addr, recomp_addr):
         if _reccmp_is_pointer_match(self, orig_addr, recomp_addr):
             return True
+
+        expected_name = VARIABLE_ILT_DESTINATION_ALIASES.get(orig_addr)
+        if expected_name is not None:
+            entity = self.db.get(ImageId.RECOMP, recomp_addr)
+            if entity is not None and expected_name in (entity.best_name() or ""):
+                return True
 
         destination = _ilt_destination(self, orig_addr)
         return destination is not None and self.db.is_match(destination, recomp_addr)
