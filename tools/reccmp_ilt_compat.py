@@ -61,6 +61,11 @@ THUNK_ILT_REFERENCES = {
         "LevelChunkObjectBaseView::InitializeLevelChunkObjectBase",
         "level chunk object base initializer 0041dda0",
     ),
+    0x00429ED0: (
+        0x004034D6,
+        "destroy_lasr_chunk_object_vtable_thunk",
+        "LASR chunk object destructor target 004288f0",
+    ),
     0x00439850: (0x00403521, "DeleteReconstructedLevelScreenAuto", "adjustor target 00439490"),
     0x004472E0: (0x00401E1F, "DeleteBaseModeObjectAuto", "adjustor target 004472b0"),
     0x0044EFF0: (
