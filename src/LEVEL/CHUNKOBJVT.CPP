@@ -148,6 +148,26 @@ extern ManagedEntityPacketStreamView* g_pManagedEntityPacketBindStream;
 	}                                                                                                                  \
 	return pObject
 
+#define DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR_CURSOR_FIRST(pObject, fDelete, objectSize, destroyProc)                    \
+	char* pCursor;                                                                                                     \
+	char* pAllocation;                                                                                                 \
+	if (((fDelete) & 2) != 0) {                                                                                        \
+		pAllocation = (char*) pObject - sizeof(int);                                                                   \
+		(fDelete) = *(unsigned int*) pAllocation;                                                                      \
+		pCursor = (char*) pObject + (fDelete) * (objectSize);                                                          \
+		while ((int) --(fDelete) >= 0) {                                                                               \
+			pCursor -= (objectSize);                                                                                   \
+			destroyProc(pCursor);                                                                                      \
+		}                                                                                                              \
+		FreeVSMemBlock(pAllocation);                                                                                   \
+		return pObject;                                                                                                \
+	}                                                                                                                  \
+	destroyProc(pObject);                                                                                              \
+	if (((fDelete) & 1) != 0) {                                                                                        \
+		FreeVSMemBlock(pObject);                                                                                       \
+	}                                                                                                                  \
+	return pObject
+
 // These entries recover the source-owned 16-slot chunk-object interface. Bodies marked STUB remain
 // explicit decompilation targets; their distinct identities preserve real virtual dispatch and table ownership.
 
@@ -846,7 +866,7 @@ int LEMBALL_FASTCALL AdvanceCaptureChunkObjectStateMachine(void* pObject)
 void* LEMBALL_FASTCALL DeleteCaptureChunkObjectAuto(void* pObject, void* pUnused, unsigned int fDelete)
 {
 	(void) pUnused;
-	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x144, destroy_capture_trigger_chunk_object);
+	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR_CURSOR_FIRST(pObject, fDelete, 0x144, destroy_capture_trigger_chunk_object);
 }
 
 // FUNCTION: LEMBALL 0x00428cf0

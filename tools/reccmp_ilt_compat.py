@@ -76,6 +76,11 @@ THUNK_ILT_REFERENCES = {
         "destroy_rock_chunk_object",
         "ROCK chunk object destructor target 00426830",
     ),
+    0x00428800: (
+        0x004018C0,
+        "destroy_capture_trigger_chunk_object",
+        "CAPT chunk object destructor target 00427b40",
+    ),
     0x00429ED0: (
         0x004034D6,
         "destroy_lasr_chunk_object_vtable_thunk",
