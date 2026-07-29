@@ -100,7 +100,7 @@ struct VsNetWin32FileWrapperDispatchData {
 	int (VsNetWin32FileWrapper::*m_pOpenCreateNew)(LPCSTR, int);
 	int (VsNetWin32FileWrapper::*m_pProbeAccess)(LPCSTR);
 	int (VsNetWin32FileWrapper::*m_pCloseIfOpen)(void);
-	void (*m_pFreePath)(char*);
+	void(LEMBALL_STDCALL* m_pDeletePath)(char*);
 	void (VsNetWin32FileWrapper::*m_pFreeOwnedPath)(void);
 	int (VsNetWin32FileWrapper::*m_pWrite)(const void*, DWORD);
 	int (VsNetWin32FileWrapper::*m_pRead)(LPVOID, DWORD);
@@ -126,7 +126,7 @@ struct VsNetFatalWin32FileWrapperVtableData {
 	void* m_pNullTail;
 };
 
-void FreeWin32FileWrapperPath(char* pszPath);
+void LEMBALL_STDCALL DeleteWin32FileWrapperPath(char* pszPath);
 void LEMBALL_FASTCALL InitializeGlobalStateFileBackedEffStorageAdjustor(void* pObject);
 BYTE __fastcall MapNestedEffCallbackFailureToStatus6(void* pObject);
 void* DeleteEffChannelStateSideBufferWrapper(void* pObject, BYTE fFreeMemory);
@@ -423,7 +423,7 @@ static VsNetFatalWin32FileWrapperVtableData g_NETWORK_FileBackedFatalFileWrapper
 		&VsNetWin32FileWrapper::OpenCreateNew,
 		&VsNetWin32FileWrapper::ProbeAccess,
 		&VsNetWin32FileWrapper::CloseIfOpen,
-		FreeWin32FileWrapperPath,
+		DeleteWin32FileWrapperPath,
 		&VsNetWin32FileWrapper::FreeOwnedPath,
 		&VsNetWin32FileWrapper::Write,
 		&VsNetWin32FileWrapper::Read,
@@ -605,7 +605,7 @@ static VsNetGlobalStateFinalPrimaryThunkVtableData g_NETWORK_GlobalStateFinalPri
 		&VsNetWin32FileWrapper::OpenCreateNew,
 		&VsNetWin32FileWrapper::ProbeAccess,
 		&VsNetWin32FileWrapper::CloseIfOpen,
-		FreeWin32FileWrapperPath,
+		DeleteWin32FileWrapperPath,
 		&VsNetWin32FileWrapper::FreeOwnedPath,
 		&VsNetWin32FileWrapper::Write,
 		&VsNetWin32FileWrapper::Read,
@@ -773,7 +773,7 @@ static VsNetGlobalStateCompositeFinalVtableData g_NETWORK_GlobalStateCompositeFi
 		&VsNetWin32FileWrapper::OpenCreateNew,
 		&VsNetWin32FileWrapper::ProbeAccess,
 		&VsNetWin32FileWrapper::CloseIfOpen,
-		FreeWin32FileWrapperPath,
+		DeleteWin32FileWrapperPath,
 		&VsNetWin32FileWrapper::FreeOwnedPath,
 		&VsNetWin32FileWrapper::Write,
 		&VsNetWin32FileWrapper::Read,
@@ -1765,7 +1765,7 @@ struct VsNetEffTransportPacketProcessor {
 
 extern "C" DWORD WINAPI timeGetTime(void);
 
-void FreeWin32FileWrapperPath(char* pszPath);
+void LEMBALL_STDCALL DeleteWin32FileWrapperPath(char* pszPath);
 VsNetEffStreamRecordSlot* FindNextChangedEffStreamRecordSlot(void* pObject);
 
 struct VsNetEffRecordSlotVtable {
@@ -2050,7 +2050,7 @@ void LEMBALL_FASTCALL DispatchAdjustedAckedEffTransportPayloadEventFromEmbeddedT
 void* AdjustAndDeleteDualSlotTableDualFileBackedEffCompositeWrapper(void* pObject, BYTE fFreeMemory);
 void LEMBALL_FASTCALL DispatchAdjustedAckedEffTransportPayloadEventFromDualThunk(void* pObject);
 void LEMBALL_FASTCALL AdjustAndWriteDualSlotTableFileBackedEffHeader(void* pObject);
-void FreeWin32FileWrapperPath(char* pszPath);
+void LEMBALL_STDCALL DeleteWin32FileWrapperPath(char* pszPath);
 
 // FUNCTION: LEMBALL 0x00479620
 VsNetEffStreamRecordSlotTable::VsNetEffStreamRecordSlotTable(int cSlots)
@@ -4447,9 +4447,9 @@ void VsNetWin32FileWrapper::FreeOwnedPath(void)
 }
 
 // FUNCTION: LEMBALL 0x0047f670
-void FreeWin32FileWrapperPath(char* pszPath)
+void LEMBALL_STDCALL DeleteWin32FileWrapperPath(char* pszPath)
 {
-	FreeVSMemBlock(pszPath);
+	DeleteFileA(pszPath);
 }
 
 // FUNCTION: LEMBALL 0x0047f680

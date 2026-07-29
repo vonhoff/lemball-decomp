@@ -3205,7 +3205,7 @@ address,size,name,unit
 0x0047F5B0,141,open_win32_file_wrapper,ENGINE/NET/VSNETFIL.CPP
 0x0047F640,26,open_win32_file_wrapper_create_new,ENGINE/NET/VSNETFIL.CPP
 0x0047F660,11,free_win32_file_wrapper_owned_path,ENGINE/NET/VSNETFIL.CPP
-0x0047F670,14,free_win32_file_wrapper_path,ENGINE/NET/VSNETFIL.CPP
+0x0047F670,14,delete_win32_file_wrapper_path,ENGINE/NET/VSNETFIL.CPP
 0x0047F680,62,probe_win32_file_wrapper_access,ENGINE/NET/VSNETFIL.CPP
 0x0047F6C0,185,write_win32_file_wrapper,ENGINE/NET/VSNETFIL.CPP
 0x0047F780,260,read_win32_file_wrapper,ENGINE/NET/VSNETFIL.CPP

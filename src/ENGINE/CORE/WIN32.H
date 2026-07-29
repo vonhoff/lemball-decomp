@@ -192,8 +192,8 @@ extern "C"
 													 LPVOID* lplpBuffer,
 													 UINT* puLen);
 	int WINAPI GetSystemMetrics(int nIndex);
-	void WINAPI InitializeCriticalSection(LPVOID lpCriticalSection);
-	void WINAPI DeleteCriticalSection(LPVOID lpCriticalSection);
+	__declspec(dllimport) void WINAPI InitializeCriticalSection(LPVOID lpCriticalSection);
+	__declspec(dllimport) void WINAPI DeleteCriticalSection(LPVOID lpCriticalSection);
 	__declspec(dllimport) void WINAPI EnterCriticalSection(LPVOID lpCriticalSection);
 	__declspec(dllimport) void WINAPI LeaveCriticalSection(LPVOID lpCriticalSection);
 	BOOL WINAPI WinHelpA(HWND hWndMain, LPCSTR lpszHelp, UINT uCommand, DWORD_PTR dwData);
