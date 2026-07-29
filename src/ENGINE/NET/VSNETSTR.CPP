@@ -1,3 +1,5 @@
+#define LEMBALL_DEFINE_EFF_STREAM_CHANNEL_STATE_VTABLE
+
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/MEDIA/EFFSTRM.H"
@@ -72,8 +74,6 @@ struct VsNetRuntimeWindowInterface {
 	virtual void PumpMessages(void) = 0;
 };
 
-void PASCAL EffStreamChannelStateRet4Thunk(BYTE fDelete);
-
 struct VsNetAckedEffTransportRecordOwner {};
 extern int PASCAL ReturnTrueVtableCallbackThunk(void* pObject);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
@@ -92,7 +92,6 @@ void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462850(void* pObject, void*, 
 void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462870(void* pObject, void*, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462890(void* pObject, void*, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper004628B0(void* pObject, void*, BYTE fDelete);
-void PASCAL EffStreamChannelStateRet4Thunk(BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper00462900(void* pObject, void*, BYTE fDelete);
 void ReturnVoidVtableCallback(void);
 void LEMBALL_FASTCALL WriteEffStreamTwoU16Fields(void* pObject);
@@ -401,6 +400,11 @@ VsNetEffStreamChannelState::VsNetEffStreamChannelState()
 	m_nReserved24 = 0;
 	m_nReserved04 = 0;
 	m_pSideBuffer28 = AllocateVSMemBlock(0x10);
+}
+
+inline void VsNetEffStreamChannelState::operator delete(void* pObject)
+{
+	FreeVSMemBlock(pObject);
 }
 
 // FUNCTION: LEMBALL 0x0045f6c0
@@ -770,9 +774,12 @@ void* LEMBALL_FASTCALL DeleteEffStreamBaseWrapper004628B0(void* pObject, void*, 
 }
 
 // FUNCTION: LEMBALL 0x004628d0
-void PASCAL EffStreamChannelStateRet4Thunk(BYTE fDelete)
+void VsNetEffStreamChannelState::ClearPendingWrite(void*)
 {
-	(void) fDelete;
+}
+
+void PASCAL EffStreamChannelStateRet4Thunk(BYTE)
+{
 }
 
 // FUNCTION: LEMBALL 0x00462900
@@ -820,15 +827,6 @@ int WINAPI InitializeNonZrleVariantRenderEntry(int nValue)
 void VsNetEffStreamBase::DestroyEffStreamBaseThunk(void)
 {
 	this->VsNetEffStreamBase::~VsNetEffStreamBase();
-}
-
-void* LEMBALL_FASTCALL DeleteEffStreamChannelStateAuto(void* pObject, void*, BYTE fDelete)
-{
-	((VsNetEffStreamChannelState*) pObject)->VsNetEffStreamChannelState::~VsNetEffStreamChannelState();
-	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pObject);
-	}
-	return pObject;
 }
 
 void* LEMBALL_FASTCALL DeleteEffStreamBaseAuto(void* pObject, void*, BYTE fDelete)

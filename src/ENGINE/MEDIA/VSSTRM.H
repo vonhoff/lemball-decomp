@@ -9,11 +9,17 @@
 // ??_GVsNetEffStreamChannelState@@UAEPAXI@Z
 // Compatibility symbol preserving MSVC 4.20 compiler state.
 // ??_EVsNetEffStreamBase@@UAEPAXI@Z
+// VTABLE: LEMBALL 0x00498f30
 struct VsNetEffStreamChannelState {
 	virtual int ReleaseFileBackedEffMarker(void) = 0;
 	virtual ~VsNetEffStreamChannelState();
 	virtual void ClearNestedEffChannelAsyncStatus(void) = 0;
+#ifdef LEMBALL_DEFINE_EFF_STREAM_CHANNEL_STATE_VTABLE
+	virtual void ClearPendingWrite(void* pArgument);
+	static void operator delete(void* pObject);
+#else
 	virtual void ClearPendingWrite(void* pArgument) = 0;
+#endif
 
 	int m_nReserved04;
 	int m_nSelectedPeer08;
