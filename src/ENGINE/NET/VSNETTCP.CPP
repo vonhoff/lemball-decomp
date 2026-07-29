@@ -262,13 +262,6 @@ struct VsNetTcpipEffTransportCompositeLayout {
 	void* ConstructTcpipEffTransportComposite(int fConstructEmbeddedObjects);
 };
 
-struct VsNetTcpipCompositeControlVtableModel {
-	void ConfigureRemoteHost(const char* pszHost);
-	int StartLocalHostLookup(char* pszHost);
-	void EnableAsyncSelect(void);
-	void DisableAsyncSelect(void);
-};
-
 /* The allocator is a multiple-subobject layout.  Its metadata is not at the
  * offsets used by the standalone 00470270 composite. */
 struct VsNetAllocatedTcpipEffTransportCompositeLayout {
@@ -354,6 +347,10 @@ struct VsNetTcpipEffTransportComposite : VsNetRuntimeChannelStack,
 										 virtual VsNetTcpipClientAsyncDispatcher {
 	VsNetTcpipEffTransportComposite();
 	~VsNetTcpipEffTransportComposite();
+	virtual void RuntimeReserved08(void* pHost);
+	virtual int RuntimeReserved0c(char* pszHost);
+	virtual void RuntimeReserved14(void);
+	virtual void RuntimeReserved18(void);
 	virtual void ClearPendingWrite(void* pArgument);
 	virtual int HandleAsyncMessage(int nMessage, void* pReserved, unsigned int nEvent);
 };
@@ -1461,16 +1458,18 @@ VsNetTcpipEffTransportComposite::~VsNetTcpipEffTransportComposite()
 }
 
 // FUNCTION: LEMBALL 0x00470580
-void VsNetTcpipCompositeControlVtableModel::ConfigureRemoteHost(const char* pszHost)
+void VsNetTcpipEffTransportComposite::RuntimeReserved08(void* pHost)
 
 {
 	VsNetTcpipEffTransportCompositeLayout* pComposite;
+	const char* pszHost;
 	VsNetInetAddressEntry* pAddress;
 	VsNetConstructionAdjustorVtable* pOffsets;
 	VsNetAdjustorSubobject* pErrorChannel;
 	int nAddress;
 	int nResult;
 
+	pszHost = (const char*) pHost;
 	pComposite = (VsNetTcpipEffTransportCompositeLayout*) this;
 	nAddress = (int) inet_addr(pszHost);
 	if (nAddress != -1) {
@@ -1544,7 +1543,7 @@ void VsNetHostLookupCompletionAdapter::HandleRemoteHostLookupComplete(int nError
 	*(int*) ((char*) this + 0x24) = 0;
 }
 // FUNCTION: LEMBALL 0x00470730
-int VsNetTcpipCompositeControlVtableModel::StartLocalHostLookup(char* pszHost)
+int VsNetTcpipEffTransportComposite::RuntimeReserved0c(char* pszHost)
 {
 	VsNetTcpipEffTransportCompositeLayout* pComposite;
 	VsNetConstructionAdjustorVtable* pOffsets;
@@ -1780,7 +1779,7 @@ int VsNetTcpipEffTransportComposite::HandleAsyncMessage(int nMessage, void* pRes
 	return pSocketDispatcher->VsNetTcpipSocketChannelStackLayout::HandleAsyncMessage(nMessage, pReserved, nEvent);
 }
 // FUNCTION: LEMBALL 0x00470d30
-void VsNetTcpipCompositeControlVtableModel::EnableAsyncSelect(void)
+void VsNetTcpipEffTransportComposite::RuntimeReserved14(void)
 {
 	VsNetTcpipEffTransportCompositeLayout* pComposite;
 	VsNetConstructionAdjustorVtable* pOffsets;
@@ -1807,7 +1806,7 @@ void VsNetTcpipCompositeControlVtableModel::EnableAsyncSelect(void)
 	pComposite->m_nRuntimeField14 = 1;
 }
 // FUNCTION: LEMBALL 0x00470d80
-void VsNetTcpipCompositeControlVtableModel::DisableAsyncSelect(void)
+void VsNetTcpipEffTransportComposite::RuntimeReserved18(void)
 {
 	VsNetTcpipEffTransportCompositeLayout* pComposite;
 	VsNetConstructionAdjustorVtable* pOffsets;
@@ -2220,10 +2219,10 @@ void* AllocateTcpipEffTransportRuntimeOwner(void)
 	void* pStorage;
 
 	pStorage = AllocateVSMemBlock(0x16c);
-	if (pStorage == 0) {
-		return 0;
+	if (pStorage != 0) {
+		return new (pStorage) VsNetTcpipEffTransportComposite;
 	}
-	return pStorage;
+	return 0;
 }
 VsNetTcpipSocketChannelStackLayout::VsNetTcpipSocketChannelStackLayout()
 {
