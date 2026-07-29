@@ -89,7 +89,6 @@ extern void* LEMBALL_FASTCALL InitializeEmptyGeometryOwnerRect(void* pObject);
 extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(void* pOwner, int nUnusedEdx, void* pChild);
 extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(void* pOwner, int nUnusedEdx, void* pChild);
 extern void LEMBALL_FASTCALL clear_mapped_list_resource_table_pending_flag(void* pTable);
-extern void LEMBALL_FASTCALL ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen);
 struct GameNetworkLobbyScreenView;
 void SetNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus);
 void SetTimedNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus, DWORD dwDuration);
@@ -272,6 +271,7 @@ class VsNetNetworkLobbyScreen {
 public:
 	void ShowPlayerEntries(void);
 	void ClearPlayerEntryDirty(int iEntry);
+	void RefreshPlayerEntries(void);
 	int SelectNextPlayerEntry(void);
 	int SelectPreviousPlayerEntry(void);
 };
@@ -5055,7 +5055,7 @@ void LEMBALL_FASTCALL InitializeNetworkLobbyActionButtons(void* pObject)
 								 (int) 0xacef000eU);
 	SelectQueuedVariantChildSlot(pScreen->m_pQueuedVariantManager338, 0, 0);
 	InitializeQueuedVariantChildContext(pScreen->m_pQueuedVariantManager338);
-	ThunkRefreshNetworkLobbyPlayerEntries((int) (unsigned long) pScreen);
+	((VsNetNetworkLobbyScreen*) pScreen)->RefreshPlayerEntries();
 }
 
 struct NetworkLobbyQueuedVariantManagerDeleteInterface {
@@ -5563,7 +5563,7 @@ void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void* pObject)
 		}
 	}
 	if (pScreen->m_fRefreshPlayers3C4 != 0 && pScreen->m_pPlayerEntries3CC != 0) {
-		ThunkRefreshNetworkLobbyPlayerEntries((int) (unsigned long) pScreen);
+		((VsNetNetworkLobbyScreen*) pScreen)->RefreshPlayerEntries();
 		pScreen->m_fRefreshPlayers3C4 = 0;
 		pScreen->m_fSelectorDirty360 = 1;
 	}

@@ -50,6 +50,7 @@ address,name,symbol,type,source
 0x00401956,EmitCollChunkManagerRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004019C4,WriteEffStreamU32Field2C,,stub,src/ENGINE/MEDIA/EFFSTRM.H
 0x00401A0A,get_first_projectile_pool_object,?get_first_projectile_pool_object@@YIPAXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
+0x00401A87,VsNetNetworkLobbyScreen::ConfirmSelectedPlayerEntry,?ConfirmSelectedPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/FRONTEND/LOBBY.CPP
 0x00401AC3,LevelManagedEntityChildIterator::AppendChild,?AppendChild@LevelManagedEntityChildIterator@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00401ADC,HandleMenuSelectorEventThunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401B31,DoorChunkObjectActionView::RequestDoorChunkObjectTriggerTransition,?RequestDoorChunkObjectTriggerTransition@DoorChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFDOORACTION.CPP
@@ -70,6 +71,7 @@ address,name,symbol,type,source
 0x00401E29,VS_WindowOwnerBase::ReservedWindowOwnerSlot19,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00401E7E,ManagedEntityPacket28::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacket28@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00401E9C,DispatchDoorChildArrayVirtual104,,stub,src/ENGINE/CORE/LINKSCF.H
+0x00401F23,HandleNetworkLobbyTransportStatusEvent,?HandleNetworkLobbyTransportStatusEvent@@YGXH@Z,stub,src/FRONTEND/LOBBY.CPP
 0x00401F28,HandleMenuSelectorEntryEventThunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401F2D,RefreshActiveRockChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401F3C,ManagedEntityStateView::RequestManagedEntityStateId,?RequestManagedEntityStateId@ManagedEntityStateView@@QAEXH@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
@@ -103,6 +105,7 @@ address,name,symbol,type,source
 0x0040243C,LevelChunkObjectRuntimeStateView::ClearStateFieldsThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402446,clear_managed_entity_child_pending_state_if_interruptible,?clear_managed_entity_child_pending_state_if_interruptible@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
 0x00402518,ActivateLiftChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
+0x0040252C,VsNetNetworkLobbyScreen::ShowPlayerEntries,?ShowPlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
 0x0040253B,RefreshActivePgunChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402559,ActivateIceChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040258B,AdvanceCachedGroupManagedEntityChildIterator,,stub,src/ENGINE/CORE/LINKSCF.H
@@ -110,12 +113,14 @@ address,name,symbol,type,source
 0x004025EA,IceChunkObjectActionView::RequestIceChunkObjectToggleActivation,?RequestIceChunkObjectToggleActivation@IceChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFICEACTION.CPP
 0x004025FE,DestroyCountedChildTableStreamAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402608,InvsChunkObjectActionView::AddInvsTrackedEntity,?AddInvsTrackedEntity@InvsChunkObjectActionView@@QAEXPAX@Z,stub,src/ENGINE/CORE/LINKSCFINVS.CPP
+0x0040260D,VsNetNetworkLobbyScreen::RemoveUnavailablePlayerEntries,?RemoveUnavailablePlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
 0x0040263A,get_next_projectile_pool_object,?get_next_projectile_pool_object@@YIPAXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402658,MarkNetworkLobbySelectedPeerDisconnected,?MarkNetworkLobbySelectedPeerDisconnected@@YIXPAX@Z,stub,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x00402667,ManagedEntityChildView::SetManagedEntityPrimaryActiveFlag,?SetManagedEntityPrimaryActiveFlag@ManagedEntityChildView@@QAEXH@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402676,DestroyCollChunkObjectAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x0040268A,FindManagedEntityByPointer,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040268F,LevelSlotActionDispatcherView::DispatchLevelSlotActionByType,?DispatchLevelSlotActionByType@LevelSlotActionDispatcherView@@QAEXHIHH@Z,stub,src/LEVEL/LEVELVTACTIONDISPATCH.CPP
+0x004026A8,VsNetNetworkLobbyScreen::RefreshPlayerEntries,?RefreshPlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
 0x004026CB,AppendManagedEntityGroupFromIds,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004026E9,DestroyCollChunkManagerAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402743,DestroyIceChunkManagerAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
@@ -130,6 +135,7 @@ address,name,symbol,type,source
 0x00402900,EmitProjectilePoolRenderEntries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402946,DispatchMoveChunkObjectActionBySlot,?DispatchMoveChunkObjectActionBySlot@@YIXPAX0HI@Z,stub,src/LEVEL/LEVELVTMOVEACTION.CPP
 0x0040295F,ClearCountedChildBackReference,,stub,src/ENGINE/CORE/LINKSCF.H
+0x0040296E,VsNetNetworkLobbyScreen::ActivateSelectedPlayerEntry,?ActivateSelectedPlayerEntry@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
 0x004029A0,GameScreenObject::ConstructPasswordEntryScreen,,stub,src/GAME.H
 0x004029B4,VS_WindowOwnerBase::ReservedWindowOwnerSlot39,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x004029FA,ResetCaptureTriggerChunkObjectRuntimeStateThunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
@@ -179,6 +185,7 @@ address,name,symbol,type,source
 0x004030C1,VS_RootGeometryOwner::RemoveQueuedRenderSinkValueNode,,stub,src/ENGINE/GDI/VSWINDOW.H
 0x004031CF,GmobChunkType14ActionView::DispatchGmobChunkType14Actions,?DispatchGmobChunkType14Actions@GmobChunkType14ActionView@@QAEXXZ,stub,src/LEVEL/LEVELVTACTIONDISPATCH.CPP
 0x00403201,GetFirstManagedEntityChildFromCachedGroup,,stub,src/ENGINE/CORE/LINKSCF.H
+0x0040325B,VsNetNetworkLobbyScreen::HidePlayerEntries,?HidePlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
 0x004032AB,set_move_chunk_object_trigger_latch,?set_move_chunk_object_trigger_latch@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004032C4,ActivateCollChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004032D3,InitializeLiftChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
