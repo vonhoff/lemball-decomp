@@ -194,8 +194,8 @@ extern "C"
 	int WINAPI GetSystemMetrics(int nIndex);
 	void WINAPI InitializeCriticalSection(LPVOID lpCriticalSection);
 	void WINAPI DeleteCriticalSection(LPVOID lpCriticalSection);
-	void WINAPI EnterCriticalSection(LPVOID lpCriticalSection);
-	void WINAPI LeaveCriticalSection(LPVOID lpCriticalSection);
+	__declspec(dllimport) void WINAPI EnterCriticalSection(LPVOID lpCriticalSection);
+	__declspec(dllimport) void WINAPI LeaveCriticalSection(LPVOID lpCriticalSection);
 	BOOL WINAPI WinHelpA(HWND hWndMain, LPCSTR lpszHelp, UINT uCommand, DWORD_PTR dwData);
 	int WINAPI DialogBoxParamA(HINSTANCE hInstance,
 							   LPCSTR lpTemplateName,
