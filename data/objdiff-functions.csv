@@ -1375,8 +1375,8 @@ address,size,name,unit
 0x00444900,36,release_pause_dialog_palette_remaps,FRONTEND/MENUSEL.CPP
 0x00444930,68,select_pause_dialog_palette_remap_for_index,FRONTEND/MENUSEL.CPP
 0x00444A90,140,update_pause_dialog_hovered_option_at_point,FRONTEND/MENUSEL.CPP
-0x00444BD0,22,clear_pause_dialog_hovered_option,FRONTEND/MENUSEL.CPP
-0x00444BF0,22,clear_pause_dialog_hovered_option_variant,FRONTEND/MENUSEL.CPP
+0x00444BD0,22,clear_pause_dialog_hovered_option,FRONTEND/MENUSELPAUSE.CPP
+0x00444BF0,22,clear_pause_dialog_hovered_option_variant,FRONTEND/MENUSELPAUSE.CPP
 0x00444C10,267,handle_pause_dialog_option_event,FRONTEND/MENUSEL.CPP
 0x00444DA0,37,dispatch_pause_dialog_callback_and_clear_queue,FRONTEND/MENUSEL.CPP
 0x004452A0,23,add_two_short_point_in_place,LEVEL/LEVELSTAT.CPP
