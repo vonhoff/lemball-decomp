@@ -674,7 +674,7 @@ address,size,name,unit
 0x0041F140,36,service_iterated_level_chunk_children_variant,LEVEL/LEVELRUN.CPP
 0x0041F250,139,remove_cached_chunk_object_from_level_list_and_destroy,LEVEL/LEVELVT.CPP
 0x0041F2E0,313,load_shpg_chunk_objects,LEVEL/LEVELVT.CPP
-0x0041F500,35,construct_shpg_chunk_owner,LEVEL/LEVELVT.CPP
+0x0041F500,35,construct_shpg_managed_entity_group_controller,LEVEL/LEVELVT.CPP
 0x0041F530,512,queue_owner_child_offset_move_commands_for_point,LEVEL/LEVELVT.CPP
 0x0041F730,234,queue_owner_children_toward_nearest_target,LEVEL/LEVELVT.CPP
 0x0041F820,70,service_composite_children_and_seek_target,LEVEL/LEVELVT.CPP
@@ -714,7 +714,7 @@ address,size,name,unit
 0x004206F0,41,handle_enmy_chunk_object_projectile_hit,LEVEL/LEVELVT.CPP
 0x00420AA0,7,get_object_field_0x124,LEVEL/LEVELVT.CPP
 0x00420AB0,30,delete_three_optional_record_chunk_object_wrapper,LEVEL/LEVELVT.CPP
-0x00420AE0,35,construct_enmy_chunk_owner,LEVEL/LEVELVT.CPP
+0x00420AE0,35,construct_enmy_managed_entity_group_controller,LEVEL/LEVELVT.CPP
 0x00420B20,30,delete_level_chunk_object_children_wrapper_00420b20,ENGINE/CORE/LINKSCF.CPP
 0x00420B50,39,read_little_endian_u32_from_bytes,ENGINE/CORE/LINKSCF.CPP
 0x00420B80,35,construct_enmy_chunk_manager,ENGINE/CORE/LINKSCF.CPP
