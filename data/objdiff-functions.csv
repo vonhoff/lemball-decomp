@@ -2254,7 +2254,6 @@ address,size,name,unit
 0x00462590,24,register_eff_transport_event_client,ENGINE/MEDIA/EFFSTRM.CPP
 0x004625B0,33,unregister_eff_transport_event_client,ENGINE/MEDIA/EFFSTRM.CPP
 0x004625E0,161,cleanup_network_transport,ENGINE/NET/VSNET.CPP
-0x00462720,89,broadcast_eff_stream_to_active_peers,ENGINE/NET/VSNET.CPP
 0x004627B0,91,process_network_transport_event,ENGINE/NET/VSNET.CPP
 0x00462810,30,delete_eff_stream_base_wrapper_00462810,ENGINE/NET/VSNETSTR.CPP
 0x00462830,30,delete_eff_stream_base_wrapper_00462830,ENGINE/NET/VSNETSTR.CPP
