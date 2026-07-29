@@ -166,6 +166,7 @@ address,name,symbol,type,source
 0x00402EB9,GetCachedChunkObjectByIndex,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402F09,DestroyManagedEntityQueueCursorAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402F3B,SetMenuSelectorDurationFieldThunk,,stub,src/FRONTEND/MENUSEL.H
+0x00402F4A,VsNetNetworkLobbyScreen::SelectNextPlayerEntry,?SelectNextPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/FRONTEND/LOBBY.CPP
 0x00402FF4,AdvanceActiveMoveChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402FFE,DestroyLevelScreenActionPanelResourcesThunk,,stub,src/LEVEL/LEVELSTAT.CPP
 0x00403008,FUN_0043a2e0,,stub,src/GAME.H
@@ -193,6 +194,7 @@ address,name,symbol,type,source
 0x0040345E,ActivateMoveChunkObjects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00403463,DestroyLevelSelectionScreenAutoThunk,,stub,src/FRONTEND/MAINMENU.CPP
 0x00403468,DestroyProjectileObject,?DestroyProjectileObject@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCFPROJECTILE.CPP
+0x0040346D,VsNetNetworkLobbyScreen::SelectPreviousPlayerEntry,?SelectPreviousPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/FRONTEND/LOBBY.CPP
 0x00403472,DestroyThreeOptionalRecordChunkObjectAutoThunk,,stub,src/LEVEL/LEVELVT.CPP
 0x0040349A,DispatchIceChunkObjectActionBySlot,?DispatchIceChunkObjectActionBySlot@@YIXPAX0HI@Z,stub,src/ENGINE/CORE/LINKSCFICEACTION.CPP
 0x004034A9,VS_RootGeometryOwner::QueryRootGeometryState,,stub,src/ENGINE/GDI/VSWINDOW.H

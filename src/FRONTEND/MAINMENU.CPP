@@ -90,8 +90,6 @@ extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(void* pOwner, int nUnusedE
 extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(void* pOwner, int nUnusedEdx, void* pChild);
 extern void LEMBALL_FASTCALL clear_mapped_list_resource_table_pending_flag(void* pTable);
 extern void LEMBALL_FASTCALL ThunkRefreshNetworkLobbyPlayerEntries(int nNetworkLobbyScreen);
-extern int LEMBALL_FASTCALL ThunkSelectNextNetworkLobbyPlayerEntry(int nNetworkLobbyScreen);
-extern int LEMBALL_FASTCALL ThunkSelectPreviousNetworkLobbyPlayerEntry(int nNetworkLobbyScreen);
 struct GameNetworkLobbyScreenView;
 void SetNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus);
 void SetTimedNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus, DWORD dwDuration);
@@ -274,6 +272,8 @@ class VsNetNetworkLobbyScreen {
 public:
 	void ShowPlayerEntries(void);
 	void ClearPlayerEntryDirty(int iEntry);
+	int SelectNextPlayerEntry(void);
+	int SelectPreviousPlayerEntry(void);
 };
 
 struct GameNetworkLobbyScreenView : public GameFramedScreenBase {
@@ -5440,10 +5440,10 @@ int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(void* pObject, int, void* pEv
 
 		fMoved = 0;
 		if (nCode == 1U) {
-			fMoved = ThunkSelectPreviousNetworkLobbyPlayerEntry((int) (unsigned long) pScreen);
+			fMoved = ((VsNetNetworkLobbyScreen*) pScreen)->SelectPreviousPlayerEntry();
 		}
 		else if (nCode == 2U) {
-			fMoved = ThunkSelectNextNetworkLobbyPlayerEntry((int) (unsigned long) pScreen);
+			fMoved = ((VsNetNetworkLobbyScreen*) pScreen)->SelectNextPlayerEntry();
 		}
 		if (fMoved != 0) {
 			if (g_pVariantResourceEntryManager != 0) {
