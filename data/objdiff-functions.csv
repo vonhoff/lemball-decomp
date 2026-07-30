@@ -2507,8 +2507,8 @@ address,size,name,unit
 0x00468130,70,reset_sprite_owner_frame_event_point,FRONTEND/MENUSEL.CPP
 0x00468180,107,notify_sprite_owner_frame_event_c,FRONTEND/MENUSEL.CPP
 0x004681F0,107,notify_sprite_owner_frame_event_b,FRONTEND/MENUSEL.CPP
-0x00468260,66,notify_sprite_owner_variant_c_event_0x0d,FRONTEND/MENUSEL.CPP
-0x004682B0,66,notify_sprite_owner_variant_c_event_0x0e,FRONTEND/MENUSEL.CPP
+0x00468260,66,notify_sprite_owner_variant_c_event_0x0d,FRONTEND/MENUSELSPRITEEVENT.CPP
+0x004682B0,66,notify_sprite_owner_variant_c_event_0x0e,FRONTEND/MENUSELSPRITEEVENT.CPP
 0x00468300,83,refresh_compact_zrle_owner_if_helper_dirty,FRONTEND/MENUSEL.CPP
 0x00468360,170,queue_compact_zrle_owner_if_dirty,FRONTEND/MENUSEL.CPP
 0x00468410,276,construct_aligned_zrle_child_overlay_from_rect,FRONTEND/MENUSEL.CPP
