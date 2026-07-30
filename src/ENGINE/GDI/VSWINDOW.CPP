@@ -1133,8 +1133,7 @@ void VS_WindowOwnerBase::PropagateWindowOwnerPosition(const VS_XYPair* pPoint)
 	delta.m_y = (short) (pPoint->m_y - m_Position0C.m_y);
 	pNode = m_pChildren24;
 	while (pNode != 0) {
-		pNode->m_pOwner->OffsetRootGeometryPosition((unsigned int) (unsigned short) delta.m_x |
-													((unsigned int) (unsigned short) delta.m_y << 16));
+		pNode->m_pOwner->OffsetRootGeometryPosition(delta);
 		pNode = pNode->m_pNext;
 	}
 	m_Position0C.m_x = pPoint->m_x;
@@ -1154,8 +1153,7 @@ void VS_WindowOwnerBase::MoveWindowOwnerOrigin(const VS_XYPair* pPoint)
 	delta.m_y = (short) (pPoint->m_y - m_Origin18.m_y);
 	pNode = m_pChildren24;
 	while (pNode != 0) {
-		pNode->m_pOwner->OffsetRootGeometryPosition((unsigned int) (unsigned short) delta.m_x |
-													((unsigned int) (unsigned short) delta.m_y << 16));
+		pNode->m_pOwner->OffsetRootGeometryPosition(delta);
 		pNode->m_pOwner->ReservedWindowOwnerSlot18();
 		pNode = pNode->m_pNext;
 	}
@@ -1922,10 +1920,10 @@ void VS_RootGeometryOwner::CanonicalizeRootGeometrySubrectAlt(void)
 }
 
 // FUNCTION: LEMBALL 0x00466260
-void VS_RootGeometryOwner::OffsetRootGeometryPosition(unsigned int uPackedDelta)
+void VS_RootGeometryOwner::OffsetRootGeometryPosition(VS_XYPair delta)
 {
-	m_Position0C.m_x = (short) (m_Position0C.m_x + (short) (uPackedDelta & 0xffff));
-	m_Position0C.m_y = (short) (m_Position0C.m_y + (short) (uPackedDelta >> 16));
+	m_Position0C.m_x = (short) (m_Position0C.m_x + delta.m_x);
+	m_Position0C.m_y = (short) (m_Position0C.m_y + delta.m_y);
 	CanonicalizeRootGeometrySubrectAlt();
 }
 

@@ -36,7 +36,7 @@ public:
 	virtual void RetainRootGeometryOwner(void);                           // vtable+0x18
 	virtual void ReleaseRootGeometryOwner(void);                          // vtable+0x1c
 	virtual void CanonicalizeRootGeometrySubrect(void);                   // vtable+0x20
-	virtual void OffsetRootGeometryPosition(unsigned int uPackedDelta);   // vtable+0x24
+	virtual void OffsetRootGeometryPosition(VS_XYPair delta);             // vtable+0x24
 	virtual void CanonicalizeRootGeometrySubrectAlt(void);                // vtable+0x28
 	virtual void SetRootGeometryScaleFactor(int nScaleFactor);            // vtable+0x2c
 	virtual void SetRootGeometryRect(const VS_XYPair* pRect);             // vtable+0x30
