@@ -70,23 +70,23 @@ inline static void* LoadTypedSoundResource(int nResourceId, unsigned int uTypeTa
 
 	pResourceObject = (MogLoadStringResourceObject*) ((MogLoadResourceArchive*) g_pResourceArchive)
 						  ->FindCachedResourceObjectById(nResourceId);
-	if (pResourceObject != 0) {
-		if (pResourceObject->m_uTypeTag != uTypeTag) {
-			ReleaseTypedResourceObjectReference(pResourceObject);
-			pResourceObject = 0;
+	if (pResourceObject == 0) {
+		pResourceObject = (MogLoadStringResourceObject*) AllocateVSMemBlock(0x48);
+		if (pResourceObject != 0) {
+			pResourceObject->m_pVtable = g_MOGLOAD_CachedResourceObjectBaseVtable;
+			pResourceObject->m_nReserved18 = 0;
+			pResourceObject->m_pVtable = pVtable;
+			InitializeResourceObjectFromId(pResourceObject, 0, nResourceId);
+			return FinalizeLoadedResourceObjectResult(pResourceObject, 0);
 		}
-		return pResourceObject;
+		return FinalizeLoadedResourceObjectResult(0, 0);
 	}
 
-	pResourceObject = (MogLoadStringResourceObject*) AllocateVSMemBlock(0x48);
-	if (pResourceObject != 0) {
-		pResourceObject->m_pVtable = g_MOGLOAD_CachedResourceObjectBaseVtable;
-		pResourceObject->m_nReserved18 = 0;
-		pResourceObject->m_pVtable = pVtable;
-		InitializeResourceObjectFromId(pResourceObject, 0, nResourceId);
-		return FinalizeLoadedResourceObjectResult(pResourceObject, 0);
+	if (pResourceObject->m_uTypeTag != uTypeTag) {
+		ReleaseTypedResourceObjectReference(pResourceObject);
+		pResourceObject = 0;
 	}
-	return FinalizeLoadedResourceObjectResult(0, 0);
+	return pResourceObject;
 }
 
 // FUNCTION: LEMBALL 0x0045e3f0
