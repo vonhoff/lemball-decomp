@@ -3493,7 +3493,7 @@ void LEMBALL_FASTCALL DestroyQueuedVariantRangeEntryAutoThunk(void* pObject)
 
 void* LEMBALL_FASTCALL DeleteQueuedVariantRangeEntryAuto(void* pObject, void*, BYTE fDelete)
 {
-	DestroyQueuedVariantRangeEntryAuto(pObject);
+	DestroyQueuedVariantRangeEntryAutoThunk(pObject);
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}
