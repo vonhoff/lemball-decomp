@@ -102,8 +102,6 @@ struct LinkScfBoonChunkManagerView {
 // Referenced real destinations that remain minimally implemented.
 // STUB: LEMBALL 0x0040a270
 // ResetAllInvsChunkObjects
-// STUB: LEMBALL 0x0040a3b0
-// AdvanceInvsChunkObjects
 // STUB: LEMBALL 0x0040df90
 // DispatchDoorChildArrayVirtual104
 // STUB: LEMBALL 0x0040e550
