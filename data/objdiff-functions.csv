@@ -1649,6 +1649,7 @@ address,size,name,unit
 0x00451E60,171,draw_password_entry_input_panel,FRONTEND/MAINMENU.CPP
 0x00451F10,155,initialize_password_entry_render_context,FRONTEND/MAINMENU.CPP
 0x00451FB0,22,construct_password_entry_render_context_object,FRONTEND/MAINMENU.CPP
+0x00451FD0,21,mark_password_entry_render_context_dirty,FRONTEND/MAINMENUCONTEXT.CPP
 0x00452370,30,delete_password_entry_screen,FRONTEND/MAINMENU.CPP
 0x004523A0,8,delete_adjusted_password_entry_screen,FRONTEND/MAINMENU.CPP
 0x004523B0,35,construct_network_lobby_selected_peer_status_stream,ENGINE/MEDIA/EFFSTRM.CPP
