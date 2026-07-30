@@ -651,7 +651,6 @@ struct VsGdiResourceGeometryHelperSlotManagerVtable {
 	void (VsGdiResourceGeometryHelperSlotManager::*m_pRemove)(void*);
 	int (VsGdiResourceGeometryHelperSlotManager::*m_pFind)(void*);
 	void (VsGdiResourceGeometryHelperSlotManager::*m_pDeactivate)(void*);
-	void* m_apReserved[28];
 };
 
 static VsGdiResourceGeometryHelperSlotManagerVtable g_VSGDI_ResourceGeometryHelperSlotManagerVtable = {
@@ -659,7 +658,6 @@ static VsGdiResourceGeometryHelperSlotManagerVtable g_VSGDI_ResourceGeometryHelp
 	&VsGdiResourceGeometryHelperSlotManager::RemoveResourceGeometryHelperSlot,
 	&VsGdiResourceGeometryHelperSlotManager::FindResourceGeometryHelperSlot,
 	&VsGdiResourceGeometryHelperSlotManager::DeactivateResourceGeometryHelperSlot,
-	{VSGDI_SAFE_SLOTS_28},
 };
 
 struct VsGdiResourceGeometryHelperTargetVtable {
