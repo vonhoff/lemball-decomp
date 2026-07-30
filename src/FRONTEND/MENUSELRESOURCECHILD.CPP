@@ -11,6 +11,11 @@ public:
 	int m_fRefreshPending48;
 };
 
+class MenuSelectorXorFieldNoArgView {
+public:
+	void RecomputeField104FromXor(void);
+};
+
 // FUNCTION: LEMBALL 0x0043a5e0
 void GameResourceGeometryChildView::RefreshGeometryChildEnabled(void)
 {
@@ -24,4 +29,14 @@ void GameResourceGeometryChildView::RefreshGeometryChildEnabled(void)
 	}
 	((GameResourceGeometryChildState*) (pObject + 0x90))->m_fRefreshPending48 = 1;
 	((GameResourceGeometryChildState*) (pObject + 0x90))->SetEnabled(*(int*) (pObject + 0x34));
+}
+
+// FUNCTION: LEMBALL 0x00443890
+void MenuSelectorXorFieldNoArgView::RecomputeField104FromXor(void)
+{
+	int nValue;
+
+	nValue = *(volatile int*) ((char*) this + 0xd0);
+	nValue ^= *(volatile int*) ((char*) this + 0x130);
+	*(int*) ((char*) this + 0x104) = nValue;
 }

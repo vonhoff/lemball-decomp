@@ -1367,6 +1367,7 @@ address,size,name,unit
 0x00443360,75,is_point_inside_level_screen_action_panel,LEVEL/LEVELSTAT.CPP
 0x00443850,21,recompute_field_0x104_from_xor,FRONTEND/MENUSEL.CPP
 0x00443870,19,update_action_button_field_0x104_from_fields_0x130_xor_0xd0,FRONTEND/MENUSEL.CPP
+0x00443890,19,recompute_field_0x104_from_xor_no_arg,FRONTEND/MENUSELRESOURCECHILD.CPP
 0x00443990,25,initialize_base_mode_action_button_point_sink,FRONTEND/MENUSEL.CPP
 0x004439B0,31,delete_base_mode_action_button_point_sink_array_or_scalar,FRONTEND/MENUSEL.CPP
 0x004439E0,7,restore_base_mode_action_button_point_sink_vtable,LEVEL/LEVELSTAT.CPP
