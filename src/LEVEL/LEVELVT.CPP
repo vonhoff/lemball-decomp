@@ -2697,3 +2697,14 @@ int PASCAL return_zero_move_chunk_callback(void* pUnused1, void* pUnused2)
 	(void) pUnused2;
 	return 0;
 }
+
+int return_chunk_status_two(void)
+{
+	return 2;
+}
+
+int PASCAL accept_gmob_activation(void* pUnused)
+{
+	(void) pUnused;
+	return 1;
+}
