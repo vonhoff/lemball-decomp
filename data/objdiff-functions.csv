@@ -214,7 +214,7 @@ address,size,name,unit
 0x0040D910,293,set_door_chunk_tile_blocking_flags,LEVEL/LEVELVT.CPP
 0x0040DA40,305,clear_door_chunk_tile_blocking_flags,LEVEL/LEVELVT.CPP
 0x0040DB80,345,service_door_chunk_object_state_machine,LEVEL/LEVELVT.CPP
-0x0040DD00,47,request_door_chunk_object_trigger_transition,LEVEL/LEVELVT.CPP
+0x0040DD00,47,request_door_chunk_object_trigger_transition,ENGINE/CORE/LINKSCF.CPP
 0x0040DD30,32,is_door_chunk_idle_or_closed_state,LEVEL/LEVELVT.CPP
 0x0040DD80,292,handle_door_chunk_object_entity_overlap,ENGINE/CORE/LINKSCF.CPP
 0x0040DEC0,98,activate_door_chunk_object_trigger,ENGINE/CORE/LINKSCF.CPP
