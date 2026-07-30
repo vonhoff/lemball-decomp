@@ -5259,3 +5259,13 @@ DEFINE_LEVELSTAT_COMPAT_DELETE(DeleteQueuedVariantChildSlotRenderPointSinkAuto)
 DEFINE_LEVELSTAT_COMPAT_DELETE(DeleteQueuedRenderPointSinkAuto)
 
 #undef DEFINE_LEVELSTAT_COMPAT_DELETE
+
+class GameAlignedZrleChildOverlayView {
+public:
+	void QueueAlignedFrame(void);
+};
+
+void LEMBALL_FASTCALL QueueAlignedZrleChildDrawEntry(void* pObject)
+{
+	((GameAlignedZrleChildOverlayView*) pObject)->QueueAlignedFrame();
+}

@@ -130,6 +130,7 @@ address,name,symbol,type,source
 0x00442130,LevelTwoShortPointView::CopyTwoShortPoint,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00442150,LevelTwoShortPointView::CopyTwoShortPointVariant,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00442170,LevelFourShortRectView::ClearFourShortRect,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x00442260,QueueAlignedZrleChildDrawEntry,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00442270,QueueAlignedZrleChildOverlayIfDirty,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00442CA0,LevelScreenActionButtonLayoutAuto::Position,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x004432A0,LevelActionPanelCodeView::MapActionPanelCode14To8,,synthetic,src/LEVEL/LEVELSTAT.CPP
