@@ -5145,8 +5145,6 @@ DEFINE_LEVELSTAT_COMPAT_DELETE(DeleteRenderPointRectSinkEntryAuto)
 DEFINE_LEVELSTAT_COMPAT_DELETE(DeleteFramedScreenRenderChildEntryAAuto)
 DEFINE_LEVELSTAT_COMPAT_DELETE(DeleteFramedScreenRenderChildEntryBAuto)
 
-#undef DEFINE_LEVELSTAT_COMPAT_DELETE
-
 void* LEMBALL_FASTCALL DeletePackagedSpriteRenderEntryAuto(void* pObject, void*, BYTE fDelete)
 {
 	*(void**) pObject = &g_LEVEL_PackagedSpriteRenderEntryVtableStorage[4];
@@ -5255,3 +5253,9 @@ void* LEMBALL_FASTCALL DeleteBaseModeObjectVariantAuto(void* pObject, void*, BYT
 	}
 	return pObject;
 }
+
+// Keep these compiler-generated deletes last to preserve MSVC 4.20 state.
+DEFINE_LEVELSTAT_COMPAT_DELETE(DeleteQueuedVariantChildSlotRenderPointSinkAuto)
+DEFINE_LEVELSTAT_COMPAT_DELETE(DeleteQueuedRenderPointSinkAuto)
+
+#undef DEFINE_LEVELSTAT_COMPAT_DELETE

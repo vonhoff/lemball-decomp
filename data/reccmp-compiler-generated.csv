@@ -99,6 +99,7 @@ address,name,symbol,type,source
 0x004324D0,is_object_field_0x44_current_context,,synthetic,src/SHELL/PRIMARY.CPP
 0x00432870,ClearWindowOwnerRuntimeFields,,synthetic,src/ENGINE/GDI/VSWINDOW.CPP
 0x00432A30,InitializeStatusIndicatorPointSinkEntryAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x00432A60,DeleteQueuedVariantChildSlotRenderPointSinkAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00432A90,DeleteStatusIndicatorPointSinkEntryAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00434F50,DispatchLevelStatusCallbackIfActive,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00439400,DeletePackagedSpriteRenderEntryAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
@@ -106,6 +107,7 @@ address,name,symbol,type,source
 0x004395C0,DeleteQueuedRenderSinkEntryA,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x004395F0,DeleteQueuedRenderPointSinkFinalizeAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00439620,DeleteQueuedRenderSinkEntryB,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x00439650,DeleteQueuedRenderPointSinkAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00439680,DeleteQueuedRenderSinkEntryC,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x004396B0,DeleteQueuedRenderSinkEntryD,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x004396E0,DeleteRenderPointRectSinkEntryAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
