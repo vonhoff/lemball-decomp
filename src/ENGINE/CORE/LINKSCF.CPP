@@ -1347,6 +1347,7 @@ unsigned short LiftChunkManagerSerializationView::GetLiftChunkObjectSlotIdByInde
 	}
 	return ((LiftManagedEntitySlotView*) (*(char**) ((char*) this + 0x3c) + iObject * 0x190))->GetManagedEntitySlotId();
 }
+
 extern void* g_LINKSCF_RockChunkObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x004267d0
@@ -1732,6 +1733,11 @@ void LEMBALL_FASTCALL ActivateTramChunkObjects(void* pManager)
 	}
 }
 
+// FUNCTION: LEMBALL 0x0042b9b0
+void noop_tram_runtime_callback(void)
+{
+}
+
 extern void* g_LINKSCF_PgunChunkObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x0042bad0
@@ -1747,6 +1753,22 @@ void LEMBALL_FASTCALL destroy_pgun_chunk_object_vtable_thunk(void* pObject)
 {
 	*(void**) pObject = g_LINKSCF_PgunChunkObjectVtable;
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
+}
+
+// FUNCTION: LEMBALL 0x0042bfc0
+int PASCAL return_zero_pgun_chunk_callback_a(void* pUnused1, void* pUnused2)
+{
+	(void) pUnused1;
+	(void) pUnused2;
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0042bfd0
+int PASCAL return_zero_pgun_chunk_object_callback(void* pUnused1, void* pUnused2)
+{
+	(void) pUnused1;
+	(void) pUnused2;
+	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0042bfe0
@@ -1787,6 +1809,22 @@ void LEMBALL_FASTCALL ActivatePgunChunkObjects(void* pManager)
 void LEMBALL_FASTCALL clear_pgun_chunk_object_count(void* pManager)
 {
 	*(int*) ((char*) pManager + 0x34) = 0;
+}
+
+// FUNCTION: LEMBALL 0x0042c4c0
+int PASCAL return_zero_pgun_chunk_callback_b(void* pUnused1, void* pUnused2)
+{
+	(void) pUnused1;
+	(void) pUnused2;
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0042c580
+int PASCAL return_zero_pgun_chunk_manager_callback(void* pUnused1, void* pUnused2)
+{
+	(void) pUnused1;
+	(void) pUnused2;
+	return 0;
 }
 
 extern void* g_LINKSCF_IceChunkObjectVtable[16];
