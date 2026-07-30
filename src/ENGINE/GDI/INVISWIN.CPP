@@ -96,27 +96,27 @@ LRESULT CALLBACK InvisibleMessageWindowWndProc(HWND hWnd, UINT uMessage, WPARAM 
 {
 	VS_InvisibleWindow* pWindow;
 	LRESULT lResult;
-	CREATESTRUCTA* pCreateStruct;
+	CREATESTRUCTA* pCreateStruct = (CREATESTRUCTA*) (unsigned long) lParam;
 
 	if (g_fWindowMessagePassthroughMode != 0) {
 		return DefWindowProcA(hWnd, uMessage, wParam, lParam);
 	}
 
 	pWindow = (VS_InvisibleWindow*) (unsigned long) GetWindowLongA(hWnd, GWL_USERDATA);
-	if (uMessage == WM_CREATE) {
-		pCreateStruct = (CREATESTRUCTA*) (unsigned long) lParam;
-		SetWindowLongA(hWnd, GWL_USERDATA, (LONG) (unsigned long) pCreateStruct->lpCreateParams);
-		return 0;
-	}
-
-	if (pWindow != 0) {
-		if (pWindow->m_dwReserved1 == 0 || uMessage < pWindow->m_dwReserved0 || pWindow->m_dwReserved1 < uMessage) {
-			lResult = ((VS_InvisibleWindowMessageInterface*) pWindow)->HandleWindowMessage(uMessage, wParam, lParam);
-			if (lResult != -1) {
-				return lResult;
+	if (uMessage != WM_CREATE) {
+		if (pWindow != 0) {
+			if (pWindow->m_dwReserved1 == 0 ||
+				(pWindow->m_dwReserved0 <= uMessage && uMessage <= pWindow->m_dwReserved1)) {
+				lResult =
+					((VS_InvisibleWindowMessageInterface*) pWindow)->HandleWindowMessage(uMessage, wParam, lParam);
+				if (lResult != -1) {
+					return lResult;
+				}
 			}
 		}
+		return DefWindowProcA(hWnd, uMessage, wParam, lParam);
 	}
 
-	return DefWindowProcA(hWnd, uMessage, wParam, lParam);
+	SetWindowLongA(hWnd, GWL_USERDATA, (LONG) (unsigned long) pCreateStruct->lpCreateParams);
+	return 0;
 }
