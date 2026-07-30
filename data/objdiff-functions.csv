@@ -425,6 +425,7 @@ address,size,name,unit
 0x00416850,44,construct_managed_entity_packet_base,LEVEL/LEVELRUN.CPP
 0x00416880,19,bind_managed_entity_packet_target,LEVEL/LEVELRUN.CPP
 0x004168A0,30,serialize_managed_entity_type_and_slot_id,LEVEL/LEVELRUN.CPP
+0x004168C0,1,reverse_managed_entity_packet_base_payload,LEVEL/LEVELRUN.CPP
 0x004168D0,24,construct_managed_entity_state_update_packet,LEVEL/LEVELRUN.CPP
 0x004168F0,75,serialize_managed_entity_state_update_packet,LEVEL/LEVELRUN.CPP
 0x00416940,202,apply_managed_entity_state_update_packet,LEVEL/LEVELRUN.CPP
@@ -669,6 +670,7 @@ address,size,name,unit
 0x0041EB90,66,find_managed_entity_by_pointer,ENGINE/CORE/LINKSCF.CPP
 0x0041EBE0,150,append_managed_entity_group_from_ids,ENGINE/CORE/LINKSCF.CPP
 0x0041EC80,28,append_cached_chunk_object,ENGINE/CORE/LINKSCF.CPP
+0x0041ECA0,1,reset_cached_chunk_manager_scratch,ENGINE/CORE/LINKSCF.CPP
 0x0041ECB0,102,remove_cached_chunk_object_and_destroy,ENGINE/CORE/LINKSCF.CPP
 0x0041ED20,28,attach_and_activate_chunk_object,ENGINE/CORE/LINKSCF.CPP
 0x0041ED40,153,remove_owner_child_if_no_nested_entries,ENGINE/CORE/LINKSCF.CPP
@@ -1178,9 +1180,12 @@ address,size,name,unit
 0x00439340,37,initialize_level_screen_hotspot_entry,LEVEL/LEVELSTAT.CPP
 0x00439370,1,noop_render_entry_callback_00439370,LEVEL/LEVELSTAT.CPP
 0x00439380,3,noop_render_entry_callback_00439380,LEVEL/LEVELSTAT.CPP
+0x00439390,3,noop_render_entry_callback_00439390,FRONTEND/SCREENVTDEFAULTS.CPP
 0x004393A0,3,noop_render_entry_callback_004393a0,FRONTEND/SCREENVT.CPP
 0x004393B0,1,noop_render_entry_callback_004393b0,FRONTEND/SCREENVT.CPP
+0x004393C0,1,noop_render_entry_callback_004393c0,FRONTEND/SCREENVTDEFAULTS.CPP
 0x004393D0,1,noop_render_entry_callback_004393d0,FRONTEND/SCREENVT.CPP
+0x004393E0,1,noop_render_entry_callback_004393e0,FRONTEND/SCREENVTDEFAULTS.CPP
 0x004393F0,1,noop_render_entry_callback_004393f0,FRONTEND/SCREENVT.CPP
 0x00439400,31,delete_render_entry_variant_00439400,LEVEL/LEVELSTAT.CPP
 0x00439430,10,set_render_entry_field_0x04,FRONTEND/SCREENVT.CPP

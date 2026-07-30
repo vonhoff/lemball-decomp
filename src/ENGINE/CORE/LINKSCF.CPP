@@ -218,10 +218,7 @@ DEFINE_LINKSCF_VTABLE_STUB_1(EmitMoveChunkManagerRenderEntries)
 #undef DEFINE_LINKSCF_VTABLE_STUB_1
 #undef DEFINE_LINKSCF_VTABLE_STUB_2
 
-int ResetCachedChunkManagerScratch(void)
-{
-	return 0;
-}
+void ResetCachedChunkManagerScratch(void);
 
 // Compatibility shim retained for compiler-generated callers; original ILT slot
 // 0x00401078 targets GetFirstCachedChunkObject directly.
@@ -1201,6 +1198,12 @@ void LEMBALL_FASTCALL AppendCachedChunkObject(void* pObject, void*, void* pChunk
 		++*(int*) ((char*) pObject + 0xa4);
 	}
 }
+
+// FUNCTION: LEMBALL 0x0041eca0
+void ResetCachedChunkManagerScratch(void)
+{
+}
+
 // FUNCTION: LEMBALL 0x0041ee90
 int LEMBALL_FASTCALL EmitCachedChunkManagerRenderEntries(void* pObject, void*, char* pEntries)
 {

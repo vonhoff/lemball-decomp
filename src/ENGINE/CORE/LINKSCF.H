@@ -134,8 +134,6 @@ struct LinkScfBoonChunkManagerView {
 // FindManagedEntityByPointer
 // STUB: LEMBALL 0x0041ebe0
 // AppendManagedEntityGroupFromIds
-// STUB: LEMBALL 0x0041eca0
-// ResetCachedChunkManagerScratch
 // STUB: LEMBALL 0x0041ed20
 // AttachAndActivateChunkObject
 // STUB: LEMBALL 0x0041ed40
