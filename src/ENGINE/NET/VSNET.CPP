@@ -2160,7 +2160,7 @@ void VsNetCompositeEffTransportStack::DualStreamNoop(void)
 			((VsNetChannelOwnerObject*) (unsigned long) pWindowState->m_nChannelOwner24)->ClearEffTransportSendGate();
 		}
 	}
-	((void(LEMBALL_STDCALL*)(VsNetEffDispatchEvent*))(*(void***) g_pEffTransportDispatchQueue)[2])(&kEvent);
+	((VsNetErrorDispatchQueue*) g_pEffTransportDispatchQueue)->QueueEvent(&kEvent);
 }
 
 // FUNCTION: LEMBALL 0x00460e40
@@ -2198,7 +2198,7 @@ int VsNetEffTransportPeer::SendEffStreamToActivePeer(int* pStream)
 			}
 			kFailureEvent.m_pStream = pStream;
 			kFailureEvent.m_pPeer = this;
-			((void (*)(VsNetEffDispatchEvent*))(*(void***) g_pEffTransportDispatchQueue)[2])(&kFailureEvent);
+			((VsNetErrorDispatchQueue*) g_pEffTransportDispatchQueue)->QueueEvent(&kFailureEvent);
 		}
 
 		if (fOpenedWriteSession != 0) {
@@ -2233,7 +2233,7 @@ void VsNetCompositeEffTransportStack::ClearPendingWrite(void* pArgument)
 		kEvent.m_nCode = 0;
 		kEvent.m_pStream = (int*) (pbObject - 0x30);
 		kEvent.m_nType = 10;
-		((void(LEMBALL_STDCALL*)(VsNetEffDispatchEvent*))(*(void***) g_pEffTransportDispatchQueue)[2])(&kEvent);
+		((VsNetErrorDispatchQueue*) g_pEffTransportDispatchQueue)->QueueEvent(&kEvent);
 	}
 }
 
@@ -2288,7 +2288,7 @@ void VsNetCompositeEffTransportStack::DualStreamRet8(int nType, void* pPayload)
 	kEvent.m_pStream = (int*) this;
 	kEvent.m_pPeer = pPayload;
 	kEvent.m_nCode = 0;
-	((void(LEMBALL_STDCALL*)(VsNetEffDispatchEvent*))(*(void***) g_pEffTransportSecondaryDispatchQueue)[2])(&kEvent);
+	((VsNetErrorDispatchQueue*) g_pEffTransportSecondaryDispatchQueue)->QueueEvent(&kEvent);
 }
 
 // FUNCTION: LEMBALL 0x00461030
