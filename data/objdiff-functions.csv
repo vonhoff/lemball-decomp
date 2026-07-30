@@ -1267,6 +1267,7 @@ address,size,name,unit
 0x0043A540,39,detach_geometry_child_and_destroy_window_owner_0043a540,FRONTEND/MENUSEL.CPP
 0x0043A570,6,return_hresult_80000801_screen_hook,FRONTEND/SCREENVT.CPP
 0x0043A580,73,set_render_anchor_with_origin_compensation_0043a580,FRONTEND/MENUSEL.CPP
+0x0043A5E0,49,refresh_resource_geometry_child_enabled,FRONTEND/MENUSELRESOURCECHILD.CPP
 0x0043A620,48,set_child_present_flag_for_modes_0_or_3,FRONTEND/MENUSEL.CPP
 0x0043A660,48,set_child_present_flag_for_modes_0_or_3_variant,FRONTEND/MENUSEL.CPP
 0x0043A6A0,49,game_aligned_zrle_child_overlay_view_handle_pointer_enter,FRONTEND/MENUSEL.CPP
