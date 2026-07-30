@@ -155,6 +155,7 @@ public:
 class LevelManagedEntityChildIterator {
 public:
 	int HasDirtyChildrenThunk(void);
+	int HasStreamDirtyChildren(void);
 };
 
 class LevelManagedEntityActiveGroupView {
@@ -163,6 +164,8 @@ class LevelManagedEntityActiveGroupView {
 	int m_cManagedEntitiesA4;
 
 public:
+	int HasStreamDirtyChildren(void);
+	int HasStreamDirtyChildrenThunk(void);
 	int HasDirtyChildren(void);
 	int HasDirtyChildrenThunk(void);
 };
@@ -178,6 +181,21 @@ int LevelManagedEntityActiveGroupView::HasDirtyChildren(void)
 	for (iEntity = 0; iEntity < m_cManagedEntitiesA4; ++iEntity) {
 		pEntity = m_apManagedEntities04[iEntity];
 		fDirty = pEntity->HasDirtyChildrenThunk() || fDirty;
+	}
+	return fDirty;
+}
+
+// Original body: LEMBALL 0x004193f0. Kept beside its required compatibility ILT owner.
+int LevelManagedEntityActiveGroupView::HasStreamDirtyChildren(void)
+{
+	LevelManagedEntityChildIterator* pEntity;
+	int fDirty;
+	int iEntity;
+
+	fDirty = 0;
+	for (iEntity = 0; iEntity < m_cManagedEntitiesA4; ++iEntity) {
+		pEntity = m_apManagedEntities04[iEntity];
+		fDirty = pEntity->HasStreamDirtyChildren() || fDirty;
 	}
 	return fDirty;
 }
@@ -685,6 +703,11 @@ void DispatchType14CountedChildSlotC4Thunk(int nChunkManager)
 			++i;
 		} while (i < (int) (unsigned int) *(unsigned short*) (nChunkManager + 0x36));
 	}
+}
+// Compatibility shim for the original ILT call site.
+int LevelManagedEntityActiveGroupView::HasStreamDirtyChildrenThunk(void)
+{
+	return HasStreamDirtyChildren();
 }
 // LINKERILT: LEMBALL 0x00403224
 void LevelTileGridRuntimeView::ComputeLevelTileGridRepeatedColumnCountsThunk(void)
@@ -1448,6 +1471,11 @@ int EmitLevelGameModeDynamicRenderEntries(void* pObject, void* pOutputEntries)
 	cEntries += EmitBoonChunkManagerRenderEntries(*(void**) (pLevelMode + 0x1a8), pEntries + cEntries * 0x4c);
 	cEntries += EmitSlnkChunkManagerRenderEntries(*(void**) (pLevelMode + 0x1c8), pEntries + cEntries * 0x4c);
 	return cEntries;
+}
+// FUNCTION: LEMBALL 0x00412c40
+int LEMBALL_FASTCALL HasStreamDirtyManagedEntityGroups(void* pObject)
+{
+	return ((LevelManagedEntityActiveGroupView*) *(void**) ((char*) pObject + 0x15c))->HasStreamDirtyChildrenThunk();
 }
 // FUNCTION: LEMBALL 0x00412c50
 int LEMBALL_FASTCALL HasPlasChunkDirtyManagedChildren(void* pObject)

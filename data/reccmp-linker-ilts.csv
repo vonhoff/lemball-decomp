@@ -19,6 +19,7 @@ address,name,symbol,type,source
 0x0040126C,level_chunk_stream_write_view_append_level_chunk_stream_payload,?AppendLevelChunkStreamPayload@LevelChunkStreamWriteView@@QAEXPAUVsNetEffStreamBase@@@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x00401271,destroy_level_game_mode_auto_thunk,?DestroyLevelGameModeAutoThunk@@YIXPAX@Z,stub,src/GAME.CPP
 0x004012A3,projectile_pool_remove_object,?RemoveObject@ProjectilePool@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
+0x00401302,has_stream_dirty_managed_entity_children,?HasStreamDirtyChildren@LevelManagedEntityChildIterator@@QAEHXZ,stub,src/LEVEL/LEVELVT.CPP
 0x0040132A,game_screen_object_construct_main_menu_screen,,stub,src/GAME.H
 0x0040137F,activate_iterated_level_chunk_children,?ActivateIteratedLevelChunkChildren@@YIXPAX@Z,stub,src/LEVEL/LEVELRUNITERATOR.CPP
 0x004013DE,activate_tram_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
@@ -112,6 +113,7 @@ address,name,symbol,type,source
 0x0040243C,level_chunk_object_runtime_state_view_clear_state_fields_thunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402446,clear_managed_entity_child_pending_state_if_interruptible,?clear_managed_entity_child_pending_state_if_interruptible@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
 0x00402496,serialize_lift_endpoints,?SerializeLiftChunkEndpointPairs@LiftChunkManagerSerializationView@@QAEHPAULiftChunkEndpointPair@@@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
+0x0040249B,has_stream_dirty_plas_chunk_children,?HasStreamDirtyChildrenThunk@LevelManagedEntityActiveGroupView@@QAEHXZ,stub,src/LEVEL/LEVELRUN.CPP
 0x00402518,activate_lift_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040252C,vs_net_network_lobby_screen_show_player_entries,?ShowPlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
 0x0040253B,refresh_active_pgun_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
