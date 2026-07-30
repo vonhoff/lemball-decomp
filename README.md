@@ -40,30 +40,6 @@ per-member confirmation.
 After high-yield families are exhausted, use miner's `singleton fallback`.
 Ghidra inventory export validates all 2,077 ILT entries and excludes them.
 
-### Cron worker prompt
-
-Copy this into next editing task:
-
-```text
-Work autonomously on Lemmings Paintball decompilation project in
-C:\Users\Simon\CLionProjects\lemball-decomp. Follow AGENTS.md.
-
-Continue unfinished work. If none remains, refresh reccmp results when stale,
-then run:
-`.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --save-baseline`
-Prioritize highest-yield proven shape cluster, inspect every member in Ghidra,
-recover one minimal C/C++ template, and verify every member. After each full
-reccmp run, run:
-`.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --check-baseline`
-Keep zero-loss gains.
-Continue additional viable clusters; do not stop after one tiny function.
-After batch candidates are exhausted, work first viable singleton fallback.
-
-Run canonical checks, review all diffs, commit verified progress, push, and
-leave clean worktree. Finish only after successful commit and push or
-repository-wide blocker. Return one or two plain-English result sentences.
-```
-
 ## Setup
 
 Install [MSVC 4.20](https://github.com/itsmattkc/MSVC420) outside the checkout

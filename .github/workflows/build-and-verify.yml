@@ -2,6 +2,7 @@ name: build
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -16,8 +17,6 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Check out portable MSVC 4.20
         uses: actions/checkout@v4
@@ -46,6 +45,10 @@ jobs:
             --passphrase "$LEMBALL_GPG_PASSPHRASE" \
             --output data/LEMBALL.EXE \
             data/LEMBALL.EXE.gpg
+
+      - name: Lint metadata
+        shell: pwsh
+        run: python tools/lint_reccmp_metadata.py
 
       - name: Configure and build
         shell: pwsh

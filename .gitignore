@@ -40,5 +40,4 @@ data/*
 !data/reccmp-compiler-generated.csv
 !data/reccmp-linker-ilts.csv
 !data/reccmp-library-symbols.csv
-!data/ghidra-evidence-function-names.csv
 .gnupg-local/
