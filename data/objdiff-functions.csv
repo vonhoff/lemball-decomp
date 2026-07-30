@@ -100,6 +100,7 @@ address,size,name,unit
 0x0040A810,7,get_object_field_0xf0,LEVEL/LEVELVT.CPP
 0x0040A820,3,return_false_vtable_callback_0040a820,LEVEL/LEVELVT.CPP
 0x0040A830,33,copy_object_fields_0x9c_triplet,LEVEL/LEVELVT.CPP
+0x0040A860,1,noop_vtable_callback_0040a860,LEVEL/LEVELVT.CPP
 0x0040A870,13,set_object_field_0x98,LEVEL/LEVELVT.CPP
 0x0040A880,7,get_object_field_0x98,LEVEL/LEVELVT.CPP
 0x0040A890,55,is_point_inside_3d_bounds,LEVEL/LEVELVT.CPP
