@@ -2342,17 +2342,16 @@ int VsSoundDirectSoundEffectBufferPool::FindAvailableDirectSoundEffectBufferSlot
 {
 	VsSoundDirectSoundEffectBufferPool* pPool;
 	void* pBuffer;
-	int i;
-	int nOffset;
+	int nIndex;
 	DWORD dwStatus;
 	LONG hResult;
 
-	nOffset = 0;
+	nIndex = 0;
 	pPool = this;
-	i = 0;
 	if (pPool->m_cBuffers > 0) {
+		int nByteOffset = 0;
 		do {
-			pBuffer = *(void**) ((char*) pPool->m_ppBuffers + nOffset);
+			pBuffer = *(void**) ((char*) pPool->m_ppBuffers + nByteOffset);
 			hResult = ((VsSoundGetDirectSoundBufferStatusProc) (*(void***) pBuffer)[9])(pBuffer, &dwStatus);
 			if (hResult != 0) {
 				g_pErrorOutputStream->AppendCStringToStream("Effect Buffer Status Request failed: ")
@@ -2361,11 +2360,11 @@ int VsSoundDirectSoundEffectBufferPool::FindAvailableDirectSoundEffectBufferSlot
 				return -1;
 			}
 			if ((dwStatus & 1) == 0) {
-				return i;
+				return nIndex;
 			}
-			nOffset += sizeof(void*);
-			++i;
-		} while (i < pPool->m_cBuffers);
+			nByteOffset += sizeof(void*);
+			++nIndex;
+		} while (nIndex < pPool->m_cBuffers);
 	}
 	return -1;
 }
