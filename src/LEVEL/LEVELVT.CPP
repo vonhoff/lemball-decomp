@@ -2690,3 +2690,10 @@ void __cdecl ForwardManagedEntityVslot8CVariant(void* pUnused, void* pEntity)
 	pVtable = *(void***) pEntity;
 	((LevelManagedEntityNoArgVirtualProc) pVtable[0x8c / sizeof(void*)])(pEntity);
 }
+
+int PASCAL return_zero_move_chunk_callback(void* pUnused1, void* pUnused2)
+{
+	(void) pUnused1;
+	(void) pUnused2;
+	return 0;
+}

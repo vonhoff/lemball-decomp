@@ -2415,3 +2415,11 @@ void LEMBALL_FASTCALL ResetLasrChunkObject(void* pObject)
 	ResetManagedEntityRuntimeStateThunk(pObject);
 	ResetLasrChunkObjectRuntimeStateThunk(pObject);
 }
+
+// Original body is emitted last to preserve MSVC 4.20 compiler state.
+int PASCAL return_false_ice_chunk_callback(void* pUnused1, void* pUnused2)
+{
+	(void) pUnused1;
+	(void) pUnused2;
+	return 0;
+}
