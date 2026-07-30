@@ -6,7 +6,6 @@
 
 DECOMP_SIZE_ASSERT(VS_InvisibleWindow, 0x10);
 
-static const char g_PLATFORM_ErrorTitle[] = "ERROR";
 static const char g_PLATFORM_BaseWindowRegisterError[] = "Unable to register base window class";
 static const char g_PLATFORM_InvisibleWindowTitle[] = "Invisible Window";
 static const char g_PLATFORM_InvisibleWindowCreateError[] = "Failed to create invisible window - Error code: ";
@@ -33,9 +32,10 @@ struct VS_InvisibleWindowMessageInterface {
 	virtual LRESULT HandleWindowMessage(UINT uMessage, WPARAM wParam, LPARAM lParam) = 0; // vtable+0x0
 };
 LRESULT CALLBACK InvisibleMessageWindowWndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
+extern void __cdecl ShowFatalGetLastErrorMessageAndExit(const char* pszMessage);
 
 // FUNCTION: LEMBALL 0x0047c050
-int VS_InvisibleWindow::Construct(LPCSTR pszClassName, int* pfClassRegistered)
+VS_InvisibleWindow* VS_InvisibleWindow::Construct(LPCSTR pszClassName, int* pfClassRegistered)
 {
 	WNDCLASSA WndClass;
 
@@ -44,21 +44,19 @@ int VS_InvisibleWindow::Construct(LPCSTR pszClassName, int* pfClassRegistered)
 	m_dwReserved1 = 0;
 
 	if (*pfClassRegistered == 0) {
-		WndClass.style = CS_DBLCLKS;
-		WndClass.lpfnWndProc = InvisibleMessageWindowWndProc;
+		WndClass.style = 0;
 		WndClass.cbClsExtra = 0;
-		WndClass.cbWndExtra = 4;
 		WndClass.hInstance = g_hApplicationInstance;
 		WndClass.hIcon = 0;
 		WndClass.hCursor = 0;
 		WndClass.hbrBackground = 0;
 		WndClass.lpszMenuName = 0;
 		WndClass.lpszClassName = pszClassName;
+		WndClass.lpfnWndProc = InvisibleMessageWindowWndProc;
+		WndClass.cbWndExtra = 4;
 
 		if (RegisterClassA(&WndClass) == 0) {
-			MessageBoxA(0, g_PLATFORM_BaseWindowRegisterError, g_PLATFORM_ErrorTitle, MB_OK | MB_ICONERROR);
-			ExitProcess(0xbbbb);
-			return 0;
+			ShowFatalGetLastErrorMessageAndExit(g_PLATFORM_BaseWindowRegisterError);
 		}
 
 		*pfClassRegistered = 1;
@@ -78,12 +76,13 @@ int VS_InvisibleWindow::Construct(LPCSTR pszClassName, int* pfClassRegistered)
 							 this);
 
 	if (m_hWnd == 0) {
-		g_pErrorOutputStream->AppendCStringToStream(g_PLATFORM_InvisibleWindowCreateError);
-		g_pErrorOutputStream->AppendIntToStream(GetLastError());
-		g_pErrorOutputStream->AppendCStringToStream(g_PLATFORM_ErrorSuffix);
+		unsigned int nError = GetLastError();
+		g_pErrorOutputStream->AppendCStringToStream(g_PLATFORM_InvisibleWindowCreateError)
+			->AppendUIntToStream(nError)
+			->AppendCStringToStream(g_PLATFORM_ErrorSuffix);
 	}
 
-	return (int) (unsigned long) this;
+	return this;
 }
 
 // FUNCTION: LEMBALL 0x0047c140

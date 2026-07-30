@@ -7,7 +7,7 @@
 // SIZE 0x10
 class VS_InvisibleWindow {
 public:
-	int Construct(LPCSTR pszClassName, int* pfClassRegistered);
+	VS_InvisibleWindow* Construct(LPCSTR pszClassName, int* pfClassRegistered);
 
 public:
 	void* m_pVTable;     // 0x00
