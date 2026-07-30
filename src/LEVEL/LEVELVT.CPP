@@ -2662,3 +2662,31 @@ void LEMBALL_FASTCALL SetLevelChunkObjectMotionVector(void* pObject,
 	*(int*) (pObjectBytes + 0xc8) = g_nLevelFrameClockTick;
 	*(int*) (pObjectBytes + 0xcc) = g_nLevelFrameClockTick + 10;
 }
+
+// Original bodies are emitted last to preserve MSVC 4.20 compiler state.
+void __cdecl ForwardTargetManagedEntityVslot7C(void* pUnused, void* pEntity)
+{
+	void** pVtable;
+
+	(void) pUnused;
+	pVtable = *(void***) pEntity;
+	((LevelManagedEntityNoArgVirtualProc) pVtable[0x7c / sizeof(void*)])(pEntity);
+}
+
+void __cdecl ForwardManagedEntityVslot88Variant(void* pUnused, void* pEntity)
+{
+	void** pVtable;
+
+	(void) pUnused;
+	pVtable = *(void***) pEntity;
+	((LevelManagedEntityNoArgVirtualProc) pVtable[0x88 / sizeof(void*)])(pEntity);
+}
+
+void __cdecl ForwardManagedEntityVslot8CVariant(void* pUnused, void* pEntity)
+{
+	void** pVtable;
+
+	(void) pUnused;
+	pVtable = *(void***) pEntity;
+	((LevelManagedEntityNoArgVirtualProc) pVtable[0x8c / sizeof(void*)])(pEntity);
+}
