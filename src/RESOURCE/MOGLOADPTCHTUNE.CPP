@@ -26,8 +26,11 @@ extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void*);
 extern void __fastcall InitializeResourceObjectFromId(void*, void*, int);
 extern void* __fastcall FinalizeLoadedResourceObjectResult(void*, void*);
 
+// PTCH and TUNE share the complete 15-slot typed-resource interface.
+typedef void* MogLoadTypedSoundResourceVtable[15];
+
 // GLOBAL: LEMBALL 0x00498da0
-static void* g_MOGLOAD_PtchResourceObjectVtable[15] = {
+static MogLoadTypedSoundResourceVtable g_MOGLOAD_PtchResourceObjectVtable = {
 	(void*) DestroyPtchResourceAuto,
 	(void*) CopyBufferIntoTypedResourceObjectAndParse,
 	(void*) ParseIntResourceDescriptor,
@@ -46,7 +49,7 @@ static void* g_MOGLOAD_PtchResourceObjectVtable[15] = {
 };
 
 // GLOBAL: LEMBALL 0x00498de0
-static void* g_MOGLOAD_TuneResourceObjectVtable[15] = {
+static MogLoadTypedSoundResourceVtable g_MOGLOAD_TuneResourceObjectVtable = {
 	(void*) DestroyTuneResourceAuto,
 	(void*) CopyBufferIntoTypedResourceObjectAndParse,
 	(void*) ParseIntResourceDescriptor,
