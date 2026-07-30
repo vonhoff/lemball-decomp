@@ -2256,8 +2256,7 @@ void* VsNetCompositeEffTransportStack::ClaimRecord(void)
 		kEvent.m_pPeer = pPayload;
 		kEvent.m_nCode = 0;
 		kEvent.m_nType = 6;
-		((void(LEMBALL_STDCALL*)(VsNetEffDispatchEvent*))(*(void***) g_pEffTransportSecondaryDispatchQueue)[2])(
-			&kEvent);
+		((VsNetErrorDispatchQueue*) g_pEffTransportSecondaryDispatchQueue)->QueueEvent(&kEvent);
 	}
 	return pPayload;
 }
