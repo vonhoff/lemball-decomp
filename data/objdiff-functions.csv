@@ -2050,8 +2050,8 @@ address,size,name,unit
 0x0045E2B0,138,load_zrle_resource,RESOURCE/VARLOAD.CPP
 0x0045E340,53,populate_zrle_resource_descriptor_fields,RESOURCE/VARLOAD.CPP
 0x0045E380,106,load_eff_resource,RESOURCE/MOGLOAD.CPP
-0x0045E3F0,106,load_ptch_resource,RESOURCE/MOGLOAD.CPP
-0x0045E460,106,load_tune_resource,RESOURCE/MOGLOAD.CPP
+0x0045E3F0,106,load_ptch_resource,RESOURCE/MOGLOADPTCHTUNE.CPP
+0x0045E460,106,load_tune_resource,RESOURCE/MOGLOADPTCHTUNE.CPP
 0x0045E4D0,106,load_pres_resource,LEVEL/DEMO.CPP
 0x0045E540,106,load_bin_resource,LEVEL/DEMO.CPP
 0x0045E5B0,4,get_field14_needs_age_increment,RESOURCE/MOGLOAD.CPP
