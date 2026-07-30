@@ -1614,6 +1614,12 @@ void LEMBALL_FASTCALL ActivateLasrChunkObjects(void* pManager)
 	}
 }
 
+// FUNCTION: LEMBALL 0x004297e0
+void LEMBALL_FASTCALL reset_lasr_chunk_object_count(void* pManager)
+{
+	*(int*) ((char*) pManager + 0x34) = 0;
+}
+
 // FUNCTION: LEMBALL 0x00429f50
 LinkScfBoonChunkManagerView* LinkScfBoonChunkManagerView::ConstructBoonChunkManager(void* pLevelMode, void* pTileGrid)
 {
@@ -1696,6 +1702,12 @@ LinkScfTramChunkManagerView* LinkScfTramChunkManagerView::ConstructTramChunkMana
 	return this;
 }
 
+// FUNCTION: LEMBALL 0x0042b0b0
+void LEMBALL_FASTCALL clear_tram_chunk_object_count(void* pManager)
+{
+	*(int*) ((char*) pManager + 0x34) = 0;
+}
+
 // FUNCTION: LEMBALL 0x0042b4a0
 void LEMBALL_FASTCALL ActivateTramChunkObjects(void* pManager)
 {
@@ -1769,6 +1781,12 @@ void LEMBALL_FASTCALL ActivatePgunChunkObjects(void* pManager)
 			} while (*(int*) (pManagerBytes + 0x30) > i);
 		}
 	}
+}
+
+// FUNCTION: LEMBALL 0x0042c140
+void LEMBALL_FASTCALL clear_pgun_chunk_object_count(void* pManager)
+{
+	*(int*) ((char*) pManager + 0x34) = 0;
 }
 
 extern void* g_LINKSCF_IceChunkObjectVtable[16];

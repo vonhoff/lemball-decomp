@@ -1969,6 +1969,12 @@ void LevelNodeChunkRecord::AppendNodeChunkRecordLink(int nFirst, int nSecond)
 	++m_cLinks10;
 }
 
+// FUNCTION: LEMBALL 0x00421430
+int return_true_node_chunk_callback(void)
+{
+	return 1;
+}
+
 // FUNCTION: LEMBALL 0x00421470
 void LevelNodeChunkManager::LoadNodeChunkRecords(const unsigned short* pWords, unsigned int cbPayload, int fReuseState)
 {
@@ -2050,6 +2056,13 @@ void LevelBallChunkManager::DestroyBallChunkManagerEntries(void)
 	}
 	FreeVSMemBlock(ppObjects);
 }
+
+// FUNCTION: LEMBALL 0x00422050
+void LEMBALL_FASTCALL reset_ball_chunk_manager_load_cursor(void* pManager)
+{
+	*(int*) ((char*) pManager + 8) = 0;
+}
+
 // FUNCTION: LEMBALL 0x00423090
 void* LevelTileReachabilityHelper::ConstructLevelTileReachabilityHelperThunk(void* pTileGrid)
 {
