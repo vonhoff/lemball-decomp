@@ -2083,7 +2083,8 @@ int VsNetAllocatedTcpipEffTransportComposite::HandleAsyncMessage(int nMessage, v
 		return 0;
 	}
 }
-// FUNCTION: LEMBALL 0x004714f0
+// Compiler-state shim for default invisible-window message handler, whose
+// ownership is reconstructed in INVISWIN.CPP.
 int VsNetSocketWindowEffChannel::HandleAsyncMessage(int nMessage, void* pReserved, unsigned int nEvent)
 {
 	(void) nMessage;

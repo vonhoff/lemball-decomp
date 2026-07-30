@@ -2725,7 +2725,7 @@ address,size,name,unit
 0x00471460,19,shutdown_tcpip_network_transport,ENGINE/NET/VSNET.CPP
 0x00471480,77,handle_tcpip_runtime_window_message,ENGINE/NET/VSNET.CPP
 0x004714D0,20,service_tcpip_network_transport,ENGINE/NET/VSNET.CPP
-0x004714F0,8,handle_socket_async_message,ENGINE/NET/VSNETTCP.CPP
+0x004714F0,8,default_invisible_window_message_handler,ENGINE/GDI/INVISWIN.CPP
 0x00471500,67,vs_net_inet_address_entry_copy_address_entry,ENGINE/NET/VSNETTCP.CPP
 0x00471550,56,store_inet_addr_string_entry,ENGINE/NET/VSNETTCP.CPP
 0x00471590,28,vs_net_inet_address_entry_is_address_less_or_equal,ENGINE/NET/VSNETTCP.CPP

@@ -12,8 +12,26 @@ static const char g_PLATFORM_InvisibleWindowTitle[] = "Invisible Window";
 static const char g_PLATFORM_InvisibleWindowCreateError[] = "Failed to create invisible window - Error code: ";
 static const char g_PLATFORM_ErrorSuffix[] = "\n";
 
-static void* g_VS_InvisibleWindowVTable[1] = {(void*) NetworkSafeVtableNoop};
-typedef LRESULT (*VS_WindowMessageHandler)(VS_InvisibleWindow* pWindow, UINT uMessage, WPARAM wParam, LPARAM lParam);
+// FUNCTION: LEMBALL 0x004714f0
+LRESULT LEMBALL_FASTCALL DefaultInvisibleWindowMessageHandler(VS_InvisibleWindow* pWindow,
+															  void* pUnused,
+															  UINT uMessage,
+															  WPARAM wParam,
+															  LPARAM lParam)
+{
+	(void) pWindow;
+	(void) pUnused;
+	(void) uMessage;
+	(void) wParam;
+	(void) lParam;
+	return -1;
+}
+
+// GLOBAL: LEMBALL 0x0049ac30
+static void* g_VS_InvisibleWindowVTable[1] = {(void*) DefaultInvisibleWindowMessageHandler};
+struct VS_InvisibleWindowMessageInterface {
+	virtual LRESULT HandleWindowMessage(UINT uMessage, WPARAM wParam, LPARAM lParam) = 0; // vtable+0x0
+};
 LRESULT CALLBACK InvisibleMessageWindowWndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 
 // FUNCTION: LEMBALL 0x0047c050
@@ -94,7 +112,7 @@ LRESULT CALLBACK InvisibleMessageWindowWndProc(HWND hWnd, UINT uMessage, WPARAM 
 
 	if (pWindow != 0) {
 		if (pWindow->m_dwReserved1 == 0 || uMessage < pWindow->m_dwReserved0 || pWindow->m_dwReserved1 < uMessage) {
-			lResult = ((VS_WindowMessageHandler) (*(void**) pWindow->m_pVTable))(pWindow, uMessage, wParam, lParam);
+			lResult = ((VS_InvisibleWindowMessageInterface*) pWindow)->HandleWindowMessage(uMessage, wParam, lParam);
 			if (lResult != -1) {
 				return lResult;
 			}
