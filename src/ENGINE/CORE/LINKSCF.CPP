@@ -169,9 +169,9 @@ void LEMBALL_FASTCALL ActivateIceChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateMoveChunkObjects(void* pManager);
 void LEMBALL_FASTCALL AdvanceIceChunkManagerObjects(void* pManager);
 void LEMBALL_FASTCALL AdvanceActiveMoveChunkObjects(void* pManager);
+void LEMBALL_FASTCALL AdvanceInvsChunkObjects(void* pManager);
 
 DEFINE_LINKSCF_VTABLE_STUB_0(ResetAllInvsChunkObjects)
-DEFINE_LINKSCF_VTABLE_STUB_0(AdvanceInvsChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(DispatchDoorChildArrayVirtual104)
 DEFINE_LINKSCF_VTABLE_STUB_0(ServiceActiveDoorChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitDoorChunkRenderEntries)

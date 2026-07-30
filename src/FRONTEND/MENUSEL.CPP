@@ -320,10 +320,12 @@ static void LEMBALL_FASTCALL StartMenuSelectorActionThunk(GameMenuSelectorManage
 void LEMBALL_FASTCALL ReleaseMenuSelectorEntryResources(GameMenuSelectorEntry* pEntry);
 void LEMBALL_FASTCALL DestroyMenuSelectorEntry(GameMenuSelectorEntry* pEntry);
 void* LEMBALL_FASTCALL DeleteMenuSelectorEntry(GameMenuSelectorEntry* pEntry, int nUnusedEdx, int fDelete);
-static void* LEMBALL_FASTCALL DeleteMenuSelectorEntryThunk(GameMenuSelectorEntry* pEntry, int nUnusedEdx, int fDelete);
-static int LEMBALL_FASTCALL HandleMenuSelectorEntryEventThunk(GameMenuSelectorEntry* pEntry,
-															  int nUnusedEdx,
-															  GameMenuSelectorEvent* pEvent);
+static void* LEMBALL_FASTCALL delete_menu_selector_entry_thunk(GameMenuSelectorEntry* pEntry,
+															   int nUnusedEdx,
+															   int fDelete);
+static int LEMBALL_FASTCALL handle_menu_selector_entry_event_thunk(GameMenuSelectorEntry* pEntry,
+																   int nUnusedEdx,
+																   GameMenuSelectorEvent* pEvent);
 void LEMBALL_FASTCALL InitializeSharedSpriteOwnerState(void* pObject);
 void LEMBALL_FASTCALL ComputeAlignedZrleChildLayout(void* pObject);
 
@@ -473,8 +475,8 @@ typedef char GameMenuActionFramePointSink_size_must_be_0x20[sizeof(GameMenuActio
 /* VTABLE: LEMBALL 0x00497CF8 */
 // GLOBAL: LEMBALL 0x00497cf8
 static void* g_MenuSelectorEntryVtable[3] = {(void*) InitializeNonZrleVariantRenderEntry,
-											 (void*) DeleteMenuSelectorEntryThunk,
-											 (void*) HandleMenuSelectorEntryEventThunk};
+											 (void*) delete_menu_selector_entry_thunk,
+											 (void*) handle_menu_selector_entry_event_thunk};
 
 extern void* g_VSGDI_StatusIndicatorPointSinkVtable[12];
 
@@ -1039,14 +1041,16 @@ __inline static void InitializeSelectorProgressOverlayOwnerVtables(void** pOwner
 	g_fSelectorProgressOverlayOwnerVtablesInitialized = 1;
 }
 
-static int LEMBALL_FASTCALL HandleMenuSelectorEntryEventThunk(GameMenuSelectorEntry* pEntry,
-															  int nUnusedEdx,
-															  GameMenuSelectorEvent* pEvent)
+static int LEMBALL_FASTCALL handle_menu_selector_entry_event_thunk(GameMenuSelectorEntry* pEntry,
+																   int nUnusedEdx,
+																   GameMenuSelectorEvent* pEvent)
 {
 	return pEntry->HandleEvent(pEvent);
 }
 
-static void* LEMBALL_FASTCALL DeleteMenuSelectorEntryThunk(GameMenuSelectorEntry* pEntry, int nUnusedEdx, int fDelete)
+static void* LEMBALL_FASTCALL delete_menu_selector_entry_thunk(GameMenuSelectorEntry* pEntry,
+															   int nUnusedEdx,
+															   int fDelete)
 {
 	return DeleteMenuSelectorEntry(pEntry, nUnusedEdx, fDelete);
 }
