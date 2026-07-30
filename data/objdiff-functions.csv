@@ -189,6 +189,7 @@ address,size,name,unit
 0x0040C290,19,copy_two_dword_pair,LEVEL/LEVELVT.CPP
 0x0040C2B0,25,copy_three_dword_point_variant,LEVEL/LEVELVT.CPP
 0x0040C2D0,119,construct_type_0x18_chunk_object,LEVEL/LEVELVT.CPP
+0x0040C350,90,reset_type_0x18_chunk_object_runtime_state,LEVEL/TYPE18RESET.CPP
 0x0040C3B0,313,emit_type_0x18_chunk_render_entry,LEVEL/LEVELVT.CPP
 0x0040C720,42,set_fixed_point_triplet_from_ints,LEVEL/TYPE18.CPP
 0x0040C750,89,construct_type_0x18_chunk_stream,LEVEL/TYPE18.CPP
