@@ -5269,3 +5269,19 @@ void LEMBALL_FASTCALL QueueAlignedZrleChildDrawEntry(void* pObject)
 {
 	((GameAlignedZrleChildOverlayView*) pObject)->QueueAlignedFrame();
 }
+
+void noop_level_screen_static_region_callback(void)
+{
+}
+
+void noop_level_screen_view_follow_callback(void)
+{
+}
+
+void noop_level_screen_action_panel_callback(void)
+{
+}
+
+void noop_level_selection_mode_render_hook(void)
+{
+}

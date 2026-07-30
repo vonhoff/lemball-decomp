@@ -127,6 +127,8 @@ address,name,symbol,type,source
 0x00439900,AppendRenderEntryToPointerQueueB,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00439930,AppendRenderEntryToPointerQueueC,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x0043A450,delete_adjusted_resource_window_owner_buffer_0043a450 `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/SCREENVT.CPP
+0x0043BCD0,noop_level_screen_static_region_callback,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x0043ED10,noop_level_screen_view_follow_callback,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00442130,LevelTwoShortPointView::CopyTwoShortPoint,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00442150,LevelTwoShortPointView::CopyTwoShortPointVariant,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00442170,LevelFourShortRectView::ClearFourShortRect,,synthetic,src/LEVEL/LEVELSTAT.CPP
@@ -134,6 +136,7 @@ address,name,symbol,type,source
 0x00442270,QueueAlignedZrleChildOverlayIfDirty,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00442CA0,LevelScreenActionButtonLayoutAuto::Position,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x004432A0,LevelActionPanelCodeView::MapActionPanelCode14To8,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x00443350,noop_level_screen_action_panel_callback,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00443850,MenuSelectorXorFieldView::RecomputeField104FromXor,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x00443870,update_action_button_field_0x104_from_fields_0x130_xor_0xd0,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x004438B0,delete_aligned_zrle_child_overlay_adjusted_a `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
@@ -160,6 +163,7 @@ address,name,symbol,type,source
 0x0044A940,DeleteLevelSelectionScreenAuto,,synthetic,src/FRONTEND/MAINMENU.CPP
 0x0044A9D0,DeleteLevelSelectionModeAuto,,synthetic,src/GAME.CPP
 0x0044AA70,ResetLevelStatusChildCursor,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x0044B330,noop_level_selection_mode_render_hook,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x0044C0D0,DeleteRegistrationInfoScreenAuto,,synthetic,src/GAME.CPP
 0x0044E620,DeleteMenuSelectorEntryAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x0044E650,delete_aligned_zrle_child_overlay_adjusted_c `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
