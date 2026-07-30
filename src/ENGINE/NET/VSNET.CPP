@@ -750,7 +750,7 @@ struct VsNetEffTransportRuntimeState {
 	void DestroyEffTransportRuntimeGlobals(void);
 	int InitializeEffTransportRuntimeGlobals(void);
 	int ProcessEffTransportDispatchEvent(VsNetEffDispatchEvent* pEvent);
-	int MarkExistingEffTransportPeerActive(int nPeer);
+	int MarkExistingEffTransportPeerActive(VsNetEffTransportPeer* pTargetPeer);
 	int FindMatchingActiveEffTransportPeer(void* pPeerKey);
 	void CloseMatchingEffTransportPeer(void* pPeerKey);
 	void HandleEffTransportRequestConnect(void* pPeerKey);
@@ -3348,7 +3348,7 @@ int LEMBALL_FASTCALL AllocateEffTransportPeerEntry(void* pRuntimeState)
 }
 
 // FUNCTION: LEMBALL 0x00462130
-int VsNetEffTransportRuntimeState::MarkExistingEffTransportPeerActive(int nPeer)
+int VsNetEffTransportRuntimeState::MarkExistingEffTransportPeerActive(VsNetEffTransportPeer* pTargetPeer)
 {
 	VsNetEffTransportRuntimeState* pState;
 	VsNetEffTransportPeer* pPeer;
@@ -3356,7 +3356,7 @@ int VsNetEffTransportRuntimeState::MarkExistingEffTransportPeerActive(int nPeer)
 	pState = this;
 	pPeer = (VsNetEffTransportPeer*) pState->m_pFirstPeer;
 	while (pPeer != 0) {
-		if ((int) (unsigned long) pPeer == nPeer) {
+		if (pTargetPeer == pPeer) {
 			if (pPeer->IsEffTransportPeerStillConnecting() == 0) {
 				return 0;
 			}
@@ -3465,7 +3465,7 @@ void VsNetEffTransportRuntimeState::HandleEffTransportRequestNewPort(void* pPeer
 	pAuthoriseConnectStream = (VsNetAuthoriseConnectControlStream*) g_pEffTransportAuthoriseConnectControlStream;
 	pFailedConnectStream = (VsNetFailedConnectControlStream*) g_pEffTransportFailedConnectControlStream;
 	pPeer = pRequestNewPortStream->m_pPeer;
-	if (MarkExistingEffTransportPeerActive((int) (unsigned long) pPeer) == 0) {
+	if (MarkExistingEffTransportPeerActive(pPeer) == 0) {
 		return;
 	}
 
@@ -3568,7 +3568,7 @@ void VsNetEffTransportRuntimeState::HandleEffTransportGoAheadConnect(void*)
 	VsNetEffTransportPeer* pPeer;
 
 	pPeer = ((VsNetAuthoriseConnectControlStream*) g_pEffTransportGoAheadConnectControlStream)->m_pPeer;
-	if (MarkExistingEffTransportPeerActive((int) (unsigned long) pPeer) != 0) {
+	if (MarkExistingEffTransportPeerActive(pPeer) != 0) {
 		((void(LEMBALL_FASTCALL*)(void*))((VsNetEffTransportPeerVtable*) pPeer->m_pVtable)->m_pCompleteConnect)(pPeer);
 	}
 }
