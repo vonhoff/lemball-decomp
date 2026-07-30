@@ -11,12 +11,7 @@
       "displayName": "MSVC 4.20",
       "generator": "NMake Makefiles",
       "binaryDir": "${sourceDir}/build-msvc420",
-      "toolchainFile": "${sourceDir}/cmake/msvc420-toolchain.cmake",
-      "vendor": {
-        "jetbrains.com/clion": {
-          "toolchain": "MSVC 4.20"
-        }
-      }
+      "toolchainFile": "${sourceDir}/cmake/msvc420-toolchain.cmake"
     }
   ],
   "buildPresets": [

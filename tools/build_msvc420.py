@@ -26,14 +26,27 @@ def valid_build_rule(path):
     )
 
 
+def find_msvc420_root(root, environ=os.environ):
+    configured = environ.get("MSVC420_ROOT") or environ.get("MSVCDIR")
+    candidate = Path(configured) if configured else root / "msvc420"
+    if (candidate / "bin" / "CL.EXE").exists() and (
+        candidate / "bin" / "VCVARS32.BAT"
+    ).exists():
+        return candidate
+    raise SystemExit(
+        f"MSVC 4.20 not found at {candidate}; set MSVC420_ROOT to its install directory"
+    )
+
+
 def run(command, cwd=ROOT):
     print(" ".join(map(str, command)))
     subprocess.run(command, cwd=cwd, check=True)
 
 
-def bootstrap_command(vcvars, python, script):
+def bootstrap_command(vcvars, msvc_root, python, script):
     return (
         f'call "{vcvars}" x86 && '
+        f'set "MSVC420_ROOT={msvc_root}" && '
         f'set "LEMBALL_MSVC420_READY=1" && '
         f'"{python}" "{script}"'
     )
@@ -94,10 +107,11 @@ def find_reccmp_python(root):
 
 def main():
     if os.environ.get("LEMBALL_MSVC420_READY") != "1":
-        vcvars = ROOT / "msvc420" / "bin" / "VCVARS32.BAT"
-        if not vcvars.exists():
-            raise SystemExit(f"missing {vcvars.relative_to(ROOT)}")
-        command = bootstrap_command(vcvars, sys.executable, Path(__file__).resolve())
+        msvc_root = find_msvc420_root(ROOT)
+        vcvars = msvc_root / "bin" / "VCVARS32.BAT"
+        command = bootstrap_command(
+            vcvars, msvc_root, sys.executable, Path(__file__).resolve()
+        )
         raise SystemExit(
             subprocess.call(f"cmd.exe /d /c {command}", cwd=ROOT)
         )

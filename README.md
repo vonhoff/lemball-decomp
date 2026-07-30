@@ -66,9 +66,25 @@ repository-wide blocker. Return one or two plain-English result sentences.
 
 ## Setup
 
+Install [MSVC 4.20](https://github.com/itsmattkc/MSVC420) outside the checkout
+and set `MSVC420_ROOT` to the directory containing `bin\CL.EXE` and
+`bin\VCVARS32.BAT`. For a per-user installation in PowerShell:
+
+```powershell
+$msvc420 = "$env:LOCALAPPDATA\Programs\MSVC420"
+git clone https://github.com/itsmattkc/MSVC420 $msvc420
+[Environment]::SetEnvironmentVariable("MSVC420_ROOT", $msvc420, "User")
+$env:MSVC420_ROOT = $msvc420
+```
+
+The build script checks `MSVC420_ROOT`, then the legacy `MSVCDIR` variable,
+then the ignored `msvc420` directory in the checkout. It validates the selected
+installation and propagates the same root to CMake.
+
 ```powershell
 py -m venv .decomp-venv
 .decomp-venv\Scripts\python.exe -m pip install -r requirements.txt
+.decomp-venv\Scripts\python.exe tools\build_msvc420.py
 ```
 
 The canonical build installs a narrow reccmp 0.1.6 compatibility hook. For
