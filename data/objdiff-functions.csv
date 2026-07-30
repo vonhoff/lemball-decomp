@@ -112,11 +112,15 @@ address,size,name,unit
 0x0040A970,1,noop_vtable_callback_0040a970,LEVEL/LEVELVT.CPP
 0x0040A980,1,noop_vtable_callback_0040a980,LEVEL/LEVELVT.CPP
 0x0040A990,1,noop_vtable_callback_0040a990,LEVEL/LEVELVT.CPP
+0x0040A9A0,3,return_false_vtable_callback_0040a9a0,LEVEL/LEVELVTDEFAULTS.CPP
+0x0040A9B0,1,noop_vtable_callback_0040a9b0,LEVEL/LEVELVTDEFAULTS.CPP
 0x0040A9C0,3,return_false_vtable_callback_0040a9c0,LEVEL/LEVELVT.CPP
 0x0040A9D0,3,return_false_vtable_callback_0040a9d0,LEVEL/LEVELVT.CPP
+0x0040A9E0,3,noop_vtable_callback_0040a9e0,LEVEL/LEVELVTDEFAULTS.CPP
 0x0040A9F0,1,noop_vtable_callback_0040a9f0,LEVEL/LEVELVT.CPP
 0x0040AA00,1,noop_vtable_callback_0040aa00,LEVEL/LEVELVT.CPP
 0x0040AA10,1,noop_vtable_callback_0040aa10,LEVEL/LEVELVT.CPP
+0x0040AA20,1,noop_vtable_callback_0040aa20,LEVEL/LEVELVTDEFAULTS.CPP
 0x0040AA30,3,return_false_vtable_callback_0040aa30,LEVEL/LEVELVT.CPP
 0x0040AA40,1,noop_vtable_callback_0040aa40,LEVEL/LEVELVT.CPP
 0x0040AA50,6,return_true_vtable_callback_0040aa50,LEVEL/LEVELVT.CPP
@@ -126,8 +130,10 @@ address,size,name,unit
 0x0040AA90,5,return_false_vtable_callback_0040aa90,LEVEL/LEVELVT.CPP
 0x0040AAA0,1,noop_vtable_callback_0040aaa0,LEVEL/LEVELVT.CPP
 0x0040AAB0,1,noop_vtable_callback_0040aab0,LEVEL/LEVELVT.CPP
+0x0040AAC0,3,noop_vtable_callback_0040aac0,LEVEL/LEVELVTDEFAULTS.CPP
 0x0040AAD0,1,noop_callback_0040aad0,LEVEL/LEVELVT.CPP
 0x0040AAE0,8,set_object_field_0x30_true,LEVEL/LEVELVT.CPP
+0x0040AAF0,8,set_object_field_0x30_false_0040aaf0,LEVEL/LEVELVTDEFAULTS.CPP
 0x0040AB00,8,set_object_field_0x30_false,LEVEL/LEVELVT.CPP
 0x0040AB10,4,get_plas_child_runtime_flag_0x30,LEVEL/LEVELVT.CPP
 0x0040AB20,3,noop_callback_0040ab20,LEVEL/LEVELVT.CPP
