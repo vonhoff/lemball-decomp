@@ -302,6 +302,20 @@ struct VsNetDualSocketWindowEffChannelBundle : virtual VsNetDualHandleEffStream,
 	virtual void ClearPendingWrite(void* pArgument);
 };
 
+// GLOBAL: LEMBALL 0x0049a3f0
+// VsNetTcpipSocketChannelStackLayout::`vbtable'{for `VsNetTimedSocketEffChannelBundleLayout'}
+// GLOBAL: LEMBALL 0x0049a400
+// VsNetTcpipSocketChannelStackLayout::`vbtable'{for `VsNetDualSocketWindowEffChannelBundle'}
+// GLOBAL: LEMBALL 0x0049a410
+// VsNetTcpipSocketChannelStackLayout::`vbtable'{for `VsNetSocketWindowEffChannel'}
+// GLOBAL: LEMBALL 0x0049a418
+// VsNetTcpipSocketChannelStackLayout::`vbtable'{for `VsNetRuntimeChannelCore'}
+// GLOBAL: LEMBALL 0x0049a428
+// VsNetTcpipSocketChannelStackLayout::`vbtable'{for `VsNetDualHandleEffStream'}
+// GLOBAL: LEMBALL 0x0049a430
+// VsNetTcpipSocketChannelStackLayout::`vbtable'{for `VsNetTimedEffStream'}
+// GLOBAL: LEMBALL 0x0049a438
+// VsNetTcpipSocketChannelStackLayout::`vbtable'{for `VsNetTcpipSocketChannelStackLayout'}
 struct VsNetTcpipSocketChannelStackLayout : virtual VsNetRuntimeChannelCore,
 											virtual VsNetSocketWindowEffChannel,
 											virtual VsNetDualSocketWindowEffChannelBundle,
@@ -2271,6 +2285,7 @@ void* AllocateTcpipEffTransportRuntimeOwner(void)
 	}
 	return 0;
 }
+// FUNCTION: LEMBALL 0x00471830
 VsNetTcpipSocketChannelStackLayout::VsNetTcpipSocketChannelStackLayout()
 {
 }
