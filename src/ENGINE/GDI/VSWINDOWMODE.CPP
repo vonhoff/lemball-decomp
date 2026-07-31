@@ -16,9 +16,13 @@ struct VsWindowOwnerRuntimeStateView {
 	char m_abReserved4C[8];
 	int m_nOwnerRuntime54;
 	int m_nChildRuntime58;
+	char m_abReserved5C[0x14];
+	int m_nRenderOriginX70;
+	int m_nRenderOriginY74;
 
 	void ClearChildState(void);
 	void ClearOwnerState(void);
+	void SetRenderOrigin(int nX, int nY);
 };
 
 // FUNCTION: LEMBALL 0x004323c0
@@ -41,6 +45,13 @@ void VsWindowOwnerRuntimeStateView::ClearOwnerState(void)
 	m_nOwnerMotion44 = 0;
 	m_nOwnerState3C = 0;
 	m_nOwnerRuntime54 = 0;
+}
+
+// FUNCTION: LEMBALL 0x00432920
+void VsWindowOwnerRuntimeStateView::SetRenderOrigin(int nX, int nY)
+{
+	m_nRenderOriginX70 = nX;
+	m_nRenderOriginY74 = nY;
 }
 
 // FUNCTION: LEMBALL 0x00458180

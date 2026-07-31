@@ -1243,7 +1243,7 @@ address,size,name,unit
 0x00432870,12,clear_window_owner_runtime_fields,ENGINE/GDI/VSWINDOWMODE.CPP
 0x00432880,72,start_directional_offset_animation_if_idle,ENGINE/GDI/VSWINDOW.CPP
 0x004328D0,72,start_signed_offset_animation_if_idle,ENGINE/GDI/VSWINDOW.CPP
-0x00432920,17,set_inertial_source_render_origin,ENGINE/GDI/VSWINDOW.CPP
+0x00432920,17,set_inertial_source_render_origin,ENGINE/GDI/VSWINDOWMODE.CPP
 0x00432A30,33,initialize_status_indicator_point_sink_entry,LEVEL/LEVELSTAT.CPP
 0x00432A60,31,delete_queued_variant_child_slot_render_point_sink,LEVEL/LEVELSTAT.CPP
 0x00432A90,31,delete_status_indicator_point_sink_entry,LEVEL/LEVELSTAT.CPP
