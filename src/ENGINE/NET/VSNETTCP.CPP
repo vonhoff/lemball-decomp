@@ -316,6 +316,8 @@ struct VsNetDualSocketWindowEffChannelBundle : virtual VsNetDualHandleEffStream,
 // VsNetTcpipSocketChannelStackLayout::`vbtable'{for `VsNetTimedEffStream'}
 // GLOBAL: LEMBALL 0x0049a438
 // VsNetTcpipSocketChannelStackLayout::`vbtable'{for `VsNetTcpipSocketChannelStackLayout'}
+// VTABLE: LEMBALL 0x0049a220 VsNetSocketWindowPrimary
+// VTABLE: LEMBALL 0x0049a280 VsNetTcpipSocketChannelStackLayout
 struct VsNetTcpipSocketChannelStackLayout : virtual VsNetRuntimeChannelCore,
 											virtual VsNetSocketWindowEffChannel,
 											virtual VsNetDualSocketWindowEffChannelBundle,
