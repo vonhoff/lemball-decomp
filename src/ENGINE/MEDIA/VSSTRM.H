@@ -278,6 +278,14 @@ struct VsNetRuntimeChannelCore : virtual VsNetEffStreamChannelState,
 #endif
 };
 
+// GLOBAL: LEMBALL 0x00499048
+// VsNetRuntimeChannelStack::`vbtable'{for `VsNetRuntimeChannelCore'}
+// GLOBAL: LEMBALL 0x00499058
+// VsNetRuntimeChannelStack::`vbtable'{for `VsNetDualHandleEffStream'}
+// GLOBAL: LEMBALL 0x00499060
+// VsNetRuntimeChannelStack::`vbtable'{for `VsNetTimedEffStream'}
+// GLOBAL: LEMBALL 0x00499068
+// VsNetRuntimeChannelStack::`vbtable'{for `VsNetRuntimeChannelStack'}
 struct VsNetRuntimeChannelStack : virtual VsNetRuntimeChannelCore {
 	VsNetRuntimeChannelStack();
 	inline void* ConstructEffTransportRuntimeChannelStack(int) { return this; }
