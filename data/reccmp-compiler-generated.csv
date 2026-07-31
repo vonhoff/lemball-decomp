@@ -84,6 +84,7 @@ address,name,symbol,type,source
 0x00423010,DeleteCollChunkObject1B,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00423060,DeleteCollChunkObjectWrapper23060,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00424C30,DeleteMineChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
+0x004266D0,noop_lift_callback,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x004266E0,DeleteLiftChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x004267A0,LinkScfSmallFunctionView::CopyFourDwordBlock,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x004267F0,LinkScfSmallFunctionView::ResetRockChunkObjectRuntimeState,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
@@ -92,6 +93,7 @@ address,name,symbol,type,source
 0x00427AF0,LinkScfSmallFunctionView::ResetCaptureTriggerChunkObjectRuntimeState,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x004287D0,DeleteCaptureTriggerChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x004288D0,LinkScfSmallFunctionView::ResetLasrChunkObjectRuntimeState,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
+0x00429E40,noop_lasr_callback,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00429E50,LinkScfSmallFunctionView::CopyFixedPointPointToPixelPoint,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00429E80,LinkScfSmallFunctionView::SetObjectFields18_1c_20,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00429EA0,DeleteLasrChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
