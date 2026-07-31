@@ -1219,7 +1219,7 @@ address,size,name,unit
 0x00432380,13,queue_queued_render_point_sink,ENGINE/GDI/VSGDI.CPP
 0x00432390,22,promote_queued_render_point_sink_target_state,ENGINE/GDI/VSGDI.CPP
 0x004323B0,4,get_queued_render_point_sink_field_0x30,ENGINE/GDI/VSGDI.CPP
-0x004323C0,10,set_queued_render_point_sink_field_0x30,ENGINE/GDI/VSGDI.CPP
+0x004323C0,10,set_queued_render_point_sink_field_0x30,ENGINE/GDI/VSWINDOWMODE.CPP
 0x004323D0,70,append_queued_render_sink_value_node,ENGINE/GDI/VSGDI.CPP
 0x00432430,86,remove_queued_render_sink_value_node,ENGINE/GDI/VSGDI.CPP
 0x004324A0,15,cache_object_field_0x44_as_current_context,SHELL/PRIMARY.CPP
@@ -1239,8 +1239,8 @@ address,size,name,unit
 0x004327E0,35,emit_variant_child_slot_render_marker,ENGINE/GDI/VSWINDOW.CPP
 0x00432810,41,reset_inertial_coordinate_event_position,ENGINE/GDI/VSWINDOW.CPP
 0x00432840,26,get_inertial_source_pixel_position,ENGINE/GDI/VSWINDOW.CPP
-0x00432860,12,clear_variant_child_slot_motion_state,ENGINE/GDI/VSWINDOW.CPP
-0x00432870,12,clear_window_owner_runtime_fields,ENGINE/GDI/VSWINDOW.CPP
+0x00432860,12,clear_variant_child_slot_motion_state,ENGINE/GDI/VSWINDOWMODE.CPP
+0x00432870,12,clear_window_owner_runtime_fields,ENGINE/GDI/VSWINDOWMODE.CPP
 0x00432880,72,start_directional_offset_animation_if_idle,ENGINE/GDI/VSWINDOW.CPP
 0x004328D0,72,start_signed_offset_animation_if_idle,ENGINE/GDI/VSWINDOW.CPP
 0x00432920,17,set_inertial_source_render_origin,ENGINE/GDI/VSWINDOW.CPP
