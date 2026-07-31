@@ -60,6 +60,7 @@ static const char g_GAME_RegistryRoot[] = "SOFTWARE\\Visual Sciences\\";
 static const char g_GAME_RegistryKey[] = "SOFTWARE\\Visual Sciences\\Lemmings Paintball";
 static const char g_GAME_RunningValueName[] = "Running";
 static const char g_GAME_RunningState[] = "running";
+// GLOBAL: LEMBALL 0x004a1df8
 static const char g_GAME_NotRunningState[] = "";
 static const char g_GAME_WindowTitle[] = "Lemmings Paintball";
 static const char g_GAME_MainArchiveName[] = "pbaimog.vsr";
@@ -5312,7 +5313,7 @@ int WINAPI SetVisualSciencesRegistryRunningState(const char* pszProductName, int
 
 	pszState = "running";
 	if (fRunning == 0) {
-		pszState = "";
+		pszState = g_GAME_NotRunningState;
 	}
 
 	cbState = strlen(pszState) + 1;
