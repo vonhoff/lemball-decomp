@@ -126,7 +126,7 @@ address,name,symbol,type,source
 0x00402608,invs_chunk_object_action_view_add_invs_tracked_entity,?AddInvsTrackedEntity@InvsChunkObjectActionView@@QAEXPAX@Z,stub,src/ENGINE/CORE/LINKSCFINVS.CPP
 0x0040260D,VsNetNetworkLobbyScreen::RemoveUnavailablePlayerEntries,?RemoveUnavailablePlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
 0x0040263A,get_next_projectile_pool_object,?get_next_projectile_pool_object@@YIPAXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
-0x00402658,mark_network_lobby_selected_peer_disconnected,?MarkNetworkLobbySelectedPeerDisconnected@@YIXPAX@Z,stub,src/ENGINE/MEDIA/EFFSTRM.CPP
+0x00402658,MarkNetworkLobbySelectedPeerDisconnected,?MarkNetworkLobbySelectedPeerDisconnected@@YIXPAX@Z,stub,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x00402667,managed_entity_child_view_set_managed_entity_primary_active_flag,?SetManagedEntityPrimaryActiveFlag@ManagedEntityChildView@@QAEXH@Z,stub,src/LEVEL/LEVELVT.CPP
 0x0040266C,handle_queued_variant_range_entry_event,?HandleQueuedVariantRangeEntryEvent@@YIHPAUGameQueuedVariantRangeEntry@@HPAUGameMenuSelectorEvent@@@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00402676,destroy_coll_chunk_object_auto_thunk,?DestroyCollChunkObjectAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
