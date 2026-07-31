@@ -41,3 +41,51 @@ unsigned int ReadLittleEndianU32FromBytes(const unsigned char* pBytes)
 	nValue |= pBytes[0];
 	return nValue;
 }
+
+struct FourDwordValue {
+	int m_anValues[4];
+
+	FourDwordValue* CopyFrom(const int* pSource);
+};
+
+// FUNCTION: LEMBALL 0x004267a0
+FourDwordValue* FourDwordValue::CopyFrom(const int* pSource)
+{
+	m_anValues[0] = pSource[0];
+	m_anValues[1] = pSource[1];
+	m_anValues[2] = pSource[2];
+	m_anValues[3] = pSource[3];
+	return this;
+}
+
+struct ThreeDwordPoint {
+	int m_nX;
+	int m_nY;
+	int m_nZ;
+
+	void CopyFixedPointToPixels(const int* pSource);
+	ThreeDwordPoint* Initialize(const int* pX, const int* pY, const int* pZ);
+};
+
+// FUNCTION: LEMBALL 0x00429e50
+void ThreeDwordPoint::CopyFixedPointToPixels(const int* pSource)
+{
+	m_nX = pSource[0] >> 12;
+	m_nY = pSource[1] >> 12;
+	m_nZ = pSource[2] >> 12;
+}
+
+// FUNCTION: LEMBALL 0x0042b9c0
+void AddDwordValues(int* pDestination, const int* pLeft, const int* pRight)
+{
+	*pDestination = *pRight + *pLeft;
+}
+
+// FUNCTION: LEMBALL 0x0042b9e0
+ThreeDwordPoint* ThreeDwordPoint::Initialize(const int* pX, const int* pY, const int* pZ)
+{
+	m_nX = *pX;
+	m_nY = *pY;
+	m_nZ = *pZ;
+	return this;
+}

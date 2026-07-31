@@ -68,7 +68,6 @@ address,name,symbol,type,source
 0x00424C30,DeleteMineChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x004266D0,noop_lift_callback,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x004266E0,DeleteLiftChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x004267A0,LinkScfSmallFunctionView::CopyFourDwordBlock,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x004267F0,LinkScfSmallFunctionView::ResetRockChunkObjectRuntimeState,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x004274F0,DeleteRockChunkManagerAuto,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00427AA0,DeleteTileFlag1CChunkObjectAuto,,synthetic,src/LEVEL/LEVELVT.CPP
@@ -76,11 +75,8 @@ address,name,symbol,type,source
 0x004287D0,DeleteCaptureTriggerChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x004288D0,LinkScfSmallFunctionView::ResetLasrChunkObjectRuntimeState,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00429E40,noop_lasr_callback,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x00429E50,LinkScfSmallFunctionView::CopyFixedPointPointToPixelPoint,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00429E80,LinkScfSmallFunctionView::SetObjectFields18_1c_20,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00429EA0,DeleteLasrChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x0042B9C0,add_two_dword_values,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x0042B9E0,LinkScfSmallFunctionView::InitializeThreeDwordPointFromValues,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x0042BA10,DeleteTramChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x0042C9B0,DeletePgunChunkManagerAuto,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0042D4C0,return_false_ice_chunk_callback,,synthetic,src/ENGINE/CORE/LINKSCF.CPP

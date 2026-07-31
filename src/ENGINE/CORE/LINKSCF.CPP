@@ -1998,21 +1998,13 @@ void LEMBALL_FASTCALL AdvanceActiveMoveChunkObjects(void* pManager)
 	}
 }
 
-void add_two_dword_values(int* pDestination, const int* pLeft, const int* pRight)
-{
-	*pDestination = *pRight + *pLeft;
-}
-
 struct LinkScfSmallFunctionView {
 	void* GetLevelTileGridCellPointer(int x, int y);
 	void ClearManagedEntityGroupChildActiveFlag(int iChild);
-	void* CopyFourDwordBlock(const int* pSource);
 	void ResetRockChunkObjectRuntimeState(void);
 	void ResetCaptureTriggerChunkObjectRuntimeState(void);
 	void ResetLasrChunkObjectRuntimeState(void);
-	void CopyFixedPointPointToPixelPoint(const int* pSource);
 	void SetObjectFields18_1c_20(int nField18, int nField1c, int nField20);
-	void* InitializeThreeDwordPointFromValues(const int* pX, const int* pY, const int* pZ);
 };
 
 void* LinkScfSmallFunctionView::GetLevelTileGridCellPointer(int x, int y)
@@ -2028,15 +2020,6 @@ void LinkScfSmallFunctionView::ClearManagedEntityGroupChildActiveFlag(int iChild
 	ppChildren = *(void***) ((char*) this + 0x3c);
 	pChild = ppChildren[iChild];
 	*(int*) ((char*) pChild + 0x38) = 0;
-}
-
-void* LinkScfSmallFunctionView::CopyFourDwordBlock(const int* pSource)
-{
-	*(int*) this = pSource[0];
-	*(int*) ((char*) this + 4) = pSource[1];
-	*(int*) ((char*) this + 8) = pSource[2];
-	*(int*) ((char*) this + 0x0c) = pSource[3];
-	return this;
 }
 
 void LinkScfSmallFunctionView::ResetRockChunkObjectRuntimeState(void)
@@ -2070,13 +2053,6 @@ void LinkScfSmallFunctionView::ResetLasrChunkObjectRuntimeState(void)
 	*(int*) ((char*) this + 0x13c) = nZero;
 }
 
-void LinkScfSmallFunctionView::CopyFixedPointPointToPixelPoint(const int* pSource)
-{
-	*(int*) this = pSource[0] >> 12;
-	*(int*) ((char*) this + 4) = pSource[1] >> 12;
-	*(int*) ((char*) this + 8) = pSource[2] >> 12;
-}
-
 void LinkScfSmallFunctionView::SetObjectFields18_1c_20(int nField18, int nField1c, int nField20)
 {
 	int nValue18;
@@ -2087,14 +2063,6 @@ void LinkScfSmallFunctionView::SetObjectFields18_1c_20(int nField18, int nField1
 	*(short*) ((char*) this + 0x1c) = (short) nValue1c;
 	*(int*) ((char*) this + 0x18) = nValue18;
 	*(int*) ((char*) this + 0x20) = nField20;
-}
-
-void* LinkScfSmallFunctionView::InitializeThreeDwordPointFromValues(const int* pX, const int* pY, const int* pZ)
-{
-	*(int*) this = *pX;
-	*(int*) ((char*) this + 4) = *pY;
-	*(int*) ((char*) this + 8) = *pZ;
-	return this;
 }
 
 struct LinkScfAutoEffDeleteView {
