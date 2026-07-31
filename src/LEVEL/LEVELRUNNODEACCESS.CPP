@@ -117,9 +117,26 @@ struct LevelNodeChunkPositionView {
 	int m_nX;
 	int m_nY;
 
+	void InitializePosition(int nX, int nY, int nUnused);
+	void SetFixedPointPosition(int nX, int nY);
 	void CopyFixedPointPosition(int* pDestination);
 	void CopyTileXY(int* pX, int* pY);
 };
+
+// FUNCTION: LEMBALL 0x00421370
+void LevelNodeChunkPositionView::InitializePosition(int nX, int nY, int nUnused)
+{
+	(void) nUnused;
+	m_nX = nX;
+	m_nY = nY;
+}
+
+// FUNCTION: LEMBALL 0x00421380
+void LevelNodeChunkPositionView::SetFixedPointPosition(int nX, int nY)
+{
+	m_nX = nX << 12;
+	m_nY = nY << 12;
+}
 
 // FUNCTION: LEMBALL 0x004213d0
 void LevelNodeChunkPositionView::CopyFixedPointPosition(int* pDestination)
