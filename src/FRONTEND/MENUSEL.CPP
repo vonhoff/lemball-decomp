@@ -63,6 +63,8 @@ extern void* LEMBALL_FASTCALL InitializeGeometryOwnerRect(void* pObject, int nUn
 extern void* LEMBALL_FASTCALL InitializePackagedSpriteRenderEntryThunk(void* pObject);
 extern void* LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryThunk(void* pObject);
 extern void LEMBALL_FASTCALL SetWindowOwnerRenderAnchorFromPoint(void* pOwner, int nUnusedEdx, const VS_XYPair* pPoint);
+extern void LEMBALL_FASTCALL NotifySpriteOwnerVariantCEvent0D(void* pObject);
+extern void LEMBALL_FASTCALL NotifySpriteOwnerVariantCEvent0E(void* pObject);
 extern void LEMBALL_FASTCALL set_overlay_owner_field_0xf8(void* pOwner, void* pUnusedEdx, int nValue);
 void LEMBALL_FASTCALL DetachGeometryChildAndDestroyWindowOwner(void* pObject);
 int GetIntDirectionSign(int nValue);
@@ -557,13 +559,6 @@ __inline static void NotifySpriteOwnerFrameEvent(void* pObject, short nType, int
 	}
 	if (*(void**) ((char*) pObject + 0xf4) != 0) {
 		QueueSpriteOwnerEvent(pObject, nType, MapSpriteOwnerEventToFrameSlot(nEvent));
-	}
-}
-
-__inline static void NotifySpriteOwnerStateEvent(void* pObject, short nType)
-{
-	if (*(void**) ((char*) pObject + 0xf4) != 0) {
-		QueueSpriteOwnerEvent(pObject, nType, 0);
 	}
 }
 
@@ -3097,11 +3092,11 @@ void LEMBALL_FASTCALL HandleSpriteOwnerPointerEnter(void* pGeometryOwner)
 {
 	void* pObject;
 
-	pObject = (char*) pGeometryOwner - 0x90;
 	if (*(int*) ((char*) pGeometryOwner + 0x10) != 0 || *(int*) ((char*) pGeometryOwner + 0x1c) != 0) {
 		*(int*) ((char*) pGeometryOwner + 0x40) = 1;
 	}
-	NotifySpriteOwnerStateEvent(pObject, 0x0d);
+	pObject = (char*) pGeometryOwner - 0x90;
+	NotifySpriteOwnerVariantCEvent0D(pObject);
 	((void(LEMBALL_FASTCALL*)(void*))(*(void***) pObject)[50])(pObject);
 }
 // FUNCTION: LEMBALL 0x00467fd0
@@ -3111,7 +3106,7 @@ void LEMBALL_FASTCALL HandleSpriteOwnerPointerLeave(void* pGeometryOwner)
 
 	pObject = (char*) pGeometryOwner - 0x90;
 	*(int*) ((char*) pGeometryOwner + 0x40) = 0;
-	NotifySpriteOwnerStateEvent(pObject, 0x0e);
+	NotifySpriteOwnerVariantCEvent0E(pObject);
 	((void(LEMBALL_FASTCALL*)(void*))(*(void***) pObject)[51])(pObject);
 }
 // FUNCTION: LEMBALL 0x00468050
