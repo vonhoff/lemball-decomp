@@ -3926,24 +3926,23 @@ int StopFileBasedNetworkMessageThread(void)
 	VsNetEffTransportRuntimeStateVtable* pVtable;
 	DWORD dwStartTime;
 
-	if (g_pActiveNetworkRuntimeWindow == 0) {
-		return 0;
-	}
-
-	pActiveRuntime = (VsNetEffTransportRuntimeState*) g_pActiveNetworkRuntimeWindow;
-	pVtable = (VsNetEffTransportRuntimeStateVtable*) pActiveRuntime->m_RenderQueueNode.m_pVtable;
-	pActiveRuntime->m_fShutdownRequested = 1;
-	(pActiveRuntime->*pVtable->m_pServiceTransport)();
-
-	dwStartTime = timeGetTime();
-	while (timeGetTime() - dwStartTime < 10000 && g_pActiveNetworkRuntimeWindow != 0) {
-	}
 	if (g_pActiveNetworkRuntimeWindow != 0) {
-		g_pErrorOutputStream->AppendCStringToStream("Network quit timed out\n");
-		return 0;
-	}
+		((VsNetEffTransportRuntimeState*) g_pActiveNetworkRuntimeWindow)->m_fShutdownRequested = 1;
+		pActiveRuntime = (VsNetEffTransportRuntimeState*) g_pActiveNetworkRuntimeWindow;
+		pVtable = (VsNetEffTransportRuntimeStateVtable*) pActiveRuntime->m_RenderQueueNode.m_pVtable;
+		(pActiveRuntime->*pVtable->m_pServiceTransport)();
 
-	return 1;
+		dwStartTime = timeGetTime();
+		while (timeGetTime() - dwStartTime < 10000 && g_pActiveNetworkRuntimeWindow != 0) {
+		}
+		if (g_pActiveNetworkRuntimeWindow != 0) {
+			g_pErrorOutputStream->AppendCStringToStream("Network quit timed out\n");
+			return 0;
+		}
+
+		return 1;
+	}
+	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0046f4f0
@@ -4266,24 +4265,23 @@ int StopTcpipNetworkMessageThread(void)
 	VsNetEffTransportRuntimeStateVtable* pVtable;
 	DWORD dwStartTime;
 
-	if (g_pActiveNetworkRuntimeWindow == 0) {
-		return 0;
-	}
-
-	pActiveRuntime = (VsNetEffTransportRuntimeState*) g_pActiveNetworkRuntimeWindow;
-	pVtable = (VsNetEffTransportRuntimeStateVtable*) pActiveRuntime->m_RenderQueueNode.m_pVtable;
-	pActiveRuntime->m_fShutdownRequested = 1;
-	(pActiveRuntime->*pVtable->m_pServiceTransport)();
-
-	dwStartTime = timeGetTime();
-	while (timeGetTime() - dwStartTime < 10000 && g_pActiveNetworkRuntimeWindow != 0) {
-	}
 	if (g_pActiveNetworkRuntimeWindow != 0) {
-		g_pErrorOutputStream->AppendCStringToStream("Network quit timed out\n");
-		return 0;
-	}
+		((VsNetEffTransportRuntimeState*) g_pActiveNetworkRuntimeWindow)->m_fShutdownRequested = 1;
+		pActiveRuntime = (VsNetEffTransportRuntimeState*) g_pActiveNetworkRuntimeWindow;
+		pVtable = (VsNetEffTransportRuntimeStateVtable*) pActiveRuntime->m_RenderQueueNode.m_pVtable;
+		(pActiveRuntime->*pVtable->m_pServiceTransport)();
 
-	return 1;
+		dwStartTime = timeGetTime();
+		while (timeGetTime() - dwStartTime < 10000 && g_pActiveNetworkRuntimeWindow != 0) {
+		}
+		if (g_pActiveNetworkRuntimeWindow != 0) {
+			g_pErrorOutputStream->AppendCStringToStream("Network quit timed out\n");
+			return 0;
+		}
+
+		return 1;
+	}
+	return 0;
 }
 
 // FUNCTION: LEMBALL 0x004713c0
