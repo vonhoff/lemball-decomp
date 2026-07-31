@@ -1,4 +1,5 @@
 extern void FreeVSMemBlock(void* pMemory);
+extern int g_nLevelFrameClockTick;
 
 // FUNCTION: LEMBALL 0x0040ce90
 void NoopType18PacketHook(void)
@@ -19,6 +20,17 @@ struct LevelVtSmallFunctionView {
 	void AddClampedU16Field228(unsigned short nValue);
 	void AddLevelScoreClamped(int nValue);
 };
+
+struct LevelObjectTimerPredicateView {
+	unsigned char m_abReserved00[0x190];
+	unsigned int m_nDeadline190;
+};
+
+// FUNCTION: LEMBALL 0x004109f0
+int __fastcall IsObjectTimerExpired(LevelObjectTimerPredicateView* pObject)
+{
+	return pObject->m_nDeadline190 < (unsigned int) g_nLevelFrameClockTick;
+}
 
 // FUNCTION: LEMBALL 0x00410ac0
 void LevelVtSmallFunctionView::AddClampedU16Field228(unsigned short nValue)

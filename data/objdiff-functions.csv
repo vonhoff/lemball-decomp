@@ -301,7 +301,7 @@ address,size,name,unit
 0x00410250,120,set_managed_entity_ice_attachment,LEVEL/LEVELVT.CPP
 0x004102D0,55,is_managed_entity_state_not_7_8_15_or_0f_variant_1_2,LEVEL/LEVELVT.CPP
 0x004108B0,252,emit_plas_chunk_object_render_entry,LEVEL/LEVELVT.CPP
-0x004109F0,20,is_object_timer_expired,LEVEL/LEVELVT.CPP
+0x004109F0,20,is_object_timer_expired,LEVEL/LEVELRUNNODEACCESS.CPP
 0x00410A10,7,get_level_mode_chunk_loader_context,LEVEL/LEVELVT.CPP
 0x00410A20,103,remove_pointer_from_level_mode_list_0x120,LEVEL/LEVELVT.CPP
 0x00410AA0,25,mark_object_field_0x178_and_set_timer_0x3c,LEVEL/LEVELVT.CPP
