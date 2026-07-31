@@ -563,8 +563,8 @@ void LEMBALL_FASTCALL RefreshCompactZrleOwnerIfHelperDirty(void* pObject)
 	}
 	nRenderObject = ResolveResourceGeometryRenderObject(pObject);
 	*(int*) (nRenderObject + 0x38) = 1;
-refresh:
 	*(int*) ((char*) pObject + 0x108) = *(int*) ((char*) pObject + 0x104);
+refresh:
 	RefreshCompactZrleOwnerFromResourceHelper(pObject);
 }
 
