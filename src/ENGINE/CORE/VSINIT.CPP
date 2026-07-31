@@ -63,7 +63,6 @@ unsigned long g_EffStreamSubobjectVtable[2] = {0, (unsigned long) -0x20};
 extern void* LEMBALL_FASTCALL DeleteStreamFormatTargetState(void* pState, int nUnused, unsigned char fDelete);
 // GLOBAL: LEMBALL 0x00493034
 void* g_StreamFormatTargetStateVtable[1] = {(void*) DeleteStreamFormatTargetState};
-void* g_StreamFormatSubobjectVtable[1] = {(void*) NetworkSafeVtableNoop};
 // GLOBAL: LEMBALL 0x00498968
 static void* g_FixedBufferStreamVtable[4] = {
 	(void*) DeleteFixedBufferStreamReturnThis,
@@ -1922,3 +1921,7 @@ void* ConstructRenderDispatchQueue(void* pQueue, int cEntries)
 {
 	return ((RenderDispatchQueueConstructorView*) pQueue)->ConstructRenderDispatchQueue(cEntries);
 }
+
+extern void* LEMBALL_FASTCALL DeleteFormattedOutputStream(void* pState, int nUnused, unsigned char fDelete);
+// GLOBAL: LEMBALL 0x00493038
+void* g_StreamFormatSubobjectVtable[1] = {(void*) DeleteFormattedOutputStream};
