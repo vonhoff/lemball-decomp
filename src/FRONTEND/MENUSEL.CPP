@@ -1159,7 +1159,7 @@ void LEMBALL_FASTCALL SetMenuSelectorChildrenEnabledThunk(GameMenuSelectorManage
 	SetMenuSelectorChildrenEnabled(pManager, nUnusedEdx, fEnabled);
 }
 
-// LINKERILT: LEMBALL 0x00402432
+// Compiler-state shim for the original selector-manager constructor ILT; removal loses exact 0x0044d290 and 0x0044ebc0.
 GameMenuSelectorManager* LEMBALL_FASTCALL ConstructMenuSelectorManagerThunk(GameMenuSelectorManager* pManager,
 																			int nUnusedEdx,
 																			void* pRenderOwner,
@@ -1170,6 +1170,7 @@ GameMenuSelectorManager* LEMBALL_FASTCALL ConstructMenuSelectorManagerThunk(Game
 	(void) nUnusedEdx;
 	return new (pManager) GameMenuSelectorManager(pRenderOwner, pRenderContext, nChildCapacity, nLayoutMode);
 }
+
 // FUNCTION: LEMBALL 0x0043a540
 void LEMBALL_FASTCALL DetachGeometryChildAndDestroyWindowOwner(void* pObject)
 {

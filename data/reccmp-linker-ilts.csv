@@ -123,6 +123,7 @@ address,name,symbol,type,source
 0x004023E7,LevelManagedEntityStateFields::DecrementHeadingOctant,?DecrementHeadingOctant@LevelManagedEntityStateFields@@QAEXXZ,stub,src/LEVEL/LEVELVT.CPP
 0x004023EC,GameMenuSelectorEntry::RebuildRects,?RebuildRects@GameMenuSelectorEntry@@QAEXHH@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x0040240A,activate_managed_entity_group_children,,stub,src/ENGINE/CORE/LINKSCF.H
+0x00402432,GameMenuSelectorManager::GameMenuSelectorManager,??0GameMenuSelectorManager@@QAE@PAX0HH@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x0040243C,level_chunk_object_runtime_state_view_clear_state_fields_thunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402446,clear_managed_entity_child_pending_state_if_interruptible,?clear_managed_entity_child_pending_state_if_interruptible@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
 0x00402496,LiftChunkManagerSerializationView::SerializeLiftChunkEndpointPairs,?SerializeLiftChunkEndpointPairs@LiftChunkManagerSerializationView@@QAEHPAULiftChunkEndpointPair@@@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
