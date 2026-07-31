@@ -367,14 +367,14 @@ address,size,name,unit
 0x004130D0,29,find_level_mode_move_chunk_containing_point,LEVEL/LEVELVT.CPP
 0x004130F0,13,set_level_mode_field_0xf8,LEVEL/LEVELVT.CPP
 0x00413100,24,copy_level_mode_profile_position_fixed,LEVEL/LEVELRUN.CPP
-0x00413120,13,get_plas_chunk_manager_field_0x124,LEVEL/LEVELVT.CPP
+0x00413120,13,get_plas_chunk_manager_field_0x124,LEVEL/LEVELRUNPROFILE.CPP
 0x00413130,39,configure_level_mode_managed_entity_profiles,LEVEL/LEVELRUN.CPP
 0x00413160,19,get_level_mode_profile_value_by_index,LEVEL/LEVELRUN.CPP
 0x00413180,41,set_level_mode_triplet_arrays_entry,LEVEL/LEVELRUN.CPP
 0x004131B0,47,set_level_mode_profile_range_selector,LEVEL/LEVELRUN.CPP
 0x004131E0,168,configure_level_mode_profile_ranges,LEVEL/LEVELRUN.CPP
-0x00413290,14,get_level_mode_profile_range_value,LEVEL/LEVELRUN.CPP
-0x004132A0,18,set_level_mode_profile_value_by_index,LEVEL/LEVELRUN.CPP
+0x00413290,14,get_level_mode_profile_range_value,LEVEL/LEVELRUNPROFILE.CPP
+0x004132A0,18,set_level_mode_profile_value_by_index,LEVEL/LEVELRUNPROFILE.CPP
 0x004132C0,49,copy_level_mode_fixed_point_triplet_by_index,LEVEL/LEVELRUN.CPP
 0x00413300,102,load_level_flag_chunk,LEVEL/LEVELRUN.CPP
 0x00413370,13,has_level_plas_history_entries,LEVEL/LEVELVT.CPP
