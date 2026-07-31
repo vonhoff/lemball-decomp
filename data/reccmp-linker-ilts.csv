@@ -212,6 +212,7 @@ address,name,symbol,type,source
 0x00402F22,LevelVtSmallFunctionView::AddLevelScoreClamped,?AddLevelScoreClamped@LevelVtSmallFunctionView@@QAEXH@Z,stub,src/LEVEL/LEVELRUNNODEACCESS.CPP
 0x00402F3B,set_menu_selector_duration_field_thunk,,stub,src/FRONTEND/MENUSEL.H
 0x00402F4A,VsNetNetworkLobbyScreen::SelectNextPlayerEntry,?SelectNextPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/FRONTEND/LOBBY.CPP
+0x00402F6D,LevelNodeManagerView::CopyPointByIndex,?CopyPointByIndex@LevelNodeManagerView@@QAEPAULevelNodePoint@@PAU2@H@Z,stub,src/LEVEL/LEVELRUNNODEACCESS.CPP
 0x00402FB3,InitializeStartupSwitchDefaults,?InitializeStartupSwitchDefaults@@YAXXZ,stub,src/SHELL/OPTIONS.CPP
 0x00402FF4,advance_active_move_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402FFE,destroy_level_screen_action_panel_resources_thunk,?DestroyLevelScreenActionPanelResourcesThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELSTAT.CPP
@@ -224,6 +225,7 @@ address,name,symbol,type,source
 0x00403076,reset_move_chunk_object_runtime_state_thunk,?ResetMoveChunkObjectRuntimeStateThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004030C1,vs_root_geometry_owner_remove_queued_render_sink_value_node,?RemoveQueuedRenderSinkValueNode@VS_RootGeometryOwner@@UAEXPAX@Z,stub,src/ENGINE/GDI/VSWINDOW.H
 0x004030DF,GameScreenObject::ConstructIntroSequenceScreen,?ConstructIntroSequenceScreen@GameScreenObject@@QAEPAXPAX0PAFH@Z,stub,src/GAME.CPP
+0x00403120,LevelNodeChunkPositionView::CopyFixedPointPosition,?CopyFixedPointPosition@LevelNodeChunkPositionView@@QAEXPAH@Z,stub,src/LEVEL/LEVELRUNNODEACCESS.CPP
 0x004031CF,gmob_chunk_type14action_view_dispatch_gmob_chunk_type14actions,?DispatchGmobChunkType14Actions@GmobChunkType14ActionView@@QAEXXZ,stub,src/LEVEL/LEVELVTACTIONDISPATCH.CPP
 0x00403201,get_first_managed_entity_child_from_cached_group,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040325B,VsNetNetworkLobbyScreen::HidePlayerEntries,?HidePlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP

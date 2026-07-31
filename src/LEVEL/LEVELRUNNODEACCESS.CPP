@@ -44,6 +44,32 @@ void LevelVtSmallFunctionView::AddClampedU16Field228(unsigned short nValue)
 	}
 }
 
+struct LevelNodeChunkPositionView;
+
+struct LevelNodePoint {
+	int m_anValues[3];
+};
+
+struct LevelNodeManagerView {
+	LevelNodeChunkPositionView* m_pRecords00;
+
+	LevelNodePoint* CopyPointByIndex(LevelNodePoint* pOutput, int nIndex);
+};
+
+struct LevelModeNodeView {
+	char m_abReserved00[0x17c];
+	LevelNodeManagerView* m_pNodeManager17C;
+
+	LevelNodePoint* CopyNodePointByIndex(LevelNodePoint* pOutput, int nIndex);
+};
+
+// FUNCTION: LEMBALL 0x00412b60
+LevelNodePoint* LevelModeNodeView::CopyNodePointByIndex(LevelNodePoint* pOutput, int nIndex)
+{
+	m_pNodeManager17C->CopyPointByIndex(pOutput, nIndex);
+	return pOutput;
+}
+
 // FUNCTION: LEMBALL 0x00413390
 void LevelVtSmallFunctionView::AddLevelScoreClamped(int nValue)
 {
@@ -132,12 +158,20 @@ struct LevelNodeChunkPositionView {
 	int m_nY;
 	int m_cExpectedLinks08;
 	int* m_pLinks0C;
+	int m_nReserved10;
 
 	void InitializePosition(int nX, int nY, int nUnused);
 	void SetFixedPointPosition(int nX, int nY);
 	void CopyFixedPointPosition(int* pDestination);
 	void CopyTileXY(int* pX, int* pY);
 };
+
+// FUNCTION: LEMBALL 0x004212a0
+LevelNodePoint* LevelNodeManagerView::CopyPointByIndex(LevelNodePoint* pOutput, int nIndex)
+{
+	m_pRecords00[nIndex].CopyFixedPointPosition(pOutput->m_anValues);
+	return pOutput;
+}
 
 // FUNCTION: LEMBALL 0x00421310
 void __fastcall DestroyNodeChunkRecordLinks(LevelNodeChunkPositionView* pRecord)

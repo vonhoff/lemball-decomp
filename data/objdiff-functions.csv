@@ -340,7 +340,7 @@ address,size,name,unit
 0x00412870,24,find_level_mode_entity_by_type_in_rect,LEVEL/LEVELRUN.CPP
 0x00412890,564,dispatch_managed_entity_chunk_contacts_from_tile_flags,LEVEL/LEVELRUN.CPP
 0x00412AD0,129,dispatch_door_overlap_if_tile_blocks_motion,LEVEL/LEVELRUN.CPP
-0x00412B60,28,copy_level_mode_node_point_by_index,LEVEL/LEVELRUN.CPP
+0x00412B60,28,copy_level_mode_node_point_by_index,LEVEL/LEVELRUNNODEACCESS.CPP
 0x00412B80,86,load_level_mode_manager_stream_ranges_0x1b4,LEVEL/LEVELRUN.CPP
 0x00412BE0,85,load_level_mode_manager_streams_0x1c4,LEVEL/LEVELRUN.CPP
 0x00412C40,11,has_stream_dirty_managed_entity_groups,LEVEL/LEVELRUN.CPP
@@ -832,7 +832,7 @@ address,size,name,unit
 0x004211A0,40,reset_node_chunk_records,LEVEL/LEVELRUN.CPP
 0x004211D0,134,allocate_node_chunk_record_array,LEVEL/LEVELRUN.CPP
 0x00421260,56,destroy_node_chunk_manager_records,LEVEL/LEVELRUN.CPP
-0x004212A0,31,copy_node_chunk_record_point_by_index,LEVEL/LEVELRUN.CPP
+0x004212A0,31,copy_node_chunk_record_point_by_index,LEVEL/LEVELRUNNODEACCESS.CPP
 0x004212C0,32,copy_node_chunk_record_tile_xy_by_index,LEVEL/LEVELRUN.CPP
 0x004212E0,23,initialize_node_chunk_record,LEVEL/LEVELRUN.CPP
 0x00421300,8,reset_node_chunk_record_link_count,LEVEL/LEVELRUN.CPP
