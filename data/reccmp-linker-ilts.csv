@@ -158,7 +158,7 @@ address,name,symbol,type,source
 0x00402A45,service_counted_child_pointer_table,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402A59,get_menu_selector_start_time_thunk,,stub,src/FRONTEND/MENUSEL.H
 0x00402A72,refresh_active_coll_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
-0x00402AA9,toggle_lift_chunk_object_activation_state,?ToggleLiftChunkObjectActivationState@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCFLIFTACTION.CPP
+0x00402AA9,ToggleLiftChunkObjectActivationState,?ToggleLiftChunkObjectActivationState@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCFLIFTACTION.CPP
 0x00402ACC,get_next_managed_entity_child_from_cached_group,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402B1C,restore_reconstructed_level_screen_vtables_auto_thunk,?RestoreReconstructedLevelScreenVtablesAutoThunk@@YIXPAX@Z,stub,src/GAME.CPP
 0x00402B76,delete_network_lobby_selected_peer_status_stream,,stub,src/ENGINE/MEDIA/EFFSTRM.H
