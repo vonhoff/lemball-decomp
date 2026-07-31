@@ -1,3 +1,17 @@
+struct LevelProjectilePoolView {
+	char m_abReserved00[0x34];
+	void* m_apObjects34[40];
+	int m_cObjectsD4;
+
+	void Append(void* pObject);
+};
+
+// FUNCTION: LEMBALL 0x00417f80
+void LevelProjectilePoolView::Append(void* pObject)
+{
+	m_apObjects34[m_cObjectsD4++] = pObject;
+}
+
 struct LevelProjectileGeometryIteratorPair {
 	int m_nX;
 	int m_nY;

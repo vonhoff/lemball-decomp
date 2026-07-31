@@ -2130,7 +2130,6 @@ struct LevelVtSmallFunctionView {
 	void AddLevelScoreClamped(int nValue);
 	void* InitializeManagedEntityChildSlotRecord(void);
 	void SetRectFromBounds(int nLeft, int nTop, int nRight, int nBottom);
-	void AppendProjectilePoolObject(void* pObject);
 	void* GetProjectileGeometryRotatedPair(int nIndex);
 	void GetManagedEntityInteractionPoint(int* pPoint);
 	void SwapObjectChildSlots128(int iFirst, int iSecond);
@@ -2188,15 +2187,6 @@ void LevelVtSmallFunctionView::SetRectFromBounds(int nLeft, int nTop, int nRight
 	nHeight -= nTopValue;
 	*(int*) ((char*) this + 0x0c) = nHeight;
 	*(int*) ((char*) this + 4) = nTopValue;
-}
-
-void LevelVtSmallFunctionView::AppendProjectilePoolObject(void* pObject)
-{
-	int nIndex;
-
-	nIndex = *(int*) ((char*) this + 0xd4);
-	*(void**) ((char*) this + 0x34 + nIndex * 4) = pObject;
-	++*(int*) ((char*) this + 0xd4);
 }
 
 void* LevelVtSmallFunctionView::GetProjectileGeometryRotatedPair(int nIndex)

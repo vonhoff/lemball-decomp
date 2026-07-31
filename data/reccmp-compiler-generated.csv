@@ -44,7 +44,6 @@ address,name,symbol,type,source
 0x00417D00,DeleteLevelChunkObjectBaseWrapper17D00,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00417D30,ReadEffStreamU16ToField30,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00417D50,LinkScfAutoEffDeleteView::Delete17D50,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x00417F80,LevelVtSmallFunctionView::AppendProjectilePoolObject,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00418300,DeleteProjectilePoolAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x004193F0,LevelManagedEntityActiveGroupView::HasStreamDirtyChildren,,synthetic,src/LEVEL/LEVELRUN.CPP
 0x00419440,LevelManagedEntityActiveGroupView::HasDirtyChildren,,synthetic,src/LEVEL/LEVELRUN.CPP
