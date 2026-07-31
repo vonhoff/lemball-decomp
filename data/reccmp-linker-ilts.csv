@@ -121,7 +121,7 @@ address,name,symbol,type,source
 0x00402559,activate_ice_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040258B,advance_cached_group_managed_entity_child_iterator,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004025B3,managed_entity_packet26_reverse_eff_stream_payload,?ReverseEffStreamPayload@ManagedEntityPacket26@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKETTHUNK.CPP
-0x004025EA,toggle_ice_activation,?RequestIceChunkObjectToggleActivation@IceChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFICEACTION.CPP
+0x004025EA,IceChunkObjectActionView::RequestIceChunkObjectToggleActivation,?RequestIceChunkObjectToggleActivation@IceChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFICEACTION.CPP
 0x004025FE,destroy_counted_child_table_stream_auto_thunk,?DestroyCountedChildTableStreamAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402608,invs_chunk_object_action_view_add_invs_tracked_entity,?AddInvsTrackedEntity@InvsChunkObjectActionView@@QAEXPAX@Z,stub,src/ENGINE/CORE/LINKSCFINVS.CPP
 0x0040260D,vs_net_network_lobby_screen_remove_unavailable_player_entries,?RemoveUnavailablePlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
