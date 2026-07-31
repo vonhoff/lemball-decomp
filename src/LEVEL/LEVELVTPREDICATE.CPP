@@ -214,3 +214,21 @@ void __cdecl DispatchManagedEntityVslot90ThenVslot30(void* pUnused, void* pEntit
 	((LevelManagedEntityNoArgVirtualProc) pVtable[0x90 / sizeof(void*)])(pEntity);
 	((LevelManagedEntityThreeArgVirtualProc) ForwardManagedEntityVslot30)(pUnused, pEntity, pUnused2);
 }
+
+// FUNCTION: LEMBALL 0x00419e00
+void __cdecl ForwardTargetManagedEntityVslotF0(void* pUnused, void* pTargetEntity)
+{
+	void** pVtable;
+
+	(void) pUnused;
+	pVtable = *(void***) pTargetEntity;
+	((LevelManagedEntityNoArgVirtualProc) pVtable[0xf0 / sizeof(void*)])(pTargetEntity);
+}
+
+// FUNCTION: LEMBALL 0x00419e20
+void __cdecl DispatchManagedEntityPreUpdateCallbacks(void* pUnused, void* pEntity, void* pUnused2)
+{
+	void** pVtable = *(void***) pEntity;
+	((LevelManagedEntityNoArgVirtualProc) pVtable[0x6c / sizeof(void*)])(pEntity);
+	((LevelManagedEntityThreeArgVirtualProc) ForwardManagedEntityVslot30)(pUnused, pEntity, pUnused2);
+}
