@@ -61,6 +61,7 @@ address,name,symbol,type,source
 0x00401A0A,get_first_projectile_pool_object,?get_first_projectile_pool_object@@YIPAXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00401A5F,LoadFramedScreenFrameResources,?LoadFramedScreenFrameResources@@YIXPAX@Z,stub,src/FRONTEND/MAINMENU.CPP
 0x00401A87,vs_net_network_lobby_screen_confirm_selected_player_entry,?ConfirmSelectedPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/FRONTEND/LOBBY.CPP
+0x00401A9B,GamePasswordKeyOverlayTableView::RebuildSourceRects,?RebuildSourceRects@GamePasswordKeyOverlayTableView@@QAEXXZ,stub,src/FRONTEND/MAINMENUPASSWORD.CPP
 0x00401AC3,LevelManagedEntityChildIterator::AppendChild,?AppendChild@LevelManagedEntityChildIterator@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00401ADC,handle_menu_selector_event_thunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401B31,DoorChunkObjectActionView::RequestDoorChunkObjectTriggerTransition,?RequestDoorChunkObjectTriggerTransition@DoorChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFDOORACTION.CPP
