@@ -335,6 +335,25 @@ inline VsNetTcpipEffTransportOwnershipPath::~VsNetTcpipEffTransportOwnershipPath
 
 /* 004715E0 constructs these two nonvirtual bases at +0 and +0x2c.  Their
  * virtual bases are shared by the complete 0x170-byte allocation. */
+// GLOBAL: LEMBALL 0x0049a2e0
+// VsNetAllocatedTcpipEffTransportComposite::`vbtable'{for `VsNetTimedSocketEffChannelBundleLayout'}
+// GLOBAL: LEMBALL 0x0049a2f0
+// VsNetAllocatedTcpipEffTransportComposite::`vbtable'{for `VsNetDualSocketWindowEffChannelBundle'}
+// GLOBAL: LEMBALL 0x0049a300
+// VsNetAllocatedTcpipEffTransportComposite::`vbtable'{for `VsNetSocketWindowEffChannel'}
+// GLOBAL: LEMBALL 0x0049a308
+// VsNetAllocatedTcpipEffTransportComposite::`vbtable'{for `VsNetRuntimeChannelCore'}
+// GLOBAL: LEMBALL 0x0049a318
+// VsNetAllocatedTcpipEffTransportComposite::`vbtable'{for `VsNetDualHandleEffStream'}
+// GLOBAL: LEMBALL 0x0049a320
+// VsNetAllocatedTcpipEffTransportComposite::`vbtable'{for `VsNetTimedEffStream'}
+// GLOBAL: LEMBALL 0x0049a328
+// VsNetAllocatedTcpipEffTransportComposite::`vbtable'{for `VsNetTcpipSocketChannelStackLayout'}
+// GLOBAL: LEMBALL 0x0049a348
+// VsNetAllocatedTcpipEffTransportComposite::`vbtable'{for `VsNetAllocatedTcpipEffTransportComposite'}
+// VTABLE: LEMBALL 0x0049a368 VsNetSocketWindowPrimary
+// VTABLE: LEMBALL 0x0049a3c8 VsNetRuntimeChannelCore
+// VTABLE: LEMBALL 0x0049a3d8 VsNetCompositeEffTransportStack
 struct VsNetAllocatedTcpipEffTransportComposite : VsNetCompositeEffTransportStack, VsNetTcpipSocketChannelStackLayout {
 	inline VsNetAllocatedTcpipEffTransportComposite() {}
 	virtual int CompositeReserved00(const char* pUnused, const char* pszHost);
