@@ -37,3 +37,8 @@ LevelProjectileGeometryIteratorPair* LevelProjectileGeometryPairTableIteratorVie
 	}
 	return &m_aSecondaryPairsC0[nIndex];
 }
+
+// FUNCTION: LEMBALL 0x0041af00
+void NoopProjectilePacketHook(void)
+{
+}
