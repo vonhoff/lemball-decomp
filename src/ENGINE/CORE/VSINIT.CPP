@@ -77,7 +77,6 @@ static const char g_VSINIT_HexPointerPrefix[] = "0x";
 static int g_fRadixPowerTableInitialized = 0;
 static unsigned int g_adwRadixPowerTable[17];
 
-
 static const char g_VSINIT_SyncDebugName[] = "Sync_Debug";
 static const char g_VSINIT_DebugOutPath[] = "debug.out";
 static const char g_VSINIT_ErrorTitle[] = "ERROR";
@@ -1517,6 +1516,9 @@ int ShutdownTimingSubsystemStub(void)
 	return 1;
 }
 
+struct GameStatusEntryInitialVtable;
+extern GameStatusEntryInitialVtable g_GAME_StatusEntryDeleteVtable;
+
 // FUNCTION: LEMBALL 0x00463020
 void* ConstructRenderDispatchQueue(void* pQueue, int cEntries)
 {
@@ -1557,7 +1559,7 @@ RenderDispatchQueue* RenderDispatchQueue::ConstructRenderDispatchQueueVariant(in
 	int nEntryBuffer;
 
 	(void) pszName;
-	m_pVtable = g_RenderDispatchQueueDeleteThunkVtable;
+	m_pVtable = (void**) &g_GAME_StatusEntryDeleteVtable;
 	m_pLockVtable = g_RenderDispatchQueueCriticalSectionHelperVtable;
 	InitializeCriticalSection((char*) this + 0xc);
 	m_pVtable = g_RenderDispatchQueueVtable;

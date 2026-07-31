@@ -19,7 +19,7 @@ struct GameStatusEntryInitialVtable {
 	int (CArena::*m_pFree)(void*);
 };
 // GLOBAL: LEMBALL 0x00498908
-static GameStatusEntryInitialVtable g_GAME_StatusEntryDeleteVtable = {
+GameStatusEntryInitialVtable g_GAME_StatusEntryDeleteVtable = {
 	_purecall,
 	0,
 	EnterObjectCriticalSection,
