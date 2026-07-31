@@ -25,7 +25,7 @@ void GamePasswordKeyOverlayTableView::RebuildSourceRects(void)
 	i = 12;
 	do {
 		pOverlay = *ppOverlay;
-		++ppOverlay;
 		pOverlay->RebuildSourceRect(1);
+		++ppOverlay;
 	} while (--i != 0);
 }
