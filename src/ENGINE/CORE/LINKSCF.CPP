@@ -1998,11 +1998,6 @@ void LEMBALL_FASTCALL AdvanceActiveMoveChunkObjects(void* pManager)
 	}
 }
 
-void LEMBALL_FASTCALL ReadEffStreamU16ToField30(void* pObject)
-{
-	*(unsigned short*) ((char*) pObject + 0x30) = ((VsNetEffStreamBase*) pObject)->ReadEffStreamU16BEValue();
-}
-
 void add_two_dword_values(int* pDestination, const int* pLeft, const int* pRight)
 {
 	*pDestination = *pRight + *pLeft;

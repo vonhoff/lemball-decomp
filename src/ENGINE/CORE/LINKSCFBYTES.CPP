@@ -1,3 +1,20 @@
+#include "ENGINE/CORE/COMMON.H"
+#include "ENGINE/CORE/WIN32.H"
+#include "ENGINE/MEDIA/VSSTRM.H"
+
+struct EffStreamU16FieldView {
+	char m_abReserved00[0x30];
+	unsigned short m_nValue30;
+
+	void ReadValue(void);
+};
+
+// FUNCTION: LEMBALL 0x00417d30
+void EffStreamU16FieldView::ReadValue(void)
+{
+	m_nValue30 = ((VsNetEffStreamBase*) this)->ReadEffStreamU16BEValue();
+}
+
 struct LevelModeValuesView {
 	char m_abReserved00[0x110];
 	int m_anValues110[1];
