@@ -4622,6 +4622,29 @@ void PASCAL SetVariantResourceEffectMasterVolume(unsigned char nVolume)
 {
 	((VsSoundManager*) g_pAudioManager)->SetAudioManagerMusicAndEffectVolume(-1, nVolume);
 }
+
+struct GameAudioCallbackOwnerView {
+	char m_abReserved00[0x2c4];
+	int m_hMusic2C4;
+};
+
+extern int g_fVariantResourceMusicEnabled;
+
+// FUNCTION: LEMBALL 0x00439f90
+void LEMBALL_FASTCALL DispatchGameAudioChildCallback(GameAudioCallbackOwnerView* pOwner)
+{
+	if (g_fVariantResourceMusicEnabled != 0) {
+		((VsSoundManager*) g_pAudioManager)->DispatchChildInterfaceSlot18IfReady(pOwner->m_hMusic2C4);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00439fb0
+void LEMBALL_FASTCALL NotifyGameAudioMusicIfActive(GameAudioCallbackOwnerView* pOwner)
+{
+	if (g_fVariantResourceMusicEnabled != 0) {
+		((VsSoundManager*) g_pAudioManager)->InvokeAudioManagerEmbeddedSlot1cIfMusicActive(pOwner->m_hMusic2C4);
+	}
+}
 // FUNCTION: LEMBALL 0x00440000
 void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void* pObject, int nUnusedEdx, void* pFrameArgument)
 {
