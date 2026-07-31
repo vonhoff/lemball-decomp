@@ -1493,7 +1493,7 @@ address,size,name,unit
 0x00442170,20,clear_four_short_rect,LEVEL/LEVELSTAT.CPP
 0x00442190,49,copy_four_short_rect,LEVEL/LEVELSTAT.CPP
 0x004421D0,100,construct_text_aligned_zrle_child_overlay,LEVEL/LEVELSTAT.CPP
-0x00442240,20,show_level_status_indicator_mode,LEVEL/LEVELSTAT.CPP
+0x00442240,20,show_level_status_indicator_mode,LEVEL/LEVELSTATUSMODE.CPP
 0x00442260,5,queue_aligned_zrle_child_draw_entry,LEVEL/LEVELSTAT.CPP
 0x00442270,13,queue_aligned_zrle_child_overlay_if_dirty,LEVEL/LEVELSTAT.CPP
 0x00442280,44,begin_level_pause_action,LEVEL/LEVELSTAT.CPP
@@ -1505,8 +1505,8 @@ address,size,name,unit
 0x00442690,787,rebuild_level_status_panel_render_entries,LEVEL/LEVELSTAT.CPP
 0x004429B0,144,sync_action_button_state,LEVEL/LEVELSTAT.CPP
 0x00442A40,96,refresh_aligned_zrle_child_and_queue_if_dirty,LEVEL/LEVELSTAT.CPP
-0x00442AA0,25,clear_action_button_field_0x10c_and_reset_status_indicator,LEVEL/LEVELSTAT.CPP
-0x00442AC0,28,clear_action_button_status_indicator_flag,LEVEL/LEVELSTAT.CPP
+0x00442AA0,25,clear_action_button_field_0x10c_and_reset_status_indicator,LEVEL/LEVELSTATUSMODE.CPP
+0x00442AC0,28,clear_action_button_status_indicator_flag,LEVEL/LEVELSTATUSMODE.CPP
 0x00442AE0,448,handle_entity_button_event,LEVEL/LEVELSTAT.CPP
 0x00442CA0,64,position_level_screen_action_button,LEVEL/LEVELSTAT.CPP
 0x00442CE0,205,construct_level_screen_action_button,LEVEL/LEVELSTAT.CPP
