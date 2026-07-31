@@ -2708,3 +2708,15 @@ int PASCAL accept_gmob_activation(void* pUnused)
 	(void) pUnused;
 	return 1;
 }
+
+void noop_projectile_boon_hook(void)
+{
+}
+
+void noop_saved_chunk_packet_hook(void)
+{
+}
+
+void noop_move_chunk_path_search(void)
+{
+}

@@ -16,6 +16,7 @@ address,name,symbol,type,source
 0x0040CEA0,DeleteLevelChunkObjectBaseScalarB,,synthetic,src/LEVEL/TYPE18.CPP
 0x0040EB70,LinkScfSmallFunctionView::GetLevelTileGridCellPointer,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x0040EBE0,DeleteDoorChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
+0x0040FF60,noop_projectile_boon_hook,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00410AC0,LevelVtSmallFunctionView::AddClampedU16Field228,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00410B20,DeleteDoorChunkObjectAuto,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00410B70,Door chunk-object deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/LEVEL/LEVELVTDOOR.CPP
@@ -58,6 +59,7 @@ address,name,symbol,type,source
 0x0041C330,DeleteCountedChildTableStreamAuto,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0041C400,DeleteLevelChunkObjectBaseWrapper1C400,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0041C440,DeleteLevelChunkObjectBaseWrapper1C440,,synthetic,src/LEVEL/LEVELVT.CPP
+0x0041C5A0,noop_saved_chunk_packet_hook,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0041C5C0,DeleteLevelChunkObjectBaseWrapper1C5C0,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0041C5F0,return_chunk_status_two,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0041C600,DeleteLevelChunkObjectBaseWrapper1C600,,synthetic,src/LEVEL/LEVELVT.CPP
@@ -100,6 +102,7 @@ address,name,symbol,type,source
 0x0042D4C0,return_false_ice_chunk_callback,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x0042E4D0,DeleteIceChunkManagerAuto,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0042EED0,return_zero_move_chunk_callback,,synthetic,src/LEVEL/LEVELVT.CPP
+0x0042FB90,noop_move_chunk_path_search,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0042FBA0,DeleteMoveChunkManagerAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x004322E0,delete_primary_context_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/GAME.CPP
 0x00432350,DeleteQueuedRenderPointSinkWrapperAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
