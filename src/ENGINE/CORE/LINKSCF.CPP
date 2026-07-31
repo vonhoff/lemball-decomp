@@ -190,7 +190,6 @@ DEFINE_LINKSCF_VTABLE_STUB_0(GetFirstManagedEntityChildFromCachedGroupCompatibil
 DEFINE_LINKSCF_VTABLE_STUB_0(GetNextManagedEntityChildFromCachedGroup)
 DEFINE_LINKSCF_VTABLE_STUB_0(GetFirstIteratedChildStatus11CCompatibility)
 DEFINE_LINKSCF_VTABLE_STUB_1(AdvanceCachedGroupManagedEntityChildIterator)
-DEFINE_LINKSCF_VTABLE_STUB_1(FindManagedEntityByPointer)
 DEFINE_LINKSCF_VTABLE_STUB_2(AppendManagedEntityGroupFromIds)
 DEFINE_LINKSCF_VTABLE_STUB_1(AttachAndActivateChunkObject)
 DEFINE_LINKSCF_VTABLE_STUB_2(RemoveOwnerChildIfNoNestedEntries)
@@ -345,66 +344,48 @@ static void* g_LINKSCF_ProjectilePoolVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(Delet
 																		   ReturnFalseChunkStreamCommandThunk,
 																		   EmitProjectilePoolRenderEntries);
 static void* g_LINKSCF_ManagedEntityQueueCursorVtable[4];
+struct LevelManagedEntityChildIterator;
+struct LevelManagedEntityActiveGroupView {
+	LevelManagedEntityChildIterator* FindManagedEntityByPointer(void* pObject);
+};
+
+typedef LevelManagedEntityChildIterator* (LevelManagedEntityActiveGroupView::*FindManagedEntityProc)(void*);
+
+struct CachedChunkObjectManagerVtable {
+	void* m_apBeforeFind00[11];
+	FindManagedEntityProc m_pFindManagedEntity2C;
+	void* m_apAfterFind30[7];
+};
+
+#define LINKSCF_CACHED_CHUNK_MANAGER_VTABLE                                                                            \
+	{                                                                                                                  \
+		{(void*) GetManagedEntityGroupCount,                                                                           \
+		 (void*) GetFirstCachedChunkObject,                                                                            \
+		 (void*) GetNextCachedChunkObject,                                                                             \
+		 (void*) GetCachedChunkObjectByIndex,                                                                          \
+		 (void*) GetNextManagedEntityGroup,                                                                            \
+		 (void*) RemoveCachedChunkObjectAndDestroy,                                                                    \
+		 (void*) CountNestedIteratedChildEntries,                                                                      \
+		 (void*) GetFirstManagedEntityChildFromCachedGroup,                                                            \
+		 (void*) GetNextManagedEntityChildFromCachedGroup,                                                             \
+		 (void*) GetFirstIteratedChildStatus11C,                                                                       \
+		 (void*) AdvanceCachedGroupManagedEntityChildIterator},                                                        \
+			&LevelManagedEntityActiveGroupView::FindManagedEntityByPointer,                                            \
+		{                                                                                                              \
+			(void*) AppendCachedChunkObject, (void*) AppendManagedEntityGroupFromIds,                                  \
+				(void*) ResetCachedChunkManagerScratch, (void*) AttachAndActivateChunkObject,                          \
+				(void*) RemoveOwnerChildIfNoNestedEntries, (void*) ForwardOwnerChildCommandValue,                      \
+				(void*) EmitIteratedChildBoundsRecords                                                                 \
+		}                                                                                                              \
+	}
+
 // GLOBAL: LEMBALL 0x00494d08
-static void* g_LINKSCF_CachedChunkObjectManagerBaseVtable[19] = {(void*) GetManagedEntityGroupCount,
-																 (void*) GetFirstCachedChunkObject,
-																 (void*) GetNextCachedChunkObject,
-																 (void*) GetCachedChunkObjectByIndex,
-																 (void*) GetNextManagedEntityGroup,
-																 (void*) RemoveCachedChunkObjectAndDestroy,
-																 (void*) CountNestedIteratedChildEntries,
-																 (void*) GetFirstManagedEntityChildFromCachedGroup,
-																 (void*) GetNextManagedEntityChildFromCachedGroup,
-																 (void*) GetFirstIteratedChildStatus11C,
-																 (void*) AdvanceCachedGroupManagedEntityChildIterator,
-																 (void*) FindManagedEntityByPointer,
-																 (void*) AppendCachedChunkObject,
-																 (void*) AppendManagedEntityGroupFromIds,
-																 (void*) ResetCachedChunkManagerScratch,
-																 (void*) AttachAndActivateChunkObject,
-																 (void*) RemoveOwnerChildIfNoNestedEntries,
-																 (void*) ForwardOwnerChildCommandValue,
-																 (void*) EmitIteratedChildBoundsRecords};
+static CachedChunkObjectManagerVtable g_LINKSCF_CachedChunkObjectManagerBaseVtable =
+	LINKSCF_CACHED_CHUNK_MANAGER_VTABLE;
 // GLOBAL: LEMBALL 0x00494d70
-static void* g_LINKSCF_ShpgChunkManagerVtable[19] = {(void*) GetManagedEntityGroupCount,
-													 (void*) GetFirstCachedChunkObject,
-													 (void*) GetNextCachedChunkObject,
-													 (void*) GetCachedChunkObjectByIndex,
-													 (void*) GetNextManagedEntityGroup,
-													 (void*) RemoveCachedChunkObjectAndDestroy,
-													 (void*) CountNestedIteratedChildEntries,
-													 (void*) GetFirstManagedEntityChildFromCachedGroup,
-													 (void*) GetNextManagedEntityChildFromCachedGroup,
-													 (void*) GetFirstIteratedChildStatus11C,
-													 (void*) AdvanceCachedGroupManagedEntityChildIterator,
-													 (void*) FindManagedEntityByPointer,
-													 (void*) AppendCachedChunkObject,
-													 (void*) AppendManagedEntityGroupFromIds,
-													 (void*) ResetCachedChunkManagerScratch,
-													 (void*) AttachAndActivateChunkObject,
-													 (void*) RemoveOwnerChildIfNoNestedEntries,
-													 (void*) ForwardOwnerChildCommandValue,
-													 (void*) EmitIteratedChildBoundsRecords};
+static CachedChunkObjectManagerVtable g_LINKSCF_ShpgChunkManagerVtable = LINKSCF_CACHED_CHUNK_MANAGER_VTABLE;
 // GLOBAL: LEMBALL 0x004953f8
-static void* g_LINKSCF_EnmyChunkManagerVtable[19] = {(void*) GetManagedEntityGroupCount,
-													 (void*) GetFirstCachedChunkObject,
-													 (void*) GetNextCachedChunkObject,
-													 (void*) GetCachedChunkObjectByIndex,
-													 (void*) GetNextManagedEntityGroup,
-													 (void*) RemoveCachedChunkObjectAndDestroy,
-													 (void*) CountNestedIteratedChildEntries,
-													 (void*) GetFirstManagedEntityChildFromCachedGroup,
-													 (void*) GetNextManagedEntityChildFromCachedGroup,
-													 (void*) GetFirstIteratedChildStatus11C,
-													 (void*) AdvanceCachedGroupManagedEntityChildIterator,
-													 (void*) FindManagedEntityByPointer,
-													 (void*) AppendCachedChunkObject,
-													 (void*) AppendManagedEntityGroupFromIds,
-													 (void*) ResetCachedChunkManagerScratch,
-													 (void*) AttachAndActivateChunkObject,
-													 (void*) RemoveOwnerChildIfNoNestedEntries,
-													 (void*) ForwardOwnerChildCommandValue,
-													 (void*) EmitIteratedChildBoundsRecords};
+static CachedChunkObjectManagerVtable g_LINKSCF_EnmyChunkManagerVtable = LINKSCF_CACHED_CHUNK_MANAGER_VTABLE;
 // GLOBAL: LEMBALL 0x004955a0
 void* g_LINKSCF_CollChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteCollChunkManagerAuto,
 																	  ActivateCollChunkObjects,
@@ -1134,7 +1115,7 @@ LinkScfCachedChunkObjectManagerBaseView* LinkScfCachedChunkObjectManagerBaseView
 	void* pEntityLookup,
 	void* pProjectileGeometryTable)
 {
-	*(void**) this = g_LINKSCF_CachedChunkObjectManagerBaseVtable;
+	*(void**) this = &g_LINKSCF_CachedChunkObjectManagerBaseVtable;
 	g_pCachedChunkManagerLevelMode = pLevelMode;
 	g_pCachedChunkManagerEntityLookup = pEntityLookup;
 	g_pCachedChunkManagerProjectileGeometryTable = pProjectileGeometryTable;
@@ -1238,7 +1219,7 @@ LinkScfShpgChunkManagerView* LinkScfShpgChunkManagerView::ConstructShpgChunkMana
 {
 	((LinkScfCachedChunkObjectManagerBaseView*) this)
 		->ConstructCachedChunkObjectManagerBaseThunk(pLevelMode, pGmobManager, pProjectileGeometryTable);
-	*(void**) this = g_LINKSCF_ShpgChunkManagerVtable;
+	*(void**) this = &g_LINKSCF_ShpgChunkManagerVtable;
 	return this;
 }
 
@@ -1249,7 +1230,7 @@ LinkScfEnmyChunkManagerView* LinkScfEnmyChunkManagerView::ConstructEnmyChunkMana
 {
 	((LinkScfCachedChunkObjectManagerBaseView*) this)
 		->ConstructCachedChunkObjectManagerBaseThunk(pLevelMode, pGmobManager, pProjectileGeometryTable);
-	*(void**) this = g_LINKSCF_EnmyChunkManagerVtable;
+	*(void**) this = &g_LINKSCF_EnmyChunkManagerVtable;
 	return this;
 }
 // FUNCTION: LEMBALL 0x004223c0

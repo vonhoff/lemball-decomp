@@ -65,6 +65,7 @@ address,name,symbol,type,source
 0x00401ADC,handle_menu_selector_event_thunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401B31,DoorChunkObjectActionView::RequestDoorChunkObjectTriggerTransition,?RequestDoorChunkObjectTriggerTransition@DoorChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFDOORACTION.CPP
 0x00401B95,reset_all_invs_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
+0x00401B9F,LevelManagedEntityActiveGroupView::GetEntityActiveState,?GetEntityActiveState@LevelManagedEntityActiveGroupView@@QAEHPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00401BC2,delete_menu_selector_entry_thunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401BEA,reset_projectile_pool,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401C49,delete_registered_render_slot_array_auto,,stub,src/GAME.H
@@ -141,7 +142,7 @@ address,name,symbol,type,source
 0x00402667,ManagedEntityChildView::SetManagedEntityPrimaryActiveFlag,?SetManagedEntityPrimaryActiveFlag@ManagedEntityChildView@@QAEXH@Z,stub,src/LEVEL/LEVELVT.CPP
 0x0040266C,handle_queued_variant_range_entry_event,?HandleQueuedVariantRangeEntryEvent@@YIHPAUGameQueuedVariantRangeEntry@@HPAUGameMenuSelectorEvent@@@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00402676,destroy_coll_chunk_object_auto_thunk,?DestroyCollChunkObjectAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
-0x0040268A,find_managed_entity_by_pointer,,stub,src/ENGINE/CORE/LINKSCF.H
+0x0040268A,LevelManagedEntityActiveGroupView::FindManagedEntityByPointer,?FindManagedEntityByPointer@LevelManagedEntityActiveGroupView@@QAEPAULevelManagedEntityChildIterator@@PAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x0040268F,LevelSlotActionDispatcherView::DispatchLevelSlotActionByType,?DispatchLevelSlotActionByType@LevelSlotActionDispatcherView@@QAEXHIHH@Z,stub,src/LEVEL/LEVELVTACTIONDISPATCH.CPP
 0x004026A8,vs_net_network_lobby_screen_refresh_player_entries,?RefreshPlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
 0x004026CB,append_managed_entity_group_from_ids,,stub,src/ENGINE/CORE/LINKSCF.H

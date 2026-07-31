@@ -167,6 +167,14 @@ public:
 	int HasStreamDirtyChildrenThunk(void);
 	int HasDirtyChildren(void);
 	int HasDirtyChildrenThunk(void);
+	int GetEntityActiveState(void* pObject);
+};
+
+struct LevelManagedEntityOwnerView {
+	unsigned char m_abReserved00[0x15c];
+	LevelManagedEntityActiveGroupView* m_pManagedEntities15C;
+
+	int GetManagedEntityActiveState(void* pObject);
 };
 
 // Original body: LEMBALL 0x00419440. Kept beside its required compatibility ILT owner.
@@ -1494,6 +1502,13 @@ int EmitLevelGameModeDynamicRenderEntries(void* pObject, void* pOutputEntries)
 	cEntries += EmitSlnkChunkManagerRenderEntries(*(void**) (pLevelMode + 0x1c8), pEntries + cEntries * 0x4c);
 	return cEntries;
 }
+
+// FUNCTION: LEMBALL 0x004125e0
+int LevelManagedEntityOwnerView::GetManagedEntityActiveState(void* pObject)
+{
+	return m_pManagedEntities15C->GetEntityActiveState(pObject);
+}
+
 // FUNCTION: LEMBALL 0x00412c40
 int LEMBALL_FASTCALL HasStreamDirtyManagedEntityGroups(void* pObject)
 {
