@@ -300,6 +300,7 @@ struct VsNetAllocatedTcpipEffTransportCompositeLayout {
 
 typedef VsNetRuntimeChannelCore VsNetTcpipRuntimeChannelFacet;
 
+// VTABLE: LEMBALL 0x0049a210 VsNetEffStreamChannelState
 struct VsNetDualSocketWindowEffChannelBundle : virtual VsNetDualHandleEffStream, virtual VsNetSocketWindowEffChannel {
 	static void operator delete(void* pObject) { FreeVSMemBlock(pObject); }
 	virtual void ClearPendingWrite(void* pArgument);
