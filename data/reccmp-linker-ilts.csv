@@ -145,7 +145,7 @@ address,name,symbol,type,source
 0x004027FC,read_network_lobby_peer_entry_stream,,stub,src/ENGINE/MEDIA/EFFSTRM.H
 0x00402856,return_zero_vtable_callback_0042dd30,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402860,forward_owner_child_command_value,,stub,src/ENGINE/CORE/LINKSCF.H
-0x0040289C,reset_lasr_chunk_object_runtime_state_thunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
+0x0040289C,ResetLasrChunkObjectRuntimeStateThunk,?ResetLasrChunkObjectRuntimeStateThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x004028BF,vs_window_owner_base_reserved_window_owner_slot18,?ReservedWindowOwnerSlot18@VS_WindowOwnerBase@@UAEXXZ,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00402900,emit_projectile_pool_render_entries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402946,dispatch_move_chunk_object_action_by_slot,?DispatchMoveChunkObjectActionBySlot@@YIXPAX0HI@Z,stub,src/LEVEL/LEVELVTMOVEACTION.CPP
