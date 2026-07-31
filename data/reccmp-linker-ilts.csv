@@ -188,7 +188,7 @@ address,name,symbol,type,source
 0x00402EB9,get_cached_chunk_object_by_index,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402F09,destroy_managed_entity_queue_cursor_auto_thunk,?DestroyManagedEntityQueueCursorAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402F3B,set_menu_selector_duration_field_thunk,,stub,src/FRONTEND/MENUSEL.H
-0x00402F4A,vs_net_network_lobby_screen_select_next_player_entry,?SelectNextPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/FRONTEND/LOBBY.CPP
+0x00402F4A,VsNetNetworkLobbyScreen::SelectNextPlayerEntry,?SelectNextPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/FRONTEND/LOBBY.CPP
 0x00402FF4,advance_active_move_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402FFE,destroy_level_screen_action_panel_resources_thunk,?DestroyLevelScreenActionPanelResourcesThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELSTAT.CPP
 0x00403008,fun_0043a2e0,,stub,src/GAME.H
@@ -218,7 +218,7 @@ address,name,symbol,type,source
 0x0040345E,activate_move_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00403463,destroy_level_selection_screen_auto_thunk,?DestroyLevelSelectionScreenAutoThunk@@YIXPAX@Z,stub,src/FRONTEND/MAINMENU.CPP
 0x00403468,DestroyProjectileObject,?DestroyProjectileObject@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCFPROJECTILE.CPP
-0x0040346D,vs_net_network_lobby_screen_select_previous_player_entry,?SelectPreviousPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/FRONTEND/LOBBY.CPP
+0x0040346D,VsNetNetworkLobbyScreen::SelectPreviousPlayerEntry,?SelectPreviousPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/FRONTEND/LOBBY.CPP
 0x00403472,destroy_three_optional_record_chunk_object_auto_thunk,?DestroyThreeOptionalRecordChunkObjectAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x0040349A,dispatch_ice_chunk_object_action_by_slot,?DispatchIceChunkObjectActionBySlot@@YIXPAX0HI@Z,stub,src/ENGINE/CORE/LINKSCFICEACTION.CPP
 0x004034A9,vs_root_geometry_owner_query_root_geometry_state,?QueryRootGeometryState@VS_RootGeometryOwner@@UAEHPAX0@Z,stub,src/ENGINE/GDI/VSWINDOW.H
