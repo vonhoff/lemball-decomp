@@ -957,8 +957,8 @@ static void* g_NETWORK_AllocatedTcpipCompositeSocketThunkVtable[2] = {
 };
 #endif
 
-static const char* g_NETWORK_SocketWindowClassName;
-static int* g_pfSocketWindowClassRegistered;
+// GLOBAL: LEMBALL 0x004a23b8
+static int g_fSocketWindowClassRegistered = 0;
 extern void* g_pEffTransportRuntimeService;
 extern "C" const char* WINAPI inet_ntoa(unsigned long nAddress);
 
@@ -1142,7 +1142,7 @@ int VsNetInetAddressEntry::IsAddressGreaterOrEqual(const VsNetInetAddressEntry* 
 // FUNCTION: LEMBALL 0x0046fcf0
 VsNetSocketWindowEffChannel::VsNetSocketWindowEffChannel()
 {
-	((VS_InvisibleWindow*) this)->Construct(g_NETWORK_SocketWindowClassName, g_pfSocketWindowClassRegistered);
+	((VS_InvisibleWindow*) this)->Construct("Socket Window", &g_fSocketWindowClassRegistered);
 	m_nSocketHandle = 0;
 	m_nReserved18 = 0;
 	m_dwReserved0 = 0x440;
