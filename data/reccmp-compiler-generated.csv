@@ -13,6 +13,7 @@ address,name,symbol,type,source
 0x0040AC30,DeleteLevelChunkStreamAuto,,synthetic,src/LEVEL/TYPE18.CPP
 0x0040B450,DeleteLevelChunkStreamDispatcherAuto,,synthetic,src/LEVEL/LEVELRUN.CPP
 0x0040CE50,DeleteLevelChunkObjectBaseScalarA,,synthetic,src/LEVEL/LEVELVT.CPP
+0x0040CE90,noop_type18_packet_hook,,synthetic,src/LEVEL/TYPE18.CPP
 0x0040CEA0,DeleteLevelChunkObjectBaseScalarB,,synthetic,src/LEVEL/TYPE18.CPP
 0x0040EB70,LinkScfSmallFunctionView::GetLevelTileGridCellPointer,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x0040EBE0,DeleteDoorChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
@@ -54,6 +55,7 @@ address,name,symbol,type,source
 0x00419D30,ForwardManagedEntityVslot88Variant,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00419D40,ForwardManagedEntityVslot8CVariant,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0041A320,LevelVtSmallFunctionView::GetProjectileGeometryRotatedPair,,synthetic,src/LEVEL/LEVELVT.CPP
+0x0041AF00,noop_projectile_packet_hook,,synthetic,src/LEVEL/LEVELRUN.CPP
 0x0041AF50,Projectile deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/ENGINE/CORE/LINKSCFPROJECTILE.CPP
 0x0041B990,LinkScfSmallFunctionView::ClearManagedEntityGroupChildActiveFlag,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x0041C330,DeleteCountedChildTableStreamAuto,,synthetic,src/LEVEL/LEVELVT.CPP
@@ -164,6 +166,7 @@ address,name,symbol,type,source
 0x00447EB0,LoadMainGameVariantBitmapResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
 0x00447F30,LoadMainGameVariantPaletteResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
 0x00448030,LoadMainGameVariantTwoArrayListResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
+0x00449000,noop_options_screen_frame_draw,,synthetic,src/FRONTEND/MAINMENU.CPP
 0x00449170,DeleteOptionsScreenAuto,,synthetic,src/FRONTEND/MAINMENU.CPP
 0x00449EA0,RequestLevelSelectionTransitionMode5,,synthetic,src/FRONTEND/MAINMENU.CPP
 0x00449EC0,RequestLevelSelectionTransitionMode2,,synthetic,src/FRONTEND/MAINMENU.CPP
@@ -190,6 +193,7 @@ address,name,symbol,type,source
 0x00452F20,DeleteNetworkLobbyVsnetRuntimeAuto,,synthetic,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x00453120,DeleteNetworkLevelChunkDeltaStreamAuto,,synthetic,src/LEVEL/LEVELRUN.CPP
 0x00455DE0,DeleteNetworkLobbyScreenAuto,,synthetic,src/FRONTEND/MAINMENU.CPP
+0x00455EA0,noop_lobby_transport_callback,,synthetic,src/GAME.CPP
 0x00455EB0,DeleteNetworkLobbyTransportControllerAuto,,synthetic,src/GAME.CPP
 0x004583C0,DeleteDibDisplayStateVariantAuto,,synthetic,src/ENGINE/GDI/VSGDI.CPP
 0x004599B0,DeleteRenderDispatchQueueAuto,,synthetic,src/ENGINE/CORE/VSINIT.CPP

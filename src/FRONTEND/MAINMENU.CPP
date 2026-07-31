@@ -5798,3 +5798,7 @@ void LEMBALL_FASTCALL DrawPasswordEntryScreenContents(void* pObject)
 	DrawPasswordEntryInputPanelThunk(pObject);
 	draw_entered_password_text(pObject);
 }
+
+void noop_options_screen_frame_draw(void)
+{
+}

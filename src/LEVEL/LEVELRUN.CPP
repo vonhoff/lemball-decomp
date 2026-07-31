@@ -2623,3 +2623,7 @@ void* LEMBALL_FASTCALL DeleteLevelChunkStreamDispatcherAuto(void* pObject, void*
 	}
 	return pObject;
 }
+
+void noop_projectile_packet_hook(void)
+{
+}

@@ -5909,3 +5909,7 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbyTransportControllerAuto(void* pObject, 
 	}
 	return pObject;
 }
+
+void noop_lobby_transport_callback(void)
+{
+}
