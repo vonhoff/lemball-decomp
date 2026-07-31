@@ -124,7 +124,7 @@ address,name,symbol,type,source
 0x004025EA,IceChunkObjectActionView::RequestIceChunkObjectToggleActivation,?RequestIceChunkObjectToggleActivation@IceChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFICEACTION.CPP
 0x004025FE,destroy_counted_child_table_stream_auto_thunk,?DestroyCountedChildTableStreamAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402608,invs_chunk_object_action_view_add_invs_tracked_entity,?AddInvsTrackedEntity@InvsChunkObjectActionView@@QAEXPAX@Z,stub,src/ENGINE/CORE/LINKSCFINVS.CPP
-0x0040260D,vs_net_network_lobby_screen_remove_unavailable_player_entries,?RemoveUnavailablePlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
+0x0040260D,VsNetNetworkLobbyScreen::RemoveUnavailablePlayerEntries,?RemoveUnavailablePlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
 0x0040263A,get_next_projectile_pool_object,?get_next_projectile_pool_object@@YIPAXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402658,mark_network_lobby_selected_peer_disconnected,?MarkNetworkLobbySelectedPeerDisconnected@@YIXPAX@Z,stub,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x00402667,managed_entity_child_view_set_managed_entity_primary_active_flag,?SetManagedEntityPrimaryActiveFlag@ManagedEntityChildView@@QAEXH@Z,stub,src/LEVEL/LEVELVT.CPP
