@@ -514,11 +514,11 @@ address,size,name,unit
 0x00417E80,62,reset_projectile_pool,ENGINE/CORE/LINKSCF.CPP
 0x00417EC0,31,destroy_projectile_pool,ENGINE/CORE/LINKSCF.CPP
 0x00417EE0,79,get_free_projectile_pool_object,ENGINE/CORE/LINKSCF.CPP
-0x00417F30,7,get_projectile_pool_object_count,LEVEL/LEVELVT.CPP
+0x00417F30,7,get_projectile_pool_object_count,LEVEL/LEVELVTPROJECTILEGEOMETRY.CPP
 0x00417F40,14,get_first_projectile_pool_object,LEVEL/LEVELVT.CPP
 0x00417F50,29,get_next_projectile_pool_object,LEVEL/LEVELVT.CPP
-0x00417F70,11,get_current_projectile_pool_object,LEVEL/LEVELVT.CPP
-0x00417F80,23,append_projectile_pool_object,LEVEL/LEVELVT.CPP
+0x00417F70,11,get_current_projectile_pool_object,LEVEL/LEVELVTPROJECTILEGEOMETRY.CPP
+0x00417F80,23,append_projectile_pool_object,LEVEL/LEVELVTPROJECTILEGEOMETRY.CPP
 0x00417FA0,155,spawn_projectile_object,LEVEL/LEVELVT.CPP
 0x00418040,50,update_projectile_pool,LEVEL/LEVELVT.CPP
 0x00418080,90,remove_projectile_pool_object,LEVEL/LEVELVT.CPP

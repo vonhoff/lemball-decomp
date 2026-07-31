@@ -2,9 +2,22 @@ struct LevelProjectilePoolView {
 	char m_abReserved00[0x34];
 	void* m_apObjects34[40];
 	int m_cObjectsD4;
+	int m_iObjectD8;
 
 	void Append(void* pObject);
 };
+
+// FUNCTION: LEMBALL 0x00417f30
+int __fastcall GetProjectilePoolObjectCount(LevelProjectilePoolView* pPool)
+{
+	return pPool->m_cObjectsD4;
+}
+
+// FUNCTION: LEMBALL 0x00417f70
+void* __fastcall GetCurrentProjectilePoolObject(LevelProjectilePoolView* pPool)
+{
+	return pPool->m_apObjects34[pPool->m_iObjectD8];
+}
 
 // FUNCTION: LEMBALL 0x00417f80
 void LevelProjectilePoolView::Append(void* pObject)
