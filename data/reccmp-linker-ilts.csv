@@ -116,7 +116,7 @@ address,name,symbol,type,source
 0x00402496,LiftChunkManagerSerializationView::SerializeLiftChunkEndpointPairs,?SerializeLiftChunkEndpointPairs@LiftChunkManagerSerializationView@@QAEHPAULiftChunkEndpointPair@@@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x0040249B,has_stream_dirty_plas_chunk_children,?HasStreamDirtyChildrenThunk@LevelManagedEntityActiveGroupView@@QAEHXZ,stub,src/LEVEL/LEVELRUN.CPP
 0x00402518,activate_lift_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
-0x0040252C,vs_net_network_lobby_screen_show_player_entries,?ShowPlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
+0x0040252C,VsNetNetworkLobbyScreen::ShowPlayerEntries,?ShowPlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
 0x0040253B,refresh_active_pgun_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402559,activate_ice_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040258B,advance_cached_group_managed_entity_child_iterator,,stub,src/ENGINE/CORE/LINKSCF.H
