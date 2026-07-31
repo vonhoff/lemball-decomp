@@ -76,6 +76,54 @@ FourDwordValue* FourDwordValue::CopyFrom(const int* pSource)
 	return this;
 }
 
+struct ChunkRuntimeStateView {
+	char m_abReserved00[0x94];
+	int m_nRuntimeState94;
+	char m_abReserved98[0x20];
+	int m_nLaserTypeB8;
+	char m_abReservedBC[0x7c];
+	int m_nRuntimeState138;
+	int m_nRuntimeState13C;
+
+	void ResetRockState(void);
+	void ResetCaptureTriggerState(void);
+	void ResetLaserState(void);
+};
+
+// FUNCTION: LEMBALL 0x004267f0
+void ChunkRuntimeStateView::ResetRockState(void)
+{
+	int nZero;
+
+	nZero = 0;
+	m_nRuntimeState94 = nZero;
+	m_nRuntimeState138 = nZero;
+	m_nRuntimeState13C = nZero;
+}
+
+// FUNCTION: LEMBALL 0x00427af0
+void ChunkRuntimeStateView::ResetCaptureTriggerState(void)
+{
+	int nZero;
+
+	nZero = 0;
+	m_nRuntimeState94 = nZero;
+	m_nRuntimeState138 = nZero;
+	m_nRuntimeState13C = nZero;
+}
+
+// FUNCTION: LEMBALL 0x004288d0
+void ChunkRuntimeStateView::ResetLaserState(void)
+{
+	int nZero;
+
+	m_nLaserTypeB8 = 0x18;
+	nZero = 0;
+	m_nRuntimeState94 = nZero;
+	m_nRuntimeState138 = nZero;
+	m_nRuntimeState13C = nZero;
+}
+
 struct ThreeDwordPoint {
 	int m_nX;
 	int m_nY;

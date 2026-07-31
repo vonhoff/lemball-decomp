@@ -2000,10 +2000,13 @@ void LEMBALL_FASTCALL AdvanceActiveMoveChunkObjects(void* pManager)
 
 struct LinkScfSmallFunctionView {
 	void ClearManagedEntityGroupChildActiveFlag(int iChild);
-	void ResetRockChunkObjectRuntimeState(void);
-	void ResetCaptureTriggerChunkObjectRuntimeState(void);
-	void ResetLasrChunkObjectRuntimeState(void);
 	void SetObjectFields18_1c_20(int nField18, int nField1c, int nField20);
+};
+
+struct ChunkRuntimeStateView {
+	void ResetRockState(void);
+	void ResetCaptureTriggerState(void);
+	void ResetLaserState(void);
 };
 
 void LinkScfSmallFunctionView::ClearManagedEntityGroupChildActiveFlag(int iChild)
@@ -2014,37 +2017,6 @@ void LinkScfSmallFunctionView::ClearManagedEntityGroupChildActiveFlag(int iChild
 	ppChildren = *(void***) ((char*) this + 0x3c);
 	pChild = ppChildren[iChild];
 	*(int*) ((char*) pChild + 0x38) = 0;
-}
-
-void LinkScfSmallFunctionView::ResetRockChunkObjectRuntimeState(void)
-{
-	int nZero;
-
-	nZero = 0;
-	*(int*) ((char*) this + 0x94) = nZero;
-	*(int*) ((char*) this + 0x138) = nZero;
-	*(int*) ((char*) this + 0x13c) = nZero;
-}
-
-void LinkScfSmallFunctionView::ResetCaptureTriggerChunkObjectRuntimeState(void)
-{
-	int nZero;
-
-	nZero = 0;
-	*(int*) ((char*) this + 0x94) = nZero;
-	*(int*) ((char*) this + 0x138) = nZero;
-	*(int*) ((char*) this + 0x13c) = nZero;
-}
-
-void LinkScfSmallFunctionView::ResetLasrChunkObjectRuntimeState(void)
-{
-	int nZero;
-
-	*(int*) ((char*) this + 0xb8) = 0x18;
-	nZero = 0;
-	*(int*) ((char*) this + 0x94) = nZero;
-	*(int*) ((char*) this + 0x138) = nZero;
-	*(int*) ((char*) this + 0x13c) = nZero;
 }
 
 void LinkScfSmallFunctionView::SetObjectFields18_1c_20(int nField18, int nField1c, int nField20)
@@ -2285,7 +2257,7 @@ void LEMBALL_FASTCALL ResetInvsChunkObject(void* pObject)
 
 void LEMBALL_FASTCALL ResetRockChunkObjectRuntimeStateThunk(void* pObject)
 {
-	((LinkScfSmallFunctionView*) pObject)->ResetRockChunkObjectRuntimeState();
+	((ChunkRuntimeStateView*) pObject)->ResetRockState();
 }
 
 void LEMBALL_FASTCALL ResetRockChunkObject(void* pObject)
@@ -2307,7 +2279,7 @@ void LEMBALL_FASTCALL ResetIceChunkObject(void* pObject)
 
 void LEMBALL_FASTCALL ResetCaptureTriggerChunkObjectRuntimeStateThunk(void* pObject)
 {
-	((LinkScfSmallFunctionView*) pObject)->ResetCaptureTriggerChunkObjectRuntimeState();
+	((ChunkRuntimeStateView*) pObject)->ResetCaptureTriggerState();
 }
 
 void LEMBALL_FASTCALL ResetCaptureTriggerChunkObject(void* pObject)
@@ -2330,7 +2302,7 @@ void LEMBALL_FASTCALL ResetCaptureTriggerChunkObject(void* pObject)
 
 void LEMBALL_FASTCALL ResetLasrChunkObjectRuntimeStateThunk(void* pObject)
 {
-	((LinkScfSmallFunctionView*) pObject)->ResetLasrChunkObjectRuntimeState();
+	((ChunkRuntimeStateView*) pObject)->ResetLaserState();
 }
 
 void LEMBALL_FASTCALL ResetLasrChunkObject(void* pObject)
