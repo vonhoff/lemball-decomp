@@ -88,13 +88,13 @@ extern "C" __declspec(dllimport) unsigned int WINAPI SetTimer(HWND hWnd,
 extern "C" int WINAPI WSAStartup(unsigned short nVersion, void* pData);
 extern "C" int WINAPI WSAGetLastError(void);
 extern "C" int WINAPI WSACleanup(void);
-extern "C" HANDLE WINAPI CreateThread(LPSECURITY_ATTRIBUTES pThreadAttributes,
+extern "C" __declspec(dllimport) HANDLE WINAPI CreateThread(LPSECURITY_ATTRIBUTES pThreadAttributes,
 									  DWORD cbStack,
 									  DWORD(WINAPI* pfnStartAddress)(LPVOID),
 									  LPVOID pvThreadParam,
 									  DWORD dwCreationFlags,
 									  LPDWORD pdwThreadId);
-extern "C" BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority);
+extern "C" __declspec(dllimport) BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority);
 extern "C" __declspec(dllimport) void WINAPI ExitProcess(UINT uExitCode);
 
 // GLOBAL: LEMBALL 0x004a1e24
@@ -971,9 +971,13 @@ void* g_pEffTransportRuntimeService = 0;
 int g_fFileBasedRuntimeWindowClassRegistered = 0;
 // GLOBAL: LEMBALL 0x004a23bc
 int g_fTcpipRuntimeWindowClassRegistered = 0;
-DWORD g_dwFileBasedNetworkThreadId = 0;
-DWORD g_dwTcpipNetworkThreadId = 0;
+// GLOBAL: LEMBALL 0x004a2260
+DWORD g_dwFileBasedNetworkThreadId = 0x12345678;
+// GLOBAL: LEMBALL 0x004a23b0
+DWORD g_dwTcpipNetworkThreadId = 0x12345678;
+// GLOBAL: LEMBALL 0x004a2264
 HANDLE g_hFileBasedNetworkThread = 0;
+// GLOBAL: LEMBALL 0x004a23b4
 HANDLE g_hTcpipNetworkThread = 0;
 
 extern "C" DWORD WINAPI timeGetTime(void);
@@ -3897,7 +3901,7 @@ int StartFileBasedNetworkMessageThread(void)
 	SetThreadPriority(g_hFileBasedNetworkThread, 2);
 
 	dwStartTime = timeGetTime();
-	while (timeGetTime() - dwStartTime <= 9999 && g_pActiveNetworkRuntimeWindow == 0) {
+	while (timeGetTime() - dwStartTime < 10000 && g_pActiveNetworkRuntimeWindow == 0) {
 	}
 	if (g_pActiveNetworkRuntimeWindow == 0) {
 		g_pErrorOutputStream->AppendCStringToStream("Network initialisation timed out\n");
@@ -3905,7 +3909,7 @@ int StartFileBasedNetworkMessageThread(void)
 	}
 
 	dwStartTime = timeGetTime();
-	while (timeGetTime() - dwStartTime <= 9999 && g_pEffTransportDispatchQueue == 0) {
+	while (timeGetTime() - dwStartTime < 10000 && g_pEffTransportDispatchQueue == 0) {
 	}
 	if (g_pEffTransportDispatchQueue == 0) {
 		g_pErrorOutputStream->AppendCStringToStream("Network queue initialisation timed out\n");
@@ -3932,7 +3936,7 @@ int StopFileBasedNetworkMessageThread(void)
 	(pActiveRuntime->*pVtable->m_pServiceTransport)();
 
 	dwStartTime = timeGetTime();
-	while (timeGetTime() - dwStartTime <= 9999 && g_pActiveNetworkRuntimeWindow != 0) {
+	while (timeGetTime() - dwStartTime < 10000 && g_pActiveNetworkRuntimeWindow != 0) {
 	}
 	if (g_pActiveNetworkRuntimeWindow != 0) {
 		g_pErrorOutputStream->AppendCStringToStream("Network quit timed out\n");
@@ -4237,7 +4241,7 @@ int StartTcpipNetworkMessageThread(void)
 	SetThreadPriority(g_hTcpipNetworkThread, 2);
 
 	dwStartTime = timeGetTime();
-	while (timeGetTime() - dwStartTime <= 9999 && g_pActiveNetworkRuntimeWindow == 0) {
+	while (timeGetTime() - dwStartTime < 10000 && g_pActiveNetworkRuntimeWindow == 0) {
 	}
 	if (g_pActiveNetworkRuntimeWindow == 0) {
 		g_pErrorOutputStream->AppendCStringToStream("Network initialisation timed out\n");
@@ -4245,7 +4249,7 @@ int StartTcpipNetworkMessageThread(void)
 	}
 
 	dwStartTime = timeGetTime();
-	while (timeGetTime() - dwStartTime <= 9999 && g_pEffTransportDispatchQueue == 0) {
+	while (timeGetTime() - dwStartTime < 10000 && g_pEffTransportDispatchQueue == 0) {
 	}
 	if (g_pEffTransportDispatchQueue == 0) {
 		g_pErrorOutputStream->AppendCStringToStream("Network queue initialisation timed out\n");
@@ -4272,7 +4276,7 @@ int StopTcpipNetworkMessageThread(void)
 	(pActiveRuntime->*pVtable->m_pServiceTransport)();
 
 	dwStartTime = timeGetTime();
-	while (timeGetTime() - dwStartTime <= 9999 && g_pActiveNetworkRuntimeWindow != 0) {
+	while (timeGetTime() - dwStartTime < 10000 && g_pActiveNetworkRuntimeWindow != 0) {
 	}
 	if (g_pActiveNetworkRuntimeWindow != 0) {
 		g_pErrorOutputStream->AppendCStringToStream("Network quit timed out\n");

@@ -243,13 +243,13 @@ extern "C"
 							   BOOL bInitialState,
 							   LPCSTR lpName);
 	BOOL WINAPI SetEvent(HANDLE hEvent);
-	HANDLE WINAPI CreateThread(LPSECURITY_ATTRIBUTES lpThreadAttributes,
+	__declspec(dllimport) HANDLE WINAPI CreateThread(LPSECURITY_ATTRIBUTES lpThreadAttributes,
 							   DWORD dwStackSize,
 							   LPTHREAD_START_ROUTINE lpStartAddress,
 							   LPVOID lpParameter,
 							   DWORD dwCreationFlags,
 							   LPDWORD lpThreadId);
-	BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority);
+	__declspec(dllimport) BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority);
 	DWORD WINAPI WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds);
 	BOOL WINAPI TerminateThread(HANDLE hThread, DWORD dwExitCode);
 	__declspec(dllimport) void WINAPI ExitProcess(UINT uExitCode);
