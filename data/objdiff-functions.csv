@@ -720,7 +720,7 @@ address,size,name,unit
 0x0041DD70,30,delete_gmob_chunk_type_0x14_object,LEVEL/LEVELVT.CPP
 0x0041DDA0,155,construct_managed_entity_group_controller_base,LEVEL/LEVELVT.CPP
 0x0041DE40,51,destroy_composite_level_chunk_children,LEVEL/LEVELVT.CPP
-0x0041DE80,33,clear_managed_entity_group_children,LEVEL/LEVELVT.CPP
+0x0041DE80,33,clear_managed_entity_group_children,LEVEL/LEVELSAVEDPOSITION.CPP
 0x0041DEB0,56,service_composite_level_chunk_children,LEVEL/LEVELVT.CPP
 0x0041DEF0,7,get_managed_entity_child_count,LEVEL/LEVELVT.CPP
 0x0041DF00,17,get_first_managed_entity_child,LEVEL/LEVELVT.CPP

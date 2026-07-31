@@ -74,3 +74,27 @@ void GmobType14SavedPositionView::ResetType14State(void)
 	m_nLinkedVariant144 = 0;
 	m_nVariantBC = 0;
 }
+
+struct LevelChunkObjectRuntimeStateView {
+	void ResetRuntimeStateThunk(void);
+};
+
+struct ManagedEntityGroupChildrenView {
+	char m_abReserved00[0x124];
+	int m_nChildCount124;
+	void* m_apChildren128[10];
+
+	void ClearChildren(void);
+};
+
+// FUNCTION: LEMBALL 0x0041de80
+void ManagedEntityGroupChildrenView::ClearChildren(void)
+{
+	int i;
+
+	((LevelChunkObjectRuntimeStateView*) this)->ResetRuntimeStateThunk();
+	for (i = 0; i < 10; ++i) {
+		m_apChildren128[i] = 0;
+	}
+	m_nChildCount124 = 0;
+}
