@@ -12,7 +12,7 @@ address,name,symbol,type,source
 0x00401177,refresh_active_capture_trigger_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040119F,vs_window_owner_base_reserved_window_owner_slot37,?ReservedWindowOwnerSlot37@VS_WindowOwnerBase@@UAEXXZ,stub,src/ENGINE/GDI/VSWINDOW.H
 0x004011A9,get_managed_entity_group_count,,stub,src/ENGINE/CORE/LINKSCF.H
-0x004011AE,managed_entity_child_view_set_managed_entity_owner_group,?SetManagedEntityOwnerGroup@ManagedEntityChildView@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
+0x004011AE,ManagedEntityChildView::SetManagedEntityOwnerGroup,?SetManagedEntityOwnerGroup@ManagedEntityChildView@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004011DB,destroy_door_chunk_object_auto_thunk,?DestroyDoorChunkObjectAutoThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00401212,destroy_tram_chunk_manager_auto_thunk,?DestroyTramChunkManagerAutoThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00401217,managed_entity_packet25_reverse_eff_stream_payload,?ReverseEffStreamPayload@ManagedEntityPacket25@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
@@ -57,7 +57,7 @@ address,name,symbol,type,source
 0x004019C4,write_eff_stream_u32field2c,,stub,src/ENGINE/MEDIA/EFFSTRM.H
 0x00401A0A,get_first_projectile_pool_object,?get_first_projectile_pool_object@@YIPAXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00401A87,vs_net_network_lobby_screen_confirm_selected_player_entry,?ConfirmSelectedPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/FRONTEND/LOBBY.CPP
-0x00401AC3,level_managed_entity_child_iterator_append_child,?AppendChild@LevelManagedEntityChildIterator@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
+0x00401AC3,LevelManagedEntityChildIterator::AppendChild,?AppendChild@LevelManagedEntityChildIterator@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00401ADC,handle_menu_selector_event_thunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401B31,DoorChunkObjectActionView::RequestDoorChunkObjectTriggerTransition,?RequestDoorChunkObjectTriggerTransition@DoorChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFDOORACTION.CPP
 0x00401B95,reset_all_invs_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
@@ -129,7 +129,7 @@ address,name,symbol,type,source
 0x0040260D,VsNetNetworkLobbyScreen::RemoveUnavailablePlayerEntries,?RemoveUnavailablePlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
 0x0040263A,get_next_projectile_pool_object,?get_next_projectile_pool_object@@YIPAXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402658,MarkNetworkLobbySelectedPeerDisconnected,?MarkNetworkLobbySelectedPeerDisconnected@@YIXPAX@Z,stub,src/ENGINE/MEDIA/EFFSTRM.CPP
-0x00402667,managed_entity_child_view_set_managed_entity_primary_active_flag,?SetManagedEntityPrimaryActiveFlag@ManagedEntityChildView@@QAEXH@Z,stub,src/LEVEL/LEVELVT.CPP
+0x00402667,ManagedEntityChildView::SetManagedEntityPrimaryActiveFlag,?SetManagedEntityPrimaryActiveFlag@ManagedEntityChildView@@QAEXH@Z,stub,src/LEVEL/LEVELVT.CPP
 0x0040266C,handle_queued_variant_range_entry_event,?HandleQueuedVariantRangeEntryEvent@@YIHPAUGameQueuedVariantRangeEntry@@HPAUGameMenuSelectorEvent@@@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00402676,destroy_coll_chunk_object_auto_thunk,?DestroyCollChunkObjectAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x0040268A,find_managed_entity_by_pointer,,stub,src/ENGINE/CORE/LINKSCF.H
