@@ -157,12 +157,13 @@ const LemballImportMap* lemball_get_import_map(size_t* count);
 extern "C"
 {
 	__declspec(dllimport) DWORD WINAPI GetLastError(void);
-	LSTATUS WINAPI RegOpenKeyExA(HKEY hKey, LPCSTR lpSubKey, DWORD ulOptions, REGSAM samDesired, HKEY* phkResult);
-	LSTATUS WINAPI
+	__declspec(dllimport) LSTATUS WINAPI
+	RegOpenKeyExA(HKEY hKey, LPCSTR lpSubKey, DWORD ulOptions, REGSAM samDesired, HKEY* phkResult);
+	__declspec(dllimport) LSTATUS WINAPI
 	RegSetValueExA(HKEY hKey, LPCSTR lpValueName, DWORD Reserved, DWORD dwType, const BYTE* lpData, DWORD cbData);
-	LSTATUS WINAPI
+	__declspec(dllimport) LSTATUS WINAPI
 	RegQueryValueExA(HKEY hKey, LPCSTR lpValueName, LPDWORD lpReserved, LPDWORD lpType, BYTE* lpData, LPDWORD lpcbData);
-	LSTATUS WINAPI RegCloseKey(HKEY hKey);
+	__declspec(dllimport) LSTATUS WINAPI RegCloseKey(HKEY hKey);
 	__declspec(dllimport) DWORD WINAPI GetLogicalDrives(void);
 	__declspec(dllimport) UINT WINAPI GetDriveTypeA(LPCSTR lpRootPathName);
 	UINT WINAPI GetModuleFileNameA(HINSTANCE hModule, LPSTR lpFilename, UINT nSize);
@@ -239,16 +240,16 @@ extern "C"
 	__declspec(dllimport) BOOL WINAPI GetCursorPos(tagPOINT* lpPoint);
 	__declspec(dllimport) short WINAPI GetKeyState(int nVirtKey);
 	__declspec(dllimport) HANDLE WINAPI CreateEventA(LPSECURITY_ATTRIBUTES lpEventAttributes,
-							   BOOL bManualReset,
-							   BOOL bInitialState,
-							   LPCSTR lpName);
+													 BOOL bManualReset,
+													 BOOL bInitialState,
+													 LPCSTR lpName);
 	BOOL WINAPI SetEvent(HANDLE hEvent);
 	__declspec(dllimport) HANDLE WINAPI CreateThread(LPSECURITY_ATTRIBUTES lpThreadAttributes,
-							   DWORD dwStackSize,
-							   LPTHREAD_START_ROUTINE lpStartAddress,
-							   LPVOID lpParameter,
-							   DWORD dwCreationFlags,
-							   LPDWORD lpThreadId);
+													 DWORD dwStackSize,
+													 LPTHREAD_START_ROUTINE lpStartAddress,
+													 LPVOID lpParameter,
+													 DWORD dwCreationFlags,
+													 LPDWORD lpThreadId);
 	__declspec(dllimport) BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority);
 	__declspec(dllimport) DWORD WINAPI WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds);
 	__declspec(dllimport) BOOL WINAPI TerminateThread(HANDLE hThread, DWORD dwExitCode);

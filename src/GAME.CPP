@@ -54,6 +54,7 @@ static void* g_pSignedTrigTable = 0;
 void* g_pSessionRandomState = 0;
 static char g_GAME_SrcDiskBuffer[0x100];
 
+// Compiler-state string block; removal regresses exact SetUnlockedPackCap.
 static const char g_GAME_RegistryRoot[] = "SOFTWARE\\Visual Sciences\\";
 static const char g_GAME_RegistryKey[] = "SOFTWARE\\Visual Sciences\\Lemmings Paintball";
 static const char g_GAME_RunningValueName[] = "Running";
@@ -752,7 +753,7 @@ void LEMBALL_FASTCALL RequestFramedScreenTransitionMode2(void* pScreen);
 void LEMBALL_FASTCALL DestroyBaseModeObject(void* pObject);
 int __stdcall PumpMessagesAndRunFrame(void);
 void TriggerReleaseAssertFailure(const char* pszExpression, const char* pszFile, int nLine);
-int SetVisualSciencesRegistryRunningState(const char* pszProductName, int fRunning);
+int WINAPI SetVisualSciencesRegistryRunningState(const char* pszProductName, int fRunning);
 void* LEMBALL_FASTCALL InitializeRenderQueueNodeBase(void* pRenderQueueNode);
 void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(void* pPrimaryContext);
 char* GetSrcDiskRegistryValueBuffer(void);
@@ -5288,7 +5289,7 @@ void TriggerReleaseAssertFailure(const char* pszExpression, const char* pszFile,
 	ShowReleaseAssertFailureAndAbort(pszExpression, pszFile, nLine);
 }
 // FUNCTION: LEMBALL 0x0045ecb0
-int SetVisualSciencesRegistryRunningState(const char* pszProductName, int fRunning)
+int WINAPI SetVisualSciencesRegistryRunningState(const char* pszProductName, int fRunning)
 {
 #if defined(LEMBALL_SKIP_REGISTRY_RUNNING_STATE)
 	(void) pszProductName;
@@ -5301,21 +5302,20 @@ int SetVisualSciencesRegistryRunningState(const char* pszProductName, int fRunni
 	unsigned int cbState;
 	LSTATUS nRegistryStatus;
 
-	strcpy(szKeyPath, g_GAME_RegistryRoot);
+	strcpy(szKeyPath, "SOFTWARE\\Visual Sciences\\");
 	strcat(szKeyPath, pszProductName);
 
 	if (RegOpenKeyExA((HKEY) 0x80000002, szKeyPath, 0, KEY_ALL_ACCESS, &hRegistryKey) != 0) {
 		return 0;
 	}
 
-	pszState = g_GAME_RunningState;
-	if (!fRunning) {
-		pszState = g_GAME_NotRunningState;
+	pszState = "running";
+	if (fRunning == 0) {
+		pszState = "";
 	}
 
-	cbState = (unsigned int) strlen(pszState) + 1;
-
-	nRegistryStatus = RegSetValueExA(hRegistryKey, g_GAME_RunningValueName, 0, 1, (const BYTE*) pszState, cbState);
+	cbState = strlen(pszState) + 1;
+	nRegistryStatus = RegSetValueExA(hRegistryKey, "Running", 0, 1, (const BYTE*) pszState, cbState);
 	RegCloseKey(hRegistryKey);
 	return nRegistryStatus == 0;
 #endif
