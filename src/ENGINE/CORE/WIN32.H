@@ -238,7 +238,7 @@ extern "C"
 	BOOL WINAPI ClientToScreen(HWND hWnd, tagPOINT* lpPoint);
 	__declspec(dllimport) BOOL WINAPI GetCursorPos(tagPOINT* lpPoint);
 	__declspec(dllimport) short WINAPI GetKeyState(int nVirtKey);
-	HANDLE WINAPI CreateEventA(LPSECURITY_ATTRIBUTES lpEventAttributes,
+	__declspec(dllimport) HANDLE WINAPI CreateEventA(LPSECURITY_ATTRIBUTES lpEventAttributes,
 							   BOOL bManualReset,
 							   BOOL bInitialState,
 							   LPCSTR lpName);
@@ -250,7 +250,7 @@ extern "C"
 							   DWORD dwCreationFlags,
 							   LPDWORD lpThreadId);
 	__declspec(dllimport) BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority);
-	DWORD WINAPI WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds);
+	__declspec(dllimport) DWORD WINAPI WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds);
 	BOOL WINAPI TerminateThread(HANDLE hThread, DWORD dwExitCode);
 	__declspec(dllimport) void WINAPI ExitProcess(UINT uExitCode);
 	int WINAPI TranslateAcceleratorA(HWND hWnd, HACCEL hAccTable, MSG* lpMsg);

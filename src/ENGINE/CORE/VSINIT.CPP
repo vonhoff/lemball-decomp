@@ -77,10 +77,12 @@ static const char g_VSINIT_HexPointerPrefix[] = "0x";
 static int g_fRadixPowerTableInitialized = 0;
 static unsigned int g_adwRadixPowerTable[17];
 
+
 static const char g_VSINIT_SyncDebugName[] = "Sync_Debug";
 static const char g_VSINIT_DebugOutPath[] = "debug.out";
 static const char g_VSINIT_ErrorTitle[] = "ERROR";
 static const char g_VSINIT_DebugStartError[] = "Unable to start 'Debug Message loop' thread";
+
 static const char g_VSINIT_BaseWindowClass[] = "VS_Base_Window_Class";
 static const char g_VSINIT_VersionPrefix[] = "ViSOS v";
 static const char g_VSINIT_VersionMinorSeparator[] = ".";
@@ -222,9 +224,12 @@ static FILE* g_pDebugOutFile = 0;
 GameProcessCurrentDirectoryState* g_pProcessCurrentDirectoryState = 0;
 // GLOBAL: LEMBALL 0x004a8088
 char g_abProcessCurrentDirectoryBuffer[0x100];
+// GLOBAL: LEMBALL 0x004a2a04
 HANDLE g_hDebugSyncEvent = 0;
+// GLOBAL: LEMBALL 0x004a29f4
 static HANDLE g_hDebugMessageThread = 0;
-static DWORD g_dwDebugMessageThreadId = 0;
+// GLOBAL: LEMBALL 0x004a2a08
+static DWORD g_dwDebugMessageThreadId = 0x12345678;
 static VS_InvisibleWindow g_InvisibleMessageWindow;
 // GLOBAL: LEMBALL 0x004a0e88
 static long g_cbMainArenaAvailableAfterInit = 0;
@@ -1855,11 +1860,11 @@ int InitializeDebugMessageThread(void)
 	(void) g_VSINIT_BaseWindowClass;
 
 	if (g_fDebugMessageThreadRunning == 1) {
-		g_hDebugSyncEvent = CreateEventA(0, 0, 0, g_VSINIT_SyncDebugName);
+		g_hDebugSyncEvent = CreateEventA(0, 0, 0, "Sync_Debug");
 		g_hDebugMessageThread =
 			CreateThread(0, 0, (LPTHREAD_START_ROUTINE) DebugMessageThreadMain, 0, 0, &g_dwDebugMessageThreadId);
 		if (g_hDebugMessageThread == 0) {
-			MessageBoxA(0, g_VSINIT_DebugStartError, g_VSINIT_ErrorTitle, 0);
+			MessageBoxA(0, "Unable to start 'Debug Message loop' thread\n", "ERROR", 0);
 			ExitProcess(0xbbbb);
 		}
 
