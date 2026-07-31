@@ -1,10 +1,26 @@
 extern int g_nLevelFrameClockTick;
+extern int g_fLevelEndStateRequestLatched;
 
 typedef int(__fastcall* LevelManagedEntityNoArgPredicateProc)(void* pEntity);
 
 struct LevelManagedEntityTimedPredicateView {
 	unsigned char m_abReserved00[0xcc];
 	unsigned int m_nActionDeadlineCC;
+};
+
+struct LevelEndStatePredicateView {
+	unsigned char m_abReserved00[0x108];
+	int m_nEndState108;
+};
+
+struct LevelMoveDirtyPredicateView {
+	unsigned char m_abReserved00[8];
+	int m_fMoveDirty08;
+};
+
+struct LevelManagedEntityRuntimeValueView {
+	unsigned char m_abReserved00[0x2c];
+	int m_nRuntimeValue2C;
 };
 
 // FUNCTION: LEMBALL 0x00419ab0
@@ -69,4 +85,24 @@ int __cdecl IsManagedEntityActionActiveBeforeDelay(void* pUnused, LevelManagedEn
 	pVtable = *(void***) pEntity;
 	return ((LevelManagedEntityNoArgPredicateProc) pVtable[0x7c / sizeof(void*)])(pEntity) != 0 &&
 		   (unsigned int) g_nLevelFrameClockTick < pEntity->m_nActionDeadlineCC;
+}
+
+// FUNCTION: LEMBALL 0x00419bc0
+int __cdecl IsLevelEndStateFourLatched(LevelEndStatePredicateView* pState)
+{
+	return g_fLevelEndStateRequestLatched != 0 && pState->m_nEndState108 == 4;
+}
+
+// FUNCTION: LEMBALL 0x00419be0
+int __cdecl IsEntityMoveDirty(void* pUnused, LevelMoveDirtyPredicateView* pState)
+{
+	(void) pUnused;
+	return pState->m_fMoveDirty08;
+}
+
+// FUNCTION: LEMBALL 0x00419bf0
+int __cdecl GetManagedEntityRuntimeValue(void* pUnused, LevelManagedEntityRuntimeValueView* pEntity)
+{
+	(void) pUnused;
+	return pEntity->m_nRuntimeValue2C;
 }

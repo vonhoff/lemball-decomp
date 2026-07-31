@@ -112,7 +112,8 @@ static int g_LEVEL_ProjectileGeometryPairSeeds[3][8][2] = {
 	{{0, 0}, {-24, -16}, {-24, 16}, {-48, -32}, {-48, 32}, {-72, -48}, {-72, 48}, {-96, -64}},
 	{{0, 0}, {-24, -24}, {-24, 0}, {-24, 24}, {-48, -48}, {-48, -24}, {-48, 0}, {-48, 24}}};
 
-int g_fLevelEndStateRequestLatched = 0;
+// GLOBAL: LEMBALL 0x004a74b8
+int g_fLevelEndStateRequestLatched;
 // GLOBAL: LEMBALL 0x004a6510
 int g_GAME_ManagedEntityRegistryTable[1000];
 // GLOBAL: LEMBALL 0x004a74b0
