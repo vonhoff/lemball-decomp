@@ -10,7 +10,9 @@ struct SavedPositionChunkObjectView {
 	char m_abReservedA8[0x10];
 	int m_nStateB8;
 	short m_nVariantBC;
-	char m_abReservedBE[0x7a];
+	char m_abReservedBE[0x6a];
+	int m_nGmobState128;
+	char m_abReserved12C[0x0c];
 	int m_nSavedPositionX138;
 	int m_nSavedPositionY13C;
 	int m_nSavedPositionZ140;
@@ -19,6 +21,18 @@ struct SavedPositionChunkObjectView {
 	void ResetToSavedPosition(void);
 	void ResetVariant(void);
 	void ResetLinkedVariant(void);
+	void ResetGmobState(void);
+};
+
+struct GmobType14SavedPositionView {
+	char m_abReserved00[0xbc];
+	short m_nVariantBC;
+	char m_abReservedBE[0x86];
+	int m_nLinkedVariant144;
+	char m_abReserved148[0x14];
+	short m_nType14Variant15C;
+
+	void ResetType14State(void);
 };
 
 // FUNCTION: LEMBALL 0x0041c6c0
@@ -43,4 +57,20 @@ void SavedPositionChunkObjectView::ResetLinkedVariant(void)
 {
 	ResetToSavedPosition();
 	m_nLinkedVariant144 = 0;
+}
+
+// FUNCTION: LEMBALL 0x0041cca0
+void SavedPositionChunkObjectView::ResetGmobState(void)
+{
+	ResetToSavedPosition();
+	m_nGmobState128 = 0x18;
+}
+
+// FUNCTION: LEMBALL 0x0041d100
+void GmobType14SavedPositionView::ResetType14State(void)
+{
+	((SavedPositionChunkObjectView*) this)->ResetToSavedPosition();
+	m_nType14Variant15C = 0;
+	m_nLinkedVariant144 = 0;
+	m_nVariantBC = 0;
 }

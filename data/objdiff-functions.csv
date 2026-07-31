@@ -686,7 +686,7 @@ address,size,name,unit
 0x0041CBE0,74,request_chunk_target_state_0x1a,LEVEL/LEVELVT.CPP
 0x0041CC30,63,complete_gmob_action_19,LEVEL/LEVELVT.CPP
 0x0041CC70,35,copy_gmob_chunk_object_current_position,LEVEL/LEVELVT.CPP
-0x0041CCA0,20,reset_gmob_chunk_object_to_state_0x18,LEVEL/LEVELVT.CPP
+0x0041CCA0,20,reset_gmob_chunk_object_to_state_0x18,LEVEL/LEVELSAVEDPOSITION.CPP
 0x0041CCC0,88,release_linked_gmob_chunk_object,LEVEL/LEVELVT.CPP
 0x0041CD20,292,advance_linked_gmob_state,LEVEL/LEVELVT.CPP
 0x0041CE50,49,request_gmob_idle_state_0x19,LEVEL/LEVELVT.CPP
@@ -696,7 +696,7 @@ address,size,name,unit
 0x0041D000,8,accept_gmob_activation,LEVEL/LEVELVT.CPP
 0x0041D010,47,get_managed_entity_interaction_point,LEVEL/LEVELVT.CPP
 0x0041D040,178,construct_gmob_chunk_type_0x14_object,LEVEL/LEVELVT.CPP
-0x0041D100,32,reset_gmob_type_0x14_object_state,LEVEL/LEVELVT.CPP
+0x0041D100,32,reset_gmob_type_0x14_object_state,LEVEL/LEVELSAVEDPOSITION.CPP
 0x0041D120,11,destroy_gmob_chunk_type_0x14_object,LEVEL/LEVELVT.CPP
 0x0041D130,77,dispatch_gmob_chunk_type_0x14_actions,LEVEL/LEVELVT.CPP
 0x0041D180,245,advance_gmob_chunk_type_0x14_state_machine,LEVEL/LEVELVT.CPP
