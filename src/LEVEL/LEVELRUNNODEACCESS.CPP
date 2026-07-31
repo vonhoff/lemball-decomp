@@ -1,3 +1,5 @@
+extern void FreeVSMemBlock(void* pMemory);
+
 // FUNCTION: LEMBALL 0x0040ce90
 void NoopType18PacketHook(void)
 {
@@ -116,12 +118,22 @@ LevelTwoDwordPairVariantView* LevelTwoDwordPairVariantView::Assign(const int* pS
 struct LevelNodeChunkPositionView {
 	int m_nX;
 	int m_nY;
+	int m_cExpectedLinks08;
+	int* m_pLinks0C;
 
 	void InitializePosition(int nX, int nY, int nUnused);
 	void SetFixedPointPosition(int nX, int nY);
 	void CopyFixedPointPosition(int* pDestination);
 	void CopyTileXY(int* pX, int* pY);
 };
+
+// FUNCTION: LEMBALL 0x00421310
+void __fastcall DestroyNodeChunkRecordLinks(LevelNodeChunkPositionView* pRecord)
+{
+	if (pRecord->m_pLinks0C != 0) {
+		FreeVSMemBlock(pRecord->m_pLinks0C);
+	}
+}
 
 // FUNCTION: LEMBALL 0x00421370
 void LevelNodeChunkPositionView::InitializePosition(int nX, int nY, int nUnused)
