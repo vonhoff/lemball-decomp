@@ -101,7 +101,8 @@ static void* g_LevelDemoPlaybackControllerVtable[4] = {
 void* g_pNonZrleVariantRenderEntryInitializeVtable[2] = {(void*) ReturnVoidVtableCallback,
 														 (void*) ReturnVoidVtableCallback};
 
-void* g_pLevelDemoPlaybackController = 0;
+// GLOBAL: LEMBALL 0x004a6408
+void* g_pLevelDemoPlaybackController;
 void* g_pLevelDemoPlaybackDescriptor = 0;
 
 union DemoLevelDemoPlaybackConstructorAddress {
