@@ -1,3 +1,25 @@
+struct LevelManagedEntityChildSlotRecord {
+	int m_nState00;
+	int m_nValue04;
+	int m_nValue08;
+	int m_nValue0C;
+
+	LevelManagedEntityChildSlotRecord* Initialize(void);
+};
+
+// FUNCTION: LEMBALL 0x00417ab0
+LevelManagedEntityChildSlotRecord* LevelManagedEntityChildSlotRecord::Initialize(void)
+{
+	int nSentinel;
+
+	nSentinel = (int) 0xaa55aa55;
+	m_nState00 = 0;
+	m_nValue04 = nSentinel;
+	m_nValue08 = nSentinel;
+	m_nValue0C = nSentinel;
+	return this;
+}
+
 struct LevelTwoDwordPairVariantView {
 	int m_anValues[2];
 
