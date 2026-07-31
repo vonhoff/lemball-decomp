@@ -1899,7 +1899,6 @@ void GameMainContext::SwitchMainGameModeForwardThunk(int nMode)
 	SwitchMainGameMode(nMode);
 }
 
-// LINKERILT: LEMBALL 0x004010ff
 int* GameScreenObject::ConstructLevelSelectionScreenForwardThunk(unsigned int nParam1,
 																 unsigned int nParam2,
 																 unsigned short* pParam3)
