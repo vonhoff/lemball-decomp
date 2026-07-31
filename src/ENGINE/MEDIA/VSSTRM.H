@@ -194,6 +194,7 @@ struct VsNetDualHandleEffStreamPrimary : VsNetEffStreamBase {
 // GLOBAL: LEMBALL 0x00498f58
 // VsNetDualHandleEffStream::`vbtable'
 // VTABLE: LEMBALL 0x00498f60 VsNetEffStreamChannelState
+// VTABLE: LEMBALL 0x00498f70 VsNetDualHandleEffStreamPrimary
 struct VsNetDualHandleEffStream : VsNetDualHandleEffStreamPrimary, virtual VsNetEffStreamChannelState {
 	VsNetDualHandleEffStream();
 	virtual ~VsNetDualHandleEffStream();
@@ -201,7 +202,7 @@ struct VsNetDualHandleEffStream : VsNetDualHandleEffStreamPrimary, virtual VsNet
 	virtual void DualStreamNoop(void);
 	virtual void WriteGlobalSession(void) = 0;
 	virtual void* ClaimRecord(void) = 0;
-	virtual void DualStreamRet8(int nArgument0, void* pArgument1) = 0;
+	virtual void DualStreamRet8(int nArgument0, void* pArgument1);
 #ifdef LEMBALL_DEFINE_EFF_STREAM_BASE_VTABLE
 	static void operator delete(void* pObject);
 #endif

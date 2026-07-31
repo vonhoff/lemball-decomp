@@ -413,7 +413,7 @@ static VsNetFileBackedDualSecondaryThunkVtableData g_NETWORK_FileBackedDualSecon
 	&VsNetDualHandleEffStream::DualStreamNoop,
 	(void*) _purecall,
 	(void*) _purecall,
-	(void*) TcpipSocketStackDualRet8,
+	&VsNetDualHandleEffStream::DualStreamRet8,
 };
 static void* g_NETWORK_FileBackedDualSecondaryThunkVtable = &g_NETWORK_FileBackedDualSecondaryThunkVtableData;
 static VsNetFatalWin32FileWrapperVtableData g_NETWORK_FileBackedFatalFileWrapperVtable = {
@@ -551,7 +551,7 @@ static VsNetFileBackedDualSecondaryThunkVtableData g_NETWORK_EmbeddedFileBackedF
 	&VsNetDualHandleEffStream::DualStreamNoop,
 	(void*) AdjustAndWriteEmbeddedDualEffStreamWithGlobalSession,
 	(void*) AdjustAndClaimEmbeddedDualEffTransportRecordPayload,
-	(void*) TcpipSocketStackDualRet8,
+	&VsNetDualHandleEffStream::DualStreamRet8,
 };
 static void* g_NETWORK_EmbeddedFileBackedFinalDualThunkVtable = &g_NETWORK_EmbeddedFileBackedFinalDualThunkVtableData;
 
@@ -748,7 +748,7 @@ static VsNetFileBackedDualSecondaryThunkVtableData g_NETWORK_GlobalStateComposit
 	&VsNetDualHandleEffStream::DualStreamNoop,
 	(void*) AdjustAndWriteGlobalStateDualEffStreamWithGlobalSession,
 	(void*) AdjustAndClaimGlobalStateDualEffTransportRecordPayload,
-	(void*) TcpipSocketStackDualRet8,
+	&VsNetDualHandleEffStream::DualStreamRet8,
 };
 static void* g_NETWORK_GlobalStateCompositeInitialDualThunkVtable =
 	&g_NETWORK_GlobalStateCompositeInitialDualThunkVtableData;

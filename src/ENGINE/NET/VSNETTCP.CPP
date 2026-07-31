@@ -735,7 +735,7 @@ static VsNetTimedSocketBundleTertiaryThunkVtableModel g_NETWORK_TimedSocketBundl
 	&VsNetFileBackedDualSecondaryThunkVtableModel::ReservedRet,
 	(void*) _purecall,
 	(void*) _purecall,
-	(void*) TcpipSocketStackDualRet8,
+	&VsNetDualHandleEffStream::DualStreamRet8,
 	(void*) TimedSocketBundlePrimaryCloseThunk,
 	(void*) TimedSocketBundlePrimaryDeleteThunk,
 	(void*) TimedSocketBundlePrimaryCaptureErrorThunk,
@@ -817,7 +817,7 @@ struct VsNetTcpipSocketStackDualRet8VtableData {
 };
 
 static VsNetTcpipSocketStackDualRet8VtableData g_NETWORK_TcpipSocketStackDualRet8VtableData = {
-	(void*) TcpipSocketStackDualRet8,
+	&VsNetDualHandleEffStream::DualStreamRet8,
 };
 void* g_NETWORK_TcpipSocketStackDualRet8 = &g_NETWORK_TcpipSocketStackDualRet8VtableData;
 struct VsNetTcpipSocketStackDualDispatchVtableData {
@@ -837,7 +837,7 @@ static VsNetTcpipSocketStackDualDispatchVtableData g_NETWORK_TcpipSocketStackDua
 		(void*) WriteAllocatedEffTransportGlobalSessionAdjustedThunk,
 		(void*) ClaimTcpipSocketStackDualAdjustedThunk,
 	},
-	(void*) TcpipSocketStackDualRet8,
+	&VsNetDualHandleEffStream::DualStreamRet8,
 };
 static void* g_NETWORK_TcpipSocketStackDualThunk = &g_NETWORK_TcpipSocketStackDualDispatchVtable;
 static void* g_NETWORK_TcpipSocketStackSocketThunkVtable[2] = {
@@ -1107,12 +1107,8 @@ VsNetCompositeEffTransportStack::~VsNetCompositeEffTransportStack()
 {
 }
 // FUNCTION: LEMBALL 0x00462930
-void LEMBALL_FASTCALL TcpipSocketStackDualRet8(void* pObject, void* pUnused, BYTE fDelete, BYTE fReserved)
+void VsNetDualHandleEffStream::DualStreamRet8(int, void*)
 {
-	(void) pObject;
-	(void) pUnused;
-	(void) fDelete;
-	(void) fReserved;
 }
 // FUNCTION: LEMBALL 0x004629d0
 void VsNetCompositeEffTransportStack::CompositeReserved14(void)
