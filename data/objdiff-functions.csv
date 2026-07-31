@@ -1523,7 +1523,7 @@ address,size,name,unit
 0x004432C0,137,handle_level_screen_pause_action_button_event,LEVEL/LEVELSTAT.CPP
 0x00443350,1,noop_level_screen_action_panel_callback,LEVEL/LEVELSTAT.CPP
 0x00443360,75,is_point_inside_level_screen_action_panel,LEVEL/LEVELSTAT.CPP
-0x00443830,24,toggle_action_button_state,LEVEL/LEVELSTAT.CPP
+0x00443830,24,toggle_action_button_state,LEVEL/LEVELSTATUSMODE.CPP
 0x00443850,21,recompute_field_0x104_from_xor,FRONTEND/MENUSEL.CPP
 0x00443870,19,update_action_button_field_0x104_from_fields_0x130_xor_0xd0,FRONTEND/MENUSEL.CPP
 0x00443890,19,recompute_field_0x104_from_xor_no_arg,FRONTEND/MENUSELRESOURCECHILD.CPP

@@ -29,10 +29,15 @@ void LevelStatusSpriteOwnerView::SetStatusMode(int nUnused)
 }
 
 struct LevelActionButtonStateView {
-	char m_abReserved00[0x10c];
+	char m_abReserved00[0x104];
+	int m_nState104;
+	char m_abReserved108[4];
 	int m_nState10C;
+	char m_abReserved110[0x20];
+	int m_nToggle130;
 
 	void ClearAndResetStatus(int nUnused);
+	void ToggleState(int nUnused);
 };
 
 // FUNCTION: LEMBALL 0x00442aa0
@@ -59,4 +64,12 @@ void LevelActionButtonStatusView::ClearStatus(int nUnused1, int nUnused2)
 		m_fStatusActive7C = 0;
 		SetLevelScreenStatusIndicatorModeThunk(1, 0);
 	}
+}
+
+// FUNCTION: LEMBALL 0x00443830
+void LevelActionButtonStateView::ToggleState(int nUnused)
+{
+	(void) nUnused;
+	m_nToggle130 ^= 1;
+	m_nState104 = m_nToggle130;
 }
