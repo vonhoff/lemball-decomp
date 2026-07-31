@@ -308,6 +308,15 @@ struct VsNetRuntimeChannelStack : virtual VsNetRuntimeChannelCore {
 	void* m_pRuntimeSideBuffer1c;
 };
 
+// GLOBAL: LEMBALL 0x00499108
+// VsNetCompositeEffTransportStack::`vbtable'{for `VsNetRuntimeChannelCore'}
+// GLOBAL: LEMBALL 0x00499118
+// VsNetCompositeEffTransportStack::`vbtable'{for `VsNetDualHandleEffStream'}
+// GLOBAL: LEMBALL 0x00499120
+// VsNetCompositeEffTransportStack::`vbtable'{for `VsNetTimedEffStream'}
+// GLOBAL: LEMBALL 0x00499128
+// VsNetCompositeEffTransportStack::`vbtable'{for `VsNetCompositeEffTransportStack'}
+// VTABLE: LEMBALL 0x00499198 VsNetRuntimeChannelCore
 struct VsNetCompositeEffTransportStack : virtual VsNetRuntimeChannelCore {
 protected:
 	VsNetCompositeEffTransportStack();
