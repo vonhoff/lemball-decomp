@@ -2630,12 +2630,3 @@ void __cdecl ForwardManagedEntityVslot8CVariant(void* pUnused, void* pEntity)
 	pVtable = *(void***) pEntity;
 	((LevelManagedEntityNoArgVirtualProc) pVtable[0x8c / sizeof(void*)])(pEntity);
 }
-
-int return_chunk_status_two(void)
-{
-	return 2;
-}
-
-void noop_saved_chunk_packet_hook(void)
-{
-}
