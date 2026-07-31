@@ -1162,25 +1162,25 @@ int VsNetSocketAsyncErrorAdapter::HandleSocketAsyncErrorLparam(void* pReserved,
 															   unsigned int* pBuffer)
 
 {
-	unsigned int nError;
+	int nError;
 	int nChannelDelta;
 
 	(void) pReserved;
-	nError = nEvent >> 16;
-	if (nError == 0) {
-		return 0;
-	}
-	if (nError > 11000 && nError < 0x2afd) {
+	nError = (unsigned short) (nEvent >> 16);
+	if (nError != 0) {
+		if (nError < 11001 || nError > 11004) {
+			nChannelDelta = *(int*) (*(int*) ((char*) this + 0x10) + 4);
+			((VsNetEffStreamChannelState*) ((char*) this + nChannelDelta + 0x10))
+				->SetEffStreamChannelAsyncErrorStatus(nError);
+			if (*pBuffer != 0) {
+				FreeVSMemBlock((void*) (unsigned long) *pBuffer);
+			}
+			*pBuffer = 0;
+			return 0x0e;
+		}
 		return 2;
 	}
-	nChannelDelta = *(int*) (*(int*) ((char*) this + 0x10) + 4);
-	((VsNetEffStreamChannelState*) ((char*) this + nChannelDelta + 0x10))
-		->SetEffStreamChannelAsyncErrorStatus((int) nError);
-	if (*pBuffer != 0) {
-		FreeVSMemBlock((void*) (unsigned long) *pBuffer);
-	}
-	*pBuffer = 0;
-	return 0x0e;
+	return 0;
 }
 // FUNCTION: LEMBALL 0x0046fe10
 int VsNetSocketAsyncMessageAdapter::ReceiveUdpPayloadFromSenderAddress(void)
