@@ -156,7 +156,7 @@ void lemball_imports_reset(void);
 const LemballImportMap* lemball_get_import_map(size_t* count);
 extern "C"
 {
-	DWORD WINAPI GetLastError(void);
+	__declspec(dllimport) DWORD WINAPI GetLastError(void);
 	LSTATUS WINAPI RegOpenKeyExA(HKEY hKey, LPCSTR lpSubKey, DWORD ulOptions, REGSAM samDesired, HKEY* phkResult);
 	LSTATUS WINAPI
 	RegSetValueExA(HKEY hKey, LPCSTR lpValueName, DWORD Reserved, DWORD dwType, const BYTE* lpData, DWORD cbData);
