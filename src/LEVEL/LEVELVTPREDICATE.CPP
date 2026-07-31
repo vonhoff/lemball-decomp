@@ -177,3 +177,40 @@ int __cdecl IsDropToTileCenterArmed(void* pUnused, LevelManagedEntityDropStateVi
 	(void) pUnused;
 	return pEntity->m_fDropToTileCenterArmed108;
 }
+
+// FUNCTION: LEMBALL 0x00419cc0
+void __cdecl ForwardManagedEntityVslotE0(void* pUnused, void* pEntity)
+{
+	void** pVtable;
+
+	(void) pUnused;
+	pVtable = *(void***) pEntity;
+	((LevelManagedEntityNoArgVirtualProc) pVtable[0xe0 / sizeof(void*)])(pEntity);
+}
+
+void __cdecl ForwardManagedEntityVslot30(void* pUnused, void* pEntity);
+typedef void(__cdecl* LevelManagedEntityThreeArgVirtualProc)(void* pUnused, void* pEntity, void* pUnused2);
+
+// FUNCTION: LEMBALL 0x00419cd0
+void __cdecl DispatchManagedEntityVslot78ThenVslot30(void* pUnused, void* pEntity, void* pUnused2)
+{
+	void** pVtable = *(void***) pEntity;
+	((LevelManagedEntityNoArgVirtualProc) pVtable[0x78 / sizeof(void*)])(pEntity);
+	((LevelManagedEntityThreeArgVirtualProc) ForwardManagedEntityVslot30)(pUnused, pEntity, pUnused2);
+}
+
+// FUNCTION: LEMBALL 0x00419d00
+void __cdecl DispatchManagedEntityVslot9CThenVslot30(void* pUnused, void* pEntity, void* pUnused2)
+{
+	void** pVtable = *(void***) pEntity;
+	((LevelManagedEntityNoArgVirtualProc) pVtable[0x9c / sizeof(void*)])(pEntity);
+	((LevelManagedEntityThreeArgVirtualProc) ForwardManagedEntityVslot30)(pUnused, pEntity, pUnused2);
+}
+
+// FUNCTION: LEMBALL 0x00419d50
+void __cdecl DispatchManagedEntityVslot90ThenVslot30(void* pUnused, void* pEntity, void* pUnused2)
+{
+	void** pVtable = *(void***) pEntity;
+	((LevelManagedEntityNoArgVirtualProc) pVtable[0x90 / sizeof(void*)])(pEntity);
+	((LevelManagedEntityThreeArgVirtualProc) ForwardManagedEntityVslot30)(pUnused, pEntity, pUnused2);
+}

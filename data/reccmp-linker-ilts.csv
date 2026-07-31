@@ -265,3 +265,4 @@ address,name,symbol,type,source
 0x00403797,emit_capture_trigger_chunk_manager_render_entries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004037BA,get_managed_entity_owner_group,?get_managed_entity_owner_group@@YIPAXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004037C4,destroy_composite_level_chunk_children_auto_thunk,?DestroyCompositeLevelChunkChildrenAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
+0x0040385A,ForwardManagedEntityVslot30,?ForwardManagedEntityVslot30@@YAXPAX0@Z,stub,src/LEVEL/LEVELVT.CPP
