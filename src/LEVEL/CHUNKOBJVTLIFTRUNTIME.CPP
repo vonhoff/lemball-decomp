@@ -32,6 +32,7 @@ int LEMBALL_FASTCALL AdvanceLiftChunkObjectStateMachine(void* pObject)
 	int nTick;
 	short nNow;
 	short nHeight;
+	int nTileHeight;
 	int nX;
 	int nY;
 
@@ -76,10 +77,12 @@ int LEMBALL_FASTCALL AdvanceLiftChunkObjectStateMachine(void* pObject)
 		nHeight = (short) pFields[0x54] - (short) pFields[0x25] + nNow;
 		*(short*) ((char*) pObject + 0x13e) = nHeight;
 		if (pFields[0x53] <= nHeight) {
+			int fActive;
 			*(short*) ((char*) pObject + 0x13e) = (short) pFields[0x53];
-			pFields[0x59] = pFields[0x5a];
+			fActive = pFields[0x5a];
+			pFields[0x59] = fActive;
 			*(short*) ((char*) pObject + 0x154) = -1;
-			if (pFields[0x5a] == 0 ||
+			if (fActive == 0 ||
 				(g_nSelectedNetworkLobbyPeerId != 0 && *(int*) (g_nSelectedNetworkLobbyPeerId + 0x1c) == 0)) {
 				pFields[0x2e] = 0x18;
 			}
@@ -93,10 +96,12 @@ int LEMBALL_FASTCALL AdvanceLiftChunkObjectStateMachine(void* pObject)
 		nHeight = (short) pFields[0x54] - nNow + (short) pFields[0x25];
 		*(short*) ((char*) pObject + 0x13e) = nHeight;
 		if (nHeight <= pFields[0x52]) {
+			int fActive;
 			*(short*) ((char*) pObject + 0x13e) = (short) pFields[0x52];
-			pFields[0x59] = pFields[0x5a];
+			fActive = pFields[0x5a];
+			pFields[0x59] = fActive;
 			*(short*) ((char*) pObject + 0x154) = 1;
-			if (pFields[0x5a] == 0 ||
+			if (fActive == 0 ||
 				(g_nSelectedNetworkLobbyPeerId != 0 && *(int*) (g_nSelectedNetworkLobbyPeerId + 0x1c) == 0)) {
 				pFields[0x2e] = 0x18;
 			}
@@ -115,7 +120,7 @@ int LEMBALL_FASTCALL AdvanceLiftChunkObjectStateMachine(void* pObject)
 		break;
 	}
 
-	nHeight = *(short*) ((char*) pObject + 0x13e);
+	nTileHeight = *(short*) ((char*) pObject + 0x13e);
 	for (nY = *(short*) ((char*) pObject + 0x13c); nY <= *(short*) ((char*) pObject + 0x142); nY += 0x10) {
 		char* pTile;
 		short nStartX = *(short*) ((char*) pObject + 0x13a);
@@ -123,9 +128,8 @@ int LEMBALL_FASTCALL AdvanceLiftChunkObjectStateMachine(void* pObject)
 				((nY / 0x10) * *(int*) ((char*) g_pLiftTileGrid + 0x10) + nStartX / 0x10) * 0x0c;
 		pFields[0x58] = (int) pTile;
 		for (nX = nStartX; nX <= *(short*) ((char*) pObject + 0x140); nX += 0x10) {
-			*(short*) (pTile + 8) = nHeight;
-			*(short*) (pTile + 10) = (short) ((nHeight + 0x0f) / 0x10);
-			pTile += 0x0c;
+			*(short*) (pFields[0x58] + 8) = (short) nTileHeight;
+			*(short*) (pFields[0x58] + 10) = (short) ((nTileHeight + 0x0f) / 0x10);
 			pFields[0x58] += 0x0c;
 		}
 	}
