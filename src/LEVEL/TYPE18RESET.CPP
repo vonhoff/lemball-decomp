@@ -23,6 +23,8 @@ struct Type18ChunkObjectRuntimeState {
 	char m_abReservedD0[0x78];
 	int m_fTransitionActive148;
 	int m_nTransitionDuration14C;
+
+	void SetFixedPointPosition(int nX, int nY, int nZ);
 };
 
 // FUNCTION: LEMBALL 0x0040c350
@@ -48,4 +50,12 @@ void LEMBALL_FASTCALL ResetType18ChunkObjectRuntimeState(void* pObject)
 	pState->m_fTransitionActive148 = 1;
 	pState->m_nTransitionDuration14C = 0x50;
 	pState->m_nFrameTickCC = nTick;
+}
+
+// FUNCTION: LEMBALL 0x0040c720
+void Type18ChunkObjectRuntimeState::SetFixedPointPosition(int nX, int nY, int nZ)
+{
+	m_nSavedPositionX9C = nX << 12;
+	m_nSavedPositionYA0 = nY << 12;
+	m_nSavedPositionZA4 = nZ << 12;
 }
