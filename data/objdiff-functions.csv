@@ -174,9 +174,9 @@ address,size,name,unit
 0x0040B450,30,delete_level_chunk_stream_dispatcher,LEVEL/LEVELRUN.CPP
 0x0040B480,67,construct_type_0x35_chunk_object,LEVEL/LEVELRUN.CPP
 0x0040B4D0,215,set_type_0x35_chunk_object_bounds,LEVEL/LEVELRUN.CPP
-0x0040B5B0,51,copy_type_0x35_chunk_object_bounds,LEVEL/LEVELRUN.CPP
-0x0040B5F0,54,is_point_inside_type35_chunk_bounds_inclusive,LEVEL/LEVELRUN.CPP
-0x0040B630,60,is_point_inside_type_0x35_chunk_bounds,LEVEL/LEVELRUN.CPP
+0x0040B5B0,51,copy_type_0x35_chunk_object_bounds,LEVEL/LEVELTYPE35BOUNDS.CPP
+0x0040B5F0,54,is_point_inside_type35_chunk_bounds_inclusive,LEVEL/LEVELTYPE35BOUNDS.CPP
+0x0040B630,60,is_point_inside_type_0x35_chunk_bounds,LEVEL/LEVELTYPE35BOUNDS.CPP
 0x0040B670,215,choose_type35_random_target,LEVEL/LEVELRUN.CPP
 0x0040B760,374,service_type_0x35_chunk_object,LEVEL/LEVELRUN.CPP
 0x0040B8E0,25,construct_slnk_chunk_manager,LEVEL/LEVELRUN.CPP
