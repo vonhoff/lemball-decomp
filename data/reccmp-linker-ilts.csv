@@ -172,7 +172,7 @@ address,name,symbol,type,source
 0x00402D5B,set_menu_selector_direction_field_thunk,,stub,src/FRONTEND/MENUSEL.H
 0x00402D83,noop_level_status_callback_ilt,,stub,src/LEVEL/LEVELSTAT.CPP
 0x00402DA1,emit_move_chunk_manager_render_entries,,stub,src/ENGINE/CORE/LINKSCF.H
-0x00402DAB,draw_password_entry_input_panel_thunk,,stub,src/FRONTEND/MAINMENU.CPP
+0x00402DAB,draw_password_entry_input_panel_thunk,?DrawPasswordEntryInputPanelThunk@@YIXPAX@Z,stub,src/FRONTEND/MAINMENU.CPP
 0x00402DC4,destroy_level_chunk_object_base_eca0,?DestroyLevelChunkObjectBaseECA0@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402DD8,set_menu_selector_start_time_field_thunk,,stub,src/FRONTEND/MENUSEL.H
 0x00402DDD,game_selector_progress_overlay_child_set_percent,?SetPercent@GameSelectorProgressOverlayChild@@QAEXH@Z,stub,src/FRONTEND/MENUSEL.CPP
