@@ -165,3 +165,11 @@ ThreeDwordPoint* ThreeDwordPoint::Initialize(const int* pX, const int* pY, const
 	m_nZ = *pZ;
 	return this;
 }
+
+// FUNCTION: LEMBALL 0x0042d4c0
+int PASCAL ReturnFalseIceChunkCallback(void* pUnused1, void* pUnused2)
+{
+	(void) pUnused1;
+	(void) pUnused2;
+	return 0;
+}

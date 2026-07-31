@@ -2631,22 +2631,11 @@ void __cdecl ForwardManagedEntityVslot8CVariant(void* pUnused, void* pEntity)
 	((LevelManagedEntityNoArgVirtualProc) pVtable[0x8c / sizeof(void*)])(pEntity);
 }
 
-int PASCAL return_zero_move_chunk_callback(void* pUnused1, void* pUnused2)
-{
-	(void) pUnused1;
-	(void) pUnused2;
-	return 0;
-}
-
 int return_chunk_status_two(void)
 {
 	return 2;
 }
 
 void noop_saved_chunk_packet_hook(void)
-{
-}
-
-void noop_move_chunk_path_search(void)
 {
 }

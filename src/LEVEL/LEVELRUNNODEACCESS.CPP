@@ -153,3 +153,16 @@ void LevelTwoDwordPairSourceView::CopyTo(int* pDestination)
 	pDestination[0] = m_anValues[0];
 	pDestination[1] = m_anValues[1];
 }
+
+// FUNCTION: LEMBALL 0x0042eed0
+int __stdcall ReturnZeroMoveChunkCallback(void* pUnused1, void* pUnused2)
+{
+	(void) pUnused1;
+	(void) pUnused2;
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0042fb90
+void NoopMoveChunkPathSearch(void)
+{
+}
