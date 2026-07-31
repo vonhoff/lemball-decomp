@@ -251,7 +251,7 @@ extern "C"
 							   LPDWORD lpThreadId);
 	__declspec(dllimport) BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority);
 	__declspec(dllimport) DWORD WINAPI WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds);
-	BOOL WINAPI TerminateThread(HANDLE hThread, DWORD dwExitCode);
+	__declspec(dllimport) BOOL WINAPI TerminateThread(HANDLE hThread, DWORD dwExitCode);
 	__declspec(dllimport) void WINAPI ExitProcess(UINT uExitCode);
 	int WINAPI TranslateAcceleratorA(HWND hWnd, HACCEL hAccTable, MSG* lpMsg);
 	__declspec(dllimport) MCIERROR WINAPI mciSendCommandA(MCIDEVICEID mciId,

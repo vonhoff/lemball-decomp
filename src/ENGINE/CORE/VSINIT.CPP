@@ -219,6 +219,7 @@ static unsigned int g_cParsedArgs;
 // GLOBAL: LEMBALL 0x004a0e68
 int g_fSubsystemsReady = 0;
 static const char* g_pszDebugOutPath = g_VSINIT_DebugOutPath;
+// GLOBAL: LEMBALL 0x004a2a0c
 static FILE* g_pDebugOutFile = 0;
 // GLOBAL: LEMBALL 0x004a1dcc
 GameProcessCurrentDirectoryState* g_pProcessCurrentDirectoryState = 0;
@@ -462,6 +463,7 @@ void AppendStringToDebugOutFile(const char* pszText);
 int LEMBALL_FASTCALL TranslateKeyboardRenderQueueEntry(void* pRenderQueueNode, int, RenderDispatchQueueEntry* pEntry);
 int InitializeDebugMessageThread(void);
 int ShutdownDebugMessageThread(int fForceTerminate);
+void CloseCrtFilePointer(FILE* pFile);
 
 // FUNCTION: LEMBALL 0x00456660
 int SetSharedGeometryHelperFlags03(void)
@@ -1890,7 +1892,7 @@ int ShutdownDebugMessageThread(int fForceTerminate)
 	}
 
 	if (g_pDebugOutFile != 0) {
-		fclose(g_pDebugOutFile);
+		CloseCrtFilePointer(g_pDebugOutFile);
 		g_pDebugOutFile = 0;
 	}
 
