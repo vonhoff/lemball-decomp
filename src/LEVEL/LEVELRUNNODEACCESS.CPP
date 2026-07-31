@@ -1,3 +1,8 @@
+// FUNCTION: LEMBALL 0x0040ff60
+void NoopProjectileBonusHook(void)
+{
+}
+
 struct LevelVtSmallFunctionView {
 	char m_abReserved00[0xf0];
 	int m_nScoreF0;

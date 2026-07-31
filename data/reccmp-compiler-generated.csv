@@ -16,7 +16,6 @@ address,name,symbol,type,source
 0x0040CE90,noop_type18_packet_hook,,synthetic,src/LEVEL/TYPE18.CPP
 0x0040CEA0,DeleteLevelChunkObjectBaseScalarB,,synthetic,src/LEVEL/TYPE18.CPP
 0x0040EBE0,DeleteDoorChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x0040FF60,noop_projectile_boon_hook,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00410B20,DeleteDoorChunkObjectAuto,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00410B70,Door chunk-object deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/LEVEL/LEVELVTDOOR.CPP
 0x00413090,ReturnTrueVirtualHookBodyStdcall,,synthetic,src/LEVEL/LEVELSTAT.CPP
