@@ -87,6 +87,16 @@ int __cdecl IsManagedEntityVslot7CTrueAndVslot98FalseB(void* pUnused, void* pEnt
 		   ((LevelManagedEntityNoArgPredicateProc) pVtable[0x98 / sizeof(void*)])(pEntity) == 0;
 }
 
+// FUNCTION: LEMBALL 0x00419b80
+int __cdecl ForwardTargetManagedEntityVslot7C(void* pUnused, void* pEntity)
+{
+	void** pVtable;
+
+	(void) pUnused;
+	pVtable = *(void***) pEntity;
+	return ((LevelManagedEntityNoArgPredicateProc) pVtable[0x7c / sizeof(void*)])(pEntity);
+}
+
 // FUNCTION: LEMBALL 0x00419b90
 int __cdecl IsManagedEntityActionActiveBeforeDelay(void* pUnused, LevelManagedEntityTimedPredicateView* pEntity)
 {
