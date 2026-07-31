@@ -252,7 +252,7 @@ address,size,name,unit
 0x0040E500,72,dispatch_door_chunk_entity_overlap,ENGINE/CORE/LINKSCF.CPP
 0x0040E550,74,service_active_door_chunk_objects,ENGINE/CORE/LINKSCF.CPP
 0x0040E5A0,88,dispatch_door_chunk_object_trigger_by_slot,ENGINE/CORE/LINKSCF.CPP
-0x0040E600,40,get_door_chunk_object_slot_id_by_index,ENGINE/CORE/LINKSCF.CPP
+0x0040E600,40,get_door_chunk_object_slot_id_by_index,ENGINE/CORE/LINKSCFDOORSLOT.CPP
 0x0040E630,156,load_door_chunk_objects,ENGINE/CORE/LINKSCF.CPP
 0x0040EB70,24,get_level_tile_grid_cell_pointer,ENGINE/CORE/LINKSCF.CPP
 0x0040EB90,53,or_level_tile_grid_cell_flags,ENGINE/CORE/LINKSCF.CPP
