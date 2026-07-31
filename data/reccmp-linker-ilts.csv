@@ -6,7 +6,7 @@ address,name,symbol,type,source
 0x00401078,get_first_cached_chunk_object,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004010A0,vs_root_geometry_owner_get_window_owner_state,?GetWindowOwnerState@VS_RootGeometryOwner@@UAEHXZ,stub,src/GAME.CPP
 0x004010B9,LevelManagedEntityMoveCommandView::UpdateFacingTowardFirstMoveCommand,?UpdateFacingTowardFirstMoveCommand@LevelManagedEntityMoveCommandView@@QAEXXZ,stub,src/LEVEL/LEVELVTMOVE.CPP
-0x004010E1,move_menu_selector_next_thunk,,stub,src/FRONTEND/MENUSEL.H
+0x004010E1,MoveMenuSelectorNextThunk,?MoveMenuSelectorNextThunk@@YIXPAUGameMenuSelectorManager@@@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00401154,destroy_queued_variant_range_entry_auto,?DestroyQueuedVariantRangeEntryAutoThunk@@YIXPAX@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00401159,activate_pgun_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401177,refresh_active_capture_trigger_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
@@ -51,7 +51,7 @@ address,name,symbol,type,source
 0x004018CF,vs_window_owner_base_is_current_window_owner_context,?IsCurrentWindowOwnerContext@VS_WindowOwnerBase@@UAEHXZ,stub,src/ENGINE/GDI/VSWINDOW.H
 0x004018D4,ManagedEntityPacketBase::ManagedEntityPacketBase,??0ManagedEntityPacketBase@@QAE@H@Z,stub,src/LEVEL/LEVELRUN.CPP
 0x004018D9,advance_ice_chunk_manager_objects,,stub,src/ENGINE/CORE/LINKSCF.H
-0x004018F7,select_menu_selector_side0thunk,,stub,src/FRONTEND/MENUSEL.H
+0x004018F7,SelectMenuSelectorSide0Thunk,?SelectMenuSelectorSide0Thunk@@YIXPAUGameMenuSelectorManager@@@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00401942,refresh_active_lasr_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401956,emit_coll_chunk_manager_render_entries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004019C4,write_eff_stream_u32field2c,,stub,src/ENGINE/MEDIA/EFFSTRM.H
@@ -86,7 +86,7 @@ address,name,symbol,type,source
 0x00401FAF,count_nested_iterated_child_entries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401FBE,activate_rock_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401FE1,destroy_lift_chunk_manager_auto_thunk,?DestroyLiftChunkManagerAutoThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
-0x00401FF5,select_menu_selector_side1thunk,,stub,src/FRONTEND/MENUSEL.H
+0x00401FF5,SelectMenuSelectorSide1Thunk,?SelectMenuSelectorSide1Thunk@@YIXPAUGameMenuSelectorManager@@@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x0040200E,GameScreenObject::ConstructPaintballSequenceScreen,?ConstructPaintballSequenceScreen@GameScreenObject@@QAEPAXPAX0PAFH@Z,stub,src/GAME.CPP
 0x00402054,delete_door_chunk_object_array_vtable_thunk,?DeleteDoorChunkObjectArrayVtableThunk@@YIPAXPAX0E@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402068,LevelManagedEntityStateFields::IncrementHeadingOctant,?IncrementHeadingOctant@LevelManagedEntityStateFields@@QAEXXZ,stub,src/LEVEL/LEVELVT.CPP
@@ -157,7 +157,7 @@ address,name,symbol,type,source
 0x004029B4,vs_window_owner_base_reserved_window_owner_slot39,?ReservedWindowOwnerSlot39@VS_WindowOwnerBase@@UAEXXZ,stub,src/ENGINE/GDI/VSWINDOW.H
 0x004029FA,reset_capture_trigger_chunk_object_runtime_state_thunk,,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402A09,service_active_door_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
-0x00402A36,move_menu_selector_previous_thunk,,stub,src/FRONTEND/MENUSEL.H
+0x00402A36,MoveMenuSelectorPreviousThunk,?MoveMenuSelectorPreviousThunk@@YIXPAUGameMenuSelectorManager@@@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00402A3B,managed_entity_packet24_write_eff_stream_tagged_header,?WriteEffStreamTaggedHeader@ManagedEntityPacket24@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00402A45,service_counted_child_pointer_table,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402A59,get_menu_selector_start_time_thunk,,stub,src/FRONTEND/MENUSEL.H
@@ -184,7 +184,7 @@ address,name,symbol,type,source
 0x00402DDD,GameSelectorProgressOverlayChild::SetPercent,?SetPercent@GameSelectorProgressOverlayChild@@QAEXH@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00402DF1,destroy_tile_flag1c_chunk_object_auto_thunk,?DestroyTileFlag1CChunkObjectAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402E1E,vs_window_owner_base_cache_current_context_window,?CacheCurrentContextWindow@VS_WindowOwnerBase@@UAEXXZ,stub,src/ENGINE/GDI/VSWINDOW.H
-0x00402E28,start_menu_selector_action_thunk,,stub,src/FRONTEND/MENUSEL.H
+0x00402E28,StartMenuSelectorActionThunk,?StartMenuSelectorActionThunk@@YIXPAUGameMenuSelectorManager@@@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00402E41,managed_entity_packet26_write_eff_stream_tagged_header,?WriteEffStreamTaggedHeader@ManagedEntityPacket26@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKETTHUNK.CPP
 0x00402E4B,dispatch_door_chunk_object_trigger_by_slot,?DispatchDoorChunkObjectTriggerBySlot@@YIXPAX0HI@Z,stub,src/ENGINE/CORE/LINKSCFDOORACTION.CPP
 0x00402E91,managed_projectile_object_view_activate_at_position,?ActivateAtPosition@ManagedProjectileObjectView@@QAEXPBULevelPoint3@@@Z,stub,src/LEVEL/LEVELVTPROJECTILE.CPP
