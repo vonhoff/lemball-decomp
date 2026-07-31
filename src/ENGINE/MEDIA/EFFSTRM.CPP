@@ -114,8 +114,10 @@ static void* g_EFF_NetworkLobbyPeerDirtyConfirmVtable[6] = {
 static const char g_EFF_DefaultNetworkPath[] = "t:\\network";
 // GLOBAL: LEMBALL 0x004a0138
 static const char g_EFF_NetworkRuntimeKey[] = "Paintball v0.1";
+struct GameNetworkLobbyPeerEntryStream;
 void* LEMBALL_FASTCALL ConstructNetworkLobbySelectedPeerStatusStream(void* pObject);
-void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerEntryStream(void* pObject);
+GameNetworkLobbyPeerEntryStream* LEMBALL_FASTCALL
+ConstructNetworkLobbyPeerEntryStream(GameNetworkLobbyPeerEntryStream* pStream);
 void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStream(void* pObject);
 void LEMBALL_FASTCALL ReadNetworkLobbyU32PayloadStream(void* pObject);
 void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerClearCloseStream(void* pObject);
@@ -129,7 +131,6 @@ void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void* pObject);
 void* LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void* pObject, void* pUnused, BYTE fDelete);
 int HasShiftedRecordSlotPayloadForStream(void* pTransportPeer, void* pStream);
 void LoadStreamFromShiftedRecordSlotAndClear(void* pTransportPeer, void* pStream);
-
 
 // GLOBAL: LEMBALL 0x004a1e1c
 void* g_pEffTransportDispatchQueue = 0;
@@ -494,13 +495,12 @@ void* LEMBALL_FASTCALL ConstructNetworkLobbySelectedPeerStatusStream(void* pObje
 	return pObject;
 }
 // FUNCTION: LEMBALL 0x004523e0
-void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerEntryStream(void* pObject)
+GameNetworkLobbyPeerEntryStream* LEMBALL_FASTCALL
+ConstructNetworkLobbyPeerEntryStream(GameNetworkLobbyPeerEntryStream* pStream)
 {
-	GameNetworkLobbyPeerEntryStream* pStream;
 	GameEffStream* pBaseStream;
 
-	pStream = (GameNetworkLobbyPeerEntryStream*) pObject;
-	pBaseStream = (GameEffStream*) pObject;
+	pBaseStream = (GameEffStream*) pStream;
 	pStream->m_pVtable = (GameEffStreamVtable*) g_GAME_EffStreamConstructionVtable;
 	pStream->m_nEventCode = 5;
 	pBaseStream->ResetStateFields();
@@ -509,7 +509,7 @@ void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerEntryStream(void* pObject)
 	pStream->m_nPeerEntryState = 0;
 	pStream->m_cbSerializedLength += 0x1e;
 	pStream->m_fHasPayload = 1;
-	return pObject;
+	return pStream;
 }
 // FUNCTION: LEMBALL 0x00452420
 void LEMBALL_FASTCALL WriteNetworkLobbyPeerEntryPayload(void* pObject)
@@ -634,7 +634,8 @@ GameNetworkLobbyVsnetRuntime* GameNetworkLobbyVsnetRuntime::Construct(char* pszF
 		pRuntime->m_pPeerEntryWriteStream = 0;
 	}
 	else {
-		pRuntime->m_pPeerEntryWriteStream = (GameEffStream*) ConstructNetworkLobbyPeerEntryStream(pStream);
+		pRuntime->m_pPeerEntryWriteStream =
+			(GameEffStream*) ConstructNetworkLobbyPeerEntryStream((GameNetworkLobbyPeerEntryStream*) pStream);
 	}
 
 	pStream = (GameEffStream*) AllocateVSMemBlock(0x30);
@@ -1081,8 +1082,8 @@ void* GameRecordSlotTable::GetShiftedRecordSlotByPacketId(int nPacketId)
 }
 // FUNCTION: LEMBALL 0x00462550
 void GameEffTransportRuntimeWindow::SetPrimaryHandleParams(int nPrimaryHandleCount,
-																				 int nPrimaryHandleStride,
-																				 int nFlags)
+														   int nPrimaryHandleStride,
+														   int nFlags)
 {
 	m_nPrimaryHandleCount = nPrimaryHandleCount;
 	m_nPrimaryHandleStride = nPrimaryHandleStride;
