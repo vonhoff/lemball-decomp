@@ -94,7 +94,7 @@ address,name,symbol,type,source
 0x004020A4,game_screen_object_construct_level_screen,,stub,src/GAME.H
 0x004020EF,destroy_level_chunk_object_children_variant_auto_thunk,?DestroyLevelChunkObjectChildrenVariantAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004020F9,reset_ice_chunk_object_runtime_state_thunk,?ResetIceChunkObjectRuntimeStateThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
-0x00402108,refresh_functional_level_selection_metadata,?RefreshFunctionalLevelSelectionMetadata@@YIXPAUGameLevelSelectionScreenView@@@Z,stub,src/FRONTEND/MAINMENU.CPP
+0x00402108,RefreshFunctionalLevelSelectionMetadata,?RefreshFunctionalLevelSelectionMetadata@@YIXPAUGameLevelSelectionScreenView@@@Z,stub,src/FRONTEND/MAINMENU.CPP
 0x00402167,activate_mine_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040217B,managed_entity_packet_base_reverse_eff_stream_payload,?ReverseEffStreamPayload@ManagedEntityPacketBase@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00402180,destroy_level_chunk_stream_auto_thunk,?DestroyLevelChunkStreamAutoThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
