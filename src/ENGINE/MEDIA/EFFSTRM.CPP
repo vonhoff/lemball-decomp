@@ -128,11 +128,7 @@ void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void* pObject);
 void* LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void* pObject, void* pUnused, BYTE fDelete);
 int HasShiftedRecordSlotPayloadForStream(void* pTransportPeer, void* pStream);
 void LoadStreamFromShiftedRecordSlotAndClear(void* pTransportPeer, void* pStream);
-void SetEffTransportPrimaryHandleParams(void* pRuntimeWindow,
-										int nPrimaryHandleCount,
-										int nPrimaryHandleStride,
-										int nFlags);
-void SetEffTransportSecondaryHandleParams(void* pRuntimeWindow, int nSecondaryHandleCount, int nSecondaryHandleStride);
+
 
 // GLOBAL: LEMBALL 0x004a1e1c
 void* g_pEffTransportDispatchQueue = 0;
@@ -284,12 +280,15 @@ struct GameEffTransportRuntimeWindow {
 	void* m_pPrimaryDispatchClient;
 	void* m_pReserved40;
 	void* m_pSecondaryDispatchClient;
+	void* m_pReserved48;
 	int m_nPrimaryHandleCount;
 	int m_nPrimaryHandleStride;
 	int m_nPrimaryHandleFlags;
 	int m_nSecondaryHandleCount;
 	int m_nSecondaryHandleStride;
 
+	void SetPrimaryHandleParams(int nPrimaryHandleCount, int nPrimaryHandleStride, int nFlags);
+	void SetSecondaryHandleParams(int nSecondaryHandleCount, int nSecondaryHandleStride);
 	void RegisterEffTransportEventClient(void* pClient);
 	void UnregisterEffTransportEventClient(void);
 };
@@ -667,8 +666,8 @@ GameNetworkLobbyVsnetRuntime* GameNetworkLobbyVsnetRuntime::Construct(char* pszF
 
 		if (((VsNetRuntimeStartView*) g_pActiveNetworkRuntimeWindow)
 				->StartEffTransportRuntimeAndWaitReady((int) (unsigned long) g_EFF_NetworkRuntimeKey, 0x400) != 0) {
-			SetEffTransportSecondaryHandleParams(g_pActiveNetworkRuntimeWindow, 100, 0x10);
-			SetEffTransportPrimaryHandleParams(g_pActiveNetworkRuntimeWindow, 4, 4, 0);
+			((GameEffTransportRuntimeWindow*) g_pActiveNetworkRuntimeWindow)->SetSecondaryHandleParams(100, 0x10);
+			((GameEffTransportRuntimeWindow*) g_pActiveNetworkRuntimeWindow)->SetPrimaryHandleParams(4, 4, 0);
 			pRuntime->m_fSelectedPeerDisconnected = 0;
 			g_nSelectedNetworkLobbyPeerId = 0;
 			pRuntime->m_fSelectionNeedsReset = 0;
@@ -1080,26 +1079,19 @@ void* GameRecordSlotTable::GetShiftedRecordSlotByPacketId(int nPacketId)
 	return m_apSlots08[nPacketId];
 }
 // FUNCTION: LEMBALL 0x00462550
-void SetEffTransportPrimaryHandleParams(void* pRuntimeWindow,
-										int nPrimaryHandleCount,
-										int nPrimaryHandleStride,
-										int nFlags)
+void GameEffTransportRuntimeWindow::SetPrimaryHandleParams(int nPrimaryHandleCount,
+																				 int nPrimaryHandleStride,
+																				 int nFlags)
 {
-	GameEffTransportRuntimeWindow* pWindow;
-
-	pWindow = (GameEffTransportRuntimeWindow*) pRuntimeWindow;
-	pWindow->m_nPrimaryHandleCount = nPrimaryHandleCount;
-	pWindow->m_nPrimaryHandleStride = nPrimaryHandleStride;
-	pWindow->m_nPrimaryHandleFlags = nFlags;
+	m_nPrimaryHandleCount = nPrimaryHandleCount;
+	m_nPrimaryHandleStride = nPrimaryHandleStride;
+	m_nPrimaryHandleFlags = nFlags;
 }
 // FUNCTION: LEMBALL 0x00462570
-void SetEffTransportSecondaryHandleParams(void* pRuntimeWindow, int nSecondaryHandleCount, int nSecondaryHandleStride)
+void GameEffTransportRuntimeWindow::SetSecondaryHandleParams(int nSecondaryHandleCount, int nSecondaryHandleStride)
 {
-	GameEffTransportRuntimeWindow* pWindow;
-
-	pWindow = (GameEffTransportRuntimeWindow*) pRuntimeWindow;
-	pWindow->m_nSecondaryHandleCount = nSecondaryHandleCount;
-	pWindow->m_nSecondaryHandleStride = nSecondaryHandleStride;
+	m_nSecondaryHandleCount = nSecondaryHandleCount;
+	m_nSecondaryHandleStride = nSecondaryHandleStride;
 }
 // FUNCTION: LEMBALL 0x00462590
 void GameEffTransportRuntimeWindow::RegisterEffTransportEventClient(void* pClient)
