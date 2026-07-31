@@ -350,6 +350,25 @@ struct VsNetAllocatedTcpipEffTransportComposite : VsNetCompositeEffTransportStac
 /* 00470270 is the complete TCP specialization of the 00460350 runtime
  * stack.  Its two local handles occupy +0x24/+0x28 before the shared
  * virtual-base tail. */
+// GLOBAL: LEMBALL 0x0049a0d0
+// VsNetTcpipEffTransportComposite::`vbtable'{for `VsNetTimedSocketEffChannelBundleLayout'}
+// GLOBAL: LEMBALL 0x0049a0e0
+// VsNetTcpipEffTransportComposite::`vbtable'{for `VsNetDualSocketWindowEffChannelBundle'}
+// GLOBAL: LEMBALL 0x0049a0f0
+// VsNetTcpipEffTransportComposite::`vbtable'{for `VsNetSocketWindowEffChannel'}
+// GLOBAL: LEMBALL 0x0049a0f8
+// VsNetTcpipEffTransportComposite::`vbtable'{for `VsNetRuntimeChannelCore'}
+// GLOBAL: LEMBALL 0x0049a108
+// VsNetTcpipEffTransportComposite::`vbtable'{for `VsNetDualHandleEffStream'}
+// GLOBAL: LEMBALL 0x0049a110
+// VsNetTcpipEffTransportComposite::`vbtable'{for `VsNetTimedEffStream'}
+// GLOBAL: LEMBALL 0x0049a118
+// VsNetTcpipEffTransportComposite::`vbtable'{for `VsNetTcpipEffTransportOwnershipPath'}
+// GLOBAL: LEMBALL 0x0049a138
+// VsNetTcpipEffTransportComposite::`vbtable'{for `VsNetTcpipEffTransportComposite'}
+// VTABLE: LEMBALL 0x0049a158 VsNetSocketWindowPrimary
+// VTABLE: LEMBALL 0x0049a1b8 VsNetRuntimeChannelCore
+// VTABLE: LEMBALL 0x0049a1c8 VsNetRuntimeChannelStack
 struct VsNetTcpipEffTransportComposite : VsNetRuntimeChannelStack,
 										 VsNetTcpipEffTransportOwnershipPath,
 										 virtual VsNetTcpipClientAsyncDispatcher {
