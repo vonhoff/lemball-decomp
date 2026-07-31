@@ -1999,7 +1999,6 @@ void LEMBALL_FASTCALL AdvanceActiveMoveChunkObjects(void* pManager)
 }
 
 struct LinkScfSmallFunctionView {
-	void ClearManagedEntityGroupChildActiveFlag(int iChild);
 	void SetObjectFields18_1c_20(int nField18, int nField1c, int nField20);
 };
 
@@ -2008,16 +2007,6 @@ struct ChunkRuntimeStateView {
 	void ResetCaptureTriggerState(void);
 	void ResetLaserState(void);
 };
-
-void LinkScfSmallFunctionView::ClearManagedEntityGroupChildActiveFlag(int iChild)
-{
-	void** ppChildren;
-	void* pChild;
-
-	ppChildren = *(void***) ((char*) this + 0x3c);
-	pChild = ppChildren[iChild];
-	*(int*) ((char*) pChild + 0x38) = 0;
-}
 
 void LinkScfSmallFunctionView::SetObjectFields18_1c_20(int nField18, int nField1c, int nField20)
 {
