@@ -39,8 +39,9 @@ int LevelManagedEntityActiveGroupView::GetEntityActiveState(void* pObject)
 // FUNCTION: LEMBALL 0x0041eb90
 LevelManagedEntityChildIterator* LevelManagedEntityActiveGroupView::FindManagedEntityByPointer(void* pObject)
 {
+	LevelManagedEntityChildIterator* pEntity;
 	LevelManagedEntityGroupVtable* pVtable = m_pVtable00;
-	LevelManagedEntityChildIterator* pEntity = (this->*pVtable->m_pGetFirst04)();
+	pEntity = (this->*pVtable->m_pGetFirst04)();
 	while (pEntity != 0) {
 		if ((pEntity->*pEntity->m_pVtable00->m_pMatchesObject130)(pObject) == 1) {
 			return pEntity;
