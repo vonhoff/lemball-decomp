@@ -6,7 +6,6 @@
 
 DECOMP_SIZE_ASSERT(VS_InvisibleWindow, 0x10);
 
-
 // FUNCTION: LEMBALL 0x004714f0
 LRESULT LEMBALL_FASTCALL DefaultInvisibleWindowMessageHandler(VS_InvisibleWindow* pWindow,
 															  void* pUnused,
@@ -47,9 +46,9 @@ VS_InvisibleWindow* VS_InvisibleWindow::Construct(LPCSTR pszClassName, int* pfCl
 		WndClass.hCursor = 0;
 		WndClass.hbrBackground = 0;
 		WndClass.lpszMenuName = 0;
-		WndClass.lpszClassName = pszClassName;
 		WndClass.lpfnWndProc = InvisibleMessageWindowWndProc;
 		WndClass.cbWndExtra = 4;
+		WndClass.lpszClassName = pszClassName;
 
 		if (RegisterClassA(&WndClass) == 0) {
 			ShowFatalGetLastErrorMessageAndExit("Unable to register base window class");
