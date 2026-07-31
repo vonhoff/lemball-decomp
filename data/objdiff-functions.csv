@@ -1501,7 +1501,7 @@ address,size,name,unit
 0x00442350,59,reset_sprite_point_and_clear_status_indicator,LEVEL/LEVELSTAT.CPP
 0x00442390,590,construct_base_mode_action_button,LEVEL/LEVELSTAT.CPP
 0x004425E0,140,destroy_base_mode_action_button_adjusted,LEVEL/LEVELSTAT.CPP
-0x00442670,17,set_sprite_owner_status_mode,LEVEL/LEVELSTAT.CPP
+0x00442670,17,set_sprite_owner_status_mode,LEVEL/LEVELSTATUSMODE.CPP
 0x00442690,787,rebuild_level_status_panel_render_entries,LEVEL/LEVELSTAT.CPP
 0x004429B0,144,sync_action_button_state,LEVEL/LEVELSTAT.CPP
 0x00442A40,96,refresh_aligned_zrle_child_and_queue_if_dirty,LEVEL/LEVELSTAT.CPP
