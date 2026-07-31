@@ -131,3 +131,49 @@ int __cdecl HasPendingCommandsNeedingFacingUpdate(void* pUnused,
 	}
 	return pEntity->IsFacingTowardFirstMoveCommand() == 0;
 }
+
+typedef void(__fastcall* LevelManagedEntityNoArgVirtualProc)(void* pEntity);
+
+struct LevelManagedEntityDropStateView {
+	unsigned char m_abReserved00[0x104];
+	int m_fDropToSavedPointArmed104;
+	int m_fDropToTileCenterArmed108;
+};
+
+// FUNCTION: LEMBALL 0x00419c40
+int __cdecl IsManagedEntityDelayElapsed(void* pUnused, LevelManagedEntityTimedPredicateView* pEntity)
+{
+	(void) pUnused;
+	return (unsigned int) g_nLevelFrameClockTick >= pEntity->m_nActionDeadlineCC;
+}
+
+// FUNCTION: LEMBALL 0x00419c60
+int __cdecl IsManagedEntityDelayActive(void* pUnused, LevelManagedEntityTimedPredicateView* pEntity)
+{
+	(void) pUnused;
+	return (unsigned int) g_nLevelFrameClockTick < pEntity->m_nActionDeadlineCC;
+}
+
+// FUNCTION: LEMBALL 0x00419c90
+void __cdecl ForwardManagedEntityVslot5C(void* pUnused, void* pEntity)
+{
+	void** pVtable;
+
+	(void) pUnused;
+	pVtable = *(void***) pEntity;
+	((LevelManagedEntityNoArgVirtualProc) pVtable[0x5c / sizeof(void*)])(pEntity);
+}
+
+// FUNCTION: LEMBALL 0x00419ca0
+int __cdecl IsDropToSavedPointArmed(void* pUnused, LevelManagedEntityDropStateView* pEntity)
+{
+	(void) pUnused;
+	return pEntity->m_fDropToSavedPointArmed104;
+}
+
+// FUNCTION: LEMBALL 0x00419cb0
+int __cdecl IsDropToTileCenterArmed(void* pUnused, LevelManagedEntityDropStateView* pEntity)
+{
+	(void) pUnused;
+	return pEntity->m_fDropToTileCenterArmed108;
+}
