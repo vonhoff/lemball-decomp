@@ -534,7 +534,7 @@ extern unsigned short g_GAME_ManagedEntityRegistryCount;
 extern void ResetLevelFrameClockEntryThunk(void);
 extern void* LEMBALL_FASTCALL ConstructLevelGameStateStreamThunk(void* pObject);
 extern void* LEMBALL_FASTCALL ConstructLevelTileGridThunk(void* pObject);
-extern void InitializeLevelTileGridThunk(void* pTileGrid);
+extern void LEMBALL_FASTCALL InitializeLevelTileGridThunk(void* pTileGrid);
 struct LevelTileReachabilityHelper {
 	void* ConstructLevelTileReachabilityHelperThunk(void* pTileGrid);
 };

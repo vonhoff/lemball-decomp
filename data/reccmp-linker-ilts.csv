@@ -37,6 +37,7 @@ address,name,symbol,type,source
 0x00401514,vs_window_owner_base_reserved_window_owner_slot21,?ReservedWindowOwnerSlot21@VS_WindowOwnerBase@@UAEXXZ,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00401532,compute_direction_octant_between_points,?compute_direction_octant_between_points@@YAIHHHH@Z,stub,src/GAMEHELPERS.CPP
 0x0040153C,level_chunk_object_base_view_initialize_level_chunk_object_base,?InitializeLevelChunkObjectBase@LevelChunkObjectBaseView@@QAEPAXHGG@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
+0x00401555,ClearLevelTileGridCells,?ClearLevelTileGridCells@@YIXH@Z,stub,src/LEVEL/LEVELRUN.CPP
 0x00401573,managed_entity_packet23_write_eff_stream_tagged_header,?WriteEffStreamTaggedHeader@ManagedEntityPacket23@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x004015A0,GameScreenObject::ConstructNetworkLobbyScreen,?ConstructNetworkLobbyScreen@GameScreenObject@@QAEPAXPAX0PAF@Z,stub,src/GAME.CPP
 0x004015DC,emit_active_pgun_chunk_manager_render_entries,,stub,src/ENGINE/CORE/LINKSCF.H

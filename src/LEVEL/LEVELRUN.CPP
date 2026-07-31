@@ -86,9 +86,9 @@ void LEMBALL_FASTCALL ResetBallChunkEntries(void* pBallManager);
 void LEMBALL_FASTCALL FillReachabilityGridFromTileFlags(void* pReachabilityHelper);
 void LEMBALL_FASTCALL ResizeLevelTileReachabilityGrid(void* pReachabilityHelper);
 void LEMBALL_FASTCALL ResetBoonChunkManagerObjects(void* pObject);
-void ClearLevelTileGridCells(int nTileGridCells);
+void LEMBALL_FASTCALL ClearLevelTileGridCells(int nTileGridCells);
 void* LEMBALL_FASTCALL ConstructLevelTileGridThunk(void* pObject);
-void InitializeLevelTileGridThunk(void* pTileGrid);
+void LEMBALL_FASTCALL InitializeLevelTileGridThunk(void* pTileGrid);
 void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void* pObject);
 void LEMBALL_FASTCALL ClearPrimaryLockedRecordTablePayloadFlags(void* pPayload);
 void LEMBALL_FASTCALL ClearSecondaryLockedRecordTablePayloadFlags(void* pPayload);
@@ -2269,7 +2269,7 @@ void LevelLevelTileCell::InitializeLevelTileGridCellRenderFlags(void)
 	}
 }
 // FUNCTION: LEMBALL 0x00430370
-void ClearLevelTileGridCells(int nTileGridCells)
+void LEMBALL_FASTCALL ClearLevelTileGridCells(int nTileGridCells)
 {
 	int y;
 	int x;
@@ -2306,7 +2306,7 @@ void* LEMBALL_FASTCALL ConstructLevelTileGridThunk(void* pObject)
 	return pObject;
 }
 // FUNCTION: LEMBALL 0x004303f0
-void InitializeLevelTileGridThunk(void* pTileGrid)
+void LEMBALL_FASTCALL InitializeLevelTileGridThunk(void* pTileGrid)
 {
 	*(int*) ((char*) pTileGrid + 4) = 0;
 	*(unsigned char*) ((char*) pTileGrid + 0x24) = 0;
@@ -2385,8 +2385,13 @@ void LevelTileGridRuntimeView::SetLevelTileGridName(const char* pszName, unsigne
 // FUNCTION: LEMBALL 0x00430e90
 void LevelTileGridRuntimeView::SetLevelTileGridDefaultVariantIds(const unsigned short* pWords, unsigned int)
 {
-	*(int*) ((char*) this + 0x4c) = pWords[0];
-	*(int*) ((char*) this + 0x50) = pWords[1];
+	unsigned int nPrimaryVariant;
+	unsigned int nSecondaryVariant;
+
+	nSecondaryVariant = pWords[1];
+	nPrimaryVariant = pWords[0];
+	*(int*) ((char*) this + 0x4c) = nPrimaryVariant;
+	*(int*) ((char*) this + 0x50) = nSecondaryVariant;
 }
 // FUNCTION: LEMBALL 0x00431010
 void LevelTileGridRuntimeView::CopyLevelTileGridName(const char* pszName)
