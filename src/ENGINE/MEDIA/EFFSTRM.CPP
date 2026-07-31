@@ -52,6 +52,7 @@ static void* g_EFF_NetworkLobbySelectedPeerStatusVtable[6] = {
 	(void*) WriteEffStreamU32Field2C,
 	(void*) DeleteNetworkLobbySelectedPeerStatusStream,
 };
+// GLOBAL: LEMBALL 0x00498578
 static void* g_EFF_NetworkLobbyPeerEntryVtable[6] = {
 	(void*) ReturnTrueVtableCallbackThunk,
 	(void*) ReturnTrueVtableCallbackSecondaryThunk,
