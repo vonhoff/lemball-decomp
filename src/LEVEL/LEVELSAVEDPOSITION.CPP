@@ -1,6 +1,9 @@
 #include "ENGINE/CORE/VSINIT.H"
 
 void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
+extern int g_nLevelFrameClockTimeMs;
+extern int g_nLevelFrameClockTick;
+extern void* g_pActiveManagedEntityOwner;
 
 struct SavedPositionChunkObjectView {
 	char m_abReserved00[0x9c];
@@ -73,6 +76,32 @@ void GmobType14SavedPositionView::ResetType14State(void)
 	m_nType14Variant15C = 0;
 	m_nLinkedVariant144 = 0;
 	m_nVariantBC = 0;
+}
+
+struct LevelVtSmallFunctionView {
+	void AddLevelScoreClamped(int nValue);
+};
+
+struct GmobType14ScoreView {
+	char m_abReserved00[0x94];
+	int m_nFrameTime94;
+	char m_abReserved98[0x3c];
+	int m_nDeadlineD4;
+	char m_abReservedD8[0x6c];
+	int m_fScoreAwarded144;
+
+	void AwardScoreOnce(void);
+};
+
+// FUNCTION: LEMBALL 0x0041d2e0
+void GmobType14ScoreView::AwardScoreOnce(void)
+{
+	m_nFrameTime94 = g_nLevelFrameClockTimeMs;
+	m_nDeadlineD4 += g_nLevelFrameClockTick;
+	if (m_fScoreAwarded144 == 0) {
+		((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(0x19);
+		m_fScoreAwarded144 = 1;
+	}
 }
 
 struct LevelChunkObjectRuntimeStateView {

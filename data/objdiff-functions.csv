@@ -701,7 +701,7 @@ address,size,name,unit
 0x0041D130,77,dispatch_gmob_chunk_type_0x14_actions,LEVEL/LEVELVT.CPP
 0x0041D180,245,advance_gmob_chunk_type_0x14_state_machine,LEVEL/LEVELVT.CPP
 0x0041D280,94,toggle_gmob_type14_variant,LEVEL/LEVELVT.CPP
-0x0041D2E0,60,award_gmob_type_0x14_score_once,LEVEL/LEVELVT.CPP
+0x0041D2E0,60,award_gmob_type_0x14_score_once,LEVEL/LEVELSAVEDPOSITION.CPP
 0x0041D320,41,copy_gmob_type14_point,LEVEL/LEVELVT.CPP
 0x0041D350,59,append_gmob_chunk_type_0x14_action,LEVEL/LEVELVT.CPP
 0x0041D390,154,append_gmob_type_0x14_lift_or_door_actions,LEVEL/LEVELVT.CPP

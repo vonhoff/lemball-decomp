@@ -209,6 +209,7 @@ address,name,symbol,type,source
 0x00402E9B,dispatch_lift_chunk_object_action_by_slot,?DispatchLiftChunkObjectActionBySlot@@YIXPAX0HIHH@Z,stub,src/ENGINE/CORE/LINKSCFLIFTACTION.CPP
 0x00402EB9,get_cached_chunk_object_by_index,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402F09,destroy_managed_entity_queue_cursor_auto_thunk,?DestroyManagedEntityQueueCursorAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
+0x00402F22,LevelVtSmallFunctionView::AddLevelScoreClamped,?AddLevelScoreClamped@LevelVtSmallFunctionView@@QAEXH@Z,stub,src/LEVEL/LEVELRUNNODEACCESS.CPP
 0x00402F3B,set_menu_selector_duration_field_thunk,,stub,src/FRONTEND/MENUSEL.H
 0x00402F4A,VsNetNetworkLobbyScreen::SelectNextPlayerEntry,?SelectNextPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/FRONTEND/LOBBY.CPP
 0x00402FB3,InitializeStartupSwitchDefaults,?InitializeStartupSwitchDefaults@@YAXXZ,stub,src/SHELL/OPTIONS.CPP

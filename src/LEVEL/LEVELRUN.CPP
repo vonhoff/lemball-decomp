@@ -41,6 +41,7 @@ struct LevelModeLiftManagerOwnerView {
 extern int g_nLevelFrameClockTick;
 int g_nNetworkFrameClockLatestTimeMs = 0;
 int g_nLevelFrameClockLastSampleMs = 0;
+// GLOBAL: LEMBALL 0x0049ce08
 int g_nLevelFrameClockTimeMs = 0;
 int g_nLevelFrameClockDemoTimeMs = 0;
 int g_nLevelFrameClockTimeBaseMs = 0;
