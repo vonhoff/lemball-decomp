@@ -213,6 +213,7 @@ address,name,symbol,type,source
 0x00402F3B,set_menu_selector_duration_field_thunk,,stub,src/FRONTEND/MENUSEL.H
 0x00402F4A,VsNetNetworkLobbyScreen::SelectNextPlayerEntry,?SelectNextPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/FRONTEND/LOBBY.CPP
 0x00402F6D,LevelNodeManagerView::CopyPointByIndex,?CopyPointByIndex@LevelNodeManagerView@@QAEPAULevelNodePoint@@PAU2@H@Z,stub,src/LEVEL/LEVELRUNNODEACCESS.CPP
+0x00402FAE,LevelNodeChunkPositionView::CopyTileXY,?CopyTileXY@LevelNodeChunkPositionView@@QAEXPAH0@Z,stub,src/LEVEL/LEVELRUNNODEACCESS.CPP
 0x00402FB3,InitializeStartupSwitchDefaults,?InitializeStartupSwitchDefaults@@YAXXZ,stub,src/SHELL/OPTIONS.CPP
 0x00402FF4,advance_active_move_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402FFE,destroy_level_screen_action_panel_resources_thunk,?DestroyLevelScreenActionPanelResourcesThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELSTAT.CPP

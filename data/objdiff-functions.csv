@@ -833,7 +833,7 @@ address,size,name,unit
 0x004211D0,134,allocate_node_chunk_record_array,LEVEL/LEVELRUN.CPP
 0x00421260,56,destroy_node_chunk_manager_records,LEVEL/LEVELRUN.CPP
 0x004212A0,31,copy_node_chunk_record_point_by_index,LEVEL/LEVELRUNNODEACCESS.CPP
-0x004212C0,32,copy_node_chunk_record_tile_xy_by_index,LEVEL/LEVELRUN.CPP
+0x004212C0,32,copy_node_chunk_record_tile_xy_by_index,LEVEL/LEVELRUNNODEACCESS.CPP
 0x004212E0,23,initialize_node_chunk_record,LEVEL/LEVELRUN.CPP
 0x00421300,8,reset_node_chunk_record_link_count,LEVEL/LEVELRUN.CPP
 0x00421310,17,destroy_node_chunk_record_links,LEVEL/LEVELRUNNODEACCESS.CPP

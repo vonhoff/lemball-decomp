@@ -54,6 +54,7 @@ struct LevelNodeManagerView {
 	LevelNodeChunkPositionView* m_pRecords00;
 
 	LevelNodePoint* CopyPointByIndex(LevelNodePoint* pOutput, int nIndex);
+	void CopyTileByIndex(int nIndex, int* pX, int* pY);
 };
 
 struct LevelModeNodeView {
@@ -171,6 +172,12 @@ LevelNodePoint* LevelNodeManagerView::CopyPointByIndex(LevelNodePoint* pOutput, 
 {
 	m_pRecords00[nIndex].CopyFixedPointPosition(pOutput->m_anValues);
 	return pOutput;
+}
+
+// FUNCTION: LEMBALL 0x004212c0
+void LevelNodeManagerView::CopyTileByIndex(int nIndex, int* pX, int* pY)
+{
+	m_pRecords00[nIndex].CopyTileXY(pX, pY);
 }
 
 // FUNCTION: LEMBALL 0x00421310
