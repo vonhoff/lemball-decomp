@@ -31,7 +31,7 @@ address,name,symbol,type,source
 0x004014CE,update_menu_selector_animation_thunk,,stub,src/FRONTEND/MENUSEL.H
 0x004014F1,destroy_level_chunk_stream_dispatcher_auto_thunk,?DestroyLevelChunkStreamDispatcherAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
 0x004014FB,activate_lasr_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
-0x00401500,update_managed_entity_bounds_from_position,?UpdateManagedEntityBoundsFromPosition@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
+0x00401500,UpdateManagedEntityBoundsFromPosition,?UpdateManagedEntityBoundsFromPosition@@YIXPAX@Z,stub,src/LEVEL/CHUNKOBJVT.CPP
 0x0040150F,vs_root_geometry_owner_append_queued_render_sink_value_node,?AppendQueuedRenderSinkValueNode@VS_RootGeometryOwner@@UAEXPAX@Z,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00401514,vs_window_owner_base_reserved_window_owner_slot21,?ReservedWindowOwnerSlot21@VS_WindowOwnerBase@@UAEXXZ,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00401532,compute_direction_octant_between_points,?compute_direction_octant_between_points@@YAIHHHH@Z,stub,src/GAMEHELPERS.CPP
@@ -234,7 +234,7 @@ address,name,symbol,type,source
 0x0040369D,emit_door_chunk_render_entries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004036C0,get_int_direction_sign_thunk,,stub,src/FRONTEND/MENUSEL.H
 0x004036D4,initialize_tram_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
-0x004036D9,dispatch_plas_child_state_table,?DispatchPlasChildStateTable@@YAXPAPAUPlasChildStateDispatchEntry@@PAXPAUPlasChildStateEntityView@@@Z,stub,src/LEVEL/LEVELVT.CPP
+0x004036D9,DispatchPlasChildStateTable,?DispatchPlasChildStateTable@@YAXPAPAUPlasChildStateDispatchEntry@@PAXPAUPlasChildStateEntityView@@@Z,stub,src/LEVEL/LEVELVTGROUP.CPP
 0x004036F2,destroy_network_lobby_transport_controller_auto_thunk,?DestroyNetworkLobbyTransportControllerAutoThunk@@YIXPAX@Z,stub,src/GAME.CPP
 0x00403729,ReleaseQueuedVariantRangeResources,?ReleaseQueuedVariantRangeResources@@YIXPAUGameQueuedVariantRangeEntry@@@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x0040372E,has_level_plas_history_entries,?has_level_plas_history_entries@@YIHPAX@Z,stub,src/LEVEL/LEVELVT.CPP
