@@ -52,6 +52,7 @@ struct LevelScreenTerrainRenderView {
 static void* g_pSignedTrigTable = 0;
 // GLOBAL: LEMBALL 0x004a1bcc
 void* g_pSessionRandomState = 0;
+// GLOBAL: LEMBALL 0x004a9ff8
 static char g_GAME_SrcDiskBuffer[0x100];
 
 // Compiler-state string block; removal regresses exact SetUnlockedPackCap.
@@ -5808,17 +5809,20 @@ char* GetSrcDiskRegistryValueBuffer(void)
 	DWORD cbValue;
 	DWORD dwType;
 
+	hRegistryKey = 0;
 	g_GAME_SrcDiskBuffer[0] = '\0';
-	if (RegOpenKeyExA((HKEY) 0x80000002, g_GAME_RegistryKey, 0, KEY_ALL_ACCESS, &hRegistryKey) != 0) {
+	if (RegOpenKeyExA((HKEY) 0x80000002,
+					  "SOFTWARE\\Visual Sciences\\Lemmings Paintball",
+					  0,
+					  KEY_ALL_ACCESS,
+					  &hRegistryKey) != 0) {
 		return g_GAME_SrcDiskBuffer;
 	}
 
-	cbValue = sizeof(g_GAME_SrcDiskBuffer);
 	dwType = 0xffffffffu;
-	if (RegQueryValueExA(hRegistryKey, g_GAME_SrcDiskValueName, 0, &dwType, (BYTE*) g_GAME_SrcDiskBuffer, &cbValue) !=
-		0) {
+	cbValue = sizeof(g_GAME_SrcDiskBuffer);
+	if (RegQueryValueExA(hRegistryKey, "SrcDisk", 0, &dwType, (BYTE*) g_GAME_SrcDiskBuffer, &cbValue) != 0) {
 		g_GAME_SrcDiskBuffer[0] = '\0';
-		RegCloseKey(hRegistryKey);
 		return g_GAME_SrcDiskBuffer;
 	}
 
