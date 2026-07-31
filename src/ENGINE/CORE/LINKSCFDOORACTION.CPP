@@ -3,10 +3,30 @@
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
 
 struct ManagedEntityStateView {
+	virtual void Reserved00(void) = 0;
+	virtual void Reserved01(void) = 0;
+	virtual void Reserved02(void) = 0;
+	virtual void Reserved03(void) = 0;
+	virtual void Reserved04(void) = 0;
+	virtual void Reserved05(void) = 0;
+	virtual void Reserved06(void) = 0;
+	virtual void Reserved07(void) = 0;
+	virtual void Reserved08(void) = 0;
+	virtual void Reserved09(void) = 0;
+	virtual void Reserved10(void) = 0;
+	virtual void Reserved11(void) = 0;
+	virtual void Reserved12(void) = 0;
+	virtual void SetTrigger(int nTrigger) = 0;
+
 	void RequestManagedEntityStateId(int nStateId);
 };
 
 struct DoorChunkObjectActionView : public ManagedEntityStateView {
+	unsigned char m_abReserved04[0xb4];
+	int m_nStateB8;
+	unsigned char m_abReservedBC[0x10];
+	int m_nFrameTickCC;
+
 	void RequestDoorChunkObjectTriggerTransition(void);
 };
 
@@ -15,12 +35,9 @@ struct DoorChunkObjectActionView : public ManagedEntityStateView {
 // FUNCTION: LEMBALL 0x0040dd00
 void DoorChunkObjectActionView::RequestDoorChunkObjectTriggerTransition(void)
 {
-	typedef void(__stdcall * SetTriggerProc)(int);
-	char* pObject = (char*) this;
-	int nStateId = *(int*) (pObject + 0xb8);
-	if (nStateId >= 0x1c && nStateId <= 0x1d) {
-		*(int*) (pObject + 0xcc) = 0x14;
-		((SetTriggerProc) (*(void***) pObject)[13])(0xb);
+	if (m_nStateB8 >= 0x1c && m_nStateB8 <= 0x1d) {
+		m_nFrameTickCC = 0x14;
+		SetTrigger(0xb);
 		RequestManagedEntityStateId(0x20);
 	}
 }
