@@ -3541,3 +3541,11 @@ void LEMBALL_FASTCALL QueueSingleChildOverlayOwnerIfDirty(void* pObject, void* p
 	(void) pUnusedEdx;
 	((void(PASCAL*)(const short*)) QueueSingleChildOverlayOwnerIfDirtyBody)(pRect);
 }
+
+void noop_menu_selector_animation_callback(void)
+{
+}
+
+void noop_queued_variant_child_refresh_callback(void)
+{
+}

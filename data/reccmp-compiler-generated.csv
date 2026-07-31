@@ -174,9 +174,11 @@ address,name,symbol,type,source
 0x0044BEC0,noop_registration_recenter,,synthetic,src/FRONTEND/SCREENVT.CPP
 0x0044C0C0,noop_registration_buffer_reset,,synthetic,src/FRONTEND/SCREENVT.CPP
 0x0044C0D0,DeleteRegistrationInfoScreenAuto,,synthetic,src/GAME.CPP
+0x0044DED0,noop_menu_selector_animation_callback,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x0044E620,DeleteMenuSelectorEntryAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x0044E650,delete_aligned_zrle_child_overlay_adjusted_c `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
 0x0044E690,DeleteMenuSelectorManagerAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
+0x0044FCA0,noop_queued_variant_child_refresh_callback,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x0044FFC0,DeleteQueuedVariantRangeEntryAuto,?DeleteQueuedVariantRangeEntryAuto@@YIPAXPAX0E@Z,synthetic,src/FRONTEND/MENUSEL.CPP
 0x0044FFF0,DeleteQueuedVariantChildSlotManagerAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x004509F0,FinishPaintballSequenceToMainMenu,,synthetic,src/FRONTEND/MAINMENU.CPP

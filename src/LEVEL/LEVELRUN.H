@@ -34,6 +34,9 @@ struct LevelCachedChunkManagerBView {
 };
 
 struct LevelTileGridRuntimeView {
+	unsigned char m_abReserved00[0x24];
+	char m_szName24[0x21];
+
 	void ReleaseLevelTileGridBuffers(void);
 	void ResizeLevelTileGrid(int cColumns, int cRows);
 	void ResizeLevelTileGridThunk(int cColumns, int cRows);

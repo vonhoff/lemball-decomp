@@ -53,7 +53,7 @@ void LEMBALL_FASTCALL ResizeLevelTileReachabilityGridThunk(void* pReachabilityHe
 void ResetLevelFrameClockEntryThunk(void);
 void LEMBALL_FASTCALL ResetBoonChunkManagerObjectsThunk(void* pObject);
 void UpdateNetworkFrameClockFromNetworkTimeThunk(unsigned int nTimeMs);
-void DispatchType14CountedChildSlotC4Thunk(int nChunkManager);
+void LEMBALL_FASTCALL DispatchType14CountedChildSlotC4(void* pChunkManager);
 void LEMBALL_FASTCALL FillReachabilityGridFromTileFlagsThunk(void* pReachabilityHelper);
 void ResetLevelFrameClockThunk(void);
 void UpdateNetworkFrameClockFromNetworkTime(unsigned int nTimeMs);
@@ -489,7 +489,7 @@ void SetManagedEntitySlotId(void* pManagedEntityObject, unsigned short nSlotId);
 unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void);
 unsigned short FindLastFreeManagedEntitySlotIdThunk(void);
 void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEnabled);
-void DispatchType14CountedChildSlotC4Thunk(int nChunkManager);
+void LEMBALL_FASTCALL DispatchType14CountedChildSlotC4(void* pChunkManager);
 void LEMBALL_FASTCALL FillReachabilityGridFromTileFlagsThunk(void* pReachabilityHelper);
 
 void InitializeManagedEntitySlotTablesThunk(void* pLevelGameMode);
@@ -684,24 +684,41 @@ void LevelShpgChunkManager::ActivateNestedChildrenFromOwnerTableA4Thunk(void)
 {
 	ActivateNestedChildrenFromOwnerTableA4();
 }
-// LINKERILT: LEMBALL 0x004031bb
-void DispatchType14CountedChildSlotC4Thunk(int nChunkManager)
-{
-	int* pChildObject;
-	int i;
-	int nOffset;
+struct LevelType14ChildView {
+	void** m_pVtable00;
+	unsigned char m_abReserved04[0x60];
+	int m_nType64;
 
-	nOffset = 0;
+	void DispatchSlotC4(void)
+	{
+		typedef void(LEMBALL_FASTCALL * DispatchProc)(LevelType14ChildView * pObject);
+		((DispatchProc) m_pVtable00[0xc4 / sizeof(void*)])(this);
+	}
+};
+
+struct LevelCountedChildManagerView {
+	unsigned char m_abReserved00[0x36];
+	unsigned short m_cChildren36;
+	unsigned char m_abReserved38[4];
+	LevelType14ChildView** m_ppChildren3C;
+};
+
+void LEMBALL_FASTCALL DispatchType14CountedChildSlotC4(void* pObject)
+{
+	LevelCountedChildManagerView* pManager;
+	LevelType14ChildView* pChild;
+	int i;
+
+	pManager = (LevelCountedChildManagerView*) pObject;
 	i = 0;
-	if (*(short*) (nChunkManager + 0x36) != 0) {
+	if (pManager->m_cChildren36 > 0) {
 		do {
-			pChildObject = *(int**) (*(int*) (nChunkManager + 0x3c) + nOffset);
-			if (pChildObject[0x19] == 0x14) {
-				((void (*)()) * (void**) (*pChildObject + 0xc4))();
+			pChild = pManager->m_ppChildren3C[i];
+			if (pChild->m_nType64 == 0x14) {
+				pChild->DispatchSlotC4();
 			}
-			nOffset += 4;
 			++i;
-		} while (i < (int) (unsigned int) *(unsigned short*) (nChunkManager + 0x36));
+		} while (i < (int) (unsigned int) pManager->m_cChildren36);
 	}
 }
 // Compatibility shim for the original ILT call site.
@@ -1545,7 +1562,7 @@ void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode)
 			++i;
 		} while ((int) i < (int) cManagedEntities);
 	}
-	DispatchType14CountedChildSlotC4Thunk(*(int*) (nLevelMode + 0x158));
+	DispatchType14CountedChildSlotC4(*(void**) (nLevelMode + 0x158));
 }
 
 // FUNCTION: LEMBALL 0x00413020
@@ -2397,13 +2414,13 @@ void LevelTileGridRuntimeView::CopyLevelTileGridName(const char* pszName)
 	i = 0;
 	do {
 		ch = *pszName++;
-		*((char*) this + 0x24 + i) = ch;
+		m_szName24[i] = ch;
 		if (ch == '\0') {
 			break;
 		}
 		++i;
 	} while (i < 0x20);
-	*((char*) this + 0x44) = '\0';
+	m_szName24[0x20] = '\0';
 }
 // FUNCTION: LEMBALL 0x00431030
 void LevelTileGridRuntimeView::ComputeLevelTileGridRepeatedColumnCounts(void)

@@ -16,6 +16,7 @@ address,name,symbol,type,source
 0x00416D50,ManagedEntityRuntimeStateView::ResetManagedEntityRuntimeState,,function,src/LEVEL/LEVELVT.CPP
 0x00417EC0,DestroyProjectilePoolAuto,,function,src/ENGINE/CORE/LINKSCF.CPP
 0x0041B110,DestroyCountedChildTableStreamAuto,,stub,src/LEVEL/LEVELVT.CPP
+0x0041BEC0,DispatchType14CountedChildSlotC4,,function,src/LEVEL/LEVELRUN.CPP
 0x0041DE40,DestroyCompositeLevelChunkChildrenAuto,,stub,src/LEVEL/LEVELVT.CPP
 0x0041FDA0,DestroyThreeOptionalRecordChunkObjectAuto,,stub,src/LEVEL/LEVELVT.CPP
 0x004224C0,DestroyCollChunkManagerAuto,,function,src/LEVEL/LEVELVT.CPP
