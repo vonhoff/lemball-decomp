@@ -264,11 +264,12 @@ struct VsNetTimedEffStream : VsNetTimedEffStreamPrimary, virtual VsNetEffStreamC
 	void InvokeTimedEffStreamServiceCallback(void* pArgument);
 };
 
+// VTABLE: LEMBALL 0x00499038 VsNetRuntimeChannelCore
 struct VsNetRuntimeChannelCore : virtual VsNetEffStreamChannelState,
 								 virtual VsNetTimedEffStream,
 								 virtual VsNetDualHandleEffStream {
 	virtual ~VsNetRuntimeChannelCore() {}
-	virtual void ClearPendingWrite(void* pArgument) = 0;
+	virtual void ClearPendingWrite(void* pArgument);
 	virtual void WriteGlobalSession(void);
 	virtual void* ClaimRecord(void);
 #ifdef LEMBALL_DEFINE_EFF_STREAM_BASE_VTABLE

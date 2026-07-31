@@ -3805,6 +3805,12 @@ void* DeleteEffTransportRuntimeGlobalsWrapper(void* pObject, BYTE fFreeMemory)
 	return pObject;
 }
 
+// FUNCTION: LEMBALL 0x00462d00
+void VsNetRuntimeChannelCore::ClearPendingWrite(void* pArgument)
+{
+	VsNetTimedEffStream::ClearPendingWrite(pArgument);
+}
+
 // FUNCTION: LEMBALL 0x0046f210
 DWORD FileBasedNetworkMessageThreadMain(void)
 {
