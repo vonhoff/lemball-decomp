@@ -40,3 +40,11 @@ void MenuSelectorXorFieldNoArgView::RecomputeField104FromXor(void)
 	nValue ^= *(volatile int*) ((char*) this + 0x130);
 	*(int*) ((char*) this + 0x104) = nValue;
 }
+
+void noop_entity_button_state_update(void)
+{
+}
+
+void noop_entity_button_state_recalc(void)
+{
+}

@@ -146,6 +146,8 @@ address,name,symbol,type,source
 0x00443870,update_action_button_field_0x104_from_fields_0x130_xor_0xd0,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x004438B0,delete_aligned_zrle_child_overlay_adjusted_a `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
 0x004438F0,delete_aligned_zrle_child_overlay_adjusted_b `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
+0x00443930,noop_entity_button_state_update,,synthetic,src/FRONTEND/MENUSELRESOURCECHILD.CPP
+0x00443940,noop_entity_button_state_recalc,,synthetic,src/FRONTEND/MENUSELRESOURCECHILD.CPP
 0x00443950,delete_base_mode_action_button_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
 0x004439F0,DeleteLevelScreenActionPanelAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00443AB0,delete_resource_geometry_child_from_rect_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
