@@ -1871,9 +1871,9 @@ void LEMBALL_FASTCALL AdvanceIceChunkManagerObjects(void* pManager)
 	int nOffset;
 
 	pManagerBytes = (char*) pManager;
-	nOffset = 0;
 	i = 0;
 	if (*(int*) (pManagerBytes + 0x34) > 0) {
+		nOffset = 0;
 		do {
 			pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
 			++i;
