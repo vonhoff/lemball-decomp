@@ -1,3 +1,8 @@
+// FUNCTION: LEMBALL 0x0040ce90
+void NoopType18PacketHook(void)
+{
+}
+
 // FUNCTION: LEMBALL 0x0040ff60
 void NoopProjectileBonusHook(void)
 {

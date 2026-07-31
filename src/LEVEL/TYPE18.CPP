@@ -482,7 +482,3 @@ void* LEMBALL_FASTCALL DeleteLevelChunkStreamAuto(void* pObject, void*, BYTE fDe
 	}
 	return pObject;
 }
-
-void noop_type18_packet_hook(void)
-{
-}
