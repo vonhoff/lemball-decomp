@@ -59,7 +59,7 @@ address,name,symbol,type,source
 0x00401A87,vs_net_network_lobby_screen_confirm_selected_player_entry,?ConfirmSelectedPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/FRONTEND/LOBBY.CPP
 0x00401AC3,level_managed_entity_child_iterator_append_child,?AppendChild@LevelManagedEntityChildIterator@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00401ADC,handle_menu_selector_event_thunk,,stub,src/FRONTEND/MENUSEL.H
-0x00401B31,request_door_trigger,?RequestDoorChunkObjectTriggerTransition@DoorChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFDOORACTION.CPP
+0x00401B31,DoorChunkObjectActionView::RequestDoorChunkObjectTriggerTransition,?RequestDoorChunkObjectTriggerTransition@DoorChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LINKSCFDOORACTION.CPP
 0x00401B95,reset_all_invs_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401BC2,delete_menu_selector_entry_thunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401BEA,reset_projectile_pool,,stub,src/ENGINE/CORE/LINKSCF.H
