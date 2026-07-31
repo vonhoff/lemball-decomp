@@ -88,7 +88,7 @@ address,name,symbol,type,source
 0x00401FF5,select_menu_selector_side1thunk,,stub,src/FRONTEND/MENUSEL.H
 0x0040200E,game_screen_object_construct_paintball_sequence_screen,,stub,src/GAME.H
 0x00402054,delete_door_chunk_object_array_vtable_thunk,?DeleteDoorChunkObjectArrayVtableThunk@@YIPAXPAX0E@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
-0x00402068,level_managed_entity_state_fields_increment_heading_octant,?IncrementHeadingOctant@LevelManagedEntityStateFields@@QAEXXZ,stub,src/LEVEL/LEVELVT.CPP
+0x00402068,LevelManagedEntityStateFields::IncrementHeadingOctant,?IncrementHeadingOctant@LevelManagedEntityStateFields@@QAEXXZ,stub,src/LEVEL/LEVELVT.CPP
 0x0040207C,LevelManagedEntityMoveCommandView::PopFirstMoveCommandAndResetMotion,?PopFirstMoveCommandAndResetMotion@LevelManagedEntityMoveCommandView@@QAEXXZ,stub,src/LEVEL/LEVELVTMOVE.CPP
 0x00402090,get_next_managed_entity_group,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040209F,LevelChunkObjectRuntimeStateView::ResetRuntimeStateThunk,?ResetRuntimeStateThunk@LevelChunkObjectRuntimeStateView@@QAEXXZ,stub,src/LEVEL/LEVELVT.CPP
@@ -110,7 +110,7 @@ address,name,symbol,type,source
 0x00402351,LevelManagedEntityMoveCommandView::PopFirstMoveCommand,?PopFirstMoveCommand@LevelManagedEntityMoveCommandView@@QAEXXZ,stub,src/LEVEL/LEVELVTMOVE.CPP
 0x00402360,activate_capture_trigger_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402374,destroy_mine_chunk_manager_auto_thunk,?DestroyMineChunkManagerAutoThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
-0x004023E7,level_managed_entity_state_fields_decrement_heading_octant,?DecrementHeadingOctant@LevelManagedEntityStateFields@@QAEXXZ,stub,src/LEVEL/LEVELVT.CPP
+0x004023E7,LevelManagedEntityStateFields::DecrementHeadingOctant,?DecrementHeadingOctant@LevelManagedEntityStateFields@@QAEXXZ,stub,src/LEVEL/LEVELVT.CPP
 0x0040240A,activate_managed_entity_group_children,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040243C,level_chunk_object_runtime_state_view_clear_state_fields_thunk,,stub,src/LEVEL/LEVELVT.CPP
 0x00402446,clear_managed_entity_child_pending_state_if_interruptible,?clear_managed_entity_child_pending_state_if_interruptible@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
