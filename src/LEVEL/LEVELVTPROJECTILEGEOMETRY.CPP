@@ -10,6 +10,7 @@ struct LevelProjectileGeometryPairTableIteratorView {
 
 	LevelProjectileGeometryIteratorPair* ResetSecondaryPairCursor(void);
 	LevelProjectileGeometryIteratorPair* GetNextSecondaryPair(void);
+	LevelProjectileGeometryIteratorPair* GetRotatedPair(int nIndex);
 };
 
 // FUNCTION: LEMBALL 0x0041a2e0
@@ -26,4 +27,13 @@ LevelProjectileGeometryIteratorPair* LevelProjectileGeometryPairTableIteratorVie
 		return 0;
 	}
 	return &m_aSecondaryPairsC0[m_nPairCursor100];
+}
+
+// FUNCTION: LEMBALL 0x0041a320
+LevelProjectileGeometryIteratorPair* LevelProjectileGeometryPairTableIteratorView::GetRotatedPair(int nIndex)
+{
+	if (nIndex >= 8) {
+		nIndex -= 8;
+	}
+	return &m_aSecondaryPairsC0[nIndex];
 }

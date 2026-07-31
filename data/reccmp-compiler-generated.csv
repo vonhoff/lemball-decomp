@@ -54,7 +54,6 @@ address,name,symbol,type,source
 0x00419B80,ForwardTargetManagedEntityVslot7C,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00419D30,ForwardManagedEntityVslot88Variant,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00419D40,ForwardManagedEntityVslot8CVariant,,synthetic,src/LEVEL/LEVELVT.CPP
-0x0041A320,LevelVtSmallFunctionView::GetProjectileGeometryRotatedPair,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0041AF00,noop_projectile_packet_hook,,synthetic,src/LEVEL/LEVELRUN.CPP
 0x0041AF50,Projectile deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/ENGINE/CORE/LINKSCFPROJECTILE.CPP
 0x0041B990,LinkScfSmallFunctionView::ClearManagedEntityGroupChildActiveFlag,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
