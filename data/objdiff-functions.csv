@@ -678,7 +678,7 @@ address,size,name,unit
 0x0041C6C0,56,reset_managed_entity_to_saved_chunk_position,LEVEL/LEVELSAVEDPOSITION.CPP
 0x0041C700,19,reset_saved_position_chunk_variant,LEVEL/LEVELSAVEDPOSITION.CPP
 0x0041C720,642,advance_saved_chunk_state,LEVEL/LEVELVT.CPP
-0x0041C9B0,78,request_chunk_idle_target_state_0x19,LEVEL/LEVELVT.CPP
+0x0041C9B0,78,request_chunk_idle_target_state_0x19,LEVEL/LEVELSAVEDPOSITION.CPP
 0x0041CA00,93,activate_child_award_20,LEVEL/LEVELVT.CPP
 0x0041CA60,47,copy_gmob_offset_point,LEVEL/LEVELVT.CPP
 0x0041CA90,19,reset_linked_type_0x11_chunk_state,LEVEL/LEVELSAVEDPOSITION.CPP
@@ -689,7 +689,7 @@ address,size,name,unit
 0x0041CCA0,20,reset_gmob_chunk_object_to_state_0x18,LEVEL/LEVELSAVEDPOSITION.CPP
 0x0041CCC0,88,release_linked_gmob_chunk_object,LEVEL/LEVELVT.CPP
 0x0041CD20,292,advance_linked_gmob_state,LEVEL/LEVELVT.CPP
-0x0041CE50,49,request_gmob_idle_state_0x19,LEVEL/LEVELVT.CPP
+0x0041CE50,49,request_gmob_idle_state_0x19,LEVEL/LEVELSAVEDPOSITION.CPP
 0x0041CE90,122,award_gmob_linked_object_score,LEVEL/LEVELVT.CPP
 0x0041CF10,95,compute_gmob_render_anchor_position,LEVEL/LEVELVT.CPP
 0x0041CF70,133,refresh_gmob_chunk_object_tile_height,LEVEL/LEVELVT.CPP

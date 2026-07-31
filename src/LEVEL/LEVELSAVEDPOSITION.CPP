@@ -5,6 +5,26 @@ extern int g_nLevelFrameClockTimeMs;
 extern int g_nLevelFrameClockTick;
 extern void* g_pActiveManagedEntityOwner;
 
+struct ManagedEntityStateView {
+	void RequestManagedEntityStateId(int nState);
+};
+
+struct SavedPositionTransitionView {
+	char m_abReserved00[0x5c];
+	void* m_pTarget5C;
+	char m_abReserved60[0x34];
+	int m_nFrameTime94;
+	char m_abReserved98[0x20];
+	int m_nStateB8;
+	char m_abReservedBC[0x10];
+	int m_nPhaseDurationCC;
+	int m_nPhaseStepD0;
+	int m_nDeadlineD4;
+
+	int RequestIdleTarget(void* pTarget);
+	int RequestGmobIdle(int nUnused);
+};
+
 struct SavedPositionChunkObjectView {
 	char m_abReserved00[0x9c];
 	int m_nPositionX9C;
@@ -55,6 +75,24 @@ void SavedPositionChunkObjectView::ResetVariant(void)
 	m_nVariantBC = 0;
 }
 
+// FUNCTION: LEMBALL 0x0041c9b0
+int SavedPositionTransitionView::RequestIdleTarget(void* pTarget)
+{
+	int nFrameTime;
+
+	if (m_nStateB8 == 0x18) {
+		m_pTarget5C = pTarget;
+		nFrameTime = g_nLevelFrameClockTimeMs;
+		m_nPhaseStepD0 = 0x20;
+		m_nDeadlineD4 = 0x2e;
+		m_nPhaseDurationCC = 0x5e;
+		m_nFrameTime94 = nFrameTime;
+		((ManagedEntityStateView*) this)->RequestManagedEntityStateId(0x19);
+		return 1;
+	}
+	return 0;
+}
+
 // FUNCTION: LEMBALL 0x0041ca90
 void SavedPositionChunkObjectView::ResetLinkedVariant(void)
 {
@@ -67,6 +105,19 @@ void SavedPositionChunkObjectView::ResetGmobState(void)
 {
 	ResetToSavedPosition();
 	m_nGmobState128 = 0x18;
+}
+
+// FUNCTION: LEMBALL 0x0041ce50
+int SavedPositionTransitionView::RequestGmobIdle(int nUnused)
+{
+	(void) nUnused;
+	if (m_nStateB8 == 0x18) {
+		m_nPhaseStepD0 = 0x10;
+		m_nDeadlineD4 = 0x1e;
+		((ManagedEntityStateView*) this)->RequestManagedEntityStateId(0x19);
+		return 1;
+	}
+	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0041d100
