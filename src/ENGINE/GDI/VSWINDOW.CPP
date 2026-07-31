@@ -533,8 +533,7 @@ void LEMBALL_FASTCALL NotifyWindowOwnersDisplayChanged(const int* pnSelectedDriv
 	}
 }
 
-// FUNCTION: LEMBALL 0x00458180
-int LEMBALL_FASTCALL IsDisplayModeWindowedRange(const int* pnDisplayMode)
+int LEMBALL_FASTCALL IsDisplayModeWindowedRangeCompatibility(const int* pnDisplayMode)
 {
 	if (*pnDisplayMode < 2) {
 		return 0;
