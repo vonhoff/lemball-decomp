@@ -18,7 +18,7 @@ address,name,symbol,type,source
 0x00401217,managed_entity_packet25_reverse_eff_stream_payload,?ReverseEffStreamPayload@ManagedEntityPacket25@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x0040126C,LevelChunkStreamWriteView::AppendLevelChunkStreamPayload,?AppendLevelChunkStreamPayload@LevelChunkStreamWriteView@@QAEXPAUVsNetEffStreamBase@@@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x00401271,destroy_level_game_mode_auto_thunk,?DestroyLevelGameModeAutoThunk@@YIXPAX@Z,stub,src/GAME.CPP
-0x004012A3,projectile_pool_remove_object,?RemoveObject@ProjectilePool@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
+0x004012A3,ProjectilePool::RemoveObject,?RemoveObject@ProjectilePool@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00401302,has_stream_dirty_managed_entity_children,?HasStreamDirtyChildren@LevelManagedEntityChildIterator@@QAEHXZ,stub,src/LEVEL/LEVELVT.CPP
 0x0040132A,game_screen_object_construct_main_menu_screen,,stub,src/GAME.H
 0x0040137F,ActivateIteratedLevelChunkChildren,?ActivateIteratedLevelChunkChildren@@YIXPAX@Z,stub,src/LEVEL/LEVELRUNITERATOR.CPP
