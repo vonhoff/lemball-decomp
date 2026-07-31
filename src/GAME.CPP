@@ -4123,8 +4123,8 @@ void GamePrimaryContext::SwitchPrimaryContextScreen(int nMode)
 	case 5:
 	case 0x13:
 		ppActiveLevelMode = (GameLevelModeActiveInterface**) &pContext->m_pMainContext->m_pActiveMode;
-		pContext->m_pActiveLevelMode = *ppActiveLevelMode == 0 ? 0 : (char*) *ppActiveLevelMode - 0x10;
-		pActiveLevelMode = *ppActiveLevelMode == 0 ? 0 : (GameLevelModeObjectView*) ((char*) *ppActiveLevelMode - 0x10);
+		pContext->m_pActiveLevelMode = *ppActiveLevelMode != 0 ? (char*) *ppActiveLevelMode - 0x10 : 0;
+		pActiveLevelMode = *ppActiveLevelMode != 0 ? (GameLevelModeObjectView*) ((char*) *ppActiveLevelMode - 0x10) : 0;
 		pContext->m_nLevelScreenStatusIndicatorMode = pActiveLevelMode->m_nStatusIndicatorMode110;
 		pScreenObject = AllocateVSMemBlock(0x2428);
 		if (pScreenObject != 0) {
