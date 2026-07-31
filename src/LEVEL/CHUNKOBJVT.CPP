@@ -405,10 +405,9 @@ void LEMBALL_FASTCALL SetManagedEntityStateIdWithVariantLocal(void* pObject,
 // FUNCTION: LEMBALL 0x00416de0
 void LEMBALL_FASTCALL SetManagedEntityStateIdWithVariant(void* pObject, void* pUnused, int nStateId, int nVariant)
 {
-	typedef void(PASCAL * SetStateProc)(int);
 	(void) pUnused;
 	*(unsigned short*) ((char*) pObject + 0xbc) = (unsigned short) nVariant;
-	((SetStateProc) (*(void***) pObject)[2])(nStateId);
+	((ManagedEntityLocalStateView*) pObject)->SetManagedEntityStateIdLocal(nStateId);
 }
 
 // FUNCTION: LEMBALL 0x0041d180
@@ -594,105 +593,6 @@ int LEMBALL_FASTCALL AdvanceCollChunkObjectStateMachine(void* pObject)
 	return 1;
 }
 
-// FUNCTION: LEMBALL 0x00425100
-int LEMBALL_FASTCALL AdvanceLiftChunkObjectStateMachine(void* pObject)
-{
-	typedef void(LEMBALL_FASTCALL * ObjectSlotProc)(void*, void*, int);
-	int* pFields = (int*) pObject;
-	int nTick = g_nLevelFrameClockTick;
-	short nNow;
-	short nHeight;
-	int nX;
-	int nY;
-
-	if (g_nSelectedNetworkLobbyPeerId != 0 && *(int*) (g_nSelectedNetworkLobbyPeerId + 0x1c) == 0) {
-		nTick = g_nNetworkFrameClockTick;
-	}
-	nNow = (short) nTick;
-	switch (pFields[0x2e]) {
-	case 8:
-		pFields[0x59] = 0;
-		pFields[0x2e] = 0x18;
-		break;
-	case 0x19:
-		pFields[0x59] = 1;
-		pFields[0x5b] = 1;
-		((ObjectSlotProc) (*(void***) pObject)[13])(pObject, 0, 0x2c);
-		if (pFields[0x59] != 0 &&
-			(g_nSelectedNetworkLobbyPeerId == 0 || *(int*) (g_nSelectedNetworkLobbyPeerId + 0x1c) != 0)) {
-			pFields[0x25] = nTick;
-			((ObjectSlotProc) (*(void***) pObject)[2])(pObject,
-													   0,
-													   *(short*) ((char*) pObject + 0x154) == 1 ? 0x1f : 0x23);
-		}
-		break;
-	case 0x1f:
-		pFields[0x54] = *(short*) ((char*) pObject + 0x13e);
-		*(short*) ((char*) pObject + 0x154) = 1;
-		pFields[0x59] = 1;
-		pFields[0x2e] = 0x20;
-		*(short*) ((char*) pObject + 0x13e) += nNow - (short) pFields[0x25];
-		break;
-	case 0x20:
-		nHeight = (short) pFields[0x54] - (short) pFields[0x25] + nNow;
-		*(short*) ((char*) pObject + 0x13e) = nHeight;
-		if (pFields[0x53] <= nHeight) {
-			*(short*) ((char*) pObject + 0x13e) = (short) pFields[0x53];
-			pFields[0x59] = pFields[0x5a];
-			*(short*) ((char*) pObject + 0x154) = -1;
-			if (pFields[0x5a] == 0 ||
-				(g_nSelectedNetworkLobbyPeerId != 0 && *(int*) (g_nSelectedNetworkLobbyPeerId + 0x1c) == 0)) {
-				pFields[0x2e] = 0x18;
-			}
-			else {
-				pFields[0x25] = nTick;
-				((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x23);
-			}
-		}
-		break;
-	case 0x22:
-		nHeight = (short) pFields[0x54] - nNow + (short) pFields[0x25];
-		*(short*) ((char*) pObject + 0x13e) = nHeight;
-		if (nHeight <= pFields[0x52]) {
-			*(short*) ((char*) pObject + 0x13e) = (short) pFields[0x52];
-			pFields[0x59] = pFields[0x5a];
-			*(short*) ((char*) pObject + 0x154) = 1;
-			if (pFields[0x5a] == 0 ||
-				(g_nSelectedNetworkLobbyPeerId != 0 && *(int*) (g_nSelectedNetworkLobbyPeerId + 0x1c) == 0)) {
-				pFields[0x2e] = 0x18;
-			}
-			else {
-				pFields[0x25] = nTick;
-				((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x1f);
-			}
-		}
-		break;
-	case 0x23:
-		*(short*) ((char*) pObject + 0x154) = -1;
-		pFields[0x54] = *(short*) ((char*) pObject + 0x13e);
-		pFields[0x2e] = 0x22;
-		pFields[0x59] = 1;
-		*(short*) ((char*) pObject + 0x13e) += (short) pFields[0x25] - nNow;
-		break;
-	}
-
-	nHeight = *(short*) ((char*) pObject + 0x13e);
-	for (nY = *(short*) ((char*) pObject + 0x13c); nY <= *(short*) ((char*) pObject + 0x142); nY += 0x10) {
-		char* pTile;
-		short nStartX = *(short*) ((char*) pObject + 0x13a);
-		pTile = (char*) *(void**) ((char*) g_pLiftTileGrid + 0x0c) +
-				((nY / 0x10) * *(int*) ((char*) g_pLiftTileGrid + 0x10) + nStartX / 0x10) * 0x0c;
-		pFields[0x58] = (int) pTile;
-		for (nX = nStartX; nX <= *(short*) ((char*) pObject + 0x140); nX += 0x10) {
-			*(short*) (pTile + 8) = nHeight;
-			*(short*) (pTile + 10) = (short) ((nHeight + 0x0f) / 0x10);
-			pTile += 0x0c;
-			pFields[0x58] += 0x0c;
-		}
-	}
-	return 1;
-}
-
 // FUNCTION: LEMBALL 0x00426710
 void* LEMBALL_FASTCALL DeleteLiftChunkObjectAuto(void* pObject, void* pUnused, unsigned int fDelete)
 {
@@ -862,13 +762,6 @@ int LEMBALL_FASTCALL AdvanceCaptureChunkObjectStateMachine(void* pObject)
 	return 1;
 }
 
-// FUNCTION: LEMBALL 0x00428800
-void* LEMBALL_FASTCALL DeleteCaptureChunkObjectAuto(void* pObject, void* pUnused, unsigned int fDelete)
-{
-	(void) pUnused;
-	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR_CURSOR_FIRST(pObject, fDelete, 0x144, destroy_capture_trigger_chunk_object);
-}
-
 // FUNCTION: LEMBALL 0x00428cf0
 int LEMBALL_FASTCALL AdvanceLasrChunkObjectStateMachine(void* pObject)
 {
@@ -977,32 +870,6 @@ int LEMBALL_FASTCALL AdvanceTramChunkObjectStateMachine(void* pObject)
 		((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x18);
 	}
 	return 1;
-}
-
-// FUNCTION: LEMBALL 0x0042ba40
-void* LEMBALL_FASTCALL DeleteTramChunkObjectAuto(void* pObject, void* pUnused, unsigned int fDelete)
-{
-	char* pAllocation;
-	char* pCursor;
-	unsigned int cObjects;
-
-	(void) pUnused;
-	if ((fDelete & 2) != 0) {
-		pAllocation = (char*) pObject - sizeof(int);
-		cObjects = *(unsigned int*) pAllocation;
-		pCursor = (char*) pObject + cObjects * 0x144;
-		while ((int) --cObjects >= 0) {
-			pCursor -= 0x144;
-			destroy_tram_chunk_object(pCursor);
-		}
-		FreeVSMemBlock(pAllocation);
-		return pObject;
-	}
-	destroy_tram_chunk_object(pObject);
-	if ((fDelete & 1) != 0) {
-		FreeVSMemBlock(pObject);
-	}
-	return pObject;
 }
 
 // STUB: LEMBALL 0x0042bbe0
