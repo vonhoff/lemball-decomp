@@ -6,10 +6,6 @@
 
 DECOMP_SIZE_ASSERT(VS_InvisibleWindow, 0x10);
 
-static const char g_PLATFORM_BaseWindowRegisterError[] = "Unable to register base window class";
-static const char g_PLATFORM_InvisibleWindowTitle[] = "Invisible Window";
-static const char g_PLATFORM_InvisibleWindowCreateError[] = "Failed to create invisible window - Error code: ";
-static const char g_PLATFORM_ErrorSuffix[] = "\n";
 
 // FUNCTION: LEMBALL 0x004714f0
 LRESULT LEMBALL_FASTCALL DefaultInvisibleWindowMessageHandler(VS_InvisibleWindow* pWindow,
@@ -56,7 +52,7 @@ VS_InvisibleWindow* VS_InvisibleWindow::Construct(LPCSTR pszClassName, int* pfCl
 		WndClass.cbWndExtra = 4;
 
 		if (RegisterClassA(&WndClass) == 0) {
-			ShowFatalGetLastErrorMessageAndExit(g_PLATFORM_BaseWindowRegisterError);
+			ShowFatalGetLastErrorMessageAndExit("Unable to register base window class");
 		}
 
 		*pfClassRegistered = 1;
@@ -64,7 +60,7 @@ VS_InvisibleWindow* VS_InvisibleWindow::Construct(LPCSTR pszClassName, int* pfCl
 
 	m_hWnd = CreateWindowExA(0,
 							 pszClassName,
-							 g_PLATFORM_InvisibleWindowTitle,
+							 "Invisible Window",
 							 0,
 							 (INT) CW_USEDEFAULT,
 							 (INT) CW_USEDEFAULT,
@@ -77,9 +73,9 @@ VS_InvisibleWindow* VS_InvisibleWindow::Construct(LPCSTR pszClassName, int* pfCl
 
 	if (m_hWnd == 0) {
 		unsigned int nError = GetLastError();
-		g_pErrorOutputStream->AppendCStringToStream(g_PLATFORM_InvisibleWindowCreateError)
+		g_pErrorOutputStream->AppendCStringToStream("Failed to create invisible window - Error code: ")
 			->AppendUIntToStream(nError)
-			->AppendCStringToStream(g_PLATFORM_ErrorSuffix);
+			->AppendCStringToStream("\n");
 	}
 
 	return this;
