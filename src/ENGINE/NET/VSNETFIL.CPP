@@ -4118,7 +4118,7 @@ void* VsNetEff512ByteStateStream::Delete(BYTE fDeleteFlags)
 // FUNCTION: LEMBALL 0x0047b8e0
 void* VsNetWin32FileWrapper::GetOwnedPath(void)
 {
-	return *(void**) ((char*) this + 4);
+	return m_pOwnedPath;
 }
 
 // FUNCTION: LEMBALL 0x0047b8f0
@@ -4439,10 +4439,7 @@ int VsNetWin32FileWrapper::OpenCreateNew(LPCSTR pszPath, int nAccessMode)
 // FUNCTION: LEMBALL 0x0047f660
 void VsNetWin32FileWrapper::FreeOwnedPath(void)
 {
-	VsNetInlineOpenWin32FileWrapper* pWrapper;
-
-	pWrapper = (VsNetInlineOpenWin32FileWrapper*) this;
-	DeleteFileA((LPCSTR) (unsigned long) pWrapper->m_nReserved04);
+	DeleteFileA((LPCSTR) m_pOwnedPath);
 }
 
 // FUNCTION: LEMBALL 0x0047f670
@@ -4454,12 +4451,10 @@ void LEMBALL_STDCALL DeleteWin32FileWrapperPath(char* pszPath)
 // FUNCTION: LEMBALL 0x0047f680
 int VsNetWin32FileWrapper::ProbeAccess(LPCSTR pszPath)
 {
-	VsNetInlineOpenWin32FileWrapper* pWrapper;
 	HANDLE hFile;
 
-	pWrapper = (VsNetInlineOpenWin32FileWrapper*) this;
 	hFile = CreateFileA(pszPath, 0xc0000000, 3, (LPSECURITY_ATTRIBUTES) 0, OPEN_EXISTING, 0x80, (HANDLE) 0);
-	pWrapper->m_nReserved0c = (int) (unsigned long) hFile;
+	m_nHandle = (int) (unsigned long) hFile;
 	if (hFile == (HANDLE) -1) {
 		return 0;
 	}
@@ -4535,34 +4530,26 @@ int VsNetWin32FileWrapper::Read(LPVOID pvTarget, DWORD cbRead)
 // FUNCTION: LEMBALL 0x0047f890
 int VsNetWin32FileWrapper::Seek(DWORD dwOffset)
 {
-	VsNetInlineOpenWin32FileWrapper* pWrapper;
-
-	pWrapper = (VsNetInlineOpenWin32FileWrapper*) this;
-	pWrapper->m_nReserved10 = (int) dwOffset;
-	return SetFilePointer((HANDLE) (unsigned long) pWrapper->m_nReserved0c, dwOffset, 0, FILE_BEGIN) != 0xffffffff;
+	m_nOffset = (int) dwOffset;
+	return SetFilePointer((HANDLE) (unsigned long) m_nHandle, dwOffset, 0, FILE_BEGIN) != 0xffffffff;
 }
 
 // FUNCTION: LEMBALL 0x0047f8b0
 DWORD VsNetWin32FileWrapper::GetOffset(void)
 {
-	VsNetInlineOpenWin32FileWrapper* pWrapper;
-
-	pWrapper = (VsNetInlineOpenWin32FileWrapper*) this;
-	return (DWORD) pWrapper->m_nReserved10;
+	return (DWORD) m_nOffset;
 }
 
 // FUNCTION: LEMBALL 0x0047f8c0
 int VsNetWin32FileWrapper::CloseIfOpen(void)
 {
-	VsNetInlineOpenWin32FileWrapper* pWrapper;
 	int fClosed;
 
-	pWrapper = (VsNetInlineOpenWin32FileWrapper*) this;
 	fClosed = 1;
-	if (pWrapper->m_fOpen08 == 0) {
-		fClosed = CloseHandle((HANDLE) (unsigned long) pWrapper->m_nReserved0c);
+	if (m_fOpen == 0) {
+		fClosed = CloseHandle((HANDLE) (unsigned long) m_nHandle);
 		if (fClosed != 0) {
-			pWrapper->m_fOpen08 = 1;
+			m_fOpen = 1;
 		}
 	}
 	return fClosed;
@@ -4571,26 +4558,17 @@ int VsNetWin32FileWrapper::CloseIfOpen(void)
 // FUNCTION: LEMBALL 0x0047f8f0
 DWORD VsNetWin32FileWrapper::GetLength(void)
 {
-	VsNetInlineOpenWin32FileWrapper* pWrapper;
-
-	pWrapper = (VsNetInlineOpenWin32FileWrapper*) this;
-	return GetFileSize((HANDLE) (unsigned long) pWrapper->m_nReserved0c, 0);
+	return GetFileSize((HANDLE) (unsigned long) m_nHandle, 0);
 }
 
 // FUNCTION: LEMBALL 0x0047f900
 int VsNetWin32FileWrapper::LockRange(DWORD dwOffset, DWORD cbRange)
 {
-	VsNetInlineOpenWin32FileWrapper* pWrapper;
-
-	pWrapper = (VsNetInlineOpenWin32FileWrapper*) this;
-	return LockFile((HANDLE) (unsigned long) pWrapper->m_nReserved0c, dwOffset, 0, cbRange, 0);
+	return LockFile((HANDLE) (unsigned long) m_nHandle, dwOffset, 0, cbRange, 0);
 }
 
 // FUNCTION: LEMBALL 0x0047f920
 int VsNetWin32FileWrapper::UnlockRange(DWORD dwOffset, DWORD cbRange)
 {
-	VsNetInlineOpenWin32FileWrapper* pWrapper;
-
-	pWrapper = (VsNetInlineOpenWin32FileWrapper*) this;
-	return UnlockFile((HANDLE) (unsigned long) pWrapper->m_nReserved0c, dwOffset, 0, cbRange, 0);
+	return UnlockFile((HANDLE) (unsigned long) m_nHandle, dwOffset, 0, cbRange, 0);
 }
