@@ -2125,19 +2125,6 @@ void noop_callback_00456600(void)
 {
 }
 
-struct LevelTwoDwordPairVariantView {
-	int m_anValues[2];
-
-	void* copy_two_dword_pair_variant(const int* pSource);
-};
-
-void* LevelTwoDwordPairVariantView::copy_two_dword_pair_variant(const int* pSource)
-{
-	m_anValues[0] = pSource[0];
-	m_anValues[1] = pSource[1];
-	return this;
-}
-
 struct LevelVtSmallFunctionView {
 	void AddClampedU16Field228(unsigned short nValue);
 	void AddLevelScoreClamped(int nValue);

@@ -1,3 +1,17 @@
+struct LevelTwoDwordPairVariantView {
+	int m_anValues[2];
+
+	LevelTwoDwordPairVariantView* Assign(const int* pSource);
+};
+
+// FUNCTION: LEMBALL 0x00417b30
+LevelTwoDwordPairVariantView* LevelTwoDwordPairVariantView::Assign(const int* pSource)
+{
+	m_anValues[0] = pSource[0];
+	m_anValues[1] = pSource[1];
+	return this;
+}
+
 struct LevelNodeChunkPositionView {
 	int m_nX;
 	int m_nY;
