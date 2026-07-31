@@ -43,7 +43,7 @@ address,name,symbol,type,source
 0x004016B3,RequestLiftChunkObjectActivationState,?RequestLiftChunkObjectActivationState@@YIHPAX@Z,stub,src/ENGINE/CORE/LINKSCFLIFTACTION.CPP
 0x00401730,ManagedEntityPacketBase::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacketBase@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00401749,reset_invs_chunk_object_state_thunk,?ResetInvsChunkObjectStateThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
-0x00401762,set_variant_music_enabled,?SetVariantResourceMusicEnabled@GameVariantResourceEntryManager@@QAEXH@Z,stub,src/RESOURCE/VARMGR.CPP
+0x00401762,GameVariantResourceEntryManager::SetVariantResourceMusicEnabled,?SetVariantResourceMusicEnabled@GameVariantResourceEntryManager@@QAEXH@Z,stub,src/RESOURCE/VARMGR.CPP
 0x004017C1,ReleaseMenuSelectorEntryResources,?ReleaseMenuSelectorEntryResources@@YIXPAUGameMenuSelectorEntry@@@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x004017DF,attach_and_activate_chunk_object,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040180C,reset_managed_entity_runtime_state_thunk,?ResetManagedEntityRuntimeStateThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
@@ -208,7 +208,7 @@ address,name,symbol,type,source
 0x004032DD,ManagedEntityPacketStreamView::BindManagedEntityPacketTarget,?BindManagedEntityPacketTarget@ManagedEntityPacketStreamView@@QAEXPAX@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x0040333C,advance_invs_chunk_objects,?AdvanceInvsChunkObjects@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040335A,managed_entity_packet28_reverse_eff_stream_payload,?ReverseEffStreamPayload@ManagedEntityPacket28@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
-0x00403369,clear_active_variant_resources,?ClearActiveVariantResourceEntries@GameVariantResourceEntryManager@@QAEXXZ,stub,src/RESOURCE/VARMGR.CPP
+0x00403369,GameVariantResourceEntryManager::ClearActiveVariantResourceEntries,?ClearActiveVariantResourceEntries@GameVariantResourceEntryManager@@QAEXXZ,stub,src/RESOURCE/VARMGR.CPP
 0x0040336E,LevelManagedEntityMoveCommandView::CopyFirstMoveCommandPositionOrCurrent,?CopyFirstMoveCommandPositionOrCurrent@LevelManagedEntityMoveCommandView@@QAEPAULevelThreeDwordPoint@@PAU2@@Z,stub,src/LEVEL/LEVELVTMOVE.CPP
 0x0040339B,deactivate_projectile_object,?deactivate_projectile_object@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00403404,emit_mine_chunk_manager_render_entries,,stub,src/ENGINE/CORE/LINKSCF.H
