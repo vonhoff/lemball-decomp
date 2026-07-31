@@ -55,9 +55,7 @@ address,name,symbol,type,source
 0x0041C330,DeleteCountedChildTableStreamAuto,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0041C400,DeleteLevelChunkObjectBaseWrapper1C400,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0041C440,DeleteLevelChunkObjectBaseWrapper1C440,,synthetic,src/LEVEL/LEVELVT.CPP
-0x0041C5A0,noop_saved_chunk_packet_hook,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0041C5C0,DeleteLevelChunkObjectBaseWrapper1C5C0,,synthetic,src/LEVEL/LEVELVT.CPP
-0x0041C5F0,return_chunk_status_two,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0041C600,DeleteLevelChunkObjectBaseWrapper1C600,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0041C640,DeleteLevelChunkObjectBaseWrapper1C640,,synthetic,src/LEVEL/LEVELVT.CPP
 0x0041D000,accept_gmob_activation,,synthetic,src/LEVEL/LEVELVT.CPP

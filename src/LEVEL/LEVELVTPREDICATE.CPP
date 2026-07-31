@@ -262,3 +262,14 @@ void __cdecl DispatchManagedEntityPreUpdateCallbacks(void* pUnused, void* pEntit
 	((LevelManagedEntityNoArgVirtualProc) pVtable[0x6c / sizeof(void*)])(pEntity);
 	((LevelManagedEntityThreeArgVirtualProc) ForwardManagedEntityVslot30)(pUnused, pEntity, pUnused2);
 }
+
+// FUNCTION: LEMBALL 0x0041c5a0
+void NoopSavedChunkPacketHook(void)
+{
+}
+
+// FUNCTION: LEMBALL 0x0041c5f0
+int GetSavedChunkStatus(void)
+{
+	return 2;
+}
