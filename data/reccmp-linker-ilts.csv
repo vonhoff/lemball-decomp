@@ -28,7 +28,7 @@ address,name,symbol,type,source
 0x0040143D,destroy_paintball_sequence_screen_auto_thunk,?DestroyPaintballSequenceScreenAutoThunk@@YIXPAX@Z,stub,src/FRONTEND/MAINMENU.CPP
 0x0040146A,ResetMineChunkObjectRuntimeState,?ResetMineChunkObjectRuntimeState@@YIXPAUMineChunkObjectRuntimeView@@@Z,stub,src/LEVEL/LEVELVTMINE.CPP
 0x004014AB,pop_level_plas_history_child,?PopLevelPlasHistoryChild@@YIHPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
-0x004014CE,update_menu_selector_animation_thunk,,stub,src/FRONTEND/MENUSEL.H
+0x004014CE,UpdateMenuSelectorAnimationThunk,?UpdateMenuSelectorAnimationThunk@@YIXPAUGameMenuSelectorManager@@@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x004014F1,destroy_level_chunk_stream_dispatcher_auto_thunk,?DestroyLevelChunkStreamDispatcherAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
 0x004014FB,activate_lasr_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401500,UpdateManagedEntityBoundsFromPosition,?UpdateManagedEntityBoundsFromPosition@@YIXPAX@Z,stub,src/LEVEL/CHUNKOBJVT.CPP
@@ -229,6 +229,7 @@ address,name,symbol,type,source
 0x00403530,destroy_password_entry_screen_auto_thunk,?DestroyPasswordEntryScreenAutoThunk@@YIXPAX@Z,stub,src/FRONTEND/MAINMENU.CPP
 0x00403549,get_next_cached_chunk_object,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040354E,destroy_lasr_chunk_manager_auto_thunk,?DestroyLasrChunkManagerAutoThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
+0x00403567,NoopQueuedVariantChildSlotManagerUpdate,?NoopQueuedVariantChildSlotManagerUpdate@@YIXPAX@Z,stub,src/FRONTEND/MAINMENU.CPP
 0x004035F3,destroy_network_lobby_vsnet_runtime_auto_thunk,?DestroyNetworkLobbyVsnetRuntimeAutoThunk@@YIXPAX@Z,stub,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x0040363E,destroy_pgun_chunk_manager_auto_thunk,?DestroyPgunChunkManagerAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x0040364D,delete_queued_variant_range_entry_auto,,stub,src/FRONTEND/MENUSEL.CPP

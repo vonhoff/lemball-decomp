@@ -1981,7 +1981,7 @@ __inline static void LEMBALL_FASTCALL EmitQueuedVariantChildSlotEntry(void* pObj
 	((LevelVariantRenderManagerView*) (pManager + 0x10))->ResetOrFlipVariantRenderBuffers();
 }
 
-__inline static void LEMBALL_FASTCALL NoopQueuedVariantChildSlotManagerUpdate(void*)
+static void LEMBALL_FASTCALL NoopQueuedVariantChildSlotManagerUpdate(void*)
 {
 }
 
@@ -2961,8 +2961,9 @@ void GameFramedScreenBase::UpdateRuntime(void)
 {
 	GameFramedScreenBase* pScreen;
 	VsNetRuntimeModeView* pNetworkRuntime;
+	GameProgressiveSelectorVtableView* pTimedFrameSelector;
 	DWORD dwNow;
-	unsigned int uRandom;
+	int nRandom;
 
 	pScreen = this;
 	if (pScreen->m_fNetworkScreen8C != 0 && pScreen->m_fNetworkReady94 == 0) {
@@ -2979,15 +2980,16 @@ void GameFramedScreenBase::UpdateRuntime(void)
 	if (pScreen->m_pTimedFrameSelector34C != 0) {
 		dwNow = timeGetTime();
 		if (pScreen->m_dwRandomDelay33C + 1000U < dwNow - pScreen->m_dwRandomStart340) {
-			((GameProgressiveSelectorVtableView*) pScreen->m_pTimedFrameSelector34C)
-				->SetStartTime(pScreen->m_dwRandomStart340 = timeGetTime());
-			uRandom = (*(unsigned int*) g_pSessionRandomState * 0x29U + 0x1fU) & 0x7fffffU;
-			*(unsigned int*) g_pSessionRandomState = uRandom;
-			pScreen->m_dwRandomDelay33C = uRandom % 6000U;
+			dwNow = timeGetTime();
+			pTimedFrameSelector = (GameProgressiveSelectorVtableView*) pScreen->m_pTimedFrameSelector34C;
+			pTimedFrameSelector->SetStartTime(pScreen->m_dwRandomStart340 = dwNow);
+			nRandom = (*(int*) g_pSessionRandomState * 0x29 + 0x1f) & 0x7fffff;
+			*(int*) g_pSessionRandomState = nRandom;
+			pScreen->m_dwRandomDelay33C = nRandom % 6000;
 		}
 	}
 	if (pScreen->m_pSelectorManager334 != 0) {
-		UpdateMenuSelectorAnimation((GameMenuSelectorManager*) pScreen->m_pSelectorManager334);
+		UpdateMenuSelectorAnimationThunk((GameMenuSelectorManager*) pScreen->m_pSelectorManager334);
 	}
 	if (pScreen->m_pQueuedVariantManager338 != 0) {
 		NoopQueuedVariantChildSlotManagerUpdate(pScreen->m_pQueuedVariantManager338);
