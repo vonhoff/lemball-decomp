@@ -2553,11 +2553,11 @@ void VsSoundDirectSoundEffectBufferPool::StopAllDirectSoundEffectBufferSlots(voi
 	LONG hResult;
 
 	pPool = (char*) this;
-	nBufferOffset = 0;
 	i = 0;
-	if (*(int*) (pPool + 0x10) <= nBufferOffset) {
+	if (*(int*) (pPool + 0x10) <= 0) {
 		return;
 	}
+	nBufferOffset = 0;
 	do {
 		void* pBuffer = *(void**) (*(int*) (pPool + 8) + nBufferOffset);
 		hResult = VsSoundDIRECTSOUND_METHOD(pBuffer, 18, VsSoundPauseDirectSoundBufferProc)(pBuffer);
