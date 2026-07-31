@@ -1,3 +1,37 @@
+struct LevelVtSmallFunctionView {
+	char m_abReserved00[0xf0];
+	int m_nScoreF0;
+	char m_abReservedF4[0x134];
+	unsigned short m_nBonus228;
+
+	void AddClampedU16Field228(unsigned short nValue);
+	void AddLevelScoreClamped(int nValue);
+};
+
+// FUNCTION: LEMBALL 0x00410ac0
+void LevelVtSmallFunctionView::AddClampedU16Field228(unsigned short nValue)
+{
+	unsigned short nResult;
+
+	nResult = (unsigned short) (m_nBonus228 + nValue);
+	m_nBonus228 = nResult;
+	if (nResult > 0x32) {
+		m_nBonus228 = 0x32;
+	}
+}
+
+// FUNCTION: LEMBALL 0x00413390
+void LevelVtSmallFunctionView::AddLevelScoreClamped(int nValue)
+{
+	int nResult;
+
+	nResult = m_nScoreF0 + nValue;
+	m_nScoreF0 = nResult;
+	if (nResult > 9999999) {
+		m_nScoreF0 = 9999999;
+	}
+}
+
 struct LevelManagedEntityResetStateView {
 	char m_abReserved00[0x8c];
 	int m_nRuntimeState8C;

@@ -2126,36 +2126,12 @@ void noop_callback_00456600(void)
 }
 
 struct LevelVtSmallFunctionView {
-	void AddClampedU16Field228(unsigned short nValue);
-	void AddLevelScoreClamped(int nValue);
 	void SetRectFromBounds(int nLeft, int nTop, int nRight, int nBottom);
 	void* GetProjectileGeometryRotatedPair(int nIndex);
 	void GetManagedEntityInteractionPoint(int* pPoint);
 	void SwapObjectChildSlots128(int iFirst, int iSecond);
 	void GetTileFlag1cObjectRenderPoint(int* pPoint);
 };
-
-void LevelVtSmallFunctionView::AddClampedU16Field228(unsigned short nValue)
-{
-	unsigned short nResult;
-
-	nResult = (unsigned short) (*(unsigned short*) ((char*) this + 0x228) + nValue);
-	*(unsigned short*) ((char*) this + 0x228) = nResult;
-	if (nResult > 0x32) {
-		*(unsigned short*) ((char*) this + 0x228) = 0x32;
-	}
-}
-
-void LevelVtSmallFunctionView::AddLevelScoreClamped(int nValue)
-{
-	int nResult;
-
-	nResult = *(int*) ((char*) this + 0xf0) + nValue;
-	*(int*) ((char*) this + 0xf0) = nResult;
-	if (nResult > 9999999) {
-		*(int*) ((char*) this + 0xf0) = 9999999;
-	}
-}
 
 void LevelVtSmallFunctionView::SetRectFromBounds(int nLeft, int nTop, int nRight, int nBottom)
 {
