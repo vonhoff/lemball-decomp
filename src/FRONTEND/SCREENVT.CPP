@@ -56,6 +56,12 @@ int __fastcall get_level_screen_requested_mode(void* pScreen)
 	return *(int*) ((char*) pScreen + 0x8fc);
 }
 
+// FUNCTION: LEMBALL 0x00439470
+int __fastcall GetLevelScreenActiveMode(void* pScreen)
+{
+	return *(int*) ((char*) pScreen + 0xa34);
+}
+
 // FUNCTION: LEMBALL 0x00439480
 void* __fastcall clear_render_entry_word(void* pEntry)
 {

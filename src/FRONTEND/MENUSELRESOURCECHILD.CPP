@@ -49,10 +49,12 @@ void MenuSelectorXorFieldNoArgView::RecomputeField104FromXor(void)
 	*(int*) ((char*) this + 0x104) = nValue;
 }
 
+// FUNCTION: LEMBALL 0x00443930
 void noop_entity_button_state_update(void)
 {
 }
 
+// FUNCTION: LEMBALL 0x00443940
 void noop_entity_button_state_recalc(void)
 {
 }
