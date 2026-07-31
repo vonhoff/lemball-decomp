@@ -90,7 +90,7 @@ address,name,symbol,type,source
 0x00402068,level_managed_entity_state_fields_increment_heading_octant,?IncrementHeadingOctant@LevelManagedEntityStateFields@@QAEXXZ,stub,src/LEVEL/LEVELVT.CPP
 0x0040207C,pop_move_and_reset_motion,?PopFirstMoveCommandAndResetMotion@LevelManagedEntityMoveCommandView@@QAEXXZ,stub,src/LEVEL/LEVELVTMOVE.CPP
 0x00402090,get_next_managed_entity_group,,stub,src/ENGINE/CORE/LINKSCF.H
-0x0040209F,level_chunk_object_runtime_state_view_reset_runtime_state_thunk,,stub,src/LEVEL/LEVELVT.CPP
+0x0040209F,LevelChunkObjectRuntimeStateView::ResetRuntimeStateThunk,?ResetRuntimeStateThunk@LevelChunkObjectRuntimeStateView@@QAEXXZ,stub,src/LEVEL/LEVELVT.CPP
 0x004020A4,game_screen_object_construct_level_screen,,stub,src/GAME.H
 0x004020EF,destroy_level_chunk_object_children_variant_auto_thunk,?DestroyLevelChunkObjectChildrenVariantAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004020F9,reset_ice_chunk_object_runtime_state_thunk,?ResetIceChunkObjectRuntimeStateThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
