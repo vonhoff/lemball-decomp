@@ -193,6 +193,7 @@ struct VsNetDualHandleEffStreamPrimary : VsNetEffStreamBase {
 	char m_abReserved38[0x0c];
 };
 
+// VTABLE: LEMBALL 0x00498f60 VsNetEffStreamChannelState
 struct VsNetDualHandleEffStream : VsNetDualHandleEffStreamPrimary, virtual VsNetEffStreamChannelState {
 	VsNetDualHandleEffStream();
 	virtual ~VsNetDualHandleEffStream();
