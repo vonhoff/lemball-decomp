@@ -387,7 +387,7 @@ address,size,name,unit
 0x00413E60,8,delete_level_mode_from_active_interface,GAME.CPP
 0x00413E70,8,delete_level_game_mode_adjusted,GAME.CPP
 0x00413E80,196,compute_direction_octant_between_points,GAME.CPP
-0x00413F50,41,is_point_strictly_inside_rect_bounds,GAME.CPP
+0x00413F50,41,is_point_strictly_inside_rect_bounds,LEVEL/LEVELTYPE35BOUNDS.CPP
 0x00413F80,51,distance2d_int_pixels,GAME.CPP
 0x00414010,35,construct_plas_child_controller,LEVEL/LEVELVT.CPP
 0x00414040,36,reset_managed_entity_group_runtime_state,LEVEL/LEVELVT.CPP

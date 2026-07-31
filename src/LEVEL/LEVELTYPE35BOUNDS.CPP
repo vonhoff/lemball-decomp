@@ -42,3 +42,9 @@ int LevelType35BoundsView::ContainsFixedPoint(const LevelIntPoint* pPoint)
 	return m_nMinX124 <= nX && m_nMinY128 <= (pPoint->m_nY >> 12) && nX <= m_nMaxX12C &&
 		   (pPoint->m_nY >> 12) <= m_nMaxY130;
 }
+
+// FUNCTION: LEMBALL 0x00413f50
+int IsPointStrictlyInsideRect(int nX, int nY, int nMinX, int nMinY, int nMaxX, int nMaxY)
+{
+	return nX > nMinX && nX < nMaxX && nY > nMinY && nY < nMaxY;
+}
