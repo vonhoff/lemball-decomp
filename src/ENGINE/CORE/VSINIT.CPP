@@ -1519,36 +1519,38 @@ int ShutdownTimingSubsystemStub(void)
 struct GameStatusEntryInitialVtable;
 extern GameStatusEntryInitialVtable g_GAME_StatusEntryDeleteVtable;
 
+struct RenderDispatchQueueConstructorView : RenderDispatchQueue {
+	RenderDispatchQueue* ConstructRenderDispatchQueue(int cEntries);
+};
+
 // FUNCTION: LEMBALL 0x00463020
-void* ConstructRenderDispatchQueue(void* pQueue, int cEntries)
+RenderDispatchQueue* RenderDispatchQueueConstructorView::ConstructRenderDispatchQueue(int cEntries)
 {
-	RenderDispatchQueue* pDispatchQueue;
 	RenderDispatchQueueEntry* pEntryBuffer;
 	int nEntryBuffer;
 
-	pDispatchQueue = (RenderDispatchQueue*) pQueue;
-	pDispatchQueue->m_pVtable = g_RenderDispatchQueueDeleteThunkVtable;
-	pDispatchQueue->m_pLockVtable = g_RenderDispatchQueueCriticalSectionHelperVtable;
-	InitializeCriticalSection((char*) pQueue + 0xc);
-	pDispatchQueue->m_pVtable = g_RenderDispatchQueueVtable;
-	pDispatchQueue->m_pLockVtable = g_DeleteRenderDispatchQueueCriticalSectionHelperThunk;
+	m_pVtable = (void**) &g_GAME_StatusEntryDeleteVtable;
+	m_pLockVtable = g_RenderDispatchQueueCriticalSectionHelperVtable;
+	InitializeCriticalSection((char*) this + 0xc);
+	m_pVtable = g_RenderDispatchQueueVtable;
+	m_pLockVtable = g_DeleteRenderDispatchQueueCriticalSectionHelperThunk;
 
 	nEntryBuffer = (int) (unsigned long) AllocateVSMemBlock((unsigned int) (cEntries * 0x14));
 	pEntryBuffer = (RenderDispatchQueueEntry*) (unsigned long) nEntryBuffer;
-	pDispatchQueue->m_pEntryBuffer = pEntryBuffer;
-	pDispatchQueue->m_cEntryCapacity = cEntries;
-	pDispatchQueue->m_pEntryBufferEnd = (RenderDispatchQueueEntry*) (unsigned long) (cEntries * 0x14 + nEntryBuffer);
-	pDispatchQueue->m_pTail = pEntryBuffer;
-	pDispatchQueue->m_pHead = pEntryBuffer;
-	pDispatchQueue->m_cQueuedEntries = 0;
-	pDispatchQueue->m_cClients = 0;
-	pDispatchQueue->m_nReserved34 = 0;
-	pDispatchQueue->m_nReserved38 = 0;
-	pDispatchQueue->m_nReserved3C = 0;
-	pDispatchQueue->m_cEntriesDropped = 0;
-	pDispatchQueue->m_nReserved30 = 0;
-	pDispatchQueue->m_pClientList = 0;
-	return pQueue;
+	m_pEntryBuffer = pEntryBuffer;
+	m_cEntryCapacity = cEntries;
+	m_pEntryBufferEnd = (RenderDispatchQueueEntry*) (unsigned long) (cEntries * 0x14 + nEntryBuffer);
+	m_pTail = pEntryBuffer;
+	m_pHead = pEntryBuffer;
+	m_cQueuedEntries = 0;
+	m_cClients = 0;
+	m_nReserved34 = 0;
+	m_nReserved38 = 0;
+	m_nReserved3C = 0;
+	m_cEntriesDropped = 0;
+	m_nReserved30 = 0;
+	m_pClientList = 0;
+	return this;
 }
 
 // FUNCTION: LEMBALL 0x004630a0
@@ -1914,4 +1916,9 @@ void* LEMBALL_FASTCALL DeleteRenderDispatchQueueAuto(void* pObject, void*, BYTE 
 		FreeVSMemBlock(pObject);
 	}
 	return pObject;
+}
+
+void* ConstructRenderDispatchQueue(void* pQueue, int cEntries)
+{
+	return ((RenderDispatchQueueConstructorView*) pQueue)->ConstructRenderDispatchQueue(cEntries);
 }
