@@ -48,7 +48,7 @@ address,name,symbol,type,source
 0x0040180C,reset_managed_entity_runtime_state_thunk,?ResetManagedEntityRuntimeStateThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00401843,destroy_network_lobby_screen_auto_thunk,?DestroyNetworkLobbyScreenAutoThunk@@YIXPAX@Z,stub,src/FRONTEND/MAINMENU.CPP
 0x004018CF,vs_window_owner_base_is_current_window_owner_context,?IsCurrentWindowOwnerContext@VS_WindowOwnerBase@@UAEHXZ,stub,src/ENGINE/GDI/VSWINDOW.H
-0x004018D4,managed_entity_packet_base_managed_entity_packet_base,??0ManagedEntityPacketBase@@QAE@H@Z,stub,src/LEVEL/LEVELRUN.CPP
+0x004018D4,ManagedEntityPacketBase::ManagedEntityPacketBase,??0ManagedEntityPacketBase@@QAE@H@Z,stub,src/LEVEL/LEVELRUN.CPP
 0x004018D9,advance_ice_chunk_manager_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004018F7,select_menu_selector_side0thunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401942,refresh_active_lasr_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
