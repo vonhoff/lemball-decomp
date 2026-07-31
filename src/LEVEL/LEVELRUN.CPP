@@ -2024,7 +2024,7 @@ void LevelNodeChunkManager::LoadNodeChunkRecords(const unsigned short* pWords, u
 {
 	const unsigned short* pEnd;
 	unsigned int cRecords;
-	unsigned int cLinks;
+	int cLinks;
 	unsigned int nRecordOffset;
 
 	pEnd = (const unsigned short*) ((const char*) pWords + cbPayload);
@@ -2045,7 +2045,7 @@ void LevelNodeChunkManager::LoadNodeChunkRecords(const unsigned short* pWords, u
 		cLinks = pWords[2];
 		pWords += 3;
 		m_pRecords00[nRecordOffset].InitializeNodeChunkRecordFromLevelDataThunk(nX, nY, cLinks);
-		while (cLinks != 0) {
+		while (0 < cLinks) {
 			m_pRecords00[nRecordOffset].AppendNodeChunkRecordLinkThunk(pWords[0], pWords[1]);
 			pWords += 2;
 			--cLinks;
