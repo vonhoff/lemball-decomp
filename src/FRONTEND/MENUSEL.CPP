@@ -1439,10 +1439,7 @@ GameMenuSelectorEntry* GameMenuSelectorEntry::ConstructProgressEntry(const short
 	m_nProgressWidth18 = 0;
 	m_nProgressX14 = paProgressRect[0];
 	m_nProgressY16 = paProgressRect[1];
-	pExtent = paProgressRect;
-	if (pExtent != 0) {
-		pExtent += 2;
-	}
+	pExtent = paProgressRect != 0 ? paProgressRect + 2 : 0;
 	m_nProgressWidth18 = pExtent[0];
 	m_nProgressHeight1A = pExtent[1];
 	m_pRenderOwner28 = pRenderOwner;
