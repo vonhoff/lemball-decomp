@@ -1,8 +1,8 @@
 #ifndef LEMBALL_NETWORK_RUNTIME_H
 #define LEMBALL_NETWORK_RUNTIME_H
 
-#include "ENGINE/MEDIA/VSSTRM.H"
 #include "ENGINE/CORE/VSMEM.H"
+#include "ENGINE/MEDIA/VSSTRM.H"
 
 struct VsNetFileBackedChannelRoot {
 	VsNetFileBackedChannelRoot();
@@ -15,7 +15,7 @@ class VsNetWin32FileWrapper {
 public:
 	inline ~VsNetWin32FileWrapper()
 	{
-		void* pOwnedPath = *(void**) &m_abFileState04[0];
+		void* pOwnedPath = m_pOwnedPath;
 		if (pOwnedPath != 0) {
 			FreeVSMemBlock(pOwnedPath);
 		}
@@ -34,41 +34,37 @@ public:
 	virtual int UnlockRange(unsigned long dwOffset, unsigned long cbRange);
 	virtual void* GetOwnedPath(void);
 
-	char m_abFileState04[0x10];
+	void* m_pOwnedPath;
+	int m_fOpen;
+	int m_nHandle;
+	int m_nOffset;
 };
 
-struct VsNetFileBackedFatalFacet :
-	virtual VsNetEffStreamChannelState,
-	virtual VsNetWin32FileWrapper {
+struct VsNetFileBackedFatalFacet : virtual VsNetEffStreamChannelState, virtual VsNetWin32FileWrapper {
 	virtual ~VsNetFileBackedFatalFacet() = 0;
 	virtual void FatalFileBackedOperation00(void) = 0;
 	int m_nFatalFacet08;
 };
 
-inline VsNetFileBackedFatalFacet::~VsNetFileBackedFatalFacet() {}
+inline VsNetFileBackedFatalFacet::~VsNetFileBackedFatalFacet()
+{
+}
 
 struct VsNetFileBackedEffStream : VsNetEffStreamCommon {
 	virtual void ReverseEffStreamPayload(void);
 	virtual void WriteEffStreamTaggedHeader(void);
 
-	void WriteEffStreamU16BE(unsigned short nValue)
-	{
-		((VsNetEffStreamBase*) this)->WriteEffStreamU16BE(nValue);
-	}
-	void ReadEffStreamU16BE(unsigned char* pbTarget)
-	{
-		((VsNetEffStreamBase*) this)->ReadEffStreamU16BE(pbTarget);
-	}
+	void WriteEffStreamU16BE(unsigned short nValue) { ((VsNetEffStreamBase*) this)->WriteEffStreamU16BE(nValue); }
+	void ReadEffStreamU16BE(unsigned char* pbTarget) { ((VsNetEffStreamBase*) this)->ReadEffStreamU16BE(pbTarget); }
 
 	unsigned short m_nWord2c;
 	unsigned short m_nWord2e;
 };
 
-struct VsNetTimedFileBackedEffChannel :
-	VsNetFileBackedChannelRoot,
-	virtual VsNetEffStreamChannelState,
-	virtual VsNetTimedEffStream,
-	virtual VsNetFileBackedFatalFacet {
+struct VsNetTimedFileBackedEffChannel : VsNetFileBackedChannelRoot,
+										virtual VsNetEffStreamChannelState,
+										virtual VsNetTimedEffStream,
+										virtual VsNetFileBackedFatalFacet {
 	VsNetTimedFileBackedEffChannel();
 	virtual ~VsNetTimedFileBackedEffChannel();
 	virtual void ClearPendingWrite(void* pUnused);
@@ -77,20 +73,18 @@ struct VsNetTimedFileBackedEffChannel :
 	int m_nFileBackedMode10;
 };
 
-struct VsNetDualFileBackedEffChannel :
-	VsNetFileBackedChannelRoot,
-	virtual VsNetEffStreamChannelState,
-	virtual VsNetDualHandleEffStream,
-	virtual VsNetFileBackedFatalFacet {
+struct VsNetDualFileBackedEffChannel : VsNetFileBackedChannelRoot,
+									   virtual VsNetEffStreamChannelState,
+									   virtual VsNetDualHandleEffStream,
+									   virtual VsNetFileBackedFatalFacet {
 	VsNetDualFileBackedEffChannel();
 	virtual void ClearPendingWrite(void* pUnused);
 	int m_nFileBackedMode10;
 };
 
-struct VsNetEmbeddedFileBackedEffChannelStack :
-	virtual VsNetRuntimeChannelCore,
-	virtual VsNetDualFileBackedEffChannel,
-	virtual VsNetTimedFileBackedEffChannel {
+struct VsNetEmbeddedFileBackedEffChannelStack : virtual VsNetRuntimeChannelCore,
+												virtual VsNetDualFileBackedEffChannel,
+												virtual VsNetTimedFileBackedEffChannel {
 	VsNetEmbeddedFileBackedEffChannelStack();
 	virtual void ClearNestedEffChannelAsyncStatus(void);
 	virtual void ClearPendingWrite(void* pUnused);
@@ -102,15 +96,12 @@ struct VsNetEmbeddedFileBackedEffChannelStack :
  * runtime/composite sibling's vfptr to offset zero while retaining this
  * owner's vbptr and initial stream at +0x20/+0x24 (global) or +0x2c/+0x30
  * (dual-slot). */
-struct VsNetFileBackedCompositeEffChannelAdapter :
-	virtual VsNetEmbeddedFileBackedEffChannelStack {
+struct VsNetFileBackedCompositeEffChannelAdapter : virtual VsNetEmbeddedFileBackedEffChannelStack {
 	virtual int ReleaseFileBackedEffMarker(void);
 	VsNetFileBackedEffStream m_InitialStream04;
 };
 
-struct VsNetGlobalStateFileBackedEffComposite :
-	VsNetFileBackedCompositeEffChannelAdapter,
-	VsNetRuntimeChannelStack {
+struct VsNetGlobalStateFileBackedEffComposite : VsNetFileBackedCompositeEffChannelAdapter, VsNetRuntimeChannelStack {
 	VsNetGlobalStateFileBackedEffComposite();
 	virtual ~VsNetGlobalStateFileBackedEffComposite();
 	virtual short ClaimRuntimeFlag(const char* pszFlags);
@@ -126,9 +117,8 @@ struct VsNetGlobalStateFileBackedEffComposite :
 	DWORD m_dwGlobalStateServiceTick58;
 };
 
-struct VsNetDualSlotTableFileBackedEffComposite :
-	VsNetFileBackedCompositeEffChannelAdapter,
-	VsNetCompositeEffTransportStack {
+struct VsNetDualSlotTableFileBackedEffComposite : VsNetFileBackedCompositeEffChannelAdapter,
+												  VsNetCompositeEffTransportStack {
 	VsNetDualSlotTableFileBackedEffComposite();
 	virtual ~VsNetDualSlotTableFileBackedEffComposite();
 	virtual int CompositeReserved00(const char* pszPath08, const char* pszPath0c);

@@ -4432,10 +4432,7 @@ int VsNetWin32FileWrapper::OpenWithCreateFlag(LPCSTR pszPath, int nAccessMode, i
 // FUNCTION: LEMBALL 0x0047f640
 int VsNetWin32FileWrapper::OpenCreateNew(LPCSTR pszPath, int nAccessMode)
 {
-	VsNetInlineOpenWin32FileWrapper* pWrapper;
-
-	pWrapper = (VsNetInlineOpenWin32FileWrapper*) this;
-	pWrapper->m_nReserved10 = 0;
+	m_nOffset = 0;
 	return OpenWithCreateFlag(pszPath, nAccessMode, 1);
 }
 
