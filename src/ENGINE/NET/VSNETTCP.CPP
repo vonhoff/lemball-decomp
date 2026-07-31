@@ -1151,8 +1151,8 @@ VsNetSocketWindowEffChannel::VsNetSocketWindowEffChannel()
 // FUNCTION: LEMBALL 0x0046fd70
 VsNetSocketWindowEffChannel::~VsNetSocketWindowEffChannel()
 {
-	if (*(int*) ((char*) this - 0x08) != 0) {
-		FreeVSMemBlock((void*) (unsigned long) *(int*) ((char*) this - 0x08));
+	if (m_nSocketHandle != 0) {
+		FreeVSMemBlock((void*) (unsigned long) m_nSocketHandle);
 	}
 	DestroyInvisibleMessageWindow((VS_InvisibleWindow*) this);
 }
