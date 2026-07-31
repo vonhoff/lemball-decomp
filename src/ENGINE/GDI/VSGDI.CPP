@@ -488,19 +488,22 @@ struct VsGdiResourceGeometryHelperSlot {
 	int m_nOwnerOrState18;
 };
 
+// VTABLE: LEMBALL 0x00499d78
 struct VsGdiResourceGeometryHelperSlotManager {
-	void* m_pVtable;
+	virtual void* AllocateResourceGeometryHelperSlot(short* pRect, void* pWrappedTarget);
+	virtual void RemoveResourceGeometryHelperSlot(void* pTarget);
+	virtual void LookupResourceGeometryHelperSlot(void);
+	virtual void DeactivateResourceGeometryHelperSlot(void* pTarget);
+
+	int FindResourceGeometryHelperSlot(void* pTarget);
+
 	VsGdiResourceGeometryHelperSlot* m_pSlots;
 	int m_nReserved08;
 	int m_nReserved0C;
 	int m_cSlots;
 
+	VsGdiResourceGeometryHelperSlotManager(int cSlots);
 	~VsGdiResourceGeometryHelperSlotManager(void);
-	VsGdiResourceGeometryHelperSlotManager* InitializeResourceGeometryHelperSlotManager(int cSlots);
-	void* AllocateResourceGeometryHelperSlot(short* pRect, void* pWrappedTarget);
-	void RemoveResourceGeometryHelperSlot(void* pTarget);
-	int FindResourceGeometryHelperSlot(void* pTarget);
-	void DeactivateResourceGeometryHelperSlot(void* pTarget);
 };
 
 struct VsGdiResourceGeometryLinkNode {
@@ -645,20 +648,6 @@ private:
 
 static void* g_VSGDI_AnimWindowOwnerVtable[50];
 static int g_fVSGDIAnimWindowOwnerVtableInitialized;
-
-struct VsGdiResourceGeometryHelperSlotManagerVtable {
-	void* (VsGdiResourceGeometryHelperSlotManager::*m_pAllocate)(short*, void*);
-	void (VsGdiResourceGeometryHelperSlotManager::*m_pRemove)(void*);
-	int (VsGdiResourceGeometryHelperSlotManager::*m_pFind)(void*);
-	void (VsGdiResourceGeometryHelperSlotManager::*m_pDeactivate)(void*);
-};
-
-static VsGdiResourceGeometryHelperSlotManagerVtable g_VSGDI_ResourceGeometryHelperSlotManagerVtable = {
-	&VsGdiResourceGeometryHelperSlotManager::AllocateResourceGeometryHelperSlot,
-	&VsGdiResourceGeometryHelperSlotManager::RemoveResourceGeometryHelperSlot,
-	&VsGdiResourceGeometryHelperSlotManager::FindResourceGeometryHelperSlot,
-	&VsGdiResourceGeometryHelperSlotManager::DeactivateResourceGeometryHelperSlot,
-};
 
 struct VsGdiResourceGeometryHelperTargetVtable {
 	void* m_pReserved0;
@@ -3514,7 +3503,7 @@ int InitializeResourceGeometryHelperRuntime(void)
 		(VsGdiResourceGeometryHelperSlotManager*) AllocateVSMemBlock(sizeof(VsGdiResourceGeometryHelperSlotManager));
 	if (pSlotManager != 0) {
 		g_pResourceGeometryHelperSlotManager =
-			pSlotManager->InitializeResourceGeometryHelperSlotManager((int) g_StartupGraphicsDriverConfig.m_cbSize);
+			new (pSlotManager) VsGdiResourceGeometryHelperSlotManager((int) g_StartupGraphicsDriverConfig.m_cbSize);
 	}
 	else {
 		g_pResourceGeometryHelperSlotManager = 0;
@@ -3589,35 +3578,29 @@ int ShutdownResourceGeometryHelperRuntime(void)
 	return 1;
 }
 // FUNCTION: LEMBALL 0x0046bc00
-VsGdiResourceGeometryHelperSlotManager* VsGdiResourceGeometryHelperSlotManager::
-	InitializeResourceGeometryHelperSlotManager(int cSlots)
+VsGdiResourceGeometryHelperSlotManager::VsGdiResourceGeometryHelperSlotManager(int cSlots)
 {
-	VsGdiResourceGeometryHelperSlotManager* pSlotManager;
 	int nByteOffset;
 
-	pSlotManager = this;
-	pSlotManager->m_pVtable = &g_VSGDI_ResourceGeometryHelperSlotManagerVtable;
-	pSlotManager->m_pSlots = (VsGdiResourceGeometryHelperSlot*) AllocateVSMemBlock(
-		(unsigned int) (cSlots * sizeof(*pSlotManager->m_pSlots)));
-	pSlotManager->m_cSlots = cSlots;
-	pSlotManager->m_nReserved08 = 0;
-	pSlotManager->m_nReserved0C = 0;
+	m_pSlots = (VsGdiResourceGeometryHelperSlot*) AllocateVSMemBlock((unsigned int) (cSlots * sizeof(*m_pSlots)));
+	m_cSlots = cSlots;
+	m_nReserved08 = 0;
+	m_nReserved0C = 0;
 	if (0 < cSlots) {
 		nByteOffset = 0;
 		do {
 			nByteOffset += sizeof(VsGdiResourceGeometryHelperSlot);
 			--cSlots;
-			*(int*) ((char*) pSlotManager->m_pSlots + nByteOffset - 0x1c) = 0;
-			*(int*) ((char*) pSlotManager->m_pSlots + nByteOffset - 0x14) = 0;
-			*(int*) ((char*) pSlotManager->m_pSlots + nByteOffset - 0x18) = 0;
-			*(int*) ((char*) pSlotManager->m_pSlots + nByteOffset - 0x0c) = 0;
-			*(int*) ((char*) pSlotManager->m_pSlots + nByteOffset - 0x10) = 0;
-			*(int*) ((char*) pSlotManager->m_pSlots + nByteOffset - 8) = 1;
-			*(int*) ((char*) pSlotManager->m_pSlots + nByteOffset - 4) = 0;
+			*(int*) ((char*) m_pSlots + nByteOffset - 0x1c) = 0;
+			*(int*) ((char*) m_pSlots + nByteOffset - 0x14) = 0;
+			*(int*) ((char*) m_pSlots + nByteOffset - 0x18) = 0;
+			*(int*) ((char*) m_pSlots + nByteOffset - 0x0c) = 0;
+			*(int*) ((char*) m_pSlots + nByteOffset - 0x10) = 0;
+			*(int*) ((char*) m_pSlots + nByteOffset - 8) = 1;
+			*(int*) ((char*) m_pSlots + nByteOffset - 4) = 0;
 		} while (cSlots != 0);
 	}
 	g_pResourceGeometryHelperTarget = 0;
-	return pSlotManager;
 }
 // FUNCTION: LEMBALL 0x0046bc90
 VsGdiResourceGeometryHelperSlotManager::~VsGdiResourceGeometryHelperSlotManager(void)
@@ -3625,7 +3608,6 @@ VsGdiResourceGeometryHelperSlotManager::~VsGdiResourceGeometryHelperSlotManager(
 	int i;
 	int nByteOffset;
 
-	m_pVtable = &g_VSGDI_ResourceGeometryHelperSlotManagerVtable;
 	i = 0;
 	if (0 < m_cSlots) {
 		nByteOffset = 0;
@@ -3716,6 +3698,11 @@ void VsGdiResourceGeometryHelperSlotManager::RemoveResourceGeometryHelperSlot(vo
 	pSlot->m_nOwnerOrStateC = 0;
 	pSlot->m_fAvailable = 1;
 }
+// FUNCTION: LEMBALL 0x0046bf60
+void VsGdiResourceGeometryHelperSlotManager::LookupResourceGeometryHelperSlot(void)
+{
+}
+
 // FUNCTION: LEMBALL 0x0046bf70
 int VsGdiResourceGeometryHelperSlotManager::FindResourceGeometryHelperSlot(void* pTarget)
 

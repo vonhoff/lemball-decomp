@@ -22,11 +22,6 @@ void __fastcall clear_mapped_list_resource_table_pending_flag(void* pTable)
 	*(int*) ((char*) pTable + 0x18) = 0;
 }
 
-// FUNCTION: LEMBALL 0x0046bf60
-void lookup_resource_geometry_helper_slot(void)
-{
-}
-
 // FUNCTION: LEMBALL 0x0046db30
 int __fastcall get_helper_group_0_dirty_flag_local(void* pHelperGroup)
 {
