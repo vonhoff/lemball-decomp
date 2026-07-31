@@ -60,6 +60,11 @@ unsigned int ReadLittleEndianU32FromBytes(const unsigned char* pBytes)
 	return nValue;
 }
 
+// FUNCTION: LEMBALL 0x004266d0
+void NoopLiftChunkCallback(void)
+{
+}
+
 struct FourDwordValue {
 	int m_anValues[4];
 
@@ -122,6 +127,11 @@ void ChunkRuntimeStateView::ResetLaserState(void)
 	m_nRuntimeState94 = nZero;
 	m_nRuntimeState138 = nZero;
 	m_nRuntimeState13C = nZero;
+}
+
+// FUNCTION: LEMBALL 0x00429e40
+void NoopLaserChunkCallback(void)
+{
 }
 
 struct ThreeDwordPoint {

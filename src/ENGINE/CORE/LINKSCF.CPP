@@ -2307,11 +2307,3 @@ int PASCAL return_false_ice_chunk_callback(void* pUnused1, void* pUnused2)
 	(void) pUnused2;
 	return 0;
 }
-
-void noop_lift_callback(void)
-{
-}
-
-void noop_lasr_callback(void)
-{
-}
