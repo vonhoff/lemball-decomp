@@ -200,7 +200,7 @@ address,name,symbol,type,source
 0x004030C1,vs_root_geometry_owner_remove_queued_render_sink_value_node,?RemoveQueuedRenderSinkValueNode@VS_RootGeometryOwner@@UAEXPAX@Z,stub,src/ENGINE/GDI/VSWINDOW.H
 0x004031CF,gmob_chunk_type14action_view_dispatch_gmob_chunk_type14actions,?DispatchGmobChunkType14Actions@GmobChunkType14ActionView@@QAEXXZ,stub,src/LEVEL/LEVELVTACTIONDISPATCH.CPP
 0x00403201,get_first_managed_entity_child_from_cached_group,,stub,src/ENGINE/CORE/LINKSCF.H
-0x0040325B,vs_net_network_lobby_screen_hide_player_entries,?HidePlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
+0x0040325B,VsNetNetworkLobbyScreen::HidePlayerEntries,?HidePlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
 0x004032AB,set_move_chunk_object_trigger_latch,?set_move_chunk_object_trigger_latch@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004032C4,activate_coll_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004032D3,initialize_lift_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
