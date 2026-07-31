@@ -95,7 +95,7 @@ extern "C" HANDLE WINAPI CreateThread(LPSECURITY_ATTRIBUTES pThreadAttributes,
 									  DWORD dwCreationFlags,
 									  LPDWORD pdwThreadId);
 extern "C" BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority);
-extern "C" void WINAPI ExitProcess(UINT uExitCode);
+extern "C" __declspec(dllimport) void WINAPI ExitProcess(UINT uExitCode);
 
 // GLOBAL: LEMBALL 0x004a1e24
 int g_cbEffTransportMaxPacketBytes = 0;
