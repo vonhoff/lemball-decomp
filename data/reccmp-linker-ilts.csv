@@ -42,6 +42,7 @@ address,name,symbol,type,source
 0x00401573,managed_entity_packet23_write_eff_stream_tagged_header,?WriteEffStreamTaggedHeader@ManagedEntityPacket23@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x004015A0,GameScreenObject::ConstructNetworkLobbyScreen,?ConstructNetworkLobbyScreen@GameScreenObject@@QAEPAXPAX0PAF@Z,stub,src/GAME.CPP
 0x004015DC,emit_active_pgun_chunk_manager_render_entries,,stub,src/ENGINE/CORE/LINKSCF.H
+0x0040160E,LevelManagedEntityMoveCommandView::IsFacingTowardFirstMoveCommand,?IsFacingTowardFirstMoveCommand@LevelManagedEntityMoveCommandView@@QAEHXZ,stub,src/LEVEL/LEVELVTMOVE.CPP
 0x00401672,emit_lasr_chunk_manager_render_entries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004016B3,RequestLiftChunkObjectActivationState,?RequestLiftChunkObjectActivationState@@YIHPAX@Z,stub,src/ENGINE/CORE/LINKSCFLIFTACTION.CPP
 0x00401730,ManagedEntityPacketBase::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacketBase@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
@@ -200,6 +201,7 @@ address,name,symbol,type,source
 0x00402E28,StartMenuSelectorActionThunk,?StartMenuSelectorActionThunk@@YIXPAUGameMenuSelectorManager@@@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00402E41,managed_entity_packet26_write_eff_stream_tagged_header,?WriteEffStreamTaggedHeader@ManagedEntityPacket26@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKETTHUNK.CPP
 0x00402E4B,dispatch_door_chunk_object_trigger_by_slot,?DispatchDoorChunkObjectTriggerBySlot@@YIXPAX0HI@Z,stub,src/ENGINE/CORE/LINKSCFDOORACTION.CPP
+0x00402E5F,CallHasPendingManagedEntityCommands,?CallHasPendingManagedEntityCommands@@YAHPAXPAULevelManagedEntityCommandQueueView@@@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402E91,managed_projectile_object_view_activate_at_position,?ActivateAtPosition@ManagedProjectileObjectView@@QAEXPBULevelPoint3@@@Z,stub,src/LEVEL/LEVELVTPROJECTILE.CPP
 0x00402E9B,dispatch_lift_chunk_object_action_by_slot,?DispatchLiftChunkObjectActionBySlot@@YIXPAX0HIHH@Z,stub,src/ENGINE/CORE/LINKSCFLIFTACTION.CPP
 0x00402EB9,get_cached_chunk_object_by_index,,stub,src/ENGINE/CORE/LINKSCF.H

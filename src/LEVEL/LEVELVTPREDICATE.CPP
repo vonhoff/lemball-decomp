@@ -3,6 +3,17 @@ extern int g_fLevelEndStateRequestLatched;
 
 typedef int(__fastcall* LevelManagedEntityNoArgPredicateProc)(void* pEntity);
 
+struct LevelManagedEntityCommandQueueView;
+
+struct LevelManagedEntityMoveCommandView {
+	int IsFacingTowardFirstMoveCommand(void);
+};
+
+int __cdecl CallHasPendingManagedEntityCommands(void* pUnused, LevelManagedEntityCommandQueueView* pEntity);
+typedef int(__cdecl* LevelManagedEntityThreeArgPredicateProc)(void* pUnused,
+															  LevelManagedEntityCommandQueueView* pEntity,
+															  void* pUnused2);
+
 struct LevelManagedEntityTimedPredicateView {
 	unsigned char m_abReserved00[0xcc];
 	unsigned int m_nActionDeadlineCC;
@@ -105,4 +116,18 @@ int __cdecl GetManagedEntityRuntimeValue(void* pUnused, LevelManagedEntityRuntim
 {
 	(void) pUnused;
 	return pEntity->m_nRuntimeValue2C;
+}
+
+// FUNCTION: LEMBALL 0x00419c00
+int __cdecl HasPendingCommandsNeedingFacingUpdate(void* pUnused,
+												  LevelManagedEntityMoveCommandView* pEntity,
+												  void* pUnused2)
+{
+	if (((LevelManagedEntityThreeArgPredicateProc) CallHasPendingManagedEntityCommands)(
+			pUnused,
+			(LevelManagedEntityCommandQueueView*) pEntity,
+			pUnused2) == 0) {
+		return 0;
+	}
+	return pEntity->IsFacingTowardFirstMoveCommand() == 0;
 }
