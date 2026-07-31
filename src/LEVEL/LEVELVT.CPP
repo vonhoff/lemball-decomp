@@ -2703,12 +2703,6 @@ int return_chunk_status_two(void)
 	return 2;
 }
 
-int PASCAL accept_gmob_activation(void* pUnused)
-{
-	(void) pUnused;
-	return 1;
-}
-
 void noop_projectile_boon_hook(void)
 {
 }

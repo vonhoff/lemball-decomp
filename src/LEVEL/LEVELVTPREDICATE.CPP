@@ -273,3 +273,10 @@ int GetSavedChunkStatus(void)
 {
 	return 2;
 }
+
+// FUNCTION: LEMBALL 0x0041d000
+int __stdcall AcceptGmobActivation(void* pUnused)
+{
+	(void) pUnused;
+	return 1;
+}
