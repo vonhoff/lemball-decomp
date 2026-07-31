@@ -1493,17 +1493,20 @@ void* __fastcall FinalizeLoadedResourceObjectResult(void* pObject, void* pUnused
 	MogLoadStringResourceObject* pResourceObject;
 
 	pResourceObject = (MogLoadStringResourceObject*) pObject;
-	if (pResourceObject->m_nResultCode44 == 1) {
-		((MogLoadResourceArchive*) g_pResourceArchive)->RemoveCachedResourceObject(pResourceObject);
-		if (pResourceObject != 0) {
-			((MogLoadDeleteResourceProc) pResourceObject->m_pVtable[0])(pResourceObject, 0, 1);
-		}
+	switch (pResourceObject->m_nResultCode44) {
+	case 1:
+		break;
+	case 2:
 		return 0;
+	default:
+		return pObject;
 	}
-	if (pResourceObject->m_nResultCode44 == 2) {
-		return 0;
+
+	((MogLoadResourceArchive*) g_pResourceArchive)->RemoveCachedResourceObject(pResourceObject);
+	if (pResourceObject != 0) {
+		((MogLoadResourceObjectDeleteInterface*) pResourceObject)->Delete(1);
 	}
-	return pObject;
+	return 0;
 }
 
 // FUNCTION: LEMBALL 0x45de00
