@@ -2644,9 +2644,9 @@ void LEMBALL_FASTCALL ReleaseQueuedVariantRangeResources(GameQueuedVariantRangeE
 			(QueuedVariantOverlayDeleteInterface*) ((char*) pEntry->m_pOverlay4C + 0x90);
 		pDelete->Delete(1);
 	}
-	nOffset = 0;
 	i = 0;
-	if (pEntry->m_cResources34 > nOffset) {
+	if (pEntry->m_cResources34 > 0) {
+		nOffset = 0;
 		do {
 			ReleaseTypedResourceObjectReference(*(void**) ((char*) pEntry->m_ppLoadedResources50 + nOffset));
 			nOffset += sizeof(void*);
