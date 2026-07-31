@@ -74,8 +74,7 @@ address,name,symbol,type,source
 0x004322E0,delete_primary_context_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/GAME.CPP
 0x00432350,DeleteQueuedRenderPointSinkWrapperAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
 
-0x004324A0,CacheObjectField44AsCurrentContext,,synthetic,src/SHELL/PRIMARY.CPP
-0x004324D0,is_object_field_0x44_current_context,,synthetic,src/SHELL/PRIMARY.CPP
+
 
 0x00432A30,InitializeStatusIndicatorPointSinkEntryAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x00432A60,DeleteQueuedVariantChildSlotRenderPointSinkAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP

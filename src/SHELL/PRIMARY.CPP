@@ -204,19 +204,3 @@ void GameHelperGroup0::SetBackingActive(int fActive)
 		*(int*) ((char*) this + 0x48) = 1;
 	}
 }
-
-void LEMBALL_FASTCALL CacheObjectField44AsCurrentContext(void* pObject)
-{
-	extern void* g_pCachedCurrentContextWindow;
-	extern void* g_pCachedCurrentContextOwner;
-
-	g_pCachedCurrentContextWindow = *(void**) ((char*) pObject + 0x44);
-	g_pCachedCurrentContextOwner = pObject;
-}
-
-int LEMBALL_FASTCALL is_object_field_0x44_current_context(void* pObject)
-{
-	extern void* g_pCachedCurrentContextWindow;
-
-	return *(void**) ((char*) pObject + 0x44) == g_pCachedCurrentContextWindow;
-}

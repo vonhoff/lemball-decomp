@@ -1222,9 +1222,9 @@ address,size,name,unit
 0x004323C0,10,set_queued_render_point_sink_field_0x30,ENGINE/GDI/VSWINDOWMODE.CPP
 0x004323D0,70,append_queued_render_sink_value_node,ENGINE/GDI/VSGDI.CPP
 0x00432430,86,remove_queued_render_sink_value_node,ENGINE/GDI/VSGDI.CPP
-0x004324A0,15,cache_object_field_0x44_as_current_context,SHELL/PRIMARY.CPP
+0x004324A0,15,cache_object_field_0x44_as_current_context,ENGINE/GDI/VSWINDOWMODE.CPP
 0x004324C0,1,noop_window_owner_slot_37,SHELL/PRIMARY.CPP
-0x004324D0,17,is_object_field_0x44_current_context,SHELL/PRIMARY.CPP
+0x004324D0,17,is_object_field_0x44_current_context,ENGINE/GDI/VSWINDOWMODE.CPP
 0x004324F0,1,noop_window_owner_slot_19,SHELL/PRIMARY.CPP
 0x00432500,1,noop_window_owner_slot_20,SHELL/PRIMARY.CPP
 0x00432510,1,noop_window_owner_slot_38,SHELL/PRIMARY.CPP

@@ -31,6 +31,24 @@ void VsQueuedRenderPointSinkView::SetSink(int nSink)
 	m_nSink30 = nSink;
 }
 
+// FUNCTION: LEMBALL 0x004324a0
+void LEMBALL_FASTCALL CacheObjectField44AsCurrentContext(void* pObject)
+{
+	extern void* g_pCachedCurrentContextWindow;
+	extern void* g_pCachedCurrentContextOwner;
+
+	g_pCachedCurrentContextWindow = *(void**) ((char*) pObject + 0x44);
+	g_pCachedCurrentContextOwner = pObject;
+}
+
+// FUNCTION: LEMBALL 0x004324d0
+int LEMBALL_FASTCALL IsObjectField44CurrentContext(void* pObject)
+{
+	extern void* g_pCachedCurrentContextWindow;
+
+	return *(void**) ((char*) pObject + 0x44) == g_pCachedCurrentContextWindow;
+}
+
 // FUNCTION: LEMBALL 0x00432860
 void VsWindowOwnerRuntimeStateView::ClearChildState(void)
 {
