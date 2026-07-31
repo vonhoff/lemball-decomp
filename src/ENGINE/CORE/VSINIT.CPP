@@ -552,12 +552,10 @@ VsInitFormattedOutputStream* VsInitFormattedOutputStream::ConstructFormattedOutp
 // FUNCTION: LEMBALL 0x004584a0
 void LEMBALL_FASTCALL RestoreStreamFormatSubobjectVtable(VsInitStreamFormatTargetState* pState)
 {
-	VsInitFormattedOutputStream* pStream;
 	void** pVtable;
 
-	pStream = (VsInitFormattedOutputStream*) ((char*) pState - 0x12c);
-	pVtable = *(void***) pStream;
-	*(void**) ((char*) pStream + (unsigned long) pVtable[1]) = g_StreamFormatSubobjectVtable;
+	pVtable = *(void***) ((char*) pState - 0x12c);
+	*(void**) ((char*) pState + (unsigned long) pVtable[1] - 0x12c) = g_StreamFormatSubobjectVtable;
 }
 
 // FUNCTION: LEMBALL 0x004584c0
