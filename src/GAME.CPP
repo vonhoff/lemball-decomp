@@ -49,6 +49,7 @@ struct LevelScreenTerrainRenderView {
 };
 
 static void* g_pSignedTrigTable = 0;
+// GLOBAL: LEMBALL 0x004a1bcc
 void* g_pSessionRandomState = 0;
 static char g_GAME_SrcDiskBuffer[0x100];
 
