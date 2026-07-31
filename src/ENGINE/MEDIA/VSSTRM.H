@@ -318,6 +318,7 @@ struct VsNetRuntimeChannelStack : virtual VsNetRuntimeChannelCore {
 // GLOBAL: LEMBALL 0x00499128
 // VsNetCompositeEffTransportStack::`vbtable'{for `VsNetCompositeEffTransportStack'}
 // VTABLE: LEMBALL 0x00499198 VsNetRuntimeChannelCore
+// VTABLE: LEMBALL 0x004991a8 VsNetCompositeEffTransportStack
 struct VsNetCompositeEffTransportStack : virtual VsNetRuntimeChannelCore {
 protected:
 	VsNetCompositeEffTransportStack();
@@ -329,7 +330,7 @@ public:
 	virtual void CompositeReserved08(void) = 0;
 	virtual void CompositeReserved0c(int nArgument) = 0;
 	virtual void CompositeReserved10(void) = 0;
-	virtual void CompositeReserved14(void) = 0;
+	virtual void CompositeReserved14(void);
 	~VsNetCompositeEffTransportStack();
 	virtual void ClearPendingWrite(void* pArgument);
 	virtual void DualStreamNoop(void);

@@ -380,7 +380,7 @@ struct VsNetAllocatedTcpipEffTransportComposite : VsNetCompositeEffTransportStac
 	virtual void CompositeReserved08(void);
 	virtual void CompositeReserved0c(int nAddress);
 	virtual void CompositeReserved10(void);
-	virtual void CompositeReserved14(void);
+
 	virtual void ClearPendingWrite(void* pArgument);
 	virtual void* ClaimRecord(void);
 	virtual int HandleAsyncMessage(int nMessage, void* pReserved, unsigned int nEvent);
@@ -1115,7 +1115,7 @@ void LEMBALL_FASTCALL TcpipSocketStackDualRet8(void* pObject, void* pUnused, BYT
 	(void) fReserved;
 }
 // FUNCTION: LEMBALL 0x004629d0
-void VsNetAllocatedTcpipEffTransportComposite::CompositeReserved14(void)
+void VsNetCompositeEffTransportStack::CompositeReserved14(void)
 {
 	(void) 0;
 }
