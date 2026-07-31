@@ -56,6 +56,7 @@ address,name,symbol,type,source
 0x00401956,emit_coll_chunk_manager_render_entries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004019C4,write_eff_stream_u32field2c,,stub,src/ENGINE/MEDIA/EFFSTRM.H
 0x00401A0A,get_first_projectile_pool_object,?get_first_projectile_pool_object@@YIPAXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
+0x00401A5F,LoadFramedScreenFrameResources,?LoadFramedScreenFrameResources@@YIXPAX@Z,stub,src/FRONTEND/MAINMENU.CPP
 0x00401A87,vs_net_network_lobby_screen_confirm_selected_player_entry,?ConfirmSelectedPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/FRONTEND/LOBBY.CPP
 0x00401AC3,LevelManagedEntityChildIterator::AppendChild,?AppendChild@LevelManagedEntityChildIterator@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00401ADC,handle_menu_selector_event_thunk,,stub,src/FRONTEND/MENUSEL.H
@@ -143,6 +144,7 @@ address,name,symbol,type,source
 0x00402784,initialize_level_selection_point_rect_sink_entry_thunk,?InitializeLevelSelectionPointRectSinkEntryThunk@@YIPAXPAX@Z,stub,src/LEVEL/LEVELSTAT.CPP
 0x004027E8,append_cached_chunk_object,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004027FC,read_network_lobby_peer_entry_stream,,stub,src/ENGINE/MEDIA/EFFSTRM.H
+0x00402815,GameFramedScreenBase::ReleaseFrameResources,?ReleaseFrameResources@GameFramedScreenBase@@QAEXXZ,stub,src/FRONTEND/MAINMENU.CPP
 0x00402856,return_zero_vtable_callback_0042dd30,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402860,forward_owner_child_command_value,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040289C,ResetLasrChunkObjectRuntimeStateThunk,?ResetLasrChunkObjectRuntimeStateThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP

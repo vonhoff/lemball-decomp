@@ -2724,7 +2724,7 @@ void LEMBALL_FASTCALL RefreshFramedScreenFrameResources(void* pObject)
 	int fWindowReady;
 
 	pScreen = (GameFramedScreenBase*) pObject;
-	fWindowReady = IsPrimaryContextWindowReadyForPresent((int*) pScreen->m_pPrimaryContext84);
+	fWindowReady = IsPrimaryContextWindowReadyForPresentThunk((int*) pScreen->m_pPrimaryContext84);
 	if (pScreen->m_fFrameResourcesLoaded9C != 0) {
 		((GameFramedScreenVirtualInterface*) pScreen)->ReleaseDerivedFrameResources();
 		pScreen->ReleaseFrameResources();
