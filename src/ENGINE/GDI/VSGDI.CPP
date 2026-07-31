@@ -2678,8 +2678,7 @@ void* ConstructHelperGroup0RowBuffer(void* pvHelperGroup, int fConstructCompactH
 	*(int*) ((char*) pHelperGroup + 0x48) = 0;
 	return pHelperGroup;
 }
-// FUNCTION: LEMBALL 0x004664b0
-void LEMBALL_FASTCALL DestroyHelperGroup0RowBuffer(void* pvHelperGroup)
+void LEMBALL_FASTCALL DestroyHelperGroup0RowBufferCompilerStateShim(void* pvHelperGroup)
 {
 	int iCompactDelta;
 	int* pHelperGroup;
@@ -5696,4 +5695,19 @@ void* HelperUploadRectEntryView::Clear(void)
 	m_bottom = nZero;
 	m_right = nZero;
 	return this;
+}
+
+// Compiler-safe tail definition; correlated through reccmp-source-symbols.csv.
+void LEMBALL_FASTCALL DestroyHelperGroup0RowBuffer(void* pvHelperGroup)
+{
+	int* pHelperGroup;
+
+	pHelperGroup = (int*) pvHelperGroup;
+	*(void**) pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup0Vtable;
+	pHelperGroup += 2;
+	*(void**) ((char*) pHelperGroup + *(int*) ((char*) (unsigned long) pHelperGroup[-1] + 4) - 4) =
+		(void*) &g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable;
+	*(int*) ((char*) pHelperGroup + *(int*) ((char*) (unsigned long) pHelperGroup[-1] + 4) - 8) =
+		*(int*) ((char*) (unsigned long) pHelperGroup[-1] + 4) - 0x54;
+	DestroyResourceGeometryRowBuffer(pHelperGroup);
 }
