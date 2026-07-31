@@ -18,6 +18,8 @@
 #include <stdio.h>
 #include <string.h>
 
+extern void* LEMBALL_STDCALL ReturnStreamArgumentStdcall(void* pStream);
+
 extern "C" int __cdecl _isctype(int nCharacter, int nType);
 #undef _tolower
 extern "C" int __cdecl _tolower(int nCharacter);
@@ -243,16 +245,19 @@ static VsInitVSMemPointerTable* g_pPaletteRemapPointerTable = 0;
 static void* g_pSharedRenderQueueNode = 0;
 void* LEMBALL_FASTCALL DeleteRenderDispatchQueueThunk00463940(void* pQueue, int nUnused, int fFreeMemory);
 static void* g_RenderDispatchQueueDeleteThunkVtable[1] = {(void*) NetworkSafeVtableNoop};
+// GLOBAL: LEMBALL 0x004988d0
 static void* g_RenderDispatchQueueCriticalSectionHelperVtable[2] = {
 	(void*) EnterObjectCriticalSection,
 	(void*) LeaveObjectCriticalSection,
 };
+// GLOBAL: LEMBALL 0x00499250
 static void* g_RenderDispatchQueueVtable[4] = {
-	(void*) ReturnStreamArgument,
+	(void*) ReturnStreamArgumentStdcall,
 	(void*) DeleteRenderDispatchQueueThunk00463940,
 	(void*) AppendRenderDispatchQueueEntry,
 	(void*) DispatchRenderQueueEntryImmediately,
 };
+// GLOBAL: LEMBALL 0x00499248
 static void* g_DeleteRenderDispatchQueueCriticalSectionHelperThunk[2] = {
 	(void*) EnterObjectCriticalSection,
 	(void*) LeaveObjectCriticalSection,
