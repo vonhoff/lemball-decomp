@@ -48,6 +48,7 @@ struct LevelScreenTerrainRenderView {
 	void DispatchDynamicRenderEntry(int iEntry, unsigned short nDepth);
 };
 
+// GLOBAL: LEMBALL 0x004a13c0
 static void* g_pSignedTrigTable = 0;
 // GLOBAL: LEMBALL 0x004a1bcc
 void* g_pSessionRandomState = 0;
@@ -70,7 +71,8 @@ static const char g_GAME_InstallPrompt[] =
 	"To play Lemmings Paintball, you must first install it.  Run the SETUP.EXE program on the CD";
 static const char g_GAME_CdromErrorTitle[] = "Unable to find CD";
 static const char g_GAME_CdromErrorText[] = "Please insert the Paintball CD in a local CD Drive";
-static const char g_GAME_ClosedDownText[] = "GAME CLOSED DOWN\n";
+// GLOBAL: LEMBALL 0x0049ca48
+static const char g_GAME_ClosedDownText[] = "\n*************\nGAME CLOSED DOWN\n****************\n";
 static const char g_GAME_IsValidResourceFileAssert[] = "IsValidResourceFile";
 static const char g_GAME_SourceFileName[] = "GAME.CPP";
 static const char g_GAME_StartingDemoModePrefix[] = "Starting demo mode for level ";
