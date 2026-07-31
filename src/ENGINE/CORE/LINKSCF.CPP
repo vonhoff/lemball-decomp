@@ -160,6 +160,9 @@ int LEMBALL_FASTCALL GetManagedEntityGroupCount(void* pObject);
 
 typedef void(LEMBALL_FASTCALL* ActivateChunkObjectProc)(void* pObject);
 
+int LEMBALL_FASTCALL GetFirstManagedEntityChildFromCachedGroup(void* pObject);
+int LEMBALL_FASTCALL GetFirstIteratedChildStatus11C(void* pObject);
+
 void LEMBALL_FASTCALL ActivateRockChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateCaptureTriggerChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateLasrChunkObjects(void* pManager);
@@ -183,9 +186,9 @@ DEFINE_LINKSCF_VTABLE_STUB_2(ClearCountedChildBackReference)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitGmobChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_1(RemoveCachedChunkObjectAndDestroy)
 DEFINE_LINKSCF_VTABLE_STUB_0(CountNestedIteratedChildEntries)
-DEFINE_LINKSCF_VTABLE_STUB_0(GetFirstManagedEntityChildFromCachedGroup)
+DEFINE_LINKSCF_VTABLE_STUB_0(GetFirstManagedEntityChildFromCachedGroupCompatibility)
 DEFINE_LINKSCF_VTABLE_STUB_0(GetNextManagedEntityChildFromCachedGroup)
-DEFINE_LINKSCF_VTABLE_STUB_0(GetFirstIteratedChildStatus11C)
+DEFINE_LINKSCF_VTABLE_STUB_0(GetFirstIteratedChildStatus11CCompatibility)
 DEFINE_LINKSCF_VTABLE_STUB_1(AdvanceCachedGroupManagedEntityChildIterator)
 DEFINE_LINKSCF_VTABLE_STUB_1(FindManagedEntityByPointer)
 DEFINE_LINKSCF_VTABLE_STUB_2(AppendManagedEntityGroupFromIds)
