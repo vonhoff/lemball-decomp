@@ -27,7 +27,6 @@ void GameResourceGeometryChildView::RefreshGeometryChildEnabled(void)
 		nRenderContext = *(int*) (*(int*) (pObject + 0x4c) + 0x0c);
 		*(int*) (nRenderContext + *(int*) (*(int*) (nRenderContext + 0x40) + 4) + 0x78) = 1;
 	}
-	((GameResourceGeometryChildState*) (pObject + 0x90))->m_fRefreshPending48 = 1;
 	((GameResourceGeometryChildState*) (pObject + 0x90))->SetEnabled(*(int*) (pObject + 0x34));
 }
 
