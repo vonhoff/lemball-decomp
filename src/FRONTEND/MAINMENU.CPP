@@ -188,6 +188,8 @@ struct GameMainMenuScreenView : public GameFramedScreenBase {
 	int m_nDisplayModeSelection3B0;
 	int m_nPackSelection3B4;
 	int m_nSharedSelection3B8;
+
+	int HandleMainMenuInput(void* pEvent);
 };
 
 struct GameOptionsScreenView : public GameFramedScreenBase {
@@ -2152,10 +2154,10 @@ void LEMBALL_FASTCALL DestroyIntroSequenceScreenThunk(void* pObject)
 	DestroyIntroSequenceScreen(pObject);
 }
 // LINKERILT: LEMBALL 0x0040242d
-int LEMBALL_FASTCALL HandleMainMenuInputThunk(void* pObject, int nUnusedEdx, void* pEvent)
+int LEMBALL_FASTCALL HandleMainMenuInputThunk(void* pObject, int, void* pEvent)
 
 {
-	return HandleMainMenuInput(pObject, nUnusedEdx, pEvent);
+	return ((GameMainMenuScreenView*) pObject)->HandleMainMenuInput(pEvent);
 }
 // LINKERILT: LEMBALL 0x00402595
 void* LEMBALL_FASTCALL DeleteMainMenuScreenThunk(void* pObject, int nUnusedEdx, int fDelete)
@@ -3229,11 +3231,11 @@ void LEMBALL_FASTCALL InitializeMainMenuWidgets(void* pObject)
 	ppSelectorManager = (GameMenuSelectorManager**) &pScreen->m_pSelectorManager334;
 	if (pSelectorStorage != 0) {
 		*ppSelectorManager = ConstructMenuSelectorManagerThunk((GameMenuSelectorManager*) pSelectorStorage,
-																				(int) pScreen->m_pRenderContext88,
-																				pScreen->m_pPrimaryContext84,
-																				pScreen->m_pRenderContext88,
-																				6,
-																				pScreen->m_fCompactLayout32C);
+															   (int) pScreen->m_pRenderContext88,
+															   pScreen->m_pPrimaryContext84,
+															   pScreen->m_pRenderContext88,
+															   6,
+															   pScreen->m_fCompactLayout32C);
 	}
 	else {
 		*ppSelectorManager = 0;
@@ -3353,7 +3355,7 @@ void LEMBALL_FASTCALL DestroyMainMenuScreen(void* pObject)
 	DestroyFramedScreenBaseThunk00402081(pScreen);
 }
 // FUNCTION: LEMBALL 0x00448620
-int LEMBALL_FASTCALL HandleMainMenuInput(void* pObject, int, void* pEvent)
+int GameMainMenuScreenView::HandleMainMenuInput(void* pEvent)
 
 {
 	GameMainMenuScreenView* pScreen;
@@ -3361,7 +3363,7 @@ int LEMBALL_FASTCALL HandleMainMenuInput(void* pObject, int, void* pEvent)
 	int nType;
 
 	pMessage = (ShellUiMenuCommandMessage*) pEvent;
-	pScreen = (GameMainMenuScreenView*) pObject;
+	pScreen = this;
 	nType = *(unsigned short*) pMessage;
 	switch (nType) {
 	case 3:
