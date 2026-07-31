@@ -2107,8 +2107,8 @@ unsigned char LEMBALL_FASTCALL PlayWaveOutEffectInstance(void* pBackend, int, in
 // FUNCTION: LEMBALL 0x0047d220
 int LEMBALL_FASTCALL DispatchWaveOutEffectVolume(void* pBackend, int, int nEffectInstanceId, int, int nVolume)
 {
-	typedef int(LEMBALL_FASTCALL * DispatchProc)(void*, int, int, int, int);
-	return ((DispatchProc) (*(void***) pBackend)[36])(pBackend, 0, nEffectInstanceId, 0xff00, nVolume);
+	typedef int(LEMBALL_STDCALL * DispatchProc)(int, int, int);
+	return ((DispatchProc) (*(void***) pBackend)[36])(nEffectInstanceId, 0xff00, nVolume);
 }
 
 // FUNCTION: LEMBALL 0x0047d240
