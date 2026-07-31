@@ -2921,9 +2921,10 @@ int VsNetRuntimeStartView::StartEffTransportRuntimeAndWaitReady(int nRuntimeKey,
 	DWORD dwNow;
 	DWORD dwDelayStart;
 
+	pVtable =
+		(VsNetEffTransportRuntimeStateVtable*) ((VsNetEffTransportRuntimeState*) this)->m_RenderQueueNode.m_pVtable;
+	((VsNetEffTransportRuntimeState*) this)->m_nRuntimeKey = nRuntimeKey;
 	pState = (VsNetEffTransportRuntimeState*) this;
-	pVtable = (VsNetEffTransportRuntimeStateVtable*) pState->m_RenderQueueNode.m_pVtable;
-	pState->m_nRuntimeKey = nRuntimeKey;
 	pState->m_fStartRequested = 1;
 	g_cbEffTransportMaxPacketBytes = cbMaxPacket;
 	(pState->*pVtable->m_pServiceTransport)();
