@@ -14,11 +14,9 @@ struct VsNetEffStreamChannelState {
 	virtual int ReleaseFileBackedEffMarker(void) = 0; // vtable+0x0
 	virtual ~VsNetEffStreamChannelState();
 	virtual void ClearNestedEffChannelAsyncStatus(void) = 0; // vtable+0x8
-#ifdef LEMBALL_DEFINE_EFF_STREAM_CHANNEL_STATE_VTABLE
 	virtual void ClearPendingWrite(void* pArgument);
+#ifdef LEMBALL_DEFINE_EFF_STREAM_CHANNEL_STATE_VTABLE
 	static void operator delete(void* pObject);
-#else
-	virtual void ClearPendingWrite(void* pArgument) = 0;
 #endif
 
 	int m_nReserved04;

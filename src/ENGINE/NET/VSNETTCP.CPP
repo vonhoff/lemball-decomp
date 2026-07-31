@@ -86,6 +86,9 @@ public:
 	DWORD m_dwReserved1;
 };
 
+// GLOBAL: LEMBALL 0x0049a048
+// VsNetSocketWindowEffChannel::`vbtable'
+// VTABLE: LEMBALL 0x0049a050 VsNetEffStreamChannelState
 class VsNetSocketWindowEffChannel : public VsNetSocketWindowPrimary, virtual public VsNetEffStreamChannelState {
 public:
 	static void operator delete(void* pObject) { FreeVSMemBlock(pObject); }
