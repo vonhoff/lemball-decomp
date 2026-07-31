@@ -19,6 +19,7 @@ address,name,symbol,type,source
 0x0040126C,LevelChunkStreamWriteView::AppendLevelChunkStreamPayload,?AppendLevelChunkStreamPayload@LevelChunkStreamWriteView@@QAEXPAUVsNetEffStreamBase@@@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x00401271,destroy_level_game_mode_auto_thunk,?DestroyLevelGameModeAutoThunk@@YIXPAX@Z,stub,src/GAME.CPP
 0x004012A3,ProjectilePool::RemoveObject,?RemoveObject@ProjectilePool@@QAEXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
+0x004012DF,ClaimManagedEntitySlotId,?ClaimManagedEntitySlotId@@YIXH@Z,stub,src/LEVEL/LEVELRUNSLOT.CPP
 0x00401302,has_stream_dirty_managed_entity_children,?HasStreamDirtyChildren@LevelManagedEntityChildIterator@@QAEHXZ,stub,src/LEVEL/LEVELVT.CPP
 0x0040132A,GameScreenObject::ConstructMainMenuScreen,?ConstructMainMenuScreen@GameScreenObject@@QAEPAXPAX0PAF@Z,stub,src/GAME.CPP
 0x0040137F,ActivateIteratedLevelChunkChildren,?ActivateIteratedLevelChunkChildren@@YIXPAX@Z,stub,src/LEVEL/LEVELRUNITERATOR.CPP

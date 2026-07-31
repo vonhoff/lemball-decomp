@@ -79,10 +79,9 @@ void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode);
 void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEnabled);
 void InitializeManagedEntitySlotTablesThunk(void* pLevelGameMode);
 unsigned short LEMBALL_FASTCALL GetManagedEntitySlotId(int nManagedEntityObject);
-void SetManagedEntitySlotId(void* pManagedEntityObject, unsigned short nSlotId);
 unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void);
 unsigned short FindLastFreeManagedEntitySlotIdThunk(void);
-void ClaimManagedEntitySlotId(int nManagedEntityObject);
+void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject);
 void LEMBALL_FASTCALL ResetBallChunkEntries(void* pBallManager);
 void LEMBALL_FASTCALL FillReachabilityGridFromTileFlags(void* pReachabilityHelper);
 void LEMBALL_FASTCALL ResizeLevelTileReachabilityGrid(void* pReachabilityHelper);
@@ -121,7 +120,7 @@ void* g_pActiveManagedEntityOwner;
 // GLOBAL: LEMBALL 0x004a74bc
 unsigned short g_GAME_ManagedEntityRegistryCount;
 // GLOBAL: LEMBALL 0x0049d108
-static unsigned char g_GAME_ManagedEntitySlotBitMasks[8] = {1, 2, 4, 8, 0x10, 0x20, 0x40, 0x80};
+unsigned char g_GAME_ManagedEntitySlotBitMasks[8] = {1, 2, 4, 8, 0x10, 0x20, 0x40, 0x80};
 
 struct ManagedEntityPacketStreamView {
 	void BindManagedEntityPacketTarget(void* pEntity);
@@ -134,7 +133,7 @@ ManagedEntityPacketStreamView* g_pManagedEntityPacket2ATargetStream = 0;
 ManagedEntityPacketStreamView* g_pManagedEntityStateResetPacketStream = 0;
 
 // GLOBAL: LEMBALL 0x004a6410
-static unsigned char g_GAME_ManagedEntitySlotClaimBitset[0x100];
+unsigned char g_GAME_ManagedEntitySlotClaimBitset[0x100];
 
 struct LevelLevelTileCell {
 	int m_nType00;
@@ -483,9 +482,15 @@ struct GameLevelTileGrid {
 	int m_cRows14;
 };
 
-void ClaimManagedEntitySlotId(int nManagedEntityObject);
+struct ManagedEntitySlotOwnerView {
+	char m_abReserved00[0x6c];
+	unsigned short m_nSlotId6C;
+
+	void SetManagedEntitySlotId(unsigned short nSlotId);
+};
+
+void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject);
 unsigned short LEMBALL_FASTCALL GetManagedEntitySlotId(int nManagedEntityObject);
-void SetManagedEntitySlotId(void* pManagedEntityObject, unsigned short nSlotId);
 unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void);
 unsigned short FindLastFreeManagedEntitySlotIdThunk(void);
 void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEnabled);
@@ -1404,7 +1409,7 @@ void AssignNetworkPlayerManagedEntitySlotIdsThunk(int nLevelMode)
 			ppManagedEntities = (void**) (nLevelMode + 0x1d0 + *pOffsets * 4);
 			do {
 				nSlotId = FindLastFreeManagedEntitySlotIdThunk();
-				SetManagedEntitySlotId(*ppManagedEntities, (unsigned short) nSlotId);
+				((ManagedEntitySlotOwnerView*) *ppManagedEntities)->SetManagedEntitySlotId((unsigned short) nSlotId);
 				--i;
 				++ppManagedEntities;
 			} while (i != 0);
@@ -1557,7 +1562,8 @@ void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode)
 			nSlotId = GetManagedEntitySlotId((int) (unsigned long) pManagedEntityObject);
 			if (nSlotId == 0xffff) {
 				nFreeSlotId = FindFirstFreeManagedEntitySlotIdForwardThunk();
-				SetManagedEntitySlotId(pManagedEntityObject, (unsigned short) nFreeSlotId);
+				((ManagedEntitySlotOwnerView*) pManagedEntityObject)
+					->SetManagedEntitySlotId((unsigned short) nFreeSlotId);
 			}
 			++i;
 		} while ((int) i < (int) cManagedEntities);
@@ -1650,12 +1656,14 @@ unsigned short LEMBALL_FASTCALL GetManagedEntitySlotId(int nManagedEntityObject)
 {
 	return *(unsigned short*) (nManagedEntityObject + 0x6c);
 }
-// FUNCTION: LEMBALL 0x00416620
-void SetManagedEntitySlotId(void* pManagedEntityObject, unsigned short nSlotId)
+// Compiler-state compatibility body; the original typed member is isolated in LEVELRUNSLOT.CPP.
+void ClaimManagedEntitySlotIdCompatibility(int nManagedEntityObject);
+void SetManagedEntitySlotIdCompatibility(void* pManagedEntityObject, unsigned short nSlotId)
 {
 	*(unsigned short*) ((char*) pManagedEntityObject + 0x6c) = nSlotId;
-	ClaimManagedEntitySlotId((int) (unsigned long) pManagedEntityObject);
+	ClaimManagedEntitySlotIdCompatibility((int) (unsigned long) pManagedEntityObject);
 }
+
 // FUNCTION: LEMBALL 0x00416670
 unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void)
 {
@@ -1703,31 +1711,6 @@ int PASCAL ReturnZeroLevelCallback00416730(void)
 {
 	return 0;
 }
-// FUNCTION: LEMBALL 0x00416740
-void ClaimManagedEntitySlotId(int nManagedEntityObject)
-{
-	unsigned char bClaimByte;
-	unsigned short nSlotId;
-	unsigned int i;
-	unsigned int cManagedEntities;
-
-	nSlotId = *(unsigned short*) (nManagedEntityObject + 0x6c);
-	if (nSlotId != 0xffff) {
-		bClaimByte = g_GAME_ManagedEntitySlotClaimBitset[nSlotId >> 3];
-		if ((g_GAME_ManagedEntitySlotBitMasks[nSlotId & 7] & bClaimByte) != 0) {
-			cManagedEntities = (unsigned int) g_GAME_ManagedEntityRegistryCount;
-			for (i = 0; (int) i < (int) cManagedEntities; ++i) {
-				if (g_GAME_ManagedEntityRegistryTable[i & 0xffff] != 0) {
-					GetManagedEntitySlotId(g_GAME_ManagedEntityRegistryTable[i & 0xffff]);
-				}
-			}
-			*(unsigned short*) (nManagedEntityObject + 0x6c) = 0xffff;
-			return;
-		}
-		g_GAME_ManagedEntitySlotClaimBitset[nSlotId >> 3] = g_GAME_ManagedEntitySlotBitMasks[nSlotId & 7] | bClaimByte;
-	}
-}
-
 inline void ManagedEntityPacketBase::operator delete(void* pObject)
 {
 	FreeVSMemBlock(pObject);
