@@ -27,8 +27,6 @@ address,name,symbol,type,source
 0x00413E30,DeleteLevelGameModeAuto,,synthetic,src/GAME.CPP
 0x00414C80,DeleteLevelChunkObjectChildrenVariant14C80,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00414F00,DeleteManagedEntityQueueCursorAuto,,synthetic,src/LEVEL/LEVELVT.CPP
-0x00416D90,LevelRunSmallFunctionView::ClearObjectField134,,synthetic,src/LEVEL/LEVELRUN.CPP
-0x00416E70,LevelRunSmallFunctionView::ApplyManagedEntityStateResetPacket,,synthetic,src/LEVEL/LEVELRUN.CPP
 0x00417AD0,DeleteLevelChunkObjectBaseWrapper17AD0,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00417B00,LevelVtSmallFunctionView::SetRectFromBounds,,synthetic,src/LEVEL/LEVELVT.CPP
 0x00417B50,,??_GManagedEntityPacketBase@@UAEPAXI@Z,synthetic,src/LEVEL/LEVELRUNPACKET.H

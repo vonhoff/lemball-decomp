@@ -2542,31 +2542,6 @@ void GameLockedRecordSlotTableView::ClearLockedRecordSlotPayloadFlags(void)
 	}
 }
 
-struct LevelRunSmallFunctionView {
-	int ClearObjectField134(void);
-	void ApplyManagedEntityStateResetPacket(void);
-};
-
-int LevelRunSmallFunctionView::ClearObjectField134(void)
-{
-	int nValue;
-
-	nValue = *(int*) ((char*) this + 0x134);
-	if (nValue != 0) {
-		*(int*) ((char*) this + 0x134) = 0;
-	}
-	return nValue;
-}
-
-void LevelRunSmallFunctionView::ApplyManagedEntityStateResetPacket(void)
-{
-	if (*(int*) ((char*) this + 0x130) != 0) {
-		*(int*) ((char*) this + 0x114) = 0;
-		*(int*) ((char*) this + 0x130) = 0;
-		*(int*) ((char*) this + 0x8c) = 0;
-	}
-}
-
 void* LEMBALL_FASTCALL DeleteNetworkLevelChunkDeltaStreamAuto(void* pObject, void*, BYTE fDelete)
 {
 	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();

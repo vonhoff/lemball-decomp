@@ -1,3 +1,38 @@
+struct LevelManagedEntityResetStateView {
+	char m_abReserved00[0x8c];
+	int m_nRuntimeState8C;
+	char m_abReserved90[0x84];
+	int m_nPendingState114;
+	char m_abReserved118[0x18];
+	int m_fResetPending130;
+	int m_nLatchedValue134;
+
+	int ClearLatchedValue(void);
+	void ApplyPendingReset(void);
+};
+
+// FUNCTION: LEMBALL 0x00416d90
+int LevelManagedEntityResetStateView::ClearLatchedValue(void)
+{
+	int nValue;
+
+	nValue = m_nLatchedValue134;
+	if (nValue != 0) {
+		m_nLatchedValue134 = 0;
+	}
+	return nValue;
+}
+
+// FUNCTION: LEMBALL 0x00416e70
+void LevelManagedEntityResetStateView::ApplyPendingReset(void)
+{
+	if (m_fResetPending130 != 0) {
+		m_nPendingState114 = 0;
+		m_fResetPending130 = 0;
+		m_nRuntimeState8C = 0;
+	}
+}
+
 struct LevelManagedEntityChildSlotRecord {
 	int m_nState00;
 	int m_nValue04;
