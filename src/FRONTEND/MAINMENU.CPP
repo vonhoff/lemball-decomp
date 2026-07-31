@@ -3227,14 +3227,16 @@ void LEMBALL_FASTCALL InitializeMainMenuWidgets(void* pObject)
 
 	pSelectorStorage = AllocateVSMemBlock(sizeof(GameMenuSelectorManager));
 	ppSelectorManager = (GameMenuSelectorManager**) &pScreen->m_pSelectorManager334;
-	if (pSelectorStorage == 0) {
-		*ppSelectorManager = 0;
+	if (pSelectorStorage != 0) {
+		*ppSelectorManager = ConstructMenuSelectorManagerThunk((GameMenuSelectorManager*) pSelectorStorage,
+																				(int) pScreen->m_pRenderContext88,
+																				pScreen->m_pPrimaryContext84,
+																				pScreen->m_pRenderContext88,
+																				6,
+																				pScreen->m_fCompactLayout32C);
 	}
 	else {
-		*ppSelectorManager = new (pSelectorStorage) GameMenuSelectorManager(pScreen->m_pPrimaryContext84,
-																			pScreen->m_pRenderContext88,
-																			6,
-																			pScreen->m_fCompactLayout32C);
+		*ppSelectorManager = 0;
 	}
 
 	(*ppSelectorManager)
