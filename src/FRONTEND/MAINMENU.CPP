@@ -3177,9 +3177,9 @@ int LEMBALL_FASTCALL GetIntroSequenceMediaNotifyFlags(void*)
 void LEMBALL_FASTCALL InitializeMainMenuWidgets(void* pObject)
 {
 	GameMainMenuScreenView* pScreen;
-	void* pForegroundBitmap;
-	int cRenderGroups;
 	unsigned char* pForegroundEntry;
+	int cRenderGroups;
+	void* pForegroundBitmap;
 	const int* pPlayResources;
 	const int* pSinglePlayerResources;
 	const int* pMultiPlayerResources;
