@@ -81,6 +81,7 @@ address,name,symbol,type,source
 0x00401F28,handle_menu_selector_entry_event_thunk,,stub,src/FRONTEND/MENUSEL.H
 0x00401F2D,refresh_active_rock_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401F3C,ManagedEntityStateView::RequestManagedEntityStateId,?RequestManagedEntityStateId@ManagedEntityStateView@@QAEXH@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
+0x00401FDC,LevelManagedEntityActiveGroupView::GetProfileValueByIndex,?GetProfileValueByIndex@LevelManagedEntityActiveGroupView@@QAEHH@Z,stub,src/LEVEL/LEVELRUNPROFILE.CPP
 0x00401FAF,count_nested_iterated_child_entries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401FBE,activate_rock_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401FE1,destroy_lift_chunk_manager_auto_thunk,?DestroyLiftChunkManagerAutoThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
