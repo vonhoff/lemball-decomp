@@ -88,6 +88,7 @@ address,name,symbol,type,source
 0x00401FDC,LevelManagedEntityActiveGroupView::GetProfileValueByIndex,?GetProfileValueByIndex@LevelManagedEntityActiveGroupView@@QAEHH@Z,stub,src/LEVEL/LEVELRUNPROFILE.CPP
 0x00401FE1,destroy_lift_chunk_manager_auto_thunk,?DestroyLiftChunkManagerAutoThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00401FF5,SelectMenuSelectorSide1Thunk,?SelectMenuSelectorSide1Thunk@@YIXPAUGameMenuSelectorManager@@@Z,stub,src/FRONTEND/MENUSEL.CPP
+0x00402009,GameMenuSelectorManager::AppendChild,?AppendChild@GameMenuSelectorManager@@QAEXHHPBHHHHHPAHH@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x0040200E,GameScreenObject::ConstructPaintballSequenceScreen,?ConstructPaintballSequenceScreen@GameScreenObject@@QAEPAXPAX0PAFH@Z,stub,src/GAME.CPP
 0x00402054,delete_door_chunk_object_array_vtable_thunk,?DeleteDoorChunkObjectArrayVtableThunk@@YIPAXPAX0E@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402068,LevelManagedEntityStateFields::IncrementHeadingOctant,?IncrementHeadingOctant@LevelManagedEntityStateFields@@QAEXXZ,stub,src/LEVEL/LEVELVT.CPP
@@ -119,6 +120,7 @@ address,name,symbol,type,source
 0x00402496,LiftChunkManagerSerializationView::SerializeLiftChunkEndpointPairs,?SerializeLiftChunkEndpointPairs@LiftChunkManagerSerializationView@@QAEHPAULiftChunkEndpointPair@@@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x0040249B,has_stream_dirty_plas_chunk_children,?HasStreamDirtyChildrenThunk@LevelManagedEntityActiveGroupView@@QAEHXZ,stub,src/LEVEL/LEVELRUN.CPP
 0x004024AA,GameVariantResourceEntryManager::PopulateVariantResourceEntriesForFlagMask,?PopulateVariantResourceEntriesForFlagMask@GameVariantResourceEntryManager@@QAEXG@Z,stub,src/RESOURCE/VARMGR.CPP
+0x004024F5,GameMenuSelectorManager::InitializeCurrentState,?InitializeCurrentState@GameMenuSelectorManager@@QAEXH@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00402518,activate_lift_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402527,DestroyFrameTimerController,?DestroyFrameTimerController@@YAXXZ,stub,src/LEVEL/DEMO.CPP
 0x0040252C,VsNetNetworkLobbyScreen::ShowPlayerEntries,?ShowPlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
