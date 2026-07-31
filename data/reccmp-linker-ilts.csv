@@ -26,6 +26,7 @@ address,name,symbol,type,source
 0x00401406,destroy_menu_selector_manager_auto_thunk,?DestroyMenuSelectorManagerAutoThunk@@YIXPAX@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00401433,level_chunk_stream_write_view_flush_level_chunk_stream_write,?FlushLevelChunkStreamWrite@LevelChunkStreamWriteView@@QAEXXZ,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x0040143D,destroy_paintball_sequence_screen_auto_thunk,?DestroyPaintballSequenceScreenAutoThunk@@YIXPAX@Z,stub,src/FRONTEND/MAINMENU.CPP
+0x0040146A,ResetMineChunkObjectRuntimeState,?ResetMineChunkObjectRuntimeState@@YIXPAUMineChunkObjectRuntimeView@@@Z,stub,src/LEVEL/LEVELVTMINE.CPP
 0x004014AB,pop_level_plas_history_child,?PopLevelPlasHistoryChild@@YIHPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
 0x004014CE,update_menu_selector_animation_thunk,,stub,src/FRONTEND/MENUSEL.H
 0x004014F1,destroy_level_chunk_stream_dispatcher_auto_thunk,?DestroyLevelChunkStreamDispatcherAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELRUN.CPP
