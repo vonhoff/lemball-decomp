@@ -531,8 +531,10 @@ void* LEMBALL_FASTCALL DeleteSelectorProgressOverlayChildAdjusted(void* pGeometr
 
 __inline static void StoreSpriteOwnerLocalPoint(void* pGeometryOwner, const VS_XYPair* pPoint)
 {
-	*(short*) ((char*) pGeometryOwner + 0x70) = (short) (pPoint->m_x - *(short*) ((char*) pGeometryOwner - 0x78));
-	*(short*) ((char*) pGeometryOwner + 0x72) = (short) (pPoint->m_y - *(short*) ((char*) pGeometryOwner - 0x76));
+	VS_XYPair Origin = *(VS_XYPair*) ((char*) pGeometryOwner - 0x78);
+
+	*(short*) ((char*) pGeometryOwner + 0x70) = (short) (pPoint->m_x - Origin.m_x);
+	*(short*) ((char*) pGeometryOwner + 0x72) = (short) (pPoint->m_y - Origin.m_y);
 }
 
 inline static int ResolveResourceGeometryRenderObject(void* pObject)
