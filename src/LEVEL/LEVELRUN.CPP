@@ -2542,23 +2542,9 @@ void GameLockedRecordSlotTableView::ClearLockedRecordSlotPayloadFlags(void)
 	}
 }
 
-struct LevelTwoDwordPairSourceView {
-	int m_anValues[2];
-
-	void copy_two_dword_pair_from_this(int* pDestination);
-};
-
-void LevelTwoDwordPairSourceView::copy_two_dword_pair_from_this(int* pDestination)
-{
-	pDestination[0] = m_anValues[0];
-	pDestination[1] = m_anValues[1];
-}
-
 struct LevelRunSmallFunctionView {
 	int ClearObjectField134(void);
 	void ApplyManagedEntityStateResetPacket(void);
-	void CopyNodeChunkRecordFixedPointPosition(int* pDestination);
-	void CopyNodeChunkRecordTileXY(int* pX, int* pY);
 };
 
 int LevelRunSmallFunctionView::ClearObjectField134(void)
@@ -2579,24 +2565,6 @@ void LevelRunSmallFunctionView::ApplyManagedEntityStateResetPacket(void)
 		*(int*) ((char*) this + 0x130) = 0;
 		*(int*) ((char*) this + 0x8c) = 0;
 	}
-}
-
-void LevelRunSmallFunctionView::CopyNodeChunkRecordFixedPointPosition(int* pDestination)
-{
-	int x;
-	int y;
-
-	y = *(volatile int*) ((char*) this + 4);
-	x = *(volatile int*) this;
-	pDestination[0] = x;
-	pDestination[1] = y;
-	pDestination[2] = (int) 0xaa55aa55;
-}
-
-void LevelRunSmallFunctionView::CopyNodeChunkRecordTileXY(int* pX, int* pY)
-{
-	*pX = *(int*) this >> 12;
-	*pY = *(int*) ((char*) this + 4) >> 12;
 }
 
 void* LEMBALL_FASTCALL DeleteNetworkLevelChunkDeltaStreamAuto(void* pObject, void*, BYTE fDelete)
