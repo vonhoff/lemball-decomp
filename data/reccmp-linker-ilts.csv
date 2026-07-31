@@ -167,6 +167,7 @@ address,name,symbol,type,source
 0x00402B1C,restore_reconstructed_level_screen_vtables_auto_thunk,?RestoreReconstructedLevelScreenVtablesAutoThunk@@YIXPAX@Z,stub,src/GAME.CPP
 0x00402B76,delete_network_lobby_selected_peer_status_stream,,stub,src/ENGINE/MEDIA/EFFSTRM.H
 0x00402BE9,destroy_gmob_chunk_type14object_auto_thunk,?DestroyGmobChunkType14ObjectAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
+0x00402C4D,destroy_ice_chunk_object,?destroy_ice_chunk_object@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402C5C,LiftChunkManagerSerializationView::GetLiftChunkObjectSlotIdByIndex,?GetLiftChunkObjectSlotIdByIndex@LiftChunkManagerSerializationView@@QAEGH@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402C75,return_zero_level_callback_0042eec0,?return_zero_level_callback_0042eec0@@YGHPAX0@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402CA2,destroy_capture_trigger_chunk_manager_auto_thunk,?DestroyCaptureTriggerChunkManagerAutoThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
