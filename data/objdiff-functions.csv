@@ -10,7 +10,7 @@ address,size,name,unit
 0x00406B30,108,apply_level_progress_password_value,GAME.CPP
 0x00406BA0,24,compute_level_password_checksum,GAME.CPP
 0x00406BC0,21,compute_power_of_two,GAME.CPP
-0x00406BE0,26,extract_level_password_bit_field,GAME.CPP
+0x00406BE0,26,extract_level_password_bit_field,LEVEL/LEVELPASSWORDBITS.CPP
 0x00406C00,150,format_level_progress_password,GAME.CPP
 0x00406CA0,215,validate_and_apply_level_password,GAME.CPP
 0x00406D80,68,parse_level_password_digits,GAME.CPP
