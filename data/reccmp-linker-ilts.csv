@@ -204,7 +204,7 @@ address,name,symbol,type,source
 0x004032AB,set_move_chunk_object_trigger_latch,?set_move_chunk_object_trigger_latch@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004032C4,activate_coll_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004032D3,initialize_lift_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
-0x004032DD,bind_packet_target,?BindManagedEntityPacketTarget@ManagedEntityPacketStreamView@@QAEXPAX@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
+0x004032DD,ManagedEntityPacketStreamView::BindManagedEntityPacketTarget,?BindManagedEntityPacketTarget@ManagedEntityPacketStreamView@@QAEXPAX@Z,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x0040333C,advance_invs_chunk_objects,?AdvanceInvsChunkObjects@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040335A,managed_entity_packet28_reverse_eff_stream_payload,?ReverseEffStreamPayload@ManagedEntityPacket28@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00403369,clear_active_variant_resources,?ClearActiveVariantResourceEntries@GameVariantResourceEntryManager@@QAEXXZ,stub,src/RESOURCE/VARMGR.CPP
