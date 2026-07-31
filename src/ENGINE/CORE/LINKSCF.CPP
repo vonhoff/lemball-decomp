@@ -1999,18 +1999,12 @@ void LEMBALL_FASTCALL AdvanceActiveMoveChunkObjects(void* pManager)
 }
 
 struct LinkScfSmallFunctionView {
-	void* GetLevelTileGridCellPointer(int x, int y);
 	void ClearManagedEntityGroupChildActiveFlag(int iChild);
 	void ResetRockChunkObjectRuntimeState(void);
 	void ResetCaptureTriggerChunkObjectRuntimeState(void);
 	void ResetLasrChunkObjectRuntimeState(void);
 	void SetObjectFields18_1c_20(int nField18, int nField1c, int nField20);
 };
-
-void* LinkScfSmallFunctionView::GetLevelTileGridCellPointer(int x, int y)
-{
-	return (char*) *(void**) ((char*) this + 4) + (x + *(int*) ((char*) this + 8) * y) * 12;
-}
 
 void LinkScfSmallFunctionView::ClearManagedEntityGroupChildActiveFlag(int iChild)
 {

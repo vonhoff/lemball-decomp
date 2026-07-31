@@ -2,6 +2,24 @@
 #include "ENGINE/CORE/WIN32.H"
 #include "ENGINE/MEDIA/VSSTRM.H"
 
+struct LevelTileGridCell {
+	int m_anValues[3];
+};
+
+struct LevelTileGridView {
+	void* m_pReserved00;
+	LevelTileGridCell* m_pCells04;
+	int m_nWidth08;
+
+	LevelTileGridCell* GetCell(int x, int y);
+};
+
+// FUNCTION: LEMBALL 0x0040eb70
+LevelTileGridCell* LevelTileGridView::GetCell(int x, int y)
+{
+	return &m_pCells04[x + m_nWidth08 * y];
+}
+
 struct EffStreamU16FieldView {
 	char m_abReserved00[0x30];
 	unsigned short m_nValue30;
