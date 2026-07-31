@@ -163,6 +163,7 @@ address,name,symbol,type,source
 0x00402860,forward_owner_child_command_value,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040289C,ResetLasrChunkObjectRuntimeStateThunk,?ResetLasrChunkObjectRuntimeStateThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x004028BF,vs_window_owner_base_reserved_window_owner_slot18,?ReservedWindowOwnerSlot18@VS_WindowOwnerBase@@UAEXXZ,stub,src/ENGINE/GDI/VSWINDOW.H
+0x004028E2,SavedPositionChunkObjectView::ResetToSavedPosition,?ResetToSavedPosition@SavedPositionChunkObjectView@@QAEXXZ,stub,src/LEVEL/LEVELSAVEDPOSITION.CPP
 0x00402900,emit_projectile_pool_render_entries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402946,dispatch_move_chunk_object_action_by_slot,?DispatchMoveChunkObjectActionBySlot@@YIXPAX0HI@Z,stub,src/LEVEL/LEVELVTMOVEACTION.CPP
 0x0040295F,clear_counted_child_back_reference,,stub,src/ENGINE/CORE/LINKSCF.H
