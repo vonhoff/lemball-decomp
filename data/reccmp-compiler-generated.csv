@@ -171,6 +171,8 @@ address,name,symbol,type,source
 0x0044A9D0,DeleteLevelSelectionModeAuto,,synthetic,src/GAME.CPP
 0x0044AA70,ResetLevelStatusChildCursor,,synthetic,src/LEVEL/LEVELSTAT.CPP
 0x0044B330,noop_level_selection_mode_render_hook,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x0044BEC0,noop_registration_recenter,,synthetic,src/FRONTEND/SCREENVT.CPP
+0x0044C0C0,noop_registration_buffer_reset,,synthetic,src/FRONTEND/SCREENVT.CPP
 0x0044C0D0,DeleteRegistrationInfoScreenAuto,,synthetic,src/GAME.CPP
 0x0044E620,DeleteMenuSelectorEntryAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x0044E650,delete_aligned_zrle_child_overlay_adjusted_c `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP

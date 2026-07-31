@@ -252,3 +252,11 @@ void PASCAL ForwardLevelScreenStatusIndicatorMode(int nMode, int nValue)
 {
 	SetLevelScreenStatusIndicatorModeThunk(nMode, nValue);
 }
+
+void noop_registration_recenter(void)
+{
+}
+
+void noop_registration_buffer_reset(void)
+{
+}
