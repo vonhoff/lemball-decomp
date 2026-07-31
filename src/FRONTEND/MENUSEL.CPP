@@ -68,6 +68,13 @@ extern void LEMBALL_FASTCALL NotifySpriteOwnerVariantCEvent0E(void* pObject);
 extern void LEMBALL_FASTCALL set_overlay_owner_field_0xf8(void* pOwner, void* pUnusedEdx, int nValue);
 void LEMBALL_FASTCALL DetachGeometryChildAndDestroyWindowOwner(void* pObject);
 int GetIntDirectionSign(int nValue);
+
+class GameSpriteOwnerVariantC {
+public:
+	int MapSpriteOwnerEventToFrameSlot(int nEvent);
+	void NotifyFrameEventC(int nEvent);
+	void NotifyFrameEventB(int nEvent);
+};
 void LEMBALL_FASTCALL RefreshCompactZrleOwnerAfterFrameChange(void* pObject);
 void LEMBALL_FASTCALL HandleSpriteOwnerPointerEnter(void* pGeometryOwner);
 void LEMBALL_FASTCALL HandleSpriteOwnerPointerLeave(void* pGeometryOwner);
@@ -521,46 +528,6 @@ void LEMBALL_FASTCALL DestroySelectorProgressOverlayChild(void* pGeometryInterfa
 void* LEMBALL_FASTCALL DeleteSelectorProgressOverlayChildAdjusted(void* pGeometryInterface,
 																  int nUnusedEdx,
 																  unsigned int fDelete);
-
-__inline static int MapSpriteOwnerEventToFrameSlot(int nEvent)
-{
-	switch (nEvent) {
-	case 0:
-	case 3:
-		return 0;
-	case 1:
-	case 4:
-		return 1;
-	case 2:
-	case 5:
-		return 2;
-	}
-	return 6;
-}
-
-__inline static void QueueSpriteOwnerEvent(void* pObject, short nType, int nFrame)
-{
-	GameMenuSelectorEvent Event;
-	void* pQueue;
-
-	Event.m_nType00 = nType;
-	Event.m_dwTimestamp04 = (int) timeGetTime();
-	Event.m_nPayload08 = *(int*) ((char*) pObject + 0xcc);
-	Event.m_nPayload0C = (int) (unsigned long) pObject;
-	Event.m_nPayload10 = nFrame;
-	pQueue = *(void**) ((char*) pObject + 0xf4);
-	((void(LEMBALL_FASTCALL*)(void*, int, void*))(*(void***) pQueue)[2])(pQueue, 0, &Event);
-}
-
-__inline static void NotifySpriteOwnerFrameEvent(void* pObject, short nType, int nEvent)
-{
-	if (*(int*) ((char*) pObject + 0xf8) == 0) {
-		*(int*) ((char*) pObject + 0xd8) = 1;
-	}
-	if (*(void**) ((char*) pObject + 0xf4) != 0) {
-		QueueSpriteOwnerEvent(pObject, nType, MapSpriteOwnerEventToFrameSlot(nEvent));
-	}
-}
 
 __inline static void StoreSpriteOwnerLocalPoint(void* pGeometryOwner, const VS_XYPair* pPoint)
 {
@@ -3119,9 +3086,9 @@ void LEMBALL_FASTCALL HandleSpriteOwnerButtonTransition(void* pGeometryOwner, in
 	if (nButton == 0 || nButton == 3) {
 		*(int*) ((char*) pGeometryOwner + 0x40) = 1;
 	}
-	nFrame = MapSpriteOwnerEventToFrameSlot(nButton);
+	nFrame = ((GameSpriteOwnerVariantC*) pObject)->MapSpriteOwnerEventToFrameSlot(nButton);
 	StoreSpriteOwnerLocalPoint(pGeometryOwner, pPoint);
-	NotifySpriteOwnerFrameEvent(pObject, 0x0b, nFrame);
+	((GameSpriteOwnerVariantC*) pObject)->NotifyFrameEventB(nFrame);
 	((void(LEMBALL_FASTCALL*)(void*, int, int))(*(void***) pObject)[49])(pObject, 0, nFrame);
 }
 // FUNCTION: LEMBALL 0x004680c0
@@ -3134,10 +3101,10 @@ void LEMBALL_FASTCALL HandleSpriteOwnerButtonInside(void* pGeometryOwner, int, c
 		return;
 	}
 	pObject = (char*) pGeometryOwner - 0x90;
-	nFrame = MapSpriteOwnerEventToFrameSlot(nButton);
+	nFrame = ((GameSpriteOwnerVariantC*) pObject)->MapSpriteOwnerEventToFrameSlot(nButton);
 	*(int*) ((char*) pGeometryOwner + 0x40) = 0;
 	StoreSpriteOwnerLocalPoint(pGeometryOwner, pPoint);
-	NotifySpriteOwnerFrameEvent(pObject, 0x0c, nFrame);
+	((GameSpriteOwnerVariantC*) pObject)->NotifyFrameEventC(nFrame);
 	((void(LEMBALL_FASTCALL*)(void*, int, int))(*(void***) pObject)[48])(pObject, 0, nFrame);
 }
 // FUNCTION: LEMBALL 0x00468130
