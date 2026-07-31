@@ -60,7 +60,7 @@ address,size,name,unit
 0x00408FA0,34,is_current_level_progress_locked,GAME.CPP
 0x00408FD0,7,can_retreat_current_level_progress,GAME.CPP
 0x00408FE0,111,set_unlocked_level_progress_cap,GAME.CPP
-0x00409070,16,set_selected_level_number,LEVEL/LEVELRUN.CPP
+0x00409070,16,set_selected_level_number,LEVEL/LEVELRUNPROGRESS.CPP
 0x00409080,8,get_selected_level_number,LEVEL/LEVELRUN.CPP
 0x00409150,43,create_frame_timer_controller,LEVEL/DEMO.CPP
 0x00409180,33,destroy_frame_timer_controller,LEVEL/DEMO.CPP

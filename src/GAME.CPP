@@ -258,8 +258,7 @@ struct GameLevelProgressState {
 	int m_nUnused20;
 	int m_nUnused24;
 	int m_anUnlockedPackCaps[5];
-	int m_anSnapshotPackCaps[4];
-	int m_nUnused4C;
+	int m_anSnapshotPackCaps[5];
 
 	void Advance(void);
 	bool Retreat(void);
@@ -276,6 +275,7 @@ struct GameLevelProgressState {
 	int ParsePasswordDigits(void);
 	int ParsePasswordDigitsThunk(void);
 	void Snapshot(void);
+	void SetSelectedLevelNumber(int nLevel);
 	void SetUnlockedPackCap(int nPack, int nCap);
 	void SetUnlockedPackCapThunk(int nPack, int nCap);
 };
@@ -3131,6 +3131,7 @@ bool GameLevelProgressState::CanRetreat(void)
 {
 	return m_nCurrentLevel != 0;
 }
+
 // FUNCTION: LEMBALL 0x00408fe0
 void GameLevelProgressState::SetUnlockedPackCap(int nPack, int nCap)
 {
@@ -5105,7 +5106,7 @@ void* GameScreenObject::ConstructMainMenuScreen(void* pPrimaryContext, void* pWi
 		*(int*) (pScreen + 0x3b4) = 0;
 		break;
 	}
-	((GameLevelProgressState*) g_pLevelProgressState)->m_nUnused4C = 0;
+	((GameLevelProgressState*) g_pLevelProgressState)->m_anSnapshotPackCaps[4] = 0;
 	*(int*) (pScreen + 0xa8) = 1;
 	*(int*) (pScreen + 0xac) = 1;
 	*(int*) (pScreen + 0xb0) = 1;
