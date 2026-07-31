@@ -214,6 +214,14 @@ public:
 	virtual void NotifyPacketReady(void) = 0;
 };
 
+// GLOBAL: LEMBALL 0x0049a068
+// VsNetTimedSocketEffChannelBundleLayout::`vbtable'{for `VsNetSocketWindowEffChannel'}
+// GLOBAL: LEMBALL 0x0049a070
+// VsNetTimedSocketEffChannelBundleLayout::`vbtable'{for `VsNetTimedEffStream'}
+// GLOBAL: LEMBALL 0x0049a078
+// VsNetTimedSocketEffChannelBundleLayout::`vbtable'{for `VsNetTimedSocketEffChannelBundleLayout'}
+// VTABLE: LEMBALL 0x0049a088 VsNetSocketWindowPrimary
+// VTABLE: LEMBALL 0x0049a0c0 VsNetEffStreamChannelState
 class VsNetTimedSocketEffChannelBundleLayout : virtual public VsNetTimedEffStream,
 											   virtual public VsNetSocketWindowEffChannel {
 public:
