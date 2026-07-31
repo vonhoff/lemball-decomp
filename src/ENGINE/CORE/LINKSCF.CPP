@@ -1369,10 +1369,10 @@ void LEMBALL_FASTCALL ActivateRockChunkObjects(void* pManager)
 	int nOffset;
 
 	pManagerBytes = (char*) pManager;
-	nOffset = 0;
 	if (*(char**) (pManagerBytes + 0x38) != 0) {
+		i = 0;
 		if (*(int*) (pManagerBytes + 0x30) > 0) {
-			i = 0;
+			nOffset = 0;
 			do {
 				pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
 				++i;
@@ -1421,10 +1421,10 @@ void LEMBALL_FASTCALL ActivateCaptureTriggerChunkObjects(void* pManager)
 	int nOffset;
 
 	pManagerBytes = (char*) pManager;
-	nOffset = 0;
 	if (*(char**) (pManagerBytes + 0x38) != 0) {
+		i = 0;
 		if (*(int*) (pManagerBytes + 0x30) > 0) {
-			i = 0;
+			nOffset = 0;
 			do {
 				pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
 				++i;
@@ -1585,10 +1585,10 @@ void LEMBALL_FASTCALL ActivateLasrChunkObjects(void* pManager)
 	int nOffset;
 
 	pManagerBytes = (char*) pManager;
-	nOffset = 0;
 	if (*(char**) (pManagerBytes + 0x38) != 0) {
+		i = 0;
 		if (*(int*) (pManagerBytes + 0x30) > 0) {
-			i = 0;
+			nOffset = 0;
 			do {
 				pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
 				++i;
@@ -1775,10 +1775,10 @@ void LEMBALL_FASTCALL ActivatePgunChunkObjects(void* pManager)
 	int nOffset;
 
 	pManagerBytes = (char*) pManager;
-	nOffset = 0;
 	if (*(char**) (pManagerBytes + 0x38) != 0) {
+		i = 0;
 		if (*(int*) (pManagerBytes + 0x30) > 0) {
-			i = 0;
+			nOffset = 0;
 			do {
 				pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
 				++i;
@@ -1848,10 +1848,10 @@ void LEMBALL_FASTCALL ActivateIceChunkObjects(void* pManager)
 	int nOffset;
 
 	pManagerBytes = (char*) pManager;
-	nOffset = 0;
 	if (*(char**) (pManagerBytes + 0x38) != 0) {
+		i = 0;
 		if (*(int*) (pManagerBytes + 0x30) > 0) {
-			i = 0;
+			nOffset = 0;
 			do {
 				pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
 				++i;
