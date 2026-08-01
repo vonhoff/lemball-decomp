@@ -2718,7 +2718,7 @@ address,size,name,unit
 0x00469530,153,queue_resource_sprite_window_owner_if_dirty,FRONTEND/MENUSEL.CPP
 0x004695D0,67,construct_resource_sprite_window_owner_variant_a,FRONTEND/MENUSEL.CPP
 0x00469620,67,construct_resource_sprite_window_owner_variant_b,FRONTEND/MENUSEL.CPP
-0x00469670,22,initialize_resource_sprite_window_owner_state,FRONTEND/MENUSEL.CPP
+0x00469670,22,initialize_resource_sprite_window_owner_state,ENGINE/GDI/VSSPRITEOWNER.CPP
 0x00469690,37,refresh_resource_sprite_text_owner_layout,FRONTEND/MENUSEL.CPP
 0x00469810,67,construct_resource_sprite_window_owner_variant_c,ENGINE/GDI/GDIVT.CPP
 0x00469860,12,initialize_resource_sprite_window_owner_variant_c_state,ENGINE/GDI/GDIVT.CPP
