@@ -1294,8 +1294,20 @@ void GameMenuActionFramePointSink::DispatchToRenderObject(void* pContext)
 	--m_pResource1C[2];
 }
 
-extern void* LEMBALL_FASTCALL DeleteRegistrationInfoScreenAuto(void* pObject, void*, BYTE fDelete);
+// FUNCTION: LEMBALL 0x00443d40
+void LEMBALL_FASTCALL ReleaseLevelScreenPauseDialogResources(void* pObject)
+{
+	char* pBytes = (char*) pObject;
 
+	if (*(int*) (pBytes + 0x208) != 0) {
+		((MappedListResourceTable*) (pBytes + 0xdc))->ReleaseListResourceSlot(*(int*) (pBytes + 0x204));
+		ReleaseTypedResourceObjectReference(*(void**) (pBytes + 0x158));
+		ReleaseTypedResourceObjectReference(*(void**) (pBytes + 0x154));
+		*(int*) (pBytes + 0x208) = 0;
+	}
+}
+
+extern void* LEMBALL_FASTCALL DeleteRegistrationInfoScreenAuto(void* pObject, void*, BYTE fDelete);
 // ABI-THUNK: 83 e9 04; e9 rel32. __fastcall this adjustment followed by tail jump;
 // MSVC 4.20 C++ emitted call/ret. Verified with reccmp.
 // FUNCTION: LEMBALL 0x0044c1d0
