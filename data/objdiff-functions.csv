@@ -1878,8 +1878,8 @@ address,size,name,unit
 0x00453030,64,write_network_level_chunk_delta_stream,LEVEL/LEVELRUN.CPP
 0x00453070,110,read_network_level_chunk_delta_stream,LEVEL/LEVELRUN.CPP
 0x00453120,30,delete_network_level_chunk_delta_stream,LEVEL/LEVELRUN.CPP
-0x00453150,45,initialize_bounded_text_buffer,LEVEL/LEVELRUN.CPP
-0x00453180,38,append_char_to_bounded_text_buffer,LEVEL/LEVELRUN.CPP
+0x00453150,45,initialize_bounded_text_buffer,FRONTEND/BOUNDEDTEXT.CPP
+0x00453180,38,append_char_to_bounded_text_buffer,FRONTEND/BOUNDEDTEXT.CPP
 0x004531B0,68,assign_bounded_text_buffer,LEVEL/LEVELRUN.CPP
 0x00453200,65,copy_string_to_bounded_text_buffer,FRONTEND/LOBBY.CPP
 0x00453250,12,reset_network_lobby_player_entry_child_flags,FRONTEND/LOBBY.CPP
