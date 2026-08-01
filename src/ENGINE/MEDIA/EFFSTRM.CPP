@@ -525,9 +525,9 @@ void LEMBALL_FASTCALL WriteNetworkLobbyPeerEntryPayload(void* pObject)
 	szHostName[20] = '\0';
 	HostName.ConstructDynamicCStringFromCString(szHostName);
 	HostName.LowercaseAndCopyDynamicCString(&LowercaseHostName);
-	HostName.DestroyDynamicCString();
-	pStream->WriteEffStreamCString(LowercaseHostName.m_pszText);
 	LowercaseHostName.DestroyDynamicCString();
+	pStream->WriteEffStreamCString(HostName.m_pszText);
+	HostName.DestroyDynamicCString();
 }
 // FUNCTION: LEMBALL 0x00452490
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryPayload(void* pObject)
