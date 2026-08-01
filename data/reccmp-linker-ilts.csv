@@ -159,6 +159,7 @@ address,name,symbol,type,source
 0x004026CB,append_managed_entity_group_from_ids,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004026D5,LevelManagedEntityRandomDelayView::ArmRandomActionDelay,?ArmRandomActionDelay@LevelManagedEntityRandomDelayView@@QAEXXZ,stub,src/LEVEL/VTABLE/LVRANDVT.CPP
 0x004026E9,destroy_coll_chunk_manager_auto_thunk,?DestroyCollChunkManagerAutoThunk@@YIXPAX@Z,stub,src/LEVEL/VTABLE/LEVELVT.CPP
+0x00402739,GameQueuedVariantChildSlotManager::SelectChildSlot,?SelectChildSlot@GameQueuedVariantChildSlotManager@@QAEXH@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00402743,destroy_ice_chunk_manager_auto_thunk,?DestroyIceChunkManagerAutoThunk@@YIXPAX@Z,stub,src/LEVEL/VTABLE/LEVELVT.CPP
 0x00402757,DoorChunkObjectManagerView::GetObjectSlotId,?GetObjectSlotId@DoorChunkObjectManagerView@@QAEGH@Z,stub,src/ENGINE/CORE/LSDOORSLOT.CPP
 0x0040275C,get_first_iterated_child_status11c,,stub,src/ENGINE/CORE/LINKSCF.H
