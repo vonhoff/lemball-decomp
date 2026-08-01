@@ -1741,12 +1741,7 @@ void PaletteRemapPointerTableMemberView::ReleasePaletteRemapVariant(void* pVaria
 	int i;
 	int cFound;
 
-	i = 0;
-	cFound = 0;
-	if (m_nCursor <= 0) {
-		return;
-	}
-	do {
+	for (i = 0, cFound = 0; cFound < m_nCursor; ++i, ++cFound) {
 		while (m_ppItems[i] == 0) {
 			++i;
 		}
@@ -1760,9 +1755,7 @@ void PaletteRemapPointerTableMemberView::ReleasePaletteRemapVariant(void* pVaria
 			--m_nCursor;
 			return;
 		}
-		++cFound;
-		++i;
-	} while (cFound < m_nCursor);
+	}
 }
 
 void ReleasePaletteRemapVariant(void* pVariant)
