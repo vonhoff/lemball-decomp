@@ -1299,13 +1299,13 @@ __declspec(naked) void* LEMBALL_FASTCALL DeleteRegistrationInfoScreenAdjusted(vo
 // FUNCTION: LEMBALL 0x0044c1e0
 int GetIntDirectionSign(int nValue)
 {
+	if (nValue == 0) {
+		return 0;
+	}
 	if (nValue < 0) {
 		return -1;
 	}
-	if (nValue > 0) {
-		return 1;
-	}
-	return 0;
+	return 1;
 }
 // FUNCTION: LEMBALL 0x0044c200
 void GameAlignedZrleChildOverlayView::HandleButtonRelease(int nMode)
