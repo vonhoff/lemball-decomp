@@ -25,9 +25,8 @@ void LEMBALL_FASTCALL DestroyProjectileObject(void* pObject);
 // FUNCTION: LEMBALL 0x00417e80
 void LEMBALL_FASTCALL ResetProjectilePool(void* pPool)
 {
-	int cbProjectile;
 	void** ppActiveProjectile;
-	ProjectilePoolOwnerView* pOwner;
+	int cbProjectile;
 	void* pProjectile;
 	ResetProjectileObjectProc pReset;
 
@@ -35,11 +34,10 @@ void LEMBALL_FASTCALL ResetProjectilePool(void* pPool)
 	ppActiveProjectile = ((ProjectilePoolOwnerView*) pPool)->m_apActiveProjectiles34;
 	((ProjectilePoolOwnerView*) pPool)->m_iActiveProjectileD8 = 0;
 	((ProjectilePoolOwnerView*) pPool)->m_cActiveProjectilesD4 = 0;
-	pOwner = (ProjectilePoolOwnerView*) pPool;
 	do {
 		*ppActiveProjectile = NULL;
 		ppActiveProjectile++;
-		pProjectile = pOwner->m_pProjectilePool30 + cbProjectile;
+		pProjectile = ((ProjectilePoolOwnerView*) pPool)->m_pProjectilePool30 + cbProjectile;
 		cbProjectile += 0x1a4;
 		pReset = (ResetProjectileObjectProc) (*(void***) pProjectile)[65];
 		pReset(pProjectile);
