@@ -1232,6 +1232,51 @@ int SmallMemoryBucket::FreeSlot(void* pvSlot)
 	return 1;
 }
 
+struct SmallMemoryBucketSlotIndex {
+	unsigned short m_iWord;
+	unsigned short m_iBit;
+};
+
+struct SmallMemoryBucketSlotFinder {
+	unsigned char m_abReserved00[0x40];
+	unsigned short m_wFlags;
+	unsigned short m_nReserved42;
+	int m_cBitmapWords;
+	unsigned int* m_pBitmap;
+
+	void FindNextFreeSlot(unsigned int* pNextSlot, SmallMemoryBucketSlotIndex CurrentSlot);
+};
+
+// FUNCTION: LEMBALL 0x00472fd0
+void SmallMemoryBucketSlotFinder::FindNextFreeSlot(unsigned int* pNextSlot, SmallMemoryBucketSlotIndex CurrentSlot)
+{
+	const unsigned int* pMask;
+	unsigned int dwBitmap;
+
+	if ((m_wFlags & 4) != 0) {
+		*(SmallMemoryBucketSlotIndex*) pNextSlot = CurrentSlot;
+		return;
+	}
+	if (m_pBitmap[CurrentSlot.m_iWord] == 0xffffffffU) {
+		do {
+			++CurrentSlot.m_iWord;
+			if (CurrentSlot.m_iWord >= m_cBitmapWords) {
+				CurrentSlot.m_iWord = 0;
+			}
+		} while (m_pBitmap[CurrentSlot.m_iWord] == 0xffffffffU);
+	}
+	CurrentSlot.m_iBit = 0;
+	dwBitmap = m_pBitmap[CurrentSlot.m_iWord];
+	pMask = g_adwSmallMemoryBucketSlotMasks;
+	do {
+		if ((*pMask & dwBitmap) == 0) {
+			break;
+		}
+		++CurrentSlot.m_iBit;
+		++pMask;
+	} while (pMask < g_adwSmallMemoryBucketSlotMasks + 32);
+	*(SmallMemoryBucketSlotIndex*) pNextSlot = CurrentSlot;
+}
 // FUNCTION: LEMBALL 0x00473050
 SmallMemoryBucket* LEMBALL_FASTCALL AllocateSmallMemoryChildBucket(SmallMemoryBucket* pParentBucket)
 
