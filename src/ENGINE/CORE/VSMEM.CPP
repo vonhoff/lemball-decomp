@@ -1085,6 +1085,8 @@ SmallMemoryBucket* SmallMemoryBucket::ConstructSmallMemoryBucket(unsigned int cb
 	return this;
 }
 
+void LEMBALL_FASTCALL ReleaseSmallMemoryChildBucket(SmallMemoryBucket* pBucket);
+
 // FUNCTION: LEMBALL 0x00472dc0
 void LEMBALL_FASTCALL DestroySmallMemoryBucket(SmallMemoryBucket* pBucket)
 {
@@ -1093,6 +1095,9 @@ void LEMBALL_FASTCALL DestroySmallMemoryBucket(SmallMemoryBucket* pBucket)
 	pBucket->m_pVtable = g_aSmallMemoryBucketVtable;
 	fSmallBuckets = g_fSmallMemoryBucketTableEnabled;
 	g_fSmallMemoryBucketTableEnabled = 0;
+	if (pBucket->m_pChildBucket != 0) {
+		ReleaseSmallMemoryChildBucket(pBucket);
+	}
 	if ((pBucket->m_wFlags & 2) != 0 && pBucket->m_pStorage != 0) {
 		FreeVSMemBlock(pBucket->m_pStorage);
 		pBucket->m_pStorage = 0;
@@ -1226,6 +1231,21 @@ SmallMemoryBucket* LEMBALL_FASTCALL AllocateSmallMemoryChildBucket(SmallMemoryBu
 		pChildBucket->m_pParentBucket = pParentBucket;
 	}
 	return pChildBucket;
+}
+
+// FUNCTION: LEMBALL 0x004730e0
+void LEMBALL_FASTCALL ReleaseSmallMemoryChildBucket(SmallMemoryBucket* pBucket)
+{
+	SmallMemoryBucket* pChildBucket;
+
+	CalculateMemoryArenaAvailableBytes(g_pMainMemoryArena);
+	pChildBucket = pBucket->m_pChildBucket;
+	if (pChildBucket != 0) {
+		DestroySmallMemoryBucket(pChildBucket);
+		FreeVSMemBlock(pChildBucket);
+	}
+	CalculateMemoryArenaAvailableBytes(g_pMainMemoryArena);
+	pBucket->m_pChildBucket = 0;
 }
 
 // FUNCTION: LEMBALL 0x00473180
