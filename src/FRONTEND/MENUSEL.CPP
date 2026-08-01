@@ -698,6 +698,8 @@ void LEMBALL_FASTCALL destroy_queued_variant_child_slot_manager(void* pObject)
 }
 
 struct GameQueuedVariantRangeEntry {
+	void RebuildSourceRect(int fForce);
+
 	void** m_pVtable00;
 	int m_nQueueTag04;
 	int m_nQueueReserved08;
@@ -738,6 +740,7 @@ struct GameQueuedVariantChildSlotManager {
 	void DispatchSelectedChildSlotEvent(void);
 	void RefreshAllRangeSelections(void);
 	void RefreshChildByToken(int nToken);
+	void RebuildChildSourceRects(int fForce);
 
 	void** m_pVtable00;
 	int m_nQueueTag04;
@@ -929,12 +932,10 @@ __inline static void LEMBALL_FASTCALL RebuildCompactZrleOwnerSourceRectIfNeeded(
 	*(int*) ((char*) pOverlay + 0xfc) = 0;
 }
 
-__inline static void LEMBALL_FASTCALL RebuildQueuedVariantChildSourceRect(GameQueuedVariantRangeEntry* pEntry,
-																		  int,
-																		  int fForce)
+void GameQueuedVariantRangeEntry::RebuildSourceRect(int fForce)
 {
-	if (pEntry->m_pOverlay4C != 0) {
-		RebuildCompactZrleOwnerSourceRectIfNeeded(pEntry->m_pOverlay4C, 0, fForce);
+	if (m_pOverlay4C != 0) {
+		RebuildCompactZrleOwnerSourceRectIfNeeded(m_pOverlay4C, 0, fForce);
 	}
 }
 
@@ -1167,7 +1168,8 @@ void LEMBALL_FASTCALL SetMenuSelectorChildrenEnabledThunk(GameMenuSelectorManage
 	SetMenuSelectorChildrenEnabled(pManager, nUnusedEdx, fEnabled);
 }
 
-// Compiler-state shim for the original selector-manager constructor ILT; removal loses exact 0x0044d290 and 0x0044ebc0.
+// Compiler-state shim for the original selector-manager constructor ILT; removal loses exact 0x0044d290 and
+// 0x0044ebc0.
 GameMenuSelectorManager* LEMBALL_FASTCALL ConstructMenuSelectorManagerThunk(GameMenuSelectorManager* pManager,
 																			int nUnusedEdx,
 																			void* pRenderOwner,
@@ -2829,17 +2831,25 @@ void LEMBALL_FASTCALL AppendQueuedVariantChildSlot(void* pObject,
 	++pManager->m_cChildren80;
 }
 // FUNCTION: LEMBALL 0x0044f9d0
+void GameQueuedVariantChildSlotManager::RebuildChildSourceRects(int fForce)
+{
+	GameQueuedVariantRangeEntry** ppEntry;
+	int cRemaining;
+
+	ppEntry = m_apChildrenAC;
+	cRemaining = 4;
+	do {
+		if (*ppEntry != 0) {
+			(*ppEntry)->RebuildSourceRect(fForce);
+		}
+		++ppEntry;
+		--cRemaining;
+	} while (cRemaining != 0);
+}
+
 void LEMBALL_FASTCALL RebuildQueuedVariantChildSlotSourceRects(void* pObject, int, int fForce)
 {
-	GameQueuedVariantChildSlotManager* pManager;
-	int i;
-
-	pManager = (GameQueuedVariantChildSlotManager*) pObject;
-	for (i = 0; i < 4; ++i) {
-		if (pManager->m_apChildrenAC[i] != 0) {
-			RebuildQueuedVariantChildSourceRect(pManager->m_apChildrenAC[i], 0, fForce);
-		}
-	}
+	((GameQueuedVariantChildSlotManager*) pObject)->RebuildChildSourceRects(fForce);
 }
 // FUNCTION: LEMBALL 0x0044fae0
 void GameQueuedVariantChildSlotManager::SelectPreviousChildSlot(void)
