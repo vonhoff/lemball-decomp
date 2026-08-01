@@ -545,7 +545,7 @@ address,size,name,unit
 0x004189C0,39,clear_managed_entity_active_states,LEVEL/LEVELVT.CPP
 0x004189F0,60,get_first_active_managed_entity,LEVEL/LEVELVT.CPP
 0x00418A30,89,dispatch_active_managed_entity_point_command,LEVEL/LEVELVT.CPP
-0x00418A90,20,clear_active_managed_entity_children_pending_state,LEVEL/LEVELVT.CPP
+0x00418A90,20,clear_active_managed_entity_children_pending_state,LEVEL/LEVELVTACTIVECHILD.CPP
 0x00418AB0,97,activate_or_queue_managed_entity_for_level_entity_id,LEVEL/LEVELVT.CPP
 0x00418B20,54,notify_other_managed_entity_groups_of_selection,LEVEL/LEVELVT.CPP
 0x00418B60,59,set_active_managed_entity_children_door_target_tile,LEVEL/LEVELVT.CPP
