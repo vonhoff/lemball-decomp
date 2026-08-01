@@ -494,7 +494,7 @@ address,size,name,unit
 0x00416D90,21,clear_object_field_0x134,LEVEL/LEVELRUN.CPP
 0x00416DB0,34,set_managed_entity_state_id,LEVEL/LEVELRUN.CPP
 0x00416DE0,24,set_managed_entity_state_id_with_variant,LEVEL/LEVELRUN.CPP
-0x00416E00,24,request_managed_entity_state_id_with_variant,LEVEL/LEVELRUN.CPP
+0x00416E00,24,request_managed_entity_state_id_with_variant,LEVEL/LEVELSTATEVARIANT.CPP
 0x00416E20,68,request_managed_entity_state_id,LEVEL/LEVELRUN.CPP
 0x00416E70,29,apply_managed_entity_state_reset_packet,LEVEL/LEVELRUN.CPP
 0x00416E90,268,dispatch_managed_entity_packet_by_type,LEVEL/LEVELRUN.CPP
