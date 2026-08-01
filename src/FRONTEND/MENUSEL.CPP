@@ -2480,6 +2480,7 @@ void GameSelectorProgressOverlayChild::SetPercent(int nPercent)
 void GameSelectorProgressGeometry::DispatchPointerMove(const VS_XYPair* pPoint)
 {
 	int x;
+	int xMax;
 
 	if (*(int*) ((char*) this + 0x10) == 0) {
 		return;
@@ -2488,8 +2489,11 @@ void GameSelectorProgressGeometry::DispatchPointerMove(const VS_XYPair* pPoint)
 	if (x < 0) {
 		x = 0;
 	}
-	else if (*(short*) ((char*) this + 0x38) < x) {
-		x = (int) *(short*) ((char*) this + 0x38);
+	else {
+		xMax = (int) *(short*) ((char*) this + 0x38);
+		if (xMax < x) {
+			x = xMax;
+		}
 	}
 	((GameSelectorProgressOverlayChild*) ((char*) this - 0x90))
 		->SetPercent((x * 100) / (int) *(short*) ((char*) this + 0x30));
