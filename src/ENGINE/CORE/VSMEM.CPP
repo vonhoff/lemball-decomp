@@ -1340,39 +1340,50 @@ SmallMemoryBucketTable* LEMBALL_FASTCALL ConstructSmallMemoryBucketTable(SmallMe
 {
 	int i;
 	int iFirstBucket;
-	int cBuckets;
-	unsigned int cbSlot;
+	int nBucketOffset;
+	int nSlotShift;
+	unsigned int* pcbBucketSize;
 
-	iFirstBucket = (int) g_StartupGraphicsDriverConfig.m_dwReserved1;
-	cBuckets = iFirstBucket + (int) g_StartupGraphicsDriverConfig.m_cItems;
-	if (cBuckets > 7) {
-		cBuckets = 7;
+	iFirstBucket = (int) g_StartupGraphicsDriverConfig.m_dwReserved0;
+	nSlotShift = 1 << (iFirstBucket + 1);
+	pTable->m_cBuckets = iFirstBucket + (int) g_StartupGraphicsDriverConfig.m_cItems;
+	if (pTable->m_cBuckets > 7) {
+		pTable->m_cBuckets = 7;
 	}
-	pTable->m_cBuckets = cBuckets;
-	for (i = 0; i < 7; ++i) {
-		pTable->m_apBuckets[i] = 0;
-		pTable->m_acbBucketSizes[i] = 0;
-	}
+	memset(pTable->m_apBuckets, 0, sizeof(pTable->m_apBuckets));
 
-	cbSlot = 1U << (iFirstBucket + 1);
-	for (i = iFirstBucket; i < cBuckets; ++i) {
-		SmallMemoryBucket* pBucket;
+	if (iFirstBucket < pTable->m_cBuckets) {
+		pcbBucketSize = &pTable->m_acbBucketSizes[iFirstBucket];
+		nBucketOffset = iFirstBucket * sizeof(int);
+		i = iFirstBucket;
+		do {
+			int fSmallBuckets;
 
-		pTable->m_acbBucketSizes[i] = cbSlot;
-		if (g_adwStartupGraphicsBucketSizeTable[i] != 0) {
-			pBucket = (SmallMemoryBucket*) AllocateVSMemBlock(sizeof(SmallMemoryBucket));
-			if (pBucket != 0) {
-				pTable->m_apBuckets[i] =
-					pBucket->ConstructSmallMemoryBucket(cbSlot,
-														(unsigned int) g_adwStartupGraphicsBucketSizeTable[i],
-														0,
-														0);
+			*pcbBucketSize = 1U << nSlotShift;
+			fSmallBuckets = g_fSmallMemoryBucketTableEnabled;
+			g_fSmallMemoryBucketTableEnabled = 0;
+			if (*(int*) ((char*) g_StartupGraphicsDriverConfig.m_pItemDataEnd + nBucketOffset) != 0) {
+				SmallMemoryBucket* pBucket;
+
+				pBucket = (SmallMemoryBucket*) AllocateVSMemBlock(sizeof(SmallMemoryBucket));
+				if (pBucket != 0) {
+					pBucket = pBucket->ConstructSmallMemoryBucket(
+						*pcbBucketSize,
+						*(unsigned int*) ((char*) g_StartupGraphicsDriverConfig.m_pItemDataEnd + nBucketOffset),
+						0,
+						0);
+				}
+				pTable->m_apBuckets[i] = pBucket;
+				if (g_cbSmallMemoryBucketUpperBound < *pcbBucketSize) {
+					g_cbSmallMemoryBucketUpperBound = *pcbBucketSize;
+				}
 			}
-			if (g_cbSmallMemoryBucketUpperBound < cbSlot) {
-				g_cbSmallMemoryBucketUpperBound = cbSlot;
-			}
-		}
-		cbSlot <<= 1;
+			++pcbBucketSize;
+			nBucketOffset += sizeof(int);
+			++i;
+			++nSlotShift;
+			g_fSmallMemoryBucketTableEnabled = fSmallBuckets;
+		} while (i < pTable->m_cBuckets);
 	}
 	return pTable;
 }
@@ -1384,7 +1395,7 @@ void LEMBALL_FASTCALL DestroySmallMemoryBucketTable(SmallMemoryBucketTable* pTab
 	int iFirstBucket;
 
 	g_fSmallMemoryBucketTableEnabled = 0;
-	iFirstBucket = (int) g_StartupGraphicsDriverConfig.m_dwReserved1;
+	iFirstBucket = (int) g_StartupGraphicsDriverConfig.m_dwReserved0;
 	for (i = iFirstBucket; i < pTable->m_cBuckets; ++i) {
 		if (pTable->m_apBuckets[i] != 0) {
 			DestroySmallMemoryBucket(pTable->m_apBuckets[i]);
@@ -1403,7 +1414,7 @@ int SmallMemoryBucketTable::AllocateFromSmallMemoryBucketTable(int cbBlock, cons
 	int cBuckets;
 	int nPreviousSize;
 
-	iFirstBucket = (int) g_StartupGraphicsDriverConfig.m_dwReserved1;
+	iFirstBucket = (int) g_StartupGraphicsDriverConfig.m_dwReserved0;
 	cBuckets = m_cBuckets;
 	nPreviousSize = 0;
 	if (iFirstBucket < cBuckets) {
@@ -1430,9 +1441,10 @@ int SmallMemoryBucketTable::FreeToSmallMemoryBucketTable(void* pBlock)
 	int iFirstBucket;
 	int i;
 
-	iFirstBucket = (int) g_StartupGraphicsDriverConfig.m_dwReserved1;
+	iFirstBucket = (int) g_StartupGraphicsDriverConfig.m_dwReserved0;
 	for (i = iFirstBucket; i < m_cBuckets; ++i) {
-		if (m_apBuckets[i] != 0 && m_apBuckets[i]->FreeSlot(pBlock) != 0) {
+		if (m_apBuckets[i] != 0 && m_apBuckets[i]->ContainsPointer((unsigned int) pBlock) != 0) {
+			m_apBuckets[i]->FreeSlot(pBlock);
 			return 1;
 		}
 	}
