@@ -1363,7 +1363,7 @@ void LevelViewRotationTransform::TransformScreenToTile(int nScreenX, int nScreen
 {
 	switch (m_nRotation04) {
 	case 0:
-		*pTileX = nScreenY + nScreenX / 2 - 8;
+		*pTileX = nScreenX / 2 + nScreenY - 8;
 		*pTileY = nScreenY - nScreenX / 2 + 8;
 		break;
 	case 1:

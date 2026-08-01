@@ -3891,9 +3891,9 @@ struct LevelTileGridView {
 // FUNCTION: LEMBALL 0x00431520
 unsigned short LevelTileGridView::SampleHeightAtPoint(int x, int y)
 {
-	LevelTileRenderDescriptor* pCell;
 	int nTileX;
 	int nTileY;
+	LevelTileRenderDescriptor* pCell;
 
 	nTileX = x >> 4;
 	nTileY = y >> 4;
