@@ -317,11 +317,11 @@ int CArena::UnlinkMemoryBlockFromAddressListLinks(void* pBlock)
 	pMemoryBlock = (CMemoryBlock*) pBlock;
 	pPreviousBlock = pMemoryBlock->m_pPreviousAddress;
 	pNextBlock = pMemoryBlock->m_pNextAddress;
-	if (pNextBlock == 0) {
-		m_pLastAddressBlock = pPreviousBlock;
+	if (pNextBlock != 0) {
+		pNextBlock->m_pPreviousAddress = pPreviousBlock;
 	}
 	else {
-		pNextBlock->m_pPreviousAddress = pPreviousBlock;
+		m_pLastAddressBlock = pPreviousBlock;
 	}
 	if (pPreviousBlock != 0) {
 		pPreviousBlock->m_pNextAddress = pNextBlock;
@@ -341,11 +341,11 @@ int CArena::UnlinkMemoryBlockFromFreeList(void* pBlock)
 	pMemoryBlock = (CMemoryBlock*) pBlock;
 	pPreviousBlock = pMemoryBlock->m_pPreviousFree;
 	pNextBlock = pMemoryBlock->m_pNextFree;
-	if (pNextBlock == 0) {
-		m_pLastFreeBlock = pPreviousBlock;
+	if (pNextBlock != 0) {
+		pNextBlock->m_pPreviousFree = pPreviousBlock;
 	}
 	else {
-		pNextBlock->m_pPreviousFree = pPreviousBlock;
+		m_pLastFreeBlock = pPreviousBlock;
 	}
 	if (pPreviousBlock != 0) {
 		pPreviousBlock->m_pNextFree = pNextBlock;
