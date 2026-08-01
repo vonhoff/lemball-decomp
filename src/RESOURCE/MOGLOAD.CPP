@@ -483,15 +483,17 @@ MogLoadDirectoryNode* MogLoadDirectoryNode::Construct(long lFileOffset)
 void MogLoadDirectoryNode::DestroyResourceArchiveDirectoryTree(void)
 {
 	m_CursorState = m_SavedState;
-	while (m_CursorState.m_pEntry != 0) {
-		m_SavedState = m_CursorState;
-		m_CursorState = m_SavedState.m_pEntry->m_NextState;
-		if (m_SavedState.m_pEntry->m_uTag == MogLoadTAG_CRID && m_SavedState.m_pEntry->m_pChildDirectory != 0) {
-			FreeResourceArchiveMemory(m_SavedState.m_pEntry->m_pChildDirectory);
-			m_SavedState.m_pEntry->m_pChildDirectory = 0;
-		}
-		FreeResourceArchiveMemory(m_SavedState.m_pEntry);
-		m_SavedState.m_pEntry = 0;
+	if (m_SavedState.m_pEntry != 0) {
+		do {
+			m_SavedState = m_CursorState;
+			m_CursorState = m_SavedState.m_pEntry->m_NextState;
+			if (m_SavedState.m_pEntry->m_uTag == MogLoadTAG_CRID && m_SavedState.m_pEntry->m_pChildDirectory != 0) {
+				FreeResourceArchiveMemory(m_SavedState.m_pEntry->m_pChildDirectory);
+				m_SavedState.m_pEntry->m_pChildDirectory = 0;
+			}
+			FreeResourceArchiveMemory(m_SavedState.m_pEntry);
+			m_SavedState.m_pEntry = 0;
+		} while (m_CursorState.m_pEntry != 0);
 	}
 	if (m_pNameData != 0) {
 		FreeResourceArchiveMemory(m_pNameData);
