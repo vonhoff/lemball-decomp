@@ -200,10 +200,14 @@ static VsInitCommandLineOption g_aCommandLineOptions[] = {
 	{"gc:", &g_nGarbageCollectorMode},
 };
 
+// GLOBAL: LEMBALL 0x004a93b0
 static char g_abStreamFixedBuffer[0x400];
-static VsInitFixedBufferStream* g_pStartupFixedBufferStream = 0;
-static VsInitFixedBufferStream* g_pStatusFixedBufferStream = 0;
-static VsInitFixedBufferStream* g_pErrorFixedBufferStream = 0;
+// GLOBAL: LEMBALL 0x004a97b0
+static VsInitFixedBufferStream* g_pStartupFixedBufferStream;
+// GLOBAL: LEMBALL 0x004a97b4
+static VsInitFixedBufferStream* g_pStatusFixedBufferStream;
+// GLOBAL: LEMBALL 0x004a97c0
+static VsInitFixedBufferStream* g_pErrorFixedBufferStream;
 // GLOBAL: LEMBALL 0x004a97b8
 VsInitFormattedOutputStream* g_pStartupOutputStream;
 // GLOBAL: LEMBALL 0x004a97bc
