@@ -1249,6 +1249,12 @@ void LEMBALL_FASTCALL ReleaseSmallMemoryChildBucket(SmallMemoryBucket* pBucket)
 	pBucket->m_pChildBucket = 0;
 }
 
+// FUNCTION: LEMBALL 0x00473120
+void LEMBALL_FASTCALL ReleaseParentSmallMemoryChildBucket(SmallMemoryBucket* pBucket)
+{
+	ReleaseSmallMemoryChildBucket(pBucket->m_pParentBucket);
+}
+
 // FUNCTION: LEMBALL 0x00473140
 int SmallMemoryBucket::ContainsPointer(unsigned int nPointer)
 {
