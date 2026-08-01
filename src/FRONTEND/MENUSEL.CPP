@@ -471,6 +471,7 @@ public:
 
 class GameMenuSelectorChildContextView {
 public:
+	GameMenuSelectorChildContextView* ConstructSelectorManagerChildContextObject(void);
 	void MarkRenderObjectDirty(void);
 };
 
@@ -1612,6 +1613,14 @@ void LEMBALL_FASTCALL ReleaseMenuSelectorEntryResources(GameMenuSelectorEntry* p
 	}
 	FreeVSMemBlock(pEntry->m_ppLoadedResources58);
 	pEntry->m_ppLoadedResources58 = 0;
+}
+// FUNCTION: LEMBALL 0x0044c830
+GameMenuSelectorChildContextView* GameMenuSelectorChildContextView::ConstructSelectorManagerChildContextObject(void)
+{
+	((GameWindowOwnerRenderContext*) this)->ConstructWindowOwnerRenderContext();
+	*(void***) this = g_MenuSelectorChildContextVtable;
+	*(int*) ((char*) this + 0x50) += 5;
+	return this;
 }
 // FUNCTION: LEMBALL 0x0044c850
 void GameMenuSelectorChildContextView::MarkRenderObjectDirty(void)
