@@ -1119,6 +1119,8 @@ static const unsigned int g_adwSmallMemoryBucketSlotMasks[32] = {
 	0x00010000, 0x00020000, 0x00040000, 0x00080000, 0x00100000, 0x00200000, 0x00400000, 0x00800000,
 	0x01000000, 0x02000000, 0x04000000, 0x08000000, 0x10000000, 0x20000000, 0x40000000, 0x80000000,
 };
+static const char g_VSMEM_AllocatingSmallMemoryChildPrefix[] = "Allocating Small Memory Child: ";
+static const char g_VSMEM_NewLine[] = "\n";
 
 struct SmallMemoryBucketSlotIndex {
 	unsigned short m_iWord;
@@ -1273,19 +1275,22 @@ SmallMemoryBucket* LEMBALL_FASTCALL AllocateSmallMemoryChildBucket(SmallMemoryBu
 	SmallMemoryBucket* pChildBucket;
 	void* pStorage;
 
+	g_pStartupOutputStream->AppendCStringToStream(g_VSMEM_AllocatingSmallMemoryChildPrefix)
+		->AppendIntToStream(pParentBucket->m_cbSlot)
+		->AppendCStringToStream(g_VSMEM_NewLine);
 	fSmallBuckets = g_fSmallMemoryBucketTableEnabled;
 	g_fSmallMemoryBucketTableEnabled = 0;
-	pStorage = AllocateVSMemBlock(0x54);
 	pChildBucket = 0;
+	CalculateMemoryArenaAvailableBytes(g_pMainMemoryArena);
+	pStorage = AllocateVSMemBlock(0x54);
 	if (pStorage != 0) {
 		pChildBucket = ((SmallMemoryBucket*) pStorage)
 						   ->ConstructSmallMemoryBucket(pParentBucket->m_cbSlot, pParentBucket->m_cSlots, 0, 0);
 	}
+	CalculateMemoryArenaAvailableBytes(g_pMainMemoryArena);
 	g_fSmallMemoryBucketTableEnabled = fSmallBuckets;
 	pParentBucket->m_pChildBucket = pChildBucket;
-	if (pChildBucket != 0) {
-		pChildBucket->m_pParentBucket = pParentBucket;
-	}
+	pChildBucket->m_pParentBucket = pParentBucket;
 	return pChildBucket;
 }
 
