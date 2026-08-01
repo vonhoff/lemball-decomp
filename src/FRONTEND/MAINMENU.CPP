@@ -347,6 +347,15 @@ struct GameNetworkLobbyRuntimeView {
 	int m_fPlayerEntriesDirty54;
 };
 
+struct GameNetworkLobbyTransportControllerView {
+	char m_abReserved00[0x30];
+	GameEffStream* m_pPeerClearStream30;
+	GameEffStream* m_pPeerDirtyConfirmStream34;
+
+	void SendPeerDirtyConfirmStream(void* pPeer, int nPayload);
+	void SendPeerClearStream(void* pPeer);
+};
+
 class GameNetworkRuntimeServiceView {
 public:
 	virtual const char* GetLocalHostName(void) = 0;
@@ -5523,7 +5532,7 @@ void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void* pObject)
 	GameNetworkLobbyRuntimeView* pRuntime;
 	const char* pszLocalAddress;
 	const char* pszLocalComputer;
-	GameEffStream* pStream;
+	int nPayload;
 	void* pPeer;
 	int i;
 	DWORD dwNow;
@@ -5584,24 +5593,19 @@ void LEMBALL_FASTCALL UpdateNetworkLobbyScreen(void* pObject)
 				if (pScreen->m_nSelectedPlayer3D0 != -1) {
 					pPeer = pRuntime->m_apTrackedPeers20[pScreen->m_nSelectedPlayer3D0];
 					if (pPeer != 0) {
-						pStream = *(GameEffStream**) ((char*) g_pActiveNetworkLobbyTransportController + 0x30);
-						if (pStream != 0) {
-							pStream->m_nU32Payload = 0;
-							pStream->QueueEffStreamWriteEvent((int) (unsigned long) pPeer);
-						}
+						((GameNetworkLobbyTransportControllerView*) g_pActiveNetworkLobbyTransportController)
+							->SendPeerClearStream(pPeer);
 					}
 				}
 				pScreen->m_nSelectedPlayer3D0 = i;
 				pPeer = pRuntime->m_apTrackedPeers20[i];
 				if (pPeer != 0) {
-					pStream = *(GameEffStream**) ((char*) g_pActiveNetworkLobbyTransportController + 0x34);
-					if (pStream != 0) {
-						pStream->m_nU32Payload = *(int*) ((char*) pScreen->m_pPlayerEntries3CC + i * 0x44 + 0x40);
-						if (pStream->m_nU32Payload != 0) {
-							HideNetworkLobbyPlayerEntries(pScreen);
-						}
-						pStream->QueueEffStreamWriteEvent((int) (unsigned long) pPeer);
+					nPayload = *(int*) ((char*) pScreen->m_pPlayerEntries3CC + i * 0x44 + 0x40);
+					if (nPayload != 0) {
+						HideNetworkLobbyPlayerEntries(pScreen);
 					}
+					((GameNetworkLobbyTransportControllerView*) g_pActiveNetworkLobbyTransportController)
+						->SendPeerDirtyConfirmStream(pPeer, nPayload);
 				}
 			}
 			*(int*) ((char*) pScreen->m_pPlayerEntries3CC + i * 0x44 + 0x3c) = 0;
@@ -5671,6 +5675,20 @@ int LEMBALL_FASTCALL HandleNetworkLobbyTransportPayloadEvent(void* pController,
 		return 1;
 	}
 	return 0;
+}
+
+// FUNCTION: LEMBALL 0x00455480
+void GameNetworkLobbyTransportControllerView::SendPeerDirtyConfirmStream(void* pPeer, int nPayload)
+{
+	m_pPeerDirtyConfirmStream34->m_nU32Payload = nPayload;
+	m_pPeerDirtyConfirmStream34->QueueEffStreamWriteEvent((int) (unsigned long) pPeer);
+}
+
+// FUNCTION: LEMBALL 0x004554a0
+void GameNetworkLobbyTransportControllerView::SendPeerClearStream(void* pPeer)
+{
+	m_pPeerClearStream30->m_nU32Payload = 0;
+	m_pPeerClearStream30->QueueEffStreamWriteEvent((int) (unsigned long) pPeer);
 }
 
 // Compatibility shim preserving MSVC 4.20 compiler state.
