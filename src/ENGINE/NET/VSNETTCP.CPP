@@ -1075,8 +1075,7 @@ void VsNetEffStreamBase::WriteEffStreamTaggedHeader(void)
 	WriteEffStreamU16BE(*(unsigned short*) ((char*) m_pTagBuffer2c + 8));
 	WriteEffStreamU16BE(*(unsigned short*) ((char*) m_pTagBuffer2c + 0xa));
 	WriteEffStreamU16BE(*(unsigned short*) ((char*) m_pTagBuffer2c + 0xc));
-	*(unsigned char*) (unsigned long) m_nReserved1c = *((unsigned char*) m_pTagBuffer2c + 0xe);
-	++m_nReserved1c;
+	WriteEffStreamU8(*((unsigned char*) m_pTagBuffer2c + 0xe));
 }
 // FUNCTION: LEMBALL 0x0045f7f0
 void VsNetEffStreamBase::ReverseEffStreamPayload(void)
