@@ -1741,23 +1741,28 @@ void PaletteRemapPointerTableMemberView::ReleasePaletteRemapVariant(void* pVaria
 	int i;
 	int cFound;
 
-	if (pVariant == 0) {
+	i = 0;
+	cFound = 0;
+	if (m_nCursor <= 0) {
 		return;
 	}
-	cFound = 0;
-	for (i = 0; cFound < m_nCursor; ++i) {
-		if (m_ppItems[i] == 0) {
-			continue;
+	do {
+		while (m_ppItems[i] == 0) {
+			++i;
 		}
 		if (m_ppItems[i] == pVariant) {
-			ReleasePaletteRemapVariantFields((VsInitPaletteRemapVariant*) pVariant);
-			FreeVSMemBlock(pVariant);
+			pVariant = m_ppItems[i];
+			if (pVariant != 0) {
+				ReleasePaletteRemapVariantFields((VsInitPaletteRemapVariant*) pVariant);
+				FreeVSMemBlock(pVariant);
+			}
 			m_ppItems[i] = 0;
 			--m_nCursor;
 			return;
 		}
 		++cFound;
-	}
+		++i;
+	} while (cFound < m_nCursor);
 }
 
 void ReleasePaletteRemapVariant(void* pVariant)
