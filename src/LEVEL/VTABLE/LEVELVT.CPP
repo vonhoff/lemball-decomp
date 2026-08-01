@@ -2147,9 +2147,30 @@ struct MoveChunkObjectInitializeView : ManagedEntitySlotOwnerView {
 	int m_nValue16C;
 	int m_nState170;
 	int m_cAttachedEntities174;
+	char m_abReserved178[0x28];
 
+	int SampleHeightIfPointInsideBounds(int x, int y, int* pHeight);
 	void Initialize(unsigned short nSlotId, short nHeading, int nMode, int iNode, int nValue);
 };
+
+// FUNCTION: LEMBALL 0x0042e700
+int MoveChunkObjectInitializeView::SampleHeightIfPointInsideBounds(int x, int y, int* pHeight)
+{
+	int nLeft;
+	int nRight;
+	int nTop;
+	int nBottom;
+
+	nLeft = (m_nWorldX9C >> 12) - 8;
+	nRight = nLeft + 15;
+	nTop = (m_nWorldYA0 >> 12) - 8;
+	nBottom = nTop + 15;
+	if (nLeft <= x && x <= nRight && nTop <= y && y <= nBottom) {
+		*pHeight = (m_nWorldZA4 >> 12) + 8;
+		return 1;
+	}
+	return 0;
+}
 
 // FUNCTION: LEMBALL 0x0042e760
 void MoveChunkObjectInitializeView::Initialize(unsigned short nSlotId, short nHeading, int nMode, int iNode, int nValue)
@@ -2203,6 +2224,11 @@ struct MoveChunkObjectTriggerView {
 };
 
 struct MoveChunkManagerTriggerView {
+	char m_abReserved00[0x34];
+	int m_cObjects34;
+	MoveChunkObjectInitializeView* m_pObjects38;
+
+	MoveChunkObjectInitializeView* FindObjectContainingPoint(int x, int y, int* pHeight);
 	int HasTriggeredObject(void* pEntity, const int* pPosition);
 };
 
@@ -2218,6 +2244,27 @@ int MoveChunkObjectTriggerView::IsTriggered(void* pEntity, const int* pPosition)
 void __fastcall reset_move_chunk_object_count(void* pManager)
 {
 	*(int*) ((char*) pManager + 0x34) = 0;
+}
+
+// FUNCTION: LEMBALL 0x0042f2f0
+MoveChunkObjectInitializeView* MoveChunkManagerTriggerView::FindObjectContainingPoint(int x, int y, int* pHeight)
+{
+	int i;
+	int nOffset;
+
+	i = 0;
+	if (m_cObjects34 > 0) {
+		nOffset = 0;
+		do {
+			if (((MoveChunkObjectInitializeView*) ((char*) m_pObjects38 + nOffset))
+					->SampleHeightIfPointInsideBounds(x, y, pHeight) != 0) {
+				return &m_pObjects38[i];
+			}
+			nOffset += sizeof(MoveChunkObjectInitializeView);
+			++i;
+		} while (i < m_cObjects34);
+	}
+	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0042f590
