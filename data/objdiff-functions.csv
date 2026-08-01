@@ -1190,7 +1190,7 @@ address,size,name,unit
 0x00430EB0,56,validate_level_tile_variant_id,LEVEL/LEVELRUN.CPP
 0x00431010,32,copy_level_tile_grid_name,LEVEL/LEVELRUN.CPP
 0x00431030,128,compute_level_tile_grid_repeated_column_counts,LEVEL/LEVELRUN.CPP
-0x004314F0,27,initialize_default_level_tile_cell,GAME.CPP
+0x004314F0,27,initialize_default_level_tile_cell,LEVEL/LEVELTILECELL.CPP
 0x00431520,85,sample_level_tile_grid_height_at_point,GAME.CPP
 0x00431590,302,construct_primary_context,GAME.CPP
 0x004316C0,109,destroy_primary_context,GAME.CPP
