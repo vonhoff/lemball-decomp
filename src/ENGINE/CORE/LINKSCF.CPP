@@ -1696,24 +1696,22 @@ void LEMBALL_FASTCALL clear_tram_chunk_object_count(void* pManager)
 // FUNCTION: LEMBALL 0x0042b4a0
 void LEMBALL_FASTCALL ActivateTramChunkObjects(void* pManager)
 {
-	char* pManagerBytes;
 	char* pChunkObject;
 	int nOffset;
 	int i;
 
-	pManagerBytes = (char*) pManager;
 	i = 0;
-	if (*(int*) (pManagerBytes + 0x34) > 0) {
+	if (*(int*) ((char*) pManager + 0x34) > 0) {
 		nOffset = 0;
 		do {
-			*(int*) (*(char**) (pManagerBytes + 0x38) + nOffset + 0x124) = 1;
-			pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
+			*(int*) (*(char**) ((char*) pManager + 0x38) + nOffset + 0x124) = 1;
+			pChunkObject = *(char**) ((char*) pManager + 0x38) + nOffset;
 			if (*(int*) (pChunkObject + 0x138) != 0) {
 				((ActivateChunkObjectProc) (*(void***) pChunkObject)[5])(pChunkObject);
 			}
 			nOffset += 0x144;
 			++i;
-		} while (*(int*) (pManagerBytes + 0x34) > i);
+		} while (*(int*) ((char*) pManager + 0x34) > i);
 	}
 }
 
