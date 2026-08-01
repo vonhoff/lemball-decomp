@@ -84,6 +84,10 @@ FUNCTION_DATA_REFERENCES = {
         "g_EFF_NetworkLobbyPeerDirtyConfirmVtable",
         "network lobby peer dirty-confirm vtable 004985d8",
     ),
+    0x0045A480: (
+        (0x00498918, "g_MainMemoryArenaVtable", "main memory arena vtable 00498918"),
+        (0x00498910, "g_aMainMemoryArenaLockVtable", "main memory arena lock vtable 00498910"),
+    ),
     0x0045FCE0: (
         0x00498FB0,
         "vftable'{for `VsNetTimedEffStreamPrimary",
@@ -269,15 +273,20 @@ if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False)
     def _compare_function(self, match):
         reference = ONE_PAST_REFERENCES.get(match.orig_addr)
         ilt_reference = THUNK_ILT_REFERENCES.get(match.orig_addr)
-        data_reference = FUNCTION_DATA_REFERENCES.get(match.orig_addr)
+        data_references = FUNCTION_DATA_REFERENCES.get(match.orig_addr)
+        if data_references is None:
+            data_references = ()
+        elif isinstance(data_references[0], int):
+            data_references = (data_references,)
         orig_lookup = self.orig_sanitize.name_lookup
         recomp_lookup = self.recomp_sanitize.name_lookup
 
         def _orig_lookup(address, exact=False, indirect=False):
             if ilt_reference is not None and address == ilt_reference[0]:
                 return ilt_reference[2]
-            if data_reference is not None and address == data_reference[0]:
-                return data_reference[2]
+            for data_reference in data_references:
+                if address == data_reference[0]:
+                    return data_reference[2]
             if not exact and not indirect:
                 if reference is not None and address == reference[0]:
                     return reference[2]
@@ -294,9 +303,10 @@ if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False)
             if ilt_reference is not None and name is not None:
                 if ilt_reference[1] in name:
                     return ilt_reference[2]
-            if data_reference is not None and name is not None:
-                if data_reference[1] in name:
-                    return data_reference[2]
+            if name is not None:
+                for data_reference in data_references:
+                    if data_reference[1] in name:
+                        return data_reference[2]
             if not indirect:
                 destination = _thunk_destination(self.db, ImageId.RECOMP, address)
                 if destination is not None:
