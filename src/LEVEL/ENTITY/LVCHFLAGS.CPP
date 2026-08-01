@@ -17,13 +17,18 @@ void LevelChunkTypeEnabledFlagsView::Initialize(void)
 	unsigned int cManagedEntities;
 
 	cManagedEntities = (unsigned int) g_GAME_ManagedEntityRegistryCount;
-	for (i = 0; (int) i < (int) cManagedEntities; ++i) {
-		if (g_GAME_ManagedEntityRegistryTable[i & 0xffff] != 0) {
-			nChunkType = *(int*) (g_GAME_ManagedEntityRegistryTable[i & 0xffff] + 100);
+	i = 0;
+	for (;;) {
+		if ((int) cManagedEntities <= (int) i) {
+			break;
+		}
+		if (g_GAME_ManagedEntityRegistryTable[(unsigned short) i] != 0) {
+			nChunkType = *(int*) (g_GAME_ManagedEntityRegistryTable[(unsigned short) i] + 100);
 			if (nChunkType != 0xffff) {
 				SetEnabled(nChunkType, 1);
 			}
 		}
+		++i;
 	}
 	if (*(int*) (*(int*) ((char*) this + 0x180) + 8) == 0) {
 		SetEnabled(9, 0);
