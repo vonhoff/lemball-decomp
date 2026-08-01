@@ -3871,6 +3871,39 @@ __declspec(naked) void* LEMBALL_FASTCALL DeleteLevelGameModeAdjusted(void*, int,
         jmp offset DeleteLevelGameModeAuto
 	}
 }
+struct LevelTileRenderDescriptor {
+	char m_abReserved00[8];
+	short m_nHeight08;
+	short m_nReserved0A;
+
+	short SampleHeightOffsetThunk(int nLocalX, int nLocalY);
+};
+
+struct LevelTileGridView {
+	void* m_pReserved00;
+	LevelTileRenderDescriptor* m_pCells04;
+	int m_cColumns08;
+	int m_cRows0C;
+
+	unsigned short SampleHeightAtPoint(int x, int y);
+};
+
+// FUNCTION: LEMBALL 0x00431520
+unsigned short LevelTileGridView::SampleHeightAtPoint(int x, int y)
+{
+	LevelTileRenderDescriptor* pCell;
+	int nTileX;
+	int nTileY;
+
+	nTileX = x >> 4;
+	nTileY = y >> 4;
+	if (x < 0 || y < 0 || nTileX >= m_cColumns08 || nTileY >= m_cRows0C) {
+		return 0;
+	}
+	pCell = &m_pCells04[nTileY * m_cColumns08 + nTileX];
+	return pCell->SampleHeightOffsetThunk(x & 0x0f, y & 0x0f);
+}
+
 // FUNCTION: LEMBALL 0x00431590
 GamePrimaryContext* GamePrimaryContext::ConstructPrimaryContext(GameMainContext* pMainContext)
 {

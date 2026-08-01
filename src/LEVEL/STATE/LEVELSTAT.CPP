@@ -729,11 +729,44 @@ struct LevelLevelTileCell {
 	void InitializeLevelTileGridCellRenderFlagsThunk(void);
 };
 
+struct LevelTileGridCell {
+	int m_nType00;
+	short m_nVariant04;
+	unsigned short m_nFlags06;
+	short m_nReserved08;
+	short m_nReserved0A;
+};
+
 struct LevelTileGridView {
-	char m_abReserved00[0x0c];
-	LevelLevelTileCell* m_pCells0C;
-	int m_cColumns10;
-	int m_cRows14;
+	void* m_pReserved00;
+	LevelTileGridCell* m_pCells04;
+	int m_cColumns08;
+	int m_cRows0C;
+
+	LevelTileGridCell* GetCell(int x, int y);
+	unsigned short SampleHeightAtPoint(int x, int y);
+	unsigned short SampleHeightInline(int x, int y)
+	{
+		LevelTileRenderDescriptor* pCell;
+
+		if (x < 0 || y < 0 || (x >> 4) >= m_cColumns08 || (y >> 4) >= m_cRows0C) {
+			return 0;
+		}
+		pCell = (LevelTileRenderDescriptor*) GetCell(x >> 4, y >> 4);
+		return pCell->SampleHeightOffsetThunk(x & 0x0f, y & 0x0f);
+	}
+	unsigned short GetCellFlags(int x, int y)
+	{
+		if (x < 0 || y < 0 || x >= m_cColumns08 || y >= m_cRows0C) {
+			return 3;
+		}
+		return GetCell(x, y)->m_nFlags06;
+	}
+};
+
+struct LevelTileGridOwnerView {
+	char m_abReserved00[8];
+	LevelTileGridView m_Grid08;
 	char m_abReserved18[4];
 	int m_cEdgeColumns1C;
 	int m_cEdgeRows20;
@@ -742,6 +775,7 @@ struct LevelTileGridView {
 
 	int TestEdgeMask(int x, int y, unsigned char nMask);
 	unsigned char GetEdgeMask(int x, int y);
+	void BuildNeighborEdgeMasks(void);
 	void SetCellType(int x, int y, int nType, int nVariant);
 };
 
@@ -1231,7 +1265,7 @@ unsigned int LevelTileRenderDescriptor::TestShapePixel(int nLocalX, int nLocalY,
 }
 
 // FUNCTION: LEMBALL 0x004305a0
-int LevelTileGridView::TestEdgeMask(int x, int y, unsigned char nMask)
+int LevelTileGridOwnerView::TestEdgeMask(int x, int y, unsigned char nMask)
 {
 	if (x < 0 || y < 0 || x >= m_cEdgeColumns1C || y >= m_cEdgeRows20) {
 		return 0;
@@ -1240,7 +1274,7 @@ int LevelTileGridView::TestEdgeMask(int x, int y, unsigned char nMask)
 }
 
 // FUNCTION: LEMBALL 0x004305f0
-unsigned char LevelTileGridView::GetEdgeMask(int x, int y)
+unsigned char LevelTileGridOwnerView::GetEdgeMask(int x, int y)
 {
 	if (x < 0 || y < 0 || x >= m_cEdgeColumns1C || y >= m_cEdgeRows20) {
 		return 0;
@@ -1248,12 +1282,77 @@ unsigned char LevelTileGridView::GetEdgeMask(int x, int y)
 	return m_pEdgeMasks48[y * m_cEdgeColumns1C + x];
 }
 
+// FUNCTION: LEMBALL 0x00430620
+void LevelTileGridOwnerView::BuildNeighborEdgeMasks(void)
+{
+	unsigned char* pMask;
+	unsigned short nFirstHeight;
+	unsigned short nSecondHeight;
+	int x;
+	int y;
+	int nWorldX;
+	int nWorldY;
+
+	pMask = m_pEdgeMasks48;
+	nWorldY = 8;
+	for (y = 0; y < m_cEdgeRows20; ++y, nWorldY += 16) {
+		nWorldX = 8;
+		for (x = 0; x < m_cEdgeColumns1C; ++x, nWorldX += 16, ++pMask) {
+			*pMask = 0;
+
+			if (nWorldY > 8 && (m_Grid08.GetCellFlags(x, y - 1) & 0x25) == 0) {
+				nFirstHeight = m_Grid08.SampleHeightAtPoint(nWorldX, nWorldY - 8);
+				nSecondHeight = m_Grid08.SampleHeightInline(nWorldX, nWorldY - 9);
+				if (nSecondHeight <= nFirstHeight + 15) {
+					*pMask |= 0x10;
+				}
+				if (nFirstHeight <= nSecondHeight + 15) {
+					*pMask |= 0x01;
+				}
+			}
+
+			if (x < m_cEdgeColumns1C - 1 && (m_Grid08.GetCellFlags(x + 1, y) & 0x25) == 0) {
+				nFirstHeight = m_Grid08.SampleHeightInline(nWorldX + 7, nWorldY);
+				nSecondHeight = m_Grid08.SampleHeightInline(nWorldX + 8, nWorldY);
+				if (nSecondHeight <= nFirstHeight + 15) {
+					*pMask |= 0x40;
+				}
+				if (nFirstHeight <= nSecondHeight + 15) {
+					*pMask |= 0x04;
+				}
+			}
+
+			if (y < m_cEdgeRows20 - 1 && (m_Grid08.GetCellFlags(x, y + 1) & 0x25) == 0) {
+				nFirstHeight = m_Grid08.SampleHeightInline(nWorldX, nWorldY + 7);
+				nSecondHeight = m_Grid08.SampleHeightInline(nWorldX, nWorldY + 8);
+				if (nSecondHeight <= nFirstHeight + 15) {
+					*pMask |= 0x20;
+				}
+				if (nFirstHeight <= nSecondHeight + 15) {
+					*pMask |= 0x02;
+				}
+			}
+
+			if (nWorldX > 8 && (m_Grid08.GetCellFlags(x - 1, y) & 0x25) == 0) {
+				nFirstHeight = m_Grid08.SampleHeightInline(nWorldX - 8, nWorldY);
+				nSecondHeight = m_Grid08.SampleHeightInline(nWorldX - 9, nWorldY);
+				if (nSecondHeight <= nFirstHeight + 15) {
+					*pMask |= 0x80;
+				}
+				if (nFirstHeight <= nSecondHeight + 15) {
+					*pMask |= 0x08;
+				}
+			}
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x00430a20
-void LevelTileGridView::SetCellType(int x, int y, int nType, int nVariant)
+void LevelTileGridOwnerView::SetCellType(int x, int y, int nType, int nVariant)
 {
 	LevelLevelTileCell* pCell;
 
-	pCell = &m_pCells0C[y * m_cColumns10 + x];
+	pCell = (LevelLevelTileCell*) &m_Grid08.m_pCells04[y * m_Grid08.m_cColumns08 + x];
 	pCell->m_nType00 = nType;
 	pCell->m_nVariant04 = (short) nVariant;
 	pCell->InitializeLevelTileGridCellRenderFlagsThunk();
