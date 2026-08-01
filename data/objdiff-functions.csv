@@ -623,7 +623,7 @@ address,size,name,unit
 0x0041A3C0,16,initialize_two_dword_pair_sentinel,LEVEL/LEVELRUN.CPP
 0x0041A3E0,242,rotate_fixed_point_pair_by_sincos,LEVEL/LEVELRUN.CPP
 0x0041A510,135,construct_projectile_object,LEVEL/LEVELRUN.CPP
-0x0041A5A0,30,reset_projectile_object_to_inactive_state,LEVEL/LEVELRUN.CPP
+0x0041A5A0,30,reset_projectile_object_to_inactive_state,LEVEL/PROJECTILERESET.CPP
 0x0041A5C0,268,initialize_projectile_object,LEVEL/LEVELRUN.CPP
 0x0041A6D0,144,arm_projectile_path,LEVEL/LEVELRUN.CPP
 0x0041A760,62,activate_projectile_object,LEVEL/LEVELRUN.CPP
