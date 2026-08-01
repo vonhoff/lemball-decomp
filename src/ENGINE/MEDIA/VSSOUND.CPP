@@ -1568,7 +1568,11 @@ int SelectAudioManagerBackends(void** ppEffectBackends,
 // FUNCTION: LEMBALL 0x0047c210
 unsigned short ByteSwapAudioWord(unsigned short uValue)
 {
-	return (unsigned short) ((uValue >> 8) + (uValue << 8));
+	unsigned short uHigh;
+
+	uHigh = (unsigned short) (uValue >> 8);
+	uValue = (unsigned short) (uValue << 8);
+	return (unsigned short) (uHigh + uValue);
 }
 
 // FUNCTION: LEMBALL 0x0047c230
