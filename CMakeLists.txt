@@ -4,6 +4,7 @@ project(lemball_decomp CXX)
 # Order is significant for the reconstructed executable.
 set(LEMBALL_SOURCES
     src/GAME.CPP
+    src/FRONTEND/GAMEEVENTFILTER.CPP
     src/GAMELEVELSCREEN.CPP
     src/GAMEHELPERS.CPP
     src/GAMEVT.CPP

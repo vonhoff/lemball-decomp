@@ -1709,7 +1709,7 @@ address,size,name,unit
 0x0044B9F0,606,draw_registration_info_screen,GAME.CPP
 0x0044BC50,79,resize_registration_info_screen_viewport,GAME.CPP
 0x0044BCA0,471,prepare_registration_info_screen_active_upload,GAME.CPP
-0x0044BE80,30,filter_event_type_4_or_count_unhandled,GAME.CPP
+0x0044BE80,30,filter_event_type_4_or_count_unhandled,FRONTEND/GAMEEVENTFILTER.CPP
 0x0044BEA0,32,poll_registration_info_timeout,GAME.CPP
 0x0044BEC0,1,noop_registration_recenter,FRONTEND/SCREENVT.CPP
 0x0044C0B0,4,get_registration_info_screen_requested_mode,FRONTEND/SCREENVT.CPP
