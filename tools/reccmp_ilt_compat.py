@@ -98,6 +98,30 @@ FUNCTION_DATA_REFERENCES = {
         "vftable'{for `VsNetTimedEffStreamPrimary",
         "timed EFF stream primary vtable 00498fb0",
     ),
+    0x004664B0: (
+        (
+            0x004995B0,
+            "g_VSGDI_ResourceGeometryHelperGroup0Vtable",
+            "resource geometry helper group-0 vtable 004995b0",
+        ),
+        (
+            0x00499560,
+            "g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable",
+            "resource geometry helper group-0 compact-subobject vtable 00499560",
+        ),
+    ),
+    0x004666E0: (
+        (
+            0x00499618,
+            "g_VSGDI_ResourceGeometryHelperGroup1Vtable",
+            "resource geometry helper group-1 vtable 00499618",
+        ),
+        (
+            0x004995C8,
+            "g_VSGDI_ResourceGeometryHelperGroup1CompactSubobjectVtable",
+            "resource geometry helper group-1 compact-subobject vtable 004995c8",
+        ),
+    ),
     0x0045FD80: (
         0x00498FB0,
         "vftable'{for `VsNetTimedEffStreamPrimary",
