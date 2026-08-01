@@ -148,6 +148,14 @@ struct VsInitVSMemPointerTable {
 	VsInitVSMemPointerTable* ConstructVSMemPointerTable(int cItems);
 };
 
+struct PaletteRemapPointerTableMemberView {
+	void** m_ppItems;
+	int m_cItems;
+	int m_nCursor;
+
+	void ReleasePaletteRemapVariant(void* pVariant);
+};
+
 struct VsInitPaletteRemapVariant {
 	void* m_pRemapTable;
 	void* m_pResourceObject;
@@ -249,7 +257,7 @@ VsInitResourceTypeTable* g_pSecondaryResourceTypeTable = 0;
 // GLOBAL: LEMBALL 0x004a1d6c
 VsInitResourceTypeTable* g_pTertiaryResourceTypeTable = 0;
 // GLOBAL: LEMBALL 0x004a2000
-static VsInitVSMemPointerTable* g_pPaletteRemapPointerTable = 0;
+PaletteRemapPointerTableMemberView* g_pPaletteRemapPointerTable = 0;
 static void* g_pSharedRenderQueueNode = 0;
 void* LEMBALL_FASTCALL DeleteRenderDispatchQueueThunk00463940(void* pQueue, int nUnused, int fFreeMemory);
 static void* g_RenderDispatchQueueDeleteThunkVtable[1] = {(void*) NetworkSafeVtableNoop};
@@ -1464,7 +1472,8 @@ int InitializeResourceTypeTables(void)
 	g_pTertiaryResourceTypeTable = pResourceTypeTable;
 
 	g_pPaletteRemapPointerTable =
-		new (AllocateVSMemBlock(sizeof(VsInitVSMemPointerTable))) VsInitVSMemPointerTable(0x20);
+		(PaletteRemapPointerTableMemberView*) new (AllocateVSMemBlock(sizeof(VsInitVSMemPointerTable)))
+			VsInitVSMemPointerTable(0x20);
 	return 1;
 }
 
@@ -1472,7 +1481,7 @@ int InitializeResourceTypeTables(void)
 int ShutdownResourceTypeTables(void)
 {
 	if (g_pPaletteRemapPointerTable != 0) {
-		DestroyPaletteRemapPointerTable(g_pPaletteRemapPointerTable);
+		DestroyPaletteRemapPointerTable((VsInitVSMemPointerTable*) g_pPaletteRemapPointerTable);
 		FreeVSMemBlock(g_pPaletteRemapPointerTable);
 		g_pPaletteRemapPointerTable = 0;
 	}
@@ -1727,27 +1736,34 @@ void* RegisterPaletteRemapVariant(int nPaletteResourceId, unsigned char* pRemapT
 }
 
 // FUNCTION: LEMBALL 0x0046add0
-void ReleasePaletteRemapVariant(void* pVariant)
+void PaletteRemapPointerTableMemberView::ReleasePaletteRemapVariant(void* pVariant)
 {
 	int i;
 	int cFound;
 
-	if (g_pPaletteRemapPointerTable == 0 || pVariant == 0) {
+	if (pVariant == 0) {
 		return;
 	}
 	cFound = 0;
-	for (i = 0; cFound < g_pPaletteRemapPointerTable->m_nCursor; ++i) {
-		if (g_pPaletteRemapPointerTable->m_ppItems[i] == 0) {
+	for (i = 0; cFound < m_nCursor; ++i) {
+		if (m_ppItems[i] == 0) {
 			continue;
 		}
-		if (g_pPaletteRemapPointerTable->m_ppItems[i] == pVariant) {
+		if (m_ppItems[i] == pVariant) {
 			ReleasePaletteRemapVariantFields((VsInitPaletteRemapVariant*) pVariant);
 			FreeVSMemBlock(pVariant);
-			g_pPaletteRemapPointerTable->m_ppItems[i] = 0;
-			--g_pPaletteRemapPointerTable->m_nCursor;
+			m_ppItems[i] = 0;
+			--m_nCursor;
 			return;
 		}
 		++cFound;
+	}
+}
+
+void ReleasePaletteRemapVariant(void* pVariant)
+{
+	if (g_pPaletteRemapPointerTable != 0) {
+		((PaletteRemapPointerTableMemberView*) g_pPaletteRemapPointerTable)->ReleasePaletteRemapVariant(pVariant);
 	}
 }
 

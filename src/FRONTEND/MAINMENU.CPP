@@ -547,8 +547,13 @@ static void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionNavigationLocks(Game
 static void LEMBALL_FASTCALL SelectNextFunctionalLevel(GameLevelSelectionScreenView* pScreen);
 static void LEMBALL_FASTCALL SelectPreviousFunctionalLevel(GameLevelSelectionScreenView* pScreen);
 static GameProgressiveVariantFrameSelector* ConstructLevelSelectionFrameSelector(void* pManager, int nResourceId);
+struct PaletteRemapPointerTableMemberView {
+	void ReleasePaletteRemapVariant(void* pVariant);
+};
+extern PaletteRemapPointerTableMemberView* g_pPaletteRemapPointerTable;
+
 static void InitializeFunctionalLevelSelectionPaletteRemap(GameLevelSelectionScreenView* pScreen);
-static void ReleaseFunctionalLevelSelectionPaletteRemap(GameLevelSelectionScreenView* pScreen);
+static void LEMBALL_FASTCALL ReleaseFunctionalLevelSelectionPaletteRemap(GameLevelSelectionScreenView* pScreen);
 void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(void* pObject, int, void*);
 void LEMBALL_FASTCALL DrawFramedScreenBase(void* pObject);
 void LEMBALL_FASTCALL DrawFramedScreenFrameLayer(void* pObject);
@@ -1825,11 +1830,6 @@ __inline static void InitializeFunctionalLevelSelectionPaletteRemap(GameLevelSel
 	pScreen->m_nPaletteRemap3D0 =
 		(int) (unsigned long) RegisterPaletteRemapVariant(0x10a, pScreen->m_pPaletteRemap3CC, 0);
 	ReleaseTypedResourceObjectReference(pPalette);
-}
-
-__inline static void ReleaseFunctionalLevelSelectionPaletteRemap(GameLevelSelectionScreenView* pScreen)
-{
-	ReleasePaletteRemapVariant((void*) (unsigned long) pScreen->m_nPaletteRemap3D0);
 }
 
 __inline static GameProgressiveVariantFrameSelector* ConstructLevelSelectionFrameSelector(void* pManager,
@@ -4229,6 +4229,12 @@ void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(GameLevelSelection
 	pScreen->m_abTime45C[3] = (char) (Metadata.m_nTimeSeconds06 % 10 + '0');
 	pScreen->m_abTime45C[4] = '\0';
 	RefreshFunctionalLevelSelectionNavigationLocks(pScreen);
+}
+
+// FUNCTION: LEMBALL 0x0044a3c0
+static void LEMBALL_FASTCALL ReleaseFunctionalLevelSelectionPaletteRemap(GameLevelSelectionScreenView* pScreen)
+{
+	g_pPaletteRemapPointerTable->ReleasePaletteRemapVariant((void*) (unsigned long) pScreen->m_nPaletteRemap3D0);
 }
 
 // Compatibility shim preserving MSVC 4.20 compiler state.
