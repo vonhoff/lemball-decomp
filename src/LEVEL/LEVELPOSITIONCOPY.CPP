@@ -25,21 +25,26 @@ struct LevelEntityPositionView {
 	int m_nZ;
 };
 
-struct LevelPositionTriplet {
+struct LevelPoint3 {
 	int m_nX;
 	int m_nY;
 	int m_nZ;
 };
 
+struct LevelManagedEntityActiveGroupView : public LevelPositionTableView {
+	int GetActiveEntityPosition(LevelPoint3* pPosition);
+};
+
 struct LevelModePositionView {
 	unsigned char m_abReserved00[0x15c];
-	LevelPositionTableView* m_pPositions;
+	LevelManagedEntityActiveGroupView* m_pPositions;
 	unsigned char m_abReserved160[0x70];
 	LevelEntityPositionView* m_apEntities[4];
 
 	void CopySelectedEntityPosition(int* pnX, int* pnY, int* pnZ);
 	void CopyPosition(int* pnX, int* pnY, int* pnZ, int iPosition);
-	void CopyEntityPosition(unsigned int nEntityId, LevelPositionTriplet* pPosition);
+	void CopyEntityPosition(unsigned int nEntityId, LevelPoint3* pPosition);
+	void GetFollowTargetPosition(LevelPoint3* pPosition, int* pStatus);
 };
 
 // FUNCTION: LEMBALL 0x00412d50
@@ -61,7 +66,7 @@ void LevelModePositionView::CopyPosition(int* pnX, int* pnY, int* pnZ, int iPosi
 }
 
 // FUNCTION: LEMBALL 0x00412dc0
-void LevelModePositionView::CopyEntityPosition(unsigned int nEntityId, LevelPositionTriplet* pPosition)
+void LevelModePositionView::CopyEntityPosition(unsigned int nEntityId, LevelPoint3* pPosition)
 {
 	LevelEntityPositionView** ppEntity;
 	int i;
@@ -79,4 +84,11 @@ void LevelModePositionView::CopyEntityPosition(unsigned int nEntityId, LevelPosi
 		++ppEntity;
 		++i;
 	} while (i < 4);
+}
+
+// FUNCTION: LEMBALL 0x00412e20
+void LevelModePositionView::GetFollowTargetPosition(LevelPoint3* pPosition, int* pStatus)
+{
+	*pStatus = 0;
+	m_pPositions->GetActiveEntityPosition(pPosition);
 }
