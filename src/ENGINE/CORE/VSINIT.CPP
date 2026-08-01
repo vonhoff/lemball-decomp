@@ -1126,13 +1126,13 @@ void ShutdownCoreSubsystems(void)
 int ParseCommandLineOptionToken(char* pszToken)
 {
 	int i;
+	const char* pszColon;
+	size_t cchOption;
+	char* pszEnd;
 
 	if (*pszToken == '-' || *pszToken == '/') {
 		++pszToken;
 		for (i = 0; i < (int) LEMBALL_ARRAY_COUNT(g_aCommandLineOptions); ++i) {
-			const char* pszColon;
-			size_t cchOption;
-
 			pszColon = strchr((char*) g_aCommandLineOptions[i].m_pszName, ':');
 			if (pszColon != 0) {
 				cchOption = (size_t) (pszColon - g_aCommandLineOptions[i].m_pszName);
@@ -1143,8 +1143,6 @@ int ParseCommandLineOptionToken(char* pszToken)
 
 			if (strncmp(pszToken, g_aCommandLineOptions[i].m_pszName, cchOption) == 0) {
 				if (strlen(g_aCommandLineOptions[i].m_pszName) != cchOption) {
-					char* pszEnd;
-
 					*g_aCommandLineOptions[i].m_pnValue =
 						ParseDecimalIntAndAdvance(pszToken + cchOption + 1, &pszEnd, 10);
 				}
