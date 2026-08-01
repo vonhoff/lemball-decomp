@@ -17,6 +17,17 @@ struct InvsChunkObjectView : LevelChunkObjectBaseView {
 	InvsChunkObjectView* ConstructInvsChunkObject(void);
 };
 
+struct LevelVtSmallFunctionView {
+	void AddLevelScoreClamped(int nValue);
+};
+
+struct InvsChunkObjectSoundStateView {
+	unsigned char m_abReserved00[0x14c];
+	int m_fSoundTriggered14C;
+
+	void TriggerSoundOnce(void);
+};
+
 struct RockChunkObjectView : LevelChunkObjectBaseView {
 	RockChunkObjectView* ConstructRockChunkObject(void);
 };
@@ -760,6 +771,15 @@ void LEMBALL_FASTCALL destroy_invs_chunk_object(void* pObject)
 {
 	*(void**) pObject = g_LINKSCF_InvsChunkObjectVtable;
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
+}
+
+// FUNCTION: LEMBALL 0x0040a020
+void InvsChunkObjectSoundStateView::TriggerSoundOnce(void)
+{
+	if (m_fSoundTriggered14C == 0) {
+		((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(0x32);
+		m_fSoundTriggered14C = 1;
+	}
 }
 
 // FUNCTION: LEMBALL 0x0040a210
