@@ -43,7 +43,7 @@ Pop-Location
 
 ## Source layout
 
-- `src/ENGINE` contains the recovered runtime, graphics, media, networking, and debug code. Graphics implementations are split into `GDI/RENDER`, `GDI/WINDOW`, and `GDI/VGA`.
+- `src/ENGINE` contains the recovered runtime, graphics, media, networking, and debug code. Graphics implementations are split into `GDI/RENDER` and `GDI/WINDOW`.
 - `src/FRONTEND` contains menus, lobby screens, and other user-interface code.
 - `src/LEVEL` is split into `CHUNK`, `ENTITY`, `IO`, `RENDER`, `RUN`, `STATE`, and `VTABLE` implementations. Headers remain directly under `src/LEVEL`.
 - `src/RESOURCE` contains archive and typed-resource loading code.
