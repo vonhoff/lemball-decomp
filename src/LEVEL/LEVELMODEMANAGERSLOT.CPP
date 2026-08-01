@@ -19,6 +19,15 @@ struct LevelModePositionOwnerView {
 	void CopyProfilePositionFixed(int* pOutput, int nIndex);
 };
 
+struct LevelModeTripletArrayView {
+	unsigned char m_abReserved00[0x90];
+	int m_anX90[4];
+	int m_anYA0[4];
+	int m_anZB0[4];
+
+	void SetTripletEntry(int nX, int nY, int nZ, int nIndex);
+};
+
 struct DoorChunkObjectManagerView {
 	unsigned short GetObjectSlotId(int nIndex);
 };
@@ -57,4 +66,12 @@ void SynchronizeManagedEntityRegistrySlotIds(void)
 void LevelModePositionOwnerView::CopyProfilePositionFixed(int* pOutput, int nIndex)
 {
 	m_pEntries15C->CopyTripletToFixedPointThunk(pOutput, nIndex);
+}
+
+// FUNCTION: LEMBALL 0x00413180
+void LevelModeTripletArrayView::SetTripletEntry(int nX, int nY, int nZ, int nIndex)
+{
+	m_anX90[nIndex] = nX;
+	m_anYA0[nIndex] = nY;
+	m_anZB0[nIndex] = nZ;
 }
