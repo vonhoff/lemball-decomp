@@ -5507,6 +5507,7 @@ void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(void* pPrimaryContext)
 
 	pRenderContext = (GameWindowOwnerRenderContext*) pPrimaryContext;
 	pEntry = (char*) pRenderContext->m_aDirtyRect88;
+	*(void**) pRenderContext = g_GAME_WindowOwnerRenderContextVtableSlots;
 	for (i = 0; i >= 0; --i) {
 		pEntry -= 0x10;
 		RestorePackagedSpriteRenderEntryVtableD(pEntry);
