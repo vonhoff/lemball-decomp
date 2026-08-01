@@ -361,7 +361,7 @@ address,size,name,unit
 0x00413000,19,get_level_mode_door_slot_id_by_index,LEVEL/LEVELMODEMANAGERSLOT.CPP
 0x00413020,19,get_level_mode_lift_slot_id_by_index,LEVEL/LEVELRUN.CPP
 0x00413040,11,pop_level_plas_history_child,LEVEL/LEVELRUN.CPP
-0x00413050,51,synchronize_managed_entity_registry_slot_ids,LEVEL/LEVELRUN.CPP
+0x00413050,51,synchronize_managed_entity_registry_slot_ids,LEVEL/LEVELMODEMANAGERSLOT.CPP
 0x00413090,8,return_true_virtual_hook,LEVEL/LEVELSTAT.CPP
 0x004130A0,33,set_level_chunk_type_enabled_flag,LEVEL/LEVELRUN.CPP
 0x004130D0,29,find_level_mode_move_chunk_containing_point,LEVEL/LEVELVT.CPP
