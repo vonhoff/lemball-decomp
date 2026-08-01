@@ -1,61 +1,16 @@
-# Lemmings Paintball Decompilation
+# Lemmings Paintball decompilation
 
-Work-in-progress reconstruction of 1996 Win32 `LEMBALL.EXE`, built with MSVC
-4.20 and compared against original binary with reccmp.
+This repository is a work-in-progress C++ reconstruction of the 1996 Windows game `LEMBALL.EXE`.
 
-Original executable reports LINK 3.00 and contains an incremental link table at
-`0x00401000` through `0x00403890`; real code begins at `0x00406160`. Current
-MSVC 4.00 build uses `/INCREMENTAL:YES` and compares linker thunks by
-resolved destination identity. Whole-image parity remains separate work: resource
-section, CRT, and imports differ.
+The reconstructed program builds with Microsoft Visual C++ 4.0 and is compared with the original executable using [reccmp](https://github.com/isledecomp/reccmp). It is not complete yet, but the project builds and the comparison tools can measure progress function by function.
 
-## Decompilation workflow
+## Build
 
-Use one checkout and one editing agent at a time. Other agents may inspect
-Ghidra or suggest work, but do not edit or build concurrently.
+The build currently runs on Windows.
 
-Start with a shape-first batch:
-
-1. Run candidate miner with `--save-baseline` to save current non-stub 100%
-   address set and group unmatched real functions by normalized original
-   instruction shape.
-2. Prefer largest cluster with exact exemplar or simple compiler-owned C++
-   pattern.
-3. Inspect every member in Ghidra, recover one parameterized C/C++ form, and
-   implement all proven members.
-4. Compare every member and run full JSON. Keep zero-loss exact gains, then
-   continue next cluster.
-
-This turns repeated constructors, destructors, scalar deletes, vtable restores,
-accessors, and small forwarding bodies into one compiler investigation plus
-many verified matches. Shape similarity is candidate generation, never proof:
-ABI, stack cleanup, offsets, constants, xrefs, and source ownership still need
-per-member confirmation.
-
-```powershell
-.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py `
-  --save-baseline
-```
-
-After high-yield families are exhausted, use miner's `singleton fallback`.
-Ghidra inventory export validates all 2,077 ILT entries and excludes them.
-
-## Setup
-
-Install [MSVC 4.00](https://github.com/vonhoff/MSVC400) outside the checkout
-and set `MSVC400_ROOT` to the directory containing `bin\CL.EXE`, `include`,
-and `lib`. For a per-user installation in PowerShell:
-
-```powershell
-$msvc400 = "$env:LOCALAPPDATA\Programs\MSVC400"
-git clone https://github.com/vonhoff/MSVC400 $msvc400
-[Environment]::SetEnvironmentVariable("MSVC400_ROOT", $msvc400, "User")
-$env:MSVC400_ROOT = $msvc400
-```
-
-The build script checks `MSVC400_ROOT`, then the ignored `msvc400` directory in
-the checkout. It validates the selected installation and propagates the same
-root to CMake.
+1. Install [MSVC 4.00](https://github.com/vonhoff/MSVC400) outside this repository.
+2. Set `MSVC400_ROOT` to the directory containing `bin\CL.EXE`, `include`, and `lib`.
+3. Create the Python environment and build the project:
 
 ```powershell
 py -m venv .decomp-venv
@@ -63,12 +18,47 @@ py -m venv .decomp-venv
 .decomp-venv\Scripts\python.exe tools\build_msvc400.py
 ```
 
-The canonical build installs a narrow reccmp 0.1.6 compatibility hook. For
-data comparison only, original pointers to verified `E9` entries in the
-documented linker ILT are resolved to their real destinations.
+The executable and PDB are written to `build-msvc400`.
+
+## Verify a change
+
+Run these commands from the repository root:
+
+```powershell
+.decomp-venv\Scripts\python.exe tools\lint_reccmp_metadata.py
+.decomp-venv\Scripts\python.exe tools\build_msvc400.py
+.decomp-venv\Scripts\reccmp-project.exe detect --search-path data
+
+Push-Location build-msvc400
+..\.decomp-venv\Scripts\reccmp-reccmp.exe --target LEMBALL --json reccmp.json --json-diet
+..\.decomp-venv\Scripts\reccmp-decomplint.exe --target LEMBALL
+..\.decomp-venv\Scripts\reccmp-datacmp.exe --target LEMBALL --no-color
+..\.decomp-venv\Scripts\reccmp-vtable.exe --target LEMBALL
+Pop-Location
+
+.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --check-baseline
+```
+
+`AGENTS.md` has the full reconstruction rules and evidence requirements.
+
+## Source layout
+
+- `src/ENGINE` contains the recovered runtime, graphics, media, networking, and debug code. Graphics implementations are split into `GDI/RENDER`, `GDI/WINDOW`, and `GDI/VGA`.
+- `src/FRONTEND` contains menus, lobby screens, and other user-interface code.
+- `src/LEVEL` is split into `CHUNK`, `ENTITY`, `IO`, `RENDER`, `RUN`, `STATE`, and `VTABLE` implementations. Headers remain directly under `src/LEVEL`.
+- `src/RESOURCE` contains archive and typed-resource loading code.
+- `src/SHELL` contains startup, options, and top-level window code.
+- `data` contains comparison metadata and the encrypted reference executable.
+- `tools` contains the build, metadata, and comparison helpers.
+
+Some filenames remain short because they reflect the style and tool limits of the original codebase. The folders are the quickest way to find the relevant subsystem.
+
+## Contributing
+
+Treat the original executable as the source of truth. Keep changes compatible with MSVC 4.20, preserve source and link order, and do not use inline assembly to force a match. A readable reconstruction with measured binary improvement is better than decompiler-shaped code or register tricks.
+
+Build after meaningful edits and run the complete verification set before committing. Do not update the exact-match baseline to hide regressions.
 
 ## Legal
 
-Encrypted non-working original executable is included only for automated
-comparison. No game assets required for play are included. This unofficial
-preservation project is not affiliated with any rights holder.
+The encrypted, non-working reference executable is included only for automated comparison. The repository does not include the assets needed to play the game. This is an unofficial preservation project and is not affiliated with the original developers or rights holders.

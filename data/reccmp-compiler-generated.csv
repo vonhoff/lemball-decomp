@@ -2,28 +2,28 @@
 address,name,symbol,type,source
 0x00406130,EhVectorDestructorIterator,,synthetic,src/SHELL/OPTIONS.CPP
 0x00406BA0,ComputeLevelPasswordChecksumAuto,,synthetic,src/GAME.CPP
-0x00407E10,DeleteStreamFormatStateAuto,,synthetic,src/LEVEL/LEVELVT.CPP
-0x00407EF0,DeleteSimpleVtableObject407EF0,,synthetic,src/LEVEL/LEVELVT.CPP
+0x00407E10,DeleteStreamFormatStateAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x00407EF0,DeleteSimpleVtableObject407EF0,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
 0x00407F40,DeleteStartupModeAuto,,synthetic,src/GAME.CPP
 0x00407F70,DeleteMainMenuModeAuto,,synthetic,src/GAME.CPP
 0x00407FA0,DeleteOptionsModeAuto,,synthetic,src/GAME.CPP
 0x00407FD0,DeleteDerivedBaseModeWrapperAuto,,synthetic,src/GAME.CPP
-0x00408010,DeleteSimpleVtableObject408010,,synthetic,src/LEVEL/LEVELVT.CPP
-0x004098B0,DeleteLevelDemoPlaybackControllerAuto,,synthetic,src/LEVEL/DEMO.CPP
-0x0040AC30,DeleteLevelChunkStreamAuto,,synthetic,src/LEVEL/TYPE18.CPP
-0x0040B450,DeleteLevelChunkStreamDispatcherAuto,,synthetic,src/LEVEL/LEVELRUN.CPP
-0x0040CE50,DeleteLevelChunkObjectBaseScalarA,,synthetic,src/LEVEL/LEVELVT.CPP
-0x0040CEA0,DeleteLevelChunkObjectBaseScalarB,,synthetic,src/LEVEL/TYPE18.CPP
+0x00408010,DeleteSimpleVtableObject408010,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x004098B0,DeleteLevelDemoPlaybackControllerAuto,,synthetic,src/LEVEL/RUN/DEMO.CPP
+0x0040AC30,DeleteLevelChunkStreamAuto,,synthetic,src/LEVEL/ENTITY/TYPE18.CPP
+0x0040B450,DeleteLevelChunkStreamDispatcherAuto,,synthetic,src/LEVEL/RUN/LEVELRUN.CPP
+0x0040CE50,DeleteLevelChunkObjectBaseScalarA,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x0040CEA0,DeleteLevelChunkObjectBaseScalarB,,synthetic,src/LEVEL/ENTITY/TYPE18.CPP
 0x0040EBE0,DeleteDoorChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x00410B20,DeleteDoorChunkObjectAuto,,synthetic,src/LEVEL/LEVELVT.CPP
-0x00410B70,Door chunk-object deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/LEVEL/LEVELVTDOOR.CPP
-0x00413090,ReturnTrueVirtualHookBodyStdcall,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x00410B20,DeleteDoorChunkObjectAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x00410B70,Door chunk-object deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/LEVEL/VTABLE/LEVELVTDOOR.CPP
+0x00413090,ReturnTrueVirtualHookBodyStdcall,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x00413DF0,DeleteEffStreamBaseWrapperAuto,,synthetic,src/GAME.CPP
 0x00413E30,DeleteLevelGameModeAuto,,synthetic,src/GAME.CPP
-0x00414C80,DeleteLevelChunkObjectChildrenVariant14C80,,synthetic,src/LEVEL/LEVELVT.CPP
-0x00414F00,DeleteManagedEntityQueueCursorAuto,,synthetic,src/LEVEL/LEVELVT.CPP
-0x00417AD0,DeleteLevelChunkObjectBaseWrapper17AD0,,synthetic,src/LEVEL/LEVELVT.CPP
-0x00417B00,LevelVtSmallFunctionView::SetRectFromBounds,,synthetic,src/LEVEL/LEVELVT.CPP
+0x00414C80,DeleteLevelChunkObjectChildrenVariant14C80,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x00414F00,DeleteManagedEntityQueueCursorAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x00417AD0,DeleteLevelChunkObjectBaseWrapper17AD0,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x00417B00,LevelVtSmallFunctionView::SetRectFromBounds,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
 0x00417B50,,??_GManagedEntityPacketBase@@UAEPAXI@Z,synthetic,src/LEVEL/LVPKT.H
 0x00417B80,,??_EManagedEntityPacket23@@UAEPAXI@Z,synthetic,src/LEVEL/LVPKT.H
 0x00417BB0,,??_EManagedEntityPacket27@@UAEPAXI@Z,synthetic,src/LEVEL/LVPKT.H
@@ -36,92 +36,92 @@ address,name,symbol,type,source
 0x00417D00,DeleteLevelChunkObjectBaseWrapper17D00,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00417D50,LinkScfAutoEffDeleteView::Delete17D50,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00418300,DeleteProjectilePoolAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x004193F0,LevelManagedEntityActiveGroupView::HasStreamDirtyChildren,,synthetic,src/LEVEL/LEVELRUN.CPP
-0x00419440,LevelManagedEntityActiveGroupView::HasDirtyChildren,,synthetic,src/LEVEL/LEVELRUN.CPP
-0x00419970,PLAS manager render-entry `adjustor thunk' (-0xb0),,synthetic,src/LEVEL/LEVELVTPLAS.CPP
+0x004193F0,LevelManagedEntityActiveGroupView::HasStreamDirtyChildren,,synthetic,src/LEVEL/RUN/LEVELRUN.CPP
+0x00419440,LevelManagedEntityActiveGroupView::HasDirtyChildren,,synthetic,src/LEVEL/RUN/LEVELRUN.CPP
+0x00419970,PLAS manager render-entry `adjustor thunk' (-0xb0),,synthetic,src/LEVEL/VTABLE/LEVELVTPLAS.CPP
 0x0041AF50,Projectile deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/ENGINE/CORE/LSPROJ.CPP
-0x0041C330,DeleteCountedChildTableStreamAuto,,synthetic,src/LEVEL/LEVELVT.CPP
-0x0041C400,DeleteLevelChunkObjectBaseWrapper1C400,,synthetic,src/LEVEL/LEVELVT.CPP
-0x0041C440,DeleteLevelChunkObjectBaseWrapper1C440,,synthetic,src/LEVEL/LEVELVT.CPP
-0x0041C5C0,DeleteLevelChunkObjectBaseWrapper1C5C0,,synthetic,src/LEVEL/LEVELVT.CPP
-0x0041C600,DeleteLevelChunkObjectBaseWrapper1C600,,synthetic,src/LEVEL/LEVELVT.CPP
-0x0041C640,DeleteLevelChunkObjectBaseWrapper1C640,,synthetic,src/LEVEL/LEVELVT.CPP
-0x0041D010,LevelVtSmallFunctionView::GetManagedEntityInteractionPoint,,synthetic,src/LEVEL/LEVELVT.CPP
-0x0041DD70,DeleteGmobChunkType14ObjectAuto,,synthetic,src/LEVEL/LEVELVT.CPP
-0x0041DF90,LevelVtSmallFunctionView::SwapObjectChildSlots128,,synthetic,src/LEVEL/LEVELVT.CPP
+0x0041C330,DeleteCountedChildTableStreamAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x0041C400,DeleteLevelChunkObjectBaseWrapper1C400,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x0041C440,DeleteLevelChunkObjectBaseWrapper1C440,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x0041C5C0,DeleteLevelChunkObjectBaseWrapper1C5C0,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x0041C600,DeleteLevelChunkObjectBaseWrapper1C600,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x0041C640,DeleteLevelChunkObjectBaseWrapper1C640,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x0041D010,LevelVtSmallFunctionView::GetManagedEntityInteractionPoint,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x0041DD70,DeleteGmobChunkType14ObjectAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x0041DF90,LevelVtSmallFunctionView::SwapObjectChildSlots128,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
 0x0041E8C0,DeleteCompositeLevelChunkChildrenWrapper1E8C0,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x0041F960,DeleteCompositeLevelChunkChildrenWrapper1F960,,synthetic,src/LEVEL/LEVELVT.CPP
-0x0041FB70,DeleteLevelChunkObjectBaseWrapper1FB70,,synthetic,src/LEVEL/LEVELVT.CPP
-0x00420AB0,DeleteThreeOptionalRecordChunkObjectAuto,,synthetic,src/LEVEL/LEVELVT.CPP
+0x0041F960,DeleteCompositeLevelChunkChildrenWrapper1F960,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x0041FB70,DeleteLevelChunkObjectBaseWrapper1FB70,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x00420AB0,DeleteThreeOptionalRecordChunkObjectAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
 0x00420B20,DeleteCompositeLevelChunkChildrenWrapper20B20,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00422350,DeleteBallChunkEntryAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x00422F70,DeleteCollChunkManagerAuto,,synthetic,src/LEVEL/LEVELVT.CPP
-0x00422FB0,DeleteCollChunkObject0B0C,,synthetic,src/LEVEL/LEVELVT.CPP
-0x00422FE0,DeleteCollChunkObject12,,synthetic,src/LEVEL/LEVELVT.CPP
-0x00423010,DeleteCollChunkObject1B,,synthetic,src/LEVEL/LEVELVT.CPP
-0x00423060,DeleteCollChunkObjectWrapper23060,,synthetic,src/LEVEL/LEVELVT.CPP
+0x00422F70,DeleteCollChunkManagerAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x00422FB0,DeleteCollChunkObject0B0C,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x00422FE0,DeleteCollChunkObject12,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x00423010,DeleteCollChunkObject1B,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x00423060,DeleteCollChunkObjectWrapper23060,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
 0x00424C30,DeleteMineChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x004266E0,DeleteLiftChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x004274F0,DeleteRockChunkManagerAuto,,synthetic,src/LEVEL/LEVELVT.CPP
-0x00427AA0,DeleteTileFlag1CChunkObjectAuto,,synthetic,src/LEVEL/LEVELVT.CPP
+0x004274F0,DeleteRockChunkManagerAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x00427AA0,DeleteTileFlag1CChunkObjectAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
 0x004287D0,DeleteCaptureTriggerChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00429E80,LinkScfSmallFunctionView::SetObjectFields18_1c_20,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00429EA0,DeleteLasrChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x0042BA10,DeleteTramChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x0042C9B0,DeletePgunChunkManagerAuto,,synthetic,src/LEVEL/LEVELVT.CPP
-0x0042E4D0,DeleteIceChunkManagerAuto,,synthetic,src/LEVEL/LEVELVT.CPP
-0x0042FBA0,DeleteMoveChunkManagerAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x0042C9B0,DeletePgunChunkManagerAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x0042E4D0,DeleteIceChunkManagerAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x0042FBA0,DeleteMoveChunkManagerAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x004322E0,delete_primary_context_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/GAME.CPP
-0x00432350,DeleteQueuedRenderPointSinkWrapperAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x00432350,DeleteQueuedRenderPointSinkWrapperAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 
 
 
-0x00432A30,InitializeStatusIndicatorPointSinkEntryAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00432A60,DeleteQueuedVariantChildSlotRenderPointSinkAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00432A90,DeleteStatusIndicatorPointSinkEntryAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00434F50,DispatchLevelStatusCallbackIfActive,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00439400,DeletePackagedSpriteRenderEntryAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x00432A30,InitializeStatusIndicatorPointSinkEntryAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00432A60,DeleteQueuedVariantChildSlotRenderPointSinkAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00432A90,DeleteStatusIndicatorPointSinkEntryAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00434F50,DispatchLevelStatusCallbackIfActive,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00439400,DeletePackagedSpriteRenderEntryAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x00439490,DeleteReconstructedLevelScreenAuto,,synthetic,src/GAME.CPP
-0x004395C0,DeleteQueuedRenderSinkEntryA,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x004395F0,DeleteQueuedRenderPointSinkFinalizeAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00439620,DeleteQueuedRenderSinkEntryB,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00439650,DeleteQueuedRenderPointSinkAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00439680,DeleteQueuedRenderSinkEntryC,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x004396B0,DeleteQueuedRenderSinkEntryD,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x004396E0,DeleteRenderPointRectSinkEntryAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00439760,QueueRenderStatePushHelper,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x004395C0,DeleteQueuedRenderSinkEntryA,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x004395F0,DeleteQueuedRenderPointSinkFinalizeAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00439620,DeleteQueuedRenderSinkEntryB,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00439650,DeleteQueuedRenderPointSinkAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00439680,DeleteQueuedRenderSinkEntryC,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x004396B0,DeleteQueuedRenderSinkEntryD,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x004396E0,DeleteRenderPointRectSinkEntryAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00439760,QueueRenderStatePushHelper,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x004397D0,QueueRenderStatePopHelper,,synthetic,src/GAME.CPP
-0x00439860,QueueSurfaceRectHelperSlot00,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x004398D0,AppendThisToPointerQueue,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00439900,AppendRenderEntryToPointerQueueB,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00439930,AppendRenderEntryToPointerQueueC,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x00439860,QueueSurfaceRectHelperSlot00,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x004398D0,AppendThisToPointerQueue,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00439900,AppendRenderEntryToPointerQueueB,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00439930,AppendRenderEntryToPointerQueueC,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x0043A450,delete_adjusted_resource_window_owner_buffer_0043a450 `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/SCREENVT.CPP
-0x0043BCD0,noop_level_screen_static_region_callback,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x0043ED10,noop_level_screen_view_follow_callback,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00442130,LevelTwoShortPointView::CopyTwoShortPoint,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00442150,LevelTwoShortPointView::CopyTwoShortPointVariant,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00442170,LevelFourShortRectView::ClearFourShortRect,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00442260,QueueAlignedZrleChildDrawEntry,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00442270,QueueAlignedZrleChildOverlayIfDirty,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00442CA0,LevelScreenActionButtonLayoutAuto::Position,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x004432A0,LevelActionPanelCodeView::MapActionPanelCode14To8,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00443350,noop_level_screen_action_panel_callback,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x0043BCD0,noop_level_screen_static_region_callback,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x0043ED10,noop_level_screen_view_follow_callback,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00442130,LevelTwoShortPointView::CopyTwoShortPoint,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00442150,LevelTwoShortPointView::CopyTwoShortPointVariant,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00442170,LevelFourShortRectView::ClearFourShortRect,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00442260,QueueAlignedZrleChildDrawEntry,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00442270,QueueAlignedZrleChildOverlayIfDirty,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00442CA0,LevelScreenActionButtonLayoutAuto::Position,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x004432A0,LevelActionPanelCodeView::MapActionPanelCode14To8,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00443350,noop_level_screen_action_panel_callback,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x00443850,MenuSelectorXorFieldView::RecomputeField104FromXor,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x00443870,update_action_button_field_0x104_from_fields_0x130_xor_0xd0,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x004438B0,delete_aligned_zrle_child_overlay_adjusted_a `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
 0x004438F0,delete_aligned_zrle_child_overlay_adjusted_b `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
 
 0x00443950,delete_base_mode_action_button_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
-0x004439F0,DeleteLevelScreenActionPanelAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x004439F0,DeleteLevelScreenActionPanelAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x00443AB0,delete_resource_geometry_child_from_rect_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
 0x00444DD0,Pause-dialog layout forwarding thunk,,synthetic,src/FRONTEND/MENUSEL.CPP
-0x004452A0,LevelTwoShortPointView::AddTwoShortPointInPlace,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x004452C0,LevelTwoShortPointView::SubtractTwoShortPointInPlace,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00445350,delete_level_screen_pause_dialog `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00445390,Pause-dialog deleting-destructor `adjustor thunk' (-0x14),,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x00447170,DeleteFramedScreenRenderChildEntryAAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x004471A0,DeleteFramedScreenRenderChildEntryBAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x004472B0,DeleteBaseModeObjectAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x004452A0,LevelTwoShortPointView::AddTwoShortPointInPlace,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x004452C0,LevelTwoShortPointView::SubtractTwoShortPointInPlace,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00445350,delete_level_screen_pause_dialog `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00445390,Pause-dialog deleting-destructor `adjustor thunk' (-0x14),,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00447170,DeleteFramedScreenRenderChildEntryAAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x004471A0,DeleteFramedScreenRenderChildEntryBAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x004472B0,DeleteBaseModeObjectAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x00447DB0,LoadMainGameVariantZrleListResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
 0x00447E30,LoadMainGameVariantListResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
 0x00447EB0,LoadMainGameVariantBitmapResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
@@ -133,8 +133,8 @@ address,name,symbol,type,source
 0x00449EC0,RequestLevelSelectionTransitionMode2,,synthetic,src/FRONTEND/MAINMENU.CPP
 0x0044A940,DeleteLevelSelectionScreenAuto,,synthetic,src/FRONTEND/MAINMENU.CPP
 0x0044A9D0,DeleteLevelSelectionModeAuto,,synthetic,src/GAME.CPP
-0x0044AA70,ResetLevelStatusChildCursor,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x0044B330,noop_level_selection_mode_render_hook,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x0044AA70,ResetLevelStatusChildCursor,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x0044B330,noop_level_selection_mode_render_hook,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x0044BEC0,noop_registration_recenter,,synthetic,src/FRONTEND/SCREENVT.CPP
 0x0044C0C0,noop_registration_buffer_reset,,synthetic,src/FRONTEND/SCREENVT.CPP
 0x0044C0D0,DeleteRegistrationInfoScreenAuto,,synthetic,src/GAME.CPP
@@ -147,23 +147,23 @@ address,name,symbol,type,source
 0x0044FFF0,DeleteQueuedVariantChildSlotManagerAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
 0x004509F0,FinishPaintballSequenceToMainMenu,,synthetic,src/FRONTEND/MAINMENU.CPP
 0x004510E0,DeletePaintballSequenceScreenAuto,,synthetic,src/FRONTEND/MAINMENU.CPP
-0x004511C0,DeleteBaseModeObjectVariantAuto,,synthetic,src/LEVEL/LEVELSTAT.CPP
+0x004511C0,DeleteBaseModeObjectVariantAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x00452370,DeletePasswordEntryScreenAuto,,synthetic,src/FRONTEND/MAINMENU.CPP
 0x00452EC0,DeleteNetworkLobbyPeerClearCloseStream,,synthetic,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x00452EF0,DeleteNetworkLobbyPeerDirtyConfirmStream,,synthetic,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x00452F20,DeleteNetworkLobbyVsnetRuntimeAuto,,synthetic,src/ENGINE/MEDIA/EFFSTRM.CPP
-0x00453120,DeleteNetworkLevelChunkDeltaStreamAuto,,synthetic,src/LEVEL/LEVELRUN.CPP
+0x00453120,DeleteNetworkLevelChunkDeltaStreamAuto,,synthetic,src/LEVEL/RUN/LEVELRUN.CPP
 0x00455DE0,DeleteNetworkLobbyScreenAuto,,synthetic,src/FRONTEND/MAINMENU.CPP
 0x00455EA0,noop_lobby_transport_callback,,synthetic,src/GAME.CPP
 0x00455EB0,DeleteNetworkLobbyTransportControllerAuto,,synthetic,src/GAME.CPP
-0x004583C0,DeleteDibDisplayStateVariantAuto,,synthetic,src/ENGINE/GDI/VSGDI.CPP
+0x004583C0,DeleteDibDisplayStateVariantAuto,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
 0x004599B0,DeleteRenderDispatchQueueAuto,,synthetic,src/ENGINE/CORE/VSINIT.CPP
 0x0045E8D0,DestroyIntZrleListResourceAndFreeAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
 0x0045EA10,DeleteColResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
 0x0045EB50,DeleteGamiResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
 0x0045EBE0,DestroyPtchResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
 0x0045EC10,DestroyTuneResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
-0x0045EC40,DestroyPresResourceAuto,,synthetic,src/LEVEL/DEMO.CPP
+0x0045EC40,DestroyPresResourceAuto,,synthetic,src/LEVEL/RUN/DEMO.CPP
 0x004628E0,,??_GVsNetEffStreamChannelState@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462900,,??_EVsNetEffStreamBase@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462940,,??_GVsNetDualHandleEffStream@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
@@ -198,34 +198,34 @@ address,name,symbol,type,source
 0x00462E00,,??_EVsNetCompositeEffTransportStack@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462E20,,??_EVsNetCompositeEffTransportStack@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x00462E50,,?DualStreamRet8@VsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEXHPAX@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00466BC0,HelperUploadStateMarkerView::PushHelperUploadStateMarker,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x00466BD0,PopHelperUploadStateMarker,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x00467040,HelperUploadRectEntryView::Clear,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x004679E0,PackagedRectQueueAllocatorView::AllocateNextPackagedRectQueueEntry,,synthetic,src/LEVEL/DRAWTEXT.CPP
-0x00469900,delete_buffered_resource_geometry_child `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x004699A0,delete_single_child_overlay_owner `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/DRAWTEXT.CPP
-0x004699D0,delete_resource_sprite_geometry_child `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/DRAWTEXT.CPP
-0x00469C00,delete_resource_sprite_geometry_child_adjusted_a `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/DRAWTEXT.CPP
-0x00469C30,delete_resource_sprite_geometry_child_adjusted_b `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/DRAWTEXT.CPP
-0x0046B3B0,GameCursorRenderClientAuto::SetListResourceEntry,,synthetic,src/LEVEL/LEVELSTAT.CPP
-0x0046DAF0,StatusPoint2DView::Set,,synthetic,src/ENGINE/GDI/GDISTATUSVT.CPP
-0x0046DB10,GdiPoint2DView::Copy,,synthetic,src/ENGINE/GDI/GDIVT.CPP
-0x0046DB40,CompactHelperSubobjectSlot0,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x0046DB50,CompactHelperSubobjectSlot1,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x0046DB60,CompactHelperSubobjectSlot2,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x0046DB70,CompactHelperSubobjectSlot3,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x0046DB80,CompactHelperSubobjectSlot4,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x0046DB90,CompactHelperSubobjectSlot5,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x0046DBA0,FillHelperSurfaceRectCommandAdjustmentThunk,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x0046DBB0,ForwardBitmapCommandToAdjustedSurfaceThunk,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x0046DBF0,BlitBitmapRowsToScanlinesAdjustmentThunk,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x0046DC00,CompactHelperSubobjectSlot9,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x0046DC10,SetHelperTargetRenderExtentAdjustmentThunk,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x0046DC20,CompactHelperSubobjectSlot11,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x0046DC30,ApplyHelperTargetPaletteAdjustmentThunk,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x0046DC40,PresentCompactResourceGeometryHelperAdjustmentThunk,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x0046DC70,GetHelperTargetTokenAdjustmentThunk,,synthetic,src/ENGINE/GDI/VSGDI.CPP
-0x0046DCB0,CompactHelperSubobjectSlot17,?CompactHelperSubobjectSlot17@@YIXPAX@Z,synthetic,src/ENGINE/GDI/GDISUBVT.CPP
+0x00466BC0,HelperUploadStateMarkerView::PushHelperUploadStateMarker,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x00466BD0,PopHelperUploadStateMarker,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x00467040,HelperUploadRectEntryView::Clear,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x004679E0,PackagedRectQueueAllocatorView::AllocateNextPackagedRectQueueEntry,,synthetic,src/LEVEL/IO/DRAWTEXT.CPP
+0x00469900,delete_buffered_resource_geometry_child `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x004699A0,delete_single_child_overlay_owner `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/IO/DRAWTEXT.CPP
+0x004699D0,delete_resource_sprite_geometry_child `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/IO/DRAWTEXT.CPP
+0x00469C00,delete_resource_sprite_geometry_child_adjusted_a `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/IO/DRAWTEXT.CPP
+0x00469C30,delete_resource_sprite_geometry_child_adjusted_b `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/IO/DRAWTEXT.CPP
+0x0046B3B0,GameCursorRenderClientAuto::SetListResourceEntry,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x0046DAF0,StatusPoint2DView::Set,,synthetic,src/ENGINE/GDI/RENDER/GDISTATUSVT.CPP
+0x0046DB10,GdiPoint2DView::Copy,,synthetic,src/ENGINE/GDI/RENDER/GDIVT.CPP
+0x0046DB40,CompactHelperSubobjectSlot0,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x0046DB50,CompactHelperSubobjectSlot1,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x0046DB60,CompactHelperSubobjectSlot2,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x0046DB70,CompactHelperSubobjectSlot3,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x0046DB80,CompactHelperSubobjectSlot4,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x0046DB90,CompactHelperSubobjectSlot5,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x0046DBA0,FillHelperSurfaceRectCommandAdjustmentThunk,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x0046DBB0,ForwardBitmapCommandToAdjustedSurfaceThunk,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x0046DBF0,BlitBitmapRowsToScanlinesAdjustmentThunk,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x0046DC00,CompactHelperSubobjectSlot9,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x0046DC10,SetHelperTargetRenderExtentAdjustmentThunk,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x0046DC20,CompactHelperSubobjectSlot11,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x0046DC30,ApplyHelperTargetPaletteAdjustmentThunk,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x0046DC40,PresentCompactResourceGeometryHelperAdjustmentThunk,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x0046DC70,GetHelperTargetTokenAdjustmentThunk,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x0046DCB0,CompactHelperSubobjectSlot17,?CompactHelperSubobjectSlot17@@YIXPAX@Z,synthetic,src/ENGINE/GDI/RENDER/GDISUBVT.CPP
 0x00471A80,,??_EVsNetSocketWindowEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471A90,VsNetSocketWindowEffChannel::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
 0x00471AF0,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPONI@AEHXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
