@@ -1774,7 +1774,7 @@ address,size,name,unit
 0x0044F130,38,destroy_queued_zrle_variant_range_entry,FRONTEND/MENUSEL.CPP
 0x0044F160,221,handle_queued_zrle_variant_range_entry_event,FRONTEND/MENUSEL.CPP
 0x0044F240,44,forward_queued_zrle_variant_range_point,FRONTEND/MENUSEL.CPP
-0x0044F270,20,rebuild_single_compact_owner_source_rect_if_needed,FRONTEND/MENUSEL.CPP
+0x0044F270,20,rebuild_single_compact_owner_source_rect_if_needed,FRONTEND/MENUSELRECT.CPP
 0x0044F290,217,load_queued_zrle_variant_range_resources,FRONTEND/MENUSEL.CPP
 0x0044F370,81,release_queued_zrle_variant_range_resources,FRONTEND/MENUSEL.CPP
 0x0044F3D0,38,refresh_queued_zrle_variant_range_selection,FRONTEND/MENUSEL.CPP
