@@ -733,6 +733,7 @@ struct GameQueuedVariantSlotRecord {
 
 struct GameQueuedVariantChildSlotManager {
 	void SelectPreviousChildSlot(void);
+	void SelectNextChildSlot(void);
 	void SelectChildSlot(int iChild);
 
 	void** m_pVtable00;
@@ -2844,6 +2845,17 @@ void GameQueuedVariantChildSlotManager::SelectPreviousChildSlot(void)
 
 	iChild = m_iSelectedChildA8 - 1;
 	if (iChild >= 0) {
+		m_iSelectedChildA8 = iChild;
+		SelectChildSlot(iChild);
+	}
+}
+// FUNCTION: LEMBALL 0x0044fb00
+void GameQueuedVariantChildSlotManager::SelectNextChildSlot(void)
+{
+	int iChild;
+
+	iChild = m_iSelectedChildA8 + 1;
+	if (iChild < m_cChildren80) {
 		m_iSelectedChildA8 = iChild;
 		SelectChildSlot(iChild);
 	}
