@@ -54,7 +54,7 @@ ONE_PAST_REFERENCES = {
     # function: (original boundary, rebuilt successor, shared identity)
     0x004595D0: (
         0x004A0F20,
-        "g_pStartupFixedBufferStream",
+        "g_fSubsystemsReady",
         "g_aCommandLineOptions+112 (OFFSET)",
     ),
 }
