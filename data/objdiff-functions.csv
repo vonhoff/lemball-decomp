@@ -1370,7 +1370,7 @@ address,size,name,unit
 0x004398A0,13,append_render_entry_to_pointer_queue_a,LEVEL/LEVELSTAT.CPP
 0x004398B0,23,dispatch_level_screen_hotspot_handler_slot_4,LEVEL/LEVELSTAT.CPP
 0x004398D0,13,append_this_to_pointer_queue,LEVEL/LEVELSTAT.CPP
-0x004398E0,22,dispatch_render_entry_owner_slot_0x98,LEVEL/LEVELSTAT.CPP
+0x004398E0,22,dispatch_render_entry_owner_slot_0x98,LEVEL/LEVELRENDERDISPATCH.CPP
 0x00439900,13,append_render_entry_to_pointer_queue_b,LEVEL/LEVELSTAT.CPP
 0x00439910,20,dispatch_level_status_rect_sink_body,LEVEL/LEVELSTAT.CPP
 0x00439930,13,append_render_entry_to_pointer_queue_c,LEVEL/LEVELSTAT.CPP
