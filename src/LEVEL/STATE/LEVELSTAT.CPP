@@ -183,6 +183,43 @@ extern void* g_pVariantResourceEntryManager;
 extern int g_nSelectedNetworkLobbyPeerId;
 extern void* g_pSharedGeometryHelper;
 
+// GLOBAL: LEMBALL 0x0049e1e0
+static unsigned int g_LevelTileMaskUpper[32] = {
+	0x0003c000, 0x000ff000, 0x003ffc00, 0x00ffff00, 0x03fffff0, 0x0ffffff0, 0x3fffffff, 0xffffffff,
+	0xffffffff, 0x3ffffffc, 0x0ffffff0, 0x03ffffc0, 0x00ffff00, 0x003ffc00, 0x000ff000, 0x0003c000,
+	0,          0,          0,          0,          0,          0,          0,          0,
+	0,          0,          0,          0,          0,          0,          0,          0};
+// GLOBAL: LEMBALL 0x0049e260
+static unsigned int g_LevelTileMaskMiddle[32] = {
+	0,          0,          0,          0,          0,          0,          0,          0,
+	0x0003c000, 0x000ff000, 0x003ffc00, 0x00ffff00, 0x03ffffc0, 0x0ffffff0, 0x3ffffffc, 0xffffffff,
+	0xffffffff, 0x3ffffffc, 0x0ffffff0, 0x03ffffc0, 0x00ffff00, 0x003ffc00, 0x000ff000, 0x0003c000,
+	0,          0,          0,          0,          0,          0,          0,          0};
+// GLOBAL: LEMBALL 0x0049e2e0
+static unsigned int g_LevelTileMaskSlopeA[32] = {
+	0x0000e000, 0x0001f800, 0x0001fe00, 0x0003ff80, 0x0007ffe0, 0x0007fff8, 0x000ffffe, 0x001ffffe,
+	0x001fffff, 0x003fffff, 0x007ffffc, 0x007ffffc, 0x00fffff8, 0x01fffff0, 0x01fffff0, 0x03ffffe0,
+	0x07ffffc0, 0x07ffffc0, 0x0fffff80, 0x1fffff00, 0x1fffff00, 0x3ffffe00, 0x7ffffc00, 0x7ffffc00,
+	0xfffff800, 0x3ffff000, 0x0ffff000, 0x03fff000, 0x00ffe000, 0x003fc000, 0x000fc000, 0x0003c000};
+// GLOBAL: LEMBALL 0x0049e360
+static unsigned int g_LevelTileMaskLower[32] = {
+	0,          0,          0,          0,          0,          0,          0,          0,
+	0,          0,          0,          0,          0,          0,          0,          0,
+	0x0003c000, 0x000ff000, 0x003ffc00, 0x00ffff00, 0x03ffffc0, 0x0ffffff0, 0x3ffffffc, 0xffffffff,
+	0xffffffff, 0x3ffffffc, 0x0ffffff0, 0x03ffffc0, 0x00ffff00, 0x003ffc00, 0x000ff000, 0x0003c000};
+// GLOBAL: LEMBALL 0x0049e3e0
+static unsigned int g_LevelTileMaskSlopeB[32] = {
+	0,          0,          0,          0,          0,          0,          0,          0,
+	0,          0,          0x00018000, 0x0003f000, 0x0007fc00, 0x001fff00, 0x003fffc0, 0x007fffff,
+	0x01ffffff, 0x03ffffff, 0x07fffffe, 0x0ffffffc, 0x1ffffff8, 0x3ffffff0, 0x7fffffe0, 0xffffffc0,
+	0xffffff80, 0x3fffff00, 0x0ffffe00, 0x03fff880, 0x00fff000, 0x003fe000, 0x000fc000, 0x0003c000};
+// GLOBAL: LEMBALL 0x0049e460
+static unsigned int g_LevelTilePixelBits[32] = {
+	0x80000000, 0x40000000, 0x20000000, 0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000,
+	0x00800000, 0x00400000, 0x00200000, 0x00100000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
+	0x00008000, 0x00004000, 0x00002000, 0x00001000, 0x00000800, 0x00000400, 0x00000200, 0x00000100,
+	0x00000080, 0x00000040, 0x00000020, 0x00000010, 8,          4,          2,          1};
+
 // GLOBAL: LEMBALL 0x0049f148
 static const char g_szUnknownUserActionSpecified[] = "Unknown user action specified\n";
 // GLOBAL: LEMBALL 0x0049f168
@@ -674,8 +711,38 @@ struct LevelScreenActionButtonLayout {
 };
 
 struct LevelTileRenderDescriptor {
+	int m_nShapeType;
+	int m_nReserved04;
+	short m_nHeight;
+	unsigned int TestShapePixel(int nLocalX, int nLocalY, int fSpecial);
 	short SampleHeightOffset(int nLocalX, int nLocalY);
 	short SampleHeightOffsetThunk(int nLocalX, int nLocalY);
+};
+
+struct LevelLevelTileCell {
+	int m_nType00;
+	short m_nVariant04;
+	unsigned short m_nFlags06;
+	short m_nReserved08;
+	short m_nReserved0A;
+
+	void InitializeLevelTileGridCellRenderFlagsThunk(void);
+};
+
+struct LevelTileGridView {
+	char m_abReserved00[0x0c];
+	LevelLevelTileCell* m_pCells0C;
+	int m_cColumns10;
+	int m_cRows14;
+	char m_abReserved18[4];
+	int m_cEdgeColumns1C;
+	int m_cEdgeRows20;
+	char m_abReserved24[0x24];
+	unsigned char* m_pEdgeMasks48;
+
+	int TestEdgeMask(int x, int y, unsigned char nMask);
+	unsigned char GetEdgeMask(int x, int y);
+	void SetCellType(int x, int y, int nType, int nVariant);
 };
 
 void* LEMBALL_FASTCALL ConstructLevelScreenActionButton(void* pObject,
@@ -1119,6 +1186,79 @@ short LevelTileRenderDescriptor::SampleHeightOffset(int nLocalX, int nLocalY)
 	}
 	return 0;
 }
+
+// FUNCTION: LEMBALL 0x00430110
+unsigned int LevelTileRenderDescriptor::TestShapePixel(int nLocalX, int nLocalY, int fSpecial)
+{
+	switch (m_nShapeType) {
+	case 0x202:
+		return g_LevelTilePixelBits[nLocalX] & g_LevelTileMaskLower[nLocalY];
+	case 0x206:
+		return g_LevelTilePixelBits[nLocalX] & g_LevelTileMaskUpper[nLocalY];
+	case 0x207:
+		return g_LevelTilePixelBits[nLocalX] & g_LevelTileMaskMiddle[nLocalY];
+	case 0x208:
+		return g_LevelTilePixelBits[nLocalX] & g_LevelTileMaskSlopeA[nLocalY];
+	case 0x209:
+		return g_LevelTilePixelBits[nLocalX] & g_LevelTileMaskLower[nLocalY];
+	case 0x20a:
+		if (fSpecial != 0) {
+			return g_LevelTilePixelBits[nLocalX] & g_LevelTileMaskLower[nLocalY];
+		}
+		return 0;
+	case 0x20b:
+		return 0;
+	case 0x20c:
+		return 0;
+	case 0x20d:
+		return g_LevelTilePixelBits[31 - nLocalX] & g_LevelTileMaskSlopeA[nLocalY];
+	case 0x20e:
+		return g_LevelTilePixelBits[nLocalX] & g_LevelTileMaskSlopeB[nLocalY];
+	case 0x20f:
+		return g_LevelTilePixelBits[31 - nLocalX] & g_LevelTileMaskSlopeB[nLocalY];
+	case 0x210:
+		return fSpecial != 0;
+	case 0x214:
+		return g_LevelTilePixelBits[nLocalX] & g_LevelTileMaskLower[nLocalY];
+	case 0x215:
+	case 0x216:
+	case 0x217:
+	case 0x219:
+	case 0x21a:
+		return g_LevelTilePixelBits[nLocalX] & g_LevelTileMaskLower[nLocalY];
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x004305a0
+int LevelTileGridView::TestEdgeMask(int x, int y, unsigned char nMask)
+{
+	if (x < 0 || y < 0 || x >= m_cEdgeColumns1C || y >= m_cEdgeRows20) {
+		return 0;
+	}
+	return (m_pEdgeMasks48[y * m_cEdgeColumns1C + x] & nMask) == nMask;
+}
+
+// FUNCTION: LEMBALL 0x004305f0
+unsigned char LevelTileGridView::GetEdgeMask(int x, int y)
+{
+	if (x < 0 || y < 0 || x >= m_cEdgeColumns1C || y >= m_cEdgeRows20) {
+		return 0;
+	}
+	return m_pEdgeMasks48[y * m_cEdgeColumns1C + x];
+}
+
+// FUNCTION: LEMBALL 0x00430a20
+void LevelTileGridView::SetCellType(int x, int y, int nType, int nVariant)
+{
+	LevelLevelTileCell* pCell;
+
+	pCell = &m_pCells0C[y * m_cColumns10 + x];
+	pCell->m_nType00 = nType;
+	pCell->m_nVariant04 = (short) nVariant;
+	pCell->InitializeLevelTileGridCellRenderFlagsThunk();
+}
+
 // FUNCTION: LEMBALL 0x00430a50
 void LevelViewRotationTransform::TransformScreenToTile(int nScreenX, int nScreenY, int* pTileX, int* pTileY)
 {
