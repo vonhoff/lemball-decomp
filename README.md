@@ -5,9 +5,9 @@ Work-in-progress reconstruction of 1996 Win32 `LEMBALL.EXE`, built with MSVC
 
 Original executable reports LINK 3.00 and contains an incremental link table at
 `0x00401000` through `0x00403890`; real code begins at `0x00406160`. Current
-MSVC 4.20 build deliberately uses `/INCREMENTAL:NO` for function-level
-comparison. Whole-image parity remains separate work: resource section, CRT,
-and imports differ.
+MSVC 4.00 build uses `/INCREMENTAL:YES` and compares linker thunks by
+resolved destination identity. Whole-image parity remains separate work: resource
+section, CRT, and imports differ.
 
 ## Decompilation workflow
 
@@ -42,25 +42,25 @@ Ghidra inventory export validates all 2,077 ILT entries and excludes them.
 
 ## Setup
 
-Install [MSVC 4.20](https://github.com/itsmattkc/MSVC420) outside the checkout
-and set `MSVC420_ROOT` to the directory containing `bin\CL.EXE` and
-`bin\VCVARS32.BAT`. For a per-user installation in PowerShell:
+Install [MSVC 4.00](https://github.com/vonhoff/MSVC400) outside the checkout
+and set `MSVC400_ROOT` to the directory containing `bin\CL.EXE`, `include`,
+and `lib`. For a per-user installation in PowerShell:
 
 ```powershell
-$msvc420 = "$env:LOCALAPPDATA\Programs\MSVC420"
-git clone https://github.com/itsmattkc/MSVC420 $msvc420
-[Environment]::SetEnvironmentVariable("MSVC420_ROOT", $msvc420, "User")
-$env:MSVC420_ROOT = $msvc420
+$msvc400 = "$env:LOCALAPPDATA\Programs\MSVC400"
+git clone https://github.com/vonhoff/MSVC400 $msvc400
+[Environment]::SetEnvironmentVariable("MSVC400_ROOT", $msvc400, "User")
+$env:MSVC400_ROOT = $msvc400
 ```
 
-The build script checks `MSVC420_ROOT`, then the legacy `MSVCDIR` variable,
-then the ignored `msvc420` directory in the checkout. It validates the selected
-installation and propagates the same root to CMake.
+The build script checks `MSVC400_ROOT`, then the ignored `msvc400` directory in
+the checkout. It validates the selected installation and propagates the same
+root to CMake.
 
 ```powershell
 py -m venv .decomp-venv
 .decomp-venv\Scripts\python.exe -m pip install -r requirements.txt
-.decomp-venv\Scripts\python.exe tools\build_msvc420.py
+.decomp-venv\Scripts\python.exe tools\build_msvc400.py
 ```
 
 The canonical build installs a narrow reccmp 0.1.6 compatibility hook. For

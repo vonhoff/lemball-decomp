@@ -8,10 +8,10 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-BUILD = ROOT / "build-msvc420"
+BUILD = ROOT / "build-msvc400"
 OUTPUT = BUILD / "LEMBALL.EXE"
 RULE = BUILD / "CMakeFiles" / "LEMBALL.dir" / "build.make"
-EXPECTED_FLAGS = "/TP /O2 /Ob1 /Oy /G4 /Z7 /c /Fo"
+EXPECTED_FLAGS = "/O2 /Ob1 /Oy /G4 /Z7 /c /Fo"
 
 
 def stale_output(output, inputs):
@@ -26,30 +26,20 @@ def valid_build_rule(path):
     )
 
 
-def find_msvc420_root(root, environ=os.environ):
-    configured = environ.get("MSVC420_ROOT") or environ.get("MSVCDIR")
-    candidate = Path(configured) if configured else root / "msvc420"
-    if (candidate / "bin" / "CL.EXE").exists() and (
-        candidate / "bin" / "VCVARS32.BAT"
-    ).exists():
+def find_msvc400_root(root, environ=os.environ):
+    configured = environ.get("MSVC400_ROOT")
+    candidate = Path(configured) if configured else root / "msvc400"
+    required = ("bin/CL.EXE", "bin/LINK.EXE", "include", "lib")
+    if all((candidate / path).exists() for path in required):
         return candidate
     raise SystemExit(
-        f"MSVC 4.20 not found at {candidate}; set MSVC420_ROOT to its install directory"
+        f"MSVC 4.00 not found at {candidate}; set MSVC400_ROOT to its install directory"
     )
 
 
 def run(command, cwd=ROOT):
     print(" ".join(map(str, command)))
     subprocess.run(command, cwd=cwd, check=True)
-
-
-def bootstrap_command(vcvars, msvc_root, python, script):
-    return (
-        f'call "{vcvars}" x86 && '
-        f'set "MSVC420_ROOT={msvc_root}" && '
-        f'set "LEMBALL_MSVC420_READY=1" && '
-        f'"{python}" "{script}"'
-    )
 
 
 def short_path(path):
@@ -106,27 +96,23 @@ def find_reccmp_python(root):
 
 
 def main():
-    if os.environ.get("LEMBALL_MSVC420_READY") != "1":
-        msvc_root = find_msvc420_root(ROOT)
-        vcvars = msvc_root / "bin" / "VCVARS32.BAT"
-        command = bootstrap_command(
-            vcvars, msvc_root, sys.executable, Path(__file__).resolve()
-        )
-        raise SystemExit(
-            subprocess.call(f"cmd.exe /d /c {command}", cwd=ROOT)
-        )
+    msvc_root = find_msvc400_root(ROOT)
+    os.environ["MSVC400_ROOT"] = str(msvc_root)
+    os.environ["PATH"] = str(msvc_root / "bin") + os.pathsep + os.environ["PATH"]
+    os.environ["INCLUDE"] = str(msvc_root / "include")
+    os.environ["LIB"] = str(msvc_root / "lib")
 
     cmake = find_cmake(ROOT, sys.executable)
     reccmp_python = find_reccmp_python(ROOT)
     run([reccmp_python, ROOT / "tools" / "install_reccmp_compat.py"])
 
-    run([cmake, "--preset", "msvc420"])
+    run([cmake, "--preset", "msvc400"])
     if not valid_build_rule(RULE):
-        print("invalid MSVC 4.20 cache; configuring fresh")
-        run([cmake, "--fresh", "--preset", "msvc420"])
+        print("invalid MSVC 4.00 cache; configuring fresh")
+        run([cmake, "--fresh", "--preset", "msvc400"])
     if not valid_build_rule(RULE):
-        raise SystemExit("MSVC 4.20 compile rule is missing required flags")
-    run([cmake, "--build", "--preset", "msvc420"])
+        raise SystemExit("MSVC 4.00 compile rule is missing required flags")
+    run([cmake, "--build", "--preset", "msvc400"])
 
     objects = list((BUILD / "CMakeFiles" / "LEMBALL.dir").rglob("*.obj"))
     if not objects:

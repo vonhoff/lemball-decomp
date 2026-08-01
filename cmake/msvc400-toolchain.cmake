@@ -1,19 +1,19 @@
-# MSVC 4.20 toolchain for byte-matching builds.
+# MSVC 4.00 toolchain for byte-matching builds.
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR x86)
 
 get_filename_component(_root_dir "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
-if(DEFINED ENV{MSVC420_ROOT} AND NOT "$ENV{MSVC420_ROOT}" STREQUAL "")
-    file(TO_CMAKE_PATH "$ENV{MSVC420_ROOT}" _msvc420_root)
+if(DEFINED ENV{MSVC400_ROOT} AND NOT "$ENV{MSVC400_ROOT}" STREQUAL "")
+    file(TO_CMAKE_PATH "$ENV{MSVC400_ROOT}" _msvc400_root)
 else()
-    set(_msvc420_root "${_root_dir}/msvc420")
+    set(_msvc400_root "${_root_dir}/msvc400")
 endif()
 
-set(CMAKE_CXX_COMPILER "${_msvc420_root}/bin/CL.EXE")
+set(CMAKE_CXX_COMPILER "${_msvc400_root}/bin/CL.EXE")
 set(CMAKE_CXX_COMPILER_ID_RUN TRUE)
 set(CMAKE_CXX_COMPILER_FORCED TRUE)
 set(CMAKE_CXX_COMPILER_WORKS TRUE)
-set(LEMBALL_RC_COMPILER "${_msvc420_root}/bin/RC.EXE")
+set(LEMBALL_RC_COMPILER "${_msvc400_root}/bin/RC.EXE")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
 
 set(CMAKE_CXX_OUTPUT_EXTENSION ".obj")
@@ -27,9 +27,9 @@ set(CMAKE_CXX_USE_RESPONSE_FILE_FOR_OBJECTS 1)
 set(CMAKE_CXX_RESPONSE_FILE_LINK_FLAG "@")
 set(CMAKE_NMAKE_FORCE_RESPONSE_FILE 1)
 
-set(CMAKE_CXX_FLAGS_INIT "/nologo /W3 /GX- /GR- /MT")
+set(CMAKE_CXX_FLAGS_INIT "/nologo /W3 /GX- /GR- /MT /Dbool=int /Dtrue=1 /Dfalse=0")
 set(CMAKE_CXX_FLAGS_DEBUG "/MT" CACHE STRING "" FORCE)
 set(CMAKE_CXX_COMPILE_OBJECT
-    "<CMAKE_CXX_COMPILER> <DEFINES> <INCLUDES> <FLAGS> /TP /O2 /Ob1 /Oy /G4 /Z7 /c /Fo<OBJECT> <SOURCE>")
+    "<CMAKE_CXX_COMPILER> <DEFINES> <INCLUDES> <FLAGS> /O2 /Ob1 /Oy /G4 /Z7 /c /Fo<OBJECT> <SOURCE>")
 set(CMAKE_CXX_LINK_EXECUTABLE
-    "python ${_root_dir}/tools/check_link_output.py ${_msvc420_root}/bin/LINK.EXE /nologo /DEBUG /INCREMENTAL:NO /SUBSYSTEM:WINDOWS <LINK_FLAGS> /OUT:<TARGET> <OBJECTS> <LINK_LIBRARIES>")
+    "python ${_root_dir}/tools/check_link_output.py ${_msvc400_root}/bin/LINK.EXE /nologo /DEBUG /INCREMENTAL:YES /SUBSYSTEM:WINDOWS <LINK_FLAGS> /OUT:<TARGET> <OBJECTS> <LINK_LIBRARIES>")

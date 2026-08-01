@@ -7,17 +7,17 @@
   },
   "configurePresets": [
     {
-      "name": "msvc420",
-      "displayName": "MSVC 4.20",
+      "name": "msvc400",
+      "displayName": "MSVC 4.00",
       "generator": "NMake Makefiles",
-      "binaryDir": "${sourceDir}/build-msvc420",
-      "toolchainFile": "${sourceDir}/cmake/msvc420-toolchain.cmake"
+      "binaryDir": "${sourceDir}/build-msvc400",
+      "toolchainFile": "${sourceDir}/cmake/msvc400-toolchain.cmake"
     }
   ],
   "buildPresets": [
     {
-      "name": "msvc420",
-      "configurePreset": "msvc420",
+      "name": "msvc400",
+      "configurePreset": "msvc400",
       "targets": ["LEMBALL"]
     }
   ]

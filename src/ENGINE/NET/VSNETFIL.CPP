@@ -5,7 +5,7 @@
 #include "ENGINE/NET/VSNET.H"
 #include "GAME.H"
 
-#include <new>
+#include <new.h>
 #include <stdio.h>
 #include <string.h>
 

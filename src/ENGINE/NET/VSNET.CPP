@@ -47,7 +47,11 @@ void* g_NETWORK_DeleteRingEffTransportRecordBufferTableVtable[1] = {
 	(void*) DeleteRingEffTransportRecordBufferTableWrapper,
 };
 
+#if defined(_MSC_VER) && (_MSC_VER < 1100)
+#include <new.h>
+#else
 #include <new>
+#endif
 #include <string.h>
 
 extern int g_nEffTransportAsyncErrorStatus;

@@ -12,17 +12,17 @@ concurrency:
 
 jobs:
   build:
-    name: Build + verify (MSVC 4.20)
+    name: Build + verify (MSVC 4.00)
     runs-on: windows-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Check out portable MSVC 4.20
+      - name: Check out portable MSVC 4.00
         uses: actions/checkout@v4
         with:
-          repository: itsmattkc/msvc420
-          path: msvc420
+          repository: vonhoff/MSVC400
+          path: msvc400
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -52,16 +52,17 @@ jobs:
 
       - name: Configure and build
         shell: pwsh
-        run: python tools/build_msvc420.py
+        run: python tools/build_msvc400.py
 
       - name: Verify against original
         shell: pwsh
         run: |
           reccmp-project detect --search-path data
-          Push-Location build-msvc420
+          Push-Location build-msvc400
           reccmp-decomplint --target LEMBALL
           reccmp-reccmp --target LEMBALL --json reccmp.json --json-diet --silent
           reccmp-datacmp --target LEMBALL --no-color
+          reccmp-vtable --target LEMBALL
           Pop-Location
           python tools/generate_objdiff_report.py
 
@@ -71,5 +72,5 @@ jobs:
           name: LEMBALL_report
           if-no-files-found: error
           path: |
-            build-msvc420/report.json
-            build-msvc420/reccmp.json
+            build-msvc400/report.json
+            build-msvc400/reccmp.json

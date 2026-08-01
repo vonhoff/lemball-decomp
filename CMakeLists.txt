@@ -174,7 +174,7 @@ set_target_properties(LEMBALL PROPERTIES
     SUFFIX ".EXE"
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
     PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-    LINK_FLAGS "user32.lib gdi32.lib advapi32.lib winmm.lib vfw32.lib version.lib wsock32.lib ws2_32.lib /MAP:LEMBALL.map"
+    LINK_FLAGS "user32.lib gdi32.lib advapi32.lib winmm.lib vfw32.lib version.lib wsock32.lib"
 )
 
 file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/reccmp-build.yml" CONTENT

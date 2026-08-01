@@ -1,11 +1,18 @@
 """Project-specific comparison compatibility for reccmp 0.1.6."""
 
+import struct
+
 from reccmp.compare import functions
 from reccmp.compare.core import Compare
 from reccmp.compare.db import EntityDb
 from reccmp.compare.variables import VariableComparator
+from reccmp.cvdump.symbols import CvdumpSymbolsParser
 from reccmp.formats.exceptions import InvalidVirtualReadError
 from reccmp.types import ImageId
+
+
+if "S_GDATA32" not in CvdumpSymbolsParser._unhandled_symbols:
+    CvdumpSymbolsParser._unhandled_symbols.append("S_GDATA32")
 
 
 ILT_START = 0x00401000
@@ -198,6 +205,38 @@ THUNK_ILT_REFERENCES = {
 }
 
 
+def _thunk_destination(db, image_id, address, get=EntityDb.get):
+    entity = get(db, image_id, address)
+    if entity is None:
+        return None
+    key = "ref_orig" if image_id == ImageId.ORIG else "ref_recomp"
+    destination = entity.get(key)
+    return destination if isinstance(destination, int) else None
+
+
+def _logical_thunk_name(entity):
+    if entity is None:
+        return None
+    name = entity.best_name() or ""
+    if name.startswith("Thunk of '") and name.endswith("'"):
+        name = name[10:-1]
+    return name.split("`vtordisp{", 1)[0]
+
+
+def _matched_thunk_target(db, image_id, address, get=EntityDb.get):
+    entity = get(db, image_id, address)
+    if entity is None:
+        return None
+    name = entity.best_name() or ""
+    if not name.startswith("Thunk of '") or not name.endswith("'"):
+        return None
+    target_name = name[10:-1]
+    for candidate in db.all(image_id):
+        if candidate.matched and candidate.best_name() == target_name:
+            return candidate
+    return None
+
+
 def _ilt_destination(comparator, address):
     if address < ILT_START or ILT_LAST_ENTRY < address:
         return None
@@ -221,9 +260,6 @@ if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False)
         reference = ONE_PAST_REFERENCES.get(match.orig_addr)
         ilt_reference = THUNK_ILT_REFERENCES.get(match.orig_addr)
         data_reference = FUNCTION_DATA_REFERENCES.get(match.orig_addr)
-        if reference is None and ilt_reference is None and data_reference is None:
-            return _reccmp_compare_function(self, match)
-
         orig_lookup = self.orig_sanitize.name_lookup
         recomp_lookup = self.recomp_sanitize.name_lookup
 
@@ -238,6 +274,14 @@ if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False)
             return orig_lookup(address, exact=exact, indirect=indirect)
 
         def _recomp_lookup(address, exact=False, indirect=False):
+            if not indirect:
+                destination = _thunk_destination(self.db, ImageId.RECOMP, address)
+                if destination is not None:
+                    entity = self.db.get(ImageId.RECOMP, destination)
+                    if entity is not None and entity.orig_addr is not None:
+                        name = entity.match_name()
+                        if name is not None:
+                            return name
             name = recomp_lookup(address, exact=exact, indirect=indirect)
             if reference is not None and not exact and not indirect and name is not None:
                 if reference[1] in name:
@@ -276,7 +320,25 @@ if not getattr(VariableComparator, "_lemball_ilt_aware", False):
                 return True
 
         destination = _ilt_destination(self, orig_addr)
-        return destination is not None and self.db.is_match(destination, recomp_addr)
+        if destination is not None and self.db.is_match(destination, recomp_addr):
+            return True
+
+        orig_entity = self.db.get(ImageId.ORIG, orig_addr)
+        recomp_destination = _thunk_destination(self.db, ImageId.RECOMP, recomp_addr)
+        if (
+            orig_entity is not None
+            and recomp_destination is not None
+            and orig_entity.recomp_addr == recomp_destination
+        ):
+            return True
+
+        orig_destination = _ilt_destination(self, orig_addr) or _thunk_destination(
+            self.db, ImageId.ORIG, orig_addr
+        )
+        return self.db.is_match(
+            orig_destination or orig_addr,
+            recomp_destination or recomp_addr,
+        )
 
     VariableComparator.is_pointer_match = _is_pointer_match
     VariableComparator._lemball_ilt_aware = True
@@ -288,8 +350,60 @@ if not getattr(Compare, "_lemball_ilt_aware_vtables", False):
     def _compare_vtable(self, match):
         """Compare original ILT slots by their destination method identity."""
         reccmp_get = EntityDb.get
+        size = match.any_size() & ~3
+        orig_table = self.orig_bin.read(match.orig_addr, size)
+        recomp_table = self.recomp_bin.read(match.recomp_addr, size)
+        slot_aliases = {}
+        for (orig_addr,), (recomp_addr,) in zip(
+            struct.iter_unpack("<L", orig_table),
+            struct.iter_unpack("<L", recomp_table),
+        ):
+            orig_entity = reccmp_get(self._db, ImageId.ORIG, orig_addr)
+            recomp_entity = reccmp_get(self._db, ImageId.RECOMP, recomp_addr)
+            if _logical_thunk_name(orig_entity) == _logical_thunk_name(recomp_entity):
+                alias = None
+                if orig_entity is not None and orig_entity.matched:
+                    alias = orig_entity
+                elif recomp_entity is not None and recomp_entity.matched:
+                    alias = recomp_entity
+                else:
+                    alias = _matched_thunk_target(
+                        self._db, ImageId.RECOMP, recomp_addr
+                    )
+                    if alias is None:
+                        destination = _thunk_destination(
+                            self._db, ImageId.RECOMP, recomp_addr
+                        )
+                        candidate = (
+                            reccmp_get(self._db, ImageId.RECOMP, destination)
+                            if destination is not None
+                            else None
+                        )
+                        if candidate is not None and candidate.matched:
+                            alias = candidate
+                if alias is not None:
+                    slot_aliases[(ImageId.ORIG, orig_addr)] = alias
+                    slot_aliases[(ImageId.RECOMP, recomp_addr)] = alias
 
         def _get(db, image_id, address, *, exact=True):
+            alias = slot_aliases.get((image_id, address))
+            if alias is not None:
+                return alias
+            if image_id == ImageId.RECOMP:
+                destination = _thunk_destination(db, image_id, address)
+                if destination is not None:
+                    entity = reccmp_get(db, image_id, destination, exact=exact)
+                    if (
+                        entity is not None
+                        and entity.orig_addr is not None
+                        and entity.recomp_addr is not None
+                    ):
+                        return entity
+
+                target = _matched_thunk_target(db, image_id, address)
+                if target is not None:
+                    return target
+
             if image_id == ImageId.ORIG and address in VTABLE_METHOD_ILTS:
                 destination = _ilt_destination(self, address)
                 if destination is not None:

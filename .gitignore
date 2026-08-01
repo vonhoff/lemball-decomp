@@ -20,7 +20,7 @@ compile_commands.json
 .idea/
 .venv/
 .decomp-venv/
-msvc420/
+msvc400/
 *.iml
 *.tmp
 *.bak

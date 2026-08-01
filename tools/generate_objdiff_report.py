@@ -97,8 +97,8 @@ def build_report(inventory_path, reccmp_path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--inventory", type=Path, default=Path("data/objdiff-functions.csv"))
-    parser.add_argument("--reccmp", type=Path, default=Path("build-msvc420/reccmp.json"))
-    parser.add_argument("--output", type=Path, default=Path("build-msvc420/report.json"))
+    parser.add_argument("--reccmp", type=Path, default=Path("build-msvc400/reccmp.json"))
+    parser.add_argument("--output", type=Path, default=Path("build-msvc400/report.json"))
     args = parser.parse_args()
     report = build_report(args.inventory, args.reccmp)
     args.output.parent.mkdir(parents=True, exist_ok=True)

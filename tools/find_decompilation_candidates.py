@@ -16,8 +16,8 @@ from reccmp.formats import detect_image
 ROOT = Path(__file__).resolve().parents[1]
 BINARY = ROOT / "data" / "LEMBALL.EXE"
 INVENTORY = ROOT / "data" / "objdiff-functions.csv"
-RECCMP = ROOT / "build-msvc420" / "reccmp.json"
-BASELINE = ROOT / "build-msvc420" / "exact-baseline.json"
+RECCMP = ROOT / "build-msvc400" / "reccmp.json"
+BASELINE = ROOT / "build-msvc400" / "exact-baseline.json"
 LIMIT = 20
 NUMBER = re.compile(r"-?(?:0x[0-9a-f]+|\d+)")
 

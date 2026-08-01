@@ -28,7 +28,7 @@ Verified progress includes a new 100% match, measurable similarity improvement, 
 - Never use assembly or source wrappers to recreate the linker ILT. Analyze five-byte `E9` functions outside the ILT normally.
 - Repair incorrect inventory and regenerate its CSV; do not hide entries with denylists or broad filters.
 - Add `GLOBAL`, `FUNCTION`, or `STUB` ownership only after confirming original address and source owner in Ghidra. Never add annotations merely to make relocation comparison pass. Investigate every new datacmp issue; direct-function versus original ILT-pointer differences are acceptable only when binary evidence proves same destination and no ILT recreation is introduced.
-- Use maintained candidate miner; do not create one-off target-selection or verification scripts. Temporary compiler probes may live only under ignored `build-msvc420/` and must be removed before commit.
+- Use maintained candidate miner; do not create one-off target-selection or verification scripts. Temporary compiler probes may live only under ignored `build-msvc400/` and must be removed before commit.
 - Use `"/c/Program Files/LLVM/bin/clang-format.exe" -i <paths>` to fix formatting in modified C or C++ files.
 - Use only project commands below for verification.
 
@@ -36,8 +36,8 @@ Verified progress includes a new 100% match, measurable similarity improvement, 
 
 - Original LINK 3.00 incremental link table occupies `0x00401000` through `0x00403890`: 2,077 five-byte `E9` entries through `0x0040388C`, then padding. Real code begins at `0x00406160`.
 - Ghidra marks every ILT entry `linker-ilt`; none may retain an `objdiff-unit:*` tag. Source-emitted ILT wrappers use `// LINKERILT:` rather than `FUNCTION` or `STUB`; reccmp aliases this marker to non-progress `STUB` only for relocation normalization. By-name ILT inventory belongs in `data/reccmp-linker-ilts.csv`, while compiler-generated symbols without standalone implementations belong in `data/reccmp-compiler-generated.csv`. Compiler-state shims may remain unannotated only when comments identify slot, destination, and verified regression caused by removal.
-- Keep MSVC 4.20 and `/INCREMENTAL:NO` for function-level comparison. `/INCREMENTAL:YES` changes generated thunk calls and lowers useful reccmp accuracy.
-- Whole-image parity is deferred: original LINK is 3.00, current LINK is 4.20; original `.rsrc` virtual size is `0x55A4`, current is `0x160`; CRT and imports also differ.
+- Keep MSVC 4.00 and `/INCREMENTAL:YES`; compare linker thunks by their destination identity rather than recreating them in source.
+- Whole-image parity remains incomplete: linker generation is aligned at 3.00, but `.text` size, resources, CRT, imports, and object order still differ.
 
 ## Commands
 
@@ -48,7 +48,7 @@ Candidate mining, from repository root:
 .decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --check-baseline
 ```
 
-Focused diagnosis, from `build-msvc420`:
+Focused diagnosis, from `build-msvc400`:
 
 ```powershell
 ..\.decomp-venv\Scripts\reccmp-reccmp.exe --target LEMBALL --verbose 0xADDRESS --print-rec-addr
@@ -58,9 +58,9 @@ Canonical verification, from repository root:
 
 ```powershell
 .decomp-venv\Scripts\python.exe tools\lint_reccmp_metadata.py
-python tools/build_msvc420.py
+python tools/build_msvc400.py
 .decomp-venv\Scripts\reccmp-project.exe detect --search-path data
-Push-Location build-msvc420
+Push-Location build-msvc400
 ..\.decomp-venv\Scripts\reccmp-reccmp.exe --target LEMBALL --json reccmp.json --json-diet
 ..\.decomp-venv\Scripts\reccmp-decomplint.exe --target LEMBALL
 ..\.decomp-venv\Scripts\reccmp-datacmp.exe --target LEMBALL --no-color
