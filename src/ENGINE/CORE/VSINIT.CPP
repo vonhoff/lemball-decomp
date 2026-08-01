@@ -254,7 +254,7 @@ static void* g_pSharedRenderQueueNode = 0;
 void* LEMBALL_FASTCALL DeleteRenderDispatchQueueThunk00463940(void* pQueue, int nUnused, int fFreeMemory);
 static void* g_RenderDispatchQueueDeleteThunkVtable[1] = {(void*) NetworkSafeVtableNoop};
 // GLOBAL: LEMBALL 0x004988d0
-static void* g_RenderDispatchQueueCriticalSectionHelperVtable[2] = {
+void* g_RenderDispatchQueueCriticalSectionHelperVtable[2] = {
 	(void*) EnterObjectCriticalSection,
 	(void*) LeaveObjectCriticalSection,
 };

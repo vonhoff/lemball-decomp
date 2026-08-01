@@ -1087,13 +1087,15 @@ SmallMemoryBucket* SmallMemoryBucket::ConstructSmallMemoryBucket(unsigned int cb
 }
 
 void LEMBALL_FASTCALL ReleaseSmallMemoryChildBucket(SmallMemoryBucket* pBucket);
+extern void* g_RenderDispatchQueueCriticalSectionHelperVtable[2];
+extern void* g_VSGDI_ResourceGeometryRowBufferVtable[14];
 
 // FUNCTION: LEMBALL 0x00472dc0
 void LEMBALL_FASTCALL DestroySmallMemoryBucket(SmallMemoryBucket* pBucket)
 {
 	int fSmallBuckets;
 
-	pBucket->m_pVtable = g_aSmallMemoryBucketVtable;
+	pBucket->m_pVtable = g_VSGDI_ResourceGeometryRowBufferVtable + 2;
 	fSmallBuckets = g_fSmallMemoryBucketTableEnabled;
 	g_fSmallMemoryBucketTableEnabled = 0;
 	if (pBucket->m_pChildBucket != 0) {
@@ -1108,7 +1110,7 @@ void LEMBALL_FASTCALL DestroySmallMemoryBucket(SmallMemoryBucket* pBucket)
 		pBucket->m_pBitmap = 0;
 	}
 	g_fSmallMemoryBucketTableEnabled = fSmallBuckets;
-	pBucket->m_pVtable = g_aMemoryArenaInitialLockVtable;
+	pBucket->m_pVtable = g_RenderDispatchQueueCriticalSectionHelperVtable;
 	DeleteCriticalSection(pBucket->m_abCriticalSection);
 }
 
