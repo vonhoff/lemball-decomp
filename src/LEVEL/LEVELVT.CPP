@@ -1127,7 +1127,6 @@ void __fastcall add_level_time_bonus_counter(void* pLevelMode, void* pUnused, in
 	*(int*) ((char*) pLevelMode + 0xe8) += nBonus;
 }
 
-// FUNCTION: LEMBALL 0x004130f0
 void __fastcall set_level_mode_field_0xf8(void* pLevelMode, void* pUnused, int nValue)
 {
 	(void) pUnused;

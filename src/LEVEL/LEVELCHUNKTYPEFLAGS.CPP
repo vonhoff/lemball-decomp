@@ -6,6 +6,7 @@ extern unsigned short g_GAME_ManagedEntityRegistryCount;
 struct LevelChunkTypeEnabledFlagsView {
 	void Initialize(void);
 	void SetEnabled(int nChunkType, int fEnabled);
+	void SetRuntimeValue(int nValue);
 };
 
 // FUNCTION: LEMBALL 0x00412100
@@ -52,4 +53,10 @@ void LevelChunkTypeEnabledFlagsView::SetEnabled(int nChunkType, int fEnabled)
 	if (nChunkType < 0x211 || 0x212 < nChunkType) {
 		*(int*) (*(int*) ((char*) this + 0x50) + nChunkType * 4) = fEnabled;
 	}
+}
+
+// FUNCTION: LEMBALL 0x004130f0
+void LevelChunkTypeEnabledFlagsView::SetRuntimeValue(int nValue)
+{
+	*(int*) ((char*) this + 0xf8) = nValue;
 }
