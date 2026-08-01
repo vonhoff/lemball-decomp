@@ -1357,7 +1357,7 @@ address,size,name,unit
 0x00439740,7,restore_packaged_sprite_render_entry_vtable_d,LEVEL/LEVELSTAT.CPP
 0x00439750,7,restore_packaged_sprite_render_entry_vtable_e,LEVEL/LEVELSTAT.CPP
 0x00439760,13,queue_render_state_push_helper,LEVEL/LEVELSTAT.CPP
-0x00439770,30,execute_render_state_push_helper,LEVEL/LEVELSTAT.CPP
+0x00439770,30,execute_render_state_push_helper,LEVEL/LEVELRENDERDISPATCH.CPP
 0x004397A0,31,delete_queued_render_point_sink_entry,GAME.CPP
 0x004397D0,13,queue_render_state_pop_helper,GAME.CPP
 0x004397E0,22,execute_render_state_pop_helper,GAME.CPP
