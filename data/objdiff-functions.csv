@@ -884,7 +884,7 @@ address,size,name,unit
 0x00422B30,8,dispatch_vtable_slot_0x34_with_value_2,LEVEL/LEVELVT.CPP
 0x00422B40,189,service_coll_type_0x0b_idle_or_state_machine,LEVEL/LEVELVT.CPP
 0x00422C00,52,notify_coll_contact_target_and_schedule_timer_0x9c4,LEVEL/LEVELVT.CPP
-0x00422C40,22,schedule_coll_runtime_timer_1000,LEVEL/LEVELVT.CPP
+0x00422C40,22,schedule_coll_runtime_timer_1000,LEVEL/COLLSCORE.CPP
 0x00422C60,8,dispatch_vtable_slot_0x34_with_value_2_variant,LEVEL/LEVELVT.CPP
 0x00422C70,8,send_coll_message_0x16,LEVEL/LEVELVT.CPP
 0x00422C80,35,schedule_coll_runtime_timer_0xfa_and_request_level_state_0x1e,LEVEL/LEVELVT.CPP
