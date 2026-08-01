@@ -204,6 +204,7 @@ void LEMBALL_FASTCALL AppendQueuedVariantChildSlot(void* pManager,
 												   int nReserved,
 												   int* pSelection,
 												   int nCommand);
+
 void LEMBALL_FASTCALL SelectQueuedVariantChildSlot(void* pManager, int nUnusedEdx, int iChild);
 void LEMBALL_FASTCALL InitializeQueuedVariantChildContext(void* pManager);
 void LEMBALL_FASTCALL RefreshQueuedVariantChildByToken(void* pManager, int nUnusedEdx, int nToken);
