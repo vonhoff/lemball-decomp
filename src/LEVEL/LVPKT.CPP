@@ -1,5 +1,5 @@
 #include "ENGINE/CORE/VSINIT.H"
-#include "LEVEL/LEVELRUNPACKET.H"
+#include "LEVEL/LVPKT.H"
 
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
 extern void* g_pActiveManagedEntityOwner;

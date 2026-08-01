@@ -2,7 +2,7 @@
 #include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/MEDIA/EFFSTRM.H"
 #include "ENGINE/MEDIA/VSSTRM.H"
-#include "ENGINE/NET/VSNET_FORWARD.H"
+#include "ENGINE/NET/VSNETFWD.H"
 #include "GAME.H"
 
 #include <string.h>

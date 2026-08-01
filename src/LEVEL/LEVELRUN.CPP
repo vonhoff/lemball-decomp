@@ -7,7 +7,7 @@
 #include "ENGINE/MEDIA/VSSTRM.H"
 #include "GAME.H"
 #include "LEVEL/LEVELRUN.H"
-#include "LEVEL/LEVELRUNPACKET.H"
+#include "LEVEL/LVPKT.H"
 #include "RESOURCE/MOGLOAD.H"
 #include "SHELL/OPTIONS.H"
 

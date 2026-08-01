@@ -6,7 +6,7 @@
 #include "ENGINE/GDI/VSINVIS.H"
 #include "ENGINE/MEDIA/VSSTRM.H"
 #include "ENGINE/NET/VSNET.H"
-#include "ENGINE/NET/VSNET_FORWARD.H"
+#include "ENGINE/NET/VSNETFWD.H"
 #include "GAME.H"
 
 extern void* g_GAME_EffStreamConstructionVtable[6];
