@@ -908,7 +908,7 @@ address,size,name,unit
 0x004234F0,51,swap_and_clear_reachability_frontier,LEVEL/LEVELRUN.CPP
 0x00423530,273,initialize_level_tile_reachability_search,LEVEL/LEVELRUN.CPP
 0x00423650,568,expand_level_tile_reachability_wavefront,LEVEL/LEVELRUN.CPP
-0x00423890,24,compute_reachability_step_direction_code,LEVEL/LEVELRUN.CPP
+0x00423890,24,compute_reachability_step_direction_code,LEVEL/LEVELPATHDIRECTION.CPP
 0x004238B0,264,build_level_tile_reachable_path_points,LEVEL/LEVELRUN.CPP
 0x00423C10,24,construct_mine_chunk_object,LEVEL/LEVELVT.CPP
 0x00423C30,17,reset_mine_runtime_state,LEVEL/LEVELVT.CPP
