@@ -80,6 +80,7 @@ address,name,symbol,type,source
 0x00401CC1,destroy_rock_chunk_manager_auto_thunk,?DestroyRockChunkManagerAutoThunk@@YIXPAX@Z,stub,src/LEVEL/VTABLE/LEVELVT.CPP
 0x00401D16,destroy_projectile_pool_auto_thunk,?DestroyProjectilePoolAutoThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00401D43,set_menu_selector_children_enabled_thunk,,stub,src/FRONTEND/MENUSEL.H
+0x00401D52,LevelManagedEntityMoveCommandView::AppendMoveCommand,?AppendMoveCommand@LevelManagedEntityMoveCommandView@@QAEXPBULevelThreeDwordPoint@@@Z,stub,src/LEVEL/VTABLE/LEVELVTMOVE.CPP
 0x00401DA2,destroy_options_screen_auto_thunk,?DestroyOptionsScreenAutoThunk@@YIXPAX@Z,stub,src/FRONTEND/MAINMENU.CPP
 0x00401DC0,refresh_active_mine_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00401E15,managed_entity_packet24_reverse_eff_stream_payload,?ReverseEffStreamPayload@ManagedEntityPacket24@@UAEXXZ,stub,src/LEVEL/IO/LVPKT.CPP

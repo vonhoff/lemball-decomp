@@ -26,7 +26,7 @@ struct LevelManagedEntityCommandEntry {
 
 struct LevelManagedEntityCommandQueue {
 	unsigned short m_cEntries00;
-	unsigned short m_nReserved02;
+	unsigned short m_cCapacity02;
 	LevelManagedEntityCommandEntry* m_pEntries04;
 };
 
@@ -50,6 +50,7 @@ struct LevelManagedEntityMoveCommandView {
 	void PopFirstMoveCommandAndResetMotion(void);
 	void UpdateFacingTowardFirstMoveCommand(void);
 	int IsFacingTowardFirstMoveCommand(void);
+	void AppendMoveCommand(const LevelThreeDwordPoint* pPosition);
 	LevelThreeDwordPoint* CopyFirstMoveCommandPositionOrCurrent(LevelThreeDwordPoint* pPosition);
 };
 
@@ -140,6 +141,24 @@ void LevelManagedEntityMoveCommandView::PopFirstMoveCommand(void)
 		--pQueue->m_cEntries00;
 	}
 	m_fHasCommands74 = 0 < pQueue->m_cEntries00;
+}
+
+// FUNCTION: LEMBALL 0x00415ef0
+void LevelManagedEntityMoveCommandView::AppendMoveCommand(const LevelThreeDwordPoint* pPosition)
+{
+	LevelManagedEntityCommandQueue* pQueue;
+	LevelManagedEntityCommandEntry* pCommand;
+	unsigned short iEntry;
+
+	pQueue = m_pCommandQueue70;
+	if (pQueue != 0 && pQueue->m_cEntries00 < pQueue->m_cCapacity02) {
+		iEntry = pQueue->m_cEntries00++;
+		pCommand = &pQueue->m_pEntries04[iEntry];
+		pCommand->m_nField00 = 1;
+		pCommand->m_nField04 = pPosition->m_nX;
+		pCommand->m_nField08 = pPosition->m_nY;
+		pCommand->m_nField0C = pPosition->m_nZ;
+	}
 }
 
 // FUNCTION: LEMBALL 0x00416000

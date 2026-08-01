@@ -438,7 +438,7 @@ address,size,name,unit
 0x00415D90,137,update_managed_entity_facing_toward_first_move_command,LEVEL/VTABLE/LEVELVTMOVE.CPP
 0x00415E20,81,is_managed_entity_facing_toward_first_move_command,LEVEL/VTABLE/LEVELVTMOVE.CPP
 0x00415E80,107,pop_first_managed_entity_move_command,LEVEL/VTABLE/LEVELVT.CPP
-0x00415EF0,64,append_managed_entity_move_command,LEVEL/VTABLE/LEVELVT.CPP
+0x00415EF0,64,append_managed_entity_move_command,LEVEL/VTABLE/LEVELVTMOVE.CPP
 0x00415F30,195,prepend_managed_entity_move_command_and_advance,LEVEL/VTABLE/LEVELVT.CPP
 0x00416000,69,copy_first_managed_entity_move_command_position_or_current,LEVEL/VTABLE/LEVELVT.CPP
 0x00416050,101,pop_move_command_and_copy_next_position,LEVEL/VTABLE/LEVELVT.CPP
