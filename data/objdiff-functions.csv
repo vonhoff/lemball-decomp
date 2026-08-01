@@ -375,7 +375,7 @@ address,size,name,unit
 0x004131E0,168,configure_level_mode_profile_ranges,LEVEL/LEVELRUN.CPP
 0x00413290,14,get_level_mode_profile_range_value,LEVEL/LEVELRUNPROFILE.CPP
 0x004132A0,18,set_level_mode_profile_value_by_index,LEVEL/LEVELRUNPROFILE.CPP
-0x004132C0,49,copy_level_mode_fixed_point_triplet_by_index,LEVEL/LEVELRUN.CPP
+0x004132C0,49,copy_level_mode_fixed_point_triplet_by_index,LEVEL/LEVELRUNTRIPLET.CPP
 0x00413300,102,load_level_flag_chunk,LEVEL/LEVELRUN.CPP
 0x00413370,13,has_level_plas_history_entries,LEVEL/LEVELVT.CPP
 0x00413380,11,refresh_level_mode_lift_boundary_columns,LEVEL/LEVELVT.CPP
