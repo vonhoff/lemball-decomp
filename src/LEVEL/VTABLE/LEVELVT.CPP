@@ -2093,11 +2093,19 @@ void __fastcall set_move_chunk_object_trigger_latch(void* pObject)
 	*(int*) ((char*) pObject + 0x148) = 1;
 }
 
+struct MoveChunkObjectTriggerView {
+	int IsTriggered(void* pEntity, const int* pPosition);
+};
+
+struct MoveChunkManagerTriggerView {
+	int HasTriggeredObject(void* pEntity, const int* pPosition);
+};
+
 // FUNCTION: LEMBALL 0x0042eec0
-int PASCAL return_zero_level_callback_0042eec0(void* pUnused1, void* pUnused2)
+int MoveChunkObjectTriggerView::IsTriggered(void* pEntity, const int* pPosition)
 {
-	(void) pUnused1;
-	(void) pUnused2;
+	(void) pEntity;
+	(void) pPosition;
 	return 0;
 }
 
@@ -2105,6 +2113,31 @@ int PASCAL return_zero_level_callback_0042eec0(void* pUnused1, void* pUnused2)
 void __fastcall reset_move_chunk_object_count(void* pManager)
 {
 	*(int*) ((char*) pManager + 0x34) = 0;
+}
+
+// FUNCTION: LEMBALL 0x0042f590
+int MoveChunkManagerTriggerView::HasTriggeredObject(void* pEntity, const int* pPosition)
+{
+	char* pManagerBytes;
+	int i;
+	int nOffset;
+
+	pManagerBytes = (char*) this;
+	i = 0;
+	if (*(int*) (pManagerBytes + 0x34) > 0) {
+		nOffset = 0;
+		do {
+			MoveChunkObjectTriggerView* pObject;
+
+			pObject = (MoveChunkObjectTriggerView*) (*(char**) (pManagerBytes + 0x38) + nOffset);
+			if (pObject->IsTriggered(pEntity, pPosition) != 0) {
+				return 1;
+			}
+			nOffset += 0x1a0;
+			++i;
+		} while (*(int*) (pManagerBytes + 0x34) > i);
+	}
+	return 0;
 }
 
 // FUNCTION: LEMBALL 0x00435880
