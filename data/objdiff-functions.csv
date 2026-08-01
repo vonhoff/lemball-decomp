@@ -1060,7 +1060,7 @@ address,size,name,unit
 0x0042A7D0,279,initialize_fixed_point_segment_interpolator,ENGINE/CORE/LINKSCF.CPP
 0x0042A8F0,61,sample_fixed_point_segment_interpolator,ENGINE/CORE/LINKSCF.CPP
 0x0042A990,24,construct_tram_chunk_object,ENGINE/CORE/LINKSCF.CPP
-0x0042A9B0,30,initialize_tram_chunk_object,ENGINE/CORE/LINKSCF.CPP
+0x0042A9B0,30,initialize_tram_chunk_object,LEVEL/CHUNKOBJECTRESET.CPP
 0x0042A9D0,11,destroy_tram_chunk_object,ENGINE/CORE/LINKSCF.CPP
 0x0042A9E0,154,seed_tram_chunk_object_at_point,ENGINE/CORE/LINKSCF.CPP
 0x0042AA80,111,advance_tram_chunk_object_state_machine,ENGINE/CORE/LINKSCF.CPP
@@ -1084,7 +1084,7 @@ address,size,name,unit
 0x0042BA10,30,delete_tram_chunk_manager,ENGINE/CORE/LINKSCF.CPP
 0x0042BA40,109,delete_tram_chunk_object_array_or_scalar,ENGINE/CORE/LINKSCF.CPP
 0x0042BAD0,24,construct_pgun_chunk_object,ENGINE/CORE/LINKSCF.CPP
-0x0042BAF0,36,activate_pgun_chunk_object,ENGINE/CORE/LINKSCF.CPP
+0x0042BAF0,36,activate_pgun_chunk_object,LEVEL/CHUNKOBJECTRESET.CPP
 0x0042BB20,11,destroy_pgun_chunk_object,ENGINE/CORE/LINKSCF.CPP
 0x0042BB30,164,seed_pgun_chunk_object_at_point,ENGINE/CORE/LINKSCF.CPP
 0x0042BBE0,977,advance_pgun_chunk_object_state_machine,ENGINE/CORE/LINKSCF.CPP
