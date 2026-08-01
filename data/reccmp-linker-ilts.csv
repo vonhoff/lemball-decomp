@@ -258,6 +258,7 @@ address,name,symbol,type,source
 0x0040349A,dispatch_ice_chunk_object_action_by_slot,?DispatchIceChunkObjectActionBySlot@@YIXPAX0HI@Z,stub,src/ENGINE/CORE/LINKSCFICEACTION.CPP
 0x004034A9,vs_root_geometry_owner_query_root_geometry_state,?QueryRootGeometryState@VS_RootGeometryOwner@@UAEHPAX0@Z,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00403530,destroy_password_entry_screen_auto_thunk,?DestroyPasswordEntryScreenAutoThunk@@YIXPAX@Z,stub,src/FRONTEND/MAINMENU.CPP
+0x00403544,LevelChunkTypeEnabledFlagsView::SetEnabled,?SetEnabled@LevelChunkTypeEnabledFlagsView@@QAEXHH@Z,stub,src/LEVEL/LEVELCHUNKTYPEFLAGS.CPP
 0x00403549,get_next_cached_chunk_object,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040354E,destroy_lasr_chunk_manager_auto_thunk,?DestroyLasrChunkManagerAutoThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00403567,NoopQueuedVariantChildSlotManagerUpdate,?NoopQueuedVariantChildSlotManagerUpdate@@YIXPAX@Z,stub,src/FRONTEND/MAINMENU.CPP

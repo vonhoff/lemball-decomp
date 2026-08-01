@@ -1427,7 +1427,6 @@ void AssignNetworkPlayerManagedEntitySlotIdsThunk(int nLevelMode)
 		} while (pOffsets < &anOffsets[2]);
 	}
 }
-// FUNCTION: LEMBALL 0x00412100
 void InitializeLevelChunkTypeEnabledFlagsThunk(void* pLevelMode)
 {
 	int nChunkType;
@@ -1601,7 +1600,6 @@ int LEMBALL_FASTCALL PopLevelPlasHistoryChild(void* pObject)
 	return ((LevelManagedEntityHistoryView*) *(void**) ((char*) pObject + 0x15c))->PopHistoryIdThunk();
 }
 
-// FUNCTION: LEMBALL 0x004130a0
 void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEnabled)
 {
 	if (nChunkType < 0x211 || 0x212 < nChunkType) {

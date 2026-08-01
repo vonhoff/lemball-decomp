@@ -322,7 +322,7 @@ address,size,name,unit
 0x00411C10,706,handle_received_level_game_state,GAME.CPP
 0x00411F20,309,request_level_game_state_change,GAME.CPP
 0x00412080,113,assign_network_player_managed_entity_slot_ids,LEVEL/LEVELRUN.CPP
-0x00412100,221,initialize_level_chunk_type_enabled_flags,LEVEL/LEVELRUN.CPP
+0x00412100,221,initialize_level_chunk_type_enabled_flags,LEVEL/LEVELCHUNKTYPEFLAGS.CPP
 0x004121E0,13,add_level_time_bonus_counter,LEVEL/LEVELVT.CPP
 0x004121F0,698,service_level_game_mode_frame,GAME.CPP
 0x004124D0,227,emit_level_game_mode_dynamic_render_entries,LEVEL/LEVELRUN.CPP
@@ -363,7 +363,7 @@ address,size,name,unit
 0x00413040,11,pop_level_plas_history_child,LEVEL/LEVELRUN.CPP
 0x00413050,51,synchronize_managed_entity_registry_slot_ids,LEVEL/LEVELMODEMANAGERSLOT.CPP
 0x00413090,8,return_true_virtual_hook,LEVEL/LEVELSTAT.CPP
-0x004130A0,33,set_level_chunk_type_enabled_flag,LEVEL/LEVELRUN.CPP
+0x004130A0,33,set_level_chunk_type_enabled_flag,LEVEL/LEVELCHUNKTYPEFLAGS.CPP
 0x004130D0,29,find_level_mode_move_chunk_containing_point,LEVEL/LEVELVT.CPP
 0x004130F0,13,set_level_mode_field_0xf8,LEVEL/LEVELVT.CPP
 0x00413100,24,copy_level_mode_profile_position_fixed,LEVEL/LEVELMODEMANAGERSLOT.CPP
