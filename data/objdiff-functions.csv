@@ -2201,7 +2201,7 @@ address,size,name,unit
 0x0045D810,60,destroy_int_zrle_list_resource,RESOURCE/VARLOAD.CPP
 0x0045D850,84,load_list_resource,RESOURCE/VARLOAD.CPP
 0x0045D8B0,182,allocate_list_int_and_zrle_entry_arrays,LEVEL/DRAWTEXT.CPP
-0x0045D970,29,count_list_entry_arrays_with_data,LEVEL/DRAWTEXT.CPP
+0x0045D970,29,count_list_entry_arrays_with_data,LEVEL/DRAWTEXTCOUNT.CPP
 0x0045D990,94,load_list_entry_pair_from_buffers,LEVEL/DRAWTEXT.CPP
 0x0045D9F0,85,load_list_entry_pair_from_stream,LEVEL/DRAWTEXT.CPP
 0x0045DA50,58,release_list_entry_pair,LEVEL/DRAWTEXT.CPP
