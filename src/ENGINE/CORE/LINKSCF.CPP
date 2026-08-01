@@ -28,6 +28,14 @@ struct InvsChunkObjectSoundStateView {
 	void TriggerSoundOnce(void);
 };
 
+struct LinkScfInvsChunkManagerResetView {
+	unsigned char m_abReserved00[0x30];
+	int m_cCapacity30;
+	int m_cObjects34;
+	unsigned char m_abReserved38[4];
+	void* m_pObjects3C;
+};
+
 struct RockChunkObjectView : LevelChunkObjectBaseView {
 	RockChunkObjectView* ConstructRockChunkObject(void);
 };
@@ -199,8 +207,8 @@ void LEMBALL_FASTCALL ActivateMoveChunkObjects(void* pManager);
 void LEMBALL_FASTCALL AdvanceIceChunkManagerObjects(void* pManager);
 void LEMBALL_FASTCALL AdvanceActiveMoveChunkObjects(void* pManager);
 void LEMBALL_FASTCALL AdvanceInvsChunkObjects(void* pManager);
+void LEMBALL_FASTCALL ResetAllInvsChunkObjects(void* pManager);
 
-DEFINE_LINKSCF_VTABLE_STUB_0(ResetAllInvsChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(DispatchDoorChildArrayVirtual104)
 DEFINE_LINKSCF_VTABLE_STUB_0(ServiceActiveDoorChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitDoorChunkRenderEntries)
@@ -792,6 +800,27 @@ LinkScfInvsChunkManagerView* LinkScfInvsChunkManagerView::ConstructInvsChunkMana
 	*(int*) ((char*) this + 0x3c) = 0;
 	return this;
 }
+
+// FUNCTION: LEMBALL 0x0040a270
+void LEMBALL_FASTCALL ResetAllInvsChunkObjects(void* pManager)
+{
+	typedef void(LEMBALL_FASTCALL * ResetProc)(void* pObject);
+	LinkScfInvsChunkManagerResetView* pInvsManager;
+	char* pObject;
+	int i;
+	int cbOffset;
+
+	pInvsManager = (LinkScfInvsChunkManagerResetView*) pManager;
+	cbOffset = 0;
+	if (pInvsManager->m_pObjects3C != 0) {
+		for (i = 0; i < pInvsManager->m_cCapacity30; ++i) {
+			pObject = (char*) pInvsManager->m_pObjects3C + cbOffset;
+			cbOffset += 0x2b8;
+			((ResetProc) (*(void***) pObject)[65])(pObject);
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x0040b020
 void* ConstructLevelChunkStreamDispatcherThunk(void* pObject, int nChunkTypeCount)
 {
