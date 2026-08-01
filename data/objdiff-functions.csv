@@ -3055,7 +3055,7 @@ address,size,name,unit
 0x00473E20,129,handle_debug_text_append_message,ENGINE/DEBUG/TEXTWIN.CPP
 0x00473EB0,68,get_window_client_rect_in_screen_coords,ENGINE/DEBUG/TEXTWIN.CPP
 0x00473F00,89,map_screen_y_to_debug_text_line_index,ENGINE/DEBUG/TEXTWIN.CPP
-0x00473F60,30,invalidate_text_control_window,ENGINE/DEBUG/TEXTWIN.CPP
+0x00473F60,30,invalidate_text_control_window,ENGINE/DEBUG/TEXTWININVALIDATE.CPP
 0x00473F80,115,invalidate_debug_text_line_range,ENGINE/DEBUG/TEXTWIN.CPP
 0x00474000,71,refresh_debug_text_visible_line_counts,ENGINE/DEBUG/TEXTWIN.CPP
 0x00474050,51,refresh_debug_text_client_width,ENGINE/DEBUG/TEXTWIN.CPP
