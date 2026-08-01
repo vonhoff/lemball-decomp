@@ -1830,6 +1830,32 @@ int return_two_vtable_callback_0041c630(void)
 	return 2;
 }
 
+struct GmobOffsetPointView {
+	char m_abReserved00[0x9c];
+	int m_nPositionX9c;
+	int m_nPositionYa0;
+	int m_nPositionZa4;
+
+	void CopyOffsetPoint(int* pPoint);
+};
+
+// FUNCTION: LEMBALL 0x0041ca60
+void GmobOffsetPointView::CopyOffsetPoint(int* pPoint)
+{
+	int nX;
+	int nY;
+	int nZ;
+
+	nY = m_nPositionYa0;
+	nZ = m_nPositionZa4;
+	nY -= 0xc000;
+	nX = m_nPositionX9c;
+	nX -= 0x3c000;
+	pPoint[0] = nX;
+	pPoint[1] = nY;
+	pPoint[2] = nZ;
+}
+
 extern void* g_LEVELVT_GmobChunkType14ObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x0041d120
