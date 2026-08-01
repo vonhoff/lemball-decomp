@@ -2,8 +2,13 @@
 
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
 
+struct ManagedEntityStateView {
+	void RequestManagedEntityStateId(int nStateId);
+};
+
 struct InvsChunkObjectActionView {
 	void AddInvsTrackedEntity(void* pEntity);
+	void TryTriggerContact(const int* pPosition, void* pEntity);
 };
 
 // Split from the original LINKSCF source group to preserve MSVC 4.20 code generation in LINKSCF.CPP.
@@ -41,4 +46,26 @@ void InvsChunkObjectActionView::AddInvsTrackedEntity(void* pEntity)
 		++*(int*) (pObjectBytes + 0x254);
 		*(unsigned short*) ((char*) pEntity + 0x120) = GetManagedEntitySlotIdThunk((int) (unsigned long) this);
 	}
+}
+
+// FUNCTION: LEMBALL 0x00409fa0
+void InvsChunkObjectActionView::TryTriggerContact(const int* pPosition, void* pEntity)
+{
+	char* pObjectBytes = (char*) this;
+	char* pEntityBytes = (char*) pEntity;
+	int nX;
+	int nY;
+
+	if (*(int*) (pObjectBytes + 0x148) != 0 || *(int*) (pObjectBytes + 0x12c) != 0x18 ||
+		GetManagedEntitySlotIdThunk((int) (unsigned long) this) == *(unsigned short*) (pEntityBytes + 0x120)) {
+		return;
+	}
+	nX = pPosition[0] >> 12;
+	nY = pPosition[1] >> 12;
+	if (nX < *(short*) (pObjectBytes + 0x138) - 8 || *(short*) (pObjectBytes + 0x13e) + 7 < nX ||
+		nY < *(short*) (pObjectBytes + 0x13a) - 8 || *(short*) (pObjectBytes + 0x140) + 7 < nY) {
+		return;
+	}
+	*(void**) (pObjectBytes + 0x5c) = pEntity;
+	((ManagedEntityStateView*) this)->RequestManagedEntityStateId(0x1a);
 }
