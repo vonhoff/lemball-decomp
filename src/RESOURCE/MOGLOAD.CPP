@@ -283,7 +283,7 @@ struct MogLoadResourceObjectReferenceInterface {
 
 void* AllocateResourceArchiveMemory(unsigned int cbBytes);
 void FreeResourceArchiveMemory(void* pMemoryBlock);
-int OpenResourceArchiveFileHandle(const char* pszPath, const char* pszMode);
+int LEMBALL_STDCALL OpenResourceArchiveFileHandle(const char* pszPath, const char* pszMode);
 unsigned char MogLoadReadU8(void);
 unsigned int MogLoadReadU32(void);
 int LEMBALL_STDCALL ResourceArchiveComponentEquals(char* pszEntryName, char* pszPathComponent);
@@ -372,10 +372,10 @@ void FreeResourceArchiveMemory(void* pMemoryBlock)
 }
 
 // FUNCTION: LEMBALL 0x0045bbc0
-int OpenResourceArchiveFileHandle(const char* pszPath, const char* pszMode)
+int LEMBALL_STDCALL OpenResourceArchiveFileHandle(const char* pszPath, const char* pszMode)
 {
 	g_pResourceArchiveFile = OpenFileWithMode(pszPath, pszMode);
-	return 1 - (g_pResourceArchiveFile == 0);
+	return g_pResourceArchiveFile != 0;
 }
 
 // FUNCTION: LEMBALL 0x0045bbe0
@@ -383,10 +383,7 @@ unsigned char MogLoadReadU8(void)
 {
 	unsigned char bValue;
 
-	bValue = 0;
-	if (g_pResourceArchiveFile != 0) {
-		fread(&bValue, 1, 1, g_pResourceArchiveFile);
-	}
+	ReadFileBytes(g_pResourceArchiveFile, &bValue, 1);
 	return bValue;
 }
 
@@ -395,10 +392,7 @@ unsigned int MogLoadReadU32(void)
 {
 	unsigned int dwValue;
 
-	dwValue = 0;
-	if (g_pResourceArchiveFile != 0) {
-		fread(&dwValue, 1, sizeof(dwValue), g_pResourceArchiveFile);
-	}
+	ReadFileBytes(g_pResourceArchiveFile, &dwValue, sizeof(dwValue));
 	return dwValue;
 }
 
@@ -1539,16 +1533,38 @@ MogLoadStringResourceObject* LoadStringResource(int nResourceId)
 	return pLoadedObject;
 }
 
+struct MogLoadBitmapDescriptor {
+	unsigned int m_nWidth;
+	unsigned short m_nHeight;
+	unsigned short m_nReserved06;
+	unsigned char m_nBitDepth;
+	unsigned char m_nFlags;
+};
+
+struct MogLoadBitmapResourceView {
+	char m_abReserved00[0x34];
+	MogLoadBitmapDescriptor* m_pDescriptor;
+	char m_abReserved38[0x10];
+	unsigned short m_nWidth;
+	unsigned short m_nHeight;
+	unsigned char m_nBitDepth;
+	unsigned char m_nFlags;
+};
+
 // FUNCTION: LEMBALL 0x0045e290
 void LEMBALL_FASTCALL ParseBitmapResourceDescriptor(void* pObject)
 {
-	unsigned char* pDescriptor;
+	MogLoadBitmapResourceView* pBitmap;
+	MogLoadBitmapDescriptor* pDescriptor;
+	unsigned short nHeight;
 
-	pDescriptor = *(unsigned char**) ((char*) pObject + 0x34);
-	*(unsigned short*) ((char*) pObject + 0x48) = *(unsigned short*) (pDescriptor + 0);
-	*(unsigned short*) ((char*) pObject + 0x4a) = *(unsigned short*) (pDescriptor + 4);
-	*(unsigned char*) ((char*) pObject + 0x4c) = pDescriptor[8];
-	*(unsigned char*) ((char*) pObject + 0x4d) = pDescriptor[9];
+	pBitmap = (MogLoadBitmapResourceView*) pObject;
+	pDescriptor = pBitmap->m_pDescriptor;
+	nHeight = pDescriptor->m_nHeight;
+	pBitmap->m_nWidth = (unsigned short) pDescriptor->m_nWidth;
+	pBitmap->m_nHeight = nHeight;
+	pBitmap->m_nBitDepth = pDescriptor->m_nBitDepth;
+	pBitmap->m_nFlags = pDescriptor->m_nFlags;
 }
 
 // FUNCTION: LEMBALL 0x0045e380
