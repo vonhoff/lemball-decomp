@@ -2486,9 +2486,9 @@ void GameLockedRecordSlotTableView::ClearLockedRecordSlotPayloadFlags(void)
 	int nOffset;
 	int* pRecordSlot;
 
-	nOffset = 0;
 	nSlots = 0;
 	if (0 < m_cRecords) {
+		nOffset = 0;
 		do {
 			nOffset += 4;
 			++nSlots;
