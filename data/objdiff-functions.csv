@@ -3116,7 +3116,7 @@ address,size,name,unit
 0x004782D0,239,decode_zrle_rows_palette_mirrored,ENGINE/GDI/VSGDI.CPP
 0x004783C0,1064,render_packaged_zrle_entry_via_helper,ENGINE/GDI/VSGDI.CPP
 0x004787F0,568,blit_bitmap_rows_to_scanlines,ENGINE/GDI/VSGDI.CPP
-0x00478B80,41,initialize_render_blit_rect_from_point,ENGINE/GDI/VSWING.CPP
+0x00478B80,41,initialize_render_blit_rect_from_point,ENGINE/GDI/VSWINGRECT.CPP
 0x00478BB0,1017,render_zrle_frame_at_point_via_helper,ENGINE/GDI/VSWING.CPP
 0x00478FB0,437,dispatch_visual_sciences_wing_driver_message,ENGINE/GDI/VSWING.CPP
 0x00479190,120,open_visual_sciences_wing_draw_handler,ENGINE/GDI/VSWING.CPP
