@@ -103,6 +103,28 @@ void LEMBALL_FASTCALL FUN_0043a2e0(void*, int, unsigned short*)
 {
 }
 
+struct RegisteredRenderSlot {
+	int m_nFirst;
+	int m_nSecond;
+};
+
+struct RegisteredRenderSlotArrayView {
+	char m_abReserved00[0x10];
+	RegisteredRenderSlot* m_pSlots10;
+	int m_cSlots14;
+	int m_cCapacity18;
+
+	void Append(int nFirst, int nSecond);
+};
+
+// FUNCTION: LEMBALL 0x0043a380
+void RegisteredRenderSlotArrayView::Append(int nFirst, int nSecond)
+{
+	m_pSlots10[m_cSlots14].m_nFirst = nFirst;
+	m_pSlots10[m_cSlots14].m_nSecond = nSecond;
+	++m_cSlots14;
+}
+
 // Compatibility shim for original ILT call site.
 void LEMBALL_FASTCALL DestroyRegisteredRenderSlotArrayAutoThunk(void* pObject)
 {
