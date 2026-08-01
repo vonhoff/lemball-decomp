@@ -25,6 +25,7 @@
 #include <new>
 #endif
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 void PASCAL SetAudioMusicAndEffectVolumeByte(unsigned char nVolume);
@@ -3871,6 +3872,18 @@ __declspec(naked) void* LEMBALL_FASTCALL DeleteLevelGameModeAdjusted(void*, int,
         jmp offset DeleteLevelGameModeAuto
 	}
 }
+
+// FUNCTION: LEMBALL 0x00413f80
+int Distance2DIntPixels(int x1, int y1, int x2, int y2)
+{
+	int dx;
+	int dy;
+
+	dx = abs(x1 - x2);
+	dy = abs(y1 - y2);
+	return (int) ((VsMathStateView*) g_pSessionRandomState)->IntegerSqrtFloor(dx * dx + dy * dy);
+}
+
 struct LevelTileRenderDescriptor {
 	char m_abReserved00[8];
 	short m_nHeight08;

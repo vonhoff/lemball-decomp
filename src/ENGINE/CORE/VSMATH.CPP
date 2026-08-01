@@ -90,7 +90,7 @@ int* LEMBALL_FASTCALL WriteDebugSentinelDword(int* pTarget)
 }
 
 // FUNCTION: LEMBALL 0x0045a9b0
-unsigned int __stdcall IntegerSqrtFloor(unsigned int uValue)
+unsigned int VsMathStateView::IntegerSqrtFloor(unsigned int uValue)
 {
 	unsigned int uLow;
 	unsigned int uHigh;

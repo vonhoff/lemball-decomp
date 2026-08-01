@@ -138,6 +138,7 @@ address,name,symbol,type,source
 0x00402527,DestroyFrameTimerController,?DestroyFrameTimerController@@YAXXZ,stub,src/LEVEL/RUN/DEMO.CPP
 0x0040252C,VsNetNetworkLobbyScreen::ShowPlayerEntries,?ShowPlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/FRONTEND/LOBBY.CPP
 0x0040253B,refresh_active_pgun_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
+0x0040254A,Distance2DIntPixels,?Distance2DIntPixels@@YAHHHHH@Z,stub,src/GAME.CPP
 0x00402559,activate_ice_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040258B,advance_cached_group_managed_entity_child_iterator,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040259A,LevelManagedEntityActiveGroupView::GetActiveEntityPosition,?GetActiveEntityPosition@LevelManagedEntityActiveGroupView@@QAEHPAULevelPoint3@@@Z,stub,src/LEVEL/VTABLE/LEVELVTGROUP.CPP
