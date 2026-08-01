@@ -3580,24 +3580,24 @@ int ShutdownResourceGeometryHelperRuntime(void)
 // FUNCTION: LEMBALL 0x0046bc00
 VsGdiResourceGeometryHelperSlotManager::VsGdiResourceGeometryHelperSlotManager(int cSlots)
 {
-	int nByteOffset;
+	int i;
 
 	m_pSlots = (VsGdiResourceGeometryHelperSlot*) AllocateVSMemBlock((unsigned int) (cSlots * sizeof(*m_pSlots)));
 	m_cSlots = cSlots;
 	m_nReserved08 = 0;
 	m_nReserved0C = 0;
 	if (0 < cSlots) {
-		nByteOffset = 0;
+		i = 0;
 		do {
-			nByteOffset += sizeof(VsGdiResourceGeometryHelperSlot);
+			m_pSlots[i].m_nOwnerOrState0 = 0;
+			m_pSlots[i].m_nOwnerOrState8 = 0;
+			m_pSlots[i].m_nOwnerOrState4 = 0;
+			m_pSlots[i].m_nOwnerOrState10 = 0;
+			m_pSlots[i].m_nOwnerOrStateC = 0;
+			m_pSlots[i].m_fAvailable = 1;
+			m_pSlots[i].m_nOwnerOrState18 = 0;
+			++i;
 			--cSlots;
-			*(int*) ((char*) m_pSlots + nByteOffset - 0x1c) = 0;
-			*(int*) ((char*) m_pSlots + nByteOffset - 0x14) = 0;
-			*(int*) ((char*) m_pSlots + nByteOffset - 0x18) = 0;
-			*(int*) ((char*) m_pSlots + nByteOffset - 0x0c) = 0;
-			*(int*) ((char*) m_pSlots + nByteOffset - 0x10) = 0;
-			*(int*) ((char*) m_pSlots + nByteOffset - 8) = 1;
-			*(int*) ((char*) m_pSlots + nByteOffset - 4) = 0;
 		} while (cSlots != 0);
 	}
 	g_pResourceGeometryHelperTarget = 0;
