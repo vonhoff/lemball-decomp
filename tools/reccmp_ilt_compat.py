@@ -104,6 +104,11 @@ FUNCTION_DATA_REFERENCES = {
         "g_VSGDI_AnimWindowOwnerVtable",
         "animation window-owner vtable 00499f30",
     ),
+    0x0046FD70: (
+        0x0049A060,
+        "VsNetSocketWindowEffChannel::`vftable'{for `VsNetSocketWindowPrimary'}",
+        "socket-window primary vtable 0049a060",
+    ),
 }
 # These real, source-owned adjustor thunks jump through original LINK 3.00
 # ILT entries while rebuilt naked thunks jump directly to the same bodies.
