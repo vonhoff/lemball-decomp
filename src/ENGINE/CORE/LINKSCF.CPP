@@ -1995,18 +1995,26 @@ extern void LEMBALL_FASTCALL clear_managed_entity_child_pending_state_if_interru
 void LEMBALL_FASTCALL release_attached_move_chunk_entities(void* pObject)
 {
 	typedef void(LEMBALL_FASTCALL * OwnerResetSlotProc)(void*);
-	char* pBytes = (char*) pObject;
+	char* pBytes;
+	void** ppEntity;
 	int i;
 
-	for (i = 0; i < *(int*) (pBytes + 0x174); ++i) {
-		void* pEntity = *(void**) (pBytes + 0x178 + i * 4);
-		if (*(int*) ((char*) pEntity + 0x64) == 2) {
-			void* pOwnerGroup = get_managed_entity_owner_group(pEntity);
-			((OwnerResetSlotProc) (*(void***) pOwnerGroup)[84])(pOwnerGroup);
-		}
-		else {
-			clear_managed_entity_child_pending_state_if_interruptible(pEntity);
-		}
+	pBytes = (char*) pObject;
+	i = 0;
+	if (*(int*) (pBytes + 0x174) > 0) {
+		ppEntity = (void**) (pBytes + 0x178);
+		do {
+			void* pEntity = *ppEntity;
+			if (*(int*) ((char*) pEntity + 0x64) == 2) {
+				void* pOwnerGroup = get_managed_entity_owner_group(pEntity);
+				((OwnerResetSlotProc) (*(void***) pOwnerGroup)[84])(pOwnerGroup);
+			}
+			else {
+				clear_managed_entity_child_pending_state_if_interruptible(pEntity);
+			}
+			++ppEntity;
+			++i;
+		} while (i < *(int*) (pBytes + 0x174));
 	}
 }
 
