@@ -108,6 +108,7 @@ address,name,symbol,type,source
 0x00402167,activate_mine_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040217B,managed_entity_packet_base_reverse_eff_stream_payload,?ReverseEffStreamPayload@ManagedEntityPacketBase@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00402180,destroy_level_chunk_stream_auto_thunk,?DestroyLevelChunkStreamAutoThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
+0x00402194,DelayedManagedEntityMoveView::ArmDelayedMoveToSavedTarget,?ArmDelayedMoveToSavedTarget@DelayedManagedEntityMoveView@@QAEXH@Z,stub,src/LEVEL/LEVELRUNDELAYEDMOVE.CPP
 0x004021D0,destroy_level_chunk_object_base_auto_thunk,?DestroyLevelChunkObjectBaseAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x004021F3,destroy_door_chunk_manager_auto_thunk,?DestroyDoorChunkManagerAutoThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402239,destroy_level_chunk_object_base24cf0,?DestroyLevelChunkObjectBase24CF0@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
