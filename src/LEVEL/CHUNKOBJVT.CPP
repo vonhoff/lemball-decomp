@@ -490,11 +490,17 @@ int LEMBALL_FASTCALL ActivateGmobChunkType14Variant(void* pObject, void* pUnused
 // FUNCTION: LEMBALL 0x0041d320
 void LEMBALL_FASTCALL CopyGmobChunkType14InteractionPoint(void* pObject, void* pUnused, LevelBoundsPoint* pPoint)
 {
-	int* pCoordinates = (int*) pPoint;
+	int nY;
+	int nZ;
+	int nX;
+
 	(void) pUnused;
-	pCoordinates[1] = *(int*) ((char*) pObject + 0xa0);
-	pCoordinates[0] = *(int*) ((char*) pObject + 0x9c) - 0x8000;
-	pCoordinates[2] = *(int*) ((char*) pObject + 0xa4);
+	nY = *(int*) ((char*) pObject + 0xa0);
+	nZ = *(int*) ((char*) pObject + 0xa4);
+	nX = *(int*) ((char*) pObject + 0x9c) - 0x8000;
+	((int*) pPoint)[1] = nY;
+	((int*) pPoint)[0] = nX;
+	((int*) pPoint)[2] = nZ;
 }
 
 // FUNCTION: LEMBALL 0x0041dc50
@@ -839,13 +845,6 @@ int LEMBALL_FASTCALL AdvanceLasrChunkObjectStateMachine(void* pObject)
 		break;
 	}
 	return 1;
-}
-
-// FUNCTION: LEMBALL 0x00429ed0
-void* LEMBALL_FASTCALL DeleteLasrChunkObjectAuto(void* pObject, void* pUnused, unsigned int fDelete)
-{
-	(void) pUnused;
-	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x148, destroy_lasr_chunk_object_vtable_thunk);
 }
 
 // FUNCTION: LEMBALL 0x0042aa80
