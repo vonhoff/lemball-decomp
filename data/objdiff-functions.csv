@@ -1237,7 +1237,7 @@ address,size,name,unit
 0x004326E0,194,integrate_inertial_coordinate_event_source,ENGINE/GDI/VSWINDOW.CPP
 0x004327B0,42,emit_inertial_source_marker_render_entry,ENGINE/GDI/VSWINDOW.CPP
 0x004327E0,35,emit_variant_child_slot_render_marker,ENGINE/GDI/VSWINDOW.CPP
-0x00432810,41,reset_inertial_coordinate_event_position,ENGINE/GDI/VSWINDOW.CPP
+0x00432810,41,reset_inertial_coordinate_event_position,ENGINE/GDI/VSWINDOWMODE.CPP
 0x00432840,26,get_inertial_source_pixel_position,ENGINE/GDI/VSWINDOWMODE.CPP
 0x00432860,12,clear_variant_child_slot_motion_state,ENGINE/GDI/VSWINDOWMODE.CPP
 0x00432870,12,clear_window_owner_runtime_fields,ENGINE/GDI/VSWINDOWMODE.CPP

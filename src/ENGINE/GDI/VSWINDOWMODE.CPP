@@ -23,11 +23,13 @@ struct VsWindowOwnerRuntimeStateView {
 	char m_abReserved4C[8];
 	int m_nOwnerRuntime54;
 	int m_nChildRuntime58;
-	char m_abReserved5C[0x14];
+	int m_fPositionReset5C;
+	char m_abReserved60[0x10];
 	int m_nRenderOriginX70;
 	int m_nRenderOriginY74;
 
 	void GetPixelPosition(VsShortPoint* pPoint);
+	void ResetPosition(const VsShortPoint* pPoint);
 	void ClearChildState(void);
 	void ClearOwnerState(void);
 	void SetRenderOrigin(int nX, int nY);
@@ -55,6 +57,16 @@ int LEMBALL_FASTCALL IsObjectField44CurrentContext(void* pObject)
 	extern void* g_pCachedCurrentContextWindow;
 
 	return *(void**) ((char*) pObject + 0x44) == g_pCachedCurrentContextWindow;
+}
+
+// FUNCTION: LEMBALL 0x00432810
+void VsWindowOwnerRuntimeStateView::ResetPosition(const VsShortPoint* pPoint)
+{
+	m_fPositionReset5C = 1;
+	m_nOwnerRuntime54 = 0;
+	m_nChildRuntime58 = 0;
+	m_nFixedPointY38 = pPoint->m_nY << 12;
+	m_nFixedPointX34 = pPoint->m_nX << 12;
 }
 
 // FUNCTION: LEMBALL 0x00432840
