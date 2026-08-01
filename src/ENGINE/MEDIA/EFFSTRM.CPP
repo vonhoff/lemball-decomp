@@ -517,11 +517,13 @@ void LEMBALL_FASTCALL WriteNetworkLobbyPeerEntryPayload(void* pObject)
 	VsNetEffStreamBase* pStream;
 	GameDynamicCString HostName;
 	GameDynamicCString LowercaseHostName;
+	const char* pszHostName;
 	char szHostName[21];
 
 	pStream = (VsNetEffStreamBase*) pObject;
 	pStream->WriteEffStreamCString(g_pszPendingNetworkLobbyStatusText);
-	strncpy(szHostName, g_pszFileBasedNetworkLocalHostName, 20);
+	pszHostName = g_pszFileBasedNetworkLocalHostName;
+	strncpy(szHostName, pszHostName, 20);
 	szHostName[20] = '\0';
 	HostName.ConstructDynamicCStringFromCString(szHostName);
 	HostName.LowercaseAndCopyDynamicCString(&LowercaseHostName);
