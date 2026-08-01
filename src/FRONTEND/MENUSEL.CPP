@@ -736,6 +736,7 @@ struct GameQueuedVariantChildSlotManager {
 	void SelectNextChildSlot(void);
 	void SelectChildSlot(int iChild);
 	void DispatchSelectedChildSlotEvent(void);
+	void RefreshAllRangeSelections(void);
 
 	void** m_pVtable00;
 	int m_nQueueTag04;
@@ -2895,6 +2896,25 @@ void GameQueuedVariantChildSlotManager::DispatchSelectedChildSlotEvent(void)
 void LEMBALL_FASTCALL SelectQueuedVariantChildSlot(void* pObject, int, int iChild)
 {
 	((GameQueuedVariantChildSlotManager*) pObject)->SelectChildSlot(iChild);
+}
+
+// FUNCTION: LEMBALL 0x0044fc20
+void GameQueuedVariantChildSlotManager::RefreshAllRangeSelections(void)
+{
+	GameQueuedVariantRangeEntry** ppEntry;
+	int i;
+
+	i = 0;
+	if (m_cChildren80 > 0) {
+		ppEntry = m_apChildrenAC;
+		do {
+			if (*ppEntry != 0) {
+				RefreshQueuedVariantRangeSelection(*ppEntry);
+			}
+			++ppEntry;
+			++i;
+		} while (i < m_cChildren80);
+	}
 }
 // FUNCTION: LEMBALL 0x0044fc50
 void LEMBALL_FASTCALL RefreshQueuedVariantChildByToken(void* pObject, int, int nToken)
