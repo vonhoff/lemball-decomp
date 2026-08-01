@@ -166,7 +166,7 @@ address,size,name,unit
 0x0040B120,42,reset_registered_level_chunk_streams,LEVEL/RUN/LEVELRUN.CPP
 0x0040B150,42,register_level_chunk_stream,LEVEL/RUN/LEVELRUN.CPP
 0x0040B180,103,remove_managed_entity_group_child,LEVEL/RUN/LEVELRUN.CPP
-0x0040B1F0,29,get_registered_level_chunk_stream,LEVEL/RUN/LEVELRUN.CPP
+0x0040B1F0,29,get_registered_level_chunk_stream,LEVEL/RUN/LVSTREAM.CPP
 0x0040B210,125,handle_level_chunk_stream_transport_event,LEVEL/RUN/LEVELRUN.CPP
 0x0040B290,68,route_level_chunk_stream_payload,LEVEL/RUN/LEVELRUN.CPP
 0x0040B2E0,62,emit_registered_level_chunk_stream_entries,LEVEL/RUN/LEVELRUN.CPP
