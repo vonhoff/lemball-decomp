@@ -2087,6 +2087,111 @@ void LEMBALL_FASTCALL destroy_move_chunk_object(void* pObject)
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 }
 
+extern void* g_pActiveManagedEntityOwner;
+extern void* g_pLevelTileGrid;
+
+struct ManagedEntitySlotOwnerView {
+	char m_abReserved00[0x6c];
+	unsigned short m_nSlotId6C;
+
+	void SetManagedEntitySlotId(unsigned short nSlotId);
+};
+
+struct LevelNodePoint {
+	int m_anValues[3];
+};
+
+struct LevelModeNodeView {
+	char m_abReserved00[0x17c];
+	void* m_pNodeManager17C;
+
+	LevelNodePoint* CopyNodePointByIndex(LevelNodePoint* pOutput, int nIndex);
+};
+
+struct LevelTileRenderDescriptor {
+	int m_nShapeType;
+	int m_nReserved04;
+	short m_nHeight;
+
+	short SampleHeightOffsetThunk(int nLocalX, int nLocalY);
+};
+
+struct LevelTileGridCell {
+	int m_nType00;
+	short m_nVariant04;
+	unsigned short m_nFlags06;
+	short m_nReserved08;
+	short m_nReserved0A;
+};
+
+struct MoveChunkTileGridView {
+	char m_abReserved00[0xc];
+	LevelTileGridCell* m_pCells0C;
+	int m_cColumns10;
+	int m_cRows14;
+};
+
+struct MoveChunkObjectInitializeView : ManagedEntitySlotOwnerView {
+	char m_abReserved6E[0x2e];
+	int m_nWorldX9C;
+	int m_nWorldYA0;
+	int m_nWorldZA4;
+	char m_abReservedA8[0x14];
+	short m_nHeadingBC;
+	char m_abReservedBE[0x7a];
+	int m_fActive138;
+	char m_abReserved13C[8];
+	int m_nMode144;
+	char m_abReserved148[0x20];
+	int m_iNode168;
+	int m_nValue16C;
+	int m_nState170;
+	int m_cAttachedEntities174;
+
+	void Initialize(unsigned short nSlotId, short nHeading, int nMode, int iNode, int nValue);
+};
+
+// FUNCTION: LEMBALL 0x0042e760
+void MoveChunkObjectInitializeView::Initialize(unsigned short nSlotId, short nHeading, int nMode, int iNode, int nValue)
+{
+	LevelNodePoint point;
+	LevelNodePoint* pPoint;
+	MoveChunkTileGridView* pGrid;
+	LevelTileRenderDescriptor* pCell;
+	int nPixelY;
+	int nPixelX;
+	int nTileY;
+	int nTileX;
+	unsigned short nHeight;
+
+	SetManagedEntitySlotId(nSlotId);
+	pPoint = ((LevelModeNodeView*) g_pActiveManagedEntityOwner)->CopyNodePointByIndex(&point, iNode);
+	m_nWorldX9C = pPoint->m_anValues[0];
+	nPixelX = m_nWorldX9C >> 12;
+	m_nWorldYA0 = pPoint->m_anValues[1];
+	nPixelY = m_nWorldYA0 >> 12;
+	m_nWorldZA4 = pPoint->m_anValues[2];
+	nTileX = nPixelX >> 4;
+	nTileY = nPixelY >> 4;
+	pGrid = (MoveChunkTileGridView*) g_pLevelTileGrid;
+	if (nPixelX < 0 || nPixelY < 0 || nTileX >= pGrid->m_cColumns10 || nTileY >= pGrid->m_cRows14) {
+		nHeight = 0;
+	}
+	else {
+		pCell = (LevelTileRenderDescriptor*) &pGrid->m_pCells0C[nTileY * pGrid->m_cColumns10 + nTileX];
+		nHeight = (unsigned short) pCell->SampleHeightOffsetThunk(nPixelX & 0x0f, nPixelY & 0x0f);
+	}
+
+	m_fActive138 = 1;
+	m_nHeadingBC = nHeading;
+	m_nWorldZA4 = (int) nHeight << 12;
+	m_iNode168 = iNode;
+	m_nState170 = 0;
+	m_cAttachedEntities174 = 0;
+	m_nMode144 = nMode;
+	m_nValue16C = nValue;
+}
+
 // FUNCTION: LEMBALL 0x0042eeb0
 void __fastcall set_move_chunk_object_trigger_latch(void* pObject)
 {
