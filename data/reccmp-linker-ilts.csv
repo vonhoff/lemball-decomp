@@ -116,6 +116,7 @@ address,name,symbol,type,source
 0x00402275,reset_rock_chunk_object_runtime_state_thunk,?ResetRockChunkObjectRuntimeStateThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x004022CA,TogglePrimaryContextDisplayMode,?TogglePrimaryContextDisplayMode@@YIXPAX@Z,stub,src/SHELL/SHELLUI.CPP
 0x00402315,GameScreenObject::ConstructOptionsScreen,?ConstructOptionsScreen@GameScreenObject@@QAEPAXPAX0PAF@Z,stub,src/GAME.CPP
+0x0040231F,AnimChunkRecordManager::Serialize,?Serialize@AnimChunkRecordManager@@QAEHPAUSerializedAnimChunkRecord@@@Z,stub,src/LEVEL/ANIMCHUNKRECORDS.CPP
 0x00402329,destroy_menu_selector_entry_auto_thunk,?DestroyMenuSelectorEntryAutoThunk@@YIXPAX@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00402338,managed_entity_packet27_reverse_eff_stream_payload,?ReverseEffStreamPayload@ManagedEntityPacket27@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP
 0x00402351,LevelManagedEntityMoveCommandView::PopFirstMoveCommand,?PopFirstMoveCommand@LevelManagedEntityMoveCommandView@@QAEXXZ,stub,src/LEVEL/LEVELVTMOVE.CPP

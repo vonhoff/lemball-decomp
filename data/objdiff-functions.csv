@@ -228,7 +228,7 @@ address,size,name,unit
 0x0040D0C0,109,append_static_anim_chunk_record_if_unique,LEVEL/LEVELRUN.CPP
 0x0040D130,243,append_anim_chunk_record_if_unique,LEVEL/LEVELRUN.CPP
 0x0040D230,115,remove_anim_chunk_records_at_tile,LEVEL/LEVELRUN.CPP
-0x0040D2B0,48,serialize_anim_chunk_records,LEVEL/LEVELRUN.CPP
+0x0040D2B0,48,serialize_anim_chunk_records,LEVEL/ANIMCHUNKRECORDS.CPP
 0x0040D2E0,105,load_anim_chunk_records,LEVEL/LEVELRUN.CPP
 0x0040D470,24,construct_door_chunk_object,LEVEL/LEVELVT.CPP
 0x0040D490,5,reset_managed_entity_base_runtime_state,LEVEL/LEVELRUN.CPP
@@ -351,7 +351,7 @@ address,size,name,unit
 0x00412D80,52,copy_level_mode_plas_triplet_by_index,LEVEL/LEVELRUN.CPP
 0x00412DC0,85,copy_managed_entity_position_by_id,LEVEL/LEVELRUN.CPP
 0x00412E20,29,get_level_follow_target_position,LEVEL/LEVELRUN.CPP
-0x00412E40,19,serialize_anim_chunk_manager_records,LEVEL/LEVELRUN.CPP
+0x00412E40,19,serialize_anim_chunk_manager_records,LEVEL/ANIMCHUNKRECORDS.CPP
 0x00412E60,19,serialize_level_mode_lift_endpoint_pairs,LEVEL/LEVELRUN.CPP
 0x00412E80,36,append_type_0x18_object_with_free_slot,LEVEL/LEVELRUN.CPP
 0x00412EB0,75,append_type_0x18_chunk_object_from_tile_coords,LEVEL/LEVELRUN.CPP
