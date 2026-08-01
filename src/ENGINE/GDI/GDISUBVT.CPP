@@ -243,6 +243,77 @@ int LEMBALL_FASTCALL CompactHelperSubobjectSlot18(void* pSubobject)
 	return get_helper_group_0_dirty_flag_local((char*) pSubobject - 0x518);
 }
 
+class ListCharEntryIndexResolver {
+public:
+	virtual void Slot0(void) = 0;
+	virtual void Slot1(void) = 0;
+	virtual char ResolveEntryIndex(void* pEntry) = 0;
+};
+
+struct ListCharEntrySourceHeader {
+	void* m_pReserved00;
+	unsigned int m_cbEntry;
+};
+
+struct ListCharEntrySourceView {
+	unsigned char m_abReserved00[0x48];
+	ListCharEntrySourceHeader* m_pHeader;
+	unsigned char m_abReserved4c[0x20];
+	unsigned int m_cbEntries;
+	unsigned char m_abReserved70[8];
+	ListCharEntryIndexResolver* m_pIndexResolver;
+	char* m_pEntries;
+	char* m_pMetadata;
+};
+
+class ListCharEntryTable {
+public:
+	void* m_pVtable;
+	void** m_apEntries;
+
+	ListCharEntryTable* Construct(ListCharEntrySourceView* pSource);
+};
+
+// FUNCTION: LEMBALL 0x00473650
+ListCharEntryTable* ListCharEntryTable::Construct(ListCharEntrySourceView* pSource)
+{
+	unsigned int cbOffset;
+	unsigned int i;
+	int cbEntryOffset;
+	int cbMetadataOffset;
+	int iEntry;
+
+	m_pVtable = &g_VSGDI_ResourceGeometryRowBufferVtable[4];
+	m_apEntries = (void**) AllocateVSMemBlock(0x400);
+	cbOffset = 0;
+	do {
+		cbOffset += sizeof(void*);
+		*(void**) ((char*) m_apEntries + cbOffset - sizeof(void*)) = 0;
+	} while (cbOffset < 0x400);
+
+	cbEntryOffset = 0;
+	i = 0;
+	if (pSource->m_cbEntries / pSource->m_pHeader->m_cbEntry != 0) {
+		cbMetadataOffset = 0;
+		do {
+			char* pEntry;
+
+			if (pSource->m_pMetadata == 0) {
+				iEntry = pSource->m_pIndexResolver->ResolveEntryIndex(pSource->m_pEntries + cbEntryOffset);
+			}
+			else {
+				iEntry = *(int*) (pSource->m_pMetadata + cbMetadataOffset + 0x48);
+			}
+			pEntry = pSource->m_pEntries + cbEntryOffset;
+			cbMetadataOffset += 0x4c;
+			cbEntryOffset += 0x54;
+			m_apEntries[iEntry] = pEntry;
+			++i;
+		} while (i < pSource->m_cbEntries / pSource->m_pHeader->m_cbEntry);
+	}
+	return this;
+}
+
 // FUNCTION: LEMBALL 0x00473700
 void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot5(void*)
 {
