@@ -2270,24 +2270,23 @@ MoveChunkObjectInitializeView* MoveChunkManagerTriggerView::FindObjectContaining
 // FUNCTION: LEMBALL 0x0042f590
 int MoveChunkManagerTriggerView::HasTriggeredObject(void* pEntity, const int* pPosition)
 {
-	char* pManagerBytes;
 	int i;
-	int nOffset;
 
-	pManagerBytes = (char*) this;
 	i = 0;
-	if (*(int*) (pManagerBytes + 0x34) > 0) {
+	if (i < m_cObjects34) {
+		int nOffset;
+
 		nOffset = 0;
 		do {
 			MoveChunkObjectTriggerView* pObject;
 
-			pObject = (MoveChunkObjectTriggerView*) (*(char**) (pManagerBytes + 0x38) + nOffset);
+			pObject = (MoveChunkObjectTriggerView*) ((char*) m_pObjects38 + nOffset);
 			if (pObject->IsTriggered(pEntity, pPosition) != 0) {
 				return 1;
 			}
 			nOffset += 0x1a0;
 			++i;
-		} while (*(int*) (pManagerBytes + 0x34) > i);
+		} while (m_cObjects34 > i);
 	}
 	return 0;
 }
