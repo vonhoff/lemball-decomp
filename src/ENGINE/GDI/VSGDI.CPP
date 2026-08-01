@@ -4295,7 +4295,7 @@ void LEMBALL_FASTCALL ApplyHelperTargetPaletteAndPropagate(void* pCompactTarget,
 						   ? g_adwGlobalResourceGeometryPaletteTable
 						   : 0;
 	BuildAndApplyLogPalette(g_adwGlobalResourceGeometryPaletteTable, pPalette, 0, paFallbackColors);
-	PropagateGlobalPaletteToResourceGeometries((char*) pCompactTarget - 0x55c);
+	PropagateGlobalPaletteToResourceGeometriesBody((char*) pCompactTarget - 0x55c);
 }
 // FUNCTION: LEMBALL 0x0046d090
 void VsGdiHelperSurface::UpdateWorkingRectAndBacking(const VsGdiRect* pRect)
