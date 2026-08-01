@@ -96,7 +96,7 @@ FUNCTION_DATA_REFERENCES = {
     ),
     0x0046BC90: (
         0x00499D78,
-        "g_VSGDI_ResourceGeometryHelperSlotManagerVtable",
+        "VsGdiResourceGeometryHelperSlotManager::`vftable'",
         "resource geometry helper slot-manager vtable 00499d78",
     ),
     0x0046DE70: (
