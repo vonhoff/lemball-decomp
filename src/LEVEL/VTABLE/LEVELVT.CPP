@@ -51,6 +51,21 @@ struct LevelManagedEntityStateIdView {
 	int m_nStateIdB8;
 };
 
+struct ManagedEntityGroupChildrenView {
+	char m_abReserved00[0x124];
+	int m_nChildCount124;
+	void* m_apChildren128[10];
+	char m_abReserved150[0x10];
+	int m_nRuntimeState160;
+	int m_nRuntimeState164;
+	int m_nRuntimeState168;
+	int m_nReserved16C;
+	int m_nRuntimeState170;
+
+	void ClearChildren(void);
+	void ResetRuntimeState(void);
+};
+
 class LevelManagedEntityDirtyStateRecoveredView {
 public:
 	int PollStreamDirtyFlag(void);
@@ -1158,6 +1173,16 @@ int __fastcall has_level_plas_history_entries(void* pLevelMode)
 {
 	void* pPlasManager = *(void**) ((char*) pLevelMode + 0x15c);
 	return *(int*) ((char*) pPlasManager + 0x128);
+}
+
+// FUNCTION: LEMBALL 0x00414040
+void ManagedEntityGroupChildrenView::ResetRuntimeState(void)
+{
+	ClearChildren();
+	m_nRuntimeState160 = 0;
+	m_nRuntimeState164 = 0;
+	m_nRuntimeState168 = 0;
+	m_nRuntimeState170 = 0;
 }
 
 extern void* g_LEVELVT_LevelChunkObjectChildrenVariantVtable[16];
