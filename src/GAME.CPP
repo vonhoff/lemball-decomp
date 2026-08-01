@@ -5740,8 +5740,8 @@ void VS_RootGeometryOwner::SetWindowOwnerScaleFactor(int nScaleFactor)
 {
 	int nPreviousScaleFactor;
 
-	nPreviousScaleFactor = m_nScaleFactor38;
-	if (nScaleFactor != nPreviousScaleFactor) {
+	if (nScaleFactor != m_nScaleFactor38) {
+		nPreviousScaleFactor = m_nScaleFactor38;
 		m_nScaleFactor38 = nScaleFactor;
 		SetRootGeometryScaleFactor(nPreviousScaleFactor);
 		ReservedWindowOwnerSlot22(nPreviousScaleFactor);
