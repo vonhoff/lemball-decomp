@@ -1120,6 +1120,21 @@ static const unsigned int g_adwSmallMemoryBucketSlotMasks[32] = {
 	0x01000000, 0x02000000, 0x04000000, 0x08000000, 0x10000000, 0x20000000, 0x40000000, 0x80000000,
 };
 
+struct SmallMemoryBucketSlotIndex {
+	unsigned short m_iWord;
+	unsigned short m_iBit;
+};
+
+struct SmallMemoryBucketSlotFinder {
+	unsigned char m_abReserved00[0x40];
+	unsigned short m_wFlags;
+	unsigned short m_nReserved42;
+	int m_cBitmapWords;
+	unsigned int* m_pBitmap;
+
+	SmallMemoryBucketSlotIndex* FindNextFreeSlot(unsigned int* pNextSlot, SmallMemoryBucketSlotIndex CurrentSlot);
+};
+
 class SmallMemoryBucketLockInterface {
 public:
 	virtual void Enter(void) = 0;
@@ -1130,7 +1145,10 @@ public:
 int SmallMemoryBucket::AllocateSlot(void** ppvSlot)
 {
 	SmallMemoryBucket* pBucket;
-	unsigned int i;
+	SmallMemoryBucketSlotIndex CurrentSlot;
+	unsigned short iWord;
+	unsigned short iBit;
+	unsigned int nSlot;
 
 	pBucket = this;
 	for (;;) {
@@ -1143,44 +1161,27 @@ int SmallMemoryBucket::AllocateSlot(void** ppvSlot)
 		}
 		((SmallMemoryBucketLockInterface*) pBucket)->Leave();
 		pBucket = pBucket->m_pChildBucket;
-		if (pBucket == 0) {
-			*ppvSlot = 0;
-			return 0;
-		}
-	}
-
-	for (i = 0; i < pBucket->m_cBitmapWords; ++i) {
-		unsigned int dwWord = ((unsigned int*) pBucket->m_pBitmap)[i];
-		if (dwWord != 0xffffffffU) {
-			unsigned int j;
-			for (j = 0; j < 32; ++j) {
-				unsigned int dwMask = g_adwSmallMemoryBucketSlotMasks[j];
-				if ((dwWord & dwMask) == 0) {
-					unsigned int nSlot = i * 32 + j;
-					if (nSlot >= pBucket->m_cSlots) {
-						break;
-					}
-					((unsigned int*) pBucket->m_pBitmap)[i] = dwWord | dwMask;
-					pBucket->m_cbStorageAvailable -= pBucket->m_cbSlot;
-					pBucket->m_cAllocated += 1;
-					pBucket->m_cAllocations += 1;
-					if (pBucket->m_cMaximumAllocations < pBucket->m_cAllocations) {
-						pBucket->m_cMaximumAllocations = pBucket->m_cAllocations;
-					}
-					if (pBucket->m_cbStorageAvailable == 0) {
-						pBucket->m_wFlags |= 4;
-					}
-					*ppvSlot = (char*) pBucket->m_pStorage + nSlot * pBucket->m_cbSlot;
-					((SmallMemoryBucketLockInterface*) pBucket)->Leave();
-					return 1;
-				}
-			}
-		}
 	}
 	*ppvSlot = 0;
-	pBucket->m_wFlags |= 4;
+	CurrentSlot = *(SmallMemoryBucketSlotIndex*) &pBucket->m_nNextFreeWord;
+	iWord = CurrentSlot.m_iWord;
+	iBit = CurrentSlot.m_iBit;
+	((unsigned int*) pBucket->m_pBitmap)[iWord] |= g_adwSmallMemoryBucketSlotMasks[iBit];
+	pBucket->m_cbStorageAvailable -= pBucket->m_cbSlot;
+	if ((int) pBucket->m_cbStorageAvailable <= 0) {
+		pBucket->m_wFlags |= 4;
+	}
+	*(SmallMemoryBucketSlotIndex*) &pBucket->m_nNextFreeWord =
+		*((SmallMemoryBucketSlotFinder*) pBucket)->FindNextFreeSlot((unsigned int*) &CurrentSlot, CurrentSlot);
+	nSlot = iWord * 32 + iBit;
+	*ppvSlot = (char*) pBucket->m_pStorage + nSlot * pBucket->m_cbSlot;
+	++pBucket->m_cAllocated;
+	++pBucket->m_cAllocations;
+	if (pBucket->m_cMaximumAllocations < pBucket->m_cAllocations) {
+		pBucket->m_cMaximumAllocations = pBucket->m_cAllocations;
+	}
 	((SmallMemoryBucketLockInterface*) pBucket)->Leave();
-	return 0;
+	return 1;
 }
 
 void LEMBALL_FASTCALL ReleaseParentSmallMemoryChildBucket(SmallMemoryBucket* pBucket);
@@ -1232,30 +1233,16 @@ int SmallMemoryBucket::FreeSlot(void* pvSlot)
 	return 1;
 }
 
-struct SmallMemoryBucketSlotIndex {
-	unsigned short m_iWord;
-	unsigned short m_iBit;
-};
-
-struct SmallMemoryBucketSlotFinder {
-	unsigned char m_abReserved00[0x40];
-	unsigned short m_wFlags;
-	unsigned short m_nReserved42;
-	int m_cBitmapWords;
-	unsigned int* m_pBitmap;
-
-	void FindNextFreeSlot(unsigned int* pNextSlot, SmallMemoryBucketSlotIndex CurrentSlot);
-};
-
 // FUNCTION: LEMBALL 0x00472fd0
-void SmallMemoryBucketSlotFinder::FindNextFreeSlot(unsigned int* pNextSlot, SmallMemoryBucketSlotIndex CurrentSlot)
+SmallMemoryBucketSlotIndex* SmallMemoryBucketSlotFinder::FindNextFreeSlot(unsigned int* pNextSlot,
+																		  SmallMemoryBucketSlotIndex CurrentSlot)
 {
 	const unsigned int* pMask;
 	unsigned int dwBitmap;
 
 	if ((m_wFlags & 4) != 0) {
 		*(SmallMemoryBucketSlotIndex*) pNextSlot = CurrentSlot;
-		return;
+		return (SmallMemoryBucketSlotIndex*) pNextSlot;
 	}
 	if (m_pBitmap[CurrentSlot.m_iWord] == 0xffffffffU) {
 		do {
@@ -1276,6 +1263,7 @@ void SmallMemoryBucketSlotFinder::FindNextFreeSlot(unsigned int* pNextSlot, Smal
 		++pMask;
 	} while (pMask < g_adwSmallMemoryBucketSlotMasks + 32);
 	*(SmallMemoryBucketSlotIndex*) pNextSlot = CurrentSlot;
+	return (SmallMemoryBucketSlotIndex*) pNextSlot;
 }
 // FUNCTION: LEMBALL 0x00473050
 SmallMemoryBucket* LEMBALL_FASTCALL AllocateSmallMemoryChildBucket(SmallMemoryBucket* pParentBucket)
