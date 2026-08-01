@@ -153,6 +153,7 @@ address,name,symbol,type,source
 0x004026D5,LevelManagedEntityRandomDelayView::ArmRandomActionDelay,?ArmRandomActionDelay@LevelManagedEntityRandomDelayView@@QAEXXZ,stub,src/LEVEL/LEVELVTRANDOM.CPP
 0x004026E9,destroy_coll_chunk_manager_auto_thunk,?DestroyCollChunkManagerAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
 0x00402743,destroy_ice_chunk_manager_auto_thunk,?DestroyIceChunkManagerAutoThunk@@YIXPAX@Z,stub,src/LEVEL/LEVELVT.CPP
+0x00402757,DoorChunkObjectManagerView::GetObjectSlotId,?GetObjectSlotId@DoorChunkObjectManagerView@@QAEGH@Z,stub,src/ENGINE/CORE/LINKSCFDOORSLOT.CPP
 0x0040275C,get_first_iterated_child_status11c,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402770,destroy_demo_playback,?DestroyLevelDemoPlaybackControllerThunk@DemoLevelDemoPlaybackController@@QAEXXZ,stub,src/LEVEL/DEMO.CPP
 0x00402784,initialize_level_selection_point_rect_sink_entry_thunk,?InitializeLevelSelectionPointRectSinkEntryThunk@@YIPAXPAX@Z,stub,src/LEVEL/LEVELSTAT.CPP

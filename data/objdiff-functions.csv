@@ -358,7 +358,7 @@ address,size,name,unit
 0x00412F00,7,get_level_game_mode_owner,LEVEL/LEVELRUN.CPP
 0x00412F10,150,load_level_ai_chunk,LEVEL/LEVELRUN.CPP
 0x00412FB0,78,assign_missing_managed_entity_slot_ids,LEVEL/LEVELRUN.CPP
-0x00413000,19,get_level_mode_door_slot_id_by_index,LEVEL/LEVELRUN.CPP
+0x00413000,19,get_level_mode_door_slot_id_by_index,LEVEL/LEVELMODEMANAGERSLOT.CPP
 0x00413020,19,get_level_mode_lift_slot_id_by_index,LEVEL/LEVELRUN.CPP
 0x00413040,11,pop_level_plas_history_child,LEVEL/LEVELRUN.CPP
 0x00413050,51,synchronize_managed_entity_registry_slot_ids,LEVEL/LEVELRUN.CPP
