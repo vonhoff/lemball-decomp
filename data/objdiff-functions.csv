@@ -394,7 +394,7 @@ address,size,name,unit
 0x00414070,11,destroy_level_chunk_object_children_variant_00414070,LEVEL/LEVELVT.CPP
 0x00414080,68,emit_level_chunk_child_render_entries,LEVEL/LEVELVT.CPP
 0x004140D0,82,is_managed_entity_within_followup_activation_range,LEVEL/LEVELVT.CPP
-0x00414130,31,clear_group_active_target,LEVEL/LEVELVT.CPP
+0x00414130,31,clear_group_active_target,LEVEL/LEVELGROUPTARGET.CPP
 0x00414150,1180,update_managed_entity_group_command_state,LEVEL/LEVELVT.CPP
 0x00414600,93,attach_managed_entity_child,LEVEL/LEVELVT.CPP
 0x00414660,195,queue_managed_entity_followup_move_commands_by_level_entity_id,LEVEL/LEVELVT.CPP
