@@ -2459,6 +2459,112 @@ void LevelTileGridRuntimeView::SetLevelTileGridDefaultVariantIds(const unsigned 
 	*(int*) ((char*) this + 0x4c) = nPrimaryVariant;
 	*(int*) ((char*) this + 0x50) = nSecondaryVariant;
 }
+
+// GLOBAL: LEMBALL 0x0049e4e8
+int g_anLevelTileVariantValues[24] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 9, 1};
+
+// FUNCTION: LEMBALL 0x00430eb0
+int ValidateLevelTileVariantId(int nType, unsigned short* pVariant)
+{
+	unsigned short nVariant;
+	unsigned short nValidatedVariant;
+
+	nVariant = *pVariant;
+	nValidatedVariant = nVariant;
+	switch (nType) {
+	case 0x202:
+		if (nVariant >= (unsigned short) g_anLevelTileVariantValues[20]) {
+			nValidatedVariant = 0;
+		}
+		break;
+	case 0x203:
+	case 0x204:
+	case 0x205:
+		break;
+	case 0x206:
+		if (nVariant >= (unsigned short) g_anLevelTileVariantValues[0]) {
+			nValidatedVariant = 0;
+		}
+		break;
+	case 0x207:
+		if (nVariant >= (unsigned short) g_anLevelTileVariantValues[1]) {
+			nValidatedVariant = 0;
+		}
+		break;
+	case 0x208:
+		if (nVariant >= (unsigned short) g_anLevelTileVariantValues[2]) {
+			nValidatedVariant = 0;
+		}
+		break;
+	case 0x209:
+		if (nVariant >= (unsigned short) g_anLevelTileVariantValues[3]) {
+			nValidatedVariant = 0;
+		}
+		break;
+	case 0x20a:
+		if (nVariant >= (unsigned short) g_anLevelTileVariantValues[4]) {
+			nValidatedVariant = 0;
+		}
+		break;
+	case 0x20b:
+		if (nVariant >= (unsigned short) g_anLevelTileVariantValues[5]) {
+			nValidatedVariant = 0;
+		}
+		break;
+	case 0x20c:
+		if (nVariant >= (unsigned short) g_anLevelTileVariantValues[6]) {
+			nValidatedVariant = 0;
+		}
+		break;
+	case 0x20d:
+		if (nVariant >= (unsigned short) g_anLevelTileVariantValues[7]) {
+			nValidatedVariant = 0;
+		}
+		break;
+	case 0x20e:
+		if (nVariant >= (unsigned short) g_anLevelTileVariantValues[13]) {
+			nValidatedVariant = 0;
+		}
+		break;
+	case 0x20f:
+		if (nVariant >= (unsigned short) g_anLevelTileVariantValues[14]) {
+			nValidatedVariant = 0;
+		}
+		break;
+	case 0x210:
+		if (nVariant >= (unsigned short) g_anLevelTileVariantValues[19]) {
+			nValidatedVariant = 0;
+		}
+		break;
+	case 0x211:
+	case 0x212:
+	case 0x213:
+		break;
+	case 0x214:
+		if (nVariant >= (unsigned short) g_anLevelTileVariantValues[16]) {
+			nValidatedVariant = 0;
+		}
+		break;
+	case 0x215:
+	case 0x216:
+	case 0x219:
+	case 0x21a:
+		return 1;
+	case 0x217:
+		if (nVariant >= (unsigned short) g_anLevelTileVariantValues[23]) {
+			nValidatedVariant = 0;
+		}
+		break;
+	case 0x218:
+		break;
+	}
+	if (nValidatedVariant != nVariant) {
+		*pVariant = nValidatedVariant;
+		return 0;
+	}
+	return 1;
+}
+
 // FUNCTION: LEMBALL 0x00431010
 void LevelTileGridRuntimeView::CopyLevelTileGridName(const char* pszName)
 {
