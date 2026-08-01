@@ -41,6 +41,21 @@ struct IceChunkObjectView : LevelChunkObjectBaseView {
 	IceChunkObjectView* ConstructIceChunkObject(void);
 };
 
+struct LevelTileGridCellView {
+	unsigned char m_abReserved00[6];
+	unsigned short m_nFlags06;
+	unsigned char m_abReserved08[4];
+};
+
+struct LevelTileGridCellArrayView {
+	void* m_pVtable00;
+	LevelTileGridCellView* m_pCells04;
+	int m_cColumns08;
+	int m_cRows0C;
+
+	void OrCellFlags(int x, int y, unsigned int nFlags);
+};
+
 // Recovered constructor and loader boundaries that are still being split into
 // their original level modules.  Keep unverified addresses free of markers.
 
@@ -794,6 +809,15 @@ void LEMBALL_FASTCALL DestroyLevelChunkStreamAuto(void* pObject)
 		((LinkScfDeletableChild*) pChild)->Delete(3);
 	}
 	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+}
+
+// FUNCTION: LEMBALL 0x0040eb90
+void LevelTileGridCellArrayView::OrCellFlags(int x, int y, unsigned int nFlags)
+{
+	if (x < 0 || y < 0 || x >= m_cColumns08 || y >= m_cRows0C) {
+		return;
+	}
+	m_pCells04[y * m_cColumns08 + x].m_nFlags06 |= (unsigned short) nFlags;
 }
 
 // FUNCTION: LEMBALL 0x0040ecb0
