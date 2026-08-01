@@ -349,7 +349,7 @@ address,size,name,unit
 0x00412C80,174,dispatch_level_slot_action_by_type,LEVEL/LEVELRUN.CPP
 0x00412D50,45,copy_level_mode_selected_entity_position_ints,LEVEL/LEVELPOSITIONCOPY.CPP
 0x00412D80,52,copy_level_mode_plas_triplet_by_index,LEVEL/LEVELPOSITIONCOPY.CPP
-0x00412DC0,85,copy_managed_entity_position_by_id,LEVEL/LEVELRUN.CPP
+0x00412DC0,85,copy_managed_entity_position_by_id,LEVEL/LEVELPOSITIONCOPY.CPP
 0x00412E20,29,get_level_follow_target_position,LEVEL/LEVELRUN.CPP
 0x00412E40,19,serialize_anim_chunk_manager_records,LEVEL/ANIMCHUNKRECORDS.CPP
 0x00412E60,19,serialize_level_mode_lift_endpoint_pairs,LEVEL/LEVELRUN.CPP
