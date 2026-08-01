@@ -47,6 +47,7 @@ struct SmallMemoryBucket {
 												  void* pBitmap);
 	int AllocateSlot(void** ppvSlot);
 	int FreeSlot(void* pvSlot);
+	int ContainsPointer(unsigned int nPointer);
 };
 
 // GLOBAL: LEMBALL 0x004aa100
@@ -1246,6 +1247,25 @@ void LEMBALL_FASTCALL ReleaseSmallMemoryChildBucket(SmallMemoryBucket* pBucket)
 	}
 	CalculateMemoryArenaAvailableBytes(g_pMainMemoryArena);
 	pBucket->m_pChildBucket = 0;
+}
+
+// FUNCTION: LEMBALL 0x00473140
+int SmallMemoryBucket::ContainsPointer(unsigned int nPointer)
+{
+	SmallMemoryBucket* pBucket;
+	unsigned int nStorage;
+
+	pBucket = this;
+	for (;;) {
+		nStorage = (unsigned int) pBucket->m_pStorage;
+		if (nStorage <= nPointer && nStorage + pBucket->m_cbStorage > nPointer) {
+			return 1;
+		}
+		pBucket = pBucket->m_pChildBucket;
+		if (pBucket == 0) {
+			return 0;
+		}
+	}
 }
 
 // FUNCTION: LEMBALL 0x00473180
