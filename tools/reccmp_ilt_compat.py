@@ -74,6 +74,11 @@ FUNCTION_DATA_REFERENCES = {
         "g_nLevelFrameClockTimeMs",
         "level frame clock time 0049ce08",
     ),
+    0x0044C830: (
+        0x00497E30,
+        "g_MenuSelectorChildContextVtable",
+        "menu selector child-context vtable 00497e30",
+    ),
     0x00452510: (
         0x004985B8,
         "g_EFF_NetworkLobbyPeerClearCloseVtable",
