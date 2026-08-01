@@ -271,17 +271,12 @@ if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False)
             if not exact and not indirect:
                 if reference is not None and address == reference[0]:
                     return reference[2]
-            return orig_lookup(address, exact=exact, indirect=indirect)
+            name = orig_lookup(address, exact=exact, indirect=indirect)
+            if name is not None and name.endswith(" (IMPORT_THUNK)"):
+                return name[:-15] + " (IMPORT)"
+            return name
 
         def _recomp_lookup(address, exact=False, indirect=False):
-            if not indirect:
-                destination = _thunk_destination(self.db, ImageId.RECOMP, address)
-                if destination is not None:
-                    entity = self.db.get(ImageId.RECOMP, destination)
-                    if entity is not None and entity.orig_addr is not None:
-                        name = entity.match_name()
-                        if name is not None:
-                            return name
             name = recomp_lookup(address, exact=exact, indirect=indirect)
             if reference is not None and not exact and not indirect and name is not None:
                 if reference[1] in name:
@@ -292,6 +287,14 @@ if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False)
             if data_reference is not None and name is not None:
                 if data_reference[1] in name:
                     return data_reference[2]
+            if not indirect:
+                destination = _thunk_destination(self.db, ImageId.RECOMP, address)
+                if destination is not None:
+                    entity = self.db.get(ImageId.RECOMP, destination)
+                    if entity is not None and entity.orig_addr is not None:
+                        resolved_name = entity.match_name()
+                        if resolved_name is not None:
+                            return resolved_name
             return name
 
         self.orig_sanitize.name_lookup = _orig_lookup
