@@ -1426,7 +1426,7 @@ address,size,name,unit
 0x0043ACE0,89,emit_repeated_level_screen_variant_column,LEVEL/LEVELSTAT.CPP
 0x0043AD40,835,emit_level_screen_variant_strip_pass_a,LEVEL/LEVELSTAT.CPP
 0x0043B0E0,870,emit_level_screen_variant_strip_pass_b,LEVEL/LEVELSTAT.CPP
-0x0043B4B0,22,clear_global_flag_0049ee28_return_zero,LEVEL/LEVELSTAT.CPP
+0x0043B4B0,22,clear_global_flag_0049ee28_return_zero,LEVEL/LEVELSTATICREGIONFLAG.CPP
 0x0043B4D0,993,build_level_screen_static_region_entries,LEVEL/LEVELSTAT.CPP
 0x0043BCD0,1,noop_level_screen_static_region_callback,LEVEL/LEVELSTAT.CPP
 0x0043BCE0,253,select_height_sampled_level_screen_variant_frame,LEVEL/LEVELSTAT.CPP
