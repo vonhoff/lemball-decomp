@@ -737,6 +737,7 @@ struct GameQueuedVariantChildSlotManager {
 	void SelectChildSlot(int iChild);
 	void DispatchSelectedChildSlotEvent(void);
 	void RefreshAllRangeSelections(void);
+	void RefreshChildByToken(int nToken);
 
 	void** m_pVtable00;
 	int m_nQueueTag04;
@@ -874,7 +875,7 @@ __inline static GameQueuedVariantRangeEntry* ConstructQueuedVariantRangeEntry(Ga
 	return pEntry;
 }
 
-__inline static void LEMBALL_FASTCALL RefreshQueuedVariantRangeSelection(GameQueuedVariantRangeEntry* pEntry)
+static void LEMBALL_FASTCALL RefreshQueuedVariantRangeSelection(GameQueuedVariantRangeEntry* pEntry)
 {
 	int nResourceId;
 
@@ -2917,20 +2918,30 @@ void GameQueuedVariantChildSlotManager::RefreshAllRangeSelections(void)
 	}
 }
 // FUNCTION: LEMBALL 0x0044fc50
-void LEMBALL_FASTCALL RefreshQueuedVariantChildByToken(void* pObject, int, int nToken)
+void GameQueuedVariantChildSlotManager::RefreshChildByToken(int nToken)
 {
-	GameQueuedVariantChildSlotManager* pManager;
-	GameQueuedVariantRangeEntry* pEntry;
+	GameQueuedVariantRangeEntry** ppEntry;
+	int cChildren;
 	int i;
 
-	pManager = (GameQueuedVariantChildSlotManager*) pObject;
-	for (i = 0; i < pManager->m_cChildren80; ++i) {
-		pEntry = pManager->m_apChildrenAC[i];
-		if (pEntry != 0 && pEntry->m_nCommand30 == nToken) {
-			RefreshQueuedVariantRangeSelection(pEntry);
-			return;
-		}
+	cChildren = m_cChildren80;
+	i = 0;
+	if (cChildren > 0) {
+		ppEntry = m_apChildrenAC;
+		do {
+			if (*ppEntry != 0 && (*ppEntry)->m_nCommand30 == nToken) {
+				RefreshQueuedVariantRangeSelection(m_apChildrenAC[i]);
+				return;
+			}
+			++ppEntry;
+			++i;
+		} while (i < cChildren);
 	}
+}
+
+void LEMBALL_FASTCALL RefreshQueuedVariantChildByToken(void* pObject, int, int nToken)
+{
+	((GameQueuedVariantChildSlotManager*) pObject)->RefreshChildByToken(nToken);
 }
 
 // Compatibility shim preserving MSVC 4.20 compiler state.
