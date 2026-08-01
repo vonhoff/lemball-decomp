@@ -187,6 +187,7 @@ address,name,symbol,type,source
 0x00402AA9,ToggleLiftChunkObjectActivationState,?ToggleLiftChunkObjectActivationState@@YIXPAX@Z,stub,src/ENGINE/CORE/LSLIFTACT.CPP
 0x00402ACC,get_next_managed_entity_child_from_cached_group,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402B1C,restore_reconstructed_level_screen_vtables_auto_thunk,?RestoreReconstructedLevelScreenVtablesAutoThunk@@YIXPAX@Z,stub,src/GAME.CPP
+0x00402B26,MoveChunkManagerTriggerView::FindObjectContainingPoint,?FindObjectContainingPoint@MoveChunkManagerTriggerView@@QAEPAUMoveChunkObjectInitializeView@@HHPAH@Z,stub,src/LEVEL/STATE/LEVELSTAT.CPP
 0x00402B76,delete_network_lobby_selected_peer_status_stream,,stub,src/ENGINE/MEDIA/EFFSTRM.H
 0x00402B9E,CreateFrameTimerController,?CreateFrameTimerController@@YAXI@Z,stub,src/LEVEL/RUN/DEMO.CPP
 0x00402BE9,destroy_gmob_chunk_type14object_auto_thunk,?DestroyGmobChunkType14ObjectAutoThunk@@YIXPAX@Z,stub,src/LEVEL/VTABLE/LEVELVT.CPP

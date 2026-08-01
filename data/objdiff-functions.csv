@@ -1175,7 +1175,7 @@ address,size,name,unit
 0x004303F0,26,initialize_level_tile_grid,LEVEL/RUN/LEVELRUN.CPP
 0x00430410,37,release_level_tile_grid_buffers,LEVEL/RUN/LEVELRUN.CPP
 0x00430440,148,resize_level_tile_grid,LEVEL/RUN/LEVELRUN.CPP
-0x004304E0,180,sample_level_height_with_move_chunk_override,LEVEL/RUN/LEVELRUN.CPP
+0x004304E0,180,sample_level_height_with_move_chunk_override,LEVEL/STATE/LEVELSTAT.CPP
 0x004305A0,68,test_level_tile_grid_cell_flag_mask,LEVEL/STATE/LEVELSTAT.CPP
 0x004305F0,48,get_level_tile_neighbor_edge_mask_byte,LEVEL/STATE/LEVELSTAT.CPP
 0x00430620,1021,build_level_tile_grid_neighbor_edge_mask_buffer,LEVEL/STATE/LEVELSTAT.CPP

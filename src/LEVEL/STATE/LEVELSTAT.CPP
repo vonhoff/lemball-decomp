@@ -764,6 +764,17 @@ struct LevelTileGridView {
 	}
 };
 
+struct MoveChunkObjectInitializeView;
+
+struct MoveChunkManagerTriggerView {
+	char m_abReserved00[0x34];
+	int m_cObjects34;
+	MoveChunkObjectInitializeView* m_pObjects38;
+
+	MoveChunkObjectInitializeView* FindObjectContainingPoint(int x, int y, int* pHeight);
+	int HasTriggeredObject(void* pEntity, const int* pPosition);
+};
+
 struct LevelTileGridOwnerView {
 	char m_abReserved00[8];
 	LevelTileGridView m_Grid08;
@@ -772,7 +783,11 @@ struct LevelTileGridOwnerView {
 	int m_cEdgeRows20;
 	char m_abReserved24[0x24];
 	unsigned char* m_pEdgeMasks48;
+	int m_nDefaultType4C;
+	int m_nDefaultVariant50;
+	MoveChunkManagerTriggerView* m_pMoveChunkManager54;
 
+	unsigned short SampleHeightWithMoveChunkOverride(int x, int y, void** ppMoveChunk);
 	int TestEdgeMask(int x, int y, unsigned char nMask);
 	unsigned char GetEdgeMask(int x, int y);
 	void BuildNeighborEdgeMasks(void);
@@ -1261,6 +1276,34 @@ unsigned int LevelTileRenderDescriptor::TestShapePixel(int nLocalX, int nLocalY,
 	case 0x219:
 	case 0x21a:
 		return g_LevelTilePixelBits[nLocalX] & g_LevelTileMaskLower[nLocalY];
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x004304e0
+unsigned short LevelTileGridOwnerView::SampleHeightWithMoveChunkOverride(int x, int y, void** ppMoveChunk)
+{
+	MoveChunkObjectInitializeView* pMoveChunk;
+	LevelTileRenderDescriptor* pCell;
+	int nHeight;
+
+	if (ppMoveChunk != 0 && (m_Grid08.m_pCells04[(y >> 4) * m_Grid08.m_cColumns08 + (x >> 4)].m_nFlags06 & 0x10) != 0) {
+		pMoveChunk = m_pMoveChunkManager54->FindObjectContainingPoint(x, y, &nHeight);
+		if (pMoveChunk != 0) {
+			*ppMoveChunk = pMoveChunk;
+			return (unsigned short) nHeight;
+		}
+	}
+	{
+		int nTileY;
+		int nTileX;
+
+		nTileX = x >> 4;
+		nTileY = y >> 4;
+		if (x >= 0 && y >= 0 && nTileX < m_Grid08.m_cColumns08 && nTileY < m_Grid08.m_cRows0C) {
+			pCell = (LevelTileRenderDescriptor*) &m_Grid08.m_pCells04[nTileY * m_Grid08.m_cColumns08 + nTileX];
+			return (unsigned short) pCell->SampleHeightOffsetThunk(x & 0x0f, y & 0x0f);
+		}
 	}
 	return 0;
 }
