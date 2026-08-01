@@ -1393,14 +1393,19 @@ void LEMBALL_FASTCALL DestroySmallMemoryBucketTable(SmallMemoryBucketTable* pTab
 {
 	int i;
 	int iFirstBucket;
+	SmallMemoryBucket** ppBucket;
 
 	g_fSmallMemoryBucketTableEnabled = 0;
 	iFirstBucket = (int) g_StartupGraphicsDriverConfig.m_dwReserved0;
-	for (i = iFirstBucket; i < pTable->m_cBuckets; ++i) {
-		if (pTable->m_apBuckets[i] != 0) {
-			DestroySmallMemoryBucket(pTable->m_apBuckets[i]);
-			FreeVSMemBlock(pTable->m_apBuckets[i]);
-			pTable->m_apBuckets[i] = 0;
+	ppBucket = &pTable->m_apBuckets[iFirstBucket];
+	for (i = iFirstBucket; i < pTable->m_cBuckets; ++i, ++ppBucket) {
+		SmallMemoryBucket* pBucket;
+
+		pBucket = *ppBucket;
+		if (pBucket != 0) {
+			DestroySmallMemoryBucket(pBucket);
+			FreeVSMemBlock(pBucket);
+			*ppBucket = 0;
 		}
 	}
 }
