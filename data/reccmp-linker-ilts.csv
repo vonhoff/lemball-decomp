@@ -188,6 +188,7 @@ address,name,symbol,type,source
 0x00402C4D,destroy_ice_chunk_object,?destroy_ice_chunk_object@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402C5C,LiftChunkManagerSerializationView::GetLiftChunkObjectSlotIdByIndex,?GetLiftChunkObjectSlotIdByIndex@LiftChunkManagerSerializationView@@QAEGH@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402C75,return_zero_level_callback_0042eec0,?return_zero_level_callback_0042eec0@@YGHPAX0@Z,stub,src/LEVEL/LEVELVT.CPP
+0x00402C84,LevelOwnedObjectManagerView::ReleaseOwnedObjects,?ReleaseOwnedObjects@LevelOwnedObjectManagerView@@QAEXXZ,stub,src/LEVEL/LEVELRUNOWNEDOBJECTS.CPP
 0x00402CA2,destroy_capture_trigger_chunk_manager_auto_thunk,?DestroyCaptureTriggerChunkManagerAutoThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00402CD4,remove_cached_chunk_object_and_destroy,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402CE3,managed_entity_packet27_write_eff_stream_tagged_header,?WriteEffStreamTaggedHeader@ManagedEntityPacket27@@UAEXXZ,stub,src/LEVEL/LEVELRUNPACKET.CPP

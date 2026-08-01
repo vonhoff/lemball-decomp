@@ -212,7 +212,7 @@ address,size,name,unit
 0x0040C950,180,get_type_0x18_chunk_object_position,LEVEL/TYPE18.CPP
 0x0040CA10,36,set_type18_chunk_object_position_by_index,LEVEL/TYPE18.CPP
 0x0040CA40,371,load_network_player_chunk_markers,LEVEL/TYPE18.CPP
-0x0040CBC0,44,release_owned_pointer_array_and_reset_count,LEVEL/TYPE18.CPP
+0x0040CBC0,44,release_owned_pointer_array_and_reset_count,LEVEL/LEVELRUNOWNEDOBJECTS.CPP
 0x0040CE40,1,noop_vtable_callback_0040ce40,LEVEL/LEVELVT.CPP
 0x0040CE50,30,delete_level_chunk_object_base_scalar_a,LEVEL/LEVELVT.CPP
 0x0040CE80,6,return_two_callback,LEVEL/LEVELVT.CPP
@@ -380,7 +380,7 @@ address,size,name,unit
 0x00413370,13,has_level_plas_history_entries,LEVEL/LEVELVT.CPP
 0x00413380,11,refresh_level_mode_lift_boundary_columns,LEVEL/LEVELVT.CPP
 0x00413390,36,add_level_score_clamped,LEVEL/LEVELVT.CPP
-0x004133C0,11,clear_level_mode_manager_owned_objects,LEVEL/LEVELRUN.CPP
+0x004133C0,11,clear_level_mode_manager_owned_objects,LEVEL/LEVELRUNOWNEDOBJECTS.CPP
 0x00413DF0,30,delete_eff_stream_base_wrapper_00413df0,GAME.CPP
 0x00413E20,11,update_level_mode_from_active_interface,GAME.CPP
 0x00413E30,30,delete_level_game_mode,GAME.CPP
