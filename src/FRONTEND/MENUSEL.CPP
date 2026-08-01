@@ -2350,11 +2350,11 @@ void GameSelectorProgressOverlayWindowSlots::InitializeWindowOwnerFromRect(short
 	DispatchWindowOwnerRectInitialization((GamePrimaryContext*) this, 0, pRect, pOwner, pszWindowName);
 	*(short*) ((char*) this + 0xc0) = pRect[0];
 	*(short*) ((char*) this + 0xc2) = pRect[1];
-	if (pRect == 0) {
-		pPosition = 0;
+	if (pRect != 0) {
+		pPosition = pRect + 2;
 	}
 	else {
-		pPosition = pRect + 2;
+		pPosition = 0;
 	}
 	*(short*) ((char*) this + 0xc4) = pPosition[0];
 	*(short*) ((char*) this + 0xc6) = pPosition[1];
