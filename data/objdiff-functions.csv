@@ -1259,7 +1259,7 @@ address,size,name,unit
 0x004334F0,763,load_level_screen_variant_resource_batch_b,LEVEL/LEVELSTAT.CPP
 0x004337F0,191,rebuild_level_screen_variant_resource_set,LEVEL/LEVELSTAT.CPP
 0x004338B0,1782,release_level_screen_variant_resource_set,LEVEL/LEVELSTAT.CPP
-0x00433FB0,11,dispatch_status_indicator_child_interface_slot_0,LEVEL/LEVELSTAT.CPP
+0x00433FB0,11,dispatch_status_indicator_child_interface_slot_0,LEVEL/LEVELSTATUSINDICATOR.CPP
 0x00433FC0,2140,emit_level_screen_variant_render_entry,LEVEL/LEVELSTAT.CPP
 0x004349E0,207,emit_level_screen_variant_entry_with_context,LEVEL/LEVELSTAT.CPP
 0x00434BC0,311,load_level_screen_variant_state_wrapper,LEVEL/LEVELSTAT.CPP
