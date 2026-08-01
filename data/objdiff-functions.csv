@@ -1937,7 +1937,7 @@ address,size,name,unit
 0x00455F00,231,center_window_over_parent_window,SHELL/SHELLUI.CPP
 0x00455FF0,266,build_system_information_report_string,SHELL/SHELLUI.CPP
 0x00456100,572,about_box_dialog_proc,SHELL/SHELLUI.CPP
-0x004564C0,17,destroy_debug_text_line_record,SHELL/ENTRY.CPP
+0x004564C0,17,destroy_debug_text_line_record,ENGINE/DEBUG/TEXTLINE.CPP
 0x004564E0,25,store_hinstance_and_run_game_startup,SHELL/ENTRY.CPP
 0x00456500,249,pump_messages_and_run_frame,GAME.CPP
 0x00456600,1,noop_callback_00456600,LEVEL/LEVELVT.CPP
