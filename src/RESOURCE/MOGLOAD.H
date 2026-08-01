@@ -25,10 +25,8 @@ public:
 	unsigned int m_uResourceId;
 	long m_lFileOffset;
 	long m_cbFileSize;
-	int m_iNextIndex;
-	MogLoadEntryRecord* m_pNextEntry;
-	int m_iSavedIndex;
-	MogLoadEntryRecord* m_pSavedEntry;
+	MogLoadEntrySearchState m_NextState;
+	MogLoadEntrySearchState m_SubdirectoryState;
 	MogLoadDirectoryNode* m_pChildDirectory;
 	unsigned int m_adwDescriptor[4];
 };
@@ -41,24 +39,19 @@ public:
 	void ResetResourceArchiveEntryCursor(MogLoadEntrySearchState* pState, unsigned int uTagFilter);
 	void FindResourceArchiveEntryByIdRecursive(MogLoadEntrySearchState* pState, int nResourceId, int fAllowRecursion);
 	MogLoadDirectoryNode* AdvanceSubdirectory(void);
-	int AppendEntryAfterCursor(void);
+	MogLoadEntryRecord* AppendEntryAfterCursor(void);
 	void DestroyResourceArchiveDirectoryTree(void);
 
 public:
-	long m_iSubdirectorySavedIndex;
-	MogLoadEntryRecord* m_pSubdirectorySavedEntry;
-	long m_iSubdirectoryCursorIndex;
-	MogLoadEntryRecord* m_pSubdirectoryCursorEntry;
+	MogLoadEntrySearchState m_SubdirectorySavedState;
+	MogLoadEntrySearchState m_SubdirectoryCursorState;
 	long m_lRecordTableOffset;
 	long m_lNameDataOffset;
-	long m_iSavedIndex;
-	MogLoadEntryRecord* m_pSavedEntry;
-	long m_iCursorIndex;
-	MogLoadEntryRecord* m_pCursorEntry;
+	MogLoadEntrySearchState m_SavedState;
+	MogLoadEntrySearchState m_CursorState;
 	unsigned int m_cEntries;
 	unsigned int m_cLoadedEntries;
 	char* m_pNameData;
-	int m_nReserved30;
 	int m_nReserved34;
 };
 

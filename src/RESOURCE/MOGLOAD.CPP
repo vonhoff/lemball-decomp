@@ -29,7 +29,10 @@ static const unsigned int g_MOGLOAD_StringResourceTypeTag = 0x53545247;
 static const unsigned int g_MOGLOAD_EffResourceTypeTag = 0x45464620;
 static const char g_MOGLOAD_OpenMode[] = "rb";
 static const char g_MOGLOAD_StatusName[] = "Mogload memory";
-static char g_MOGLOAD_RootPath[] = "/";
+// GLOBAL: LEMBALL 0x004a1d78
+static MogLoadEntrySearchState g_MOGLOAD_ResetEntrySearchState = {-1, 0};
+// GLOBAL: LEMBALL 0x004a1d80
+static char g_MOGLOAD_RootPath[] = " ";
 static const char g_MOGLOAD_SourceFileName[] = "MOGLOAD.CPP";
 static const char g_MOGLOAD_IsValidResourceFileAssert[] = "IsValidResourceFile";
 
@@ -426,27 +429,13 @@ MogLoadDirectoryNode* MogLoadDirectoryNode::Construct(long lFileOffset)
 	long lNameDataSize;
 	long lCurrentFileOffset;
 	MogLoadEntryRecord* pEntry;
+	MogLoadEntrySearchState state;
 
-	m_iSubdirectorySavedIndex = -1;
-	m_pSubdirectorySavedEntry = 0;
-	m_iSubdirectoryCursorIndex = -1;
-	m_pSubdirectoryCursorEntry = 0;
-	m_iSavedIndex = -1;
-	m_pSavedEntry = 0;
-	m_iCursorIndex = -1;
-	m_pCursorEntry = 0;
-	m_lRecordTableOffset = 0;
-	m_lNameDataOffset = 0;
-	m_cEntries = 0;
+	m_SavedState = g_MOGLOAD_ResetEntrySearchState;
+	m_CursorState = g_MOGLOAD_ResetEntrySearchState;
+	m_SubdirectorySavedState = g_MOGLOAD_ResetEntrySearchState;
+	m_SubdirectoryCursorState = g_MOGLOAD_ResetEntrySearchState;
 	m_cLoadedEntries = 0;
-	m_pNameData = 0;
-	m_nReserved30 = 0;
-	m_nReserved34 = 0;
-
-	/* The CRID directory header carries five u32 fields before the name blob and entry table. */
-	if (g_pResourceArchiveFile == 0) {
-		return this;
-	}
 
 	SeekFile(g_pResourceArchiveFile, lFileOffset, SEEK_SET);
 	if (lFileOffset == 0) {
@@ -466,129 +455,76 @@ MogLoadDirectoryNode* MogLoadDirectoryNode::Construct(long lFileOffset)
 	m_lNameDataOffset = lCurrentFileOffset;
 	lNameDataSize = m_lRecordTableOffset - lCurrentFileOffset;
 	m_pNameData = (char*) AllocateResourceArchiveMemory((unsigned int) lNameDataSize);
-	if (m_pNameData != 0) {
-		ReadFileBytes(g_pResourceArchiveFile, m_pNameData, (size_t) lNameDataSize);
-	}
+	ReadFileBytes(g_pResourceArchiveFile, m_pNameData, (size_t) lNameDataSize);
 
 	if (m_cEntries != 0) {
-		pEntry = (MogLoadEntryRecord*) AllocateResourceArchiveMemory(sizeof(MogLoadEntryRecord));
-		if (pEntry != 0) {
-			pEntry->m_pszName = 0;
-			pEntry->m_uTag = 0;
-			pEntry->m_uResourceId = 0;
-			pEntry->m_lFileOffset = 0;
-			pEntry->m_cbFileSize = 0;
-			pEntry->m_iNextIndex = 0;
-			pEntry->m_pNextEntry = 0;
-			pEntry->m_iSavedIndex = 0;
-			pEntry->m_pSavedEntry = 0;
-			pEntry->m_pChildDirectory = 0;
-			memset(pEntry->m_adwDescriptor, 0, sizeof(pEntry->m_adwDescriptor));
-			m_pSavedEntry = pEntry;
-			m_iSavedIndex = 0;
-			ReadEntryRecord(pEntry);
-			m_cLoadedEntries = 1;
-		}
+		m_SavedState.m_pEntry = (MogLoadEntryRecord*) AllocateResourceArchiveMemory(sizeof(MogLoadEntryRecord));
+		m_SavedState.m_iIndex = 0;
+		ReadEntryRecord(m_SavedState.m_pEntry);
+		++m_cLoadedEntries;
 	}
 
-	m_iCursorIndex = m_iSavedIndex;
-	m_pCursorEntry = m_pSavedEntry;
+	m_CursorState = m_SavedState;
 
-	for (;;) {
-		MogLoadEntrySearchState state;
-
-		state.m_iIndex = 0;
-		state.m_pEntry = 0;
+	do {
 		FindNextResourceArchiveEntry(&state, (unsigned int) -1);
 		pEntry = state.m_pEntry;
-		if (pEntry == 0) {
-			break;
-		}
 		if (pEntry != 0 && pEntry->m_uTag == MogLoadTAG_CRID) {
 			(void) AdvanceSubdirectory();
 		}
-	}
+	} while (pEntry != 0);
 
-	m_iCursorIndex = m_iSavedIndex;
-	m_pCursorEntry = m_pSavedEntry;
-	m_iSubdirectoryCursorIndex = m_iSubdirectorySavedIndex;
-	m_pSubdirectoryCursorEntry = m_pSubdirectorySavedEntry;
+	m_CursorState = m_SavedState;
+	m_SubdirectoryCursorState = m_SubdirectorySavedState;
 	return this;
 }
 
 // FUNCTION: LEMBALL 0x0045bf10
 void MogLoadDirectoryNode::DestroyResourceArchiveDirectoryTree(void)
 {
-	MogLoadDirectoryNode* pDirectory;
-	MogLoadEntryRecord* pEntry;
-	MogLoadEntryRecord* pNextEntry;
-
-	pDirectory = this;
-	pDirectory->m_iCursorIndex = pDirectory->m_iSavedIndex;
-	pDirectory->m_pCursorEntry = pDirectory->m_pSavedEntry;
-	pEntry = pDirectory->m_pSavedEntry;
-	while (pEntry != 0) {
-		pNextEntry = pEntry->m_pNextEntry;
-		if (pEntry->m_uTag == MogLoadTAG_CRID && pEntry->m_pChildDirectory != 0) {
-			FreeResourceArchiveMemory(pEntry->m_pChildDirectory);
-			pEntry->m_pChildDirectory = 0;
+	m_CursorState = m_SavedState;
+	while (m_CursorState.m_pEntry != 0) {
+		m_SavedState = m_CursorState;
+		m_CursorState = m_SavedState.m_pEntry->m_NextState;
+		if (m_SavedState.m_pEntry->m_uTag == MogLoadTAG_CRID && m_SavedState.m_pEntry->m_pChildDirectory != 0) {
+			FreeResourceArchiveMemory(m_SavedState.m_pEntry->m_pChildDirectory);
+			m_SavedState.m_pEntry->m_pChildDirectory = 0;
 		}
-		FreeResourceArchiveMemory(pEntry);
-		pEntry = pNextEntry;
+		FreeResourceArchiveMemory(m_SavedState.m_pEntry);
+		m_SavedState.m_pEntry = 0;
 	}
-	if (pDirectory->m_pNameData != 0) {
-		FreeResourceArchiveMemory(pDirectory->m_pNameData);
-		pDirectory->m_pNameData = 0;
+	if (m_pNameData != 0) {
+		FreeResourceArchiveMemory(m_pNameData);
+		m_pNameData = 0;
 	}
 }
 
 // FUNCTION: LEMBALL 0x0045bfa0
 void MogLoadDirectoryNode::ReadEntryRecord(MogLoadEntryRecord* pEntry)
 {
-	long lNameOffset;
-
-	/* On-disk records are fixed 36-byte entries whose name pointer is rebased into the name blob. */
-	if (pEntry == 0 || g_pResourceArchiveFile == 0) {
-		return;
-	}
-
-	SeekFile(g_pResourceArchiveFile, ((m_iCursorIndex * 4L) + 4L) * 9L + m_lRecordTableOffset, SEEK_SET);
-
-	lNameOffset = (long) MogLoadReadU32();
-	if (m_pNameData != 0) {
-		pEntry->m_pszName = m_pNameData + (lNameOffset - m_lNameDataOffset);
-	}
-	else {
-		pEntry->m_pszName = 0;
-	}
+	SeekFile(g_pResourceArchiveFile, ((m_CursorState.m_iIndex * 4L) + 4L) * 9L + m_lRecordTableOffset, SEEK_SET);
+	pEntry->m_pszName = m_pNameData + ((long) MogLoadReadU32() - m_lNameDataOffset);
 
 	pEntry->m_uResourceId = MogLoadReadU32();
 	pEntry->m_uTag = MogLoadReadU32();
 	pEntry->m_lFileOffset = (long) MogLoadReadU32();
 	pEntry->m_cbFileSize = (long) MogLoadReadU32();
-	pEntry->m_iNextIndex = 0;
-	pEntry->m_pNextEntry = 0;
-	pEntry->m_iSavedIndex = 0;
-	pEntry->m_pSavedEntry = 0;
+	pEntry->m_NextState.m_pEntry = 0;
+	pEntry->m_SubdirectoryState.m_pEntry = 0;
 	pEntry->m_pChildDirectory = 0;
 	ReadFileBytes(g_pResourceArchiveFile, pEntry->m_adwDescriptor, sizeof(pEntry->m_adwDescriptor));
 }
 
 // FUNCTION: LEMBALL 0x0045c030
-int MogLoadDirectoryNode::AppendEntryAfterCursor(void)
+MogLoadEntryRecord* MogLoadDirectoryNode::AppendEntryAfterCursor(void)
 {
 	MogLoadEntryRecord* pEntry;
 
 	pEntry = (MogLoadEntryRecord*) AllocateResourceArchiveMemory(sizeof(MogLoadEntryRecord));
-	if (pEntry == 0) {
-		return 0;
-	}
-
-	m_pCursorEntry->m_pNextEntry = pEntry;
-	m_pCursorEntry->m_iNextIndex = (int) m_cLoadedEntries;
-	++m_cLoadedEntries;
+	m_CursorState.m_pEntry->m_NextState.m_pEntry = pEntry;
+	m_CursorState.m_pEntry->m_NextState.m_iIndex = (int) m_cLoadedEntries++;
 	ReadEntryRecord(pEntry);
-	return 1;
+	return pEntry;
 }
 
 // FUNCTION: LEMBALL 0x0045c060
@@ -600,12 +536,11 @@ MogLoadDirectoryNode* MogLoadDirectoryNode::AdvanceSubdirectory(void)
 
 	state.m_iIndex = 0;
 	state.m_pEntry = 0;
-	if (m_pSubdirectorySavedEntry == 0) {
+	if (m_SubdirectorySavedState.m_pEntry == 0) {
 		ResetResourceArchiveEntryCursor(&state, MogLoadTAG_CRID);
 		pEntry = state.m_pEntry;
 		if (pEntry == 0) {
-			m_iSubdirectoryCursorIndex = m_iSubdirectorySavedIndex;
-			m_pSubdirectoryCursorEntry = m_pSubdirectorySavedEntry;
+			m_SubdirectoryCursorState = m_SubdirectorySavedState;
 			return 0;
 		}
 		if (pEntry->m_uTag == MogLoadTAG_CRID) {
@@ -616,35 +551,30 @@ MogLoadDirectoryNode* MogLoadDirectoryNode::AdvanceSubdirectory(void)
 			else {
 				pEntry->m_pChildDirectory = pChildDirectory->Construct(pEntry->m_lFileOffset);
 			}
-			m_iSubdirectorySavedIndex = state.m_iIndex;
-			m_pSubdirectorySavedEntry = pEntry;
+			m_SubdirectorySavedState = state;
 		}
 		else {
-			m_pSubdirectorySavedEntry = 0;
+			m_SubdirectorySavedState.m_pEntry = 0;
 		}
-		m_iSubdirectoryCursorIndex = m_iSubdirectorySavedIndex;
-		m_pSubdirectoryCursorEntry = m_pSubdirectorySavedEntry;
-		if (m_pSubdirectoryCursorEntry == 0) {
+		m_SubdirectoryCursorState = m_SubdirectorySavedState;
+		if (m_SubdirectoryCursorState.m_pEntry == 0) {
 			return 0;
 		}
-		return m_pSubdirectoryCursorEntry->m_pChildDirectory;
+		return m_SubdirectoryCursorState.m_pEntry->m_pChildDirectory;
 	}
 
-	if (m_iSubdirectoryCursorIndex == -1) {
-		m_iSubdirectoryCursorIndex = m_iSubdirectorySavedIndex;
-		m_pSubdirectoryCursorEntry = m_pSubdirectorySavedEntry;
-		return m_pSubdirectoryCursorEntry->m_pChildDirectory;
+	if (m_SubdirectoryCursorState.m_iIndex == -1) {
+		m_SubdirectoryCursorState = m_SubdirectorySavedState;
+		return m_SubdirectoryCursorState.m_pEntry->m_pChildDirectory;
 	}
 
-	pEntry = m_pSubdirectoryCursorEntry;
-	if (pEntry->m_pSavedEntry != 0) {
-		m_iSubdirectoryCursorIndex = pEntry->m_iSavedIndex;
-		m_pSubdirectoryCursorEntry = pEntry->m_pSavedEntry;
-		return m_pSubdirectoryCursorEntry->m_pChildDirectory;
+	pEntry = m_SubdirectoryCursorState.m_pEntry;
+	if (pEntry->m_SubdirectoryState.m_pEntry != 0) {
+		m_SubdirectoryCursorState = pEntry->m_SubdirectoryState;
+		return m_SubdirectoryCursorState.m_pEntry->m_pChildDirectory;
 	}
 
-	m_iCursorIndex = m_iSubdirectoryCursorIndex;
-	m_pCursorEntry = m_pSubdirectoryCursorEntry;
+	m_CursorState = m_SubdirectoryCursorState;
 	FindNextResourceArchiveEntry(&state, MogLoadTAG_CRID);
 	pEntry = state.m_pEntry;
 	if (pEntry == 0) {
@@ -658,15 +588,13 @@ MogLoadDirectoryNode* MogLoadDirectoryNode::AdvanceSubdirectory(void)
 		else {
 			pEntry->m_pChildDirectory = pChildDirectory->Construct(pEntry->m_lFileOffset);
 		}
-		m_pSubdirectoryCursorEntry->m_iSavedIndex = state.m_iIndex;
-		m_pSubdirectoryCursorEntry->m_pSavedEntry = pEntry;
-		m_iSubdirectoryCursorIndex = state.m_iIndex;
-		m_pSubdirectoryCursorEntry = pEntry;
-		return m_pSubdirectoryCursorEntry->m_pChildDirectory;
+		m_SubdirectoryCursorState.m_pEntry->m_SubdirectoryState = state;
+		m_SubdirectoryCursorState = state;
+		return m_SubdirectoryCursorState.m_pEntry->m_pChildDirectory;
 	}
 
-	m_pSubdirectoryCursorEntry->m_pSavedEntry = 0;
-	return m_pSubdirectoryCursorEntry->m_pChildDirectory;
+	m_SubdirectoryCursorState.m_pEntry->m_SubdirectoryState.m_pEntry = 0;
+	return m_SubdirectoryCursorState.m_pEntry->m_pChildDirectory;
 }
 
 // FUNCTION: LEMBALL 0x0045c200
@@ -674,32 +602,26 @@ void MogLoadDirectoryNode::FindNextResourceArchiveEntry(MogLoadEntrySearchState*
 
 {
 	int fAtEnd;
-	MogLoadEntryRecord* pCursorSource;
 
 	fAtEnd = 0;
 	do {
-		if (m_iCursorIndex == -1) {
-			pCursorSource = m_pSavedEntry;
-			m_iCursorIndex = m_iSavedIndex;
-			m_pCursorEntry = pCursorSource;
+		if (m_CursorState.m_iIndex == -1) {
+			m_CursorState = m_SavedState;
 		}
 		else {
-			if ((long) m_cEntries - m_iCursorIndex == 1) {
+			if ((long) m_cEntries - m_CursorState.m_iIndex == 1) {
 				fAtEnd = 1;
 				break;
 			}
-			if (m_pCursorEntry->m_pNextEntry == 0) {
+			if (m_CursorState.m_pEntry->m_NextState.m_pEntry == 0) {
 				AppendEntryAfterCursor();
 			}
-			pCursorSource = m_pCursorEntry->m_pNextEntry;
-			m_iCursorIndex += 1;
-			m_pCursorEntry = pCursorSource;
+			m_CursorState = m_CursorState.m_pEntry->m_NextState;
 		}
-	} while (uTagFilter != (unsigned int) -1 && m_pCursorEntry->m_uTag != uTagFilter);
+	} while (uTagFilter != (unsigned int) -1 && m_CursorState.m_pEntry->m_uTag != uTagFilter);
 
 	if (!fAtEnd) {
-		pState->m_iIndex = m_iCursorIndex;
-		pState->m_pEntry = m_pCursorEntry;
+		*pState = m_CursorState;
 		return;
 	}
 
@@ -710,9 +632,8 @@ void MogLoadDirectoryNode::FindNextResourceArchiveEntry(MogLoadEntrySearchState*
 void MogLoadDirectoryNode::ResetResourceArchiveEntryCursor(MogLoadEntrySearchState* pState, unsigned int uTagFilter)
 
 {
-	m_iCursorIndex = m_iSavedIndex;
-	m_pCursorEntry = m_pSavedEntry;
-	m_iCursorIndex = -1;
+	m_CursorState = m_SavedState;
+	m_CursorState.m_iIndex = -1;
 	FindNextResourceArchiveEntry(pState, uTagFilter);
 }
 
@@ -723,8 +644,7 @@ void MogLoadDirectoryNode::FindResourceArchiveEntryByIdRecursive(MogLoadEntrySea
 
 {
 	MogLoadDirectoryNode* pChildDirectory;
-	long iSavedSubdirectoryCursorIndex;
-	MogLoadEntryRecord* pSavedSubdirectoryCursorEntry;
+	MogLoadEntrySearchState savedSubdirectoryCursorState;
 
 	(void) fAllowRecursion;
 	ResetResourceArchiveEntryCursor(pState, (unsigned int) -1);
@@ -733,11 +653,9 @@ void MogLoadDirectoryNode::FindResourceArchiveEntryByIdRecursive(MogLoadEntrySea
 	}
 
 	if (pState->m_pEntry == 0) {
-		iSavedSubdirectoryCursorIndex = m_iSubdirectoryCursorIndex;
-		pSavedSubdirectoryCursorEntry = m_pSubdirectoryCursorEntry;
-		m_iSubdirectoryCursorIndex = m_iSubdirectorySavedIndex;
-		m_pSubdirectoryCursorEntry = m_pSubdirectorySavedEntry;
-		m_iSubdirectoryCursorIndex = -1;
+		savedSubdirectoryCursorState = m_SubdirectoryCursorState;
+		m_SubdirectoryCursorState = m_SubdirectorySavedState;
+		m_SubdirectoryCursorState.m_iIndex = -1;
 		while (pState->m_pEntry == 0) {
 			pChildDirectory = AdvanceSubdirectory();
 			if (pChildDirectory == 0) {
@@ -745,8 +663,7 @@ void MogLoadDirectoryNode::FindResourceArchiveEntryByIdRecursive(MogLoadEntrySea
 			}
 			pChildDirectory->FindResourceArchiveEntryByIdRecursive(pState, nResourceId, fAllowRecursion);
 		}
-		m_iSubdirectoryCursorIndex = iSavedSubdirectoryCursorIndex;
-		m_pSubdirectoryCursorEntry = pSavedSubdirectoryCursorEntry;
+		m_SubdirectoryCursorState = savedSubdirectoryCursorState;
 		return;
 	}
 }
@@ -892,9 +809,9 @@ int SelectResourceArchiveDirectoryPath(void* pArchive, const char* pszPath)
 	}
 
 	pCurrentDirectory = pResourceArchive->m_pCurrentDirectory;
-	pCurrentDirectory->m_iSubdirectoryCursorIndex = pCurrentDirectory->m_iSubdirectorySavedIndex;
-	pCurrentDirectory->m_pSubdirectoryCursorEntry = pCurrentDirectory->m_pSubdirectorySavedEntry;
-	pCurrentDirectory->m_iSubdirectoryCursorIndex = -1;
+	pCurrentDirectory->m_SubdirectoryCursorState.m_iIndex = pCurrentDirectory->m_SubdirectorySavedState.m_iIndex;
+	pCurrentDirectory->m_SubdirectoryCursorState.m_pEntry = pCurrentDirectory->m_SubdirectorySavedState.m_pEntry;
+	pCurrentDirectory->m_SubdirectoryCursorState.m_iIndex = -1;
 
 	pszFoundSlash = pszNewPath;
 	for (;;) {
@@ -910,7 +827,7 @@ int SelectResourceArchiveDirectoryPath(void* pArchive, const char* pszPath)
 					goto bad_path;
 				}
 			} while (!ResourceArchiveComponentEquals(
-				pResourceArchive->m_pCurrentDirectory->m_pSubdirectoryCursorEntry->m_pszName,
+				pResourceArchive->m_pCurrentDirectory->m_SubdirectoryCursorState.m_pEntry->m_pszName,
 				pszFoundSlash));
 			pMatchedDirectory = pDirectory;
 			if (pMatchedDirectory == 0) {
