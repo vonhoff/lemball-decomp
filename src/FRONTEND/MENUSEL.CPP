@@ -735,6 +735,7 @@ struct GameQueuedVariantChildSlotManager {
 	void SelectPreviousChildSlot(void);
 	void SelectNextChildSlot(void);
 	void SelectChildSlot(int iChild);
+	void DispatchSelectedChildSlotEvent(void);
 
 	void** m_pVtable00;
 	int m_nQueueTag04;
@@ -2879,6 +2880,16 @@ void GameQueuedVariantChildSlotManager::SelectChildSlot(int iChild)
 	m_dwSelectionEnd140 = (int) dwNow;
 	m_dwSelectionStart13C = (int) dwNow;
 	m_iSelectedChildA8 = iChild;
+}
+
+// FUNCTION: LEMBALL 0x0044fb70
+void GameQueuedVariantChildSlotManager::DispatchSelectedChildSlotEvent(void)
+{
+	m_ActionEvent84.m_nType00 = 0x0c;
+	m_ActionEvent84.m_dwTimestamp04 = (int) timeGetTime();
+	m_ActionEvent84.m_nPayload08 = m_aSlotsBC[m_iSelectedChildA8].m_nToken0C;
+	((GameMenuSelectorEventQueueInterface*) g_pSharedRenderDispatchQueue)->QueueEvent(&m_ActionEvent84);
+	((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffectThunk(0x0e);
 }
 
 void LEMBALL_FASTCALL SelectQueuedVariantChildSlot(void* pObject, int, int iChild)
