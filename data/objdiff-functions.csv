@@ -1967,7 +1967,7 @@ address,size,name,unit
 0x00456E50,84,apply_dib_display_palette,ENGINE/GDI/VSGDI.CPP
 0x00456EB0,368,vs_gdi_dib_display_state_copy_display_rect,ENGINE/GDI/VSGDI.CPP
 0x00457020,66,vs_gdi_dib_display_state_stretch_display_rect,ENGINE/GDI/VSGDI.CPP
-0x00457070,15,write_vga_sequencer_map_mask,ENGINE/GDI/VSGDI.CPP
+0x00457070,15,write_vga_sequencer_map_mask,ENGINE/GDI/VGAIO.CPP
 0x00457080,33,copy_low_bytes_from_dword_stride,ENGINE/GDI/VSGDI.CPP
 0x004570B0,514,vs_gdi_dib240_display_state_copy_display_rect,ENGINE/GDI/VSGDI.CPP
 0x004572C0,66,vs_gdi_dib240_display_state_stretch_display_rect,ENGINE/GDI/VSGDI.CPP
