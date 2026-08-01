@@ -150,6 +150,15 @@ struct LevelThreeDwordPoint {
 	LevelThreeDwordPoint* CopyThunk(const LevelThreeDwordPoint* pSource);
 };
 
+struct DoorChunkTriggerStateView {
+	char m_abReserved00[0x13c];
+	int m_nTriggerTimestamp13C;
+	char m_abReserved140[4];
+	int m_fTriggerLatched144;
+
+	int LatchTriggerTimestamp(void);
+};
+
 struct LevelTwoDwordPair {
 	int m_nFirst;
 	int m_nSecond;
@@ -977,6 +986,17 @@ int PASCAL IsDoorChunkIdleOrClosedState(int nState)
 	if (nState != 0x18 && (nState < 0x1d || nState > 0x1e)) {
 		return 0;
 	}
+	return 1;
+}
+
+// FUNCTION: LEMBALL 0x0040dd50
+int DoorChunkTriggerStateView::LatchTriggerTimestamp(void)
+{
+	if (m_fTriggerLatched144 != 0) {
+		return 0;
+	}
+	m_nTriggerTimestamp13C = g_nLevelFrameClockTick;
+	m_fTriggerLatched144 = 1;
 	return 1;
 }
 
