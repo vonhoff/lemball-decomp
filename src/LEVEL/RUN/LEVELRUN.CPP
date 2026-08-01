@@ -148,6 +148,31 @@ struct LevelLevelTileCell {
 	void InitializeLevelTileGridCellRenderFlagsThunk(void);
 };
 
+class LevelPositionQueryView {
+public:
+	virtual void Reserved00(void) = 0;
+	virtual void Reserved04(void) = 0;
+	virtual void Reserved08(void) = 0;
+	virtual void Reserved0C(void) = 0;
+	virtual void Reserved10(void) = 0;
+	virtual void Reserved14(void) = 0;
+	virtual void Reserved18(void) = 0;
+	virtual void Reserved1C(void) = 0;
+	virtual void Reserved20(void) = 0;
+	virtual void Reserved24(void) = 0;
+	virtual void Reserved28(void) = 0;
+	virtual void Reserved2C(void) = 0;
+	virtual void Reserved30(void) = 0;
+	virtual void Reserved34(void) = 0;
+	virtual void Reserved38(void) = 0;
+	virtual void Reserved3C(void) = 0;
+	virtual void Reserved40(void) = 0;
+	virtual void Reserved44(void) = 0;
+	virtual void Reserved48(void) = 0;
+	virtual void Reserved4C(void) = 0;
+	virtual void FindObjectPositionInRect(void* pRect, void* pPosition) = 0;
+};
+
 class LevelManagedEntityHistoryView {
 public:
 	int PopHistoryIdThunk(void);
@@ -174,9 +199,17 @@ public:
 
 struct LevelManagedEntityOwnerView {
 	unsigned char m_abReserved00[0x15c];
-	LevelManagedEntityActiveGroupView* m_pManagedEntities15C;
+	LevelPositionQueryView* m_pPlasManager15C;
+	unsigned char m_abReserved160[8];
+	void* m_pProjectileManager168;
+	unsigned char m_abReserved16C[4];
+	LevelPositionQueryView* m_pShpgManager170;
+	LevelPositionQueryView* m_pEnmyManager174;
 
 	int GetManagedEntityActiveState(void* pObject);
+	void FindPlasChunkObjectPositionInRect(void* pRect, void* pPosition);
+	void FindEnmyChunkObjectPositionInRect(void* pRect, void* pPosition);
+	void FindShpgChunkObjectPositionInRect(void* pRect, void* pPosition);
 };
 
 // Original body: LEMBALL 0x00419440. Kept beside its required compatibility ILT owner.
@@ -1507,7 +1540,25 @@ int EmitLevelGameModeDynamicRenderEntries(void* pObject, void* pOutputEntries)
 // FUNCTION: LEMBALL 0x004125e0
 int LevelManagedEntityOwnerView::GetManagedEntityActiveState(void* pObject)
 {
-	return m_pManagedEntities15C->GetEntityActiveState(pObject);
+	return ((LevelManagedEntityActiveGroupView*) m_pPlasManager15C)->GetEntityActiveState(pObject);
+}
+
+// FUNCTION: LEMBALL 0x00412780
+void LevelManagedEntityOwnerView::FindPlasChunkObjectPositionInRect(void* pRect, void* pPosition)
+{
+	m_pPlasManager15C->FindObjectPositionInRect(pRect, pPosition);
+}
+
+// FUNCTION: LEMBALL 0x004127a0
+void LevelManagedEntityOwnerView::FindEnmyChunkObjectPositionInRect(void* pRect, void* pPosition)
+{
+	m_pEnmyManager174->FindObjectPositionInRect(pRect, pPosition);
+}
+
+// FUNCTION: LEMBALL 0x004127c0
+void LevelManagedEntityOwnerView::FindShpgChunkObjectPositionInRect(void* pRect, void* pPosition)
+{
+	m_pShpgManager170->FindObjectPositionInRect(pRect, pPosition);
 }
 
 // FUNCTION: LEMBALL 0x00412c40
