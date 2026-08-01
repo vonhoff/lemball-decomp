@@ -8,6 +8,17 @@ struct ManagedEntityRegistryEntryView {
 	unsigned short m_nRegistryIndex6A;
 };
 
+struct LevelModeChunkEntryArrayView {
+	void CopyTripletToFixedPointThunk(int* pOutput, int nIndex);
+};
+
+struct LevelModePositionOwnerView {
+	unsigned char m_abReserved00[0x15c];
+	LevelModeChunkEntryArrayView* m_pEntries15C;
+
+	void CopyProfilePositionFixed(int* pOutput, int nIndex);
+};
+
 struct DoorChunkObjectManagerView {
 	unsigned short GetObjectSlotId(int nIndex);
 };
@@ -40,4 +51,10 @@ void SynchronizeManagedEntityRegistrySlotIds(void)
 			pEntity->m_nRegistryIndex6A = (unsigned short) i;
 		}
 	}
+}
+
+// FUNCTION: LEMBALL 0x00413100
+void LevelModePositionOwnerView::CopyProfilePositionFixed(int* pOutput, int nIndex)
+{
+	m_pEntries15C->CopyTripletToFixedPointThunk(pOutput, nIndex);
 }
