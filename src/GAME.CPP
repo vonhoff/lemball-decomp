@@ -3136,6 +3136,7 @@ bool GameLevelProgressState::CanRetreat(void)
 void GameLevelProgressState::SetUnlockedPackCap(int nPack, int nCap)
 {
 	int nPackLevelCount;
+	int nCurrentLevel;
 
 	switch (nPack) {
 	case 0:
@@ -3155,8 +3156,11 @@ void GameLevelProgressState::SetUnlockedPackCap(int nPack, int nCap)
 		break;
 	}
 
-	if (m_nCurrentPack == nPack && nCap < m_nCurrentLevel) {
-		nCap = m_nCurrentLevel;
+	if (m_nCurrentPack == nPack) {
+		nCurrentLevel = m_nCurrentLevel;
+		if (nCap < nCurrentLevel) {
+			nCap = nCurrentLevel;
+		}
 	}
 	if (nPackLevelCount >= nCap) {
 		m_anUnlockedPackCaps[nPack] = nCap;
