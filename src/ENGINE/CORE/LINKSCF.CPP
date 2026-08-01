@@ -1863,21 +1863,19 @@ void LEMBALL_FASTCALL ActivateIceChunkObjects(void* pManager)
 // FUNCTION: LEMBALL 0x0042dd00
 void LEMBALL_FASTCALL AdvanceIceChunkManagerObjects(void* pManager)
 {
-	char* pManagerBytes;
 	void* pChunkObject;
 	int i;
 	int nOffset;
 
-	pManagerBytes = (char*) pManager;
 	i = 0;
-	if (*(int*) (pManagerBytes + 0x34) > 0) {
+	if (*(int*) ((char*) pManager + 0x34) > 0) {
 		nOffset = 0;
 		do {
-			pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
+			pChunkObject = *(char**) ((char*) pManager + 0x38) + nOffset;
 			++i;
 			nOffset += 0x188;
 			((ActivateChunkObjectProc) (*(void***) pChunkObject)[5])(pChunkObject);
-		} while (*(int*) (pManagerBytes + 0x34) > i);
+		} while (*(int*) ((char*) pManager + 0x34) > i);
 	}
 }
 
