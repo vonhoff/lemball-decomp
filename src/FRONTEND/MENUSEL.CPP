@@ -733,6 +733,7 @@ struct GameQueuedVariantSlotRecord {
 
 struct GameQueuedVariantChildSlotManager {
 	void SelectPreviousChildSlot(void);
+	void SelectChildSlot(int iChild);
 
 	void** m_pVtable00;
 	int m_nQueueTag04;
@@ -2758,14 +2759,14 @@ int LEMBALL_FASTCALL HandleQueuedVariantChildSlotManagerEvent(GameQueuedVariantC
 	iChild = pManager->m_iSelectedChildA8;
 	if (pEvent->m_nPayload08 == 1 || pEvent->m_nPayload08 == 3) {
 		if (iChild > 0) {
-			SelectQueuedVariantChildSlot(pManager, 0, iChild - 1);
+			pManager->SelectChildSlot(iChild - 1);
 		}
 		((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x1b);
 		return 1;
 	}
 	if (pEvent->m_nPayload08 == 2 || pEvent->m_nPayload08 == 4) {
 		if (iChild + 1 < pManager->m_cChildren80) {
-			SelectQueuedVariantChildSlot(pManager, 0, iChild + 1);
+			pManager->SelectChildSlot(iChild + 1);
 		}
 		((GameVariantResourceEntryManager*) g_pVariantResourceEntryManager)->PlayVariantResourceEffect(0x1b);
 		return 1;
@@ -2844,26 +2845,33 @@ void GameQueuedVariantChildSlotManager::SelectPreviousChildSlot(void)
 	iChild = m_iSelectedChildA8 - 1;
 	if (iChild >= 0) {
 		m_iSelectedChildA8 = iChild;
-		SelectQueuedVariantChildSlot(this, 0, iChild);
+		SelectChildSlot(iChild);
 	}
 }
 // FUNCTION: LEMBALL 0x0044fb20
-void LEMBALL_FASTCALL SelectQueuedVariantChildSlot(void* pObject, int, int iChild)
+void GameQueuedVariantChildSlotManager::SelectChildSlot(int iChild)
 {
-	GameQueuedVariantChildSlotManager* pManager;
-	GameQueuedVariantSlotRecord* pSlot;
+	char* pSlotOffset;
+	int x;
+	int y;
 	DWORD dwNow;
 
-	pManager = (GameQueuedVariantChildSlotManager*) pObject;
-	pSlot = &pManager->m_aSlotsBC[iChild];
-	pManager->m_ActionEvent84.m_nPayload14 = pSlot->m_x04;
-	pManager->m_ActionEvent84.m_nPayload18 = pSlot->m_y08;
-	pManager->m_nCurrentChildA0 = pSlot->m_x04;
-	pManager->m_nReservedA4 = pSlot->m_y08;
+	pSlotOffset = (char*) this + iChild * 0x10;
+	x = *(int*) (pSlotOffset + 0xc0);
+	m_ActionEvent84.m_nPayload14 = x;
+	y = *(int*) (pSlotOffset + 0xc4);
+	m_ActionEvent84.m_nPayload18 = y;
+	m_nCurrentChildA0 = x;
+	m_nReservedA4 = y;
 	dwNow = timeGetTime();
-	pManager->m_dwSelectionEnd140 = (int) dwNow;
-	pManager->m_dwSelectionStart13C = (int) dwNow;
-	pManager->m_iSelectedChildA8 = iChild;
+	m_dwSelectionEnd140 = (int) dwNow;
+	m_dwSelectionStart13C = (int) dwNow;
+	m_iSelectedChildA8 = iChild;
+}
+
+void LEMBALL_FASTCALL SelectQueuedVariantChildSlot(void* pObject, int, int iChild)
+{
+	((GameQueuedVariantChildSlotManager*) pObject)->SelectChildSlot(iChild);
 }
 // FUNCTION: LEMBALL 0x0044fc50
 void LEMBALL_FASTCALL RefreshQueuedVariantChildByToken(void* pObject, int, int nToken)
