@@ -6,6 +6,10 @@ struct ManagedEntityStateView {
 	void RequestManagedEntityStateId(int nStateId);
 };
 
+struct InvsChunkManagerActionView {
+	void DispatchContactsForEntity(const int* pPosition, void* pEntity);
+};
+
 struct InvsChunkObjectActionView {
 	void AddInvsTrackedEntity(void* pEntity);
 	void TryTriggerContact(const int* pPosition, void* pEntity);
@@ -68,4 +72,27 @@ void InvsChunkObjectActionView::TryTriggerContact(const int* pPosition, void* pE
 	}
 	*(void**) (pObjectBytes + 0x5c) = pEntity;
 	((ManagedEntityStateView*) this)->RequestManagedEntityStateId(0x1a);
+}
+
+// FUNCTION: LEMBALL 0x0040a370
+void InvsChunkManagerActionView::DispatchContactsForEntity(const int* pPosition, void* pEntity)
+{
+	char* pManagerBytes;
+	int iObject;
+
+	pManagerBytes = (char*) this;
+	iObject = 0;
+	if (iObject < *(int*) ((char*) this + 0x34)) {
+		int nObjectOffset;
+
+		nObjectOffset = 0;
+		do {
+			InvsChunkObjectActionView* pObject;
+
+			pObject = (InvsChunkObjectActionView*) (*(char**) (pManagerBytes + 0x3c) + nObjectOffset);
+			pObject->TryTriggerContact(pPosition, pEntity);
+			nObjectOffset += 0x2b8;
+			++iObject;
+		} while (iObject < *(int*) (pManagerBytes + 0x34));
+	}
 }
