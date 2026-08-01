@@ -804,6 +804,7 @@ struct LevelViewRotationTransform {
 	int m_nRotation04;
 
 	void TransformScreenToTile(int nScreenX, int nScreenY, int* pTileX, int* pTileY);
+	void TransformScreenToTileInPlace(int* pX, int* pY);
 	void TransformTileToScreen(int nTileX, int nTileY, int* pScreenX, int* pScreenY);
 	void TransformTileInPlace(int* pX, int* pY);
 };
@@ -1380,6 +1381,35 @@ void LevelViewRotationTransform::TransformScreenToTile(int nScreenX, int nScreen
 		break;
 	}
 }
+
+// FUNCTION: LEMBALL 0x00430b30
+void LevelViewRotationTransform::TransformScreenToTileInPlace(int* pX, int* pY)
+{
+	int nScreenX;
+	int nScreenY;
+
+	nScreenX = *pX;
+	nScreenY = *pY;
+	switch (m_nRotation04) {
+	case 0:
+		*pX = nScreenX / 2 + nScreenY - 8;
+		*pY = nScreenY - nScreenX / 2 + 8;
+		break;
+	case 1:
+		*pX = nScreenY - nScreenX / 2 + 8;
+		*pY = 0x18 - nScreenX / 2 - nScreenY;
+		break;
+	case 2:
+		*pX = 0x18 - nScreenX / 2 - nScreenY;
+		*pY = nScreenX / 2 - nScreenY + 8;
+		break;
+	case 3:
+		*pX = nScreenX / 2 - nScreenY + 8;
+		*pY = nScreenX / 2 + nScreenY - 8;
+		break;
+	}
+}
+
 // FUNCTION: LEMBALL 0x00430be0
 void LevelViewRotationTransform::TransformTileToScreen(int nTileX, int nTileY, int* pScreenX, int* pScreenY)
 {
