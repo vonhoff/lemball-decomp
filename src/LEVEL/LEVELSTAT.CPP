@@ -4036,7 +4036,7 @@ void LEMBALL_FASTCALL DestroyFramedScreenRenderEntryGroup(void* pObject)
 	i = 9;
 	do {
 		pEntry -= 0x24;
-		RestoreFramedScreenRenderChildEntryVtableBody(pEntry);
+		RestoreFramedScreenRenderChildEntryVtable(pEntry);
 	} while (--i >= 0);
 	*(void**) ((char*) pObject + 0x10) = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
