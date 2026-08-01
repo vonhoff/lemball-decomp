@@ -109,6 +109,11 @@ FUNCTION_DATA_REFERENCES = {
         "VsNetSocketWindowEffChannel::`vftable'{for `VsNetSocketWindowPrimary'}",
         "socket-window primary vtable 0049a060",
     ),
+    0x00470030: (
+        0x0049A090,
+        "VsNetTimedSocketEffChannelBundleLayout::`vftable'{for `VsNetTimedEffStreamPrimary'}",
+        "timed socket bundle primary vtable 0049a090",
+    ),
 }
 # These real, source-owned adjustor thunks jump through original LINK 3.00
 # ILT entries while rebuilt naked thunks jump directly to the same bodies.
