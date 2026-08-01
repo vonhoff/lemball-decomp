@@ -345,7 +345,7 @@ address,size,name,unit
 0x00412BE0,85,load_level_mode_manager_streams_0x1c4,LEVEL/LEVELRUN.CPP
 0x00412C40,11,has_stream_dirty_managed_entity_groups,LEVEL/LEVELRUN.CPP
 0x00412C50,11,has_plas_chunk_dirty_managed_children,LEVEL/LEVELRUN.CPP
-0x00412C60,30,request_level_quit_game_state,LEVEL/LEVELRUN.CPP
+0x00412C60,30,request_level_quit_game_state,LEVEL/LEVELQUITSTATE.CPP
 0x00412C80,174,dispatch_level_slot_action_by_type,LEVEL/LEVELRUN.CPP
 0x00412D50,45,copy_level_mode_selected_entity_position_ints,LEVEL/LEVELRUN.CPP
 0x00412D80,52,copy_level_mode_plas_triplet_by_index,LEVEL/LEVELRUN.CPP

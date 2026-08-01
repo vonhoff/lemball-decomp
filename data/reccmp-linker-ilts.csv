@@ -25,6 +25,7 @@ address,name,symbol,type,source
 0x0040132A,GameScreenObject::ConstructMainMenuScreen,?ConstructMainMenuScreen@GameScreenObject@@QAEPAXPAX0PAF@Z,stub,src/GAME.CPP
 0x0040137F,ActivateIteratedLevelChunkChildren,?ActivateIteratedLevelChunkChildren@@YIXPAX@Z,stub,src/LEVEL/LEVELRUNITERATOR.CPP
 0x004013DE,activate_tram_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
+0x004013ED,RequestLocalLevelGameStateChange,?RequestLocalLevelGameStateChange@@YAXPAXH@Z,stub,src/GAME.CPP
 0x00401406,destroy_menu_selector_manager_auto_thunk,?DestroyMenuSelectorManagerAutoThunk@@YIXPAX@Z,stub,src/FRONTEND/MENUSEL.CPP
 0x00401433,LevelChunkStreamWriteView::FlushLevelChunkStreamWrite,?FlushLevelChunkStreamWrite@LevelChunkStreamWriteView@@QAEXXZ,stub,src/LEVEL/LEVELVTNETSTATE.CPP
 0x0040143D,destroy_paintball_sequence_screen_auto_thunk,?DestroyPaintballSequenceScreenAutoThunk@@YIXPAX@Z,stub,src/FRONTEND/MAINMENU.CPP
