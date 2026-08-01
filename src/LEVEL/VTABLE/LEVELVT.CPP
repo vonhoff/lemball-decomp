@@ -2206,9 +2206,16 @@ void* LevelVtSmallFunctionView::GetProjectileGeometryRotatedPair(int nIndex)
 
 void LevelVtSmallFunctionView::GetManagedEntityInteractionPoint(int* pPoint)
 {
-	pPoint[1] = *(int*) ((char*) this + 0xa0) - 0x8000;
-	pPoint[0] = *(int*) ((char*) this + 0x9c) - 0x30000;
-	pPoint[2] = *(int*) ((char*) this + 0xa4);
+	int nY;
+	int nZ;
+	int nX;
+
+	nY = *(int*) ((char*) this + 0xa0) - 0x8000;
+	nZ = *(int*) ((char*) this + 0xa4);
+	nX = *(int*) ((char*) this + 0x9c) - 0x30000;
+	pPoint[1] = nY;
+	pPoint[0] = nX;
+	pPoint[2] = nZ;
 }
 
 void LevelVtSmallFunctionView::SwapObjectChildSlots128(int iFirst, int iSecond)
