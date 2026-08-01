@@ -6,6 +6,7 @@ struct ActiveManagedEntityOwnerView {
 };
 
 extern void* g_pActiveManagedEntityOwner;
+extern void* g_pSessionRandomState;
 
 struct DelayedManagedEntityMoveView {
 	unsigned char m_abReserved00[0x150];
@@ -20,6 +21,7 @@ struct DelayedManagedEntityMoveView {
 
 	void ArmDelayedMove100(void* pUnused);
 	void ArmDelayedMove800(void* pUnused);
+	void ArmDelayedMoveRandom(void* pUnused);
 	void ArmDelayedMoveToSavedTarget(int nTicks);
 };
 
@@ -33,6 +35,14 @@ void DelayedManagedEntityMoveView::ArmDelayedMove100(void*)
 void DelayedManagedEntityMoveView::ArmDelayedMove800(void*)
 {
 	ArmDelayedMoveToSavedTarget(800);
+}
+
+// FUNCTION: LEMBALL 0x004201c0
+void DelayedManagedEntityMoveView::ArmDelayedMoveRandom(void*)
+{
+	int nRandom = (*(int*) g_pSessionRandomState * 0x29 + 0x1f) & 0x7fffff;
+	*(int*) g_pSessionRandomState = nRandom;
+	ArmDelayedMoveToSavedTarget(nRandom % 1000 + 150);
 }
 
 // FUNCTION: LEMBALL 0x004203e0
