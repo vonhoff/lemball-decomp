@@ -1876,7 +1876,7 @@ address,size,name,unit
 0x00452FD0,5,destroy_eff_stream_base,ENGINE/NET/VSNETSTR.CPP
 0x00452FE0,65,construct_network_level_chunk_delta_stream,LEVEL/LEVELRUN.CPP
 0x00453030,64,write_network_level_chunk_delta_stream,LEVEL/LEVELSTREAMWRITE.CPP
-0x00453070,110,read_network_level_chunk_delta_stream,LEVEL/LEVELRUN.CPP
+0x00453070,110,read_network_level_chunk_delta_stream,LEVEL/LEVELSTREAMREAD.CPP
 0x00453120,30,delete_network_level_chunk_delta_stream,LEVEL/LEVELRUN.CPP
 0x00453150,45,initialize_bounded_text_buffer,FRONTEND/BOUNDEDTEXT.CPP
 0x00453180,38,append_char_to_bounded_text_buffer,FRONTEND/BOUNDEDTEXT.CPP

@@ -2469,49 +2469,6 @@ void* GameNetworkLevelChunkDeltaStream::ConstructNetworkLevelChunkDeltaStream(in
 	*(int*) ((char*) this + 0x18) += nDispatcherPayload + 8;
 	return this;
 }
-// FUNCTION: LEMBALL 0x00453070
-void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void* pObject)
-{
-	unsigned char* pbObject;
-	unsigned short nTag;
-	int nSourceBuffer;
-
-	pbObject = (unsigned char*) pObject;
-	nTag = (unsigned short) (((unsigned int) *(unsigned char*) ((unsigned long) *(int*) (pbObject + 0x20)) << 8) |
-							 *(unsigned char*) ((unsigned long) *(int*) (pbObject + 0x20) + 1));
-	*(int*) (pbObject + 0x20) += 2;
-	while (nTag != 0x2f) {
-		if (nTag == 0x2c) {
-			unsigned char nStreamIndex;
-			int pOwner;
-			int pStream;
-			nSourceBuffer = *(int*) (pbObject + 0x20);
-			nStreamIndex = *(unsigned char*) ((unsigned long) nSourceBuffer);
-			*(int*) (pbObject + 0x20) = nSourceBuffer + 1;
-			pOwner = *(int*) (pbObject + 0x30);
-			pStream = *(int*) (pOwner + 0x10 + (unsigned int) nStreamIndex * 4);
-			pStream += 0x138;
-			if (((GameEffStream*) pStream)->LoadEffStreamFromMemory(*(int*) (pbObject + 0x20)) != 0) {
-				*(int*) (pbObject + 0x20) = *(int*) (pStream + 0x20);
-			}
-		}
-		else if (nTag == 0x2d) {
-			unsigned int nTimeMs;
-			nSourceBuffer = *(int*) (pbObject + 0x20);
-			nTimeMs = ((unsigned int) *(unsigned char*) ((unsigned long) nSourceBuffer) << 24) |
-					  ((unsigned int) *(unsigned char*) ((unsigned long) nSourceBuffer + 1) << 16) |
-					  ((unsigned int) *(unsigned char*) ((unsigned long) nSourceBuffer + 2) << 8) |
-					  *(unsigned char*) ((unsigned long) nSourceBuffer + 3);
-			*(int*) (pbObject + 0x20) = nSourceBuffer + 4;
-			UpdateNetworkFrameClockFromNetworkTimeThunk(nTimeMs);
-		}
-
-		nSourceBuffer = *(int*) (pbObject + 0x20);
-		nTag = (unsigned short) (((unsigned int) *(unsigned char*) ((unsigned long) nSourceBuffer) << 8) |
-								 *(unsigned char*) ((unsigned long) nSourceBuffer + 1));
-		*(int*) (pbObject + 0x20) = nSourceBuffer + 2;
-	}
-}
 
 // FUNCTION: LEMBALL 0x0045fcc0
 void LEMBALL_FASTCALL ClearPrimaryLockedRecordTablePayloadFlags(void* pPayload)
