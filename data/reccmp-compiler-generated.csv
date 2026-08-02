@@ -294,7 +294,9 @@ address,name,symbol,type,source
 0x0047BE20,,??_EVsNetDualFileBackedEffChannel@@WCM@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x0047BE40,,??_EVsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BE50,,??_GVsNetEmbeddedFileBackedEffChannelStack@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
+0x0047BEB0,,?ClearPendingWrite@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BEC0,,??_EVsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
+0x0047BEF0,,?SendTimedSocketPayload@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@A@AEHPAXH@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BF00,,??_EVsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
 0x0047BF30,,??_EVsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BF40,,??_GVsNetDualSlotTableFileBackedEffComposite@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
