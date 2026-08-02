@@ -181,7 +181,7 @@ void* g_LINKSCF_InvsChunkObjectVtable[16] =
 // GLOBAL: LEMBALL 0x004936f8
 void* g_LEVELVT_DoorChunkObjectVtable[16] =
 	COMMON_LEVEL_CHUNK_OBJECT_VTABLE(DeleteDoorChunkObjectArrayVtableThunk,
-									 RequestDoorChunkObjectTriggerTransitionThunk);
+									 DoActivateCDoorThunk);
 
 // GLOBAL: LEMBALL 0x00493a60
 void* g_LEVELVT_LevelChunkObjectChildrenVariantVtable[16] =

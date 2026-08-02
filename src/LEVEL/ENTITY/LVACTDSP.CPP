@@ -6,10 +6,9 @@ extern void LEMBALL_FASTCALL DispatchLiftChunkObjectActionBySlot(void* pManager,
 																 unsigned int nSlotId,
 																 int nUnused3,
 																 int nUnused4);
-extern void LEMBALL_FASTCALL DispatchDoorChunkObjectTriggerBySlot(void* pManager,
-																  void* pUnusedEdx,
-																  int nAction,
-																  unsigned int nSlotId);
+struct CDoorManager {
+	void Switch(int nAction, unsigned int nSlotId);
+};
 extern void LEMBALL_FASTCALL DispatchMoveChunkObjectActionBySlot(void* pManager,
 																 void* pUnusedEdx,
 																 int nAction,
@@ -22,7 +21,7 @@ extern void LEMBALL_FASTCALL DispatchIceChunkObjectActionBySlot(void* pManager,
 struct LevelSlotActionDispatcherView {
 	char m_abReserved000[0x18c];
 	void* m_pLiftManager18c;
-	void* m_pDoorManager190;
+	CDoorManager* m_pDoorManager190;
 	char m_abReserved194[0x18];
 	void* m_pIceManager1ac;
 	char m_abReserved1b0[0x10];
@@ -76,7 +75,7 @@ void LevelSlotActionDispatcherView::DispatchLevelSlotActionByType(int nAction,
 		}
 		return;
 	case 3:
-		DispatchDoorChunkObjectTriggerBySlot(m_pDoorManager190, 0, 3, nSlotId);
+		m_pDoorManager190->Switch(3, nSlotId);
 		return;
 	case 4:
 		DispatchMoveChunkObjectActionBySlot(m_pMoveManager1c0, 0, 4, nSlotId);

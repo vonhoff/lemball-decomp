@@ -8,7 +8,7 @@
 | `Visos (Generic)` math family | `CVSMath`, `CVSPoint`, `CVSRange`, `CVSRect`, `CVSSize` | `src/Visos/Generic/VSMath.cpp`, `VSMath.h` | High: self-contained fixed-point/trigonometry and geometry primitive family with matching Macintosh symbols |
 | `Visos (Mac Specific)` | Macintosh `CSurface::SetLinePtrs`, `CGDIDevice`, `CGDI` platform hooks | Naming evidence only for Windows counterparts | High for `CSurface::SetLinePtrs`; platform ABI is not transferred |
 | Windows platform analogue | Win32 GDI, DIB, DirectDraw, switching, and 240-line mode implementation | `src/Visos/Windows/CGDI.cpp`, `CGDISwitch.cpp`, `CGDI240.cpp` | High: three Visos TUs moved intact at their existing CMake/link positions |
-| `AI` | game objects, players, enemies | Existing game/object files; future module pass | Unmapped in this correction |
+| `AI` | `CDoor`, `CDoorManager`; remaining game objects, players, enemies | `src/AI/CDoorAct.cpp`, `CDoorSlot.cpp`, `CDoorCtor.cpp`; mixed Windows owners retained elsewhere | High for the four Door correlations; `LINKSCF.CPP` remains a 296-function mixed Windows owner |
 | `Control` | `CGame`, `CGameStatus`, `CLevelLoader`, game lifecycle and control helpers | `src/Control/CGame.cpp`, `CGame.h`, `CGameHelp.cpp`, `CGameVT.cpp` | High for `CGame` and helper ownership; the mixed compiler-vtable TU remains physically intact |
 | `Frontend` | screens, menus, UI; recovered `CEditString` family | `src/Frontend`; `CEditString.cpp` is class-owned, remaining TUs retain their Windows boundaries pending per-file audits | High for `CEditString`; module proven, other class ownership remains function-specific |
 | `Map` | map/loading | Existing map/loading files; future module pass | Module name proven; class ownership pending |

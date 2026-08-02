@@ -21,19 +21,19 @@ struct ManagedEntityStateView {
 	void RequestManagedEntityStateId(int nStateId);
 };
 
-struct DoorChunkObjectActionView : public ManagedEntityStateView {
+struct CDoor : public ManagedEntityStateView {
 	unsigned char m_abReserved04[0xb4];
 	int m_nStateB8;
 	unsigned char m_abReservedBC[0x10];
 	int m_nFrameTickCC;
 
-	void RequestDoorChunkObjectTriggerTransition(void);
+	void DoActivate(void);
 };
 
 // Split from the original LINKSCF source group to preserve MSVC 4.20 code generation.
 
 // FUNCTION: LEMBALL 0x0040dd00
-void DoorChunkObjectActionView::RequestDoorChunkObjectTriggerTransition(void)
+void CDoor::DoActivate(void)
 {
 	if (m_nStateB8 >= 0x1c && m_nStateB8 <= 0x1d) {
 		m_nFrameTickCC = 0x14;
@@ -42,33 +42,37 @@ void DoorChunkObjectActionView::RequestDoorChunkObjectTriggerTransition(void)
 	}
 }
 
+struct CDoorManager {
+private:
+	unsigned char m_abReserved00[0x34];
+	int m_nObjectCount34;
+	unsigned char m_abReserved38[4];
+	CDoor* m_pObjects3C;
+
+public:
+	void Switch(int nAction, unsigned int nSlot);
+};
+
 // FUNCTION: LEMBALL 0x0040e5a0
-void LEMBALL_FASTCALL DispatchDoorChunkObjectTriggerBySlot(void* pManager,
-														   void* pUnused,
-														   int nAction,
-														   unsigned int nSlot)
+void CDoorManager::Switch(int nAction, unsigned int nSlot)
 {
-	char* pManagerBytes;
 	int nObjectOffset;
 	int iObject;
 
-	pManagerBytes = (char*) pManager;
 	iObject = 0;
-	(void) pUnused;
 
-	if (*(int*) (pManagerBytes + 0x34) > 0) {
+	if (m_nObjectCount34 > 0) {
 		nObjectOffset = 0;
-		while (GetManagedEntitySlotIdThunk((int) (unsigned long) (*(char**) (pManagerBytes + 0x3c) + nObjectOffset)) !=
+		while (GetManagedEntitySlotIdThunk((int) (unsigned long) ((char*) m_pObjects3C + nObjectOffset)) !=
 			   nSlot) {
 			nObjectOffset += 0x14c;
 			++iObject;
-			if (*(int*) (pManagerBytes + 0x34) <= iObject) {
+			if (m_nObjectCount34 <= iObject) {
 				return;
 			}
 		}
 		if (nAction == 3) {
-			((DoorChunkObjectActionView*) (*(char**) (pManagerBytes + 0x3c) + iObject * 0x14c))
-				->RequestDoorChunkObjectTriggerTransition();
+			((CDoor*) ((char*) m_pObjects3C + iObject * 0x14c))->DoActivate();
 		}
 	}
 }

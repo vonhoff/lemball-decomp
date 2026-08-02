@@ -47,7 +47,7 @@ int LEMBALL_FASTCALL get_object_field_0x98(void* pObject);
 int LEMBALL_FASTCALL BeginManagedEntityReachablePathSearch(void* pObject);
 
 int LEMBALL_FASTCALL ServiceInvsChunkObject(void* pObject);
-void LEMBALL_FASTCALL RequestDoorChunkObjectTriggerTransitionThunk(void* pObject);
+void LEMBALL_FASTCALL DoActivateCDoorThunk(void* pObject);
 int LEMBALL_FASTCALL UpdateManagedEntityGroupCommandState(void* pObject);
 int LEMBALL_FASTCALL AdvanceGmobChunkType14StateMachine(void* pObject);
 int LEMBALL_FASTCALL AdvanceCollChunkObjectStateMachine(void* pObject);

@@ -16,7 +16,7 @@ address,name,symbol,type,source
 0x0040CEA0,DeleteLevelChunkObjectBaseScalarB,,synthetic,src/LEVEL/ENTITY/TYPE18.CPP
 0x0040EBE0,DeleteDoorChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00410B20,DeleteDoorChunkObjectAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x00410B70,Door chunk-object deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/LEVEL/VTABLE/LEVELVTDOOR.CPP
+0x00410B70,Door chunk-object deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/AI/CDoorCtor.cpp
 0x00413090,ReturnTrueVirtualHookBodyStdcall,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x00413DF0,DeleteEffStreamBaseWrapperAuto,,synthetic,src/Control/CGame.cpp
 0x00413E30,DeleteLevelGameModeAuto,,synthetic,src/Control/CGame.cpp
