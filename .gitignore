@@ -35,6 +35,7 @@ objdiff.json
 data/*
 !data/LEMBALL.EXE.gpg
 !data/objdiff-functions.csv
+!data/macintosh-structure.json
 !data/README.md
 !data/reccmp-source-symbols.csv
 !data/reccmp-compiler-generated.csv

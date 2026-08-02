@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "policies": {
+    "must": [
+      "Use Macintosh names only after behavior, lifecycle, caller, constant, string, table, signature, or ordering corroborates the x86 function.",
+      "Preserve Windows MSVC 4.00 ABI, layouts, physical TU boundaries, source-list order, and code generation.",
+      "Keep logical Macintosh class ownership separate from physical Windows TU ownership."
+    ],
+    "must_not": [
+      "Transfer Macintosh ABI, object layout, vtable encoding, calling convention, or compiler behavior to Windows.",
+      "Split a mixed Windows TU or rename it after one dominant class without Windows compiler/link evidence.",
+      "Create wrappers, duplicate lifecycles, dead address-mapped methods, or speculative class storage."
+    ]
+  },
+  "classes": [
+    {"name":"CArena","module":"Visos/Generic","state":"mapped","files":["src/Visos/Generic/Memory.cpp","src/Visos/Generic/Memory.h"],"must_contain":["arena allocation, free-list, child-arena, diagnostics, and lifecycle behavior"],"must_not_contain":["unresolved CRAMArena or CMBlock methods renamed by address proximity"]},
+    {"name":"CPVGDIBitmap","module":"Visos/Generic","state":"mapped","files":["src/Visos/Generic/CSurface.h","src/Visos/Windows/CGDI.cpp"],"must_contain":["0x40-byte Windows bitmap region and correlated 0x00472290..0x00472760 lifecycle"],"must_not_contain":["Macintosh storage layout or fabricated inheritance"]},
+    {"name":"CPVSurface","module":"Visos/Generic","state":"mapped","files":["src/Visos/Generic/CSurface.h","src/Visos/Generic/CPVSurface.cpp","src/Visos/Windows/CGDI.cpp"],"must_contain":["shared Windows virtual-base behavior and accepted virtual slots"],"must_not_contain":["the complete 0x5A0 CSurface object or CPVGDIBitmap ownership"]},
+    {"name":"CPVBackBuffSurface","module":"Visos/Generic","state":"mapped","files":["src/Visos/Generic/CSurface.h","src/Visos/Windows/CGDI.cpp"],"must_contain":["byte back-buffer allocation, resize, enable, free, and dirty-state behavior"],"must_not_contain":["16-bit z-buffer behavior"]},
+    {"name":"CPVZBuffSurface","module":"Visos/Generic","state":"mapped","files":["src/Visos/Generic/CSurface.h","src/Visos/Windows/CGDI.cpp"],"must_contain":["16-bit z-buffer allocation, resize, enable, free, and presence behavior"],"must_not_contain":["byte back-buffer ownership"]},
+    {"name":"CPVScrollableSurface","module":"Visos/Generic","state":"partial","files":["src/Visos/Generic/CSurface.h","src/Visos/Windows/CGDI.cpp"],"must_contain":["world-width behavior and the primary CPVGDIBitmap subobject"],"must_not_contain":["uncorrelated Macintosh methods imported by symbol order"]},
+    {"name":"CSurface","module":"Visos/Generic","state":"mapped","files":["src/Visos/Generic/CSurface.h","src/Visos/Generic/CSurface.cpp","src/Visos/Windows/CGDI.cpp"],"must_contain":["complete Windows surface composition, linked-surface lifecycle, palette, resize, and change-list behavior"],"must_not_contain":["the public 0x560 VsGdiHelperSurface conflated with the recovered 0x5A0 object"]},
+    {"name":"CGDIDevice","module":"Visos/Windows","state":"mapped","files":["src/Visos/Windows/CGDI.cpp"],"must_contain":["Windows surface-slot allocation, lookup, free, flush, sync, and lifecycle"],"must_not_contain":["Macintosh platform ABI"]},
+    {"name":"CGDI","module":"Visos/Windows","state":"partial","files":["src/Visos/Windows/CGDI.cpp","src/Visos/Windows/CGDISwitch.cpp","src/Visos/Windows/CGDI240.cpp"],"must_contain":["Win32 GDI, DIB, DirectDraw, mode-switch, and 240-line platform implementation"],"must_not_contain":["generic surface declarations moved solely for cosmetic class purity"]},
+    {"name":"CVSMath","module":"Visos/Generic","state":"mapped","files":["src/Visos/Generic/VSMath.cpp","src/Visos/Generic/VSMath.h"],"must_contain":["correlated generic math behavior"],"must_not_contain":["platform-specific ABI assumptions"]},
+    {"name":"CEditString","module":"Frontend","state":"mapped","files":["src/Frontend/CEditString.cpp"],"must_contain":["constructor, bounded append, C-string assignment, and same-layout copy assignment"],"must_not_contain":["unrelated Frontend menu or window families"]},
+    {"name":"CDoor","module":"AI","state":"mapped","files":["src/AI/CDoorAct.cpp","src/AI/CDoorCtor.cpp"],"must_contain":["door construction and activation fragments"],"must_not_contain":["CDoorManager slot dispatch"]},
+    {"name":"CDoorManager","module":"AI","state":"mapped","files":["src/AI/CDoorAct.cpp","src/AI/CDoorSlot.cpp"],"must_contain":["door manager switch and slot-id behavior"],"must_not_contain":["fabricated ownership of unrelated LINKSCF families"]},
+    {"name":"CIce","module":"AI","state":"mapped","files":["src/AI/CIceAct.cpp"],"must_contain":["correlated ice switch behavior"],"must_not_contain":["unsupported instance lifecycle methods"]},
+    {"name":"CIceManager","module":"AI","state":"mapped","files":["src/AI/CIceAct.cpp"],"must_contain":["correlated manager switch dispatch"],"must_not_contain":["unrelated LINKSCF manager behavior"]},
+    {"name":"CEnemyGroup","module":"AI","state":"partial","files":["src/AI/CEnemyGrp.cpp"],"must_contain":["coherent Windows construction and child-service fragment"],"must_not_contain":["CEnemy or CEnemyGroupManager methods without function-level correlation"]},
+    {"name":"CMine","module":"AI","state":"partial","files":["src/AI/CMine.cpp"],"must_contain":["coherent Windows mine lifecycle, terrain, state-machine, vtable, and delete fragment"],"must_not_contain":["CMineManager methods or Macintosh method names not yet correlated"]},
+    {"name":"CLift","module":"AI","state":"blocked","files":["src/AI/CLiftAct.cpp","src/AI/CLiftRun.cpp"],"must_contain":["existing Windows activation and run fragments with neutral function labels"],"must_not_contain":["the rejected fidelity-negative source declarations or ILT ownership changes"]},
+    {"name":"CInvisible","module":"AI","state":"partial","files":["src/AI/CInvsMgr.cpp","src/AI/CInvsSupp.cpp"],"must_contain":["coherent invisible-switch manager and support fragments"],"must_not_contain":["fabricated complete CInvisible class ownership"]}
+  ],
+  "files": [
+    {"path":"src/ENGINE/CORE/LINKSCF.CPP","module":"Windows/MSVC","state":"retained","classes":[],"must_contain":["all 296 original mixed Windows functions and shared glue in original TU order"],"must_not_contain":["a filename or physical owner claiming one Macintosh class"]},
+    {"path":"src/ENGINE/CORE/LINKSCFBYTES.CPP","module":"Windows/MSVC","state":"retained","classes":[],"must_contain":["mixed helper and compiler material"],"must_not_contain":["a fabricated class owner"]},
+    {"path":"src/AI/GroupPlas.cpp","module":"AI","state":"existing","classes":[],"must_contain":["active-group lookup and plasma state dispatch as one physical Windows TU"],"must_not_contain":["a single-class filename or synthetic TU split"]},
+    {"path":"src/AI/Projectile.cpp","module":"AI","state":"existing","classes":[],"must_contain":["coherent Windows projectile pool and lifecycle"],"must_not_contain":["an unsupported Macintosh class name"]},
+    {"path":"src/AI/PlasChild.cpp","module":"AI","state":"existing","classes":[],"must_contain":["coherent plasma child-controller constructor"],"must_not_contain":["an unsupported CPlasma class claim"]},
+    {"path":"src/ENGINE/NET","module":"Windows/MSVC","state":"retained","classes":[],"must_contain":["low-level Windows VsNet transport"],"must_not_contain":["Macintosh CODE_10_Network game-lobby ownership"]}
+  ]
+}

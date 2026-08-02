@@ -9,6 +9,8 @@ import re
 import sys
 from collections import defaultdict
 
+import macintosh_naming
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 PROJECT_FILE = ROOT / "reccmp-project.yml"
 SOURCE_ROOT = ROOT / "src"
@@ -54,6 +56,11 @@ def configured_data_sources() -> list[pathlib.Path]:
 
 def main() -> int:
     errors: list[str] = []
+    structure, mac_symbols, correlations = macintosh_naming.load()
+    errors.extend(
+        f"Macintosh naming tracker: {error}"
+        for error in macintosh_naming.check(structure, mac_symbols, correlations)
+    )
     configured = configured_data_sources()
     discovered = sorted((ROOT / "data").glob("reccmp-*.csv"))
     if set(configured) != set(discovered):
