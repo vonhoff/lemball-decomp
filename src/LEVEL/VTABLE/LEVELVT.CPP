@@ -1608,14 +1608,21 @@ void PASCAL ResetManagedEntityGroupState(void* pEntity)
 // FUNCTION: LEMBALL 0x004189f0
 LevelManagedEntityChildIterator* LevelManagedEntityActiveGroupView::GetFirstActiveEntity(void)
 {
-	LevelManagedEntityChildIterator* pEntity;
+	LevelManagedEntityChildIterator** ppEntity;
 	int iEntity;
+	LevelManagedEntityChildIterator* pEntity;
 
-	for (iEntity = 0; iEntity < m_cManagedEntitiesA4; ++iEntity) {
-		pEntity = m_apManagedEntities04[iEntity];
-		if (pEntity != 0 && pEntity->GetActiveStateThunk() == 1) {
-			return m_apManagedEntities04[iEntity];
-		}
+	iEntity = 0;
+	if (m_cManagedEntitiesA4 > 0) {
+		ppEntity = m_apManagedEntities04;
+		do {
+			pEntity = *ppEntity;
+			if (pEntity != 0 && pEntity->GetActiveStateThunk() == 1) {
+				return m_apManagedEntities04[iEntity];
+			}
+			++ppEntity;
+			++iEntity;
+		} while (iEntity < m_cManagedEntitiesA4);
 	}
 	return 0;
 }
@@ -1843,8 +1850,8 @@ struct GmobOffsetPointView {
 void GmobOffsetPointView::CopyOffsetPoint(int* pPoint)
 {
 	int nX;
-	int nY;
 	int nZ;
+	int nY;
 
 	nY = m_nPositionYa0;
 	nZ = m_nPositionZa4;
