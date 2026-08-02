@@ -1,223 +1,223 @@
 mac_code_file,mac_name_length_offset,mac_mangled_name,x86_address,confidence,evidence
-CODE_02_Visos (Generic).bin,0x000128B0,__ct__12CPVGDIBitmapFv,0x00472290,high,family order; constructor behavior; 0x40-byte object
-CODE_02_Visos (Generic).bin,0x00012902,__dt__12CPVGDIBitmapFv,0x004722D0,high,family order; destructor behavior
-CODE_02_Visos (Generic).bin,0x00012948,Free__12CPVGDIBitmapFv,0x004722E0,high,family order; releases line-pointer storage
-CODE_02_Visos (Generic).bin,0x00012994,Initialise__12CPVGDIBitmapFv,0x00472310,high,family order; clears bitmap state
-CODE_02_Visos (Generic).bin,0x00012A23,CreateLinePtrs__12CPVGDIBitmapFv,0x00472340,high,family order; allocates row-pointer index
-CODE_02_Visos (Generic).bin,0x00012AC6,ResetLinePtrs__12CPVGDIBitmapFv,0x004723A0,high,family order; resets rows and border storage
-CODE_02_Visos (Generic).bin,0x00012B3E,SetLinePtrs__12CPVGDIBitmapFv,0x00472400,high,family order; rebuilds row-pointer table
-CODE_02_Visos (Generic).bin,0x00012C21,Scroll__12CPVGDIBitmapFRC7CVSRectRC8CVSPoint,0x00472440,high,family order; rectangle row scrolling
-CODE_02_Visos (Generic).bin,0x00012CF1,SetSize__12CPVGDIBitmapFRC7CVSSizei,0x004725F0,high,family order; backing dimensions
-CODE_02_Visos (Generic).bin,0x00012D67,SetBitsBase__12CPVGDIBitmapFPUci,0x00472670,high,family order; base pointer and stride
-CODE_02_Visos (Generic).bin,0x00012E5B,GetRects__12CPVGDIBitmapFRC7CVSRectRP7CVSRectRP7CVSRect,0x004726B0,high,family order; splits wrapped rectangle
-CODE_02_Visos (Generic).bin,0x00012EA6,ResetScroll__12CPVGDIBitmapFv,0x00472760,high,family order; reset-scroll thunk
-CODE_02_Visos (Generic).bin,0x00015F18,__ct__18CPVBackBuffSurfaceFv,0x00466440,high,constructs shared CPVSurface virtual base when most-derived; embeds CPVGDIBitmap; byte backing buffer family
-CODE_02_Visos (Generic).bin,0x00015F96,__dt__18CPVBackBuffSurfaceFv,0x004664B0,high,restores back-buffer tables and destroys embedded CPVGDIBitmap
-CODE_02_Visos (Generic).bin,0x00015FF3,HasBackBuff__18CPVBackBuffSurfaceFv,0x004664E0,high,CPVSurface slot 15 override; returns byte back-buffer active state and follows linked CSurface
-CODE_02_Visos (Generic).bin,0x00016055,FreeBackBuff__18CPVBackBuffSurfaceFv,0x00466510,high,frees byte backing storage and CPVGDIBitmap line pointers
-CODE_02_Visos (Generic).bin,0x00016177,AllocateBackBuff__18CPVBackBuffSurfaceFv,0x00466540,high,allocates width*height byte backing and binds embedded CPVGDIBitmap
-CODE_02_Visos (Generic).bin,0x000161D5,EnableBackBuff__18CPVBackBuffSurfaceFUc,0x00466630,high,enable flag allocates; disable path frees byte back buffer
-CODE_02_Visos (Generic).bin,0x00016211,ResizeBackBuff__18CPVBackBuffSurfaceFv,0x00466660,high,back-buffer virtual forwards to allocation/resize body
-CODE_02_Visos (Generic).bin,0x00016296,__ct__15CPVZBuffSurfaceFv,0x00466670,high,constructs shared CPVSurface virtual base when most-derived; embeds CPVGDIBitmap; 16-bit backing family
-CODE_02_Visos (Generic).bin,0x00016310,__dt__15CPVZBuffSurfaceFv,0x004666E0,high,restores z-buffer tables and destroys embedded CPVGDIBitmap
-CODE_02_Visos (Generic).bin,0x00016366,FreeZBuff__15CPVZBuffSurfaceFv,0x00466710,high,frees 16-bit backing storage and CPVGDIBitmap line pointers
-CODE_02_Visos (Generic).bin,0x00016491,AllocateZBuff__15CPVZBuffSurfaceFv,0x00466740,high,doubles row width and allocates width*height*2 backing
-CODE_02_Visos (Generic).bin,0x000164E9,EnableZBuff__15CPVZBuffSurfaceFUc,0x00466840,high,enable flag allocates; disable path frees 16-bit z buffer
-CODE_02_Visos (Generic).bin,0x0001651F,ResizeZBuff__15CPVZBuffSurfaceFv,0x00466870,high,z-buffer virtual forwards to allocation/resize body
-CODE_01_Visos (Mac Specific).bin,0x00001396,HasZBuff__15CPVZBuffSurfaceFv,0x00466990,high,CPVSurface slot 16 override; returns 16-bit z-buffer active state
-CODE_02_Visos (Generic).bin,0x00014F8C,__ct__10CPVSurfaceFv,0x004663D0,high,initializes the shared 0x44 CPVSurface virtual base; field order and final CSurface constructor lifecycle agree
-CODE_01_Visos (Mac Specific).bin,0x00001607,SetLinePtrs__8CSurfaceFv,0x0046C9F0,high,CSurface primary CPVGDIBitmap slot 0 override; root and linked-surface row pointer behavior agrees
-CODE_02_Visos (Generic).bin,0x00015EA4,__dt__10CPVSurfaceFv,0x00466430,high,immediate constructor successor restores the CPVSurface vtable
-CODE_02_Visos (Generic).bin,0x00015F08,SetDontUpdateRect__10CPVSurfaceFRC7CVSRect,0x00466880,high,empty-extent conditional copies the complete rectangle tuple
-CODE_02_Visos (Generic).bin,0x000160EA,SetWorldWidth__20CPVScrollableSurfaceFi,0x004668D0,high,stores changed world width and propagates the paired point
-CODE_02_Visos (Generic).bin,0x00016204,Resize__10CPVSurfaceFRC7CVSSize,0x00466920,high,virtual slot and family order match the Macintosh CPVSurface table
-CODE_02_Visos (Generic).bin,0x00016210,HasBackBuff__10CPVSurfaceFv,0x00466930,high,virtual slot returns false in the CPVSurface base
-CODE_02_Visos (Generic).bin,0x00016218,HasZBuff__10CPVSurfaceFv,0x00466940,high,virtual slot returns false in the CPVSurface base
-CODE_02_Visos (Generic).bin,0x00016220,SetWorldWidth__10CPVSurfaceFi,0x00466950,high,virtual slot and family order match the Macintosh CPVSurface table
-CODE_02_Visos (Generic).bin,0x0001622C,GetWorldWidth__10CPVSurfaceFv,0x00466960,high,virtual slot returns zero in the CPVSurface base
-CODE_02_Visos (Generic).bin,0x00016238,GetWorldWidth__20CPVScrollableSurfaceFv,0x0046DCC0,high,scrollable-surface adjustor resolves the stored world width
-CODE_01_Visos (Mac Specific).bin,0x0000C97A,__ct__10CGDIDeviceFi,0x0046BC00,high,slot-array constructor and device lifecycle match
-CODE_01_Visos (Mac Specific).bin,0x0000CA02,__dt__10CGDIDeviceFv,0x0046BC90,high,warns about live surfaces then frees the device slot array
-CODE_01_Visos (Mac Specific).bin,0x0000CCAC,FindFreeSurface__10CGDIDeviceFv,0x0046BCE0,high,linear scan for the first available surface slot
-CODE_01_Visos (Mac Specific).bin,0x0000CAAE,AllocateSurface__10CGDIDeviceFRC7CVSRectP8CSurface,0x0046BD10,high,allocates and records a CSurface in a device slot
-CODE_01_Visos (Mac Specific).bin,0x0000CBD0,FreeSurface__10CGDIDeviceFP8CSurface,0x0046BED0,high,destroys a CSurface and releases its device slot
-CODE_01_Visos (Mac Specific).bin,0x0000CE98,Sync__10CGDIDeviceFv,0x0046BF60,high,empty virtual slot has exact class-table position
-CODE_01_Visos (Mac Specific).bin,0x0000CCD2,FindSurface__10CGDIDeviceFP8CSurface,0x0046BF70,high,linear scan by CSurface pointer
-CODE_01_Visos (Mac Specific).bin,0x0000CE40,Flush__10CGDIDeviceFP8CSurface,0x0046BFD0,high,marks the selected surface slot and flushes it to the root surface
-CODE_02_Visos (Generic).bin,0x000142C8,__ct__8CSurfaceFRC7CVSRectP8CSurface,0x0046C050,high,composite CSurface construction and linked-surface setup
-CODE_02_Visos (Generic).bin,0x0001440E,__dt__8CSurfaceFv,0x0046C710,high,composite CSurface teardown in matching family order
-CODE_02_Visos (Generic).bin,0x00014724,ResetScroll__8CSurfaceFv,0x0046C990,high,resets all active embedded bitmap scroll state
-CODE_02_Visos (Generic).bin,0x0001488C,AddToChangeList__8CSurfaceFRC7CVSRect,0x0046CB20,high,forwards or records the changed rectangle
-CODE_02_Visos (Generic).bin,0x00014960,GetChangeList__8CSurfaceFv,0x0046CBD0,high,returns the active change-list tracker
-CODE_02_Visos (Generic).bin,0x00014AEC,ToScreen__8CSurfaceFP8CSurface,0x0046CDA0,high,flushes changed rectangles to the linked or display surface
-CODE_02_Visos (Generic).bin,0x00014DAE,AttachPalette__8CSurfaceFP11CResPALETTE,0x0046D040,high,builds the platform palette and propagates it to surfaces
-CODE_02_Visos (Generic).bin,0x00015218,Resize__8CSurfaceFRC7CVSSize,0x0046D420,high,updates surface extent backing state and child surfaces
-CODE_02_Visos (Generic).bin,0x00000EB0,__ct__7CStringFv,0x0046E410,high,8-byte heap string default constructor allocates one NUL byte and stores capacity 1
-CODE_02_Visos (Generic).bin,0x00000F0A,__ct__7CStringFPc,0x0046E430,high,C-string constructor allocates length plus terminator and copies the source
-CODE_02_Visos (Generic).bin,0x00000F5C,__ct__7CStringFR7CString,0x0046E480,high,copy constructor preserves capacity and deep-copies the NUL-terminated buffer
-CODE_02_Visos (Generic).bin,0x00000FA8,__dt__7CStringFv,0x0046E500,high,destructor frees the sole heap buffer
+CODE_02_Visos (Generic).bin,0x000128B0,__ct__12CPVGDIBitmapFv,0x00472290,high,"family order; constructor behavior; 0x40-byte object"
+CODE_02_Visos (Generic).bin,0x00012902,__dt__12CPVGDIBitmapFv,0x004722D0,high,"family order; destructor behavior"
+CODE_02_Visos (Generic).bin,0x00012948,Free__12CPVGDIBitmapFv,0x004722E0,high,"family order; releases line-pointer storage"
+CODE_02_Visos (Generic).bin,0x00012994,Initialise__12CPVGDIBitmapFv,0x00472310,high,"family order; clears bitmap state"
+CODE_02_Visos (Generic).bin,0x00012A23,CreateLinePtrs__12CPVGDIBitmapFv,0x00472340,high,"family order; allocates row-pointer index"
+CODE_02_Visos (Generic).bin,0x00012AC6,ResetLinePtrs__12CPVGDIBitmapFv,0x004723A0,high,"family order; resets rows and border storage"
+CODE_02_Visos (Generic).bin,0x00012B3E,SetLinePtrs__12CPVGDIBitmapFv,0x00472400,high,"family order; rebuilds row-pointer table"
+CODE_02_Visos (Generic).bin,0x00012C21,Scroll__12CPVGDIBitmapFRC7CVSRectRC8CVSPoint,0x00472440,high,"family order; rectangle row scrolling"
+CODE_02_Visos (Generic).bin,0x00012CF1,SetSize__12CPVGDIBitmapFRC7CVSSizei,0x004725F0,high,"family order; backing dimensions"
+CODE_02_Visos (Generic).bin,0x00012D67,SetBitsBase__12CPVGDIBitmapFPUci,0x00472670,high,"family order; base pointer and stride"
+CODE_02_Visos (Generic).bin,0x00012E5B,GetRects__12CPVGDIBitmapFRC7CVSRectRP7CVSRectRP7CVSRect,0x004726B0,high,"family order; splits wrapped rectangle"
+CODE_02_Visos (Generic).bin,0x00012EA6,ResetScroll__12CPVGDIBitmapFv,0x00472760,high,"family order; reset-scroll thunk"
+CODE_02_Visos (Generic).bin,0x00015F18,__ct__18CPVBackBuffSurfaceFv,0x00466440,high,"constructs shared CPVSurface virtual base when most-derived; embeds CPVGDIBitmap; byte backing buffer family"
+CODE_02_Visos (Generic).bin,0x00015F96,__dt__18CPVBackBuffSurfaceFv,0x004664B0,high,"restores back-buffer tables and destroys embedded CPVGDIBitmap"
+CODE_02_Visos (Generic).bin,0x00015FF3,HasBackBuff__18CPVBackBuffSurfaceFv,0x004664E0,high,"CPVSurface slot 15 override; returns byte back-buffer active state and follows linked CSurface"
+CODE_02_Visos (Generic).bin,0x00016055,FreeBackBuff__18CPVBackBuffSurfaceFv,0x00466510,high,"frees byte backing storage and CPVGDIBitmap line pointers"
+CODE_02_Visos (Generic).bin,0x00016177,AllocateBackBuff__18CPVBackBuffSurfaceFv,0x00466540,high,"allocates width*height byte backing and binds embedded CPVGDIBitmap"
+CODE_02_Visos (Generic).bin,0x000161D5,EnableBackBuff__18CPVBackBuffSurfaceFUc,0x00466630,high,"enable flag allocates; disable path frees byte back buffer"
+CODE_02_Visos (Generic).bin,0x00016211,ResizeBackBuff__18CPVBackBuffSurfaceFv,0x00466660,high,"back-buffer virtual forwards to allocation/resize body"
+CODE_02_Visos (Generic).bin,0x00016296,__ct__15CPVZBuffSurfaceFv,0x00466670,high,"constructs shared CPVSurface virtual base when most-derived; embeds CPVGDIBitmap; 16-bit backing family"
+CODE_02_Visos (Generic).bin,0x00016310,__dt__15CPVZBuffSurfaceFv,0x004666E0,high,"restores z-buffer tables and destroys embedded CPVGDIBitmap"
+CODE_02_Visos (Generic).bin,0x00016366,FreeZBuff__15CPVZBuffSurfaceFv,0x00466710,high,"frees 16-bit backing storage and CPVGDIBitmap line pointers"
+CODE_02_Visos (Generic).bin,0x00016491,AllocateZBuff__15CPVZBuffSurfaceFv,0x00466740,high,"doubles row width and allocates width*height*2 backing"
+CODE_02_Visos (Generic).bin,0x000164E9,EnableZBuff__15CPVZBuffSurfaceFUc,0x00466840,high,"enable flag allocates; disable path frees 16-bit z buffer"
+CODE_02_Visos (Generic).bin,0x0001651F,ResizeZBuff__15CPVZBuffSurfaceFv,0x00466870,high,"z-buffer virtual forwards to allocation/resize body"
+CODE_01_Visos (Mac Specific).bin,0x00001396,HasZBuff__15CPVZBuffSurfaceFv,0x00466990,high,"CPVSurface slot 16 override; returns 16-bit z-buffer active state"
+CODE_02_Visos (Generic).bin,0x00014F8C,__ct__10CPVSurfaceFv,0x004663D0,high,"initializes the shared 0x44 CPVSurface virtual base; field order and final CSurface constructor lifecycle agree"
+CODE_01_Visos (Mac Specific).bin,0x00001607,SetLinePtrs__8CSurfaceFv,0x0046C9F0,high,"CSurface primary CPVGDIBitmap slot 0 override; root and linked-surface row pointer behavior agrees"
+CODE_02_Visos (Generic).bin,0x00015EA4,__dt__10CPVSurfaceFv,0x00466430,high,"immediate constructor successor restores the CPVSurface vtable"
+CODE_02_Visos (Generic).bin,0x00015F08,SetDontUpdateRect__10CPVSurfaceFRC7CVSRect,0x00466880,high,"empty-extent conditional copies the complete rectangle tuple"
+CODE_02_Visos (Generic).bin,0x000160EA,SetWorldWidth__20CPVScrollableSurfaceFi,0x004668D0,high,"stores changed world width and propagates the paired point"
+CODE_02_Visos (Generic).bin,0x00016204,Resize__10CPVSurfaceFRC7CVSSize,0x00466920,high,"virtual slot and family order match the Macintosh CPVSurface table"
+CODE_02_Visos (Generic).bin,0x00016210,HasBackBuff__10CPVSurfaceFv,0x00466930,high,"virtual slot returns false in the CPVSurface base"
+CODE_02_Visos (Generic).bin,0x00016218,HasZBuff__10CPVSurfaceFv,0x00466940,high,"virtual slot returns false in the CPVSurface base"
+CODE_02_Visos (Generic).bin,0x00016220,SetWorldWidth__10CPVSurfaceFi,0x00466950,high,"virtual slot and family order match the Macintosh CPVSurface table"
+CODE_02_Visos (Generic).bin,0x0001622C,GetWorldWidth__10CPVSurfaceFv,0x00466960,high,"virtual slot returns zero in the CPVSurface base"
+CODE_02_Visos (Generic).bin,0x00016238,GetWorldWidth__20CPVScrollableSurfaceFv,0x0046DCC0,high,"scrollable-surface adjustor resolves the stored world width"
+CODE_01_Visos (Mac Specific).bin,0x0000C97A,__ct__10CGDIDeviceFi,0x0046BC00,high,"slot-array constructor and device lifecycle match"
+CODE_01_Visos (Mac Specific).bin,0x0000CA02,__dt__10CGDIDeviceFv,0x0046BC90,high,"warns about live surfaces then frees the device slot array"
+CODE_01_Visos (Mac Specific).bin,0x0000CCAC,FindFreeSurface__10CGDIDeviceFv,0x0046BCE0,high,"linear scan for the first available surface slot"
+CODE_01_Visos (Mac Specific).bin,0x0000CAAE,AllocateSurface__10CGDIDeviceFRC7CVSRectP8CSurface,0x0046BD10,high,"allocates and records a CSurface in a device slot"
+CODE_01_Visos (Mac Specific).bin,0x0000CBD0,FreeSurface__10CGDIDeviceFP8CSurface,0x0046BED0,high,"destroys a CSurface and releases its device slot"
+CODE_01_Visos (Mac Specific).bin,0x0000CE98,Sync__10CGDIDeviceFv,0x0046BF60,high,"empty virtual slot has exact class-table position"
+CODE_01_Visos (Mac Specific).bin,0x0000CCD2,FindSurface__10CGDIDeviceFP8CSurface,0x0046BF70,high,"linear scan by CSurface pointer"
+CODE_01_Visos (Mac Specific).bin,0x0000CE40,Flush__10CGDIDeviceFP8CSurface,0x0046BFD0,high,"marks the selected surface slot and flushes it to the root surface"
+CODE_02_Visos (Generic).bin,0x000142C8,__ct__8CSurfaceFRC7CVSRectP8CSurface,0x0046C050,high,"composite CSurface construction and linked-surface setup"
+CODE_02_Visos (Generic).bin,0x0001440E,__dt__8CSurfaceFv,0x0046C710,high,"composite CSurface teardown in matching family order"
+CODE_02_Visos (Generic).bin,0x00014724,ResetScroll__8CSurfaceFv,0x0046C990,high,"resets all active embedded bitmap scroll state"
+CODE_02_Visos (Generic).bin,0x0001488C,AddToChangeList__8CSurfaceFRC7CVSRect,0x0046CB20,high,"forwards or records the changed rectangle"
+CODE_02_Visos (Generic).bin,0x00014960,GetChangeList__8CSurfaceFv,0x0046CBD0,high,"returns the active change-list tracker"
+CODE_02_Visos (Generic).bin,0x00014AEC,ToScreen__8CSurfaceFP8CSurface,0x0046CDA0,high,"flushes changed rectangles to the linked or display surface"
+CODE_02_Visos (Generic).bin,0x00014DAE,AttachPalette__8CSurfaceFP11CResPALETTE,0x0046D040,high,"builds the platform palette and propagates it to surfaces"
+CODE_02_Visos (Generic).bin,0x00015218,Resize__8CSurfaceFRC7CVSSize,0x0046D420,high,"updates surface extent backing state and child surfaces"
+CODE_02_Visos (Generic).bin,0x00000EB0,__ct__7CStringFv,0x0046E410,high,"8-byte heap string default constructor allocates one NUL byte and stores capacity 1"
+CODE_02_Visos (Generic).bin,0x00000F0A,__ct__7CStringFPc,0x0046E430,high,"C-string constructor allocates length plus terminator and copies the source"
+CODE_02_Visos (Generic).bin,0x00000F5C,__ct__7CStringFR7CString,0x0046E480,high,"copy constructor preserves capacity and deep-copies the NUL-terminated buffer"
+CODE_02_Visos (Generic).bin,0x00000FA8,__dt__7CStringFv,0x0046E500,high,"destructor frees the sole heap buffer"
 CODE_02_Visos (Generic).bin,0x00001008,__as__7CStringFR7CString,0x0046E510,high,"CString assignment frees, reallocates to source capacity, deep-copies, and returns this"
 CODE_02_Visos (Generic).bin,0x00001078,__as__7CStringFPCc,0x0046E570,high,"C-string assignment grows only when needed, copies through the terminator, and returns this"
 CODE_02_Visos (Generic).bin,0x00001150,__apl__7CStringFR7CString,0x0046E5D0,high,"CString append concatenates both buffers, replaces this, and copy-constructs the hidden result"
 CODE_02_Visos (Generic).bin,0x00001228,__apl__7CStringFPCc,0x0046E6E0,high,"C-string append concatenates the suffix, replaces this, and copy-constructs the hidden result"
-CODE_02_Visos (Generic).bin,0x0000125A,__ls__FR10CVSOStreamR7CString,0x0046E7F0,high,free stream insertion passes the CString buffer to CVSOStream and returns the stream
-CODE_02_Visos (Generic).bin,0x00001296,getlength__7CStringFv,0x0046EF00,high,returns strlen of the buffer at object offset zero
-CODE_02_Visos (Generic).bin,0x00001312,lower__7CStringFv,0x0046EFA0,high,lowercases this in place and copy-constructs the hidden CString result
-CODE_09_Visos (Generic).bin,0x00014827,__ct__6CArenaFUlPCcP6CArenaPv,0x004599F0,high,constructor lifecycle; matching lock and arena-list initialization
-CODE_09_Visos (Generic).bin,0x00014888,DeleteLists__6CArenaFv,0x00459A40,high,destroys block and child-arena lists under the arena lock
-CODE_09_Visos (Generic).bin,0x00014916,__dt__6CArenaFv,0x00459AA0,high,destructor lifecycle; restores base vtables and releases lock state
-CODE_09_Visos (Generic).bin,0x00014946,CheckAndAmalgamate__6CArenaFP7CMBlockT1,0x00459B10,high,adjacent free-block coalescing and header-size accounting
-CODE_09_Visos (Generic).bin,0x000149B4,AddToFreeList__6CArenaFP7CMBlock,0x00459BD0,high,appends a CMBlock to the free-list links
-CODE_09_Visos (Generic).bin,0x000149EE,AddToBlockList__6CArenaFP7CMBlockT1,0x00459C00,high,inserts a CMBlock after the supplied block-list node
-CODE_09_Visos (Generic).bin,0x00014A44,AddToArenaList__6CArenaFP6CArena,0x00459C40,high,sorted child-arena insertion
-CODE_09_Visos (Generic).bin,0x00014AA6,RemoveFromFreeList__6CArenaFP7CMBlock,0x00459C80,high,unlinks free-list neighbors
-CODE_09_Visos (Generic).bin,0x00014ADE,RemoveFromBlockList__6CArenaFP7CMBlock,0x00459CB0,high,unlinks block-list neighbors
-CODE_09_Visos (Generic).bin,0x00014B24,RemoveFromArenaList__6CArenaFP6CArena,0x00459CE0,high,unlinks a child arena from the arena list
-CODE_09_Visos (Generic).bin,0x00014B6A,FindSmallestBlock__6CArenaFUl,0x00459D20,high,best-fit free-block scan
-CODE_09_Visos (Generic).bin,0x00014BD4,Allocate__6CArenaFPPvUlPCc,0x00459D70,high,best-fit allocation; split and list relinking behavior
-CODE_09_Visos (Generic).bin,0x00014E0E,Free__6CArenaFPv,0x00459F70,high,pointer validation; free-list insertion and adjacent coalescing
-CODE_09_Visos (Generic).bin,0x00014F4C,AllocateArena__6CArenaFPP6CArenaUlPCc,0x0045A010,high,allocates storage then constructs and links a child CArena
-CODE_09_Visos (Generic).bin,0x00015026,FreeArena__6CArenaFP6CArena,0x0045A0A0,high,unlinks and frees a child CArena
-CODE_09_Visos (Generic).bin,0x0001510A,CheckValidPointer__6CArenaFPv,0x0045A0E0,high,arena-storage bounds and block validation
-CODE_09_Visos (Generic).bin,0x0001532E,StreamOut__6CArenaFR8COStream,0x0045A260,high,matching arena diagnostics and aggregate counters
-CODE_09_Visos (Generic).bin,0x00015612,GetAllocSize__6CArenaFv,0x0045A340,high,returns allocated payload counter
-CODE_09_Visos (Generic).bin,0x0001561A,GetFreeSize__6CArenaFv,0x0045A350,high,returns available arena bytes
-CODE_09_Visos (Generic).bin,0x00015642,__nw__6CArenaFUlPv,0x0045A390,high,placement allocation returns supplied storage
-CODE_09_Visos (Generic).bin,0x00015660,MemSet__6CArenaFPvUcUl,0x0045A3A0,high,byte fill implementation and signature
-CODE_09_Visos (Generic).bin,0x00015696,MemCopy__6CArenaFPvPCvUl,0x0045A3D0,high,byte copy implementation and signature
-CODE_02_Visos (Generic).bin,0x000147AC,SqRoot__7CVSMathFUi,0x0045A9B0,high,integer square-root bounds and binary-search behavior
-CODE_08_Frontend.bin,0x0000631E,__ct__11CEditStringFi,0x00453150,high,capacity allocation and empty-string constructor lifecycle
-CODE_08_Frontend.bin,0x0000636A,__apl__11CEditStringFc,0x00453180,high,bounded character append and NUL termination
-CODE_08_Frontend.bin,0x000063BE,__as__11CEditStringFPCc,0x00453200,high,C-string assignment and length update
-CODE_06_AI.bin,0x000062DE,__ct__5CDoorFv,0x0040D470,high,door type 0x19 base construction and door vtable lifecycle
+CODE_02_Visos (Generic).bin,0x0000125A,__ls__FR10CVSOStreamR7CString,0x0046E7F0,high,"free stream insertion passes the CString buffer to CVSOStream and returns the stream"
+CODE_02_Visos (Generic).bin,0x00001296,getlength__7CStringFv,0x0046EF00,high,"returns strlen of the buffer at object offset zero"
+CODE_02_Visos (Generic).bin,0x00001312,lower__7CStringFv,0x0046EFA0,high,"lowercases this in place and copy-constructs the hidden CString result"
+CODE_09_Visos (Generic).bin,0x00014827,__ct__6CArenaFUlPCcP6CArenaPv,0x004599F0,high,"constructor lifecycle; matching lock and arena-list initialization"
+CODE_09_Visos (Generic).bin,0x00014888,DeleteLists__6CArenaFv,0x00459A40,high,"destroys block and child-arena lists under the arena lock"
+CODE_09_Visos (Generic).bin,0x00014916,__dt__6CArenaFv,0x00459AA0,high,"destructor lifecycle; restores base vtables and releases lock state"
+CODE_09_Visos (Generic).bin,0x00014946,CheckAndAmalgamate__6CArenaFP7CMBlockT1,0x00459B10,high,"adjacent free-block coalescing and header-size accounting"
+CODE_09_Visos (Generic).bin,0x000149B4,AddToFreeList__6CArenaFP7CMBlock,0x00459BD0,high,"appends a CMBlock to the free-list links"
+CODE_09_Visos (Generic).bin,0x000149EE,AddToBlockList__6CArenaFP7CMBlockT1,0x00459C00,high,"inserts a CMBlock after the supplied block-list node"
+CODE_09_Visos (Generic).bin,0x00014A44,AddToArenaList__6CArenaFP6CArena,0x00459C40,high,"sorted child-arena insertion"
+CODE_09_Visos (Generic).bin,0x00014AA6,RemoveFromFreeList__6CArenaFP7CMBlock,0x00459C80,high,"unlinks free-list neighbors"
+CODE_09_Visos (Generic).bin,0x00014ADE,RemoveFromBlockList__6CArenaFP7CMBlock,0x00459CB0,high,"unlinks block-list neighbors"
+CODE_09_Visos (Generic).bin,0x00014B24,RemoveFromArenaList__6CArenaFP6CArena,0x00459CE0,high,"unlinks a child arena from the arena list"
+CODE_09_Visos (Generic).bin,0x00014B6A,FindSmallestBlock__6CArenaFUl,0x00459D20,high,"best-fit free-block scan"
+CODE_09_Visos (Generic).bin,0x00014BD4,Allocate__6CArenaFPPvUlPCc,0x00459D70,high,"best-fit allocation; split and list relinking behavior"
+CODE_09_Visos (Generic).bin,0x00014E0E,Free__6CArenaFPv,0x00459F70,high,"pointer validation; free-list insertion and adjacent coalescing"
+CODE_09_Visos (Generic).bin,0x00014F4C,AllocateArena__6CArenaFPP6CArenaUlPCc,0x0045A010,high,"allocates storage then constructs and links a child CArena"
+CODE_09_Visos (Generic).bin,0x00015026,FreeArena__6CArenaFP6CArena,0x0045A0A0,high,"unlinks and frees a child CArena"
+CODE_09_Visos (Generic).bin,0x0001510A,CheckValidPointer__6CArenaFPv,0x0045A0E0,high,"arena-storage bounds and block validation"
+CODE_09_Visos (Generic).bin,0x0001532E,StreamOut__6CArenaFR8COStream,0x0045A260,high,"matching arena diagnostics and aggregate counters"
+CODE_09_Visos (Generic).bin,0x00015612,GetAllocSize__6CArenaFv,0x0045A340,high,"returns allocated payload counter"
+CODE_09_Visos (Generic).bin,0x0001561A,GetFreeSize__6CArenaFv,0x0045A350,high,"returns available arena bytes"
+CODE_09_Visos (Generic).bin,0x00015642,__nw__6CArenaFUlPv,0x0045A390,high,"placement allocation returns supplied storage"
+CODE_09_Visos (Generic).bin,0x00015660,MemSet__6CArenaFPvUcUl,0x0045A3A0,high,"byte fill implementation and signature"
+CODE_09_Visos (Generic).bin,0x00015696,MemCopy__6CArenaFPvPCvUl,0x0045A3D0,high,"byte copy implementation and signature"
+CODE_02_Visos (Generic).bin,0x000147AC,SqRoot__7CVSMathFUi,0x0045A9B0,high,"integer square-root bounds and binary-search behavior"
+CODE_08_Frontend.bin,0x0000631E,__ct__11CEditStringFi,0x00453150,high,"capacity allocation and empty-string constructor lifecycle"
+CODE_08_Frontend.bin,0x0000636A,__apl__11CEditStringFc,0x00453180,high,"bounded character append and NUL termination"
+CODE_08_Frontend.bin,0x000063BE,__as__11CEditStringFPCc,0x00453200,high,"C-string assignment and length update"
+CODE_06_AI.bin,0x000062DE,__ct__5CDoorFv,0x0040D470,high,"door type 0x19 base construction and door vtable lifecycle"
 CODE_06_AI.bin,0x00006C5A,DoActivate__5CDoorFv,0x0040DEC0,high,sets active state and timestamps deadline before awarding type-dependent score
-CODE_06_AI.bin,0x0000716F,Switch__12CDoorManagerF9swMessagei,0x0040E5A0,high,manager selects door by slot and dispatches switch action
-CODE_06_AI.bin,0x000071CC,Id__12CDoorManagerFi,0x0040E600,high,manager index-to-door-slot identifier lookup
-CODE_06_AI.bin,0x00012224,Switch__4CIceFv,0x0042D550,high,ice object requests its switched state transition
-CODE_06_AI.bin,0x000127F9,Switch__11CIceManagerF9swMessagei,0x0042DD90,high,manager selects ice object by slot and dispatches switch action
-CODE_06_AI.bin,0x000162B0,__ct__5CMineFv,0x00423C10,high,contiguous CMine family start; type 0x13 construction and mine vtable lifecycle
-CODE_06_AI.bin,0x000162DE,Restart__5CMineFv,0x00423C30,high,immediate family successor; resets managed-entity and CMine runtime state
+CODE_06_AI.bin,0x0000716F,Switch__12CDoorManagerF9swMessagei,0x0040E5A0,high,"manager selects door by slot and dispatches switch action"
+CODE_06_AI.bin,0x000071CC,Id__12CDoorManagerFi,0x0040E600,high,"manager index-to-door-slot identifier lookup"
+CODE_06_AI.bin,0x00012224,Switch__4CIceFv,0x0042D550,high,"ice object requests its switched state transition"
+CODE_06_AI.bin,0x000127F9,Switch__11CIceManagerF9swMessagei,0x0042DD90,high,"manager selects ice object by slot and dispatches switch action"
+CODE_06_AI.bin,0x000162B0,__ct__5CMineFv,0x00423C10,high,"contiguous CMine family start; type 0x13 construction and mine vtable lifecycle"
+CODE_06_AI.bin,0x000162DE,Restart__5CMineFv,0x00423C30,high,"immediate family successor; resets managed-entity and CMine runtime state"
 CODE_06_AI.bin,0x0001633C,Initialise__5CMineFv,0x00423C50,high,"family order; seeds state 0x18, timers, trigger fields, and mine terrain variants"
-CODE_06_AI.bin,0x000163D8,Set__5CMineF7AICOORD,0x00423CB0,high,family order; stores fixed-point position and marks mine occupancy in the tile grid
-CODE_06_AI.bin,0x00016428,Trigger__5CMineFi,0x00423D40,high,family order; records trigger delay and requests mine state 0x1a
+CODE_06_AI.bin,0x000163D8,Set__5CMineF7AICOORD,0x00423CB0,high,"family order; stores fixed-point position and marks mine occupancy in the tile grid"
+CODE_06_AI.bin,0x00016428,Trigger__5CMineFi,0x00423D40,high,"family order; records trigger delay and requests mine state 0x1a"
 CODE_06_AI.bin,0x00016498,DoActivate__5CMineFv,0x00423D70,high,"family order; executes triggered mine state, timing, terrain, and nearby chain activation"
 CODE_06_AI.bin,0x00016560,SetTerrain__5CMineFv,0x00423DD0,high,"family order; writes mine tile type 0x20a, collision flag 4, and activation notification"
-CODE_06_AI.bin,0x0001659E,StepOn__5CMineFP11CGameObject,0x00423E70,high,family order; requests detonation state and notifies the stepping game object
-CODE_06_AI.bin,0x000165DE,IsUsable__5CMineF7eAction,0x00423E90,high,family order; accepts only inactive/ready mine states 8 and 0x18
+CODE_06_AI.bin,0x0001659E,StepOn__5CMineFP11CGameObject,0x00423E70,high,"family order; requests detonation state and notifies the stepping game object"
+CODE_06_AI.bin,0x000165DE,IsUsable__5CMineF7eAction,0x00423E90,high,"family order; accepts only inactive/ready mine states 8 and 0x18"
 CODE_06_AI.bin,0x000166E8,Process__5CMineFv,0x00423EB0,high,"family order; advances mine trigger, terrain, cooldown, and state transitions"
-CODE_06_AI.bin,0x0001674E,OnGround__5CMineFv,0x00423FA0,high,family end; resamples mine ground height from the tile grid
+CODE_06_AI.bin,0x0001674E,OnGround__5CMineFv,0x00423FA0,high,"family end; resamples mine ground height from the tile grid"
 CODE_06_AI.bin,0x000088E7,__ct__11CEnemyGroupFP3CAIP14CObjectManagerP17CFormationManager,0x00420AE0,high,"enemy load/create callers allocate the 0x168-byte group, pass the three shared AI/object/formation contexts, invoke this constructor through its ILT, and install the enemy-group vtable"
 CODE_02_Visos (Generic).bin,0x000118C1,__ct__4CGDIFRC7CVSRectiP8CSurface,0x00467060,high,"contiguous four-function family start; constructs the 0x10-byte Windows render queue from a rectangle, entry count, and CSurface allocation"
-CODE_02_Visos (Generic).bin,0x0001192C,__dt__4CGDIFv,0x004670D0,high,contiguous family order; frees the queue storage and releases its CSurface
-CODE_02_Visos (Generic).bin,0x00011958,AddToList__4CGDIFP10CPrimitive,0x004670F0,high,contiguous family order; appends one render-entry pointer and increments the queue count
+CODE_02_Visos (Generic).bin,0x0001192C,__dt__4CGDIFv,0x004670D0,high,"contiguous family order; frees the queue storage and releases its CSurface"
+CODE_02_Visos (Generic).bin,0x00011958,AddToList__4CGDIFP10CPrimitive,0x004670F0,high,"contiguous family order; appends one render-entry pointer and increments the queue count"
 CODE_02_Visos (Generic).bin,0x000119DC,Render__4CGDIFv,0x00467110,high,"contiguous family end; validates and dispatches each queued primitive through virtual slot 2, then presents the target surface"
 CODE_07_Control.bin,0x000001BA,SetGameDefaults__Fv,0x00406230,high,"exact startup-default role and void signature; initializes shared game, audio, display, debug, level, and command-line state"
-CODE_07_Control.bin,0x000001D8,DisplayHelp__Fv,0x00406300,high,exact no-argument help-switch callback; Windows body is intentionally empty while caller handles /? and ?
-CODE_07_Control.bin,0x000002C6,StrCmpI__FPCcPCci,0x00406790,high,exact two-string plus maximum-length signature and case-insensitive bounded comparison behavior
-CODE_07_Control.bin,0x00000666,DoCommandLine__FiPPc,0x00406460,high,exact argc/argv signature; parses shared game switches through StrCmpI and invokes DisplayHelp
-CODE_07_Control.bin,0x00001428,__ct__11CGameStatusFv,0x00406A90,high,0x50-byte allocation and complete state clear establish constructor lifecycle
-CODE_07_Control.bin,0x000014BB,JiggleLevelData__11CGameStatusFv,0x00406AD0,high,eight 3-bit digits are permuted and XOR-packed for the password
-CODE_07_Control.bin,0x00001577,UnJiggleLevelData__11CGameStatusFUl,0x00406B30,high,inverse permutation reconstructs four bounded unlocked-level caps
-CODE_07_Control.bin,0x000015DE,CalcCheckSum__11CGameStatusFUl,0x00406BA0,high,matching 5-bit checksum over value bytes used by encode and decode
-CODE_07_Control.bin,0x0000167E,EncodePassword__11CGameStatusFv,0x00406C00,high,packs state and checksum then formats the stored zero-padded password
+CODE_07_Control.bin,0x000001D8,DisplayHelp__Fv,0x00406300,high,"exact no-argument help-switch callback; Windows body is intentionally empty while caller handles /? and ?"
+CODE_07_Control.bin,0x000002C6,StrCmpI__FPCcPCci,0x00406790,high,"exact two-string plus maximum-length signature and case-insensitive bounded comparison behavior"
+CODE_07_Control.bin,0x00000666,DoCommandLine__FiPPc,0x00406460,high,"exact argc/argv signature; parses shared game switches through StrCmpI and invokes DisplayHelp"
+CODE_07_Control.bin,0x00001428,__ct__11CGameStatusFv,0x00406A90,high,"0x50-byte allocation and complete state clear establish constructor lifecycle"
+CODE_07_Control.bin,0x000014BB,JiggleLevelData__11CGameStatusFv,0x00406AD0,high,"eight 3-bit digits are permuted and XOR-packed for the password"
+CODE_07_Control.bin,0x00001577,UnJiggleLevelData__11CGameStatusFUl,0x00406B30,high,"inverse permutation reconstructs four bounded unlocked-level caps"
+CODE_07_Control.bin,0x000015DE,CalcCheckSum__11CGameStatusFUl,0x00406BA0,high,"matching 5-bit checksum over value bytes used by encode and decode"
+CODE_07_Control.bin,0x0000167E,EncodePassword__11CGameStatusFv,0x00406C00,high,"packs state and checksum then formats the stored zero-padded password"
 CODE_07_Control.bin,0x00001795,DecodePassword__11CGameStatusFPc,0x00406CA0,high,"parses, validates checksum, handles cheat code, and applies caps"
-CODE_07_Control.bin,0x000017F8,StringToDWord__11CGameStatusFv,0x00406D80,high,decimal accumulation over the stored password buffer
-CODE_07_Control.bin,0x0000183A,GotoLastLevels__11CGameStatusFv,0x00406DD0,high,copies active unlock caps into per-pack selected-level snapshots
-CODE_07_Control.bin,0x00003316,IncLevel__11CGameStatusFv,0x00408DC0,high,increments within exact pack limits and updates unlock/snapshot state
+CODE_07_Control.bin,0x000017F8,StringToDWord__11CGameStatusFv,0x00406D80,high,"decimal accumulation over the stored password buffer"
+CODE_07_Control.bin,0x0000183A,GotoLastLevels__11CGameStatusFv,0x00406DD0,high,"copies active unlock caps into per-pack selected-level snapshots"
+CODE_07_Control.bin,0x00003316,IncLevel__11CGameStatusFv,0x00408DC0,high,"increments within exact pack limits and updates unlock/snapshot state"
 CODE_07_Control.bin,0x00003358,DecLevel__11CGameStatusFv,0x00408E40,high,"decrements current level, updates snapshot, and reports further retreat"
-CODE_07_Control.bin,0x000033C8,IncSkill__11CGameStatusFUc,0x00408E60,high,advances the four normal skill packs with optional wrap and resets level
-CODE_07_Control.bin,0x00003425,NoOfLevelsInSkill__11CGameStatusFi,0x00408F30,high,exact skill-to-level-count switch 24/25/28/21/11
-CODE_07_Control.bin,0x00003481,NextLevelAvailable__11CGameStatusFv,0x00408FA0,high,availability predicate compares current level with the active unlock cap
-CODE_07_Control.bin,0x000034BF,LastLevelAvailable__11CGameStatusFv,0x00408FD0,high,returns whether current level is nonzero for previous navigation
-CODE_07_Control.bin,0x0000354E,SetMaxLevel__11CGameStatusFii,0x00408FE0,high,clamps a skill cap and protects the active current level
-CODE_07_Control.bin,0x0000358A,Level__11CGameStatusFi,0x00409070,high,sets current level and matching per-skill snapshot; exact overload tail
-CODE_07_Control.bin,0x000035BA,Level__11CGameStatusFv,0x00409080,high,returns selected-level snapshot for active skill; live level-mode callers
+CODE_07_Control.bin,0x000033C8,IncSkill__11CGameStatusFUc,0x00408E60,high,"advances the four normal skill packs with optional wrap and resets level"
+CODE_07_Control.bin,0x00003425,NoOfLevelsInSkill__11CGameStatusFi,0x00408F30,high,"exact skill-to-level-count switch 24/25/28/21/11"
+CODE_07_Control.bin,0x00003481,NextLevelAvailable__11CGameStatusFv,0x00408FA0,high,"availability predicate compares current level with the active unlock cap"
+CODE_07_Control.bin,0x000034BF,LastLevelAvailable__11CGameStatusFv,0x00408FD0,high,"returns whether current level is nonzero for previous navigation"
+CODE_07_Control.bin,0x0000354E,SetMaxLevel__11CGameStatusFii,0x00408FE0,high,"clamps a skill cap and protects the active current level"
+CODE_07_Control.bin,0x0000358A,Level__11CGameStatusFi,0x00409070,high,"sets current level and matching per-skill snapshot; exact overload tail"
+CODE_07_Control.bin,0x000035BA,Level__11CGameStatusFv,0x00409080,high,"returns selected-level snapshot for active skill; live level-mode callers"
 CODE_06_AI.bin,0x000091DD,__ct__11CGameObjectF11eObjectTypeUsUs,0x00414F30,high,"constructor installs base table, allocates destination queue, and registers object"
-CODE_06_AI.bin,0x000092BE,Restart__11CGameObjectFv,0x004150D0,high,lifecycle successor resets runtime and command state
+CODE_06_AI.bin,0x000092BE,Restart__11CGameObjectFv,0x004150D0,high,"lifecycle successor resets runtime and command state"
 CODE_06_AI.bin,0x00009352,__dt__11CGameObjectFv,0x00415160,high,"paired destructor releases id, registration, and destination queue"
-CODE_06_AI.bin,0x000093C6,Initialise__11CGameObjectFv,0x004151B0,high,clears the complete shared object state field set
-CODE_06_AI.bin,0x0000949B,StartFly__11CGameObjectFR9C3DVectorP9C3DVector,0x00415240,high,two vector-shaped inputs initialize flight motion state
-CODE_06_AI.bin,0x000097B4,Fly__11CGameObjectFv,0x00415300,high,advances gravity and flight motion state
-CODE_06_AI.bin,0x000097EB,RotateClockwise__11CGameObjectFv,0x00415520,high,increments and wraps the eight-way heading
-CODE_06_AI.bin,0x0000982B,RotateAnticlockwise__11CGameObjectFv,0x00415550,high,decrements and wraps the eight-way heading
-CODE_06_AI.bin,0x00009A90,StartMoving__11CGameObjectFv,0x00415580,high,advances the queued movement path and motion state
-CODE_06_AI.bin,0x00009ADE,StopMoving__11CGameObjectFv,0x00415780,high,removes first command and resets motion
-CODE_06_AI.bin,0x00009B9C,MapCheck__11CGameObjectFii,0x004157B0,high,samples map tile flags for the supplied coordinates
-CODE_06_AI.bin,0x00009C7E,StartRoute__11CGameObjectFv,0x00415830,high,starts shared tile reachability search
-CODE_06_AI.bin,0x00009EB2,SearchRoute__11CGameObjectFv,0x004158B0,high,services the active reachability search
-CODE_06_AI.bin,0x0000A24E,Move__11CGameObjectFv,0x00415A30,high,performs queued path motion with height and collision checks
-CODE_06_AI.bin,0x0000A321,TurnToFaceDestination__11CGameObjectFv,0x00415D90,high,derives destination octant and rotates toward first queued point
-CODE_06_AI.bin,0x0000A3BB,FacingDestination__11CGameObjectFv,0x00415E20,high,compares heading with first queued destination octant
-CODE_06_AI.bin,0x0000A46D,DeleteFirstEntryFromDestinationList__11CGameObjectFv,0x00415E80,high,removes the first destination-list entry
-CODE_06_AI.bin,0x0000A4F1,AddDestination__11CGameObjectFRC7AICOORD,0x00415EF0,high,appends one coordinate to the destination queue
-CODE_06_AI.bin,0x0000A5F9,AlterDestination__11CGameObjectFRC7AICOORD,0x00415F30,high,prepends/changes destination then advances command state
-CODE_06_AI.bin,0x0000A68E,GetDestination__11CGameObjectFv,0x00416000,high,returns first destination or current position
-CODE_06_AI.bin,0x0000A6CD,DestinationExists__11CGameObjectFv,0x004160C0,high,tests destination queue count
-CODE_06_AI.bin,0x0000A705,EmptyDestinationList__11CGameObjectFv,0x004160E0,high,clears destination queue count
-CODE_06_AI.bin,0x0000A76B,GetBoundingBox__11CGameObjectFR7CVSRect,0x004160F0,high,writes a centered 48 by 48 rectangle to output
-CODE_06_AI.bin,0x0000AB53,OnLift__11CGameObjectFR8tCoord3d,0x00416340,high,point-bounds overload updates object height inside lift bounds
-CODE_06_AI.bin,0x0000AC61,OnLift__11CGameObjectFR8tCoord3dR8tCoord3d,0x00416420,high,two-point bounds overload updates object height inside lift rectangle
-CODE_06_AI.bin,0x0000ADA0,IsSelectable__11CGameObjectFv,0x00416570,high,state predicate excludes inactive/unselectable states
-CODE_06_AI.bin,0x0000AE37,ResetInstructions__11CGameObjectFv,0x00416590,high,clears interruptible child command and pending state
-CODE_06_AI.bin,0x0000AE96,Init__11CGameObjectFP3CAI,0x004165E0,high,initializes global object-id tables and records active AI owner
-CODE_06_AI.bin,0x0000AEC2,GetId__11CGameObjectFv,0x00416610,high,direct read of the shared 16-bit object id
-CODE_06_AI.bin,0x0000AEF8,SetId__11CGameObjectFUs,0x00416620,high,stores and claims the supplied object id
-CODE_06_AI.bin,0x0000AF76,ReSetId__11CGameObjectFv,0x00416640,high,releases and clears the same object-id bitmap slot
-CODE_06_AI.bin,0x0000AFEC,NextId__11CGameObjectFv,0x00416670,high,low-to-high free object-id allocator
-CODE_06_AI.bin,0x0000B05E,NextLoadingId__11CGameObjectFv,0x004166A0,high,high-to-low loading object-id allocator
-CODE_06_AI.bin,0x0000B126,RegisterId__11CGameObjectFv,0x00416740,high,registers current object id in shared bitmap
-CODE_06_AI.bin,0x0000B1C3,UpdateCollision__11CGameObjectFv,0x004167C0,high,rebuilds six collision bounds fields from position
-CODE_06_AI.bin,0x0000B21C,StartLand__11CGameObjectFv,0x00416820,high,dispatches terrain and object contacts from current tile
-CODE_11_views_2d.bin,0x00008424,CancelMoves__3C2DFv,0x00437250,high,event 3 clears selection fields and restores resource mode 0x25
-CODE_11_views_2d.bin,0x00008488,NextGroup__3C2DFv,0x004372A0,high,event 7 clears selection fields and enters group mode 0x1b
-CODE_11_views_2d.bin,0x000084EA,PrevGroup__3C2DFv,0x004372F0,high,event 6 clears selection fields and enters group mode 0x1b
-CODE_11_views_2d.bin,0x00004C46,DrawObject__3C2DFR9CViewData,0x0043DC70,high,Windows object-type dispatcher selects the same per-object render families from one CViewData-shaped record
+CODE_06_AI.bin,0x000093C6,Initialise__11CGameObjectFv,0x004151B0,high,"clears the complete shared object state field set"
+CODE_06_AI.bin,0x0000949B,StartFly__11CGameObjectFR9C3DVectorP9C3DVector,0x00415240,high,"two vector-shaped inputs initialize flight motion state"
+CODE_06_AI.bin,0x000097B4,Fly__11CGameObjectFv,0x00415300,high,"advances gravity and flight motion state"
+CODE_06_AI.bin,0x000097EB,RotateClockwise__11CGameObjectFv,0x00415520,high,"increments and wraps the eight-way heading"
+CODE_06_AI.bin,0x0000982B,RotateAnticlockwise__11CGameObjectFv,0x00415550,high,"decrements and wraps the eight-way heading"
+CODE_06_AI.bin,0x00009A90,StartMoving__11CGameObjectFv,0x00415580,high,"advances the queued movement path and motion state"
+CODE_06_AI.bin,0x00009ADE,StopMoving__11CGameObjectFv,0x00415780,high,"removes first command and resets motion"
+CODE_06_AI.bin,0x00009B9C,MapCheck__11CGameObjectFii,0x004157B0,high,"samples map tile flags for the supplied coordinates"
+CODE_06_AI.bin,0x00009C7E,StartRoute__11CGameObjectFv,0x00415830,high,"starts shared tile reachability search"
+CODE_06_AI.bin,0x00009EB2,SearchRoute__11CGameObjectFv,0x004158B0,high,"services the active reachability search"
+CODE_06_AI.bin,0x0000A24E,Move__11CGameObjectFv,0x00415A30,high,"performs queued path motion with height and collision checks"
+CODE_06_AI.bin,0x0000A321,TurnToFaceDestination__11CGameObjectFv,0x00415D90,high,"derives destination octant and rotates toward first queued point"
+CODE_06_AI.bin,0x0000A3BB,FacingDestination__11CGameObjectFv,0x00415E20,high,"compares heading with first queued destination octant"
+CODE_06_AI.bin,0x0000A46D,DeleteFirstEntryFromDestinationList__11CGameObjectFv,0x00415E80,high,"removes the first destination-list entry"
+CODE_06_AI.bin,0x0000A4F1,AddDestination__11CGameObjectFRC7AICOORD,0x00415EF0,high,"appends one coordinate to the destination queue"
+CODE_06_AI.bin,0x0000A5F9,AlterDestination__11CGameObjectFRC7AICOORD,0x00415F30,high,"prepends/changes destination then advances command state"
+CODE_06_AI.bin,0x0000A68E,GetDestination__11CGameObjectFv,0x00416000,high,"returns first destination or current position"
+CODE_06_AI.bin,0x0000A6CD,DestinationExists__11CGameObjectFv,0x004160C0,high,"tests destination queue count"
+CODE_06_AI.bin,0x0000A705,EmptyDestinationList__11CGameObjectFv,0x004160E0,high,"clears destination queue count"
+CODE_06_AI.bin,0x0000A76B,GetBoundingBox__11CGameObjectFR7CVSRect,0x004160F0,high,"writes a centered 48 by 48 rectangle to output"
+CODE_06_AI.bin,0x0000AB53,OnLift__11CGameObjectFR8tCoord3d,0x00416340,high,"point-bounds overload updates object height inside lift bounds"
+CODE_06_AI.bin,0x0000AC61,OnLift__11CGameObjectFR8tCoord3dR8tCoord3d,0x00416420,high,"two-point bounds overload updates object height inside lift rectangle"
+CODE_06_AI.bin,0x0000ADA0,IsSelectable__11CGameObjectFv,0x00416570,high,"state predicate excludes inactive/unselectable states"
+CODE_06_AI.bin,0x0000AE37,ResetInstructions__11CGameObjectFv,0x00416590,high,"clears interruptible child command and pending state"
+CODE_06_AI.bin,0x0000AE96,Init__11CGameObjectFP3CAI,0x004165E0,high,"initializes global object-id tables and records active AI owner"
+CODE_06_AI.bin,0x0000AEC2,GetId__11CGameObjectFv,0x00416610,high,"direct read of the shared 16-bit object id"
+CODE_06_AI.bin,0x0000AEF8,SetId__11CGameObjectFUs,0x00416620,high,"stores and claims the supplied object id"
+CODE_06_AI.bin,0x0000AF76,ReSetId__11CGameObjectFv,0x00416640,high,"releases and clears the same object-id bitmap slot"
+CODE_06_AI.bin,0x0000AFEC,NextId__11CGameObjectFv,0x00416670,high,"low-to-high free object-id allocator"
+CODE_06_AI.bin,0x0000B05E,NextLoadingId__11CGameObjectFv,0x004166A0,high,"high-to-low loading object-id allocator"
+CODE_06_AI.bin,0x0000B126,RegisterId__11CGameObjectFv,0x00416740,high,"registers current object id in shared bitmap"
+CODE_06_AI.bin,0x0000B1C3,UpdateCollision__11CGameObjectFv,0x004167C0,high,"rebuilds six collision bounds fields from position"
+CODE_06_AI.bin,0x0000B21C,StartLand__11CGameObjectFv,0x00416820,high,"dispatches terrain and object contacts from current tile"
+CODE_11_views_2d.bin,0x00008424,CancelMoves__3C2DFv,0x00437250,high,"event 3 clears selection fields and restores resource mode 0x25"
+CODE_11_views_2d.bin,0x00008488,NextGroup__3C2DFv,0x004372A0,high,"event 7 clears selection fields and enters group mode 0x1b"
+CODE_11_views_2d.bin,0x000084EA,PrevGroup__3C2DFv,0x004372F0,high,"event 6 clears selection fields and enters group mode 0x1b"
+CODE_11_views_2d.bin,0x00004C46,DrawObject__3C2DFR9CViewData,0x0043DC70,high,"Windows object-type dispatcher selects the same per-object render families from one CViewData-shaped record"
 CODE_11_views_2d.bin,0x0000228A,LemmingFly__3C2DFR9CViewDataRi,0x0043BCE0,high,"Both implementations combine direction with view rotation, sample terrain height, derive elapsed frames using `15/1000`, and clamp to `0..6` or `7..12`. Called from the corresponding `DrawLemming` body."
-CODE_11_views_2d.bin,0x000023AB,DrawLemmingFlyShadow__3C2DFR9CViewData,0x0043BDE0,high,Corresponding `DrawLemming` caller; both terrain-sample and transform the position before emitting marker resource `0x96`.
+CODE_11_views_2d.bin,0x000023AB,DrawLemmingFlyShadow__3C2DFR9CViewData,0x0043BDE0,high,"Corresponding `DrawLemming` caller; both terrain-sample and transform the position before emitting marker resource `0x96`."
 CODE_11_views_2d.bin,0x000024C3,DrawLemmingJump__3C2DFR9CViewDataUc,0x0043BEE0,high,"Exact helper position in both `DrawLemming` call graphs; directional resource table, elapsed-frame split, and optional player remap agree."
-CODE_11_views_2d.bin,0x000025A9,DrawLemmingLanding__3C2DFR9CViewDataUc,0x0043BFC0,high,Exact corresponding late-phase helper call; both force the `+7` frame phase and clamp at `12`.
-CODE_11_views_2d.bin,0x000025EB,DrawLemmingFall__3C2DFR9CViewDataUc,0x0043C070,high,Both are thin wrappers around the jump/directional renderer; exact caller position in `DrawLemming`.
-CODE_11_views_2d.bin,0x00002723,DrawLemmingExternal__3C2DFR9CViewDataUc,0x0043C090,high,Exact corresponding `DrawLemming` helper; state-dependent resources/frames and optional remap behavior agree.
+CODE_11_views_2d.bin,0x000025A9,DrawLemmingLanding__3C2DFR9CViewDataUc,0x0043BFC0,high,"Exact corresponding late-phase helper call; both force the `+7` frame phase and clamp at `12`."
+CODE_11_views_2d.bin,0x000025EB,DrawLemmingFall__3C2DFR9CViewDataUc,0x0043C070,high,"Both are thin wrappers around the jump/directional renderer; exact caller position in `DrawLemming`."
+CODE_11_views_2d.bin,0x00002723,DrawLemmingExternal__3C2DFR9CViewDataUc,0x0043C090,high,"Exact corresponding `DrawLemming` helper; state-dependent resources/frames and optional remap behavior agree."
 CODE_11_views_2d.bin,0x000027C5,DrawLemmingOnConveyor__3C2DFR9CViewDataUc,0x0043C1A0,high,"Independently distinctive body: elapsed `15/1000`, modulo `8`, resource `0x3F`, offsets `(-15,-22)`, optional remap."
-CODE_11_views_2d.bin,0x00002C1D,DrawLemming__3C2DFR9CViewDataiUc,0x0043C200,high,x86 object dispatcher cases `1/2`; internal subtype dispatcher invokes the same six named helpers with matching conditions and arguments.
-CODE_11_views_2d.bin,0x00002CAE,DrawBullet__3C2DFR9CViewDatai,0x0043C610,high,Macintosh and x86 `DrawObject` dispatch case `3`; both use direction-rotated resource selection.
-CODE_11_views_2d.bin,0x00002D80,DrawAmmo__3C2DFR9CViewDatai,0x0043C660,high,Exact `DrawObject` case `5`; distinctive state split and resources `0x7C/0x82`.
-CODE_11_views_2d.bin,0x00002EBE,DrawRocket__3C2DFR9CViewData,0x0043C6E0,high,Exact dispatcher case `0x20`; distinctive segmented timer sequence using resource `0x88`.
-CODE_11_views_2d.bin,0x00002F92,DrawHand__3C2DFR9CViewData,0x0043C7F0,high,Exact dispatcher case `0x1F`; state-gated timed frame sequence and remap handling agree.
-CODE_11_views_2d.bin,0x00003089,DrawLemmingOnBalloon__3C2DFR9CViewDataiUc,0x0043C8A0,high,Called from the corresponding lemming subtype path; both terrain-sample and emit the same two-layer overlay pattern.
+CODE_11_views_2d.bin,0x00002C1D,DrawLemming__3C2DFR9CViewDataiUc,0x0043C200,high,"x86 object dispatcher cases `1/2`; internal subtype dispatcher invokes the same six named helpers with matching conditions and arguments."
+CODE_11_views_2d.bin,0x00002CAE,DrawBullet__3C2DFR9CViewDatai,0x0043C610,high,"Macintosh and x86 `DrawObject` dispatch case `3`; both use direction-rotated resource selection."
+CODE_11_views_2d.bin,0x00002D80,DrawAmmo__3C2DFR9CViewDatai,0x0043C660,high,"Exact `DrawObject` case `5`; distinctive state split and resources `0x7C/0x82`."
+CODE_11_views_2d.bin,0x00002EBE,DrawRocket__3C2DFR9CViewData,0x0043C6E0,high,"Exact dispatcher case `0x20`; distinctive segmented timer sequence using resource `0x88`."
+CODE_11_views_2d.bin,0x00002F92,DrawHand__3C2DFR9CViewData,0x0043C7F0,high,"Exact dispatcher case `0x1F`; state-gated timed frame sequence and remap handling agree."
+CODE_11_views_2d.bin,0x00003089,DrawLemmingOnBalloon__3C2DFR9CViewDataiUc,0x0043C8A0,high,"Called from the corresponding lemming subtype path; both terrain-sample and emit the same two-layer overlay pattern."
 CODE_11_views_2d.bin,0x00003188,DrawBalloon__3C2DFR9CViewDatai,0x0043C940,high,"Exact dispatcher cases `0x27/0x29/0x2B/0x2D`, with player indices `3/1/4/0`; paired moving marker behavior agrees."
 CODE_11_views_2d.bin,0x000031FD,DrawBalloonPost__3C2DFR9CViewDatai,0x0043C9F0,high,"Exact dispatcher cases `0x28/0x2A/0x2C/0x2E`, with the same `3/1/4/0` index matrix; single marker entry."
-CODE_11_views_2d.bin,0x000032C9,DrawTrampoline__3C2DFR9CViewData,0x0043CA30,high,Exact dispatcher case `0x22`; state `0x18/0x1B` and capped timed resource `0x97`.
-CODE_11_views_2d.bin,0x000033D2,DrawMover__3C2DFR9CViewData,0x0043CAC0,high,Exact dispatcher case `0x34`; mode-selected frame/resource path plus animated alternate path.
+CODE_11_views_2d.bin,0x000032C9,DrawTrampoline__3C2DFR9CViewData,0x0043CA30,high,"Exact dispatcher case `0x22`; state `0x18/0x1B` and capped timed resource `0x97`."
+CODE_11_views_2d.bin,0x000033D2,DrawMover__3C2DFR9CViewData,0x0043CAC0,high,"Exact dispatcher case `0x34`; mode-selected frame/resource path plus animated alternate path."
 CODE_11_views_2d.bin,0x00003594,DrawSlinky__3C2DFR9CViewData,0x0043CBB0,high,"Exact dispatcher case `0x35`; indexed offsets, four-resource selection, and timed state sequence agree."
-CODE_11_views_2d.bin,0x000036BA,DrawPaintGun__3C2DFR9CViewData,0x0043CD50,high,Exact dispatcher case `0x21`; distinctive multi-phase primary/secondary sequence.
-CODE_11_views_2d.bin,0x00003766,DrawLaserFire__3C2DFR9CViewData,0x0043CE30,high,Exact dispatcher cases `0x26/0x32`; type-selected resources `0x8F/0x8D`.
-CODE_11_views_2d.bin,0x00003864,DrawLaser__3C2DFR9CViewData,0x0043CEA0,high,Exact dispatcher cases `0x1E/0x2F/0x30/0x31`; same two type groups and timed resources `0x8C/0x8E`.
-CODE_11_views_2d.bin,0x0000395B,DrawDuplicator__3C2DFR9CViewData,0x0043CFA0,high,Exact dispatcher case `0x1C`; progress-driven resource `0x89`.
-CODE_11_views_2d.bin,0x00003A2E,DrawCrate__3C2DFR9CViewDatai,0x0043D070,high,Exact dispatcher case `0x11`; fixed/timed resources `0x86/0x87`.
-CODE_11_views_2d.bin,0x00003AAA,DrawTimeBonus__3C2DFR9CViewData,0x0043D0F0,high,Exact dispatcher case `0x1B`; indexed resource `0x85`.
-CODE_11_views_2d.bin,0x00003D5C,DrawCatapult__3C2DFR9CViewDatai,0x0043D130,high,Exact dispatcher case `4`; distinctive composite resource `0x74` sequence.
-CODE_11_views_2d.bin,0x00003E4E,DrawSheep__3C2DFR9CViewDatai,0x0043D370,high,Exact dispatcher case `7`; lookup-table animation behavior.
-CODE_11_views_2d.bin,0x00003F38,DrawBall__3C2DFR9CViewData,0x0043D420,high,Exact dispatcher case `9`; fixed/timed resources `0x7D/0x7E`.
+CODE_11_views_2d.bin,0x000036BA,DrawPaintGun__3C2DFR9CViewData,0x0043CD50,high,"Exact dispatcher case `0x21`; distinctive multi-phase primary/secondary sequence."
+CODE_11_views_2d.bin,0x00003766,DrawLaserFire__3C2DFR9CViewData,0x0043CE30,high,"Exact dispatcher cases `0x26/0x32`; type-selected resources `0x8F/0x8D`."
+CODE_11_views_2d.bin,0x00003864,DrawLaser__3C2DFR9CViewData,0x0043CEA0,high,"Exact dispatcher cases `0x1E/0x2F/0x30/0x31`; same two type groups and timed resources `0x8C/0x8E`."
+CODE_11_views_2d.bin,0x0000395B,DrawDuplicator__3C2DFR9CViewData,0x0043CFA0,high,"Exact dispatcher case `0x1C`; progress-driven resource `0x89`."
+CODE_11_views_2d.bin,0x00003A2E,DrawCrate__3C2DFR9CViewDatai,0x0043D070,high,"Exact dispatcher case `0x11`; fixed/timed resources `0x86/0x87`."
+CODE_11_views_2d.bin,0x00003AAA,DrawTimeBonus__3C2DFR9CViewData,0x0043D0F0,high,"Exact dispatcher case `0x1B`; indexed resource `0x85`."
+CODE_11_views_2d.bin,0x00003D5C,DrawCatapult__3C2DFR9CViewDatai,0x0043D130,high,"Exact dispatcher case `4`; distinctive composite resource `0x74` sequence."
+CODE_11_views_2d.bin,0x00003E4E,DrawSheep__3C2DFR9CViewDatai,0x0043D370,high,"Exact dispatcher case `7`; lookup-table animation behavior."
+CODE_11_views_2d.bin,0x00003F38,DrawBall__3C2DFR9CViewData,0x0043D420,high,"Exact dispatcher case `9`; fixed/timed resources `0x7D/0x7E`."
 CODE_11_views_2d.bin,0x00003FAA,DrawKey__3C2DFR9CViewDatai,0x0043D4B0,high,"Exact dispatcher cases `0x15/0x16/0x17`, passed indices `3/1/4`; resource `0xB2`."
-CODE_11_views_2d.bin,0x0000407C,DrawMine__3C2DFR9CViewData,0x0043D500,high,Exact dispatcher case `0x13`; state-dependent resources `0x83/0x84`.
-CODE_11_views_2d.bin,0x000042DC,DrawDoor__3C2DFR9CViewData,0x0043D590,high,Exact dispatcher cases `0x19/0x1A`; distinctive two-layer timed door sequence.
-CODE_11_views_2d.bin,0x000043EC,DrawSwitch__3C2DFR9CViewData,0x0043D7E0,high,Exact dispatcher case `0x14`; switch-state-selected rendering.
+CODE_11_views_2d.bin,0x0000407C,DrawMine__3C2DFR9CViewData,0x0043D500,high,"Exact dispatcher case `0x13`; state-dependent resources `0x83/0x84`."
+CODE_11_views_2d.bin,0x000042DC,DrawDoor__3C2DFR9CViewData,0x0043D590,high,"Exact dispatcher cases `0x19/0x1A`; distinctive two-layer timed door sequence."
+CODE_11_views_2d.bin,0x000043EC,DrawSwitch__3C2DFR9CViewData,0x0043D7E0,high,"Exact dispatcher case `0x14`; switch-state-selected rendering."
 CODE_11_views_2d.bin,0x000044B1,DrawFlag__3C2DFR9CViewData11eObjectType,0x0043D8D0,high,"Exact dispatcher cases `0x0B/0x0C`, passing the object type into one shared renderer."
-CODE_11_views_2d.bin,0x0000452C,DrawBonus__3C2DFR9CViewData,0x0043D950,high,Exact dispatcher case `0x12`; fixed-frame entry.
-CODE_11_views_2d.bin,0x0000485A,DrawTrapDoor__3C2DFR9CViewData,0x0043D990,high,Exact dispatcher case `0x18`; distinctive multi-stage states `0x1F..0x23` and primary/secondary animation layers.
+CODE_11_views_2d.bin,0x0000452C,DrawBonus__3C2DFR9CViewData,0x0043D950,high,"Exact dispatcher case `0x12`; fixed-frame entry."
+CODE_11_views_2d.bin,0x0000485A,DrawTrapDoor__3C2DFR9CViewData,0x0043D990,high,"Exact dispatcher case `0x18`; distinctive multi-stage states `0x1F..0x23` and primary/secondary animation layers."
 CODE_11_views_2d.bin,0x000057F0,DrawDemo__3C2DFv,0x0043FCE0,high,"Both toggle a demo icon every `500 ms`, render resource `0xF8`, and are selected by the top-level draw routine during demo playback."
 CODE_11_views_2d.bin,0x00005900,DrawTime__3C2DFv,0x0043FD80,high,"Both clamp at `599`, format `m:ss`, cache the previous value, and submit text resource `0x115`."
-CODE_11_views_2d.bin,0x0000591C,DrawPaused__3C2DFv,0x0043FE70,high,Both bodies are genuine no-ops; both occupy the corresponding top-level draw call position.
+CODE_11_views_2d.bin,0x0000591C,DrawPaused__3C2DFv,0x0043FE70,high,"Both bodies are genuine no-ops; both occupy the corresponding top-level draw call position."
 CODE_11_views_2d.bin,0x00005A20,DrawScore__3C2DFv,0x0043FE80,high,"Both advance by `10` or `100`, cap at `9,999,999`, generate exactly seven digits, and use resource `0x115`."
-CODE_11_views_2d.bin,0x00005A4C,ViewDataCmp__FPCvPCv,0x0043FF60,high,Both comparator bodies return the subtraction of the depth field (`+0x38` Mac versus `+0x48` x86 due to platform record layout).
-CODE_11_views_2d.bin,0x00005AEE,SortViewData__3C2DFv,0x0043FF70,high,Both compute each record’s depth key and quicksort the view-data array using the comparator; record strides are platform-specific `0x3C` versus `0x4C`.
+CODE_11_views_2d.bin,0x00005A4C,ViewDataCmp__FPCvPCv,0x0043FF60,high,"Both comparator bodies return the subtraction of the depth field (`+0x38` Mac versus `+0x48` x86 due to platform record layout)."
+CODE_11_views_2d.bin,0x00005AEE,SortViewData__3C2DFv,0x0043FF70,high,"Both compute each record’s depth key and quicksort the view-data array using the comparator; record strides are platform-specific `0x3C` versus `0x4C`."
 CODE_11_views_2d.bin,0x00005F90,Draw__3C2DFRC7CVSRect,0x00440000,high,"Top-level call graph agrees: reset, object/depth rendering, then demo versus time/score paths and paused hook."
-CODE_11_views_2d.bin,0x0000603C,ResetPrimitives__3C2DFv,0x00440400,high,Called at the same top-level draw phase; resets the render target/upload state and per-frame primitive counters. Platform-specific backend calls differ as expected.
+CODE_11_views_2d.bin,0x0000603C,ResetPrimitives__3C2DFv,0x00440400,high,"Called at the same top-level draw phase; resets the render target/upload state and per-frame primitive counters. Platform-specific backend calls differ as expected."
 CODE_11_views_2d.bin,0x0000608E,DrawZBuff_Sprite__3C2DFiUs,0x00440460,high,"Both set the current depth value and dispatch one dynamic record through `DrawObject`; strides are Mac `0x3C`, x86 `0x4C`."
 CODE_11_views_2d.bin,0x00006190,DrawZBuff_Anim__3C2DFiUs,0x00440490,high,"Both transform static animation coordinates, set depth, optionally emit repeated columns, then emit the mapped static entry."
 CODE_11_views_2d.bin,0x000063FA,DrawObjectsZBuff__3C2DFv,0x00440560,high,"Both transform and sort dynamic entries, then merge dynamic sprites with static animation entries by depth; x86 callees directly include sort, dynamic draw, static draw, and sort-key calculation."
-CODE_11_views_2d.bin,0x000064AA,CalcZValue_Sprite__3C2DFi,0x004407E0,high,Both return `0x7FFF` for object type `0x18`; otherwise return `z + CalcGroundCode(...) + 1`.
+CODE_11_views_2d.bin,0x000064AA,CalcZValue_Sprite__3C2DFi,0x004407E0,high,"Both return `0x7FFF` for object type `0x18`; otherwise return `z + CalcGroundCode(...) + 1`."
 CODE_11_views_2d.bin,0x00006729,CalcGroundCode__3C2DF11eObjectTypeiiUs,0x00440840,high,"Same object-type exceptions, tile-coordinate normalization, four neighboring terrain samples, collision-edge tests, and `0x40/0x80` depth-bias results."
 CODE_11_views_2d.bin,0x0000742A,RegisterRemaps__3C2DFv,0x004363C0,high,"loads palette 0x2e, builds four indexed remaps plus one special remap, and stores all five handles"
 CODE_11_views_2d.bin,0x00007476,UnRegisterRemaps__3C2DFv,0x00436480,high,releases the five consecutive palette-remap handles created by RegisterRemaps
@@ -608,166 +608,166 @@ CODE_06_AI.bin,0x000031CB,FindPost__12CBalloonPostF11eObjectTypeR7AICOORD,0x0042
 CODE_06_AI.bin,0x0000336A,Process__12CBalloonPostFv,0x0042A170,high,"samples terrain height for each active post and updates child coordinates; exact Mac body/signature and Windows ABI, four-record layout, subtype constants, terrain and loader behavior corroborate ownership"
 CODE_06_AI.bin,0x0000345B,GetViewData__12CBalloonPostFP9CViewData,0x0042A320,high,"emits one child view record per active post bit; exact Mac body/signature and Windows ABI, four-record layout, subtype constants, terrain and loader behavior corroborate ownership"
 CODE_06_AI.bin,0x000035C7,LoadLevel__12CBalloonPostFPUciUc,0x0042A4E0,high,"loads active mask and four fixed-point post coordinates; exact Mac body/signature and Windows ABI, four-record layout, subtype constants, terrain and loader behavior corroborate ownership"
-CODE_06_AI.bin,0x00020576,__ct__11CTrampolineFv,0x0042A990,high,constructs level chunk type 0x22 and installs TRAM vtable
-CODE_06_AI.bin,0x000205B4,Restart__11CTrampolineFv,0x0042A9B0,high,resets managed runtime and clears timestamp configured and active fields
-CODE_06_AI.bin,0x00020616,__dt__11CTrampolineFv,0x0042A9D0,high,restores TRAM vtable and destroys level chunk base
-CODE_06_AI.bin,0x000206C0,Set__11CTrampolineFUsRC7AICOORD,0x0042A9E0,high,stores slot and fixed coordinates enters state 0x18 and marks terrain metadata
-CODE_06_AI.bin,0x0002076C,Process__11CTrampolineFv,0x0042AA80,high,mirrors state changes and returns state 0x1b to idle after deadline
-CODE_06_AI.bin,0x00020BC7,Hit__11CTrampolineFRC7AICOORDP11CGameObject,0x0042AB90,high,tests 3D overlap emits bounded impulse enters cooldown and awards score
-CODE_06_AI.bin,0x00020C63,__ct__18CTrampolineManagerFP3CAIi,0x0042AF60,high,constructs EFF stream 0x18 payload 0x0d and records owner capacity
-CODE_06_AI.bin,0x00020CCE,Restart__18CTrampolineManagerFv,0x0042AFC0,high,restarts every child using 0x144 byte stride
-CODE_06_AI.bin,0x00020D9D,Initialise__18CTrampolineManagerFi,0x0042AFF0,high,allocates and constructs the 0x144 byte child array
-CODE_06_AI.bin,0x00020E1E,__dt__18CTrampolineManagerFv,0x0042B090,high,deletes child array and destroys EFF stream base
-CODE_06_AI.bin,0x00020EAA,Process__18CTrampolineManagerFv,0x0042B4A0,high,activates and processes each configured child
-CODE_06_AI.bin,0x00020F35,GetViewData__18CTrampolineManagerFP9CViewData,0x0042B4F0,high,emits 0x4c byte view records for active children
-CODE_06_AI.bin,0x00020FB7,Hit__18CTrampolineManagerFRC7AICOORDP11CGameObject,0x0042B550,high,returns after first child applies trampoline impulse
-CODE_06_AI.bin,0x00021070,Add__18CTrampolineManagerFUsiii,0x0042B5A0,high,converts integer coordinates to fixed point and appends one child
-CODE_06_AI.bin,0x00021143,LoadLevel__18CTrampolineManagerFPUciUc,0x0042B600,high,loads versioned slot IDs and coordinates through Add
-CODE_06_AI.bin,0x0001B29E,__ct__9CPaintGunFv,0x0042BAD0,high,constructs level chunk type 0x21 and installs PGUN vtable
-CODE_06_AI.bin,0x0001B2DE,Restart__9CPaintGunFv,0x0042BAF0,high,resets managed runtime and clears timestamp active configured and subtype fields
-CODE_06_AI.bin,0x0001B33C,__dt__9CPaintGunFv,0x0042BB20,high,restores PGUN vtable and destroys level chunk base
-CODE_06_AI.bin,0x0001B3EC,Set__9CPaintGunFUsRC7AICOORDi,0x0042BB30,high,stores slot fixed coordinates and subtype enters state 0x18 and marks tile metadata
-CODE_06_AI.bin,0x0001B890,Process__9CPaintGunFv,0x0042BBE0,high,runs timed firing states and emits four directional projectiles
-CODE_06_AI.bin,0x0001B914,__ct__16CPaintGunManagerFP3CAIi,0x0042BFE0,high,constructs EFF stream 0x1f payload 0x14 and records owner capacity
-CODE_06_AI.bin,0x0001B97C,Restart__16CPaintGunManagerFv,0x0042C040,high,restarts every child using 0x144 byte stride
-CODE_06_AI.bin,0x0001BA49,Initialise__16CPaintGunManagerFi,0x0042C070,high,allocates constructs and owns the 0x144 byte child array
-CODE_06_AI.bin,0x0001BAC8,__dt__16CPaintGunManagerFv,0x0042C120,high,deletes child array and destroys EFF stream base
-CODE_06_AI.bin,0x0001BB52,Process__16CPaintGunManagerFv,0x0042C4D0,high,marks and processes every configured active child
-CODE_06_AI.bin,0x0001BBDB,GetViewData__16CPaintGunManagerFP9CViewData,0x0042C520,high,emits 0x4c byte view records for active children
-CODE_06_AI.bin,0x0001BCAC,Add__16CPaintGunManagerFUsiiii,0x0042C590,high,converts coordinates to fixed point appends child and stores subtype
-CODE_06_AI.bin,0x0001BD99,LoadLevel__16CPaintGunManagerFPUciUc,0x0042C610,high,loads versioned slot coordinates and subtype records through Add
-CODE_06_AI.bin,0x0001179A,__ct__4CIceFv,0x0042CA70,high,constructs level chunk type 0x33 and installs ICE vtable
-CODE_06_AI.bin,0x000117C6,Restart__4CIceFv,0x0042CA90,high,restarts inherited runtime then calls CIce Initialise
-CODE_06_AI.bin,0x00011804,Initialise__4CIceFv,0x0042CAB0,high,clears runtime flags attached count and records current tick
-CODE_06_AI.bin,0x00011860,__dt__4CIceFv,0x0042CAF0,high,restores ICE vtable and destroys level chunk base
-CODE_06_AI.bin,0x00011A19,Set__4CIceFUsRC8tCoord3dRC8tCoord3diiUc,0x0042CB00,high,stores endpoints movement and activation marks covered terrain and samples heights
-CODE_06_AI.bin,0x00011FF8,Process__4CIceFv,0x0042CD70,high,moves attached entities toggles activation and redispatches terrain contacts
-CODE_06_AI.bin,0x00012151,StepOn__4CIceFRC7AICOORDP11CGameObject,0x0042D380,high,attaches eligible entities inside bounds to the ten-entry held list
-CODE_06_AI.bin,0x000121EC,Leave__4CIceFP14CPlayerLemming,0x0042D4D0,high,removes the matching lemming from the attached entity list
-CODE_06_AI.bin,0x00012434,Switched__4CIceFv,0x0042D560,high,releases held entities when disabled and refreshes activation timestamp when enabled
-CODE_06_AI.bin,0x000124B4,__ct__11CIceManagerFP3CAIi,0x0042D7A0,high,constructs EFF stream 0x19 payload 0x0e and records owner capacity
-CODE_06_AI.bin,0x00012518,Restart__11CIceManagerFv,0x0042D800,high,restarts every child using 0x188 byte stride
-CODE_06_AI.bin,0x000125E0,Initialise__11CIceManagerFi,0x0042D830,high,allocates constructs and owns the 0x188 byte child array
-CODE_06_AI.bin,0x0001265A,__dt__11CIceManagerFv,0x0042D8E0,high,deletes child array and destroys EFF stream base
-CODE_06_AI.bin,0x000126B2,Process__11CIceManagerFv,0x0042DD00,high,processes every configured child
-CODE_06_AI.bin,0x000126DF,GetViewData__11CIceManagerFP9CViewData,0x0042DD30,high,exact constant-zero Macintosh view method
-CODE_06_AI.bin,0x00012759,StepOn__11CIceManagerFRC7AICOORDP11CGameObject,0x0042DD40,high,tries each child until one accepts the entity
-CODE_06_AI.bin,0x00012871,Add__11CIceManagerFUsRC8tCoord3dRC8tCoord3diiUc,0x0042DDF0,high,appends one bounded moving ICE rectangle
-CODE_06_AI.bin,0x000129C8,LoadLevel__11CIceManagerFPUciUc,0x0042DEA0,high,loads versioned endpoints movement activation and slot records through Add
-CODE_07_Control.bin,0x00001C1C,__ct__5CGameFPc,0x00406DF0,high,constructs the main game context resource archive views audio modes and startup path
-CODE_07_Control.bin,0x00001D98,__dt__5CGameFv,0x004071D0,high,tears down active mode view resources audio network state and progress data
-CODE_07_Control.bin,0x00001E4A,IsValidResource__5CGameFv,0x00407300,high,decodes resource 0x100 and validates the expected master version string
-CODE_07_Control.bin,0x00001EAA,LoadFrontendResources__5CGameFi,0x004073B0,high,lazily constructs the frontend variant resource helper for requested mode mask
-CODE_07_Control.bin,0x00001EF7,UnLoadFrontendResources__5CGameFv,0x004073F0,high,destroys frees and clears the frontend resource helper
-CODE_07_Control.bin,0x0000234D,NextProcess__5CGameF14eFlowProcesses,0x00407420,high,destroys current process creates the requested flow process and switches the active view
-CODE_07_Control.bin,0x000024F4,Process__5CGameFv,0x004077E0,high,updates active view and process handles transition and quit requests and network service
-CODE_07_Control.bin,0x00002586,RefreshViews__5CGameFv,0x004078F0,high,presents the active view with refresh timing accounting
-CODE_07_Control.bin,0x0000266C,Run__5CGameFv,0x00407950,high,runs message process and refresh loop until quit
-CODE_07_Control.bin,0x00000B0E,__ct__5CDemoFi,0x004091B0,high,constructs the demo controller registers render dispatch at priority -100 and resets playback state
-CODE_07_Control.bin,0x00000B78,__dt__5CDemoFv,0x00409220,high,releases demo data unregisters render dispatch and restores the base vtable
-CODE_07_Control.bin,0x00000E1C,SendNextPacket__5CDemoFi,0x00409250,high,dispatches all recorded input packets for the requested frame
-CODE_07_Control.bin,0x00000F6A,LoadBuffer__5CDemoFv,0x00409460,high,loads resource or file backed demo data and primes the record cursor
-CODE_07_Control.bin,0x00001012,GetUserPacket__5CDemoFPUcRUl,0x00409560,high,reads one length-prefixed user packet and advances remaining data
-CODE_07_Control.bin,0x00001050,Reset__5CDemoFv,0x004095E0,high,resets buffer sentinel frame timeout stop and cursor state
-CODE_07_Control.bin,0x00001092,SetDemoMode__5CDemoFUc,0x00409600,high,enables playback with reset or disables it with cleanup
-CODE_07_Control.bin,0x00001102,Process__5CDemoFv,0x00409620,high,services timed playback and dispatches all packets for the current frame
-CODE_07_Control.bin,0x00001164,CleanUp__5CDemoFv,0x00409660,high,releases resource or owned file buffer and clears pointers
-CODE_07_Control.bin,0x00001192,GameIsOver__5CDemoFv,0x004096A0,high,marks playback stopped and cleans up the active buffer
-CODE_07_Control.bin,0x00001205,ProcessMsg__5CDemoFP10tagMESSAGE,0x004096B0,high,filters live input and passes synthetic recorded messages
-CODE_07_Control.bin,0x000026AC,__ct__12CLevelLoaderFP3CAI,0x00408210,high,constructs the 8-byte loader context with CAI owner level path and cleared level cursor
-CODE_07_Control.bin,0x00002CB5,LoadLevel__12CLevelLoaderF6eSkilliUc,0x00408240,high,loads and dispatches the complete tagged level chunk stream for skill level and player
-CODE_07_Control.bin,0x00002D61,LocateStartOfLevelFile__12CLevelLoaderFv,0x004087B0,high,opens reads and owns the override level file buffer
-CODE_07_Control.bin,0x00002DCF,GetNextBlockHeader__12CLevelLoaderFP18tagLoadBlockHeader,0x00408830,high,returns first or aligned next tagged level block header
-CODE_07_Control.bin,0x000031D9,RetrievePreviewData__12CLevelLoaderF6eSkilliP12tPreviewData,0x00408850,high,reads AI player count name and network totals into preview data
-CODE_07_Control.bin,0x0000326F,CalcLevelID__12CLevelLoaderF6eSkilli,0x00408B00,high,calculates the BIN resource id from skill-specific bases and level
-CODE_07_Control.bin,0x000000D8,VSPreInit__FP11tagPRE_INIT,0x00406160,high,copies and finalizes startup graphics configuration including icon and supported dimensions
-CODE_07_Control.bin,0x00000790,VSmain__FiPPc,0x00406310,high,runs the complete game session lifecycle from command line through CGame and cleanup
-CODE_07_Control.bin,0x000008C6,ReturnFacingDirection__Fiiii,0x00413E80,high,computes the same eight-way fixed-point direction octant between points
-CODE_07_Control.bin,0x0000095A,Distance__Fiiii,0x00413F80,high,computes Euclidean integer point distance through CVSMath square root
-CODE_07_Control.bin,0x00000A14,_DEMO_Init__Fi,0x00409150,high,allocates and constructs the global CDemo controller for the requested interval
-CODE_07_Control.bin,0x00000A5E,_DEMO_Quit__Fv,0x00409180,high,deletes and clears the global CDemo controller
-CODE_07_Control.bin,0x00001238,ClockEditMode__FUc,0x00408080,high,sets the level frame clock pause edit-mode flag
-CODE_07_Control.bin,0x0000128E,ResetGameTimes__Fv,0x00408090,high,clears frame clocks and seeds time and 50ms tick baselines
-CODE_07_Control.bin,0x00001374,SetGameTime__Fv,0x004080D0,high,advances demo or live game time with pause and jump-clamp behavior
-CODE_07_Control.bin,0x000013C0,SetRemoteGameTimeReal__FUl,0x00408190,high,accepts newer remote time and updates its 50ms frame index
-CODE_06_AI.bin,0x00012A18,__ct__16CInvisibleSwitchFv,0x00409CA0,high,constructs chunk type 0x36 and installs the invisible-switch vtable
-CODE_06_AI.bin,0x00012A52,Restart__16CInvisibleSwitchFv,0x00409CC0,high,resets inherited state then invisible-switch runtime fields
-CODE_06_AI.bin,0x00012A9D,Initialise__16CInvisibleSwitchFv,0x00409CE0,high,clears trigger action tracked-object and sound state
-CODE_06_AI.bin,0x00012B06,__dt__16CInvisibleSwitchFv,0x00409D10,high,restores the class vtable and destroys the chunk-object base
-CODE_06_AI.bin,0x00012C63,Set__16CInvisibleSwitchFRC8tCoord3dRC8tCoord3d,0x00409D70,high,normalizes two coordinate bounds marks grid cells and resets tracked objects
-CODE_06_AI.bin,0x00012D61,VerifyObjects__16CInvisibleSwitchFv,0x00409EC0,high,prunes tracked objects outside the expanded switch bounds
-CODE_06_AI.bin,0x00012DCF,AddObject__16CInvisibleSwitchFP11CGameObject,0x00409F70,high,appends a tracked object and records this switch slot id
-CODE_06_AI.bin,0x00012E8B,StepOn__16CInvisibleSwitchFRC7AICOORDP11CGameObject,0x00409FA0,high,tests contact bounds and requests activation for a new object
-CODE_06_AI.bin,0x00012EF1,DoActivate__16CInvisibleSwitchFv,0x0040A020,high,dispatches the activation score or sound action once
-CODE_06_AI.bin,0x00012FF6,Process__16CInvisibleSwitchFv,0x0040A050,high,verifies tracked objects and performs the activation action sequence
-CODE_06_AI.bin,0x00013120,Load__16CInvisibleSwitchFRPUc,0x0040A110,high,loads slot bounds versioned type and action records through a byte cursor
-CODE_06_AI.bin,0x000131AD,__ct__23CInvisibleSwitchManagerFP3CAIi,0x0040A210,high,constructs the manager stream and records owner capacity and object array
-CODE_06_AI.bin,0x0001321D,Restart__23CInvisibleSwitchManagerFv,0x0040A270,high,restarts every allocated invisible switch at stride 0x2B8
-CODE_06_AI.bin,0x000132F1,Initialise__23CInvisibleSwitchManagerFi,0x0040A2A0,high,allocates constructs restarts and binds the invisible-switch array
-CODE_06_AI.bin,0x00013373,__dt__23CInvisibleSwitchManagerFv,0x0040A350,high,destroys the owned switch array and manager stream base
-CODE_06_AI.bin,0x000133DF,StepOn__23CInvisibleSwitchManagerFRC7AICOORDP11CGameObject,0x0040A370,high,dispatches contact to each active invisible switch
-CODE_06_AI.bin,0x0001345D,Process__23CInvisibleSwitchManagerFv,0x0040A3B0,high,processes each active invisible switch through its virtual slot
-CODE_06_AI.bin,0x000134E9,LoadLevel__23CInvisibleSwitchManagerFPUciUc,0x0040A490,high,allocates and loads all serialized invisible switches
-CODE_06_AI.bin,0x00014618,__ct__5CLiftFv,0x00424D00,high,constructs chunk type 0x212 and installs the lift vtable
-CODE_06_AI.bin,0x00014670,__dt__5CLiftFv,0x00424D20,high,restores the lift vtable and destroys the chunk-object base
-CODE_06_AI.bin,0x0001478E,CalculateCliff__5CLiftFv,0x00424D30,high,refreshes boundary tile-column cliff counts around the lift footprint
-CODE_06_AI.bin,0x00014959,Edit__5CLiftFisii17eLiftActivateTypeUc,0x00424DF0,high,initializes lift motion bounds modes tile flags and runtime state
-CODE_06_AI.bin,0x000149D9,Set__5CLiftFiiisii17eLiftActivateTypeUc,0x00425010,high,converts the legacy coordinate form and delegates to endpoint setup
-CODE_06_AI.bin,0x00014AC9,Set__5CLiftFR8tCoord3dR8tCoord3dsii17eLiftActivateTypeUc,0x00425060,high,copies endpoint coordinates assigns id and initializes lift behavior
-CODE_06_AI.bin,0x00014DDA,Process__5CLiftFv,0x00425100,high,advances the timed lift state machine and updates covered tile heights
-CODE_06_AI.bin,0x00014E86,CheckObjects__5CLiftFv,0x00425440,high,prunes stale or detached lift passengers from eight object slots
-CODE_06_AI.bin,0x00014FD1,StepOn__5CLiftFRC7AICOORDP11CGameObject,0x004254A0,high,tests footprint and platform height then attaches and activates objects
-CODE_06_AI.bin,0x00015024,Activate__5CLiftFv,0x00425640,high,sets active state and requests managed state 0x19
-CODE_06_AI.bin,0x0001506E,ActivateDeactivate__5CLiftFv,0x00425660,high,activates an idle lift or requests deactivation state 8
-CODE_06_AI.bin,0x000150FA,__ct__12CLiftManagerFP3CAIi,0x00425680,high,constructs stream type 0x12 payload 7 and stores owner and capacity
-CODE_06_AI.bin,0x00015164,Restart__12CLiftManagerFv,0x004256E0,high,resets the lift id allocator and every allocated lift
-CODE_06_AI.bin,0x0001522C,Initialise__12CLiftManagerFi,0x00425720,high,allocates constructs binds and restarts a contiguous 0x190-stride lift array
-CODE_06_AI.bin,0x000152A2,__dt__12CLiftManagerFv,0x004257C0,high,destroys the lift array then inherited stream state
-CODE_06_AI.bin,0x00015328,Process__12CLiftManagerFv,0x00425D30,high,processes and prunes each active lift
-CODE_06_AI.bin,0x0001538B,StepOn__12CLiftManagerFRC7AICOORDP11CGameObject,0x00425D80,high,dispatches entity contact across all active lifts
-CODE_06_AI.bin,0x000154EB,GetViewData__12CLiftManagerFP9CViewData,0x00425DF0,high,emits one complete view record for each active lift
-CODE_06_AI.bin,0x000155F3,Switch__12CLiftManagerF9swMessageiii,0x00425F10,high,dispatches activate or toggle action to the addressed lift slot
-CODE_06_AI.bin,0x00015650,Id__12CLiftManagerFi,0x00425F90,high,returns lift slot id by index or 0xffff out of range
-CODE_06_AI.bin,0x000158DD,LoadLevel__12CLiftManagerFPUciUc,0x00425FC0,high,loads version-dependent lift records with legacy and endpoint layouts
-CODE_06_AI.bin,0x00015924,__ct__5CMazeFP4CMap,0x00423090,high,constructs the maze around CMap and clears row grid frontier banks dimensions and counters
-CODE_06_AI.bin,0x00015992,__dt__5CMazeFv,0x004230C0,high,frees every allocated distance row and the row pointer table
-CODE_06_AI.bin,0x00015A0C,ReInitialise__5CMazeFv,0x00423110,high,refills the 16-bit passability grid from map tile flag bit zero
-CODE_06_AI.bin,0x00015AC0,Initialise__5CMazeFv,0x00423190,high,resizes row storage to map dimensions then reinitialises passability
-CODE_06_AI.bin,0x00015BB2,CalcNewDistance__5CMazeFii,0x00423230,high,relaxes one reachable tile from nine edge-mask-constrained neighbors
-CODE_06_AI.bin,0x00015C70,FindSquare__5CMazeFUsRiRi,0x004232E0,high,steps backward to an adjacent tile carrying the requested distance
-CODE_06_AI.bin,0x00015D86,UpdateChangeNext__5CMazeFii,0x00423380,high,marks the bounded 3 by 3 neighborhood in both frontier banks
-CODE_06_AI.bin,0x00015DF0,Clear__5CMazeFPUc,0x004234A0,high,clears one fixed-stride frontier bitset over active maze dimensions
-CODE_06_AI.bin,0x00015E42,SwapChange__5CMazeFv,0x004234F0,high,clears the inactive frontier bank then toggles banks
-CODE_06_AI.bin,0x00015F34,BInitialise__5CMazeFUciiii,0x00423530,high,seeds timed breadth search coordinates grids and initial frontier
-CODE_06_AI.bin,0x00016106,BIteration__5CMazeFRUcRUc,0x00423650,high,expands one bounded wavefront iteration and reports found or exhausted state
-CODE_06_AI.bin,0x00016156,Direction__Fiiii,0x00423890,high,computes the direction code used to retain only path turns
-CODE_06_AI.bin,0x00016260,BSolution__5CMazeFRiP9tSolution,0x004238B0,high,walks decreasing distances and emits endpoint and turn solution points
-CODE_06_AI.bin,0x000167D4,__ct__12CMineManagerFP3CAIi,0x00424020,high,constructs stream type 0x0d payload 2 and stores owner capacity object and position arrays
-CODE_06_AI.bin,0x00016838,Restart__12CMineManagerFv,0x00424080,high,restarts each allocated 0x150-stride mine object
-CODE_06_AI.bin,0x0001691E,Initialise__12CMineManagerFi,0x004240B0,high,allocates constructs indexes binds and restarts mines plus six-byte position cache entries
-CODE_06_AI.bin,0x000169A8,__dt__12CMineManagerFv,0x00424170,high,destroys the mine array and position cache then inherited stream state
-CODE_06_AI.bin,0x000169E5,Triggered__12CMineManagerFP5CMine,0x00424560,high,forwards triggering mine index and delay to nearby-mine propagation
-CODE_06_AI.bin,0x00016B06,Trigger__12CMineManagerFii,0x00424580,high,propagates delayed state 0x1a within squared distance 0x801 excluding source
-CODE_06_AI.bin,0x00016C2B,StepOn__12CMineManagerFRC7AICOORDP11CGameObject,0x00424630,high,tests active mines in an eight-pixel contact box then notifies and propagates
-CODE_06_AI.bin,0x00016D24,Add__12CMineManagerFUs7AICOORD,0x00424710,high,assigns slot seeds a mine and caches its three tile coordinates
-CODE_06_AI.bin,0x00016DCA,Process__12CMineManagerFv,0x004247B0,high,resamples ground marks dirty and services pending active mines
-CODE_06_AI.bin,0x00016E3D,GetViewData__12CMineManagerFP9CViewData,0x00424800,high,emits one 0x4c-byte view record per active mine
-CODE_06_AI.bin,0x00016F69,LoadLevel__12CMineManagerFPUciUc,0x00424850,high,loads versioned slot ids and fixed-point mine coordinates
-CODE_06_AI.bin,0x00006302,Restart__5CDoorFv,0x0040D490,high,restarts the managed entity base runtime state
-CODE_06_AI.bin,0x0000659A,Set__5CDoorF11eObjectTypeUsiii,0x0040D4A0,high,initializes type key position sequence state and vertical or horizontal tile footprint
-CODE_06_AI.bin,0x000066AE,Delete__5CDoorFv,0x0040D760,high,clears occupancy flags across the door footprint
-CODE_06_AI.bin,0x0000677A,SetCollision__5CDoorFv,0x0040D910,high,sets blocking flags on vertical or horizontal door footprint tiles
-CODE_06_AI.bin,0x0000684C,ResetCollision__5CDoorFv,0x0040DA40,high,clears blocking flags on vertical or horizontal door footprint tiles
-CODE_06_AI.bin,0x000069E0,Process__5CDoorFv,0x0040DB80,high,services delayed open and close states timestamps and collision transitions
+CODE_06_AI.bin,0x00020576,__ct__11CTrampolineFv,0x0042A990,high,"constructs level chunk type 0x22 and installs TRAM vtable"
+CODE_06_AI.bin,0x000205B4,Restart__11CTrampolineFv,0x0042A9B0,high,"resets managed runtime and clears timestamp configured and active fields"
+CODE_06_AI.bin,0x00020616,__dt__11CTrampolineFv,0x0042A9D0,high,"restores TRAM vtable and destroys level chunk base"
+CODE_06_AI.bin,0x000206C0,Set__11CTrampolineFUsRC7AICOORD,0x0042A9E0,high,"stores slot and fixed coordinates enters state 0x18 and marks terrain metadata"
+CODE_06_AI.bin,0x0002076C,Process__11CTrampolineFv,0x0042AA80,high,"mirrors state changes and returns state 0x1b to idle after deadline"
+CODE_06_AI.bin,0x00020BC7,Hit__11CTrampolineFRC7AICOORDP11CGameObject,0x0042AB90,high,"tests 3D overlap emits bounded impulse enters cooldown and awards score"
+CODE_06_AI.bin,0x00020C63,__ct__18CTrampolineManagerFP3CAIi,0x0042AF60,high,"constructs EFF stream 0x18 payload 0x0d and records owner capacity"
+CODE_06_AI.bin,0x00020CCE,Restart__18CTrampolineManagerFv,0x0042AFC0,high,"restarts every child using 0x144 byte stride"
+CODE_06_AI.bin,0x00020D9D,Initialise__18CTrampolineManagerFi,0x0042AFF0,high,"allocates and constructs the 0x144 byte child array"
+CODE_06_AI.bin,0x00020E1E,__dt__18CTrampolineManagerFv,0x0042B090,high,"deletes child array and destroys EFF stream base"
+CODE_06_AI.bin,0x00020EAA,Process__18CTrampolineManagerFv,0x0042B4A0,high,"activates and processes each configured child"
+CODE_06_AI.bin,0x00020F35,GetViewData__18CTrampolineManagerFP9CViewData,0x0042B4F0,high,"emits 0x4c byte view records for active children"
+CODE_06_AI.bin,0x00020FB7,Hit__18CTrampolineManagerFRC7AICOORDP11CGameObject,0x0042B550,high,"returns after first child applies trampoline impulse"
+CODE_06_AI.bin,0x00021070,Add__18CTrampolineManagerFUsiii,0x0042B5A0,high,"converts integer coordinates to fixed point and appends one child"
+CODE_06_AI.bin,0x00021143,LoadLevel__18CTrampolineManagerFPUciUc,0x0042B600,high,"loads versioned slot IDs and coordinates through Add"
+CODE_06_AI.bin,0x0001B29E,__ct__9CPaintGunFv,0x0042BAD0,high,"constructs level chunk type 0x21 and installs PGUN vtable"
+CODE_06_AI.bin,0x0001B2DE,Restart__9CPaintGunFv,0x0042BAF0,high,"resets managed runtime and clears timestamp active configured and subtype fields"
+CODE_06_AI.bin,0x0001B33C,__dt__9CPaintGunFv,0x0042BB20,high,"restores PGUN vtable and destroys level chunk base"
+CODE_06_AI.bin,0x0001B3EC,Set__9CPaintGunFUsRC7AICOORDi,0x0042BB30,high,"stores slot fixed coordinates and subtype enters state 0x18 and marks tile metadata"
+CODE_06_AI.bin,0x0001B890,Process__9CPaintGunFv,0x0042BBE0,high,"runs timed firing states and emits four directional projectiles"
+CODE_06_AI.bin,0x0001B914,__ct__16CPaintGunManagerFP3CAIi,0x0042BFE0,high,"constructs EFF stream 0x1f payload 0x14 and records owner capacity"
+CODE_06_AI.bin,0x0001B97C,Restart__16CPaintGunManagerFv,0x0042C040,high,"restarts every child using 0x144 byte stride"
+CODE_06_AI.bin,0x0001BA49,Initialise__16CPaintGunManagerFi,0x0042C070,high,"allocates constructs and owns the 0x144 byte child array"
+CODE_06_AI.bin,0x0001BAC8,__dt__16CPaintGunManagerFv,0x0042C120,high,"deletes child array and destroys EFF stream base"
+CODE_06_AI.bin,0x0001BB52,Process__16CPaintGunManagerFv,0x0042C4D0,high,"marks and processes every configured active child"
+CODE_06_AI.bin,0x0001BBDB,GetViewData__16CPaintGunManagerFP9CViewData,0x0042C520,high,"emits 0x4c byte view records for active children"
+CODE_06_AI.bin,0x0001BCAC,Add__16CPaintGunManagerFUsiiii,0x0042C590,high,"converts coordinates to fixed point appends child and stores subtype"
+CODE_06_AI.bin,0x0001BD99,LoadLevel__16CPaintGunManagerFPUciUc,0x0042C610,high,"loads versioned slot coordinates and subtype records through Add"
+CODE_06_AI.bin,0x0001179A,__ct__4CIceFv,0x0042CA70,high,"constructs level chunk type 0x33 and installs ICE vtable"
+CODE_06_AI.bin,0x000117C6,Restart__4CIceFv,0x0042CA90,high,"restarts inherited runtime then calls CIce Initialise"
+CODE_06_AI.bin,0x00011804,Initialise__4CIceFv,0x0042CAB0,high,"clears runtime flags attached count and records current tick"
+CODE_06_AI.bin,0x00011860,__dt__4CIceFv,0x0042CAF0,high,"restores ICE vtable and destroys level chunk base"
+CODE_06_AI.bin,0x00011A19,Set__4CIceFUsRC8tCoord3dRC8tCoord3diiUc,0x0042CB00,high,"stores endpoints movement and activation marks covered terrain and samples heights"
+CODE_06_AI.bin,0x00011FF8,Process__4CIceFv,0x0042CD70,high,"moves attached entities toggles activation and redispatches terrain contacts"
+CODE_06_AI.bin,0x00012151,StepOn__4CIceFRC7AICOORDP11CGameObject,0x0042D380,high,"attaches eligible entities inside bounds to the ten-entry held list"
+CODE_06_AI.bin,0x000121EC,Leave__4CIceFP14CPlayerLemming,0x0042D4D0,high,"removes the matching lemming from the attached entity list"
+CODE_06_AI.bin,0x00012434,Switched__4CIceFv,0x0042D560,high,"releases held entities when disabled and refreshes activation timestamp when enabled"
+CODE_06_AI.bin,0x000124B4,__ct__11CIceManagerFP3CAIi,0x0042D7A0,high,"constructs EFF stream 0x19 payload 0x0e and records owner capacity"
+CODE_06_AI.bin,0x00012518,Restart__11CIceManagerFv,0x0042D800,high,"restarts every child using 0x188 byte stride"
+CODE_06_AI.bin,0x000125E0,Initialise__11CIceManagerFi,0x0042D830,high,"allocates constructs and owns the 0x188 byte child array"
+CODE_06_AI.bin,0x0001265A,__dt__11CIceManagerFv,0x0042D8E0,high,"deletes child array and destroys EFF stream base"
+CODE_06_AI.bin,0x000126B2,Process__11CIceManagerFv,0x0042DD00,high,"processes every configured child"
+CODE_06_AI.bin,0x000126DF,GetViewData__11CIceManagerFP9CViewData,0x0042DD30,high,"exact constant-zero Macintosh view method"
+CODE_06_AI.bin,0x00012759,StepOn__11CIceManagerFRC7AICOORDP11CGameObject,0x0042DD40,high,"tries each child until one accepts the entity"
+CODE_06_AI.bin,0x00012871,Add__11CIceManagerFUsRC8tCoord3dRC8tCoord3diiUc,0x0042DDF0,high,"appends one bounded moving ICE rectangle"
+CODE_06_AI.bin,0x000129C8,LoadLevel__11CIceManagerFPUciUc,0x0042DEA0,high,"loads versioned endpoints movement activation and slot records through Add"
+CODE_07_Control.bin,0x00001C1C,__ct__5CGameFPc,0x00406DF0,high,"constructs the main game context resource archive views audio modes and startup path"
+CODE_07_Control.bin,0x00001D98,__dt__5CGameFv,0x004071D0,high,"tears down active mode view resources audio network state and progress data"
+CODE_07_Control.bin,0x00001E4A,IsValidResource__5CGameFv,0x00407300,high,"decodes resource 0x100 and validates the expected master version string"
+CODE_07_Control.bin,0x00001EAA,LoadFrontendResources__5CGameFi,0x004073B0,high,"lazily constructs the frontend variant resource helper for requested mode mask"
+CODE_07_Control.bin,0x00001EF7,UnLoadFrontendResources__5CGameFv,0x004073F0,high,"destroys frees and clears the frontend resource helper"
+CODE_07_Control.bin,0x0000234D,NextProcess__5CGameF14eFlowProcesses,0x00407420,high,"destroys current process creates the requested flow process and switches the active view"
+CODE_07_Control.bin,0x000024F4,Process__5CGameFv,0x004077E0,high,"updates active view and process handles transition and quit requests and network service"
+CODE_07_Control.bin,0x00002586,RefreshViews__5CGameFv,0x004078F0,high,"presents the active view with refresh timing accounting"
+CODE_07_Control.bin,0x0000266C,Run__5CGameFv,0x00407950,high,"runs message process and refresh loop until quit"
+CODE_07_Control.bin,0x00000B0E,__ct__5CDemoFi,0x004091B0,high,"constructs the demo controller registers render dispatch at priority -100 and resets playback state"
+CODE_07_Control.bin,0x00000B78,__dt__5CDemoFv,0x00409220,high,"releases demo data unregisters render dispatch and restores the base vtable"
+CODE_07_Control.bin,0x00000E1C,SendNextPacket__5CDemoFi,0x00409250,high,"dispatches all recorded input packets for the requested frame"
+CODE_07_Control.bin,0x00000F6A,LoadBuffer__5CDemoFv,0x00409460,high,"loads resource or file backed demo data and primes the record cursor"
+CODE_07_Control.bin,0x00001012,GetUserPacket__5CDemoFPUcRUl,0x00409560,high,"reads one length-prefixed user packet and advances remaining data"
+CODE_07_Control.bin,0x00001050,Reset__5CDemoFv,0x004095E0,high,"resets buffer sentinel frame timeout stop and cursor state"
+CODE_07_Control.bin,0x00001092,SetDemoMode__5CDemoFUc,0x00409600,high,"enables playback with reset or disables it with cleanup"
+CODE_07_Control.bin,0x00001102,Process__5CDemoFv,0x00409620,high,"services timed playback and dispatches all packets for the current frame"
+CODE_07_Control.bin,0x00001164,CleanUp__5CDemoFv,0x00409660,high,"releases resource or owned file buffer and clears pointers"
+CODE_07_Control.bin,0x00001192,GameIsOver__5CDemoFv,0x004096A0,high,"marks playback stopped and cleans up the active buffer"
+CODE_07_Control.bin,0x00001205,ProcessMsg__5CDemoFP10tagMESSAGE,0x004096B0,high,"filters live input and passes synthetic recorded messages"
+CODE_07_Control.bin,0x000026AC,__ct__12CLevelLoaderFP3CAI,0x00408210,high,"constructs the 8-byte loader context with CAI owner level path and cleared level cursor"
+CODE_07_Control.bin,0x00002CB5,LoadLevel__12CLevelLoaderF6eSkilliUc,0x00408240,high,"loads and dispatches the complete tagged level chunk stream for skill level and player"
+CODE_07_Control.bin,0x00002D61,LocateStartOfLevelFile__12CLevelLoaderFv,0x004087B0,high,"opens reads and owns the override level file buffer"
+CODE_07_Control.bin,0x00002DCF,GetNextBlockHeader__12CLevelLoaderFP18tagLoadBlockHeader,0x00408830,high,"returns first or aligned next tagged level block header"
+CODE_07_Control.bin,0x000031D9,RetrievePreviewData__12CLevelLoaderF6eSkilliP12tPreviewData,0x00408850,high,"reads AI player count name and network totals into preview data"
+CODE_07_Control.bin,0x0000326F,CalcLevelID__12CLevelLoaderF6eSkilli,0x00408B00,high,"calculates the BIN resource id from skill-specific bases and level"
+CODE_07_Control.bin,0x000000D8,VSPreInit__FP11tagPRE_INIT,0x00406160,high,"copies and finalizes startup graphics configuration including icon and supported dimensions"
+CODE_07_Control.bin,0x00000790,VSmain__FiPPc,0x00406310,high,"runs the complete game session lifecycle from command line through CGame and cleanup"
+CODE_07_Control.bin,0x000008C6,ReturnFacingDirection__Fiiii,0x00413E80,high,"computes the same eight-way fixed-point direction octant between points"
+CODE_07_Control.bin,0x0000095A,Distance__Fiiii,0x00413F80,high,"computes Euclidean integer point distance through CVSMath square root"
+CODE_07_Control.bin,0x00000A14,_DEMO_Init__Fi,0x00409150,high,"allocates and constructs the global CDemo controller for the requested interval"
+CODE_07_Control.bin,0x00000A5E,_DEMO_Quit__Fv,0x00409180,high,"deletes and clears the global CDemo controller"
+CODE_07_Control.bin,0x00001238,ClockEditMode__FUc,0x00408080,high,"sets the level frame clock pause edit-mode flag"
+CODE_07_Control.bin,0x0000128E,ResetGameTimes__Fv,0x00408090,high,"clears frame clocks and seeds time and 50ms tick baselines"
+CODE_07_Control.bin,0x00001374,SetGameTime__Fv,0x004080D0,high,"advances demo or live game time with pause and jump-clamp behavior"
+CODE_07_Control.bin,0x000013C0,SetRemoteGameTimeReal__FUl,0x00408190,high,"accepts newer remote time and updates its 50ms frame index"
+CODE_06_AI.bin,0x00012A18,__ct__16CInvisibleSwitchFv,0x00409CA0,high,"constructs chunk type 0x36 and installs the invisible-switch vtable"
+CODE_06_AI.bin,0x00012A52,Restart__16CInvisibleSwitchFv,0x00409CC0,high,"resets inherited state then invisible-switch runtime fields"
+CODE_06_AI.bin,0x00012A9D,Initialise__16CInvisibleSwitchFv,0x00409CE0,high,"clears trigger action tracked-object and sound state"
+CODE_06_AI.bin,0x00012B06,__dt__16CInvisibleSwitchFv,0x00409D10,high,"restores the class vtable and destroys the chunk-object base"
+CODE_06_AI.bin,0x00012C63,Set__16CInvisibleSwitchFRC8tCoord3dRC8tCoord3d,0x00409D70,high,"normalizes two coordinate bounds marks grid cells and resets tracked objects"
+CODE_06_AI.bin,0x00012D61,VerifyObjects__16CInvisibleSwitchFv,0x00409EC0,high,"prunes tracked objects outside the expanded switch bounds"
+CODE_06_AI.bin,0x00012DCF,AddObject__16CInvisibleSwitchFP11CGameObject,0x00409F70,high,"appends a tracked object and records this switch slot id"
+CODE_06_AI.bin,0x00012E8B,StepOn__16CInvisibleSwitchFRC7AICOORDP11CGameObject,0x00409FA0,high,"tests contact bounds and requests activation for a new object"
+CODE_06_AI.bin,0x00012EF1,DoActivate__16CInvisibleSwitchFv,0x0040A020,high,"dispatches the activation score or sound action once"
+CODE_06_AI.bin,0x00012FF6,Process__16CInvisibleSwitchFv,0x0040A050,high,"verifies tracked objects and performs the activation action sequence"
+CODE_06_AI.bin,0x00013120,Load__16CInvisibleSwitchFRPUc,0x0040A110,high,"loads slot bounds versioned type and action records through a byte cursor"
+CODE_06_AI.bin,0x000131AD,__ct__23CInvisibleSwitchManagerFP3CAIi,0x0040A210,high,"constructs the manager stream and records owner capacity and object array"
+CODE_06_AI.bin,0x0001321D,Restart__23CInvisibleSwitchManagerFv,0x0040A270,high,"restarts every allocated invisible switch at stride 0x2B8"
+CODE_06_AI.bin,0x000132F1,Initialise__23CInvisibleSwitchManagerFi,0x0040A2A0,high,"allocates constructs restarts and binds the invisible-switch array"
+CODE_06_AI.bin,0x00013373,__dt__23CInvisibleSwitchManagerFv,0x0040A350,high,"destroys the owned switch array and manager stream base"
+CODE_06_AI.bin,0x000133DF,StepOn__23CInvisibleSwitchManagerFRC7AICOORDP11CGameObject,0x0040A370,high,"dispatches contact to each active invisible switch"
+CODE_06_AI.bin,0x0001345D,Process__23CInvisibleSwitchManagerFv,0x0040A3B0,high,"processes each active invisible switch through its virtual slot"
+CODE_06_AI.bin,0x000134E9,LoadLevel__23CInvisibleSwitchManagerFPUciUc,0x0040A490,high,"allocates and loads all serialized invisible switches"
+CODE_06_AI.bin,0x00014618,__ct__5CLiftFv,0x00424D00,high,"constructs chunk type 0x212 and installs the lift vtable"
+CODE_06_AI.bin,0x00014670,__dt__5CLiftFv,0x00424D20,high,"restores the lift vtable and destroys the chunk-object base"
+CODE_06_AI.bin,0x0001478E,CalculateCliff__5CLiftFv,0x00424D30,high,"refreshes boundary tile-column cliff counts around the lift footprint"
+CODE_06_AI.bin,0x00014959,Edit__5CLiftFisii17eLiftActivateTypeUc,0x00424DF0,high,"initializes lift motion bounds modes tile flags and runtime state"
+CODE_06_AI.bin,0x000149D9,Set__5CLiftFiiisii17eLiftActivateTypeUc,0x00425010,high,"converts the legacy coordinate form and delegates to endpoint setup"
+CODE_06_AI.bin,0x00014AC9,Set__5CLiftFR8tCoord3dR8tCoord3dsii17eLiftActivateTypeUc,0x00425060,high,"copies endpoint coordinates assigns id and initializes lift behavior"
+CODE_06_AI.bin,0x00014DDA,Process__5CLiftFv,0x00425100,high,"advances the timed lift state machine and updates covered tile heights"
+CODE_06_AI.bin,0x00014E86,CheckObjects__5CLiftFv,0x00425440,high,"prunes stale or detached lift passengers from eight object slots"
+CODE_06_AI.bin,0x00014FD1,StepOn__5CLiftFRC7AICOORDP11CGameObject,0x004254A0,high,"tests footprint and platform height then attaches and activates objects"
+CODE_06_AI.bin,0x00015024,Activate__5CLiftFv,0x00425640,high,"sets active state and requests managed state 0x19"
+CODE_06_AI.bin,0x0001506E,ActivateDeactivate__5CLiftFv,0x00425660,high,"activates an idle lift or requests deactivation state 8"
+CODE_06_AI.bin,0x000150FA,__ct__12CLiftManagerFP3CAIi,0x00425680,high,"constructs stream type 0x12 payload 7 and stores owner and capacity"
+CODE_06_AI.bin,0x00015164,Restart__12CLiftManagerFv,0x004256E0,high,"resets the lift id allocator and every allocated lift"
+CODE_06_AI.bin,0x0001522C,Initialise__12CLiftManagerFi,0x00425720,high,"allocates constructs binds and restarts a contiguous 0x190-stride lift array"
+CODE_06_AI.bin,0x000152A2,__dt__12CLiftManagerFv,0x004257C0,high,"destroys the lift array then inherited stream state"
+CODE_06_AI.bin,0x00015328,Process__12CLiftManagerFv,0x00425D30,high,"processes and prunes each active lift"
+CODE_06_AI.bin,0x0001538B,StepOn__12CLiftManagerFRC7AICOORDP11CGameObject,0x00425D80,high,"dispatches entity contact across all active lifts"
+CODE_06_AI.bin,0x000154EB,GetViewData__12CLiftManagerFP9CViewData,0x00425DF0,high,"emits one complete view record for each active lift"
+CODE_06_AI.bin,0x000155F3,Switch__12CLiftManagerF9swMessageiii,0x00425F10,high,"dispatches activate or toggle action to the addressed lift slot"
+CODE_06_AI.bin,0x00015650,Id__12CLiftManagerFi,0x00425F90,high,"returns lift slot id by index or 0xffff out of range"
+CODE_06_AI.bin,0x000158DD,LoadLevel__12CLiftManagerFPUciUc,0x00425FC0,high,"loads version-dependent lift records with legacy and endpoint layouts"
+CODE_06_AI.bin,0x00015924,__ct__5CMazeFP4CMap,0x00423090,high,"constructs the maze around CMap and clears row grid frontier banks dimensions and counters"
+CODE_06_AI.bin,0x00015992,__dt__5CMazeFv,0x004230C0,high,"frees every allocated distance row and the row pointer table"
+CODE_06_AI.bin,0x00015A0C,ReInitialise__5CMazeFv,0x00423110,high,"refills the 16-bit passability grid from map tile flag bit zero"
+CODE_06_AI.bin,0x00015AC0,Initialise__5CMazeFv,0x00423190,high,"resizes row storage to map dimensions then reinitialises passability"
+CODE_06_AI.bin,0x00015BB2,CalcNewDistance__5CMazeFii,0x00423230,high,"relaxes one reachable tile from nine edge-mask-constrained neighbors"
+CODE_06_AI.bin,0x00015C70,FindSquare__5CMazeFUsRiRi,0x004232E0,high,"steps backward to an adjacent tile carrying the requested distance"
+CODE_06_AI.bin,0x00015D86,UpdateChangeNext__5CMazeFii,0x00423380,high,"marks the bounded 3 by 3 neighborhood in both frontier banks"
+CODE_06_AI.bin,0x00015DF0,Clear__5CMazeFPUc,0x004234A0,high,"clears one fixed-stride frontier bitset over active maze dimensions"
+CODE_06_AI.bin,0x00015E42,SwapChange__5CMazeFv,0x004234F0,high,"clears the inactive frontier bank then toggles banks"
+CODE_06_AI.bin,0x00015F34,BInitialise__5CMazeFUciiii,0x00423530,high,"seeds timed breadth search coordinates grids and initial frontier"
+CODE_06_AI.bin,0x00016106,BIteration__5CMazeFRUcRUc,0x00423650,high,"expands one bounded wavefront iteration and reports found or exhausted state"
+CODE_06_AI.bin,0x00016156,Direction__Fiiii,0x00423890,high,"computes the direction code used to retain only path turns"
+CODE_06_AI.bin,0x00016260,BSolution__5CMazeFRiP9tSolution,0x004238B0,high,"walks decreasing distances and emits endpoint and turn solution points"
+CODE_06_AI.bin,0x000167D4,__ct__12CMineManagerFP3CAIi,0x00424020,high,"constructs stream type 0x0d payload 2 and stores owner capacity object and position arrays"
+CODE_06_AI.bin,0x00016838,Restart__12CMineManagerFv,0x00424080,high,"restarts each allocated 0x150-stride mine object"
+CODE_06_AI.bin,0x0001691E,Initialise__12CMineManagerFi,0x004240B0,high,"allocates constructs indexes binds and restarts mines plus six-byte position cache entries"
+CODE_06_AI.bin,0x000169A8,__dt__12CMineManagerFv,0x00424170,high,"destroys the mine array and position cache then inherited stream state"
+CODE_06_AI.bin,0x000169E5,Triggered__12CMineManagerFP5CMine,0x00424560,high,"forwards triggering mine index and delay to nearby-mine propagation"
+CODE_06_AI.bin,0x00016B06,Trigger__12CMineManagerFii,0x00424580,high,"propagates delayed state 0x1a within squared distance 0x801 excluding source"
+CODE_06_AI.bin,0x00016C2B,StepOn__12CMineManagerFRC7AICOORDP11CGameObject,0x00424630,high,"tests active mines in an eight-pixel contact box then notifies and propagates"
+CODE_06_AI.bin,0x00016D24,Add__12CMineManagerFUs7AICOORD,0x00424710,high,"assigns slot seeds a mine and caches its three tile coordinates"
+CODE_06_AI.bin,0x00016DCA,Process__12CMineManagerFv,0x004247B0,high,"resamples ground marks dirty and services pending active mines"
+CODE_06_AI.bin,0x00016E3D,GetViewData__12CMineManagerFP9CViewData,0x00424800,high,"emits one 0x4c-byte view record per active mine"
+CODE_06_AI.bin,0x00016F69,LoadLevel__12CMineManagerFPUciUc,0x00424850,high,"loads versioned slot ids and fixed-point mine coordinates"
+CODE_06_AI.bin,0x00006302,Restart__5CDoorFv,0x0040D490,high,"restarts the managed entity base runtime state"
+CODE_06_AI.bin,0x0000659A,Set__5CDoorF11eObjectTypeUsiii,0x0040D4A0,high,"initializes type key position sequence state and vertical or horizontal tile footprint"
+CODE_06_AI.bin,0x000066AE,Delete__5CDoorFv,0x0040D760,high,"clears occupancy flags across the door footprint"
+CODE_06_AI.bin,0x0000677A,SetCollision__5CDoorFv,0x0040D910,high,"sets blocking flags on vertical or horizontal door footprint tiles"
+CODE_06_AI.bin,0x0000684C,ResetCollision__5CDoorFv,0x0040DA40,high,"clears blocking flags on vertical or horizontal door footprint tiles"
+CODE_06_AI.bin,0x000069E0,Process__5CDoorFv,0x0040DB80,high,"services delayed open and close states timestamps and collision transitions"
 CODE_06_AI.bin,0x00006A40,Unlock__5CDoorFv,0x0040DD00,high,states 0x1c or 0x1d delay 0x14 trigger 0x0b and state request 0x20
-CODE_06_AI.bin,0x00006A7A,IsUsable__5CDoorF7eAction,0x0040DD30,high,accepts idle closed and unlocked door action states
-CODE_06_AI.bin,0x00006BBF,Hits__5CDoorFRC7AICOORDP11CGameObject,0x0040DD80,high,tests overlap consults key callback and requests door transitions
-CODE_06_AI.bin,0x00006CDE,__ct__12CDoorManagerFP3CAIi,0x0040DF30,high,constructs stream type 0x13 payload 8 and stores owner and capacity
-CODE_06_AI.bin,0x00006D42,Restart__12CDoorManagerFv,0x0040DF90,high,restarts every allocated 0x14c-stride door
-CODE_06_AI.bin,0x00006E12,Initialise__12CDoorManagerFi,0x0040DFC0,high,allocates constructs binds and restarts the door array
-CODE_06_AI.bin,0x00006E90,__dt__12CDoorManagerFv,0x0040E060,high,destroys the door array then inherited stream state
-CODE_06_AI.bin,0x00006EFF,GetViewData__12CDoorManagerFP9CViewData,0x0040E080,high,emits one 0x4c-byte view record per active door
-CODE_06_AI.bin,0x00006FB9,Add__12CDoorManagerFUs11eObjectTypeUsiii,0x0040E0C0,high,assigns a slot initializes a door and returns its array index
-CODE_06_AI.bin,0x00007035,Open__12CDoorManagerFRC7AICOORDP11CGameObject,0x0040E500,high,dispatches overlap handling until one active door opens
-CODE_06_AI.bin,0x000070E4,Process__12CDoorManagerFv,0x0040E550,high,marks and services doors with active or delayed state
-CODE_06_AI.bin,0x000072DB,LoadLevel__12CDoorManagerFPUciUc,0x0040E630,high,loads versioned slot key type and position records
+CODE_06_AI.bin,0x00006A7A,IsUsable__5CDoorF7eAction,0x0040DD30,high,"accepts idle closed and unlocked door action states"
+CODE_06_AI.bin,0x00006BBF,Hits__5CDoorFRC7AICOORDP11CGameObject,0x0040DD80,high,"tests overlap consults key callback and requests door transitions"
+CODE_06_AI.bin,0x00006CDE,__ct__12CDoorManagerFP3CAIi,0x0040DF30,high,"constructs stream type 0x13 payload 8 and stores owner and capacity"
+CODE_06_AI.bin,0x00006D42,Restart__12CDoorManagerFv,0x0040DF90,high,"restarts every allocated 0x14c-stride door"
+CODE_06_AI.bin,0x00006E12,Initialise__12CDoorManagerFi,0x0040DFC0,high,"allocates constructs binds and restarts the door array"
+CODE_06_AI.bin,0x00006E90,__dt__12CDoorManagerFv,0x0040E060,high,"destroys the door array then inherited stream state"
+CODE_06_AI.bin,0x00006EFF,GetViewData__12CDoorManagerFP9CViewData,0x0040E080,high,"emits one 0x4c-byte view record per active door"
+CODE_06_AI.bin,0x00006FB9,Add__12CDoorManagerFUs11eObjectTypeUsiii,0x0040E0C0,high,"assigns a slot initializes a door and returns its array index"
+CODE_06_AI.bin,0x00007035,Open__12CDoorManagerFRC7AICOORDP11CGameObject,0x0040E500,high,"dispatches overlap handling until one active door opens"
+CODE_06_AI.bin,0x000070E4,Process__12CDoorManagerFv,0x0040E550,high,"marks and services doors with active or delayed state"
+CODE_06_AI.bin,0x000072DB,LoadLevel__12CDoorManagerFPUciUc,0x0040E630,high,"loads versioned slot key type and position records"
