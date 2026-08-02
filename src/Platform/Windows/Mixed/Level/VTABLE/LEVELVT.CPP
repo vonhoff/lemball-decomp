@@ -2038,6 +2038,7 @@ void LEMBALL_FASTCALL CallBallChunkEntryVfuncC8(void* pEntry, void* pUnused, int
 
 extern void* g_LEVELVT_CollChunkObjectVtable[16];
 
+// MACINTOSH: CCollectable::~CCollectable()
 // FUNCTION: LEMBALL 0x004228f0
 void LEMBALL_FASTCALL DestroyCollChunkObjectAuto(void* pObject)
 {

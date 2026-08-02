@@ -529,6 +529,7 @@ void LEMBALL_FASTCALL EmitGmobChunkType14RenderEntry(void* pObject, void* pUnuse
 	*(unsigned short*) ((char*) pRenderEntry + 0x2e) = *(unsigned short*) ((char*) pObject + 0x148);
 }
 
+// MACINTOSH: CCollectable::Process()
 // FUNCTION: LEMBALL 0x00422900
 int LEMBALL_FASTCALL AdvanceCollChunkObjectStateMachine(void* pObject)
 {

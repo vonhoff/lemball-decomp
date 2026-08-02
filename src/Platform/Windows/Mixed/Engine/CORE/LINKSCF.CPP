@@ -652,7 +652,7 @@ LinkScfPgunChunkManagerView* LinkScfPgunChunkManagerView::ConstructPgunChunkMana
 	return ConstructPgunChunkManager(pLevelMode, nCapacity);
 }
 // LINKERILT: LEMBALL 0x00402fdb
-LinkScfCollChunkManagerView* LinkScfCollChunkManagerView::ConstructCollChunkManagerThunk(void* pLevelMode,
+CCollectableManager* CCollectableManager::ConstructCollChunkManagerThunk(void* pLevelMode,
 																						 int nCapacity)
 {
 	return ConstructCollChunkManager(pLevelMode, nCapacity);
@@ -1320,8 +1320,9 @@ LinkScfEnmyChunkManagerView* LinkScfEnmyChunkManagerView::ConstructEnmyChunkMana
 	*(void**) this = &g_LINKSCF_EnmyChunkManagerVtable;
 	return this;
 }
+// MACINTOSH: CCollectableManager::CCollectableManager(CAI*, int)
 // FUNCTION: LEMBALL 0x004223c0
-LinkScfCollChunkManagerView* LinkScfCollChunkManagerView::ConstructCollChunkManager(void* pLevelMode, int nCapacity)
+CCollectableManager* CCollectableManager::ConstructCollChunkManager(void* pLevelMode, int nCapacity)
 {
 	LINKSCF_INITIALIZE_EFF_CHUNK_STREAM(this, 0x11, 6);
 	*(void**) this = g_LINKSCF_CollChunkManagerVtable;

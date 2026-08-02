@@ -46,9 +46,9 @@ struct LinkScfMineChunkManagerView {
 	LinkScfMineChunkManagerView* ConstructMineChunkManagerThunk(void* pLevelMode, int nCapacity);
 };
 
-struct LinkScfCollChunkManagerView {
-	LinkScfCollChunkManagerView* ConstructCollChunkManager(void* pLevelMode, int nCapacity);
-	LinkScfCollChunkManagerView* ConstructCollChunkManagerThunk(void* pLevelMode, int nCapacity);
+struct CCollectableManager {
+	CCollectableManager* ConstructCollChunkManager(void* pLevelMode, int nCapacity);
+	CCollectableManager* ConstructCollChunkManagerThunk(void* pLevelMode, int nCapacity);
 };
 
 struct LinkScfGmobChunkManagerView {
@@ -136,8 +136,10 @@ struct LinkScfBoonChunkManagerView {
 // ForwardOwnerChildCommandValue
 // STUB: LEMBALL 0x0041ee00
 // EmitIteratedChildBoundsRecords
+// MACINTOSH: CCollectableManager::Restart()
 // STUB: LEMBALL 0x00422420
 // ActivateCollChunkObjects
+// MACINTOSH: CCollectableManager::Process()
 // STUB: LEMBALL 0x00422550
 // RefreshActiveCollChunkObjects
 // STUB: LEMBALL 0x00422ef0

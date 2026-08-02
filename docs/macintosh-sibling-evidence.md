@@ -103,3 +103,6 @@ All seven portable `CBallManager` methods align with Windows `0x00421EA0..0x0042
 ### CBall portable family
 
 All ten portable `CBall` methods align with Windows `0x00421660..0x00421DA0` through the 0x13c Windows layout, managed-entity base/vtable, fixed-point endpoints, segment timing, terrain sampling, collision dispatch, active-list removal, state machine, and BALL payload cursor consumption. Scalar deleting wrapper `0x00422350` remains generated and excluded.
+### CCollectable portable families
+
+All four portable `CCollectable` and seven portable `CCollectableManager` methods align with Windows `0x004223C0..0x00422900` through network-stream inheritance, manager capacity/live-count fields, subtype allocation, 0x13c child layout, fixed-point positions, collectable state transitions, and COLL payload parsing. Target-only helpers `0x00422510` and `0x00422710` plus deleting wrappers remain excluded.
