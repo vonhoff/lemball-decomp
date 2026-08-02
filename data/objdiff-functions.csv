@@ -784,11 +784,11 @@ address,size,name,unit
 0x0041F820,70,service_composite_children_and_seek_target,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041F870,3,return_zero_vtable_callback_0041f870,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041F960,30,delete_level_chunk_object_children_wrapper_0041f960,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041F990,92,construct_shpg_chunk_object,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041F9F0,157,activate_shpg_chunk_object,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041FA90,18,dispatch_shpg_chunk_object_plas_state_table_variant_2,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041FAB0,17,handle_shpg_chunk_object_projectile_hit,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041FAD0,58,award_150_points_and_emit_object_callback_0041fad0,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041F990,92,CSheep::CSheep,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041F9F0,157,CSheep::Restart,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041FA90,18,CSheep::Process,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041FAB0,17,CSheep::HitBall,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041FAD0,58,CSheep::HitMine,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041FB70,30,delete_level_chunk_object_base_wrapper_0041fb70,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041FBA0,302,CEnemy::CEnemy,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041FCD0,196,CEnemy::Restart,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

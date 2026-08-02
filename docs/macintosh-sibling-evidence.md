@@ -225,3 +225,7 @@ All eight portable methods map at `0x0040B8E0..0x0040BE50` in physical `LEVELRUN
 ## CSheepGroupManager reconstruction
 
 All four portable methods map at `0x0041F0B0..0x0041F2E0`. Independent auditing confirms the SHPG manager constructor and `0xB0` layout, nested restart loop, first/next group process iteration, and six-byte record loader through exact 68K bodies, Windows ILTs, CAI callers, and the `SHPG` chunk route. Physical ownership remains split across `LINKSCF.CPP`, `LEVELRUN.CPP`, and `LEVELVT.CPP`. Windows-only four-sheep factory `0x0041F170` and removal helper `0x0041F250` remain excluded.
+
+## CSheep reconstruction
+
+All five portable methods map at `0x0041F990..0x0041FAD0` in physical `LEVELVT.CPP`. Independent auditing confirms type `7`, the coherent `0x124` Windows layout and vtable, restart bounds and owner registration, PLAS state-table processing, and exact score/vector reactions. Scalar deleting wrapper `0x0041FB70` remains target-only; the Macintosh semantic destructor is platform-specific and is not consumed by that wrapper.

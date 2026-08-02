@@ -2182,11 +2182,11 @@ CODE_06_AI.bin,AI,0x0001E050,0x0001E051,Process__14CRocketManagerFv,CRocketManag
 CODE_06_AI.bin,AI,0x0001E0DD,0x0001E0DE,GetViewData__14CRocketManagerFP9CViewData,CRocketManager,GetViewData,accepted_x86_correlation,gap,0x00427050,mapped,high,"emits non-idle rocket view records with Windows stride 0x4C"
 CODE_06_AI.bin,AI,0x0001E18E,0x0001E18F,Add__14CRocketManagerFUsiii,CRocketManager,Add,accepted_x86_correlation,gap,0x004270B0,mapped,high,"capacity-checks, converts coordinates to fixed point, and appends rocket"
 CODE_06_AI.bin,AI,0x0001E25D,0x0001E25E,LoadLevel__14CRocketManagerFPUciUc,CRocketManager,LoadLevel,accepted_x86_correlation,gap,0x00427110,mapped,high,"matches versioned ID fallback and XYZ load loop"
-CODE_06_AI.bin,AI,0x0001E32A,0x0001E32B,__ct__6CSheepFP3CAIiiii,CSheep,CSheep,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x0001E40E,0x0001E40F,Restart__6CSheepFv,CSheep,Restart,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x0001E43E,0x0001E43F,Process__6CSheepFv,CSheep,Process,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x0001E46C,0x0001E46D,HitBall__6CSheepFv,CSheep,HitBall,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x0001E4C0,0x0001E4C1,HitMine__6CSheepFv,CSheep,HitMine,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
+CODE_06_AI.bin,AI,0x0001E32A,0x0001E32B,__ct__6CSheepFP3CAIiiii,CSheep,CSheep,accepted_x86_correlation,gap,0x0041F990,mapped,high,"exact type 7 construction, vtable installation, fixed-point coordinates, saved word, and entity id"
+CODE_06_AI.bin,AI,0x0001E40E,0x0001E40F,Restart__6CSheepFv,CSheep,Restart,accepted_x86_correlation,gap,0x0041F9F0,mapped,high,"exact base reset, saved-coordinate restoration, bounds, owner child registration, and count increment"
+CODE_06_AI.bin,AI,0x0001E43E,0x0001E43F,Process__6CSheepFv,CSheep,Process,accepted_x86_correlation,gap,0x0041FA90,mapped,high,"exact PLAS state-table variant 2 dispatch returning zero"
+CODE_06_AI.bin,AI,0x0001E46C,0x0001E46D,HitBall__6CSheepFv,CSheep,HitBall,accepted_x86_correlation,gap,0x0041FAB0,mapped,high,"exact owner score increment by 150"
+CODE_06_AI.bin,AI,0x0001E4C0,0x0001E4C1,HitMine__6CSheepFv,CSheep,HitMine,accepted_x86_correlation,gap,0x0041FAD0,mapped,high,"exact score 150 and virtual vector callback with z 0xA000"
 CODE_06_AI.bin,AI,0x0001E511,0x0001E512,__ct__11CSheepGroupFP3CAIP14CObjectManagerP17CFormationManager,CSheepGroup,CSheepGroup,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
 CODE_06_AI.bin,AI,0x0001E722,0x0001E723,RunAway__11CSheepGroupF7AICOORD,CSheepGroup,RunAway,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
 CODE_06_AI.bin,AI,0x0001E847,0x0001E848,CheckAgainstLemmings__11CSheepGroupFv,CSheepGroup,CheckAgainstLemmings,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
