@@ -241,6 +241,7 @@ address,name,symbol,type,source
 0x00471C00,,?SendTimedSocketPayload@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEHPAXH@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471C10,,?SetTimedChannelWord@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEXG@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471C60,,??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471C70,,?DualStreamNoop@VsNetCompositeEffTransportStack@@$4PPPPPPPM@3AEXXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471C90,,?ClaimRecord@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@HI@AEPAXXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471CA0,,?DualStreamRet8@VsNetCompositeEffTransportStack@@$4PPPPPPPM@3AEXHPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471CB0,,?HandleAsyncMessage@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
@@ -271,6 +272,8 @@ address,name,symbol,type,source
 0x00471FB0,,?ClearPendingWrite@VsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471FD0,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00472000,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00472030,,?DualStreamRet8@VsNetRuntimeChannelStack@@$4PPPPPPPM@M@AEXHPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00472040,,?HandleAsyncMessage@VsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x0047B7D0,VsNetEffStreamRecordSlotTable::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETFIL.CPP
 0x0047B970,DeleteFileBackedEffStreamAuto,,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047B9B0,,?ReleaseFileBackedEffMarker@VsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@A@AEHXZ,synthetic,src/ENGINE/MEDIA/VSSTRM.H
