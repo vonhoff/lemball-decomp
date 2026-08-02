@@ -1928,10 +1928,12 @@ void LevelManagedEntityChildIterator::AppendChild(void* pChild)
 // FUNCTION: LEMBALL 0x0041e0c0
 int LevelManagedEntityChildIterator::ContainsChild(void* pChild)
 {
-	int i;
+	int cChildren;
+	int iChild;
 
-	for (i = 0; i < m_cChildren124; ++i) {
-		if (m_apChildren128[i] == pChild) {
+	cChildren = m_cChildren124;
+	for (iChild = 0; iChild < cChildren; ++iChild) {
+		if (m_apChildren128[iChild] == pChild) {
 			return 1;
 		}
 	}
