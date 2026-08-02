@@ -2317,6 +2317,7 @@ void LEMBALL_FASTCALL ResizeLevelTileReachabilityGrid(void* pReachabilityHelper)
 	}
 	FillReachabilityGridFromTileFlagsThunk(pReachabilityHelper);
 }
+// MACINTOSH: CBalloonPost::Restart()
 // FUNCTION: LEMBALL 0x0042a030
 void LEMBALL_FASTCALL ResetBoonChunkManagerObjects(void* pObject)
 {
@@ -2329,6 +2330,7 @@ void LEMBALL_FASTCALL ResetBoonChunkManagerObjects(void* pObject)
 	pManager->m_apObjects34[2]->m_pVtable->m_pResetObject104(pManager->m_apObjects34[2]);
 	pManager->m_apObjects34[3]->m_pVtable->m_pResetObject104(pManager->m_apObjects34[3]);
 }
+// MACINTOSH: CBalloonPost::GetViewData(CViewData*)
 // FUNCTION: LEMBALL 0x0042a320
 int EmitBoonChunkManagerRenderEntries(void* pObject, char* pEntries)
 {

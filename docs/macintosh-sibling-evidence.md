@@ -118,3 +118,6 @@ All eight portable `CHand` and nine portable `CHandManager` methods align with W
 ### CLaser portable families
 
 All ten portable `CLaser` and nine portable `CLaserManager` methods align with Windows `0x00428890..0x00429950` through chunk type `0x2F`, 0x148-byte child stride, directional terrain footprints, target acquisition, states `0x17..0x1A`, EFF-backed manager fields, variable view output and versioned loader records. Windows remove/count helpers `0x00429470`/`0x004297E0`, no-op callback `0x00429E40`, and deleting wrappers `0x00429EA0`/`0x00429ED0` remain separate.
+### CBalloonPost portable family
+
+All seven portable `CBalloonPost` methods align with Windows `0x00429F50..0x0042A4E0` through the four typed posts (`0x28`, `0x2A`, `0x2C`, `0x2E`), active-mask bits, fixed-point coordinates, terrain-height updates, child view dispatch and loader records. Windows activation/deactivation helpers `0x0042A3A0` and `0x0042A460` remain separate; `0x0042A5C0` begins the child `CBalloon` family.

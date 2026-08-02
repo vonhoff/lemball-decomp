@@ -1703,6 +1703,7 @@ void LEMBALL_FASTCALL reset_lasr_chunk_object_count(void* pManager)
 	*(int*) ((char*) pManager + 0x34) = 0;
 }
 
+// MACINTOSH: CBalloonPost::CBalloonPost(CAI*)
 // FUNCTION: LEMBALL 0x00429f50
 LinkScfBoonChunkManagerView* LinkScfBoonChunkManagerView::ConstructBoonChunkManager(void* pLevelMode, void* pTileGrid)
 {
@@ -1733,6 +1734,7 @@ LinkScfBoonChunkManagerView* LinkScfBoonChunkManagerView::ConstructBoonChunkMana
 	}
 	return this;
 }
+// MACINTOSH: CBalloonPost::~CBalloonPost()
 // FUNCTION: LEMBALL 0x0042a070
 void LinkScfBoonChunkManagerView::DestroyBoonChunkManagerChildren(void)
 {
