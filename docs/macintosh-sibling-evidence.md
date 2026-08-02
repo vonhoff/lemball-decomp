@@ -153,3 +153,7 @@ Ten portable Control globals map through independent Windows behavior: `VSPreIni
 ### CInvisibleSwitch and CInvisibleSwitchManager
 
 All 18 portable methods map at `0x00409CA0..0x0040A490`. Windows evidence preserves the `0x2B8` object stride, two-coordinate bounds setup, `0x18` tracked-object capacity, contact/activation state machine, versioned level loader, and split physical ownership between `LINKSCF.CPP` and `CInvsMgr.cpp`. The point-only object overload `0x00409D20`, manager Add overloads `0x0040A3E0`/`0x0040A440`, and deleting wrapper `0x0040AC60` are target-only and consume no portable symbols.
+
+### CLift and CLiftManager
+
+All 21 portable methods map at `0x00424D00..0x00425FC0`. Windows evidence preserves the `0x190` object stride, endpoint/legacy setup overloads, boundary cliff updates, eight passenger slots, timed motion states, view records, slot switching, and versioned loader while retaining split Windows ownership. Serialization helpers `0x004257E0`/`0x00425830`, remove helper `0x00425890`, Add helpers `0x00425C80`/`0x00425CE0`, manager cliff helper `0x00425DC0`, and deleting wrappers `0x004266E0`/`0x00426710` consume no portable symbols.

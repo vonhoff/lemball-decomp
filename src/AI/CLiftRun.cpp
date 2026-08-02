@@ -24,6 +24,7 @@ struct ManagedEntityActionStateView {
 
 // Split from CHUNKOBJVT.CPP to preserve MSVC 4.20 code generation.
 
+// MACINTOSH: CLift::Process()
 // FUNCTION: LEMBALL 0x00425100
 int LEMBALL_FASTCALL AdvanceLiftChunkObjectStateMachine(void* pObject)
 {

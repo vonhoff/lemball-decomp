@@ -1352,6 +1352,7 @@ LinkScfMineChunkManagerView* LinkScfMineChunkManagerView::ConstructMineChunkMana
 
 extern void* g_LINKSCF_LiftChunkObjectVtable[16];
 
+// MACINTOSH: CLift::~CLift()
 // FUNCTION: LEMBALL 0x00424d20
 void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject)
 {
@@ -1359,6 +1360,7 @@ void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject)
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 }
 
+// MACINTOSH: CLiftManager::CLiftManager(CAI*, int)
 // FUNCTION: LEMBALL 0x00425680
 LinkScfLiftChunkManagerView* LinkScfLiftChunkManagerView::ConstructLiftChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -1417,6 +1419,7 @@ int LiftChunkManagerSerializationView::SerializeLiftChunkEndpointPairs(LiftChunk
 	return *(int*) ((char*) this + 0x34);
 }
 
+// MACINTOSH: CLiftManager::Id(int)
 // FUNCTION: LEMBALL 0x00425f90
 unsigned short LiftChunkManagerSerializationView::GetLiftChunkObjectSlotIdByIndex(int iObject)
 {

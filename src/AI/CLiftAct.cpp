@@ -4,6 +4,7 @@ extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedE
 
 // Split from the original LINKSCF source group to preserve MSVC 4.20 code generation.
 
+// MACINTOSH: CLift::Activate()
 // FUNCTION: LEMBALL 0x00425640
 int LEMBALL_FASTCALL RequestLiftChunkObjectActivationState(void* pObject)
 {
@@ -13,6 +14,7 @@ int LEMBALL_FASTCALL RequestLiftChunkObjectActivationState(void* pObject)
 	return 1;
 }
 
+// MACINTOSH: CLift::ActivateDeactivate()
 // FUNCTION: LEMBALL 0x00425660
 void LEMBALL_FASTCALL ToggleLiftChunkObjectActivationState(void* pObject)
 {
@@ -25,6 +27,7 @@ void LEMBALL_FASTCALL ToggleLiftChunkObjectActivationState(void* pObject)
 	}
 }
 
+// MACINTOSH: CLiftManager::Switch(swMessage, int, int, int)
 // FUNCTION: LEMBALL 0x00425f10
 void LEMBALL_FASTCALL DispatchLiftChunkObjectActionBySlot(void* pManager,
 														  void* pUnusedEdx,
