@@ -1,6 +1,6 @@
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/CORE/VSINIT.H"
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 #include "ENGINE/DEBUG/CTEXTWIN.H"
 #include "ENGINE/DEBUG/VSDBG.H"
 #include "ENGINE/GDI/VSGDI.H"
@@ -194,7 +194,7 @@ static VsInitSharedGeometryHelperVtable g_SharedGeometryHelperVtable = {
 static VsInitCommandLineOption g_aCommandLineOptions[] = {
 	{"paranoid", &g_fViSOSParanoidMode},
 	{"nowait", &g_fStartupNoWait},
-	{"nosmallmemory", &g_fSmallMemoryBucketTableEnabled},
+	{"nosmallmemory", &g_fCSmallMemoryEnabled},
 	{"wing", &g_fStartupGraphicsDriverWing},
 	{"cds", &g_fStartupGraphicsDriverCds},
 	{"gdk", &g_fStartupGraphicsDriverGdk},

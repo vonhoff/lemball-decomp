@@ -1,7 +1,7 @@
 #include "ENGINE/CORE/COMMON.H"
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/CORE/VSINIT.H"
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 #include "ENGINE/GDI/VSGDI.H"
 #include "ENGINE/GDI/VSWINDOW.H"
 #include "FRONTEND/CURSOR.H"
@@ -299,7 +299,7 @@ void* g_VSGDI_ResourceGeometryRowBufferVtable[2] = {
 	0,
 };
 // GLOBAL: LEMBALL 0x0049a478
-void* g_VSMEM_SmallMemoryBucketDestructionVtable[2] = {
+void* g_VSMEM_CBucketDestructionVtable[2] = {
 	(void*) EnterObjectCriticalSection,
 	(void*) LeaveObjectCriticalSection,
 };
@@ -318,7 +318,7 @@ void* g_GDISUBVT_ListCharEntryTableDeletingVtable[4] = {
 	0,
 };
 // GLOBAL: LEMBALL 0x0049a4a0
-void* g_VSMEM_SmallMemoryBucketBaseDestructionVtable[2] = {
+void* g_VSMEM_CBucketBaseDestructionVtable[2] = {
 	(void*) EnterObjectCriticalSection,
 	(void*) LeaveObjectCriticalSection,
 };

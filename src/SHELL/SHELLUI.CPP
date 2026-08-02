@@ -1,5 +1,5 @@
 #include "ENGINE/CORE/VSINIT.H"
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 #include "ENGINE/GDI/VSGDI.H"
 #include "ENGINE/MEDIA/VSSOUND.H"
 #include "SHELL/ENTRY.H"

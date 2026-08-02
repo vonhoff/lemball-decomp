@@ -1,7 +1,7 @@
 #ifndef LEMBALL_NETWORK_RUNTIME_H
 #define LEMBALL_NETWORK_RUNTIME_H
 
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 #include "ENGINE/MEDIA/VSSTRM.H"
 
 struct VsNetFileBackedChannelRoot {

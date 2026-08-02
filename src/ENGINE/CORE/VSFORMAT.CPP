@@ -1,5 +1,5 @@
 #include "ENGINE/CORE/VSINIT.H"
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 
 // LINKERILT: LEMBALL 0x00401d2a
 void* LEMBALL_FASTCALL DeleteStreamFormatTargetState(void* pState, int nUnused, unsigned char fDelete)

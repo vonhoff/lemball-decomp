@@ -1,7 +1,7 @@
 #ifndef LEMBALL_DRAWTEXT_H
 #define LEMBALL_DRAWTEXT_H
 
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 #include "GAME.H"
 
 class LevelVariantRenderManagerView {

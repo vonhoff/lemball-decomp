@@ -71,7 +71,7 @@ short g_nLevelViewportHorizontalRemainder = 0;
 // GLOBAL: LEMBALL 0x004a6258
 static StartupGraphicsWindowConfig g_StartupGraphicsWindowConfig;
 // GLOBAL: LEMBALL 0x004a217c
-int g_fSmallMemoryBucketTableEnabled = 1;
+int g_fCSmallMemoryEnabled = 1;
 // GLOBAL: LEMBALL 0x004aa108
 int g_adwStartupGraphicsBucketSizeTable[7];
 // GLOBAL: LEMBALL 0x004a27a8
@@ -307,7 +307,7 @@ void FinalizeStartupGraphicsDriverConfig(void)
 		g_StartupGraphicsDriverConfig.m_cItems = 7;
 	}
 	if ((int) g_StartupGraphicsDriverConfig.m_cItems <= 0) {
-		g_fSmallMemoryBucketTableEnabled = 0;
+		g_fCSmallMemoryEnabled = 0;
 	}
 	pBucketSize = g_adwStartupGraphicsBucketSizeTable;
 	do {

@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 #include "ENGINE/CORE/WIN32.H"
 #include "LEVEL/CHUNKOBJVT.H"
 

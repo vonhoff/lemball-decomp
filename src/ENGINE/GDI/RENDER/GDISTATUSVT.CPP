@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 
 extern void LEMBALL_FASTCALL DestroyArrowCursorState(void* pRenderClient);
 extern void LEMBALL_FASTCALL DestroyStatusIndicatorRenderClientBase(int* pRenderClient);

@@ -4,29 +4,26 @@
 #include "ENGINE/CORE/WIN32.H"
 
 struct VsInitFormattedOutputStream;
-struct SmallMemoryBucket;
+struct CBucket;
 
 // SIZE 0x28
-struct CMemoryBlock {
-	void** m_pVtable;                 // 0x00
-	int m_nMagic;                     // 0x04
-	void* m_pPayload;                 // 0x08
-	unsigned int m_cbPayload;         // 0x0c
-	void* m_pArena;                   // 0x10
-	CMemoryBlock* m_pNextFree;        // 0x14
-	CMemoryBlock* m_pPreviousFree;    // 0x18
-	CMemoryBlock* m_pNextAddress;     // 0x1c
-	CMemoryBlock* m_pPreviousAddress; // 0x20
-	unsigned int m_dwFlags;           // 0x24
+struct CMBlock {
+	void** m_pVtable;            // 0x00
+	int m_nMagic;                // 0x04
+	void* m_pPayload;            // 0x08
+	unsigned int m_cbPayload;    // 0x0c
+	void* m_pArena;              // 0x10
+	CMBlock* m_pNextFree;        // 0x14
+	CMBlock* m_pPreviousFree;    // 0x18
+	CMBlock* m_pNextAddress;     // 0x1c
+	CMBlock* m_pPreviousAddress; // 0x20
+	unsigned int m_dwFlags;      // 0x24
 
-	CMemoryBlock* ConstructMemoryBlockBase(void* pArena,
-										   CMemoryBlock* pPreviousBlock,
-										   const char* pszName,
-										   unsigned int cbBlock);
-	CMemoryBlock* ConstructMemoryArenaBlock(void* pArena,
-											CMemoryBlock* pPreviousBlock,
-											const char* pszName,
-											unsigned int cbBlock);
+	CMBlock* ConstructMemoryBlockBase(void* pArena, CMBlock* pPreviousBlock, const char* pszName, unsigned int cbBlock);
+	CMBlock* ConstructMemoryArenaBlock(void* pArena,
+									   CMBlock* pPreviousBlock,
+									   const char* pszName,
+									   unsigned int cbBlock);
 	void SetMemoryBlockDescription(const char* pszDescription);
 };
 
@@ -40,10 +37,10 @@ struct CArena {
 	unsigned int m_cbStorage;                // 0x28
 	unsigned int m_cbFree;                   // 0x2c
 	void* m_pStatusEntry;                    // 0x30
-	CMemoryBlock* m_pFirstFreeBlock;         // 0x34
-	CMemoryBlock* m_pLastFreeBlock;          // 0x38
-	CMemoryBlock* m_pFirstAddressBlock;      // 0x3c
-	CMemoryBlock* m_pLastAddressBlock;       // 0x40
+	CMBlock* m_pFirstFreeBlock;              // 0x34
+	CMBlock* m_pLastFreeBlock;               // 0x38
+	CMBlock* m_pFirstAddressBlock;           // 0x3c
+	CMBlock* m_pLastAddressBlock;            // 0x40
 	CArena* m_pParentArena;                  // 0x44
 	const char* m_pszName;                   // 0x48
 	CArena* m_pFirstChildArena;              // 0x4c
@@ -70,13 +67,13 @@ struct CArena {
 };
 
 // SIZE 0x3c
-struct SmallMemoryBucketTable {
-	SmallMemoryBucket* m_apBuckets[7]; // 0x00
-	unsigned int m_acbBucketSizes[7];  // 0x1c
-	int m_cBuckets;                    // 0x38
+struct CSmallMemory {
+	CBucket* m_apBuckets[7];          // 0x00
+	unsigned int m_acbBucketSizes[7]; // 0x1c
+	int m_cBuckets;                   // 0x38
 
-	int AllocateFromSmallMemoryBucketTable(int cbBlock, const char* pszName);
-	int FreeToSmallMemoryBucketTable(void* pBlock);
+	int AllocateFromCSmallMemory(int cbBlock, const char* pszName);
+	int FreeToCSmallMemory(void* pBlock);
 };
 
 int InitializeMasterMainRamArena(void);

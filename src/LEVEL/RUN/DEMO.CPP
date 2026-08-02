@@ -1,5 +1,5 @@
 #include "ENGINE/CORE/VSINIT.H"
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 #include "ENGINE/CORE/WIN32.H"
 #include "GAME.H"
 #include "LEVEL/DEMO.H"

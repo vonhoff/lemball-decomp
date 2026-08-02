@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 #include "ENGINE/MEDIA/VSSTRM.H"
 
 extern int g_nLevelFrameClockTimeMs;

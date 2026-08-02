@@ -31,7 +31,7 @@ extern short g_nLevelViewportHorizontalRemainder;
 extern short g_nLevelViewportVerticalRemainder;
 extern unsigned char g_abOverrideLevelFilePathBuffer[260];
 extern StartupGraphicsWindowConfig g_StartupGraphicsDriverConfig;
-extern int g_fSmallMemoryBucketTableEnabled;
+extern int g_fCSmallMemoryEnabled;
 extern int g_adwStartupGraphicsBucketSizeTable[7];
 
 StartupGraphicsWindowConfig* BuildStartupGraphicsWindowConfig(const StartupGraphicsWindowConfig* pSeedConfig);

@@ -1,6 +1,6 @@
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/CORE/VSINIT.H"
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 #include "ENGINE/DEBUG/CTEXTWIN.H"
 
 #include <stdlib.h>

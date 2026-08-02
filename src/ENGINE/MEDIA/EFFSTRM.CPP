@@ -1,5 +1,5 @@
 #include "ENGINE/CORE/SAFEVT.H"
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 #include "ENGINE/MEDIA/EFFSTRM.H"
 #include "ENGINE/MEDIA/VSSTRM.H"
 #include "ENGINE/NET/VSNETFWD.H"

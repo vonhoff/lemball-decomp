@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 #include "ENGINE/GDI/VSGDI.H"
 #include "GAME.H"
 #include "SHELL/OPTIONS.H"

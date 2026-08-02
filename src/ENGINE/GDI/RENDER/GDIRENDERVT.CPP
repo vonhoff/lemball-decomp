@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 #include "ENGINE/GDI/VSGDI.H"
 
 extern void LEMBALL_FASTCALL DispatchLevelScreenRenderStatePop(void* pEntry, int nUnused, void* pContext);

@@ -1,5 +1,5 @@
 #include "ENGINE/CORE/VSINIT.H"
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 
 // FUNCTION: LEMBALL 0x00407e40
 void* LEMBALL_FASTCALL DeleteFormattedOutputStream(void* pState, int nUnused, unsigned char fDelete)

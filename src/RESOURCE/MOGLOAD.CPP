@@ -1,5 +1,5 @@
 #include "ENGINE/CORE/VSINIT.H"
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 #include "GAME.H"
 #include "RESOURCE/MOGLOAD.H"
 #include "SHELL/OPTIONS.H"
@@ -246,9 +246,9 @@ static void* g_MOGLOAD_PaletteResourceVtable[15] = {
 void* g_pResourceArchive = 0;
 extern void* __fastcall FinalizeLoadedResourceObjectResult(void* pObject, void* pUnusedEdx);
 extern void LEMBALL_FASTCALL ResetTypedResourceObjectState(void* pObject);
-extern void* g_pSmallMemoryBucketTable;
-extern unsigned int g_cbSmallMemoryBucketUpperBound;
-extern const char* g_pszSmallMemoryBucketAllocTag;
+extern void* g_pCSmallMemory;
+extern unsigned int g_cbCBucketUpperBound;
+extern const char* g_pszCBucketAllocTag;
 extern void* g_pStatusEntryRegistry;
 extern void CloseCrtFilePointer(FILE* pFile);
 extern FILE* OpenFileWithMode(const char* pszPath, const char* pszMode);
@@ -343,16 +343,16 @@ void* AllocateResourceArchiveMemory(unsigned int cbBytes)
 		return AllocateVSMemBlock(cbBytes);
 	}
 
-	if (g_fSmallMemoryBucketTableEnabled != 0 && cbBytes < g_cbSmallMemoryBucketUpperBound) {
-		pvBlock = (unsigned int) ((SmallMemoryBucketTable*) g_pSmallMemoryBucketTable)
-					  ->AllocateFromSmallMemoryBucketTable(cbBytes, g_pszSmallMemoryBucketAllocTag);
+	if (g_fCSmallMemoryEnabled != 0 && cbBytes < g_cbCBucketUpperBound) {
+		pvBlock = (unsigned int) ((CSmallMemory*) g_pCSmallMemory)
+					  ->AllocateFromCSmallMemory(cbBytes, g_pszCBucketAllocTag);
 		if (pvBlock != 0) {
 			return (void*) (unsigned long) pvBlock;
 		}
 	}
 
 	if (((MogLoadArenaDispatch*) g_pResourceArchiveMemoryArena)
-			->Allocate((void**) &pvBlock, cbBytes, g_pszSmallMemoryBucketAllocTag) == 0) {
+			->Allocate((void**) &pvBlock, cbBytes, g_pszCBucketAllocTag) == 0) {
 		return 0;
 	}
 	return (void*) (unsigned long) pvBlock;
@@ -366,8 +366,8 @@ void FreeResourceArchiveMemory(void* pMemoryBlock)
 		return;
 	}
 
-	if (g_fSmallMemoryBucketTableEnabled != 0 &&
-		((SmallMemoryBucketTable*) g_pSmallMemoryBucketTable)->FreeToSmallMemoryBucketTable(pMemoryBlock) != 0) {
+	if (g_fCSmallMemoryEnabled != 0 &&
+		((CSmallMemory*) g_pCSmallMemory)->FreeToCSmallMemory(pMemoryBlock) != 0) {
 		return;
 	}
 

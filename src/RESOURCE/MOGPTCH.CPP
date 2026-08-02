@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/VSMEM.H"
+#include "Visos/Generic/Memory.h"
 #include "RESOURCE/MOGLOAD.H"
 
 extern void* g_pResourceArchive;

@@ -3,6 +3,7 @@
 | Macintosh CODE module | Recovered families | Windows source owner | Confidence / evidence |
 | --- | --- | --- | --- |
 | `Visos (Generic)` | `CPVGDIBitmap`, `CPVSurface`, `CPVScrollableSurface`, `CPVBackBuffSurface`, `CPVZBuffSurface`, generic `CSurface` lifecycle | `src/Visos/Generic/CSurface.h` declarations; implementations retained in the existing `CGDI.cpp` TU | High: contiguous MacsBug families, x86 object offsets, vbptr/vtordisp topology, backing widths, lifecycle order |
+| `Visos (Generic)` allocator family | `CArena`, `CRAMArena`, `CMBlock`, `CMRAMBlock`, `CBucket`, `CSmallMemory` | `src/Visos/Generic/Memory.cpp`, `Memory.h` | High: contiguous MacsBug family order, matching diagnostics, allocation/list behavior, Windows sizes and lifecycle |
 | `Visos (Mac Specific)` | Macintosh `CSurface::SetLinePtrs`, `CGDIDevice`, `CGDI` platform hooks | Naming evidence only for Windows counterparts | High for `CSurface::SetLinePtrs`; platform ABI is not transferred |
 | Windows platform analogue | Win32 GDI, DIB, DirectDraw, switching, and 240-line mode implementation | `src/Visos/Windows/CGDI.cpp`, `CGDISwitch.cpp`, `CGDI240.cpp` | High: three Visos TUs moved intact at their existing CMake/link positions |
 | `AI` | game objects, players, enemies | Existing game/object files; future module pass | Unmapped in this correction |

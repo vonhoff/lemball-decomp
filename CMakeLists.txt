@@ -68,7 +68,7 @@ set(LEMBALL_SOURCES
     src/Visos/Windows/CGDI.cpp
     src/Visos/Windows/CGDISwitch.cpp
     src/Visos/Windows/CGDI240.cpp
-    src/ENGINE/CORE/VSMEM.CPP
+    src/Visos/Generic/Memory.cpp
     src/ENGINE/GDI/WINDOW/VSWING.CPP
     src/ENGINE/GDI/WINDOW/VSWINGRECT.CPP
     src/ENGINE/GDI/VGAIO.CPP
