@@ -31,12 +31,28 @@ def mac_class(mangled):
     return ""
 
 
+def mac_function(mangled, class_name):
+    if mangled.startswith("__ct__"):
+        return class_name
+    if mangled.startswith("__dt__"):
+        return f"~{class_name}"
+    if mangled.startswith("__nw__"):
+        return "operator new"
+    return mangled.split("__", 1)[0]
+
+
 def load_owners(path):
     owners = {}
     with path.open(newline="", encoding="utf-8-sig") as stream:
         for row in csv.DictReader(stream):
             address = int(row["x86_address"], 16)
-            owner = (mac_module(row["mac_code_file"]), mac_class(row["mac_mangled_name"]))
+            class_name = mac_class(row["mac_mangled_name"])
+            owner = (
+                mac_module(row["mac_code_file"]),
+                class_name,
+                mac_function(row["mac_mangled_name"], class_name),
+                row["mac_mangled_name"],
+            )
             if address in owners and owners[address] != owner:
                 raise SystemExit(f"conflicting owner for 0x{address:08X}")
             owners[address] = owner
@@ -98,20 +114,30 @@ def build_report(inventory_path, reccmp_path, correlations_path):
                 "ratio": ratio,
                 "source_path": f"src/{row['unit']}",
             }
-            groups[owners.get(address, ("Windows/MSVC", ""))].append(function)
+            owner = owners.get(address)
+            if owner:
+                function.update(mac_name=owner[2], mac_symbol=owner[3])
+                group = owner[:2]
+            else:
+                group = ("Windows/MSVC", "")
+            groups[group].append(function)
 
     units = []
     for (module, class_name), functions in sorted(groups.items()):
         items = []
         for function in functions:
             item = {
-                "name": function["name"],
+                "name": function.get("mac_name", function["name"]),
                 "size": str(function["size"]),
                 "metadata": {
                     "virtual_address": str(function["address"]),
                     "source_path": function["source_path"],
                 },
             }
+            if "mac_symbol" in function:
+                item["metadata"].update(
+                    windows_name=function["name"], macintosh_symbol=function["mac_symbol"]
+                )
             if function["ratio"]:
                 item["fuzzy_match_percent"] = f32(function["ratio"])
             items.append(item)

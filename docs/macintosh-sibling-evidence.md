@@ -44,7 +44,7 @@ Only high-confidence correlations should rename Windows source, Ghidra symbols, 
 
 ## Objdiff ownership reporting
 
-`tools/generate_objdiff_report.py` derives logical units from the accepted correlation table rather than inventing units from physical Windows filenames. Correlated functions are grouped as `Macintosh module/class`; uncorrelated Windows and compiler-generated functions remain in the single `Windows/MSVC` layer. Each function retains its physical `source_path` metadata, so logical diagrams stay clean without claiming unsupported source ownership or changing translation-unit order.
+`tools/generate_objdiff_report.py` derives logical units and recovered function labels from the accepted correlation table rather than inventing units from physical Windows filenames. Correlated functions are grouped as `Macintosh module/class`, display the Macintosh method name, and retain the exact mangled symbol in metadata. Uncorrelated Windows and compiler-generated functions remain in the single `Windows/MSVC` layer. Each function also retains its Windows name and physical `source_path`, so logical diagrams stay clean without claiming unsupported source ownership or changing translation-unit order.
 
 ## Immediate inventory order
 

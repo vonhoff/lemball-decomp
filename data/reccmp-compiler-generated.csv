@@ -232,7 +232,7 @@ address,name,symbol,type,source
 0x0046DC30,ApplyHelperTargetPaletteAdjustmentThunk,,synthetic,src/Visos/Windows/CGDI.cpp
 0x0046DC40,PresentCompactResourceGeometryHelperAdjustmentThunk,,synthetic,src/Visos/Windows/CGDI.cpp
 0x0046DC70,GetHelperTargetTokenAdjustmentThunk,,synthetic,src/Visos/Windows/CGDI.cpp
-0x0046DCB0,CompactHelperSubobjectSlot17,?CompactHelperSubobjectSlot17@@YIXPAX@Z,synthetic,src/ENGINE/GDI/RENDER/GDISUBVT.CPP
+0x0046DCB0,CompactHelperSubobjectSlot17,?CompactHelperSubobjectSlot17@@YIXPAX@Z,synthetic,src/Visos/Generic/CSurface.cpp
 0x00471A50,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@$4PPPPPPPM@A@AEHXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471A80,,??_EVsNetSocketWindowEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471A90,VsNetSocketWindowEffChannel::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
