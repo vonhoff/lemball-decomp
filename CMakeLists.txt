@@ -108,7 +108,7 @@ set(LEMBALL_SOURCES
     src/ENGINE/CORE/LINKSCF.CPP
     src/ENGINE/CORE/LINKSCFBYTES.CPP
     src/AI/Projectile.cpp
-    src/ENGINE/CORE/LSMANGRP.CPP
+    src/AI/GroupState.cpp
     src/AI/CInvsSupp.cpp
     src/AI/CInvsMgr.cpp
     src/AI/CDoorAct.cpp
