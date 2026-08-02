@@ -5645,22 +5645,26 @@ void LEMBALL_FASTCALL set_queued_render_point_sink_field_0x30(void* pPointSink, 
 }
 
 struct HelperUploadStateMarkerView {
+	char m_abReserved00[0x38];
+	char m_anMarkers38[12];
+	int m_cMarkers44;
+	char m_nMarker48;
+
 	void PushHelperUploadStateMarker(int nUnused);
 };
 
 void HelperUploadStateMarkerView::PushHelperUploadStateMarker(int nUnused)
 {
 	(void) nUnused;
-	char* pBytes = (char*) this;
-	pBytes[0x38 + *(int*) (pBytes + 0x44)] = pBytes[0x48];
-	++*(int*) (pBytes + 0x44);
+	m_anMarkers38[m_cMarkers44] = m_nMarker48;
+	++m_cMarkers44;
 }
 
 void LEMBALL_FASTCALL PopHelperUploadStateMarker(void* pObject)
 {
-	char* pBytes = (char*) pObject;
-	int nIndex = --*(int*) (pBytes + 0x44);
-	pBytes[0x48] = pBytes[0x38 + nIndex];
+	HelperUploadStateMarkerView* pMarkers = (HelperUploadStateMarkerView*) pObject;
+	int nIndex = --pMarkers->m_cMarkers44;
+	pMarkers->m_nMarker48 = pMarkers->m_anMarkers38[nIndex];
 }
 
 struct HelperUploadRectEntryView {
