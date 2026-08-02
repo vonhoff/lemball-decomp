@@ -1609,6 +1609,7 @@ int LevelManagedEntityHistoryView::PopHistoryId(void)
 	return m_anHistoryIds12C[iHistoryId];
 }
 
+// MACINTOSH: CPlayerLemmingGroupManager::ProcessDead()
 // FUNCTION: LEMBALL 0x00418640
 void noop_managed_entity_group_detach_hook(void)
 {
@@ -1623,6 +1624,7 @@ void PASCAL ResetManagedEntityGroupState(void* pEntity)
 	((LevelManagedEntityNoArgVirtualProc) pVtable[0x104 / sizeof(void*)])(pEntity);
 }
 
+// MACINTOSH: CPlayerLemmingGroupManager::GetPlayerControlledGroup()
 // FUNCTION: LEMBALL 0x004189f0
 LevelManagedEntityChildIterator* LevelManagedEntityActiveGroupView::GetFirstActiveEntity(void)
 {

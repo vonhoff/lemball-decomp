@@ -1090,11 +1090,13 @@ void* ConstructPlasChunkManagerThunk(void* pObject,
 	return pObject;
 }
 
+// MACINTOSH: CPlayerLemmingGroupManager::InitialiseNetwork()
 // FUNCTION: LEMBALL 0x00418ca0
 void InitializeNetworkPlayerPlasChunkObjectPoolThunk(void* pPlasManager)
 {
 	(void) pPlasManager;
 }
+// MACINTOSH: CPlayerLemmingGroupManager::LoadLevel(unsigned char*, unsigned long, unsigned char)
 // FUNCTION: LEMBALL 0x00418d20
 void LinkScfPlasChunkManagerView::LoadPlasChunkObjects(const unsigned short* pChunk,
 													   unsigned int cbChunk,

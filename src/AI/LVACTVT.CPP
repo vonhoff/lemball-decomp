@@ -29,6 +29,7 @@ struct LevelManagedEntityVtable {
 	MatchesManagedEntityProc m_pMatchesObject130;
 };
 
+// MACINTOSH: CPlayerLemmingGroupManager::IsLemmingPlayerControlled(CPlayerLemming*)
 // FUNCTION: LEMBALL 0x00418840
 int LevelManagedEntityActiveGroupView::GetEntityActiveState(void* pObject)
 {

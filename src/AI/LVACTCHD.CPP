@@ -8,6 +8,7 @@ struct LevelManagedEntityActiveGroupView {
 
 typedef void(LEMBALL_FASTCALL* LevelManagedEntityNoArgProc)(void* pEntity);
 
+// MACINTOSH: CPlayerLemmingGroupManager::RemoveWaypointsFromCurrentGroup()
 // FUNCTION: LEMBALL 0x00418a90
 void LEMBALL_FASTCALL ClearFirstActiveManagedEntityPendingState(LevelManagedEntityActiveGroupView* pGroup)
 {
