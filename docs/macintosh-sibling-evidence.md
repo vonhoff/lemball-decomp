@@ -115,3 +115,6 @@ All five portable `CFormationManager` methods align with Windows `0x0041A140..0x
 ### CHand portable families
 
 All eight portable `CHand` and nine portable `CHandManager` methods align with Windows `0x00427AD0..0x004284C0` through level chunk type `0x1F`, 0x144-byte child stride, capture states `0x17..0x1A`, contact geometry, frame timers, EFF-backed manager fields, view emission and versioned loader records. Windows remove helper `0x00427FD0` and deleting wrappers `0x004287D0`/`0x00428800` remain separate.
+### CLaser portable families
+
+All ten portable `CLaser` and nine portable `CLaserManager` methods align with Windows `0x00428890..0x00429950` through chunk type `0x2F`, 0x148-byte child stride, directional terrain footprints, target acquisition, states `0x17..0x1A`, EFF-backed manager fields, variable view output and versioned loader records. Windows remove/count helpers `0x00429470`/`0x004297E0`, no-op callback `0x00429E40`, and deleting wrappers `0x00429EA0`/`0x00429ED0` remain separate.

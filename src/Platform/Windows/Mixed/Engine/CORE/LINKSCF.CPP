@@ -1534,6 +1534,7 @@ void LEMBALL_FASTCALL ClearManagedEntityArrayCount(void* pObject)
 
 extern void* g_LINKSCF_LasrChunkObjectVtable[16];
 
+// MACINTOSH: CLaser::CLaser()
 // FUNCTION: LEMBALL 0x00428890
 LasrChunkObjectView* LasrChunkObjectView::ConstructLasrChunkObject(void)
 {
@@ -1542,6 +1543,7 @@ LasrChunkObjectView* LasrChunkObjectView::ConstructLasrChunkObject(void)
 	return this;
 }
 
+// MACINTOSH: CLaser::~CLaser()
 // FUNCTION: LEMBALL 0x004288f0
 void LEMBALL_FASTCALL destroy_lasr_chunk_object_vtable_thunk(void* pObject)
 {
@@ -1556,6 +1558,7 @@ struct CGround {
 typedef int(LEMBALL_FASTCALL* LinkScfPointSlotProc)(void*, void*, const int*);
 typedef void(LEMBALL_FASTCALL* LinkScfIntSlotProc)(void*, void*, int);
 
+// MACINTOSH: CLaser::CheckHits()
 // FUNCTION: LEMBALL 0x00428ab0
 int LEMBALL_FASTCALL AcquireLasrPlasTarget(void* pObject)
 {
@@ -1640,6 +1643,7 @@ int LEMBALL_FASTCALL AcquireLasrPlasTarget(void* pObject)
 	return 1;
 }
 
+// MACINTOSH: CLaser::Activate()
 // FUNCTION: LEMBALL 0x00428ec0
 int LEMBALL_FASTCALL BeginLasrPlasReacquireDelay(void* pObject)
 {
@@ -1657,6 +1661,7 @@ int LEMBALL_FASTCALL BeginLasrPlasReacquireDelay(void* pObject)
 	return 1;
 }
 
+// MACINTOSH: CLaserManager::CLaserManager(CAI*, int)
 // FUNCTION: LEMBALL 0x00429320
 LinkScfLasrChunkManagerView* LinkScfLasrChunkManagerView::ConstructLasrChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -1668,6 +1673,7 @@ LinkScfLasrChunkManagerView* LinkScfLasrChunkManagerView::ConstructLasrChunkMana
 	return this;
 }
 
+// MACINTOSH: CLaserManager::Restart()
 // FUNCTION: LEMBALL 0x00429380
 void LEMBALL_FASTCALL ActivateLasrChunkObjects(void* pManager)
 {

@@ -118,6 +118,7 @@ void ChunkRuntimeStateView::ResetCaptureTriggerState(void)
 	m_nRuntimeState13C = nZero;
 }
 
+// MACINTOSH: CLaser::Initialise()
 // FUNCTION: LEMBALL 0x004288d0
 void ChunkRuntimeStateView::ResetLaserState(void)
 {

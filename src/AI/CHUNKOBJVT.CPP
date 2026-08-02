@@ -789,6 +789,7 @@ int LEMBALL_FASTCALL AdvanceCaptureChunkObjectStateMachine(void* pObject)
 	return 1;
 }
 
+// MACINTOSH: CLaser::Process()
 // FUNCTION: LEMBALL 0x00428cf0
 int LEMBALL_FASTCALL AdvanceLasrChunkObjectStateMachine(void* pObject)
 {
