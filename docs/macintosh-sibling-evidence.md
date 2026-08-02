@@ -141,3 +141,7 @@ All nine portable `CGame` methods align with Windows `0x00406DF0..0x00407950` th
 ### CDemo portable family
 
 All 11 portable `CDemo` methods align with Windows `0x004091B0..0x004096B0` through the `0x58`-byte controller lifecycle, resource/file-backed demo buffering, length-prefixed records, per-frame synthetic input dispatch, playback reset/cleanup and live-input filtering. Physical ownership remains `src/Platform/Windows/Mixed/Level/RUN/DEMO.CPP`; frame-timer helpers and deleting wrappers at `0x004098B0`/`0x004098E0` consume no portable symbol.
+
+### CLevelLoader portable family
+
+All six portable `CLevelLoader` methods align with Windows `0x00408210..0x00408B00`: the `0x8`-byte loader context, tagged chunk dispatch, override-file buffer acquisition, aligned block traversal, preview extraction and skill-specific resource-ID arithmetic. Windows physical ownership stays split between `LINKSCF.CPP` (`LoadLevel`) and `LEVELRUN.CPP` (the other five methods).

@@ -868,6 +868,7 @@ void UpdateNetworkFrameClockFromNetworkTime(unsigned int nTimeMs)
 		g_nNetworkFrameClockLatestTimeMs = (int) nTimeMs;
 	}
 }
+// MACINTOSH: CLevelLoader::CLevelLoader(CAI*)
 // FUNCTION: LEMBALL 0x00408210
 LevelChunkLoaderContext* LevelChunkLoaderContext::ConstructLevelChunkLoaderContext(void* pLevelMode)
 {
@@ -877,6 +878,7 @@ LevelChunkLoaderContext* LevelChunkLoaderContext::ConstructLevelChunkLoaderConte
 	g_pszActiveLevelFilePath = (char*) GetLevelGameModeOwnerThunk(m_pLevelMode00);
 	return this;
 }
+// MACINTOSH: CLevelLoader::LocateStartOfLevelFile()
 // FUNCTION: LEMBALL 0x004087b0
 int LoadOverrideLevelFileBuffer(void)
 {
@@ -902,6 +904,7 @@ int LoadOverrideLevelFileBuffer(void)
 				0);
 	return 0;
 }
+// MACINTOSH: CLevelLoader::GetNextBlockHeader(tagLoadBlockHeader*)
 // FUNCTION: LEMBALL 0x00408830
 unsigned char* GetNextLevelChunk(unsigned char* pChunk)
 {
@@ -920,6 +923,7 @@ unsigned char* GetNextLevelChunk(unsigned char* pChunk)
 	pChunk += cbChunk;
 	return pChunk;
 }
+// MACINTOSH: CLevelLoader::RetrievePreviewData(eSkill, int, tPreviewData*)
 // FUNCTION: LEMBALL 0x00408850
 void ReadLevelMetadataForSkillAndLevel(unsigned int nSkill, unsigned int nLevel, LevelMetadata* pMetadata)
 {
@@ -1029,6 +1033,7 @@ void ReadLevelMetadataForSkillAndLevel(unsigned int nSkill, unsigned int nLevel,
 		pChunk = GetNextLevelChunk(pChunk);
 	}
 }
+// MACINTOSH: CLevelLoader::CalcLevelID(eSkill, int)
 // FUNCTION: LEMBALL 0x00408b00
 int GetLevelBinResourceIdForSkillAndLevel(int nSkill, int nLevel)
 {

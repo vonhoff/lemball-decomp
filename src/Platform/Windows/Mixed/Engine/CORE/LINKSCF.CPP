@@ -682,6 +682,7 @@ LinkScfInvsChunkManagerView* LinkScfInvsChunkManagerView::ConstructInvsChunkMana
 {
 	return ConstructInvsChunkManager(pLevelMode, nCapacity);
 }
+// MACINTOSH: CLevelLoader::LoadLevel(eSkill, int, unsigned char)
 // FUNCTION: LEMBALL 0x00408240
 void LinkScfLevelChunkLoaderView::LoadLevelChunksForSkillAndLevel(unsigned int nSkill,
 																  unsigned int nLevel,
