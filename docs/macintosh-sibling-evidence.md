@@ -241,3 +241,7 @@ All six portable methods map at `0x0045A3F0..0x0045A500` in physical `Memory.cpp
 ## CArena partial reconstruction
 
 Three additional portable methods map at `0x0045A180`, `0x0045A1E0`, and `0x0045A230` in physical `Memory.cpp`. Exact behavior confirms recursive owner selection for shrink and `RMBL` magic/free-bit checks. The duplicate CODE_02 constructor, `MemSet`, and `MemCopy` bodies are recorded as merged with the already accepted CODE_09 x86 bodies rather than violating one-address ownership. `CheckIntegrity` remains unresolved: its Macintosh body returns one, but `0x0047FCA0` is shared by many unrelated vtables and lacks a proven CArena caller role.
+
+## CDuplicator reconstruction
+
+All nine portable methods map at `0x004275B0..0x00427910` in physical `LEVELVT.CPP`. Independent auditing confirms type `0x1C`, the `0x144` Windows object, vtable `0x00496050`, exact two-cell footprint operations, state/history duplication flow, fixed-point activation offsets, action `0x0C`, and score `100`. Platform-specific Usage/render count `0x00427A90` and scalar deleting wrapper `0x00427AA0` remain excluded.
