@@ -1996,8 +1996,8 @@ void LEMBALL_FASTCALL release_attached_move_chunk_entities(void* pObject)
 {
 	typedef void(LEMBALL_FASTCALL * OwnerResetSlotProc)(void*);
 	char* pBytes;
-	void** ppEntity;
 	int i;
+	void** ppEntity;
 
 	pBytes = (char*) pObject;
 	i = 0;
