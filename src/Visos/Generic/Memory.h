@@ -37,33 +37,30 @@ struct CArena {
 	unsigned int m_cbStorage;                // 0x28
 	unsigned int m_cbFree;                   // 0x2c
 	void* m_pStatusEntry;                    // 0x30
-	CMBlock* m_pFirstFreeBlock;              // 0x34
-	CMBlock* m_pLastFreeBlock;               // 0x38
-	CMBlock* m_pFirstAddressBlock;           // 0x3c
-	CMBlock* m_pLastAddressBlock;            // 0x40
+	CMBlock* m_pFirstBlock;                  // 0x34
+	CMBlock* m_pLastBlock;                   // 0x38
+	CMBlock* m_pFirstFreeBlock;              // 0x3c
+	CMBlock* m_pLastFreeBlock;               // 0x40
 	CArena* m_pParentArena;                  // 0x44
 	const char* m_pszName;                   // 0x48
 	CArena* m_pFirstChildArena;              // 0x4c
 
 	CArena* ConstructMemoryArena(unsigned int cbStorage, const char* pszName, void* pParentArena, void* pReserved);
-	CArena* ConstructMemoryArenaBaseState(unsigned int cbStorage,
-										  const char* pszName,
-										  void* pParentArena,
-										  void* pReserved);
+	CArena* Construct(unsigned int cbStorage, const char* pszName, void* pParentArena, void* pReserved);
 	int Allocate(void** ppvBlock, unsigned int cbBlock, const char* pszDescription);
-	int FreeMemoryArenaBlock(void* pvBlock);
-	int AllocateChildMemoryArena(void** ppChildArena, unsigned int cbChildArena, const char* pszName);
-	int ReleaseChildMemoryArena(void* pChildArena);
-	int ConsumeTrailingMemoryBlockIfAdjacent(void* pBlock, void* pNextBlock);
-	int AppendTailMemoryBlockAddressList(void* pBlock);
-	int InsertMemoryBlockAfterFreeListNode(void* pBlock, void* pPreviousBlock);
-	int InsertMemoryBlockSortedByAddress(void* pBlock);
-	int UnlinkMemoryBlockFromAddressListLinks(void* pBlock);
-	int UnlinkMemoryBlockFromFreeList(void* pBlock);
-	int UnlinkMemoryBlockFromAddressList(void* pBlock);
-	void* FindSmallestFreeMemoryBlockAtLeast(unsigned int cbPayload);
-	int IsPointerInsideMemoryArenaStorage(void* pvPointer);
-	void* WriteMemoryArenaReport(VsInitFormattedOutputStream* pOutputStream);
+	int Free(void* pvBlock);
+	int AllocateArena(void** ppChildArena, unsigned int cbChildArena, const char* pszName);
+	int FreeArena(void* pChildArena);
+	int CheckAndAmalgamate(void* pBlock, void* pNextBlock);
+	int AddToFreeList(void* pBlock);
+	int AddToBlockList(void* pBlock, void* pPreviousBlock);
+	int AddToArenaList(void* pBlock);
+	int RemoveFromFreeList(void* pBlock);
+	int RemoveFromBlockList(void* pBlock);
+	int RemoveFromArenaList(void* pBlock);
+	void* FindSmallestBlock(unsigned int cbPayload);
+	int CheckValidPointer(void* pvPointer);
+	void* StreamOut(VsInitFormattedOutputStream* pOutputStream);
 };
 
 // SIZE 0x3c
@@ -82,18 +79,18 @@ void* AllocateVSMemBlockImpl(unsigned int cbBlock);
 void FreeVSMemBlockImpl(void* pvBlock);
 void* AllocateVSMemBlock(unsigned int cbBlock);
 void FreeVSMemBlock(void* pvBlock);
-long LEMBALL_FASTCALL CalculateMemoryArenaAvailableBytes(void* pArena);
-unsigned int LEMBALL_FASTCALL GetMemoryArenaPayloadByteCounter(void* pArena);
-void* ReturnSuppliedPlacementStorage(unsigned int cbStorage, void* pvStorage);
-void __stdcall FillMemoryByte(void* pvTarget, unsigned char chValue, unsigned int cbTarget);
-void __stdcall CopyMemoryBytes(void* pvTarget, const void* pvSource, unsigned int cbCopy);
+long LEMBALL_FASTCALL GetFreeSizeCArena(void* pArena);
+unsigned int LEMBALL_FASTCALL GetAllocSizeCArena(void* pArena);
+void* NewCArenaPlacement(unsigned int cbStorage, void* pvStorage);
+void __stdcall MemSetCArena(void* pvTarget, unsigned char chValue, unsigned int cbTarget);
+void __stdcall MemCopyCArena(void* pvTarget, const void* pvSource, unsigned int cbCopy);
 void* ConstructMemoryArenaBaseState(void* pArena,
 									unsigned int cbStorage,
 									const char* pszName,
 									void* pParentArena,
 									void* pReserved);
-void LEMBALL_FASTCALL ReleaseMemoryArenaBlockLists(void* pArena);
-void LEMBALL_FASTCALL DestroyMemoryArenaBaseState(void* pArena);
+void LEMBALL_FASTCALL DeleteListsCArena(void* pArena);
+void LEMBALL_FASTCALL DestroyCArena(void* pArena);
 int PASCAL HasMemoryBlockMagic(void* pBlock);
 int PASCAL IsUsedMemoryBlock(void* pBlock);
 int PASCAL IsFreeMemoryBlock(void* pBlock);
@@ -124,10 +121,10 @@ void* ConstructMemoryArenaBlock(void* pBlock,
 								void* pPreviousBlock,
 								const char* pszName,
 								unsigned int cbBlock);
-void* LEMBALL_FASTCALL DestroyMemoryArenaBaseStateReturnThis(void* pArena, int nUnused, int fDelete);
+void* LEMBALL_FASTCALL DestroyCArenaReturnThis(void* pArena, int nUnused, int fDelete);
 void* LEMBALL_FASTCALL DestroyMemoryArenaReturnThis(void* pArena, int nUnused, int fDelete);
 void* LEMBALL_FASTCALL RestoreMemoryBlockBaseVtableReturnThis(void* pBlock, int nUnused, int fDelete);
-int IsPointerInsideManagedMemoryRegions(void* pvPointer);
+int CheckValidPointer(void* pvPointer);
 unsigned int GetMemoryArenaHeaderSize(void);
 unsigned int GetMemoryBlockHeaderSize(void);
 

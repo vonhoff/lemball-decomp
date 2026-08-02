@@ -1,7 +1,6 @@
 #include "ENGINE/CORE/COMMON.H"
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/CORE/VSINIT.H"
-#include "Visos/Generic/Memory.h"
 #include "ENGINE/GDI/VSGDI.H"
 #include "ENGINE/GDI/VSWINDOW.H"
 #include "FRONTEND/CURSOR.H"
@@ -10,6 +9,7 @@
 #include "SHELL/ENTRY.H"
 #include "SHELL/OPTIONS.H"
 #include "Visos/Generic/CSurface.h"
+#include "Visos/Generic/Memory.h"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>
@@ -3204,7 +3204,7 @@ void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void* pQueue)
 		if (0 < pDispatchQueue->m_cEntries) {
 			do {
 				pQueuedEntry = *(void**) ((char*) pDispatchQueue->m_ppEntries + nByteOffset);
-				if (IsPointerInsideManagedMemoryRegions(pQueuedEntry) != 0) {
+				if (CheckValidPointer(pQueuedEntry) != 0) {
 					((EntryDispatchVirtual) (*(void***) pQueuedEntry)[2])(pQueuedEntry, 0, pDispatchQueue);
 				}
 				nByteOffset += 4;

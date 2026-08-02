@@ -1,9 +1,9 @@
 #include "ENGINE/CORE/VSINIT.H"
-#include "Visos/Generic/Memory.h"
 #include "ENGINE/CORE/WIN32.H"
 #include "GAME.H"
 #include "LEVEL/DEMO.H"
 #include "RESOURCE/MOGLOAD.H"
+#include "Visos/Generic/Memory.h"
 
 #include <stdio.h>
 
@@ -328,7 +328,7 @@ void ReadLevelDemoLengthPrefixedRecordThunk(void* pPlaybackController, void* pRe
 	*(int*) ((char*) pPlaybackController + 0x18) -= (*pcbRecord + 4);
 
 	cbRemaining = *pcbRecord;
-	CopyMemoryBytes(pRecordBuffer, pdwCursor, cbRemaining);
+	MemCopyCArena(pRecordBuffer, pdwCursor, cbRemaining);
 	*(int*) ((char*) pPlaybackController + 0x1c) += *pcbRecord;
 	cbCopy = cbRemaining;
 	(void) cbCopy;

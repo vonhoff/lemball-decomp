@@ -1,7 +1,7 @@
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/CORE/VSINIT.H"
-#include "Visos/Generic/Memory.h"
 #include "GAME.H"
+#include "Visos/Generic/Memory.h"
 
 #include <ctype.h>
 #include <string.h>
@@ -13,7 +13,7 @@ struct GameStatusEntryInitialVtable {
 	void* m_pReserved;
 	void(LEMBALL_FASTCALL* m_pEnterCriticalSection)(void*);
 	void(LEMBALL_FASTCALL* m_pLeaveCriticalSection)(void*);
-	void* (CArena::*m_pWriteMemoryArenaReport)(VsInitFormattedOutputStream*);
+	void* (CArena::*m_pStreamOut)(VsInitFormattedOutputStream*);
 	void*(LEMBALL_FASTCALL* m_pDestroyMemoryArena)(void*, int, int);
 	int (CArena::*m_pAllocate)(void**, unsigned int, const char*);
 	int (CArena::*m_pFree)(void*);
@@ -24,10 +24,10 @@ GameStatusEntryInitialVtable g_GAME_StatusEntryDeleteVtable = {
 	0,
 	EnterObjectCriticalSection,
 	LeaveObjectCriticalSection,
-	&CArena::WriteMemoryArenaReport,
+	&CArena::StreamOut,
 	DestroyMemoryArenaReturnThis,
 	&CArena::Allocate,
-	&CArena::FreeMemoryArenaBlock,
+	&CArena::Free,
 };
 // GLOBAL: LEMBALL 0x00498960
 static void* g_GAME_StatusEntryVtable[8] = {

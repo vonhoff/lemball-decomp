@@ -1,8 +1,8 @@
 #include "ENGINE/CORE/VSINIT.H"
-#include "Visos/Generic/Memory.h"
 #include "GAME.H"
 #include "RESOURCE/MOGLOAD.H"
 #include "SHELL/OPTIONS.H"
+#include "Visos/Generic/Memory.h"
 
 #include <ctype.h>
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
@@ -132,8 +132,8 @@ static MogLoadMemoryArenaStatusEntryVtable g_MOGLOAD_MemoryArenaStatusEntryVtabl
 		(void*) EnterObjectCriticalSection,
 		(void*) LeaveObjectCriticalSection,
 	},
-	&CArena::WriteMemoryArenaReport,
-	(void*) DestroyMemoryArenaBaseStateReturnThis,
+	&CArena::StreamOut,
+	(void*) DestroyCArenaReturnThis,
 };
 // GLOBAL: LEMBALL 0x00498980
 void* g_MOGLOAD_CachedResourceObjectBaseVtable[15] = {
@@ -256,7 +256,7 @@ extern unsigned int TellFile(FILE* pFile);
 extern unsigned int SeekFile(FILE* pFile, long lOffset, int nOrigin);
 extern unsigned int ReadFileBytes(FILE* pFile, void* pBuffer, size_t cbBuffer);
 extern "C" DWORD WINAPI timeGetTime(void);
-extern void* LEMBALL_FASTCALL DestroyMemoryArenaBaseStateReturnThis(void* pArena, int nUnused, int fDelete);
+extern void* LEMBALL_FASTCALL DestroyCArenaReturnThis(void* pArena, int nUnused, int fDelete);
 
 void* g_pDestroyGRTSResourceAndFreeThunk = g_MOGLOAD_TypedResourceObjectVtable;
 void* g_pStringResourceVtable = g_MOGLOAD_StringResourceVtable;
@@ -344,8 +344,8 @@ void* AllocateResourceArchiveMemory(unsigned int cbBytes)
 	}
 
 	if (g_fCSmallMemoryEnabled != 0 && cbBytes < g_cbCBucketUpperBound) {
-		pvBlock = (unsigned int) ((CSmallMemory*) g_pCSmallMemory)
-					  ->AllocateFromCSmallMemory(cbBytes, g_pszCBucketAllocTag);
+		pvBlock =
+			(unsigned int) ((CSmallMemory*) g_pCSmallMemory)->AllocateFromCSmallMemory(cbBytes, g_pszCBucketAllocTag);
 		if (pvBlock != 0) {
 			return (void*) (unsigned long) pvBlock;
 		}
@@ -366,8 +366,7 @@ void FreeResourceArchiveMemory(void* pMemoryBlock)
 		return;
 	}
 
-	if (g_fCSmallMemoryEnabled != 0 &&
-		((CSmallMemory*) g_pCSmallMemory)->FreeToCSmallMemory(pMemoryBlock) != 0) {
+	if (g_fCSmallMemoryEnabled != 0 && ((CSmallMemory*) g_pCSmallMemory)->FreeToCSmallMemory(pMemoryBlock) != 0) {
 		return;
 	}
 
@@ -691,8 +690,7 @@ void* MogLoadResourceArchive::ConstructResourceArchive(const char* pszArchiveNam
 	pResourceArchive->m_fSkipPruneOnDestroy = 0;
 	pResourceArchive->m_cbArena = cbArenaSize;
 
-	if (((CArena*) g_pMainMemoryArena)->AllocateChildMemoryArena(&pChildArena, cbArenaSize, g_MOGLOAD_StatusName) ==
-		1) {
+	if (((CArena*) g_pMainMemoryArena)->AllocateArena(&pChildArena, cbArenaSize, g_MOGLOAD_StatusName) == 1) {
 		pResourceArchive->m_fExternalArena = 0;
 	}
 	g_pResourceArchiveMemoryArena = pChildArena;
@@ -764,7 +762,7 @@ void LEMBALL_FASTCALL DestroyResourceArchive(void* pArchive)
 		pResourceArchive->m_pszSelectedPath = 0;
 	}
 	if (pResourceArchive->m_fExternalArena == 0) {
-		((CArena*) g_pMainMemoryArena)->ReleaseChildMemoryArena(g_pResourceArchiveMemoryArena);
+		((CArena*) g_pMainMemoryArena)->FreeArena(g_pResourceArchiveMemoryArena);
 	}
 	g_pResourceArchiveMemoryArena = 0;
 }
@@ -961,7 +959,7 @@ unsigned int MogLoadResourceArchive::AllocateResourceDataBufferWithEviction(unsi
 	MogLoadTypedResourceObjectVtable* pVtable;
 
 	while ((pBuffer = (unsigned int) (unsigned long) AllocateResourceArchiveMemory(cbBuffer)) == 0) {
-		cbShortfall = (int) cbBuffer - (int) GetMemoryArenaPayloadByteCounter(g_pResourceArchiveMemoryArena);
+		cbShortfall = (int) cbBuffer - (int) GetAllocSizeCArena(g_pResourceArchiveMemoryArena);
 		cbMinimumEvict = cbShortfall < 0 ? cbBuffer : (unsigned int) cbShortfall;
 		iSlot = FindResourceCacheEvictionCandidateIndex(this, cbMinimumEvict);
 		if (iSlot == -1) {

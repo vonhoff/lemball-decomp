@@ -1,12 +1,12 @@
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/CORE/VSINIT.H"
-#include "Visos/Generic/Memory.h"
 #include "ENGINE/DEBUG/CTEXTWIN.H"
 #include "ENGINE/DEBUG/VSDBG.H"
 #include "ENGINE/GDI/VSGDI.H"
 #include "ENGINE/GDI/VSINVIS.H"
 #include "GAME.H"
 #include "SHELL/OPTIONS.H"
+#include "Visos/Generic/Memory.h"
 
 #include <ctype.h>
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
@@ -318,8 +318,8 @@ static MainMemoryArenaStatusEntryVtable g_MainMemoryArenaStatusEntryVtable = {
 		(void*) EnterObjectCriticalSection,
 		(void*) LeaveObjectCriticalSection,
 	},
-	&CArena::WriteMemoryArenaReport,
-	(void*) DestroyMemoryArenaBaseStateReturnThis,
+	&CArena::StreamOut,
+	(void*) DestroyCArenaReturnThis,
 };
 // GLOBAL: LEMBALL 0x004a9368
 static jmp_buf g_GameStartupJumpBuffer;
@@ -1060,7 +1060,7 @@ void InitializeCoreSubsystems(void)
 		->AppendCStringToStream(SelectSuccessOrFailedString(fDebugInitialized))
 		->AppendCStringToStream("...\n");
 
-	g_cbMainArenaAvailableAfterInit = CalculateMemoryArenaAvailableBytes(g_pMainMemoryArena);
+	g_cbMainArenaAvailableAfterInit = GetFreeSizeCArena(g_pMainMemoryArena);
 
 	fInputInitialized = InitializeSharedEventQueueRuntime();
 	g_pStartupOutputStream->AppendCStringToStream("_INP_Init   : ")
@@ -1117,10 +1117,10 @@ void ShutdownCoreSubsystems(void)
 	ShutdownResourceGeometryHelperRuntime();
 	ShutdownSharedEventQueueRuntime();
 
-	cbAvailableNow = CalculateMemoryArenaAvailableBytes(g_pMainMemoryArena);
+	cbAvailableNow = GetFreeSizeCArena(g_pMainMemoryArena);
 	if (cbAvailableNow != g_cbMainArenaAvailableAfterInit) {
 		g_pErrorOutputStream->AppendCStringToStream(g_VSINIT_MemoryLeakMessage);
-		((CArena*) g_pMainMemoryArena)->WriteMemoryArenaReport(g_pErrorOutputStream);
+		((CArena*) g_pMainMemoryArena)->StreamOut(g_pErrorOutputStream);
 		g_pErrorOutputStream->AppendCStringToStream(g_VSINIT_LineBreak);
 	}
 
