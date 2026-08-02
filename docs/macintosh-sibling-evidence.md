@@ -66,4 +66,4 @@ Twenty-five Macintosh `CEnemy` methods align with Windows `0x0041FBA0..0x0042072
 
 ### CPlayerLemming lifecycle, grouping, and fire core
 
-Twenty Macintosh `CPlayerLemming` methods align with Windows `0x0040ECB0..0x0040F600` through PLAS lifecycle/layout, signatures, ILTs/callers, group pointer/flags, target-latch fields, fixed-point coordinates, projectile behavior, and death/mine transitions. The later stream/object, resurrection, balloon, bored, action, conveyor, and selection family remains separate pending full independent validation.
+All thirty-nine portable Macintosh `CPlayerLemming` methods align with Windows `0x0040ECB0..0x004102D0` through PLAS lifecycle/layout, signatures, ILTs/callers, vtable slots, stream inverse pairs, group/object fields, distinctive balloon codes, fixed-point coordinates, RNG constants, and state transitions. Target-only `0x0040F7E0`, deleting wrapper `0x00410B20`, and nine Macintosh-specific duplicate members remain explicitly excluded.

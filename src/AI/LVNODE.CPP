@@ -6,6 +6,7 @@ void NoopType18PacketHook(void)
 {
 }
 
+// MACINTOSH: CPlayerLemming::StartBalloon()
 // FUNCTION: LEMBALL 0x0040ff60
 void NoopProjectileBonusHook(void)
 {

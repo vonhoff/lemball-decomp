@@ -1071,6 +1071,7 @@ void __fastcall clear_door_chunk_object_target_tile_latch(void* pObject)
 	*(int*) ((char*) pObject + 0x184) = 0;
 }
 
+// MACINTOSH: CPlayerLemming::CheckSFX()
 // FUNCTION: LEMBALL 0x0040f7a0
 int LevelManagedEntityDirtyStateView::PollChildDirtyFlag(void)
 {
@@ -1096,6 +1097,7 @@ int LevelManagedEntityDirtyStateView::PollStreamDirtyFlag(void)
 	return m_fChildDirty164;
 }
 
+// MACINTOSH: CPlayerLemming::GetObject(int)
 // FUNCTION: LEMBALL 0x0040fcb0
 int LevelQueuedProjectileRequestTable::GetRequestCode(int nIndex)
 {
@@ -1105,6 +1107,7 @@ int LevelQueuedProjectileRequestTable::GetRequestCode(int nIndex)
 	return m_anRequestCodes1C0[nIndex];
 }
 
+// MACINTOSH: CPlayerLemming::IsSelectable()
 // FUNCTION: LEMBALL 0x004102d0
 int LevelManagedEntityStateFields::IsStateAvailableForVariant(void)
 {

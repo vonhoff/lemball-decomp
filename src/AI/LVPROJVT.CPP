@@ -63,6 +63,7 @@ int g_cActiveManagedEntities;
 
 // Split from the original LEVELVT source group to preserve MSVC 4.20 code generation in LEVELVT.CPP.
 
+// MACINTOSH: CPlayerLemming::Resurrect(AICOORD const&)
 // FUNCTION: LEMBALL 0x0040fa80
 void ManagedProjectileObjectView::ActivateAtPosition(const LevelPoint3* pPosition)
 {
