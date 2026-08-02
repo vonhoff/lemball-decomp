@@ -279,7 +279,7 @@ static void* g_VSGDI_CompactResourceGeometryHelperVtable[20] = {
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot0(void*, int, short*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot1(void*, int, void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot2(void*);
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot3(void*);
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot3(void*, int, void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot4(void*, int, void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot5(void*, int, void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot9(void*, int, void*, void*);

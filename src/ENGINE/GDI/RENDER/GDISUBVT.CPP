@@ -52,6 +52,20 @@ struct CompactHelperGroup0DirtyStateView {
 	void SetDirtyFlagAndPropagate(int fDirty);
 };
 
+__inline static void PlotCompactCirclePixel(int* pRows,
+											int x,
+											int y,
+											int xMin,
+											int yMin,
+											int xMax,
+											int yMax,
+											unsigned char nColor)
+{
+	if (x >= xMin && x <= xMax && y >= yMin && y <= yMax) {
+		*(unsigned char*) (pRows[y] + x) = nColor;
+	}
+}
+
 // These small entries are compiler-generated adjustor and interface thunks.
 
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot1(void* pObject, int, void* pEntryObject)
@@ -98,8 +112,88 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot2(void*)
 {
 }
 
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot3(void*)
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot3(void* pObject, int, void* pCommand)
 {
+	typedef void(LEMBALL_FASTCALL * DirtyRectProc)(void*, int, short*);
+	char* pCompact;
+	char* pClipView;
+	char* pTarget;
+	int* pRows;
+	short DirtyRect[4];
+	int xCenter;
+	int yCenter;
+	int nRadius;
+	int xMin;
+	int yMin;
+	int xMax;
+	int yMax;
+	int x;
+	int y;
+	int nDecision;
+	int nDelta;
+	int nThreshold;
+	int nAdjustment;
+	unsigned char nColor;
+
+	pCompact = (char*) pObject - *(int*) ((char*) pObject - 4);
+	pTarget = pCompact - 0x55c;
+	nAdjustment = *(int*) (*(int*) (pCompact - 0x51c) + 4);
+	pClipView = pCompact + nAdjustment;
+	xMin = *(short*) (pClipView - 0x4f4);
+	yMin = *(short*) (pClipView - 0x4f2);
+	xMax = xMin + *(short*) (pClipView - 0x4f8) - 1;
+	yMax = yMin + *(short*) (pClipView - 0x4f6) - 1;
+	if (xMax < xMin || yMax < yMin) {
+		return;
+	}
+	xCenter = *(short*) ((char*) pCommand + 4);
+	yCenter = *(short*) ((char*) pCommand + 6);
+	nRadius = *(int*) ((char*) pCommand + 8);
+	if (nRadius < 0) {
+		nRadius = -nRadius;
+	}
+	nColor = (unsigned char) *(int*) ((char*) pCommand + 0x0c);
+	pRows = *(int**) (pCompact - 0x558);
+
+	PlotCompactCirclePixel(pRows, xCenter, yCenter + nRadius, xMin, yMin, xMax, yMax, nColor);
+	PlotCompactCirclePixel(pRows, xCenter, yCenter - nRadius, xMin, yMin, xMax, yMax, nColor);
+	PlotCompactCirclePixel(pRows, xCenter + nRadius, yCenter, xMin, yMin, xMax, yMax, nColor);
+	PlotCompactCirclePixel(pRows, xCenter - nRadius, yCenter, xMin, yMin, xMax, yMax, nColor);
+	x = 0;
+	y = nRadius;
+	nDecision = 0;
+	nDelta = 1;
+	nThreshold = nRadius * 2 - 1;
+	while (x < y) {
+		++x;
+		nDecision += nDelta;
+		nDelta += 2;
+		if (nDecision * 2 > nThreshold) {
+			--y;
+			nDecision -= nThreshold;
+			nThreshold -= 2;
+		}
+		if (x <= y) {
+			PlotCompactCirclePixel(pRows, xCenter + x, yCenter + y, xMin, yMin, xMax, yMax, nColor);
+			PlotCompactCirclePixel(pRows, xCenter - x, yCenter + y, xMin, yMin, xMax, yMax, nColor);
+			PlotCompactCirclePixel(pRows, xCenter + x, yCenter - y, xMin, yMin, xMax, yMax, nColor);
+			PlotCompactCirclePixel(pRows, xCenter - x, yCenter - y, xMin, yMin, xMax, yMax, nColor);
+			if (x < y) {
+				PlotCompactCirclePixel(pRows, xCenter + y, yCenter + x, xMin, yMin, xMax, yMax, nColor);
+				PlotCompactCirclePixel(pRows, xCenter - y, yCenter + x, xMin, yMin, xMax, yMax, nColor);
+				PlotCompactCirclePixel(pRows, xCenter + y, yCenter - x, xMin, yMin, xMax, yMax, nColor);
+				PlotCompactCirclePixel(pRows, xCenter - y, yCenter - x, xMin, yMin, xMax, yMax, nColor);
+			}
+		}
+	}
+
+	DirtyRect[2] = (short) (xCenter - nRadius < xMin ? xMin : xCenter - nRadius);
+	DirtyRect[3] = (short) (yCenter - nRadius < yMin ? yMin : yCenter - nRadius);
+	DirtyRect[0] = (short) ((xCenter + nRadius + 1 > xMax + 1 ? xMax + 1 : xCenter + nRadius + 1) - DirtyRect[2]);
+	DirtyRect[1] = (short) ((yCenter + nRadius + 1 > yMax + 1 ? yMax + 1 : yCenter + nRadius + 1) - DirtyRect[3]);
+	if (DirtyRect[0] > 0 && DirtyRect[1] > 0) {
+		((DirtyRectProc) (*(void***) pTarget)[1])(pTarget, 0, DirtyRect);
+	}
 }
 
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot4(void* pObject, int, void* pCommand)
