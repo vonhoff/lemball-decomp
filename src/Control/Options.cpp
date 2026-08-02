@@ -91,6 +91,7 @@ StartupGraphicsWindowConfig* BuildStartupGraphicsWindowConfigThunk(const Startup
 	return BuildStartupGraphicsWindowConfig(pSeedConfig);
 }
 
+// MACINTOSH: VSPreInit(tagPRE_INIT*)
 // FUNCTION: LEMBALL 0x00406160
 StartupGraphicsWindowConfig* BuildStartupGraphicsWindowConfig(const StartupGraphicsWindowConfig* pSeedConfig)
 {

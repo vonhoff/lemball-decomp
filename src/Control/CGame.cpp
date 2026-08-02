@@ -2230,6 +2230,7 @@ void LEMBALL_FASTCALL RequestFramedScreenTransitionMode2Thunk(void* pScreen)
 {
 	RequestFramedScreenTransitionMode2(pScreen);
 }
+// MACINTOSH: VSmain(int, char**)
 // FUNCTION: LEMBALL 0x00406310
 int RunMainGameSession(int cArgs, const char* const* ppszArgs)
 {
@@ -3077,6 +3078,7 @@ __declspec(naked) void* LEMBALL_FASTCALL DeleteStartupModeEventClientAdjusted(vo
         jmp offset DeleteStartupModeThunk
 	}
 }
+// MACINTOSH: ClockEditMode(unsigned char)
 // FUNCTION: LEMBALL 0x00408080
 void SetLevelFrameClockPauseFlag(int fPaused)
 {
@@ -3897,6 +3899,7 @@ __declspec(naked) void* LEMBALL_FASTCALL DeleteLevelGameModeAdjusted(void*, int,
 	}
 }
 
+// MACINTOSH: Distance(int, int, int, int)
 // FUNCTION: LEMBALL 0x00413f80
 int Distance2DIntPixels(int x1, int y1, int x2, int y2)
 {

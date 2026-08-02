@@ -5,6 +5,7 @@
 // GLOBAL: LEMBALL 0x0049d040
 static const unsigned int g_GAME_PositiveYDirectionMap[8] = {4, 3, 2, 3, 4, 5, 6, 5};
 
+// MACINTOSH: ReturnFacingDirection(int, int, int, int)
 // FUNCTION: LEMBALL 0x00413e80
 unsigned int __cdecl compute_direction_octant_between_points(int nX1, int nY1, int nX2, int nY2)
 {

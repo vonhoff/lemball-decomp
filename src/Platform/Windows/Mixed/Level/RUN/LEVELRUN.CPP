@@ -816,6 +816,7 @@ CBallManager* CBallManager::ConstructBallChunkManagerThunk(void* pLevelMode, int
 {
 	return ConstructBallChunkManager(pLevelMode, cCapacity);
 }
+// MACINTOSH: ResetGameTimes()
 // FUNCTION: LEMBALL 0x00408090
 void ResetLevelFrameClockThunk(void)
 {
@@ -827,6 +828,7 @@ void ResetLevelFrameClockThunk(void)
 	g_nLevelFrameClockTimeBaseMs = (int) timeGetTime();
 	g_nLevelFrameClockTickBase = g_nLevelFrameClockTimeBaseMs / 0x32;
 }
+// MACINTOSH: SetGameTime()
 // FUNCTION: LEMBALL 0x004080d0
 void AdvanceLevelFrameClock(void)
 {
@@ -859,6 +861,7 @@ void AdvanceLevelFrameClock(void)
 	g_nLevelFrameClockTimeMs = g_nLevelFrameClockTick * 0x32;
 	g_nLevelFrameClockLastSampleMs = g_nLevelFrameClockTick;
 }
+// MACINTOSH: SetRemoteGameTimeReal(unsigned long)
 // FUNCTION: LEMBALL 0x00408190
 void UpdateNetworkFrameClockFromNetworkTime(unsigned int nTimeMs)
 {

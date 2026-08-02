@@ -162,6 +162,7 @@ void LEMBALL_FASTCALL StopLevelDemoPlaybackThunk(void* pPlaybackController)
 	StopLevelDemoPlayback(pPlaybackController);
 }
 
+// MACINTOSH: _DEMO_Init(int)
 // FUNCTION: LEMBALL 0x00409150
 void CreateFrameTimerController(unsigned int uFrameInterval)
 {
@@ -175,6 +176,7 @@ void CreateFrameTimerController(unsigned int uFrameInterval)
 	g_pLevelDemoPlaybackController = 0;
 }
 
+// MACINTOSH: _DEMO_Quit()
 // FUNCTION: LEMBALL 0x00409180
 void DestroyFrameTimerController(void)
 {
