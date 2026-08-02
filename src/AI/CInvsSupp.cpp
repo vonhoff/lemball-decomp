@@ -17,6 +17,7 @@ struct InvsChunkObjectActionView {
 
 // Split from the original LINKSCF source group to preserve MSVC 4.20 code generation in LINKSCF.CPP.
 
+// MACINTOSH: CInvisibleSwitch::VerifyObjects()
 // FUNCTION: LEMBALL 0x00409ec0
 void LEMBALL_FASTCALL RemoveInvsTrackedEntitiesOutsideBounds(void* pObject)
 {
@@ -40,6 +41,7 @@ void LEMBALL_FASTCALL RemoveInvsTrackedEntitiesOutsideBounds(void* pObject)
 	}
 }
 
+// MACINTOSH: CInvisibleSwitch::AddObject(CGameObject*)
 // FUNCTION: LEMBALL 0x00409f70
 void InvsChunkObjectActionView::AddInvsTrackedEntity(void* pEntity)
 {
@@ -52,6 +54,7 @@ void InvsChunkObjectActionView::AddInvsTrackedEntity(void* pEntity)
 	}
 }
 
+// MACINTOSH: CInvisibleSwitch::StepOn(const AICOORD&, CGameObject*)
 // FUNCTION: LEMBALL 0x00409fa0
 void InvsChunkObjectActionView::TryTriggerContact(const int* pPosition, void* pEntity)
 {
@@ -74,6 +77,7 @@ void InvsChunkObjectActionView::TryTriggerContact(const int* pPosition, void* pE
 	((ManagedEntityStateView*) this)->RequestManagedEntityStateId(0x1a);
 }
 
+// MACINTOSH: CInvisibleSwitchManager::StepOn(const AICOORD&, CGameObject*)
 // FUNCTION: LEMBALL 0x0040a370
 void InvsChunkManagerActionView::DispatchContactsForEntity(const int* pPosition, void* pEntity)
 {

@@ -690,3 +690,21 @@ CODE_07_Control.bin,0x00001238,ClockEditMode__FUc,0x00408080,high,sets the level
 CODE_07_Control.bin,0x0000128E,ResetGameTimes__Fv,0x00408090,high,clears frame clocks and seeds time and 50ms tick baselines,exact_tuple,0x0000128E
 CODE_07_Control.bin,0x00001374,SetGameTime__Fv,0x004080D0,high,advances demo or live game time with pause and jump-clamp behavior,exact_tuple,0x00001374
 CODE_07_Control.bin,0x000013C0,SetRemoteGameTimeReal__FUl,0x00408190,high,accepts newer remote time and updates its 50ms frame index,exact_tuple,0x000013C0
+CODE_06_AI.bin,0x00012A18,__ct__16CInvisibleSwitchFv,0x00409CA0,high,constructs chunk type 0x36 and installs the invisible-switch vtable,exact_tuple,0x00012A18
+CODE_06_AI.bin,0x00012A52,Restart__16CInvisibleSwitchFv,0x00409CC0,high,resets inherited state then invisible-switch runtime fields,exact_tuple,0x00012A52
+CODE_06_AI.bin,0x00012A9D,Initialise__16CInvisibleSwitchFv,0x00409CE0,high,clears trigger action tracked-object and sound state,exact_tuple,0x00012A9D
+CODE_06_AI.bin,0x00012B06,__dt__16CInvisibleSwitchFv,0x00409D10,high,restores the class vtable and destroys the chunk-object base,exact_tuple,0x00012B06
+CODE_06_AI.bin,0x00012C63,Set__16CInvisibleSwitchFRC8tCoord3dRC8tCoord3d,0x00409D70,high,normalizes two coordinate bounds marks grid cells and resets tracked objects,exact_tuple,0x00012C63
+CODE_06_AI.bin,0x00012D61,VerifyObjects__16CInvisibleSwitchFv,0x00409EC0,high,prunes tracked objects outside the expanded switch bounds,exact_tuple,0x00012D61
+CODE_06_AI.bin,0x00012DCF,AddObject__16CInvisibleSwitchFP11CGameObject,0x00409F70,high,appends a tracked object and records this switch slot id,exact_tuple,0x00012DCF
+CODE_06_AI.bin,0x00012E8B,StepOn__16CInvisibleSwitchFRC7AICOORDP11CGameObject,0x00409FA0,high,tests contact bounds and requests activation for a new object,exact_tuple,0x00012E8B
+CODE_06_AI.bin,0x00012EF1,DoActivate__16CInvisibleSwitchFv,0x0040A020,high,dispatches the activation score or sound action once,exact_tuple,0x00012EF1
+CODE_06_AI.bin,0x00012FF6,Process__16CInvisibleSwitchFv,0x0040A050,high,verifies tracked objects and performs the activation action sequence,exact_tuple,0x00012FF6
+CODE_06_AI.bin,0x00013120,Load__16CInvisibleSwitchFRPUc,0x0040A110,high,loads slot bounds versioned type and action records through a byte cursor,exact_tuple,0x00013120
+CODE_06_AI.bin,0x000131AD,__ct__23CInvisibleSwitchManagerFP3CAIi,0x0040A210,high,constructs the manager stream and records owner capacity and object array,exact_tuple,0x000131AD
+CODE_06_AI.bin,0x0001321D,Restart__23CInvisibleSwitchManagerFv,0x0040A270,high,restarts every allocated invisible switch at stride 0x2B8,exact_tuple,0x0001321D
+CODE_06_AI.bin,0x000132F1,Initialise__23CInvisibleSwitchManagerFi,0x0040A2A0,high,allocates constructs restarts and binds the invisible-switch array,exact_tuple,0x000132F1
+CODE_06_AI.bin,0x00013373,__dt__23CInvisibleSwitchManagerFv,0x0040A350,high,destroys the owned switch array and manager stream base,exact_tuple,0x00013373
+CODE_06_AI.bin,0x000133DF,StepOn__23CInvisibleSwitchManagerFRC7AICOORDP11CGameObject,0x0040A370,high,dispatches contact to each active invisible switch,exact_tuple,0x000133DF
+CODE_06_AI.bin,0x0001345D,Process__23CInvisibleSwitchManagerFv,0x0040A3B0,high,processes each active invisible switch through its virtual slot,exact_tuple,0x0001345D
+CODE_06_AI.bin,0x000134E9,LoadLevel__23CInvisibleSwitchManagerFPUciUc,0x0040A490,high,allocates and loads all serialized invisible switches,exact_tuple,0x000134E9

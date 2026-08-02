@@ -2,6 +2,7 @@
 
 typedef void(LEMBALL_FASTCALL* InvsChunkObjectActivateProc)(void* pObject);
 
+// MACINTOSH: CInvisibleSwitchManager::Process()
 // FUNCTION: LEMBALL 0x0040a3b0
 void LEMBALL_FASTCALL AdvanceInvsChunkObjects(void* pManager)
 {

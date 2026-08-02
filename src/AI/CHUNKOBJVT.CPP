@@ -289,6 +289,7 @@ int g_nNetworkFrameClockTick = 0;
 // GLOBAL: LEMBALL 0x0049ce10
 int g_nNetworkFrameClockTimeMs = 0;
 
+// MACINTOSH: CInvisibleSwitch::Process()
 // FUNCTION: LEMBALL 0x0040a050
 int LEMBALL_FASTCALL ServiceInvsChunkObject(void* pObject)
 {

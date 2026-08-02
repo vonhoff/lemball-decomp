@@ -149,3 +149,7 @@ All six portable `CLevelLoader` methods align with Windows `0x00408210..0x00408B
 ### Portable Control globals
 
 Ten portable Control globals map through independent Windows behavior: `VSPreInit` (`0x00406160`), `VSmain` (`0x00406310`), direction and distance helpers (`0x00413E80`, `0x00413F80`), demo lifecycle (`0x00409150`, `0x00409180`), and frame-clock operations (`0x00408080..0x00408190`). Physical ownership remains split across the existing Windows Control and mixed level TUs. `GETWORD` and `GETLONG` remain unresolved pending proof of their target-endian/inlining disposition.
+
+### CInvisibleSwitch and CInvisibleSwitchManager
+
+All 18 portable methods map at `0x00409CA0..0x0040A490`. Windows evidence preserves the `0x2B8` object stride, two-coordinate bounds setup, `0x18` tracked-object capacity, contact/activation state machine, versioned level loader, and split physical ownership between `LINKSCF.CPP` and `CInvsMgr.cpp`. The point-only object overload `0x00409D20`, manager Add overloads `0x0040A3E0`/`0x0040A440`, and deleting wrapper `0x0040AC60` are target-only and consume no portable symbols.

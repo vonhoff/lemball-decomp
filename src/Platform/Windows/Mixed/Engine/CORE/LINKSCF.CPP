@@ -767,6 +767,7 @@ extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject)
 
 extern void* g_LINKSCF_InvsChunkObjectVtable[16];
 
+// MACINTOSH: CInvisibleSwitch::CInvisibleSwitch()
 // FUNCTION: LEMBALL 0x00409ca0
 InvsChunkObjectView* InvsChunkObjectView::ConstructInvsChunkObject(void)
 {
@@ -775,6 +776,7 @@ InvsChunkObjectView* InvsChunkObjectView::ConstructInvsChunkObject(void)
 	return this;
 }
 
+// MACINTOSH: CInvisibleSwitch::~CInvisibleSwitch()
 // FUNCTION: LEMBALL 0x00409d10
 void LEMBALL_FASTCALL destroy_invs_chunk_object(void* pObject)
 {
@@ -782,6 +784,7 @@ void LEMBALL_FASTCALL destroy_invs_chunk_object(void* pObject)
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 }
 
+// MACINTOSH: CInvisibleSwitch::DoActivate()
 // FUNCTION: LEMBALL 0x0040a020
 void InvsChunkObjectSoundStateView::TriggerSoundOnce(void)
 {
@@ -791,6 +794,7 @@ void InvsChunkObjectSoundStateView::TriggerSoundOnce(void)
 	}
 }
 
+// MACINTOSH: CInvisibleSwitchManager::CInvisibleSwitchManager(CAI*, int)
 // FUNCTION: LEMBALL 0x0040a210
 LinkScfInvsChunkManagerView* LinkScfInvsChunkManagerView::ConstructInvsChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -802,6 +806,7 @@ LinkScfInvsChunkManagerView* LinkScfInvsChunkManagerView::ConstructInvsChunkMana
 	return this;
 }
 
+// MACINTOSH: CInvisibleSwitchManager::Restart()
 // FUNCTION: LEMBALL 0x0040a270
 void LEMBALL_FASTCALL ResetAllInvsChunkObjects(void* pManager)
 {
