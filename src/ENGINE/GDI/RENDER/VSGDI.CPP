@@ -543,13 +543,15 @@ struct VsGdiResourceGeometryRowBufferView {
 
 struct VsGdiCompactResourceGeometryHelper {
 	void* m_pVtable;
-	unsigned char m_abReserved04[0x1c];
+	short m_aGeometry04[14];
 	void* m_pLinkedTarget;
-	unsigned char m_abReserved24[0xc];
+	short m_aGeometry24[4];
+	int m_nReserved2C;
 	int m_fForwardingEnabled;
 	int m_nQueuedState;
 	int m_nReserved38;
-	unsigned char m_abReserved3C[8];
+	int m_fInitialized;
+	int m_nReserved40;
 
 	void* InitializeCompactResourceGeometryHelper(void);
 };
@@ -2655,32 +2657,30 @@ void GamePrimaryContext::SampleRootHelperGeometryAndDispatchRenderGroups(int nTo
 // FUNCTION: LEMBALL 0x004663d0
 void* VsGdiCompactResourceGeometryHelper::InitializeCompactResourceGeometryHelper(void)
 {
-	char* pbHelper;
 	unsigned short wZero;
 
-	pbHelper = (char*) this;
 	wZero = 0;
-	*(unsigned short*) (pbHelper + 6) = wZero;
-	*(unsigned short*) (pbHelper + 4) = wZero;
-	*(unsigned short*) (pbHelper + 10) = wZero;
-	*(unsigned short*) (pbHelper + 8) = wZero;
-	*(unsigned short*) (pbHelper + 0xe) = wZero;
-	*(unsigned short*) (pbHelper + 0xc) = wZero;
-	*(unsigned short*) (pbHelper + 0x12) = wZero;
-	*(unsigned short*) (pbHelper + 0x10) = wZero;
-	*(unsigned short*) (pbHelper + 0x16) = wZero;
-	*(unsigned short*) (pbHelper + 0x14) = wZero;
-	*(unsigned short*) (pbHelper + 0x1a) = wZero;
-	*(unsigned short*) (pbHelper + 0x18) = wZero;
-	*(unsigned short*) (pbHelper + 0x1e) = wZero;
-	*(unsigned short*) (pbHelper + 0x1c) = wZero;
-	*(void**) pbHelper = &g_VSGDI_CompactResourceGeometryHelperVtable;
-	*(int*) (pbHelper + 0x3c) = 1;
-	*(unsigned short*) (pbHelper + 0x26) = wZero;
-	*(int*) (pbHelper + 0x40) = 0;
-	*(unsigned short*) (pbHelper + 0x24) = wZero;
-	*(unsigned short*) (pbHelper + 0x2a) = wZero;
-	*(unsigned short*) (pbHelper + 0x28) = wZero;
+	m_aGeometry04[1] = wZero;
+	m_aGeometry04[0] = wZero;
+	m_aGeometry04[3] = wZero;
+	m_aGeometry04[2] = wZero;
+	m_aGeometry04[5] = wZero;
+	m_aGeometry04[4] = wZero;
+	m_aGeometry04[7] = wZero;
+	m_aGeometry04[6] = wZero;
+	m_aGeometry04[9] = wZero;
+	m_aGeometry04[8] = wZero;
+	m_aGeometry04[11] = wZero;
+	m_aGeometry04[10] = wZero;
+	m_aGeometry04[13] = wZero;
+	m_aGeometry04[12] = wZero;
+	m_pVtable = &g_VSGDI_CompactResourceGeometryHelperVtable;
+	m_fInitialized = 1;
+	m_aGeometry24[1] = wZero;
+	m_nReserved40 = 0;
+	m_aGeometry24[0] = wZero;
+	m_aGeometry24[3] = wZero;
+	m_aGeometry24[2] = wZero;
 	return this;
 }
 // FUNCTION: LEMBALL 0x00466430
