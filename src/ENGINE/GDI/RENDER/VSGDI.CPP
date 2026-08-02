@@ -538,7 +538,17 @@ struct VsGdiResourceGeometryLinkList {
 
 struct VsGdiResourceGeometryRowBufferView {
 	void* m_pVtable;
-	unsigned char m_abState[0x3c];
+	int* m_pRows;
+	int m_nRowByteOffset;
+	void* m_pBackingBase;
+	int m_nReserved10;
+	int m_iLogicalRow;
+	int m_nBackingOrigin;
+	int m_nStride;
+	int m_cbBorderRow;
+	int m_nReserved24;
+	int m_cRowCapacity;
+	short m_aGeometry2C[10];
 };
 
 struct VsGdiCompactResourceGeometryHelper {
@@ -5200,20 +5210,20 @@ void VsGdiAnimWindowOwner::IgnoreEmbeddedMciNotification(void)
 // FUNCTION: LEMBALL 0x00472290
 void* LEMBALL_FASTCALL InitializeResourceGeometryRowBuffer(void* pvRowBuffer)
 {
-	int* pRowBuffer;
+	VsGdiResourceGeometryRowBufferView* pRowBuffer;
 
-	pRowBuffer = (int*) pvRowBuffer;
-	*(short*) ((char*) pRowBuffer + 0x2e) = 0;
-	*(short*) (pRowBuffer + 0xb) = 0;
-	*(short*) ((char*) pRowBuffer + 0x32) = 0;
-	*(short*) (pRowBuffer + 0xc) = 0;
-	*(short*) ((char*) pRowBuffer + 0x36) = 0;
-	*(short*) (pRowBuffer + 0xd) = 0;
-	*pRowBuffer = (int) (unsigned long) &g_VSGDI_ResourceGeometryRowBufferVtable;
-	*(short*) ((char*) pRowBuffer + 0x3a) = 0;
-	*(short*) (pRowBuffer + 0xe) = 0;
-	*(short*) ((char*) pRowBuffer + 0x3e) = 0;
-	*(short*) (pRowBuffer + 0xf) = 0;
+	pRowBuffer = (VsGdiResourceGeometryRowBufferView*) pvRowBuffer;
+	pRowBuffer->m_aGeometry2C[1] = 0;
+	pRowBuffer->m_aGeometry2C[0] = 0;
+	pRowBuffer->m_aGeometry2C[3] = 0;
+	pRowBuffer->m_aGeometry2C[2] = 0;
+	pRowBuffer->m_aGeometry2C[5] = 0;
+	pRowBuffer->m_aGeometry2C[4] = 0;
+	pRowBuffer->m_pVtable = &g_VSGDI_ResourceGeometryRowBufferVtable;
+	pRowBuffer->m_aGeometry2C[7] = 0;
+	pRowBuffer->m_aGeometry2C[6] = 0;
+	pRowBuffer->m_aGeometry2C[9] = 0;
+	pRowBuffer->m_aGeometry2C[8] = 0;
 	ClearResourceGeometryRowBufferFields(pRowBuffer);
 	return pRowBuffer;
 }
@@ -5226,33 +5236,33 @@ void LEMBALL_FASTCALL DestroyResourceGeometryRowBuffer(void* pvRowBuffer)
 // FUNCTION: LEMBALL 0x004722e0
 void LEMBALL_FASTCALL ReleaseResourceGeometryRowBufferStorage(int nRowBuffer)
 {
-	int* pRowBuffer;
+	VsGdiResourceGeometryRowBufferView* pRowBuffer;
 
-	pRowBuffer = (int*) (unsigned long) nRowBuffer;
-	if (pRowBuffer[1] != 0) {
-		FreeVSMemBlock((void*) (unsigned long) pRowBuffer[1]);
-		pRowBuffer[1] = 0;
-		pRowBuffer[10] = 0;
+	pRowBuffer = (VsGdiResourceGeometryRowBufferView*) (unsigned long) nRowBuffer;
+	if (pRowBuffer->m_pRows != 0) {
+		FreeVSMemBlock(pRowBuffer->m_pRows);
+		pRowBuffer->m_pRows = 0;
+		pRowBuffer->m_cRowCapacity = 0;
 	}
-	pRowBuffer[2] = 0;
-	pRowBuffer[3] = 0;
+	pRowBuffer->m_nRowByteOffset = 0;
+	pRowBuffer->m_pBackingBase = 0;
 }
 // FUNCTION: LEMBALL 0x00472310
 void LEMBALL_FASTCALL ClearResourceGeometryRowBufferFields(void* pvRowBuffer)
 {
-	char* pRowBuffer;
+	VsGdiResourceGeometryRowBufferView* pRowBuffer;
 
-	pRowBuffer = (char*) pvRowBuffer;
-	*(int*) (pRowBuffer + 0x10) = 0;
-	*(int*) (pRowBuffer + 0x08) = 0;
-	*(int*) (pRowBuffer + 0x0c) = 0;
-	*(int*) (pRowBuffer + 0x18) = 0;
-	*(int*) (pRowBuffer + 0x14) = 0;
-	*(int*) (pRowBuffer + 0x04) = 0;
-	*(int*) (pRowBuffer + 0x1c) = 0;
-	*(int*) (pRowBuffer + 0x24) = 0;
-	*(int*) (pRowBuffer + 0x20) = 0;
-	*(int*) (pRowBuffer + 0x28) = 0;
+	pRowBuffer = (VsGdiResourceGeometryRowBufferView*) pvRowBuffer;
+	pRowBuffer->m_nReserved10 = 0;
+	pRowBuffer->m_nRowByteOffset = 0;
+	pRowBuffer->m_pBackingBase = 0;
+	pRowBuffer->m_nBackingOrigin = 0;
+	pRowBuffer->m_iLogicalRow = 0;
+	pRowBuffer->m_pRows = 0;
+	pRowBuffer->m_nStride = 0;
+	pRowBuffer->m_nReserved24 = 0;
+	pRowBuffer->m_cbBorderRow = 0;
+	pRowBuffer->m_cRowCapacity = 0;
 }
 // FUNCTION: LEMBALL 0x00472340
 void LEMBALL_FASTCALL EnsureHelperBackingRowIndexCapacity(VsGdiHelperSurface* pSurface)
