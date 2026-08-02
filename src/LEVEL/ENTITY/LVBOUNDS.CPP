@@ -23,6 +23,7 @@ void* g_pManagedEntityReachabilityHelper = NULL;
 
 // Split from LEVELRUN.CPP to preserve compiler state in the original translation unit.
 
+// Macintosh: CGameObject::UpdateCollision()
 // FUNCTION: LEMBALL 0x004167c0
 void LEMBALL_FASTCALL UpdateManagedEntityBoundsFromPosition(void* pObject)
 {

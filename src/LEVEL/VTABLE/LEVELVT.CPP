@@ -1376,6 +1376,7 @@ void LevelManagedEntityQueueCursor::GetPosition(int* pnX, int* pnY)
 	*pnY = m_nY14;
 }
 
+// Macintosh: CGameObject::RotateClockwise()
 // FUNCTION: LEMBALL 0x00415520
 void LevelManagedEntityStateFields::IncrementHeadingOctant(void)
 {
@@ -1391,6 +1392,7 @@ void LevelManagedEntityStateFields::IncrementHeadingOctant(void)
 	}
 }
 
+// Macintosh: CGameObject::RotateAnticlockwise()
 // FUNCTION: LEMBALL 0x00415550
 void LevelManagedEntityStateFields::DecrementHeadingOctant(void)
 {
@@ -1415,18 +1417,21 @@ void __fastcall set_entity_field_0x08_if_flags_bit0(void* pEntity)
 	}
 }
 
+// Macintosh: CGameObject::DestinationExists()
 // FUNCTION: LEMBALL 0x004160c0
 int LevelManagedEntityCommandQueueView::HasPendingCommands(void)
 {
 	return 0 < *m_pCommandCount70;
 }
 
+// Macintosh: CGameObject::EmptyDestinationList()
 // FUNCTION: LEMBALL 0x004160e0
 void __fastcall clear_managed_entity_move_commands(void* pEntity)
 {
 	**(unsigned short**) ((char*) pEntity + 0x70) = 0;
 }
 
+// Macintosh: CGameObject::IsSelectable()
 // FUNCTION: LEMBALL 0x00416570
 int LevelManagedEntityStateFields::IsStateNotInactive(void)
 {

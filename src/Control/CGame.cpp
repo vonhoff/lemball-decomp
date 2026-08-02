@@ -2284,6 +2284,7 @@ int RunMainGameSession(int cArgs, const char* const* ppszArgs)
 	g_pStatusOutputStream->AppendCStringToStream(g_GAME_ClosedDownText);
 	return 0;
 }
+// Macintosh: CGameStatus::CGameStatus()
 // FUNCTION: LEMBALL 0x00406a90
 GameLevelProgressState* GameLevelProgressState::Clear(void)
 {
@@ -2310,6 +2311,7 @@ GameLevelProgressState* GameLevelProgressState::Clear(void)
 	pFields[4] = 0;
 	return this;
 }
+// Macintosh: CGameStatus::JiggleLevelData()
 // FUNCTION: LEMBALL 0x00406ad0
 unsigned int GameLevelProgressState::EncodePasswordValue(void)
 {
@@ -2338,6 +2340,7 @@ unsigned int GameLevelProgressState::EncodePasswordValue(void)
 	}
 	return uValue;
 }
+// Macintosh: CGameStatus::UnJiggleLevelData(unsigned long)
 // FUNCTION: LEMBALL 0x00406b30
 void GameLevelProgressState::ApplyPasswordValue(unsigned int uValue)
 {
@@ -2379,6 +2382,7 @@ int PASCAL ComputePowerOfTwo(int nExponent)
 	}
 	return nValue;
 }
+// Macintosh: CGameStatus::EncodePassword()
 // FUNCTION: LEMBALL 0x00406c00
 char* GameLevelProgressState::FormatPassword(void)
 {
@@ -2394,6 +2398,7 @@ char* GameLevelProgressState::FormatPassword(void)
 	memcpy(m_szPassword + 10 - cchDigits, szDigits, cchDigits + 1);
 	return m_szPassword;
 }
+// Macintosh: CGameStatus::DecodePassword(char*)
 // FUNCTION: LEMBALL 0x00406ca0
 int GameLevelProgressState::ValidateAndApplyPassword(char* pszPassword)
 {
@@ -2421,6 +2426,7 @@ int GameLevelProgressState::ValidateAndApplyPassword(char* pszPassword)
 	ApplyPasswordValueThunk(uValue & 0xffffff);
 	return 1;
 }
+// Macintosh: CGameStatus::StringToDWord()
 // FUNCTION: LEMBALL 0x00406d80
 int GameLevelProgressState::ParsePasswordDigits(void)
 {
@@ -2435,6 +2441,7 @@ int GameLevelProgressState::ParsePasswordDigits(void)
 	}
 	return nValue;
 }
+// Macintosh: CGameStatus::GotoLastLevels()
 // FUNCTION: LEMBALL 0x00406dd0
 void GameLevelProgressState::Snapshot(void)
 {
@@ -3067,6 +3074,7 @@ void SetLevelFrameClockPauseFlag(int fPaused)
 {
 	g_fLevelFrameClockPaused = fPaused;
 }
+// Macintosh: CGameStatus::IncLevel()
 // FUNCTION: LEMBALL 0x00408dc0
 void GameLevelProgressState::Advance(void)
 {
@@ -3102,6 +3110,7 @@ void GameLevelProgressState::Advance(void)
 	m_anSnapshotPackCaps[m_nCurrentPack] = m_nCurrentLevel;
 	IsCurrentLevelProgressAvailableThunk(this);
 }
+// Macintosh: CGameStatus::DecLevel()
 // FUNCTION: LEMBALL 0x00408e40
 bool GameLevelProgressState::Retreat(void)
 {
@@ -3111,6 +3120,7 @@ bool GameLevelProgressState::Retreat(void)
 	m_anSnapshotPackCaps[m_nCurrentPack] = m_nCurrentLevel;
 	return m_nCurrentLevel != 0;
 }
+// Macintosh: CGameStatus::NextLevelAvailable()
 // FUNCTION: LEMBALL 0x00408fa0
 bool GameLevelProgressState::IsCurrentLevelAvailable(void)
 {
@@ -3127,12 +3137,14 @@ bool GameLevelProgressState::IsCurrentLevelAvailable(void)
 	}
 	return fAvailable;
 }
+// Macintosh: CGameStatus::LastLevelAvailable()
 // FUNCTION: LEMBALL 0x00408fd0
 bool GameLevelProgressState::CanRetreat(void)
 {
 	return m_nCurrentLevel != 0;
 }
 
+// Macintosh: CGameStatus::SetMaxLevel(int, int)
 // FUNCTION: LEMBALL 0x00408fe0
 void GameLevelProgressState::SetUnlockedPackCap(int nPack, int nCap)
 {
@@ -4698,6 +4710,7 @@ void LEMBALL_FASTCALL NotifyGameAudioMusicIfActive(GameAudioCallbackOwnerView* p
 		((VsSoundManager*) g_pAudioManager)->InvokeAudioManagerEmbeddedSlot1cIfMusicActive(pOwner->m_hMusic2C4);
 	}
 }
+// Macintosh: Draw__3C2DFRC7CVSRect
 // FUNCTION: LEMBALL 0x00440000
 void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void* pObject, int nUnusedEdx, void* pFrameArgument)
 {

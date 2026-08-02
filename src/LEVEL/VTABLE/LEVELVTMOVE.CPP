@@ -64,6 +64,7 @@ struct LevelManagedEntityStateFields {
 
 // Split from the original LEVELVT source group to preserve MSVC 4.20 code generation in LEVELVT.CPP.
 
+// Macintosh: CGameObject::StopMoving()
 // FUNCTION: LEMBALL 0x00415780
 void LevelManagedEntityMoveCommandView::PopFirstMoveCommandAndResetMotion(void)
 {
@@ -75,6 +76,7 @@ void LevelManagedEntityMoveCommandView::PopFirstMoveCommandAndResetMotion(void)
 	m_nMotionStartTickC8 = nFrameClockTick;
 }
 
+// Macintosh: CGameObject::TurnToFaceDestination()
 // FUNCTION: LEMBALL 0x00415d90
 void LevelManagedEntityMoveCommandView::UpdateFacingTowardFirstMoveCommand(void)
 {
@@ -98,6 +100,7 @@ void LevelManagedEntityMoveCommandView::UpdateFacingTowardFirstMoveCommand(void)
 	m_nNextUpdateTickCC = g_nLevelFrameClockTick + g_LEVEL_ManagedEntityUpdatePeriods[m_nEntityType64] / 50;
 }
 
+// Macintosh: CGameObject::FacingDestination()
 // FUNCTION: LEMBALL 0x00415e20
 int LevelManagedEntityMoveCommandView::IsFacingTowardFirstMoveCommand(void)
 {
@@ -112,6 +115,7 @@ int LevelManagedEntityMoveCommandView::IsFacingTowardFirstMoveCommand(void)
 	return m_nHeadingOctantB4 == nDirection;
 }
 
+// Macintosh: CGameObject::DeleteFirstEntryFromDestinationList()
 // FUNCTION: LEMBALL 0x00415e80
 void LevelManagedEntityMoveCommandView::PopFirstMoveCommand(void)
 {
@@ -143,6 +147,7 @@ void LevelManagedEntityMoveCommandView::PopFirstMoveCommand(void)
 	m_fHasCommands74 = 0 < pQueue->m_cEntries00;
 }
 
+// Macintosh: CGameObject::AddDestination(const AICOORD&)
 // FUNCTION: LEMBALL 0x00415ef0
 void LevelManagedEntityMoveCommandView::AppendMoveCommand(const LevelThreeDwordPoint* pPosition)
 {
@@ -161,6 +166,7 @@ void LevelManagedEntityMoveCommandView::AppendMoveCommand(const LevelThreeDwordP
 	}
 }
 
+// Macintosh: CGameObject::GetDestination()
 // FUNCTION: LEMBALL 0x00416000
 LevelThreeDwordPoint* LevelManagedEntityMoveCommandView::CopyFirstMoveCommandPositionOrCurrent(
 	LevelThreeDwordPoint* pPosition)

@@ -9,6 +9,7 @@ struct GameLevelProgressState {
 	void SetSelectedLevelNumber(int nLevel);
 };
 
+// Macintosh: CGameStatus::Level(int)
 // FUNCTION: LEMBALL 0x00409070
 void GameLevelProgressState::SetSelectedLevelNumber(int nLevel)
 {

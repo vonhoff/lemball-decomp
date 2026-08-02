@@ -2778,6 +2778,7 @@ void LevelScreenTerrainRenderView::BuildStaticRegionEntries(const short* pRegion
 		*(int*) (pScreen + 0x21f0) = i + 1;
 	}
 }
+// Macintosh: DrawLemming__3C2DFR9CViewDataiUc
 // FUNCTION: LEMBALL 0x0043c200
 void LevelScreenTerrainRenderView::EmitObjectVariantRenderEntries(unsigned short* pEntry, unsigned int, int fSecondary)
 {
@@ -2856,6 +2857,7 @@ void LevelScreenTerrainRenderView::EmitObjectVariantRenderEntries(unsigned short
 								*(void**) (pEntry + 0x12),
 								nPalette);
 }
+// Macintosh: C2D::DrawObject(CViewData&)
 // FUNCTION: LEMBALL 0x0043dc70
 void LevelScreenTerrainRenderView::DispatchDynamicRenderEntry(int iEntry, unsigned short nDepth)
 {
@@ -3666,11 +3668,13 @@ void LevelScreenTerrainRenderView::DispatchDynamicRenderEntry(int iEntry, unsign
 	} break;
 	}
 }
+// Macintosh: ViewDataCmp__FPCvPCv
 // FUNCTION: LEMBALL 0x0043ff60
 int CompareLevelDynamicRenderEntryDepth(const void* pLeft, const void* pRight)
 {
 	return *(const int*) ((const char*) pLeft + 0x48) - *(const int*) ((const char*) pRight + 0x48);
 }
+// Macintosh: SortViewData__3C2DFv
 // FUNCTION: LEMBALL 0x0043ff70
 void LevelScreenTerrainRenderView::PrepareAndSortDynamicDepthEntries(void)
 {
@@ -3705,6 +3709,7 @@ void LevelScreenTerrainRenderView::PrepareAndSortDynamicDepthEntries(void)
 	}
 	qsort(*(void**) (pScreen + 0x95c), cEntries, 0x4c, CompareLevelDynamicRenderEntryDepth);
 }
+// Macintosh: DrawZBuff_Anim__3C2DFiUs
 // FUNCTION: LEMBALL 0x00440490
 void LevelScreenTerrainRenderView::DrawStaticRenderEntry(int iEntry, unsigned short nDepth)
 {
@@ -3739,6 +3744,7 @@ void LevelScreenTerrainRenderView::DrawStaticRenderEntry(int iEntry, unsigned sh
 											pTile[0],
 											nFrameValue);
 }
+// Macintosh: CalcZValue_Sprite__3C2DFi
 // FUNCTION: LEMBALL 0x004407e0
 short LevelScreenTerrainRenderView::ComputeDynamicRenderEntrySortKey(int iEntry)
 {

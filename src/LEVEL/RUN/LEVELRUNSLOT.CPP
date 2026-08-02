@@ -16,6 +16,7 @@ struct ManagedEntitySlotOwnerView {
 
 void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject);
 
+// Macintosh: CGameObject::SetId(unsigned short)
 // FUNCTION: LEMBALL 0x00416620
 void ManagedEntitySlotOwnerView::SetManagedEntitySlotId(unsigned short nSlotId)
 {
@@ -23,6 +24,7 @@ void ManagedEntitySlotOwnerView::SetManagedEntitySlotId(unsigned short nSlotId)
 	ClaimManagedEntitySlotId((int) (unsigned long) this);
 }
 
+// Macintosh: CGameObject::RegisterId()
 // FUNCTION: LEMBALL 0x00416740
 void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject)
 {

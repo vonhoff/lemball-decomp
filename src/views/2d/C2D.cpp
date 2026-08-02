@@ -32,6 +32,7 @@ struct VariantResourceEntryManagerView {
 	int m_nSelectionMode10;
 };
 
+// Macintosh: C2D::CancelMoves()
 // FUNCTION: LEMBALL 0x00437250
 void LEMBALL_FASTCALL ClearActiveEntityChildrenPending(LevelScreenManagedEntitySelectionView* pScreen)
 {
@@ -44,6 +45,7 @@ void LEMBALL_FASTCALL ClearActiveEntityChildrenPending(LevelScreenManagedEntityS
 	((VariantResourceEntryManagerView*) g_pVariantResourceEntryManager)->m_nSelectionMode10 = 0x25;
 }
 
+// Macintosh: C2D::NextGroup()
 // FUNCTION: LEMBALL 0x004372a0
 void LEMBALL_FASTCALL SelectNextReadyManagedEntityFromLevelScreen(LevelScreenManagedEntitySelectionView* pScreen)
 {
@@ -56,6 +58,7 @@ void LEMBALL_FASTCALL SelectNextReadyManagedEntityFromLevelScreen(LevelScreenMan
 	((VariantResourceEntryManagerView*) g_pVariantResourceEntryManager)->m_nSelectionMode10 = 0x1b;
 }
 
+// Macintosh: C2D::PrevGroup()
 // FUNCTION: LEMBALL 0x004372f0
 void LEMBALL_FASTCALL SelectPreviousReadyManagedEntityFromLevelScreen(LevelScreenManagedEntitySelectionView* pScreen)
 {

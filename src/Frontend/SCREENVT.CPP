@@ -187,6 +187,7 @@ unsigned int return_hresult_80000801_screen_hook(void)
 {
 	return 0x80000801U;
 }
+// Macintosh: DrawPaused__3C2DFv
 // FUNCTION: LEMBALL 0x0043fe70
 void noop_level_screen_related_hook_0043fe70(void)
 {

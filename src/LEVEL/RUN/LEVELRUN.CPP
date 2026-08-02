@@ -1045,6 +1045,7 @@ int GetLevelBinResourceIdForSkillAndLevel(int nSkill, int nLevel)
 		return nLevel + 0x2aa;
 	}
 }
+// Macintosh: CGameStatus::Level()
 // FUNCTION: LEMBALL 0x00409080
 int LEMBALL_FASTCALL GetSelectedLevelNumber(void* pLevelProgressState)
 {
@@ -1682,6 +1683,7 @@ void LoadLevelFlagChunk(void* pLevelMode, const unsigned short* pWords)
 extern int g_nLevelFrameClockTick;
 extern void* g_pManagedEntityReachabilityHelper;
 
+// Macintosh: CGameObject::ResetInstructions()
 // FUNCTION: LEMBALL 0x00416590
 void LEMBALL_FASTCALL clear_managed_entity_child_pending_state_if_interruptible(void* pEntity)
 {
@@ -1705,6 +1707,7 @@ void LEMBALL_FASTCALL clear_managed_entity_child_pending_state_if_interruptible(
 	*(void**) (pBytes + 8) = 0;
 }
 
+// Macintosh: CGameObject::Init(CAI*)
 // FUNCTION: LEMBALL 0x004165e0
 void InitializeManagedEntitySlotTablesThunk(void* pLevelGameMode)
 {
@@ -1723,6 +1726,7 @@ void InitializeManagedEntitySlotTablesThunk(void* pLevelGameMode)
 	}
 	g_GAME_ManagedEntitySlotClaimBitset[0] |= g_GAME_ManagedEntitySlotBitMasks[0];
 }
+// Macintosh: CGameObject::GetId()
 // FUNCTION: LEMBALL 0x00416610
 unsigned short LEMBALL_FASTCALL GetManagedEntitySlotId(int nManagedEntityObject)
 
@@ -1737,6 +1741,7 @@ void SetManagedEntitySlotIdCompatibility(void* pManagedEntityObject, unsigned sh
 	ClaimManagedEntitySlotIdCompatibility((int) (unsigned long) pManagedEntityObject);
 }
 
+// Macintosh: CGameObject::NextId()
 // FUNCTION: LEMBALL 0x00416670
 unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void)
 {
@@ -1758,6 +1763,7 @@ unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void)
 	} while ((int) iByte < 0x100);
 	return iByte & 0xffff0000;
 }
+// Macintosh: CGameObject::NextLoadingId()
 // FUNCTION: LEMBALL 0x004166a0
 unsigned short FindLastFreeManagedEntitySlotIdThunk(void)
 {

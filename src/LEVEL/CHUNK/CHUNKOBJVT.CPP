@@ -385,12 +385,14 @@ int LEMBALL_FASTCALL UpdateManagedEntityGroupCommandState(void* pObject)
 	return 1;
 }
 
+// Macintosh: CGameObject::Fly()
 // STUB: LEMBALL 0x00415300
 void LEMBALL_FASTCALL AdvanceManagedEntityGravityMotion(void* pObject)
 {
 	(void) pObject;
 }
 
+// Macintosh: CGameObject::StartRoute()
 // STUB: LEMBALL 0x00415830
 int LEMBALL_FASTCALL BeginManagedEntityReachablePathSearch(void* pObject)
 {
