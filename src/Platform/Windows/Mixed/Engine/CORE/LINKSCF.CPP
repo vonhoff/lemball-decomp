@@ -2035,6 +2035,7 @@ void LEMBALL_FASTCALL release_attached_move_chunk_entities(void* pObject)
 	}
 }
 
+// MACINTOSH: CMoverManager::CMoverManager(CAI*, int)
 // FUNCTION: LEMBALL 0x0042f190
 LinkScfMoveChunkManagerView* LinkScfMoveChunkManagerView::ConstructMoveChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -2046,6 +2047,7 @@ LinkScfMoveChunkManagerView* LinkScfMoveChunkManagerView::ConstructMoveChunkMana
 	return this;
 }
 
+// MACINTOSH: CMoverManager::Restart()
 // FUNCTION: LEMBALL 0x0042f1f0
 void LEMBALL_FASTCALL ActivateMoveChunkObjects(void* pManager)
 {
@@ -2069,6 +2071,7 @@ void LEMBALL_FASTCALL ActivateMoveChunkObjects(void* pManager)
 	}
 }
 
+// MACINTOSH: CMoverManager::Process()
 // FUNCTION: LEMBALL 0x0042f500
 void LEMBALL_FASTCALL AdvanceActiveMoveChunkObjects(void* pManager)
 {

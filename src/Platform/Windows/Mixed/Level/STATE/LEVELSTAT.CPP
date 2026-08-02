@@ -766,12 +766,12 @@ struct LevelTileGridView {
 
 struct CMover;
 
-struct MoveChunkManagerTriggerView {
+struct CMoverManager {
 	char m_abReserved00[0x34];
 	int m_cObjects34;
 	CMover* m_pObjects38;
 
-	CMover* FindObjectContainingPoint(int x, int y, int* pHeight);
+	CMover* Find(int x, int y, int* pHeight);
 	int HasTriggeredObject(void* pEntity, const int* pPosition);
 };
 
@@ -785,7 +785,7 @@ struct LevelTileGridOwnerView {
 	unsigned char* m_pEdgeMasks48;
 	int m_nDefaultType4C;
 	int m_nDefaultVariant50;
-	MoveChunkManagerTriggerView* m_pMoveChunkManager54;
+	CMoverManager* m_pMoveChunkManager54;
 
 	unsigned short SampleHeightWithMoveChunkOverride(int x, int y, void** ppMoveChunk);
 	int TestEdgeMask(int x, int y, unsigned char nMask);
@@ -1288,7 +1288,7 @@ unsigned short LevelTileGridOwnerView::SampleHeightWithMoveChunkOverride(int x, 
 	int nHeight;
 
 	if (ppMoveChunk != 0 && (m_Grid08.m_pCells04[(y >> 4) * m_Grid08.m_cColumns08 + (x >> 4)].m_nFlags06 & 0x10) != 0) {
-		pMoveChunk = m_pMoveChunkManager54->FindObjectContainingPoint(x, y, &nHeight);
+		pMoveChunk = m_pMoveChunkManager54->Find(x, y, &nHeight);
 		if (pMoveChunk != 0) {
 			*ppMoveChunk = pMoveChunk;
 			return (unsigned short) nHeight;

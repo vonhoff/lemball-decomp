@@ -5,6 +5,7 @@ extern void LEMBALL_FASTCALL set_move_chunk_object_trigger_latch(void* pObject);
 
 // Split from the original LEVELVT source group to preserve MSVC 4.20 code generation.
 
+// MACINTOSH: CMoverManager::Switch(swMessage, int)
 // FUNCTION: LEMBALL 0x0042f620
 void LEMBALL_FASTCALL DispatchMoveChunkObjectActionBySlot(void* pManager,
 														  void* pUnused,

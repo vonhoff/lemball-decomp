@@ -2294,12 +2294,12 @@ struct MoveChunkObjectTriggerView {
 	int IsTriggered(void* pEntity, const int* pPosition);
 };
 
-struct MoveChunkManagerTriggerView {
+struct CMoverManager {
 	char m_abReserved00[0x34];
 	int m_cObjects34;
 	CMover* m_pObjects38;
 
-	CMover* FindObjectContainingPoint(int x, int y, int* pHeight);
+	CMover* Find(int x, int y, int* pHeight);
 	int HasTriggeredObject(void* pEntity, const int* pPosition);
 };
 
@@ -2317,8 +2317,9 @@ void __fastcall reset_move_chunk_object_count(void* pManager)
 	*(int*) ((char*) pManager + 0x34) = 0;
 }
 
+// MACINTOSH: CMoverManager::Find(int, int, int&)
 // FUNCTION: LEMBALL 0x0042f2f0
-CMover* MoveChunkManagerTriggerView::FindObjectContainingPoint(int x, int y, int* pHeight)
+CMover* CMoverManager::Find(int x, int y, int* pHeight)
 {
 	int i;
 	int nOffset;
@@ -2339,7 +2340,7 @@ CMover* MoveChunkManagerTriggerView::FindObjectContainingPoint(int x, int y, int
 }
 
 // FUNCTION: LEMBALL 0x0042f590
-int MoveChunkManagerTriggerView::HasTriggeredObject(void* pEntity, const int* pPosition)
+int CMoverManager::HasTriggeredObject(void* pEntity, const int* pPosition)
 {
 	int i;
 

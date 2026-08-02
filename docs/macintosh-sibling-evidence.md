@@ -85,3 +85,6 @@ All fifteen Macintosh lifecycle, view-data, child mutation, use-object, player-c
 ### CMover portable family
 
 All sixteen portable Macintosh `CMover` methods align with Windows `0x0042E590..0x0042F140` through exact signatures, mover vtable/ILTs, type `0x34`, the 16x16 footprint, route/timing fields, fixed-point interpolation, rider attachment inverse operations, and manager callers. Target-only rider synchronization `0x0042EAC0` and zero callbacks `0x0042EEC0`/`0x0042EED0` remain excluded.
+### CMoverManager portable family
+
+All ten portable Macintosh `CMoverManager` methods align with Windows `0x0042F190..0x0042F680` through exact signatures, EFF type `0x1A`, mover stride `0x1A0`, manager/object vtables and ILTs, live/capacity fields, rendering, slot dispatch, versioned loading, and inverse `CMover` calls. Reset-count `0x0042F2E0`, array removal `0x0042F350`, trigger query `0x0042F590`, noop `0x0042FB90`, and deleting wrapper `0x0042FBA0` remain excluded.

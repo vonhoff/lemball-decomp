@@ -174,6 +174,7 @@ struct LinkScfBoonChunkManagerView {
 // RefreshActivePgunChunkObjects
 // STUB: LEMBALL 0x0042c520
 // EmitActivePgunChunkManagerRenderEntries
+// MACINTOSH: CMoverManager::GetViewData(CViewData*)
 // STUB: LEMBALL 0x0042f540
 // EmitMoveChunkManagerRenderEntries
 
