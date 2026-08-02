@@ -1280,6 +1280,7 @@ unsigned int LevelTileRenderDescriptor::TestShapePixel(int nLocalX, int nLocalY,
 	return 0;
 }
 
+// MACINTOSH: CMap::GetZ(int, int, CMover**)
 // FUNCTION: LEMBALL 0x004304e0
 unsigned short LevelTileGridOwnerView::SampleHeightWithMoveChunkOverride(int x, int y, void** ppMoveChunk)
 {
@@ -1317,6 +1318,7 @@ int LevelTileGridOwnerView::TestEdgeMask(int x, int y, unsigned char nMask)
 	return (m_pEdgeMasks48[y * m_cEdgeColumns1C + x] & nMask) == nMask;
 }
 
+// MACINTOSH: CMap::GetWalk(int, int)
 // FUNCTION: LEMBALL 0x004305f0
 unsigned char LevelTileGridOwnerView::GetEdgeMask(int x, int y)
 {
@@ -1326,6 +1328,7 @@ unsigned char LevelTileGridOwnerView::GetEdgeMask(int x, int y)
 	return m_pEdgeMasks48[y * m_cEdgeColumns1C + x];
 }
 
+// MACINTOSH: CMap::CreateWalkBits()
 // FUNCTION: LEMBALL 0x00430620
 void LevelTileGridOwnerView::BuildNeighborEdgeMasks(void)
 {
@@ -1391,6 +1394,7 @@ void LevelTileGridOwnerView::BuildNeighborEdgeMasks(void)
 	}
 }
 
+// MACINTOSH: CMap::SetTerrain(int, int, eObjectType, int)
 // FUNCTION: LEMBALL 0x00430a20
 void LevelTileGridOwnerView::SetCellType(int x, int y, int nType, int nVariant)
 {
@@ -1402,6 +1406,7 @@ void LevelTileGridOwnerView::SetCellType(int x, int y, int nType, int nVariant)
 	pCell->InitializeLevelTileGridCellRenderFlagsThunk();
 }
 
+// MACINTOSH: CMap::ScreenToGame(int, int, int&, int&)
 // FUNCTION: LEMBALL 0x00430a50
 void LevelViewRotationTransform::TransformScreenToTile(int nScreenX, int nScreenY, int* pTileX, int* pTileY)
 {
@@ -1453,6 +1458,7 @@ void LevelViewRotationTransform::TransformScreenToTileInPlace(int* pX, int* pY)
 	}
 }
 
+// MACINTOSH: CMap::GameToScreen(int, int, int&, int&)
 // FUNCTION: LEMBALL 0x00430be0
 void LevelViewRotationTransform::TransformTileToScreen(int nTileX, int nTileY, int* pScreenX, int* pScreenY)
 {
@@ -1475,6 +1481,7 @@ void LevelViewRotationTransform::TransformTileToScreen(int nTileX, int nTileY, i
 		break;
 	}
 }
+// MACINTOSH: CMap::GameToScreen(int&, int&)
 // FUNCTION: LEMBALL 0x00430ce0
 void LevelViewRotationTransform::TransformTileInPlace(int* pX, int* pY)
 {

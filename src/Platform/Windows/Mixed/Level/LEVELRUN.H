@@ -43,10 +43,10 @@ struct LevelTileGridRuntimeView {
 	void LoadLevelTileGridChunk(const unsigned short* pWords, unsigned int cbPayload, int fReuseState);
 	void SetLevelTileGridDefaultVariantIds(const unsigned short* pWords, unsigned int cbPayload);
 	void SetLevelTileGridName(const char* pszName, unsigned int cbPayload);
-	void CopyLevelTileGridName(const char* pszName);
-	void CopyLevelTileGridNameThunk(const char* pszName);
-	void ComputeLevelTileGridRepeatedColumnCounts(void);
-	void ComputeLevelTileGridRepeatedColumnCountsThunk(void);
+	void SetLevelName(const char* pszName);
+	void SetLevelNameThunk(const char* pszName);
+	void CalculateCliff(void);
+	void CalculateCliffThunk(void);
 };
 
 struct LevelTileGridStaticRenderEntry {

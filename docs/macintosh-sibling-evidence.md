@@ -88,3 +88,6 @@ All sixteen portable Macintosh `CMover` methods align with Windows `0x0042E590..
 ### CMoverManager portable family
 
 All ten portable Macintosh `CMoverManager` methods align with Windows `0x0042F190..0x0042F680` through exact signatures, EFF type `0x1A`, mover stride `0x1A0`, manager/object vtables and ILTs, live/capacity fields, rendering, slot dispatch, versioned loading, and inverse `CMover` calls. Reset-count `0x0042F2E0`, array removal `0x0042F350`, trigger query `0x0042F590`, noop `0x0042FB90`, and deleting wrapper `0x0042FBA0` remain excluded.
+### CMap portable family
+
+All sixteen portable Macintosh `CMap` methods align with Windows `0x004303C0..0x00431030` through exact signatures, the `0x54`-byte map layout, 12-byte terrain cells, walk buffer, moving-platform override, four-view transforms, chunk-loader callers, bounded level-name copy, and cliff derivation. Windows-only mask test `0x004305A0`, in-place screen-to-game transform `0x00430B30`, and variant validator `0x00430EB0` remain excluded. The shared Windows partial-layout views remain neutral: a broad `CMap` class rewrite caused `76` exact losses and three datacmp issues and was reverted; binary-safe `SetLevelName` and `CalculateCliff` source method names were retained.
