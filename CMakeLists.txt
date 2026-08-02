@@ -110,7 +110,7 @@ set(LEMBALL_SOURCES
     src/ENGINE/CORE/LSPROJ.CPP
     src/ENGINE/CORE/LSMANGRP.CPP
     src/ENGINE/CORE/LINKSCFINVS.CPP
-    src/ENGINE/CORE/LSINVACT.CPP
+    src/AI/CInvsMgr.cpp
     src/AI/CDoorAct.cpp
     src/AI/CDoorSlot.cpp
     src/AI/CIceAct.cpp
