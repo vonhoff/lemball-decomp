@@ -999,6 +999,7 @@ void noop_vtable_callback_0040cf30(void)
 {
 }
 
+// MACINTOSH: CDoor::IsUsable(eAction)
 // FUNCTION: LEMBALL 0x0040dd30
 int PASCAL IsDoorChunkIdleOrClosedState(int nState)
 {
@@ -1008,6 +1009,7 @@ int PASCAL IsDoorChunkIdleOrClosedState(int nState)
 	return 1;
 }
 
+// MACINTOSH: CDoor::Unlock()
 // FUNCTION: LEMBALL 0x0040dd50
 int DoorChunkTriggerStateView::LatchTriggerTimestamp(void)
 {

@@ -165,3 +165,7 @@ The 12 portable `CMaze` methods and global `Direction` map at `0x00423090..0x004
 ### CMineManager
 
 All 11 portable manager methods map at `0x00424020..0x00424850`. Windows evidence preserves the `0x150` mine stride, six-byte tile-position cache, delayed chain threshold `< 0x801`, eight-pixel contact box, versioned slot IDs, and split CMine/manager ownership. Remove helper `0x004241A0` and deleting wrappers `0x00424C30`/`0x00424C60` consume no portable symbols.
+
+### CDoor and CDoorManager
+
+The remaining 18 portable methods map at `0x0040D490..0x0040E630`. Windows evidence preserves the `0x14c` stride, vertical/horizontal tile footprints, key and state values, delayed timing, overlap bounds, versioned loader, and split physical TUs. Remove helper `0x0040E140`, tile access helpers `0x0040EB70`/`0x0040EB90`, and deleting wrappers `0x0040EBE0`/`0x0040EC10` consume no portable symbols.

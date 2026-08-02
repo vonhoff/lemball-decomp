@@ -844,6 +844,7 @@ void* ConstructLevelChunkStreamDispatcherThunk(void* pObject, int nChunkTypeCoun
 	*(void**) ((char*) pObject + 0x20) = 0;
 	return pObject;
 }
+// MACINTOSH: CDoorManager::CDoorManager(CAI*, int)
 // FUNCTION: LEMBALL 0x0040df30
 LinkScfDoorChunkManagerView* LinkScfDoorChunkManagerView::ConstructDoorChunkManager(void* pLevelMode, int nCapacity)
 {

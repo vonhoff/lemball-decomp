@@ -753,3 +753,21 @@ CODE_06_AI.bin,0x00016D24,Add__12CMineManagerFUs7AICOORD,0x00424710,high,assigns
 CODE_06_AI.bin,0x00016DCA,Process__12CMineManagerFv,0x004247B0,high,resamples ground marks dirty and services pending active mines,exact_tuple,0x00016DCA
 CODE_06_AI.bin,0x00016E3D,GetViewData__12CMineManagerFP9CViewData,0x00424800,high,emits one 0x4c-byte view record per active mine,exact_tuple,0x00016E3D
 CODE_06_AI.bin,0x00016F69,LoadLevel__12CMineManagerFPUciUc,0x00424850,high,loads versioned slot ids and fixed-point mine coordinates,exact_tuple,0x00016F69
+CODE_06_AI.bin,0x00006302,Restart__5CDoorFv,0x0040D490,high,restarts the managed entity base runtime state,exact_tuple,0x00006302
+CODE_06_AI.bin,0x0000659A,Set__5CDoorF11eObjectTypeUsiii,0x0040D4A0,high,initializes type key position sequence state and vertical or horizontal tile footprint,exact_tuple,0x0000659A
+CODE_06_AI.bin,0x000066AE,Delete__5CDoorFv,0x0040D760,high,clears occupancy flags across the door footprint,exact_tuple,0x000066AE
+CODE_06_AI.bin,0x0000677A,SetCollision__5CDoorFv,0x0040D910,high,sets blocking flags on vertical or horizontal door footprint tiles,exact_tuple,0x0000677A
+CODE_06_AI.bin,0x0000684C,ResetCollision__5CDoorFv,0x0040DA40,high,clears blocking flags on vertical or horizontal door footprint tiles,exact_tuple,0x0000684C
+CODE_06_AI.bin,0x000069E0,Process__5CDoorFv,0x0040DB80,high,services delayed open and close states timestamps and collision transitions,exact_tuple,0x000069E0
+CODE_06_AI.bin,0x00006A40,Unlock__5CDoorFv,0x0040DD50,high,latches one trigger request and current level tick,exact_tuple,0x00006A40
+CODE_06_AI.bin,0x00006A7A,IsUsable__5CDoorF7eAction,0x0040DD30,high,accepts idle closed and unlocked door action states,exact_tuple,0x00006A7A
+CODE_06_AI.bin,0x00006BBF,Hits__5CDoorFRC7AICOORDP11CGameObject,0x0040DD80,high,tests overlap consults key callback and requests door transitions,exact_tuple,0x00006BBF
+CODE_06_AI.bin,0x00006CDE,__ct__12CDoorManagerFP3CAIi,0x0040DF30,high,constructs stream type 0x13 payload 8 and stores owner and capacity,exact_tuple,0x00006CDE
+CODE_06_AI.bin,0x00006D42,Restart__12CDoorManagerFv,0x0040DF90,high,restarts every allocated 0x14c-stride door,exact_tuple,0x00006D42
+CODE_06_AI.bin,0x00006E12,Initialise__12CDoorManagerFi,0x0040DFC0,high,allocates constructs binds and restarts the door array,exact_tuple,0x00006E12
+CODE_06_AI.bin,0x00006E90,__dt__12CDoorManagerFv,0x0040E060,high,destroys the door array then inherited stream state,exact_tuple,0x00006E90
+CODE_06_AI.bin,0x00006EFF,GetViewData__12CDoorManagerFP9CViewData,0x0040E080,high,emits one 0x4c-byte view record per active door,exact_tuple,0x00006EFF
+CODE_06_AI.bin,0x00006FB9,Add__12CDoorManagerFUs11eObjectTypeUsiii,0x0040E0C0,high,assigns a slot initializes a door and returns its array index,exact_tuple,0x00006FB9
+CODE_06_AI.bin,0x00007035,Open__12CDoorManagerFRC7AICOORDP11CGameObject,0x0040E500,high,dispatches overlap handling until one active door opens,exact_tuple,0x00007035
+CODE_06_AI.bin,0x000070E4,Process__12CDoorManagerFv,0x0040E550,high,marks and services doors with active or delayed state,exact_tuple,0x000070E4
+CODE_06_AI.bin,0x000072DB,LoadLevel__12CDoorManagerFPUciUc,0x0040E630,high,loads versioned slot key type and position records,exact_tuple,0x000072DB
