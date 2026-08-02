@@ -46,7 +46,7 @@ address,name,symbol,type,source
 0x004015DC,emit_active_pgun_chunk_manager_render_entries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040160E,LevelManagedEntityMoveCommandView::IsFacingTowardFirstMoveCommand,?IsFacingTowardFirstMoveCommand@LevelManagedEntityMoveCommandView@@QAEHXZ,stub,src/LEVEL/VTABLE/LEVELVTMOVE.CPP
 0x00401672,emit_lasr_chunk_manager_render_entries,,stub,src/ENGINE/CORE/LINKSCF.H
-0x004016B3,RequestLiftChunkObjectActivationState,?RequestLiftChunkObjectActivationState@@YIHPAX@Z,stub,src/ENGINE/CORE/LSLIFTACT.CPP
+0x004016B3,RequestLiftChunkObjectActivationState,?RequestLiftChunkObjectActivationState@@YIHPAX@Z,stub,src/AI/CLiftAct.cpp
 0x004016B8,SetMineOrCollTileVariant,?SetMineOrCollTileVariant@@YIXPAX@Z,stub,src/LEVEL/VTABLE/LEVELVTMINE.CPP
 0x00401730,ManagedEntityPacketBase::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacketBase@@UAEXXZ,stub,src/LEVEL/IO/LVPKT.CPP
 0x00401749,reset_invs_chunk_object_state_thunk,?ResetInvsChunkObjectStateThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
@@ -188,7 +188,7 @@ address,name,symbol,type,source
 0x00402A45,service_counted_child_pointer_table,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402A59,get_menu_selector_start_time_thunk,,stub,src/Frontend/MENUSEL.H
 0x00402A72,refresh_active_coll_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
-0x00402AA9,ToggleLiftChunkObjectActivationState,?ToggleLiftChunkObjectActivationState@@YIXPAX@Z,stub,src/ENGINE/CORE/LSLIFTACT.CPP
+0x00402AA9,ToggleLiftChunkObjectActivationState,?ToggleLiftChunkObjectActivationState@@YIXPAX@Z,stub,src/AI/CLiftAct.cpp
 0x00402ACC,get_next_managed_entity_child_from_cached_group,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402B1C,restore_reconstructed_level_screen_vtables_auto_thunk,?RestoreReconstructedLevelScreenVtablesAutoThunk@@YIXPAX@Z,stub,src/Control/CGame.cpp
 0x00402B26,MoveChunkManagerTriggerView::FindObjectContainingPoint,?FindObjectContainingPoint@MoveChunkManagerTriggerView@@QAEPAUMoveChunkObjectInitializeView@@HHPAH@Z,stub,src/LEVEL/STATE/LEVELSTAT.CPP
@@ -218,7 +218,7 @@ address,name,symbol,type,source
 0x00402E4B,CDoorManager::Switch,?Switch@CDoorManager@@QAEXHI@Z,stub,src/AI/CDoorAct.cpp
 0x00402E5F,CallHasPendingManagedEntityCommands,?CallHasPendingManagedEntityCommands@@YAHPAXPAULevelManagedEntityCommandQueueView@@@Z,stub,src/LEVEL/VTABLE/LEVELVT.CPP
 0x00402E91,managed_projectile_object_view_activate_at_position,?ActivateAtPosition@ManagedProjectileObjectView@@QAEXPBULevelPoint3@@@Z,stub,src/LEVEL/VTABLE/LVPROJVT.CPP
-0x00402E9B,dispatch_lift_chunk_object_action_by_slot,?DispatchLiftChunkObjectActionBySlot@@YIXPAX0HIHH@Z,stub,src/ENGINE/CORE/LSLIFTACT.CPP
+0x00402E9B,dispatch_lift_chunk_object_action_by_slot,?DispatchLiftChunkObjectActionBySlot@@YIXPAX0HIHH@Z,stub,src/AI/CLiftAct.cpp
 0x00402EB9,get_cached_chunk_object_by_index,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00402EBE,ManagedEntityGroupChildrenView::ClearChildren,?ClearChildren@ManagedEntityGroupChildrenView@@QAEXXZ,stub,src/LEVEL/STATE/LVSAVEPOS.CPP
 0x00402F09,destroy_managed_entity_queue_cursor_auto_thunk,?DestroyManagedEntityQueueCursorAutoThunk@@YIXPAX@Z,stub,src/LEVEL/VTABLE/LEVELVT.CPP
