@@ -112,3 +112,6 @@ All ten portable `CBullet` and twelve portable `CBulletManager` methods align wi
 ### CFormationManager portable family
 
 All five portable `CFormationManager` methods align with Windows `0x0041A140..0x0041A320` through the 0x104-byte three-block vector table, fixed16.12 initialization, signed sine/cosine rotation of eight vectors, transformed output at `+0xC0`, and wrapped accessor. Windows iterator helpers `0x0041A2E0` and `0x0041A300` remain separate.
+### CHand portable families
+
+All eight portable `CHand` and nine portable `CHandManager` methods align with Windows `0x00427AD0..0x004284C0` through level chunk type `0x1F`, 0x144-byte child stride, capture states `0x17..0x1A`, contact geometry, frame timers, EFF-backed manager fields, view emission and versioned loader records. Windows remove helper `0x00427FD0` and deleting wrappers `0x004287D0`/`0x00428800` remain separate.

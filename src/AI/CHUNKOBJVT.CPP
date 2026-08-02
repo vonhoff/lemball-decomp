@@ -742,6 +742,7 @@ int LEMBALL_FASTCALL RequestRockHistoryChildSwapState(void* pObject, void* pUnus
 	return 1;
 }
 
+// MACINTOSH: CHand::Process()
 // FUNCTION: LEMBALL 0x00427c40
 int LEMBALL_FASTCALL AdvanceCaptureChunkObjectStateMachine(void* pObject)
 {

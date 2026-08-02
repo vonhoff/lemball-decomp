@@ -106,6 +106,7 @@ void ChunkRuntimeStateView::ResetRockState(void)
 	m_nRuntimeState13C = nZero;
 }
 
+// MACINTOSH: CHand::Initialise()
 // FUNCTION: LEMBALL 0x00427af0
 void ChunkRuntimeStateView::ResetCaptureTriggerState(void)
 {

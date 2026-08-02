@@ -160,8 +160,10 @@ struct LinkScfBoonChunkManagerView {
 // RefreshActiveRockChunkObjects
 // STUB: LEMBALL 0x00427050
 // EmitRockChunkManagerRenderEntries
+// MACINTOSH: CHandManager::Process()
 // STUB: LEMBALL 0x004283c0
 // RefreshActiveCaptureTriggerChunkObjects
+// MACINTOSH: CHandManager::GetViewData(CViewData*)
 // STUB: LEMBALL 0x00428410
 // EmitCaptureTriggerChunkManagerRenderEntries
 // STUB: LEMBALL 0x00429850

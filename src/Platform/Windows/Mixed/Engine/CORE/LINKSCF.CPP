@@ -1473,6 +1473,7 @@ void LEMBALL_FASTCALL ActivateRockChunkObjects(void* pManager)
 
 extern void* g_LINKSCF_CaptureChunkObjectVtable[16];
 
+// MACINTOSH: CHand::CHand()
 // FUNCTION: LEMBALL 0x00427ad0
 CaptureTriggerChunkObjectView* CaptureTriggerChunkObjectView::ConstructCaptureTriggerChunkObject(void)
 {
@@ -1481,6 +1482,7 @@ CaptureTriggerChunkObjectView* CaptureTriggerChunkObjectView::ConstructCaptureTr
 	return this;
 }
 
+// MACINTOSH: CHand::~CHand()
 // FUNCTION: LEMBALL 0x00427b40
 void LEMBALL_FASTCALL destroy_capture_trigger_chunk_object(void* pObject)
 {
@@ -1488,6 +1490,7 @@ void LEMBALL_FASTCALL destroy_capture_trigger_chunk_object(void* pObject)
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 }
 
+// MACINTOSH: CHandManager::CHandManager(CAI*, int)
 // FUNCTION: LEMBALL 0x00427e60
 LinkScfCaptureChunkManagerView* LinkScfCaptureChunkManagerView::ConstructCaptureTriggerChunkManager(void* pLevelMode,
 																									int nCapacity)
@@ -1500,6 +1503,7 @@ LinkScfCaptureChunkManagerView* LinkScfCaptureChunkManagerView::ConstructCapture
 	return this;
 }
 
+// MACINTOSH: CHandManager::Restart()
 // FUNCTION: LEMBALL 0x00427ec0
 void LEMBALL_FASTCALL ActivateCaptureTriggerChunkObjects(void* pManager)
 {
