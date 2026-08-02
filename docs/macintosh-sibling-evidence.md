@@ -193,3 +193,7 @@ All seventeen portable methods map at `0x004267D0..0x00427110`. Exact 68K and Wi
 ## CTrapDoor and CTrapDoorManager reconstruction
 
 All eleven portable methods map in the Windows type-`0x18` region at `0x0040C2D0..0x0040CA40`. Exact 68K and Windows evidence preserves state sequence `0x18→0x1F→0x20→0x21→0x22→0x23→0x1E`, timing constants, terrain sampling, eight child slots, Windows object size `0x150`, manager size `0x54`, and versioned network-marker loading. Physical ownership remains split among `LEVELVT.CPP`, `TYPE18RESET.CPP`, and `TYPE18.CPP`. Position/access helpers `0x0040C720`, `0x0040C950`, `0x0040CA10`, clear helper `0x0040CBC0`, and deleting wrappers `0x0040CE50`, `0x0040CEA0`, and `0x0040CED0` are target-only.
+
+## CTower reconstruction
+
+The three portable methods map consecutively at `0x0041CF70`, `0x0041D000`, and `0x0041D010` in physical `LEVELVT.CPP`. Exact 68K and Windows bodies agree on terrain-height refresh, unconditional activation success, and activation position `(x-0x30000,y-0x8000,z)`. Their ILTs occupy one Windows vtable at slots `+0x14`, `+0x18`, and `+0x2C`; neighboring CCrate and GMOB type-`0x14` bodies consume no CTower symbols.

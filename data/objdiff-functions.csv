@@ -692,9 +692,9 @@ address,size,name,unit
 0x0041CE50,49,request_gmob_idle_state_0x19,AI/LVSAVEPOS.CPP
 0x0041CE90,122,award_gmob_linked_object_score,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041CF10,95,compute_gmob_render_anchor_position,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041CF70,133,refresh_gmob_chunk_object_tile_height,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041D000,8,accept_gmob_activation,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041D010,47,get_managed_entity_interaction_point,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041CF70,133,CTower::Process,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041D000,8,CTower::Activate,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041D010,47,CTower::ActivatePosition,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041D040,178,construct_gmob_chunk_type_0x14_object,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041D100,32,reset_gmob_type_0x14_object_state,AI/LVSAVEPOS.CPP
 0x0041D120,11,destroy_gmob_chunk_type_0x14_object,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
