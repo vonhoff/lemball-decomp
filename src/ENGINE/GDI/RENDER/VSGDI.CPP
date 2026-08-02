@@ -4157,6 +4157,37 @@ void LEMBALL_FASTCALL DestroyResourceGeometryHelperTarget(void* pvTarget)
 	DestroyHelperGroup1RowBuffer((char*) pTarget + 0x44);
 	DestroyResourceGeometryRowBuffer(pTarget);
 }
+// FUNCTION: LEMBALL 0x0046c990
+void LEMBALL_FASTCALL ClearResourceGeometryHelperTargetBackingBorderRows(void* pvTarget)
+{
+	typedef int(LEMBALL_FASTCALL * GetGroupFlagProc)(void*);
+	struct ChildTargetLink {
+		VsGdiHelperSurface* m_pTarget;
+		ChildTargetLink* m_pNext;
+	};
+	char* pTarget;
+	ChildTargetLink* pLink;
+
+	pTarget = (char*) pvTarget;
+	((VsGdiHelperSurface*) pTarget)->ClearBackingBorderRowsThunk();
+	{
+		char* pCompactHelper = pTarget + 0x40 + *(int*) ((char*) (unsigned long) *(int*) (pTarget + 0x40) + 4);
+		if (((GetGroupFlagProc) (*(void***) pCompactHelper)[15])(pCompactHelper) != 0) {
+			((VsGdiHelperSurface*) (pTarget + 0xa0))->ClearBackingBorderRowsThunk();
+		}
+	}
+	{
+		char* pCompactHelper = pTarget + 0x40 + *(int*) ((char*) (unsigned long) *(int*) (pTarget + 0x40) + 4);
+		if (((GetGroupFlagProc) (*(void***) pCompactHelper)[16])(pCompactHelper) != 0) {
+			((VsGdiHelperSurface*) (pTarget + 0x4c))->ClearBackingBorderRowsThunk();
+		}
+	}
+	pLink = *(ChildTargetLink**) (pTarget + 0x528);
+	while (pLink != 0) {
+		pLink->m_pTarget->ClearBackingBorderRows();
+		pLink = pLink->m_pNext;
+	}
+}
 // FUNCTION: LEMBALL 0x0046cb20
 void VsGdiResourceGeometryHelperTargetView::MarkOrForwardHelperTargetDirtyRect(short* pRect)
 {
