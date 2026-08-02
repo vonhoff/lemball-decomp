@@ -129,7 +129,7 @@ set(LEMBALL_SOURCES
     src/AI/CDoorCtor.cpp
     src/LEVEL/VTABLE/LEVELVTPLAS.CPP
     src/AI/CEnemyGrp.cpp
-    src/LEVEL/VTABLE/LEVELVTMINE.CPP
+    src/AI/CMine.cpp
     src/AI/GroupPlas.cpp
     src/LEVEL/CHUNK/CHUNKOBJVT.CPP
     src/AI/CLiftRun.cpp
