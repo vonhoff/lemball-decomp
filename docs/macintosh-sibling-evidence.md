@@ -185,3 +185,7 @@ The six Macintosh `CAICursor` bodies map to constructor `0x00414DA0`, destructor
 ## CGlobalGameObject action and network-message reconstruction
 
 All twelve portable bodies map at `0x00416D20..0x00417150` in physical `LEVELRUN.CPP`. Exact 68K and Windows evidence agrees on lifecycle state, both `Action` overloads, request/cancel behavior, packet switch `0x23..0x29`, remove/cancel sends, and construction/destruction of nine shared message helpers. `UsableState` at `0x00416D90` returns the pre-clear value; its former void prototype was incorrect. Windows-only `RequestAction(eAction,int)` adapter `0x00416E00` consumes no Macintosh symbol.
+
+## CRocket and CRocketManager reconstruction
+
+All seventeen portable methods map at `0x004267D0..0x00427110`. Exact 68K and Windows evidence preserves type `0x20`, rocket state/timer constants, contact radius `0x20`, target state `0x15`, manager capacity/count semantics, Windows rocket stride `0x144`, view stride `0x4C`, and versioned loading. Physical ownership is mixed: `0x004267D0..0x00426B50` remains in `LINKSCF.CPP`, while `0x00426C00` onward remains in `LEVELVT.CPP`. Count reset `0x00426C20`, compaction helper `0x00426C30`, network serializer `0x004273F0`, and deleting wrappers `0x004274F0`/`0x00427520` are Windows-only.
