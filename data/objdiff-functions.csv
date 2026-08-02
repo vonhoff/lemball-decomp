@@ -710,11 +710,11 @@ address,size,name,unit
 0x0041D560,50,try_attach_gmob_target,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041D5A0,43,complete_gmob_action_29,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041D5D0,41,copy_gmob_action29_point,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041D600,67,reset_gmob_chunk_randomized_timestamp,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041D650,233,advance_gmob_state_machine_action_0x2a,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041D740,50,try_attach_managed_entity_target,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041D780,43,complete_gmob_action_2a,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041D7B0,35,copy_gmob_chunk_object_current_position_variant,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041D600,67,CBalloon::Restart,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041D650,233,CBalloon::Process,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041D740,50,CBalloon::Activate,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041D780,43,CBalloon::DoActivate,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041D7B0,35,CBalloon::ActivatePosition,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041DC40,6,return_two_vtable_callback_0041dc40,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041DC50,219,emit_gmob_chunk_type_0x14_render_entry,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041DD70,30,delete_gmob_chunk_type_0x14_object,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

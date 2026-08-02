@@ -839,3 +839,8 @@ CODE_06_AI.bin,0x00021B53,LoadLevel__16CTrapDoorManagerFPUciUc,0x0040CA40,high,"
 CODE_06_AI.bin,0x000195A4,Process__6CTowerFv,0x0041CF70,high,"exact terrain-height refresh and constant success body; exact 68K body plus one shared Windows vtable and ABI evidence",exact_tuple,0x000195A4
 CODE_06_AI.bin,0x000195C5,Activate__6CTowerFP11CGameObject,0x0041D000,high,"exact unconditional success body; exact 68K body plus one shared Windows vtable and ABI evidence",exact_tuple,0x000195C5
 CODE_06_AI.bin,0x00019642,ActivatePosition__6CTowerFv,0x0041D010,high,"exact current-position copy with x minus 0x30000 and y minus 0x8000; exact 68K body plus one shared Windows vtable and ABI evidence",exact_tuple,0x00019642
+CODE_06_AI.bin,0x00019E8C,Restart__8CBalloonFv,0x0041D600,high,"exact shared reset plus randomized low-12-bit timestamp seed; exact 68K body plus Windows ABI/layout/vtable evidence",exact_tuple,0x00019E8C
+CODE_06_AI.bin,0x00019F5A,Process__8CBalloonFv,0x0041D650,high,"exact terrain refresh and local/network state 0x1A action 0x2A handling; exact 68K body plus Windows ABI/layout/vtable evidence",exact_tuple,0x00019F5A
+CODE_06_AI.bin,0x00019FB9,Activate__8CBalloonFP11CGameObject,0x0041D740,high,"exact target permission check and state 0x1A request; exact 68K body plus Windows ABI/layout/vtable evidence",exact_tuple,0x00019FB9
+CODE_06_AI.bin,0x0001A02A,DoActivate__8CBalloonFv,0x0041D780,high,"exact target callback, action 0x2A, and score 50; exact 68K body plus Windows ABI/layout/vtable evidence",exact_tuple,0x0001A02A
+CODE_06_AI.bin,0x0001A078,ActivatePosition__8CBalloonFv,0x0041D7B0,high,"exact current-position copy through hidden result pointer; exact 68K body plus Windows ABI/layout/vtable evidence",exact_tuple,0x0001A078

@@ -2094,11 +2094,11 @@ CODE_06_AI.bin,AI,0x00019CF2,0x00019CF3,Process__4CKeyFv,CKey,Process,genuinely_
 CODE_06_AI.bin,AI,0x00019D4C,0x00019D4D,Activate__4CKeyFP11CGameObject,CKey,Activate,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
 CODE_06_AI.bin,AI,0x00019DBA,0x00019DBB,DoActivate__4CKeyFv,CKey,DoActivate,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
 CODE_06_AI.bin,AI,0x00019E28,0x00019E29,ActivatePosition__4CKeyFv,CKey,ActivatePosition,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00019E8C,0x00019E8D,Restart__8CBalloonFv,CBalloon,Restart,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00019F5A,0x00019F5B,Process__8CBalloonFv,CBalloon,Process,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00019FB9,0x00019FBA,Activate__8CBalloonFP11CGameObject,CBalloon,Activate,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x0001A02A,0x0001A02B,DoActivate__8CBalloonFv,CBalloon,DoActivate,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x0001A078,0x0001A079,ActivatePosition__8CBalloonFv,CBalloon,ActivatePosition,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
+CODE_06_AI.bin,AI,0x00019E8C,0x00019E8D,Restart__8CBalloonFv,CBalloon,Restart,accepted_x86_correlation,gap,0x0041D600,mapped,high,"exact shared reset plus randomized low-12-bit timestamp seed"
+CODE_06_AI.bin,AI,0x00019F5A,0x00019F5B,Process__8CBalloonFv,CBalloon,Process,accepted_x86_correlation,gap,0x0041D650,mapped,high,"exact terrain refresh and local/network state 0x1A action 0x2A handling"
+CODE_06_AI.bin,AI,0x00019FB9,0x00019FBA,Activate__8CBalloonFP11CGameObject,CBalloon,Activate,accepted_x86_correlation,gap,0x0041D740,mapped,high,"exact target permission check and state 0x1A request"
+CODE_06_AI.bin,AI,0x0001A02A,0x0001A02B,DoActivate__8CBalloonFv,CBalloon,DoActivate,accepted_x86_correlation,gap,0x0041D780,mapped,high,"exact target callback, action 0x2A, and score 50"
+CODE_06_AI.bin,AI,0x0001A078,0x0001A079,ActivatePosition__8CBalloonFv,CBalloon,ActivatePosition,accepted_x86_correlation,gap,0x0041D7B0,mapped,high,"exact current-position copy through hidden result pointer"
 CODE_06_AI.bin,AI,0x0001A116,0x0001A117,__ct__14CObjectManagerFP3CAIi,CObjectManager,CObjectManager,accepted_x86_correlation,gap,0x0041AF60,mapped,high,"constructs 0x40-byte GMOB manager and preserves CAI/int ABI"
 CODE_06_AI.bin,AI,0x0001A22E,0x0001A22F,Restart__14CObjectManagerFv,CObjectManager,Restart,accepted_x86_correlation,gap,0x0041AFD0,mapped,high,"activates children and resolves linked type 0x11 entries"
 CODE_06_AI.bin,AI,0x0001A2A0,0x0001A2A1,Initialise__14CObjectManagerFi,CObjectManager,Initialise,accepted_x86_correlation,gap,0x0041B0C0,mapped,high,"allocates and clears platform-sized child pointer table"
