@@ -536,18 +536,6 @@ struct VsGdiResourceGeometryLinkList {
 	int m_cNodes;
 };
 
-struct VsGdiCompactResourceGeometryHelperFields {
-	unsigned char m_abReserved00[0x3c];
-	int m_nThisAdjust;
-	void* m_pVtable;
-	unsigned char m_abReserved44[0x1c];
-	void* m_pLinkedTarget;
-	unsigned char m_abReserved64[0xc];
-	int m_fForwardingEnabled;
-	int m_nQueuedState;
-	int m_nReserved78;
-};
-
 struct VsGdiResourceGeometryRowBufferView {
 	void* m_pVtable;
 	unsigned char m_abState[0x3c];
@@ -555,7 +543,13 @@ struct VsGdiResourceGeometryRowBufferView {
 
 struct VsGdiCompactResourceGeometryHelper {
 	void* m_pVtable;
-	unsigned char m_abState[0x40];
+	unsigned char m_abReserved04[0x1c];
+	void* m_pLinkedTarget;
+	unsigned char m_abReserved24[0xc];
+	int m_fForwardingEnabled;
+	int m_nQueuedState;
+	int m_nReserved38;
+	unsigned char m_abReserved3C[8];
 
 	void* InitializeCompactResourceGeometryHelper(void);
 };
@@ -3800,7 +3794,6 @@ VsGdiResourceGeometryHelperTargetView* VsGdiResourceGeometryHelperTargetView::In
 	int fConstructCompactHelper)
 {
 	int iCompactDelta;
-	VsGdiCompactResourceGeometryHelperFields* pCompactHelper;
 	VsGdiResourceGeometryLinkList* pGlobalList;
 	VsGdiResourceGeometryLinkNode* pLink;
 	VsGdiResourceGeometryLinkList* pChildList;
@@ -3809,33 +3802,32 @@ VsGdiResourceGeometryHelperTargetView* VsGdiResourceGeometryHelperTargetView::In
 	VsGdiRect CellExtent;
 
 	if (fConstructCompactHelper != 0) {
-		*(void**) ((char*) this + 0x40) = &g_VSGDI_CompactHelperTargetAdjustor;
-		*(void**) ((char*) this + 0x48) = &g_VSGDI_HelperGroup1Adjustor;
-		*(void**) ((char*) this + 0x9c) = &g_VSGDI_HelperGroup0Adjustor;
-		((VsGdiCompactResourceGeometryHelper*) ((char*) this + 0x55c))->InitializeCompactResourceGeometryHelper();
+		m_Primary.m_pCompactHelperVbtable = &g_VSGDI_CompactHelperTargetAdjustor;
+		m_HelperGroup1.m_pCompactHelperVbtable = &g_VSGDI_HelperGroup1Adjustor;
+		m_HelperGroup0.m_pCompactHelperVbtable = &g_VSGDI_HelperGroup0Adjustor;
+		m_CompactHelper.InitializeCompactResourceGeometryHelper();
 	}
 
 	InitializeResourceGeometryRowBuffer(this);
 	*(void**) this = &g_VSGDI_ResourceGeometryHelperTargetConstructionVtable;
-	iCompactDelta = *(int*) ((char*) (unsigned long) *(int*) ((char*) this + 0x40) + 4);
-	pCompactHelper = (VsGdiCompactResourceGeometryHelperFields*) ((char*) this + iCompactDelta);
-	pCompactHelper->m_pVtable = &g_VSGDI_CompactResourceGeometryHelperConstructionVtable;
-	ConstructHelperGroup1RowBuffer((char*) this + 0x44, 0);
-	ConstructHelperGroup0RowBuffer((char*) this + 0x98, 0);
+	iCompactDelta = *(int*) ((char*) (unsigned long) m_Primary.m_pCompactHelperVbtable + 4);
+	m_CompactHelper.m_pVtable = &g_VSGDI_CompactResourceGeometryHelperConstructionVtable;
+	ConstructHelperGroup1RowBuffer(&m_HelperGroup1, 0);
+	ConstructHelperGroup0RowBuffer(&m_HelperGroup0, 0);
 	m_nReservedEE = 0;
 	m_ChildTargetLinks.m_pTail = 0;
 	m_nReservedEC = 0;
 	m_ChildTargetLinks.m_pHead = 0;
 	m_ChildTargetLinks.m_cNodes = 0;
 	*(void**) this = &g_VSGDI_ResourceGeometryHelperTargetVtable;
-	*(void**) ((char*) this + 0x44) = &g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable;
-	*(void**) ((char*) this + 0x98) = &g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable;
-	pCompactHelper->m_pVtable = &g_VSGDI_CompactResourceGeometryHelperSubobjectVtable;
-	pCompactHelper->m_nThisAdjust = iCompactDelta - 0x51c;
-	pCompactHelper->m_pLinkedTarget = pWrappedTarget;
-	pCompactHelper->m_fForwardingEnabled = 1;
-	pCompactHelper->m_nQueuedState = 0;
-	pCompactHelper->m_nReserved78 = 0;
+	m_HelperGroup1.m_pVtable = &g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable;
+	m_HelperGroup0.m_pVtable = &g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable;
+	m_CompactHelper.m_pVtable = &g_VSGDI_CompactResourceGeometryHelperSubobjectVtable;
+	m_nCompactHelperVtordisp = iCompactDelta - 0x51c;
+	m_CompactHelper.m_pLinkedTarget = pWrappedTarget;
+	m_CompactHelper.m_fForwardingEnabled = 1;
+	m_CompactHelper.m_nQueuedState = 0;
+	m_CompactHelper.m_nReserved38 = 0;
 
 	pChildList = (VsGdiResourceGeometryLinkList*) ((char*) pWrappedTarget + 0x528);
 	pLink = (VsGdiResourceGeometryLinkNode*) AllocateVSMemBlock(0xc);
@@ -4020,7 +4012,6 @@ VsGdiResourceGeometryHelperTargetView* VsGdiResourceGeometryHelperTargetView::Co
 	int fConstructCompactHelper)
 {
 	int iCompactDelta;
-	VsGdiCompactResourceGeometryHelperFields* pCompactHelper;
 	VsGdiHelperTargetParamWrapper* pParamWrapper;
 	VsGdiResourceGeometryHelperTargetView* pTarget;
 
@@ -4033,9 +4024,8 @@ VsGdiResourceGeometryHelperTargetView* VsGdiResourceGeometryHelperTargetView::Co
 	}
 	InitializeResourceGeometryRowBuffer(pTarget);
 	*(void**) pTarget = &g_VSGDI_ResourceGeometryHelperTargetConstructionVtable;
-	iCompactDelta = *(int*) ((char*) (unsigned long) *(int*) ((char*) pTarget + 0x40) + 4);
-	pCompactHelper = (VsGdiCompactResourceGeometryHelperFields*) ((char*) pTarget + iCompactDelta);
-	pCompactHelper->m_pVtable = &g_VSGDI_CompactResourceGeometryHelperConstructionVtable;
+	iCompactDelta = *(int*) ((char*) (unsigned long) pTarget->m_Primary.m_pCompactHelperVbtable + 4);
+	pTarget->m_CompactHelper.m_pVtable = &g_VSGDI_CompactResourceGeometryHelperConstructionVtable;
 	ConstructHelperGroup1RowBuffer(&pTarget->m_HelperGroup1, 0);
 	ConstructHelperGroup0RowBuffer(&pTarget->m_HelperGroup0, 0);
 	pTarget->m_nReservedEE = 0;
@@ -4046,8 +4036,8 @@ VsGdiResourceGeometryHelperTargetView* VsGdiResourceGeometryHelperTargetView::Co
 	*(void**) pTarget = &g_VSGDI_ResourceGeometryHelperTargetVtable;
 	pTarget->m_HelperGroup1.m_pVtable = &g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable;
 	pTarget->m_HelperGroup0.m_pVtable = &g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable;
-	pCompactHelper->m_pVtable = &g_VSGDI_CompactResourceGeometryHelperSubobjectVtable;
-	pCompactHelper->m_nThisAdjust = iCompactDelta - 0x51c;
+	pTarget->m_CompactHelper.m_pVtable = &g_VSGDI_CompactResourceGeometryHelperSubobjectVtable;
+	pTarget->m_nCompactHelperVtordisp = iCompactDelta - 0x51c;
 
 	pParamWrapper = (VsGdiHelperTargetParamWrapper*) AllocateVSMemBlock(0xc);
 	if (pParamWrapper == 0) {
@@ -4061,10 +4051,10 @@ VsGdiResourceGeometryHelperTargetView* VsGdiResourceGeometryHelperTargetView::Co
 	}
 	pTarget->m_pBackingBitmap = 0;
 	pTarget->m_nActiveUploadState = 0;
-	pCompactHelper->m_pLinkedTarget = 0;
+	pTarget->m_CompactHelper.m_pLinkedTarget = 0;
 	InitializeCriticalSection(pTarget->m_abCriticalSection);
 	pTarget->m_fCriticalSectionReady = 1;
-	pCompactHelper->m_fForwardingEnabled = 0;
+	pTarget->m_CompactHelper.m_fForwardingEnabled = 0;
 	return pTarget;
 }
 // FUNCTION: LEMBALL 0x0046c710
@@ -4073,7 +4063,6 @@ void LEMBALL_FASTCALL DestroyResourceGeometryHelperTarget(void* pvTarget)
 	int iCompactDelta;
 	int iCriticalSectionReady;
 	unsigned int pFollowingNode;
-	VsGdiCompactResourceGeometryHelperFields* pCompactHelper;
 	VsGdiResourceGeometryLinkList* pGlobalList;
 	VsGdiResourceGeometryLinkList* pLinkedTargetList;
 	VsGdiResourceGeometryLinkNode* pLink;
@@ -4086,10 +4075,9 @@ void LEMBALL_FASTCALL DestroyResourceGeometryHelperTarget(void* pvTarget)
 	*(void**) pTarget = &g_VSGDI_ResourceGeometryHelperTargetVtable;
 	pTarget->m_HelperGroup1.m_pVtable = &g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable;
 	pTarget->m_HelperGroup0.m_pVtable = &g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable;
-	iCompactDelta = *(int*) ((char*) (unsigned long) *(int*) ((char*) pTarget + 0x40) + 4);
-	pCompactHelper = (VsGdiCompactResourceGeometryHelperFields*) ((char*) pTarget + iCompactDelta);
-	pCompactHelper->m_pVtable = &g_VSGDI_CompactResourceGeometryHelperSubobjectVtable;
-	pCompactHelper->m_nThisAdjust = iCompactDelta - 0x51c;
+	iCompactDelta = *(int*) ((char*) (unsigned long) pTarget->m_Primary.m_pCompactHelperVbtable + 4);
+	pTarget->m_CompactHelper.m_pVtable = &g_VSGDI_CompactResourceGeometryHelperSubobjectVtable;
+	pTarget->m_nCompactHelperVtordisp = iCompactDelta - 0x51c;
 
 	iCriticalSectionReady = pTarget->m_fCriticalSectionReady;
 	if (iCriticalSectionReady != 0) {
@@ -4107,7 +4095,7 @@ void LEMBALL_FASTCALL DestroyResourceGeometryHelperTarget(void* pvTarget)
 			(int) (unsigned long) pTarget->m_pBackingBitmap);
 		pTarget->m_pBackingBitmap = 0;
 	}
-	if (pCompactHelper->m_pLinkedTarget == g_pResourceGeometryHelperTarget) {
+	if (pTarget->m_CompactHelper.m_pLinkedTarget == g_pResourceGeometryHelperTarget) {
 		ReleaseHelperGroup0BackingBuffer((int) (unsigned long) &pTarget->m_HelperGroup0);
 		ReleaseHelperGroup1BackingBuffer((int) (unsigned long) &pTarget->m_HelperGroup1);
 	}
@@ -4123,7 +4111,7 @@ void LEMBALL_FASTCALL DestroyResourceGeometryHelperTarget(void* pvTarget)
 		FreeVSMemBlock((void*) (unsigned long) pTarget->m_nActiveUploadState);
 		pTarget->m_nActiveUploadState = 0;
 	}
-	pLinkedTarget = (VsGdiResourceGeometryHelperTargetView*) pCompactHelper->m_pLinkedTarget;
+	pLinkedTarget = (VsGdiResourceGeometryHelperTargetView*) pTarget->m_CompactHelper.m_pLinkedTarget;
 	if (pLinkedTarget != 0) {
 		pLinkedTargetList = &pLinkedTarget->m_ChildTargetLinks;
 		pLink = pLinkedTargetList->m_pTail;
@@ -4151,7 +4139,7 @@ void LEMBALL_FASTCALL DestroyResourceGeometryHelperTarget(void* pvTarget)
 			}
 			pLinkedTargetList->m_cNodes = pLinkedTargetList->m_cNodes - 1;
 		}
-		pCompactHelper->m_pLinkedTarget = 0;
+		pTarget->m_CompactHelper.m_pLinkedTarget = 0;
 	}
 	if (iCriticalSectionReady != 0) {
 		LeaveCriticalSection(pTarget->m_abCriticalSection);
