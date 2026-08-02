@@ -13,7 +13,7 @@ Make verified decompilation progress while preserving compiler behavior. Treat t
 5. Inspect every proposed cluster member in original `/LEMBALL.EXE` with Ghidra MCP. Establish raw bytes, boundaries, ABI, control flow, xrefs, owning source file, and all per-member variations. Use decompiler output only as supporting evidence. ILT entries never become targets.
 6. Recover one minimal C or C++ template from binary evidence and compiler probes. Parameterize only proven variations. Never mass-generate speculative bodies from shape similarity alone.
 7. Implement complete viable cluster, build once, compare representative member, then compare every member with verbose reccmp. Revise from assembly diffs and binary evidence.
-8. Run full reccmp JSON after each batch, then run `.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --check-baseline`. Keep batch only if exact-set gate passes and it adds verified matches or another form of verified progress. Revert speculative or regressing edits.
+8. Run full reccmp JSON after each batch, then run `.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --check-baseline`. Compare the printed lost set with the last trusted checkpoint; exit status `1` is expected while tolerated losses remain and is not sufficient validation by itself. Never accept a new lost address. Keep a batch only when it adds verified matches or another measured improvement without worsening the lost set.
 9. Repeat next viable high-yield cluster. Do not stop after one tiny function while safe members of same proven family remain.
 10. When no viable repeated family remains, work first viable entry under miner's `singleton fallback`. It prefers fewest estimated mismatched bytes and investigates five-byte functions last.
 11. Fix discovered issues immediately. If fix cannot be completed in current run, leave minimal compiling stub with `// STUB:` marker for next run.
@@ -61,9 +61,10 @@ Canonical verification, from repository root:
 python tools/build_msvc400.py
 .decomp-venv\Scripts\reccmp-project.exe detect --search-path data
 Push-Location build-msvc400
-..\.decomp-venv\Scripts\reccmp-reccmp.exe --target LEMBALL --json reccmp.json --json-diet
-..\.decomp-venv\Scripts\reccmp-decomplint.exe --target LEMBALL
-..\.decomp-venv\Scripts\reccmp-datacmp.exe --target LEMBALL --no-color
+../.decomp-venv/Scripts/reccmp-reccmp.exe --target LEMBALL --json reccmp.json --json-diet
+../.decomp-venv/Scripts/reccmp-vtable.exe --target LEMBALL
+../.decomp-venv/Scripts/reccmp-decomplint.exe --target LEMBALL
+../.decomp-venv/Scripts/reccmp-datacmp.exe --target LEMBALL --no-color
 Pop-Location
 ```
 
