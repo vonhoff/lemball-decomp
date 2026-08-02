@@ -127,7 +127,7 @@ set(LEMBALL_SOURCES
     src/LEVEL/RUN/LEVELRUNSLOT.CPP
     src/LEVEL/VTABLE/LVBSTH.CPP
     src/AI/CDoorCtor.cpp
-    src/LEVEL/VTABLE/LEVELVTPLAS.CPP
+    src/AI/PlasChild.cpp
     src/AI/CEnemyGrp.cpp
     src/AI/CMine.cpp
     src/AI/GroupPlas.cpp

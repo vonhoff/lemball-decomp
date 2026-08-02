@@ -38,7 +38,7 @@ address,name,symbol,type,source
 0x00418300,DeleteProjectilePoolAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x004193F0,LevelManagedEntityActiveGroupView::HasStreamDirtyChildren,,synthetic,src/LEVEL/RUN/LEVELRUN.CPP
 0x00419440,LevelManagedEntityActiveGroupView::HasDirtyChildren,,synthetic,src/LEVEL/RUN/LEVELRUN.CPP
-0x00419970,PLAS manager render-entry `adjustor thunk' (-0xb0),,synthetic,src/LEVEL/VTABLE/LEVELVTPLAS.CPP
+0x00419970,PLAS manager render-entry `adjustor thunk' (-0xb0),,synthetic,src/AI/PlasChild.cpp
 0x0041AF50,Projectile deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/AI/Projectile.cpp
 0x0041C330,DeleteCountedChildTableStreamAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
 0x0041C400,DeleteLevelChunkObjectBaseWrapper1C400,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
