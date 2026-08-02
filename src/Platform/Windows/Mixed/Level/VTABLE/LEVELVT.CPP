@@ -2141,6 +2141,7 @@ void __fastcall reset_ice_chunk_object_count(void* pManager)
 	*(int*) ((char*) pManager + 0x34) = 0;
 }
 
+// MACINTOSH: CIceManager::GetViewData(CViewData*)
 // FUNCTION: LEMBALL 0x0042dd30
 int PASCAL return_zero_vtable_callback_0042dd30(void* pUnused)
 {

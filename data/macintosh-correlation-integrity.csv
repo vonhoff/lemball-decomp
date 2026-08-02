@@ -636,3 +636,21 @@ CODE_06_AI.bin,0x0001BB52,Process__16CPaintGunManagerFv,0x0042C4D0,high,marks an
 CODE_06_AI.bin,0x0001BBDB,GetViewData__16CPaintGunManagerFP9CViewData,0x0042C520,high,emits 0x4c byte view records for active children,exact_tuple,0x0001BBDB
 CODE_06_AI.bin,0x0001BCAC,Add__16CPaintGunManagerFUsiiii,0x0042C590,high,converts coordinates to fixed point appends child and stores subtype,exact_tuple,0x0001BCAC
 CODE_06_AI.bin,0x0001BD99,LoadLevel__16CPaintGunManagerFPUciUc,0x0042C610,high,loads versioned slot coordinates and subtype records through Add,exact_tuple,0x0001BD99
+CODE_06_AI.bin,0x0001179A,__ct__4CIceFv,0x0042CA70,high,constructs level chunk type 0x33 and installs ICE vtable,exact_tuple,0x0001179A
+CODE_06_AI.bin,0x000117C6,Restart__4CIceFv,0x0042CA90,high,restarts inherited runtime then calls CIce Initialise,exact_tuple,0x000117C6
+CODE_06_AI.bin,0x00011804,Initialise__4CIceFv,0x0042CAB0,high,clears runtime flags attached count and records current tick,exact_tuple,0x00011804
+CODE_06_AI.bin,0x00011860,__dt__4CIceFv,0x0042CAF0,high,restores ICE vtable and destroys level chunk base,exact_tuple,0x00011860
+CODE_06_AI.bin,0x00011A19,Set__4CIceFUsRC8tCoord3dRC8tCoord3diiUc,0x0042CB00,high,stores endpoints movement and activation marks covered terrain and samples heights,exact_tuple,0x00011A19
+CODE_06_AI.bin,0x00011FF8,Process__4CIceFv,0x0042CD70,high,moves attached entities toggles activation and redispatches terrain contacts,exact_tuple,0x00011FF8
+CODE_06_AI.bin,0x00012151,StepOn__4CIceFRC7AICOORDP11CGameObject,0x0042D380,high,attaches eligible entities inside bounds to the ten-entry held list,exact_tuple,0x00012151
+CODE_06_AI.bin,0x000121EC,Leave__4CIceFP14CPlayerLemming,0x0042D4D0,high,removes the matching lemming from the attached entity list,exact_tuple,0x000121EC
+CODE_06_AI.bin,0x00012434,Switched__4CIceFv,0x0042D560,high,releases held entities when disabled and refreshes activation timestamp when enabled,exact_tuple,0x00012434
+CODE_06_AI.bin,0x000124B4,__ct__11CIceManagerFP3CAIi,0x0042D7A0,high,constructs EFF stream 0x19 payload 0x0e and records owner capacity,exact_tuple,0x000124B4
+CODE_06_AI.bin,0x00012518,Restart__11CIceManagerFv,0x0042D800,high,restarts every child using 0x188 byte stride,exact_tuple,0x00012518
+CODE_06_AI.bin,0x000125E0,Initialise__11CIceManagerFi,0x0042D830,high,allocates constructs and owns the 0x188 byte child array,exact_tuple,0x000125E0
+CODE_06_AI.bin,0x0001265A,__dt__11CIceManagerFv,0x0042D8E0,high,deletes child array and destroys EFF stream base,exact_tuple,0x0001265A
+CODE_06_AI.bin,0x000126B2,Process__11CIceManagerFv,0x0042DD00,high,processes every configured child,exact_tuple,0x000126B2
+CODE_06_AI.bin,0x000126DF,GetViewData__11CIceManagerFP9CViewData,0x0042DD30,high,exact constant-zero Macintosh view method,exact_tuple,0x000126DF
+CODE_06_AI.bin,0x00012759,StepOn__11CIceManagerFRC7AICOORDP11CGameObject,0x0042DD40,high,tries each child until one accepts the entity,exact_tuple,0x00012759
+CODE_06_AI.bin,0x00012871,Add__11CIceManagerFUsRC8tCoord3dRC8tCoord3diiUc,0x0042DDF0,high,appends one bounded moving ICE rectangle,exact_tuple,0x00012871
+CODE_06_AI.bin,0x000129C8,LoadLevel__11CIceManagerFPUciUc,0x0042DEA0,high,loads versioned endpoints movement activation and slot records through Add,exact_tuple,0x000129C8

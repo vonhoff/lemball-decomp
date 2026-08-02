@@ -909,6 +909,7 @@ void* LEMBALL_FASTCALL DeletePgunChunkObjectAuto(void* pObject, void* pUnused, u
 	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x144, destroy_pgun_chunk_object_vtable_thunk);
 }
 
+// MACINTOSH: CIce::Process()
 // STUB: LEMBALL 0x0042cd70
 int LEMBALL_FASTCALL AdvanceIceChunkObjectStateMachine(void* pObject)
 {

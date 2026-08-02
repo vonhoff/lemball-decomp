@@ -1919,6 +1919,7 @@ int PASCAL return_zero_pgun_chunk_manager_callback(void* pUnused1, void* pUnused
 
 extern void* g_LINKSCF_IceChunkObjectVtable[16];
 
+// MACINTOSH: CIce::CIce()
 // FUNCTION: LEMBALL 0x0042ca70
 IceChunkObjectView* IceChunkObjectView::ConstructIceChunkObject(void)
 {
@@ -1927,6 +1928,7 @@ IceChunkObjectView* IceChunkObjectView::ConstructIceChunkObject(void)
 	return this;
 }
 
+// MACINTOSH: CIce::~CIce()
 // FUNCTION: LEMBALL 0x0042caf0
 void LEMBALL_FASTCALL destroy_ice_chunk_object(void* pObject)
 {
@@ -1934,6 +1936,7 @@ void LEMBALL_FASTCALL destroy_ice_chunk_object(void* pObject)
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 }
 
+// MACINTOSH: CIceManager::CIceManager(CAI*, int)
 // FUNCTION: LEMBALL 0x0042d7a0
 LinkScfIceChunkManagerView* LinkScfIceChunkManagerView::ConstructIceChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -1945,6 +1948,7 @@ LinkScfIceChunkManagerView* LinkScfIceChunkManagerView::ConstructIceChunkManager
 	return this;
 }
 
+// MACINTOSH: CIceManager::Restart()
 // FUNCTION: LEMBALL 0x0042d800
 void LEMBALL_FASTCALL ActivateIceChunkObjects(void* pManager)
 {
@@ -1968,6 +1972,7 @@ void LEMBALL_FASTCALL ActivateIceChunkObjects(void* pManager)
 	}
 }
 
+// MACINTOSH: CIceManager::Process()
 // FUNCTION: LEMBALL 0x0042dd00
 void LEMBALL_FASTCALL AdvanceIceChunkManagerObjects(void* pManager)
 {

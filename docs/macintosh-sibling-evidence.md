@@ -129,3 +129,7 @@ All six portable `CTrampoline` and nine portable `CTrampolineManager` methods al
 ### CPaintGun portable families
 
 All five portable `CPaintGun` and eight portable `CPaintGunManager` methods align with Windows `0x0042BAD0..0x0042C610` through chunk type `0x21`, a `0x144`-byte child stride, fixed-point placement, timed states and four-direction projectile emission, EFF stream payload `0x14`, view records and versioned loader records. Constant callbacks `0x0042BFC0`/`0x0042BFD0`/`0x0042C4C0`/`0x0042C580`, count/remove helpers `0x0042C140`/`0x0042C150`, no-op `0x0042C9A0`, and deleting wrappers `0x0042C9B0`/`0x0042C9E0` remain separate.
+
+### CIce portable families
+
+All nine portable `CIce` and nine portable `CIceManager` methods align with Windows `0x0042CA70..0x0042DEA0` through chunk type `0x33`, a `0x188`-byte child stride, bounded endpoint geometry, movement of up to ten attached entities, terrain-contact redispatch, EFF stream payload `0x0E`, exact zero-body view behavior and versioned loader records. Windows switch request/dispatch helpers `0x0042D550`/`0x0042DD90`, count/remove helpers `0x0042D900`/`0x0042D910`, auxiliary-copy helper `0x0042DE40`, and deleting wrapper `0x0042E4D0` remain separate.
