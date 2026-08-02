@@ -24,6 +24,8 @@ The VSGDI inheritance names are also corroborated by x86 layout and behavior: th
 
 The first high-confidence x86 correction is the complete `CPVGDIBitmap` family. Method order and behavior correlate one-for-one with `/LEMBALL.EXE` `0x00472290..0x00472760`. The reviewed mappings are recorded in `data/macintosh-x86-correlations.csv`, including the `CPVSurface`, back-buffer, z-buffer, and `CSurface::SetLinePtrs` extensions. The x86 functions are named in Ghidra using their recovered CodeWarrior manglings.
 
+The ordered C2D lifecycle and input-selection family at `/LEMBALL.EXE` `0x004363C0..0x00438210` now contributes 36 additional high-confidence correlations. Function bodies confirm remap lifecycle, grouping event payloads, object-id storage at `+0xA48..+0xA50`, screen-to-game conversion, pause state, cursor messaging, and button dispatch; Windows physical owners and ABI remain unchanged.
+
 The Windows implementation translation unit now lives at `src/Visos/Windows/CGDI.cpp`, retaining its original CMake/link position. Shared family skeletons live at `src/Visos/Generic/CSurface.h`; this mirrors the sibling `Visos (Generic)` versus platform-specific module split without transferring Macintosh ABI details.
 
 Analysis copies live outside the repository under `C:\Users\simon\lemball-mac-source`; build products must not depend on them.

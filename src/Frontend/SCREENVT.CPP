@@ -1,11 +1,12 @@
-#include "Visos/Generic/Memory.h"
+#include "Control/CGame.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
-#include "Control/CGame.h"
+#include "Visos/Generic/Memory.h"
 
 // STRONG INFERENCE: callbacks relocated from the artificial aggregate by
 // vtable owner, semantic role, and neighboring address/call-graph cluster.
 
+// Macintosh: C2D::DoButtons()
 // FUNCTION: LEMBALL 0x00436690
 void noop_render_entry_callback_00436690(void)
 {

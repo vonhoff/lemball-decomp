@@ -1,23 +1,24 @@
+#include "Control/CGame.h"
+
+#include "Control/Options.h"
+#include "Frontend/CURSOR.H"
+#include "Frontend/MAINMENU.H"
 #include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
-#include "Visos/Generic/VSMath.h"
-#include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/GDI/VSGDI.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSOUND.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
-#include "Frontend/CURSOR.H"
-#include "Frontend/MAINMENU.H"
-#include "Control/CGame.h"
 #include "Platform/Windows/Mixed/Level/DEMO.H"
 #include "Platform/Windows/Mixed/Level/DRAWTEXT.H"
 #include "Platform/Windows/Mixed/Level/LEVELRUN.H"
 #include "Platform/Windows/Mixed/Level/TYPE18.H"
-#include "Visos/Generic/MogLoad.h"
 #include "Platform/Windows/Mixed/Resource/VARMGR.H"
-#include "Control/Options.h"
 #include "Platform/Windows/ShellUI.h"
+#include "Visos/Generic/Memory.h"
+#include "Visos/Generic/MogLoad.h"
+#include "Visos/Generic/VSMath.h"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>
@@ -4473,10 +4474,12 @@ void LEMBALL_FASTCALL DestroyReconstructedLevelScreen(void* pObject)
 	ReleaseLevelScreenPaletteRemaps(pScreen);
 	SetLevelScreenStatusIndicatorModeThunk(0, 0);
 }
+// Macintosh: C2D::OnZoom(const CVSRect&)
 // FUNCTION: LEMBALL 0x004366a0
 void LEMBALL_FASTCALL NoopLevelScreenScaleChanged(void*, int, void*)
 {
 }
+// Macintosh: C2D::OnSize(const CVSRect&)
 // FUNCTION: LEMBALL 0x004366b0
 void LEMBALL_FASTCALL HandleLevelScreenViewportResize(void* pScreen, int, const VS_XYPair* pViewportSize)
 {
@@ -4509,6 +4512,7 @@ void LEMBALL_FASTCALL HandleLevelScreenViewportResize(void* pScreen, int, const 
 		RelayoutLevelScreenActionPanelThunk(*(void**) (pScreenBytes + 0x97c));
 	}
 }
+// Macintosh: C2D::Process()
 // FUNCTION: LEMBALL 0x00436a10
 void LEMBALL_FASTCALL UpdateReconstructedLevelScreen(void* pObject)
 {

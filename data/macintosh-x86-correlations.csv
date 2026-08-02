@@ -219,3 +219,39 @@ CODE_11_views_2d.bin,0x00006190,DrawZBuff_Anim__3C2DFiUs,0x00440490,high,"Both t
 CODE_11_views_2d.bin,0x000063FA,DrawObjectsZBuff__3C2DFv,0x00440560,high,"Both transform and sort dynamic entries, then merge dynamic sprites with static animation entries by depth; x86 callees directly include sort, dynamic draw, static draw, and sort-key calculation."
 CODE_11_views_2d.bin,0x000064AA,CalcZValue_Sprite__3C2DFi,0x004407E0,high,"Both return `0x7FFF` for object type `0x18`; otherwise return `z + CalcGroundCode(...) + 1`."
 CODE_11_views_2d.bin,0x00006729,CalcGroundCode__3C2DF11eObjectTypeiiUs,0x00440840,high,"Same object-type exceptions, tile-coordinate normalization, four neighboring terrain samples, collision-edge tests, and `0x40/0x80` depth-bias results."
+CODE_11_views_2d.bin,0x0000742A,RegisterRemaps__3C2DFv,0x004363C0,high,"loads palette 0x2e, builds four indexed remaps plus one special remap, and stores all five handles"
+CODE_11_views_2d.bin,0x00007476,UnRegisterRemaps__3C2DFv,0x00436480,high,releases the five consecutive palette-remap handles created by RegisterRemaps
+CODE_11_views_2d.bin,0x000074A9,CursorChangeType__3C2DF18eCursorDisplayTypei,0x004364B0,high,two-argument forwarder to the level-screen status-indicator mode implementation
+CODE_11_views_2d.bin,0x000077FA,OnLoaded__3C2DFv,0x004364D0,high,"activates the level screen, computes scale and viewport, creates the action panel, enables z-buffering, and starts the level session"
+CODE_11_views_2d.bin,0x00007816,DoButtons__3C2DFv,0x00436690,high,no-op callback in the exact ordered C2D slot between OnLoaded and OnZoom
+CODE_11_views_2d.bin,0x00007832,OnZoom__3C2DFRC7CVSRect,0x004366A0,high,no-op rectangle callback in the exact ordered C2D slot immediately before the independently identified OnSize body
+CODE_11_views_2d.bin,0x0000790A,OnSize__3C2DFRC7CVSRect,0x004366B0,high,"reads the two-short viewport extent, applies scale +0x160, marks refresh state, and relayouts the action panel"
+CODE_11_views_2d.bin,0x000079AA,SetUpRemapPalettes__3C2DFv,0x00436760,high,"builds the 256-byte level palette map, applies substitutions 0x37/0x5c/0x71/0x75/0x80, and registers resource 0x2e"
+CODE_11_views_2d.bin,0x000079E4,KillRemapPalettes__3C2DFv,0x00436830,high,releases the resource-0x2e palette remap handle stored at C2D +0x968
+CODE_11_views_2d.bin,0x00007A74,Restart__3C2DFv,0x00436850,high,"clears viewport offsets, resets pause state, reinitializes and starts level mode, and synchronizes progress fields"
+CODE_11_views_2d.bin,0x00007AFA,CheckValidFormGroup__3C2DFv,0x004369B0,high,walks selected ids at +0xa50 and removes entries whose registered game object is invalid
+CODE_11_views_2d.bin,0x00007F34,Process__3C2DFv,0x00436A10,high,"top-level update validates grouping, services activation/cursor/pause, and handles completion, restart, and network exit"
+CODE_11_views_2d.bin,0x00008257,FindGameObject__3C2DFRC8CVSPointRiUc,0x00436E40,high,tests the point against typed 0x4c-byte view records and writes the selected record index with requested preference
+CODE_11_views_2d.bin,0x000082AE,AddObjectToGroup__3C2DFiUc,0x00437130,high,"appends a 16-bit object id at +0xa50, increments count, and optionally updates the group cursor"
+CODE_11_views_2d.bin,0x00008340,FormGroup__3C2DFv,0x00437170,high,"validates selected ids, dispatches event 5 with count and array, then clears grouping state"
+CODE_11_views_2d.bin,0x000083B8,MoveGroup__3C2DFRC8CVSPoint,0x004371E0,high,dispatches event 2 with the two-coordinate destination and clears grouping state
+CODE_11_views_2d.bin,0x00008570,SelectLemming__3C2DFi,0x00437340,high,"loads a lemming id through the level-mode registry, dispatches event 8, and clears selection"
+CODE_11_views_2d.bin,0x000085F6,SelectObject__3C2DFi,0x004373B0,high,"loads an id from the indexed 0x4c-byte view record, dispatches event 8, and clears selection"
+CODE_11_views_2d.bin,0x00008646,InGroupByObjectNo__3C2DFi,0x00437420,high,linearly searches the selected 16-bit object-id array at +0xa50
+CODE_11_views_2d.bin,0x000086D3,RemoveFromGroupByObjectNo__3C2DFi,0x00437460,high,"compacts selected ids after removal and repairs count, cursor, and grouping mode"
+CODE_11_views_2d.bin,0x00008735,IsInGrouping__3C2DFP11CGameObject,0x004374E0,high,compares the CGameObject id at +0x6a against the selected-id array
+CODE_11_views_2d.bin,0x000088C5,NoStateLeftClick__3C2DFRC8CVSPointRC8CVSPointUcUc,0x00437520,high,"normal-mode click selects lemmings, dispatches object actions, or sends a point command by view-record type"
+CODE_11_views_2d.bin,0x00008A7B,GroupingLeftClick__3C2DFRC8CVSPointRC8CVSPointUc,0x004376B0,high,grouping click toggles selected lemming ids and commits the group before object or point commands
+CODE_11_views_2d.bin,0x00008B03,LeftClick__3C2DFRC8CVSPointRC8CVSPointUcUc,0x00437840,high,dispatches to no-state or grouping left-click behavior from grouping mode +0xa48
+CODE_11_views_2d.bin,0x00008BD1,NoStateRightClick__3C2DFRC8CVSPointRC8CVSPoint,0x00437890,high,"resolves a hotspot or dispatches event 4 with tile coordinates, then clears grouping mode"
+CODE_11_views_2d.bin,0x00008C45,RightClick__3C2DFRC8CVSPointRC8CVSPoint,0x00437930,high,commits any active group before forwarding to the no-state right-click point-command path
+CODE_11_views_2d.bin,0x00008E78,ScreenToGame__3C2DFiiRiRi,0x00437970,high,"searches terrain cells, applies screen/tile transforms and shape-mask testing, and writes two game coordinates"
+CODE_11_views_2d.bin,0x00008FE6,ProcessMsg__3C2DFP10tagMESSAGE,0x00437B60,high,"filters inactive/demo input and maps command ids to previous/next selection, projectile requests, and lemming selection"
+CODE_11_views_2d.bin,0x000090B1,NewPauseWindow__3C2DF20ePauseWindowMessages,0x00437D00,high,"replaces the pause dialog, constructs the requested 0x20c-byte variant, and records prior/current states"
+CODE_11_views_2d.bin,0x00009134,TriggerPause__3C2DFUc,0x00437DA0,high,unpauses directly or requests level game-state 1 when level mode permits pausing
+CODE_11_views_2d.bin,0x000091F4,SetPause__3C2DFUc,0x00437DE0,high,"updates pause flags, frame-clock state, level-mode state, and active pause-window variant"
+CODE_11_views_2d.bin,0x0000941E,SetMouseShape__3C2DFv,0x00437E90,high,"derives cursor mode from panel, hotspot, terrain-mask, and timed-toggle state and forwards the shape"
+CODE_11_views_2d.bin,0x000094FC,SendCursorMsg__3C2DFv,0x004380C0,high,resolves the current viewport anchor to terrain coordinates and dispatches level-screen event 1
+CODE_11_views_2d.bin,0x0000956E,OnInside__3C2DFRC8CVSPoint,0x00438170,high,stores the two-short pointer position in the adjusted C2D subobject and sends the cursor message
+CODE_11_views_2d.bin,0x000095DD,OnButtonUp__3C2DFRC8CVSPoint12BUTTON_FLAGS,0x004381C0,high,clears the button-latched flag and sends the cursor message when the screen is active
+CODE_11_views_2d.bin,0x00009731,OnButtonDown__3C2DFRC8CVSPoint12BUTTON_FLAGS,0x00438210,high,converts the point to game coordinates and routes modes 0/3 to LeftClick and 1/4 to RightClick
