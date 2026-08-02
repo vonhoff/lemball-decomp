@@ -2692,36 +2692,36 @@ void LEMBALL_FASTCALL RestoreCompactResourceGeometryHelperVtable(void* pvHelper)
 void* ConstructHelperGroup0RowBuffer(void* pvHelperGroup, int fConstructCompactHelper)
 {
 	int iCompactDelta;
-	int* pHelperGroup;
+	VsGdiResourceGeometryHelperGroupView* pHelperGroup;
 
-	pHelperGroup = (int*) pvHelperGroup;
+	pHelperGroup = (VsGdiResourceGeometryHelperGroupView*) pvHelperGroup;
 	if (fConstructCompactHelper != 0) {
-		*(void**) ((char*) pHelperGroup + 4) = &g_VSGDI_ResourceGeometryHelperGroup0ConstructionAdjustorVtable;
+		pHelperGroup->m_pCompactHelperVbtable = &g_VSGDI_ResourceGeometryHelperGroup0ConstructionAdjustorVtable;
 		((VsGdiCompactResourceGeometryHelper*) ((char*) pHelperGroup + 0x58))
 			->InitializeCompactResourceGeometryHelper();
 	}
-	InitializeResourceGeometryRowBuffer((char*) pHelperGroup + 8);
-	*(void**) pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup0Vtable;
-	iCompactDelta = *(int*) ((char*) (unsigned long) pHelperGroup[1] + 4);
+	InitializeResourceGeometryRowBuffer(&pHelperGroup->m_RowBuffer);
+	pHelperGroup->m_pVtable = &g_VSGDI_ResourceGeometryHelperGroup0Vtable;
+	iCompactDelta = *(int*) ((char*) (unsigned long) pHelperGroup->m_pCompactHelperVbtable + 4);
 	*(void**) ((char*) pHelperGroup + 4 + iCompactDelta) =
 		(void*) &g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable;
 	*(int*) ((char*) pHelperGroup + iCompactDelta) = iCompactDelta - 0x54;
-	*(short*) ((char*) pHelperGroup + 0x50) = 0;
-	*(int*) ((char*) pHelperGroup + 0x4c) = 0;
-	*(short*) ((char*) pHelperGroup + 0x52) = 0;
-	*(int*) ((char*) pHelperGroup + 0x48) = 0;
+	pHelperGroup->m_nWidth = 0;
+	pHelperGroup->m_pBackingBuffer = 0;
+	pHelperGroup->m_nHeight = 0;
+	pHelperGroup->m_fActive = 0;
 	return pHelperGroup;
 }
 void LEMBALL_FASTCALL DestroyHelperGroup0RowBufferCompilerStateShim(void* pvHelperGroup)
 {
 	int iCompactDelta;
-	int* pHelperGroup;
-	int* pRowBuffer;
+	VsGdiResourceGeometryHelperGroupView* pHelperGroup;
+	VsGdiResourceGeometryRowBufferView* pRowBuffer;
 
-	pHelperGroup = (int*) pvHelperGroup;
-	*(void**) pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup0Vtable;
-	pRowBuffer = pHelperGroup + 2;
-	iCompactDelta = *(int*) ((char*) (unsigned long) pHelperGroup[1] + 4);
+	pHelperGroup = (VsGdiResourceGeometryHelperGroupView*) pvHelperGroup;
+	pHelperGroup->m_pVtable = &g_VSGDI_ResourceGeometryHelperGroup0Vtable;
+	pRowBuffer = &pHelperGroup->m_RowBuffer;
+	iCompactDelta = *(int*) ((char*) (unsigned long) pHelperGroup->m_pCompactHelperVbtable + 4);
 	*(void**) ((char*) pRowBuffer + iCompactDelta - 4) =
 		(void*) &g_VSGDI_ResourceGeometryHelperGroup0CompactSubobjectVtable;
 	*(int*) ((char*) pRowBuffer + iCompactDelta - 8) = iCompactDelta - 0x54;
@@ -2765,39 +2765,41 @@ void LEMBALL_FASTCALL EnsureHelperGroup0BackingBufferThunk(void* pHelperGroup)
 void* ConstructHelperGroup1RowBuffer(void* pvHelperGroup, int fConstructCompactHelper)
 {
 	int iCompactDelta;
-	int* pHelperGroup;
+	VsGdiResourceGeometryHelperGroupView* pHelperGroup;
 
-	pHelperGroup = (int*) pvHelperGroup;
+	pHelperGroup = (VsGdiResourceGeometryHelperGroupView*) pvHelperGroup;
 	if (fConstructCompactHelper != 0) {
-		*(void**) ((char*) pHelperGroup + 4) = &g_VSGDI_ResourceGeometryHelperGroup1ConstructionAdjustorVtable;
+		pHelperGroup->m_pCompactHelperVbtable = &g_VSGDI_ResourceGeometryHelperGroup1ConstructionAdjustorVtable;
 		((VsGdiCompactResourceGeometryHelper*) ((char*) pHelperGroup + 0x58))
 			->InitializeCompactResourceGeometryHelper();
 	}
-	InitializeResourceGeometryRowBuffer((char*) pHelperGroup + 8);
-	*(void**) pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup1Vtable;
-	iCompactDelta = *(int*) ((char*) (unsigned long) pHelperGroup[1] + 4);
+	InitializeResourceGeometryRowBuffer(&pHelperGroup->m_RowBuffer);
+	pHelperGroup->m_pVtable = &g_VSGDI_ResourceGeometryHelperGroup1Vtable;
+	iCompactDelta = *(int*) ((char*) (unsigned long) pHelperGroup->m_pCompactHelperVbtable + 4);
 	*(void**) ((char*) pHelperGroup + 4 + iCompactDelta) =
 		(void*) &g_VSGDI_ResourceGeometryHelperGroup1CompactSubobjectVtable;
 	*(int*) ((char*) pHelperGroup + iCompactDelta) = iCompactDelta - 0x54;
-	*(short*) ((char*) pHelperGroup + 0x50) = 0;
-	*(int*) ((char*) pHelperGroup + 0x48) = 0;
-	*(short*) ((char*) pHelperGroup + 0x52) = 0;
-	*(int*) ((char*) pHelperGroup + 0x4c) = 0;
+	pHelperGroup->m_nWidth = 0;
+	pHelperGroup->m_fActive = 0;
+	pHelperGroup->m_nHeight = 0;
+	pHelperGroup->m_pBackingBuffer = 0;
 	return pHelperGroup;
 }
 // FUNCTION: LEMBALL 0x004666e0
 void LEMBALL_FASTCALL DestroyHelperGroup1RowBuffer(void* pvHelperGroup)
 {
-	int* pHelperGroup;
+	int iCompactDelta;
+	VsGdiResourceGeometryHelperGroupView* pHelperGroup;
+	VsGdiResourceGeometryRowBufferView* pRowBuffer;
 
-	pHelperGroup = (int*) pvHelperGroup;
-	*(void**) pHelperGroup = &g_VSGDI_ResourceGeometryHelperGroup1Vtable;
-	pHelperGroup += 2;
-	*(void**) ((char*) pHelperGroup + *(int*) ((char*) (unsigned long) pHelperGroup[-1] + 4) - 4) =
+	pHelperGroup = (VsGdiResourceGeometryHelperGroupView*) pvHelperGroup;
+	pHelperGroup->m_pVtable = &g_VSGDI_ResourceGeometryHelperGroup1Vtable;
+	pRowBuffer = &pHelperGroup->m_RowBuffer;
+	iCompactDelta = *(int*) ((char*) (unsigned long) pHelperGroup->m_pCompactHelperVbtable + 4);
+	*(void**) ((char*) pRowBuffer + iCompactDelta - 4) =
 		(void*) &g_VSGDI_ResourceGeometryHelperGroup1CompactSubobjectVtable;
-	*(int*) ((char*) pHelperGroup + *(int*) ((char*) (unsigned long) pHelperGroup[-1] + 4) - 8) =
-		*(int*) ((char*) (unsigned long) pHelperGroup[-1] + 4) - 0x54;
-	DestroyResourceGeometryRowBuffer(pHelperGroup);
+	*(int*) ((char*) pRowBuffer + iCompactDelta - 8) = iCompactDelta - 0x54;
+	DestroyResourceGeometryRowBuffer(pRowBuffer);
 }
 // FUNCTION: LEMBALL 0x00466710
 void LEMBALL_FASTCALL ReleaseHelperGroup1BackingBuffer(int nHelperGroup)
