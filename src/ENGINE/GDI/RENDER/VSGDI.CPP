@@ -536,10 +536,28 @@ struct VsGdiCompactResourceGeometryHelperFields {
 	int m_nReserved78;
 };
 
+struct VsGdiResourceGeometryHelperTargetPrimaryView {
+	unsigned char m_abRowBuffer[0x40];
+	void* m_pCompactHelperVbtable;
+};
+
+struct VsGdiResourceGeometryHelperGroupView {
+	void* m_pVtable;
+	void* m_pCompactHelperVbtable;
+	unsigned char m_abRowBuffer[0x40];
+	int m_fActive;
+	void* m_pBackingBuffer;
+	short m_nWidth;
+	short m_nHeight;
+};
+
+DECOMP_SIZE_ASSERT(VsGdiResourceGeometryHelperTargetPrimaryView, 0x44);
+DECOMP_SIZE_ASSERT(VsGdiResourceGeometryHelperGroupView, 0x54);
+
 struct VsGdiResourceGeometryHelperTargetView {
-	unsigned char m_abRowBuffer[0x44];
-	unsigned char m_abHelperGroup1[0x54];
-	unsigned char m_abHelperGroup0[0x54];
+	VsGdiResourceGeometryHelperTargetPrimaryView m_Primary;
+	VsGdiResourceGeometryHelperGroupView m_HelperGroup1;
+	VsGdiResourceGeometryHelperGroupView m_HelperGroup0;
 	short m_nReservedEC;
 	short m_nReservedEE;
 	void* m_pBackingBitmap;
@@ -4344,7 +4362,7 @@ void VsGdiResourceGeometryHelperTargetView::FlushResourceGeometryHelperTargetUpd
 			nRectCount = pTracker->BuildHelperUploadRectList();
 			while (iRect < nRectCount) {
 				pEntry = pTracker->GetHelperUploadRectEntryByIndex(iRect);
-				((RectProc) (*(void***) (m_abHelperGroup0))[2])(m_abHelperGroup0, 0, pEntry);
+				((RectProc) (*(void***) (&m_HelperGroup0))[2])(&m_HelperGroup0, 0, pEntry);
 				++iRect;
 				nRectCount = pTracker->BuildHelperUploadRectList();
 			}
