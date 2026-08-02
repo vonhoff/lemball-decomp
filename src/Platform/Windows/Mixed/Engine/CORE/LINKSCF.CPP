@@ -869,6 +869,7 @@ void LevelTileGridCellArrayView::OrCellFlags(int x, int y, unsigned int nFlags)
 	m_pCells04[y * m_cColumns08 + x].m_nFlags06 |= (unsigned short) nFlags;
 }
 
+// MACINTOSH: CPlayerLemming::CPlayerLemming(int, int, int, int, unsigned char, unsigned long)
 // FUNCTION: LEMBALL 0x0040ecb0
 void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevel(void* pObject,
 														int nUnusedEdx,
@@ -951,6 +952,7 @@ void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevel(void* pObject,
 	*(int*) ((char*) pObject + 0x1bc) = 0xaa55aa55;
 	return pObject;
 }
+// MACINTOSH: CPlayerLemming::Restart()
 // FUNCTION: LEMBALL 0x0040ed90
 void LEMBALL_FASTCALL ActivateOrStagePlasChunkObject(void* pObject)
 {

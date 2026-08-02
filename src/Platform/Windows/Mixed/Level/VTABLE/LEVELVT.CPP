@@ -1015,24 +1015,28 @@ int DoorChunkTriggerStateView::LatchTriggerTimestamp(void)
 	return 1;
 }
 
+// MACINTOSH: CPlayerLemming::SetGroup(CPlayerLemmingGroup*)
 // FUNCTION: LEMBALL 0x0040f0d0
 void ManagedEntityChildView::SetManagedEntityOwnerGroup(void* pOwnerGroup)
 {
 	*(void**) ((char*) this + 0x224) = pOwnerGroup;
 }
 
+// MACINTOSH: CPlayerLemming::GetGroup()
 // FUNCTION: LEMBALL 0x0040f0e0
 void* __fastcall get_managed_entity_owner_group(void* pEntity)
 {
 	return *(void**) ((char*) pEntity + 0x224);
 }
 
+// MACINTOSH: CPlayerLemming::SetGroupLeader(unsigned char)
 // FUNCTION: LEMBALL 0x0040f0f0
 void ManagedEntityChildView::SetManagedEntityPrimaryActiveFlag(int fActive)
 {
 	*(int*) ((char*) this + 0x17c) = fActive;
 }
 
+// MACINTOSH: CPlayerLemming::SetGroup(unsigned char)
 // FUNCTION: LEMBALL 0x0040f100
 void __fastcall set_managed_entity_secondary_active_flag(void* pEntity, void* pUnused, int fActive)
 {
@@ -1046,18 +1050,21 @@ int __fastcall get_level_mode_field_0x17c(void* pLevelMode)
 	return *(int*) ((char*) pLevelMode + 0x17c);
 }
 
+// MACINTOSH: CPlayerLemming::IsRequestingFire()
 // FUNCTION: LEMBALL 0x0040f2b0
 int __fastcall has_door_chunk_object_target_tile_latched(void* pObject)
 {
 	return *(int*) ((char*) pObject + 0x184) == 1;
 }
 
+// MACINTOSH: CPlayerLemming::StartFiring()
 // FUNCTION: LEMBALL 0x0040f410
 void __fastcall schedule_door_chunk_object_update_in_10_ticks(void* pObject)
 {
 	*(int*) ((char*) pObject + 0xcc) = g_nLevelFrameClockTick + 10;
 }
 
+// MACINTOSH: CPlayerLemming::EndFiring()
 // FUNCTION: LEMBALL 0x0040f420
 void __fastcall clear_door_chunk_object_target_tile_latch(void* pObject)
 {
