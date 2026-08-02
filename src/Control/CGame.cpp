@@ -3759,6 +3759,7 @@ void LEMBALL_FASTCALL DestroyLevelGameMode(void* pModeObject)
 	*(void***) (pMode + 4) = g_GAME_GenericModeVtableSlots;
 	*(void***) pMode = g_GAME_RenderQueueNodeVtableSlots;
 }
+// MACINTOSH: CAI::GameState(eGameStatus)
 // FUNCTION: LEMBALL 0x00411f20
 void RequestLocalLevelGameStateChange(void* pLevelMode, int nState)
 {
@@ -3786,6 +3787,7 @@ void RequestLocalLevelGameStateChange(void* pLevelMode, int nState)
 		*(int*) (pMode + 0x108) = nState;
 	}
 }
+// MACINTOSH: CAI::Process(unsigned char)
 // FUNCTION: LEMBALL 0x004121f0
 void LEMBALL_FASTCALL ServiceLevelGameModeFrame(void* pModeObject, int, int nModeVariant)
 {

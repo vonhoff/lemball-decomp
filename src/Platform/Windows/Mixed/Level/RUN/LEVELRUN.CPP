@@ -1435,6 +1435,7 @@ void LEMBALL_FASTCALL LoadLevelGameStateStreamPayload(void* pObject)
 	pStream->ReadEffStreamU32BE((unsigned char*) ((char*) pObject + 0x34));
 	pStream->ReadEffStreamU32BE((unsigned char*) ((char*) pObject + 0x38));
 }
+// MACINTOSH: CAI::SetPlayerIDs()
 // FUNCTION: LEMBALL 0x00412080
 void AssignNetworkPlayerManagedEntitySlotIdsThunk(int nLevelMode)
 {
@@ -1504,6 +1505,7 @@ void InitializeLevelChunkTypeEnabledFlagsThunk(void* pLevelMode)
 		SetLevelChunkTypeEnabledFlagThunk(pLevelMode, 0x35, 0);
 	}
 }
+// MACINTOSH: CAI::GetData(CViewData*)
 // FUNCTION: LEMBALL 0x004124d0
 int EmitLevelGameModeDynamicRenderEntries(void* pObject, void* pOutputEntries)
 {
@@ -1545,6 +1547,7 @@ int EmitLevelGameModeDynamicRenderEntries(void* pObject, void* pOutputEntries)
 	return cEntries;
 }
 
+// MACINTOSH: CAI::IsLemmingPlayerControlled(CPlayerLemming*)
 // FUNCTION: LEMBALL 0x004125e0
 int LevelManagedEntityOwnerView::GetManagedEntityActiveState(void* pObject)
 {

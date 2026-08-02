@@ -1155,6 +1155,7 @@ LevelThreeDwordPointVariantB* LevelThreeDwordPointVariantB::Copy(const LevelThre
 	return this;
 }
 
+// MACINTOSH: CAI::AddTime(int)
 // FUNCTION: LEMBALL 0x004121e0
 void __fastcall add_level_time_bonus_counter(void* pLevelMode, void* pUnused, int nBonus)
 {

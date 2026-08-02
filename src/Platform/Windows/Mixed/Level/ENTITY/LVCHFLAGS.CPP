@@ -9,6 +9,7 @@ struct LevelChunkTypeEnabledFlagsView {
 	void SetRuntimeValue(int nValue);
 };
 
+// MACINTOSH: CAI::DecideAnimsRequired()
 // FUNCTION: LEMBALL 0x00412100
 void LevelChunkTypeEnabledFlagsView::Initialize(void)
 {
