@@ -894,6 +894,7 @@ int LEMBALL_FASTCALL AdvanceTramChunkObjectStateMachine(void* pObject)
 	return 1;
 }
 
+// MACINTOSH: CPaintGun::Process()
 // STUB: LEMBALL 0x0042bbe0
 int LEMBALL_FASTCALL AdvancePgunChunkObjectStateMachine(void* pObject)
 {

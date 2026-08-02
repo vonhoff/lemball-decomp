@@ -125,3 +125,7 @@ All seven portable `CBalloonPost` methods align with Windows `0x00429F50..0x0042
 ### CTrampoline portable families
 
 All six portable `CTrampoline` and nine portable `CTrampolineManager` methods align with Windows `0x0042A990..0x0042B600` through chunk type `0x22`, a `0x144`-byte child stride, fixed-point placement, states `0x18`/`0x1B`, bounded overlap impulses, EFF stream payload `0x0D`, view records and versioned loader records. Windows activation helpers `0x0042AAF0`/`0x0042B440`, count/remove helpers `0x0042B0B0`/`0x0042B0C0`, no-op `0x0042B9B0`, and deleting wrappers `0x0042BA10`/`0x0042BA40` remain separate.
+
+### CPaintGun portable families
+
+All five portable `CPaintGun` and eight portable `CPaintGunManager` methods align with Windows `0x0042BAD0..0x0042C610` through chunk type `0x21`, a `0x144`-byte child stride, fixed-point placement, timed states and four-direction projectile emission, EFF stream payload `0x14`, view records and versioned loader records. Constant callbacks `0x0042BFC0`/`0x0042BFD0`/`0x0042C4C0`/`0x0042C580`, count/remove helpers `0x0042C140`/`0x0042C150`, no-op `0x0042C9A0`, and deleting wrappers `0x0042C9B0`/`0x0042C9E0` remain separate.

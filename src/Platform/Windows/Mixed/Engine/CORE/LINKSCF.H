@@ -176,8 +176,10 @@ struct LinkScfBoonChunkManagerView {
 // InitializeTramChunkObjects
 // STUB: LEMBALL 0x0042b4f0
 // EmitTramChunkManagerRenderEntries
+// MACINTOSH: CPaintGunManager::Process()
 // STUB: LEMBALL 0x0042c4d0
 // RefreshActivePgunChunkObjects
+// MACINTOSH: CPaintGunManager::GetViewData(CViewData*)
 // STUB: LEMBALL 0x0042c520
 // EmitActivePgunChunkManagerRenderEntries
 // MACINTOSH: CMoverManager::GetViewData(CViewData*)

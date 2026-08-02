@@ -19,6 +19,7 @@ void LEMBALL_FASTCALL InitializeTramChunkObject(MobileChunkObjectRuntimeView* pO
 	pObject->m_anRuntime138[1] = 0;
 }
 
+// MACINTOSH: CPaintGun::Restart()
 // FUNCTION: LEMBALL 0x0042baf0
 void LEMBALL_FASTCALL ActivatePgunChunkObject(MobileChunkObjectRuntimeView* pObject)
 {

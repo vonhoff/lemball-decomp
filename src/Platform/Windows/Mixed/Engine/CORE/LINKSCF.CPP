@@ -1826,6 +1826,7 @@ void noop_tram_runtime_callback(void)
 
 extern void* g_LINKSCF_PgunChunkObjectVtable[16];
 
+// MACINTOSH: CPaintGun::CPaintGun()
 // FUNCTION: LEMBALL 0x0042bad0
 PgunChunkObjectView* PgunChunkObjectView::ConstructPgunChunkObject(void)
 {
@@ -1834,6 +1835,7 @@ PgunChunkObjectView* PgunChunkObjectView::ConstructPgunChunkObject(void)
 	return this;
 }
 
+// MACINTOSH: CPaintGun::~CPaintGun()
 // FUNCTION: LEMBALL 0x0042bb20
 void LEMBALL_FASTCALL destroy_pgun_chunk_object_vtable_thunk(void* pObject)
 {
@@ -1857,6 +1859,7 @@ int PASCAL return_zero_pgun_chunk_object_callback(void* pUnused1, void* pUnused2
 	return 0;
 }
 
+// MACINTOSH: CPaintGunManager::CPaintGunManager(CAI*, int)
 // FUNCTION: LEMBALL 0x0042bfe0
 LinkScfPgunChunkManagerView* LinkScfPgunChunkManagerView::ConstructPgunChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -1868,6 +1871,7 @@ LinkScfPgunChunkManagerView* LinkScfPgunChunkManagerView::ConstructPgunChunkMana
 	return this;
 }
 
+// MACINTOSH: CPaintGunManager::Restart()
 // FUNCTION: LEMBALL 0x0042c040
 void LEMBALL_FASTCALL ActivatePgunChunkObjects(void* pManager)
 {
