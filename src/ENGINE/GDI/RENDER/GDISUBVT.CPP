@@ -52,6 +52,13 @@ struct CompactHelperGroup0DirtyStateView {
 	void SetDirtyFlagAndPropagate(int fDirty);
 };
 
+struct CompactHelperLinkNode {
+	void* m_pTarget;
+	CompactHelperLinkNode* m_pPrev;
+};
+
+void LEMBALL_FASTCALL EnsureHelperBackingRowIndexCapacity(VsGdiHelperSurface* pSurface);
+
 __inline static void PlotCompactCirclePixel(int* pRows,
 											int x,
 											int y,
@@ -503,8 +510,106 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot9(void* pObject, int, void* pEnt
 	}
 }
 
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot11(void*)
+__inline static void ApplyPointDeltaToLinkedHelper(void* pChild, const short* pDelta)
 {
+	typedef void(LEMBALL_FASTCALL * SetPointProc)(void*, int, short*);
+	char* pTarget;
+	char* pCompact;
+	short* pPoint;
+	int nCompactDelta;
+
+	pTarget = (char*) pChild;
+	nCompactDelta = *(int*) (*(int*) (pTarget + 0x40) + 4);
+	pPoint = (short*) (pTarget + nCompactDelta + 0x50);
+	pPoint[0] += pDelta[0];
+	pPoint[1] += pDelta[1];
+	pCompact = pTarget + 0x40 + nCompactDelta;
+	((SetPointProc) (*(void***) pCompact)[11])(pCompact, 0, pPoint);
+}
+
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot11(void* pObject, int, short* pPoint)
+{
+	typedef void(LEMBALL_FASTCALL * SetExtentProc)(void*, int, short*);
+	char* pCompact;
+	char* pView;
+	char* pLinkedTarget;
+	short* pRequestedRect;
+	short* pWorkingRect;
+	short* pBackingRect;
+	short* pLinkedExtent;
+	short Delta[2];
+	short nOldWidth;
+	short nOldHeight;
+	CompactHelperLinkNode* pNode;
+	int nCompactDelta;
+	int nLinkedDelta;
+	void* pBackingBitmap;
+
+	pCompact = (char*) pObject - *(int*) ((char*) pObject - 4);
+	nCompactDelta = *(int*) (*(int*) (pCompact - 0x51c) + 4);
+	pView = pCompact + nCompactDelta;
+	pRequestedRect = (short*) (pView - 0x510);
+	Delta[0] = pPoint[0] - pRequestedRect[2];
+	Delta[1] = pPoint[1] - pRequestedRect[3];
+	pLinkedTarget = *(char**) (pView - 0x4fc);
+	if (pLinkedTarget == (char*) g_pResourceGeometryHelperTarget) {
+		return;
+	}
+
+	EnterCriticalSection(pCompact - 0x28);
+	pRequestedRect[2] = pPoint[0];
+	pRequestedRect[3] = pPoint[1];
+	pWorkingRect = (short*) (pView - 0x508);
+	nOldWidth = pWorkingRect[0];
+	nOldHeight = pWorkingRect[1];
+	pWorkingRect[0] = pRequestedRect[0];
+	pWorkingRect[1] = pRequestedRect[1];
+	pWorkingRect[2] = pRequestedRect[2];
+	pWorkingRect[3] = pRequestedRect[3];
+
+	nLinkedDelta = *(int*) (*(int*) (pLinkedTarget + 0x40) + 4);
+	pLinkedExtent = (short*) (pLinkedTarget + nLinkedDelta + 0x54);
+	if (pWorkingRect[2] < 0) {
+		pWorkingRect[0] += pWorkingRect[2];
+		pWorkingRect[2] = 0;
+	}
+	if (pWorkingRect[0] + pWorkingRect[2] > pLinkedExtent[0]) {
+		pWorkingRect[0] = pLinkedExtent[0] - pWorkingRect[2];
+	}
+	if (pWorkingRect[3] < 0) {
+		pWorkingRect[1] += pWorkingRect[3];
+		pWorkingRect[3] = 0;
+	}
+	if (pWorkingRect[1] + pWorkingRect[3] > pLinkedExtent[1]) {
+		pWorkingRect[1] = pLinkedExtent[1] - pWorkingRect[3];
+	}
+	if (pWorkingRect[0] < 1 || pWorkingRect[1] < 1) {
+		pWorkingRect[0] = 0;
+		pWorkingRect[1] = 0;
+		pWorkingRect[2] = 0;
+		pWorkingRect[3] = 0;
+	}
+	pBackingRect = (short*) (pView - 0x4f8);
+	pBackingRect[0] = pWorkingRect[0];
+	pBackingRect[1] = pWorkingRect[1];
+	if (pWorkingRect[0] != nOldWidth || pWorkingRect[1] != nOldHeight) {
+		((SetExtentProc) (*(void***) pCompact)[10])(pCompact, 0, pWorkingRect);
+	}
+
+	pBackingBitmap = *(void**) (pCompact - 0x46c);
+	if (pBackingBitmap != 0) {
+		((VsGdiDisplayStateDispatch*) g_pDisplayState)->ReleaseDisplayBitmap(pBackingBitmap);
+		*(void**) (pCompact - 0x46c) = 0;
+	}
+	*(int*) (pCompact - 0x38) = 0;
+	EnsureHelperBackingRowIndexCapacity((VsGdiHelperSurface*) (pCompact - 0x55c));
+	LeaveCriticalSection(pCompact - 0x28);
+
+	pNode = *(CompactHelperLinkNode**) (pCompact - 0x34);
+	while (pNode != 0) {
+		ApplyPointDeltaToLinkedHelper(pNode->m_pTarget, Delta);
+		pNode = pNode->m_pPrev;
+	}
 }
 
 // FUNCTION: LEMBALL 0x004668d0
