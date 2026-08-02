@@ -1008,8 +1008,8 @@ int GameEffStream::LoadEffStreamFromMemory(int nSourceBuffer)
 {
 	GameEffStreamVtable* pVtable;
 
-	pVtable = m_pVtable;
 	m_pvReadCursor = nSourceBuffer;
+	pVtable = m_pVtable;
 	if (pVtable->m_pLoadFromMemoryHeader(this) != 0) {
 		pVtable->m_pLoadFromMemoryBody(this);
 		return 1;
