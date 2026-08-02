@@ -48,9 +48,12 @@ void LEMBALL_FASTCALL DispatchDoorChunkObjectTriggerBySlot(void* pManager,
 														   int nAction,
 														   unsigned int nSlot)
 {
-	char* pManagerBytes = (char*) pManager;
-	int iObject = 0;
+	char* pManagerBytes;
 	int nObjectOffset;
+	int iObject;
+
+	pManagerBytes = (char*) pManager;
+	iObject = 0;
 	(void) pUnused;
 
 	if (*(int*) (pManagerBytes + 0x34) > 0) {
