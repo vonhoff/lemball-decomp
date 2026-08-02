@@ -25,18 +25,21 @@ struct DelayedManagedEntityMoveView {
 	void ArmDelayedMoveToSavedTarget(int nTicks);
 };
 
+// MACINTOSH: CEnemy::EnemyAction_TURNANDFIRERAPID(tEnemyLemmingUnion*)
 // FUNCTION: LEMBALL 0x004201a0
 void DelayedManagedEntityMoveView::ArmDelayedMove100(void*)
 {
 	ArmDelayedMoveToSavedTarget(100);
 }
 
+// MACINTOSH: CEnemy::EnemyAction_TURNANDFIRESLOW(tEnemyLemmingUnion*)
 // FUNCTION: LEMBALL 0x004201b0
 void DelayedManagedEntityMoveView::ArmDelayedMove800(void*)
 {
 	ArmDelayedMoveToSavedTarget(800);
 }
 
+// MACINTOSH: CEnemy::EnemyAction_TURNANDFIRERANDOM(tEnemyLemmingUnion*)
 // FUNCTION: LEMBALL 0x004201c0
 void DelayedManagedEntityMoveView::ArmDelayedMoveRandom(void*)
 {
@@ -45,6 +48,7 @@ void DelayedManagedEntityMoveView::ArmDelayedMoveRandom(void*)
 	ArmDelayedMoveToSavedTarget(nRandom % 1000 + 150);
 }
 
+// MACINTOSH: CEnemy::RequestFire(int)
 // FUNCTION: LEMBALL 0x004203e0
 void DelayedManagedEntityMoveView::ArmDelayedMoveToSavedTarget(int nTicks)
 {

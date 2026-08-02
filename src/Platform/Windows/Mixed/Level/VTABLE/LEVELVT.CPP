@@ -1981,6 +1981,7 @@ int return_zero_vtable_callback_0041f870(void)
 	return 0;
 }
 
+// MACINTOSH: CEnemy::IsRequestingFire()
 // FUNCTION: LEMBALL 0x004203d0
 int __fastcall is_delayed_move_to_saved_target_armed(void* pObject)
 {

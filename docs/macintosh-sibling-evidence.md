@@ -59,3 +59,7 @@ Only high-confidence correlations should rename Windows source, Ghidra symbols, 
 ### CAI portable core
 
 Forty-one Macintosh `CAI` methods now align with Windows `0x00410C10..0x00413390` through lifecycle, signatures, ILTs/callers, manager offsets, constants, and behavior. The accepted family covers construction/restart/real teardown/start, state networking, frame/view service, collision and interaction dispatch, load/fixup, ids, network profiles, history, and score while retaining all mixed Windows TUs. `OnLoaded`, `AddData`, `GetData()`, `LemmingsSFXChanged`, `LevelName`, and `NLemmings` remain unresolved rather than consuming order-only or semantically mismatched targets.
+
+### CEnemy lifecycle, behavior, and fire core
+
+Nineteen Macintosh `CEnemy` methods align with Windows `0x0041FBA0..0x00420430` through ENMY layout, signatures, ILTs/callers, rule/action semantics, distinctive delays, radius 50, directional constants, and projectile behavior. Seven later firing/hit methods remain unresolved rather than consuming the non-isomorphic tail by order.
