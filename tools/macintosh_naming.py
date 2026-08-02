@@ -15,10 +15,15 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 SYMBOLS = ROOT / "data/macintosh-68k-symbols.csv"
 CORRELATIONS = ROOT / "data/macintosh-x86-correlations.csv"
 COVERAGE = ROOT / "data/macintosh-symbol-coverage.csv"
+INTEGRITY = ROOT / "data/macintosh-correlation-integrity.csv"
 STRUCTURE = ROOT / "data/macintosh-structure.json"
 CLASS_PREFIX = re.compile(r"__(\d+)")
 VALID_CLASS_STATES = {"planned", "partial", "mapped", "blocked"}
 VALID_FILE_STATES = {"planned", "existing", "retained"}
+CORRELATION_KEYS = (
+    "mac_code_file", "mac_name_length_offset", "mac_mangled_name",
+    "x86_address", "confidence", "evidence",
+)
 VALID_COVERAGE_CATEGORIES = {
     "accepted_x86_correlation",
     "present_spelling_or_source_analogue",
@@ -158,6 +163,26 @@ def check(data: dict, symbols: list[dict[str, str]], correlations: list[dict[str
                 errors.append(f"{where}: x86 address disagrees with accepted correlation")
         elif correlation is not None:
             errors.append(f"{where}: accepted correlation is not represented in coverage ledger")
+
+    integrity = rows(INTEGRITY)
+    correlation_rows = {tuple(row[key] for key in CORRELATION_KEYS) for row in correlations}
+    integrity_rows = {tuple(row[key] for key in CORRELATION_KEYS) for row in integrity}
+    if len(integrity) != len(integrity_rows):
+        errors.append("duplicate correlation-integrity row")
+    if integrity_rows != correlation_rows:
+        errors.append("correlation-integrity ledger is stale")
+    raw_exact = {(module_name(row["code_file"]), row["name_length_offset"], row["mangled_name"]) for row in symbols}
+    raw_names = {(module_name(row["code_file"]), row["mangled_name"]) for row in symbols}
+    for row in integrity:
+        exact = (module_name(row["mac_code_file"]), row["mac_name_length_offset"], row["mac_mangled_name"])
+        named = (module_name(row["mac_code_file"]), row["mac_mangled_name"])
+        expected = (
+            "exact_tuple" if exact in raw_exact
+            else "exact_name_module_offset_mismatch" if named in raw_names
+            else "no_exact_raw_name_in_module"
+        )
+        if row["raw_inventory_status"] != expected:
+            errors.append(f"wrong correlation-integrity status: {row['mac_mangled_name']}")
     return errors
 
 

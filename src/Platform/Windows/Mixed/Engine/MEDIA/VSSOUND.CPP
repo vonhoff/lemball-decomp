@@ -96,7 +96,7 @@ struct VsSoundBackendControl {
 	int m_nReserved04;
 	int m_fStartupMusicNameSet;
 	int m_fMusicEnabled;
-	GameDynamicCString m_StartupMusicName;
+	CString m_StartupMusicName;
 };
 
 struct VsSoundBackendControlDispatch {
@@ -151,7 +151,7 @@ struct VsSoundDynamicStringEntry {
 	unsigned char m_abReserved05[3];
 	int m_nReserved08;
 	int m_fSearchCdromPath;
-	GameDynamicCString m_BasePath;
+	CString m_BasePath;
 };
 
 struct VsSoundMciMusicBackend : VsSoundDynamicStringEntry {
@@ -3368,13 +3368,13 @@ void LEMBALL_FASTCALL PrepareMciMusicTrack(VsSoundMciMusicBackend* pBackend,
 										   int nMusicResourceId)
 {
 	struct MciMusicTrackPrepareLocals {
-		GameDynamicCString m_BasePath;
-		GameDynamicCString m_MusicPath;
+		CString m_BasePath;
+		CString m_MusicPath;
 		VsSoundMciOpenParms m_OpenParms;
 		VsSoundMciSetParms m_SetParms;
 		DWORD m_dwReserved2C;
 		union {
-			GameDynamicCString m_TemporaryPath;
+			CString m_TemporaryPath;
 			char m_szMciErrorText[0x80];
 		} m_Temporary;
 		VsSoundMciGenericParms m_SeekParms;
@@ -3383,9 +3383,9 @@ void LEMBALL_FASTCALL PrepareMciMusicTrack(VsSoundMciMusicBackend* pBackend,
 	VsSoundStringResourceObjectView* pStringResource;
 	VsSoundMciOpenParms& OpenParms = Locals.m_OpenParms;
 	VsSoundMciGenericParms& SeekParms = Locals.m_SeekParms;
-	GameDynamicCString& MusicPath = Locals.m_MusicPath;
-	GameDynamicCString& BasePath = Locals.m_BasePath;
-	GameDynamicCString& TemporaryPath = Locals.m_Temporary.m_TemporaryPath;
+	CString& MusicPath = Locals.m_MusicPath;
+	CString& BasePath = Locals.m_BasePath;
+	CString& TemporaryPath = Locals.m_Temporary.m_TemporaryPath;
 	MCIERROR nMciError;
 	char (&szMciErrorText)[0x80] = Locals.m_Temporary.m_szMciErrorText;
 

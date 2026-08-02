@@ -515,8 +515,8 @@ ConstructNetworkLobbyPeerEntryStream(GameNetworkLobbyPeerEntryStream* pStream)
 void LEMBALL_FASTCALL WriteNetworkLobbyPeerEntryPayload(void* pObject)
 {
 	VsNetEffStreamBase* pStream;
-	GameDynamicCString HostName;
-	GameDynamicCString LowercaseHostName;
+	CString HostName;
+	CString LowercaseHostName;
 	const char* pszHostName;
 	char szHostName[21];
 

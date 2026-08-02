@@ -17,19 +17,19 @@ extern GameProcessCurrentDirectoryState* g_pProcessCurrentDirectoryState;
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
 
-struct GameDynamicCString {
+struct CString {
 	char* m_pszText;
 	int m_cchCapacity;
 
-	GameDynamicCString* ConstructDynamicCString(void);
-	GameDynamicCString* ConstructDynamicCStringFromCString(const char* pszText);
-	GameDynamicCString* CopyConstructDynamicCString(const GameDynamicCString* pSource);
-	GameDynamicCString* AssignDynamicCString(const char* pszText);
-	GameDynamicCString* AssignDynamicCStringFromDynamic(const GameDynamicCString* pSource);
-	GameDynamicCString* AppendDynamicCStringObjectAndCopyResult(GameDynamicCString* pResult,
-																const GameDynamicCString* pSuffix);
-	GameDynamicCString* AppendDynamicCStringAndCopyResult(GameDynamicCString* pResult, const char* pszSuffix);
-	GameDynamicCString* LowercaseAndCopyDynamicCString(GameDynamicCString* pResult);
+	CString* ConstructDynamicCString(void);
+	CString* ConstructDynamicCStringFromCString(const char* pszText);
+	CString* CopyConstructDynamicCString(const CString* pSource);
+	CString* AssignDynamicCString(const char* pszText);
+	CString* AssignDynamicCStringFromDynamic(const CString* pSource);
+	CString* AppendDynamicCStringObjectAndCopyResult(CString* pResult,
+																const CString* pSuffix);
+	CString* AppendDynamicCStringAndCopyResult(CString* pResult, const char* pszSuffix);
+	CString* LowercaseAndCopyDynamicCString(CString* pResult);
 	void DestroyDynamicCString(void);
 };
 
@@ -46,7 +46,7 @@ public:
 	int m_nMinimumValue;
 	int m_nTotalValue;
 	int m_cSamples;
-	GameDynamicCString m_Name;
+	CString m_Name;
 };
 
 class GameMainContext {
@@ -143,8 +143,8 @@ void LEMBALL_FASTCALL DispatchWindowOwnerRectInitialization(GamePrimaryContext* 
 void LEMBALL_FASTCALL ShutdownMainGameContext(GameMainContext* pMainContext);
 int RunMainGameSession(int cArgs, const char* const* ppszArgs);
 int RunMainGameSessionThunk(int cArgs, const char* const* ppszArgs);
-void* AppendDynamicCStringToStream(void* pStream, const GameDynamicCString* pString);
-int LEMBALL_FASTCALL GetDynamicCStringLength(const GameDynamicCString* pString);
+void* AppendDynamicCStringToStream(void* pStream, const CString* pString);
+int LEMBALL_FASTCALL GetDynamicCStringLength(const CString* pString);
 void LEMBALL_FASTCALL DestroyNamedStatusEntry(void* pEntry);
 void UpdateNamedStatusEntry(void* pEntry, unsigned int nValue);
 VsInitFormattedOutputStream* LEMBALL_FASTCALL WriteNamedStatusEntry(void* pEntry,

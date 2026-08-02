@@ -1,6 +1,6 @@
 # Portable Macintosh function coverage audit
 
-Audit target: `4dfde41` (`4dfde41d7bdddc0627a8cb2791a2f18ab067dbeb`), read-only.
+This tracked ledger is updated with every accepted correlation batch.
 
 ## Result
 
@@ -8,18 +8,18 @@ This audit does **not** establish complete portable coverage. Only accepted corr
 
 | Category | Count | Meaning |
 | --- | ---: | --- |
-| Accepted x86 correlation | 185 | Exact Macintosh module+mangled spelling has a reviewed x86 mapping; offset integrity is reported separately. |
+| Accepted x86 correlation | 196 | Exact Macintosh module+mangled spelling has a reviewed x86 mapping; offset integrity is reported separately. |
 | Present spelling/source analogue | 8 | Exact scoped spelling exists in current source, but equivalence is not proven. |
 | Likely inlined/merged | 0 | Exact scoped header definition exists, but no standalone x86 address is accepted. |
 | Platform-specific | 881 | Unmapped body belongs to `Visos (Mac Specific)` or the reviewed Macintosh Toolbox/Open Transport `UtilMain` set. |
-| Genuinely missing/unresolved | 1775 | No accepted address and no exact scoped source spelling. |
+| Genuinely missing/unresolved | 1764 | No accepted address and no exact scoped source spelling. |
 | **Total** | **2849** | Complete raw inventory accounting. |
 
 ### Accepted-correlation referential integrity
 
-The accepted table has **209** rows, but only **185** match an exact raw module+mangled spelling. Of all accepted rows: **162** match the full raw tuple, **23** match name+module but carry a different trailer offset, and **24** have no exact raw name in that module. The latter are family-level/alternate-sibling claims, not coverage of an exact raw symbol.
+The accepted table has **220** rows, but only **196** match an exact raw module+mangled spelling. Of all accepted rows: **173** match the full raw tuple, **23** match name+module but carry a different trailer offset, and **24** have no exact raw name in that module. The latter are family-level/alternate-sibling claims, not coverage of an exact raw symbol.
 
-This is why the 209-row accepted table must not be reported as 209 exact raw-symbol contracts. See `data/macintosh-correlation-integrity.csv`.
+This is why the 220-row accepted table must not be reported as 220 exact raw-symbol contracts. See `data/macintosh-correlation-integrity.csv`.
 
 The non-Mac-specific target contains 1958 symbols after excluding the 12 reviewed `UtilMain` Toolbox/resolver bodies. Ten accepted cross-platform analogues found inside the Macintosh-specific module remain represented separately.
 
@@ -33,7 +33,7 @@ The non-Mac-specific target contains 1958 symbols after excluding the 12 reviewe
 | Map | 0 | 0 | 0 | 0 | 20 | 20 |
 | Network | 0 | 0 | 0 | 0 | 24 | 24 |
 | UtilMain | 0 | 0 | 0 | 12 | 0 | 12 |
-| Visos (Generic) | 46 | 8 | 0 | 0 | 572 | 626 |
+| Visos (Generic) | 57 | 8 | 0 | 0 | 561 | 626 |
 | Visos (Mac Specific) | 10 | 0 | 0 | 869 | 0 | 879 |
 | views_2d | 51 | 0 | 0 | 0 | 154 | 205 |
 

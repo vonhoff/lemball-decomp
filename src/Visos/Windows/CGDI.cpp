@@ -601,12 +601,12 @@ private:
 	unsigned char m_abReserved00[0x90];
 	int m_nReserved90;
 	int m_nReserved94;
-	GameDynamicCString m_MediaName98;
+	CString m_MediaName98;
 	int m_nA0;
 	int m_nA4;
 	int m_nA8;
 	int m_nAC;
-	GameDynamicCString m_MediaPathB0;
+	CString m_MediaPathB0;
 	HWND m_hMciWindowB8;
 };
 
@@ -2223,8 +2223,8 @@ int VsGdiSelectedGraphicsDriverRuntime::InitializeSelectedGraphicsDriver(int nRe
 		}
 
 		if (pRuntime->m_fFallbackWarningShown == 0) {
-			GameDynamicCString WarningMessage;
-			GameDynamicCString WarningResult;
+			CString WarningMessage;
+			CString WarningResult;
 
 			WarningMessage.ConstructDynamicCStringFromCString(g_apszGraphicsDriverFallbackMessages[nSelectedDriver]);
 			WarningMessage.AppendDynamicCStringAndCopyResult(
@@ -5001,8 +5001,8 @@ void VsGdiAnimWindowOwner::UpdateMediaPathFromListResource(int nResourceId)
 	VsGdiMediaListResourceView* pResource;
 	const char* pszMediaName;
 	const char* pszBasePath;
-	GameDynamicCString MediaPath;
-	GameDynamicCString TemporaryPath;
+	CString MediaPath;
+	CString TemporaryPath;
 
 	pszMediaName = "test";
 	pResource = 0;

@@ -112,10 +112,11 @@ VsInitFormattedOutputStream* LEMBALL_FASTCALL WriteNamedStatusEntry(void* pEntry
 				&pStatusEntry->m_Name))
 		->AppendCStringToStream("\n");
 }
+// MACINTOSH: CODE_02_Visos (Generic).bin 0x00000EB0 __ct__7CStringFv
 // FUNCTION: LEMBALL 0x0046e410
-GameDynamicCString* GameDynamicCString::ConstructDynamicCString(void)
+CString* CString::ConstructDynamicCString(void)
 {
-	GameDynamicCString* pString = this;
+	CString* pString = this;
 	char* pszBuffer;
 
 	pString->m_cchCapacity = 1;
@@ -125,10 +126,11 @@ GameDynamicCString* GameDynamicCString::ConstructDynamicCString(void)
 	return pString;
 }
 
+// MACINTOSH: CODE_02_Visos (Generic).bin 0x00000F0A __ct__7CStringFPc
 // FUNCTION: LEMBALL 0x0046e430
-GameDynamicCString* GameDynamicCString::ConstructDynamicCStringFromCString(const char* pszText)
+CString* CString::ConstructDynamicCStringFromCString(const char* pszText)
 {
-	GameDynamicCString* pString = this;
+	CString* pString = this;
 	unsigned int cchText;
 
 	cchText = (unsigned int) strlen(pszText) + 1;
@@ -138,27 +140,30 @@ GameDynamicCString* GameDynamicCString::ConstructDynamicCStringFromCString(const
 	return pString;
 }
 
+// MACINTOSH: CODE_02_Visos (Generic).bin 0x00000F5C __ct__7CStringFR7CString
 // FUNCTION: LEMBALL 0x0046e480
-GameDynamicCString* GameDynamicCString::CopyConstructDynamicCString(const GameDynamicCString* pSource)
+CString* CString::CopyConstructDynamicCString(const CString* pSource)
 {
-	GameDynamicCString* pString = this;
+	CString* pString = this;
 	pString->m_cchCapacity = pSource->m_cchCapacity;
 	pString->m_pszText = (char*) AllocateVSMemBlock((unsigned int) pString->m_cchCapacity);
 	strcpy(pString->m_pszText, pSource->m_pszText);
 	return pString;
 }
 
+// MACINTOSH: CODE_02_Visos (Generic).bin 0x00000FA8 __dt__7CStringFv
 // FUNCTION: LEMBALL 0x0046e500
-void GameDynamicCString::DestroyDynamicCString(void)
+void CString::DestroyDynamicCString(void)
 {
 	FreeVSMemBlock(m_pszText);
 }
 
+// MACINTOSH: CODE_02_Visos (Generic).bin 0x00001008 __as__7CStringFR7CString
 // FUNCTION: LEMBALL 0x0046e510
-GameDynamicCString* GameDynamicCString::AssignDynamicCStringFromDynamic(const GameDynamicCString* pSource)
+CString* CString::AssignDynamicCStringFromDynamic(const CString* pSource)
 
 {
-	GameDynamicCString* pString = this;
+	CString* pString = this;
 	FreeVSMemBlock(pString->m_pszText);
 	pString->m_cchCapacity = pSource->m_cchCapacity;
 	pString->m_pszText = (char*) AllocateVSMemBlock((unsigned int) pString->m_cchCapacity);
@@ -166,10 +171,11 @@ GameDynamicCString* GameDynamicCString::AssignDynamicCStringFromDynamic(const Ga
 	return pString;
 }
 
+// MACINTOSH: CODE_02_Visos (Generic).bin 0x00001078 __as__7CStringFPCc
 // FUNCTION: LEMBALL 0x0046e570
-GameDynamicCString* GameDynamicCString::AssignDynamicCString(const char* pszText)
+CString* CString::AssignDynamicCString(const char* pszText)
 {
-	GameDynamicCString* pString = this;
+	CString* pString = this;
 	char ch;
 	unsigned int cchText;
 	unsigned int cDwords;
@@ -222,12 +228,13 @@ GameDynamicCString* GameDynamicCString::AssignDynamicCString(const char* pszText
 	return pString;
 }
 
+// MACINTOSH: CODE_02_Visos (Generic).bin 0x00001150 __apl__7CStringFR7CString
 // FUNCTION: LEMBALL 0x0046e5d0
-GameDynamicCString* GameDynamicCString::AppendDynamicCStringObjectAndCopyResult(GameDynamicCString* pResult,
-																				const GameDynamicCString* pSuffix)
+CString* CString::AppendDynamicCStringObjectAndCopyResult(CString* pResult,
+																				const CString* pSuffix)
 
 {
-	GameDynamicCString* pString = this;
+	CString* pString = this;
 	unsigned int cchPrefix;
 	unsigned int cchSuffix;
 	unsigned int cchTotal;
@@ -248,12 +255,13 @@ GameDynamicCString* GameDynamicCString::AppendDynamicCStringObjectAndCopyResult(
 	return pResult;
 }
 
+// MACINTOSH: CODE_02_Visos (Generic).bin 0x00001228 __apl__7CStringFPCc
 // FUNCTION: LEMBALL 0x0046e6e0
-GameDynamicCString* GameDynamicCString::AppendDynamicCStringAndCopyResult(GameDynamicCString* pResult,
+CString* CString::AppendDynamicCStringAndCopyResult(CString* pResult,
 																		  const char* pszSuffix)
 
 {
-	GameDynamicCString* pString = this;
+	CString* pString = this;
 	unsigned int cchPrefix;
 	unsigned int cchSuffix;
 	unsigned int cchTotal;
@@ -274,21 +282,24 @@ GameDynamicCString* GameDynamicCString::AppendDynamicCStringAndCopyResult(GameDy
 	return pResult;
 }
 
+// MACINTOSH: CODE_02_Visos (Generic).bin 0x0000125A __ls__FR10CVSOStreamR7CString
 // FUNCTION: LEMBALL 0x0046e7f0
-void* AppendDynamicCStringToStream(void* pStream, const GameDynamicCString* pString)
+void* AppendDynamicCStringToStream(void* pStream, const CString* pString)
 {
 	((VsInitFormattedOutputStream*) pStream)->AppendCStringToStream(pString->m_pszText);
 	return pStream;
 }
 
+// MACINTOSH: CODE_02_Visos (Generic).bin 0x00001296 getlength__7CStringFv
 // FUNCTION: LEMBALL 0x0046ef00
-int LEMBALL_FASTCALL GetDynamicCStringLength(const GameDynamicCString* pString)
+int LEMBALL_FASTCALL GetDynamicCStringLength(const CString* pString)
 {
 	return (int) strlen(pString->m_pszText);
 }
 
+// MACINTOSH: CODE_02_Visos (Generic).bin 0x00001312 lower__7CStringFv
 // FUNCTION: LEMBALL 0x0046efa0
-GameDynamicCString* GameDynamicCString::LowercaseAndCopyDynamicCString(GameDynamicCString* pResult)
+CString* CString::LowercaseAndCopyDynamicCString(CString* pResult)
 {
 	char* pszText;
 	int cchText;

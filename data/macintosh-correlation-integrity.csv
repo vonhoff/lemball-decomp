@@ -208,3 +208,14 @@ CODE_11_views_2d.bin,0x00006190,DrawZBuff_Anim__3C2DFiUs,0x00440490,high,"Both t
 CODE_11_views_2d.bin,0x000063FA,DrawObjectsZBuff__3C2DFv,0x00440560,high,"Both transform and sort dynamic entries, then merge dynamic sprites with static animation entries by depth; x86 callees directly include sort, dynamic draw, static draw, and sort-key calculation.",exact_tuple,0x000063FA
 CODE_11_views_2d.bin,0x000064AA,CalcZValue_Sprite__3C2DFi,0x004407E0,high,Both return `0x7FFF` for object type `0x18`; otherwise return `z + CalcGroundCode(...) + 1`.,exact_tuple,0x000064AA
 CODE_11_views_2d.bin,0x00006729,CalcGroundCode__3C2DF11eObjectTypeiiUs,0x00440840,high,"Same object-type exceptions, tile-coordinate normalization, four neighboring terrain samples, collision-edge tests, and `0x40/0x80` depth-bias results.",exact_tuple,0x00006729
+CODE_02_Visos (Generic).bin,0x00000EB0,__ct__7CStringFv,0x0046E410,high,8-byte heap string default constructor allocates one NUL byte and stores capacity 1,exact_tuple,0x00000EB0
+CODE_02_Visos (Generic).bin,0x00000F0A,__ct__7CStringFPc,0x0046E430,high,C-string constructor allocates length plus terminator and copies the source,exact_tuple,0x00000F0A
+CODE_02_Visos (Generic).bin,0x00000F5C,__ct__7CStringFR7CString,0x0046E480,high,copy constructor preserves capacity and deep-copies the NUL-terminated buffer,exact_tuple,0x00000F5C
+CODE_02_Visos (Generic).bin,0x00000FA8,__dt__7CStringFv,0x0046E500,high,destructor frees the sole heap buffer,exact_tuple,0x00000FA8
+CODE_02_Visos (Generic).bin,0x00001008,__as__7CStringFR7CString,0x0046E510,high,"CString assignment frees, reallocates to source capacity, deep-copies, and returns this",exact_tuple,0x00001008
+CODE_02_Visos (Generic).bin,0x00001078,__as__7CStringFPCc,0x0046E570,high,"C-string assignment grows only when needed, copies through the terminator, and returns this",exact_tuple,0x00001078
+CODE_02_Visos (Generic).bin,0x00001150,__apl__7CStringFR7CString,0x0046E5D0,high,"CString append concatenates both buffers, replaces this, and copy-constructs the hidden result",exact_tuple,0x00001150
+CODE_02_Visos (Generic).bin,0x00001228,__apl__7CStringFPCc,0x0046E6E0,high,"C-string append concatenates the suffix, replaces this, and copy-constructs the hidden result",exact_tuple,0x00001228
+CODE_02_Visos (Generic).bin,0x0000125A,__ls__FR10CVSOStreamR7CString,0x0046E7F0,high,free stream insertion passes the CString buffer to CVSOStream and returns the stream,exact_tuple,0x0000125A
+CODE_02_Visos (Generic).bin,0x00001296,getlength__7CStringFv,0x0046EF00,high,returns strlen of the buffer at object offset zero,exact_tuple,0x00001296
+CODE_02_Visos (Generic).bin,0x00001312,lower__7CStringFv,0x0046EFA0,high,lowercases this in place and copy-constructs the hidden CString result,exact_tuple,0x00001312

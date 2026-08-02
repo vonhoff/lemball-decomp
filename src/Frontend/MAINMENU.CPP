@@ -4326,7 +4326,7 @@ void* LEMBALL_FASTCALL ConstructFunctionalPaintballSequenceScreen(void* pObject,
 	pScreen->m_fMediaEnabled604 = g_fSkipStartupSequence == 0;
 	((GamePaintballSequenceMediaState*) pMediaOwner)->InitializeVariant(pScreen, pPrimaryContext, fSecondVariant);
 	*(int*) (pMediaOwner + 0x94) = 1;
-	((GameDynamicCString*) (pMediaOwner + 0x98))->AssignDynamicCString("lemball");
+	((CString*) (pMediaOwner + 0x98))->AssignDynamicCString("lemball");
 	*(int*) (pMediaOwner + 0x90) = 1;
 	pScreen->m_nActionSelection514 = 0;
 	pScreen->m_fEffectStarted51C = 0;

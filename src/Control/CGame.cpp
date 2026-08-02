@@ -5073,7 +5073,7 @@ void* GameScreenObject::ConstructIntroSequenceScreen(void* pPrimaryContext,
 	((GamePrimaryContext*) pPrimaryContext)->SampleRootHelperGeometryAndDispatchRenderGroups(-1);
 	((GameIntroSequenceMediaState*) pMediaOwner)->ConfigureOwnerThunk(pScreen, pPrimaryContext, fSkipVariant);
 	*(int*) (pScreen + 0x450) = 1;
-	((GameDynamicCString*) (pScreen + 0x454))->AssignDynamicCString("lemball");
+	((CString*) (pScreen + 0x454))->AssignDynamicCString("lemball");
 	*(int*) (pScreen + 0x44c) = 1;
 	*(int*) (pScreen + 0xa8) = 0;
 	*(int*) (pScreen + 0xac) = 0;
@@ -5897,8 +5897,8 @@ char* GetSrcDiskRegistryValueBuffer(void)
 // FUNCTION: LEMBALL 0x004734f0
 void ShowReleaseAssertFailureAndAbort(const char* pszExpression, const char* pszFile, int nLine)
 {
-	GameDynamicCString Message;
-	GameDynamicCString Result;
+	CString Message;
+	CString Result;
 	char szLine[16];
 
 	Message.ConstructDynamicCString();

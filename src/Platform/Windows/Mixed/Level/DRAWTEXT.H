@@ -82,13 +82,13 @@ public:
 	void ResetVtablesAfterDestruction();
 	virtual void InitializeFromPointAndDynamicText(const short* pPoint,
 												   void* pOwner,
-												   GameDynamicCString Text,
+												   CString Text,
 												   int nDrawFlags,
 												   int nDrawValue); // vtable+0x0c
 	virtual void InitializeFromPositionAndDynamicText(int x,
 													  int y,
 													  void* pOwner,
-													  GameDynamicCString Text,
+													  CString Text,
 													  int nDrawFlags,
 													  int nDrawValue); // vtable+0x10
 	virtual void InitializeFromPointAndText(const short* pPoint,
@@ -130,13 +130,13 @@ public:
 	virtual void* Delete(unsigned int fDelete); // vtable+0x00
 	virtual void InitializeFromPointAndDynamicText(const short* pPoint,
 												   void* pOwner,
-												   GameDynamicCString Text,
+												   CString Text,
 												   int nDrawFlags,
 												   int nDrawValue); // vtable+0x0c
 	virtual void InitializeFromPositionAndDynamicText(int x,
 													  int y,
 													  void* pOwner,
-													  GameDynamicCString Text,
+													  CString Text,
 													  int nDrawFlags,
 													  int nDrawValue); // vtable+0x10
 	virtual void InitializeFromPointAndText(const short* pPoint,

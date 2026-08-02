@@ -389,7 +389,7 @@ void LevelScreenDrawEntry::InitializeFromPointAndText(const short* pPoint,
 void LevelScreenDrawEntry::InitializeFromPositionAndDynamicText(int x,
 																int y,
 																void* pOwner,
-																GameDynamicCString Text,
+																CString Text,
 																int nDrawFlags,
 																int nDrawValue)
 {
@@ -405,7 +405,7 @@ void LevelScreenDrawEntry::InitializeFromPositionAndDynamicText(int x,
 // FUNCTION: LEMBALL 0x00469b00
 void LevelScreenDrawEntry::InitializeFromPointAndDynamicText(const short* pPoint,
 															 void* pOwner,
-															 GameDynamicCString Text,
+															 CString Text,
 															 int nDrawFlags,
 															 int nDrawValue)
 {
@@ -609,7 +609,7 @@ void LevelResourceScreenDrawEntry::InitializeFromPointAndText(const short* pPoin
 void LevelResourceScreenDrawEntry::InitializeFromPositionAndDynamicText(int x,
 																		int y,
 																		void* pOwner,
-																		GameDynamicCString Text,
+																		CString Text,
 																		int nDrawFlags,
 																		int nDrawValue)
 {
@@ -621,7 +621,7 @@ void LevelResourceScreenDrawEntry::InitializeFromPositionAndDynamicText(int x,
 // FUNCTION: LEMBALL 0x0046a1b0
 void LevelResourceScreenDrawEntry::InitializeFromPointAndDynamicText(const short* pPoint,
 																	 void* pOwner,
-																	 GameDynamicCString Text,
+																	 CString Text,
 																	 int nDrawFlags,
 																	 int nDrawValue)
 {
