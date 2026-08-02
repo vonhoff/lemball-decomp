@@ -201,3 +201,7 @@ The three portable methods map consecutively at `0x0041CF70`, `0x0041D000`, and 
 ## CBalloon reconstruction
 
 The five portable methods map at `0x0041D600..0x0041D7B0` in physical `LEVELVT.CPP`. Exact 68K and Windows bodies agree on randomized timestamp restart, terrain refresh, network action `0x2A`, state `0x1A`, target permission/callback dispatch, score `50`, and unchanged activation-position output. The output method preserves the Windows hidden-result-pointer ABI; adjacent type-`0x14` action and render helpers consume no CBalloon symbols.
+
+## CCrate reconstruction
+
+All six portable methods map at `0x0041CCA0..0x0041CF10`. Independent exact-body auditing confirms saved-position restart, linked-content release through the GMOB manager, state `0x19/0x1A` processing, timer/action `0x14` behavior, contents-dependent scoring, and subtype-selected activation offsets. The Windows object uses linked object/id fields at `+0x148/+0x14C`; `ActivatePosition` preserves its hidden-result-pointer ABI. Physical ownership remains split between `LVSAVEPOS.CPP` and `LEVELVT.CPP`; neighboring CAmmo/CTower bodies and wrappers consume no CCrate symbols.

@@ -2070,12 +2070,12 @@ CODE_06_AI.bin,AI,0x0001901C,0x0001901D,Process__5CAmmoFv,CAmmo,Process,genuinel
 CODE_06_AI.bin,AI,0x00019082,0x00019083,Activate__5CAmmoFP11CGameObject,CAmmo,Activate,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
 CODE_06_AI.bin,AI,0x00019100,0x00019101,DoActivate__5CAmmoFv,CAmmo,DoActivate,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
 CODE_06_AI.bin,AI,0x0001916E,0x0001916F,ActivatePosition__5CAmmoFv,CAmmo,ActivatePosition,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x000191A6,0x000191A7,Restart__6CCrateFv,CCrate,Restart,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00019212,0x00019213,TriggerContents__6CCrateFv,CCrate,TriggerContents,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x0001936E,0x0001936F,Process__6CCrateFv,CCrate,Process,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x000193BD,0x000193BE,Activate__6CCrateFP11CGameObject,CCrate,Activate,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00019462,0x00019463,DoActivate__6CCrateFv,CCrate,DoActivate,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00019536,0x00019537,ActivatePosition__6CCrateFv,CCrate,ActivatePosition,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
+CODE_06_AI.bin,AI,0x000191A6,0x000191A7,Restart__6CCrateFv,CCrate,Restart,accepted_x86_correlation,gap,0x0041CCA0,mapped,high,"exact saved-position reset followed by state 0x18"
+CODE_06_AI.bin,AI,0x00019212,0x00019213,TriggerContents__6CCrateFv,CCrate,TriggerContents,accepted_x86_correlation,gap,0x0041CCC0,mapped,high,"exact linked-object position transfer, manager reinsert, and ID reset to 0xFFFF"
+CODE_06_AI.bin,AI,0x0001936E,0x0001936F,Process__6CCrateFv,CCrate,Process,accepted_x86_correlation,gap,0x0041CD20,mapped,high,"exact terrain refresh and local/network states 0x19/0x1A"
+CODE_06_AI.bin,AI,0x000193BD,0x000193BE,Activate__6CCrateFP11CGameObject,CCrate,Activate,accepted_x86_correlation,gap,0x0041CE50,mapped,high,"exact idle-state gate, timers 0x10/0x1E, and state 0x19 request"
+CODE_06_AI.bin,AI,0x00019462,0x00019463,DoActivate__6CCrateFv,CCrate,DoActivate,accepted_x86_correlation,gap,0x0041CE90,mapped,high,"exact clock update, action 0x14, and contents-dependent score"
+CODE_06_AI.bin,AI,0x00019536,0x00019537,ActivatePosition__6CCrateFv,CCrate,ActivatePosition,accepted_x86_correlation,gap,0x0041CF10,mapped,high,"exact subtype-selected fixed-point output offsets through hidden result pointer"
 CODE_06_AI.bin,AI,0x000195A4,0x000195A5,Process__6CTowerFv,CTower,Process,accepted_x86_correlation,gap,0x0041CF70,mapped,high,"exact terrain-height refresh and constant success body"
 CODE_06_AI.bin,AI,0x000195C5,0x000195C6,Activate__6CTowerFP11CGameObject,CTower,Activate,accepted_x86_correlation,gap,0x0041D000,mapped,high,"exact unconditional success body"
 CODE_06_AI.bin,AI,0x00019642,0x00019643,ActivatePosition__6CTowerFv,CTower,ActivatePosition,accepted_x86_correlation,gap,0x0041D010,mapped,high,"exact current-position copy with x minus 0x30000 and y minus 0x8000"
