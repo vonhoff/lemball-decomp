@@ -3034,10 +3034,10 @@ address,size,name,unit
 0x004730E0,59,CBucket::RemoveChild,Visos/Generic/Memory.cpp
 0x00473120,8,CBucket::RemoveThis,Visos/Generic/Memory.cpp
 0x00473140,45,CBucket::CheckValidPointer,Visos/Generic/Memory.cpp
-0x00473180,253,construct_small_memory_bucket_table,Visos/Generic/Memory.cpp
-0x00473280,74,destroy_small_memory_bucket_table,Visos/Generic/Memory.cpp
-0x004732D0,102,allocate_from_small_memory_bucket_table,Visos/Generic/Memory.cpp
-0x00473340,80,free_to_small_memory_bucket_table,Visos/Generic/Memory.cpp
+0x00473180,253,CSmallMemory::CSmallMemory,Visos/Generic/Memory.cpp
+0x00473280,74,CSmallMemory::~CSmallMemory,Visos/Generic/Memory.cpp
+0x004732D0,102,CSmallMemory::Allocate,Visos/Generic/Memory.cpp
+0x00473340,80,CSmallMemory::Free,Visos/Generic/Memory.cpp
 0x00473390,341,select_audio_manager_backends,Platform/Windows/Mixed/Engine/MEDIA/VSSOUND.CPP
 0x004734F0,288,show_release_assert_failure_and_abort,Control/CGame.cpp
 0x00473610,29,construct_palette_remap_variant_wrapper,Control/CGame.cpp

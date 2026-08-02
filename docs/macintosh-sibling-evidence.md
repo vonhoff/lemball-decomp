@@ -249,3 +249,7 @@ All nine portable methods map at `0x004275B0..0x00427910` in physical `LEVELVT.C
 ## CBucket reconstruction
 
 All nine portable methods map at `0x00472CE0..0x00473140` in physical `Memory.cpp`. Independent auditing confirms the expanded `0x54` Windows layout, exact storage/bitmap ownership, packed free-slot cursor, child-chain lifecycle, allocation/free counters, and half-open pointer checks. The source retains proven helper forms where forced language-level member rewrites were not shown binary-neutral; adjacent `CSmallMemory`, Mac-specific `Mem2Offs`, and lock adapters remain excluded.
+
+## CSmallMemory reconstruction
+
+All four portable methods map at `0x00473180..0x00473340` in physical `Memory.cpp`. Exact Macintosh trailers and independent Windows auditing confirm the literal `CSmallMemory` owner, unchanged `0x3C` seven-class layout, bucket construction/teardown, interval-based allocation, and bucket-chain free dispatch. `CBucketStore` is rejected as nonexistent terminology; adjacent CBucket helpers and Windows lock/free wrappers remain separate.
