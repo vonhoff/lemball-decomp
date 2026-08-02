@@ -229,3 +229,7 @@ All four portable methods map at `0x0041F0B0..0x0041F2E0`. Independent auditing 
 ## CSheep reconstruction
 
 All five portable methods map at `0x0041F990..0x0041FAD0` in physical `LEVELVT.CPP`. Independent auditing confirms type `7`, the coherent `0x124` Windows layout and vtable, restart bounds and owner registration, PLAS state-table processing, and exact score/vector reactions. Scalar deleting wrapper `0x0041FB70` remains target-only; the Macintosh semantic destructor is platform-specific and is not consumed by that wrapper.
+
+## CSheepGroup reconstruction
+
+All five portable methods map at `0x0041F500..0x0041F870` in physical `LEVELVT.CPP`. Independent auditing confirms `0x16C` group construction, the exact octant/LCG runaway algorithm, ordered three-source lemming checks, child processing, and the constant-zero catapult callback through one coherent SHPG vtable and call chain. Scalar deleting wrapper `0x0041F960` remains excluded from the Macintosh semantic destructor.

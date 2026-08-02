@@ -778,11 +778,11 @@ address,size,name,unit
 0x0041F170,217,create_shpg_group_with_four_children,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x0041F250,139,remove_cached_chunk_object_from_level_list_and_destroy,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041F2E0,313,CSheepGroupManager::LoadLevel,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041F500,35,construct_shpg_managed_entity_group_controller,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041F530,512,queue_owner_child_offset_move_commands_for_point,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041F730,234,queue_owner_children_toward_nearest_target,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041F820,70,service_composite_children_and_seek_target,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041F870,3,return_zero_vtable_callback_0041f870,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041F500,35,CSheepGroup::CSheepGroup,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041F530,512,CSheepGroup::RunAway,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041F730,234,CSheepGroup::CheckAgainstLemmings,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041F820,70,CSheepGroup::Process,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041F870,3,CSheepGroup::CheckAgainstCatapults,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041F960,30,delete_level_chunk_object_children_wrapper_0041f960,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041F990,92,CSheep::CSheep,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041F9F0,157,CSheep::Restart,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
