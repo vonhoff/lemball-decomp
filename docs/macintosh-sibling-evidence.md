@@ -233,3 +233,7 @@ All five portable methods map at `0x0041F990..0x0041FAD0` in physical `LEVELVT.C
 ## CSheepGroup reconstruction
 
 All five portable methods map at `0x0041F500..0x0041F870` in physical `LEVELVT.CPP`. Independent auditing confirms `0x16C` group construction, the exact octant/LCG runaway algorithm, ordered three-source lemming checks, child processing, and the constant-zero catapult callback through one coherent SHPG vtable and call chain. Scalar deleting wrapper `0x0041F960` remains excluded from the Macintosh semantic destructor.
+
+## CRAMArena reconstruction
+
+All six portable methods map at `0x0045A3F0..0x0045A500` in physical `Memory.cpp`. Exact Macintosh and Windows behavior agrees on CArena construction, `RARN` magic, `0x50` arena and `0x28` block headers, initial free-block linkage, derived teardown, and both placement-construction paths. Base-arena and block helpers remain separately owned.
