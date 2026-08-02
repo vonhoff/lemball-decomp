@@ -1,6 +1,6 @@
 #include "Visos/Generic/Memory.h"
 #include "ENGINE/MEDIA/VSSTRM.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 
 extern int g_nLevelFrameClockTimeMs;
 extern void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void* pObject);

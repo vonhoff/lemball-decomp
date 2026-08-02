@@ -2,7 +2,7 @@
 #include "ENGINE/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
 #include "ENGINE/MEDIA/VSSOUND.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 #include "Visos/Generic/MogLoad.h"
 #include "SHELL/ENTRY.H"
 

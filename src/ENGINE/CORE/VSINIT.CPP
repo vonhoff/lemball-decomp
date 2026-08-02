@@ -4,7 +4,7 @@
 #include "ENGINE/DEBUG/VSDBG.H"
 #include "ENGINE/GDI/VSGDI.H"
 #include "ENGINE/GDI/VSINVIS.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 #include "SHELL/OPTIONS.H"
 #include "Visos/Generic/Memory.h"
 

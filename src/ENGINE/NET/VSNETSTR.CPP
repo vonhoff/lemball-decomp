@@ -7,7 +7,7 @@
 #include "ENGINE/MEDIA/EFFSTRM.H"
 #include "ENGINE/MEDIA/VSSTRM.H"
 #include "ENGINE/NET/VSNET.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 
 #include <string.h>
 

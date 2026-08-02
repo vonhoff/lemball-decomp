@@ -1,4 +1,4 @@
-#include "GAME.H"
+#include "Control/CGame.h"
 
 struct VsResourceSpriteWindowOwnerState {
 	unsigned char m_abReserved00[0xf4];

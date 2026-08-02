@@ -1,7 +1,7 @@
 #include "Visos/Generic/Memory.h"
 #include "ENGINE/CORE/WIN32.H"
 #include "ENGINE/GDI/VSWINDOW.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 
 // STRONG INFERENCE: callbacks relocated from the artificial aggregate by
 // vtable owner, semantic role, and neighboring address/call-graph cluster.

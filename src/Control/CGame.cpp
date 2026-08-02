@@ -9,7 +9,7 @@
 #include "ENGINE/MEDIA/VSSTRM.H"
 #include "FRONTEND/CURSOR.H"
 #include "FRONTEND/MAINMENU.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 #include "LEVEL/DEMO.H"
 #include "LEVEL/DRAWTEXT.H"
 #include "LEVEL/LEVELRUN.H"

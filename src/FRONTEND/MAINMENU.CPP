@@ -5,7 +5,7 @@
 #include "ENGINE/MEDIA/EFFSTRM.H"
 #include "FRONTEND/MAINMENU.H"
 #include "FRONTEND/MENUSEL.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 #include "LEVEL/DRAWTEXT.H"
 #include "LEVEL/LEVELRUN.H"
 #include "Visos/Generic/MogLoad.h"

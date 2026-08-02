@@ -1,4 +1,4 @@
-#include "GAME.H"
+#include "Control/CGame.h"
 
 extern void* LEMBALL_FASTCALL RestoreLevelDemoPlaybackBaseVtable(void* pPlaybackController,
 																 void*,

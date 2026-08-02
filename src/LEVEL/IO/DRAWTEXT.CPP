@@ -1,7 +1,7 @@
 #include "ENGINE/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
 #include "ENGINE/GDI/VSGDI.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 #include "LEVEL/DRAWTEXT.H"
 #include "Visos/Generic/MogLoad.h"
 

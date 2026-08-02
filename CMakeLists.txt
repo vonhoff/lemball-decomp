@@ -3,11 +3,11 @@ project(lemball_decomp CXX)
 
 # Order is significant for the reconstructed executable.
 set(LEMBALL_SOURCES
-    src/GAME.CPP
+    src/Control/CGame.cpp
     src/FRONTEND/GAMEEVT.CPP
-    src/GMLVLSCR.CPP
-    src/GAMEHELPERS.CPP
-    src/GAMEVT.CPP
+    src/views/2d/C2D.cpp
+    src/Control/CGameHelp.cpp
+    src/Control/CGameVT.cpp
     src/FRONTEND/MAINMENU.CPP
     src/FRONTEND/MMRENDCH.CPP
     src/FRONTEND/MMCONTEXT.CPP

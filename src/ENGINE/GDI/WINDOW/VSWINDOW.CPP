@@ -4,7 +4,7 @@
 #include "ENGINE/GDI/VSGDI.H"
 #include "ENGINE/GDI/VSGEOM.H"
 #include "ENGINE/GDI/VSWINDOW.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 #include "SHELL/ENTRY.H"
 #include "SHELL/OPTIONS.H"
 

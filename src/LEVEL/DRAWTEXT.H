@@ -2,7 +2,7 @@
 #define LEMBALL_DRAWTEXT_H
 
 #include "Visos/Generic/Memory.h"
-#include "GAME.H"
+#include "Control/CGame.h"
 
 class LevelVariantRenderManagerView {
 public:

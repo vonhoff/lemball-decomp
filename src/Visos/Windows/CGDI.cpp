@@ -4,7 +4,7 @@
 #include "ENGINE/GDI/VSGDI.H"
 #include "ENGINE/GDI/VSWINDOW.H"
 #include "FRONTEND/CURSOR.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 #include "LEVEL/DRAWTEXT.H"
 #include "SHELL/ENTRY.H"
 #include "SHELL/OPTIONS.H"

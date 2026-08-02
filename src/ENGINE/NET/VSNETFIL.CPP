@@ -3,7 +3,7 @@
 #include "Visos/Generic/Memory.h"
 #include "ENGINE/MEDIA/VSSTRM.H"
 #include "ENGINE/NET/VSNET.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 
 #include <new.h>
 #include <stdio.h>

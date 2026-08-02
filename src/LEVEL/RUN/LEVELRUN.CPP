@@ -5,7 +5,7 @@
 #include "Visos/Generic/Memory.h"
 #include "ENGINE/MEDIA/EFFSTRM.H"
 #include "ENGINE/MEDIA/VSSTRM.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 #include "LEVEL/LEVELRUN.H"
 #include "LEVEL/LVPKT.H"
 #include "Visos/Generic/MogLoad.h"

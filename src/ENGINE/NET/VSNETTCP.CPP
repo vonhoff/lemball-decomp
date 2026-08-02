@@ -4,7 +4,7 @@
 #include "ENGINE/GDI/VSINVIS.H"
 #include "ENGINE/MEDIA/VSSTRM.H"
 #include "ENGINE/NET/VSNET.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 
 #include <stdlib.h>
 #include <string.h>

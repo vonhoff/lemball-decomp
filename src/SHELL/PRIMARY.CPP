@@ -1,6 +1,6 @@
 #include "Visos/Generic/Memory.h"
 #include "ENGINE/GDI/VSGDI.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 #include "SHELL/OPTIONS.H"
 #include "Visos/Generic/CSurface.h"
 

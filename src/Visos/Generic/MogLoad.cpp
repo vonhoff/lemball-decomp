@@ -1,5 +1,5 @@
 #include "ENGINE/CORE/VSINIT.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 #include "Visos/Generic/MogLoad.h"
 #include "SHELL/OPTIONS.H"
 #include "Visos/Generic/Memory.h"

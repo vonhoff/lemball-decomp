@@ -3,7 +3,7 @@
 #include "ENGINE/MEDIA/EFFSTRM.H"
 #include "ENGINE/MEDIA/VSSTRM.H"
 #include "ENGINE/NET/VSNETFWD.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 
 #include <string.h>
 

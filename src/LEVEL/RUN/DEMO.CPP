@@ -1,6 +1,6 @@
 #include "ENGINE/CORE/VSINIT.H"
 #include "ENGINE/CORE/WIN32.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 #include "LEVEL/DEMO.H"
 #include "Visos/Generic/MogLoad.h"
 #include "Visos/Generic/Memory.h"

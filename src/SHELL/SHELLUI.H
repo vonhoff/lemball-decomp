@@ -1,7 +1,7 @@
 #ifndef LEMBALL_SHELL_UI_H
 #define LEMBALL_SHELL_UI_H
 
-#include "GAME.H"
+#include "Control/CGame.h"
 
 class ShellUiPrimaryContextShell {
 public:

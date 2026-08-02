@@ -4,7 +4,7 @@
 #include "ENGINE/GDI/VSGEOM.H"
 #include "ENGINE/MEDIA/EFFSTRM.H"
 #include "ENGINE/MEDIA/VSSTRM.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 #include "LEVEL/LEVELRUN.H"
 
 #include <string.h>

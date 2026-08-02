@@ -6,7 +6,7 @@
 #include "ENGINE/MEDIA/EFFSTRM.H"
 #include "FRONTEND/CURSOR.H"
 #include "FRONTEND/MENUSEL.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 #include "LEVEL/DEMO.H"
 #include "LEVEL/DRAWTEXT.H"
 #include "Visos/Generic/MogLoad.h"

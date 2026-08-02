@@ -1,7 +1,7 @@
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
-#include "GAME.H"
+#include "Control/CGame.h"
 #include "Visos/Generic/MogLoad.h"
 #include "Visos/Generic/TypedRes.h"
 #include "RESOURCE/VARLOAD.H"

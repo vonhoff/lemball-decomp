@@ -7,7 +7,7 @@
 #include "ENGINE/MEDIA/VSSTRM.H"
 #include "ENGINE/NET/VSNET.H"
 #include "ENGINE/NET/VSNETFWD.H"
-#include "GAME.H"
+#include "Control/CGame.h"
 
 extern void* g_GAME_EffStreamConstructionVtable[6];
 void* LEMBALL_FASTCALL DeleteSimpleEffTransportRecordSlotAuto(void*, void*, BYTE);
