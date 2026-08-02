@@ -96,3 +96,7 @@ CODE_06_AI.bin,0x000165DE,IsUsable__5CMineF7eAction,0x00423E90,high,"family orde
 CODE_06_AI.bin,0x000166E8,Process__5CMineFv,0x00423EB0,high,"family order; advances mine trigger, terrain, cooldown, and state transitions"
 CODE_06_AI.bin,0x0001674E,OnGround__5CMineFv,0x00423FA0,high,"family end; resamples mine ground height from the tile grid"
 CODE_06_AI.bin,0x000088E7,__ct__11CEnemyGroupFP3CAIP14CObjectManagerP17CFormationManager,0x00420AE0,high,"enemy load/create callers allocate the 0x168-byte group, pass the three shared AI/object/formation contexts, invoke this constructor through its ILT, and install the enemy-group vtable"
+CODE_02_Visos (Generic).bin,0x000118C1,__ct__4CGDIFRC7CVSRectiP8CSurface,0x00467060,high,"contiguous four-function family start; constructs the 0x10-byte Windows render queue from a rectangle, entry count, and CSurface allocation"
+CODE_02_Visos (Generic).bin,0x0001192C,__dt__4CGDIFv,0x004670D0,high,"contiguous family order; frees the queue storage and releases its CSurface"
+CODE_02_Visos (Generic).bin,0x00011958,AddToList__4CGDIFP10CPrimitive,0x004670F0,high,"contiguous family order; appends one render-entry pointer and increments the queue count"
+CODE_02_Visos (Generic).bin,0x000119DC,Render__4CGDIFv,0x00467110,high,"contiguous family end; validates and dispatches each queued primitive through virtual slot 2, then presents the target surface"

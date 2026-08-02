@@ -521,6 +521,7 @@ struct CGDIDevice {
 	~CGDIDevice(void);
 };
 
+// Windows ABI view of the generic CGDI render queue.
 struct VsGdiGeometryHelperPointerArray {
 	void* m_pEntries;
 	int m_nReserved;
@@ -3148,6 +3149,7 @@ int VsGdiQuantizedHelperUploadRectTracker::GetHelperUploadActiveRectStartIndex(v
 	return *(int*) ((char*) this + 8);
 }
 
+// Macintosh: CGDI::CGDI(const CVSRect&, int, CSurface*)
 // FUNCTION: LEMBALL 0x00467060
 VsGdiGeometryHelperPointerArray* VsGdiGeometryHelperPointerArray::InitializeGeometryHelperPointerArray(
 	short* pRect,
@@ -3172,6 +3174,7 @@ VsGdiGeometryHelperPointerArray* VsGdiGeometryHelperPointerArray::InitializeGeom
 	}
 	return this;
 }
+// Macintosh: CGDI::~CGDI()
 // FUNCTION: LEMBALL 0x004670d0
 void LEMBALL_FASTCALL DestroyGeometryHelperPointerArray(void* pHelper)
 {
@@ -3182,12 +3185,14 @@ void LEMBALL_FASTCALL DestroyGeometryHelperPointerArray(void* pHelper)
 	((VsGdiResourceGeometryHelperSlotReleaseInterface*) g_pResourceGeometryHelperSlotManager)
 		->ReleaseResourceGeometryHelperSlot(pArray->m_pTarget);
 }
+// Macintosh: CGDI::AddToList(CPrimitive*)
 // FUNCTION: LEMBALL 0x004670f0
 void VsGdiHelperDispatchQueue::AppendPointerQueueEntry(void* pEntry)
 {
 	m_ppEntries[m_cEntries] = pEntry;
 	m_cEntries = m_cEntries + 1;
 }
+// Macintosh: CGDI::Render()
 // FUNCTION: LEMBALL 0x00467110
 void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void* pQueue)
 {

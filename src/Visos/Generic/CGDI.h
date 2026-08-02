@@ -5,7 +5,8 @@ class CPrimitive;
 class CSurface;
 class CVSRect;
 
-// Recovered from CODE_02 `Visos (Generic)`. Windows storage remains unknown.
+// Recovered from CODE_02 `Visos (Generic)`. The authoritative 0x10-byte
+// Windows render-queue layout remains in Visos/Windows/CGDI.cpp.
 class CGDI {
 public:
 	CGDI(const CVSRect& rect, int nFlags, CSurface* pSurface);

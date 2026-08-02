@@ -2643,10 +2643,10 @@ address,size,name,unit
 0x00467000,31,get_helper_upload_rect_entry_by_index,Visos/Windows/CGDI.cpp
 0x00467020,31,get_helper_upload_active_rect_start_index,Visos/Windows/CGDI.cpp
 0x00467040,20,clear_helper_upload_rect_entry,Visos/Windows/CGDI.cpp
-0x00467060,106,initialize_geometry_helper_pointer_array,Visos/Windows/CGDI.cpp
-0x004670D0,31,destroy_geometry_helper_pointer_array,Visos/Windows/CGDI.cpp
-0x004670F0,19,append_pointer_queue_entry,Visos/Windows/CGDI.cpp
-0x00467110,85,dispatch_and_clear_pointer_queue,Visos/Windows/CGDI.cpp
+0x00467060,106,cgdi_constructor,Visos/Windows/CGDI.cpp
+0x004670D0,31,cgdi_destructor,Visos/Windows/CGDI.cpp
+0x004670F0,19,cgdi_add_to_list,Visos/Windows/CGDI.cpp
+0x00467110,85,cgdi_render,Visos/Windows/CGDI.cpp
 0x00467170,53,select_timed_variant_frame_index,Frontend/MENUSEL.CPP
 0x004671B0,37,set_timed_variant_frame_duration,LEVEL/STATE/LEVELSTAT.CPP
 0x004671E0,37,set_timed_variant_frame_seed,Frontend/MENUSEL.CPP
