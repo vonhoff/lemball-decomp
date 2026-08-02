@@ -42,6 +42,10 @@ Macintosh symbols are potentially original source names and therefore outrank in
 
 Only high-confidence correlations should rename Windows source, Ghidra symbols, and reccmp metadata. Keep aliases for uncertain or platform-specific names rather than forcing a false match.
 
+## Objdiff ownership reporting
+
+`tools/generate_objdiff_report.py` derives logical units from the accepted correlation table rather than inventing units from physical Windows filenames. Correlated functions are grouped as `Macintosh module/class`; uncorrelated Windows and compiler-generated functions remain in the single `Windows/MSVC` layer. Each function retains its physical `source_path` metadata, so logical diagrams stay clean without claiming unsupported source ownership or changing translation-unit order.
+
 ## Immediate inventory order
 
 1. Preserve data and resource forks for both installed applications.

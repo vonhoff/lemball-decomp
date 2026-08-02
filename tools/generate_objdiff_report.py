@@ -12,6 +12,35 @@ from pathlib import Path
 
 FUNCTION_NAME = re.compile(r"[a-z][a-z0-9_]{0,63}")
 VAGUE_NAME = re.compile(r"(?:^|_)(?:fun|unknown|method|reserved[0-9a-f]*)(?:_|$)")
+MAC_CLASS = re.compile(r"__(\d+)([A-Za-z_][A-Za-z0-9_]*)F")
+
+
+def mac_module(code_file):
+    name = re.sub(r"^CODE_[0-9]+_", "", code_file).removesuffix(".bin")
+    return {
+        "Visos (Generic)": "Visos/Generic",
+        "Visos (Mac Specific)": "Visos/Windows",
+        "views_2d": "views/2d",
+    }.get(name, name)
+
+
+def mac_class(mangled):
+    match = MAC_CLASS.search(mangled)
+    if match and len(match[2]) == int(match[1]):
+        return match[2]
+    return ""
+
+
+def load_owners(path):
+    owners = {}
+    with path.open(newline="", encoding="utf-8-sig") as stream:
+        for row in csv.DictReader(stream):
+            address = int(row["x86_address"], 16)
+            owner = (mac_module(row["mac_code_file"]), mac_class(row["mac_mangled_name"]))
+            if address in owners and owners[address] != owner:
+                raise SystemExit(f"conflicting owner for 0x{address:08X}")
+            owners[address] = owner
+    return owners
 
 
 def f32(value):
@@ -40,8 +69,9 @@ def measures(functions, total_units=1):
     return result
 
 
-def build_report(inventory_path, reccmp_path):
+def build_report(inventory_path, reccmp_path, correlations_path):
     native = json.loads(reccmp_path.read_text(encoding="utf-8"))
+    owners = load_owners(correlations_path)
     matches = {
         int(row["address"], 16): row
         for row in native["data"]
@@ -66,28 +96,32 @@ def build_report(inventory_path, reccmp_path):
                 "size": int(row["size"]),
                 "address": address,
                 "ratio": ratio,
+                "source_path": f"src/{row['unit']}",
             }
-            groups[row["unit"]].append(function)
+            groups[owners.get(address, ("Windows/MSVC", ""))].append(function)
 
     units = []
-    for module, functions in sorted(groups.items()):
+    for (module, class_name), functions in sorted(groups.items()):
         items = []
         for function in functions:
             item = {
                 "name": function["name"],
                 "size": str(function["size"]),
-                "metadata": {"virtual_address": str(function["address"])},
+                "metadata": {
+                    "virtual_address": str(function["address"]),
+                    "source_path": function["source_path"],
+                },
             }
             if function["ratio"]:
                 item["fuzzy_match_percent"] = f32(function["ratio"])
             items.append(item)
         units.append(
             {
-                "name": module,
+                "name": f"{module}/{class_name}" if class_name else module,
                 "measures": measures(functions),
                 "sections": [],
                 "functions": items,
-                "metadata": {"source_path": f"src/{module}"},
+                "metadata": {"module": module, "class": class_name},
             }
         )
     functions = [function for group in groups.values() for function in group]
@@ -98,9 +132,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--inventory", type=Path, default=Path("data/objdiff-functions.csv"))
     parser.add_argument("--reccmp", type=Path, default=Path("build-msvc400/reccmp.json"))
+    parser.add_argument(
+        "--correlations", type=Path, default=Path("data/macintosh-x86-correlations.csv")
+    )
     parser.add_argument("--output", type=Path, default=Path("build-msvc400/report.json"))
     args = parser.parse_args()
-    report = build_report(args.inventory, args.reccmp)
+    report = build_report(args.inventory, args.reccmp, args.correlations)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     values = report["measures"]
