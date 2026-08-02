@@ -46,6 +46,22 @@ def mac_class(symbol: str) -> str:
     return ""
 
 
+def objdiff_name(symbol: str) -> str:
+    match = re.match(r"^(.*?)__(\d+)([A-Za-z_][A-Za-z0-9_]*)F", symbol)
+    if match:
+        function, length, owner = match.groups()
+        owner = owner[: int(length)]
+        if function == "__ct":
+            function = owner
+        elif function == "__dt":
+            function = f"~{owner}"
+        return f"{owner}::{function}"
+    match = re.match(r"^(.*?)__F", symbol)
+    if match:
+        return match.group(1)
+    raise ValueError(f"unsupported Macintosh function name: {symbol}")
+
+
 def rows(path: pathlib.Path) -> list[dict[str, str]]:
     with path.open(encoding="utf-8-sig", newline="") as stream:
         return list(csv.DictReader(stream))
@@ -141,10 +157,11 @@ def check(data: dict, symbols: list[dict[str, str]], correlations: list[dict[str
     objdiff_names = {row["address"].lower(): row["name"] for row in rows(OBJDIFF)}
     for row in correlations:
         actual = objdiff_names.get(row["x86_address"].lower())
-        if actual is not None and actual != row["mac_mangled_name"]:
+        expected = objdiff_name(row["mac_mangled_name"])
+        if actual is not None and actual != expected:
             errors.append(
-                f"{OBJDIFF.relative_to(ROOT)}: {row['x86_address']} must use original Macintosh name "
-                f"{row['mac_mangled_name']!r}, not {actual!r}"
+                f"{OBJDIFF.relative_to(ROOT)}: {row['x86_address']} must use original readable name "
+                f"{expected!r}, not {actual!r}"
             )
 
     coverage = rows(COVERAGE)
