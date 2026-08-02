@@ -608,3 +608,18 @@ CODE_06_AI.bin,0x000031CB,FindPost__12CBalloonPostF11eObjectTypeR7AICOORD,0x0042
 CODE_06_AI.bin,0x0000336A,Process__12CBalloonPostFv,0x0042A170,high,"samples terrain height for each active post and updates child coordinates; exact Mac body/signature and Windows ABI, four-record layout, subtype constants, terrain and loader behavior corroborate ownership",exact_tuple,0x0000336A
 CODE_06_AI.bin,0x0000345B,GetViewData__12CBalloonPostFP9CViewData,0x0042A320,high,"emits one child view record per active post bit; exact Mac body/signature and Windows ABI, four-record layout, subtype constants, terrain and loader behavior corroborate ownership",exact_tuple,0x0000345B
 CODE_06_AI.bin,0x000035C7,LoadLevel__12CBalloonPostFPUciUc,0x0042A4E0,high,"loads active mask and four fixed-point post coordinates; exact Mac body/signature and Windows ABI, four-record layout, subtype constants, terrain and loader behavior corroborate ownership",exact_tuple,0x000035C7
+CODE_06_AI.bin,0x00020576,__ct__11CTrampolineFv,0x0042A990,high,constructs level chunk type 0x22 and installs TRAM vtable,exact_tuple,0x00020576
+CODE_06_AI.bin,0x000205B4,Restart__11CTrampolineFv,0x0042A9B0,high,resets managed runtime and clears timestamp configured and active fields,exact_tuple,0x000205B4
+CODE_06_AI.bin,0x00020616,__dt__11CTrampolineFv,0x0042A9D0,high,restores TRAM vtable and destroys level chunk base,exact_tuple,0x00020616
+CODE_06_AI.bin,0x000206C0,Set__11CTrampolineFUsRC7AICOORD,0x0042A9E0,high,stores slot and fixed coordinates enters state 0x18 and marks terrain metadata,exact_tuple,0x000206C0
+CODE_06_AI.bin,0x0002076C,Process__11CTrampolineFv,0x0042AA80,high,mirrors state changes and returns state 0x1b to idle after deadline,exact_tuple,0x0002076C
+CODE_06_AI.bin,0x00020BC7,Hit__11CTrampolineFRC7AICOORDP11CGameObject,0x0042AB90,high,tests 3D overlap emits bounded impulse enters cooldown and awards score,exact_tuple,0x00020BC7
+CODE_06_AI.bin,0x00020C63,__ct__18CTrampolineManagerFP3CAIi,0x0042AF60,high,constructs EFF stream 0x18 payload 0x0d and records owner capacity,exact_tuple,0x00020C63
+CODE_06_AI.bin,0x00020CCE,Restart__18CTrampolineManagerFv,0x0042AFC0,high,restarts every child using 0x144 byte stride,exact_tuple,0x00020CCE
+CODE_06_AI.bin,0x00020D9D,Initialise__18CTrampolineManagerFi,0x0042AFF0,high,allocates and constructs the 0x144 byte child array,exact_tuple,0x00020D9D
+CODE_06_AI.bin,0x00020E1E,__dt__18CTrampolineManagerFv,0x0042B090,high,deletes child array and destroys EFF stream base,exact_tuple,0x00020E1E
+CODE_06_AI.bin,0x00020EAA,Process__18CTrampolineManagerFv,0x0042B4A0,high,activates and processes each configured child,exact_tuple,0x00020EAA
+CODE_06_AI.bin,0x00020F35,GetViewData__18CTrampolineManagerFP9CViewData,0x0042B4F0,high,emits 0x4c byte view records for active children,exact_tuple,0x00020F35
+CODE_06_AI.bin,0x00020FB7,Hit__18CTrampolineManagerFRC7AICOORDP11CGameObject,0x0042B550,high,returns after first child applies trampoline impulse,exact_tuple,0x00020FB7
+CODE_06_AI.bin,0x00021070,Add__18CTrampolineManagerFUsiii,0x0042B5A0,high,converts integer coordinates to fixed point and appends one child,exact_tuple,0x00021070
+CODE_06_AI.bin,0x00021143,LoadLevel__18CTrampolineManagerFPUciUc,0x0042B600,high,loads versioned slot IDs and coordinates through Add,exact_tuple,0x00021143

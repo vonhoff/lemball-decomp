@@ -869,6 +869,7 @@ int LEMBALL_FASTCALL AdvanceLasrChunkObjectStateMachine(void* pObject)
 	return 1;
 }
 
+// MACINTOSH: CTrampoline::Process()
 // FUNCTION: LEMBALL 0x0042aa80
 int LEMBALL_FASTCALL AdvanceTramChunkObjectStateMachine(void* pObject)
 {

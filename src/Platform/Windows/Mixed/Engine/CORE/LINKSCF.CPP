@@ -1761,6 +1761,7 @@ void* LEMBALL_FASTCALL destroy_lasr_chunk_object(void* pObject, void*, BYTE fDel
 
 extern void* g_LINKSCF_TramChunkObjectVtable[16];
 
+// MACINTOSH: CTrampoline::CTrampoline()
 // FUNCTION: LEMBALL 0x0042a990
 TramChunkObjectView* TramChunkObjectView::ConstructTramChunkObject(void)
 {
@@ -1769,6 +1770,7 @@ TramChunkObjectView* TramChunkObjectView::ConstructTramChunkObject(void)
 	return this;
 }
 
+// MACINTOSH: CTrampoline::~CTrampoline()
 // FUNCTION: LEMBALL 0x0042a9d0
 void LEMBALL_FASTCALL destroy_tram_chunk_object(void* pObject)
 {
@@ -1776,6 +1778,7 @@ void LEMBALL_FASTCALL destroy_tram_chunk_object(void* pObject)
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 }
 
+// MACINTOSH: CTrampolineManager::CTrampolineManager(CAI*, int)
 // FUNCTION: LEMBALL 0x0042af60
 LinkScfTramChunkManagerView* LinkScfTramChunkManagerView::ConstructTramChunkManager(void* pLevelMode, int nCapacity)
 {
@@ -1793,6 +1796,7 @@ void LEMBALL_FASTCALL clear_tram_chunk_object_count(void* pManager)
 	*(int*) ((char*) pManager + 0x34) = 0;
 }
 
+// MACINTOSH: CTrampolineManager::Process()
 // FUNCTION: LEMBALL 0x0042b4a0
 void LEMBALL_FASTCALL ActivateTramChunkObjects(void* pManager)
 {

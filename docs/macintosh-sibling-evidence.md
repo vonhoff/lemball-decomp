@@ -121,3 +121,7 @@ All ten portable `CLaser` and nine portable `CLaserManager` methods align with W
 ### CBalloonPost portable family
 
 All seven portable `CBalloonPost` methods align with Windows `0x00429F50..0x0042A4E0` through the four typed posts (`0x28`, `0x2A`, `0x2C`, `0x2E`), active-mask bits, fixed-point coordinates, terrain-height updates, child view dispatch and loader records. Windows activation/deactivation helpers `0x0042A3A0` and `0x0042A460` remain separate; `0x0042A5C0` begins the child `CBalloon` family.
+
+### CTrampoline portable families
+
+All six portable `CTrampoline` and nine portable `CTrampolineManager` methods align with Windows `0x0042A990..0x0042B600` through chunk type `0x22`, a `0x144`-byte child stride, fixed-point placement, states `0x18`/`0x1B`, bounded overlap impulses, EFF stream payload `0x0D`, view records and versioned loader records. Windows activation helpers `0x0042AAF0`/`0x0042B440`, count/remove helpers `0x0042B0B0`/`0x0042B0C0`, no-op `0x0042B9B0`, and deleting wrappers `0x0042BA10`/`0x0042BA40` remain separate.

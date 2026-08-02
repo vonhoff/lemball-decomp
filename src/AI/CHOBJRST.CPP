@@ -9,6 +9,7 @@ struct MobileChunkObjectRuntimeView {
 	int m_anRuntime138[3];
 };
 
+// MACINTOSH: CTrampoline::Restart()
 // FUNCTION: LEMBALL 0x0042a9b0
 void LEMBALL_FASTCALL InitializeTramChunkObject(MobileChunkObjectRuntimeView* pObject)
 {
