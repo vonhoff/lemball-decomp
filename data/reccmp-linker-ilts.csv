@@ -145,7 +145,7 @@ address,name,symbol,type,source
 0x0040258B,advance_cached_group_managed_entity_child_iterator,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040259A,LevelManagedEntityActiveGroupView::GetActiveEntityPosition,?GetActiveEntityPosition@LevelManagedEntityActiveGroupView@@QAEHPAULevelPoint3@@@Z,stub,src/LEVEL/VTABLE/LEVELVTGROUP.CPP
 0x004025B3,managed_entity_packet26_reverse_eff_stream_payload,?ReverseEffStreamPayload@ManagedEntityPacket26@@UAEXXZ,stub,src/LEVEL/IO/LVPKTTH.CPP
-0x004025EA,IceChunkObjectActionView::RequestIceChunkObjectToggleActivation,?RequestIceChunkObjectToggleActivation@IceChunkObjectActionView@@QAEXXZ,stub,src/ENGINE/CORE/LSICEACT.CPP
+0x004025EA,CIce::Switch,?Switch@CIce@@QAEXXZ,stub,src/AI/CIceAct.cpp
 0x004025FE,destroy_counted_child_table_stream_auto_thunk,?DestroyCountedChildTableStreamAutoThunk@@YIXPAX@Z,stub,src/LEVEL/VTABLE/LEVELVT.CPP
 0x00402608,InvsChunkObjectActionView::AddInvsTrackedEntity,?AddInvsTrackedEntity@InvsChunkObjectActionView@@QAEXPAX@Z,stub,src/ENGINE/CORE/LINKSCFINVS.CPP
 0x0040260D,VsNetNetworkLobbyScreen::RemoveUnavailablePlayerEntries,?RemoveUnavailablePlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/Frontend/LOBBY.CPP
@@ -262,7 +262,7 @@ address,name,symbol,type,source
 0x00403468,DestroyProjectileObject,?DestroyProjectileObject@@YIXPAX@Z,stub,src/ENGINE/CORE/LSPROJ.CPP
 0x0040346D,VsNetNetworkLobbyScreen::SelectPreviousPlayerEntry,?SelectPreviousPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/Frontend/LOBBY.CPP
 0x00403472,destroy_three_optional_record_chunk_object_auto_thunk,?DestroyThreeOptionalRecordChunkObjectAutoThunk@@YIXPAX@Z,stub,src/LEVEL/VTABLE/LEVELVT.CPP
-0x0040349A,dispatch_ice_chunk_object_action_by_slot,?DispatchIceChunkObjectActionBySlot@@YIXPAX0HI@Z,stub,src/ENGINE/CORE/LSICEACT.CPP
+0x0040349A,CIceManager::Switch,?Switch@CIceManager@@QAEXHI@Z,stub,src/AI/CIceAct.cpp
 0x004034A9,vs_root_geometry_owner_query_root_geometry_state,?QueryRootGeometryState@VS_RootGeometryOwner@@UAEHPAX0@Z,stub,src/ENGINE/GDI/VSWINDOW.H
 0x00403530,destroy_password_entry_screen_auto_thunk,?DestroyPasswordEntryScreenAutoThunk@@YIXPAX@Z,stub,src/Frontend/MAINMENU.CPP
 0x00403544,LevelChunkTypeEnabledFlagsView::SetEnabled,?SetEnabled@LevelChunkTypeEnabledFlagsView@@QAEXHH@Z,stub,src/LEVEL/ENTITY/LVCHFLAGS.CPP

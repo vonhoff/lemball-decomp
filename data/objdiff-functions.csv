@@ -1114,7 +1114,7 @@ address,size,name,unit
 0x0042D380,318,attach_entity_to_ice_chunk_object_if_inside_bounds,ENGINE/CORE/LINKSCF.CPP
 0x0042D4C0,5,return_false_ice_chunk_callback,ENGINE/CORE/LINKSCF.CPP
 0x0042D4D0,113,remove_entity_from_ice_chunk_object,ENGINE/CORE/LINKSCF.CPP
-0x0042D550,8,request_ice_chunk_object_toggle_activation,ENGINE/CORE/LINKSCF.CPP
+0x0042D550,8,switch_c_ice,ENGINE/CORE/LINKSCF.CPP
 0x0042D560,564,release_ice_chunk_object_entities,ENGINE/CORE/LINKSCF.CPP
 0x0042D7A0,91,construct_ice_chunk_manager,ENGINE/CORE/LINKSCF.CPP
 0x0042D800,48,activate_ice_chunk_objects,ENGINE/CORE/LINKSCF.CPP
@@ -1125,7 +1125,7 @@ address,size,name,unit
 0x0042DD00,40,advance_ice_chunk_manager_objects,LEVEL/VTABLE/LEVELVT.CPP
 0x0042DD30,5,return_zero_vtable_callback_0042dd30,LEVEL/VTABLE/LEVELVT.CPP
 0x0042DD40,72,try_attach_entity_to_ice_chunk_objects,LEVEL/VTABLE/LEVELVT.CPP
-0x0042DD90,93,dispatch_ice_chunk_object_action_by_slot,LEVEL/VTABLE/LEVELVT.CPP
+0x0042DD90,93,switch_c_ice_manager,LEVEL/VTABLE/LEVELVT.CPP
 0x0042DDF0,73,append_ice_chunk_object,LEVEL/VTABLE/LEVELVT.CPP
 0x0042DE40,88,copy_ice_chunk_object_aux_records,LEVEL/VTABLE/LEVELVT.CPP
 0x0042DEA0,215,load_ice_chunk_objects,LEVEL/VTABLE/LEVELVT.CPP

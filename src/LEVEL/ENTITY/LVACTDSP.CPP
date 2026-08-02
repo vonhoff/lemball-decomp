@@ -13,17 +13,16 @@ extern void LEMBALL_FASTCALL DispatchMoveChunkObjectActionBySlot(void* pManager,
 																 void* pUnusedEdx,
 																 int nAction,
 																 unsigned int nSlotId);
-extern void LEMBALL_FASTCALL DispatchIceChunkObjectActionBySlot(void* pManager,
-																void* pUnusedEdx,
-																int nAction,
-																unsigned int nSlotId);
+struct CIceManager {
+	void Switch(int nAction, unsigned int nSlotId);
+};
 
 struct LevelSlotActionDispatcherView {
 	char m_abReserved000[0x18c];
 	void* m_pLiftManager18c;
 	CDoorManager* m_pDoorManager190;
 	char m_abReserved194[0x18];
-	void* m_pIceManager1ac;
+	CIceManager* m_pIceManager1ac;
 	char m_abReserved1b0[0x10];
 	void* m_pMoveManager1c0;
 
@@ -81,7 +80,7 @@ void LevelSlotActionDispatcherView::DispatchLevelSlotActionByType(int nAction,
 		DispatchMoveChunkObjectActionBySlot(m_pMoveManager1c0, 0, 4, nSlotId);
 		return;
 	case 5:
-		DispatchIceChunkObjectActionBySlot(m_pIceManager1ac, 0, 5, nSlotId);
+		m_pIceManager1ac->Switch(5, nSlotId);
 		return;
 	}
 }
