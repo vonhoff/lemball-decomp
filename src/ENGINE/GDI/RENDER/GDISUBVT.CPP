@@ -1,5 +1,6 @@
 #include "ENGINE/CORE/VSMEM.H"
 #include "ENGINE/GDI/VSGDI.H"
+#include "Visos/Generic/CSurface.h"
 
 #include <string.h>
 
@@ -47,10 +48,6 @@ struct CompactHelperDirtyPointSink {
 	virtual void ReservedSlot8(void) = 0;
 	virtual void ReservedSlot9(void) = 0;
 	virtual void PropagateDirtyPoint(const CompactHelperPoint* pPoint) = 0;
-};
-
-struct CPVBackBuffSurfaceDirtyStateView {
-	void SetDirtyFlagAndPropagate(int fDirty);
 };
 
 struct CompactHelperLinkNode {
@@ -614,7 +611,7 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot11(void* pObject, int, short* pP
 }
 
 // FUNCTION: LEMBALL 0x004668d0
-void CPVBackBuffSurfaceDirtyStateView::SetDirtyFlagAndPropagate(int fDirty)
+void CPVScrollableSurface::SetWorldWidth(int fDirty)
 {
 	char* pGroup;
 	int* pOffsetEntry;
@@ -637,17 +634,17 @@ void CPVBackBuffSurfaceDirtyStateView::SetDirtyFlagAndPropagate(int fDirty)
 }
 
 // Compiler-state shim retained for manual table slot 17. Original 0x0046dcb0 is a
-// generated -0x518 adjustor to CPVBackBuffSurfaceDirtyStateView::SetDirtyFlagAndPropagate.
+// generated -0x518 adjustor to CPVScrollableSurface::SetWorldWidth.
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot17(void*)
 {
 }
 
-int LEMBALL_FASTCALL get_helper_group_0_dirty_flag_local(void* pHelperGroup);
+int LEMBALL_FASTCALL GetWorldWidthCPVScrollableSurface(void* pHelperGroup);
 
 // FUNCTION: LEMBALL 0x0046dcc0
-int LEMBALL_FASTCALL CompactHelperSubobjectSlot18(void* pSubobject)
+int LEMBALL_FASTCALL GetWorldWidthCPVScrollableSurfaceAdjustor(void* pSubobject)
 {
-	return get_helper_group_0_dirty_flag_local((char*) pSubobject - 0x518);
+	return GetWorldWidthCPVScrollableSurface((char*) pSubobject - 0x518);
 }
 
 class ListCharEntryIndexResolver {

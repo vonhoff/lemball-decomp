@@ -71,6 +71,9 @@ class CPVScrollableSurface {
 public:
 	CPVGDIBitmap m_RowBuffer;
 	void* m_pCPVSurfaceVbtable;
+
+	void SetWorldWidth(int nWidth);
+	int GetWorldWidth(void);
 };
 
 class CPVBackBuffSurface {
@@ -127,10 +130,14 @@ public:
 	CPVSurface m_PVSurface;
 
 	CSurface* ConstructResourceGeometryHelperTarget(int nWrappedParam, int fConstructCPVSurface);
-	CSurface* InitializeResourceGeometryHelper(const VsGdiRect* pRect, void* pWrappedTarget, int fConstructCPVSurface);
-	void MarkOrForwardHelperTargetDirtyRect(short* pRect);
-	void FlushResourceGeometryHelperTargetUpdates(CSurface* pPeerTarget);
+	CSurface* Construct(const VsGdiRect* pRect, void* pWrappedTarget, int fConstructCPVSurface);
+	void AddToChangeList(short* pRect);
+	void ToScreen(CSurface* pPeerTarget);
+	void ResetScroll(void);
 	void SetLinePtrs(void);
+	void* GetChangeList(void);
+	void AttachPalette(void* pPalette);
+	void Resize(const VsGdiRect& extent);
 };
 
 DECOMP_SIZE_ASSERT(CPVGDIBitmap, 0x40);

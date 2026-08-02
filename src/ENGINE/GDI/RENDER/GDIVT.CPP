@@ -23,7 +23,7 @@ void __fastcall clear_mapped_list_resource_table_pending_flag(void* pTable)
 }
 
 // FUNCTION: LEMBALL 0x0046db30
-int __fastcall get_helper_group_0_dirty_flag_local(void* pHelperGroup)
+int __fastcall GetWorldWidthCPVScrollableSurface(void* pHelperGroup)
 {
 	char* pOwner;
 	char* pState;

@@ -33,6 +33,6 @@ Windows ABI and addresses come from `/LEMBALL.EXE`; names and family order come 
 | `0x004726B0` | `CPVGDIBitmap::GetRects` | `Visos (Generic)` | High |
 | `0x00472760` | `CPVGDIBitmap::ResetScroll` | `Visos (Generic)` | High |
 
-`data/macintosh-x86-correlations.csv` is the machine-readable source of truth and records Macintosh offsets and evidence.
+`data/macintosh-x86-correlations.csv` is the exhaustive machine-readable source of truth. It records 55 accepted mappings, including the additional `CPVSurface`, `CPVScrollableSurface`, `CGDIDevice`, and `CSurface` lifecycle/virtual families with Macintosh offsets and evidence.
 
-Unresolved `CPVSurface` virtual slots and Windows-only rendering adapters retain slot/behavior labels. They are not assigned a Macintosh method merely by address order; promote them only when caller, signature, lifecycle, or table evidence agrees. This avoids converting a useful unknown into a false original name.
+Windows-only rendering adapters, DirectDraw helpers, upload trackers, and compiler adjustor thunks retain slot/behavior labels. They are not assigned a Macintosh method merely by address order; promote them only when caller, signature, lifecycle, or table evidence agrees.

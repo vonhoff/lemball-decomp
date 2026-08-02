@@ -227,7 +227,7 @@ address,name,symbol,type,source
 0x0046DBB0,ForwardBitmapCommandToAdjustedSurfaceThunk,,synthetic,src/Visos/Windows/CGDI.cpp
 0x0046DBF0,BlitBitmapRowsToScanlinesAdjustmentThunk,,synthetic,src/Visos/Windows/CGDI.cpp
 0x0046DC00,CompactHelperSubobjectSlot9,,synthetic,src/Visos/Windows/CGDI.cpp
-0x0046DC10,SetHelperTargetRenderExtentAdjustmentThunk,,synthetic,src/Visos/Windows/CGDI.cpp
+0x0046DC10,ResizeCSurfaceAdjustmentThunk,,synthetic,src/Visos/Windows/CGDI.cpp
 0x0046DC20,CompactHelperSubobjectSlot11,,synthetic,src/Visos/Windows/CGDI.cpp
 0x0046DC30,ApplyHelperTargetPaletteAdjustmentThunk,,synthetic,src/Visos/Windows/CGDI.cpp
 0x0046DC40,PresentCompactResourceGeometryHelperAdjustmentThunk,,synthetic,src/Visos/Windows/CGDI.cpp

@@ -1,20 +1,26 @@
 #ifndef LEMBALL_VISOS_WINDOWS_CGDIDEVICE_H
 #define LEMBALL_VISOS_WINDOWS_CGDIDEVICE_H
 
-class CSurface;
-class CVSRect;
+struct VsGdiResourceGeometryHelperSlot;
 
-// Platform analogue of CODE_01 `Visos (Mac Specific)`; no Macintosh layout is transferred.
+// Windows ABI layout recovered from /LEMBALL.EXE. Method names come from
+// CODE_01 `Visos (Mac Specific)`; Macintosh layout is not transferred.
 class CGDIDevice {
 public:
-	CGDIDevice(int nDevice);
+	virtual void* AllocateSurface(short* pRect, void* pSurface);
+	virtual void FreeSurface(void* pSurface);
+	virtual void Sync(void);
+	virtual void Flush(void* pSurface);
+
+	int FindSurface(void* pSurface);
+
+	VsGdiResourceGeometryHelperSlot* m_pSlots;
+	int m_nReserved08;
+	int m_nReserved0C;
+	int m_cSlots;
+
+	CGDIDevice(int cSlots);
 	~CGDIDevice(void);
-	CSurface* FindFreeSurface(void);
-	CSurface* AllocateSurface(const CVSRect& rect, CSurface* pSurface);
-	void FreeSurface(CSurface* pSurface);
-	void Sync(void);
-	CSurface* FindSurface(CSurface* pSurface);
-	void Flush(CSurface* pSurface);
 };
 
 #endif

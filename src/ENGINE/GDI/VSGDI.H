@@ -189,7 +189,7 @@ void LEMBALL_FASTCALL DestroyGeometryHelperPointerArray(void* pHelper);
 void LEMBALL_FASTCALL BindHelperTargetDisplayDc(void* pTarget, int nUnused, void* hDc);
 void LEMBALL_FASTCALL PropagateGlobalPaletteToResourceGeometries(void* pTarget);
 void LEMBALL_FASTCALL PropagateGlobalPaletteToResourceGeometriesBody(void* pTarget);
-void LEMBALL_FASTCALL CopyRectTupleIfExtentEmpty(void* pTarget, int nUnused, short* paRect);
+void LEMBALL_FASTCALL SetDontUpdateRectCPVSurface(void* pTarget, int nUnused, short* paRect);
 extern void* g_pSelectedGraphicsDriverRuntime;
 extern VsGdiDisplayState* g_pDisplayState;
 extern void* g_pResourceGeometryHelperTarget;

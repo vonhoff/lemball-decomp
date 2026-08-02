@@ -423,10 +423,10 @@ void LEMBALL_FASTCALL ForwardNestedGeometryRectUpdate(void* pOwner, int, short* 
 	if (pHelper != 0) {
 		pGeometryContext = *(void**) ((char*) pHelper + 0x0c);
 		if (pGeometryContext != 0) {
-			CopyRectTupleIfExtentEmpty((char*) pGeometryContext + 0x40 +
-										   *(int*) ((char*) *(void**) ((char*) pGeometryContext + 0x40) + 4),
-									   0,
-									   paRect);
+			SetDontUpdateRectCPVSurface((char*) pGeometryContext + 0x40 +
+											*(int*) ((char*) *(void**) ((char*) pGeometryContext + 0x40) + 4),
+										0,
+										paRect);
 		}
 	}
 }
