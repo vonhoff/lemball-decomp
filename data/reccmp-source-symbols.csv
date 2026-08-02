@@ -46,6 +46,6 @@ address,name,symbol,type,source
 0x004535C0,DestroyNetworkLobbyScreenAuto,,stub,src/FRONTEND/MAINMENU.CPP
 0x004550C0,DestroyNetworkLobbyTransportControllerRealAuto,,stub,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x0045D810,DestroyIntZrleListResourceAuto,,stub,src/RESOURCE/VARLOAD.CPP
-0x004664B0,DestroyHelperGroup0RowBuffer,,function,src/ENGINE/GDI/RENDER/VSGDI.CPP
+0x004664B0,DestroyCPVBackBuffSurfaceCompilerStateShim,,function,src/Visos/Windows/CGDI.cpp
 0x00468DD0,QueueSingleChildOverlayOwnerIfDirtyBody,,function,src/FRONTEND/MENUSEL.CPP
 0x00468F80,QueueSingleChildOverlayOwnerIfDirty,,function,src/FRONTEND/MENUSEL.CPP

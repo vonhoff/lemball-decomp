@@ -49,7 +49,7 @@ struct CompactHelperDirtyPointSink {
 	virtual void PropagateDirtyPoint(const CompactHelperPoint* pPoint) = 0;
 };
 
-struct CompactHelperGroup0DirtyStateView {
+struct CPVBackBuffSurfaceDirtyStateView {
 	void SetDirtyFlagAndPropagate(int fDirty);
 };
 
@@ -58,7 +58,7 @@ struct CompactHelperLinkNode {
 	CompactHelperLinkNode* m_pPrev;
 };
 
-void LEMBALL_FASTCALL EnsureHelperBackingRowIndexCapacity(VsGdiHelperSurface* pSurface);
+void LEMBALL_FASTCALL CreateLinePtrsCPVGDIBitmap(VsGdiHelperSurface* pSurface);
 
 __inline static void PlotCompactCirclePixel(int* pRows,
 											int x,
@@ -603,7 +603,7 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot11(void* pObject, int, short* pP
 		*(void**) (pCompact - 0x46c) = 0;
 	}
 	*(int*) (pCompact - 0x38) = 0;
-	EnsureHelperBackingRowIndexCapacity((VsGdiHelperSurface*) (pCompact - 0x55c));
+	CreateLinePtrsCPVGDIBitmap((VsGdiHelperSurface*) (pCompact - 0x55c));
 	LeaveCriticalSection(pCompact - 0x28);
 
 	pNode = *(CompactHelperLinkNode**) (pCompact - 0x34);
@@ -614,7 +614,7 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot11(void* pObject, int, short* pP
 }
 
 // FUNCTION: LEMBALL 0x004668d0
-void CompactHelperGroup0DirtyStateView::SetDirtyFlagAndPropagate(int fDirty)
+void CPVBackBuffSurfaceDirtyStateView::SetDirtyFlagAndPropagate(int fDirty)
 {
 	char* pGroup;
 	int* pOffsetEntry;
@@ -637,7 +637,7 @@ void CompactHelperGroup0DirtyStateView::SetDirtyFlagAndPropagate(int fDirty)
 }
 
 // Compiler-state shim retained for manual table slot 17. Original 0x0046dcb0 is a
-// generated -0x518 adjustor to CompactHelperGroup0DirtyStateView::SetDirtyFlagAndPropagate.
+// generated -0x518 adjustor to CPVBackBuffSurfaceDirtyStateView::SetDirtyFlagAndPropagate.
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot17(void*)
 {
 }
@@ -783,7 +783,7 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot0(void* pObject, int, short* pEn
 	pPrimary = pTarget + *(int*) (*(int*) (pTarget + 0x40) + 4);
 
 	if (((QueryProc) (*(void***) pPrimary)[15])(pPrimary, 0) != 0) {
-		((VsGdiHelperSurface*) (pTarget + 0xa0))->CopyOrScrollRows(DestinationRect, DestinationPoint);
+		((VsGdiHelperSurface*) (pTarget + 0xa0))->Scroll(DestinationRect, DestinationPoint);
 	}
 	if (((QueryProc) (*(void***) pPrimary)[16])(pPrimary, 0) != 0) {
 		ScaledRect[0] = DestinationRect[0] * 2;
@@ -792,8 +792,8 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot0(void* pObject, int, short* pEn
 		ScaledRect[3] = DestinationRect[3];
 		ScaledPoint[0] = DestinationPoint[0] * 2;
 		ScaledPoint[1] = DestinationPoint[1];
-		((VsGdiHelperSurface*) (pTarget + 0x4c))->CopyOrScrollRows(ScaledRect, ScaledPoint);
+		((VsGdiHelperSurface*) (pTarget + 0x4c))->Scroll(ScaledRect, ScaledPoint);
 	}
-	((VsGdiHelperSurface*) pTarget)->CopyOrScrollRows(DestinationRect, DestinationPoint);
+	((VsGdiHelperSurface*) pTarget)->Scroll(DestinationRect, DestinationPoint);
 	((DirtyRectProc) (*(void***) pTarget)[1])(pTarget, 0, DestinationRect);
 }

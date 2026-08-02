@@ -20,7 +20,11 @@ The installer stores target forks as consecutive raw-deflate streams after its P
 
 The inventory immediately confirms original shared-source types including `CPVGDIBitmap`, `CSurface`, `CGDIDevice`, `CSmallMemory`, `CBucket`, `CArena`, `CGameObject`, `CPlayerLemming`, `CEnemy`, `CMap`, and `C2D`.
 
-The first high-confidence x86 correction is the complete `CPVGDIBitmap` family. Method order and behavior correlate one-for-one with `/LEMBALL.EXE` `0x00472290..0x00472760`. The twelve reviewed mappings are recorded in `data/macintosh-x86-correlations.csv`. The x86 functions are now named in Ghidra as `CPVGDIBitmap` constructor/destructor, `Free`, `Initialise`, `CreateLinePtrs`, `ResetLinePtrs`, `SetLinePtrs`, `Scroll`, `SetSize`, `SetBitsBase`, `GetRects`, and `ResetScroll` using their recovered CodeWarrior manglings.
+The VSGDI inheritance names are also corroborated by x86 layout and behavior: the compact virtual base is `CPVSurface`; the primary `CPVGDIBitmap` branch is `CPVScrollableSurface`; the byte-backed group at `+0x98` is `CPVBackBuffSurface`; the 16-bit group at `+0x44` is `CPVZBuffSurface`; and the complete `0x5A0` target is `CSurface`. These names describe shared source structure only; the Windows offsets, vtables, vtordisps, thunks, and calling conventions remain derived from `/LEMBALL.EXE` and VC4.00.
+
+The first high-confidence x86 correction is the complete `CPVGDIBitmap` family. Method order and behavior correlate one-for-one with `/LEMBALL.EXE` `0x00472290..0x00472760`. The reviewed mappings are recorded in `data/macintosh-x86-correlations.csv`, including the `CPVSurface`, back-buffer, z-buffer, and `CSurface::SetLinePtrs` extensions. The x86 functions are named in Ghidra using their recovered CodeWarrior manglings.
+
+The Windows implementation translation unit now lives at `src/Visos/Windows/CGDI.cpp`, retaining its original CMake/link position. Shared family skeletons live at `src/Visos/Generic/CSurface.h`; this mirrors the sibling `Visos (Generic)` versus platform-specific module split without transferring Macintosh ABI details.
 
 Analysis copies live outside the repository under `C:\Users\simon\lemball-mac-source`; build products must not depend on them.
 

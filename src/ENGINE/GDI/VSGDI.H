@@ -29,9 +29,9 @@ class VsGdiHelperSurface;
 
 // SIZE 0x10
 struct VsGdiHelperDispatchQueue {
-	void** m_ppEntries; // 0x00
-	int m_cEntries; // 0x04
-	int m_nReserved08; // 0x08
+	void** m_ppEntries;                  // 0x00
+	int m_cEntries;                      // 0x04
+	int m_nReserved08;                   // 0x08
 	VsGdiHelperSurface* m_pHelperTarget; // 0x0c
 
 	void AppendPointerQueueEntry(void* pEntry);
@@ -49,11 +49,11 @@ public:
 	int ReleaseDisplayBitmap(void* pBitmap);
 	void* BindDisplayBitmap(int nDriver, void* pBitmap);
 	void* DeleteDisplayBitmap(int nDriver, void* pBitmap);
-	unsigned int DispatchSplitRectAtBackingRowBoundary(void* pDestination,
-													   short* pDestinationRect,
-													   void* pSource,
-													   short* pSourceRect,
-													   void* pHelperTarget);
+	unsigned int DispatchGetRects(void* pDestination,
+								  short* pDestinationRect,
+								  void* pSource,
+								  short* pSourceRect,
+								  void* pHelperTarget);
 
 protected:
 	void* m_pVtable;           // 0x00
@@ -109,14 +109,14 @@ public:
 	int ClipRenderRectToSurfaceBounds(VsGdiRect* pRect, VsGdiRect* pClippedRect);
 	void FillRect(VsGdiRect Rect, int nColor);
 	void UpdateWorkingRectAndBacking(const VsGdiRect* pRect);
-	void ComputeBackingDimensions(short* paOut, short* paRect, int nWidth);
-	void ConfigureBackingStrideAndOrigin(int nStride, int nOrigin);
-	void ClearBackingBorderRows(void);
-	void ClearBackingBorderRowsThunk(void);
-	void CopyOrScrollRows(short* pRect, short* pDestinationPoint);
+	void SetSize(short* paOut, short* paRect, int nWidth);
+	void SetBitsBase(int nStride, int nOrigin);
+	void ResetLinePtrs(void);
+	void ResetScroll(void);
+	void Scroll(short* pRect, short* pDestinationPoint);
 	int ClipLineToActiveRect(int* px0, int* py0, int* px1, int* py1);
 	void CopyClippedBitmapIntoHelperBufferAndNotify(const void* pBitmapInfo, const void* pBitmapBits);
-	void SplitRectAtBackingRowBoundary(short* pRect, short** ppFirstRect, short** ppSecondRect);
+	void GetRects(short* pRect, short** ppFirstRect, short** ppSecondRect);
 
 private:
 	unsigned char m_abState[0x560]; // 0x00

@@ -2,14 +2,11 @@
 #include "ENGINE/GDI/VSGDI.H"
 #include "GAME.H"
 #include "SHELL/OPTIONS.H"
+#include "Visos/Generic/CSurface.h"
 
-extern void LEMBALL_FASTCALL EnsureHelperGroup0BackingBuffer(int nHelperGroup);
-extern void LEMBALL_FASTCALL ReleaseHelperGroup0BackingBuffer(int nHelperGroup);
+extern void LEMBALL_FASTCALL AllocateBackBuff(int nHelperGroup);
+extern void LEMBALL_FASTCALL FreeBackBuff(int nHelperGroup);
 extern void* g_GAME_PrimaryContextMenuDefinitionTable[];
-
-struct GameHelperGroup0 {
-	void SetBackingActive(int fActive);
-};
 
 // FUNCTION: LEMBALL 0x00431730
 unsigned int __stdcall ComputePrimaryContextWindowStyleFlags(void)
@@ -42,7 +39,7 @@ void LEMBALL_FASTCALL PrepareLevelScreenRootHelperForRuntime(GamePrimaryContext*
 
 	pHelperGroup = *(void**) ((char*) pPrimaryContext + 0x4c);
 	pHelperGroup = (char*) *(void**) ((char*) pHelperGroup + 0x0c) + 0x98;
-	((GameHelperGroup0*) pHelperGroup)->SetBackingActive(1);
+	((CPVBackBuffSurface*) pHelperGroup)->EnableBackBuff(1);
 	*(int*) ((char*) pPrimaryContext + 0xd4) = 0;
 }
 
@@ -152,7 +149,7 @@ unsigned int MapWindowOwnerFlagsToWin32Style(unsigned int uFlags)
 }
 
 // FUNCTION: LEMBALL 0x00466540
-void LEMBALL_FASTCALL EnsureHelperGroup0BackingBuffer(int nHelperGroup)
+void LEMBALL_FASTCALL AllocateBackBuff(int nHelperGroup)
 {
 	unsigned short* pSize;
 	short aDimensions[2];
@@ -167,14 +164,14 @@ void LEMBALL_FASTCALL EnsureHelperGroup0BackingBuffer(int nHelperGroup)
 
 	nHelperTarget = *(int*) (*(int*) (nHelperGroup + 4) + 4) + nHelperGroup;
 	((VsGdiHelperSurface*) (unsigned long) (nHelperGroup + 8))
-		->ComputeBackingDimensions(aDimensions, (short*) aRect, *(int*) (nHelperTarget + 0x44));
+		->SetSize(aDimensions, (short*) aRect, *(int*) (nHelperTarget + 0x44));
 	aRect[0] = (unsigned short) aDimensions[0];
 	aRect[1] = (unsigned short) aDimensions[1];
 
 	if ((unsigned int) *(unsigned short*) (nHelperGroup + 0x50) *
 			(unsigned int) *(unsigned short*) (nHelperGroup + 0x52) <
 		(unsigned int) (short) aRect[0] * (unsigned int) (short) aRect[1]) {
-		ReleaseHelperGroup0BackingBuffer(nHelperGroup);
+		FreeBackBuff(nHelperGroup);
 	}
 
 	if ((short) *(short*) (nHelperTarget + 0x18) * (short) *(short*) (nHelperTarget + 0x1a) != 0) {
@@ -188,19 +185,19 @@ void LEMBALL_FASTCALL EnsureHelperGroup0BackingBuffer(int nHelperGroup)
 			*(int*) (nHelperGroup + 0x48) = 0;
 		}
 		((VsGdiHelperSurface*) (unsigned long) (nHelperGroup + 8))
-			->ConfigureBackingStrideAndOrigin(*(int*) (nHelperGroup + 0x4c), (short) aRect[0]);
+			->SetBitsBase(*(int*) (nHelperGroup + 0x4c), (short) aRect[0]);
 	}
 }
 
 // FUNCTION: LEMBALL 0x00466630
-void GameHelperGroup0::SetBackingActive(int fActive)
+void CPVBackBuffSurface::EnableBackBuff(int fActive)
 {
 	if (fActive == 0) {
-		ReleaseHelperGroup0BackingBuffer((int) (unsigned long) this);
+		::FreeBackBuff((int) (unsigned long) this);
 		*(int*) ((char*) this + 0x48) = 0;
 	}
 	else {
-		EnsureHelperGroup0BackingBuffer((int) (unsigned long) this);
+		::AllocateBackBuff((int) (unsigned long) this);
 		*(int*) ((char*) this + 0x48) = 1;
 	}
 }
