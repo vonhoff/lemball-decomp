@@ -259,7 +259,7 @@ address,name,symbol,type,source
 0x00403440,vs_window_owner_base_reserved_window_owner_slot20,?ReservedWindowOwnerSlot20@VS_WindowOwnerBase@@UAEXXZ,stub,src/ENGINE/GDI/VSWINDOW.H
 0x0040345E,activate_move_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x00403463,destroy_level_selection_screen_auto_thunk,?DestroyLevelSelectionScreenAutoThunk@@YIXPAX@Z,stub,src/Frontend/MAINMENU.CPP
-0x00403468,DestroyProjectileObject,?DestroyProjectileObject@@YIXPAX@Z,stub,src/ENGINE/CORE/LSPROJ.CPP
+0x00403468,DestroyProjectileObject,?DestroyProjectileObject@@YIXPAX@Z,stub,src/AI/Projectile.cpp
 0x0040346D,VsNetNetworkLobbyScreen::SelectPreviousPlayerEntry,?SelectPreviousPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/Frontend/LOBBY.CPP
 0x00403472,destroy_three_optional_record_chunk_object_auto_thunk,?DestroyThreeOptionalRecordChunkObjectAutoThunk@@YIXPAX@Z,stub,src/LEVEL/VTABLE/LEVELVT.CPP
 0x0040349A,CIceManager::Switch,?Switch@CIceManager@@QAEXHI@Z,stub,src/AI/CIceAct.cpp

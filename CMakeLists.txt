@@ -107,7 +107,7 @@ set(LEMBALL_SOURCES
     src/Visos/Generic/MogBst.cpp
     src/ENGINE/CORE/LINKSCF.CPP
     src/ENGINE/CORE/LINKSCFBYTES.CPP
-    src/ENGINE/CORE/LSPROJ.CPP
+    src/AI/Projectile.cpp
     src/ENGINE/CORE/LSMANGRP.CPP
     src/AI/CInvsSupp.cpp
     src/AI/CInvsMgr.cpp
