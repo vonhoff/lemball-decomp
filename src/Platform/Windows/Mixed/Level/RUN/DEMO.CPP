@@ -187,6 +187,7 @@ void DestroyFrameTimerController(void)
 	}
 }
 
+// MACINTOSH: CDemo::CDemo(int)
 // FUNCTION: LEMBALL 0x004091b0
 DemoLevelDemoPlaybackController* DemoLevelDemoPlaybackController::ConstructLevelDemoPlaybackController(
 	unsigned int uFrameInterval)
@@ -213,6 +214,7 @@ DemoLevelDemoPlaybackController* DemoLevelDemoPlaybackController::ConstructLevel
 	return this;
 }
 
+// MACINTOSH: CDemo::~CDemo()
 // FUNCTION: LEMBALL 0x00409220
 void DemoLevelDemoPlaybackController::DestroyLevelDemoPlaybackController(void)
 {
@@ -239,6 +241,7 @@ void* LEMBALL_FASTCALL DeleteLevelDemoPlaybackControllerAuto(void* pObject, void
 	return pObject;
 }
 
+// MACINTOSH: CDemo::LoadBuffer()
 // FUNCTION: LEMBALL 0x00409460
 int LoadNextLevelDemoRecordBuffer(void* pPlaybackController)
 {
@@ -302,6 +305,7 @@ int LoadNextLevelDemoRecordBuffer(void* pPlaybackController)
 	return 1;
 }
 
+// MACINTOSH: CDemo::GetUserPacket(unsigned char*, unsigned long&)
 // FUNCTION: LEMBALL 0x00409560
 void ReadLevelDemoLengthPrefixedRecordThunk(void* pPlaybackController, void* pRecordBuffer, unsigned int* pcbRecord)
 {
@@ -334,6 +338,7 @@ void ReadLevelDemoLengthPrefixedRecordThunk(void* pPlaybackController, void* pRe
 	(void) cbCopy;
 }
 
+// MACINTOSH: CDemo::Reset()
 // FUNCTION: LEMBALL 0x004095e0
 void DemoLevelDemoPlaybackController::ResetLevelDemoPlaybackCursor(void)
 {
@@ -343,6 +348,7 @@ void DemoLevelDemoPlaybackController::ResetLevelDemoPlaybackCursor(void)
 	*(int*) ((char*) this + 0x3c) = 0;
 }
 
+// MACINTOSH: CDemo::SetDemoMode(unsigned char)
 // FUNCTION: LEMBALL 0x00409600
 void DemoLevelDemoPlaybackController::SetLevelDemoPlaybackEnabled(int fEnabled)
 {
@@ -354,6 +360,7 @@ void DemoLevelDemoPlaybackController::SetLevelDemoPlaybackEnabled(int fEnabled)
 	ReleaseLevelDemoRecordBufferThunk(this);
 }
 
+// MACINTOSH: CDemo::Process()
 // FUNCTION: LEMBALL 0x00409620
 void ServiceLevelDemoPlayback(void* pPlaybackController)
 {
@@ -372,6 +379,7 @@ void ServiceLevelDemoPlayback(void* pPlaybackController)
 	}
 }
 
+// MACINTOSH: CDemo::CleanUp()
 // FUNCTION: LEMBALL 0x00409660
 void LEMBALL_FASTCALL ReleaseLevelDemoRecordBuffer(void* pPlaybackController)
 {
@@ -395,6 +403,7 @@ void LEMBALL_FASTCALL ReleaseLevelDemoRecordBuffer(void* pPlaybackController)
 	*(void**) ((char*) pPlaybackController + 0x1c) = 0;
 }
 
+// MACINTOSH: CDemo::GameIsOver()
 // FUNCTION: LEMBALL 0x004096a0
 void LEMBALL_FASTCALL StopLevelDemoPlayback(void* pPlaybackController)
 {
@@ -402,6 +411,7 @@ void LEMBALL_FASTCALL StopLevelDemoPlayback(void* pPlaybackController)
 	ReleaseLevelDemoRecordBufferThunk(pPlaybackController);
 }
 
+// MACINTOSH: CDemo::ProcessMsg(tagMESSAGE*)
 // FUNCTION: LEMBALL 0x004096b0
 int FilterLevelDemoPlaybackInputEvent(void* pPlaybackController, unsigned short* pEventId)
 {

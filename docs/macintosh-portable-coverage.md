@@ -8,18 +8,18 @@ This audit does **not** establish complete portable coverage. Only accepted corr
 
 | Category | Count | Meaning |
 | --- | ---: | --- |
-| Accepted x86 correlation | 640 | Exact Macintosh module+mangled spelling has a reviewed x86 mapping; offset integrity is reported separately. |
+| Accepted x86 correlation | 651 | Exact Macintosh module+mangled spelling has a reviewed x86 mapping; offset integrity is reported separately. |
 | Present spelling/source analogue | 8 | Exact scoped spelling exists in current source, but equivalence is not proven. |
 | Likely inlined/merged | 0 | Exact scoped header definition exists, but no standalone x86 address is accepted. |
 | Platform-specific | 881 | Unmapped body belongs to `Visos (Mac Specific)` or the reviewed Macintosh Toolbox/Open Transport `UtilMain` set. |
-| Genuinely missing/unresolved | 1320 | No accepted address and no exact scoped source spelling. |
+| Genuinely missing/unresolved | 1309 | No accepted address and no exact scoped source spelling. |
 | **Total** | **2849** | Complete raw inventory accounting. |
 
 ### Accepted-correlation referential integrity
 
-The accepted table has **664** rows, but only **640** match an exact raw module+mangled spelling. Of all accepted rows: **617** match the full raw tuple, **23** match name+module but carry a different trailer offset, and **24** have no exact raw name in that module. The latter are family-level/alternate-sibling claims, not coverage of an exact raw symbol.
+The accepted table has **675** rows, but only **651** match an exact raw module+mangled spelling. Of all accepted rows: **628** match the full raw tuple, **23** match name+module but carry a different trailer offset, and **24** have no exact raw name in that module. The latter are family-level/alternate-sibling claims, not coverage of an exact raw symbol.
 
-This is why the 664-row accepted table must not be reported as 256 exact raw-symbol contracts. See `data/macintosh-correlation-integrity.csv`.
+This is why the 675-row accepted table must not be reported as 256 exact raw-symbol contracts. See `data/macintosh-correlation-integrity.csv`.
 
 The non-Mac-specific target contains 1958 symbols after excluding the 12 reviewed `UtilMain` Toolbox/resolver bodies. Ten accepted cross-platform analogues found inside the Macintosh-specific module remain represented separately.
 
@@ -28,7 +28,7 @@ The non-Mac-specific target contains 1958 symbols after excluding the 12 reviewe
 | Module | accepted_x86_correlation | present_spelling_or_source_analogue | likely_inlined_or_merged | platform_specific | genuinely_missing_or_unresolved | Total |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | AI | 433 | 0 | 0 | 0 | 351 | 784 |
-| Control | 30 | 0 | 0 | 0 | 29 | 59 |
+| Control | 41 | 0 | 0 | 0 | 18 | 59 |
 | Frontend | 3 | 0 | 0 | 0 | 237 | 240 |
 | Map | 20 | 0 | 0 | 0 | 0 | 20 |
 | Network | 0 | 0 | 0 | 0 | 24 | 24 |

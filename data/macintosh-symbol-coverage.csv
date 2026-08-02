@@ -2300,17 +2300,17 @@ CODE_07_Control.bin,Control,0x00000992,0x00000993,GETWORD__FPUs,<global>,GETWORD
 CODE_07_Control.bin,Control,0x000009D2,0x000009D3,GETLONG__FPUl,<global>,GETLONG,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
 CODE_07_Control.bin,Control,0x00000A14,0x00000A15,_DEMO_Init__Fi,<global>,_DEMO_Init,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
 CODE_07_Control.bin,Control,0x00000A5E,0x00000A5F,_DEMO_Quit__Fv,<global>,_DEMO_Quit,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_07_Control.bin,Control,0x00000B0E,0x00000B0F,__ct__5CDemoFi,CDemo,CDemo,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_07_Control.bin,Control,0x00000B78,0x00000B79,__dt__5CDemoFv,CDemo,~CDemo,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_07_Control.bin,Control,0x00000E1C,0x00000E1D,SendNextPacket__5CDemoFi,CDemo,SendNextPacket,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_07_Control.bin,Control,0x00000F6A,0x00000F6B,LoadBuffer__5CDemoFv,CDemo,LoadBuffer,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_07_Control.bin,Control,0x00001012,0x00001013,GetUserPacket__5CDemoFPUcRUl,CDemo,GetUserPacket,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_07_Control.bin,Control,0x00001050,0x00001051,Reset__5CDemoFv,CDemo,Reset,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_07_Control.bin,Control,0x00001092,0x00001093,SetDemoMode__5CDemoFUc,CDemo,SetDemoMode,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_07_Control.bin,Control,0x00001102,0x00001103,Process__5CDemoFv,CDemo,Process,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_07_Control.bin,Control,0x00001164,0x00001165,CleanUp__5CDemoFv,CDemo,CleanUp,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_07_Control.bin,Control,0x00001192,0x00001193,GameIsOver__5CDemoFv,CDemo,GameIsOver,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_07_Control.bin,Control,0x00001205,0x00001206,ProcessMsg__5CDemoFP10tagMESSAGE,CDemo,ProcessMsg,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
+CODE_07_Control.bin,Control,0x00000B0E,0x00000B0F,__ct__5CDemoFi,CDemo,CDemo,accepted_x86_correlation,gap,0x004091B0,high,,constructs the demo controller registers render dispatch at priority -100 and resets playback state
+CODE_07_Control.bin,Control,0x00000B78,0x00000B79,__dt__5CDemoFv,CDemo,~CDemo,accepted_x86_correlation,gap,0x00409220,high,,releases demo data unregisters render dispatch and restores the base vtable
+CODE_07_Control.bin,Control,0x00000E1C,0x00000E1D,SendNextPacket__5CDemoFi,CDemo,SendNextPacket,accepted_x86_correlation,gap,0x00409250,high,,dispatches all recorded input packets for the requested frame
+CODE_07_Control.bin,Control,0x00000F6A,0x00000F6B,LoadBuffer__5CDemoFv,CDemo,LoadBuffer,accepted_x86_correlation,gap,0x00409460,high,,loads resource or file backed demo data and primes the record cursor
+CODE_07_Control.bin,Control,0x00001012,0x00001013,GetUserPacket__5CDemoFPUcRUl,CDemo,GetUserPacket,accepted_x86_correlation,gap,0x00409560,high,,reads one length-prefixed user packet and advances remaining data
+CODE_07_Control.bin,Control,0x00001050,0x00001051,Reset__5CDemoFv,CDemo,Reset,accepted_x86_correlation,gap,0x004095E0,high,,resets buffer sentinel frame timeout stop and cursor state
+CODE_07_Control.bin,Control,0x00001092,0x00001093,SetDemoMode__5CDemoFUc,CDemo,SetDemoMode,accepted_x86_correlation,gap,0x00409600,high,,enables playback with reset or disables it with cleanup
+CODE_07_Control.bin,Control,0x00001102,0x00001103,Process__5CDemoFv,CDemo,Process,accepted_x86_correlation,gap,0x00409620,high,,services timed playback and dispatches all packets for the current frame
+CODE_07_Control.bin,Control,0x00001164,0x00001165,CleanUp__5CDemoFv,CDemo,CleanUp,accepted_x86_correlation,gap,0x00409660,high,,releases resource or owned file buffer and clears pointers
+CODE_07_Control.bin,Control,0x00001192,0x00001193,GameIsOver__5CDemoFv,CDemo,GameIsOver,accepted_x86_correlation,gap,0x004096A0,high,,marks playback stopped and cleans up the active buffer
+CODE_07_Control.bin,Control,0x00001205,0x00001206,ProcessMsg__5CDemoFP10tagMESSAGE,CDemo,ProcessMsg,accepted_x86_correlation,gap,0x004096B0,high,,filters live input and passes synthetic recorded messages
 CODE_07_Control.bin,Control,0x00001238,0x00001239,ClockEditMode__FUc,<global>,ClockEditMode,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
 CODE_07_Control.bin,Control,0x0000128E,0x0000128F,ResetGameTimes__Fv,<global>,ResetGameTimes,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
 CODE_07_Control.bin,Control,0x00001374,0x00001375,SetGameTime__Fv,<global>,SetGameTime,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source

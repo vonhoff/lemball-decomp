@@ -137,3 +137,7 @@ All nine portable `CIce` and nine portable `CIceManager` methods align with Wind
 ### CGame portable family
 
 All nine portable `CGame` methods align with Windows `0x00406DF0..0x00407950` through the main-context lifecycle, resource validation and frontend-resource helper, flow-process switching, active-mode processing, view presentation and message-driven run loop. The Macintosh `char*` constructor parameter is the Windows startup path argument recovered from the stack; the physical Windows owner remains `src/Control/CGame.cpp`. Adjacent stream, callback and deleting-wrapper functions remain separate.
+
+### CDemo portable family
+
+All 11 portable `CDemo` methods align with Windows `0x004091B0..0x004096B0` through the `0x58`-byte controller lifecycle, resource/file-backed demo buffering, length-prefixed records, per-frame synthetic input dispatch, playback reset/cleanup and live-input filtering. Physical ownership remains `src/Platform/Windows/Mixed/Level/RUN/DEMO.CPP`; frame-timer helpers and deleting wrappers at `0x004098B0`/`0x004098E0` consume no portable symbol.
