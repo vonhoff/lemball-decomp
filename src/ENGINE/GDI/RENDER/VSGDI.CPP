@@ -280,7 +280,7 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot0(void*, int, short*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot1(void*, int, void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot2(void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot3(void*);
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot4(void*);
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot4(void*, int, void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot5(void*, int, void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot9(void*, int, void*, void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot11(void*);
@@ -5669,6 +5669,83 @@ void VsGdiHelperSurface::FillRect(VsGdiRect Rect, int nColor)
 		memset(ppRows[paRect[3] + iRow] + paRect[2], (unsigned char) nColor, (unsigned int) (unsigned short) paRect[0]);
 	}
 	((DirtyRectVirtual) (*(void***) this)[1])(this, 0, &Rect);
+}
+
+__inline static int ComputeHelperLineClipCode(int x, int y, int xMin, int yMin, int xMax, int yMax)
+{
+	int nCode = 0;
+	if (x < xMin) {
+		nCode |= 1;
+	}
+	else if (x > xMax) {
+		nCode |= 2;
+	}
+	if (y < yMin) {
+		nCode |= 4;
+	}
+	else if (y > yMax) {
+		nCode |= 8;
+	}
+	return nCode;
+}
+
+// FUNCTION: LEMBALL 0x004757a0
+int VsGdiHelperSurface::ClipLineToActiveRect(int* px0, int* py0, int* px1, int* py1)
+{
+	char* pView;
+	int nCode0;
+	int nCode1;
+	int nCode;
+	int xMin;
+	int yMin;
+	int xMax;
+	int yMax;
+	int x;
+	int y;
+
+	pView = (char*) this + *(int*) (*(int*) ((char*) this + 0x40) + 4);
+	if (*(short*) (pView + 0x64) < 1 || *(short*) (pView + 0x66) < 1) {
+		return 1;
+	}
+	xMin = *(short*) (pView + 0x68);
+	yMin = *(short*) (pView + 0x6a);
+	xMax = xMin + *(short*) (pView + 0x64) - 1;
+	yMax = yMin + *(short*) (pView + 0x66) - 1;
+	nCode0 = ComputeHelperLineClipCode(*px0, *py0, xMin, yMin, xMax, yMax);
+	nCode1 = ComputeHelperLineClipCode(*px1, *py1, xMin, yMin, xMax, yMax);
+	while (nCode0 != 0 || nCode1 != 0) {
+		if ((nCode0 & nCode1) != 0) {
+			return 1;
+		}
+		nCode = nCode0 != 0 ? nCode0 : nCode1;
+		if ((nCode & 1) != 0) {
+			y = *py0 + (xMin - *px0) * (*py1 - *py0) / (*px1 - *px0);
+			x = xMin;
+		}
+		else if ((nCode & 2) != 0) {
+			y = *py0 + (xMax - *px0) * (*py1 - *py0) / (*px1 - *px0);
+			x = xMax;
+		}
+		else if ((nCode & 4) != 0) {
+			x = *px0 + (yMin - *py0) * (*px1 - *px0) / (*py1 - *py0);
+			y = yMin;
+		}
+		else {
+			x = *px0 + (yMax - *py0) * (*px1 - *px0) / (*py1 - *py0);
+			y = yMax;
+		}
+		if (nCode == nCode0) {
+			*px0 = x;
+			*py0 = y;
+			nCode0 = ComputeHelperLineClipCode(x, y, xMin, yMin, xMax, yMax);
+		}
+		else {
+			*px1 = x;
+			*py1 = y;
+			nCode1 = ComputeHelperLineClipCode(x, y, xMin, yMin, xMax, yMax);
+		}
+	}
+	return 0;
 }
 // FUNCTION: LEMBALL 0x00476580
 int VsGdiHelperSurface::ClipRenderRectToSurfaceBounds(VsGdiRect* pRect, VsGdiRect* pClippedRect)

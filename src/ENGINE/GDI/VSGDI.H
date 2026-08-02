@@ -114,6 +114,7 @@ public:
 	void ClearBackingBorderRows(void);
 	void ClearBackingBorderRowsThunk(void);
 	void CopyOrScrollRows(short* pRect, short* pDestinationPoint);
+	int ClipLineToActiveRect(int* px0, int* py0, int* px1, int* py1);
 	void CopyClippedBitmapIntoHelperBufferAndNotify(const void* pBitmapInfo, const void* pBitmapBits);
 	void SplitRectAtBackingRowBoundary(short* pRect, short** ppFirstRect, short** ppSecondRect);
 

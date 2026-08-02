@@ -102,8 +102,80 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot3(void*)
 {
 }
 
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot4(void*)
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot4(void* pObject, int, void* pCommand)
 {
+	typedef void(LEMBALL_FASTCALL * DirtyRectProc)(void*, int, short*);
+	char* pCompact;
+	char* pTarget;
+	int* pRows;
+	short DirtyRect[4];
+	int x0;
+	int y0;
+	int x1;
+	int y1;
+	int dx;
+	int dy;
+	int nError;
+	int nStepY;
+	int i;
+	unsigned char nColor;
+
+	pCompact = (char*) pObject - *(int*) ((char*) pObject - 4);
+	pTarget = pCompact - 0x55c;
+	x0 = *(short*) ((char*) pCommand + 4);
+	y0 = *(short*) ((char*) pCommand + 6);
+	x1 = *(short*) ((char*) pCommand + 8);
+	y1 = *(short*) ((char*) pCommand + 0x0a);
+	if (x1 < x0) {
+		i = x0;
+		x0 = x1;
+		x1 = i;
+		i = y0;
+		y0 = y1;
+		y1 = i;
+	}
+	if (((VsGdiHelperSurface*) pTarget)->ClipLineToActiveRect(&x0, &y0, &x1, &y1) != 0) {
+		return;
+	}
+	DirtyRect[0] = (short) (x1 - x0 + 1);
+	DirtyRect[1] = (short) ((y1 < y0 ? y0 - y1 : y1 - y0) + 1);
+	DirtyRect[2] = (short) x0;
+	DirtyRect[3] = (short) (y0 < y1 ? y0 : y1);
+
+	pRows = *(int**) (pCompact - 0x558);
+	nColor = (unsigned char) *(int*) ((char*) pCommand + 0x0c);
+	dx = x1 - x0;
+	dy = y1 - y0;
+	nStepY = 1;
+	if (dy < 0) {
+		nStepY = -1;
+		dy = -dy;
+	}
+	if (dy < dx) {
+		nError = 0;
+		for (i = 0; i < dx; ++i) {
+			++x0;
+			nError += dy * 2;
+			*(unsigned char*) (pRows[y0] + x0 - 1) = nColor;
+			if (nError > dx) {
+				y0 += nStepY;
+				nError -= dx * 2;
+			}
+		}
+	}
+	else {
+		nError = 0;
+		for (i = 0; i < dy; ++i) {
+			*(unsigned char*) (pRows[y0] + x0) = nColor;
+			y0 += nStepY;
+			nError += dx * 2;
+			if (nError > dy) {
+				++x0;
+				nError -= dy * 2;
+			}
+		}
+	}
+	((DirtyRectProc) (*(void***) pTarget)[1])(pTarget, 0, DirtyRect);
 }
 
 // Original body 0x00474fd0 is reached through vtordisp thunk 0x0046db90.
