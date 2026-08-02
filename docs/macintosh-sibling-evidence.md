@@ -177,3 +177,7 @@ All 14 portable GMOB manager methods map at `0x0041AF60..0x0041BF00` in physical
 ### CDoor and CDoorManager
 
 The remaining 18 portable methods map at `0x0040D490..0x0040E630`; audit correction places `Unlock` at `0x0040DD00` and the pre-existing `DoActivate` at `0x0040DEC0`, leaving the latch helper at `0x0040DD50` target-only. Windows evidence preserves the `0x14c` stride, vertical/horizontal tile footprints, key and state values, delayed timing, overlap bounds, versioned loader, and split physical TUs. Remove helper `0x0040E140`, tile access helpers `0x0040EB70`/`0x0040EB90`, and deleting wrappers `0x0040EBE0`/`0x0040EC10` consume no portable symbols.
+
+## CAICursor exact 68K and Windows queue-cursor reconstruction
+
+The six Macintosh `CAICursor` bodies map to constructor `0x00414DA0`, destructor `0x00414DE0`, `SetCursorXY` `0x00414E00`, `CheckAndClipCursorBounds` `0x00414E20`, `GetCursorSurfaceCoordinates` `0x00414E60`, and `ProcessMsg` `0x00414E80`. Exact 68K disassembly confirms the same bounds, queue registration, coordinate clamping, outputs, and message dispatch. Windows layout offsets differ; constructor code is physically in `LINKSCF.CPP` and the remaining bodies in `LEVELVT.CPP`. Scalar deleting wrapper `0x00414F00` remains Windows-only.
