@@ -2819,8 +2819,9 @@ void LEMBALL_FASTCALL ReleaseHelperGroup1BackingBuffer(int nHelperGroup)
 	ReleaseResourceGeometryRowBufferStorage((int) (unsigned long) &pHelperGroup->m_RowBuffer);
 }
 // FUNCTION: LEMBALL 0x00466740
-void LEMBALL_FASTCALL EnsureHelperGroup1BackingBufferBody(void* pHelperGroup)
+void LEMBALL_FASTCALL EnsureHelperGroup1BackingBufferBody(void* pvHelperGroup)
 {
+	VsGdiResourceGeometryHelperGroupView* pHelperGroup;
 	VsGdiHelperSurface* pSurface;
 	short* pExtent;
 	short aRequestedRect[4];
@@ -2829,35 +2830,35 @@ void LEMBALL_FASTCALL EnsureHelperGroup1BackingBufferBody(void* pHelperGroup)
 	unsigned int cbExisting;
 	unsigned int cbRequired;
 
-	nCompactDelta = *(int*) ((char*) *(void**) ((char*) pHelperGroup + 4) + 4);
+	pHelperGroup = (VsGdiResourceGeometryHelperGroupView*) pvHelperGroup;
+	nCompactDelta = *(int*) ((char*) pHelperGroup->m_pCompactHelperVbtable + 4);
 	pExtent = (short*) ((char*) pHelperGroup + nCompactDelta + 0x18);
 	aRequestedRect[0] = (short) (pExtent[0] * 2);
 	aRequestedRect[1] = pExtent[1];
 	aRequestedRect[2] = 0;
 	aRequestedRect[3] = 0;
-	pSurface = (VsGdiHelperSurface*) ((char*) pHelperGroup + 8);
+	pSurface = (VsGdiHelperSurface*) &pHelperGroup->m_RowBuffer;
 	pSurface->ComputeBackingDimensions(aBackingSize,
 									   aRequestedRect,
 									   *(int*) ((char*) pHelperGroup + nCompactDelta + 0x44) * 2);
 
-	cbExisting = (unsigned short) *(short*) ((char*) pHelperGroup + 0x50) *
-				 (unsigned short) *(short*) ((char*) pHelperGroup + 0x52) * 2;
+	cbExisting = (unsigned short) pHelperGroup->m_nWidth * (unsigned short) pHelperGroup->m_nHeight * 2;
 	cbRequired = (unsigned int) ((int) aBackingSize[0] * (int) aBackingSize[1]);
 	if (cbExisting < cbRequired) {
 		ReleaseHelperGroup1BackingBuffer((int) (unsigned long) pHelperGroup);
 	}
 
 	if ((int) pExtent[0] * (int) pExtent[1] != 0) {
-		if (*(void**) ((char*) pHelperGroup + 0x4c) == 0) {
-			*(short*) ((char*) pHelperGroup + 0x50) = (short) ((unsigned int) (int) aBackingSize[0] >> 1);
-			*(short*) ((char*) pHelperGroup + 0x52) = aBackingSize[1];
-			*(void**) ((char*) pHelperGroup + 0x4c) = AllocateVSMemBlock(
-				(unsigned short) *(short*) ((char*) pHelperGroup + 0x50) * (unsigned short) aBackingSize[1] * 2);
+		if (pHelperGroup->m_pBackingBuffer == 0) {
+			pHelperGroup->m_nWidth = (short) ((unsigned int) (int) aBackingSize[0] >> 1);
+			pHelperGroup->m_nHeight = aBackingSize[1];
+			pHelperGroup->m_pBackingBuffer =
+				AllocateVSMemBlock((unsigned short) pHelperGroup->m_nWidth * (unsigned short) aBackingSize[1] * 2);
 		}
-		if (*(void**) ((char*) pHelperGroup + 0x4c) == 0) {
-			*(int*) ((char*) pHelperGroup + 0x48) = 0;
+		if (pHelperGroup->m_pBackingBuffer == 0) {
+			pHelperGroup->m_fActive = 0;
 		}
-		pSurface->ConfigureBackingStrideAndOrigin((int) (unsigned long) *(void**) ((char*) pHelperGroup + 0x4c),
+		pSurface->ConfigureBackingStrideAndOrigin((int) (unsigned long) pHelperGroup->m_pBackingBuffer,
 												  (int) aBackingSize[0]);
 	}
 }
