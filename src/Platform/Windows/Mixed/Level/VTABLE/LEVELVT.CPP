@@ -51,19 +51,23 @@ struct LevelManagedEntityStateIdView {
 	int m_nStateIdB8;
 };
 
-struct ManagedEntityGroupChildrenView {
+struct CGenericGroup {
 	char m_abReserved00[0x124];
 	int m_nChildCount124;
 	void* m_apChildren128[10];
 	char m_abReserved150[0x10];
+
+	void ClearChildren(void);
+};
+
+struct CPlayerLemmingGroup : CGenericGroup {
 	int m_nRuntimeState160;
 	int m_nRuntimeState164;
 	int m_nRuntimeState168;
 	int m_nReserved16C;
 	int m_nRuntimeState170;
 
-	void ClearChildren(void);
-	void ResetRuntimeState(void);
+	void Restart(void);
 };
 
 class LevelManagedEntityDirtyStateRecoveredView {
@@ -125,14 +129,14 @@ struct LevelManagedEntityChildIterator {
 	void* GetFirstChildThunk(void);
 	void* GetNextChildThunk(void);
 	void* GetCurrentChildThunk(void);
-	int GetActiveState(void);
+	int CheckPlayerControlled(void);
 	int GetActiveStateThunk(void);
-	void* GetChildWithState8(void);
+	void* GetFirstDeadLemming(void);
 	void* GetChildWithState8Thunk(void);
 	void* GetCurrentChildWithState8(void);
 	int HasDirtyChildren(void);
 	int HasDirtyChildrenThunk(void);
-	int HasStreamDirtyChildren(void);
+	int HasSFXChanged(void);
 	int AttachManagedEntityChild(ManagedEntityChildView* pChild);
 };
 
@@ -507,7 +511,7 @@ LevelThreeDwordPointVariantB* LevelThreeDwordPointVariantB::CopyThunk(const Leve
 // LINKERILT: LEMBALL 0x0040173f
 void* LevelManagedEntityChildIterator::GetChildWithState8Thunk(void)
 {
-	return GetChildWithState8();
+	return GetFirstDeadLemming();
 }
 
 // LINKERILT: LEMBALL 0x00401816
@@ -631,7 +635,7 @@ int PASCAL IsManagedEntityState18Thunk(int nState)
 // LINKERILT: LEMBALL 0x00403477
 int LevelManagedEntityChildIterator::GetActiveStateThunk(void)
 {
-	return GetActiveState();
+	return CheckPlayerControlled();
 }
 
 // LINKERILT: LEMBALL 0x0040367a
@@ -1187,8 +1191,9 @@ int __fastcall has_level_plas_history_entries(void* pLevelMode)
 	return *(int*) ((char*) pPlasManager + 0x128);
 }
 
+// MACINTOSH: CPlayerLemmingGroup::Restart()
 // FUNCTION: LEMBALL 0x00414040
-void ManagedEntityGroupChildrenView::ResetRuntimeState(void)
+void CPlayerLemmingGroup::Restart(void)
 {
 	ClearChildren();
 	m_nRuntimeState160 = 0;
@@ -1210,14 +1215,16 @@ void LEMBALL_FASTCALL DestroyLevelChunkObjectChildrenVariantAutoThunk(void* pObj
 	DestroyLevelChunkObjectChildrenVariantAuto(pObject);
 }
 
+// MACINTOSH: CPlayerLemmingGroup::CheckPlayerControlled()
 // FUNCTION: LEMBALL 0x00414880
-int LevelManagedEntityChildIterator::GetActiveState(void)
+int LevelManagedEntityChildIterator::CheckPlayerControlled(void)
 {
 	return m_nActiveState168;
 }
 
+// MACINTOSH: CPlayerLemmingGroup::GetFirstDeadLemming()
 // FUNCTION: LEMBALL 0x00414890
-void* LevelManagedEntityChildIterator::GetChildWithState8(void)
+void* LevelManagedEntityChildIterator::GetFirstDeadLemming(void)
 {
 	LevelManagedEntityStateIdView* pChild;
 	int nStateId;
@@ -1254,8 +1261,9 @@ void* LevelManagedEntityChildIterator::GetCurrentChildWithState8(void)
 	}
 }
 
+// MACINTOSH: CPlayerLemmingGroup::HasSFXChanged()
 // FUNCTION: LEMBALL 0x00414960
-int LevelManagedEntityChildIterator::HasStreamDirtyChildren(void)
+int LevelManagedEntityChildIterator::HasSFXChanged(void)
 {
 	LevelManagedEntityDirtyStateView* pChild;
 	int fDirty;

@@ -5,15 +5,16 @@ struct LevelManagedEntityTargetView {
 	int m_fActiveTarget8C;
 };
 
-struct LevelManagedEntityGroupTargetView {
+struct CPlayerLemmingGroup {
 	unsigned char m_abReserved00[0x170];
 	LevelManagedEntityTargetView* m_pActiveTarget170;
 
-	void ClearActiveTarget(void);
+	void Delete(void);
 };
 
+// MACINTOSH: CPlayerLemmingGroup::Delete()
 // FUNCTION: LEMBALL 0x00414130
-void LevelManagedEntityGroupTargetView::ClearActiveTarget(void)
+void CPlayerLemmingGroup::Delete(void)
 {
 	if (m_pActiveTarget170 != 0) {
 		m_pActiveTarget170->m_fActiveTarget8C = 0;

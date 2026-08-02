@@ -79,3 +79,6 @@ All twenty-six portable Macintosh `CPlayerLemmingGroupManager` methods align wit
 ### CGenericGroupManager lifecycle and iterator core
 
 All twenty-five portable Macintosh `CGenericGroupManager` methods align with Windows `0x0041E8F0..0x0041EED0` through the 40-slot manager layout, vtable/ILT calls, exact count/index fields, nested iterator and mutation inverse pairs, signatures, allocation sizes, bounding-box/view-data strides, and intersection dispatch. Target-only child-destruction helper `0x0041E9A0` remains explicitly excluded.
+### CPlayerLemmingGroup portable core
+
+All fifteen Macintosh lifecycle, view-data, child mutation, use-object, player-control, dead-child, waypoint, and SFX methods align with Windows `0x00414010..0x004148F0` through the player-group vtable, exact signatures, fields `0x160..0x170`, paired child operations, command semantics, ILTs, and callers. Target-only range helper `0x004140D0`, current-dead iterator `0x004148C0`, and child-dirty walker `0x004149A0` remain excluded. `HasSFXChanged` is `0x00414960`: the already-evidenced manager method at `0x004193F0` calls its ILT directly. The source-identifier refactor is tracked with a temporary fidelity debt: exact accounting changed from `169/21` to `166/21` and implemented functions from `2803` to `2802`; the protected checkpoint remains unchanged.

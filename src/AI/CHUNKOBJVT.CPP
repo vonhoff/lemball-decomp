@@ -59,7 +59,7 @@ struct ManagedProjectileObjectView {
 struct ManagedEntityChildView;
 
 struct LevelManagedEntityChildIterator {
-	int AttachManagedEntityChild(ManagedEntityChildView* pChild);
+	int AddLemmingToGroup(ManagedEntityChildView* pChild);
 };
 
 struct RockChunkObjectStateView {
@@ -705,7 +705,7 @@ int LEMBALL_FASTCALL UpdateRockHistoryChildSwapState(void* pObject)
 			activationPoint.m_nZ = *(int*) (pObjectBytes + 0xa4);
 			pProjectile->ActivateAtPosition(&activationPoint);
 			((LevelManagedEntityChildIterator*) get_managed_entity_owner_group(*(void**) (pObjectBytes + 0x140)))
-				->AttachManagedEntityChild((ManagedEntityChildView*) pProjectile);
+				->AddLemmingToGroup((ManagedEntityChildView*) pProjectile);
 		}
 		((RockChunkObjectStateView*) pObject)->SetManagedEntityStateIdLocal(0x18);
 	}

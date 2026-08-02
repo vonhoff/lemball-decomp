@@ -31,14 +31,15 @@ struct LevelManagedEntityChildIterator {
 	void* GetCurrentChildWithState8(void);
 	int HasDirtyChildren(void);
 	int HasDirtyChildrenThunk(void);
-	int HasStreamDirtyChildren(void);
-	int AttachManagedEntityChild(ManagedEntityChildView* pChild);
+	int HasSFXChanged(void);
+	int AddLemmingToGroup(ManagedEntityChildView* pChild);
 };
 
 // Split from the original LEVELVT source group to preserve MSVC 4.20 code generation in LEVELVT.CPP.
 
+// MACINTOSH: CPlayerLemmingGroup::AddLemmingToGroup(CPlayerLemming*)
 // FUNCTION: LEMBALL 0x00414600
-int LevelManagedEntityChildIterator::AttachManagedEntityChild(ManagedEntityChildView* pChild)
+int LevelManagedEntityChildIterator::AddLemmingToGroup(ManagedEntityChildView* pChild)
 {
 	typedef int(LEMBALL_FASTCALL * GetChildCountProc)(void*);
 	AppendChild(pChild);

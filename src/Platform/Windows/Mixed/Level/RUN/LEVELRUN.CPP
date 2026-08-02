@@ -181,7 +181,7 @@ public:
 class LevelManagedEntityChildIterator {
 public:
 	int HasDirtyChildrenThunk(void);
-	int HasStreamDirtyChildren(void);
+	int HasSFXChanged(void);
 };
 
 class LevelManagedEntityActiveGroupView {
@@ -190,7 +190,7 @@ class LevelManagedEntityActiveGroupView {
 	int m_cManagedEntitiesA4;
 
 public:
-	int HasStreamDirtyChildren(void);
+	int HasSFXChanged(void);
 	int HasStreamDirtyChildrenThunk(void);
 	int HasDirtyChildren(void);
 	int HasDirtyChildrenThunk(void);
@@ -213,7 +213,7 @@ struct LevelManagedEntityOwnerView {
 };
 
 // Original body: LEMBALL 0x004193f0. Kept beside its required compatibility ILT owner.
-int LevelManagedEntityActiveGroupView::HasStreamDirtyChildren(void)
+int LevelManagedEntityActiveGroupView::HasSFXChanged(void)
 {
 	int fDirty;
 	int iEntity;
@@ -226,7 +226,7 @@ int LevelManagedEntityActiveGroupView::HasStreamDirtyChildren(void)
 		ppEntity = m_apManagedEntities04;
 		do {
 			pEntity = *ppEntity;
-			fDirty = pEntity->HasStreamDirtyChildren() || fDirty;
+			fDirty = pEntity->HasSFXChanged() || fDirty;
 			++ppEntity;
 			++iEntity;
 		} while (iEntity < m_cManagedEntitiesA4);
@@ -779,7 +779,7 @@ void LEMBALL_FASTCALL DispatchType14CountedChildSlotC4(void* pObject)
 // Compatibility shim for the original ILT call site.
 int LevelManagedEntityActiveGroupView::HasStreamDirtyChildrenThunk(void)
 {
-	return HasStreamDirtyChildren();
+	return HasSFXChanged();
 }
 // LINKERILT: LEMBALL 0x00403224
 void LevelTileGridRuntimeView::ComputeLevelTileGridRepeatedColumnCountsThunk(void)

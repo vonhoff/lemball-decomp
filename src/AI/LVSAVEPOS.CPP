@@ -159,7 +159,7 @@ struct LevelChunkObjectRuntimeStateView {
 	void ResetRuntimeStateThunk(void);
 };
 
-struct ManagedEntityGroupChildrenView {
+struct CGenericGroup {
 	char m_abReserved00[0x124];
 	int m_nChildCount124;
 	void* m_apChildren128[10];
@@ -169,7 +169,7 @@ struct ManagedEntityGroupChildrenView {
 
 // MACINTOSH: CGenericGroup::Restart()
 // FUNCTION: LEMBALL 0x0041de80
-void ManagedEntityGroupChildrenView::ClearChildren(void)
+void CGenericGroup::ClearChildren(void)
 {
 	int i;
 
