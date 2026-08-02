@@ -819,7 +819,7 @@ address,size,name,unit
 0x00420720,117,remove_enemy_award_500,LEVEL/VTABLE/LEVELVT.CPP
 0x00420AA0,7,get_object_field_0x124,LEVEL/VTABLE/LEVELVT.CPP
 0x00420AB0,30,delete_three_optional_record_chunk_object_wrapper,LEVEL/VTABLE/LEVELVT.CPP
-0x00420AE0,35,construct_enmy_managed_entity_group_controller,LEVEL/VTABLE/LEVELVT.CPP
+0x00420AE0,35,cenemy_group_constructor,AI/CEnemyGrp.cpp
 0x00420B20,30,delete_level_chunk_object_children_wrapper_00420b20,ENGINE/CORE/LINKSCF.CPP
 0x00420B50,39,read_little_endian_u32_from_bytes,ENGINE/CORE/LINKSCF.CPP
 0x00420B80,35,construct_enmy_chunk_manager,ENGINE/CORE/LINKSCF.CPP

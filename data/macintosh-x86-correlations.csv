@@ -95,3 +95,4 @@ CODE_06_AI.bin,0x0001659E,StepOn__5CMineFP11CGameObject,0x00423E70,high,"family 
 CODE_06_AI.bin,0x000165DE,IsUsable__5CMineF7eAction,0x00423E90,high,"family order; accepts only inactive/ready mine states 8 and 0x18"
 CODE_06_AI.bin,0x000166E8,Process__5CMineFv,0x00423EB0,high,"family order; advances mine trigger, terrain, cooldown, and state transitions"
 CODE_06_AI.bin,0x0001674E,OnGround__5CMineFv,0x00423FA0,high,"family end; resamples mine ground height from the tile grid"
+CODE_06_AI.bin,0x000088E7,__ct__11CEnemyGroupFP3CAIP14CObjectManagerP17CFormationManager,0x00420AE0,high,"enemy load/create callers allocate the 0x168-byte group, pass the three shared AI/object/formation contexts, invoke this constructor through its ILT, and install the enemy-group vtable"

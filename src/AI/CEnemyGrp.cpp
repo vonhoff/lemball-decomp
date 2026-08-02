@@ -57,12 +57,13 @@ int LEMBALL_FASTCALL ServiceEnmyManagedEntityGroup(EnmyManagedEntityGroupView* p
 	return 0;
 }
 
+struct CEnemyGroup : EnmyManagedEntityGroupView {
+	CEnemyGroup(int nAI, unsigned short nObjectManager, unsigned short nFormationManager);
+};
+
 // FUNCTION: LEMBALL 0x00420ae0
-EnmyManagedEntityGroupView* EnmyManagedEntityGroupView::ConstructEnmyManagedEntityGroup(int nType,
-																						unsigned short nVariant,
-																						unsigned short nStateId)
+CEnemyGroup::CEnemyGroup(int nAI, unsigned short nObjectManager, unsigned short nFormationManager)
 {
-	InitializeLevelChunkObjectBase(nType, nVariant, nStateId);
+	InitializeLevelChunkObjectBase(nAI, nObjectManager, nFormationManager);
 	*(void**) this = g_LEVELVT_EnmyManagedEntityGroupVtable;
-	return this;
 }
