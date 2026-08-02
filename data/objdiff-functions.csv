@@ -2067,9 +2067,10 @@ address,size,name,unit
 0x0045A010,134,CArena::AllocateArena,Visos/Generic/Memory.cpp
 0x0045A0A0,61,CArena::FreeArena,Visos/Generic/Memory.cpp
 0x0045A0E0,76,CArena::CheckValidPointer,Visos/Generic/Memory.cpp
-0x0045A1E0,22,has_memory_block_magic,Visos/Generic/Memory.cpp
+0x0045A180,63,CArena::Shrink,Visos/Generic/Memory.cpp
+0x0045A1E0,22,CArena::CheckMemoryBlock,Visos/Generic/Memory.cpp
 0x0045A200,36,is_used_memory_block,Visos/Generic/Memory.cpp
-0x0045A230,36,is_free_memory_block,Visos/Generic/Memory.cpp
+0x0045A230,36,CArena::CheckFreeMemoryBlock,Visos/Generic/Memory.cpp
 0x0045A260,206,CArena::StreamOut,Visos/Generic/Memory.cpp
 0x0045A340,4,CArena::GetAllocSize,Visos/Generic/Memory.cpp
 0x0045A350,37,CArena::GetFreeSize,Visos/Generic/Memory.cpp
