@@ -67,7 +67,6 @@ void LevelChunkStreamWriteView::AppendLevelChunkStreamPayload(VsNetEffStreamBase
 	GameEffStream* pSource = (GameEffStream*) pPayload;
 	LevelChunkStreamWriteView* pTarget = this;
 	unsigned long dwStart;
-	int cbRequired;
 
 	do {
 		if (pTarget->m_fWritePending != 0) {
@@ -88,10 +87,8 @@ void LevelChunkStreamWriteView::AppendLevelChunkStreamPayload(VsNetEffStreamBase
 		if (pTarget->m_cWriteSessions <= 0) {
 			pTarget->BeginEffStreamWriteSession();
 		}
-		cbRequired = (unsigned char*) pTarget->m_pvWriteCursor - (unsigned char*) pTarget->m_pvOwnedBuffer;
-		cbRequired += pSource->m_cbSerializedLength;
-		cbRequired += 2;
-		if ((unsigned int) cbRequired <= (unsigned int) pTarget->m_cbSerializedLength) {
+		if ((unsigned int) ((unsigned char*) pTarget->m_pvWriteCursor - (unsigned char*) pTarget->m_pvOwnedBuffer +
+							pSource->m_cbSerializedLength + 2) <= (unsigned int) pTarget->m_cbSerializedLength) {
 			((VsNetEffStreamBase*) pSource)->SaveEffStreamToMemoryRange(pTarget->m_pvWriteCursor, 0);
 			pTarget->m_pvWriteCursor += pSource->m_pvWriteCursor - pSource->m_pvOwnedBuffer;
 			return;
