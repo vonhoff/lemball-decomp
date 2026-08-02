@@ -143,7 +143,7 @@ address,name,symbol,type,source
 0x0040254A,Distance2DIntPixels,?Distance2DIntPixels@@YAHHHHH@Z,stub,src/Control/CGame.cpp
 0x00402559,activate_ice_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
 0x0040258B,advance_cached_group_managed_entity_child_iterator,,stub,src/ENGINE/CORE/LINKSCF.H
-0x0040259A,LevelManagedEntityActiveGroupView::GetActiveEntityPosition,?GetActiveEntityPosition@LevelManagedEntityActiveGroupView@@QAEHPAULevelPoint3@@@Z,stub,src/LEVEL/VTABLE/LEVELVTGROUP.CPP
+0x0040259A,LevelManagedEntityActiveGroupView::GetActiveEntityPosition,?GetActiveEntityPosition@LevelManagedEntityActiveGroupView@@QAEHPAULevelPoint3@@@Z,stub,src/AI/GroupPlas.cpp
 0x004025B3,managed_entity_packet26_reverse_eff_stream_payload,?ReverseEffStreamPayload@ManagedEntityPacket26@@UAEXXZ,stub,src/LEVEL/IO/LVPKTTH.CPP
 0x004025EA,CIce::Switch,?Switch@CIce@@QAEXXZ,stub,src/AI/CIceAct.cpp
 0x004025FE,destroy_counted_child_table_stream_auto_thunk,?DestroyCountedChildTableStreamAutoThunk@@YIXPAX@Z,stub,src/LEVEL/VTABLE/LEVELVT.CPP
@@ -278,7 +278,7 @@ address,name,symbol,type,source
 0x0040369D,emit_door_chunk_render_entries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004036C0,get_int_direction_sign_thunk,,stub,src/Frontend/MENUSEL.H
 0x004036D4,initialize_tram_chunk_objects,,stub,src/ENGINE/CORE/LINKSCF.H
-0x004036D9,DispatchPlasChildStateTable,?DispatchPlasChildStateTable@@YAXPAPAUPlasChildStateDispatchEntry@@PAXPAUPlasChildStateEntityView@@@Z,stub,src/LEVEL/VTABLE/LEVELVTGROUP.CPP
+0x004036D9,DispatchPlasChildStateTable,?DispatchPlasChildStateTable@@YAXPAPAUPlasChildStateDispatchEntry@@PAXPAUPlasChildStateEntityView@@@Z,stub,src/AI/GroupPlas.cpp
 0x004036F2,destroy_network_lobby_transport_controller_auto_thunk,?DestroyNetworkLobbyTransportControllerAutoThunk@@YIXPAX@Z,stub,src/Control/CGame.cpp
 0x00403729,ReleaseQueuedVariantRangeResources,?ReleaseQueuedVariantRangeResources@@YIXPAUGameQueuedVariantRangeEntry@@@Z,stub,src/Frontend/MENUSEL.CPP
 0x0040372E,has_level_plas_history_entries,?has_level_plas_history_entries@@YIHPAX@Z,stub,src/LEVEL/VTABLE/LEVELVT.CPP
