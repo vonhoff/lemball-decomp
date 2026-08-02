@@ -860,3 +860,8 @@ CODE_06_AI.bin,0x0001901C,Process__5CAmmoFv,0x0041CAB0,high,"exact terrain refre
 CODE_06_AI.bin,0x00019082,Activate__5CAmmoFP11CGameObject,0x0041CBE0,high,"exact idle gate, target acceptance, deadline 8, and state 0x1A request; independently audited exact 68K body and coherent Windows vtable/ABI/layout evidence"
 CODE_06_AI.bin,0x00019100,DoActivate__5CAmmoFv,0x0041CC30,high,"exact clock update, action 0x11, target action 0x19, and score 50; independently audited exact 68K body and coherent Windows vtable/ABI/layout evidence"
 CODE_06_AI.bin,0x0001916E,ActivatePosition__5CAmmoFv,0x0041CC70,high,"exact unchanged current-position output through hidden result pointer; independently audited exact 68K body and coherent Windows vtable/ABI/layout evidence"
+CODE_06_AI.bin,0x0001ECB0,__ct__7CSlinkyFv,0x0040B480,high,"exact type 0x35 construction and class vtable installation; exact 68K body plus Windows ABI/layout/caller/vtable evidence"
+CODE_06_AI.bin,0x0001ED8A,Set__7CSlinkyFiiii,0x0040B4D0,high,"exact bounds, terrain height, fixed-point position, clock, and state 0x18 setup; exact 68K body plus Windows ABI/layout/caller/vtable evidence"
+CODE_06_AI.bin,0x0001EDF2,GoodEndPt__7CSlinkyFRC7AICOORD,0x0040B630,high,"exact inclusive fixed-point endpoint bounds test; exact 68K body plus Windows ABI/layout/caller/vtable evidence"
+CODE_06_AI.bin,0x0001EEE0,Move__7CSlinkyFv,0x0040B670,high,"exact randomized cardinal target selection with eight endpoint attempts; exact 68K body plus Windows ABI/layout/caller/vtable evidence"
+CODE_06_AI.bin,0x0001F07A,Process__7CSlinkyFv,0x0040B760,high,"exact state 0x18/0x1B timers, movement, overlap query, and callback dispatch; exact 68K body plus Windows ABI/layout/caller/vtable evidence"

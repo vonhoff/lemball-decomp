@@ -2196,11 +2196,11 @@ CODE_06_AI.bin,AI,0x0001E94F,0x0001E950,__ct__18CSheepGroupManagerFP3CAIP14CObje
 CODE_06_AI.bin,AI,0x0001E9FA,0x0001E9FB,Restart__18CSheepGroupManagerFv,CSheepGroupManager,Restart,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
 CODE_06_AI.bin,AI,0x0001EA6A,0x0001EA6B,Process__18CSheepGroupManagerFv,CSheepGroupManager,Process,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
 CODE_06_AI.bin,AI,0x0001EBF1,0x0001EBF2,LoadLevel__18CSheepGroupManagerFP16tagLoadSheepDataUlUc,CSheepGroupManager,LoadLevel,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x0001ECB0,0x0001ECB1,__ct__7CSlinkyFv,CSlinky,CSlinky,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x0001ED8A,0x0001ED8B,Set__7CSlinkyFiiii,CSlinky,Set,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x0001EDF2,0x0001EDF3,GoodEndPt__7CSlinkyFRC7AICOORD,CSlinky,GoodEndPt,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x0001EEE0,0x0001EEE1,Move__7CSlinkyFv,CSlinky,Move,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x0001F07A,0x0001F07B,Process__7CSlinkyFv,CSlinky,Process,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
+CODE_06_AI.bin,AI,0x0001ECB0,0x0001ECB1,__ct__7CSlinkyFv,CSlinky,CSlinky,accepted_x86_correlation,gap,0x0040B480,mapped,high,"exact type 0x35 construction and class vtable installation"
+CODE_06_AI.bin,AI,0x0001ED8A,0x0001ED8B,Set__7CSlinkyFiiii,CSlinky,Set,accepted_x86_correlation,gap,0x0040B4D0,mapped,high,"exact bounds, terrain height, fixed-point position, clock, and state 0x18 setup"
+CODE_06_AI.bin,AI,0x0001EDF2,0x0001EDF3,GoodEndPt__7CSlinkyFRC7AICOORD,CSlinky,GoodEndPt,accepted_x86_correlation,gap,0x0040B630,mapped,high,"exact inclusive fixed-point endpoint bounds test"
+CODE_06_AI.bin,AI,0x0001EEE0,0x0001EEE1,Move__7CSlinkyFv,CSlinky,Move,accepted_x86_correlation,gap,0x0040B670,mapped,high,"exact randomized cardinal target selection with eight endpoint attempts"
+CODE_06_AI.bin,AI,0x0001F07A,0x0001F07B,Process__7CSlinkyFv,CSlinky,Process,accepted_x86_correlation,gap,0x0040B760,mapped,high,"exact state 0x18/0x1B timers, movement, overlap query, and callback dispatch"
 CODE_06_AI.bin,AI,0x0001F0AA,0x0001F0AB,__ct__14CSlinkyManagerFP3CAIi,CSlinkyManager,CSlinkyManager,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
 CODE_06_AI.bin,AI,0x0001F10A,0x0001F10B,Restart__14CSlinkyManagerFv,CSlinkyManager,Restart,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
 CODE_06_AI.bin,AI,0x0001F1B4,0x0001F1B5,Initialise__14CSlinkyManagerFi,CSlinkyManager,Initialise,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source

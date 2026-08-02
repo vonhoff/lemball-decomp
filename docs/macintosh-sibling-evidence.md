@@ -213,3 +213,7 @@ All five portable methods map at `0x0041C700..0x0041CA60`. Independent auditing 
 ## CAmmo reconstruction
 
 All five portable methods map at `0x0041CA90..0x0041CC70` on the coherent Windows vtable at `0x00494268`: slots `5/6/11/65/67` hold Process, Activate, ActivatePosition, Restart, and DoActivate. Independent auditing corrected the preliminary crossed-family hypothesis: `0x0041C700/0x0041C720` belong to CCatapult, while CAmmo uses `0x0041CA90/0x0041CAB0`. Exact bodies agree on the class-specific duration field, states `0x1A/0x1B/0x18`, action `0x11`, target action `0x19`, score `50`, and unchanged hidden-result position output. Physical ownership remains split between `LVSAVEPOS.CPP` and `LEVELVT.CPP`.
+
+## CSlinky reconstruction
+
+All five portable methods map at `0x0040B480..0x0040B760`. Exact 68K and Windows bodies agree on type-`0x35` construction, inclusive fixed-point bounds, terrain-derived setup, random cardinal movement with eight attempts, state `0x18/0x1B` timing, overlap queries, and callbacks. ILTs and the type-`0x35` vtable keep the family coherent; raw-coordinate helpers `0x0040B5B0/0x0040B5F0` remain target-only. Physical ownership stays split between `LEVELRUN.CPP` and `LV35BOUND.CPP`.
