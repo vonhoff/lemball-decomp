@@ -95,7 +95,7 @@ address,name,symbol,type,source
 0x004398D0,AppendThisToPointerQueue,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x00439900,AppendRenderEntryToPointerQueueB,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x00439930,AppendRenderEntryToPointerQueueC,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x0043A450,delete_adjusted_resource_window_owner_buffer_0043a450 `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/SCREENVT.CPP
+0x0043A450,delete_adjusted_resource_window_owner_buffer_0043a450 `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Frontend/SCREENVT.CPP
 0x0043BCD0,noop_level_screen_static_region_callback,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x0043ED10,noop_level_screen_view_follow_callback,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x00442130,LevelTwoShortPointView::CopyTwoShortPoint,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
@@ -106,15 +106,15 @@ address,name,symbol,type,source
 0x00442CA0,LevelScreenActionButtonLayoutAuto::Position,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x004432A0,LevelActionPanelCodeView::MapActionPanelCode14To8,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x00443350,noop_level_screen_action_panel_callback,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00443850,MenuSelectorXorFieldView::RecomputeField104FromXor,,synthetic,src/FRONTEND/MENUSEL.CPP
-0x00443870,update_action_button_field_0x104_from_fields_0x130_xor_0xd0,,synthetic,src/FRONTEND/MENUSEL.CPP
-0x004438B0,delete_aligned_zrle_child_overlay_adjusted_a `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
-0x004438F0,delete_aligned_zrle_child_overlay_adjusted_b `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
+0x00443850,MenuSelectorXorFieldView::RecomputeField104FromXor,,synthetic,src/Frontend/MENUSEL.CPP
+0x00443870,update_action_button_field_0x104_from_fields_0x130_xor_0xd0,,synthetic,src/Frontend/MENUSEL.CPP
+0x004438B0,delete_aligned_zrle_child_overlay_adjusted_a `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Frontend/MENUSEL.CPP
+0x004438F0,delete_aligned_zrle_child_overlay_adjusted_b `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Frontend/MENUSEL.CPP
 
-0x00443950,delete_base_mode_action_button_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
+0x00443950,delete_base_mode_action_button_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Frontend/MENUSEL.CPP
 0x004439F0,DeleteLevelScreenActionPanelAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00443AB0,delete_resource_geometry_child_from_rect_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
-0x00444DD0,Pause-dialog layout forwarding thunk,,synthetic,src/FRONTEND/MENUSEL.CPP
+0x00443AB0,delete_resource_geometry_child_from_rect_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Frontend/MENUSEL.CPP
+0x00444DD0,Pause-dialog layout forwarding thunk,,synthetic,src/Frontend/MENUSEL.CPP
 0x004452A0,LevelTwoShortPointView::AddTwoShortPointInPlace,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x004452C0,LevelTwoShortPointView::SubtractTwoShortPointInPlace,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x00445350,delete_level_screen_pause_dialog `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
@@ -127,33 +127,33 @@ address,name,symbol,type,source
 0x00447EB0,LoadMainGameVariantBitmapResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
 0x00447F30,LoadMainGameVariantPaletteResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
 0x00448030,LoadMainGameVariantTwoArrayListResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
-0x00449000,noop_options_screen_frame_draw,,synthetic,src/FRONTEND/MAINMENU.CPP
-0x00449170,DeleteOptionsScreenAuto,,synthetic,src/FRONTEND/MAINMENU.CPP
-0x00449EA0,RequestLevelSelectionTransitionMode5,,synthetic,src/FRONTEND/MAINMENU.CPP
-0x00449EC0,RequestLevelSelectionTransitionMode2,,synthetic,src/FRONTEND/MAINMENU.CPP
-0x0044A940,DeleteLevelSelectionScreenAuto,,synthetic,src/FRONTEND/MAINMENU.CPP
+0x00449000,noop_options_screen_frame_draw,,synthetic,src/Frontend/MAINMENU.CPP
+0x00449170,DeleteOptionsScreenAuto,,synthetic,src/Frontend/MAINMENU.CPP
+0x00449EA0,RequestLevelSelectionTransitionMode5,,synthetic,src/Frontend/MAINMENU.CPP
+0x00449EC0,RequestLevelSelectionTransitionMode2,,synthetic,src/Frontend/MAINMENU.CPP
+0x0044A940,DeleteLevelSelectionScreenAuto,,synthetic,src/Frontend/MAINMENU.CPP
 0x0044A9D0,DeleteLevelSelectionModeAuto,,synthetic,src/Control/CGame.cpp
 0x0044AA70,ResetLevelStatusChildCursor,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
 0x0044B330,noop_level_selection_mode_render_hook,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x0044BEC0,noop_registration_recenter,,synthetic,src/FRONTEND/SCREENVT.CPP
-0x0044C0C0,noop_registration_buffer_reset,,synthetic,src/FRONTEND/SCREENVT.CPP
+0x0044BEC0,noop_registration_recenter,,synthetic,src/Frontend/SCREENVT.CPP
+0x0044C0C0,noop_registration_buffer_reset,,synthetic,src/Frontend/SCREENVT.CPP
 0x0044C0D0,DeleteRegistrationInfoScreenAuto,,synthetic,src/Control/CGame.cpp
-0x0044DED0,noop_menu_selector_animation_callback,,synthetic,src/FRONTEND/MENUSEL.CPP
-0x0044E620,DeleteMenuSelectorEntryAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
-0x0044E650,delete_aligned_zrle_child_overlay_adjusted_c `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/FRONTEND/MENUSEL.CPP
-0x0044E690,DeleteMenuSelectorManagerAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
-0x0044FCA0,noop_queued_variant_child_refresh_callback,,synthetic,src/FRONTEND/MENUSEL.CPP
-0x0044FFC0,DeleteQueuedVariantRangeEntryAuto,?DeleteQueuedVariantRangeEntryAuto@@YIPAXPAX0E@Z,synthetic,src/FRONTEND/MENUSEL.CPP
-0x0044FFF0,DeleteQueuedVariantChildSlotManagerAuto,,synthetic,src/FRONTEND/MENUSEL.CPP
-0x004509F0,FinishPaintballSequenceToMainMenu,,synthetic,src/FRONTEND/MAINMENU.CPP
-0x004510E0,DeletePaintballSequenceScreenAuto,,synthetic,src/FRONTEND/MAINMENU.CPP
+0x0044DED0,noop_menu_selector_animation_callback,,synthetic,src/Frontend/MENUSEL.CPP
+0x0044E620,DeleteMenuSelectorEntryAuto,,synthetic,src/Frontend/MENUSEL.CPP
+0x0044E650,delete_aligned_zrle_child_overlay_adjusted_c `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Frontend/MENUSEL.CPP
+0x0044E690,DeleteMenuSelectorManagerAuto,,synthetic,src/Frontend/MENUSEL.CPP
+0x0044FCA0,noop_queued_variant_child_refresh_callback,,synthetic,src/Frontend/MENUSEL.CPP
+0x0044FFC0,DeleteQueuedVariantRangeEntryAuto,?DeleteQueuedVariantRangeEntryAuto@@YIPAXPAX0E@Z,synthetic,src/Frontend/MENUSEL.CPP
+0x0044FFF0,DeleteQueuedVariantChildSlotManagerAuto,,synthetic,src/Frontend/MENUSEL.CPP
+0x004509F0,FinishPaintballSequenceToMainMenu,,synthetic,src/Frontend/MAINMENU.CPP
+0x004510E0,DeletePaintballSequenceScreenAuto,,synthetic,src/Frontend/MAINMENU.CPP
 0x004511C0,DeleteBaseModeObjectVariantAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00452370,DeletePasswordEntryScreenAuto,,synthetic,src/FRONTEND/MAINMENU.CPP
+0x00452370,DeletePasswordEntryScreenAuto,,synthetic,src/Frontend/MAINMENU.CPP
 0x00452EC0,DeleteNetworkLobbyPeerClearCloseStream,,synthetic,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x00452EF0,DeleteNetworkLobbyPeerDirtyConfirmStream,,synthetic,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x00452F20,DeleteNetworkLobbyVsnetRuntimeAuto,,synthetic,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x00453120,DeleteNetworkLevelChunkDeltaStreamAuto,,synthetic,src/LEVEL/RUN/LEVELRUN.CPP
-0x00455DE0,DeleteNetworkLobbyScreenAuto,,synthetic,src/FRONTEND/MAINMENU.CPP
+0x00455DE0,DeleteNetworkLobbyScreenAuto,,synthetic,src/Frontend/MAINMENU.CPP
 0x00455EA0,noop_lobby_transport_callback,,synthetic,src/Control/CGame.cpp
 0x00455EB0,DeleteNetworkLobbyTransportControllerAuto,,synthetic,src/Control/CGame.cpp
 0x004583C0,DeleteDibDisplayStateVariantAuto,,synthetic,src/Visos/Windows/CGDI.cpp

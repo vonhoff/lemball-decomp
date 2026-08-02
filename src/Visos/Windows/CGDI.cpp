@@ -3,7 +3,7 @@
 #include "ENGINE/CORE/VSINIT.H"
 #include "ENGINE/GDI/VSGDI.H"
 #include "ENGINE/GDI/VSWINDOW.H"
-#include "FRONTEND/CURSOR.H"
+#include "Frontend/CURSOR.H"
 #include "Control/CGame.h"
 #include "LEVEL/DRAWTEXT.H"
 #include "SHELL/ENTRY.H"

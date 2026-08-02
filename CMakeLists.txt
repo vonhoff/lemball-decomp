@@ -4,13 +4,13 @@ project(lemball_decomp CXX)
 # Order is significant for the reconstructed executable.
 set(LEMBALL_SOURCES
     src/Control/CGame.cpp
-    src/FRONTEND/GAMEEVT.CPP
+    src/Frontend/GAMEEVT.CPP
     src/views/2d/C2D.cpp
     src/Control/CGameHelp.cpp
     src/Control/CGameVT.cpp
-    src/FRONTEND/MAINMENU.CPP
-    src/FRONTEND/MMRENDCH.CPP
-    src/FRONTEND/MMCONTEXT.CPP
+    src/Frontend/MAINMENU.CPP
+    src/Frontend/MMRENDCH.CPP
+    src/Frontend/MMCONTEXT.CPP
     src/SHELL/PRIMARY.CPP
     src/LEVEL/ENTITY/TYPE18.CPP
     src/LEVEL/ENTITY/TYPE18RESET.CPP
@@ -45,22 +45,22 @@ set(LEMBALL_SOURCES
     src/LEVEL/VTABLE/LVMOVEVT.CPP
     src/LEVEL/IO/LVNETVT.CPP
     src/LEVEL/VTABLE/LVPROJVT.CPP
-    src/FRONTEND/SCREENVT.CPP
-    src/FRONTEND/SCRVTDEF.CPP
+    src/Frontend/SCREENVT.CPP
+    src/Frontend/SCRVTDEF.CPP
     src/LEVEL/STATE/LEVELSTAT.CPP
     src/LEVEL/STATE/LVSTATMODE.CPP
     src/LEVEL/STATE/LVSTATUS.CPP
     src/LEVEL/STATE/LVSTATRG.CPP
-    src/FRONTEND/MENUSEL.CPP
-    src/FRONTEND/MENUSELRECT.CPP
-    src/FRONTEND/MSSPREVT.CPP
-    src/FRONTEND/MSRESCHD.CPP
-    src/FRONTEND/MENUSELSINK.CPP
-    src/FRONTEND/MENUSELPAUSE.CPP
+    src/Frontend/MENUSEL.CPP
+    src/Frontend/MENUSELRECT.CPP
+    src/Frontend/MSSPREVT.CPP
+    src/Frontend/MSRESCHD.CPP
+    src/Frontend/MENUSELSINK.CPP
+    src/Frontend/MENUSELPAUSE.CPP
     src/RESOURCE/VARLOAD.CPP
     src/RESOURCE/VARMGR.CPP
-    src/FRONTEND/LOBBY.CPP
-    src/FRONTEND/BOUNDEDTEXT.CPP
+    src/Frontend/LOBBY.CPP
+    src/Frontend/CEditString.cpp
     src/SHELL/ENTRY.CPP
     src/SHELL/SHELLUI.CPP
     src/SHELL/OPTIONS.CPP
@@ -141,8 +141,8 @@ set(LEMBALL_SOURCES
     src/LEVEL/IO/DRAWTEXT.CPP
     src/LEVEL/IO/TXTCNT.CPP
     src/LEVEL/IO/TXTCONST.CPP
-    src/FRONTEND/MMPASSTH.CPP
-    src/FRONTEND/MMPASS.CPP
+    src/Frontend/MMPASSTH.CPP
+    src/Frontend/MMPASS.CPP
     src/LEVEL/VTABLE/LVRANDVT.CPP
     src/LEVEL/VTABLE/LVPREDVT.CPP
     src/LEVEL/ENTITY/LVACTCHD.CPP

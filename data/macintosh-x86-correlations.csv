@@ -75,3 +75,6 @@ CODE_09_Visos (Generic).bin,0x00015642,__nw__6CArenaFUlPv,0x0045A390,high,"place
 CODE_09_Visos (Generic).bin,0x00015660,MemSet__6CArenaFPvUcUl,0x0045A3A0,high,"byte fill implementation and signature"
 CODE_09_Visos (Generic).bin,0x00015696,MemCopy__6CArenaFPvPCvUl,0x0045A3D0,high,"byte copy implementation and signature"
 CODE_02_Visos (Generic).bin,0x000147AC,SqRoot__7CVSMathFUi,0x0045A9B0,high,"integer square-root bounds and binary-search behavior"
+CODE_08_Frontend.bin,0x0000631E,__ct__11CEditStringFi,0x00453150,high,"capacity allocation and empty-string constructor lifecycle"
+CODE_08_Frontend.bin,0x0000636A,__apl__11CEditStringFc,0x00453180,high,"bounded character append and NUL termination"
+CODE_08_Frontend.bin,0x000063BE,__as__11CEditStringFPCc,0x00453200,high,"C-string assignment and length update"

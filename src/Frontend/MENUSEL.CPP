@@ -3,7 +3,7 @@
 #include "ENGINE/CORE/WIN32.H"
 #include "ENGINE/GDI/VSGDI.H"
 #include "ENGINE/GDI/VSGEOM.H"
-#include "FRONTEND/MENUSEL.H"
+#include "Frontend/MENUSEL.H"
 #include "Control/CGame.h"
 #include "LEVEL/DRAWTEXT.H"
 #include "RESOURCE/VARMGR.H"

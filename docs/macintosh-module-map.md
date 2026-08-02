@@ -10,7 +10,7 @@
 | Windows platform analogue | Win32 GDI, DIB, DirectDraw, switching, and 240-line mode implementation | `src/Visos/Windows/CGDI.cpp`, `CGDISwitch.cpp`, `CGDI240.cpp` | High: three Visos TUs moved intact at their existing CMake/link positions |
 | `AI` | game objects, players, enemies | Existing game/object files; future module pass | Unmapped in this correction |
 | `Control` | `CGame`, `CGameStatus`, `CLevelLoader`, game lifecycle and control helpers | `src/Control/CGame.cpp`, `CGame.h`, `CGameHelp.cpp`, `CGameVT.cpp` | High for `CGame` and helper ownership; the mixed compiler-vtable TU remains physically intact |
-| `Frontend` | screens, menus, UI | Existing `FRONTEND` files; future module pass | Module name proven; class ownership pending |
+| `Frontend` | screens, menus, UI; recovered `CEditString` family | `src/Frontend`; `CEditString.cpp` is class-owned, remaining TUs retain their Windows boundaries pending per-file audits | High for `CEditString`; module proven, other class ownership remains function-specific |
 | `Map` | map/loading | Existing map/loading files; future module pass | Module name proven; class ownership pending |
 | `Network` | network | Existing network files; future module pass | Module name proven; class ownership pending |
 | `views/2d` | `C2D` group navigation and cancel-move behavior | `src/views/2d/C2D.cpp` | High: matching Macintosh `C2D` behavior and lifecycle |

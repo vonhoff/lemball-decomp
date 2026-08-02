@@ -32,6 +32,10 @@ def mac_class(mangled):
 
 
 def mac_function(mangled, class_name):
+    operators = {"__apl__": "operator+=", "__as__": "operator="}
+    for prefix, name in operators.items():
+        if mangled.startswith(prefix):
+            return name
     if mangled.startswith("__ct__"):
         return class_name
     if mangled.startswith("__dt__"):

@@ -1,4 +1,4 @@
-#include "FRONTEND/MENUSEL.H"
+#include "Frontend/MENUSEL.H"
 
 class GameCompactZrleOverlay {
 public:

@@ -1,6 +1,6 @@
 # By-name correlations for reconstructed or intentionally stubbed project functions whose definitions cannot carry direct annotations.
 address,name,symbol,type,source
-0x00407EE0,ForwardUpdateNamedStatusEntry,,function,src/FRONTEND/MAINMENU.CPP
+0x00407EE0,ForwardUpdateNamedStatusEntry,,function,src/Frontend/MAINMENU.CPP
 0x00409CC0,ResetInvsChunkObject,,function,src/ENGINE/CORE/LINKSCF.CPP
 0x00409CE0,ResetInvsChunkObjectState,,function,src/ENGINE/CORE/LINKSCF.CPP
 0x0040A350,DestroyLevelChunkStreamAuto,,function,src/ENGINE/CORE/LINKSCF.CPP
@@ -36,16 +36,16 @@ address,name,symbol,type,source
 0x0042E5E0,ResetMoveChunkObject,,function,src/LEVEL/VTABLE/LEVELVT.CPP
 0x0042E600,ResetMoveChunkObjectRuntimeState,,function,src/LEVEL/VTABLE/LEVELVT.CPP
 0x0042F2C0,DestroyMoveChunkManagerAuto,,function,src/LEVEL/VTABLE/LEVELVT.CPP
-0x004364B0,ForwardLevelScreenStatusIndicatorMode,,function,src/FRONTEND/SCREENVT.CPP
-0x0043A2E0,FUN_0043a2e0,,stub,src/FRONTEND/SCREENVT.CPP
-0x00448DE0,DestroyOptionsScreenAuto,,stub,src/FRONTEND/MAINMENU.CPP
-0x004496D0,DestroyLevelSelectionScreenAuto,,stub,src/FRONTEND/MAINMENU.CPP
-0x004507A0,DestroyPaintballSequenceScreenAuto,,stub,src/FRONTEND/MAINMENU.CPP
-0x004515C0,DestroyPasswordEntryScreenAuto,,stub,src/FRONTEND/MAINMENU.CPP
-0x00451610,DrawPasswordEntryScreenContents,,function,src/FRONTEND/MAINMENU.CPP
-0x004535C0,DestroyNetworkLobbyScreenAuto,,stub,src/FRONTEND/MAINMENU.CPP
+0x004364B0,ForwardLevelScreenStatusIndicatorMode,,function,src/Frontend/SCREENVT.CPP
+0x0043A2E0,FUN_0043a2e0,,stub,src/Frontend/SCREENVT.CPP
+0x00448DE0,DestroyOptionsScreenAuto,,stub,src/Frontend/MAINMENU.CPP
+0x004496D0,DestroyLevelSelectionScreenAuto,,stub,src/Frontend/MAINMENU.CPP
+0x004507A0,DestroyPaintballSequenceScreenAuto,,stub,src/Frontend/MAINMENU.CPP
+0x004515C0,DestroyPasswordEntryScreenAuto,,stub,src/Frontend/MAINMENU.CPP
+0x00451610,DrawPasswordEntryScreenContents,,function,src/Frontend/MAINMENU.CPP
+0x004535C0,DestroyNetworkLobbyScreenAuto,,stub,src/Frontend/MAINMENU.CPP
 0x004550C0,DestroyNetworkLobbyTransportControllerRealAuto,,stub,src/ENGINE/MEDIA/EFFSTRM.CPP
 0x0045D810,DestroyIntZrleListResourceAuto,,stub,src/RESOURCE/VARLOAD.CPP
 0x004664B0,DestroyCPVBackBuffSurfaceCompilerStateShim,,function,src/Visos/Windows/CGDI.cpp
-0x00468DD0,QueueSingleChildOverlayOwnerIfDirtyBody,,function,src/FRONTEND/MENUSEL.CPP
-0x00468F80,QueueSingleChildOverlayOwnerIfDirty,,function,src/FRONTEND/MENUSEL.CPP
+0x00468DD0,QueueSingleChildOverlayOwnerIfDirtyBody,,function,src/Frontend/MENUSEL.CPP
+0x00468F80,QueueSingleChildOverlayOwnerIfDirty,,function,src/Frontend/MENUSEL.CPP
