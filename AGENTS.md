@@ -21,6 +21,17 @@ Make verified decompilation progress while preserving compiler behavior. Treat t
 
 Verified progress includes a new 100% match, measurable similarity improvement, corrected inventory or Ghidra data, compiler-accurate infrastructure, or removal of an incorrect implementation.
 
+## Macintosh sibling-build evidence
+
+The Japanese Macintosh release is a first-class corroborating source for original program terminology and shared source structure. Its 68K and PowerPC code may preserve original function, method, class, global, module, assertion, and file-format names that are absent from the Windows executable.
+
+1. Inventory the Macintosh executables and symbol-bearing resources before assigning more provisional names in Windows code.
+2. Correlate every imported Macintosh name to `/LEMBALL.EXE` using behavior, constants, strings, callers, table position, and subsystem context. Record confidence and architecture provenance.
+3. Prefer a corroborated original Macintosh name over an invented semantic name when the x86 implementation performs the same shared-game operation. Correct Ghidra, source, and reccmp metadata together after correlation.
+4. Treat platform-specific Macintosh Toolbox, Code Fragment Manager, filesystem, sound, display, and input code as terminology evidence only unless an x86 counterpart is independently proven.
+5. Never transfer Macintosh object layouts, vtable encodings, thunks, calling conventions, RTTI layout, exception ABI, or compiler code generation to the MSVC reconstruction. `/LEMBALL.EXE` and VC4.00 probes remain authoritative for the Windows ABI and bytes.
+6. Preserve the raw sibling binaries and a reproducible symbol inventory outside generated build trees. Do not silently normalize or discard mangled names.
+
 ## Constraints
 
 - Preserve required ABI, layout, annotations, source placement, and link order.

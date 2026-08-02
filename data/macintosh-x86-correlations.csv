@@ -1,0 +1,13 @@
+mac_code_file,mac_name_length_offset,mac_mangled_name,x86_address,confidence,evidence
+CODE_02_Visos (Generic).bin,0x000128B0,__ct__12CPVGDIBitmapFv,0x00472290,high,"family order; constructor behavior; 0x40-byte object"
+CODE_02_Visos (Generic).bin,0x00012902,__dt__12CPVGDIBitmapFv,0x004722D0,high,"family order; destructor behavior"
+CODE_02_Visos (Generic).bin,0x00012948,Free__12CPVGDIBitmapFv,0x004722E0,high,"family order; releases line-pointer storage"
+CODE_02_Visos (Generic).bin,0x00012994,Initialise__12CPVGDIBitmapFv,0x00472310,high,"family order; clears bitmap state"
+CODE_02_Visos (Generic).bin,0x00012A23,CreateLinePtrs__12CPVGDIBitmapFv,0x00472340,high,"family order; allocates row-pointer index"
+CODE_02_Visos (Generic).bin,0x00012AC6,ResetLinePtrs__12CPVGDIBitmapFv,0x004723A0,high,"family order; resets rows and border storage"
+CODE_02_Visos (Generic).bin,0x00012B3E,SetLinePtrs__12CPVGDIBitmapFv,0x00472400,high,"family order; rebuilds row-pointer table"
+CODE_02_Visos (Generic).bin,0x00012C21,Scroll__12CPVGDIBitmapFRC7CVSRectRC8CVSPoint,0x00472440,high,"family order; rectangle row scrolling"
+CODE_02_Visos (Generic).bin,0x00012CF1,SetSize__12CPVGDIBitmapFRC7CVSSizei,0x004725F0,high,"family order; backing dimensions"
+CODE_02_Visos (Generic).bin,0x00012D67,SetBitsBase__12CPVGDIBitmapFPUci,0x00472670,high,"family order; base pointer and stride"
+CODE_02_Visos (Generic).bin,0x00012E5B,GetRects__12CPVGDIBitmapFRC7CVSRectRP7CVSRectRP7CVSRect,0x004726B0,high,"family order; splits wrapped rectangle"
+CODE_02_Visos (Generic).bin,0x00012EA6,ResetScroll__12CPVGDIBitmapFv,0x00472760,high,"family order; reset-scroll thunk"
