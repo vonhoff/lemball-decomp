@@ -292,6 +292,7 @@ void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot6(void*);
 void* LEMBALL_FASTCALL ResourceGeometryRowBufferSlot8(void*, int, BYTE);
 void LEMBALL_FASTCALL FillRectInHelperGroup1Buffer(void*, int, void*);
 void LEMBALL_FASTCALL NoopHelperGroup1Command(void*, int, void*);
+void LEMBALL_FASTCALL RebuildHelperTargetLinkedRows(void*);
 
 // GLOBAL: LEMBALL 0x0049a470
 void* g_VSGDI_ResourceGeometryRowBufferVtable[14] = {
@@ -662,7 +663,7 @@ struct VsGdiResourceGeometryHelperTargetVtable {
 };
 
 static VsGdiResourceGeometryHelperTargetVtable g_VSGDI_ResourceGeometryHelperTargetVtable = {
-	VSGDI_SAFE_SLOT,
+	(void*) RebuildHelperTargetLinkedRows,
 	&VsGdiResourceGeometryHelperTargetView::MarkOrForwardHelperTargetDirtyRect,
 	GetResourceGeometryHelperTargetActiveUploadState,
 	{VSGDI_SAFE_SLOTS_29},
@@ -4191,6 +4192,53 @@ void LEMBALL_FASTCALL ClearResourceGeometryHelperTargetBackingBorderRows(void* p
 	while (pLink != 0) {
 		pLink->m_pTarget->ClearBackingBorderRows();
 		pLink = pLink->m_pNext;
+	}
+}
+// FUNCTION: LEMBALL 0x0046c9f0
+void LEMBALL_FASTCALL RebuildHelperTargetLinkedRows(void* pvTarget)
+{
+	char* pLinkedView;
+	char* pLinkedTarget;
+	char* pTarget;
+	int* pAdjustment;
+	int* pRows;
+	int nLinkedStride;
+	int nOffset;
+	int iRow;
+
+	pTarget = (char*) pvTarget;
+	pAdjustment = (int*) (*(int*) (pTarget + 0x40) + 4);
+	pLinkedView = pTarget + *pAdjustment;
+	pLinkedTarget = *(char**) (pLinkedView + 0x60);
+	if (pLinkedTarget == (char*) g_pResourceGeometryHelperTarget) {
+		RebuildResourceGeometryRowPointerTable((VsGdiHelperSurface*) pTarget);
+		return;
+	}
+
+	nLinkedStride = *(int*) (pLinkedTarget + 0x1c);
+	*(int*) (pTarget + 0x1c) = nLinkedStride;
+	nOffset = (int) *(short*) (pLinkedView + 0x58);
+	pRows = *(int**) (pLinkedTarget + 4);
+	pRows = (int*) (unsigned long) pRows[*(short*) (pLinkedView + 0x5a)];
+	*(int*) (pTarget + 8) = *(int*) (pTarget + 0x0c) = (int) (unsigned long) pRows + nOffset;
+	*(int*) (pTarget + 0x14) = 0;
+	*(int*) (pTarget + 0x18) = 0;
+
+	*(int*) (pTarget + 0xe0) = *(int*) (pLinkedTarget + 0xe0);
+	if (*(int*) (pTarget + 0xe0) != 0) {
+		*(int*) (pTarget + 0xe4) =
+			*(int*) (pLinkedTarget + 0xe4) + *(short*) (pLinkedView + 0x5a) * nLinkedStride + nOffset;
+	}
+
+	*(int*) (pTarget + 0x8c) = *(int*) (pLinkedTarget + 0x8c);
+	if (*(int*) (pTarget + 0x8c) != 0) {
+		*(int*) (pTarget + 0x90) =
+			*(int*) (pLinkedTarget + 0x90) + (*(short*) (pLinkedView + 0x5a) * nLinkedStride + nOffset) * 2;
+	}
+
+	pRows = *(int**) (pTarget + 4);
+	for (iRow = 0; iRow < *(short*) (pTarget + 0x2e); ++iRow) {
+		pRows[iRow] = *(int*) (*(int*) (pLinkedTarget + 4) + (iRow + *(short*) (pLinkedView + 0x5a)) * 4) + nOffset;
 	}
 }
 // FUNCTION: LEMBALL 0x0046cb20
