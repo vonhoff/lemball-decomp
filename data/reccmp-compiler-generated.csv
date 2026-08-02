@@ -284,7 +284,10 @@ address,name,symbol,type,source
 0x0047BC90,,?FatalFileBackedOperation00@VsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@A@AEXXZ,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BCB0,,??_EVsNetTimedFileBackedEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BCC0,VsNetTimedFileBackedEffChannel::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETFIL.CPP
+0x0047BD20,,?ClearPendingWrite@VsNetTimedFileBackedEffChannel@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BD50,,??_EVsNetTimedFileBackedEffChannel@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
+0x0047BD60,,?CaptureTimedSocketLookup@VsNetTimedFileBackedEffChannel@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
+0x0047BD70,,?SendTimedSocketPayload@VsNetTimedFileBackedEffChannel@@$4PPPPPPPM@A@AEHPAXH@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BD90,,??_EVsNetDualFileBackedEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BDA0,VsNetDualFileBackedEffChannel::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETFIL.CPP
 0x0047BE00,,?ClearPendingWrite@VsNetDualFileBackedEffChannel@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
