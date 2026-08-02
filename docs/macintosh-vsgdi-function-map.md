@@ -35,4 +35,6 @@ Windows ABI and addresses come from `/LEMBALL.EXE`; names and family order come 
 
 `data/macintosh-x86-correlations.csv` is the exhaustive machine-readable source of truth. It records 79 accepted mappings, including the `CPVSurface`, `CPVScrollableSurface`, `CGDIDevice`, `CSurface`, and `CArena` lifecycle/virtual families with Macintosh offsets and evidence.
 
+Windows topology now identifies the provisional names directly: `TargetPrimary` is the `CPVScrollableSurface` primary subobject, `Target` is `CSurface`, `CompactHelper` is the virtual `CPVSurface` base, `Group0` is `CPVBackBuffSurface`, and `Group1` is `CPVZBuffSurface`. The `0x5A0` Windows layout and its vbtable/vtordisp offsets remain Windows-only evidence.
+
 Windows-only rendering adapters, DirectDraw helpers, upload trackers, and compiler adjustor thunks retain slot/behavior labels. They are not assigned a Macintosh method merely by address order; promote them only when caller, signature, lifecycle, or table evidence agrees.

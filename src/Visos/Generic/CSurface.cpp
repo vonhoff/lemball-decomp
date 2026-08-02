@@ -8,7 +8,7 @@ extern void* g_GDISUBVT_ListCharEntryTableVtable[4];
 extern void* g_GDISUBVT_ListCharEntryTableDeletingVtable[4];
 extern void FreeResourceArchiveMemory(void* pMemoryBlock);
 
-__inline static void MergeCompactHelperRect(short* pTarget, const short* pEntry)
+__inline static void MergeCPVSurfaceRect(short* pTarget, const short* pEntry)
 {
 	short nRight;
 	short nBottom;
@@ -31,12 +31,12 @@ __inline static void MergeCompactHelperRect(short* pTarget, const short* pEntry)
 	}
 }
 
-struct CompactHelperPoint {
+struct CPVSurfacePoint {
 	short m_nX;
 	short m_nY;
 };
 
-struct CompactHelperDirtyPointSink {
+struct CPVSurfaceDirtyPointSink {
 	virtual void ReservedSlot0(void) = 0;
 	virtual void ReservedSlot1(void) = 0;
 	virtual void ReservedSlot2(void) = 0;
@@ -47,12 +47,12 @@ struct CompactHelperDirtyPointSink {
 	virtual void ReservedSlot7(void) = 0;
 	virtual void ReservedSlot8(void) = 0;
 	virtual void ReservedSlot9(void) = 0;
-	virtual void PropagateDirtyPoint(const CompactHelperPoint* pPoint) = 0;
+	virtual void PropagateDirtyPoint(const CPVSurfacePoint* pPoint) = 0;
 };
 
-struct CompactHelperLinkNode {
+struct CPVSurfaceLinkNode {
 	void* m_pTarget;
-	CompactHelperLinkNode* m_pPrev;
+	CPVSurfaceLinkNode* m_pPrev;
 };
 
 void LEMBALL_FASTCALL CreateLinePtrsCPVGDIBitmap(VsGdiHelperSurface* pSurface);
@@ -101,7 +101,7 @@ __inline static void FillCompactCircleSpan(int* pRows,
 
 // These small entries are compiler-generated adjustor and interface thunks.
 
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot1(void* pObject, int, void* pEntryObject)
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot1(void* pObject, int, void* pEntryObject)
 {
 	char* pCompactTarget;
 	char* pLinkedTarget;
@@ -123,7 +123,7 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot1(void* pObject, int, void* pEnt
 		pLocalRect[3] = pEntry[5];
 	}
 	else if (pEntry[2] * pEntry[3] != 0) {
-		MergeCompactHelperRect(pLocalRect, pEntry + 2);
+		MergeCPVSurfaceRect(pLocalRect, pEntry + 2);
 	}
 
 	pLinkedTarget = *(char**) (pCompactTarget + nVariableOffset - 0x4fc);
@@ -131,7 +131,7 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot1(void* pObject, int, void* pEnt
 		(*(unsigned char*) ((char*) pEntryObject + 0x0e) & 1) == 0) {
 		nLinkedOffset = *(int*) (*(int*) (pLinkedTarget + 0x40) + 4);
 		pLinkedRect = (short*) (pLinkedTarget + nLinkedOffset + 0x64);
-		MergeCompactHelperRect(pLocalRect, pLinkedRect);
+		MergeCPVSurfaceRect(pLocalRect, pLinkedRect);
 		if (pLocalRect[0] < 1 || pLocalRect[1] < 1) {
 			pLocalRect[0] = 0;
 			pLocalRect[1] = 0;
@@ -141,7 +141,7 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot1(void* pObject, int, void* pEnt
 	}
 }
 
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot2(void* pObject, int, void* pCommand)
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot2(void* pObject, int, void* pCommand)
 {
 	typedef void(LEMBALL_FASTCALL * DirtyRectProc)(void*, int, short*);
 	char* pCompact;
@@ -224,7 +224,7 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot2(void* pObject, int, void* pCom
 	}
 }
 
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot3(void* pObject, int, void* pCommand)
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot3(void* pObject, int, void* pCommand)
 {
 	typedef void(LEMBALL_FASTCALL * DirtyRectProc)(void*, int, short*);
 	char* pCompact;
@@ -308,7 +308,7 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot3(void* pObject, int, void* pCom
 	}
 }
 
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot4(void* pObject, int, void* pCommand)
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot4(void* pObject, int, void* pCommand)
 {
 	typedef void(LEMBALL_FASTCALL * DirtyRectProc)(void*, int, short*);
 	char* pCompact;
@@ -385,7 +385,7 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot4(void* pObject, int, void* pCom
 }
 
 // Original body 0x00474fd0 is reached through vtordisp thunk 0x0046db90.
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot5(void* pObject, int, void* pCommand)
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot5(void* pObject, int, void* pCommand)
 {
 	typedef void(LEMBALL_FASTCALL * DirtyRectProc)(void*, int, short*);
 	char* pCompact;
@@ -420,7 +420,7 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot5(void* pObject, int, void* pCom
 	((DirtyRectProc) (*(void***) pTarget)[1])(pTarget, 0, DirtyRect);
 }
 
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot9(void* pObject, int, void* pEntryObject, void* pFrameObject)
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot9(void* pObject, int, void* pEntryObject, void* pFrameObject)
 {
 	typedef unsigned char*(LEMBALL_FASTCALL * GetDataProc)(void*, int);
 	typedef void(LEMBALL_FASTCALL * DirtyRectProc)(void*, int, VsGdiRect*);
@@ -525,7 +525,7 @@ __inline static void ApplyPointDeltaToLinkedHelper(void* pChild, const short* pD
 	((SetPointProc) (*(void***) pCompact)[11])(pCompact, 0, pPoint);
 }
 
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot11(void* pObject, int, short* pPoint)
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot11(void* pObject, int, short* pPoint)
 {
 	typedef void(LEMBALL_FASTCALL * SetExtentProc)(void*, int, short*);
 	char* pCompact;
@@ -538,7 +538,7 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot11(void* pObject, int, short* pP
 	short Delta[2];
 	short nOldWidth;
 	short nOldHeight;
-	CompactHelperLinkNode* pNode;
+	CPVSurfaceLinkNode* pNode;
 	int nCompactDelta;
 	int nLinkedDelta;
 	void* pBackingBitmap;
@@ -603,7 +603,7 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot11(void* pObject, int, short* pP
 	CreateLinePtrsCPVGDIBitmap((VsGdiHelperSurface*) (pCompact - 0x55c));
 	LeaveCriticalSection(pCompact - 0x28);
 
-	pNode = *(CompactHelperLinkNode**) (pCompact - 0x34);
+	pNode = *(CPVSurfaceLinkNode**) (pCompact - 0x34);
 	while (pNode != 0) {
 		ApplyPointDeltaToLinkedHelper(pNode->m_pTarget, Delta);
 		pNode = pNode->m_pPrev;
@@ -616,26 +616,26 @@ void CPVScrollableSurface::SetWorldWidth(int fDirty)
 	char* pGroup;
 	int* pOffsetEntry;
 	int* pfCurrentDirty;
-	CompactHelperPoint* pSourcePoint;
-	CompactHelperPoint Point;
-	CompactHelperDirtyPointSink* pSink;
+	CPVSurfacePoint* pSourcePoint;
+	CPVSurfacePoint Point;
+	CPVSurfaceDirtyPointSink* pSink;
 
 	pGroup = (char*) this;
 	pfCurrentDirty = (int*) (pGroup + (*(int**) (pGroup - sizeof(void*)))[1] + 0x3c);
 	if (*pfCurrentDirty != fDirty) {
 		*pfCurrentDirty = fDirty;
 		pOffsetEntry = *(int**) (pGroup - sizeof(void*)) + 1;
-		pSourcePoint = (CompactHelperPoint*) (pGroup + *pOffsetEntry + 8);
+		pSourcePoint = (CPVSurfacePoint*) (pGroup + *pOffsetEntry + 8);
 		Point.m_nX = pSourcePoint->m_nX;
 		Point.m_nY = pSourcePoint->m_nY;
-		pSink = (CompactHelperDirtyPointSink*) (pGroup + *pOffsetEntry - sizeof(void*));
+		pSink = (CPVSurfaceDirtyPointSink*) (pGroup + *pOffsetEntry - sizeof(void*));
 		pSink->PropagateDirtyPoint(&Point);
 	}
 }
 
 // Compiler-state shim retained for manual table slot 17. Original 0x0046dcb0 is a
 // generated -0x518 adjustor to CPVScrollableSurface::SetWorldWidth.
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot17(void*)
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot17(void*)
 {
 }
 
@@ -757,7 +757,7 @@ void* LEMBALL_FASTCALL ResourceGeometryRowBufferSlot8(void* pObject, int, BYTE f
 }
 
 // FUNCTION: LEMBALL 0x00474c20
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot0(void* pObject, int, short* pEntry)
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot0(void* pObject, int, short* pEntry)
 {
 	typedef int(LEMBALL_FASTCALL * QueryProc)(void*, int);
 	typedef void(LEMBALL_FASTCALL * DirtyRectProc)(void*, int, short*);

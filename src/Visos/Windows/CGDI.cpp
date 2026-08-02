@@ -170,9 +170,9 @@ void LEMBALL_FASTCALL DispatchStatusPointSinkOwnerThunk(void*, int, void*);
 void DeleteRenderPointRectSinkThunk00401898(void*, unsigned char);
 void LEMBALL_FASTCALL QueueRenderPointRectSinkThunk00402DD3(void*, int, void*);
 void LEMBALL_FASTCALL DispatchRenderPointRectSinkThunk00401C71(void*, int, void*);
-void LEMBALL_FASTCALL CopyRectRowsToBackBuff(void* pGroup0RowBuffer, int, void* pCopyCommand);
-void LEMBALL_FASTCALL FillRectInBackBuff(void* pGroup0RowBuffer, int, void* pFillCommand);
-void LEMBALL_FASTCALL CopyBackBuffRectToTarget(void* pGroup0RowBuffer, int, void* pCopyRect);
+void LEMBALL_FASTCALL CopyRectRowsToBackBuff(void* pBackBuffSurfaceRowBuffer, int, void* pCopyCommand);
+void LEMBALL_FASTCALL FillRectInBackBuff(void* pBackBuffSurfaceRowBuffer, int, void* pFillCommand);
+void LEMBALL_FASTCALL CopyBackBuffRectToTarget(void* pBackBuffSurfaceRowBuffer, int, void* pCopyRect);
 void LEMBALL_FASTCALL FillHelperSurfaceRectCommand(void* pCompactTarget, int, void* pCommand);
 void LEMBALL_FASTCALL BlitBitmapRowsToScanlines(void* pCompactTarget, int, void* pCommand, void* pBitmap);
 
@@ -275,15 +275,15 @@ static void* g_VSGDI_CompactResourceGeometryHelperVtable[20] = {
 	(void*) GetWorldWidthCPVSurface,
 	0,
 };
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot0(void*, int, short*);
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot1(void*, int, void*);
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot2(void*, int, void*);
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot3(void*, int, void*);
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot4(void*, int, void*);
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot5(void*, int, void*);
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot9(void*, int, void*, void*);
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot11(void*, int, short*);
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot17(void*);
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot0(void*, int, short*);
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot1(void*, int, void*);
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot2(void*, int, void*);
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot3(void*, int, void*);
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot4(void*, int, void*);
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot5(void*, int, void*);
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot9(void*, int, void*, void*);
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot11(void*, int, short*);
+void LEMBALL_FASTCALL CPVSurfaceSubobjectSlot17(void*);
 int LEMBALL_FASTCALL GetWorldWidthCPVScrollableSurfaceAdjustor(void*);
 void* LEMBALL_FASTCALL ResourceGeometryRowBufferSlot4(void*, int, BYTE);
 void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot5(void*);
@@ -341,24 +341,24 @@ static void* g_VSGDI_CPVBackBuffSurfaceCPVGDIBitmapVtable[4] = {
 };
 // GLOBAL: LEMBALL 0x00499df0
 static void* g_VSGDI_CompactResourceGeometryHelperSubobjectVtable[20] = {
-	(void*) CompactHelperSubobjectSlot0,
-	(void*) CompactHelperSubobjectSlot1,
-	(void*) CompactHelperSubobjectSlot2,
-	(void*) CompactHelperSubobjectSlot3,
-	(void*) CompactHelperSubobjectSlot4,
-	(void*) CompactHelperSubobjectSlot5,
+	(void*) CPVSurfaceSubobjectSlot0,
+	(void*) CPVSurfaceSubobjectSlot1,
+	(void*) CPVSurfaceSubobjectSlot2,
+	(void*) CPVSurfaceSubobjectSlot3,
+	(void*) CPVSurfaceSubobjectSlot4,
+	(void*) CPVSurfaceSubobjectSlot5,
 	(void*) FillHelperSurfaceRectCommandAdjustmentThunk,
 	(void*) ForwardBitmapCommandToAdjustedSurfaceThunk,
 	(void*) BlitBitmapRowsToScanlinesAdjustmentThunk,
-	(void*) CompactHelperSubobjectSlot9,
+	(void*) CPVSurfaceSubobjectSlot9,
 	(void*) ResizeCSurfaceAdjustmentThunk,
-	(void*) CompactHelperSubobjectSlot11,
+	(void*) CPVSurfaceSubobjectSlot11,
 	(void*) ApplyHelperTargetPaletteAdjustmentThunk,
 	(void*) PresentCompactResourceGeometryHelperAdjustmentThunk,
 	(void*) GetHelperTargetTokenAdjustmentThunk,
 	(void*) HasBackBuffAdjustmentThunk,
 	(void*) HasZBuffAdjustmentThunk,
-	(void*) CompactHelperSubobjectSlot17,
+	(void*) CPVSurfaceSubobjectSlot17,
 	(void*) GetWorldWidthCPVScrollableSurfaceAdjustor,
 	0,
 };
@@ -459,9 +459,9 @@ void LEMBALL_FASTCALL BlitBitmapRowsToScanlinesAdjustmentThunk(void* pCompactTar
 															   void* pBitmap);
 void LEMBALL_FASTCALL PresentCompactResourceGeometryHelper(void* pCompactTarget);
 void LEMBALL_FASTCALL PresentCompactResourceGeometryHelperAdjustmentThunk(void* pCompactTarget);
-void LEMBALL_FASTCALL CopyRectRowsToBackBuff(void* pGroup0RowBuffer, int nUnused, void* pCopyCommand);
-void LEMBALL_FASTCALL FillRectInBackBuff(void* pGroup0RowBuffer, int nUnused, void* pFillCommand);
-void LEMBALL_FASTCALL CopyBackBuffRectToTarget(void* pGroup0RowBuffer, int nUnused, void* pCopyRect);
+void LEMBALL_FASTCALL CopyRectRowsToBackBuff(void* pBackBuffSurfaceRowBuffer, int nUnused, void* pCopyCommand);
+void LEMBALL_FASTCALL FillRectInBackBuff(void* pBackBuffSurfaceRowBuffer, int nUnused, void* pFillCommand);
+void LEMBALL_FASTCALL CopyBackBuffRectToTarget(void* pBackBuffSurfaceRowBuffer, int nUnused, void* pCopyRect);
 void LEMBALL_FASTCALL SetHelperTargetParamWrapperDisplayDc(void* pParamWrapper, int nUnused, void* hDc);
 void* LEMBALL_FASTCALL DeleteHelperTargetParamWrapper(void* pParamWrapper, int nUnused, int fDelete);
 void LEMBALL_FASTCALL NoopHelperTargetParamWrapperArgument(void* pParamWrapper, int nUnused, void* pArgument);
@@ -472,18 +472,18 @@ int LEMBALL_FASTCALL ReturnTrueHelperTargetParamWrapperB(void* pParamWrapper, in
 int LEMBALL_FASTCALL GetHelperTargetParamWrapperDisplayDc(void* pParamWrapper, int nUnused);
 int LEMBALL_FASTCALL GetHelperTargetParamWrapperReserved(void* pParamWrapper, int nUnused);
 
-struct VsGdiCompactHelperAdjustorTable {
+struct VsGdiCPVSurfaceAdjustorTable {
 	int m_nThisDelta;
 	int m_nSubobjectOffset;
 };
 
 /* Ghidra 00466440/00466670: both temporary row-group adjustors are {-4, 0x54}. */
-static VsGdiCompactHelperAdjustorTable g_VSGDI_CPVBackBuffSurfaceConstructionAdjustorVtable = {-4, 0x54};
-static VsGdiCompactHelperAdjustorTable g_VSGDI_CPVZBuffSurfaceConstructionAdjustorVtable = {-4, 0x54};
+static VsGdiCPVSurfaceAdjustorTable g_VSGDI_CPVBackBuffSurfaceConstructionAdjustorVtable = {-4, 0x54};
+static VsGdiCPVSurfaceAdjustorTable g_VSGDI_CPVZBuffSurfaceConstructionAdjustorVtable = {-4, 0x54};
 
-static VsGdiCompactHelperAdjustorTable g_VSGDI_CompactHelperTargetAdjustor = {-0x40, 0x51c};
-static VsGdiCompactHelperAdjustorTable g_VSGDI_CPVZBuffSurfaceAdjustor = {-4, 0x514};
-static VsGdiCompactHelperAdjustorTable g_VSGDI_CPVBackBuffSurfaceAdjustor = {-4, 0x4c0};
+static VsGdiCPVSurfaceAdjustorTable g_VSGDI_CPVSurfaceTargetAdjustor = {-0x40, 0x51c};
+static VsGdiCPVSurfaceAdjustorTable g_VSGDI_CPVZBuffSurfaceAdjustor = {-4, 0x514};
+static VsGdiCPVSurfaceAdjustorTable g_VSGDI_CPVBackBuffSurfaceAdjustor = {-4, 0x4c0};
 
 static void* g_pResourceGeometryListHead = 0;
 
@@ -3713,7 +3713,7 @@ CSurface* CSurface::Construct(const VsGdiRect* pRect, void* pWrappedTarget, int 
 	VsGdiRect CellExtent;
 
 	if (fConstructCPVSurface != 0) {
-		m_ScrollableSurface.m_pCPVSurfaceVbtable = &g_VSGDI_CompactHelperTargetAdjustor;
+		m_ScrollableSurface.m_pCPVSurfaceVbtable = &g_VSGDI_CPVSurfaceTargetAdjustor;
 		m_ZBuffSurface.m_pCPVSurfaceVbtable = &g_VSGDI_CPVZBuffSurfaceAdjustor;
 		m_BackBuffSurface.m_pCPVSurfaceVbtable = &g_VSGDI_CPVBackBuffSurfaceAdjustor;
 		m_PVSurface.Construct();
@@ -3926,7 +3926,7 @@ CSurface* CSurface::ConstructResourceGeometryHelperTarget(int nWrappedParam, int
 
 	pTarget = this;
 	if (fConstructCPVSurface != 0) {
-		pTarget->m_ScrollableSurface.m_pCPVSurfaceVbtable = &g_VSGDI_CompactHelperTargetAdjustor;
+		pTarget->m_ScrollableSurface.m_pCPVSurfaceVbtable = &g_VSGDI_CPVSurfaceTargetAdjustor;
 		pTarget->m_ZBuffSurface.m_pCPVSurfaceVbtable = &g_VSGDI_CPVZBuffSurfaceAdjustor;
 		pTarget->m_BackBuffSurface.m_pCPVSurfaceVbtable = &g_VSGDI_CPVBackBuffSurfaceAdjustor;
 		pTarget->m_PVSurface.Construct();
@@ -4119,14 +4119,14 @@ void LEMBALL_FASTCALL ResetScrollCSurface(void* pvTarget)
 	pTarget = (char*) pvTarget;
 	((VsGdiHelperSurface*) pTarget)->ResetScroll();
 	{
-		char* pCompactHelper = pTarget + 0x40 + *(int*) ((char*) (unsigned long) *(int*) (pTarget + 0x40) + 4);
-		if (((GetGroupFlagProc) (*(void***) pCompactHelper)[15])(pCompactHelper) != 0) {
+		char* pCPVSurface = pTarget + 0x40 + *(int*) ((char*) (unsigned long) *(int*) (pTarget + 0x40) + 4);
+		if (((GetGroupFlagProc) (*(void***) pCPVSurface)[15])(pCPVSurface) != 0) {
 			((VsGdiHelperSurface*) (pTarget + 0xa0))->ResetScroll();
 		}
 	}
 	{
-		char* pCompactHelper = pTarget + 0x40 + *(int*) ((char*) (unsigned long) *(int*) (pTarget + 0x40) + 4);
-		if (((GetGroupFlagProc) (*(void***) pCompactHelper)[16])(pCompactHelper) != 0) {
+		char* pCPVSurface = pTarget + 0x40 + *(int*) ((char*) (unsigned long) *(int*) (pTarget + 0x40) + 4);
+		if (((GetGroupFlagProc) (*(void***) pCPVSurface)[16])(pCPVSurface) != 0) {
 			((VsGdiHelperSurface*) (pTarget + 0x4c))->ResetScroll();
 		}
 	}
@@ -4187,16 +4187,16 @@ void LEMBALL_FASTCALL SetLinePtrsCSurface(void* pvTarget)
 void CSurface::AddToChangeList(short* pRect)
 {
 	char* pTarget;
-	char* pCompactHelper;
+	char* pCPVSurface;
 	short* pOrigin;
 	short* pTail;
 	short aForwardedRect[4];
 	CSurface* pLinkedTarget;
 
-	pCompactHelper = (char*) this + *(int*) ((char*) (unsigned long) *(int*) ((char*) this + 0x40) + 4);
-	pLinkedTarget = *(CSurface**) (pCompactHelper + 0x60);
-	if (pLinkedTarget != g_pResourceGeometryHelperTarget && *(int*) (pCompactHelper + 0x74) != 0 &&
-		*(int*) (pCompactHelper + 0x70) != 0) {
+	pCPVSurface = (char*) this + *(int*) ((char*) (unsigned long) *(int*) ((char*) this + 0x40) + 4);
+	pLinkedTarget = *(CSurface**) (pCPVSurface + 0x60);
+	if (pLinkedTarget != g_pResourceGeometryHelperTarget && *(int*) (pCPVSurface + 0x74) != 0 &&
+		*(int*) (pCPVSurface + 0x70) != 0) {
 		pTarget = (char*) this + 0x50 + *(int*) ((char*) (unsigned long) *(int*) ((char*) this + 0x40) + 4);
 		pOrigin = (short*) pTarget;
 		aForwardedRect[0] = pRect[0];
@@ -5427,7 +5427,7 @@ void LEMBALL_FASTCALL ShowArrowCursor(void* pRenderClient)
 	*(int*) ((char*) pRenderClient + 0x3c) = 1;
 }
 // FUNCTION: LEMBALL 0x00474d40
-void LEMBALL_FASTCALL FillRectInZBuff(void* pGroup1RowBuffer, int, void* pFillCommand)
+void LEMBALL_FASTCALL FillRectInZBuff(void* pZBuffSurfaceRowBuffer, int, void* pFillCommand)
 {
 	unsigned short** ppRows;
 	unsigned short* pDestination;
@@ -5453,7 +5453,7 @@ void LEMBALL_FASTCALL FillRectInZBuff(void* pGroup1RowBuffer, int, void* pFillCo
 		return;
 	}
 	for (iRow = 0; iRow < cRows; ++iRow) {
-		ppRows = *(unsigned short***) ((char*) pGroup1RowBuffer + 0x0c);
+		ppRows = *(unsigned short***) ((char*) pZBuffSurfaceRowBuffer + 0x0c);
 		pDestination = ppRows[yDestination + iRow] + xDestination;
 		for (iColumn = 0; iColumn < cColumns; ++iColumn) {
 			pDestination[iColumn] = nColor;
@@ -5465,7 +5465,7 @@ void LEMBALL_FASTCALL NoopZBuffCommand(void*, int, void*)
 {
 }
 // FUNCTION: LEMBALL 0x00474dd0
-void LEMBALL_FASTCALL CopyRectRowsToBackBuff(void* pGroup0RowBuffer, int, void* pCopyCommand)
+void LEMBALL_FASTCALL CopyRectRowsToBackBuff(void* pBackBuffSurfaceRowBuffer, int, void* pCopyCommand)
 
 {
 	unsigned char** ppSourceRows;
@@ -5494,8 +5494,8 @@ void LEMBALL_FASTCALL CopyRectRowsToBackBuff(void* pGroup0RowBuffer, int, void* 
 		return;
 	}
 
-	ppSourceRows = *(unsigned char***) ((char*) pGroup0RowBuffer - 0x94);
-	ppDestinationRows = *(unsigned char***) ((char*) pGroup0RowBuffer + 0x0c);
+	ppSourceRows = *(unsigned char***) ((char*) pBackBuffSurfaceRowBuffer - 0x94);
+	ppDestinationRows = *(unsigned char***) ((char*) pBackBuffSurfaceRowBuffer + 0x0c);
 	for (iRow = 0; iRow < cRows; ++iRow) {
 		memcpy(ppDestinationRows[yDestination + iRow] + xDestination,
 			   ppSourceRows[ySource + iRow] + xSource,
@@ -5503,7 +5503,7 @@ void LEMBALL_FASTCALL CopyRectRowsToBackBuff(void* pGroup0RowBuffer, int, void* 
 	}
 }
 // FUNCTION: LEMBALL 0x00474e60
-void LEMBALL_FASTCALL FillRectInBackBuff(void* pGroup0RowBuffer, int, void* pFillCommand)
+void LEMBALL_FASTCALL FillRectInBackBuff(void* pBackBuffSurfaceRowBuffer, int, void* pFillCommand)
 
 {
 	unsigned char** ppRows;
@@ -5529,13 +5529,13 @@ void LEMBALL_FASTCALL FillRectInBackBuff(void* pGroup0RowBuffer, int, void* pFil
 		return;
 	}
 
-	ppRows = *(unsigned char***) ((char*) pGroup0RowBuffer + 0x0c);
+	ppRows = *(unsigned char***) ((char*) pBackBuffSurfaceRowBuffer + 0x0c);
 	for (iRow = 0; iRow < cRows; ++iRow) {
 		memset(ppRows[yDestination + iRow] + xDestination, (unsigned char) nColor, (unsigned int) cbRow);
 	}
 }
 // FUNCTION: LEMBALL 0x00474ee0
-void LEMBALL_FASTCALL CopyBackBuffRectToTarget(void* pGroup0RowBuffer, int, void* pCopyRect)
+void LEMBALL_FASTCALL CopyBackBuffRectToTarget(void* pBackBuffSurfaceRowBuffer, int, void* pCopyRect)
 
 {
 	unsigned char** ppTargetRows;
@@ -5556,18 +5556,18 @@ void LEMBALL_FASTCALL CopyBackBuffRectToTarget(void* pGroup0RowBuffer, int, void
 
 	x = (int) paRect[2];
 	y = (int) paRect[3];
-	if (x + cbRow > (int) *(unsigned short*) ((char*) pGroup0RowBuffer + 0x50)) {
-		cbRow = (int) *(unsigned short*) ((char*) pGroup0RowBuffer + 0x50) - x;
+	if (x + cbRow > (int) *(unsigned short*) ((char*) pBackBuffSurfaceRowBuffer + 0x50)) {
+		cbRow = (int) *(unsigned short*) ((char*) pBackBuffSurfaceRowBuffer + 0x50) - x;
 	}
-	if (y + cRows > (int) *(unsigned short*) ((char*) pGroup0RowBuffer + 0x52)) {
-		cRows = (int) *(unsigned short*) ((char*) pGroup0RowBuffer + 0x52) - y;
+	if (y + cRows > (int) *(unsigned short*) ((char*) pBackBuffSurfaceRowBuffer + 0x52)) {
+		cRows = (int) *(unsigned short*) ((char*) pBackBuffSurfaceRowBuffer + 0x52) - y;
 	}
 	if (cRows <= 0) {
 		return;
 	}
 
-	ppTargetRows = *(unsigned char***) ((char*) pGroup0RowBuffer - 0x94);
-	ppGroupRows = *(unsigned char***) ((char*) pGroup0RowBuffer + 0x0c);
+	ppTargetRows = *(unsigned char***) ((char*) pBackBuffSurfaceRowBuffer - 0x94);
+	ppGroupRows = *(unsigned char***) ((char*) pBackBuffSurfaceRowBuffer + 0x0c);
 	for (iRow = 0; iRow < cRows; ++iRow) {
 		memcpy(ppTargetRows[y + iRow] + x, ppGroupRows[y + iRow] + x, (unsigned int) cbRow);
 	}

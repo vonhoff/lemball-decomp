@@ -2827,8 +2827,8 @@ address,size,name,unit
 0x0046DBC0,34,forward_bitmap_entry_to_scanline_blitter,Visos/Windows/CGDI.cpp
 0x0046DC50,24,present_compact_resource_geometry_helper,Visos/Windows/CGDI.cpp
 0x0046DC80,4,get_helper_target_token,Visos/Windows/CGDI.cpp
-0x0046DC90,11,get_helper_group0_dirty_flag_adjustment_thunk,Visos/Windows/CGDI.cpp
-0x0046DCA0,11,get_helper_group1_dirty_flag_adjustment_thunk,Visos/Windows/CGDI.cpp
+0x0046DC90,11,get_cpv_back_buff_surface_dirty_flag_adjustment_thunk,Visos/Windows/CGDI.cpp
+0x0046DCA0,11,get_cpv_z_buff_surface_dirty_flag_adjustment_thunk,Visos/Windows/CGDI.cpp
 0x0046DCC0,11,get_world_width_cpv_scrollable_surface,Visos/Generic/CSurface.cpp
 0x0046DCD0,144,get_srcdisk_registry_value_buffer,Control/CGame.cpp
 0x0046DD60,86,bind_as_singleton_anim_window,Visos/Windows/CGDI.cpp
@@ -3078,9 +3078,9 @@ address,size,name,unit
 0x00474BE0,28,hide_arrow_cursor,Visos/Windows/CGDI.cpp
 0x00474C00,20,show_cursor_and_mark_visible,Visos/Windows/CGDI.cpp
 0x00474C20,276,merge_child_helper_rects_and_notify_root,Visos/Windows/CGDI.cpp
-0x00474DD0,133,copy_rect_rows_to_helper_group0_buffer,Visos/Windows/CGDI.cpp
-0x00474E60,114,fill_rect_in_helper_group0_buffer,Visos/Windows/CGDI.cpp
-0x00474EE0,235,copy_helper_group0_rect_to_target,Visos/Windows/CGDI.cpp
+0x00474DD0,133,copy_rect_rows_to_cpv_back_buff_surface_buffer,Visos/Windows/CGDI.cpp
+0x00474E60,114,fill_rect_in_cpv_back_buff_surface_buffer,Visos/Windows/CGDI.cpp
+0x00474EE0,235,copy_cpv_back_buff_surface_rect_to_target,Visos/Windows/CGDI.cpp
 0x00474FD0,168,draw_helper_surface_pixel_command,Visos/Windows/CGDI.cpp
 0x00475080,54,fill_helper_surface_rect_command,Visos/Windows/CGDI.cpp
 0x004750C0,450,draw_helper_surface_line_command,Visos/Windows/CGDI.cpp
