@@ -167,6 +167,7 @@ struct ManagedEntityGroupChildrenView {
 	void ClearChildren(void);
 };
 
+// MACINTOSH: CGenericGroup::Restart()
 // FUNCTION: LEMBALL 0x0041de80
 void ManagedEntityGroupChildrenView::ClearChildren(void)
 {

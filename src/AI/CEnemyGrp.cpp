@@ -37,6 +37,7 @@ struct EnmyManagedEntityGroupView : LevelChunkObjectBaseView {
 
 extern void* g_LEVELVT_EnmyManagedEntityGroupVtable[16];
 
+// MACINTOSH: CGenericGroup::Process()
 // FUNCTION: LEMBALL 0x0041deb0
 int LEMBALL_FASTCALL ServiceEnmyManagedEntityGroup(EnmyManagedEntityGroupView* pGroup)
 {

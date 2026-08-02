@@ -1949,6 +1949,7 @@ void LevelManagedEntityChildIterator::AppendChild(void* pChild)
 	++m_cChildren124;
 }
 
+// MACINTOSH: CGenericGroup::ConfirmElementIsInGroup(CGameObject*)
 // FUNCTION: LEMBALL 0x0041e0c0
 int LevelManagedEntityChildIterator::ContainsChild(void* pChild)
 {
@@ -1964,6 +1965,7 @@ int LevelManagedEntityChildIterator::ContainsChild(void* pChild)
 	return 0;
 }
 
+// MACINTOSH: CGenericGroup::OverideExistingWaypoints(AICOORD)
 // FUNCTION: LEMBALL 0x0041e3c0
 void PASCAL noop_vtable_callback_0041e3c0(void* pUnused1, void* pUnused2, void* pUnused3)
 {

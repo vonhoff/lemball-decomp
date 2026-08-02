@@ -67,3 +67,7 @@ Twenty-five Macintosh `CEnemy` methods align with Windows `0x0041FBA0..0x0042072
 ### CPlayerLemming lifecycle, grouping, and fire core
 
 All thirty-nine portable Macintosh `CPlayerLemming` methods align with Windows `0x0040ECB0..0x004102D0` through PLAS lifecycle/layout, signatures, ILTs/callers, vtable slots, stream inverse pairs, group/object fields, distinctive balloon codes, fixed-point coordinates, RNG constants, and state transitions. Target-only `0x0040F7E0`, deleting wrapper `0x00410B20`, and nine Macintosh-specific duplicate members remain explicitly excluded.
+
+### CGenericGroup portable family
+
+All twenty-six portable Macintosh `CGenericGroup` methods align with Windows `0x0041DDA0..0x0041E640` through managed-group lifecycle/layout, vtable slots, iterator and membership inverse pairs, bounds sentinels, formation geometry, waypoint dispatch, intersection behavior, and render-record stride. Target-only `0x0041DF90` and deleting wrappers remain excluded; physical Windows TUs stay intact.
