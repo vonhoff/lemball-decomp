@@ -55,7 +55,7 @@ Some filenames remain short because they reflect the style and tool limits of th
 
 ## Contributing
 
-Treat the original executable as the source of truth. Keep changes compatible with MSVC 4.20, preserve source and link order, and do not use inline assembly to force a match. A readable reconstruction with measured binary improvement is better than decompiler-shaped code or register tricks.
+Treat the original executable as the source of truth. Keep changes compatible with MSVC 4.00, preserve source and link order, and do not use inline assembly to force a match. A readable reconstruction with measured binary improvement is better than decompiler-shaped code or register tricks.
 
 Build after meaningful edits and run the complete verification set before committing. Do not update the exact-match baseline to hide regressions.
 

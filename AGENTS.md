@@ -7,7 +7,7 @@ Make verified decompilation progress while preserving compiler behavior. Treat t
 ## Workflow
 
 1. Inspect `git status`, every existing diff, and `// STUB:` markers. Continue unfinished work before selecting a new target; complete, commit, or revert it rather than leaving it for the user.
-2. Refresh build and reccmp JSON when missing or stale, then run `.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --save-baseline`. This records non-stub 100% addresses as no-regression baseline and prints candidates.
+2. Refresh the canonical MSVC 4.00 build and reccmp JSON when missing or stale, then run `.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py` to print candidates. Treat `exact-baseline.json` as immutable; never save or regenerate it during reconstruction.
 3. Use printed repeated normalized instruction shapes before choosing a singleton. Preserve instruction order, branches, stack cleanup, calling convention, object offsets, and function size; normalization covers only concrete addresses, relocations, and per-member constants.
 4. Work highest-ranked viable cluster. Prefer existing 100% exemplars and compiler-owned C++ patterns such as constructors, destructors, scalar deletes, vtable restores, accessors, and forwarding or adjustment thunks.
 5. Inspect every proposed cluster member in original `/LEMBALL.EXE` with Ghidra MCP. Establish raw bytes, boundaries, ABI, control flow, xrefs, owning source file, and all per-member variations. Use decompiler output only as supporting evidence. ILT entries never become targets.
@@ -29,7 +29,7 @@ Verified progress includes a new 100% match, measurable similarity improvement, 
 - Repair incorrect inventory and regenerate its CSV; do not hide entries with denylists or broad filters.
 - Add `GLOBAL`, `FUNCTION`, or `STUB` ownership only after confirming original address and source owner in Ghidra. Never add annotations merely to make relocation comparison pass. Investigate every new datacmp issue; direct-function versus original ILT-pointer differences are acceptable only when binary evidence proves same destination and no ILT recreation is introduced.
 - Use maintained candidate miner; do not create one-off target-selection or verification scripts. Temporary compiler probes may live only under ignored `build-msvc400/` and must be removed before commit.
-- Use `"/c/Program Files/LLVM/bin/clang-format.exe" -i <paths>` to fix formatting in modified C or C++ files.
+- Use `clang-format -i <paths>` from `PATH` to fix formatting in modified C or C++ files.
 - Use only project commands below for verification.
 
 ## Binary layout
@@ -44,7 +44,7 @@ Verified progress includes a new 100% match, measurable similarity improvement, 
 Candidate mining, from repository root:
 
 ```powershell
-.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --save-baseline
+.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py
 .decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --check-baseline
 ```
 

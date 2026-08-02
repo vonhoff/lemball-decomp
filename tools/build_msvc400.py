@@ -31,9 +31,17 @@ def find_msvc400_root(root, environ=os.environ):
     candidate = Path(configured) if configured else root / "msvc400"
     required = ("bin/CL.EXE", "bin/LINK.EXE", "include", "lib")
     if all((candidate / path).exists() for path in required):
-        return candidate
+        compiler = subprocess.run(
+            [candidate / "bin" / "CL.EXE"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if "Compiler Version 10.00." in compiler.stdout + compiler.stderr:
+            return candidate
     raise SystemExit(
-        f"MSVC 4.00 not found at {candidate}; set MSVC400_ROOT to its install directory"
+        f"MSVC 4.00 (compiler version 10.00) not found at {candidate}; "
+        "set MSVC400_ROOT to its install directory"
     )
 
 
