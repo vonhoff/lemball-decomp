@@ -97,3 +97,6 @@ The three portable `CGround` methods and `CGroundArray::Clear` align with Window
 ### CNode portable family
 
 All six portable `CNode` and six portable `CNodeManager` methods align with Windows `0x00421180..0x00421470` through exact ABI, 0x14-byte node stride, counted allocation, fixed-point coordinates, neighbour-pair storage, ILTs, callers, and NODE chunk parsing. Windows-only tile-coordinate overloads and record helpers remain excluded. Macintosh-led source class/method naming retains mixed-TU aliases and currently carries measured exact-set debt of `161/24` versus the protected baseline; vtables remain `39/39` and datacmp remains `0`.
+### CBallManager portable family
+
+All seven portable `CBallManager` methods align with Windows `0x00421EA0..0x00422060` through exact lifecycle, active/capacity fields, pointer-array allocation, CBall vtable dispatch, active-prefix compaction, and BALL chunk loading. Windows-only load-cursor reset `0x00422050` and CBall deleting wrapper `0x00422350` remain excluded. Macintosh-led source ownership improved the tracked exact set to `161/23`; vtables remain `39/39` and datacmp remains `0`.

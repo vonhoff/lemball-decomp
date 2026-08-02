@@ -161,16 +161,18 @@ struct LevelSlnkChunkManager {
 	void DeleteType35ChunkObjectArray(void);
 };
 
-struct LevelBallChunkManager {
+struct CBallManager {
 	void* m_pLevelMode00;
 	void* m_pObjects04;
 	int m_nReserved08;
 	int m_cCapacity0C;
 
-	LevelBallChunkManager* ConstructBallChunkManager(void* pLevelMode, int cCapacity);
-	LevelBallChunkManager* ConstructBallChunkManagerThunk(void* pLevelMode, int cCapacity);
+	CBallManager* ConstructBallChunkManager(void* pLevelMode, int cCapacity);
+	CBallManager* ConstructBallChunkManagerThunk(void* pLevelMode, int cCapacity);
 	void DestroyBallChunkManagerEntries(void);
 };
+
+typedef CBallManager LevelBallChunkManager;
 
 struct LevelField194TimerBlock {
 	int m_nNextTick00;
@@ -192,7 +194,7 @@ void LoadAnimChunkRecords(void* pTimerBlock, const unsigned short* pWords);
 void LEMBALL_FASTCALL AdvanceAnimChunkFrames(void* pTimerBlock);
 void LEMBALL_FASTCALL DestroyLevelTileReachabilityHelper(void* pReachabilityHelper);
 
-extern LevelBallChunkManager* g_pBallChunkManager;
+extern CBallManager* g_pBallChunkManager;
 extern char* g_pszActiveLevelFilePath;
 extern void* g_pLoadedLevelFileBuffer;
 

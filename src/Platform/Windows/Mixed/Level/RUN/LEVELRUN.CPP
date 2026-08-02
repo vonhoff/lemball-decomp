@@ -95,7 +95,7 @@ void LEMBALL_FASTCALL ClearPrimaryLockedRecordTablePayloadFlags(void* pPayload);
 void LEMBALL_FASTCALL ClearSecondaryLockedRecordTablePayloadFlags(void* pPayload);
 
 // GLOBAL: LEMBALL 0x0049e1bc
-LevelBallChunkManager* g_pBallChunkManager = 0;
+CBallManager* g_pBallChunkManager = 0;
 // GLOBAL: LEMBALL 0x004a63fc
 char* g_pszActiveLevelFilePath = 0;
 // GLOBAL: LEMBALL 0x004a6400
@@ -574,7 +574,7 @@ struct LevelChunkObjectResetView {
 	LevelChunkObjectResetVtable* m_pVtable;
 };
 
-struct LevelBallChunkManagerResetView {
+struct CBallManagerResetView {
 	int m_nReserved00;
 	LevelChunkObjectResetView** m_ppObjects04;
 	int m_nReserved08;
@@ -812,7 +812,7 @@ void LevelField194TimerBlock::ResetLevelField194TimerBlockThunk(void)
 	ResetLevelField194TimerBlock();
 }
 // LINKERILT: LEMBALL 0x004037d8
-LevelBallChunkManager* LevelBallChunkManager::ConstructBallChunkManagerThunk(void* pLevelMode, int cCapacity)
+CBallManager* CBallManager::ConstructBallChunkManagerThunk(void* pLevelMode, int cCapacity)
 {
 	return ConstructBallChunkManager(pLevelMode, cCapacity);
 }
@@ -2138,8 +2138,9 @@ void CNodeManager::LoadLevel(const unsigned short* pWords, unsigned int cbPayloa
 		++nRecordOffset;
 	} while (pWords < pEnd);
 }
+// MACINTOSH: CBallManager::CBallManager(CAI*, int)
 // FUNCTION: LEMBALL 0x00421ea0
-LevelBallChunkManager* LevelBallChunkManager::ConstructBallChunkManager(void* pLevelMode, int cCapacity)
+CBallManager* CBallManager::ConstructBallChunkManager(void* pLevelMode, int cCapacity)
 {
 	m_pLevelMode00 = pLevelMode;
 	g_pBallChunkManager = this;
@@ -2147,6 +2148,7 @@ LevelBallChunkManager* LevelBallChunkManager::ConstructBallChunkManager(void* pL
 	m_cCapacity0C = cCapacity;
 	return this;
 }
+// MACINTOSH: CBallManager::Restart()
 // FUNCTION: LEMBALL 0x00421ec0
 void LEMBALL_FASTCALL ResetBallChunkEntries(void* pBallManager)
 {
@@ -2155,21 +2157,22 @@ void LEMBALL_FASTCALL ResetBallChunkEntries(void* pBallManager)
 	int cEntries;
 
 	cEntries = 0;
-	if (((LevelBallChunkManagerResetView*) pBallManager)->m_ppObjects04 != 0 &&
-		0 < ((LevelBallChunkManagerResetView*) pBallManager)->m_cObjects0c) {
+	if (((CBallManagerResetView*) pBallManager)->m_ppObjects04 != 0 &&
+		0 < ((CBallManagerResetView*) pBallManager)->m_cObjects0c) {
 		i = 0;
 		do {
 			cEntries += 4;
 			++i;
 			pChunkObject = *(
-				LevelChunkObjectResetView**) ((char*) ((LevelBallChunkManagerResetView*) pBallManager)->m_ppObjects04 -
+				LevelChunkObjectResetView**) ((char*) ((CBallManagerResetView*) pBallManager)->m_ppObjects04 -
 											  4 + cEntries);
 			pChunkObject->m_pVtable->m_pResetObject104(pChunkObject);
-		} while (i < ((LevelBallChunkManagerResetView*) pBallManager)->m_cObjects0c);
+		} while (i < ((CBallManagerResetView*) pBallManager)->m_cObjects0c);
 	}
 }
+// MACINTOSH: CBallManager::~CBallManager()
 // FUNCTION: LEMBALL 0x00421f80
-void LevelBallChunkManager::DestroyBallChunkManagerEntries(void)
+void CBallManager::DestroyBallChunkManagerEntries(void)
 {
 	void** ppObjects;
 	int i;
@@ -2186,6 +2189,7 @@ void LevelBallChunkManager::DestroyBallChunkManagerEntries(void)
 	FreeVSMemBlock(ppObjects);
 }
 
+// WINDOWS: Target-only CBallManager load-cursor reset; no portable Macintosh symbol.
 // FUNCTION: LEMBALL 0x00422050
 void LEMBALL_FASTCALL reset_ball_chunk_manager_load_cursor(void* pManager)
 {
