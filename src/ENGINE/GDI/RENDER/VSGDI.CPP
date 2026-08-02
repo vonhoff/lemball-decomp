@@ -276,7 +276,7 @@ static void* g_VSGDI_CompactResourceGeometryHelperVtable[20] = {
 	(void*) CompactHelperReturnZeroSlot18,
 	0,
 };
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot0(void*);
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot0(void*, int, short*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot1(void*, int, void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot2(void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot3(void*);
@@ -5302,6 +5302,65 @@ void LEMBALL_FASTCALL RebuildResourceGeometryRowPointerTable(VsGdiHelperSurface*
 			}
 			++iRowIndex;
 		} while (iRowIndex < (int) *(short*) ((char*) pSurface + 0x2e));
+	}
+}
+// FUNCTION: LEMBALL 0x00472440
+void VsGdiHelperSurface::CopyOrScrollRows(short* pRect, short* pDestinationPoint)
+{
+	char* pSurface;
+	char* pSource;
+	char* pDestination;
+	int* pRows;
+	int cRows;
+	int iRow;
+	int nOriginRow;
+	int nWidth;
+
+	nWidth = pRect[0];
+	cRows = pRect[1];
+	if (nWidth * cRows == 0) {
+		return;
+	}
+
+	pSurface = (char*) this;
+	if (*(int*) (pSurface + 0x10) == 0) {
+		*(int*) (pSurface + 0x18) -= (short) (pRect[2] - pDestinationPoint[0]);
+		nOriginRow = *(int*) (pSurface + 0x14) + (short) (pRect[3] - pDestinationPoint[1]);
+		if (nOriginRow < 0) {
+			nOriginRow += *(short*) (pSurface + 0x2e);
+		}
+		else if (nOriginRow >= *(short*) (pSurface + 0x2e)) {
+			nOriginRow -= *(short*) (pSurface + 0x2e);
+		}
+		*(int*) (pSurface + 0x14) = nOriginRow;
+		((void(LEMBALL_FASTCALL*)(void*))(*(void***) pSurface)[0])(pSurface);
+		return;
+	}
+
+	pRows = *(int**) (pSurface + 4);
+	if (pDestinationPoint[1] == pRect[3]) {
+		if (pDestinationPoint[0] != pRect[2]) {
+			for (iRow = 0; iRow < cRows; ++iRow) {
+				pSource = (char*) pRows[pRect[3] + iRow] + pRect[2];
+				pDestination = (char*) pRows[pDestinationPoint[1] + iRow] + pDestinationPoint[0];
+				memcpy(pDestination, pSource, nWidth);
+			}
+		}
+		return;
+	}
+	if (pDestinationPoint[1] < pRect[3]) {
+		for (iRow = 0; iRow < cRows; ++iRow) {
+			pSource = (char*) pRows[pRect[3] + iRow] + pRect[2];
+			pDestination = (char*) pRows[pDestinationPoint[1] + iRow] + pDestinationPoint[0];
+			memcpy(pDestination, pSource, nWidth);
+		}
+	}
+	else {
+		for (iRow = cRows - 1; iRow >= 0; --iRow) {
+			pSource = (char*) pRows[pRect[3] + iRow] + pRect[2];
+			pDestination = (char*) pRows[pDestinationPoint[1] + iRow] + pDestinationPoint[0];
+			memcpy(pDestination, pSource, nWidth);
+		}
 	}
 }
 // FUNCTION: LEMBALL 0x004725f0

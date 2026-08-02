@@ -54,10 +54,6 @@ struct CompactHelperGroup0DirtyStateView {
 
 // These small entries are compiler-generated adjustor and interface thunks.
 
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot0(void*)
-{
-}
-
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot1(void* pObject, int, void* pEntryObject)
 {
 	char* pCompactTarget;
@@ -350,4 +346,43 @@ void* LEMBALL_FASTCALL ResourceGeometryRowBufferSlot8(void* pObject, int, BYTE f
 		FreeResourceArchiveMemory(pObject);
 	}
 	return pObject;
+}
+
+// FUNCTION: LEMBALL 0x00474c20
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot0(void* pObject, int, short* pEntry)
+{
+	typedef int(LEMBALL_FASTCALL * QueryProc)(void*, int);
+	typedef void(LEMBALL_FASTCALL * DirtyRectProc)(void*, int, short*);
+	char* pCompact;
+	char* pPrimary;
+	char* pTarget;
+	short DestinationPoint[2];
+	short DestinationRect[4];
+	short ScaledPoint[2];
+	short ScaledRect[4];
+
+	pCompact = (char*) pObject;
+	pTarget = pCompact - 0x55c;
+	DestinationPoint[0] = pEntry[2];
+	DestinationPoint[1] = pEntry[3];
+	DestinationRect[0] = pEntry[4];
+	DestinationRect[1] = pEntry[5];
+	DestinationRect[2] = pEntry[6];
+	DestinationRect[3] = pEntry[7];
+	pPrimary = pTarget + *(int*) (*(int*) (pTarget + 0x40) + 4);
+
+	if (((QueryProc) (*(void***) pPrimary)[15])(pPrimary, 0) != 0) {
+		((VsGdiHelperSurface*) (pTarget + 0xa0))->CopyOrScrollRows(DestinationRect, DestinationPoint);
+	}
+	if (((QueryProc) (*(void***) pPrimary)[16])(pPrimary, 0) != 0) {
+		ScaledRect[0] = DestinationRect[0] * 2;
+		ScaledRect[1] = DestinationRect[1];
+		ScaledRect[2] = DestinationRect[2] * 2;
+		ScaledRect[3] = DestinationRect[3];
+		ScaledPoint[0] = DestinationPoint[0] * 2;
+		ScaledPoint[1] = DestinationPoint[1];
+		((VsGdiHelperSurface*) (pTarget + 0x4c))->CopyOrScrollRows(ScaledRect, ScaledPoint);
+	}
+	((VsGdiHelperSurface*) pTarget)->CopyOrScrollRows(DestinationRect, DestinationPoint);
+	((DirtyRectProc) (*(void***) pTarget)[1])(pTarget, 0, DestinationRect);
 }
