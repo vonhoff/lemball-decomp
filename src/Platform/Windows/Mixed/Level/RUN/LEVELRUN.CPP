@@ -1907,6 +1907,7 @@ LevelProjectileGeometryPair* LevelProjectileGeometryPair::InitializeSentinel(voi
 	m_nY = 0xaa55aa55;
 	return this;
 }
+// MACINTOSH: CGenericGroupManager::~CGenericGroupManager()
 // FUNCTION: LEMBALL 0x0041e940
 void LevelCachedChunkObjectManagerBase::DestroyCachedChunkObjects(void)
 {
@@ -1919,6 +1920,7 @@ void LevelCachedChunkObjectManagerBase::DestroyCachedChunkObjects(void)
 		}
 	}
 }
+// MACINTOSH: CGenericGroupManager::Process()
 // FUNCTION: LEMBALL 0x0041e9f0
 int LevelCachedChunkManagerAView::ServiceCachedChunkObjects(void)
 {

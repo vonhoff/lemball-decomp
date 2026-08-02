@@ -75,3 +75,7 @@ All twenty-six portable Macintosh `CGenericGroup` methods align with Windows `0x
 ### CPlayerLemmingGroupManager lifecycle core
 
 All twenty-six portable Macintosh `CPlayerLemmingGroupManager` methods align with Windows `0x00418400..0x00419490` through PLAS manager/stream/group vtables, exact this-adjustment, five-child allocation, dead-history and selection fields, signatures, inverse operations, loader formats, callers, and render stride. Five target-only interleavings and deleting wrapper `0x00419930` remain explicitly excluded.
+
+### CGenericGroupManager lifecycle and iterator core
+
+Fifteen Macintosh lifecycle and group/nested-element iterator methods align with Windows `0x0041E8F0..0x0041EB90` through the 40-slot manager layout, vtable/ILT calls, exact count/index fields, nested iterator inverse pairs, signatures, and family sequence. Target-only child-destruction helper `0x0041E9A0` and the later mutation/render tail remain separate.

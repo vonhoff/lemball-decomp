@@ -24,6 +24,7 @@ struct LevelIteratedChildView {
 
 // Split from the original LEVELRUN source group to preserve MSVC 4.20 code generation in LEVELRUN.CPP.
 
+// MACINTOSH: CGenericGroupManager::Restart()
 // FUNCTION: LEMBALL 0x0041e970
 void LEMBALL_FASTCALL ActivateIteratedLevelChunkChildren(void* pIterator)
 {

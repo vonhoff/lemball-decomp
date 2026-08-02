@@ -1187,6 +1187,7 @@ LinkScfGmobChunkManagerView* LinkScfGmobChunkManagerView::ConstructGmobChunkMana
 	return this;
 }
 
+// MACINTOSH: CGenericGroupManager::CGenericGroupManager(CAI*, CObjectManager*, CFormationManager*)
 // FUNCTION: LEMBALL 0x0041e8f0
 LinkScfCachedChunkObjectManagerBaseView* LinkScfCachedChunkObjectManagerBaseView::ConstructCachedChunkObjectManagerBase(
 	void* pLevelMode,
@@ -1203,11 +1204,13 @@ LinkScfCachedChunkObjectManagerBaseView* LinkScfCachedChunkObjectManagerBaseView
 	memset((char*) this + 4, 0, 40 * sizeof(int));
 	return this;
 }
+// MACINTOSH: CGenericGroupManager::GetNumberOfGroups()
 // FUNCTION: LEMBALL 0x0041ea20
 int LEMBALL_FASTCALL GetManagedEntityGroupCount(void* pObject)
 {
 	return *(int*) ((char*) pObject + 0xa4);
 }
+// MACINTOSH: CGenericGroupManager::GetFirstGroup()
 // FUNCTION: LEMBALL 0x0041ea30
 void* LEMBALL_FASTCALL GetFirstCachedChunkObject(void* pObject)
 {
@@ -1217,6 +1220,7 @@ void* LEMBALL_FASTCALL GetFirstCachedChunkObject(void* pObject)
 	}
 	return *(void**) ((char*) pObject + 4);
 }
+// MACINTOSH: CGenericGroupManager::GetNextGroup()
 // FUNCTION: LEMBALL 0x0041ea50
 void* LEMBALL_FASTCALL GetNextCachedChunkObject(void* pObject)
 {
@@ -1229,6 +1233,7 @@ void* LEMBALL_FASTCALL GetNextCachedChunkObject(void* pObject)
 	}
 	return *(void**) ((char*) pObject + 4 + nIndex * 4);
 }
+// MACINTOSH: CGenericGroupManager::GetNthGroup(int)
 // FUNCTION: LEMBALL 0x0041ea70
 void* LEMBALL_FASTCALL GetCachedChunkObjectByIndex(void* pObject, void*, int nIndex)
 {
@@ -1238,6 +1243,7 @@ void* LEMBALL_FASTCALL GetCachedChunkObjectByIndex(void* pObject, void*, int nIn
 	}
 	return *(void**) ((char*) pObject + 4 + nIndex * 4);
 }
+// MACINTOSH: CGenericGroupManager::GetCurrentGroup()
 // FUNCTION: LEMBALL 0x0041ea90
 void* LEMBALL_FASTCALL GetNextManagedEntityGroup(void* pObject)
 {

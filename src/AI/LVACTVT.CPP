@@ -37,6 +37,7 @@ int LevelManagedEntityActiveGroupView::GetEntityActiveState(void* pObject)
 	return pEntity != 0 ? pEntity->GetActiveStateThunk() : 0;
 }
 
+// MACINTOSH: CGenericGroupManager::GetGroupElementIsMemberOf(CGameObject*)
 // FUNCTION: LEMBALL 0x0041eb90
 LevelManagedEntityChildIterator* LevelManagedEntityActiveGroupView::FindManagedEntityByPointer(void* pObject)
 {
