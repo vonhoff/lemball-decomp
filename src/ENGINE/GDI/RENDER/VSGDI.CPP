@@ -2748,13 +2748,16 @@ int LEMBALL_FASTCALL GetHelperGroup0DirtyFlag(void* pGroupState, int)
 // FUNCTION: LEMBALL 0x00466510
 void LEMBALL_FASTCALL ReleaseHelperGroup0BackingBuffer(int nHelperGroup)
 {
-	if (*(int*) (unsigned long) (nHelperGroup + 0x4c) != 0) {
-		FreeVSMemBlock((void*) (unsigned long) *(int*) (unsigned long) (nHelperGroup + 0x4c));
-		*(int*) (unsigned long) (nHelperGroup + 0x4c) = 0;
-		*(short*) (unsigned long) (nHelperGroup + 0x52) = 0;
-		*(short*) (unsigned long) (nHelperGroup + 0x50) = 0;
+	VsGdiResourceGeometryHelperGroupView* pHelperGroup;
+
+	pHelperGroup = (VsGdiResourceGeometryHelperGroupView*) (unsigned long) nHelperGroup;
+	if (pHelperGroup->m_pBackingBuffer != 0) {
+		FreeVSMemBlock(pHelperGroup->m_pBackingBuffer);
+		pHelperGroup->m_pBackingBuffer = 0;
+		pHelperGroup->m_nHeight = 0;
+		pHelperGroup->m_nWidth = 0;
 	}
-	ReleaseResourceGeometryRowBufferStorage(nHelperGroup + 8);
+	ReleaseResourceGeometryRowBufferStorage((int) (unsigned long) &pHelperGroup->m_RowBuffer);
 }
 // FUNCTION: LEMBALL 0x00466660
 void LEMBALL_FASTCALL EnsureHelperGroup0BackingBufferThunk(void* pHelperGroup)
@@ -2804,13 +2807,16 @@ void LEMBALL_FASTCALL DestroyHelperGroup1RowBuffer(void* pvHelperGroup)
 // FUNCTION: LEMBALL 0x00466710
 void LEMBALL_FASTCALL ReleaseHelperGroup1BackingBuffer(int nHelperGroup)
 {
-	if (*(int*) (unsigned long) (nHelperGroup + 0x4c) != 0) {
-		FreeVSMemBlock((void*) (unsigned long) *(int*) (unsigned long) (nHelperGroup + 0x4c));
-		*(int*) (unsigned long) (nHelperGroup + 0x4c) = 0;
-		*(short*) (unsigned long) (nHelperGroup + 0x52) = 0;
-		*(short*) (unsigned long) (nHelperGroup + 0x50) = 0;
+	VsGdiResourceGeometryHelperGroupView* pHelperGroup;
+
+	pHelperGroup = (VsGdiResourceGeometryHelperGroupView*) (unsigned long) nHelperGroup;
+	if (pHelperGroup->m_pBackingBuffer != 0) {
+		FreeVSMemBlock(pHelperGroup->m_pBackingBuffer);
+		pHelperGroup->m_pBackingBuffer = 0;
+		pHelperGroup->m_nHeight = 0;
+		pHelperGroup->m_nWidth = 0;
 	}
-	ReleaseResourceGeometryRowBufferStorage(nHelperGroup + 8);
+	ReleaseResourceGeometryRowBufferStorage((int) (unsigned long) &pHelperGroup->m_RowBuffer);
 }
 // FUNCTION: LEMBALL 0x00466740
 void LEMBALL_FASTCALL EnsureHelperGroup1BackingBufferBody(void* pHelperGroup)
@@ -2858,13 +2864,16 @@ void LEMBALL_FASTCALL EnsureHelperGroup1BackingBufferBody(void* pHelperGroup)
 // FUNCTION: LEMBALL 0x00466840
 void LEMBALL_FASTCALL SetHelperGroup1BackingActive(int nHelperGroup, int nUnused, int fActive)
 {
+	VsGdiResourceGeometryHelperGroupView* pHelperGroup;
+
+	pHelperGroup = (VsGdiResourceGeometryHelperGroupView*) (unsigned long) nHelperGroup;
 	if (fActive == 0) {
 		ReleaseHelperGroup1BackingBuffer(nHelperGroup);
-		*(int*) (nHelperGroup + 0x48) = 0;
+		pHelperGroup->m_fActive = 0;
 	}
 	else {
-		EnsureHelperGroup1BackingBufferBody((void*) (unsigned long) nHelperGroup);
-		*(int*) (nHelperGroup + 0x48) = 1;
+		EnsureHelperGroup1BackingBufferBody(pHelperGroup);
+		pHelperGroup->m_fActive = 1;
 	}
 }
 // FUNCTION: LEMBALL 0x00466870
