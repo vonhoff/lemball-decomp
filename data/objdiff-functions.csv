@@ -772,12 +772,12 @@ address,size,name,unit
 0x0041EE00,129,CGenericGroupManager::GetAllBoundingBoxes,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0041EE90,63,CGenericGroupManager::GetViewData,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0041EED0,70,CGenericGroupManager::CheckGroupIntersection,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x0041F0B0,35,construct_shpg_chunk_manager,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x0041F0E0,92,activate_nested_children_from_owner_table_0xa4,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
-0x0041F140,36,service_iterated_level_chunk_children_variant,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x0041F0B0,35,CSheepGroupManager::CSheepGroupManager,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x0041F0E0,92,CSheepGroupManager::Restart,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x0041F140,36,CSheepGroupManager::Process,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x0041F170,217,create_shpg_group_with_four_children,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x0041F250,139,remove_cached_chunk_object_from_level_list_and_destroy,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041F2E0,313,load_shpg_chunk_objects,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041F2E0,313,CSheepGroupManager::LoadLevel,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041F500,35,construct_shpg_managed_entity_group_controller,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041F530,512,queue_owner_child_offset_move_commands_for_point,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041F730,234,queue_owner_children_toward_nearest_target,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

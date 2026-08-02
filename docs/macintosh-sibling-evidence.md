@@ -221,3 +221,7 @@ All five portable methods map at `0x0040B480..0x0040B760`. Exact 68K and Windows
 ## CSlinkyManager reconstruction
 
 All eight portable methods map at `0x0040B8E0..0x0040BE50` in physical `LEVELRUN.CPP`. Exact Macintosh sequencing and Windows bodies agree on owner/capacity construction, `0x150`-byte CSlinky arrays, restart/destruction, bounded add, render-entry iteration, per-object processing, and serialized level loading. Large removal/compaction helper `0x0040BA30` has no portable counterpart and remains target-only.
+
+## CSheepGroupManager reconstruction
+
+All four portable methods map at `0x0041F0B0..0x0041F2E0`. Independent auditing confirms the SHPG manager constructor and `0xB0` layout, nested restart loop, first/next group process iteration, and six-byte record loader through exact 68K bodies, Windows ILTs, CAI callers, and the `SHPG` chunk route. Physical ownership remains split across `LINKSCF.CPP`, `LEVELRUN.CPP`, and `LEVELVT.CPP`. Windows-only four-sheep factory `0x0041F170` and removal helper `0x0041F250` remain excluded.
