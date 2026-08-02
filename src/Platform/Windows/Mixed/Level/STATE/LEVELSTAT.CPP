@@ -764,14 +764,14 @@ struct LevelTileGridView {
 	}
 };
 
-struct MoveChunkObjectInitializeView;
+struct CMover;
 
 struct MoveChunkManagerTriggerView {
 	char m_abReserved00[0x34];
 	int m_cObjects34;
-	MoveChunkObjectInitializeView* m_pObjects38;
+	CMover* m_pObjects38;
 
-	MoveChunkObjectInitializeView* FindObjectContainingPoint(int x, int y, int* pHeight);
+	CMover* FindObjectContainingPoint(int x, int y, int* pHeight);
 	int HasTriggeredObject(void* pEntity, const int* pPosition);
 };
 
@@ -1283,7 +1283,7 @@ unsigned int LevelTileRenderDescriptor::TestShapePixel(int nLocalX, int nLocalY,
 // FUNCTION: LEMBALL 0x004304e0
 unsigned short LevelTileGridOwnerView::SampleHeightWithMoveChunkOverride(int x, int y, void** ppMoveChunk)
 {
-	MoveChunkObjectInitializeView* pMoveChunk;
+	CMover* pMoveChunk;
 	LevelTileRenderDescriptor* pCell;
 	int nHeight;
 

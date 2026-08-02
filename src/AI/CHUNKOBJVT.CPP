@@ -918,6 +918,7 @@ void* LEMBALL_FASTCALL DeleteIceChunkObjectAuto(void* pObject, void* pUnused, un
 	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x188, destroy_ice_chunk_object);
 }
 
+// MACINTOSH: CMover::SetPos()
 // FUNCTION: LEMBALL 0x0042e650
 void LEMBALL_FASTCALL mark_move_chunk_tiles_occupied(void* pObject)
 {
@@ -944,6 +945,7 @@ void LEMBALL_FASTCALL mark_move_chunk_tiles_occupied(void* pObject)
 	}
 }
 
+// MACINTOSH: CMover::MoveObjects(int, int, int)
 // FUNCTION: LEMBALL 0x0042ea40
 void LEMBALL_FASTCALL
 translate_attached_move_chunk_objects(void* pObject, void* pUnused, int nDeltaX, int nDeltaY, int nDeltaZ)
@@ -958,6 +960,7 @@ translate_attached_move_chunk_objects(void* pObject, void* pUnused, int nDeltaX,
 	}
 }
 
+// MACINTOSH: CMover::Process()
 // STUB: LEMBALL 0x0042eb00
 int LEMBALL_FASTCALL AdvanceMoveChunkObjectStateMachine(void* pObject)
 {

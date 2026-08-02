@@ -2147,6 +2147,7 @@ int PASCAL return_zero_vtable_callback_0042dd30(void* pUnused)
 
 extern void* g_LEVELVT_MoveChunkObjectVtable[16];
 
+// MACINTOSH: CMover::~CMover()
 // FUNCTION: LEMBALL 0x0042e640
 void LEMBALL_FASTCALL destroy_move_chunk_object(void* pObject)
 {
@@ -2198,7 +2199,7 @@ struct MoveChunkTileGridView {
 	int m_cRows14;
 };
 
-struct MoveChunkObjectInitializeView : ManagedEntitySlotOwnerView {
+struct CMover : ManagedEntitySlotOwnerView {
 	char m_abReserved6E[0x2e];
 	int m_nWorldX9C;
 	int m_nWorldYA0;
@@ -2216,12 +2217,13 @@ struct MoveChunkObjectInitializeView : ManagedEntitySlotOwnerView {
 	int m_cAttachedEntities174;
 	char m_abReserved178[0x28];
 
-	int SampleHeightIfPointInsideBounds(int x, int y, int* pHeight);
-	void Initialize(unsigned short nSlotId, short nHeading, int nMode, int iNode, int nValue);
+	int IsAt(int x, int y, int* pHeight);
+	void Set(unsigned short nSlotId, short nHeading, int nMode, int iNode, int nValue);
 };
 
+// MACINTOSH: CMover::IsAt(int, int, int&)
 // FUNCTION: LEMBALL 0x0042e700
-int MoveChunkObjectInitializeView::SampleHeightIfPointInsideBounds(int x, int y, int* pHeight)
+int CMover::IsAt(int x, int y, int* pHeight)
 {
 	int nLeft;
 	int nRight;
@@ -2239,8 +2241,9 @@ int MoveChunkObjectInitializeView::SampleHeightIfPointInsideBounds(int x, int y,
 	return 0;
 }
 
+// MACINTOSH: CMover::Set(unsigned short, int, unsigned char, int, int)
 // FUNCTION: LEMBALL 0x0042e760
-void MoveChunkObjectInitializeView::Initialize(unsigned short nSlotId, short nHeading, int nMode, int iNode, int nValue)
+void CMover::Set(unsigned short nSlotId, short nHeading, int nMode, int iNode, int nValue)
 {
 	LevelNodePoint point;
 	LevelNodePoint* pPoint;
@@ -2280,6 +2283,7 @@ void MoveChunkObjectInitializeView::Initialize(unsigned short nSlotId, short nHe
 	m_nValue16C = nValue;
 }
 
+// MACINTOSH: CMover::Switch()
 // FUNCTION: LEMBALL 0x0042eeb0
 void __fastcall set_move_chunk_object_trigger_latch(void* pObject)
 {
@@ -2293,9 +2297,9 @@ struct MoveChunkObjectTriggerView {
 struct MoveChunkManagerTriggerView {
 	char m_abReserved00[0x34];
 	int m_cObjects34;
-	MoveChunkObjectInitializeView* m_pObjects38;
+	CMover* m_pObjects38;
 
-	MoveChunkObjectInitializeView* FindObjectContainingPoint(int x, int y, int* pHeight);
+	CMover* FindObjectContainingPoint(int x, int y, int* pHeight);
 	int HasTriggeredObject(void* pEntity, const int* pPosition);
 };
 
@@ -2314,7 +2318,7 @@ void __fastcall reset_move_chunk_object_count(void* pManager)
 }
 
 // FUNCTION: LEMBALL 0x0042f2f0
-MoveChunkObjectInitializeView* MoveChunkManagerTriggerView::FindObjectContainingPoint(int x, int y, int* pHeight)
+CMover* MoveChunkManagerTriggerView::FindObjectContainingPoint(int x, int y, int* pHeight)
 {
 	int i;
 	int nOffset;
@@ -2323,11 +2327,11 @@ MoveChunkObjectInitializeView* MoveChunkManagerTriggerView::FindObjectContaining
 	if (m_cObjects34 > 0) {
 		nOffset = 0;
 		do {
-			if (((MoveChunkObjectInitializeView*) ((char*) m_pObjects38 + nOffset))
-					->SampleHeightIfPointInsideBounds(x, y, pHeight) != 0) {
+			if (((CMover*) ((char*) m_pObjects38 + nOffset))
+					->IsAt(x, y, pHeight) != 0) {
 				return &m_pObjects38[i];
 			}
-			nOffset += sizeof(MoveChunkObjectInitializeView);
+			nOffset += sizeof(CMover);
 			++i;
 		} while (i < m_cObjects34);
 	}

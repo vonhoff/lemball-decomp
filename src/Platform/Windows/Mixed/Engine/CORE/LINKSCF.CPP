@@ -1966,6 +1966,7 @@ void LEMBALL_FASTCALL AdvanceIceChunkManagerObjects(void* pManager)
 	}
 }
 
+// MACINTOSH: CMover::IsOn(AICOORD&)
 // FUNCTION: LEMBALL 0x0042eee0
 int LEMBALL_FASTCALL is_point_inside_move_chunk_bounds(void* pObject, void* pUnused, const int* pPoint)
 {
@@ -1977,6 +1978,7 @@ int LEMBALL_FASTCALL is_point_inside_move_chunk_bounds(void* pObject, void* pUnu
 	return nMinX <= nX && nX <= nMinX + 15 && nMinY <= nY && nY <= nMinY + 15;
 }
 
+// MACINTOSH: CMover::VerifyObjects()
 // FUNCTION: LEMBALL 0x0042ef40
 void LEMBALL_FASTCALL detach_entities_outside_move_chunk_bounds(void* pObject)
 {
@@ -2005,6 +2007,7 @@ void LEMBALL_FASTCALL detach_entities_outside_move_chunk_bounds(void* pObject)
 extern void* LEMBALL_FASTCALL get_managed_entity_owner_group(void* pEntity);
 extern void LEMBALL_FASTCALL clear_managed_entity_child_pending_state_if_interruptible(void* pEntity);
 
+// MACINTOSH: CMover::StopObjectsMoving()
 // FUNCTION: LEMBALL 0x0042f140
 void LEMBALL_FASTCALL release_attached_move_chunk_entities(void* pObject)
 {
