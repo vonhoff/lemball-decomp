@@ -1995,6 +1995,7 @@ int __fastcall is_delayed_move_to_saved_target_armed(void* pObject)
 	return *(int*) ((char*) pObject + 0x168) == 1;
 }
 
+// MACINTOSH: CEnemy::StartFiring()
 // FUNCTION: LEMBALL 0x004204d0
 void __fastcall set_chunk_short_delay_timer(void* pObject)
 {

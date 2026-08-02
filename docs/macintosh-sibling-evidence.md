@@ -62,7 +62,7 @@ Forty-one Macintosh `CAI` methods now align with Windows `0x00410C10..0x00413390
 
 ### CEnemy lifecycle, behavior, and fire core
 
-Nineteen Macintosh `CEnemy` methods align with Windows `0x0041FBA0..0x00420430` through ENMY layout, signatures, ILTs/callers, rule/action semantics, distinctive delays, radius 50, directional constants, and projectile behavior. Seven later firing/hit methods remain unresolved rather than consuming the non-isomorphic tail by order.
+Twenty-five Macintosh `CEnemy` methods align with Windows `0x0041FBA0..0x00420720` through ENMY layout, signatures, ILTs/callers, vtable slots, rule/action semantics, distinctive delays, radius 50, directional constants, projectile behavior, and hit lifecycle. The clipped Macintosh `ype` symbol remains unresolved because its damaged spelling/signature cannot support ABI-safe acceptance by family order.
 
 ### CPlayerLemming lifecycle, grouping, and fire core
 
