@@ -1983,19 +1983,19 @@ CODE_06_AI.bin,AI,0x000154EB,0x000154EC,GetViewData__12CLiftManagerFP9CViewData,
 CODE_06_AI.bin,AI,0x000155F3,0x000155F4,Switch__12CLiftManagerF9swMessageiii,CLiftManager,Switch,accepted_x86_correlation,gap,0x00425F10,high,,dispatches activate or toggle action to the addressed lift slot
 CODE_06_AI.bin,AI,0x00015650,0x00015651,Id__12CLiftManagerFi,CLiftManager,Id,accepted_x86_correlation,gap,0x00425F90,high,,returns lift slot id by index or 0xffff out of range
 CODE_06_AI.bin,AI,0x000158DD,0x000158DE,LoadLevel__12CLiftManagerFPUciUc,CLiftManager,LoadLevel,accepted_x86_correlation,gap,0x00425FC0,high,,loads version-dependent lift records with legacy and endpoint layouts
-CODE_06_AI.bin,AI,0x00015924,0x00015925,__ct__5CMazeFP4CMap,CMaze,CMaze,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00015992,0x00015993,__dt__5CMazeFv,CMaze,~CMaze,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00015A0C,0x00015A0D,ReInitialise__5CMazeFv,CMaze,ReInitialise,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00015AC0,0x00015AC1,Initialise__5CMazeFv,CMaze,Initialise,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00015BB2,0x00015BB3,CalcNewDistance__5CMazeFii,CMaze,CalcNewDistance,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00015C70,0x00015C71,FindSquare__5CMazeFUsRiRi,CMaze,FindSquare,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00015D86,0x00015D87,UpdateChangeNext__5CMazeFii,CMaze,UpdateChangeNext,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00015DF0,0x00015DF1,Clear__5CMazeFPUc,CMaze,Clear,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00015E42,0x00015E43,SwapChange__5CMazeFv,CMaze,SwapChange,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00015F34,0x00015F35,BInitialise__5CMazeFUciiii,CMaze,BInitialise,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00016106,0x00016107,BIteration__5CMazeFRUcRUc,CMaze,BIteration,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00016156,0x00016157,Direction__Fiiii,<global>,Direction,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00016260,0x00016261,BSolution__5CMazeFRiP9tSolution,CMaze,BSolution,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
+CODE_06_AI.bin,AI,0x00015924,0x00015925,__ct__5CMazeFP4CMap,CMaze,CMaze,accepted_x86_correlation,gap,0x00423090,high,,constructs the maze around CMap and clears row grid frontier banks dimensions and counters
+CODE_06_AI.bin,AI,0x00015992,0x00015993,__dt__5CMazeFv,CMaze,~CMaze,accepted_x86_correlation,gap,0x004230C0,high,,frees every allocated distance row and the row pointer table
+CODE_06_AI.bin,AI,0x00015A0C,0x00015A0D,ReInitialise__5CMazeFv,CMaze,ReInitialise,accepted_x86_correlation,gap,0x00423110,high,,refills the 16-bit passability grid from map tile flag bit zero
+CODE_06_AI.bin,AI,0x00015AC0,0x00015AC1,Initialise__5CMazeFv,CMaze,Initialise,accepted_x86_correlation,gap,0x00423190,high,,resizes row storage to map dimensions then reinitialises passability
+CODE_06_AI.bin,AI,0x00015BB2,0x00015BB3,CalcNewDistance__5CMazeFii,CMaze,CalcNewDistance,accepted_x86_correlation,gap,0x00423230,high,,relaxes one reachable tile from nine edge-mask-constrained neighbors
+CODE_06_AI.bin,AI,0x00015C70,0x00015C71,FindSquare__5CMazeFUsRiRi,CMaze,FindSquare,accepted_x86_correlation,gap,0x004232E0,high,,steps backward to an adjacent tile carrying the requested distance
+CODE_06_AI.bin,AI,0x00015D86,0x00015D87,UpdateChangeNext__5CMazeFii,CMaze,UpdateChangeNext,accepted_x86_correlation,gap,0x00423380,high,,marks the bounded 3 by 3 neighborhood in both frontier banks
+CODE_06_AI.bin,AI,0x00015DF0,0x00015DF1,Clear__5CMazeFPUc,CMaze,Clear,accepted_x86_correlation,gap,0x004234A0,high,,clears one fixed-stride frontier bitset over active maze dimensions
+CODE_06_AI.bin,AI,0x00015E42,0x00015E43,SwapChange__5CMazeFv,CMaze,SwapChange,accepted_x86_correlation,gap,0x004234F0,high,,clears the inactive frontier bank then toggles banks
+CODE_06_AI.bin,AI,0x00015F34,0x00015F35,BInitialise__5CMazeFUciiii,CMaze,BInitialise,accepted_x86_correlation,gap,0x00423530,high,,seeds timed breadth search coordinates grids and initial frontier
+CODE_06_AI.bin,AI,0x00016106,0x00016107,BIteration__5CMazeFRUcRUc,CMaze,BIteration,accepted_x86_correlation,gap,0x00423650,high,,expands one bounded wavefront iteration and reports found or exhausted state
+CODE_06_AI.bin,AI,0x00016156,0x00016157,Direction__Fiiii,<global>,Direction,accepted_x86_correlation,gap,0x00423890,high,,computes the direction code used to retain only path turns
+CODE_06_AI.bin,AI,0x00016260,0x00016261,BSolution__5CMazeFRiP9tSolution,CMaze,BSolution,accepted_x86_correlation,gap,0x004238B0,high,,walks decreasing distances and emits endpoint and turn solution points
 CODE_06_AI.bin,AI,0x000162B0,0x000162B1,__ct__5CMineFv,CMine,CMine,accepted_x86_correlation,represented,0x00423C10,high,,accepted mapping 0x00423C10 (exact trailer offset): contiguous CMine family start; type 0x13 construction and mine vtable lifecycle
 CODE_06_AI.bin,AI,0x000162DE,0x000162DF,Restart__5CMineFv,CMine,Restart,accepted_x86_correlation,represented,0x00423C30,high,,accepted mapping 0x00423C30 (exact trailer offset): immediate family successor; resets managed-entity and CMine runtime state
 CODE_06_AI.bin,AI,0x0001633C,0x0001633D,Initialise__5CMineFv,CMine,Initialise,accepted_x86_correlation,represented,0x00423C50,high,,"accepted mapping 0x00423C50 (exact trailer offset): family order; seeds state 0x18, timers, trigger fields, and mine terrain variants"

@@ -729,3 +729,16 @@ CODE_06_AI.bin,0x000154EB,GetViewData__12CLiftManagerFP9CViewData,0x00425DF0,hig
 CODE_06_AI.bin,0x000155F3,Switch__12CLiftManagerF9swMessageiii,0x00425F10,high,dispatches activate or toggle action to the addressed lift slot,exact_tuple,0x000155F3
 CODE_06_AI.bin,0x00015650,Id__12CLiftManagerFi,0x00425F90,high,returns lift slot id by index or 0xffff out of range,exact_tuple,0x00015650
 CODE_06_AI.bin,0x000158DD,LoadLevel__12CLiftManagerFPUciUc,0x00425FC0,high,loads version-dependent lift records with legacy and endpoint layouts,exact_tuple,0x000158DD
+CODE_06_AI.bin,0x00015924,__ct__5CMazeFP4CMap,0x00423090,high,constructs the maze around CMap and clears row grid frontier banks dimensions and counters,exact_tuple,0x00015924
+CODE_06_AI.bin,0x00015992,__dt__5CMazeFv,0x004230C0,high,frees every allocated distance row and the row pointer table,exact_tuple,0x00015992
+CODE_06_AI.bin,0x00015A0C,ReInitialise__5CMazeFv,0x00423110,high,refills the 16-bit passability grid from map tile flag bit zero,exact_tuple,0x00015A0C
+CODE_06_AI.bin,0x00015AC0,Initialise__5CMazeFv,0x00423190,high,resizes row storage to map dimensions then reinitialises passability,exact_tuple,0x00015AC0
+CODE_06_AI.bin,0x00015BB2,CalcNewDistance__5CMazeFii,0x00423230,high,relaxes one reachable tile from nine edge-mask-constrained neighbors,exact_tuple,0x00015BB2
+CODE_06_AI.bin,0x00015C70,FindSquare__5CMazeFUsRiRi,0x004232E0,high,steps backward to an adjacent tile carrying the requested distance,exact_tuple,0x00015C70
+CODE_06_AI.bin,0x00015D86,UpdateChangeNext__5CMazeFii,0x00423380,high,marks the bounded 3 by 3 neighborhood in both frontier banks,exact_tuple,0x00015D86
+CODE_06_AI.bin,0x00015DF0,Clear__5CMazeFPUc,0x004234A0,high,clears one fixed-stride frontier bitset over active maze dimensions,exact_tuple,0x00015DF0
+CODE_06_AI.bin,0x00015E42,SwapChange__5CMazeFv,0x004234F0,high,clears the inactive frontier bank then toggles banks,exact_tuple,0x00015E42
+CODE_06_AI.bin,0x00015F34,BInitialise__5CMazeFUciiii,0x00423530,high,seeds timed breadth search coordinates grids and initial frontier,exact_tuple,0x00015F34
+CODE_06_AI.bin,0x00016106,BIteration__5CMazeFRUcRUc,0x00423650,high,expands one bounded wavefront iteration and reports found or exhausted state,exact_tuple,0x00016106
+CODE_06_AI.bin,0x00016156,Direction__Fiiii,0x00423890,high,computes the direction code used to retain only path turns,exact_tuple,0x00016156
+CODE_06_AI.bin,0x00016260,BSolution__5CMazeFRiP9tSolution,0x004238B0,high,walks decreasing distances and emits endpoint and turn solution points,exact_tuple,0x00016260

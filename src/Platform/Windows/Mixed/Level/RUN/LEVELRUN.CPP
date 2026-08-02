@@ -2206,6 +2206,7 @@ void LEMBALL_FASTCALL reset_ball_chunk_manager_load_cursor(void* pManager)
 	*(int*) ((char*) pManager + 8) = 0;
 }
 
+// MACINTOSH: CMaze::CMaze(CMap*)
 // FUNCTION: LEMBALL 0x00423090
 void* LevelTileReachabilityHelper::ConstructLevelTileReachabilityHelperThunk(void* pTileGrid)
 {
@@ -2217,6 +2218,7 @@ void* LevelTileReachabilityHelper::ConstructLevelTileReachabilityHelperThunk(voi
 	*(int*) ((char*) this + 0x1014) = 0;
 	return this;
 }
+// MACINTOSH: CMaze::~CMaze()
 // FUNCTION: LEMBALL 0x004230c0
 void LEMBALL_FASTCALL DestroyLevelTileReachabilityHelper(void* pReachabilityHelper)
 {
@@ -2236,6 +2238,7 @@ void LEMBALL_FASTCALL DestroyLevelTileReachabilityHelper(void* pReachabilityHelp
 	}
 	FreeVSMemBlock(ppRows);
 }
+// MACINTOSH: CMaze::ReInitialise()
 // FUNCTION: LEMBALL 0x00423110
 void LEMBALL_FASTCALL FillReachabilityGridFromTileFlags(void* pReachabilityHelper)
 {
@@ -2283,6 +2286,7 @@ void LEMBALL_FASTCALL FillReachabilityGridFromTileFlags(void* pReachabilityHelpe
 		} while (y < pHelper->m_cRows1014);
 	}
 }
+// MACINTOSH: CMaze::Initialise()
 // FUNCTION: LEMBALL 0x00423190
 void LEMBALL_FASTCALL ResizeLevelTileReachabilityGrid(void* pReachabilityHelper)
 {

@@ -157,3 +157,7 @@ All 18 portable methods map at `0x00409CA0..0x0040A490`. Windows evidence preser
 ### CLift and CLiftManager
 
 All 21 portable methods map at `0x00424D00..0x00425FC0`. Windows evidence preserves the `0x190` object stride, endpoint/legacy setup overloads, boundary cliff updates, eight passenger slots, timed motion states, view records, slot switching, and versioned loader while retaining split Windows ownership. Serialization helpers `0x004257E0`/`0x00425830`, remove helper `0x00425890`, Add helpers `0x00425C80`/`0x00425CE0`, manager cliff helper `0x00425DC0`, and deleting wrappers `0x004266E0`/`0x00426710` consume no portable symbols.
+
+### CMaze path search
+
+The 12 portable `CMaze` methods and global `Direction` map at `0x00423090..0x004238B0`. Windows evidence preserves the row-allocated 16-bit passability/distance grid, two fixed-stride frontier banks, edge-mask-constrained nine-neighbor relaxation, reference arguments, bounded breadth expansion, direction coding, and turn-only solution output. Physical ownership stays split between `LEVELRUN.CPP` and `LVPATHDIR.CPP`; Macintosh-only `AdvanceBit`, `ChangeAddr`, and `ChangeNextAddr` remain unresolved pending standalone Windows identities.
