@@ -189,3 +189,7 @@ All twelve portable bodies map at `0x00416D20..0x00417150` in physical `LEVELRUN
 ## CRocket and CRocketManager reconstruction
 
 All seventeen portable methods map at `0x004267D0..0x00427110`. Exact 68K and Windows evidence preserves type `0x20`, rocket state/timer constants, contact radius `0x20`, target state `0x15`, manager capacity/count semantics, Windows rocket stride `0x144`, view stride `0x4C`, and versioned loading. Physical ownership is mixed: `0x004267D0..0x00426B50` remains in `LINKSCF.CPP`, while `0x00426C00` onward remains in `LEVELVT.CPP`. Count reset `0x00426C20`, compaction helper `0x00426C30`, network serializer `0x004273F0`, and deleting wrappers `0x004274F0`/`0x00427520` are Windows-only.
+
+## CTrapDoor and CTrapDoorManager reconstruction
+
+All eleven portable methods map in the Windows type-`0x18` region at `0x0040C2D0..0x0040CA40`. Exact 68K and Windows evidence preserves state sequence `0x18→0x1F→0x20→0x21→0x22→0x23→0x1E`, timing constants, terrain sampling, eight child slots, Windows object size `0x150`, manager size `0x54`, and versioned network-marker loading. Physical ownership remains split among `LEVELVT.CPP`, `TYPE18RESET.CPP`, and `TYPE18.CPP`. Position/access helpers `0x0040C720`, `0x0040C950`, `0x0040CA10`, clear helper `0x0040CBC0`, and deleting wrappers `0x0040CE50`, `0x0040CEA0`, and `0x0040CED0` are target-only.
