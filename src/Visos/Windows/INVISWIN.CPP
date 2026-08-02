@@ -1,6 +1,6 @@
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/CORE/VSINIT.H"
-#include "ENGINE/GDI/VSINVIS.H"
+#include "Visos/Windows/VSINVIS.H"
 #include "ENGINE/GDI/VSWINDOW.H"
 #include "Platform/Windows/Entry.h"
 

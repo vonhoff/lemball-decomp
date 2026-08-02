@@ -1,5 +1,5 @@
 #include "ENGINE/CORE/VSINIT.H"
-#include "ENGINE/DEBUG/CTEXTWIN.H"
+#include "Visos/Windows/Debug/CTextWin.h"
 #include "ENGINE/DEBUG/VSDBG.H"
 
 extern int g_fSubsystemsReady;

@@ -70,12 +70,12 @@ set(LEMBALL_SOURCES
     src/Visos/Windows/CGDI240.cpp
     src/Visos/Generic/Memory.cpp
     src/ENGINE/GDI/WINDOW/VSWING.CPP
-    src/ENGINE/GDI/WINDOW/VSWINGRECT.CPP
-    src/ENGINE/GDI/VGAIO.CPP
+    src/Visos/Windows/VSWINGRECT.CPP
+    src/Visos/Windows/VGAIO.CPP
     src/ENGINE/CORE/VSINIT.CPP
     src/ENGINE/CORE/VSFORMAT.CPP
     src/ENGINE/CORE/VSRETURN.CPP
-    src/ENGINE/DEBUG/RAWOUT.CPP
+    src/Visos/Windows/RAWOUT.CPP
     src/ENGINE/GDI/WINDOW/VSWINDOW.CPP
     src/ENGINE/GDI/WINDOW/VSWINDOWMODE.CPP
     src/ENGINE/GDI/RENDER/GEOMETRYVT.CPP
@@ -88,8 +88,8 @@ set(LEMBALL_SOURCES
     src/ENGINE/GDI/WINDOW/WINDOWSLOT38.CPP
     src/ENGINE/GDI/RENDER/GDIVT.CPP
     src/ENGINE/GDI/WINDOW/VSSPROWN.CPP
-    src/ENGINE/DEBUG/DEBUGVT.CPP
-    src/ENGINE/CORE/VSSTAT.CPP
+    src/Visos/Windows/Debug/DEBUGVT.CPP
+    src/Visos/Generic/VSSTAT.CPP
     src/ENGINE/NET/VSNETFIL.CPP
     src/ENGINE/NET/VSNETTCP.CPP
     src/ENGINE/NET/VSNET.CPP
@@ -97,10 +97,10 @@ set(LEMBALL_SOURCES
     src/ENGINE/NET/NSTRBSTH.CPP
     src/ENGINE/MEDIA/VSSOUND.CPP
     src/Visos/Generic/VSMath.cpp
-    src/ENGINE/GDI/WINDOW/INVISWIN.CPP
-    src/ENGINE/DEBUG/TEXTWIN.CPP
-    src/ENGINE/DEBUG/TXWININV.CPP
-    src/ENGINE/DEBUG/TEXTLINE.CPP
+    src/Visos/Windows/INVISWIN.CPP
+    src/Visos/Windows/Debug/TEXTWIN.CPP
+    src/Visos/Windows/Debug/TXWININV.CPP
+    src/Visos/Windows/Debug/TEXTLINE.CPP
     src/Visos/Generic/MogLoad.cpp
     src/Visos/Generic/MogPatch.cpp
     src/Visos/Generic/MogConst.cpp

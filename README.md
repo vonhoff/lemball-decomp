@@ -43,7 +43,7 @@ Pop-Location
 
 ## Source layout
 
-- `src/ENGINE` contains the recovered runtime, graphics, media, networking, and debug code. Graphics implementations are split into `GDI/RENDER` and `GDI/WINDOW`.
+- `src/ENGINE` retains only mixed Windows physical owners and ABI/link-order splits that cannot yet move intact. Proven portable Visos code lives under `src/Visos/Generic`; pure Win32 backends live under `src/Visos/Windows`.
 - `src/FRONTEND` contains menus, lobby screens, and other user-interface code.
 - `src/LEVEL` is split into `CHUNK`, `ENTITY`, `IO`, `RENDER`, `RUN`, `STATE`, and `VTABLE` implementations. Headers remain directly under `src/LEVEL`.
 - `src/RESOURCE` contains archive and typed-resource loading code.

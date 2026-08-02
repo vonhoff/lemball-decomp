@@ -46,6 +46,8 @@
     {"path":"src/Control/Options.cpp","module":"Control","state":"existing","classes":[],"must_contain":["accepted SetGameDefaults, DisplayHelp, StrCmpI, and DoCommandLine behavior plus retained Windows graphics-option setup"],"must_not_contain":["a claim that Win32 graphics-driver configuration exists in the Macintosh Control module"]},
     {"path":"src/Platform/Windows/Entry.cpp","module":"Windows/MSVC","state":"retained","classes":[],"must_contain":["WinMain and HINSTANCE startup glue"],"must_not_contain":["portable Macintosh UtilMain ownership"]},
     {"path":"src/Platform/Windows/ShellUI.cpp","module":"Windows/MSVC","state":"retained","classes":[],"must_contain":["WinHelp, registry, dialog, OS-version, and display-switching behavior"],"must_not_contain":["portable Macintosh Frontend ownership"]},
-    {"path":"src/Platform/Windows/Primary.cpp","module":"Windows/MSVC","state":"retained","classes":[],"must_contain":["intact Win32 primary-window host TU including its shared CPVBackBuffSurface emissions"],"must_not_contain":["a single Macintosh class claim for the mixed TU"]}
+    {"path":"src/Platform/Windows/Primary.cpp","module":"Windows/MSVC","state":"retained","classes":[],"must_contain":["intact Win32 primary-window host TU including its shared CPVBackBuffSurface emissions"],"must_not_contain":["a single Macintosh class claim for the mixed TU"]},
+    {"path":"src/Visos/Generic/VSSTAT.CPP","module":"Visos (Generic)","state":"existing","classes":[],"must_contain":["intact portable CString and status aggregation family"],"must_not_contain":["Windows debug-window backend ownership"]},
+    {"path":"src/Visos/Windows","module":"Windows/MSVC","state":"retained","classes":[],"must_contain":["intact Win32 graphics, VGA, invisible-window, raw-output, and debug-window backends"],"must_not_contain":["claims that platform-only bodies implement portable Macintosh Generic methods"]}
   ]
 }

@@ -3,7 +3,7 @@
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
-#include "ENGINE/GDI/VSINVIS.H"
+#include "Visos/Windows/VSINVIS.H"
 #include "ENGINE/MEDIA/VSSTRM.H"
 #include "ENGINE/NET/VSNET.H"
 #include "ENGINE/NET/VSNETFWD.H"

@@ -14,10 +14,18 @@ from collections import Counter, defaultdict
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SYMBOLS = ROOT / "data/macintosh-68k-symbols.csv"
 CORRELATIONS = ROOT / "data/macintosh-x86-correlations.csv"
+COVERAGE = ROOT / "data/macintosh-symbol-coverage.csv"
 STRUCTURE = ROOT / "data/macintosh-structure.json"
 CLASS_PREFIX = re.compile(r"__(\d+)")
 VALID_CLASS_STATES = {"planned", "partial", "mapped", "blocked"}
 VALID_FILE_STATES = {"planned", "existing", "retained"}
+VALID_COVERAGE_CATEGORIES = {
+    "accepted_x86_correlation",
+    "present_spelling_or_source_analogue",
+    "likely_inlined_or_merged",
+    "platform_specific",
+    "genuinely_missing_or_unresolved",
+}
 
 
 def mac_class(symbol: str) -> str:
@@ -123,6 +131,33 @@ def check(data: dict, symbols: list[dict[str, str]], correlations: list[dict[str
     undeclared = sorted(correlated_classes - set(class_names))
     if undeclared:
         errors.append(f"correlated classes absent from structure manifest: {', '.join(undeclared)}")
+
+    coverage = rows(COVERAGE)
+    raw_keys = {(row["code_file"], row["name_length_offset"].lower(), row["mangled_name"]) for row in symbols}
+    coverage_keys = [
+        (row["mac_code_file"], row["mac_name_length_offset"].lower(), row["mac_mangled_name"])
+        for row in coverage
+    ]
+    if len(coverage_keys) != len(set(coverage_keys)):
+        errors.append("Macintosh symbol coverage ledger contains duplicate raw keys")
+    if set(coverage_keys) != raw_keys:
+        errors.append("Macintosh symbol coverage ledger does not exactly cover the raw inventory")
+    accepted = {correlation_key(row): row for row in correlations}
+    for line, row in enumerate(coverage, 2):
+        where = f"{COVERAGE.relative_to(ROOT)}:{line}"
+        category = row["coverage_category"]
+        if category not in VALID_COVERAGE_CATEGORIES:
+            errors.append(f"{where}: invalid coverage category {category!r}")
+            continue
+        key = row["mac_module"], row["mac_mangled_name"]
+        correlation = accepted.get(key)
+        if category == "accepted_x86_correlation":
+            if correlation is None:
+                errors.append(f"{where}: accepted disposition has no correlation")
+            elif row["x86_address"].lower() != correlation["x86_address"].lower():
+                errors.append(f"{where}: x86 address disagrees with accepted correlation")
+        elif correlation is not None:
+            errors.append(f"{where}: accepted correlation is not represented in coverage ledger")
     return errors
 
 
@@ -136,10 +171,20 @@ def summary(data: dict, symbols: list[dict[str, str]], correlations: list[dict[s
     states = Counter(item["state"] for item in data["classes"])
     mapped_keys = {correlation_key(row) for row in correlations}
     mapped_raw = sum(symbol_key(row) in mapped_keys for row in symbols)
+    coverage = rows(COVERAGE)
+    target = [
+        row for row in coverage
+        if row["mac_module"] != "Visos (Mac Specific)" and row["coverage_category"] != "platform_specific"
+    ]
+    dispositions = Counter(row["coverage_category"] for row in target)
     print(f"Macintosh symbols: {len(symbols)}")
     print(f"Accepted x86 mappings: {len(correlations)}")
     print(f"Raw symbols with accepted spelling: {mapped_raw}")
     print(f"Raw symbols without accepted spelling: {len(symbols) - mapped_raw}")
+    print(f"Non-Mac-specific target: {len(target)}")
+    print(f"  accepted: {dispositions['accepted_x86_correlation']}")
+    print(f"  lexical/inlined candidates: {dispositions['present_spelling_or_source_analogue'] + dispositions['likely_inlined_or_merged']}")
+    print(f"  unresolved: {dispositions['genuinely_missing_or_unresolved']}")
     print("Tracked classes: " + ", ".join(f"{key}={value}" for key, value in sorted(states.items())))
     print(f"Tracked physical files: {len(data['files'])}")
 
