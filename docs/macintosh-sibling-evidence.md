@@ -168,4 +168,4 @@ All 11 portable manager methods map at `0x00424020..0x00424850`. Windows evidenc
 
 ### CDoor and CDoorManager
 
-The remaining 18 portable methods map at `0x0040D490..0x0040E630`. Windows evidence preserves the `0x14c` stride, vertical/horizontal tile footprints, key and state values, delayed timing, overlap bounds, versioned loader, and split physical TUs. Remove helper `0x0040E140`, tile access helpers `0x0040EB70`/`0x0040EB90`, and deleting wrappers `0x0040EBE0`/`0x0040EC10` consume no portable symbols.
+The remaining 18 portable methods map at `0x0040D490..0x0040E630`; audit correction places `Unlock` at `0x0040DD00` and the pre-existing `DoActivate` at `0x0040DEC0`, leaving the latch helper at `0x0040DD50` target-only. Windows evidence preserves the `0x14c` stride, vertical/horizontal tile footprints, key and state values, delayed timing, overlap bounds, versioned loader, and split physical TUs. Remove helper `0x0040E140`, tile access helpers `0x0040EB70`/`0x0040EB90`, and deleting wrappers `0x0040EBE0`/`0x0040EC10` consume no portable symbols.

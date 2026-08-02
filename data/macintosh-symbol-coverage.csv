@@ -1638,10 +1638,10 @@ CODE_06_AI.bin,AI,0x000066AE,0x000066AF,Delete__5CDoorFv,CDoor,Delete,accepted_x
 CODE_06_AI.bin,AI,0x0000677A,0x0000677B,SetCollision__5CDoorFv,CDoor,SetCollision,accepted_x86_correlation,gap,0x0040D910,high,,sets blocking flags on vertical or horizontal door footprint tiles
 CODE_06_AI.bin,AI,0x0000684C,0x0000684D,ResetCollision__5CDoorFv,CDoor,ResetCollision,accepted_x86_correlation,gap,0x0040DA40,high,,clears blocking flags on vertical or horizontal door footprint tiles
 CODE_06_AI.bin,AI,0x000069E0,0x000069E1,Process__5CDoorFv,CDoor,Process,accepted_x86_correlation,gap,0x0040DB80,high,,services delayed open and close states timestamps and collision transitions
-CODE_06_AI.bin,AI,0x00006A40,0x00006A41,Unlock__5CDoorFv,CDoor,Unlock,accepted_x86_correlation,gap,0x0040DD50,high,,latches one trigger request and current level tick
+CODE_06_AI.bin,AI,0x00006A40,0x00006A41,Unlock__5CDoorFv,CDoor,Unlock,accepted_x86_correlation,gap,0x0040DD00,high,,states 0x1c or 0x1d delay 0x14 trigger 0x0b and state request 0x20
 CODE_06_AI.bin,AI,0x00006A7A,0x00006A7B,IsUsable__5CDoorF7eAction,CDoor,IsUsable,accepted_x86_correlation,gap,0x0040DD30,high,,accepts idle closed and unlocked door action states
 CODE_06_AI.bin,AI,0x00006BBF,0x00006BC0,Hits__5CDoorFRC7AICOORDP11CGameObject,CDoor,Hits,accepted_x86_correlation,gap,0x0040DD80,high,,tests overlap consults key callback and requests door transitions
-CODE_06_AI.bin,AI,0x00006C5A,0x00006C5B,DoActivate__5CDoorFv,CDoor,DoActivate,accepted_x86_correlation,represented,0x0040DD00,high,src/AI/CDoorAct.cpp,accepted mapping 0x0040DD00 (exact trailer offset): door-state gated trigger and activation-state transition
+CODE_06_AI.bin,AI,0x00006C5A,0x00006C5B,DoActivate__5CDoorFv,CDoor,DoActivate,accepted_x86_correlation,represented,0x0040DEC0,high,src/AI/CDoorAct.cpp,sets active state and timestamps deadline before awarding type-dependent score
 CODE_06_AI.bin,AI,0x00006CDE,0x00006CDF,__ct__12CDoorManagerFP3CAIi,CDoorManager,CDoorManager,accepted_x86_correlation,gap,0x0040DF30,high,,constructs stream type 0x13 payload 8 and stores owner and capacity
 CODE_06_AI.bin,AI,0x00006D42,0x00006D43,Restart__12CDoorManagerFv,CDoorManager,Restart,accepted_x86_correlation,gap,0x0040DF90,high,,restarts every allocated 0x14c-stride door
 CODE_06_AI.bin,AI,0x00006E12,0x00006E13,Initialise__12CDoorManagerFi,CDoorManager,Initialise,accepted_x86_correlation,gap,0x0040DFC0,high,,allocates constructs binds and restarts the door array

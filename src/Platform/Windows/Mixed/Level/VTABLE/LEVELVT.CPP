@@ -1009,7 +1009,6 @@ int PASCAL IsDoorChunkIdleOrClosedState(int nState)
 	return 1;
 }
 
-// MACINTOSH: CDoor::Unlock()
 // FUNCTION: LEMBALL 0x0040dd50
 int DoorChunkTriggerStateView::LatchTriggerTimestamp(void)
 {

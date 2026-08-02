@@ -32,6 +32,7 @@ struct CDoor : public ManagedEntityStateView {
 
 // Split from the original LINKSCF source group to preserve MSVC 4.20 code generation.
 
+// MACINTOSH: CDoor::Unlock()
 // FUNCTION: LEMBALL 0x0040dd00
 void CDoor::DoActivate(void)
 {

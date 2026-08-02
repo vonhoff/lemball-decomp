@@ -237,11 +237,11 @@ address,size,name,unit
 0x0040D910,293,CDoor::SetCollision,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0040DA40,305,CDoor::ResetCollision,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0040DB80,345,CDoor::Process,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0040DD00,47,CDoor::DoActivate,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x0040DD00,47,CDoor::Unlock,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0040DD30,32,CDoor::IsUsable,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0040DD50,39,CDoor::Unlock,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0040DD50,39,latch_door_chunk_trigger_timestamp,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0040DD80,292,CDoor::Hits,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x0040DEC0,98,activate_door_chunk_object_trigger,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x0040DEC0,98,CDoor::DoActivate,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0040DF30,91,CDoorManager::CDoorManager,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0040DF90,48,CDoorManager::Restart,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0040DFC0,160,CDoorManager::Initialise,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
