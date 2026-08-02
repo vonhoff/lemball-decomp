@@ -205,3 +205,7 @@ The five portable methods map at `0x0041D600..0x0041D7B0` in physical `LEVELVT.C
 ## CCrate reconstruction
 
 All six portable methods map at `0x0041CCA0..0x0041CF10`. Independent exact-body auditing confirms saved-position restart, linked-content release through the GMOB manager, state `0x19/0x1A` processing, timer/action `0x14` behavior, contents-dependent scoring, and subtype-selected activation offsets. The Windows object uses linked object/id fields at `+0x148/+0x14C`; `ActivatePosition` preserves its hidden-result-pointer ABI. Physical ownership remains split between `LVSAVEPOS.CPP` and `LEVELVT.CPP`; neighboring CAmmo/CTower bodies and wrappers consume no CCrate symbols.
+
+## CCatapult reconstruction
+
+All five portable methods map at `0x0041C700..0x0041CA60`. Independent auditing identifies the type-`4` vtable at `0x00494640` and confirms exact state, clock, randomized launch-vector, linked-target, owner-transfer, score-`20`, and activation-offset behavior. Restart is the distinct `0x0041C700` wrapper that clears its 16-bit field after calling shared helper `0x0041C6C0`; that helper and saved-position activation helper `0x0041C670` remain target-only. Physical ownership stays split between `LVSAVEPOS.CPP` and `LEVELVT.CPP`.

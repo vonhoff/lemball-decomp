@@ -676,11 +676,11 @@ address,size,name,unit
 0x0041C640,30,delete_level_chunk_object_base_wrapper_0041c640,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041C670,65,activate_saved_position_chunk_object,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041C6C0,56,reset_managed_entity_to_saved_chunk_position,AI/LVSAVEPOS.CPP
-0x0041C700,19,reset_saved_position_chunk_variant,AI/LVSAVEPOS.CPP
-0x0041C720,642,advance_saved_chunk_state,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041C9B0,78,request_chunk_idle_target_state_0x19,AI/LVSAVEPOS.CPP
-0x0041CA00,93,activate_child_award_20,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041CA60,47,copy_gmob_offset_point,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041C700,19,CCatapult::Restart,AI/LVSAVEPOS.CPP
+0x0041C720,642,CCatapult::Process,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041C9B0,78,CCatapult::Activate,AI/LVSAVEPOS.CPP
+0x0041CA00,93,CCatapult::DoActivate,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041CA60,47,CCatapult::ActivatePosition,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041CA90,19,reset_linked_type_0x11_chunk_state,AI/LVSAVEPOS.CPP
 0x0041CAB0,304,advance_gmob_delay_cycle,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041CBE0,74,request_chunk_target_state_0x1a,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
