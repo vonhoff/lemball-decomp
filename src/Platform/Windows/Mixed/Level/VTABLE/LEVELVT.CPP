@@ -1596,6 +1596,7 @@ int ProjectilePool::FindProjectilePositionInRect(const LevelShortRect* pRect, Le
 	return 0;
 }
 
+// MACINTOSH: CPlayerLemmingGroupManager::GetDead()
 // FUNCTION: LEMBALL 0x004185d0
 int LevelManagedEntityHistoryView::PopHistoryId(void)
 {

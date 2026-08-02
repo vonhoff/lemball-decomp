@@ -527,11 +527,11 @@ address,size,name,unit
 0x00418300,30,delete_projectile_pool,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00418330,125,delete_projectile_object,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x004183D0,29,destroy_projectile_object,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x00418400,282,construct_plas_chunk_manager,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x00418520,23,reset_managed_entity_group_detach_cache,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x00418540,131,destroy_managed_entity_group,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x004185D0,28,pop_managed_entity_history_id,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x004185F0,68,get_active_managed_entity_position,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00418400,282,cplayer_lemming_group_manager_constructor,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00418520,23,cplayer_lemming_group_manager_restart,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00418540,131,cplayer_lemming_group_manager_destructor,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x004185D0,28,cplayer_lemming_group_manager_get_dead,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x004185F0,68,cplayer_lemming_group_manager_get_leader_pos,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00418640,1,noop_managed_entity_group_detach_hook,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00418650,205,detach_managed_entity_children_with_state_8,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00418720,15,reset_managed_entity_group_state,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

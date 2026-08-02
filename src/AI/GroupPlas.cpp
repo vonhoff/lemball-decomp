@@ -58,6 +58,7 @@ void LEMBALL_FASTCALL UpdateManagedEntityBoundsFromPosition(void* pObject);
 
 // Split from LEVELVT.CPP to preserve compiler state in the original translation unit.
 
+// MACINTOSH: CPlayerLemmingGroupManager::GetLeaderPos(AICOORD&)
 // FUNCTION: LEMBALL 0x004185f0
 int LevelManagedEntityActiveGroupView::GetActiveEntityPosition(LevelPoint3* pPosition)
 {

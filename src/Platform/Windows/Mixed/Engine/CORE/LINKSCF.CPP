@@ -1053,6 +1053,7 @@ void* ConstructProjectilePoolThunk(void* pObject)
 	*(int*) ((char*) pObject + 0xdc) = 0;
 	return pObject;
 }
+// MACINTOSH: CPlayerLemmingGroupManager::CPlayerLemmingGroupManager(CAI*, CObjectManager*, CFormationManager*)
 // FUNCTION: LEMBALL 0x00418400
 void* ConstructPlasChunkManagerThunk(void* pObject,
 									 void* pLevelMode,

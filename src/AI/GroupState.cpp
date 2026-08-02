@@ -9,6 +9,7 @@ struct ManagedEntityGroupDetachCacheView {
 
 // Split from the original LINKSCF source group to preserve MSVC 4.20 code generation in LINKSCF.CPP.
 
+// MACINTOSH: CPlayerLemmingGroupManager::Restart()
 // FUNCTION: LEMBALL 0x00418520
 void LEMBALL_FASTCALL ResetManagedEntityGroupDetachCache(void* pCache)
 {

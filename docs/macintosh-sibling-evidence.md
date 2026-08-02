@@ -71,3 +71,7 @@ All thirty-nine portable Macintosh `CPlayerLemming` methods align with Windows `
 ### CGenericGroup portable family
 
 All twenty-six portable Macintosh `CGenericGroup` methods align with Windows `0x0041DDA0..0x0041E640` through managed-group lifecycle/layout, vtable slots, iterator and membership inverse pairs, bounds sentinels, formation geometry, waypoint dispatch, intersection behavior, and render-record stride. Target-only `0x0041DF90` and deleting wrappers remain excluded; physical Windows TUs stay intact.
+
+### CPlayerLemmingGroupManager lifecycle core
+
+Five Macintosh lifecycle/dead-history/leader-position methods align with Windows `0x00418400..0x004185F0` through PLAS manager and embedded-stream vtables, exact this-adjustment, five-child allocation, object layout, signatures, and callers. The process/group-selection/load tail remains separate pending completed independent validation.
