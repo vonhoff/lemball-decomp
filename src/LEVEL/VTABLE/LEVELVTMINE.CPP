@@ -100,8 +100,7 @@ void LEMBALL_FASTCALL SetMineOrCollTileVariant(void* pvObject)
 	y = (*(int*) (pObject + 0xa0) >> 12) / 16;
 	if (*(int*) (pObject + 0x140) == 0) {
 		pGrid = (char*) g_pLevelTileGrid;
-		((LevelTileGridOwnerView*) pGrid)
-			->SetCellType(x, y, 0x20a, g_LEVEL_MineTileVariantCodes[*(int*) pGrid]);
+		((LevelTileGridOwnerView*) pGrid)->SetCellType(x, y, 0x20a, g_LEVEL_MineTileVariantCodes[*(int*) pGrid]);
 		*(int*) (pObject + 0x10) = 1;
 		if (x >= 0 && y >= 0 && x < *(int*) (pGrid + 0x10) && y < *(int*) (pGrid + 0x14)) {
 			*(unsigned char*) (*(char**) (pGrid + 0x0c) + (y * *(int*) (pGrid + 0x10) + x) * 12 + 6) |= 4;
@@ -121,34 +120,39 @@ int LEMBALL_FASTCALL AdvanceMineChunkObjectStateMachine(void* pvObject)
 	nState = *(int*) (pObject + 0xb8);
 	if (*(int*) (pObject + 0x114) != 0) {
 		if (*(int*) (pObject + 0x128) != nState) {
-			if (nState == 8) {
+			switch (nState) {
+			case 8:
 				*(int*) (pObject + 0x13c) = 0;
 				*(int*) (pObject + 0x138) = 0;
-			}
-			else if (nState == 0x1b) {
+				break;
+			case 0x1b:
 				SetMineOrCollTileVariant(pObject);
+				break;
 			}
 		}
 		*(int*) (pObject + 0x128) = *(int*) (pObject + 0xb8);
 		return 1;
 	}
-	if (nState == 0x19) {
+	switch (nState) {
+	case 0x19:
 		*(int*) (pObject + 0x140) = 0;
-	}
-	else if (nState == 0x1a) {
+		break;
+	case 0x1a:
 		if ((unsigned int) *(int*) (pObject + 0xc8) < (unsigned int) g_nLevelFrameClockTick) {
 			SetMineOrCollTileVariant(pObject);
 			*(int*) (pObject + 0x94) = g_nLevelFrameClockTimeMs;
 			*(int*) (pObject + 0xcc) = g_nLevelFrameClockTick + 0x14;
 			((MineChunkObjectActionView*) pObject)->SetManagedEntityStateId(0x1b);
 		}
-	}
-	else if (nState == 0x1b &&
-			 (unsigned int) *(int*) (pObject + 0xcc) < (unsigned int) g_nLevelFrameClockTick) {
-		*(int*) (pObject + 0x13c) = 0;
-		*(int*) (pObject + 0x138) = 0;
-		*(int*) (pObject + 0xc8) = g_nLevelFrameClockTick + 100;
-		((MineChunkObjectActionView*) pObject)->SetManagedEntityStateId(8);
+		break;
+	case 0x1b:
+		if ((unsigned int) *(int*) (pObject + 0xcc) < (unsigned int) g_nLevelFrameClockTick) {
+			*(int*) (pObject + 0x13c) = 0;
+			*(int*) (pObject + 0x138) = 0;
+			*(int*) (pObject + 0xc8) = g_nLevelFrameClockTick + 100;
+			((MineChunkObjectActionView*) pObject)->SetManagedEntityStateId(8);
+		}
+		break;
 	}
 	return 0;
 }

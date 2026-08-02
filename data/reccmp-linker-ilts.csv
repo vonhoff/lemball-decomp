@@ -47,6 +47,7 @@ address,name,symbol,type,source
 0x0040160E,LevelManagedEntityMoveCommandView::IsFacingTowardFirstMoveCommand,?IsFacingTowardFirstMoveCommand@LevelManagedEntityMoveCommandView@@QAEHXZ,stub,src/LEVEL/VTABLE/LEVELVTMOVE.CPP
 0x00401672,emit_lasr_chunk_manager_render_entries,,stub,src/ENGINE/CORE/LINKSCF.H
 0x004016B3,RequestLiftChunkObjectActivationState,?RequestLiftChunkObjectActivationState@@YIHPAX@Z,stub,src/ENGINE/CORE/LSLIFTACT.CPP
+0x004016B8,SetMineOrCollTileVariant,?SetMineOrCollTileVariant@@YIXPAX@Z,stub,src/LEVEL/VTABLE/LEVELVTMINE.CPP
 0x00401730,ManagedEntityPacketBase::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacketBase@@UAEXXZ,stub,src/LEVEL/IO/LVPKT.CPP
 0x00401749,reset_invs_chunk_object_state_thunk,?ResetInvsChunkObjectStateThunk@@YIXPAX@Z,stub,src/ENGINE/CORE/LINKSCF.CPP
 0x00401762,GameVariantResourceEntryManager::SetVariantResourceMusicEnabled,?SetVariantResourceMusicEnabled@GameVariantResourceEntryManager@@QAEXH@Z,stub,src/RESOURCE/VARMGR.CPP
