@@ -1257,13 +1257,16 @@ int VsSoundManager::CreateVariantResourceEffectInstance(int nEffectResourceId)
 // FUNCTION: LEMBALL 0x0045b460
 void VsSoundManager::PlayVariantResourceEffectId(int nEffectResourceId)
 {
-	VsSoundEffectPlaybackInterface* pBackend;
 	int nReserved;
+	VsSoundManagerLayout* pManager;
 
 	nReserved = 0;
-	if (*(int*) ((char*) this + 0x10) == 1) {
-		pBackend = *(VsSoundEffectPlaybackInterface**) ((char*) this + 0x78);
-		pBackend->PlayEffect(nEffectResourceId, pBackend->GetEffectVolume(), nReserved);
+	pManager = (VsSoundManagerLayout*) this;
+	if (pManager->m_cAcceptedEffectResources10 == 1) {
+		((VsSoundEffectPlaybackInterface*) pManager->m_pEffectBackend78)
+			->PlayEffect(nEffectResourceId,
+						 ((VsSoundEffectPlaybackInterface*) pManager->m_pEffectBackend78)->GetEffectVolume(),
+						 nReserved);
 	}
 }
 
