@@ -681,11 +681,11 @@ address,size,name,unit
 0x0041C9B0,78,CCatapult::Activate,AI/LVSAVEPOS.CPP
 0x0041CA00,93,CCatapult::DoActivate,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041CA60,47,CCatapult::ActivatePosition,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041CA90,19,reset_linked_type_0x11_chunk_state,AI/LVSAVEPOS.CPP
-0x0041CAB0,304,advance_gmob_delay_cycle,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041CBE0,74,request_chunk_target_state_0x1a,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041CC30,63,complete_gmob_action_19,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041CC70,35,copy_gmob_chunk_object_current_position,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041CA90,19,CAmmo::Restart,AI/LVSAVEPOS.CPP
+0x0041CAB0,304,CAmmo::Process,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041CBE0,74,CAmmo::Activate,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041CC30,63,CAmmo::DoActivate,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041CC70,35,CAmmo::ActivatePosition,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041CCA0,20,CCrate::Restart,AI/LVSAVEPOS.CPP
 0x0041CCC0,88,CCrate::TriggerContents,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041CD20,292,CCrate::Process,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

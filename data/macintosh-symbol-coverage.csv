@@ -2065,11 +2065,11 @@ CODE_06_AI.bin,AI,0x00018D52,0x00018D53,Process__9CCatapultFv,CCatapult,Process,
 CODE_06_AI.bin,AI,0x00018DB7,0x00018DB8,Activate__9CCatapultFP11CGameObject,CCatapult,Activate,accepted_x86_correlation,gap,0x0041C9B0,mapped,high,"exact target binding, timestamp deadlines 0x20/0x2E/0x5E, and state 0x19 request"
 CODE_06_AI.bin,AI,0x00018E46,0x00018E47,DoActivate__9CCatapultFv,CCatapult,DoActivate,accepted_x86_correlation,gap,0x0041CA00,mapped,high,"exact deadline advance, owner transfer, target state 5, and score 20"
 CODE_06_AI.bin,AI,0x00018EBC,0x00018EBD,ActivatePosition__9CCatapultFv,CCatapult,ActivatePosition,accepted_x86_correlation,gap,0x0041CA60,mapped,high,"exact fixed x/y output offsets through hidden result pointer"
-CODE_06_AI.bin,AI,0x00018EF6,0x00018EF7,Restart__5CAmmoFv,CAmmo,Restart,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x0001901C,0x0001901D,Process__5CAmmoFv,CAmmo,Process,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00019082,0x00019083,Activate__5CAmmoFP11CGameObject,CAmmo,Activate,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x00019100,0x00019101,DoActivate__5CAmmoFv,CAmmo,DoActivate,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
-CODE_06_AI.bin,AI,0x0001916E,0x0001916F,ActivatePosition__5CAmmoFv,CAmmo,ActivatePosition,genuinely_missing_or_unresolved,gap,,unresolved,,no accepted address and no exact scoped spelling in current source
+CODE_06_AI.bin,AI,0x00018EF6,0x00018EF7,Restart__5CAmmoFv,CAmmo,Restart,accepted_x86_correlation,gap,0x0041CA90,mapped,high,"exact shared reset wrapper plus CAmmo duration-field clear"
+CODE_06_AI.bin,AI,0x0001901C,0x0001901D,Process__5CAmmoFv,CAmmo,Process,accepted_x86_correlation,gap,0x0041CAB0,mapped,high,"exact terrain refresh, network shadow state, states 0x1A/0x1B/0x18, action 0x11, and duration timing"
+CODE_06_AI.bin,AI,0x00019082,0x00019083,Activate__5CAmmoFP11CGameObject,CAmmo,Activate,accepted_x86_correlation,gap,0x0041CBE0,mapped,high,"exact idle gate, target acceptance, deadline 8, and state 0x1A request"
+CODE_06_AI.bin,AI,0x00019100,0x00019101,DoActivate__5CAmmoFv,CAmmo,DoActivate,accepted_x86_correlation,gap,0x0041CC30,mapped,high,"exact clock update, action 0x11, target action 0x19, and score 50"
+CODE_06_AI.bin,AI,0x0001916E,0x0001916F,ActivatePosition__5CAmmoFv,CAmmo,ActivatePosition,accepted_x86_correlation,gap,0x0041CC70,mapped,high,"exact unchanged current-position output through hidden result pointer"
 CODE_06_AI.bin,AI,0x000191A6,0x000191A7,Restart__6CCrateFv,CCrate,Restart,accepted_x86_correlation,gap,0x0041CCA0,mapped,high,"exact saved-position reset followed by state 0x18"
 CODE_06_AI.bin,AI,0x00019212,0x00019213,TriggerContents__6CCrateFv,CCrate,TriggerContents,accepted_x86_correlation,gap,0x0041CCC0,mapped,high,"exact linked-object position transfer, manager reinsert, and ID reset to 0xFFFF"
 CODE_06_AI.bin,AI,0x0001936E,0x0001936F,Process__6CCrateFv,CCrate,Process,accepted_x86_correlation,gap,0x0041CD20,mapped,high,"exact terrain refresh and local/network states 0x19/0x1A"

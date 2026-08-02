@@ -209,3 +209,7 @@ All six portable methods map at `0x0041CCA0..0x0041CF10`. Independent exact-body
 ## CCatapult reconstruction
 
 All five portable methods map at `0x0041C700..0x0041CA60`. Independent auditing identifies the type-`4` vtable at `0x00494640` and confirms exact state, clock, randomized launch-vector, linked-target, owner-transfer, score-`20`, and activation-offset behavior. Restart is the distinct `0x0041C700` wrapper that clears its 16-bit field after calling shared helper `0x0041C6C0`; that helper and saved-position activation helper `0x0041C670` remain target-only. Physical ownership stays split between `LVSAVEPOS.CPP` and `LEVELVT.CPP`.
+
+## CAmmo reconstruction
+
+All five portable methods map at `0x0041CA90..0x0041CC70` on the coherent Windows vtable at `0x00494268`: slots `5/6/11/65/67` hold Process, Activate, ActivatePosition, Restart, and DoActivate. Independent auditing corrected the preliminary crossed-family hypothesis: `0x0041C700/0x0041C720` belong to CCatapult, while CAmmo uses `0x0041CA90/0x0041CAB0`. Exact bodies agree on the class-specific duration field, states `0x1A/0x1B/0x18`, action `0x11`, target action `0x19`, score `50`, and unchanged hidden-result position output. Physical ownership remains split between `LVSAVEPOS.CPP` and `LEVELVT.CPP`.
