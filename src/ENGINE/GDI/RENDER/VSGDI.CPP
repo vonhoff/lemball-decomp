@@ -295,19 +295,31 @@ void LEMBALL_FASTCALL NoopHelperGroup1Command(void*, int, void*);
 void LEMBALL_FASTCALL RebuildHelperTargetLinkedRows(void*);
 
 // GLOBAL: LEMBALL 0x0049a470
-void* g_VSGDI_ResourceGeometryRowBufferVtable[14] = {
+void* g_VSGDI_ResourceGeometryRowBufferVtable[2] = {
 	(void*) RebuildResourceGeometryRowPointerTable,
 	0,
+};
+// GLOBAL: LEMBALL 0x0049a478
+void* g_VSMEM_SmallMemoryBucketDestructionVtable[2] = {
 	(void*) EnterObjectCriticalSection,
 	(void*) LeaveObjectCriticalSection,
+};
+// GLOBAL: LEMBALL 0x0049a480
+void* g_GDISUBVT_ListCharEntryTableVtable[4] = {
 	(void*) ResourceGeometryRowBufferSlot4,
 	(void*) ResourceGeometryRowBufferSlot5,
 	(void*) ResourceGeometryRowBufferSlot6,
 	0,
+};
+// GLOBAL: LEMBALL 0x0049a490
+void* g_GDISUBVT_ListCharEntryTableDeletingVtable[4] = {
 	(void*) ResourceGeometryRowBufferSlot8,
 	(void*) _purecall,
 	(void*) _purecall,
 	0,
+};
+// GLOBAL: LEMBALL 0x0049a4a0
+void* g_VSMEM_SmallMemoryBucketBaseDestructionVtable[2] = {
 	(void*) EnterObjectCriticalSection,
 	(void*) LeaveObjectCriticalSection,
 };

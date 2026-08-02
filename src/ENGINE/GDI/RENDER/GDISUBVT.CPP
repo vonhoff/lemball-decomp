@@ -3,7 +3,8 @@
 
 #include <string.h>
 
-extern void* g_VSGDI_ResourceGeometryRowBufferVtable[14];
+extern void* g_GDISUBVT_ListCharEntryTableVtable[4];
+extern void* g_GDISUBVT_ListCharEntryTableDeletingVtable[4];
 extern void FreeResourceArchiveMemory(void* pMemoryBlock);
 
 __inline static void MergeCompactHelperRect(short* pTarget, const short* pEntry)
@@ -689,7 +690,7 @@ ListCharEntryTable* ListCharEntryTable::Construct(ListCharEntrySourceView* pSour
 	int cbMetadataOffset;
 	int iEntry;
 
-	m_pVtable = &g_VSGDI_ResourceGeometryRowBufferVtable[4];
+	m_pVtable = g_GDISUBVT_ListCharEntryTableVtable;
 	m_apEntries = (void**) AllocateVSMemBlock(0x400);
 	cbOffset = 0;
 	do {
@@ -733,9 +734,9 @@ void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot6(void*)
 // FUNCTION: LEMBALL 0x00473730
 void LEMBALL_FASTCALL DestroyListCharEntryTable(void* pObject)
 {
-	*(void**) pObject = &g_VSGDI_ResourceGeometryRowBufferVtable[4];
+	*(void**) pObject = g_GDISUBVT_ListCharEntryTableVtable;
 	FreeVSMemBlock(*(void**) ((char*) pObject + 4));
-	*(void**) pObject = &g_VSGDI_ResourceGeometryRowBufferVtable[8];
+	*(void**) pObject = g_GDISUBVT_ListCharEntryTableDeletingVtable;
 }
 
 // FUNCTION: LEMBALL 0x00473750
@@ -751,7 +752,7 @@ void* LEMBALL_FASTCALL ResourceGeometryRowBufferSlot4(void* pObject, int, BYTE f
 // FUNCTION: LEMBALL 0x00473770
 void* LEMBALL_FASTCALL ResourceGeometryRowBufferSlot8(void* pObject, int, BYTE fDelete)
 {
-	*(void**) pObject = &g_VSGDI_ResourceGeometryRowBufferVtable[8];
+	*(void**) pObject = g_GDISUBVT_ListCharEntryTableDeletingVtable;
 	if ((fDelete & 1) != 0) {
 		FreeResourceArchiveMemory(pObject);
 	}
