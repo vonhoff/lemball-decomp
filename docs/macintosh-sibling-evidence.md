@@ -109,3 +109,6 @@ All four portable `CCollectable` and seven portable `CCollectableManager` method
 ### CBullet portable families
 
 All ten portable `CBullet` and twelve portable `CBulletManager` methods align with Windows `0x00417D80..0x00418120` and `0x0041A510..0x0041ACA0` through the 40-object pool, 0x1a4 Windows stride, active-table iteration, fixed-point segment interpolation, terrain/entity collision, view emission, and network serialization/dispatch. Target-only destroy helpers, scalar deleting wrapper `0x0041AF10`, and `-0x138` adjustor thunk remain excluded. Broad `ProjectilePool`/`ProjectileObjectProxy` source renames were reverted because their changed C++ symbol identities regressed the exact set; Macintosh ownership remains recorded without disturbing Windows linker order.
+### CFormationManager portable family
+
+All five portable `CFormationManager` methods align with Windows `0x0041A140..0x0041A320` through the 0x104-byte three-block vector table, fixed16.12 initialization, signed sine/cosine rotation of eight vectors, transformed output at `+0xC0`, and wrapped accessor. Windows iterator helpers `0x0041A2E0` and `0x0041A300` remain separate.

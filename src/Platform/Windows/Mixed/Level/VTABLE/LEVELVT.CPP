@@ -1810,6 +1810,7 @@ void __cdecl ForwardManagedEntityVslot90(void* pUnused, void* pEntity)
 	((LevelManagedEntityNoArgVirtualProc) pVtable[0x90 / sizeof(void*)])(pEntity);
 }
 
+// MACINTOSH: CFormationManager::~CFormationManager()
 // FUNCTION: LEMBALL 0x0041a1c0
 void noop_projectile_geometry_callback(void)
 {

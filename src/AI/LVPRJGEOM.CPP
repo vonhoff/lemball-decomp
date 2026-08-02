@@ -56,6 +56,7 @@ LevelProjectileGeometryIteratorPair* LevelProjectileGeometryPairTableIteratorVie
 	return &m_aSecondaryPairsC0[m_nPairCursor100];
 }
 
+// MACINTOSH: CFormationManager::GetAVector(int)
 // FUNCTION: LEMBALL 0x0041a320
 LevelProjectileGeometryIteratorPair* LevelProjectileGeometryPairTableIteratorView::GetRotatedPair(int nIndex)
 {

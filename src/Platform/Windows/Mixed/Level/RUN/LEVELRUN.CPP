@@ -1871,6 +1871,7 @@ void LEMBALL_FASTCALL BindManagedEntityStateResetPacketTarget(void* pEntity)
 	g_pManagedEntityStateResetPacketStream->BindManagedEntityPacketTarget(pEntity);
 }
 
+// MACINTOSH: CFormationManager::CFormationManager()
 // FUNCTION: LEMBALL 0x0041a140
 LevelProjectileGeometryPairTable* LevelProjectileGeometryPairTable::InitializeProjectileGeometryPairTable(void)
 {
@@ -1895,6 +1896,7 @@ LevelProjectileGeometryPairTable* LevelProjectileGeometryPairTable::InitializePr
 	}
 	return this;
 }
+// MACINTOSH: CFormationManager::Restart()
 // FUNCTION: LEMBALL 0x0041a1b0
 void LevelProjectileGeometryPairTable::ClearProjectileGeometryField100(void)
 {
