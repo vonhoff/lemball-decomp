@@ -212,6 +212,28 @@ struct LevelManagedEntityOwnerView {
 	void FindShpgChunkObjectPositionInRect(void* pRect, void* pPosition);
 };
 
+// Original body: LEMBALL 0x004193f0. Kept beside its required compatibility ILT owner.
+int LevelManagedEntityActiveGroupView::HasStreamDirtyChildren(void)
+{
+	int fDirty;
+	int iEntity;
+	LevelManagedEntityChildIterator** ppEntity;
+	LevelManagedEntityChildIterator* pEntity;
+
+	fDirty = 0;
+	iEntity = 0;
+	if (m_cManagedEntitiesA4 > 0) {
+		ppEntity = m_apManagedEntities04;
+		do {
+			pEntity = *ppEntity;
+			fDirty = pEntity->HasStreamDirtyChildren() || fDirty;
+			++ppEntity;
+			++iEntity;
+		} while (iEntity < m_cManagedEntitiesA4);
+	}
+	return fDirty;
+}
+
 // Original body: LEMBALL 0x00419440. Kept beside its required compatibility ILT owner.
 int LevelManagedEntityActiveGroupView::HasDirtyChildren(void)
 {
@@ -223,21 +245,6 @@ int LevelManagedEntityActiveGroupView::HasDirtyChildren(void)
 	for (iEntity = 0; iEntity < m_cManagedEntitiesA4; ++iEntity) {
 		pEntity = m_apManagedEntities04[iEntity];
 		fDirty = pEntity->HasDirtyChildrenThunk() || fDirty;
-	}
-	return fDirty;
-}
-
-// Original body: LEMBALL 0x004193f0. Kept beside its required compatibility ILT owner.
-int LevelManagedEntityActiveGroupView::HasStreamDirtyChildren(void)
-{
-	LevelManagedEntityChildIterator* pEntity;
-	int fDirty;
-	int iEntity;
-
-	fDirty = 0;
-	for (iEntity = 0; iEntity < m_cManagedEntitiesA4; ++iEntity) {
-		pEntity = m_apManagedEntities04[iEntity];
-		fDirty = pEntity->HasStreamDirtyChildren() || fDirty;
 	}
 	return fDirty;
 }
@@ -753,9 +760,9 @@ struct LevelCountedChildManagerView {
 
 void LEMBALL_FASTCALL DispatchType14CountedChildSlotC4(void* pObject)
 {
+	int i;
 	LevelCountedChildManagerView* pManager;
 	LevelType14ChildView* pChild;
-	int i;
 
 	pManager = (LevelCountedChildManagerView*) pObject;
 	i = 0;
