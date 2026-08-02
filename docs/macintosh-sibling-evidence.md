@@ -217,3 +217,7 @@ All five portable methods map at `0x0041CA90..0x0041CC70` on the coherent Window
 ## CSlinky reconstruction
 
 All five portable methods map at `0x0040B480..0x0040B760`. Exact 68K and Windows bodies agree on type-`0x35` construction, inclusive fixed-point bounds, terrain-derived setup, random cardinal movement with eight attempts, state `0x18/0x1B` timing, overlap queries, and callbacks. ILTs and the type-`0x35` vtable keep the family coherent; raw-coordinate helpers `0x0040B5B0/0x0040B5F0` remain target-only. Physical ownership stays split between `LEVELRUN.CPP` and `LV35BOUND.CPP`.
+
+## CSlinkyManager reconstruction
+
+All eight portable methods map at `0x0040B8E0..0x0040BE50` in physical `LEVELRUN.CPP`. Exact Macintosh sequencing and Windows bodies agree on owner/capacity construction, `0x150`-byte CSlinky arrays, restart/destruction, bounded add, render-entry iteration, per-object processing, and serialized level loading. Large removal/compaction helper `0x0040BA30` has no portable counterpart and remains target-only.
