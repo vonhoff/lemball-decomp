@@ -181,3 +181,7 @@ The remaining 18 portable methods map at `0x0040D490..0x0040E630`; audit correct
 ## CAICursor exact 68K and Windows queue-cursor reconstruction
 
 The six Macintosh `CAICursor` bodies map to constructor `0x00414DA0`, destructor `0x00414DE0`, `SetCursorXY` `0x00414E00`, `CheckAndClipCursorBounds` `0x00414E20`, `GetCursorSurfaceCoordinates` `0x00414E60`, and `ProcessMsg` `0x00414E80`. Exact 68K disassembly confirms the same bounds, queue registration, coordinate clamping, outputs, and message dispatch. Windows layout offsets differ; constructor code is physically in `LINKSCF.CPP` and the remaining bodies in `LEVELVT.CPP`. Scalar deleting wrapper `0x00414F00` remains Windows-only.
+
+## CGlobalGameObject action and network-message reconstruction
+
+All twelve portable bodies map at `0x00416D20..0x00417150` in physical `LEVELRUN.CPP`. Exact 68K and Windows evidence agrees on lifecycle state, both `Action` overloads, request/cancel behavior, packet switch `0x23..0x29`, remove/cancel sends, and construction/destruction of nine shared message helpers. `UsableState` at `0x00416D90` returns the pre-clear value; its former void prototype was incorrect. Windows-only `RequestAction(eAction,int)` adapter `0x00416E00` consumes no Macintosh symbol.
