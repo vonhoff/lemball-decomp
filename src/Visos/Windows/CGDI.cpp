@@ -6,8 +6,8 @@
 #include "Frontend/CURSOR.H"
 #include "Control/CGame.h"
 #include "LEVEL/DRAWTEXT.H"
-#include "SHELL/ENTRY.H"
-#include "SHELL/OPTIONS.H"
+#include "Platform/Windows/Entry.h"
+#include "Control/Options.h"
 #include "Visos/Generic/CSurface.h"
 #include "Visos/Generic/Memory.h"
 

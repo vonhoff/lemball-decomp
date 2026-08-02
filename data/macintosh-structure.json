@@ -42,6 +42,10 @@
     {"path":"src/AI/GroupPlas.cpp","module":"AI","state":"existing","classes":[],"must_contain":["active-group lookup and plasma state dispatch as one physical Windows TU"],"must_not_contain":["a single-class filename or synthetic TU split"]},
     {"path":"src/AI/Projectile.cpp","module":"AI","state":"existing","classes":[],"must_contain":["coherent Windows projectile pool and lifecycle"],"must_not_contain":["an unsupported Macintosh class name"]},
     {"path":"src/AI/PlasChild.cpp","module":"AI","state":"existing","classes":[],"must_contain":["coherent plasma child-controller constructor"],"must_not_contain":["an unsupported CPlasma class claim"]},
-    {"path":"src/ENGINE/NET","module":"Windows/MSVC","state":"retained","classes":[],"must_contain":["low-level Windows VsNet transport"],"must_not_contain":["Macintosh CODE_10_Network game-lobby ownership"]}
+    {"path":"src/ENGINE/NET","module":"Windows/MSVC","state":"retained","classes":[],"must_contain":["low-level Windows VsNet transport"],"must_not_contain":["Macintosh CODE_10_Network game-lobby ownership"]},
+    {"path":"src/Control/Options.cpp","module":"Control","state":"existing","classes":[],"must_contain":["accepted SetGameDefaults, DisplayHelp, StrCmpI, and DoCommandLine behavior plus retained Windows graphics-option setup"],"must_not_contain":["a claim that Win32 graphics-driver configuration exists in the Macintosh Control module"]},
+    {"path":"src/Platform/Windows/Entry.cpp","module":"Windows/MSVC","state":"retained","classes":[],"must_contain":["WinMain and HINSTANCE startup glue"],"must_not_contain":["portable Macintosh UtilMain ownership"]},
+    {"path":"src/Platform/Windows/ShellUI.cpp","module":"Windows/MSVC","state":"retained","classes":[],"must_contain":["WinHelp, registry, dialog, OS-version, and display-switching behavior"],"must_not_contain":["portable Macintosh Frontend ownership"]},
+    {"path":"src/Platform/Windows/Primary.cpp","module":"Windows/MSVC","state":"retained","classes":[],"must_contain":["intact Win32 primary-window host TU including its shared CPVBackBuffSurface emissions"],"must_not_contain":["a single Macintosh class claim for the mixed TU"]}
   ]
 }

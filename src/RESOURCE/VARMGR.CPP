@@ -4,7 +4,7 @@
 #include "Visos/Generic/MogLoad.h"
 #include "RESOURCE/VARLOAD.H"
 #include "RESOURCE/VARMGR.H"
-#include "SHELL/OPTIONS.H"
+#include "Control/Options.h"
 
 extern "C" DWORD WINAPI timeGetTime(void);
 

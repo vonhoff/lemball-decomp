@@ -16,8 +16,8 @@
 #include "LEVEL/TYPE18.H"
 #include "Visos/Generic/MogLoad.h"
 #include "RESOURCE/VARMGR.H"
-#include "SHELL/OPTIONS.H"
-#include "SHELL/SHELLUI.H"
+#include "Control/Options.h"
+#include "Platform/Windows/ShellUI.h"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>
@@ -2254,8 +2254,8 @@ int RunMainGameSession(int cArgs, const char* const* ppszArgs)
 	}
 
 	CreateFrameTimerController(0x19000);
-	InitializeStartupSwitchDefaults();
-	if (ApplyStartupCommandLineSwitches(cArgs, ppszArgs) == 1) {
+	SetGameDefaults();
+	if (DoCommandLine(cArgs, ppszArgs) == 1) {
 		pMainContext = (GameMainContext*) AllocateVSMemBlock(0x70);
 		if (pMainContext == 0) {
 			pMainContext = 0;

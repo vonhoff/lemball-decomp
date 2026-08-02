@@ -1,6 +1,6 @@
 #include "ENGINE/GDI/VSGDI.H"
-#include "SHELL/ENTRY.H"
-#include "SHELL/OPTIONS.H"
+#include "Platform/Windows/Entry.h"
+#include "Control/Options.h"
 
 #include <ctype.h>
 #include <string.h>
@@ -110,7 +110,7 @@ StartupGraphicsWindowConfig* BuildStartupGraphicsWindowConfig(const StartupGraph
 }
 
 // FUNCTION: LEMBALL 0x00406230
-void InitializeStartupSwitchDefaults(void)
+void SetGameDefaults(void)
 {
 	int nSelectedDriver;
 
@@ -148,12 +148,12 @@ void InitializeStartupSwitchDefaults(void)
 }
 
 // FUNCTION: LEMBALL 0x00406300
-void NoopHelpSwitchCallback(void)
+void DisplayHelp(void)
 {
 }
 
 // FUNCTION: LEMBALL 0x00406460
-int ApplyStartupCommandLineSwitches(int cArgs, const char* const* ppszArgs)
+int DoCommandLine(int cArgs, const char* const* ppszArgs)
 {
 	unsigned int cchPrefix;
 	int fContinue = 1;
@@ -161,51 +161,51 @@ int ApplyStartupCommandLineSwitches(int cArgs, const char* const* ppszArgs)
 		do {
 			const char* pszPath;
 
-			if (CompareSwitchNameCaseInsensitive(*ppszArgs, g_STARTUP_SwitchNoMusic, 99) == 0) {
+			if (StrCmpI(*ppszArgs, g_STARTUP_SwitchNoMusic, 99) == 0) {
 				g_fMusicOptionAvailable = 0;
 			}
-			if (CompareSwitchNameCaseInsensitive(*ppszArgs, g_STARTUP_SwitchNoEffects, 99) == 0) {
+			if (StrCmpI(*ppszArgs, g_STARTUP_SwitchNoEffects, 99) == 0) {
 				g_fEffectsOptionAvailable = 0;
 			}
-			if (CompareSwitchNameCaseInsensitive(*ppszArgs, g_STARTUP_SwitchSoundDebug, 99) == 0) {
+			if (StrCmpI(*ppszArgs, g_STARTUP_SwitchSoundDebug, 99) == 0) {
 				g_fSoundDebugRequested = 1;
 			}
-			if (CompareSwitchNameCaseInsensitive(*ppszArgs, g_STARTUP_SwitchStatusDebug, 99) == 0) {
+			if (StrCmpI(*ppszArgs, g_STARTUP_SwitchStatusDebug, 99) == 0) {
 				g_fStatusDebugRequested = 1;
 			}
-			if (CompareSwitchNameCaseInsensitive(*ppszArgs, g_STARTUP_SwitchMemoryDebug, 99) == 0) {
+			if (StrCmpI(*ppszArgs, g_STARTUP_SwitchMemoryDebug, 99) == 0) {
 				g_fMemoryDebugRequested = 1;
 			}
-			if (CompareSwitchNameCaseInsensitive(*ppszArgs, g_STARTUP_SwitchNoAnim, 99) == 0) {
+			if (StrCmpI(*ppszArgs, g_STARTUP_SwitchNoAnim, 99) == 0) {
 				g_fStartupAnimationsEnabled = 0;
 			}
-			if (CompareSwitchNameCaseInsensitive(*ppszArgs, g_STARTUP_SwitchNoZoom, 99) == 0) {
+			if (StrCmpI(*ppszArgs, g_STARTUP_SwitchNoZoom, 99) == 0) {
 				g_fZoomOptionAvailable = 0;
 			}
-			if (CompareSwitchNameCaseInsensitive(*ppszArgs, g_STARTUP_SwitchCompact, 99) == 0) {
+			if (StrCmpI(*ppszArgs, g_STARTUP_SwitchCompact, 99) == 0) {
 				g_fCompactPrimaryContextLayout = 1;
 			}
-			if (CompareSwitchNameCaseInsensitive(*ppszArgs, g_STARTUP_SwitchTestAllLevels, 99) == 0) {
+			if (StrCmpI(*ppszArgs, g_STARTUP_SwitchTestAllLevels, 99) == 0) {
 				g_fStartupTestAllLevels = 1;
 			}
-			if (CompareSwitchNameCaseInsensitive(*ppszArgs, g_STARTUP_SwitchHelp0, 99) == 0 ||
-				CompareSwitchNameCaseInsensitive(*ppszArgs, g_STARTUP_SwitchHelp1, 99) == 0) {
-				NoopHelpSwitchCallback();
+			if (StrCmpI(*ppszArgs, g_STARTUP_SwitchHelp0, 99) == 0 ||
+				StrCmpI(*ppszArgs, g_STARTUP_SwitchHelp1, 99) == 0) {
+				DisplayHelp();
 				fContinue = 0;
 			}
 			cchPrefix = (unsigned int) strlen(g_STARTUP_SwitchEditPrefix);
-			if (CompareSwitchNameCaseInsensitive(*ppszArgs, g_STARTUP_SwitchEditPrefix, (int) cchPrefix) == 0) {
+			if (StrCmpI(*ppszArgs, g_STARTUP_SwitchEditPrefix, (int) cchPrefix) == 0) {
 				pszPath = *ppszArgs + cchPrefix;
 				g_fStartupEditLevelOverride = *pszPath != '\0';
 				strcpy((char*) g_abOverrideLevelFilePathBuffer, pszPath);
 			}
 			cchPrefix = (unsigned int) strlen(g_STARTUP_SwitchPlayPrefix);
-			if (CompareSwitchNameCaseInsensitive(*ppszArgs, g_STARTUP_SwitchPlayPrefix, (int) cchPrefix) == 0) {
+			if (StrCmpI(*ppszArgs, g_STARTUP_SwitchPlayPrefix, (int) cchPrefix) == 0) {
 				pszPath = *ppszArgs + cchPrefix;
 				g_fStartupPlayLevelOverride = *pszPath != '\0';
 				strcpy((char*) g_abOverrideLevelFilePathBuffer, pszPath);
 			}
-			if (CompareSwitchNameCaseInsensitive(*ppszArgs, g_STARTUP_SwitchGraphics, 99) == 0) {
+			if (StrCmpI(*ppszArgs, g_STARTUP_SwitchGraphics, 99) == 0) {
 				g_fStartupGraphicsDialogRequested = 1;
 			}
 
@@ -231,7 +231,7 @@ int ApplyStartupCommandLineSwitches(int cArgs, const char* const* ppszArgs)
 }
 
 // FUNCTION: LEMBALL 0x00406790
-int CompareSwitchNameCaseInsensitive(const char* pszLeft, const char* pszRight, int cchMax)
+int StrCmpI(const char* pszLeft, const char* pszRight, int cchMax)
 {
 	int cchLeft;
 	int cchRight;

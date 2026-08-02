@@ -1,7 +1,7 @@
 #include "Visos/Generic/Memory.h"
 
 #include "ENGINE/CORE/VSINIT.H"
-#include "SHELL/OPTIONS.H"
+#include "Control/Options.h"
 
 #include <stdlib.h>
 #include <string.h>

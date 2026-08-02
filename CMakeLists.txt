@@ -11,7 +11,7 @@ set(LEMBALL_SOURCES
     src/Frontend/MAINMENU.CPP
     src/Frontend/MMRENDCH.CPP
     src/Frontend/MMCONTEXT.CPP
-    src/SHELL/PRIMARY.CPP
+    src/Platform/Windows/Primary.cpp
     src/LEVEL/ENTITY/TYPE18.CPP
     src/LEVEL/ENTITY/TYPE18RESET.CPP
     src/LEVEL/ENTITY/LV35BOUND.CPP
@@ -61,9 +61,9 @@ set(LEMBALL_SOURCES
     src/RESOURCE/VARMGR.CPP
     src/Frontend/LOBBY.CPP
     src/Frontend/CEditString.cpp
-    src/SHELL/ENTRY.CPP
-    src/SHELL/SHELLUI.CPP
-    src/SHELL/OPTIONS.CPP
+    src/Platform/Windows/Entry.cpp
+    src/Platform/Windows/ShellUI.cpp
+    src/Control/Options.cpp
     src/LEVEL/RUN/DEMO.CPP
     src/Visos/Windows/CGDI.cpp
     src/Visos/Windows/CGDISwitch.cpp

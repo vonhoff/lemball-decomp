@@ -5,7 +5,7 @@
 #include "ENGINE/GDI/VSGDI.H"
 #include "ENGINE/GDI/VSINVIS.H"
 #include "Control/CGame.h"
-#include "SHELL/OPTIONS.H"
+#include "Control/Options.h"
 #include "Visos/Generic/Memory.h"
 
 #include <ctype.h>

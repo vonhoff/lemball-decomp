@@ -2,7 +2,7 @@
 #include "ENGINE/CORE/VSINIT.H"
 #include "ENGINE/GDI/VSINVIS.H"
 #include "ENGINE/GDI/VSWINDOW.H"
-#include "SHELL/ENTRY.H"
+#include "Platform/Windows/Entry.h"
 
 DECOMP_SIZE_ASSERT(VS_InvisibleWindow, 0x10);
 

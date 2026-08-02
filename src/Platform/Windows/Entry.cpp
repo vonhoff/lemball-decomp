@@ -1,6 +1,6 @@
 #include "ENGINE/CORE/VSINIT.H"
 #include "ENGINE/CORE/WIN32.H"
-#include "SHELL/ENTRY.H"
+#include "Platform/Windows/Entry.h"
 
 // GLOBAL: LEMBALL 0x004a8188
 HINSTANCE g_hApplicationInstance;

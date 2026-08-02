@@ -1,6 +1,6 @@
 # Compiler-generated functions without standalone source implementations.
 address,name,symbol,type,source
-0x00406130,EhVectorDestructorIterator,,synthetic,src/SHELL/OPTIONS.CPP
+0x00406130,EhVectorDestructorIterator,,synthetic,src/Control/Options.cpp
 0x00406BA0,ComputeLevelPasswordChecksumAuto,,synthetic,src/Control/CGame.cpp
 0x00407E10,DeleteStreamFormatStateAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
 0x00407EF0,DeleteSimpleVtableObject407EF0,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP

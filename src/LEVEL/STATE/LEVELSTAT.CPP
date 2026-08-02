@@ -11,7 +11,7 @@
 #include "LEVEL/DRAWTEXT.H"
 #include "Visos/Generic/MogLoad.h"
 #include "RESOURCE/VARMGR.H"
-#include "SHELL/OPTIONS.H"
+#include "Control/Options.h"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>

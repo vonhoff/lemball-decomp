@@ -9,7 +9,7 @@
 #include "LEVEL/LEVELRUN.H"
 #include "LEVEL/LVPKT.H"
 #include "Visos/Generic/MogLoad.h"
-#include "SHELL/OPTIONS.H"
+#include "Control/Options.h"
 
 #include <stdio.h>
 #include <stdlib.h>

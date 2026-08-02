@@ -5,8 +5,8 @@
 #include "ENGINE/GDI/VSGEOM.H"
 #include "ENGINE/GDI/VSWINDOW.H"
 #include "Control/CGame.h"
-#include "SHELL/ENTRY.H"
-#include "SHELL/OPTIONS.H"
+#include "Platform/Windows/Entry.h"
+#include "Control/Options.h"
 
 DECOMP_SIZE_ASSERT(VS_XYPair, 0x04);
 DECOMP_SIZE_ASSERT(VS_RootGeometryOwner, 0x3c);

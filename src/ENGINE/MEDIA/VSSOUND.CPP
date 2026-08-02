@@ -4,7 +4,7 @@
 #include "ENGINE/MEDIA/VSSOUND.H"
 #include "Control/CGame.h"
 #include "Visos/Generic/MogLoad.h"
-#include "SHELL/ENTRY.H"
+#include "Platform/Windows/Entry.h"
 
 #include <string.h>
 

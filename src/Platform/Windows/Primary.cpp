@@ -1,7 +1,7 @@
 #include "Visos/Generic/Memory.h"
 #include "ENGINE/GDI/VSGDI.H"
 #include "Control/CGame.h"
-#include "SHELL/OPTIONS.H"
+#include "Control/Options.h"
 #include "Visos/Generic/CSurface.h"
 
 extern void LEMBALL_FASTCALL AllocateBackBuff(int nHelperGroup);

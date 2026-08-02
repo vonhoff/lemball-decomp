@@ -10,8 +10,8 @@
 #include "LEVEL/LEVELRUN.H"
 #include "Visos/Generic/MogLoad.h"
 #include "RESOURCE/VARMGR.H"
-#include "SHELL/OPTIONS.H"
-#include "SHELL/SHELLUI.H"
+#include "Control/Options.h"
+#include "Platform/Windows/ShellUI.h"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>

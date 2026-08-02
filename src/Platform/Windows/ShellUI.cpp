@@ -2,8 +2,8 @@
 #include "Visos/Generic/Memory.h"
 #include "ENGINE/GDI/VSGDI.H"
 #include "ENGINE/MEDIA/VSSOUND.H"
-#include "SHELL/ENTRY.H"
-#include "SHELL/SHELLUI.H"
+#include "Platform/Windows/Entry.h"
+#include "Platform/Windows/ShellUI.h"
 
 #include <stdarg.h>
 #include <stdio.h>

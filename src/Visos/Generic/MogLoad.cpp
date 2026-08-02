@@ -1,7 +1,7 @@
 #include "ENGINE/CORE/VSINIT.H"
 #include "Control/CGame.h"
 #include "Visos/Generic/MogLoad.h"
-#include "SHELL/OPTIONS.H"
+#include "Control/Options.h"
 #include "Visos/Generic/Memory.h"
 
 #include <ctype.h>

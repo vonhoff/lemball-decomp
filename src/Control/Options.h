@@ -35,9 +35,9 @@ extern int g_fCSmallMemoryEnabled;
 extern int g_adwStartupGraphicsBucketSizeTable[7];
 
 StartupGraphicsWindowConfig* BuildStartupGraphicsWindowConfig(const StartupGraphicsWindowConfig* pSeedConfig);
-void InitializeStartupSwitchDefaults(void);
-int ApplyStartupCommandLineSwitches(int cArgs, const char* const* ppszArgs);
-int CompareSwitchNameCaseInsensitive(const char* pszLeft, const char* pszRight, int cchMax);
+void SetGameDefaults(void);
+int DoCommandLine(int cArgs, const char* const* ppszArgs);
+int StrCmpI(const char* pszLeft, const char* pszRight, int cchMax);
 void FinalizeStartupGraphicsDriverConfig(void);
 
 #endif

@@ -47,7 +47,7 @@ Pop-Location
 - `src/FRONTEND` contains menus, lobby screens, and other user-interface code.
 - `src/LEVEL` is split into `CHUNK`, `ENTITY`, `IO`, `RENDER`, `RUN`, `STATE`, and `VTABLE` implementations. Headers remain directly under `src/LEVEL`.
 - `src/RESOURCE` contains archive and typed-resource loading code.
-- `src/SHELL` contains startup, options, and top-level window code.
+- Shared startup options live under `src/Control`; Win32 entry, shell UI, and primary-window host code live under `src/Platform/Windows`.
 - `data` contains comparison metadata and the encrypted reference executable.
 - `tools` contains the build, metadata, and comparison helpers.
 
