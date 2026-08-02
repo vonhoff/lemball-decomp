@@ -5267,21 +5267,23 @@ void LEMBALL_FASTCALL ClearResourceGeometryRowBufferFields(void* pvRowBuffer)
 // FUNCTION: LEMBALL 0x00472340
 void LEMBALL_FASTCALL EnsureHelperBackingRowIndexCapacity(VsGdiHelperSurface* pSurface)
 {
+	VsGdiResourceGeometryRowBufferView* pRowBuffer;
 	int cRows;
 	int cbRowIndexBytes;
 
-	cRows = (int) *(short*) ((char*) pSurface + 0x2e);
-	if (*(int*) ((char*) pSurface + 0x28) < cRows) {
-		if (*(int*) ((char*) pSurface + 4) != 0) {
-			FreeVSMemBlock((void*) (unsigned long) *(int*) ((char*) pSurface + 4));
-			*(int*) ((char*) pSurface + 4) = 0;
+	pRowBuffer = (VsGdiResourceGeometryRowBufferView*) pSurface;
+	cRows = (int) pRowBuffer->m_aGeometry2C[1];
+	if (pRowBuffer->m_cRowCapacity < cRows) {
+		if (pRowBuffer->m_pRows != 0) {
+			FreeVSMemBlock(pRowBuffer->m_pRows);
+			pRowBuffer->m_pRows = 0;
 		}
-		if (0 < *(short*) ((char*) pSurface + 0x2e)) {
+		if (0 < pRowBuffer->m_aGeometry2C[1]) {
 			cbRowIndexBytes = cRows << 2;
-			*(int*) ((char*) pSurface + 4) = (int) (unsigned long) AllocateVSMemBlock((unsigned int) cbRowIndexBytes);
+			pRowBuffer->m_pRows = (int*) AllocateVSMemBlock((unsigned int) cbRowIndexBytes);
 			pSurface->ClearBackingBorderRows();
 		}
-		*(int*) ((char*) pSurface + 0x28) = cRows;
+		pRowBuffer->m_cRowCapacity = cRows;
 		return;
 	}
 	pSurface->ClearBackingBorderRows();
@@ -5339,24 +5341,25 @@ void VsGdiHelperSurface::ClearBackingBorderRows(void)
 // FUNCTION: LEMBALL 0x00472400
 void LEMBALL_FASTCALL RebuildResourceGeometryRowPointerTable(VsGdiHelperSurface* pSurface)
 {
+	VsGdiResourceGeometryRowBufferView* pRowBuffer;
 	int nRowByteOffset;
 	int iRowIndex;
 	int iLogicalRow;
 
-	nRowByteOffset = *(int*) ((char*) pSurface + 8);
-	iLogicalRow = *(int*) ((char*) pSurface + 0x14);
+	pRowBuffer = (VsGdiResourceGeometryRowBufferView*) pSurface;
+	nRowByteOffset = pRowBuffer->m_nRowByteOffset;
+	iLogicalRow = pRowBuffer->m_iLogicalRow;
 	iRowIndex = 0;
-	if (0 < *(short*) ((char*) pSurface + 0x2e)) {
+	if (0 < pRowBuffer->m_aGeometry2C[1]) {
 		do {
-			*(int*) (*(int*) ((char*) pSurface + 4) + iLogicalRow * 4) =
-				*(int*) ((char*) pSurface + 0x18) + nRowByteOffset;
+			pRowBuffer->m_pRows[iLogicalRow] = pRowBuffer->m_nBackingOrigin + nRowByteOffset;
 			++iLogicalRow;
-			nRowByteOffset = nRowByteOffset + *(int*) ((char*) pSurface + 0x1c);
-			if ((int) *(short*) ((char*) pSurface + 0x2e) <= iLogicalRow) {
-				iLogicalRow = iLogicalRow - (int) *(short*) ((char*) pSurface + 0x2e);
+			nRowByteOffset = nRowByteOffset + pRowBuffer->m_nStride;
+			if ((int) pRowBuffer->m_aGeometry2C[1] <= iLogicalRow) {
+				iLogicalRow = iLogicalRow - (int) pRowBuffer->m_aGeometry2C[1];
 			}
 			++iRowIndex;
-		} while (iRowIndex < (int) *(short*) ((char*) pSurface + 0x2e));
+		} while (iRowIndex < (int) pRowBuffer->m_aGeometry2C[1]);
 	}
 }
 // FUNCTION: LEMBALL 0x00472440
