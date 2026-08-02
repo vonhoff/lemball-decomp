@@ -10,10 +10,10 @@ address,name,symbol,type,source
 0x00407FD0,DeleteDerivedBaseModeWrapperAuto,,synthetic,src/Control/CGame.cpp
 0x00408010,DeleteSimpleVtableObject408010,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
 0x004098B0,DeleteLevelDemoPlaybackControllerAuto,,synthetic,src/LEVEL/RUN/DEMO.CPP
-0x0040AC30,DeleteLevelChunkStreamAuto,,synthetic,src/LEVEL/ENTITY/TYPE18.CPP
+0x0040AC30,DeleteLevelChunkStreamAuto,,synthetic,src/AI/TYPE18.CPP
 0x0040B450,DeleteLevelChunkStreamDispatcherAuto,,synthetic,src/LEVEL/RUN/LEVELRUN.CPP
 0x0040CE50,DeleteLevelChunkObjectBaseScalarA,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x0040CEA0,DeleteLevelChunkObjectBaseScalarB,,synthetic,src/LEVEL/ENTITY/TYPE18.CPP
+0x0040CEA0,DeleteLevelChunkObjectBaseScalarB,,synthetic,src/AI/TYPE18.CPP
 0x0040EBE0,DeleteDoorChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
 0x00410B20,DeleteDoorChunkObjectAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
 0x00410B70,Door chunk-object deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/AI/CDoorCtor.cpp

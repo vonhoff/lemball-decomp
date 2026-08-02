@@ -45,7 +45,7 @@ Pop-Location
 
 - `src/ENGINE` retains only mixed Windows physical owners and ABI/link-order splits that cannot yet move intact. Proven portable Visos code lives under `src/Visos/Generic`; pure Win32 backends live under `src/Visos/Windows`.
 - `src/FRONTEND` contains menus, lobby screens, and other user-interface code.
-- `src/LEVEL` is split into `CHUNK`, `ENTITY`, `IO`, `RENDER`, `RUN`, `STATE`, and `VTABLE` implementations. Headers remain directly under `src/LEVEL`.
+- `src/LEVEL` retains mixed physical owners and shared headers only. Audited intact AI, Control, views/2d, and Visos TUs live in their canonical module folders without changing CMake/link order.
 - `src/RESOURCE` contains archive and typed-resource loading code.
 - Shared startup options live under `src/Control`; Win32 entry, shell UI, and primary-window host code live under `src/Platform/Windows`.
 - `data` contains comparison metadata and the encrypted reference executable.
