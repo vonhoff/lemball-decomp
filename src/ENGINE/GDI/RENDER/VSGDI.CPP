@@ -5663,8 +5663,11 @@ void HelperUploadStateMarkerView::PushHelperUploadStateMarker(int nUnused)
 void LEMBALL_FASTCALL PopHelperUploadStateMarker(void* pObject)
 {
 	HelperUploadStateMarkerView* pMarkers = (HelperUploadStateMarkerView*) pObject;
+	char* pMarker;
 	int nIndex = --pMarkers->m_cMarkers44;
-	pMarkers->m_nMarker48 = pMarkers->m_anMarkers38[nIndex];
+
+	pMarker = pMarkers->m_anMarkers38;
+	pMarkers->m_nMarker48 = pMarker[nIndex];
 }
 
 struct HelperUploadRectEntryView {
