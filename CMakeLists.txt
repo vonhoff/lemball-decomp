@@ -115,7 +115,7 @@ set(LEMBALL_SOURCES
     src/AI/CDoorSlot.cpp
     src/AI/CIceAct.cpp
     src/AI/CLiftAct.cpp
-    src/ENGINE/CORE/LSCACHCH.CPP
+    src/AI/ChildState.cpp
     src/LEVEL/ENTITY/LVITER.CPP
     src/LEVEL/ENTITY/LVBOUNDS.CPP
     src/LEVEL/IO/LVPKT.CPP
