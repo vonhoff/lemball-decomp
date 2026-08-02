@@ -1935,8 +1935,8 @@ void LevelManagedEntityChildIterator::AppendChild(void* pChild)
 // FUNCTION: LEMBALL 0x0041e0c0
 int LevelManagedEntityChildIterator::ContainsChild(void* pChild)
 {
-	int cChildren;
 	int iChild;
+	int cChildren;
 
 	cChildren = m_cChildren124;
 	for (iChild = 0; iChild < cChildren; ++iChild) {
