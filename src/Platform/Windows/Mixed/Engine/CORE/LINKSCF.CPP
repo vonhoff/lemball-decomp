@@ -2154,6 +2154,7 @@ DEFINE_LINKSCF_EFF_DELETE(Delete17D50)
 	}
 
 DEFINE_LINKSCF_CHUNK_BASE_DELETE(DeleteLevelChunkObjectBaseWrapper17D00)
+// WINDOWS: Generated CBall scalar deleting wrapper at 0x00422350; not a portable method.
 DEFINE_LINKSCF_CHUNK_BASE_DELETE(DeleteBallChunkEntryAuto)
 
 #undef DEFINE_LINKSCF_CHUNK_BASE_DELETE

@@ -100,3 +100,6 @@ All six portable `CNode` and six portable `CNodeManager` methods align with Wind
 ### CBallManager portable family
 
 All seven portable `CBallManager` methods align with Windows `0x00421EA0..0x00422060` through exact lifecycle, active/capacity fields, pointer-array allocation, CBall vtable dispatch, active-prefix compaction, and BALL chunk loading. Windows-only load-cursor reset `0x00422050` and CBall deleting wrapper `0x00422350` remain excluded. Macintosh-led source ownership improved the tracked exact set to `161/23`; vtables remain `39/39` and datacmp remains `0`.
+### CBall portable family
+
+All ten portable `CBall` methods align with Windows `0x00421660..0x00421DA0` through the 0x13c Windows layout, managed-entity base/vtable, fixed-point endpoints, segment timing, terrain sampling, collision dispatch, active-list removal, state machine, and BALL payload cursor consumption. Scalar deleting wrapper `0x00422350` remains generated and excluded.

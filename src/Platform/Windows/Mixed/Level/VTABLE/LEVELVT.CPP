@@ -2024,6 +2024,7 @@ int __fastcall get_object_field_0x124(void* pObject)
 	return *(int*) ((char*) pObject + 0x124);
 }
 
+// MACINTOSH: CBall::HitBullet(CBullet*)
 // FUNCTION: LEMBALL 0x00421aa0
 void LEMBALL_FASTCALL CallBallChunkEntryVfuncC8(void* pEntry, void* pUnused, int nUnused)
 {
