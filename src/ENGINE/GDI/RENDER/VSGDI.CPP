@@ -536,21 +536,33 @@ struct VsGdiCompactResourceGeometryHelperFields {
 	int m_nReserved78;
 };
 
+struct VsGdiResourceGeometryRowBufferView {
+	void* m_pVtable;
+	unsigned char m_abState[0x3c];
+};
+
+struct VsGdiCompactResourceGeometryHelperBaseView {
+	void* m_pVtable;
+	unsigned char m_abState[0x40];
+};
+
 struct VsGdiResourceGeometryHelperTargetPrimaryView {
-	unsigned char m_abRowBuffer[0x40];
+	VsGdiResourceGeometryRowBufferView m_RowBuffer;
 	void* m_pCompactHelperVbtable;
 };
 
 struct VsGdiResourceGeometryHelperGroupView {
 	void* m_pVtable;
 	void* m_pCompactHelperVbtable;
-	unsigned char m_abRowBuffer[0x40];
+	VsGdiResourceGeometryRowBufferView m_RowBuffer;
 	int m_fActive;
 	void* m_pBackingBuffer;
 	short m_nWidth;
 	short m_nHeight;
 };
 
+DECOMP_SIZE_ASSERT(VsGdiResourceGeometryRowBufferView, 0x40);
+DECOMP_SIZE_ASSERT(VsGdiCompactResourceGeometryHelperBaseView, 0x44);
 DECOMP_SIZE_ASSERT(VsGdiResourceGeometryHelperTargetPrimaryView, 0x44);
 DECOMP_SIZE_ASSERT(VsGdiResourceGeometryHelperGroupView, 0x54);
 
@@ -568,7 +580,9 @@ struct VsGdiResourceGeometryHelperTargetView {
 	unsigned char m_abCriticalSection[0x18];
 	int m_fCriticalSectionReady;
 	int m_nActiveUploadState;
-	unsigned char m_abReserved554[8];
+	int m_nReserved554;
+	int m_nCompactHelperVtordisp;
+	VsGdiCompactResourceGeometryHelperBaseView m_CompactHelper;
 
 	VsGdiResourceGeometryHelperTargetView* ConstructResourceGeometryHelperTarget(int nWrappedParam,
 																				 int fConstructCompactHelper);
@@ -578,6 +592,8 @@ struct VsGdiResourceGeometryHelperTargetView {
 	void MarkOrForwardHelperTargetDirtyRect(short* pRect);
 	void FlushResourceGeometryHelperTargetUpdates(VsGdiResourceGeometryHelperTargetView* pPeerTarget);
 };
+
+DECOMP_SIZE_ASSERT(VsGdiResourceGeometryHelperTargetView, 0x5a0);
 
 struct VsGdiGeometryHelperPointerArray {
 	void* m_pEntries;
