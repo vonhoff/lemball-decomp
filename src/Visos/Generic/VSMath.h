@@ -6,10 +6,10 @@
 int* LEMBALL_FASTCALL InitializeSignedTrigTable(int* pTrigTableBuffer);
 int* LEMBALL_FASTCALL WriteDebugSentinelDword(int* pTarget);
 
-struct VsMathStateView {
+struct CVSMath {
 	unsigned int m_nRandomSeed;
 
-	unsigned int IntegerSqrtFloor(unsigned int uValue);
+	unsigned int SqRoot(unsigned int uValue);
 };
 
 struct VsMathPoint2D {

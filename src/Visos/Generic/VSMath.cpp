@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/VSMATH.H"
+#include "Visos/Generic/VSMath.h"
 
 static int g_anSignedTrigTable[512] = {
 	0,     50,    100,   150,   200,   251,   301,   351,   401,   451,   501,   551,   601,   650,   700,   749,
@@ -90,7 +90,7 @@ int* LEMBALL_FASTCALL WriteDebugSentinelDword(int* pTarget)
 }
 
 // FUNCTION: LEMBALL 0x0045a9b0
-unsigned int VsMathStateView::IntegerSqrtFloor(unsigned int uValue)
+unsigned int CVSMath::SqRoot(unsigned int uValue)
 {
 	unsigned int uLow;
 	unsigned int uHigh;

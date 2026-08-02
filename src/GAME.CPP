@@ -1,7 +1,7 @@
 #include "ENGINE/CORE/LINKSCF.H"
 #include "ENGINE/CORE/SAFEVT.H"
 #include "ENGINE/CORE/VSINIT.H"
-#include "ENGINE/CORE/VSMATH.H"
+#include "Visos/Generic/VSMath.h"
 #include "Visos/Generic/Memory.h"
 #include "ENGINE/GDI/VSGDI.H"
 #include "ENGINE/GDI/VSWINDOW.H"
@@ -3881,7 +3881,7 @@ int Distance2DIntPixels(int x1, int y1, int x2, int y2)
 
 	dx = abs(x1 - x2);
 	dy = abs(y1 - y2);
-	return (int) ((VsMathStateView*) g_pSessionRandomState)->IntegerSqrtFloor(dx * dx + dy * dy);
+	return (int) ((CVSMath*) g_pSessionRandomState)->SqRoot(dx * dx + dy * dy);
 }
 
 struct LevelTileRenderDescriptor {

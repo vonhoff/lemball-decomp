@@ -74,3 +74,4 @@ CODE_09_Visos (Generic).bin,0x0001561A,GetFreeSize__6CArenaFv,0x0045A350,high,"r
 CODE_09_Visos (Generic).bin,0x00015642,__nw__6CArenaFUlPv,0x0045A390,high,"placement allocation returns supplied storage"
 CODE_09_Visos (Generic).bin,0x00015660,MemSet__6CArenaFPvUcUl,0x0045A3A0,high,"byte fill implementation and signature"
 CODE_09_Visos (Generic).bin,0x00015696,MemCopy__6CArenaFPvPCvUl,0x0045A3D0,high,"byte copy implementation and signature"
+CODE_02_Visos (Generic).bin,0x000147AC,SqRoot__7CVSMathFUi,0x0045A9B0,high,"integer square-root bounds and binary-search behavior"
