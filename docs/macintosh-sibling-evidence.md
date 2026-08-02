@@ -148,7 +148,7 @@ All six portable `CLevelLoader` methods align with Windows `0x00408210..0x00408B
 
 ### Portable Control globals
 
-Ten portable Control globals map through independent Windows behavior: `VSPreInit` (`0x00406160`), `VSmain` (`0x00406310`), direction and distance helpers (`0x00413E80`, `0x00413F80`), demo lifecycle (`0x00409150`, `0x00409180`), and frame-clock operations (`0x00408080..0x00408190`). Physical ownership remains split across the existing Windows Control and mixed level TUs. `GETWORD` and `GETLONG` remain unresolved pending proof of their target-endian/inlining disposition.
+Ten portable Control globals map through independent Windows behavior: `VSPreInit` (`0x00406160`), `VSmain` (`0x00406310`), direction and distance helpers (`0x00413E80`, `0x00413F80`), demo lifecycle (`0x00409150`, `0x00409180`), and frame-clock operations (`0x00408080..0x00408190`). Physical ownership remains split across the existing Windows Control and mixed level TUs. `GETWORD` and `GETLONG` are final Macintosh-only big-endian load adapters: Windows consumers directly read native little-endian values at the corresponding call sites, and no standalone x86 equivalent is emitted.
 
 ### CInvisibleSwitch and CInvisibleSwitchManager
 

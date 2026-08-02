@@ -11,8 +11,8 @@ This audit does **not** establish complete portable coverage. Only accepted corr
 | Accepted x86 correlation | 685 | Exact Macintosh module+mangled spelling has a reviewed x86 mapping; offset integrity is reported separately. |
 | Present spelling/source analogue | 8 | Exact scoped spelling exists in current source, but equivalence is not proven. |
 | Likely inlined/merged | 0 | Exact scoped header definition exists, but no standalone x86 address is accepted. |
-| Platform-specific | 881 | Unmapped body belongs to `Visos (Mac Specific)` or the reviewed Macintosh Toolbox/Open Transport `UtilMain` set. |
-| Genuinely missing/unresolved | 1275 | No accepted address and no exact scoped source spelling. |
+| Platform-specific | 883 | Unmapped body belongs to `Visos (Mac Specific)` or the reviewed Macintosh Toolbox/Open Transport `UtilMain` set. |
+| Genuinely missing/unresolved | 1273 | No accepted address and no exact scoped source spelling. |
 | **Total** | **2849** | Complete raw inventory accounting. |
 
 ### Accepted-correlation referential integrity
@@ -28,7 +28,7 @@ The non-Mac-specific target contains 1958 symbols after excluding the 12 reviewe
 | Module | accepted_x86_correlation | present_spelling_or_source_analogue | likely_inlined_or_merged | platform_specific | genuinely_missing_or_unresolved | Total |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | AI | 451 | 0 | 0 | 0 | 333 | 784 |
-| Control | 57 | 0 | 0 | 0 | 2 | 59 |
+| Control | 57 | 0 | 0 | 2 | 0 | 59 |
 | Frontend | 3 | 0 | 0 | 0 | 237 | 240 |
 | Map | 20 | 0 | 0 | 0 | 0 | 20 |
 | Network | 0 | 0 | 0 | 0 | 24 | 24 |
