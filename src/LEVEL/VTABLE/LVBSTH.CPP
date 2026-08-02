@@ -17,7 +17,7 @@ void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseECA0(void* pObject)
 }
 
 // FUNCTION: LEMBALL 0x00424cf0
-void LEMBALL_FASTCALL DestroyLevelChunkObjectBase24CF0(void* pObject)
+void LEMBALL_FASTCALL destroy_level_chunk_object_base24cf0(void* pObject)
 {
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 }

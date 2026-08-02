@@ -31,7 +31,7 @@ struct LevelTileGridOwnerView {
 extern void* g_pLevelTileGrid;
 extern int g_nLevelFrameClockTimeMs;
 extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
-extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBase24CF0(void* pObject);
+extern void LEMBALL_FASTCALL destroy_level_chunk_object_base24cf0(void* pObject);
 void* LEMBALL_FASTCALL DeleteMineChunkObjectArrayOrScalar(void* pObject, void* pUnused, unsigned int fDelete);
 int LEMBALL_FASTCALL AdvanceMineChunkObjectStateMachine(void* pObject);
 
@@ -169,7 +169,7 @@ void* LEMBALL_FASTCALL DeleteMineChunkObjectArrayOrScalar(void* pObject, void*, 
 		pEntry = (char*) pObject + cEntries * 0x150;
 		while (--cEntries >= 0) {
 			pEntry -= 0x150;
-			DestroyLevelChunkObjectBase24CF0(pEntry);
+			destroy_level_chunk_object_base24cf0(pEntry);
 		}
 		FreeVSMemBlock((char*) pObject - 4);
 		return pObject;
