@@ -78,4 +78,4 @@ All twenty-six portable Macintosh `CPlayerLemmingGroupManager` methods align wit
 
 ### CGenericGroupManager lifecycle and iterator core
 
-Fifteen Macintosh lifecycle and group/nested-element iterator methods align with Windows `0x0041E8F0..0x0041EB90` through the 40-slot manager layout, vtable/ILT calls, exact count/index fields, nested iterator inverse pairs, signatures, and family sequence. Target-only child-destruction helper `0x0041E9A0` and the later mutation/render tail remain separate.
+All twenty-five portable Macintosh `CGenericGroupManager` methods align with Windows `0x0041E8F0..0x0041EED0` through the 40-slot manager layout, vtable/ILT calls, exact count/index fields, nested iterator and mutation inverse pairs, signatures, allocation sizes, bounding-box/view-data strides, and intersection dispatch. Target-only child-destruction helper `0x0041E9A0` remains explicitly excluded.
