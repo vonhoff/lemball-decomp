@@ -101,10 +101,10 @@ set(LEMBALL_SOURCES
     src/ENGINE/DEBUG/TEXTWIN.CPP
     src/ENGINE/DEBUG/TXWININV.CPP
     src/ENGINE/DEBUG/TEXTLINE.CPP
-    src/RESOURCE/MOGLOAD.CPP
-    src/RESOURCE/MOGPTCH.CPP
-    src/RESOURCE/MOGCONST.CPP
-    src/RESOURCE/MOGBSTH.CPP
+    src/Visos/Generic/MogLoad.cpp
+    src/Visos/Generic/MogPatch.cpp
+    src/Visos/Generic/MogConst.cpp
+    src/Visos/Generic/MogBst.cpp
     src/ENGINE/CORE/LINKSCF.CPP
     src/ENGINE/CORE/LINKSCFBYTES.CPP
     src/ENGINE/CORE/LSPROJ.CPP

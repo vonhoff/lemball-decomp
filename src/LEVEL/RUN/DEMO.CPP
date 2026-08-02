@@ -2,7 +2,7 @@
 #include "ENGINE/CORE/WIN32.H"
 #include "GAME.H"
 #include "LEVEL/DEMO.H"
-#include "RESOURCE/MOGLOAD.H"
+#include "Visos/Generic/MogLoad.h"
 #include "Visos/Generic/Memory.h"
 
 #include <stdio.h>

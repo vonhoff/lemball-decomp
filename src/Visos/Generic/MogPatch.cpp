@@ -1,5 +1,5 @@
 #include "Visos/Generic/Memory.h"
-#include "RESOURCE/MOGLOAD.H"
+#include "Visos/Generic/MogLoad.h"
 
 extern void* g_pResourceArchive;
 extern void* g_MOGLOAD_CachedResourceObjectBaseVtable[15];

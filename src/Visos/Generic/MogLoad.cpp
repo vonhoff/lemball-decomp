@@ -1,6 +1,6 @@
 #include "ENGINE/CORE/VSINIT.H"
 #include "GAME.H"
-#include "RESOURCE/MOGLOAD.H"
+#include "Visos/Generic/MogLoad.h"
 #include "SHELL/OPTIONS.H"
 #include "Visos/Generic/Memory.h"
 

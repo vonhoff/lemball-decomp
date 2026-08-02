@@ -8,7 +8,7 @@
 #include "GAME.H"
 #include "LEVEL/LEVELRUN.H"
 #include "LEVEL/LVPKT.H"
-#include "RESOURCE/MOGLOAD.H"
+#include "Visos/Generic/MogLoad.h"
 #include "SHELL/OPTIONS.H"
 
 #include <stdio.h>

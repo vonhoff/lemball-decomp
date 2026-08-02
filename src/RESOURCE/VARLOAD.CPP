@@ -2,8 +2,8 @@
 #include "ENGINE/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
 #include "GAME.H"
-#include "RESOURCE/MOGLOAD.H"
-#include "RESOURCE/TYPEDRES.H"
+#include "Visos/Generic/MogLoad.h"
+#include "Visos/Generic/TypedRes.h"
 #include "RESOURCE/VARLOAD.H"
 
 extern void LEMBALL_FASTCALL CopyBufferIntoTypedResourceObjectAndParse(void* pObject,

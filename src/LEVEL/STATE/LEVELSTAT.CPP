@@ -9,7 +9,7 @@
 #include "GAME.H"
 #include "LEVEL/DEMO.H"
 #include "LEVEL/DRAWTEXT.H"
-#include "RESOURCE/MOGLOAD.H"
+#include "Visos/Generic/MogLoad.h"
 #include "RESOURCE/VARMGR.H"
 #include "SHELL/OPTIONS.H"
 

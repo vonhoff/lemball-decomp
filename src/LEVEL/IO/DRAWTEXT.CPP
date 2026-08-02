@@ -3,7 +3,7 @@
 #include "ENGINE/GDI/VSGDI.H"
 #include "GAME.H"
 #include "LEVEL/DRAWTEXT.H"
-#include "RESOURCE/MOGLOAD.H"
+#include "Visos/Generic/MogLoad.h"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_TYPED_RESOURCE_OBJECT_H
 #define LEMBALL_TYPED_RESOURCE_OBJECT_H
 
-#include "RESOURCE/MOGLOAD.H"
+#include "Visos/Generic/MogLoad.h"
 
 struct MogLoadTypedResourceObject : MogLoadStringResourceObject {
 	int LoadTypedResourceObjectFromStreamDescriptor(int* pDataCursor, void* pOwner);

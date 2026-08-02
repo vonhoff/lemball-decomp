@@ -1,7 +1,7 @@
 #include "Visos/Generic/Memory.h"
 #include "ENGINE/MEDIA/VSSOUND.H"
 #include "GAME.H"
-#include "RESOURCE/MOGLOAD.H"
+#include "Visos/Generic/MogLoad.h"
 #include "RESOURCE/VARLOAD.H"
 #include "RESOURCE/VARMGR.H"
 #include "SHELL/OPTIONS.H"

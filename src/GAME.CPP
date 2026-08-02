@@ -14,7 +14,7 @@
 #include "LEVEL/DRAWTEXT.H"
 #include "LEVEL/LEVELRUN.H"
 #include "LEVEL/TYPE18.H"
-#include "RESOURCE/MOGLOAD.H"
+#include "Visos/Generic/MogLoad.h"
 #include "RESOURCE/VARMGR.H"
 #include "SHELL/OPTIONS.H"
 #include "SHELL/SHELLUI.H"
