@@ -1,9 +1,9 @@
 extern void* g_pSessionRandomState;
 extern int g_nLevelFrameClockTick;
 
-class LevelManagedEntityRandomDelayView {
+class CGameObject {
 public:
-	void ArmRandomActionDelay(void);
+	void StartSommersault(void);
 
 private:
 	unsigned char m_abReserved00[0xbc];
@@ -16,7 +16,7 @@ private:
 int g_nManagedEntityRandomActionPhase = 0;
 
 // FUNCTION: LEMBALL 0x00416510
-void LevelManagedEntityRandomDelayView::ArmRandomActionDelay(void)
+void CGameObject::StartSommersault(void)
 {
 	int nRandom = (*(int*) g_pSessionRandomState * 0x29 + 0x1f) & 0x7fffff;
 	*(int*) g_pSessionRandomState = nRandom;
@@ -26,8 +26,8 @@ void LevelManagedEntityRandomDelayView::ArmRandomActionDelay(void)
 }
 
 // FUNCTION: LEMBALL 0x00419e10
-void __cdecl ThunkArmRandomManagedEntityActionDelay(void* pUnused, LevelManagedEntityRandomDelayView* pEntity)
+void __cdecl ThunkArmRandomManagedEntityActionDelay(void* pUnused, CGameObject* pEntity)
 {
 	(void) pUnused;
-	pEntity->ArmRandomActionDelay();
+	pEntity->StartSommersault();
 }

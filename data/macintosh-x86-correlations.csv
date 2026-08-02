@@ -771,3 +771,8 @@ CODE_06_AI.bin,0x00006FB9,Add__12CDoorManagerFUs11eObjectTypeUsiii,0x0040E0C0,hi
 CODE_06_AI.bin,0x00007035,Open__12CDoorManagerFRC7AICOORDP11CGameObject,0x0040E500,high,"dispatches overlap handling until one active door opens"
 CODE_06_AI.bin,0x000070E4,Process__12CDoorManagerFv,0x0040E550,high,"marks and services doors with active or delayed state"
 CODE_06_AI.bin,0x000072DB,LoadLevel__12CDoorManagerFPUciUc,0x0040E630,high,"loads versioned slot key type and position records"
+CODE_06_AI.bin,0x0000A8AE,Jump__11CGameObjectFv,0x00416130,high,"rising trajectory terrain clamp saved-position restore and lift/contact handling match"
+CODE_06_AI.bin,0x0000AA94,Fall__11CGameObjectFv,0x00416220,high,"falling trajectory tile-centering landing cleanup and lift/contact handling match"
+CODE_06_AI.bin,0x0000AB93,OffLift__11CGameObjectFR8tCoord3d,0x00416410,high,"one-reference virtual forwarder matches slot and RET 4 ABI"
+CODE_06_AI.bin,0x0000ACAF,OffLift__11CGameObjectFR8tCoord3dR8tCoord3d,0x004164F0,high,"two-reference virtual forwarder matches slot and RET 8 ABI"
+CODE_06_AI.bin,0x0000AD53,StartSommersault__11CGameObjectFv,0x00416510,high,"exact RNG recurrence deadline and alternating phase algorithm"
