@@ -2176,12 +2176,12 @@ struct LevelModeNodeView {
 	LevelNodePoint* CopyNodePointByIndex(LevelNodePoint* pOutput, int nIndex);
 };
 
-struct LevelTileRenderDescriptor {
+struct CGround {
 	int m_nShapeType;
 	int m_nReserved04;
 	short m_nHeight;
 
-	short SampleHeightOffsetThunk(int nLocalX, int nLocalY);
+	short GetZThunk(int nLocalX, int nLocalY);
 };
 
 struct LevelTileGridCell {
@@ -2248,7 +2248,7 @@ void CMover::Set(unsigned short nSlotId, short nHeading, int nMode, int iNode, i
 	LevelNodePoint point;
 	LevelNodePoint* pPoint;
 	MoveChunkTileGridView* pGrid;
-	LevelTileRenderDescriptor* pCell;
+	CGround* pCell;
 	int nPixelY;
 	int nPixelX;
 	int nTileY;
@@ -2269,8 +2269,8 @@ void CMover::Set(unsigned short nSlotId, short nHeading, int nMode, int iNode, i
 		nHeight = 0;
 	}
 	else {
-		pCell = (LevelTileRenderDescriptor*) &pGrid->m_pCells0C[nTileY * pGrid->m_cColumns10 + nTileX];
-		nHeight = (unsigned short) pCell->SampleHeightOffsetThunk(nPixelX & 0x0f, nPixelY & 0x0f);
+		pCell = (CGround*) &pGrid->m_pCells0C[nTileY * pGrid->m_cColumns10 + nTileX];
+		nHeight = (unsigned short) pCell->GetZThunk(nPixelX & 0x0f, nPixelY & 0x0f);
 	}
 
 	m_fActive138 = 1;

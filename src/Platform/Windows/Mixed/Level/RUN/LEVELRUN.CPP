@@ -144,8 +144,8 @@ struct LevelLevelTileCell {
 	short m_nReserved08;
 	short m_nReserved0A;
 
-	void InitializeLevelTileGridCellRenderFlags(void);
-	void InitializeLevelTileGridCellRenderFlagsThunk(void);
+	void SetCollision(void);
+	void SetCollisionThunk(void);
 };
 
 class LevelPositionQueryView {
@@ -700,9 +700,9 @@ void LEMBALL_FASTCALL ResetBoonChunkManagerObjectsThunk(void* pObject)
 	ResetBoonChunkManagerObjects(pObject);
 }
 // LINKERILT: LEMBALL 0x00402d6a
-void LevelLevelTileCell::InitializeLevelTileGridCellRenderFlagsThunk(void)
+void LevelLevelTileCell::SetCollisionThunk(void)
 {
-	InitializeLevelTileGridCellRenderFlags();
+	SetCollision();
 }
 // LINKERILT: LEMBALL 0x00402de2
 LevelProjectileGeometryPair* LevelProjectileGeometryPair::InitializeSentinelThunk(void)
@@ -715,9 +715,9 @@ void LevelProjectileGeometryPairTable::ClearProjectileGeometryField100Thunk(void
 	ClearProjectileGeometryField100();
 }
 // LINKERILT: LEMBALL 0x00402e7d
-void LevelTileGridRuntimeView::ResizeLevelTileGridThunk(int cColumns, int cRows)
+void CMap::ReSizeThunk(int cColumns, int cRows)
 {
-	ResizeLevelTileGrid(cColumns, cRows);
+	ReSize(cColumns, cRows);
 }
 // LINKERILT: LEMBALL 0x00402f72
 int LevelCachedChunkManagerBView::ServiceCachedChunkObjectsThunk(void)
@@ -782,7 +782,7 @@ int LevelManagedEntityActiveGroupView::HasStreamDirtyChildrenThunk(void)
 	return HasSFXChanged();
 }
 // LINKERILT: LEMBALL 0x00403224
-void LevelTileGridRuntimeView::CalculateCliffThunk(void)
+void CMap::CalculateCliffThunk(void)
 {
 	CalculateCliff();
 }
@@ -802,7 +802,7 @@ LevelSlnkChunkManager* LevelSlnkChunkManager::ConstructSlnkChunkManagerThunk(voi
 	return ConstructSlnkChunkManager(pLevelMode, cCapacity);
 }
 // LINKERILT: LEMBALL 0x004034d1
-void LevelTileGridRuntimeView::SetLevelNameThunk(const char* pszName)
+void CMap::SetLevelNameThunk(const char* pszName)
 {
 	SetLevelName(pszName);
 }
@@ -2335,8 +2335,9 @@ int EmitBoonChunkManagerRenderEntries(void* pObject, char* pEntries)
 	}
 	return cEntries;
 }
+// MACINTOSH: CGround::SetCollision()
 // FUNCTION: LEMBALL 0x004302d0
-void LevelLevelTileCell::InitializeLevelTileGridCellRenderFlags(void)
+void LevelLevelTileCell::SetCollision(void)
 {
 	switch (m_nType00) {
 	case 0x202:
@@ -2360,6 +2361,7 @@ void LevelLevelTileCell::InitializeLevelTileGridCellRenderFlags(void)
 		break;
 	}
 }
+// MACINTOSH: CGroundArray::Clear()
 // FUNCTION: LEMBALL 0x00430370
 void LEMBALL_FASTCALL ClearLevelTileGridCells(int nTileGridCells)
 {
@@ -2410,7 +2412,7 @@ void LEMBALL_FASTCALL InitializeLevelTileGridThunk(void* pTileGrid)
 }
 // MACINTOSH: CMap::~CMap()
 // FUNCTION: LEMBALL 0x00430410
-void LevelTileGridRuntimeView::ReleaseLevelTileGridBuffers(void)
+void CMap::ReleaseLevelTileGridBuffers(void)
 {
 	char* pGrid;
 
@@ -2420,7 +2422,7 @@ void LevelTileGridRuntimeView::ReleaseLevelTileGridBuffers(void)
 }
 // MACINTOSH: CMap::ReSize(int, int)
 // FUNCTION: LEMBALL 0x00430440
-void LevelTileGridRuntimeView::ResizeLevelTileGrid(int cColumns, int cRows)
+void CMap::ReSize(int cColumns, int cRows)
 {
 	char* pGrid;
 	int cCells;
@@ -2448,7 +2450,7 @@ void LevelTileGridRuntimeView::ResizeLevelTileGrid(int cColumns, int cRows)
 }
 // MACINTOSH: CMap::LoadLevel(tagLoadGroundSurfaceData*, unsigned long, unsigned char)
 // FUNCTION: LEMBALL 0x00430db0
-void LevelTileGridRuntimeView::LoadLevelTileGridChunk(const unsigned short* pWords, unsigned int, int)
+void CMap::LoadLevel(const unsigned short* pWords, unsigned int, int)
 {
 	int cColumns;
 	int cRows;
@@ -2460,14 +2462,14 @@ void LevelTileGridRuntimeView::LoadLevelTileGridChunk(const unsigned short* pWor
 	cRows = pWords[1];
 	pWords += 2;
 	ClearLevelTileGridCells((int) (unsigned long) this + 8);
-	ResizeLevelTileGridThunk(cColumns, cRows);
+	ReSizeThunk(cColumns, cRows);
 	pCells = *(LevelLevelTileCell**) ((char*) this + 0x0c);
 	for (y = 0; y < cRows; ++y) {
 		for (x = 0; x < cColumns; ++x) {
 			LevelLevelTileCell* pCell = &pCells[y * cColumns + x];
 			pCell->m_nType00 = pWords[0];
 			pCell->m_nReserved04 = (short) pWords[1];
-			pCell->InitializeLevelTileGridCellRenderFlagsThunk();
+			pCell->SetCollisionThunk();
 			pCell->m_nReserved08 = (short) pWords[2];
 			pWords += 3;
 		}
@@ -2476,13 +2478,13 @@ void LevelTileGridRuntimeView::LoadLevelTileGridChunk(const unsigned short* pWor
 }
 // MACINTOSH: CMap::LoadLevelName(tagLoadGroundName*, unsigned long)
 // FUNCTION: LEMBALL 0x00430e80
-void LevelTileGridRuntimeView::SetLevelTileGridName(const char* pszName, unsigned int)
+void CMap::LoadLevelName(const char* pszName, unsigned int)
 {
 	SetLevelNameThunk(pszName);
 }
 // MACINTOSH: CMap::LoadDefaultBlox(tagLoadDefaultBlox*, unsigned long)
 // FUNCTION: LEMBALL 0x00430e90
-void LevelTileGridRuntimeView::SetLevelTileGridDefaultVariantIds(const unsigned short* pWords, unsigned int)
+void CMap::LoadDefaultBlox(const unsigned short* pWords, unsigned int)
 {
 	unsigned int nPrimaryVariant;
 	unsigned int nSecondaryVariant;
@@ -2600,7 +2602,7 @@ int ValidateLevelTileVariantId(int nType, unsigned short* pVariant)
 
 // MACINTOSH: CMap::SetLevelName(char*)
 // FUNCTION: LEMBALL 0x00431010
-void LevelTileGridRuntimeView::SetLevelName(const char* pszName)
+void CMap::SetLevelName(const char* pszName)
 {
 	int i;
 	char ch;
@@ -2618,7 +2620,7 @@ void LevelTileGridRuntimeView::SetLevelName(const char* pszName)
 }
 // MACINTOSH: CMap::CalculateCliff()
 // FUNCTION: LEMBALL 0x00431030
-void LevelTileGridRuntimeView::CalculateCliff(void)
+void CMap::CalculateCliff(void)
 {
 	char* pGrid;
 	int x;

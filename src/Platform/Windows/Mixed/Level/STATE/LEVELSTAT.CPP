@@ -710,13 +710,13 @@ struct LevelScreenActionButtonLayout {
 	void PositionLevelScreenActionButtonThunk(const VS_XYPair* pPanelOrigin);
 };
 
-struct LevelTileRenderDescriptor {
+struct CGround {
 	int m_nShapeType;
 	int m_nReserved04;
 	short m_nHeight;
-	unsigned int TestShapePixel(int nLocalX, int nLocalY, int fSpecial);
-	short SampleHeightOffset(int nLocalX, int nLocalY);
-	short SampleHeightOffsetThunk(int nLocalX, int nLocalY);
+	unsigned int IsHit(int nLocalX, int nLocalY, int fSpecial);
+	short GetZ(int nLocalX, int nLocalY);
+	short GetZThunk(int nLocalX, int nLocalY);
 };
 
 struct LevelLevelTileCell {
@@ -726,7 +726,7 @@ struct LevelLevelTileCell {
 	short m_nReserved08;
 	short m_nReserved0A;
 
-	void InitializeLevelTileGridCellRenderFlagsThunk(void);
+	void SetCollisionThunk(void);
 };
 
 struct LevelTileGridCell {
@@ -747,13 +747,13 @@ struct LevelTileGridView {
 	unsigned short SampleHeightAtPoint(int x, int y);
 	unsigned short SampleHeightInline(int x, int y)
 	{
-		LevelTileRenderDescriptor* pCell;
+		CGround* pCell;
 
 		if (x < 0 || y < 0 || (x >> 4) >= m_cColumns08 || (y >> 4) >= m_cRows0C) {
 			return 0;
 		}
-		pCell = (LevelTileRenderDescriptor*) GetCell(x >> 4, y >> 4);
-		return pCell->SampleHeightOffsetThunk(x & 0x0f, y & 0x0f);
+		pCell = (CGround*) GetCell(x >> 4, y >> 4);
+		return pCell->GetZThunk(x & 0x0f, y & 0x0f);
 	}
 	unsigned short GetCellFlags(int x, int y)
 	{
@@ -787,11 +787,11 @@ struct LevelTileGridOwnerView {
 	int m_nDefaultVariant50;
 	CMoverManager* m_pMoveChunkManager54;
 
-	unsigned short SampleHeightWithMoveChunkOverride(int x, int y, void** ppMoveChunk);
+	unsigned short GetZ(int x, int y, void** ppMoveChunk);
 	int TestEdgeMask(int x, int y, unsigned char nMask);
-	unsigned char GetEdgeMask(int x, int y);
-	void BuildNeighborEdgeMasks(void);
-	void SetCellType(int x, int y, int nType, int nVariant);
+	unsigned char GetWalk(int x, int y);
+	void CreateWalkBits(void);
+	void SetTerrain(int x, int y, int nType, int nVariant);
 };
 
 void* LEMBALL_FASTCALL ConstructLevelScreenActionButton(void* pObject,
@@ -818,10 +818,10 @@ struct LevelViewRotationTransform {
 	void* m_pVtable00;
 	int m_nRotation04;
 
-	void TransformScreenToTile(int nScreenX, int nScreenY, int* pTileX, int* pTileY);
-	void TransformScreenToTileInPlace(int* pX, int* pY);
-	void TransformTileToScreen(int nTileX, int nTileY, int* pScreenX, int* pScreenY);
-	void TransformTileInPlace(int* pX, int* pY);
+	void ScreenToGame(int nScreenX, int nScreenY, int* pTileX, int* pTileY);
+	void ScreenToGameInPlace(int* pX, int* pY);
+	void GameToScreen(int nTileX, int nTileY, int* pScreenX, int* pScreenY);
+	void GameToScreen(int* pX, int* pY);
 };
 
 struct LevelScreenTerrainRenderView {
@@ -1042,9 +1042,9 @@ void* LEMBALL_FASTCALL InitializeLevelSelectionPointRectSinkEntryThunk(void* pOb
 	return InitializeLevelSelectionPointRectSinkEntry(pObject);
 }
 // LINKERILT: LEMBALL 0x004029a5
-short LevelTileRenderDescriptor::SampleHeightOffsetThunk(int nLocalX, int nLocalY)
+short CGround::GetZThunk(int nLocalX, int nLocalY)
 {
-	return SampleHeightOffset(nLocalX, nLocalY);
+	return GetZ(nLocalX, nLocalY);
 }
 // LINKERILT: LEMBALL 0x004029be
 void GameBaseModeScreen::DispatchBaseModeUserActionThunk(int nAction, int nPhase)
@@ -1197,8 +1197,9 @@ int ReturnTrueVirtualHookBody(void)
 	return 1;
 }
 
+// MACINTOSH: CGround::GetZ(int, int)
 // FUNCTION: LEMBALL 0x0042ffe0
-short LevelTileRenderDescriptor::SampleHeightOffset(int nLocalX, int nLocalY)
+short CGround::GetZ(int nLocalX, int nLocalY)
 {
 	const char* pTile;
 	short nHeight;
@@ -1237,8 +1238,9 @@ short LevelTileRenderDescriptor::SampleHeightOffset(int nLocalX, int nLocalY)
 	return 0;
 }
 
+// MACINTOSH: CGround::IsHit(int, int, unsigned char)
 // FUNCTION: LEMBALL 0x00430110
-unsigned int LevelTileRenderDescriptor::TestShapePixel(int nLocalX, int nLocalY, int fSpecial)
+unsigned int CGround::IsHit(int nLocalX, int nLocalY, int fSpecial)
 {
 	switch (m_nShapeType) {
 	case 0x202:
@@ -1282,10 +1284,10 @@ unsigned int LevelTileRenderDescriptor::TestShapePixel(int nLocalX, int nLocalY,
 
 // MACINTOSH: CMap::GetZ(int, int, CMover**)
 // FUNCTION: LEMBALL 0x004304e0
-unsigned short LevelTileGridOwnerView::SampleHeightWithMoveChunkOverride(int x, int y, void** ppMoveChunk)
+unsigned short LevelTileGridOwnerView::GetZ(int x, int y, void** ppMoveChunk)
 {
 	CMover* pMoveChunk;
-	LevelTileRenderDescriptor* pCell;
+	CGround* pCell;
 	int nHeight;
 
 	if (ppMoveChunk != 0 && (m_Grid08.m_pCells04[(y >> 4) * m_Grid08.m_cColumns08 + (x >> 4)].m_nFlags06 & 0x10) != 0) {
@@ -1302,8 +1304,8 @@ unsigned short LevelTileGridOwnerView::SampleHeightWithMoveChunkOverride(int x, 
 		nTileX = x >> 4;
 		nTileY = y >> 4;
 		if (x >= 0 && y >= 0 && nTileX < m_Grid08.m_cColumns08 && nTileY < m_Grid08.m_cRows0C) {
-			pCell = (LevelTileRenderDescriptor*) &m_Grid08.m_pCells04[nTileY * m_Grid08.m_cColumns08 + nTileX];
-			return (unsigned short) pCell->SampleHeightOffsetThunk(x & 0x0f, y & 0x0f);
+			pCell = (CGround*) &m_Grid08.m_pCells04[nTileY * m_Grid08.m_cColumns08 + nTileX];
+			return (unsigned short) pCell->GetZThunk(x & 0x0f, y & 0x0f);
 		}
 	}
 	return 0;
@@ -1320,7 +1322,7 @@ int LevelTileGridOwnerView::TestEdgeMask(int x, int y, unsigned char nMask)
 
 // MACINTOSH: CMap::GetWalk(int, int)
 // FUNCTION: LEMBALL 0x004305f0
-unsigned char LevelTileGridOwnerView::GetEdgeMask(int x, int y)
+unsigned char LevelTileGridOwnerView::GetWalk(int x, int y)
 {
 	if (x < 0 || y < 0 || x >= m_cEdgeColumns1C || y >= m_cEdgeRows20) {
 		return 0;
@@ -1330,7 +1332,7 @@ unsigned char LevelTileGridOwnerView::GetEdgeMask(int x, int y)
 
 // MACINTOSH: CMap::CreateWalkBits()
 // FUNCTION: LEMBALL 0x00430620
-void LevelTileGridOwnerView::BuildNeighborEdgeMasks(void)
+void LevelTileGridOwnerView::CreateWalkBits(void)
 {
 	unsigned char* pMask;
 	unsigned short nFirstHeight;
@@ -1396,19 +1398,19 @@ void LevelTileGridOwnerView::BuildNeighborEdgeMasks(void)
 
 // MACINTOSH: CMap::SetTerrain(int, int, eObjectType, int)
 // FUNCTION: LEMBALL 0x00430a20
-void LevelTileGridOwnerView::SetCellType(int x, int y, int nType, int nVariant)
+void LevelTileGridOwnerView::SetTerrain(int x, int y, int nType, int nVariant)
 {
 	LevelLevelTileCell* pCell;
 
 	pCell = (LevelLevelTileCell*) &m_Grid08.m_pCells04[y * m_Grid08.m_cColumns08 + x];
 	pCell->m_nType00 = nType;
 	pCell->m_nVariant04 = (short) nVariant;
-	pCell->InitializeLevelTileGridCellRenderFlagsThunk();
+	pCell->SetCollisionThunk();
 }
 
 // MACINTOSH: CMap::ScreenToGame(int, int, int&, int&)
 // FUNCTION: LEMBALL 0x00430a50
-void LevelViewRotationTransform::TransformScreenToTile(int nScreenX, int nScreenY, int* pTileX, int* pTileY)
+void LevelViewRotationTransform::ScreenToGame(int nScreenX, int nScreenY, int* pTileX, int* pTileY)
 {
 	switch (m_nRotation04) {
 	case 0:
@@ -1431,7 +1433,7 @@ void LevelViewRotationTransform::TransformScreenToTile(int nScreenX, int nScreen
 }
 
 // FUNCTION: LEMBALL 0x00430b30
-void LevelViewRotationTransform::TransformScreenToTileInPlace(int* pX, int* pY)
+void LevelViewRotationTransform::ScreenToGameInPlace(int* pX, int* pY)
 {
 	int nScreenX;
 	int nScreenY;
@@ -1460,7 +1462,7 @@ void LevelViewRotationTransform::TransformScreenToTileInPlace(int* pX, int* pY)
 
 // MACINTOSH: CMap::GameToScreen(int, int, int&, int&)
 // FUNCTION: LEMBALL 0x00430be0
-void LevelViewRotationTransform::TransformTileToScreen(int nTileX, int nTileY, int* pScreenX, int* pScreenY)
+void LevelViewRotationTransform::GameToScreen(int nTileX, int nTileY, int* pScreenX, int* pScreenY)
 {
 	switch (m_nRotation04) {
 	case 0:
@@ -1483,14 +1485,14 @@ void LevelViewRotationTransform::TransformTileToScreen(int nTileX, int nTileY, i
 }
 // MACINTOSH: CMap::GameToScreen(int&, int&)
 // FUNCTION: LEMBALL 0x00430ce0
-void LevelViewRotationTransform::TransformTileInPlace(int* pX, int* pY)
+void LevelViewRotationTransform::GameToScreen(int* pX, int* pY)
 {
 	int nTileX;
 	int nTileY;
 
 	nTileX = *pX;
 	nTileY = *pY;
-	TransformTileToScreen(nTileX, nTileY, pX, pY);
+	GameToScreen(nTileX, nTileY, pX, pY);
 }
 // Compatibility shim preserving MSVC 4.20 compiler state.
 void* DeleteQueuedRenderPointSinkWrapper00432350(void* pObject, BYTE fDelete)
@@ -2729,13 +2731,13 @@ void LevelScreenTerrainRenderView::BuildStaticRegionEntries(const short* pRegion
 	}
 	nStripCount = (nRight - nLeft + 0x1f) / 0x20;
 
-	pTransform->TransformScreenToTile(*(int*) (pScreen + 0x918) + nLeft,
+	pTransform->ScreenToGame(*(int*) (pScreen + 0x918) + nLeft,
 									  *(int*) (pScreen + 0x91c) + nTop,
 									  &nTileX,
 									  &nTileY);
 	nTileX /= 0x10;
 	nTileY /= 0x10;
-	pTransform->TransformTileToScreen(nTileX << 4, nTileY << 4, (int*) (pScreen + 0x184), (int*) (pScreen + 0x188));
+	pTransform->GameToScreen(nTileX << 4, nTileY << 4, (int*) (pScreen + 0x184), (int*) (pScreen + 0x188));
 	*(int*) (pScreen + 0x184) -= *(int*) (pScreen + 0x918);
 	*(int*) (pScreen + 0x188) -= *(int*) (pScreen + 0x91c);
 	nRowCount = (nBottom - nTop + 0x0f) / 0x10;
@@ -2751,13 +2753,13 @@ void LevelScreenTerrainRenderView::BuildStaticRegionEntries(const short* pRegion
 	}
 
 	nBottom += *(unsigned short*) (pScreen + 0x8d0);
-	pTransform->TransformScreenToTile(*(int*) (pScreen + 0x918) + nLeft,
+	pTransform->ScreenToGame(*(int*) (pScreen + 0x918) + nLeft,
 									  *(int*) (pScreen + 0x91c) + nTop + nRowCount * 0x10,
 									  &nTileX,
 									  &nTileY);
 	nTileX /= 0x10;
 	nTileY /= 0x10;
-	pTransform->TransformTileToScreen(nTileX << 4, nTileY << 4, (int*) (pScreen + 0x184), (int*) (pScreen + 0x188));
+	pTransform->GameToScreen(nTileX << 4, nTileY << 4, (int*) (pScreen + 0x184), (int*) (pScreen + 0x188));
 	*(int*) (pScreen + 0x184) -= *(int*) (pScreen + 0x918);
 	*(int*) (pScreen + 0x188) -= *(int*) (pScreen + 0x91c);
 	nRowCount = (*(unsigned short*) (pScreen + 0x8d0) + 0x0f) / 0x10;
@@ -3705,7 +3707,7 @@ void LevelScreenTerrainRenderView::PrepareAndSortDynamicDepthEntries(void)
 		nX = *(int*) (pEntry + 4);
 		nY = *(int*) (pEntry + 8);
 		nHeight = *(int*) (pEntry + 0x0c);
-		((LevelViewRotationTransform*) *(void**) (pScreen + 0x914))->TransformTileInPlace(&nX, &nY);
+		((LevelViewRotationTransform*) *(void**) (pScreen + 0x914))->GameToScreen(&nX, &nY);
 		*(int*) (pEntry + 4) = nX - *(int*) (pScreen + 0x918);
 		*(int*) (pEntry + 8) = nY - nHeight - *(int*) (pScreen + 0x91c);
 		*(int*) (pEntry + 0x0c) = nHeight;
@@ -3737,7 +3739,7 @@ void LevelScreenTerrainRenderView::DrawStaticRenderEntry(int iEntry, unsigned sh
 	cRepeatedEntries = *(short*) ((char*) pTile + 0x0a);
 	nFlags = *(unsigned short*) ((char*) pTile + 6);
 	((LevelViewRotationTransform*) *(void**) (pScreen + 0x914))
-		->TransformTileToScreen((int) pEntry[0] << 4, (int) pEntry[1] << 4, &nScreenX, &nScreenY);
+		->GameToScreen((int) pEntry[0] << 4, (int) pEntry[1] << 4, &nScreenX, &nScreenY);
 	nScreenX -= *(int*) (pScreen + 0x918);
 	nScreenY -= *(int*) (pScreen + 0x91c);
 	*(unsigned short*) (*(char**) (pScreen + 0xa40) + 0x68) = nDepth;
@@ -3814,14 +3816,14 @@ short LevelScreenTerrainRenderView::ComputeDynamicRenderEntrySortKey(int iEntry)
 	}
 	else {
 		pSampleTile = pTiles + (((nTileY + 0x10) >> 4) * nLevelWidth + (nTileX >> 4)) * 0x0c;
-		nSampleA = ((LevelTileRenderDescriptor*) pSampleTile)->SampleHeightOffsetThunk(nTileX & 0x0f, nTileY & 0x0f);
+		nSampleA = ((CGround*) pSampleTile)->GetZThunk(nTileX & 0x0f, nTileY & 0x0f);
 	}
 	if (nTileX + 0x10 < 0 || nTileY < 0 || (nTileX + 0x10) >> 4 >= nLevelWidth || nTileY >> 4 >= nLevelHeight) {
 		nSampleB = 0;
 	}
 	else {
 		pSampleTile = pTiles + ((nTileY >> 4) * nLevelWidth + ((nTileX + 0x10) >> 4)) * 0x0c;
-		nSampleB = ((LevelTileRenderDescriptor*) pSampleTile)->SampleHeightOffsetThunk(nTileX & 0x0f, nTileY & 0x0f);
+		nSampleB = ((CGround*) pSampleTile)->GetZThunk(nTileX & 0x0f, nTileY & 0x0f);
 	}
 	if (nTileX + 0x10 < 0 || nTileY + 0x10 < 0 || (nTileX + 0x10) >> 4 >= nLevelWidth ||
 		(nTileY + 0x10) >> 4 >= nLevelHeight) {
@@ -3829,7 +3831,7 @@ short LevelScreenTerrainRenderView::ComputeDynamicRenderEntrySortKey(int iEntry)
 	}
 	else {
 		pSampleTile = pTiles + (((nTileY + 0x10) >> 4) * nLevelWidth + ((nTileX + 0x10) >> 4)) * 0x0c;
-		nSampleC = ((LevelTileRenderDescriptor*) pSampleTile)->SampleHeightOffsetThunk(nTileX & 0x0f, nTileY & 0x0f);
+		nSampleC = ((CGround*) pSampleTile)->GetZThunk(nTileX & 0x0f, nTileY & 0x0f);
 	}
 	nThreshold = nHeight - 0x16;
 	nTileX /= 0x10;
@@ -5545,10 +5547,10 @@ struct LevelViewRotationTransformAuto {
 	void* m_pVtable00;
 	int m_nRotation04;
 
-	void TransformScreenToTile(int nScreenX, int nScreenY, int* pTileX, int* pTileY);
+	void ScreenToGame(int nScreenX, int nScreenY, int* pTileX, int* pTileY);
 };
 
-void LevelViewRotationTransformAuto::TransformScreenToTile(int nScreenX, int nScreenY, int* pTileX, int* pTileY)
+void LevelViewRotationTransformAuto::ScreenToGame(int nScreenX, int nScreenY, int* pTileX, int* pTileY)
 {
 	switch (m_nRotation04) {
 	case 0:

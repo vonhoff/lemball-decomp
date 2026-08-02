@@ -3667,7 +3667,7 @@ void LEMBALL_FASTCALL DestroyLevelGameMode(void* pModeObject)
 	}
 	pChild = (void*) (unsigned long) pMode[0x44];
 	if (pChild != 0) {
-		((LevelTileGridRuntimeView*) pChild)->ReleaseLevelTileGridBuffers();
+		((CMap*) pChild)->ReleaseLevelTileGridBuffers();
 		FreeVSMemBlock(pChild);
 	}
 	pChild = (void*) (unsigned long) pMode[0x5f];
@@ -3901,17 +3901,17 @@ int Distance2DIntPixels(int x1, int y1, int x2, int y2)
 	return (int) ((CVSMath*) g_pSessionRandomState)->SqRoot(dx * dx + dy * dy);
 }
 
-struct LevelTileRenderDescriptor {
+struct CGround {
 	char m_abReserved00[8];
 	short m_nHeight08;
 	short m_nReserved0A;
 
-	short SampleHeightOffsetThunk(int nLocalX, int nLocalY);
+	short GetZThunk(int nLocalX, int nLocalY);
 };
 
 struct LevelTileGridView {
 	void* m_pReserved00;
-	LevelTileRenderDescriptor* m_pCells04;
+	CGround* m_pCells04;
 	int m_cColumns08;
 	int m_cRows0C;
 
@@ -3923,7 +3923,7 @@ unsigned short LevelTileGridView::SampleHeightAtPoint(int x, int y)
 {
 	int nTileX;
 	int nTileY;
-	LevelTileRenderDescriptor* pCell;
+	CGround* pCell;
 
 	nTileX = x >> 4;
 	nTileY = y >> 4;
@@ -3931,7 +3931,7 @@ unsigned short LevelTileGridView::SampleHeightAtPoint(int x, int y)
 		return 0;
 	}
 	pCell = &m_pCells04[nTileY * m_cColumns08 + nTileX];
-	return pCell->SampleHeightOffsetThunk(x & 0x0f, y & 0x0f);
+	return pCell->GetZThunk(x & 0x0f, y & 0x0f);
 }
 
 // FUNCTION: LEMBALL 0x00431590

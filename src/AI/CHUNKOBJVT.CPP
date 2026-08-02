@@ -79,8 +79,8 @@ struct RockChunkObjectStateView {
 	virtual void SetActionState(int nStateId);
 };
 
-struct LevelTileRenderDescriptor {
-	short SampleHeightOffset(int nLocalX, int nLocalY);
+struct CGround {
+	short GetZ(int nLocalX, int nLocalY);
 };
 
 struct GmobChunkType14ActionView {
@@ -445,9 +445,9 @@ int LEMBALL_FASTCALL AdvanceGmobChunkType14StateMachine(void* pObject)
 		nHeightOffset = 0;
 	}
 	else {
-		LevelTileRenderDescriptor* pTile =
-			(LevelTileRenderDescriptor*) (*(char**) (pGrid + 0x0c) + (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 12);
-		nHeightOffset = (unsigned short) pTile->SampleHeightOffset(nLocalX & 15, nLocalY & 15);
+		CGround* pTile =
+			(CGround*) (*(char**) (pGrid + 0x0c) + (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 12);
+		nHeightOffset = (unsigned short) pTile->GetZ(nLocalX & 15, nLocalY & 15);
 	}
 	*(int*) (pObjectBytes + 0xa4) = nHeightOffset << 12;
 	nStateId = *(int*) (pObjectBytes + 0xb8);
@@ -574,10 +574,10 @@ int LEMBALL_FASTCALL AdvanceCollChunkObjectStateMachine(void* pObject)
 			int nTileX = nLocalX >> 4;
 			int nTileY = nLocalY >> 4;
 			if (nLocalX >= 0 && nLocalY >= 0 && nTileX < *(int*) (pGrid + 0x10) && nTileY < *(int*) (pGrid + 0x14)) {
-				LevelTileRenderDescriptor* pTile =
-					(LevelTileRenderDescriptor*) (*(char**) (pGrid + 0x0c) +
+				CGround* pTile =
+					(CGround*) (*(char**) (pGrid + 0x0c) +
 												  (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 12);
-				nHeight = pTile->SampleHeightOffset(nLocalX & 0x0f, nLocalY & 0x0f);
+				nHeight = pTile->GetZ(nLocalX & 0x0f, nLocalY & 0x0f);
 			}
 			*(int*) (pObjectBytes + 0xa4) = (unsigned short) nHeight << 12;
 		}

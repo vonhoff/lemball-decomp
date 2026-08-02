@@ -725,8 +725,8 @@ void LinkScfLevelChunkLoaderView::LoadLevelChunksForSkillAndLevel(unsigned int n
 			break;
 		}
 		if (nTag == 0x47445346) {
-			((LevelTileGridRuntimeView*) *(void**) (pLevelMode + 0x110))
-				->LoadLevelTileGridChunk((const unsigned short*) (pChunk + 8), cbChunk - 8, fReuseState);
+			((CMap*) *(void**) (pLevelMode + 0x110))
+				->LoadLevel((const unsigned short*) (pChunk + 8), cbChunk - 8, fReuseState);
 		}
 		else if (nTag == 0x41492020) {
 			LoadLevelAiChunk(pLevelMode, (const unsigned short*) (pChunk + 8), cbChunk - 8);
@@ -735,12 +735,12 @@ void LinkScfLevelChunkLoaderView::LoadLevelChunksForSkillAndLevel(unsigned int n
 			LoadLevelFlagChunk(pLevelMode, (const unsigned short*) (pChunk + 8));
 		}
 		else if (nTag == 0x44454654) {
-			((LevelTileGridRuntimeView*) *(void**) (pLevelMode + 0x110))
-				->SetLevelTileGridDefaultVariantIds((const unsigned short*) (pChunk + 8), cbChunk - 8);
+			((CMap*) *(void**) (pLevelMode + 0x110))
+				->LoadDefaultBlox((const unsigned short*) (pChunk + 8), cbChunk - 8);
 		}
 		else if (nTag == 0x4e414d45) {
-			((LevelTileGridRuntimeView*) *(void**) (pLevelMode + 0x110))
-				->SetLevelTileGridName((const char*) (pChunk + 8), cbChunk - 8);
+			((CMap*) *(void**) (pLevelMode + 0x110))
+				->LoadLevelName((const char*) (pChunk + 8), cbChunk - 8);
 		}
 		else if (nTag == 0x414e494d) {
 			LoadAnimChunkRecords(*(void**) (pLevelMode + 0x194), (const unsigned short*) (pChunk + 8));
@@ -1544,8 +1544,8 @@ void LEMBALL_FASTCALL destroy_lasr_chunk_object_vtable_thunk(void* pObject)
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 }
 
-struct LevelTileRenderDescriptor {
-	short SampleHeightOffset(int nLocalX, int nLocalY);
+struct CGround {
+	short GetZ(int nLocalX, int nLocalY);
 };
 
 typedef int(LEMBALL_FASTCALL* LinkScfPointSlotProc)(void*, void*, const int*);
@@ -1592,10 +1592,10 @@ int LEMBALL_FASTCALL AcquireLasrPlasTarget(void* pObject)
 			nTerrain = 0;
 		}
 		else {
-			LevelTileRenderDescriptor* pTile =
-				(LevelTileRenderDescriptor*) (*(char**) (pGrid + 0x0c) +
+			CGround* pTile =
+				(CGround*) (*(char**) (pGrid + 0x0c) +
 											  (((nY >> 4) * *(int*) (pGrid + 0x10)) + (nX >> 4)) * 12);
-			nTerrain = (unsigned short) pTile->SampleHeightOffset(nX & 15, nY & 15);
+			nTerrain = (unsigned short) pTile->GetZ(nX & 15, nY & 15);
 		}
 		if ((int) nTerrain > nZ) {
 			break;

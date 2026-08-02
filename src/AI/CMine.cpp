@@ -25,7 +25,7 @@ struct MineChunkObjectNotifyVtable {
 };
 
 struct LevelTileGridOwnerView {
-	void SetCellType(int x, int y, int nType, int nVariant);
+	void SetTerrain(int x, int y, int nType, int nVariant);
 };
 
 extern void* g_pLevelTileGrid;
@@ -100,7 +100,7 @@ void LEMBALL_FASTCALL SetMineOrCollTileVariant(void* pvObject)
 	y = (*(int*) (pObject + 0xa0) >> 12) / 16;
 	if (*(int*) (pObject + 0x140) == 0) {
 		pGrid = (char*) g_pLevelTileGrid;
-		((LevelTileGridOwnerView*) pGrid)->SetCellType(x, y, 0x20a, g_LEVEL_MineTileVariantCodes[*(int*) pGrid]);
+		((LevelTileGridOwnerView*) pGrid)->SetTerrain(x, y, 0x20a, g_LEVEL_MineTileVariantCodes[*(int*) pGrid]);
 		*(int*) (pObject + 0x10) = 1;
 		if (x >= 0 && y >= 0 && x < *(int*) (pGrid + 0x10) && y < *(int*) (pGrid + 0x14)) {
 			*(unsigned char*) (*(char**) (pGrid + 0x0c) + (y * *(int*) (pGrid + 0x10) + x) * 12 + 6) |= 4;

@@ -1167,10 +1167,10 @@ address,size,name,unit
 0x0042FBA0,30,delete_move_chunk_manager,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 0x0042FBD0,105,delete_move_chunk_object_array_or_scalar,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 0x0042FC60,651,copy_move_chunk_object_prefix_0x120,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
-0x0042FFE0,207,sample_tile_height_offset,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
-0x00430110,350,test_level_tile_shape_mask_at_pixel,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
-0x004302D0,76,initialize_level_tile_grid_cell_render_flags,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
-0x00430370,72,clear_level_tile_grid_cells,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x0042FFE0,207,cground_get_z,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00430110,350,cground_is_hit,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x004302D0,76,cground_set_collision,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x00430370,72,cground_array_clear,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x004303C0,35,cmap_constructor,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x004303F0,26,cmap_restart,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00430410,37,cmap_destructor,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP

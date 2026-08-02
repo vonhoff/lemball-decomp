@@ -33,16 +33,16 @@ struct LevelCachedChunkManagerBView {
 	int ServiceCachedChunkObjectsThunk(void);
 };
 
-struct LevelTileGridRuntimeView {
+struct CMap {
 	unsigned char m_abReserved00[0x24];
 	char m_szName24[0x21];
 
 	void ReleaseLevelTileGridBuffers(void);
-	void ResizeLevelTileGrid(int cColumns, int cRows);
-	void ResizeLevelTileGridThunk(int cColumns, int cRows);
-	void LoadLevelTileGridChunk(const unsigned short* pWords, unsigned int cbPayload, int fReuseState);
-	void SetLevelTileGridDefaultVariantIds(const unsigned short* pWords, unsigned int cbPayload);
-	void SetLevelTileGridName(const char* pszName, unsigned int cbPayload);
+	void ReSize(int cColumns, int cRows);
+	void ReSizeThunk(int cColumns, int cRows);
+	void LoadLevel(const unsigned short* pWords, unsigned int cbPayload, int fReuseState);
+	void LoadDefaultBlox(const unsigned short* pWords, unsigned int cbPayload);
+	void LoadLevelName(const char* pszName, unsigned int cbPayload);
 	void SetLevelName(const char* pszName);
 	void SetLevelNameThunk(const char* pszName);
 	void CalculateCliff(void);
