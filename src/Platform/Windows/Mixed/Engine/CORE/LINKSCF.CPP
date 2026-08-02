@@ -1338,6 +1338,7 @@ CCollectableManager* CCollectableManager::ConstructCollChunkManager(void* pLevel
 	*(int*) ((char*) this + 0x34) = 0;
 	return this;
 }
+// MACINTOSH: CMineManager::CMineManager(CAI*, int)
 // FUNCTION: LEMBALL 0x00424020
 LinkScfMineChunkManagerView* LinkScfMineChunkManagerView::ConstructMineChunkManager(void* pLevelMode, int nCapacity)
 {

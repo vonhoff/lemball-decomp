@@ -161,3 +161,7 @@ All 21 portable methods map at `0x00424D00..0x00425FC0`. Windows evidence preser
 ### CMaze path search
 
 The 12 portable `CMaze` methods and global `Direction` map at `0x00423090..0x004238B0`. Windows evidence preserves the row-allocated 16-bit passability/distance grid, two fixed-stride frontier banks, edge-mask-constrained nine-neighbor relaxation, reference arguments, bounded breadth expansion, direction coding, and turn-only solution output. Physical ownership stays split between `LEVELRUN.CPP` and `LVPATHDIR.CPP`; Macintosh-only `AdvanceBit`, `ChangeAddr`, and `ChangeNextAddr` remain unresolved pending standalone Windows identities.
+
+### CMineManager
+
+All 11 portable manager methods map at `0x00424020..0x00424850`. Windows evidence preserves the `0x150` mine stride, six-byte tile-position cache, delayed chain threshold `< 0x801`, eight-pixel contact box, versioned slot IDs, and split CMine/manager ownership. Remove helper `0x004241A0` and deleting wrappers `0x00424C30`/`0x00424C60` consume no portable symbols.

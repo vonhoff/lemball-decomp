@@ -742,3 +742,14 @@ CODE_06_AI.bin,0x00015F34,BInitialise__5CMazeFUciiii,0x00423530,high,seeds timed
 CODE_06_AI.bin,0x00016106,BIteration__5CMazeFRUcRUc,0x00423650,high,expands one bounded wavefront iteration and reports found or exhausted state,exact_tuple,0x00016106
 CODE_06_AI.bin,0x00016156,Direction__Fiiii,0x00423890,high,computes the direction code used to retain only path turns,exact_tuple,0x00016156
 CODE_06_AI.bin,0x00016260,BSolution__5CMazeFRiP9tSolution,0x004238B0,high,walks decreasing distances and emits endpoint and turn solution points,exact_tuple,0x00016260
+CODE_06_AI.bin,0x000167D4,__ct__12CMineManagerFP3CAIi,0x00424020,high,constructs stream type 0x0d payload 2 and stores owner capacity object and position arrays,exact_tuple,0x000167D4
+CODE_06_AI.bin,0x00016838,Restart__12CMineManagerFv,0x00424080,high,restarts each allocated 0x150-stride mine object,exact_tuple,0x00016838
+CODE_06_AI.bin,0x0001691E,Initialise__12CMineManagerFi,0x004240B0,high,allocates constructs indexes binds and restarts mines plus six-byte position cache entries,exact_tuple,0x0001691E
+CODE_06_AI.bin,0x000169A8,__dt__12CMineManagerFv,0x00424170,high,destroys the mine array and position cache then inherited stream state,exact_tuple,0x000169A8
+CODE_06_AI.bin,0x000169E5,Triggered__12CMineManagerFP5CMine,0x00424560,high,forwards triggering mine index and delay to nearby-mine propagation,exact_tuple,0x000169E5
+CODE_06_AI.bin,0x00016B06,Trigger__12CMineManagerFii,0x00424580,high,propagates delayed state 0x1a within squared distance 0x801 excluding source,exact_tuple,0x00016B06
+CODE_06_AI.bin,0x00016C2B,StepOn__12CMineManagerFRC7AICOORDP11CGameObject,0x00424630,high,tests active mines in an eight-pixel contact box then notifies and propagates,exact_tuple,0x00016C2B
+CODE_06_AI.bin,0x00016D24,Add__12CMineManagerFUs7AICOORD,0x00424710,high,assigns slot seeds a mine and caches its three tile coordinates,exact_tuple,0x00016D24
+CODE_06_AI.bin,0x00016DCA,Process__12CMineManagerFv,0x004247B0,high,resamples ground marks dirty and services pending active mines,exact_tuple,0x00016DCA
+CODE_06_AI.bin,0x00016E3D,GetViewData__12CMineManagerFP9CViewData,0x00424800,high,emits one 0x4c-byte view record per active mine,exact_tuple,0x00016E3D
+CODE_06_AI.bin,0x00016F69,LoadLevel__12CMineManagerFPUciUc,0x00424850,high,loads versioned slot ids and fixed-point mine coordinates,exact_tuple,0x00016F69
