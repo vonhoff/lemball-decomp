@@ -12,7 +12,7 @@ from pathlib import Path
 
 FUNCTION_NAME = re.compile(r"[a-z][a-z0-9_]{0,63}")
 VAGUE_NAME = re.compile(r"(?:^|_)(?:fun|unknown|method|reserved[0-9a-f]*)(?:_|$)")
-MAC_CLASS = re.compile(r"__(\d+)([A-Za-z_][A-Za-z0-9_]*)F")
+MAC_CLASS_PREFIX = re.compile(r"__(\d+)")
 
 
 def mac_module(code_file):
@@ -25,9 +25,14 @@ def mac_module(code_file):
 
 
 def mac_class(mangled):
-    match = MAC_CLASS.search(mangled)
-    if match and len(match[2]) == int(match[1]):
-        return match[2]
+    match = MAC_CLASS_PREFIX.search(mangled)
+    if match is None:
+        return ""
+    start = match.end()
+    length = int(match.group(1))
+    name = mangled[start : start + length]
+    if len(name) == length and mangled[start + length : start + length + 1] == "F":
+        return name
     return ""
 
 

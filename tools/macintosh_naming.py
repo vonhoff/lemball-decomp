@@ -15,15 +15,20 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 SYMBOLS = ROOT / "data/macintosh-68k-symbols.csv"
 CORRELATIONS = ROOT / "data/macintosh-x86-correlations.csv"
 STRUCTURE = ROOT / "data/macintosh-structure.json"
-CLASS = re.compile(r"__(\d+)([A-Za-z_][A-Za-z0-9_]*)F")
+CLASS_PREFIX = re.compile(r"__(\d+)")
 VALID_CLASS_STATES = {"planned", "partial", "mapped", "blocked"}
 VALID_FILE_STATES = {"planned", "existing", "retained"}
 
 
 def mac_class(symbol: str) -> str:
-    match = CLASS.search(symbol)
-    if match and len(match.group(2)) == int(match.group(1)):
-        return match.group(2)
+    match = CLASS_PREFIX.search(symbol)
+    if match is None:
+        return ""
+    start = match.end()
+    length = int(match.group(1))
+    name = symbol[start : start + length]
+    if len(name) == length and symbol[start + length : start + length + 1] == "F":
+        return name
     return ""
 
 
@@ -52,6 +57,8 @@ def check(data: dict, symbols: list[dict[str, str]], correlations: list[dict[str
     errors: list[str] = []
     if data.get("version") != 1:
         errors.append("structure version must be 1")
+    if mac_class("__ct__11CEnemyGroupFP3CAIP14CObjectManager") != "CEnemyGroup":
+        errors.append("MacsBug class parser failed constructor-with-parameters self-check")
 
     classes = data.get("classes", [])
     files = data.get("files", [])
