@@ -226,8 +226,10 @@ address,name,symbol,type,source
 0x0046DC40,PresentCompactResourceGeometryHelperAdjustmentThunk,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
 0x0046DC70,GetHelperTargetTokenAdjustmentThunk,,synthetic,src/ENGINE/GDI/RENDER/VSGDI.CPP
 0x0046DCB0,CompactHelperSubobjectSlot17,?CompactHelperSubobjectSlot17@@YIXPAX@Z,synthetic,src/ENGINE/GDI/RENDER/GDISUBVT.CPP
+0x00471A50,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@$4PPPPPPPM@A@AEHXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471A80,,??_EVsNetSocketWindowEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471A90,VsNetSocketWindowEffChannel::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
+0x00471AC0,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@$4PPPPPPPM@A@AEXXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471AF0,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPONI@AEHXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471B00,,??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471B10,VsNetAllocatedTcpipEffTransportComposite::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
@@ -244,8 +246,10 @@ address,name,symbol,type,source
 0x00471CB0,,?HandleAsyncMessage@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471CC0,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471CD0,VsNetTcpipSocketChannelStackLayout::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
+0x00471D20,,?ClearPendingWrite@VsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471D50,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471D90,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471DB0,,?HandleAsyncMessage@VsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471DC0,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPPFM@AEHXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471DD0,,??_EVsNetDualSocketWindowEffChannelBundle@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471DE0,VsNetDualSocketWindowEffChannelBundle::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
@@ -256,7 +260,12 @@ address,name,symbol,type,source
 0x00471E70,,??_EVsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471E80,VsNetTimedSocketEffChannelBundleLayout::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
 0x00471EC0,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPPDI@AEXXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471ED0,,?ClearPendingWrite@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471F00,,??_EVsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471F10,,?CaptureTimedSocketLookup@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471F20,,?SendTimedSocketPayload@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEHPAXH@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471F30,,?SetTimedChannelWord@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEXG@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
+0x00471F40,,?HandleAsyncMessage@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471F50,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
 0x00471F60,VsNetTcpipEffTransportComposite::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
 0x00471FB0,,?ClearPendingWrite@VsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
