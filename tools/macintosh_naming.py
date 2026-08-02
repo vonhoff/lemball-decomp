@@ -17,6 +17,7 @@ CORRELATIONS = ROOT / "data/macintosh-x86-correlations.csv"
 COVERAGE = ROOT / "data/macintosh-symbol-coverage.csv"
 INTEGRITY = ROOT / "data/macintosh-correlation-integrity.csv"
 STRUCTURE = ROOT / "data/macintosh-structure.json"
+OBJDIFF = ROOT / "data/objdiff-functions.csv"
 CLASS_PREFIX = re.compile(r"__(\d+)")
 VALID_CLASS_STATES = {"planned", "partial", "mapped", "blocked"}
 VALID_FILE_STATES = {"planned", "existing", "retained"}
@@ -136,6 +137,15 @@ def check(data: dict, symbols: list[dict[str, str]], correlations: list[dict[str
     undeclared = sorted(correlated_classes - set(class_names))
     if undeclared:
         errors.append(f"correlated classes absent from structure manifest: {', '.join(undeclared)}")
+
+    objdiff_names = {row["address"].lower(): row["name"] for row in rows(OBJDIFF)}
+    for row in correlations:
+        actual = objdiff_names.get(row["x86_address"].lower())
+        if actual is not None and actual != row["mac_mangled_name"]:
+            errors.append(
+                f"{OBJDIFF.relative_to(ROOT)}: {row['x86_address']} must use original Macintosh name "
+                f"{row['mac_mangled_name']!r}, not {actual!r}"
+            )
 
     coverage = rows(COVERAGE)
     raw_keys = {(row["code_file"], row["name_length_offset"].lower(), row["mangled_name"]) for row in symbols}
