@@ -106,3 +106,6 @@ All ten portable `CBall` methods align with Windows `0x00421660..0x00421DA0` thr
 ### CCollectable portable families
 
 All four portable `CCollectable` and seven portable `CCollectableManager` methods align with Windows `0x004223C0..0x00422900` through network-stream inheritance, manager capacity/live-count fields, subtype allocation, 0x13c child layout, fixed-point positions, collectable state transitions, and COLL payload parsing. Target-only helpers `0x00422510` and `0x00422710` plus deleting wrappers remain excluded.
+### CBullet portable families
+
+All ten portable `CBullet` and twelve portable `CBulletManager` methods align with Windows `0x00417D80..0x00418120` and `0x0041A510..0x0041ACA0` through the 40-object pool, 0x1a4 Windows stride, active-table iteration, fixed-point segment interpolation, terrain/entity collision, view emission, and network serialization/dispatch. Target-only destroy helpers, scalar deleting wrapper `0x0041AF10`, and `-0x138` adjustor thunk remain excluded. Broad `ProjectilePool`/`ProjectileObjectProxy` source renames were reverted because their changed C++ symbol identities regressed the exact set; Macintosh ownership remains recorded without disturbing Windows linker order.
