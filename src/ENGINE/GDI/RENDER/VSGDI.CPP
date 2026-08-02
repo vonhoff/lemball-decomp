@@ -290,6 +290,8 @@ void* LEMBALL_FASTCALL ResourceGeometryRowBufferSlot4(void*, int, BYTE);
 void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot5(void*);
 void LEMBALL_FASTCALL ResourceGeometryRowBufferSlot6(void*);
 void* LEMBALL_FASTCALL ResourceGeometryRowBufferSlot8(void*, int, BYTE);
+void LEMBALL_FASTCALL FillRectInHelperGroup1Buffer(void*, int, void*);
+void LEMBALL_FASTCALL NoopHelperGroup1Command(void*, int, void*);
 
 // GLOBAL: LEMBALL 0x0049a470
 void* g_VSGDI_ResourceGeometryRowBufferVtable[14] = {
@@ -314,7 +316,10 @@ VsGdiSAFE_TABLE(g_VSGDI_ResourceGeometryHelperGroup1Vtable);
 VsGdiSAFE_TABLE(g_VSGDI_ResourceGeometryHelperGroup1CompactSubobjectVtable);
 VsGdiSAFE_TABLE(g_VSGDI_ResourceGeometryHelperTargetConstructionVtable);
 VsGdiSAFE_TABLE(g_VSGDI_CompactResourceGeometryHelperConstructionVtable);
-VsGdiSAFE_TABLE(g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable);
+static void* g_VSGDI_ResourceGeometryHelperGroup1RowBufferVtable[2] = {
+	(void*) FillRectInHelperGroup1Buffer,
+	(void*) NoopHelperGroup1Command,
+};
 // GLOBAL: LEMBALL 0x00499e40
 static void* g_VSGDI_ResourceGeometryHelperGroup0RowBufferVtable[4] = {
 	(void*) FillRectInHelperGroup0Buffer,
@@ -5369,6 +5374,44 @@ void LEMBALL_FASTCALL ShowArrowCursor(void* pRenderClient)
 {
 	ShowCursor(1);
 	*(int*) ((char*) pRenderClient + 0x3c) = 1;
+}
+// FUNCTION: LEMBALL 0x00474d40
+void LEMBALL_FASTCALL FillRectInHelperGroup1Buffer(void* pGroup1RowBuffer, int, void* pFillCommand)
+{
+	unsigned short** ppRows;
+	unsigned short* pDestination;
+	unsigned char* pbCommand;
+	int cColumns;
+	int cRows;
+	int xDestination;
+	int yDestination;
+	unsigned short nColor;
+	int iColumn;
+	int iRow;
+
+	pbCommand = (unsigned char*) pFillCommand;
+	cColumns = (int) *(short*) (pbCommand + 8);
+	cRows = (int) *(short*) (pbCommand + 0x0a);
+	if (cColumns == 0 || cRows == 0) {
+		return;
+	}
+	xDestination = (int) *(short*) (pbCommand + 0x0c);
+	yDestination = (int) *(short*) (pbCommand + 0x0e);
+	nColor = *(unsigned short*) (pbCommand + 4);
+	if (cRows <= 0) {
+		return;
+	}
+	for (iRow = 0; iRow < cRows; ++iRow) {
+		ppRows = *(unsigned short***) ((char*) pGroup1RowBuffer + 0x0c);
+		pDestination = ppRows[yDestination + iRow] + xDestination;
+		for (iColumn = 0; iColumn < cColumns; ++iColumn) {
+			pDestination[iColumn] = nColor;
+		}
+	}
+}
+// FUNCTION: LEMBALL 0x00474dc0
+void LEMBALL_FASTCALL NoopHelperGroup1Command(void*, int, void*)
+{
 }
 // FUNCTION: LEMBALL 0x00474dd0
 void LEMBALL_FASTCALL CopyRectRowsToHelperGroup0Buffer(void* pGroup0RowBuffer, int, void* pCopyCommand)
