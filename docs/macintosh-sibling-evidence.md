@@ -56,6 +56,6 @@ Only high-confidence correlations should rename Windows source, Ghidra symbols, 
 4. Correlate distinctive VSGDI, level, object, loader, and gameplay families against `/LEMBALL.EXE`.
 5. Apply reviewed corrections to the Windows Ghidra project and repository together.
 
-### CAI state, frame, and interaction core
+### CAI portable core
 
-The Macintosh `CAI` sequence from `SendGameState` through `ProcessMsg` aligns with Windows `0x00411B70..0x00412660` by signatures and behavior: state/stage messages, player slot IDs, required animation flags, time, frame service, `CViewData` emission, trampoline and player-control queries, projectile creation, and `tagMESSAGE` dispatch. These methods remain in four authoritative mixed Windows TUs; ambiguous lifecycle and later load/manager accessors remain unresolved.
+Forty-one Macintosh `CAI` methods now align with Windows `0x00410C10..0x00413390` through lifecycle, signatures, ILTs/callers, manager offsets, constants, and behavior. The accepted family covers construction/restart/real teardown/start, state networking, frame/view service, collision and interaction dispatch, load/fixup, ids, network profiles, history, and score while retaining all mixed Windows TUs. `OnLoaded`, `AddData`, `GetData()`, `LemmingsSFXChanged`, `LevelName`, and `NLemmings` remain unresolved rather than consuming order-only or semantically mismatched targets.

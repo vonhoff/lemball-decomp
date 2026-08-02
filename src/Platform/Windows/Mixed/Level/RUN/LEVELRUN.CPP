@@ -1554,18 +1554,21 @@ int LevelManagedEntityOwnerView::GetManagedEntityActiveState(void* pObject)
 	return ((LevelManagedEntityActiveGroupView*) m_pPlasManager15C)->GetEntityActiveState(pObject);
 }
 
+// MACINTOSH: CAI::PlayerCheckGroupIntersection(CVSRect*, AICOORD*)
 // FUNCTION: LEMBALL 0x00412780
 void LevelManagedEntityOwnerView::FindPlasChunkObjectPositionInRect(void* pRect, void* pPosition)
 {
 	m_pPlasManager15C->FindObjectPositionInRect(pRect, pPosition);
 }
 
+// MACINTOSH: CAI::EnemyCheckGroupIntersection(CVSRect*, AICOORD*)
 // FUNCTION: LEMBALL 0x004127a0
 void LevelManagedEntityOwnerView::FindEnmyChunkObjectPositionInRect(void* pRect, void* pPosition)
 {
 	m_pEnmyManager174->FindObjectPositionInRect(pRect, pPosition);
 }
 
+// MACINTOSH: CAI::SheepCheckGroupIntersection(CVSRect*, AICOORD*)
 // FUNCTION: LEMBALL 0x004127c0
 void LevelManagedEntityOwnerView::FindShpgChunkObjectPositionInRect(void* pRect, void* pPosition)
 {
@@ -1595,6 +1598,7 @@ void* LEMBALL_FASTCALL GetLevelGameModeOwner(void* pLevelMode)
 {
 	return *(void**) ((char*) pLevelMode + 0x154);
 }
+// MACINTOSH: CAI::LoadLevel(unsigned char*, int, unsigned char)
 // FUNCTION: LEMBALL 0x00412f10
 void LoadLevelAiChunk(void* pLevelMode, const unsigned short* pWords, unsigned int cbPayload)
 {
@@ -1623,6 +1627,7 @@ void LoadLevelAiChunk(void* pLevelMode, const unsigned short* pWords, unsigned i
 	}
 	*(int*) (pMode + 0xe4) = *(int*) (pMode + 0xec);
 }
+// MACINTOSH: CAI::FixUpLevel()
 // FUNCTION: LEMBALL 0x00412fb0
 void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode)
 {
@@ -1649,6 +1654,7 @@ void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode)
 	DispatchType14CountedChildSlotC4(*(void**) (nLevelMode + 0x158));
 }
 
+// MACINTOSH: CAI::LiftId(int)
 // FUNCTION: LEMBALL 0x00413020
 unsigned short LevelModeLiftManagerOwnerView::GetLiftChunkObjectSlotIdByIndex(int iObject)
 {
@@ -1656,6 +1662,7 @@ unsigned short LevelModeLiftManagerOwnerView::GetLiftChunkObjectSlotIdByIndex(in
 		->GetLiftChunkObjectSlotIdByIndex(iObject);
 }
 
+// MACINTOSH: CAI::GetDead()
 // FUNCTION: LEMBALL 0x00413040
 int LEMBALL_FASTCALL PopLevelPlasHistoryChild(void* pObject)
 {
@@ -1668,6 +1675,7 @@ void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEn
 		*(int*) (*(int*) ((char*) pLevelMode + 0x50) + nChunkType * 4) = fEnabled;
 	}
 }
+// MACINTOSH: CAI::LoadFlagInfo(unsigned char*, int)
 // FUNCTION: LEMBALL 0x00413300
 void LoadLevelFlagChunk(void* pLevelMode, const unsigned short* pWords)
 {

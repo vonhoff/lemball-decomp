@@ -3182,6 +3182,7 @@ void GameLevelProgressState::SetUnlockedPackCap(int nPack, int nCap)
 	}
 	m_anUnlockedPackCaps[nPack] = nPackLevelCount;
 }
+// MACINTOSH: CAI::Restart()
 // FUNCTION: LEMBALL 0x00410d00
 void LevelGameMode::InitializeLevelGameMode(void)
 {
@@ -3612,6 +3613,7 @@ void LevelGameMode::InitializeLevelGameMode(void)
 	InitializeLevelChunkTypeEnabledFlagsThunk(pLevelGameMode);
 	*(int*) (pModeBytes + 0x4c) = 1;
 }
+// MACINTOSH: CAI::~CAI()
 // FUNCTION: LEMBALL 0x004117a0
 void LEMBALL_FASTCALL DestroyLevelGameMode(void* pModeObject)
 {

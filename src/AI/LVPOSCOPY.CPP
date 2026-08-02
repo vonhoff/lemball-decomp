@@ -65,6 +65,7 @@ void LevelModePositionView::CopyPosition(int* pnX, int* pnY, int* pnZ, int iPosi
 	*pnZ = pPosition->m_nZ;
 }
 
+// MACINTOSH: CAI::GetPlayerPos(int, AICOORD&)
 // FUNCTION: LEMBALL 0x00412dc0
 void LevelModePositionView::CopyEntityPosition(unsigned int nEntityId, LevelPoint3* pPosition)
 {
@@ -86,6 +87,7 @@ void LevelModePositionView::CopyEntityPosition(unsigned int nEntityId, LevelPoin
 	} while (i < 4);
 }
 
+// MACINTOSH: CAI::GetOrigin(AICOORD&, unsigned char&)
 // FUNCTION: LEMBALL 0x00412e20
 void LevelModePositionView::GetFollowTargetPosition(LevelPoint3* pPosition, int* pStatus)
 {

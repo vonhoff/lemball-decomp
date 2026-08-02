@@ -53,6 +53,7 @@ void LevelChunkTypeEnabledFlagsView::Initialize(void)
 	}
 }
 
+// MACINTOSH: CAI::SetObjectRequired(eObjectType, unsigned char)
 // FUNCTION: LEMBALL 0x004130a0
 void LevelChunkTypeEnabledFlagsView::SetEnabled(int nChunkType, int fEnabled)
 {

@@ -13,6 +13,7 @@ struct LevelProgressStateView {
 	int m_nState;
 };
 
+// MACINTOSH: CAI::QuitGame()
 // FUNCTION: LEMBALL 0x00412c60
 void LEMBALL_FASTCALL RequestLevelQuitGameState(LevelQuitStateView* pLevelMode)
 {

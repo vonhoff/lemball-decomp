@@ -1169,6 +1169,7 @@ void __fastcall set_level_mode_field_0xf8(void* pLevelMode, void* pUnused, int n
 	*(int*) ((char*) pLevelMode + 0xf8) = nValue;
 }
 
+// MACINTOSH: CAI::nDead()
 // FUNCTION: LEMBALL 0x00413370
 int __fastcall has_level_plas_history_entries(void* pLevelMode)
 {

@@ -39,6 +39,7 @@ struct LevelModeChunkManagerView {
 	unsigned short GetDoorSlotId(int nIndex);
 };
 
+// MACINTOSH: CAI::DoorId(int)
 // FUNCTION: LEMBALL 0x00413000
 unsigned short LevelModeChunkManagerView::GetDoorSlotId(int nIndex)
 {
@@ -68,6 +69,7 @@ void LevelModePositionOwnerView::CopyProfilePositionFixed(int* pOutput, int nInd
 	m_pEntries15C->CopyTripletToFixedPointThunk(pOutput, nIndex);
 }
 
+// MACINTOSH: CAI::AddANetworkStart(int, int, int, int)
 // FUNCTION: LEMBALL 0x00413180
 void LevelModeTripletArrayView::SetTripletEntry(int nX, int nY, int nZ, int nIndex)
 {

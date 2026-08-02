@@ -57,6 +57,7 @@ extern void* g_pActiveManagedEntityOwner;
 
 // Split from the original LEVELVT source group to preserve MSVC 4.20 code generation.
 
+// MACINTOSH: CAI::SwitchMessage(swMessage, int, int, int)
 // FUNCTION: LEMBALL 0x00412c80
 void LevelSlotActionDispatcherView::DispatchLevelSlotActionByType(int nAction,
 																  unsigned int nSlotId,

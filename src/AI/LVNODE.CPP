@@ -64,6 +64,7 @@ struct LevelModeNodeView {
 	LevelNodePoint* CopyNodePointByIndex(LevelNodePoint* pOutput, int nIndex);
 };
 
+// MACINTOSH: CAI::GetNodePosition(int)
 // FUNCTION: LEMBALL 0x00412b60
 LevelNodePoint* LevelModeNodeView::CopyNodePointByIndex(LevelNodePoint* pOutput, int nIndex)
 {
@@ -71,6 +72,7 @@ LevelNodePoint* LevelModeNodeView::CopyNodePointByIndex(LevelNodePoint* pOutput,
 	return pOutput;
 }
 
+// MACINTOSH: CAI::Score(int)
 // FUNCTION: LEMBALL 0x00413390
 void LevelVtSmallFunctionView::AddLevelScoreClamped(int nValue)
 {
