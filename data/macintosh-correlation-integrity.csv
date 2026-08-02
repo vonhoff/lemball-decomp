@@ -654,3 +654,12 @@ CODE_06_AI.bin,0x000126DF,GetViewData__11CIceManagerFP9CViewData,0x0042DD30,high
 CODE_06_AI.bin,0x00012759,StepOn__11CIceManagerFRC7AICOORDP11CGameObject,0x0042DD40,high,tries each child until one accepts the entity,exact_tuple,0x00012759
 CODE_06_AI.bin,0x00012871,Add__11CIceManagerFUsRC8tCoord3dRC8tCoord3diiUc,0x0042DDF0,high,appends one bounded moving ICE rectangle,exact_tuple,0x00012871
 CODE_06_AI.bin,0x000129C8,LoadLevel__11CIceManagerFPUciUc,0x0042DEA0,high,loads versioned endpoints movement activation and slot records through Add,exact_tuple,0x000129C8
+CODE_04_Control.bin,0x00001C1C,__ct__5CGameFPc,0x00406DF0,high,constructs the main game context resource archive views audio modes and startup path,exact_tuple,0x00001C1C
+CODE_04_Control.bin,0x00001D98,__dt__5CGameFv,0x004071D0,high,tears down active mode view resources audio network state and progress data,exact_tuple,0x00001D98
+CODE_04_Control.bin,0x00001E4A,IsValidResource__5CGameFv,0x00407300,high,decodes resource 0x100 and validates the expected master version string,exact_tuple,0x00001E4A
+CODE_04_Control.bin,0x00001EAA,LoadFrontendResources__5CGameFi,0x004073B0,high,lazily constructs the frontend variant resource helper for requested mode mask,exact_tuple,0x00001EAA
+CODE_04_Control.bin,0x00001EF7,UnLoadFrontendResources__5CGameFv,0x004073F0,high,destroys frees and clears the frontend resource helper,exact_tuple,0x00001EF7
+CODE_04_Control.bin,0x0000234D,NextProcess__5CGameF14eFlowProcesses,0x00407420,high,destroys current process creates the requested flow process and switches the active view,exact_tuple,0x0000234D
+CODE_04_Control.bin,0x000024F4,Process__5CGameFv,0x004077E0,high,updates active view and process handles transition and quit requests and network service,exact_tuple,0x000024F4
+CODE_04_Control.bin,0x00002586,RefreshViews__5CGameFv,0x004078F0,high,presents the active view with refresh timing accounting,exact_tuple,0x00002586
+CODE_04_Control.bin,0x0000266C,Run__5CGameFv,0x00407950,high,runs message process and refresh loop until quit,exact_tuple,0x0000266C

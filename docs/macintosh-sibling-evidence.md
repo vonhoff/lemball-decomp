@@ -133,3 +133,7 @@ All five portable `CPaintGun` and eight portable `CPaintGunManager` methods alig
 ### CIce portable families
 
 All nine portable `CIce` and nine portable `CIceManager` methods align with Windows `0x0042CA70..0x0042DEA0` through chunk type `0x33`, a `0x188`-byte child stride, bounded endpoint geometry, movement of up to ten attached entities, terrain-contact redispatch, EFF stream payload `0x0E`, exact zero-body view behavior and versioned loader records. Windows switch request/dispatch helpers `0x0042D550`/`0x0042DD90`, count/remove helpers `0x0042D900`/`0x0042D910`, auxiliary-copy helper `0x0042DE40`, and deleting wrapper `0x0042E4D0` remain separate.
+
+### CGame portable family
+
+All nine portable `CGame` methods align with Windows `0x00406DF0..0x00407950` through the main-context lifecycle, resource validation and frontend-resource helper, flow-process switching, active-mode processing, view presentation and message-driven run loop. The Macintosh `char*` constructor parameter is the Windows startup path argument recovered from the stack; the physical Windows owner remains `src/Control/CGame.cpp`. Adjacent stream, callback and deleting-wrapper functions remain separate.

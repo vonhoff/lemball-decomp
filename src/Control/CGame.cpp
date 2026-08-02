@@ -2456,6 +2456,7 @@ void GameLevelProgressState::Snapshot(void)
 		--i;
 	} while (i != 0);
 }
+// MACINTOSH: CGame::CGame(char*)
 // FUNCTION: LEMBALL 0x00406df0
 GameMainContext* GameMainContext::InitializeMainGameContext(const char* pszCmdLine)
 {
@@ -2595,6 +2596,7 @@ GameMainContext* GameMainContext::InitializeMainGameContext(const char* pszCmdLi
 
 	return pMainContext;
 }
+// MACINTOSH: CGame::~CGame()
 // FUNCTION: LEMBALL 0x004071d0
 void LEMBALL_FASTCALL ShutdownMainGameContext(GameMainContext* pMainContext)
 {
@@ -2657,6 +2659,7 @@ void LEMBALL_FASTCALL ShutdownMainGameContext(GameMainContext* pMainContext)
 
 	SetVisualSciencesRegistryRunningState(g_GAME_WindowTitle, 0);
 }
+// MACINTOSH: CGame::IsValidResource()
 // FUNCTION: LEMBALL 0x00407300
 int __stdcall IsValidResourceFile(void)
 {
@@ -2692,6 +2695,7 @@ int __stdcall IsValidResourceFile(void)
 
 	return strcmp(g_GAME_ResourceSignatureDecodeBuffer, g_GAME_ResourceSignatureExpected) == 0;
 }
+// MACINTOSH: CGame::NextProcess(eFlowProcesses)
 // FUNCTION: LEMBALL 0x00407420
 void GameMainContext::SwitchMainGameMode(int nMode)
 {
@@ -2867,6 +2871,7 @@ void GameMainContext::SwitchMainGameMode(int nMode)
 
 	((GamePrimaryContext*) pMainContext->m_pPrimaryContext)->SwitchPrimaryContextScreen(pMainContext->m_nActiveMode);
 }
+// MACINTOSH: CGame::Process()
 // FUNCTION: LEMBALL 0x004077e0
 void LEMBALL_FASTCALL UpdateMainGameActiveMode(void* pMainGameContext)
 {
@@ -2937,6 +2942,7 @@ void LEMBALL_FASTCALL UpdateMainGameActiveMode(void* pMainGameContext)
 		((GamePrimaryContext*) pMainContext->m_pPrimaryContext)->DestroyPrimaryContextActiveScreen(0);
 	}
 }
+// MACINTOSH: CGame::RefreshViews()
 // FUNCTION: LEMBALL 0x004078f0
 void LEMBALL_FASTCALL PresentMainGameFrame(void* pMainGameContext)
 {
@@ -2966,6 +2972,7 @@ void LEMBALL_FASTCALL PresentMainGameFrame(void* pMainGameContext)
 		*(int*) ((char*) pRefreshingStatus + 0x24) = 0;
 	}
 }
+// MACINTOSH: CGame::Run()
 // FUNCTION: LEMBALL 0x00407950
 void LEMBALL_FASTCALL RunMainGameLoop(GameMainContext* pMainContext)
 {
