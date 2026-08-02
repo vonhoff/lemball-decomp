@@ -245,3 +245,7 @@ Three additional portable methods map at `0x0045A180`, `0x0045A1E0`, and `0x0045
 ## CDuplicator reconstruction
 
 All nine portable methods map at `0x004275B0..0x00427910` in physical `LEVELVT.CPP`. Independent auditing confirms type `0x1C`, the `0x144` Windows object, vtable `0x00496050`, exact two-cell footprint operations, state/history duplication flow, fixed-point activation offsets, action `0x0C`, and score `100`. Platform-specific Usage/render count `0x00427A90` and scalar deleting wrapper `0x00427AA0` remain excluded.
+
+## CBucket reconstruction
+
+All nine portable methods map at `0x00472CE0..0x00473140` in physical `Memory.cpp`. Independent auditing confirms the expanded `0x54` Windows layout, exact storage/bitmap ownership, packed free-slot cursor, child-chain lifecycle, allocation/free counters, and half-open pointer checks. The source retains proven helper forms where forced language-level member rewrites were not shown binary-neutral; adjacent `CSmallMemory`, Mac-specific `Mem2Offs`, and lock adapters remain excluded.
