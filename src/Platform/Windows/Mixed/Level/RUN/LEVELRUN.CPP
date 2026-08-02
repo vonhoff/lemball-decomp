@@ -600,16 +600,16 @@ int LEMBALL_FASTCALL GetSelectedLevelNumberThunk(void* pLevelProgressState)
 	return GetSelectedLevelNumber(pLevelProgressState);
 }
 // LINKERILT: LEMBALL 0x00401230
-void LevelNodeChunkRecord::ResetNodeChunkRecordLinkCountThunk(void)
+void CNode::RestartThunk(void)
 {
-	ResetNodeChunkRecordLinkCount();
+	Restart();
 }
 // LINKERILT: LEMBALL 0x004012b2
-void LevelNodeChunkManager::LoadNodeChunkRecordsThunk(const unsigned short* pWords,
+void CNodeManager::LoadLevelThunk(const unsigned short* pWords,
 													  unsigned int cbPayload,
 													  int fReuseState)
 {
-	LoadNodeChunkRecords(pWords, cbPayload, fReuseState);
+	LoadLevel(pWords, cbPayload, fReuseState);
 }
 // LINKERILT: LEMBALL 0x004012fd
 void LevelSpecialTileGridStaticRenderList::BuildSpecialLevelTileGridStaticRenderEntriesThunk(
@@ -619,20 +619,20 @@ void LevelSpecialTileGridStaticRenderList::BuildSpecialLevelTileGridStaticRender
 	BuildSpecialLevelTileGridStaticRenderEntries(pTileGrid);
 }
 // LINKERILT: LEMBALL 0x00401424
-LevelNodeChunkRecord* LevelNodeChunkRecord::InitializeNodeChunkRecordThunk(void)
+CNode* CNode::InitializeNodeChunkRecordThunk(void)
 {
 	return InitializeNodeChunkRecord();
 }
 
 // LINKERILT: LEMBALL 0x004015e1
-LevelNodeChunkManager* LevelNodeChunkManager::ConstructNodeChunkManagerThunk(int cCapacity)
+CNodeManager* CNodeManager::ConstructNodeChunkManagerThunk(int cCapacity)
 {
 	return ConstructNodeChunkManager(cCapacity);
 }
 // LINKERILT: LEMBALL 0x00401933
-void LevelNodeChunkRecord::AppendNodeChunkRecordLinkThunk(int nFirst, int nSecond)
+void CNode::AddANeighbourThunk(int nFirst, int nSecond)
 {
-	AppendNodeChunkRecordLink(nFirst, nSecond);
+	AddANeighbour(nFirst, nSecond);
 }
 // LINKERILT: LEMBALL 0x00401d48
 void LEMBALL_FASTCALL ResetBallChunkEntriesThunk(void* pBallManager)
@@ -665,14 +665,14 @@ LevelChunkLoaderContext* LevelChunkLoaderContext::ConstructLevelChunkLoaderConte
 	return ConstructLevelChunkLoaderContext(pLevelMode);
 }
 // LINKERILT: LEMBALL 0x00402572
-void LevelNodeChunkRecord::InitializeNodeChunkRecordFromLevelDataThunk(int nX, int nY, int cLinks)
+void CNode::InitialiseThunk(int nX, int nY, int cLinks)
 {
-	InitializeNodeChunkRecordFromLevelData(nX, nY, cLinks);
+	Initialise(nX, nY, cLinks);
 }
 // LINKERILT: LEMBALL 0x00402748
-void LevelNodeChunkManager::ResetNodeChunkRecordsThunk(void)
+void CNodeManager::RestartThunk(void)
 {
-	ResetNodeChunkRecords();
+	Restart();
 }
 // LINKERILT: LEMBALL 0x00402752
 LevelProjectileGeometryPairTable* LevelProjectileGeometryPairTable::InitializeProjectileGeometryPairTableThunk(void)
@@ -725,9 +725,9 @@ int LevelCachedChunkManagerBView::ServiceCachedChunkObjectsThunk(void)
 	return ServiceCachedChunkObjects();
 }
 // LINKERILT: LEMBALL 0x004030b7
-void LevelNodeChunkManager::AllocateNodeChunkRecordArrayThunk(int cRecords)
+void CNodeManager::InitialiseThunk(int cRecords)
 {
-	AllocateNodeChunkRecordArray(cRecords);
+	Initialise(cRecords);
 }
 // LINKERILT: LEMBALL 0x00403107
 void UpdateNetworkFrameClockFromNetworkTimeThunk(unsigned int nTimeMs)
@@ -1993,26 +1993,29 @@ void LevelEnmyChunkManager::ActivateNestedChildrenFromOwnerTableVariant(void)
 		} while (i < m_cObjectsA4);
 	}
 }
+// MACINTOSH: CNodeManager::CNodeManager(int)
 // FUNCTION: LEMBALL 0x00421180
-LevelNodeChunkManager* LevelNodeChunkManager::ConstructNodeChunkManager(int cCapacity)
+CNodeManager* CNodeManager::ConstructNodeChunkManager(int cCapacity)
 {
 	m_pRecords00 = 0;
 	m_cCapacity08 = cCapacity;
 	return this;
 }
+// MACINTOSH: CNodeManager::Restart()
 // FUNCTION: LEMBALL 0x004211a0
-void LevelNodeChunkManager::ResetNodeChunkRecords(void)
+void CNodeManager::Restart(void)
 {
 	int i;
 
 	if (m_pRecords00 != 0 && 0 < m_cCapacity08) {
 		for (i = 0; i < m_cCapacity08; ++i) {
-			m_pRecords00[i].ResetNodeChunkRecordLinkCountThunk();
+			m_pRecords00[i].RestartThunk();
 		}
 	}
 }
+// MACINTOSH: CNodeManager::Initialise(int)
 // FUNCTION: LEMBALL 0x004211d0
-void LevelNodeChunkManager::AllocateNodeChunkRecordArray(int cRecords)
+void CNodeManager::Initialise(int cRecords)
 {
 	int i;
 	int cCapacity;
@@ -2028,10 +2031,10 @@ void LevelNodeChunkManager::AllocateNodeChunkRecordArray(int cRecords)
 	}
 
 	cCapacity = m_cCapacity08;
-	pAllocation = (int*) AllocateVSMemBlock((unsigned int) cCapacity * sizeof(LevelNodeChunkRecord) + 4);
+	pAllocation = (int*) AllocateVSMemBlock((unsigned int) cCapacity * sizeof(CNode) + 4);
 	if (pAllocation != 0) {
 		*pAllocation = cCapacity;
-		m_pRecords00 = (LevelNodeChunkRecord*) (pAllocation + 1);
+		m_pRecords00 = (CNode*) (pAllocation + 1);
 		for (i = 0; i < cCapacity; ++i) {
 			m_pRecords00[i].InitializeNodeChunkRecordThunk();
 		}
@@ -2041,11 +2044,12 @@ void LevelNodeChunkManager::AllocateNodeChunkRecordArray(int cRecords)
 	}
 
 	for (i = 0; i < m_cCapacity08; ++i) {
-		m_pRecords00[i].ResetNodeChunkRecordLinkCountThunk();
+		m_pRecords00[i].RestartThunk();
 	}
 }
+// MACINTOSH: CNodeManager::~CNodeManager()
 // FUNCTION: LEMBALL 0x00421260
-void LevelNodeChunkManager::DestroyNodeChunkManagerRecords(void)
+void CNodeManager::DestroyNodeChunkManagerRecords(void)
 {
 	int i;
 
@@ -2058,21 +2062,24 @@ void LevelNodeChunkManager::DestroyNodeChunkManagerRecords(void)
 	}
 	FreeVSMemBlock((int*) m_pRecords00 - 1);
 }
+// MACINTOSH: CNode::CNode()
 // FUNCTION: LEMBALL 0x004212e0
-LevelNodeChunkRecord* LevelNodeChunkRecord::InitializeNodeChunkRecord(void)
+CNode* CNode::InitializeNodeChunkRecord(void)
 {
 	m_nX00 = 0xaa55aa55;
 	m_nY04 = 0xaa55aa55;
 	m_pLinks0C = 0;
 	return this;
 }
+// MACINTOSH: CNode::Restart()
 // FUNCTION: LEMBALL 0x00421300
-void LevelNodeChunkRecord::ResetNodeChunkRecordLinkCount(void)
+void CNode::Restart(void)
 {
 	m_cLinks10 = 0;
 }
+// MACINTOSH: CNode::Initialise(int, int, int)
 // FUNCTION: LEMBALL 0x00421330
-void LevelNodeChunkRecord::InitializeNodeChunkRecordFromLevelData(int nX, int nY, int cLinks)
+void CNode::Initialise(int nX, int nY, int cLinks)
 {
 	if (cLinks != 0 && m_pLinks0C != 0) {
 		m_pLinks0C = (int*) AllocateVSMemBlock((unsigned int) cLinks * 8);
@@ -2081,8 +2088,9 @@ void LevelNodeChunkRecord::InitializeNodeChunkRecordFromLevelData(int nX, int nY
 	m_nX00 = nX << 12;
 	m_nY04 = nY << 12;
 }
+// MACINTOSH: CNode::AddANeighbour(int, int)
 // FUNCTION: LEMBALL 0x004213a0
-void LevelNodeChunkRecord::AppendNodeChunkRecordLink(int nFirst, int nSecond)
+void CNode::AddANeighbour(int nFirst, int nSecond)
 {
 	m_pLinks0C[m_cLinks10 * 2] = nFirst;
 	m_pLinks0C[m_cLinks10 * 2 + 1] = nSecond;
@@ -2095,8 +2103,9 @@ int return_true_node_chunk_callback(void)
 	return 1;
 }
 
+// MACINTOSH: CNodeManager::LoadLevel(tagLoadNodeInformation*, unsigned long, unsigned char)
 // FUNCTION: LEMBALL 0x00421470
-void LevelNodeChunkManager::LoadNodeChunkRecords(const unsigned short* pWords, unsigned int cbPayload, int fReuseState)
+void CNodeManager::LoadLevel(const unsigned short* pWords, unsigned int cbPayload, int fReuseState)
 {
 	const unsigned short* pEnd;
 	unsigned int cRecords;
@@ -2105,7 +2114,7 @@ void LevelNodeChunkManager::LoadNodeChunkRecords(const unsigned short* pWords, u
 
 	pEnd = (const unsigned short*) ((const char*) pWords + cbPayload);
 	cRecords = *pWords++;
-	AllocateNodeChunkRecordArrayThunk(cRecords);
+	InitialiseThunk(cRecords);
 	m_nReserved04 = cRecords;
 	if (fReuseState != 0 || pWords >= pEnd) {
 		return;
@@ -2120,9 +2129,9 @@ void LevelNodeChunkManager::LoadNodeChunkRecords(const unsigned short* pWords, u
 		nY = pWords[1];
 		cLinks = pWords[2];
 		pWords += 3;
-		m_pRecords00[nRecordOffset].InitializeNodeChunkRecordFromLevelDataThunk(nX, nY, cLinks);
+		m_pRecords00[nRecordOffset].InitialiseThunk(nX, nY, cLinks);
 		while (0 < cLinks) {
-			m_pRecords00[nRecordOffset].AppendNodeChunkRecordLinkThunk(pWords[0], pWords[1]);
+			m_pRecords00[nRecordOffset].AddANeighbourThunk(pWords[0], pWords[1]);
 			pWords += 2;
 			--cLinks;
 		}

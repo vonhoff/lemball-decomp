@@ -45,22 +45,22 @@ void LevelVtSmallFunctionView::AddClampedU16Field228(unsigned short nValue)
 	}
 }
 
-struct LevelNodeChunkPositionView;
+struct CNode;
 
 struct LevelNodePoint {
 	int m_anValues[3];
 };
 
-struct LevelNodeManagerView {
-	LevelNodeChunkPositionView* m_pRecords00;
+struct CNodeManager {
+	CNode* m_pRecords00;
 
-	LevelNodePoint* CopyPointByIndex(LevelNodePoint* pOutput, int nIndex);
+	LevelNodePoint* GetNodePosition(LevelNodePoint* pOutput, int nIndex);
 	void CopyTileByIndex(int nIndex, int* pX, int* pY);
 };
 
 struct LevelModeNodeView {
 	char m_abReserved00[0x17c];
-	LevelNodeManagerView* m_pNodeManager17C;
+	CNodeManager* m_pNodeManager17C;
 
 	LevelNodePoint* CopyNodePointByIndex(LevelNodePoint* pOutput, int nIndex);
 };
@@ -69,7 +69,7 @@ struct LevelModeNodeView {
 // FUNCTION: LEMBALL 0x00412b60
 LevelNodePoint* LevelModeNodeView::CopyNodePointByIndex(LevelNodePoint* pOutput, int nIndex)
 {
-	m_pNodeManager17C->CopyPointByIndex(pOutput, nIndex);
+	m_pNodeManager17C->GetNodePosition(pOutput, nIndex);
 	return pOutput;
 }
 
@@ -157,7 +157,7 @@ LevelTwoDwordPairVariantView* LevelTwoDwordPairVariantView::Assign(const int* pS
 	return this;
 }
 
-struct LevelNodeChunkPositionView {
+struct CNode {
 	int m_nX;
 	int m_nY;
 	int m_cExpectedLinks08;
@@ -166,25 +166,27 @@ struct LevelNodeChunkPositionView {
 
 	void InitializePosition(int nX, int nY, int nUnused);
 	void SetFixedPointPosition(int nX, int nY);
-	void CopyFixedPointPosition(int* pDestination);
+	void Position(int* pDestination);
 	void CopyTileXY(int* pX, int* pY);
 };
 
+// MACINTOSH: CNodeManager::GetNodePosition(int)
 // FUNCTION: LEMBALL 0x004212a0
-LevelNodePoint* LevelNodeManagerView::CopyPointByIndex(LevelNodePoint* pOutput, int nIndex)
+LevelNodePoint* CNodeManager::GetNodePosition(LevelNodePoint* pOutput, int nIndex)
 {
-	m_pRecords00[nIndex].CopyFixedPointPosition(pOutput->m_anValues);
+	m_pRecords00[nIndex].Position(pOutput->m_anValues);
 	return pOutput;
 }
 
 // FUNCTION: LEMBALL 0x004212c0
-void LevelNodeManagerView::CopyTileByIndex(int nIndex, int* pX, int* pY)
+void CNodeManager::CopyTileByIndex(int nIndex, int* pX, int* pY)
 {
 	m_pRecords00[nIndex].CopyTileXY(pX, pY);
 }
 
+// MACINTOSH: CNode::~CNode()
 // FUNCTION: LEMBALL 0x00421310
-void __fastcall DestroyNodeChunkRecordLinks(LevelNodeChunkPositionView* pRecord)
+void __fastcall DestroyNodeChunkRecordLinks(CNode* pRecord)
 {
 	if (pRecord->m_pLinks0C != 0) {
 		FreeVSMemBlock(pRecord->m_pLinks0C);
@@ -192,7 +194,7 @@ void __fastcall DestroyNodeChunkRecordLinks(LevelNodeChunkPositionView* pRecord)
 }
 
 // FUNCTION: LEMBALL 0x00421370
-void LevelNodeChunkPositionView::InitializePosition(int nX, int nY, int nUnused)
+void CNode::InitializePosition(int nX, int nY, int nUnused)
 {
 	(void) nUnused;
 	m_nX = nX;
@@ -200,14 +202,15 @@ void LevelNodeChunkPositionView::InitializePosition(int nX, int nY, int nUnused)
 }
 
 // FUNCTION: LEMBALL 0x00421380
-void LevelNodeChunkPositionView::SetFixedPointPosition(int nX, int nY)
+void CNode::SetFixedPointPosition(int nX, int nY)
 {
 	m_nX = nX << 12;
 	m_nY = nY << 12;
 }
 
+// MACINTOSH: CNode::Position()
 // FUNCTION: LEMBALL 0x004213d0
-void LevelNodeChunkPositionView::CopyFixedPointPosition(int* pDestination)
+void CNode::Position(int* pDestination)
 {
 	int y;
 	int x;
@@ -220,7 +223,7 @@ void LevelNodeChunkPositionView::CopyFixedPointPosition(int* pDestination)
 }
 
 // FUNCTION: LEMBALL 0x004213f0
-void LevelNodeChunkPositionView::CopyTileXY(int* pX, int* pY)
+void CNode::CopyTileXY(int* pX, int* pY)
 {
 	*pX = m_nX >> 12;
 	*pY = m_nY >> 12;

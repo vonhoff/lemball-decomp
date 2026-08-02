@@ -112,38 +112,42 @@ struct LevelChunkLoaderContext {
 	LevelChunkLoaderContext* ConstructLevelChunkLoaderContextThunk(void* pLevelMode);
 };
 
-struct LevelNodeChunkRecord {
+struct CNode {
 	int m_nX00;
 	int m_nY04;
 	int m_cExpectedLinks08;
 	int* m_pLinks0C;
 	int m_cLinks10;
 
-	LevelNodeChunkRecord* InitializeNodeChunkRecord(void);
-	LevelNodeChunkRecord* InitializeNodeChunkRecordThunk(void);
-	void InitializeNodeChunkRecordFromLevelData(int nX, int nY, int cLinks);
-	void InitializeNodeChunkRecordFromLevelDataThunk(int nX, int nY, int cLinks);
-	void AppendNodeChunkRecordLink(int nFirst, int nSecond);
-	void AppendNodeChunkRecordLinkThunk(int nFirst, int nSecond);
-	void ResetNodeChunkRecordLinkCount(void);
-	void ResetNodeChunkRecordLinkCountThunk(void);
+	CNode* InitializeNodeChunkRecord(void);
+	CNode* InitializeNodeChunkRecordThunk(void);
+	void Initialise(int nX, int nY, int cLinks);
+	void InitialiseThunk(int nX, int nY, int cLinks);
+	void AddANeighbour(int nFirst, int nSecond);
+	void AddANeighbourThunk(int nFirst, int nSecond);
+	void Restart(void);
+	void RestartThunk(void);
 };
 
-struct LevelNodeChunkManager {
-	LevelNodeChunkRecord* m_pRecords00;
+struct CNodeManager {
+	CNode* m_pRecords00;
 	int m_nReserved04;
 	int m_cCapacity08;
 
-	LevelNodeChunkManager* ConstructNodeChunkManager(int cCapacity);
-	LevelNodeChunkManager* ConstructNodeChunkManagerThunk(int cCapacity);
-	void AllocateNodeChunkRecordArray(int cRecords);
-	void AllocateNodeChunkRecordArrayThunk(int cRecords);
-	void LoadNodeChunkRecords(const unsigned short* pWords, unsigned int cbPayload, int fReuseState);
-	void LoadNodeChunkRecordsThunk(const unsigned short* pWords, unsigned int cbPayload, int fReuseState);
-	void ResetNodeChunkRecords(void);
-	void ResetNodeChunkRecordsThunk(void);
+	CNodeManager* ConstructNodeChunkManager(int cCapacity);
+	CNodeManager* ConstructNodeChunkManagerThunk(int cCapacity);
+	void Initialise(int cRecords);
+	void InitialiseThunk(int cRecords);
+	void LoadLevel(const unsigned short* pWords, unsigned int cbPayload, int fReuseState);
+	void LoadLevelThunk(const unsigned short* pWords, unsigned int cbPayload, int fReuseState);
+	void Restart(void);
+	void RestartThunk(void);
 	void DestroyNodeChunkManagerRecords(void);
 };
+
+// Windows mixed-TU aliases retain local role names without changing Macintosh ownership.
+typedef CNode LevelNodeChunkRecord;
+typedef CNodeManager LevelNodeChunkManager;
 
 struct LevelSlnkChunkManager {
 	void* m_pLevelMode00;

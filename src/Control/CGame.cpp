@@ -3429,7 +3429,7 @@ void LevelGameMode::InitializeLevelGameMode(void)
 		}
 		*(void**) (pModeBytes + 0x17c) = pObject;
 	}
-	((LevelNodeChunkManager*) *(void**) (pModeBytes + 0x17c))->ResetNodeChunkRecordsThunk();
+	((LevelNodeChunkManager*) *(void**) (pModeBytes + 0x17c))->RestartThunk();
 
 	if (*(int*) (pModeBytes + 0x4c) == 0) {
 		pObject = AllocateVSMemBlock(0x10);

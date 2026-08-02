@@ -747,7 +747,7 @@ void LinkScfLevelChunkLoaderView::LoadLevelChunksForSkillAndLevel(unsigned int n
 		}
 		else if (nTag == 0x4e4f4445) {
 			((LevelNodeChunkManager*) *(void**) (pLevelMode + 0x17c))
-				->LoadNodeChunkRecords((const unsigned short*) (pChunk + 8), cbChunk - 8, fReuseState);
+				->LoadLevel((const unsigned short*) (pChunk + 8), cbChunk - 8, fReuseState);
 		}
 		else if (nTag == 0x504c4153) {
 			((LinkScfPlasChunkManagerView*) *(void**) (pLevelMode + 0x15c))

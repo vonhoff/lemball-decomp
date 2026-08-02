@@ -94,3 +94,6 @@ All sixteen portable Macintosh `CMap` methods align with Windows `0x004303C0..0x
 ### CGround portable family
 
 The three portable `CGround` methods and `CGroundArray::Clear` align with Windows `0x0042FFE0..0x00430370` through exact signatures, the 12-byte terrain-cell layout, type-specific height/mask tables, collision flags at `+6`, and two-dimensional array clearing to type `0x209`. This completes the portable Map module.
+### CNode portable family
+
+All six portable `CNode` and six portable `CNodeManager` methods align with Windows `0x00421180..0x00421470` through exact ABI, 0x14-byte node stride, counted allocation, fixed-point coordinates, neighbour-pair storage, ILTs, callers, and NODE chunk parsing. Windows-only tile-coordinate overloads and record helpers remain excluded. Macintosh-led source class/method naming retains mixed-TU aliases and currently carries measured exact-set debt of `161/24` versus the protected baseline; vtables remain `39/39` and datacmp remains `0`.
