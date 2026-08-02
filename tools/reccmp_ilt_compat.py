@@ -166,6 +166,11 @@ THUNK_ILT_REFERENCES = {
         "LevelChunkObjectBaseView::InitializeLevelChunkObjectBase",
         "level chunk object base initializer 0041dda0",
     ),
+    0x00420AE0: (
+        0x00402103,
+        "LevelChunkObjectBaseView::InitializeLevelChunkObjectBase",
+        "level chunk object base initializer 0041dda0",
+    ),
     0x00416CC0: (
         0x00402F22,
         "LevelVtSmallFunctionView::AddLevelScoreClamped",
