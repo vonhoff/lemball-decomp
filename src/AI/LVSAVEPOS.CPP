@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern int g_nLevelFrameClockTimeMs;

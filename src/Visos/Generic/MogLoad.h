@@ -1,7 +1,7 @@
 #ifndef LEMBALL_RESOURCE_ARCHIVE_H
 #define LEMBALL_RESOURCE_ARCHIVE_H
 
-#include "ENGINE/CORE/COMMON.H"
+#include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
 #include <stdio.h>
 

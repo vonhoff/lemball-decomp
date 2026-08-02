@@ -2,139 +2,139 @@
 address,name,symbol,type,source
 0x00406130,EhVectorDestructorIterator,,synthetic,src/Control/Options.cpp
 0x00406BA0,ComputeLevelPasswordChecksumAuto,,synthetic,src/Control/CGame.cpp
-0x00407E10,DeleteStreamFormatStateAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x00407EF0,DeleteSimpleVtableObject407EF0,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x00407E10,DeleteStreamFormatStateAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00407EF0,DeleteSimpleVtableObject407EF0,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00407F40,DeleteStartupModeAuto,,synthetic,src/Control/CGame.cpp
 0x00407F70,DeleteMainMenuModeAuto,,synthetic,src/Control/CGame.cpp
 0x00407FA0,DeleteOptionsModeAuto,,synthetic,src/Control/CGame.cpp
 0x00407FD0,DeleteDerivedBaseModeWrapperAuto,,synthetic,src/Control/CGame.cpp
-0x00408010,DeleteSimpleVtableObject408010,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x004098B0,DeleteLevelDemoPlaybackControllerAuto,,synthetic,src/LEVEL/RUN/DEMO.CPP
+0x00408010,DeleteSimpleVtableObject408010,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x004098B0,DeleteLevelDemoPlaybackControllerAuto,,synthetic,src/Platform/Windows/Mixed/Level/RUN/DEMO.CPP
 0x0040AC30,DeleteLevelChunkStreamAuto,,synthetic,src/AI/TYPE18.CPP
-0x0040B450,DeleteLevelChunkStreamDispatcherAuto,,synthetic,src/LEVEL/RUN/LEVELRUN.CPP
-0x0040CE50,DeleteLevelChunkObjectBaseScalarA,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x0040B450,DeleteLevelChunkStreamDispatcherAuto,,synthetic,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x0040CE50,DeleteLevelChunkObjectBaseScalarA,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0040CEA0,DeleteLevelChunkObjectBaseScalarB,,synthetic,src/AI/TYPE18.CPP
-0x0040EBE0,DeleteDoorChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x00410B20,DeleteDoorChunkObjectAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
+0x0040EBE0,DeleteDoorChunkManagerAuto,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00410B20,DeleteDoorChunkObjectAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00410B70,Door chunk-object deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/AI/CDoorCtor.cpp
-0x00413090,ReturnTrueVirtualHookBodyStdcall,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00413090,ReturnTrueVirtualHookBodyStdcall,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 0x00413DF0,DeleteEffStreamBaseWrapperAuto,,synthetic,src/Control/CGame.cpp
 0x00413E30,DeleteLevelGameModeAuto,,synthetic,src/Control/CGame.cpp
-0x00414C80,DeleteLevelChunkObjectChildrenVariant14C80,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x00414F00,DeleteManagedEntityQueueCursorAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x00417AD0,DeleteLevelChunkObjectBaseWrapper17AD0,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x00417B00,LevelVtSmallFunctionView::SetRectFromBounds,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x00417B50,,??_GManagedEntityPacketBase@@UAEPAXI@Z,synthetic,src/LEVEL/LVPKT.H
-0x00417B80,,??_EManagedEntityPacket23@@UAEPAXI@Z,synthetic,src/LEVEL/LVPKT.H
-0x00417BB0,,??_EManagedEntityPacket27@@UAEPAXI@Z,synthetic,src/LEVEL/LVPKT.H
-0x00417BE0,,??_EManagedEntityPacket28@@UAEPAXI@Z,synthetic,src/LEVEL/LVPKT.H
-0x00417C10,,??_EManagedEntityStateResetPacket@@UAEPAXI@Z,synthetic,src/LEVEL/LVPKT.H
-0x00417C40,,??_EManagedEntityPacket2A@@UAEPAXI@Z,synthetic,src/LEVEL/LVPKT.H
-0x00417C70,,??_EManagedEntityPacket24@@UAEPAXI@Z,synthetic,src/LEVEL/LVPKT.H
-0x00417CA0,,??_EManagedEntityPacket25@@UAEPAXI@Z,synthetic,src/LEVEL/LVPKT.H
-0x00417CD0,,??_EManagedEntityPacket26@@UAEPAXI@Z,synthetic,src/LEVEL/LVPKT.H
-0x00417D00,DeleteLevelChunkObjectBaseWrapper17D00,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x00417D50,LinkScfAutoEffDeleteView::Delete17D50,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x00418300,DeleteProjectilePoolAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x004193F0,LevelManagedEntityActiveGroupView::HasStreamDirtyChildren,,synthetic,src/LEVEL/RUN/LEVELRUN.CPP
-0x00419440,LevelManagedEntityActiveGroupView::HasDirtyChildren,,synthetic,src/LEVEL/RUN/LEVELRUN.CPP
+0x00414C80,DeleteLevelChunkObjectChildrenVariant14C80,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00414F00,DeleteManagedEntityQueueCursorAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00417AD0,DeleteLevelChunkObjectBaseWrapper17AD0,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00417B00,LevelVtSmallFunctionView::SetRectFromBounds,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00417B50,,??_GManagedEntityPacketBase@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Level/LVPKT.H
+0x00417B80,,??_EManagedEntityPacket23@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Level/LVPKT.H
+0x00417BB0,,??_EManagedEntityPacket27@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Level/LVPKT.H
+0x00417BE0,,??_EManagedEntityPacket28@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Level/LVPKT.H
+0x00417C10,,??_EManagedEntityStateResetPacket@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Level/LVPKT.H
+0x00417C40,,??_EManagedEntityPacket2A@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Level/LVPKT.H
+0x00417C70,,??_EManagedEntityPacket24@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Level/LVPKT.H
+0x00417CA0,,??_EManagedEntityPacket25@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Level/LVPKT.H
+0x00417CD0,,??_EManagedEntityPacket26@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Level/LVPKT.H
+0x00417D00,DeleteLevelChunkObjectBaseWrapper17D00,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00417D50,LinkScfAutoEffDeleteView::Delete17D50,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00418300,DeleteProjectilePoolAuto,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x004193F0,LevelManagedEntityActiveGroupView::HasStreamDirtyChildren,,synthetic,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x00419440,LevelManagedEntityActiveGroupView::HasDirtyChildren,,synthetic,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00419970,PLAS manager render-entry `adjustor thunk' (-0xb0),,synthetic,src/AI/PlasChild.cpp
 0x0041AF50,Projectile deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/AI/Projectile.cpp
-0x0041C330,DeleteCountedChildTableStreamAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x0041C400,DeleteLevelChunkObjectBaseWrapper1C400,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x0041C440,DeleteLevelChunkObjectBaseWrapper1C440,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x0041C5C0,DeleteLevelChunkObjectBaseWrapper1C5C0,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x0041C600,DeleteLevelChunkObjectBaseWrapper1C600,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x0041C640,DeleteLevelChunkObjectBaseWrapper1C640,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x0041D010,LevelVtSmallFunctionView::GetManagedEntityInteractionPoint,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x0041DD70,DeleteGmobChunkType14ObjectAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x0041DF90,LevelVtSmallFunctionView::SwapObjectChildSlots128,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x0041E8C0,DeleteCompositeLevelChunkChildrenWrapper1E8C0,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x0041F960,DeleteCompositeLevelChunkChildrenWrapper1F960,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x0041FB70,DeleteLevelChunkObjectBaseWrapper1FB70,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x00420AB0,DeleteThreeOptionalRecordChunkObjectAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x00420B20,DeleteCompositeLevelChunkChildrenWrapper20B20,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x00422350,DeleteBallChunkEntryAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x00422F70,DeleteCollChunkManagerAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x00422FB0,DeleteCollChunkObject0B0C,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x00422FE0,DeleteCollChunkObject12,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x00423010,DeleteCollChunkObject1B,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x00423060,DeleteCollChunkObjectWrapper23060,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x00424C30,DeleteMineChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x004266E0,DeleteLiftChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x004274F0,DeleteRockChunkManagerAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x00427AA0,DeleteTileFlag1CChunkObjectAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x004287D0,DeleteCaptureTriggerChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x00429E80,LinkScfSmallFunctionView::SetObjectFields18_1c_20,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x00429EA0,DeleteLasrChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x0042BA10,DeleteTramChunkManagerAuto,,synthetic,src/ENGINE/CORE/LINKSCF.CPP
-0x0042C9B0,DeletePgunChunkManagerAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x0042E4D0,DeleteIceChunkManagerAuto,,synthetic,src/LEVEL/VTABLE/LEVELVT.CPP
-0x0042FBA0,DeleteMoveChunkManagerAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x0041C330,DeleteCountedChildTableStreamAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041C400,DeleteLevelChunkObjectBaseWrapper1C400,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041C440,DeleteLevelChunkObjectBaseWrapper1C440,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041C5C0,DeleteLevelChunkObjectBaseWrapper1C5C0,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041C600,DeleteLevelChunkObjectBaseWrapper1C600,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041C640,DeleteLevelChunkObjectBaseWrapper1C640,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041D010,LevelVtSmallFunctionView::GetManagedEntityInteractionPoint,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041DD70,DeleteGmobChunkType14ObjectAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041DF90,LevelVtSmallFunctionView::SwapObjectChildSlots128,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041E8C0,DeleteCompositeLevelChunkChildrenWrapper1E8C0,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x0041F960,DeleteCompositeLevelChunkChildrenWrapper1F960,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041FB70,DeleteLevelChunkObjectBaseWrapper1FB70,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00420AB0,DeleteThreeOptionalRecordChunkObjectAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00420B20,DeleteCompositeLevelChunkChildrenWrapper20B20,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00422350,DeleteBallChunkEntryAuto,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00422F70,DeleteCollChunkManagerAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00422FB0,DeleteCollChunkObject0B0C,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00422FE0,DeleteCollChunkObject12,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00423010,DeleteCollChunkObject1B,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00423060,DeleteCollChunkObjectWrapper23060,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00424C30,DeleteMineChunkManagerAuto,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x004266E0,DeleteLiftChunkManagerAuto,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x004274F0,DeleteRockChunkManagerAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00427AA0,DeleteTileFlag1CChunkObjectAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x004287D0,DeleteCaptureTriggerChunkManagerAuto,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00429E80,LinkScfSmallFunctionView::SetObjectFields18_1c_20,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00429EA0,DeleteLasrChunkManagerAuto,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x0042BA10,DeleteTramChunkManagerAuto,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x0042C9B0,DeletePgunChunkManagerAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0042E4D0,DeleteIceChunkManagerAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0042FBA0,DeleteMoveChunkManagerAuto,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 0x004322E0,delete_primary_context_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Control/CGame.cpp
-0x00432350,DeleteQueuedRenderPointSinkWrapperAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00432350,DeleteQueuedRenderPointSinkWrapperAuto,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 
 
 
-0x00432A30,InitializeStatusIndicatorPointSinkEntryAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00432A60,DeleteQueuedVariantChildSlotRenderPointSinkAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00432A90,DeleteStatusIndicatorPointSinkEntryAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00434F50,DispatchLevelStatusCallbackIfActive,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00439400,DeletePackagedSpriteRenderEntryAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00432A30,InitializeStatusIndicatorPointSinkEntryAuto,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00432A60,DeleteQueuedVariantChildSlotRenderPointSinkAuto,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00432A90,DeleteStatusIndicatorPointSinkEntryAuto,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00434F50,DispatchLevelStatusCallbackIfActive,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00439400,DeletePackagedSpriteRenderEntryAuto,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 0x00439490,DeleteReconstructedLevelScreenAuto,,synthetic,src/Control/CGame.cpp
-0x004395C0,DeleteQueuedRenderSinkEntryA,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x004395F0,DeleteQueuedRenderPointSinkFinalizeAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00439620,DeleteQueuedRenderSinkEntryB,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00439650,DeleteQueuedRenderPointSinkAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00439680,DeleteQueuedRenderSinkEntryC,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x004396B0,DeleteQueuedRenderSinkEntryD,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x004396E0,DeleteRenderPointRectSinkEntryAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00439760,QueueRenderStatePushHelper,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x004395C0,DeleteQueuedRenderSinkEntryA,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x004395F0,DeleteQueuedRenderPointSinkFinalizeAuto,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00439620,DeleteQueuedRenderSinkEntryB,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00439650,DeleteQueuedRenderPointSinkAuto,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00439680,DeleteQueuedRenderSinkEntryC,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x004396B0,DeleteQueuedRenderSinkEntryD,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x004396E0,DeleteRenderPointRectSinkEntryAuto,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00439760,QueueRenderStatePushHelper,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 0x004397D0,QueueRenderStatePopHelper,,synthetic,src/Control/CGame.cpp
-0x00439860,QueueSurfaceRectHelperSlot00,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x004398D0,AppendThisToPointerQueue,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00439900,AppendRenderEntryToPointerQueueB,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00439930,AppendRenderEntryToPointerQueueC,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x00439860,QueueSurfaceRectHelperSlot00,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x004398D0,AppendThisToPointerQueue,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00439900,AppendRenderEntryToPointerQueueB,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00439930,AppendRenderEntryToPointerQueueC,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 0x0043A450,delete_adjusted_resource_window_owner_buffer_0043a450 `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Frontend/SCREENVT.CPP
-0x0043BCD0,noop_level_screen_static_region_callback,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x0043ED10,noop_level_screen_view_follow_callback,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00442130,LevelTwoShortPointView::CopyTwoShortPoint,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00442150,LevelTwoShortPointView::CopyTwoShortPointVariant,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00442170,LevelFourShortRectView::ClearFourShortRect,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00442260,QueueAlignedZrleChildDrawEntry,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00442270,QueueAlignedZrleChildOverlayIfDirty,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00442CA0,LevelScreenActionButtonLayoutAuto::Position,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x004432A0,LevelActionPanelCodeView::MapActionPanelCode14To8,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00443350,noop_level_screen_action_panel_callback,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x0043BCD0,noop_level_screen_static_region_callback,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x0043ED10,noop_level_screen_view_follow_callback,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00442130,LevelTwoShortPointView::CopyTwoShortPoint,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00442150,LevelTwoShortPointView::CopyTwoShortPointVariant,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00442170,LevelFourShortRectView::ClearFourShortRect,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00442260,QueueAlignedZrleChildDrawEntry,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00442270,QueueAlignedZrleChildOverlayIfDirty,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00442CA0,LevelScreenActionButtonLayoutAuto::Position,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x004432A0,LevelActionPanelCodeView::MapActionPanelCode14To8,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00443350,noop_level_screen_action_panel_callback,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 0x00443850,MenuSelectorXorFieldView::RecomputeField104FromXor,,synthetic,src/Frontend/MENUSEL.CPP
 0x00443870,update_action_button_field_0x104_from_fields_0x130_xor_0xd0,,synthetic,src/Frontend/MENUSEL.CPP
 0x004438B0,delete_aligned_zrle_child_overlay_adjusted_a `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Frontend/MENUSEL.CPP
 0x004438F0,delete_aligned_zrle_child_overlay_adjusted_b `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Frontend/MENUSEL.CPP
 
 0x00443950,delete_base_mode_action_button_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Frontend/MENUSEL.CPP
-0x004439F0,DeleteLevelScreenActionPanelAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x004439F0,DeleteLevelScreenActionPanelAuto,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 0x00443AB0,delete_resource_geometry_child_from_rect_adjusted `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Frontend/MENUSEL.CPP
 0x00444DD0,Pause-dialog layout forwarding thunk,,synthetic,src/Frontend/MENUSEL.CPP
-0x004452A0,LevelTwoShortPointView::AddTwoShortPointInPlace,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x004452C0,LevelTwoShortPointView::SubtractTwoShortPointInPlace,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00445350,delete_level_screen_pause_dialog `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00445390,Pause-dialog deleting-destructor `adjustor thunk' (-0x14),,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00447170,DeleteFramedScreenRenderChildEntryAAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x004471A0,DeleteFramedScreenRenderChildEntryBAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x004472B0,DeleteBaseModeObjectAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x00447DB0,LoadMainGameVariantZrleListResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
-0x00447E30,LoadMainGameVariantListResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
-0x00447EB0,LoadMainGameVariantBitmapResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
-0x00447F30,LoadMainGameVariantPaletteResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
-0x00448030,LoadMainGameVariantTwoArrayListResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
+0x004452A0,LevelTwoShortPointView::AddTwoShortPointInPlace,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x004452C0,LevelTwoShortPointView::SubtractTwoShortPointInPlace,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00445350,delete_level_screen_pause_dialog `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00445390,Pause-dialog deleting-destructor `adjustor thunk' (-0x14),,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00447170,DeleteFramedScreenRenderChildEntryAAuto,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x004471A0,DeleteFramedScreenRenderChildEntryBAuto,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x004472B0,DeleteBaseModeObjectAuto,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x00447DB0,LoadMainGameVariantZrleListResourceAuto,,synthetic,src/Platform/Windows/Mixed/Resource/VARLOAD.CPP
+0x00447E30,LoadMainGameVariantListResourceAuto,,synthetic,src/Platform/Windows/Mixed/Resource/VARLOAD.CPP
+0x00447EB0,LoadMainGameVariantBitmapResourceAuto,,synthetic,src/Platform/Windows/Mixed/Resource/VARLOAD.CPP
+0x00447F30,LoadMainGameVariantPaletteResourceAuto,,synthetic,src/Platform/Windows/Mixed/Resource/VARLOAD.CPP
+0x00448030,LoadMainGameVariantTwoArrayListResourceAuto,,synthetic,src/Platform/Windows/Mixed/Resource/VARLOAD.CPP
 0x00449000,noop_options_screen_frame_draw,,synthetic,src/Frontend/MAINMENU.CPP
 0x00449170,DeleteOptionsScreenAuto,,synthetic,src/Frontend/MAINMENU.CPP
 0x00449EA0,RequestLevelSelectionTransitionMode5,,synthetic,src/Frontend/MAINMENU.CPP
 0x00449EC0,RequestLevelSelectionTransitionMode2,,synthetic,src/Frontend/MAINMENU.CPP
 0x0044A940,DeleteLevelSelectionScreenAuto,,synthetic,src/Frontend/MAINMENU.CPP
 0x0044A9D0,DeleteLevelSelectionModeAuto,,synthetic,src/Control/CGame.cpp
-0x0044AA70,ResetLevelStatusChildCursor,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x0044B330,noop_level_selection_mode_render_hook,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x0044AA70,ResetLevelStatusChildCursor,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x0044B330,noop_level_selection_mode_render_hook,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 0x0044BEC0,noop_registration_recenter,,synthetic,src/Frontend/SCREENVT.CPP
 0x0044C0C0,noop_registration_buffer_reset,,synthetic,src/Frontend/SCREENVT.CPP
 0x0044C0D0,DeleteRegistrationInfoScreenAuto,,synthetic,src/Control/CGame.cpp
@@ -147,76 +147,76 @@ address,name,symbol,type,source
 0x0044FFF0,DeleteQueuedVariantChildSlotManagerAuto,,synthetic,src/Frontend/MENUSEL.CPP
 0x004509F0,FinishPaintballSequenceToMainMenu,,synthetic,src/Frontend/MAINMENU.CPP
 0x004510E0,DeletePaintballSequenceScreenAuto,,synthetic,src/Frontend/MAINMENU.CPP
-0x004511C0,DeleteBaseModeObjectVariantAuto,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
+0x004511C0,DeleteBaseModeObjectVariantAuto,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 0x00452370,DeletePasswordEntryScreenAuto,,synthetic,src/Frontend/MAINMENU.CPP
-0x00452EC0,DeleteNetworkLobbyPeerClearCloseStream,,synthetic,src/ENGINE/MEDIA/EFFSTRM.CPP
-0x00452EF0,DeleteNetworkLobbyPeerDirtyConfirmStream,,synthetic,src/ENGINE/MEDIA/EFFSTRM.CPP
-0x00452F20,DeleteNetworkLobbyVsnetRuntimeAuto,,synthetic,src/ENGINE/MEDIA/EFFSTRM.CPP
-0x00453120,DeleteNetworkLevelChunkDeltaStreamAuto,,synthetic,src/LEVEL/RUN/LEVELRUN.CPP
+0x00452EC0,DeleteNetworkLobbyPeerClearCloseStream,,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.CPP
+0x00452EF0,DeleteNetworkLobbyPeerDirtyConfirmStream,,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.CPP
+0x00452F20,DeleteNetworkLobbyVsnetRuntimeAuto,,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.CPP
+0x00453120,DeleteNetworkLevelChunkDeltaStreamAuto,,synthetic,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00455DE0,DeleteNetworkLobbyScreenAuto,,synthetic,src/Frontend/MAINMENU.CPP
 0x00455EA0,noop_lobby_transport_callback,,synthetic,src/Control/CGame.cpp
 0x00455EB0,DeleteNetworkLobbyTransportControllerAuto,,synthetic,src/Control/CGame.cpp
 0x004583C0,DeleteDibDisplayStateVariantAuto,,synthetic,src/Visos/Windows/CGDI.cpp
-0x004599B0,DeleteRenderDispatchQueueAuto,,synthetic,src/ENGINE/CORE/VSINIT.CPP
-0x0045E8D0,DestroyIntZrleListResourceAndFreeAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
-0x0045EA10,DeleteColResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
-0x0045EB50,DeleteGamiResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
-0x0045EBE0,DestroyPtchResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
-0x0045EC10,DestroyTuneResourceAuto,,synthetic,src/RESOURCE/VARLOAD.CPP
-0x0045EC40,DestroyPresResourceAuto,,synthetic,src/LEVEL/RUN/DEMO.CPP
-0x004628E0,,??_GVsNetEffStreamChannelState@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462900,,??_EVsNetEffStreamBase@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462940,,??_GVsNetDualHandleEffStream@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462990,,??_EVsNetTimedEffStream@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462A20,DeleteSimpleEffTransportRecordSlotAuto,,synthetic,src/ENGINE/NET/VSNET.CPP
-0x00462A40,DeleteEffTransportRecordBufferAuto,,synthetic,src/ENGINE/NET/VSNET.CPP
-0x00462AD0,DeleteEffTransportRuntimeGlobalsAuto,,synthetic,src/ENGINE/NET/VSNET.CPP
-0x00462B80,DeleteEffStreamBaseAuto,,synthetic,src/ENGINE/NET/VSNETSTR.CPP
-0x00462BA0,,??_EVsNetDualHandleEffStream@@WFI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462BB0,,??_EVsNetRuntimeChannelStack@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462BC0,,??_GVsNetRuntimeChannelStack@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462C00,,?ClearPendingWrite@VsNetRuntimeChannelStack@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462C10,,??_EVsNetRuntimeChannelStack@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462C20,WriteGlobalSession virtual-base `vtordisp adjustor' (+0x108),,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462C30,WriteGlobalSession virtual-base `vbtable adjustor' (-0x38),,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462C40,ClaimRecord virtual-base `vtordisp adjustor' (+0x108),,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462C50,ClaimRecord virtual-base `vbtable adjustor' (-0x38),,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462C60,,??_EVsNetRuntimeChannelStack@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462C70,WriteGlobalSession virtual-base `vtordisp adjustor' (+0x90),,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462C80,ClaimRecord virtual-base `vtordisp adjustor' (+0x90),,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462C90,,?DualStreamRet8@VsNetRuntimeChannelStack@@$4PPPPPPPM@A@AEXHPAX@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462CA0,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462CB0,VsNetRuntimeChannelCore::`scalar deleting destructor',,function,src/ENGINE/MEDIA/VSSTRM.H
-0x00462CF0,,?ClearPendingWrite@VsNetRuntimeChannelCore@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462D20,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462D30,VsNetRuntimeChannelCore::WriteGlobalSession `vtordisp adjustor',,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462D40,VsNetRuntimeChannelCore::ClaimRecord `vtordisp adjustor',,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462D50,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462D60,WriteGlobalSession virtual-base `vtordisp adjustor' (-0x78),,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462D70,ClaimRecord virtual-base `vtordisp adjustor' (-0x78),,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462D80,,??_EVsNetTimedEffStream@@$4PPPPPPPM@HI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462D90,,?ClearPendingWrite@VsNetTimedEffStream@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462DA0,,??_EVsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462DB0,,??_EVsNetCompositeEffTransportStack@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462DF0,,?ClearPendingWrite@VsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462E00,,??_EVsNetCompositeEffTransportStack@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462E10,,?ClaimRecord@VsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEPAXXZ,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462E20,,??_EVsNetCompositeEffTransportStack@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462E30,,?DualStreamNoop@VsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEXXZ,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462E40,,?ClaimRecord@VsNetCompositeEffTransportStack@@$4PPPPPPPM@HI@AEPAXXZ,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x00462E50,,?DualStreamRet8@VsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEXHPAX@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
+0x004599B0,DeleteRenderDispatchQueueAuto,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x0045E8D0,DestroyIntZrleListResourceAndFreeAuto,,synthetic,src/Platform/Windows/Mixed/Resource/VARLOAD.CPP
+0x0045EA10,DeleteColResourceAuto,,synthetic,src/Platform/Windows/Mixed/Resource/VARLOAD.CPP
+0x0045EB50,DeleteGamiResourceAuto,,synthetic,src/Platform/Windows/Mixed/Resource/VARLOAD.CPP
+0x0045EBE0,DestroyPtchResourceAuto,,synthetic,src/Platform/Windows/Mixed/Resource/VARLOAD.CPP
+0x0045EC10,DestroyTuneResourceAuto,,synthetic,src/Platform/Windows/Mixed/Resource/VARLOAD.CPP
+0x0045EC40,DestroyPresResourceAuto,,synthetic,src/Platform/Windows/Mixed/Level/RUN/DEMO.CPP
+0x004628E0,,??_GVsNetEffStreamChannelState@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462900,,??_EVsNetEffStreamBase@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462940,,??_GVsNetDualHandleEffStream@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462990,,??_EVsNetTimedEffStream@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462A20,DeleteSimpleEffTransportRecordSlotAuto,,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00462A40,DeleteEffTransportRecordBufferAuto,,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00462AD0,DeleteEffTransportRuntimeGlobalsAuto,,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00462B80,DeleteEffStreamBaseAuto,,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETSTR.CPP
+0x00462BA0,,??_EVsNetDualHandleEffStream@@WFI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462BB0,,??_EVsNetRuntimeChannelStack@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462BC0,,??_GVsNetRuntimeChannelStack@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462C00,,?ClearPendingWrite@VsNetRuntimeChannelStack@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462C10,,??_EVsNetRuntimeChannelStack@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462C20,WriteGlobalSession virtual-base `vtordisp adjustor' (+0x108),,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462C30,WriteGlobalSession virtual-base `vbtable adjustor' (-0x38),,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462C40,ClaimRecord virtual-base `vtordisp adjustor' (+0x108),,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462C50,ClaimRecord virtual-base `vbtable adjustor' (-0x38),,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462C60,,??_EVsNetRuntimeChannelStack@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462C70,WriteGlobalSession virtual-base `vtordisp adjustor' (+0x90),,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462C80,ClaimRecord virtual-base `vtordisp adjustor' (+0x90),,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462C90,,?DualStreamRet8@VsNetRuntimeChannelStack@@$4PPPPPPPM@A@AEXHPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462CA0,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462CB0,VsNetRuntimeChannelCore::`scalar deleting destructor',,function,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462CF0,,?ClearPendingWrite@VsNetRuntimeChannelCore@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462D20,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462D30,VsNetRuntimeChannelCore::WriteGlobalSession `vtordisp adjustor',,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462D40,VsNetRuntimeChannelCore::ClaimRecord `vtordisp adjustor',,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462D50,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462D60,WriteGlobalSession virtual-base `vtordisp adjustor' (-0x78),,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462D70,ClaimRecord virtual-base `vtordisp adjustor' (-0x78),,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462D80,,??_EVsNetTimedEffStream@@$4PPPPPPPM@HI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462D90,,?ClearPendingWrite@VsNetTimedEffStream@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462DA0,,??_EVsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462DB0,,??_EVsNetCompositeEffTransportStack@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462DF0,,?ClearPendingWrite@VsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462E00,,??_EVsNetCompositeEffTransportStack@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462E10,,?ClaimRecord@VsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEPAXXZ,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462E20,,??_EVsNetCompositeEffTransportStack@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462E30,,?DualStreamNoop@VsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEXXZ,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462E40,,?ClaimRecord@VsNetCompositeEffTransportStack@@$4PPPPPPPM@HI@AEPAXXZ,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462E50,,?DualStreamRet8@VsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEXHPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00466BC0,HelperUploadStateMarkerView::PushHelperUploadStateMarker,,synthetic,src/Visos/Windows/CGDI.cpp
 0x00466BD0,PopHelperUploadStateMarker,,synthetic,src/Visos/Windows/CGDI.cpp
 0x00467040,HelperUploadRectEntryView::Clear,,synthetic,src/Visos/Windows/CGDI.cpp
-0x004679E0,PackagedRectQueueAllocatorView::AllocateNextPackagedRectQueueEntry,,synthetic,src/LEVEL/IO/DRAWTEXT.CPP
-0x00469900,delete_buffered_resource_geometry_child `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x004699A0,delete_single_child_overlay_owner `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/IO/DRAWTEXT.CPP
-0x004699D0,delete_resource_sprite_geometry_child `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/IO/DRAWTEXT.CPP
-0x00469C00,delete_resource_sprite_geometry_child_adjusted_a `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/IO/DRAWTEXT.CPP
-0x00469C30,delete_resource_sprite_geometry_child_adjusted_b `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/LEVEL/IO/DRAWTEXT.CPP
-0x0046B3B0,GameCursorRenderClientAuto::SetListResourceEntry,,synthetic,src/LEVEL/STATE/LEVELSTAT.CPP
-0x0046DAF0,StatusPoint2DView::Set,,synthetic,src/ENGINE/GDI/RENDER/GDISTATUSVT.CPP
-0x0046DB10,GdiPoint2DView::Copy,,synthetic,src/ENGINE/GDI/RENDER/GDIVT.CPP
+0x004679E0,PackagedRectQueueAllocatorView::AllocateNextPackagedRectQueueEntry,,synthetic,src/Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
+0x00469900,delete_buffered_resource_geometry_child `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x004699A0,delete_single_child_overlay_owner `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
+0x004699D0,delete_resource_sprite_geometry_child `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
+0x00469C00,delete_resource_sprite_geometry_child_adjusted_a `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
+0x00469C30,delete_resource_sprite_geometry_child_adjusted_b `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
+0x0046B3B0,GameCursorRenderClientAuto::SetListResourceEntry,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x0046DAF0,StatusPoint2DView::Set,,synthetic,src/Platform/Windows/Mixed/Engine/GDI/RENDER/GDISTATUSVT.CPP
+0x0046DB10,GdiPoint2DView::Copy,,synthetic,src/Platform/Windows/Mixed/Engine/GDI/RENDER/GDIVT.CPP
 0x0046DB40,CPVSurfaceSubobjectSlot0,,synthetic,src/Visos/Windows/CGDI.cpp
 0x0046DB50,CPVSurfaceSubobjectSlot1,,synthetic,src/Visos/Windows/CGDI.cpp
 0x0046DB60,CPVSurfaceSubobjectSlot2,,synthetic,src/Visos/Windows/CGDI.cpp
@@ -233,98 +233,98 @@ address,name,symbol,type,source
 0x0046DC40,PresentCompactResourceGeometryHelperAdjustmentThunk,,synthetic,src/Visos/Windows/CGDI.cpp
 0x0046DC70,GetHelperTargetTokenAdjustmentThunk,,synthetic,src/Visos/Windows/CGDI.cpp
 0x0046DCB0,CPVSurfaceSubobjectSlot17,?CPVSurfaceSubobjectSlot17@@YIXPAX@Z,synthetic,src/Visos/Generic/CSurface.cpp
-0x00471A50,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@$4PPPPPPPM@A@AEHXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471A80,,??_EVsNetSocketWindowEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471A90,VsNetSocketWindowEffChannel::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
-0x00471AC0,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@$4PPPPPPPM@A@AEXXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471AF0,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPONI@AEHXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471B00,,??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471B10,VsNetAllocatedTcpipEffTransportComposite::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
-0x00471B60,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPONI@AEXXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471B70,,?ClearPendingWrite@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471B90,,??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471BD0,,?ClaimRecord@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471BF0,,?CaptureTimedSocketLookup@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471C00,,?SendTimedSocketPayload@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEHPAXH@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471C10,,?SetTimedChannelWord@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEXG@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471C60,,??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471C70,,?DualStreamNoop@VsNetCompositeEffTransportStack@@$4PPPPPPPM@3AEXXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471C90,,?ClaimRecord@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@HI@AEPAXXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471CA0,,?DualStreamRet8@VsNetCompositeEffTransportStack@@$4PPPPPPPM@3AEXHPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471CB0,,?HandleAsyncMessage@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471CC0,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471CD0,VsNetTcpipSocketChannelStackLayout::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
-0x00471D20,,?ClearPendingWrite@VsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471D50,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471D90,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471DB0,,?HandleAsyncMessage@VsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471DC0,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPPFM@AEHXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471DD0,,??_EVsNetDualSocketWindowEffChannelBundle@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471DE0,VsNetDualSocketWindowEffChannelBundle::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
-0x00471E20,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPPFM@AEXXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471E30,,?ClearPendingWrite@VsNetDualSocketWindowEffChannelBundle@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471E50,,??_EVsNetDualSocketWindowEffChannelBundle@@WCM@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471E60,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPPDI@AEHXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471E70,,??_EVsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471E80,VsNetTimedSocketEffChannelBundleLayout::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
-0x00471EC0,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPPDI@AEXXZ,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471ED0,,?ClearPendingWrite@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471F00,,??_EVsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471F10,,?CaptureTimedSocketLookup@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471F20,,?SendTimedSocketPayload@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEHPAXH@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471F30,,?SetTimedChannelWord@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEXG@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471F40,,?HandleAsyncMessage@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471F50,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471F60,VsNetTcpipEffTransportComposite::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETTCP.CPP
-0x00471FB0,,?ClearPendingWrite@VsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00471FD0,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00472000,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00472030,,?DualStreamRet8@VsNetRuntimeChannelStack@@$4PPPPPPPM@M@AEXHPAX@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x00472040,,?HandleAsyncMessage@VsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/ENGINE/NET/VSNETTCP.CPP
-0x0047B7D0,VsNetEffStreamRecordSlotTable::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETFIL.CPP
-0x0047B970,DeleteFileBackedEffStreamAuto,,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047B9B0,,?ReleaseFileBackedEffMarker@VsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@A@AEHXZ,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047B9C0,,??_EVsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047B9D0,,??_GVsNetFileBackedCompositeEffChannelAdapter@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BA50,,?ClearPendingWrite@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@PPPPPOKM@AEXPAX@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BA80,,??_EVsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BAF0,,?CaptureTimedSocketLookup@VsNetTimedFileBackedEffChannel@@WPPPPPOLA@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BB00,,?SendTimedSocketPayload@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@PPPPPOKM@AEHPAXH@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BB10,,??_EVsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BB40,,?ReleaseFileBackedEffMarker@VsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@7AEHXZ,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BB50,,??_EVsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BB60,,??_GVsNetGlobalStateFileBackedEffComposite@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BBE0,,?ClearPendingWrite@VsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BC00,,??_EVsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BC30,,?CaptureTimedSocketLookup@VsNetTimedFileBackedEffChannel@@WPPPPPOKM@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BC40,,?SendTimedSocketPayload@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@PPPPPOKI@AEHPAXH@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BC50,,??_EVsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BC80,,?DualStreamRet8@VsNetRuntimeChannelStack@@WDM@AEXHPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BC90,,?FatalFileBackedOperation00@VsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@A@AEXXZ,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BCB0,,??_EVsNetTimedFileBackedEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BCC0,VsNetTimedFileBackedEffChannel::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BD20,,?ClearPendingWrite@VsNetTimedFileBackedEffChannel@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BD50,,??_EVsNetTimedFileBackedEffChannel@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BD60,,?CaptureTimedSocketLookup@VsNetTimedFileBackedEffChannel@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BD70,,?SendTimedSocketPayload@VsNetTimedFileBackedEffChannel@@$4PPPPPPPM@A@AEHPAXH@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BD90,,??_EVsNetDualFileBackedEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BDA0,VsNetDualFileBackedEffChannel::`scalar deleting destructor',,function,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BE00,,?ClearPendingWrite@VsNetDualFileBackedEffChannel@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BE20,,??_EVsNetDualFileBackedEffChannel@@WCM@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BE40,,??_EVsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BE50,,??_GVsNetEmbeddedFileBackedEffChannelStack@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BEB0,,?ClearPendingWrite@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BEC0,,??_EVsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BEF0,,?SendTimedSocketPayload@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@A@AEHPAXH@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BF00,,??_EVsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BF30,,??_EVsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BF40,,??_GVsNetDualSlotTableFileBackedEffComposite@@UAEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047BFB0,,?ClearPendingWrite@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BFD0,,??_EVsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047BFE0,,?ClaimRecord@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEPAXXZ,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047C000,,??_EVsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/ENGINE/MEDIA/VSSTRM.H
-0x0047C010,,?DualStreamNoop@VsNetCompositeEffTransportStack@@WDE@AEXXZ,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047C020,,?ClaimRecord@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@HI@AEPAXXZ,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047C030,,?DualStreamRet8@VsNetCompositeEffTransportStack@@WDE@AEXHPAX@Z,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047C040,,?FatalFileBackedOperation00@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEXXZ,synthetic,src/ENGINE/NET/VSNETFIL.CPP
-0x0047CBE0,IsWaveOutEffectBackendAvailableStdcall,,synthetic,src/ENGINE/MEDIA/VSSOUND.CPP
+0x00471A50,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@$4PPPPPPPM@A@AEHXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471A80,,??_EVsNetSocketWindowEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471A90,VsNetSocketWindowEffChannel::`scalar deleting destructor',,function,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471AC0,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@$4PPPPPPPM@A@AEXXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471AF0,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPONI@AEHXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471B00,,??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471B10,VsNetAllocatedTcpipEffTransportComposite::`scalar deleting destructor',,function,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471B60,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPONI@AEXXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471B70,,?ClearPendingWrite@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471B90,,??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471BD0,,?ClaimRecord@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471BF0,,?CaptureTimedSocketLookup@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471C00,,?SendTimedSocketPayload@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEHPAXH@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471C10,,?SetTimedChannelWord@VsNetTimedSocketEffChannelBundleLayout@@WPPPPPOMA@AEXG@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471C60,,??_EVsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471C70,,?DualStreamNoop@VsNetCompositeEffTransportStack@@$4PPPPPPPM@3AEXXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471C90,,?ClaimRecord@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@HI@AEPAXXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471CA0,,?DualStreamRet8@VsNetCompositeEffTransportStack@@$4PPPPPPPM@3AEXHPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471CB0,,?HandleAsyncMessage@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471CC0,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471CD0,VsNetTcpipSocketChannelStackLayout::`scalar deleting destructor',,function,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471D20,,?ClearPendingWrite@VsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471D50,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471D90,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471DB0,,?HandleAsyncMessage@VsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471DC0,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPPFM@AEHXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471DD0,,??_EVsNetDualSocketWindowEffChannelBundle@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471DE0,VsNetDualSocketWindowEffChannelBundle::`scalar deleting destructor',,function,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471E20,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPPFM@AEXXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471E30,,?ClearPendingWrite@VsNetDualSocketWindowEffChannelBundle@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471E50,,??_EVsNetDualSocketWindowEffChannelBundle@@WCM@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471E60,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPPDI@AEHXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471E70,,??_EVsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471E80,VsNetTimedSocketEffChannelBundleLayout::`scalar deleting destructor',,function,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471EC0,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPPDI@AEXXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471ED0,,?ClearPendingWrite@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471F00,,??_EVsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471F10,,?CaptureTimedSocketLookup@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471F20,,?SendTimedSocketPayload@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEHPAXH@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471F30,,?SetTimedChannelWord@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEXG@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471F40,,?HandleAsyncMessage@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471F50,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471F60,VsNetTcpipEffTransportComposite::`scalar deleting destructor',,function,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471FB0,,?ClearPendingWrite@VsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00471FD0,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00472000,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00472030,,?DualStreamRet8@VsNetRuntimeChannelStack@@$4PPPPPPPM@M@AEXHPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x00472040,,?HandleAsyncMessage@VsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+0x0047B7D0,VsNetEffStreamRecordSlotTable::`scalar deleting destructor',,function,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047B970,DeleteFileBackedEffStreamAuto,,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047B9B0,,?ReleaseFileBackedEffMarker@VsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@A@AEHXZ,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x0047B9C0,,??_EVsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x0047B9D0,,??_GVsNetFileBackedCompositeEffChannelAdapter@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x0047BA50,,?ClearPendingWrite@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@PPPPPOKM@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x0047BA80,,??_EVsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x0047BAF0,,?CaptureTimedSocketLookup@VsNetTimedFileBackedEffChannel@@WPPPPPOLA@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BB00,,?SendTimedSocketPayload@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@PPPPPOKM@AEHPAXH@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x0047BB10,,??_EVsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x0047BB40,,?ReleaseFileBackedEffMarker@VsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@7AEHXZ,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x0047BB50,,??_EVsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BB60,,??_GVsNetGlobalStateFileBackedEffComposite@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x0047BBE0,,?ClearPendingWrite@VsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BC00,,??_EVsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BC30,,?CaptureTimedSocketLookup@VsNetTimedFileBackedEffChannel@@WPPPPPOKM@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BC40,,?SendTimedSocketPayload@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@PPPPPOKI@AEHPAXH@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x0047BC50,,??_EVsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x0047BC80,,?DualStreamRet8@VsNetRuntimeChannelStack@@WDM@AEXHPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BC90,,?FatalFileBackedOperation00@VsNetGlobalStateFileBackedEffComposite@@$4PPPPPPPM@A@AEXXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BCB0,,??_EVsNetTimedFileBackedEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BCC0,VsNetTimedFileBackedEffChannel::`scalar deleting destructor',,function,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BD20,,?ClearPendingWrite@VsNetTimedFileBackedEffChannel@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BD50,,??_EVsNetTimedFileBackedEffChannel@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BD60,,?CaptureTimedSocketLookup@VsNetTimedFileBackedEffChannel@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BD70,,?SendTimedSocketPayload@VsNetTimedFileBackedEffChannel@@$4PPPPPPPM@A@AEHPAXH@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BD90,,??_EVsNetDualFileBackedEffChannel@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BDA0,VsNetDualFileBackedEffChannel::`scalar deleting destructor',,function,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BE00,,?ClearPendingWrite@VsNetDualFileBackedEffChannel@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BE20,,??_EVsNetDualFileBackedEffChannel@@WCM@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x0047BE40,,??_EVsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BE50,,??_GVsNetEmbeddedFileBackedEffChannelStack@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x0047BEB0,,?ClearPendingWrite@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BEC0,,??_EVsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BEF0,,?SendTimedSocketPayload@VsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@A@AEHPAXH@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BF00,,??_EVsNetEmbeddedFileBackedEffChannelStack@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x0047BF30,,??_EVsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BF40,,??_GVsNetDualSlotTableFileBackedEffComposite@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x0047BFB0,,?ClearPendingWrite@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BFD0,,??_EVsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047BFE0,,?ClaimRecord@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEPAXXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047C000,,??_EVsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x0047C010,,?DualStreamNoop@VsNetCompositeEffTransportStack@@WDE@AEXXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047C020,,?ClaimRecord@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@HI@AEPAXXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047C030,,?DualStreamRet8@VsNetCompositeEffTransportStack@@WDE@AEXHPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047C040,,?FatalFileBackedOperation00@VsNetDualSlotTableFileBackedEffComposite@@$4PPPPPPPM@A@AEXXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047CBE0,IsWaveOutEffectBackendAvailableStdcall,,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSOUND.CPP

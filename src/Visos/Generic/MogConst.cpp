@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/WIN32.H"
+#include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 
 extern void* g_MOGLOAD_CachedResourceObjectBaseVtable[];
 extern void* g_MOGLOAD_StringResourceVtable[];

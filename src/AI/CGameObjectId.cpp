@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/COMMON.H"
+#include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
 extern int g_GAME_ManagedEntityRegistryTable[1000];
 extern unsigned short g_GAME_ManagedEntityRegistryCount;

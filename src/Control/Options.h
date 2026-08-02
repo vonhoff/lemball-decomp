@@ -1,7 +1,7 @@
 #ifndef LEMBALL_STARTUP_OPTIONS_H
 #define LEMBALL_STARTUP_OPTIONS_H
 
-#include "ENGINE/CORE/COMMON.H"
+#include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
 struct StartupGraphicsWindowConfig {
 	u32 m_cbSize;

@@ -1,6 +1,6 @@
-#include "ENGINE/CORE/VSINIT.H"
-#include "ENGINE/GDI/VSGEOM.H"
-#include "ENGINE/MEDIA/EFFSTRM.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/GDI/VSGEOM.H"
+#include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
 #include "Control/CGame.h"
 
 extern "C" int WINAPI IsBadReadPtr(const void* pAddress, unsigned int cbAddress);

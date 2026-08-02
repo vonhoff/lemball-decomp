@@ -1,6 +1,6 @@
-#include "ENGINE/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
-#include "ENGINE/MEDIA/VSSTRM.H"
+#include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
 
 void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 

@@ -16,26 +16,26 @@ set(LEMBALL_SOURCES
     src/AI/TYPE18RESET.CPP
     src/AI/LV35BOUND.CPP
     src/Control/CGameStatusPasswordBits.cpp
-    src/LEVEL/ENTITY/LVMODESLOT.CPP
+    src/Platform/Windows/Mixed/Level/ENTITY/LVMODESLOT.CPP
     src/AI/LVTRIPLET.CPP
     src/AI/LVOWNOBJ.CPP
     src/AI/LVDELMOVE.CPP
     src/AI/LVSTREAM.CPP
-    src/LEVEL/RUN/LEVELRUN.CPP
+    src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
     src/AI/LVNODE.CPP
-    src/LEVEL/ENTITY/LVTILE.CPP
-    src/LEVEL/IO/LVSTRVT.CPP
-    src/LEVEL/IO/LVSTRWRT.CPP
-    src/LEVEL/IO/LVSTRREAD.CPP
-    src/LEVEL/STATE/LVQUIT.CPP
+    src/Platform/Windows/Mixed/Level/ENTITY/LVTILE.CPP
+    src/Platform/Windows/Mixed/Level/IO/LVSTRVT.CPP
+    src/Platform/Windows/Mixed/Level/IO/LVSTRWRT.CPP
+    src/Platform/Windows/Mixed/Level/IO/LVSTRREAD.CPP
+    src/Platform/Windows/Mixed/Level/STATE/LVQUIT.CPP
     src/AI/LVPATHDIR.CPP
-    src/LEVEL/RENDER/LVRENDISP.CPP
+    src/Platform/Windows/Mixed/Level/RENDER/LVRENDISP.CPP
     src/AI/LVSTATEVAR.CPP
     src/AI/LVGRPTGT.CPP
-    src/LEVEL/ENTITY/LVCHFLAGS.CPP
+    src/Platform/Windows/Mixed/Level/ENTITY/LVCHFLAGS.CPP
     src/AI/LVPOSCOPY.CPP
     src/Visos/Generic/LVSTRFMT.CPP
-    src/LEVEL/VTABLE/LEVELVT.CPP
+    src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
     src/AI/LVACTVT.CPP
     src/AI/LVVTDEF.CPP
     src/AI/LVPOSVT.CPP
@@ -43,11 +43,11 @@ set(LEMBALL_SOURCES
     src/AI/LEVELVTCHILD.CPP
     src/AI/CGameObjectMove.cpp
     src/AI/LVMOVEVT.CPP
-    src/LEVEL/IO/LVNETVT.CPP
+    src/Platform/Windows/Mixed/Level/IO/LVNETVT.CPP
     src/AI/LVPROJVT.CPP
     src/Frontend/SCREENVT.CPP
     src/Frontend/SCRVTDEF.CPP
-    src/LEVEL/STATE/LEVELSTAT.CPP
+    src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
     src/views/2d/LVSTATMODE.CPP
     src/views/2d/LVSTATUS.CPP
     src/views/2d/LVSTATRG.CPP
@@ -57,45 +57,45 @@ set(LEMBALL_SOURCES
     src/Frontend/MSRESCHD.CPP
     src/Frontend/MENUSELSINK.CPP
     src/Frontend/MENUSELPAUSE.CPP
-    src/RESOURCE/VARLOAD.CPP
-    src/RESOURCE/VARMGR.CPP
+    src/Platform/Windows/Mixed/Resource/VARLOAD.CPP
+    src/Platform/Windows/Mixed/Resource/VARMGR.CPP
     src/Frontend/LOBBY.CPP
     src/Frontend/CEditString.cpp
     src/Platform/Windows/Entry.cpp
     src/Platform/Windows/ShellUI.cpp
     src/Control/Options.cpp
-    src/LEVEL/RUN/DEMO.CPP
+    src/Platform/Windows/Mixed/Level/RUN/DEMO.CPP
     src/Visos/Windows/CGDI.cpp
     src/Visos/Windows/CGDISwitch.cpp
     src/Visos/Windows/CGDI240.cpp
     src/Visos/Generic/Memory.cpp
-    src/ENGINE/GDI/WINDOW/VSWING.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWING.CPP
     src/Visos/Windows/VSWINGRECT.CPP
     src/Visos/Windows/VGAIO.CPP
-    src/ENGINE/CORE/VSINIT.CPP
-    src/ENGINE/CORE/VSFORMAT.CPP
-    src/ENGINE/CORE/VSRETURN.CPP
+    src/Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+    src/Platform/Windows/Mixed/Engine/CORE/VSFORMAT.CPP
+    src/Platform/Windows/Mixed/Engine/CORE/VSRETURN.CPP
     src/Visos/Windows/RAWOUT.CPP
-    src/ENGINE/GDI/WINDOW/VSWINDOW.CPP
-    src/ENGINE/GDI/WINDOW/VSWINDOWMODE.CPP
-    src/ENGINE/GDI/RENDER/GEOMETRYVT.CPP
-    src/ENGINE/GDI/RENDER/GDISTATUSVT.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOW.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOWMODE.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/RENDER/GEOMETRYVT.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/RENDER/GDISTATUSVT.CPP
     src/Visos/Generic/CPVSurface.cpp
-    src/ENGINE/GDI/RENDER/GDIRENDERVT.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/RENDER/GDIRENDERVT.CPP
     src/Visos/Generic/CSurface.cpp
-    src/ENGINE/MEDIA/EFFSTRM.CPP
-    src/ENGINE/MEDIA/EFFVT.CPP
-    src/ENGINE/GDI/WINDOW/WINDOWSLOT38.CPP
-    src/ENGINE/GDI/RENDER/GDIVT.CPP
-    src/ENGINE/GDI/WINDOW/VSSPROWN.CPP
+    src/Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.CPP
+    src/Platform/Windows/Mixed/Engine/MEDIA/EFFVT.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/WINDOW/WINDOWSLOT38.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/RENDER/GDIVT.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/WINDOW/VSSPROWN.CPP
     src/Visos/Windows/Debug/DEBUGVT.CPP
     src/Visos/Generic/VSSTAT.CPP
-    src/ENGINE/NET/VSNETFIL.CPP
-    src/ENGINE/NET/VSNETTCP.CPP
-    src/ENGINE/NET/VSNET.CPP
-    src/ENGINE/NET/VSNETSTR.CPP
-    src/ENGINE/NET/NSTRBSTH.CPP
-    src/ENGINE/MEDIA/VSSOUND.CPP
+    src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+    src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+    src/Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+    src/Platform/Windows/Mixed/Engine/NET/VSNETSTR.CPP
+    src/Platform/Windows/Mixed/Engine/NET/NSTRBSTH.CPP
+    src/Platform/Windows/Mixed/Engine/MEDIA/VSSOUND.CPP
     src/Visos/Generic/VSMath.cpp
     src/Visos/Windows/INVISWIN.CPP
     src/Visos/Windows/Debug/TEXTWIN.CPP
@@ -105,8 +105,8 @@ set(LEMBALL_SOURCES
     src/Visos/Generic/MogPatch.cpp
     src/Visos/Generic/MogConst.cpp
     src/Visos/Generic/MogBst.cpp
-    src/ENGINE/CORE/LINKSCF.CPP
-    src/ENGINE/CORE/LINKSCFBYTES.CPP
+    src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+    src/Platform/Windows/Mixed/Engine/CORE/LINKSCFBYTES.CPP
     src/AI/Projectile.cpp
     src/AI/GroupState.cpp
     src/AI/CInvsSupp.cpp
@@ -122,7 +122,7 @@ set(LEMBALL_SOURCES
     src/AI/LVPKTTH.CPP
     src/AI/LVRSTTH.CPP
     src/AI/LVSAVEPOS.CPP
-    src/LEVEL/STATE/LVPROFILE.CPP
+    src/Platform/Windows/Mixed/Level/STATE/LVPROFILE.CPP
     src/Control/CGameStatusLevel.cpp
     src/AI/CGameObjectId.cpp
     src/AI/LVBSTH.CPP
@@ -136,9 +136,9 @@ set(LEMBALL_SOURCES
     src/AI/CHOBJDEL.CPP
     src/AI/CHOBJRST.CPP
     src/AI/COLLSCORE.CPP
-    src/LEVEL/CHUNK/ANIMREC.CPP
+    src/Platform/Windows/Mixed/Level/CHUNK/ANIMREC.CPP
     src/AI/PROJRST.CPP
-    src/LEVEL/IO/DRAWTEXT.CPP
+    src/Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
     src/Visos/Generic/TXTCNT.CPP
     src/Visos/Generic/TXTCONST.CPP
     src/Frontend/MMPASSTH.CPP

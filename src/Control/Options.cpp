@@ -1,4 +1,4 @@
-#include "ENGINE/GDI/VSGDI.H"
+#include "Platform/Windows/Mixed/Engine/GDI/VSGDI.H"
 #include "Platform/Windows/Entry.h"
 #include "Control/Options.h"
 

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_GAME_MENU_SELECTOR_H
 #define LEMBALL_GAME_MENU_SELECTOR_H
 
-#include "ENGINE/CORE/COMMON.H"
+#include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
 struct GameMenuSelectorEntry;
 struct GameQueuedVariantChildSlotManager;

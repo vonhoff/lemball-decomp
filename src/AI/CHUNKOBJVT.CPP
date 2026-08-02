@@ -1,6 +1,6 @@
 #include "Visos/Generic/Memory.h"
-#include "ENGINE/CORE/WIN32.H"
-#include "LEVEL/CHUNKOBJVT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
+#include "Platform/Windows/Mixed/Level/CHUNKOBJVT.H"
 
 extern int g_nLevelFrameClockTimeMs;
 extern int g_nLevelFrameClockTick;

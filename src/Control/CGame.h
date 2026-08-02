@@ -14,8 +14,8 @@ struct GameProcessCurrentDirectoryState {
 
 extern GameProcessCurrentDirectoryState* g_pProcessCurrentDirectoryState;
 
-#include "ENGINE/CORE/WIN32.H"
-#include "ENGINE/GDI/VSWINDOW.H"
+#include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
+#include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
 
 struct GameDynamicCString {
 	char* m_pszText;

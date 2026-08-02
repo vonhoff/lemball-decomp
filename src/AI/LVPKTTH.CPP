@@ -1,5 +1,5 @@
-#include "ENGINE/CORE/VSINIT.H"
-#include "LEVEL/LVPKT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Level/LVPKT.H"
 
 // Split from LEVELRUN.CPP to reproduce the original cross-translation-unit forwarding method.
 

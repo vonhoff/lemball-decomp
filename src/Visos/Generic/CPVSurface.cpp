@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/COMMON.H"
+#include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
 // FUNCTION: LEMBALL 0x00466920
 void LEMBALL_FASTCALL ResizeCPVSurface(void* pObject, int nUnused, void* pArgument)

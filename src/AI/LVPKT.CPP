@@ -1,5 +1,5 @@
-#include "ENGINE/CORE/VSINIT.H"
-#include "LEVEL/LVPKT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Level/LVPKT.H"
 
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
 extern void* g_pActiveManagedEntityOwner;

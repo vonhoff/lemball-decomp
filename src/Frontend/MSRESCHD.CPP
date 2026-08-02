@@ -1,4 +1,4 @@
-#include "ENGINE/GDI/VSGEOM.H"
+#include "Platform/Windows/Mixed/Engine/GDI/VSGEOM.H"
 
 class GameResourceGeometryChildState : public GameGeometryOwnerRectState {
 public:

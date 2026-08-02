@@ -17,7 +17,7 @@ Use:
 .decomp-venv/Scripts/python.exe tools/macintosh_naming.py summary
 .decomp-venv/Scripts/python.exe tools/macintosh_naming.py todo
 .decomp-venv/Scripts/python.exe tools/macintosh_naming.py class CMine
-.decomp-venv/Scripts/python.exe tools/macintosh_naming.py file src/ENGINE/CORE/LINKSCF.CPP
+.decomp-venv/Scripts/python.exe tools/macintosh_naming.py file src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 .decomp-venv/Scripts/python.exe tools/macintosh_naming.py names --class CMine --status unmapped
 ```
 

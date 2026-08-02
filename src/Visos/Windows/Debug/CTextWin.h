@@ -1,7 +1,7 @@
 #ifndef VISOS_CTEXTWINDOW_H
 #define VISOS_CTEXTWINDOW_H
 
-#include "ENGINE/CORE/WIN32.H"
+#include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 
 // PRESERVED: class string at 0x004A2B70.
 // SIZE 0x58

@@ -1,5 +1,5 @@
-#include "ENGINE/CORE/VSINIT.H"
-#include "ENGINE/CORE/WIN32.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Entry.h"
 
 // GLOBAL: LEMBALL 0x004a8188

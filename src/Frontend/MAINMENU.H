@@ -1,7 +1,7 @@
 #ifndef LEMBALL_GAME_MAIN_MENU_SCREEN_H
 #define LEMBALL_GAME_MAIN_MENU_SCREEN_H
 
-#include "ENGINE/CORE/COMMON.H"
+#include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
 struct GameNetworkLobbyScreenView;
 

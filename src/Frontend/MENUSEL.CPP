@@ -1,12 +1,12 @@
-#include "ENGINE/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
-#include "ENGINE/CORE/WIN32.H"
-#include "ENGINE/GDI/VSGDI.H"
-#include "ENGINE/GDI/VSGEOM.H"
+#include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
+#include "Platform/Windows/Mixed/Engine/GDI/VSGDI.H"
+#include "Platform/Windows/Mixed/Engine/GDI/VSGEOM.H"
 #include "Frontend/MENUSEL.H"
 #include "Control/CGame.h"
-#include "LEVEL/DRAWTEXT.H"
-#include "RESOURCE/VARMGR.H"
+#include "Platform/Windows/Mixed/Level/DRAWTEXT.H"
+#include "Platform/Windows/Mixed/Resource/VARMGR.H"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>

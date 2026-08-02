@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
 
 // FUNCTION: LEMBALL 0x00407e40

@@ -1,5 +1,5 @@
 #include "Visos/Generic/Memory.h"
-#include "ENGINE/GDI/VSGDI.H"
+#include "Platform/Windows/Mixed/Engine/GDI/VSGDI.H"
 #include "Control/CGame.h"
 #include "Control/Options.h"
 #include "Visos/Generic/CSurface.h"

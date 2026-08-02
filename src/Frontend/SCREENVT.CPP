@@ -1,6 +1,6 @@
 #include "Visos/Generic/Memory.h"
-#include "ENGINE/CORE/WIN32.H"
-#include "ENGINE/GDI/VSWINDOW.H"
+#include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
+#include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
 #include "Control/CGame.h"
 
 // STRONG INFERENCE: callbacks relocated from the artificial aggregate by

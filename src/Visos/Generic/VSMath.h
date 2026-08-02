@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FIXED_MATH_H
 #define LEMBALL_FIXED_MATH_H
 
-#include "ENGINE/CORE/COMMON.H"
+#include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
 int* LEMBALL_FASTCALL InitializeSignedTrigTable(int* pTrigTableBuffer);
 int* LEMBALL_FASTCALL WriteDebugSentinelDword(int* pTarget);

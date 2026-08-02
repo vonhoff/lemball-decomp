@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 // Split from the original GAME source group to preserve MSVC 4.20 code generation in GAME.CPP.
 

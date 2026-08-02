@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 extern void LEMBALL_FASTCALL DispatchLiftChunkObjectActionBySlot(void* pManager,
 																 void* pUnusedEdx,

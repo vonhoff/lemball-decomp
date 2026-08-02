@@ -1,6 +1,6 @@
 #include "Visos/Generic/Memory.h"
 
-#include "ENGINE/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Control/Options.h"
 
 #include <stdlib.h>

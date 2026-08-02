@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Control/CGame.h"
 #include "Visos/Generic/MogLoad.h"
 #include "Control/Options.h"

@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/COMMON.H"
+#include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
 struct GameEventTypeView {
 	unsigned short m_nType;

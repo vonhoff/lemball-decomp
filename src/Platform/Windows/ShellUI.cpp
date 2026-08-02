@@ -1,7 +1,7 @@
-#include "ENGINE/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
-#include "ENGINE/GDI/VSGDI.H"
-#include "ENGINE/MEDIA/VSSOUND.H"
+#include "Platform/Windows/Mixed/Engine/GDI/VSGDI.H"
+#include "Platform/Windows/Mixed/Engine/MEDIA/VSSOUND.H"
 #include "Platform/Windows/Entry.h"
 #include "Platform/Windows/ShellUI.h"
 

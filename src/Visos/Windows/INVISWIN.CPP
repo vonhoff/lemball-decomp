@@ -1,7 +1,7 @@
-#include "ENGINE/CORE/SAFEVT.H"
-#include "ENGINE/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Visos/Windows/VSINVIS.H"
-#include "ENGINE/GDI/VSWINDOW.H"
+#include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
 #include "Platform/Windows/Entry.h"
 
 DECOMP_SIZE_ASSERT(VS_InvisibleWindow, 0x10);

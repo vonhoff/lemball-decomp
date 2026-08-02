@@ -1,5 +1,5 @@
-#include "ENGINE/CORE/WIN32.H"
-#include "ENGINE/GDI/VSWINDOW.H"
+#include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
+#include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
 
 // STRONG INFERENCE: callbacks relocated from the artificial aggregate by
 // vtable owner, semantic role, and neighboring address/call-graph cluster.

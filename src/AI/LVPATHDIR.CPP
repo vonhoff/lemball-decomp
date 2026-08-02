@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/COMMON.H"
+#include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
 // FUNCTION: LEMBALL 0x00423890
 int ComputeReachabilityStepDirectionCode(int x, int y, int nNextX, int nNextY)

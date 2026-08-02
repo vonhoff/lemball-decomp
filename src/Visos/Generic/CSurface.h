@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_GENERIC_CSURFACE_H
 #define LEMBALL_VISOS_GENERIC_CSURFACE_H
 
-#include "ENGINE/CORE/COMMON.H"
-#include "ENGINE/GDI/VSGDI.H"
+#include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
+#include "Platform/Windows/Mixed/Engine/GDI/VSGDI.H"
 
 struct VsGdiResourceGeometryLinkNode {
 	void* m_pTarget;

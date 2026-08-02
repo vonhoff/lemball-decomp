@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 void LEMBALL_FASTCALL InitializeTypedResourceObjectBaseVtable(void* pObject);
 

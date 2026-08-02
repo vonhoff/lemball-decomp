@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/COMMON.H"
+#include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
 extern void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
 

@@ -1,6 +1,6 @@
-#include "ENGINE/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Visos/Windows/Debug/CTextWin.h"
-#include "ENGINE/DEBUG/VSDBG.H"
+#include "Platform/Windows/Mixed/Engine/DEBUG/VSDBG.H"
 
 extern int g_fSubsystemsReady;
 extern int g_fDebugFileEnabled;

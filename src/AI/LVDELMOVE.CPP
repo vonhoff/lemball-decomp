@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 struct ActiveManagedEntityOwnerView {
 	unsigned char m_abReserved00[0x58];

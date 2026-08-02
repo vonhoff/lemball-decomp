@@ -1,5 +1,5 @@
-#include "ENGINE/GDI/VSGDI.H"
-#include "ENGINE/GDI/VSWINDOW.H"
+#include "Platform/Windows/Mixed/Engine/GDI/VSGDI.H"
+#include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
 
 struct VsGdiSelectedGraphicsDriverSwitchView {
 	int SwitchSelectedGraphicsDriver(int nRequestedDriver);

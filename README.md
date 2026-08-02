@@ -43,15 +43,14 @@ Pop-Location
 
 ## Source layout
 
-- `src/ENGINE` retains only mixed Windows physical owners and ABI/link-order splits that cannot yet move intact. Proven portable Visos code lives under `src/Visos/Generic`; pure Win32 backends live under `src/Visos/Windows`.
-- `src/FRONTEND` contains menus, lobby screens, and other user-interface code.
-- `src/LEVEL` retains mixed physical owners and shared headers only. Audited intact AI, Control, views/2d, and Visos TUs live in their canonical module folders without changing CMake/link order.
-- `src/RESOURCE` contains archive and typed-resource loading code.
+- Canonical portable owners live under `src/AI`, `Control`, `Frontend`, `Map`, `Network`, `Visos/Generic`, and `views/2d`.
+- `src/Platform/Windows/Mixed` retains intact multi-module Windows TUs, ABI/link-order splits, and shared headers that cannot yet move to one Macintosh owner.
+- Pure Win32 graphics backends live under `src/Visos/Windows`.
 - Shared startup options live under `src/Control`; Win32 entry, shell UI, and primary-window host code live under `src/Platform/Windows`.
 - `data` contains comparison metadata and the encrypted reference executable.
 - `tools` contains the build, metadata, and comparison helpers.
 
-Some filenames remain short because they reflect the style and tool limits of the original codebase. The folders are the quickest way to find the relevant subsystem.
+Some filenames remain short because they reflect the style and tool limits of the original codebase. `Platform/Windows/Mixed` is physical ownership, not a canonical source module.
 
 ## Contributing
 

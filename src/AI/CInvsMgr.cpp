@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/COMMON.H"
+#include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
 typedef void(LEMBALL_FASTCALL* InvsChunkObjectActivateProc)(void* pObject);
 

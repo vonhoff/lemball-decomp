@@ -1,7 +1,7 @@
 #ifndef VISOS_INVISIBLE_WINDOW_H
 #define VISOS_INVISIBLE_WINDOW_H
 
-#include "ENGINE/CORE/WIN32.H"
+#include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 
 // STRONG INFERENCE: generic ViSOS hidden-window infrastructure.
 // SIZE 0x10

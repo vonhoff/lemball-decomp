@@ -1,4 +1,4 @@
-#include "LEVEL/DRAWTEXT.H"
+#include "Platform/Windows/Mixed/Level/DRAWTEXT.H"
 
 // FUNCTION: LEMBALL 0x00467570
 short* LevelVariantRenderManagerView::GetVariantFrameExtent(short* pExtent, int nResourceId, int iFrame)

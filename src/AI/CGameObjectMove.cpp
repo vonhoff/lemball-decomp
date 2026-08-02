@@ -1,4 +1,4 @@
-#include "ENGINE/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 extern int g_nLevelFrameClockTick;
 extern unsigned int __cdecl compute_direction_octant_between_points(int nX1, int nY1, int nX2, int nY2);

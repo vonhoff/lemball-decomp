@@ -1,6 +1,6 @@
-#include "ENGINE/CORE/VSINIT.H"
-#include "ENGINE/CORE/WIN32.H"
-#include "LEVEL/CHUNKOBJVT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
+#include "Platform/Windows/Mixed/Level/CHUNKOBJVT.H"
 
 struct LevelChunkObjectBaseView {
 	void* InitializeLevelChunkObjectBase(int nType, unsigned short nVariant, unsigned short nStateId);

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_MAIN_H
 #define LEMBALL_MAIN_H
 
-#include "ENGINE/CORE/WIN32.H"
+#include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 
 extern HINSTANCE g_hApplicationInstance;
 extern HICON g_hApplicationIcon;

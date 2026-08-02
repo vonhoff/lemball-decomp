@@ -1,5 +1,5 @@
-#include "ENGINE/CORE/VSINIT.H"
-#include "ENGINE/GDI/VSGDI.H"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/GDI/VSGDI.H"
 
 char* LookupDirectDrawErrorString(unsigned int nError);
 

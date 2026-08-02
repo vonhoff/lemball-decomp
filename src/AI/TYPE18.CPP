@@ -1,6 +1,6 @@
 #include "Visos/Generic/Memory.h"
-#include "ENGINE/MEDIA/VSSTRM.H"
-#include "LEVEL/TYPE18.H"
+#include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
+#include "Platform/Windows/Mixed/Level/TYPE18.H"
 
 DECOMP_SIZE_ASSERT(LevelType18ChunkStream, 0x54);
 
