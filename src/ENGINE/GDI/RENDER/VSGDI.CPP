@@ -281,7 +281,7 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot1(void*, int, void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot2(void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot3(void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot4(void*);
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot5(void*);
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot5(void*, int, void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot9(void*, int, void*, void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot11(void*);
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot17(void*);

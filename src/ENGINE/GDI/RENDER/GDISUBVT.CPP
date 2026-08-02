@@ -106,8 +106,40 @@ void LEMBALL_FASTCALL CompactHelperSubobjectSlot4(void*)
 {
 }
 
-void LEMBALL_FASTCALL CompactHelperSubobjectSlot5(void*)
+// Original body 0x00474fd0 is reached through vtordisp thunk 0x0046db90.
+void LEMBALL_FASTCALL CompactHelperSubobjectSlot5(void* pObject, int, void* pCommand)
 {
+	typedef void(LEMBALL_FASTCALL * DirtyRectProc)(void*, int, short*);
+	char* pCompact;
+	char* pClipView;
+	char* pTarget;
+	short DirtyRect[4];
+	short nClipX;
+	short nClipY;
+	short x;
+	short y;
+	int nAdjustment;
+
+	pCompact = (char*) pObject - *(int*) ((char*) pObject - 4);
+	nAdjustment = *(int*) (*(int*) (pCompact - 0x51c) + 4);
+	pClipView = pCompact + nAdjustment;
+	x = *(short*) ((char*) pCommand + 4);
+	y = *(short*) ((char*) pCommand + 6);
+	nClipX = *(short*) (pClipView - 0x4f4);
+	nClipY = *(short*) (pClipView - 0x4f2);
+	if (x < nClipX || x >= (short) (nClipX + *(short*) (pClipView - 0x4f8)) || y < nClipY ||
+		y >= (short) (nClipY + *(short*) (pClipView - 0x4f6))) {
+		return;
+	}
+
+	*(unsigned char*) (*(int*) (*(int*) (pCompact - 0x558) + y * 4) + x) =
+		(unsigned char) *(int*) ((char*) pCommand + 8);
+	DirtyRect[0] = 1;
+	DirtyRect[1] = 1;
+	DirtyRect[2] = x;
+	DirtyRect[3] = y;
+	pTarget = pCompact - 0x55c;
+	((DirtyRectProc) (*(void***) pTarget)[1])(pTarget, 0, DirtyRect);
 }
 
 void LEMBALL_FASTCALL CompactHelperSubobjectSlot9(void* pObject, int, void* pEntryObject, void* pFrameObject)
