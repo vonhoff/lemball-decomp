@@ -499,3 +499,7 @@ The final interaction subset maps `OnEnter`, `OnExit`, `ConvertDoubleClick`, `On
 ## Portable depressed-button reconstruction
 
 `CDepressedButton::_DrawButton` and `OnPaint` map to `0x00468300/0x00468360`. They extend the recovered `CPVButton` state with depressed-state change tracking, force-draw refresh, dirty geometry checks, primitive queueing, and change-list reset. Physical ownership remains in `src/Frontend/MENUSEL.CPP`.
+
+## Portable graphic-button reconstruction
+
+The `CGraphicButton` point constructor, `Initialise`, `SetAnimID`, destructor, `OnDestroy`, and `DrawButton` map to `0x00468530/0x004686E0/0x004688E0/0x00468920/0x00468980/0x004689A0`. The family derives from `CPVButton`, loads and unloads animation resources, computes frame extent and alignment flags, and queues the aligned draw primitive. Windows-only rectangle overload `0x00468410` remains separate.

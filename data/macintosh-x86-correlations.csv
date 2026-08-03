@@ -1344,3 +1344,9 @@ CODE_02_Visos (Generic).bin,0x00010310,_OnEnterButton__9CPVButtonFv,0x00468260,h
 CODE_02_Visos (Generic).bin,0x00010376,_OnExitButton__9CPVButtonFv,0x004682B0,high,emits timestamped exit-button notification
 CODE_02_Visos (Generic).bin,0x000103F1,_DrawButton__16CDepressedButtonFv,0x00468300,high,tracks depressed-state changes marks target dirty then checks forced drawing
 CODE_02_Visos (Generic).bin,0x000104E7,OnPaint__16CDepressedButtonFRC7CVSRect,0x00468360,high,queues button primitive when depressed draw state or geometry is dirty
+CODE_02_Visos (Generic).bin,0x00010659,__ct__14CGraphicButtonFRC8CVSPointP7CPVGWndUlUl,0x00468530,high,constructs CPVButton-derived graphic at point with animation and alignment flags
+CODE_02_Visos (Generic).bin,0x000108E4,Initialise__14CGraphicButtonFv,0x004686E0,high,allocates draw primitive loads animation computes extent and alignment
+CODE_02_Visos (Generic).bin,0x00010944,SetAnimID__14CGraphicButtonFUl,0x004688E0,high,unloads prior animation loads replacement and marks redraw
+CODE_02_Visos (Generic).bin,0x00010A0E,__dt__14CGraphicButtonFv,0x00468920,high,restores vtables destroys embedded draw state and CPVButton base
+CODE_02_Visos (Generic).bin,0x00010A50,OnDestroy__14CGraphicButtonFv,0x00468980,high,unloads active animation resource and clears handle
+CODE_02_Visos (Generic).bin,0x00010B46,DrawButton__14CGraphicButtonFv,0x004689A0,high,populates and queues aligned animation draw primitive
