@@ -12,8 +12,6 @@ extern unsigned short g_nNextLiftObjectId;
 extern int g_nLevelFrameClockTimeMs;
 extern int g_nNetworkFrameClockTimeMs;
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
-extern unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void);
-
 typedef void(LEMBALL_FASTCALL* LiftRestartProc)(void* pObject);
 typedef int(LEMBALL_FASTCALL* LiftProcessProc)(void* pObject);
 typedef void(LEMBALL_FASTCALL* LiftViewStateProc)(void* pObject, int nState);
@@ -248,7 +246,7 @@ void CLiftManager::LoadLevel(unsigned char* pData, int cbData, unsigned char nVe
 		do {
 			pRecord = (unsigned short*) pData;
 			if (*(unsigned short*) ((char*) m_pAI30 + 0x54) < 2) {
-				nSlotId = FindFirstFreeManagedEntitySlotIdForwardThunk();
+				nSlotId = CGameObject::NextId();
 			}
 			else {
 				nSlotId = *pRecord;

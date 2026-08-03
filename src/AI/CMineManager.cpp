@@ -14,8 +14,6 @@ struct VsNetEffStreamCommon {
 extern MineManagerVtableLayout g_LINKSCF_MineChunkManagerVtable;
 extern void* g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
-extern unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void);
-
 // FUNCTION: LEMBALL 0x00424020
 CMineManager::CMineManager(CAI* pAI, int nCapacity)
 {
@@ -266,7 +264,7 @@ void CMineManager::LoadLevel(unsigned char* pData, int cbData, unsigned char nVe
 	while (cObjects != 0) {
 		pRecord = (unsigned short*) pData;
 		if (*(unsigned short*) ((char*) m_pAI30 + 0x54) < 2) {
-			nId = FindFirstFreeManagedEntitySlotIdForwardThunk();
+			nId = CGameObject::NextId();
 		}
 		else {
 			nId = *pRecord;

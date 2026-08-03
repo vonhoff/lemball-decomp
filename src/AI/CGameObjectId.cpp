@@ -31,6 +31,44 @@ void CGameObject::ReSetId(void)
 	}
 }
 
+// FUNCTION: LEMBALL 0x00416670
+unsigned short CGameObject::NextId(void)
+{
+	unsigned int iByte = 0;
+	do {
+		if (g_GAME_ManagedEntitySlotClaimBitset[iByte] != 0xff) {
+			int iBit = 0;
+			do {
+				if ((g_GAME_ManagedEntitySlotBitMasks[iBit] & g_GAME_ManagedEntitySlotClaimBitset[iByte]) == 0) {
+					return (unsigned int) (iBit + iByte * 8);
+				}
+				++iBit;
+			} while (iBit < 8);
+		}
+		++iByte;
+	} while ((int) iByte < 0x100);
+	return iByte & 0xffff0000;
+}
+
+// FUNCTION: LEMBALL 0x004166a0
+unsigned short CGameObject::NextLoadingId(void)
+{
+	unsigned int iByte = 0xff;
+	do {
+		if (g_GAME_ManagedEntitySlotClaimBitset[iByte] != 0xff) {
+			int iBit = 7;
+			do {
+				if ((g_GAME_ManagedEntitySlotBitMasks[iBit] & g_GAME_ManagedEntitySlotClaimBitset[iByte]) == 0) {
+					return (unsigned int) (iBit + iByte * 8);
+				}
+				--iBit;
+			} while (0 < iBit);
+		}
+		--iByte;
+	} while (0 < (int) iByte);
+	return iByte & 0xffff0000;
+}
+
 // Macintosh: CGameObject::RegisterId()
 // FUNCTION: LEMBALL 0x00416740
 void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject)

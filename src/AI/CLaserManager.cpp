@@ -1,5 +1,6 @@
 #include "AI/CLaserManager.h"
 
+#include "AI/CGameObject.h"
 #include "AI/CLaser.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
@@ -8,8 +9,6 @@ struct LaserManagerVtableLayout;
 extern LaserManagerVtableLayout g_LINKSCF_LasrChunkManagerVtable;
 extern void* g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
-extern unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void);
-
 struct VsNetEffStreamCommon {
 	virtual ~VsNetEffStreamCommon(void);
 };
@@ -201,7 +200,7 @@ void CLaserManager::LoadLevel(unsigned char* pData, int cbData, unsigned char nV
 	while (nObjects != 0) {
 		pRecord = (unsigned short*) pData;
 		if (*(unsigned short*) ((char*) m_pAI3C + 0x54) < 2) {
-			nSlot = FindFirstFreeManagedEntitySlotIdForwardThunk();
+			nSlot = CGameObject::NextId();
 		}
 		else {
 			nSlot = *pRecord;

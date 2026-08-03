@@ -458,8 +458,8 @@ address,size,name,unit
 0x00416610,5,CGameObject::GetId,AI/CGameObjectId.cpp
 0x00416620,17,CGameObject::SetId,AI/CGameObjectId.cpp
 0x00416640,44,CGameObject::ReSetId,AI/CGameObjectId.cpp
-0x00416670,45,CGameObject::NextId,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
-0x004166A0,47,CGameObject::NextLoadingId,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x00416670,45,CGameObject::NextId,AI/CGameObjectId.cpp
+0x004166A0,47,CGameObject::NextLoadingId,AI/CGameObjectId.cpp
 0x004166D0,90,collect_free_managed_entity_slot_ids,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416730,3,return_zero_level_callback_00416730,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416740,115,CGameObject::RegisterId,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP

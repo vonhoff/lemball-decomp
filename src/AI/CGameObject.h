@@ -60,6 +60,8 @@ public:
 	unsigned short GetId(void);
 	void SetId(unsigned short nSlotId);
 	void ReSetId(void);
+	static unsigned short NextId(void);
+	static unsigned short NextLoadingId(void);
 };
 
 #endif
