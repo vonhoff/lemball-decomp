@@ -668,12 +668,6 @@ void LinkScfPlasChunkManagerView::LoadPlasChunkObjectsThunk(const unsigned short
 {
 	LoadPlasChunkObjects(pChunk, cbChunk, fReuseState);
 }
-// LINKERILT: LEMBALL 0x0040349f
-LinkScfInvsChunkManagerView* LinkScfInvsChunkManagerView::ConstructInvsChunkManagerThunk(void* pLevelMode,
-																						 int nCapacity)
-{
-	return ConstructInvsChunkManager(pLevelMode, nCapacity);
-}
 // MACINTOSH: CLevelLoader::LoadLevel(eSkill, int, unsigned char)
 // FUNCTION: LEMBALL 0x00408240
 void LinkScfLevelChunkLoaderView::LoadLevelChunksForSkillAndLevel(unsigned int nSkill,
@@ -755,19 +749,6 @@ void LinkScfLevelChunkLoaderView::LoadLevelChunksForSkillAndLevel(unsigned int n
 	ReleaseTypedResourceObjectReference(pResourceObject);
 	(void) fReuseState;
 }
-// MACINTOSH: CInvisibleSwitchManager::CInvisibleSwitchManager(CAI*, int)
-// FUNCTION: LEMBALL 0x0040a210
-LinkScfInvsChunkManagerView* LinkScfInvsChunkManagerView::ConstructInvsChunkManager(void* pLevelMode, int nCapacity)
-{
-	LINKSCF_INITIALIZE_EFF_CHUNK_STREAM(this, 0x20, 0x15);
-	*(void**) this = &g_LINKSCF_InvsChunkManagerVtable;
-	*(void**) ((char*) this + 0x38) = pLevelMode;
-	*(int*) ((char*) this + 0x30) = nCapacity;
-	*(int*) ((char*) this + 0x3c) = 0;
-	return this;
-}
-
-
 // FUNCTION: LEMBALL 0x0040b020
 void* ConstructLevelChunkStreamDispatcherThunk(void* pObject, int nChunkTypeCount)
 {

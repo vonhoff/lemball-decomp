@@ -2,9 +2,12 @@
 
 #include "AI/CInvisibleSwitch.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
+#include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
 
 struct InvisibleSwitchManagerVtableLayout;
 extern InvisibleSwitchManagerVtableLayout g_LINKSCF_InvsChunkManagerVtable;
+extern void* g_pActiveNetworkRuntimeWindow;
+extern int g_cbEffTransportMaxPacketBytes;
 
 struct VsNetEffStreamCommon {
 	virtual ~VsNetEffStreamCommon(void);
@@ -23,6 +26,24 @@ struct InvisibleSwitchManagerResetView {
 struct InvisibleSwitchManagerDeletableChild {
 	virtual void Delete(unsigned char fDelete);
 };
+
+// FUNCTION: LEMBALL 0x0040a210
+CInvisibleSwitchManager::CInvisibleSwitchManager(CAI* pAI, int nCapacity)
+{
+	*(void**) this = g_GAME_EffStreamConstructionVtable;
+	*(int*) ((char*) this + 4) = 0x20;
+	((GameEffStream*) this)->ResetStateFields();
+	*(int*) ((char*) this + 0x2c) = 0x15;
+	*(void**) this = g_LEVEL_EffChunkStreamBaseVtable;
+	if (g_pActiveNetworkRuntimeWindow != 0) {
+		*(int*) ((char*) this + 0x24) = 1;
+		*(int*) ((char*) this + 0x18) += g_cbEffTransportMaxPacketBytes;
+	}
+	*(void**) this = &g_LINKSCF_InvsChunkManagerVtable;
+	*(CAI**) ((char*) this + 0x38) = pAI;
+	*(int*) ((char*) this + 0x30) = nCapacity;
+	*(void**) ((char*) this + 0x3c) = 0;
+}
 
 // FUNCTION: LEMBALL 0x0040a270
 void CInvisibleSwitchManager::Restart(void)

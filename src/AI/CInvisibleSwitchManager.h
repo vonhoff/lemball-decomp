@@ -2,10 +2,12 @@
 #define LEMBALL_CINVISIBLESWITCHMANAGER_H
 
 struct AICOORD;
+class CAI;
 class CGameObject;
 
 class CInvisibleSwitchManager {
 public:
+	CInvisibleSwitchManager(CAI* pAI, int nCapacity);
 	void Restart(void);
 	~CInvisibleSwitchManager(void);
 	void StepOn(const AICOORD& position, CGameObject* pObject);

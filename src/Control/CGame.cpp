@@ -1,5 +1,6 @@
 #include "Control/CGame.h"
 
+#include "AI/CInvisibleSwitchManager.h"
 #include "Control/Options.h"
 #include "Frontend/CURSOR.H"
 #include "Frontend/MAINMENU.H"
@@ -3553,7 +3554,7 @@ void LevelGameMode::InitializeLevelGameMode(void)
 	if (*(int*) (pModeBytes + 0x4c) == 0) {
 		pObject = AllocateVSMemBlock(0x40);
 		if (pObject != 0) {
-			pObject = ((LinkScfInvsChunkManagerView*) pObject)->ConstructInvsChunkManagerThunk(pLevelGameMode, 0x28);
+			pObject = new (pObject) CInvisibleSwitchManager((CAI*) pLevelGameMode, 0x28);
 		}
 		*(void**) (pModeBytes + 0x1cc) = pObject;
 		RegisterLevelChunkStreamThunk(g_pLevelChunkStreamDispatcher, *(void**) (pModeBytes + 0x1cc));
