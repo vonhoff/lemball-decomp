@@ -63,6 +63,26 @@ void CMover::Initialise(void)
 	*(int*) (pObject + 0xb8) = 0x18;
 }
 
+// FUNCTION: LEMBALL 0x0042e650
+void CMover::SetPos(void)
+{
+	MoveChunkTileGridView* pGrid = (MoveChunkTileGridView*) g_pLevelTileGrid;
+	int nMinX = ((m_nWorldX9C >> 12) - 8) / 16;
+	int nMaxX = ((m_nWorldX9C >> 12) + 7) / 16;
+	int nMinY = ((m_nWorldYA0 >> 12) - 8) / 16;
+	int nMaxY = ((m_nWorldYA0 >> 12) + 7) / 16;
+	int y;
+
+	for (y = nMinY; y <= nMaxY; ++y) {
+		int x;
+		for (x = nMinX; x <= nMaxX; ++x) {
+			if (x >= 0 && y >= 0 && x < pGrid->m_cColumns10 && y < pGrid->m_cRows14) {
+				pGrid->m_pCells0C[y * pGrid->m_cColumns10 + x].m_nFlags06 |= 0x10;
+			}
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x0042e700
 int CMover::IsAt(int x, int y, int* pHeight)
 {

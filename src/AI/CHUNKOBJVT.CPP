@@ -836,32 +836,6 @@ void* LEMBALL_FASTCALL DeleteIceChunkObjectAuto(void* pObject, void* pUnused, un
 	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x188, destroy_ice_chunk_object);
 }
 
-// MACINTOSH: CMover::SetPos()
-// FUNCTION: LEMBALL 0x0042e650
-void LEMBALL_FASTCALL mark_move_chunk_tiles_occupied(void* pObject)
-{
-	char* pGrid = (char*) g_pLevelTileGrid;
-	int nMinX = (*(int*) ((char*) pObject + 0x9c) >> 12) - 8;
-	int nMaxX = nMinX + 15;
-	int nMinY = (*(int*) ((char*) pObject + 0xa0) >> 12) - 8;
-	int nMaxY = nMinY + 15;
-	int nTileX;
-	int nTileY;
-
-	nMinX = (nMinX + ((nMinX >> 31) & 15)) >> 4;
-	nMaxX = (nMaxX + ((nMaxX >> 31) & 15)) >> 4;
-	nMinY = (nMinY + ((nMinY >> 31) & 15)) >> 4;
-	nMaxY = (nMaxY + ((nMaxY >> 31) & 15)) >> 4;
-
-	for (nTileY = nMinY; nTileY <= nMaxY; ++nTileY) {
-		for (nTileX = nMinX; nTileX <= nMaxX; ++nTileX) {
-			if (nTileX >= 0 && nTileY >= 0 && nTileX < *(int*) (pGrid + 0x10) && nTileY < *(int*) (pGrid + 0x14)) {
-				char* pTile = *(char**) (pGrid + 0x0c) + (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 12;
-				*(unsigned char*) (pTile + 6) |= 0x10;
-			}
-		}
-	}
-}
 
 // MACINTOSH: CMover::MoveObjects(int, int, int)
 // FUNCTION: LEMBALL 0x0042ea40
