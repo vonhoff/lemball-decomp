@@ -2,6 +2,7 @@
 
 #include "AI/CInvisibleSwitchManager.h"
 #include "AI/CLaserManager.h"
+#include "AI/CLiftManager.h"
 #include "Control/Options.h"
 #include "Frontend/CURSOR.H"
 #include "Frontend/MAINMENU.H"
@@ -3347,7 +3348,7 @@ void LevelGameMode::InitializeLevelGameMode(void)
 	if (*(int*) (pModeBytes + 0x4c) == 0) {
 		pObject = AllocateVSMemBlock(0x40);
 		if (pObject != 0) {
-			pObject = ((LinkScfLiftChunkManagerView*) pObject)->ConstructLiftChunkManagerThunk(pLevelGameMode, 0x3c);
+			pObject = new (pObject) CLiftManager((CAI*) pLevelGameMode, 0x3c);
 		}
 		*(void**) (pModeBytes + 0x18c) = pObject;
 		RegisterLevelChunkStreamThunk(g_pLevelChunkStreamDispatcher, *(void**) (pModeBytes + 0x18c));

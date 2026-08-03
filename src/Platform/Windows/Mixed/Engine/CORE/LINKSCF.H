@@ -50,10 +50,6 @@ struct LinkScfMoveChunkManagerView {
 	LinkScfMoveChunkManagerView* ConstructMoveChunkManagerThunk(void* pLevelMode, int nCapacity);
 };
 
-struct LinkScfLiftChunkManagerView {
-	LinkScfLiftChunkManagerView* ConstructLiftChunkManager(void* pLevelMode, int nCapacity);
-	LinkScfLiftChunkManagerView* ConstructLiftChunkManagerThunk(void* pLevelMode, int nCapacity);
-};
 
 struct LinkScfEnmyChunkManagerView {
 	LinkScfEnmyChunkManagerView* ConstructEnmyChunkManager(void* pLevelMode,

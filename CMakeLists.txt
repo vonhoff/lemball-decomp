@@ -114,6 +114,7 @@ set(LEMBALL_SOURCES
     src/AI/CLaser.cpp
     src/AI/CLaserManager.cpp
     src/AI/CLift.cpp
+    src/AI/CLiftManager.cpp
     src/AI/CDoorAct.cpp
     src/AI/CDoorSlot.cpp
     src/AI/CIceAct.cpp

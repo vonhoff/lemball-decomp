@@ -256,7 +256,7 @@ void* LEMBALL_FASTCALL GetFirstCachedChunkObjectThunk(void* pObject)
 	 (void*) renderProc}
 
 // GLOBAL: LEMBALL 0x00495ea8
-static void* g_LINKSCF_LiftChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteLiftChunkManagerAuto,
+void* g_LINKSCF_LiftChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteLiftChunkManagerAuto,
 																			 InitializeLiftChunkObjects,
 																			 ActivateLiftChunkObjects,
 																			 ReturnFalseChunkStreamCommandThunk,
@@ -613,12 +613,7 @@ void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevelThunk(void* pObject,
 {
 	return ConstructPlasChunkObjectForLevel(pObject, nUnusedEdx, nX, nY, nZ, nVariant, nNetworkPlayer, nStartDelay);
 }
-// LINKERILT: LEMBALL 0x00401ea6
-LinkScfLiftChunkManagerView* LinkScfLiftChunkManagerView::ConstructLiftChunkManagerThunk(void* pLevelMode,
-																						 int nCapacity)
-{
-	return ConstructLiftChunkManager(pLevelMode, nCapacity);
-}
+
 // LINKERILT: LEMBALL 0x00401ece
 LinkScfEnmyChunkManagerView* LinkScfEnmyChunkManagerView::ConstructEnmyChunkManagerThunk(void* pLevelMode,
 																						 void* pGmobManager,
@@ -1276,17 +1271,6 @@ void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject)
 	((CLift*) pObject)->~CLift();
 }
 
-// MACINTOSH: CLiftManager::CLiftManager(CAI*, int)
-// FUNCTION: LEMBALL 0x00425680
-LinkScfLiftChunkManagerView* LinkScfLiftChunkManagerView::ConstructLiftChunkManager(void* pLevelMode, int nCapacity)
-{
-	LINKSCF_INITIALIZE_EFF_CHUNK_STREAM(this, 0x12, 7);
-	*(void**) this = g_LINKSCF_LiftChunkManagerVtable;
-	*(void**) ((char*) this + 0x30) = pLevelMode;
-	*(int*) ((char*) this + 0x38) = nCapacity;
-	*(int*) ((char*) this + 0x3c) = 0;
-	return this;
-}
 
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
 
