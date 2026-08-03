@@ -1332,3 +1332,13 @@ CODE_02_Visos (Generic).bin,0x0000FC80,SetAutoDraw__9CPVButtonFUc,0x00467E40,hig
 CODE_02_Visos (Generic).bin,0x0000FDA2,CheckForceDraw__9CPVButtonFv,0x00467E50,high,refreshes force-draw countdown rectangle and dirty target
 CODE_02_Visos (Generic).bin,0x0000FE00,_DrawButton__9CPVButtonFv,0x00467EF0,high,marks changed button frame dirty then performs forced draw check
 CODE_02_Visos (Generic).bin,0x0000FE7C,Draw__9CPVButtonFUc,0x00467F30,high,temporarily forces draw dispatch and clears pending redraw state
+CODE_02_Visos (Generic).bin,0x0000FECC,OnEnter__9CPVButtonFv,0x00467FA0,high,sets hover latch emits enter event and dispatches virtual handler
+CODE_02_Visos (Generic).bin,0x0000FF10,OnExit__9CPVButtonFv,0x00467FD0,high,clears hover latch emits exit event and dispatches virtual handler
+CODE_02_Visos (Generic).bin,0x0000FF61,ConvertDoubleClick__9CPVButtonF12BUTTON_FLAGS,0x00468000,high,normalizes single and double click flags to button state slots
+CODE_02_Visos (Generic).bin,0x00010019,OnButtonDown__9CPVButtonFRC8CVSPoint12BUTTON_FLAGS,0x00468050,high,latches press local point emits pressed event and dispatches handler
+CODE_02_Visos (Generic).bin,0x000100CD,OnButtonUp__9CPVButtonFRC8CVSPoint12BUTTON_FLAGS,0x004680C0,high,releases latched press emits release event and dispatches handler
+CODE_02_Visos (Generic).bin,0x00010163,OnExternalButtonUp__9CPVButtonFRC8CVSPoint12BUTTON_FLAGS,0x00468130,high,records local point and clears per-button press state
+CODE_02_Visos (Generic).bin,0x0001020B,_OnReleased__9CPVButtonF12BUTTON_FLAGS,0x00468180,high,marks redraw and emits timestamped release notification
+CODE_02_Visos (Generic).bin,0x000102A1,_OnPressed__9CPVButtonF12BUTTON_FLAGS,0x004681F0,high,marks redraw and emits timestamped press notification
+CODE_02_Visos (Generic).bin,0x00010310,_OnEnterButton__9CPVButtonFv,0x00468260,high,emits timestamped enter-button notification
+CODE_02_Visos (Generic).bin,0x00010376,_OnExitButton__9CPVButtonFv,0x004682B0,high,emits timestamped exit-button notification
