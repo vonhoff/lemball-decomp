@@ -507,3 +507,7 @@ The `CGraphicButton` point constructor, `Initialise`, `SetAnimID`, destructor, `
 ## Portable file-wrapper reconstruction
 
 `vsOpen`, `vsClose`, `vsRead`, `vsWrite`, `vsSeek`, `vsTell`, and `vsGetFileSize` map to `0x00462EE0/0x00462F20/0x00462F30/0x00462F50/0x00462F80/0x00462FB0/0x00462FC0`. They preserve the CRT-backed open/close/read/write/flush/seek/tell semantics and the size query's saved-position contract. Windows physically places `vsWrite` in `VSNETFIL.CPP` and the other six wrappers in `DEMO.CPP`; that split remains intact.
+
+## Portable text primitive reconstruction
+
+`CText::NextPos` and `Render` map to `0x004749C0/0x00474A20`. `NextPos` advances the cursor using glyph or fixed-cell extents and direction flags; `Render` owns font lifetime during the pass, resolves fallback glyphs, submits each glyph through `CGDI`, and advances the cursor. Physical ownership remains `DRAWTEXT.CPP`.

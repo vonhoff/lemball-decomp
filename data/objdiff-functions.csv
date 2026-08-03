@@ -3073,8 +3073,8 @@ address,size,name,unit
 0x00474520,243,build_selected_text_clipboard_string,Visos/Windows/Debug/TEXTWIN.CPP
 0x00474620,304,copy_selected_text_to_clipboard,Visos/Windows/Debug/TEXTWIN.CPP
 0x004749B0,13,initialize_debug_text_line_record,Visos/Windows/Debug/DEBUGVT.CPP
-0x004749C0,93,advance_text_draw_entry_cursor,Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
-0x00474A20,297,process_text_level_screen_draw_entry,Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
+0x004749C0,93,CText::NextPos,Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
+0x00474A20,297,CText::Render,Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
 0x00474B50,41,initialize_arrow_cursor_state,Visos/Windows/CGDI.cpp
 0x00474B80,38,initialize_arrow_cursor_position,Visos/Windows/CGDI.cpp
 0x00474BB0,38,destroy_cursor_state_render_client,Visos/Windows/CGDI.cpp
