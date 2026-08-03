@@ -397,3 +397,7 @@ The two overloads remain distinct: `SetMainID(unsigned long)` selects a ZRLE res
 The three portable `CHeaderMessage` symbols map to `0x00479540`, `0x00479580`, and `0x004795D0`; constructor state, marker serialization, two `0x15`-byte fields, and the unchanged-marker `0x2E` skip match exactly. Its Macintosh-specific destructor remains excluded.
 
 The four portable `CHeaders` symbols map to `0x00479620`, `0x004796E0`, `0x00479790`, and `0x004797D0`. Windows widens each Macintosh `0x56`-byte child to `0x60`, while preserving the counted child array, parallel marker table, ordered `AddData`/`GetData` loops, and parent cursor equations. The Windows-only `FindNextChangedSlot` at `0x00479720` remains unconsumed; physical ownership stays in `VSNETFIL.CPP`.
+
+## CPortsMessage reconstruction
+
+Portable `CPortsMessage` construction and `AnyUsed` map to `0x00479810` and `0x00479860`. Both architectures allocate and zero exactly `0x200` state bytes, include that extent in the inherited stream length, and scan the full map for any nonzero byte. Windows expands the inherited stream prefix so the state pointer moves from Macintosh `+0x24` to x86 `+0x2C`; physical ownership remains in `VSNETFIL.CPP`.

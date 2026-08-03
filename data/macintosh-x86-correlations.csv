@@ -1199,3 +1199,5 @@ CODE_02_Visos (Generic).bin,0x00006E6E,__ct__8CHeadersFi,0x00479620,high,"counte
 CODE_02_Visos (Generic).bin,0x00006ED8,__dt__8CHeadersFv,0x004796E0,high,"parallel flag free, counted-slot destruction, base destructor and vtable restoration"
 CODE_02_Visos (Generic).bin,0x00006F38,AddData__8CHeadersFv,0x00479790,high,ordered child stream copy loop and parent cursor advance; 0x60 Windows stride adapts Macintosh 0x56
 CODE_02_Visos (Generic).bin,0x00006F98,GetData__8CHeadersFv,0x004797D0,high,"ordered child Set loop, conditional parent cursor update, changed-slot cursor reset"
+CODE_02_Visos (Generic).bin,0x0000700E,__ct__13CPortsMessageFv,0x00479810,high,"base stream init, fixed 0x200-byte allocation, zero-fill loop, layout adaptation and sole composite caller"
+CODE_02_Visos (Generic).bin,0x00007052,AnyUsed__13CPortsMessageFv,0x00479860,high,"exact 0x200-byte nonzero scan, boolean result, caller gate and 100% reccmp"

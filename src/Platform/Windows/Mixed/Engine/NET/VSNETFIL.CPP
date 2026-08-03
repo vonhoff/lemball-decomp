@@ -1458,11 +1458,11 @@ struct VsNetFileBackedCompositeInitialStream {
 	unsigned short m_wReserved2e;
 };
 
-class VsNetEff512ByteStateStream : public VsNetEffStreamCore {
+class CPortsMessage : public VsNetEffStreamCore {
 public:
 	unsigned char* m_pbStateBytes2c;
 
-	VsNetEff512ByteStateStream* Construct();
+	CPortsMessage* Construct();
 	void Load(void);
 	void Save(void);
 	void* Delete(BYTE fDeleteFlags);
@@ -1789,19 +1789,19 @@ static VsNetEffRecordSlotVtable g_NETWORK_EffRecordSlotVtable = {
 struct VsNetEffStateStreamVtable {
 	int(PASCAL* m_pReturnTrue)(void*);
 	int (*m_pReturnTrueSecondary)(void);
-	void (VsNetEff512ByteStateStream::*m_pLoad)(void);
+	void (CPortsMessage::*m_pLoad)(void);
 	void (*m_pNoop)(void);
-	void (VsNetEff512ByteStateStream::*m_pSave)(void);
-	void* (VsNetEff512ByteStateStream::*m_pDelete)(BYTE);
+	void (CPortsMessage::*m_pSave)(void);
+	void* (CPortsMessage::*m_pDelete)(BYTE);
 };
 // GLOBAL: LEMBALL 0x0049a4d8
 static VsNetEffStateStreamVtable g_NETWORK_EffStateStreamVtable = {
 	ReturnTrueVtableCallbackThunk,
 	ReturnTrueVtableCallbackSecondaryThunk,
-	&VsNetEff512ByteStateStream::Load,
+	&CPortsMessage::Load,
 	NoopVtableCallbackThunk,
-	&VsNetEff512ByteStateStream::Save,
-	&VsNetEff512ByteStateStream::Delete,
+	&CPortsMessage::Save,
+	&CPortsMessage::Delete,
 };
 
 struct VsNetDualFileBackedEffChannelDeleteView {
@@ -1978,7 +1978,7 @@ inline int VsNetFileBackedRecordWriterView::AppendAdjustedFileBackedEffRecordSlo
 }
 
 size_t WriteAndFlushFileBuffer(FILE* pFile, void* pBuffer, size_t cbBuffer);
-int LEMBALL_FASTCALL HasNonzeroEff512ByteState(int nObject);
+int LEMBALL_FASTCALL CPortsMessageAnyUsed(int nObject);
 int OpenFileBackedEffHandleWithRetry(void* pObject, int nHandle);
 BYTE __fastcall MapNestedEffCallbackFailureToStatus6(void* pObject);
 void* LEMBALL_FASTCALL ClearFileBackedEffChannelStateWord(void* pObject);
@@ -2198,7 +2198,7 @@ void CHeaders::ReverseEffStreamPayload(void)
 }
 
 // FUNCTION: LEMBALL 0x00479810
-VsNetEff512ByteStateStream* VsNetEff512ByteStateStream::Construct()
+CPortsMessage* CPortsMessage::Construct()
 {
 	int i;
 
@@ -2217,12 +2217,12 @@ VsNetEff512ByteStateStream* VsNetEff512ByteStateStream::Construct()
 }
 
 // FUNCTION: LEMBALL 0x00479860
-int LEMBALL_FASTCALL HasNonzeroEff512ByteState(int nObject)
+int LEMBALL_FASTCALL CPortsMessageAnyUsed(int nObject)
 {
-	VsNetEff512ByteStateStream* pStream;
+	CPortsMessage* pStream;
 	int i;
 
-	pStream = (VsNetEff512ByteStateStream*) (unsigned long) nObject;
+	pStream = (CPortsMessage*) (unsigned long) nObject;
 	i = 0;
 	do {
 		if (i[pStream->m_pbStateBytes2c] != 0) {
@@ -3020,7 +3020,7 @@ void* VsNetGlobalStateCompositeLayout::ConstructGlobalStateFileBackedEffComposit
 	VsNetGlobalStateCompositeOpenWrapperFront* pOpenWrapperFront;
 	VsNetEmbeddedFileBackedStackFront* pEmbeddedStackFront;
 	VsNetFileBackedCompositeInitialStream* pInitialStream;
-	VsNetEff512ByteStateStream* pStateStream;
+	CPortsMessage* pStateStream;
 	CHeaders* pRecordSlotTable;
 	char* pbObjectBase;
 	char* pbEmbeddedStackBase;
@@ -3129,10 +3129,10 @@ void* VsNetGlobalStateCompositeLayout::ConstructGlobalStateFileBackedEffComposit
 			g_pGlobalStateEff512ByteStream = 0;
 		}
 		else {
-			g_pGlobalStateEff512ByteStream = ((VsNetEff512ByteStateStream*) pStorage)->Construct();
+			g_pGlobalStateEff512ByteStream = ((CPortsMessage*) pStorage)->Construct();
 		}
 	}
-	pStateStream = (VsNetEff512ByteStateStream*) g_pGlobalStateEff512ByteStream;
+	pStateStream = (CPortsMessage*) g_pGlobalStateEff512ByteStream;
 
 	*(int*) (pbObjectBase + pCompositeOffsets->m_nRecordTableAOffset18 + 0x28) = 0x14;
 	pStorage = AllocateVSMemBlock(0x3c);
@@ -3219,7 +3219,7 @@ VsNetGlobalStateFileBackedEffComposite::VsNetGlobalStateFileBackedEffComposite()
 	VsNetGlobalStateCompositeLayout* pFront;
 	VsNetCompositeViewOffsets* pCompositeOffsets;
 	VsNetEffTransportRuntimeService* pRuntimeService;
-	VsNetEff512ByteStateStream* pStateStream;
+	CPortsMessage* pStateStream;
 	CHeaders* pRecordSlotTable;
 	VsNetFileBackedCompositeInitialStream* pInitialStream;
 	char* pbObjectBase;
@@ -3241,10 +3241,10 @@ VsNetGlobalStateFileBackedEffComposite::VsNetGlobalStateFileBackedEffComposite()
 			g_pGlobalStateEff512ByteStream = 0;
 		}
 		else {
-			g_pGlobalStateEff512ByteStream = ((VsNetEff512ByteStateStream*) pStorage)->Construct();
+			g_pGlobalStateEff512ByteStream = ((CPortsMessage*) pStorage)->Construct();
 		}
 	}
-	pStateStream = (VsNetEff512ByteStateStream*) g_pGlobalStateEff512ByteStream;
+	pStateStream = (CPortsMessage*) g_pGlobalStateEff512ByteStream;
 
 	*(int*) (pbObjectBase + pCompositeOffsets->m_nRecordTableAOffset18 + 0x28) = 0x14;
 	pStorage = AllocateVSMemBlock(0x3c);
@@ -3459,7 +3459,7 @@ int VsNetLockedEffStreamFileRangeView::WriteLockedEffStreamToFileRange(void)
 short VsNetGlobalStateFileBackedEffComposite::ClaimRuntimeFlag(const char* pszFlags)
 {
 	unsigned char* pbSlotState;
-	VsNetEff512ByteStateStream* pStateStream;
+	CPortsMessage* pStateStream;
 	VsNetCompositeViewOffsets* pOffsets;
 	VsNetFileWrapperObject* pFileWrapper;
 	DWORD cbStream;
@@ -3472,7 +3472,7 @@ short VsNetGlobalStateFileBackedEffComposite::ClaimRuntimeFlag(const char* pszFl
 		return -1;
 	}
 
-	pStateStream = (VsNetEff512ByteStateStream*) g_pGlobalStateEff512ByteStream;
+	pStateStream = (CPortsMessage*) g_pGlobalStateEff512ByteStream;
 	pbSlotState = pStateStream->m_pbStateBytes2c;
 	nSlot = 0;
 	while (nSlot < 0x200 && pbSlotState[nSlot] == 0) {
@@ -3498,7 +3498,7 @@ short VsNetGlobalStateFileBackedEffComposite::ClaimRuntimeFlag(const char* pszFl
 void VsNetGlobalStateFileBackedEffComposite::ClearRuntimeFlag(short nSlot)
 {
 	VsNetGlobalStateCompositeLayout* pComposite;
-	VsNetEff512ByteStateStream* pStateStream;
+	CPortsMessage* pStateStream;
 	unsigned char* pbSlotState;
 	VsNetCompositeViewOffsets* pOffsets;
 	VsNetFileWrapperObject* pFileWrapper;
@@ -3506,7 +3506,7 @@ void VsNetGlobalStateFileBackedEffComposite::ClearRuntimeFlag(short nSlot)
 
 	pComposite = (VsNetGlobalStateCompositeLayout*) pObject;
 	pbSlotState = pComposite->m_pbGlobalStateSlotFlags10;
-	pStateStream = (VsNetEff512ByteStateStream*) g_pGlobalStateEff512ByteStream;
+	pStateStream = (CPortsMessage*) g_pGlobalStateEff512ByteStream;
 	if (pbSlotState == 0 && pStateStream != 0) {
 		/* Assumption: constructor-owned slot map aliases shared state bytes. */
 		pbSlotState = pStateStream->m_pbStateBytes2c;
@@ -3521,7 +3521,7 @@ void VsNetGlobalStateFileBackedEffComposite::ClearRuntimeFlag(short nSlot)
 	}
 	--pbSlotState[nSlot];
 	((VsNetLockedEffStreamFileRangeView*) pObject)->WriteLockedEffStreamToFileRange();
-	if (pStateStream != 0 && HasNonzeroEff512ByteState((int) (unsigned long) pStateStream) == 0) {
+	if (pStateStream != 0 && CPortsMessageAnyUsed((int) (unsigned long) pStateStream) == 0) {
 		pOffsets = pComposite->m_pTimedStreamOffsets20;
 		pFileWrapper = (VsNetFileWrapperObject*) ((char*) pObject + 0x20 + pOffsets->m_nMarkerViewOffset14);
 		if (g_pszFileBasedNetworkConfiguredPath != 0) {
@@ -4081,30 +4081,30 @@ void* CHeaderMessage::Delete(int fDeleteFlags)
 }
 
 // FUNCTION: LEMBALL 0x0047b870
-void VsNetEff512ByteStateStream::Save(void)
+void CPortsMessage::Save(void)
 {
-	VsNetEff512ByteStateStream* pStateStream;
+	CPortsMessage* pStateStream;
 
-	pStateStream = (VsNetEff512ByteStateStream*) this;
+	pStateStream = (CPortsMessage*) this;
 	((VsNetEffStreamBase*) pStateStream)->WriteEffStreamBytes(pStateStream->m_pbStateBytes2c, 0x200);
 }
 
 // FUNCTION: LEMBALL 0x0047b880
-void VsNetEff512ByteStateStream::Load(void)
+void CPortsMessage::Load(void)
 {
-	VsNetEff512ByteStateStream* pStateStream;
+	CPortsMessage* pStateStream;
 
-	pStateStream = (VsNetEff512ByteStateStream*) this;
+	pStateStream = (CPortsMessage*) this;
 	((VsNetEffStreamBase*) pStateStream)->ReadEffStreamBytes(pStateStream->m_pbStateBytes2c, 0x200);
 }
 
 // FUNCTION: LEMBALL 0x0047b890
-void* VsNetEff512ByteStateStream::Delete(BYTE fDeleteFlags)
+void* CPortsMessage::Delete(BYTE fDeleteFlags)
 {
-	VsNetEff512ByteStateStream* pStateStream;
+	CPortsMessage* pStateStream;
 	unsigned char* pbStateBytes;
 
-	pStateStream = (VsNetEff512ByteStateStream*) this;
+	pStateStream = (CPortsMessage*) this;
 	pbStateBytes = pStateStream->m_pbStateBytes2c;
 	pStateStream->m_pVtable = (void**) &g_NETWORK_EffStateStreamVtable;
 	FreeVSMemBlock((void*) (unsigned long) pbStateBytes);
