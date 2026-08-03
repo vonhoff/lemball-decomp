@@ -13,6 +13,7 @@ struct VsNetEffStreamCommon {
 extern MineManagerVtableLayout g_LINKSCF_MineChunkManagerVtable;
 extern void* g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
+extern unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void);
 
 // FUNCTION: LEMBALL 0x00424020
 CMineManager::CMineManager(CAI* pAI, int nCapacity)
@@ -252,4 +253,35 @@ int CMineManager::GetViewData(CViewData* pViewData)
 		} while (i < m_cObjects3C);
 	}
 	return cViewData;
+}
+
+// FUNCTION: LEMBALL 0x00424850
+void CMineManager::LoadLevel(unsigned char* pData, int cbData, unsigned char nVersion)
+{
+	AICOORD position;
+	unsigned short* pRecord;
+	unsigned short nId;
+	unsigned int cObjects;
+
+	cObjects = *(unsigned short*) pData;
+	pData += 2;
+	Initialise(cObjects);
+	while (cObjects != 0) {
+		pRecord = (unsigned short*) pData;
+		if (*(unsigned short*) ((char*) m_pAI30 + 0x54) < 2) {
+			nId = FindFirstFreeManagedEntitySlotIdForwardThunk();
+		}
+		else {
+			nId = *pRecord;
+			++pRecord;
+		}
+		position.x = (unsigned int) pRecord[0] << 12;
+		position.y = (unsigned int) pRecord[1] << 12;
+		position.z = (unsigned int) pRecord[2] << 12;
+		pData = (unsigned char*) (pRecord + 3);
+		Add(nId, position);
+		--cObjects;
+	}
+	(void) cbData;
+	(void) nVersion;
 }

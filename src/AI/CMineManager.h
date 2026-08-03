@@ -25,6 +25,7 @@ public:
 	void Add(unsigned short nId, AICOORD position);
 	void Process(void);
 	int GetViewData(CViewData* pViewData);
+	void LoadLevel(unsigned char* pData, int cbData, unsigned char nVersion);
 
 private:
 	unsigned char m_abReserved00[0x30];
