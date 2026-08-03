@@ -309,3 +309,7 @@ All twenty-five portable network-message methods map across `0x0045EE80..0x0045F
 ## Typed resource loader reconstruction
 
 Eight portable `CResPALETTE`, `CResSTRING`, `CResBITMAP`, `CResZRLE`, `CResEFFECT`, and `CResBIN` methods map across `0x0045DD90..0x0045E540`. Exact type tags, expanded layouts, descriptor parsing, callers and vtables support the batch while preserving the non-obvious `VARLOAD.CPP`, `MogLoad.cpp`, and `DEMO.CPP` physical split. Adjacent Windows-only loaders, parsers, type slots, and deleting wrappers remain separate.
+
+## CResMOVIE reconstruction
+
+All seven portable movie/list-resource methods map across `0x0045DE70..0x0045E120` in `VARLOAD.CPP`. Exact LIST-tag loading, paired `CResSTRING`/`CResINT` arrays, overload ABI, callers and vtable slots support the family. The unused Windows default constructor, scalar deleting wrapper, adjacent GAMI family and trivial filler slots remain target-only or separate.
