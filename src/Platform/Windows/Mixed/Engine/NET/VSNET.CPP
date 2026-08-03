@@ -2515,7 +2515,7 @@ void VsNetSimpleEffTransportRecordSlotTable::CopyPayloadIntoSimpleRecordSlot(int
 	m_apRecords08[nIndex]->CopyIntoSimpleEffTransportRecordSlot(pvSource, cbSource, pPayload);
 }
 
-#include "../../../../../Engine/NET/CReadMSBuff.CPP"
+#include "../../../../../Visos/Generic/CReadMSBuff.cpp"
 
 // FUNCTION: LEMBALL 0x00461560
 void* ConstructShiftedLockedRecordSlotTable(void* pObject, int cPacketIds, unsigned int cbRecord)
