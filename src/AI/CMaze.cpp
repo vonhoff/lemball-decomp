@@ -9,6 +9,16 @@ struct MazeMapView {
 	int m_cRows14;
 };
 
+struct LevelTileGridOwnerView {
+	unsigned char GetWalk(int x, int y);
+};
+
+static const int g_anMazeNeighborX[9] = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
+static const int g_anMazeNeighborY[9] = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
+static const int g_afMazeNeighborEnabled[9] = {0, 1, 0, 1, 0, 1, 0, 1, 0};
+static const unsigned char g_abMazeEdgeMaskA[9] = {0, 1, 0, 8, 0, 4, 0, 2, 0};
+static const unsigned char g_abMazeEdgeMaskB[9] = {0, 16, 0, 128, 0, 64, 0, 32, 0};
+
 extern void __fastcall FillReachabilityGridFromTileFlagsThunk(void* pMaze);
 
 // FUNCTION: LEMBALL 0x00423090
@@ -77,4 +87,32 @@ void CMaze::Initialise(void)
 		m_ppRows04[i] = (unsigned short*) AllocateVSMemBlock((unsigned int) m_cColumns1010 * 2);
 	}
 	FillReachabilityGridFromTileFlagsThunk(this);
+}
+
+// FUNCTION: LEMBALL 0x00423230
+int CMaze::CalcNewDistance(int x, int y)
+{
+	unsigned short nDistance;
+	unsigned short nNeighborDistance;
+	unsigned char nWalk;
+	int fChanged;
+	int i;
+
+	nDistance = m_ppRows04[y][x];
+	nWalk = ((LevelTileGridOwnerView*) m_pMap00)->GetWalk(x, y);
+	fChanged = 0;
+	for (i = 0; i < 9; ++i) {
+		if (g_afMazeNeighborEnabled[i] != 0 && (g_abMazeEdgeMaskA[i] & nWalk) != 0 &&
+			(g_abMazeEdgeMaskB[i] & nWalk) != 0) {
+			nNeighborDistance = m_ppRows04[y + g_anMazeNeighborY[i]][x + g_anMazeNeighborX[i]];
+			if (nNeighborDistance < nDistance) {
+				fChanged = 1;
+				nDistance = nNeighborDistance;
+			}
+		}
+	}
+	if (fChanged != 0) {
+		m_ppRows04[y][x] = nDistance + 1;
+	}
+	return fChanged;
 }

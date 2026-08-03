@@ -9,6 +9,7 @@ public:
 	~CMaze(void);
 	void ReInitialise(void);
 	void Initialise(void);
+	int CalcNewDistance(int x, int y);
 
 private:
 	CMap* m_pMap00;
