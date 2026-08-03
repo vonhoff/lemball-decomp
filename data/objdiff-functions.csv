@@ -451,7 +451,7 @@ address,size,name,unit
 0x00416410,16,CGameObject::OffLift,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00416420,204,CGameObject::OnLift,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004164F0,21,CGameObject::OffLift,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x00416510,84,CGameObject::StartSommersault,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00416510,84,CGameObject::StartSommersault,AI/LVRANDVT.CPP
 0x00416570,30,CGameObject::IsSelectable,AI/CGameObjectMove.cpp
 0x00416590,80,CGameObject::ResetInstructions,AI/CGameObjectMove.cpp
 0x004165E0,47,CGameObject::Init,AI/CGameObjectId.cpp

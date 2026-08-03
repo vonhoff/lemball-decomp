@@ -57,7 +57,8 @@ public:
 	short m_nHeadingOctantB4;
 	char m_abReservedB6[2];
 	int m_nStateB8;
-	char m_abReservedBC[0xc];
+	short m_nActionPhaseBC;
+	char m_abReservedBE[0xa];
 	int m_nMotionStartTickC8;
 	int m_nNextUpdateTickCC;
 	char m_abReservedD0[0x4c];
@@ -75,6 +76,7 @@ public:
 	void GetBoundingBox(CVSRect& rect);
 	int IsSelectable(void);
 	void ResetInstructions(void);
+	void StartSommersault(void);
 	static void Init(CAI* pAI);
 	unsigned short GetId(void);
 	void SetId(unsigned short nSlotId);

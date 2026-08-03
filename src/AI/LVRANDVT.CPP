@@ -1,16 +1,7 @@
+#include "AI/CGameObject.h"
+
 extern void* g_pSessionRandomState;
 extern int g_nLevelFrameClockTick;
-
-class CGameObject {
-public:
-	void StartSommersault(void);
-
-private:
-	unsigned char m_abReserved00[0xbc];
-	short m_nActionPhaseBC;
-	unsigned char m_abReservedBE[0x0e];
-	int m_nActionDeadlineCC;
-};
 
 // GLOBAL: LEMBALL 0x0049d134
 int g_nManagedEntityRandomActionPhase = 0;
@@ -20,7 +11,7 @@ void CGameObject::StartSommersault(void)
 {
 	int nRandom = (*(int*) g_pSessionRandomState * 0x29 + 0x1f) & 0x7fffff;
 	*(int*) g_pSessionRandomState = nRandom;
-	m_nActionDeadlineCC = g_nLevelFrameClockTick + (nRandom % 500 + 50) / 50;
+	m_nNextUpdateTickCC = g_nLevelFrameClockTick + (nRandom % 500 + 50) / 50;
 	m_nActionPhaseBC = (short) g_nManagedEntityRandomActionPhase;
 	g_nManagedEntityRandomActionPhase ^= 1;
 }
