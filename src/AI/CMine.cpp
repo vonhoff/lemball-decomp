@@ -1,6 +1,7 @@
 #include "AI/CMine.h"
 
 #include "AI/AICoord.h"
+#include "AI/CMineManager.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Level/CHUNKOBJVT.H"
@@ -130,8 +131,23 @@ void CMine::Trigger(int nDelay)
 	}
 }
 
+// FUNCTION: LEMBALL 0x00423d70
+void CMine::DoActivate(void)
+{
+	*(int*) ((char*) this + 0x13c) = 1;
+	if (*(int*) ((char*) this + 0x144) != 0) {
+		*(int*) ((char*) this + 0x140) = 0;
+		*(int*) ((char*) this + 0xc8) = *(int*) ((char*) this + 0x148) + g_nLevelFrameClockTick;
+		((CMineManager*) *(void**) ((char*) this + 0x60))->Triggered(this);
+		return;
+	}
+	SetTerrain();
+	*(int*) ((char*) this + 0x94) = g_nLevelFrameClockTimeMs;
+	*(int*) ((char*) this + 0xcc) = g_nLevelFrameClockTick + 0x14;
+}
+
 // FUNCTION: LEMBALL 0x00423dd0
-void LEMBALL_FASTCALL SetMineOrCollTileVariant(void* pvObject)
+void CMine::SetTerrain(void)
 {
 	char* pObject;
 	char* pGrid;
@@ -139,7 +155,7 @@ void LEMBALL_FASTCALL SetMineOrCollTileVariant(void* pvObject)
 	int x;
 	int y;
 
-	pObject = (char*) pvObject;
+	pObject = (char*) this;
 	x = (*(int*) (pObject + 0x9c) >> 12) / 16;
 	y = (*(int*) (pObject + 0xa0) >> 12) / 16;
 	if (*(int*) (pObject + 0x140) == 0) {
@@ -177,7 +193,7 @@ int LEMBALL_FASTCALL AdvanceMineChunkObjectStateMachine(void* pvObject)
 				*(int*) (pObject + 0x138) = 0;
 				break;
 			case 0x1b:
-				SetMineOrCollTileVariant(pObject);
+				((CMine*) pObject)->SetTerrain();
 				break;
 			}
 		}
@@ -190,7 +206,7 @@ int LEMBALL_FASTCALL AdvanceMineChunkObjectStateMachine(void* pvObject)
 		break;
 	case 0x1a:
 		if ((unsigned int) *(int*) (pObject + 0xc8) < (unsigned int) g_nLevelFrameClockTick) {
-			SetMineOrCollTileVariant(pObject);
+			((CMine*) pObject)->SetTerrain();
 			*(int*) (pObject + 0x94) = g_nLevelFrameClockTimeMs;
 			*(int*) (pObject + 0xcc) = g_nLevelFrameClockTick + 0x14;
 			((MineChunkObjectActionView*) pObject)->SetManagedEntityStateId(0x1b);

@@ -10,6 +10,8 @@ public:
 	void Restart(void);
 	void Initialise(void);
 	void Trigger(int nDelay);
+	void DoActivate(void);
+	void SetTerrain(void);
 	void Set(AICOORD position);
 	void StepOn(CGameObject* pObject);
 	void OnGround(void);
