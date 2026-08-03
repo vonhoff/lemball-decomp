@@ -137,3 +137,33 @@ int CLift::Process(void)
 	}
 	return 1;
 }
+
+// FUNCTION: LEMBALL 0x00425440
+void CLift::CheckObjects(void)
+{
+	struct ObjectView {};
+	typedef int (ObjectView::*ObjectPredicate)(void);
+	typedef int (ObjectView::*ObjectBoundsPredicate)(tCoord3d* pStart, tCoord3d* pEnd);
+	char* pObject;
+	void** pPassenger;
+	void* pChild;
+	ObjectPredicate predicate;
+	ObjectBoundsPredicate boundsPredicate;
+	int i;
+
+	pObject = (char*) this;
+	pPassenger = (void**) (pObject + 0x170);
+	for (i = 0; i < 8; ++i, ++pPassenger) {
+		pChild = *pPassenger;
+		if (pChild != 0) {
+			*(void**) &predicate = (*(void***) pChild)[0x38];
+			*(void**) &boundsPredicate = (*(void***) pChild)[0x28];
+			if ((((ObjectView*) pChild)->*predicate)() != 0 ||
+				(((ObjectView*) pChild)->*boundsPredicate)((tCoord3d*) (pObject + 0x13a),
+														   (tCoord3d*) (pObject + 0x140)) == 0) {
+				*(int*) ((char*) pChild + 0x110) = 0xffff;
+				*pPassenger = 0;
+			}
+		}
+	}
+}
