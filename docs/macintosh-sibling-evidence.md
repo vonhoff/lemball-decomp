@@ -477,3 +477,7 @@ All fourteen `CBroadcast` bodies map in order to `0x00460350..0x00460A50`. The c
 ## Write contiguous buffer reconstruction
 
 `CWriteCBuff` constructor, `StorePacket`, and `IsPacketAvailable` map to `0x00461970/0x00461990/0x004619D0`. Packet IDs select write slots modulo capacity, payload/message context is copied only into available slots, and availability checks inspect the subsequent sequence slot. Physical definitions remain in `VSNET.CPP` under the demonstrated downstream exact-ownership constraint.
+
+## Base network lifecycle reconstruction
+
+`CBaseNetwork` constructor, `Initialise`, `DoInitialise`, destructor, and `ShutDown` map to `0x004619F0/0x00461AA0/0x00461BD0/0x00461DB0/0x00461E10`. Together they own queue registration, control-message/global-stream allocation, transport startup readiness, peer/broadcast shutdown, and global resource release. Physical definitions remain in `VSNET.CPP`; the remaining `CBaseNetwork` peer-routing and dispatch methods are tracked separately.

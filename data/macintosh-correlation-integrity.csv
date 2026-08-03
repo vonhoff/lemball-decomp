@@ -1301,3 +1301,8 @@ CODE_02_Visos (Generic).bin,0x0000E4E7,StoreSubPacket__12CReadCMSBuffFv,0x004619
 CODE_02_Visos (Generic).bin,0x0000E526,__ct__11CWriteCBuffFiUs,0x00461970,high,constructs write-slot table with ring capacity,exact_tuple,0x0000E526
 CODE_02_Visos (Generic).bin,0x0000E595,StorePacket__11CWriteCBuffFUsPCUciP15CNetworkMessage,0x00461990,high,claims packet-id modulo slot and copies payload message context,exact_tuple,0x0000E595
 CODE_02_Visos (Generic).bin,0x0000E5F5,IsPacketAvailable__11CWriteCBuffFUs,0x004619D0,high,returns next packet slot availability modulo capacity,exact_tuple,0x0000E5F5
+CODE_02_Visos (Generic).bin,0x0000E6E2,__ct__12CBaseNetworkFv,0x004619F0,high,constructs queue-backed network runtime and initializes transport state,exact_tuple,0x0000E6E2
+CODE_02_Visos (Generic).bin,0x0000E864,Initialise__12CBaseNetworkFPCci,0x00461AA0,high,starts transport runtime and waits for initialized connection readiness,exact_tuple,0x0000E864
+CODE_02_Visos (Generic).bin,0x0000EA62,DoInitialise__12CBaseNetworkFv,0x00461BD0,high,allocates control messages and global streams then starts broadcast transport,exact_tuple,0x0000EA62
+CODE_02_Visos (Generic).bin,0x0000EB36,__dt__12CBaseNetworkFv,0x00461DB0,high,detaches and deletes transport dispatch queues before base destruction,exact_tuple,0x0000EB36
+CODE_02_Visos (Generic).bin,0x0000ED82,ShutDown__12CBaseNetworkFv,0x00461E10,high,stops connections and broadcast then releases global transport resources,exact_tuple,0x0000ED82

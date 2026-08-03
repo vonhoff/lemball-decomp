@@ -2435,11 +2435,11 @@ address,size,name,unit
 0x00461970,24,CWriteCBuff::CWriteCBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461990,58,CWriteCBuff::StorePacket,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x004619D0,27,CWriteCBuff::IsPacketAvailable,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x004619F0,174,construct_eff_transport_runtime_state,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00461AA0,301,start_eff_transport_runtime_and_wait_ready,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00461BD0,477,initialize_eff_transport_runtime_globals,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00461DB0,90,destroy_eff_transport_runtime_globals,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00461E10,417,release_eff_transport_runtime_owner_state,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x004619F0,174,CBaseNetwork::CBaseNetwork,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00461AA0,301,CBaseNetwork::Initialise,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00461BD0,477,CBaseNetwork::DoInitialise,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00461DB0,90,CBaseNetwork::~CBaseNetwork,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00461E10,417,CBaseNetwork::ShutDown,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461FC0,122,unlink_and_delete_eff_transport_peer,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00462040,232,allocate_eff_transport_peer_entry,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00462130,74,mark_existing_eff_transport_peer_active,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
