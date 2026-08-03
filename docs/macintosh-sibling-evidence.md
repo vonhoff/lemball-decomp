@@ -545,3 +545,5 @@ The seven CODE_02 spelling variants of `CheckAndAmalgamate`, `AddToBlockList`, `
 ## Portable memory-allocation globals
 
 `InternalNew`, `InternalDelete`, global `operator new`, and global `operator delete` map to `0x0045A6B0/0x0045A730/0x0045A780/0x0045A790`. The internal pair tries the optional small-block buckets before falling back to the main arena and asserting allocation/free success; the global operators are thin delegates to that pair.
+
+Global `CheckValidPointer` maps to `0x0045A800`: both implementations scan every enabled small-memory bucket before consulting the main arena. The member `CArena::CheckValidPointer` and `CBucket::CheckValidPointer` bodies remain distinct callees.

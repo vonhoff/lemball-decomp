@@ -8,8 +8,8 @@ This audit does **not** establish complete portable coverage. Only accepted corr
 
 | Category | Count | Meaning |
 | --- | ---: | --- |
-| Accepted x86 correlation | 1366 | Exact Macintosh module+mangled spelling has a reviewed x86 mapping; offset integrity is reported separately. |
-| Present spelling/source analogue | 1 | Exact scoped spelling exists in current source, but equivalence is not proven. |
+| Accepted x86 correlation | 1367 | Exact Macintosh module+mangled spelling has a reviewed x86 mapping; offset integrity is reported separately. |
+| Present spelling/source analogue | 0 | Exact scoped spelling exists in current source, but equivalence is not proven. |
 | Likely inlined/merged | 13 | Exact scoped header definition or split Windows implementation exists, but no standalone x86 address is accepted. |
 | Platform-specific | 885 | Unmapped body belongs to `Visos (Mac Specific)`, the reviewed Macintosh Toolbox/Open Transport `UtilMain` set, or an individually evidenced Macintosh-only implementation. |
 | Genuinely missing/unresolved | 585 | No accepted address and no exact scoped source spelling. |
@@ -33,7 +33,7 @@ The non-Mac-specific target contains 1958 symbols after excluding the 12 reviewe
 | Map | 20 | 0 | 0 | 0 | 0 | 20 |
 | Network | 0 | 0 | 0 | 0 | 24 | 24 |
 | UtilMain | 0 | 0 | 0 | 12 | 0 | 12 |
-| Visos (Generic) | 289 | 1 | 10 | 1 | 325 | 626 |
+| Visos (Generic) | 290 | 0 | 10 | 1 | 325 | 626 |
 | Visos (Mac Specific) | 10 | 0 | 0 | 869 | 0 | 879 |
 | views_2d | 87 | 0 | 0 | 0 | 118 | 205 |
 

@@ -1389,3 +1389,4 @@ CODE_02_Visos (Generic).bin,0x00015BCC,InternalNew__FUl,0x0045A6B0,high,small bu
 CODE_02_Visos (Generic).bin,0x00015C48,InternalDelete__FPv,0x0045A730,high,small bucket return first then main arena free with failure assertion,exact_tuple,0x00015C48
 CODE_02_Visos (Generic).bin,0x00015C6E,__nw__FUl,0x0045A780,high,global allocation wrapper forwards to InternalNew,exact_tuple,0x00015C6E
 CODE_02_Visos (Generic).bin,0x00015C8A,__dl__FPv,0x0045A790,high,global deletion wrapper forwards to InternalDelete,exact_tuple,0x00015C8A
+CODE_02_Visos (Generic).bin,0x00015CE2,CheckValidPointer__FPv,0x0045A800,high,checks every enabled small-memory bucket then the main arena for pointer ownership,exact_tuple,0x00015CE2
