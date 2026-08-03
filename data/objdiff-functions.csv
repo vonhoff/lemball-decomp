@@ -936,8 +936,8 @@ address,size,name,unit
 0x00424C30,30,delete_mine_chunk_manager,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00424C60,105,delete_mine_chunk_object_array_or_scalar,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00424CF0,5,destroy_level_chunk_object_base,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x00424D00,27,CLift::CLift,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x00424D20,11,CLift::~CLift,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00424D00,27,CLift::CLift,AI/CLift.cpp
+0x00424D20,11,CLift::~CLift,AI/CLift.cpp
 0x00424D30,184,CLift::CalculateCliff,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00424DF0,522,CLift::Edit,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00425010,77,CLift::Set,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP

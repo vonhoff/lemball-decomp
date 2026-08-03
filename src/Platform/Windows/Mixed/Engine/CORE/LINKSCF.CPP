@@ -2,6 +2,7 @@
 #include "AI/CInvisibleSwitchManager.h"
 #include "AI/CLaser.h"
 #include "AI/CLaserManager.h"
+#include "AI/CLift.h"
 #include "Control/CGame.h"
 #include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
@@ -1270,14 +1271,9 @@ LinkScfMineChunkManagerView* LinkScfMineChunkManagerView::ConstructMineChunkMana
 	return this;
 }
 
-extern void* g_LINKSCF_LiftChunkObjectVtable[16];
-
-// MACINTOSH: CLift::~CLift()
-// FUNCTION: LEMBALL 0x00424d20
 void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject)
 {
-	*(void**) pObject = g_LINKSCF_LiftChunkObjectVtable;
-	DestroyLevelChunkObjectBaseAutoThunk(pObject);
+	((CLift*) pObject)->~CLift();
 }
 
 // MACINTOSH: CLiftManager::CLiftManager(CAI*, int)
