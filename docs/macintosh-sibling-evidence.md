@@ -436,7 +436,7 @@ All eight portable methods map from constructor `0x0047AF30` through `ConnectSet
 
 ## Base socket reconstruction
 
-`CBaseCommonSocket` constructor, destructor and `SocketError` map to `0x0045F680`, `0x0045F6C0`, and `0x0045F6E0`. Its portable `CloseSocket` has no standalone Windows body: Windows splits raw `closesocket` and last-error capture into adjusted callbacks at `0x00471A60/0x00471AD0`, so neither callback is falsely consumed. `CBaseSocket` constructor, `AddData`, and `GetData` map to `0x0045F750/0x0045F790/0x0045F7F0`, preserving the two-dword, three-word, one-byte tagged header.
+`CBaseCommonSocket` constructor, destructor, `SocketError`, and `CloseSocket` map to `0x0045F680`, `0x0045F6C0`, `0x0045F6E0`, and `0x0045F720`. `CloseSocket` is the standalone state wrapper: it clears active fields, invokes virtual close, and falls back to `SocketError` on `-1`; raw callback `0x00471A60` remains unconsumed. `CBaseSocket` constructor, `AddData`, and `GetData` map to `0x0045F750/0x0045F790/0x0045F7F0`, preserving the two-dword, three-word, one-byte tagged header.
 
 ## Broadcast runtime reconstruction
 

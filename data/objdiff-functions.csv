@@ -2346,7 +2346,7 @@ address,size,name,unit
 0x0045F680,61,CBaseCommonSocket::CBaseCommonSocket,Platform/Windows/Mixed/Engine/NET/VSNETSTR.CPP
 0x0045F6C0,19,CBaseCommonSocket::~CBaseCommonSocket,Platform/Windows/Mixed/Engine/NET/VSNETSTR.CPP
 0x0045F6E0,52,CBaseCommonSocket::SocketError,Platform/Windows/Mixed/Engine/NET/VSNETSTR.CPP
-0x0045F720,41,reset_eff_transport_handle_group,Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.CPP
+0x0045F720,41,CBaseCommonSocket::CloseSocket,Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.CPP
 0x0045F750,51,CBaseSocket::CBaseSocket,Platform/Windows/Mixed/Engine/NET/VSNETSTR.CPP
 0x0045F790,91,CBaseSocket::AddData,Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x0045F7F0,45,CBaseSocket::GetData,Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
