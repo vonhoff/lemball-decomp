@@ -68,6 +68,14 @@ def load_owners(path):
     return owners
 
 
+def load_addresses(path):
+    if path is None:
+        return set()
+    with path.open(newline="", encoding="utf-8-sig") as stream:
+        rows = csv.DictReader(line for line in stream if not line.startswith("#"))
+        return {int(row["address"], 16) for row in rows}
+
+
 def f32(value):
     return struct.unpack("<f", struct.pack("<f", value))[0]
 
@@ -94,9 +102,10 @@ def measures(functions, total_units=1):
     return result
 
 
-def build_report(inventory_path, reccmp_path, correlations_path):
+def build_report(inventory_path, reccmp_path, correlations_path, compiler_generated_path=None):
     native = json.loads(reccmp_path.read_text(encoding="utf-8"))
     owners = load_owners(correlations_path)
+    compiler_generated = load_addresses(compiler_generated_path)
     matches = {
         int(row["address"], 16): row
         for row in native["data"]
@@ -126,8 +135,10 @@ def build_report(inventory_path, reccmp_path, correlations_path):
             if owner:
                 function["mac_name"] = owner[2]
                 group = owner[:2]
+            elif address in compiler_generated:
+                group = ("Windows", "Compiler-generated")
             else:
-                group = ("Windows/MSVC", "")
+                group = ("Windows", "Uncorrelated")
             groups[group].append(function)
 
     units = []
@@ -164,9 +175,16 @@ def main():
     parser.add_argument(
         "--correlations", type=Path, default=Path("data/macintosh-x86-correlations.csv")
     )
+    parser.add_argument(
+        "--compiler-generated",
+        type=Path,
+        default=Path("data/reccmp-compiler-generated.csv"),
+    )
     parser.add_argument("--output", type=Path, default=Path("build-msvc400/report.json"))
     args = parser.parse_args()
-    report = build_report(args.inventory, args.reccmp, args.correlations)
+    report = build_report(
+        args.inventory, args.reccmp, args.correlations, args.compiler_generated
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     values = report["measures"]
