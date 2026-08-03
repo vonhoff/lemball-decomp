@@ -119,3 +119,20 @@ void CLiftManager::Process(void)
 		} while (i < m_cObjects34);
 	}
 }
+
+// FUNCTION: LEMBALL 0x00425d80
+void CLiftManager::StepOn(const AICOORD& coord, CGameObject* pObject)
+{
+	int cbOffset;
+	int i;
+
+	i = 0;
+	if (m_cObjects34 > 0) {
+		cbOffset = 0;
+		do {
+			((CLift*) ((char*) m_pObjects3C + cbOffset))->StepOn(coord, pObject);
+			cbOffset += 0x190;
+			++i;
+		} while (i < m_cObjects34);
+	}
+}

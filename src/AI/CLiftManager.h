@@ -2,7 +2,9 @@
 #define LEMBALL_CLIFTMANAGER_H
 
 class CAI;
+class CGameObject;
 class CLift;
+struct AICOORD;
 
 class CLiftManager {
 public:
@@ -11,6 +13,7 @@ public:
 	void Restart(void);
 	void Initialise(int nCapacity);
 	void Process(void);
+	void StepOn(const AICOORD& coord, CGameObject* pObject);
 
 private:
 	unsigned char m_abReserved00[0x30];
