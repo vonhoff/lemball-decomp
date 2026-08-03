@@ -2,6 +2,7 @@
 #define LEMBALL_CMOVER_H
 
 #include "AI/AICoord.h"
+#include "AI/CMove3d.h"
 
 struct ManagedEntitySlotOwnerView {
 	char m_abReserved00[0x6c];
@@ -17,6 +18,7 @@ public:
 	void Restart(void);
 	void Initialise(void);
 	void SetPos(void);
+	void SetUpNextNode(unsigned long nTime);
 	void MoveObjects(int nDeltaX, int nDeltaY, int nDeltaZ);
 	void Switch(void);
 	int IsOn(AICOORD& point);
@@ -36,7 +38,8 @@ private:
 	int m_fActive138;
 	char m_abReserved13C[8];
 	int m_nMode144;
-	char m_abReserved148[0x20];
+	int m_fSwitch148;
+	CMove3d m_Move14C;
 	int m_iNode168;
 	int m_nValue16C;
 	int m_nState170;

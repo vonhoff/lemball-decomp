@@ -6,6 +6,7 @@ extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern void __fastcall ResetMoveChunkObjectRuntimeStateThunk(void* pObject);
 extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void* g_LEVELVT_MoveChunkObjectVtable[16];
+extern int Distance2DIntPixels(int x1, int y1, int x2, int y2);
 extern void* __fastcall get_managed_entity_owner_group(void* pEntity);
 extern void __fastcall clear_managed_entity_child_pending_state_if_interruptible(void* pEntity);
 
@@ -168,6 +169,38 @@ void CMover::Set(unsigned short nSlotId, short nHeading, int nMode, int iNode, i
 	m_cAttachedEntities174 = 0;
 	m_nMode144 = nMode;
 	m_nValue16C = nValue;
+}
+
+// FUNCTION: LEMBALL 0x0042e850
+void CMover::SetUpNextNode(unsigned long nTime)
+{
+	LevelNodePoint point;
+	CPt3 start;
+	CPt3 end;
+	int iNextNode = m_nState170 + 1;
+	MoveChunkTileGridView* pGrid = (MoveChunkTileGridView*) g_pLevelTileGrid;
+	short nHeight = 0;
+
+	if (iNextNode >= m_nValue16C) {
+		iNextNode = 0;
+	}
+	((LevelModeNodeView*) g_pActiveManagedEntityOwner)->CopyNodePointByIndex(&point, m_iNode168 + iNextNode);
+	if ((point.m_anValues[0] >> 12) >= 0 && (point.m_anValues[1] >> 12) >= 0 &&
+		(point.m_anValues[0] >> 16) < pGrid->m_cColumns10 && (point.m_anValues[1] >> 16) < pGrid->m_cRows14) {
+		CGround* pGround =
+			(CGround*) &pGrid
+				->m_pCells0C[(point.m_anValues[1] >> 16) * pGrid->m_cColumns10 + (point.m_anValues[0] >> 16)];
+		nHeight = pGround->GetZThunk((point.m_anValues[0] >> 12) & 15, (point.m_anValues[1] >> 12) & 15);
+	}
+	start.x = m_nWorldX9C >> 12;
+	start.y = m_nWorldYA0 >> 12;
+	start.z = m_nWorldZA4 >> 12;
+	end.x = point.m_anValues[0] >> 12;
+	end.y = point.m_anValues[1] >> 12;
+	end.z = ((unsigned short) nHeight << 12) >> 12;
+	*(int*) ((char*) this + 0xc8) = nTime;
+	*(int*) ((char*) this + 0xcc) = nTime + Distance2DIntPixels(start.x, start.y, end.x, end.y);
+	m_Move14C.Set(start, end, nTime, 1);
 }
 
 // FUNCTION: LEMBALL 0x0042ea40
