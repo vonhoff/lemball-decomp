@@ -13,6 +13,7 @@ public:
 	int m_nVectorCursor100;
 
 	void Restart(void);
+	~CFormationManager(void);
 };
 
 #endif
