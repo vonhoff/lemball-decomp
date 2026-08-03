@@ -2083,12 +2083,12 @@ address,size,name,unit
 0x0045A4B0,6,CRAMArena::GetSizeOfBlock,Visos/Generic/Memory.cpp
 0x0045A4C0,54,CRAMArena::CreateNew,Visos/Generic/Memory.cpp
 0x0045A500,54,CRAMArena::CreateNewBlock,Visos/Generic/Memory.cpp
-0x0045A540,39,construct_memory_block_base,Visos/Generic/Memory.cpp
-0x0045A570,7,restore_memory_block_base_vtable,Visos/Generic/Memory.cpp
+0x0045A540,39,CMBlock::CMBlock,Visos/Generic/Memory.cpp
+0x0045A570,7,CMBlock::~CMBlock,Visos/Generic/Memory.cpp
 0x0045A580,36,is_pointer_inside_memory_block,Visos/Generic/Memory.cpp
-0x0045A5B0,95,vsmem_report_block_stub,Visos/Generic/Memory.cpp
-0x0045A610,3,noop_callback_0045a610,Visos/Generic/Memory.cpp
-0x0045A630,5,return_placement_block_storage,Visos/Generic/Memory.cpp
+0x0045A5B0,95,CMBlock::StreamOut,Visos/Generic/Memory.cpp
+0x0045A610,3,CMBlock::SetDesc,Visos/Generic/Memory.cpp
+0x0045A630,5,CMBlock::__nw,Visos/Generic/Memory.cpp
 0x0045A640,61,construct_memory_arena_block,Visos/Generic/Memory.cpp
 0x0045A6B0,127,allocate_vsmem_block_impl,Visos/Generic/Memory.cpp
 0x0045A730,72,free_vsmem_block_impl,Visos/Generic/Memory.cpp

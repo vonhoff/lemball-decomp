@@ -257,3 +257,7 @@ All four portable methods map at `0x00473180..0x00473340` in physical `Memory.cp
 ## CVSStreambuf reconstruction
 
 The portable base constructor and destructor map to `0x004583E0` and `0x00458400` in physical `VSINIT.CPP`. Exact 68K and x86 bodies only install/restore the base vtable; the constructor retains the two unused stack arguments via `RET 8`. The richer fixed-buffer constructor `0x0045AD70` is a derived object, while `0x00458E60` remains a deleting wrapper.
+
+## CMBlock reconstruction
+
+All five portable base methods map at `0x0045A540..0x0045A630` in physical `Memory.cpp`. Independent exact-body auditing confirms the `0x28` Windows header, arena/list fields, stream report slot, no-op description setter, and placement allocator. Pointer helper `0x0045A580`, derived `CMRAMBlock` construction, allocator routines, and return-this destructor wrappers remain separate.
