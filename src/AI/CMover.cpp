@@ -126,3 +126,13 @@ void CMover::Switch(void)
 {
 	*(int*) ((char*) this + 0x148) = 1;
 }
+
+// FUNCTION: LEMBALL 0x0042eee0
+int CMover::IsOn(AICOORD& point)
+{
+	int nMinX = (m_nWorldX9C >> 12) - 8;
+	int nMinY = (m_nWorldYA0 >> 12) - 8;
+	int nX = point.x >> 12;
+	int nY = point.y >> 12;
+	return nMinX <= nX && nX <= nMinX + 15 && nMinY <= nY && nY <= nMinY + 15;
+}

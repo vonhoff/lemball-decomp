@@ -1,6 +1,8 @@
 #ifndef LEMBALL_CMOVER_H
 #define LEMBALL_CMOVER_H
 
+#include "AI/AICoord.h"
+
 struct ManagedEntitySlotOwnerView {
 	char m_abReserved00[0x6c];
 	unsigned short m_nSlotId6C;
@@ -13,6 +15,7 @@ public:
 	void Restart(void);
 	void Initialise(void);
 	void Switch(void);
+	int IsOn(AICOORD& point);
 	int IsAt(int x, int y, int* pHeight);
 	void Set(unsigned short nSlotId, short nHeading, int nMode, int iNode, int nValue);
 

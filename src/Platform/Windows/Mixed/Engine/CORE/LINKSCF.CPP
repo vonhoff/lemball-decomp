@@ -1720,17 +1720,6 @@ void LEMBALL_FASTCALL AdvanceIceChunkManagerObjects(void* pManager)
 	}
 }
 
-// MACINTOSH: CMover::IsOn(AICOORD&)
-// FUNCTION: LEMBALL 0x0042eee0
-int LEMBALL_FASTCALL is_point_inside_move_chunk_bounds(void* pObject, void* pUnused, const int* pPoint)
-{
-	int nMinX = (*(int*) ((char*) pObject + 0x9c) >> 12) - 8;
-	int nMinY = (*(int*) ((char*) pObject + 0xa0) >> 12) - 8;
-	int nX = pPoint[0] >> 12;
-	int nY = pPoint[1] >> 12;
-	(void) pUnused;
-	return nMinX <= nX && nX <= nMinX + 15 && nMinY <= nY && nY <= nMinY + 15;
-}
 
 // MACINTOSH: CMover::VerifyObjects()
 // FUNCTION: LEMBALL 0x0042ef40
