@@ -128,7 +128,6 @@ struct LinkScfBoonChunkManagerView {
 // EmitCollChunkManagerRenderEntries
 
 // RefreshActiveMineChunkObjects
-// STUB: LEMBALL 0x00424800
 // EmitMineChunkManagerRenderEntries
 
 

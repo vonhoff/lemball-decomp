@@ -3,6 +3,7 @@
 
 class CAI;
 class CGameObject;
+class CViewData;
 class CMine;
 struct AICOORD;
 
@@ -23,6 +24,7 @@ public:
 	void StepOn(const AICOORD& position, CGameObject* pObject);
 	void Add(unsigned short nId, AICOORD position);
 	void Process(void);
+	int GetViewData(CViewData* pViewData);
 
 private:
 	unsigned char m_abReserved00[0x30];
@@ -38,7 +40,7 @@ struct MineManagerVtableLayout {
 	void (CMineManager::*m_pRestart18)(void);
 	void (CMineManager::*m_pProcess1C)(void);
 	void* m_pCommand20;
-	void* m_pGetViewData24;
+	int (CMineManager::*m_pGetViewData24)(CViewData* pViewData);
 };
 
 typedef char CMineManagerSizeCheck[sizeof(CMineManager) == 0x44 ? 1 : -1];

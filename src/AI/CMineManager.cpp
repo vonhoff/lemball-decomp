@@ -45,6 +45,13 @@ struct ManagedEntitySlotOwnerView {
 
 typedef void(LEMBALL_FASTCALL* MineProcessProc)(void* pObject);
 
+struct MineViewObject {
+	virtual void Reserved0(void);
+	virtual void Reserved1(void);
+	virtual void Reserved2(void);
+	virtual void GetViewData(CViewData* pViewData);
+};
+
 // FUNCTION: LEMBALL 0x00424080
 void CMineManager::Restart(void)
 {
@@ -223,4 +230,26 @@ void CMineManager::Process(void)
 			++i;
 		} while (i < m_cObjects3C);
 	}
+}
+
+// FUNCTION: LEMBALL 0x00424800
+int CMineManager::GetViewData(CViewData* pViewData)
+{
+	int cbObject;
+	int cViewData;
+	int i;
+
+	cbObject = 0;
+	cViewData = 0;
+	i = 0;
+	if (m_cObjects3C > 0) {
+		do {
+			((MineViewObject*) ((char*) m_pObjects34 + cbObject))->GetViewData(pViewData);
+			cbObject += 0x150;
+			++i;
+			++cViewData;
+			pViewData = (CViewData*) ((char*) pViewData + 0x4c);
+		} while (i < m_cObjects3C);
+	}
+	return cViewData;
 }

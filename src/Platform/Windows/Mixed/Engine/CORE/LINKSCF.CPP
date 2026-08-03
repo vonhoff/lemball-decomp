@@ -421,7 +421,7 @@ MineManagerVtableLayout g_LINKSCF_MineChunkManagerVtable = {
 	&CMineManager::Restart,
 	&CMineManager::Process,
 	(void*) ReturnFalseChunkStreamCommandThunk,
-	(void*) EmitMineChunkManagerRenderEntries};
+	&CMineManager::GetViewData};
 // GLOBAL: LEMBALL 0x00493840
 static void* g_LINKSCF_DoorChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteDoorChunkManagerAuto,
 																			 DispatchDoorChildArrayVirtual104,

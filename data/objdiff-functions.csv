@@ -931,7 +931,7 @@ address,size,name,unit
 0x00424630,217,CMineManager::StepOn,AI/CMineManager.cpp
 0x00424710,160,CMineManager::Add,AI/CMineManager.cpp
 0x004247B0,76,CMineManager::Process,AI/CMineManager.cpp
-0x00424800,70,CMineManager::GetViewData,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00424800,70,CMineManager::GetViewData,AI/CMineManager.cpp
 0x00424850,147,CMineManager::LoadLevel,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00424C30,30,delete_mine_chunk_manager,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00424C60,105,delete_mine_chunk_object_array_or_scalar,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
