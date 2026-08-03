@@ -317,3 +317,7 @@ All seven portable movie/list-resource methods map across `0x0045DE70..0x0045E12
 ## CResFONT reconstruction
 
 All thirteen portable font-resource methods map across `0x0045D7B0..0x0045DB30`, preserving mixed `VARLOAD.CPP`, `DRAWTEXT.CPP`, and `TXTCNT.CPP` ownership. Exact LIST semantics, paired ZRLE glyph and INT character-code arrays, indexed VRAM operations, vtables, glyph fallback and metric accumulation support the family. The unused default constructor, deleting wrapper, entry-array helpers, and inherited base-list slots remain separate.
+
+## CReadSocket and CWriteSocket reconstruction
+
+All twenty-seven portable socket methods map across `0x0045F820..0x00460280`, preserving mixed `VSNETSTR.CPP`, `VSNET.CPP`, `EFFSTRM.CPP`, and `LEVELRUN.CPP` ownership. Exact composite layouts, vtables, critical/noncritical record tables, fragmentation, acknowledgements, retries, idle close, and adjusted close ABI support the pair. Deleting wrappers, virtual-base thunks, the adjusted channel thunk, shared EFF-stream predecessors, and the following runtime-stack family remain separate.

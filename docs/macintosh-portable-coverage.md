@@ -8,11 +8,11 @@ This audit does **not** establish complete portable coverage. Only accepted corr
 
 | Category | Count | Meaning |
 | --- | ---: | --- |
-| Accepted x86 correlation | 1045 | Exact Macintosh module+mangled spelling has a reviewed x86 mapping; offset integrity is reported separately. |
+| Accepted x86 correlation | 1072 | Exact Macintosh module+mangled spelling has a reviewed x86 mapping; offset integrity is reported separately. |
 | Present spelling/source analogue | 8 | Exact scoped spelling exists in current source, but equivalence is not proven. |
 | Likely inlined/merged | 3 | Exact scoped header definition exists, but no standalone x86 address is accepted. |
 | Platform-specific | 884 | Unmapped body belongs to `Visos (Mac Specific)` or the reviewed Macintosh Toolbox/Open Transport `UtilMain` set. |
-| Genuinely missing/unresolved | 906 | No accepted address and no exact scoped source spelling. |
+| Genuinely missing/unresolved | 879 | No accepted address and no exact scoped source spelling. |
 | **Total** | **2849** | Complete raw inventory accounting. |
 
 ### Accepted-correlation referential integrity
