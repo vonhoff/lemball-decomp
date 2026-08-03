@@ -10,6 +10,7 @@ public:
 	void Initialise(void);
 	~CLaser(void);
 	void Set(unsigned short nSlotId, const AICOORD& position, int nObjectType);
+	int CheckHits(void);
 };
 
 #endif

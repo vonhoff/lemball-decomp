@@ -7,6 +7,7 @@ extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject)
 extern void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern void LEMBALL_FASTCALL ResetLasrChunkObjectRuntimeStateThunk(void* pObject);
 extern void* g_pLevelTileGrid;
+extern void* g_pActiveManagedEntityOwner;
 extern int g_nLevelFrameClockTick;
 
 struct LevelChunkObjectBaseView {
@@ -16,6 +17,13 @@ struct LevelChunkObjectBaseView {
 struct ManagedEntitySlotOwnerView {
 	void SetManagedEntitySlotId(unsigned short nSlotId);
 };
+
+struct CGround {
+	short GetZThunk(int nLocalX, int nLocalY);
+};
+
+typedef int(LEMBALL_FASTCALL* LaserPointSlotProc)(void*, void*, const int*);
+typedef void(LEMBALL_FASTCALL* LaserIntSlotProc)(void*, void*, int);
 
 // FUNCTION: LEMBALL 0x00428890
 CLaser::CLaser(void)
@@ -116,6 +124,90 @@ void CLaser::Set(unsigned short nSlotId, const AICOORD& position, int nObjectTyp
 		break;
 	}
 	*(int*) (pObjectBytes + 0xcc) = g_nLevelFrameClockTick + 0x3c;
+}
+
+// FUNCTION: LEMBALL 0x00428ab0
+int CLaser::CheckHits(void)
+{
+	void* pObject = this;
+	int* pFields = (int*) pObject;
+	int nX = pFields[0x27] >> 12;
+	int nY = pFields[0x28] >> 12;
+	int nZ = pFields[0x29] >> 12;
+	int nStepX;
+	int nStepY;
+	int nSteps;
+	void* pCandidate = 0;
+
+	switch (pFields[0x19]) {
+	case 0x1e:
+	case 0x30:
+		nStepX = 0x10;
+		nStepY = 0;
+		nX += 8;
+		break;
+	case 0x2f:
+	case 0x31:
+		nStepX = 0;
+		nStepY = 0x10;
+		nY += 8;
+		break;
+	default:
+		return 0;
+	}
+
+	for (nSteps = 0; nSteps < 8; ++nSteps) {
+		char* pGrid;
+		char* pOwner;
+		unsigned short nTerrain;
+
+		nX += nStepX;
+		nY += nStepY;
+		pGrid = (char*) g_pLevelTileGrid;
+		if (nX < 0 || nY < 0 || (nX >> 4) >= *(int*) (pGrid + 0x10) || (nY >> 4) >= *(int*) (pGrid + 0x14)) {
+			nTerrain = 0;
+		}
+		else {
+			CGround* pTile =
+				(CGround*) (*(char**) (pGrid + 0x0c) + (((nY >> 4) * *(int*) (pGrid + 0x10)) + (nX >> 4)) * 12);
+			nTerrain = (unsigned short) pTile->GetZThunk(nX & 15, nY & 15);
+		}
+		if ((int) nTerrain > nZ) {
+			break;
+		}
+
+		pOwner = (char*) g_pActiveManagedEntityOwner;
+		*(void**) (pOwner + 0x150) = 0;
+		*(int*) (pOwner + 0x124) = nX;
+		*(int*) (pOwner + 0x128) = nY;
+		*(int*) (pOwner + 0x12c) = nZ;
+		*(int*) (pOwner + 0x130) = 0;
+		pCandidate = 0;
+		while (*(int*) (pOwner + 0x130) < *(int*) (pOwner + 0x118)) {
+			pCandidate = (*(void***) (pOwner + 0x120))[*(int*) (pOwner + 0x130)];
+			if (pCandidate != *(void**) (pOwner + 0x150) &&
+				((LaserPointSlotProc) (*(void***) pCandidate)[20])(pCandidate, 0, (int*) (pOwner + 0x124)) != 0) {
+				++*(int*) (pOwner + 0x130);
+				break;
+			}
+			pCandidate = 0;
+			++*(int*) (pOwner + 0x130);
+		}
+		if (pCandidate != 0 && *(int*) ((char*) pCandidate + 0x64) == 2) {
+			break;
+		}
+		pCandidate = 0;
+	}
+
+	if (pCandidate == 0) {
+		return 0;
+	}
+	*(void**) ((char*) pObject + 0x144) = pCandidate;
+	*(int*) ((char*) pCandidate + 0xb8) = 0x0f;
+	*(short*) ((char*) pCandidate + 0xbc) = 1;
+	*(int*) ((char*) pCandidate + 0xcc) = g_nLevelFrameClockTick + 0x1a;
+	((LaserIntSlotProc) (*(void***) pObject)[13])(pObject, 0, 0x22);
+	return 1;
 }
 
 void LEMBALL_FASTCALL destroy_lasr_chunk_object_vtable_thunk(void* pObject)
