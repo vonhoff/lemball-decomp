@@ -616,7 +616,7 @@ address,size,name,unit
 0x0041A140,103,CFormationManager::CFormationManager,AI/CFormationManager.cpp
 0x0041A1B0,11,CFormationManager::Restart,AI/CFormationManager.cpp
 0x0041A1C0,1,CFormationManager::~CFormationManager,AI/CFormationManager.cpp
-0x0041A1D0,258,CFormationManager::TransformFormation,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041A1D0,258,CFormationManager::TransformFormation,AI/CFormationManager.cpp
 0x0041A2E0,17,reset_projectile_geometry_pair_cursor,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041A300,29,get_next_projectile_geometry_pair,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041A320,22,CFormationManager::GetAVector,AI/CFormationManager.cpp

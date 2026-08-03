@@ -1755,6 +1755,25 @@ LevelProjectileGeometryPair* LevelProjectileGeometryPair::InitializeSentinel(voi
 	m_nY = 0xaa55aa55;
 	return this;
 }
+
+// FUNCTION: LEMBALL 0x0041a3e0
+void __stdcall RotateFormationVector(CFormationVector* pOutput,
+									 int nX,
+									 int nY,
+									 const int* pSin,
+									 const int* pCos)
+{
+	int nNegativeSin = -*pSin;
+	int nXFraction = nX & 0xfff;
+	int nYFraction = nY & 0xfff;
+
+	pOutput->x = (((nNegativeSin & 0xfff) * nYFraction) >> 12) + (nNegativeSin >> 12) * nYFraction +
+					 (((*pCos & 0xfff) * nXFraction) >> 12) + nNegativeSin * (nY >> 12) +
+					 nXFraction * (*pCos >> 12) + (nX >> 12) * *pCos;
+	pOutput->y = (((*pSin & 0xfff) * nXFraction) >> 12) + (*pSin >> 12) * nXFraction +
+					 (((*pCos & 0xfff) * nYFraction) >> 12) + nYFraction * (*pCos >> 12) +
+					 (nX >> 12) * *pSin + (nY >> 12) * *pCos;
+}
 // MACINTOSH: CGenericGroupManager::~CGenericGroupManager()
 // FUNCTION: LEMBALL 0x0041e940
 void LevelCachedChunkObjectManagerBase::DestroyCachedChunkObjects(void)

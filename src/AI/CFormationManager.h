@@ -15,6 +15,7 @@ public:
 	CFormationManager(void);
 	void Restart(void);
 	~CFormationManager(void);
+	void TransformFormation(int nFormation, int nAngle);
 	CFormationVector* GetAVector(int nIndex);
 };
 
