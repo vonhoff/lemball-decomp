@@ -128,7 +128,7 @@ struct VsNetFatalWin32FileWrapperVtableData {
 
 void LEMBALL_STDCALL DeleteWin32FileWrapperPath(char* pszPath);
 void LEMBALL_FASTCALL InitializeGlobalStateFileBackedEffStorageAdjustor(void* pObject);
-BYTE __fastcall MapNestedEffCallbackFailureToStatus6(void* pObject);
+BYTE __fastcall CFileCommonSocketSysCloseSocket(void* pObject);
 void* DeleteEffChannelStateSideBufferWrapper(void* pObject, BYTE fFreeMemory);
 void LEMBALL_FASTCALL ClearNestedEffChannelAsyncStatus(void* pObject);
 void LEMBALL_FASTCALL AdjustAndClearEmbeddedFileBackedEffChannelAsyncErrorStatus(void* pObject);
@@ -1979,8 +1979,8 @@ inline int VsNetFileBackedRecordWriterView::AppendAdjustedFileBackedEffRecordSlo
 
 size_t WriteAndFlushFileBuffer(FILE* pFile, void* pBuffer, size_t cbBuffer);
 int LEMBALL_FASTCALL CPortsMessageAnyUsed(int nObject);
-int OpenFileBackedEffHandleWithRetry(void* pObject, int nHandle);
-BYTE __fastcall MapNestedEffCallbackFailureToStatus6(void* pObject);
+int CFileCommonSocketCreateSocket(void* pObject, int nHandle);
+BYTE __fastcall CFileCommonSocketSysCloseSocket(void* pObject);
 void* LEMBALL_FASTCALL ClearFileBackedEffChannelStateWord(void* pObject);
 void LEMBALL_FASTCALL InitializeGlobalStateFileBackedEffStorage(int nObjectBasePlus0x15c);
 void NoopGlobalStateCompositeCallback0047AB10(void* pObject);
@@ -2234,7 +2234,7 @@ int LEMBALL_FASTCALL CPortsMessageAnyUsed(int nObject)
 }
 
 // FUNCTION: LEMBALL 0x00479880
-int OpenFileBackedEffHandleWithRetry(void* pObject, int nHandle)
+int CFileCommonSocketCreateSocket(void* pObject, int nHandle)
 {
 	VsNetFileBackedOpenRetryOwner* pOwner;
 	VsNetFileWrapperOpenObject* pOpenThunk;
@@ -2263,7 +2263,7 @@ int OpenFileBackedEffHandleWithRetry(void* pObject, int nHandle)
 }
 
 // FUNCTION: LEMBALL 0x00479900
-BYTE __fastcall MapNestedEffCallbackFailureToStatus6(void* pObject)
+BYTE __fastcall CFileCommonSocketSysCloseSocket(void* pObject)
 {
 	VsNetFileBackedCallbackStatusFront* pFront;
 	VsNetFileBackedAppendOwner* pOwner;
@@ -2334,7 +2334,7 @@ void* VsNetDualFileBackedEffChannelConstructorView::ConstructDualFileBackedEffCh
 #endif
 
 // FUNCTION: LEMBALL 0x00479920
-VsNetFileBackedChannelRoot::VsNetFileBackedChannelRoot()
+CFileBaseSocket::CFileBaseSocket()
 {
 	m_nFileBackedRoot00 = 0;
 }
@@ -2993,7 +2993,7 @@ int VsNetFileBackedCompositeEffChannelAdapter::ReleaseFileBackedEffMarker(void)
 	pOwner->DecrementFileBackedEffStreamMarker();
 	pCallbackFront =
 		(VsNetFileBackedCallbackStatusFront*) ((char*) pReleaseFront + pOffsets->m_nNestedThunkOffset18 - 0x18);
-	bStatus = MapNestedEffCallbackFailureToStatus6(pCallbackFront);
+	bStatus = CFileCommonSocketSysCloseSocket(pCallbackFront);
 	if (pOwner->m_Marker04.m_Stream04.m_wReferenceCount2c == 0) {
 		pReleaseThunk =
 			(VsNetCallbackThunkObject*) (unsigned long) (pOffsets->m_nReadThunkOffset14 + (int) (unsigned long) pOwner);
@@ -3376,7 +3376,7 @@ int VsNetGlobalStateFileBackedEffComposite::RuntimeReserved0c(char* pszHostName)
 	}
 	memcpy(pszDot, ".bct", 5);
 
-	fOpened = OpenFileBackedEffHandleWithRetry(pbBase + pOffsets->m_nRecordTableAOffset18 + 0x20,
+	fOpened = CFileCommonSocketCreateSocket(pbBase + pOffsets->m_nRecordTableAOffset18 + 0x20,
 											   (int) (unsigned long) pszPath);
 	((VsNetFileBackedMarkerOwner*) pTransport)->IncrementFileBackedEffStreamMarker();
 
@@ -3891,7 +3891,7 @@ void VsNetDualSlotTableFileBackedEffComposite::CompositeReserved08(void)
 	}
 	memcpy(pszDot, ".con", 5);
 
-	OpenFileBackedEffHandleWithRetry((char*) pObject + pOffsets->m_nRecordTableAOffset18 + 0x2c,
+	CFileCommonSocketCreateSocket((char*) pObject + pOffsets->m_nRecordTableAOffset18 + 0x2c,
 									 (int) (unsigned long) pszPath);
 	pMarkerOwner = (VsNetFileBackedMarkerOwner*) ((char*) pObject + 0x2c);
 	pMarkerOwner->IncrementFileBackedEffStreamMarker();
@@ -4306,7 +4306,7 @@ void LEMBALL_FASTCALL AdjustAndClaimDualSlotTimedEffTransportRecordPayload(void*
 // FUNCTION: LEMBALL 0x0047bca0
 BYTE LEMBALL_FASTCALL AdjustAndMapGlobalStateFileBackedEffCallbackFailure(void* pObject)
 {
-	return MapNestedEffCallbackFailureToStatus6((char*) pObject + 0xd8);
+	return CFileCommonSocketSysCloseSocket((char*) pObject + 0xd8);
 }
 
 // FUNCTION: LEMBALL 0x0047bd10
@@ -4330,7 +4330,7 @@ void VsNetTimedFileBackedEffChannel::ClearPendingWrite(void* pUnused)
 // FUNCTION: LEMBALL 0x0047bd80
 BYTE LEMBALL_FASTCALL AdjustAndMapNestedEffCallbackFailureFromB8(void* pObject)
 {
-	return MapNestedEffCallbackFailureToStatus6((char*) pObject + 0xb8);
+	return CFileCommonSocketSysCloseSocket((char*) pObject + 0xb8);
 }
 
 // FUNCTION: LEMBALL 0x0047bdf0
@@ -4349,7 +4349,7 @@ void VsNetDualFileBackedEffChannel::ClearPendingWrite(void* pUnused)
 // FUNCTION: LEMBALL 0x0047be30
 BYTE LEMBALL_FASTCALL AdjustAndMapEmbeddedFileBackedEffCallbackFailure(void* pObject)
 {
-	return MapNestedEffCallbackFailureToStatus6((char*) pObject + 0x138);
+	return CFileCommonSocketSysCloseSocket((char*) pObject + 0x138);
 }
 
 // FUNCTION: LEMBALL 0x0047bed0

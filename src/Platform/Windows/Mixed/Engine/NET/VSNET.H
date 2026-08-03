@@ -4,8 +4,8 @@
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
 
-struct VsNetFileBackedChannelRoot {
-	VsNetFileBackedChannelRoot();
+struct CFileBaseSocket {
+	CFileBaseSocket();
 	int m_nFileBackedRoot00;
 	int m_nFileBackedRoot04;
 	int m_nFileBackedRoot08;
@@ -61,7 +61,7 @@ struct VsNetFileBackedEffStream : VsNetEffStreamCommon {
 	unsigned short m_nWord2e;
 };
 
-struct VsNetTimedFileBackedEffChannel : VsNetFileBackedChannelRoot,
+struct VsNetTimedFileBackedEffChannel : CFileBaseSocket,
 										virtual VsNetEffStreamChannelState,
 										virtual VsNetTimedEffStream,
 										virtual VsNetFileBackedFatalFacet {
@@ -73,7 +73,7 @@ struct VsNetTimedFileBackedEffChannel : VsNetFileBackedChannelRoot,
 	int m_nFileBackedMode10;
 };
 
-struct VsNetDualFileBackedEffChannel : VsNetFileBackedChannelRoot,
+struct VsNetDualFileBackedEffChannel : CFileBaseSocket,
 									   virtual VsNetEffStreamChannelState,
 									   virtual VsNetDualHandleEffStream,
 									   virtual VsNetFileBackedFatalFacet {

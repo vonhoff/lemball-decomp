@@ -401,3 +401,7 @@ The four portable `CHeaders` symbols map to `0x00479620`, `0x004796E0`, `0x00479
 ## CPortsMessage reconstruction
 
 Portable `CPortsMessage` construction and `AnyUsed` map to `0x00479810` and `0x00479860`. Both architectures allocate and zero exactly `0x200` state bytes, include that extent in the inherited stream length, and scan the full map for any nonzero byte. Windows expands the inherited stream prefix so the state pointer moves from Macintosh `+0x24` to x86 `+0x2C`; physical ownership remains in `VSNETFIL.CPP`.
+
+## File socket foundations reconstruction
+
+`CFileCommonSocket::CreateSocket` and `SysCloseSocket` map to `0x00479880` and `0x00479900`: both architectures use the same virtual open/create fallback, 100 ms retry, close-on-create success, and close status `6`/`0`. The Windows bodies remain global/helper ABIs in `VSNETFIL.CPP`. `CFileBaseSocket` construction maps independently to the exact zero-word body at `0x00479920`; the adjacent composite constructor at `0x00479930` remains unconsumed.
