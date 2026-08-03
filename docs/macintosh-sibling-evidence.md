@@ -433,3 +433,7 @@ All eight portable methods map from constructor `0x0047AF30` through `ConnectSet
 ## File-protocol control messages
 
 `CBroadcastMessage::AddHeader/GetHeader` map to `0x0045F360/0x0045F370`, shared by six control-stream vtables. Five derived request/response classes contribute fifteen constructor and `GetData`/`AddData` bodies at `0x0045F3D0..0x0045F670`: request-connect serializes a port, 0x200-byte map and host; new-port appends a dword; OK/GO each serialize a word+dword; FAILED serializes its string. The existing `VSNET.CPP` helpers, widened layouts, and shared vtable references remain physically unchanged.
+
+## Base socket reconstruction
+
+`CBaseCommonSocket` constructor, destructor and `SocketError` map to `0x0045F680`, `0x0045F6C0`, and `0x0045F6E0`. Its portable `CloseSocket` has no standalone Windows body: Windows splits raw `closesocket` and last-error capture into adjusted callbacks at `0x00471A60/0x00471AD0`, so neither callback is falsely consumed. `CBaseSocket` constructor, `AddData`, and `GetData` map to `0x0045F750/0x0045F790/0x0045F7F0`, preserving the two-dword, three-word, one-byte tagged header.

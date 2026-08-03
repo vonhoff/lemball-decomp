@@ -1255,3 +1255,9 @@ CODE_02_Visos (Generic).bin,0x0000B0DE,AddData__14CMessGOConnectFv,0x0045F5F0,hi
 CODE_02_Visos (Generic).bin,0x0000B156,__ct__18CMessFAILEDConnectFPCc,0x0045F610,high,constructs named failed-connect stream with 0x101-byte string allowance
 CODE_02_Visos (Generic).bin,0x0000B190,GetData__18CMessFAILEDConnectFv,0x0045F660,high,loads failed-connect string
 CODE_02_Visos (Generic).bin,0x0000B1CA,AddData__18CMessFAILEDConnectFv,0x0045F670,high,writes failed-connect string
+CODE_02_Visos (Generic).bin,0x0000B23C,__ct__17CBaseCommonSocketFv,0x0045F680,high,"initializes async channel state, sentinel fields and 0x10-byte side buffer"
+CODE_02_Visos (Generic).bin,0x0000B294,__dt__17CBaseCommonSocketFv,0x0045F6C0,high,restores channel vtable and releases the side buffer; deleting wrappers remain generated
+CODE_02_Visos (Generic).bin,0x0000B2FF,SocketError__17CBaseCommonSocketF13NetworkErrors,0x0045F6E0,high,stores channel/global error and cancels active operation through virtual cleanup
+CODE_02_Visos (Generic).bin,0x0000B3E6,__ct__11CBaseSocketFv,0x0045F750,high,"constructs network-message stream, reserves 0x10-byte tagged header and clears latch fields"
+CODE_02_Visos (Generic).bin,0x0000B464,AddData__11CBaseSocketFv,0x0045F790,high,"serializes two dwords, three words and one byte from tagged header"
+CODE_02_Visos (Generic).bin,0x0000B4B8,GetData__11CBaseSocketFv,0x0045F7F0,high,"converts two dwords, three words and one byte in the tagged header"
