@@ -455,7 +455,7 @@ address,size,name,unit
 0x00416570,30,CGameObject::IsSelectable,AI/CGameObjectMove.cpp
 0x00416590,80,CGameObject::ResetInstructions,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x004165E0,47,CGameObject::Init,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
-0x00416610,5,CGameObject::GetId,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x00416610,5,CGameObject::GetId,AI/CGameObjectId.cpp
 0x00416620,17,CGameObject::SetId,AI/CGameObjectId.cpp
 0x00416640,44,CGameObject::ReSetId,AI/CGameObjectId.cpp
 0x00416670,45,CGameObject::NextId,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP

@@ -4,6 +4,7 @@
 #include "AI/CMaze.h"
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "AI/CGameObject.h"
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
@@ -80,7 +81,6 @@ void* LEMBALL_FASTCALL GetLevelGameModeOwner(void* pLevelMode);
 void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode);
 void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEnabled);
 void InitializeManagedEntitySlotTablesThunk(void* pLevelGameMode);
-unsigned short LEMBALL_FASTCALL GetManagedEntitySlotId(int nManagedEntityObject);
 unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void);
 unsigned short FindLastFreeManagedEntitySlotIdThunk(void);
 void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject);
@@ -541,7 +541,6 @@ struct ManagedEntitySlotOwnerView {
 };
 
 void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject);
-unsigned short LEMBALL_FASTCALL GetManagedEntitySlotId(int nManagedEntityObject);
 unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void);
 unsigned short FindLastFreeManagedEntitySlotIdThunk(void);
 void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEnabled);
@@ -1649,7 +1648,7 @@ void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode)
 	if (cManagedEntities != 0) {
 		do {
 			pManagedEntityObject = (void*) (unsigned long) g_GAME_ManagedEntityRegistryTable[i & 0xffff];
-			nSlotId = GetManagedEntitySlotId((int) (unsigned long) pManagedEntityObject);
+			nSlotId = ((CGameObject*) pManagedEntityObject)->GetId();
 			if (nSlotId == 0xffff) {
 				nFreeSlotId = FindFirstFreeManagedEntitySlotIdForwardThunk();
 				((ManagedEntitySlotOwnerView*) pManagedEntityObject)
@@ -1742,13 +1741,6 @@ void InitializeManagedEntitySlotTablesThunk(void* pLevelGameMode)
 		pbBits += 4;
 	}
 	g_GAME_ManagedEntitySlotClaimBitset[0] |= g_GAME_ManagedEntitySlotBitMasks[0];
-}
-// Macintosh: CGameObject::GetId()
-// FUNCTION: LEMBALL 0x00416610
-unsigned short LEMBALL_FASTCALL GetManagedEntitySlotId(int nManagedEntityObject)
-
-{
-	return *(unsigned short*) (nManagedEntityObject + 0x6c);
 }
 // Compiler-state compatibility body; the original typed member is isolated in LEVELRUNSLOT.CPP.
 void ClaimManagedEntitySlotIdCompatibility(int nManagedEntityObject);

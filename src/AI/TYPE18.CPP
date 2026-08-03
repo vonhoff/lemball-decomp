@@ -1,5 +1,6 @@
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
+#include "AI/CGameObject.h"
 #include "Platform/Windows/Mixed/Level/TYPE18.H"
 
 DECOMP_SIZE_ASSERT(LevelType18ChunkStream, 0x54);
@@ -15,7 +16,7 @@ extern void* g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
 extern int g_GAME_ManagedEntityRegistryTable[1000];
 extern unsigned short g_GAME_ManagedEntityRegistryCount;
-extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotId(int nManagedEntityObject);
+
 
 struct LevelType18ChunkStreamEntry {
 	char m_abPayload[0x4c];
@@ -208,7 +209,7 @@ void* LEMBALL_FASTCALL DeleteLevelEffChunkStreamBaseThunk(void* pObject, void* p
 unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject)
 
 {
-	return GetManagedEntitySlotId(nManagedEntityObject);
+	return ((CGameObject*) nManagedEntityObject)->GetId();
 }
 
 // LINKERILT: LEMBALL 0x00401aaa

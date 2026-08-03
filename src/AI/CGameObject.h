@@ -56,6 +56,7 @@ struct CGameObject {
 	void EmptyDestinationList(void);
 	void GetBoundingBox(CVSRect& rect);
 	int IsSelectable(void);
+	unsigned short GetId(void);
 	void SetId(unsigned short nSlotId);
 	void ReSetId(void);
 };
