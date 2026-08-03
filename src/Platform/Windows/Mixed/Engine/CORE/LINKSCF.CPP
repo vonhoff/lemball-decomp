@@ -1453,27 +1453,6 @@ void LEMBALL_FASTCALL ClearManagedEntityArrayCount(void* pObject)
 }
 
 
-typedef void(LEMBALL_FASTCALL* LinkScfIntSlotProc)(void*, void*, int);
-
-
-// MACINTOSH: CLaser::Activate()
-// FUNCTION: LEMBALL 0x00428ec0
-int LEMBALL_FASTCALL BeginLasrPlasReacquireDelay(void* pObject)
-{
-	int* pFields = (int*) pObject;
-	pFields[0x4e] = 1;
-	if (g_nSelectedNetworkLobbyPeerId != 0 && *(int*) (g_nSelectedNetworkLobbyPeerId + 0x1c) != 0) {
-		return 0;
-	}
-	pFields[0x32] = g_nLevelFrameClockTick;
-	pFields[0x34] = g_nLevelFrameClockTick + 6;
-	pFields[0x33] = g_nLevelFrameClockTick + 0x18;
-	*(void**) ((char*) pObject + 0x144) = 0;
-	pFields[0x25] = g_nLevelFrameClockTimeMs;
-	((LinkScfIntSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x19);
-	return 1;
-}
-
 // MACINTOSH: CLaserManager::CLaserManager(CAI*, int)
 // FUNCTION: LEMBALL 0x00429320
 LinkScfLasrChunkManagerView* LinkScfLasrChunkManagerView::ConstructLasrChunkManager(void* pLevelMode, int nCapacity)

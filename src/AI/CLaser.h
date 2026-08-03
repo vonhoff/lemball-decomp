@@ -12,6 +12,7 @@ public:
 	void Set(unsigned short nSlotId, const AICOORD& position, int nObjectType);
 	int CheckHits(void);
 	int Process(void);
+	int Activate(void);
 };
 
 #endif

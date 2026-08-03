@@ -10,8 +10,8 @@ extern void LEMBALL_FASTCALL ResetLasrChunkObjectRuntimeStateThunk(void* pObject
 extern void* g_pLevelTileGrid;
 extern void* g_pActiveManagedEntityOwner;
 extern int g_nLevelFrameClockTick;
+extern int g_nLevelFrameClockTimeMs;
 extern int g_nSelectedNetworkLobbyPeerId;
-extern int LEMBALL_FASTCALL BeginLasrPlasReacquireDelay(void* pObject);
 
 struct LevelChunkObjectBaseView {
 	void* InitializeLevelChunkObjectBase(int nType, unsigned short nChildType, unsigned short nFlags);
@@ -27,6 +27,12 @@ struct CGround {
 
 typedef int(LEMBALL_FASTCALL* LaserPointSlotProc)(void*, void*, const int*);
 typedef void(LEMBALL_FASTCALL* LaserIntSlotProc)(void*, void*, int);
+
+struct LaserStateView {
+	virtual void ReservedSlot0(int nValue);
+	virtual void ReservedSlot1(int nValue);
+	virtual void SetManagedEntityStateId(int nStateId);
+};
 
 // FUNCTION: LEMBALL 0x00428890
 CLaser::CLaser(void)
@@ -234,7 +240,7 @@ int CLaser::Process(void)
 					*(int*) ((char*) pTarget + 0x2c) = 1;
 					*(void**) ((char*) pObject + 0x144) = 0;
 				}
-				((LaserIntSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x18);
+				((LaserStateView*) pObject)->SetManagedEntityStateId(0x18);
 			}
 			else if (nState == 0x19) {
 				*(void**) ((char*) pObject + 0x144) = 0;
@@ -259,17 +265,17 @@ int CLaser::Process(void)
 			*(int*) ((char*) pTarget + 0x2c) = 1;
 			*(void**) ((char*) pObject + 0x144) = 0;
 		}
-		((LaserIntSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x18);
+		((LaserStateView*) pObject)->SetManagedEntityStateId(0x18);
 		return 1;
 	case 0x18:
 		if ((unsigned int) pFields[0x33] < (unsigned int) g_nLevelFrameClockTick) {
-			BeginLasrPlasReacquireDelay(pObject);
+			Activate();
 		}
 		return 1;
 	case 0x19:
 		if ((unsigned int) pFields[0x34] < (unsigned int) g_nLevelFrameClockTick) {
 			*(void**) ((char*) pObject + 0x144) = 0;
-			((LaserIntSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x1a);
+			((LaserStateView*) pObject)->SetManagedEntityStateId(0x1a);
 		}
 		return 1;
 	case 0x1a:
@@ -285,10 +291,29 @@ int CLaser::Process(void)
 				*(int*) ((char*) pTarget + 0x2c) = 1;
 				*(void**) ((char*) pObject + 0x144) = 0;
 			}
-			((LaserIntSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x17);
+			((LaserStateView*) pObject)->SetManagedEntityStateId(0x17);
 		}
 		break;
 	}
+	return 1;
+}
+
+// FUNCTION: LEMBALL 0x00428ec0
+int CLaser::Activate(void)
+{
+	void* pObject = this;
+	int* pFields = (int*) pObject;
+
+	pFields[0x4e] = 1;
+	if (g_nSelectedNetworkLobbyPeerId != 0 && *(int*) (g_nSelectedNetworkLobbyPeerId + 0x1c) != 0) {
+		return 0;
+	}
+	pFields[0x32] = g_nLevelFrameClockTick;
+	pFields[0x34] = g_nLevelFrameClockTick + 6;
+	pFields[0x33] = g_nLevelFrameClockTick + 0x18;
+	*(void**) ((char*) pObject + 0x144) = 0;
+	pFields[0x25] = g_nLevelFrameClockTimeMs;
+	((LaserStateView*) pObject)->SetManagedEntityStateId(0x19);
 	return 1;
 }
 
