@@ -8,6 +8,7 @@ struct LaserManagerVtableLayout;
 extern LaserManagerVtableLayout g_LINKSCF_LasrChunkManagerVtable;
 extern void* g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
+extern unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void);
 
 struct VsNetEffStreamCommon {
 	virtual ~VsNetEffStreamCommon(void);
@@ -186,4 +187,31 @@ void CLaserManager::Add(unsigned short nSlot, int x, int y, int z, eObjectType o
 		m_pObjects38[m_cObjects34].Set(nSlot, position, objectType);
 		++m_cObjects34;
 	}
+}
+
+// FUNCTION: LEMBALL 0x00429950
+void CLaserManager::LoadLevel(unsigned char* pData, int cbData, unsigned char nVersion)
+{
+	unsigned short nSlot;
+	unsigned short* pRecord;
+	int nObjects;
+
+	nObjects = *(unsigned short*) pData;
+	pData += 2;
+	Initialise(nObjects);
+	while (nObjects != 0) {
+		pRecord = (unsigned short*) pData;
+		if (*(unsigned short*) ((char*) m_pAI3C + 0x54) < 2) {
+			nSlot = FindFirstFreeManagedEntitySlotIdForwardThunk();
+		}
+		else {
+			nSlot = *pRecord;
+			++pRecord;
+		}
+		pData = (unsigned char*) (pRecord + 4);
+		Add(nSlot, pRecord[1], pRecord[2], pRecord[3], (eObjectType) pRecord[0]);
+		--nObjects;
+	}
+	(void) cbData;
+	(void) nVersion;
 }
