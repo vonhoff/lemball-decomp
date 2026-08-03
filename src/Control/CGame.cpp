@@ -1,6 +1,7 @@
 #include "Control/CGame.h"
 
 #include "AI/CInvisibleSwitchManager.h"
+#include "AI/CLaserManager.h"
 #include "Control/Options.h"
 #include "Frontend/CURSOR.H"
 #include "Frontend/MAINMENU.H"
@@ -3489,7 +3490,7 @@ void LevelGameMode::InitializeLevelGameMode(void)
 
 		pObject = AllocateVSMemBlock(0x40);
 		if (pObject != 0) {
-			pObject = ((LinkScfLasrChunkManagerView*) pObject)->ConstructLasrChunkManagerThunk(pLevelGameMode, 0x14);
+			pObject = new (pObject) CLaserManager((CAI*) pLevelGameMode, 0x14);
 		}
 		*(void**) (pModeBytes + 0x1a0) = pObject;
 		RegisterLevelChunkStreamThunk(g_pLevelChunkStreamDispatcher, *(void**) (pModeBytes + 0x1a0));

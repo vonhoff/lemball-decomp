@@ -429,7 +429,7 @@ static void* g_LINKSCF_CaptureChunkManagerVtable[10] =
 							 ReturnFalseChunkStreamCommandThunk,
 							 EmitCaptureTriggerChunkManagerRenderEntries);
 // GLOBAL: LEMBALL 0x00496458
-static void* g_LINKSCF_LasrChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteLasrChunkManagerAuto,
+void* g_LINKSCF_LasrChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteLasrChunkManagerAuto,
 																			 ActivateLasrChunkObjects,
 																			 RefreshActiveLasrChunkObjects,
 																			 ReturnFalseChunkStreamCommandThunk,
@@ -616,12 +616,7 @@ int LEMBALL_FASTCALL EmitCachedChunkManagerRenderEntriesThunk(void* pObject, voi
 {
 	return GetViewData(pObject, pUnused, pEntries);
 }
-// LINKERILT: LEMBALL 0x0040204a
-LinkScfLasrChunkManagerView* LinkScfLasrChunkManagerView::ConstructLasrChunkManagerThunk(void* pLevelMode,
-																						 int nCapacity)
-{
-	return ConstructLasrChunkManager(pLevelMode, nCapacity);
-}
+
 // LINKERILT: LEMBALL 0x0040204f
 LinkScfBoonChunkManagerView* LinkScfBoonChunkManagerView::ConstructBoonChunkManagerThunk(void* pLevelMode,
 																						 void* pTileGrid)
@@ -1453,17 +1448,6 @@ void LEMBALL_FASTCALL ClearManagedEntityArrayCount(void* pObject)
 }
 
 
-// MACINTOSH: CLaserManager::CLaserManager(CAI*, int)
-// FUNCTION: LEMBALL 0x00429320
-LinkScfLasrChunkManagerView* LinkScfLasrChunkManagerView::ConstructLasrChunkManager(void* pLevelMode, int nCapacity)
-{
-	LINKSCF_INITIALIZE_EFF_CHUNK_STREAM(this, 0x15, 10);
-	*(void**) this = g_LINKSCF_LasrChunkManagerVtable;
-	*(void**) ((char*) this + 0x3c) = pLevelMode;
-	*(int*) ((char*) this + 0x30) = nCapacity;
-	*(int*) ((char*) this + 0x38) = 0;
-	return this;
-}
 
 // MACINTOSH: CLaserManager::Restart()
 // FUNCTION: LEMBALL 0x00429380

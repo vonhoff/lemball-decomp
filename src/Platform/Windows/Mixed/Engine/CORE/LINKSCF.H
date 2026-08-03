@@ -16,11 +16,6 @@ struct LinkScfTramChunkManagerView {
 	LinkScfTramChunkManagerView* ConstructTramChunkManagerThunk(void* pLevelMode, int nCapacity);
 };
 
-struct LinkScfLasrChunkManagerView {
-	LinkScfLasrChunkManagerView* ConstructLasrChunkManager(void* pLevelMode, int nCapacity);
-	LinkScfLasrChunkManagerView* ConstructLasrChunkManagerThunk(void* pLevelMode, int nCapacity);
-};
-
 struct LinkScfCaptureChunkManagerView {
 	LinkScfCaptureChunkManagerView* ConstructCaptureTriggerChunkManager(void* pLevelMode, int nCapacity);
 	LinkScfCaptureChunkManagerView* ConstructCaptureTriggerChunkManagerThunk(void* pLevelMode, int nCapacity);
