@@ -1,3 +1,4 @@
+#include "AI/CGameObject.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
 extern int g_GAME_ManagedEntityRegistryTable[1000];
@@ -8,20 +9,21 @@ extern unsigned char g_GAME_ManagedEntitySlotClaimBitset[0x100];
 unsigned short LEMBALL_FASTCALL GetManagedEntitySlotId(int nManagedEntityObject);
 
 struct ManagedEntitySlotOwnerView {
-	char m_abReserved00[0x6c];
-	unsigned short m_nSlotId6C;
-
 	void SetManagedEntitySlotId(unsigned short nSlotId);
 };
 
 void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject);
 
-// Macintosh: CGameObject::SetId(unsigned short)
 // FUNCTION: LEMBALL 0x00416620
-void ManagedEntitySlotOwnerView::SetManagedEntitySlotId(unsigned short nSlotId)
+void CGameObject::SetId(unsigned short nSlotId)
 {
 	m_nSlotId6C = nSlotId;
 	ClaimManagedEntitySlotId((int) (unsigned long) this);
+}
+
+void ManagedEntitySlotOwnerView::SetManagedEntitySlotId(unsigned short nSlotId)
+{
+	((CGameObject*) this)->SetId(nSlotId);
 }
 
 // Macintosh: CGameObject::RegisterId()
@@ -46,8 +48,7 @@ void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject)
 			*(unsigned short*) (nManagedEntityObject + 0x6c) = 0xffff;
 			return;
 		}
-		g_GAME_ManagedEntitySlotClaimBitset[nSlotId >> 3] =
-			g_GAME_ManagedEntitySlotBitMasks[nSlotId & 7] | bClaimByte;
+		g_GAME_ManagedEntitySlotClaimBitset[nSlotId >> 3] = g_GAME_ManagedEntitySlotBitMasks[nSlotId & 7] | bClaimByte;
 	}
 }
 

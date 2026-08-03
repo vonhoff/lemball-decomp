@@ -26,7 +26,9 @@ struct CGameObjectCommandQueue {
 struct CGameObject {
 	char m_abReserved00[0x64];
 	int m_nEntityType64;
-	char m_abReserved68[8];
+	char m_abReserved68[4];
+	unsigned short m_nSlotId6C;
+	char m_abReserved6E[2];
 	CGameObjectCommandQueue* m_pCommandQueue70;
 	int m_fHasCommands74;
 	char m_abReserved78[0x10];
@@ -54,6 +56,7 @@ struct CGameObject {
 	void EmptyDestinationList(void);
 	void GetBoundingBox(CVSRect& rect);
 	int IsSelectable(void);
+	void SetId(unsigned short nSlotId);
 };
 
 #endif
