@@ -11,6 +11,7 @@ public:
 	void Initialise(void);
 	int CalcNewDistance(int x, int y);
 	int FindSquare(unsigned short nDistance, int& x, int& y);
+	void UpdateChangeNext(int x, int y);
 
 private:
 	CMap* m_pMap00;

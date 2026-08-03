@@ -903,7 +903,7 @@ address,size,name,unit
 0x00423190,156,CMaze::Initialise,AI/CMaze.cpp
 0x00423230,170,CMaze::CalcNewDistance,AI/CMaze.cpp
 0x004232E0,160,CMaze::FindSquare,AI/CMaze.cpp
-0x00423380,287,CMaze::UpdateChangeNext,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x00423380,287,CMaze::UpdateChangeNext,AI/CMaze.cpp
 0x004234A0,74,CMaze::Clear,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x004234F0,51,CMaze::SwapChange,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00423530,273,CMaze::BInitialise,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP

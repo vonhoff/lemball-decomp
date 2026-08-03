@@ -18,6 +18,7 @@ static const int g_anMazeNeighborY[9] = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
 static const int g_afMazeNeighborEnabled[9] = {0, 1, 0, 1, 0, 1, 0, 1, 0};
 static const unsigned char g_abMazeEdgeMaskA[9] = {0, 1, 0, 8, 0, 4, 0, 2, 0};
 static const unsigned char g_abMazeEdgeMaskB[9] = {0, 16, 0, 128, 0, 64, 0, 32, 0};
+static const int g_anMazeBitMask[8] = {0x80, 0x40, 0x20, 0x10, 8, 4, 2, 1};
 
 extern void __fastcall FillReachabilityGridFromTileFlagsThunk(void* pMaze);
 
@@ -145,4 +146,54 @@ int CMaze::FindSquare(unsigned short nDistance, int& x, int& y)
 		}
 	}
 	return fFound;
+}
+
+// FUNCTION: LEMBALL 0x00423380
+void CMaze::UpdateChangeNext(int x, int y)
+{
+	unsigned char* pCurrentRow;
+	unsigned char* pNextRow;
+	unsigned char* pCurrent;
+	unsigned char* pNext;
+	unsigned char nMask;
+	unsigned char nInitialMask;
+	int nLeft;
+	int nTop;
+	int nRight;
+	int nBottom;
+	int nColumn;
+	int nRow;
+
+	nLeft = x > 0 ? x - 1 : x;
+	nTop = y > 0 ? y - 1 : y;
+	nRight = x < m_cColumns1010 - 1 ? x + 1 : x;
+	nBottom = y < m_cRows1014 - 1 ? y + 1 : y;
+	if (m_nFrontier100C == 0) {
+		pCurrentRow = m_abFrontiers0C + ((nTop * 0x80 + nLeft) >> 3);
+		pNextRow = m_abFrontiers0C + 0x800 + ((nTop * 0x80 + nLeft) >> 3);
+	}
+	else {
+		pCurrentRow = m_abFrontiers0C + 0x800 + ((nTop * 0x80 + nLeft) >> 3);
+		pNextRow = m_abFrontiers0C + ((nTop * 0x80 + nLeft) >> 3);
+	}
+	nInitialMask = (unsigned char) g_anMazeBitMask[nLeft & 7];
+	for (nRow = nTop; nRow <= nBottom; ++nRow) {
+		pCurrent = pCurrentRow;
+		pNext = pNextRow;
+		nMask = nInitialMask;
+		for (nColumn = nLeft; nColumn <= nRight; ++nColumn) {
+			if (nColumn != x || nRow != y) {
+				*pCurrent |= nMask;
+				*pNext |= nMask;
+			}
+			nMask >>= 1;
+			if (nMask == 0) {
+				++pCurrent;
+				++pNext;
+				nMask = 0x80;
+			}
+		}
+		pCurrentRow += 0x10;
+		pNextRow += 0x10;
+	}
 }
