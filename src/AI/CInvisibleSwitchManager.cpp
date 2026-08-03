@@ -5,6 +5,34 @@
 
 typedef void(LEMBALL_FASTCALL* InvsChunkObjectActivateProc)(void* pObject);
 
+struct InvisibleSwitchManagerResetView {
+	unsigned char m_abReserved00[0x30];
+	int m_cCapacity30;
+	int m_cObjects34;
+	unsigned char m_abReserved38[4];
+	void* m_pObjects3C;
+};
+
+// FUNCTION: LEMBALL 0x0040a270
+void CInvisibleSwitchManager::Restart(void)
+{
+	typedef void(LEMBALL_FASTCALL * ResetProc)(void* pObject);
+	InvisibleSwitchManagerResetView* pManager;
+	char* pObject;
+	int i;
+	int cbOffset;
+
+	pManager = (InvisibleSwitchManagerResetView*) this;
+	cbOffset = 0;
+	if (pManager->m_pObjects3C != 0) {
+		for (i = 0; i < pManager->m_cCapacity30; ++i) {
+			pObject = (char*) pManager->m_pObjects3C + cbOffset;
+			cbOffset += 0x2b8;
+			((ResetProc) (*(void***) pObject)[65])(pObject);
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x0040a370
 void CInvisibleSwitchManager::StepOn(const AICOORD& position, CGameObject* pEntity)
 {

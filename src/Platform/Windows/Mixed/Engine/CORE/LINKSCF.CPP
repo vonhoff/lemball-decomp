@@ -17,14 +17,6 @@ struct LevelChunkObjectBaseView {
 
 extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 
-struct LinkScfInvsChunkManagerResetView {
-	unsigned char m_abReserved00[0x30];
-	int m_cCapacity30;
-	int m_cObjects34;
-	unsigned char m_abReserved38[4];
-	void* m_pObjects3C;
-};
-
 struct RockChunkObjectView : LevelChunkObjectBaseView {
 	RockChunkObjectView* ConstructRockChunkObject(void);
 };
@@ -195,7 +187,6 @@ void LEMBALL_FASTCALL ActivateIceChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateMoveChunkObjects(void* pManager);
 void LEMBALL_FASTCALL AdvanceIceChunkManagerObjects(void* pManager);
 void LEMBALL_FASTCALL AdvanceActiveMoveChunkObjects(void* pManager);
-void LEMBALL_FASTCALL ResetAllInvsChunkObjects(void* pManager);
 
 DEFINE_LINKSCF_VTABLE_STUB_0(DispatchDoorChildArrayVirtual104)
 DEFINE_LINKSCF_VTABLE_STUB_0(ServiceActiveDoorChunkObjects)
@@ -464,7 +455,8 @@ void* g_LINKSCF_IceChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteIceCh
 																	 ReturnFalseChunkStreamCommandThunk,
 																	 return_zero_vtable_callback_0042dd30);
 struct InvisibleSwitchManagerVtableLayout {
-	void* m_apBaseSlots[7];
+	void* m_apBaseSlots[6];
+	void (CInvisibleSwitchManager::*m_pRestart)(void);
 	void (CInvisibleSwitchManager::*m_pProcess)(void);
 	void* m_apTailSlots[2];
 };
@@ -477,8 +469,8 @@ static InvisibleSwitchManagerVtableLayout g_LINKSCF_InvsChunkManagerVtable = {
 	 (void*) DispatchType18ChunkStreamCommandsThunk,
 	 (void*) NoopVtableCallbackThunk,
 	 (void*) NoopType18ChunkStreamWriteThunk,
-	 (void*) DeleteLevelChunkStreamAuto,
-	 (void*) ResetAllInvsChunkObjects},
+	 (void*) DeleteLevelChunkStreamAuto},
+	&CInvisibleSwitchManager::Restart,
 	&CInvisibleSwitchManager::Process,
 	{(void*) ReturnFalseChunkStreamCommandThunk, (void*) ReturnFalseChunkStreamRenderThunk}};
 static void* g_LINKSCF_BoonChunkObjectVtable[66];
@@ -775,26 +767,6 @@ LinkScfInvsChunkManagerView* LinkScfInvsChunkManagerView::ConstructInvsChunkMana
 	return this;
 }
 
-// MACINTOSH: CInvisibleSwitchManager::Restart()
-// FUNCTION: LEMBALL 0x0040a270
-void LEMBALL_FASTCALL ResetAllInvsChunkObjects(void* pManager)
-{
-	typedef void(LEMBALL_FASTCALL * ResetProc)(void* pObject);
-	LinkScfInvsChunkManagerResetView* pInvsManager;
-	char* pObject;
-	int i;
-	int cbOffset;
-
-	pInvsManager = (LinkScfInvsChunkManagerResetView*) pManager;
-	cbOffset = 0;
-	if (pInvsManager->m_pObjects3C != 0) {
-		for (i = 0; i < pInvsManager->m_cCapacity30; ++i) {
-			pObject = (char*) pInvsManager->m_pObjects3C + cbOffset;
-			cbOffset += 0x2b8;
-			((ResetProc) (*(void***) pObject)[65])(pObject);
-		}
-	}
-}
 
 // FUNCTION: LEMBALL 0x0040b020
 void* ConstructLevelChunkStreamDispatcherThunk(void* pObject, int nChunkTypeCount)
