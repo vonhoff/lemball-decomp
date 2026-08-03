@@ -2,6 +2,8 @@
 
 #include "Visos/Generic/Memory.h"
 
+#include <string.h>
+
 struct MazeMapView {
 	unsigned char m_abReserved00[0x0c];
 	unsigned char* m_pCells0C;
@@ -195,5 +197,16 @@ void CMaze::UpdateChangeNext(int x, int y)
 		}
 		pCurrentRow += 0x10;
 		pNextRow += 0x10;
+	}
+}
+
+// FUNCTION: LEMBALL 0x004234a0
+void CMaze::Clear(unsigned char* pFrontier)
+{
+	int y;
+
+	for (y = 0; y < m_cRows1014; ++y) {
+		memset(pFrontier, 0, m_cColumns1010 / 8);
+		pFrontier += 0x10;
 	}
 }
