@@ -10,3 +10,12 @@ void CFormationManager::Restart(void)
 CFormationManager::~CFormationManager(void)
 {
 }
+
+// FUNCTION: LEMBALL 0x0041a320
+CFormationVector* CFormationManager::GetAVector(int nIndex)
+{
+	if (nIndex >= 8) {
+		nIndex -= 8;
+	}
+	return &m_aTransformedVectorsC0[nIndex];
+}

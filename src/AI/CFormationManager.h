@@ -14,6 +14,7 @@ public:
 
 	void Restart(void);
 	~CFormationManager(void);
+	CFormationVector* GetAVector(int nIndex);
 };
 
 #endif
