@@ -3,7 +3,7 @@
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
 
-extern void* g_LINKSCF_MineChunkManagerVtable[10];
+extern MineManagerVtableLayout g_LINKSCF_MineChunkManagerVtable;
 extern void* g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
 
@@ -19,9 +19,32 @@ CMineManager::CMineManager(CAI* pAI, int nCapacity)
 		*(int*) ((char*) this + 0x24) = 1;
 		*(int*) ((char*) this + 0x18) += g_cbEffTransportMaxPacketBytes;
 	}
-	*(void**) this = g_LINKSCF_MineChunkManagerVtable;
+	*(void**) this = &g_LINKSCF_MineChunkManagerVtable;
 	m_pAI30 = pAI;
 	m_cCapacity40 = nCapacity;
 	m_pObjects34 = 0;
 	m_pPositions38 = 0;
+}
+
+typedef void(LEMBALL_FASTCALL* MineRestartProc)(void* pObject);
+
+// FUNCTION: LEMBALL 0x00424080
+void CMineManager::Restart(void)
+{
+	int cbOffset;
+	int i;
+	char* pObject;
+
+	cbOffset = 0;
+	if (m_pObjects34 != 0) {
+		i = 0;
+		if (m_cCapacity40 > 0) {
+			do {
+				pObject = (char*) m_pObjects34 + cbOffset;
+				++i;
+				cbOffset += 0x150;
+				((MineRestartProc) (*(void***) pObject)[65])(pObject);
+			} while (i < m_cCapacity40);
+		}
+	}
 }

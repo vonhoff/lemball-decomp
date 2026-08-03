@@ -4,6 +4,7 @@
 #include "AI/CLaserManager.h"
 #include "AI/CLift.h"
 #include "AI/CLiftManager.h"
+#include "AI/CMineManager.h"
 #include "Control/CGame.h"
 #include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
@@ -211,7 +212,7 @@ DEFINE_LINKSCF_VTABLE_STUB_1(EmitIteratedChildBoundsRecords)
 DEFINE_LINKSCF_VTABLE_STUB_0(ActivateCollChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveCollChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitCollChunkManagerRenderEntries)
-DEFINE_LINKSCF_VTABLE_STUB_0(ActivateMineChunkObjects)
+
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveMineChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitMineChunkManagerRenderEntries)
 
@@ -410,11 +411,17 @@ void* g_LINKSCF_CollChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteColl
 																	  ReturnFalseChunkStreamCommandThunk,
 																	  EmitCollChunkManagerRenderEntries);
 // GLOBAL: LEMBALL 0x00495d30
-void* g_LINKSCF_MineChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteMineChunkManagerAuto,
-																			 ActivateMineChunkObjects,
-																			 RefreshActiveMineChunkObjects,
-																			 ReturnFalseChunkStreamCommandThunk,
-																			 EmitMineChunkManagerRenderEntries);
+MineManagerVtableLayout g_LINKSCF_MineChunkManagerVtable = {
+	{(void*) ReturnTrueVtableCallbackThunk,
+	 (void*) ReturnTrueVtableCallbackSecondaryThunk,
+	 (void*) DispatchType18ChunkStreamCommandsThunk,
+	 (void*) NoopVtableCallbackThunk,
+	 (void*) NoopType18ChunkStreamWriteThunk,
+	 (void*) DeleteMineChunkManagerAuto},
+	&CMineManager::Restart,
+	(void*) RefreshActiveMineChunkObjects,
+	(void*) ReturnFalseChunkStreamCommandThunk,
+	(void*) EmitMineChunkManagerRenderEntries};
 // GLOBAL: LEMBALL 0x00493840
 static void* g_LINKSCF_DoorChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteDoorChunkManagerAuto,
 																			 DispatchDoorChildArrayVirtual104,
@@ -1961,7 +1968,7 @@ void LEMBALL_FASTCALL DestroyMineChunkManagerAuto(void* pObject)
 {
 	void* pChild;
 
-	*(void**) pObject = g_LINKSCF_MineChunkManagerVtable;
+	*(void**) pObject = &g_LINKSCF_MineChunkManagerVtable;
 	pChild = *(void**) ((char*) pObject + 0x34);
 	if (pChild != 0) {
 		((LinkScfDeletableChild*) pChild)->Delete(3);

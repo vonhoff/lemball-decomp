@@ -922,7 +922,7 @@ address,size,name,unit
 0x00423EB0,225,CMine::Process,AI/CMine.cpp
 0x00423FA0,128,CMine::OnGround,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00424020,92,CMineManager::CMineManager,AI/CMineManager.cpp
-0x00424080,48,CMineManager::Restart,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00424080,48,CMineManager::Restart,AI/CMineManager.cpp
 0x004240B0,186,CMineManager::Initialise,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00424170,43,CMineManager::~CMineManager,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x004241A0,957,remove_mine_chunk_object_by_address,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
