@@ -29,7 +29,6 @@ set(LEMBALL_SOURCES
     src/Platform/Windows/Mixed/Level/IO/LVSTRWRT.CPP
     src/Platform/Windows/Mixed/Level/IO/LVSTRREAD.CPP
     src/Platform/Windows/Mixed/Level/STATE/LVQUIT.CPP
-    src/AI/LVPATHDIR.CPP
     src/Platform/Windows/Mixed/Level/RENDER/LVRENDISP.CPP
     src/AI/LVSTATEVAR.CPP
     src/AI/LVGRPTGT.CPP

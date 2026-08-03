@@ -333,3 +333,9 @@ int CMaze::BIteration(unsigned char& fFound, unsigned char& fExhausted)
 	}
 	return 1;
 }
+
+// FUNCTION: LEMBALL 0x00423890
+int Direction(int x, int y, int nNextX, int nNextY)
+{
+	return (y - nNextY) * 3 - nNextX + x + 4;
+}
