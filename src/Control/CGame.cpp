@@ -3,6 +3,7 @@
 #include "AI/CInvisibleSwitchManager.h"
 #include "AI/CLaserManager.h"
 #include "AI/CLiftManager.h"
+#include "AI/CMaze.h"
 #include "Control/Options.h"
 #include "Frontend/CURSOR.H"
 #include "Frontend/MAINMENU.H"
@@ -543,9 +544,7 @@ extern void ResetLevelFrameClockEntryThunk(void);
 extern void* LEMBALL_FASTCALL ConstructLevelGameStateStreamThunk(void* pObject);
 extern void* LEMBALL_FASTCALL ConstructLevelTileGridThunk(void* pObject);
 extern void LEMBALL_FASTCALL InitializeLevelTileGridThunk(void* pTileGrid);
-struct LevelTileReachabilityHelper {
-	void* ConstructLevelTileReachabilityHelperThunk(void* pTileGrid);
-};
+
 extern void LEMBALL_FASTCALL ClearPrimaryLockedRecordTablePayloadFlags(void* pPayload);
 extern void LEMBALL_FASTCALL ClearSecondaryLockedRecordTablePayloadFlags(void* pPayload);
 extern void* ConstructLevelChunkStreamDispatcherThunk(void* pObject, int nChunkTypeCount);
@@ -3307,8 +3306,7 @@ void LevelGameMode::InitializeLevelGameMode(void)
 	if (*(int*) (pModeBytes + 0x4c) == 0) {
 		pObject = AllocateVSMemBlock(0x103c);
 		if (pObject != 0) {
-			pObject = ((LevelTileReachabilityHelper*) pObject)
-						  ->ConstructLevelTileReachabilityHelperThunk(*(void**) (pModeBytes + 0x110));
+			pObject = new (pObject) CMaze((CMap*) *(void**) (pModeBytes + 0x110));
 		}
 		*(void**) (pModeBytes + 0x114) = pObject;
 	}

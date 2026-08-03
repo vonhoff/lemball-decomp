@@ -557,9 +557,7 @@ struct GameLockedRecordSlotTableView {
 	void ClearLockedRecordSlotPayloadFlags(void);
 };
 
-struct LevelTileReachabilityHelper {
-	void* ConstructLevelTileReachabilityHelperThunk(void* pTileGrid);
-};
+
 
 struct LevelChunkObjectResetView;
 
@@ -2205,18 +2203,7 @@ void LEMBALL_FASTCALL reset_ball_chunk_manager_load_cursor(void* pManager)
 	*(int*) ((char*) pManager + 8) = 0;
 }
 
-// MACINTOSH: CMaze::CMaze(CMap*)
-// FUNCTION: LEMBALL 0x00423090
-void* LevelTileReachabilityHelper::ConstructLevelTileReachabilityHelperThunk(void* pTileGrid)
-{
-	*(void**) this = pTileGrid;
-	*(int*) ((char*) this + 4) = 0;
-	*(unsigned char*) ((char*) this + 0x100c) = 0;
-	*(int*) ((char*) this + 8) = 0;
-	*(int*) ((char*) this + 0x1010) = 0;
-	*(int*) ((char*) this + 0x1014) = 0;
-	return this;
-}
+
 // MACINTOSH: CMaze::~CMaze()
 // FUNCTION: LEMBALL 0x004230c0
 void LEMBALL_FASTCALL DestroyLevelTileReachabilityHelper(void* pReachabilityHelper)

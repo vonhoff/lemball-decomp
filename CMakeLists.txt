@@ -22,6 +22,7 @@ set(LEMBALL_SOURCES
     src/AI/LVDELMOVE.CPP
     src/AI/LVSTREAM.CPP
     src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+    src/AI/CMaze.cpp
     src/AI/LVNODE.CPP
     src/Platform/Windows/Mixed/Level/ENTITY/LVTILE.CPP
     src/Platform/Windows/Mixed/Level/IO/LVSTRVT.CPP
