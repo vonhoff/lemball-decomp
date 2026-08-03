@@ -27,6 +27,7 @@ public:
 	void StepOn(const AICOORD& position, CGameObject* pObject);
 	void DoActivate(void);
 	int Process(void);
+	void Load(unsigned char*& pData);
 };
 
 #endif

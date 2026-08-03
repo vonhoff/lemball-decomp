@@ -28,6 +28,10 @@ struct ManagedEntityStateView {
 	void RequestManagedEntityStateId(int nStateId);
 };
 
+struct ManagedEntitySlotOwnerView {
+	void SetManagedEntitySlotId(unsigned short nSlotId);
+};
+
 struct LevelSlotActionDispatcherView {
 	void DispatchLevelSlotActionByType(int nAction, unsigned int nSlotId, int nRangeEnd, int nUnused4);
 };
@@ -249,4 +253,55 @@ int CInvisibleSwitch::Process(void)
 		((InvsChunkObjectActionView*) this)->SetManagedEntityStateId(0x18);
 	}
 	return 1;
+}
+
+// FUNCTION: LEMBALL 0x0040a110
+void CInvisibleSwitch::Load(unsigned char*& pData)
+{
+	tCoord3d begin;
+	tCoord3d end;
+	char* pObjectBytes = (char*) this;
+	InvsChunkActionRecord* pAction;
+	int iAction;
+	unsigned short nSlotId;
+
+	nSlotId = *(unsigned short*) pData;
+	pData += 2;
+	((ManagedEntitySlotOwnerView*) this)->SetManagedEntitySlotId(nSlotId);
+	begin.x = *(short*) pData;
+	pData += 2;
+	begin.y = *(short*) pData;
+	pData += 2;
+	begin.z = *(short*) pData;
+	pData += 2;
+	end.x = *(short*) pData;
+	pData += 2;
+	end.y = *(short*) pData;
+	pData += 2;
+	end.z = *(short*) pData;
+	pData += 2;
+	Set(begin, end);
+
+	if (*(unsigned short*) ((char*) g_pActiveManagedEntityOwner + 0x54) >= 9) {
+		*(int*) (pObjectBytes + 0x144) = *(unsigned short*) pData;
+		pData += 2;
+	}
+	else {
+		*(int*) (pObjectBytes + 0x144) = 0;
+	}
+
+	*(unsigned short*) (pObjectBytes + 0x150) = *(unsigned short*) pData;
+	pData += 2;
+	iAction = 0;
+	if (*(unsigned short*) (pObjectBytes + 0x150) > iAction) {
+		pAction = (InvsChunkActionRecord*) (pObjectBytes + 0x154);
+		do {
+			pAction->m_nAction = *(unsigned short*) pData;
+			pData += 2;
+			pAction->m_nSlotId = *(unsigned short*) pData;
+			pData += 2;
+			++pAction;
+			++iAction;
+		} while (iAction < *(unsigned short*) (pObjectBytes + 0x150));
+	}
 }

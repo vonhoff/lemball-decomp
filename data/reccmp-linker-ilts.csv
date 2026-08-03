@@ -118,6 +118,7 @@ address,name,symbol,type,source
 0x00402239,destroy_level_chunk_object_base24cf0,?DestroyLevelChunkObjectBase24CF0@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0040225C,destroy_registered_render_slot_array_auto_thunk,?DestroyRegisteredRenderSlotArrayAutoThunk@@YIXPAX@Z,stub,src/Frontend/SCREENVT.CPP
 0x00402275,reset_rock_chunk_object_runtime_state_thunk,?ResetRockChunkObjectRuntimeStateThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00402293,ManagedEntitySlotOwnerView::SetManagedEntitySlotId,?SetManagedEntitySlotId@ManagedEntitySlotOwnerView@@QAEXG@Z,stub,src/AI/CGameObjectId.cpp
 0x004022CA,TogglePrimaryContextDisplayMode,?TogglePrimaryContextDisplayMode@@YIXPAX@Z,stub,src/Platform/Windows/ShellUI.cpp
 0x00402315,GameScreenObject::ConstructOptionsScreen,?ConstructOptionsScreen@GameScreenObject@@QAEPAXPAX0PAF@Z,stub,src/Control/CGame.cpp
 0x0040231F,AnimChunkRecordManager::Serialize,?Serialize@AnimChunkRecordManager@@QAEHPAUSerializedAnimChunkRecord@@@Z,stub,src/Platform/Windows/Mixed/Level/CHUNK/ANIMREC.CPP
@@ -126,6 +127,7 @@ address,name,symbol,type,source
 0x00402351,LevelManagedEntityMoveCommandView::PopFirstMoveCommand,?PopFirstMoveCommand@LevelManagedEntityMoveCommandView@@QAEXXZ,stub,src/AI/CGameObjectMove.cpp
 0x00402360,activate_capture_trigger_chunk_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x00402374,destroy_mine_chunk_manager_auto_thunk,?DestroyMineChunkManagerAutoThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x0040237E,CInvisibleSwitch::Set,?Set@CInvisibleSwitch@@QAEXABUtCoord3d@@0@Z,stub,src/AI/CInvisibleSwitch.cpp
 0x004023E7,LevelManagedEntityStateFields::DecrementHeadingOctant,?DecrementHeadingOctant@LevelManagedEntityStateFields@@QAEXXZ,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004023EC,GameMenuSelectorEntry::RebuildRects,?RebuildRects@GameMenuSelectorEntry@@QAEXHH@Z,stub,src/Frontend/MENUSEL.CPP
 0x0040240A,activate_managed_entity_group_children,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
