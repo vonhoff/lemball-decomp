@@ -10,6 +10,7 @@ extern int g_cbEffTransportMaxPacketBytes;
 extern unsigned short g_nNextLiftObjectId;
 
 typedef void(LEMBALL_FASTCALL* LiftRestartProc)(void* pObject);
+typedef int(LEMBALL_FASTCALL* LiftProcessProc)(void* pObject);
 
 struct LiftManagerDeletableChild {
 	virtual void Delete(unsigned char fDelete);
@@ -96,4 +97,25 @@ CLiftManager::~CLiftManager(void)
 		((LiftManagerDeletableChild*) m_pObjects3C)->Delete(3);
 	}
 	((VsNetEffStreamCommon*) this)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+}
+
+// FUNCTION: LEMBALL 0x00425d30
+void CLiftManager::Process(void)
+{
+	CLift* pObject;
+	int cbOffset;
+	int i;
+
+	cbOffset = 0;
+	i = 0;
+	if (m_cObjects34 > 0) {
+		do {
+			pObject = (CLift*) ((char*) m_pObjects3C + cbOffset);
+			*(int*) ((char*) pObject + 0x124) = 1;
+			((LiftProcessProc) (*(void***) pObject)[5])(pObject);
+			cbOffset += 0x190;
+			pObject->CheckObjects();
+			++i;
+		} while (i < m_cObjects34);
+	}
 }

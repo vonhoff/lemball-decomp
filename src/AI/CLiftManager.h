@@ -10,6 +10,7 @@ public:
 	~CLiftManager(void);
 	void Restart(void);
 	void Initialise(int nCapacity);
+	void Process(void);
 
 private:
 	unsigned char m_abReserved00[0x30];
@@ -22,7 +23,8 @@ private:
 struct LiftManagerVtableLayout {
 	void* m_apSlots00[6];
 	void (CLiftManager::*m_pRestart18)(void);
-	void* m_apSlots1C[3];
+	void (CLiftManager::*m_pProcess1C)(void);
+	void* m_apSlots20[2];
 };
 
 #endif

@@ -956,7 +956,7 @@ address,size,name,unit
 0x00425890,1004,remove_fixed_size_record_by_address_and_compact,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00425C80,85,append_legacy_lift_chunk_object,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00425CE0,80,append_lift_chunk_object_between_endpoints,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x00425D30,67,CLiftManager::Process,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00425D30,67,CLiftManager::Process,AI/CLiftManager.cpp
 0x00425D80,54,CLiftManager::StepOn,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00425DC0,40,refresh_all_lift_boundary_column_counts,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00425DF0,288,CLiftManager::GetViewData,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP

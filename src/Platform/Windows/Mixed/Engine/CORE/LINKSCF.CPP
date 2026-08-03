@@ -215,7 +215,7 @@ DEFINE_LINKSCF_VTABLE_STUB_0(ActivateMineChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveMineChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitMineChunkManagerRenderEntries)
 
-DEFINE_LINKSCF_VTABLE_STUB_0(ActivateLiftChunkObjects)
+
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitLiftChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveRockChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitRockChunkManagerRenderEntries)
@@ -265,8 +265,8 @@ LiftManagerVtableLayout g_LINKSCF_LiftChunkManagerVtable = {
 	 (void*) NoopType18ChunkStreamWriteThunk,
 	 (void*) DeleteLiftChunkManagerAuto},
 	&CLiftManager::Restart,
-	{(void*) ActivateLiftChunkObjects,
-	 (void*) ReturnFalseChunkStreamCommandThunk,
+	&CLiftManager::Process,
+	{(void*) ReturnFalseChunkStreamCommandThunk,
 	 (void*) EmitLiftChunkManagerRenderEntries}};
 // GLOBAL: LEMBALL 0x00496b78
 void* g_LINKSCF_MoveChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteMoveChunkManagerAuto,
