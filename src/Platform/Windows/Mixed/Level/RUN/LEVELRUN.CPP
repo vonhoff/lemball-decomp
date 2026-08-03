@@ -1935,14 +1935,6 @@ CNode* CNode::InitializeNodeChunkRecord(void)
 }
 
 
-// MACINTOSH: CNode::AddANeighbour(int, int)
-// FUNCTION: LEMBALL 0x004213a0
-void CNode::AddANeighbour(int nFirst, int nSecond)
-{
-	m_pLinks0C[m_cLinks10 * 2] = nFirst;
-	m_pLinks0C[m_cLinks10 * 2 + 1] = nSecond;
-	++m_cLinks10;
-}
 
 // FUNCTION: LEMBALL 0x00421430
 int return_true_node_chunk_callback(void)

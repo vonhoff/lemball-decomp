@@ -132,6 +132,7 @@ struct CNode {
 	int m_nReserved10;
 
 	CNode(void);
+	void AddANeighbour(int nFirst, int nSecond);
 	void Initialise(int nX, int nY, int cLinks);
 	void InitializePosition(int nX, int nY, int nUnused);
 	void Restart(void);
@@ -201,6 +202,14 @@ void CNode::SetFixedPointPosition(int nX, int nY)
 {
 	m_nX = nX << 12;
 	m_nY = nY << 12;
+}
+
+// FUNCTION: LEMBALL 0x004213a0
+void CNode::AddANeighbour(int nFirst, int nSecond)
+{
+	m_pLinks0C[m_nReserved10 * 2] = nFirst;
+	m_pLinks0C[m_nReserved10 * 2 + 1] = nSecond;
+	++m_nReserved10;
 }
 
 // MACINTOSH: CNode::Position()
