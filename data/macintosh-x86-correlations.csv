@@ -1350,3 +1350,10 @@ CODE_02_Visos (Generic).bin,0x00010944,SetAnimID__14CGraphicButtonFUl,0x004688E0
 CODE_02_Visos (Generic).bin,0x00010A0E,__dt__14CGraphicButtonFv,0x00468920,high,restores vtables destroys embedded draw state and CPVButton base
 CODE_02_Visos (Generic).bin,0x00010A50,OnDestroy__14CGraphicButtonFv,0x00468980,high,unloads active animation resource and clears handle
 CODE_02_Visos (Generic).bin,0x00010B46,DrawButton__14CGraphicButtonFv,0x004689A0,high,populates and queues aligned animation draw primitive
+CODE_02_Visos (Generic).bin,0x000116DE,vsOpen__FPcPc,0x00462EE0,high,delegates filename and mode to CRT fopen
+CODE_02_Visos (Generic).bin,0x00011700,vsClose__FP6_Filet,0x00462F20,high,delegates file handle to CRT fclose
+CODE_02_Visos (Generic).bin,0x00011734,vsRead__FP6_FiletPvUl,0x00462F30,high,reads requested byte count through CRT fread
+CODE_02_Visos (Generic).bin,0x0001177C,vsWrite__FP6_FiletPvUl,0x00462F50,high,writes requested byte count and flushes the stream
+CODE_02_Visos (Generic).bin,0x000117BA,vsSeek__FP6_Filetli,0x00462F80,high,seeks file and returns resulting position
+CODE_02_Visos (Generic).bin,0x000117E2,vsTell__FP6_Filet,0x00462FB0,high,returns current file position through CRT ftell
+CODE_02_Visos (Generic).bin,0x00011830,vsGetFileSize__FP6_Filet,0x00462FC0,high,seeks to end and restores original file position

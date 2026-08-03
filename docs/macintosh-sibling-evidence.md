@@ -503,3 +503,7 @@ The final interaction subset maps `OnEnter`, `OnExit`, `ConvertDoubleClick`, `On
 ## Portable graphic-button reconstruction
 
 The `CGraphicButton` point constructor, `Initialise`, `SetAnimID`, destructor, `OnDestroy`, and `DrawButton` map to `0x00468530/0x004686E0/0x004688E0/0x00468920/0x00468980/0x004689A0`. The family derives from `CPVButton`, loads and unloads animation resources, computes frame extent and alignment flags, and queues the aligned draw primitive. Windows-only rectangle overload `0x00468410` remains separate.
+
+## Portable file-wrapper reconstruction
+
+`vsOpen`, `vsClose`, `vsRead`, `vsWrite`, `vsSeek`, `vsTell`, and `vsGetFileSize` map to `0x00462EE0/0x00462F20/0x00462F30/0x00462F50/0x00462F80/0x00462FB0/0x00462FC0`. They preserve the CRT-backed open/close/read/write/flush/seek/tell semantics and the size query's saved-position contract. Windows physically places `vsWrite` in `VSNETFIL.CPP` and the other six wrappers in `DEMO.CPP`; that split remains intact.
