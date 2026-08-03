@@ -377,3 +377,7 @@ Portable `_RES_Init` and `_RES_Quit` map to `0x0045B900` and `0x0045BA50` in `VS
 ## RNAME stream insertion reconstruction
 
 Portable `operator<<(CVSOStream&, RNAME)` maps to `0x0045BAD0` in `DRAWTEXT.CPP`. Both bodies forward the 32-bit `RNAME` payload through the integer stream insertion routine and return the original stream reference. The sole Windows caller reports a font resource identifier. Focused reccmp is 100%; the underlying integer insertion method remains separately owned.
+
+## CResBase StreamOut final disposition
+
+Portable `CResBase::StreamOut` has exact Macintosh body `0x00002C72..0x00002F00` and trailer `0x00002F01`. The 655-byte body formats resource type, identity, load flags, offsets, and sizes through a global diagnostic stream; its explicit stream argument is not consumed. Windows has no corresponding body, no resource-vtable slot, and no direct or indirect formatter candidate. It is therefore finalized as Macintosh-specific with no x86 correlation; nearby identity methods, shared stream helpers, wrappers, and `CResBaseLIST` methods remain independently owned.
