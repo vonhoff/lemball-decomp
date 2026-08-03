@@ -1295,3 +1295,6 @@ CODE_02_Visos (Generic).bin,0x0000E1ED,UpdateSubPacket__13CReadNCMSBuffFv,0x0046
 CODE_02_Visos (Generic).bin,0x0000E23E,__ct__10CReadCBuffFiUs,0x00461780,high,constructs locked packet ring and clears sequence and overflow state,exact_tuple,0x0000E23E
 CODE_02_Visos (Generic).bin,0x0000E2D2,StorePacket__10CReadCBuffFv,0x004617A0,high,stores current packet by sequence modulo capacity and marks gaps unavailable,exact_tuple,0x0000E2D2
 CODE_02_Visos (Generic).bin,0x0000E336,NextPacketReady__10CReadCBuffFv,0x00461810,high,returns next contiguous ready packet and advances expected sequence,exact_tuple,0x0000E336
+CODE_02_Visos (Generic).bin,0x0000E3E6,__ct__12CReadCMSBuffFiiUs,0x00461840,high,constructs ring-indexed child fragment buffers,exact_tuple,0x0000E3E6
+CODE_02_Visos (Generic).bin,0x0000E484,__dt__12CReadCMSBuffFv,0x004618E0,high,deletes each ring child fragment buffer then destroys inherited buffer,exact_tuple,0x0000E484
+CODE_02_Visos (Generic).bin,0x0000E4E7,StoreSubPacket__12CReadCMSBuffFv,0x00461930,high,stores current fragment by sequence modulo ring capacity,exact_tuple,0x0000E4E7
