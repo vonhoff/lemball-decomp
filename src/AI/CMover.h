@@ -16,6 +16,7 @@ public:
 	void Initialise(void);
 	void Switch(void);
 	int IsOn(AICOORD& point);
+	void VerifyObjects(void);
 	void StopObjectsMoving(void);
 	int IsAt(int x, int y, int* pHeight);
 	void Set(unsigned short nSlotId, short nHeading, int nMode, int iNode, int nValue);

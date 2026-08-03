@@ -139,6 +139,30 @@ int CMover::IsOn(AICOORD& point)
 	return nMinX <= nX && nX <= nMinX + 15 && nMinY <= nY && nY <= nMinY + 15;
 }
 
+// FUNCTION: LEMBALL 0x0042ef40
+void CMover::VerifyObjects(void)
+{
+	int nMinX = (m_nWorldX9C >> 12) - 8;
+	int nMinY = (m_nWorldYA0 >> 12) - 8;
+	int i = 0;
+
+	while (i < m_cAttachedEntities174) {
+		char* pEntity = (char*) m_apAttachedEntities178[i];
+		int nX = *(int*) (pEntity + 0x9c) >> 12;
+		int nY = *(int*) (pEntity + 0xa0) >> 12;
+		if (nX < nMinX || nMinX + 15 < nX || nY < nMinY || nMinY + 15 < nY) {
+			int j;
+			*(int*) (pEntity + 0x11c) = 0;
+			for (j = i + 1; j < m_cAttachedEntities174; ++j) {
+				m_apAttachedEntities178[j - 1] = m_apAttachedEntities178[j];
+			}
+			--i;
+			--m_cAttachedEntities174;
+		}
+		++i;
+	}
+}
+
 // FUNCTION: LEMBALL 0x0042f140
 void CMover::StopObjectsMoving(void)
 {

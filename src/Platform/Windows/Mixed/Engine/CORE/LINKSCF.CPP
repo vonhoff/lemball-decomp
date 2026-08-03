@@ -1721,31 +1721,6 @@ void LEMBALL_FASTCALL AdvanceIceChunkManagerObjects(void* pManager)
 }
 
 
-// MACINTOSH: CMover::VerifyObjects()
-// FUNCTION: LEMBALL 0x0042ef40
-void LEMBALL_FASTCALL detach_entities_outside_move_chunk_bounds(void* pObject)
-{
-	char* pBytes = (char*) pObject;
-	int nMinX = (*(int*) (pBytes + 0x9c) >> 12) - 8;
-	int nMinY = (*(int*) (pBytes + 0xa0) >> 12) - 8;
-	int i = 0;
-
-	while (i < *(int*) (pBytes + 0x174)) {
-		char* pEntity = *(char**) (pBytes + 0x178 + i * 4);
-		int nX = *(int*) (pEntity + 0x9c) >> 12;
-		int nY = *(int*) (pEntity + 0xa0) >> 12;
-		if (nX < nMinX || nMinX + 15 < nX || nY < nMinY || nMinY + 15 < nY) {
-			int j;
-			*(int*) (pEntity + 0x11c) = 0;
-			for (j = i + 1; j < *(int*) (pBytes + 0x174); ++j) {
-				*(void**) (pBytes + 0x178 + (j - 1) * 4) = *(void**) (pBytes + 0x178 + j * 4);
-			}
-			--i;
-			--*(int*) (pBytes + 0x174);
-		}
-		++i;
-	}
-}
 
 
 // MACINTOSH: CMoverManager::CMoverManager(CAI*, int)
