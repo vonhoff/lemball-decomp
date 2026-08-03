@@ -46,11 +46,43 @@ extern int g_nLevelFrameClockTimeMs;
 extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void LEMBALL_FASTCALL destroy_level_chunk_object_base24cf0(void* pObject);
 void* LEMBALL_FASTCALL DeleteMineChunkObjectArrayOrScalar(void* pObject, void* pUnused, unsigned int fDelete);
-int LEMBALL_FASTCALL AdvanceMineChunkObjectStateMachine(void* pObject);
+
+struct CMineVtable {
+	void* m_pDelete00;
+	void* m_pSetVariant04;
+	void* m_pSetState08;
+	void* m_pRender0C;
+	void* m_pNoop10;
+	int (CMine::*m_pProcess14)(void);
+	void* m_pSlot618;
+	void* m_pGetF01C;
+	void* m_pSetMotion20;
+	void* m_pSlot924;
+	void* m_pSlot1028;
+	void* m_pSlot112C;
+	void* m_pNoop30;
+	void* m_pSlot1334;
+	void* m_pGet9838;
+	void* m_pSlot153C;
+};
 
 // GLOBAL: LEMBALL 0x00495be8
-void* g_LEVELVT_MineChunkObjectVtable[16] =
-	COMMON_LEVEL_CHUNK_OBJECT_VTABLE(DeleteMineChunkObjectArrayOrScalar, AdvanceMineChunkObjectStateMachine);
+CMineVtable g_LEVELVT_MineChunkObjectVtable = {(void*) DeleteMineChunkObjectArrayOrScalar,
+											   (void*) SetManagedEntityStateIdWithVariant,
+											   (void*) SetManagedEntityStateId,
+											   (void*) EmitLevelChunkObjectRenderEntry,
+											   (void*) noop_vtable_callback_0040a7f0,
+											   &CMine::Process,
+											   (void*) return_true_vtable_callback_0040a800,
+											   (void*) get_object_field_0xf0,
+											   (void*) SetLevelChunkObjectMotionVector,
+											   (void*) AdvanceManagedEntityGravityMotion,
+											   (void*) return_false_vtable_callback_0040a820,
+											   (void*) copy_object_fields_0x9c_triplet,
+											   (void*) noop_vtable_callback_0040a860,
+											   (void*) set_object_field_0x98,
+											   (void*) get_object_field_0x98,
+											   (void*) BeginManagedEntityReachablePathSearch};
 
 extern int g_nLevelFrameClockTick;
 extern void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
@@ -71,7 +103,7 @@ short g_LEVEL_MineTileVariantCodes[4];
 CMine::CMine(void)
 {
 	((LevelChunkObjectBaseView*) this)->InitializeLevelChunkObjectBase(0x13, 0, 0);
-	*(void**) this = g_LEVELVT_MineChunkObjectVtable;
+	*(void**) this = &g_LEVELVT_MineChunkObjectVtable;
 }
 
 // FUNCTION: LEMBALL 0x00423c30
@@ -177,13 +209,19 @@ void CMine::StepOn(CGameObject* pObject)
 	((MineContactNotifyProc) (*(void***) pObject)[25])(pObject);
 }
 
+// FUNCTION: LEMBALL 0x00423e90
+int CMine::IsUsable(eAction action)
+{
+	return action == 8 || action == 0x18;
+}
+
 // FUNCTION: LEMBALL 0x00423eb0
-int LEMBALL_FASTCALL AdvanceMineChunkObjectStateMachine(void* pvObject)
+int CMine::Process(void)
 {
 	char* pObject;
 	int nState;
 
-	pObject = (char*) pvObject;
+	pObject = (char*) this;
 	nState = *(int*) (pObject + 0xb8);
 	if (*(int*) (pObject + 0x114) != 0) {
 		if (*(int*) (pObject + 0x128) != nState) {

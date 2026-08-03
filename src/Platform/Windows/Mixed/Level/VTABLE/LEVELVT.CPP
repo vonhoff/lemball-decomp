@@ -433,7 +433,7 @@ void LEMBALL_FASTCALL SendCollMessage16(void* pObject, void* pUnused);
 void noop_vtable_callback_00422fa0(void);
 void noop_vtable_callback_00423040(void);
 int return_true_vtable_callback_00423050(void);
-int PASCAL IsManagedEntityState8Or18(int nState);
+
 void __fastcall clear_rock_chunk_object_count(void* pManager);
 int PASCAL get_tile_flag_0x1c_object_render_entry_count(void);
 void noop_vtable_callback_0042c9a0(void);
@@ -2097,14 +2097,6 @@ int return_true_vtable_callback_00423050(void)
 	return 1;
 }
 
-// FUNCTION: LEMBALL 0x00423e90
-int PASCAL IsManagedEntityState8Or18(int nState)
-{
-	if (nState == 8 || nState == 0x18) {
-		return 1;
-	}
-	return 0;
-}
 
 // FUNCTION: LEMBALL 0x00426c20
 void __fastcall clear_rock_chunk_object_count(void* pManager)

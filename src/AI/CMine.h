@@ -2,6 +2,8 @@
 #define LEMBALL_CMINE_H
 
 class CGameObject;
+
+typedef int eAction;
 struct AICOORD;
 
 class CMine {
@@ -14,6 +16,8 @@ public:
 	void SetTerrain(void);
 	void Set(AICOORD position);
 	void StepOn(CGameObject* pObject);
+	int IsUsable(eAction action);
+	int Process(void);
 	void OnGround(void);
 
 private:
