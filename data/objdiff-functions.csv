@@ -905,7 +905,7 @@ address,size,name,unit
 0x004232E0,160,CMaze::FindSquare,AI/CMaze.cpp
 0x00423380,287,CMaze::UpdateChangeNext,AI/CMaze.cpp
 0x004234A0,74,CMaze::Clear,AI/CMaze.cpp
-0x004234F0,51,CMaze::SwapChange,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x004234F0,51,CMaze::SwapChange,AI/CMaze.cpp
 0x00423530,273,CMaze::BInitialise,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00423650,568,CMaze::BIteration,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00423890,24,Direction,AI/LVPATHDIR.CPP

@@ -210,3 +210,15 @@ void CMaze::Clear(unsigned char* pFrontier)
 		pFrontier += 0x10;
 	}
 }
+
+// FUNCTION: LEMBALL 0x004234f0
+void CMaze::SwapChange(void)
+{
+	if (m_nFrontier100C == 0) {
+		Clear(m_abFrontiers0C + 0x800);
+	}
+	else {
+		Clear(m_abFrontiers0C);
+	}
+	m_nFrontier100C = m_nFrontier100C == 0;
+}

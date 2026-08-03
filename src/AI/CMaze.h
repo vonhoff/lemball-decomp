@@ -13,6 +13,7 @@ public:
 	int FindSquare(unsigned short nDistance, int& x, int& y);
 	void UpdateChangeNext(int x, int y);
 	void Clear(unsigned char* pFrontier);
+	void SwapChange(void);
 
 private:
 	CMap* m_pMap00;
