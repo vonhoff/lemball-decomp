@@ -1,14 +1,12 @@
+#include "AI/CMine.h"
+
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
-#include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Level/CHUNKOBJVT.H"
+#include "Visos/Generic/Memory.h"
 
 struct LevelChunkObjectBaseView {
 	void* InitializeLevelChunkObjectBase(int nType, unsigned short nVariant, unsigned short nStateId);
-};
-
-struct MineChunkObjectView : LevelChunkObjectBaseView {
-	MineChunkObjectView* ConstructMineChunkObject(void);
 };
 
 struct MineChunkObjectActionView {
@@ -57,11 +55,10 @@ short g_LEVEL_MineTileVariantCodes[4];
 void LEMBALL_FASTCALL ResetMineChunkObjectRuntimeState(MineChunkObjectRuntimeView* pObject);
 
 // FUNCTION: LEMBALL 0x00423c10
-MineChunkObjectView* MineChunkObjectView::ConstructMineChunkObject(void)
+CMine::CMine(void)
 {
-	InitializeLevelChunkObjectBase(0x13, 0, 0);
+	((LevelChunkObjectBaseView*) this)->InitializeLevelChunkObjectBase(0x13, 0, 0);
 	*(void**) this = g_LEVELVT_MineChunkObjectVtable;
-	return this;
 }
 
 // FUNCTION: LEMBALL 0x00423c30

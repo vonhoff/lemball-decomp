@@ -1,5 +1,6 @@
 #include "AI/CMineManager.h"
 
+#include "AI/CMine.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
 
@@ -46,5 +47,36 @@ void CMineManager::Restart(void)
 				((MineRestartProc) (*(void***) pObject)[65])(pObject);
 			} while (i < m_cCapacity40);
 		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x004240b0
+void CMineManager::Initialise(int nCapacity)
+{
+	char* pObject;
+	int cbOffset;
+	int i;
+
+	m_cCapacity40 = nCapacity;
+	m_cObjects3C = 0;
+	if (nCapacity == 0) {
+		m_pObjects34 = 0;
+		return;
+	}
+	if (m_pObjects34 == 0) {
+		m_pObjects34 = new CMine[nCapacity];
+		cbOffset = 0;
+		i = 0;
+		if (m_cCapacity40 > 0) {
+			do {
+				pObject = (char*) m_pObjects34 + cbOffset;
+				*(int*) (pObject + 0x14c) = i;
+				++i;
+				*(CMineManager**) (pObject + 0x60) = this;
+				cbOffset += 0x150;
+				((MineRestartProc) (*(void***) pObject)[65])(pObject);
+			} while (i < m_cCapacity40);
+		}
+		m_pPositions38 = new MinePosition[m_cCapacity40];
 	}
 }

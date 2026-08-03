@@ -14,6 +14,7 @@ class CMineManager {
 public:
 	CMineManager(CAI* pAI, int nCapacity);
 	void Restart(void);
+	void Initialise(int nCapacity);
 
 private:
 	unsigned char m_abReserved00[0x30];
