@@ -551,3 +551,7 @@ Global `CheckValidPointer` maps to `0x0045A800`: both implementations scan every
 ## Portable memory pre-initialization
 
 `INIT_PreInit` maps to `0x0046F060`. Macintosh `NewPtr`/Windows `GlobalAlloc` and `GlobalLock` are platform delegates around the same portable contract: acquire master storage, construct the main RAM arena in place, conditionally construct the small-memory bucket table without recursively using it, restore its enable flag, and report success only when required objects exist.
+
+## Portable sorting helpers
+
+`VSQSort`, `shortsort`, and `swap` map to `0x00463960/0x00463AC0/0x00463B20`. Both binaries implement the same fixed-record comparator sort: explicit quicksort partitions, a short-partition selection-sort fallback, and byte-counted swapping. Windows physical ownership remains split between `VSINIT.CPP` and `CGame.cpp`.

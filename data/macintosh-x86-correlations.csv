@@ -1391,3 +1391,6 @@ CODE_02_Visos (Generic).bin,0x00015C6E,__nw__FUl,0x0045A780,high,global allocati
 CODE_02_Visos (Generic).bin,0x00015C8A,__dl__FPv,0x0045A790,high,global deletion wrapper forwards to InternalDelete
 CODE_02_Visos (Generic).bin,0x00015CE2,CheckValidPointer__FPv,0x0045A800,high,checks every enabled small-memory bucket then the main arena for pointer ownership
 CODE_02_Visos (Generic).bin,0x00015DBE,INIT_PreInit__Fv,0x0046F060,high,allocates and locks master RAM storage constructs main arena and conditionally initializes small-memory buckets
+CODE_02_Visos (Generic).bin,0x00017400,VSQSort,0x00463960,high,iterative quicksort with explicit deferred-partition stack and shortsort fallback
+CODE_02_Visos (Generic).bin,0x00017460,shortsort,0x00463AC0,high,small-partition selection sort with comparator and byte swap
+CODE_02_Visos (Generic).bin,0x00017494,swap,0x00463B20,high,byte-counted record swap helper

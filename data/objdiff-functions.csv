@@ -2537,8 +2537,8 @@ address,size,name,unit
 0x00463810,139,CBaseQueue::ProcessNMsgs,Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWING.CPP
 0x004638A0,95,CBaseQueue::Process,Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWING.CPP
 0x00463940,30,delete_render_dispatch_queue_thunk_00463940,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x00463960,350,quicksort_records_with_comparator,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x00463AC0,91,selection_sort_records_with_comparator,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x00463960,350,VSQSort,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x00463AC0,91,shortsort,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x00463B20,45,swap,Control/CGame.cpp
 0x00463B50,121,construct_window_owner_render_context,Control/CGame.cpp
 0x00463BD0,79,destroy_window_owner_render_context,Control/CGame.cpp

@@ -59,6 +59,8 @@ def objdiff_name(symbol: str) -> str:
     match = re.match(r"^(.*?)__F", symbol)
     if match:
         return match.group(1)
+    if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", symbol):
+        return symbol
     raise ValueError(f"unsupported Macintosh function name: {symbol}")
 
 
