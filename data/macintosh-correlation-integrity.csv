@@ -1375,3 +1375,7 @@ CODE_02_Visos (Generic).bin,0x000126F3,ProcessHandlers__12CHotAreaListFRC8CVSPoi
 CODE_02_Visos (Generic).bin,0x000127A1,AddToList__12CHotAreaListFP15CHotAreaHandler,0x0046A9A0,high,appends linked entry and assigns handler parent,exact_tuple,0x000127A1
 CODE_02_Visos (Generic).bin,0x00012815,RemoveFromList__12CHotAreaListFP15CHotAreaHandler,0x0046AA00,high,finds handler clears selection and deletes linked entry,exact_tuple,0x00012815
 CODE_02_Visos (Generic).bin,0x00012FCA,OkFailed__FUc,0x00458F10,high,returns the shared Ok string for nonzero and Failed for zero; exact 68K branch and x86 callers during subsystem initialization,exact_tuple,0x00012FCA
+CODE_02_Visos (Generic).bin,0x00013164,_STRM_Init__Fv,0x00458F70,high,allocates three debug stream buffers and three output streams,exact_tuple,0x00013164
+CODE_02_Visos (Generic).bin,0x00013246,_STRM_Quit__Fv,0x004590B0,high,destroys output streams then backing debug buffers,exact_tuple,0x00013246
+CODE_02_Visos (Generic).bin,0x0001331E,_INP_Init__Fv,0x00459130,high,creates shared queue master input and queue handler then attaches input runtime,exact_tuple,0x0001331E
+CODE_02_Visos (Generic).bin,0x000133CC,_INP_Quit__Fv,0x004591F0,high,clears input flags detaches handler and destroys shared input objects,exact_tuple,0x000133CC

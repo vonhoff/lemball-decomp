@@ -527,3 +527,7 @@ Macintosh `CTimedQueue::Post` and `Send` are counter-plus-forwarding overrides l
 ## Portable initialization-status selector
 
 Global `OkFailed` maps directly to `0x00458F10`: both bodies select the shared `Ok` string for nonzero input and `Failed` for zero. The Windows callers use it repeatedly while reporting subsystem initialization results in physical `VSINIT.CPP`.
+
+## Portable stream and input lifecycle reconstruction
+
+`_STRM_Init`/`_STRM_Quit` map to `0x00458F70/0x004590B0`, preserving creation and teardown of three debug buffers and their three output streams. `_INP_Init`/`_INP_Quit` map to `0x00459130/0x004591F0`, preserving shared queue, master input, handler attachment, input flags, detachment, and destruction. Physical ownership remains `VSINIT.CPP`.
