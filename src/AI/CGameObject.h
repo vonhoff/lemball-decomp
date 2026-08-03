@@ -78,7 +78,9 @@ public:
 	int IsSelectable(void);
 	void ResetInstructions(void);
 	void StartSommersault(void);
+	int OnLift(tCoord3d& point);
 	void OffLift(tCoord3d& point);
+	int OnLift(tCoord3d& start, tCoord3d& end);
 	void OffLift(tCoord3d& start, tCoord3d& end);
 	static void Init(CAI* pAI);
 	unsigned short GetId(void);
