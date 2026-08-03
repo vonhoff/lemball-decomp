@@ -4,6 +4,7 @@
 #include "AI/AICoord.h"
 
 class CAI;
+struct tCoord3d;
 
 struct CVSRect {
 	short width;
@@ -77,6 +78,8 @@ public:
 	int IsSelectable(void);
 	void ResetInstructions(void);
 	void StartSommersault(void);
+	void OffLift(tCoord3d& point);
+	void OffLift(tCoord3d& start, tCoord3d& end);
 	static void Init(CAI* pAI);
 	unsigned short GetId(void);
 	void SetId(unsigned short nSlotId);
