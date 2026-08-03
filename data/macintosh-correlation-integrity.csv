@@ -1289,3 +1289,6 @@ CODE_02_Visos (Generic).bin,0x0000DE7E,FillPacket__11CReadMSBuffFv,0x00461470,hi
 CODE_02_Visos (Generic).bin,0x0000DECE,__ct__11CReadNCBuffFUlUs,0x00461560,high,constructs shifted locked-slot table for packet ids with three reserved low ids,exact_tuple,0x0000DECE
 CODE_02_Visos (Generic).bin,0x0000DF74,UpdatePacket__11CReadNCBuffFv,0x00461580,high,claims current packet by shifted id and rejects stale sequence values before copying,exact_tuple,0x0000DF74
 CODE_02_Visos (Generic).bin,0x0000DFBA,GetPacket__11CReadNCBuffFUl,0x004615F0,high,returns shifted locked packet slot by packet id,exact_tuple,0x0000DFBA
+CODE_02_Visos (Generic).bin,0x0000E084,__ct__13CReadNCMSBuffFUlUliUs,0x00461610,high,constructs range-indexed child fragment buffers and tracks first packet id,exact_tuple,0x0000E084
+CODE_02_Visos (Generic).bin,0x0000E126,__dt__13CReadNCMSBuffFv,0x004616B0,high,deletes each child fragment buffer then destroys inherited buffer,exact_tuple,0x0000E126
+CODE_02_Visos (Generic).bin,0x0000E1ED,UpdateSubPacket__13CReadNCMSBuffFv,0x00461700,high,appends current packet to range child with stale and expected-sequence rejection,exact_tuple,0x0000E1ED
