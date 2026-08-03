@@ -1218,3 +1218,15 @@ CODE_02_Visos (Generic).bin,0x00008071,SendPacket__13CFileRWSocketFPCUci,0x0047A
 CODE_02_Visos (Generic).bin,0x0000811F,IncOpenCount__19CFileOpenManagementFv,0x0047A470,high,"reads the shared header under lock, increments its 16-bit open count, then writes it back while retaining the lock",exact_tuple,0x0000811F
 CODE_02_Visos (Generic).bin,0x000081D1,DecOpenCount__19CFileOpenManagementFv,0x0047A4D0,high,"reads the shared header under lock, decrements its 16-bit open count, then writes it back while retaining the lock",exact_tuple,0x000081D1
 CODE_02_Visos (Generic).bin,0x0000824D,SysCloseSocket__19CFileOpenManagementFv,0x0047A530,high,"decrements open count, maps close status, and invokes the underlying close only when count reaches zero",exact_tuple,0x0000824D
+CODE_02_Visos (Generic).bin,0x000088B0,__ct__14CFileBroadcastFv,0x0047A570,high,"expanded shared channel stack, network message, global CPortsMessage and 20-slot CHeaders construction",exact_tuple,0x000088B0
+CODE_02_Visos (Generic).bin,0x00008D28,__dt__14CFileBroadcastFv,0x0047A910,high,"restores composite vtables and releases header table, configured path, global ports state and runtime buffers",exact_tuple,0x00008D28
+CODE_02_Visos (Generic).bin,0x00008E11,InitialiseFile__14CFileBroadcastFv,0x0047AA10,high,"writes outer, ports and header streams then zero-fills each configured payload slot",exact_tuple,0x00008E11
+CODE_02_Visos (Generic).bin,0x00008E3F,GetSpecificAddr__14CFileBroadcastFPCc,0x0047AB10,high,portable no-op virtual with unused address argument,exact_tuple,0x00008E3F
+CODE_02_Visos (Generic).bin,0x00008F92,Start__14CFileBroadcastFPCc,0x0047AB20,high,"prepares path, opens file, increments open count, configures stream state and posts startup event",exact_tuple,0x00008F92
+CODE_02_Visos (Generic).bin,0x00009079,ReadPortInfo__14CFileBroadcastFv,0x0047AC50,high,"seeks, locks and reads the shared 0x200-byte port table, retaining lock on success",exact_tuple,0x00009079
+CODE_02_Visos (Generic).bin,0x00009171,WritePortInfo__14CFileBroadcastFv,0x0047ACE0,high,writes shared port table and releases its locked file range,exact_tuple,0x00009171
+CODE_02_Visos (Generic).bin,0x00009254,FindPort__14CFileBroadcastFPCUc,0x0047AD70,high,"finds first free port byte, increments it under lock, writes table and returns slot or -1",exact_tuple,0x00009254
+CODE_02_Visos (Generic).bin,0x0000933E,ResetPort__14CFileBroadcastFs,0x0047AE00,high,"clears local slot, decrements shared port use and closes file when no ports remain",exact_tuple,0x0000933E
+CODE_02_Visos (Generic).bin,0x00009370,StartListen__14CFileBroadcastFv,0x0047AED0,high,sets the listening flag,exact_tuple,0x00009370
+CODE_02_Visos (Generic).bin,0x000093A2,StopListen__14CFileBroadcastFv,0x0047AEE0,high,clears the listening flag,exact_tuple,0x000093A2
+CODE_02_Visos (Generic).bin,0x0000940C,Process__14CFileBroadcastFv,0x0047AEF0,high,100ms cadence for read-socket processing followed by common connection service,exact_tuple,0x0000940C
