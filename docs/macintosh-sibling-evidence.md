@@ -487,3 +487,7 @@ All fourteen `CBroadcast` bodies map in order to `0x00460350..0x00460A50`. The c
 The six connect-control methods `CtoSRequestConnect`, `CtoSRequestNewPort`, `StoCOKConnect`, `StoCFAILEDConnect`, `CtoSGOConnect`, and `Establish` map to `0x004621E0/0x00462280/0x00462340/0x00462460/0x00462480/0x004624A0`. Their shared control streams implement request, port negotiation, authorisation, failure, go-ahead, and payload dispatch.
 
 The final seven `CBaseNetwork` methods map `SetNCBuffers`, `SetCBuffers`, `AttachMessageQueue`, and `DetachMessageQueue` to `0x00462550/0x00462570/0x00462590/0x004625B0` in physical `EFFSTRM.CPP`, and `Process`, `SendAll`, and `ProcessMsg` to `0x004625E0/0x00462720/0x004627B0` in physical `VSNET.CPP`. This completes all 23 portable `CBaseNetwork` methods while preserving the Windows mixed-TU split. The `DetachMessageQueue` entry is `0x004625B0`; `0x004625C0` lies inside that body.
+
+## Portable button lifecycle reconstruction
+
+The two `CPVButton` constructors, `Initialise`, and destructor map to `0x00467C10/0x00467CD0/0x00467D50/0x00467DD0`. Constructor callers include derived button/window classes; both constructors establish CPVGWnd ownership before shared button-state initialization, and the destructor reverses that ownership. Physical definitions remain in `MENUSEL.CPP`; draw and pointer-interaction methods remain a separate pending subset.

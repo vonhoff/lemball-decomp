@@ -2672,10 +2672,10 @@ address,size,name,unit
 0x00467B40,87,destroy_packaged_rect_queue_entry_array,Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
 0x00467BA0,7,reset_packaged_rect_queue_entry_vtable,Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
 0x00467BB0,89,delete_packaged_rect_queue_entry_array_or_scalar,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
-0x00467C10,189,construct_resource_geometry_child_from_rect,Frontend/MENUSEL.CPP
-0x00467CD0,113,construct_resource_geometry_child_base,Frontend/MENUSEL.CPP
-0x00467D50,117,initialize_shared_sprite_owner_state,Frontend/MENUSEL.CPP
-0x00467DD0,48,destroy_resource_geometry_child_from_rect,Frontend/MENUSEL.CPP
+0x00467C10,189,CPVButton::CPVButton,Frontend/MENUSEL.CPP
+0x00467CD0,113,CPVButton::CPVButton,Frontend/MENUSEL.CPP
+0x00467D50,117,CPVButton::Initialise,Frontend/MENUSEL.CPP
+0x00467DD0,48,CPVButton::~CPVButton,Frontend/MENUSEL.CPP
 0x00467E00,61,destroy_zrle_variant_render_entry_array,Frontend/MENUSEL.CPP
 0x00467E40,13,set_overlay_owner_field_0xf8,Platform/Windows/Mixed/Engine/GDI/RENDER/GDIVT.CPP
 0x00467E50,160,refresh_compact_zrle_owner_from_resource_helper,Frontend/MENUSEL.CPP
