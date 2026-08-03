@@ -491,7 +491,7 @@ address,size,name,unit
 0x00416D10,1,noop_chunk_object_callback,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416D20,42,CGlobalGameObject::CGlobalGameObject,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416D50,51,CGlobalGameObject::Restart,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
-0x00416D90,21,CGlobalGameObject::UsableState,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x00416D90,21,CGlobalGameObject::UsableState,AI/CGlobalGameObject.cpp
 0x00416DB0,34,CGlobalGameObject::Action,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416DE0,24,CGlobalGameObject::Action,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416E00,24,request_managed_entity_state_id_with_variant,AI/LVSTATEVAR.CPP

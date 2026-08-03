@@ -95,21 +95,8 @@ struct LevelManagedEntityResetStateView {
 	int m_fResetPending130;
 	int m_nLatchedValue134;
 
-	int ClearLatchedValue(void);
 	void ApplyPendingReset(void);
 };
-
-// FUNCTION: LEMBALL 0x00416d90
-int LevelManagedEntityResetStateView::ClearLatchedValue(void)
-{
-	int nValue;
-
-	nValue = m_nLatchedValue134;
-	if (nValue != 0) {
-		m_nLatchedValue134 = 0;
-	}
-	return nValue;
-}
 
 // FUNCTION: LEMBALL 0x00416e70
 void LevelManagedEntityResetStateView::ApplyPendingReset(void)
