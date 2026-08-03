@@ -1317,3 +1317,10 @@ CODE_02_Visos (Generic).bin,0x0000F449,StoCOKConnect__12CBaseNetworkFP15CNetwork
 CODE_02_Visos (Generic).bin,0x0000F49B,StoCFAILEDConnect__12CBaseNetworkFP15CNetworkAddress,0x00462460,high,forwards failed-connect control stream to peer
 CODE_02_Visos (Generic).bin,0x0000F509,CtoSGOConnect__12CBaseNetworkFP15CNetworkAddress,0x00462480,high,validates referenced peer and completes connection
 CODE_02_Visos (Generic).bin,0x0000F5FF,Establish__12CBaseNetworkFP15CNetworkAddressPUc,0x004624A0,high,dispatches connect-control payload to matching protocol handler
+CODE_02_Visos (Generic).bin,0x0000F651,SetNCBuffers__12CBaseNetworkFUlUli,0x00462550,high,stores non-contiguous buffer count stride and mode
+CODE_02_Visos (Generic).bin,0x0000F68E,SetCBuffers__12CBaseNetworkFii,0x00462570,high,stores contiguous buffer count and stride
+CODE_02_Visos (Generic).bin,0x0000F6D5,AttachMessageQueue__12CBaseNetworkFP17CBaseQueueHandler,0x00462590,high,registers queue handler with secondary dispatch queue
+CODE_02_Visos (Generic).bin,0x0000F741,DetachMessageQueue__12CBaseNetworkFv,0x004625B0,high,unregisters stored queue handler and clears it
+CODE_02_Visos (Generic).bin,0x0000F84A,Process__12CBaseNetworkFv,0x004625E0,high,transitions dispatch clients and initializes shuts down or processes peers
+CODE_02_Visos (Generic).bin,0x0000F8C3,SendAll__12CBaseNetworkFR15CNetworkMessage,0x00462720,high,sends message to every active connection until blocked
+CODE_02_Visos (Generic).bin,0x0000F969,ProcessMsg__12CBaseNetworkFP10tagMESSAGE,0x004627B0,high,dispatches single-peer or all-peer queued send events
