@@ -1150,7 +1150,7 @@ address,size,name,unit
 0x0042EEE0,83,CMover::IsOn,AI/CMover.cpp
 0x0042EF40,170,CMover::VerifyObjects,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0042EFF0,334,CMover::GetOn,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x0042F140,73,CMover::StopObjectsMoving,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x0042F140,73,CMover::StopObjectsMoving,AI/CMover.cpp
 0x0042F190,91,CMoverManager::CMoverManager,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0042F1F0,48,CMoverManager::Restart,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0042F220,158,CMoverManager::Initialise,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

@@ -16,6 +16,7 @@ public:
 	void Initialise(void);
 	void Switch(void);
 	int IsOn(AICOORD& point);
+	void StopObjectsMoving(void);
 	int IsAt(int x, int y, int* pHeight);
 	void Set(unsigned short nSlotId, short nHeading, int nMode, int iNode, int nValue);
 
@@ -35,7 +36,7 @@ private:
 	int m_nValue16C;
 	int m_nState170;
 	int m_cAttachedEntities174;
-	char m_abReserved178[0x28];
+	void* m_apAttachedEntities178[10];
 };
 
 typedef char CMoverSizeCheck[sizeof(CMover) == 0x1a0 ? 1 : -1];

@@ -4,6 +4,8 @@ extern void* g_pActiveManagedEntityOwner;
 extern void* g_pLevelTileGrid;
 extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern void __fastcall ResetMoveChunkObjectRuntimeStateThunk(void* pObject);
+extern void* __fastcall get_managed_entity_owner_group(void* pEntity);
+extern void __fastcall clear_managed_entity_child_pending_state_if_interruptible(void* pEntity);
 
 struct LevelNodePoint {
 	int m_anValues[3];
@@ -135,4 +137,26 @@ int CMover::IsOn(AICOORD& point)
 	int nX = point.x >> 12;
 	int nY = point.y >> 12;
 	return nMinX <= nX && nX <= nMinX + 15 && nMinY <= nY && nY <= nMinY + 15;
+}
+
+// FUNCTION: LEMBALL 0x0042f140
+void CMover::StopObjectsMoving(void)
+{
+	typedef void(__fastcall * OwnerResetSlotProc)(void*);
+	int i = 0;
+	if (m_cAttachedEntities174 > 0) {
+		void** ppEntity = m_apAttachedEntities178;
+		do {
+			void* pEntity = *ppEntity;
+			if (*(int*) ((char*) pEntity + 0x64) == 2) {
+				void* pOwnerGroup = get_managed_entity_owner_group(pEntity);
+				((OwnerResetSlotProc) (*(void***) pOwnerGroup)[84])(pOwnerGroup);
+			}
+			else {
+				clear_managed_entity_child_pending_state_if_interruptible(pEntity);
+			}
+			++ppEntity;
+			++i;
+		} while (i < m_cAttachedEntities174);
+	}
 }

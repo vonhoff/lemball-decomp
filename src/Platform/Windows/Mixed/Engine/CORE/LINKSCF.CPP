@@ -1747,36 +1747,6 @@ void LEMBALL_FASTCALL detach_entities_outside_move_chunk_bounds(void* pObject)
 	}
 }
 
-extern void* LEMBALL_FASTCALL get_managed_entity_owner_group(void* pEntity);
-extern void LEMBALL_FASTCALL clear_managed_entity_child_pending_state_if_interruptible(void* pEntity);
-
-// MACINTOSH: CMover::StopObjectsMoving()
-// FUNCTION: LEMBALL 0x0042f140
-void LEMBALL_FASTCALL release_attached_move_chunk_entities(void* pObject)
-{
-	typedef void(LEMBALL_FASTCALL * OwnerResetSlotProc)(void*);
-	char* pBytes;
-	int i;
-	void** ppEntity;
-
-	pBytes = (char*) pObject;
-	i = 0;
-	if (*(int*) (pBytes + 0x174) > 0) {
-		ppEntity = (void**) (pBytes + 0x178);
-		do {
-			void* pEntity = *ppEntity;
-			if (*(int*) ((char*) pEntity + 0x64) == 2) {
-				void* pOwnerGroup = get_managed_entity_owner_group(pEntity);
-				((OwnerResetSlotProc) (*(void***) pOwnerGroup)[84])(pOwnerGroup);
-			}
-			else {
-				clear_managed_entity_child_pending_state_if_interruptible(pEntity);
-			}
-			++ppEntity;
-			++i;
-		} while (i < *(int*) (pBytes + 0x174));
-	}
-}
 
 // MACINTOSH: CMoverManager::CMoverManager(CAI*, int)
 // FUNCTION: LEMBALL 0x0042f190
