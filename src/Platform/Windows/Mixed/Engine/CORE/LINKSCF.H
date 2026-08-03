@@ -31,10 +31,6 @@ struct LinkScfDoorChunkManagerView {
 	LinkScfDoorChunkManagerView* ConstructDoorChunkManagerThunk(void* pLevelMode, int nCapacity);
 };
 
-struct LinkScfMineChunkManagerView {
-	LinkScfMineChunkManagerView* ConstructMineChunkManager(void* pLevelMode, int nCapacity);
-	LinkScfMineChunkManagerView* ConstructMineChunkManagerThunk(void* pLevelMode, int nCapacity);
-};
 
 struct CCollectableManager {
 	CCollectableManager* ConstructCollChunkManager(void* pLevelMode, int nCapacity);

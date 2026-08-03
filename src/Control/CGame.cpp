@@ -4,6 +4,7 @@
 #include "AI/CLaserManager.h"
 #include "AI/CLiftManager.h"
 #include "AI/CMaze.h"
+#include "AI/CMineManager.h"
 #include "Control/Options.h"
 #include "Frontend/CURSOR.H"
 #include "Frontend/MAINMENU.H"
@@ -3460,7 +3461,7 @@ void LevelGameMode::InitializeLevelGameMode(void)
 
 		pObject = AllocateVSMemBlock(0x44);
 		if (pObject != 0) {
-			pObject = ((LinkScfMineChunkManagerView*) pObject)->ConstructMineChunkManagerThunk(pLevelGameMode, 0x28);
+			pObject = new (pObject) CMineManager((CAI*) pLevelGameMode, 0x28);
 		}
 		*(void**) (pModeBytes + 0x188) = pObject;
 		RegisterLevelChunkStreamThunk(g_pLevelChunkStreamDispatcher, *(void**) (pModeBytes + 0x188));

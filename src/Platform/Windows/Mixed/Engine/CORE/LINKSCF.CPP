@@ -410,7 +410,7 @@ void* g_LINKSCF_CollChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteColl
 																	  ReturnFalseChunkStreamCommandThunk,
 																	  EmitCollChunkManagerRenderEntries);
 // GLOBAL: LEMBALL 0x00495d30
-static void* g_LINKSCF_MineChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteMineChunkManagerAuto,
+void* g_LINKSCF_MineChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteMineChunkManagerAuto,
 																			 ActivateMineChunkObjects,
 																			 RefreshActiveMineChunkObjects,
 																			 ReturnFalseChunkStreamCommandThunk,
@@ -641,12 +641,7 @@ LinkScfBoonChunkManagerView* LinkScfBoonChunkManagerView::ConstructBoonChunkMana
 	return ConstructBoonChunkManager(pLevelMode, pTileGrid);
 }
 
-// LINKERILT: LEMBALL 0x00402af4
-LinkScfMineChunkManagerView* LinkScfMineChunkManagerView::ConstructMineChunkManagerThunk(void* pLevelMode,
-																						 int nCapacity)
-{
-	return ConstructMineChunkManager(pLevelMode, nCapacity);
-}
+
 // LINKERILT: LEMBALL 0x00402f95
 LinkScfPgunChunkManagerView* LinkScfPgunChunkManagerView::ConstructPgunChunkManagerThunk(void* pLevelMode,
 																						 int nCapacity)
@@ -1260,18 +1255,7 @@ CCollectableManager* CCollectableManager::ConstructCollChunkManager(void* pLevel
 	*(int*) ((char*) this + 0x34) = 0;
 	return this;
 }
-// MACINTOSH: CMineManager::CMineManager(CAI*, int)
-// FUNCTION: LEMBALL 0x00424020
-LinkScfMineChunkManagerView* LinkScfMineChunkManagerView::ConstructMineChunkManager(void* pLevelMode, int nCapacity)
-{
-	LINKSCF_INITIALIZE_EFF_CHUNK_STREAM(this, 0x0d, 2);
-	*(void**) this = g_LINKSCF_MineChunkManagerVtable;
-	*(void**) ((char*) this + 0x30) = pLevelMode;
-	*(int*) ((char*) this + 0x40) = nCapacity;
-	*(int*) ((char*) this + 0x34) = 0;
-	*(int*) ((char*) this + 0x38) = 0;
-	return this;
-}
+
 
 void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject)
 {
