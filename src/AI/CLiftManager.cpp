@@ -3,9 +3,12 @@
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
 
-extern void* g_LINKSCF_LiftChunkManagerVtable[10];
+extern LiftManagerVtableLayout g_LINKSCF_LiftChunkManagerVtable;
 extern void* g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
+extern unsigned short g_nNextLiftObjectId;
+
+typedef void(LEMBALL_FASTCALL* LiftRestartProc)(void* pObject);
 
 // FUNCTION: LEMBALL 0x00425680
 CLiftManager::CLiftManager(CAI* pAI, int nCapacity)
@@ -19,8 +22,30 @@ CLiftManager::CLiftManager(CAI* pAI, int nCapacity)
 		*(int*) ((char*) this + 0x24) = 1;
 		*(int*) ((char*) this + 0x18) += g_cbEffTransportMaxPacketBytes;
 	}
-	*(void**) this = g_LINKSCF_LiftChunkManagerVtable;
+	*(void**) this = &g_LINKSCF_LiftChunkManagerVtable;
 	m_pAI30 = pAI;
 	m_cCapacity38 = nCapacity;
 	m_pObjects3C = 0;
+}
+
+// FUNCTION: LEMBALL 0x004256e0
+void CLiftManager::Restart(void)
+{
+	char* pObject;
+	int cbOffset;
+	int i;
+
+	g_nNextLiftObjectId = 0;
+	cbOffset = 0;
+	if (m_pObjects3C != 0) {
+		i = 0;
+		if (m_cCapacity38 > 0) {
+			do {
+				pObject = (char*) m_pObjects3C + cbOffset;
+				++i;
+				cbOffset += 0x190;
+				((LiftRestartProc) (*(void***) pObject)[65])(pObject);
+			} while (i < m_cCapacity38);
+		}
+	}
 }

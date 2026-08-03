@@ -7,6 +7,7 @@ class CLift;
 class CLiftManager {
 public:
 	CLiftManager(CAI* pAI, int nCapacity);
+	void Restart(void);
 
 private:
 	unsigned char m_abReserved00[0x30];
@@ -14,6 +15,12 @@ private:
 	int m_cObjects34;
 	int m_cCapacity38;
 	CLift* m_pObjects3C;
+};
+
+struct LiftManagerVtableLayout {
+	void* m_apSlots00[6];
+	void (CLiftManager::*m_pRestart18)(void);
+	void* m_apSlots1C[3];
 };
 
 #endif

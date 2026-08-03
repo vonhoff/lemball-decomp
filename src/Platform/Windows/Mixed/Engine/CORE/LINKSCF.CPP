@@ -3,6 +3,7 @@
 #include "AI/CLaser.h"
 #include "AI/CLaserManager.h"
 #include "AI/CLift.h"
+#include "AI/CLiftManager.h"
 #include "Control/CGame.h"
 #include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
@@ -213,7 +214,7 @@ DEFINE_LINKSCF_VTABLE_STUB_1(EmitCollChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(ActivateMineChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveMineChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitMineChunkManagerRenderEntries)
-DEFINE_LINKSCF_VTABLE_STUB_0(InitializeLiftChunkObjects)
+
 DEFINE_LINKSCF_VTABLE_STUB_0(ActivateLiftChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitLiftChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveRockChunkObjects)
@@ -256,11 +257,17 @@ void* LEMBALL_FASTCALL GetFirstCachedChunkObjectThunk(void* pObject)
 	 (void*) renderProc}
 
 // GLOBAL: LEMBALL 0x00495ea8
-void* g_LINKSCF_LiftChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteLiftChunkManagerAuto,
-																			 InitializeLiftChunkObjects,
-																			 ActivateLiftChunkObjects,
-																			 ReturnFalseChunkStreamCommandThunk,
-																			 EmitLiftChunkManagerRenderEntries);
+LiftManagerVtableLayout g_LINKSCF_LiftChunkManagerVtable = {
+	{(void*) ReturnTrueVtableCallbackThunk,
+	 (void*) ReturnTrueVtableCallbackSecondaryThunk,
+	 (void*) DispatchType18ChunkStreamCommandsThunk,
+	 (void*) NoopVtableCallbackThunk,
+	 (void*) NoopType18ChunkStreamWriteThunk,
+	 (void*) DeleteLiftChunkManagerAuto},
+	&CLiftManager::Restart,
+	{(void*) ActivateLiftChunkObjects,
+	 (void*) ReturnFalseChunkStreamCommandThunk,
+	 (void*) EmitLiftChunkManagerRenderEntries}};
 // GLOBAL: LEMBALL 0x00496b78
 void* g_LINKSCF_MoveChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteMoveChunkManagerAuto,
 																	  ActivateMoveChunkObjects,
@@ -2000,10 +2007,21 @@ void LEMBALL_FASTCALL DestroyMineChunkManagerAutoThunk(void* pObject)
 	DestroyMineChunkManagerAuto(pObject);
 }
 
-DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyLiftChunkManagerAuto,
-									DestroyLiftChunkManagerAutoThunk,
-									g_LINKSCF_LiftChunkManagerVtable,
-									0x3c)
+void LEMBALL_FASTCALL DestroyLiftChunkManagerAuto(void* pObject)
+{
+	void* pChild;
+
+	*(void**) pObject = &g_LINKSCF_LiftChunkManagerVtable;
+	pChild = *(void**) ((char*) pObject + 0x3c);
+	if (pChild != 0) {
+		((LinkScfDeletableChild*) pChild)->Delete(3);
+	}
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+}
+void LEMBALL_FASTCALL DestroyLiftChunkManagerAutoThunk(void* pObject)
+{
+	DestroyLiftChunkManagerAuto(pObject);
+}
 
 DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyCaptureTriggerChunkManagerAuto,
 									DestroyCaptureTriggerChunkManagerAutoThunk,
