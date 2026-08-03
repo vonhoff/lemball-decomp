@@ -1278,3 +1278,6 @@ CODE_02_Visos (Generic).bin,0x0000CF13,Send__10CBroadcastFP15CNetworkAddressR17C
 CODE_02_Visos (Generic).bin,0x0000D9E2,__ct__15CBasePacketBuffFiUs,0x00461210,high,stores slot count and 16-bit payload size then allocates pointer array,exact_tuple,0x0000D9E2
 CODE_02_Visos (Generic).bin,0x0000DA6E,__dt__15CBasePacketBuffFv,0x00461250,high,deletes each non-null packet slot then frees pointer array,exact_tuple,0x0000DA6E
 CODE_02_Visos (Generic).bin,0x0000B37F,CloseSocket__17CBaseCommonSocketFv,0x0045F720,high,"standalone close-state wrapper clears active fields, invokes virtual close and falls back to SocketError on -1",exact_tuple,0x0000B37F
+CODE_02_Visos (Generic).bin,0x0000DAE8,__ct__15CReadPacketBuffFiUs,0x00461290,high,constructs base table then allocates one 0x2c-byte CReadPacket per slot,exact_tuple,0x0000DAE8
+CODE_02_Visos (Generic).bin,0x0000DB48,FillPacket__15CReadPacketBuffFi,0x004612F0,high,copies current global network packet into indexed read slot,exact_tuple,0x0000DB48
+CODE_02_Visos (Generic).bin,0x0000DB90,UnUseAll__15CReadPacketBuffFv,0x00461310,high,clears payload-present flag on every read slot,exact_tuple,0x0000DB90

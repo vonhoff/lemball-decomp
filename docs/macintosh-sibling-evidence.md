@@ -445,3 +445,7 @@ All fourteen `CBroadcast` bodies map in order to `0x00460350..0x00460A50`. The c
 ## Base packet-buffer reconstruction
 
 `CBasePacketBuff` constructor/destructor map to `0x00461210/0x00461250`. The constructor stores count and 16-bit payload size and allocates the pointer array; the destructor invokes each non-null slot's deleting destructor before releasing the array. Derived buffer constructors remain separate.
+
+## Read packet-buffer reconstruction
+
+`CReadPacketBuff` constructor, `FillPacket`, and `UnUseAll` map to `0x00461290/0x004612F0/0x00461310`. The constructor allocates one 0x2c-byte `CReadPacket` per base-table slot, `FillPacket` copies the current global packet into an indexed slot, and `UnUseAll` clears every slot's payload-present flag.
