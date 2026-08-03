@@ -289,3 +289,7 @@ All fourteen portable queue methods map across `0x00463020..0x004638A0` while pr
 ## CResANIM reconstruction
 
 All four portable animation-list resource methods map across `0x0045D610..0x0045D720` in physical `VARLOAD.CPP`. Exact load, counted `CResZRLE` entry-array allocation, per-entry unload, force-load, ABI, layout, caller, and derived-vtable evidence supports the family. Inherited base-list and adjacent `CResFONT` lifecycle bodies remain separate.
+
+## CResBaseLIST reconstruction
+
+All six portable list-resource base methods map across `0x0045D290..0x0045D5C0` in physical `VARLOAD.CPP`. Exact header/data arrival, archive loading, force-load and unload loops, layout adaptations, and common slots across four list vtables support the family. Derived resource bodies and deleting wrappers remain separate.
