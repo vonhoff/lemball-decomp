@@ -6,10 +6,6 @@ extern unsigned short g_GAME_ManagedEntityRegistryCount;
 extern unsigned char g_GAME_ManagedEntitySlotBitMasks[8];
 extern unsigned char g_GAME_ManagedEntitySlotClaimBitset[0x100];
 
-struct ManagedEntitySlotOwnerView {
-	void SetManagedEntitySlotId(unsigned short nSlotId);
-};
-
 void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject);
 
 // FUNCTION: LEMBALL 0x00416610
@@ -33,11 +29,6 @@ void CGameObject::ReSetId(void)
 		g_GAME_ManagedEntitySlotClaimBitset[nSlotId >> 3] &=
 			(unsigned char) ~g_GAME_ManagedEntitySlotBitMasks[nSlotId & 7];
 	}
-}
-
-void ManagedEntitySlotOwnerView::SetManagedEntitySlotId(unsigned short nSlotId)
-{
-	((CGameObject*) this)->SetId(nSlotId);
 }
 
 // Macintosh: CGameObject::RegisterId()

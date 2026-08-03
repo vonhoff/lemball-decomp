@@ -1,6 +1,7 @@
 #include "AI/CMineManager.h"
 
 #include "AI/AICoord.h"
+#include "AI/CGameObject.h"
 #include "AI/CMine.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
@@ -38,10 +39,6 @@ typedef void(LEMBALL_FASTCALL* MineRestartProc)(void* pObject);
 
 struct MineManagerDeletableChild {
 	virtual void Delete(unsigned char fDelete);
-};
-
-struct ManagedEntitySlotOwnerView {
-	void SetManagedEntitySlotId(unsigned short nSlotId);
 };
 
 typedef void(LEMBALL_FASTCALL* MineProcessProc)(void* pObject);
@@ -203,7 +200,7 @@ void CMineManager::Add(unsigned short nId, AICOORD position)
 
 	if (nId != 0xffff && m_cObjects3C < m_cCapacity40) {
 		pMine = (CMine*) ((char*) m_pObjects34 + m_cObjects3C * 0x150);
-		((ManagedEntitySlotOwnerView*) pMine)->SetManagedEntitySlotId(nId);
+		((CGameObject*) pMine)->SetId(nId);
 		pMine->Set(position);
 		m_pPositions38[m_cObjects3C].x = (short) (position.x >> 12);
 		m_pPositions38[m_cObjects3C].y = (short) (position.y >> 12);

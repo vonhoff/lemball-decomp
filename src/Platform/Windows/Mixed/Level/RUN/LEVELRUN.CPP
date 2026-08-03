@@ -533,12 +533,6 @@ struct GameLevelTileGrid {
 	int m_cRows14;
 };
 
-struct ManagedEntitySlotOwnerView {
-	char m_abReserved00[0x6c];
-	unsigned short m_nSlotId6C;
-
-	void SetManagedEntitySlotId(unsigned short nSlotId);
-};
 
 void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject);
 unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void);
@@ -1467,7 +1461,7 @@ void AssignNetworkPlayerManagedEntitySlotIdsThunk(int nLevelMode)
 			ppManagedEntities = (void**) (nLevelMode + 0x1d0 + *pOffsets * 4);
 			do {
 				nSlotId = FindLastFreeManagedEntitySlotIdThunk();
-				((ManagedEntitySlotOwnerView*) *ppManagedEntities)->SetManagedEntitySlotId((unsigned short) nSlotId);
+				((CGameObject*) *ppManagedEntities)->SetId((unsigned short) nSlotId);
 				--i;
 				++ppManagedEntities;
 			} while (i != 0);
@@ -1651,8 +1645,7 @@ void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode)
 			nSlotId = ((CGameObject*) pManagedEntityObject)->GetId();
 			if (nSlotId == 0xffff) {
 				nFreeSlotId = FindFirstFreeManagedEntitySlotIdForwardThunk();
-				((ManagedEntitySlotOwnerView*) pManagedEntityObject)
-					->SetManagedEntitySlotId((unsigned short) nFreeSlotId);
+				((CGameObject*) pManagedEntityObject)->SetId((unsigned short) nFreeSlotId);
 			}
 			++i;
 		} while ((int) i < (int) cManagedEntities);

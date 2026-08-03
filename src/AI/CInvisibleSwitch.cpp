@@ -1,5 +1,6 @@
 #include "AI/CInvisibleSwitch.h"
 
+#include "AI/CGameObject.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
@@ -26,10 +27,6 @@ struct InvsChunkObjectSoundState {
 
 struct ManagedEntityStateView {
 	void RequestManagedEntityStateId(int nStateId);
-};
-
-struct ManagedEntitySlotOwnerView {
-	void SetManagedEntitySlotId(unsigned short nSlotId);
 };
 
 struct LevelSlotActionDispatcherView {
@@ -267,7 +264,7 @@ void CInvisibleSwitch::Load(unsigned char*& pData)
 
 	nSlotId = *(unsigned short*) pData;
 	pData += 2;
-	((ManagedEntitySlotOwnerView*) this)->SetManagedEntitySlotId(nSlotId);
+	((CGameObject*) this)->SetId(nSlotId);
 	begin.x = *(short*) pData;
 	pData += 2;
 	begin.y = *(short*) pData;

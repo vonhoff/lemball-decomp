@@ -1,5 +1,6 @@
 #include "AI/CLiftManager.h"
 
+#include "AI/CGameObject.h"
 #include "AI/CLift.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
@@ -23,10 +24,6 @@ struct LiftManagerDeletableChild {
 
 struct VsNetEffStreamCommon {
 	virtual ~VsNetEffStreamCommon(void);
-};
-
-struct ManagedEntitySlotOwnerView {
-	void SetManagedEntitySlotId(unsigned short nSlotId);
 };
 
 // FUNCTION: LEMBALL 0x00425680
@@ -258,7 +255,7 @@ void CLiftManager::LoadLevel(unsigned char* pData, int cbData, unsigned char nVe
 				++pRecord;
 			}
 			pObject = (CLift*) ((char*) m_pObjects3C + m_cObjects34 * 0x190);
-			((ManagedEntitySlotOwnerView*) pObject)->SetManagedEntitySlotId(nSlotId);
+			((CGameObject*) pObject)->SetId(nSlotId);
 			if (*(unsigned short*) ((char*) m_pAI30 + 0x54) < 5) {
 				pData = (unsigned char*) (pRecord + 8);
 				pObject->Set(pRecord[2],

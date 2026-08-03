@@ -7,8 +7,6 @@
 struct ManagedEntitySlotOwnerView {
 	char m_abReserved00[0x6c];
 	unsigned short m_nSlotId6C;
-
-	void SetManagedEntitySlotId(unsigned short nSlotId);
 };
 
 struct CMover : public ManagedEntitySlotOwnerView {

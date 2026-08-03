@@ -23,7 +23,8 @@ struct CGameObjectCommandQueue {
 	CGameObjectCommand* m_pEntries;
 };
 
-struct CGameObject {
+class CGameObject {
+public:
 	char m_abReserved00[0x64];
 	int m_nEntityType64;
 	char m_abReserved68[4];

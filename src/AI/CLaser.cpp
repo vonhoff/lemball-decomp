@@ -1,5 +1,6 @@
 #include "AI/CLaser.h"
 
+#include "AI/CGameObject.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
 struct LaserVtableLayout;
@@ -17,10 +18,6 @@ extern void LEMBALL_FASTCALL EmitLevelChunkObjectRenderEntry(void* pObject, void
 
 struct LevelChunkObjectBaseView {
 	void* InitializeLevelChunkObjectBase(int nType, unsigned short nChildType, unsigned short nFlags);
-};
-
-struct ManagedEntitySlotOwnerView {
-	void SetManagedEntitySlotId(unsigned short nSlotId);
 };
 
 struct CGround {
@@ -83,7 +80,7 @@ void CLaser::Set(unsigned short nSlotId, const AICOORD& position, int nObjectTyp
 	int y;
 
 	pObjectBytes = (char*) this;
-	((ManagedEntitySlotOwnerView*) this)->SetManagedEntitySlotId(nSlotId);
+	((CGameObject*) this)->SetId(nSlotId);
 	*(int*) (pObjectBytes + 0x9c) = position.x;
 	nTileX = (position.x >> 12) / 16;
 	*(int*) (pObjectBytes + 0xa0) = position.y;

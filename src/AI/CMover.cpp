@@ -1,5 +1,7 @@
 #include "AI/CMover.h"
 
+#include "AI/CGameObject.h"
+
 extern void* g_pActiveManagedEntityOwner;
 extern void* g_pLevelTileGrid;
 extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
@@ -143,7 +145,7 @@ void CMover::Set(unsigned short nSlotId, short nHeading, int nMode, int iNode, i
 	int nTileX;
 	unsigned short nHeight;
 
-	SetManagedEntitySlotId(nSlotId);
+	((CGameObject*) this)->SetId(nSlotId);
 	pPoint = ((LevelModeNodeView*) g_pActiveManagedEntityOwner)->CopyNodePointByIndex(&point, iNode);
 	m_nWorldX9C = pPoint->m_anValues[0];
 	nPixelX = m_nWorldX9C >> 12;

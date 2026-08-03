@@ -15,10 +15,6 @@ struct ManagedEntityStateView {
 	void RequestManagedEntityStateId(int nStateId);
 };
 
-struct ManagedEntitySlotOwnerView {
-	void SetManagedEntitySlotId(unsigned short nSlotId);
-};
-
 struct CGround {
 	short GetZ(int nLocalX, int nLocalY);
 };
