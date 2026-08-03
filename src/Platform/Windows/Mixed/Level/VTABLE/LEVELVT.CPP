@@ -1,5 +1,6 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "AI/CMover.h"
+#include "AI/CGameObject.h"
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
@@ -270,7 +271,6 @@ struct LevelManagedEntityCommandQueueView {
 	char m_abReserved00[0x70];
 	unsigned short* m_pCommandCount70;
 
-	int HasPendingCommands(void);
 	int HasPendingCommandsThunk(void);
 };
 
@@ -357,7 +357,7 @@ int __fastcall has_level_plas_history_entries(void* pLevelMode);
 int __fastcall get_managed_entity_group_command_state(void* pEntity);
 void __fastcall set_managed_entity_group_command_state(void* pEntity, void* pUnused, int nState);
 void __fastcall set_entity_field_0x08_if_flags_bit0(void* pEntity);
-void __fastcall clear_managed_entity_move_commands(void* pEntity);
+
 int return_false_virtual_hook(void);
 void* __fastcall get_first_projectile_pool_object(void* pPool);
 void noop_managed_entity_group_detach_hook(void);
@@ -488,7 +488,7 @@ LevelThreeDwordPoint* LevelManagedEntityPositionView::CopyWorldPositionThunk(Lev
 // LINKERILT: LEMBALL 0x004011ef
 void __fastcall ClearManagedEntityMoveCommandsThunk(void* pEntity)
 {
-	clear_managed_entity_move_commands(pEntity);
+	((CGameObject*) pEntity)->EmptyDestinationList();
 }
 
 // LINKERILT: LEMBALL 0x0040142e
@@ -560,7 +560,7 @@ LevelTwoDwordPair* LevelTwoDwordPair::CopyThunk(const LevelTwoDwordPair* pSource
 // LINKERILT: LEMBALL 0x00401f37
 int LevelManagedEntityCommandQueueView::HasPendingCommandsThunk(void)
 {
-	return HasPendingCommands();
+	return ((CGameObject*) this)->DestinationExists();
 }
 
 // LINKERILT: LEMBALL 0x0040202c
@@ -1437,20 +1437,6 @@ void __fastcall set_entity_field_0x08_if_flags_bit0(void* pEntity)
 	if ((*(unsigned char*) ((char*) pEntity + 0x68) & 1) != 0) {
 		*(int*) ((char*) pEntity + 8) = 1;
 	}
-}
-
-// Macintosh: CGameObject::DestinationExists()
-// FUNCTION: LEMBALL 0x004160c0
-int LevelManagedEntityCommandQueueView::HasPendingCommands(void)
-{
-	return 0 < *m_pCommandCount70;
-}
-
-// Macintosh: CGameObject::EmptyDestinationList()
-// FUNCTION: LEMBALL 0x004160e0
-void __fastcall clear_managed_entity_move_commands(void* pEntity)
-{
-	**(unsigned short**) ((char*) pEntity + 0x70) = 0;
 }
 
 // Macintosh: CGameObject::IsSelectable()

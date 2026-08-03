@@ -442,8 +442,8 @@ address,size,name,unit
 0x00415F30,195,CGameObject::AlterDestination,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00416000,69,CGameObject::GetDestination,AI/CGameObjectMove.cpp
 0x00416050,101,pop_move_command_and_copy_next_position,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x004160C0,18,CGameObject::DestinationExists,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x004160E0,9,CGameObject::EmptyDestinationList,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x004160C0,18,CGameObject::DestinationExists,AI/CGameObjectMove.cpp
+0x004160E0,9,CGameObject::EmptyDestinationList,AI/CGameObjectMove.cpp
 0x004160F0,52,CGameObject::GetBoundingBox,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00416130,237,CGameObject::Jump,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00416220,275,CGameObject::Fall,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

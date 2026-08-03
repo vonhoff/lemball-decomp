@@ -1,4 +1,4 @@
-#include "AI/AICoord.h"
+#include "AI/CGameObject.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 extern int g_nLevelFrameClockTick;
@@ -9,45 +9,6 @@ static const int g_LEVEL_HeadingTurnDirections[8] = {0, 1, 1, 1, 1, -1, -1, -1};
 
 // GLOBAL: LEMBALL 0x0049d0b0
 static const int g_LEVEL_ManagedEntityUpdatePeriods[9] = {0, 87, 75, 0, 0, 0, 0, 75, 75};
-
-struct LevelManagedEntityCommandEntry {
-	int m_nField00;
-	int m_nField04;
-	int m_nField08;
-	int m_nField0C;
-	unsigned short m_nField10;
-	unsigned short m_nReserved12;
-};
-
-struct LevelManagedEntityCommandQueue {
-	unsigned short m_cEntries00;
-	unsigned short m_cCapacity02;
-	LevelManagedEntityCommandEntry* m_pEntries04;
-};
-
-struct CGameObject {
-	char m_abReserved00[0x64];
-	int m_nEntityType64;
-	char m_abReserved68[8];
-	LevelManagedEntityCommandQueue* m_pCommandQueue70;
-	int m_fHasCommands74;
-	char m_abReserved78[0x10];
-	int m_nMotionDuration88;
-	char m_abReserved8C[0x10];
-	AICOORD m_WorldPosition9C;
-	char m_abReservedA8[0xc];
-	short m_nHeadingOctantB4;
-	char m_abReservedB6[0x12];
-	int m_nMotionStartTickC8;
-	int m_nNextUpdateTickCC;
-
-	void DeleteFirstEntryFromDestinationList(void);
-	void StopMoving(void);
-	void TurnToFaceDestination(void);
-	int FacingDestination(void);
-	void AddDestination(const AICOORD& position);
-	AICOORD* GetDestination(AICOORD* pPosition);
-};
 
 struct LevelManagedEntityStateFields {
 	char m_abReserved00[0xb4];
@@ -114,50 +75,50 @@ int CGameObject::FacingDestination(void)
 // FUNCTION: LEMBALL 0x00415e80
 void CGameObject::DeleteFirstEntryFromDestinationList(void)
 {
-	LevelManagedEntityCommandEntry* pDestination;
-	LevelManagedEntityCommandEntry* pSource;
-	LevelManagedEntityCommandQueue* pQueue;
+	CGameObjectCommand* pDestination;
+	CGameObjectCommand* pSource;
+	CGameObjectCommandQueue* pQueue;
 	int iEntry;
 	int nOffset;
 
 	pQueue = m_pCommandQueue70;
 	nOffset = 0;
-	if (pQueue->m_cEntries00 != 0) {
+	if (pQueue->m_cEntries != 0) {
 		iEntry = 0;
-		if (pQueue->m_cEntries00 - 1 > 0) {
+		if (pQueue->m_cEntries - 1 > 0) {
 			do {
-				pDestination = (LevelManagedEntityCommandEntry*) ((char*) pQueue->m_pEntries04 + nOffset);
+				pDestination = (CGameObjectCommand*) ((char*) pQueue->m_pEntries + nOffset);
 				++iEntry;
-				nOffset += sizeof(LevelManagedEntityCommandEntry);
+				nOffset += sizeof(CGameObjectCommand);
 				pSource = pDestination + 1;
-				pDestination->m_nField00 = pSource->m_nField00;
-				pDestination->m_nField04 = pSource->m_nField04;
-				pDestination->m_nField08 = pSource->m_nField08;
-				pDestination->m_nField0C = pSource->m_nField0C;
-				pDestination->m_nField10 = pSource->m_nField10;
-			} while (iEntry < pQueue->m_cEntries00 - 1);
+				pDestination->m_nType = pSource->m_nType;
+				pDestination->m_Position.x = pSource->m_Position.x;
+				pDestination->m_Position.y = pSource->m_Position.y;
+				pDestination->m_Position.z = pSource->m_Position.z;
+				pDestination->m_nFlags = pSource->m_nFlags;
+			} while (iEntry < pQueue->m_cEntries - 1);
 		}
-		--pQueue->m_cEntries00;
+		--pQueue->m_cEntries;
 	}
-	m_fHasCommands74 = 0 < pQueue->m_cEntries00;
+	m_fHasCommands74 = 0 < pQueue->m_cEntries;
 }
 
 // Macintosh: CGameObject::AddDestination(const AICOORD&)
 // FUNCTION: LEMBALL 0x00415ef0
 void CGameObject::AddDestination(const AICOORD& position)
 {
-	LevelManagedEntityCommandQueue* pQueue;
-	LevelManagedEntityCommandEntry* pCommand;
+	CGameObjectCommandQueue* pQueue;
+	CGameObjectCommand* pCommand;
 	unsigned short iEntry;
 
 	pQueue = m_pCommandQueue70;
-	if (pQueue != 0 && pQueue->m_cEntries00 < pQueue->m_cCapacity02) {
-		iEntry = pQueue->m_cEntries00++;
-		pCommand = &pQueue->m_pEntries04[iEntry];
-		pCommand->m_nField00 = 1;
-		pCommand->m_nField04 = position.x;
-		pCommand->m_nField08 = position.y;
-		pCommand->m_nField0C = position.z;
+	if (pQueue != 0 && pQueue->m_cEntries < pQueue->m_cCapacity) {
+		iEntry = pQueue->m_cEntries++;
+		pCommand = &pQueue->m_pEntries[iEntry];
+		pCommand->m_nType = 1;
+		pCommand->m_Position.x = position.x;
+		pCommand->m_Position.y = position.y;
+		pCommand->m_Position.z = position.z;
 	}
 }
 
@@ -165,11 +126,11 @@ void CGameObject::AddDestination(const AICOORD& position)
 // FUNCTION: LEMBALL 0x00416000
 AICOORD* CGameObject::GetDestination(AICOORD* pPosition)
 {
-	if (m_pCommandQueue70->m_cEntries00 > 0) {
-		LevelManagedEntityCommandEntry* pCommand = m_pCommandQueue70->m_pEntries04;
-		pPosition->x = pCommand->m_nField04;
-		pPosition->y = pCommand->m_nField08;
-		pPosition->z = pCommand->m_nField0C;
+	if (m_pCommandQueue70->m_cEntries > 0) {
+		CGameObjectCommand* pCommand = m_pCommandQueue70->m_pEntries;
+		pPosition->x = pCommand->m_Position.x;
+		pPosition->y = pCommand->m_Position.y;
+		pPosition->z = pCommand->m_Position.z;
 	}
 	else {
 		pPosition->x = m_WorldPosition9C.x;
@@ -177,6 +138,18 @@ AICOORD* CGameObject::GetDestination(AICOORD* pPosition)
 		pPosition->z = m_WorldPosition9C.z;
 	}
 	return pPosition;
+}
+
+// FUNCTION: LEMBALL 0x004160c0
+int CGameObject::DestinationExists(void)
+{
+	return 0 < m_pCommandQueue70->m_cEntries;
+}
+
+// FUNCTION: LEMBALL 0x004160e0
+void CGameObject::EmptyDestinationList(void)
+{
+	m_pCommandQueue70->m_cEntries = 0;
 }
 
 // FUNCTION: LEMBALL 0x00419ea0
