@@ -281,3 +281,7 @@ All five portable callback-buffer methods map across `0x0045AD70..0x0045AF20` in
 ## CBaseQueueHandler reconstruction
 
 The constructor, `ProcessMsg`, and `StreamOut` map to `0x00462EA0`, `0x00462EC0`, and `0x00462ED0` across their mixed physical Windows owners. Vtable evidence proves handler `StreamOut` remains a distinct byte-identical body from `CBaseQueue::StreamOut` at `0x00463280`; neither is merged or double-consumed.
+
+## CBaseQueue reconstruction
+
+All fourteen portable queue methods map across `0x00463020..0x004638A0` while preserving mixed `VSINIT.CPP`, `VSWING.CPP`, and `CGame.cpp` ownership. Exact ABI, `0x14` x86 message records, ring-buffer layout, stable signed handler ordering, callers, and vtables support the family. The undefined resize helper at `0x00463450`, scalar deleting destructor at `0x00463940`, and adjacent packing/sort helpers remain target-only.
