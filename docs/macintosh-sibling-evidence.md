@@ -305,3 +305,7 @@ Eleven portable resource-base methods map across `0x0045CF20..0x0045D250`, prese
 ## CNetworkMessage reconstruction
 
 All twenty-five portable network-message methods map across `0x0045EE80..0x0045F2B0`, preserving mixed `EFFSTRM.CPP` and `VSNETSTR.CPP` ownership. Exact big-endian append/read/convert behavior, pointer aliases, copy semantics, expanded layout, vtables and send-event path support the family. Deleting wrappers, a duplicate destructor thunk, and the following request-control streams remain target-only or separate.
+
+## Typed resource loader reconstruction
+
+Eight portable `CResPALETTE`, `CResSTRING`, `CResBITMAP`, `CResZRLE`, `CResEFFECT`, and `CResBIN` methods map across `0x0045DD90..0x0045E540`. Exact type tags, expanded layouts, descriptor parsing, callers and vtables support the batch while preserving the non-obvious `VARLOAD.CPP`, `MogLoad.cpp`, and `DEMO.CPP` physical split. Adjacent Windows-only loaders, parsers, type slots, and deleting wrappers remain separate.
