@@ -1359,3 +1359,10 @@ CODE_02_Visos (Generic).bin,0x000117E2,vsTell__FP6_Filet,0x00462FB0,high,returns
 CODE_02_Visos (Generic).bin,0x00011830,vsGetFileSize__FP6_Filet,0x00462FC0,high,seeks to end and restores original file position,exact_tuple,0x00011830
 CODE_02_Visos (Generic).bin,0x00011AC4,NextPos__5CTextFv,0x004749C0,high,advances text cursor by glyph or fixed cell extent under direction flags,exact_tuple,0x00011AC4
 CODE_02_Visos (Generic).bin,0x00011C72,Render__5CTextFP4CGDI,0x00474A20,high,loads font resolves glyphs renders each glyph and advances cursor,exact_tuple,0x00011C72
+CODE_02_Visos (Generic).bin,0x00011D03,__ct__15CHotAreaHandlerFRC7CVSRect,0x0046A290,high,constructs initialized active handler from rectangle,exact_tuple,0x00011D03
+CODE_02_Visos (Generic).bin,0x00011D68,__ct__15CHotAreaHandlerFv,0x0046A300,high,constructs initialized handler with empty rectangle,exact_tuple,0x00011D68
+CODE_02_Visos (Generic).bin,0x00011DAC,Initialise__15CHotAreaHandlerFv,0x0046A330,high,clears owner dispatch and transient state,exact_tuple,0x00011DAC
+CODE_02_Visos (Generic).bin,0x00011E0C,Reset__15CHotAreaHandlerFv,0x0046A350,high,releases active transition and clears six button states,exact_tuple,0x00011E0C
+CODE_02_Visos (Generic).bin,0x00012013,ProcessArea__15CHotAreaHandlerFP10tagMESSAGERC8CVSPointP15CHotAreaHandler,0x0046A380,high,dispatches button and pointer events through bounds and transition callbacks,exact_tuple,0x00012013
+CODE_02_Visos (Generic).bin,0x00012094,SetActive__15CHotAreaHandlerFUc,0x0046A530,high,updates enabled state resets when disabled and redispatches parent when enabled,exact_tuple,0x00012094
+CODE_02_Visos (Generic).bin,0x000120D3,SetParent__15CHotAreaHandlerFP12CHotAreaList,0x0046A560,high,stores parent list and requests pointer redispatch,exact_tuple,0x000120D3

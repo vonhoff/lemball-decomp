@@ -511,3 +511,7 @@ The `CGraphicButton` point constructor, `Initialise`, `SetAnimID`, destructor, `
 ## Portable text primitive reconstruction
 
 `CText::NextPos` and `Render` map to `0x004749C0/0x00474A20`. `NextPos` advances the cursor using glyph or fixed-cell extents and direction flags; `Render` owns font lifetime during the pass, resolves fallback glyphs, submits each glyph through `CGDI`, and advances the cursor. Physical ownership remains `DRAWTEXT.CPP`.
+
+## Portable hot-area handler reconstruction
+
+The two `CHotAreaHandler` constructors, `Initialise`, `Reset`, `ProcessArea`, `SetActive`, and `SetParent` map to `0x0046A290/0x0046A300/0x0046A330/0x0046A350/0x0046A380/0x0046A530/0x0046A560`. Their rectangle fields, six-button state arrays, event switch, virtual transitions, active-state reset, and parent redispatch correspond directly across the packed Macintosh and aligned Windows layouts. Physical ownership remains `VSWINDOW.CPP`.
