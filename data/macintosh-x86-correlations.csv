@@ -1281,3 +1281,5 @@ CODE_02_Visos (Generic).bin,0x0000B37F,CloseSocket__17CBaseCommonSocketFv,0x0045
 CODE_02_Visos (Generic).bin,0x0000DAE8,__ct__15CReadPacketBuffFiUs,0x00461290,high,constructs base table then allocates one 0x2c-byte CReadPacket per slot
 CODE_02_Visos (Generic).bin,0x0000DB48,FillPacket__15CReadPacketBuffFi,0x004612F0,high,copies current global network packet into indexed read slot
 CODE_02_Visos (Generic).bin,0x0000DB90,UnUseAll__15CReadPacketBuffFv,0x00461310,high,clears payload-present flag on every read slot
+CODE_02_Visos (Generic).bin,0x0000DC0E,__ct__16CWritePacketBuffFiUs,0x00461340,high,constructs base table then allocates one 0x18-byte CWritePacket per slot
+CODE_02_Visos (Generic).bin,0x0000DC57,FillPacket__16CWritePacketBuffFiPCUcUsP15CNetworkMessage,0x004613A0,high,copies caller payload and network-message pointer into indexed write slot

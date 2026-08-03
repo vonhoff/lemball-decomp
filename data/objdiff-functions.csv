@@ -2415,8 +2415,8 @@ address,size,name,unit
 0x00461290,92,CReadPacketBuff::CReadPacketBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x004612F0,31,CReadPacketBuff::FillPacket,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461310,33,CReadPacketBuff::UnUseAll,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
-0x00461340,92,construct_simple_eff_transport_record_slot_table,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x004613A0,33,copy_payload_into_simple_record_slot,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00461340,92,CWritePacketBuff::CWritePacketBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x004613A0,33,CWritePacketBuff::FillPacket,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x004613D0,98,construct_eff_transport_record_buffer,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461440,33,destroy_eff_transport_record_buffer,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461470,228,append_global_packet_to_record_buffer,Platform/Windows/Mixed/Engine/NET/VSNET.CPP

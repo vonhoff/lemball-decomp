@@ -449,3 +449,7 @@ All fourteen `CBroadcast` bodies map in order to `0x00460350..0x00460A50`. The c
 ## Read packet-buffer reconstruction
 
 `CReadPacketBuff` constructor, `FillPacket`, and `UnUseAll` map to `0x00461290/0x004612F0/0x00461310`. The constructor allocates one 0x2c-byte `CReadPacket` per base-table slot, `FillPacket` copies the current global packet into an indexed slot, and `UnUseAll` clears every slot's payload-present flag.
+
+## Write packet-buffer reconstruction
+
+`CWritePacketBuff` constructor and `FillPacket` map to `0x00461340/0x004613A0`. The constructor allocates one 0x18-byte `CWritePacket` per base-table slot; `FillPacket` forwards the caller payload, size, and network-message pointer into the indexed write slot.
