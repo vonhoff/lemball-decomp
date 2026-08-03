@@ -60,6 +60,7 @@ struct CNodeManager {
 	CNodeManager(int cCapacity);
 	LevelNodePoint* GetNodePosition(LevelNodePoint* pOutput, int nIndex);
 	void CopyTileByIndex(int nIndex, int* pX, int* pY);
+	void Restart(void);
 };
 
 struct LevelModeNodeView {
@@ -139,6 +140,7 @@ struct CNode {
 	void Initialise(int nX, int nY, int cLinks);
 	void InitializePosition(int nX, int nY, int nUnused);
 	void Restart(void);
+	void RestartThunk(void);
 	~CNode(void);
 	void SetFixedPointPosition(int nX, int nY);
 	void Position(int* pDestination);
@@ -150,6 +152,18 @@ CNodeManager::CNodeManager(int cCapacity)
 {
 	m_pRecords00 = 0;
 	m_cCapacity08 = cCapacity;
+}
+
+// FUNCTION: LEMBALL 0x004211a0
+void CNodeManager::Restart(void)
+{
+	int i;
+
+	if (m_pRecords00 != 0 && 0 < m_cCapacity08) {
+		for (i = 0; i < m_cCapacity08; ++i) {
+			m_pRecords00[i].RestartThunk();
+		}
+	}
 }
 
 // MACINTOSH: CNodeManager::GetNodePosition(int)

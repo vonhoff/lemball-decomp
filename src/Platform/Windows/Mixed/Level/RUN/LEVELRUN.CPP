@@ -1864,18 +1864,7 @@ CNodeManager* CNodeManager::ConstructNodeChunkManager(int cCapacity)
 {
 	return new (this) CNodeManager(cCapacity);
 }
-// MACINTOSH: CNodeManager::Restart()
-// FUNCTION: LEMBALL 0x004211a0
-void CNodeManager::Restart(void)
-{
-	int i;
 
-	if (m_pRecords00 != 0 && 0 < m_cCapacity08) {
-		for (i = 0; i < m_cCapacity08; ++i) {
-			m_pRecords00[i].RestartThunk();
-		}
-	}
-}
 // MACINTOSH: CNodeManager::Initialise(int)
 // FUNCTION: LEMBALL 0x004211d0
 void CNodeManager::Initialise(int cRecords)
