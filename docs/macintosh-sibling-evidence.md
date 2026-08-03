@@ -473,3 +473,7 @@ All fourteen `CBroadcast` bodies map in order to `0x00460350..0x00460A50`. The c
 ## Read contiguous multi-segment buffer reconstruction
 
 `CReadCMSBuff` constructor, destructor, and `StoreSubPacket` map to `0x00461840/0x004618E0/0x00461930`. The object owns a ring of child `CReadMSBuff` assemblers selected by packet sequence modulo capacity. Physical definitions remain in `VSNET.CPP`, following the demonstrated downstream exact-ownership constraint.
+
+## Write contiguous buffer reconstruction
+
+`CWriteCBuff` constructor, `StorePacket`, and `IsPacketAvailable` map to `0x00461970/0x00461990/0x004619D0`. Packet IDs select write slots modulo capacity, payload/message context is copied only into available slots, and availability checks inspect the subsequent sequence slot. Physical definitions remain in `VSNET.CPP` under the demonstrated downstream exact-ownership constraint.

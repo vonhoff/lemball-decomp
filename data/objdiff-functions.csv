@@ -2432,9 +2432,9 @@ address,size,name,unit
 0x00461840,150,CReadCMSBuff::CReadCMSBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x004618E0,73,CReadCMSBuff::~CReadCMSBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461930,50,CReadCMSBuff::StoreSubPacket,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00461970,24,construct_simple_record_slot_table_wrapper,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00461990,58,claim_simple_record_slot_for_packet_id,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x004619D0,27,get_next_eff_transport_record_claim_flag,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00461970,24,CWriteCBuff::CWriteCBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00461990,58,CWriteCBuff::StorePacket,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x004619D0,27,CWriteCBuff::IsPacketAvailable,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x004619F0,174,construct_eff_transport_runtime_state,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461AA0,301,start_eff_transport_runtime_and_wait_ready,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461BD0,477,initialize_eff_transport_runtime_globals,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
