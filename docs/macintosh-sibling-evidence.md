@@ -413,3 +413,7 @@ The four portable `CFileReadSocket` methods map in order to `0x00479930`, `0x004
 ## CFileWriteSocket reconstruction
 
 The five portable `CFileWriteSocket` methods map in order to `0x00479E20`, `0x00479F40`, `0x00479FA0`, `0x0047A090`, and `0x0047A0B0`. Constructor, locked stream write, adjusted destination forwarding, and record-slot packet append preserve the Macintosh control flow with widened Windows objects. The x86 destructor core restores final vtables while generated wrappers retain subobject teardown; those wrappers remain unconsumed. Attribution is metadata-only because the preceding source-class rename probe was fidelity-negative.
+
+## CFileRWSocket reconstruction
+
+The portable constructor and `SendPacket` map to `0x0047A220` and `0x0047A420`. Both architectures compose read and write sockets with shared channel/file state; `SendPacket` forwards payload and size to `CFileWriteSocket` and wraps the active slot modulo the header count after success. The adjacent `0x0047A470` marker helper remains unconsumed.
