@@ -116,3 +116,33 @@ int CMaze::CalcNewDistance(int x, int y)
 	}
 	return fChanged;
 }
+
+// FUNCTION: LEMBALL 0x004232e0
+int CMaze::FindSquare(unsigned short nDistance, int& x, int& y)
+{
+	unsigned char nWalk;
+	int nCurrentX;
+	int nCurrentY;
+	int nNeighborX;
+	int nNeighborY;
+	int fFound;
+	int i;
+
+	nCurrentX = x;
+	nCurrentY = y;
+	nWalk = ((LevelTileGridOwnerView*) m_pMap00)->GetWalk(nCurrentX, nCurrentY);
+	fFound = 0;
+	for (i = 0; i < 9; ++i) {
+		if (g_afMazeNeighborEnabled[i] != 0 && (g_abMazeEdgeMaskA[i] & nWalk) != 0) {
+			nNeighborX = nCurrentX + g_anMazeNeighborX[i];
+			nNeighborY = nCurrentY + g_anMazeNeighborY[i];
+			if (m_ppRows04[nNeighborY][nNeighborX] == nDistance) {
+				fFound = 1;
+				x = nNeighborX;
+				y = nNeighborY;
+				break;
+			}
+		}
+	}
+	return fFound;
+}
