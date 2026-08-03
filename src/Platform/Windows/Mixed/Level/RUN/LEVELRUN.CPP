@@ -2204,26 +2204,7 @@ void LEMBALL_FASTCALL reset_ball_chunk_manager_load_cursor(void* pManager)
 }
 
 
-// MACINTOSH: CMaze::~CMaze()
-// FUNCTION: LEMBALL 0x004230c0
-void LEMBALL_FASTCALL DestroyLevelTileReachabilityHelper(void* pReachabilityHelper)
-{
-	char* pHelper;
-	void** ppRows;
-	int cRows;
-	int i;
 
-	pHelper = (char*) pReachabilityHelper;
-	ppRows = *(void***) (pHelper + 4);
-	if (ppRows == 0) {
-		return;
-	}
-	cRows = *(int*) (pHelper + 0x1014);
-	for (i = 0; i < cRows; ++i) {
-		FreeVSMemBlock(ppRows[i]);
-	}
-	FreeVSMemBlock(ppRows);
-}
 // MACINTOSH: CMaze::ReInitialise()
 // FUNCTION: LEMBALL 0x00423110
 void LEMBALL_FASTCALL FillReachabilityGridFromTileFlags(void* pReachabilityHelper)

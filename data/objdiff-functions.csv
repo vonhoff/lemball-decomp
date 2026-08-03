@@ -898,7 +898,7 @@ address,size,name,unit
 0x00423050,6,return_true_vtable_callback_00423050,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00423060,30,delete_coll_chunk_object_wrapper_00423060,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00423090,37,CMaze::CMaze,AI/CMaze.cpp
-0x004230C0,66,CMaze::~CMaze,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x004230C0,66,CMaze::~CMaze,AI/CMaze.cpp
 0x00423110,115,CMaze::ReInitialise,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00423190,156,CMaze::Initialise,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00423230,170,CMaze::CalcNewDistance,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP

@@ -6,6 +6,7 @@ struct CMap;
 class CMaze {
 public:
 	CMaze(CMap* pMap);
+	~CMaze(void);
 
 private:
 	CMap* m_pMap00;

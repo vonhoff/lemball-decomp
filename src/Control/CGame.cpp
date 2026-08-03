@@ -3672,7 +3672,7 @@ void LEMBALL_FASTCALL DestroyLevelGameMode(void* pModeObject)
 	}
 	pChild = (void*) (unsigned long) pMode[0x45];
 	if (pChild != 0) {
-		DestroyLevelTileReachabilityHelper(pChild);
+		((CMaze*) pChild)->~CMaze();
 		FreeVSMemBlock(pChild);
 	}
 	pChild = (void*) (unsigned long) pMode[0x44];

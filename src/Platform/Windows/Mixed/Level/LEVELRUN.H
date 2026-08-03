@@ -192,7 +192,7 @@ void LoadLevelAiChunk(void* pLevelMode, const unsigned short* pWords, unsigned i
 void LoadLevelFlagChunk(void* pLevelMode, const unsigned short* pWords);
 void LoadAnimChunkRecords(void* pTimerBlock, const unsigned short* pWords);
 void LEMBALL_FASTCALL AdvanceAnimChunkFrames(void* pTimerBlock);
-void LEMBALL_FASTCALL DestroyLevelTileReachabilityHelper(void* pReachabilityHelper);
+
 
 extern CBallManager* g_pBallChunkManager;
 extern char* g_pszActiveLevelFilePath;
