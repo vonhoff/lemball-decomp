@@ -1171,6 +1171,18 @@ void VsSoundManager::StartRegisteredVariantResourceMusic(int hMusic)
 	}
 }
 
+// FUNCTION: LEMBALL 0x0045b350
+void VsSoundManager::ProcessMusic(unsigned long nDuration)
+{
+	void* pControl;
+
+	(void) nDuration;
+	if (*(int*) ((char*) this + 0xc) == 1) {
+		pControl = *(void**) ((char*) this + 0x34);
+		((VsSoundThisProc) (*(void***) pControl)[10])(pControl);
+	}
+}
+
 // FUNCTION: LEMBALL 0x0045b370
 void VsSoundManager::DispatchChildInterfaceSlot18IfReady(int hMusic)
 

@@ -40,6 +40,7 @@ struct VsSoundManager {
 	void SetAudioManagerMusicResourceContext(void* pPrimaryContext);
 	int RegisterVariantResourceMusicHandle(int nMusicResourceId, int nUnused);
 	void StartRegisteredVariantResourceMusic(int hMusic);
+	void ProcessMusic(unsigned long nDuration);
 	void DispatchChildInterfaceSlot18IfReady(int hMusic);
 	void InvokeAudioManagerEmbeddedSlot1cIfMusicActive(int hMusic);
 	void StopVariantResourceMusicPlayback(int hMusic);

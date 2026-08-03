@@ -1394,4 +1394,4 @@ CODE_02_Visos (Generic).bin,0x00015DBE,INIT_PreInit__Fv,0x0046F060,high,allocate
 CODE_02_Visos (Generic).bin,0x00017400,VSQSort,0x00463960,high,iterative quicksort with explicit deferred-partition stack and shortsort fallback
 CODE_02_Visos (Generic).bin,0x00017460,shortsort,0x00463AC0,high,small-partition selection sort with comparator and byte swap
 CODE_02_Visos (Generic).bin,0x00017494,swap,0x00463B20,high,byte-counted record swap helper
-CODE_02_Visos (Generic).bin,0x0001873B,ProcessMusic__13CSoundManagerFUl,0x0045B350,high,when music is active forwards the stored current-music identifier through the sound-device virtual dispatch; explicit duration argument is unused on both platforms
+CODE_02_Visos (Generic).bin,0x0001873B,ProcessMusic__13CSoundManagerFUl,0x0045B350,high,both gate on active music and dispatch backend processing; Macintosh passes its stored current-music identifier while Windows uses a no-argument backend slot and leaves the explicit duration unused

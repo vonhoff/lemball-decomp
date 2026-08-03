@@ -562,4 +562,4 @@ Macintosh `operator<<(CVSOStream&, CSmallMemory&)` is an exact identity stub at 
 
 ## CSoundManager ProcessMusic
 
-`CSoundManager::ProcessMusic` maps to the previously uncreated x86 entry at `0x0045B350`. Macintosh `[0x18714,0x1873B)` and Windows both test the active-music state and dispatch the stored current-music identifier through the sound-device virtual table; the explicit duration parameter is unused. Adjacent Windows `PauseMusic` and `ResumeMusic` remain distinct.
+`CSoundManager::ProcessMusic` maps to the previously uncreated x86 entry at `0x0045B350`. Macintosh `[0x18714,0x1873B)` and Windows both test active music and dispatch backend processing; Macintosh passes its stored current-music identifier, whereas the Windows backend slot takes no argument and owns that state internally. The explicit duration parameter is unused on both platforms. The recovered source implementation is a 100% reccmp match; adjacent Windows `PauseMusic` and `ResumeMusic` remain distinct.
