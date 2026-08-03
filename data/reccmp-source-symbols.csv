@@ -27,8 +27,6 @@ address,name,symbol,type,source
 0x0042CA90,ResetIceChunkObject,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0042CAB0,ResetIceChunkObjectRuntimeState,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0042D8E0,DestroyIceChunkManagerAuto,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0042E5E0,ResetMoveChunkObject,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0042E600,ResetMoveChunkObjectRuntimeState,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0042F2C0,DestroyMoveChunkManagerAuto,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004364B0,ForwardLevelScreenStatusIndicatorMode,,function,src/Frontend/SCREENVT.CPP
 0x0043A2E0,FUN_0043a2e0,,stub,src/Frontend/SCREENVT.CPP

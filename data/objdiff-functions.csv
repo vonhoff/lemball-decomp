@@ -1133,8 +1133,8 @@ address,size,name,unit
 0x0042E4D0,30,delete_ice_chunk_manager,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0042E500,110,delete_ice_chunk_object_array_or_scalar,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0042E590,67,CMover::CMover,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0042E5E0,17,CMover::Restart,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0042E600,59,CMover::Initialise,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0042E5E0,17,CMover::Restart,AI/CMover.cpp
+0x0042E600,59,CMover::Initialise,AI/CMover.cpp
 0x0042E640,11,CMover::~CMover,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0042E650,164,CMover::SetPos,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0042E700,94,CMover::IsAt,AI/CMover.cpp

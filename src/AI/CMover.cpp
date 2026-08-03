@@ -2,6 +2,8 @@
 
 extern void* g_pActiveManagedEntityOwner;
 extern void* g_pLevelTileGrid;
+extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
+extern void __fastcall ResetMoveChunkObjectRuntimeStateThunk(void* pObject);
 
 struct LevelNodePoint {
 	int m_anValues[3];
@@ -36,6 +38,28 @@ struct MoveChunkTileGridView {
 	int m_cColumns10;
 	int m_cRows14;
 };
+
+// FUNCTION: LEMBALL 0x0042e5e0
+void CMover::Restart(void)
+{
+	ResetManagedEntityRuntimeStateThunk(this);
+	ResetMoveChunkObjectRuntimeStateThunk(this);
+}
+
+// FUNCTION: LEMBALL 0x0042e600
+void CMover::Initialise(void)
+{
+	char* pObject = (char*) this;
+
+	*(int*) (pObject + 0x94) = 0;
+	*(int*) (pObject + 0x138) = 0;
+	*(int*) (pObject + 0x13c) = 0;
+	*(int*) (pObject + 0x144) = 0;
+	*(int*) (pObject + 0x148) = 0;
+	*(int*) (pObject + 0x174) = 0;
+	*(int*) (pObject + 0x140) = 1;
+	*(int*) (pObject + 0xb8) = 0x18;
+}
 
 // FUNCTION: LEMBALL 0x0042e700
 int CMover::IsAt(int x, int y, int* pHeight)
