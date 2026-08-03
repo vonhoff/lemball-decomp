@@ -1934,17 +1934,7 @@ CNode* CNode::InitializeNodeChunkRecord(void)
 	return new (this) CNode;
 }
 
-// MACINTOSH: CNode::Initialise(int, int, int)
-// FUNCTION: LEMBALL 0x00421330
-void CNode::Initialise(int nX, int nY, int cLinks)
-{
-	if (cLinks != 0 && m_pLinks0C != 0) {
-		m_pLinks0C = (int*) AllocateVSMemBlock((unsigned int) cLinks * 8);
-	}
-	m_cExpectedLinks08 = cLinks;
-	m_nX00 = nX << 12;
-	m_nY04 = nY << 12;
-}
+
 // MACINTOSH: CNode::AddANeighbour(int, int)
 // FUNCTION: LEMBALL 0x004213a0
 void CNode::AddANeighbour(int nFirst, int nSecond)

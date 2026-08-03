@@ -1,3 +1,4 @@
+extern void* AllocateVSMemBlock(unsigned int cbBlock);
 extern void FreeVSMemBlock(void* pMemory);
 extern int g_nLevelFrameClockTick;
 
@@ -131,6 +132,7 @@ struct CNode {
 	int m_nReserved10;
 
 	CNode(void);
+	void Initialise(int nX, int nY, int cLinks);
 	void InitializePosition(int nX, int nY, int nUnused);
 	void Restart(void);
 	~CNode(void);
@@ -173,6 +175,17 @@ CNode::~CNode(void)
 	if (m_pLinks0C != 0) {
 		FreeVSMemBlock(m_pLinks0C);
 	}
+}
+
+// FUNCTION: LEMBALL 0x00421330
+void CNode::Initialise(int nX, int nY, int cLinks)
+{
+	if (cLinks != 0 && m_pLinks0C != 0) {
+		m_pLinks0C = (int*) AllocateVSMemBlock((unsigned int) cLinks * 8);
+	}
+	m_cExpectedLinks08 = cLinks;
+	m_nX = nX << 12;
+	m_nY = nY << 12;
 }
 
 // FUNCTION: LEMBALL 0x00421370
