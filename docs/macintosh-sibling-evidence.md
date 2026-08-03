@@ -515,3 +515,7 @@ The `CGraphicButton` point constructor, `Initialise`, `SetAnimID`, destructor, `
 ## Portable hot-area handler reconstruction
 
 The two `CHotAreaHandler` constructors, `Initialise`, `Reset`, `ProcessArea`, `SetActive`, and `SetParent` map to `0x0046A290/0x0046A300/0x0046A330/0x0046A350/0x0046A380/0x0046A530/0x0046A560`. Their rectangle fields, six-button state arrays, event switch, virtual transitions, active-state reset, and parent redispatch correspond directly across the packed Macintosh and aligned Windows layouts. Physical ownership remains `VSWINDOW.CPP`.
+
+## Portable hot-area list reconstruction
+
+`CHotAreaList` constructor/destructor, `UpdateHandlers`, `DeleteEntry`, `ProcessMsg`, `ProcessHandlers`, `AddToList`, and `RemoveFromList` map to `0x0046A580/0x0046A650/0x0046A6D0/0x0046A6E0/0x0046A710/0x0046A770/0x0046A9A0/0x0046AA00`. The family owns queue attachment, shared pointer state, doubly linked handlers, coordinate normalization, bounds testing, and selected-handler dispatch. The adjacent deleting wrapper remains separate.
