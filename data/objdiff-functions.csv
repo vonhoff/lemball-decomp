@@ -429,7 +429,7 @@ address,size,name,unit
 0x00415520,44,CGameObject::RotateClockwise,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00415550,40,CGameObject::RotateAnticlockwise,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00415580,509,CGameObject::StartMoving,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x00415780,37,CGameObject::StopMoving,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00415780,37,CGameObject::StopMoving,AI/CGameObjectMove.cpp
 0x004157B0,123,CGameObject::MapCheck,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00415830,122,CGameObject::StartRoute,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004158B0,368,CGameObject::SearchRoute,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
@@ -437,10 +437,10 @@ address,size,name,unit
 0x00415A30,853,CGameObject::Move,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00415D90,137,CGameObject::TurnToFaceDestination,AI/CGameObjectMove.cpp
 0x00415E20,81,CGameObject::FacingDestination,AI/CGameObjectMove.cpp
-0x00415E80,107,CGameObject::DeleteFirstEntryFromDestinationList,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00415E80,107,CGameObject::DeleteFirstEntryFromDestinationList,AI/CGameObjectMove.cpp
 0x00415EF0,64,CGameObject::AddDestination,AI/CGameObjectMove.cpp
 0x00415F30,195,CGameObject::AlterDestination,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x00416000,69,CGameObject::GetDestination,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00416000,69,CGameObject::GetDestination,AI/CGameObjectMove.cpp
 0x00416050,101,pop_move_command_and_copy_next_position,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004160C0,18,CGameObject::DestinationExists,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004160E0,9,CGameObject::EmptyDestinationList,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

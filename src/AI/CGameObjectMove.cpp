@@ -1,3 +1,4 @@
+#include "AI/AICoord.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 extern int g_nLevelFrameClockTick;
@@ -8,12 +9,6 @@ static const int g_LEVEL_HeadingTurnDirections[8] = {0, 1, 1, 1, 1, -1, -1, -1};
 
 // GLOBAL: LEMBALL 0x0049d0b0
 static const int g_LEVEL_ManagedEntityUpdatePeriods[9] = {0, 87, 75, 0, 0, 0, 0, 75, 75};
-
-struct LevelThreeDwordPoint {
-	int m_nX;
-	int m_nY;
-	int m_nZ;
-};
 
 struct LevelManagedEntityCommandEntry {
 	int m_nField00;
@@ -30,7 +25,7 @@ struct LevelManagedEntityCommandQueue {
 	LevelManagedEntityCommandEntry* m_pEntries04;
 };
 
-struct LevelManagedEntityMoveCommandView {
+struct CGameObject {
 	char m_abReserved00[0x64];
 	int m_nEntityType64;
 	char m_abReserved68[8];
@@ -39,19 +34,19 @@ struct LevelManagedEntityMoveCommandView {
 	char m_abReserved78[0x10];
 	int m_nMotionDuration88;
 	char m_abReserved8C[0x10];
-	LevelThreeDwordPoint m_WorldPosition9C;
+	AICOORD m_WorldPosition9C;
 	char m_abReservedA8[0xc];
 	short m_nHeadingOctantB4;
 	char m_abReservedB6[0x12];
 	int m_nMotionStartTickC8;
 	int m_nNextUpdateTickCC;
 
-	void PopFirstMoveCommand(void);
-	void PopFirstMoveCommandAndResetMotion(void);
-	void UpdateFacingTowardFirstMoveCommand(void);
-	int IsFacingTowardFirstMoveCommand(void);
-	void AppendMoveCommand(const LevelThreeDwordPoint* pPosition);
-	LevelThreeDwordPoint* CopyFirstMoveCommandPositionOrCurrent(LevelThreeDwordPoint* pPosition);
+	void DeleteFirstEntryFromDestinationList(void);
+	void StopMoving(void);
+	void TurnToFaceDestination(void);
+	int FacingDestination(void);
+	void AddDestination(const AICOORD& position);
+	AICOORD* GetDestination(AICOORD* pPosition);
 };
 
 struct LevelManagedEntityStateFields {
@@ -66,10 +61,10 @@ struct LevelManagedEntityStateFields {
 
 // Macintosh: CGameObject::StopMoving()
 // FUNCTION: LEMBALL 0x00415780
-void LevelManagedEntityMoveCommandView::PopFirstMoveCommandAndResetMotion(void)
+void CGameObject::StopMoving(void)
 {
 	int nFrameClockTick;
-	PopFirstMoveCommand();
+	DeleteFirstEntryFromDestinationList();
 	m_nMotionDuration88 = 0;
 	nFrameClockTick = g_nLevelFrameClockTick;
 	m_nNextUpdateTickCC = nFrameClockTick;
@@ -78,16 +73,16 @@ void LevelManagedEntityMoveCommandView::PopFirstMoveCommandAndResetMotion(void)
 
 // Macintosh: CGameObject::TurnToFaceDestination()
 // FUNCTION: LEMBALL 0x00415d90
-void LevelManagedEntityMoveCommandView::UpdateFacingTowardFirstMoveCommand(void)
+void CGameObject::TurnToFaceDestination(void)
 {
-	LevelThreeDwordPoint targetPosition;
+	AICOORD targetPosition;
 	int nDirection;
 
-	CopyFirstMoveCommandPositionOrCurrent(&targetPosition);
-	nDirection = compute_direction_octant_between_points(m_WorldPosition9C.m_nX >> 12,
-														 m_WorldPosition9C.m_nY >> 12,
-														 targetPosition.m_nX >> 12,
-														 targetPosition.m_nY >> 12);
+	GetDestination(&targetPosition);
+	nDirection = compute_direction_octant_between_points(m_WorldPosition9C.x >> 12,
+														 m_WorldPosition9C.y >> 12,
+														 targetPosition.x >> 12,
+														 targetPosition.y >> 12);
 	if (nDirection != m_nHeadingOctantB4) {
 		LevelManagedEntityStateFields* pState = (LevelManagedEntityStateFields*) this;
 		if (g_LEVEL_HeadingTurnDirections[(nDirection - m_nHeadingOctantB4) & 7] < 0) {
@@ -102,22 +97,22 @@ void LevelManagedEntityMoveCommandView::UpdateFacingTowardFirstMoveCommand(void)
 
 // Macintosh: CGameObject::FacingDestination()
 // FUNCTION: LEMBALL 0x00415e20
-int LevelManagedEntityMoveCommandView::IsFacingTowardFirstMoveCommand(void)
+int CGameObject::FacingDestination(void)
 {
-	LevelThreeDwordPoint targetPosition;
+	AICOORD targetPosition;
 	int nDirection;
 
-	CopyFirstMoveCommandPositionOrCurrent(&targetPosition);
-	nDirection = compute_direction_octant_between_points(m_WorldPosition9C.m_nX >> 12,
-														 m_WorldPosition9C.m_nY >> 12,
-														 targetPosition.m_nX >> 12,
-														 targetPosition.m_nY >> 12);
+	GetDestination(&targetPosition);
+	nDirection = compute_direction_octant_between_points(m_WorldPosition9C.x >> 12,
+														 m_WorldPosition9C.y >> 12,
+														 targetPosition.x >> 12,
+														 targetPosition.y >> 12);
 	return m_nHeadingOctantB4 == nDirection;
 }
 
 // Macintosh: CGameObject::DeleteFirstEntryFromDestinationList()
 // FUNCTION: LEMBALL 0x00415e80
-void LevelManagedEntityMoveCommandView::PopFirstMoveCommand(void)
+void CGameObject::DeleteFirstEntryFromDestinationList(void)
 {
 	LevelManagedEntityCommandEntry* pDestination;
 	LevelManagedEntityCommandEntry* pSource;
@@ -149,7 +144,7 @@ void LevelManagedEntityMoveCommandView::PopFirstMoveCommand(void)
 
 // Macintosh: CGameObject::AddDestination(const AICOORD&)
 // FUNCTION: LEMBALL 0x00415ef0
-void LevelManagedEntityMoveCommandView::AppendMoveCommand(const LevelThreeDwordPoint* pPosition)
+void CGameObject::AddDestination(const AICOORD& position)
 {
 	LevelManagedEntityCommandQueue* pQueue;
 	LevelManagedEntityCommandEntry* pCommand;
@@ -160,43 +155,40 @@ void LevelManagedEntityMoveCommandView::AppendMoveCommand(const LevelThreeDwordP
 		iEntry = pQueue->m_cEntries00++;
 		pCommand = &pQueue->m_pEntries04[iEntry];
 		pCommand->m_nField00 = 1;
-		pCommand->m_nField04 = pPosition->m_nX;
-		pCommand->m_nField08 = pPosition->m_nY;
-		pCommand->m_nField0C = pPosition->m_nZ;
+		pCommand->m_nField04 = position.x;
+		pCommand->m_nField08 = position.y;
+		pCommand->m_nField0C = position.z;
 	}
 }
 
 // Macintosh: CGameObject::GetDestination()
 // FUNCTION: LEMBALL 0x00416000
-LevelThreeDwordPoint* LevelManagedEntityMoveCommandView::CopyFirstMoveCommandPositionOrCurrent(
-	LevelThreeDwordPoint* pPosition)
+AICOORD* CGameObject::GetDestination(AICOORD* pPosition)
 {
 	if (m_pCommandQueue70->m_cEntries00 > 0) {
 		LevelManagedEntityCommandEntry* pCommand = m_pCommandQueue70->m_pEntries04;
-		pPosition->m_nX = pCommand->m_nField04;
-		pPosition->m_nY = pCommand->m_nField08;
-		pPosition->m_nZ = pCommand->m_nField0C;
+		pPosition->x = pCommand->m_nField04;
+		pPosition->y = pCommand->m_nField08;
+		pPosition->z = pCommand->m_nField0C;
 	}
 	else {
-		pPosition->m_nX = m_WorldPosition9C.m_nX;
-		pPosition->m_nY = m_WorldPosition9C.m_nY;
-		pPosition->m_nZ = m_WorldPosition9C.m_nZ;
+		pPosition->x = m_WorldPosition9C.x;
+		pPosition->y = m_WorldPosition9C.y;
+		pPosition->z = m_WorldPosition9C.z;
 	}
 	return pPosition;
 }
 
 // FUNCTION: LEMBALL 0x00419ea0
-void __cdecl ThunkPopFirstManagedEntityMoveCommandAndResetMotion(void* pUnused,
-																 LevelManagedEntityMoveCommandView* pEntity)
+void __cdecl ThunkPopFirstManagedEntityMoveCommandAndResetMotion(void* pUnused, CGameObject* pEntity)
 {
 	(void) pUnused;
-	pEntity->PopFirstMoveCommandAndResetMotion();
+	pEntity->StopMoving();
 }
 
 // FUNCTION: LEMBALL 0x00419ec0
-void __cdecl ThunkUpdateManagedEntityFacingTowardFirstMoveCommand(void* pUnused,
-																  LevelManagedEntityMoveCommandView* pEntity)
+void __cdecl ThunkUpdateManagedEntityFacingTowardFirstMoveCommand(void* pUnused, CGameObject* pEntity)
 {
 	(void) pUnused;
-	pEntity->UpdateFacingTowardFirstMoveCommand();
+	pEntity->TurnToFaceDestination();
 }

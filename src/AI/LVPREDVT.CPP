@@ -5,8 +5,8 @@ typedef int(__fastcall* LevelManagedEntityNoArgPredicateProc)(void* pEntity);
 
 struct LevelManagedEntityCommandQueueView;
 
-struct LevelManagedEntityMoveCommandView {
-	int IsFacingTowardFirstMoveCommand(void);
+struct CGameObject {
+	int FacingDestination(void);
 };
 
 int __cdecl CallHasPendingManagedEntityCommands(void* pUnused, LevelManagedEntityCommandQueueView* pEntity);
@@ -130,7 +130,7 @@ int __cdecl GetManagedEntityRuntimeValue(void* pUnused, LevelManagedEntityRuntim
 
 // FUNCTION: LEMBALL 0x00419c00
 int __cdecl HasPendingCommandsNeedingFacingUpdate(void* pUnused,
-												  LevelManagedEntityMoveCommandView* pEntity,
+												  CGameObject* pEntity,
 												  void* pUnused2)
 {
 	if (((LevelManagedEntityThreeArgPredicateProc) CallHasPendingManagedEntityCommands)(
@@ -139,7 +139,7 @@ int __cdecl HasPendingCommandsNeedingFacingUpdate(void* pUnused,
 			pUnused2) == 0) {
 		return 0;
 	}
-	return pEntity->IsFacingTowardFirstMoveCommand() == 0;
+	return pEntity->FacingDestination() == 0;
 }
 
 typedef void(__fastcall* LevelManagedEntityNoArgVirtualProc)(void* pEntity);
