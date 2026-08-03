@@ -828,7 +828,7 @@ address,size,name,unit
 0x00420D30,150,remove_cached_enmy_chunk_object_and_destroy,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00420DD0,433,load_enmy_chunk_objects,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00420F90,168,parse_counted_u16_record_from_stream,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
-0x00421180,18,CNodeManager::CNodeManager,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x00421180,18,CNodeManager::CNodeManager,AI/LVNODE.CPP
 0x004211A0,40,CNodeManager::Restart,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x004211D0,134,CNodeManager::Initialise,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00421260,56,CNodeManager::~CNodeManager,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP

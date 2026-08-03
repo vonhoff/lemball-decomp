@@ -1860,13 +1860,9 @@ void LevelEnmyChunkManager::ActivateNestedChildrenFromOwnerTableVariant(void)
 		} while (i < m_cObjectsA4);
 	}
 }
-// MACINTOSH: CNodeManager::CNodeManager(int)
-// FUNCTION: LEMBALL 0x00421180
 CNodeManager* CNodeManager::ConstructNodeChunkManager(int cCapacity)
 {
-	m_pRecords00 = 0;
-	m_cCapacity08 = cCapacity;
-	return this;
+	return new (this) CNodeManager(cCapacity);
 }
 // MACINTOSH: CNodeManager::Restart()
 // FUNCTION: LEMBALL 0x004211a0

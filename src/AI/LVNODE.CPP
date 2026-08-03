@@ -54,7 +54,10 @@ struct LevelNodePoint {
 
 struct CNodeManager {
 	CNode* m_pRecords00;
+	int m_nReserved04;
+	int m_cCapacity08;
 
+	CNodeManager(int cCapacity);
 	LevelNodePoint* GetNodePosition(LevelNodePoint* pOutput, int nIndex);
 	void CopyTileByIndex(int nIndex, int* pX, int* pY);
 };
@@ -141,6 +144,13 @@ struct CNode {
 	void Position(int* pDestination);
 	void CopyTileXY(int* pX, int* pY);
 };
+
+// FUNCTION: LEMBALL 0x00421180
+CNodeManager::CNodeManager(int cCapacity)
+{
+	m_pRecords00 = 0;
+	m_cCapacity08 = cCapacity;
+}
 
 // MACINTOSH: CNodeManager::GetNodePosition(int)
 // FUNCTION: LEMBALL 0x004212a0
