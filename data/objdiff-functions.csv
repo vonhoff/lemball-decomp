@@ -2863,7 +2863,7 @@ address,size,name,unit
 0x0046E7F0,23,__ls,Visos/Generic/VSSTAT.CPP
 0x0046EF00,19,CString::getlength,Visos/Generic/VSSTAT.CPP
 0x0046EFA0,120,CString::lower,Visos/Generic/VSSTAT.CPP
-0x0046F060,189,initialize_master_main_ram_arena,Visos/Generic/Memory.cpp
+0x0046F060,189,INIT_PreInit,Visos/Generic/Memory.cpp
 0x0046F120,240,shutdown_master_main_ram_arena,Visos/Generic/Memory.cpp
 0x0046F210,402,file_based_network_message_thread_main,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x0046F3B0,194,start_file_based_network_message_thread,Platform/Windows/Mixed/Engine/NET/VSNET.CPP

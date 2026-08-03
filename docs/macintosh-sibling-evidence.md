@@ -547,3 +547,7 @@ The seven CODE_02 spelling variants of `CheckAndAmalgamate`, `AddToBlockList`, `
 `InternalNew`, `InternalDelete`, global `operator new`, and global `operator delete` map to `0x0045A6B0/0x0045A730/0x0045A780/0x0045A790`. The internal pair tries the optional small-block buckets before falling back to the main arena and asserting allocation/free success; the global operators are thin delegates to that pair.
 
 Global `CheckValidPointer` maps to `0x0045A800`: both implementations scan every enabled small-memory bucket before consulting the main arena. The member `CArena::CheckValidPointer` and `CBucket::CheckValidPointer` bodies remain distinct callees.
+
+## Portable memory pre-initialization
+
+`INIT_PreInit` maps to `0x0046F060`. Macintosh `NewPtr`/Windows `GlobalAlloc` and `GlobalLock` are platform delegates around the same portable contract: acquire master storage, construct the main RAM arena in place, conditionally construct the small-memory bucket table without recursively using it, restore its enable flag, and report success only when required objects exist.
