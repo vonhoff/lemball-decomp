@@ -286,10 +286,10 @@ struct MogLoadResourceObjectReferenceInterface {
 
 void* AllocateResourceArchiveMemory(unsigned int cbBytes);
 void FreeResourceArchiveMemory(void* pMemoryBlock);
-int LEMBALL_STDCALL OpenResourceArchiveFileHandle(const char* pszPath, const char* pszMode);
-unsigned char MogLoadReadU8(void);
-unsigned int MogLoadReadU32(void);
-int LEMBALL_STDCALL ResourceArchiveComponentEquals(char* pszEntryName, char* pszPathComponent);
+int LEMBALL_STDCALL CRawReadOpen(const char* pszPath, const char* pszMode);
+unsigned char CRawReadInputByte(void);
+unsigned int CRawReadInputDword(void);
+int LEMBALL_STDCALL CRawReadNameCmp(char* pszEntryName, char* pszPathComponent);
 void LEMBALL_FASTCALL DestroyResourceArchive(void* pArchive);
 int SelectResourceArchiveDirectoryPath(void* pArchive, const char* pszPath);
 int FindResourceCacheEvictionCandidateIndex(void* pArchive, unsigned int cbMinimumEvict);
@@ -374,14 +374,14 @@ void FreeResourceArchiveMemory(void* pMemoryBlock)
 }
 
 // FUNCTION: LEMBALL 0x0045bbc0
-int LEMBALL_STDCALL OpenResourceArchiveFileHandle(const char* pszPath, const char* pszMode)
+int LEMBALL_STDCALL CRawReadOpen(const char* pszPath, const char* pszMode)
 {
 	g_pResourceArchiveFile = OpenFileWithMode(pszPath, pszMode);
 	return g_pResourceArchiveFile != 0;
 }
 
 // FUNCTION: LEMBALL 0x0045bbe0
-unsigned char MogLoadReadU8(void)
+unsigned char CRawReadInputByte(void)
 {
 	unsigned char bValue;
 
@@ -390,7 +390,7 @@ unsigned char MogLoadReadU8(void)
 }
 
 // FUNCTION: LEMBALL 0x0045bc40
-unsigned int MogLoadReadU32(void)
+unsigned int CRawReadInputDword(void)
 {
 	unsigned int dwValue;
 
@@ -399,7 +399,7 @@ unsigned int MogLoadReadU32(void)
 }
 
 // FUNCTION: LEMBALL 0x0045bd50
-int LEMBALL_STDCALL ResourceArchiveComponentEquals(char* pszEntryName, char* pszPathComponent)
+int LEMBALL_STDCALL CRawReadNameCmp(char* pszEntryName, char* pszPathComponent)
 {
 	int fEqual;
 	char chEntry;
@@ -438,18 +438,18 @@ MogLoadDirectoryNode* MogLoadDirectoryNode::Construct(long lFileOffset)
 
 	SeekFile(g_pResourceArchiveFile, lFileOffset, SEEK_SET);
 	if (lFileOffset == 0) {
-		(void) MogLoadReadU8();
+		(void) CRawReadInputByte();
 		SeekFile(g_pResourceArchiveFile, 0L, SEEK_SET);
 	}
 
-	(void) MogLoadReadU32();
-	(void) MogLoadReadU32();
-	m_cEntries = MogLoadReadU32();
-	if (MogLoadReadU32() != 3) {
+	(void) CRawReadInputDword();
+	(void) CRawReadInputDword();
+	m_cEntries = CRawReadInputDword();
+	if (CRawReadInputDword() != 3) {
 		TriggerReleaseAssertFailure(g_MOGLOAD_IsValidResourceFileAssert, g_MOGLOAD_SourceFileName, 0x1a2);
 	}
 
-	m_lRecordTableOffset = (long) MogLoadReadU32();
+	m_lRecordTableOffset = (long) CRawReadInputDword();
 	lCurrentFileOffset = (long) TellFile(g_pResourceArchiveFile);
 	m_lNameDataOffset = lCurrentFileOffset;
 	lNameDataSize = m_lRecordTableOffset - lCurrentFileOffset;
@@ -504,12 +504,12 @@ void MogLoadDirectoryNode::DestroyResourceArchiveDirectoryTree(void)
 void MogLoadDirectoryNode::ReadEntryRecord(MogLoadEntryRecord* pEntry)
 {
 	SeekFile(g_pResourceArchiveFile, ((m_CursorState.m_iIndex * 4L) + 4L) * 9L + m_lRecordTableOffset, SEEK_SET);
-	pEntry->m_pszName = m_pNameData + ((long) MogLoadReadU32() - m_lNameDataOffset);
+	pEntry->m_pszName = m_pNameData + ((long) CRawReadInputDword() - m_lNameDataOffset);
 
-	pEntry->m_uResourceId = MogLoadReadU32();
-	pEntry->m_uTag = MogLoadReadU32();
-	pEntry->m_lFileOffset = (long) MogLoadReadU32();
-	pEntry->m_cbFileSize = (long) MogLoadReadU32();
+	pEntry->m_uResourceId = CRawReadInputDword();
+	pEntry->m_uTag = CRawReadInputDword();
+	pEntry->m_lFileOffset = (long) CRawReadInputDword();
+	pEntry->m_cbFileSize = (long) CRawReadInputDword();
 	pEntry->m_NextState.m_pEntry = 0;
 	pEntry->m_SubdirectoryState.m_pEntry = 0;
 	pEntry->m_pChildDirectory = 0;
@@ -695,7 +695,7 @@ void* MogLoadResourceArchive::ConstructResourceArchive(const char* pszArchiveNam
 	}
 	g_pResourceArchiveMemoryArena = pChildArena;
 
-	if (!OpenResourceArchiveFileHandle(pszArchiveName, g_MOGLOAD_OpenMode)) {
+	if (!CRawReadOpen(pszArchiveName, g_MOGLOAD_OpenMode)) {
 		pResourceArchive->m_nOpenFailed = 1;
 		return this;
 	}
@@ -826,7 +826,7 @@ int SelectResourceArchiveDirectoryPath(void* pArchive, const char* pszPath)
 				if (pDirectory == 0) {
 					goto bad_path;
 				}
-			} while (!ResourceArchiveComponentEquals(
+			} while (!CRawReadNameCmp(
 				pResourceArchive->m_pCurrentDirectory->m_SubdirectoryCursorState.m_pEntry->m_pszName,
 				pszFoundSlash));
 			pMatchedDirectory = pDirectory;

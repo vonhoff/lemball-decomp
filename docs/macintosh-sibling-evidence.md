@@ -361,3 +361,7 @@ The four portable animation-selector symbols map to `0x00467170`, `0x004671B0`, 
 ## CMasterInput reconstruction
 
 The three portable `CMasterInput` symbols map to constructor `0x00472070`, semantic destructor `0x00472090`, and `StreamOut` `0x00472210` in `VSINIT.CPP`. Exact 68K/x86 bodies share the queue pointer, zeroed input count and list head, linked-list teardown, and identity stream slot. The Windows object is `0x18` bytes and the startup runtime is its sole constructor caller. Source terminology now reflects `CMasterInput`; scalar deleting wrapper `0x00472270` remains separate.
+
+## CRawRead reconstruction
+
+The four portable `CRawRead` methods map to `0x0045BBC0`, `0x0045BBE0`, `0x0045BC40`, and `0x0045BD50` in `MogLoad.cpp`. Both architectures use one shared archive handle, one- and four-byte reads, and the same case-folded path-component comparison with `/` terminating an archive name. Windows implements the stateless methods as free functions; source names now preserve the Macintosh logical owner without inventing an object layout or changing the physical TU/ABI. Generic CRT wrappers remain separate.

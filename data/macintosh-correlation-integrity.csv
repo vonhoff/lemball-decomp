@@ -1164,3 +1164,7 @@ CODE_02_Visos (Generic).bin,0x0000017C,GetFrameNo__13CPlayThruAnimFv,0x00467210,
 CODE_02_Visos (Generic).bin,0x00001357,__ct__12CMasterInputFP10CBaseQueue,0x00472070,high,exact 0x18-byte construction; queue field; vtable; sole startup caller; and 100% reccmp,exact_tuple,0x00001357
 CODE_02_Visos (Generic).bin,0x000013CE,__dt__12CMasterInputFv,0x00472090,high,exact list-head and count destruction; vtable restoration; wrapper relationship; and x86 body,exact_tuple,0x000013CE
 CODE_02_Visos (Generic).bin,0x000013F5,StreamOut__12CMasterInputFR10CVSOStream,0x00472210,high,exact stream identity slot; vtable ownership; and 100% reccmp,exact_tuple,0x000013F5
+CODE_02_Visos (Generic).bin,0x000017A0,Open__8CRawReadFPcPc,0x0045BBC0,high,exact shared archive file handle; filename/mode open; boolean result; sole archive constructor caller; and 100% reccmp,exact_tuple,0x000017A0
+CODE_02_Visos (Generic).bin,0x000017D8,InputByte__8CRawReadFv,0x0045BBE0,high,exact one-byte read from shared archive handle; callers; and 100% effective reccmp,exact_tuple,0x000017D8
+CODE_02_Visos (Generic).bin,0x00001812,InputDword__8CRawReadFv,0x0045BC40,high,exact four-byte read from shared archive handle; callers; and 100% effective reccmp,exact_tuple,0x00001812
+CODE_02_Visos (Generic).bin,0x00001884,NameCmp__8CRawReadFPcPc,0x0045BD50,high,matching case-folded component compare; slash termination; callers; and x86 ABI,exact_tuple,0x00001884
