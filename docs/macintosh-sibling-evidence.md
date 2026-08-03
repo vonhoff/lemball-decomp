@@ -297,3 +297,7 @@ All six portable list-resource base methods map across `0x0045D290..0x0045D5C0` 
 ## CMogRes reconstruction
 
 All fifteen portable archive-manager methods map across `0x0045C630..0x0045CF10` in physical `MogLoad.cpp`. Exact archive lifecycle, directory traversal, sparse cache, eviction, allocation, lookup, resource ownership, ranged loading, aging and cleanup behavior supports the family. Interleaved path wrappers and the typed-resource family beginning at `0x0045CF20` remain target-only or separate.
+
+## CResBase reconstruction
+
+Eleven portable resource-base methods map across `0x0045CF20..0x0045D250`, preserving mixed `MogLoad.cpp` and `VARLOAD.CPP` ownership. Exact ABI, expanded layout, vtable slots, archive loading, reference and unload semantics support the mappings; notably, `DoLoad` is `0x0045CF20`, not `CMogRes::Load` at `0x0045CB80`. The Macintosh-only diagnostic `StreamOut` has no emitted Windows counterpart and does not consume an independently owned short stream identity.
