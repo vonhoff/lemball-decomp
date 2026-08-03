@@ -417,3 +417,7 @@ The five portable `CFileWriteSocket` methods map in order to `0x00479E20`, `0x00
 ## CFileRWSocket reconstruction
 
 The portable constructor and `SendPacket` map to `0x0047A220` and `0x0047A420`. Both architectures compose read and write sockets with shared channel/file state; `SendPacket` forwards payload and size to `CFileWriteSocket` and wraps the active slot modulo the header count after success. The adjacent `0x0047A470` marker helper remains unconsumed.
+
+## CFileOpenManagement reconstruction
+
+`IncOpenCount`, `DecOpenCount`, and `SysCloseSocket` map to `0x0047A470`, `0x0047A4D0`, and `0x0047A530`. The first two read the shared header under lock, adjust its 16-bit open count, and write it back while retaining the lock. Close decrements that count, preserves the common close status adaptation, and closes the underlying file only at zero. Physical Windows adapter ownership remains unchanged.

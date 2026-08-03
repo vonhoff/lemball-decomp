@@ -3157,9 +3157,9 @@ address,size,name,unit
 0x0047A0B0,365,CFileWriteSocket::SendPacket,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x0047A220,506,CFileRWSocket::CFileRWSocket,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x0047A420,66,CFileRWSocket::SendPacket,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
-0x0047A470,85,increment_file_backed_eff_stream_marker,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
-0x0047A4D0,85,decrement_file_backed_eff_stream_marker,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
-0x0047A530,58,decrement_file_backed_eff_marker_and_release_if_zero,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047A470,85,CFileOpenManagement::IncOpenCount,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047A4D0,85,CFileOpenManagement::DecOpenCount,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047A530,58,CFileOpenManagement::SysCloseSocket,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x0047A570,916,construct_global_state_file_backed_eff_composite,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x0047A910,253,destroy_global_state_file_backed_eff_composite,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x0047AA10,241,initialize_global_state_file_backed_eff_storage,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
