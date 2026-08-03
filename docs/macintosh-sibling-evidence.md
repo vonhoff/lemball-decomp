@@ -325,3 +325,7 @@ All twenty-seven portable socket methods map across `0x0045F820..0x00460280`, pr
 ## CMogDir reconstruction
 
 All eight portable archive-directory methods map across `0x0045BDA0..0x0045C2D0` in `MogLoad.cpp`. Exact record parsing, directory/entry layouts, cursor threading, recursive lookup, callers, and ownership support the family. Archive-arena and `CRawRead` helpers plus Windows-only name-search and integrity routines remain separate.
+
+## CConnect reconstruction
+
+All thirteen portable connection methods map across `0x00460A90..0x00461030`, preserving `VSNETTCP.CPP` construction/destruction and `VSNET.CPP` runtime ownership. Composite layouts, vtables/adjustors, timers, event posting, acknowledgement, send/close state, and callers support the family. `InitConnect` now forwards the peer-key argument as the raw x86 and Macintosh signature require. Deleting/virtual-base wrappers, transport helpers, the following locked-record family, and concrete derived transports remain separate.

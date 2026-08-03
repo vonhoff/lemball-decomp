@@ -681,7 +681,7 @@ struct VsNetEffTransportPeer {
 	DWORD m_dwConnectStartTick;
 
 	void FreeEffTransportPeerBuffers(void);
-	void SetEffTransportPeerNameAndPort(char* pszName, void* pKey, short nPort);
+	void InitConnect(char* pszName, void* pKey, short nPort);
 	int IsEffTransportPeerStillConnecting(void);
 	void MarkEffTransportPeerActivityTime(void);
 	int SendEffStreamToActivePeer(int* pStream);
@@ -2026,7 +2026,7 @@ void VsNetChannelOwnerObject::SendLoadedEffEventToPeer(void* pPeerKey, void* pSt
 }
 
 // FUNCTION: LEMBALL 0x00460c60
-void VsNetEffTransportPeer::SetEffTransportPeerNameAndPort(char* pszName, void* pKey, short nPort)
+void VsNetEffTransportPeer::InitConnect(char* pszName, void* pKey, short nPort)
 {
 	VsNetEffTransportPeer* pTransportPeer;
 	VsNetPeerPayloadSenderSlot* pPayloadSenderSlot;
@@ -2085,9 +2085,7 @@ void VsNetEffTransportPeer::SetEffTransportPeerNameAndPort(char* pszName, void* 
 		(VsNetPeerPayloadSenderSlot*) ((char*) pTransportPeer + pTransportPeer->m_pOffsets->m_nPayloadSenderSlotOffset);
 	pPayloadSender = &pPayloadSenderSlot->m_Sender;
 	((VsNetPeerPayloadSender*) pPayloadSender)->SetAssignedPort(nPort);
-	/* The original routine forwards the first argument again here.  The
-	 * request key is consumed by the caller, not by this peer-name setter. */
-	((VsNetPeerPayloadSender*) pPayloadSender)->WritePeerKey(pszName);
+	((VsNetPeerPayloadSender*) pPayloadSender)->WritePeerKey(pKey);
 }
 
 // FUNCTION: LEMBALL 0x00460ce0
@@ -3438,7 +3436,7 @@ void VsNetEffTransportRuntimeState::HandleEffTransportRequestConnect(void* pPeer
 	nAssignedPort = ((VsNetChannelOwnerObject*) pState->m_pActiveChannelOwner)
 						->m_pVtable->m_pAllocatePort(pRequestConnectStream->m_pPortBinding);
 	if (nAssignedPort != -1) {
-		pPeer->SetEffTransportPeerNameAndPort(pRequestConnectStream->m_pszHostName, pPeerKey, nAssignedPort);
+		pPeer->InitConnect(pRequestConnectStream->m_pszHostName, pPeerKey, nAssignedPort);
 		pEndpointSlot = (VsNetTransportEndpointSlot*) ((char*) pPeer + pPeer->m_pOffsets->m_nEndpointStateSlotOffset);
 		pPeerTransportState = &pEndpointSlot->m_State;
 		pAuthoriseConnectStream->m_nAssignedPort = pPeerTransportState->m_nAssignedPort;
