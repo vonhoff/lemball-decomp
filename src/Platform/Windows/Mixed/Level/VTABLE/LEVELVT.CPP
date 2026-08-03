@@ -1,4 +1,5 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "AI/CMover.h"
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
@@ -2155,132 +2156,7 @@ void LEMBALL_FASTCALL destroy_move_chunk_object(void* pObject)
 extern void* g_pActiveManagedEntityOwner;
 extern void* g_pLevelTileGrid;
 
-struct ManagedEntitySlotOwnerView {
-	char m_abReserved00[0x6c];
-	unsigned short m_nSlotId6C;
 
-	void SetManagedEntitySlotId(unsigned short nSlotId);
-};
-
-struct LevelNodePoint {
-	int m_anValues[3];
-};
-
-struct LevelModeNodeView {
-	char m_abReserved00[0x17c];
-	void* m_pNodeManager17C;
-
-	LevelNodePoint* CopyNodePointByIndex(LevelNodePoint* pOutput, int nIndex);
-};
-
-struct CGround {
-	int m_nShapeType;
-	int m_nReserved04;
-	short m_nHeight;
-
-	short GetZThunk(int nLocalX, int nLocalY);
-};
-
-struct LevelTileGridCell {
-	int m_nType00;
-	short m_nVariant04;
-	unsigned short m_nFlags06;
-	short m_nReserved08;
-	short m_nReserved0A;
-};
-
-struct MoveChunkTileGridView {
-	char m_abReserved00[0xc];
-	LevelTileGridCell* m_pCells0C;
-	int m_cColumns10;
-	int m_cRows14;
-};
-
-struct CMover : ManagedEntitySlotOwnerView {
-	char m_abReserved6E[0x2e];
-	int m_nWorldX9C;
-	int m_nWorldYA0;
-	int m_nWorldZA4;
-	char m_abReservedA8[0x14];
-	short m_nHeadingBC;
-	char m_abReservedBE[0x7a];
-	int m_fActive138;
-	char m_abReserved13C[8];
-	int m_nMode144;
-	char m_abReserved148[0x20];
-	int m_iNode168;
-	int m_nValue16C;
-	int m_nState170;
-	int m_cAttachedEntities174;
-	char m_abReserved178[0x28];
-
-	int IsAt(int x, int y, int* pHeight);
-	void Set(unsigned short nSlotId, short nHeading, int nMode, int iNode, int nValue);
-};
-
-// MACINTOSH: CMover::IsAt(int, int, int&)
-// FUNCTION: LEMBALL 0x0042e700
-int CMover::IsAt(int x, int y, int* pHeight)
-{
-	int nLeft;
-	int nRight;
-	int nTop;
-	int nBottom;
-
-	nLeft = (m_nWorldX9C >> 12) - 8;
-	nRight = nLeft + 15;
-	nTop = (m_nWorldYA0 >> 12) - 8;
-	nBottom = nTop + 15;
-	if (nLeft <= x && x <= nRight && nTop <= y && y <= nBottom) {
-		*pHeight = (m_nWorldZA4 >> 12) + 8;
-		return 1;
-	}
-	return 0;
-}
-
-// MACINTOSH: CMover::Set(unsigned short, int, unsigned char, int, int)
-// FUNCTION: LEMBALL 0x0042e760
-void CMover::Set(unsigned short nSlotId, short nHeading, int nMode, int iNode, int nValue)
-{
-	LevelNodePoint point;
-	LevelNodePoint* pPoint;
-	MoveChunkTileGridView* pGrid;
-	CGround* pCell;
-	int nPixelY;
-	int nPixelX;
-	int nTileY;
-	int nTileX;
-	unsigned short nHeight;
-
-	SetManagedEntitySlotId(nSlotId);
-	pPoint = ((LevelModeNodeView*) g_pActiveManagedEntityOwner)->CopyNodePointByIndex(&point, iNode);
-	m_nWorldX9C = pPoint->m_anValues[0];
-	nPixelX = m_nWorldX9C >> 12;
-	m_nWorldYA0 = pPoint->m_anValues[1];
-	nPixelY = m_nWorldYA0 >> 12;
-	m_nWorldZA4 = pPoint->m_anValues[2];
-	nTileX = nPixelX >> 4;
-	nTileY = nPixelY >> 4;
-	pGrid = (MoveChunkTileGridView*) g_pLevelTileGrid;
-	if (nPixelX < 0 || nPixelY < 0 || nTileX >= pGrid->m_cColumns10 || nTileY >= pGrid->m_cRows14) {
-		nHeight = 0;
-	}
-	else {
-		pCell = (CGround*) &pGrid->m_pCells0C[nTileY * pGrid->m_cColumns10 + nTileX];
-		nHeight = (unsigned short) pCell->GetZThunk(nPixelX & 0x0f, nPixelY & 0x0f);
-	}
-
-	m_fActive138 = 1;
-	m_nHeadingBC = nHeading;
-	m_nWorldZA4 = (int) nHeight << 12;
-	m_iNode168 = iNode;
-	m_nState170 = 0;
-	m_cAttachedEntities174 = 0;
-	m_nMode144 = nMode;
-	m_nValue16C = nValue;
-}
-
-// MACINTOSH: CMover::Switch()
 // FUNCTION: LEMBALL 0x0042eeb0
 void __fastcall set_move_chunk_object_trigger_latch(void* pObject)
 {

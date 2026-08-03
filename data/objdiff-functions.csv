@@ -1137,8 +1137,8 @@ address,size,name,unit
 0x0042E600,59,CMover::Initialise,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0042E640,11,CMover::~CMover,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0042E650,164,CMover::SetPos,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0042E700,94,CMover::IsAt,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0042E760,226,CMover::Set,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0042E700,94,CMover::IsAt,AI/CMover.cpp
+0x0042E760,226,CMover::Set,AI/CMover.cpp
 0x0042E850,292,CMover::SetUpNextNode,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0042E980,192,CMover::FindObjectsOnTopOfMe,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0042EA40,126,CMover::MoveObjects,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
