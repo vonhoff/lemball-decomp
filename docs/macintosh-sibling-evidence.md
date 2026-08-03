@@ -535,3 +535,7 @@ Global `OkFailed` maps directly to `0x00458F10`: both bodies select the shared `
 ## Portable aggregate initialization reconstruction
 
 `INIT_SubSystems`, `INIT_QuitSubSystems`, `INIT_CheckOptions`, `INIT_CmdLine`, `INIT_Main`, and `_VSExit` map to `0x00459250/0x00459520/0x004595D0/0x004596B0/0x00459860/0x00459970`. The family preserves subsystem dependency order and reverse teardown, option-table parsing, mutable command-line tokenization and compaction, game-session startup with exception frames, and non-returning startup `longjmp` behavior.
+
+## Portable CArena allocator core
+
+The seven CODE_02 spelling variants of `CheckAndAmalgamate`, `AddToBlockList`, `FindSmallestBlock`, `Allocate`, `Free`, `AllocateArena`, and `StreamOut` duplicate already-correlated CODE_09 implementations. Their bodies agree on block links, best-fit selection, split/coalesce accounting, child-arena ownership, locking, and recursive stream output, but one x86 body cannot be consumed twice. They therefore receive split/merged dispositions while canonical CODE_09 identities remain at `0x00459B10/0x00459C00/0x00459D20/0x00459D70/0x00459F70/0x0045A010/0x0045A260`.
