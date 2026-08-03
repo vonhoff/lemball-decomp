@@ -1,6 +1,11 @@
 #define LEMBALL_DEFINE_MANAGED_ENTITY_PACKET_CLASSES
 
 #include "AI/CFormationManager.h"
+
+inline void* operator new(unsigned int, void* pMemory)
+{
+	return pMemory;
+}
 #include "AI/CGameObject.h"
 #include "AI/CLiftManager.h"
 #include "AI/CMaze.h"
@@ -105,7 +110,7 @@ extern unsigned int SeekFile(FILE* pFile, long lOffset, int nOrigin);
 extern int* LoadBinResource(int nResourceId);
 
 // GLOBAL: LEMBALL 0x0049e0d0
-static int g_LEVEL_ProjectileGeometryPairSeeds[3][8][2] = {
+int g_LEVEL_ProjectileGeometryPairSeeds[3][8][2] = {
 	{{0, 0}, {-16, 0}, {-32, 0}, {-48, 0}, {-64, 0}, {-80, 0}, {-96, 0}, {-112, 0}},
 	{{0, 0}, {-24, -16}, {-24, 16}, {-48, -32}, {-48, 32}, {-72, -48}, {-72, 48}, {-96, -64}},
 	{{0, 0}, {-24, -24}, {-24, 0}, {-24, 24}, {-48, -48}, {-48, -24}, {-48, 0}, {-48, 24}}};
@@ -1738,30 +1743,9 @@ ManagedEntityPacket26::ManagedEntityPacket26() : ManagedEntityPacketBase(0x26)
 	m_nBufferEnd18 += 4;
 }
 
-// MACINTOSH: CFormationManager::CFormationManager()
-// FUNCTION: LEMBALL 0x0041a140
 LevelProjectileGeometryPairTable* LevelProjectileGeometryPairTable::InitializeProjectileGeometryPairTable(void)
 {
-	int i;
-	int j;
-	LevelProjectileGeometryPair* pPair;
-
-	for (i = 0; i < 24; ++i) {
-		m_aPrimaryPairs00[i].InitializeSentinelThunk();
-	}
-	for (i = 0; i < 8; ++i) {
-		m_aSecondaryPairsC0[i].InitializeSentinelThunk();
-	}
-
-	pPair = m_aPrimaryPairs00;
-	for (i = 0; i < 3; ++i) {
-		for (j = 0; j < 8; ++j) {
-			pPair->m_nX = g_LEVEL_ProjectileGeometryPairSeeds[i][j][0] << 12;
-			pPair->m_nY = g_LEVEL_ProjectileGeometryPairSeeds[i][j][1] << 12;
-			++pPair;
-		}
-	}
-	return this;
+	return (LevelProjectileGeometryPairTable*) new (this) CFormationManager;
 }
 
 // FUNCTION: LEMBALL 0x0041a3c0

@@ -12,6 +12,7 @@ public:
 	CFormationVector m_aTransformedVectorsC0[8];
 	int m_nVectorCursor100;
 
+	CFormationManager(void);
 	void Restart(void);
 	~CFormationManager(void);
 	CFormationVector* GetAVector(int nIndex);
