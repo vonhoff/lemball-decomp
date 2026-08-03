@@ -101,33 +101,6 @@ struct GmobChunkType14ActionView {
 	void DispatchGmobChunkType14Actions(void);
 };
 
-struct LevelSlotActionDispatcherView {
-	void DispatchLevelSlotActionByType(int nAction, unsigned int nSlotId, int nRangeEnd, int nUnused4);
-};
-
-struct InvsChunkObjectActionView {
-	virtual void ReservedSlot0(int nValue);
-	virtual void ReservedSlot1(int nValue);
-	virtual void SetManagedEntityStateId(int nStateId);
-	virtual void ReservedSlot3(int nValue);
-	virtual void ReservedSlot4(int nValue);
-	virtual void ReservedSlot5(int nValue);
-	virtual void ReservedSlot6(int nValue);
-	virtual void ReservedSlot7(int nValue);
-	virtual void ReservedSlot8(int nValue);
-	virtual void ReservedSlot9(int nValue);
-	virtual void ReservedSlot10(int nValue);
-	virtual void ReservedSlot11(int nValue);
-	virtual void ReservedSlot12(int nValue);
-	virtual void SetActionState(int nStateId);
-};
-
-struct InvsChunkActionRecord {
-	int m_nAction;
-	unsigned short m_nSlotId;
-	unsigned short m_nReserved;
-};
-
 extern ManagedEntityPacketStreamView* g_pManagedEntityPacketBindStream;
 
 #define DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, objectSize, destroyProc)                                 \
@@ -173,9 +146,31 @@ extern ManagedEntityPacketStreamView* g_pManagedEntityPacketBindStream;
 // These entries recover the source-owned 16-slot chunk-object interface. Bodies marked STUB remain
 // explicit decompilation targets; their distinct identities preserve real virtual dispatch and table ownership.
 
+struct InvisibleSwitchVtableLayout {
+	void* m_apSlots00[5];
+	int (CInvisibleSwitch::*m_pProcess14)(void);
+	void* m_apSlots18[10];
+};
+typedef char
+	InvisibleSwitchMemberPointerMustBeOneWord[sizeof(int (CInvisibleSwitch::*)(void)) == sizeof(void*) ? 1 : -1];
+
 // GLOBAL: LEMBALL 0x00493120
-void* g_LINKSCF_InvsChunkObjectVtable[16] =
-	COMMON_LEVEL_CHUNK_OBJECT_VTABLE(DeleteInvsChunkObjectAuto, ServiceInvsChunkObject);
+InvisibleSwitchVtableLayout g_LINKSCF_InvsChunkObjectVtable = {{(void*) DeleteInvsChunkObjectAuto,
+																(void*) SetManagedEntityStateIdWithVariant,
+																(void*) SetManagedEntityStateId,
+																(void*) EmitLevelChunkObjectRenderEntry,
+																(void*) noop_vtable_callback_0040a7f0},
+															   &CInvisibleSwitch::Process,
+															   {(void*) return_true_vtable_callback_0040a800,
+																(void*) get_object_field_0xf0,
+																(void*) SetLevelChunkObjectMotionVector,
+																(void*) AdvanceManagedEntityGravityMotion,
+																(void*) return_false_vtable_callback_0040a820,
+																(void*) copy_object_fields_0x9c_triplet,
+																(void*) noop_vtable_callback_0040a860,
+																(void*) set_object_field_0x98,
+																(void*) get_object_field_0x98,
+																(void*) BeginManagedEntityReachablePathSearch}};
 
 // GLOBAL: LEMBALL 0x004936f8
 void* g_LEVELVT_DoorChunkObjectVtable[16] =
@@ -287,48 +282,6 @@ int g_nNetworkFrameClockTick = 0;
 
 // GLOBAL: LEMBALL 0x0049ce10
 int g_nNetworkFrameClockTimeMs = 0;
-
-// MACINTOSH: CInvisibleSwitch::Process()
-// FUNCTION: LEMBALL 0x0040a050
-int LEMBALL_FASTCALL ServiceInvsChunkObject(void* pObject)
-{
-	char* pObjectBytes = (char*) pObject;
-	int nStateId;
-
-	((CInvisibleSwitch*) pObject)->VerifyObjects();
-	if (*(int*) (pObjectBytes + 0x114) != 0) {
-		nStateId = *(int*) (pObjectBytes + 0xb8);
-		if (*(int*) (pObjectBytes + 0x128) != nStateId && nStateId != 0x1a) {
-			return 1;
-		}
-	}
-
-	if (*(int*) (pObjectBytes + 0xb8) == 0x1a) {
-		if (*(int*) (pObjectBytes + 0x144) == 0) {
-			*(int*) (pObjectBytes + 0x148) = 1;
-		}
-		if (*(void**) (pObjectBytes + 0x5c) != 0) {
-			((CInvisibleSwitch*) pObject)->AddObject((CGameObject*) *(void**) (pObjectBytes + 0x5c));
-			*(void**) (pObjectBytes + 0x5c) = 0;
-		}
-		{
-			InvsChunkActionRecord* pAction;
-			int iAction = 0;
-			if (*(unsigned short*) (pObjectBytes + 0x150) > iAction) {
-				pAction = (InvsChunkActionRecord*) (pObjectBytes + 0x154);
-				do {
-					((LevelSlotActionDispatcherView*) g_pActiveManagedEntityOwner)
-						->DispatchLevelSlotActionByType(pAction->m_nAction, pAction->m_nSlotId, 0, 0);
-					++pAction;
-					++iAction;
-				} while (*(unsigned short*) (pObjectBytes + 0x150) > iAction);
-			}
-		}
-		((InvsChunkObjectActionView*) pObject)->SetActionState(0x15);
-		((InvsChunkObjectActionView*) pObject)->SetManagedEntityStateId(0x18);
-	}
-	return 1;
-}
 
 // FUNCTION: LEMBALL 0x0040a6f0
 void LEMBALL_FASTCALL EmitLevelChunkObjectRenderEntry(void* pObject, void* pUnused, void* pRenderEntry)

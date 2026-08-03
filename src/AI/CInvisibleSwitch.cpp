@@ -5,7 +5,8 @@
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
 extern void* g_pActiveManagedEntityOwner;
 extern void* g_pLevelTileGrid;
-extern void* g_LINKSCF_InvsChunkObjectVtable[16];
+struct InvisibleSwitchVtableLayout;
+extern InvisibleSwitchVtableLayout g_LINKSCF_InvsChunkObjectVtable;
 extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern void LEMBALL_FASTCALL ResetInvsChunkObjectStateThunk(void* pObject);
@@ -27,13 +28,40 @@ struct ManagedEntityStateView {
 	void RequestManagedEntityStateId(int nStateId);
 };
 
+struct LevelSlotActionDispatcherView {
+	void DispatchLevelSlotActionByType(int nAction, unsigned int nSlotId, int nRangeEnd, int nUnused4);
+};
+
+struct InvsChunkObjectActionView {
+	virtual void ReservedSlot0(int nValue);
+	virtual void ReservedSlot1(int nValue);
+	virtual void SetManagedEntityStateId(int nStateId);
+	virtual void ReservedSlot3(int nValue);
+	virtual void ReservedSlot4(int nValue);
+	virtual void ReservedSlot5(int nValue);
+	virtual void ReservedSlot6(int nValue);
+	virtual void ReservedSlot7(int nValue);
+	virtual void ReservedSlot8(int nValue);
+	virtual void ReservedSlot9(int nValue);
+	virtual void ReservedSlot10(int nValue);
+	virtual void ReservedSlot11(int nValue);
+	virtual void ReservedSlot12(int nValue);
+	virtual void SetActionState(int nStateId);
+};
+
+struct InvsChunkActionRecord {
+	int m_nAction;
+	unsigned short m_nSlotId;
+	unsigned short m_nReserved;
+};
+
 // Split from the original LINKSCF source group to preserve MSVC 4.00 code generation in LINKSCF.CPP.
 
 // FUNCTION: LEMBALL 0x00409ca0
 CInvisibleSwitch::CInvisibleSwitch(void)
 {
 	((LevelChunkObjectBaseView*) this)->InitializeLevelChunkObjectBase(0x36, 0, 0);
-	*(void**) this = g_LINKSCF_InvsChunkObjectVtable;
+	*(void**) this = &g_LINKSCF_InvsChunkObjectVtable;
 }
 
 // FUNCTION: LEMBALL 0x00409cc0
@@ -59,7 +87,7 @@ void CInvisibleSwitch::Initialise(void)
 // FUNCTION: LEMBALL 0x00409d10
 CInvisibleSwitch::~CInvisibleSwitch(void)
 {
-	*(void**) this = g_LINKSCF_InvsChunkObjectVtable;
+	*(void**) this = &g_LINKSCF_InvsChunkObjectVtable;
 	DestroyLevelChunkObjectBaseAutoThunk(this);
 }
 
@@ -180,4 +208,45 @@ void CInvisibleSwitch::DoActivate(void)
 		((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(0x32);
 		pState->m_fSoundTriggered14C = 1;
 	}
+}
+
+// FUNCTION: LEMBALL 0x0040a050
+int CInvisibleSwitch::Process(void)
+{
+	char* pObjectBytes = (char*) this;
+	int nStateId;
+
+	VerifyObjects();
+	if (*(int*) (pObjectBytes + 0x114) != 0) {
+		nStateId = *(int*) (pObjectBytes + 0xb8);
+		if (*(int*) (pObjectBytes + 0x128) != nStateId && nStateId != 0x1a) {
+			return 1;
+		}
+	}
+
+	if (*(int*) (pObjectBytes + 0xb8) == 0x1a) {
+		if (*(int*) (pObjectBytes + 0x144) == 0) {
+			*(int*) (pObjectBytes + 0x148) = 1;
+		}
+		if (*(void**) (pObjectBytes + 0x5c) != 0) {
+			AddObject((CGameObject*) *(void**) (pObjectBytes + 0x5c));
+			*(void**) (pObjectBytes + 0x5c) = 0;
+		}
+		{
+			InvsChunkActionRecord* pAction;
+			int iAction = 0;
+			if (*(unsigned short*) (pObjectBytes + 0x150) > iAction) {
+				pAction = (InvsChunkActionRecord*) (pObjectBytes + 0x154);
+				do {
+					((LevelSlotActionDispatcherView*) g_pActiveManagedEntityOwner)
+						->DispatchLevelSlotActionByType(pAction->m_nAction, pAction->m_nSlotId, 0, 0);
+					++pAction;
+					++iAction;
+				} while (*(unsigned short*) (pObjectBytes + 0x150) > iAction);
+			}
+		}
+		((InvsChunkObjectActionView*) this)->SetActionState(0x15);
+		((InvsChunkObjectActionView*) this)->SetManagedEntityStateId(0x18);
+	}
+	return 1;
 }
