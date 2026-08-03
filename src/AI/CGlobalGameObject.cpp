@@ -9,3 +9,13 @@ int CGlobalGameObject::UsableState(void)
 	}
 	return nState;
 }
+
+// FUNCTION: LEMBALL 0x00416e70
+void CGlobalGameObject::CancelRequest(void)
+{
+	if (m_fResetPending130 != 0) {
+		m_nPendingState114 = 0;
+		m_fResetPending130 = 0;
+		m_nRuntimeState8C = 0;
+	}
+}

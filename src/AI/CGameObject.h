@@ -52,7 +52,8 @@ public:
 	int m_fHasCommands74;
 	char m_abReserved78[0x10];
 	int m_nMotionDuration88;
-	char m_abReserved8C[0x10];
+	int m_nRuntimeState8C;
+	char m_abReserved90[0xc];
 	AICOORD m_WorldPosition9C;
 	char m_abReservedA8[0xc];
 	short m_nHeadingOctantB4;
@@ -62,7 +63,9 @@ public:
 	char m_abReservedBE[0xa];
 	int m_nMotionStartTickC8;
 	int m_nNextUpdateTickCC;
-	char m_abReservedD0[0x4c];
+	char m_abReservedD0[0x44];
+	int m_nPendingState114;
+	char m_abReserved118[4];
 	int m_fOnMover11C;
 
 	void StartMoving(void);

@@ -188,7 +188,7 @@ The six Macintosh `CAICursor` bodies map to constructor `0x00414DA0`, destructor
 
 ## CGlobalGameObject action and network-message reconstruction
 
-All twelve portable bodies map at `0x00416D20..0x00417150`. Exact 68K and Windows evidence agrees on lifecycle state, both `Action` overloads, request/cancel behavior, packet switch `0x23..0x29`, remove/cancel sends, and construction/destruction of nine shared message helpers. Genuine `CGlobalGameObject::UsableState` ownership now lives in `src/AI/CGlobalGameObject.cpp` as a `100%` match; it returns the pre-clear value, and its former void prototype was incorrect. The remaining bodies retain physical `LEVELRUN.CPP` ownership pending class extraction. Windows-only `RequestAction(eAction,int)` adapter `0x00416E00` consumes no Macintosh symbol.
+All twelve portable bodies map at `0x00416D20..0x00417150`. Exact 68K and Windows evidence agrees on lifecycle state, both `Action` overloads, request/cancel behavior, packet switch `0x23..0x29`, remove/cancel sends, and construction/destruction of nine shared message helpers. Genuine `CGlobalGameObject::UsableState` and `CancelRequest` ownership now lives in `src/AI/CGlobalGameObject.cpp` as `100%` matches; `UsableState` returns the pre-clear value, and its former void prototype was incorrect, while `CancelRequest` clears the evidenced inherited and derived request-state fields. The remaining bodies retain physical `LEVELRUN.CPP` ownership pending class extraction. Windows-only `RequestAction(eAction,int)` adapter `0x00416E00` consumes no Macintosh symbol.
 
 ## CRocket and CRocketManager reconstruction
 

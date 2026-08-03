@@ -496,7 +496,7 @@ address,size,name,unit
 0x00416DE0,24,CGlobalGameObject::Action,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416E00,24,request_managed_entity_state_id_with_variant,AI/LVSTATEVAR.CPP
 0x00416E20,68,CGlobalGameObject::RequestAction,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
-0x00416E70,29,CGlobalGameObject::CancelRequest,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x00416E70,29,CGlobalGameObject::CancelRequest,AI/CGlobalGameObject.cpp
 0x00416E90,268,CGlobalGameObject::Receive,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416FC0,13,CGlobalGameObject::SendRemove,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416FD0,13,CGlobalGameObject::SendCancel,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
