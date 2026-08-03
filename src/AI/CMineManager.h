@@ -2,7 +2,9 @@
 #define LEMBALL_CMINEMANAGER_H
 
 class CAI;
+class CGameObject;
 class CMine;
+struct AICOORD;
 
 struct MinePosition {
 	short x;
@@ -18,6 +20,7 @@ public:
 	void Initialise(int nCapacity);
 	void Triggered(CMine* pMine);
 	void Trigger(int nIndex, int nDelay);
+	void StepOn(const AICOORD& position, CGameObject* pObject);
 
 private:
 	unsigned char m_abReserved00[0x30];

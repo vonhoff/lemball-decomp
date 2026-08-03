@@ -21,6 +21,7 @@ struct MineChunkObjectActionView {
 
 struct MineChunkObjectNotifyView {};
 typedef void (MineChunkObjectNotifyView::*MineNotifyProc)(int nValue);
+typedef void(LEMBALL_FASTCALL* MineContactNotifyProc)(void* pObject);
 struct MineChunkObjectNotifyVtable {
 	void* m_apReserved00[13];
 	MineNotifyProc m_pNotify34;
@@ -119,6 +120,13 @@ void LEMBALL_FASTCALL SetMineOrCollTileVariant(void* pvObject)
 	}
 	pVtable = *(MineChunkObjectNotifyVtable**) pObject;
 	(((MineChunkObjectNotifyView*) pObject)->*pVtable->m_pNotify34)(0x10);
+}
+
+// FUNCTION: LEMBALL 0x00423e70
+void CMine::StepOn(CGameObject* pObject)
+{
+	((ManagedEntityStateView*) this)->RequestManagedEntityStateId(0x1b);
+	((MineContactNotifyProc) (*(void***) pObject)[25])(pObject);
 }
 
 // FUNCTION: LEMBALL 0x00423eb0

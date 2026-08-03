@@ -1,5 +1,6 @@
 #include "AI/CMineManager.h"
 
+#include "AI/AICoord.h"
 #include "AI/CMine.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
@@ -141,6 +142,42 @@ void CMineManager::Trigger(int nIndex, int nDelay)
 			cbObject += 0x150;
 			++i;
 			cbPosition += 6;
+		} while (i < m_cObjects3C);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00424630
+void CMineManager::StepOn(const AICOORD& position, CGameObject* pObject)
+{
+	MinePosition* pMinePosition;
+	CMine* pMine;
+	int maxX;
+	int maxY;
+	int minX;
+	int minY;
+	int minZ;
+	int i;
+
+	minX = (position.x >> 12) - 8;
+	minY = (position.y >> 12) - 8;
+	minZ = (position.z >> 12) - 8;
+	maxX = minX + 15;
+	maxY = minY + 15;
+	i = 0;
+	if (m_cObjects3C > 0) {
+		pMine = (CMine*) ((char*) m_pObjects34 + 0x138);
+		do {
+			if (*(int*) pMine != 0 && *(int*) ((char*) pMine + 4) == 0) {
+				pMinePosition = &m_pPositions38[i];
+				if (minX < pMinePosition->x && pMinePosition->x < maxX && minY < pMinePosition->y &&
+					pMinePosition->y < maxY && minZ < pMinePosition->z && pMinePosition->z < maxY) {
+					((CMine*) ((char*) m_pObjects34 + i * 0x150))->StepOn(pObject);
+					Trigger(i, 0);
+					return;
+				}
+			}
+			pMine = (CMine*) ((char*) pMine + 0x150);
+			++i;
 		} while (i < m_cObjects3C);
 	}
 }
