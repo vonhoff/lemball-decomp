@@ -212,7 +212,6 @@ void CNode::AddANeighbour(int nFirst, int nSecond)
 	++m_nReserved10;
 }
 
-// MACINTOSH: CNode::Position()
 // FUNCTION: LEMBALL 0x004213d0
 void CNode::Position(int* pDestination)
 {

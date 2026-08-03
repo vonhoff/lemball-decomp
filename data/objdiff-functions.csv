@@ -841,7 +841,7 @@ address,size,name,unit
 0x00421370,16,initialize_node_chunk_record_buffer,AI/LVNODE.CPP
 0x00421380,22,set_node_chunk_record_fixed_point_xy,AI/LVNODE.CPP
 0x004213A0,35,CNode::AddANeighbour,AI/LVNODE.CPP
-0x004213D0,24,CNode::Position,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x004213D0,24,CNode::Position,AI/LVNODE.CPP
 0x004213F0,26,copy_node_chunk_record_tile_xy,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00421410,17,copy_two_dword_pair_from_this,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00421430,6,return_true_node_chunk_callback,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
