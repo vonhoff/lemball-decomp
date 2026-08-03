@@ -2417,9 +2417,9 @@ address,size,name,unit
 0x00461310,33,CReadPacketBuff::UnUseAll,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00461340,92,CWritePacketBuff::CWritePacketBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x004613A0,33,CWritePacketBuff::FillPacket,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x004613D0,98,construct_eff_transport_record_buffer,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00461440,33,destroy_eff_transport_record_buffer,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00461470,228,append_global_packet_to_record_buffer,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x004613D0,98,CReadMSBuff::CReadMSBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00461440,33,CReadMSBuff::~CReadMSBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00461470,228,CReadMSBuff::FillPacket,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461560,32,construct_shifted_locked_record_slot_table,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461580,106,claim_global_packet_locked_record_slot,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x004615F0,21,get_shifted_record_slot_by_packet_id,Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.CPP

@@ -453,3 +453,7 @@ All fourteen `CBroadcast` bodies map in order to `0x00460350..0x00460A50`. The c
 ## Write packet-buffer reconstruction
 
 `CWritePacketBuff` constructor and `FillPacket` map to `0x00461340/0x004613A0`. The constructor allocates one 0x18-byte `CWritePacket` per base-table slot; `FillPacket` forwards the caller payload, size, and network-message pointer into the indexed write slot.
+
+## Read multi-segment buffer reconstruction
+
+`CReadMSBuff` constructor, destructor, and `FillPacket` map to `0x004613D0/0x00461440/0x00461470`. The family owns fragment-buffer allocation and assembly while preserving the first 0x10-byte packet header. Its definitions now live in class-aligned `src/Engine/NET/CReadMSBuff.CPP`, included at the original `VSNET.CPP` position so MSVC emits the same physical translation unit and link order.

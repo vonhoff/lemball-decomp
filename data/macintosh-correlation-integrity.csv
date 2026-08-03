@@ -1283,3 +1283,6 @@ CODE_02_Visos (Generic).bin,0x0000DB48,FillPacket__15CReadPacketBuffFi,0x004612F
 CODE_02_Visos (Generic).bin,0x0000DB90,UnUseAll__15CReadPacketBuffFv,0x00461310,high,clears payload-present flag on every read slot,exact_tuple,0x0000DB90
 CODE_02_Visos (Generic).bin,0x0000DC0E,__ct__16CWritePacketBuffFiUs,0x00461340,high,constructs base table then allocates one 0x18-byte CWritePacket per slot,exact_tuple,0x0000DC0E
 CODE_02_Visos (Generic).bin,0x0000DC57,FillPacket__16CWritePacketBuffFiPCUcUsP15CNetworkMessage,0x004613A0,high,copies caller payload and network-message pointer into indexed write slot,exact_tuple,0x0000DC57
+CODE_02_Visos (Generic).bin,0x0000DCFE,__ct__11CReadMSBuffFiiUs,0x004613D0,high,initializes fragment buffer metadata and allocates payload storage with 0x10-byte header slack,exact_tuple,0x0000DCFE
+CODE_02_Visos (Generic).bin,0x0000DD62,__dt__11CReadMSBuffFv,0x00461440,high,releases owned serialized payload and restores base vtable,exact_tuple,0x0000DD62
+CODE_02_Visos (Generic).bin,0x0000DE7E,FillPacket__11CReadMSBuffFv,0x00461470,high,assembles global packet fragments while preserving first 0x10-byte header,exact_tuple,0x0000DE7E
