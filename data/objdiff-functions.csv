@@ -2091,10 +2091,10 @@ address,size,name,unit
 0x0045A610,3,CMBlock::SetDesc,Visos/Generic/Memory.cpp
 0x0045A630,5,CMBlock::__nw,Visos/Generic/Memory.cpp
 0x0045A640,61,CMRAMBlock::CMRAMBlock,Visos/Generic/Memory.cpp
-0x0045A6B0,127,allocate_vsmem_block_impl,Visos/Generic/Memory.cpp
-0x0045A730,72,free_vsmem_block_impl,Visos/Generic/Memory.cpp
-0x0045A780,14,allocate_vsmem_block,Visos/Generic/Memory.cpp
-0x0045A790,14,free_vsmem_block,Visos/Generic/Memory.cpp
+0x0045A6B0,127,InternalNew,Visos/Generic/Memory.cpp
+0x0045A730,72,InternalDelete,Visos/Generic/Memory.cpp
+0x0045A780,14,__nw,Visos/Generic/Memory.cpp
+0x0045A790,14,__dl,Visos/Generic/Memory.cpp
 0x0045A800,95,is_pointer_inside_managed_memory_regions,Visos/Generic/Memory.cpp
 0x0045A8D0,14,destroy_memory_arena_base_state_return_this,Visos/Generic/Memory.cpp
 0x0045A8E0,14,destroy_memory_arena_return_this,Visos/Generic/Memory.cpp

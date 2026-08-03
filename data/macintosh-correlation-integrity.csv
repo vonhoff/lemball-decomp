@@ -1385,3 +1385,7 @@ CODE_02_Visos (Generic).bin,0x000139AE,INIT_CheckOptions__FPc,0x004595D0,high,ma
 CODE_02_Visos (Generic).bin,0x00013B0A,INIT_CmdLine__FPc,0x004596B0,high,tokenizes lowercases filters options and compacts remaining arguments,exact_tuple,0x00013B0A
 CODE_02_Visos (Generic).bin,0x00013C28,INIT_Main__FPc,0x00459860,high,parses options initializes runs game session handles startup jumps and shuts down,exact_tuple,0x00013C28
 CODE_02_Visos (Generic).bin,0x00013C44,_VSExit__Fi,0x00459970,high,nonreturning longjmp to startup exception frame,exact_tuple,0x00013C44
+CODE_02_Visos (Generic).bin,0x00015BCC,InternalNew__FUl,0x0045A6B0,high,small bucket first then main arena allocation with failure assertion,exact_tuple,0x00015BCC
+CODE_02_Visos (Generic).bin,0x00015C48,InternalDelete__FPv,0x0045A730,high,small bucket return first then main arena free with failure assertion,exact_tuple,0x00015C48
+CODE_02_Visos (Generic).bin,0x00015C6E,__nw__FUl,0x0045A780,high,global allocation wrapper forwards to InternalNew,exact_tuple,0x00015C6E
+CODE_02_Visos (Generic).bin,0x00015C8A,__dl__FPv,0x0045A790,high,global deletion wrapper forwards to InternalDelete,exact_tuple,0x00015C8A

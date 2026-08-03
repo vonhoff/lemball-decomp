@@ -541,3 +541,7 @@ Global `OkFailed` maps directly to `0x00458F10`: both bodies select the shared `
 The seven CODE_02 spelling variants of `CheckAndAmalgamate`, `AddToBlockList`, `FindSmallestBlock`, `Allocate`, `Free`, `AllocateArena`, and `StreamOut` duplicate already-correlated CODE_09 implementations. Their bodies agree on block links, best-fit selection, split/coalesce accounting, child-arena ownership, locking, and recursive stream output, but one x86 body cannot be consumed twice. They therefore receive split/merged dispositions while canonical CODE_09 identities remain at `0x00459B10/0x00459C00/0x00459D20/0x00459D70/0x00459F70/0x0045A010/0x0045A260`.
 
 `CArena::CheckIntegrity` is a distinct constant-success Macintosh stub (`[0x1557E,0x15588)`). Windows emits no corresponding standalone body; its specific `CheckMemoryBlock` and `CheckFreeMemoryBlock` validators remain separate and already mapped. `CheckIntegrity` is therefore split/merged rather than force-correlated.
+
+## Portable memory-allocation globals
+
+`InternalNew`, `InternalDelete`, global `operator new`, and global `operator delete` map to `0x0045A6B0/0x0045A730/0x0045A780/0x0045A790`. The internal pair tries the optional small-block buckets before falling back to the main arena and asserting allocation/free success; the global operators are thin delegates to that pair.
