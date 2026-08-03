@@ -285,3 +285,7 @@ The constructor, `ProcessMsg`, and `StreamOut` map to `0x00462EA0`, `0x00462EC0`
 ## CBaseQueue reconstruction
 
 All fourteen portable queue methods map across `0x00463020..0x004638A0` while preserving mixed `VSINIT.CPP`, `VSWING.CPP`, and `CGame.cpp` ownership. Exact ABI, `0x14` x86 message records, ring-buffer layout, stable signed handler ordering, callers, and vtables support the family. The undefined resize helper at `0x00463450`, scalar deleting destructor at `0x00463940`, and adjacent packing/sort helpers remain target-only.
+
+## CResANIM reconstruction
+
+All four portable animation-list resource methods map across `0x0045D610..0x0045D720` in physical `VARLOAD.CPP`. Exact load, counted `CResZRLE` entry-array allocation, per-entry unload, force-load, ABI, layout, caller, and derived-vtable evidence supports the family. Inherited base-list and adjacent `CResFONT` lifecycle bodies remain separate.

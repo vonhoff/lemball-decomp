@@ -979,3 +979,7 @@ CODE_02_Visos (Generic).bin,0x000051D7,PutNth__10CBaseQueueFP10tagMESSAGEUi,0x00
 CODE_02_Visos (Generic).bin,0x00005326,DeleteNth__10CBaseQueueFUi,0x004636E0,high,"singleton/head handling and wrapped record compaction; independent exact 68K and x86 ABI/layout/ring/caller/vtable audit"
 CODE_02_Visos (Generic).bin,0x000053E2,ProcessNMsgs__10CBaseQueueFUi,0x00463810,high,"snapshot-bounded repeated dequeue and process; independent exact 68K and x86 ABI/layout/ring/caller/vtable audit"
 CODE_02_Visos (Generic).bin,0x00005483,Process__10CBaseQueueFP10tagMESSAGE,0x004638A0,high,"ordered handler dispatch and first-handled termination; independent exact 68K and x86 ABI/layout/ring/caller/vtable audit"
+CODE_02_Visos (Generic).bin,0x00003802,Load__8CResANIMFUl,0x0045D610,high,"resource cache lookup, LIST validation and derived object initialization; independent exact 68K and x86 ABI/layout/caller/vtable audit"
+CODE_02_Visos (Generic).bin,0x0000386A,AllocateResources__8CResANIMFUl,0x0045D6A0,high,"counted CResZRLE entry-array allocation and construction; independent exact 68K and x86 ABI/layout/caller/vtable audit"
+CODE_02_Visos (Generic).bin,0x000038B8,UnLoadVramData__8CResANIMFUlUc,0x0045D700,high,"indexed CResZRLE entry unload dispatch; independent exact 68K and x86 ABI/layout/caller/vtable audit"
+CODE_02_Visos (Generic).bin,0x00003932,ForceLoadVram__8CResANIMFUl,0x0045D720,high,"indexed two-call force-load Boolean pattern; independent exact 68K and x86 ABI/layout/caller/vtable audit"

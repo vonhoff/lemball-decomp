@@ -2195,10 +2195,10 @@ address,size,name,unit
 0x0045D4F0,78,ensure_int_zrle_list_entries_loaded,Platform/Windows/Mixed/Resource/VARLOAD.CPP
 0x0045D540,120,release_list_entries_and_stream_buffer,Platform/Windows/Mixed/Resource/VARLOAD.CPP
 0x0045D5C0,68,load_list_entries_from_stream_descriptors,Platform/Windows/Mixed/Resource/VARLOAD.CPP
-0x0045D610,144,load_zrle_only_list_resource,Platform/Windows/Mixed/Resource/VARLOAD.CPP
-0x0045D6A0,82,allocate_list_zrle_entry_array,Platform/Windows/Mixed/Resource/VARLOAD.CPP
-0x0045D700,29,dispatch_list_entry,Platform/Windows/Mixed/Resource/VARLOAD.CPP
-0x0045D720,60,has_list_entry_descriptor,Platform/Windows/Mixed/Resource/VARLOAD.CPP
+0x0045D610,144,CResANIM::Load,Platform/Windows/Mixed/Resource/VARLOAD.CPP
+0x0045D6A0,82,CResANIM::AllocateResources,Platform/Windows/Mixed/Resource/VARLOAD.CPP
+0x0045D700,29,CResANIM::UnLoadVramData,Platform/Windows/Mixed/Resource/VARLOAD.CPP
+0x0045D720,60,CResANIM::ForceLoadVram,Platform/Windows/Mixed/Resource/VARLOAD.CPP
 0x0045D760,76,construct_int_zrle_list_resource,Platform/Windows/Mixed/Resource/VARLOAD.CPP
 0x0045D7B0,83,construct_int_zrle_list_resource_from_id,Platform/Windows/Mixed/Resource/VARLOAD.CPP
 0x0045D810,60,destroy_int_zrle_list_resource,Platform/Windows/Mixed/Resource/VARLOAD.CPP
