@@ -4,14 +4,14 @@
 typedef void(LEMBALL_FASTCALL* InvsChunkObjectActivateProc)(void* pObject);
 
 // FUNCTION: LEMBALL 0x0040a3b0
-void LEMBALL_FASTCALL CInvisibleSwitchManager::Process(void* pManager)
+void CInvisibleSwitchManager::Process(void)
 {
 	char* pManagerBytes;
 	void* pChunkObject;
 	int i;
 	int nOffset;
 
-	pManagerBytes = (char*) pManager;
+	pManagerBytes = (char*) this;
 	i = 0;
 	if (*(int*) (pManagerBytes + 0x34) > 0) {
 		nOffset = 0;

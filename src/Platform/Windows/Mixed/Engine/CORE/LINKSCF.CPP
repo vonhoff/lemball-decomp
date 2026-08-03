@@ -475,12 +475,24 @@ void* g_LINKSCF_IceChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteIceCh
 																	 AdvanceIceChunkManagerObjects,
 																	 ReturnFalseChunkStreamCommandThunk,
 																	 return_zero_vtable_callback_0042dd30);
+struct InvisibleSwitchManagerVtableLayout {
+	void* m_apBaseSlots[7];
+	void (CInvisibleSwitchManager::*m_pProcess)(void);
+	void* m_apTailSlots[2];
+};
+typedef char InvisibleSwitchManagerMemberPointerMustFitVtableSlot
+	[sizeof(void (CInvisibleSwitchManager::*)(void)) == sizeof(void*) ? 1 : -1];
 // GLOBAL: LEMBALL 0x00493298
-static void* g_LINKSCF_InvsChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteLevelChunkStreamAuto,
-																			 ResetAllInvsChunkObjects,
-																			 CInvisibleSwitchManager::Process,
-																			 ReturnFalseChunkStreamCommandThunk,
-																			 ReturnFalseChunkStreamRenderThunk);
+static InvisibleSwitchManagerVtableLayout g_LINKSCF_InvsChunkManagerVtable = {
+	{(void*) ReturnTrueVtableCallbackThunk,
+	 (void*) ReturnTrueVtableCallbackSecondaryThunk,
+	 (void*) DispatchType18ChunkStreamCommandsThunk,
+	 (void*) NoopVtableCallbackThunk,
+	 (void*) NoopType18ChunkStreamWriteThunk,
+	 (void*) DeleteLevelChunkStreamAuto,
+	 (void*) ResetAllInvsChunkObjects},
+	&CInvisibleSwitchManager::Process,
+	{(void*) ReturnFalseChunkStreamCommandThunk, (void*) ReturnFalseChunkStreamRenderThunk}};
 static void* g_LINKSCF_BoonChunkObjectVtable[66];
 static void* g_LINKSCF_LevelChunkStreamDispatcherVtable[10];
 static char* g_pLINKSCF_PlasLevelMode;
@@ -799,7 +811,7 @@ void InvsChunkObjectSoundStateView::TriggerSoundOnce(void)
 LinkScfInvsChunkManagerView* LinkScfInvsChunkManagerView::ConstructInvsChunkManager(void* pLevelMode, int nCapacity)
 {
 	LINKSCF_INITIALIZE_EFF_CHUNK_STREAM(this, 0x20, 0x15);
-	*(void**) this = g_LINKSCF_InvsChunkManagerVtable;
+	*(void**) this = &g_LINKSCF_InvsChunkManagerVtable;
 	*(void**) ((char*) this + 0x38) = pLevelMode;
 	*(int*) ((char*) this + 0x30) = nCapacity;
 	*(int*) ((char*) this + 0x3c) = 0;
@@ -859,7 +871,7 @@ void LEMBALL_FASTCALL DestroyLevelChunkStreamAuto(void* pObject)
 {
 	void* pChild;
 
-	*(void**) pObject = g_LINKSCF_InvsChunkManagerVtable;
+	*(void**) pObject = &g_LINKSCF_InvsChunkManagerVtable;
 	pChild = *(void**) ((char*) pObject + 0x3c);
 	if (pChild != 0) {
 		((LinkScfDeletableChild*) pChild)->Delete(3);

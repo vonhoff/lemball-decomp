@@ -3,7 +3,7 @@
 
 class CInvisibleSwitchManager {
 public:
-	static void LEMBALL_FASTCALL Process(void* pManager);
+	void Process(void);
 };
 
 #endif
