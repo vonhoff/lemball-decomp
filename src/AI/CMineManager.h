@@ -13,6 +13,7 @@ struct MinePosition {
 class CMineManager {
 public:
 	CMineManager(CAI* pAI, int nCapacity);
+	~CMineManager(void);
 	void Restart(void);
 	void Initialise(int nCapacity);
 

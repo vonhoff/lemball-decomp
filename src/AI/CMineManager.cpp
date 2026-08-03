@@ -3,6 +3,11 @@
 #include "AI/CMine.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
+#include "Visos/Generic/Memory.h"
+
+struct VsNetEffStreamCommon {
+	virtual ~VsNetEffStreamCommon(void);
+};
 
 extern MineManagerVtableLayout g_LINKSCF_MineChunkManagerVtable;
 extern void* g_pActiveNetworkRuntimeWindow;
@@ -28,6 +33,10 @@ CMineManager::CMineManager(CAI* pAI, int nCapacity)
 }
 
 typedef void(LEMBALL_FASTCALL* MineRestartProc)(void* pObject);
+
+struct MineManagerDeletableChild {
+	virtual void Delete(unsigned char fDelete);
+};
 
 // FUNCTION: LEMBALL 0x00424080
 void CMineManager::Restart(void)
@@ -79,4 +88,15 @@ void CMineManager::Initialise(int nCapacity)
 		}
 		m_pPositions38 = new MinePosition[m_cCapacity40];
 	}
+}
+
+// FUNCTION: LEMBALL 0x00424170
+CMineManager::~CMineManager(void)
+{
+	*(void**) this = &g_LINKSCF_MineChunkManagerVtable;
+	if (m_pObjects34 != 0) {
+		((MineManagerDeletableChild*) m_pObjects34)->Delete(3);
+		FreeVSMemBlock(m_pPositions38);
+	}
+	((VsNetEffStreamCommon*) this)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 }

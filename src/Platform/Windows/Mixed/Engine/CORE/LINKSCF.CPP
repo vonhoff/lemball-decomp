@@ -1966,15 +1966,7 @@ DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyProjectilePoolAuto,
 
 void LEMBALL_FASTCALL DestroyMineChunkManagerAuto(void* pObject)
 {
-	void* pChild;
-
-	*(void**) pObject = &g_LINKSCF_MineChunkManagerVtable;
-	pChild = *(void**) ((char*) pObject + 0x34);
-	if (pChild != 0) {
-		((LinkScfDeletableChild*) pChild)->Delete(3);
-		FreeVSMemBlock(*(void**) ((char*) pObject + 0x38));
-	}
-	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+	((CMineManager*) pObject)->~CMineManager();
 }
 void LEMBALL_FASTCALL DestroyMineChunkManagerAutoThunk(void* pObject)
 {
