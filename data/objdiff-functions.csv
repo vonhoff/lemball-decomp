@@ -3413,3 +3413,4 @@ address,size,name,unit
 0x0047FA70,5,return_false_audio_effect_slot35,Platform/Windows/Mixed/Engine/MEDIA/VSSOUND.CPP
 0x0047FA80,8,return_true_audio_effect_slot37,Platform/Windows/Mixed/Engine/MEDIA/VSSOUND.CPP
 0x0047FA90,30,delete_audio_effect_backend_base,Platform/Windows/Mixed/Engine/MEDIA/VSSOUND.CPP
+0x0045B350,17,CSoundManager::ProcessMusic,Platform/Windows/Mixed/Engine/MEDIA/VSSOUND.CPP

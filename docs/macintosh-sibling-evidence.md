@@ -559,3 +559,7 @@ Global `CheckValidPointer` maps to `0x0045A800`: both implementations scan every
 ## CSmallMemory stream identity stub
 
 Macintosh `operator<<(CVSOStream&, CSmallMemory&)` is an exact identity stub at `[0x17D50,0x17D5D)`: it returns the stream argument without reading the allocator. Windows emits no standalone body, so this is split/merged rather than a forced correlation.
+
+## CSoundManager ProcessMusic
+
+`CSoundManager::ProcessMusic` maps to the previously uncreated x86 entry at `0x0045B350`. Macintosh `[0x18714,0x1873B)` and Windows both test the active-music state and dispatch the stored current-music identifier through the sound-device virtual table; the explicit duration parameter is unused. Adjacent Windows `PauseMusic` and `ResumeMusic` remain distinct.
