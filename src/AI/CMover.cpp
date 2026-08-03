@@ -4,6 +4,8 @@ extern void* g_pActiveManagedEntityOwner;
 extern void* g_pLevelTileGrid;
 extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern void __fastcall ResetMoveChunkObjectRuntimeStateThunk(void* pObject);
+extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
+extern void* g_LEVELVT_MoveChunkObjectVtable[16];
 extern void* __fastcall get_managed_entity_owner_group(void* pEntity);
 extern void __fastcall clear_managed_entity_child_pending_state_if_interruptible(void* pEntity);
 
@@ -61,6 +63,13 @@ void CMover::Initialise(void)
 	*(int*) (pObject + 0x174) = 0;
 	*(int*) (pObject + 0x140) = 1;
 	*(int*) (pObject + 0xb8) = 0x18;
+}
+
+// FUNCTION: LEMBALL 0x0042e640
+CMover::~CMover(void)
+{
+	*(void**) this = g_LEVELVT_MoveChunkObjectVtable;
+	DestroyLevelChunkObjectBaseAutoThunk(this);
 }
 
 // FUNCTION: LEMBALL 0x0042e650

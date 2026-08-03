@@ -2145,12 +2145,9 @@ int PASCAL return_zero_vtable_callback_0042dd30(void* pUnused)
 
 extern void* g_LEVELVT_MoveChunkObjectVtable[16];
 
-// MACINTOSH: CMover::~CMover()
-// FUNCTION: LEMBALL 0x0042e640
 void LEMBALL_FASTCALL destroy_move_chunk_object(void* pObject)
 {
-	*(void**) pObject = g_LEVELVT_MoveChunkObjectVtable;
-	DestroyLevelChunkObjectBaseAutoThunk(pObject);
+	((CMover*) pObject)->~CMover();
 }
 
 extern void* g_pActiveManagedEntityOwner;
