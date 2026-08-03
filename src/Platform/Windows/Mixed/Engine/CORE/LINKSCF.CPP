@@ -1294,14 +1294,6 @@ struct LiftChunkEndpointPair {
 
 struct LiftChunkManagerSerializationView {
 	int SerializeLiftChunkEndpointPairs(LiftChunkEndpointPair* pPairs);
-	unsigned short GetLiftChunkObjectSlotIdByIndex(int iObject);
-};
-
-struct LiftManagedEntitySlotView {
-	inline unsigned short GetManagedEntitySlotId(void)
-	{
-		return GetManagedEntitySlotIdThunk((int) (unsigned long) this);
-	}
 };
 
 // FUNCTION: LEMBALL 0x00425830
@@ -1326,15 +1318,6 @@ int LiftChunkManagerSerializationView::SerializeLiftChunkEndpointPairs(LiftChunk
 	return *(int*) ((char*) this + 0x34);
 }
 
-// MACINTOSH: CLiftManager::Id(int)
-// FUNCTION: LEMBALL 0x00425f90
-unsigned short LiftChunkManagerSerializationView::GetLiftChunkObjectSlotIdByIndex(int iObject)
-{
-	if (*(int*) ((char*) this + 0x34) <= iObject) {
-		return 0xffff;
-	}
-	return ((LiftManagedEntitySlotView*) (*(char**) ((char*) this + 0x3c) + iObject * 0x190))->GetManagedEntitySlotId();
-}
 
 extern void* g_LINKSCF_RockChunkObjectVtable[16];
 

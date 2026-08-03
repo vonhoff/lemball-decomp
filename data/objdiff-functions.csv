@@ -961,7 +961,7 @@ address,size,name,unit
 0x00425DC0,40,refresh_all_lift_boundary_column_counts,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00425DF0,288,CLiftManager::GetViewData,AI/CLiftManager.cpp
 0x00425F10,122,CLiftManager::Switch,AI/CLiftManager.cpp
-0x00425F90,38,CLiftManager::Id,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00425F90,38,CLiftManager::Id,AI/CLiftManager.cpp
 0x00425FC0,474,CLiftManager::LoadLevel,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x004266D0,1,noop_lift_callback,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x004266E0,30,delete_lift_chunk_manager,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP

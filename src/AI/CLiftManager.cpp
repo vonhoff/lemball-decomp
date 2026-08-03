@@ -219,3 +219,12 @@ void CLiftManager::Switch(swMessage message, int nSlotId, int nRangeEnd, int nUn
 		}
 	}
 }
+
+// FUNCTION: LEMBALL 0x00425f90
+unsigned short CLiftManager::Id(int iObject)
+{
+	if (m_cObjects34 <= iObject) {
+		return 0xffff;
+	}
+	return GetManagedEntitySlotIdThunk((int) (unsigned long) ((char*) m_pObjects3C + iObject * 0x190));
+}

@@ -1,5 +1,6 @@
 #define LEMBALL_DEFINE_MANAGED_ENTITY_PACKET_CLASSES
 
+#include "AI/CLiftManager.h"
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
@@ -30,7 +31,6 @@ struct LiftChunkEndpointPair {
 
 struct LiftChunkManagerSerializationView {
 	int SerializeLiftChunkEndpointPairs(LiftChunkEndpointPair* pPairs);
-	unsigned short GetLiftChunkObjectSlotIdByIndex(int iObject);
 };
 
 struct LevelModeLiftManagerOwnerView {
@@ -1666,8 +1666,7 @@ void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode)
 // FUNCTION: LEMBALL 0x00413020
 unsigned short LevelModeLiftManagerOwnerView::GetLiftChunkObjectSlotIdByIndex(int iObject)
 {
-	return ((LiftChunkManagerSerializationView*) *(void**) ((char*) this + 0x18c))
-		->GetLiftChunkObjectSlotIdByIndex(iObject);
+	return ((CLiftManager*) *(void**) ((char*) this + 0x18c))->Id(iObject);
 }
 
 // MACINTOSH: CAI::GetDead()
