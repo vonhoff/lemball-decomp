@@ -1286,3 +1286,6 @@ CODE_02_Visos (Generic).bin,0x0000DC57,FillPacket__16CWritePacketBuffFiPCUcUsP15
 CODE_02_Visos (Generic).bin,0x0000DCFE,__ct__11CReadMSBuffFiiUs,0x004613D0,high,initializes fragment buffer metadata and allocates payload storage with 0x10-byte header slack,exact_tuple,0x0000DCFE
 CODE_02_Visos (Generic).bin,0x0000DD62,__dt__11CReadMSBuffFv,0x00461440,high,releases owned serialized payload and restores base vtable,exact_tuple,0x0000DD62
 CODE_02_Visos (Generic).bin,0x0000DE7E,FillPacket__11CReadMSBuffFv,0x00461470,high,assembles global packet fragments while preserving first 0x10-byte header,exact_tuple,0x0000DE7E
+CODE_02_Visos (Generic).bin,0x0000DECE,__ct__11CReadNCBuffFUlUs,0x00461560,high,constructs shifted locked-slot table for packet ids with three reserved low ids,exact_tuple,0x0000DECE
+CODE_02_Visos (Generic).bin,0x0000DF74,UpdatePacket__11CReadNCBuffFv,0x00461580,high,claims current packet by shifted id and rejects stale sequence values before copying,exact_tuple,0x0000DF74
+CODE_02_Visos (Generic).bin,0x0000DFBA,GetPacket__11CReadNCBuffFUl,0x004615F0,high,returns shifted locked packet slot by packet id,exact_tuple,0x0000DFBA

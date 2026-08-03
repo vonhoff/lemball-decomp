@@ -2517,42 +2517,9 @@ void VsNetSimpleEffTransportRecordSlotTable::CopyPayloadIntoSimpleRecordSlot(int
 
 #include "../../../../../Visos/Generic/CReadMSBuff.cpp"
 
-// FUNCTION: LEMBALL 0x00461560
-void* ConstructShiftedLockedRecordSlotTable(void* pObject, int cPacketIds, unsigned int cbRecord)
-{
-	((VsNetSimpleEffTransportRecordSlotTable*) pObject)
-		->ConstructLockedEffTransportRecordSlotTable(cPacketIds - 2, cbRecord);
-	*(int*) ((char*) pObject + 0x0c) = cPacketIds - 2;
-	return pObject;
-}
-
-// FUNCTION: LEMBALL 0x00461580
-void* VsNetGlobalLockedPacketState::ClaimGlobalPacketLockedRecordSlot(void)
-{
-	VsNetLockedEffTransportRecordSlot* pSlot;
-	unsigned short nPacket;
-	unsigned int nIndex;
-	unsigned short nSequence;
-	int fClaimed;
-
-	nPacket = *(unsigned short*) ((char*) g_pEffTransportPacketBuffer + 8);
-	nIndex = nPacket;
-	if (nPacket > 2) {
-		nIndex -= 3;
-	}
-	pSlot = m_appSlots08[nIndex];
-	fClaimed = 0;
-	nSequence = *(unsigned short*) ((char*) pSlot->m_pPayload04 + 0x0a);
-	if (nPacket < 3 || (*(unsigned short*) ((char*) g_pEffTransportPacketBuffer + 0x0a) != nSequence &&
-						(short) (*(unsigned short*) ((char*) g_pEffTransportPacketBuffer + 0x0a) - nSequence) >= 0)) {
-		fClaimed = pSlot->m_fPayloadPresent24 == 0;
-		CopyGlobalPacketIntoLockedRecordSlot((int) nIndex);
-	}
-	if (fClaimed != 0) {
-		return m_appSlots08[nIndex];
-	}
-	return 0;
-}
+#define LEMBALL_CREADNCBUFF_VSNET
+#include "../../../../../Visos/Generic/CReadNCBuff.cpp"
+#undef LEMBALL_CREADNCBUFF_VSNET
 
 // FUNCTION: LEMBALL 0x00461610
 void* ConstructRangeEffTransportRecordBufferTable(void* pObject,

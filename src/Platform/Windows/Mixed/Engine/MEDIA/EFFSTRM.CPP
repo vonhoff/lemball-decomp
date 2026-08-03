@@ -1074,14 +1074,9 @@ void LoadStreamFromShiftedRecordSlotAndClear(void* pTransportPeer, void* pStream
 	pLockVtable->m_pUnlock();
 	pSlot->m_fHasPayload = 0;
 }
-// FUNCTION: LEMBALL 0x004615f0
-void* GameRecordSlotTable::GetShiftedRecordSlotByPacketId(int nPacketId)
-{
-	if (nPacketId >= 3) {
-		nPacketId -= 3;
-	}
-	return m_apSlots08[nPacketId];
-}
+#define LEMBALL_CREADNCBUFF_EFFSTRM
+#include "../../../../../Visos/Generic/CReadNCBuff.cpp"
+#undef LEMBALL_CREADNCBUFF_EFFSTRM
 // FUNCTION: LEMBALL 0x00462550
 void GameEffTransportRuntimeWindow::SetPrimaryHandleParams(int nPrimaryHandleCount,
 														   int nPrimaryHandleStride,

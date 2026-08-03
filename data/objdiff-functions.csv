@@ -2420,9 +2420,9 @@ address,size,name,unit
 0x004613D0,98,CReadMSBuff::CReadMSBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461440,33,CReadMSBuff::~CReadMSBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461470,228,CReadMSBuff::FillPacket,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00461560,32,construct_shifted_locked_record_slot_table,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00461580,106,claim_global_packet_locked_record_slot,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x004615F0,21,get_shifted_record_slot_by_packet_id,Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.CPP
+0x00461560,32,CReadNCBuff::CReadNCBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00461580,106,CReadNCBuff::UpdatePacket,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x004615F0,21,CReadNCBuff::GetPacket,Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.CPP
 0x00461610,159,construct_range_eff_transport_record_buffer_table,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x004616B0,73,destroy_range_eff_transport_record_buffer_table,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461700,122,append_global_packet_to_range_record_slot,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
