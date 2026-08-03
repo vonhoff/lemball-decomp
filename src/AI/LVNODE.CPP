@@ -131,6 +131,7 @@ struct CNode {
 	int m_nReserved10;
 
 	void InitializePosition(int nX, int nY, int nUnused);
+	void Restart(void);
 	void SetFixedPointPosition(int nX, int nY);
 	void Position(int* pDestination);
 	void CopyTileXY(int* pX, int* pY);
@@ -148,6 +149,12 @@ LevelNodePoint* CNodeManager::GetNodePosition(LevelNodePoint* pOutput, int nInde
 void CNodeManager::CopyTileByIndex(int nIndex, int* pX, int* pY)
 {
 	m_pRecords00[nIndex].CopyTileXY(pX, pY);
+}
+
+// FUNCTION: LEMBALL 0x00421300
+void CNode::Restart(void)
+{
+	m_nReserved10 = 0;
 }
 
 // MACINTOSH: CNode::~CNode()

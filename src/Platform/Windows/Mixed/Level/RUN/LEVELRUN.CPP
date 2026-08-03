@@ -1938,12 +1938,7 @@ CNode* CNode::InitializeNodeChunkRecord(void)
 	m_pLinks0C = 0;
 	return this;
 }
-// MACINTOSH: CNode::Restart()
-// FUNCTION: LEMBALL 0x00421300
-void CNode::Restart(void)
-{
-	m_cLinks10 = 0;
-}
+
 // MACINTOSH: CNode::Initialise(int, int, int)
 // FUNCTION: LEMBALL 0x00421330
 void CNode::Initialise(int nX, int nY, int cLinks)
