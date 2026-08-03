@@ -5,6 +5,7 @@ class CLift {
 public:
 	CLift(void);
 	~CLift(void);
+	void CalculateCliff(void);
 
 private:
 	unsigned char m_abReserved00[0x190];
