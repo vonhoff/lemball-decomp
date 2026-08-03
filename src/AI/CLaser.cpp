@@ -12,6 +12,7 @@ extern void* g_pActiveManagedEntityOwner;
 extern int g_nLevelFrameClockTick;
 extern int g_nLevelFrameClockTimeMs;
 extern int g_nSelectedNetworkLobbyPeerId;
+extern int Distance2DIntPixels(int x1, int y1, int x2, int y2);
 
 struct LevelChunkObjectBaseView {
 	void* InitializeLevelChunkObjectBase(int nType, unsigned short nChildType, unsigned short nFlags);
@@ -315,6 +316,21 @@ int CLaser::Activate(void)
 	pFields[0x25] = g_nLevelFrameClockTimeMs;
 	((LaserStateView*) pObject)->SetManagedEntityStateId(0x19);
 	return 1;
+}
+
+// FUNCTION: LEMBALL 0x00428f30
+int CLaser::StepOn(const AICOORD& position, CGameObject* pObject)
+{
+	char* pObjectBytes = (char*) pObject;
+	int* pFields = (int*) this;
+
+	if (*(int*) (pObjectBytes + 0x64) == 2 &&
+		Distance2DIntPixels(pFields[0x27] >> 12, pFields[0x28] >> 12, position.x >> 12, position.y >> 12) < 0x30) {
+		Activate();
+		*(CGameObject**) ((char*) this + 0x144) = pObject;
+		return 1;
+	}
+	return 0;
 }
 
 void LEMBALL_FASTCALL destroy_lasr_chunk_object_vtable_thunk(void* pObject)

@@ -3,6 +3,8 @@
 
 #include "AI/AICoord.h"
 
+class CGameObject;
+
 class CLaser {
 public:
 	CLaser(void);
@@ -13,6 +15,7 @@ public:
 	int CheckHits(void);
 	int Process(void);
 	int Activate(void);
+	int StepOn(const AICOORD& position, CGameObject* pObject);
 };
 
 #endif

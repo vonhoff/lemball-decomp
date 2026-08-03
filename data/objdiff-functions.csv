@@ -1029,7 +1029,7 @@ address,size,name,unit
 0x00428AB0,524,CLaser::CheckHits,AI/CLaser.cpp
 0x00428CF0,447,CLaser::Process,AI/CLaser.cpp
 0x00428EC0,107,CLaser::Activate,AI/CLaser.cpp
-0x00428F30,94,CLaser::StepOn,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00428F30,94,CLaser::StepOn,AI/CLaser.cpp
 0x00428F90,860,CLaser::GetViewData,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00429320,91,CLaserManager::CLaserManager,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00429380,48,CLaserManager::Restart,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
