@@ -54,7 +54,6 @@ int LEMBALL_FASTCALL AdvanceLiftChunkObjectStateMachine(void* pObject);
 int LEMBALL_FASTCALL AdvanceRockChunkObjectStateMachine(void* pObject);
 int LEMBALL_FASTCALL UpdateRockHistoryChildSwapState(void* pObject);
 int LEMBALL_FASTCALL AdvanceCaptureChunkObjectStateMachine(void* pObject);
-int LEMBALL_FASTCALL AdvanceLasrChunkObjectStateMachine(void* pObject);
 int LEMBALL_FASTCALL AdvanceTramChunkObjectStateMachine(void* pObject);
 int LEMBALL_FASTCALL AdvancePgunChunkObjectStateMachine(void* pObject);
 int LEMBALL_FASTCALL AdvanceIceChunkObjectStateMachine(void* pObject);

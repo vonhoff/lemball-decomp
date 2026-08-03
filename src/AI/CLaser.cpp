@@ -2,13 +2,16 @@
 
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
-extern void* g_LINKSCF_LasrChunkObjectVtable[16];
+struct LaserVtableLayout;
+extern LaserVtableLayout g_LINKSCF_LasrChunkObjectVtable;
 extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern void LEMBALL_FASTCALL ResetLasrChunkObjectRuntimeStateThunk(void* pObject);
 extern void* g_pLevelTileGrid;
 extern void* g_pActiveManagedEntityOwner;
 extern int g_nLevelFrameClockTick;
+extern int g_nSelectedNetworkLobbyPeerId;
+extern int LEMBALL_FASTCALL BeginLasrPlasReacquireDelay(void* pObject);
 
 struct LevelChunkObjectBaseView {
 	void* InitializeLevelChunkObjectBase(int nType, unsigned short nChildType, unsigned short nFlags);
@@ -29,7 +32,7 @@ typedef void(LEMBALL_FASTCALL* LaserIntSlotProc)(void*, void*, int);
 CLaser::CLaser(void)
 {
 	((LevelChunkObjectBaseView*) this)->InitializeLevelChunkObjectBase(0x2f, 0, 0);
-	*(void**) this = g_LINKSCF_LasrChunkObjectVtable;
+	*(void**) this = &g_LINKSCF_LasrChunkObjectVtable;
 }
 
 // FUNCTION: LEMBALL 0x004288b0
@@ -56,7 +59,7 @@ void CLaser::Initialise(void)
 // FUNCTION: LEMBALL 0x004288f0
 CLaser::~CLaser(void)
 {
-	*(void**) this = g_LINKSCF_LasrChunkObjectVtable;
+	*(void**) this = &g_LINKSCF_LasrChunkObjectVtable;
 	DestroyLevelChunkObjectBaseAutoThunk(this);
 }
 
@@ -207,6 +210,85 @@ int CLaser::CheckHits(void)
 	*(short*) ((char*) pCandidate + 0xbc) = 1;
 	*(int*) ((char*) pCandidate + 0xcc) = g_nLevelFrameClockTick + 0x1a;
 	((LaserIntSlotProc) (*(void***) pObject)[13])(pObject, 0, 0x22);
+	return 1;
+}
+
+// FUNCTION: LEMBALL 0x00428cf0
+int CLaser::Process(void)
+{
+	void* pObject = this;
+	int* pFields = (int*) pObject;
+	void* pTarget;
+	int nState;
+
+	if (pFields[0x45] != 0) {
+		pFields[0x4e] = pFields[0x2e] != 0x18;
+		if (pFields[0x2e] == 0x1a && *(void**) ((char*) pObject + 0x144) == 0) {
+			CheckHits();
+		}
+		nState = pFields[0x2e];
+		if (pFields[0x4a] != nState) {
+			if (nState == 0x17) {
+				pTarget = *(void**) ((char*) pObject + 0x144);
+				if (pTarget != 0) {
+					*(int*) ((char*) pTarget + 0x2c) = 1;
+					*(void**) ((char*) pObject + 0x144) = 0;
+				}
+				((LaserIntSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x18);
+			}
+			else if (nState == 0x19) {
+				*(void**) ((char*) pObject + 0x144) = 0;
+			}
+			pFields[0x4a] = pFields[0x2e];
+		}
+		return 1;
+	}
+
+	if (g_nSelectedNetworkLobbyPeerId != 0 && *(int*) (g_nSelectedNetworkLobbyPeerId + 0x1c) != 0) {
+		return 1;
+	}
+	if (pFields[0x4e] == 0) {
+		return 1;
+	}
+
+	switch (pFields[0x2e]) {
+	case 0x17:
+		pTarget = *(void**) ((char*) pObject + 0x144);
+		if (pTarget != 0) {
+			((LaserIntSlotProc) (*(void***) pTarget)[13])(pTarget, 0, 0x22);
+			*(int*) ((char*) pTarget + 0x2c) = 1;
+			*(void**) ((char*) pObject + 0x144) = 0;
+		}
+		((LaserIntSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x18);
+		return 1;
+	case 0x18:
+		if ((unsigned int) pFields[0x33] < (unsigned int) g_nLevelFrameClockTick) {
+			BeginLasrPlasReacquireDelay(pObject);
+		}
+		return 1;
+	case 0x19:
+		if ((unsigned int) pFields[0x34] < (unsigned int) g_nLevelFrameClockTick) {
+			*(void**) ((char*) pObject + 0x144) = 0;
+			((LaserIntSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x1a);
+		}
+		return 1;
+	case 0x1a:
+		if (*(void**) ((char*) pObject + 0x144) == 0) {
+			CheckHits();
+		}
+		if ((unsigned int) pFields[0x33] < (unsigned int) g_nLevelFrameClockTick) {
+			pFields[0x4f] = 1;
+			pFields[0x4e] = pFields[0x50];
+			pFields[0x33] = g_nLevelFrameClockTick + 0x3c;
+			pTarget = *(void**) ((char*) pObject + 0x144);
+			if (pTarget != 0) {
+				*(int*) ((char*) pTarget + 0x2c) = 1;
+				*(void**) ((char*) pObject + 0x144) = 0;
+			}
+			((LaserIntSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x17);
+		}
+		break;
+	}
 	return 1;
 }
 

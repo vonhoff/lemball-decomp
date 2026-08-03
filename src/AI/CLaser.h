@@ -11,6 +11,7 @@ public:
 	~CLaser(void);
 	void Set(unsigned short nSlotId, const AICOORD& position, int nObjectType);
 	int CheckHits(void);
+	int Process(void);
 };
 
 #endif

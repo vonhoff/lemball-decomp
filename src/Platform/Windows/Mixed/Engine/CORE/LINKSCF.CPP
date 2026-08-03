@@ -1455,10 +1455,6 @@ void LEMBALL_FASTCALL ClearManagedEntityArrayCount(void* pObject)
 
 typedef void(LEMBALL_FASTCALL* LinkScfIntSlotProc)(void*, void*, int);
 
-int LEMBALL_FASTCALL AcquireLasrPlasTarget(void* pObject)
-{
-	return ((CLaser*) pObject)->CheckHits();
-}
 
 // MACINTOSH: CLaser::Activate()
 // FUNCTION: LEMBALL 0x00428ec0

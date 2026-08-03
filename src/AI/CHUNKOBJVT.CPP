@@ -1,3 +1,4 @@
+#include "AI/CLaser.h"
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Level/CHUNKOBJVT.H"
@@ -12,8 +13,6 @@ extern int __fastcall has_level_plas_history_entries(void* pLevelMode);
 extern int LEMBALL_FASTCALL PopLevelPlasHistoryChild(void* pLevelMode);
 extern void LEMBALL_FASTCALL clear_managed_entity_child_pending_state_if_interruptible(void* pEntity);
 extern void* LEMBALL_FASTCALL get_managed_entity_owner_group(void* pEntity);
-extern int LEMBALL_FASTCALL AcquireLasrPlasTarget(void* pObject);
-extern int LEMBALL_FASTCALL BeginLasrPlasReacquireDelay(void* pObject);
 extern void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_rock_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_capture_trigger_chunk_object(void* pObject);
@@ -257,9 +256,30 @@ void* g_LEVELVT_TileFlag1CChunkObjectVtable[16] =
 void* g_LINKSCF_CaptureChunkObjectVtable[16] =
 	COMMON_LEVEL_CHUNK_OBJECT_VTABLE(DeleteCaptureChunkObjectAuto, AdvanceCaptureChunkObjectStateMachine);
 
+struct LaserVtableLayout {
+	void* m_apSlots00[5];
+	int (CLaser::*m_pProcess14)(void);
+	void* m_apSlots18[10];
+};
+typedef char LaserMemberPointerMustBeOneWord[sizeof(int (CLaser::*)(void)) == sizeof(void*) ? 1 : -1];
+
 // GLOBAL: LEMBALL 0x00496310
-void* g_LINKSCF_LasrChunkObjectVtable[16] =
-	COMMON_LEVEL_CHUNK_OBJECT_VTABLE(DeleteLasrChunkObjectAuto, AdvanceLasrChunkObjectStateMachine);
+LaserVtableLayout g_LINKSCF_LasrChunkObjectVtable = {{(void*) DeleteLasrChunkObjectAuto,
+													 (void*) SetManagedEntityStateIdWithVariant,
+													 (void*) SetManagedEntityStateId,
+													 (void*) EmitLevelChunkObjectRenderEntry,
+													 (void*) noop_vtable_callback_0040a7f0},
+													&CLaser::Process,
+													{(void*) return_true_vtable_callback_0040a800,
+													 (void*) get_object_field_0xf0,
+													 (void*) SetLevelChunkObjectMotionVector,
+													 (void*) AdvanceManagedEntityGravityMotion,
+													 (void*) return_false_vtable_callback_0040a820,
+													 (void*) copy_object_fields_0x9c_triplet,
+													 (void*) noop_vtable_callback_0040a860,
+													 (void*) set_object_field_0x98,
+													 (void*) get_object_field_0x98,
+													 (void*) BeginManagedEntityReachablePathSearch}};
 
 // GLOBAL: LEMBALL 0x004965c8
 void* g_LINKSCF_TramChunkObjectVtable[16] =
@@ -740,86 +760,6 @@ int LEMBALL_FASTCALL AdvanceCaptureChunkObjectStateMachine(void* pObject)
 		pFields[0x4f] = 1;
 		pFields[0x33] = g_nLevelFrameClockTick + 0x14;
 		((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x17);
-	}
-	return 1;
-}
-
-// MACINTOSH: CLaser::Process()
-// FUNCTION: LEMBALL 0x00428cf0
-int LEMBALL_FASTCALL AdvanceLasrChunkObjectStateMachine(void* pObject)
-{
-	typedef void(LEMBALL_FASTCALL * ObjectSlotProc)(void*, void*, int);
-	int* pFields = (int*) pObject;
-	void* pTarget;
-	int nState;
-
-	if (pFields[0x45] != 0) {
-		pFields[0x4e] = pFields[0x2e] != 0x18;
-		if (pFields[0x2e] == 0x1a && *(void**) ((char*) pObject + 0x144) == 0) {
-			AcquireLasrPlasTarget(pObject);
-		}
-		nState = pFields[0x2e];
-		if (pFields[0x4a] != nState) {
-			if (nState == 0x17) {
-				pTarget = *(void**) ((char*) pObject + 0x144);
-				if (pTarget != 0) {
-					*(int*) ((char*) pTarget + 0x2c) = 1;
-					*(void**) ((char*) pObject + 0x144) = 0;
-				}
-				((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x18);
-			}
-			else if (nState == 0x19) {
-				*(void**) ((char*) pObject + 0x144) = 0;
-			}
-			pFields[0x4a] = pFields[0x2e];
-		}
-		return 1;
-	}
-
-	if (g_nSelectedNetworkLobbyPeerId != 0 && *(int*) (g_nSelectedNetworkLobbyPeerId + 0x1c) != 0) {
-		return 1;
-	}
-	if (pFields[0x4e] == 0) {
-		return 1;
-	}
-
-	switch (pFields[0x2e]) {
-	case 0x17:
-		pTarget = *(void**) ((char*) pObject + 0x144);
-		if (pTarget != 0) {
-			((ObjectSlotProc) (*(void***) pTarget)[13])(pTarget, 0, 0x22);
-			*(int*) ((char*) pTarget + 0x2c) = 1;
-			*(void**) ((char*) pObject + 0x144) = 0;
-		}
-		((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x18);
-		return 1;
-	case 0x18:
-		if ((unsigned int) pFields[0x33] < (unsigned int) g_nLevelFrameClockTick) {
-			BeginLasrPlasReacquireDelay(pObject);
-		}
-		return 1;
-	case 0x19:
-		if ((unsigned int) pFields[0x34] < (unsigned int) g_nLevelFrameClockTick) {
-			*(void**) ((char*) pObject + 0x144) = 0;
-			((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x1a);
-		}
-		return 1;
-	case 0x1a:
-		if (*(void**) ((char*) pObject + 0x144) == 0) {
-			AcquireLasrPlasTarget(pObject);
-		}
-		if ((unsigned int) pFields[0x33] < (unsigned int) g_nLevelFrameClockTick) {
-			pFields[0x4f] = 1;
-			pFields[0x4e] = pFields[0x50];
-			pFields[0x33] = g_nLevelFrameClockTick + 0x3c;
-			pTarget = *(void**) ((char*) pObject + 0x144);
-			if (pTarget != 0) {
-				*(int*) ((char*) pTarget + 0x2c) = 1;
-				*(void**) ((char*) pObject + 0x144) = 0;
-			}
-			((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x17);
-		}
-		break;
 	}
 	return 1;
 }
