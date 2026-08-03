@@ -23,9 +23,20 @@ struct CGameObjectCommandQueue {
 	CGameObjectCommand* m_pEntries;
 };
 
+struct CGameObjectBounds {
+	int m_nMinX;
+	int m_nMinY;
+	int m_nMinZ;
+	int m_nMaxX;
+	int m_nMaxY;
+	int m_nMaxZ;
+};
+
 class CGameObject {
 public:
-	char m_abReserved00[0x64];
+	char m_abReserved00[0x14];
+	CGameObjectBounds m_bounds14;
+	char m_abReserved2C[0x38];
 	int m_nEntityType64;
 	char m_abReserved68[4];
 	unsigned short m_nSlotId6C;
@@ -63,6 +74,7 @@ public:
 	static unsigned short NextId(void);
 	static unsigned short NextLoadingId(void);
 	void RegisterId(void);
+	void UpdateCollision(void);
 };
 
 #endif

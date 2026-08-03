@@ -1,3 +1,4 @@
+#include "AI/CGameObject.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 struct LevelPoint3 {
@@ -54,7 +55,6 @@ struct PlasChildStateEntityView {
 };
 
 extern int g_nLevelFrameClockTick;
-void LEMBALL_FASTCALL UpdateManagedEntityBoundsFromPosition(void* pObject);
 
 // Split from LEVELVT.CPP to preserve compiler state in the original translation unit.
 
@@ -103,7 +103,7 @@ void __cdecl DispatchPlasChildStateTable(PlasChildStateDispatchEntry** ppStateTa
 	if (pEntity->HasStateVariant() == 0) {
 		pEntity->SetStateVariant(nStateVariant);
 	}
-	UpdateManagedEntityBoundsFromPosition(pEntity);
+	((CGameObject*) pEntity)->UpdateCollision();
 	if (nNextState != 0x28 && nNextState != nOriginalState && pEntity->m_nStateB8 == nOriginalState) {
 		pEntity->m_nStateDeadline94 = g_nLevelFrameClockTick * 50;
 		pEntity->SetState(nNextState);

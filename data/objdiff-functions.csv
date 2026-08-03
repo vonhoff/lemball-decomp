@@ -463,7 +463,7 @@ address,size,name,unit
 0x004166D0,90,collect_free_managed_entity_slot_ids,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416730,3,return_zero_level_callback_00416730,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416740,115,CGameObject::RegisterId,AI/CGameObjectId.cpp
-0x004167C0,91,CGameObject::UpdateCollision,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x004167C0,91,CGameObject::UpdateCollision,AI/CGameObjectCollision.cpp
 0x00416820,39,CGameObject::StartLand,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416850,44,construct_managed_entity_packet_base,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416880,19,bind_managed_entity_packet_target,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
