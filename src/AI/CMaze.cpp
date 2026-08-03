@@ -339,3 +339,45 @@ int Direction(int x, int y, int nNextX, int nNextY)
 {
 	return (y - nNextY) * 3 - nNextX + x + 4;
 }
+
+// FUNCTION: LEMBALL 0x004238b0
+void CMaze::BSolution(int& cSolutions, tSolution* pSolutions)
+{
+	int nDistance;
+	int nDirection;
+	int nNextDirection;
+	int x;
+	int y;
+	int nNextX;
+	int nNextY;
+	unsigned long nElapsed;
+
+	cSolutions = 0;
+	x = m_nEndX1020;
+	y = m_nEndY1024;
+	nDistance = m_ppRows04[y][x];
+	pSolutions[cSolutions].x = (short) x;
+	pSolutions[cSolutions].y = (short) y;
+	++cSolutions;
+	nNextX = x;
+	nNextY = y;
+	if (FindSquare(nDistance - 1, nNextX, nNextY) != 0) {
+		nDirection = Direction(x, y, nNextX, nNextY);
+		for (nDistance -= 2; nDistance >= 0; --nDistance) {
+			x = nNextX;
+			y = nNextY;
+			FindSquare(nDistance, nNextX, nNextY);
+			nNextDirection = Direction(x, y, nNextX, nNextY);
+			if (nDirection != nNextDirection) {
+				pSolutions[cSolutions].x = (short) x;
+				pSolutions[cSolutions].y = (short) y;
+				++cSolutions;
+				nDirection = nNextDirection;
+			}
+		}
+	}
+	nElapsed = timeGetTime() - m_dwStartTime102C;
+	m_dwStartTime102C = nElapsed;
+	m_nCounter1030 += nElapsed;
+	++m_nCounter1034;
+}

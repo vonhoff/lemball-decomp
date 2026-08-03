@@ -3,6 +3,11 @@
 
 struct CMap;
 
+struct tSolution {
+	short x;
+	short y;
+};
+
 class CMaze {
 public:
 	CMaze(CMap* pMap);
@@ -16,6 +21,7 @@ public:
 	void SwapChange(void);
 	void BInitialise(unsigned char fReset, int nStartX, int nStartY, int nEndX, int nEndY);
 	int BIteration(unsigned char& fFound, unsigned char& fExhausted);
+	void BSolution(int& cSolutions, tSolution* pSolutions);
 
 private:
 	CMap* m_pMap00;

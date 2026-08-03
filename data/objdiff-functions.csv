@@ -909,7 +909,7 @@ address,size,name,unit
 0x00423530,273,CMaze::BInitialise,AI/CMaze.cpp
 0x00423650,568,CMaze::BIteration,AI/CMaze.cpp
 0x00423890,24,Direction,AI/CMaze.cpp
-0x004238B0,264,CMaze::BSolution,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x004238B0,264,CMaze::BSolution,AI/CMaze.cpp
 0x00423C10,24,CMine::CMine,AI/CMine.cpp
 0x00423C30,17,CMine::Restart,AI/CMine.cpp
 0x00423C50,85,CMine::Initialise,AI/CMine.cpp
