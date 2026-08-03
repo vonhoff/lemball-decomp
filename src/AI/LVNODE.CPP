@@ -218,7 +218,6 @@ CNodeManager::~CNodeManager(void)
 	FreeVSMemBlock((int*) m_pRecords00 - 1);
 }
 
-// MACINTOSH: CNodeManager::GetNodePosition(int)
 // FUNCTION: LEMBALL 0x004212a0
 LevelNodePoint* CNodeManager::GetNodePosition(LevelNodePoint* pOutput, int nIndex)
 {
