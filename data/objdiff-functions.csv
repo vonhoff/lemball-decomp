@@ -2774,10 +2774,10 @@ address,size,name,unit
 0x0046AAD0,32,CBaseRemap::~CBaseRemap,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x0046AAF0,121,CBaseRemap::MapRemap,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x0046AB70,341,CBaseRemap::CalculateGreyScale,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x0046ACD0,63,construct_vsmem_pointer_table,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x0046AD10,83,destroy_palette_remap_pointer_table,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x0046AD70,86,register_palette_remap_variant,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x0046ADD0,100,release_palette_remap_variant,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x0046ACD0,63,CBasePalManager::CBasePalManager,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x0046AD10,83,CBasePalManager::~CBasePalManager,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x0046AD70,86,CBasePalManager::RegisterRemap,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x0046ADD0,100,CBasePalManager::UnRegisterRemap,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x0046AEC0,105,construct_status_indicator_render_client_base,Visos/Windows/CGDI.cpp
 0x0046AF30,67,destroy_status_indicator_render_client_base,Visos/Windows/CGDI.cpp
 0x0046AFD0,264,initialize_status_indicator_render_client_defaults,Visos/Windows/CGDI.cpp

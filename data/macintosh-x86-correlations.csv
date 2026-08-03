@@ -1145,3 +1145,7 @@ CODE_02_Visos (Generic).bin,0x00000973,__ct__10CBaseRemapFUlPUc13ePaletteTypes,0
 CODE_02_Visos (Generic).bin,0x000009E4,__dt__10CBaseRemapFv,0x0046AAD0,high,semantic destructor releases remap table and palette resource; Macintosh deleting tail remains wrapper glue
 CODE_02_Visos (Generic).bin,0x00000A90,MapRemap__10CBaseRemapFPCUc,0x0046AAF0,high,"loads palette, builds identity table, applies counted sparse source/target pairs, and releases temporary resource hold"
 CODE_02_Visos (Generic).bin,0x00000C4D,CalculateGreyScale__10CBaseRemapFv,0x0046AB70,high,"loads palette, collects grayscale entries, maps weighted 2:7:1 luminance to nearest gray, and releases scratch/resource hold"
+CODE_02_Visos (Generic).bin,0x00000CB6,__ct__15CBasePalManagerFi,0x0046ACD0,high,12-byte manager allocates and clears a capacity-sized CBaseRemap pointer table; exact 68K layout and 100% x86 reccmp
+CODE_02_Visos (Generic).bin,0x00000D3E,__dt__15CBasePalManagerFv,0x0046AD10,high,"destroys occupied remaps, clears slots, and frees the pointer table; Macintosh deleting tail remains wrapper glue"
+CODE_02_Visos (Generic).bin,0x00000DB7,RegisterRemap__15CBasePalManagerFUlPUc13ePaletteTypes,0x0046AD70,high,"finds first free slot, allocates 8-byte CBaseRemap, invokes constructor path, stores it, and increments active count"
+CODE_02_Visos (Generic).bin,0x00000E55,UnRegisterRemap__15CBasePalManagerFP6CRemap,0x0046ADD0,high,"scans occupied slots by active count, destroys matching remap, clears slot, and decrements active count"

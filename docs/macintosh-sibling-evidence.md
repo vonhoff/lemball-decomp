@@ -345,3 +345,7 @@ All four portable glyph-table methods map across `0x00473650..0x00473730` in `CS
 ## CBaseRemap reconstruction
 
 All four portable palette-remap methods map across `0x0046AA80..0x0046AB70`. Exact 68K bodies and x86 behavior share the 8-byte remap-table/resource layout, palette load and release lifetime, direct-table mode, counted sparse-pair mode, and weighted 2:7:1 grayscale nearest-match algorithm. Windows keeps constructor `0x0046AA80` physically in `VSWINDOW.CPP` and the destructor/builders in `VSINIT.CPP`. The Macintosh destructor's conditional delete tail remains wrapper glue; the following `CBasePalManager` pointer-table family beginning at `0x0046ACD0` remains separate.
+
+## CBasePalManager reconstruction
+
+All four portable palette-manager methods map across `0x0046ACD0..0x0046ADD0` in `VSINIT.CPP`. Exact 68K bodies and x86 behavior share the 12-byte pointer-table/capacity/active-count layout, capacity-sized zeroed allocation, first-hole registration, occupied-slot destruction, and active-count-based hole skipping. Constructor `0x0046ACD0` is a 100% reccmp match and unregistration `0x0046ADD0` is a 100% effective match. The `CBaseRemap` family and placement wrapper `0x00473610` remain separate.
