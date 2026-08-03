@@ -13,6 +13,7 @@ public:
 	void Restart(void);
 	void Initialise(int nCapacity);
 	int StepOn(const AICOORD& position, CGameObject* pObject);
+	void Process(void);
 
 private:
 	unsigned char m_abReserved00[0x30];

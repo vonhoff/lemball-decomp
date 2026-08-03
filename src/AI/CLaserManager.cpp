@@ -21,6 +21,7 @@ typedef char LaserManagerSizeMustMatchLayout[sizeof(CLaserManager) == 0x40 ? 1 :
 typedef char LaserSizeMustMatchArrayStride[sizeof(CLaser) == 0x148 ? 1 : -1];
 
 typedef void(LEMBALL_FASTCALL* LaserRestartProc)(void* pObject);
+typedef int(LEMBALL_FASTCALL* LaserProcessProc)(void* pObject);
 
 // FUNCTION: LEMBALL 0x00429320
 CLaserManager::CLaserManager(CAI* pAI, int nCapacity)
@@ -123,4 +124,26 @@ int CLaserManager::StepOn(const AICOORD& position, CGameObject* pObject)
 		++i;
 	}
 	return 0;
+}
+
+// FUNCTION: LEMBALL 0x00429850
+void CLaserManager::Process(void)
+{
+	char* pObject;
+	int i;
+	int cbOffset;
+
+	i = 0;
+	if (m_cObjects34 > 0) {
+		cbOffset = 0;
+		do {
+			*(int*) ((char*) m_pObjects38 + cbOffset + 0x124) = 1;
+			pObject = (char*) m_pObjects38 + cbOffset;
+			if (*(int*) (pObject + 0x138) != 0 || *(int*) (pObject + 0x114) != 0) {
+				((LaserProcessProc) (*(void***) pObject)[5])(pObject);
+			}
+			cbOffset += 0x148;
+			++i;
+		} while (i < m_cObjects34);
+	}
 }

@@ -156,9 +156,6 @@ struct LinkScfBoonChunkManagerView {
 // MACINTOSH: CHandManager::GetViewData(CViewData*)
 // STUB: LEMBALL 0x00428410
 // EmitCaptureTriggerChunkManagerRenderEntries
-// MACINTOSH: CLaserManager::Process()
-// STUB: LEMBALL 0x00429850
-// RefreshActiveLasrChunkObjects
 // MACINTOSH: CLaserManager::GetViewData(CViewData*)
 // STUB: LEMBALL 0x004298a0
 // EmitLasrChunkManagerRenderEntries
