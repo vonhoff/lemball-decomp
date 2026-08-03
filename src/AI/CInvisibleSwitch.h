@@ -12,6 +12,8 @@ class CGameObject;
 class CInvisibleSwitch {
 public:
 	CInvisibleSwitch(void);
+	void Restart(void);
+	void Initialise(void);
 	~CInvisibleSwitch(void);
 	void VerifyObjects(void);
 	void AddObject(CGameObject* pObject);

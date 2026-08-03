@@ -6,6 +6,8 @@ extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedE
 extern void* g_pActiveManagedEntityOwner;
 extern void* g_LINKSCF_InvsChunkObjectVtable[16];
 extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
+extern void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
+extern void LEMBALL_FASTCALL ResetInvsChunkObjectStateThunk(void* pObject);
 
 struct LevelChunkObjectBaseView {
 	void* InitializeLevelChunkObjectBase(int nType, unsigned short nChildType, unsigned short nFlags);
@@ -31,6 +33,26 @@ CInvisibleSwitch::CInvisibleSwitch(void)
 {
 	((LevelChunkObjectBaseView*) this)->InitializeLevelChunkObjectBase(0x36, 0, 0);
 	*(void**) this = g_LINKSCF_InvsChunkObjectVtable;
+}
+
+// FUNCTION: LEMBALL 0x00409cc0
+void CInvisibleSwitch::Restart(void)
+{
+	ResetManagedEntityRuntimeStateThunk(this);
+	ResetInvsChunkObjectStateThunk(this);
+}
+
+// FUNCTION: LEMBALL 0x00409ce0
+void CInvisibleSwitch::Initialise(void)
+{
+	char* pObjectBytes = (char*) this;
+	*(int*) (pObjectBytes + 0xb8) = 0x18;
+	*(unsigned short*) (pObjectBytes + 0x150) = 0;
+	*(int*) (pObjectBytes + 0x148) = 0;
+	*(int*) (pObjectBytes + 0x254) = 0;
+	*(int*) (pObjectBytes + 0x144) = 0;
+	*(int*) (pObjectBytes + 0x5c) = 0;
+	*(int*) (pObjectBytes + 0x14c) = 0;
 }
 
 // FUNCTION: LEMBALL 0x00409d10

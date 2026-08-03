@@ -1,3 +1,4 @@
+#include "AI/CInvisibleSwitch.h"
 #include "AI/CInvisibleSwitchManager.h"
 #include "Control/CGame.h"
 #include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
@@ -2305,20 +2306,6 @@ void* LevelChunkObjectBaseView::InitializeLevelChunkObjectBase(int nType,
 	return this;
 }
 
-void LEMBALL_FASTCALL ResetInvsChunkObjectState(void* pObject)
-{
-	char* pObjectBytes;
-
-	pObjectBytes = (char*) pObject;
-	*(int*) (pObjectBytes + 0xb8) = 0x18;
-	*(unsigned short*) (pObjectBytes + 0x150) = 0;
-	*(int*) (pObjectBytes + 0x148) = 0;
-	*(int*) (pObjectBytes + 0x254) = 0;
-	*(int*) (pObjectBytes + 0x144) = 0;
-	*(int*) (pObjectBytes + 0x5c) = 0;
-	*(int*) (pObjectBytes + 0x14c) = 0;
-}
-
 void LEMBALL_FASTCALL ResetIceChunkObjectRuntimeState(void* pObject)
 {
 	char* pObjectBytes;
@@ -2338,13 +2325,7 @@ extern void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
 
 void LEMBALL_FASTCALL ResetInvsChunkObjectStateThunk(void* pObject)
 {
-	ResetInvsChunkObjectState(pObject);
-}
-
-void LEMBALL_FASTCALL ResetInvsChunkObject(void* pObject)
-{
-	ResetManagedEntityRuntimeStateThunk(pObject);
-	ResetInvsChunkObjectStateThunk(pObject);
+	((CInvisibleSwitch*) pObject)->Initialise();
 }
 
 void LEMBALL_FASTCALL ResetRockChunkObjectRuntimeStateThunk(void* pObject)
