@@ -11,6 +11,14 @@ extern unsigned short g_nNextLiftObjectId;
 
 typedef void(LEMBALL_FASTCALL* LiftRestartProc)(void* pObject);
 
+struct LiftManagerDeletableChild {
+	virtual void Delete(unsigned char fDelete);
+};
+
+struct VsNetEffStreamCommon {
+	virtual ~VsNetEffStreamCommon(void);
+};
+
 // FUNCTION: LEMBALL 0x00425680
 CLiftManager::CLiftManager(CAI* pAI, int nCapacity)
 {
@@ -78,4 +86,14 @@ void CLiftManager::Initialise(int nCapacity)
 			} while (i < m_cCapacity38);
 		}
 	}
+}
+
+// FUNCTION: LEMBALL 0x004257c0
+CLiftManager::~CLiftManager(void)
+{
+	*(void**) this = &g_LINKSCF_LiftChunkManagerVtable;
+	if (m_pObjects3C != 0) {
+		((LiftManagerDeletableChild*) m_pObjects3C)->Delete(3);
+	}
+	((VsNetEffStreamCommon*) this)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 }

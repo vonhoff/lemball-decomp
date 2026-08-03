@@ -7,6 +7,7 @@ class CLift;
 class CLiftManager {
 public:
 	CLiftManager(CAI* pAI, int nCapacity);
+	~CLiftManager(void);
 	void Restart(void);
 	void Initialise(int nCapacity);
 

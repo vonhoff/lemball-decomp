@@ -2007,20 +2007,9 @@ void LEMBALL_FASTCALL DestroyMineChunkManagerAutoThunk(void* pObject)
 	DestroyMineChunkManagerAuto(pObject);
 }
 
-void LEMBALL_FASTCALL DestroyLiftChunkManagerAuto(void* pObject)
-{
-	void* pChild;
-
-	*(void**) pObject = &g_LINKSCF_LiftChunkManagerVtable;
-	pChild = *(void**) ((char*) pObject + 0x3c);
-	if (pChild != 0) {
-		((LinkScfDeletableChild*) pChild)->Delete(3);
-	}
-	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
-}
 void LEMBALL_FASTCALL DestroyLiftChunkManagerAutoThunk(void* pObject)
 {
-	DestroyLiftChunkManagerAuto(pObject);
+	((CLiftManager*) pObject)->~CLiftManager();
 }
 
 DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyCaptureTriggerChunkManagerAuto,

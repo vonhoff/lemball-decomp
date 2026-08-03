@@ -18,7 +18,7 @@ address,name,symbol,type,source
 0x0041FDA0,DestroyThreeOptionalRecordChunkObjectAuto,,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004224C0,DestroyCollChunkManagerAuto,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00424170,DestroyMineChunkManagerAuto,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x004257C0,DestroyLiftChunkManagerAuto,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+
 0x00426810,ResetRockChunkObject,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00426C00,DestroyRockChunkManagerAuto,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00427B10,ResetCaptureTriggerChunkObject,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
