@@ -23,7 +23,6 @@ address,name,symbol,type,source
 0x00426C00,DestroyRockChunkManagerAuto,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00427B10,ResetCaptureTriggerChunkObject,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00427FA0,DestroyCaptureTriggerChunkManagerAuto,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x00429450,DestroyLasrChunkManagerAuto,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0042B090,DestroyTramChunkManagerAuto,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0042C120,DestroyPgunChunkManagerAuto,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0042CA90,ResetIceChunkObject,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP

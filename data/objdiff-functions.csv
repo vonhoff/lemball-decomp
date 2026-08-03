@@ -1034,7 +1034,7 @@ address,size,name,unit
 0x00429320,91,CLaserManager::CLaserManager,AI/CLaserManager.cpp
 0x00429380,48,CLaserManager::Restart,AI/CLaserManager.cpp
 0x004293B0,154,CLaserManager::Initialise,AI/CLaserManager.cpp
-0x00429450,31,CLaserManager::~CLaserManager,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00429450,31,CLaserManager::~CLaserManager,AI/CLaserManager.cpp
 0x00429470,880,remove_lasr_chunk_object_by_address,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x004297E0,8,reset_lasr_chunk_object_count,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x004297F0,96,CLaserManager::StepOn,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP

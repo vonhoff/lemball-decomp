@@ -7,6 +7,7 @@ class CLaser;
 class CLaserManager {
 public:
 	CLaserManager(CAI* pAI, int nCapacity);
+	~CLaserManager(void);
 	void Restart(void);
 	void Initialise(int nCapacity);
 

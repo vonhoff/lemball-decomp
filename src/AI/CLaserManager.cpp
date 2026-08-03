@@ -9,6 +9,14 @@ extern LaserManagerVtableLayout g_LINKSCF_LasrChunkManagerVtable;
 extern void* g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
 
+struct VsNetEffStreamCommon {
+	virtual ~VsNetEffStreamCommon(void);
+};
+
+struct LaserManagerDeletableChild {
+	virtual void Delete(unsigned char fDelete);
+};
+
 typedef char LaserManagerSizeMustMatchLayout[sizeof(CLaserManager) == 0x40 ? 1 : -1];
 typedef char LaserSizeMustMatchArrayStride[sizeof(CLaser) == 0x148 ? 1 : -1];
 
@@ -81,4 +89,17 @@ void CLaserManager::Initialise(int nCapacity)
 			} while (i < m_cCapacity30);
 		}
 	}
+}
+
+// FUNCTION: LEMBALL 0x00429450
+CLaserManager::~CLaserManager(void)
+{
+	void* pChild;
+
+	*(void**) this = &g_LINKSCF_LasrChunkManagerVtable;
+	pChild = m_pObjects38;
+	if (pChild != 0) {
+		((LaserManagerDeletableChild*) pChild)->Delete(3);
+	}
+	((VsNetEffStreamCommon*) this)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 }

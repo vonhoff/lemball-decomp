@@ -2030,10 +2030,10 @@ DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyCaptureTriggerChunkManagerAuto,
 									g_LINKSCF_CaptureChunkManagerVtable,
 									0x38)
 
-DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyLasrChunkManagerAuto,
-									DestroyLasrChunkManagerAutoThunk,
-									&g_LINKSCF_LasrChunkManagerVtable,
-									0x38)
+void LEMBALL_FASTCALL DestroyLasrChunkManagerAutoThunk(void* pObject)
+{
+	((CLaserManager*) pObject)->~CLaserManager();
+}
 
 DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyTramChunkManagerAuto,
 									DestroyTramChunkManagerAutoThunk,
