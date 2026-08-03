@@ -2426,9 +2426,9 @@ address,size,name,unit
 0x00461610,159,CReadNCMSBuff::CReadNCMSBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x004616B0,73,CReadNCMSBuff::~CReadNCMSBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461700,122,CReadNCMSBuff::UpdateSubPacket,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00461780,32,construct_ring_locked_record_slot_table,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x004617A0,112,claim_ordered_global_packet_locked_slot,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00461810,47,claim_next_ready_locked_record_slot,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00461780,32,CReadCBuff::CReadCBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x004617A0,112,CReadCBuff::StorePacket,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00461810,47,CReadCBuff::NextPacketReady,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461840,150,construct_ring_eff_transport_record_buffer_table,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x004618E0,73,destroy_ring_eff_transport_record_buffer_table,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461930,50,append_global_packet_to_ring_record_slot,Platform/Windows/Mixed/Engine/NET/VSNET.CPP

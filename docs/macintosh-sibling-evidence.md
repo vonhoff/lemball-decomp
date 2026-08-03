@@ -465,3 +465,7 @@ All fourteen `CBroadcast` bodies map in order to `0x00460350..0x00460A50`. The c
 ## Read non-contiguous multi-segment buffer reconstruction
 
 `CReadNCMSBuff` constructor, destructor, and `UpdateSubPacket` map to `0x00461610/0x004616B0/0x00461700`. The object owns a packet-ID range of child `CReadMSBuff` fragment assemblers and rejects stale or skipped sequence transitions. Physical definitions remain in `VSNET.CPP`: extracting them into a class-aligned include lost protected exact function `0x00462130`, so the fidelity-negative source move was reverted.
+
+## Read contiguous buffer reconstruction
+
+`CReadCBuff` constructor, `StorePacket`, and `NextPacketReady` map to `0x00461780/0x004617A0/0x00461810`. Incoming sequence numbers select ring slots modulo capacity; gaps are marked unavailable until contiguous consumption catches up. Physical definitions remain in `VSNET.CPP`: the class-aligned extraction lost protected exact function `0x00462130` during the complete regenerated gate sequence and was reverted.
