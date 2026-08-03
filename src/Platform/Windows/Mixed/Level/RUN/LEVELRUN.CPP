@@ -86,7 +86,7 @@ unsigned short FindLastFreeManagedEntitySlotIdThunk(void);
 void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject);
 void LEMBALL_FASTCALL ResetBallChunkEntries(void* pBallManager);
 
-void LEMBALL_FASTCALL ResizeLevelTileReachabilityGrid(void* pReachabilityHelper);
+
 void LEMBALL_FASTCALL ResetBoonChunkManagerObjects(void* pObject);
 void LEMBALL_FASTCALL ClearLevelTileGridCells(int nTileGridCells);
 void* LEMBALL_FASTCALL ConstructLevelTileGridThunk(void* pObject);
@@ -651,7 +651,7 @@ void InitializeManagedEntitySlotTablesEntryThunk(void* pLevelGameMode)
 // LINKERILT: LEMBALL 0x00402379
 void LEMBALL_FASTCALL ResizeLevelTileReachabilityGridThunk(void* pReachabilityHelper)
 {
-	ResizeLevelTileReachabilityGrid(pReachabilityHelper);
+	((CMaze*) pReachabilityHelper)->Initialise();
 }
 // LINKERILT: LEMBALL 0x00402423
 void ResetLevelFrameClockEntryThunk(void)
@@ -2207,49 +2207,7 @@ void LEMBALL_FASTCALL reset_ball_chunk_manager_load_cursor(void* pManager)
 
 
 
-// MACINTOSH: CMaze::Initialise()
-// FUNCTION: LEMBALL 0x00423190
-void LEMBALL_FASTCALL ResizeLevelTileReachabilityGrid(void* pReachabilityHelper)
-{
-	GameLevelTileReachabilityHelper* pHelper;
-	GameLevelTileGrid* pTileGrid;
-	int i;
-	int cRows;
-	int cAllocatedRows;
-	int** ppRows;
 
-	pHelper = (GameLevelTileReachabilityHelper*) pReachabilityHelper;
-	pTileGrid = (GameLevelTileGrid*) (unsigned long) pHelper->m_pTileGrid00;
-	i = 0;
-	if (pHelper->m_ppRows04 != 0) {
-		ppRows = (int**) (unsigned long) (pHelper->m_ppRows04 - 4);
-		if (0 < pHelper->m_cRows1014) {
-			cAllocatedRows = 0;
-			do {
-				++ppRows;
-				++cAllocatedRows;
-				FreeVSMemBlock(*ppRows);
-			} while (cAllocatedRows < pHelper->m_cRows1014);
-		}
-		FreeVSMemBlock((void*) (unsigned long) pHelper->m_ppRows04);
-	}
-
-	pHelper->m_cColumns1010 = pTileGrid->m_cColumns10;
-	cRows = pTileGrid->m_cRows14;
-	i = 0;
-	cAllocatedRows = 0;
-	pHelper->m_cRows1014 = cRows;
-	pHelper->m_ppRows04 = (int) (unsigned long) AllocateVSMemBlock((unsigned int) cRows << 2);
-	ppRows = (int**) (unsigned long) (pHelper->m_ppRows04 - 4);
-	if (0 < pHelper->m_cRows1014) {
-		do {
-			++ppRows;
-			++cAllocatedRows;
-			*ppRows = (int*) AllocateVSMemBlock((unsigned int) pHelper->m_cColumns1010 * 2);
-		} while (cAllocatedRows < pHelper->m_cRows1014);
-	}
-	FillReachabilityGridFromTileFlagsThunk(pReachabilityHelper);
-}
 // MACINTOSH: CBalloonPost::Restart()
 // FUNCTION: LEMBALL 0x0042a030
 void LEMBALL_FASTCALL ResetBoonChunkManagerObjects(void* pObject)

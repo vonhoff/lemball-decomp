@@ -8,6 +8,7 @@ public:
 	CMaze(CMap* pMap);
 	~CMaze(void);
 	void ReInitialise(void);
+	void Initialise(void);
 
 private:
 	CMap* m_pMap00;

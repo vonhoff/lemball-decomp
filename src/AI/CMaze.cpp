@@ -9,6 +9,8 @@ struct MazeMapView {
 	int m_cRows14;
 };
 
+extern void __fastcall FillReachabilityGridFromTileFlagsThunk(void* pMaze);
+
 // FUNCTION: LEMBALL 0x00423090
 CMaze::CMaze(CMap* pMap)
 {
@@ -53,4 +55,26 @@ void CMaze::ReInitialise(void)
 			m_ppRows04[y][x] = (nCellValue & 1) == 0 ? 0xff00 : 0xffff;
 		}
 	}
+}
+
+// FUNCTION: LEMBALL 0x00423190
+void CMaze::Initialise(void)
+{
+	MazeMapView* pMap;
+	int i;
+
+	if (m_ppRows04 != 0) {
+		for (i = 0; i < m_cRows1014; ++i) {
+			FreeVSMemBlock(m_ppRows04[i]);
+		}
+		FreeVSMemBlock(m_ppRows04);
+	}
+	pMap = (MazeMapView*) m_pMap00;
+	m_cColumns1010 = pMap->m_cColumns10;
+	m_cRows1014 = pMap->m_cRows14;
+	m_ppRows04 = (unsigned short**) AllocateVSMemBlock((unsigned int) m_cRows1014 << 2);
+	for (i = 0; i < m_cRows1014; ++i) {
+		m_ppRows04[i] = (unsigned short*) AllocateVSMemBlock((unsigned int) m_cColumns1010 * 2);
+	}
+	FillReachabilityGridFromTileFlagsThunk(this);
 }

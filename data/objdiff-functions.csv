@@ -900,7 +900,7 @@ address,size,name,unit
 0x00423090,37,CMaze::CMaze,AI/CMaze.cpp
 0x004230C0,66,CMaze::~CMaze,AI/CMaze.cpp
 0x00423110,115,CMaze::ReInitialise,AI/CMaze.cpp
-0x00423190,156,CMaze::Initialise,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x00423190,156,CMaze::Initialise,AI/CMaze.cpp
 0x00423230,170,CMaze::CalcNewDistance,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x004232E0,160,CMaze::FindSquare,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00423380,287,CMaze::UpdateChangeNext,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
