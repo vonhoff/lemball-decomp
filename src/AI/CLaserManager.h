@@ -6,6 +6,7 @@ class CLaser;
 class CGameObject;
 class CViewData;
 struct AICOORD;
+typedef int eObjectType;
 
 class CLaserManager {
 public:
@@ -16,6 +17,7 @@ public:
 	int StepOn(const AICOORD& position, CGameObject* pObject);
 	void Process(void);
 	int GetViewData(CViewData* pViewData);
+	void Add(unsigned short nSlot, int x, int y, int z, eObjectType objectType);
 
 private:
 	unsigned char m_abReserved00[0x30];

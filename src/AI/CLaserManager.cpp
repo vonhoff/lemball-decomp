@@ -173,3 +173,17 @@ int CLaserManager::GetViewData(CViewData* pViewData)
 	}
 	return cTotal;
 }
+
+// FUNCTION: LEMBALL 0x004298f0
+void CLaserManager::Add(unsigned short nSlot, int x, int y, int z, eObjectType objectType)
+{
+	AICOORD position;
+
+	if (m_cObjects34 < m_cCapacity30) {
+		position.x = x << 12;
+		position.y = y << 12;
+		position.z = z << 12;
+		m_pObjects38[m_cObjects34].Set(nSlot, position, objectType);
+		++m_cObjects34;
+	}
+}
