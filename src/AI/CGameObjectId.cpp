@@ -21,6 +21,16 @@ void CGameObject::SetId(unsigned short nSlotId)
 	ClaimManagedEntitySlotId((int) (unsigned long) this);
 }
 
+// FUNCTION: LEMBALL 0x00416640
+void CGameObject::ReSetId(void)
+{
+	unsigned short nSlotId = m_nSlotId6C;
+	if (nSlotId != 0xffff) {
+		g_GAME_ManagedEntitySlotClaimBitset[nSlotId >> 3] &=
+			(unsigned char) ~g_GAME_ManagedEntitySlotBitMasks[nSlotId & 7];
+	}
+}
+
 void ManagedEntitySlotOwnerView::SetManagedEntitySlotId(unsigned short nSlotId)
 {
 	((CGameObject*) this)->SetId(nSlotId);

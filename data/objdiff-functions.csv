@@ -457,7 +457,7 @@ address,size,name,unit
 0x004165E0,47,CGameObject::Init,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416610,5,CGameObject::GetId,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416620,17,CGameObject::SetId,AI/CGameObjectId.cpp
-0x00416640,44,CGameObject::ReSetId,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x00416640,44,CGameObject::ReSetId,AI/CGameObjectId.cpp
 0x00416670,45,CGameObject::NextId,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x004166A0,47,CGameObject::NextLoadingId,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x004166D0,90,collect_free_managed_entity_slot_ids,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
