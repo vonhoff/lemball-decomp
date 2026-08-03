@@ -3,6 +3,13 @@
 
 #include "AI/AICoord.h"
 
+struct CVSRect {
+	short width;
+	short height;
+	short x;
+	short y;
+};
+
 struct CGameObjectCommand {
 	int m_nType;
 	AICOORD m_Position;
@@ -43,6 +50,7 @@ struct CGameObject {
 	AICOORD* GetDestination(AICOORD* position);
 	int DestinationExists(void);
 	void EmptyDestinationList(void);
+	void GetBoundingBox(CVSRect& rect);
 };
 
 #endif

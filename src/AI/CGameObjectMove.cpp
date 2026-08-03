@@ -152,6 +152,15 @@ void CGameObject::EmptyDestinationList(void)
 	m_pCommandQueue70->m_cEntries = 0;
 }
 
+// FUNCTION: LEMBALL 0x004160f0
+void CGameObject::GetBoundingBox(CVSRect& rect)
+{
+	rect.x = (m_WorldPosition9C.x >> 12) - 24;
+	rect.y = (m_WorldPosition9C.y >> 12) - 24;
+	rect.width = 48;
+	rect.height = 48;
+}
+
 // FUNCTION: LEMBALL 0x00419ea0
 void __cdecl ThunkPopFirstManagedEntityMoveCommandAndResetMotion(void* pUnused, CGameObject* pEntity)
 {
