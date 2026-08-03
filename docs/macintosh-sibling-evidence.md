@@ -152,7 +152,7 @@ Ten portable Control globals map through independent Windows behavior: `VSPreIni
 
 ### CInvisibleSwitch and CInvisibleSwitchManager
 
-All 18 portable methods map at `0x00409CA0..0x0040A490`. Windows evidence preserves the `0x2B8` object stride, two-coordinate bounds setup, `0x18` tracked-object capacity, contact/activation state machine, versioned level loader, and split physical ownership between `LINKSCF.CPP` and `CInvsMgr.cpp`. The point-only object overload `0x00409D20`, manager Add overloads `0x0040A3E0`/`0x0040A440`, and deleting wrapper `0x0040AC60` are target-only and consume no portable symbols.
+All 18 portable methods map at `0x00409CA0..0x0040A490`. Windows evidence preserves the `0x2B8` object stride, two-coordinate bounds setup, `0x18` tracked-object capacity, contact/activation state machine, versioned level loader, and split physical ownership between `LINKSCF.CPP`, `CInvisibleSwitchManager.cpp`, and `CInvsSupp.cpp`. `Process` now carries its Macintosh class identity directly in source and remains 100% exact without an attribution annotation. The point-only object overload `0x00409D20`, manager Add overloads `0x0040A3E0`/`0x0040A440`, and deleting wrapper `0x0040AC60` are target-only and consume no portable symbols.
 
 ### CLift and CLiftManager
 

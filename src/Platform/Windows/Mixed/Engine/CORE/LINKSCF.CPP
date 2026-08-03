@@ -5,6 +5,7 @@
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
 #include "Control/CGame.h"
+#include "AI/CInvisibleSwitchManager.h"
 #include "Platform/Windows/Mixed/Level/LEVELRUN.H"
 
 #include <string.h>
@@ -206,7 +207,6 @@ void LEMBALL_FASTCALL ActivateIceChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateMoveChunkObjects(void* pManager);
 void LEMBALL_FASTCALL AdvanceIceChunkManagerObjects(void* pManager);
 void LEMBALL_FASTCALL AdvanceActiveMoveChunkObjects(void* pManager);
-void LEMBALL_FASTCALL AdvanceInvsChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ResetAllInvsChunkObjects(void* pManager);
 
 DEFINE_LINKSCF_VTABLE_STUB_0(DispatchDoorChildArrayVirtual104)
@@ -478,7 +478,7 @@ void* g_LINKSCF_IceChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteIceCh
 // GLOBAL: LEMBALL 0x00493298
 static void* g_LINKSCF_InvsChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteLevelChunkStreamAuto,
 																			 ResetAllInvsChunkObjects,
-																			 AdvanceInvsChunkObjects,
+																			 CInvisibleSwitchManager::Process,
 																			 ReturnFalseChunkStreamCommandThunk,
 																			 ReturnFalseChunkStreamRenderThunk);
 static void* g_LINKSCF_BoonChunkObjectVtable[66];

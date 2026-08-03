@@ -110,7 +110,7 @@ set(LEMBALL_SOURCES
     src/AI/Projectile.cpp
     src/AI/GroupState.cpp
     src/AI/CInvsSupp.cpp
-    src/AI/CInvsMgr.cpp
+    src/AI/CInvisibleSwitchManager.cpp
     src/AI/CDoorAct.cpp
     src/AI/CDoorSlot.cpp
     src/AI/CIceAct.cpp
