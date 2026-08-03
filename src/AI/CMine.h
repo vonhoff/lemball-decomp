@@ -4,6 +4,7 @@
 class CMine {
 public:
 	CMine(void);
+	void Trigger(int nDelay);
 
 private:
 	unsigned char m_abReserved00[0x150];

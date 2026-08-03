@@ -164,7 +164,7 @@ All 12 portable `CMaze` methods and the global `Direction` helper at `0x00423090
 
 ### CMineManager
 
-All 11 portable manager methods map at `0x00424020..0x00424850`. The genuine constructor, `Restart`, `Initialise`, and destructor now live in `src/AI/CMineManager.cpp`, with typed placement construction and manager-vtable ownership; they match `100%` exact, `81.82%`, `64.52%`, and `100%` exact. The typed `CMine[0x150]` array reuses the genuine exact `CMine::CMine()` constructor in `src/AI/CMine.cpp`. Windows evidence preserves the `0x150` mine stride, six-byte tile-position cache, delayed chain threshold `< 0x801`, eight-pixel contact box, versioned slot IDs, and split CMine/manager ownership. Remove helper `0x004241A0` and deleting wrappers `0x00424C30`/`0x00424C60` consume no portable symbols.
+All 11 portable manager methods map at `0x00424020..0x00424850`. Six now have genuine ownership in `src/AI/CMineManager.cpp`: constructor, `Restart`, `Initialise`, destructor, `Triggered`, and `Trigger`; they match `100%` exact, `81.82%`, `64.52%`, `100%` exact, `85.71%`, and `38.26%`. The typed `CMine[0x150]` array reuses the genuine exact `CMine::CMine()` constructor in `src/AI/CMine.cpp`. Windows evidence preserves the `0x150` mine stride, six-byte tile-position cache, delayed chain threshold `< 0x801`, eight-pixel contact box, versioned slot IDs, and split CMine/manager ownership. Remove helper `0x004241A0` and deleting wrappers `0x00424C30`/`0x00424C60` consume no portable symbols.
 
 ### CGameObject movement/lift tail
 

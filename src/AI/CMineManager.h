@@ -16,6 +16,8 @@ public:
 	~CMineManager(void);
 	void Restart(void);
 	void Initialise(int nCapacity);
+	void Triggered(CMine* pMine);
+	void Trigger(int nIndex, int nDelay);
 
 private:
 	unsigned char m_abReserved00[0x30];

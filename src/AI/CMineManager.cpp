@@ -100,3 +100,47 @@ CMineManager::~CMineManager(void)
 	}
 	((VsNetEffStreamCommon*) this)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 }
+
+// FUNCTION: LEMBALL 0x00424560
+void CMineManager::Triggered(CMine* pMine)
+{
+	Trigger(*(int*) ((char*) pMine + 0x14c), *(int*) ((char*) pMine + 0x148));
+}
+
+// FUNCTION: LEMBALL 0x00424580
+void CMineManager::Trigger(int nIndex, int nDelay)
+{
+	MinePosition* pOrigin;
+	MinePosition* pPosition;
+	CMine* pMine;
+	int cbObject;
+	int cbPosition;
+	int dx;
+	int dy;
+	int dz;
+	int i;
+
+	pOrigin = (MinePosition*) ((char*) m_pPositions38 + nIndex * 6);
+	cbObject = 0;
+	i = 0;
+	if (m_cObjects3C > 0) {
+		cbPosition = 0;
+		do {
+			if (nIndex != i) {
+				pMine = (CMine*) ((char*) m_pObjects34 + cbObject);
+				if (*(int*) ((char*) pMine + 0xb8) == 0x18) {
+					pPosition = (MinePosition*) ((char*) m_pPositions38 + cbPosition);
+					dz = pPosition->z - pOrigin->z;
+					dy = pPosition->y - pOrigin->y;
+					dx = pPosition->x - pOrigin->x;
+					if (dz * dz + dy * dy + dx * dx < 0x801) {
+						pMine->Trigger(nDelay + 6);
+					}
+				}
+			}
+			cbObject += 0x150;
+			++i;
+			cbPosition += 6;
+		} while (i < m_cObjects3C);
+	}
+}

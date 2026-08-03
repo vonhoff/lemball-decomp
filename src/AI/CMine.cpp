@@ -9,6 +9,10 @@ struct LevelChunkObjectBaseView {
 	void* InitializeLevelChunkObjectBase(int nType, unsigned short nVariant, unsigned short nStateId);
 };
 
+struct ManagedEntityStateView {
+	void RequestManagedEntityStateId(int nStateId);
+};
+
 struct MineChunkObjectActionView {
 	virtual void Reserved0(void);
 	virtual void Reserved1(void);
@@ -81,6 +85,16 @@ void LEMBALL_FASTCALL ResetMineChunkObjectRuntimeState(MineChunkObjectRuntimeVie
 	g_LEVEL_MineTileVariantCodes[1] = 0x11;
 	g_LEVEL_MineTileVariantCodes[2] = 0x30;
 	g_LEVEL_MineTileVariantCodes[3] = 8;
+}
+
+// FUNCTION: LEMBALL 0x00423d40
+void CMine::Trigger(int nDelay)
+{
+	if (*(int*) ((char*) this + 0x144) == 0 && *(int*) ((char*) this + 0xb8) == 0x18) {
+		*(int*) ((char*) this + 0x144) = 1;
+		*(int*) ((char*) this + 0x148) = nDelay;
+		((ManagedEntityStateView*) this)->RequestManagedEntityStateId(0x1a);
+	}
 }
 
 // FUNCTION: LEMBALL 0x00423dd0

@@ -926,8 +926,8 @@ address,size,name,unit
 0x004240B0,186,CMineManager::Initialise,AI/CMineManager.cpp
 0x00424170,43,CMineManager::~CMineManager,AI/CMineManager.cpp
 0x004241A0,957,remove_mine_chunk_object_by_address,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x00424560,26,CMineManager::Triggered,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x00424580,167,CMineManager::Trigger,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00424560,26,CMineManager::Triggered,AI/CMineManager.cpp
+0x00424580,167,CMineManager::Trigger,AI/CMineManager.cpp
 0x00424630,217,CMineManager::StepOn,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00424710,160,CMineManager::Add,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x004247B0,76,CMineManager::Process,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
