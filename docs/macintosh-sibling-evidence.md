@@ -277,3 +277,7 @@ Nineteen portable methods map across `0x0045AF80..0x0045B5F0`; `StreamOut` remai
 ## CVSDebugStreambuf reconstruction
 
 All five portable callback-buffer methods map across `0x0045AD70..0x0045AF20` in physical `VSINIT.CPP`. Exact 68K and x86 layout, callback, vtable, newline, tab, and full-buffer behavior agree. The scalar deleting wrapper at `0x0045AF60` and the larger formatted-composite wrapper at `0x00407E80` plus its ILT remain target-only.
+
+## CBaseQueueHandler reconstruction
+
+The constructor, `ProcessMsg`, and `StreamOut` map to `0x00462EA0`, `0x00462EC0`, and `0x00462ED0` across their mixed physical Windows owners. Vtable evidence proves handler `StreamOut` remains a distinct byte-identical body from `CBaseQueue::StreamOut` at `0x00463280`; neither is merged or double-consumed.

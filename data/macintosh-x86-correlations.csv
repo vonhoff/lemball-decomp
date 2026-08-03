@@ -962,3 +962,6 @@ CODE_02_Visos (Generic).bin,0x00014480,__dt__17CVSDebugStreambufFv,0x0045ADC0,hi
 CODE_02_Visos (Generic).bin,0x000144E4,flush__17CVSDebugStreambufFv,0x0045ADD0,high,"callback flush, cursor/count reset, tab width 8 and full-buffer clearing; independent exact 68K and x86 ABI/layout/caller/vtable audit"
 CODE_02_Visos (Generic).bin,0x0001464A,sputc__17CVSDebugStreambufFc,0x0045AE10,high,"exact newline, tab and full-buffer state machine; independent exact 68K and x86 ABI/layout/caller/vtable audit"
 CODE_02_Visos (Generic).bin,0x000146A8,sputs__17CVSDebugStreambufFPc,0x0045AF20,high,"string length traversal through virtual sputc; independent exact 68K and x86 ABI/layout/caller/vtable audit"
+CODE_02_Visos (Generic).bin,0x0000490C,__ct__17CBaseQueueHandlerFv,0x00462EA0,high,"QHDR tag, vtable, counter fields and common derived-base construction; independent exact 68K and x86 ABI/layout/caller/vtable audit"
+CODE_02_Visos (Generic).bin,0x0000494D,ProcessMsg__17CBaseQueueHandlerFP10tagMESSAGE,0x00462EC0,high,"one-pointer virtual ABI and optimized counter increment; independent exact 68K and x86 ABI/layout/caller/vtable audit"
+CODE_02_Visos (Generic).bin,0x0000498B,StreamOut__17CBaseQueueHandlerFR10CVSOStream,0x00462ED0,high,"distinct handler vtable-owned stream identity body; independent exact 68K and x86 ABI/layout/caller/vtable audit"

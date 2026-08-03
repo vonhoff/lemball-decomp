@@ -2511,9 +2511,9 @@ address,size,name,unit
 0x00462E50,8,dispatch_composite_eff_transport_dual_ret8_adjusted_thunk,Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00462E60,6,initialize_timing_subsystem_stub,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x00462E70,6,shutdown_timing_subsystem_stub,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x00462EA0,24,initialize_render_queue_node_base,Control/CGame.cpp
-0x00462EC0,8,increment_render_queue_node_counter_thunk,Control/CGameVT.cpp
-0x00462ED0,7,initialize_non_zrle_variant_render_entry,Platform/Windows/Mixed/Engine/NET/VSNETSTR.CPP
+0x00462EA0,24,CBaseQueueHandler::CBaseQueueHandler,Control/CGame.cpp
+0x00462EC0,8,CBaseQueueHandler::ProcessMsg,Control/CGameVT.cpp
+0x00462ED0,7,CBaseQueueHandler::StreamOut,Platform/Windows/Mixed/Engine/NET/VSNETSTR.CPP
 0x00462EE0,19,open_file_with_mode,Platform/Windows/Mixed/Level/RUN/DEMO.CPP
 0x00462F20,14,close_crt_file_pointer,Platform/Windows/Mixed/Level/RUN/DEMO.CPP
 0x00462F30,26,read_file_bytes,Platform/Windows/Mixed/Level/RUN/DEMO.CPP
