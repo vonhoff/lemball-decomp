@@ -7,6 +7,8 @@ struct AICOORD;
 class CMine {
 public:
 	CMine(void);
+	void Restart(void);
+	void Initialise(void);
 	void Trigger(int nDelay);
 	void Set(AICOORD position);
 	void StepOn(CGameObject* pObject);

@@ -920,7 +920,7 @@ address,size,name,unit
 0x00423E70,19,CMine::StepOn,AI/CMine.cpp
 0x00423E90,27,CMine::IsUsable,AI/CMine.cpp
 0x00423EB0,225,CMine::Process,AI/CMine.cpp
-0x00423FA0,128,CMine::OnGround,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00423FA0,128,CMine::OnGround,AI/CMine.cpp
 0x00424020,92,CMineManager::CMineManager,AI/CMineManager.cpp
 0x00424080,48,CMineManager::Restart,AI/CMineManager.cpp
 0x004240B0,186,CMineManager::Initialise,AI/CMineManager.cpp

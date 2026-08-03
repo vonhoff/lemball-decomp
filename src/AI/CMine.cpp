@@ -66,8 +66,6 @@ struct MineChunkObjectRuntimeView {
 // GLOBAL: LEMBALL 0x004a7840
 short g_LEVEL_MineTileVariantCodes[4];
 
-void LEMBALL_FASTCALL ResetMineChunkObjectRuntimeState(MineChunkObjectRuntimeView* pObject);
-
 // FUNCTION: LEMBALL 0x00423c10
 CMine::CMine(void)
 {
@@ -76,15 +74,17 @@ CMine::CMine(void)
 }
 
 // FUNCTION: LEMBALL 0x00423c30
-void LEMBALL_FASTCALL ResetMineChunkObject(MineChunkObjectRuntimeView* pObject)
+void CMine::Restart(void)
 {
-	ResetManagedEntityRuntimeStateThunk(pObject);
-	ResetMineChunkObjectRuntimeState(pObject);
+	ResetManagedEntityRuntimeStateThunk(this);
+	Initialise();
 }
 
 // FUNCTION: LEMBALL 0x00423c50
-void LEMBALL_FASTCALL ResetMineChunkObjectRuntimeState(MineChunkObjectRuntimeView* pObject)
+void CMine::Initialise(void)
 {
+	MineChunkObjectRuntimeView* pObject = (MineChunkObjectRuntimeView*) this;
+
 	pObject->m_nStateB8 = 0x18;
 	pObject->m_anRuntimeState138[0] = 0;
 	pObject->m_anRuntimeState138[1] = 0;
