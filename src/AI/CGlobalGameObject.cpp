@@ -7,6 +7,17 @@ struct ManagedEntityPacketStreamView {
 extern ManagedEntityPacketStreamView* g_pManagedEntityPacket2ATargetStream;
 extern ManagedEntityPacketStreamView* g_pManagedEntityStateResetPacketStream;
 
+// FUNCTION: LEMBALL 0x00416d50
+void CGlobalGameObject::Restart(void)
+{
+	CGameObject::Restart();
+	m_fResetPending130 = 0;
+	m_nSerializedState12C = 0x18;
+	m_nStateResetCode128 = 0x18;
+	m_nUsableState134 = 0;
+	m_fNetworkStateUpdateActive124 = 1;
+}
+
 // FUNCTION: LEMBALL 0x00416d90
 int CGlobalGameObject::UsableState(void)
 {

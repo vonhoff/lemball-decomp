@@ -421,9 +421,9 @@ address,size,name,unit
 0x00414E80,43,CAICursor::ProcessMsg,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00414F00,30,delete_managed_entity_queue_cursor,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00414F30,414,CGameObject::CGameObject,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x004150D0,138,CGameObject::Restart,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x004150D0,138,CGameObject::Restart,AI/CGameObjectLifecycle.cpp
 0x00415160,69,CGameObject::~CGameObject,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x004151B0,139,CGameObject::Initialise,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x004151B0,139,CGameObject::Initialise,AI/CGameObjectLifecycle.cpp
 0x00415240,183,CGameObject::StartFly,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00415300,534,CGameObject::Fly,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00415520,44,CGameObject::RotateClockwise,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
@@ -490,7 +490,7 @@ address,size,name,unit
 0x00416D00,5,serialize_managed_entity_type_and_slot_id,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416D10,1,noop_chunk_object_callback,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416D20,42,CGlobalGameObject::CGlobalGameObject,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
-0x00416D50,51,CGlobalGameObject::Restart,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x00416D50,51,CGlobalGameObject::Restart,AI/CGlobalGameObject.cpp
 0x00416D90,21,CGlobalGameObject::UsableState,AI/CGlobalGameObject.cpp
 0x00416DB0,34,CGlobalGameObject::Action,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416DE0,24,CGlobalGameObject::Action,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP

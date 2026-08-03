@@ -1,10 +1,11 @@
-#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
-#include "AI/CMover.h"
 #include "AI/CGameObject.h"
-#include "Visos/Generic/Memory.h"
+#include "AI/CGlobalGameObject.h"
+#include "AI/CMover.h"
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
+#include "Visos/Generic/Memory.h"
 
 void* LEMBALL_FASTCALL DeleteSimpleVtableObject407EF0(void* pObject, void*, BYTE fDelete);
 void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
@@ -2068,7 +2069,6 @@ int return_true_vtable_callback_00423050(void)
 	return 1;
 }
 
-
 // FUNCTION: LEMBALL 0x00426c20
 void __fastcall clear_rock_chunk_object_count(void* pManager)
 {
@@ -2123,8 +2123,6 @@ void LEMBALL_FASTCALL destroy_move_chunk_object(void* pObject)
 extern void* g_pActiveManagedEntityOwner;
 extern void* g_pLevelTileGrid;
 
-
-
 struct MoveChunkObjectTriggerView {
 	int IsTriggered(void* pEntity, const int* pPosition);
 };
@@ -2163,8 +2161,7 @@ CMover* CMoverManager::Find(int x, int y, int* pHeight)
 	if (m_cObjects34 > 0) {
 		nOffset = 0;
 		do {
-			if (((CMover*) ((char*) m_pObjects38 + nOffset))
-					->IsAt(x, y, pHeight) != 0) {
+			if (((CMover*) ((char*) m_pObjects38 + nOffset))->IsAt(x, y, pHeight) != 0) {
 				return &m_pObjects38[i];
 			}
 			nOffset += sizeof(CMover);
@@ -2568,114 +2565,18 @@ void noop_vtable_callback_0040a860(void)
 {
 }
 
-
-void LEMBALL_FASTCALL ClearLevelChunkObjectStateFields(void* pObject)
-{
-	char* pObjectBytes;
-	int nFrameClockTick;
-
-	pObjectBytes = (char*) pObject;
-	*(unsigned short*) (pObjectBytes + 0xbc) = 0;
-	*(int*) (pObjectBytes + 0x2c) = 0;
-	*(int*) (pObjectBytes + 0xb8) = 0;
-	*(int*) (pObjectBytes + 0x114) = 0;
-	*(unsigned short*) (pObjectBytes + 0xb4) = 0;
-	*(int*) (pObjectBytes + 0x38) = 0;
-	*(unsigned short*) (pObjectBytes + 0xc4) = 0;
-	*(int*) (pObjectBytes + 0x3c) = 0;
-	*(int*) (pObjectBytes + 0xf0) = 0;
-	*(int*) (pObjectBytes + 0xc0) = 0;
-	*(int*) (pObjectBytes + 0x8c) = 0;
-	*(int*) (pObjectBytes + 0x08) = 0;
-	*(int*) (pObjectBytes + 0x0c) = 0;
-	*(int*) (pObjectBytes + 0x104) = 0;
-	*(int*) (pObjectBytes + 0x108) = 0;
-	*(int*) (pObjectBytes + 0x10c) = 0;
-	*(int*) (pObjectBytes + 0x30) = 0;
-	*(int*) (pObjectBytes + 0x34) = 0;
-	*(int*) (pObjectBytes + 0x4c) = 0;
-	*(int*) (pObjectBytes + 0x50) = 0;
-	*(unsigned short*) (pObjectBytes + 0x6e) = 0;
-	*(int*) (pObjectBytes + 0x54) = 0;
-	*(int*) (pObjectBytes + 0x58) = 0;
-	*(int*) (pObjectBytes + 0x11c) = 0;
-	*(int*) (pObjectBytes + 0x74) = 0;
-	nFrameClockTick = g_nLevelFrameClockTick;
-	*(int*) (pObjectBytes + 0xcc) = nFrameClockTick;
-	*(int*) (pObjectBytes + 0x98) = 0;
-	*(int*) (pObjectBytes + 0x10) = 0;
-}
-
 struct LevelChunkObjectRuntimeStateView {
-	void ClearStateFieldsThunk(void);
-	void ResetRuntimeState(void);
 	void ResetRuntimeStateThunk(void);
 };
 
-struct ManagedEntityRuntimeStateView : LevelChunkObjectRuntimeStateView {
-	void ResetManagedEntityRuntimeState(void);
-};
-
-void LevelChunkObjectRuntimeStateView::ClearStateFieldsThunk(void)
-{
-	ClearLevelChunkObjectStateFields(this);
-}
-
-void LevelChunkObjectRuntimeStateView::ResetRuntimeState(void)
-{
-	char* pObjectBytes;
-	unsigned short* pPendingEntryCount;
-	int nObjectType;
-
-	*(int*) ((char*) this + 0x9c) = *(int*) ((char*) this + 0x40);
-	*(int*) ((char*) this + 0xa4) = *(int*) ((char*) this + 0x48);
-	pObjectBytes = (char*) this;
-	*(int*) (pObjectBytes + 0xe4) = 0;
-	*(int*) (pObjectBytes + 0xa0) = *(int*) (pObjectBytes + 0x44);
-	*(int*) (pObjectBytes + 0xe8) = 0;
-	*(int*) (pObjectBytes + 0xec) = 0;
-	ClearStateFieldsThunk();
-	*(int*) (pObjectBytes + 0xa4) = 0;
-	*(unsigned short*) (pObjectBytes + 0x120) = 0xffff;
-	*(int*) (pObjectBytes + 0x110) = 0xffff;
-	*(int*) (pObjectBytes + 0xa0) = 0;
-	*(int*) (pObjectBytes + 0x9c) = 0;
-	pPendingEntryCount = *(unsigned short**) (pObjectBytes + 0x70);
-	if (pPendingEntryCount != 0) {
-		*pPendingEntryCount = 0;
-	}
-	nObjectType = *(int*) (pObjectBytes + 0x64);
-	switch (nObjectType) {
-	case 1:
-		*(unsigned short*) (pObjectBytes + 4) = 0x200;
-		break;
-	case 2:
-		*(unsigned short*) (pObjectBytes + 4) = 0x100;
-		break;
-	}
-}
-
 void LevelChunkObjectRuntimeStateView::ResetRuntimeStateThunk(void)
 {
-	ResetRuntimeState();
-}
-
-void ManagedEntityRuntimeStateView::ResetManagedEntityRuntimeState(void)
-{
-	char* pObjectBytes;
-
-	ResetRuntimeStateThunk();
-	pObjectBytes = (char*) this;
-	*(int*) (pObjectBytes + 0x130) = 0;
-	*(int*) (pObjectBytes + 0x12c) = 0x18;
-	*(int*) (pObjectBytes + 0x128) = 0x18;
-	*(int*) (pObjectBytes + 0x134) = 0;
-	*(int*) (pObjectBytes + 0x124) = 1;
+	((CGameObject*) this)->Restart();
 }
 
 void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject)
 {
-	((ManagedEntityRuntimeStateView*) pObject)->ResetManagedEntityRuntimeState();
+	((CGlobalGameObject*) pObject)->Restart();
 }
 
 void LEMBALL_FASTCALL ResetMoveChunkObjectRuntimeStateThunk(void* pObject)

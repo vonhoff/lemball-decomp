@@ -67,7 +67,11 @@ public:
 	int m_nPendingState114;
 	char m_abReserved118[4];
 	int m_fOnMover11C;
+	unsigned short m_nRestartValue120;
+	char m_abReserved122[2];
 
+	void Restart(void);
+	void Initialise(void);
 	void StartMoving(void);
 	void StopMoving(void);
 	void TurnToFaceDestination(void);

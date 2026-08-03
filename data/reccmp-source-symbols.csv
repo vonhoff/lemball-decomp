@@ -6,11 +6,11 @@ address,name,symbol,type,source
 0x0040E060,DestroyDoorChunkManagerAuto,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0040EFD0,DestroyDoorChunkObjectAuto,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00414DE0,DestroyManagedEntityQueueCursorAuto,,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x004150D0,LevelChunkObjectRuntimeStateView::ResetRuntimeState,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+
 0x00415160,DestroyLevelChunkObjectBaseAuto,,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x004151B0,ClearLevelChunkObjectStateFields,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+
 0x00415240,SetLevelChunkObjectMotionVector,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x00416D50,ManagedEntityRuntimeStateView::ResetManagedEntityRuntimeState,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+
 0x00417EC0,DestroyProjectilePoolAuto,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0041B110,DestroyCountedChildTableStreamAuto,,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041BEC0,DispatchType14CountedChildSlotC4,,function,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
