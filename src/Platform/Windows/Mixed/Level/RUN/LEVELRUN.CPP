@@ -1,6 +1,7 @@
 #define LEMBALL_DEFINE_MANAGED_ENTITY_PACKET_CLASSES
 
 #include "AI/CLiftManager.h"
+#include "AI/CMaze.h"
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
@@ -84,7 +85,7 @@ unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void);
 unsigned short FindLastFreeManagedEntitySlotIdThunk(void);
 void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject);
 void LEMBALL_FASTCALL ResetBallChunkEntries(void* pBallManager);
-void LEMBALL_FASTCALL FillReachabilityGridFromTileFlags(void* pReachabilityHelper);
+
 void LEMBALL_FASTCALL ResizeLevelTileReachabilityGrid(void* pReachabilityHelper);
 void LEMBALL_FASTCALL ResetBoonChunkManagerObjects(void* pObject);
 void LEMBALL_FASTCALL ClearLevelTileGridCells(int nTileGridCells);
@@ -787,7 +788,7 @@ void CMap::CalculateCliffThunk(void)
 // LINKERILT: LEMBALL 0x00403364
 void LEMBALL_FASTCALL FillReachabilityGridFromTileFlagsThunk(void* pReachabilityHelper)
 {
-	FillReachabilityGridFromTileFlags(pReachabilityHelper);
+	((CMaze*) pReachabilityHelper)->ReInitialise();
 }
 // LINKERILT: LEMBALL 0x00403391
 int LevelManagedEntityActiveGroupView::HasDirtyChildrenThunk(void)
@@ -2205,54 +2206,7 @@ void LEMBALL_FASTCALL reset_ball_chunk_manager_load_cursor(void* pManager)
 
 
 
-// MACINTOSH: CMaze::ReInitialise()
-// FUNCTION: LEMBALL 0x00423110
-void LEMBALL_FASTCALL FillReachabilityGridFromTileFlags(void* pReachabilityHelper)
-{
-	GameLevelTileReachabilityHelper* pHelper;
-	GameLevelTileGrid* pTileGrid;
-	int nTileFlags;
-	unsigned short nCellValue;
-	int y;
-	int x;
-	unsigned short* pReachabilityRow;
 
-	pHelper = (GameLevelTileReachabilityHelper*) pReachabilityHelper;
-	pTileGrid = (GameLevelTileGrid*) (unsigned long) pHelper->m_pTileGrid00;
-	y = 0;
-	if (0 < pHelper->m_cRows1014) {
-		do {
-			x = 0;
-			pReachabilityRow = (unsigned short*) (unsigned long) (*(int*) (pHelper->m_ppRows04 + y * 4));
-			if (0 < pHelper->m_cColumns1010) {
-				do {
-					if (x < 0 || y < 0) {
-						nCellValue = 3;
-					}
-					else {
-						nTileFlags = pHelper->m_pTileGrid00;
-						if (pTileGrid->m_cColumns10 <= x || pTileGrid->m_cRows14 <= y) {
-							nCellValue = 3;
-						}
-						else {
-							nCellValue = *(unsigned short*) (pTileGrid->m_pCells0C + 6 +
-															 (y * pTileGrid->m_cColumns10 + x) * 0xc);
-						}
-					}
-
-					if ((nCellValue & 1) == 0) {
-						pReachabilityRow[x] = 0xff00;
-					}
-					else {
-						pReachabilityRow[x] = 0xffff;
-					}
-					++x;
-				} while (x < pHelper->m_cColumns1010);
-			}
-			++y;
-		} while (y < pHelper->m_cRows1014);
-	}
-}
 // MACINTOSH: CMaze::Initialise()
 // FUNCTION: LEMBALL 0x00423190
 void LEMBALL_FASTCALL ResizeLevelTileReachabilityGrid(void* pReachabilityHelper)

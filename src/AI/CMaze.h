@@ -7,6 +7,7 @@ class CMaze {
 public:
 	CMaze(CMap* pMap);
 	~CMaze(void);
+	void ReInitialise(void);
 
 private:
 	CMap* m_pMap00;
