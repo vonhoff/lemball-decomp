@@ -281,7 +281,7 @@ address,name,symbol,type,source
 0x00472000,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00472030,,?DualStreamRet8@VsNetRuntimeChannelStack@@$4PPPPPPPM@M@AEXHPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00472040,,?HandleAsyncMessage@VsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
-0x0047B7D0,VsNetEffStreamRecordSlotTable::`scalar deleting destructor',,function,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047B7D0,CHeaders::`scalar deleting destructor',,function,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x0047B970,DeleteFileBackedEffStreamAuto,,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x0047B9B0,,?ReleaseFileBackedEffMarker@VsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@A@AEHXZ,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x0047B9C0,,??_EVsNetFileBackedCompositeEffChannelAdapter@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H

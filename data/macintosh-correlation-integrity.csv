@@ -1192,3 +1192,10 @@ CODE_02_Visos (Generic).bin,0x00006262,SetMainID__11CBaseCursorFUli,0x0046B3B0,h
 CODE_02_Visos (Generic).bin,0x0000644A,InWindow__11CBaseCursorFP5CGWnd,0x0046B460,high,window/render-entry bounds and cursor visibility semantics,exact_tuple,0x0000644A
 CODE_02_Visos (Generic).bin,0x0000679A,Draw__11CBaseCursorFP5CGWnd,0x0046B5C0,high,"window-relative cursor geometry, clipping, native-cursor arbitration",exact_tuple,0x0000679A
 CODE_02_Visos (Generic).bin,0x00006B7A,Process__11CBaseCursorFv,0x0046B810,high,"timed fixed-point motion, clamp, position event dispatch",exact_tuple,0x00006B7A
+CODE_02_Visos (Generic).bin,0x00006CB6,__ct__14CHeaderMessageFv,0x00479540,high,"base stream init, vtable role, +0x30 payload extent, exact 68K field layout, 100% reccmp",exact_tuple,0x00006CB6
+CODE_02_Visos (Generic).bin,0x00006D28,AddData__14CHeaderMessageFv,0x00479580,high,"marker increment, u16/u32 writes, two 0x15-byte fields, exact call sequence, 100% reccmp",exact_tuple,0x00006D28
+CODE_02_Visos (Generic).bin,0x00006DA6,GetData__14CHeaderMessageFv,0x004795D0,high,"marker compare, conditional u32 and two 0x15-byte reads, 0x2e skip, 100% reccmp",exact_tuple,0x00006DA6
+CODE_02_Visos (Generic).bin,0x00006E6E,__ct__8CHeadersFi,0x00479620,high,"counted 0x60-byte Windows slot array, parallel u16 flags, constructor callers and layout adaptation",exact_tuple,0x00006E6E
+CODE_02_Visos (Generic).bin,0x00006ED8,__dt__8CHeadersFv,0x004796E0,high,"parallel flag free, counted-slot destruction, base destructor and vtable restoration",exact_tuple,0x00006ED8
+CODE_02_Visos (Generic).bin,0x00006F38,AddData__8CHeadersFv,0x00479790,high,ordered child stream copy loop and parent cursor advance; 0x60 Windows stride adapts Macintosh 0x56,exact_tuple,0x00006F38
+CODE_02_Visos (Generic).bin,0x00006F98,GetData__8CHeadersFv,0x004797D0,high,"ordered child Set loop, conditional parent cursor update, changed-slot cursor reset",exact_tuple,0x00006F98

@@ -391,3 +391,9 @@ All eight portable `CTextManager` symbols map to the Windows manager at `0x00469
 The eleven generic Macintosh methods from constructor trailer `0x00005B68` through `Process` trailer `0x00006B7A` map in order to the Windows cursor-client family at `0x0046AEC0..0x0046B810`. Exact 68K bodies, resource replacement, packed-position event handling, fixed-point motion, window-relative drawing, callers, and the Windows cursor render-client vtable establish the family independently of adjacency. The Windows object expands to `0xA4` bytes and keeps implementations split across `CGDI.cpp`, `LEVELSTAT.CPP`, `GDISTATUSVT.CPP`, and `CGame.cpp`.
 
 The two overloads remain distinct: `SetMainID(unsigned long)` selects a ZRLE resource at `0x0046B310`; `SetMainID(unsigned long,int)` selects a LIST resource entry at `0x0046B3B0`. Windows global/fastcall helpers retain their actual ABI even where the Macintosh identity is a member. Macintosh-specific `RefreshPos` and `GetPos` remain platform-specific and consume no Windows functions.
+
+## CHeaderMessage and CHeaders reconstruction
+
+The three portable `CHeaderMessage` symbols map to `0x00479540`, `0x00479580`, and `0x004795D0`; constructor state, marker serialization, two `0x15`-byte fields, and the unchanged-marker `0x2E` skip match exactly. Its Macintosh-specific destructor remains excluded.
+
+The four portable `CHeaders` symbols map to `0x00479620`, `0x004796E0`, `0x00479790`, and `0x004797D0`. Windows widens each Macintosh `0x56`-byte child to `0x60`, while preserving the counted child array, parallel marker table, ordered `AddData`/`GetData` loops, and parent cursor equations. The Windows-only `FindNextChangedSlot` at `0x00479720` remains unconsumed; physical ownership stays in `VSNETFIL.CPP`.
