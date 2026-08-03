@@ -12,6 +12,7 @@ struct ManagedEntitySlotOwnerView {
 
 struct CMover : public ManagedEntitySlotOwnerView {
 public:
+	CMover(void);
 	~CMover(void);
 	void Restart(void);
 	void Initialise(void);

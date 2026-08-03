@@ -13,6 +13,10 @@ struct LevelNodePoint {
 	int m_anValues[3];
 };
 
+struct LevelChunkObjectBaseView {
+	void* InitializeLevelChunkObjectBase(int nType, unsigned short nVariant, unsigned short nStateId);
+};
+
 struct LevelModeNodeView {
 	char m_abReserved00[0x17c];
 	void* m_pNodeManager17C;
@@ -42,6 +46,20 @@ struct MoveChunkTileGridView {
 	int m_cColumns10;
 	int m_cRows14;
 };
+
+// FUNCTION: LEMBALL 0x0042e590
+CMover::CMover(void)
+{
+	char* pObject = (char*) this;
+	((LevelChunkObjectBaseView*) this)->InitializeLevelChunkObjectBase(0x34, 0, 0);
+	*(int*) (pObject + 0x150) = 0;
+	*(int*) (pObject + 0x154) = 0;
+	*(int*) (pObject + 0x158) = 0;
+	*(int*) (pObject + 0x15c) = 0xaa55aa55;
+	*(int*) (pObject + 0x160) = 0xaa55aa55;
+	*(int*) (pObject + 0x164) = 0xaa55aa55;
+	*(void**) this = g_LEVELVT_MoveChunkObjectVtable;
+}
 
 // FUNCTION: LEMBALL 0x0042e5e0
 void CMover::Restart(void)
