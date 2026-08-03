@@ -219,7 +219,6 @@ DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveRockChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitRockChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveCaptureTriggerChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitCaptureTriggerChunkManagerRenderEntries)
-DEFINE_LINKSCF_VTABLE_STUB_1(EmitLasrChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(InitializeTramChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitTramChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActivePgunChunkObjects)
@@ -431,7 +430,8 @@ struct LaserManagerVtableLayout {
 	void* m_apSlots00[6];
 	void (CLaserManager::*m_pRestart18)(void);
 	void (CLaserManager::*m_pProcess1C)(void);
-	void* m_apSlots20[2];
+	void* m_pCommand20;
+	int (CLaserManager::*m_pGetViewData24)(CViewData*);
 };
 typedef char LaserManagerMemberPointerMustBeOneWord
 	[sizeof(void (CLaserManager::*)(void)) == sizeof(void*) ? 1 : -1];
@@ -446,8 +446,8 @@ LaserManagerVtableLayout g_LINKSCF_LasrChunkManagerVtable = {
 	 (void*) DeleteLasrChunkManagerAuto},
 	&CLaserManager::Restart,
 	&CLaserManager::Process,
-	{(void*) ReturnFalseChunkStreamCommandThunk,
-	 (void*) EmitLasrChunkManagerRenderEntries}};
+	(void*) ReturnFalseChunkStreamCommandThunk,
+	&CLaserManager::GetViewData};
 // GLOBAL: LEMBALL 0x00496710
 static void* g_LINKSCF_TramChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteTramChunkManagerAuto,
 																			 InitializeTramChunkObjects,

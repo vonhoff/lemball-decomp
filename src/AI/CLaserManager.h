@@ -4,6 +4,7 @@
 class CAI;
 class CLaser;
 class CGameObject;
+class CViewData;
 struct AICOORD;
 
 class CLaserManager {
@@ -14,6 +15,7 @@ public:
 	void Initialise(int nCapacity);
 	int StepOn(const AICOORD& position, CGameObject* pObject);
 	void Process(void);
+	int GetViewData(CViewData* pViewData);
 
 private:
 	unsigned char m_abReserved00[0x30];

@@ -1039,7 +1039,7 @@ address,size,name,unit
 0x004297E0,8,reset_lasr_chunk_object_count,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x004297F0,96,CLaserManager::StepOn,AI/CLaserManager.cpp
 0x00429850,74,CLaserManager::Process,AI/CLaserManager.cpp
-0x004298A0,76,CLaserManager::GetViewData,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x004298A0,76,CLaserManager::GetViewData,AI/CLaserManager.cpp
 0x004298F0,90,CLaserManager::Add,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00429950,142,CLaserManager::LoadLevel,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00429E40,1,noop_lasr_callback,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
