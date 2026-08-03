@@ -132,6 +132,7 @@ struct CNode {
 
 	void InitializePosition(int nX, int nY, int nUnused);
 	void Restart(void);
+	~CNode(void);
 	void SetFixedPointPosition(int nX, int nY);
 	void Position(int* pDestination);
 	void CopyTileXY(int* pX, int* pY);
@@ -157,12 +158,11 @@ void CNode::Restart(void)
 	m_nReserved10 = 0;
 }
 
-// MACINTOSH: CNode::~CNode()
 // FUNCTION: LEMBALL 0x00421310
-void __fastcall DestroyNodeChunkRecordLinks(CNode* pRecord)
+CNode::~CNode(void)
 {
-	if (pRecord->m_pLinks0C != 0) {
-		FreeVSMemBlock(pRecord->m_pLinks0C);
+	if (m_pLinks0C != 0) {
+		FreeVSMemBlock(m_pLinks0C);
 	}
 }
 
