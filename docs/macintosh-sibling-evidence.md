@@ -269,3 +269,7 @@ The sole generic portable constructor maps to `0x0045A640` in physical `Memory.c
 ## CVSOStream reconstruction
 
 All twelve portable stream-format methods map across `0x00458450..0x00458D40` in physical `VSINIT.CPP`. Exact bodies and ABI/caller evidence distinguish `HEX` at `0x00458780`, zero-filled `HEX8` at `0x004589C0`, and four-byte `CHAR4` at `0x00458D40`. Windows-only unsigned-int, other fixed-width hexadecimal/binary adapters, character forwarding, and LEVELVT deleting wrappers remain separate.
+
+## CSoundManager reconstruction
+
+Nineteen portable methods map across `0x0045AF80..0x0045B5F0`; `StreamOut` remains physically in `VSRETURN.CPP`, while the other accepted bodies remain in `VSSOUND.CPP`. Exact ABI, layout, caller, vtable, and backend-slot auditing rejects `0x0045B370`/`0x0045B390` as Windows PauseMusic/ResumeMusic rather than Macintosh `ProcessMusic`, which stays unresolved. Windows-only dispatch, startup-name, report, and global lifecycle helpers remain excluded.
