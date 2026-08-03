@@ -409,3 +409,7 @@ Portable `CPortsMessage` construction and `AnyUsed` map to `0x00479810` and `0x0
 ## CFileReadSocket reconstruction
 
 The four portable `CFileReadSocket` methods map in order to `0x00479930`, `0x00479A40`, `0x00479B30`, and `0x00479C10`. Exact 68K bodies and x86 code preserve embedded channel/read-stream construction, lock/read/unlock behavior, per-slot payload reads, source-address selection, marker/latch comparisons, one-payload service, and the pending-slot cursor. Windows keeps widened embedded objects, `0x60`-byte `CHeaderMessage` slots, hidden constructor state, and physical ownership in `VSNETFIL.CPP`.
+
+## CFileWriteSocket reconstruction
+
+The five portable `CFileWriteSocket` methods map in order to `0x00479E20`, `0x00479F40`, `0x00479FA0`, `0x0047A090`, and `0x0047A0B0`. Constructor, locked stream write, adjusted destination forwarding, and record-slot packet append preserve the Macintosh control flow with widened Windows objects. The x86 destructor core restores final vtables while generated wrappers retain subobject teardown; those wrappers remain unconsumed. Attribution is metadata-only because the preceding source-class rename probe was fidelity-negative.

@@ -3150,11 +3150,11 @@ address,size,name,unit
 0x00479A40,227,CFileReadSocket::Read,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x00479B30,211,CFileReadSocket::ReadBuff,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x00479C10,526,CFileReadSocket::Process,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
-0x00479E20,285,construct_timed_file_backed_eff_channel,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
-0x00479F40,83,restore_timed_file_backed_eff_channel_vtables,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
-0x00479FA0,227,write_eff_stream_to_locked_file,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
-0x0047A090,23,invoke_adjusted_timed_eff_stream_service_callback,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
-0x0047A0B0,365,append_file_backed_eff_record_slot,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x00479E20,285,CFileWriteSocket::CFileWriteSocket,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x00479F40,83,CFileWriteSocket::~CFileWriteSocket,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x00479FA0,227,CFileWriteSocket::Write,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047A090,23,CFileWriteSocket::SetDestAddr,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x0047A0B0,365,CFileWriteSocket::SendPacket,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x0047A220,506,construct_embedded_file_backed_eff_channel_stack,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x0047A420,66,append_adjusted_file_backed_eff_record_slot,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x0047A470,85,increment_file_backed_eff_stream_marker,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
