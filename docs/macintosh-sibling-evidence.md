@@ -441,3 +441,7 @@ All eight portable methods map from constructor `0x0047AF30` through `ConnectSet
 ## Broadcast runtime reconstruction
 
 All fourteen `CBroadcast` bodies map in order to `0x00460350..0x00460A50`. The constructor composes adjusted common/read/write socket views and allocates the 0x200-byte port map; the family covers peer close, port claiming, specific-address setup, broadcast payload construction, stop/read dispatch, message loading, one-second request retry, failure events, run/suspend gating, and addressed send. Physical `VSNET.CPP` ownership and generated wrappers remain unchanged.
+
+## Base packet-buffer reconstruction
+
+`CBasePacketBuff` constructor/destructor map to `0x00461210/0x00461250`. The constructor stores count and 16-bit payload size and allocates the pointer array; the destructor invokes each non-null slot's deleting destructor before releasing the array. Derived buffer constructors remain separate.

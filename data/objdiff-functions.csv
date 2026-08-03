@@ -2410,8 +2410,8 @@ address,size,name,unit
 0x00461190,44,CWritePacket::CWritePacket,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x004611C0,29,CWritePacket::~CWritePacket,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x004611E0,48,CWritePacket::Fill,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00461210,59,construct_eff_transport_record_slot_table,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00461250,58,destroy_vsmem_object_pointer_array,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00461210,59,CBasePacketBuff::CBasePacketBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00461250,58,CBasePacketBuff::~CBasePacketBuff,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461290,92,construct_locked_eff_transport_record_slot_table,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x004612F0,31,copy_global_packet_into_locked_record_slot,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461310,33,clear_locked_record_slot_payload_flags,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP

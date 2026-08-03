@@ -1275,3 +1275,5 @@ CODE_02_Visos (Generic).bin,0x0000CE43,SendFailedInit__10CBroadcastF13NetworkErr
 CODE_02_Visos (Generic).bin,0x0000CE94,Run__10CBroadcastFv,0x00460A20,high,enables send gate and primes retry timestamp
 CODE_02_Visos (Generic).bin,0x0000CEBA,Suspend__10CBroadcastFv,0x00460A40,high,clears send gate
 CODE_02_Visos (Generic).bin,0x0000CF13,Send__10CBroadcastFP15CNetworkAddressR17CBroadcastMessage,0x00460A50,high,"loads broadcast payload, sets peer address and submits through write socket"
+CODE_02_Visos (Generic).bin,0x0000D9E2,__ct__15CBasePacketBuffFiUs,0x00461210,high,stores slot count and 16-bit payload size then allocates pointer array
+CODE_02_Visos (Generic).bin,0x0000DA6E,__dt__15CBasePacketBuffFv,0x00461250,high,deletes each non-null packet slot then frees pointer array
