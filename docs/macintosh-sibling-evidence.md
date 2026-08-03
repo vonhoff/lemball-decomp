@@ -313,3 +313,7 @@ Eight portable `CResPALETTE`, `CResSTRING`, `CResBITMAP`, `CResZRLE`, `CResEFFEC
 ## CResMOVIE reconstruction
 
 All seven portable movie/list-resource methods map across `0x0045DE70..0x0045E120` in `VARLOAD.CPP`. Exact LIST-tag loading, paired `CResSTRING`/`CResINT` arrays, overload ABI, callers and vtable slots support the family. The unused Windows default constructor, scalar deleting wrapper, adjacent GAMI family and trivial filler slots remain target-only or separate.
+
+## CResFONT reconstruction
+
+All thirteen portable font-resource methods map across `0x0045D7B0..0x0045DB30`, preserving mixed `VARLOAD.CPP`, `DRAWTEXT.CPP`, and `TXTCNT.CPP` ownership. Exact LIST semantics, paired ZRLE glyph and INT character-code arrays, indexed VRAM operations, vtables, glyph fallback and metric accumulation support the family. The unused default constructor, deleting wrapper, entry-array helpers, and inherited base-list slots remain separate.
