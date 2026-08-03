@@ -523,3 +523,7 @@ The two `CHotAreaHandler` constructors, `Initialise`, `Reset`, `ProcessArea`, `S
 ## Portable timed-queue disposition
 
 Macintosh `CTimedQueue::Post` and `Send` are counter-plus-forwarding overrides layered on `CBaseQueue`. Windows folds those operations into `CBaseQueue::Post` and `Send` at `0x004631A0/0x00463230`; the shared addresses already belong to the independently mapped base methods, so the timed overrides have split/merged dispositions rather than duplicate direct correlations.
+
+## Portable initialization-status selector
+
+Global `OkFailed` maps directly to `0x00458F10`: both bodies select the shared `Ok` string for nonzero input and `Failed` for zero. The Windows callers use it repeatedly while reporting subsystem initialization results in physical `VSINIT.CPP`.

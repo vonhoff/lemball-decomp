@@ -2036,7 +2036,7 @@ address,size,name,unit
 0x00458D80,34,format_signed_int_to_radix_string,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x00458DB0,174,format_unsigned_int_to_radix_string,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x00458E60,30,delete_stream_base,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x00458F10,18,select_success_or_failed_string,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x00458F10,18,OkFailed,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x00458F30,61,parse_decimal_int_and_advance,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x00458F70,316,initialize_stream_channels,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x004590B0,117,shutdown_stream_channels,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP

@@ -1374,3 +1374,4 @@ CODE_02_Visos (Generic).bin,0x0001242B,ProcessMsg__12CHotAreaListFP10tagMESSAGE,
 CODE_02_Visos (Generic).bin,0x000126F3,ProcessHandlers__12CHotAreaListFRC8CVSPointP10tagMESSAGE,0x0046A770,high,normalizes coordinates performs bounds hit testing and dispatches selected handler
 CODE_02_Visos (Generic).bin,0x000127A1,AddToList__12CHotAreaListFP15CHotAreaHandler,0x0046A9A0,high,appends linked entry and assigns handler parent
 CODE_02_Visos (Generic).bin,0x00012815,RemoveFromList__12CHotAreaListFP15CHotAreaHandler,0x0046AA00,high,finds handler clears selection and deletes linked entry
+CODE_02_Visos (Generic).bin,0x00012FCA,OkFailed__FUc,0x00458F10,high,returns the shared Ok string for nonzero and Failed for zero; exact 68K branch and x86 callers during subsystem initialization
