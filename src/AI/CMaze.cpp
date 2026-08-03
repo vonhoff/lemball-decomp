@@ -260,3 +260,76 @@ void CMaze::BInitialise(unsigned char fReset, int nStartX, int nStartY, int nEnd
 	UpdateChangeNext(m_nStartX1018, m_nStartY101C);
 	m_ppRows04[m_nStartY101C][m_nStartX1018] = 0;
 }
+
+// FUNCTION: LEMBALL 0x00423650
+int CMaze::BIteration(unsigned char& fFound, unsigned char& fExhausted)
+{
+	unsigned char* pFrontierRow;
+	unsigned char* pFrontier;
+	unsigned char nInitialMask;
+	unsigned char nMask;
+	unsigned short* pDistance;
+	int fChanged;
+	int nLeft;
+	int nRight;
+	int nTop;
+	int nBottom;
+	int x;
+	int y;
+
+	*(unsigned int*) &fFound = 0;
+	if (m_nEndY1024 < 0 || m_nEndX1020 < 0 || m_cRows1014 <= m_nEndY1024 || m_cColumns1010 <= m_nEndX1020 ||
+		m_ppRows04[m_nEndY1024][m_nEndX1020] == 0xffff) {
+		return 1;
+	}
+	fChanged = 0;
+	SwapChange();
+	++m_nSearchState1038;
+	nLeft = m_nStartX1018 - m_nSearchState1038;
+	nRight = m_nStartX1018 + m_nSearchState1038;
+	nTop = m_nStartY101C - m_nSearchState1038;
+	nBottom = m_nStartY101C + m_nSearchState1038;
+	if (nLeft < 0) {
+		nLeft = 0;
+	}
+	if (m_cColumns1010 - 1 < nRight) {
+		nRight = m_cColumns1010 - 1;
+	}
+	if (nTop < 0) {
+		nTop = 0;
+	}
+	if (m_cRows1014 - 1 < nBottom) {
+		nBottom = m_cRows1014 - 1;
+	}
+	if (m_nFrontier100C == 0) {
+		pFrontierRow = m_abFrontiers0C + 0x800 + ((nTop * 0x80 + nLeft) >> 3);
+	}
+	else {
+		pFrontierRow = m_abFrontiers0C + ((nTop * 0x80 + nLeft) >> 3);
+	}
+	nInitialMask = (unsigned char) g_anMazeBitMask[nLeft & 7];
+	for (y = nTop; y <= nBottom; ++y) {
+		pDistance = m_ppRows04[y] + nLeft;
+		pFrontier = pFrontierRow;
+		nMask = nInitialMask;
+		for (x = nLeft; x <= nRight; ++x) {
+			if ((nMask & *pFrontier) != 0 && *pDistance != 0xffff && CalcNewDistance(x, y) != 0) {
+				fChanged = 1;
+				UpdateChangeNext(x, y);
+			}
+			nMask >>= 1;
+			if (nMask == 0) {
+				nMask = 0x80;
+				++pFrontier;
+			}
+			++pDistance;
+		}
+		pFrontierRow += 0x10;
+	}
+	*(unsigned int*) &fFound = m_ppRows04[m_nEndY1024][m_nEndX1020] != 0xff00;
+	*(unsigned int*) &fExhausted = fFound == 0 && fChanged == 0;
+	if (fFound == 0 && fChanged != 0 && m_nSearchState1038 < 20) {
+		return 0;
+	}
+	return 1;
+}

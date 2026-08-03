@@ -15,6 +15,7 @@ public:
 	void Clear(unsigned char* pFrontier);
 	void SwapChange(void);
 	void BInitialise(unsigned char fReset, int nStartX, int nStartY, int nEndX, int nEndY);
+	int BIteration(unsigned char& fFound, unsigned char& fExhausted);
 
 private:
 	CMap* m_pMap00;
