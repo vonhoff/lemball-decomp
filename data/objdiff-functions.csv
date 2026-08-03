@@ -2113,11 +2113,11 @@ address,size,name,unit
 0x0045AC50,14,destroy_named_status_entry,Visos/Generic/VSSTAT.CPP
 0x0045AC60,47,update_named_status_entry,Visos/Generic/VSSTAT.CPP
 0x0045AC90,223,write_named_status_entry,Visos/Generic/VSSTAT.CPP
-0x0045AD70,73,construct_fixed_buffer_stream,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x0045ADC0,11,destroy_fixed_buffer_stream,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x0045ADD0,62,reset_fixed_buffer_stream,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x0045AE10,272,append_char_to_fixed_buffer_stream,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x0045AF20,56,append_c_string_to_fixed_buffer_stream,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x0045AD70,73,CVSDebugStreambuf::CVSDebugStreambuf,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x0045ADC0,11,CVSDebugStreambuf::~CVSDebugStreambuf,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x0045ADD0,62,CVSDebugStreambuf::flush,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x0045AE10,272,CVSDebugStreambuf::sputc,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x0045AF20,56,CVSDebugStreambuf::sputs,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x0045AF60,30,delete_fixed_buffer_stream_return_this,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x0045AF80,398,CSoundManager::CSoundManager,Platform/Windows/Mixed/Engine/MEDIA/VSSOUND.CPP
 0x0045B110,121,CSoundManager::~CSoundManager,Platform/Windows/Mixed/Engine/MEDIA/VSSOUND.CPP

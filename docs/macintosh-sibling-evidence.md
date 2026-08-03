@@ -273,3 +273,7 @@ All twelve portable stream-format methods map across `0x00458450..0x00458D40` in
 ## CSoundManager reconstruction
 
 Nineteen portable methods map across `0x0045AF80..0x0045B5F0`; `StreamOut` remains physically in `VSRETURN.CPP`, while the other accepted bodies remain in `VSSOUND.CPP`. Exact ABI, layout, caller, vtable, and backend-slot auditing rejects `0x0045B370`/`0x0045B390` as Windows PauseMusic/ResumeMusic rather than Macintosh `ProcessMusic`, which stays unresolved. Windows-only dispatch, startup-name, report, and global lifecycle helpers remain excluded.
+
+## CVSDebugStreambuf reconstruction
+
+All five portable callback-buffer methods map across `0x0045AD70..0x0045AF20` in physical `VSINIT.CPP`. Exact 68K and x86 layout, callback, vtable, newline, tab, and full-buffer behavior agree. The scalar deleting wrapper at `0x0045AF60` and the larger formatted-composite wrapper at `0x00407E80` plus its ILT remain target-only.
