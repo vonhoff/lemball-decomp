@@ -1929,14 +1929,9 @@ void CNodeManager::DestroyNodeChunkManagerRecords(void)
 	}
 	FreeVSMemBlock((int*) m_pRecords00 - 1);
 }
-// MACINTOSH: CNode::CNode()
-// FUNCTION: LEMBALL 0x004212e0
 CNode* CNode::InitializeNodeChunkRecord(void)
 {
-	m_nX00 = 0xaa55aa55;
-	m_nY04 = 0xaa55aa55;
-	m_pLinks0C = 0;
-	return this;
+	return new (this) CNode;
 }
 
 // MACINTOSH: CNode::Initialise(int, int, int)

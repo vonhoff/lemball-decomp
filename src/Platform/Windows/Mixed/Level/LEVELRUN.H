@@ -119,6 +119,7 @@ struct CNode {
 	int* m_pLinks0C;
 	int m_cLinks10;
 
+	CNode(void);
 	CNode* InitializeNodeChunkRecord(void);
 	CNode* InitializeNodeChunkRecordThunk(void);
 	void Initialise(int nX, int nY, int cLinks);
