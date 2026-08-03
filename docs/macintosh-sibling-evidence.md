@@ -333,3 +333,7 @@ All thirteen portable connection methods map across `0x00460A90..0x00461030`, pr
 ## CChangeList reconstruction
 
 All fifteen portable change-map methods map across `0x004669A0..0x00467020` in `CGDI.cpp`. Exact map quantization, aligned item layout, active marker stack, lazy list generation, callers, and ABI support the family. `GetNItem` is `0x00467000` and `GetDrawMark` is `0x00467020`; the Windows-only two-argument accessor at `0x00466FD0` and rectangle initializer at `0x00467040` remain separate.
+
+## CReadPacket and CWritePacket reconstruction
+
+All six portable packet-slot methods map across `0x00461090..0x004611E0` in `VSNET.CPP`. Exact 68K bodies, locked-versus-simple layouts, direct table and deleting-wrapper callers, x86 calling conventions, and payload ownership establish the two families. `CReadPacket` retains the expanded Win32 critical section; `CWritePacket` retains the network-message owner and retry fields. The deleting wrappers and adjacent `CBasePacketBuff`, `CReadPacketBuff`, and `CWritePacketBuff` families remain separate.
