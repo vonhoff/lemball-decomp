@@ -1379,3 +1379,9 @@ CODE_02_Visos (Generic).bin,0x00013164,_STRM_Init__Fv,0x00458F70,high,allocates 
 CODE_02_Visos (Generic).bin,0x00013246,_STRM_Quit__Fv,0x004590B0,high,destroys output streams then backing debug buffers
 CODE_02_Visos (Generic).bin,0x0001331E,_INP_Init__Fv,0x00459130,high,creates shared queue master input and queue handler then attaches input runtime
 CODE_02_Visos (Generic).bin,0x000133CC,_INP_Quit__Fv,0x004591F0,high,clears input flags detaches handler and destroys shared input objects
+CODE_02_Visos (Generic).bin,0x00013792,INIT_SubSystems__Fv,0x00459250,high,initializes core subsystems in dependency order and reports each status
+CODE_02_Visos (Generic).bin,0x000138A4,INIT_QuitSubSystems__Fv,0x00459520,high,shuts down subsystems in reverse order and checks memory leak state
+CODE_02_Visos (Generic).bin,0x000139AE,INIT_CheckOptions__FPc,0x004595D0,high,matches command option table and toggles or parses selected option
+CODE_02_Visos (Generic).bin,0x00013B0A,INIT_CmdLine__FPc,0x004596B0,high,tokenizes lowercases filters options and compacts remaining arguments
+CODE_02_Visos (Generic).bin,0x00013C28,INIT_Main__FPc,0x00459860,high,parses options initializes runs game session handles startup jumps and shuts down
+CODE_02_Visos (Generic).bin,0x00013C44,_VSExit__Fi,0x00459970,high,nonreturning longjmp to startup exception frame

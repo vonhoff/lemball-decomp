@@ -531,3 +531,7 @@ Global `OkFailed` maps directly to `0x00458F10`: both bodies select the shared `
 ## Portable stream and input lifecycle reconstruction
 
 `_STRM_Init`/`_STRM_Quit` map to `0x00458F70/0x004590B0`, preserving creation and teardown of three debug buffers and their three output streams. `_INP_Init`/`_INP_Quit` map to `0x00459130/0x004591F0`, preserving shared queue, master input, handler attachment, input flags, detachment, and destruction. Physical ownership remains `VSINIT.CPP`.
+
+## Portable aggregate initialization reconstruction
+
+`INIT_SubSystems`, `INIT_QuitSubSystems`, `INIT_CheckOptions`, `INIT_CmdLine`, `INIT_Main`, and `_VSExit` map to `0x00459250/0x00459520/0x004595D0/0x004596B0/0x00459860/0x00459970`. The family preserves subsystem dependency order and reverse teardown, option-table parsing, mutable command-line tokenization and compaction, game-session startup with exception frames, and non-returning startup `longjmp` behavior.
