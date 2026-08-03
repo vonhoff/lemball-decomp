@@ -261,3 +261,7 @@ The portable base constructor and destructor map to `0x004583E0` and `0x00458400
 ## CMBlock reconstruction
 
 All five portable base methods map at `0x0045A540..0x0045A630` in physical `Memory.cpp`. Independent exact-body auditing confirms the `0x28` Windows header, arena/list fields, stream report slot, no-op description setter, and placement allocator. Pointer helper `0x0045A580`, derived `CMRAMBlock` construction, allocator routines, and return-this destructor wrappers remain separate.
+
+## CMRAMBlock reconstruction
+
+The sole generic portable constructor maps to `0x0045A640` in physical `Memory.cpp`. Exact bodies forward all arguments to `CMBlock`, install the derived vtable, stamp `RMBL`, and expose payload `this+0x28` with size reduced by `0x28`. The Macintosh destructor is Mac-specific; Windows return-this wrapper `0x0045A900` remains excluded.

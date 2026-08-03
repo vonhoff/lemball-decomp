@@ -2089,7 +2089,7 @@ address,size,name,unit
 0x0045A5B0,95,CMBlock::StreamOut,Visos/Generic/Memory.cpp
 0x0045A610,3,CMBlock::SetDesc,Visos/Generic/Memory.cpp
 0x0045A630,5,CMBlock::__nw,Visos/Generic/Memory.cpp
-0x0045A640,61,construct_memory_arena_block,Visos/Generic/Memory.cpp
+0x0045A640,61,CMRAMBlock::CMRAMBlock,Visos/Generic/Memory.cpp
 0x0045A6B0,127,allocate_vsmem_block_impl,Visos/Generic/Memory.cpp
 0x0045A730,72,free_vsmem_block_impl,Visos/Generic/Memory.cpp
 0x0045A780,14,allocate_vsmem_block,Visos/Generic/Memory.cpp
