@@ -2015,8 +2015,8 @@ address,size,name,unit
 0x00458380,31,delete_direct_draw_binding,Visos/Windows/CGDI.cpp
 0x004583A0,31,delete_direct_draw_surface_bitmap,Visos/Windows/CGDI.cpp
 0x004583C0,30,delete_dspdib32_display_state_variant,Visos/Windows/CGDI.cpp
-0x004583E0,11,construct_stream_base_vtable,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x00458400,7,destroy_stream_base_vtable,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x004583E0,11,CVSStreambuf::CVSStreambuf,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x00458400,7,CVSStreambuf::~CVSStreambuf,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x00458410,43,construct_stream_format_target_state,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x00458440,7,construct_stream_format_state,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x00458450,69,construct_formatted_output_stream,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP

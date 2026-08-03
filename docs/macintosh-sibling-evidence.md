@@ -253,3 +253,7 @@ All nine portable methods map at `0x00472CE0..0x00473140` in physical `Memory.cp
 ## CSmallMemory reconstruction
 
 All four portable methods map at `0x00473180..0x00473340` in physical `Memory.cpp`. Exact Macintosh trailers and independent Windows auditing confirm the literal `CSmallMemory` owner, unchanged `0x3C` seven-class layout, bucket construction/teardown, interval-based allocation, and bucket-chain free dispatch. `CBucketStore` is rejected as nonexistent terminology; adjacent CBucket helpers and Windows lock/free wrappers remain separate.
+
+## CVSStreambuf reconstruction
+
+The portable base constructor and destructor map to `0x004583E0` and `0x00458400` in physical `VSINIT.CPP`. Exact 68K and x86 bodies only install/restore the base vtable; the constructor retains the two unused stack arguments via `RET 8`. The richer fixed-buffer constructor `0x0045AD70` is a derived object, while `0x00458E60` remains a deleting wrapper.
