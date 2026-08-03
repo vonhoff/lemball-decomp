@@ -58,6 +58,7 @@ struct CNodeManager {
 	int m_cCapacity08;
 
 	CNodeManager(int cCapacity);
+	void Initialise(int cRecords);
 	LevelNodePoint* GetNodePosition(LevelNodePoint* pOutput, int nIndex);
 	void CopyTileByIndex(int nIndex, int* pX, int* pY);
 	void Restart(void);
@@ -138,6 +139,7 @@ struct CNode {
 	CNode(void);
 	void AddANeighbour(int nFirst, int nSecond);
 	void Initialise(int nX, int nY, int cLinks);
+	CNode* InitializeNodeChunkRecordThunk(void);
 	void InitializePosition(int nX, int nY, int nUnused);
 	void Restart(void);
 	void RestartThunk(void);
@@ -163,6 +165,40 @@ void CNodeManager::Restart(void)
 		for (i = 0; i < m_cCapacity08; ++i) {
 			m_pRecords00[i].RestartThunk();
 		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x004211d0
+void CNodeManager::Initialise(int cRecords)
+{
+	int i;
+	int cCapacity;
+	int* pAllocation;
+
+	m_nReserved04 = 0;
+	if (cRecords == 0) {
+		m_pRecords00 = 0;
+		return;
+	}
+	if (m_pRecords00 != 0) {
+		return;
+	}
+
+	cCapacity = m_cCapacity08;
+	pAllocation = (int*) AllocateVSMemBlock((unsigned int) cCapacity * sizeof(CNode) + 4);
+	if (pAllocation != 0) {
+		*pAllocation = cCapacity;
+		m_pRecords00 = (CNode*) (pAllocation + 1);
+		for (i = 0; i < cCapacity; ++i) {
+			m_pRecords00[i].InitializeNodeChunkRecordThunk();
+		}
+	}
+	else {
+		m_pRecords00 = 0;
+	}
+
+	for (i = 0; i < m_cCapacity08; ++i) {
+		m_pRecords00[i].RestartThunk();
 	}
 }
 

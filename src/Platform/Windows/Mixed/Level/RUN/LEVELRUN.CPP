@@ -1865,40 +1865,7 @@ CNodeManager* CNodeManager::ConstructNodeChunkManager(int cCapacity)
 	return new (this) CNodeManager(cCapacity);
 }
 
-// MACINTOSH: CNodeManager::Initialise(int)
-// FUNCTION: LEMBALL 0x004211d0
-void CNodeManager::Initialise(int cRecords)
-{
-	int i;
-	int cCapacity;
-	int* pAllocation;
 
-	m_nReserved04 = 0;
-	if (cRecords == 0) {
-		m_pRecords00 = 0;
-		return;
-	}
-	if (m_pRecords00 != 0) {
-		return;
-	}
-
-	cCapacity = m_cCapacity08;
-	pAllocation = (int*) AllocateVSMemBlock((unsigned int) cCapacity * sizeof(CNode) + 4);
-	if (pAllocation != 0) {
-		*pAllocation = cCapacity;
-		m_pRecords00 = (CNode*) (pAllocation + 1);
-		for (i = 0; i < cCapacity; ++i) {
-			m_pRecords00[i].InitializeNodeChunkRecordThunk();
-		}
-	}
-	else {
-		m_pRecords00 = 0;
-	}
-
-	for (i = 0; i < m_cCapacity08; ++i) {
-		m_pRecords00[i].RestartThunk();
-	}
-}
 // MACINTOSH: CNodeManager::~CNodeManager()
 // FUNCTION: LEMBALL 0x00421260
 void CNodeManager::DestroyNodeChunkManagerRecords(void)
