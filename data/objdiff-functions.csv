@@ -1058,8 +1058,8 @@ address,size,name,unit
 0x0042A4E0,221,CBalloonPost::LoadLevel,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x0042A5C0,39,construct_boon_chunk_object,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x0042A7A0,30,destroy_lasr_chunk_object,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x0042A7D0,279,initialize_fixed_point_segment_interpolator,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x0042A8F0,61,sample_fixed_point_segment_interpolator,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x0042A7D0,279,CMove3d::Set,AI/CMove3d.cpp
+0x0042A8F0,61,CMove3d::Position,AI/CMove3d.cpp
 0x0042A990,24,CTrampoline::CTrampoline,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0042A9B0,30,CTrampoline::Restart,AI/CHOBJRST.CPP
 0x0042A9D0,11,CTrampoline::~CTrampoline,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP

@@ -24,6 +24,7 @@ set(LEMBALL_SOURCES
     src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
     src/AI/CMaze.cpp
     src/AI/CMineManager.cpp
+    src/AI/CMove3d.cpp
     src/AI/CMover.cpp
     src/AI/LVNODE.CPP
     src/Platform/Windows/Mixed/Level/ENTITY/LVTILE.CPP

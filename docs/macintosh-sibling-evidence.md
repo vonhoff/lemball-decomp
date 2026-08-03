@@ -82,6 +82,10 @@ All twenty-five portable Macintosh `CGenericGroupManager` methods align with Win
 ### CPlayerLemmingGroup portable core
 
 All fifteen Macintosh lifecycle, view-data, child mutation, use-object, player-control, dead-child, waypoint, and SFX methods align with Windows `0x00414010..0x004148F0` through the player-group vtable, exact signatures, fields `0x160..0x170`, paired child operations, command semantics, ILTs, and callers. Target-only range helper `0x004140D0`, current-dead iterator `0x004148C0`, and child-dirty walker `0x004149A0` remain excluded. `HasSFXChanged` is `0x00414960`: the already-evidenced manager method at `0x004193F0` calls its ILT directly. The source-identifier refactor is tracked with a temporary fidelity debt: exact accounting changed from `169/21` to `166/21` and implemented functions from `2803` to `2802`; the protected checkpoint remains unchanged.
+### CMove3d portable family
+
+Both portable Macintosh `CMove3d` methods now have genuine ownership in `src/AI/CMove3d.cpp`, correlated to the fixed-point segment implementation at Windows `0x0042A7D0..0x0042A8F0` through exact signatures, the `0x1C` layout, CMover ILTs, callers, and interpolation behavior. `Set` matches `73.40%`; `Position` matches `37.74%`.
+
 ### CMover portable family
 
 All sixteen portable Macintosh `CMover` methods align with Windows `0x0042E590..0x0042F140` through exact signatures, mover vtable/ILTs, type `0x34`, the 16x16 footprint, route/timing fields, fixed-point interpolation, rider attachment inverse operations, and manager callers. The constructor is a `100%` effective match; `CMover::Restart`, `Initialise`, destructor, `IsAt`, and `Switch` have genuine exact ownership in `src/AI/CMover.cpp`; `CMover::Set`, `SetPos`, `MoveObjects`, `IsOn`, `VerifyObjects`, and `StopObjectsMoving` match `59.15%`, `41.79%`, `23.08%`, `48.28%`, `28.85%`, and `71.43%` respectively; the evidenced Windows object size remains `0x1A0`. Target-only rider synchronization `0x0042EAC0` and zero callbacks `0x0042EEC0`/`0x0042EED0` remain excluded.

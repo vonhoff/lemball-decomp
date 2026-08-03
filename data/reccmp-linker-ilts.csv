@@ -142,6 +142,7 @@ address,name,symbol,type,source
 0x00402527,DestroyFrameTimerController,?DestroyFrameTimerController@@YAXXZ,stub,src/Platform/Windows/Mixed/Level/RUN/DEMO.CPP
 0x0040252C,VsNetNetworkLobbyScreen::ShowPlayerEntries,?ShowPlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/Frontend/LOBBY.CPP
 0x0040253B,refresh_active_pgun_chunk_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
+0x00402540,CMove3d::Position,?Position@CMove3d@@QAEXAAUCPt3@@H@Z,stub,src/AI/CMove3d.cpp
 0x0040254A,Distance2DIntPixels,?Distance2DIntPixels@@YAHHHHH@Z,stub,src/Control/CGame.cpp
 0x00402559,activate_ice_chunk_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x0040258B,advance_cached_group_managed_entity_child_iterator,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
@@ -168,6 +169,7 @@ address,name,symbol,type,source
 0x0040275C,get_first_iterated_child_status11c,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x00402770,destroy_demo_playback,?DestroyLevelDemoPlaybackControllerThunk@DemoLevelDemoPlaybackController@@QAEXXZ,stub,src/Platform/Windows/Mixed/Level/RUN/DEMO.CPP
 0x00402784,initialize_level_selection_point_rect_sink_entry_thunk,?InitializeLevelSelectionPointRectSinkEntryThunk@@YIPAXPAX@Z,stub,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x004027DE,CMove3d::Set,?Set@CMove3d@@QAEXAAUCPt3@@0HH@Z,stub,src/AI/CMove3d.cpp
 0x004027E8,append_cached_chunk_object,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x004027FC,read_network_lobby_peer_entry_stream,,stub,src/Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H
 0x00402815,GameFramedScreenBase::ReleaseFrameResources,?ReleaseFrameResources@GameFramedScreenBase@@QAEXXZ,stub,src/Frontend/MAINMENU.CPP
