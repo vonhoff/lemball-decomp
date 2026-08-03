@@ -11,6 +11,8 @@ public:
 
 	int UsableState(void);
 	void CancelRequest(void);
+	void SendRemove(void);
+	void SendCancel(void);
 };
 
 #endif

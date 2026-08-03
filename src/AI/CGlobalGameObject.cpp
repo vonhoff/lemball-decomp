@@ -1,5 +1,12 @@
 #include "AI/CGlobalGameObject.h"
 
+struct ManagedEntityPacketStreamView {
+	void BindManagedEntityPacketTarget(void* pEntity);
+};
+
+extern ManagedEntityPacketStreamView* g_pManagedEntityPacket2ATargetStream;
+extern ManagedEntityPacketStreamView* g_pManagedEntityStateResetPacketStream;
+
 // FUNCTION: LEMBALL 0x00416d90
 int CGlobalGameObject::UsableState(void)
 {
@@ -18,4 +25,16 @@ void CGlobalGameObject::CancelRequest(void)
 		m_fResetPending130 = 0;
 		m_nRuntimeState8C = 0;
 	}
+}
+
+// FUNCTION: LEMBALL 0x00416fc0
+void CGlobalGameObject::SendRemove(void)
+{
+	g_pManagedEntityPacket2ATargetStream->BindManagedEntityPacketTarget(this);
+}
+
+// FUNCTION: LEMBALL 0x00416fd0
+void CGlobalGameObject::SendCancel(void)
+{
+	g_pManagedEntityStateResetPacketStream->BindManagedEntityPacketTarget(this);
 }

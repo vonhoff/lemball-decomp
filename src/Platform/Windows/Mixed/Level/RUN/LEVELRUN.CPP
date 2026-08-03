@@ -1744,17 +1744,6 @@ ManagedEntityPacket26::ManagedEntityPacket26() : ManagedEntityPacketBase(0x26)
 	m_nBufferEnd18 += 4;
 }
 
-// FUNCTION: LEMBALL 0x00416fc0
-void LEMBALL_FASTCALL BindManagedEntityPacket2ATarget(void* pEntity)
-{
-	g_pManagedEntityPacket2ATargetStream->BindManagedEntityPacketTarget(pEntity);
-}
-
-// FUNCTION: LEMBALL 0x00416fd0
-void LEMBALL_FASTCALL BindManagedEntityStateResetPacketTarget(void* pEntity)
-{
-	g_pManagedEntityStateResetPacketStream->BindManagedEntityPacketTarget(pEntity);
-}
 
 // MACINTOSH: CFormationManager::CFormationManager()
 // FUNCTION: LEMBALL 0x0041a140

@@ -498,8 +498,8 @@ address,size,name,unit
 0x00416E20,68,CGlobalGameObject::RequestAction,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00416E70,29,CGlobalGameObject::CancelRequest,AI/CGlobalGameObject.cpp
 0x00416E90,268,CGlobalGameObject::Receive,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
-0x00416FC0,13,CGlobalGameObject::SendRemove,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
-0x00416FD0,13,CGlobalGameObject::SendCancel,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x00416FC0,13,CGlobalGameObject::SendRemove,AI/CGlobalGameObject.cpp
+0x00416FD0,13,CGlobalGameObject::SendCancel,AI/CGlobalGameObject.cpp
 0x00416FE0,356,CGlobalGameObject::SetMessages,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00417150,154,CGlobalGameObject::DeleteMessages,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00417AA0,3,return_false_virtual_hook,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
