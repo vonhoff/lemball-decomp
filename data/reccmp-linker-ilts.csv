@@ -245,7 +245,7 @@ address,name,symbol,type,source
 0x004031CF,gmob_chunk_type14action_view_dispatch_gmob_chunk_type14actions,?DispatchGmobChunkType14Actions@GmobChunkType14ActionView@@QAEXXZ,stub,src/AI/LVACTDSP.CPP
 0x00403201,get_first_managed_entity_child_from_cached_group,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x0040325B,VsNetNetworkLobbyScreen::HidePlayerEntries,?HidePlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/Frontend/LOBBY.CPP
-0x004032AB,set_move_chunk_object_trigger_latch,?set_move_chunk_object_trigger_latch@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x004032AB,CMover::Switch,?Switch@CMover@@QAEXXZ,stub,src/AI/CMover.cpp
 0x004032C4,activate_coll_chunk_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x004032D3,initialize_lift_chunk_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x004032DD,ManagedEntityPacketStreamView::BindManagedEntityPacketTarget,?BindManagedEntityPacketTarget@ManagedEntityPacketStreamView@@QAEXPAX@Z,stub,src/Platform/Windows/Mixed/Level/IO/LVNETVT.CPP

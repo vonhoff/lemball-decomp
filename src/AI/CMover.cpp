@@ -120,3 +120,9 @@ void CMover::Set(unsigned short nSlotId, short nHeading, int nMode, int iNode, i
 	m_nMode144 = nMode;
 	m_nValue16C = nValue;
 }
+
+// FUNCTION: LEMBALL 0x0042eeb0
+void CMover::Switch(void)
+{
+	*(int*) ((char*) this + 0x148) = 1;
+}

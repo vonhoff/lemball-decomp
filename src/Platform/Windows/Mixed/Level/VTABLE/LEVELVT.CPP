@@ -440,7 +440,7 @@ int PASCAL get_tile_flag_0x1c_object_render_entry_count(void);
 void noop_vtable_callback_0042c9a0(void);
 void __fastcall reset_ice_chunk_object_count(void* pManager);
 int PASCAL return_zero_vtable_callback_0042dd30(void* pUnused);
-void __fastcall set_move_chunk_object_trigger_latch(void* pObject);
+
 void __fastcall reset_move_chunk_object_count(void* pManager);
 int __fastcall return_object_field_0x0c_00435880(void* pObject);
 void __fastcall set_object_field_0x10_00435890(void* pObject, void* pUnused, int nValue);
@@ -2157,11 +2157,6 @@ extern void* g_pActiveManagedEntityOwner;
 extern void* g_pLevelTileGrid;
 
 
-// FUNCTION: LEMBALL 0x0042eeb0
-void __fastcall set_move_chunk_object_trigger_latch(void* pObject)
-{
-	*(int*) ((char*) pObject + 0x148) = 1;
-}
 
 struct MoveChunkObjectTriggerView {
 	int IsTriggered(void* pEntity, const int* pPosition);

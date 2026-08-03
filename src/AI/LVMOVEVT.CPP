@@ -1,7 +1,7 @@
+#include "AI/CMover.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
-extern void LEMBALL_FASTCALL set_move_chunk_object_trigger_latch(void* pObject);
 
 // Split from the original LEVELVT source group to preserve MSVC 4.20 code generation.
 
@@ -30,7 +30,7 @@ void LEMBALL_FASTCALL DispatchMoveChunkObjectActionBySlot(void* pManager,
 			}
 		}
 		if (nAction == 4) {
-			set_move_chunk_object_trigger_latch(*(char**) (pManagerBytes + 0x38) + iObject * 0x1a0);
+			((CMover*) (*(char**) (pManagerBytes + 0x38) + iObject * 0x1a0))->Switch();
 		}
 	}
 }

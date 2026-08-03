@@ -1144,7 +1144,7 @@ address,size,name,unit
 0x0042EA40,126,CMover::MoveObjects,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0042EAC0,62,sync_attached_move_chunk_entities_to_current_position,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0042EB00,872,CMover::Process,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0042EEB0,11,CMover::Switch,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0042EEB0,11,CMover::Switch,AI/CMover.cpp
 0x0042EEC0,5,return_zero_level_callback_0042eec0,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0042EED0,5,return_zero_move_chunk_callback,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0042EEE0,83,CMover::IsOn,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP

@@ -12,6 +12,7 @@ struct CMover : public ManagedEntitySlotOwnerView {
 public:
 	void Restart(void);
 	void Initialise(void);
+	void Switch(void);
 	int IsAt(int x, int y, int* pHeight);
 	void Set(unsigned short nSlotId, short nHeading, int nMode, int iNode, int nValue);
 
