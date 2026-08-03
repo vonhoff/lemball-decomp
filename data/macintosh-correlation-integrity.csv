@@ -1342,3 +1342,5 @@ CODE_02_Visos (Generic).bin,0x0001020B,_OnReleased__9CPVButtonF12BUTTON_FLAGS,0x
 CODE_02_Visos (Generic).bin,0x000102A1,_OnPressed__9CPVButtonF12BUTTON_FLAGS,0x004681F0,high,marks redraw and emits timestamped press notification,exact_tuple,0x000102A1
 CODE_02_Visos (Generic).bin,0x00010310,_OnEnterButton__9CPVButtonFv,0x00468260,high,emits timestamped enter-button notification,exact_tuple,0x00010310
 CODE_02_Visos (Generic).bin,0x00010376,_OnExitButton__9CPVButtonFv,0x004682B0,high,emits timestamped exit-button notification,exact_tuple,0x00010376
+CODE_02_Visos (Generic).bin,0x000103F1,_DrawButton__16CDepressedButtonFv,0x00468300,high,tracks depressed-state changes marks target dirty then checks forced drawing,exact_tuple,0x000103F1
+CODE_02_Visos (Generic).bin,0x000104E7,OnPaint__16CDepressedButtonFRC7CVSRect,0x00468360,high,queues button primitive when depressed draw state or geometry is dirty,exact_tuple,0x000104E7

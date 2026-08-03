@@ -495,3 +495,7 @@ The two `CPVButton` constructors, `Initialise`, and destructor map to `0x00467C1
 The draw-state subset maps `SetAutoDraw`, `CheckForceDraw`, `_DrawButton`, and `Draw` to `0x00467E40/0x00467E50/0x00467EF0/0x00467F30`. The field setter, force-draw countdown and dirty-target refresh, changed-frame check, and forced virtual draw dispatch use the same object fields initialized by `CPVButton::Initialise`.
 
 The final interaction subset maps `OnEnter`, `OnExit`, `ConvertDoubleClick`, `OnButtonDown`, `OnButtonUp`, `OnExternalButtonUp`, `_OnReleased`, `_OnPressed`, `_OnEnterButton`, and `_OnExitButton` to `0x00467FA0..0x004682B0`. Shared vtable references, local-point storage, click-flag normalization, press/hover latches, timestamped callbacks, and internal call edges complete all 18 portable `CPVButton` methods. Macintosh-specific painting and visibility methods remain outside this portable family.
+
+## Portable depressed-button reconstruction
+
+`CDepressedButton::_DrawButton` and `OnPaint` map to `0x00468300/0x00468360`. They extend the recovered `CPVButton` state with depressed-state change tracking, force-draw refresh, dirty geometry checks, primitive queueing, and change-list reset. Physical ownership remains in `src/Frontend/MENUSEL.CPP`.
