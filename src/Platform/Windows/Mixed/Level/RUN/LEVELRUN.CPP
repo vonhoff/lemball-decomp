@@ -1866,20 +1866,9 @@ CNodeManager* CNodeManager::ConstructNodeChunkManager(int cCapacity)
 }
 
 
-// MACINTOSH: CNodeManager::~CNodeManager()
-// FUNCTION: LEMBALL 0x00421260
 void CNodeManager::DestroyNodeChunkManagerRecords(void)
 {
-	int i;
-
-	if (m_pRecords00 == 0) {
-		return;
-	}
-	i = *((int*) m_pRecords00 - 1);
-	while (--i >= 0) {
-		FreeVSMemBlock(m_pRecords00[i].m_pLinks0C);
-	}
-	FreeVSMemBlock((int*) m_pRecords00 - 1);
+	this->~CNodeManager();
 }
 CNode* CNode::InitializeNodeChunkRecord(void)
 {

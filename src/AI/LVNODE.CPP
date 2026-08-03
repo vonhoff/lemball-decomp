@@ -58,6 +58,7 @@ struct CNodeManager {
 	int m_cCapacity08;
 
 	CNodeManager(int cCapacity);
+	~CNodeManager(void);
 	void Initialise(int cRecords);
 	LevelNodePoint* GetNodePosition(LevelNodePoint* pOutput, int nIndex);
 	void CopyTileByIndex(int nIndex, int* pX, int* pY);
@@ -200,6 +201,21 @@ void CNodeManager::Initialise(int cRecords)
 	for (i = 0; i < m_cCapacity08; ++i) {
 		m_pRecords00[i].RestartThunk();
 	}
+}
+
+// FUNCTION: LEMBALL 0x00421260
+CNodeManager::~CNodeManager(void)
+{
+	int i;
+
+	if (m_pRecords00 == 0) {
+		return;
+	}
+	i = *((int*) m_pRecords00 - 1);
+	while (--i >= 0) {
+		m_pRecords00[i].~CNode();
+	}
+	FreeVSMemBlock((int*) m_pRecords00 - 1);
 }
 
 // MACINTOSH: CNodeManager::GetNodePosition(int)

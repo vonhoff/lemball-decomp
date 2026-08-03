@@ -136,6 +136,7 @@ struct CNodeManager {
 	int m_cCapacity08;
 
 	CNodeManager(int cCapacity);
+	~CNodeManager(void);
 	CNodeManager* ConstructNodeChunkManager(int cCapacity);
 	CNodeManager* ConstructNodeChunkManagerThunk(int cCapacity);
 	void Initialise(int cRecords);
