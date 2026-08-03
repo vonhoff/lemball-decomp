@@ -1328,3 +1328,7 @@ CODE_02_Visos (Generic).bin,0x0000FA51,__ct__9CPVButtonFRC7CVSRectP7CPVGWnd,0x00
 CODE_02_Visos (Generic).bin,0x0000FAFC,__ct__9CPVButtonFP7CPVGWnd,0x00467CD0,high,constructs empty button window for parent then initializes button state,exact_tuple,0x0000FAFC
 CODE_02_Visos (Generic).bin,0x0000FB7E,Initialise__9CPVButtonFv,0x00467D50,high,sets draw press and hover state defaults and allocates helper,exact_tuple,0x0000FB7E
 CODE_02_Visos (Generic).bin,0x0000FC58,__dt__9CPVButtonFv,0x00467DD0,high,releases button helper and restores parent window ownership,exact_tuple,0x0000FC58
+CODE_02_Visos (Generic).bin,0x0000FC80,SetAutoDraw__9CPVButtonFUc,0x00467E40,high,stores automatic draw flag in shared button state,exact_tuple,0x0000FC80
+CODE_02_Visos (Generic).bin,0x0000FDA2,CheckForceDraw__9CPVButtonFv,0x00467E50,high,refreshes force-draw countdown rectangle and dirty target,exact_tuple,0x0000FDA2
+CODE_02_Visos (Generic).bin,0x0000FE00,_DrawButton__9CPVButtonFv,0x00467EF0,high,marks changed button frame dirty then performs forced draw check,exact_tuple,0x0000FE00
+CODE_02_Visos (Generic).bin,0x0000FE7C,Draw__9CPVButtonFUc,0x00467F30,high,temporarily forces draw dispatch and clears pending redraw state,exact_tuple,0x0000FE7C

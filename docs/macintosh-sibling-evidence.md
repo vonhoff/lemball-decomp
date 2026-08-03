@@ -491,3 +491,5 @@ The final seven `CBaseNetwork` methods map `SetNCBuffers`, `SetCBuffers`, `Attac
 ## Portable button lifecycle reconstruction
 
 The two `CPVButton` constructors, `Initialise`, and destructor map to `0x00467C10/0x00467CD0/0x00467D50/0x00467DD0`. Constructor callers include derived button/window classes; both constructors establish CPVGWnd ownership before shared button-state initialization, and the destructor reverses that ownership. Physical definitions remain in `MENUSEL.CPP`; draw and pointer-interaction methods remain a separate pending subset.
+
+The draw-state subset maps `SetAutoDraw`, `CheckForceDraw`, `_DrawButton`, and `Draw` to `0x00467E40/0x00467E50/0x00467EF0/0x00467F30`. The field setter, force-draw countdown and dirty-target refresh, changed-frame check, and forced virtual draw dispatch use the same object fields initialized by `CPVButton::Initialise`.
