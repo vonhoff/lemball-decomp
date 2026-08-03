@@ -214,7 +214,7 @@ address,name,symbol,type,source
 0x004699D0,delete_resource_sprite_geometry_child `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
 0x00469C00,delete_resource_sprite_geometry_child_adjusted_a `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
 0x00469C30,delete_resource_sprite_geometry_child_adjusted_b `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
-0x0046B3B0,GameCursorRenderClientAuto::SetListResourceEntry,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x0046B3B0,CBaseCursorAuto::SetMainID,,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 0x0046DAF0,StatusPoint2DView::Set,,synthetic,src/Platform/Windows/Mixed/Engine/GDI/RENDER/GDISTATUSVT.CPP
 0x0046DB10,GdiPoint2DView::Copy,,synthetic,src/Platform/Windows/Mixed/Engine/GDI/RENDER/GDIVT.CPP
 0x0046DB40,CPVSurfaceSubobjectSlot0,,synthetic,src/Visos/Windows/CGDI.cpp

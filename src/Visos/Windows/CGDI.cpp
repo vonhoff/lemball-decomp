@@ -100,10 +100,10 @@ void LEMBALL_FASTCALL ResetHelperUploadRectListAndStateMap(int nUploadState);
 void LEMBALL_FASTCALL PromoteHelperUploadStateToActive(int nUploadState);
 void LEMBALL_FASTCALL DestroyGeometryHelperPointerArray(void* pHelper);
 void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void* pQueue);
-void* LEMBALL_FASTCALL ConstructStatusIndicatorRenderClientBase(int* pRenderClient);
-void LEMBALL_FASTCALL DestroyStatusIndicatorRenderClientBase(int* pRenderClient);
-void LEMBALL_FASTCALL InitializeStatusIndicatorRenderClientDefaults(int* pRenderClient);
-int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(void* pRenderClient, int, RenderDispatchQueueEntry* pEntry);
+void* LEMBALL_FASTCALL CBaseCursorConstruct(int* pRenderClient);
+void LEMBALL_FASTCALL CBaseCursorDestroy(int* pRenderClient);
+void LEMBALL_FASTCALL CBaseCursorInitialise(int* pRenderClient);
+int LEMBALL_FASTCALL CBaseCursorProcessMsg(void* pRenderClient, int, RenderDispatchQueueEntry* pEntry);
 int InitializeResourceGeometryHelperRuntime(void);
 int ShutdownResourceGeometryHelperRuntime(void);
 int FindFreeSurfaceCGDIDevice(void* pvSlotManager);
@@ -149,7 +149,7 @@ void* LEMBALL_FASTCALL DeleteStatusIndicatorRenderClientBaseThunk(void* pRenderC
 																  int nUnused,
 																  unsigned char fDelete);
 void LEMBALL_FASTCALL NoopStatusIndicatorRenderClientSlot(void* pRenderClient);
-int LEMBALL_FASTCALL DispatchStatusIndicatorRenderEntry(void* pRenderClient, int nUnused, void* pEntry);
+int LEMBALL_FASTCALL CBaseCursorInWindow(void* pRenderClient, int nUnused, void* pEntry);
 void* LEMBALL_FASTCALL DeleteArrowCursorRenderClientThunk(void* pRenderClient, int nUnused, unsigned char fDelete);
 void LEMBALL_FASTCALL ResizeCPVSurface(void*, int, void*);
 int LEMBALL_FASTCALL HasBackBuffCPVSurface(void*);
@@ -392,8 +392,8 @@ static VsGdiTargetParamWrapperVtable g_VSGDI_ResourceGeometryHelperTargetParamWr
 static void* g_VSGDI_StatusIndicatorBaseVtable[8] = {
 	(void*) InitializeNonZrleVariantRenderEntry,
 	(void*) DeleteStatusIndicatorRenderClientBaseThunk,
-	(void*) HandleStatusIndicatorInputEvent,
-	(void*) DispatchStatusIndicatorRenderEntry,
+	(void*) CBaseCursorProcessMsg,
+	(void*) CBaseCursorInWindow,
 	(void*) _purecall,
 	(void*) _purecall,
 	(void*) NoopStatusIndicatorRenderClientSlot,
@@ -403,8 +403,8 @@ static void* g_VSGDI_StatusIndicatorBaseVtable[8] = {
 static void* g_VSGDI_ArrowCursorRuntimeVtable[8] = {
 	(void*) InitializeNonZrleVariantRenderEntry,
 	(void*) DeleteArrowCursorRenderClientThunk,
-	(void*) HandleStatusIndicatorInputEvent,
-	(void*) DispatchStatusIndicatorRenderEntry,
+	(void*) CBaseCursorProcessMsg,
+	(void*) CBaseCursorInWindow,
 	(void*) HideArrowCursor,
 	(void*) ShowArrowCursor,
 	(void*) InitializeArrowCursorPosition,
@@ -438,7 +438,7 @@ void* g_VSGDI_StatusIndicatorPointSinkVtable[12] = {
 };
 
 void* LEMBALL_FASTCALL VsGdiDeleteDisplayState(void* pDisplayState, int nUnused, int fDelete);
-int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(void* pRenderClient,
+int LEMBALL_FASTCALL CBaseCursorProcessMsg(void* pRenderClient,
 													 int nUnused,
 													 RenderDispatchQueueEntry* pEntry);
 void LEMBALL_FASTCALL InitializeArrowCursorPosition(void* pRenderClient);
@@ -3220,7 +3220,7 @@ void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void* pQueue)
 	}
 }
 // FUNCTION: LEMBALL 0x0046aec0
-void* LEMBALL_FASTCALL ConstructStatusIndicatorRenderClientBase(int* pRenderClient)
+void* LEMBALL_FASTCALL CBaseCursorConstruct(int* pRenderClient)
 {
 	InitializeRenderQueueNodeBase(pRenderClient);
 	*(void**) ((char*) pRenderClient + 0x40) = g_VSGDI_StatusIndicatorRenderClientVtable;
@@ -3243,11 +3243,11 @@ void* LEMBALL_FASTCALL ConstructStatusIndicatorRenderClientBase(int* pRenderClie
 	pRenderClient[0x1a] = 0xaa55aa55;
 	*(short*) ((char*) pRenderClient + 0x78) = 0;
 	*(void**) pRenderClient = g_VSGDI_StatusIndicatorBaseVtable;
-	InitializeStatusIndicatorRenderClientDefaults(pRenderClient);
+	CBaseCursorInitialise(pRenderClient);
 	return pRenderClient;
 }
 // FUNCTION: LEMBALL 0x0046af30
-void LEMBALL_FASTCALL DestroyStatusIndicatorRenderClientBase(int* pRenderClient)
+void LEMBALL_FASTCALL CBaseCursorDestroy(int* pRenderClient)
 {
 	struct RenderEntryDeleteInterface {
 		virtual void Delete(int fDelete) = 0;
@@ -3267,7 +3267,7 @@ void LEMBALL_FASTCALL DestroyStatusIndicatorRenderClientBase(int* pRenderClient)
 	*(void**) (pRenderClient + 0x10) = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
 // FUNCTION: LEMBALL 0x0046afd0
-void LEMBALL_FASTCALL InitializeStatusIndicatorRenderClientDefaults(int* pRenderClient)
+void LEMBALL_FASTCALL CBaseCursorInitialise(int* pRenderClient)
 {
 	int* pEntryBlock;
 	int* pEntry;
@@ -3326,7 +3326,7 @@ void LEMBALL_FASTCALL InitializeStatusIndicatorRenderClientDefaults(int* pRender
 	pRenderClient[0x1c] = (int) dwNow;
 }
 // FUNCTION: LEMBALL 0x0046b0e0
-int LEMBALL_FASTCALL HandleStatusIndicatorInputEvent(void* pRenderClient, int, RenderDispatchQueueEntry* pEntry)
+int LEMBALL_FASTCALL CBaseCursorProcessMsg(void* pRenderClient, int, RenderDispatchQueueEntry* pEntry)
 
 {
 	int* pState;
@@ -3429,11 +3429,11 @@ position_event:
 	}
 	Scratch.m_Position.m_nX = (short) (pEntry->m_awords[2] & 0xffff);
 	Scratch.m_Position.m_nY = (short) (pEntry->m_awords[2] >> 16);
-	((GameCursorRenderClient*) pRenderClient)->SetCursorPosition(&Scratch.m_Position);
+	((CBaseCursor*) pRenderClient)->SetPos(&Scratch.m_Position);
 	goto done;
 }
 // FUNCTION: LEMBALL 0x0046b2c0
-void GameCursorRenderClient::SetCursorPosition(const VsMathPoint2D* pPosition)
+void CBaseCursor::SetPos(const VsMathPoint2D* pPosition)
 {
 	short x;
 	short y;
@@ -3486,7 +3486,7 @@ int InitializeResourceGeometryHelperRuntime(void)
 
 	piArrowCursorClient = (int*) AllocateVSMemBlock(0xa4);
 	if (piArrowCursorClient != 0) {
-		ConstructStatusIndicatorRenderClientBase(piArrowCursorClient);
+		CBaseCursorConstruct(piArrowCursorClient);
 		*(void**) piArrowCursorClient = g_VSGDI_ArrowCursorRuntimeVtable;
 		InitializeArrowCursorState(piArrowCursorClient);
 		g_pArrowCursorStatusIndicatorRenderClient = piArrowCursorClient;
@@ -5416,7 +5416,7 @@ void LEMBALL_FASTCALL DestroyArrowCursorState(void* pRenderClient)
 	*(void**) pRenderClient = g_VSGDI_ArrowCursorRuntimeVtable;
 	SetCursor(*(HCURSOR*) ((char*) pRenderClient + 0x9c));
 	ShowArrowCursor(pRenderClient);
-	DestroyStatusIndicatorRenderClientBase((int*) pRenderClient);
+	CBaseCursorDestroy((int*) pRenderClient);
 }
 // FUNCTION: LEMBALL 0x00474be0
 void LEMBALL_FASTCALL HideArrowCursor(void* pRenderClient)

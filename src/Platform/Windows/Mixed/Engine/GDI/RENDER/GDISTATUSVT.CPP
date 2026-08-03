@@ -1,10 +1,10 @@
 #include "Visos/Generic/Memory.h"
 
 extern void LEMBALL_FASTCALL DestroyArrowCursorState(void* pRenderClient);
-extern void LEMBALL_FASTCALL DestroyStatusIndicatorRenderClientBase(int* pRenderClient);
+extern void LEMBALL_FASTCALL CBaseCursorDestroy(int* pRenderClient);
 
 // FUNCTION: LEMBALL 0x0046b460
-int LEMBALL_FASTCALL DispatchStatusIndicatorRenderEntry(void* pRenderClient, int nUnused, void* pEntry)
+int LEMBALL_FASTCALL CBaseCursorInWindow(void* pRenderClient, int nUnused, void* pEntry)
 {
 	short* pEntryWords = (short*) pEntry;
 	short width = pEntryWords[4];
@@ -61,7 +61,7 @@ void* LEMBALL_FASTCALL DeleteStatusIndicatorRenderClientBaseThunk(void* pRenderC
 																  unsigned char fDelete)
 {
 	(void) nUnused;
-	DestroyStatusIndicatorRenderClientBase((int*) pRenderClient);
+	CBaseCursorDestroy((int*) pRenderClient);
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pRenderClient);
 	}

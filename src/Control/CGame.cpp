@@ -5363,7 +5363,7 @@ int __stdcall PumpMessagesAndRunFrame(void)
 		((MogLoadResourceArchive*) g_pMainResourceArchive)->AdvanceCachedResourceObjectFrameCounters();
 	}
 	if (g_pArrowCursorStatusIndicatorRenderClient != 0) {
-		((GameCursorRenderClient*) g_pArrowCursorStatusIndicatorRenderClient)->TickCursorRenderClientMotion();
+		((CBaseCursor*) g_pArrowCursorStatusIndicatorRenderClient)->Process();
 	}
 	return g_GAME_RootDispatchGlobals.m_fHelperGeometryDispatchSuppressed == 1;
 }
@@ -5632,7 +5632,7 @@ void GameWindowOwnerRenderContext::UpdateWindowOwnerRenderContext(void)
 			}
 
 			if (*(int*) ((char*) this + 0x20) == 0 && g_pArrowCursorStatusIndicatorRenderClient != 0) {
-				((GameCursorRenderClient*) g_pArrowCursorStatusIndicatorRenderClient)->UpdateForWindowOwner(this);
+				((CBaseCursor*) g_pArrowCursorStatusIndicatorRenderClient)->Draw(this);
 				DispatchAndClearPointerQueue(m_pWindowOwnerContext);
 				*(int*) ((char*) m_pWindowOwnerContext + 4) = 0;
 			}
@@ -5781,7 +5781,7 @@ void VS_RootGeometryOwner::SetWindowOwnerScaleFactor(int nScaleFactor)
 	}
 }
 // FUNCTION: LEMBALL 0x0046b5c0
-void GameCursorRenderClient::UpdateForWindowOwner(void* pOwner)
+void CBaseCursor::Draw(void* pOwner)
 {
 	typedef void(LEMBALL_FASTCALL * VoidProc)(void*);
 	short aRect[4];
@@ -5796,7 +5796,7 @@ void GameCursorRenderClient::UpdateForWindowOwner(void* pOwner)
 	short xCursorOffset;
 	short yCursorOffset;
 
-	GameCursorRenderClient* pCursor = this;
+	CBaseCursor* pCursor = this;
 
 	if ((*(int*) ((char*) pCursor + 0x2c) == 0 ||
 		 (*(unsigned char*) ((char*) g_pSharedGeometryHelper + 0x14) & 1) == 0) &&

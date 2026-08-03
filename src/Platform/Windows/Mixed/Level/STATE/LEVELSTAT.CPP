@@ -584,7 +584,7 @@ extern void* LEMBALL_FASTCALL ConstructAlignedZrleChildOverlayFromPoint(void* pO
 extern void* LEMBALL_FASTCALL ConstructResourceGeometryChildBase(void* pObject, int nUnusedEdx, void* pRenderOwner);
 extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(void* pOwner, int nUnusedEdx, void* pChildOwner);
 
-void LEMBALL_FASTCALL SetStatusIndicatorActive(void* pObject, int nUnused, int fActive);
+void LEMBALL_FASTCALL CBaseCursorSetActive(void* pObject, int nUnused, int fActive);
 
 void* LEMBALL_FASTCALL InitializePackagedSpriteRenderEntry(void* pObject);
 void* LEMBALL_FASTCALL InitializeRenderPointRectSinkEntry(void* pObject);
@@ -704,7 +704,7 @@ void DestroyVariantRenderManager(void* pObject);
 void* DestroyStatusIndicatorPointSinkArray00467BB0(void* pObject, unsigned int fDelete);
 void LEMBALL_FASTCALL RestoreQueuedRenderPointSinkVtable(void* pObject);
 void* DestroyPackagedSpriteRenderEntryArray00469930(void* pObject, unsigned int fDelete);
-void LEMBALL_FASTCALL SetStatusIndicatorActive(void* pObject, int, int fActive);
+void LEMBALL_FASTCALL CBaseCursorSetActive(void* pObject, int, int fActive);
 struct LevelScreenActionButtonLayout {
 	void PositionLevelScreenActionButton(const VS_XYPair* pPanelOrigin);
 	void PositionLevelScreenActionButtonThunk(const VS_XYPair* pPanelOrigin);
@@ -2319,22 +2319,22 @@ void SetLevelScreenStatusIndicatorMode(int nMode, int nValue)
 
 	switch (nMode) {
 	case 0:
-		SetStatusIndicatorActive(g_pArrowCursorStatusIndicatorRenderClient, 0, 0);
-		((GameCursorRenderClient*) g_pArrowCursorStatusIndicatorRenderClient)
-			->SetZrleResource(g_LEVEL_StatusIndicatorModeResourceIds[0]);
+		CBaseCursorSetActive(g_pArrowCursorStatusIndicatorRenderClient, 0, 0);
+		((CBaseCursor*) g_pArrowCursorStatusIndicatorRenderClient)
+			->SetMainID(g_LEVEL_StatusIndicatorModeResourceIds[0]);
 		return;
 
 	case 1:
 		if (g_pLevelDemoPlaybackController != 0 && *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) != 0) {
 			nValue = 0;
 		}
-		((GameCursorRenderClient*) g_pArrowCursorStatusIndicatorRenderClient)
-			->SetListResourceEntry(g_LEVEL_StatusIndicatorModeResourceIds[1], nValue);
+		((CBaseCursor*) g_pArrowCursorStatusIndicatorRenderClient)
+			->SetMainID(g_LEVEL_StatusIndicatorModeResourceIds[1], nValue);
 		if (g_fLevelScreenStatusIndicatorConfigured == 0) {
 			*(int*) ((char*) g_pArrowCursorStatusIndicatorRenderClient + 0x2c) = 1;
 			g_fLevelScreenStatusIndicatorConfigured = 1;
 		}
-		SetStatusIndicatorActive(g_pArrowCursorStatusIndicatorRenderClient, 0, 1);
+		CBaseCursorSetActive(g_pArrowCursorStatusIndicatorRenderClient, 0, 1);
 		*(unsigned short*) ((char*) g_pArrowCursorStatusIndicatorRenderClient + 0x14) = 3;
 		*(unsigned short*) ((char*) g_pArrowCursorStatusIndicatorRenderClient + 0x16) = 3;
 		return;
@@ -2342,14 +2342,14 @@ void SetLevelScreenStatusIndicatorMode(int nMode, int nValue)
 	case 2:
 	case 3:
 		nResourceId = g_LEVEL_StatusIndicatorModeResourceIds[nMode];
-		((GameCursorRenderClient*) g_pArrowCursorStatusIndicatorRenderClient)->SetZrleResource(nResourceId);
+		((CBaseCursor*) g_pArrowCursorStatusIndicatorRenderClient)->SetMainID(nResourceId);
 		if (g_fLevelScreenStatusIndicatorConfigured == 0) {
 			*(int*) ((char*) g_pArrowCursorStatusIndicatorRenderClient + 0x2c) = 1;
 			*(unsigned short*) ((char*) g_pArrowCursorStatusIndicatorRenderClient + 0x14) = 3;
 			*(unsigned short*) ((char*) g_pArrowCursorStatusIndicatorRenderClient + 0x16) = 3;
 			g_fLevelScreenStatusIndicatorConfigured = 1;
 		}
-		SetStatusIndicatorActive(g_pArrowCursorStatusIndicatorRenderClient, 0, 1);
+		CBaseCursorSetActive(g_pArrowCursorStatusIndicatorRenderClient, 0, 1);
 		break;
 	}
 }
@@ -4519,7 +4519,7 @@ void* ConstructLevelScreenStatusIndicatorManager(void* pObject, int nStatusMode,
 		pManager[0x1e] = (int) (unsigned long) paPoint;
 	}
 
-	SetStatusIndicatorActive(g_pArrowCursorStatusIndicatorRenderClient, 0, 0);
+	CBaseCursorSetActive(g_pArrowCursorStatusIndicatorRenderClient, 0, 0);
 	if (g_fCompactPrimaryContextLayout == 0) {
 		pManager[0x25] = (int) (unsigned long) LoadBitmapResource(0xf1);
 		puPointTable = g_LEVEL_StandardStatusIndicatorPointTable;
@@ -5093,7 +5093,7 @@ void* DestroyPackagedSpriteRenderEntryArray00469930(void* pObject, unsigned int 
 	return pObject;
 }
 // FUNCTION: LEMBALL 0x0046b310
-void GameCursorRenderClient::SetZrleResource(int nResourceId)
+void CBaseCursor::SetMainID(int nResourceId)
 {
 	int* pClient;
 	int nOffset;
@@ -5115,7 +5115,7 @@ void GameCursorRenderClient::SetZrleResource(int nResourceId)
 	}
 }
 // FUNCTION: LEMBALL 0x0046b370
-void LEMBALL_FASTCALL SetStatusIndicatorActive(void* pObject, int, int fActive)
+void LEMBALL_FASTCALL CBaseCursorSetActive(void* pObject, int, int fActive)
 
 {
 	int* pClient;
@@ -5138,7 +5138,7 @@ void LEMBALL_FASTCALL SetStatusIndicatorActive(void* pObject, int, int fActive)
 	}
 }
 // Compatibility shim preserving MSVC 4.20 compiler state.
-void GameCursorRenderClient::SetListResourceEntry(int nResourceId, int nEntryIndex)
+void CBaseCursor::SetMainID(int nResourceId, int nEntryIndex)
 {
 	int* pClient;
 	int nOffset;
@@ -5166,7 +5166,7 @@ void GameCursorRenderClient::SetListResourceEntry(int nResourceId, int nEntryInd
 	}
 }
 // FUNCTION: LEMBALL 0x0046b810
-void GameCursorRenderClient::TickCursorRenderClientMotion(void)
+void CBaseCursor::Process(void)
 {
 	VsMathPoint2D PreviousPosition;
 	DWORD dwNow;
@@ -5500,11 +5500,11 @@ void LevelScreenActionButtonLayoutAuto::Position(const VS_XYPair* pPanelOrigin)
 	((VS_RootGeometryOwner*) *(void**) (pButtonBytes + 4))->MoveWindowOwnerOrigin(&Point);
 }
 
-struct GameCursorRenderClientAuto {
-	void SetListResourceEntry(int nResourceId, int nEntryIndex);
+struct CBaseCursorAuto {
+	void SetMainID(int nResourceId, int nEntryIndex);
 };
 
-void GameCursorRenderClientAuto::SetListResourceEntry(int nResourceId, int nEntryIndex)
+void CBaseCursorAuto::SetMainID(int nResourceId, int nEntryIndex)
 {
 	int* pClient;
 	int nOffset;

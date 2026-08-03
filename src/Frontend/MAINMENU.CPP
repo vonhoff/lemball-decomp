@@ -35,7 +35,7 @@ extern void LEMBALL_FASTCALL RestoreLevelSelectionRenderChildEntryVtable(void* p
 extern void LEMBALL_FASTCALL RestoreCompositePointRectSinkFinalizeVtables(void* pObject);
 extern void* LEMBALL_FASTCALL InitializeCompositePointRectSinkEntriesThunk(void* pObject);
 extern void SetLevelScreenStatusIndicatorMode(int nMode, int nValue);
-extern void LEMBALL_FASTCALL SetStatusIndicatorActive(void* pObject, int nUnused, int fActive);
+extern void LEMBALL_FASTCALL CBaseCursorSetActive(void* pObject, int nUnused, int fActive);
 extern int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresent(int* pPrimaryContext);
 extern int LEMBALL_FASTCALL IsPrimaryContextWindowReadyForPresentThunk(int* pPrimaryContext);
 extern void LEMBALL_FASTCALL TogglePrimaryContextDisplayMode(void* pPrimaryContext);
@@ -2570,7 +2570,7 @@ void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroup(void* pObject)
 	if (pScreen->m_fRenderEntriesInitialized368 == 0) {
 		pScreen->m_fRenderEntriesInitialized368 = 1;
 	}
-	SetStatusIndicatorActive(g_pArrowCursorStatusIndicatorRenderClient, 0, 0);
+	CBaseCursorSetActive(g_pArrowCursorStatusIndicatorRenderClient, 0, 0);
 	((GameNoArgVirtual) (*(void***) pScreen->m_pPrimaryContext84)[44])(pScreen->m_pPrimaryContext84, 0);
 
 	pGroup = pScreen->m_abRenderEntryGroupC8 + pScreen->m_iRenderEntryGroup328 * 0x260;
@@ -2589,7 +2589,7 @@ void LEMBALL_FASTCALL RefreshFramedScreenRenderEntryGroup(void* pObject)
 	if (pScreen->m_pSelectorManager334 != 0 && fSelectorChildrenEnabled != 0) {
 		SetMenuSelectorChildrenEnabledThunk((GameMenuSelectorManager*) pScreen->m_pSelectorManager334, 0, 1);
 	}
-	SetStatusIndicatorActive(g_pArrowCursorStatusIndicatorRenderClient, 0, 1);
+	CBaseCursorSetActive(g_pArrowCursorStatusIndicatorRenderClient, 0, 1);
 }
 // FUNCTION: LEMBALL 0x00445a40
 void LEMBALL_FASTCALL RefreshAndDrawFramedScreenBase(void* pObject, int, void*)

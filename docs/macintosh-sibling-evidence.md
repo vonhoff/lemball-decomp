@@ -385,3 +385,9 @@ Portable `CResBase::StreamOut` has exact Macintosh body `0x00002C72..0x00002F00`
 ## CTextManager reconstruction
 
 All eight portable `CTextManager` symbols map to the Windows manager at `0x00469C60..0x0046A070`: constructor/destructor, `LoadFont`, `GetFont`, `UnLoadFont`, both `DrawString` overloads, and `ResetPrimitives`. Both architectures maintain a font-pointer array plus a short resource-ID remap, reuse pooled draw primitives, apply a nonzero relative point with flag `0x200`, and keep the raw-character and `CString` lifetime paths distinct. The Windows object is `0x24` bytes and physically splits the six primary methods into `DRAWTEXT.CPP` while the `CString` overload and reset helper remain owned by `GDIVT.CPP`. Source terminology now follows `CTextManager` without moving either TU.
+
+# Portable `CBaseCursor` family
+
+The eleven generic Macintosh methods from constructor trailer `0x00005B68` through `Process` trailer `0x00006B7A` map in order to the Windows cursor-client family at `0x0046AEC0..0x0046B810`. Exact 68K bodies, resource replacement, packed-position event handling, fixed-point motion, window-relative drawing, callers, and the Windows cursor render-client vtable establish the family independently of adjacency. The Windows object expands to `0xA4` bytes and keeps implementations split across `CGDI.cpp`, `LEVELSTAT.CPP`, `GDISTATUSVT.CPP`, and `CGame.cpp`.
+
+The two overloads remain distinct: `SetMainID(unsigned long)` selects a ZRLE resource at `0x0046B310`; `SetMainID(unsigned long,int)` selects a LIST resource entry at `0x0046B3B0`. Windows global/fastcall helpers retain their actual ABI even where the Macintosh identity is a member. Macintosh-specific `RefreshPos` and `GetPos` remain platform-specific and consume no Windows functions.

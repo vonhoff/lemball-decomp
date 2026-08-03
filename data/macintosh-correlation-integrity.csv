@@ -1181,3 +1181,14 @@ CODE_02_Visos (Generic).bin,0x00005854,UnLoadFont__12CTextManagerFUl,0x00469F10,
 CODE_02_Visos (Generic).bin,0x000058FF,DrawString__12CTextManagerFP4CGDIR8CVSPointRC7CVSSizeUlPcUlP6CRemap,0x00469F50,high,exact pooled primitive; optional relative point; mapped font; char-pointer draw dispatch; and callers,exact_tuple,0x000058FF
 CODE_02_Visos (Generic).bin,0x000059ED,DrawString__12CTextManagerFP4CGDIR8CVSPointRC7CVSSizeUl7CStringUlP6CRemap,0x00469FD0,high,exact pooled primitive; optional relative point; CString lifetime; mapped font draw dispatch; and caller,exact_tuple,0x000059ED
 CODE_02_Visos (Generic).bin,0x00005A4B,ResetPrimitives__12CTextManagerFv,0x0046A070,high,exact current-primitive field reset; callers; and 100% reccmp,exact_tuple,0x00005A4B
+CODE_02_Visos (Generic).bin,0x00005B68,__ct__11CBaseCursorFv,0x0046AEC0,high,"constructor/base init, vtable role, sequential family, caller allocation",exact_tuple,0x00005B68
+CODE_02_Visos (Generic).bin,0x00005C44,__dt__11CBaseCursorFv,0x0046AF30,high,"destructor/resource release, vtable role, exact focused reccmp",exact_tuple,0x00005C44
+CODE_02_Visos (Generic).bin,0x00005DC4,Initialise__11CBaseCursorFv,0x0046AFD0,high,"field defaults, render-entry pool setup, timer state",exact_tuple,0x00005DC4
+CODE_02_Visos (Generic).bin,0x00006015,ProcessMsg__11CBaseCursorFP10tagMESSAGE,0x0046B0E0,high,"input event filtering, packed position, key-motion state",exact_tuple,0x00006015
+CODE_02_Visos (Generic).bin,0x00006085,SetPos__11CBaseCursorFRC8CVSPoint,0x0046B2C0,high,position and fixed-point coordinate update,exact_tuple,0x00006085
+CODE_02_Visos (Generic).bin,0x00006116,SetMainID__11CBaseCursorFUl,0x0046B310,high,ZRLE resource replacement and render-entry propagation,exact_tuple,0x00006116
+CODE_02_Visos (Generic).bin,0x000061AC,SetActive__11CBaseCursorFUc,0x0046B370,high,"active transition, hide slot, timer reset, exact reccmp",exact_tuple,0x000061AC
+CODE_02_Visos (Generic).bin,0x00006262,SetMainID__11CBaseCursorFUli,0x0046B3B0,high,"LIST resource plus entry selection and propagation, exact reccmp",exact_tuple,0x00006262
+CODE_02_Visos (Generic).bin,0x0000644A,InWindow__11CBaseCursorFP5CGWnd,0x0046B460,high,window/render-entry bounds and cursor visibility semantics,exact_tuple,0x0000644A
+CODE_02_Visos (Generic).bin,0x0000679A,Draw__11CBaseCursorFP5CGWnd,0x0046B5C0,high,"window-relative cursor geometry, clipping, native-cursor arbitration",exact_tuple,0x0000679A
+CODE_02_Visos (Generic).bin,0x00006B7A,Process__11CBaseCursorFv,0x0046B810,high,"timed fixed-point motion, clamp, position event dispatch",exact_tuple,0x00006B7A

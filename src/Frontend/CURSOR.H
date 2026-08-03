@@ -3,7 +3,7 @@
 
 #include "Visos/Generic/VSMath.h"
 
-struct GameCursorRenderClientInterface {
+struct CBaseCursorInterface {
 	virtual void Reserved00(void) = 0;
 	virtual void Reserved04(void) = 0;
 	virtual void Reserved08(void) = 0;
@@ -13,7 +13,7 @@ struct GameCursorRenderClientInterface {
 	virtual void InitializeCursorPosition(void) = 0;
 };
 
-struct GameCursorRenderClient : public GameCursorRenderClientInterface {
+struct CBaseCursor : public CBaseCursorInterface {
 	char m_abReserved04[0x0c];
 	VsMathPoint2D m_Position10;
 	char m_abReserved14[4];
@@ -37,11 +37,11 @@ struct GameCursorRenderClient : public GameCursorRenderClientInterface {
 	VsMathPoint2D m_BoundsSize74;
 	VsMathPoint2D m_BoundsOrigin78;
 
-	void TickCursorRenderClientMotion(void);
-	void UpdateForWindowOwner(void* pWindowOwner);
-	void SetCursorPosition(const VsMathPoint2D* pPosition);
-	void SetZrleResource(int nResourceId);
-	void SetListResourceEntry(int nResourceId, int nEntryIndex);
+	void Process(void);
+	void Draw(void* pWindowOwner);
+	void SetPos(const VsMathPoint2D* pPosition);
+	void SetMainID(int nResourceId);
+	void SetMainID(int nResourceId, int nEntryIndex);
 };
 
 #endif
