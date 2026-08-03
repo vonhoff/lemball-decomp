@@ -519,3 +519,7 @@ The two `CHotAreaHandler` constructors, `Initialise`, `Reset`, `ProcessArea`, `S
 ## Portable hot-area list reconstruction
 
 `CHotAreaList` constructor/destructor, `UpdateHandlers`, `DeleteEntry`, `ProcessMsg`, `ProcessHandlers`, `AddToList`, and `RemoveFromList` map to `0x0046A580/0x0046A650/0x0046A6D0/0x0046A6E0/0x0046A710/0x0046A770/0x0046A9A0/0x0046AA00`. The family owns queue attachment, shared pointer state, doubly linked handlers, coordinate normalization, bounds testing, and selected-handler dispatch. The adjacent deleting wrapper remains separate.
+
+## Portable timed-queue disposition
+
+Macintosh `CTimedQueue::Post` and `Send` are counter-plus-forwarding overrides layered on `CBaseQueue`. Windows folds those operations into `CBaseQueue::Post` and `Send` at `0x004631A0/0x00463230`; the shared addresses already belong to the independently mapped base methods, so the timed overrides have split/merged dispositions rather than duplicate direct correlations.
