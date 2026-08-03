@@ -13,6 +13,7 @@ extern int g_nLevelFrameClockTick;
 extern int g_nLevelFrameClockTimeMs;
 extern int g_nSelectedNetworkLobbyPeerId;
 extern int Distance2DIntPixels(int x1, int y1, int x2, int y2);
+extern void LEMBALL_FASTCALL EmitLevelChunkObjectRenderEntry(void* pObject, void* pUnused, void* pRenderEntry);
 
 struct LevelChunkObjectBaseView {
 	void* InitializeLevelChunkObjectBase(int nType, unsigned short nChildType, unsigned short nFlags);
@@ -331,6 +332,79 @@ int CLaser::StepOn(const AICOORD& position, CGameObject* pObject)
 		return 1;
 	}
 	return 0;
+}
+
+// FUNCTION: LEMBALL 0x00428f90
+int CLaser::GetViewData(CViewData* pViewData)
+{
+	char* pObject;
+	char* pEntry;
+	char* pGrid;
+	CGround* pTile;
+	unsigned short nTerrain;
+	int nX;
+	int nY;
+	int nZ;
+	int nStepX;
+	int nStepY;
+	int nRenderType;
+	int cEntries;
+
+	pObject = (char*) this;
+	pEntry = (char*) pViewData;
+	EmitLevelChunkObjectRenderEntry(this, 0, pEntry);
+	cEntries = 1;
+	if (*(int*) (pObject + 0xb8) != 0x1a) {
+		return cEntries;
+	}
+
+	switch (*(int*) (pObject + 0x64)) {
+	case 0x1e:
+	case 0x30:
+		nX = (*(int*) (pObject + 0x9c) >> 12) + 0x26;
+		nY = *(int*) (pObject + 0xa0) >> 12;
+		nStepX = 0x10;
+		nStepY = 0;
+		nRenderType = 0x32;
+		break;
+	case 0x2f:
+	case 0x31:
+		nX = *(int*) (pObject + 0x9c) >> 12;
+		nY = (*(int*) (pObject + 0xa0) >> 12) + 0x14;
+		nStepX = 0;
+		nStepY = 0x10;
+		nRenderType = 0x26;
+		break;
+	default:
+		return cEntries;
+	}
+	nZ = (*(int*) (pObject + 0xa4) >> 12) + 3;
+	pEntry += 0x4c;
+	while (cEntries < 8) {
+		pGrid = (char*) g_pLevelTileGrid;
+		if (nX < 0 || nY < 0 || (nX >> 4) >= *(int*) (pGrid + 0x10) || (nY >> 4) >= *(int*) (pGrid + 0x14)) {
+			nTerrain = 0;
+		}
+		else {
+			pTile = (CGround*) (*(char**) (pGrid + 0x0c) + (((nY >> 4) * *(int*) (pGrid + 0x10)) + (nX >> 4)) * 12);
+			nTerrain = (unsigned short) pTile->GetZThunk(nX & 15, nY & 15);
+		}
+		if (nZ < (int) nTerrain) {
+			return cEntries;
+		}
+		EmitLevelChunkObjectRenderEntry(this, 0, pEntry);
+		*(unsigned short*) pEntry = 0;
+		*(int*) (pEntry + 4) = nX;
+		*(int*) (pEntry + 8) = nY;
+		*(int*) (pEntry + 12) = nZ;
+		*(int*) (pEntry + 0x18) = 0x1a;
+		*(int*) (pEntry + 0x28) = nRenderType;
+		++cEntries;
+		nX += nStepX;
+		nY += nStepY;
+		pEntry += 0x4c;
+	}
+	return cEntries;
 }
 
 void LEMBALL_FASTCALL destroy_lasr_chunk_object_vtable_thunk(void* pObject)

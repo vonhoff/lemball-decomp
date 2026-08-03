@@ -4,6 +4,7 @@
 #include "AI/AICoord.h"
 
 class CGameObject;
+class CViewData;
 
 class CLaser {
 public:
@@ -16,6 +17,7 @@ public:
 	int Process(void);
 	int Activate(void);
 	int StepOn(const AICOORD& position, CGameObject* pObject);
+	int GetViewData(CViewData* pViewData);
 
 private:
 	unsigned char m_abReserved00[0x148];
