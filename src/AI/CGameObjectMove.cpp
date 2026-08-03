@@ -2,6 +2,7 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 extern int g_nLevelFrameClockTick;
+extern void* g_pManagedEntityReachabilityHelper;
 extern unsigned int __cdecl compute_direction_octant_between_points(int nX1, int nY1, int nX2, int nY2);
 
 // GLOBAL: LEMBALL 0x0049d020
@@ -173,6 +174,24 @@ int CGameObject::IsSelectable(void)
 	return 1;
 inactive:
 	return 0;
+}
+
+typedef int(LEMBALL_FASTCALL* CGameObjectInterruptibleProc)(CGameObject* pObject);
+
+// FUNCTION: LEMBALL 0x00416590
+void CGameObject::ResetInstructions(void)
+{
+	if (m_nStateB8 != 4 && m_nStateB8 != 0xc && m_pCommandQueue70 != 0) {
+		CGameObjectInterruptibleProc pIsInterruptible = (CGameObjectInterruptibleProc) ((void**) m_pVtable00)[0x1c];
+		if (pIsInterruptible(this) != 0) {
+			m_nNextUpdateTickCC = g_nLevelFrameClockTick;
+		}
+		m_pCommandQueue70->m_cEntries = 0;
+		if (m_pReachabilityOwner0C != 0) {
+			*(int*) ((char*) g_pManagedEntityReachabilityHelper + 8) = 0;
+		}
+		m_nPendingInstruction08 = 0;
+	}
 }
 
 // FUNCTION: LEMBALL 0x00419ea0

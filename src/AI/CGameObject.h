@@ -34,7 +34,11 @@ struct CGameObjectBounds {
 
 class CGameObject {
 public:
-	char m_abReserved00[0x14];
+	void* m_pVtable00;
+	char m_abReserved04[4];
+	int m_nPendingInstruction08;
+	void* m_pReachabilityOwner0C;
+	char m_abReserved10[4];
 	CGameObjectBounds m_bounds14;
 	char m_abReserved2C[0x38];
 	int m_nEntityType64;
@@ -68,6 +72,7 @@ public:
 	void EmptyDestinationList(void);
 	void GetBoundingBox(CVSRect& rect);
 	int IsSelectable(void);
+	void ResetInstructions(void);
 	unsigned short GetId(void);
 	void SetId(unsigned short nSlotId);
 	void ReSetId(void);

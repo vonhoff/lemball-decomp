@@ -10,7 +10,6 @@ extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void* g_LEVELVT_MoveChunkObjectVtable[16];
 extern int Distance2DIntPixels(int x1, int y1, int x2, int y2);
 extern void* __fastcall get_managed_entity_owner_group(void* pEntity);
-extern void __fastcall clear_managed_entity_child_pending_state_if_interruptible(void* pEntity);
 
 struct LevelNodePoint {
 	int m_anValues[3];
@@ -271,7 +270,7 @@ void CMover::StopObjectsMoving(void)
 				((OwnerResetSlotProc) (*(void***) pOwnerGroup)[84])(pOwnerGroup);
 			}
 			else {
-				clear_managed_entity_child_pending_state_if_interruptible(pEntity);
+				((CGameObject*) pEntity)->ResetInstructions();
 			}
 			++ppEntity;
 			++i;

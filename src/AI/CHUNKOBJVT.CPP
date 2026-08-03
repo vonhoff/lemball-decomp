@@ -1,5 +1,6 @@
 #include "AI/CLaser.h"
 #include "AI/CLift.h"
+#include "AI/CGameObject.h"
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Level/CHUNKOBJVT.H"
@@ -12,7 +13,7 @@ extern void* g_pLevelTileGrid;
 extern void* g_pActiveManagedEntityOwner;
 extern int __fastcall has_level_plas_history_entries(void* pLevelMode);
 extern int LEMBALL_FASTCALL PopLevelPlasHistoryChild(void* pLevelMode);
-extern void LEMBALL_FASTCALL clear_managed_entity_child_pending_state_if_interruptible(void* pEntity);
+
 extern void* LEMBALL_FASTCALL get_managed_entity_owner_group(void* pEntity);
 extern void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_rock_chunk_object(void* pObject);
@@ -690,7 +691,7 @@ int LEMBALL_FASTCALL UpdateRockHistoryChildSwapState(void* pObject)
 		*(int*) (pChildBytes + 0xc0) = 0;
 		*(int*) (pChildBytes + 0xb8) = 0;
 		((ManagedEntityLocalStateView*) *(void**) (pObjectBytes + 0x140))->SetManagedEntityStateIdLocal(0);
-		clear_managed_entity_child_pending_state_if_interruptible(*(void**) (pObjectBytes + 0x140));
+		((CGameObject*) *(void**) (pObjectBytes + 0x140))->ResetInstructions();
 		pProjectile = (ManagedProjectileObjectView*) PopLevelPlasHistoryChild(g_pActiveManagedEntityOwner);
 		if (pProjectile != 0) {
 			activationPoint.m_nX = *(int*) (pObjectBytes + 0x9c);
