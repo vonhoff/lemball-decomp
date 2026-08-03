@@ -301,3 +301,7 @@ All fifteen portable archive-manager methods map across `0x0045C630..0x0045CF10`
 ## CResBase reconstruction
 
 Eleven portable resource-base methods map across `0x0045CF20..0x0045D250`, preserving mixed `MogLoad.cpp` and `VARLOAD.CPP` ownership. Exact ABI, expanded layout, vtable slots, archive loading, reference and unload semantics support the mappings; notably, `DoLoad` is `0x0045CF20`, not `CMogRes::Load` at `0x0045CB80`. The Macintosh-only diagnostic `StreamOut` has no emitted Windows counterpart and does not consume an independently owned short stream identity.
+
+## CNetworkMessage reconstruction
+
+All twenty-five portable network-message methods map across `0x0045EE80..0x0045F2B0`, preserving mixed `EFFSTRM.CPP` and `VSNETSTR.CPP` ownership. Exact big-endian append/read/convert behavior, pointer aliases, copy semantics, expanded layout, vtables and send-event path support the family. Deleting wrappers, a duplicate destructor thunk, and the following request-control streams remain target-only or separate.
