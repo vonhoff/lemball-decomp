@@ -369,3 +369,7 @@ The four portable `CRawRead` methods map to `0x0045BBC0`, `0x0045BBE0`, `0x0045B
 ## CMogloadArena reconstruction
 
 Portable `CMogloadArena::operator new` and `operator delete` map to `0x0045BAF0` and `0x0045BB70`. Exact 68K/x86 behavior falls back to the default allocator when no archive arena exists, tries the small-memory bucket path when enabled, then dispatches allocation/free through the main arena. Both focused reccmp checks are exact. Macintosh terminology replaces provisional archive-memory helper names without changing the Windows free-function ABI or existing TU boundaries.
+
+## Resource-global lifecycle reconstruction
+
+Portable `_RES_Init` and `_RES_Quit` map to `0x0045B900` and `0x0045BA50` in `VSINIT.CPP`. Both architectures construct three resource tag tables with the same capacities and INT/ZRLE/STRG order, create the palette manager, then destroy those resources in reverse lifecycle order. Source terminology now follows the exact Macintosh spellings. Reusing typed local pointers also restores the intended destructor call ABI and raises `_RES_Quit` to a 100% effective reccmp match without consuming startup wrappers or child methods.

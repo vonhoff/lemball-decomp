@@ -146,6 +146,7 @@ struct VsInitVSMemPointerTable {
 
 	VsInitVSMemPointerTable(int cItems);
 	VsInitVSMemPointerTable* ConstructVSMemPointerTable(int cItems);
+	void DestroyVSMemPointerTable(void);
 };
 
 struct PaletteRemapPointerTableMemberView {
@@ -457,8 +458,8 @@ void __fastcall ResetFixedBufferStream(VsInitFixedBufferStream* pStream);
 void* LEMBALL_FASTCALL DeleteFixedBufferStreamReturnThis(VsInitFixedBufferStream* pStream,
 														 int nUnused,
 														 int fFreeMemory);
-int InitializeResourceTypeTables(void);
-int ShutdownResourceTypeTables(void);
+int _RES_Init(void);
+int _RES_Quit(void);
 void* LEMBALL_FASTCALL ConstructProcessCurrentDirectoryMarker(void* pMarker);
 void DestroyProcessCurrentDirectoryMarker(void);
 int InitializeTimingSubsystemStub(void);
@@ -467,7 +468,7 @@ void* ConstructRenderDispatchQueue(void* pQueue, int cEntries);
 void LEMBALL_FASTCALL DestroyRenderDispatchQueue(void* pQueue);
 void* LEMBALL_FASTCALL DeleteRenderDispatchQueueThunk00463940(void* pQueue, int, int fFreeMemory);
 void LEMBALL_FASTCALL ReleasePaletteRemapVariantFields(VsInitPaletteRemapVariant* pVariant);
-void DestroyPaletteRemapPointerTable(VsInitVSMemPointerTable* pPointerTable);
+
 void LEMBALL_FASTCALL DestroyCMasterInput(CMasterInput* pHelper);
 void AppendStringToDebugOutFile(const char* pszText);
 int LEMBALL_FASTCALL TranslateKeyboardRenderQueueEntry(void* pRenderQueueNode, int, RenderDispatchQueueEntry* pEntry);
@@ -1084,7 +1085,7 @@ void InitializeCoreSubsystems(void)
 		->AppendCStringToStream(SelectSuccessOrFailedString(fStatusInitialized))
 		->AppendCStringToStream("...\n");
 
-	fResourcesInitialized = InitializeResourceTypeTables();
+	fResourcesInitialized = _RES_Init();
 	g_pStartupOutputStream->AppendCStringToStream("_RES_Init   : ")
 		->AppendCStringToStream(SelectSuccessOrFailedString(fResourcesInitialized))
 		->AppendCStringToStream("...\n");
@@ -1111,7 +1112,7 @@ void ShutdownCoreSubsystems(void)
 	g_pStatusOutputStream->AppendCStringToStream(g_VSINIT_LineBreak);
 	g_pErrorOutputStream->AppendCStringToStream(g_VSINIT_LineBreak);
 
-	ShutdownResourceTypeTables();
+	_RES_Quit();
 	ShutdownStatusEntryRegistry();
 	ShutdownTimingSubsystemStub();
 	ShutdownResourceGeometryHelperRuntime();
@@ -1421,7 +1422,7 @@ void* LEMBALL_FASTCALL DeleteFixedBufferStreamReturnThis(VsInitFixedBufferStream
 }
 
 // FUNCTION: LEMBALL 0x0045b900
-int InitializeResourceTypeTables(void)
+int _RES_Init(void)
 {
 	VsInitResourceTypeTable* pResourceTypeTable;
 
@@ -1478,27 +1479,30 @@ int InitializeResourceTypeTables(void)
 }
 
 // FUNCTION: LEMBALL 0x0045ba50
-int ShutdownResourceTypeTables(void)
+int _RES_Quit(void)
 {
-	if (g_pPaletteRemapPointerTable != 0) {
-		DestroyPaletteRemapPointerTable((VsInitVSMemPointerTable*) g_pPaletteRemapPointerTable);
-		FreeVSMemBlock(g_pPaletteRemapPointerTable);
-		g_pPaletteRemapPointerTable = 0;
+	VsInitVSMemPointerTable* pPointerTable;
+	VsInitResourceTypeTable* pResourceTypeTable;
+
+	pPointerTable = (VsInitVSMemPointerTable*) g_pPaletteRemapPointerTable;
+	if (pPointerTable != 0) {
+		pPointerTable->DestroyVSMemPointerTable();
+		FreeVSMemBlock(pPointerTable);
 	}
-	if (g_pTertiaryResourceTypeTable != 0) {
-		FreeVSMemBlock(g_pTertiaryResourceTypeTable->m_pTags);
-		FreeVSMemBlock(g_pTertiaryResourceTypeTable);
-		g_pTertiaryResourceTypeTable = 0;
+	pResourceTypeTable = g_pTertiaryResourceTypeTable;
+	if (pResourceTypeTable != 0) {
+		FreeVSMemBlock(pResourceTypeTable->m_pTags);
+		FreeVSMemBlock(pResourceTypeTable);
 	}
-	if (g_pSecondaryResourceTypeTable != 0) {
-		FreeVSMemBlock(g_pSecondaryResourceTypeTable->m_pTags);
-		FreeVSMemBlock(g_pSecondaryResourceTypeTable);
-		g_pSecondaryResourceTypeTable = 0;
+	pResourceTypeTable = g_pSecondaryResourceTypeTable;
+	if (pResourceTypeTable != 0) {
+		FreeVSMemBlock(pResourceTypeTable->m_pTags);
+		FreeVSMemBlock(pResourceTypeTable);
 	}
-	if (g_pPrimaryResourceTypeTable != 0) {
-		FreeVSMemBlock(g_pPrimaryResourceTypeTable->m_pTags);
-		FreeVSMemBlock(g_pPrimaryResourceTypeTable);
-		g_pPrimaryResourceTypeTable = 0;
+	pResourceTypeTable = g_pPrimaryResourceTypeTable;
+	if (pResourceTypeTable != 0) {
+		FreeVSMemBlock(pResourceTypeTable->m_pTags);
+		FreeVSMemBlock(pResourceTypeTable);
 	}
 	return 1;
 }
@@ -1669,10 +1673,12 @@ VsInitVSMemPointerTable* VsInitVSMemPointerTable::ConstructVSMemPointerTable(int
 }
 
 // FUNCTION: LEMBALL 0x0046ad10
-void DestroyPaletteRemapPointerTable(VsInitVSMemPointerTable* pPointerTable)
+void VsInitVSMemPointerTable::DestroyVSMemPointerTable(void)
 {
+	VsInitVSMemPointerTable* pPointerTable;
 	int i;
 
+	pPointerTable = this;
 	if (pPointerTable->m_ppItems != 0 && 0 < pPointerTable->m_nCursor) {
 		for (i = 0; i < pPointerTable->m_nCursor; ++i) {
 			if (pPointerTable->m_ppItems[i] != 0) {

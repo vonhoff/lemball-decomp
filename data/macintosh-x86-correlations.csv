@@ -1170,3 +1170,5 @@ CODE_02_Visos (Generic).bin,0x00001812,InputDword__8CRawReadFv,0x0045BC40,high,e
 CODE_02_Visos (Generic).bin,0x00001884,NameCmp__8CRawReadFPcPc,0x0045BD50,high,matching case-folded component compare; slash termination; callers; and x86 ABI
 CODE_02_Visos (Generic).bin,0x000016E2,__nw__13CMogloadArenaFUl,0x0045BAF0,high,exact fallback allocation; small-memory path; arena dispatch; callers; and 100% reccmp
 CODE_02_Visos (Generic).bin,0x00001758,__dl__13CMogloadArenaFPv,0x0045BB70,high,exact fallback free; small-memory ownership test; arena dispatch; callers; and 100% reccmp
+CODE_02_Visos (Generic).bin,0x00001570,_RES_Init__Fv,0x0045B900,high,exact three tag tables; INT/ZRLE/STRG ordering; palette manager construction; startup caller; and x86 body
+CODE_02_Visos (Generic).bin,0x00001608,_RES_Quit__Fv,0x0045BA50,high,exact reverse lifecycle; palette manager destruction; three tag-table frees; shutdown caller; and 100% effective reccmp
