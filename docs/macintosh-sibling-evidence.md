@@ -293,3 +293,7 @@ All four portable animation-list resource methods map across `0x0045D610..0x0045
 ## CResBaseLIST reconstruction
 
 All six portable list-resource base methods map across `0x0045D290..0x0045D5C0` in physical `VARLOAD.CPP`. Exact header/data arrival, archive loading, force-load and unload loops, layout adaptations, and common slots across four list vtables support the family. Derived resource bodies and deleting wrappers remain separate.
+
+## CMogRes reconstruction
+
+All fifteen portable archive-manager methods map across `0x0045C630..0x0045CF10` in physical `MogLoad.cpp`. Exact archive lifecycle, directory traversal, sparse cache, eviction, allocation, lookup, resource ownership, ranged loading, aging and cleanup behavior supports the family. Interleaved path wrappers and the typed-resource family beginning at `0x0045CF20` remain target-only or separate.
