@@ -555,3 +555,7 @@ Global `CheckValidPointer` maps to `0x0045A800`: both implementations scan every
 ## Portable sorting helpers
 
 `VSQSort`, `shortsort`, and `swap` map to `0x00463960/0x00463AC0/0x00463B20`. Both binaries implement the same fixed-record comparator sort: explicit quicksort partitions, a short-partition selection-sort fallback, and byte-counted swapping. Windows physical ownership remains split between `VSINIT.CPP` and `CGame.cpp`.
+
+## CSmallMemory stream identity stub
+
+Macintosh `operator<<(CVSOStream&, CSmallMemory&)` is an exact identity stub at `[0x17D50,0x17D5D)`: it returns the stream argument without reading the allocator. Windows emits no standalone body, so this is split/merged rather than a forced correlation.
