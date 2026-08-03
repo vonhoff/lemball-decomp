@@ -1261,3 +1261,17 @@ CODE_02_Visos (Generic).bin,0x0000B2FF,SocketError__17CBaseCommonSocketF13Networ
 CODE_02_Visos (Generic).bin,0x0000B3E6,__ct__11CBaseSocketFv,0x0045F750,high,"constructs network-message stream, reserves 0x10-byte tagged header and clears latch fields",exact_tuple,0x0000B3E6
 CODE_02_Visos (Generic).bin,0x0000B464,AddData__11CBaseSocketFv,0x0045F790,high,"serializes two dwords, three words and one byte from tagged header",exact_tuple,0x0000B464
 CODE_02_Visos (Generic).bin,0x0000B4B8,GetData__11CBaseSocketFv,0x0045F7F0,high,"converts two dwords, three words and one byte in the tagged header",exact_tuple,0x0000B4B8
+CODE_02_Visos (Generic).bin,0x0000C794,__ct__10CBroadcastFv,0x00460350,high,"composes common/read/write socket views, installs adjusted vtables, allocates and zeros 0x200-byte port map",exact_tuple,0x0000C794
+CODE_02_Visos (Generic).bin,0x0000C8FC,__dt__10CBroadcastFv,0x004604E0,high,restores adjusted vtables and releases local/global broadcast buffers,exact_tuple,0x0000C8FC
+CODE_02_Visos (Generic).bin,0x0000C93C,Closed__10CBroadcastFUc,0x004605B0,high,resolves adjusted peer key and closes matching active peer,exact_tuple,0x0000C93C
+CODE_02_Visos (Generic).bin,0x0000C99A,FindPort__10CBroadcastFPCUc,0x004605D0,high,searches 0x200-byte port map and claims first matching free slot,exact_tuple,0x0000C99A
+CODE_02_Visos (Generic).bin,0x0000C9FF,SetSpecificAddr__10CBroadcastFPCc,0x00460610,high,replaces specific host state and invokes address callback,exact_tuple,0x0000C9FF
+CODE_02_Visos (Generic).bin,0x0000CB34,Initialise__10CBroadcastFPCc,0x00460650,high,configures buffers and builds versioned broadcast-status payload,exact_tuple,0x0000CB34
+CODE_02_Visos (Generic).bin,0x0000CB88,Stop__10CBroadcastFv,0x004607F0,high,releases global host buffer and resets peer handle group,exact_tuple,0x0000CB88
+CODE_02_Visos (Generic).bin,0x0000CC77,PostRead__10CBroadcastF13NetworkEventsP11CBasePacket,0x00460830,high,checks broadcast prefix then dispatches stripped connect-control payload,exact_tuple,0x0000CC77
+CODE_02_Visos (Generic).bin,0x0000CCD3,AddToMessage__10CBroadcastFR17CBroadcastMessage,0x004608F0,high,loads broadcast message from global payload range,exact_tuple,0x0000CCD3
+CODE_02_Visos (Generic).bin,0x0000CDFA,Process__10CBroadcastFv,0x00460910,high,services read/write sockets and retries connect/new-port requests once per second,exact_tuple,0x0000CDFA
+CODE_02_Visos (Generic).bin,0x0000CE43,SendFailedInit__10CBroadcastF13NetworkErrors,0x004609F0,high,queues failed-initialisation event with network error,exact_tuple,0x0000CE43
+CODE_02_Visos (Generic).bin,0x0000CE94,Run__10CBroadcastFv,0x00460A20,high,enables send gate and primes retry timestamp,exact_tuple,0x0000CE94
+CODE_02_Visos (Generic).bin,0x0000CEBA,Suspend__10CBroadcastFv,0x00460A40,high,clears send gate,exact_tuple,0x0000CEBA
+CODE_02_Visos (Generic).bin,0x0000CF13,Send__10CBroadcastFP15CNetworkAddressR17CBroadcastMessage,0x00460A50,high,"loads broadcast payload, sets peer address and submits through write socket",exact_tuple,0x0000CF13

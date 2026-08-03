@@ -437,3 +437,7 @@ All eight portable methods map from constructor `0x0047AF30` through `ConnectSet
 ## Base socket reconstruction
 
 `CBaseCommonSocket` constructor, destructor and `SocketError` map to `0x0045F680`, `0x0045F6C0`, and `0x0045F6E0`. Its portable `CloseSocket` has no standalone Windows body: Windows splits raw `closesocket` and last-error capture into adjusted callbacks at `0x00471A60/0x00471AD0`, so neither callback is falsely consumed. `CBaseSocket` constructor, `AddData`, and `GetData` map to `0x0045F750/0x0045F790/0x0045F7F0`, preserving the two-dword, three-word, one-byte tagged header.
+
+## Broadcast runtime reconstruction
+
+All fourteen `CBroadcast` bodies map in order to `0x00460350..0x00460A50`. The constructor composes adjusted common/read/write socket views and allocates the 0x200-byte port map; the family covers peer close, port claiming, specific-address setup, broadcast payload construction, stop/read dispatch, message loading, one-second request retry, failure events, run/suspend gating, and addressed send. Physical `VSNET.CPP` ownership and generated wrappers remain unchanged.
