@@ -1157,3 +1157,7 @@ CODE_02_Visos (Generic).bin,0x00000598,GetnAnims__13CAnimsManagerFUl,0x00467540,
 CODE_02_Visos (Generic).bin,0x00000629,GetAnimSize__13CAnimsManagerFUlUl,0x00467570,high,returns ZRLE extent or indexed ANIM-frame extent; exact x86 reccmp with hidden return storage
 CODE_02_Visos (Generic).bin,0x00000837,DrawAnim__13CAnimsManagerFRC8CVSPointUlUlP14CAnimFrameBASEP6CRemap,0x00467730,high,"selects ZRLE or ANIM frame, queues matching draw entry, handles double buffering, and returns frame rectangle"
 CODE_02_Visos (Generic).bin,0x000008FB,ResetPrimitives__13CAnimsManagerFv,0x004678C0,high,resets immediate queues or renders and flips double-buffered queues; exact x86 reccmp
+CODE_02_Visos (Generic).bin,0x00000064,GetFrameNo__10CTimedAnimFv,0x00467170,high,exact 68K timing/state equations; x86 body; fields; distinct vtable slot; callers; and reccmp agree
+CODE_02_Visos (Generic).bin,0x000000B2,StartAnim__11CRepeatAnimFUl,0x004671B0,high,exact 68K timing/state equations; x86 body; fields; distinct vtable slot; callers; and reccmp agree
+CODE_02_Visos (Generic).bin,0x00000100,StartAnim__13CPlayThruAnimFUl,0x004671E0,high,exact 68K timing/state equations; x86 body; fields; distinct vtable slot; callers; and reccmp agree
+CODE_02_Visos (Generic).bin,0x0000017C,GetFrameNo__13CPlayThruAnimFv,0x00467210,high,exact 68K timing/state equations; x86 body; fields; distinct vtable slot; callers; and reccmp agree

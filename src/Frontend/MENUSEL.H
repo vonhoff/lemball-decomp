@@ -43,8 +43,8 @@ struct GameProgressiveVariantFrameSelector {
 };
 
 int LEMBALL_FASTCALL GetMenuSelectorStartTimeThunk(GameProgressiveVariantFrameSelector* pSelector);
-int LEMBALL_FASTCALL SelectTimedVariantFrameIndex(GameProgressiveVariantFrameSelector* pSelector);
-int LEMBALL_FASTCALL SelectProgressiveVariantFrameIndex(GameProgressiveVariantFrameSelector* pSelector);
+int LEMBALL_FASTCALL GetTimedAnimFrameNo(GameProgressiveVariantFrameSelector* pSelector);
+int LEMBALL_FASTCALL GetPlayThruAnimFrameNo(GameProgressiveVariantFrameSelector* pSelector);
 
 extern void* g_MenuSelectorFrameSelectorCtorVtable[2];
 extern void* g_MenuSelectorTimedFrameSelectorVtable[6];

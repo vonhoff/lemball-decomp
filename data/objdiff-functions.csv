@@ -2650,10 +2650,10 @@ address,size,name,unit
 0x004670D0,31,CGDI::~CGDI,Visos/Windows/CGDI.cpp
 0x004670F0,19,CGDI::AddToList,Visos/Windows/CGDI.cpp
 0x00467110,85,CGDI::Render,Visos/Windows/CGDI.cpp
-0x00467170,53,select_timed_variant_frame_index,Frontend/MENUSEL.CPP
-0x004671B0,37,set_timed_variant_frame_duration,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
-0x004671E0,37,set_timed_variant_frame_seed,Frontend/MENUSEL.CPP
-0x00467210,67,select_progressive_variant_frame_index,Frontend/MENUSEL.CPP
+0x00467170,53,CTimedAnim::GetFrameNo,Frontend/MENUSEL.CPP
+0x004671B0,37,CRepeatAnim::StartAnim,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x004671E0,37,CPlayThruAnim::StartAnim,Frontend/MENUSEL.CPP
+0x00467210,67,CPlayThruAnim::GetFrameNo,Frontend/MENUSEL.CPP
 0x00467260,363,CAnimsManager::CAnimsManager,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 0x004673D0,178,CAnimsManager::~CAnimsManager,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 0x00467490,111,CAnimsManager::LoadAnims,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP

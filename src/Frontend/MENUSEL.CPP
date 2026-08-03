@@ -54,7 +54,7 @@ extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(void* pOwner, int nUnusedE
 extern void* g_pVariantResourceEntryManager;
 extern int g_fLevelSelectionChanged;
 extern int LEMBALL_FASTCALL GetTimedVariantFrameStartTimeThunk(void* pObject);
-extern void LEMBALL_FASTCALL SetTimedVariantFrameDuration(void* pObject, int nUnusedEdx, int nFrameDuration);
+extern void LEMBALL_FASTCALL StartRepeatAnim(void* pObject, int nUnusedEdx, int nFrameDuration);
 extern void LEMBALL_FASTCALL set_object_field_0x10_00435890(void* pObject, void* pUnusedEdx, int nValue);
 extern void LEMBALL_FASTCALL set_object_field_0x0c_004358a0(void* pObject, void* pUnusedEdx, int nValue);
 extern void LEMBALL_FASTCALL set_object_field_0x18_004358b0(void* pObject, void* pUnusedEdx, int nValue);
@@ -367,11 +367,11 @@ int LEMBALL_FASTCALL GetMenuSelectorStartTimeThunk(GameProgressiveVariantFrameSe
 	return return_object_field_0x0c_00435880(pSelector);
 }
 
-int LEMBALL_FASTCALL SelectTimedVariantFrameIndex(GameProgressiveVariantFrameSelector* pSelector);
-void LEMBALL_FASTCALL SetProgressiveVariantFrameDuration(GameProgressiveVariantFrameSelector* pSelector,
+int LEMBALL_FASTCALL GetTimedAnimFrameNo(GameProgressiveVariantFrameSelector* pSelector);
+void LEMBALL_FASTCALL StartPlayThruAnim(GameProgressiveVariantFrameSelector* pSelector,
 														 int,
 														 int dwDuration);
-int LEMBALL_FASTCALL SelectProgressiveVariantFrameIndex(GameProgressiveVariantFrameSelector* pSelector);
+int LEMBALL_FASTCALL GetPlayThruAnimFrameNo(GameProgressiveVariantFrameSelector* pSelector);
 
 static void LEMBALL_FASTCALL SetMenuSelectorDurationFieldThunk(GameProgressiveVariantFrameSelector* pSelector,
 															   int,
@@ -398,7 +398,7 @@ static void LEMBALL_FASTCALL SetMenuSelectorDirectionFieldThunk(GameProgressiveV
 void* g_MenuSelectorFrameSelectorCtorVtable[2] = {(void*) _purecall, (void*) GetMenuSelectorStartTimeThunk};
 
 /* VTABLE: LEMBALL 0x00496D08 */
-void* g_MenuSelectorTimedFrameSelectorVtable[6] = {(void*) SelectTimedVariantFrameIndex,
+void* g_MenuSelectorTimedFrameSelectorVtable[6] = {(void*) GetTimedAnimFrameNo,
 												   (void*) _purecall,
 												   (void*) SetMenuSelectorDurationFieldThunk,
 												   (void*) SetMenuSelectorStartTimeFieldThunk,
@@ -406,8 +406,8 @@ void* g_MenuSelectorTimedFrameSelectorVtable[6] = {(void*) SelectTimedVariantFra
 												   0};
 
 /* VTABLE: LEMBALL 0x00496D20 */
-void* g_MenuSelectorProgressiveFrameSelectorVtable[6] = {(void*) SelectProgressiveVariantFrameIndex,
-														 (void*) SetProgressiveVariantFrameDuration,
+void* g_MenuSelectorProgressiveFrameSelectorVtable[6] = {(void*) GetPlayThruAnimFrameNo,
+														 (void*) StartPlayThruAnim,
 														 (void*) SetMenuSelectorDurationFieldThunk,
 														 (void*) SetMenuSelectorStartTimeFieldThunk,
 														 (void*) SetMenuSelectorDirectionFieldThunk,
@@ -415,8 +415,8 @@ void* g_MenuSelectorProgressiveFrameSelectorVtable[6] = {(void*) SelectProgressi
 
 /* VTABLE: LEMBALL 0x00496CE4 */
 void* g_MenuSelectorCurrentFrameCallbackVtable[7] = {(void*) GetTimedVariantFrameStartTimeThunk,
-													 (void*) SelectTimedVariantFrameIndex,
-													 (void*) SetTimedVariantFrameDuration,
+													 (void*) GetTimedAnimFrameNo,
+													 (void*) StartRepeatAnim,
 													 (void*) SetMenuSelectorDurationFieldThunk,
 													 (void*) SetMenuSelectorStartTimeFieldThunk,
 													 (void*) SetMenuSelectorDirectionFieldThunk,
@@ -2980,7 +2980,7 @@ void* LEMBALL_FASTCALL DeleteQueuedVariantRangeEntry(GameQueuedVariantRangeEntry
 	return pEntry;
 }
 // FUNCTION: LEMBALL 0x00467170
-int LEMBALL_FASTCALL SelectTimedVariantFrameIndex(GameProgressiveVariantFrameSelector* pSelector)
+int LEMBALL_FASTCALL GetTimedAnimFrameNo(GameProgressiveVariantFrameSelector* pSelector)
 {
 	unsigned int dwNow;
 	unsigned int iFrame;
@@ -2999,7 +2999,7 @@ int LEMBALL_FASTCALL SelectTimedVariantFrameIndex(GameProgressiveVariantFrameSel
 	return (int) iFrame;
 }
 // FUNCTION: LEMBALL 0x004671e0
-void LEMBALL_FASTCALL SetProgressiveVariantFrameDuration(GameProgressiveVariantFrameSelector* pSelector,
+void LEMBALL_FASTCALL StartPlayThruAnim(GameProgressiveVariantFrameSelector* pSelector,
 														 int,
 														 int dwDuration)
 {
@@ -3012,7 +3012,7 @@ void LEMBALL_FASTCALL SetProgressiveVariantFrameDuration(GameProgressiveVariantF
 	}
 }
 // FUNCTION: LEMBALL 0x00467210
-int LEMBALL_FASTCALL SelectProgressiveVariantFrameIndex(GameProgressiveVariantFrameSelector* pSelector)
+int LEMBALL_FASTCALL GetPlayThruAnimFrameNo(GameProgressiveVariantFrameSelector* pSelector)
 {
 	unsigned int dwElapsed;
 	int* pFrames;

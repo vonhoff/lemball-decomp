@@ -24,7 +24,7 @@ extern "C" DWORD WINAPI timeGetTime(void);
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 extern void NoopVtableCallbackThunk(void);
 extern void VariantResourceBundleNoopThunk(void);
-void LEMBALL_FASTCALL SetTimedVariantFrameDuration(void* pObject, int nUnusedEdx, int nFrameDuration);
+void LEMBALL_FASTCALL StartRepeatAnim(void* pObject, int nUnusedEdx, int nFrameDuration);
 extern void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void* pQueue);
 extern void LEMBALL_FASTCALL PresentPrimaryContextScreen(void* pPrimaryContext);
 extern void noop_callback_00456600(void);
@@ -494,7 +494,7 @@ static void* g_LEVEL_TimedVariantFrameIndexSelectorVtable[6] = {
 };
 static void* g_LEVEL_TimedVariantFrameIndexSelectorCallbackVtable[6] = {
 	(void*) NoopVtableCallbackThunk,
-	(void*) SetTimedVariantFrameDuration,
+	(void*) StartRepeatAnim,
 	(void*) NoopVtableCallbackThunk,
 	(void*) NoopVtableCallbackThunk,
 	(void*) NoopVtableCallbackThunk,
@@ -507,10 +507,10 @@ static void* g_LEVEL_SelectStoredFrameVtable[1] = {
 	(void*) GetMenuSelectorStartTimeThunk,
 };
 static void* g_LEVEL_SelectTimedFrameVtable[1] = {
-	(void*) SelectTimedVariantFrameIndex,
+	(void*) GetTimedAnimFrameNo,
 };
 static void* g_LEVEL_SelectProgressiveFrameVtable[1] = {
-	(void*) SelectProgressiveVariantFrameIndex,
+	(void*) GetPlayThruAnimFrameNo,
 };
 static int g_LEVEL_StatusIndicatorModeResourceIds[4] = {0, 0xfd, 0xfc, 0};
 // GLOBAL: LEMBALL 0x0049f9b0
@@ -699,7 +699,7 @@ void LEMBALL_FASTCALL ReleaseStatusIndicatorPrimaryBitmap(void* pObject);
 void LEMBALL_FASTCALL SetStatusIndicatorLoadProgress0044B340(void* pObject, int, int nProgress);
 void LEMBALL_FASTCALL RestoreLevelSelectionPointSinkFinalizeVtableBody(void* pObject);
 void LEMBALL_FASTCALL RestoreCompositePointRectSinkFinalizeVtablesBody(void* pObject);
-void LEMBALL_FASTCALL SetTimedVariantFrameDuration(void* pObject, int, int nFrameDuration);
+void LEMBALL_FASTCALL StartRepeatAnim(void* pObject, int, int nFrameDuration);
 void DestroyVariantRenderManager(void* pObject);
 void* DestroyStatusIndicatorPointSinkArray00467BB0(void* pObject, unsigned int fDelete);
 void LEMBALL_FASTCALL RestoreQueuedRenderPointSinkVtable(void* pObject);
@@ -4574,7 +4574,7 @@ void* ConstructLevelScreenStatusIndicatorManager(void* pObject, int nStatusMode,
 	}
 
 	*(int*) (unsigned long) (pManager[0x37] + 0x14) = -1;
-	SetTimedVariantFrameDuration((void*) (unsigned long) pManager[0x37], 0, nFrameCount * 0x42);
+	StartRepeatAnim((void*) (unsigned long) pManager[0x37], 0, nFrameCount * 0x42);
 	return pObject;
 }
 // FUNCTION: LEMBALL 0x0044ad60
@@ -4704,7 +4704,7 @@ void LEMBALL_FASTCALL RestoreCompositePointRectSinkFinalizeVtablesBody(void* pOb
 	*(void**) pObject = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 }
 // FUNCTION: LEMBALL 0x004671b0
-void LEMBALL_FASTCALL SetTimedVariantFrameDuration(void* pObject, int, int nFrameDuration)
+void LEMBALL_FASTCALL StartRepeatAnim(void* pObject, int, int nFrameDuration)
 
 {
 	int* pSelector;
