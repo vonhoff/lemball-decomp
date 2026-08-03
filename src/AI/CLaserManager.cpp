@@ -103,3 +103,24 @@ CLaserManager::~CLaserManager(void)
 	}
 	((VsNetEffStreamCommon*) this)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 }
+
+// FUNCTION: LEMBALL 0x004297f0
+int CLaserManager::StepOn(const AICOORD& position, CGameObject* pObject)
+{
+	char* pLaser;
+	int cbOffset;
+	int i;
+
+	cbOffset = 0;
+	i = 0;
+	while (i < m_cObjects34) {
+		pLaser = (char*) m_pObjects38 + cbOffset;
+		if (*(int*) (pLaser + 0x13c) != 0 && *(int*) (pLaser + 0x140) == 0 && *(int*) (pLaser + 0xb8) == 0x18 &&
+			((CLaser*) pLaser)->StepOn(position, pObject) != 0) {
+			return 1;
+		}
+		cbOffset += 0x148;
+		++i;
+	}
+	return 0;
+}

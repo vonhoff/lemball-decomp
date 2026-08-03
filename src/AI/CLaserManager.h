@@ -3,6 +3,8 @@
 
 class CAI;
 class CLaser;
+class CGameObject;
+struct AICOORD;
 
 class CLaserManager {
 public:
@@ -10,6 +12,7 @@ public:
 	~CLaserManager(void);
 	void Restart(void);
 	void Initialise(int nCapacity);
+	int StepOn(const AICOORD& position, CGameObject* pObject);
 
 private:
 	unsigned char m_abReserved00[0x30];
