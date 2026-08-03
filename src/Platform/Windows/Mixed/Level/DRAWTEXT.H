@@ -151,13 +151,13 @@ public:
 };
 
 // SIZE 0x24
-class MappedListResourceTable {
+class CTextManager {
 public:
-	MappedListResourceTable(int cResourceIds, int cSlots, int cDrawEntries, int cchOwnedText);
-	void LoadListResourceIntoSlot(int nResourceId);
-	void ReleaseListResourceSlot(int nResourceId);
-	void* GetMappedResource(int nResourceId);
-	void SubmitRenderEntry(void* pRenderQueue,
+	CTextManager(int cResourceIds, int cSlots, int cDrawEntries, int cchOwnedText);
+	void LoadFont(int nResourceId);
+	void UnLoadFont(int nResourceId);
+	void* GetFont(int nResourceId);
+	void DrawString(void* pRenderQueue,
 						   const short* pPoint,
 						   const short* pRelativePoint,
 						   int nResourceId,

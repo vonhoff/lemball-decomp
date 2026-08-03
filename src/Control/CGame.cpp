@@ -166,7 +166,7 @@ extern void noop_render_entry_callback_004393d0(void);
 extern void noop_render_entry_callback_004393f0(void);
 extern int LEMBALL_FASTCALL get_level_screen_transition_status(void* pScreen);
 extern int LEMBALL_FASTCALL get_level_screen_requested_mode(void* pScreen);
-extern void LEMBALL_FASTCALL clear_mapped_list_resource_table_pending_flag(void* pTable);
+extern void LEMBALL_FASTCALL CTextManagerResetPrimitives(void* pTable);
 void LEMBALL_FASTCALL InitializeLevelScreenRenderSupportState(void* pScreen);
 void LEMBALL_FASTCALL InitializeLevelScreenRenderSupportStateThunk(void* pScreen);
 void LEMBALL_FASTCALL RefreshLevelScreenViewportLayout(void* pScreen);
@@ -1342,14 +1342,14 @@ void* GameScreenObject::ConstructLevelScreen(void* pPrimaryContext,
 												 pLevelModeObject);
 	}
 	{
-		MappedListResourceTable* pMappedList;
-		pMappedList = (MappedListResourceTable*) AllocateVSMemBlock(sizeof(MappedListResourceTable));
+		CTextManager* pMappedList;
+		pMappedList = (CTextManager*) AllocateVSMemBlock(sizeof(CTextManager));
 		if (pMappedList != 0) {
-			pMappedList = new (pMappedList) MappedListResourceTable(0x2b6, 2, 2, 10);
+			pMappedList = new (pMappedList) CTextManager(0x2b6, 2, 2, 10);
 		}
-		*(MappedListResourceTable**) (pScreenObject + 0x78) = pMappedList;
+		*(CTextManager**) (pScreenObject + 0x78) = pMappedList;
 		if (pMappedList != 0) {
-			pMappedList->LoadListResourceIntoSlot(0x115);
+			pMappedList->LoadFont(0x115);
 		}
 	}
 	InitializeLevelScreenRenderSupportState(pScreenObject);
@@ -1406,7 +1406,7 @@ void* GameScreenObject::ConstructLevelScreen(void* pPrimaryContext,
 void* GameScreenObject::ConstructRegistrationInfoScreen(void* pPrimaryContext, void* pWindowOwnerContext, short* paRect)
 {
 	char* pScreenObject;
-	MappedListResourceTable* pMappedList;
+	CTextManager* pMappedList;
 	MogLoadStringResourceObject* pStringResource;
 	const char* pszEncoded;
 	unsigned int i;
@@ -1433,12 +1433,12 @@ void* GameScreenObject::ConstructRegistrationInfoScreen(void* pPrimaryContext, v
 	*(short*) (pScreenObject + 0x1a) = paRect[1];
 	*(void**) (pScreenObject + 0x60) = LoadBitmapResource(0x101);
 
-	pMappedList = (MappedListResourceTable*) AllocateVSMemBlock(sizeof(MappedListResourceTable));
+	pMappedList = (CTextManager*) AllocateVSMemBlock(sizeof(CTextManager));
 	if (pMappedList != 0) {
-		pMappedList = new (pMappedList) MappedListResourceTable(0x2b6, 1, 10, 0);
-		pMappedList->LoadListResourceIntoSlot(0x32);
+		pMappedList = new (pMappedList) CTextManager(0x2b6, 1, 10, 0);
+		pMappedList->LoadFont(0x32);
 	}
-	*(MappedListResourceTable**) (pScreenObject + 0x90) = pMappedList;
+	*(CTextManager**) (pScreenObject + 0x90) = pMappedList;
 
 	g_GAME_RegistrationNameBuffer[0] = 0;
 	pStringResource = LoadStringResource(0x100);
@@ -4449,15 +4449,15 @@ void LEMBALL_FASTCALL RestoreReconstructedLevelScreenVtables(void* pObject)
 void LEMBALL_FASTCALL DestroyReconstructedLevelScreen(void* pObject)
 {
 	char* pScreen;
-	MappedListResourceTable* pMappedList;
+	CTextManager* pMappedList;
 	int* pGrid;
 	void* pPrimaryContext;
 
 	pScreen = (char*) pObject;
-	pMappedList = *(MappedListResourceTable**) (pScreen + 0x78);
+	pMappedList = *(CTextManager**) (pScreen + 0x78);
 	if (pMappedList != 0) {
-		pMappedList->ReleaseListResourceSlot(0x115);
-		pMappedList->ReleaseListResourceSlot(0xf8);
+		pMappedList->UnLoadFont(0x115);
+		pMappedList->UnLoadFont(0xf8);
 		pMappedList->Destroy();
 		FreeVSMemBlock(pMappedList);
 		*(void**) (pScreen + 0x78) = 0;
@@ -4653,7 +4653,7 @@ void LEMBALL_FASTCALL UpdateLevelScreenViewportLayoutState(void* pObject)
 	g_nLevelViewportVerticalRemainder = (short) (*(short*) (pScreen + 0x942) - *(short*) (pScreen + 0x95a));
 	*(int*) (pScreen + 0x2214) = 1;
 	if (g_pLevelDemoPlaybackController != 0 && *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) != 0) {
-		pFont = ((MappedListResourceTable*) *(void**) (pScreen + 0x78))->GetMappedResource(0xf8);
+		pFont = ((CTextManager*) *(void**) (pScreen + 0x78))->GetFont(0xf8);
 		((LevelScreenDrawOwnerView*) pFont)->MeasureGlyphStringExtent(aExtent, "Demo", 0x20);
 		*(short*) (pScreen + 0x8e6) = (short) ((*(short*) (pScreen + 0x958) - aExtent[0]) / 2);
 		*(short*) (pScreen + 0x8e8) = 0;
@@ -4776,8 +4776,8 @@ void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void* pObject, int nUnusedEdx
 			if (pLevel != 0 && pManager != 0 && *(void**) (pLevel + 0x0c) != 0 && *(int*) (pLevel + 0x10) > 0 &&
 				*(int*) (pLevel + 0x14) > 0 && *(short*) (pScreen + 0x958) > 0 && *(short*) (pScreen + 0x95a) > 0) {
 				((CAnimsManager*) pManager)->ResetPrimitives();
-				if (*(MappedListResourceTable**) (pScreen + 0x78) != 0) {
-					(*(MappedListResourceTable**) (pScreen + 0x78))->ResetDrawEntryPool();
+				if (*(CTextManager**) (pScreen + 0x78) != 0) {
+					(*(CTextManager**) (pScreen + 0x78))->ResetDrawEntryPool();
 				}
 				*(unsigned short*) (pScreen + 0x8d0) = 0x40;
 				*(int*) (pScreen + 0x2188) = 0;
@@ -4857,7 +4857,7 @@ void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void* pObject, int nUnusedEdx
 			static int s_fDemoBlinkVisible = 0;
 			static char s_szDemoStatus[] = "Demo";
 			char* pMode;
-			MappedListResourceTable* pMappedList;
+			CTextManager* pMappedList;
 			short RelativePoint[2];
 			char szTimer[5];
 			char szCounter[8];
@@ -4868,7 +4868,7 @@ void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void* pObject, int nUnusedEdx
 			int i;
 
 			pMode = *(char**) (pScreen + 0x96c);
-			pMappedList = *(MappedListResourceTable**) (pScreen + 0x78);
+			pMappedList = *(CTextManager**) (pScreen + 0x78);
 			if (pMode != 0 && pMappedList != 0 && *(void**) (pScreen + 0x970) != 0) {
 				RelativePoint[0] = -4;
 				RelativePoint[1] = 0;
@@ -4887,7 +4887,7 @@ void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void* pObject, int nUnusedEdx
 					}
 					if (s_fDemoBlinkVisible != 0) {
 						RelativePoint[0] = 0;
-						pMappedList->SubmitRenderEntry(*(void**) (pScreen + 0x970),
+						pMappedList->DrawString(*(void**) (pScreen + 0x970),
 													   (short*) (pScreen + 0x8e6),
 													   RelativePoint,
 													   0xf8,
@@ -4911,7 +4911,7 @@ void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void* pObject, int nUnusedEdx
 						szTimer[2] = (char) ((nTime % 60) / 10) + '0';
 						szTimer[3] = (char) (nTime % 10) + '0';
 						szTimer[4] = '\0';
-						pMappedList->SubmitRenderEntry(*(void**) (pScreen + 0x970),
+						pMappedList->DrawString(*(void**) (pScreen + 0x970),
 													   (short*) (pScreen + 0x8d6),
 													   RelativePoint,
 													   0x115,
@@ -4940,7 +4940,7 @@ void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void* pObject, int nUnusedEdx
 						szCounter[i] = (char) (nCounter % 10) + '0';
 						nCounter /= 10;
 					}
-					pMappedList->SubmitRenderEntry(*(void**) (pScreen + 0x970),
+					pMappedList->DrawString(*(void**) (pScreen + 0x970),
 												   (short*) (pScreen + 0x8de),
 												   RelativePoint,
 												   0x115,
@@ -4986,7 +4986,7 @@ void LEMBALL_FASTCALL InitializeLevelScreenRenderSupportState(void* pObject)
 
 	pScreen = (char*) pObject;
 	((CAnimsManager*) *(void**) (pScreen + 0xa40))->ResetPrimitives();
-	clear_mapped_list_resource_table_pending_flag(*(void**) (pScreen + 0x78));
+	CTextManagerResetPrimitives(*(void**) (pScreen + 0x78));
 	*(int*) (pScreen + 0xc90) = 0;
 	*(int*) (pScreen + 0x2188) = 0;
 }
@@ -5229,7 +5229,7 @@ __declspec(naked) void* LEMBALL_FASTCALL DeleteLevelSelectionScreenAdjusted(void
 void LEMBALL_FASTCALL DestroyRegistrationInfoScreen(void* pObject)
 {
 	char* pScreen;
-	MappedListResourceTable* pMappedList;
+	CTextManager* pMappedList;
 
 	pScreen = (char*) pObject;
 	if (g_pSharedRenderDispatchQueue != 0) {
@@ -5240,9 +5240,9 @@ void LEMBALL_FASTCALL DestroyRegistrationInfoScreen(void* pObject)
 		ReleaseTypedResourceObjectReference(*(void**) (pScreen + 0x60));
 		*(void**) (pScreen + 0x60) = 0;
 	}
-	pMappedList = *(MappedListResourceTable**) (pScreen + 0x90);
+	pMappedList = *(CTextManager**) (pScreen + 0x90);
 	if (pMappedList != 0) {
-		pMappedList->ReleaseListResourceSlot(0x32);
+		pMappedList->UnLoadFont(0x32);
 		pMappedList->Destroy();
 		FreeVSMemBlock(pMappedList);
 		*(void**) (pScreen + 0x90) = 0;
@@ -5256,14 +5256,14 @@ void LEMBALL_FASTCALL DestroyRegistrationInfoScreen(void* pObject)
 void LEMBALL_FASTCALL DrawRegistrationInfoScreen(void* pObject)
 {
 	char* pScreen;
-	MappedListResourceTable* pMappedList;
+	CTextManager* pMappedList;
 	short Point[2];
 	short Relative[2];
 	const char* pszBuild;
 	const char* pszName;
 
 	pScreen = (char*) pObject;
-	pMappedList = *(MappedListResourceTable**) (pScreen + 0x90);
+	pMappedList = *(CTextManager**) (pScreen + 0x90);
 	if (pMappedList == 0 || *(void**) (pScreen + 0x20) == 0) {
 		return;
 	}
@@ -5272,15 +5272,15 @@ void LEMBALL_FASTCALL DrawRegistrationInfoScreen(void* pObject)
 	Relative[1] = 0;
 	Point[0] = (short) (*(short*) (pScreen + 0x18) / 2 - 56);
 	Point[1] = (short) (*(short*) (pScreen + 0x1a) / 2 - 18);
-	pMappedList->SubmitRenderEntry(*(void**) (pScreen + 0x20), Point, Relative, 0x32, (void*) "Registered to", 0x20, 0);
+	pMappedList->DrawString(*(void**) (pScreen + 0x20), Point, Relative, 0x32, (void*) "Registered to", 0x20, 0);
 	pszName = g_GAME_RegistrationNameBuffer[0] != 0 ? g_GAME_RegistrationNameBuffer : "Lemmings Paintball";
 	Point[0] = (short) (*(short*) (pScreen + 0x18) / 2 - (int) strlen(pszName) * 4);
 	Point[1] = (short) (*(short*) (pScreen + 0x1a) / 2 + 17);
-	pMappedList->SubmitRenderEntry(*(void**) (pScreen + 0x20), Point, Relative, 0x32, (void*) pszName, 0x20, 0);
+	pMappedList->DrawString(*(void**) (pScreen + 0x20), Point, Relative, 0x32, (void*) pszName, 0x20, 0);
 	pszBuild = "ViSOS Build 201";
 	Point[0] = (short) (*(short*) (pScreen + 0x18) / 2 - (int) strlen(pszBuild) * 4);
 	Point[1] = (short) (*(short*) (pScreen + 0x1a) / 2 + 70);
-	pMappedList->SubmitRenderEntry(*(void**) (pScreen + 0x20), Point, Relative, 0x32, (void*) pszBuild, 0x20, 0);
+	pMappedList->DrawString(*(void**) (pScreen + 0x20), Point, Relative, 0x32, (void*) pszBuild, 0x20, 0);
 }
 // FUNCTION: LEMBALL 0x0044bea0
 int LEMBALL_FASTCALL PollRegistrationInfoTimeout(void* pObject)

@@ -1173,3 +1173,11 @@ CODE_02_Visos (Generic).bin,0x00001758,__dl__13CMogloadArenaFPv,0x0045BB70,high,
 CODE_02_Visos (Generic).bin,0x00001570,_RES_Init__Fv,0x0045B900,high,exact three tag tables; INT/ZRLE/STRG ordering; palette manager construction; startup caller; and x86 body
 CODE_02_Visos (Generic).bin,0x00001608,_RES_Quit__Fv,0x0045BA50,high,exact reverse lifecycle; palette manager destruction; three tag-table frees; shutdown caller; and 100% effective reccmp
 CODE_02_Visos (Generic).bin,0x00001634,__ls__FR10CVSOStream5RNAME,0x0045BAD0,high,exact RNAME payload insertion through integer stream slot; sole caller; returned stream identity; and 100% reccmp
+CODE_02_Visos (Generic).bin,0x0000566C,__ct__12CTextManagerFUliiUi,0x00469C60,high,exact table and primitive-pool construction; 0x24 Windows layout; allocation sizes; callers; and source
+CODE_02_Visos (Generic).bin,0x00005748,__dt__12CTextManagerFv,0x00469E20,high,exact font release; remap-array and primitive-pool teardown; callers; and source
+CODE_02_Visos (Generic).bin,0x000057A4,LoadFont__12CTextManagerFUl,0x00469EB0,high,exact first-empty-slot search; CResFONT load; id remap; loaded count; and callers
+CODE_02_Visos (Generic).bin,0x000057F6,GetFont__12CTextManagerFUl,0x00469EF0,high,exact font_array[short_remap[id]] lookup; callers; and 100% reccmp
+CODE_02_Visos (Generic).bin,0x00005854,UnLoadFont__12CTextManagerFUl,0x00469F10,high,exact mapped font release; slot clear; loaded-count decrement; and callers
+CODE_02_Visos (Generic).bin,0x000058FF,DrawString__12CTextManagerFP4CGDIR8CVSPointRC7CVSSizeUlPcUlP6CRemap,0x00469F50,high,exact pooled primitive; optional relative point; mapped font; char-pointer draw dispatch; and callers
+CODE_02_Visos (Generic).bin,0x000059ED,DrawString__12CTextManagerFP4CGDIR8CVSPointRC7CVSSizeUl7CStringUlP6CRemap,0x00469FD0,high,exact pooled primitive; optional relative point; CString lifetime; mapped font draw dispatch; and caller
+CODE_02_Visos (Generic).bin,0x00005A4B,ResetPrimitives__12CTextManagerFv,0x0046A070,high,exact current-primitive field reset; callers; and 100% reccmp

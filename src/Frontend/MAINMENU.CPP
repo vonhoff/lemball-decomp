@@ -88,7 +88,7 @@ extern void LEMBALL_FASTCALL DestroyWindowOwnerRenderContext(void* pObject);
 extern void* LEMBALL_FASTCALL InitializeEmptyGeometryOwnerRect(void* pObject);
 extern void LEMBALL_FASTCALL AppendGeometryOwnerChild(void* pOwner, int nUnusedEdx, void* pChild);
 extern void LEMBALL_FASTCALL RemoveGeometryOwnerChild(void* pOwner, int nUnusedEdx, void* pChild);
-extern void LEMBALL_FASTCALL clear_mapped_list_resource_table_pending_flag(void* pTable);
+extern void LEMBALL_FASTCALL CTextManagerResetPrimitives(void* pTable);
 struct GameNetworkLobbyScreenView;
 void SetNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus);
 void SetTimedNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus, DWORD dwDuration);
@@ -1520,8 +1520,8 @@ __inline static void LayoutPaintballSequencePromptText(GamePaintballSequenceScre
 	}
 	*(char**) ((char*) pScreen + 0x4e0) = pszBuffer;
 	*(char**) ((char*) pScreen + 0x4e4) = 0;
-	pFontResource = ((MappedListResourceTable*) pScreen->m_pMappedListResources98)
-						->GetMappedResource(pScreen->m_nMappedListRemapResourceId384);
+	pFontResource = ((CTextManager*) pScreen->m_pMappedListResources98)
+						->GetFont(pScreen->m_nMappedListRemapResourceId384);
 	pszSecondLine = 0;
 	do {
 		((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, pszBuffer, 0x20);
@@ -1780,7 +1780,7 @@ __inline static void DestroyPasswordEntryScreen(GamePasswordEntryScreenView* pSc
 		pScreen->ReleaseFrameResources();
 	}
 	if (pScreen->m_pMappedListResources98 != 0) {
-		((MappedListResourceTable*) pScreen->m_pMappedListResources98)->Destroy();
+		((CTextManager*) pScreen->m_pMappedListResources98)->Destroy();
 		FreeVSMemBlock(pScreen->m_pMappedListResources98);
 		pScreen->m_pMappedListResources98 = 0;
 	}
@@ -2416,7 +2416,7 @@ void* GameFramedScreenBase::ConstructFramedScreenBaseFields(void* pPrimaryContex
 void LEMBALL_FASTCALL ActivateFramedScreenBase(void* pObject)
 {
 	GameFramedScreenBase* pScreen;
-	MappedListResourceTable* pMappedList;
+	CTextManager* pMappedList;
 	GameProgressiveVariantFrameSelector* pSelector;
 	int nRuntimeMode;
 	VsNetRuntimeModeView* pRuntime;
@@ -2430,10 +2430,10 @@ void LEMBALL_FASTCALL ActivateFramedScreenBase(void* pObject)
 		SetLevelScreenStatusIndicatorMode(0, 0);
 	}
 	if (pScreen->m_cMappedListEntriesA0 > 0) {
-		pMappedList = (MappedListResourceTable*) AllocateVSMemBlock(sizeof(MappedListResourceTable));
+		pMappedList = (CTextManager*) AllocateVSMemBlock(sizeof(CTextManager));
 		if (pMappedList != 0) {
 			pScreen->m_pMappedListResources98 = new (pMappedList)
-				MappedListResourceTable(0x2b6, 1, pScreen->m_cMappedListEntriesA0, pScreen->m_nMappedListModeA4);
+				CTextManager(0x2b6, 1, pScreen->m_cMappedListEntriesA0, pScreen->m_nMappedListModeA4);
 		}
 		else {
 			pScreen->m_pMappedListResources98 = 0;
@@ -2493,7 +2493,7 @@ void LEMBALL_FASTCALL ActivateFramedScreenBase(void* pObject)
 void LEMBALL_FASTCALL DestroyFramedScreenBase(void* pObject)
 {
 	GameFramedScreenBase* pScreen;
-	MappedListResourceTable* pMappedListResources;
+	CTextManager* pMappedListResources;
 	DWORD dwStartTime;
 	DWORD dwNow;
 
@@ -2528,7 +2528,7 @@ void LEMBALL_FASTCALL DestroyFramedScreenBase(void* pObject)
 	if (pScreen->m_fFrameResourcesLoaded9C != 0) {
 		pScreen->ReleaseFrameResources();
 	}
-	pMappedListResources = (MappedListResourceTable*) pScreen->m_pMappedListResources98;
+	pMappedListResources = (CTextManager*) pScreen->m_pMappedListResources98;
 	if (pMappedListResources != 0) {
 		pMappedListResources->Destroy();
 		FreeVSMemBlock(pMappedListResources);
@@ -2775,8 +2775,8 @@ void LEMBALL_FASTCALL LoadFramedScreenFrameResources(void* pObject)
 	LoadAnims(pScreen->m_abVariantRenderManager14, pScreen->m_nMappedListResourceId38C);
 	LoadAnims(pScreen->m_abVariantRenderManager14, pScreen->m_nFrameResourceId390);
 	if (pScreen->m_pMappedListResources98 != 0) {
-		((MappedListResourceTable*) pScreen->m_pMappedListResources98)
-			->LoadListResourceIntoSlot(pScreen->m_nMappedListRemapResourceId384);
+		((CTextManager*) pScreen->m_pMappedListResources98)
+			->LoadFont(pScreen->m_nMappedListRemapResourceId384);
 	}
 }
 // FUNCTION: LEMBALL 0x00445fe0
@@ -2786,8 +2786,8 @@ void GameFramedScreenBase::ReleaseFrameResources(void)
 
 	pScreen = this;
 	if (pScreen->m_pMappedListResources98 != 0) {
-		((MappedListResourceTable*) pScreen->m_pMappedListResources98)
-			->ReleaseListResourceSlot(pScreen->m_nMappedListRemapResourceId384);
+		((CTextManager*) pScreen->m_pMappedListResources98)
+			->UnLoadFont(pScreen->m_nMappedListRemapResourceId384);
 	}
 	ReleaseTypedResourceObjectReference(pScreen->m_pForegroundBitmapC0);
 	ReleaseTypedResourceObjectReference(pScreen->m_pBackgroundBitmapC4);
@@ -2826,7 +2826,7 @@ void LEMBALL_FASTCALL ResetFramedScreenVariantBuffers(void* pObject)
 	pScreen = (GameFramedScreenBase*) pObject;
 	((CAnimsManager*) pScreen->m_abVariantRenderManager14)->ResetPrimitives();
 	if (pScreen->m_pMappedListResources98 != 0) {
-		clear_mapped_list_resource_table_pending_flag(pScreen->m_pMappedListResources98);
+		CTextManagerResetPrimitives(pScreen->m_pMappedListResources98);
 	}
 	pScreen->m_iPackagedEntry36C = 0;
 }
@@ -3890,7 +3890,7 @@ void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(void* pObject)
 	static const char* s_apszSkillNames[5] = {"Fun", " Tricky", "Taxing", "Mayhem", "Network"};
 	static const int s_anStatusLabelPoints[4] = {10, 13, 16, 22};
 	GameLevelSelectionScreenView* pScreen;
-	MappedListResourceTable* pMappedList;
+	CTextManager* pMappedList;
 	void* pFontResource;
 	const char* pszTime;
 	const char* pszSkill;
@@ -3905,14 +3905,14 @@ void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(void* pObject)
 	if (pScreen->m_fBuildingRenderEntries364 == 0) {
 		return;
 	}
-	pMappedList = (MappedListResourceTable*) pScreen->m_pMappedListResources98;
+	pMappedList = (CTextManager*) pScreen->m_pMappedListResources98;
 	Relative[0] = 0;
 	Relative[1] = 0;
 	for (i = 0; i < 3; ++i) {
 		if (pScreen->m_aTitlePositions464[i][0] != -1) {
 			Point[0] = (short) pScreen->m_aTitlePositions464[i][0];
 			Point[1] = (short) pScreen->m_aTitlePositions464[i][1];
-			pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+			pMappedList->DrawString(pScreen->m_pRenderContext88,
 										   Point,
 										   Relative,
 										   pScreen->m_nMappedListRemapResourceId384,
@@ -3926,7 +3926,7 @@ void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(void* pObject)
 	for (i = 0; i < cStatusLabels; ++i) {
 		Point[0] = (short) pScreen->m_pLayout3D4[s_anStatusLabelPoints[i] * 2];
 		Point[1] = (short) pScreen->m_pLayout3D4[s_anStatusLabelPoints[i] * 2 + 1];
-		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+		pMappedList->DrawString(pScreen->m_pRenderContext88,
 									   Point,
 									   Relative,
 									   pScreen->m_nMappedListRemapResourceId384,
@@ -3941,7 +3941,7 @@ void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(void* pObject)
 	}
 	Point[0] = (short) pScreen->m_pLayout3D4[22];
 	Point[1] = (short) pScreen->m_pLayout3D4[23];
-	pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+	pMappedList->DrawString(pScreen->m_pRenderContext88,
 								   Point,
 								   Relative,
 								   pScreen->m_nMappedListRemapResourceId384,
@@ -3950,11 +3950,11 @@ void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(void* pObject)
 								   0);
 	nPack = ((GameLevelProgressStateView*) g_pLevelProgressState)->m_nCurrentPack08;
 	pszSkill = s_apszSkillNames[nPack];
-	pFontResource = pMappedList->GetMappedResource(pScreen->m_nMappedListRemapResourceId384);
+	pFontResource = pMappedList->GetFont(pScreen->m_nMappedListRemapResourceId384);
 	((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, pszSkill, 0x20);
 	Point[0] = (short) (pScreen->m_pLayout3D4[40] - Extent[0] / 2);
 	Point[1] = (short) pScreen->m_pLayout3D4[41];
-	pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+	pMappedList->DrawString(pScreen->m_pRenderContext88,
 								   Point,
 								   Relative,
 								   pScreen->m_nMappedListRemapResourceId384,
@@ -3964,7 +3964,7 @@ void LEMBALL_FASTCALL DrawFunctionalLevelSelectionText(void* pObject)
 	if (4 < pScreen->m_cSkillStatus3F4) {
 		Point[0] = (short) pScreen->m_pLayout3D4[22];
 		Point[1] = (short) pScreen->m_pLayout3D4[53];
-		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+		pMappedList->DrawString(pScreen->m_pRenderContext88,
 									   Point,
 									   Relative,
 									   pScreen->m_nMappedListRemapResourceId384,
@@ -4194,8 +4194,8 @@ void LEMBALL_FASTCALL RefreshFunctionalLevelSelectionMetadata(GameLevelSelection
 
 	iSource = 0;
 	y = pScreen->m_pLayout3D4[37];
-	pFontResource = ((MappedListResourceTable*) pScreen->m_pMappedListResources98)
-						->GetMappedResource(pScreen->m_nMappedListRemapResourceId384);
+	pFontResource = ((CTextManager*) pScreen->m_pMappedListResources98)
+						->GetFont(pScreen->m_nMappedListRemapResourceId384);
 	fEndOfTitle = 0;
 	for (iLine = 0; iLine < 3; ++iLine) {
 		if (fEndOfTitle == 1) {
@@ -4379,17 +4379,17 @@ void LEMBALL_FASTCALL ReleasePaintballSequenceResources(void* pObject)
 void LEMBALL_FASTCALL DrawPaintballSequencePromptText(void* pObject)
 {
 	GamePaintballSequenceScreenView* pScreen;
-	MappedListResourceTable* pMappedList;
+	CTextManager* pMappedList;
 	short Relative[2];
 
 	pScreen = (GamePaintballSequenceScreenView*) pObject;
 	if (pScreen->m_fBuildingRenderEntries364 == 0 || pScreen->m_pMappedListResources98 == 0) {
 		return;
 	}
-	pMappedList = (MappedListResourceTable*) pScreen->m_pMappedListResources98;
+	pMappedList = (CTextManager*) pScreen->m_pMappedListResources98;
 	Relative[0] = 0;
 	Relative[1] = 0;
-	pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+	pMappedList->DrawString(pScreen->m_pRenderContext88,
 								   (short*) ((char*) pScreen + 0x4e8),
 								   Relative,
 								   pScreen->m_nMappedListRemapResourceId384,
@@ -4397,7 +4397,7 @@ void LEMBALL_FASTCALL DrawPaintballSequencePromptText(void* pObject)
 								   0x20,
 								   0);
 	if (*(void**) ((char*) pScreen + 0x4e4) != 0) {
-		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+		pMappedList->DrawString(pScreen->m_pRenderContext88,
 									   (short*) ((char*) pScreen + 0x4ec),
 									   Relative,
 									   pScreen->m_nMappedListRemapResourceId384,
@@ -4405,14 +4405,14 @@ void LEMBALL_FASTCALL DrawPaintballSequencePromptText(void* pObject)
 									   0x20,
 									   0);
 	}
-	pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+	pMappedList->DrawString(pScreen->m_pRenderContext88,
 								   (short*) ((char*) pScreen + 0x4f0),
 								   Relative,
 								   pScreen->m_nMappedListRemapResourceId384,
 								   (void*) "Password:",
 								   0x20,
 								   0);
-	pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+	pMappedList->DrawString(pScreen->m_pRenderContext88,
 								   (short*) ((char*) pScreen + 0x4f4),
 								   Relative,
 								   pScreen->m_nMappedListRemapResourceId384,
@@ -4786,7 +4786,7 @@ void LEMBALL_FASTCALL DrawPasswordEntryText(void* pObject)
 {
 	static const char* s_apszSkillNames[4] = {"Fun", "Tricky", "Taxing", "Mayhem"};
 	GamePasswordEntryScreenView* pScreen;
-	MappedListResourceTable* pMappedList;
+	CTextManager* pMappedList;
 	GameLevelProgressStateView* pProgress;
 	short Point[2];
 	short Relative[2];
@@ -4798,14 +4798,14 @@ void LEMBALL_FASTCALL DrawPasswordEntryText(void* pObject)
 	if (pScreen->m_pMappedListResources98 == 0 || pScreen->m_pLayout3A8 == 0) {
 		return;
 	}
-	pMappedList = (MappedListResourceTable*) pScreen->m_pMappedListResources98;
+	pMappedList = (CTextManager*) pScreen->m_pMappedListResources98;
 	pProgress = (GameLevelProgressStateView*) g_pLevelProgressState;
 	Relative[0] = 0;
 	Relative[1] = 0;
 	for (i = 0; i < 4; ++i) {
 		Point[0] = (short) pScreen->m_pLayout3A8[6 + i * 2];
 		Point[1] = (short) pScreen->m_pLayout3A8[7 + i * 2];
-		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+		pMappedList->DrawString(pScreen->m_pRenderContext88,
 									   Point,
 									   Relative,
 									   pScreen->m_nMappedListRemapResourceId384,
@@ -4816,7 +4816,7 @@ void LEMBALL_FASTCALL DrawPasswordEntryText(void* pObject)
 		FormatSignedIntToRadixString(pProgress->m_anUnlockedPackCaps28[i] + 1, aszLevelCounts[i] + 2, 10);
 		Point[0] = (short) pScreen->m_pLayout3A8[14 + i * 2];
 		Point[1] = (short) pScreen->m_pLayout3A8[15 + i * 2];
-		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+		pMappedList->DrawString(pScreen->m_pRenderContext88,
 									   Point,
 									   Relative,
 									   pScreen->m_nMappedListRemapResourceId384,
@@ -4828,7 +4828,7 @@ void LEMBALL_FASTCALL DrawPasswordEntryText(void* pObject)
 		pszResult = pScreen->m_fPasswordValid484 != 0 ? "Password OK!" : "Invalid Password!";
 		Point[0] = (short) pScreen->m_pLayout3A8[30];
 		Point[1] = (short) pScreen->m_pLayout3A8[31];
-		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+		pMappedList->DrawString(pScreen->m_pRenderContext88,
 									   Point,
 									   Relative,
 									   pScreen->m_nMappedListRemapResourceId384,
@@ -4841,20 +4841,20 @@ void LEMBALL_FASTCALL DrawPasswordEntryText(void* pObject)
 void LEMBALL_FASTCALL DrawEnteredPasswordText(void* pObject)
 {
 	GamePasswordEntryScreenView* pScreen;
-	MappedListResourceTable* pMappedList;
+	CTextManager* pMappedList;
 	short Point[2];
 	short Relative[2];
 	short Extent[2];
 
 	pScreen = (GamePasswordEntryScreenView*) pObject;
-	pMappedList = (MappedListResourceTable*) pScreen->m_pMappedListResources98;
+	pMappedList = (CTextManager*) pScreen->m_pMappedListResources98;
 	Relative[0] = 0;
 	Relative[1] = 0;
-	((LevelScreenDrawOwnerView*) pMappedList->GetMappedResource(pScreen->m_nMappedListRemapResourceId384))
+	((LevelScreenDrawOwnerView*) pMappedList->GetFont(pScreen->m_nMappedListRemapResourceId384))
 		->MeasureGlyphStringExtent(Extent, pScreen->m_szPassword3B0, 0x20);
 	Point[0] = (short) (pScreen->m_cxScreen37C - pScreen->m_pLayout3A8[22] - Extent[0]);
 	Point[1] = (short) pScreen->m_pLayout3A8[23];
-	pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+	pMappedList->DrawString(pScreen->m_pRenderContext88,
 								   Point,
 								   Relative,
 								   pScreen->m_nMappedListRemapResourceId384,
@@ -4866,7 +4866,7 @@ void LEMBALL_FASTCALL DrawEnteredPasswordText(void* pObject)
 void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void* pObject)
 {
 	GamePasswordEntryScreenView* pScreen;
-	MappedListResourceTable* pMappedList;
+	CTextManager* pMappedList;
 	typedef void(LEMBALL_FASTCALL * QueuePointSinkVirtual)(void*, int, void*);
 	int nContext;
 	int nExtent;
@@ -4906,14 +4906,14 @@ void LEMBALL_FASTCALL DrawPasswordEntryInputArea(void* pObject)
 	if (pScreen->m_pMappedListResources98 == 0 || pScreen->m_pLayout3A8 == 0) {
 		return;
 	}
-	pMappedList = (MappedListResourceTable*) pScreen->m_pMappedListResources98;
+	pMappedList = (CTextManager*) pScreen->m_pMappedListResources98;
 	Relative[0] = 0;
 	Relative[1] = 0;
-	((LevelScreenDrawOwnerView*) pMappedList->GetMappedResource(pScreen->m_nMappedListRemapResourceId384))
+	((LevelScreenDrawOwnerView*) pMappedList->GetFont(pScreen->m_nMappedListRemapResourceId384))
 		->MeasureGlyphStringExtent(Extent, pScreen->m_szPassword3B0, 0x20);
 	Point[0] = (short) (pScreen->m_cxScreen37C - pScreen->m_pLayout3A8[22] - Extent[0]);
 	Point[1] = (short) pScreen->m_pLayout3A8[23];
-	pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+	pMappedList->DrawString(pScreen->m_pRenderContext88,
 								   Point,
 								   Relative,
 								   pScreen->m_nMappedListRemapResourceId384,
@@ -5111,7 +5111,7 @@ void GameNetworkLobbyScreenView::DrawPlayerEntry(int iPeer, int* piVisible, int 
 	GameNetworkLobbyPeerStateView* pPeerState;
 	GameNetworkLobbyTrackedPeerView* pPeer;
 	GameNetworkLobbyAddressView* pAddress;
-	MappedListResourceTable* pMappedList;
+	CTextManager* pMappedList;
 	void* pFontResource;
 	const char* pszAddress;
 	char szComputer[0x18];
@@ -5127,8 +5127,8 @@ void GameNetworkLobbyScreenView::DrawPlayerEntry(int iPeer, int* piVisible, int 
 	if (pRuntime == 0 || pRuntime->m_pPeerStates14[iPeer].m_fActive4C == 0) {
 		return;
 	}
-	pMappedList = (MappedListResourceTable*) m_pMappedListResources98;
-	pFontResource = pMappedList->GetMappedResource(m_nMappedListRemapResourceId384);
+	pMappedList = (CTextManager*) m_pMappedListResources98;
+	pFontResource = pMappedList->GetFont(m_nMappedListRemapResourceId384);
 	pPeerState = pRuntime->m_pPeerStates14 + iPeer;
 	pPeer = pRuntime->m_apTrackedPeers20[iPeer];
 	nRemap = nColor == 6 ? 0 : m_anPaletteRemaps414[nColor];
@@ -5158,21 +5158,21 @@ void GameNetworkLobbyScreenView::DrawPlayerEntry(int iPeer, int* piVisible, int 
 	((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, pPeerState->m_szComputer35, 0x20);
 	ComputerPoint[0] = (short) (ComputerPoint[0] - Extent[0] / 2);
 
-	pMappedList->SubmitRenderEntry(m_pRenderContext88,
+	pMappedList->DrawString(m_pRenderContext88,
 								   NamePoint,
 								   Relative,
 								   m_nMappedListRemapResourceId384,
 								   pPeerState->m_szName2C,
 								   0x20,
 								   nRemap);
-	pMappedList->SubmitRenderEntry(m_pRenderContext88,
+	pMappedList->DrawString(m_pRenderContext88,
 								   AddressPoint,
 								   Relative,
 								   m_nMappedListRemapResourceId384,
 								   (void*) pszAddress,
 								   0x20,
 								   nRemap);
-	pMappedList->SubmitRenderEntry(m_pRenderContext88,
+	pMappedList->DrawString(m_pRenderContext88,
 								   ComputerPoint,
 								   Relative,
 								   m_nMappedListRemapResourceId384,
@@ -5185,7 +5185,7 @@ void GameNetworkLobbyScreenView::DrawPlayerEntry(int iPeer, int* piVisible, int 
 void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void* pObject)
 {
 	GameNetworkLobbyScreenView* pScreen;
-	MappedListResourceTable* pMappedList;
+	CTextManager* pMappedList;
 	void* pFontResource;
 	const char* pszStatus;
 	short Point[2];
@@ -5208,7 +5208,7 @@ void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void* pObject)
 		((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, (text), 0x20);                   \
 		Point[0] = (short) ((x) - Extent[0] / 2);                                                                      \
 		Point[1] = (short) (y);                                                                                        \
-		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,                                                    \
+		pMappedList->DrawString(pScreen->m_pRenderContext88,                                                    \
 									   Point,                                                                          \
 									   Relative,                                                                       \
 									   pScreen->m_nMappedListRemapResourceId384,                                       \
@@ -5218,8 +5218,8 @@ void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void* pObject)
 	} while (0)
 
 	pScreen = (GameNetworkLobbyScreenView*) pObject;
-	pMappedList = (MappedListResourceTable*) pScreen->m_pMappedListResources98;
-	pFontResource = pMappedList->GetMappedResource(pScreen->m_nMappedListRemapResourceId384);
+	pMappedList = (CTextManager*) pScreen->m_pMappedListResources98;
+	pFontResource = pMappedList->GetFont(pScreen->m_nMappedListRemapResourceId384);
 	Relative[0] = 0;
 	Relative[1] = 0;
 	if (pScreen->m_fBuildingRenderEntries364 != 0) {
@@ -5228,7 +5228,7 @@ void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void* pObject)
 		((LevelScreenDrawOwnerView*) pFontResource)->MeasureGlyphStringExtent(Extent, pszStatus, 0x20);
 		Point[0] = (short) ((pScreen->m_cxScreen37C - Extent[0]) / 2);
 		Point[1] = (short) pScreen->m_pLayout42C[20];
-		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+		pMappedList->DrawString(pScreen->m_pRenderContext88,
 									   Point,
 									   Relative,
 									   pScreen->m_nMappedListRemapResourceId384,
@@ -5337,7 +5337,7 @@ void LEMBALL_FASTCALL DrawNetworkLobbyScreen(void* pObject)
 		}
 		Point[0] = (short) pScreen->m_pLayout42C[22];
 		Point[1] = (short) pScreen->m_pLayout42C[23];
-		pMappedList->SubmitRenderEntry(pScreen->m_pRenderContext88,
+		pMappedList->DrawString(pScreen->m_pRenderContext88,
 									   Point,
 									   Relative,
 									   pScreen->m_nMappedListRemapResourceId384,

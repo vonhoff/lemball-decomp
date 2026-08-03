@@ -381,3 +381,7 @@ Portable `operator<<(CVSOStream&, RNAME)` maps to `0x0045BAD0` in `DRAWTEXT.CPP`
 ## CResBase StreamOut final disposition
 
 Portable `CResBase::StreamOut` has exact Macintosh body `0x00002C72..0x00002F00` and trailer `0x00002F01`. The 655-byte body formats resource type, identity, load flags, offsets, and sizes through a global diagnostic stream; its explicit stream argument is not consumed. Windows has no corresponding body, no resource-vtable slot, and no direct or indirect formatter candidate. It is therefore finalized as Macintosh-specific with no x86 correlation; nearby identity methods, shared stream helpers, wrappers, and `CResBaseLIST` methods remain independently owned.
+
+## CTextManager reconstruction
+
+All eight portable `CTextManager` symbols map to the Windows manager at `0x00469C60..0x0046A070`: constructor/destructor, `LoadFont`, `GetFont`, `UnLoadFont`, both `DrawString` overloads, and `ResetPrimitives`. Both architectures maintain a font-pointer array plus a short resource-ID remap, reuse pooled draw primitives, apply a nonzero relative point with flag `0x200`, and keep the raw-character and `CString` lifetime paths distinct. The Windows object is `0x24` bytes and physically splits the six primary methods into `DRAWTEXT.CPP` while the `CString` overload and reset helper remain owned by `GDIVT.CPP`. Source terminology now follows `CTextManager` without moving either TU.

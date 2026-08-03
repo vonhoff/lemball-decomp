@@ -1300,7 +1300,7 @@ void LEMBALL_FASTCALL ReleaseLevelScreenPauseDialogResources(void* pObject)
 	char* pBytes = (char*) pObject;
 
 	if (*(int*) (pBytes + 0x208) != 0) {
-		((MappedListResourceTable*) (pBytes + 0xdc))->ReleaseListResourceSlot(*(int*) (pBytes + 0x204));
+		((CTextManager*) (pBytes + 0xdc))->UnLoadFont(*(int*) (pBytes + 0x204));
 		ReleaseTypedResourceObjectReference(*(void**) (pBytes + 0x158));
 		ReleaseTypedResourceObjectReference(*(void**) (pBytes + 0x154));
 		*(int*) (pBytes + 0x208) = 0;

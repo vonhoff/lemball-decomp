@@ -459,7 +459,7 @@ void LevelScreenDrawEntry::ResetVtablesAfterDestruction()
 }
 
 // FUNCTION: LEMBALL 0x00469c60
-MappedListResourceTable::MappedListResourceTable(int cResourceIds, int cSlots, int cDrawEntries, int cchOwnedText)
+CTextManager::CTextManager(int cResourceIds, int cSlots, int cDrawEntries, int cchOwnedText)
 {
 	int i;
 
@@ -493,10 +493,10 @@ DECOMP_SIZE_ASSERT(LevelQueuedRenderPointSink, 0x04);
 DECOMP_SIZE_ASSERT(LevelPackagedRectQueueEntry, 0x18);
 DECOMP_SIZE_ASSERT(LevelScreenDrawEntry, 0x44);
 DECOMP_SIZE_ASSERT(LevelResourceScreenDrawEntry, 0x4c);
-DECOMP_SIZE_ASSERT(MappedListResourceTable, 0x24);
+DECOMP_SIZE_ASSERT(CTextManager, 0x24);
 
 // FUNCTION: LEMBALL 0x00469e20
-void MappedListResourceTable::Destroy(void)
+void CTextManager::Destroy(void)
 {
 	typedef void(LEMBALL_FASTCALL * DeleteProc)(void* pObject, int nUnusedEdx, int fDelete);
 	int i;
@@ -522,7 +522,7 @@ void MappedListResourceTable::Destroy(void)
 }
 
 // FUNCTION: LEMBALL 0x00469eb0
-void MappedListResourceTable::LoadListResourceIntoSlot(int nResourceId)
+void CTextManager::LoadFont(int nResourceId)
 {
 	int i;
 
@@ -538,13 +538,13 @@ void MappedListResourceTable::LoadListResourceIntoSlot(int nResourceId)
 }
 
 // FUNCTION: LEMBALL 0x00469ef0
-void* MappedListResourceTable::GetMappedResource(int nResourceId)
+void* CTextManager::GetFont(int nResourceId)
 {
 	return m_apResources00[m_aiResourceSlots04[nResourceId]];
 }
 
 // FUNCTION: LEMBALL 0x00469f10
-void MappedListResourceTable::ReleaseListResourceSlot(int nResourceId)
+void CTextManager::UnLoadFont(int nResourceId)
 {
 	int i;
 
@@ -557,7 +557,7 @@ void MappedListResourceTable::ReleaseListResourceSlot(int nResourceId)
 }
 
 // FUNCTION: LEMBALL 0x00469f50
-void MappedListResourceTable::SubmitRenderEntry(void* pRenderQueue,
+void CTextManager::DrawString(void* pRenderQueue,
 												const short* pPoint,
 												const short* pRelativePoint,
 												int nResourceId,
@@ -569,7 +569,7 @@ void MappedListResourceTable::SubmitRenderEntry(void* pRenderQueue,
 	void* pResource;
 
 	pEntry = m_apDrawEntries20[m_nCurrentSlot18++];
-	pResource = GetMappedResource(nResourceId);
+	pResource = GetFont(nResourceId);
 	if (pResource == 0) {
 		--m_nCurrentSlot18;
 		return;

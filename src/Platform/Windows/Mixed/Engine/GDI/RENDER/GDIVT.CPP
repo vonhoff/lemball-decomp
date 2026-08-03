@@ -17,7 +17,7 @@ void __fastcall initialize_resource_sprite_window_owner_variant_c_state(void* pO
 	*(void**) ((char*) pObject + 0xf4) = g_pSharedRenderDispatchQueue;
 }
 // FUNCTION: LEMBALL 0x0046a070
-void __fastcall clear_mapped_list_resource_table_pending_flag(void* pTable)
+void __fastcall CTextManagerResetPrimitives(void* pTable)
 {
 	*(int*) ((char*) pTable + 0x18) = 0;
 }
