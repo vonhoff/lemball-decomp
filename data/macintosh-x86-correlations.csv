@@ -1137,3 +1137,7 @@ CODE_02_Visos (Generic).bin,0x0000D85E,Fill__11CReadPacketFPCUcUs,0x00461140,hig
 CODE_02_Visos (Generic).bin,0x0000D8BA,__ct__12CWritePacketFUs,0x00461190,high,construct simple/write packet slot; independent exact 68K and x86 ABI/layout/caller/ownership audit
 CODE_02_Visos (Generic).bin,0x0000D918,__dt__12CWritePacketFv,0x004611C0,high,destroy simple/write packet slot; independent exact 68K and x86 ABI/layout/caller/ownership audit
 CODE_02_Visos (Generic).bin,0x0000D96F,Fill__12CWritePacketFPCUcUsP15CNetworkMessage,0x004611E0,high,copy serialized packet and retain network-message owner; exact raw 0x80 trailer remainder plus independent 68K and x86 ABI/layout/caller/ownership audit
+CODE_02_Visos (Generic).bin,0x00010BF4,__ct__10CFontTableFP8CResFONT,0x00473650,high,construct 256-slot glyph table from CResFONT entries; independent exact 68K and x86 ABI/layout/vtable/caller/lifetime audit
+CODE_02_Visos (Generic).bin,0x00010C2C,GetZRLE__10CFontTableCFi,0x00473700,high,index glyph pointer table by character code; independent exact 68K and x86 ABI/layout/vtable/caller/lifetime audit
+CODE_02_Visos (Generic).bin,0x00010C79,GetChar__10CFontTableCFP8CResZRLE,0x00473710,high,scan 256 glyph pointers and return character index or 0xFF; independent exact 68K and x86 ABI/layout/vtable/caller/lifetime audit
+CODE_02_Visos (Generic).bin,0x00010CE0,__dt__10CFontTableFv,0x00473730,high,free glyph pointer table without owning glyph entries; independent exact 68K and x86 ABI/layout/vtable/caller/lifetime audit

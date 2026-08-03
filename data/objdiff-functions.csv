@@ -3043,10 +3043,10 @@ address,size,name,unit
 0x004734F0,288,show_release_assert_failure_and_abort,Control/CGame.cpp
 0x00473610,29,construct_palette_remap_variant_wrapper,Control/CGame.cpp
 0x00473630,19,construct_vsmem_pointer_table_wrapper,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x00473650,164,construct_list_char_entry_table,Visos/Generic/CSurface.cpp
-0x00473700,13,resource_geometry_row_buffer_slot5,Visos/Generic/CSurface.cpp
-0x00473710,29,resource_geometry_row_buffer_slot6,Visos/Generic/CSurface.cpp
-0x00473730,29,destroy_list_char_entry_table,Visos/Generic/CSurface.cpp
+0x00473650,164,CFontTable::CFontTable,Visos/Generic/CSurface.cpp
+0x00473700,13,CFontTable::GetZRLE,Visos/Generic/CSurface.cpp
+0x00473710,29,CFontTable::GetChar,Visos/Generic/CSurface.cpp
+0x00473730,29,CFontTable::~CFontTable,Visos/Generic/CSurface.cpp
 0x00473750,30,resource_geometry_row_buffer_slot4,Visos/Generic/CSurface.cpp
 0x00473770,31,resource_geometry_row_buffer_slot8,Visos/Generic/CSurface.cpp
 0x00473790,316,show_fatal_getlasterror_message_and_exit,Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOW.CPP

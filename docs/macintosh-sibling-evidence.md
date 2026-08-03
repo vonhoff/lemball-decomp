@@ -337,3 +337,7 @@ All fifteen portable change-map methods map across `0x004669A0..0x00467020` in `
 ## CReadPacket and CWritePacket reconstruction
 
 All six portable packet-slot methods map across `0x00461090..0x004611E0` in `VSNET.CPP`. Exact 68K bodies, locked-versus-simple layouts, direct table and deleting-wrapper callers, x86 calling conventions, and payload ownership establish the two families. `CReadPacket` retains the expanded Win32 critical section; `CWritePacket` retains the network-message owner and retry fields. The deleting wrappers and adjacent `CBasePacketBuff`, `CReadPacketBuff`, and `CWritePacketBuff` families remain separate.
+
+## CFontTable reconstruction
+
+All four portable glyph-table methods map across `0x00473650..0x00473730` in `CSurface.cpp`. Exact 68K bodies, the shared 8-byte layout, the 256-entry pointer table, vtable slots, `CResFONT` callers, and teardown order establish construction, indexed lookup, reverse lookup, and destruction. `CResFONT::ASCIItoZRLE` at `0x0045DB20` and `GetSize` at `0x0045DB30` remain distinct published methods; scalar deleting wrapper `0x00473750` remains compiler glue.
