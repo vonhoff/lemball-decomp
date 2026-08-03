@@ -23,6 +23,10 @@ struct ManagedEntityActionStateView {
 	virtual void SetActionState(int nStateId);
 };
 
+struct CGround {
+	short GetZ(int nLocalX, int nLocalY);
+};
+
 // Split from CHUNKOBJVT.CPP to preserve MSVC 4.20 code generation.
 
 // FUNCTION: LEMBALL 0x00425100
@@ -166,4 +170,66 @@ void CLift::CheckObjects(void)
 			}
 		}
 	}
+}
+
+// FUNCTION: LEMBALL 0x004254a0
+int CLift::StepOn(const AICOORD& position, CGameObject* pObject)
+{
+	char* pLift;
+	char* pChild;
+	char* pGrid;
+	CGround* pTile;
+	unsigned short nLiftId;
+	unsigned short nHeight;
+	int nStartX;
+	int nStartY;
+	int nPositionX;
+	int nPositionY;
+	int nPositionZ;
+	int i;
+
+	pLift = (char*) this;
+	pChild = (char*) pObject;
+	nLiftId = *(unsigned short*) (pLift + 0x138);
+	if (nLiftId == *(unsigned int*) (pChild + 0x110)) {
+		return 1;
+	}
+	nStartX = *(short*) (pLift + 0x13a) - 8;
+	nStartY = *(short*) (pLift + 0x13c) - 8;
+	nPositionX = position.x >> 12;
+	nPositionY = position.y >> 12;
+	if (nPositionX >= nStartX && nPositionX <= *(short*) (pLift + 0x140) + 7 && nPositionY >= nStartY &&
+		nPositionY <= *(short*) (pLift + 0x142) + 7) {
+		nPositionZ = position.z >> 12;
+		pGrid = (char*) g_pLiftTileGrid;
+		if (nStartX < 0 || nStartY < 0 || nStartX >> 4 >= *(int*) (pGrid + 0x10) ||
+			nStartY >> 4 >= *(int*) (pGrid + 0x14)) {
+			nHeight = 0;
+		}
+		else {
+			pTile =
+				(CGround*) (*(char**) (pGrid + 0x0c) + ((nStartY >> 4) * *(int*) (pGrid + 0x10) + (nStartX >> 4)) * 12);
+			nHeight = pTile->GetZ(nStartX & 0x0f, nStartY & 0x0f);
+		}
+		if ((int) nHeight - 2 <= nPositionZ && nPositionZ <= (int) nHeight + 4) {
+			for (i = 0; i < 8; ++i) {
+				if (*(void**) (pLift + 0x170 + i * 4) == 0) {
+					*(void**) (pLift + 0x170 + i * 4) = pObject;
+					*(unsigned int*) (pChild + 0x110) = nLiftId;
+					if (*(int*) (pLift + 0x15c) == 1) {
+						Activate();
+						return 1;
+					}
+					if (*(int*) (pLift + 0x15c) == 4 && *(int*) (pLift + 0x16c) != 1) {
+						Activate();
+					}
+					return 1;
+				}
+			}
+		}
+	}
+	if (nLiftId == *(unsigned int*) (pChild + 0x110)) {
+		*(unsigned int*) (pChild + 0x110) = 0xffff;
+	}
+	return 0;
 }

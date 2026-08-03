@@ -5,6 +5,8 @@
 
 typedef int eLiftActivateType;
 
+class CGameObject;
+
 class CLift {
 public:
 	CLift(void);
@@ -12,6 +14,7 @@ public:
 	void CalculateCliff(void);
 	int Process(void);
 	void CheckObjects(void);
+	int StepOn(const AICOORD& position, CGameObject* pObject);
 	int Activate(void);
 	void ActivateDeactivate(void);
 	void Edit(int nHeight,
