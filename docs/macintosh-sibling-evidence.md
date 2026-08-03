@@ -265,3 +265,7 @@ All five portable base methods map at `0x0045A540..0x0045A630` in physical `Memo
 ## CMRAMBlock reconstruction
 
 The sole generic portable constructor maps to `0x0045A640` in physical `Memory.cpp`. Exact bodies forward all arguments to `CMBlock`, install the derived vtable, stamp `RMBL`, and expose payload `this+0x28` with size reduced by `0x28`. The Macintosh destructor is Mac-specific; Windows return-this wrapper `0x0045A900` remains excluded.
+
+## CVSOStream reconstruction
+
+All twelve portable stream-format methods map across `0x00458450..0x00458D40` in physical `VSINIT.CPP`. Exact bodies and ABI/caller evidence distinguish `HEX` at `0x00458780`, zero-filled `HEX8` at `0x004589C0`, and four-byte `CHAR4` at `0x00458D40`. Windows-only unsigned-int, other fixed-width hexadecimal/binary adapters, character forwarding, and LEVELVT deleting wrappers remain separate.
