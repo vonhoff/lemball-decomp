@@ -3,6 +3,8 @@
 
 #include "AI/AICoord.h"
 
+class CAI;
+
 struct CVSRect {
 	short width;
 	short height;
@@ -73,6 +75,7 @@ public:
 	void GetBoundingBox(CVSRect& rect);
 	int IsSelectable(void);
 	void ResetInstructions(void);
+	static void Init(CAI* pAI);
 	unsigned short GetId(void);
 	void SetId(unsigned short nSlotId);
 	void ReSetId(void);

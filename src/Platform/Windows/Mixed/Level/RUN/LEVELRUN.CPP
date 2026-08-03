@@ -80,7 +80,6 @@ void InitializeLevelChunkTypeEnabledFlagsThunk(void* pLevelMode);
 void* LEMBALL_FASTCALL GetLevelGameModeOwner(void* pLevelMode);
 void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode);
 void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEnabled);
-void InitializeManagedEntitySlotTablesThunk(void* pLevelGameMode);
 void LEMBALL_FASTCALL ResetBallChunkEntries(void* pBallManager);
 
 
@@ -535,7 +534,6 @@ void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEn
 void LEMBALL_FASTCALL DispatchType14CountedChildSlotC4(void* pChunkManager);
 void LEMBALL_FASTCALL FillReachabilityGridFromTileFlagsThunk(void* pReachabilityHelper);
 
-void InitializeManagedEntitySlotTablesThunk(void* pLevelGameMode);
 
 struct GameLockedRecordSlotTableView {
 	int m_cRecords;
@@ -633,7 +631,7 @@ void LevelEnmyChunkManager::ActivateNestedChildrenFromOwnerTableVariantThunk(voi
 // LINKERILT: LEMBALL 0x00401e8d
 void InitializeManagedEntitySlotTablesEntryThunk(void* pLevelGameMode)
 {
-	InitializeManagedEntitySlotTablesThunk(pLevelGameMode);
+	CGameObject::Init((CAI*) pLevelGameMode);
 }
 // LINKERILT: LEMBALL 0x00402379
 void LEMBALL_FASTCALL ResizeLevelTileReachabilityGridThunk(void* pReachabilityHelper)
@@ -1683,26 +1681,6 @@ void LoadLevelFlagChunk(void* pLevelMode, const unsigned short* pWords)
 		*(int*) (pMode + 0x100) = pWords[1];
 	}
 }
-// Macintosh: CGameObject::Init(CAI*)
-// FUNCTION: LEMBALL 0x004165e0
-void InitializeManagedEntitySlotTablesThunk(void* pLevelGameMode)
-{
-	int i;
-	unsigned char* pbBits;
-
-	g_fLevelEndStateRequestLatched = 0;
-	g_pActiveManagedEntityOwner = pLevelGameMode;
-	pbBits = g_GAME_ManagedEntitySlotClaimBitset;
-	for (i = 0x40; i != 0; --i) {
-		pbBits[0] = 0;
-		pbBits[1] = 0;
-		pbBits[2] = 0;
-		pbBits[3] = 0;
-		pbBits += 4;
-	}
-	g_GAME_ManagedEntitySlotClaimBitset[0] |= g_GAME_ManagedEntitySlotBitMasks[0];
-}
-
 // FUNCTION: LEMBALL 0x00416730
 int PASCAL ReturnZeroLevelCallback00416730(void)
 {

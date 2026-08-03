@@ -6,6 +6,28 @@ extern unsigned short g_GAME_ManagedEntityRegistryCount;
 extern unsigned char g_GAME_ManagedEntitySlotBitMasks[8];
 extern unsigned char g_GAME_ManagedEntitySlotClaimBitset[0x100];
 
+extern int g_fLevelEndStateRequestLatched;
+extern void* g_pActiveManagedEntityOwner;
+
+// FUNCTION: LEMBALL 0x004165e0
+void CGameObject::Init(CAI* pAI)
+{
+	int i;
+	unsigned char* pbBits;
+
+	g_fLevelEndStateRequestLatched = 0;
+	g_pActiveManagedEntityOwner = pAI;
+	pbBits = g_GAME_ManagedEntitySlotClaimBitset;
+	for (i = 0x40; i != 0; --i) {
+		pbBits[0] = 0;
+		pbBits[1] = 0;
+		pbBits[2] = 0;
+		pbBits[3] = 0;
+		pbBits += 4;
+	}
+	g_GAME_ManagedEntitySlotClaimBitset[0] |= g_GAME_ManagedEntitySlotBitMasks[0];
+}
+
 // FUNCTION: LEMBALL 0x00416610
 unsigned short CGameObject::GetId(void)
 {

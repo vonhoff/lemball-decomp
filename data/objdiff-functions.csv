@@ -454,7 +454,7 @@ address,size,name,unit
 0x00416510,84,CGameObject::StartSommersault,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00416570,30,CGameObject::IsSelectable,AI/CGameObjectMove.cpp
 0x00416590,80,CGameObject::ResetInstructions,AI/CGameObjectMove.cpp
-0x004165E0,47,CGameObject::Init,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x004165E0,47,CGameObject::Init,AI/CGameObjectId.cpp
 0x00416610,5,CGameObject::GetId,AI/CGameObjectId.cpp
 0x00416620,17,CGameObject::SetId,AI/CGameObjectId.cpp
 0x00416640,44,CGameObject::ReSetId,AI/CGameObjectId.cpp
