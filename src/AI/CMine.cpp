@@ -18,6 +18,10 @@ struct ManagedEntitySlotOwnerView {
 	void SetManagedEntitySlotId(unsigned short nSlotId);
 };
 
+struct CGround {
+	short GetZ(int nLocalX, int nLocalY);
+};
+
 struct MineChunkObjectActionView {
 	virtual void Reserved0(void);
 	virtual void Reserved1(void);
@@ -202,6 +206,27 @@ int LEMBALL_FASTCALL AdvanceMineChunkObjectStateMachine(void* pvObject)
 		break;
 	}
 	return 0;
+}
+
+// FUNCTION: LEMBALL 0x00423fa0
+void CMine::OnGround(void)
+{
+	char* pGrid;
+	int x;
+	int y;
+	short z;
+
+	x = *(int*) ((char*) this + 0x9c) >> 12;
+	y = *(int*) ((char*) this + 0xa0) >> 12;
+	pGrid = (char*) g_pLevelTileGrid;
+	if (x < 0 || y < 0 || x / 16 >= *(int*) (pGrid + 0x10) || y / 16 >= *(int*) (pGrid + 0x14)) {
+		z = 0;
+	}
+	else {
+		z = ((CGround*) (*(char**) (pGrid + 0x0c) + (y / 16 * *(int*) (pGrid + 0x10) + x / 16) * 12))
+				->GetZ(x & 15, y & 15);
+	}
+	*(int*) ((char*) this + 0xa4) = (unsigned short) z << 12;
 }
 
 // FUNCTION: LEMBALL 0x00424c60

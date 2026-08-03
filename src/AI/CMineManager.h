@@ -22,6 +22,7 @@ public:
 	void Trigger(int nIndex, int nDelay);
 	void StepOn(const AICOORD& position, CGameObject* pObject);
 	void Add(unsigned short nId, AICOORD position);
+	void Process(void);
 
 private:
 	unsigned char m_abReserved00[0x30];
@@ -35,7 +36,7 @@ private:
 struct MineManagerVtableLayout {
 	void* m_apSlots00[6];
 	void (CMineManager::*m_pRestart18)(void);
-	void* m_pProcess1C;
+	void (CMineManager::*m_pProcess1C)(void);
 	void* m_pCommand20;
 	void* m_pGetViewData24;
 };

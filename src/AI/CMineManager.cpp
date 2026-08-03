@@ -43,6 +43,8 @@ struct ManagedEntitySlotOwnerView {
 	void SetManagedEntitySlotId(unsigned short nSlotId);
 };
 
+typedef void(LEMBALL_FASTCALL* MineProcessProc)(void* pObject);
+
 // FUNCTION: LEMBALL 0x00424080
 void CMineManager::Restart(void)
 {
@@ -199,5 +201,26 @@ void CMineManager::Add(unsigned short nId, AICOORD position)
 		m_pPositions38[m_cObjects3C].y = (short) (position.y >> 12);
 		m_pPositions38[m_cObjects3C].z = (short) (position.z >> 12);
 		++m_cObjects3C;
+	}
+}
+
+// FUNCTION: LEMBALL 0x004247b0
+void CMineManager::Process(void)
+{
+	CMine* pMine;
+	int i;
+
+	i = 0;
+	if (m_cObjects3C > 0) {
+		pMine = m_pObjects34;
+		do {
+			pMine->OnGround();
+			*(int*) ((char*) pMine + 0x124) = 1;
+			if (*(int*) ((char*) pMine + 0x138) != 0) {
+				((MineProcessProc) (*(void***) pMine)[5])(pMine);
+			}
+			pMine = (CMine*) ((char*) pMine + 0x150);
+			++i;
+		} while (i < m_cObjects3C);
 	}
 }

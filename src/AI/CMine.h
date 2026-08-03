@@ -10,6 +10,7 @@ public:
 	void Trigger(int nDelay);
 	void Set(AICOORD position);
 	void StepOn(CGameObject* pObject);
+	void OnGround(void);
 
 private:
 	unsigned char m_abReserved00[0x150];

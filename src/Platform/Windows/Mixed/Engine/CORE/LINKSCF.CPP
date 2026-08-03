@@ -419,7 +419,7 @@ MineManagerVtableLayout g_LINKSCF_MineChunkManagerVtable = {
 	 (void*) NoopType18ChunkStreamWriteThunk,
 	 (void*) DeleteMineChunkManagerAuto},
 	&CMineManager::Restart,
-	(void*) RefreshActiveMineChunkObjects,
+	&CMineManager::Process,
 	(void*) ReturnFalseChunkStreamCommandThunk,
 	(void*) EmitMineChunkManagerRenderEntries};
 // GLOBAL: LEMBALL 0x00493840
