@@ -1141,3 +1141,7 @@ CODE_02_Visos (Generic).bin,0x00010BF4,__ct__10CFontTableFP8CResFONT,0x00473650,
 CODE_02_Visos (Generic).bin,0x00010C2C,GetZRLE__10CFontTableCFi,0x00473700,high,index glyph pointer table by character code; independent exact 68K and x86 ABI/layout/vtable/caller/lifetime audit
 CODE_02_Visos (Generic).bin,0x00010C79,GetChar__10CFontTableCFP8CResZRLE,0x00473710,high,scan 256 glyph pointers and return character index or 0xFF; independent exact 68K and x86 ABI/layout/vtable/caller/lifetime audit
 CODE_02_Visos (Generic).bin,0x00010CE0,__dt__10CFontTableFv,0x00473730,high,free glyph pointer table without owning glyph entries; independent exact 68K and x86 ABI/layout/vtable/caller/lifetime audit
+CODE_02_Visos (Generic).bin,0x00000973,__ct__10CBaseRemapFUlPUc13ePaletteTypes,0x0046AA80,high,"8-byte remap/resource object; loads palette and dispatches direct, sparse-pair, or grayscale mode exactly as 68K"
+CODE_02_Visos (Generic).bin,0x000009E4,__dt__10CBaseRemapFv,0x0046AAD0,high,semantic destructor releases remap table and palette resource; Macintosh deleting tail remains wrapper glue
+CODE_02_Visos (Generic).bin,0x00000A90,MapRemap__10CBaseRemapFPCUc,0x0046AAF0,high,"loads palette, builds identity table, applies counted sparse source/target pairs, and releases temporary resource hold"
+CODE_02_Visos (Generic).bin,0x00000C4D,CalculateGreyScale__10CBaseRemapFv,0x0046AB70,high,"loads palette, collects grayscale entries, maps weighted 2:7:1 luminance to nearest gray, and releases scratch/resource hold"

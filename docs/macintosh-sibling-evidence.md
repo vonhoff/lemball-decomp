@@ -341,3 +341,7 @@ All six portable packet-slot methods map across `0x00461090..0x004611E0` in `VSN
 ## CFontTable reconstruction
 
 All four portable glyph-table methods map across `0x00473650..0x00473730` in `CSurface.cpp`. Exact 68K bodies, the shared 8-byte layout, the 256-entry pointer table, vtable slots, `CResFONT` callers, and teardown order establish construction, indexed lookup, reverse lookup, and destruction. `CResFONT::ASCIItoZRLE` at `0x0045DB20` and `GetSize` at `0x0045DB30` remain distinct published methods; scalar deleting wrapper `0x00473750` remains compiler glue.
+
+## CBaseRemap reconstruction
+
+All four portable palette-remap methods map across `0x0046AA80..0x0046AB70`. Exact 68K bodies and x86 behavior share the 8-byte remap-table/resource layout, palette load and release lifetime, direct-table mode, counted sparse-pair mode, and weighted 2:7:1 grayscale nearest-match algorithm. Windows keeps constructor `0x0046AA80` physically in `VSWINDOW.CPP` and the destructor/builders in `VSINIT.CPP`. The Macintosh destructor's conditional delete tail remains wrapper glue; the following `CBasePalManager` pointer-table family beginning at `0x0046ACD0` remains separate.

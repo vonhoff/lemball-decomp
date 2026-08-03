@@ -2770,10 +2770,10 @@ address,size,name,unit
 0x0046AA30,21,reset_root_geometry_owner_buttons,Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOW.CPP
 0x0046AA50,30,destroy_geometry_owner,Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOW.CPP
 0x0046AA70,8,delete_geometry_owner_adjusted_0046aa70,Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOW.CPP
-0x0046AA80,72,construct_palette_remap_variant,Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOW.CPP
-0x0046AAD0,32,release_palette_remap_variant_fields,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x0046AAF0,121,build_palette_remap_from_sparse_pairs,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x0046AB70,341,build_palette_grayscale_remap,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x0046AA80,72,CBaseRemap::CBaseRemap,Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOW.CPP
+0x0046AAD0,32,CBaseRemap::~CBaseRemap,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x0046AAF0,121,CBaseRemap::MapRemap,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x0046AB70,341,CBaseRemap::CalculateGreyScale,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x0046ACD0,63,construct_vsmem_pointer_table,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x0046AD10,83,destroy_palette_remap_pointer_table,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x0046AD70,86,register_palette_remap_variant,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
