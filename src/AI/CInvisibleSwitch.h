@@ -1,11 +1,7 @@
 #ifndef LEMBALL_CINVISIBLESWITCH_H
 #define LEMBALL_CINVISIBLESWITCH_H
 
-struct AICOORD {
-	int x;
-	int y;
-	int z;
-};
+#include "AI/AICoord.h"
 
 struct tCoord3d {
 	short x;

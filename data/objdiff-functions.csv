@@ -1025,7 +1025,7 @@ address,size,name,unit
 0x004288B0,8,CLaser::Restart,AI/CLaser.cpp
 0x004288D0,31,CLaser::Initialise,AI/CLaser.cpp
 0x004288F0,11,CLaser::~CLaser,AI/CLaser.cpp
-0x00428900,385,CLaser::Set,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00428900,385,CLaser::Set,AI/CLaser.cpp
 0x00428AB0,524,CLaser::CheckHits,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00428CF0,447,CLaser::Process,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00428EC0,107,CLaser::Activate,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
