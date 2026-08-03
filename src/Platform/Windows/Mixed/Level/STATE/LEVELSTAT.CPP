@@ -978,7 +978,7 @@ void LEMBALL_FASTCALL DispatchLevelStatusRectSinkThunk(void* pObject, int, void*
 	DispatchLevelStatusRectSinkBody(pObject, 0, pContext);
 }
 // LINKERILT: LEMBALL 0x00401cd5
-void LevelVariantRenderManagerView::ReleaseLevelScreenVariantStateWrapper(int nResourceId)
+void CAnimsManager::ReleaseLevelScreenVariantStateWrapper(int nResourceId)
 {
 	ReleaseLevelScreenVariantStateWrapperBody(nResourceId);
 }
@@ -1094,7 +1094,7 @@ void LEMBALL_FASTCALL RestorePackagedSpriteRenderEntryVtableC(void* pObject)
 	RestorePackagedSpriteRenderEntryVtableCBody(pObject);
 }
 // LINKERILT: LEMBALL 0x00402f1d
-void LevelVariantRenderManagerView::ReleaseLevelScreenVariantStateWrapperRange(int nFirstResourceId,
+void CAnimsManager::ReleaseLevelScreenVariantStateWrapperRange(int nFirstResourceId,
 																			   int nLastResourceId)
 {
 	ReleaseLevelScreenVariantStateWrapperRangeBody(nFirstResourceId, nLastResourceId);
@@ -1562,7 +1562,7 @@ void* ConstructLevelScreenVariantRenderManager(void* pObject, int nRenderOwner, 
 	int i;
 
 	pManager = (int*) pObject;
-	((LevelVariantRenderManagerView*) pObject)->Construct(nRenderOwner, 0x2b6, 200, 0x28, 0x14, 1);
+	((CAnimsManager*) pObject)->Construct(nRenderOwner, 0x2b6, 200, 0x28, 0x14, 1);
 	*(void***) pManager = g_LEVEL_LevelScreenVariantManagerVtable;
 	*(void***) (pManager + 0x1c) = g_LEVEL_LevelScreenVariantProgressVtable;
 	pManager[0x1f] = (int) (unsigned long) pPrimaryContext;
@@ -1663,9 +1663,9 @@ void LEMBALL_FASTCALL LoadLevelScreenVariantResourceBatchA(void* pObject)
 		{0xb2, 0}, {0xde, 2}, {0x84, 0}, {0x2a, 2}, {0x2c, 2}, {0x2b, 2}, {0x2d, 2}};
 	int i;
 	int nResourceId;
-	LevelVariantRenderManagerView* pManagerView;
+	CAnimsManager* pManagerView;
 
-	pManagerView = (LevelVariantRenderManagerView*) pObject;
+	pManagerView = (CAnimsManager*) pObject;
 	for (i = 0; i < (int) (sizeof(aResources) / sizeof(aResources[0])); ++i) {
 		pManagerView->LoadLevelScreenVariantState(aResources[i].m_nResourceId, aResources[i].m_nSelectorMode);
 	}
@@ -1707,10 +1707,10 @@ void LEMBALL_FASTCALL LoadLevelScreenVariantResourceBatchB(void* pObject)
 		{0xa0, 2}, {0x83, 3}, {0x87, 3}, {0xb0, 3}, {0x74, 3}, {0x88, 2}, {0x89, 2}, {0x8c, 2},
 		{0x8d, 2}, {0x8e, 2}, {0x8f, 2}, {0x97, 2}, {0x98, 2}, {0x9d, 2}, {0x9f, 2}, {0x9c, 2},
 		{0x9e, 2}, {0x28, 2}, {0x29, 2}, {0x7d, 1}, {0x7e, 2}, {0x85, 1}, {0x1f, 2}};
-	LevelVariantRenderManagerView* pManagerView;
+	CAnimsManager* pManagerView;
 	int i;
 
-	pManagerView = (LevelVariantRenderManagerView*) pObject;
+	pManagerView = (CAnimsManager*) pObject;
 	for (i = 0; i < (int) (sizeof(aResources) / sizeof(aResources[0])); ++i) {
 		pManagerView->LoadLevelScreenVariantState(aResources[i].m_nResourceId, aResources[i].m_nSelectorMode);
 	}
@@ -1767,10 +1767,10 @@ void LEMBALL_FASTCALL ReleaseLevelSelectionModeRenderStateResource(void* pObject
 		return;
 	}
 
-	((LevelVariantRenderManagerView*) pObject)->ReleaseVariantRenderResource(0xf6);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseVariantRenderResource(0xf7);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseVariantRenderResource(0xf9);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseVariantRenderResource(0xfa);
+	((CAnimsManager*) pObject)->UnLoadAnims(0xf6);
+	((CAnimsManager*) pObject)->UnLoadAnims(0xf7);
+	((CAnimsManager*) pObject)->UnLoadAnims(0xf9);
+	((CAnimsManager*) pObject)->UnLoadAnims(0xfa);
 
 	if (pManager[0x27] != 0) {
 		ReleaseTypedResourceObjectReference((void*) (unsigned long) pManager[0x27]);
@@ -1782,202 +1782,202 @@ void LEMBALL_FASTCALL ReleaseLevelSelectionModeRenderStateResource(void* pObject
 		ReleaseTypedResourceObjectReference((void*) (unsigned long) pManager[0x29]);
 	}
 
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xfd);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapperRange(0x35, 0x3c);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapperRange(0x47, 0x4e);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapperRange(0x4f, 0x56);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapperRange(0x5f, 0x66);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xfd);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapperRange(0x35, 0x3c);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapperRange(0x47, 0x4e);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapperRange(0x4f, 0x56);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapperRange(0x5f, 0x66);
 
 	if (ReturnTrueVirtualHook() != 0 || ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x90);
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x91);
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x92);
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x93);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x90);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x91);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x92);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x93);
 	}
 
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x6f);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x70);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x71);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x3d);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x3e);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x6f);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x70);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x71);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x3d);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x3e);
 
 	if (ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapperRange(0xa1, 0xa8);
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapperRange(0xa9, 0xac);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapperRange(0xa1, 0xa8);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapperRange(0xa9, 0xac);
 	}
 
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x40);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x41);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x42);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xaf);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xad);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x40);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x41);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x42);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xaf);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xad);
 
 	if (ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenCompositeSequencePrimaryResourceId);
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenCompositeSequenceSecondaryResourceId);
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x74);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x74);
 	}
 
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x7c);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x82);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xae);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x75);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x76);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x43);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x44);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x46);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x45);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x3f);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x67);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x68);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x69);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x6a);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x6b);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x6c);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x6d);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x6e);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x80);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x81);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x7c);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x82);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xae);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x75);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x76);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x43);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x44);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x46);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x45);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x3f);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x67);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x68);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x69);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x6a);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x6b);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x6c);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x6d);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x6e);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x80);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x81);
 
 	if (ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x28);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x28);
 	}
 	if (ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x29);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x29);
 	}
 	if (ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x7d);
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x7e);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x7d);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x7e);
 	}
 	if (ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x85);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x85);
 	}
 	if (ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x87);
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x86);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x87);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x86);
 	}
 	if (pManager[0x2a] != 3 && ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenContextSelectedVariantResourceId);
 	}
 
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xdf);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xe0);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xe1);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xdd);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xdf);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xe0);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xe1);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xdd);
 
 	if (g_nLevelScreenMappedVariantResourceId0x206 != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenMappedVariantResourceId0x206);
 	}
 	if (g_nLevelScreenMappedVariantResourceId0x207 != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenMappedVariantResourceId0x207);
 	}
 	if (g_nLevelScreenMappedVariantResourceId0x208 != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenMappedVariantResourceId0x208);
 	}
 	if (g_nLevelScreenMappedVariantResourceId0x209 != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenMappedVariantResourceId0x209);
 	}
 	if (g_nLevelScreenMappedVariantResourceId0x20A != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenMappedVariantResourceId0x20A);
 	}
 	if (g_nLevelScreenMappedVariantResourceId0x20B != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenMappedVariantResourceId0x20B);
 	}
 	if (g_nLevelScreenMappedVariantResourceId0x20C != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenMappedVariantResourceId0x20C);
 	}
 	if (g_nLevelScreenMappedVariantResourceId0x20D != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenMappedVariantResourceId0x20D);
 	}
 	if (g_nLevelScreenMappedVariantResourceId0x20E != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenMappedVariantResourceId0x20E);
 	}
 	if (g_nLevelScreenMappedVariantResourceId0x20F != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenMappedVariantResourceId0x20F);
 	}
 	if (g_nLevelScreenMappedVariantResourceId0x202 != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenMappedVariantResourceId0x202);
 	}
 	if (g_nLevelScreenMultiStageSequencePrimaryResourceId != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenMultiStageSequencePrimaryResourceId);
 	}
 	if (g_nLevelScreenMultiStageSequenceSecondaryResourceId != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenMultiStageSequenceSecondaryResourceId);
 	}
 	if (g_nLevelScreenTimedVariantResourceId != 0 && ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenTimedVariantResourceId);
 	}
 
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x1f);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x1f);
 	if (ReturnTrueVirtualHook() != 0 || ReturnTrueVirtualHook() != 0 || ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xb2);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xb2);
 	}
 
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xde);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x83);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x84);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xa0);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xde);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x83);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x84);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xa0);
 
 	if (ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x88);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x88);
 	}
 	if (ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x89);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x89);
 	}
 	if (ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x8c);
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x8d);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x8c);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x8d);
 	}
 	if (ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x8e);
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x8f);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x8e);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x8f);
 	}
 	if (ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x97);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x97);
 	}
 	if (ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)
+		((CAnimsManager*) pObject)
 			->ReleaseLevelScreenVariantStateWrapper(g_nLevelScreenMultiPhaseSequenceResourceId);
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x98);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x98);
 	}
 	if (ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x9d);
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x9f);
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x9c);
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x9e);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x9d);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x9f);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x9c);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x9e);
 	}
 	if (ReturnTrueVirtualHook() != 0 || ReturnTrueVirtualHook() != 0 || ReturnTrueVirtualHook() != 0 ||
 		ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x94);
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x95);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x94);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x95);
 	}
 
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x96);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x2a);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x2c);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x2b);
-	((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x2d);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x96);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x2a);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x2c);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x2b);
+	((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0x2d);
 
 	if (ReturnTrueVirtualHook() != 0) {
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xb1);
-		((LevelVariantRenderManagerView*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xb0);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xb1);
+		((CAnimsManager*) pObject)->ReleaseLevelScreenVariantStateWrapper(0xb0);
 	}
 
 	((MogLoadResourceArchive*) g_pMainResourceArchive)->PruneUnreferencedCachedResourceObjects();
@@ -2007,11 +2007,11 @@ void EmitLevelScreenVariantEntry(void* pObject,
 	}
 	Point[0] = (short) (x + *(short*) ((char*) pManager + 0xb0));
 	Point[1] = (short) (y + *(short*) ((char*) pManager + 0xb2));
-	((LevelVariantRenderManagerView*) pManager)
-		->EmitVariantRenderResourceEntry(Rect, Point, nResourceId, nFlags, pFrameSelector, nValue);
+	((CAnimsManager*) pManager)
+		->DrawAnim(Rect, Point, nResourceId, nFlags, pFrameSelector, nValue);
 }
 // FUNCTION: LEMBALL 0x00434bc0
-void LevelVariantRenderManagerView::LoadLevelScreenVariantState(int nResourceId, int nSelectorMode)
+void CAnimsManager::LoadLevelScreenVariantState(int nResourceId, int nSelectorMode)
 {
 	int* pManager;
 	int* pSelector;
@@ -2023,10 +2023,10 @@ void LevelVariantRenderManagerView::LoadLevelScreenVariantState(int nResourceId,
 		++pManager[0x24];
 		return;
 	}
-	LoadVariantRenderResource(nResourceId);
+	LoadAnims(nResourceId);
 	cFrames = 1;
 	if (nSelectorMode == 1 || nSelectorMode == 3) {
-		cFrames = GetVariantRenderFrameCount(nResourceId);
+		cFrames = GetnAnims(nResourceId);
 		pSelector = (int*) AllocateVSMemBlock(0x1c);
 		if (pSelector != 0) {
 			pSelector[0] = (int) (unsigned long) (nSelectorMode == 1 ? g_LEVEL_SelectTimedFrameVtable
@@ -2066,7 +2066,7 @@ void LEMBALL_FASTCALL UpdateStatusIndicatorLoadProgress00434D10(void* pObject)
 	}
 }
 // FUNCTION: LEMBALL 0x00434ec0
-void LevelVariantRenderManagerView::ReleaseLevelScreenVariantStateWrapperBody(int nResourceId)
+void CAnimsManager::ReleaseLevelScreenVariantStateWrapperBody(int nResourceId)
 {
 	int* pManager;
 	unsigned int uStatePointer;
@@ -2080,10 +2080,10 @@ void LevelVariantRenderManagerView::ReleaseLevelScreenVariantStateWrapperBody(in
 		*(int*) (unsigned long) (pManager[0x1d] +
 								 (int) *(short*) (unsigned long) (pManager[10] + nResourceId * 2) * 4) = 0;
 	}
-	ReleaseVariantRenderResource(nResourceId);
+	UnLoadAnims(nResourceId);
 }
 // FUNCTION: LEMBALL 0x00434f00
-void LevelVariantRenderManagerView::ReleaseLevelScreenVariantStateWrapperRangeBody(int nFirstResourceId,
+void CAnimsManager::ReleaseLevelScreenVariantStateWrapperRangeBody(int nFirstResourceId,
 																				   int nLastResourceId)
 {
 	int nResourceId;
@@ -2100,7 +2100,7 @@ void LevelVariantRenderManagerView::ReleaseLevelScreenVariantStateWrapperRangeBo
 			*(void**) ((char*) pManager[0x1d] + (int) *(short*) (unsigned long) (pManager[10] + nResourceId * 2) * 4) =
 				0;
 		}
-		ReleaseVariantRenderResource(nResourceId);
+		UnLoadAnims(nResourceId);
 		++nResourceId;
 	}
 }
@@ -4475,7 +4475,7 @@ void* ConstructLevelScreenStatusIndicatorManager(void* pObject, int nStatusMode,
 
 	pManager = (int*) pObject;
 
-	((LevelVariantRenderManagerView*) pObject)->Construct(nStatusMode, 0x2b6, 1, 1, 0, 0);
+	((CAnimsManager*) pObject)->Construct(nStatusMode, 0x2b6, 1, 1, 0, 0);
 	*(void**) (pManager + 0x1c) = g_LEVEL_StatusIndicatorManagerSlot70Vtable;
 	*(void**) (pManager + 0x1d) = g_LEVEL_StatusIndicatorManagerSlot74Vtable;
 	*(unsigned short*) ((char*) pManager + 0x8a) = 0;
@@ -4533,7 +4533,7 @@ void* ConstructLevelScreenStatusIndicatorManager(void* pObject, int nStatusMode,
 		pManager[0x21] = 0xf0;
 	}
 
-	((LevelVariantRenderManagerView*) pManager)->LoadVariantRenderResource(pManager[0x21]);
+	((CAnimsManager*) pManager)->LoadAnims(pManager[0x21]);
 	{
 		void* pPaletteObject;
 
@@ -4558,7 +4558,7 @@ void* ConstructLevelScreenStatusIndicatorManager(void* pObject, int nStatusMode,
 
 	*(unsigned short*) ((char*) pManager + 0x90) = 0;
 	pManager[0x23] = 1;
-	nFrameCount = ((LevelVariantRenderManagerView*) pManager)->GetVariantRenderFrameCount(pManager[0x21]);
+	nFrameCount = ((CAnimsManager*) pManager)->GetnAnims(pManager[0x21]);
 
 	pSelector = (int*) AllocateVSMemBlock(0x1c);
 	if (pSelector == 0) {
@@ -4589,7 +4589,7 @@ void DestroyLevelScreenStatusIndicatorManager(void* pObject)
 	*(void**) (pManager + 0x1d) = g_LEVEL_StatusIndicatorManagerSlot74Vtable;
 	FreeVSMemBlock((void*) (unsigned long) pManager[0x1e]);
 	FreeVSMemBlock((void*) (unsigned long) pManager[0x37]);
-	((LevelVariantRenderManagerView*) pManager)->ReleaseVariantRenderResource(pManager[0x21]);
+	((CAnimsManager*) pManager)->UnLoadAnims(pManager[0x21]);
 	if (pManager[0x25] != 0) {
 		ReleaseTypedResourceObjectReference((void*) (unsigned long) pManager[0x25]);
 	}
@@ -4719,7 +4719,7 @@ void LEMBALL_FASTCALL SetTimedVariantFrameDuration(void* pObject, int, int nFram
 	}
 }
 // FUNCTION: LEMBALL 0x00467260
-void* LevelVariantRenderManagerView::Construct(int nOwner,
+void* CAnimsManager::Construct(int nOwner,
 											   int cResourceIds,
 											   int cPackagedRectEntries,
 											   int cActionButtonEntries,
@@ -4804,7 +4804,7 @@ void* LevelVariantRenderManagerView::Construct(int nOwner,
 
 	pManager[4] = 0;
 	pManager[1] = 0;
-	((LevelVariantRenderManagerView*) pManager)->ResetOrFlipVariantRenderBuffers();
+	((CAnimsManager*) pManager)->ResetPrimitives();
 	return this;
 }
 // FUNCTION: LEMBALL 0x004673d0
@@ -4857,7 +4857,7 @@ void DestroyVariantRenderManager(void* pObject)
 	}
 }
 // FUNCTION: LEMBALL 0x00467490
-void LevelVariantRenderManagerView::LoadVariantRenderResource(int nResourceId)
+void CAnimsManager::LoadAnims(int nResourceId)
 {
 	int* pManager;
 	short* pnResourceIndex;
@@ -4887,7 +4887,7 @@ void LevelVariantRenderManagerView::LoadVariantRenderResource(int nResourceId)
 	}
 }
 // FUNCTION: LEMBALL 0x00467500
-void LevelVariantRenderManagerView::ReleaseVariantRenderResource(int nResourceId)
+void CAnimsManager::UnLoadAnims(int nResourceId)
 {
 	void* pResourceObject;
 	int iResourceSlot;
@@ -4905,7 +4905,7 @@ void LevelVariantRenderManagerView::ReleaseVariantRenderResource(int nResourceId
 	--m_cLoadedResources34;
 }
 // FUNCTION: LEMBALL 0x00467540
-int LevelVariantRenderManagerView::GetVariantRenderFrameCount(int nResourceId)
+int CAnimsManager::GetnAnims(int nResourceId)
 {
 	int* pResourceObject;
 
@@ -4916,7 +4916,7 @@ int LevelVariantRenderManagerView::GetVariantRenderFrameCount(int nResourceId)
 	return pResourceObject[0x1b];
 }
 // FUNCTION: LEMBALL 0x00467730
-void LevelVariantRenderManagerView::EmitVariantRenderResourceEntry(short* pRect,
+void CAnimsManager::DrawAnim(short* pRect,
 																   const short* pPoint,
 																   int nResourceId,
 																   int nFlags,
@@ -4936,7 +4936,7 @@ void LevelVariantRenderManagerView::EmitVariantRenderResourceEntry(short* pRect,
 	if (pManager[0x0e] != 0 && pManager[7] != pManager[8] && pManager[8] != 0) {
 		int nOwner = pManager[7];
 		pManager[7] = pManager[8];
-		ResetOrFlipVariantRenderBuffers();
+		ResetPrimitives();
 		pManager[7] = nOwner;
 	}
 	pManager[8] = pManager[7];
@@ -4949,7 +4949,7 @@ void LevelVariantRenderManagerView::EmitVariantRenderResourceEntry(short* pRect,
 		}
 		else {
 			if (pManager[0x16] == pManager[0x13]) {
-				ResetOrFlipVariantRenderBuffers();
+				ResetPrimitives();
 			}
 			iEntry = pManager[0x13];
 			pManager[0x13] += 2;
@@ -4984,7 +4984,7 @@ void LevelVariantRenderManagerView::EmitVariantRenderResourceEntry(short* pRect,
 		}
 		else {
 			if (pManager[0x0f] == pManager[0x12]) {
-				ResetOrFlipVariantRenderBuffers();
+				ResetPrimitives();
 			}
 			iEntry = pManager[0x12];
 			pManager[0x12] += 2;
@@ -5012,7 +5012,7 @@ void LevelVariantRenderManagerView::EmitVariantRenderResourceEntry(short* pRect,
 	pRect[3] = *(short*) ((char*) pFrame + 0x4a);
 }
 // FUNCTION: LEMBALL 0x004678c0
-void LevelVariantRenderManagerView::ResetOrFlipVariantRenderBuffers(void)
+void CAnimsManager::ResetPrimitives(void)
 {
 	struct VariantRenderBufferCounts {
 		int m_cEntries;

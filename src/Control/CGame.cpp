@@ -4775,7 +4775,7 @@ void LEMBALL_FASTCALL DrawReconstructedLevelScreen(void* pObject, int nUnusedEdx
 			pTerrain = (LevelScreenTerrainRenderView*) pScreen;
 			if (pLevel != 0 && pManager != 0 && *(void**) (pLevel + 0x0c) != 0 && *(int*) (pLevel + 0x10) > 0 &&
 				*(int*) (pLevel + 0x14) > 0 && *(short*) (pScreen + 0x958) > 0 && *(short*) (pScreen + 0x95a) > 0) {
-				((LevelVariantRenderManagerView*) pManager)->ResetOrFlipVariantRenderBuffers();
+				((CAnimsManager*) pManager)->ResetPrimitives();
 				if (*(MappedListResourceTable**) (pScreen + 0x78) != 0) {
 					(*(MappedListResourceTable**) (pScreen + 0x78))->ResetDrawEntryPool();
 				}
@@ -4985,7 +4985,7 @@ void LEMBALL_FASTCALL InitializeLevelScreenRenderSupportState(void* pObject)
 	char* pScreen;
 
 	pScreen = (char*) pObject;
-	((LevelVariantRenderManagerView*) *(void**) (pScreen + 0xa40))->ResetOrFlipVariantRenderBuffers();
+	((CAnimsManager*) *(void**) (pScreen + 0xa40))->ResetPrimitives();
 	clear_mapped_list_resource_table_pending_flag(*(void**) (pScreen + 0x78));
 	*(int*) (pScreen + 0xc90) = 0;
 	*(int*) (pScreen + 0x2188) = 0;

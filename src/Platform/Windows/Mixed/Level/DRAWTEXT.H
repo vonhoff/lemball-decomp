@@ -4,7 +4,7 @@
 #include "Visos/Generic/Memory.h"
 #include "Control/CGame.h"
 
-class LevelVariantRenderManagerView {
+class CAnimsManager {
 public:
 	void* Construct(int nOwner,
 					int cResourceIds,
@@ -12,22 +12,22 @@ public:
 					int cActionButtonEntries,
 					int nUnknown58,
 					int fDoubleBuffered);
-	void LoadVariantRenderResource(int nResourceId);
-	void ReleaseVariantRenderResource(int nResourceId);
-	int GetVariantRenderFrameCount(int nResourceId);
-	short* GetVariantFrameExtent(short* pExtent, int nResourceId, int iFrame);
+	void LoadAnims(int nResourceId);
+	void UnLoadAnims(int nResourceId);
+	int GetnAnims(int nResourceId);
+	short* GetAnimSize(short* pExtent, int nResourceId, int iFrame);
 	void ReleaseLevelScreenVariantStateWrapperBody(int nResourceId);
 	void ReleaseLevelScreenVariantStateWrapper(int nResourceId);
 	void ReleaseLevelScreenVariantStateWrapperRangeBody(int nFirstResourceId, int nLastResourceId);
 	void ReleaseLevelScreenVariantStateWrapperRange(int nFirstResourceId, int nLastResourceId);
-	void EmitVariantRenderResourceEntry(short* pRect,
+	void DrawAnim(short* pRect,
 										const short* pPoint,
 										int nResourceId,
 										int nFlags,
 										void* pFrameSelector,
 										int nValue);
 	void LoadLevelScreenVariantState(int nResourceId, int nSelectorMode);
-	void ResetOrFlipVariantRenderBuffers(void);
+	void ResetPrimitives(void);
 
 	char m_abReserved00[0x24];
 	void** m_ppResourceObjects24;
@@ -37,9 +37,9 @@ public:
 	int m_cLoadedResources34;
 };
 
-inline void LoadVariantRenderResource(void* pManager, int nResourceId)
+inline void LoadAnims(void* pManager, int nResourceId)
 {
-	((LevelVariantRenderManagerView*) pManager)->LoadVariantRenderResource(nResourceId);
+	((CAnimsManager*) pManager)->LoadAnims(nResourceId);
 }
 
 // SIZE 0x04

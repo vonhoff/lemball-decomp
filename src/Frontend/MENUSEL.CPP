@@ -958,7 +958,7 @@ inline static GameProgressiveVariantFrameSelector* AllocateFrameSelector(void* p
 	if (pSelector != 0) {
 		pSelector->m_pVtable = g_MenuSelectorFrameSelectorCtorVtable;
 		pSelector->m_cFrames =
-			((LevelVariantRenderManagerView*) pVariantManager)->GetVariantRenderFrameCount(nResourceId);
+			((CAnimsManager*) pVariantManager)->GetnAnims(nResourceId);
 		pSelector->m_pVtable = g_MenuSelectorTimedFrameSelectorVtable;
 		pSelector->m_nDirection = 1;
 		pSelector->m_pVtable = g_MenuSelectorProgressiveFrameSelectorVtable;
@@ -1665,7 +1665,7 @@ GameMenuSelectorManager::GameMenuSelectorManager(void* pRenderOwner, void* pRend
 	pManager = this;
 	InitializeRenderQueueNodeBase(pManager);
 	pVariantManager = (char*) pManager + 0x10;
-	((LevelVariantRenderManagerView*) pVariantManager)
+	((CAnimsManager*) pVariantManager)
 		->Construct((int) (unsigned long) pRenderContext, 0x2b6, 10, 5, 0, 0);
 	pLocalRectEntry = pManager->m_abLocalRectEntry200;
 	for (iLocalRect = 0; iLocalRect >= 0; --iLocalRect) {
@@ -1721,15 +1721,15 @@ GameMenuSelectorManager::GameMenuSelectorManager(void* pRenderOwner, void* pRend
 		g_nMenuSelectorResourceId8 = 0x14e;
 	}
 
-	((LevelVariantRenderManagerView*) pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId0);
-	((LevelVariantRenderManagerView*) pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId1);
-	((LevelVariantRenderManagerView*) pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId2);
-	((LevelVariantRenderManagerView*) pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId3);
-	((LevelVariantRenderManagerView*) pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId4);
-	((LevelVariantRenderManagerView*) pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId5);
-	((LevelVariantRenderManagerView*) pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId6);
-	((LevelVariantRenderManagerView*) pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId7);
-	((LevelVariantRenderManagerView*) pVariantManager)->LoadVariantRenderResource(g_nMenuSelectorResourceId8);
+	((CAnimsManager*) pVariantManager)->LoadAnims(g_nMenuSelectorResourceId0);
+	((CAnimsManager*) pVariantManager)->LoadAnims(g_nMenuSelectorResourceId1);
+	((CAnimsManager*) pVariantManager)->LoadAnims(g_nMenuSelectorResourceId2);
+	((CAnimsManager*) pVariantManager)->LoadAnims(g_nMenuSelectorResourceId3);
+	((CAnimsManager*) pVariantManager)->LoadAnims(g_nMenuSelectorResourceId4);
+	((CAnimsManager*) pVariantManager)->LoadAnims(g_nMenuSelectorResourceId5);
+	((CAnimsManager*) pVariantManager)->LoadAnims(g_nMenuSelectorResourceId6);
+	((CAnimsManager*) pVariantManager)->LoadAnims(g_nMenuSelectorResourceId7);
+	((CAnimsManager*) pVariantManager)->LoadAnims(g_nMenuSelectorResourceId8);
 
 	pManager->m_pSideSelector244 = AllocateFrameSelector(pVariantManager, g_nMenuSelectorResourceId6);
 	pManager->m_pSideSelector244->m_dwFixedTime = -1;
@@ -2016,18 +2016,18 @@ void LEMBALL_FASTCALL EmitMenuSelectorResourceEntries(GameMenuSelectorManager* p
 	if (pManager->m_nActionStateA4 == 0) {
 		pManager->m_nCurrentFrameCallbackFrame264 =
 			pManager->m_nCurrentSide94 == 0 ? 0
-											: ((LevelVariantRenderManagerView*) pManager->m_abVariantRenderManager10)
-													  ->GetVariantRenderFrameCount(g_nMenuSelectorResourceId6) -
+											: ((CAnimsManager*) pManager->m_abVariantRenderManager10)
+													  ->GetnAnims(g_nMenuSelectorResourceId6) -
 												  1;
 		Point[0] = (short) (pManager->m_xCenteredAction88 + pOffsets[0]);
 		Point[1] = (short) (pManager->m_nCurrentPosition8C + pOffsets[1]);
 		nOwner = *(int*) (pManager->m_abVariantRenderManager10 + 0x1c);
 		*(void**) (pManager->m_abVariantRenderManager10 + 0x1c) = pManager->m_pChildRenderContext26C;
-		((LevelVariantRenderManagerView*) pManager->m_abVariantRenderManager10)
-			->EmitVariantRenderResourceEntry(Rect, Point, g_nMenuSelectorResourceId6, 0, 0, 0);
+		((CAnimsManager*) pManager->m_abVariantRenderManager10)
+			->DrawAnim(Rect, Point, g_nMenuSelectorResourceId6, 0, 0, 0);
 		*(int*) (pManager->m_abVariantRenderManager10 + 0x1c) = nOwner;
 	}
-	((LevelVariantRenderManagerView*) pManager->m_abVariantRenderManager10)->ResetOrFlipVariantRenderBuffers();
+	((CAnimsManager*) pManager->m_abVariantRenderManager10)->ResetPrimitives();
 }
 // FUNCTION: LEMBALL 0x0044d830
 void GameMenuSelectorManager::MovePrevious(void)
@@ -2121,8 +2121,8 @@ void GameMenuSelectorManager::InitializeCurrentState(int iMetadata)
 	short cxOwner;
 	int nSide;
 
-	pExtent = ((LevelVariantRenderManagerView*) ((char*) this + 0x10))
-				  ->GetVariantFrameExtent(Extent, g_nMenuSelectorResourceId6, 0);
+	pExtent = ((CAnimsManager*) ((char*) this + 0x10))
+				  ->GetAnimSize(Extent, g_nMenuSelectorResourceId6, 0);
 	cxOwner = *(short*) ((char*) m_pRenderOwner214 + 8);
 	m_xCenteredAction88 = cxOwner / 2 - pExtent[0] / 2;
 	m_nCurrentPosition8C = m_aMetadataE0[iMetadata].m_nPosition;
@@ -2684,7 +2684,7 @@ void* LEMBALL_FASTCALL ConstructQueuedVariantChildSlotManager(void* pObject,
 	memset(pManager, 0, sizeof(*pManager));
 	InitializeRenderQueueNodeBase(pManager);
 	pManager->m_pVtable00 = g_QueuedVariantChildSlotManagerVtable;
-	((LevelVariantRenderManagerView*) pManager->m_abVariantRenderManager10)
+	((CAnimsManager*) pManager->m_abVariantRenderManager10)
 		->Construct((int) (unsigned long) pRenderContext, 0x2b6, 1, 1, 0, 0);
 	*(void***) pManager->m_abPointSinkFC = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage;
 	*(void***) pManager->m_abPointSinkFC = g_LEVEL_QueuedRenderPointSinkFinalizeVtableStorage + 4;
@@ -2705,8 +2705,8 @@ void* LEMBALL_FASTCALL ConstructQueuedVariantChildSlotManager(void* pObject,
 	}
 	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->RegisterOrderedRenderDispatchClient(pManager, 0);
 	g_nQueuedVariantChildSlotManagerModeSelectedResourceId = nLayoutMode == 1 ? 0x183 : 0x156;
-	((LevelVariantRenderManagerView*) pManager->m_abVariantRenderManager10)
-		->LoadVariantRenderResource(g_nQueuedVariantChildSlotManagerModeSelectedResourceId);
+	((CAnimsManager*) pManager->m_abVariantRenderManager10)
+		->LoadAnims(g_nQueuedVariantChildSlotManagerModeSelectedResourceId);
 	return pManager;
 }
 // FUNCTION: LEMBALL 0x0044f590
@@ -2750,7 +2750,7 @@ void LEMBALL_FASTCALL DestroyQueuedVariantChildSlotManager(void* pObject)
 		}
 	}
 	nResourceId = pManager->m_nLayoutMode130 == 1 ? 0x183 : 0x156;
-	((LevelVariantRenderManagerView*) pManager->m_abVariantRenderManager10)->ReleaseVariantRenderResource(nResourceId);
+	((CAnimsManager*) pManager->m_abVariantRenderManager10)->UnLoadAnims(nResourceId);
 	if (pManager->m_pChildContext128 != 0) {
 		typedef void(LEMBALL_FASTCALL * DetachProc)(void*, int);
 		if (*(int*) ((char*) pManager->m_pChildContext128 + 4) == 1) {
