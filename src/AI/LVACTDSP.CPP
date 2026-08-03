@@ -1,11 +1,5 @@
+#include "AI/CLiftManager.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
-
-extern void LEMBALL_FASTCALL DispatchLiftChunkObjectActionBySlot(void* pManager,
-																 void* pUnusedEdx,
-																 int nAction,
-																 unsigned int nSlotId,
-																 int nUnused3,
-																 int nUnused4);
 struct CDoorManager {
 	void Switch(int nAction, unsigned int nSlotId);
 };
@@ -66,11 +60,11 @@ void LevelSlotActionDispatcherView::DispatchLevelSlotActionByType(int nAction,
 {
 	switch (nAction) {
 	case 1:
-		DispatchLiftChunkObjectActionBySlot(m_pLiftManager18c, 0, nAction, nSlotId, nRangeEnd, nUnused4);
+		((CLiftManager*) m_pLiftManager18c)->Switch(nAction, nSlotId, nRangeEnd, nUnused4);
 		return;
 	case 2:
 		while ((int) nSlotId < nRangeEnd) {
-			DispatchLiftChunkObjectActionBySlot(m_pLiftManager18c, 0, 1, nSlotId, 0, 0);
+			((CLiftManager*) m_pLiftManager18c)->Switch(1, nSlotId, 0, 0);
 			++nSlotId;
 		}
 		return;

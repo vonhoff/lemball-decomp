@@ -220,7 +220,7 @@ address,name,symbol,type,source
 0x00402E4B,CDoorManager::Switch,?Switch@CDoorManager@@QAEXHI@Z,stub,src/AI/CDoorAct.cpp
 0x00402E5F,CallHasPendingManagedEntityCommands,?CallHasPendingManagedEntityCommands@@YAHPAXPAULevelManagedEntityCommandQueueView@@@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00402E91,managed_projectile_object_view_activate_at_position,?ActivateAtPosition@ManagedProjectileObjectView@@QAEXPBULevelPoint3@@@Z,stub,src/AI/LVPROJVT.CPP
-0x00402E9B,dispatch_lift_chunk_object_action_by_slot,?DispatchLiftChunkObjectActionBySlot@@YIXPAX0HIHH@Z,stub,src/AI/CLiftAct.cpp
+
 0x00402EB9,get_cached_chunk_object_by_index,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x00402EBE,ManagedEntityGroupChildrenView::ClearChildren,?ClearChildren@ManagedEntityGroupChildrenView@@QAEXXZ,stub,src/AI/LVSAVEPOS.CPP
 0x00402F09,destroy_managed_entity_queue_cursor_auto_thunk,?DestroyManagedEntityQueueCursorAutoThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

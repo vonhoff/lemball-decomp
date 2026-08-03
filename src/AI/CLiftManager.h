@@ -6,6 +6,7 @@ class CGameObject;
 class CViewData;
 class CLift;
 struct AICOORD;
+typedef int swMessage;
 
 class CLiftManager {
 public:
@@ -16,6 +17,7 @@ public:
 	void Process(void);
 	void StepOn(const AICOORD& coord, CGameObject* pObject);
 	int GetViewData(CViewData* pViewData);
+	void Switch(swMessage message, int nSlotId, int nRangeEnd, int nUnused4);
 
 private:
 	unsigned char m_abReserved00[0x30];

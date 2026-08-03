@@ -10,6 +10,7 @@ extern int g_cbEffTransportMaxPacketBytes;
 extern unsigned short g_nNextLiftObjectId;
 extern int g_nLevelFrameClockTimeMs;
 extern int g_nNetworkFrameClockTimeMs;
+extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
 
 typedef void(LEMBALL_FASTCALL* LiftRestartProc)(void* pObject);
 typedef int(LEMBALL_FASTCALL* LiftProcessProc)(void* pObject);
@@ -184,4 +185,37 @@ int CLiftManager::GetViewData(CViewData* pViewData)
 		} while (i < m_cObjects34);
 	}
 	return cEntries;
+}
+
+// FUNCTION: LEMBALL 0x00425f10
+void CLiftManager::Switch(swMessage message, int nSlotId, int nRangeEnd, int nUnused4)
+{
+	int iObject;
+	int nOffset;
+	(void) nRangeEnd;
+	(void) nUnused4;
+
+	iObject = 0;
+	nOffset = 0;
+	if (m_cObjects34 > 0) {
+		while (GetManagedEntitySlotIdThunk((int) (unsigned long) ((char*) m_pObjects3C + nOffset)) != nSlotId) {
+			nOffset += 0x190;
+			++iObject;
+			if (m_cObjects34 <= iObject) {
+				return;
+			}
+		}
+		if (message == 1) {
+			char* pObject = (char*) m_pObjects3C + iObject * 0x190;
+			if (*(int*) (pObject + 0x15c) != 3) {
+				if (*(int*) (pObject + 0x15c) == 0) {
+					((CLift*) pObject)->ActivateDeactivate();
+					return;
+				}
+			}
+			else if (*(int*) (pObject + 0x16c) == 0) {
+				((CLift*) pObject)->Activate();
+			}
+		}
+	}
 }
