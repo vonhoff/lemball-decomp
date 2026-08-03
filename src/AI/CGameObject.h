@@ -35,7 +35,9 @@ struct CGameObject {
 	AICOORD m_WorldPosition9C;
 	char m_abReservedA8[0xc];
 	short m_nHeadingOctantB4;
-	char m_abReservedB6[0x12];
+	char m_abReservedB6[2];
+	int m_nStateB8;
+	char m_abReservedBC[0xc];
 	int m_nMotionStartTickC8;
 	int m_nNextUpdateTickCC;
 	char m_abReservedD0[0x4c];
@@ -51,6 +53,7 @@ struct CGameObject {
 	int DestinationExists(void);
 	void EmptyDestinationList(void);
 	void GetBoundingBox(CVSRect& rect);
+	int IsSelectable(void);
 };
 
 #endif

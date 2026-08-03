@@ -155,7 +155,6 @@ struct LevelManagedEntityStateFields {
 
 	void IncrementHeadingOctant(void);
 	void DecrementHeadingOctant(void);
-	int IsStateNotInactive(void);
 	int IsStateNotInactiveThunk(void);
 	int IsStateAvailableForVariant(void);
 	void SetStateIdWithVariantLocal(int nStateId, int nVariant);
@@ -642,7 +641,7 @@ int LevelManagedEntityChildIterator::GetActiveStateThunk(void)
 // LINKERILT: LEMBALL 0x0040367a
 int LevelManagedEntityStateFields::IsStateNotInactiveThunk(void)
 {
-	return IsStateNotInactive();
+	return ((CGameObject*) this)->IsSelectable();
 }
 
 // LINKERILT: LEMBALL 0x0040380a
@@ -1437,21 +1436,6 @@ void __fastcall set_entity_field_0x08_if_flags_bit0(void* pEntity)
 	if ((*(unsigned char*) ((char*) pEntity + 0x68) & 1) != 0) {
 		*(int*) ((char*) pEntity + 8) = 1;
 	}
-}
-
-// Macintosh: CGameObject::IsSelectable()
-// FUNCTION: LEMBALL 0x00416570
-int LevelManagedEntityStateFields::IsStateNotInactive(void)
-{
-	int nState = m_nStateIdB8;
-	if (nState >= 7) {
-		if (nState <= 8 || nState == 0x15) {
-			goto inactive;
-		}
-	}
-	return 1;
-inactive:
-	return 0;
 }
 
 // FUNCTION: LEMBALL 0x00417aa0

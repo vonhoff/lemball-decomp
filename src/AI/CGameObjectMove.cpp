@@ -161,6 +161,20 @@ void CGameObject::GetBoundingBox(CVSRect& rect)
 	rect.height = 48;
 }
 
+// FUNCTION: LEMBALL 0x00416570
+int CGameObject::IsSelectable(void)
+{
+	int nState = m_nStateB8;
+	if (nState >= 7) {
+		if (nState <= 8 || nState == 0x15) {
+			goto inactive;
+		}
+	}
+	return 1;
+inactive:
+	return 0;
+}
+
 // FUNCTION: LEMBALL 0x00419ea0
 void __cdecl ThunkPopFirstManagedEntityMoveCommandAndResetMotion(void* pUnused, CGameObject* pEntity)
 {
