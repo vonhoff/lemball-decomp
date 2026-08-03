@@ -2,7 +2,7 @@
 
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
-extern void* g_LINKSCF_LiftChunkObjectVtable[16];
+extern LiftVtableLayout g_LINKSCF_LiftChunkObjectVtable;
 extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void* g_pLiftTileGrid;
 extern int LEMBALL_FASTCALL RequestLiftChunkObjectActivationState(void* pObject);
@@ -18,13 +18,13 @@ struct LevelChunkObjectBaseView {
 CLift::CLift(void)
 {
 	((LevelChunkObjectBaseView*) this)->InitializeLevelChunkObjectBase(0x212, 0, 0);
-	*(void**) this = g_LINKSCF_LiftChunkObjectVtable;
+	*(void**) this = &g_LINKSCF_LiftChunkObjectVtable;
 }
 
 // FUNCTION: LEMBALL 0x00424d20
 CLift::~CLift(void)
 {
-	*(void**) this = g_LINKSCF_LiftChunkObjectVtable;
+	*(void**) this = &g_LINKSCF_LiftChunkObjectVtable;
 	DestroyLevelChunkObjectBaseAutoThunk(this);
 }
 

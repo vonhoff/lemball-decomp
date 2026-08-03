@@ -1,3 +1,4 @@
+#include "AI/CLift.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 
 extern int g_nLevelFrameClockTick;
@@ -24,10 +25,10 @@ struct ManagedEntityActionStateView {
 
 // Split from CHUNKOBJVT.CPP to preserve MSVC 4.20 code generation.
 
-// MACINTOSH: CLift::Process()
 // FUNCTION: LEMBALL 0x00425100
-int LEMBALL_FASTCALL AdvanceLiftChunkObjectStateMachine(void* pObject)
+int CLift::Process(void)
 {
+	void* pObject = this;
 	ManagedEntityActionStateView* pActionState = (ManagedEntityActionStateView*) pObject;
 	int* pFields = (int*) pObject;
 	int nTick;

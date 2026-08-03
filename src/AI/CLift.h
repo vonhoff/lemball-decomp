@@ -10,6 +10,7 @@ public:
 	CLift(void);
 	~CLift(void);
 	void CalculateCliff(void);
+	int Process(void);
 	void Edit(int nHeight,
 			  short nDirection,
 			  int nTargetA,
@@ -34,6 +35,12 @@ public:
 
 private:
 	unsigned char m_abReserved00[0x190];
+};
+
+struct LiftVtableLayout {
+	void* m_apSlots00[5];
+	int (CLift::*m_pProcess14)(void);
+	void* m_apSlots18[10];
 };
 
 #endif

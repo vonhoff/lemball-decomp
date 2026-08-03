@@ -942,7 +942,7 @@ address,size,name,unit
 0x00424DF0,522,CLift::Edit,AI/CLift.cpp
 0x00425010,77,CLift::Set,AI/CLift.cpp
 0x00425060,148,CLift::Set,AI/CLift.cpp
-0x00425100,767,CLift::Process,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00425100,767,CLift::Process,AI/CLiftRun.cpp
 0x00425440,93,CLift::CheckObjects,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x004254A0,408,CLift::StepOn,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00425640,23,CLift::Activate,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP

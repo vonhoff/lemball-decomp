@@ -50,7 +50,7 @@ void LEMBALL_FASTCALL DoActivateCDoorThunk(void* pObject);
 int LEMBALL_FASTCALL UpdateManagedEntityGroupCommandState(void* pObject);
 int LEMBALL_FASTCALL AdvanceGmobChunkType14StateMachine(void* pObject);
 int LEMBALL_FASTCALL AdvanceCollChunkObjectStateMachine(void* pObject);
-int LEMBALL_FASTCALL AdvanceLiftChunkObjectStateMachine(void* pObject);
+
 int LEMBALL_FASTCALL AdvanceRockChunkObjectStateMachine(void* pObject);
 int LEMBALL_FASTCALL UpdateRockHistoryChildSwapState(void* pObject);
 int LEMBALL_FASTCALL AdvanceCaptureChunkObjectStateMachine(void* pObject);
