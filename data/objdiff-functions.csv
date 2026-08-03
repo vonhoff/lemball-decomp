@@ -949,7 +949,7 @@ address,size,name,unit
 0x00425660,22,CLift::ActivateDeactivate,AI/CLiftAct.cpp
 0x00425680,91,CLiftManager::CLiftManager,AI/CLiftManager.cpp
 0x004256E0,55,CLiftManager::Restart,AI/CLiftManager.cpp
-0x00425720,155,CLiftManager::Initialise,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00425720,155,CLiftManager::Initialise,AI/CLiftManager.cpp
 0x004257C0,31,CLiftManager::~CLiftManager,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x004257E0,67,serialize_lift_chunk_start_points,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00425830,88,serialize_lift_chunk_endpoint_pairs,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
