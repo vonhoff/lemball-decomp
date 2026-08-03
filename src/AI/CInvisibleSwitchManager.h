@@ -9,6 +9,7 @@ class CInvisibleSwitchManager {
 public:
 	CInvisibleSwitchManager(CAI* pAI, int nCapacity);
 	void Restart(void);
+	void Initialise(int nCapacity);
 	~CInvisibleSwitchManager(void);
 	void StepOn(const AICOORD& position, CGameObject* pObject);
 	void Process(void);

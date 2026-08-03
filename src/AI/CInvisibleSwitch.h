@@ -28,6 +28,9 @@ public:
 	void DoActivate(void);
 	int Process(void);
 	void Load(unsigned char*& pData);
+
+private:
+	unsigned char m_abReserved[0x2b8];
 };
 
 #endif

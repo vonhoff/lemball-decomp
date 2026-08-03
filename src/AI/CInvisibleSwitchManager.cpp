@@ -27,6 +27,8 @@ struct InvisibleSwitchManagerDeletableChild {
 	virtual void Delete(unsigned char fDelete);
 };
 
+typedef char InvisibleSwitchSizeMustMatchArrayStride[sizeof(CInvisibleSwitch) == 0x2b8 ? 1 : -1];
+
 // FUNCTION: LEMBALL 0x0040a210
 CInvisibleSwitchManager::CInvisibleSwitchManager(CAI* pAI, int nCapacity)
 {
@@ -61,6 +63,39 @@ void CInvisibleSwitchManager::Restart(void)
 			pObject = (char*) pManager->m_pObjects3C + cbOffset;
 			cbOffset += 0x2b8;
 			((ResetProc) (*(void***) pObject)[65])(pObject);
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x0040a2a0
+void CInvisibleSwitchManager::Initialise(int nCapacity)
+{
+	typedef void(LEMBALL_FASTCALL * InitialiseProc)(void* pObject);
+	InvisibleSwitchManagerResetView* pManager;
+	CInvisibleSwitch* pObject;
+	int i;
+	int cbOffset;
+
+	pManager = (InvisibleSwitchManagerResetView*) this;
+	pManager->m_cCapacity30 = nCapacity;
+	pManager->m_cObjects34 = 0;
+	if (nCapacity == 0) {
+		pManager->m_pObjects3C = 0;
+		return;
+	}
+	if (pManager->m_pObjects3C == 0) {
+		pManager->m_pObjects3C = new CInvisibleSwitch[nCapacity];
+
+		cbOffset = 0;
+		i = 0;
+		if (pManager->m_cCapacity30 > 0) {
+			do {
+				pObject = (CInvisibleSwitch*) ((char*) pManager->m_pObjects3C + cbOffset);
+				++i;
+				cbOffset += 0x2b8;
+				((InitialiseProc) (*(void***) pObject)[65])(pObject);
+				*(CInvisibleSwitchManager**) ((char*) pManager->m_pObjects3C + cbOffset - 0x258) = this;
+			} while (i < pManager->m_cCapacity30);
 		}
 	}
 }
