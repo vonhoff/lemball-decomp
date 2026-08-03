@@ -11,6 +11,7 @@ extern unsigned short g_nNextLiftObjectId;
 extern int g_nLevelFrameClockTimeMs;
 extern int g_nNetworkFrameClockTimeMs;
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
+extern unsigned short FindFirstFreeManagedEntitySlotIdForwardThunk(void);
 
 typedef void(LEMBALL_FASTCALL* LiftRestartProc)(void* pObject);
 typedef int(LEMBALL_FASTCALL* LiftProcessProc)(void* pObject);
@@ -22,6 +23,10 @@ struct LiftManagerDeletableChild {
 
 struct VsNetEffStreamCommon {
 	virtual ~VsNetEffStreamCommon(void);
+};
+
+struct ManagedEntitySlotOwnerView {
+	void SetManagedEntitySlotId(unsigned short nSlotId);
 };
 
 // FUNCTION: LEMBALL 0x00425680
@@ -227,4 +232,64 @@ unsigned short CLiftManager::Id(int iObject)
 		return 0xffff;
 	}
 	return GetManagedEntitySlotIdThunk((int) (unsigned long) ((char*) m_pObjects3C + iObject * 0x190));
+}
+
+// FUNCTION: LEMBALL 0x00425fc0
+void CLiftManager::LoadLevel(unsigned char* pData, int cbData, unsigned char nVersion)
+{
+	unsigned short* pRecord;
+	unsigned short nSlotId;
+	unsigned int cObjects;
+	CLift* pObject;
+	tCoord3d start;
+	tCoord3d end;
+
+	cObjects = *(unsigned short*) pData;
+	pData += 2;
+	Initialise(cObjects);
+	if (*(unsigned short*) ((char*) m_pAI30 + 0x54) > 2 && cObjects != 0) {
+		do {
+			pRecord = (unsigned short*) pData;
+			if (*(unsigned short*) ((char*) m_pAI30 + 0x54) < 2) {
+				nSlotId = FindFirstFreeManagedEntitySlotIdForwardThunk();
+			}
+			else {
+				nSlotId = *pRecord;
+				++pRecord;
+			}
+			pObject = (CLift*) ((char*) m_pObjects3C + m_cObjects34 * 0x190);
+			((ManagedEntitySlotOwnerView*) pObject)->SetManagedEntitySlotId(nSlotId);
+			if (*(unsigned short*) ((char*) m_pAI30 + 0x54) < 5) {
+				pData = (unsigned char*) (pRecord + 8);
+				pObject->Set(pRecord[2],
+							 pRecord[3],
+							 pRecord[4],
+							 (short) pRecord[7],
+							 (short) pRecord[5],
+							 (short) pRecord[6],
+							 pRecord[1],
+							 (unsigned char) pRecord[0]);
+			}
+			else {
+				start.x = pRecord[2];
+				start.y = pRecord[3];
+				start.z = pRecord[4];
+				end.x = pRecord[5];
+				end.y = pRecord[6];
+				end.z = pRecord[7];
+				pData = (unsigned char*) (pRecord + 11);
+				pObject->Set(start,
+							 end,
+							 (short) pRecord[10],
+							 (short) pRecord[8],
+							 (short) pRecord[9],
+							 pRecord[1],
+							 (unsigned char) pRecord[0]);
+			}
+			++m_cObjects34;
+			--cObjects;
+		} while (cObjects != 0);
+	}
+	(void) cbData;
+	(void) nVersion;
 }

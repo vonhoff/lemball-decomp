@@ -19,6 +19,7 @@ public:
 	int GetViewData(CViewData* pViewData);
 	void Switch(swMessage message, int nSlotId, int nRangeEnd, int nUnused4);
 	unsigned short Id(int iObject);
+	void LoadLevel(unsigned char* pData, int cbData, unsigned char nVersion);
 
 private:
 	unsigned char m_abReserved00[0x30];
