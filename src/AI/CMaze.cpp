@@ -23,6 +23,7 @@ static const unsigned char g_abMazeEdgeMaskB[9] = {0, 16, 0, 128, 0, 64, 0, 32, 
 static const int g_anMazeBitMask[8] = {0x80, 0x40, 0x20, 0x10, 8, 4, 2, 1};
 
 extern void __fastcall FillReachabilityGridFromTileFlagsThunk(void* pMaze);
+extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x00423090
 CMaze::CMaze(CMap* pMap)
@@ -221,4 +222,41 @@ void CMaze::SwapChange(void)
 		Clear(m_abFrontiers0C);
 	}
 	m_nFrontier100C = m_nFrontier100C == 0;
+}
+
+// FUNCTION: LEMBALL 0x00423530
+void CMaze::BInitialise(unsigned char fReset, int nStartX, int nStartY, int nEndX, int nEndY)
+{
+	MazeMapView* pMap;
+	unsigned short nCellValue;
+	int y;
+	int x;
+
+	if (fReset != 0) {
+		m_nCounter1030 = 0;
+		m_nCounter1034 = 0;
+	}
+	m_dwStartTime102C = timeGetTime();
+	m_nSearchState1038 = 0;
+	m_nStartX1018 = nStartX;
+	m_nStartY101C = nStartY;
+	m_nEndX1020 = nEndX;
+	m_nEndY1024 = nEndY;
+	pMap = (MazeMapView*) m_pMap00;
+	for (y = 0; y < m_cRows1014; ++y) {
+		for (x = 0; x < m_cColumns1010; ++x) {
+			if (x < 0 || y < 0 || pMap->m_cColumns10 <= x || pMap->m_cRows14 <= y) {
+				nCellValue = 3;
+			}
+			else {
+				nCellValue = *(unsigned short*) (pMap->m_pCells0C + 6 + (y * pMap->m_cColumns10 + x) * 0xc);
+			}
+			m_ppRows04[y][x] = (nCellValue & 1) == 0 ? 0xff00 : 0xffff;
+		}
+	}
+	m_nFrontier100C = 0;
+	Clear(m_abFrontiers0C);
+	Clear(m_abFrontiers0C + 0x800);
+	UpdateChangeNext(m_nStartX1018, m_nStartY101C);
+	m_ppRows04[m_nStartY101C][m_nStartX1018] = 0;
 }

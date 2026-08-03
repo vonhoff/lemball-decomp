@@ -14,6 +14,7 @@ public:
 	void UpdateChangeNext(int x, int y);
 	void Clear(unsigned char* pFrontier);
 	void SwapChange(void);
+	void BInitialise(unsigned char fReset, int nStartX, int nStartY, int nEndX, int nEndY);
 
 private:
 	CMap* m_pMap00;
@@ -24,7 +25,15 @@ private:
 	unsigned char m_abReserved100D[3];
 	int m_cColumns1010;
 	int m_cRows1014;
-	unsigned char m_abReserved1018[0x24];
+	int m_nStartX1018;
+	int m_nStartY101C;
+	int m_nEndX1020;
+	int m_nEndY1024;
+	int m_nReserved1028;
+	unsigned long m_dwStartTime102C;
+	int m_nCounter1030;
+	int m_nCounter1034;
+	int m_nSearchState1038;
 };
 
 typedef char CMazeSizeCheck[sizeof(CMaze) == 0x103c ? 1 : -1];
