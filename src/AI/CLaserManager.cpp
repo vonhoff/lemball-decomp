@@ -54,3 +54,31 @@ void CLaserManager::Restart(void)
 		}
 	}
 }
+
+// FUNCTION: LEMBALL 0x004293b0
+void CLaserManager::Initialise(int nCapacity)
+{
+	char* pObject;
+	int i;
+	int cbOffset;
+
+	m_cObjects34 = 0;
+	if (nCapacity == 0) {
+		m_pObjects38 = 0;
+		return;
+	}
+	if (m_pObjects38 == 0) {
+		m_pObjects38 = new CLaser[m_cCapacity30];
+		cbOffset = 0;
+		i = 0;
+		if (m_cCapacity30 > 0) {
+			do {
+				*(CLaserManager**) ((char*) m_pObjects38 + cbOffset + 0x60) = this;
+				pObject = (char*) m_pObjects38 + cbOffset;
+				cbOffset += 0x148;
+				++i;
+				((LaserRestartProc) (*(void***) pObject)[65])(pObject);
+			} while (i < m_cCapacity30);
+		}
+	}
+}
