@@ -321,3 +321,7 @@ All thirteen portable font-resource methods map across `0x0045D7B0..0x0045DB30`,
 ## CReadSocket and CWriteSocket reconstruction
 
 All twenty-seven portable socket methods map across `0x0045F820..0x00460280`, preserving mixed `VSNETSTR.CPP`, `VSNET.CPP`, `EFFSTRM.CPP`, and `LEVELRUN.CPP` ownership. Exact composite layouts, vtables, critical/noncritical record tables, fragmentation, acknowledgements, retries, idle close, and adjusted close ABI support the pair. Deleting wrappers, virtual-base thunks, the adjusted channel thunk, shared EFF-stream predecessors, and the following runtime-stack family remain separate.
+
+## CMogDir reconstruction
+
+All eight portable archive-directory methods map across `0x0045BDA0..0x0045C2D0` in `MogLoad.cpp`. Exact record parsing, directory/entry layouts, cursor threading, recursive lookup, callers, and ownership support the family. Archive-arena and `CRawRead` helpers plus Windows-only name-search and integrity routines remain separate.
