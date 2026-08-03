@@ -405,3 +405,7 @@ Portable `CPortsMessage` construction and `AnyUsed` map to `0x00479810` and `0x0
 ## File socket foundations reconstruction
 
 `CFileCommonSocket::CreateSocket` and `SysCloseSocket` map to `0x00479880` and `0x00479900`: both architectures use the same virtual open/create fallback, 100 ms retry, close-on-create success, and close status `6`/`0`. The Windows bodies remain global/helper ABIs in `VSNETFIL.CPP`. `CFileBaseSocket` construction maps independently to the exact zero-word body at `0x00479920`; the adjacent composite constructor at `0x00479930` remains unconsumed.
+
+## CFileReadSocket reconstruction
+
+The four portable `CFileReadSocket` methods map in order to `0x00479930`, `0x00479A40`, `0x00479B30`, and `0x00479C10`. Exact 68K bodies and x86 code preserve embedded channel/read-stream construction, lock/read/unlock behavior, per-slot payload reads, source-address selection, marker/latch comparisons, one-payload service, and the pending-slot cursor. Windows keeps widened embedded objects, `0x60`-byte `CHeaderMessage` slots, hidden constructor state, and physical ownership in `VSNETFIL.CPP`.

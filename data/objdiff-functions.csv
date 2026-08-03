@@ -3146,10 +3146,10 @@ address,size,name,unit
 0x00479880,121,CFileCommonSocket::CreateSocket,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x00479900,24,CFileCommonSocket::SysCloseSocket,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x00479920,9,CFileBaseSocket::CFileBaseSocket,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
-0x00479930,272,construct_dual_file_backed_eff_channel,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
-0x00479A40,227,load_eff_stream_from_file_backed_range,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
-0x00479B30,211,load_file_backed_eff_record_payload,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
-0x00479C10,526,service_pending_file_backed_eff_records,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x00479930,272,CFileReadSocket::CFileReadSocket,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x00479A40,227,CFileReadSocket::Read,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x00479B30,211,CFileReadSocket::ReadBuff,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+0x00479C10,526,CFileReadSocket::Process,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x00479E20,285,construct_timed_file_backed_eff_channel,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x00479F40,83,restore_timed_file_backed_eff_channel_vtables,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
 0x00479FA0,227,write_eff_stream_to_locked_file,Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
