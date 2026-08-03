@@ -3001,9 +3001,9 @@ address,size,name,unit
 0x00472020,14,claim_composite_tcpip_eff_transport_dual_record_adjusted_thunk,Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00472030,11,dispatch_composite_tcpip_prefixed_control_adjusted_thunk,Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00472040,8,dispatch_tcpip_client_async_message_adjusted_thunk,Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
-0x00472070,29,construct_shared_geometry_helper,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x00472090,45,destroy_shared_geometry_helper,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x00472210,7,return_shared_geometry_helper_argument,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x00472070,29,CMasterInput::CMasterInput,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x00472090,45,CMasterInput::~CMasterInput,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+0x00472210,7,CMasterInput::StreamOut,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x00472270,30,delete_shared_geometry_helper,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x00472290,60,CPVGDIBitmap::CPVGDIBitmap,Visos/Windows/CGDI.cpp
 0x004722D0,11,CPVGDIBitmap::~CPVGDIBitmap,Visos/Windows/CGDI.cpp

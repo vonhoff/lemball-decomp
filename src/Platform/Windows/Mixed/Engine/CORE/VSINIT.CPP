@@ -165,29 +165,29 @@ struct VsInitRenderDispatchQueue {
 	char m_abReserved[0x58];
 };
 
-struct VsInitSharedGeometryHelper {
+struct CMasterInput {
 	void* m_pVtable;
 	int m_nReserved04;
-	int m_nReserved08;
-	void* m_pRenderDispatchQueue;
-	int m_nReserved10;
+	int m_cInputs;
+	void* m_pBaseQueue;
+	int m_pInputHead;
 	int m_dwFlags;
-	VsInitSharedGeometryHelper* ConstructSharedGeometryHelper(void* pRenderDispatchQueue);
+	CMasterInput* Construct(void* pBaseQueue);
 };
-void LEMBALL_FASTCALL DestroySharedGeometryHelper(VsInitSharedGeometryHelper* pHelper);
-void* LEMBALL_FASTCALL ReturnSharedGeometryHelperArgument(VsInitSharedGeometryHelper* pHelper,
+void LEMBALL_FASTCALL DestroyCMasterInput(CMasterInput* pHelper);
+void* LEMBALL_FASTCALL StreamOutCMasterInput(CMasterInput* pHelper,
 														  int nUnused,
 														  void* pArgument);
-void* LEMBALL_FASTCALL DeleteSharedGeometryHelper(VsInitSharedGeometryHelper* pHelper, int nUnused, BYTE fDelete);
+void* LEMBALL_FASTCALL DeleteCMasterInput(CMasterInput* pHelper, int nUnused, BYTE fDelete);
 
-struct VsInitSharedGeometryHelperVtable {
-	void*(LEMBALL_FASTCALL* m_pReturnArgument)(VsInitSharedGeometryHelper*, int, void*);
-	void*(LEMBALL_FASTCALL* m_pDelete)(VsInitSharedGeometryHelper*, int, BYTE);
+struct CMasterInputVtable {
+	void*(LEMBALL_FASTCALL* m_pReturnArgument)(CMasterInput*, int, void*);
+	void*(LEMBALL_FASTCALL* m_pDelete)(CMasterInput*, int, BYTE);
 };
 // GLOBAL: LEMBALL 0x0049a468
-static VsInitSharedGeometryHelperVtable g_SharedGeometryHelperVtable = {
-	ReturnSharedGeometryHelperArgument,
-	DeleteSharedGeometryHelper,
+static CMasterInputVtable g_CMasterInputVtable = {
+	StreamOutCMasterInput,
+	DeleteCMasterInput,
 };
 
 // GLOBAL: LEMBALL 0x004a0eb0
@@ -468,7 +468,7 @@ void LEMBALL_FASTCALL DestroyRenderDispatchQueue(void* pQueue);
 void* LEMBALL_FASTCALL DeleteRenderDispatchQueueThunk00463940(void* pQueue, int, int fFreeMemory);
 void LEMBALL_FASTCALL ReleasePaletteRemapVariantFields(VsInitPaletteRemapVariant* pVariant);
 void DestroyPaletteRemapPointerTable(VsInitVSMemPointerTable* pPointerTable);
-void LEMBALL_FASTCALL DestroySharedGeometryHelper(VsInitSharedGeometryHelper* pHelper);
+void LEMBALL_FASTCALL DestroyCMasterInput(CMasterInput* pHelper);
 void AppendStringToDebugOutFile(const char* pszText);
 int LEMBALL_FASTCALL TranslateKeyboardRenderQueueEntry(void* pRenderQueueNode, int, RenderDispatchQueueEntry* pEntry);
 int InitializeDebugMessageThread(void);
@@ -478,14 +478,14 @@ void CloseCrtFilePointer(FILE* pFile);
 // FUNCTION: LEMBALL 0x00456660
 int SetSharedGeometryHelperFlags03(void)
 {
-	((VsInitSharedGeometryHelper*) g_pSharedGeometryHelper)->m_dwFlags |= 3;
+	((CMasterInput*) g_pSharedGeometryHelper)->m_dwFlags |= 3;
 	return 1;
 }
 
 // FUNCTION: LEMBALL 0x00456670
 int ClearSharedGeometryHelperFlags03(void)
 {
-	((VsInitSharedGeometryHelper*) g_pSharedGeometryHelper)->m_dwFlags &= ~3;
+	((CMasterInput*) g_pSharedGeometryHelper)->m_dwFlags &= ~3;
 	return 1;
 }
 
@@ -967,7 +967,7 @@ int InitializeSharedEventQueueRuntime(void)
 	}
 	else {
 		g_pSharedGeometryHelper =
-			((VsInitSharedGeometryHelper*) pHelper)->ConstructSharedGeometryHelper(g_pSharedRenderDispatchQueue);
+			((CMasterInput*) pHelper)->Construct(g_pSharedRenderDispatchQueue);
 	}
 
 	pRenderQueueNode = AllocateVSMemBlock(0x10);
@@ -1766,27 +1766,27 @@ void ReleasePaletteRemapVariant(void* pVariant)
 }
 
 // FUNCTION: LEMBALL 0x00472070
-VsInitSharedGeometryHelper* VsInitSharedGeometryHelper::ConstructSharedGeometryHelper(void* pRenderDispatchQueue)
+CMasterInput* CMasterInput::Construct(void* pBaseQueue)
 {
-	m_pVtable = &g_SharedGeometryHelperVtable;
-	m_nReserved08 = 0;
-	m_nReserved10 = 0;
-	m_pRenderDispatchQueue = pRenderDispatchQueue;
+	m_pVtable = &g_CMasterInputVtable;
+	m_cInputs = 0;
+	m_pInputHead = 0;
+	m_pBaseQueue = pBaseQueue;
 	m_dwFlags = 0;
 	return this;
 }
 
 // FUNCTION: LEMBALL 0x00472090
-void LEMBALL_FASTCALL DestroySharedGeometryHelper(VsInitSharedGeometryHelper* pHelper)
+void LEMBALL_FASTCALL DestroyCMasterInput(CMasterInput* pHelper)
 {
 	unsigned int i;
 	void* pNode;
 	void* pNext;
 
-	pHelper->m_pVtable = &g_SharedGeometryHelperVtable;
+	pHelper->m_pVtable = &g_CMasterInputVtable;
 	pNode = *(void**) ((char*) pHelper + 0x10);
 	i = 0;
-	while (i < (unsigned int) pHelper->m_nReserved08) {
+	while (i < (unsigned int) pHelper->m_cInputs) {
 		pNext = *(void**) ((char*) pNode + 4);
 		++i;
 		FreeVSMemBlock(pNode);
@@ -1795,7 +1795,7 @@ void LEMBALL_FASTCALL DestroySharedGeometryHelper(VsInitSharedGeometryHelper* pH
 }
 
 // FUNCTION: LEMBALL 0x00472210
-void* LEMBALL_FASTCALL ReturnSharedGeometryHelperArgument(VsInitSharedGeometryHelper* pHelper,
+void* LEMBALL_FASTCALL StreamOutCMasterInput(CMasterInput* pHelper,
 														  int nUnused,
 														  void* pArgument)
 {
@@ -1805,10 +1805,10 @@ void* LEMBALL_FASTCALL ReturnSharedGeometryHelperArgument(VsInitSharedGeometryHe
 }
 
 // FUNCTION: LEMBALL 0x00472270
-void* LEMBALL_FASTCALL DeleteSharedGeometryHelper(VsInitSharedGeometryHelper* pHelper, int nUnused, BYTE fDelete)
+void* LEMBALL_FASTCALL DeleteCMasterInput(CMasterInput* pHelper, int nUnused, BYTE fDelete)
 {
 	(void) nUnused;
-	DestroySharedGeometryHelper(pHelper);
+	DestroyCMasterInput(pHelper);
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pHelper);
 	}

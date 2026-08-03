@@ -357,3 +357,7 @@ All eight portable animation-manager methods map across `0x00467260..0x004678C0`
 ## Animation selector reconstruction
 
 The four portable animation-selector symbols map to `0x00467170`, `0x004671B0`, `0x004671E0`, and `0x00467210`. Exact 68K/x86 timing equations, shared fields, distinct vtable slots, fixed-time overrides, direction reversal, and focused reccmp agree. The two byte-identical `StartAnim` bodies remain separate `CRepeatAnim` and `CPlayThruAnim` slots; the timed selector repeats modulo duration while the play-through selector clamps to the terminal frame.
+
+## CMasterInput reconstruction
+
+The three portable `CMasterInput` symbols map to constructor `0x00472070`, semantic destructor `0x00472090`, and `StreamOut` `0x00472210` in `VSINIT.CPP`. Exact 68K/x86 bodies share the queue pointer, zeroed input count and list head, linked-list teardown, and identity stream slot. The Windows object is `0x18` bytes and the startup runtime is its sole constructor caller. Source terminology now reflects `CMasterInput`; scalar deleting wrapper `0x00472270` remains separate.
