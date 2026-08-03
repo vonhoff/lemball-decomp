@@ -1238,3 +1238,20 @@ CODE_02_Visos (Generic).bin,0x0000A02C,InitSocket__12CFileConnectFv,0x0047B440,h
 CODE_02_Visos (Generic).bin,0x0000A0E7,Listen__12CFileConnectFP15CNetworkAddress,0x0047B4D0,high,initializes socket state and destination address with listening timestamps and flags,exact_tuple,0x0000A0E7
 CODE_02_Visos (Generic).bin,0x0000A16A,Connect__12CFileConnectFv,0x0047B540,high,initializes socket state and marks connected with timestamp,exact_tuple,0x0000A16A
 CODE_02_Visos (Generic).bin,0x0000A466,ConnectSetup__12CFileConnectFv,0x0047B580,high,"computes paired slot ranges, extends file under lock and finalizes ready or failure state",exact_tuple,0x0000A466
+CODE_02_Visos (Generic).bin,0x0000AC57,AddHeader__17CBroadcastMessageFv,0x0045F360,high,writes the NUL-terminated control-stream name stored at +0x2c,exact_tuple,0x0000AC57
+CODE_02_Visos (Generic).bin,0x0000ACC5,GetHeader__17CBroadcastMessageFv,0x0045F370,high,compares the stream prefix with the stored name and advances input cursor by name length,exact_tuple,0x0000ACC5
+CODE_02_Visos (Generic).bin,0x0000AD50,__ct__15CMessReqConnectFPCc,0x0045F3D0,high,"constructs named request-connect stream and reserves 16-bit, 0x200-byte and string fields",exact_tuple,0x0000AD50
+CODE_02_Visos (Generic).bin,0x0000ADA4,GetData__15CMessReqConnectFv,0x0045F430,high,"loads port value, 0x200-byte port map and host string",exact_tuple,0x0000ADA4
+CODE_02_Visos (Generic).bin,0x0000ADFC,AddData__15CMessReqConnectFv,0x0045F460,high,"writes port value, 0x200-byte port map and host string",exact_tuple,0x0000ADFC
+CODE_02_Visos (Generic).bin,0x0000AE48,__ct__15CMessReqNewPortFPCc,0x0045F490,high,extends request-connect stream with one dword field,exact_tuple,0x0000AE48
+CODE_02_Visos (Generic).bin,0x0000AE88,GetData__15CMessReqNewPortFv,0x0045F4B0,high,loads inherited request fields then new-port dword,exact_tuple,0x0000AE88
+CODE_02_Visos (Generic).bin,0x0000AECC,AddData__15CMessReqNewPortFv,0x0045F4D0,high,writes inherited request fields then new-port dword,exact_tuple,0x0000AECC
+CODE_02_Visos (Generic).bin,0x0000AF4C,__ct__14CMessOKConnectFPCc,0x0045F4F0,high,constructs named authorization stream with word and dword fields,exact_tuple,0x0000AF4C
+CODE_02_Visos (Generic).bin,0x0000AF90,GetData__14CMessOKConnectFv,0x0045F540,high,loads authorization word and dword,exact_tuple,0x0000AF90
+CODE_02_Visos (Generic).bin,0x0000AFD6,AddData__14CMessOKConnectFv,0x0045F560,high,writes authorization word and dword,exact_tuple,0x0000AFD6
+CODE_02_Visos (Generic).bin,0x0000B054,__ct__14CMessGOConnectFPCc,0x0045F580,high,constructs named go-ahead stream with word and dword fields,exact_tuple,0x0000B054
+CODE_02_Visos (Generic).bin,0x0000B098,GetData__14CMessGOConnectFv,0x0045F5D0,high,loads go-ahead word and dword,exact_tuple,0x0000B098
+CODE_02_Visos (Generic).bin,0x0000B0DE,AddData__14CMessGOConnectFv,0x0045F5F0,high,writes go-ahead word and dword,exact_tuple,0x0000B0DE
+CODE_02_Visos (Generic).bin,0x0000B156,__ct__18CMessFAILEDConnectFPCc,0x0045F610,high,constructs named failed-connect stream with 0x101-byte string allowance,exact_tuple,0x0000B156
+CODE_02_Visos (Generic).bin,0x0000B190,GetData__18CMessFAILEDConnectFv,0x0045F660,high,loads failed-connect string,exact_tuple,0x0000B190
+CODE_02_Visos (Generic).bin,0x0000B1CA,AddData__18CMessFAILEDConnectFv,0x0045F670,high,writes failed-connect string,exact_tuple,0x0000B1CA

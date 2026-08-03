@@ -429,3 +429,7 @@ All twelve portable methods map contiguously from constructor `0x0047A570` throu
 ## CFileConnect reconstruction
 
 All eight portable methods map from constructor `0x0047AF30` through `ConnectSetup` at `0x0047B580`. The Windows composite preserves two three-slot `CHeaders` tables, copied path pairs, file open-count and payload-base setup, listen/connect state transitions, and paired file-range initialization with a 100 ms lock retry. Expanded virtual-base views and generated destructor wrappers remain physically owned by `VSNETFIL.CPP`.
+
+## File-protocol control messages
+
+`CBroadcastMessage::AddHeader/GetHeader` map to `0x0045F360/0x0045F370`, shared by six control-stream vtables. Five derived request/response classes contribute fifteen constructor and `GetData`/`AddData` bodies at `0x0045F3D0..0x0045F670`: request-connect serializes a port, 0x200-byte map and host; new-port appends a dword; OK/GO each serialize a word+dword; FAILED serializes its string. The existing `VSNET.CPP` helpers, widened layouts, and shared vtable references remain physically unchanged.
