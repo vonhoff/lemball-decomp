@@ -2440,11 +2440,11 @@ address,size,name,unit
 0x00461BD0,477,CBaseNetwork::DoInitialise,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461DB0,90,CBaseNetwork::~CBaseNetwork,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00461E10,417,CBaseNetwork::ShutDown,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00461FC0,122,unlink_and_delete_eff_transport_peer,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00462040,232,allocate_eff_transport_peer_entry,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00462130,74,mark_existing_eff_transport_peer_active,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x00462180,56,find_matching_active_eff_transport_peer,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
-0x004621C0,24,close_matching_eff_transport_peer,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00461FC0,122,CBaseNetwork::Delete,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00462040,232,CBaseNetwork::NewConnect,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00462130,74,CBaseNetwork::Exists,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x00462180,56,CBaseNetwork::FindConnection,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+0x004621C0,24,CBaseNetwork::KillUnBornConnection,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x004621E0,150,handle_eff_transport_request_connect,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00462280,188,handle_eff_transport_request_new_port,Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00462340,280,handle_eff_transport_authorise_connect,Platform/Windows/Mixed/Engine/NET/VSNET.CPP

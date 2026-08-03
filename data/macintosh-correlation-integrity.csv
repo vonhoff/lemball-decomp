@@ -1306,3 +1306,8 @@ CODE_02_Visos (Generic).bin,0x0000E864,Initialise__12CBaseNetworkFPCci,0x00461AA
 CODE_02_Visos (Generic).bin,0x0000EA62,DoInitialise__12CBaseNetworkFv,0x00461BD0,high,allocates control messages and global streams then starts broadcast transport,exact_tuple,0x0000EA62
 CODE_02_Visos (Generic).bin,0x0000EB36,__dt__12CBaseNetworkFv,0x00461DB0,high,detaches and deletes transport dispatch queues before base destruction,exact_tuple,0x0000EB36
 CODE_02_Visos (Generic).bin,0x0000ED82,ShutDown__12CBaseNetworkFv,0x00461E10,high,stops connections and broadcast then releases global transport resources,exact_tuple,0x0000ED82
+CODE_02_Visos (Generic).bin,0x0000EE4D,Delete__12CBaseNetworkFP8CConnect,0x00461FC0,high,unlinks peer from doubly linked list releases port and deletes connection,exact_tuple,0x0000EE4D
+CODE_02_Visos (Generic).bin,0x0000EF52,NewConnect__12CBaseNetworkFv,0x00462040,high,removes closed peers allocates a connection and configures socket buffers,exact_tuple,0x0000EF52
+CODE_02_Visos (Generic).bin,0x0000EFC7,Exists__12CBaseNetworkFP8CConnect,0x00462130,high,finds live connection refreshes timeout and reports existence,exact_tuple,0x0000EFC7
+CODE_02_Visos (Generic).bin,0x0000F039,FindConnection__12CBaseNetworkFP15CNetworkAddress,0x00462180,high,finds first active connection matching network address,exact_tuple,0x0000F039
+CODE_02_Visos (Generic).bin,0x0000F097,KillUnBornConnection__12CBaseNetworkFP15CNetworkAddress,0x004621C0,high,finds and kills matching not-yet-established connection,exact_tuple,0x0000F097

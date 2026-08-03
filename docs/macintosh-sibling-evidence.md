@@ -481,3 +481,5 @@ All fourteen `CBroadcast` bodies map in order to `0x00460350..0x00460A50`. The c
 ## Base network lifecycle reconstruction
 
 `CBaseNetwork` constructor, `Initialise`, `DoInitialise`, destructor, and `ShutDown` map to `0x004619F0/0x00461AA0/0x00461BD0/0x00461DB0/0x00461E10`. Together they own queue registration, control-message/global-stream allocation, transport startup readiness, peer/broadcast shutdown, and global resource release. Physical definitions remain in `VSNET.CPP`; the remaining `CBaseNetwork` peer-routing and dispatch methods are tracked separately.
+
+`CBaseNetwork::Delete`, `NewConnect`, `Exists`, `FindConnection`, and `KillUnBornConnection` map to `0x00461FC0/0x00462040/0x00462130/0x00462180/0x004621C0`. They maintain the doubly linked connection list, configure buffers on newly allocated peers, refresh live-peer timeouts, match network addresses, and kill matching unborn connections.
