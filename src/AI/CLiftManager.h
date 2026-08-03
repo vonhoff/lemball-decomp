@@ -3,6 +3,7 @@
 
 class CAI;
 class CGameObject;
+class CViewData;
 class CLift;
 struct AICOORD;
 
@@ -14,6 +15,7 @@ public:
 	void Initialise(int nCapacity);
 	void Process(void);
 	void StepOn(const AICOORD& coord, CGameObject* pObject);
+	int GetViewData(CViewData* pViewData);
 
 private:
 	unsigned char m_abReserved00[0x30];
@@ -27,7 +29,8 @@ struct LiftManagerVtableLayout {
 	void* m_apSlots00[6];
 	void (CLiftManager::*m_pRestart18)(void);
 	void (CLiftManager::*m_pProcess1C)(void);
-	void* m_apSlots20[2];
+	void* m_pSlot20;
+	int (CLiftManager::*m_pGetViewData24)(CViewData*);
 };
 
 #endif

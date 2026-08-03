@@ -8,9 +8,12 @@ extern LiftManagerVtableLayout g_LINKSCF_LiftChunkManagerVtable;
 extern void* g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
 extern unsigned short g_nNextLiftObjectId;
+extern int g_nLevelFrameClockTimeMs;
+extern int g_nNetworkFrameClockTimeMs;
 
 typedef void(LEMBALL_FASTCALL* LiftRestartProc)(void* pObject);
 typedef int(LEMBALL_FASTCALL* LiftProcessProc)(void* pObject);
+typedef void(LEMBALL_FASTCALL* LiftViewStateProc)(void* pObject, int nState);
 
 struct LiftManagerDeletableChild {
 	virtual void Delete(unsigned char fDelete);
@@ -135,4 +138,50 @@ void CLiftManager::StepOn(const AICOORD& coord, CGameObject* pObject)
 			++i;
 		} while (i < m_cObjects34);
 	}
+}
+
+// FUNCTION: LEMBALL 0x00425df0
+int CLiftManager::GetViewData(CViewData* pViewData)
+{
+	char* pEntry;
+	char* pObject;
+	int cbOffset;
+	int cEntries;
+	int i;
+
+	cEntries = 0;
+	i = 0;
+	if (m_cObjects34 > 0) {
+		cbOffset = 0;
+		pEntry = (char*) pViewData;
+		do {
+			pObject = (char*) m_pObjects3C + cbOffset;
+			*(short*) (pEntry + 0x2c) = *(short*) (pObject + 0x6a);
+			*(int*) (pEntry + 0x28) = *(int*) (pObject + 0x64);
+			*(short*) (pEntry + 0x2e) = 0;
+			*(int*) (pEntry + 0x04) = *(int*) (pObject + 0x9c) >> 12;
+			*(int*) (pEntry + 0x08) = *(int*) (pObject + 0xa0) >> 12;
+			*(int*) (pEntry + 0x0c) = *(int*) (pObject + 0xa4) >> 12;
+			*(short*) pEntry = (short) *(int*) (pObject + 0xb4);
+			*(int*) (pEntry + 0x18) = *(int*) (pObject + 0xb8);
+			*(short*) (pEntry + 0x1c) = (short) *(int*) (pObject + 0xbc);
+			*(int*) (pEntry + 0x20) = *(int*) (pObject + 0x94);
+			*(int*) (pEntry + 0x14) = 0;
+			*(int*) (pEntry + 0x30) = *(int*) (pObject + 0xc0);
+			*(int*) (pEntry + 0x38) = *(int*) (pObject + 0xe4);
+			*(int*) (pEntry + 0x3c) = *(int*) (pObject + 0xe8);
+			*(int*) (pEntry + 0x40) = *(int*) (pObject + 0xec);
+			*(int*) (pEntry + 0x44) = *(int*) (pObject + 0x98);
+			*(int*) (pEntry + 0x24) =
+				*(int*) (pObject + 0x114) != 0 ? g_nNetworkFrameClockTimeMs : g_nLevelFrameClockTimeMs;
+			((LiftViewStateProc) (*(void***) pObject)[13])(pObject, 0);
+			*(int*) (pEntry + 0x34) = *(int*) (pObject + 0x10);
+			*(int*) (pObject + 0x10) = 0;
+			cbOffset += 0x190;
+			pEntry += 0x4c;
+			++cEntries;
+			++i;
+		} while (i < m_cObjects34);
+	}
+	return cEntries;
 }
