@@ -365,3 +365,7 @@ The three portable `CMasterInput` symbols map to constructor `0x00472070`, seman
 ## CRawRead reconstruction
 
 The four portable `CRawRead` methods map to `0x0045BBC0`, `0x0045BBE0`, `0x0045BC40`, and `0x0045BD50` in `MogLoad.cpp`. Both architectures use one shared archive handle, one- and four-byte reads, and the same case-folded path-component comparison with `/` terminating an archive name. Windows implements the stateless methods as free functions; source names now preserve the Macintosh logical owner without inventing an object layout or changing the physical TU/ABI. Generic CRT wrappers remain separate.
+
+## CMogloadArena reconstruction
+
+Portable `CMogloadArena::operator new` and `operator delete` map to `0x0045BAF0` and `0x0045BB70`. Exact 68K/x86 behavior falls back to the default allocator when no archive arena exists, tries the small-memory bucket path when enabled, then dispatches allocation/free through the main arena. Both focused reccmp checks are exact. Macintosh terminology replaces provisional archive-memory helper names without changing the Windows free-function ABI or existing TU boundaries.

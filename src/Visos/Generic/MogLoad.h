@@ -81,8 +81,8 @@ public:
 
 extern void* g_pResourceArchive;
 
-void* AllocateResourceArchiveMemory(unsigned int cbBytes);
-void FreeResourceArchiveMemory(void* pMemoryBlock);
+void* CMogloadArenaNew(unsigned int cbBytes);
+void CMogloadArenaDelete(void* pMemoryBlock);
 void LEMBALL_FASTCALL DestroyResourceArchive(void* pArchive);
 int LEMBALL_FASTCALL AreAllCachedResourceObjectsUnreferenced(void* pArchive);
 MogLoadStringResourceObject* LoadStringResource(int nResourceId);

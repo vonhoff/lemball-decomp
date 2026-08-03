@@ -2523,7 +2523,7 @@ GameMainContext* GameMainContext::InitializeMainGameContext(const char* pszCmdLi
 	((VsInitStatusEntryPointerArray*) g_pStatusEntryRegistry)->AppendStatusEntry(pMainContext->m_pProcessingStatus);
 	((VsInitStatusEntryPointerArray*) g_pStatusEntryRegistry)->AppendStatusEntry(pMainContext->m_pRefreshingStatus);
 
-	pPrimaryStorage = AllocateResourceArchiveMemory(0x28);
+	pPrimaryStorage = CMogloadArenaNew(0x28);
 	if (pPrimaryStorage != 0) {
 		g_pMainResourceArchive =
 			((MogLoadResourceArchive*) pPrimaryStorage)->ConstructResourceArchive(g_GAME_MainArchiveName, 0x177000);
@@ -2650,7 +2650,7 @@ void LEMBALL_FASTCALL ShutdownMainGameContext(GameMainContext* pMainContext)
 	pMainResourceArchive = g_pMainResourceArchive;
 	if (pMainResourceArchive != 0) {
 		DestroyResourceArchive(pMainResourceArchive);
-		FreeResourceArchiveMemory(pMainResourceArchive);
+		CMogloadArenaDelete(pMainResourceArchive);
 		g_pMainResourceArchive = 0;
 	}
 	if (g_pLevelProgressState != 0) {

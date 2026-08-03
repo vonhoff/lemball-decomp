@@ -1168,3 +1168,5 @@ CODE_02_Visos (Generic).bin,0x000017A0,Open__8CRawReadFPcPc,0x0045BBC0,high,exac
 CODE_02_Visos (Generic).bin,0x000017D8,InputByte__8CRawReadFv,0x0045BBE0,high,exact one-byte read from shared archive handle; callers; and 100% effective reccmp,exact_tuple,0x000017D8
 CODE_02_Visos (Generic).bin,0x00001812,InputDword__8CRawReadFv,0x0045BC40,high,exact four-byte read from shared archive handle; callers; and 100% effective reccmp,exact_tuple,0x00001812
 CODE_02_Visos (Generic).bin,0x00001884,NameCmp__8CRawReadFPcPc,0x0045BD50,high,matching case-folded component compare; slash termination; callers; and x86 ABI,exact_tuple,0x00001884
+CODE_02_Visos (Generic).bin,0x000016E2,__nw__13CMogloadArenaFUl,0x0045BAF0,high,exact fallback allocation; small-memory path; arena dispatch; callers; and 100% reccmp,exact_tuple,0x000016E2
+CODE_02_Visos (Generic).bin,0x00001758,__dl__13CMogloadArenaFPv,0x0045BB70,high,exact fallback free; small-memory ownership test; arena dispatch; callers; and 100% reccmp,exact_tuple,0x00001758

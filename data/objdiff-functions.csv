@@ -2149,8 +2149,8 @@ address,size,name,unit
 0x0045B900,327,initialize_resource_type_tables,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x0045BA50,127,shutdown_resource_type_tables,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x0045BAD0,21,append_uint_to_stream_as_int,Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
-0x0045BAF0,128,allocate_resource_archive_memory,Visos/Generic/MogLoad.cpp
-0x0045BB70,69,free_resource_archive_memory,Visos/Generic/MogLoad.cpp
+0x0045BAF0,128,CMogloadArena::__nw,Visos/Generic/MogLoad.cpp
+0x0045BB70,69,CMogloadArena::__dl,Visos/Generic/MogLoad.cpp
 0x0045BBC0,32,CRawRead::Open,Visos/Generic/MogLoad.cpp
 0x0045BBE0,33,CRawRead::InputByte,Visos/Generic/MogLoad.cpp
 0x0045BC40,33,CRawRead::InputDword,Visos/Generic/MogLoad.cpp

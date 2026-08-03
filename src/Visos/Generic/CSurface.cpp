@@ -6,7 +6,7 @@
 
 extern void* g_GDISUBVT_ListCharEntryTableVtable[4];
 extern void* g_GDISUBVT_ListCharEntryTableDeletingVtable[4];
-extern void FreeResourceArchiveMemory(void* pMemoryBlock);
+extern void CMogloadArenaDelete(void* pMemoryBlock);
 
 __inline static void MergeCPVSurfaceRect(short* pTarget, const short* pEntry)
 {
@@ -741,7 +741,7 @@ void* LEMBALL_FASTCALL ResourceGeometryRowBufferSlot4(void* pObject, int, BYTE f
 {
 	DestroyListCharEntryTable(pObject);
 	if ((fDelete & 1) != 0) {
-		FreeResourceArchiveMemory(pObject);
+		CMogloadArenaDelete(pObject);
 	}
 	return pObject;
 }
@@ -751,7 +751,7 @@ void* LEMBALL_FASTCALL ResourceGeometryRowBufferSlot8(void* pObject, int, BYTE f
 {
 	*(void**) pObject = g_GDISUBVT_ListCharEntryTableDeletingVtable;
 	if ((fDelete & 1) != 0) {
-		FreeResourceArchiveMemory(pObject);
+		CMogloadArenaDelete(pObject);
 	}
 	return pObject;
 }

@@ -284,8 +284,8 @@ struct MogLoadResourceObjectReferenceInterface {
 	virtual void ReleaseReference(int nReleaseFlag) = 0;
 };
 
-void* AllocateResourceArchiveMemory(unsigned int cbBytes);
-void FreeResourceArchiveMemory(void* pMemoryBlock);
+void* CMogloadArenaNew(unsigned int cbBytes);
+void CMogloadArenaDelete(void* pMemoryBlock);
 int LEMBALL_STDCALL CRawReadOpen(const char* pszPath, const char* pszMode);
 unsigned char CRawReadInputByte(void);
 unsigned int CRawReadInputDword(void);
@@ -335,7 +335,7 @@ void* LEMBALL_FASTCALL DestroyBitmapResource(void* pObject, int nUnused, int fDe
 void* LEMBALL_FASTCALL DestroyEffResource(void* pObject, int nUnused, int fDelete);
 
 // FUNCTION: LEMBALL 0x0045baf0
-void* AllocateResourceArchiveMemory(unsigned int cbBytes)
+void* CMogloadArenaNew(unsigned int cbBytes)
 {
 	unsigned int pvBlock;
 
@@ -359,7 +359,7 @@ void* AllocateResourceArchiveMemory(unsigned int cbBytes)
 }
 
 // FUNCTION: LEMBALL 0x0045bb70
-void FreeResourceArchiveMemory(void* pMemoryBlock)
+void CMogloadArenaDelete(void* pMemoryBlock)
 {
 	if (g_pResourceArchiveMemoryArena == 0) {
 		FreeVSMemBlock(pMemoryBlock);
@@ -453,11 +453,11 @@ MogLoadDirectoryNode* MogLoadDirectoryNode::Construct(long lFileOffset)
 	lCurrentFileOffset = (long) TellFile(g_pResourceArchiveFile);
 	m_lNameDataOffset = lCurrentFileOffset;
 	lNameDataSize = m_lRecordTableOffset - lCurrentFileOffset;
-	m_pNameData = (char*) AllocateResourceArchiveMemory((unsigned int) lNameDataSize);
+	m_pNameData = (char*) CMogloadArenaNew((unsigned int) lNameDataSize);
 	ReadFileBytes(g_pResourceArchiveFile, m_pNameData, (size_t) lNameDataSize);
 
 	if (m_cEntries != 0) {
-		m_SavedState.m_pEntry = (MogLoadEntryRecord*) AllocateResourceArchiveMemory(sizeof(MogLoadEntryRecord));
+		m_SavedState.m_pEntry = (MogLoadEntryRecord*) CMogloadArenaNew(sizeof(MogLoadEntryRecord));
 		m_SavedState.m_iIndex = 0;
 		ReadEntryRecord(m_SavedState.m_pEntry);
 		++m_cLoadedEntries;
@@ -487,15 +487,15 @@ void MogLoadDirectoryNode::DestroyResourceArchiveDirectoryTree(void)
 			m_SavedState = m_CursorState;
 			m_CursorState = m_SavedState.m_pEntry->m_NextState;
 			if (m_SavedState.m_pEntry->m_uTag == MogLoadTAG_CRID && m_SavedState.m_pEntry->m_pChildDirectory != 0) {
-				FreeResourceArchiveMemory(m_SavedState.m_pEntry->m_pChildDirectory);
+				CMogloadArenaDelete(m_SavedState.m_pEntry->m_pChildDirectory);
 				m_SavedState.m_pEntry->m_pChildDirectory = 0;
 			}
-			FreeResourceArchiveMemory(m_SavedState.m_pEntry);
+			CMogloadArenaDelete(m_SavedState.m_pEntry);
 			m_SavedState.m_pEntry = 0;
 		} while (m_CursorState.m_pEntry != 0);
 	}
 	if (m_pNameData != 0) {
-		FreeResourceArchiveMemory(m_pNameData);
+		CMogloadArenaDelete(m_pNameData);
 		m_pNameData = 0;
 	}
 }
@@ -521,7 +521,7 @@ MogLoadEntryRecord* MogLoadDirectoryNode::AppendEntryAfterCursor(void)
 {
 	MogLoadEntryRecord* pEntry;
 
-	pEntry = (MogLoadEntryRecord*) AllocateResourceArchiveMemory(sizeof(MogLoadEntryRecord));
+	pEntry = (MogLoadEntryRecord*) CMogloadArenaNew(sizeof(MogLoadEntryRecord));
 	m_CursorState.m_pEntry->m_NextState.m_pEntry = pEntry;
 	m_CursorState.m_pEntry->m_NextState.m_iIndex = (int) m_cLoadedEntries++;
 	ReadEntryRecord(pEntry);
@@ -545,7 +545,7 @@ MogLoadDirectoryNode* MogLoadDirectoryNode::AdvanceSubdirectory(void)
 			return 0;
 		}
 		if (pEntry->m_uTag == MogLoadTAG_CRID) {
-			pChildDirectory = (MogLoadDirectoryNode*) AllocateResourceArchiveMemory(0x38);
+			pChildDirectory = (MogLoadDirectoryNode*) CMogloadArenaNew(0x38);
 			if (pChildDirectory == 0) {
 				pEntry->m_pChildDirectory = 0;
 			}
@@ -582,7 +582,7 @@ MogLoadDirectoryNode* MogLoadDirectoryNode::AdvanceSubdirectory(void)
 		return 0;
 	}
 	if (pEntry->m_uTag == MogLoadTAG_CRID) {
-		pChildDirectory = (MogLoadDirectoryNode*) AllocateResourceArchiveMemory(0x38);
+		pChildDirectory = (MogLoadDirectoryNode*) CMogloadArenaNew(0x38);
 		if (pChildDirectory == 0) {
 			pEntry->m_pChildDirectory = 0;
 		}
@@ -701,7 +701,7 @@ void* MogLoadResourceArchive::ConstructResourceArchive(const char* pszArchiveNam
 	}
 
 	timeGetTime();
-	pResourceArchive->m_pRootDirectory = (MogLoadDirectoryNode*) AllocateResourceArchiveMemory(0x38);
+	pResourceArchive->m_pRootDirectory = (MogLoadDirectoryNode*) CMogloadArenaNew(0x38);
 	if (pResourceArchive->m_pRootDirectory == 0) {
 		pResourceArchive->m_pRootDirectory = 0;
 	}
@@ -712,7 +712,7 @@ void* MogLoadResourceArchive::ConstructResourceArchive(const char* pszArchiveNam
 	pResourceArchive->m_pCurrentDirectory = pResourceArchive->m_pRootDirectory;
 	SelectResourceArchiveDirectoryPath(pResourceArchive, g_MOGLOAD_RootPath);
 
-	pResourceArchive->m_ppCachedResourceObjects = (MogLoadStringResourceObject**) AllocateResourceArchiveMemory(0x1000);
+	pResourceArchive->m_ppCachedResourceObjects = (MogLoadStringResourceObject**) CMogloadArenaNew(0x1000);
 	nOffset = 0;
 	do {
 		nOffset += 4;
@@ -748,17 +748,17 @@ void LEMBALL_FASTCALL DestroyResourceArchive(void* pArchive)
 		pResourceArchive->PruneUnreferencedCachedResourceObjects();
 	}
 	if (pResourceArchive->m_ppCachedResourceObjects != 0) {
-		FreeResourceArchiveMemory(pResourceArchive->m_ppCachedResourceObjects);
+		CMogloadArenaDelete(pResourceArchive->m_ppCachedResourceObjects);
 		pResourceArchive->m_ppCachedResourceObjects = 0;
 	}
 	pRootDirectory = (unsigned int) (unsigned long) pResourceArchive->m_pRootDirectory;
 	if (pRootDirectory != 0) {
 		((MogLoadDirectoryNode*) (unsigned long) pRootDirectory)->DestroyResourceArchiveDirectoryTree();
-		FreeResourceArchiveMemory((void*) (unsigned long) pRootDirectory);
+		CMogloadArenaDelete((void*) (unsigned long) pRootDirectory);
 		pResourceArchive->m_pRootDirectory = 0;
 	}
 	if (pResourceArchive->m_pszSelectedPath != 0) {
-		FreeResourceArchiveMemory(pResourceArchive->m_pszSelectedPath);
+		CMogloadArenaDelete(pResourceArchive->m_pszSelectedPath);
 		pResourceArchive->m_pszSelectedPath = 0;
 	}
 	if (pResourceArchive->m_fExternalArena == 0) {
@@ -784,12 +784,12 @@ int SelectResourceArchiveDirectoryPath(void* pArchive, const char* pszPath)
 	if (*pszPath == '/') {
 		pResourceArchive->m_pCurrentDirectory = pResourceArchive->m_pRootDirectory;
 		cchPath = (unsigned int) strlen(pszPath) + 1;
-		pszNewPath = (char*) AllocateResourceArchiveMemory(cchPath);
+		pszNewPath = (char*) CMogloadArenaNew(cchPath);
 		pszCopyDestination = pszNewPath;
 	}
 	else {
 		cchPath = (unsigned int) strlen(pszPath) + 2;
-		pszNewPath = (char*) AllocateResourceArchiveMemory(cchPath);
+		pszNewPath = (char*) CMogloadArenaNew(cchPath);
 		if (pszNewPath != 0) {
 			*pszNewPath = '/';
 		}
@@ -839,7 +839,7 @@ int SelectResourceArchiveDirectoryPath(void* pArchive, const char* pszPath)
 
 	pszOldPath = pResourceArchive->m_pszSelectedPath;
 	if (pszOldPath != 0) {
-		FreeResourceArchiveMemory(pszOldPath);
+		CMogloadArenaDelete(pszOldPath);
 		pResourceArchive->m_pszSelectedPath = 0;
 	}
 	pResourceArchive->m_pszSelectedPath = pszNewPath;
@@ -849,7 +849,7 @@ bad_path:
 	pszOldPath = pResourceArchive->m_pszSelectedPath;
 	SelectResourceArchiveDirectoryPath(pResourceArchive, pszOldPath);
 	if (pszNewPath != 0) {
-		FreeResourceArchiveMemory(pszNewPath);
+		CMogloadArenaDelete(pszNewPath);
 	}
 	return 0;
 }
@@ -958,7 +958,7 @@ unsigned int MogLoadResourceArchive::AllocateResourceDataBufferWithEviction(unsi
 	MogLoadStringResourceObject** ppCachedObjects;
 	MogLoadTypedResourceObjectVtable* pVtable;
 
-	while ((pBuffer = (unsigned int) (unsigned long) AllocateResourceArchiveMemory(cbBuffer)) == 0) {
+	while ((pBuffer = (unsigned int) (unsigned long) CMogloadArenaNew(cbBuffer)) == 0) {
 		cbShortfall = (int) cbBuffer - (int) GetAllocSizeCArena(g_pResourceArchiveMemoryArena);
 		cbMinimumEvict = cbShortfall < 0 ? cbBuffer : (unsigned int) cbShortfall;
 		iSlot = FindResourceCacheEvictionCandidateIndex(this, cbMinimumEvict);
@@ -1212,7 +1212,7 @@ void MogLoadResourceArchive::RemoveCachedResourceObject(void* pResourceObject)
 // FUNCTION: LEMBALL 0x0045cf10
 void MogLoadResourceArchive::FreeResourceObjectDataBuffer(unsigned int pBuffer, int)
 {
-	FreeResourceArchiveMemory((void*) (unsigned long) pBuffer);
+	CMogloadArenaDelete((void*) (unsigned long) pBuffer);
 }
 
 // FUNCTION: LEMBALL 0x0045cf20
