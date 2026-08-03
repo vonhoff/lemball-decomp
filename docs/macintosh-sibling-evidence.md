@@ -329,3 +329,7 @@ All eight portable archive-directory methods map across `0x0045BDA0..0x0045C2D0`
 ## CConnect reconstruction
 
 All thirteen portable connection methods map across `0x00460A90..0x00461030`, preserving `VSNETTCP.CPP` construction/destruction and `VSNET.CPP` runtime ownership. Composite layouts, vtables/adjustors, timers, event posting, acknowledgement, send/close state, and callers support the family. `InitConnect` now forwards the peer-key argument as the raw x86 and Macintosh signature require. Deleting/virtual-base wrappers, transport helpers, the following locked-record family, and concrete derived transports remain separate.
+
+## CChangeList reconstruction
+
+All fifteen portable change-map methods map across `0x004669A0..0x00467020` in `CGDI.cpp`. Exact map quantization, aligned item layout, active marker stack, lazy list generation, callers, and ABI support the family. `GetNItem` is `0x00467000` and `GetDrawMark` is `0x00467020`; the Windows-only two-argument accessor at `0x00466FD0` and rectangle initializer at `0x00467040` remain separate.
