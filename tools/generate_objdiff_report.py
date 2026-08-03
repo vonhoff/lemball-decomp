@@ -121,11 +121,10 @@ def build_report(inventory_path, reccmp_path, correlations_path):
                 "size": int(row["size"]),
                 "address": address,
                 "ratio": ratio,
-                "source_path": f"src/{row['unit']}",
             }
             owner = owners.get(address)
             if owner:
-                function.update(mac_name=owner[2], mac_symbol=owner[3])
+                function["mac_name"] = owner[2]
                 group = owner[:2]
             else:
                 group = ("Windows/MSVC", "")
@@ -140,13 +139,8 @@ def build_report(inventory_path, reccmp_path, correlations_path):
                 "size": str(function["size"]),
                 "metadata": {
                     "virtual_address": str(function["address"]),
-                    "source_path": function["source_path"],
                 },
             }
-            if "mac_symbol" in function:
-                item["metadata"].update(
-                    windows_name=function["name"], macintosh_symbol=function["mac_symbol"]
-                )
             if function["ratio"]:
                 item["fuzzy_match_percent"] = f32(function["ratio"])
             items.append(item)
@@ -156,7 +150,7 @@ def build_report(inventory_path, reccmp_path, correlations_path):
                 "measures": measures(functions),
                 "sections": [],
                 "functions": items,
-                "metadata": {"module": module, "class": class_name},
+                "metadata": {"module_name": module},
             }
         )
     functions = [function for group in groups.values() for function in group]
