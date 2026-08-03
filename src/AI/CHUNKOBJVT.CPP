@@ -26,7 +26,8 @@ extern void LEMBALL_FASTCALL destroy_move_chunk_object(void* pObject);
 struct EnmyManagedEntityGroupView;
 extern void* LEMBALL_FASTCALL DeleteCompositeLevelChunkChildrenWrapper20B20(void*, void*, BYTE);
 extern int LEMBALL_FASTCALL ServiceEnmyManagedEntityGroup(EnmyManagedEntityGroupView* pObject);
-extern void LEMBALL_FASTCALL RemoveInvsTrackedEntitiesOutsideBounds(void* pObject);
+
+#include "AI/CInvisibleSwitch.h"
 
 struct ManagedEntityPacketStreamView {
 	void BindManagedEntityPacketTarget(void* pEntity);
@@ -120,7 +121,6 @@ struct InvsChunkObjectActionView {
 	virtual void ReservedSlot11(int nValue);
 	virtual void ReservedSlot12(int nValue);
 	virtual void SetActionState(int nStateId);
-	void AddInvsTrackedEntity(void* pEntity);
 };
 
 struct InvsChunkActionRecord {
@@ -296,7 +296,7 @@ int LEMBALL_FASTCALL ServiceInvsChunkObject(void* pObject)
 	char* pObjectBytes = (char*) pObject;
 	int nStateId;
 
-	RemoveInvsTrackedEntitiesOutsideBounds(pObject);
+	((CInvisibleSwitch*) pObject)->VerifyObjects();
 	if (*(int*) (pObjectBytes + 0x114) != 0) {
 		nStateId = *(int*) (pObjectBytes + 0xb8);
 		if (*(int*) (pObjectBytes + 0x128) != nStateId && nStateId != 0x1a) {
@@ -309,7 +309,7 @@ int LEMBALL_FASTCALL ServiceInvsChunkObject(void* pObject)
 			*(int*) (pObjectBytes + 0x148) = 1;
 		}
 		if (*(void**) (pObjectBytes + 0x5c) != 0) {
-			((InvsChunkObjectActionView*) pObject)->AddInvsTrackedEntity(*(void**) (pObjectBytes + 0x5c));
+			((CInvisibleSwitch*) pObject)->AddObject((CGameObject*) *(void**) (pObjectBytes + 0x5c));
 			*(void**) (pObjectBytes + 0x5c) = 0;
 		}
 		{

@@ -109,7 +109,7 @@ set(LEMBALL_SOURCES
     src/Platform/Windows/Mixed/Engine/CORE/LINKSCFBYTES.CPP
     src/AI/Projectile.cpp
     src/AI/GroupState.cpp
-    src/AI/CInvsSupp.cpp
+    src/AI/CInvisibleSwitch.cpp
     src/AI/CInvisibleSwitchManager.cpp
     src/AI/CDoorAct.cpp
     src/AI/CDoorSlot.cpp

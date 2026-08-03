@@ -1,3 +1,5 @@
+#include "AI/CInvisibleSwitch.h"
+
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
@@ -6,22 +8,12 @@ struct ManagedEntityStateView {
 	void RequestManagedEntityStateId(int nStateId);
 };
 
-struct InvsChunkManagerActionView {
-	void DispatchContactsForEntity(const int* pPosition, void* pEntity);
-};
+// Split from the original LINKSCF source group to preserve MSVC 4.00 code generation in LINKSCF.CPP.
 
-struct InvsChunkObjectActionView {
-	void AddInvsTrackedEntity(void* pEntity);
-	void TryTriggerContact(const int* pPosition, void* pEntity);
-};
-
-// Split from the original LINKSCF source group to preserve MSVC 4.20 code generation in LINKSCF.CPP.
-
-// MACINTOSH: CInvisibleSwitch::VerifyObjects()
 // FUNCTION: LEMBALL 0x00409ec0
-void LEMBALL_FASTCALL RemoveInvsTrackedEntitiesOutsideBounds(void* pObject)
+void CInvisibleSwitch::VerifyObjects(void)
 {
-	char* pObjectBytes = (char*) pObject;
+	char* pObjectBytes = (char*) this;
 	int iEntity = 0;
 	while (iEntity < *(int*) (pObjectBytes + 0x254)) {
 		char* pEntity = *(char**) (pObjectBytes + 0x258 + iEntity * 4);
@@ -41,22 +33,20 @@ void LEMBALL_FASTCALL RemoveInvsTrackedEntitiesOutsideBounds(void* pObject)
 	}
 }
 
-// MACINTOSH: CInvisibleSwitch::AddObject(CGameObject*)
 // FUNCTION: LEMBALL 0x00409f70
-void InvsChunkObjectActionView::AddInvsTrackedEntity(void* pEntity)
+void CInvisibleSwitch::AddObject(CGameObject* pEntity)
 {
 	char* pObjectBytes = (char*) this;
 	int cEntities = *(int*) (pObjectBytes + 0x254);
 	if (cEntities < 0x18) {
-		*(void**) (pObjectBytes + 0x258 + cEntities * 4) = pEntity;
+		*(CGameObject**) (pObjectBytes + 0x258 + cEntities * 4) = pEntity;
 		++*(int*) (pObjectBytes + 0x254);
 		*(unsigned short*) ((char*) pEntity + 0x120) = GetManagedEntitySlotIdThunk((int) (unsigned long) this);
 	}
 }
 
-// MACINTOSH: CInvisibleSwitch::StepOn(const AICOORD&, CGameObject*)
 // FUNCTION: LEMBALL 0x00409fa0
-void InvsChunkObjectActionView::TryTriggerContact(const int* pPosition, void* pEntity)
+void CInvisibleSwitch::StepOn(const AICOORD& position, CGameObject* pEntity)
 {
 	char* pObjectBytes = (char*) this;
 	char* pEntityBytes = (char*) pEntity;
@@ -67,36 +57,12 @@ void InvsChunkObjectActionView::TryTriggerContact(const int* pPosition, void* pE
 		GetManagedEntitySlotIdThunk((int) (unsigned long) this) == *(unsigned short*) (pEntityBytes + 0x120)) {
 		return;
 	}
-	nX = pPosition[0] >> 12;
-	nY = pPosition[1] >> 12;
+	nX = position.x >> 12;
+	nY = position.y >> 12;
 	if (nX < *(short*) (pObjectBytes + 0x138) - 8 || *(short*) (pObjectBytes + 0x13e) + 7 < nX ||
 		nY < *(short*) (pObjectBytes + 0x13a) - 8 || *(short*) (pObjectBytes + 0x140) + 7 < nY) {
 		return;
 	}
-	*(void**) (pObjectBytes + 0x5c) = pEntity;
+	*(CGameObject**) (pObjectBytes + 0x5c) = pEntity;
 	((ManagedEntityStateView*) this)->RequestManagedEntityStateId(0x1a);
-}
-
-// MACINTOSH: CInvisibleSwitchManager::StepOn(const AICOORD&, CGameObject*)
-// FUNCTION: LEMBALL 0x0040a370
-void InvsChunkManagerActionView::DispatchContactsForEntity(const int* pPosition, void* pEntity)
-{
-	char* pManagerBytes;
-	int iObject;
-
-	pManagerBytes = (char*) this;
-	iObject = 0;
-	if (iObject < *(int*) ((char*) this + 0x34)) {
-		int nObjectOffset;
-
-		nObjectOffset = 0;
-		do {
-			InvsChunkObjectActionView* pObject;
-
-			pObject = (InvsChunkObjectActionView*) (*(char**) (pManagerBytes + 0x3c) + nObjectOffset);
-			pObject->TryTriggerContact(pPosition, pEntity);
-			nObjectOffset += 0x2b8;
-			++iObject;
-		} while (iObject < *(int*) (pManagerBytes + 0x34));
-	}
 }
