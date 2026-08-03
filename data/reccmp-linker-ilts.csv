@@ -243,6 +243,7 @@ address,name,symbol,type,source
 0x00403076,reset_move_chunk_object_runtime_state_thunk,?ResetMoveChunkObjectRuntimeStateThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004030C1,vs_root_geometry_owner_remove_queued_render_sink_value_node,?RemoveQueuedRenderSinkValueNode@VS_RootGeometryOwner@@UAEXPAX@Z,stub,src/Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H
 0x004030DF,GameScreenObject::ConstructIntroSequenceScreen,?ConstructIntroSequenceScreen@GameScreenObject@@QAEPAXPAX0PAFH@Z,stub,src/Control/CGame.cpp
+0x004030E4,ManagedEntityPacketBase::`scalar deleting destructor',??_GManagedEntityPacketBase@@UAEPAXI@Z,stub,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00403120,LevelNodeChunkPositionView::CopyFixedPointPosition,?CopyFixedPointPosition@LevelNodeChunkPositionView@@QAEXPAH@Z,stub,src/AI/LVNODE.CPP
 0x004031CF,gmob_chunk_type14action_view_dispatch_gmob_chunk_type14actions,?DispatchGmobChunkType14Actions@GmobChunkType14ActionView@@QAEXXZ,stub,src/AI/LVACTDSP.CPP
 0x00403201,get_first_managed_entity_child_from_cached_group,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H

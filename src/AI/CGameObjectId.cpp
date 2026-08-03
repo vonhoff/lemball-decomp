@@ -6,8 +6,6 @@ extern unsigned short g_GAME_ManagedEntityRegistryCount;
 extern unsigned char g_GAME_ManagedEntitySlotBitMasks[8];
 extern unsigned char g_GAME_ManagedEntitySlotClaimBitset[0x100];
 
-void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject);
-
 // FUNCTION: LEMBALL 0x00416610
 unsigned short CGameObject::GetId(void)
 {
@@ -18,7 +16,7 @@ unsigned short CGameObject::GetId(void)
 void CGameObject::SetId(unsigned short nSlotId)
 {
 	m_nSlotId6C = nSlotId;
-	ClaimManagedEntitySlotId((int) (unsigned long) this);
+	RegisterId();
 }
 
 // FUNCTION: LEMBALL 0x00416640
@@ -69,16 +67,15 @@ unsigned short CGameObject::NextLoadingId(void)
 	return iByte & 0xffff0000;
 }
 
-// Macintosh: CGameObject::RegisterId()
 // FUNCTION: LEMBALL 0x00416740
-void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject)
+void CGameObject::RegisterId(void)
 {
 	unsigned char bClaimByte;
 	unsigned short nSlotId;
 	unsigned int i;
 	unsigned int cManagedEntities;
 
-	nSlotId = *(unsigned short*) (nManagedEntityObject + 0x6c);
+	nSlotId = m_nSlotId6C;
 	if (nSlotId != 0xffff) {
 		bClaimByte = g_GAME_ManagedEntitySlotClaimBitset[nSlotId >> 3];
 		if ((g_GAME_ManagedEntitySlotBitMasks[nSlotId & 7] & bClaimByte) != 0) {
@@ -88,14 +85,9 @@ void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject)
 					((CGameObject*) g_GAME_ManagedEntityRegistryTable[i & 0xffff])->GetId();
 				}
 			}
-			*(unsigned short*) (nManagedEntityObject + 0x6c) = 0xffff;
+			m_nSlotId6C = 0xffff;
 			return;
 		}
 		g_GAME_ManagedEntitySlotClaimBitset[nSlotId >> 3] = g_GAME_ManagedEntitySlotBitMasks[nSlotId & 7] | bClaimByte;
 	}
-}
-
-void ClaimManagedEntitySlotIdCompatibility(int nManagedEntityObject)
-{
-	ClaimManagedEntitySlotId(nManagedEntityObject);
 }

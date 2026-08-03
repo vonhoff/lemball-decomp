@@ -62,6 +62,7 @@ public:
 	void ReSetId(void);
 	static unsigned short NextId(void);
 	static unsigned short NextLoadingId(void);
+	void RegisterId(void);
 };
 
 #endif

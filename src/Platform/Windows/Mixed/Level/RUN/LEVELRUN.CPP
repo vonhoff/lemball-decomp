@@ -81,7 +81,6 @@ void* LEMBALL_FASTCALL GetLevelGameModeOwner(void* pLevelMode);
 void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode);
 void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEnabled);
 void InitializeManagedEntitySlotTablesThunk(void* pLevelGameMode);
-void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject);
 void LEMBALL_FASTCALL ResetBallChunkEntries(void* pBallManager);
 
 
@@ -532,7 +531,6 @@ struct GameLevelTileGrid {
 };
 
 
-void LEMBALL_FASTCALL ClaimManagedEntitySlotId(int nManagedEntityObject);
 void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEnabled);
 void LEMBALL_FASTCALL DispatchType14CountedChildSlotC4(void* pChunkManager);
 void LEMBALL_FASTCALL FillReachabilityGridFromTileFlagsThunk(void* pReachabilityHelper);
@@ -1730,13 +1728,6 @@ void InitializeManagedEntitySlotTablesThunk(void* pLevelGameMode)
 		pbBits += 4;
 	}
 	g_GAME_ManagedEntitySlotClaimBitset[0] |= g_GAME_ManagedEntitySlotBitMasks[0];
-}
-// Compiler-state compatibility body; the original typed member is isolated in LEVELRUNSLOT.CPP.
-void ClaimManagedEntitySlotIdCompatibility(int nManagedEntityObject);
-void SetManagedEntitySlotIdCompatibility(void* pManagedEntityObject, unsigned short nSlotId)
-{
-	*(unsigned short*) ((char*) pManagedEntityObject + 0x6c) = nSlotId;
-	ClaimManagedEntitySlotIdCompatibility((int) (unsigned long) pManagedEntityObject);
 }
 
 // FUNCTION: LEMBALL 0x00416730
