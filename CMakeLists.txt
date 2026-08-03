@@ -48,6 +48,7 @@ set(LEMBALL_SOURCES
     src/AI/CGameObjectLifecycle.cpp
     src/AI/CGameObjectLift.cpp
     src/AI/CGlobalGameObject.cpp
+    src/AI/CFormationManager.cpp
     src/AI/LVMOVEVT.CPP
     src/Platform/Windows/Mixed/Level/IO/LVNETVT.CPP
     src/AI/LVPROJVT.CPP

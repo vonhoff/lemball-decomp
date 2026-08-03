@@ -1,18 +1,19 @@
 #define LEMBALL_DEFINE_MANAGED_ENTITY_PACKET_CLASSES
 
+#include "AI/CFormationManager.h"
+#include "AI/CGameObject.h"
 #include "AI/CLiftManager.h"
 #include "AI/CMaze.h"
+#include "Control/CGame.h"
+#include "Control/Options.h"
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
-#include "AI/CGameObject.h"
-#include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
-#include "Control/CGame.h"
 #include "Platform/Windows/Mixed/Level/LEVELRUN.H"
 #include "Platform/Windows/Mixed/Level/LVPKT.H"
+#include "Visos/Generic/Memory.h"
 #include "Visos/Generic/MogLoad.h"
-#include "Control/Options.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -81,7 +82,6 @@ void* LEMBALL_FASTCALL GetLevelGameModeOwner(void* pLevelMode);
 void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode);
 void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEnabled);
 void LEMBALL_FASTCALL ResetBallChunkEntries(void* pBallManager);
-
 
 void LEMBALL_FASTCALL ResetBoonChunkManagerObjects(void* pObject);
 void LEMBALL_FASTCALL ClearLevelTileGridCells(int nTileGridCells);
@@ -529,11 +529,9 @@ struct GameLevelTileGrid {
 	int m_cRows14;
 };
 
-
 void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEnabled);
 void LEMBALL_FASTCALL DispatchType14CountedChildSlotC4(void* pChunkManager);
 void LEMBALL_FASTCALL FillReachabilityGridFromTileFlagsThunk(void* pReachabilityHelper);
-
 
 struct GameLockedRecordSlotTableView {
 	int m_cRecords;
@@ -542,8 +540,6 @@ struct GameLockedRecordSlotTableView {
 
 	void ClearLockedRecordSlotPayloadFlags(void);
 };
-
-
 
 struct LevelChunkObjectResetView;
 
@@ -589,9 +585,7 @@ void CNode::RestartThunk(void)
 	Restart();
 }
 // LINKERILT: LEMBALL 0x004012b2
-void CNodeManager::LoadLevelThunk(const unsigned short* pWords,
-													  unsigned int cbPayload,
-													  int fReuseState)
+void CNodeManager::LoadLevelThunk(const unsigned short* pWords, unsigned int cbPayload, int fReuseState)
 {
 	LoadLevel(pWords, cbPayload, fReuseState);
 }
@@ -696,7 +690,7 @@ LevelProjectileGeometryPair* LevelProjectileGeometryPair::InitializeSentinelThun
 // LINKERILT: LEMBALL 0x00402e78
 void LevelProjectileGeometryPairTable::ClearProjectileGeometryField100Thunk(void)
 {
-	ClearProjectileGeometryField100();
+	((CFormationManager*) this)->Restart();
 }
 // LINKERILT: LEMBALL 0x00402e7d
 void CMap::ReSizeThunk(int cColumns, int cRows)
@@ -1744,7 +1738,6 @@ ManagedEntityPacket26::ManagedEntityPacket26() : ManagedEntityPacketBase(0x26)
 	m_nBufferEnd18 += 4;
 }
 
-
 // MACINTOSH: CFormationManager::CFormationManager()
 // FUNCTION: LEMBALL 0x0041a140
 LevelProjectileGeometryPairTable* LevelProjectileGeometryPairTable::InitializeProjectileGeometryPairTable(void)
@@ -1770,12 +1763,7 @@ LevelProjectileGeometryPairTable* LevelProjectileGeometryPairTable::InitializePr
 	}
 	return this;
 }
-// MACINTOSH: CFormationManager::Restart()
-// FUNCTION: LEMBALL 0x0041a1b0
-void LevelProjectileGeometryPairTable::ClearProjectileGeometryField100(void)
-{
-	m_nReserved100 = 0;
-}
+
 // FUNCTION: LEMBALL 0x0041a3c0
 LevelProjectileGeometryPair* LevelProjectileGeometryPair::InitializeSentinel(void)
 {
@@ -2039,9 +2027,9 @@ void LEMBALL_FASTCALL ResetBallChunkEntries(void* pBallManager)
 		do {
 			cEntries += 4;
 			++i;
-			pChunkObject = *(
-				LevelChunkObjectResetView**) ((char*) ((CBallManagerResetView*) pBallManager)->m_ppObjects04 -
-											  4 + cEntries);
+			pChunkObject =
+				*(LevelChunkObjectResetView**) ((char*) ((CBallManagerResetView*) pBallManager)->m_ppObjects04 - 4 +
+												cEntries);
 			pChunkObject->m_pVtable->m_pResetObject104(pChunkObject);
 		} while (i < ((CBallManagerResetView*) pBallManager)->m_cObjects0c);
 	}
@@ -2071,10 +2059,6 @@ void LEMBALL_FASTCALL reset_ball_chunk_manager_load_cursor(void* pManager)
 {
 	*(int*) ((char*) pManager + 8) = 0;
 }
-
-
-
-
 
 // MACINTOSH: CBalloonPost::Restart()
 // FUNCTION: LEMBALL 0x0042a030

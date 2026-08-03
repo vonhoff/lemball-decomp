@@ -614,7 +614,7 @@ address,size,name,unit
 0x00419F90,12,forward_managed_entity_vslot_0x88,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00419FA0,12,forward_managed_entity_vslot_0x90,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041A140,103,CFormationManager::CFormationManager,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
-0x0041A1B0,11,CFormationManager::Restart,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x0041A1B0,11,CFormationManager::Restart,AI/CFormationManager.cpp
 0x0041A1C0,1,CFormationManager::~CFormationManager,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041A1D0,258,CFormationManager::TransformFormation,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041A2E0,17,reset_projectile_geometry_pair_cursor,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
