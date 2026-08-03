@@ -88,7 +88,7 @@ address,size,name,unit
 0x00409EC0,172,CInvisibleSwitch::VerifyObjects,AI/CInvisibleSwitch.cpp
 0x00409F70,45,CInvisibleSwitch::AddObject,AI/CInvisibleSwitch.cpp
 0x00409FA0,128,CInvisibleSwitch::StepOn,AI/CInvisibleSwitch.cpp
-0x0040A020,37,CInvisibleSwitch::DoActivate,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x0040A020,37,CInvisibleSwitch::DoActivate,AI/CInvisibleSwitch.cpp
 0x0040A050,181,CInvisibleSwitch::Process,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0040A110,253,CInvisibleSwitch::Load,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0040A210,91,CInvisibleSwitchManager::CInvisibleSwitchManager,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP

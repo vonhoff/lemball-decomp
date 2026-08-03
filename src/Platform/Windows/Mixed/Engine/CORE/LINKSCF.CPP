@@ -18,17 +18,6 @@ struct InvsChunkObjectView : LevelChunkObjectBaseView {
 	InvsChunkObjectView* ConstructInvsChunkObject(void);
 };
 
-struct LevelVtSmallFunctionView {
-	void AddLevelScoreClamped(int nValue);
-};
-
-struct InvsChunkObjectSoundStateView {
-	unsigned char m_abReserved00[0x14c];
-	int m_fSoundTriggered14C;
-
-	void TriggerSoundOnce(void);
-};
-
 struct LinkScfInvsChunkManagerResetView {
 	unsigned char m_abReserved00[0x30];
 	int m_cCapacity30;
@@ -794,16 +783,6 @@ void LEMBALL_FASTCALL destroy_invs_chunk_object(void* pObject)
 {
 	*(void**) pObject = g_LINKSCF_InvsChunkObjectVtable;
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
-}
-
-// MACINTOSH: CInvisibleSwitch::DoActivate()
-// FUNCTION: LEMBALL 0x0040a020
-void InvsChunkObjectSoundStateView::TriggerSoundOnce(void)
-{
-	if (m_fSoundTriggered14C == 0) {
-		((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(0x32);
-		m_fSoundTriggered14C = 1;
-	}
 }
 
 // MACINTOSH: CInvisibleSwitchManager::CInvisibleSwitchManager(CAI*, int)

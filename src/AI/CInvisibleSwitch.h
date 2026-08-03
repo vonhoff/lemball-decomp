@@ -14,6 +14,7 @@ public:
 	void VerifyObjects(void);
 	void AddObject(CGameObject* pObject);
 	void StepOn(const AICOORD& position, CGameObject* pObject);
+	void DoActivate(void);
 };
 
 #endif

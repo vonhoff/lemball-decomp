@@ -3,6 +3,16 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
+extern void* g_pActiveManagedEntityOwner;
+
+struct LevelVtSmallFunctionView {
+	void AddLevelScoreClamped(int nValue);
+};
+
+struct InvsChunkObjectSoundState {
+	unsigned char m_abReserved00[0x14c];
+	int m_fSoundTriggered14C;
+};
 
 struct ManagedEntityStateView {
 	void RequestManagedEntityStateId(int nStateId);
@@ -65,4 +75,14 @@ void CInvisibleSwitch::StepOn(const AICOORD& position, CGameObject* pEntity)
 	}
 	*(CGameObject**) (pObjectBytes + 0x5c) = pEntity;
 	((ManagedEntityStateView*) this)->RequestManagedEntityStateId(0x1a);
+}
+
+// FUNCTION: LEMBALL 0x0040a020
+void CInvisibleSwitch::DoActivate(void)
+{
+	InvsChunkObjectSoundState* pState = (InvsChunkObjectSoundState*) this;
+	if (pState->m_fSoundTriggered14C == 0) {
+		((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(0x32);
+		pState->m_fSoundTriggered14C = 1;
+	}
 }
