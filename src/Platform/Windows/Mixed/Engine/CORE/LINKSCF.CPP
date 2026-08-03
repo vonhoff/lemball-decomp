@@ -1,5 +1,6 @@
 #include "AI/CInvisibleSwitch.h"
 #include "AI/CInvisibleSwitchManager.h"
+#include "AI/CLaser.h"
 #include "Control/CGame.h"
 #include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
@@ -25,9 +26,6 @@ struct CaptureTriggerChunkObjectView : LevelChunkObjectBaseView {
 	CaptureTriggerChunkObjectView* ConstructCaptureTriggerChunkObject(void);
 };
 
-struct LasrChunkObjectView : LevelChunkObjectBaseView {
-	LasrChunkObjectView* ConstructLasrChunkObject(void);
-};
 
 struct TramChunkObjectView : LevelChunkObjectBaseView {
 	TramChunkObjectView* ConstructTramChunkObject(void);
@@ -1454,24 +1452,6 @@ void LEMBALL_FASTCALL ClearManagedEntityArrayCount(void* pObject)
 	*(int*) ((char*) pObject + 0x34) = 0;
 }
 
-extern void* g_LINKSCF_LasrChunkObjectVtable[16];
-
-// MACINTOSH: CLaser::CLaser()
-// FUNCTION: LEMBALL 0x00428890
-LasrChunkObjectView* LasrChunkObjectView::ConstructLasrChunkObject(void)
-{
-	InitializeLevelChunkObjectBase(0x2f, 0, 0);
-	*(void**) this = g_LINKSCF_LasrChunkObjectVtable;
-	return this;
-}
-
-// MACINTOSH: CLaser::~CLaser()
-// FUNCTION: LEMBALL 0x004288f0
-void LEMBALL_FASTCALL destroy_lasr_chunk_object_vtable_thunk(void* pObject)
-{
-	*(void**) pObject = g_LINKSCF_LasrChunkObjectVtable;
-	DestroyLevelChunkObjectBaseAutoThunk(pObject);
-}
 
 struct CGround {
 	short GetZ(int nLocalX, int nLocalY);
@@ -2050,7 +2030,6 @@ struct LinkScfSmallFunctionView {
 struct ChunkRuntimeStateView {
 	void ResetRockState(void);
 	void ResetCaptureTriggerState(void);
-	void ResetLaserState(void);
 };
 
 void LinkScfSmallFunctionView::SetObjectFields18_1c_20(int nField18, int nField1c, int nField20)
@@ -2317,7 +2296,7 @@ void LEMBALL_FASTCALL ResetCaptureTriggerChunkObject(void* pObject)
 
 void LEMBALL_FASTCALL ResetLasrChunkObjectRuntimeStateThunk(void* pObject)
 {
-	((ChunkRuntimeStateView*) pObject)->ResetLaserState();
+	((CLaser*) pObject)->Initialise();
 }
 
 void LEMBALL_FASTCALL ResetLasrChunkObject(void* pObject)

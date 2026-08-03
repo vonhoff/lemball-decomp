@@ -92,7 +92,6 @@ struct ChunkRuntimeStateView {
 
 	void ResetRockState(void);
 	void ResetCaptureTriggerState(void);
-	void ResetLaserState(void);
 };
 
 // FUNCTION: LEMBALL 0x004267f0
@@ -118,18 +117,6 @@ void ChunkRuntimeStateView::ResetCaptureTriggerState(void)
 	m_nRuntimeState13C = nZero;
 }
 
-// MACINTOSH: CLaser::Initialise()
-// FUNCTION: LEMBALL 0x004288d0
-void ChunkRuntimeStateView::ResetLaserState(void)
-{
-	int nZero;
-
-	m_nLaserTypeB8 = 0x18;
-	nZero = 0;
-	m_nRuntimeState94 = nZero;
-	m_nRuntimeState138 = nZero;
-	m_nRuntimeState13C = nZero;
-}
 
 // FUNCTION: LEMBALL 0x00429e40
 void NoopLaserChunkCallback(void)
