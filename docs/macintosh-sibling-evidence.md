@@ -425,3 +425,7 @@ The portable constructor and `SendPacket` map to `0x0047A220` and `0x0047A420`. 
 ## CFileBroadcast reconstruction
 
 All twelve portable methods map contiguously from constructor `0x0047A570` through `Process` at `0x0047AEF0`. The x86 family preserves global `CPortsMessage` state, a 20-slot `CHeaders` table, open-count lifecycle, file initialization, locked port-table read/write, free-port allocation/reset, listen flags, and 100 ms processing cadence. Windows widened layout, adjusted views, generated destructor wrappers, and `VSNETFIL.CPP` ownership remain intact; the following `0x0047AF30` constructor is excluded.
+
+## CFileConnect reconstruction
+
+All eight portable methods map from constructor `0x0047AF30` through `ConnectSetup` at `0x0047B580`. The Windows composite preserves two three-slot `CHeaders` tables, copied path pairs, file open-count and payload-base setup, listen/connect state transitions, and paired file-range initialization with a 100 ms lock retry. Expanded virtual-base views and generated destructor wrappers remain physically owned by `VSNETFIL.CPP`.

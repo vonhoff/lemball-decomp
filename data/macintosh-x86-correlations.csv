@@ -1230,3 +1230,11 @@ CODE_02_Visos (Generic).bin,0x0000933E,ResetPort__14CFileBroadcastFs,0x0047AE00,
 CODE_02_Visos (Generic).bin,0x00009370,StartListen__14CFileBroadcastFv,0x0047AED0,high,sets the listening flag
 CODE_02_Visos (Generic).bin,0x000093A2,StopListen__14CFileBroadcastFv,0x0047AEE0,high,clears the listening flag
 CODE_02_Visos (Generic).bin,0x0000940C,Process__14CFileBroadcastFv,0x0047AEF0,high,100ms cadence for read-socket processing followed by common connection service
+CODE_02_Visos (Generic).bin,0x00009A3E,__ct__12CFileConnectFv,0x0047AF30,high,expanded CFileRWSocket and CConnect composition with two three-slot CHeaders tables
+CODE_02_Visos (Generic).bin,0x00009E98,__dt__12CFileConnectFv,0x0047B2A0,high,"restores vtables, deletes both header tables and destroys CConnect and message bases"
+CODE_02_Visos (Generic).bin,0x00009EF3,InitialiseFile__12CFileConnectFv,0x0047B370,high,seeks to zero and writes the outer file-backed stream header
+CODE_02_Visos (Generic).bin,0x00009F82,Start__12CFileConnectFPCcPCc,0x0047B3B0,high,allocates and copies both connection path strings
+CODE_02_Visos (Generic).bin,0x0000A02C,InitSocket__12CFileConnectFv,0x0047B440,high,"derives configured path, opens file, increments open count and positions payload base"
+CODE_02_Visos (Generic).bin,0x0000A0E7,Listen__12CFileConnectFP15CNetworkAddress,0x0047B4D0,high,initializes socket state and destination address with listening timestamps and flags
+CODE_02_Visos (Generic).bin,0x0000A16A,Connect__12CFileConnectFv,0x0047B540,high,initializes socket state and marks connected with timestamp
+CODE_02_Visos (Generic).bin,0x0000A466,ConnectSetup__12CFileConnectFv,0x0047B580,high,"computes paired slot ranges, extends file under lock and finalizes ready or failure state"
