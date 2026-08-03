@@ -373,3 +373,7 @@ Portable `CMogloadArena::operator new` and `operator delete` map to `0x0045BAF0`
 ## Resource-global lifecycle reconstruction
 
 Portable `_RES_Init` and `_RES_Quit` map to `0x0045B900` and `0x0045BA50` in `VSINIT.CPP`. Both architectures construct three resource tag tables with the same capacities and INT/ZRLE/STRG order, create the palette manager, then destroy those resources in reverse lifecycle order. Source terminology now follows the exact Macintosh spellings. Reusing typed local pointers also restores the intended destructor call ABI and raises `_RES_Quit` to a 100% effective reccmp match without consuming startup wrappers or child methods.
+
+## RNAME stream insertion reconstruction
+
+Portable `operator<<(CVSOStream&, RNAME)` maps to `0x0045BAD0` in `DRAWTEXT.CPP`. Both bodies forward the 32-bit `RNAME` payload through the integer stream insertion routine and return the original stream reference. The sole Windows caller reports a font resource identifier. Focused reccmp is 100%; the underlying integer insertion method remains separately owned.

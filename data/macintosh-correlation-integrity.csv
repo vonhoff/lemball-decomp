@@ -1172,3 +1172,4 @@ CODE_02_Visos (Generic).bin,0x000016E2,__nw__13CMogloadArenaFUl,0x0045BAF0,high,
 CODE_02_Visos (Generic).bin,0x00001758,__dl__13CMogloadArenaFPv,0x0045BB70,high,exact fallback free; small-memory ownership test; arena dispatch; callers; and 100% reccmp,exact_tuple,0x00001758
 CODE_02_Visos (Generic).bin,0x00001570,_RES_Init__Fv,0x0045B900,high,exact three tag tables; INT/ZRLE/STRG ordering; palette manager construction; startup caller; and x86 body,exact_tuple,0x00001570
 CODE_02_Visos (Generic).bin,0x00001608,_RES_Quit__Fv,0x0045BA50,high,exact reverse lifecycle; palette manager destruction; three tag-table frees; shutdown caller; and 100% effective reccmp,exact_tuple,0x00001608
+CODE_02_Visos (Generic).bin,0x00001634,__ls__FR10CVSOStream5RNAME,0x0045BAD0,high,exact RNAME payload insertion through integer stream slot; sole caller; returned stream identity; and 100% reccmp,exact_tuple,0x00001634

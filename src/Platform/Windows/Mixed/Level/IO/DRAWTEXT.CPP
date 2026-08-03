@@ -87,7 +87,7 @@ struct LevelDrawContextView {
 };
 
 // FUNCTION: LEMBALL 0x0045bad0
-VsInitFormattedOutputStream* AppendUIntToStreamAsInt(VsInitFormattedOutputStream* pStream, unsigned int nValue)
+VsInitFormattedOutputStream* AppendRNAMEToStream(VsInitFormattedOutputStream* pStream, unsigned int nValue)
 {
 	pStream->AppendIntToStream(nValue);
 	return pStream;
@@ -705,7 +705,7 @@ void LevelScreenDrawEntry::Process(void* pRenderContext)
 				m_pGlyph28 = ((LevelScreenDrawOwnerView*) m_pOwner04)->m_pFallbackGlyph7C;
 			}
 			if (*pch != ' ' || m_pGlyph28 == 0) {
-				AppendUIntToStreamAsInt(g_pStatusOutputStream->AppendCStringToStream("Letter '")
+				AppendRNAMEToStream(g_pStatusOutputStream->AppendCStringToStream("Letter '")
 											->AppendCharToStreamVariant((char) *pch)
 											->AppendCStringToStream("' not found in font "),
 										((LevelScreenDrawOwnerView*) m_pOwner04)->m_nFontResourceId30)

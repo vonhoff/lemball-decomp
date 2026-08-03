@@ -2148,7 +2148,7 @@ address,size,name,unit
 0x0045B8E0,24,trigger_release_assert_failure,Control/CGame.cpp
 0x0045B900,327,_RES_Init,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x0045BA50,127,_RES_Quit,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
-0x0045BAD0,21,append_uint_to_stream_as_int,Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
+0x0045BAD0,21,__ls,Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
 0x0045BAF0,128,CMogloadArena::__nw,Visos/Generic/MogLoad.cpp
 0x0045BB70,69,CMogloadArena::__dl,Visos/Generic/MogLoad.cpp
 0x0045BBC0,32,CRawRead::Open,Visos/Generic/MogLoad.cpp
