@@ -1,6 +1,7 @@
 #include "AI/CInvisibleSwitch.h"
 #include "AI/CInvisibleSwitchManager.h"
 #include "AI/CLaser.h"
+#include "AI/CLaserManager.h"
 #include "Control/CGame.h"
 #include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
@@ -178,7 +179,6 @@ int LEMBALL_FASTCALL GetFirstIteratedChildStatus11C(void* pObject);
 
 void LEMBALL_FASTCALL ActivateRockChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateCaptureTriggerChunkObjects(void* pManager);
-void LEMBALL_FASTCALL ActivateLasrChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateTramChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivatePgunChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateIceChunkObjects(void* pManager);
@@ -428,12 +428,26 @@ static void* g_LINKSCF_CaptureChunkManagerVtable[10] =
 							 RefreshActiveCaptureTriggerChunkObjects,
 							 ReturnFalseChunkStreamCommandThunk,
 							 EmitCaptureTriggerChunkManagerRenderEntries);
+struct LaserManagerVtableLayout {
+	void* m_apSlots00[6];
+	void (CLaserManager::*m_pRestart18)(void);
+	void* m_apSlots1C[3];
+};
+typedef char LaserManagerMemberPointerMustBeOneWord
+	[sizeof(void (CLaserManager::*)(void)) == sizeof(void*) ? 1 : -1];
+
 // GLOBAL: LEMBALL 0x00496458
-void* g_LINKSCF_LasrChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteLasrChunkManagerAuto,
-																			 ActivateLasrChunkObjects,
-																			 RefreshActiveLasrChunkObjects,
-																			 ReturnFalseChunkStreamCommandThunk,
-																			 EmitLasrChunkManagerRenderEntries);
+LaserManagerVtableLayout g_LINKSCF_LasrChunkManagerVtable = {
+	{(void*) ReturnTrueVtableCallbackThunk,
+	 (void*) ReturnTrueVtableCallbackSecondaryThunk,
+	 (void*) DispatchType18ChunkStreamCommandsThunk,
+	 (void*) NoopVtableCallbackThunk,
+	 (void*) NoopType18ChunkStreamWriteThunk,
+	 (void*) DeleteLasrChunkManagerAuto},
+	&CLaserManager::Restart,
+	{(void*) RefreshActiveLasrChunkObjects,
+	 (void*) ReturnFalseChunkStreamCommandThunk,
+	 (void*) EmitLasrChunkManagerRenderEntries}};
 // GLOBAL: LEMBALL 0x00496710
 static void* g_LINKSCF_TramChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteTramChunkManagerAuto,
 																			 InitializeTramChunkObjects,
@@ -1449,29 +1463,6 @@ void LEMBALL_FASTCALL ClearManagedEntityArrayCount(void* pObject)
 
 
 
-// MACINTOSH: CLaserManager::Restart()
-// FUNCTION: LEMBALL 0x00429380
-void LEMBALL_FASTCALL ActivateLasrChunkObjects(void* pManager)
-{
-	char* pManagerBytes;
-	void* pChunkObject;
-	int i;
-	int nOffset;
-
-	pManagerBytes = (char*) pManager;
-	if (*(char**) (pManagerBytes + 0x38) != 0) {
-		i = 0;
-		if (*(int*) (pManagerBytes + 0x30) > 0) {
-			nOffset = 0;
-			do {
-				pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
-				++i;
-				nOffset += 0x148;
-				((ActivateChunkObjectProc) (*(void***) pChunkObject)[65])(pChunkObject);
-			} while (*(int*) (pManagerBytes + 0x30) > i);
-		}
-	}
-}
 
 // FUNCTION: LEMBALL 0x004297e0
 void LEMBALL_FASTCALL reset_lasr_chunk_object_count(void* pManager)
@@ -2041,7 +2032,7 @@ DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyCaptureTriggerChunkManagerAuto,
 
 DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyLasrChunkManagerAuto,
 									DestroyLasrChunkManagerAutoThunk,
-									g_LINKSCF_LasrChunkManagerVtable,
+									&g_LINKSCF_LasrChunkManagerVtable,
 									0x38)
 
 DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyTramChunkManagerAuto,
