@@ -28,6 +28,7 @@ struct InvisibleSwitchManagerDeletableChild {
 };
 
 typedef char InvisibleSwitchSizeMustMatchArrayStride[sizeof(CInvisibleSwitch) == 0x2b8 ? 1 : -1];
+typedef char InvisibleSwitchManagerSizeMustMatchLayout[sizeof(CInvisibleSwitchManager) == 0x40 ? 1 : -1];
 
 // FUNCTION: LEMBALL 0x0040a210
 CInvisibleSwitchManager::CInvisibleSwitchManager(CAI* pAI, int nCapacity)
@@ -155,4 +156,28 @@ void CInvisibleSwitchManager::Process(void)
 			((InvsChunkObjectActivateProc) (*(void***) pChunkObject)[5])(pChunkObject);
 		} while (*(int*) (pManagerBytes + 0x34) > i);
 	}
+}
+
+// FUNCTION: LEMBALL 0x0040a490
+void CInvisibleSwitchManager::LoadLevel(unsigned char* pData, int cbData, unsigned char nVersion)
+{
+	int nObjects;
+	int i;
+	int cbOffset;
+
+	nObjects = *(unsigned short*) pData;
+	pData += 2;
+	Initialise(nObjects);
+	m_cObjects34 = nObjects;
+	i = 0;
+	if (nObjects > 0) {
+		cbOffset = 0;
+		do {
+			((CInvisibleSwitch*) ((char*) m_pObjects3C + cbOffset))->Load(pData);
+			cbOffset += 0x2b8;
+			++i;
+		} while (i < m_cObjects34);
+	}
+	(void) cbData;
+	(void) nVersion;
 }

@@ -99,7 +99,7 @@ address,size,name,unit
 0x0040A3B0,40,CInvisibleSwitchManager::Process,AI/CInvisibleSwitchManager.cpp
 0x0040A3E0,86,append_invs_chunk_object_with_bounds,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0040A440,76,append_invs_chunk_object_at_point,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x0040A490,70,CInvisibleSwitchManager::LoadLevel,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x0040A490,70,CInvisibleSwitchManager::LoadLevel,AI/CInvisibleSwitchManager.cpp
 0x0040A6F0,205,emit_level_chunk_object_render_entry,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0040A7F0,3,noop_vtable_callback_0040a7f0,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0040A800,8,return_true_vtable_callback_0040a800,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
