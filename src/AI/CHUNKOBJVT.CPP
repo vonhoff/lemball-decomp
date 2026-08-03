@@ -14,7 +14,6 @@ extern void LEMBALL_FASTCALL clear_managed_entity_child_pending_state_if_interru
 extern void* LEMBALL_FASTCALL get_managed_entity_owner_group(void* pEntity);
 extern int LEMBALL_FASTCALL AcquireLasrPlasTarget(void* pObject);
 extern int LEMBALL_FASTCALL BeginLasrPlasReacquireDelay(void* pObject);
-extern void LEMBALL_FASTCALL destroy_invs_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_rock_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_capture_trigger_chunk_object(void* pObject);
@@ -376,7 +375,9 @@ void LEMBALL_FASTCALL EmitLevelChunkObjectRenderEntry(void* pObject, void* pUnus
 void* LEMBALL_FASTCALL DeleteInvsChunkObjectAuto(void* pObject, void* pUnused, unsigned int fDelete)
 {
 	(void) pUnused;
-	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x2b8, destroy_invs_chunk_object);
+#define DESTROY_INVS_CHUNK_OBJECT(pItem) ((CInvisibleSwitch*) (pItem))->~CInvisibleSwitch()
+	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x2b8, DESTROY_INVS_CHUNK_OBJECT);
+#undef DESTROY_INVS_CHUNK_OBJECT
 }
 
 // STUB: LEMBALL 0x00414150

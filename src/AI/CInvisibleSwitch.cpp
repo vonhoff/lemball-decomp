@@ -4,6 +4,12 @@
 
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
 extern void* g_pActiveManagedEntityOwner;
+extern void* g_LINKSCF_InvsChunkObjectVtable[16];
+extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
+
+struct LevelChunkObjectBaseView {
+	void* InitializeLevelChunkObjectBase(int nType, unsigned short nChildType, unsigned short nFlags);
+};
 
 struct LevelVtSmallFunctionView {
 	void AddLevelScoreClamped(int nValue);
@@ -19,6 +25,20 @@ struct ManagedEntityStateView {
 };
 
 // Split from the original LINKSCF source group to preserve MSVC 4.00 code generation in LINKSCF.CPP.
+
+// FUNCTION: LEMBALL 0x00409ca0
+CInvisibleSwitch::CInvisibleSwitch(void)
+{
+	((LevelChunkObjectBaseView*) this)->InitializeLevelChunkObjectBase(0x36, 0, 0);
+	*(void**) this = g_LINKSCF_InvsChunkObjectVtable;
+}
+
+// FUNCTION: LEMBALL 0x00409d10
+CInvisibleSwitch::~CInvisibleSwitch(void)
+{
+	*(void**) this = g_LINKSCF_InvsChunkObjectVtable;
+	DestroyLevelChunkObjectBaseAutoThunk(this);
+}
 
 // FUNCTION: LEMBALL 0x00409ec0
 void CInvisibleSwitch::VerifyObjects(void)

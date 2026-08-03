@@ -11,6 +11,8 @@ class CGameObject;
 
 class CInvisibleSwitch {
 public:
+	CInvisibleSwitch(void);
+	~CInvisibleSwitch(void);
 	void VerifyObjects(void);
 	void AddObject(CGameObject* pObject);
 	void StepOn(const AICOORD& position, CGameObject* pObject);

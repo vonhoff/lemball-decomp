@@ -79,10 +79,10 @@ address,size,name,unit
 0x004098E0,31,restore_level_demo_playback_base_vtable,Platform/Windows/Mixed/Level/RUN/DEMO.CPP
 0x00409910,23,compare_level_tile_grid_static_render_entry_sort_keys,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00409930,589,build_special_level_tile_grid_static_render_entries,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
-0x00409CA0,24,CInvisibleSwitch::CInvisibleSwitch,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00409CA0,24,CInvisibleSwitch::CInvisibleSwitch,AI/CInvisibleSwitch.cpp
 0x00409CC0,17,CInvisibleSwitch::Restart,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00409CE0,47,CInvisibleSwitch::Initialise,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x00409D10,11,CInvisibleSwitch::~CInvisibleSwitch,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00409D10,11,CInvisibleSwitch::~CInvisibleSwitch,AI/CInvisibleSwitch.cpp
 0x00409D20,71,set_invs_chunk_object_point_bounds,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00409D70,335,CInvisibleSwitch::Set,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00409EC0,172,CInvisibleSwitch::VerifyObjects,AI/CInvisibleSwitch.cpp

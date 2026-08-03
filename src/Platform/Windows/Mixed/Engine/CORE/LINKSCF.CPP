@@ -1,12 +1,12 @@
+#include "AI/CInvisibleSwitchManager.h"
+#include "Control/CGame.h"
 #include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
-#include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSGEOM.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
-#include "Control/CGame.h"
-#include "AI/CInvisibleSwitchManager.h"
 #include "Platform/Windows/Mixed/Level/LEVELRUN.H"
+#include "Visos/Generic/Memory.h"
 
 #include <string.h>
 
@@ -14,9 +14,7 @@ struct LevelChunkObjectBaseView {
 	void* InitializeLevelChunkObjectBase(int nType, unsigned short nChildType, unsigned short nFlags);
 };
 
-struct InvsChunkObjectView : LevelChunkObjectBaseView {
-	InvsChunkObjectView* ConstructInvsChunkObject(void);
-};
+extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 
 struct LinkScfInvsChunkManagerResetView {
 	unsigned char m_abReserved00[0x30];
@@ -764,27 +762,6 @@ void LinkScfLevelChunkLoaderView::LoadLevelChunksForSkillAndLevel(unsigned int n
 	ReleaseTypedResourceObjectReference(pResourceObject);
 	(void) fReuseState;
 }
-extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
-
-extern void* g_LINKSCF_InvsChunkObjectVtable[16];
-
-// MACINTOSH: CInvisibleSwitch::CInvisibleSwitch()
-// FUNCTION: LEMBALL 0x00409ca0
-InvsChunkObjectView* InvsChunkObjectView::ConstructInvsChunkObject(void)
-{
-	InitializeLevelChunkObjectBase(0x36, 0, 0);
-	*(void**) this = g_LINKSCF_InvsChunkObjectVtable;
-	return this;
-}
-
-// MACINTOSH: CInvisibleSwitch::~CInvisibleSwitch()
-// FUNCTION: LEMBALL 0x00409d10
-void LEMBALL_FASTCALL destroy_invs_chunk_object(void* pObject)
-{
-	*(void**) pObject = g_LINKSCF_InvsChunkObjectVtable;
-	DestroyLevelChunkObjectBaseAutoThunk(pObject);
-}
-
 // MACINTOSH: CInvisibleSwitchManager::CInvisibleSwitchManager(CAI*, int)
 // FUNCTION: LEMBALL 0x0040a210
 LinkScfInvsChunkManagerView* LinkScfInvsChunkManagerView::ConstructInvsChunkManager(void* pLevelMode, int nCapacity)
