@@ -12,6 +12,8 @@ public:
 	void CalculateCliff(void);
 	int Process(void);
 	void CheckObjects(void);
+	int Activate(void);
+	void ActivateDeactivate(void);
 	void Edit(int nHeight,
 			  short nDirection,
 			  int nTargetA,

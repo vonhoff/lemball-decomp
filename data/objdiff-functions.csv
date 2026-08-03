@@ -945,8 +945,8 @@ address,size,name,unit
 0x00425100,767,CLift::Process,AI/CLiftRun.cpp
 0x00425440,93,CLift::CheckObjects,AI/CLiftRun.cpp
 0x004254A0,408,CLift::StepOn,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x00425640,23,CLift::Activate,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x00425660,22,CLift::ActivateDeactivate,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00425640,23,CLift::Activate,AI/CLiftAct.cpp
+0x00425660,22,CLift::ActivateDeactivate,AI/CLiftAct.cpp
 0x00425680,91,CLiftManager::CLiftManager,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x004256E0,55,CLiftManager::Restart,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00425720,155,CLiftManager::Initialise,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP

@@ -5,7 +5,6 @@
 extern LiftVtableLayout g_LINKSCF_LiftChunkObjectVtable;
 extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void* g_pLiftTileGrid;
-extern int LEMBALL_FASTCALL RequestLiftChunkObjectActivationState(void* pObject);
 
 // GLOBAL: LEMBALL 0x0049e1c0
 unsigned short g_nNextLiftObjectId = 0;
@@ -111,7 +110,7 @@ void CLift::Edit(int nHeight,
 				*(int*) (pObject + 0x164) = 0;
 				break;
 			case 2:
-				RequestLiftChunkObjectActivationState(this);
+				Activate();
 				break;
 			case 4:
 				*(int*) (pObject + 0x164) = 0;

@@ -1,26 +1,27 @@
+#include "AI/CLift.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
 
 // Split from the original LINKSCF source group to preserve MSVC 4.20 code generation.
 
-// MACINTOSH: CLift::Activate()
 // FUNCTION: LEMBALL 0x00425640
-int LEMBALL_FASTCALL RequestLiftChunkObjectActivationState(void* pObject)
+int CLift::Activate(void)
 {
 	typedef void(__stdcall * SetStateProc)(int);
+	void* pObject = this;
 	*(int*) ((char*) pObject + 0x164) = 1;
 	((SetStateProc) (*(void***) pObject)[2])(0x19);
 	return 1;
 }
 
-// MACINTOSH: CLift::ActivateDeactivate()
 // FUNCTION: LEMBALL 0x00425660
-void LEMBALL_FASTCALL ToggleLiftChunkObjectActivationState(void* pObject)
+void CLift::ActivateDeactivate(void)
 {
 	typedef void(__stdcall * SetStateProc)(int);
+	void* pObject = this;
 	if (*(int*) ((char*) pObject + 0x164) == 0) {
-		RequestLiftChunkObjectActivationState(pObject);
+		Activate();
 	}
 	else {
 		((SetStateProc) (*(void***) pObject)[2])(8);
@@ -56,12 +57,12 @@ void LEMBALL_FASTCALL DispatchLiftChunkObjectActionBySlot(void* pManager,
 			char* pObject = *(char**) (pManagerBytes + 0x3c) + iObject * 0x190;
 			if (*(int*) (pObject + 0x15c) != 3) {
 				if (*(int*) (pObject + 0x15c) == 0) {
-					ToggleLiftChunkObjectActivationState(pObject);
+					((CLift*) pObject)->ActivateDeactivate();
 					return;
 				}
 			}
 			else if (*(int*) (pObject + 0x16c) == 0) {
-				RequestLiftChunkObjectActivationState(pObject);
+				((CLift*) pObject)->Activate();
 			}
 		}
 	}
