@@ -2,11 +2,13 @@
 #define LEMBALL_CMINE_H
 
 class CGameObject;
+struct AICOORD;
 
 class CMine {
 public:
 	CMine(void);
 	void Trigger(int nDelay);
+	void Set(AICOORD position);
 	void StepOn(CGameObject* pObject);
 
 private:

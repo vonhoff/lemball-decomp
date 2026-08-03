@@ -39,6 +39,10 @@ struct MineManagerDeletableChild {
 	virtual void Delete(unsigned char fDelete);
 };
 
+struct ManagedEntitySlotOwnerView {
+	void SetManagedEntitySlotId(unsigned short nSlotId);
+};
+
 // FUNCTION: LEMBALL 0x00424080
 void CMineManager::Restart(void)
 {
@@ -179,5 +183,21 @@ void CMineManager::StepOn(const AICOORD& position, CGameObject* pObject)
 			pMine = (CMine*) ((char*) pMine + 0x150);
 			++i;
 		} while (i < m_cObjects3C);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00424710
+void CMineManager::Add(unsigned short nId, AICOORD position)
+{
+	CMine* pMine;
+
+	if (nId != 0xffff && m_cObjects3C < m_cCapacity40) {
+		pMine = (CMine*) ((char*) m_pObjects34 + m_cObjects3C * 0x150);
+		((ManagedEntitySlotOwnerView*) pMine)->SetManagedEntitySlotId(nId);
+		pMine->Set(position);
+		m_pPositions38[m_cObjects3C].x = (short) (position.x >> 12);
+		m_pPositions38[m_cObjects3C].y = (short) (position.y >> 12);
+		m_pPositions38[m_cObjects3C].z = (short) (position.z >> 12);
+		++m_cObjects3C;
 	}
 }

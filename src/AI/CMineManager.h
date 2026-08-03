@@ -21,6 +21,7 @@ public:
 	void Triggered(CMine* pMine);
 	void Trigger(int nIndex, int nDelay);
 	void StepOn(const AICOORD& position, CGameObject* pObject);
+	void Add(unsigned short nId, AICOORD position);
 
 private:
 	unsigned char m_abReserved00[0x30];

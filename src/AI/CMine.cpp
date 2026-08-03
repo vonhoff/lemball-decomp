@@ -1,5 +1,6 @@
 #include "AI/CMine.h"
 
+#include "AI/AICoord.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Level/CHUNKOBJVT.H"
@@ -11,6 +12,10 @@ struct LevelChunkObjectBaseView {
 
 struct ManagedEntityStateView {
 	void RequestManagedEntityStateId(int nStateId);
+};
+
+struct ManagedEntitySlotOwnerView {
+	void SetManagedEntitySlotId(unsigned short nSlotId);
 };
 
 struct MineChunkObjectActionView {
@@ -86,6 +91,29 @@ void LEMBALL_FASTCALL ResetMineChunkObjectRuntimeState(MineChunkObjectRuntimeVie
 	g_LEVEL_MineTileVariantCodes[1] = 0x11;
 	g_LEVEL_MineTileVariantCodes[2] = 0x30;
 	g_LEVEL_MineTileVariantCodes[3] = 8;
+}
+
+// FUNCTION: LEMBALL 0x00423cb0
+void CMine::Set(AICOORD position)
+{
+	char* pGrid;
+	int x;
+	int y;
+
+	*(int*) ((char*) this + 0x9c) = position.x;
+	*(int*) ((char*) this + 0xa0) = position.y;
+	*(int*) ((char*) this + 0xa4) = position.z;
+	*(int*) ((char*) this + 0x13c) = 0;
+	*(int*) ((char*) this + 0x138) = 1;
+	*(int*) ((char*) this + 0x140) = 0;
+	x = (position.x >> 12) / 16;
+	y = (position.y >> 12) / 16;
+	if (x >= 0 && y >= 0) {
+		pGrid = (char*) g_pLevelTileGrid;
+		if (x < *(int*) (pGrid + 0x10) && y < *(int*) (pGrid + 0x14)) {
+			*(unsigned char*) (*(char**) (pGrid + 0x0c) + (y * *(int*) (pGrid + 0x10) + x) * 12 + 7) |= 0x80;
+		}
+	}
 }
 
 // FUNCTION: LEMBALL 0x00423d40
