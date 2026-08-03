@@ -15,6 +15,7 @@ public:
 	void Restart(void);
 	void Initialise(void);
 	void SetPos(void);
+	void MoveObjects(int nDeltaX, int nDeltaY, int nDeltaZ);
 	void Switch(void);
 	int IsOn(AICOORD& point);
 	void VerifyObjects(void);

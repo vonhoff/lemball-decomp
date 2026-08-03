@@ -837,20 +837,6 @@ void* LEMBALL_FASTCALL DeleteIceChunkObjectAuto(void* pObject, void* pUnused, un
 }
 
 
-// MACINTOSH: CMover::MoveObjects(int, int, int)
-// FUNCTION: LEMBALL 0x0042ea40
-void LEMBALL_FASTCALL
-translate_attached_move_chunk_objects(void* pObject, void* pUnused, int nDeltaX, int nDeltaY, int nDeltaZ)
-{
-	int i;
-	(void) pUnused;
-	for (i = 0; i < *(int*) ((char*) pObject + 0x174); ++i) {
-		char* pEntity = *(char**) ((char*) pObject + 0x178 + i * 4);
-		*(int*) (pEntity + 0x9c) += nDeltaX << 12;
-		*(int*) (pEntity + 0xa0) += nDeltaY << 12;
-		*(int*) (pEntity + 0xa4) += nDeltaZ << 12;
-	}
-}
 
 // MACINTOSH: CMover::Process()
 // STUB: LEMBALL 0x0042eb00

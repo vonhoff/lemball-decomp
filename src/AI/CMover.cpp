@@ -143,6 +143,18 @@ void CMover::Set(unsigned short nSlotId, short nHeading, int nMode, int iNode, i
 	m_nValue16C = nValue;
 }
 
+// FUNCTION: LEMBALL 0x0042ea40
+void CMover::MoveObjects(int nDeltaX, int nDeltaY, int nDeltaZ)
+{
+	int i;
+	for (i = 0; i < m_cAttachedEntities174; ++i) {
+		char* pEntity = (char*) m_apAttachedEntities178[i];
+		*(int*) (pEntity + 0x9c) += nDeltaX << 12;
+		*(int*) (pEntity + 0xa0) += nDeltaY << 12;
+		*(int*) (pEntity + 0xa4) += nDeltaZ << 12;
+	}
+}
+
 // FUNCTION: LEMBALL 0x0042eeb0
 void CMover::Switch(void)
 {
