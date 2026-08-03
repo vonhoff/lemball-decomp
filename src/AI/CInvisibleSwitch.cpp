@@ -4,6 +4,7 @@
 
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
 extern void* g_pActiveManagedEntityOwner;
+extern void* g_pLevelTileGrid;
 extern void* g_LINKSCF_InvsChunkObjectVtable[16];
 extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
@@ -60,6 +61,58 @@ CInvisibleSwitch::~CInvisibleSwitch(void)
 {
 	*(void**) this = g_LINKSCF_InvsChunkObjectVtable;
 	DestroyLevelChunkObjectBaseAutoThunk(this);
+}
+
+// FUNCTION: LEMBALL 0x00409d70
+void CInvisibleSwitch::Set(const tCoord3d& begin, const tCoord3d& end)
+{
+	char* pObjectBytes = (char*) this;
+	short nSwap;
+	int nX;
+	int nY;
+
+	*(int*) (pObjectBytes + 0x254) = 0;
+	*(tCoord3d*) (pObjectBytes + 0x138) = begin;
+	*(tCoord3d*) (pObjectBytes + 0x13e) = end;
+	if (*(short*) (pObjectBytes + 0x138) > *(short*) (pObjectBytes + 0x13e)) {
+		nSwap = *(short*) (pObjectBytes + 0x138);
+		*(short*) (pObjectBytes + 0x138) = *(short*) (pObjectBytes + 0x13e);
+		*(short*) (pObjectBytes + 0x13e) = nSwap;
+	}
+	if (*(short*) (pObjectBytes + 0x13a) > *(short*) (pObjectBytes + 0x140)) {
+		nSwap = *(short*) (pObjectBytes + 0x13a);
+		*(short*) (pObjectBytes + 0x13a) = *(short*) (pObjectBytes + 0x140);
+		*(short*) (pObjectBytes + 0x140) = nSwap;
+	}
+	nY = *(short*) (pObjectBytes + 0x13a);
+	*(int*) (pObjectBytes + 0x144) = 0;
+	*(int*) (pObjectBytes + 0x9c) = *(short*) (pObjectBytes + 0x138) << 12;
+	*(int*) (pObjectBytes + 0x148) = 0;
+	*(int*) (pObjectBytes + 0xa0) = nY << 12;
+	*(int*) (pObjectBytes + 0xa4) = *(short*) (pObjectBytes + 0x13c) << 12;
+
+	if (nY <= *(short*) (pObjectBytes + 0x140)) {
+		do {
+			nX = *(short*) (pObjectBytes + 0x138);
+			if (nX <= *(short*) (pObjectBytes + 0x13e)) {
+				do {
+					int nTileX = nX / 16;
+					if (nTileX >= 0) {
+						int nTileY = nY / 16;
+						if (nTileY >= 0 && nTileX < *(int*) ((char*) g_pLevelTileGrid + 0x10) &&
+							nTileY < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
+							char* pGrid = (char*) g_pLevelTileGrid;
+							*(unsigned char*) (*(char**) (pGrid + 0x0c) +
+											   (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 12 + 7) |= 0x80;
+						}
+					}
+					nX += 16;
+				} while (nX <= *(short*) (pObjectBytes + 0x13e));
+			}
+			nY += 16;
+		} while (nY <= *(short*) (pObjectBytes + 0x140));
+	}
+	*(unsigned short*) (pObjectBytes + 0x150) = 0;
 }
 
 // FUNCTION: LEMBALL 0x00409ec0

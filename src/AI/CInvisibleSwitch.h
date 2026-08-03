@@ -7,6 +7,12 @@ struct AICOORD {
 	int z;
 };
 
+struct tCoord3d {
+	short x;
+	short y;
+	short z;
+};
+
 class CGameObject;
 
 class CInvisibleSwitch {
@@ -15,6 +21,7 @@ public:
 	void Restart(void);
 	void Initialise(void);
 	~CInvisibleSwitch(void);
+	void Set(const tCoord3d& begin, const tCoord3d& end);
 	void VerifyObjects(void);
 	void AddObject(CGameObject* pObject);
 	void StepOn(const AICOORD& position, CGameObject* pObject);
