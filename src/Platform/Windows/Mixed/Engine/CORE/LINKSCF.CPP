@@ -463,7 +463,7 @@ struct InvisibleSwitchManagerVtableLayout {
 typedef char InvisibleSwitchManagerMemberPointerMustFitVtableSlot
 	[sizeof(void (CInvisibleSwitchManager::*)(void)) == sizeof(void*) ? 1 : -1];
 // GLOBAL: LEMBALL 0x00493298
-static InvisibleSwitchManagerVtableLayout g_LINKSCF_InvsChunkManagerVtable = {
+InvisibleSwitchManagerVtableLayout g_LINKSCF_InvsChunkManagerVtable = {
 	{(void*) ReturnTrueVtableCallbackThunk,
 	 (void*) ReturnTrueVtableCallbackSecondaryThunk,
 	 (void*) DispatchType18ChunkStreamCommandsThunk,
@@ -795,17 +795,6 @@ LinkScfDoorChunkManagerView* LinkScfDoorChunkManagerView::ConstructDoorChunkMana
 	*(int*) ((char*) this + 0x38) = nCapacity;
 	*(int*) ((char*) this + 0x3c) = 0;
 	return this;
-}
-void LEMBALL_FASTCALL DestroyLevelChunkStreamAuto(void* pObject)
-{
-	void* pChild;
-
-	*(void**) pObject = &g_LINKSCF_InvsChunkManagerVtable;
-	pChild = *(void**) ((char*) pObject + 0x3c);
-	if (pChild != 0) {
-		((LinkScfDeletableChild*) pChild)->Delete(3);
-	}
-	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 }
 
 // FUNCTION: LEMBALL 0x0040eb90
@@ -2252,7 +2241,7 @@ DEFINE_LINKSCF_NAMED_SCALAR_DELETE(DeleteTramChunkManagerAuto, DestroyTramChunkM
 // Compatibility shim for original ILT call site.
 void LEMBALL_FASTCALL DestroyLevelChunkStreamAutoThunk(void* pObject)
 {
-	DestroyLevelChunkStreamAuto(pObject);
+	((CInvisibleSwitchManager*) pObject)->~CInvisibleSwitchManager();
 }
 
 // Comparison-only compatibility stub.

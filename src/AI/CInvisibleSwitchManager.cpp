@@ -3,6 +3,13 @@
 #include "AI/CInvisibleSwitch.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
+struct InvisibleSwitchManagerVtableLayout;
+extern InvisibleSwitchManagerVtableLayout g_LINKSCF_InvsChunkManagerVtable;
+
+struct VsNetEffStreamCommon {
+	virtual ~VsNetEffStreamCommon(void);
+};
+
 typedef void(LEMBALL_FASTCALL* InvsChunkObjectActivateProc)(void* pObject);
 
 struct InvisibleSwitchManagerResetView {
@@ -11,6 +18,10 @@ struct InvisibleSwitchManagerResetView {
 	int m_cObjects34;
 	unsigned char m_abReserved38[4];
 	void* m_pObjects3C;
+};
+
+struct InvisibleSwitchManagerDeletableChild {
+	virtual void Delete(unsigned char fDelete);
 };
 
 // FUNCTION: LEMBALL 0x0040a270
@@ -31,6 +42,19 @@ void CInvisibleSwitchManager::Restart(void)
 			((ResetProc) (*(void***) pObject)[65])(pObject);
 		}
 	}
+}
+
+// FUNCTION: LEMBALL 0x0040a350
+CInvisibleSwitchManager::~CInvisibleSwitchManager(void)
+{
+	void* pChild;
+
+	*(void**) this = &g_LINKSCF_InvsChunkManagerVtable;
+	pChild = *(void**) ((char*) this + 0x3c);
+	if (pChild != 0) {
+		((InvisibleSwitchManagerDeletableChild*) pChild)->Delete(3);
+	}
+	((VsNetEffStreamCommon*) this)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 }
 
 // FUNCTION: LEMBALL 0x0040a370
