@@ -55,6 +55,13 @@ void CPlayerLemmingGroupManager::ProcessDead(void)
 {
 }
 
+// FUNCTION: LEMBALL 0x00418820
+void CPlayerLemmingGroupManager::AddPlayerLemmingToGroup(CPlayerLemming* pLemming, CPlayerLemmingGroup* pGroup)
+{
+	FindElementInGroupAndRemoveIt((CGameObject*) pLemming);
+	pGroup->AddLemmingToGroup(pLemming);
+}
+
 // FUNCTION: LEMBALL 0x00418840
 int CPlayerLemmingGroupManager::IsLemmingPlayerControlled(CPlayerLemming* pLemming)
 {

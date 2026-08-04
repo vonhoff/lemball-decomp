@@ -537,7 +537,7 @@ address,size,name,unit
 0x00418720,15,reset_managed_entity_group_state,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00418730,190,CPlayerLemmingGroupManager::CreateNewGroup,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004187F0,39,CPlayerLemmingGroupManager::DeleteGroup,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x00418820,25,CPlayerLemmingGroupManager::AddPlayerLemmingToGroup,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00418820,25,CPlayerLemmingGroupManager::AddPlayerLemmingToGroup,AI/CPlayerLemmingGroupManager.cpp
 0x00418840,29,CPlayerLemmingGroupManager::IsLemmingPlayerControlled,AI/CPlayerLemmingGroupManager.cpp
 0x00418860,117,CPlayerLemmingGroupManager::MakeNextGroupPlayerControlled,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004188E0,122,CPlayerLemmingGroupManager::MakePreviousGroupPlayerControlled,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

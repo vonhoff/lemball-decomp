@@ -22,6 +22,7 @@ public:
 	void RemoveWaypointsFromCurrentGroup(void);
 	void InitialiseNetwork(void);
 	int HasSFXChanged(void);
+	void AddPlayerLemmingToGroup(CPlayerLemming* pLemming, CPlayerLemmingGroup* pGroup);
 };
 
 typedef char CPlayerLemmingGroupManagerSizeCheck[sizeof(CPlayerLemmingGroupManager) == 0x150 ? 1 : -1];
