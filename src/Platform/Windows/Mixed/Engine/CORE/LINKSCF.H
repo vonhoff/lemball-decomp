@@ -72,6 +72,7 @@ struct CGenericGroupManager {
 	CGenericGroup* GetGroupElementIsMemberOf(CGameObject* pObject);
 	void AddNewGroup(CGenericGroup* pGroup);
 	void CreateNewGroup(void);
+	void DeleteGroup(CGenericGroup* pGroup);
 	void AddElementToGroup(CGameObject* pObject, CGenericGroup* pGroup);
 	int RemoveElementFromGroup(CGameObject* pObject, CGenericGroup* pGroup);
 	void FindElementInGroupAndRemoveIt(CGameObject* pObject);
@@ -149,8 +150,7 @@ struct LinkScfBoonChunkManagerView {
 // EmitDoorChunkRenderEntries
 
 
-// STUB: LEMBALL 0x0041ecb0
-// RemoveCachedChunkObjectAndDestroy
+
 
 // STUB: LEMBALL 0x0041ebe0
 // AppendManagedEntityGroupFromIds

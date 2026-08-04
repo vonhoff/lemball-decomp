@@ -195,7 +195,7 @@ int LEMBALL_FASTCALL EmitProjectilePoolRenderEntries(void* pPool, void* pUnused,
 
 
 
-DEFINE_LINKSCF_VTABLE_STUB_1(RemoveCachedChunkObjectAndDestroy)
+
 DEFINE_LINKSCF_VTABLE_STUB_0(CountNestedIteratedChildEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(GetFirstManagedEntityChildFromCachedGroupCompatibility)
 DEFINE_LINKSCF_VTABLE_STUB_0(GetNextManagedEntityChildFromCachedGroup)
@@ -407,7 +407,7 @@ struct CachedChunkObjectManagerVtable {
 	CGenericGroup* (CGenericGroupManager::*m_pGetNextGroup08)(void);
 	CGenericGroup* (CGenericGroupManager::*m_pGetNthGroup0C)(int);
 	CGenericGroup* (CGenericGroupManager::*m_pGetCurrentGroup10)(void);
-	void* m_pDeleteGroup14;
+	void (CGenericGroupManager::*m_pDeleteGroup14)(CGenericGroup*);
 	int (CGenericGroupManager::*m_pGetNumberOfElements18)(void);
 	CGameObject* (CGenericGroupManager::*m_pGetFirstElement1C)(void);
 	CGameObject* (CGenericGroupManager::*m_pGetNextElement20)(void);
@@ -430,7 +430,7 @@ struct CachedChunkObjectManagerVtable {
 		&CGenericGroupManager::GetNextGroup,                                                                   \
 		&CGenericGroupManager::GetNthGroup,                                                                    \
 		&CGenericGroupManager::GetCurrentGroup,                                                                \
-		(void*) RemoveCachedChunkObjectAndDestroy,                                                             \
+		&CGenericGroupManager::DeleteGroup,                                                                    \
 		&CGenericGroupManager::GetNumberOfElements,                                                          \
 		&CGenericGroupManager::GetFirstElement,                                                              \
 		&CGenericGroupManager::GetNextElement,                                                               \
@@ -1588,6 +1588,36 @@ void CGenericGroupManager::AddNewGroup(CGenericGroup* pGroup)
 // FUNCTION: LEMBALL 0x0041eca0
 void CGenericGroupManager::CreateNewGroup(void)
 {
+}
+
+// FUNCTION: LEMBALL 0x0041ecb0
+void CGenericGroupManager::DeleteGroup(CGenericGroup* pGroup)
+{
+	int i;
+	CGenericGroup** ppGroup;
+
+	i = 0;
+	if (m_nGroupCountA4 > 0) {
+		while (m_apGroups04[i] != pGroup) {
+			++i;
+			if (m_nGroupCountA4 <= i) {
+				return;
+			}
+		}
+		if (pGroup != 0) {
+			(pGroup->*pGroup->m_pVtable00->m_pDelete00)(1);
+		}
+		--m_nGroupCountA4;
+		if (i < m_nGroupCountA4) {
+			ppGroup = &m_apGroups04[i];
+			do {
+				++i;
+				*ppGroup = ppGroup[1];
+				++ppGroup;
+			} while (i < m_nGroupCountA4);
+		}
+		m_apGroups04[i] = 0;
+	}
 }
 
 // FUNCTION: LEMBALL 0x0041ed20
