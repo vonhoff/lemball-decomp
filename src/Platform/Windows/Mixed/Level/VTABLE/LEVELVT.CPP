@@ -3,6 +3,7 @@
 #include "AI/CMover.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "AI/CCatapult.h"
+#include "AI/CAmmo.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
@@ -1886,6 +1887,18 @@ void CCatapult::ActivatePosition(int* pPoint)
 	pPoint[0] = nX;
 	pPoint[1] = nY;
 	pPoint[2] = nZ;
+}
+
+// FUNCTION: LEMBALL 0x0041cc30
+void CAmmo::DoActivate(void)
+{
+	typedef void(LEMBALL_FASTCALL * ActionProc)(void*, void*, int);
+
+	m_nFrameTime94 = g_nLevelFrameClockTimeMs;
+	m_nDeadlineD4 += g_nLevelFrameClockTick;
+	((ActionProc) (*(void***) this)[13])(this, 0, 0x11);
+	((ActionProc) (*(void***) m_pTarget5C)[51])(m_pTarget5C, 0, 0x19);
+	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(50);
 }
 
 extern void* g_LEVELVT_GmobChunkType14ObjectVtable[16];

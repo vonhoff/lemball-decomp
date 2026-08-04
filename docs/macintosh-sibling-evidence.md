@@ -218,7 +218,7 @@ All five portable methods map at `0x0041C700..0x0041CA60`. Independent auditing 
 
 ## CAmmo reconstruction
 
-All five portable methods map at `0x0041CA90..0x0041CC70` on the coherent Windows vtable at `0x00494268`: slots `5/6/11/65/67` hold Process, Activate, ActivatePosition, Restart, and DoActivate. Independent auditing corrected the preliminary crossed-family hypothesis: `0x0041C700/0x0041C720` belong to CCatapult, while CAmmo uses `0x0041CA90/0x0041CAB0`. Genuine `CAmmo::Restart` and `Activate` ownership now lives in `LVSAVEPOS.CPP` at `100%` and `90.57%`. Exact behavior agrees on the class-specific duration field, idle acceptance, deadline `8`, state request `0x1A`, action `0x11`, target action `0x19`, score `50`, and unchanged hidden-result position output. Remaining physical ownership stays split between `LVSAVEPOS.CPP` and `LEVELVT.CPP`.
+All five portable methods map at `0x0041CA90..0x0041CC70` on the coherent Windows vtable at `0x00494268`: slots `5/6/11/65/67` hold Process, Activate, ActivatePosition, Restart, and DoActivate. Independent auditing corrected the preliminary crossed-family hypothesis: `0x0041C700/0x0041C720` belong to CCatapult, while CAmmo uses `0x0041CA90/0x0041CAB0`. Shared `CAmmo` layout now lives in `CAmmo.h`; genuine `Restart` and `Activate` remain in `LVSAVEPOS.CPP` at `100%` and `90.57%`, while genuine `DoActivate` lives in `LEVELVT.CPP` at `92.68%`. Exact behavior agrees on the class-specific duration field, idle acceptance, deadline `8`, state request `0x1A`, action `0x11`, target action `0x19`, score `50`, and unchanged hidden-result position output.
 
 ## CSlinky reconstruction
 

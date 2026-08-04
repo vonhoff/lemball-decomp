@@ -1,5 +1,6 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "AI/CCatapult.h"
+#include "AI/CAmmo.h"
 
 void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern int g_nLevelFrameClockTimeMs;
@@ -45,22 +46,6 @@ struct SavedPositionChunkObjectView {
 	void ResetGmobState(void);
 };
 
-class CAmmo {
-public:
-	char m_abReserved00[0x5c];
-	void* m_pTarget5C;
-	char m_abReserved60[4];
-	int m_nObjectType64;
-	char m_abReserved68[0x50];
-	int m_nStateB8;
-	char m_abReservedBC[0x18];
-	int m_nDeadlineD4;
-	char m_abReservedD8[0x6c];
-	short m_nLinkedVariant144;
-
-	void Restart(void);
-	int Activate(void* pTarget);
-};
 
 
 struct GmobType14SavedPositionView {
