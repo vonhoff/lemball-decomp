@@ -19,6 +19,7 @@ public:
 	void ProcessDead(void);
 	int IsLemmingPlayerControlled(CPlayerLemming* pLemming);
 	CPlayerLemmingGroup* GetPlayerControlledGroup(void);
+	void AddNewWaypointToCurrentGroup(int nX, int nY);
 	void RemoveWaypointsFromCurrentGroup(void);
 	void InitialiseNetwork(void);
 	int HasSFXChanged(void);

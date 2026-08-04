@@ -5,6 +5,9 @@ struct AICOORD {
 	int x;
 	int y;
 	int z;
+
+	AICOORD() {}
+	AICOORD(const AICOORD& source);
 };
 
 #endif

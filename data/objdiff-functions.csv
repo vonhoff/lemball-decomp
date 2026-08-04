@@ -310,7 +310,7 @@ address,size,name,unit
 0x00410B00,7,get_level_mode_lift_chunk_manager,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00410B10,4,get_object_field_0x30,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00410B20,30,delete_door_chunk_object,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x00410B50,25,copy_three_dword_point_variant_b,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00410B50,25,AICOORD::AICOORD,AI/AICoord.cpp
 0x00410B80,42,construct_level_game_state_stream,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00410BB0,47,write_level_game_state_payload,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00410BE0,44,load_level_game_state_stream_payload,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
@@ -544,7 +544,7 @@ address,size,name,unit
 0x00418960,91,CPlayerLemmingGroupManager::MakeParticularGroupPlayerControlled,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004189C0,39,CPlayerLemmingGroupManager::MakeNoGroupsPlayerControlled,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004189F0,60,CPlayerLemmingGroupManager::GetPlayerControlledGroup,AI/CPlayerLemmingGroupManager.cpp
-0x00418A30,89,CPlayerLemmingGroupManager::AddNewWaypointToCurrentGroup,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00418A30,89,CPlayerLemmingGroupManager::AddNewWaypointToCurrentGroup,AI/CPlayerLemmingGroupManager.cpp
 0x00418A90,20,CPlayerLemmingGroupManager::RemoveWaypointsFromCurrentGroup,AI/CPlayerLemmingGroupManager.cpp
 0x00418AB0,97,CPlayerLemmingGroupManager::UseObject,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00418B20,54,CPlayerLemmingGroupManager::ReformAlteredGroups,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

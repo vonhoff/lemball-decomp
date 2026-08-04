@@ -38,6 +38,7 @@ set(LEMBALL_SOURCES
     src/AI/LVPOSCOPY.CPP
     src/Visos/Generic/LVSTRFMT.CPP
     src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+    src/AI/AICoord.cpp
     src/AI/LVVTDEF.CPP
     src/AI/LVPOSVT.CPP
     src/AI/LVACTDSP.CPP

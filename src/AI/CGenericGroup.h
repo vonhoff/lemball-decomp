@@ -48,6 +48,8 @@ typedef int (CGenericGroup::*GenericGroupCountProc)(void);
 typedef CGameObject* (CGenericGroup::*GenericGroupIteratorProc)(void);
 typedef void (CGenericGroup::*GenericGroupElementProc)(CGameObject* pObject);
 typedef void (CGenericGroup::*GenericGroupBoundsProc)(short* pBounds);
+typedef void (CGenericGroup::*GenericGroupWaypointProc)(AICOORD position, CFormationManager* pFormationManager);
+typedef void (CGenericGroup::*GenericGroupNoArgProc)(void);
 typedef int (CGenericGroup::*GenericGroupViewDataProc)(CViewData* pViewData);
 typedef int (CGenericGroup::*GenericGroupIntersectionProc)(CVSRect* pRect, AICOORD* pPosition);
 
@@ -72,7 +74,11 @@ struct CGenericGroupVtable {
 	GenericGroupElementProc m_pRemoveElement128;
 	void* m_pReserved12C;
 	GenericGroupContainsProc m_pContains130;
-	void* m_apReserved134[9];
+	void* m_apReserved134[4];
+	GenericGroupWaypointProc m_pAddNewWaypoint144;
+	void* m_apReserved148[2];
+	GenericGroupNoArgProc m_pClearExistingWaypoints150;
+	void* m_pReserved154;
 	GenericGroupViewDataProc m_pGetViewData158;
 	GenericGroupIntersectionProc m_pCheckIntersection15C;
 };

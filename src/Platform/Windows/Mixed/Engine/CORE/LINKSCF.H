@@ -55,10 +55,10 @@ struct CGenericGroupManager {
 
 	CGenericGroupManager* ConstructCachedChunkObjectManagerBase(void* pLevelMode,
 		void* pEntityLookup,
-		void* pProjectileGeometryTable);
+		void* pFormationManager);
 	CGenericGroupManager* ConstructCachedChunkObjectManagerBaseThunk(void* pLevelMode,
 		void* pEntityLookup,
-		void* pProjectileGeometryTable);
+		void* pFormationManager);
 	int GetNumberOfGroups(void);
 	CGenericGroup* GetFirstGroup(void);
 	CGenericGroup* GetNextGroup(void);

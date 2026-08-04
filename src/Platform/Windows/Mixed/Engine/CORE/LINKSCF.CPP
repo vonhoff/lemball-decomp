@@ -552,7 +552,7 @@ void* g_pCachedChunkManagerLevelMode;
 // GLOBAL: LEMBALL 0x004a7830
 void* g_pCachedChunkManagerEntityLookup;
 // GLOBAL: LEMBALL 0x004a7834
-void* g_pCachedChunkManagerProjectileGeometryTable;
+CFormationManager* g_pGenericGroupFormationManager;
 
 
 void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevel(void* pObject,
@@ -589,9 +589,9 @@ void* ManagedEntityQueueCursorForwardThunks::ConstructManagedEntityQueueCursorFo
 
 // LINKERILT: LEMBALL 0x00401604
 CGenericGroupManager* CGenericGroupManager::
-	ConstructCachedChunkObjectManagerBaseThunk(void* pLevelMode, void* pEntityLookup, void* pProjectileGeometryTable)
+	ConstructCachedChunkObjectManagerBaseThunk(void* pLevelMode, void* pEntityLookup, void* pFormationManager)
 {
-	return ConstructCachedChunkObjectManagerBase(pLevelMode, pEntityLookup, pProjectileGeometryTable);
+	return ConstructCachedChunkObjectManagerBase(pLevelMode, pEntityLookup, pFormationManager);
 }
 // LINKERILT: LEMBALL 0x00401677
 LinkScfIceChunkManagerView* LinkScfIceChunkManagerView::ConstructIceChunkManagerThunk(void* pLevelMode, int nCapacity)
@@ -1374,12 +1374,12 @@ int CObjectManager::Receive(
 CGenericGroupManager* CGenericGroupManager::ConstructCachedChunkObjectManagerBase(
 	void* pLevelMode,
 	void* pEntityLookup,
-	void* pProjectileGeometryTable)
+	void* pFormationManager)
 {
 	*(void**) this = &g_LINKSCF_CachedChunkObjectManagerBaseVtable;
 	g_pCachedChunkManagerLevelMode = pLevelMode;
 	g_pCachedChunkManagerEntityLookup = pEntityLookup;
-	g_pCachedChunkManagerProjectileGeometryTable = pProjectileGeometryTable;
+	g_pGenericGroupFormationManager = (CFormationManager*) pFormationManager;
 	*(int*) ((char*) this + 0xa4) = 0;
 	*(int*) ((char*) this + 0xa8) = 0;
 	*(int*) ((char*) this + 0xac) = 1;

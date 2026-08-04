@@ -185,14 +185,6 @@ struct LevelQueuedProjectileRequestTable {
 	int GetRequestCodeThunk(int nIndex);
 };
 
-struct LevelThreeDwordPointVariantB {
-	int m_nX;
-	int m_nY;
-	int m_nZ;
-
-	LevelThreeDwordPointVariantB* Copy(const LevelThreeDwordPointVariantB* pSource);
-	LevelThreeDwordPointVariantB* CopyThunk(const LevelThreeDwordPointVariantB* pSource);
-};
 
 struct LevelModeChunkEntryArrayView {
 	char m_abReserved00[0xE0];
@@ -472,11 +464,6 @@ void LevelModeChunkEntryArrayView::CopyTripletToFixedPointThunk(int* pOutput, in
 	CopyTripletToFixedPoint(pOutput, nIndex);
 }
 
-// LINKERILT: LEMBALL 0x0040161d
-LevelThreeDwordPointVariantB* LevelThreeDwordPointVariantB::CopyThunk(const LevelThreeDwordPointVariantB* pSource)
-{
-	return Copy(pSource);
-}
 
 // LINKERILT: LEMBALL 0x0040173f
 void* LevelManagedEntityChildIterator::GetChildWithState8Thunk(void)
@@ -1086,14 +1073,6 @@ void* __fastcall get_object_field_0x30(void* pObject)
 	return *(void**) ((char*) pObject + 0x30);
 }
 
-// FUNCTION: LEMBALL 0x00410b50
-LevelThreeDwordPointVariantB* LevelThreeDwordPointVariantB::Copy(const LevelThreeDwordPointVariantB* pSource)
-{
-	m_nX = pSource->m_nX;
-	m_nY = pSource->m_nY;
-	m_nZ = pSource->m_nZ;
-	return this;
-}
 
 // MACINTOSH: CAI::AddTime(int)
 // FUNCTION: LEMBALL 0x004121e0

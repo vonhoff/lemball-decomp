@@ -6,6 +6,7 @@ class CViewData;
 
 extern unsigned int __cdecl compute_direction_octant_between_points(int nX1, int nY1, int nX2, int nY2);
 extern void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
+extern CFormationManager* g_pGenericGroupFormationManager;
 
 // FUNCTION: LEMBALL 0x0041de80
 void CGenericGroup::Restart(void)
@@ -202,8 +203,6 @@ void CGenericGroup::CalculateBoundingBox(int nRadius)
 	m_BoundingBox158.width = (short) nMaxX;
 	m_BoundingBox158.height = (short) nMaxY;
 }
-
-CFormationManager* g_pGenericGroupFormationManager;
 
 // FUNCTION: LEMBALL 0x0041e290
 void CGenericGroup::AddNewWaypoint(AICOORD position, CFormationManager* pFormationManager)

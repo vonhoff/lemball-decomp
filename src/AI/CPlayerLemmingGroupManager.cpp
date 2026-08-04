@@ -4,6 +4,7 @@
 #include "Visos/Generic/Memory.h"
 
 extern int g_nSelectedNetworkLobbyPeerId;
+extern CFormationManager* g_pGenericGroupFormationManager;
 
 extern void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevelThunk(void* pObject,
 																	int nUnusedEdx,
@@ -91,15 +92,28 @@ CPlayerLemmingGroup* CPlayerLemmingGroupManager::GetPlayerControlledGroup(void)
 	return 0;
 }
 
+// FUNCTION: LEMBALL 0x00418a30
+void CPlayerLemmingGroupManager::AddNewWaypointToCurrentGroup(int nX, int nY)
+{
+	AICOORD position;
+	CPlayerLemmingGroup* pGroup;
+
+	position.x = nX << 12;
+	position.y = nY << 12;
+	position.z = 0;
+	pGroup = GetPlayerControlledGroup();
+	if (pGroup != 0) {
+		(pGroup->*(pGroup->m_pVtable00->m_pAddNewWaypoint144))(position, g_pGenericGroupFormationManager);
+	}
+}
+
 // FUNCTION: LEMBALL 0x00418a90
 void CPlayerLemmingGroupManager::RemoveWaypointsFromCurrentGroup(void)
 {
-	typedef void(LEMBALL_FASTCALL * NoArgProc)(void* pEntity);
 	CPlayerLemmingGroup* pGroup = GetPlayerControlledGroup();
 
 	if (pGroup != 0) {
-		void** pVtable = *(void***) pGroup;
-		((NoArgProc) pVtable[0x150 / sizeof(void*)])(pGroup);
+		(pGroup->*(pGroup->m_pVtable00->m_pClearExistingWaypoints150))();
 	}
 }
 
