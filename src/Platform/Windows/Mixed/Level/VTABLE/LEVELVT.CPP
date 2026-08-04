@@ -81,6 +81,9 @@ struct CGenericGroup {
 	CVSRect GetBoundingBox(void);
 	void GetBoundingBox(CVSRect& rect);
 	void CalculateBoundingBox(int nRadius);
+	void OverideExistingWaypoints(AICOORD position);
+	void SetFormationIndex(int nIndex);
+	int GetFormationIndex(void);
 };
 struct CPlayerLemmingGroup : CGenericGroup {
 	int m_nRuntimeState160;
@@ -442,9 +445,6 @@ int return_two_vtable_callback_0041c430(void);
 int return_true_vtable_callback_0041c5b0(void);
 int return_two_vtable_callback_0041c630(void);
 int return_two_vtable_callback_0041dc40(void);
-void PASCAL noop_vtable_callback_0041e3c0(void* pUnused1, void* pUnused2, void* pUnused3);
-void __fastcall set_object_field_0x160(void* pObject, void* pUnused, int nValue);
-int __fastcall get_object_field_0x160(void* pObject);
 int return_zero_vtable_callback_0041f870(void);
 int __fastcall is_delayed_move_to_saved_target_armed(void* pObject);
 void __fastcall set_chunk_short_delay_timer(void* pObject);
@@ -2161,26 +2161,22 @@ void CGenericGroup::CalculateBoundingBox(int nRadius)
 	m_BoundingBox158.height = (short) nMaxY;
 }
 
-// MACINTOSH: CGenericGroup::OverideExistingWaypoints(AICOORD)
 // FUNCTION: LEMBALL 0x0041e3c0
-void PASCAL noop_vtable_callback_0041e3c0(void* pUnused1, void* pUnused2, void* pUnused3)
+void CGenericGroup::OverideExistingWaypoints(AICOORD position)
 {
-	(void) pUnused1;
-	(void) pUnused2;
-	(void) pUnused3;
+	(void) position;
 }
 
 // FUNCTION: LEMBALL 0x0041e400
-void __fastcall set_object_field_0x160(void* pObject, void* pUnused, int nValue)
+void CGenericGroup::SetFormationIndex(int nIndex)
 {
-	(void) pUnused;
-	*(int*) ((char*) pObject + 0x160) = nValue;
+	*(int*) ((char*) this + 0x160) = nIndex;
 }
 
 // FUNCTION: LEMBALL 0x0041e410
-int __fastcall get_object_field_0x160(void* pObject)
+int CGenericGroup::GetFormationIndex(void)
 {
-	return *(int*) ((char*) pObject + 0x160);
+	return *(int*) ((char*) this + 0x160);
 }
 
 // FUNCTION: LEMBALL 0x0041f870
