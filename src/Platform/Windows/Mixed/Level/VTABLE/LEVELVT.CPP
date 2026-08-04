@@ -1,5 +1,6 @@
 #include "AI/CGameObject.h"
 #include "AI/CGlobalGameObject.h"
+#include "AI/CFormationManager.h"
 #include "AI/CMover.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
@@ -12,7 +13,7 @@
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
 #include "Visos/Generic/Memory.h"
 
-class CFormationManager;
+extern unsigned int __cdecl compute_direction_octant_between_points(int nX1, int nY1, int nX2, int nY2);
 
 void* LEMBALL_FASTCALL DeleteSimpleVtableObject407EF0(void* pObject, void*, BYTE fDelete);
 void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
@@ -84,6 +85,7 @@ struct CGenericGroup {
 	void GetBoundingBox(CVSRect& rect);
 	void CalculateBoundingBox(int nRadius);
 	void AddNewWaypoint(AICOORD position, CFormationManager* pFormationManager);
+	void SendNewWaypoint(AICOORD position);
 	void OverideExistingWaypoints(AICOORD position);
 	void ClearExistingWaypoints(void);
 	void SetFormationIndex(int nIndex);
@@ -2180,6 +2182,33 @@ void CGenericGroup::AddNewWaypoint(AICOORD position, CFormationManager* pFormati
 		pCommand->m_Position.x = position.x;
 		pCommand->m_Position.y = position.y;
 		pCommand->m_Position.z = position.z;
+	}
+}
+
+// FUNCTION: LEMBALL 0x0041e2e0
+void CGenericGroup::SendNewWaypoint(AICOORD position)
+{
+	typedef int(LEMBALL_FASTCALL * GroupCountProc)(CGenericGroup*);
+	typedef CGameObject*(LEMBALL_FASTCALL * ElementIteratorProc)(CGenericGroup*);
+	void** pVtable = *(void***) this;
+	CGameObject* pObject = ((ElementIteratorProc) pVtable[0x114 / sizeof(void*)])(this);
+	if (pObject != 0) {
+		unsigned int nDirection = compute_direction_octant_between_points(pObject->m_WorldPosition9C.x >> 12,
+																						 pObject->m_WorldPosition9C.y >> 12,
+																						 position.x >> 12,
+																						 position.y >> 12);
+		g_pGenericGroupFormationManager->TransformFormation(
+				*(int*) ((char*) this + 0x160), (nDirection - 2) << 6);
+		int nElements = ((GroupCountProc) pVtable[0x108 / sizeof(void*)])(this);
+		for (int i = 0; i < nElements; ++i) {
+			CFormationVector* pVector = g_pGenericGroupFormationManager->GetAVector(i);
+			AICOORD destination;
+			destination.x = pVector->x + position.x;
+			destination.y = pVector->y + position.y;
+			destination.z = position.z;
+			pObject->AddDestination(destination);
+			pObject = ((ElementIteratorProc) (*(void***) this)[0x118 / sizeof(void*)])(this);
+		}
 	}
 }
 
