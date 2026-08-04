@@ -61,11 +61,17 @@ struct LevelManagedEntityStateIdView {
 
 struct CGenericGroup {
 	char m_abReserved00[0x124];
-	int m_nChildCount124;
-	void* m_apChildren128[10];
-	char m_abReserved150[0x10];
+	int m_nElementCount124;
+	CGameObject* m_apElements128[10];
+	int m_nCurrentElement150;
+	char m_abReserved154[0x0c];
 
 	void ClearChildren(void);
+	int GetElementsInGroup(void);
+	CGameObject* GetFirstElementInGroup(void);
+	CGameObject* GetNextElementInGroup(void);
+	CGameObject* GetCurrentElementInGroup(void);
+	CGameObject* GetNthElementInGroup(int nElement);
 };
 
 struct CPlayerLemmingGroup : CGenericGroup {
@@ -127,11 +133,6 @@ struct LevelManagedEntityChildIterator {
 	int m_fChildrenDirty164;
 	int m_nActiveState168;
 
-	int GetChildCount(void);
-	void* GetFirstChild(void);
-	void* GetNextChild(void);
-	void* GetCurrentChild(void);
-	void* GetChildAt(int iChild);
 	void AppendChild(void* pChild);
 	int ContainsChild(void* pChild);
 	void* GetFirstChildThunk(void);
@@ -533,7 +534,7 @@ void* LevelManagedEntityChildIterator::GetChildWithState8Thunk(void)
 // LINKERILT: LEMBALL 0x00401816
 void* LevelManagedEntityChildIterator::GetNextChildThunk(void)
 {
-	return GetNextChild();
+	return ((CGenericGroup*) this)->GetNextElementInGroup();
 }
 
 // LINKERILT: LEMBALL 0x0040185c
@@ -563,7 +564,7 @@ void LevelManagedEntityQueueCursor::GetPositionThunk(int* pnX, int* pnY)
 // LINKERILT: LEMBALL 0x00401eab
 void* LevelManagedEntityChildIterator::GetCurrentChildThunk(void)
 {
-	return GetCurrentChild();
+	return ((CGenericGroup*) this)->GetCurrentElementInGroup();
 }
 
 // LINKERILT: LEMBALL 0x00401ed3
@@ -599,7 +600,7 @@ LevelManagedEntityChildIterator* LevelManagedEntityActiveGroupView::GetFirstActi
 // LINKERILT: LEMBALL 0x0040241e
 void* LevelManagedEntityChildIterator::GetFirstChildThunk(void)
 {
-	return GetFirstChild();
+	return ((CGenericGroup*) this)->GetFirstElementInGroup();
 }
 
 // LINKERILT: LEMBALL 0x004024be
@@ -1982,45 +1983,45 @@ int return_two_vtable_callback_0041dc40(void)
 }
 
 // FUNCTION: LEMBALL 0x0041def0
-int LevelManagedEntityChildIterator::GetChildCount(void)
+int CGenericGroup::GetElementsInGroup(void)
 {
-	return m_cChildren124;
+	return m_nElementCount124;
 }
 
 // FUNCTION: LEMBALL 0x0041df00
-void* LevelManagedEntityChildIterator::GetFirstChild(void)
+CGameObject* CGenericGroup::GetFirstElementInGroup(void)
 {
-	m_iCurrentChild150 = 0;
-	return m_apChildren128[0];
+	m_nCurrentElement150 = 0;
+	return m_apElements128[0];
 }
 
 // FUNCTION: LEMBALL 0x0041df20
-void* LevelManagedEntityChildIterator::GetNextChild(void)
+CGameObject* CGenericGroup::GetNextElementInGroup(void)
 {
-	++m_iCurrentChild150;
-	if (m_iCurrentChild150 >= m_cChildren124) {
+	++m_nCurrentElement150;
+	if (m_nCurrentElement150 >= m_nElementCount124) {
 		return 0;
 	}
-	return m_apChildren128[m_iCurrentChild150];
+	return m_apElements128[m_nCurrentElement150];
 }
 
 // FUNCTION: LEMBALL 0x0041df40
-void* LevelManagedEntityChildIterator::GetCurrentChild(void)
+CGameObject* CGenericGroup::GetCurrentElementInGroup(void)
 {
-	if (m_iCurrentChild150 >= m_cChildren124) {
+	if (m_nCurrentElement150 >= m_nElementCount124) {
 		return 0;
 	}
-	return m_apChildren128[m_iCurrentChild150];
+	return m_apElements128[m_nCurrentElement150];
 }
 
 // FUNCTION: LEMBALL 0x0041df60
-void* LevelManagedEntityChildIterator::GetChildAt(int iChild)
+CGameObject* CGenericGroup::GetNthElementInGroup(int nElement)
 {
-	m_iCurrentChild150 = iChild;
-	if (iChild >= m_cChildren124) {
+	m_nCurrentElement150 = nElement;
+	if (nElement >= m_nElementCount124) {
 		return 0;
 	}
-	return m_apChildren128[iChild];
+	return m_apElements128[nElement];
 }
 
 // FUNCTION: LEMBALL 0x0041e020
