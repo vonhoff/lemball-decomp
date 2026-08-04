@@ -56,6 +56,7 @@ public:
 	CGlobalGameObject* FindObject(int nObjectId);
 	void Remove(CGlobalGameObject* pObject);
 	int Receive(unsigned short nMessage, CGlobalGameObject* pObject, CNetworkMessage* pMessage);
+	void ConvertVer0ToVer1(void);
 };
 
 struct LinkScfMoveChunkManagerView {

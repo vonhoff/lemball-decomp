@@ -11,6 +11,7 @@ inline void* operator new(unsigned int, void* pMemory)
 #include "AI/CMaze.h"
 #include "Control/CGame.h"
 #include "Control/Options.h"
+#include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
@@ -62,7 +63,6 @@ void LEMBALL_FASTCALL ResizeLevelTileReachabilityGridThunk(void* pReachabilityHe
 void ResetLevelFrameClockEntryThunk(void);
 void LEMBALL_FASTCALL ResetBoonChunkManagerObjectsThunk(void* pObject);
 void UpdateNetworkFrameClockFromNetworkTimeThunk(unsigned int nTimeMs);
-void LEMBALL_FASTCALL DispatchType14CountedChildSlotC4(void* pChunkManager);
 void LEMBALL_FASTCALL FillReachabilityGridFromTileFlagsThunk(void* pReachabilityHelper);
 void ResetLevelFrameClockThunk(void);
 void UpdateNetworkFrameClockFromNetworkTime(unsigned int nTimeMs);
@@ -535,7 +535,6 @@ struct GameLevelTileGrid {
 };
 
 void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEnabled);
-void LEMBALL_FASTCALL DispatchType14CountedChildSlotC4(void* pChunkManager);
 void LEMBALL_FASTCALL FillReachabilityGridFromTileFlagsThunk(void* pReachabilityHelper);
 
 struct GameLockedRecordSlotTableView {
@@ -734,29 +733,25 @@ struct LevelType14ChildView {
 	}
 };
 
-struct LevelCountedChildManagerView {
-	unsigned char m_abReserved00[0x36];
-	unsigned short m_cChildren36;
-	unsigned char m_abReserved38[4];
-	LevelType14ChildView** m_ppChildren3C;
-};
-
-void LEMBALL_FASTCALL DispatchType14CountedChildSlotC4(void* pObject)
+void CObjectManager::ConvertVer0ToVer1(void)
 {
+	int nOffset;
 	int i;
-	LevelCountedChildManagerView* pManager;
+	CObjectManager* pManager;
 	LevelType14ChildView* pChild;
 
-	pManager = (LevelCountedChildManagerView*) pObject;
+	nOffset = 0;
+	pManager = this;
 	i = 0;
-	if (pManager->m_cChildren36 > 0) {
+	if (pManager->m_nPendingCount36 > 0) {
 		do {
-			pChild = pManager->m_ppChildren3C[i];
+			pChild = *(LevelType14ChildView**) ((char*) pManager->m_apObjects3C + nOffset);
 			if (pChild->m_nType64 == 0x14) {
 				pChild->DispatchSlotC4();
 			}
+			nOffset += 4;
 			++i;
-		} while (i < (int) (unsigned int) pManager->m_cChildren36);
+		} while (i < (int) (unsigned int) pManager->m_nPendingCount36);
 	}
 }
 // Compatibility shim for the original ILT call site.
@@ -1641,7 +1636,7 @@ void AssignMissingManagedEntitySlotIdsThunk(int nLevelMode)
 			++i;
 		} while ((int) i < (int) cManagedEntities);
 	}
-	DispatchType14CountedChildSlotC4(*(void**) (nLevelMode + 0x158));
+	((CObjectManager*) *(void**) (nLevelMode + 0x158))->ConvertVer0ToVer1();
 }
 
 // MACINTOSH: CAI::LiftId(int)
