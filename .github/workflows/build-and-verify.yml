@@ -76,7 +76,7 @@ jobs:
             echo '::error::downloaded reference is not a Windows executable; the URL may return an HTML login page'
             exit 1
           fi
-          actual=$(sha256sum "$RUNNER_TEMP/LEMBALL.EXE" | cut -d' ' -f1)
+          actual=$(REFERENCE_PATH="$RUNNER_TEMP/LEMBALL.EXE" python -c 'import hashlib, os; print(hashlib.file_digest(open(os.environ["REFERENCE_PATH"], "rb"), "sha256").hexdigest())')
           if [ "$actual" != "$LEMBALL_SHA256" ]; then
             echo "::error::reference SHA-256 mismatch (downloaded: $actual)"
             exit 1
