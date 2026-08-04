@@ -47,6 +47,7 @@ public:
 	void** m_apObjects3C;
 
 	CObjectManager(CAI* pAI, int nCapacity);
+	~CObjectManager();
 	void Restart(void);
 	void Initialise(int nCount);
 };

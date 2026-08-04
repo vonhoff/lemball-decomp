@@ -12,7 +12,7 @@ address,name,symbol,type,source
 0x00415240,SetLevelChunkObjectMotionVector,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 
 0x00417EC0,DestroyProjectilePoolAuto,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x0041B110,DestroyCountedChildTableStreamAuto,,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+
 0x0041BEC0,DispatchType14CountedChildSlotC4,,function,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x0041DE40,DestroyCompositeLevelChunkChildrenAuto,,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041FDA0,DestroyThreeOptionalRecordChunkObjectAuto,,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

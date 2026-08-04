@@ -1134,11 +1134,14 @@ CObjectManager::CObjectManager(CAI* pAI, int nCapacity)
 struct ObjectManagerChildVtable;
 struct ObjectManagerChildView {
 	ObjectManagerChildVtable* m_pVtable00;
+	void Delete(BYTE fDelete);
 	void Activate(void);
 };
+typedef void (ObjectManagerChildView::*ObjectManagerChildDeleteProc)(BYTE);
 typedef void (ObjectManagerChildView::*ObjectManagerChildActivateProc)(void);
 struct ObjectManagerChildVtable {
-	void* m_apReserved00[65];
+	ObjectManagerChildDeleteProc m_pDelete00;
+	void* m_apReserved04[64];
 	ObjectManagerChildActivateProc m_pActivate104;
 };
 
@@ -1209,6 +1212,30 @@ void CObjectManager::Initialise(int nCount)
 			} while (nIndex < m_nObjectCount34);
 		}
 	}
+}
+
+// FUNCTION: LEMBALL 0x0041b110
+CObjectManager::~CObjectManager()
+{
+	int nIndex;
+	int nOffset;
+	ObjectManagerChildView* pChild;
+
+	nOffset = 0;
+	*(void**) this = &g_LINKSCF_GmobChunkManagerVtable;
+	nIndex = 0;
+	if (m_nPendingCount36 > nOffset) {
+		do {
+			pChild = (ObjectManagerChildView*) *(void**) ((char*) m_apObjects3C + nOffset);
+			if (pChild != 0) {
+				(pChild->*pChild->m_pVtable00->m_pDelete00)(1);
+			}
+			nOffset += sizeof(void*);
+			++nIndex;
+		} while (nIndex < m_nPendingCount36);
+	}
+	FreeVSMemBlock(m_apObjects3C);
+	((VsNetEffStreamCommon*) this)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 }
 
 // MACINTOSH: CGenericGroupManager::CGenericGroupManager(CAI*, CObjectManager*, CFormationManager*)

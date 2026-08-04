@@ -2,6 +2,7 @@
 #include "AI/CGlobalGameObject.h"
 #include "AI/CMover.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
 #include "AI/CCatapult.h"
 #include "AI/CAmmo.h"
 #include "AI/CCrate.h"
@@ -2515,7 +2516,10 @@ DEFINE_LEVELVT_SCALAR_DELETE(DeleteCollChunkObjectWrapper23060, DestroyCollChunk
 
 DEFINE_LEVELVT_DESTROY_PAIR(DestroyManagedEntityQueueCursorAuto, DestroyManagedEntityQueueCursorAutoThunk)
 
-DEFINE_LEVELVT_DESTROY_PAIR(DestroyCountedChildTableStreamAuto, DestroyCountedChildTableStreamAutoThunk)
+void LEMBALL_FASTCALL DestroyCountedChildTableStreamAutoThunk(void* pObject)
+{
+	((CObjectManager*) pObject)->~CObjectManager();
+}
 
 DEFINE_LEVELVT_DESTROY_PAIR(DestroyThreeOptionalRecordChunkObjectAuto, DestroyThreeOptionalRecordChunkObjectAutoThunk)
 
