@@ -12,6 +12,8 @@
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
 #include "Visos/Generic/Memory.h"
 
+class CFormationManager;
+
 void* LEMBALL_FASTCALL DeleteSimpleVtableObject407EF0(void* pObject, void*, BYTE fDelete);
 void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 void LEMBALL_FASTCALL DestroyCompositeLevelChunkChildrenAutoThunk(void* pObject);
@@ -81,6 +83,7 @@ struct CGenericGroup {
 	CVSRect GetBoundingBox(void);
 	void GetBoundingBox(CVSRect& rect);
 	void CalculateBoundingBox(int nRadius);
+	void AddNewWaypoint(AICOORD position, CFormationManager* pFormationManager);
 	void OverideExistingWaypoints(AICOORD position);
 	void ClearExistingWaypoints(void);
 	void SetFormationIndex(int nIndex);
@@ -2160,6 +2163,24 @@ void CGenericGroup::CalculateBoundingBox(int nRadius)
 	m_BoundingBox158.y = (short) nMinY;
 	m_BoundingBox158.width = (short) nMaxX;
 	m_BoundingBox158.height = (short) nMaxY;
+}
+
+CFormationManager* g_pGenericGroupFormationManager;
+
+// FUNCTION: LEMBALL 0x0041e290
+void CGenericGroup::AddNewWaypoint(AICOORD position, CFormationManager* pFormationManager)
+{
+	g_pGenericGroupFormationManager = pFormationManager;
+	CGameObjectCommandQueue* pQueue = *(CGameObjectCommandQueue**) ((char*) this + 0x70);
+	unsigned short nIndex = pQueue->m_cEntries;
+	if (nIndex < pQueue->m_cCapacity) {
+		pQueue->m_cEntries = nIndex + 1;
+		CGameObjectCommand* pCommand = &pQueue->m_pEntries[nIndex];
+		pCommand->m_nType = 1;
+		pCommand->m_Position.x = position.x;
+		pCommand->m_Position.y = position.y;
+		pCommand->m_Position.z = position.z;
+	}
 }
 
 // FUNCTION: LEMBALL 0x0041e3c0
