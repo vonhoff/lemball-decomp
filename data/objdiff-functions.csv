@@ -545,7 +545,7 @@ address,size,name,unit
 0x004189C0,39,CPlayerLemmingGroupManager::MakeNoGroupsPlayerControlled,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004189F0,60,CPlayerLemmingGroupManager::GetPlayerControlledGroup,AI/CPlayerLemmingGroupManager.cpp
 0x00418A30,89,CPlayerLemmingGroupManager::AddNewWaypointToCurrentGroup,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x00418A90,20,CPlayerLemmingGroupManager::RemoveWaypointsFromCurrentGroup,AI/LVACTCHD.CPP
+0x00418A90,20,CPlayerLemmingGroupManager::RemoveWaypointsFromCurrentGroup,AI/CPlayerLemmingGroupManager.cpp
 0x00418AB0,97,CPlayerLemmingGroupManager::UseObject,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00418B20,54,CPlayerLemmingGroupManager::ReformAlteredGroups,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00418B60,59,CPlayerLemmingGroupManager::PlayerGroupRequestFire,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

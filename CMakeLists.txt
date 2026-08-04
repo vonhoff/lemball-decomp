@@ -156,7 +156,6 @@ set(LEMBALL_SOURCES
     src/Frontend/MMPASS.CPP
     src/AI/LVRANDVT.CPP
     src/AI/LVPREDVT.CPP
-    src/AI/LVACTCHD.CPP
     src/AI/LVPRJGEOM.CPP
     src/AI/LVGMOBPT.CPP
     src/views/2d/LVRUNEXT.CPP

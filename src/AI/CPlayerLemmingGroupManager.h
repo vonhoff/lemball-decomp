@@ -18,6 +18,7 @@ public:
 	void ProcessDead(void);
 	int IsLemmingPlayerControlled(CPlayerLemming* pLemming);
 	CPlayerLemmingGroup* GetPlayerControlledGroup(void);
+	void RemoveWaypointsFromCurrentGroup(void);
 	int HasSFXChanged(void);
 };
 

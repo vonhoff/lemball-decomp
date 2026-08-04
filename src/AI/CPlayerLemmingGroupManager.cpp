@@ -1,5 +1,7 @@
 #include "AI/CPlayerLemmingGroupManager.h"
 
+#include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+
 struct LevelManagedEntityChildIterator;
 
 struct LevelManagedEntityChildIterator {
@@ -68,6 +70,18 @@ CPlayerLemmingGroup* CPlayerLemmingGroupManager::GetPlayerControlledGroup(void)
 		} while (iGroup < m_nGroupCountA4);
 	}
 	return 0;
+}
+
+// FUNCTION: LEMBALL 0x00418a90
+void CPlayerLemmingGroupManager::RemoveWaypointsFromCurrentGroup(void)
+{
+	typedef void(LEMBALL_FASTCALL * NoArgProc)(void* pEntity);
+	CPlayerLemmingGroup* pGroup = GetPlayerControlledGroup();
+
+	if (pGroup != 0) {
+		void** pVtable = *(void***) pGroup;
+		((NoArgProc) pVtable[0x150 / sizeof(void*)])(pGroup);
+	}
 }
 
 // FUNCTION: LEMBALL 0x004193f0
