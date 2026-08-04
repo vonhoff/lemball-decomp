@@ -143,14 +143,10 @@ void* ConstructManagedEntityQueueCursorThunk(void* pObject,
 											 int nPrimaryCapacity,
 											 int nSecondaryCapacity);
 
-void* LEMBALL_FASTCALL GetFirstGroup(void* pObject);
-void* LEMBALL_FASTCALL GetNextGroup(void* pObject);
-void* LEMBALL_FASTCALL GetNthGroup(void* pObject, void* pUnused, int nIndex);
-void* LEMBALL_FASTCALL GetCurrentGroup(void* pObject);
+
 void LEMBALL_FASTCALL AddNewGroup(void* pObject, void* pUnused, void* pChunkObject);
 int LEMBALL_FASTCALL GetViewData(void* pObject, void* pUnused, char* pEntries);
 int LEMBALL_FASTCALL EmitCachedChunkManagerRenderEntriesThunk(void* pObject, void* pUnused, char* pEntries);
-int LEMBALL_FASTCALL GetNumberOfGroups(void* pObject);
 
 #define DEFINE_LINKSCF_VTABLE_STUB_0(name)                                                                             \
 	int LEMBALL_FASTCALL name(void* pObject)                                                                           \
@@ -234,13 +230,34 @@ DEFINE_LINKSCF_VTABLE_STUB_1(EmitMoveChunkManagerRenderEntries)
 #undef DEFINE_LINKSCF_VTABLE_STUB_1
 #undef DEFINE_LINKSCF_VTABLE_STUB_2
 
+struct CGenericGroup;
+struct CGenericGroupManager {
+	void* m_pVtable00;
+	CGenericGroup* m_apGroups04[40];
+	int m_nGroupCountA4;
+	int m_nCurrentGroupA8;
+	int m_fActiveAC;
+
+	CGenericGroupManager* ConstructCachedChunkObjectManagerBase(void* pLevelMode,
+		void* pEntityLookup,
+		void* pProjectileGeometryTable);
+	CGenericGroupManager* ConstructCachedChunkObjectManagerBaseThunk(void* pLevelMode,
+		void* pEntityLookup,
+		void* pProjectileGeometryTable);
+	int GetNumberOfGroups(void);
+	CGenericGroup* GetFirstGroup(void);
+	CGenericGroup* GetNextGroup(void);
+	CGenericGroup* GetNthGroup(int nIndex);
+	CGenericGroup* GetCurrentGroup(void);
+};
+
 void CreateNewGroup(void);
 
 // Compatibility shim retained for compiler-generated callers; original ILT slot
 // 0x00401078 targets GetFirstGroup directly.
 void* LEMBALL_FASTCALL GetFirstCachedChunkObjectThunk(void* pObject)
 {
-	return GetFirstGroup(pObject);
+	return ((CGenericGroupManager*) pObject)->GetFirstGroup();
 }
 
 /* These tables retain the recovered common EFF stream interface while the
@@ -387,19 +404,24 @@ struct LevelManagedEntityActiveGroupView {
 typedef LevelManagedEntityChildIterator* (LevelManagedEntityActiveGroupView::*FindManagedEntityProc)(void*);
 
 struct CachedChunkObjectManagerVtable {
-	void* m_apBeforeFind00[11];
+	int (CGenericGroupManager::*m_pGetNumberOfGroups00)(void);
+	CGenericGroup* (CGenericGroupManager::*m_pGetFirstGroup04)(void);
+	CGenericGroup* (CGenericGroupManager::*m_pGetNextGroup08)(void);
+	CGenericGroup* (CGenericGroupManager::*m_pGetNthGroup0C)(int);
+	CGenericGroup* (CGenericGroupManager::*m_pGetCurrentGroup10)(void);
+	void* m_apBeforeFind14[6];
 	FindManagedEntityProc m_pFindManagedEntity2C;
 	void* m_apAfterFind30[7];
 };
 
 #define LINKSCF_CACHED_CHUNK_MANAGER_VTABLE                                                                            \
 	{                                                                                                                  \
-		{(void*) GetNumberOfGroups,                                                                           \
-		 (void*) GetFirstGroup,                                                                            \
-		 (void*) GetNextGroup,                                                                             \
-		 (void*) GetNthGroup,                                                                          \
-		 (void*) GetCurrentGroup,                                                                            \
-		 (void*) RemoveCachedChunkObjectAndDestroy,                                                                    \
+		&CGenericGroupManager::GetNumberOfGroups,                                                              \
+		&CGenericGroupManager::GetFirstGroup,                                                                  \
+		&CGenericGroupManager::GetNextGroup,                                                                   \
+		&CGenericGroupManager::GetNthGroup,                                                                    \
+		&CGenericGroupManager::GetCurrentGroup,                                                                \
+		{(void*) RemoveCachedChunkObjectAndDestroy,                                                             \
 		 (void*) CountNestedIteratedChildEntries,                                                                      \
 		 (void*) GetFirstManagedEntityChildFromCachedGroup,                                                            \
 		 (void*) GetNextManagedEntityChildFromCachedGroup,                                                             \
@@ -547,14 +569,6 @@ void* g_pCachedChunkManagerEntityLookup;
 // GLOBAL: LEMBALL 0x004a7834
 void* g_pCachedChunkManagerProjectileGeometryTable;
 
-struct CGenericGroupManager {
-	CGenericGroupManager* ConstructCachedChunkObjectManagerBase(void* pLevelMode,
-		void* pEntityLookup,
-		void* pProjectileGeometryTable);
-	CGenericGroupManager* ConstructCachedChunkObjectManagerBaseThunk(void* pLevelMode,
-		void* pEntityLookup,
-		void* pProjectileGeometryTable);
-};
 
 void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevel(void* pObject,
 														int nUnusedEdx,
@@ -1393,56 +1407,49 @@ CGenericGroupManager* CGenericGroupManager::ConstructCachedChunkObjectManagerBas
 	memset((char*) this + 4, 0, 40 * sizeof(int));
 	return this;
 }
-// MACINTOSH: CGenericGroupManager::GetNumberOfGroups()
 // FUNCTION: LEMBALL 0x0041ea20
-int LEMBALL_FASTCALL GetNumberOfGroups(void* pObject)
+int CGenericGroupManager::GetNumberOfGroups(void)
 {
-	return *(int*) ((char*) pObject + 0xa4);
+	return m_nGroupCountA4;
 }
-// MACINTOSH: CGenericGroupManager::GetFirstGroup()
 // FUNCTION: LEMBALL 0x0041ea30
-void* LEMBALL_FASTCALL GetFirstGroup(void* pObject)
+CGenericGroup* CGenericGroupManager::GetFirstGroup(void)
 {
-	*(int*) ((char*) pObject + 0xa8) = 0;
-	if (*(int*) ((char*) pObject + 0xa4) == 0) {
+	m_nCurrentGroupA8 = 0;
+	if (m_nGroupCountA4 == 0) {
 		return 0;
 	}
-	return *(void**) ((char*) pObject + 4);
+	return m_apGroups04[0];
 }
-// MACINTOSH: CGenericGroupManager::GetNextGroup()
 // FUNCTION: LEMBALL 0x0041ea50
-void* LEMBALL_FASTCALL GetNextGroup(void* pObject)
+CGenericGroup* CGenericGroupManager::GetNextGroup(void)
 {
 	int nIndex;
 
-	nIndex = *(int*) ((char*) pObject + 0xa8) + 1;
-	*(int*) ((char*) pObject + 0xa8) = nIndex;
-	if (*(int*) ((char*) pObject + 0xa4) <= nIndex) {
+	nIndex = m_nCurrentGroupA8 + 1;
+	m_nCurrentGroupA8 = nIndex;
+	if (m_nGroupCountA4 <= nIndex) {
 		return 0;
 	}
-	return *(void**) ((char*) pObject + 4 + nIndex * 4);
+	return m_apGroups04[nIndex];
 }
-// MACINTOSH: CGenericGroupManager::GetNthGroup(int)
 // FUNCTION: LEMBALL 0x0041ea70
-void* LEMBALL_FASTCALL GetNthGroup(void* pObject, void*, int nIndex)
+CGenericGroup* CGenericGroupManager::GetNthGroup(int nIndex)
 {
-	*(int*) ((char*) pObject + 0xa8) = nIndex;
-	if (*(int*) ((char*) pObject + 0xa4) <= nIndex) {
+	m_nCurrentGroupA8 = nIndex;
+	if (m_nGroupCountA4 <= nIndex) {
 		return 0;
 	}
-	return *(void**) ((char*) pObject + 4 + nIndex * 4);
+	return m_apGroups04[nIndex];
 }
-// MACINTOSH: CGenericGroupManager::GetCurrentGroup()
 // FUNCTION: LEMBALL 0x0041ea90
-void* LEMBALL_FASTCALL GetCurrentGroup(void* pObject)
+CGenericGroup* CGenericGroupManager::GetCurrentGroup(void)
 {
-	int nIndex;
-
-	nIndex = *(int*) ((char*) pObject + 0xa8);
-	if (*(int*) ((char*) pObject + 0xa4) <= nIndex) {
+	int nIndex = m_nCurrentGroupA8;
+	if (m_nGroupCountA4 <= nIndex) {
 		return 0;
 	}
-	return *(void**) ((char*) pObject + 4 + nIndex * 4);
+	return m_apGroups04[nIndex];
 }
 // MACINTOSH: CGenericGroupManager::AddNewGroup(CGenericGroup*)
 // FUNCTION: LEMBALL 0x0041ec80
