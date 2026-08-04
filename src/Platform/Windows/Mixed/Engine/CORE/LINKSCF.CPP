@@ -249,6 +249,11 @@ struct CGenericGroupManager {
 	CGenericGroup* GetNextGroup(void);
 	CGenericGroup* GetNthGroup(int nIndex);
 	CGenericGroup* GetCurrentGroup(void);
+	int GetNumberOfElements(void);
+	CGameObject* GetFirstElement(void);
+	CGameObject* GetNextElement(void);
+	CGameObject* GetCurrentElement(void);
+	CGameObject* GetNthElement(int nIndex);
 };
 
 void CreateNewGroup(void);
@@ -409,7 +414,12 @@ struct CachedChunkObjectManagerVtable {
 	CGenericGroup* (CGenericGroupManager::*m_pGetNextGroup08)(void);
 	CGenericGroup* (CGenericGroupManager::*m_pGetNthGroup0C)(int);
 	CGenericGroup* (CGenericGroupManager::*m_pGetCurrentGroup10)(void);
-	void* m_apBeforeFind14[6];
+	void* m_pDeleteGroup14;
+	int (CGenericGroupManager::*m_pGetNumberOfElements18)(void);
+	CGameObject* (CGenericGroupManager::*m_pGetFirstElement1C)(void);
+	CGameObject* (CGenericGroupManager::*m_pGetNextElement20)(void);
+	CGameObject* (CGenericGroupManager::*m_pGetCurrentElement24)(void);
+	CGameObject* (CGenericGroupManager::*m_pGetNthElement28)(int);
 	FindManagedEntityProc m_pFindManagedEntity2C;
 	void* m_apAfterFind30[7];
 };
@@ -421,12 +431,12 @@ struct CachedChunkObjectManagerVtable {
 		&CGenericGroupManager::GetNextGroup,                                                                   \
 		&CGenericGroupManager::GetNthGroup,                                                                    \
 		&CGenericGroupManager::GetCurrentGroup,                                                                \
-		{(void*) RemoveCachedChunkObjectAndDestroy,                                                             \
-		 (void*) CountNestedIteratedChildEntries,                                                                      \
-		 (void*) GetFirstManagedEntityChildFromCachedGroup,                                                            \
-		 (void*) GetNextManagedEntityChildFromCachedGroup,                                                             \
-		 (void*) GetFirstIteratedChildStatus11C,                                                                       \
-		 (void*) AdvanceCachedGroupManagedEntityChildIterator},                                                        \
+		(void*) RemoveCachedChunkObjectAndDestroy,                                                             \
+		&CGenericGroupManager::GetNumberOfElements,                                                          \
+		&CGenericGroupManager::GetFirstElement,                                                              \
+		&CGenericGroupManager::GetNextElement,                                                               \
+		&CGenericGroupManager::GetCurrentElement,                                                            \
+		&CGenericGroupManager::GetNthElement,                                                                \
 			&LevelManagedEntityActiveGroupView::FindManagedEntityByPointer,                                            \
 		{                                                                                                              \
 			(void*) AddNewGroup, (void*) AppendManagedEntityGroupFromIds,                                              \
@@ -1451,6 +1461,103 @@ CGenericGroup* CGenericGroupManager::GetCurrentGroup(void)
 	}
 	return m_apGroups04[nIndex];
 }
+
+// FUNCTION: LEMBALL 0x0041eab0
+int CGenericGroupManager::GetNumberOfElements(void)
+{
+	typedef CGenericGroup*(LEMBALL_FASTCALL * ManagerGroupProc)(void* pManager);
+	typedef int(LEMBALL_FASTCALL * GroupCountProc)(void* pGroup);
+	void** pVtable;
+	ManagerGroupProc pGetNextGroup;
+	CGenericGroup* pGroup;
+	int nElements;
+
+	nElements = 0;
+	pVtable = *(void***) this;
+	pGroup = ((ManagerGroupProc) pVtable[1])(this);
+	if (pGroup != 0) {
+		pGetNextGroup = (ManagerGroupProc) pVtable[2];
+		do {
+			nElements += ((GroupCountProc) (*(void***) pGroup)[0x108 / sizeof(void*)])(pGroup);
+			pGroup = pGetNextGroup(this);
+		} while (pGroup != 0);
+	}
+	return nElements;
+}
+
+// FUNCTION: LEMBALL 0x0041eae0
+CGameObject* CGenericGroupManager::GetFirstElement(void)
+{
+	typedef CGenericGroup*(LEMBALL_FASTCALL * ManagerGroupProc)(void* pManager);
+	typedef CGameObject*(LEMBALL_FASTCALL * GroupElementProc)(void* pGroup);
+	CGenericGroup* pGroup;
+
+	pGroup = ((ManagerGroupProc) (*(void***) this)[1])(this);
+	if (pGroup != 0) {
+		return ((GroupElementProc) (*(void***) pGroup)[0x114 / sizeof(void*)])(pGroup);
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0041eb00
+CGameObject* CGenericGroupManager::GetNextElement(void)
+{
+	typedef CGenericGroup*(LEMBALL_FASTCALL * ManagerGroupProc)(void* pManager);
+	typedef CGameObject*(LEMBALL_FASTCALL * GroupElementProc)(void* pGroup);
+	void** pVtable;
+	CGenericGroup* pGroup;
+	CGameObject* pElement;
+
+	pVtable = *(void***) this;
+	pGroup = ((ManagerGroupProc) pVtable[4])(this);
+	if (pGroup == 0) {
+		pElement = 0;
+	}
+	else {
+		pElement = ((GroupElementProc) (*(void***) pGroup)[0x118 / sizeof(void*)])(pGroup);
+		if (pElement == 0) {
+			pGroup = ((ManagerGroupProc) pVtable[2])(this);
+			if (pGroup != 0) {
+				return ((GroupElementProc) (*(void***) pGroup)[0x114 / sizeof(void*)])(pGroup);
+			}
+			return 0;
+		}
+	}
+	return pElement;
+}
+
+// FUNCTION: LEMBALL 0x0041eb40
+CGameObject* CGenericGroupManager::GetCurrentElement(void)
+{
+	typedef CGenericGroup*(LEMBALL_FASTCALL * ManagerGroupProc)(void* pManager);
+	typedef CGameObject*(LEMBALL_FASTCALL * GroupElementProc)(void* pGroup);
+	CGenericGroup* pGroup;
+	CGameObject* pElement;
+
+	pElement = 0;
+	pGroup = ((ManagerGroupProc) (*(void***) this)[4])(this);
+	if (pGroup != 0) {
+		pElement = ((GroupElementProc) (*(void***) pGroup)[0x11c / sizeof(void*)])(pGroup);
+	}
+	return pElement;
+}
+
+// FUNCTION: LEMBALL 0x0041eb60
+CGameObject* CGenericGroupManager::GetNthElement(int nIndex)
+{
+	typedef CGameObject*(LEMBALL_FASTCALL * ManagerElementProc)(void* pManager);
+	void** pVtable;
+	CGameObject* pElement;
+	int i;
+
+	pVtable = *(void***) this;
+	pElement = ((ManagerElementProc) pVtable[7])(this);
+	for (i = 0; pElement != 0 && i < nIndex; ++i) {
+		pElement = ((ManagerElementProc) pVtable[8])(this);
+	}
+	return pElement;
+}
+
 // MACINTOSH: CGenericGroupManager::AddNewGroup(CGenericGroup*)
 // FUNCTION: LEMBALL 0x0041ec80
 void LEMBALL_FASTCALL AddNewGroup(void* pObject, void*, void* pChunkObject)

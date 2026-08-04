@@ -113,16 +113,7 @@ struct LinkScfBoonChunkManagerView {
 
 // STUB: LEMBALL 0x0041ecb0
 // RemoveCachedChunkObjectAndDestroy
-// STUB: LEMBALL 0x0041eab0
-// CountNestedIteratedChildEntries
-// STUB: LEMBALL 0x0041eae0
-// GetFirstManagedEntityChildFromCachedGroup
-// STUB: LEMBALL 0x0041eb00
-// GetNextManagedEntityChildFromCachedGroup
-// STUB: LEMBALL 0x0041eb40
-// GetFirstIteratedChildStatus11C
-// STUB: LEMBALL 0x0041eb60
-// AdvanceCachedGroupManagedEntityChildIterator
+
 // STUB: LEMBALL 0x0041ebe0
 // AppendManagedEntityGroupFromIds
 // STUB: LEMBALL 0x0041ed20
