@@ -1257,6 +1257,28 @@ CGlobalGameObject* CObjectManager::AddObject(
 	return 0;
 }
 
+// FUNCTION: LEMBALL 0x0041b8f0
+CGlobalGameObject* CObjectManager::FindObject(int nObjectId)
+{
+	int nObjectCount;
+	int iObject;
+	char* pObject;
+
+	nObjectCount = m_nPendingCount36;
+	iObject = 0;
+	while (1) {
+		if (nObjectCount <= iObject) {
+			return 0;
+		}
+		if (*(unsigned short*) ((char*) m_apObjects3C[iObject] + 0x6a) == nObjectId) {
+			break;
+		}
+		++iObject;
+	}
+	pObject = (char*) m_apObjects3C[iObject];
+	return *(int*) (pObject + 0x38) != 0 ? (CGlobalGameObject*) pObject : 0;
+}
+
 // MACINTOSH: CGenericGroupManager::CGenericGroupManager(CAI*, CObjectManager*, CFormationManager*)
 // FUNCTION: LEMBALL 0x0041e8f0
 CGenericGroupManager* CGenericGroupManager::ConstructCachedChunkObjectManagerBase(
