@@ -1,5 +1,6 @@
 #include "AI/CGameObject.h"
 #include "AI/CGenericGroup.h"
+#include "AI/CIceManager.h"
 #include "AI/CPlayerLemmingGroup.h"
 #include "AI/CGlobalGameObject.h"
 #include "AI/CMover.h"
@@ -22,7 +23,7 @@ void LEMBALL_FASTCALL DestroyCompositeLevelChunkChildrenAutoThunk(void* pObject)
 extern void* g_LINKSCF_RockChunkManagerVtable[10];
 extern void* g_LINKSCF_CollChunkManagerVtable[10];
 extern void* g_LINKSCF_PgunChunkManagerVtable[10];
-extern void* g_LINKSCF_IceChunkManagerVtable[10];
+
 extern void* g_LINKSCF_MoveChunkManagerVtable[10];
 
 struct LevelVtDeletableChild {
@@ -398,7 +399,6 @@ void __fastcall clear_rock_chunk_object_count(void* pManager);
 int PASCAL get_tile_flag_0x1c_object_render_entry_count(void);
 void noop_vtable_callback_0042c9a0(void);
 void __fastcall reset_ice_chunk_object_count(void* pManager);
-int PASCAL return_zero_vtable_callback_0042dd30(void* pUnused);
 
 void __fastcall reset_move_chunk_object_count(void* pManager);
 int __fastcall return_object_field_0x0c_00435880(void* pObject);
@@ -1898,13 +1898,6 @@ void __fastcall reset_ice_chunk_object_count(void* pManager)
 	*(int*) ((char*) pManager + 0x34) = 0;
 }
 
-// MACINTOSH: CIceManager::GetViewData(CViewData*)
-// FUNCTION: LEMBALL 0x0042dd30
-int PASCAL return_zero_vtable_callback_0042dd30(void* pUnused)
-{
-	(void) pUnused;
-	return 0;
-}
 
 extern void* g_LEVELVT_MoveChunkObjectVtable[16];
 
@@ -2253,10 +2246,10 @@ DEFINE_LEVELVT_MANAGER_DESTROY_PAIR(DestroyPgunChunkManagerAuto,
 									g_LINKSCF_PgunChunkManagerVtable,
 									0x38)
 
-DEFINE_LEVELVT_MANAGER_DESTROY_PAIR(DestroyIceChunkManagerAuto,
-									DestroyIceChunkManagerAutoThunk,
-									g_LINKSCF_IceChunkManagerVtable,
-									0x38)
+void LEMBALL_FASTCALL DestroyIceChunkManagerAutoThunk(void* pObject)
+{
+	((CIceManager*) pObject)->~CIceManager();
+}
 
 void LEMBALL_FASTCALL DestroyMoveChunkManagerAuto(void* pObject)
 {

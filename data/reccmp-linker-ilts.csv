@@ -48,6 +48,7 @@ address,name,symbol,type,source
 0x0040160E,LevelManagedEntityMoveCommandView::IsFacingTowardFirstMoveCommand,?IsFacingTowardFirstMoveCommand@LevelManagedEntityMoveCommandView@@QAEHXZ,stub,src/AI/CGameObjectMove.cpp
 0x0040161D,AICOORD::AICOORD,??0AICOORD@@QAE@ABU0@@Z,stub,src/AI/AICoord.cpp
 0x00401672,emit_lasr_chunk_manager_render_entries,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
+0x00401677,CIceManager::CIceManager,??0CIceManager@@QAE@PAVCAI@@H@Z,stub,src/AI/CIceManager.cpp
 0x004016B3,RequestLiftChunkObjectActivationState,?RequestLiftChunkObjectActivationState@@YIHPAX@Z,stub,src/AI/CLiftAct.cpp
 0x004016B8,SetMineOrCollTileVariant,?SetMineOrCollTileVariant@@YIXPAX@Z,stub,src/AI/CMine.cpp
 0x00401730,ManagedEntityPacketBase::WriteEffStreamTaggedHeader,?WriteEffStreamTaggedHeader@ManagedEntityPacketBase@@UAEXXZ,stub,src/AI/LVPKT.CPP
@@ -60,7 +61,7 @@ address,name,symbol,type,source
 0x00401843,destroy_network_lobby_screen_auto_thunk,?DestroyNetworkLobbyScreenAutoThunk@@YIXPAX@Z,stub,src/Frontend/MAINMENU.CPP
 0x004018CF,vs_window_owner_base_is_current_window_owner_context,?IsCurrentWindowOwnerContext@VS_WindowOwnerBase@@UAEHXZ,stub,src/Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H
 0x004018D4,ManagedEntityPacketBase::ManagedEntityPacketBase,??0ManagedEntityPacketBase@@QAE@H@Z,stub,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
-0x004018D9,advance_ice_chunk_manager_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
+0x004018D9,CIceManager::Process,?Process@CIceManager@@QAEXXZ,stub,src/AI/CIceManager.cpp
 0x004018F7,SelectMenuSelectorSide0Thunk,?SelectMenuSelectorSide0Thunk@@YIXPAUGameMenuSelectorManager@@@Z,stub,src/Frontend/MENUSEL.CPP
 0x00401942,refresh_active_lasr_chunk_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x00401956,emit_coll_chunk_manager_render_entries,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
@@ -153,11 +154,11 @@ address,name,symbol,type,source
 0x0040253B,refresh_active_pgun_chunk_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x00402540,CMove3d::Position,?Position@CMove3d@@QAEXAAUCPt3@@H@Z,stub,src/AI/CMove3d.cpp
 0x0040254A,Distance2DIntPixels,?Distance2DIntPixels@@YAHHHHH@Z,stub,src/Control/CGame.cpp
-0x00402559,activate_ice_chunk_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
+0x00402559,CIceManager::Restart,?Restart@CIceManager@@QAEXXZ,stub,src/AI/CIceManager.cpp
 0x0040258B,advance_cached_group_managed_entity_child_iterator,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x0040259A,CPlayerLemmingGroupManager::GetLeaderPos,?GetLeaderPos@CPlayerLemmingGroupManager@@QAEHAAUAICOORD@@@Z,stub,src/AI/CPlayerLemmingGroupManager.cpp
 0x004025B3,managed_entity_packet26_reverse_eff_stream_payload,?ReverseEffStreamPayload@ManagedEntityPacket26@@UAEXXZ,stub,src/AI/LVPKTTH.CPP
-0x004025EA,CIce::Switch,?Switch@CIce@@QAEXXZ,stub,src/AI/CIceAct.cpp
+0x004025EA,CIce::Switch,?Switch@CIce@@QAEXXZ,stub,src/AI/CIce.cpp
 0x004025FE,destroy_counted_child_table_stream_auto_thunk,?DestroyCountedChildTableStreamAutoThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00402608,CInvisibleSwitch::AddObject,?AddObject@CInvisibleSwitch@@QAEXPAVCGameObject@@@Z,stub,src/AI/CInvisibleSwitch.cpp
 0x0040260D,VsNetNetworkLobbyScreen::RemoveUnavailablePlayerEntries,?RemoveUnavailablePlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/Frontend/LOBBY.CPP
@@ -183,7 +184,7 @@ address,name,symbol,type,source
 0x004027FC,read_network_lobby_peer_entry_stream,,stub,src/Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H
 0x00402815,GameFramedScreenBase::ReleaseFrameResources,?ReleaseFrameResources@GameFramedScreenBase@@QAEXXZ,stub,src/Frontend/MAINMENU.CPP
 0x00402833,CPlayerLemmingGroupManager::GetDead,?GetDead@CPlayerLemmingGroupManager@@QAEPAVCPlayerLemming@@XZ,stub,src/AI/CPlayerLemmingGroupManager.cpp
-0x00402856,return_zero_vtable_callback_0042dd30,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
+0x00402856,CIceManager::GetViewData,?GetViewData@CIceManager@@QAEHPAVCViewData@@@Z,stub,src/AI/CIceManager.cpp
 0x00402860,CGenericGroupManager::FindElementInGroupAndRemoveIt,?FindElementInGroupAndRemoveIt@CGenericGroupManager@@QAEXPAVCGameObject@@@Z,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0040289C,ResetLasrChunkObjectRuntimeStateThunk,?ResetLasrChunkObjectRuntimeStateThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x004028BF,vs_window_owner_base_reserved_window_owner_slot18,?ReservedWindowOwnerSlot18@VS_WindowOwnerBase@@UAEXXZ,stub,src/Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H
@@ -277,7 +278,7 @@ address,name,symbol,type,source
 0x00403468,DestroyProjectileObject,?DestroyProjectileObject@@YIXPAX@Z,stub,src/AI/Projectile.cpp
 0x0040346D,VsNetNetworkLobbyScreen::SelectPreviousPlayerEntry,?SelectPreviousPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/Frontend/LOBBY.CPP
 0x00403472,destroy_three_optional_record_chunk_object_auto_thunk,?DestroyThreeOptionalRecordChunkObjectAutoThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0040349A,CIceManager::Switch,?Switch@CIceManager@@QAEXHI@Z,stub,src/AI/CIceAct.cpp
+0x0040349A,CIceManager::Switch,?Switch@CIceManager@@QAEXHI@Z,stub,src/AI/CIceManager.cpp
 0x004034A9,vs_root_geometry_owner_query_root_geometry_state,?QueryRootGeometryState@VS_RootGeometryOwner@@UAEHPAX0@Z,stub,src/Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H
 0x00403530,destroy_password_entry_screen_auto_thunk,?DestroyPasswordEntryScreenAutoThunk@@YIXPAX@Z,stub,src/Frontend/MAINMENU.CPP
 0x00403544,LevelChunkTypeEnabledFlagsView::SetEnabled,?SetEnabled@LevelChunkTypeEnabledFlagsView@@QAEXHH@Z,stub,src/Platform/Windows/Mixed/Level/ENTITY/LVCHFLAGS.CPP

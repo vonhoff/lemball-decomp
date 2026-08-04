@@ -129,7 +129,8 @@ set(LEMBALL_SOURCES
     src/AI/CLiftManager.cpp
     src/AI/CDoorAct.cpp
     src/AI/CDoorSlot.cpp
-    src/AI/CIceAct.cpp
+    src/AI/CIce.cpp
+    src/AI/CIceManager.cpp
     src/AI/CLiftAct.cpp
     src/AI/ChildState.cpp
     src/AI/LVITER.CPP

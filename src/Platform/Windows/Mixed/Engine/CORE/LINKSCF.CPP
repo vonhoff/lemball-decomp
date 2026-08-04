@@ -2,6 +2,7 @@
 #include "AI/CGenericGroup.h"
 #include "AI/CInvisibleSwitch.h"
 #include "AI/CInvisibleSwitchManager.h"
+#include "AI/CIceManager.h"
 #include "AI/CLaser.h"
 #include "AI/CLaserManager.h"
 #include "AI/CLift.h"
@@ -130,7 +131,7 @@ extern void* LEMBALL_FASTCALL DeletePgunChunkManagerAuto(void* pObject, void* pU
 extern void* LEMBALL_FASTCALL DeleteIceChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
 extern void* LEMBALL_FASTCALL DeleteMoveChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
 extern void LEMBALL_FASTCALL update_projectile_pool_real(void* pPool);
-extern int PASCAL return_zero_vtable_callback_0042dd30(void* pUnused);
+
 void* LEMBALL_FASTCALL DeleteDoorChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteProjectilePoolAuto(void* pObject, void* pUnused, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteMineChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
@@ -183,9 +184,7 @@ void LEMBALL_FASTCALL ActivateRockChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateCaptureTriggerChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateTramChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivatePgunChunkObjects(void* pManager);
-void LEMBALL_FASTCALL ActivateIceChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateMoveChunkObjects(void* pManager);
-void LEMBALL_FASTCALL AdvanceIceChunkManagerObjects(void* pManager);
 void LEMBALL_FASTCALL AdvanceActiveMoveChunkObjects(void* pManager);
 
 DEFINE_LINKSCF_VTABLE_STUB_0(DispatchDoorChildArrayVirtual104)
@@ -500,11 +499,17 @@ void* g_LINKSCF_PgunChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeletePgun
 																	  ReturnFalseChunkStreamCommandThunk,
 																	  EmitActivePgunChunkManagerRenderEntries);
 // GLOBAL: LEMBALL 0x00496a00
-void* g_LINKSCF_IceChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteIceChunkManagerAuto,
-																	 ActivateIceChunkObjects,
-																	 AdvanceIceChunkManagerObjects,
-																	 ReturnFalseChunkStreamCommandThunk,
-																	 return_zero_vtable_callback_0042dd30);
+CIceManagerVtable g_LINKSCF_IceChunkManagerVtable = {
+	{(void*) ReturnTrueVtableCallbackThunk,
+	 (void*) ReturnTrueVtableCallbackSecondaryThunk,
+	 (void*) DispatchType18ChunkStreamCommandsThunk,
+	 (void*) NoopVtableCallbackThunk,
+	 (void*) NoopType18ChunkStreamWriteThunk,
+	 (void*) DeleteIceChunkManagerAuto},
+	&CIceManager::Restart,
+	&CIceManager::Process,
+	(void*) ReturnFalseChunkStreamCommandThunk,
+	&CIceManager::GetViewData};
 struct InvisibleSwitchManagerVtableLayout {
 	void* m_apBaseSlots[6];
 	void (CInvisibleSwitchManager::*m_pRestart)(void);
@@ -593,11 +598,7 @@ CGenericGroupManager* CGenericGroupManager::
 {
 	return ConstructCachedChunkObjectManagerBase(pLevelMode, pEntityLookup, pFormationManager);
 }
-// LINKERILT: LEMBALL 0x00401677
-LinkScfIceChunkManagerView* LinkScfIceChunkManagerView::ConstructIceChunkManagerThunk(void* pLevelMode, int nCapacity)
-{
-	return ConstructIceChunkManager(pLevelMode, nCapacity);
-}
+
 // LINKERILT: LEMBALL 0x00401799
 LinkScfShpgChunkManagerView* LinkScfShpgChunkManagerView::ConstructShpgChunkManagerThunk(void* pLevelMode,
 																						 void* pGmobManager,
@@ -2144,61 +2145,6 @@ void LEMBALL_FASTCALL destroy_ice_chunk_object(void* pObject)
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 }
 
-// MACINTOSH: CIceManager::CIceManager(CAI*, int)
-// FUNCTION: LEMBALL 0x0042d7a0
-LinkScfIceChunkManagerView* LinkScfIceChunkManagerView::ConstructIceChunkManager(void* pLevelMode, int nCapacity)
-{
-	LINKSCF_INITIALIZE_EFF_CHUNK_STREAM(this, 0x19, 0x0e);
-	*(void**) this = g_LINKSCF_IceChunkManagerVtable;
-	*(void**) ((char*) this + 0x3c) = pLevelMode;
-	*(int*) ((char*) this + 0x30) = nCapacity;
-	*(int*) ((char*) this + 0x38) = 0;
-	return this;
-}
-
-// MACINTOSH: CIceManager::Restart()
-// FUNCTION: LEMBALL 0x0042d800
-void LEMBALL_FASTCALL ActivateIceChunkObjects(void* pManager)
-{
-	char* pManagerBytes;
-	void* pChunkObject;
-	int i;
-	int nOffset;
-
-	pManagerBytes = (char*) pManager;
-	if (*(char**) (pManagerBytes + 0x38) != 0) {
-		i = 0;
-		if (*(int*) (pManagerBytes + 0x30) > 0) {
-			nOffset = 0;
-			do {
-				pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
-				++i;
-				nOffset += 0x188;
-				((ActivateChunkObjectProc) (*(void***) pChunkObject)[65])(pChunkObject);
-			} while (*(int*) (pManagerBytes + 0x30) > i);
-		}
-	}
-}
-
-// MACINTOSH: CIceManager::Process()
-// FUNCTION: LEMBALL 0x0042dd00
-void LEMBALL_FASTCALL AdvanceIceChunkManagerObjects(void* pManager)
-{
-	void* pChunkObject;
-	int i;
-	int nOffset;
-
-	i = 0;
-	if (*(int*) ((char*) pManager + 0x34) > 0) {
-		nOffset = 0;
-		do {
-			pChunkObject = *(char**) ((char*) pManager + 0x38) + nOffset;
-			++i;
-			nOffset += 0x188;
-			((ActivateChunkObjectProc) (*(void***) pChunkObject)[5])(pChunkObject);
-		} while (*(int*) ((char*) pManager + 0x34) > i);
-	}
-}
 
 
 

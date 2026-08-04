@@ -1,10 +1,6 @@
 #ifndef LEMBALL_ENGINE_CORE_LINKSCF_H
 #define LEMBALL_ENGINE_CORE_LINKSCF_H
 
-struct LinkScfIceChunkManagerView {
-	LinkScfIceChunkManagerView* ConstructIceChunkManager(void* pLevelMode, int nCapacity);
-	LinkScfIceChunkManagerView* ConstructIceChunkManagerThunk(void* pLevelMode, int nCapacity);
-};
 
 struct LinkScfPgunChunkManagerView {
 	LinkScfPgunChunkManagerView* ConstructPgunChunkManager(void* pLevelMode, int nCapacity);

@@ -1,6 +1,7 @@
 #include "Control/CGame.h"
 
 #include "AI/CInvisibleSwitchManager.h"
+#include "AI/CIceManager.h"
 #include "AI/CLaserManager.h"
 #include "AI/CLiftManager.h"
 #include "AI/CMaze.h"
@@ -3531,7 +3532,7 @@ void LevelGameMode::InitializeLevelGameMode(void)
 
 		pObject = AllocateVSMemBlock(100);
 		if (pObject != 0) {
-			pObject = ((LinkScfIceChunkManagerView*) pObject)->ConstructIceChunkManagerThunk(pLevelGameMode, 100);
+			pObject = new (pObject) CIceManager((CAI*) pLevelGameMode, 100);
 		}
 		*(void**) (pModeBytes + 0x1ac) = pObject;
 		RegisterLevelChunkStreamThunk(g_pLevelChunkStreamDispatcher, *(void**) (pModeBytes + 0x1ac));
