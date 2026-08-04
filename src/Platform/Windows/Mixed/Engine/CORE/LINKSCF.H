@@ -53,6 +53,7 @@ public:
 	void Initialise(int nCount);
 	CGlobalGameObject* AddObject(unsigned short nId, CGlobalGameObject* pObject, unsigned char nState);
 	CGlobalGameObject* FindObject(int nObjectId);
+	void Remove(CGlobalGameObject* pObject);
 };
 
 struct LinkScfMoveChunkManagerView {
