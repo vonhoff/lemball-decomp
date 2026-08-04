@@ -1,3 +1,5 @@
+#include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
+
 struct LevelManagedEntityChildIterator;
 struct LevelManagedEntityActiveGroupView;
 struct LevelManagedEntityGroupVtable;
@@ -11,7 +13,6 @@ struct LevelManagedEntityChildIterator {
 struct LevelManagedEntityActiveGroupView {
 	LevelManagedEntityGroupVtable* m_pVtable00;
 
-	LevelManagedEntityChildIterator* FindManagedEntityByPointer(void* pObject);
 	int GetEntityActiveState(void* pObject);
 };
 
@@ -33,22 +34,6 @@ struct LevelManagedEntityVtable {
 // FUNCTION: LEMBALL 0x00418840
 int LevelManagedEntityActiveGroupView::GetEntityActiveState(void* pObject)
 {
-	LevelManagedEntityChildIterator* pEntity = FindManagedEntityByPointer(pObject);
-	return pEntity != 0 ? pEntity->GetActiveStateThunk() : 0;
-}
-
-// MACINTOSH: CGenericGroupManager::GetGroupElementIsMemberOf(CGameObject*)
-// FUNCTION: LEMBALL 0x0041eb90
-LevelManagedEntityChildIterator* LevelManagedEntityActiveGroupView::FindManagedEntityByPointer(void* pObject)
-{
-	LevelManagedEntityChildIterator* pEntity;
-	LevelManagedEntityGroupVtable* pVtable = m_pVtable00;
-	pEntity = (this->*pVtable->m_pGetFirst04)();
-	while (pEntity != 0) {
-		if ((pEntity->*pEntity->m_pVtable00->m_pMatchesObject130)(pObject) == 1) {
-			return pEntity;
-		}
-		pEntity = (this->*pVtable->m_pGetNext08)();
-	}
-	return 0;
+	CGenericGroup* pGroup = ((CGenericGroupManager*) this)->GetGroupElementIsMemberOf((CGameObject*) pObject);
+	return pGroup != 0 ? ((LevelManagedEntityChildIterator*) pGroup)->GetActiveStateThunk() : 0;
 }

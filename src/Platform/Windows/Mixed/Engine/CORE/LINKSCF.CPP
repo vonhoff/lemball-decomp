@@ -144,7 +144,7 @@ void* ConstructManagedEntityQueueCursorThunk(void* pObject,
 											 int nSecondaryCapacity);
 
 
-void LEMBALL_FASTCALL AddNewGroup(void* pObject, void* pUnused, void* pChunkObject);
+
 int LEMBALL_FASTCALL GetViewData(void* pObject, void* pUnused, char* pEntries);
 int LEMBALL_FASTCALL EmitCachedChunkManagerRenderEntriesThunk(void* pObject, void* pUnused, char* pEntries);
 
@@ -230,34 +230,15 @@ DEFINE_LINKSCF_VTABLE_STUB_1(EmitMoveChunkManagerRenderEntries)
 #undef DEFINE_LINKSCF_VTABLE_STUB_1
 #undef DEFINE_LINKSCF_VTABLE_STUB_2
 
-struct CGenericGroup;
-struct CGenericGroupManager {
-	void* m_pVtable00;
-	CGenericGroup* m_apGroups04[40];
-	int m_nGroupCountA4;
-	int m_nCurrentGroupA8;
-	int m_fActiveAC;
-
-	CGenericGroupManager* ConstructCachedChunkObjectManagerBase(void* pLevelMode,
-		void* pEntityLookup,
-		void* pProjectileGeometryTable);
-	CGenericGroupManager* ConstructCachedChunkObjectManagerBaseThunk(void* pLevelMode,
-		void* pEntityLookup,
-		void* pProjectileGeometryTable);
-	int GetNumberOfGroups(void);
-	CGenericGroup* GetFirstGroup(void);
-	CGenericGroup* GetNextGroup(void);
-	CGenericGroup* GetNthGroup(int nIndex);
-	CGenericGroup* GetCurrentGroup(void);
-	int GetNumberOfElements(void);
-	CGameObject* GetFirstElement(void);
-	CGameObject* GetNextElement(void);
-	CGameObject* GetCurrentElement(void);
-	CGameObject* GetNthElement(int nIndex);
+struct CGenericGroupVtable;
+struct CGenericGroup {
+	CGenericGroupVtable* m_pVtable00;
 };
-
-void CreateNewGroup(void);
-
+typedef int (CGenericGroup::*GenericGroupContainsProc)(CGameObject* pObject);
+struct CGenericGroupVtable {
+	void* m_apReserved00[76];
+	GenericGroupContainsProc m_pContains130;
+};
 // Compatibility shim retained for compiler-generated callers; original ILT slot
 // 0x00401078 targets GetFirstGroup directly.
 void* LEMBALL_FASTCALL GetFirstCachedChunkObjectThunk(void* pObject)
@@ -401,13 +382,6 @@ static void* g_LINKSCF_ProjectilePoolVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(Delet
 																		   ReturnFalseChunkStreamCommandThunk,
 																		   EmitProjectilePoolRenderEntries);
 static void* g_LINKSCF_ManagedEntityQueueCursorVtable[4];
-struct LevelManagedEntityChildIterator;
-struct LevelManagedEntityActiveGroupView {
-	LevelManagedEntityChildIterator* FindManagedEntityByPointer(void* pObject);
-};
-
-typedef LevelManagedEntityChildIterator* (LevelManagedEntityActiveGroupView::*FindManagedEntityProc)(void*);
-
 struct CachedChunkObjectManagerVtable {
 	int (CGenericGroupManager::*m_pGetNumberOfGroups00)(void);
 	CGenericGroup* (CGenericGroupManager::*m_pGetFirstGroup04)(void);
@@ -420,8 +394,11 @@ struct CachedChunkObjectManagerVtable {
 	CGameObject* (CGenericGroupManager::*m_pGetNextElement20)(void);
 	CGameObject* (CGenericGroupManager::*m_pGetCurrentElement24)(void);
 	CGameObject* (CGenericGroupManager::*m_pGetNthElement28)(int);
-	FindManagedEntityProc m_pFindManagedEntity2C;
-	void* m_apAfterFind30[7];
+	CGenericGroup* (CGenericGroupManager::*m_pGetGroupElementIsMemberOf2C)(CGameObject*);
+	void (CGenericGroupManager::*m_pAddNewGroup30)(CGenericGroup*);
+	void* m_pCreateNewGroupFromIds34;
+	void (CGenericGroupManager::*m_pCreateNewGroup38)(void);
+	void* m_apAfterCreate3C[4];
 };
 
 #define LINKSCF_CACHED_CHUNK_MANAGER_VTABLE                                                                            \
@@ -437,10 +414,11 @@ struct CachedChunkObjectManagerVtable {
 		&CGenericGroupManager::GetNextElement,                                                               \
 		&CGenericGroupManager::GetCurrentElement,                                                            \
 		&CGenericGroupManager::GetNthElement,                                                                \
-			&LevelManagedEntityActiveGroupView::FindManagedEntityByPointer,                                            \
-		{                                                                                                              \
-			(void*) AddNewGroup, (void*) AppendManagedEntityGroupFromIds,                                              \
-				(void*) CreateNewGroup, (void*) AttachAndActivateChunkObject,                                          \
+		&CGenericGroupManager::GetGroupElementIsMemberOf,                                                     \
+		&CGenericGroupManager::AddNewGroup,                                                                    \
+		(void*) AppendManagedEntityGroupFromIds,                                                               \
+		&CGenericGroupManager::CreateNewGroup,                                                                 \
+		{(void*) AttachAndActivateChunkObject,                                                                 \
 				(void*) RemoveOwnerChildIfNoNestedEntries, (void*) ForwardOwnerChildCommandValue,                      \
 				(void*) EmitIteratedChildBoundsRecords                                                                 \
 		}                                                                                                              \
@@ -1558,22 +1536,35 @@ CGameObject* CGenericGroupManager::GetNthElement(int nIndex)
 	return pElement;
 }
 
-// MACINTOSH: CGenericGroupManager::AddNewGroup(CGenericGroup*)
-// FUNCTION: LEMBALL 0x0041ec80
-void LEMBALL_FASTCALL AddNewGroup(void* pObject, void*, void* pChunkObject)
+// FUNCTION: LEMBALL 0x0041eb90
+CGenericGroup* CGenericGroupManager::GetGroupElementIsMemberOf(CGameObject* pObject)
 {
-	int nIndex;
+	typedef CGenericGroup*(LEMBALL_FASTCALL * ManagerGroupProc)(void* pManager);
+	void** pVtable;
+	CGenericGroup* pGroup;
 
-	nIndex = *(int*) ((char*) pObject + 0xa4);
-	if (nIndex < 40) {
-		*(void**) ((char*) pObject + 4 + nIndex * 4) = pChunkObject;
-		++*(int*) ((char*) pObject + 0xa4);
+	pVtable = *(void***) this;
+	pGroup = ((ManagerGroupProc) pVtable[1])(this);
+	while (pGroup != 0) {
+		if ((pGroup->*pGroup->m_pVtable00->m_pContains130)(pObject) == 1) {
+			return pGroup;
+		}
+		pGroup = ((ManagerGroupProc) pVtable[2])(this);
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0041ec80
+void CGenericGroupManager::AddNewGroup(CGenericGroup* pGroup)
+{
+	if (m_nGroupCountA4 < 40) {
+		m_apGroups04[m_nGroupCountA4] = pGroup;
+		++m_nGroupCountA4;
 	}
 }
 
-// MACINTOSH: CGenericGroupManager::CreateNewGroup()
 // FUNCTION: LEMBALL 0x0041eca0
-void CreateNewGroup(void)
+void CGenericGroupManager::CreateNewGroup(void)
 {
 }
 

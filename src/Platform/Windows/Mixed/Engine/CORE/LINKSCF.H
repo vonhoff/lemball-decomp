@@ -39,8 +39,37 @@ struct CCollectableManager {
 
 class CAI;
 class CGlobalGameObject;
+class CGameObject;
 class CNetworkMessage;
 class CViewData;
+struct CGenericGroup;
+struct CGenericGroupManager {
+	void* m_pVtable00;
+	CGenericGroup* m_apGroups04[40];
+	int m_nGroupCountA4;
+	int m_nCurrentGroupA8;
+	int m_fActiveAC;
+
+	CGenericGroupManager* ConstructCachedChunkObjectManagerBase(void* pLevelMode,
+		void* pEntityLookup,
+		void* pProjectileGeometryTable);
+	CGenericGroupManager* ConstructCachedChunkObjectManagerBaseThunk(void* pLevelMode,
+		void* pEntityLookup,
+		void* pProjectileGeometryTable);
+	int GetNumberOfGroups(void);
+	CGenericGroup* GetFirstGroup(void);
+	CGenericGroup* GetNextGroup(void);
+	CGenericGroup* GetNthGroup(int nIndex);
+	CGenericGroup* GetCurrentGroup(void);
+	int GetNumberOfElements(void);
+	CGameObject* GetFirstElement(void);
+	CGameObject* GetNextElement(void);
+	CGameObject* GetCurrentElement(void);
+	CGameObject* GetNthElement(int nIndex);
+	CGenericGroup* GetGroupElementIsMemberOf(CGameObject* pObject);
+	void AddNewGroup(CGenericGroup* pGroup);
+	void CreateNewGroup(void);
+};
 class CObjectManager {
 public:
 	char m_abReserved00[0x34];
