@@ -2,6 +2,7 @@
 #include "AI/CGlobalGameObject.h"
 #include "AI/CMover.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "AI/CCatapult.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
@@ -1834,26 +1835,17 @@ int return_two_vtable_callback_0041c630(void)
 	return 2;
 }
 
-struct GmobOffsetPointView {
-	char m_abReserved00[0x9c];
-	int m_nPositionX9c;
-	int m_nPositionYa0;
-	int m_nPositionZa4;
-
-	void CopyOffsetPoint(int* pPoint);
-};
-
 // FUNCTION: LEMBALL 0x0041ca60
-void GmobOffsetPointView::CopyOffsetPoint(int* pPoint)
+void CCatapult::ActivatePosition(int* pPoint)
 {
 	int nX;
 	int nZ;
 	int nY;
 
-	nY = m_nPositionYa0;
-	nZ = m_nPositionZa4;
+	nY = m_nPositionYA0;
+	nZ = m_nPositionZA4;
 	nY -= 0xc000;
-	nX = m_nPositionX9c;
+	nX = m_nPositionX9C;
 	nX -= 0x3c000;
 	pPoint[0] = nX;
 	pPoint[1] = nY;

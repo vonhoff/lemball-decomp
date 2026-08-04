@@ -1,4 +1,5 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "AI/CCatapult.h"
 
 void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern int g_nLevelFrameClockTimeMs;
@@ -45,23 +46,6 @@ struct SavedPositionChunkObjectView {
 	void ResetGmobState(void);
 };
 
-class CCatapult {
-public:
-	char m_abReserved00[0x5c];
-	void* m_pTarget5C;
-	char m_abReserved60[0x34];
-	int m_nFrameTime94;
-	char m_abReserved98[0x20];
-	int m_nStateB8;
-	short m_nVariantBC;
-	char m_abReservedBE[0x0e];
-	int m_nPhaseDurationCC;
-	int m_nPhaseStepD0;
-	int m_nDeadlineD4;
-
-	void Restart(void);
-	int Activate(void* pTarget);
-};
 
 struct GmobType14SavedPositionView {
 	char m_abReserved00[0xbc];
