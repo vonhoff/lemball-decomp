@@ -1,63 +1,29 @@
-# Lemmings Paintball decompilation
+# Lemmings Paintball Decompilation
 
-This repository is a work-in-progress C++ reconstruction of the 1996 Windows game `LEMBALL.EXE`.
+This repository contains a work-in-progress C++ reconstruction of the 1996 Windows game *Lemmings Paintball*. It targets Microsoft Visual C++ 4.0 and uses [`reccmp`](https://github.com/isledecomp/reccmp) to compare the reconstructed code with the original executable.
 
-The reconstructed program builds with Microsoft Visual C++ 4.0 and is compared with the original executable using [reccmp](https://github.com/isledecomp/reccmp). It is not complete yet, but the project builds and the comparison tools can measure progress function by function.
+The goal is to produce a readable representation of the program while reproducing its behavior, data layout, and compiler output where practical. The project is intended for software preservation, research, and technical analysis.
 
-## Build
+A matching progress report is available on [decomp.dev](https://decomp.dev/vonhoff/lemball-decomp).
 
-The build currently runs on Windows.
+## Development
 
-1. Install [MSVC 4.00](https://github.com/vonhoff/MSVC400) outside this repository.
-2. Set `MSVC400_ROOT` to the directory containing `bin\CL.EXE`, `include`, and `lib`.
-3. Create the Python environment and build the project:
+The project is primarily developed with the assistance of AI agents because the scale of the reconstruction exceeds the time available for manual analysis alone. These agents assist with binary analysis, implementation, naming, refactoring, and verification.
 
-```powershell
-py -m venv .decomp-venv
-.decomp-venv\Scripts\python.exe -m pip install -r requirements.txt
-.decomp-venv\Scripts\python.exe tools\build_msvc400.py
-```
+Generated output is treated as a hypothesis, not as authoritative source code. Changes are validated against binary evidence, recovered symbols, compiler output, and automated comparison results. Implementations may be revised or replaced as better evidence becomes available.
 
-The executable and PDB are written to `build-msvc400`.
+## Reference material
 
-## Verify a change
+The original executable and game assets are not included. Users must provide their own compatible copy of `LEMBALL.EXE`.
 
-Run these commands from the repository root:
-
-```powershell
-.decomp-venv\Scripts\python.exe tools\lint_reccmp_metadata.py
-.decomp-venv\Scripts\python.exe tools\build_msvc400.py
-.decomp-venv\Scripts\reccmp-project.exe detect --search-path data
-
-Push-Location build-msvc400
-..\.decomp-venv\Scripts\reccmp-reccmp.exe --target LEMBALL --json reccmp.json --json-diet
-..\.decomp-venv\Scripts\reccmp-decomplint.exe --target LEMBALL
-..\.decomp-venv\Scripts\reccmp-datacmp.exe --target LEMBALL --no-color
-..\.decomp-venv\Scripts\reccmp-vtable.exe --target LEMBALL
-Pop-Location
-
-.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --check-baseline
-```
-
-`AGENTS.md` has the full reconstruction rules and evidence requirements.
-
-## Source layout
-
-- Canonical portable owners live under `src/AI`, `Control`, `Frontend`, `Map`, `Network`, `Visos/Generic`, and `views/2d`.
-- `src/Platform/Windows/Mixed` retains intact multi-module Windows TUs, ABI/link-order splits, and shared headers that cannot yet move to one Macintosh owner.
-- Pure Win32 graphics backends live under `src/Visos/Windows`.
-- Shared startup options live under `src/Control`; Win32 entry, shell UI, and primary-window host code live under `src/Platform/Windows`.
-- `data` contains comparison metadata and the encrypted reference executable.
-- `tools` contains the build, metadata, and comparison helpers.
-
-Some filenames remain short because they reflect the style and tool limits of the original codebase. `Platform/Windows/Mixed` is physical ownership, not a canonical source module.
-
-## Contributing
-
-Treat the original executable as the source of truth. Keep changes compatible with MSVC 4.00, preserve source and link order, and do not use inline assembly to force a match. A readable reconstruction with measured binary improvement is better than decompiler-shaped code or register tricks.
-
-Build after meaningful edits and run the complete verification set before committing. Do not update the exact-match baseline to hide regressions.
+Original binaries, assets, extracted resources, encrypted or decrypted reference files, access credentials, and private download locations must not be committed to this repository.
 
 ## Legal
 
-The encrypted, non-working reference executable is included only for automated comparison. The repository does not include the assets needed to play the game. This is an unofficial preservation project and is not affiliated with the original developers or rights holders.
+This repository is an unofficial software-preservation and research project. It is not affiliated with, authorized by, or endorsed by the original developers, publishers, or other rights holders.
+
+Reverse engineering and decompilation are subject to applicable copyright, contract, anti-circumvention, and other laws, which vary by jurisdiction. Independent reconstruction or binary matching does not, by itself, confer a right to reproduce, modify, distribute, or otherwise use protected material.
+
+All rights, title, and interest in *Lemmings Paintball*, including the original software, assets, names, and trademarks, remain with their respective owners. The terms of [`LICENSE`](LICENSE) apply only to material that contributors are legally entitled to license and confer no rights in the original game or any third-party material.
+
+Users and contributors are solely responsible for determining whether their use, modification, or distribution of this project is lawful in their jurisdiction.

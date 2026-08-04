@@ -15,6 +15,7 @@ compile_commands.json
 *.obj
 *.pdb
 *.res
+*.vsr
 
 # Local tools and settings
 .idea/
@@ -33,10 +34,7 @@ reccmp-build.yml
 reccmp-user.yml
 objdiff.json
 data/*
-!data/LEMBALL.EXE.gpg
 !data/objdiff-functions.csv
-!data/macintosh-structure.json
-!data/README.md
 !data/reccmp-source-symbols.csv
 !data/reccmp-compiler-generated.csv
 !data/reccmp-linker-ilts.csv

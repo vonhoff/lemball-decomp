@@ -12,6 +12,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.event_name != 'pull_request'
     name: Build + verify (MSVC 4.00)
     runs-on: windows-latest
     steps:
@@ -35,16 +36,28 @@ jobs:
         shell: pwsh
         run: python -m pip install --requirement requirements.txt
 
+      - name: Configure MSVC 4.00 environment
+        shell: pwsh
+        run: |
+          "MSVC400_ROOT=$env:GITHUB_WORKSPACE\msvc400" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "INCLUDE=$env:GITHUB_WORKSPACE\msvc400\include" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "LIB=$env:GITHUB_WORKSPACE\msvc400\lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "$env:GITHUB_WORKSPACE\msvc400\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
       - name: Prepare target binary
         shell: bash
         env:
-          LEMBALL_GPG_PASSPHRASE: ${{ secrets.LEMBALL_GPG_PASSPHRASE }}
+          LEMBALL_REFERENCE_URL: ${{ secrets.LEMBALL_REFERENCE_URL }}
+          LEMBALL_SHA256: ${{ secrets.LEMBALL_SHA256 }}
         run: |
-          gpg --quiet --batch --yes \
-            --decrypt \
-            --passphrase "$LEMBALL_GPG_PASSPHRASE" \
-            --output data/LEMBALL.EXE \
-            data/LEMBALL.EXE.gpg
+          test -n "$LEMBALL_REFERENCE_URL"
+          test -n "$LEMBALL_SHA256"
+          curl --fail --location --silent --show-error \
+            "$LEMBALL_REFERENCE_URL" \
+            --output "$RUNNER_TEMP/LEMBALL.EXE"
+          actual=$(sha256sum "$RUNNER_TEMP/LEMBALL.EXE" | cut -d' ' -f1)
+          test "$actual" = "$LEMBALL_SHA256"
+          cp "$RUNNER_TEMP/LEMBALL.EXE" data/LEMBALL.EXE
 
       - name: Lint metadata
         shell: pwsh
@@ -52,7 +65,10 @@ jobs:
 
       - name: Configure and build
         shell: pwsh
-        run: python tools/build_msvc400.py
+        run: |
+          python tools/install_reccmp_compat.py
+          cmake --fresh --preset msvc400
+          cmake --build --preset msvc400 --clean-first
 
       - name: Verify against original
         shell: pwsh
@@ -74,3 +90,10 @@ jobs:
           path: |
             build-msvc400/report.json
             build-msvc400/reccmp.json
+
+      - name: Remove target binary
+        if: always()
+        shell: pwsh
+        run: |
+          Remove-Item -LiteralPath "$env:RUNNER_TEMP\LEMBALL.EXE" -Force -ErrorAction SilentlyContinue
+          Remove-Item -LiteralPath "$env:GITHUB_WORKSPACE\data\LEMBALL.EXE" -Force -ErrorAction SilentlyContinue

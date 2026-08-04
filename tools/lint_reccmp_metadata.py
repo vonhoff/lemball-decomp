@@ -56,10 +56,10 @@ def configured_data_sources() -> list[pathlib.Path]:
 
 def main() -> int:
     errors: list[str] = []
-    structure, mac_symbols, correlations = macintosh_naming.load()
+    mac_symbols, correlations = macintosh_naming.load()
     errors.extend(
         f"Macintosh naming tracker: {error}"
-        for error in macintosh_naming.check(structure, mac_symbols, correlations)
+        for error in macintosh_naming.check(mac_symbols, correlations)
     )
     configured = configured_data_sources()
     discovered = sorted((ROOT / "data").glob("reccmp-*.csv"))

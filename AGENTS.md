@@ -2,63 +2,59 @@
 
 ## Objective
 
-Make verified decompilation progress while preserving compiler behavior. Treat the original binary as authoritative.
+Make verified decompilation progress while preserving compiler behavior. `/LEMBALL.EXE` is authority.
 
 ## Workflow
 
-1. Inspect `git status`, every existing diff, and `// STUB:` markers. Continue unfinished work before selecting a new target; complete, commit, or revert it rather than leaving it for the user.
-2. Refresh the canonical MSVC 4.00 build and reccmp JSON when missing or stale, then run `.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py` to print candidates. Treat `exact-baseline.json` as immutable; never save or regenerate it during reconstruction.
-3. Use printed repeated normalized instruction shapes before choosing a singleton. Preserve instruction order, branches, stack cleanup, calling convention, object offsets, and function size; normalization covers only concrete addresses, relocations, and per-member constants.
-4. Work highest-ranked viable cluster. Prefer existing 100% exemplars and compiler-owned C++ patterns such as constructors, destructors, scalar deletes, vtable restores, accessors, and forwarding or adjustment thunks.
-5. Inspect every proposed cluster member in original `/LEMBALL.EXE` with Ghidra MCP. Establish raw bytes, boundaries, ABI, control flow, xrefs, owning source file, and all per-member variations. Use decompiler output only as supporting evidence. ILT entries never become targets.
-6. Recover one minimal C or C++ template from binary evidence and compiler probes. Parameterize only proven variations. Never mass-generate speculative bodies from shape similarity alone.
-7. Implement complete viable cluster, build once, compare representative member, then compare every member with verbose reccmp. Revise from assembly diffs and binary evidence.
-8. Run full reccmp JSON after each batch, then run `.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --check-baseline`. Compare the printed lost set with the last trusted checkpoint; exit status `1` is expected while tolerated losses remain and is not sufficient validation by itself. Never accept a new lost address. Keep a batch only when it adds verified matches or another measured improvement without worsening the lost set.
-9. Repeat next viable high-yield cluster. Do not stop after one tiny function while safe members of same proven family remain.
-10. When no viable repeated family remains, work first viable entry under miner's `singleton fallback`. It prefers fewest estimated mismatched bytes and investigates five-byte functions last.
-11. Fix discovered issues immediately. If fix cannot be completed in current run, leave minimal compiling stub with `// STUB:` marker for next run.
-12. Stop only for repository-wide blocker.
+1. Inspect `git status`, all diffs, and `// STUB:` markers. Finish, commit, or revert unfinished work.
+2. Refresh canonical MSVC 4.00 build/reccmp JSON when stale. Keep `exact-baseline.json` immutable.
+3. Choose repeated normalized instruction shapes first. Preserve order, branches, stack cleanup, ABI, offsets, and size; normalize only addresses, relocations, and proven member constants.
+4. Prefer 100% exemplars and compiler-owned families: constructors, destructors, scalar deletes, vtable restores, accessors, forwarding/adjustment thunks.
+5. Inspect every candidate member in original `/LEMBALL.EXE` with Ghidra MCP: bytes, boundaries, ABI, flow, xrefs, owner, and variations. ILT entries are never targets.
+6. Recover one minimal C/C++ template from binary evidence and compiler probes. Parameterize only proven variations; never mass-generate from shape alone.
+7. Implement the complete viable family, build, compare a representative, then every member. Revise from assembly diffs and binary evidence.
+8. Run full reccmp JSON and `--check-baseline` after each batch. Exit `1` is expected for tolerated losses; never accept a new lost address. Keep batches only for verified gains or measured improvement without worsening the lost set.
+9. Repeat safe members of the family; then investigate remaining singletons by fewest mismatched bytes, five-byte functions last.
+10. Fix issues immediately. If blocked, leave a compiling `// STUB:` marker.
 
-Verified progress includes a new 100% match, measurable similarity improvement, corrected inventory or Ghidra data, compiler-accurate infrastructure, or removal of an incorrect implementation.
+Verified progress: new 100% match, similarity gain, corrected inventory/Ghidra data, compiler-accurate infrastructure, or removed incorrect code.
 
 ## Macintosh sibling-build evidence
 
-The Japanese Macintosh release is a first-class corroborating source for original program terminology and shared source structure. Its 68K and PowerPC code may preserve original function, method, class, global, module, assertion, and file-format names that are absent from the Windows executable.
+Japanese Macintosh CODE resources provide terminology and logical ownership, not Windows ABI evidence.
 
-1. Inventory the Macintosh executables and symbol-bearing resources before assigning more provisional names in Windows code.
-2. Correlate every imported Macintosh name to `/LEMBALL.EXE` using behavior, constants, strings, callers, table position, and subsystem context. Record confidence and architecture provenance. Track class/file ownership and exclusions in `data/macintosh-structure.json`; query it with `tools/macintosh_naming.py`.
-3. Prefer a corroborated original Macintosh name over an invented semantic name when the x86 implementation performs the same shared-game operation. Correct Ghidra, source, and reccmp metadata together after correlation.
-4. Use the Macintosh source tree as the recovered source-layout blueprint: put implementations in Macintosh-named class files and use the original class/method names while preserving the proven Windows physical TU through exact-position textual includes or compatibility views when required. Do not add or retain `// MACINTOSH:` attribution comments; the source identity must carry the attribution. The target is zero such comments.
-5. Treat platform-specific Macintosh Toolbox, Code Fragment Manager, filesystem, sound, display, and input code as terminology evidence only unless an x86 counterpart is independently proven.
-6. Never transfer Macintosh object layouts, vtable encodings, thunks, calling conventions, RTTI layout, exception ABI, or compiler code generation to the MSVC reconstruction. `/LEMBALL.EXE` and VC4.00 probes remain authoritative for the Windows ABI and bytes.
-7. Preserve the raw sibling binaries and a reproducible symbol inventory outside generated build trees. Do not silently normalize or discard mangled names.
+1. Inventory raw resources and symbols before assigning Windows names.
+2. Correlate names to `/LEMBALL.EXE` by behavior, constants, strings, callers, tables, subsystem, and signature; record confidence/evidence.
+3. Use corroborated Macintosh names only after independent x86 correlation; update Ghidra, source, and reccmp metadata together.
+4. Use Macintosh logical class/file ownership while preserving proven Windows physical TUs with exact-position includes/views. No `// MACINTOSH:` comments.
+5. Treat Macintosh Toolbox, CFM, filesystem, sound, display, and input code as terminology only unless x86 behavior proves equivalence.
+6. Never transfer Macintosh layout, vtables, thunks, calling conventions, RTTI, exceptions, or code generation to Windows. `/LEMBALL.EXE` and VC4.00 probes win.
+7. Preserve raw sibling binaries and reproducible symbol inventories; do not normalize away mangled names.
+
+### Macintosh evidence files and checks
+
+- `data/macintosh-68k-symbols.csv`: raw symbols. `data/macintosh-x86-correlations.csv`: reviewed mappings. `data/macintosh-symbol-coverage.csv`: every raw-symbol disposition.
+- Run `.decomp-venv\Scripts\python.exe tools\macintosh_naming.py check`; use `summary` and `names` for live reports. `tools/generate_objdiff_report.py` produces the required grouped progress report from reccmp output.
+- Coverage key: `(mac_code_file, mac_name_length_offset, mac_mangled_name)`. Every row has one disposition. Accepted mappings require proven x86 address, canonical unit, source path or `unreconstructed`, Windows identity, and behavioral evidence. Inline/merged and platform-specific rows require evidence/reason.
+
+- VSGDI mappings live in `data/macintosh-x86-correlations.csv`; keep platform hooks, DirectDraw adapters, upload helpers, and compiler adjustor thunks Windows-owned until proven. `CPVSurface`/`CPVScrollableSurface`/`CSurface` topology and `0x5A0` layout are Windows-only evidence.
 
 ## Constraints
 
-- Preserve required ABI, layout, annotations, source placement, and link order.
-- Use compiler-generated C or C++ except for proven real ABI/vtordisp thunks outside the ILT. Use assembly only after C++ compiler probes fail, and mark it `// ABI-THUNK:` with original bytes, ABI, failed C++ form, and verified reccmp result. Never use embedded opcodes or binary patches.
-- Never use assembly or source wrappers to recreate the linker ILT. Analyze five-byte `E9` functions outside the ILT normally.
-- Repair incorrect inventory and regenerate its CSV; do not hide entries with denylists or broad filters.
-- Add `GLOBAL`, `FUNCTION`, or `STUB` ownership only after confirming original address and source owner in Ghidra. Never add annotations merely to make relocation comparison pass. Investigate every new datacmp issue; direct-function versus original ILT-pointer differences are acceptable only when binary evidence proves same destination and no ILT recreation is introduced.
-- Use maintained candidate miner; do not create one-off target-selection or verification scripts. Temporary compiler probes may live only under ignored `build-msvc400/` and must be removed before commit.
-- Use `clang-format -i <paths>` from `PATH` to fix formatting in modified C or C++ files.
-- Use only project commands below for verification.
+- Do not edit `README.md` unless requested.
+- Preserve ABI, layout, annotations, source placement, and link order.
+- Use compiler-generated C/C++; use assembly only for proven real ABI/vtordisp thunks after failed C++ probes. Mark it `// ABI-THUNK:` with original bytes, ABI, failed form, and reccmp result. Never embed opcodes or recreate ILT wrappers.
+- Repair inventories; never hide entries with denylists. Add ownership only after Ghidra confirms address and source owner. Investigate every datacmp issue.
+- Temporary probes belong only in ignored `build-msvc400/`. Run `clang-format -i <paths>` on modified C/C++.
+- Use project commands below for verification.
 
 ## Binary layout
 
-- Original LINK 3.00 incremental link table occupies `0x00401000` through `0x00403890`: 2,077 five-byte `E9` entries through `0x0040388C`, then padding. Real code begins at `0x00406160`.
-- Ghidra marks every ILT entry `linker-ilt`; none may retain an `objdiff-unit:*` tag. Source-emitted ILT wrappers use `// LINKERILT:` rather than `FUNCTION` or `STUB`; reccmp aliases this marker to non-progress `STUB` only for relocation normalization. By-name ILT inventory belongs in `data/reccmp-linker-ilts.csv`, while compiler-generated symbols without standalone implementations belong in `data/reccmp-compiler-generated.csv`. Compiler-state shims may remain unannotated only when comments identify slot, destination, and verified regression caused by removal.
-- Keep MSVC 4.00 and `/INCREMENTAL:YES`; compare linker thunks by their destination identity rather than recreating them in source.
-- Whole-image parity remains incomplete: linker generation is aligned at 3.00, but `.text` size, resources, CRT, imports, and object order still differ.
+Original LINK 3.00 ILT: `0x00401000`–`0x00403890`, 2,077 five-byte `E9` entries through `0x0040388C`; real code starts `0x00406160`. Ghidra marks ILT as `linker-ilt`; source wrappers use `// LINKERILT:`. By-name ILTs belong in `data/reccmp-linker-ilts.csv`; standalone compiler-generated symbols in `data/reccmp-compiler-generated.csv`. Keep MSVC 4.00 `/INCREMENTAL:YES`; compare thunk destination identity. Whole-image parity is incomplete across `.text`, resources, CRT, imports, and object order.
+
+`data/reccmp-*.csv` are configured in `reccmp-project.yml` and use `address,name,symbol,type,source`; `objdiff-functions.csv` uses `address,size,name,unit`. Do not replace these inventories with broad filters or duplicated summaries.
 
 ## Commands
-
-Candidate mining, from repository root:
-
-```powershell
-.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py
-.decomp-venv\Scripts\python.exe tools\find_decompilation_candidates.py --check-baseline
-```
 
 Focused diagnosis, from `build-msvc400`:
 
@@ -70,7 +66,9 @@ Canonical verification, from repository root:
 
 ```powershell
 .decomp-venv\Scripts\python.exe tools\lint_reccmp_metadata.py
-python tools/build_msvc400.py
+.decomp-venv\Scripts\python.exe tools\install_reccmp_compat.py
+.decomp-venv\Scripts\cmake.exe --fresh --preset msvc400
+.decomp-venv\Scripts\cmake.exe --build --preset msvc400 --clean-first
 .decomp-venv\Scripts\reccmp-project.exe detect --search-path data
 Push-Location build-msvc400
 ../.decomp-venv/Scripts/reccmp-reccmp.exe --target LEMBALL --json reccmp.json --json-diet
@@ -82,11 +80,8 @@ Pop-Location
 
 ## Completion
 
-Before committing:
+Run canonical verification and `git diff --check`; review diff; stage explicit paths; commit/push verified progress; leave worktree clean. Report change and commit/push status in one or two sentences.
 
-1. Run the canonical verification commands and `git diff --check`.
-2. Review every diff and stage explicit paths.
-3. Commit verified progress with a descriptive message and push.
-4. Leave the worktree clean.
+## Exact-set audit
 
-Report the result in one or two plain-English sentences. State what changed and whether it was committed and pushed. Mention a blocker only if it prevented progress.
+`data/exact-baseline.json` is immutable. After rebuilding `build-msvc400/reccmp.json`, compare added/lost addresses; keep measured gains without new lost baseline addresses. Historical checkpoints are not current truth.
