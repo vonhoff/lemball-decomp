@@ -3,7 +3,9 @@
 
 class CCrate {
 public:
-	char m_abReserved00[0x9c];
+	char m_abReserved00[0x94];
+	int m_nFrameTime94;
+	char m_abReserved98[4];
 	int m_nPositionX9C;
 	int m_nPositionYA0;
 	int m_nPositionZA4;
@@ -20,6 +22,7 @@ public:
 
 	void Restart(void);
 	int Activate(void* pTarget);
+	void DoActivate(void);
 	void ActivatePosition(int* pPoint);
 };
 

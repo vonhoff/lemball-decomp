@@ -1902,6 +1902,26 @@ void CAmmo::DoActivate(void)
 	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(50);
 }
 
+// FUNCTION: LEMBALL 0x0041ce90
+void CCrate::DoActivate(void)
+{
+	typedef void(LEMBALL_FASTCALL * ActionProc)(void*, void*, int);
+	int nScore;
+
+	m_nFrameTime94 = g_nLevelFrameClockTimeMs;
+	m_nPhaseStepD0 += g_nLevelFrameClockTick;
+	m_nDeadlineD4 += g_nLevelFrameClockTick;
+	((ActionProc) (*(void***) this)[13])(this, 0, 0x14);
+	if (m_nContentsType14C >= 0x15 && m_nContentsType14C <= 0x17) {
+		nScore = 50;
+	} else if (m_nContentsType14C == 4) {
+		nScore = 100;
+	} else if (m_nContentsType14C == 0xffff) {
+		nScore = 25;
+	}
+	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(nScore);
+}
+
 // FUNCTION: LEMBALL 0x0041cf10
 void CCrate::ActivatePosition(int* pPoint)
 {
