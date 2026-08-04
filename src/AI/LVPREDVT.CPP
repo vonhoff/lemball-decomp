@@ -274,9 +274,14 @@ int GetSavedChunkStatus(void)
 	return 2;
 }
 
+class CTower {
+public:
+	int Activate(void* pTarget);
+};
+
 // FUNCTION: LEMBALL 0x0041d000
-int __stdcall AcceptGmobActivation(void* pUnused)
+int CTower::Activate(void* pTarget)
 {
-	(void) pUnused;
+	(void) pTarget;
 	return 1;
 }

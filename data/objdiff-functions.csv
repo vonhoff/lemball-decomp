@@ -693,7 +693,7 @@ address,size,name,unit
 0x0041CE90,122,CCrate::DoActivate,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041CF10,95,CCrate::ActivatePosition,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041CF70,133,CTower::Process,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041D000,8,CTower::Activate,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041D000,8,CTower::Activate,AI/LVPREDVT.CPP
 0x0041D010,47,CTower::ActivatePosition,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041D040,178,construct_gmob_chunk_type_0x14_object,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041D100,32,reset_gmob_type_0x14_object_state,AI/LVSAVEPOS.CPP

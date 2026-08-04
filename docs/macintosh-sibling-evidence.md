@@ -202,7 +202,7 @@ All eleven portable methods map in the Windows type-`0x18` region at `0x0040C2D0
 
 ## CTower reconstruction
 
-The three portable methods map consecutively at `0x0041CF70`, `0x0041D000`, and `0x0041D010` in physical `LEVELVT.CPP`. Exact 68K and Windows bodies agree on terrain-height refresh, unconditional activation success, and activation position `(x-0x30000,y-0x8000,z)`. Their ILTs occupy one Windows vtable at slots `+0x14`, `+0x18`, and `+0x2C`; neighboring CCrate and GMOB type-`0x14` bodies consume no CTower symbols.
+The three portable methods map consecutively at `0x0041CF70`, `0x0041D000`, and `0x0041D010`. Genuine `CTower::Activate` now lives in `LVPREDVT.CPP` as a `100%` match, replacing the neutral unconditional-success callback. Exact 68K and Windows bodies agree on terrain-height refresh, unconditional activation success, and activation position `(x-0x30000,y-0x8000,z)`. Their ILTs occupy one Windows vtable at slots `+0x14`, `+0x18`, and `+0x2C`; neighboring CCrate and GMOB type-`0x14` bodies consume no CTower symbols.
 
 ## CBalloon reconstruction
 
