@@ -846,7 +846,7 @@ address,size,name,unit
 0x00421410,17,copy_two_dword_pair_from_this,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00421430,6,return_true_node_chunk_callback,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00421440,47,append_node_chunk_record_from_level_data,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
-0x00421470,139,CNodeManager::LoadLevel,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x00421470,139,CNodeManager::LoadLevel,AI/LVNODE.CPP
 0x004215E0,103,delete_node_chunk_record_array_or_scalar,Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00421660,47,CBall::CBall,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00421690,37,CBall::Restart,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

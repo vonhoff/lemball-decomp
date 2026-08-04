@@ -60,6 +60,8 @@ struct CNodeManager {
 	CNodeManager(int cCapacity);
 	~CNodeManager(void);
 	void Initialise(int cRecords);
+	void InitialiseThunk(int cRecords);
+	void LoadLevel(const unsigned short* pWords, unsigned int cbPayload, int fReuseState);
 	LevelNodePoint* GetNodePosition(LevelNodePoint* pOutput, int nIndex);
 	void CopyTileByIndex(int nIndex, int* pX, int* pY);
 	void Restart(void);
@@ -139,7 +141,9 @@ struct CNode {
 
 	CNode(void);
 	void AddANeighbour(int nFirst, int nSecond);
+	void AddANeighbourThunk(int nFirst, int nSecond);
 	void Initialise(int nX, int nY, int cLinks);
+	void InitialiseThunk(int nX, int nY, int cLinks);
 	CNode* InitializeNodeChunkRecordThunk(void);
 	void InitializePosition(int nX, int nY, int nUnused);
 	void Restart(void);
@@ -318,6 +322,41 @@ void LevelTwoDwordPairSourceView::CopyTo(int* pDestination)
 {
 	pDestination[0] = m_anValues[0];
 	pDestination[1] = m_anValues[1];
+}
+
+// FUNCTION: LEMBALL 0x00421470
+void CNodeManager::LoadLevel(const unsigned short* pWords, unsigned int cbPayload, int fReuseState)
+{
+	const unsigned short* pEnd;
+	unsigned int cRecords;
+	int cLinks;
+	unsigned int nRecordOffset;
+
+	pEnd = (const unsigned short*) ((const char*) pWords + cbPayload);
+	cRecords = *pWords++;
+	InitialiseThunk(cRecords);
+	m_nReserved04 = cRecords;
+	if (fReuseState != 0 || pWords >= pEnd) {
+		return;
+	}
+
+	nRecordOffset = 0;
+	do {
+		int nX;
+		int nY;
+
+		nX = pWords[0];
+		nY = pWords[1];
+		cLinks = pWords[2];
+		pWords += 3;
+		m_pRecords00[nRecordOffset].InitialiseThunk(nX, nY, cLinks);
+		while (0 < cLinks) {
+			m_pRecords00[nRecordOffset].AddANeighbourThunk(pWords[0], pWords[1]);
+			pWords += 2;
+			--cLinks;
+		}
+		++nRecordOffset;
+	} while (pWords < pEnd);
 }
 
 // FUNCTION: LEMBALL 0x0042eed0

@@ -1883,41 +1883,7 @@ int return_true_node_chunk_callback(void)
 	return 1;
 }
 
-// MACINTOSH: CNodeManager::LoadLevel(tagLoadNodeInformation*, unsigned long, unsigned char)
-// FUNCTION: LEMBALL 0x00421470
-void CNodeManager::LoadLevel(const unsigned short* pWords, unsigned int cbPayload, int fReuseState)
-{
-	const unsigned short* pEnd;
-	unsigned int cRecords;
-	int cLinks;
-	unsigned int nRecordOffset;
 
-	pEnd = (const unsigned short*) ((const char*) pWords + cbPayload);
-	cRecords = *pWords++;
-	InitialiseThunk(cRecords);
-	m_nReserved04 = cRecords;
-	if (fReuseState != 0 || pWords >= pEnd) {
-		return;
-	}
-
-	nRecordOffset = 0;
-	do {
-		int nX;
-		int nY;
-
-		nX = pWords[0];
-		nY = pWords[1];
-		cLinks = pWords[2];
-		pWords += 3;
-		m_pRecords00[nRecordOffset].InitialiseThunk(nX, nY, cLinks);
-		while (0 < cLinks) {
-			m_pRecords00[nRecordOffset].AddANeighbourThunk(pWords[0], pWords[1]);
-			pWords += 2;
-			--cLinks;
-		}
-		++nRecordOffset;
-	} while (pWords < pEnd);
-}
 // MACINTOSH: CBallManager::CBallManager(CAI*, int)
 // FUNCTION: LEMBALL 0x00421ea0
 CBallManager* CBallManager::ConstructBallChunkManager(void* pLevelMode, int cCapacity)
