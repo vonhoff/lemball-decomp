@@ -42,8 +42,15 @@ struct SavedPositionChunkObjectView {
 	short m_nLinkedVariant144;
 
 	void ResetToSavedPosition(void);
-	void ResetLinkedVariant(void);
 	void ResetGmobState(void);
+};
+
+class CAmmo {
+public:
+	char m_abReserved00[0x144];
+	short m_nLinkedVariant144;
+
+	void Restart(void);
 };
 
 
@@ -94,9 +101,9 @@ int CCatapult::Activate(void* pTarget)
 }
 
 // FUNCTION: LEMBALL 0x0041ca90
-void SavedPositionChunkObjectView::ResetLinkedVariant(void)
+void CAmmo::Restart(void)
 {
-	ResetToSavedPosition();
+	((SavedPositionChunkObjectView*) this)->ResetToSavedPosition();
 	m_nLinkedVariant144 = 0;
 }
 
