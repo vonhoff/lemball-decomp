@@ -1,4 +1,4 @@
-#include "Visos/Generic/VSMath.h"
+#include "Visos/Generic/CVSPoint.h"
 
 class VsWingRenderBlitRect {
 public:
@@ -7,11 +7,11 @@ public:
 	short m_nWidth;
 	short m_nHeight;
 
-	VsWingRenderBlitRect* Initialize(short nWidth, short nHeight, const VsMathPoint2D* pPoint);
+	VsWingRenderBlitRect* Initialize(short nWidth, short nHeight, const CVSPoint* pPoint);
 };
 
 // FUNCTION: LEMBALL 0x00478b80
-VsWingRenderBlitRect* VsWingRenderBlitRect::Initialize(short nWidth, short nHeight, const VsMathPoint2D* pPoint)
+VsWingRenderBlitRect* VsWingRenderBlitRect::Initialize(short nWidth, short nHeight, const CVSPoint* pPoint)
 {
 	m_nX = pPoint->m_nX;
 	m_nY = pPoint->m_nY;

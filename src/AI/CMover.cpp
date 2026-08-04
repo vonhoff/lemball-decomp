@@ -1,6 +1,7 @@
 #include "AI/CMover.h"
 
 #include "AI/CGameObject.h"
+#include "AI/CPlayerLemming.h"
 
 extern void* g_pActiveManagedEntityOwner;
 extern void* g_pLevelTileGrid;
@@ -9,7 +10,6 @@ extern void __fastcall ResetMoveChunkObjectRuntimeStateThunk(void* pObject);
 extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void* g_LEVELVT_MoveChunkObjectVtable[16];
 extern int Distance2DIntPixels(int x1, int y1, int x2, int y2);
-extern void* __fastcall get_managed_entity_owner_group(void* pEntity);
 
 struct LevelNodePoint {
 	int m_anValues[3];
@@ -266,7 +266,7 @@ void CMover::StopObjectsMoving(void)
 		do {
 			void* pEntity = *ppEntity;
 			if (*(int*) ((char*) pEntity + 0x64) == 2) {
-				void* pOwnerGroup = get_managed_entity_owner_group(pEntity);
+				void* pOwnerGroup = ((CPlayerLemming*) pEntity)->GetGroup();
 				((OwnerResetSlotProc) (*(void***) pOwnerGroup)[84])(pOwnerGroup);
 			}
 			else {

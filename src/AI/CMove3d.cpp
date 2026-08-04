@@ -1,6 +1,6 @@
 #include "AI/CMove3d.h"
 
-#include "Visos/Generic/VSMath.h"
+#include "Visos/Generic/CVSMath.h"
 
 extern void* g_pSessionRandomState;
 

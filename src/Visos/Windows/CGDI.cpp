@@ -3336,7 +3336,7 @@ int LEMBALL_FASTCALL CBaseCursorProcessMsg(void* pRenderClient, int, RenderDispa
 	unsigned int dwNow;
 	union {
 		RenderDispatchQueueEntry m_OutputEntry;
-		VsMathPoint2D m_Position;
+		CVSPoint m_Position;
 	} Scratch;
 
 	pState = (int*) pRenderClient;
@@ -3433,7 +3433,7 @@ position_event:
 	goto done;
 }
 // FUNCTION: LEMBALL 0x0046b2c0
-void CBaseCursor::SetPos(const VsMathPoint2D* pPosition)
+void CBaseCursor::SetPos(const CVSPoint* pPosition)
 {
 	short x;
 	short y;

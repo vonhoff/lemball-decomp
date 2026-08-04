@@ -3,6 +3,7 @@
 #include "AI/CGameObject.h"
 #include "AI/CGenericGroup.h"
 #include "AI/CPlayerLemmingGroup.h"
+#include "AI/CPlayerLemming.h"
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Level/CHUNKOBJVT.H"
@@ -16,7 +17,6 @@ extern void* g_pActiveManagedEntityOwner;
 extern int __fastcall has_level_plas_history_entries(void* pLevelMode);
 extern CPlayerLemming* LEMBALL_FASTCALL PopLevelPlasHistoryChild(void* pLevelMode);
 
-extern void* LEMBALL_FASTCALL get_managed_entity_owner_group(void* pEntity);
 extern void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_rock_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_capture_trigger_chunk_object(void* pObject);
@@ -698,7 +698,8 @@ int LEMBALL_FASTCALL UpdateRockHistoryChildSwapState(void* pObject)
 			activationPoint.m_nY = *(int*) (pObjectBytes + 0xa0) - 0x34000;
 			activationPoint.m_nZ = *(int*) (pObjectBytes + 0xa4);
 			pProjectile->ActivateAtPosition(&activationPoint);
-			((CPlayerLemmingGroup*) get_managed_entity_owner_group(*(void**) (pObjectBytes + 0x140)))
+			((CPlayerLemming*) *(void**) (pObjectBytes + 0x140))
+				->GetGroup()
 				->AddLemmingToGroup((CPlayerLemming*) pProjectile);
 		}
 		((RockChunkObjectStateView*) pObject)->SetManagedEntityStateIdLocal(0x18);

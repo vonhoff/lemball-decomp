@@ -1,4 +1,6 @@
 #include "AI/CPlayerLemmingGroup.h"
+
+#include "AI/CPlayerLemming.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 struct LevelManagedEntityTargetView {
@@ -9,11 +11,6 @@ struct LevelManagedEntityTargetView {
 struct LevelManagedEntityStateIdView {
 	char m_abReserved00[0xb8];
 	int m_nStateIdB8;
-};
-
-struct ManagedEntityChildView {
-	void SetManagedEntityOwnerGroup(void* pOwnerGroup);
-	void SetManagedEntityPrimaryActiveFlag(int fActive);
 };
 
 struct LevelManagedEntityDirtyStateView {
@@ -42,15 +39,14 @@ void CPlayerLemmingGroup::Delete(void)
 // FUNCTION: LEMBALL 0x00414600
 int CPlayerLemmingGroup::AddLemmingToGroup(CPlayerLemming* pLemming)
 {
-	ManagedEntityChildView* pChild = (ManagedEntityChildView*) pLemming;
 	AddElementToGroup((CGameObject*) pLemming);
 	m_nRuntimeState164 = 1;
-	pChild->SetManagedEntityOwnerGroup(this);
+	pLemming->SetGroup(this);
 	if ((this->*m_pVtable00->m_pGetNumberOfElements108)() == 0 && m_nRuntimeState168 == 1) {
-		pChild->SetManagedEntityPrimaryActiveFlag(1);
+		pLemming->SetGroupLeader(1);
 		return 1;
 	}
-	pChild->SetManagedEntityPrimaryActiveFlag(0);
+	pLemming->SetGroupLeader(0);
 	return 1;
 }
 

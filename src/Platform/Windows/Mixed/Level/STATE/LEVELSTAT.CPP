@@ -5168,7 +5168,7 @@ void CBaseCursor::SetMainID(int nResourceId, int nEntryIndex)
 // FUNCTION: LEMBALL 0x0046b810
 void CBaseCursor::Process(void)
 {
-	VsMathPoint2D PreviousPosition;
+	CVSPoint PreviousPosition;
 	DWORD dwNow;
 	int nElapsed;
 	int nMaximumVelocity;
@@ -5263,14 +5263,7 @@ void CBaseCursor::Process(void)
 	}
 	m_fMotionPending38 = 0;
 }
-// FUNCTION: LEMBALL 0x0046ba50
-int VsMathPoint2D::Equals(const VsMathPoint2D* pOther)
-{
-	if (pOther->m_nX == m_nX && pOther->m_nY == m_nY) {
-		return 1;
-	}
-	return 0;
-}
+
 
 int LEMBALL_STDCALL ReturnTrueVirtualHookBodyStdcall(void* pUnused)
 {

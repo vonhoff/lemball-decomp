@@ -1,7 +1,8 @@
 #ifndef LEMBALL_GAME_CURSOR_RENDER_CLIENT_H
 #define LEMBALL_GAME_CURSOR_RENDER_CLIENT_H
 
-#include "Visos/Generic/VSMath.h"
+#include "Visos/Generic/CVSPoint.h"
+#include "Visos/Generic/VsMathFixed12Vector2D.h"
 
 struct CBaseCursorInterface {
 	virtual void Reserved00(void) = 0;
@@ -15,7 +16,7 @@ struct CBaseCursorInterface {
 
 struct CBaseCursor : public CBaseCursorInterface {
 	char m_abReserved04[0x0c];
-	VsMathPoint2D m_Position10;
+	CVSPoint m_Position10;
 	char m_abReserved14[4];
 	int m_fActive18;
 	void* m_pRenderEntry1C;
@@ -34,12 +35,12 @@ struct CBaseCursor : public CBaseCursorInterface {
 	VsMathFixed12Vector2D m_Acceleration64;
 	unsigned long m_dwLastAccelerationXTick6C;
 	unsigned long m_dwLastAccelerationYTick70;
-	VsMathPoint2D m_BoundsSize74;
-	VsMathPoint2D m_BoundsOrigin78;
+	CVSPoint m_BoundsSize74;
+	CVSPoint m_BoundsOrigin78;
 
 	void Process(void);
 	void Draw(void* pWindowOwner);
-	void SetPos(const VsMathPoint2D* pPosition);
+	void SetPos(const CVSPoint* pPosition);
 	void SetMainID(int nResourceId);
 	void SetMainID(int nResourceId, int nEntryIndex);
 };

@@ -49,6 +49,7 @@ set(LEMBALL_SOURCES
     src/AI/CGenericGroup.cpp
     src/AI/CPlayerLemmingGroup.cpp
     src/AI/CPlayerLemmingGroupManager.cpp
+    src/AI/CPlayerLemming.cpp
     src/AI/LVMOVEVT.CPP
     src/Platform/Windows/Mixed/Level/IO/LVNETVT.CPP
     src/AI/LVPROJVT.CPP
@@ -103,7 +104,10 @@ set(LEMBALL_SOURCES
     src/Platform/Windows/Mixed/Engine/NET/VSNETSTR.CPP
     src/Platform/Windows/Mixed/Engine/NET/NSTRBSTH.CPP
     src/Platform/Windows/Mixed/Engine/MEDIA/VSSOUND.CPP
-    src/Visos/Generic/VSMath.cpp
+    src/Visos/Generic/VsMathFixed12Vector2D.cpp
+    src/Visos/Generic/SignedTrigTable.cpp
+    src/Visos/Generic/CVSMath.cpp
+    src/Visos/Generic/CVSPoint.cpp
     src/Visos/Windows/INVISWIN.CPP
     src/Visos/Windows/Debug/TEXTWIN.CPP
     src/Visos/Windows/Debug/TXWININV.CPP

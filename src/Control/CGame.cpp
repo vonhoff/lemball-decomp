@@ -24,7 +24,8 @@
 #include "Platform/Windows/ShellUI.h"
 #include "Visos/Generic/Memory.h"
 #include "Visos/Generic/MogLoad.h"
-#include "Visos/Generic/VSMath.h"
+#include "Visos/Generic/CVSMath.h"
+#include "Visos/Generic/SignedTrigTable.h"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1100)
 #include <new.h>

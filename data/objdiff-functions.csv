@@ -263,10 +263,10 @@ address,size,name,unit
 0x0040ED90,573,CPlayerLemming::Restart,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0040EFD0,48,CPlayerLemming::~CPlayerLemming,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0040F000,203,CPlayerLemming::HitBullet,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x0040F0D0,13,CPlayerLemming::SetGroup,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0040F0E0,7,CPlayerLemming::GetGroup,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0040F0F0,13,CPlayerLemming::SetGroupLeader,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0040F100,13,CPlayerLemming::SetGroup,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0040F0D0,13,CPlayerLemming::SetGroup,AI/CPlayerLemming.cpp
+0x0040F0E0,7,CPlayerLemming::GetGroup,AI/CPlayerLemming.cpp
+0x0040F0F0,13,CPlayerLemming::SetGroupLeader,AI/CPlayerLemming.cpp
+0x0040F100,13,CPlayerLemming::SetGroup,AI/CPlayerLemming.cpp
 0x0040F110,7,get_level_mode_field_0x17c,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0040F120,59,CPlayerLemming::Process,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0040F160,178,CPlayerLemming::TurnToFaceCursor,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
@@ -1700,8 +1700,8 @@ address,size,name,unit
 0x0044B5D0,14,clear_two_word_point,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0044B5F0,41,initialize_level_selection_point_rect_sink_entry,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 0x0044B630,7,restore_level_selection_point_sink_finalize_vtable,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
-0x0044B640,24,initialize_fixed12_2d_vector_from_pixels,Visos/Generic/VSMath.cpp
-0x0044B660,42,add_fixed12_2d_vectors,Visos/Generic/VSMath.cpp
+0x0044B640,24,VsMathFixed12Vector2D::InitializeFromPixels,Visos/Generic/VsMathFixed12Vector2D.cpp
+0x0044B660,42,add_fixed12_2d_vectors,Visos/Generic/VsMathFixed12Vector2D.cpp
 0x0044B6A0,64,sample_signed_sine_table,Control/CGame.cpp
 0x0044B6F0,75,sample_signed_cosine_table,Control/CGame.cpp
 0x0044B750,411,construct_registration_info_screen,Control/CGame.cpp
@@ -2100,9 +2100,9 @@ address,size,name,unit
 0x0045A8E0,14,destroy_memory_arena_return_this,Visos/Generic/Memory.cpp
 0x0045A8F0,14,restore_memory_block_base_vtable_return_this,Visos/Generic/Memory.cpp
 0x0045A900,20,vsmem_delete_block_stub,Visos/Generic/Memory.cpp
-0x0045A940,91,initialize_signed_trig_table,Visos/Generic/VSMath.cpp
-0x0045A9A0,9,write_debug_sentinel_dword,Visos/Generic/VSMath.cpp
-0x0045A9B0,202,CVSMath::SqRoot,Visos/Generic/VSMath.cpp
+0x0045A940,91,initialize_signed_trig_table,Visos/Generic/SignedTrigTable.cpp
+0x0045A9A0,9,write_debug_sentinel_dword,Visos/Generic/SignedTrigTable.cpp
+0x0045A9B0,202,CVSMath::SqRoot,Visos/Generic/CVSMath.cpp
 0x0045AA80,39,initialize_status_entry_registry,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x0045AAB0,50,shutdown_status_entry_registry,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
 0x0045AAF0,50,construct_status_entry_pointer_array,Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
@@ -2791,7 +2791,7 @@ address,size,name,unit
 0x0046B810,525,CBaseCursor::Process,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
 0x0046BA20,1,noop_status_indicator_render_client_slot,Platform/Windows/Mixed/Engine/GDI/RENDER/GDISTATUSVT.CPP
 0x0046BA30,30,delete_status_indicator_render_client_base,Platform/Windows/Mixed/Engine/GDI/RENDER/GDISTATUSVT.CPP
-0x0046BA50,35,point2d_equals,Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+0x0046BA50,35,CVSPoint::Equals,Visos/Generic/CVSPoint.cpp
 0x0046BA80,227,initialize_resource_geometry_helper_runtime,Visos/Windows/CGDI.cpp
 0x0046BB70,139,shutdown_resource_geometry_helper_runtime,Visos/Windows/CGDI.cpp
 0x0046BC00,134,CGDIDevice::CGDIDevice,Visos/Windows/CGDI.cpp
