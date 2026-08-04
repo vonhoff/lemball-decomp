@@ -1,6 +1,18 @@
 #include "AI/CPlayerLemmingGroupManager.h"
 
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "Visos/Generic/Memory.h"
+
+extern int g_nSelectedNetworkLobbyPeerId;
+
+extern void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevelThunk(void* pObject,
+																	int nUnusedEdx,
+																	int nX,
+																	int nY,
+																	int nZ,
+																	unsigned short nVariant,
+																	int nNetworkPlayer,
+																	int nStartDelay);
 
 struct LevelManagedEntityChildIterator;
 
@@ -84,6 +96,36 @@ void CPlayerLemmingGroupManager::RemoveWaypointsFromCurrentGroup(void)
 	}
 }
 
+// FUNCTION: LEMBALL 0x00418ca0
+void CPlayerLemmingGroupManager::InitialiseNetwork(void)
+{
+	typedef void(LEMBALL_FASTCALL * RestartProc)(void* pLemming);
+	CPlayerLemming* pLemming;
+	void* pStorage;
+	void* pChunkStream;
+	int i;
+
+	if (g_nSelectedNetworkLobbyPeerId != 0) {
+		for (i = 0; i < 4; ++i) {
+			if (m_fNetworkInitialised14C == 0) {
+				pStorage = AllocateVSMemBlock(0x22c);
+				if (pStorage == 0) {
+					m_apNetworkLemmings13C[i] = 0;
+				}
+				else {
+					m_apNetworkLemmings13C[i] =
+						(CPlayerLemming*) ConstructPlasChunkObjectForLevelThunk(pStorage, 0, 0, 0, 0, 0, 1, 0);
+				}
+			}
+
+			pLemming = m_apNetworkLemmings13C[i];
+			((RestartProc) (*(void***) pLemming)[0x104 / sizeof(void*)])(pLemming);
+			pChunkStream = this == 0 ? 0 : (char*) this + 0xb0;
+			((CGameObject*) pLemming)->m_pOwningChunkStream60 = pChunkStream;
+		}
+		m_fNetworkInitialised14C = 1;
+	}
+}
 // FUNCTION: LEMBALL 0x004193f0
 int CPlayerLemmingGroupManager::HasSFXChanged(void)
 {

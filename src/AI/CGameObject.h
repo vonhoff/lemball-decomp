@@ -43,7 +43,8 @@ public:
 	void* m_pReachabilityOwner0C;
 	char m_abReserved10[4];
 	CGameObjectBounds m_bounds14;
-	char m_abReserved2C[0x38];
+	char m_abReserved2C[0x34];
+	void* m_pOwningChunkStream60;
 	int m_nEntityType64;
 	char m_abReserved68[4];
 	unsigned short m_nSlotId6C;

@@ -552,7 +552,7 @@ address,size,name,unit
 0x00418BA0,49,copy_indexed_level_mode_position_as_fixed_point,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00418BE0,168,configure_managed_entity_profile_ranges,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00418C90,14,get_indexed_level_mode_value_0x110,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x00418CA0,127,CPlayerLemmingGroupManager::InitialiseNetwork,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+0x00418CA0,127,CPlayerLemmingGroupManager::InitialiseNetwork,AI/CPlayerLemmingGroupManager.cpp
 0x00418D20,826,CPlayerLemmingGroupManager::LoadLevel,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00419060,900,CPlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions,Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x004193F0,65,CPlayerLemmingGroupManager::HasSFXChanged,AI/CPlayerLemmingGroupManager.cpp

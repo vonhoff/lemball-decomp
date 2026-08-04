@@ -5,6 +5,7 @@
 #include "AI/CLiftManager.h"
 #include "AI/CMaze.h"
 #include "AI/CMineManager.h"
+#include "AI/CPlayerLemmingGroupManager.h"
 #include "Control/Options.h"
 #include "Frontend/CURSOR.H"
 #include "Frontend/MAINMENU.H"
@@ -567,7 +568,6 @@ extern int LEMBALL_FASTCALL GetSelectedLevelNumberThunk(void* pLevelProgressStat
 extern void ReadLevelDemoLengthPrefixedRecordThunk(void* pPlaybackController,
 												   void* pRecordHeader,
 												   unsigned int* pcbRecord);
-extern void InitializeNetworkPlayerPlasChunkObjectPoolThunk(void* pPlasManager);
 extern void AssignNetworkPlayerManagedEntitySlotIdsThunk(int nLevelMode);
 extern void LEMBALL_FASTCALL ResizeLevelTileReachabilityGridThunk(void* pReachabilityHelper);
 extern void LEMBALL_FASTCALL FillReachabilityGridFromTileFlagsThunk(void* pReachabilityHelper);
@@ -3588,7 +3588,7 @@ void LevelGameMode::InitializeLevelGameMode(void)
 
 	((LinkScfLevelChunkLoaderView*) *(void**) (pModeBytes + 0x178))
 		->LoadLevelChunksForSkillAndLevelThunk(nSkill, nLevel, *(int*) (pModeBytes + 0x4c));
-	InitializeNetworkPlayerPlasChunkObjectPoolThunk(*(void**) (pModeBytes + 0x15c));
+	((CPlayerLemmingGroupManager*) *(void**) (pModeBytes + 0x15c))->InitialiseNetwork();
 	if (*(int*) (pModeBytes + 0x4c) == 0) {
 		AssignNetworkPlayerManagedEntitySlotIdsThunk((int) (unsigned long) pLevelGameMode);
 		ResizeLevelTileReachabilityGridThunk(*(void**) (pModeBytes + 0x114));

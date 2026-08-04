@@ -10,8 +10,9 @@ class CPlayerLemmingGroupManager : public CGenericGroupManager {
 public:
 	char m_abReservedB0[0x78];
 	int m_nDeadCount128;
-	CPlayerLemming* m_apDeadLemmings12C[8];
-	int m_nSelectedGroup14C;
+	CPlayerLemming* m_apDeadLemmings12C[4];
+	CPlayerLemming* m_apNetworkLemmings13C[4];
+	int m_fNetworkInitialised14C;
 
 	CPlayerLemming* GetDead(void);
 	int GetLeaderPos(AICOORD& position);
@@ -19,6 +20,7 @@ public:
 	int IsLemmingPlayerControlled(CPlayerLemming* pLemming);
 	CPlayerLemmingGroup* GetPlayerControlledGroup(void);
 	void RemoveWaypointsFromCurrentGroup(void);
+	void InitialiseNetwork(void);
 	int HasSFXChanged(void);
 };
 
