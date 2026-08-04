@@ -21,7 +21,6 @@ struct SavedPositionTransitionView {
 	int m_nPhaseStepD0;
 	int m_nDeadlineD4;
 
-	int RequestIdleTarget(void* pTarget);
 	int RequestGmobIdle(int nUnused);
 };
 
@@ -48,10 +47,20 @@ struct SavedPositionChunkObjectView {
 
 class CCatapult {
 public:
-	char m_abReserved00[0xbc];
+	char m_abReserved00[0x5c];
+	void* m_pTarget5C;
+	char m_abReserved60[0x34];
+	int m_nFrameTime94;
+	char m_abReserved98[0x20];
+	int m_nStateB8;
 	short m_nVariantBC;
+	char m_abReservedBE[0x0e];
+	int m_nPhaseDurationCC;
+	int m_nPhaseStepD0;
+	int m_nDeadlineD4;
 
 	void Restart(void);
+	int Activate(void* pTarget);
 };
 
 struct GmobType14SavedPositionView {
@@ -83,7 +92,7 @@ void CCatapult::Restart(void)
 }
 
 // FUNCTION: LEMBALL 0x0041c9b0
-int SavedPositionTransitionView::RequestIdleTarget(void* pTarget)
+int CCatapult::Activate(void* pTarget)
 {
 	int nFrameTime;
 
