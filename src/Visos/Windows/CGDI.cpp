@@ -92,13 +92,8 @@ void LEMBALL_FASTCALL AllocateZBuff(void* pHelperGroup);
 void LEMBALL_FASTCALL EnableZBuff(int nHelperGroup, int nUnused, int fActive);
 void LEMBALL_FASTCALL SetDontUpdateRectCPVSurface(void* pTarget, int, short* paRect);
 int LEMBALL_FASTCALL HasZBuff(void* pGroupState, int);
-void LEMBALL_FASTCALL ResetHelperUploadStateMap(void* pTracker);
-void LEMBALL_FASTCALL EnsureHelperUploadStateMapCapacity(void* pTracker);
-void LEMBALL_FASTCALL SetHelperUploadTrackerExtent(void* pTracker, int, int nExtent);
 void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
-void LEMBALL_FASTCALL ResetHelperUploadRectListAndStateMap(int nUploadState);
 void LEMBALL_FASTCALL PromoteHelperUploadStateToActive(int nUploadState);
-void LEMBALL_FASTCALL DestroyGeometryHelperPointerArray(void* pHelper);
 void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void* pQueue);
 void* LEMBALL_FASTCALL CBaseCursorConstruct(int* pRenderClient);
 void LEMBALL_FASTCALL CBaseCursorDestroy(int* pRenderClient);
@@ -551,22 +546,11 @@ struct VsGdiHelperSurfaceBindingSurface {
 	short m_nOriginX;
 };
 
-struct VsGdiQuantizedHelperUploadRectTracker {
-	int InitializeQuantizedHelperUploadRectTracker(int cRectEntries, int nTrackerExtent, int nCellExtent);
-	void MarkHelperUploadCellsForRect(short* pRect);
-	void MarkHelperUploadRectWithState(short* pRect, unsigned char bState);
-	int ConsumeMarkedHelperUploadRun(unsigned char bTargetState, int nEntryState, unsigned char bReplacementState);
-	int BuildHelperUploadRectList(void);
-	short* GetHelperUploadRectEntryByIndex(int iRect);
-	int GetHelperUploadActiveRectStartIndex(void);
-};
 
 /* The target+0x98 row-buffer view receives a two-point/two-extent copy
  * command.  Ghidra 00474dd0 and table 00499e40 slot 1 show that the source
  * rows belong to the target base while the destination rows belong to this
  * helper-group view. */
-
-void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState);
 
 extern void TriggerReleaseAssertFailure(const char* pszExpression, const char* pszFile, int nLine);
 extern void* g_pQueuedRenderPointSinkFinalizeThunk;
@@ -2813,343 +2797,9 @@ int LEMBALL_FASTCALL HasZBuff(void* pGroupState, int)
 {
 	return *(int*) ((char*) pGroupState - 0x10);
 }
-// FUNCTION: LEMBALL 0x004669a0
-int VsGdiQuantizedHelperUploadRectTracker::InitializeQuantizedHelperUploadRectTracker(int cRectEntries,
-																					  int nTrackerExtent,
-																					  int nCellExtent)
-{
-	short* pTracker;
-	short* pRect;
-	int i;
-	short cxTracker;
-	short cyTracker;
-	short cxCell;
-	short cyCell;
+#include "../Generic/CChangeList.cpp"
 
-	pTracker = (short*) this;
-	pTracker[0xb] = 0;
-	pTracker[0xa] = 0;
-	pTracker[0xd] = 0;
-	pTracker[0xc] = 0;
-	pTracker[0xf] = 0;
-	pTracker[0xe] = 0;
-	pTracker[0x19] = 0;
-	pTracker[0x18] = 0;
-	pTracker[0x1b] = 0;
-	pTracker[0x1a] = 0;
 
-	pRect = 0;
-	if (cRectEntries != 0) {
-		pRect = (short*) AllocateVSMemBlock((unsigned int) (cRectEntries * 0xc));
-	}
-	if (pRect == 0) {
-		*(void**) ((char*) this + 0xc) = 0;
-	}
-	else {
-		for (i = 0; i < cRectEntries; ++i) {
-			pRect[0] = 0;
-			pRect[1] = 0;
-			pRect[2] = 0;
-			pRect[3] = 0;
-			pRect[4] = 0;
-			pRect[5] = 0;
-			pRect += 6;
-		}
-		*(short**) ((char*) this + 0xc) = pRect - cRectEntries * 6;
-	}
-
-	*(int*) this = cRectEntries;
-	*(int*) ((char*) this + 0x18) = nCellExtent;
-	*(int*) ((char*) this + 0x14) = nTrackerExtent;
-	cxTracker = (short) nTrackerExtent;
-	cyTracker = (short) ((unsigned int) nTrackerExtent >> 16);
-	cxCell = (short) nCellExtent;
-	cyCell = (short) ((unsigned int) nCellExtent >> 16);
-	*(short*) ((char*) this + 0x1c) = (short) ((cxTracker + cxCell - 1) / cxCell);
-	*(short*) ((char*) this + 0x1e) = (short) ((cyTracker + cyCell - 1) / cyCell);
-	*(int*) ((char*) this + 0x44) = 0;
-	*(int*) ((char*) this + 0x10) = 0;
-	EnsureHelperUploadStateMapCapacity(this);
-	InitializeHelperUploadStatePending((int) (unsigned long) this);
-	return (int) (unsigned long) this;
-}
-// FUNCTION: LEMBALL 0x00466a90
-void LEMBALL_FASTCALL ResetHelperUploadStateMap(void* pTracker)
-{
-	if (*(void**) ((char*) pTracker + 0x10) != 0) {
-		FreeVSMemBlock(*(void**) ((char*) pTracker + 0x10));
-		*(void**) ((char*) pTracker + 0x10) = 0;
-	}
-	InitializeHelperUploadStatePending((int) (unsigned long) pTracker);
-}
-// FUNCTION: LEMBALL 0x00466ac0
-void LEMBALL_FASTCALL EnsureHelperUploadStateMapCapacity(void* pTracker)
-{
-	int nMapEntries;
-
-	if (*(int*) ((char*) pTracker + 0x10) == 0) {
-		nMapEntries = (int) *(short*) ((char*) pTracker + 0x1c) * (int) *(short*) ((char*) pTracker + 0x1e);
-		*(int*) ((char*) pTracker + 0x20) = nMapEntries;
-		*(void**) ((char*) pTracker + 0x10) = AllocateVSMemBlock((unsigned int) nMapEntries);
-	}
-}
-// FUNCTION: LEMBALL 0x00466af0
-void LEMBALL_FASTCALL SetHelperUploadTrackerExtent(void* pTracker, int, int nExtent)
-
-{
-	short cxExtent;
-	short cyExtent;
-	short cxCell;
-	short cyCell;
-	short cxMap;
-	short cyMap;
-
-	cxExtent = (short) nExtent;
-	cyExtent = (short) ((unsigned int) nExtent >> 16);
-	if (*(short*) ((char*) pTracker + 0x14) == cxExtent && *(short*) ((char*) pTracker + 0x16) == cyExtent) {
-		return;
-	}
-
-	cxCell = *(short*) ((char*) pTracker + 0x18);
-	cyCell = *(short*) ((char*) pTracker + 0x1a);
-	cxMap = (short) (cxExtent / cxCell);
-	cyMap = (short) (cyExtent / cyCell);
-	*(short*) ((char*) pTracker + 0x14) = cxExtent;
-	*(short*) ((char*) pTracker + 0x16) = cyExtent;
-	*(short*) ((char*) pTracker + 0x1c) = cxMap;
-	*(short*) ((char*) pTracker + 0x1e) = cyMap;
-	if ((int) cxMap * (int) cyMap > *(int*) ((char*) pTracker + 0x20)) {
-		ResetHelperUploadStateMap(pTracker);
-	}
-	if ((int) cxExtent * (int) cyExtent > 0) {
-		EnsureHelperUploadStateMapCapacity(pTracker);
-	}
-}
-// FUNCTION: LEMBALL 0x00466b60
-void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState)
-{
-	*(unsigned short*) (unsigned long) (nUploadState + 0x30) = 0;
-	*(int*) (unsigned long) (nUploadState + 0x2c) = 0;
-	*(char*) (unsigned long) (nUploadState + 0x48) = 'P';
-	*(unsigned short*) (unsigned long) (nUploadState + 0x32) = 0;
-	*(unsigned short*) (unsigned long) (nUploadState + 0x34) = 0;
-	*(unsigned short*) (unsigned long) (nUploadState + 0x36) = 0;
-	*(int*) (unsigned long) (nUploadState + 4) = -1;
-	*(int*) (unsigned long) (nUploadState + 8) = -1;
-}
-// FUNCTION: LEMBALL 0x00466b90
-void LEMBALL_FASTCALL ResetHelperUploadRectListAndStateMap(int nUploadState)
-{
-	if (*(int*) (unsigned long) (nUploadState + 0xc) != 0) {
-		FreeVSMemBlock((void*) (unsigned long) *(int*) (unsigned long) (nUploadState + 0xc));
-		*(int*) (unsigned long) (nUploadState + 0xc) = 0;
-	}
-	ResetHelperUploadStateMap((void*) (unsigned long) nUploadState);
-}
-
-// FUNCTION: LEMBALL 0x00466be0
-void VsGdiQuantizedHelperUploadRectTracker::MarkHelperUploadCellsForRect(short* pRect)
-{
-	char* pTracker;
-	short cxCell;
-	short cyCell;
-	int nFirstColumn;
-	int nFirstRow;
-	unsigned int cColumns;
-	int cRows;
-	int nGridWidth;
-	int nRow;
-	unsigned char* pRow;
-	unsigned int i;
-
-	pTracker = (char*) this;
-	if (*(int*) (pTracker + 0x10) == 0) {
-		return;
-	}
-
-	cxCell = *(short*) (pTracker + 0x18);
-	cyCell = *(short*) (pTracker + 0x1a);
-	nFirstColumn = pRect[2] / cxCell;
-	nFirstRow = pRect[3] / cyCell;
-	cColumns = (unsigned int) ((pRect[0] + pRect[2] - 1 + cxCell) / cxCell - nFirstColumn);
-	cRows = (pRect[1] + pRect[3] - 1 + cyCell) / cyCell - nFirstRow;
-	if (*(short*) (pTracker + 0x1e) < nFirstRow + cRows) {
-		cRows = *(short*) (pTracker + 0x1e) - nFirstRow;
-	}
-	nGridWidth = *(short*) (pTracker + 0x1c);
-	if (nGridWidth < nFirstColumn + (int) cColumns) {
-		cColumns = (unsigned int) (nGridWidth - nFirstColumn);
-	}
-
-	if ((int) cColumns <= 0 || cRows <= 0) {
-		return;
-	}
-
-	pRow = (unsigned char*) (*(int*) (pTracker + 0x10) + nGridWidth * nFirstRow + nFirstColumn);
-	nRow = cRows;
-	do {
-		for (i = 0; i < cColumns; ++i) {
-			pRow[i] = *(unsigned char*) (pTracker + 0x48);
-		}
-		pRow += nGridWidth;
-		--nRow;
-	} while (nRow != 0);
-	*(int*) (pTracker + 0x2c) += (int) pRect[0] * (int) pRect[1];
-}
-// FUNCTION: LEMBALL 0x00466ce0
-void VsGdiQuantizedHelperUploadRectTracker::MarkHelperUploadRectWithState(short* pRect, unsigned char bState)
-
-{
-	unsigned char bPreviousState;
-	bPreviousState = *(unsigned char*) ((char*) this + 0x48);
-	*(unsigned char*) ((char*) this + 0x48) = bState;
-	MarkHelperUploadCellsForRect(pRect);
-	*(unsigned char*) ((char*) this + 0x48) = bPreviousState;
-}
-// FUNCTION: LEMBALL 0x00466d10
-void LEMBALL_FASTCALL PromoteHelperUploadStateToActive(int nUploadState)
-{
-	unsigned int nState;
-
-	nState = *(unsigned char*) (unsigned long) (nUploadState + 0x48);
-	switch (nState) {
-	case 'P':
-		*(char*) (unsigned long) (nUploadState + 0x48) = 'A';
-		break;
-	case 'p':
-		*(char*) (unsigned long) (nUploadState + 0x48) = 'a';
-		break;
-	}
-}
-// FUNCTION: LEMBALL 0x00466d40
-int VsGdiQuantizedHelperUploadRectTracker::ConsumeMarkedHelperUploadRun(unsigned char bTargetState,
-																		int nEntryState,
-																		unsigned char bReplacementState)
-
-{
-	char* pTracker;
-	unsigned char* pMap;
-	unsigned char* pRow;
-	short* pEntry;
-	int cxGrid, cyGrid, cxCell, cyCell;
-	int xCell, yCell, xRunEnd, cRunCells, cRunRows, x;
-
-	pTracker = (char*) this;
-	pMap = *(unsigned char**) (pTracker + 0x10);
-	cxGrid = *(short*) (pTracker + 0x1c);
-	cyGrid = *(short*) (pTracker + 0x1e);
-	cxCell = *(short*) (pTracker + 0x18);
-	cyCell = *(short*) (pTracker + 0x1a);
-	xCell = *(int*) (pTracker + 0x24);
-	yCell = *(int*) (pTracker + 0x28);
-	while (yCell < cyGrid) {
-		pRow = pMap + yCell * cxGrid;
-		while (xCell < cxGrid && pRow[xCell] != bTargetState) {
-			++xCell;
-		}
-		if (xCell < cxGrid) {
-			break;
-		}
-		xCell = 0;
-		++yCell;
-	}
-	if (yCell >= cyGrid) {
-		return 0;
-	}
-
-	pRow = pMap + yCell * cxGrid;
-	xRunEnd = xCell;
-	while (xRunEnd < cxGrid && pRow[xRunEnd] == bTargetState) {
-		pRow[xRunEnd++] = bReplacementState;
-	}
-	cRunCells = xRunEnd - xCell;
-	cRunRows = 1;
-	while (yCell + cRunRows < cyGrid) {
-		pRow = pMap + (yCell + cRunRows) * cxGrid;
-		x = xCell;
-		while (x < cxGrid && pRow[x] == bTargetState) {
-			++x;
-		}
-		if (x - xCell != cRunCells) {
-			break;
-		}
-		for (x = 0; x < cRunCells; ++x) {
-			pRow[xCell + x] = bReplacementState;
-		}
-		++cRunRows;
-	}
-
-	pEntry = (short*) (*(char**) (pTracker + 0x0c) + *(int*) (pTracker + 4) * 0x0c);
-	pEntry[0] = (short) (cRunCells * cxCell);
-	pEntry[1] = (short) (cRunRows * cyCell);
-	pEntry[2] = (short) (xCell * cxCell);
-	pEntry[3] = (short) (yCell * cyCell);
-	*(int*) (pEntry + 4) = nEntryState;
-	++*(int*) (pTracker + 4);
-	*(int*) (pTracker + 0x24) = xRunEnd < cxGrid ? xRunEnd : 0;
-	*(int*) (pTracker + 0x28) = yCell;
-	return 1;
-}
-// FUNCTION: LEMBALL 0x00466ef0
-int VsGdiQuantizedHelperUploadRectTracker::BuildHelperUploadRectList(void)
-
-{
-	char* pTracker;
-	pTracker = (char*) this;
-	if (*(void**) (pTracker + 0x10) == 0 || *(void**) (pTracker + 0x0c) == 0) {
-		return 0;
-	}
-	if (*(int*) (pTracker + 4) == -1) {
-		*(int*) (pTracker + 4) = 0;
-		*(int*) (pTracker + 0x24) = 0;
-		*(int*) (pTracker + 0x28) = 0;
-		while (ConsumeMarkedHelperUploadRun(1, 1, 0)) {
-		}
-		*(int*) (pTracker + 0x24) = 0;
-		*(int*) (pTracker + 0x28) = 0;
-		while (ConsumeMarkedHelperUploadRun('P', 1, 1)) {
-		}
-		*(int*) (pTracker + 0x24) = 0;
-		*(int*) (pTracker + 0x28) = 0;
-		while (ConsumeMarkedHelperUploadRun('p', 0, 1)) {
-		}
-		*(int*) (pTracker + 8) = *(int*) (pTracker + 4);
-		if (*(unsigned char*) (pTracker + 0x48) == 'A' || *(unsigned char*) (pTracker + 0x48) == 'a') {
-			*(int*) (pTracker + 0x24) = 0;
-			*(int*) (pTracker + 0x28) = 0;
-			while (ConsumeMarkedHelperUploadRun('A', 1, 1)) {
-			}
-			*(int*) (pTracker + 0x24) = 0;
-			*(int*) (pTracker + 0x28) = 0;
-			while (ConsumeMarkedHelperUploadRun('a', 0, 1)) {
-			}
-		}
-	}
-	return *(int*) (pTracker + 4);
-}
-// FUNCTION: LEMBALL 0x00467000
-short* VsGdiQuantizedHelperUploadRectTracker::GetHelperUploadRectEntryByIndex(int iRect)
-
-{
-	if (*(int*) ((char*) this + 4) == -1) {
-		BuildHelperUploadRectList();
-	}
-	return (short*) (*(char**) ((char*) this + 0x0c) + iRect * 0x0c);
-}
-// FUNCTION: LEMBALL 0x00467020
-int VsGdiQuantizedHelperUploadRectTracker::GetHelperUploadActiveRectStartIndex(void)
-
-{
-	if (*(void**) ((char*) this + 0x10) == 0) {
-		return 0;
-	}
-	if (*(int*) ((char*) this + 4) == -1) {
-		BuildHelperUploadRectList();
-	}
-	return *(int*) ((char*) this + 8);
-}
-
-// Macintosh: CGDI::CGDI(const CVSRect&, int, CSurface*)
 // FUNCTION: LEMBALL 0x00467060
 VsGdiGeometryHelperPointerArray* VsGdiGeometryHelperPointerArray::InitializeGeometryHelperPointerArray(
 	short* pRect,
@@ -3713,9 +3363,9 @@ CSurface* CSurface::Construct(const VsGdiRect* pRect, void* pWrappedTarget, int 
 	VsGdiResourceGeometryLinkList* pGlobalList;
 	VsGdiResourceGeometryLinkNode* pLink;
 	VsGdiResourceGeometryLinkList* pChildList;
-	VsGdiQuantizedHelperUploadRectTracker* pTracker;
-	VsGdiRect TrackerExtent;
-	VsGdiRect CellExtent;
+	CChangeList* pTracker;
+	CVSSize TrackerExtent;
+	CVSSize CellExtent;
 
 	if (fConstructCPVSurface != 0) {
 		m_ScrollableSurface.m_pCPVSurfaceVbtable = &g_VSGDI_CPVSurfaceTargetAdjustor;
@@ -3794,20 +3444,15 @@ CSurface* CSurface::Construct(const VsGdiRect* pRect, void* pWrappedTarget, int 
 	InitializeCriticalSection(m_abCriticalSection);
 	m_fCriticalSectionReady = 1;
 
-	TrackerExtent.m_x = 8;
-	TrackerExtent.m_y = 8;
-	TrackerExtent.m_cx = 0;
-	TrackerExtent.m_cy = 0;
-	CellExtent.m_x = 8;
-	CellExtent.m_y = 8;
-	CellExtent.m_cx = 0;
-	CellExtent.m_cy = 0;
-	pTracker = (VsGdiQuantizedHelperUploadRectTracker*) AllocateVSMemBlock(0x4c);
+	TrackerExtent.width = 8;
+	TrackerExtent.height = 8;
+	CellExtent.width = 8;
+	CellExtent.height = 8;
+	pTracker = (CChangeList*) AllocateVSMemBlock(sizeof(CChangeList));
 	if (pTracker != 0) {
-		pTracker->InitializeQuantizedHelperUploadRectTracker(pWrappedTarget == g_pResourceGeometryHelperTarget ? 0x1000
-																											   : 0,
-															 *(int*) &TrackerExtent,
-															 *(int*) &CellExtent);
+		new (pTracker) CChangeList(pWrappedTarget == g_pResourceGeometryHelperTarget ? 0x1000 : 0,
+									 TrackerExtent,
+									 CellExtent);
 	}
 	*(void**) ((char*) this + 0x550) = pTracker;
 
@@ -4021,7 +3666,7 @@ void LEMBALL_FASTCALL DestroyCSurface(void* pvTarget)
 		pTarget->m_pDisplayBinding = 0;
 	}
 	if (pTarget->m_nActiveUploadState != 0) {
-		ResetHelperUploadRectListAndStateMap(pTarget->m_nActiveUploadState);
+		((CChangeList*) (unsigned long) pTarget->m_nActiveUploadState)->~CChangeList();
 		FreeVSMemBlock((void*) (unsigned long) pTarget->m_nActiveUploadState);
 		pTarget->m_nActiveUploadState = 0;
 	}
@@ -4213,7 +3858,7 @@ void CSurface::AddToChangeList(short* pRect)
 		return;
 	}
 
-	((VsGdiQuantizedHelperUploadRectTracker*) *(void**) ((char*) this + 0x550))->MarkHelperUploadCellsForRect(pRect);
+	((CChangeList*) *(void**) ((char*) this + 0x550))->Add(*(CVSRect*) pRect);
 }
 // FUNCTION: LEMBALL 0x0046cbd0
 int LEMBALL_FASTCALL GetChangeListCSurface(void* pTarget)
@@ -4226,7 +3871,7 @@ void CSurface::ToScreen(CSurface* pPeerTarget)
 {
 	char* pVariableBlock;
 	CSurface* pLinkedTarget;
-	VsGdiQuantizedHelperUploadRectTracker* pTracker;
+	CChangeList* pTracker;
 	short* pEntry;
 	short* pOrigin;
 	short aDestinationRect[4];
@@ -4249,15 +3894,15 @@ void CSurface::ToScreen(CSurface* pPeerTarget)
 		EnterCriticalSection((char*) this + 0x534);
 		EnterCriticalSection((char*) pPeerTarget + 0x534);
 		((PaletteProc) (*(void***) g_pDisplayState)[12])(g_pDisplayState, 0, pPeerTarget->m_pDisplayBinding);
-		pTracker = (VsGdiQuantizedHelperUploadRectTracker*) (unsigned long) m_nActiveUploadState;
+		pTracker = (CChangeList*) (unsigned long) m_nActiveUploadState;
 		if ((int) *(short*) (pVariableBlock + 0x44) * (int) *(short*) (pVariableBlock + 0x46) > 0) {
-			pTracker->MarkHelperUploadRectWithState((short*) (pVariableBlock + 0x44), 0);
+			pTracker->SetDrawMark(*(CVSRect*) (pVariableBlock + 0x44), 0);
 		}
 		iRect = 0;
-		nRectCount = pTracker->BuildHelperUploadRectList();
+		nRectCount = pTracker->GetNumItems();
 		g_nDebugLastRectCount = nRectCount;
 		while (iRect < nRectCount) {
-			pEntry = pTracker->GetHelperUploadRectEntryByIndex(iRect);
+			pEntry = (short*) pTracker->GetNItem(iRect);
 			aDestinationRect[0] = pEntry[0];
 			aDestinationRect[1] = pEntry[1];
 			aDestinationRect[2] = pEntry[2];
@@ -4282,17 +3927,17 @@ void CSurface::ToScreen(CSurface* pPeerTarget)
 											  pEntry,
 											  this);
 			++iRect;
-			nRectCount = pTracker->BuildHelperUploadRectList();
+			nRectCount = pTracker->GetNumItems();
 		}
 		GdiFlush();
 		if (((IntNoArgProc) (*(void***) (pVariableBlock + 0x40))[15])(pVariableBlock + 0x40, 0) != 0) {
 			iRect = 0;
-			nRectCount = pTracker->BuildHelperUploadRectList();
+			nRectCount = pTracker->GetNumItems();
 			while (iRect < nRectCount) {
-				pEntry = pTracker->GetHelperUploadRectEntryByIndex(iRect);
+				pEntry = (short*) pTracker->GetNItem(iRect);
 				((RectProc) (*(void***) (&m_BackBuffSurface))[2])(&m_BackBuffSurface, 0, pEntry);
 				++iRect;
-				nRectCount = pTracker->BuildHelperUploadRectList();
+				nRectCount = pTracker->GetNumItems();
 			}
 		}
 		LeaveCriticalSection((char*) this + 0x534);
@@ -4309,8 +3954,8 @@ void CSurface::ToScreen(CSurface* pPeerTarget)
 	}
 	if (*(int*) (pVariableBlock + 0x70) != 0) {
 		pTracker =
-			(VsGdiQuantizedHelperUploadRectTracker*) (unsigned long) ((IntNoArgProc) (*(void***) this)[2])(this, 0);
-		if (pTracker->BuildHelperUploadRectList() - pTracker->GetHelperUploadActiveRectStartIndex() > 0) {
+			(CChangeList*) (unsigned long) ((IntNoArgProc) (*(void***) this)[2])(this, 0);
+		if (pTracker->GetNumItems() - pTracker->GetDrawMark() > 0) {
 			((RectProc) (*(void***) pLinkedTarget)[1])(pLinkedTarget, 0, (short*) (pVariableBlock + 0x54));
 		}
 	}
@@ -4476,7 +4121,8 @@ void VsGdiHelperSurface::UpdateWorkingRectAndBacking(const VsGdiRect* pRect)
 		nBitmapOrigin = ((VsGdiDisplayBitmapDispatch*) paBackingObject)->Origin();
 		nBitmapStride = ((VsGdiDisplayBitmapDispatch*) paBackingObject)->Bits();
 		SetBitsBase(nBitmapStride, nBitmapOrigin);
-		PromoteHelperUploadStateToActive(*(int*) ((char*) this + 0x550));
+		// GetArea promotes the pending marker state to active.
+		((CChangeList*) *(void**) ((char*) this + 0x550))->GetArea();
 
 		aRectBuffer[0] = 0;
 		aRectBuffer[1] = 0;
@@ -4500,7 +4146,6 @@ void LEMBALL_FASTCALL ResizeCSurface(void* pCompactTarget, int, const VsGdiRect*
 	void** pVtable;
 	void* pTracker;
 	int nCompactDelta;
-	int nExtent;
 
 	nCompactDelta = *(int*) ((char*) *(void**) ((char*) pCompactTarget - 0x51c) + 4);
 	Rect.m_x = pExtent->m_x;
@@ -4510,8 +4155,10 @@ void LEMBALL_FASTCALL ResizeCSurface(void* pCompactTarget, int, const VsGdiRect*
 
 	pTracker = *(void**) ((char*) pCompactTarget - 0x0c);
 	if (pTracker != 0) {
-		nExtent = (unsigned short) Rect.m_x | ((unsigned int) (unsigned short) Rect.m_y << 16);
-		SetHelperUploadTrackerExtent(pTracker, 0, nExtent);
+		CVSSize Size;
+		Size.width = Rect.m_x;
+		Size.height = Rect.m_y;
+		((CChangeList*) pTracker)->Resize(Size);
 	}
 
 	((VsGdiHelperSurface*) ((char*) pCompactTarget - 0x55c))->UpdateWorkingRectAndBacking(&Rect);
@@ -4584,7 +4231,7 @@ void VsGdiHelperSurface::CopyClippedBitmapIntoHelperBufferAndNotify(const void* 
 	aRect[1] = pWorkingSize[1];
 	aRect[2] = 0;
 	aRect[3] = 0;
-	InitializeHelperUploadStatePending(*(int*) ((char*) this + 0x550));
+	((CChangeList*) *(void**) ((char*) this + 0x550))->Reset();
 	((void(LEMBALL_FASTCALL*)(void*, int, short*))(*(void***) this)[1])(this, 0, aRect);
 	LeaveCriticalSection((char*) this + 0x534);
 }
@@ -5851,31 +5498,6 @@ void LEMBALL_FASTCALL set_queued_render_point_sink_field_0x30(void* pPointSink, 
 	*(int*) ((char*) pPointSink + 0x30) = nValue;
 }
 
-struct HelperUploadStateMarkerView {
-	char m_abReserved00[0x38];
-	char m_anMarkers38[12];
-	int m_cMarkers44;
-	char m_nMarker48;
-
-	void PushHelperUploadStateMarker(int nUnused);
-};
-
-void HelperUploadStateMarkerView::PushHelperUploadStateMarker(int nUnused)
-{
-	(void) nUnused;
-	m_anMarkers38[m_cMarkers44] = m_nMarker48;
-	++m_cMarkers44;
-}
-
-void LEMBALL_FASTCALL PopHelperUploadStateMarker(void* pObject)
-{
-	HelperUploadStateMarkerView* pMarkers = (HelperUploadStateMarkerView*) pObject;
-	char* pMarker;
-	int nIndex = --pMarkers->m_cMarkers44;
-
-	pMarker = pMarkers->m_anMarkers38;
-	pMarkers->m_nMarker48 = pMarker[nIndex];
-}
 
 struct HelperUploadRectEntryView {
 	short m_left;

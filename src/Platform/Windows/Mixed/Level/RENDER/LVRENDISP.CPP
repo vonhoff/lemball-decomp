@@ -1,15 +1,11 @@
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
-
-class HelperUploadStateMarkerView {
-public:
-	void PushHelperUploadStateMarker(int nMarker);
-};
+#include "Visos/Generic/CChangeList.h"
 
 class LevelRenderHelperProviderInterface {
 public:
 	virtual void Slot0(void) = 0;
 	virtual void Slot1(void) = 0;
-	virtual HelperUploadStateMarkerView* GetUploadStateHelper(void) = 0;
+	virtual CChangeList* GetUploadStateHelper(void) = 0;
 };
 
 struct LevelRenderHelperContextView {
@@ -45,10 +41,10 @@ public:
 // FUNCTION: LEMBALL 0x00439770
 void LevelRenderStatePushEntry::Execute(LevelRenderHelperContextView* pContext)
 {
-	HelperUploadStateMarkerView* pHelper;
+	CChangeList* pHelper;
 
 	pHelper = pContext->m_pProvider0C->GetUploadStateHelper();
-	pHelper->PushHelperUploadStateMarker(m_nMarker04);
+	pHelper->PushActive((unsigned char) m_nMarker04);
 }
 
 // FUNCTION: LEMBALL 0x004398e0

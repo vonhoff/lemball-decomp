@@ -342,7 +342,7 @@ All thirteen portable connection methods map across `0x00460A90..0x00461030`, pr
 
 ## CChangeList reconstruction
 
-All fifteen portable change-map methods map across `0x004669A0..0x00467020` in `CGDI.cpp`. Exact map quantization, aligned item layout, active marker stack, lazy list generation, callers, and ABI support the family. `GetNItem` is `0x00467000` and `GetDrawMark` is `0x00467020`; the Windows-only two-argument accessor at `0x00466FD0` and rectangle initializer at `0x00467040` remain separate.
+All fifteen portable change-map methods map across `0x004669A0..0x00467020` and now live in `CChangeList` ownership under `src/Visos/Generic/CChangeList.h/.cpp`; `CGDI.cpp` includes the class-aligned implementation at the original physical position to preserve link order. The evidenced Windows layout is `0x4C`, with 12-byte items, typed `CVSSize`/`CVSRect` geometry, the map, active-marker stack, and lazy list cursors represented as named members. `Reset`, `GetArea`, and `PopActive` use thin inline member facades over the existing unscoped ABI entries: this preserves exact VC4 callers—including the naked caller at `0x004397E0`—without duplicate logic or exposing layout offsets. `FreeMap`, `AllocMap`, `Reset`, the destructor, `PushActive`, `PopActive`, `SetDrawMark`, `GetArea`, `GetNItem`, and `GetDrawMark` remain exact; the final focused similarities are constructor `19.20%`, `Resize` `67.47%`, `Add` `18.93%`, `GetNextArea` `17.06%`, and `GetNumItems` `83.21%`. `GetNItem` is `0x00467000` and `GetDrawMark` is `0x00467020`; the Windows-only two-argument accessor at `0x00466FD0` and rectangle initializer at `0x00467040` remain separate.
 
 ## CReadPacket and CWritePacket reconstruction
 

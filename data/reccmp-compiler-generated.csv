@@ -203,8 +203,6 @@ address,name,symbol,type,source
 0x00462E30,,?DualStreamNoop@VsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEXXZ,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462E40,,?ClaimRecord@VsNetCompositeEffTransportStack@@$4PPPPPPPM@HI@AEPAXXZ,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462E50,,?DualStreamRet8@VsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEXHPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
-0x00466BC0,HelperUploadStateMarkerView::PushHelperUploadStateMarker,,synthetic,src/Visos/Windows/CGDI.cpp
-0x00466BD0,PopHelperUploadStateMarker,,synthetic,src/Visos/Windows/CGDI.cpp
 0x00467040,HelperUploadRectEntryView::Clear,,synthetic,src/Visos/Windows/CGDI.cpp
 0x004679E0,PackagedRectQueueAllocatorView::AllocateNextPackagedRectQueueEntry,,synthetic,src/Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
 0x00469900,delete_buffered_resource_geometry_child `scalar deleting destructor' adjustor wrapper (-0x90),,synthetic,src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
