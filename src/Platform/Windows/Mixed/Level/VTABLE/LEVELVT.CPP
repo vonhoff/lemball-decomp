@@ -101,8 +101,6 @@ struct LevelManagedEntityChildIterator {
 	int m_fChildrenDirty164;
 	int m_nActiveState168;
 
-	void* GetFirstChildThunk(void);
-	void* GetNextChildThunk(void);
 	void* GetCurrentChildThunk(void);
 	int GetActiveStateThunk(void);
 	void* GetChildWithState8Thunk(void);
@@ -471,11 +469,6 @@ void* LevelManagedEntityChildIterator::GetChildWithState8Thunk(void)
 	return ((CPlayerLemmingGroup*) this)->GetFirstDeadLemming();
 }
 
-// LINKERILT: LEMBALL 0x00401816
-void* LevelManagedEntityChildIterator::GetNextChildThunk(void)
-{
-	return ((CGenericGroup*) this)->GetNextElementInGroup();
-}
 
 // LINKERILT: LEMBALL 0x0040185c
 int __fastcall GetManagedEntityGroupCommandStateThunk(void* pEntity)
@@ -525,11 +518,6 @@ void LevelManagedEntityCommandQueue::PushFrontThunk(void)
 	PushFront();
 }
 
-// LINKERILT: LEMBALL 0x0040241e
-void* LevelManagedEntityChildIterator::GetFirstChildThunk(void)
-{
-	return ((CGenericGroup*) this)->GetFirstElementInGroup();
-}
 
 // LINKERILT: LEMBALL 0x004024be
 void LEMBALL_FASTCALL SetManagedEntityStateIdWithVariantLocalThunk(void* pObject,
@@ -1126,7 +1114,7 @@ void* LevelManagedEntityChildIterator::GetCurrentChildWithState8(void)
 		if (pChild->m_nStateIdB8 == nStateId) {
 			return pChild;
 		}
-		pChild = (LevelManagedEntityStateIdView*) GetNextChildThunk();
+		pChild = (LevelManagedEntityStateIdView*) ((CGenericGroup*) this)->GetNextElementInGroup();
 	}
 }
 
@@ -1138,10 +1126,10 @@ int LevelManagedEntityChildIterator::HasDirtyChildren(void)
 	int fDirty;
 
 	fDirty = 0;
-	pChild = (LevelManagedEntityDirtyStateView*) GetFirstChildThunk();
+	pChild = (LevelManagedEntityDirtyStateView*) ((CGenericGroup*) this)->GetFirstElementInGroup();
 	while (pChild != 0) {
 		fDirty = pChild->PollChildDirtyFlagThunk() || fDirty;
-		pChild = (LevelManagedEntityDirtyStateView*) GetNextChildThunk();
+		pChild = (LevelManagedEntityDirtyStateView*) ((CGenericGroup*) this)->GetNextElementInGroup();
 	}
 	return fDirty;
 }

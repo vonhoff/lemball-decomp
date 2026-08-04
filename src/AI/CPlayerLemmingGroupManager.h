@@ -8,7 +8,9 @@ class CPlayerLemming;
 
 class CPlayerLemmingGroupManager : public CGenericGroupManager {
 public:
-	char m_abReservedB0[0x78];
+	char m_abReservedB0[0x70];
+	int m_nCurrentPlayerGroup120;
+	int m_nReserved124;
 	int m_nDeadCount128;
 	CPlayerLemming* m_apDeadLemmings12C[4];
 	CPlayerLemming* m_apNetworkLemmings13C[4];
@@ -18,6 +20,10 @@ public:
 	int GetLeaderPos(AICOORD& position);
 	void ProcessDead(void);
 	int IsLemmingPlayerControlled(CPlayerLemming* pLemming);
+	int MakeNextGroupPlayerControlled(void);
+	int MakePreviousGroupPlayerControlled(void);
+	int MakeParticularGroupPlayerControlled(CPlayerLemmingGroup* pGroup);
+	int MakeNoGroupsPlayerControlled(void);
 	CPlayerLemmingGroup* GetPlayerControlledGroup(void);
 	void AddNewWaypointToCurrentGroup(int nX, int nY);
 	void RemoveWaypointsFromCurrentGroup(void);

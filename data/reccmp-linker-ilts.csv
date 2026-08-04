@@ -32,6 +32,7 @@ address,name,symbol,type,source
 0x0040143D,destroy_paintball_sequence_screen_auto_thunk,?DestroyPaintballSequenceScreenAutoThunk@@YIXPAX@Z,stub,src/Frontend/MAINMENU.CPP
 0x0040146A,ResetMineChunkObjectRuntimeState,?ResetMineChunkObjectRuntimeState@@YIXPAUMineChunkObjectRuntimeView@@@Z,stub,src/AI/CMine.cpp
 0x004014AB,pop_level_plas_history_child,?PopLevelPlasHistoryChild@@YIHPAX@Z,stub,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x004014BF,CPlayerLemmingGroup::SetPlayerControlled,?SetPlayerControlled@CPlayerLemmingGroup@@QAEXHPAVCPlayerLemming@@@Z,stub,src/AI/CPlayerLemmingGroup.cpp
 0x004014CE,UpdateMenuSelectorAnimationThunk,?UpdateMenuSelectorAnimationThunk@@YIXPAUGameMenuSelectorManager@@@Z,stub,src/Frontend/MENUSEL.CPP
 0x004014F1,destroy_level_chunk_stream_dispatcher_auto_thunk,?DestroyLevelChunkStreamDispatcherAutoThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x004014FB,activate_lasr_chunk_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
@@ -55,6 +56,7 @@ address,name,symbol,type,source
 0x004017C1,ReleaseMenuSelectorEntryResources,?ReleaseMenuSelectorEntryResources@@YIXPAUGameMenuSelectorEntry@@@Z,stub,src/Frontend/MENUSEL.CPP
 0x004017DF,attach_and_activate_chunk_object,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x0040180C,reset_managed_entity_runtime_state_thunk,?ResetManagedEntityRuntimeStateThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00401816,CGenericGroup::GetNextElementInGroup,?GetNextElementInGroup@CGenericGroup@@QAEPAVCGameObject@@XZ,stub,src/AI/CGenericGroup.cpp
 0x00401843,destroy_network_lobby_screen_auto_thunk,?DestroyNetworkLobbyScreenAutoThunk@@YIXPAX@Z,stub,src/Frontend/MAINMENU.CPP
 0x004018CF,vs_window_owner_base_is_current_window_owner_context,?IsCurrentWindowOwnerContext@VS_WindowOwnerBase@@UAEHXZ,stub,src/Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H
 0x004018D4,ManagedEntityPacketBase::ManagedEntityPacketBase,??0ManagedEntityPacketBase@@QAE@H@Z,stub,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
@@ -85,6 +87,7 @@ address,name,symbol,type,source
 0x00401D43,set_menu_selector_children_enabled_thunk,,stub,src/Frontend/MENUSEL.H
 0x00401D52,CGameObject::AddDestination,?AddDestination@CGameObject@@QAEXABUAICOORD@@@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00401DA2,destroy_options_screen_auto_thunk,?DestroyOptionsScreenAutoThunk@@YIXPAX@Z,stub,src/Frontend/MAINMENU.CPP
+0x00401DA7,CPlayerLemmingGroupManager::MakeNoGroupsPlayerControlled,?MakeNoGroupsPlayerControlled@CPlayerLemmingGroupManager@@QAEHXZ,stub,src/AI/CPlayerLemmingGroupManager.cpp
 0x00401DC0,refresh_active_mine_chunk_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x00401E15,managed_entity_packet24_reverse_eff_stream_payload,?ReverseEffStreamPayload@ManagedEntityPacket24@@UAEXXZ,stub,src/AI/LVPKT.CPP
 0x00401E29,vs_window_owner_base_reserved_window_owner_slot19,?ReservedWindowOwnerSlot19@VS_WindowOwnerBase@@UAEXXZ,stub,src/Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H
@@ -131,9 +134,11 @@ address,name,symbol,type,source
 0x00402360,activate_capture_trigger_chunk_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x00402374,destroy_mine_chunk_manager_auto_thunk,?DestroyMineChunkManagerAutoThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0040237E,CInvisibleSwitch::Set,?Set@CInvisibleSwitch@@QAEXABUtCoord3d@@0@Z,stub,src/AI/CInvisibleSwitch.cpp
+0x004023BF,CGenericGroup::SwapElements,?SwapElements@CGenericGroup@@QAEXPAVCGameObject@@0@Z,stub,src/AI/CGenericGroup.cpp
 0x004023E7,LevelManagedEntityStateFields::DecrementHeadingOctant,?DecrementHeadingOctant@LevelManagedEntityStateFields@@QAEXXZ,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004023EC,GameMenuSelectorEntry::RebuildRects,?RebuildRects@GameMenuSelectorEntry@@QAEXHH@Z,stub,src/Frontend/MENUSEL.CPP
 0x0040240A,activate_managed_entity_group_children,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
+0x0040241E,CGenericGroup::GetFirstElementInGroup,?GetFirstElementInGroup@CGenericGroup@@QAEPAVCGameObject@@XZ,stub,src/AI/CGenericGroup.cpp
 0x00402432,GameMenuSelectorManager::GameMenuSelectorManager,??0GameMenuSelectorManager@@QAE@PAX0HH@Z,stub,src/Frontend/MENUSEL.CPP
 0x0040243C,level_chunk_object_runtime_state_view_clear_state_fields_thunk,,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00402446,CGameObject::ResetInstructions,?ResetInstructions@CGameObject@@QAEXXZ,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
@@ -141,6 +146,7 @@ address,name,symbol,type,source
 0x0040249B,CPlayerLemmingGroupManager::HasSFXChanged,?HasSFXChanged@CPlayerLemmingGroupManager@@QAEHXZ,stub,src/AI/CPlayerLemmingGroupManager.cpp
 0x004024AA,GameVariantResourceEntryManager::PopulateVariantResourceEntriesForFlagMask,?PopulateVariantResourceEntriesForFlagMask@GameVariantResourceEntryManager@@QAEXG@Z,stub,src/Platform/Windows/Mixed/Resource/VARMGR.CPP
 0x004024F5,GameMenuSelectorManager::InitializeCurrentState,?InitializeCurrentState@GameMenuSelectorManager@@QAEXH@Z,stub,src/Frontend/MENUSEL.CPP
+0x00402509,CPlayerLemmingGroupManager::MakeNextGroupPlayerControlled,?MakeNextGroupPlayerControlled@CPlayerLemmingGroupManager@@QAEHXZ,stub,src/AI/CPlayerLemmingGroupManager.cpp
 0x00402518,activate_lift_chunk_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x00402527,DestroyFrameTimerController,?DestroyFrameTimerController@@YAXXZ,stub,src/Platform/Windows/Mixed/Level/RUN/DEMO.CPP
 0x0040252C,VsNetNetworkLobbyScreen::ShowPlayerEntries,?ShowPlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/Frontend/LOBBY.CPP
@@ -280,6 +286,7 @@ address,name,symbol,type,source
 0x00403567,NoopQueuedVariantChildSlotManagerUpdate,?NoopQueuedVariantChildSlotManagerUpdate@@YIXPAX@Z,stub,src/Frontend/MAINMENU.CPP
 0x004035F3,destroy_network_lobby_vsnet_runtime_auto_thunk,?DestroyNetworkLobbyVsnetRuntimeAutoThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.CPP
 0x0040363E,destroy_pgun_chunk_manager_auto_thunk,?DestroyPgunChunkManagerAutoThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00403643,CPlayerLemming::SetGroup,?SetGroup@CPlayerLemming@@QAEXH@Z,stub,src/AI/CPlayerLemming.cpp
 0x0040364D,delete_queued_variant_range_entry_auto,,stub,src/Frontend/MENUSEL.CPP
 0x00403657,vs_root_geometry_owner_set_window_owner_state,?SetWindowOwnerState@VS_RootGeometryOwner@@UAEXH@Z,stub,src/Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H
 0x00403675,CObjectManager::GetViewData,?GetViewData@CObjectManager@@QAEHPAVCViewData@@@Z,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP

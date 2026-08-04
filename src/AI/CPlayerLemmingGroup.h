@@ -17,6 +17,7 @@ public:
 	void Restart(void);
 	void Delete(void);
 	int AddLemmingToGroup(CPlayerLemming* pLemming);
+	void SetPlayerControlled(int fPlayerControlled, CPlayerLemming* pLeader);
 	int CheckPlayerControlled(void);
 	CPlayerLemming* GetFirstDeadLemming(void);
 	int HasSFXChanged(void);

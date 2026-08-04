@@ -18,7 +18,6 @@ extern void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevelThunk(void* pObjec
 struct LevelManagedEntityChildIterator;
 
 struct LevelManagedEntityChildIterator {
-	void* GetFirstChildThunk(void);
 	int GetActiveStateThunk(void);
 };
 
@@ -41,7 +40,7 @@ int CPlayerLemmingGroupManager::GetLeaderPos(AICOORD& position)
 	if (pGroup == 0) {
 		return 0;
 	}
-	pLemming = (CGameObject*) ((LevelManagedEntityChildIterator*) pGroup)->GetFirstChildThunk();
+	pLemming = pGroup->GetFirstElementInGroup();
 	if (pLemming == 0) {
 		return 0;
 	}
@@ -68,6 +67,76 @@ int CPlayerLemmingGroupManager::IsLemmingPlayerControlled(CPlayerLemming* pLemmi
 {
 	CGenericGroup* pGroup = GetGroupElementIsMemberOf((CGameObject*) pLemming);
 	return pGroup != 0 ? ((LevelManagedEntityChildIterator*) pGroup)->GetActiveStateThunk() : 0;
+}
+
+// FUNCTION: LEMBALL 0x00418860
+int CPlayerLemmingGroupManager::MakeNextGroupPlayerControlled(void)
+{
+	MakeNoGroupsPlayerControlled();
+	for (int i = 0; i < m_nGroupCountA4; ++i) {
+		++m_nCurrentPlayerGroup120;
+		if (m_nCurrentPlayerGroup120 == m_nGroupCountA4) {
+			m_nCurrentPlayerGroup120 = 0;
+		}
+		if (m_apGroups04[m_nCurrentPlayerGroup120] != 0 &&
+			((CPlayerLemmingGroup*) m_apGroups04[m_nCurrentPlayerGroup120]
+				 ->*((CPlayerLemmingGroup*) m_apGroups04[m_nCurrentPlayerGroup120])
+				 ->m_pVtable00->m_pGetNumberOfElements108)() > 0) {
+			((CPlayerLemmingGroup*) m_apGroups04[m_nCurrentPlayerGroup120])->SetPlayerControlled(1, 0);
+			return 1;
+		}
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x004188e0
+int CPlayerLemmingGroupManager::MakePreviousGroupPlayerControlled(void)
+{
+	MakeNoGroupsPlayerControlled();
+	MakeNoGroupsPlayerControlled();
+	for (int i = 0; i < m_nGroupCountA4; ++i) {
+		--m_nCurrentPlayerGroup120;
+		if (m_nCurrentPlayerGroup120 < 0) {
+			m_nCurrentPlayerGroup120 += m_nGroupCountA4;
+		}
+		if (m_apGroups04[m_nCurrentPlayerGroup120] != 0 &&
+			((CPlayerLemmingGroup*) m_apGroups04[m_nCurrentPlayerGroup120]
+				 ->*((CPlayerLemmingGroup*) m_apGroups04[m_nCurrentPlayerGroup120])
+				 ->m_pVtable00->m_pGetNumberOfElements108)() > 0) {
+			((CPlayerLemmingGroup*) m_apGroups04[m_nCurrentPlayerGroup120])->SetPlayerControlled(1, 0);
+			return 1;
+		}
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x00418960
+int CPlayerLemmingGroupManager::MakeParticularGroupPlayerControlled(CPlayerLemmingGroup* pGroup)
+{
+	MakeNoGroupsPlayerControlled();
+	for (int i = 0; i < 8; ++i) {
+		if (m_apGroups04[i] == pGroup) {
+			m_nCurrentPlayerGroup120 = i;
+			if ((pGroup->*pGroup->m_pVtable00->m_pGetNumberOfElements108)() == 0) {
+				return MakeNextGroupPlayerControlled();
+			}
+			pGroup->SetPlayerControlled(1, 0);
+			return 1;
+		}
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x004189c0
+int CPlayerLemmingGroupManager::MakeNoGroupsPlayerControlled(void)
+{
+	for (int i = 0; i < 8; ++i) {
+		CPlayerLemmingGroup* pGroup = (CPlayerLemmingGroup*) m_apGroups04[i];
+		if (pGroup != 0) {
+			pGroup->SetPlayerControlled(0, 0);
+		}
+	}
+	return 1;
 }
 
 // FUNCTION: LEMBALL 0x004189f0

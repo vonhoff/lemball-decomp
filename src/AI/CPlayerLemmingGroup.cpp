@@ -50,6 +50,30 @@ int CPlayerLemmingGroup::AddLemmingToGroup(CPlayerLemming* pLemming)
 	return 1;
 }
 
+// FUNCTION: LEMBALL 0x00414810
+void CPlayerLemmingGroup::SetPlayerControlled(int fPlayerControlled, CPlayerLemming* pLeader)
+{
+	int fControlled = fPlayerControlled;
+	CPlayerLemming* pLemming = (CPlayerLemming*) GetFirstElementInGroup();
+	CPlayerLemming* pFirst = pLemming;
+
+	while (pLemming != 0) {
+		pLemming->SetGroup(fControlled);
+		pLemming->SetGroupLeader(0);
+		pLemming = (CPlayerLemming*) GetNextElementInGroup();
+	}
+	if (pLeader == 0) {
+		pLeader = pFirst;
+	}
+	m_nRuntimeState168 = fControlled;
+	if (pLeader != 0) {
+		pLeader->SetGroupLeader(1);
+		if (pLeader != pFirst) {
+			SwapElements(pLeader, pFirst);
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x00414880
 int CPlayerLemmingGroup::CheckPlayerControlled(void)
 {
