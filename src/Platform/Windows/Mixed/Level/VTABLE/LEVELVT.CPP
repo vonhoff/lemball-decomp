@@ -82,6 +82,7 @@ struct CGenericGroup {
 	void GetBoundingBox(CVSRect& rect);
 	void CalculateBoundingBox(int nRadius);
 	void OverideExistingWaypoints(AICOORD position);
+	void ClearExistingWaypoints(void);
 	void SetFormationIndex(int nIndex);
 	int GetFormationIndex(void);
 };
@@ -2165,6 +2166,22 @@ void CGenericGroup::CalculateBoundingBox(int nRadius)
 void CGenericGroup::OverideExistingWaypoints(AICOORD position)
 {
 	(void) position;
+}
+
+// FUNCTION: LEMBALL 0x0041e3d0
+void CGenericGroup::ClearExistingWaypoints(void)
+{
+	typedef CGameObject*(LEMBALL_FASTCALL * ElementIteratorProc)(CGenericGroup*);
+	void** pVtable = *(void***) this;
+	*(unsigned short*) *(void**) ((char*) this + 0x70) = 0;
+	CGameObject* pObject = ((ElementIteratorProc) pVtable[0x114 / sizeof(void*)])(this);
+	if (pObject != 0) {
+		ElementIteratorProc pGetNext = (ElementIteratorProc) pVtable[0x118 / sizeof(void*)];
+		do {
+			pObject->ResetInstructions();
+			pObject = pGetNext(this);
+		} while (pObject != 0);
+	}
 }
 
 // FUNCTION: LEMBALL 0x0041e400

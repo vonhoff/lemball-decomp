@@ -134,7 +134,7 @@ address,name,symbol,type,source
 0x0040240A,activate_managed_entity_group_children,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x00402432,GameMenuSelectorManager::GameMenuSelectorManager,??0GameMenuSelectorManager@@QAE@PAX0HH@Z,stub,src/Frontend/MENUSEL.CPP
 0x0040243C,level_chunk_object_runtime_state_view_clear_state_fields_thunk,,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x00402446,clear_managed_entity_child_pending_state_if_interruptible,?clear_managed_entity_child_pending_state_if_interruptible@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
+0x00402446,CGameObject::ResetInstructions,?ResetInstructions@CGameObject@@QAEXXZ,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00402496,LiftChunkManagerSerializationView::SerializeLiftChunkEndpointPairs,?SerializeLiftChunkEndpointPairs@LiftChunkManagerSerializationView@@QAEHPAULiftChunkEndpointPair@@@Z,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0040249B,has_stream_dirty_plas_chunk_children,?HasStreamDirtyChildrenThunk@LevelManagedEntityActiveGroupView@@QAEHXZ,stub,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x004024AA,GameVariantResourceEntryManager::PopulateVariantResourceEntriesForFlagMask,?PopulateVariantResourceEntriesForFlagMask@GameVariantResourceEntryManager@@QAEXG@Z,stub,src/Platform/Windows/Mixed/Resource/VARMGR.CPP
