@@ -1,3 +1,4 @@
+#include "AI/CGameObject.h"
 #include "AI/CInvisibleSwitch.h"
 #include "AI/CInvisibleSwitchManager.h"
 #include "AI/CLaser.h"
@@ -1214,6 +1215,7 @@ void CObjectManager::Initialise(int nCount)
 	}
 }
 
+
 // FUNCTION: LEMBALL 0x0041b110
 CObjectManager::~CObjectManager()
 {
@@ -1236,6 +1238,23 @@ CObjectManager::~CObjectManager()
 	}
 	FreeVSMemBlock(m_apObjects3C);
 	((VsNetEffStreamCommon*) this)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+}
+
+// FUNCTION: LEMBALL 0x0041b2a0
+CGlobalGameObject* CObjectManager::AddObject(
+	unsigned short nId, CGlobalGameObject* pObject, unsigned char nState)
+{
+	if (m_nPendingCount36 < m_nObjectCount34) {
+		m_apObjects3C[m_nPendingCount36] = pObject;
+		if (nId != 0xffff) {
+			((CGameObject*) pObject)->SetId(nId);
+		}
+		*(int*) ((char*) *(void**) ((char*) m_apObjects3C + (unsigned int) m_nPendingCount36 * 4) + 0x38) = 1;
+		*(int*) ((char*) *(void**) ((char*) m_apObjects3C + (unsigned int) m_nPendingCount36 * 4) + 0x3c) =
+			*(int*) &nState;
+		return (CGlobalGameObject*) m_apObjects3C[m_nPendingCount36++];
+	}
+	return 0;
 }
 
 // MACINTOSH: CGenericGroupManager::CGenericGroupManager(CAI*, CObjectManager*, CFormationManager*)

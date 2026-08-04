@@ -38,6 +38,7 @@ struct CCollectableManager {
 };
 
 class CAI;
+class CGlobalGameObject;
 class CObjectManager {
 public:
 	char m_abReserved00[0x34];
@@ -50,6 +51,7 @@ public:
 	~CObjectManager();
 	void Restart(void);
 	void Initialise(int nCount);
+	CGlobalGameObject* AddObject(unsigned short nId, CGlobalGameObject* pObject, unsigned char nState);
 };
 
 struct LinkScfMoveChunkManagerView {
