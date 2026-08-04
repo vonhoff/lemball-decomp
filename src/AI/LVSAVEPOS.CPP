@@ -47,10 +47,19 @@ struct SavedPositionChunkObjectView {
 
 class CAmmo {
 public:
-	char m_abReserved00[0x144];
+	char m_abReserved00[0x5c];
+	void* m_pTarget5C;
+	char m_abReserved60[4];
+	int m_nObjectType64;
+	char m_abReserved68[0x50];
+	int m_nStateB8;
+	char m_abReservedBC[0x18];
+	int m_nDeadlineD4;
+	char m_abReservedD8[0x6c];
 	short m_nLinkedVariant144;
 
 	void Restart(void);
+	int Activate(void* pTarget);
 };
 
 
@@ -105,6 +114,21 @@ void CAmmo::Restart(void)
 {
 	((SavedPositionChunkObjectView*) this)->ResetToSavedPosition();
 	m_nLinkedVariant144 = 0;
+}
+
+// FUNCTION: LEMBALL 0x0041cbe0
+int CAmmo::Activate(void* pTarget)
+{
+	typedef int(LEMBALL_FASTCALL * EntityTypeTestProc)(void*, void*, int);
+
+	if (m_nStateB8 == 0x18 &&
+		((EntityTypeTestProc) (*(void***) pTarget)[45])(pTarget, 0, m_nObjectType64) == 0) {
+		m_nDeadlineD4 = 8;
+		m_pTarget5C = pTarget;
+		((ManagedEntityStateView*) this)->RequestManagedEntityStateId(0x1a);
+		return 1;
+	}
+	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0041cca0
