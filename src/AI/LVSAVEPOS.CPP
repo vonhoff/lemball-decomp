@@ -23,7 +23,6 @@ struct SavedPositionTransitionView {
 	int m_nPhaseStepD0;
 	int m_nDeadlineD4;
 
-	int RequestGmobIdle(int nUnused);
 };
 
 struct SavedPositionChunkObjectView {
@@ -47,10 +46,16 @@ struct SavedPositionChunkObjectView {
 
 class CCrate {
 public:
-	char m_abReserved00[0x128];
+	char m_abReserved00[0xb8];
+	int m_nStateB8;
+	char m_abReservedBC[0x14];
+	int m_nPhaseStepD0;
+	int m_nDeadlineD4;
+	char m_abReservedD8[0x50];
 	int m_nState128;
 
 	void Restart(void);
+	int Activate(void* pTarget);
 };
 
 
@@ -131,9 +136,9 @@ void CCrate::Restart(void)
 }
 
 // FUNCTION: LEMBALL 0x0041ce50
-int SavedPositionTransitionView::RequestGmobIdle(int nUnused)
+int CCrate::Activate(void* pTarget)
 {
-	(void) nUnused;
+	(void) pTarget;
 	if (m_nStateB8 == 0x18) {
 		m_nPhaseStepD0 = 0x10;
 		m_nDeadlineD4 = 0x1e;
