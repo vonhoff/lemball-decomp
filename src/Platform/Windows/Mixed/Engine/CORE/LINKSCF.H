@@ -40,6 +40,7 @@ struct CCollectableManager {
 class CAI;
 class CGlobalGameObject;
 class CNetworkMessage;
+class CViewData;
 class CObjectManager {
 public:
 	char m_abReserved00[0x34];
@@ -57,6 +58,7 @@ public:
 	void Remove(CGlobalGameObject* pObject);
 	int Receive(unsigned short nMessage, CGlobalGameObject* pObject, CNetworkMessage* pMessage);
 	void ConvertVer0ToVer1(void);
+	int GetViewData(CViewData* pViewData);
 };
 
 struct LinkScfMoveChunkManagerView {
@@ -108,8 +110,7 @@ struct LinkScfBoonChunkManagerView {
 // EmitDoorChunkRenderEntries
 // STUB: LEMBALL 0x0041b7d0
 // ServiceCountedChildPointerTable
-// STUB: LEMBALL 0x0041b830
-// EmitGmobChunkManagerRenderEntries
+
 // STUB: LEMBALL 0x0041ecb0
 // RemoveCachedChunkObjectAndDestroy
 // STUB: LEMBALL 0x0041eab0
