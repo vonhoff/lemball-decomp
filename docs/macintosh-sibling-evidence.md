@@ -214,7 +214,7 @@ All six portable methods map at `0x0041CCA0..0x0041CF10`. Independent exact-body
 
 ## CCatapult reconstruction
 
-All five portable methods map at `0x0041C700..0x0041CA60`. Independent auditing identifies the type-`4` vtable at `0x00494640` and confirms exact state, clock, randomized launch-vector, linked-target, owner-transfer, score-`20`, and activation-offset behavior. Restart is the distinct `0x0041C700` wrapper that clears its 16-bit field after calling shared helper `0x0041C6C0`; that helper and saved-position activation helper `0x0041C670` remain target-only. Physical ownership stays split between `LVSAVEPOS.CPP` and `LEVELVT.CPP`.
+All five portable methods map at `0x0041C700..0x0041CA60`. Independent auditing identifies the type-`4` vtable at `0x00494640` and confirms exact state, clock, randomized launch-vector, linked-target, owner-transfer, score-`20`, and activation-offset behavior. Genuine `CCatapult::Restart` ownership now lives in `LVSAVEPOS.CPP` as a `100%` match, clearing its 16-bit field after calling shared helper `0x0041C6C0`; that helper and saved-position activation helper `0x0041C670` remain target-only. Remaining physical ownership stays split between `LVSAVEPOS.CPP` and `LEVELVT.CPP`.
 
 ## CAmmo reconstruction
 

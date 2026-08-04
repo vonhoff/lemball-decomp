@@ -42,9 +42,16 @@ struct SavedPositionChunkObjectView {
 	short m_nLinkedVariant144;
 
 	void ResetToSavedPosition(void);
-	void ResetVariant(void);
 	void ResetLinkedVariant(void);
 	void ResetGmobState(void);
+};
+
+class CCatapult {
+public:
+	char m_abReserved00[0xbc];
+	short m_nVariantBC;
+
+	void Restart(void);
 };
 
 struct GmobType14SavedPositionView {
@@ -69,9 +76,9 @@ void SavedPositionChunkObjectView::ResetToSavedPosition(void)
 }
 
 // FUNCTION: LEMBALL 0x0041c700
-void SavedPositionChunkObjectView::ResetVariant(void)
+void CCatapult::Restart(void)
 {
-	ResetToSavedPosition();
+	((SavedPositionChunkObjectView*) this)->ResetToSavedPosition();
 	m_nVariantBC = 0;
 }
 
