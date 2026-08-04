@@ -713,7 +713,7 @@ address,size,name,unit
 0x0041D600,67,CBalloon::Restart,AI/LVSAVEPOS.CPP
 0x0041D650,233,CBalloon::Process,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041D740,50,CBalloon::Activate,AI/LVSAVEPOS.CPP
-0x0041D780,43,CBalloon::DoActivate,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041D780,43,CBalloon::DoActivate,AI/LVSAVEPOS.CPP
 0x0041D7B0,35,CBalloon::ActivatePosition,AI/LVPOSVT.CPP
 0x0041DC40,6,return_two_vtable_callback_0041dc40,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041DC50,219,emit_gmob_chunk_type_0x14_render_entry,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

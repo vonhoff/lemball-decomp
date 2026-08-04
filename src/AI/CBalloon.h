@@ -16,6 +16,7 @@ public:
 
 	void Restart(void);
 	int Activate(void* pTarget);
+	void DoActivate(void);
 	int* ActivatePosition(int* pPoint);
 };
 

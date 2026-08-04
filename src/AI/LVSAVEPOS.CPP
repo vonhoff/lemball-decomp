@@ -20,12 +20,25 @@ struct BalloonTargetView {
 	int TypeTest(int nType);
 };
 typedef int (BalloonTargetView::*BalloonTargetTypeTestProc)(int);
+typedef void (BalloonTargetView::*BalloonTargetActivateProc)(int, CBalloon*);
 struct BalloonTargetVtable {
 	void* m_apReserved00[45];
 	BalloonTargetTypeTestProc m_pTypeTestB4;
+	BalloonTargetActivateProc m_pActivateB8;
 };
 typedef char BalloonTargetMemberPointerMustBeOneWord
 	[sizeof(BalloonTargetTypeTestProc) == sizeof(void*) ? 1 : -1];
+
+struct BalloonSelfVtable;
+struct BalloonSelfView {
+	BalloonSelfVtable* m_pVtable00;
+	void Action(int nAction);
+};
+typedef void (BalloonSelfView::*BalloonSelfActionProc)(int);
+struct BalloonSelfVtable {
+	void* m_apReserved00[13];
+	BalloonSelfActionProc m_pAction34;
+};
 
 struct SavedPositionTransitionView {
 	char m_abReserved00[0x5c];
@@ -211,6 +224,19 @@ int CBalloon::Activate(void* pTarget)
 		return 1;
 	}
 	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0041d780
+void CBalloon::DoActivate(void)
+{
+	BalloonTargetView* pObject;
+	BalloonSelfView* pSelf;
+
+	pObject = (BalloonTargetView*) m_pTarget5C;
+	(pObject->*pObject->m_pVtable00->m_pActivateB8)(m_nObjectType64, this);
+	pSelf = (BalloonSelfView*) this;
+	(pSelf->*pSelf->m_pVtable00->m_pAction34)(0x2a);
+	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(50);
 }
 
 struct LevelChunkObjectRuntimeStateView {
