@@ -48,6 +48,7 @@ public:
 
 	CObjectManager(CAI* pAI, int nCapacity);
 	void Restart(void);
+	void Initialise(int nCount);
 };
 
 struct LinkScfMoveChunkManagerView {

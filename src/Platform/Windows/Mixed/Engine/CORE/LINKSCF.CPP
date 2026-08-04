@@ -1190,6 +1190,27 @@ void CObjectManager::Restart(void)
 	m_nPendingCount36 -= (short) nResolvedCount;
 }
 
+// FUNCTION: LEMBALL 0x0041b0c0
+void CObjectManager::Initialise(int nCount)
+{
+	int nOffset;
+	int nIndex;
+
+	nOffset = 0;
+	*(unsigned short*) ((char*) this + 0x34) = nCount + 4;
+	if (m_apObjects3C == 0) {
+		m_apObjects3C = (void**) AllocateVSMemBlock((unsigned int) m_nObjectCount34 * sizeof(void*));
+		nIndex = 0;
+		if (m_nObjectCount34 > 0) {
+			do {
+				nOffset += sizeof(void*);
+				++nIndex;
+				*(void**) ((char*) m_apObjects3C + nOffset - sizeof(void*)) = 0;
+			} while (nIndex < m_nObjectCount34);
+		}
+	}
+}
+
 // MACINTOSH: CGenericGroupManager::CGenericGroupManager(CAI*, CObjectManager*, CFormationManager*)
 // FUNCTION: LEMBALL 0x0041e8f0
 CGenericGroupManager* CGenericGroupManager::ConstructCachedChunkObjectManagerBase(
