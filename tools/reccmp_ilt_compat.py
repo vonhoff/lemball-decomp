@@ -193,8 +193,8 @@ THUNK_ILT_REFERENCES = {
     ),
     0x00428800: (
         0x004018C0,
-        "destroy_capture_trigger_chunk_object",
-        "CAPT chunk object destructor target 00427b40",
+        "CHand::~CHand",
+        "CHand destructor target 00427b40",
     ),
     0x00429ED0: (
         0x004034D6,

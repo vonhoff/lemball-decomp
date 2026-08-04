@@ -1,8 +1,8 @@
+#include "AI/CHand.h"
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Level/CHUNKOBJVT.H"
 
-extern void LEMBALL_FASTCALL destroy_capture_trigger_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_tram_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_lasr_chunk_object_vtable_thunk(void* pObject);
 
@@ -22,12 +22,12 @@ void* LEMBALL_FASTCALL DeleteCaptureChunkObjectAuto(void* pObject, void* pUnused
 		pCursor = (char*) pObject + cObjects * 0x144;
 		while ((int) --cObjects >= 0) {
 			pCursor -= 0x144;
-			destroy_capture_trigger_chunk_object(pCursor);
+			((CHand*) pCursor)->~CHand();
 		}
 		FreeVSMemBlock(pAllocation);
 		return pObject;
 	}
-	destroy_capture_trigger_chunk_object(pObject);
+	((CHand*) pObject)->~CHand();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}

@@ -19,7 +19,6 @@ extern CPlayerLemming* LEMBALL_FASTCALL PopLevelPlasHistoryChild(void* pLevelMod
 
 extern void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_rock_chunk_object(void* pObject);
-extern void LEMBALL_FASTCALL destroy_capture_trigger_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_lasr_chunk_object_vtable_thunk(void* pObject);
 extern void LEMBALL_FASTCALL destroy_tram_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_pgun_chunk_object_vtable_thunk(void* pObject);

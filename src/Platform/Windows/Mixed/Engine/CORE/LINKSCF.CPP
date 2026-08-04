@@ -1,5 +1,7 @@
 #include "AI/CGameObject.h"
 #include "AI/CGenericGroup.h"
+#include "AI/CHand.h"
+#include "AI/CHandManager.h"
 #include "AI/CInvisibleSwitch.h"
 #include "AI/CInvisibleSwitchManager.h"
 #include "AI/CIceManager.h"
@@ -30,11 +32,6 @@ extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject)
 struct RockChunkObjectView : LevelChunkObjectBaseView {
 	RockChunkObjectView* ConstructRockChunkObject(void);
 };
-
-struct CaptureTriggerChunkObjectView : LevelChunkObjectBaseView {
-	CaptureTriggerChunkObjectView* ConstructCaptureTriggerChunkObject(void);
-};
-
 
 struct TramChunkObjectView : LevelChunkObjectBaseView {
 	TramChunkObjectView* ConstructTramChunkObject(void);
@@ -181,7 +178,6 @@ int LEMBALL_FASTCALL GetFirstManagedEntityChildFromCachedGroup(void* pObject);
 int LEMBALL_FASTCALL GetFirstIteratedChildStatus11C(void* pObject);
 
 void LEMBALL_FASTCALL ActivateRockChunkObjects(void* pManager);
-void LEMBALL_FASTCALL ActivateCaptureTriggerChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateTramChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivatePgunChunkObjects(void* pManager);
 void LEMBALL_FASTCALL ActivateMoveChunkObjects(void* pManager);
@@ -458,12 +454,17 @@ void* g_LINKSCF_RockChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteRock
 																	  ReturnFalseChunkStreamCommandThunk,
 																	  EmitRockChunkManagerRenderEntries);
 // GLOBAL: LEMBALL 0x004962e0
-static void* g_LINKSCF_CaptureChunkManagerVtable[10] =
-	LINKSCF_EFF_CHUNK_VTABLE(DeleteCaptureTriggerChunkManagerAuto,
-							 ActivateCaptureTriggerChunkObjects,
-							 RefreshActiveCaptureTriggerChunkObjects,
-							 ReturnFalseChunkStreamCommandThunk,
-							 EmitCaptureTriggerChunkManagerRenderEntries);
+CHandManagerVtable g_LINKSCF_CaptureChunkManagerVtable = {
+	{(void*) ReturnTrueVtableCallbackThunk,
+	 (void*) ReturnTrueVtableCallbackSecondaryThunk,
+	 (void*) DispatchType18ChunkStreamCommandsThunk,
+	 (void*) NoopVtableCallbackThunk,
+	 (void*) NoopType18ChunkStreamWriteThunk,
+	 (void*) DeleteCaptureTriggerChunkManagerAuto},
+	&CHandManager::Restart,
+	{(void*) RefreshActiveCaptureTriggerChunkObjects,
+	 (void*) ReturnFalseChunkStreamCommandThunk,
+	 (void*) EmitCaptureTriggerChunkManagerRenderEntries}};
 struct LaserManagerVtableLayout {
 	void* m_apSlots00[6];
 	void (CLaserManager::*m_pRestart18)(void);
@@ -624,13 +625,6 @@ LinkScfMoveChunkManagerView* LinkScfMoveChunkManagerView::ConstructMoveChunkMana
 																						 int nCapacity)
 {
 	return ConstructMoveChunkManager(pLevelMode, nCapacity);
-}
-// LINKERILT: LEMBALL 0x00401e10
-LinkScfCaptureChunkManagerView* LinkScfCaptureChunkManagerView::ConstructCaptureTriggerChunkManagerThunk(
-	void* pLevelMode,
-	int nCapacity)
-{
-	return ConstructCaptureTriggerChunkManager(pLevelMode, nCapacity);
 }
 // LINKERILT: LEMBALL 0x00401e88
 void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevelThunk(void* pObject,
@@ -1842,61 +1836,6 @@ void LEMBALL_FASTCALL ActivateRockChunkObjects(void* pManager)
 	}
 }
 
-extern void* g_LINKSCF_CaptureChunkObjectVtable[16];
-
-// MACINTOSH: CHand::CHand()
-// FUNCTION: LEMBALL 0x00427ad0
-CaptureTriggerChunkObjectView* CaptureTriggerChunkObjectView::ConstructCaptureTriggerChunkObject(void)
-{
-	InitializeLevelChunkObjectBase(0x1f, 0, 0);
-	*(void**) this = g_LINKSCF_CaptureChunkObjectVtable;
-	return this;
-}
-
-// MACINTOSH: CHand::~CHand()
-// FUNCTION: LEMBALL 0x00427b40
-void LEMBALL_FASTCALL destroy_capture_trigger_chunk_object(void* pObject)
-{
-	*(void**) pObject = g_LINKSCF_CaptureChunkObjectVtable;
-	DestroyLevelChunkObjectBaseAutoThunk(pObject);
-}
-
-// MACINTOSH: CHandManager::CHandManager(CAI*, int)
-// FUNCTION: LEMBALL 0x00427e60
-LinkScfCaptureChunkManagerView* LinkScfCaptureChunkManagerView::ConstructCaptureTriggerChunkManager(void* pLevelMode,
-																									int nCapacity)
-{
-	LINKSCF_INITIALIZE_EFF_CHUNK_STREAM(this, 0x16, 0x0b);
-	*(void**) this = g_LINKSCF_CaptureChunkManagerVtable;
-	*(void**) ((char*) this + 0x3c) = pLevelMode;
-	*(int*) ((char*) this + 0x30) = nCapacity;
-	*(int*) ((char*) this + 0x38) = 0;
-	return this;
-}
-
-// MACINTOSH: CHandManager::Restart()
-// FUNCTION: LEMBALL 0x00427ec0
-void LEMBALL_FASTCALL ActivateCaptureTriggerChunkObjects(void* pManager)
-{
-	char* pManagerBytes;
-	void* pChunkObject;
-	int i;
-	int nOffset;
-
-	pManagerBytes = (char*) pManager;
-	if (*(char**) (pManagerBytes + 0x38) != 0) {
-		i = 0;
-		if (*(int*) (pManagerBytes + 0x30) > 0) {
-			nOffset = 0;
-			do {
-				pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
-				++i;
-				nOffset += 0x144;
-				((ActivateChunkObjectProc) (*(void***) pChunkObject)[65])(pChunkObject);
-			} while (*(int*) (pManagerBytes + 0x30) > i);
-		}
-	}
-}
 // FUNCTION: LEMBALL 0x00427fc0
 void LEMBALL_FASTCALL ClearManagedEntityArrayCount(void* pObject)
 {
@@ -2215,7 +2154,6 @@ struct LinkScfSmallFunctionView {
 
 struct ChunkRuntimeStateView {
 	void ResetRockState(void);
-	void ResetCaptureTriggerState(void);
 };
 
 void LinkScfSmallFunctionView::SetObjectFields18_1c_20(int nField18, int nField1c, int nField20)
@@ -2338,11 +2276,6 @@ void LEMBALL_FASTCALL DestroyLiftChunkManagerAutoThunk(void* pObject)
 	((CLiftManager*) pObject)->~CLiftManager();
 }
 
-DEFINE_LINKSCF_MANAGER_DESTROY_PAIR(DestroyCaptureTriggerChunkManagerAuto,
-									DestroyCaptureTriggerChunkManagerAutoThunk,
-									g_LINKSCF_CaptureChunkManagerVtable,
-									0x38)
-
 void LEMBALL_FASTCALL DestroyLasrChunkManagerAutoThunk(void* pObject)
 {
 	((CLaserManager*) pObject)->~CLaserManager();
@@ -2370,7 +2303,14 @@ DEFINE_LINKSCF_NAMED_SCALAR_DELETE(DeleteDoorChunkManagerAuto, DestroyDoorChunkM
 DEFINE_LINKSCF_NAMED_SCALAR_DELETE(DeleteProjectilePoolAuto, DestroyProjectilePoolAutoThunk)
 DEFINE_LINKSCF_NAMED_SCALAR_DELETE(DeleteMineChunkManagerAuto, DestroyMineChunkManagerAutoThunk)
 DEFINE_LINKSCF_NAMED_SCALAR_DELETE(DeleteLiftChunkManagerAuto, DestroyLiftChunkManagerAutoThunk)
-DEFINE_LINKSCF_NAMED_SCALAR_DELETE(DeleteCaptureTriggerChunkManagerAuto, DestroyCaptureTriggerChunkManagerAutoThunk)
+void* LEMBALL_FASTCALL DeleteCaptureTriggerChunkManagerAuto(void* pObject, void*, BYTE fDelete)
+{
+	((CHandManager*) pObject)->~CHandManager();
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
 DEFINE_LINKSCF_NAMED_SCALAR_DELETE(DeleteLasrChunkManagerAuto, DestroyLasrChunkManagerAutoThunk)
 DEFINE_LINKSCF_NAMED_SCALAR_DELETE(DeleteTramChunkManagerAuto, DestroyTramChunkManagerAutoThunk)
 
@@ -2449,28 +2389,6 @@ void LEMBALL_FASTCALL ResetIceChunkObject(void* pObject)
 	ResetIceChunkObjectRuntimeStateThunk(pObject);
 }
 
-void LEMBALL_FASTCALL ResetCaptureTriggerChunkObjectRuntimeStateThunk(void* pObject)
-{
-	((ChunkRuntimeStateView*) pObject)->ResetCaptureTriggerState();
-}
-
-void LEMBALL_FASTCALL ResetCaptureTriggerChunkObject(void* pObject)
-{
-	char* pObjectBytes;
-	int nX;
-	int nY;
-	int nZ;
-
-	ResetManagedEntityRuntimeStateThunk(pObject);
-	ResetCaptureTriggerChunkObjectRuntimeStateThunk(pObject);
-	pObjectBytes = (char*) pObject;
-	nZ = *(int*) (pObjectBytes + 0x48);
-	nX = *(int*) (pObjectBytes + 0x40);
-	nY = *(int*) (pObjectBytes + 0x44);
-	*(int*) (pObjectBytes + 0x9c) = nX;
-	*(int*) (pObjectBytes + 0xa0) = nY;
-	*(int*) (pObjectBytes + 0xa4) = nZ;
-}
 
 void LEMBALL_FASTCALL ResetLasrChunkObjectRuntimeStateThunk(void* pObject)
 {

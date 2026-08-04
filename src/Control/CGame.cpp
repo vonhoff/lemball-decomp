@@ -1,6 +1,7 @@
 #include "Control/CGame.h"
 
 #include "AI/CInvisibleSwitchManager.h"
+#include "AI/CHandManager.h"
 #include "AI/CIceManager.h"
 #include "AI/CLaserManager.h"
 #include "AI/CLiftManager.h"
@@ -3484,8 +3485,7 @@ void LevelGameMode::InitializeLevelGameMode(void)
 
 		pObject = AllocateVSMemBlock(0x40);
 		if (pObject != 0) {
-			pObject = ((LinkScfCaptureChunkManagerView*) pObject)
-						  ->ConstructCaptureTriggerChunkManagerThunk(pLevelGameMode, 0x14);
+			pObject = new (pObject) CHandManager((CAI*) pLevelGameMode, 0x14);
 		}
 		*(void**) (pModeBytes + 0x1a4) = pObject;
 		RegisterLevelChunkStreamThunk(g_pLevelChunkStreamDispatcher, *(void**) (pModeBytes + 0x1a4));
