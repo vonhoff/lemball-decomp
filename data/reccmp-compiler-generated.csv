@@ -46,7 +46,6 @@ address,name,symbol,type,source
 0x0041C5C0,DeleteLevelChunkObjectBaseWrapper1C5C0,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041C600,DeleteLevelChunkObjectBaseWrapper1C600,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041C640,DeleteLevelChunkObjectBaseWrapper1C640,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041D010,LevelVtSmallFunctionView::GetManagedEntityInteractionPoint,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041DD70,DeleteGmobChunkType14ObjectAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041DF90,LevelVtSmallFunctionView::SwapObjectChildSlots128,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041E8C0,DeleteCompositeLevelChunkChildrenWrapper1E8C0,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP

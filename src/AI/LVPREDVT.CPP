@@ -1,3 +1,5 @@
+#include "AI/CTower.h"
+
 extern int g_nLevelFrameClockTick;
 extern int g_fLevelEndStateRequestLatched;
 
@@ -274,10 +276,6 @@ int GetSavedChunkStatus(void)
 	return 2;
 }
 
-class CTower {
-public:
-	int Activate(void* pTarget);
-};
 
 // FUNCTION: LEMBALL 0x0041d000
 int CTower::Activate(void* pTarget)

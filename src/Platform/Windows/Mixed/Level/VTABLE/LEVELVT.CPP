@@ -5,6 +5,7 @@
 #include "AI/CCatapult.h"
 #include "AI/CAmmo.h"
 #include "AI/CCrate.h"
+#include "AI/CTower.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
@@ -155,7 +156,7 @@ struct LevelVtSmallFunctionView {
 	void AddLevelScoreClamped(int nValue);
 	void SetRectFromBounds(int nLeft, int nTop, int nRight, int nBottom);
 	void* GetProjectileGeometryRotatedPair(int nIndex);
-	void GetManagedEntityInteractionPoint(int* pPoint);
+
 	void SwapObjectChildSlots128(int iFirst, int iSecond);
 	void GetTileFlag1cObjectRenderPoint(int* pPoint);
 };
@@ -1943,6 +1944,23 @@ void CCrate::ActivatePosition(int* pPoint)
 	pPoint[2] = nZ;
 }
 
+// FUNCTION: LEMBALL 0x0041d010
+void CTower::ActivatePosition(int* pPoint)
+{
+	int nX;
+	int nY;
+	int nZ;
+
+	nY = *(int*) ((char*) this + 0xa0);
+	nZ = *(int*) ((char*) this + 0xa4);
+	nY -= 0x8000;
+	nX = *(int*) ((char*) this + 0x9c);
+	nX -= 0x30000;
+	pPoint[0] = nX;
+	pPoint[1] = nY;
+	pPoint[2] = nZ;
+}
+
 extern void* g_LEVELVT_GmobChunkType14ObjectVtable[16];
 
 // FUNCTION: LEMBALL 0x0041d120
@@ -2361,22 +2379,6 @@ void* LevelVtSmallFunctionView::GetProjectileGeometryRotatedPair(int nIndex)
 		nIndex -= 8;
 	}
 	return (char*) this + 0xc0 + nIndex * 8;
-}
-
-void LevelVtSmallFunctionView::GetManagedEntityInteractionPoint(int* pPoint)
-{
-	int nX;
-	int nY;
-	int nZ;
-
-	nY = *(int*) ((char*) this + 0xa0);
-	nZ = *(int*) ((char*) this + 0xa4);
-	nY -= 0x8000;
-	nX = *(int*) ((char*) this + 0x9c);
-	nX -= 0x30000;
-	pPoint[0] = nX;
-	pPoint[1] = nY;
-	pPoint[2] = nZ;
 }
 
 void LevelVtSmallFunctionView::SwapObjectChildSlots128(int iFirst, int iSecond)
