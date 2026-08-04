@@ -206,7 +206,7 @@ The three portable methods map consecutively at `0x0041CF70`, `0x0041D000`, and 
 
 ## CBalloon reconstruction
 
-The five portable methods map at `0x0041D600..0x0041D7B0`. Genuine `CBalloon::Restart` now lives in `LVSAVEPOS.CPP` as a `100%` match, replacing the neutral randomized reset helper. Exact 68K and Windows bodies agree on randomized timestamp restart, terrain refresh, network action `0x2A`, state `0x1A`, target permission/callback dispatch, score `50`, and unchanged activation-position output. The output method preserves the Windows hidden-result-pointer ABI; adjacent type-`0x14` action and render helpers consume no CBalloon symbols.
+The five portable methods map at `0x0041D600..0x0041D7B0`. Shared narrow `CBalloon` layout lives in `CBalloon.h`; genuine `Restart` lives in `LVSAVEPOS.CPP` and genuine `ActivatePosition` lives in `LVPOSVT.CPP`, both as `100%` matches. Exact 68K and Windows bodies agree on randomized timestamp restart, terrain refresh, network action `0x2A`, state `0x1A`, target permission/callback dispatch, score `50`, and unchanged activation-position output. The output method preserves the Windows hidden-result-pointer ABI; adjacent type-`0x14` action and render helpers consume no CBalloon symbols.
 
 ## CCrate reconstruction
 

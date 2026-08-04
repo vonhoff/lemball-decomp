@@ -2,6 +2,7 @@
 #include "AI/CCatapult.h"
 #include "AI/CAmmo.h"
 #include "AI/CCrate.h"
+#include "AI/CBalloon.h"
 
 void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern int g_nLevelFrameClockTimeMs;
@@ -46,13 +47,6 @@ struct SavedPositionChunkObjectView {
 	void ResetToSavedPosition(void);
 };
 
-class CBalloon {
-public:
-	char m_abReserved00[0x94];
-	int m_nFrameTime94;
-
-	void Restart(void);
-};
 
 
 
