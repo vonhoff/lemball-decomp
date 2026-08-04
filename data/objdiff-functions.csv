@@ -683,9 +683,9 @@ address,size,name,unit
 0x0041CA60,47,CCatapult::ActivatePosition,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041CA90,19,CAmmo::Restart,AI/LVSAVEPOS.CPP
 0x0041CAB0,304,CAmmo::Process,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041CBE0,74,CAmmo::Activate,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041CBE0,74,CAmmo::Activate,AI/LVSAVEPOS.CPP
 0x0041CC30,63,CAmmo::DoActivate,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041CC70,35,CAmmo::ActivatePosition,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041CC70,35,CAmmo::ActivatePosition,AI/LVPOSVT.CPP
 0x0041CCA0,20,CCrate::Restart,AI/LVSAVEPOS.CPP
 0x0041CCC0,88,CCrate::TriggerContents,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041CD20,292,CCrate::Process,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
