@@ -710,7 +710,7 @@ address,size,name,unit
 0x0041D560,50,try_attach_gmob_target,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041D5A0,43,complete_gmob_action_29,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041D5D0,41,copy_gmob_action29_point,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041D600,67,CBalloon::Restart,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x0041D600,67,CBalloon::Restart,AI/LVSAVEPOS.CPP
 0x0041D650,233,CBalloon::Process,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041D740,50,CBalloon::Activate,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041D780,43,CBalloon::DoActivate,Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP

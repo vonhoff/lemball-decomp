@@ -5,6 +5,7 @@
 
 void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern int g_nLevelFrameClockTimeMs;
+extern void* g_pSessionRandomState;
 extern int g_nLevelFrameClockTick;
 extern void* g_pActiveManagedEntityOwner;
 
@@ -43,6 +44,14 @@ struct SavedPositionChunkObjectView {
 	short m_nLinkedVariant144;
 
 	void ResetToSavedPosition(void);
+};
+
+class CBalloon {
+public:
+	char m_abReserved00[0x94];
+	int m_nFrameTime94;
+
+	void Restart(void);
 };
 
 
@@ -136,6 +145,7 @@ int CCrate::Activate(void* pTarget)
 	return 0;
 }
 
+
 // FUNCTION: LEMBALL 0x0041d100
 void GmobType14SavedPositionView::ResetType14State(void)
 {
@@ -169,6 +179,17 @@ void GmobType14ScoreView::AwardScoreOnce(void)
 		((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(0x19);
 		m_fScoreAwarded144 = 1;
 	}
+}
+
+// FUNCTION: LEMBALL 0x0041d600
+void CBalloon::Restart(void)
+{
+	int nRandom;
+
+	((SavedPositionChunkObjectView*) this)->ResetToSavedPosition();
+	nRandom = (*(int*) g_pSessionRandomState * 0x29 + 0x1f) & 0x7fffff;
+	*(int*) g_pSessionRandomState = nRandom;
+	m_nFrameTime94 = g_nLevelFrameClockTimeMs - nRandom % 0x1000;
 }
 
 struct LevelChunkObjectRuntimeStateView {
