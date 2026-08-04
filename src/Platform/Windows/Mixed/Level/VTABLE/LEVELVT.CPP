@@ -90,6 +90,8 @@ struct CGenericGroup {
 	void ClearExistingWaypoints(void);
 	void SetFormationIndex(int nIndex);
 	int GetFormationIndex(void);
+	int CheckGroupIntersection(CVSRect* pRect, AICOORD* pPosition);
+	int GetViewData(CViewData* pViewData);
 };
 struct CPlayerLemmingGroup : CGenericGroup {
 	int m_nRuntimeState160;
@@ -2244,6 +2246,48 @@ void CGenericGroup::SetFormationIndex(int nIndex)
 int CGenericGroup::GetFormationIndex(void)
 {
 	return *(int*) ((char*) this + 0x160);
+}
+
+// FUNCTION: LEMBALL 0x0041e530
+int CGenericGroup::CheckGroupIntersection(CVSRect* pRect, AICOORD* pPosition)
+{
+	typedef CGameObject*(LEMBALL_FASTCALL * ElementIteratorProc)(CGenericGroup*);
+	int nLeft = pRect->x;
+	int nTop = pRect->y;
+	int nRight = nLeft + pRect->width;
+	int nBottom = nTop + pRect->height;
+	if (m_BoundingBox158.x < nRight && nLeft < m_BoundingBox158.x + m_BoundingBox158.width &&
+			m_BoundingBox158.y < nBottom && nTop < m_BoundingBox158.y + m_BoundingBox158.height) {
+		CGameObject* pObject = ((ElementIteratorProc) (*(void***) this)[0x114 / sizeof(void*)])(this);
+		while (pObject != 0) {
+			int nObjectX = pObject->m_WorldPosition9C.x >> 12;
+			int nObjectY = pObject->m_WorldPosition9C.y >> 12;
+			if (nObjectX - 24 < nRight && nLeft < nObjectX + 24 &&
+					nObjectY - 24 < nBottom && nTop < nObjectY + 24) {
+				*pPosition = pObject->m_WorldPosition9C;
+				return 1;
+			}
+			pObject = ((ElementIteratorProc) (*(void***) this)[0x118 / sizeof(void*)])(this);
+		}
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0041e640
+int CGenericGroup::GetViewData(CViewData* pViewData)
+{
+	typedef CGameObject*(LEMBALL_FASTCALL * ElementIteratorProc)(CGenericGroup*);
+	typedef void(LEMBALL_FASTCALL * ObjectViewDataProc)(CGameObject*, void*, CViewData*);
+	int nCount = 0;
+	void** pVtable = *(void***) this;
+	CGameObject* pObject = ((ElementIteratorProc) pVtable[0x114 / sizeof(void*)])(this);
+	while (pObject != 0) {
+		((ObjectViewDataProc) ((void**) pObject->m_pVtable00)[3])(pObject, 0, pViewData);
+		pViewData = (CViewData*) ((char*) pViewData + 0x4c);
+		++nCount;
+		pObject = ((ElementIteratorProc) pVtable[0x118 / sizeof(void*)])(this);
+	}
+	return nCount;
 }
 
 // FUNCTION: LEMBALL 0x0041f870
