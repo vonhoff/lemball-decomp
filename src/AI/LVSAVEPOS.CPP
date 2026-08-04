@@ -14,6 +14,19 @@ struct ManagedEntityStateView {
 	void RequestManagedEntityStateId(int nState);
 };
 
+struct BalloonTargetVtable;
+struct BalloonTargetView {
+	BalloonTargetVtable* m_pVtable00;
+	int TypeTest(int nType);
+};
+typedef int (BalloonTargetView::*BalloonTargetTypeTestProc)(int);
+struct BalloonTargetVtable {
+	void* m_apReserved00[45];
+	BalloonTargetTypeTestProc m_pTypeTestB4;
+};
+typedef char BalloonTargetMemberPointerMustBeOneWord
+	[sizeof(BalloonTargetTypeTestProc) == sizeof(void*) ? 1 : -1];
+
 struct SavedPositionTransitionView {
 	char m_abReserved00[0x5c];
 	void* m_pTarget5C;
@@ -184,6 +197,20 @@ void CBalloon::Restart(void)
 	nRandom = (*(int*) g_pSessionRandomState * 0x29 + 0x1f) & 0x7fffff;
 	*(int*) g_pSessionRandomState = nRandom;
 	m_nFrameTime94 = g_nLevelFrameClockTimeMs - nRandom % 0x1000;
+}
+
+// FUNCTION: LEMBALL 0x0041d740
+int CBalloon::Activate(void* pTarget)
+{
+	BalloonTargetView* pObject;
+
+	pObject = (BalloonTargetView*) pTarget;
+	m_pTarget5C = pTarget;
+	if ((pObject->*pObject->m_pVtable00->m_pTypeTestB4)(m_nObjectType64) == 0) {
+		((ManagedEntityStateView*) this)->RequestManagedEntityStateId(0x1a);
+		return 1;
+	}
+	return 0;
 }
 
 struct LevelChunkObjectRuntimeStateView {
