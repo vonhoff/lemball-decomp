@@ -5,7 +5,8 @@ class CCatapult {
 public:
 	char m_abReserved00[0x5c];
 	void* m_pTarget5C;
-	char m_abReserved60[0x34];
+	char m_abReserved60[0x30];
+	int m_nTargetOwnerId90;
 	int m_nFrameTime94;
 	char m_abReserved98[4];
 	int m_nPositionX9C;
@@ -21,6 +22,7 @@ public:
 
 	void Restart(void);
 	int Activate(void* pTarget);
+	void DoActivate(void);
 	void ActivatePosition(int* pPoint);
 };
 

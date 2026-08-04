@@ -146,7 +146,17 @@ struct LevelManagedEntityChildIterator {
 
 extern int g_nLevelFrameClockTick;
 extern int g_nLevelFrameClockTimeMs;
+extern void* g_pActiveManagedEntityOwner;
 extern void* g_pSharedRenderDispatchQueue;
+
+struct LevelVtSmallFunctionView {
+	void AddLevelScoreClamped(int nValue);
+	void SetRectFromBounds(int nLeft, int nTop, int nRight, int nBottom);
+	void* GetProjectileGeometryRotatedPair(int nIndex);
+	void GetManagedEntityInteractionPoint(int* pPoint);
+	void SwapObjectChildSlots128(int iFirst, int iSecond);
+	void GetTileFlag1cObjectRenderPoint(int* pPoint);
+};
 
 struct LevelManagedEntityStateFields {
 	char m_abReserved00[0xb4];
@@ -1835,6 +1845,32 @@ int return_two_vtable_callback_0041c630(void)
 	return 2;
 }
 
+struct CatapultTargetView {
+	char m_abReserved00[0x64];
+	int m_nOwnerId64;
+	char m_abReserved68[0x50];
+	int m_nStateB8;
+	int m_nActionBC;
+	int m_fActivatedC0;
+};
+
+
+// FUNCTION: LEMBALL 0x0041ca00
+void CCatapult::DoActivate(void)
+{
+	CatapultTargetView* pTarget;
+
+	m_nFrameTime94 = g_nLevelFrameClockTimeMs;
+	pTarget = (CatapultTargetView*) m_pTarget5C;
+	m_nPhaseStepD0 += g_nLevelFrameClockTick;
+	m_nDeadlineD4 += g_nLevelFrameClockTick;
+	m_nPhaseDurationCC += g_nLevelFrameClockTick;
+	m_nTargetOwnerId90 = pTarget->m_nOwnerId64;
+	pTarget->m_fActivatedC0 = 1;
+	pTarget->m_nStateB8 = 5;
+	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(20);
+}
+
 // FUNCTION: LEMBALL 0x0041ca60
 void CCatapult::ActivatePosition(int* pPoint)
 {
@@ -2244,13 +2280,6 @@ void noop_callback_00456600(void)
 {
 }
 
-struct LevelVtSmallFunctionView {
-	void SetRectFromBounds(int nLeft, int nTop, int nRight, int nBottom);
-	void* GetProjectileGeometryRotatedPair(int nIndex);
-	void GetManagedEntityInteractionPoint(int* pPoint);
-	void SwapObjectChildSlots128(int iFirst, int iSecond);
-	void GetTileFlag1cObjectRenderPoint(int* pPoint);
-};
 
 void LevelVtSmallFunctionView::SetRectFromBounds(int nLeft, int nTop, int nRight, int nBottom)
 {
