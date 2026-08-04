@@ -194,7 +194,7 @@ DEFINE_LINKSCF_VTABLE_STUB_0(ServiceActiveDoorChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitDoorChunkRenderEntries)
 void LEMBALL_FASTCALL ResetProjectilePool(void* pPool);
 int LEMBALL_FASTCALL EmitProjectilePoolRenderEntries(void* pPool, void* pUnused, void* pRenderEntry);
-DEFINE_LINKSCF_VTABLE_STUB_0(ActivateManagedEntityGroupChildren)
+
 DEFINE_LINKSCF_VTABLE_STUB_0(ServiceCountedChildPointerTable)
 DEFINE_LINKSCF_VTABLE_STUB_2(ClearCountedChildBackReference)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitGmobChunkManagerRenderEntries)
@@ -275,12 +275,27 @@ void* g_LINKSCF_MoveChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteMove
 																	  AdvanceActiveMoveChunkObjects,
 																	  ReturnFalseChunkStreamCommandThunk,
 																	  EmitMoveChunkManagerRenderEntries);
+struct ObjectManagerVtableLayout {
+	void* m_apBase00[6];
+	void (CObjectManager::*m_pRestart18)(void);
+	void* m_pProcess1C;
+	void* m_pReceive20;
+	void* m_pGetViewData24;
+};
+typedef char ObjectManagerMemberPointerMustBeOneWord
+	[sizeof(void (CObjectManager::*)(void)) == sizeof(void*) ? 1 : -1];
 // GLOBAL: LEMBALL 0x00494238
-static void* g_LINKSCF_GmobChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteCountedChildTableStreamAuto,
-																			 ActivateManagedEntityGroupChildren,
-																			 ServiceCountedChildPointerTable,
-																			 ClearCountedChildBackReference,
-																			 EmitGmobChunkManagerRenderEntries);
+static ObjectManagerVtableLayout g_LINKSCF_GmobChunkManagerVtable = {
+	{(void*) ReturnTrueVtableCallbackThunk,
+	 (void*) ReturnTrueVtableCallbackSecondaryThunk,
+	 (void*) DispatchType18ChunkStreamCommandsThunk,
+	 (void*) NoopVtableCallbackThunk,
+	 (void*) NoopType18ChunkStreamWriteThunk,
+	 (void*) DeleteCountedChildTableStreamAuto},
+	&CObjectManager::Restart,
+	(void*) ServiceCountedChildPointerTable,
+	(void*) ClearCountedChildBackReference,
+	(void*) EmitGmobChunkManagerRenderEntries};
 static void* g_LINKSCF_PlasChunkManagerVtable[10];
 static void* g_LINKSCF_PlasChunkStreamVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteLevelEffChunkStreamBaseThunk,
 																			noop_vtable_callback_0040a990,
@@ -1106,7 +1121,7 @@ CObjectManager::CObjectManager(CAI* pAI, int nCapacity)
 		*(int*) ((char*) this + 0x24) = 1;
 		*(int*) ((char*) this + 0x18) += g_cbEffTransportMaxPacketBytes;
 	}
-	*(void**) this = g_LINKSCF_GmobChunkManagerVtable;
+	*(void**) this = &g_LINKSCF_GmobChunkManagerVtable;
 	g_pLINKSCF_GmobChunkManager = this;
 	*(CAI**) ((char*) this + 0x30) = pAI;
 	*(short*) ((char*) this + 0x36) = 0;
@@ -1114,6 +1129,65 @@ CObjectManager::CObjectManager(CAI* pAI, int nCapacity)
 	*(short*) ((char*) this + 0x38) = 0;
 	*(short*) ((char*) this + 0x34) = 0;
 	g_nLINKSCF_GmobObjectCount = 0;
+}
+
+struct ObjectManagerChildVtable;
+struct ObjectManagerChildView {
+	ObjectManagerChildVtable* m_pVtable00;
+	void Activate(void);
+};
+typedef void (ObjectManagerChildView::*ObjectManagerChildActivateProc)(void);
+struct ObjectManagerChildVtable {
+	void* m_apReserved00[65];
+	ObjectManagerChildActivateProc m_pActivate104;
+};
+
+// FUNCTION: LEMBALL 0x0041afd0
+void CObjectManager::Restart(void)
+{
+	int nOffset;
+	int nIndex;
+	int nPendingIndex;
+	int nResolvedCount;
+	void** ppPending;
+	char* pObject;
+	char* pLinked;
+	ObjectManagerChildView* pChild;
+
+	nOffset = 0;
+	nResolvedCount = 0;
+	if (m_apObjects3C != 0 && (nIndex = 0, m_nObjectCount34 > 0)) {
+		do {
+			ppPending = m_apObjects3C;
+			pObject = *(char**) ((char*) ppPending + nOffset);
+			if (pObject != 0) {
+				if (*(int*) (pObject + 0x64) == 0x11 &&
+					(pLinked = *(char**) (pObject + 0x148)) != 0 &&
+					*(int*) (pObject + 0x14c) == 0xffff &&
+					(nPendingIndex = 0, m_nPendingCount36 != 0)) {
+					do {
+						if (*ppPending == pLinked) {
+							*(int*) (pObject + 0x14c) = *(int*) (pLinked + 0x64);
+							pChild = (ObjectManagerChildView*) m_apObjects3C[nPendingIndex];
+							(pChild->*pChild->m_pVtable00->m_pActivate104)();
+							++nResolvedCount;
+							*(int*) ((char*) m_apObjects3C[nPendingIndex] + 0x38) = 1;
+							m_apObjects3C[nPendingIndex] = 0;
+							break;
+						}
+						++ppPending;
+						++nPendingIndex;
+					} while (nPendingIndex < m_nPendingCount36);
+				}
+				pChild = (ObjectManagerChildView*) *(void**) ((char*) m_apObjects3C + nOffset);
+				(pChild->*pChild->m_pVtable00->m_pActivate104)();
+				*(int*) ((char*) *(void**) ((char*) m_apObjects3C + nOffset) + 0x38) = 1;
+			}
+			nOffset += 4;
+			++nIndex;
+		} while (nIndex < m_nObjectCount34);
+	}
+	m_nPendingCount36 -= (short) nResolvedCount;
 }
 
 // MACINTOSH: CGenericGroupManager::CGenericGroupManager(CAI*, CObjectManager*, CFormationManager*)

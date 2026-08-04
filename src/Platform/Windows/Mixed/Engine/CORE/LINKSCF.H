@@ -40,7 +40,14 @@ struct CCollectableManager {
 class CAI;
 class CObjectManager {
 public:
+	char m_abReserved00[0x34];
+	unsigned short m_nObjectCount34;
+	unsigned short m_nPendingCount36;
+	char m_abReserved38[4];
+	void** m_apObjects3C;
+
 	CObjectManager(CAI* pAI, int nCapacity);
+	void Restart(void);
 };
 
 struct LinkScfMoveChunkManagerView {
@@ -90,8 +97,6 @@ struct LinkScfBoonChunkManagerView {
 // ServiceActiveDoorChunkObjects
 // STUB: LEMBALL 0x0040e080
 // EmitDoorChunkRenderEntries
-// STUB: LEMBALL 0x0041afd0
-// ActivateManagedEntityGroupChildren
 // STUB: LEMBALL 0x0041b7d0
 // ServiceCountedChildPointerTable
 // STUB: LEMBALL 0x0041bf00
