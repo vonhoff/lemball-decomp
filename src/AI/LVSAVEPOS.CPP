@@ -1,6 +1,7 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "AI/CCatapult.h"
 #include "AI/CAmmo.h"
+#include "AI/CCrate.h"
 
 void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern int g_nLevelFrameClockTimeMs;
@@ -44,19 +45,6 @@ struct SavedPositionChunkObjectView {
 	void ResetToSavedPosition(void);
 };
 
-class CCrate {
-public:
-	char m_abReserved00[0xb8];
-	int m_nStateB8;
-	char m_abReservedBC[0x14];
-	int m_nPhaseStepD0;
-	int m_nDeadlineD4;
-	char m_abReservedD8[0x50];
-	int m_nState128;
-
-	void Restart(void);
-	int Activate(void* pTarget);
-};
 
 
 

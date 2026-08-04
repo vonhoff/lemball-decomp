@@ -4,6 +4,7 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "AI/CCatapult.h"
 #include "AI/CAmmo.h"
+#include "AI/CCrate.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
@@ -1899,6 +1900,27 @@ void CAmmo::DoActivate(void)
 	((ActionProc) (*(void***) this)[13])(this, 0, 0x11);
 	((ActionProc) (*(void***) m_pTarget5C)[51])(m_pTarget5C, 0, 0x19);
 	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(50);
+}
+
+// FUNCTION: LEMBALL 0x0041cf10
+void CCrate::ActivatePosition(int* pPoint)
+{
+	int nX;
+	int nY;
+	int nZ;
+
+	nX = m_nPositionX9C;
+	nY = m_nPositionYA0;
+	nZ = m_nPositionZA4;
+	if ((m_nContentsType14C >= 0x15 && m_nContentsType14C <= 0x17) || m_nContentsType14C == 0xffff) {
+		pPoint[0] = nX - 0x8000;
+		pPoint[1] = nY;
+		pPoint[2] = nZ;
+		return;
+	}
+	pPoint[0] = nX - 0x30000;
+	pPoint[1] = nY - 0x8000;
+	pPoint[2] = nZ;
 }
 
 extern void* g_LEVELVT_GmobChunkType14ObjectVtable[16];
