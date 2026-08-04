@@ -59,6 +59,7 @@ public:
 	int Receive(unsigned short nMessage, CGlobalGameObject* pObject, CNetworkMessage* pMessage);
 	void ConvertVer0ToVer1(void);
 	int GetViewData(CViewData* pViewData);
+	void Process(void);
 };
 
 struct LinkScfMoveChunkManagerView {
@@ -108,8 +109,7 @@ struct LinkScfBoonChunkManagerView {
 // ServiceActiveDoorChunkObjects
 // STUB: LEMBALL 0x0040e080
 // EmitDoorChunkRenderEntries
-// STUB: LEMBALL 0x0041b7d0
-// ServiceCountedChildPointerTable
+
 
 // STUB: LEMBALL 0x0041ecb0
 // RemoveCachedChunkObjectAndDestroy

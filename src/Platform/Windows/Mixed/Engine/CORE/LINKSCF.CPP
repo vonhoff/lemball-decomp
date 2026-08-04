@@ -17,6 +17,8 @@
 
 #include <string.h>
 
+extern int g_nSelectedNetworkLobbyPeerId;
+
 struct LevelChunkObjectBaseView {
 	void* InitializeLevelChunkObjectBase(int nType, unsigned short nChildType, unsigned short nFlags);
 };
@@ -196,7 +198,7 @@ DEFINE_LINKSCF_VTABLE_STUB_1(EmitDoorChunkRenderEntries)
 void LEMBALL_FASTCALL ResetProjectilePool(void* pPool);
 int LEMBALL_FASTCALL EmitProjectilePoolRenderEntries(void* pPool, void* pUnused, void* pRenderEntry);
 
-DEFINE_LINKSCF_VTABLE_STUB_0(ServiceCountedChildPointerTable)
+
 
 DEFINE_LINKSCF_VTABLE_STUB_1(RemoveCachedChunkObjectAndDestroy)
 DEFINE_LINKSCF_VTABLE_STUB_0(CountNestedIteratedChildEntries)
@@ -278,7 +280,7 @@ void* g_LINKSCF_MoveChunkManagerVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteMove
 struct ObjectManagerVtableLayout {
 	void* m_apBase00[6];
 	void (CObjectManager::*m_pRestart18)(void);
-	void* m_pProcess1C;
+	void (CObjectManager::*m_pProcess1C)(void);
 	int (CObjectManager::*m_pReceive20)(unsigned short, CGlobalGameObject*, CNetworkMessage*);
 	int (CObjectManager::*m_pGetViewData24)(CViewData*);
 };
@@ -293,7 +295,7 @@ static ObjectManagerVtableLayout g_LINKSCF_GmobChunkManagerVtable = {
 	 (void*) NoopType18ChunkStreamWriteThunk,
 	 (void*) DeleteCountedChildTableStreamAuto},
 	&CObjectManager::Restart,
-	(void*) ServiceCountedChildPointerTable,
+	&CObjectManager::Process,
 	&CObjectManager::Receive,
 	&CObjectManager::GetViewData};
 static void* g_LINKSCF_PlasChunkManagerVtable[10];
@@ -1254,6 +1256,36 @@ CGlobalGameObject* CObjectManager::AddObject(
 		return (CGlobalGameObject*) m_apObjects3C[m_nPendingCount36++];
 	}
 	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0041b7d0
+void CObjectManager::Process(void)
+{
+	typedef void(LEMBALL_FASTCALL * ChildProcessProc)(void* pObject);
+	int iObject;
+	int nOffset;
+	void* pObject;
+
+	iObject = 0;
+	if (m_nPendingCount36 > 0) {
+		nOffset = 0;
+		do {
+			pObject = *(void**) ((char*) m_apObjects3C + nOffset);
+			*(int*) ((char*) pObject + 0x124) = 1;
+			pObject = *(void**) ((char*) m_apObjects3C + nOffset);
+			if (*(int*) ((char*) pObject + 0x38) != 0) {
+				((ChildProcessProc) (*(void***) pObject)[0x14 / sizeof(void*)])(pObject);
+				if (g_nSelectedNetworkLobbyPeerId != 0) {
+					pObject = *(void**) ((char*) m_apObjects3C + nOffset);
+					if (*(int*) ((char*) pObject + 0x38) == 0) {
+						((ChildProcessProc) (*(void***) pObject)[0xf4 / sizeof(void*)])(pObject);
+					}
+				}
+			}
+			nOffset += 4;
+			++iObject;
+		} while (iObject < (int) (unsigned int) m_nPendingCount36);
+	}
 }
 
 // FUNCTION: LEMBALL 0x0041b830

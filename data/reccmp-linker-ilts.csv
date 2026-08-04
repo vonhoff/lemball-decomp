@@ -190,7 +190,7 @@ address,name,symbol,type,source
 0x00402A09,service_active_door_chunk_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x00402A36,MoveMenuSelectorPreviousThunk,?MoveMenuSelectorPreviousThunk@@YIXPAUGameMenuSelectorManager@@@Z,stub,src/Frontend/MENUSEL.CPP
 0x00402A3B,managed_entity_packet24_write_eff_stream_tagged_header,?WriteEffStreamTaggedHeader@ManagedEntityPacket24@@UAEXXZ,stub,src/AI/LVPKT.CPP
-0x00402A45,service_counted_child_pointer_table,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
+0x00402A45,CObjectManager::Process,?Process@CObjectManager@@QAEXXZ,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00402A59,get_menu_selector_start_time_thunk,,stub,src/Frontend/MENUSEL.H
 0x00402A72,refresh_active_coll_chunk_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x00402AA9,ToggleLiftChunkObjectActivationState,?ToggleLiftChunkObjectActivationState@@YIXPAX@Z,stub,src/AI/CLiftAct.cpp
