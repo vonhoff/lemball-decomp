@@ -1,9 +1,15 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "AI/CGameObject.h"
 
 struct ManagedEntityChildView {
 	void SetManagedEntityOwnerGroup(void* pOwnerGroup);
 	void SetManagedEntityPrimaryActiveFlag(int fActive);
 };
+
+struct CGenericGroup {
+	void AddElementToGroup(CGameObject* pChild);
+};
+
 
 struct LevelManagedEntityChildIterator {
 	char m_abReserved00[0x124];
@@ -19,7 +25,6 @@ struct LevelManagedEntityChildIterator {
 	void* GetNextChild(void);
 	void* GetCurrentChild(void);
 	void* GetChildAt(int iChild);
-	void AppendChild(void* pChild);
 	int ContainsChild(void* pChild);
 	void* GetFirstChildThunk(void);
 	void* GetNextChildThunk(void);
@@ -42,7 +47,7 @@ struct LevelManagedEntityChildIterator {
 int LevelManagedEntityChildIterator::AddLemmingToGroup(ManagedEntityChildView* pChild)
 {
 	typedef int(LEMBALL_FASTCALL * GetChildCountProc)(void*);
-	AppendChild(pChild);
+	((CGenericGroup*) this)->AddElementToGroup((CGameObject*) pChild);
 	m_fChildrenDirty164 = 1;
 	pChild->SetManagedEntityOwnerGroup(this);
 	if (((GetChildCountProc) (*(void***) this)[66])(this) == 0 && m_nActiveState168 == 1) {

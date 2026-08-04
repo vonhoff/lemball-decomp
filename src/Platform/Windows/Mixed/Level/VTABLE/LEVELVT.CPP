@@ -72,6 +72,11 @@ struct CGenericGroup {
 	CGameObject* GetNextElementInGroup(void);
 	CGameObject* GetCurrentElementInGroup(void);
 	CGameObject* GetNthElementInGroup(int nElement);
+	void SwapElements(CGameObject* pFirst, CGameObject* pSecond);
+	void AddElementToGroup(CGameObject* pObject);
+	void RemoveElementFromGroup(CGameObject* pObject);
+	int ConfirmElementIsInGroup(CGameObject* pObject);
+	int ConfirmElementIsInGroup(unsigned short nId);
 };
 
 struct CPlayerLemmingGroup : CGenericGroup {
@@ -133,8 +138,6 @@ struct LevelManagedEntityChildIterator {
 	int m_fChildrenDirty164;
 	int m_nActiveState168;
 
-	void AppendChild(void* pChild);
-	int ContainsChild(void* pChild);
 	void* GetFirstChildThunk(void);
 	void* GetNextChildThunk(void);
 	void* GetCurrentChildThunk(void);
@@ -2024,24 +2027,80 @@ CGameObject* CGenericGroup::GetNthElementInGroup(int nElement)
 	return m_apElements128[nElement];
 }
 
-// FUNCTION: LEMBALL 0x0041e020
-void LevelManagedEntityChildIterator::AppendChild(void* pChild)
+// FUNCTION: LEMBALL 0x0041dfc0
+void CGenericGroup::SwapElements(CGameObject* pFirst, CGameObject* pSecond)
 {
-	m_apChildren128[m_cChildren124] = pChild;
-	m_fChildrenDirty164 = 1;
-	++m_cChildren124;
+	int i;
+	int iFirst;
+	int iSecond;
+	CGameObject* pElement;
+
+	iSecond = -1;
+	for (i = 0; i < m_nElementCount124; ++i) {
+		pElement = m_apElements128[i];
+		if (pElement == pFirst) {
+			iFirst = i;
+		}
+		if (pElement == pSecond) {
+			iSecond = i;
+		}
+	}
+	m_apElements128[iFirst] = pSecond;
+	m_apElements128[iSecond] = pFirst;
 }
 
-// MACINTOSH: CGenericGroup::ConfirmElementIsInGroup(CGameObject*)
-// FUNCTION: LEMBALL 0x0041e0c0
-int LevelManagedEntityChildIterator::ContainsChild(void* pChild)
+// FUNCTION: LEMBALL 0x0041e020
+void CGenericGroup::AddElementToGroup(CGameObject* pObject)
 {
-	int iChild;
-	int cChildren;
+	m_apElements128[m_nElementCount124] = pObject;
+	*(int*) ((char*) this + 0x164) = 1;
+	++m_nElementCount124;
+}
 
-	cChildren = m_cChildren124;
-	for (iChild = 0; iChild < cChildren; ++iChild) {
-		if (m_apChildren128[iChild] == pChild) {
+// FUNCTION: LEMBALL 0x0041e050
+void CGenericGroup::RemoveElementFromGroup(CGameObject* pObject)
+{
+	int i;
+	int j;
+
+	for (i = 0; i < 10; ++i) {
+		if (m_apElements128[i] == pObject) {
+			if (i < 9) {
+				for (j = i; j < 9; ++j) {
+					m_apElements128[j] = m_apElements128[j + 1];
+				}
+				i = j;
+			}
+			m_apElements128[i] = 0;
+			--m_nElementCount124;
+			*(int*) ((char*) this + 0x164) = 1;
+			return;
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x0041e0c0
+int CGenericGroup::ConfirmElementIsInGroup(CGameObject* pObject)
+{
+	int i;
+
+	for (i = 0; i < m_nElementCount124; ++i) {
+		if (m_apElements128[i] == pObject) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0041e100
+int CGenericGroup::ConfirmElementIsInGroup(unsigned short nId)
+{
+	int i;
+	CGameObject* pObject;
+
+	for (i = 0; i < m_nElementCount124; ++i) {
+		pObject = m_apElements128[i];
+		if (pObject != 0 && *(unsigned short*) ((char*) pObject + 0x6a) == nId) {
 			return 1;
 		}
 	}

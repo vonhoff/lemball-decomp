@@ -67,7 +67,7 @@ address,name,symbol,type,source
 0x00401A82,CObjectManager::Remove,?Remove@CObjectManager@@QAEXPAVCGlobalGameObject@@@Z,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00401A87,vs_net_network_lobby_screen_confirm_selected_player_entry,?ConfirmSelectedPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/Frontend/LOBBY.CPP
 0x00401A9B,GamePasswordKeyOverlayTableView::RebuildSourceRects,?RebuildSourceRects@GamePasswordKeyOverlayTableView@@QAEXXZ,stub,src/Frontend/MMPASS.CPP
-0x00401AC3,LevelManagedEntityChildIterator::AppendChild,?AppendChild@LevelManagedEntityChildIterator@@QAEXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x00401AC3,CGenericGroup::AddElementToGroup,?AddElementToGroup@CGenericGroup@@QAEXPAVCGameObject@@@Z,stub,src/AI/LEVELVTCHILD.CPP
 0x00401ADC,handle_menu_selector_event_thunk,,stub,src/Frontend/MENUSEL.H
 0x00401B31,CDoor::DoActivate,?DoActivate@CDoor@@QAEXXZ,stub,src/AI/CDoorAct.cpp
 0x00401B95,reset_all_invs_chunk_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
