@@ -38,7 +38,6 @@ set(LEMBALL_SOURCES
     src/AI/LVPOSCOPY.CPP
     src/Visos/Generic/LVSTRFMT.CPP
     src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-    src/AI/LVACTVT.CPP
     src/AI/LVVTDEF.CPP
     src/AI/LVPOSVT.CPP
     src/AI/LVACTDSP.CPP
@@ -49,6 +48,7 @@ set(LEMBALL_SOURCES
     src/AI/CFormationManager.cpp
     src/AI/CGenericGroup.cpp
     src/AI/CPlayerLemmingGroup.cpp
+    src/AI/CPlayerLemmingGroupManager.cpp
     src/AI/LVMOVEVT.CPP
     src/Platform/Windows/Mixed/Level/IO/LVNETVT.CPP
     src/AI/LVPROJVT.CPP

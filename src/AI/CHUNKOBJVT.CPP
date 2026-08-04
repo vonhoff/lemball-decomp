@@ -14,7 +14,7 @@ extern void* g_pLiftTileGrid;
 extern void* g_pLevelTileGrid;
 extern void* g_pActiveManagedEntityOwner;
 extern int __fastcall has_level_plas_history_entries(void* pLevelMode);
-extern int LEMBALL_FASTCALL PopLevelPlasHistoryChild(void* pLevelMode);
+extern CPlayerLemming* LEMBALL_FASTCALL PopLevelPlasHistoryChild(void* pLevelMode);
 
 extern void* LEMBALL_FASTCALL get_managed_entity_owner_group(void* pEntity);
 extern void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject);

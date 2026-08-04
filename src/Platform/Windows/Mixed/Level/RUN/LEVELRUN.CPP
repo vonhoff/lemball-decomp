@@ -8,6 +8,7 @@ inline void* operator new(unsigned int, void* pMemory)
 }
 #include "AI/CGameObject.h"
 #include "AI/CPlayerLemmingGroup.h"
+#include "AI/CPlayerLemmingGroupManager.h"
 #include "AI/CLiftManager.h"
 #include "AI/CMaze.h"
 #include "Control/CGame.h"
@@ -176,11 +177,6 @@ public:
 	virtual void FindObjectPositionInRect(void* pRect, void* pPosition) = 0;
 };
 
-class LevelManagedEntityHistoryView {
-public:
-	int PopHistoryIdThunk(void);
-};
-
 class LevelManagedEntityChildIterator {
 public:
 	int HasDirtyChildrenThunk(void);
@@ -193,11 +189,13 @@ class LevelManagedEntityActiveGroupView {
 	int m_cManagedEntitiesA4;
 
 public:
-	int HasSFXChanged(void);
-	int HasStreamDirtyChildrenThunk(void);
 	int HasDirtyChildren(void);
 	int HasDirtyChildrenThunk(void);
-	int GetEntityActiveState(void* pObject);
+};
+
+class LevelRunCompilerStateShim {
+public:
+	int PreservePlayerGroupSFXCall(void);
 };
 
 struct LevelManagedEntityOwnerView {
@@ -215,27 +213,6 @@ struct LevelManagedEntityOwnerView {
 	void FindShpgChunkObjectPositionInRect(void* pRect, void* pPosition);
 };
 
-// Original body: LEMBALL 0x004193f0. Kept beside its required compatibility ILT owner.
-int LevelManagedEntityActiveGroupView::HasSFXChanged(void)
-{
-	int fDirty;
-	int iEntity;
-	LevelManagedEntityChildIterator** ppEntity;
-	LevelManagedEntityChildIterator* pEntity;
-
-	fDirty = 0;
-	iEntity = 0;
-	if (m_cManagedEntitiesA4 > 0) {
-		ppEntity = m_apManagedEntities04;
-		do {
-			pEntity = *ppEntity;
-			fDirty = ((CPlayerLemmingGroup*) pEntity)->HasSFXChanged() || fDirty;
-			++ppEntity;
-			++iEntity;
-		} while (iEntity < m_cManagedEntitiesA4);
-	}
-	return fDirty;
-}
 
 // Original body: LEMBALL 0x00419440. Kept beside its required compatibility ILT owner.
 int LevelManagedEntityActiveGroupView::HasDirtyChildren(void)
@@ -755,10 +732,11 @@ void CObjectManager::ConvertVer0ToVer1(void)
 		} while (i < (int) (unsigned int) pManager->m_nPendingCount36);
 	}
 }
-// Compatibility shim for the original ILT call site.
-int LevelManagedEntityActiveGroupView::HasStreamDirtyChildrenThunk(void)
+// Compiler-state slot formerly emitted before CMap::CalculateCliffThunk; removing this
+// thiscall-to-HasSFXChanged shape regresses strict 0x00408830 register allocation.
+int LevelRunCompilerStateShim::PreservePlayerGroupSFXCall(void)
 {
-	return HasSFXChanged();
+	return ((CPlayerLemmingGroupManager*) this)->HasSFXChanged();
 }
 // LINKERILT: LEMBALL 0x00403224
 void CMap::CalculateCliffThunk(void)
@@ -1538,7 +1516,8 @@ int EmitLevelGameModeDynamicRenderEntries(void* pObject, void* pOutputEntries)
 // FUNCTION: LEMBALL 0x004125e0
 int LevelManagedEntityOwnerView::GetManagedEntityActiveState(void* pObject)
 {
-	return ((LevelManagedEntityActiveGroupView*) m_pPlasManager15C)->GetEntityActiveState(pObject);
+	return ((CPlayerLemmingGroupManager*) m_pPlasManager15C)
+		->IsLemmingPlayerControlled((CPlayerLemming*) pObject);
 }
 
 // MACINTOSH: CAI::PlayerCheckGroupIntersection(CVSRect*, AICOORD*)
@@ -1565,7 +1544,7 @@ void LevelManagedEntityOwnerView::FindShpgChunkObjectPositionInRect(void* pRect,
 // FUNCTION: LEMBALL 0x00412c40
 int LEMBALL_FASTCALL HasStreamDirtyManagedEntityGroups(void* pObject)
 {
-	return ((LevelManagedEntityActiveGroupView*) *(void**) ((char*) pObject + 0x15c))->HasStreamDirtyChildrenThunk();
+	return ((CPlayerLemmingGroupManager*) *(void**) ((char*) pObject + 0x15c))->HasSFXChanged();
 }
 // FUNCTION: LEMBALL 0x00412c50
 int LEMBALL_FASTCALL HasPlasChunkDirtyManagedChildren(void* pObject)
@@ -1649,9 +1628,9 @@ unsigned short LevelModeLiftManagerOwnerView::GetLiftChunkObjectSlotIdByIndex(in
 
 // MACINTOSH: CAI::GetDead()
 // FUNCTION: LEMBALL 0x00413040
-int LEMBALL_FASTCALL PopLevelPlasHistoryChild(void* pObject)
+CPlayerLemming* LEMBALL_FASTCALL PopLevelPlasHistoryChild(void* pObject)
 {
-	return ((LevelManagedEntityHistoryView*) *(void**) ((char*) pObject + 0x15c))->PopHistoryIdThunk();
+	return ((CPlayerLemmingGroupManager*) *(void**) ((char*) pObject + 0x15c))->GetDead();
 }
 
 void SetLevelChunkTypeEnabledFlagThunk(void* pLevelMode, int nChunkType, int fEnabled)

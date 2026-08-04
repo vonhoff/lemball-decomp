@@ -1,3 +1,4 @@
+#include "AI/CPlayerLemmingGroupManager.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
 struct LevelPositionTableView {
@@ -31,13 +32,9 @@ struct LevelPoint3 {
 	int m_nZ;
 };
 
-struct LevelManagedEntityActiveGroupView : public LevelPositionTableView {
-	int GetActiveEntityPosition(LevelPoint3* pPosition);
-};
-
 struct LevelModePositionView {
 	unsigned char m_abReserved00[0x15c];
-	LevelManagedEntityActiveGroupView* m_pPositions;
+	LevelPositionTableView* m_pPositions;
 	unsigned char m_abReserved160[0x70];
 	LevelEntityPositionView* m_apEntities[4];
 
@@ -92,5 +89,5 @@ void LevelModePositionView::CopyEntityPosition(unsigned int nEntityId, LevelPoin
 void LevelModePositionView::GetFollowTargetPosition(LevelPoint3* pPosition, int* pStatus)
 {
 	*pStatus = 0;
-	m_pPositions->GetActiveEntityPosition(pPosition);
+	((CPlayerLemmingGroupManager*) m_pPositions)->GetLeaderPos(*(AICOORD*) pPosition);
 }

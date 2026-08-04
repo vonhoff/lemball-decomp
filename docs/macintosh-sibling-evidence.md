@@ -78,7 +78,7 @@ Six evidenced methods now live in `AI/CPlayerLemmingGroup.h/.cpp`: `Restart`, `D
 
 ### CPlayerLemmingGroupManager lifecycle core
 
-All twenty-six portable Macintosh `CPlayerLemmingGroupManager` methods align with Windows `0x00418400..0x00419490` through PLAS manager/stream/group vtables, exact this-adjustment, five-child allocation, dead-history and selection fields, signatures, inverse operations, loader formats, callers, and render stride. Five target-only interleavings and deleting wrapper `0x00419930` remain explicitly excluded.
+All twenty-six portable Macintosh `CPlayerLemmingGroupManager` methods align with Windows `0x00418400..0x00419490` through PLAS manager/stream/group vtables, exact this-adjustment, five-child allocation, dead-history and selection fields, signatures, inverse operations, loader formats, callers, and render stride. `GetDead`, `GetLeaderPos`, `IsLemmingPlayerControlled`, `GetPlayerControlledGroup`, and `HasSFXChanged` now have genuine ownership in `src/AI/CPlayerLemmingGroupManager.cpp`; the neutral active-state TU and four annotation wrappers were deleted, while required ILT boundaries correlate directly to the genuine members. The checkpoint improves from `184/37` to `184/36`, and aggregate objdiff improves from `1804/3415` to `1805/3415`. Five target-only interleavings and deleting wrapper `0x00419930` remain explicitly excluded.
 
 ### CGenericGroupManager lifecycle and iterator core
 

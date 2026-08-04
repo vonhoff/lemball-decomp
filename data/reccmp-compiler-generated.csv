@@ -36,7 +36,6 @@ address,name,symbol,type,source
 0x00417D00,DeleteLevelChunkObjectBaseWrapper17D00,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00417D50,LinkScfAutoEffDeleteView::Delete17D50,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00418300,DeleteProjectilePoolAuto,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x004193F0,LevelManagedEntityActiveGroupView::HasStreamDirtyChildren,,synthetic,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00419440,LevelManagedEntityActiveGroupView::HasDirtyChildren,,synthetic,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00419970,PLAS manager render-entry `adjustor thunk' (-0xb0),,synthetic,src/AI/PlasChild.cpp
 0x0041AF50,Projectile deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/AI/Projectile.cpp

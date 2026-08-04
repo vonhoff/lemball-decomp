@@ -82,15 +82,6 @@ struct LevelManagedEntityDirtyStateView {
 	int PollStreamDirtyFlagThunk(void);
 };
 
-struct LevelManagedEntityHistoryView {
-	char m_abReserved00[0x128];
-	int m_cHistoryIds128;
-	int m_anHistoryIds12C[1];
-
-	int PopHistoryId(void);
-	int PopHistoryIdThunk(void);
-};
-
 struct LevelManagedEntityChildIterator;
 struct ManagedEntityChildView;
 
@@ -99,8 +90,6 @@ struct LevelManagedEntityActiveGroupView {
 	LevelManagedEntityChildIterator* m_apManagedEntities04[40];
 	int m_cManagedEntitiesA4;
 
-	LevelManagedEntityChildIterator* GetFirstActiveEntity(void);
-	LevelManagedEntityChildIterator* GetFirstActiveEntityThunk(void);
 };
 
 struct LevelManagedEntityChildIterator {
@@ -562,11 +551,6 @@ void NoopManagedEntityGroupDetachHookThunk(void)
 	noop_managed_entity_group_detach_hook();
 }
 
-// LINKERILT: LEMBALL 0x004021df
-LevelManagedEntityChildIterator* LevelManagedEntityActiveGroupView::GetFirstActiveEntityThunk(void)
-{
-	return GetFirstActiveEntity();
-}
 
 // LINKERILT: LEMBALL 0x0040241e
 void* LevelManagedEntityChildIterator::GetFirstChildThunk(void)
@@ -590,11 +574,6 @@ int LevelQueuedProjectileRequestTable::GetRequestCodeThunk(int nIndex)
 	return GetRequestCode(nIndex);
 }
 
-// LINKERILT: LEMBALL 0x00402833
-int LevelManagedEntityHistoryView::PopHistoryIdThunk(void)
-{
-	return PopHistoryId();
-}
 
 // LINKERILT: LEMBALL 0x00402b99
 int LevelManagedEntityDirtyStateView::PollStreamDirtyFlagThunk(void)
@@ -1513,19 +1492,6 @@ int ProjectilePool::FindProjectilePositionInRect(const LevelShortRect* pRect, Le
 	return 0;
 }
 
-// MACINTOSH: CPlayerLemmingGroupManager::GetDead()
-// FUNCTION: LEMBALL 0x004185d0
-int LevelManagedEntityHistoryView::PopHistoryId(void)
-{
-	int iHistoryId;
-
-	if (m_cHistoryIds128 == 0) {
-		return 0;
-	}
-	iHistoryId = --m_cHistoryIds128;
-	return m_anHistoryIds12C[iHistoryId];
-}
-
 // MACINTOSH: CPlayerLemmingGroupManager::ProcessDead()
 // FUNCTION: LEMBALL 0x00418640
 void noop_managed_entity_group_detach_hook(void)
@@ -1541,28 +1507,6 @@ void PASCAL ResetManagedEntityGroupState(void* pEntity)
 	((LevelManagedEntityNoArgVirtualProc) pVtable[0x104 / sizeof(void*)])(pEntity);
 }
 
-// MACINTOSH: CPlayerLemmingGroupManager::GetPlayerControlledGroup()
-// FUNCTION: LEMBALL 0x004189f0
-LevelManagedEntityChildIterator* LevelManagedEntityActiveGroupView::GetFirstActiveEntity(void)
-{
-	LevelManagedEntityChildIterator** ppEntity;
-	int iEntity;
-	LevelManagedEntityChildIterator* pEntity;
-
-	iEntity = 0;
-	if (m_cManagedEntitiesA4 > 0) {
-		ppEntity = m_apManagedEntities04;
-		do {
-			pEntity = *ppEntity;
-			if (pEntity != 0 && pEntity->GetActiveStateThunk() == 1) {
-				return m_apManagedEntities04[iEntity];
-			}
-			++ppEntity;
-			++iEntity;
-		} while (iEntity < m_cManagedEntitiesA4);
-	}
-	return 0;
-}
 
 // FUNCTION: LEMBALL 0x00418ba0
 void LevelModeChunkEntryArrayView::CopyTripletToFixedPoint(int* pOutput, int nIndex)
