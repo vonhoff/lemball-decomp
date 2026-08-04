@@ -34,7 +34,6 @@ set(LEMBALL_SOURCES
     src/Platform/Windows/Mixed/Level/STATE/LVQUIT.CPP
     src/Platform/Windows/Mixed/Level/RENDER/LVRENDISP.CPP
     src/AI/LVSTATEVAR.CPP
-    src/AI/LVGRPTGT.CPP
     src/Platform/Windows/Mixed/Level/ENTITY/LVCHFLAGS.CPP
     src/AI/LVPOSCOPY.CPP
     src/Visos/Generic/LVSTRFMT.CPP
@@ -43,13 +42,13 @@ set(LEMBALL_SOURCES
     src/AI/LVVTDEF.CPP
     src/AI/LVPOSVT.CPP
     src/AI/LVACTDSP.CPP
-    src/AI/LEVELVTCHILD.CPP
     src/AI/CGameObjectMove.cpp
     src/AI/CGameObjectLifecycle.cpp
     src/AI/CGameObjectLift.cpp
     src/AI/CGlobalGameObject.cpp
     src/AI/CFormationManager.cpp
     src/AI/CGenericGroup.cpp
+    src/AI/CPlayerLemmingGroup.cpp
     src/AI/LVMOVEVT.CPP
     src/Platform/Windows/Mixed/Level/IO/LVNETVT.CPP
     src/AI/LVPROJVT.CPP

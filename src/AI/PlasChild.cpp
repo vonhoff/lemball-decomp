@@ -6,8 +6,8 @@ struct LevelChunkObjectBaseView {
 	void* InitializeLevelChunkObjectBase(int nType, unsigned short nVariant, unsigned short nStateId);
 };
 
-struct CPlayerLemmingGroup : LevelChunkObjectBaseView {
-	CPlayerLemmingGroup(int nType, unsigned short nVariant, unsigned short nStateId);
+struct PlayerLemmingGroupConstructorView : LevelChunkObjectBaseView {
+	PlayerLemmingGroupConstructorView(int nType, unsigned short nVariant, unsigned short nStateId);
 };
 
 extern void* g_LEVELVT_LevelChunkObjectChildrenVariantVtable[16];
@@ -16,7 +16,7 @@ extern void* g_LEVELVT_LevelChunkObjectChildrenVariantVtable[16];
 
 // MACINTOSH: CPlayerLemmingGroup::CPlayerLemmingGroup(CAI*, CObjectManager*, CFormationManager*)
 // FUNCTION: LEMBALL 0x00414010
-CPlayerLemmingGroup::CPlayerLemmingGroup(int nType,
+PlayerLemmingGroupConstructorView::PlayerLemmingGroupConstructorView(int nType,
 																			   unsigned short nVariant,
 																			   unsigned short nStateId)
 {

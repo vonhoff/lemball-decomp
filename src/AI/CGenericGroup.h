@@ -45,6 +45,7 @@ public:
 typedef int (CGenericGroup::*GenericGroupContainsProc)(CGameObject* pObject);
 typedef void (CGenericGroup::*GenericGroupDeleteProc)(int fFree);
 typedef int (CGenericGroup::*GenericGroupCountProc)(void);
+typedef CGameObject* (CGenericGroup::*GenericGroupIteratorProc)(void);
 typedef void (CGenericGroup::*GenericGroupElementProc)(CGameObject* pObject);
 typedef void (CGenericGroup::*GenericGroupBoundsProc)(short* pBounds);
 typedef int (CGenericGroup::*GenericGroupViewDataProc)(CViewData* pViewData);
@@ -62,7 +63,11 @@ struct CGenericGroupVtable {
 	GenericGroupBoundsProc m_pGetBoundingBox48;
 	void* m_apReserved4C[47];
 	GenericGroupCountProc m_pGetNumberOfElements108;
-	void* m_apReserved10C[6];
+	void* m_apReserved10C[2];
+	GenericGroupIteratorProc m_pGetFirstElement114;
+	GenericGroupIteratorProc m_pGetNextElement118;
+	GenericGroupIteratorProc m_pGetCurrentElement11C;
+	void* m_pReserved120;
 	GenericGroupElementProc m_pAddElement124;
 	GenericGroupElementProc m_pRemoveElement128;
 	void* m_pReserved12C;

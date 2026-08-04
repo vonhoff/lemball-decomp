@@ -7,6 +7,7 @@ inline void* operator new(unsigned int, void* pMemory)
 	return pMemory;
 }
 #include "AI/CGameObject.h"
+#include "AI/CPlayerLemmingGroup.h"
 #include "AI/CLiftManager.h"
 #include "AI/CMaze.h"
 #include "Control/CGame.h"
@@ -228,7 +229,7 @@ int LevelManagedEntityActiveGroupView::HasSFXChanged(void)
 		ppEntity = m_apManagedEntities04;
 		do {
 			pEntity = *ppEntity;
-			fDirty = pEntity->HasSFXChanged() || fDirty;
+			fDirty = ((CPlayerLemmingGroup*) pEntity)->HasSFXChanged() || fDirty;
 			++ppEntity;
 			++iEntity;
 		} while (iEntity < m_cManagedEntitiesA4);

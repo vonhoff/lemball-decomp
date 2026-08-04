@@ -2,6 +2,7 @@
 #include "AI/CLift.h"
 #include "AI/CGameObject.h"
 #include "AI/CGenericGroup.h"
+#include "AI/CPlayerLemmingGroup.h"
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Level/CHUNKOBJVT.H"
@@ -56,11 +57,6 @@ struct ManagedProjectileObjectView {
 	void ActivateAtPosition(const LevelPoint3* pPosition);
 };
 
-struct ManagedEntityChildView;
-
-struct LevelManagedEntityChildIterator {
-	int AddLemmingToGroup(ManagedEntityChildView* pChild);
-};
 
 struct RockChunkObjectStateView {
 	virtual void ReservedSlot0(int nValue);
@@ -702,8 +698,8 @@ int LEMBALL_FASTCALL UpdateRockHistoryChildSwapState(void* pObject)
 			activationPoint.m_nY = *(int*) (pObjectBytes + 0xa0) - 0x34000;
 			activationPoint.m_nZ = *(int*) (pObjectBytes + 0xa4);
 			pProjectile->ActivateAtPosition(&activationPoint);
-			((LevelManagedEntityChildIterator*) get_managed_entity_owner_group(*(void**) (pObjectBytes + 0x140)))
-				->AddLemmingToGroup((ManagedEntityChildView*) pProjectile);
+			((CPlayerLemmingGroup*) get_managed_entity_owner_group(*(void**) (pObjectBytes + 0x140)))
+				->AddLemmingToGroup((CPlayerLemming*) pProjectile);
 		}
 		((RockChunkObjectStateView*) pObject)->SetManagedEntityStateIdLocal(0x18);
 	}

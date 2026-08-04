@@ -67,7 +67,7 @@ address,name,symbol,type,source
 0x00401A82,CObjectManager::Remove,?Remove@CObjectManager@@QAEXPAVCGlobalGameObject@@@Z,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00401A87,vs_net_network_lobby_screen_confirm_selected_player_entry,?ConfirmSelectedPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/Frontend/LOBBY.CPP
 0x00401A9B,GamePasswordKeyOverlayTableView::RebuildSourceRects,?RebuildSourceRects@GamePasswordKeyOverlayTableView@@QAEXXZ,stub,src/Frontend/MMPASS.CPP
-0x00401AC3,CGenericGroup::AddElementToGroup,?AddElementToGroup@CGenericGroup@@QAEXPAVCGameObject@@@Z,stub,src/AI/LEVELVTCHILD.CPP
+0x00401AC3,CGenericGroup::AddElementToGroup,?AddElementToGroup@CGenericGroup@@QAEXPAVCGameObject@@@Z,stub,src/AI/CPlayerLemmingGroup.cpp
 0x00401ADC,handle_menu_selector_event_thunk,,stub,src/Frontend/MENUSEL.H
 0x00401B31,CDoor::DoActivate,?DoActivate@CDoor@@QAEXXZ,stub,src/AI/CDoorAct.cpp
 0x00401B95,reset_all_invs_chunk_objects,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
@@ -288,7 +288,7 @@ address,name,symbol,type,source
 0x004036F2,destroy_network_lobby_transport_controller_auto_thunk,?DestroyNetworkLobbyTransportControllerAutoThunk@@YIXPAX@Z,stub,src/Control/CGame.cpp
 0x00403729,ReleaseQueuedVariantRangeResources,?ReleaseQueuedVariantRangeResources@@YIXPAUGameQueuedVariantRangeEntry@@@Z,stub,src/Frontend/MENUSEL.CPP
 0x0040372E,has_level_plas_history_entries,?has_level_plas_history_entries@@YIHPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x00403779,level_managed_entity_child_iterator_attach_managed_entity_child,?AttachManagedEntityChild@LevelManagedEntityChildIterator@@QAEHPAUManagedEntityChildView@@@Z,stub,src/AI/LEVELVTCHILD.CPP
+0x00403779,managed_entity_child_view_set_managed_entity_owner_group,?SetManagedEntityOwnerGroup@ManagedEntityChildView@@QAEXPAX@Z,stub,src/AI/CPlayerLemmingGroup.cpp
 0x00403797,emit_capture_trigger_chunk_manager_render_entries,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x004037BA,get_managed_entity_owner_group,?get_managed_entity_owner_group@@YIPAXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004037C4,destroy_composite_level_chunk_children_auto_thunk,?DestroyCompositeLevelChunkChildrenAutoThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
