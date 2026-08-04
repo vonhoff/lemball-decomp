@@ -197,7 +197,6 @@ void LEMBALL_FASTCALL ResetProjectilePool(void* pPool);
 int LEMBALL_FASTCALL EmitProjectilePoolRenderEntries(void* pPool, void* pUnused, void* pRenderEntry);
 
 DEFINE_LINKSCF_VTABLE_STUB_0(ServiceCountedChildPointerTable)
-DEFINE_LINKSCF_VTABLE_STUB_2(ClearCountedChildBackReference)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitGmobChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_1(RemoveCachedChunkObjectAndDestroy)
 DEFINE_LINKSCF_VTABLE_STUB_0(CountNestedIteratedChildEntries)
@@ -280,7 +279,7 @@ struct ObjectManagerVtableLayout {
 	void* m_apBase00[6];
 	void (CObjectManager::*m_pRestart18)(void);
 	void* m_pProcess1C;
-	void* m_pReceive20;
+	int (CObjectManager::*m_pReceive20)(unsigned short, CGlobalGameObject*, CNetworkMessage*);
 	void* m_pGetViewData24;
 };
 typedef char ObjectManagerMemberPointerMustBeOneWord
@@ -295,7 +294,7 @@ static ObjectManagerVtableLayout g_LINKSCF_GmobChunkManagerVtable = {
 	 (void*) DeleteCountedChildTableStreamAuto},
 	&CObjectManager::Restart,
 	(void*) ServiceCountedChildPointerTable,
-	(void*) ClearCountedChildBackReference,
+	&CObjectManager::Receive,
 	(void*) EmitGmobChunkManagerRenderEntries};
 static void* g_LINKSCF_PlasChunkManagerVtable[10];
 static void* g_LINKSCF_PlasChunkStreamVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteLevelEffChunkStreamBaseThunk,
@@ -1299,6 +1298,18 @@ void CObjectManager::Remove(CGlobalGameObject* pObject)
 		}
 		*(int*) ((char*) ppObjects[iObject] + 0x38) = 0;
 	}
+}
+
+// FUNCTION: LEMBALL 0x0041bf00
+int CObjectManager::Receive(
+	unsigned short nMessage, CGlobalGameObject* pObject, CNetworkMessage* pMessage)
+{
+	(void) pMessage;
+	if ((*(unsigned int*) &nMessage & 0xffff) != 0x2a) {
+		return 0;
+	}
+	Remove(pObject);
+	return 1;
 }
 
 // MACINTOSH: CGenericGroupManager::CGenericGroupManager(CAI*, CObjectManager*, CFormationManager*)

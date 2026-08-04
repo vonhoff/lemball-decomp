@@ -64,6 +64,7 @@ address,name,symbol,type,source
 0x004019C4,write_eff_stream_u32field2c,,stub,src/Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H
 0x00401A0A,get_first_projectile_pool_object,?get_first_projectile_pool_object@@YIPAXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00401A5F,LoadFramedScreenFrameResources,?LoadFramedScreenFrameResources@@YIXPAX@Z,stub,src/Frontend/MAINMENU.CPP
+0x00401A82,CObjectManager::Remove,?Remove@CObjectManager@@QAEXPAVCGlobalGameObject@@@Z,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00401A87,vs_net_network_lobby_screen_confirm_selected_player_entry,?ConfirmSelectedPlayerEntry@VsNetNetworkLobbyScreen@@QAEHXZ,stub,src/Frontend/LOBBY.CPP
 0x00401A9B,GamePasswordKeyOverlayTableView::RebuildSourceRects,?RebuildSourceRects@GamePasswordKeyOverlayTableView@@QAEXXZ,stub,src/Frontend/MMPASS.CPP
 0x00401AC3,LevelManagedEntityChildIterator::AppendChild,?AppendChild@LevelManagedEntityChildIterator@@QAEXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
@@ -180,7 +181,7 @@ address,name,symbol,type,source
 0x004028E2,SavedPositionChunkObjectView::ResetToSavedPosition,?ResetToSavedPosition@SavedPositionChunkObjectView@@QAEXXZ,stub,src/AI/LVSAVEPOS.CPP
 0x00402900,emit_projectile_pool_render_entries,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x00402946,dispatch_move_chunk_object_action_by_slot,?DispatchMoveChunkObjectActionBySlot@@YIXPAX0HI@Z,stub,src/AI/LVMOVEVT.CPP
-0x0040295F,clear_counted_child_back_reference,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
+0x0040295F,CObjectManager::Receive,?Receive@CObjectManager@@QAEHGPAVCGlobalGameObject@@PAVCNetworkMessage@@@Z,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0040296E,vs_net_network_lobby_screen_activate_selected_player_entry,?ActivateSelectedPlayerEntry@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/Frontend/LOBBY.CPP
 0x004029A0,GameScreenObject::ConstructPasswordEntryScreen,?ConstructPasswordEntryScreen@GameScreenObject@@QAEPAXPAX0PAF@Z,stub,src/Control/CGame.cpp
 0x004029B4,vs_window_owner_base_reserved_window_owner_slot39,?ReservedWindowOwnerSlot39@VS_WindowOwnerBase@@UAEXXZ,stub,src/Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H
