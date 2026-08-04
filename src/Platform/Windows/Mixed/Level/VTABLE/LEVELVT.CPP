@@ -258,7 +258,6 @@ typedef void(LEMBALL_FASTCALL* LevelManagedEntityIntVirtualProc)(void* pEntity, 
 
 void __fastcall ClearManagedEntityMoveCommandsThunk(void* pEntity);
 int __fastcall GetManagedEntityGroupCommandStateThunk(void* pEntity);
-void NoopManagedEntityGroupDetachHookThunk(void);
 int PASCAL IsManagedEntityState18Thunk(int nState);
 void noop_vtable_callback_00407f20(void);
 int PASCAL return_false_vtable_callback_00407f30(void* pUnused);
@@ -339,7 +338,6 @@ void __fastcall set_entity_field_0x08_if_flags_bit0(void* pEntity);
 
 int return_false_virtual_hook(void);
 void* __fastcall get_first_projectile_pool_object(void* pPool);
-void noop_managed_entity_group_detach_hook(void);
 void PASCAL ResetManagedEntityGroupState(void* pEntity);
 void __cdecl ForwardManagedEntityVslot7C(void* pUnused, void* pEntity);
 int __cdecl CallHasPendingManagedEntityCommands(void* pUnused, LevelManagedEntityCommandQueueView* pEntity);
@@ -544,13 +542,6 @@ void LevelManagedEntityCommandQueue::PushFrontThunk(void)
 {
 	PushFront();
 }
-
-// LINKERILT: LEMBALL 0x004020c2
-void NoopManagedEntityGroupDetachHookThunk(void)
-{
-	noop_managed_entity_group_detach_hook();
-}
-
 
 // LINKERILT: LEMBALL 0x0040241e
 void* LevelManagedEntityChildIterator::GetFirstChildThunk(void)
@@ -1490,12 +1481,6 @@ int ProjectilePool::FindProjectilePositionInRect(const LevelShortRect* pRect, Le
 		pProjectile = (ProjectileObjectProxy*) get_next_projectile_pool_object(this);
 	}
 	return 0;
-}
-
-// MACINTOSH: CPlayerLemmingGroupManager::ProcessDead()
-// FUNCTION: LEMBALL 0x00418640
-void noop_managed_entity_group_detach_hook(void)
-{
 }
 
 // FUNCTION: LEMBALL 0x00418720

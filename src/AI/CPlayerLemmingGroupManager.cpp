@@ -36,6 +36,11 @@ int CPlayerLemmingGroupManager::GetLeaderPos(AICOORD& position)
 	return 1;
 }
 
+// FUNCTION: LEMBALL 0x00418640
+void CPlayerLemmingGroupManager::ProcessDead(void)
+{
+}
+
 // FUNCTION: LEMBALL 0x00418840
 int CPlayerLemmingGroupManager::IsLemmingPlayerControlled(CPlayerLemming* pLemming)
 {

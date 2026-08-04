@@ -15,6 +15,7 @@ public:
 
 	CPlayerLemming* GetDead(void);
 	int GetLeaderPos(AICOORD& position);
+	void ProcessDead(void);
 	int IsLemmingPlayerControlled(CPlayerLemming* pLemming);
 	CPlayerLemmingGroup* GetPlayerControlledGroup(void);
 	int HasSFXChanged(void);
