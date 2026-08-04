@@ -209,8 +209,6 @@ DEFINE_LINKSCF_VTABLE_STUB_1(EmitMineChunkManagerRenderEntries)
 
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveRockChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitRockChunkManagerRenderEntries)
-DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveCaptureTriggerChunkObjects)
-DEFINE_LINKSCF_VTABLE_STUB_1(EmitCaptureTriggerChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(InitializeTramChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitTramChunkManagerRenderEntries)
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActivePgunChunkObjects)
@@ -462,9 +460,9 @@ CHandManagerVtable g_LINKSCF_CaptureChunkManagerVtable = {
 	 (void*) NoopType18ChunkStreamWriteThunk,
 	 (void*) DeleteCaptureTriggerChunkManagerAuto},
 	&CHandManager::Restart,
-	{(void*) RefreshActiveCaptureTriggerChunkObjects,
-	 (void*) ReturnFalseChunkStreamCommandThunk,
-	 (void*) EmitCaptureTriggerChunkManagerRenderEntries}};
+	&CHandManager::Process,
+	(void*) ReturnFalseChunkStreamCommandThunk,
+	&CHandManager::GetViewData};
 struct LaserManagerVtableLayout {
 	void* m_apSlots00[6];
 	void (CLaserManager::*m_pRestart18)(void);

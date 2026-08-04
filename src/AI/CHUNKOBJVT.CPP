@@ -1,3 +1,4 @@
+#include "AI/CHand.h"
 #include "AI/CLaser.h"
 #include "AI/CLift.h"
 #include "AI/CGameObject.h"
@@ -270,8 +271,22 @@ void* g_LEVELVT_TileFlag1CChunkObjectVtable[16] =
 							  BeginManagedEntityReachablePathSearch);
 
 // GLOBAL: LEMBALL 0x00496198
-void* g_LINKSCF_CaptureChunkObjectVtable[16] =
-	COMMON_LEVEL_CHUNK_OBJECT_VTABLE(DeleteCaptureChunkObjectAuto, AdvanceCaptureChunkObjectStateMachine);
+CHandVtable g_LINKSCF_CaptureChunkObjectVtable = {{(void*) DeleteCaptureChunkObjectAuto,
+														 (void*) SetManagedEntityStateIdWithVariant,
+														 (void*) SetManagedEntityStateId,
+														 (void*) EmitLevelChunkObjectRenderEntry,
+														 (void*) noop_vtable_callback_0040a7f0},
+														&CHand::Process,
+														{(void*) return_true_vtable_callback_0040a800,
+														 (void*) get_object_field_0xf0,
+														 (void*) SetLevelChunkObjectMotionVector,
+														 (void*) AdvanceManagedEntityGravityMotion,
+														 (void*) return_false_vtable_callback_0040a820,
+														 (void*) copy_object_fields_0x9c_triplet,
+														 (void*) noop_vtable_callback_0040a860,
+														 (void*) set_object_field_0x98,
+														 (void*) get_object_field_0x98,
+														 (void*) BeginManagedEntityReachablePathSearch}};
 
 struct LaserVtableLayout {
 	void* m_apSlots00[5];
@@ -735,52 +750,6 @@ int LEMBALL_FASTCALL RequestRockHistoryChildSwapState(void* pObject, void* pUnus
 	return 1;
 }
 
-// MACINTOSH: CHand::Process()
-// FUNCTION: LEMBALL 0x00427c40
-int LEMBALL_FASTCALL AdvanceCaptureChunkObjectStateMachine(void* pObject)
-{
-	typedef void(LEMBALL_FASTCALL * ObjectSlotProc)(void*, void*, int);
-	int* pFields = (int*) pObject;
-	int nState;
-
-	if (pFields[0x45] != 0) {
-		*(unsigned short*) ((char*) pObject + 0xbc) = 1;
-		if (pFields[0x4a] != pFields[0x2e]) {
-			if (pFields[0x2e] == 0x1a) {
-				((ObjectSlotProc) (*(void***) pObject)[13])(pObject, 0, 0x1e);
-			}
-			pFields[0x4a] = pFields[0x2e];
-		}
-		return 1;
-	}
-	*(unsigned short*) ((char*) pObject + 0xbc) = 0;
-	if (pFields[0x4e] == 0) {
-		return 1;
-	}
-	nState = pFields[0x2e];
-	if (nState == 0x17) {
-		if ((unsigned int) pFields[0x33] < (unsigned int) g_nLevelFrameClockTick) {
-			pFields[0x4f] = 1;
-			pFields[0x4e] = 0;
-			((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x18);
-		}
-	}
-	else if (nState == 0x19) {
-		if ((unsigned int) pFields[0x34] < (unsigned int) g_nLevelFrameClockTick) {
-			void* pTarget = *(void**) ((char*) pObject + 0x140);
-			((ObjectSlotProc) (*(void***) pTarget)[2])(pTarget, 0, 0x15);
-			*(int*) ((char*) pTarget + 0xcc) = g_nLevelFrameClockTick + 0x28;
-			((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x1a);
-			((ObjectSlotProc) (*(void***) pObject)[13])(pObject, 0, 0x1e);
-		}
-	}
-	else if (nState == 0x1a && (unsigned int) pFields[0x33] < (unsigned int) g_nLevelFrameClockTick) {
-		pFields[0x4f] = 1;
-		pFields[0x33] = g_nLevelFrameClockTick + 0x14;
-		((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x17);
-	}
-	return 1;
-}
 
 // MACINTOSH: CTrampoline::Process()
 // FUNCTION: LEMBALL 0x0042aa80

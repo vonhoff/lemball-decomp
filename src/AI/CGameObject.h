@@ -43,7 +43,10 @@ public:
 	void* m_pReachabilityOwner0C;
 	char m_abReserved10[4];
 	CGameObjectBounds m_bounds14;
-	char m_abReserved2C[0x34];
+	char m_abReserved2C[0x14];
+	AICOORD m_InitialPosition40;
+	char m_abReserved4C[0x10];
+	CGameObject* m_pTarget5C;
 	void* m_pOwningChunkStream60;
 	int m_nEntityType64;
 	char m_abReserved68[4];
@@ -54,7 +57,9 @@ public:
 	char m_abReserved78[0x10];
 	int m_nMotionDuration88;
 	int m_nRuntimeState8C;
-	char m_abReserved90[0xc];
+	char m_abReserved90[4];
+	int m_nFrameTime94;
+	char m_abReserved98[4];
 	AICOORD m_WorldPosition9C;
 	char m_abReservedA8[0xc];
 	short m_nHeadingOctantB4;
@@ -64,7 +69,8 @@ public:
 	char m_abReservedBE[0xa];
 	int m_nMotionStartTickC8;
 	int m_nNextUpdateTickCC;
-	char m_abReservedD0[0x44];
+	int m_nSecondaryUpdateTickD0;
+	char m_abReservedD4[0x40];
 	int m_nPendingState114;
 	char m_abReserved118[4];
 	int m_fOnMover11C;
@@ -99,5 +105,7 @@ public:
 	void RegisterId(void);
 	void UpdateCollision(void);
 };
+
+typedef char CGameObjectSizeMustMatchLayout[sizeof(CGameObject) == 0x124 ? 1 : -1];
 
 #endif

@@ -260,7 +260,9 @@ address,name,symbol,type,source
 0x004030DF,GameScreenObject::ConstructIntroSequenceScreen,?ConstructIntroSequenceScreen@GameScreenObject@@QAEPAXPAX0PAFH@Z,stub,src/Control/CGame.cpp
 0x004030E4,ManagedEntityPacketBase::`scalar deleting destructor',??_GManagedEntityPacketBase@@UAEPAXI@Z,stub,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00403120,LevelNodeChunkPositionView::CopyFixedPointPosition,?CopyFixedPointPosition@LevelNodeChunkPositionView@@QAEXPAH@Z,stub,src/AI/LVNODE.CPP
+0x00403170,CHand::Set,?Set@CHand@@QAEXGABUAICOORD@@@Z,stub,src/AI/CHand.cpp
 0x004031CF,gmob_chunk_type14action_view_dispatch_gmob_chunk_type14actions,?DispatchGmobChunkType14Actions@GmobChunkType14ActionView@@QAEXXZ,stub,src/AI/LVACTDSP.CPP
+0x004031ED,CHand::StepOn,?StepOn@CHand@@QAEHABUAICOORD@@PAVCGameObject@@@Z,stub,src/AI/CHand.cpp
 0x00403201,get_first_managed_entity_child_from_cached_group,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x0040325B,VsNetNetworkLobbyScreen::HidePlayerEntries,?HidePlayerEntries@VsNetNetworkLobbyScreen@@QAEXXZ,stub,src/Frontend/LOBBY.CPP
 0x004032AB,CMover::Switch,?Switch@CMover@@QAEXXZ,stub,src/AI/CMover.cpp
@@ -272,6 +274,7 @@ address,name,symbol,type,source
 0x00403369,GameVariantResourceEntryManager::ClearActiveVariantResourceEntries,?ClearActiveVariantResourceEntries@GameVariantResourceEntryManager@@QAEXXZ,stub,src/Platform/Windows/Mixed/Resource/VARMGR.CPP
 0x0040336E,LevelManagedEntityMoveCommandView::CopyFirstMoveCommandPositionOrCurrent,?CopyFirstMoveCommandPositionOrCurrent@LevelManagedEntityMoveCommandView@@QAEPAULevelThreeDwordPoint@@PAU2@@Z,stub,src/AI/CGameObjectMove.cpp
 0x0040339B,deactivate_projectile_object,?deactivate_projectile_object@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
+0x004033A0,CHandManager::Add,?Add@CHandManager@@QAEXGHHH@Z,stub,src/AI/CHandManager.cpp
 0x004033F5,GameMenuSelectorEntry::BuildOverlay,?BuildOverlay@GameMenuSelectorEntry@@QAEXPBH@Z,stub,src/Frontend/MENUSEL.CPP
 0x00403404,emit_mine_chunk_manager_render_entries,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
 0x0040340E,emit_lift_chunk_manager_render_entries,,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.H
@@ -290,6 +293,7 @@ address,name,symbol,type,source
 0x0040354E,destroy_lasr_chunk_manager_auto_thunk,?DestroyLasrChunkManagerAutoThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00403567,NoopQueuedVariantChildSlotManagerUpdate,?NoopQueuedVariantChildSlotManagerUpdate@@YIXPAX@Z,stub,src/Frontend/MAINMENU.CPP
 0x004035F3,destroy_network_lobby_vsnet_runtime_auto_thunk,?DestroyNetworkLobbyVsnetRuntimeAutoThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.CPP
+0x004035FD,CHandManager::Initialise,?Initialise@CHandManager@@QAEXH@Z,stub,src/AI/CHandManager.cpp
 0x0040363E,destroy_pgun_chunk_manager_auto_thunk,?DestroyPgunChunkManagerAutoThunk@@YIXPAX@Z,stub,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00403643,CPlayerLemming::SetGroup,?SetGroup@CPlayerLemming@@QAEXH@Z,stub,src/AI/CPlayerLemming.cpp
 0x0040364D,delete_queued_variant_range_entry_auto,,stub,src/Frontend/MENUSEL.CPP
