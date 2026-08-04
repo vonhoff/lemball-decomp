@@ -203,9 +203,6 @@ DEFINE_LINKSCF_VTABLE_STUB_0(GetNextManagedEntityChildFromCachedGroup)
 DEFINE_LINKSCF_VTABLE_STUB_0(GetFirstIteratedChildStatus11CCompatibility)
 DEFINE_LINKSCF_VTABLE_STUB_1(AdvanceCachedGroupManagedEntityChildIterator)
 DEFINE_LINKSCF_VTABLE_STUB_2(AppendManagedEntityGroupFromIds)
-DEFINE_LINKSCF_VTABLE_STUB_1(AttachAndActivateChunkObject)
-DEFINE_LINKSCF_VTABLE_STUB_2(RemoveOwnerChildIfNoNestedEntries)
-DEFINE_LINKSCF_VTABLE_STUB_1(ForwardOwnerChildCommandValue)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitIteratedChildBoundsRecords)
 DEFINE_LINKSCF_VTABLE_STUB_0(ActivateCollChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveCollChunkObjects)
@@ -235,8 +232,17 @@ struct CGenericGroup {
 	CGenericGroupVtable* m_pVtable00;
 };
 typedef int (CGenericGroup::*GenericGroupContainsProc)(CGameObject* pObject);
+typedef void (CGenericGroup::*GenericGroupDeleteProc)(int fFree);
+typedef int (CGenericGroup::*GenericGroupCountProc)(void);
+typedef void (CGenericGroup::*GenericGroupElementProc)(CGameObject* pObject);
 struct CGenericGroupVtable {
-	void* m_apReserved00[76];
+	GenericGroupDeleteProc m_pDelete00;
+	void* m_apReserved04[65];
+	GenericGroupCountProc m_pGetNumberOfElements108;
+	void* m_apReserved10C[6];
+	GenericGroupElementProc m_pAddElement124;
+	GenericGroupElementProc m_pRemoveElement128;
+	void* m_pReserved12C;
 	GenericGroupContainsProc m_pContains130;
 };
 // Compatibility shim retained for compiler-generated callers; original ILT slot
@@ -398,7 +404,10 @@ struct CachedChunkObjectManagerVtable {
 	void (CGenericGroupManager::*m_pAddNewGroup30)(CGenericGroup*);
 	void* m_pCreateNewGroupFromIds34;
 	void (CGenericGroupManager::*m_pCreateNewGroup38)(void);
-	void* m_apAfterCreate3C[4];
+	void (CGenericGroupManager::*m_pAddElementToGroup3C)(CGameObject*, CGenericGroup*);
+	int (CGenericGroupManager::*m_pRemoveElementFromGroup40)(CGameObject*, CGenericGroup*);
+	void (CGenericGroupManager::*m_pFindElementInGroupAndRemoveIt44)(CGameObject*);
+	void* m_pGetAllBoundingBoxes48;
 };
 
 #define LINKSCF_CACHED_CHUNK_MANAGER_VTABLE                                                                            \
@@ -418,10 +427,10 @@ struct CachedChunkObjectManagerVtable {
 		&CGenericGroupManager::AddNewGroup,                                                                    \
 		(void*) AppendManagedEntityGroupFromIds,                                                               \
 		&CGenericGroupManager::CreateNewGroup,                                                                 \
-		{(void*) AttachAndActivateChunkObject,                                                                 \
-				(void*) RemoveOwnerChildIfNoNestedEntries, (void*) ForwardOwnerChildCommandValue,                      \
-				(void*) EmitIteratedChildBoundsRecords                                                                 \
-		}                                                                                                              \
+		&CGenericGroupManager::AddElementToGroup,                                                               \
+		&CGenericGroupManager::RemoveElementFromGroup,                                                          \
+		&CGenericGroupManager::FindElementInGroupAndRemoveIt,                                                  \
+		(void*) EmitIteratedChildBoundsRecords                                                                  \
 	}
 
 // GLOBAL: LEMBALL 0x00494d08
@@ -1566,6 +1575,60 @@ void CGenericGroupManager::AddNewGroup(CGenericGroup* pGroup)
 // FUNCTION: LEMBALL 0x0041eca0
 void CGenericGroupManager::CreateNewGroup(void)
 {
+}
+
+// FUNCTION: LEMBALL 0x0041ed20
+void CGenericGroupManager::AddElementToGroup(CGameObject* pObject, CGenericGroup* pGroup)
+{
+	CachedChunkObjectManagerVtable* pVtable = (CachedChunkObjectManagerVtable*) m_pVtable00;
+	(this->*pVtable->m_pFindElementInGroupAndRemoveIt44)(pObject);
+	(pGroup->*pGroup->m_pVtable00->m_pAddElement124)(pObject);
+}
+
+// FUNCTION: LEMBALL 0x0041ed40
+int CGenericGroupManager::RemoveElementFromGroup(CGameObject* pObject, CGenericGroup* pGroup)
+{
+	int fRet;
+	int i;
+	int nLast;
+	CGenericGroup** ppGroup;
+
+	fRet = 1;
+	if (pGroup != 0) {
+		(pGroup->*pGroup->m_pVtable00->m_pRemoveElement128)(pObject);
+		if (m_fActiveAC != 0 && (pGroup->*pGroup->m_pVtable00->m_pGetNumberOfElements108)() < 1) {
+			(pGroup->*pGroup->m_pVtable00->m_pDelete00)(1);
+			i = 0;
+			--m_nGroupCountA4;
+			fRet = 0;
+			do {
+				ppGroup = &m_apGroups04[i];
+				if (*ppGroup == pGroup) {
+					nLast = i;
+					if (i < 39) {
+						int nRemaining = 39 - i;
+						nLast = nRemaining + i;
+						do {
+							--nRemaining;
+							*ppGroup = ppGroup[1];
+							++ppGroup;
+						} while (nRemaining != 0);
+					}
+					m_apGroups04[nLast] = 0;
+				}
+				++i;
+			} while (i < 40);
+		}
+	}
+	return fRet;
+}
+
+// FUNCTION: LEMBALL 0x0041ede0
+void CGenericGroupManager::FindElementInGroupAndRemoveIt(CGameObject* pObject)
+{
+	CachedChunkObjectManagerVtable* pVtable = (CachedChunkObjectManagerVtable*) m_pVtable00;
+	CGenericGroup* pGroup = (this->*pVtable->m_pGetGroupElementIsMemberOf2C)(pObject);
+	(this->*pVtable->m_pRemoveElementFromGroup40)(pObject, pGroup);
 }
 
 // MACINTOSH: CGenericGroupManager::GetViewData(CViewData*)

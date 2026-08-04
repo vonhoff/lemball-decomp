@@ -69,6 +69,9 @@ struct CGenericGroupManager {
 	CGenericGroup* GetGroupElementIsMemberOf(CGameObject* pObject);
 	void AddNewGroup(CGenericGroup* pGroup);
 	void CreateNewGroup(void);
+	void AddElementToGroup(CGameObject* pObject, CGenericGroup* pGroup);
+	int RemoveElementFromGroup(CGameObject* pObject, CGenericGroup* pGroup);
+	void FindElementInGroupAndRemoveIt(CGameObject* pObject);
 };
 class CObjectManager {
 public:
@@ -145,12 +148,7 @@ struct LinkScfBoonChunkManagerView {
 
 // STUB: LEMBALL 0x0041ebe0
 // AppendManagedEntityGroupFromIds
-// STUB: LEMBALL 0x0041ed20
-// AttachAndActivateChunkObject
-// STUB: LEMBALL 0x0041ed40
-// RemoveOwnerChildIfNoNestedEntries
-// STUB: LEMBALL 0x0041ede0
-// ForwardOwnerChildCommandValue
+
 // STUB: LEMBALL 0x0041ee00
 // EmitIteratedChildBoundsRecords
 // MACINTOSH: CCollectableManager::Restart()
