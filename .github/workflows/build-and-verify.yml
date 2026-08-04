@@ -89,14 +89,12 @@ jobs:
 
       - name: Configure and build
         shell: pwsh
-        run: |
-          python tools/install_reccmp_compat.py
-          cmake --fresh --preset msvc400
-          cmake --build --preset msvc400 --clean-first
+        run: python tools/build_msvc400.py
 
       - name: Verify against original
         shell: pwsh
         run: |
+          $ErrorActionPreference = 'Stop'
           reccmp-project detect --search-path data
           Push-Location build-msvc400
           reccmp-decomplint --target LEMBALL
