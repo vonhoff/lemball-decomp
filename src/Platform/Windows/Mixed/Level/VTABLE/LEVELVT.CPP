@@ -64,7 +64,8 @@ struct CGenericGroup {
 	int m_nElementCount124;
 	CGameObject* m_apElements128[10];
 	int m_nCurrentElement150;
-	char m_abReserved154[0x0c];
+	char m_abReserved154[4];
+	CVSRect m_BoundingBox158;
 
 	void ClearChildren(void);
 	int GetElementsInGroup(void);
@@ -77,8 +78,10 @@ struct CGenericGroup {
 	void RemoveElementFromGroup(CGameObject* pObject);
 	int ConfirmElementIsInGroup(CGameObject* pObject);
 	int ConfirmElementIsInGroup(unsigned short nId);
+	CVSRect GetBoundingBox(void);
+	void GetBoundingBox(CVSRect& rect);
+	void CalculateBoundingBox(int nRadius);
 };
-
 struct CPlayerLemmingGroup : CGenericGroup {
 	int m_nRuntimeState160;
 	int m_nRuntimeState164;
@@ -2105,6 +2108,57 @@ int CGenericGroup::ConfirmElementIsInGroup(unsigned short nId)
 		}
 	}
 	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0041e140
+CVSRect CGenericGroup::GetBoundingBox(void)
+{
+	return m_BoundingBox158;
+}
+
+// FUNCTION: LEMBALL 0x0041e180
+void CGenericGroup::GetBoundingBox(CVSRect& rect)
+{
+	rect.width = m_BoundingBox158.width;
+	rect.height = m_BoundingBox158.height;
+	rect.x = m_BoundingBox158.x;
+	rect.y = m_BoundingBox158.y;
+}
+
+// FUNCTION: LEMBALL 0x0041e1c0
+void CGenericGroup::CalculateBoundingBox(int nRadius)
+{
+	int nMinX = 99999;
+	int nMinY = 99999;
+	int nMaxX = -1;
+	int nMaxY = -1;
+
+	for (int i = 0; i < m_nElementCount124; ++i) {
+		CGameObject* pObject = m_apElements128[i];
+		if (pObject != 0) {
+			int x = pObject->m_WorldPosition9C.x >> 12;
+			int y = pObject->m_WorldPosition9C.y >> 12;
+			if (x - nRadius < nMinX) {
+				nMinX = x - nRadius;
+			}
+			if (y - nRadius < nMinY) {
+				nMinY = y - nRadius;
+			}
+			if (x + nRadius > nMaxX) {
+				nMaxX = x + nRadius;
+			}
+			if (y + nRadius > nMaxY) {
+				nMaxY = y + nRadius;
+			}
+		}
+	}
+
+	m_BoundingBox158.x = (short) nMinX;
+	nMaxX = (short) nMaxX - (short) nMinX;
+	nMaxY = (short) nMaxY - (short) nMinY;
+	m_BoundingBox158.y = (short) nMinY;
+	m_BoundingBox158.width = (short) nMaxX;
+	m_BoundingBox158.height = (short) nMaxY;
 }
 
 // MACINTOSH: CGenericGroup::OverideExistingWaypoints(AICOORD)
