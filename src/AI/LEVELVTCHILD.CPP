@@ -1,15 +1,11 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "AI/CGameObject.h"
+#include "AI/CGenericGroup.h"
 
 struct ManagedEntityChildView {
 	void SetManagedEntityOwnerGroup(void* pOwnerGroup);
 	void SetManagedEntityPrimaryActiveFlag(int fActive);
 };
-
-struct CGenericGroup {
-	void AddElementToGroup(CGameObject* pChild);
-};
-
 
 struct LevelManagedEntityChildIterator {
 	char m_abReserved00[0x124];

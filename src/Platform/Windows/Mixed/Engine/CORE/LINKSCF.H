@@ -42,7 +42,7 @@ class CGlobalGameObject;
 class CGameObject;
 class CNetworkMessage;
 class CViewData;
-struct CGenericGroup;
+class CGenericGroup;
 struct tRect;
 struct CVSRect;
 struct AICOORD;

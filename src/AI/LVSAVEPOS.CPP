@@ -238,28 +238,3 @@ void CBalloon::DoActivate(void)
 	(pSelf->*pSelf->m_pVtable00->m_pAction34)(0x2a);
 	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(50);
 }
-
-struct LevelChunkObjectRuntimeStateView {
-	void ResetRuntimeStateThunk(void);
-};
-
-struct CGenericGroup {
-	char m_abReserved00[0x124];
-	int m_nChildCount124;
-	void* m_apChildren128[10];
-
-	void ClearChildren(void);
-};
-
-// MACINTOSH: CGenericGroup::Restart()
-// FUNCTION: LEMBALL 0x0041de80
-void CGenericGroup::ClearChildren(void)
-{
-	int i;
-
-	((LevelChunkObjectRuntimeStateView*) this)->ResetRuntimeStateThunk();
-	for (i = 0; i < 10; ++i) {
-		m_apChildren128[i] = 0;
-	}
-	m_nChildCount124 = 0;
-}

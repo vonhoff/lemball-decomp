@@ -1,6 +1,7 @@
 #include "AI/CLaser.h"
 #include "AI/CLift.h"
 #include "AI/CGameObject.h"
+#include "AI/CGenericGroup.h"
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Level/CHUNKOBJVT.H"
@@ -23,9 +24,7 @@ extern void LEMBALL_FASTCALL destroy_tram_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_pgun_chunk_object_vtable_thunk(void* pObject);
 extern void LEMBALL_FASTCALL destroy_ice_chunk_object(void* pObject);
 extern void LEMBALL_FASTCALL destroy_move_chunk_object(void* pObject);
-struct EnmyManagedEntityGroupView;
 extern void* LEMBALL_FASTCALL DeleteCompositeLevelChunkChildrenWrapper20B20(void*, void*, BYTE);
-extern int LEMBALL_FASTCALL ServiceEnmyManagedEntityGroup(EnmyManagedEntityGroupView* pObject);
 
 #include "AI/CInvisibleSwitch.h"
 
@@ -206,18 +205,23 @@ void* g_LEVELVT_GmobChunkType14ObjectVtable[16] = LEVEL_CHUNK_OBJECT_VTABLE(Dele
 																			BeginManagedEntityReachablePathSearch);
 
 // GLOBAL: LEMBALL 0x00495250
-void* g_LEVELVT_EnmyManagedEntityGroupVtable[16] =
-	LEVEL_CHUNK_OBJECT_VTABLE(DeleteCompositeLevelChunkChildrenWrapper20B20,
-							  SetManagedEntityStateIdWithVariantLocalThunk,
-							  set_managed_entity_state_id_local,
-							  EmitLevelChunkObjectRenderEntry,
-							  ServiceEnmyManagedEntityGroup,
-							  return_true_vtable_callback_0040a800,
-							  AdvanceManagedEntityGravityMotion,
-							  return_false_vtable_callback_0040a820,
-							  copy_object_fields_0x9c_triplet,
-							  set_object_field_0x98,
-							  BeginManagedEntityReachablePathSearch);
+CGenericGroupChunkVtable g_LEVELVT_EnmyManagedEntityGroupVtable = {
+	{(void*) DeleteCompositeLevelChunkChildrenWrapper20B20,
+	 (void*) SetManagedEntityStateIdWithVariantLocalThunk,
+	 (void*) set_managed_entity_state_id_local,
+	 (void*) EmitLevelChunkObjectRenderEntry,
+	 (void*) noop_vtable_callback_0040a7f0},
+	&CGenericGroup::Process,
+	{(void*) return_true_vtable_callback_0040a800,
+	 (void*) get_object_field_0xf0,
+	 (void*) SetLevelChunkObjectMotionVector,
+	 (void*) AdvanceManagedEntityGravityMotion,
+	 (void*) return_false_vtable_callback_0040a820,
+	 (void*) copy_object_fields_0x9c_triplet,
+	 (void*) noop_vtable_callback_0040a860,
+	 (void*) set_object_field_0x98,
+	 (void*) get_object_field_0x98,
+	 (void*) BeginManagedEntityReachablePathSearch}};
 
 // GLOBAL: LEMBALL 0x004959c0
 void* g_LEVELVT_CollChunkObjectVtable[16] =

@@ -1,4 +1,5 @@
 #include "AI/CGameObject.h"
+#include "AI/CGenericGroup.h"
 #include "AI/CInvisibleSwitch.h"
 #include "AI/CInvisibleSwitchManager.h"
 #include "AI/CLaser.h"
@@ -225,32 +226,6 @@ DEFINE_LINKSCF_VTABLE_STUB_1(EmitMoveChunkManagerRenderEntries)
 #undef DEFINE_LINKSCF_VTABLE_STUB_1
 #undef DEFINE_LINKSCF_VTABLE_STUB_2
 
-struct CGenericGroupVtable;
-struct CGenericGroup {
-	CGenericGroupVtable* m_pVtable00;
-};
-typedef int (CGenericGroup::*GenericGroupContainsProc)(CGameObject* pObject);
-typedef void (CGenericGroup::*GenericGroupDeleteProc)(int fFree);
-typedef int (CGenericGroup::*GenericGroupCountProc)(void);
-typedef void (CGenericGroup::*GenericGroupElementProc)(CGameObject* pObject);
-typedef void (CGenericGroup::*GenericGroupBoundsProc)(short* pBounds);
-typedef int (CGenericGroup::*GenericGroupViewDataProc)(CViewData* pViewData);
-typedef int (CGenericGroup::*GenericGroupIntersectionProc)(CVSRect* pRect, AICOORD* pPosition);
-struct CGenericGroupVtable {
-	GenericGroupDeleteProc m_pDelete00;
-	void* m_apReserved04[17];
-	GenericGroupBoundsProc m_pGetBoundingBox48;
-	void* m_apReserved4C[47];
-	GenericGroupCountProc m_pGetNumberOfElements108;
-	void* m_apReserved10C[6];
-	GenericGroupElementProc m_pAddElement124;
-	GenericGroupElementProc m_pRemoveElement128;
-	void* m_pReserved12C;
-	GenericGroupContainsProc m_pContains130;
-	void* m_apReserved134[9];
-	GenericGroupViewDataProc m_pGetViewData158;
-	GenericGroupIntersectionProc m_pCheckIntersection15C;
-};
 
 struct tRect {
 	int m_nLeft;
