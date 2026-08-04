@@ -43,7 +43,14 @@ struct SavedPositionChunkObjectView {
 	short m_nLinkedVariant144;
 
 	void ResetToSavedPosition(void);
-	void ResetGmobState(void);
+};
+
+class CCrate {
+public:
+	char m_abReserved00[0x128];
+	int m_nState128;
+
+	void Restart(void);
 };
 
 
@@ -117,10 +124,10 @@ int CAmmo::Activate(void* pTarget)
 }
 
 // FUNCTION: LEMBALL 0x0041cca0
-void SavedPositionChunkObjectView::ResetGmobState(void)
+void CCrate::Restart(void)
 {
-	ResetToSavedPosition();
-	m_nGmobState128 = 0x18;
+	((SavedPositionChunkObjectView*) this)->ResetToSavedPosition();
+	m_nState128 = 0x18;
 }
 
 // FUNCTION: LEMBALL 0x0041ce50
