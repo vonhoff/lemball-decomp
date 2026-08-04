@@ -50,13 +50,37 @@ jobs:
           LEMBALL_REFERENCE_URL: ${{ secrets.LEMBALL_REFERENCE_URL }}
           LEMBALL_SHA256: ${{ secrets.LEMBALL_SHA256 }}
         run: |
-          test -n "$LEMBALL_REFERENCE_URL"
-          test -n "$LEMBALL_SHA256"
-          curl --fail --location --silent --show-error \
+          if [ -z "${LEMBALL_REFERENCE_URL:-}" ]; then
+            echo '::error::LEMBALL_REFERENCE_URL secret is not set'
+            exit 1
+          fi
+          if [ -z "${LEMBALL_SHA256:-}" ]; then
+            echo '::error::LEMBALL_SHA256 secret is not set'
+            exit 1
+          fi
+          if ! [[ "$LEMBALL_SHA256" =~ ^[[:xdigit:]]{64}$ ]]; then
+            echo '::error::LEMBALL_SHA256 must be exactly 64 hexadecimal characters'
+            exit 1
+          fi
+          if ! curl --fail --location --silent --show-error \
             "$LEMBALL_REFERENCE_URL" \
-            --output "$RUNNER_TEMP/LEMBALL.EXE"
+            --output "$RUNNER_TEMP/LEMBALL.EXE"; then
+            echo '::error::reference download failed; verify the URL is public and directly downloadable'
+            exit 1
+          fi
+          if [ ! -s "$RUNNER_TEMP/LEMBALL.EXE" ]; then
+            echo '::error::reference download was empty'
+            exit 1
+          fi
+          if [ "$(od -An -tx1 -N2 "$RUNNER_TEMP/LEMBALL.EXE" | tr -d " \n")" != "4d5a" ]; then
+            echo '::error::downloaded reference is not a Windows executable; the URL may return an HTML login page'
+            exit 1
+          fi
           actual=$(sha256sum "$RUNNER_TEMP/LEMBALL.EXE" | cut -d' ' -f1)
-          test "$actual" = "$LEMBALL_SHA256"
+          if [ "$actual" != "$LEMBALL_SHA256" ]; then
+            echo "::error::reference SHA-256 mismatch (downloaded: $actual)"
+            exit 1
+          fi
           cp "$RUNNER_TEMP/LEMBALL.EXE" data/LEMBALL.EXE
 
       - name: Lint metadata
