@@ -37,8 +37,10 @@ struct CCollectableManager {
 	CCollectableManager* ConstructCollChunkManagerThunk(void* pLevelMode, int nCapacity);
 };
 
-struct LinkScfGmobChunkManagerView {
-	LinkScfGmobChunkManagerView* ConstructGmobChunkManager(void* pLevelMode, int nCapacity);
+class CAI;
+class CObjectManager {
+public:
+	CObjectManager(CAI* pAI, int nCapacity);
 };
 
 struct LinkScfMoveChunkManagerView {

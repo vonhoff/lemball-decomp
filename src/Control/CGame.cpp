@@ -3363,7 +3363,7 @@ void LevelGameMode::InitializeLevelGameMode(void)
 	if (*(int*) (pModeBytes + 0x4c) == 0) {
 		pObject = AllocateVSMemBlock(0x40);
 		if (pObject != 0) {
-			pObject = ((LinkScfGmobChunkManagerView*) pObject)->ConstructGmobChunkManager(pLevelGameMode, 0x3c);
+			pObject = new (pObject) CObjectManager((CAI*) pLevelGameMode, 0x3c);
 		}
 		*(void**) (pModeBytes + 0x158) = pObject;
 		RegisterLevelChunkStreamThunk(g_pLevelChunkStreamDispatcher, *(void**) (pModeBytes + 0x158));

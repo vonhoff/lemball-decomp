@@ -1095,7 +1095,7 @@ void LinkScfPlasChunkManagerView::LoadPlasChunkObjects(const unsigned short* pCh
 	*(int*) (pManagerBytes + 0x11c) = 0;
 }
 // FUNCTION: LEMBALL 0x0041af60
-LinkScfGmobChunkManagerView* LinkScfGmobChunkManagerView::ConstructGmobChunkManager(void* pLevelMode, int nCapacity)
+CObjectManager::CObjectManager(CAI* pAI, int nCapacity)
 {
 	*(void**) this = g_GAME_EffStreamConstructionVtable;
 	*(int*) ((char*) this + 4) = 0x0c;
@@ -1108,13 +1108,12 @@ LinkScfGmobChunkManagerView* LinkScfGmobChunkManagerView::ConstructGmobChunkMana
 	}
 	*(void**) this = g_LINKSCF_GmobChunkManagerVtable;
 	g_pLINKSCF_GmobChunkManager = this;
-	*(void**) ((char*) this + 0x30) = pLevelMode;
+	*(CAI**) ((char*) this + 0x30) = pAI;
 	*(short*) ((char*) this + 0x36) = 0;
 	*(int*) ((char*) this + 0x3c) = 0;
 	*(short*) ((char*) this + 0x38) = 0;
 	*(short*) ((char*) this + 0x34) = 0;
 	g_nLINKSCF_GmobObjectCount = 0;
-	return this;
 }
 
 // MACINTOSH: CGenericGroupManager::CGenericGroupManager(CAI*, CObjectManager*, CFormationManager*)
