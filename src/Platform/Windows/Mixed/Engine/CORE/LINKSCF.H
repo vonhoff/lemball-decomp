@@ -43,6 +43,9 @@ class CGameObject;
 class CNetworkMessage;
 class CViewData;
 struct CGenericGroup;
+struct tRect;
+struct CVSRect;
+struct AICOORD;
 struct CGenericGroupManager {
 	void* m_pVtable00;
 	CGenericGroup* m_apGroups04[40];
@@ -72,6 +75,9 @@ struct CGenericGroupManager {
 	void AddElementToGroup(CGameObject* pObject, CGenericGroup* pGroup);
 	int RemoveElementFromGroup(CGameObject* pObject, CGenericGroup* pGroup);
 	void FindElementInGroupAndRemoveIt(CGameObject* pObject);
+	int GetAllBoundingBoxes(tRect* pRects);
+	int GetViewData(CViewData* pViewData);
+	int CheckGroupIntersection(CVSRect* pRect, AICOORD* pPosition);
 };
 class CObjectManager {
 public:
@@ -149,8 +155,7 @@ struct LinkScfBoonChunkManagerView {
 // STUB: LEMBALL 0x0041ebe0
 // AppendManagedEntityGroupFromIds
 
-// STUB: LEMBALL 0x0041ee00
-// EmitIteratedChildBoundsRecords
+
 // MACINTOSH: CCollectableManager::Restart()
 // STUB: LEMBALL 0x00422420
 // ActivateCollChunkObjects

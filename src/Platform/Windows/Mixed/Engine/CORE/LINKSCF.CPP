@@ -145,7 +145,6 @@ void* ConstructManagedEntityQueueCursorThunk(void* pObject,
 
 
 
-int LEMBALL_FASTCALL GetViewData(void* pObject, void* pUnused, char* pEntries);
 int LEMBALL_FASTCALL EmitCachedChunkManagerRenderEntriesThunk(void* pObject, void* pUnused, char* pEntries);
 
 #define DEFINE_LINKSCF_VTABLE_STUB_0(name)                                                                             \
@@ -203,7 +202,6 @@ DEFINE_LINKSCF_VTABLE_STUB_0(GetNextManagedEntityChildFromCachedGroup)
 DEFINE_LINKSCF_VTABLE_STUB_0(GetFirstIteratedChildStatus11CCompatibility)
 DEFINE_LINKSCF_VTABLE_STUB_1(AdvanceCachedGroupManagedEntityChildIterator)
 DEFINE_LINKSCF_VTABLE_STUB_2(AppendManagedEntityGroupFromIds)
-DEFINE_LINKSCF_VTABLE_STUB_1(EmitIteratedChildBoundsRecords)
 DEFINE_LINKSCF_VTABLE_STUB_0(ActivateCollChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_0(RefreshActiveCollChunkObjects)
 DEFINE_LINKSCF_VTABLE_STUB_1(EmitCollChunkManagerRenderEntries)
@@ -235,15 +233,30 @@ typedef int (CGenericGroup::*GenericGroupContainsProc)(CGameObject* pObject);
 typedef void (CGenericGroup::*GenericGroupDeleteProc)(int fFree);
 typedef int (CGenericGroup::*GenericGroupCountProc)(void);
 typedef void (CGenericGroup::*GenericGroupElementProc)(CGameObject* pObject);
+typedef void (CGenericGroup::*GenericGroupBoundsProc)(short* pBounds);
+typedef int (CGenericGroup::*GenericGroupViewDataProc)(CViewData* pViewData);
+typedef int (CGenericGroup::*GenericGroupIntersectionProc)(CVSRect* pRect, AICOORD* pPosition);
 struct CGenericGroupVtable {
 	GenericGroupDeleteProc m_pDelete00;
-	void* m_apReserved04[65];
+	void* m_apReserved04[17];
+	GenericGroupBoundsProc m_pGetBoundingBox48;
+	void* m_apReserved4C[47];
 	GenericGroupCountProc m_pGetNumberOfElements108;
 	void* m_apReserved10C[6];
 	GenericGroupElementProc m_pAddElement124;
 	GenericGroupElementProc m_pRemoveElement128;
 	void* m_pReserved12C;
 	GenericGroupContainsProc m_pContains130;
+	void* m_apReserved134[9];
+	GenericGroupViewDataProc m_pGetViewData158;
+	GenericGroupIntersectionProc m_pCheckIntersection15C;
+};
+
+struct tRect {
+	int m_nLeft;
+	int m_nTop;
+	int m_nRight;
+	int m_nBottom;
 };
 // Compatibility shim retained for compiler-generated callers; original ILT slot
 // 0x00401078 targets GetFirstGroup directly.
@@ -407,7 +420,7 @@ struct CachedChunkObjectManagerVtable {
 	void (CGenericGroupManager::*m_pAddElementToGroup3C)(CGameObject*, CGenericGroup*);
 	int (CGenericGroupManager::*m_pRemoveElementFromGroup40)(CGameObject*, CGenericGroup*);
 	void (CGenericGroupManager::*m_pFindElementInGroupAndRemoveIt44)(CGameObject*);
-	void* m_pGetAllBoundingBoxes48;
+	int (CGenericGroupManager::*m_pGetAllBoundingBoxes48)(tRect*);
 };
 
 #define LINKSCF_CACHED_CHUNK_MANAGER_VTABLE                                                                            \
@@ -430,7 +443,7 @@ struct CachedChunkObjectManagerVtable {
 		&CGenericGroupManager::AddElementToGroup,                                                               \
 		&CGenericGroupManager::RemoveElementFromGroup,                                                          \
 		&CGenericGroupManager::FindElementInGroupAndRemoveIt,                                                  \
-		(void*) EmitIteratedChildBoundsRecords                                                                  \
+		&CGenericGroupManager::GetAllBoundingBoxes                                                              \
 	}
 
 // GLOBAL: LEMBALL 0x00494d08
@@ -666,7 +679,7 @@ LinkScfEnmyChunkManagerView* LinkScfEnmyChunkManagerView::ConstructEnmyChunkMana
 // LINKERILT: LEMBALL 0x00401f64
 int LEMBALL_FASTCALL EmitCachedChunkManagerRenderEntriesThunk(void* pObject, void* pUnused, char* pEntries)
 {
-	return GetViewData(pObject, pUnused, pEntries);
+	return ((CGenericGroupManager*) pObject)->GetViewData((CViewData*) pEntries);
 }
 
 // LINKERILT: LEMBALL 0x0040204f
@@ -1631,30 +1644,71 @@ void CGenericGroupManager::FindElementInGroupAndRemoveIt(CGameObject* pObject)
 	(this->*pVtable->m_pRemoveElementFromGroup40)(pObject, pGroup);
 }
 
-// MACINTOSH: CGenericGroupManager::GetViewData(CViewData*)
-// FUNCTION: LEMBALL 0x0041ee90
-int LEMBALL_FASTCALL GetViewData(void* pObject, void*, char* pEntries)
+// FUNCTION: LEMBALL 0x0041ee00
+int CGenericGroupManager::GetAllBoundingBoxes(tRect* pRects)
 {
-	typedef void*(LEMBALL_FASTCALL * CachedChunkIteratorProc)(void*, void*);
-	typedef int(LEMBALL_FASTCALL * CachedChunkRenderProc)(void*, void*, char*);
+	CachedChunkObjectManagerVtable* pVtable;
+	CGenericGroup* pGroup;
+	short anPosition[4];
+	int nCount;
 
-	void** pManagerVtable;
-	CachedChunkIteratorProc pGetNext;
-	void* pChunkObject;
-	int cEntries;
-
-	cEntries = 0;
-	pManagerVtable = *(void***) pObject;
-	pChunkObject = ((CachedChunkIteratorProc) pManagerVtable[1])(pObject, 0);
-	if (pChunkObject != 0) {
-		pGetNext = (CachedChunkIteratorProc) pManagerVtable[2];
+	pVtable = (CachedChunkObjectManagerVtable*) m_pVtable00;
+	nCount = 0;
+	anPosition[0] = 0;
+	anPosition[1] = 0;
+	anPosition[2] = 0;
+	anPosition[3] = 0;
+	pGroup = (this->*pVtable->m_pGetFirstGroup04)();
+	if (pGroup != 0) {
 		do {
-			cEntries +=
-				((CachedChunkRenderProc) (*(void***) pChunkObject)[86])(pChunkObject, 0, pEntries + cEntries * 0x4c);
-			pChunkObject = pGetNext(pObject, 0);
-		} while (pChunkObject != 0);
+			++nCount;
+			(pGroup->*pGroup->m_pVtable00->m_pGetBoundingBox48)(anPosition);
+			pRects->m_nLeft = anPosition[2];
+			pRects->m_nTop = anPosition[3];
+			pRects->m_nRight = anPosition[2] + anPosition[0];
+			pRects->m_nBottom = anPosition[3] + anPosition[1];
+			pGroup = (this->*pVtable->m_pGetNextGroup08)();
+			++pRects;
+		} while (pGroup != 0);
 	}
-	return cEntries;
+	return nCount;
+}
+
+// FUNCTION: LEMBALL 0x0041ee90
+int CGenericGroupManager::GetViewData(CViewData* pViewData)
+{
+	CachedChunkObjectManagerVtable* pVtable;
+	CGenericGroup* pGroup;
+	int nCount;
+
+	nCount = 0;
+	pVtable = (CachedChunkObjectManagerVtable*) m_pVtable00;
+	pGroup = (this->*pVtable->m_pGetFirstGroup04)();
+	if (pGroup != 0) {
+		do {
+			nCount += (pGroup->*pGroup->m_pVtable00->m_pGetViewData158)(
+				(CViewData*) ((char*) pViewData + nCount * 0x4c));
+			pGroup = (this->*pVtable->m_pGetNextGroup08)();
+		} while (pGroup != 0);
+	}
+	return nCount;
+}
+
+// FUNCTION: LEMBALL 0x0041eed0
+int CGenericGroupManager::CheckGroupIntersection(CVSRect* pRect, AICOORD* pPosition)
+{
+	CachedChunkObjectManagerVtable* pVtable;
+	CGenericGroup* pGroup;
+
+	pVtable = (CachedChunkObjectManagerVtable*) m_pVtable00;
+	pGroup = (this->*pVtable->m_pGetFirstGroup04)();
+	while (pGroup != 0) {
+		if ((pGroup->*pGroup->m_pVtable00->m_pCheckIntersection15C)(pRect, pPosition) == 1) {
+			return 1;
+		}
+		pGroup = (this->*pVtable->m_pGetNextGroup08)();
+	}
+	return 0;
 }
 // FUNCTION: LEMBALL 0x0041f0b0
 LinkScfShpgChunkManagerView* LinkScfShpgChunkManagerView::ConstructShpgChunkManager(void* pLevelMode,
