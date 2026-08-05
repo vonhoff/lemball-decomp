@@ -9,6 +9,7 @@ struct CPaintGunManager {
 	CPaintGunManager* ConstructPgunChunkManager(void* pLevelMode, int nCapacity);
 	CPaintGunManager* ConstructPgunChunkManagerThunk(void* pLevelMode, int nCapacity);
 	void Initialise(int nCapacity);
+	void ResetObjectCount(void);
 };
 
 struct CTrampolineManager {

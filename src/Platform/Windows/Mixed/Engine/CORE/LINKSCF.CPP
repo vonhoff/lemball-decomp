@@ -2144,9 +2144,9 @@ void CPaintGunManager::Initialise(int nCapacity)
 
 // MACINTOSH: CPaintGunManager::Restart()
 // FUNCTION: LEMBALL 0x0042c140
-void LEMBALL_FASTCALL clear_pgun_chunk_object_count(void* pManager)
+void CPaintGunManager::ResetObjectCount(void)
 {
-	*(int*) ((char*) pManager + 0x34) = 0;
+	m_nObjectCount34 = 0;
 }
 
 // FUNCTION: LEMBALL 0x0042c4c0
