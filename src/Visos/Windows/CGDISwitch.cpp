@@ -1,9 +1,8 @@
 #include "Platform/Windows/Mixed/Engine/GDI/VSGDI.H"
+#include "Visos/VsGdiSelectedGraphicsDriverSwitchView.h"
 #include "Platform/Windows/Mixed/Engine/GDI/VSWINDOW.H"
 
-struct VsGdiSelectedGraphicsDriverSwitchView {
-	int SwitchSelectedGraphicsDriver(int nRequestedDriver);
-};
+;
 
 // FUNCTION: LEMBALL 0x00458130
 int VsGdiSelectedGraphicsDriverSwitchView::SwitchSelectedGraphicsDriver(int nRequestedDriver)

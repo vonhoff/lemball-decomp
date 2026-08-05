@@ -1,4 +1,5 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "Visos/VsGdiSelectedGraphicsDriverSwitchView.h"
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/GDI/VSGDI.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSOUND.H"
@@ -172,9 +173,7 @@ struct ShellUiWindowRect {
 	LONG m_nBottom;
 };
 
-struct VsGdiSelectedGraphicsDriverSwitchView {
-	int SwitchSelectedGraphicsDriver(int nRequestedDriver);
-};
+;
 
 // FUNCTION: LEMBALL 0x00431c90
 void LEMBALL_FASTCALL TogglePrimaryContextDisplayMode(void* pPrimaryContext)
