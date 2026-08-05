@@ -301,7 +301,7 @@ struct VsNetAllocatedTcpipEffTransportCompositeLayout {
 typedef VsNetRuntimeChannelCore VsNetTcpipRuntimeChannelFacet;
 
 // VTABLE: LEMBALL 0x0049a210 VsNetEffStreamChannelState
-struct VsNetDualSocketWindowEffChannelBundle : virtual VsNetDualHandleEffStream, virtual VsNetSocketWindowEffChannel {
+struct VsNetDualSocketWindowEffChannelBundle : virtual CReadSocket, virtual VsNetSocketWindowEffChannel {
 	static void operator delete(void* pObject) { FreeVSMemBlock(pObject); }
 	virtual void ClearPendingWrite(void* pArgument);
 };
@@ -315,7 +315,7 @@ struct VsNetDualSocketWindowEffChannelBundle : virtual VsNetDualHandleEffStream,
 // GLOBAL: LEMBALL 0x0049a418
 // VsNetTcpipSocketChannelStackLayout::`vbtable'{for `VsNetRuntimeChannelCore'}
 // GLOBAL: LEMBALL 0x0049a428
-// VsNetTcpipSocketChannelStackLayout::`vbtable'{for `VsNetDualHandleEffStream'}
+// VsNetTcpipSocketChannelStackLayout::`vbtable'{for `CReadSocket'}
 // GLOBAL: LEMBALL 0x0049a430
 // VsNetTcpipSocketChannelStackLayout::`vbtable'{for `VsNetTimedEffStream'}
 // GLOBAL: LEMBALL 0x0049a438
@@ -364,7 +364,7 @@ inline VsNetTcpipEffTransportOwnershipPath::~VsNetTcpipEffTransportOwnershipPath
 // GLOBAL: LEMBALL 0x0049a308
 // VsNetAllocatedTcpipEffTransportComposite::`vbtable'{for `VsNetRuntimeChannelCore'}
 // GLOBAL: LEMBALL 0x0049a318
-// VsNetAllocatedTcpipEffTransportComposite::`vbtable'{for `VsNetDualHandleEffStream'}
+// VsNetAllocatedTcpipEffTransportComposite::`vbtable'{for `CReadSocket'}
 // GLOBAL: LEMBALL 0x0049a320
 // VsNetAllocatedTcpipEffTransportComposite::`vbtable'{for `VsNetTimedEffStream'}
 // GLOBAL: LEMBALL 0x0049a328
@@ -398,7 +398,7 @@ struct VsNetAllocatedTcpipEffTransportComposite : VsNetCompositeEffTransportStac
 // GLOBAL: LEMBALL 0x0049a0f8
 // VsNetTcpipEffTransportComposite::`vbtable'{for `VsNetRuntimeChannelCore'}
 // GLOBAL: LEMBALL 0x0049a108
-// VsNetTcpipEffTransportComposite::`vbtable'{for `VsNetDualHandleEffStream'}
+// VsNetTcpipEffTransportComposite::`vbtable'{for `CReadSocket'}
 // GLOBAL: LEMBALL 0x0049a110
 // VsNetTcpipEffTransportComposite::`vbtable'{for `VsNetTimedEffStream'}
 // GLOBAL: LEMBALL 0x0049a118
@@ -735,7 +735,7 @@ static VsNetTimedSocketBundleTertiaryThunkVtableModel g_NETWORK_TimedSocketBundl
 	&VsNetFileBackedDualSecondaryThunkVtableModel::ReservedRet,
 	(void*) _purecall,
 	(void*) _purecall,
-	&VsNetDualHandleEffStream::DualStreamRet8,
+	&CReadSocket::DualStreamRet8,
 	(void*) TimedSocketBundlePrimaryCloseThunk,
 	(void*) TimedSocketBundlePrimaryDeleteThunk,
 	(void*) TimedSocketBundlePrimaryCaptureErrorThunk,
@@ -817,7 +817,7 @@ struct VsNetTcpipSocketStackDualRet8VtableData {
 };
 
 static VsNetTcpipSocketStackDualRet8VtableData g_NETWORK_TcpipSocketStackDualRet8VtableData = {
-	&VsNetDualHandleEffStream::DualStreamRet8,
+	&CReadSocket::DualStreamRet8,
 };
 void* g_NETWORK_TcpipSocketStackDualRet8 = &g_NETWORK_TcpipSocketStackDualRet8VtableData;
 struct VsNetTcpipSocketStackDualDispatchVtableData {
@@ -837,7 +837,7 @@ static VsNetTcpipSocketStackDualDispatchVtableData g_NETWORK_TcpipSocketStackDua
 		(void*) WriteAllocatedEffTransportGlobalSessionAdjustedThunk,
 		(void*) ClaimTcpipSocketStackDualAdjustedThunk,
 	},
-	&VsNetDualHandleEffStream::DualStreamRet8,
+	&CReadSocket::DualStreamRet8,
 };
 static void* g_NETWORK_TcpipSocketStackDualThunk = &g_NETWORK_TcpipSocketStackDualDispatchVtable;
 static void* g_NETWORK_TcpipSocketStackSocketThunkVtable[2] = {
@@ -1106,7 +1106,7 @@ VsNetCompositeEffTransportStack::~VsNetCompositeEffTransportStack()
 {
 }
 // FUNCTION: LEMBALL 0x00462930
-void VsNetDualHandleEffStream::DualStreamRet8(int, void*)
+void CReadSocket::DualStreamRet8(int, void*)
 {
 }
 // FUNCTION: LEMBALL 0x004629d0
@@ -2417,7 +2417,7 @@ void* VsNetTcpipSocketChannelStackWrapperView::DeleteCompositeTcpipSocketChannel
 	pbAllocationBase = (char*) this - 0x34;
 	RestoreCompositeEffTransportVtables((int) (unsigned long) pObject - 4);
 	DestroySocketWindowEffChannel((int) (unsigned long) pView->m_abSocketWindow128);
-	((VsNetDualHandleEffStream*) pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
+	((CReadSocket*) pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
 	((VsNetTimedEffStream*) pView->m_abTimedStream30)->DestroyTimedEffStream();
 	pView->m_ChannelState00.DestroyEffStreamChannelState();
 	if ((fFreeMemory & 1) != 0) {
@@ -2589,7 +2589,7 @@ void* VsNetTcpipSocketChannelStackWrapperView::DeleteTcpipSocketChannelStackWrap
 	pView = this;
 	pbAllocationBase = (char*) this - 8;
 	DestroySocketWindowEffChannel((int) (unsigned long) pView->m_abSocketWindow128);
-	((VsNetDualHandleEffStream*) pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
+	((CReadSocket*) pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
 	((VsNetTimedEffStream*) pView->m_abTimedStream30)->DestroyTimedEffStream();
 	pView->m_ChannelState00.DestroyEffStreamChannelState();
 	if ((fFreeMemory & 1) != 0) {
@@ -2687,7 +2687,7 @@ void* VsNetDualSocketWindowChannelStackWrapperView::DeleteDualSocketWindowChanne
 	pView = this;
 	pbAllocationBase = (char*) this - 8;
 	DestroySocketWindowEffChannel((int) (unsigned long) pView->m_abSocketWindowA4);
-	((VsNetDualHandleEffStream*) pView->m_abDualStream2c)->DestroyDualHandleEffStream();
+	((CReadSocket*) pView->m_abDualStream2c)->DestroyDualHandleEffStream();
 	pView->m_ChannelState00.DestroyEffStreamChannelState();
 	if ((fFreeMemory & 1) != 0) {
 		FreeVSMemBlock(pbAllocationBase);
@@ -2755,7 +2755,7 @@ void* VsNetTcpipSocketChannelStackWrapperView::DeleteTcpipEffTransportCompositeW
 	pbAllocationBase = (char*) this - 0x30;
 	DestroyTcpipEffTransportComposite((int) (unsigned long) pObject);
 	DestroySocketWindowEffChannel((int) (unsigned long) pView->m_abSocketWindow128);
-	((VsNetDualHandleEffStream*) pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
+	((CReadSocket*) pView->m_abDualStreamA8)->DestroyDualHandleEffStream();
 	((VsNetTimedEffStream*) pView->m_abTimedStream30)->DestroyTimedEffStream();
 	pView->m_ChannelState00.DestroyEffStreamChannelState();
 	if ((fFreeMemory & 1) != 0) {

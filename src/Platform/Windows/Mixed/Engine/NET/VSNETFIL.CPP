@@ -1,9 +1,9 @@
+#include "Control/CGame.h"
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
-#include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
 #include "Platform/Windows/Mixed/Engine/NET/VSNET.H"
-#include "Control/CGame.h"
+#include "Visos/Generic/Memory.h"
 
 #include <new.h>
 #include <stdio.h>
@@ -384,7 +384,7 @@ struct VsNetFileBackedDualSecondaryThunkVtableData {
 	void* m_pNoop;
 	void* m_pWriteTaggedHeader;
 	void* m_pDelete;
-	void (VsNetDualHandleEffStream::*m_pReservedRet)(void);
+	void (CReadSocket::*m_pReservedRet)(void);
 	void* m_pFatal0;
 	void* m_pFatal1;
 	void* m_pReservedRet8;
@@ -397,7 +397,7 @@ struct VsNetFileBackedDualDispatchThunkVtableData {
 	void* m_pNoop;
 	void* m_pWriteTaggedHeader;
 	void* m_pDelete;
-	void (VsNetDualHandleEffStream::*m_pReservedRet)(void);
+	void (CReadSocket::*m_pReservedRet)(void);
 	void* m_pWriteGlobalSession;
 	void* m_pClaimRecord;
 	void* m_pDispatch;
@@ -410,10 +410,10 @@ static VsNetFileBackedDualSecondaryThunkVtableData g_NETWORK_FileBackedDualSecon
 	(void*) NoopVtableCallbackThunk,
 	(void*) WriteEffTransportTaggedHeader,
 	(void*) AdjustAndDeleteDualFileBackedEffChannelWrapper2c,
-	&VsNetDualHandleEffStream::DualStreamNoop,
+	&CReadSocket::DualStreamNoop,
 	(void*) _purecall,
 	(void*) _purecall,
-	&VsNetDualHandleEffStream::DualStreamRet8,
+	&CReadSocket::DualStreamRet8,
 };
 static void* g_NETWORK_FileBackedDualSecondaryThunkVtable = &g_NETWORK_FileBackedDualSecondaryThunkVtableData;
 static VsNetFatalWin32FileWrapperVtableData g_NETWORK_FileBackedFatalFileWrapperVtable = {
@@ -548,10 +548,10 @@ static VsNetFileBackedDualSecondaryThunkVtableData g_NETWORK_EmbeddedFileBackedF
 	(void*) NoopVtableCallbackThunk,
 	(void*) WriteEffTransportTaggedHeader,
 	(void*) AdjustAndDeleteEmbeddedDualFileBackedEffChannelStackWrapper,
-	&VsNetDualHandleEffStream::DualStreamNoop,
+	&CReadSocket::DualStreamNoop,
 	(void*) AdjustAndWriteEmbeddedDualEffStreamWithGlobalSession,
 	(void*) AdjustAndClaimEmbeddedDualEffTransportRecordPayload,
-	&VsNetDualHandleEffStream::DualStreamRet8,
+	&CReadSocket::DualStreamRet8,
 };
 static void* g_NETWORK_EmbeddedFileBackedFinalDualThunkVtable = &g_NETWORK_EmbeddedFileBackedFinalDualThunkVtableData;
 
@@ -577,7 +577,7 @@ static VsNetFileBackedDualDispatchThunkVtableData g_NETWORK_GlobalStateFinalDual
 	(void*) NoopVtableCallbackThunk,
 	(void*) WriteEffTransportTaggedHeader,
 	(void*) AdjustAndDeleteGlobalStateDualFileBackedEffCompositeWrapper,
-	&VsNetDualHandleEffStream::DualStreamNoop,
+	&CReadSocket::DualStreamNoop,
 	(void*) AdjustAndWriteDualSlotTimedEffStreamWithGlobalSession,
 	(void*) AdjustAndClaimDualSlotTimedEffTransportRecordPayload,
 	(void*) DispatchAdjustedPrefixedEffTransportControlStream,
@@ -745,10 +745,10 @@ static VsNetFileBackedDualSecondaryThunkVtableData g_NETWORK_GlobalStateComposit
 	(void*) NoopVtableCallbackThunk,
 	(void*) WriteEffTransportTaggedHeader,
 	(void*) AdjustAndDeleteGlobalStateCompositeAtA8,
-	&VsNetDualHandleEffStream::DualStreamNoop,
+	&CReadSocket::DualStreamNoop,
 	(void*) AdjustAndWriteGlobalStateDualEffStreamWithGlobalSession,
 	(void*) AdjustAndClaimGlobalStateDualEffTransportRecordPayload,
-	&VsNetDualHandleEffStream::DualStreamRet8,
+	&CReadSocket::DualStreamRet8,
 };
 static void* g_NETWORK_GlobalStateCompositeInitialDualThunkVtable =
 	&g_NETWORK_GlobalStateCompositeInitialDualThunkVtableData;
@@ -1872,7 +1872,7 @@ struct VsNetFileBackedRecordWriterView {
 };
 
 // FUNCTION: LEMBALL 0x00462920
-void VsNetDualHandleEffStream::DualStreamNoop(void)
+void CReadSocket::DualStreamNoop(void)
 {
 	(void) 0;
 }
@@ -3252,10 +3252,9 @@ VsNetGlobalStateFileBackedEffComposite::VsNetGlobalStateFileBackedEffComposite()
 		*(int*) (pbObjectBase + 0x20 + pCompositeOffsets->m_nRecordTableCOffset20) = 0;
 	}
 	else {
-		pRecordSlotTable = new (pStorage)
-			CHeaders(*(int*) (pbObjectBase + pCompositeOffsets->m_nRecordTableAOffset18 + 0x28));
-		*(CHeaders**) (pbObjectBase + 0x20 + pCompositeOffsets->m_nRecordTableCOffset20) =
-			pRecordSlotTable;
+		pRecordSlotTable =
+			new (pStorage) CHeaders(*(int*) (pbObjectBase + pCompositeOffsets->m_nRecordTableAOffset18 + 0x28));
+		*(CHeaders**) (pbObjectBase + 0x20 + pCompositeOffsets->m_nRecordTableCOffset20) = pRecordSlotTable;
 	}
 
 	*(CHeaders**) (pbObjectBase + 0x20 + pCompositeOffsets->m_nRecordTableBOffset1c) =
@@ -3376,8 +3375,8 @@ int VsNetGlobalStateFileBackedEffComposite::RuntimeReserved0c(char* pszHostName)
 	}
 	memcpy(pszDot, ".bct", 5);
 
-	fOpened = CFileCommonSocketCreateSocket(pbBase + pOffsets->m_nRecordTableAOffset18 + 0x20,
-											   (int) (unsigned long) pszPath);
+	fOpened =
+		CFileCommonSocketCreateSocket(pbBase + pOffsets->m_nRecordTableAOffset18 + 0x20, (int) (unsigned long) pszPath);
 	((VsNetFileBackedMarkerOwner*) pTransport)->IncrementFileBackedEffStreamMarker();
 
 	pbFirstFront = pbBase + pOffsets->m_nRecordTableBOffset1c;
@@ -3788,10 +3787,9 @@ VsNetDualSlotTableFileBackedEffComposite::VsNetDualSlotTableFileBackedEffComposi
 		*(int*) (pbObjectBase + 0x2c + pCompositeOffsets->m_nRecordTableBOffset1c) = 0;
 	}
 	else {
-		pRecordSlotTable = new (pStorage)
-			CHeaders(*(int*) (pbObjectBase + pCompositeOffsets->m_nRecordTableAOffset18 + 0x34));
-		*(CHeaders**) (pbObjectBase + 0x2c + pCompositeOffsets->m_nRecordTableBOffset1c) =
-			pRecordSlotTable;
+		pRecordSlotTable =
+			new (pStorage) CHeaders(*(int*) (pbObjectBase + pCompositeOffsets->m_nRecordTableAOffset18 + 0x34));
+		*(CHeaders**) (pbObjectBase + 0x2c + pCompositeOffsets->m_nRecordTableBOffset1c) = pRecordSlotTable;
 	}
 
 	pStorage = AllocateVSMemBlock(0x3c);
@@ -3799,10 +3797,9 @@ VsNetDualSlotTableFileBackedEffComposite::VsNetDualSlotTableFileBackedEffComposi
 		*(int*) (pbObjectBase + 0x2c + pCompositeOffsets->m_nRecordTableCOffset20) = 0;
 	}
 	else {
-		pRecordSlotTable = new (pStorage)
-			CHeaders(*(int*) (pbObjectBase + pCompositeOffsets->m_nRecordTableAOffset18 + 0x34));
-		*(CHeaders**) (pbObjectBase + 0x2c + pCompositeOffsets->m_nRecordTableCOffset20) =
-			pRecordSlotTable;
+		pRecordSlotTable =
+			new (pStorage) CHeaders(*(int*) (pbObjectBase + pCompositeOffsets->m_nRecordTableAOffset18 + 0x34));
+		*(CHeaders**) (pbObjectBase + 0x2c + pCompositeOffsets->m_nRecordTableCOffset20) = pRecordSlotTable;
 	}
 
 	*(int*) ((char*) pInitialStream + pCompositeOffsets->m_nRecordTableBOffset1c) =
@@ -3892,7 +3889,7 @@ void VsNetDualSlotTableFileBackedEffComposite::CompositeReserved08(void)
 	memcpy(pszDot, ".con", 5);
 
 	CFileCommonSocketCreateSocket((char*) pObject + pOffsets->m_nRecordTableAOffset18 + 0x2c,
-									 (int) (unsigned long) pszPath);
+								  (int) (unsigned long) pszPath);
 	pMarkerOwner = (VsNetFileBackedMarkerOwner*) ((char*) pObject + 0x2c);
 	pMarkerOwner->IncrementFileBackedEffStreamMarker();
 

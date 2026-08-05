@@ -416,7 +416,7 @@ inline void VsNetRuntimeChannelCore::operator delete(void* pObject)
 	FreeVSMemBlock(pObject);
 }
 
-inline void VsNetDualHandleEffStream::operator delete(void* pObject)
+inline void CReadSocket::operator delete(void* pObject)
 {
 	FreeVSMemBlock(pObject);
 }
@@ -437,7 +437,7 @@ CNetworkMessage::CNetworkMessage()
 }
 
 // FUNCTION: LEMBALL 0x0045f820
-VsNetDualHandleEffStream::VsNetDualHandleEffStream()
+CReadSocket::CReadSocket()
 {
 	m_pPrimaryHandleArray48 = 0;
 	m_pPrimaryHandleObject4c = 0;
@@ -452,14 +452,14 @@ VsNetDualHandleEffStream::VsNetDualHandleEffStream()
 }
 
 // FUNCTION: LEMBALL 0x0045f8a0
-VsNetDualHandleEffStream::~VsNetDualHandleEffStream()
+CReadSocket::~CReadSocket()
 {
 	ReleaseEffStreamPrimaryHandleGroup();
 	ReleaseEffStreamSecondaryHandleGroup();
 }
 
 // FUNCTION: LEMBALL 0x0045f8d0
-void VsNetDualHandleEffStream::ReleaseEffStreamPrimaryHandleGroup(void)
+void CReadSocket::ReleaseEffStreamPrimaryHandleGroup(void)
 {
 	void* pHandleArray;
 	void* pHandleObject;
@@ -477,7 +477,7 @@ void VsNetDualHandleEffStream::ReleaseEffStreamPrimaryHandleGroup(void)
 }
 
 // FUNCTION: LEMBALL 0x0045f900
-void VsNetDualHandleEffStream::ReleaseEffStreamSecondaryHandleGroup(void)
+void CReadSocket::ReleaseEffStreamSecondaryHandleGroup(void)
 {
 	void* pHandleArray;
 	void* pHandleObject;
@@ -495,7 +495,7 @@ void VsNetDualHandleEffStream::ReleaseEffStreamSecondaryHandleGroup(void)
 }
 
 // FUNCTION: LEMBALL 0x0045f930
-void VsNetDualHandleEffStream::ConfigureEffStreamPrimaryHandleGroup(int nPacketCount, int cbPayload, int nMode)
+void CReadSocket::ConfigureEffStreamPrimaryHandleGroup(int nPacketCount, int cbPayload, int nMode)
 
 {
 	void* pHandleArray;
@@ -527,7 +527,7 @@ void VsNetDualHandleEffStream::ConfigureEffStreamPrimaryHandleGroup(int nPacketC
 }
 
 // FUNCTION: LEMBALL 0x0045f9b0
-void VsNetDualHandleEffStream::ConfigureEffStreamSecondaryHandleGroup(int nPacketCount, int cbPayload)
+void CReadSocket::ConfigureEffStreamSecondaryHandleGroup(int nPacketCount, int cbPayload)
 
 {
 	void* pHandleArray;

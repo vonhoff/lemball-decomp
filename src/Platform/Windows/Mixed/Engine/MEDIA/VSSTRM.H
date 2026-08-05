@@ -193,18 +193,18 @@ struct CNetworkMessage : VsNetEffStreamCommon {
 	void DestroyEffStreamBaseThunk(void);
 };
 
-struct VsNetDualHandleEffStreamPrimary : CNetworkMessage {
+struct CReadSocketPrimary : CNetworkMessage {
 	char m_abReserved38[0x0c];
 };
 
 // GLOBAL: LEMBALL 0x00498f58
-// VsNetDualHandleEffStream::`vbtable'
+// CReadSocket::`vbtable'
 // VTABLE: LEMBALL 0x00498f60 VsNetEffStreamChannelState
-// VTABLE: LEMBALL 0x00498f70 VsNetDualHandleEffStreamPrimary
-struct VsNetDualHandleEffStream : VsNetDualHandleEffStreamPrimary, virtual VsNetEffStreamChannelState {
-	VsNetDualHandleEffStream();
-	virtual ~VsNetDualHandleEffStream();
-	inline void DestroyDualHandleEffStream(void) { this->~VsNetDualHandleEffStream(); }
+// VTABLE: LEMBALL 0x00498f70 CReadSocketPrimary
+struct CReadSocket : CReadSocketPrimary, virtual VsNetEffStreamChannelState {
+	CReadSocket();
+	virtual ~CReadSocket();
+	inline void DestroyDualHandleEffStream(void) { this->~CReadSocket(); }
 	virtual void DualStreamNoop(void);
 	virtual void WriteGlobalSession(void) = 0;
 	virtual void* ClaimRecord(void) = 0;
@@ -274,7 +274,7 @@ struct VsNetTimedEffStream : VsNetTimedEffStreamPrimary, virtual VsNetEffStreamC
 // VTABLE: LEMBALL 0x00499038 VsNetRuntimeChannelCore
 struct VsNetRuntimeChannelCore : virtual VsNetEffStreamChannelState,
 								 virtual VsNetTimedEffStream,
-								 virtual VsNetDualHandleEffStream {
+								 virtual CReadSocket {
 	virtual ~VsNetRuntimeChannelCore() {}
 	virtual void ClearPendingWrite(void* pArgument);
 	virtual void WriteGlobalSession(void);
@@ -287,7 +287,7 @@ struct VsNetRuntimeChannelCore : virtual VsNetEffStreamChannelState,
 // GLOBAL: LEMBALL 0x00499048
 // VsNetRuntimeChannelStack::`vbtable'{for `VsNetRuntimeChannelCore'}
 // GLOBAL: LEMBALL 0x00499058
-// VsNetRuntimeChannelStack::`vbtable'{for `VsNetDualHandleEffStream'}
+// VsNetRuntimeChannelStack::`vbtable'{for `CReadSocket'}
 // GLOBAL: LEMBALL 0x00499060
 // VsNetRuntimeChannelStack::`vbtable'{for `VsNetTimedEffStream'}
 // GLOBAL: LEMBALL 0x00499068
@@ -319,7 +319,7 @@ struct VsNetRuntimeChannelStack : virtual VsNetRuntimeChannelCore {
 // GLOBAL: LEMBALL 0x00499108
 // VsNetCompositeEffTransportStack::`vbtable'{for `VsNetRuntimeChannelCore'}
 // GLOBAL: LEMBALL 0x00499118
-// VsNetCompositeEffTransportStack::`vbtable'{for `VsNetDualHandleEffStream'}
+// VsNetCompositeEffTransportStack::`vbtable'{for `CReadSocket'}
 // GLOBAL: LEMBALL 0x00499120
 // VsNetCompositeEffTransportStack::`vbtable'{for `VsNetTimedEffStream'}
 // GLOBAL: LEMBALL 0x00499128
