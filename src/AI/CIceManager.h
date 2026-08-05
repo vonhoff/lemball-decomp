@@ -9,6 +9,7 @@ class CIceManager {
 public:
 	CIceManager(CAI* pAI, int nCapacity);
 	void Restart(void);
+	void Initialise(int nCount);
 	~CIceManager(void);
 	void Process(void);
 	int GetViewData(CViewData* pViewData);

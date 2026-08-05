@@ -3,6 +3,7 @@
 #include "AI/CIce.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
+#include "Visos/Generic/Memory.h"
 
 extern void* g_pActiveNetworkRuntimeWindow;
 extern int g_cbEffTransportMaxPacketBytes;
@@ -53,6 +54,35 @@ void CIceManager::Restart(void)
 				nOffset += sizeof(CIce);
 				((IceObjectProc) (*(void***) pObject)[65])(pObject);
 			} while (m_nCapacity30 > i);
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x0042d830
+void CIceManager::Initialise(int nCount)
+{
+	CIce* pBase;
+	int i;
+
+	m_nCapacity30 = nCount;
+	m_nObjectCount34 = 0;
+	if (nCount != 0) {
+		if (m_pObjects38 == 0) {
+			pBase = (CIce*) ((char*) AllocateVSMemBlock((unsigned int) (nCount * sizeof(CIce) + 4)) + 4);
+			if (pBase != 0) {
+				*(int*) ((char*) pBase - 4) = nCount;
+				for (i = nCount - 1; i >= 0; --i) {
+					((void(__fastcall*)(char*)) 0x40353f)((char*) pBase + i * sizeof(CIce));
+				}
+				m_pObjects38 = pBase;
+			}
+			else {
+				m_pObjects38 = 0;
+			}
+		}
+		for (i = 0; i < m_nCapacity30; ++i) {
+			((IceObjectProc) (*(void***) ((char*) m_pObjects38 + i * sizeof(CIce)))[65])((char*) m_pObjects38 + i * sizeof(CIce));
+			*(int*) ((char*) m_pObjects38 + i * sizeof(CIce) + 0x60) = (int) this;
 		}
 	}
 }
