@@ -14,6 +14,25 @@ FUNCTION_NAME = re.compile(r"[A-Za-z_~][A-Za-z0-9_~]*(?:::[A-Za-z_~][A-Za-z0-9_~
 VAGUE_NAME = re.compile(r"(?:^|_)(?:fun|unknown|method|reserved[0-9a-f]*)(?:_|$)")
 MAC_CLASS_PREFIX = re.compile(r"__(\d+)")
 
+# MSVC/CRT library glue: never a game-code reconstruction target. A function whose
+# name matches any of these is "library" regardless of address; the report separates
+# it from genuine game code so the remaining Uncorrelated bucket is real game code.
+# NOTE: game code here uses snake_case (construct_*, destroy_*, emit_*); CRT names are
+# the exact `_pctype`, `__nw`, `strtol`, `??_G` forms — match those precisely, never
+# a substring like "str"/"mem" which would steal snake_case game functions.
+_LIBRARY_PATTERNS = (
+    re.compile(r"^_[A-Za-z_]"),  # _pctype, _mb_cur_max, _DEMO_Init, _VSExit, __nw, __dl
+    re.compile(r"^\?\?_[0-9A-G_]"),  # MSVC `??_G`/`??_E`/`??_7` deleting-dtor/vtable thunks
+    re.compile(r"^(std::|operator new|operator delete)\b"),
+    re.compile(r"^(_*printf|_*fprintf|_*sprintf|_*scanf|_*strtol|_*strtoul|_*strtod|_*atoi|_*atol|_*malloc|_*calloc|_*realloc|_*free|_*qsort|_*bsearch|_*memcpy|_*memset|_*memmove|_*strlen|_*strcpy|_*strcmp|_*strchr|_*strstr|_*abs|labs|llabs)$"),
+    re.compile(r"(_pctype|_mb_cur_max|__mb_|_ftol|__ftol|__imp_|_imp__)"),
+)
+
+
+def classify_library(name):
+    """Return True if the name is library/CRT/compiler glue rather than game code."""
+    return any(p.match(name) for p in _LIBRARY_PATTERNS)
+
 
 def mac_module(code_file):
     name = re.sub(r"^CODE_[0-9]+_", "", code_file).removesuffix(".bin")
@@ -137,8 +156,10 @@ def build_report(inventory_path, reccmp_path, correlations_path, compiler_genera
                 group = owner[:2]
             elif address in compiler_generated:
                 group = ("Windows", "Compiler-generated")
+            elif classify_library(row["name"]):
+                group = ("Windows", "Library glue")
             else:
-                group = ("Windows", "Uncorrelated")
+                group = ("Windows", "Game code (uncorrelated)")
             groups[group].append(function)
 
     units = []
