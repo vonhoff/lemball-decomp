@@ -14,6 +14,7 @@ struct CBulletManagerOwnerView {
 	volatile int m_iProjectilePoolSearchStartDC;
 
 	void* GetFreeProjectilePoolObject(void);
+	void ResetProjectilePool(void);
 };
 
 typedef void(LEMBALL_FASTCALL* ResetProjectileObjectProc)(void* pObject);
@@ -23,7 +24,7 @@ void LEMBALL_FASTCALL DestroyProjectileObject(void* pObject);
 // Split from the original LINKSCF source group to preserve MSVC 4.20 code generation in LINKSCF.CPP.
 
 // FUNCTION: LEMBALL 0x00417e80
-void LEMBALL_FASTCALL ResetProjectilePool(void* pPool)
+void CBulletManagerOwnerView::ResetProjectilePool(void)
 {
 	void** ppActiveProjectile;
 	int cbProjectile;
@@ -31,17 +32,23 @@ void LEMBALL_FASTCALL ResetProjectilePool(void* pPool)
 	ResetProjectileObjectProc pReset;
 
 	cbProjectile = 0;
-	ppActiveProjectile = ((CBulletManagerOwnerView*) pPool)->m_apActiveProjectiles34;
-	((CBulletManagerOwnerView*) pPool)->m_iActiveProjectileD8 = 0;
-	((CBulletManagerOwnerView*) pPool)->m_cActiveProjectilesD4 = 0;
+	ppActiveProjectile = m_apActiveProjectiles34;
+	m_iActiveProjectileD8 = 0;
+	m_cActiveProjectilesD4 = 0;
 	do {
 		*ppActiveProjectile = NULL;
 		ppActiveProjectile++;
-		pProjectile = ((CBulletManagerOwnerView*) pPool)->m_pProjectilePool30 + cbProjectile;
+		pProjectile = m_pProjectilePool30 + cbProjectile;
 		cbProjectile += 0x1a4;
 		pReset = (ResetProjectileObjectProc) (*(void***) pProjectile)[65];
 		pReset(pProjectile);
 	} while (cbProjectile < 0x41a0);
+}
+
+// Vtable slot 0x494008 pins the __fastcall free form; forward to the real member.
+void LEMBALL_FASTCALL ResetProjectilePool(void* pPool)
+{
+	((CBulletManagerOwnerView*) pPool)->ResetProjectilePool();
 }
 
 // FUNCTION: LEMBALL 0x00417ee0
