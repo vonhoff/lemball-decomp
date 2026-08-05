@@ -374,8 +374,6 @@ void LEMBALL_FASTCALL SendCollMessage16(void* pObject, void* pUnused);
 void noop_vtable_callback_00422fa0(void);
 void noop_vtable_callback_00423040(void);
 int return_true_vtable_callback_00423050(void);
-
-void __fastcall clear_rock_chunk_object_count(void* pManager);
 int PASCAL get_tile_flag_0x1c_object_render_entry_count(void);
 void noop_vtable_callback_0042c9a0(void);
 int __fastcall return_object_field_0x0c_00435880(void* pObject);
@@ -1851,9 +1849,9 @@ int return_true_vtable_callback_00423050(void)
 }
 
 // FUNCTION: LEMBALL 0x00426c20
-void __fastcall clear_rock_chunk_object_count(void* pManager)
+void CRocketManager::ResetObjectCount(void)
 {
-	*(int*) ((char*) pManager + 0x34) = 0;
+	m_nObjectCount34 = 0;
 }
 
 extern void* g_LEVELVT_TileFlag1CChunkObjectVtable[16];

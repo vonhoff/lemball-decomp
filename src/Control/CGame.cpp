@@ -3523,7 +3523,7 @@ void LevelGameMode::InitializeLevelGameMode(void)
 
 		pObject = AllocateVSMemBlock(0x40);
 		if (pObject != 0) {
-			pObject = ((LinkScfRockChunkManagerView*) pObject)->ConstructRockChunkManagerThunk(pLevelGameMode, 0x14);
+			pObject = ((CRocketManager*) pObject)->ConstructRockChunkManagerThunk(pLevelGameMode, 0x14);
 		}
 		*(void**) (pModeBytes + 0x198) = pObject;
 		RegisterLevelChunkStreamThunk(g_pLevelChunkStreamDispatcher, *(void**) (pModeBytes + 0x198));
@@ -3563,7 +3563,7 @@ void LevelGameMode::InitializeLevelGameMode(void)
 	if (*(int*) (pModeBytes + 0x4c) == 0) {
 		pObject = AllocateVSMemBlock(0x40);
 		if (pObject != 0) {
-			pObject = ((LinkScfTramChunkManagerView*) pObject)->ConstructTramChunkManagerThunk(pLevelGameMode, 0x14);
+			pObject = ((CTrampolineManager*) pObject)->ConstructTramChunkManagerThunk(pLevelGameMode, 0x14);
 		}
 		*(void**) (pModeBytes + 0x1b4) = pObject;
 		RegisterLevelChunkStreamThunk(g_pLevelChunkStreamDispatcher, *(void**) (pModeBytes + 0x1b4));

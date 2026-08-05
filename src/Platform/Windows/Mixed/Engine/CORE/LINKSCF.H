@@ -11,21 +11,26 @@ struct CPaintGunManager {
 	void Initialise(int nCapacity);
 };
 
-struct LinkScfTramChunkManagerView {
+struct CTrampolineManager {
 	int m_nCapacity30;         // 0x30
 	int m_nObjectCount34;      // 0x34
 	void* m_pObjectArray38;    // 0x38
-	LinkScfTramChunkManagerView* ConstructTramChunkManager(void* pLevelMode, int nCapacity);
-	LinkScfTramChunkManagerView* ConstructTramChunkManagerThunk(void* pLevelMode, int nCapacity);
+	CTrampolineManager* ConstructTramChunkManager(void* pLevelMode, int nCapacity);
+	CTrampolineManager* ConstructTramChunkManagerThunk(void* pLevelMode, int nCapacity);
 	void Restart(void);
 	void Initialise(int nCapacity);
 	int Hit(void* pCoord, void* pGameObject);
+	void ResetObjectCount(void);
 };
 
 
-struct LinkScfRockChunkManagerView {
-	LinkScfRockChunkManagerView* ConstructRockChunkManager(void* pLevelMode, int nCapacity);
-	LinkScfRockChunkManagerView* ConstructRockChunkManagerThunk(void* pLevelMode, int nCapacity);
+struct CRocketManager {
+	int m_nCapacity30;         // 0x30
+	int m_nObjectCount34;      // 0x34
+	void* m_pObjectArray38;    // 0x38
+	CRocketManager* ConstructRockChunkManager(void* pLevelMode, int nCapacity);
+	CRocketManager* ConstructRockChunkManagerThunk(void* pLevelMode, int nCapacity);
+	void ResetObjectCount(void);
 };
 
 struct LinkScfDoorChunkManagerView {

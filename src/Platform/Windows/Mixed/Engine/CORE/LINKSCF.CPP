@@ -671,13 +671,13 @@ CCollectableManager* CCollectableManager::ConstructCollChunkManagerThunk(void* p
 	return ConstructCollChunkManager(pLevelMode, nCapacity);
 }
 // LINKERILT: LEMBALL 0x004030e9
-LinkScfRockChunkManagerView* LinkScfRockChunkManagerView::ConstructRockChunkManagerThunk(void* pLevelMode,
+CRocketManager* CRocketManager::ConstructRockChunkManagerThunk(void* pLevelMode,
 																						 int nCapacity)
 {
 	return ConstructRockChunkManager(pLevelMode, nCapacity);
 }
 // LINKERILT: LEMBALL 0x004031a7
-LinkScfTramChunkManagerView* LinkScfTramChunkManagerView::ConstructTramChunkManagerThunk(void* pLevelMode,
+CTrampolineManager* CTrampolineManager::ConstructTramChunkManagerThunk(void* pLevelMode,
 																						 int nCapacity)
 {
 	return ConstructTramChunkManager(pLevelMode, nCapacity);
@@ -1801,7 +1801,7 @@ void LEMBALL_FASTCALL DestroyCRocket(void* pObject)
 }
 
 // FUNCTION: LEMBALL 0x00426ac0
-LinkScfRockChunkManagerView* LinkScfRockChunkManagerView::ConstructRockChunkManager(void* pLevelMode, int nCapacity)
+CRocketManager* CRocketManager::ConstructRockChunkManager(void* pLevelMode, int nCapacity)
 {
 	LINKSCF_INITIALIZE_EFF_CHUNK_STREAM(this, 0x14, 9);
 	*(void**) this = g_LINKSCF_RockChunkManagerVtable;
@@ -1926,7 +1926,7 @@ void LEMBALL_FASTCALL DestroyCTrampoline(void* pObject)
 
 // MACINTOSH: CTrampolineManager::Initialise(int)
 // FUNCTION: LEMBALL 0x0042af60
-LinkScfTramChunkManagerView* LinkScfTramChunkManagerView::ConstructTramChunkManager(void* pLevelMode, int nCapacity)
+CTrampolineManager* CTrampolineManager::ConstructTramChunkManager(void* pLevelMode, int nCapacity)
 {
 	LINKSCF_INITIALIZE_EFF_CHUNK_STREAM(this, 0x18, 0x0d);
 	*(void**) this = g_LINKSCF_TramChunkManagerVtable;
@@ -1937,7 +1937,7 @@ LinkScfTramChunkManagerView* LinkScfTramChunkManagerView::ConstructTramChunkMana
 }
 
 // FUNCTION: LEMBALL 0x0042afc0
-void LinkScfTramChunkManagerView::Restart(void)
+void CTrampolineManager::Restart(void)
 {
 	int nOffset;
 	int i;
@@ -1956,7 +1956,7 @@ void LinkScfTramChunkManagerView::Restart(void)
 
 // MACINTOSH: CTrampolineManager::Hit(AICOORD&, CGameObject*)
 // FUNCTION: LEMBALL 0x0042aff0
-void LinkScfTramChunkManagerView::Initialise(int nCapacity)
+void CTrampolineManager::Initialise(int nCapacity)
 {
 	char* pBase;
 	char* pObject;
@@ -1986,11 +1986,10 @@ void LinkScfTramChunkManagerView::Initialise(int nCapacity)
 	}
 }
 
-// MACINTOSH: CTrampolineManager::Restart()
-// FUNCTION: LEMBALL 0x0042b0b0
-void LEMBALL_FASTCALL clear_tram_chunk_object_count(void* pManager)
+// FUNCTION: LEMBALL 0x0042b0b0 (distinct count-reset, was "clear_tram_chunk_object_count")
+void CTrampolineManager::ResetObjectCount(void)
 {
-	*(int*) ((char*) pManager + 0x34) = 0;
+	m_nObjectCount34 = 0;
 }
 
 // MACINTOSH: CTrampolineManager::Process()
@@ -2017,7 +2016,7 @@ void LEMBALL_FASTCALL ActivateTramChunkObjects(void* pManager)
 }
 
 // FUNCTION: LEMBALL 0x0042b550
-int LinkScfTramChunkManagerView::Hit(void* pCoord, void* pGameObject)
+int CTrampolineManager::Hit(void* pCoord, void* pGameObject)
 {
 	int nOffset;
 	int i;
