@@ -99,7 +99,7 @@ void CGenericGroup::SwapElements(CGameObject* pFirst, CGameObject* pSecond)
 void CGenericGroup::AddElementToGroup(CGameObject* pObject)
 {
 	m_apElements128[m_nElementCount124] = pObject;
-	*(int*) ((char*) this + 0x164) = 1;
+	m_nUnused164 = 1;
 	++m_nElementCount124;
 }
 
@@ -119,7 +119,7 @@ void CGenericGroup::RemoveElementFromGroup(CGameObject* pObject)
 			}
 			m_apElements128[i] = 0;
 			--m_nElementCount124;
-			*(int*) ((char*) this + 0x164) = 1;
+			m_nUnused164 = 1;
 			return;
 		}
 	}
@@ -233,7 +233,7 @@ void CGenericGroup::SendNewWaypoint(AICOORD position)
 																						 position.x >> 12,
 																						 position.y >> 12);
 		g_pGenericGroupFormationManager->TransformFormation(
-				*(int*) ((char*) this + 0x160), (nDirection - 2) << 6);
+				m_nFormationIndex160, (nDirection - 2) << 6);
 		int nElements = ((GroupCountProc) pVtable[0x108 / sizeof(void*)])(this);
 		for (int i = 0; i < nElements; ++i) {
 			CFormationVector* pVector = g_pGenericGroupFormationManager->GetAVector(i);
@@ -272,13 +272,13 @@ void CGenericGroup::ClearExistingWaypoints(void)
 // FUNCTION: LEMBALL 0x0041e400
 void CGenericGroup::SetFormationIndex(int nIndex)
 {
-	*(int*) ((char*) this + 0x160) = nIndex;
+	m_nFormationIndex160 = nIndex;
 }
 
 // FUNCTION: LEMBALL 0x0041e410
 int CGenericGroup::GetFormationIndex(void)
 {
-	return *(int*) ((char*) this + 0x160);
+	return m_nFormationIndex160;
 }
 
 // FUNCTION: LEMBALL 0x0041e530

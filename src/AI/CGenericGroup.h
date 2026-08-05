@@ -16,6 +16,8 @@ public:
 	int m_nCurrentElement150;
 	char m_abReserved154[4];
 	CVSRect m_BoundingBox158;
+	int m_nFormationIndex160;    // 0x160
+	int m_nUnused164;            // 0x164
 
 	void Restart(void);
 	int Process(void);
