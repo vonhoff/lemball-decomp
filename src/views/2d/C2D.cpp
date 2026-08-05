@@ -25,10 +25,12 @@ struct LevelScreenManagedEntitySelectionView {
 	unsigned char m_abReserved978[0xd0];
 	int m_nPendingSelectionA48;
 	unsigned short m_nPendingSelectionVariantA4C;
+	unsigned short m_nGroupCapacityA4E;
 
 	void SelectLemming(int nIndex);
 	void SelectObject(int nIndex);
 	bool InGroupByObjectNo(int nObjectNo);
+	void RemoveFromGroupByObjectNo(int nObjectNo);
 };
 
 struct VariantResourceEntryManagerView {
@@ -131,4 +133,36 @@ bool LevelScreenManagedEntitySelectionView::InGroupByObjectNo(int nObjectNo)
 		}
 	}
 	return false;
+}
+
+// Macintosh: C2D::RemoveFromGroupByObjectNo(int)
+// FUNCTION: LEMBALL 0x00437460
+void LevelScreenManagedEntitySelectionView::RemoveFromGroupByObjectNo(int nObjectNo)
+{
+	unsigned short nCount;
+	unsigned short nIndex;
+	unsigned short* pRead;
+	unsigned short* pWrite;
+
+	pRead = (unsigned short*) ((char*) this + 0xa50);
+	nCount = m_nPendingSelectionVariantA4C;
+	if (nCount == 0) {
+		return;
+	}
+	pWrite = (unsigned short*) ((char*) this + 0xa50);
+	for (nIndex = 0; nIndex < nCount; ++nIndex) {
+		if (*pRead != nObjectNo) {
+			*pWrite = *pRead;
+			++pWrite;
+		}
+		++pRead;
+	}
+	--nCount;
+	m_nPendingSelectionVariantA4C = nCount;
+	if (nCount < m_nGroupCapacityA4E) {
+		--m_nGroupCapacityA4E;
+	}
+	if (nCount == 0) {
+		m_nPendingSelectionA48 = 0;
+	}
 }
