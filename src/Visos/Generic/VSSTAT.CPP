@@ -306,7 +306,7 @@ CString* CString::LowercaseAndCopyDynamicCString(CString* pResult)
 
 	pszText = m_pszText;
 	cchText = (int) strlen(pszText);
-	while (cchText != 0) {
+	while (cchText > 0) {
 		if (isupper(*pszText)) {
 			*pszText = (char) tolower(*pszText);
 		}
