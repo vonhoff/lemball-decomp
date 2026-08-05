@@ -6,7 +6,7 @@
 // vtable owner, semantic role, and neighboring address/call-graph cluster.
 
 // FUNCTION: LEMBALL 0x00467e40
-void __fastcall set_overlay_owner_field_0xf8(void* pOwner, void* pUnused, int nValue)
+void __fastcall SetAutoDraw(void* pOwner, void* pUnused, int nValue)
 {
 	(void) pUnused;
 	*(int*) ((char*) pOwner + 0xf8) = nValue;

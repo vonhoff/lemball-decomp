@@ -65,7 +65,7 @@ extern void* LEMBALL_FASTCALL InitializeStatusIndicatorPointSinkEntryThunk(void*
 extern void LEMBALL_FASTCALL SetWindowOwnerRenderAnchorFromPoint(void* pOwner, int nUnusedEdx, const VS_XYPair* pPoint);
 extern void LEMBALL_FASTCALL NotifySpriteOwnerVariantCEvent0D(void* pObject);
 extern void LEMBALL_FASTCALL NotifySpriteOwnerVariantCEvent0E(void* pObject);
-extern void LEMBALL_FASTCALL set_overlay_owner_field_0xf8(void* pOwner, void* pUnusedEdx, int nValue);
+extern void LEMBALL_FASTCALL SetAutoDraw(void* pOwner, void* pUnusedEdx, int nValue);
 void LEMBALL_FASTCALL DetachGeometryChildAndDestroyWindowOwner(void* pObject);
 int GetIntDirectionSign(int nValue);
 
@@ -1584,7 +1584,7 @@ void GameMenuSelectorEntry::BuildOverlay(const int* panResourceIds)
 		pEntry->m_pAlignedOverlay50 = pOverlay;
 		ppOverlay = &pEntry->m_pAlignedOverlay50;
 		nContext = *(int*) (*(int*) ((char*) *ppOverlay + 0x4c) + 0x0c);
-		set_overlay_owner_field_0xf8(*ppOverlay, 0, 0);
+		SetAutoDraw(*ppOverlay, 0, 0);
 		nRenderObject = nContext + *(int*) (*(int*) (nContext + 0x40) + 4) + 0x70;
 		*(int*) nRenderObject = 0;
 		*(void**) ((char*) *ppOverlay + 0xf4) = g_pSharedRenderDispatchQueue;
@@ -1607,7 +1607,7 @@ void GameMenuSelectorEntry::BuildOverlay(const int* panResourceIds)
 	pEntry->m_pProgressOverlay54 = pOverlay;
 	ppOverlay = &pEntry->m_pProgressOverlay54;
 	nContext = *(int*) (*(int*) ((char*) *ppOverlay + 0x4c) + 0x0c);
-	set_overlay_owner_field_0xf8(*ppOverlay, 0, 0);
+	SetAutoDraw(*ppOverlay, 0, 0);
 	nRenderObject = nContext + *(int*) (*(int*) (nContext + 0x40) + 4) + 0x70;
 	*(int*) nRenderObject = 0;
 	*(void**) ((char*) *ppOverlay + 0xf4) = g_pSharedRenderDispatchQueue;
