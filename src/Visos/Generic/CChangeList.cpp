@@ -2,7 +2,7 @@
 
 #include "Visos/Generic/Memory.h"
 
-// FUNCTION: LEMBALL 0x004669A0
+// FUNCTION: LEMBALL 0x004669a0
 CChangeList::CChangeList(int cItems, CVSSize Size, CVSSize CellSize)
 {
 	CChangeListItem* pItem;
@@ -46,7 +46,7 @@ CChangeList::CChangeList(int cItems, CVSSize Size, CVSSize CellSize)
 	Reset();
 }
 
-// FUNCTION: LEMBALL 0x00466A90
+// FUNCTION: LEMBALL 0x00466a90
 void CChangeList::FreeMap(void)
 {
 	if (m_pMap10 != 0) {
@@ -56,7 +56,7 @@ void CChangeList::FreeMap(void)
 	Reset();
 }
 
-// FUNCTION: LEMBALL 0x00466AC0
+// FUNCTION: LEMBALL 0x00466ac0
 void CChangeList::AllocMap(void)
 {
 	if (m_pMap10 == 0) {
@@ -65,7 +65,7 @@ void CChangeList::AllocMap(void)
 	}
 }
 
-// FUNCTION: LEMBALL 0x00466AF0
+// FUNCTION: LEMBALL 0x00466af0
 void CChangeList::Resize(CVSSize Size)
 {
 	short cxMap;
@@ -90,7 +90,7 @@ void CChangeList::Resize(CVSSize Size)
 	}
 }
 
-// FUNCTION: LEMBALL 0x00466B60
+// FUNCTION: LEMBALL 0x00466b60
 void __fastcall InitializeHelperUploadStatePending(int nChangeList)
 {
 	CChangeList* pChangeList;
@@ -109,7 +109,7 @@ void __fastcall InitializeHelperUploadStatePending(int nChangeList)
 	pChangeList->m_iDrawMark08 = -1;
 }
 
-// FUNCTION: LEMBALL 0x00466B90
+// FUNCTION: LEMBALL 0x00466b90
 CChangeList::~CChangeList()
 {
 	if (m_pItems0C != 0) {
@@ -119,14 +119,14 @@ CChangeList::~CChangeList()
 	FreeMap();
 }
 
-// FUNCTION: LEMBALL 0x00466BC0
+// FUNCTION: LEMBALL 0x00466bc0
 void CChangeList::PushActive(unsigned char)
 {
 	m_anActive38[m_cActive44] = m_nActive48;
 	++m_cActive44;
 }
 
-// FUNCTION: LEMBALL 0x00466BD0
+// FUNCTION: LEMBALL 0x00466bd0
 void __fastcall PopHelperUploadStateMarker(void* pObject)
 {
 	CChangeList* pChangeList;
@@ -136,7 +136,7 @@ void __fastcall PopHelperUploadStateMarker(void* pObject)
 	pChangeList->m_nActive48 = pChangeList->m_anActive38[pChangeList->m_cActive44];
 }
 
-// FUNCTION: LEMBALL 0x00466BE0
+// FUNCTION: LEMBALL 0x00466be0
 void CChangeList::Add(const CVSRect& Rect)
 {
 	short cxCell;
@@ -184,7 +184,7 @@ void CChangeList::Add(const CVSRect& Rect)
 	m_nArea2C += (int) Rect.width * (int) Rect.height;
 }
 
-// FUNCTION: LEMBALL 0x00466CE0
+// FUNCTION: LEMBALL 0x00466ce0
 void CChangeList::SetDrawMark(const CVSRect& Rect, unsigned char nMark)
 {
 	unsigned char nPrevious;
@@ -195,7 +195,7 @@ void CChangeList::SetDrawMark(const CVSRect& Rect, unsigned char nMark)
 	m_nActive48 = nPrevious;
 }
 
-// FUNCTION: LEMBALL 0x00466D10
+// FUNCTION: LEMBALL 0x00466d10
 void __fastcall PromoteHelperUploadStateToActive(int nChangeList)
 {
 	CChangeList* pChangeList;
@@ -211,7 +211,7 @@ void __fastcall PromoteHelperUploadStateToActive(int nChangeList)
 	}
 }
 
-// FUNCTION: LEMBALL 0x00466D40
+// FUNCTION: LEMBALL 0x00466d40
 int CChangeList::GetNextArea(unsigned char nTarget, unsigned char nState, unsigned char nReplacement)
 {
 	unsigned char* pRow;
@@ -282,7 +282,7 @@ int CChangeList::GetNextArea(unsigned char nTarget, unsigned char nState, unsign
 	return 1;
 }
 
-// FUNCTION: LEMBALL 0x00466EF0
+// FUNCTION: LEMBALL 0x00466ef0
 int CChangeList::GetNumItems(void)
 {
 	if (m_pMap10 == 0 || m_pItems0C == 0) {
