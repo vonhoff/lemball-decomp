@@ -1,10 +1,6 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "AI/LevelPoint3.h"
 
-struct LevelPoint3 {
-	int m_nX;
-	int m_nY;
-	int m_nZ;
-};
 
 struct LevelBounds3 {
 	int m_nMinX;

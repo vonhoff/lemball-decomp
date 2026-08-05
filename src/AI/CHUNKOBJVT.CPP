@@ -1,4 +1,5 @@
 #include "AI/CHand.h"
+#include "AI/LevelPoint3.h"
 #include "AI/CLaser.h"
 #include "AI/CLift.h"
 #include "AI/CGameObject.h"
@@ -47,11 +48,6 @@ struct ManagedEntityLocalStateView {
 	virtual void SetManagedEntityStateIdLocal(int nStateId);
 };
 
-struct LevelPoint3 {
-	int m_nX;
-	int m_nY;
-	int m_nZ;
-};
 
 struct ManagedProjectileObjectView {
 	void ActivateAtPosition(const LevelPoint3* pPosition);

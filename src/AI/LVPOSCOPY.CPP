@@ -1,4 +1,5 @@
 #include "AI/CPlayerLemmingGroupManager.h"
+#include "AI/LevelPoint3.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
 struct LevelPositionTableView {
@@ -26,11 +27,6 @@ struct LevelEntityPositionView {
 	int m_nZ;
 };
 
-struct LevelPoint3 {
-	int m_nX;
-	int m_nY;
-	int m_nZ;
-};
 
 struct LevelModePositionView {
 	unsigned char m_abReserved00[0x15c];
