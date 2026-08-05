@@ -38,7 +38,8 @@ private:
 	tCoord3d m_RangeStart138;              // 0x138 (x,y,z)
 	tCoord3d m_RangeEnd13E;                // 0x13e (x,y,z)
 	int m_nTriggered144;                   // 0x144
-	unsigned char m_abReserved148[0x170];
+	int m_nActive148;                      // 0x148
+	unsigned char m_abReserved14C[0x16c];
 };
 
 typedef char CInvisibleSwitchSizeCheck[sizeof(CInvisibleSwitch) == 0x2b8 ? 1 : -1];

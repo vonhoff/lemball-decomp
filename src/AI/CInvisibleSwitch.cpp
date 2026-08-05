@@ -85,7 +85,7 @@ void CInvisibleSwitch::Initialise(void)
 	char* pObjectBytes = (char*) this;
 	m_nStateB8 = 0x18;
 	*(unsigned short*) (pObjectBytes + 0x150) = 0;
-	*(int*) (pObjectBytes + 0x148) = 0;
+	m_nActive148 = 0;
 	*(int*) (pObjectBytes + 0x254) = 0;
 	m_nTriggered144 = 0;
 	*(int*) (pObjectBytes + 0x5c) = 0;
@@ -123,7 +123,7 @@ void CInvisibleSwitch::Set(const tCoord3d& begin, const tCoord3d& end)
 	nY = m_RangeStart138.y;
 	m_nTriggered144 = 0;
 	m_WorldPosition9C.x = m_RangeStart138.x << 12;
-	*(int*) (pObjectBytes + 0x148) = 0;
+	m_nActive148 = 0;
 	m_WorldPosition9C.y = nY << 12;
 	m_WorldPosition9C.z = m_RangeStart138.z << 12;
 
@@ -194,7 +194,7 @@ void CInvisibleSwitch::StepOn(const AICOORD& position, CGameObject* pEntity)
 	int nX;
 	int nY;
 
-	if (*(int*) (pObjectBytes + 0x148) != 0 || m_anRuntimeState12C[0] != 0x18 ||
+	if (m_nActive148 != 0 || m_anRuntimeState12C[0] != 0x18 ||
 		GetManagedEntitySlotIdThunk((int) (unsigned long) this) == *(unsigned short*) (pEntityBytes + 0x120)) {
 		return;
 	}
@@ -234,7 +234,7 @@ int CInvisibleSwitch::Process(void)
 
 	if (m_nStateB8 == 0x1a) {
 		if (m_nTriggered144 == 0) {
-			*(int*) (pObjectBytes + 0x148) = 1;
+			m_nActive148 = 1;
 		}
 		if (*(void**) (pObjectBytes + 0x5c) != 0) {
 			AddObject((CGameObject*) *(void**) (pObjectBytes + 0x5c));
