@@ -421,7 +421,7 @@ inline void CReadSocket::operator delete(void* pObject)
 	FreeVSMemBlock(pObject);
 }
 
-inline void VsNetTimedEffStream::operator delete(void* pObject)
+inline void CWriteSocket::operator delete(void* pObject)
 {
 	FreeVSMemBlock(pObject);
 }
@@ -562,7 +562,7 @@ void CReadSocket::ConfigureEffStreamSecondaryHandleGroup(int nPacketCount, int c
 }
 
 // FUNCTION: LEMBALL 0x0045fce0
-VsNetTimedEffStream::VsNetTimedEffStream()
+CWriteSocket::CWriteSocket()
 {
 	DWORD dwNow;
 	int* pHandleArray;
@@ -583,7 +583,7 @@ VsNetTimedEffStream::VsNetTimedEffStream()
 }
 
 // FUNCTION: LEMBALL 0x0045fd80
-VsNetTimedEffStream::~VsNetTimedEffStream()
+CWriteSocket::~CWriteSocket()
 {
 	FreeVSMemBlock(m_pRuntimeService70);
 	m_pRuntimeService70 = 0;
@@ -593,13 +593,13 @@ VsNetTimedEffStream::~VsNetTimedEffStream()
 }
 
 // FUNCTION: LEMBALL 0x0045fde0
-void VsNetTimedEffStream::InvokeTimedEffStreamServiceCallback(void* pArgument)
+void CWriteSocket::InvokeTimedEffStreamServiceCallback(void* pArgument)
 {
 	((VsNetRuntimeService*) m_pRuntimeService70)->Invoke(pArgument);
 }
 
 // FUNCTION: LEMBALL 0x0045fdf0
-void VsNetTimedEffStream::ReleaseTimedEffStreamPrimaryHandle(void)
+void CWriteSocket::ReleaseTimedEffStreamPrimaryHandle(void)
 {
 	void* pHandleArray;
 
@@ -611,7 +611,7 @@ void VsNetTimedEffStream::ReleaseTimedEffStreamPrimaryHandle(void)
 }
 
 // FUNCTION: LEMBALL 0x0045fe10
-void VsNetTimedEffStream::ReleaseTimedEffStreamSecondaryHandles(void)
+void CWriteSocket::ReleaseTimedEffStreamSecondaryHandles(void)
 {
 	void* pHandleArray;
 
@@ -629,7 +629,7 @@ void VsNetTimedEffStream::ReleaseTimedEffStreamSecondaryHandles(void)
 }
 
 // FUNCTION: LEMBALL 0x0045fe50
-void VsNetTimedEffStream::ReleaseTimedEffStreamPrimaryHandleThunk(int nUnused0, int nUnused1, int nUnused2)
+void CWriteSocket::ReleaseTimedEffStreamPrimaryHandleThunk(int nUnused0, int nUnused1, int nUnused2)
 
 {
 	(void) nUnused0;
@@ -639,7 +639,7 @@ void VsNetTimedEffStream::ReleaseTimedEffStreamPrimaryHandleThunk(int nUnused0, 
 }
 
 // FUNCTION: LEMBALL 0x0045fe60
-void VsNetTimedEffStream::ConfigureTimedEffStreamSecondaryHandle(int nPacketCount, int nMode)
+void CWriteSocket::ConfigureTimedEffStreamSecondaryHandle(int nPacketCount, int nMode)
 {
 	void* pHandleArray;
 

@@ -224,20 +224,20 @@ struct CReadSocket : CReadSocketPrimary, virtual VsNetEffStreamChannelState {
 	void ConfigureEffStreamSecondaryHandleGroup(int nPacketCount, int cbPayload);
 };
 
-struct VsNetTimedEffStreamPrimary : CNetworkMessage {
+struct CWriteSocketPrimary : CNetworkMessage {
 	int m_nReserved38;
 	DWORD m_dwLastTick3c;
 	int m_nReserved40;
 };
 
 // GLOBAL: LEMBALL 0x00498f98
-// VsNetTimedEffStream::`vbtable'
+// CWriteSocket::`vbtable'
 // VTABLE: LEMBALL 0x00498fa0 VsNetEffStreamChannelState
-struct VsNetTimedEffStream : VsNetTimedEffStreamPrimary, virtual VsNetEffStreamChannelState {
-	VsNetTimedEffStream();
-	inline VsNetTimedEffStream* ConstructTimedEffStream(int) { return this; }
-	virtual ~VsNetTimedEffStream();
-	inline void DestroyTimedEffStream(void) { this->~VsNetTimedEffStream(); }
+struct CWriteSocket : CWriteSocketPrimary, virtual VsNetEffStreamChannelState {
+	CWriteSocket();
+	inline CWriteSocket* ConstructTimedEffStream(int) { return this; }
+	virtual ~CWriteSocket();
+	inline void DestroyTimedEffStream(void) { this->~CWriteSocket(); }
 	virtual void ClearPendingWrite(void* pArgument);                     // vtable+0xc
 	virtual void WriteGlobalSession(void) = 0;                           // vtable+0x10
 	virtual void* ClaimRecord(void) = 0;                                 // vtable+0x14
@@ -273,7 +273,7 @@ struct VsNetTimedEffStream : VsNetTimedEffStreamPrimary, virtual VsNetEffStreamC
 
 // VTABLE: LEMBALL 0x00499038 VsNetRuntimeChannelCore
 struct VsNetRuntimeChannelCore : virtual VsNetEffStreamChannelState,
-								 virtual VsNetTimedEffStream,
+								 virtual CWriteSocket,
 								 virtual CReadSocket {
 	virtual ~VsNetRuntimeChannelCore() {}
 	virtual void ClearPendingWrite(void* pArgument);
@@ -289,7 +289,7 @@ struct VsNetRuntimeChannelCore : virtual VsNetEffStreamChannelState,
 // GLOBAL: LEMBALL 0x00499058
 // VsNetRuntimeChannelStack::`vbtable'{for `CReadSocket'}
 // GLOBAL: LEMBALL 0x00499060
-// VsNetRuntimeChannelStack::`vbtable'{for `VsNetTimedEffStream'}
+// VsNetRuntimeChannelStack::`vbtable'{for `CWriteSocket'}
 // GLOBAL: LEMBALL 0x00499068
 // VsNetRuntimeChannelStack::`vbtable'{for `VsNetRuntimeChannelStack'}
 // VTABLE: LEMBALL 0x004990d8 VsNetRuntimeChannelCore
@@ -321,7 +321,7 @@ struct VsNetRuntimeChannelStack : virtual VsNetRuntimeChannelCore {
 // GLOBAL: LEMBALL 0x00499118
 // VsNetCompositeEffTransportStack::`vbtable'{for `CReadSocket'}
 // GLOBAL: LEMBALL 0x00499120
-// VsNetCompositeEffTransportStack::`vbtable'{for `VsNetTimedEffStream'}
+// VsNetCompositeEffTransportStack::`vbtable'{for `CWriteSocket'}
 // GLOBAL: LEMBALL 0x00499128
 // VsNetCompositeEffTransportStack::`vbtable'{for `VsNetCompositeEffTransportStack'}
 // VTABLE: LEMBALL 0x00499198 VsNetRuntimeChannelCore

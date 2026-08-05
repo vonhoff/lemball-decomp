@@ -1181,11 +1181,10 @@ struct VsNetEmbeddedPendingWriteFacet {
 
 		pTransportView =
 			(char*) this + (*(VsNetGlobalSessionAdjustorOffsets**) ((char*) this - 8))->m_nTransportViewOffset10;
-		((VsNetTimedEffStream*) (pTransportView +
-								 (*(VsNetGlobalSessionAdjustorOffsets**) (pTransportView - 8))
-									 ->m_nEmbeddedStreamViewOffset08 -
-								 8))
-			->VsNetTimedEffStream::ClearPendingWrite(pUnused);
+		((CWriteSocket*) (pTransportView +
+						  (*(VsNetGlobalSessionAdjustorOffsets**) (pTransportView - 8))->m_nEmbeddedStreamViewOffset08 -
+						  8))
+			->CWriteSocket::ClearPendingWrite(pUnused);
 	}
 };
 
@@ -1878,7 +1877,7 @@ void CReadSocket::DualStreamNoop(void)
 }
 
 // FUNCTION: LEMBALL 0x00462970
-void VsNetTimedEffStream::SetTimedChannelWord(unsigned short nValue)
+void CWriteSocket::SetTimedChannelWord(unsigned short nValue)
 {
 	VsNetConstructionAdjustorVtable* pOffsets;
 	int nTimedStreamDelta;
@@ -2573,7 +2572,7 @@ void* VsNetTimedFileBackedEffChannelConstructorView::ConstructTimedFileBackedEff
 		pFront->m_pTimedStreamOffsets8c = &g_NETWORK_FileBackedTimedStreamOffsets;
 		pFront->m_pFileThunkd4 = (VsNetFileWrapperThunkOffsets*) &g_NETWORK_FileBackedTimedFileWrapperThunkOffsets;
 		pConstructed->m_ChannelState18.ConstructEffStreamChannelState();
-		((VsNetTimedEffStream*) &pConstructed->m_TimedStream48)->ConstructTimedEffStream(0);
+		((CWriteSocket*) &pConstructed->m_TimedStream48)->ConstructTimedEffStream(0);
 		pConstructed->m_FileWrapperbc.m_pVtable = g_NETWORK_CrtFatalRuntimeErrorThunk;
 		pConstructed->m_FileWrapperbc.m_nReserved04 = 0;
 		pConstructed->m_FileWrapperbc.m_fOpen08 = 1;
@@ -2686,7 +2685,7 @@ void VsNetTimedFileBackedEffChannel::CaptureTimedSocketLookup(void* pArgument)
 	int nTimedStreamDelta;
 
 	nTimedStreamDelta = *(int*) (unsigned long) (*(int*) ((char*) this - 0x3c) + 8);
-	((VsNetTimedEffStream*) ((char*) this + nTimedStreamDelta - 0x3c))->InvokeTimedEffStreamServiceCallback(pArgument);
+	((CWriteSocket*) ((char*) this + nTimedStreamDelta - 0x3c))->InvokeTimedEffStreamServiceCallback(pArgument);
 }
 
 // FUNCTION: LEMBALL 0x0047a0b0
@@ -2846,7 +2845,7 @@ void* VsNetEmbeddedFileBackedEffChannelStackConstructorView::ConstructEmbeddedFi
 		pStackFront->m_pTimedFileViewOffsets14c = &g_NETWORK_EmbeddedFileBackedTimedFileViewOffsets;
 
 		pConstructed->m_ChannelState08.ConstructEffStreamChannelState();
-		((VsNetTimedEffStream*) &pConstructed->m_TimedStream38)->ConstructTimedEffStream(0);
+		((CWriteSocket*) &pConstructed->m_TimedStream38)->ConstructTimedEffStream(0);
 		ConstructDualHandleEffStream(pConstructed->m_abDualHandleStreamB0, 0);
 
 		pEmbeddedOffsets = (VsNetEmbeddedStackViewOffsets*) pStackFront->m_pDualThunkOffsets108;
@@ -3047,7 +3046,7 @@ void* VsNetGlobalStateCompositeLayout::ConstructGlobalStateFileBackedEffComposit
 		pEmbeddedStackFront->m_pFinalThunkOffsets = &g_NETWORK_GlobalStateCompositeEmbeddedStackFinalOffsets;
 
 		pFront->m_ChannelState60.ConstructEffStreamChannelState();
-		((VsNetTimedEffStream*) pFront->m_abTimedStream90)->ConstructTimedEffStream(0);
+		((CWriteSocket*) pFront->m_abTimedStream90)->ConstructTimedEffStream(0);
 		ConstructDualHandleEffStream(pFront->m_abDualStream108, 0);
 
 		pbEmbeddedStackBase = pbObjectBase + 0x160;
@@ -3611,7 +3610,7 @@ void* VsNetDualSlotCompositeLayout::ConstructDualSlotTableFileBackedEffComposite
 		pEmbeddedStackFront->m_pFinalThunkOffsets = &g_NETWORK_DualSlotCompositeEmbeddedStackFinalOffsets;
 
 		pFront->m_ChannelState64.ConstructEffStreamChannelState();
-		((VsNetTimedEffStream*) pFront->m_abTimedStream94)->ConstructTimedEffStream(0);
+		((CWriteSocket*) pFront->m_abTimedStream94)->ConstructTimedEffStream(0);
 		ConstructDualHandleEffStream(pFront->m_abDualStream10c, 0);
 
 		pbEmbeddedStackBase = pbObjectBase + 0x164;
@@ -4321,7 +4320,7 @@ void VsNetTimedFileBackedEffChannel::ClearPendingWrite(void* pUnused)
 
 	pOffsets = *(VsNetGlobalSessionAdjustorOffsets**) ((char*) this - 0x0c);
 	pPendingWrite = (char*) this + pOffsets->m_nEmbeddedStreamViewOffset08 + 0x6c;
-	((VsNetTimedEffStream*) pPendingWrite)->VsNetTimedEffStream::ClearPendingWrite(pUnused);
+	((CWriteSocket*) pPendingWrite)->CWriteSocket::ClearPendingWrite(pUnused);
 }
 
 // FUNCTION: LEMBALL 0x0047bd80

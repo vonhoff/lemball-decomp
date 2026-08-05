@@ -63,7 +63,7 @@ struct VsNetFileBackedEffStream : VsNetEffStreamCommon {
 
 struct VsNetTimedFileBackedEffChannel : CFileBaseSocket,
 										virtual VsNetEffStreamChannelState,
-										virtual VsNetTimedEffStream,
+										virtual CWriteSocket,
 										virtual VsNetFileBackedFatalFacet {
 	VsNetTimedFileBackedEffChannel();
 	virtual ~VsNetTimedFileBackedEffChannel();

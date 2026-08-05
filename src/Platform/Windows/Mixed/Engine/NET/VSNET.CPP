@@ -1724,7 +1724,7 @@ void* VsNetRuntimeChannelCore::ClaimRecord(void)
 }
 
 // FUNCTION: LEMBALL 0x00460260
-void VsNetTimedEffStream::ClearPendingWrite(void*)
+void CWriteSocket::ClearPendingWrite(void*)
 {
 	int* pnOwnerBusy;
 	void* pObject = (char*) this + 0x78;
@@ -1838,13 +1838,13 @@ void VsNetEffTransportPeer::PrepareEffTransportBroadcastStatusPayload(char* pszH
 	pAdjustor = (VsNetHandleGroupAdjustor*) ((char*) this + m_pOffsets->m_nHandleGroupAdjustorSlotOffset + 4);
 	((CReadSocket*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nHandleStreamOffset))
 		->ConfigureEffStreamPrimaryHandleGroup(3, 3, 0);
-	((VsNetTimedEffStream*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nTimedStreamOffset))
+	((CWriteSocket*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nTimedStreamOffset))
 		->ReleaseTimedEffStreamPrimaryHandleThunk(3, 3, 0);
 
 	pAdjustor = (VsNetHandleGroupAdjustor*) ((char*) this + m_pOffsets->m_nHandleGroupAdjustorSlotOffset + 4);
 	((CReadSocket*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nHandleStreamOffset))
 		->ConfigureEffStreamSecondaryHandleGroup(1, 0);
-	((VsNetTimedEffStream*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nTimedStreamOffset))
+	((CWriteSocket*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nTimedStreamOffset))
 		->ConfigureTimedEffStreamSecondaryHandle(1, 0);
 
 	if (g_pszEffTransportBroadcastStatusPayload == 0) {
@@ -2233,8 +2233,7 @@ void VsNetCompositeEffTransportStack::ClearPendingWrite(void* pArgument)
 	nOwnerState = *(int*) (*(int*) (pbObject - 0x2c) + 0x10);
 	nStateDelta = *(int*) (pbObject + nOwnerState - 0x2c + 8);
 	nPendingDelta = nStateDelta + nOwnerState - 0x24 + 0x70;
-	((VsNetTimedEffStream*) (pbObject + nPendingDelta))
-		->VsNetTimedEffStream::ClearPendingWrite((void*) (unsigned long) fQueueEvent);
+	((CWriteSocket*) (pbObject + nPendingDelta))->CWriteSocket::ClearPendingWrite((void*) (unsigned long) fQueueEvent);
 	if (fQueueEvent != 0) {
 		kEvent.m_nCode = 0;
 		kEvent.m_pStream = (int*) (pbObject - 0x30);
@@ -3235,7 +3234,7 @@ int LEMBALL_FASTCALL AllocateEffTransportPeerEntry(void* pRuntimeState)
 		->ConfigureEffStreamPrimaryHandleGroup(pState->m_nPrimaryHandleGroupCount,
 											   pState->m_nPrimaryHandleGroupBytes,
 											   pState->m_nPrimaryHandleGroupMode);
-	((VsNetTimedEffStream*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nTimedStreamOffset))
+	((CWriteSocket*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nTimedStreamOffset))
 		->ReleaseTimedEffStreamPrimaryHandleThunk(pState->m_nPrimaryHandleGroupCount,
 												  pState->m_nPrimaryHandleGroupBytes,
 												  pState->m_nPrimaryHandleGroupMode);
@@ -3246,7 +3245,7 @@ int LEMBALL_FASTCALL AllocateEffTransportPeerEntry(void* pRuntimeState)
 	pAdjustor = &pAdjustorSlot->m_Adjustor;
 	((CReadSocket*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nHandleStreamOffset))
 		->ConfigureEffStreamSecondaryHandleGroup(nSecondaryHandleBytes, pState->m_nPrimaryHandleGroupMode);
-	((VsNetTimedEffStream*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nTimedStreamOffset))
+	((CWriteSocket*) ((char*) pAdjustor + pAdjustor->m_pOffsets->m_nTimedStreamOffset))
 		->ConfigureTimedEffStreamSecondaryHandle(nSecondaryHandleBytes, pState->m_nPrimaryHandleGroupMode);
 	return (int) (unsigned long) pPeer;
 }
@@ -3708,7 +3707,7 @@ void* DeleteEffTransportRuntimeGlobalsWrapper(void* pObject, BYTE fFreeMemory)
 // FUNCTION: LEMBALL 0x00462d00
 void VsNetRuntimeChannelCore::ClearPendingWrite(void* pArgument)
 {
-	VsNetTimedEffStream::ClearPendingWrite(pArgument);
+	CWriteSocket::ClearPendingWrite(pArgument);
 }
 
 // FUNCTION: LEMBALL 0x0046f210

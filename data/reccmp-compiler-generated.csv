@@ -165,7 +165,7 @@ address,name,symbol,type,source
 0x004628E0,,??_GVsNetEffStreamChannelState@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462900,,??_ECNetworkMessage@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462940,,??_GCReadSocket@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
-0x00462990,,??_EVsNetTimedEffStream@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462990,,??_ECWriteSocket@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462A20,DeleteSimpleEffTransportRecordSlotAuto,,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00462A40,DeleteEffTransportRecordBufferAuto,,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00462AD0,DeleteEffTransportRuntimeGlobalsAuto,,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNET.CPP
@@ -192,8 +192,8 @@ address,name,symbol,type,source
 0x00462D50,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462D60,WriteGlobalSession virtual-base `vtordisp adjustor' (-0x78),,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462D70,ClaimRecord virtual-base `vtordisp adjustor' (-0x78),,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
-0x00462D80,,??_EVsNetTimedEffStream@@$4PPPPPPPM@HI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
-0x00462D90,,?ClearPendingWrite@VsNetTimedEffStream@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462D80,,??_ECWriteSocket@@$4PPPPPPPM@HI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
+0x00462D90,,?ClearPendingWrite@CWriteSocket@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462DA0,,??_EVsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462DB0,,??_EVsNetCompositeEffTransportStack@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462DF0,,?ClearPendingWrite@VsNetCompositeEffTransportStack@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
