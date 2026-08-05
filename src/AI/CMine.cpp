@@ -37,6 +37,13 @@ struct LevelTileGridOwnerView {
 	void SetTerrain(int x, int y, int nType, int nVariant);
 };
 
+struct CTileGrid {
+	char m_abReserved00[0xc];
+	unsigned char* m_pTileData0C;   // 0x0c
+	int m_nWidth10;                  // 0x10
+	int m_nHeight14;                 // 0x14
+};
+
 extern void* g_pLevelTileGrid;
 extern int g_nLevelFrameClockTimeMs;
 extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
@@ -129,7 +136,6 @@ void CMine::Initialise(void)
 // FUNCTION: LEMBALL 0x00423cb0
 void CMine::Set(AICOORD position)
 {
-	char* pGrid;
 	int x;
 	int y;
 
@@ -142,9 +148,9 @@ void CMine::Set(AICOORD position)
 	x = (position.x >> 12) / 16;
 	y = (position.y >> 12) / 16;
 	if (x >= 0 && y >= 0) {
-		pGrid = (char*) g_pLevelTileGrid;
-		if (x < *(int*) (pGrid + 0x10) && y < *(int*) (pGrid + 0x14)) {
-			*(unsigned char*) (*(char**) (pGrid + 0x0c) + (y * *(int*) (pGrid + 0x10) + x) * 12 + 7) |= 0x80;
+		CTileGrid* pGrid = (CTileGrid*) g_pLevelTileGrid;
+		if (x < pGrid->m_nWidth10 && y < pGrid->m_nHeight14) {
+			pGrid->m_pTileData0C[(y * pGrid->m_nWidth10 + x) * 12 + 7] |= 0x80;
 		}
 	}
 }
@@ -178,20 +184,19 @@ void CMine::DoActivate(void)
 void CMine::SetTerrain(void)
 {
 	char* pObject;
-	char* pGrid;
 	MineChunkObjectNotifyVtable* pVtable;
 	int x;
 	int y;
 
 	pObject = (char*) this;
-	x = (*(int*) (pObject + 0x9c) >> 12) / 16;
-	y = (*(int*) (pObject + 0xa0) >> 12) / 16;
-	if (*(int*) (pObject + 0x140) == 0) {
-		pGrid = (char*) g_pLevelTileGrid;
+	x = (m_WorldPosition9C.x >> 12) / 16;
+	y = (m_WorldPosition9C.y >> 12) / 16;
+	if (m_anRuntimeState138[2] == 0) {
+		CTileGrid* pGrid = (CTileGrid*) g_pLevelTileGrid;
 		((LevelTileGridOwnerView*) pGrid)->SetTerrain(x, y, 0x20a, g_LEVEL_MineTileVariantCodes[*(int*) pGrid]);
 		*(int*) (pObject + 0x10) = 1;
-		if (x >= 0 && y >= 0 && x < *(int*) (pGrid + 0x10) && y < *(int*) (pGrid + 0x14)) {
-			*(unsigned char*) (*(char**) (pGrid + 0x0c) + (y * *(int*) (pGrid + 0x10) + x) * 12 + 6) |= 4;
+		if (x >= 0 && y >= 0 && x < pGrid->m_nWidth10 && y < pGrid->m_nHeight14) {
+			pGrid->m_pTileData0C[(y * pGrid->m_nWidth10 + x) * 12 + 6] |= 4;
 		}
 	}
 	pVtable = *(MineChunkObjectNotifyVtable**) pObject;
@@ -261,19 +266,18 @@ int CMine::Process(void)
 // FUNCTION: LEMBALL 0x00423fa0
 void CMine::OnGround(void)
 {
-	char* pGrid;
 	int x;
 	int y;
 	short z;
 
 	x = m_WorldPosition9C.x >> 12;
 	y = m_WorldPosition9C.y >> 12;
-	pGrid = (char*) g_pLevelTileGrid;
-	if (x < 0 || y < 0 || x / 16 >= *(int*) (pGrid + 0x10) || y / 16 >= *(int*) (pGrid + 0x14)) {
+	CTileGrid* pGrid = (CTileGrid*) g_pLevelTileGrid;
+	if (x < 0 || y < 0 || x / 16 >= pGrid->m_nWidth10 || y / 16 >= pGrid->m_nHeight14) {
 		z = 0;
 	}
 	else {
-		z = ((CGround*) (*(char**) (pGrid + 0x0c) + (y / 16 * *(int*) (pGrid + 0x10) + x / 16) * 12))
+		z = ((CGround*) (pGrid->m_pTileData0C + (y / 16 * pGrid->m_nWidth10 + x / 16) * 12))
 				->GetZ(x & 15, y & 15);
 	}
 	m_WorldPosition9C.z = (unsigned short) z << 12;
