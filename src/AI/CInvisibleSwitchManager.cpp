@@ -43,9 +43,9 @@ CInvisibleSwitchManager::CInvisibleSwitchManager(CAI* pAI, int nCapacity)
 		*(int*) ((char*) this + 0x18) += g_cbEffTransportMaxPacketBytes;
 	}
 	*(void**) this = &g_LINKSCF_InvsChunkManagerVtable;
-	*(CAI**) ((char*) this + 0x38) = pAI;
-	*(int*) ((char*) this + 0x30) = nCapacity;
-	*(void**) ((char*) this + 0x3c) = 0;
+	m_pAI38 = pAI;
+	m_cCapacity30 = nCapacity;
+	m_pObjects3C = 0;
 }
 
 // FUNCTION: LEMBALL 0x0040a270
