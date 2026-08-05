@@ -3570,7 +3570,7 @@ void LevelGameMode::InitializeLevelGameMode(void)
 
 		pObject = AllocateVSMemBlock(0x40);
 		if (pObject != 0) {
-			pObject = ((LinkScfPgunChunkManagerView*) pObject)->ConstructPgunChunkManagerThunk(pLevelGameMode, 0x14);
+			pObject = ((CPaintGunManager*) pObject)->ConstructPgunChunkManagerThunk(pLevelGameMode, 0x14);
 		}
 		*(void**) (pModeBytes + 0x1b0) = pObject;
 		RegisterLevelChunkStreamThunk(g_pLevelChunkStreamDispatcher, *(void**) (pModeBytes + 0x1b0));

@@ -2,12 +2,12 @@
 #define LEMBALL_ENGINE_CORE_LINKSCF_H
 
 
-struct LinkScfPgunChunkManagerView {
+struct CPaintGunManager {
 	int m_nCapacity30;         // 0x30
 	int m_nObjectCount34;      // 0x34
 	void* m_pObjectArray38;    // 0x38
-	LinkScfPgunChunkManagerView* ConstructPgunChunkManager(void* pLevelMode, int nCapacity);
-	LinkScfPgunChunkManagerView* ConstructPgunChunkManagerThunk(void* pLevelMode, int nCapacity);
+	CPaintGunManager* ConstructPgunChunkManager(void* pLevelMode, int nCapacity);
+	CPaintGunManager* ConstructPgunChunkManagerThunk(void* pLevelMode, int nCapacity);
 	void Initialise(int nCapacity);
 };
 

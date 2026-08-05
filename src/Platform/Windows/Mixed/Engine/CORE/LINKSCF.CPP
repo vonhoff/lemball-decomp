@@ -659,7 +659,7 @@ LinkScfBoonChunkManagerView* LinkScfBoonChunkManagerView::ConstructBoonChunkMana
 
 
 // LINKERILT: LEMBALL 0x00402f95
-LinkScfPgunChunkManagerView* LinkScfPgunChunkManagerView::ConstructPgunChunkManagerThunk(void* pLevelMode,
+CPaintGunManager* CPaintGunManager::ConstructPgunChunkManagerThunk(void* pLevelMode,
 																						 int nCapacity)
 {
 	return ConstructPgunChunkManager(pLevelMode, nCapacity);
@@ -2078,7 +2078,7 @@ int PASCAL return_zero_pgun_chunk_object_callback(void* pUnused1, void* pUnused2
 
 // MACINTOSH: CPaintGunManager::CPaintGunManager(CAI*, int)
 // FUNCTION: LEMBALL 0x0042bfe0
-LinkScfPgunChunkManagerView* LinkScfPgunChunkManagerView::ConstructPgunChunkManager(void* pLevelMode, int nCapacity)
+CPaintGunManager* CPaintGunManager::ConstructPgunChunkManager(void* pLevelMode, int nCapacity)
 {
 	LINKSCF_INITIALIZE_EFF_CHUNK_STREAM(this, 0x1f, 0x14);
 	*(void**) this = g_LINKSCF_PgunChunkManagerVtable;
@@ -2113,7 +2113,7 @@ void LEMBALL_FASTCALL ActivatePgunChunkObjects(void* pManager)
 }
 
 // FUNCTION: LEMBALL 0x0042c070
-void LinkScfPgunChunkManagerView::Initialise(int nCapacity)
+void CPaintGunManager::Initialise(int nCapacity)
 {
 	char* pBase;
 	char* pObject;
