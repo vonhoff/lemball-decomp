@@ -41,8 +41,9 @@ no lost baseline addresses):
 ## Next concrete steps (priority order)
 0. Manager object-count resets: `__fastcall reset/clear_*_{chunk,manager}_object_count` one-liners writing
    +0x34 promote to `C{X}Manager::ResetObjectCount()` (100% byte-identical). DONE: CIceManager(0x42d900),
-   CMoverManager(0x42f2e0). NEXT: clear_rock_chunk_object_count(0x426c20) needs CRocketManager scaffold
-   (missing class); scan for the other count-setters.
+   CMoverManager(0x42f2e0), CLaserManager(0x4297e0). NEXT: clear_rock_chunk_object_count(0x426c20),
+   clear_tram_chunk_object_count, clear_pgun_chunk_object_count need CRocketManager/CTrampolineManager/
+   CPaintgunManager scaffolds (missing classes); scan for other count-setters.
 1. CBulletManager/CBullet real-member refactor (B) — IN PROGRESS:
    - DONE: renamed ProjectilePool->CBulletManager, ProjectileObjectProxy->CBullet,
      ProjectilePoolOwnerView->CBulletManagerOwnerView (type renames); promoted
