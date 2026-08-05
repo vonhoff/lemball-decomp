@@ -44,10 +44,10 @@ no lost baseline addresses):
      ProjectilePoolOwnerView->CBulletManagerOwnerView (type renames); promoted
      CBulletManager::GetFirstBullet/GetNextBullet to real members (100% byte-identical).
    - NEXT: CBulletManagerProcess(0x418040)->CBulletManager::Process DONE, GetFirstBullet/GetNextBullet DONE,
-     CBulletFree(0x41ac70)->CBullet::Free DONE (modeled m_nStateB8/m_nPendingState114/m_nRuntimeFlag164 via
-     shared chunk-object conventions, 100%).  To-do: ResetProjectilePool(0x417e80)->member (entangled with
-     duplicate CBulletManagerOwnerView consolidation), CBullet::ServiceProjectile/EmitProjectileRenderEntry
-     as members, and CBulletManager::RemoveObject/DestroyProjectileObject call-sites.
+     CBulletFree(0x41ac70)->CBullet::Free DONE, ResetProjectilePool(0x417e80)->CBulletManagerOwnerView::Reset DONE.
+     To-do: consolidate duplicate CBulletManagerOwnerView (Projectile.cpp) into CBulletManager (LEVELVT.CPP) via a
+     shared CBulletManager.h header (they model the same object, different files); promote/define
+     CBullet::ServiceProjectile/EmitProjectileRenderEntry/SetState (currently vtable-virtuals without source bodies).
      CAUTION: g_LINKSCF_ProjectilePoolVtable(0x494008)
      stores raw __fastcall free-body addr as slot2; ILT 0x00401019 pins Process. To keep vtable bytes,
      keep a thin __fastcall forwarding thunk at the vtable name OR accept member-pointer vtable thunk
