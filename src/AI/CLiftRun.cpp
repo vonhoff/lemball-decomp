@@ -71,20 +71,20 @@ int CLift::Process(void)
 		break;
 	case 0x1f:
 		nNow -= (short) pFields[0x25];
-		nHeight = *(short*) ((char*) pObject + 0x13e);
+		nHeight = m_RangeStart13A.z;
 		nNow += nHeight;
 		pFields[0x54] = nHeight;
 		*(short*) ((char*) pObject + 0x154) = 1;
 		pFields[0x59] = 1;
 		pFields[0x2e] = 0x20;
-		*(short*) ((char*) pObject + 0x13e) = nNow;
+		m_RangeStart13A.z = nNow;
 		break;
 	case 0x20:
 		nHeight = (short) pFields[0x54] - (short) pFields[0x25] + nNow;
-		*(short*) ((char*) pObject + 0x13e) = nHeight;
+		m_RangeStart13A.z = nHeight;
 		if (pFields[0x53] <= nHeight) {
 			int fActive;
-			*(short*) ((char*) pObject + 0x13e) = (short) pFields[0x53];
+			m_RangeStart13A.z = (short) pFields[0x53];
 			fActive = pFields[0x5a];
 			pFields[0x59] = fActive;
 			*(short*) ((char*) pObject + 0x154) = -1;
@@ -100,10 +100,10 @@ int CLift::Process(void)
 		break;
 	case 0x22:
 		nHeight = (short) pFields[0x54] - nNow + (short) pFields[0x25];
-		*(short*) ((char*) pObject + 0x13e) = nHeight;
+		m_RangeStart13A.z = nHeight;
 		if (nHeight <= pFields[0x52]) {
 			int fActive;
-			*(short*) ((char*) pObject + 0x13e) = (short) pFields[0x52];
+			m_RangeStart13A.z = (short) pFields[0x52];
 			fActive = pFields[0x5a];
 			pFields[0x59] = fActive;
 			*(short*) ((char*) pObject + 0x154) = 1;
@@ -119,21 +119,21 @@ int CLift::Process(void)
 		break;
 	case 0x23:
 		*(short*) ((char*) pObject + 0x154) = -1;
-		pFields[0x54] = *(short*) ((char*) pObject + 0x13e);
+		pFields[0x54] = m_RangeStart13A.z;
 		pFields[0x2e] = 0x22;
 		pFields[0x59] = 1;
-		*(short*) ((char*) pObject + 0x13e) += (short) pFields[0x25] - nNow;
+		m_RangeStart13A.z += (short) pFields[0x25] - nNow;
 		break;
 	}
 
-	nTileHeight = *(short*) ((char*) pObject + 0x13e);
-	for (nY = *(short*) ((char*) pObject + 0x13c); nY <= *(short*) ((char*) pObject + 0x142); nY += 0x10) {
+	nTileHeight = m_RangeStart13A.z;
+	for (nY = m_RangeStart13A.y; nY <= m_RangeEnd140.y; nY += 0x10) {
 		char* pTile;
-		short nStartX = *(short*) ((char*) pObject + 0x13a);
+		short nStartX = m_RangeStart13A.x;
 		pTile = (char*) *(void**) ((char*) g_pLiftTileGrid + 0x0c) +
 				((nY / 0x10) * *(int*) ((char*) g_pLiftTileGrid + 0x10) + nStartX / 0x10) * 0x0c;
 		pFields[0x58] = (int) pTile;
-		for (nX = nStartX; nX <= *(short*) ((char*) pObject + 0x140); nX += 0x10) {
+		for (nX = nStartX; nX <= m_RangeEnd140.x; nX += 0x10) {
 			*(short*) (pFields[0x58] + 8) = (short) nTileHeight;
 			*(short*) (pFields[0x58] + 10) = (short) ((nTileHeight + 0x0f) / 0x10);
 			pFields[0x58] += 0x0c;
@@ -163,8 +163,8 @@ void CLift::CheckObjects(void)
 			*(void**) &predicate = (*(void***) pChild)[0x38];
 			*(void**) &boundsPredicate = (*(void***) pChild)[0x28];
 			if ((((ObjectView*) pChild)->*predicate)() != 0 ||
-				(((ObjectView*) pChild)->*boundsPredicate)((tCoord3d*) (pObject + 0x13a),
-														   (tCoord3d*) (pObject + 0x140)) == 0) {
+				(((ObjectView*) pChild)->*boundsPredicate)(&m_RangeStart13A,
+														   &m_RangeEnd140) == 0) {
 				*(int*) ((char*) pChild + 0x110) = 0xffff;
 				*pPassenger = 0;
 			}
