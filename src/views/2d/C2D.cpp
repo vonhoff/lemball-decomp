@@ -73,16 +73,10 @@ void LevelScreenManagedEntitySelectionView::CheckValidFormGroup(void)
 // FUNCTION: LEMBALL 0x00437130
 void LevelScreenManagedEntitySelectionView::AddObjectToGroup(int nObjectNo, int fUpdateCapacity)
 {
-	unsigned short nCount;
-	unsigned short* pGroup;
-
-	pGroup = (unsigned short*) ((char*) this + 0xa50);
-	nCount = m_nPendingSelectionVariantA4C;
-	pGroup[nCount] = (unsigned short) nObjectNo;
-	++nCount;
-	m_nPendingSelectionVariantA4C = nCount;
+	((unsigned short*) ((char*) this + 0xa50))[m_nPendingSelectionVariantA4C] = (unsigned short) nObjectNo;
+	++m_nPendingSelectionVariantA4C;
 	if (fUpdateCapacity != 0) {
-		m_nGroupCapacityA4E = nCount;
+		m_nGroupCapacityA4E = m_nPendingSelectionVariantA4C;
 	}
 }
 
