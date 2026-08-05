@@ -89,7 +89,10 @@ jobs:
 
       - name: Configure and build
         shell: pwsh
-        run: python tools/build_msvc400.py
+        run: |
+          python tools/install_reccmp_compat.py
+          cmake --fresh --preset msvc400
+          cmake --build --preset msvc400 --clean-first
 
       - name: Verify against original
         shell: pwsh
