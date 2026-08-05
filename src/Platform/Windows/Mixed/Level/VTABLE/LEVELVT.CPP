@@ -307,9 +307,9 @@ int return_two_callback(void);
 void noop_vtable_callback_0040cf30(void);
 int PASCAL IsDoorChunkIdleOrClosedState(int nState);
 
-int __fastcall has_door_chunk_object_target_tile_latched(void* pObject);
-void __fastcall schedule_door_chunk_object_update_in_10_ticks(void* pObject);
-void __fastcall clear_door_chunk_object_target_tile_latch(void* pObject);
+int __fastcall IsRequestingFire(void* pObject);
+void __fastcall StartFiring(void* pObject);
+void __fastcall EndFiring(void* pObject);
 void* __fastcall get_level_mode_chunk_loader_context(void* pLevelMode);
 void LEMBALL_FASTCALL MarkObjectField178AndSetTimer3C(void* pObject);
 void* __fastcall get_level_mode_mine_chunk_manager(void* pLevelMode);
@@ -957,21 +957,21 @@ int __fastcall get_level_mode_field_0x17c(void* pLevelMode)
 
 // MACINTOSH: CPlayerLemming::IsRequestingFire()
 // FUNCTION: LEMBALL 0x0040f2b0
-int __fastcall has_door_chunk_object_target_tile_latched(void* pObject)
+int __fastcall IsRequestingFire(void* pObject)
 {
 	return *(int*) ((char*) pObject + 0x184) == 1;
 }
 
 // MACINTOSH: CPlayerLemming::StartFiring()
 // FUNCTION: LEMBALL 0x0040f410
-void __fastcall schedule_door_chunk_object_update_in_10_ticks(void* pObject)
+void __fastcall StartFiring(void* pObject)
 {
 	*(int*) ((char*) pObject + 0xcc) = g_nLevelFrameClockTick + 10;
 }
 
 // MACINTOSH: CPlayerLemming::EndFiring()
 // FUNCTION: LEMBALL 0x0040f420
-void __fastcall clear_door_chunk_object_target_tile_latch(void* pObject)
+void __fastcall EndFiring(void* pObject)
 {
 	*(int*) ((char*) pObject + 0x184) = 0;
 }
