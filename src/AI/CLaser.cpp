@@ -357,19 +357,19 @@ int CLaser::GetViewData(CViewData* pViewData)
 		return cEntries;
 	}
 
-	switch (*(int*) (pObject + 0x64)) {
+	switch (m_nEntityType64) {
 	case 0x1e:
 	case 0x30:
-		nX = (*(int*) (pObject + 0x9c) >> 12) + 0x26;
-		nY = *(int*) (pObject + 0xa0) >> 12;
+		nX = (m_WorldPosition9C.x >> 12) + 0x26;
+		nY = m_WorldPosition9C.y >> 12;
 		nStepX = 0x10;
 		nStepY = 0;
 		nRenderType = 0x32;
 		break;
 	case 0x2f:
 	case 0x31:
-		nX = *(int*) (pObject + 0x9c) >> 12;
-		nY = (*(int*) (pObject + 0xa0) >> 12) + 0x14;
+		nX = m_WorldPosition9C.x >> 12;
+		nY = (m_WorldPosition9C.y >> 12) + 0x14;
 		nStepX = 0;
 		nStepY = 0x10;
 		nRenderType = 0x26;
@@ -377,8 +377,9 @@ int CLaser::GetViewData(CViewData* pViewData)
 	default:
 		return cEntries;
 	}
-	nZ = (*(int*) (pObject + 0xa4) >> 12) + 3;
+	nZ = (m_WorldPosition9C.z >> 12) + 3;
 	pEntry += 0x4c;
+
 	while (cEntries < 8) {
 		CLaserTileGrid* pGrid = (CLaserTileGrid*) g_pLevelTileGrid;
 		if (nX < 0 || nY < 0 || (nX >> 4) >= pGrid->m_nWidth10 || (nY >> 4) >= pGrid->m_nHeight14) {
