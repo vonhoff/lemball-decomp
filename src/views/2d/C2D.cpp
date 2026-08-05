@@ -3,6 +3,7 @@
 #include <string.h>
 
 extern void* g_pVariantResourceEntryManager;
+extern int g_GAME_ManagedEntityRegistryTable[1000];
 
 struct LevelScreenInputEvent {
 	short m_nType00;
@@ -66,7 +67,7 @@ void LevelScreenManagedEntitySelectionView::CheckValidFormGroup(void)
 	if (nCount != 0) {
 		for (nIndex = 0; nIndex < nCount; ++nIndex) {
 			nObjNo = pGroup[nIndex];
-			pObject = *(void**) (nObjNo * 4 + 0x4a6510);
+			pObject = (void*) g_GAME_ManagedEntityRegistryTable[nObjNo];
 			if (((int(__fastcall*)(void*)) (*(void***) pObject)[0x70 / sizeof(void*)])(pObject) == 0) {
 				RemoveFromGroupByObjectNo((int) nObjNo);
 			}
