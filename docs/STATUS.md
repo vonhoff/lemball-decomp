@@ -16,7 +16,10 @@ is confirmed so it is never re-triaged. Goal prompt drives *what*, this tracks *
 | 0x462990 | `??_ECWriteSocket` deleting dtor | lost; recover via CWriteSocket vtable refactor |
 | 0x417b50 | `??_GManagedEntityPacketBase` deleting dtor | lost; same |
 | 0x45e5d0/0x45e6e0 | CString append-with-result | needs temp-CString (Construct/CopyConstruct/Destroy) model; complex, not quick |
-| 0x45af20 | AppendCStringToFixedBufferStream | 24%, count-loop+vtbl dispatch done; register-noise remains |
+| 0x45af20 | AppendCStringToFixedBufferStream | 36%, count-loop+vtbl dispatch done; register-noise remains |
+| 0x458780/0x4589c0 | AppendUIntHex/AppendHexUIntToStream | member-conversion partial (75/63%) but caller-regression; needs subobject-offset audit |
+| 0x4584c0/0x458450 | ApplyStreamIntegerWidthPadding/ConstructFormattedOutputStream | structural/base divergence, needs VSINIT stream subobject audit |
+| 0x45ae10 | AppendCharToFixedBufferStream | 43%, tab/wrap/flush logic diverges |
 
 ## Unreconstructed `[gap]` family (door/trampoline/paintgun/ice managers)
 
