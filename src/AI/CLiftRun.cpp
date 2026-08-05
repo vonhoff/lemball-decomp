@@ -190,7 +190,7 @@ int CLift::StepOn(const AICOORD& position, CGameObject* pObject)
 
 	pLift = (char*) this;
 	pChild = (char*) pObject;
-	nLiftId = *(unsigned short*) (pLift + 0x138);
+	nLiftId = m_nLiftObjectId138;
 	if (nLiftId == *(unsigned int*) (pChild + 0x110)) {
 		return 1;
 	}
