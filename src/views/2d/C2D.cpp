@@ -25,6 +25,8 @@ struct LevelScreenManagedEntitySelectionView {
 	unsigned char m_abReserved978[0xd0];
 	int m_nPendingSelectionA48;
 	unsigned short m_nPendingSelectionVariantA4C;
+
+	void SelectLemming(int nIndex);
 };
 
 struct VariantResourceEntryManagerView {
@@ -69,4 +71,23 @@ void LEMBALL_FASTCALL SelectPreviousReadyManagedEntityFromLevelScreen(LevelScree
 	pScreen->m_nPendingSelectionVariantA4C = 0;
 	pScreen->m_nPendingSelectionA48 = 0;
 	((VariantResourceEntryManagerView*) g_pVariantResourceEntryManager)->m_nSelectionMode10 = 0x1b;
+}
+
+// Macintosh: C2D::SelectLemming(int)
+// FUNCTION: LEMBALL 0x00437340
+void LevelScreenManagedEntitySelectionView::SelectLemming(int nIndex)
+{
+	char* pModeBytes;
+	char* pEntry;
+	LevelScreenInputEvent Event;
+
+	pModeBytes = (char*) *(void**) ((char*) this + 0x96c);
+	pEntry = *(char**) (pModeBytes + nIndex * 4 + 0x1d0);
+	Event.m_nType00 = 8;
+	Event.m_nReserved08 = (int) *(unsigned short*) (pEntry + 0x6a);
+	memset(&Event.m_nReserved04, 0, 0x10);
+	m_pInputEventSink974->DispatchLevelScreenInputEvent(&Event);
+	m_nPendingSelectionVariantA4C = 0;
+	m_nPendingSelectionA48 = 0;
+	((VariantResourceEntryManagerView*) g_pVariantResourceEntryManager)->m_nSelectionMode10 = 3;
 }
