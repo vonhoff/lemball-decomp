@@ -39,8 +39,8 @@ struct VsNetEffStreamSerializeVtable {
 	void* m_pReserved00;
 	void (*m_pLoadFromMemoryHeader)(void* pThis);
 	void (*m_pLoadFromMemoryBody)(void* pThis);
-	void (*m_pBeginWriteHeader)(void* pThis);
-	void (*m_pBeginWriteBody)(void* pThis);
+	void (CNetworkMessage::*m_pBeginWriteHeader)(void);
+	int (CNetworkMessage::*m_pBeginWriteBody)(void);
 };
 
 struct VsNetChannelStateRuntime {
@@ -355,15 +355,13 @@ void CNetworkMessage::ReadEffStreamBytes(void* pvTarget, unsigned int cbRead)
 int CNetworkMessage::SaveEffStreamToMemoryRange(int nTargetBuffer, int cbRange)
 {
 	VsNetEffStreamSerializeVtable* pVtable;
-	int (*pfnWriteBody)(void* pThis);
 
 	m_pPayloadBuffer08 = nTargetBuffer;
 	pVtable = (VsNetEffStreamSerializeVtable*) *(void***) this;
 	m_nReserved1c = (unsigned char*) (unsigned long) (nTargetBuffer + cbRange);
 	m_fOwnsPayload0c = m_nBufferEnd18 + nTargetBuffer + cbRange;
-	pVtable->m_pBeginWriteHeader(this);
-	pfnWriteBody = (int (*)(void*)) pVtable->m_pBeginWriteBody;
-	return pfnWriteBody(this);
+	(this->*pVtable->m_pBeginWriteHeader)();
+	return (this->*pVtable->m_pBeginWriteBody)();
 }
 
 // FUNCTION: LEMBALL 0x0045f680
