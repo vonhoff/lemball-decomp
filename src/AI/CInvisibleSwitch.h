@@ -30,7 +30,11 @@ private:
 	AICOORD m_WorldPosition9C;            // 0x9c
 	unsigned char m_abReservedA8[0x10];
 	int m_nStateB8;                        // 0xb8
-	unsigned char m_abReservedBC[0x7c];
+	unsigned char m_abReservedBC[0x58];
+	int m_nPendingState114;                // 0x114
+	unsigned char m_abReserved118[0x10];
+	int m_nLastState128;                   // 0x128
+	int m_anRuntimeState12C[3];            // 0x12c..0x137
 	tCoord3d m_RangeStart138;              // 0x138 (x,y,z)
 	tCoord3d m_RangeEnd13E;                // 0x13e (x,y,z)
 	unsigned char m_abReserved144[0x174];

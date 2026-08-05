@@ -194,7 +194,7 @@ void CInvisibleSwitch::StepOn(const AICOORD& position, CGameObject* pEntity)
 	int nX;
 	int nY;
 
-	if (*(int*) (pObjectBytes + 0x148) != 0 || *(int*) (pObjectBytes + 0x12c) != 0x18 ||
+	if (*(int*) (pObjectBytes + 0x148) != 0 || m_anRuntimeState12C[0] != 0x18 ||
 		GetManagedEntitySlotIdThunk((int) (unsigned long) this) == *(unsigned short*) (pEntityBytes + 0x120)) {
 		return;
 	}
@@ -225,9 +225,9 @@ int CInvisibleSwitch::Process(void)
 	int nStateId;
 
 	VerifyObjects();
-	if (*(int*) (pObjectBytes + 0x114) != 0) {
+	if (m_nPendingState114 != 0) {
 		nStateId = m_nStateB8;
-		if (*(int*) (pObjectBytes + 0x128) != nStateId && nStateId != 0x1a) {
+		if (m_nLastState128 != nStateId && nStateId != 0x1a) {
 			return 1;
 		}
 	}
