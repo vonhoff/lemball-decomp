@@ -224,8 +224,8 @@ int CMine::Process(void)
 
 	pObject = (char*) this;
 	nState = m_nStateB8;
-	if (*(int*) (pObject + 0x114) != 0) {
-		if (*(int*) (pObject + 0x128) != nState) {
+	if (m_nPendingState114 != 0) {
+		if (m_nLastState128 != nState) {
 			switch (nState) {
 			case 8:
 				m_anRuntimeState138[1] = 0;
@@ -236,7 +236,7 @@ int CMine::Process(void)
 				break;
 			}
 		}
-		*(int*) (pObject + 0x128) = m_nStateB8;
+		m_nLastState128 = m_nStateB8;
 		return 1;
 	}
 	switch (nState) {

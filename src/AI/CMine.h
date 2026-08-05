@@ -32,7 +32,11 @@ private:
 	unsigned char m_abReservedBC[0xc];
 	int m_nNextTickC8;                     // 0xc8
 	int m_nEndTickCC;                      // 0xcc
-	unsigned char m_abReservedD0[0x68];
+	unsigned char m_abReservedD0[0x44];
+	int m_nPendingState114;                // 0x114
+	unsigned char m_abReserved118[0x10];
+	int m_nLastState128;                   // 0x128
+	unsigned char m_abReserved12C[0xc];
 	int m_anRuntimeState138[4];            // 0x138..0x147
 	int m_nDelay148;                       // 0x148
 	unsigned char m_abReserved14C[4];      // 0x14c..0x14f
