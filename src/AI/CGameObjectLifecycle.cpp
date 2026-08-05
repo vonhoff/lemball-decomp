@@ -41,19 +41,19 @@ void CGameObject::Restart(void)
 void CGameObject::Initialise(void)
 {
 	char* pObjectBytes = (char*) this;
-	*(unsigned short*) (pObjectBytes + 0xbc) = 0;
+	m_nActionPhaseBC = 0;
 	*(int*) (pObjectBytes + 0x2c) = 0;
-	*(int*) (pObjectBytes + 0xb8) = 0;
-	*(int*) (pObjectBytes + 0x114) = 0;
-	*(unsigned short*) (pObjectBytes + 0xb4) = 0;
+	m_nStateB8 = 0;
+	m_nPendingState114 = 0;
+	m_nHeadingOctantB4 = 0;
 	*(int*) (pObjectBytes + 0x38) = 0;
 	*(unsigned short*) (pObjectBytes + 0xc4) = 0;
 	*(int*) (pObjectBytes + 0x3c) = 0;
 	*(int*) (pObjectBytes + 0xf0) = 0;
 	*(int*) (pObjectBytes + 0xc0) = 0;
-	*(int*) (pObjectBytes + 0x8c) = 0;
-	*(int*) (pObjectBytes + 0x08) = 0;
-	*(int*) (pObjectBytes + 0x0c) = 0;
+	m_nRuntimeState8C = 0;
+	m_nPendingInstruction08 = 0;
+	m_pReachabilityOwner0C = 0;
 	*(int*) (pObjectBytes + 0x104) = 0;
 	*(int*) (pObjectBytes + 0x108) = 0;
 	*(int*) (pObjectBytes + 0x10c) = 0;
@@ -64,9 +64,9 @@ void CGameObject::Initialise(void)
 	*(unsigned short*) (pObjectBytes + 0x6e) = 0;
 	*(int*) (pObjectBytes + 0x54) = 0;
 	*(int*) (pObjectBytes + 0x58) = 0;
-	*(int*) (pObjectBytes + 0x11c) = 0;
-	*(int*) (pObjectBytes + 0x74) = 0;
-	*(int*) (pObjectBytes + 0xcc) = g_nLevelFrameClockTick;
+	m_fOnMover11C = 0;
+	m_fHasCommands74 = 0;
+	m_nNextUpdateTickCC = g_nLevelFrameClockTick;
 	*(int*) (pObjectBytes + 0x98) = 0;
 	*(int*) (pObjectBytes + 0x10) = 0;
 }
