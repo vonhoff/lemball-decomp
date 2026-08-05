@@ -94,7 +94,6 @@ jobs:
       - name: Verify against original
         shell: pwsh
         run: |
-          $ErrorActionPreference = 'Stop'
           reccmp-project detect --search-path data
           Push-Location build-msvc400
           reccmp-decomplint --target LEMBALL
