@@ -179,6 +179,7 @@ def main() -> int:
     ap.add_argument("--missing", action="store_true", help="list missing blueprint classes")
     ap.add_argument("--zeros", action="store_true", help="list 0% game functions")
     ap.add_argument("--legacy", action="store_true", help="list legacy source files")
+    ap.add_argument("--mismatch", action="store_true", help="list source-vs-blueprint function-name mismatches")
     args = ap.parse_args()
 
     by_addr, members = blueprint()
@@ -217,6 +218,33 @@ def main() -> int:
         print(f"legacy source files ({len(legacy)}):")
         for rel in legacy:
             print(f"  {rel}")
+        return 0
+
+    if args.mismatch:
+        # source name (from live reccmp recomp name) vs blueprint Mac name at same address
+        if not RECCMP.is_file():
+            print("no reccmp.json; run reccmp first")
+            return 0
+        data = json.loads(RECCMP.read_text(encoding="utf-8"))
+        recomp = {int(r["address"], 16): r.get("name", "") for r in data["data"]}
+        macname = {}
+        with CORR.open(newline="", encoding="utf-8-sig") as f:
+            for row in csv.DictReader(f):
+                macname[int(row["x86_address"], 16)] = row.get("mac_mangled_name", "")
+        print("source function names vs the Macintosh blueprint (candidates for reconcile):")
+        n = 0
+        for a in sorted(macname):
+            src = recomp.get(a)
+            if not src:
+                continue
+            mn = macname[a]
+            macstem = mn.split("__", 1)[0] if mn else ""
+            srcstem = src.split("(")[0].split("::")[-1]
+            # flag snake_case names or 0x-suffixed placeholder names that look invented
+            if "_" in srcstem or re.search(r"0x[0-9a-f]+$", srcstem):
+                print(f"  0x{a:08X}  src={srcstem!s:48s}  mac={macstem!s:40s}  ({mn})")
+                n += 1
+        print(f"({n} shown; 0xNNNN/thunk placeholders + snake_case names need blueprint reconcile)")
         return 0
 
     # default summary
