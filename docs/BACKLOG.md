@@ -64,6 +64,37 @@ Notes from past work:
   (`reccmp-compiler-generated.csv` `??_E`/`??_G`, `reccmp-linker-ilts.csv`
   parameter mangling) are updated in the same commit. Keep those in lockstep.
 
+## Label reconciliation audit (invented `VsNet*`/`GameEff*`/`ManagedEntity*` names)
+
+The reconstruction introduced ~40 invented class-name families to model the real network
+subsystem. Address-matched against `data/macintosh-x86-correlations.csv`, each invented
+label resolves to a real Macintosh class owning those methods — the invented names should
+be refined toward these (coordinated reccmp-CSV rename, one class at a time):
+
+| Invented label (reconstruction) | True Macintosh class | Evidence (mac correlations) |
+|---|---|---|
+| `VsNetDualHandleEffStream` | **`CReadSocket`** | ct/dt/CReadSocketFUlUli/CReadSocketFii (0x45F820–0x45FCD0) |
+| `VsNetTimedEffStream` | **`CWriteSocket`** | ct/dt/CWriteSocket… (0x45FCE0–0x460280) |
+| `VsNetRuntimeChannelStack` | **`CBroadcast`** | ct/dt/CBroadcastFUc/FPCUc/… |
+| `VsNetCompositeEffTransportStack` | **`CConnect`** | ct/dt/CConnectF13NetworkEventsP11CBasePacket/… |
+| `VsNetEffTransportRuntimeState` / `GameEffTransportRuntimeWindow` | **`CBaseNetwork`** | ct/dt/CBaseNetworkFv/FR15CNetworkMessage/… |
+| `VsNetLockedEffTransportRecordSlot` | **`CReadPacket`** | ct/dt/CReadPacketFUs/FPCUcUs |
+| `VsNetSimpleEffTransportRecordSlot` | **`CWritePacket`** | ct/dt/CWritePacketFPCUcUsP15CNetworkMessage |
+| `VsNetSimpleEffTransportRecordSlotTable` | **`CReadPacketBuff` / `CWritePacketBuff`** | ct/CReadPacketBuffFiUs, ct/CWritePacketBuffFi... |
+| `VsNetEffTransportRecordBuffer` / `VsNetGlobalPacket*State` | **`CReadMSBuff`/`CReadNCMSBuff`/`CReadCMSBuff`/`CWriteCBuff`/`CReadNCBuff`** | ct/dt/CReadMSBuffFiiUs, CReadNCMSBuffFv, CWriteCBuffFUs… |
+| `VsNetDualFileBackedEffChannel` | `CFileReadSocket` | ct/CFileReadSocketFv |
+| `VsNetTimedFileBackedEffChannel` | `CFileWriteSocket` | ct/dt/CFileWriteSocketFP15CNetworkAddress/FPCUci |
+| `VsNetEmbeddedFileBackedEffChannelStack` | **`CFileRWSocket`** | ct/CFileRWSocketFv/FPCUci |
+| `VsNetGlobalStateFileBackedEffComposite` | **`CFileBroadcast`** | ct/dt/CFileBroadcastFPCUc/Fs |
+| `VsNetDualSlotTableFileBackedEffComposite` | **`CFileConnect`** | ct/dt/CFileConnectFPCcPCc/FP15CNetworkAddress |
+| `VsNetEffStreamChannelState` / `GameEffTransportHandleGroup` | **`CBaseCommonSocket`** | ct/dt/CBaseCommonSocketFv/F13NetworkErrors |
+| `ManagedEntityPacket*` (23/24/25/26/27/28/2A) | no direct Mac class; `ManagedEntityPacketBase` ↔ mixed (AI/GB), machine is a Windows decomposition of CGameObject-managed entities | not a single Mac class — do not collapse |
+
+These are multi-session rename tasks (each needs its reccmp `??_E`/`??_G` + ILT mangling rows
+updated in lockstep, plus a full build+baseline gate). Execute one class per commit. The
+`ManagedEntityPacket*` family is a Windows-specific decomposition and should NOT be collapsed
+to a single Mac class (its methods map to several real classes like `CGameObject`/`CAI`).
+
 ## Working procedure (every session)
 
 For the top ready item:
