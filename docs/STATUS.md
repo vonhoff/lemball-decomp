@@ -23,7 +23,7 @@ is confirmed so it is never re-triaged. Goal prompt drives *what*, this tracks *
 
 ## Unreconstructed `[gap]` family (door/trampoline/paintgun/ice managers)
 
-Each is genuinely missing but infrastructure-bound — needs door ctor `0x401eba`→`0x40d470` ✅ (exists), door vtable Restart `[+0x104]`, and/or global tile-map `0x4a74b4` (`+0xc` tile data, `+0x10` w, `+0x14` h). Not isolated wins — reconstruct as a subsystem. DONE: CDoorManager::Restart (100%), Initialise (46%), Open (49%), LinkScfTramChunkManagerView::Restart (100% eff). PaintGun/Ice Manager Restart pre-existing. NEXT: CDoorManager::Add (0x40E0C0, calls Set-thunk 0x403189) + LoadLevel (0x40E630, stream-load reusing Initialise 0x401857 + Add 0x402405, versioned at levelmode+0x54) — intricate, then CDoor::Set/Delete/collision (tile-map 0x4a74b4 heavy).
+Each is genuinely missing but infrastructure-bound — needs door ctor `0x401eba`→`0x40d470` ✅ (exists), door vtable Restart `[+0x104]`, and/or global tile-map `0x4a74b4` (`+0xc` tile data, `+0x10` w, `+0x14` h). DONE: door Restart/Open/Initialise, trampoline Restart/Initialise/Hit, paintgun Initialise, ice Initialise/StepOn (all manager Restart/Initialise/Hit/StepOn/Open done). NEXT: manager Add (0x40E0C0 door, 0x42B5A0 tram, 0x42C590 pgun, 0x42DDF0 ice — Set-thunks) + LoadLevel (versioned stream-parse, reuse Initialise+Add) — intricate; then CDoor::Set/Delete/collision (tile-map 0x4a74b4 heavy).
 
 
 ## Dead-ends (confirmed not source-fixable; don't re-triage)
