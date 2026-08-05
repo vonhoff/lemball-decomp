@@ -23,22 +23,41 @@ reconstructed in source — see [_Data_](#data) and item 1 below.
 
 ## Naming authority (what to call code in this codebase)
 
-When building, name by this order of priority:
+Two separate authorities:
 
-1. **Windows binary wins.** Use the `/LEMBALL.EXE` mangled symbol
-   (e.g. `Add__15CNetworkMessage...` → class `CNetworkMessage`). This is
-   authoritative for class/function names.
-2. **Else, the Macintosh mangled name** for logical ownership/terminology, only
-   *after* independent x86 correlation (AGENTS.md §22.3).
-3. **Else, a descriptive neutral name** based on the Windows structure, clearly
-   marked, only when nothing maps. Never apply a Mac-inherited name to code that
-   is Windows-only (e.g. VSGDI surface/upload topology — AGENTS.md §40).
+- **Layout/ABI authority — the Windows binary.** `/LEMBALL.EXE`'s bytes, vtables,
+  field offsets, and structure are ground truth (AGENTS.md §22.6). Never transfer
+  Macintosh *layout* to Windows.
+- **Naming authority — the Macintosh source.** The mangled class/method names from the
+  Japanese Macintosh 68K symbols are the closest thing to the original source's naming.
+  The `/LEMBALL.EXE` *names* are (mostly) inferred by an AI agent via Ghidra and carry
+  **no serious authority** — do not treat them as ground-truth identifiers.
+
+So when naming code, prefer:
+
+1. **The Macintosh mangled name** for the correlated structure — after independent
+   x86 correlation (AGENTS.md §22.3). E.g. for `CNetworkMessage`, the class/method
+   names come from the Mac `CNetworkMessage` symbols, not from any Ghidra label.
+2. **Else, a descriptive neutral name consistent with the Macintosh convention** for
+   Windows-only structure that has no Mac counterpart, clearly marked as such. Keep
+   the naming style (e.g. `C...` classes, Mac-style method intent) aligned to the
+   reference convention rather than arbitrary AI labels.
+
+Reconstruction-only labels that the Macintosh does *not* provide (e.g.
+`VsNetEffStreamCommon`, `GameEffStream`, and other `VsNetEffStream*` names) are
+**candidate refinements**, not authoritative class names. Refine them toward the
+Macintosh convention for the correlated structure as evidence allows; never let an
+AI-invented Ghidra name override a real Macintosh-correlated name.
 
 Notes from past work:
 
-- Shared-base classes that the binary does **not** name (e.g. `VsNetEffStreamCommon`,
-  `GameEffStream`) are reconstruction labels for genuine shared bases — not
-  Mac-named classes. Do not rename them to a Mac class; the binary has no such symbol.
+- Shared-base classes (e.g. `VsNetEffStreamCommon`, `GameEffStream`) are
+  reconstruction labels for genuine shared bases. Their *layout* is real; their
+  *names* should be revisited against the Macintosh convention rather than kept as
+  AI-invented identifiers.
+- The `VsNetEffStreamBase` → `CNetworkMessage` rename (`0bdc6e7`) was a first step
+  in that direction; the remaining `VsNetEffStreamCommon`/`GameEffStream` labels are
+  still candidates for refinement.
 - Mac-only framing methods with no x86 equivalent (e.g. `CNetworkMessage`'s
   `CheckMessage`/`GetHeader`/`AddHeader`) are `platform_specific` — never add them.
 - A bulk class rename only compiles-and-matches cleanly if the reccmp symbol rows
