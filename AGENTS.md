@@ -43,6 +43,7 @@ Japanese Macintosh CODE resources provide terminology and logical ownership, not
 
 - Do not edit `README.md` unless requested.
 - Preserve ABI, layout, annotations, source placement, and link order.
+- Follow `docs/BACKLOG.md` for what to implement (map vs Macintosh blueprint vs do-not-implement), naming, and prioritization; drive each session from its top ready item.
 - Use compiler-generated C/C++; use assembly only for proven real ABI/vtordisp thunks after failed C++ probes. Mark it `// ABI-THUNK:` with original bytes, ABI, failed form, and reccmp result. Never embed opcodes or recreate ILT wrappers.
 - Repair inventories; never hide entries with denylists. Add ownership only after Ghidra confirms address and source owner. Investigate every datacmp issue.
 - Temporary probes belong only in ignored `build-msvc400/`. Run `clang-format -i <paths>` on modified C/C++.
