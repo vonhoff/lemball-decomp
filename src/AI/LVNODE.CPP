@@ -1,3 +1,4 @@
+#include "AI/LevelNodePoint.h"
 extern void* AllocateVSMemBlock(unsigned int cbBlock);
 extern void FreeVSMemBlock(void* pMemory);
 extern int g_nLevelFrameClockTick;
@@ -48,9 +49,7 @@ void LevelVtSmallFunctionView::AddClampedU16Field228(unsigned short nValue)
 
 struct CNode;
 
-struct LevelNodePoint {
-	int m_anValues[3];
-};
+
 
 struct CNodeManager {
 	CNode* m_pRecords00;

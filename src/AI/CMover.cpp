@@ -1,4 +1,5 @@
 #include "AI/CMover.h"
+#include "AI/LevelNodePoint.h"
 
 #include "AI/CGameObject.h"
 #include "AI/CPlayerLemming.h"
@@ -11,9 +12,7 @@ extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void* g_LEVELVT_MoveChunkObjectVtable[16];
 extern int Distance2DIntPixels(int x1, int y1, int x2, int y2);
 
-struct LevelNodePoint {
-	int m_anValues[3];
-};
+
 
 struct LevelChunkObjectBaseView {
 	void* InitializeLevelChunkObjectBase(int nType, unsigned short nVariant, unsigned short nStateId);
