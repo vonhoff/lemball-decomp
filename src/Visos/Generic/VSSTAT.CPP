@@ -176,55 +176,14 @@ CString* CString::AssignDynamicCStringFromDynamic(const CString* pSource)
 CString* CString::AssignDynamicCString(const char* pszText)
 {
 	CString* pString = this;
-	char ch;
-	unsigned int cchText;
-	unsigned int cDwords;
-	char* pszSource;
-	char* pszDest;
+	unsigned int cchLength = (unsigned int) strlen(pszText) + 1;
 
-	cchText = 0xffffffffU;
-	pszSource = (char*) pszText;
-	do {
-		if (cchText == 0) {
-			break;
-		}
-		--cchText;
-		ch = *pszSource;
-		++pszSource;
-	} while (ch != '\0');
-	cchText = ~cchText;
-	if (pString->m_cchCapacity < (int) cchText) {
+	if (pString->m_cchCapacity < (int) cchLength) {
 		FreeVSMemBlock(pString->m_pszText);
-		pString->m_pszText = (char*) AllocateVSMemBlock(cchText);
-		pString->m_cchCapacity = (int) cchText;
+		pString->m_pszText = (char*) AllocateVSMemBlock(cchLength);
+		pString->m_cchCapacity = (int) cchLength;
 	}
-
-	cchText = 0xffffffffU;
-	do {
-		if (cchText == 0) {
-			break;
-		}
-		pszSource = (char*) pszText;
-		--cchText;
-		pszSource = (char*) pszText + 1;
-		ch = *pszText;
-		pszText = pszSource;
-	} while (ch != '\0');
-	cchText = ~cchText;
-	pszSource -= cchText;
-	pszDest = pString->m_pszText;
-	cDwords = cchText >> 2;
-	while (cDwords != 0) {
-		*(unsigned int*) pszDest = *(const unsigned int*) pszSource;
-		pszSource += 4;
-		pszDest += 4;
-		--cDwords;
-	}
-	cchText &= 3;
-	while (cchText != 0) {
-		*pszDest++ = *pszSource++;
-		--cchText;
-	}
+	memcpy(pString->m_pszText, pszText, (unsigned int) strlen(pszText) + 1);
 	return pString;
 }
 
