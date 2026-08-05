@@ -54,12 +54,12 @@ CMover::CMover(void)
 {
 	char* pObject = (char*) this;
 	((LevelChunkObjectBaseView*) this)->InitializeLevelChunkObjectBase(0x34, 0, 0);
-	*(int*) (pObject + 0x150) = 0;
-	*(int*) (pObject + 0x154) = 0;
-	*(int*) (pObject + 0x158) = 0;
-	*(int*) (pObject + 0x15c) = 0xaa55aa55;
-	*(int*) (pObject + 0x160) = 0xaa55aa55;
-	*(int*) (pObject + 0x164) = 0xaa55aa55;
+	m_Move14C.m_Start.x = 0;
+	m_Move14C.m_Start.y = 0;
+	m_Move14C.m_Start.z = 0;
+	m_Move14C.m_Velocity.x = (int) 0xaa55aa55;
+	m_Move14C.m_Velocity.y = (int) 0xaa55aa55;
+	m_Move14C.m_Velocity.z = (int) 0xaa55aa55;
 	*(void**) this = g_LEVELVT_MoveChunkObjectVtable;
 }
 
