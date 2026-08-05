@@ -280,6 +280,14 @@ THUNK_ILT_REFERENCES = {
         "CLaser::Activate",
         "laser activate-at-position 00428ec0",
     ),
+    0x00423D70: [
+        (0x004016B8, "CMine::SetTerrain", "mine terrain variant selector 00423dd0"),
+        (0x004025DB, "CMineManager::Triggered", "mine manager triggered 00424560"),
+    ],
+    0x00425F10: [
+        (0x00402AA9, "CLift::ActivateDeactivate", "lift chunk activation toggle 00425660"),
+        (0x004016B3, "CLift::Activate", "lift chunk activation request 00425640"),
+    ],
 }
 
 
@@ -331,12 +339,22 @@ def _ilt_destination(comparator, address):
     return address + 5 + displacement
 
 
+def normalized_references(ref):
+    """Accept a single (ilt, dest, identity) tuple or a list of them."""
+    if ref is None:
+        return ()
+    if isinstance(ref[0], int):
+        return (ref,)
+    return tuple(ref)
+
+
 if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False):
     _reccmp_compare_function = functions.FunctionComparator.compare_function
 
     def _compare_function(self, match):
         reference = ONE_PAST_REFERENCES.get(match.orig_addr)
         ilt_reference = THUNK_ILT_REFERENCES.get(match.orig_addr)
+        ilt_refs = normalized_references(ilt_reference)
         data_references = FUNCTION_DATA_REFERENCES.get(match.orig_addr)
         if data_references is None:
             data_references = ()
@@ -346,8 +364,9 @@ if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False)
         recomp_lookup = self.recomp_sanitize.name_lookup
 
         def _orig_lookup(address, exact=False, indirect=False):
-            if ilt_reference is not None and address == ilt_reference[0]:
-                return ilt_reference[2]
+            for ref in ilt_refs:
+                if address == ref[0]:
+                    return ref[2]
             for data_reference in data_references:
                 if address == data_reference[0]:
                     return data_reference[2]
@@ -364,9 +383,16 @@ if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False)
             if reference is not None and not exact and not indirect and name is not None:
                 if reference[1] in name:
                     return reference[2]
-            if ilt_reference is not None and name is not None:
-                if ilt_reference[1] in name:
-                    return ilt_reference[2]
+            if name is not None:
+                # Exact ILT-dest match wins over substring so a shorter dest
+                # (e.g. "CLift::Activate") cannot mis-absorb a longer sibling
+                # call (e.g. "CLift::ActivateDeactivate") in the same function.
+                for ref in ilt_refs:
+                    if name == ref[1]:
+                        return ref[2]
+                for ref in ilt_refs:
+                    if ref[1] in name:
+                        return ref[2]
             if name is not None:
                 for data_reference in data_references:
                     if data_reference[1] in name:
