@@ -2,6 +2,7 @@
 
 This document is the single source of truth for what to implement, what to treat
 as a blueprint, and what to leave alone. Let it drive every session; do not improvise.
+The companion **goal prompt** for the continuous agent loop is `docs/GOAL.md`.
 
 The governing rule is **AGENTS.md §22** and the coverage inventory in
 `data/macintosh-symbol-coverage.csv` (2849 symbols, one disposition each). The
