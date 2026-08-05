@@ -1,8 +1,4 @@
-struct LevelBoundsPoint {
-	int m_nX;
-	int m_nY;
-	int m_nZ;
-};
+#include "AI/LevelBoundsPoint.h"
 
 struct GmobAction29PointView {
 	char m_abReserved00[0x9c];

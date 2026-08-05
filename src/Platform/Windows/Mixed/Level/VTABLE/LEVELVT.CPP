@@ -7,6 +7,7 @@
 #include "AI/CMoverManager.h"
 #include "AI/CBulletManager.h"
 #include "AI/CBullet.h"
+#include "AI/LevelBoundsPoint.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
 #include "AI/CCatapult.h"
@@ -45,11 +46,7 @@ void* LEMBALL_FASTCALL DeleteStreamFormatStateAuto(void* pObject, void*, BYTE fD
 // STRONG INFERENCE: callbacks relocated from the artificial aggregate by
 // vtable owner, semantic role, and neighboring address/call-graph cluster.
 
-struct LevelBoundsPoint {
-	int m_nX;
-	int m_nY;
-	int m_nZ;
-};
+
 
 struct LevelThreeDwordBounds {
 	LevelBoundsPoint m_Minimum;
