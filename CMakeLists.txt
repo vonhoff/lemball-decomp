@@ -42,6 +42,7 @@ set(LEMBALL_SOURCES
     src/AI/LVVTDEF.CPP
     src/AI/LVPOSVT.CPP
     src/AI/LVACTDSP.CPP
+    src/AI/CGameObject.cpp
     src/AI/CGameObjectMove.cpp
     src/AI/CGameObjectLifecycle.cpp
     src/AI/CGameObjectLift.cpp

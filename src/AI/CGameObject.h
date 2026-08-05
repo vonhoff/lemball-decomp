@@ -52,7 +52,8 @@ public:
 	CGameObject* m_pTarget5C;
 	void* m_pOwningChunkStream60;
 	int m_nEntityType64;
-	char m_abReserved68[4];
+	unsigned char m_abReserved68[2];
+	unsigned short m_nRegistryIndex6A;
 	unsigned short m_nSlotId6C;
 	char m_abReserved6E[2];
 	CGameObjectCommandQueue* m_pCommandQueue70;
@@ -107,6 +108,8 @@ public:
 	static unsigned short NextLoadingId(void);
 	void RegisterId(void);
 	void UpdateCollision(void);
+
+	CGameObject* ConstructCGameObject(int nEntityType, unsigned short nReserved68, unsigned short nCommandCapacity);
 };
 
 typedef char CGameObjectSizeMustMatchLayout[sizeof(CGameObject) == 0x124 ? 1 : -1];
