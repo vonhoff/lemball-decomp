@@ -1844,9 +1844,9 @@ void LEMBALL_FASTCALL ClearManagedEntityArrayCount(void* pObject)
 
 
 // FUNCTION: LEMBALL 0x004297e0
-void LEMBALL_FASTCALL reset_lasr_chunk_object_count(void* pManager)
+void CLaserManager::ResetObjectCount(void)
 {
-	*(int*) ((char*) pManager + 0x34) = 0;
+	m_cObjects34 = 0;
 }
 
 // MACINTOSH: CBalloonPost::CBalloonPost(CAI*)

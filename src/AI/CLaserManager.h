@@ -19,6 +19,7 @@ public:
 	int GetViewData(CViewData* pViewData);
 	void Add(unsigned short nSlot, int x, int y, int z, eObjectType objectType);
 	void LoadLevel(unsigned char* pData, int cbData, unsigned char nVersion);
+	void ResetObjectCount(void);
 
 private:
 	unsigned char m_abReserved00[0x30];
