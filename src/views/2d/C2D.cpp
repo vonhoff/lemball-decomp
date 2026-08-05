@@ -41,6 +41,7 @@ struct LevelScreenManagedEntitySelectionView {
 	unsigned short m_aGroupObjectNumbersA50[0x100]; // 0xa50..0xbb0
 
 	int FindGameObject(const CVSPoint* pPoint, int* pObjectIndex, unsigned char nMode);
+	void NoStateLeftClick(const CVSPoint* pPoint, const CVSPoint* pMarker, unsigned char nParam3, unsigned char nParam4);
 	void SelectLemming(int nIndex);
 	void SelectObject(int nIndex);
 	bool InGroupByObjectNo(int nObjectNo);
@@ -339,4 +340,63 @@ bool LevelScreenManagedEntitySelectionView::IsInGrouping(CGameObject* pObject)
 		}
 	}
 	return false;
+}
+
+// Macintosh: C2D::NoStateLeftClick(const CVSPoint&, const CVSPoint&, unsigned char, unsigned char)
+// FUNCTION: LEMBALL 0x00437520
+void LevelScreenManagedEntitySelectionView::NoStateLeftClick(const CVSPoint* pPoint, const CVSPoint* pMarker, unsigned char nParam3, unsigned char nParam4)
+{
+	unsigned short nStartX = (unsigned short) pMarker->m_nX;
+	unsigned short nStartY = (unsigned short) pMarker->m_nY;
+	int nIndex;
+	int nObjectNo;
+
+	if (FindGameObject(pPoint, &nIndex, 0) != 0) {
+		char* pEntity = (char*) m_pManagedEntityArray95C + nIndex * 0x4c;
+		nObjectNo = nIndex;
+		switch (*(int*) (pEntity + 0x28)) {
+		case 2:
+			if (nParam4 == 0) {
+				m_nPendingSelectionVariantA4C = 0;
+				m_nGroupCapacityA4E = 0;
+				m_nPendingSelectionA48 = 1;
+				AddObjectToGroup(*(unsigned short*) (pEntity + 0x2c), 0);
+				((VariantResourceEntryManagerView*) g_pVariantResourceEntryManager)->m_nSelectionMode10 = 3;
+				return;
+			}
+			break;
+		case 4:
+		case 5:
+		case 0xc:
+		case 0x11:
+		case 0x14:
+		case 0x15:
+		case 0x16:
+		case 0x17:
+		case 0x1c:
+		case 0x22:
+		case 0x27:
+		case 0x29:
+		case 0x2b:
+		case 0x2d:
+			if (nParam3 != 0) {
+				ClearActiveEntityChildrenPending(this);
+			}
+			SelectObject(nObjectNo);
+			return;
+		case 0x34:
+			nStartX = *(unsigned short*) (pEntity + 0x10);
+			nStartY = *(unsigned short*) (pEntity + 0x12);
+			break;
+		default:
+			break;
+		}
+	}
+	if (nParam3 != 0) {
+		ClearActiveEntityChildrenPending(this);
+	}
+	CVSPoint point;
+	point.m_nX = (short) nStartX;
+	point.m_nY = (short) nStartY;
+	MoveGroup((int*) &point);
 }
