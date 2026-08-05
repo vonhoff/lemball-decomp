@@ -1794,7 +1794,7 @@ RockChunkObjectView* RockChunkObjectView::ConstructRockChunkObject(void)
 }
 
 // FUNCTION: LEMBALL 0x00426830
-void LEMBALL_FASTCALL destroy_rock_chunk_object(void* pObject)
+void LEMBALL_FASTCALL DestroyCRocket(void* pObject)
 {
 	*(void**) pObject = g_LINKSCF_RockChunkObjectVtable;
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
@@ -1918,7 +1918,7 @@ TramChunkObjectView* TramChunkObjectView::ConstructTramChunkObject(void)
 
 // MACINTOSH: CTrampoline::~CTrampoline()
 // FUNCTION: LEMBALL 0x0042a9d0
-void LEMBALL_FASTCALL destroy_tram_chunk_object(void* pObject)
+void LEMBALL_FASTCALL DestroyCTrampoline(void* pObject)
 {
 	*(void**) pObject = g_LINKSCF_TramChunkObjectVtable;
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
@@ -2054,7 +2054,7 @@ PgunChunkObjectView* PgunChunkObjectView::ConstructPgunChunkObject(void)
 
 // MACINTOSH: CPaintGun::~CPaintGun()
 // FUNCTION: LEMBALL 0x0042bb20
-void LEMBALL_FASTCALL destroy_pgun_chunk_object_vtable_thunk(void* pObject)
+void LEMBALL_FASTCALL DestroyCPaintGun(void* pObject)
 {
 	*(void**) pObject = g_LINKSCF_PgunChunkObjectVtable;
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
@@ -2179,7 +2179,7 @@ IceChunkObjectView* IceChunkObjectView::ConstructIceChunkObject(void)
 
 // MACINTOSH: CIce::~CIce()
 // FUNCTION: LEMBALL 0x0042caf0
-void LEMBALL_FASTCALL destroy_ice_chunk_object(void* pObject)
+void LEMBALL_FASTCALL DestroyCIce(void* pObject)
 {
 	*(void**) pObject = g_LINKSCF_IceChunkObjectVtable;
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);

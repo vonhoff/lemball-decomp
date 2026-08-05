@@ -3,7 +3,7 @@
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Level/CHUNKOBJVT.H"
 
-extern void LEMBALL_FASTCALL destroy_tram_chunk_object(void* pObject);
+extern void LEMBALL_FASTCALL DestroyCTrampoline(void* pObject);
 extern void LEMBALL_FASTCALL destroy_lasr_chunk_object_vtable_thunk(void* pObject);
 
 // Split from CHUNKOBJVT.CPP to preserve MSVC 4.20 code generation.
@@ -72,12 +72,12 @@ void* LEMBALL_FASTCALL DeleteTramChunkObjectAuto(void* pObject, void* pUnused, u
 		pCursor = (char*) pObject + fDelete * 0x144;
 		while ((int) --fDelete >= 0) {
 			pCursor -= 0x144;
-			destroy_tram_chunk_object(pCursor);
+			DestroyCTrampoline(pCursor);
 		}
 		FreeVSMemBlock(pAllocation);
 		return pObject;
 	}
-	destroy_tram_chunk_object(pObject);
+	DestroyCTrampoline(pObject);
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}

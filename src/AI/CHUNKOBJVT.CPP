@@ -19,11 +19,11 @@ extern int __fastcall nDead(void* pLevelMode);
 extern CPlayerLemming* LEMBALL_FASTCALL PopLevelPlasHistoryChild(void* pLevelMode);
 
 extern void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject);
-extern void LEMBALL_FASTCALL destroy_rock_chunk_object(void* pObject);
+extern void LEMBALL_FASTCALL DestroyCRocket(void* pObject);
 extern void LEMBALL_FASTCALL destroy_lasr_chunk_object_vtable_thunk(void* pObject);
-extern void LEMBALL_FASTCALL destroy_tram_chunk_object(void* pObject);
-extern void LEMBALL_FASTCALL destroy_pgun_chunk_object_vtable_thunk(void* pObject);
-extern void LEMBALL_FASTCALL destroy_ice_chunk_object(void* pObject);
+extern void LEMBALL_FASTCALL DestroyCTrampoline(void* pObject);
+extern void LEMBALL_FASTCALL DestroyCPaintGun(void* pObject);
+extern void LEMBALL_FASTCALL DestroyCIce(void* pObject);
 extern void LEMBALL_FASTCALL destroy_move_chunk_object(void* pObject);
 extern void* LEMBALL_FASTCALL DeleteCompositeLevelChunkChildrenWrapper20B20(void*, void*, BYTE);
 
@@ -675,7 +675,7 @@ void LEMBALL_FASTCALL EmitRockChunkObjectRenderEntry(void* pObject, void* pUnuse
 void* LEMBALL_FASTCALL DeleteRockChunkObjectAuto(void* pObject, void* pUnused, unsigned int fDelete)
 {
 	(void) pUnused;
-	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x144, destroy_rock_chunk_object);
+	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x144, DestroyCRocket);
 }
 
 // FUNCTION: LEMBALL 0x00427780
@@ -788,7 +788,7 @@ int LEMBALL_FASTCALL AdvancePgunChunkObjectStateMachine(void* pObject)
 void* LEMBALL_FASTCALL DeletePgunChunkObjectAuto(void* pObject, void* pUnused, unsigned int fDelete)
 {
 	(void) pUnused;
-	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x144, destroy_pgun_chunk_object_vtable_thunk);
+	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x144, DestroyCPaintGun);
 }
 
 // MACINTOSH: CIce::Process()
@@ -803,7 +803,7 @@ int LEMBALL_FASTCALL AdvanceIceChunkObjectStateMachine(void* pObject)
 void* LEMBALL_FASTCALL DeleteIceChunkObjectAuto(void* pObject, void* pUnused, unsigned int fDelete)
 {
 	(void) pUnused;
-	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x188, destroy_ice_chunk_object);
+	DELETE_CHUNK_OBJECT_ARRAY_OR_SCALAR(pObject, fDelete, 0x188, DestroyCIce);
 }
 
 
