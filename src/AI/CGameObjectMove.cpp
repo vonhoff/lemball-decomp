@@ -3,7 +3,7 @@
 
 extern int g_nLevelFrameClockTick;
 extern void* g_pManagedEntityReachabilityHelper;
-extern unsigned int __cdecl compute_direction_octant_between_points(int nX1, int nY1, int nX2, int nY2);
+extern unsigned int __cdecl ReturnFacingDirection(int nX1, int nY1, int nX2, int nY2);
 
 // GLOBAL: LEMBALL 0x0049d020
 static const int g_LEVEL_HeadingTurnDirections[8] = {0, 1, 1, 1, 1, -1, -1, -1};
@@ -41,7 +41,7 @@ void CGameObject::TurnToFaceDestination(void)
 	int nDirection;
 
 	GetDestination(&targetPosition);
-	nDirection = compute_direction_octant_between_points(m_WorldPosition9C.x >> 12,
+	nDirection = ReturnFacingDirection(m_WorldPosition9C.x >> 12,
 														 m_WorldPosition9C.y >> 12,
 														 targetPosition.x >> 12,
 														 targetPosition.y >> 12);
@@ -65,7 +65,7 @@ int CGameObject::FacingDestination(void)
 	int nDirection;
 
 	GetDestination(&targetPosition);
-	nDirection = compute_direction_octant_between_points(m_WorldPosition9C.x >> 12,
+	nDirection = ReturnFacingDirection(m_WorldPosition9C.x >> 12,
 														 m_WorldPosition9C.y >> 12,
 														 targetPosition.x >> 12,
 														 targetPosition.y >> 12);

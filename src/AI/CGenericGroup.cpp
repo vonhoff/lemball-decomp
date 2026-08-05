@@ -4,7 +4,7 @@
 
 class CViewData;
 
-extern unsigned int __cdecl compute_direction_octant_between_points(int nX1, int nY1, int nX2, int nY2);
+extern unsigned int __cdecl ReturnFacingDirection(int nX1, int nY1, int nX2, int nY2);
 extern void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern CFormationManager* g_pGenericGroupFormationManager;
 
@@ -228,7 +228,7 @@ void CGenericGroup::SendNewWaypoint(AICOORD position)
 	void** pVtable = *(void***) this;
 	CGameObject* pObject = ((ElementIteratorProc) pVtable[0x114 / sizeof(void*)])(this);
 	if (pObject != 0) {
-		unsigned int nDirection = compute_direction_octant_between_points(pObject->m_WorldPosition9C.x >> 12,
+		unsigned int nDirection = ReturnFacingDirection(pObject->m_WorldPosition9C.x >> 12,
 																						 pObject->m_WorldPosition9C.y >> 12,
 																						 position.x >> 12,
 																						 position.y >> 12);
