@@ -1,4 +1,5 @@
 #include "AI/CGameObject.h"
+#include "AI/LiftChunkManagerSerializationView.h"
 #include "AI/CGenericGroup.h"
 #include "AI/CHand.h"
 #include "AI/CHandManager.h"
@@ -1745,20 +1746,6 @@ void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject)
 
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
 
-struct LiftChunkEndpointPoint {
-	short m_x;
-	short m_y;
-	short m_z;
-};
-
-struct LiftChunkEndpointPair {
-	LiftChunkEndpointPoint m_Start;
-	LiftChunkEndpointPoint m_End;
-};
-
-struct LiftChunkManagerSerializationView {
-	int SerializeLiftChunkEndpointPairs(LiftChunkEndpointPair* pPairs);
-};
 
 // FUNCTION: LEMBALL 0x00425830
 int LiftChunkManagerSerializationView::SerializeLiftChunkEndpointPairs(LiftChunkEndpointPair* pPairs)

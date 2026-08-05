@@ -1,6 +1,7 @@
 #define LEMBALL_DEFINE_MANAGED_ENTITY_PACKET_CLASSES
 
 #include "AI/CFormationManager.h"
+#include "AI/LiftChunkManagerSerializationView.h"
 
 inline void* operator new(unsigned int, void* pMemory)
 {
@@ -29,20 +30,6 @@ inline void* operator new(unsigned int, void* pMemory)
 
 extern "C" DWORD WINAPI timeGetTime(void);
 
-struct LiftChunkEndpointPoint {
-	short m_x;
-	short m_y;
-	short m_z;
-};
-
-struct LiftChunkEndpointPair {
-	LiftChunkEndpointPoint m_Start;
-	LiftChunkEndpointPoint m_End;
-};
-
-struct LiftChunkManagerSerializationView {
-	int SerializeLiftChunkEndpointPairs(LiftChunkEndpointPair* pPairs);
-};
 
 struct LevelModeLiftManagerOwnerView {
 	int SerializeLiftChunkEndpointPairs(LiftChunkEndpointPair* pPairs);
