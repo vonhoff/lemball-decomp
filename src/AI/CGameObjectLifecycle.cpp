@@ -26,7 +26,7 @@ void CGameObject::Restart(void)
 	if (pPendingEntryCount != 0) {
 		*pPendingEntryCount = 0;
 	}
-	nObjectType = *(int*) (pObjectBytes + 0x64);
+	nObjectType = m_nEntityType64;
 	switch (nObjectType) {
 	case 1:
 		*(unsigned short*) (pObjectBytes + 4) = 0x200;
