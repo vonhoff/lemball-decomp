@@ -6,8 +6,9 @@ is confirmed so it is never re-triaged. Goal prompt drives *what*, this tracks *
 
 ## CURRENT
 
-- Progress 76.47% | Impl 91.21% (2917/3198) | Accuracy 83.83% | Exact lost vs baseline: `0x417b50`, `0x462990` (pre-existing network-refactor deleters, not a regression)
-- Head: `dee079f` — AppendPointerToStreamVariant member+literals (71.7→100%)
+- Progress 76.4% | Impl 91.24% (2927/3208) | Accuracy 83.7% | Exact lost vs baseline: `0x417b50`, `0x462990` (pre-existing network-refactor deleters, not a regression)
+- **Macintosh blueprint portability coverage: 88.0%** (618/702 portable-scope w/ x86 target reconstructed; 84 gaps) — see `macintosh_naming.py coverage`
+- Head: `7dd9505` — coverage metric + pointer-integrity
 
 ## Genuine gaps (fixable, high-value)
 
