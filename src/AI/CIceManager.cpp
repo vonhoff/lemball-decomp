@@ -162,3 +162,9 @@ void CIceManager::Switch(int nAction, unsigned int nSlot)
 		}
 	}
 }
+
+// FUNCTION: LEMBALL 0x0042d900 (was "reset_ice_chunk_object_count")
+void CIceManager::ResetObjectCount(void)
+{
+	m_nObjectCount34 = 0;
+}

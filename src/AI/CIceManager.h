@@ -15,6 +15,7 @@ public:
 	int GetViewData(CViewData* pViewData);
 	void Switch(int nAction, unsigned int nSlot);
 	int StepOn(void* pCoord, void* pGameObject);
+	void ResetObjectCount(void);
 
 private:
 	unsigned char m_abReserved00[0x30];

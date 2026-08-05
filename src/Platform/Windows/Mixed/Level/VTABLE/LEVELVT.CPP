@@ -378,7 +378,6 @@ int return_true_vtable_callback_00423050(void);
 void __fastcall clear_rock_chunk_object_count(void* pManager);
 int PASCAL get_tile_flag_0x1c_object_render_entry_count(void);
 void noop_vtable_callback_0042c9a0(void);
-void __fastcall reset_ice_chunk_object_count(void* pManager);
 
 void __fastcall reset_move_chunk_object_count(void* pManager);
 int __fastcall return_object_field_0x0c_00435880(void* pObject);
@@ -1883,11 +1882,7 @@ void noop_vtable_callback_0042c9a0(void)
 {
 }
 
-// FUNCTION: LEMBALL 0x0042d900
-void __fastcall reset_ice_chunk_object_count(void* pManager)
-{
-	*(int*) ((char*) pManager + 0x34) = 0;
-}
+// FUNCTION: LEMBALL 0x0042d900 (moved to CIceManager::ResetObjectCount in CIceManager.cpp)
 
 
 extern void* g_LEVELVT_MoveChunkObjectVtable[16];
