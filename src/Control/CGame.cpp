@@ -3161,6 +3161,26 @@ void GameLevelProgressState::IncSkill(int nDecrement)
 	m_nCurrentLevel = 0;
 	m_anSnapshotPackCaps[m_nCurrentPack] = 0;
 }
+
+// Macintosh: CGameStatus::NoOfLevelsInSkill(int)
+// FUNCTION: LEMBALL 0x00408f30
+int GameLevelProgressState::NoOfLevelsInSkill(int nSkill)
+{
+	switch (nSkill) {
+	case 0:
+		return 24;
+	case 1:
+		return 25;
+	case 2:
+		return 28;
+	case 3:
+		return 21;
+	case 4:
+		return 11;
+	default:
+		return nSkill;
+	}
+}
 // Macintosh: CGameStatus::NextLevelAvailable()
 // FUNCTION: LEMBALL 0x00408fa0
 bool GameLevelProgressState::IsCurrentLevelAvailable(void)
