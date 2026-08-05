@@ -1,6 +1,7 @@
 #define LEMBALL_DEFINE_TIMED_EFF_STREAM_SECONDARY_HANDLE_ABI
 
 #include "Control/CGame.h"
+#include "Visos/VsNetVSMemObjectPointerArray.h"
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
@@ -622,13 +623,7 @@ struct VsNetSimpleEffTransportRecordSlotTable {
 										   void* pPayload);
 };
 
-struct VsNetVSMemObjectPointerArray {
-	int m_cObjects;
-	int m_nReserved04;
-	int m_pObjectArray08;
-
-	void DestroyVSMemObjectPointerArray(void);
-};
+;
 
 struct VsNetEffTransportRecordBuffer {
 	void** m_pVtable;

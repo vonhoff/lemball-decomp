@@ -3,6 +3,7 @@
 #define LEMBALL_DEFINE_TIMED_EFF_STREAM_SECONDARY_HANDLE_ABI
 
 #include "Control/CGame.h"
+#include "Visos/VsNetVSMemObjectPointerArray.h"
 #include "Visos/VsNetAdjustorThunkHeader.h"
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
@@ -128,13 +129,7 @@ struct VsNetSimpleEffTransportRecordSlotTable {
 	void* ConstructSimpleRecordSlotTableWrapper(int cRecords, unsigned int cbRecord);
 };
 
-struct VsNetVSMemObjectPointerArray {
-	int m_cObjects;
-	int m_nReserved04;
-	int m_pObjectArray08;
-
-	void DestroyVSMemObjectPointerArray(void);
-};
+;
 
 // LINKERILT: LEMBALL 0x00401451
 void NoopVtableCallbackThunk(void)
