@@ -34,7 +34,7 @@ private:
 	int m_nFrameTickCC;                    // 0xcc
 	unsigned char m_abReservedD0[0x68];
 	int m_anRuntimeState138[3];            // 0x138..0x143
-	unsigned char m_abReserved144[4];
+	CGameObject* m_pTargetObject144;       // 0x144
 };
 
 typedef char CLaserSizeCheck[sizeof(CLaser) == 0x148 ? 1 : -1];

@@ -213,7 +213,7 @@ int CLaser::CheckHits(void)
 	if (pCandidate == 0) {
 		return 0;
 	}
-	*(void**) ((char*) pObject + 0x144) = pCandidate;
+	m_pTargetObject144 = (CGameObject*) pCandidate;
 	*(int*) ((char*) pCandidate + 0xb8) = 0x0f;
 	*(short*) ((char*) pCandidate + 0xbc) = 1;
 	*(int*) ((char*) pCandidate + 0xcc) = g_nLevelFrameClockTick + 0x1a;
@@ -231,21 +231,21 @@ int CLaser::Process(void)
 
 	if (pFields[0x45] != 0) {
 		pFields[0x4e] = pFields[0x2e] != 0x18;
-		if (pFields[0x2e] == 0x1a && *(void**) ((char*) pObject + 0x144) == 0) {
+		if (pFields[0x2e] == 0x1a && m_pTargetObject144 == 0) {
 			CheckHits();
 		}
 		nState = pFields[0x2e];
 		if (pFields[0x4a] != nState) {
 			if (nState == 0x17) {
-				pTarget = *(void**) ((char*) pObject + 0x144);
+				pTarget = m_pTargetObject144;
 				if (pTarget != 0) {
 					*(int*) ((char*) pTarget + 0x2c) = 1;
-					*(void**) ((char*) pObject + 0x144) = 0;
+					m_pTargetObject144 = 0;
 				}
 				((LaserStateView*) pObject)->SetManagedEntityStateId(0x18);
 			}
 			else if (nState == 0x19) {
-				*(void**) ((char*) pObject + 0x144) = 0;
+				m_pTargetObject144 = 0;
 			}
 			pFields[0x4a] = pFields[0x2e];
 		}
@@ -261,11 +261,11 @@ int CLaser::Process(void)
 
 	switch (pFields[0x2e]) {
 	case 0x17:
-		pTarget = *(void**) ((char*) pObject + 0x144);
+		pTarget = m_pTargetObject144;
 		if (pTarget != 0) {
 			((LaserIntSlotProc) (*(void***) pTarget)[13])(pTarget, 0, 0x22);
 			*(int*) ((char*) pTarget + 0x2c) = 1;
-			*(void**) ((char*) pObject + 0x144) = 0;
+			m_pTargetObject144 = 0;
 		}
 		((LaserStateView*) pObject)->SetManagedEntityStateId(0x18);
 		return 1;
@@ -276,22 +276,22 @@ int CLaser::Process(void)
 		return 1;
 	case 0x19:
 		if ((unsigned int) pFields[0x34] < (unsigned int) g_nLevelFrameClockTick) {
-			*(void**) ((char*) pObject + 0x144) = 0;
+			m_pTargetObject144 = 0;
 			((LaserStateView*) pObject)->SetManagedEntityStateId(0x1a);
 		}
 		return 1;
 	case 0x1a:
-		if (*(void**) ((char*) pObject + 0x144) == 0) {
+		if (m_pTargetObject144 == 0) {
 			CheckHits();
 		}
 		if ((unsigned int) pFields[0x33] < (unsigned int) g_nLevelFrameClockTick) {
 			pFields[0x4f] = 1;
 			pFields[0x4e] = pFields[0x50];
 			pFields[0x33] = g_nLevelFrameClockTick + 0x3c;
-			pTarget = *(void**) ((char*) pObject + 0x144);
+			pTarget = m_pTargetObject144;
 			if (pTarget != 0) {
 				*(int*) ((char*) pTarget + 0x2c) = 1;
-				*(void**) ((char*) pObject + 0x144) = 0;
+				m_pTargetObject144 = 0;
 			}
 			((LaserStateView*) pObject)->SetManagedEntityStateId(0x17);
 		}
@@ -313,7 +313,7 @@ int CLaser::Activate(void)
 	pFields[0x32] = g_nLevelFrameClockTick;
 	pFields[0x34] = g_nLevelFrameClockTick + 6;
 	pFields[0x33] = g_nLevelFrameClockTick + 0x18;
-	*(void**) ((char*) pObject + 0x144) = 0;
+	m_pTargetObject144 = 0;
 	pFields[0x25] = g_nLevelFrameClockTimeMs;
 	((LaserStateView*) pObject)->SetManagedEntityStateId(0x19);
 	return 1;
@@ -328,7 +328,7 @@ int CLaser::StepOn(const AICOORD& position, CGameObject* pObject)
 	if (m_nEntityType64 == 2 &&
 		Distance2DIntPixels(pFields[0x27] >> 12, pFields[0x28] >> 12, position.x >> 12, position.y >> 12) < 0x30) {
 		Activate();
-		*(CGameObject**) ((char*) this + 0x144) = pObject;
+		m_pTargetObject144 = (CGameObject*) pObject;
 		return 1;
 	}
 	return 0;
