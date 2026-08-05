@@ -1,4 +1,5 @@
 #include "AI/CInvisibleSwitchManager.h"
+#include "AI/CGameObject.h"
 
 #include "AI/CInvisibleSwitch.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
@@ -180,4 +181,14 @@ void CInvisibleSwitchManager::LoadLevel(unsigned char* pData, int cbData, unsign
 	}
 	(void) cbData;
 	(void) nVersion;
+}
+
+// FUNCTION: LEMBALL 0x0040a3e0
+void CInvisibleSwitchManager::AddInvsChunkObjectWithBounds(unsigned short nSlotId, const tCoord3d& begin, const tCoord3d& end)
+{
+	if (m_cObjects34 < m_cCapacity30) {
+		((CGameObject*) ((char*) m_pObjects3C + m_cObjects34 * 0x2b8))->SetId(nSlotId);
+		((CInvisibleSwitch*) ((char*) m_pObjects3C + m_cObjects34 * 0x2b8))->Set(begin, end);
+		m_cObjects34++;
+	}
 }
