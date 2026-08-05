@@ -43,6 +43,7 @@ struct LevelScreenManagedEntitySelectionView {
 	int FindGameObject(const CVSPoint* pPoint, int* pObjectIndex, unsigned char nMode);
 	void NoStateLeftClick(const CVSPoint* pPoint, const CVSPoint* pMarker, unsigned char nParam3, unsigned char nParam4);
 	void GroupingLeftClick(const CVSPoint* pPoint, const CVSPoint* pMarker, unsigned char nParam3);
+	void LeftClick(const CVSPoint* pPoint, const CVSPoint* pMarker, unsigned char nParam3, unsigned char nParam4);
 	void SelectLemming(int nIndex);
 	void SelectObject(int nIndex);
 	bool InGroupByObjectNo(int nObjectNo);
@@ -455,4 +456,18 @@ void LevelScreenManagedEntitySelectionView::GroupingLeftClick(const CVSPoint* pP
 		return;
 	}
 	MoveGroup((int*) pMarker);
+}
+
+// Macintosh: C2D::LeftClick(const CVSPoint&, const CVSPoint&, unsigned char, unsigned char)
+// FUNCTION: LEMBALL 0x00437840
+void LevelScreenManagedEntitySelectionView::LeftClick(const CVSPoint* pPoint, const CVSPoint* pMarker, unsigned char nParam3, unsigned char nParam4)
+{
+	if (m_nPendingSelectionA48 == 0) {
+		NoStateLeftClick(pPoint, pMarker, nParam3, nParam4);
+		return;
+	}
+	if (m_nPendingSelectionA48 != 1) {
+		return;
+	}
+	GroupingLeftClick(pPoint, pMarker, nParam4);
 }
