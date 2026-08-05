@@ -164,13 +164,13 @@ void LEMBALL_FASTCALL SelectPreviousReadyManagedEntityFromLevelScreen(LevelScree
 void LevelScreenManagedEntitySelectionView::SelectLemming(int nIndex)
 {
 	char* pModeBytes;
-	char* pEntry;
+	CGameObject* pEntry;
 	LevelScreenInputEvent Event;
 
 	pModeBytes = (char*) m_pLevelMode96C;
-	pEntry = *(char**) (pModeBytes + nIndex * 4 + 0x1d0);
+	pEntry = *((CGameObject**) (pModeBytes + nIndex * 4 + 0x1d0));
 	Event.m_nType00 = 8;
-	Event.m_nReserved08 = (int) *(unsigned short*) (pEntry + 0x6a);
+	Event.m_nReserved08 = (int) pEntry->m_nRegistryIndex6A;
 	memset(&Event.m_nReserved04, 0, 0x10);
 	m_pInputEventSink974->DispatchLevelScreenInputEvent(&Event);
 	m_nPendingSelectionVariantA4C = 0;
