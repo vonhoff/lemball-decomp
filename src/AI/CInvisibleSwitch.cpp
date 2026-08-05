@@ -87,7 +87,7 @@ void CInvisibleSwitch::Initialise(void)
 	*(unsigned short*) (pObjectBytes + 0x150) = 0;
 	*(int*) (pObjectBytes + 0x148) = 0;
 	*(int*) (pObjectBytes + 0x254) = 0;
-	*(int*) (pObjectBytes + 0x144) = 0;
+	m_nTriggered144 = 0;
 	*(int*) (pObjectBytes + 0x5c) = 0;
 	*(int*) (pObjectBytes + 0x14c) = 0;
 }
@@ -121,7 +121,7 @@ void CInvisibleSwitch::Set(const tCoord3d& begin, const tCoord3d& end)
 		m_RangeEnd13E.y = nSwap;
 	}
 	nY = m_RangeStart138.y;
-	*(int*) (pObjectBytes + 0x144) = 0;
+	m_nTriggered144 = 0;
 	m_WorldPosition9C.x = m_RangeStart138.x << 12;
 	*(int*) (pObjectBytes + 0x148) = 0;
 	m_WorldPosition9C.y = nY << 12;
@@ -233,7 +233,7 @@ int CInvisibleSwitch::Process(void)
 	}
 
 	if (m_nStateB8 == 0x1a) {
-		if (*(int*) (pObjectBytes + 0x144) == 0) {
+		if (m_nTriggered144 == 0) {
 			*(int*) (pObjectBytes + 0x148) = 1;
 		}
 		if (*(void**) (pObjectBytes + 0x5c) != 0) {
@@ -287,11 +287,11 @@ void CInvisibleSwitch::Load(unsigned char*& pData)
 	Set(begin, end);
 
 	if (*(unsigned short*) ((char*) g_pActiveManagedEntityOwner + 0x54) >= 9) {
-		*(int*) (pObjectBytes + 0x144) = *(unsigned short*) pData;
+		m_nTriggered144 = *(unsigned short*) pData;
 		pData += 2;
 	}
 	else {
-		*(int*) (pObjectBytes + 0x144) = 0;
+		m_nTriggered144 = 0;
 	}
 
 	*(unsigned short*) (pObjectBytes + 0x150) = *(unsigned short*) pData;
