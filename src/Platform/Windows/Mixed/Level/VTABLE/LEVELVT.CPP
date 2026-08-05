@@ -4,6 +4,7 @@
 #include "AI/CPlayerLemmingGroup.h"
 #include "AI/CGlobalGameObject.h"
 #include "AI/CMover.h"
+#include "AI/CMoverManager.h"
 #include "AI/CBulletManager.h"
 #include "AI/CBullet.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
@@ -1893,16 +1894,6 @@ extern void* g_pLevelTileGrid;
 
 struct MoveChunkObjectTriggerView {
 	int IsTriggered(void* pEntity, const int* pPosition);
-};
-
-struct CMoverManager {
-	char m_abReserved00[0x34];
-	int m_cObjects34;
-	CMover* m_pObjects38;
-
-	CMover* Find(int x, int y, int* pHeight);
-	int HasTriggeredObject(void* pEntity, const int* pPosition);
-	void ResetObjectCount(void);
 };
 
 // FUNCTION: LEMBALL 0x0042eec0

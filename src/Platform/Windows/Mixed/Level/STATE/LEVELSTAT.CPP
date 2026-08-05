@@ -1,4 +1,5 @@
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
+#include "AI/CMoverManager.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/GDI/VSGDI.H"
@@ -765,15 +766,6 @@ struct LevelTileGridView {
 };
 
 struct CMover;
-
-struct CMoverManager {
-	char m_abReserved00[0x34];
-	int m_cObjects34;
-	CMover* m_pObjects38;
-
-	CMover* Find(int x, int y, int* pHeight);
-	int HasTriggeredObject(void* pEntity, const int* pPosition);
-};
 
 struct LevelTileGridOwnerView {
 	char m_abReserved00[8];
