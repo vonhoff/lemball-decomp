@@ -378,8 +378,6 @@ int return_true_vtable_callback_00423050(void);
 void __fastcall clear_rock_chunk_object_count(void* pManager);
 int PASCAL get_tile_flag_0x1c_object_render_entry_count(void);
 void noop_vtable_callback_0042c9a0(void);
-
-void __fastcall reset_move_chunk_object_count(void* pManager);
 int __fastcall return_object_field_0x0c_00435880(void* pObject);
 void __fastcall set_object_field_0x10_00435890(void* pObject, void* pUnused, int nValue);
 void __fastcall set_object_field_0x0c_004358a0(void* pObject, void* pUnused, int nValue);
@@ -1906,6 +1904,7 @@ struct CMoverManager {
 
 	CMover* Find(int x, int y, int* pHeight);
 	int HasTriggeredObject(void* pEntity, const int* pPosition);
+	void ResetObjectCount(void);
 };
 
 // FUNCTION: LEMBALL 0x0042eec0
@@ -1917,9 +1916,9 @@ int MoveChunkObjectTriggerView::IsTriggered(void* pEntity, const int* pPosition)
 }
 
 // FUNCTION: LEMBALL 0x0042f2e0
-void __fastcall reset_move_chunk_object_count(void* pManager)
+void CMoverManager::ResetObjectCount(void)
 {
-	*(int*) ((char*) pManager + 0x34) = 0;
+	m_cObjects34 = 0;
 }
 
 // MACINTOSH: CMoverManager::Find(int, int, int&)
