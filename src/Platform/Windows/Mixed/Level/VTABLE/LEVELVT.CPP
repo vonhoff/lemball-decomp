@@ -5,6 +5,7 @@
 #include "AI/CGlobalGameObject.h"
 #include "AI/CMover.h"
 #include "AI/CBulletManager.h"
+#include "AI/CBullet.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
 #include "AI/CCatapult.h"
@@ -357,22 +358,6 @@ struct LevelProjectilePosition {
 	int m_nZ;
 };
 
-struct CBullet {
-	virtual void vf0(void);
-	virtual void vf1(void);
-	virtual void SetState(int nState);
-	virtual void EmitProjectileRenderEntry(void* pRenderEntry);
-	virtual void vf4(void);
-	virtual int ServiceProjectile(void);
-	unsigned char m_abReserved04[0xb8 - 0x04];
-	int m_nStateB8;                     // 0xb8
-	unsigned char m_abReservedBC[0x114 - 0xbc];
-	int m_nPendingState114;             // 0x114
-	unsigned char m_abReserved118[0x164 - 0x118];
-	int m_nRuntimeFlag164;              // 0x164
-
-	void Free(void);
-};
 int return_true_vtable_callback_0041c3f0(void);
 int return_two_vtable_callback_0041c430(void);
 int return_true_vtable_callback_0041c5b0(void);
