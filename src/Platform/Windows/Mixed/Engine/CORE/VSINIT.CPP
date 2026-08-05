@@ -641,7 +641,9 @@ void LEMBALL_FASTCALL ApplyStreamIntegerWidthPadding(VsInitFormattedOutputStream
 // FUNCTION: LEMBALL 0x004585b0
 VsInitFormattedOutputStream* VsInitFormattedOutputStream::AppendCStringToStream(const char* pszText)
 {
-	AppendCStringToFixedBufferStream(VsInitFORMAT_TARGET(this)->m_pDownstream, 0, pszText);
+	VsInitFixedBufferStream* pDownstream;
+	pDownstream = VsInitFORMAT_TARGET(this)->m_pDownstream;
+	((void(LEMBALL_FASTCALL*)(VsInitFixedBufferStream*, const char*)) ((void**) pDownstream->m_pVtable)[3])(pDownstream, pszText);
 	return this;
 }
 
