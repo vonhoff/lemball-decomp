@@ -60,29 +60,6 @@ public:
 	void Initialise(int nCount);
 };
 
-// FUNCTION: LEMBALL 0x0040e5a0
-void CDoorManager::Switch(int nAction, unsigned int nSlot)
-{
-	int nObjectOffset;
-	int iObject;
-
-	iObject = 0;
-
-	if (m_nObjectCount34 > 0) {
-		nObjectOffset = 0;
-		while (GetManagedEntitySlotIdThunk((int) (unsigned long) ((char*) m_pObjects3C + nObjectOffset)) != nSlot) {
-			nObjectOffset += 0x14c;
-			++iObject;
-			if (m_nObjectCount34 <= iObject) {
-				return;
-			}
-		}
-		if (nAction == 3) {
-			((CDoor*) ((char*) m_pObjects3C + iObject * 0x14c))->DoActivate();
-		}
-	}
-}
-
 // FUNCTION: LEMBALL 0x0040df90
 void CDoorManager::Restart(void)
 {
@@ -96,25 +73,6 @@ void CDoorManager::Restart(void)
 		pObject = (CDoor*) ((char*) m_pObjects3C + iObject * 0x14c);
 		((CDoorNoArgVirtualProc) (*(void***) pObject)[0x104 / sizeof(void*)])(pObject);
 	}
-}
-
-// FUNCTION: LEMBALL 0x0040e500
-int CDoorManager::Open(void* pCoord, void* pGameObject)
-{
-	int nOffset;
-	int i;
-	CDoor* pObject;
-
-	if (m_nObjectCount34 <= 0) {
-		return 0;
-	}
-	for (i = 0, nOffset = 0; i < m_nObjectCount34; ++i, nOffset += 0x14c) {
-		pObject = (CDoor*) ((char*) m_pObjects3C + nOffset);
-		if (((int(__stdcall*)(void*, void*, void*)) 0x40193d)(pObject, pCoord, pGameObject) != 0) {
-			return 1;
-		}
-	}
-	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0040dfc0
@@ -145,6 +103,48 @@ void CDoorManager::Initialise(int nCount)
 			pObject = (CDoor*) ((char*) m_pObjects3C + iObject * 0x14c);
 			((CDoorNoArgVirtualProc) (*(void***) pObject)[0x104 / sizeof(void*)])(pObject);
 			*(int*) ((char*) pObject + 0x60) = (int) this;
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x0040e500
+int CDoorManager::Open(void* pCoord, void* pGameObject)
+{
+	int nOffset;
+	int i;
+	CDoor* pObject;
+
+	if (m_nObjectCount34 <= 0) {
+		return 0;
+	}
+	for (i = 0, nOffset = 0; i < m_nObjectCount34; ++i, nOffset += 0x14c) {
+		pObject = (CDoor*) ((char*) m_pObjects3C + nOffset);
+		if (((int(__stdcall*)(void*, void*, void*)) 0x40193d)(pObject, pCoord, pGameObject) != 0) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x0040e5a0
+void CDoorManager::Switch(int nAction, unsigned int nSlot)
+{
+	int nObjectOffset;
+	int iObject;
+
+	iObject = 0;
+
+	if (m_nObjectCount34 > 0) {
+		nObjectOffset = 0;
+		while (GetManagedEntitySlotIdThunk((int) (unsigned long) ((char*) m_pObjects3C + nObjectOffset)) != nSlot) {
+			nObjectOffset += 0x14c;
+			++iObject;
+			if (m_nObjectCount34 <= iObject) {
+				return;
+			}
+		}
+		if (nAction == 3) {
+			((CDoor*) ((char*) m_pObjects3C + iObject * 0x14c))->DoActivate();
 		}
 	}
 }

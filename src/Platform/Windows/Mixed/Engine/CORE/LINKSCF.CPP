@@ -1925,6 +1925,36 @@ void LEMBALL_FASTCALL destroy_tram_chunk_object(void* pObject)
 }
 
 // MACINTOSH: CTrampolineManager::Initialise(int)
+// FUNCTION: LEMBALL 0x0042af60
+LinkScfTramChunkManagerView* LinkScfTramChunkManagerView::ConstructTramChunkManager(void* pLevelMode, int nCapacity)
+{
+	LINKSCF_INITIALIZE_EFF_CHUNK_STREAM(this, 0x18, 0x0d);
+	*(void**) this = g_LINKSCF_TramChunkManagerVtable;
+	*(void**) ((char*) this + 0x3c) = pLevelMode;
+	*(int*) ((char*) this + 0x30) = nCapacity;
+	*(int*) ((char*) this + 0x38) = 0;
+	return this;
+}
+
+// FUNCTION: LEMBALL 0x0042afc0
+void LinkScfTramChunkManagerView::Restart(void)
+{
+	int nOffset;
+	int i;
+	void** pVtable;
+	char* pObject;
+
+	if (*(char**) ((char*) this + 0x38) == 0) {
+		return;
+	}
+	for (i = 0, nOffset = 0; *(int*) ((char*) this + 0x30) > i; ++i, nOffset += 0x144) {
+		pObject = *(char**) ((char*) this + 0x38) + nOffset;
+		pVtable = *(void***) pObject;
+		((void(LEMBALL_FASTCALL*)(void*)) pVtable[0x104 / sizeof(void*)])(pObject);
+	}
+}
+
+// MACINTOSH: CTrampolineManager::Hit(AICOORD&, CGameObject*)
 // FUNCTION: LEMBALL 0x0042aff0
 void LinkScfTramChunkManagerView::Initialise(int nCapacity)
 {
@@ -1957,56 +1987,6 @@ void LinkScfTramChunkManagerView::Initialise(int nCapacity)
 }
 
 // MACINTOSH: CTrampolineManager::Restart()
-// FUNCTION: LEMBALL 0x0042afc0
-void LinkScfTramChunkManagerView::Restart(void)
-{
-	int nOffset;
-	int i;
-	void** pVtable;
-	char* pObject;
-
-	if (*(char**) ((char*) this + 0x38) == 0) {
-		return;
-	}
-	for (i = 0, nOffset = 0; *(int*) ((char*) this + 0x30) > i; ++i, nOffset += 0x144) {
-		pObject = *(char**) ((char*) this + 0x38) + nOffset;
-		pVtable = *(void***) pObject;
-		((void(LEMBALL_FASTCALL*)(void*)) pVtable[0x104 / sizeof(void*)])(pObject);
-	}
-}
-
-// MACINTOSH: CTrampolineManager::Hit(AICOORD&, CGameObject*)
-// FUNCTION: LEMBALL 0x0042b550
-int LinkScfTramChunkManagerView::Hit(void* pCoord, void* pGameObject)
-{
-	int nOffset;
-	int i;
-	char* pObject;
-
-	if (*(int*) ((char*) this + 0x34) <= 0) {
-		return 0;
-	}
-	for (i = 0, nOffset = 0; i < *(int*) ((char*) this + 0x34); ++i, nOffset += 0x144) {
-		pObject = *(char**) ((char*) this + 0x38) + nOffset;
-		if (((int(__stdcall*)(void*, void*, void*)) 0x401ee2)(pObject, pCoord, pGameObject) != 0) {
-			return 1;
-		}
-	}
-	return 0;
-}
-
-// MACINTOSH: CTrampolineManager::CTrampolineManager(CAI*, int)
-// FUNCTION: LEMBALL 0x0042af60
-LinkScfTramChunkManagerView* LinkScfTramChunkManagerView::ConstructTramChunkManager(void* pLevelMode, int nCapacity)
-{
-	LINKSCF_INITIALIZE_EFF_CHUNK_STREAM(this, 0x18, 0x0d);
-	*(void**) this = g_LINKSCF_TramChunkManagerVtable;
-	*(void**) ((char*) this + 0x3c) = pLevelMode;
-	*(int*) ((char*) this + 0x30) = nCapacity;
-	*(int*) ((char*) this + 0x38) = 0;
-	return this;
-}
-
 // FUNCTION: LEMBALL 0x0042b0b0
 void LEMBALL_FASTCALL clear_tram_chunk_object_count(void* pManager)
 {
@@ -2036,6 +2016,26 @@ void LEMBALL_FASTCALL ActivateTramChunkObjects(void* pManager)
 	}
 }
 
+// FUNCTION: LEMBALL 0x0042b550
+int LinkScfTramChunkManagerView::Hit(void* pCoord, void* pGameObject)
+{
+	int nOffset;
+	int i;
+	char* pObject;
+
+	if (*(int*) ((char*) this + 0x34) <= 0) {
+		return 0;
+	}
+	for (i = 0, nOffset = 0; i < *(int*) ((char*) this + 0x34); ++i, nOffset += 0x144) {
+		pObject = *(char**) ((char*) this + 0x38) + nOffset;
+		if (((int(__stdcall*)(void*, void*, void*)) 0x401ee2)(pObject, pCoord, pGameObject) != 0) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+// MACINTOSH: CTrampolineManager::CTrampolineManager(CAI*, int)
 // FUNCTION: LEMBALL 0x0042b9b0
 void noop_tram_runtime_callback(void)
 {
@@ -2089,6 +2089,29 @@ LinkScfPgunChunkManagerView* LinkScfPgunChunkManagerView::ConstructPgunChunkMana
 }
 
 // MACINTOSH: CPaintGunManager::Initialise(int)
+// FUNCTION: LEMBALL 0x0042c040
+void LEMBALL_FASTCALL ActivatePgunChunkObjects(void* pManager)
+{
+	char* pManagerBytes;
+	void* pChunkObject;
+	int i;
+	int nOffset;
+
+	pManagerBytes = (char*) pManager;
+	if (*(char**) (pManagerBytes + 0x38) != 0) {
+		i = 0;
+		if (*(int*) (pManagerBytes + 0x30) > 0) {
+			nOffset = 0;
+			do {
+				pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
+				++i;
+				nOffset += 0x144;
+				((ActivateChunkObjectProc) (*(void***) pChunkObject)[65])(pChunkObject);
+			} while (*(int*) (pManagerBytes + 0x30) > i);
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x0042c070
 void LinkScfPgunChunkManagerView::Initialise(int nCapacity)
 {
@@ -2121,29 +2144,6 @@ void LinkScfPgunChunkManagerView::Initialise(int nCapacity)
 }
 
 // MACINTOSH: CPaintGunManager::Restart()
-// FUNCTION: LEMBALL 0x0042c040
-void LEMBALL_FASTCALL ActivatePgunChunkObjects(void* pManager)
-{
-	char* pManagerBytes;
-	void* pChunkObject;
-	int i;
-	int nOffset;
-
-	pManagerBytes = (char*) pManager;
-	if (*(char**) (pManagerBytes + 0x38) != 0) {
-		i = 0;
-		if (*(int*) (pManagerBytes + 0x30) > 0) {
-			nOffset = 0;
-			do {
-				pChunkObject = *(char**) (pManagerBytes + 0x38) + nOffset;
-				++i;
-				nOffset += 0x144;
-				((ActivateChunkObjectProc) (*(void***) pChunkObject)[65])(pChunkObject);
-			} while (*(int*) (pManagerBytes + 0x30) > i);
-		}
-	}
-}
-
 // FUNCTION: LEMBALL 0x0042c140
 void LEMBALL_FASTCALL clear_pgun_chunk_object_count(void* pManager)
 {
