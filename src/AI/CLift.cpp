@@ -91,8 +91,8 @@ void CLift::Edit(int nHeight,
 	for (i = 0; i < 8; ++i) {
 		*(void**) (pObject + 0x170 + i * 4) = 0;
 	}
-	*(short*) (pObject + 0x13e) = (short) nHeight;
-	*(short*) (pObject + 0x144) = (short) nHeight;
+	m_RangeStart13A.z = (short) nHeight;
+	m_RangeEnd140.z = (short) nHeight;
 	if (*(int*) (pObject + 0x148) == (short) nHeight && *(short*) (pObject + 0x154) != 1) {
 		*(short*) (pObject + 0x154) = 1;
 	}
