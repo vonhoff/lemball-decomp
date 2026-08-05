@@ -323,7 +323,6 @@ void __fastcall set_managed_entity_group_command_state(void* pEntity, void* pUnu
 void __fastcall set_entity_field_0x08_if_flags_bit0(void* pEntity);
 
 int return_false_virtual_hook(void);
-void* __fastcall GetFirstBullet(void* pPool);
 void PASCAL ResetManagedEntityGroupState(void* pEntity);
 void __cdecl ForwardManagedEntityVslot7C(void* pUnused, void* pEntity);
 int __cdecl CallHasPendingManagedEntityCommands(void* pUnused, LevelManagedEntityCommandQueueView* pEntity);
@@ -343,7 +342,6 @@ void __cdecl ForwardManagedEntityVslot90(void* pUnused, void* pEntity);
 void noop_projectile_geometry_callback(void);
 void* __fastcall initialize_three_dword_point_sentinel(void* pPoint);
 void __fastcall CBulletFree(void* pObject);
-void* __fastcall GetNextBullet(void* pPool);
 void __fastcall CBulletManagerProcess(void* pPool);
 
 struct LevelShortRect {
@@ -368,6 +366,8 @@ struct CBulletManager {
 
 	void RemoveObject(void* pObject);
 	int FindProjectilePositionInRect(const LevelShortRect* pRect, LevelProjectilePosition* pPosition);
+	void* GetFirstBullet(void);
+	void* GetNextBullet(void);
 };
 
 struct CBullet {
@@ -1286,26 +1286,26 @@ int return_false_virtual_hook(void)
 }
 
 // FUNCTION: LEMBALL 0x00417f40
-void* __fastcall GetFirstBullet(void* pPool)
+void* CBulletManager::GetFirstBullet(void)
 {
-	*(int*) ((char*) pPool + 0xd8) = 0;
-	return *(void**) ((char*) pPool + 0x34);
+	m_nIndexD8 = 0;
+	return m_apObjects[0];
 }
 
 // FUNCTION: LEMBALL 0x00417f50
-void* __fastcall GetNextBullet(void* pPool)
+void* CBulletManager::GetNextBullet(void)
 {
 	int nIndex;
 	int nLimit;
 
-	nIndex = *(int*) ((char*) pPool + 0xd8);
+	nIndex = m_nIndexD8;
 	nIndex++;
-	*(int*) ((char*) pPool + 0xd8) = nIndex;
-	nLimit = *(int*) ((char*) pPool + 0xd4);
+	m_nIndexD8 = nIndex;
+	nLimit = m_nCountD4;
 	if (nLimit <= nIndex) {
 		return NULL;
 	}
-	return *(void**) ((char*) pPool + nIndex * 4 + 0x34);
+	return m_apObjects[nIndex];
 }
 
 // FUNCTION: LEMBALL 0x00418040
@@ -1314,13 +1314,13 @@ void __fastcall CBulletManagerProcess(void* pPool)
 	void* pObj;
 	int fKeep;
 
-	pObj = GetFirstBullet(pPool);
+	pObj = ((CBulletManager*) pPool)->GetFirstBullet();
 	while (pObj != NULL) {
 		fKeep = ((CBullet*) pObj)->ServiceProjectile();
 		if (fKeep == 0) {
 			((CBulletManager*) pPool)->RemoveObject(pObj);
 		}
-		pObj = GetNextBullet(pPool);
+		pObj = ((CBulletManager*) pPool)->GetNextBullet();
 	}
 }
 
@@ -1370,12 +1370,12 @@ int LEMBALL_FASTCALL EmitProjectilePoolRenderEntries(void* pPool, void* pUnused,
 	(void) pUnused;
 	cEntries = 0;
 	pOwner = pPool;
-	pObject = GetFirstBullet(pOwner);
+	pObject = ((CBulletManager*) pOwner)->GetFirstBullet();
 	while (pObject != NULL) {
 		((CBullet*) pObject)->EmitProjectileRenderEntry(pRenderEntry);
 		pRenderEntry = (char*) pRenderEntry + 0x4c;
 		cEntries++;
-		pObject = GetNextBullet(pOwner);
+		pObject = ((CBulletManager*) pOwner)->GetNextBullet();
 	}
 	return cEntries;
 }
@@ -1397,7 +1397,7 @@ int CBulletManager::FindProjectilePositionInRect(const LevelShortRect* pRect, Le
 	nRight = pRect->m_nX + nWidth;
 	nHeight = pRect->m_nHeight;
 	nBottom = pRect->m_nY + nHeight;
-	pProjectile = (CBullet*) GetFirstBullet(this);
+	pProjectile = (CBullet*) GetFirstBullet();
 	while (pProjectile != NULL) {
 		nProjectileX = *(int*) ((char*) pProjectile + 0x9c) >> 12;
 		nProjectileY = *(int*) ((char*) pProjectile + 0xa0) >> 12;
@@ -1412,7 +1412,7 @@ int CBulletManager::FindProjectilePositionInRect(const LevelShortRect* pRect, Le
 			pPosition->m_nZ = *(int*) ((char*) pProjectile + 0xa4);
 			return 1;
 		}
-		pProjectile = (CBullet*) GetNextBullet(this);
+		pProjectile = (CBullet*) GetNextBullet();
 	}
 	return 0;
 }
