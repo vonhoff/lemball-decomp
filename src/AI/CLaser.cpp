@@ -61,11 +61,11 @@ void CLaser::Initialise(void)
 	int nZero;
 
 	pObjectBytes = (char*) this;
-	*(int*) (pObjectBytes + 0xb8) = 0x18;
+	m_nStateB8 = 0x18;
 	nZero = 0;
 	*(int*) (pObjectBytes + 0x94) = nZero;
-	*(int*) (pObjectBytes + 0x138) = nZero;
-	*(int*) (pObjectBytes + 0x13c) = nZero;
+	m_anRuntimeState138[0] = nZero;
+	m_anRuntimeState138[1] = nZero;
 }
 
 // FUNCTION: LEMBALL 0x004288f0
@@ -92,24 +92,24 @@ void CLaser::Set(unsigned short nSlotId, const AICOORD& position, int nObjectTyp
 	*(int*) (pObjectBytes + 0xa0) = position.y;
 	*(int*) (pObjectBytes + 0xa4) = position.z;
 	*(int*) (pObjectBytes + 0x64) = nObjectType;
-	*(int*) (pObjectBytes + 0x13c) = 1;
+	m_anRuntimeState138[1] = 1;
 	nTileY = (position.y >> 12) / 16;
 
 	switch (nObjectType) {
 	case 0x1e:
-		*(int*) (pObjectBytes + 0xb8) = 0x18;
-		*(int*) (pObjectBytes + 0x140) = 1;
-		*(int*) (pObjectBytes + 0x138) = 1;
+		m_nStateB8 = 0x18;
+		m_anRuntimeState138[2] = 1;
+		m_anRuntimeState138[0] = 1;
 		break;
 	case 0x2f:
-		*(int*) (pObjectBytes + 0xb8) = 0x18;
-		*(int*) (pObjectBytes + 0x140) = 1;
-		*(int*) (pObjectBytes + 0x138) = 1;
+		m_nStateB8 = 0x18;
+		m_anRuntimeState138[2] = 1;
+		m_anRuntimeState138[0] = 1;
 		break;
 	case 0x30:
-		*(int*) (pObjectBytes + 0x140) = 0;
-		*(int*) (pObjectBytes + 0xb8) = 0x18;
-		*(int*) (pObjectBytes + 0x138) = 1;
+		m_anRuntimeState138[2] = 0;
+		m_nStateB8 = 0x18;
+		m_anRuntimeState138[0] = 1;
 		for (i = 1; i < 8; ++i) {
 			x = nTileX + i;
 			if (x >= 0 && nTileY >= 0) {
@@ -121,9 +121,9 @@ void CLaser::Set(unsigned short nSlotId, const AICOORD& position, int nObjectTyp
 		}
 		break;
 	case 0x31:
-		*(int*) (pObjectBytes + 0x140) = 0;
-		*(int*) (pObjectBytes + 0xb8) = 0x18;
-		*(int*) (pObjectBytes + 0x138) = 1;
+		m_anRuntimeState138[2] = 0;
+		m_nStateB8 = 0x18;
+		m_anRuntimeState138[0] = 1;
 		for (i = 1; i < 8; ++i) {
 			y = nTileY + i;
 			if (nTileX >= 0 && y >= 0) {
@@ -353,7 +353,7 @@ int CLaser::GetViewData(CViewData* pViewData)
 	pEntry = (char*) pViewData;
 	EmitLevelChunkObjectRenderEntry(this, 0, pEntry);
 	cEntries = 1;
-	if (*(int*) (pObject + 0xb8) != 0x1a) {
+	if (m_nStateB8 != 0x1a) {
 		return cEntries;
 	}
 

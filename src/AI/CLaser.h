@@ -20,7 +20,11 @@ public:
 	int GetViewData(CViewData* pViewData);
 
 private:
-	unsigned char m_abReserved00[0x148];
+	unsigned char m_abReserved00[0xb8];
+	int m_nStateB8;                        // 0xb8
+	unsigned char m_abReservedBC[0x7c];
+	int m_anRuntimeState138[3];            // 0x138..0x143
+	unsigned char m_abReserved144[4];
 };
 
 #endif
