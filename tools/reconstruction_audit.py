@@ -180,6 +180,7 @@ def main() -> int:
     ap.add_argument("--zeros", action="store_true", help="list 0% game functions")
     ap.add_argument("--legacy", action="store_true", help="list legacy source files")
     ap.add_argument("--mismatch", action="store_true", help="list source-vs-blueprint function-name mismatches")
+    ap.add_argument("--misplaced", action="store_true", help="list functions whose source class differs from the blueprint class")
     args = ap.parse_args()
 
     by_addr, members = blueprint()
@@ -245,6 +246,45 @@ def main() -> int:
                 print(f"  0x{a:08X}  src={srcstem!s:48s}  mac={macstem!s:40s}  ({mn})")
                 n += 1
         print(f"({n} shown; 0xNNNN/thunk placeholders + snake_case names need blueprint reconcile)")
+        return 0
+
+    if args.misplaced:
+        # src CClass::method at address vs blueprint class at same address
+        mapping = {}
+        pat = re.compile(r"\b(C[A-Za-z0-9_]+)::([A-Za-z0-9_~]+)\s*\(")
+        for p in SRC.rglob("*.cpp"):
+            if not p.is_file():
+                continue
+            lines = p.read_text(encoding="utf-8", errors="ignore").splitlines()
+            addr = None
+            for ln in lines:
+                m = re.search(r"FUNCTION:\s*LEMBALL\s+0x([0-9a-fA-F]+)", ln)
+                if m:
+                    addr = int(m.group(1), 16); continue
+                if addr is None:
+                    continue
+                pm = pat.search(ln)
+                if pm and "::" in ln.split("(")[0]:
+                    mapping.setdefault(addr, (pm.group(1), pm.group(2), p.relative_to(ROOT).as_posix()))
+                    addr = None
+        with CORR.open(newline="", encoding="utf-8-sig") as f:
+            bp = {}
+            for row in csv.DictReader(f):
+                mn = row.get("mac_mangled_name", "")
+                mm = re.search(r"__(\d+)([A-Za-z_][A-Za-z0-9_]*)", mn)
+                if mm and mm.group(2)[: int(mm.group(1))].startswith("C"):
+                    bp[int(row["x86_address"], 16)] = mm.group(2)[: int(mm.group(1))]
+        print(f"source fns mapped to addresses: {len(mapping)}")
+        print("functions whose source class differs from the blueprint class at their address:")
+        n = 0
+        for a in sorted(mapping):
+            if a not in bp:
+                continue
+            scls, sfunc, rel = mapping[a]
+            if scls != bp[a]:
+                print(f"  0x{a:08X}  src {scls}::{sfunc}  ->  blueprint {bp[a]}  ({rel})")
+                n += 1
+        print(f"({n} misplaced)")
         return 0
 
     # default summary
