@@ -28,6 +28,7 @@ struct LevelScreenManagedEntitySelectionView {
 
 	void SelectLemming(int nIndex);
 	void SelectObject(int nIndex);
+	bool InGroupByObjectNo(int nObjectNo);
 };
 
 struct VariantResourceEntryManagerView {
@@ -110,4 +111,24 @@ void LevelScreenManagedEntitySelectionView::SelectObject(int nIndex)
 	m_nPendingSelectionVariantA4C = 0;
 	m_nPendingSelectionA48 = 0;
 	((VariantResourceEntryManagerView*) g_pVariantResourceEntryManager)->m_nSelectionMode10 = 3;
+}
+
+// Macintosh: C2D::InGroupByObjectNo(int)
+// FUNCTION: LEMBALL 0x00437420
+bool LevelScreenManagedEntitySelectionView::InGroupByObjectNo(int nObjectNo)
+{
+	unsigned short nCount;
+	unsigned short nIndex;
+	unsigned short* pGroup;
+
+	pGroup = (unsigned short*) ((char*) this + 0xa50);
+	nCount = m_nPendingSelectionVariantA4C;
+	if (nCount != 0) {
+		for (nIndex = 0; nIndex < nCount; ++nIndex) {
+			if (pGroup[nIndex] == nObjectNo) {
+				return true;
+			}
+		}
+	}
+	return false;
 }
