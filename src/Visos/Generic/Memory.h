@@ -49,6 +49,9 @@ struct CArena {
 	CArena* Construct(unsigned int cbStorage, const char* pszName, void* pParentArena, void* pReserved);
 	int Allocate(void** ppvBlock, unsigned int cbBlock, const char* pszDescription);
 	int Free(void* pvBlock);
+	void DeleteLists(void);
+	unsigned int GetAllocSize(void);
+	long GetFreeSize(void);
 	int AllocateArena(void** ppChildArena, unsigned int cbChildArena, const char* pszName);
 	int FreeArena(void* pChildArena);
 	int CheckAndAmalgamate(void* pBlock, void* pNextBlock);
@@ -79,8 +82,6 @@ void* AllocateVSMemBlockImpl(unsigned int cbBlock);
 void FreeVSMemBlockImpl(void* pvBlock);
 void* AllocateVSMemBlock(unsigned int cbBlock);
 void FreeVSMemBlock(void* pvBlock);
-long LEMBALL_FASTCALL GetFreeSizeCArena(void* pArena);
-unsigned int LEMBALL_FASTCALL GetAllocSizeCArena(void* pArena);
 void* NewCArenaPlacement(unsigned int cbStorage, void* pvStorage);
 void __stdcall MemSetCArena(void* pvTarget, unsigned char chValue, unsigned int cbTarget);
 void __stdcall MemCopyCArena(void* pvTarget, const void* pvSource, unsigned int cbCopy);
@@ -89,7 +90,6 @@ void* ConstructMemoryArenaBaseState(void* pArena,
 									const char* pszName,
 									void* pParentArena,
 									void* pReserved);
-void LEMBALL_FASTCALL DeleteListsCArena(void* pArena);
 void LEMBALL_FASTCALL DestroyCArena(void* pArena);
 int PASCAL HasMemoryBlockMagic(void* pBlock);
 int PASCAL IsUsedMemoryBlock(void* pBlock);

@@ -1061,7 +1061,7 @@ void InitializeCoreSubsystems(void)
 		->AppendCStringToStream(SelectSuccessOrFailedString(fDebugInitialized))
 		->AppendCStringToStream("...\n");
 
-	g_cbMainArenaAvailableAfterInit = GetFreeSizeCArena(g_pMainMemoryArena);
+	g_cbMainArenaAvailableAfterInit = ((CArena*) g_pMainMemoryArena)->GetFreeSize();
 
 	fInputInitialized = InitializeSharedEventQueueRuntime();
 	g_pStartupOutputStream->AppendCStringToStream("_INP_Init   : ")
@@ -1118,7 +1118,7 @@ void ShutdownCoreSubsystems(void)
 	ShutdownResourceGeometryHelperRuntime();
 	ShutdownSharedEventQueueRuntime();
 
-	cbAvailableNow = GetFreeSizeCArena(g_pMainMemoryArena);
+	cbAvailableNow = ((CArena*) g_pMainMemoryArena)->GetFreeSize();
 	if (cbAvailableNow != g_cbMainArenaAvailableAfterInit) {
 		g_pErrorOutputStream->AppendCStringToStream(g_VSINIT_MemoryLeakMessage);
 		((CArena*) g_pMainMemoryArena)->StreamOut(g_pErrorOutputStream);

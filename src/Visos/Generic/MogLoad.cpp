@@ -959,7 +959,7 @@ unsigned int MogLoadResourceArchive::AllocateResourceDataBufferWithEviction(unsi
 	MogLoadTypedResourceObjectVtable* pVtable;
 
 	while ((pBuffer = (unsigned int) (unsigned long) CMogloadArenaNew(cbBuffer)) == 0) {
-		cbShortfall = (int) cbBuffer - (int) GetAllocSizeCArena(g_pResourceArchiveMemoryArena);
+		cbShortfall = (int) cbBuffer - (int) ((CArena*) g_pResourceArchiveMemoryArena)->GetAllocSize();
 		cbMinimumEvict = cbShortfall < 0 ? cbBuffer : (unsigned int) cbShortfall;
 		iSlot = FindResourceCacheEvictionCandidateIndex(this, cbMinimumEvict);
 		if (iSlot == -1) {

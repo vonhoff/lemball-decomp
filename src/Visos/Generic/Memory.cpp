@@ -172,31 +172,29 @@ CArena* CArena::Construct(unsigned int cbStorage, const char* pszName, void* pPa
 	return this;
 }
 // FUNCTION: LEMBALL 0x00459a40
-void LEMBALL_FASTCALL DeleteListsCArena(void* pArena)
+void CArena::DeleteLists(void)
 {
-	CArena* pMemoryArena;
 	void** pLockVtable;
 	void* pBlock;
 	void* pNextBlock;
 
-	pMemoryArena = (CArena*) pArena;
-	pLockVtable = pMemoryArena->m_pLockVtable;
-	((VSMEM_LockProc) pLockVtable[0])((char*) pMemoryArena + 8);
-	pBlock = pMemoryArena->m_pFirstBlock;
-	pMemoryArena->m_pFirstBlock = 0;
+	pLockVtable = m_pLockVtable;
+	((VSMEM_LockProc) pLockVtable[0])((char*) this + 8);
+	pBlock = m_pFirstBlock;
+	m_pFirstBlock = 0;
 	while (pBlock != 0) {
 		pNextBlock = ((CMBlock*) pBlock)->m_pNextFree;
 		((VSMEM_DeleteProc) (*(void***) pBlock)[1])(pBlock, 0, 1);
 		pBlock = pNextBlock;
 	}
-	pBlock = pMemoryArena->m_pFirstChildArena;
-	pMemoryArena->m_pFirstChildArena = 0;
+	pBlock = m_pFirstChildArena;
+	m_pFirstChildArena = 0;
 	while (pBlock != 0) {
 		pNextBlock = ((CArena*) pBlock)->m_pFirstChildArena;
 		((VSMEM_DeleteProc) (*(void***) pBlock)[1])(pBlock, 0, 1);
 		pBlock = pNextBlock;
 	}
-	((VSMEM_LockProc) pLockVtable[1])((char*) pMemoryArena + 8);
+	((VSMEM_LockProc) pLockVtable[1])((char*) this + 8);
 }
 
 // FUNCTION: LEMBALL 0x00459aa0
@@ -614,7 +612,7 @@ void* CArena::StreamOut(VsInitFormattedOutputStream* pOutputStream)
 	((VSMEM_LockProc) pLockVtable[0])((char*) pMemoryArena + 8);
 	pOutputStream->AppendCStringToStream(g_VSMEM_ReportSeparator);
 	pOutputStream->AppendCStringToStream(g_VSMEM_ReportFreeSizePrefix);
-	pOutputStream->AppendUIntToStream(GetAllocSizeCArena(this));
+	pOutputStream->AppendUIntToStream(this->GetAllocSize());
 	pOutputStream->AppendCStringToStream(g_VSMEM_ReportLineBreak);
 	pOutputStream->AppendCStringToStream(g_VSMEM_ReportHeaderRule);
 	pOutputStream->AppendCStringToStream(g_VSMEM_ReportColumns);
@@ -636,26 +634,24 @@ void* CArena::StreamOut(VsInitFormattedOutputStream* pOutputStream)
 }
 
 // FUNCTION: LEMBALL 0x0045a340
-unsigned int LEMBALL_FASTCALL GetAllocSizeCArena(void* pArena)
+unsigned int CArena::GetAllocSize(void)
 {
-	return ((CArena*) pArena)->m_cbFree;
+	return m_cbFree;
 }
 
 // FUNCTION: LEMBALL 0x0045a350
-long LEMBALL_FASTCALL GetFreeSizeCArena(void* pArena)
+long CArena::GetFreeSize(void)
 {
-	CArena* pMemoryArena;
 	CMBlock* pBlock;
 	unsigned int cFreeBlocks;
 
-	pMemoryArena = (CArena*) pArena;
 	cFreeBlocks = 0;
-	pBlock = pMemoryArena->m_pFirstBlock;
+	pBlock = m_pFirstBlock;
 	while (pBlock != 0) {
 		++cFreeBlocks;
 		pBlock = pBlock->m_pNextFree;
 	}
-	return pMemoryArena->m_cbStorage - (int) (((VSMEM_SizeProc) pMemoryArena->m_pVtable[7])() * cFreeBlocks);
+	return m_cbStorage - (int) (((VSMEM_SizeProc) m_pVtable[7])() * cFreeBlocks);
 }
 
 // FUNCTION: LEMBALL 0x0045a390
@@ -714,7 +710,7 @@ void LEMBALL_FASTCALL DestroyMemoryArena(void* pArena)
 {
 	((CArena*) pArena)->m_pVtable = (void**) &g_MainMemoryArenaVtable;
 	((CArena*) pArena)->m_pLockVtable = g_aMainMemoryArenaLockVtable;
-	DeleteListsCArena(pArena);
+	((CArena*) pArena)->DeleteLists();
 	DestroyCArena(pArena);
 }
 
@@ -1272,12 +1268,12 @@ CBucket* LEMBALL_FASTCALL AllocateSmallMemoryChildBucket(CBucket* pParentBucket)
 	fSmallBuckets = g_fCSmallMemoryEnabled;
 	g_fCSmallMemoryEnabled = 0;
 	pChildBucket = 0;
-	GetFreeSizeCArena(g_pMainMemoryArena);
+	((CArena*) g_pMainMemoryArena)->GetFreeSize();
 	pStorage = AllocateVSMemBlock(0x54);
 	if (pStorage != 0) {
 		pChildBucket = ((CBucket*) pStorage)->ConstructCBucket(pParentBucket->m_cbSlot, pParentBucket->m_cSlots, 0, 0);
 	}
-	GetFreeSizeCArena(g_pMainMemoryArena);
+	((CArena*) g_pMainMemoryArena)->GetFreeSize();
 	g_fCSmallMemoryEnabled = fSmallBuckets;
 	pParentBucket->m_pChildBucket = pChildBucket;
 	pChildBucket->m_pParentBucket = pParentBucket;
@@ -1289,13 +1285,13 @@ void LEMBALL_FASTCALL ReleaseSmallMemoryChildBucket(CBucket* pBucket)
 {
 	CBucket* pChildBucket;
 
-	GetFreeSizeCArena(g_pMainMemoryArena);
+	((CArena*) g_pMainMemoryArena)->GetFreeSize();
 	pChildBucket = pBucket->m_pChildBucket;
 	if (pChildBucket != 0) {
 		DestroyCBucket(pChildBucket);
 		FreeVSMemBlock(pChildBucket);
 	}
-	GetFreeSizeCArena(g_pMainMemoryArena);
+	((CArena*) g_pMainMemoryArena)->GetFreeSize();
 	pBucket->m_pChildBucket = 0;
 }
 
