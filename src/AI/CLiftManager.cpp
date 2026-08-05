@@ -298,3 +298,13 @@ void CLiftManager::AppendLiftChunkObjectBetweenEndpoints(unsigned short nSlotId,
 		m_cObjects34++;
 	}
 }
+
+// FUNCTION: LEMBALL 0x00425c80
+void CLiftManager::AppendLegacyLiftChunkObject(unsigned short nSlotId, int nParam1, int nParam2, int nParam3)
+{
+	if (m_cObjects34 < m_cCapacity38) {
+		((CGameObject*) ((char*) m_pObjects3C + m_cObjects34 * 0x190))->SetId(nSlotId);
+		((CLift*) ((char*) m_pObjects3C + m_cObjects34 * 0x190))->Set(nParam1, nParam2, nParam3, 1, -1, 0x30, (eLiftActivateType) 2, 1);
+		m_cObjects34++;
+	}
+}

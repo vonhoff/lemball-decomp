@@ -22,6 +22,7 @@ public:
 	unsigned short Id(int iObject);
 	void LoadLevel(unsigned char* pData, int cbData, unsigned char nVersion);
 	void AppendLiftChunkObjectBetweenEndpoints(unsigned short nSlotId, const tCoord3d& start, const tCoord3d& end);
+	void AppendLegacyLiftChunkObject(unsigned short nSlotId, int nParam1, int nParam2, int nParam3);
 
 private:
 	unsigned char m_abReserved00[0x30];
