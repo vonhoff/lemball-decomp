@@ -56,6 +56,7 @@ private:
 public:
 	void Switch(int nAction, unsigned int nSlot);
 	void Restart(void);
+	int Open(void* pCoord, void* pGameObject);
 	void Initialise(int nCount);
 };
 
@@ -95,6 +96,25 @@ void CDoorManager::Restart(void)
 		pObject = (CDoor*) ((char*) m_pObjects3C + iObject * 0x14c);
 		((CDoorNoArgVirtualProc) (*(void***) pObject)[0x104 / sizeof(void*)])(pObject);
 	}
+}
+
+// FUNCTION: LEMBALL 0x0040e500
+int CDoorManager::Open(void* pCoord, void* pGameObject)
+{
+	int nOffset;
+	int i;
+	CDoor* pObject;
+
+	if (m_nObjectCount34 <= 0) {
+		return 0;
+	}
+	for (i = 0, nOffset = 0; i < m_nObjectCount34; ++i, nOffset += 0x14c) {
+		pObject = (CDoor*) ((char*) m_pObjects3C + nOffset);
+		if (((int(__stdcall*)(void*, void*, void*)) 0x40193d)(pObject, pCoord, pGameObject) != 0) {
+			return 1;
+		}
+	}
+	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0040dfc0
