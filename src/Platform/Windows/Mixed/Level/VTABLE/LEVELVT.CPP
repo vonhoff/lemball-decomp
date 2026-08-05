@@ -341,7 +341,6 @@ void __cdecl ForwardManagedEntityVslot88(void* pUnused, void* pEntity);
 void __cdecl ForwardManagedEntityVslot90(void* pUnused, void* pEntity);
 void noop_projectile_geometry_callback(void);
 void* __fastcall initialize_three_dword_point_sentinel(void* pPoint);
-void __fastcall CBulletFree(void* pObject);
 void __fastcall CBulletManagerProcess(void* pPool);
 
 struct LevelShortRect {
@@ -378,6 +377,14 @@ struct CBullet {
 	virtual void EmitProjectileRenderEntry(void* pRenderEntry);
 	virtual void vf4(void);
 	virtual int ServiceProjectile(void);
+	unsigned char m_abReserved04[0xb8 - 0x04];
+	int m_nStateB8;                     // 0xb8
+	unsigned char m_abReservedBC[0x114 - 0xbc];
+	int m_nPendingState114;             // 0x114
+	unsigned char m_abReserved118[0x164 - 0x118];
+	int m_nRuntimeFlag164;              // 0x164
+
+	void Free(void);
 };
 int return_true_vtable_callback_0041c3f0(void);
 int return_two_vtable_callback_0041c430(void);
@@ -1352,7 +1359,7 @@ void CBulletManager::RemoveObject(void* pObject)
 	}
 
 	pEntry = &m_apObjects[i];
-	CBulletFree(*pEntry);
+	((CBullet*) *pEntry)->Free();
 	if (i < 19) {
 		nRemaining = 19;
 		nRemaining -= i;
@@ -1592,13 +1599,13 @@ void __cdecl ForwardManagedEntityVslot90(void* pUnused, void* pEntity)
 
 
 // FUNCTION: LEMBALL 0x0041ac70
-void __fastcall CBulletFree(void* pObject)
+void CBullet::Free(void)
 {
-	*(int*) ((char*) pObject + 0x164) = 0;
-	if (*(int*) ((char*) pObject + 0xb8) != 8) {
-		((CBullet*) pObject)->SetState(8);
+	m_nRuntimeFlag164 = 0;
+	if (m_nStateB8 != 8) {
+		SetState(8);
 	}
-	*(int*) ((char*) pObject + 0x114) = 0;
+	m_nPendingState114 = 0;
 }
 
 // FUNCTION: LEMBALL 0x0041c360
