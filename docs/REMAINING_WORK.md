@@ -46,9 +46,10 @@ no lost baseline addresses):
    CRocketManager (Mac class names) in LINKSCF.H/CPP + CGame.cpp.
    BLOCKER for the remaining LinkScf*View (Door/Move/Enmy/Shpg/Plas/Boon): those Mac classes
    (CDoorManager, CMoverManager, etc.) are NOT safe to rename to because DUPLICATE local structs
-   already define them across other TUs (CDoorManager in CDoorAct/Slot/LVACTDSP/LVMODESLOT;
-   CMoverManager in LEVELVT/LEVELSTAT). Renaming would ODR-collide. Must FIRST consolidate the
-   duplicate manager-struct definitions into shared headers, then rename.
+   already define them across other TUs. DONE: CMoverManager consolidated into shared src/ai/CMoverManager.h
+   (LEVELSTAT+LEVELVT, byte-faithful). NEXT: CDoorManager has 4 divergent local variants (CDoorAct has
+   m_nCapacity38+Switch/Restart/Open/Initialise; CDoorSlot has reserved38+Id(); LVACTDSP/LVMODESLOT decl-only)
+   - consolidate into a shared header with union of fields+methods; then remaining Enmy/Shpg/Plas/Boon.
 1. CBulletManager/CBullet real-member refactor (B) — IN PROGRESS:
    - DONE: renamed ProjectilePool->CBulletManager, ProjectileObjectProxy->CBullet,
      ProjectilePoolOwnerView->CBulletManagerOwnerView (type renames); promoted
