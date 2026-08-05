@@ -183,13 +183,13 @@ void LevelScreenManagedEntitySelectionView::SelectLemming(int nIndex)
 void LevelScreenManagedEntitySelectionView::SelectObject(int nIndex)
 {
 	char* pObjectsBytes;
-	char* pEntry;
+	CGameObject* pEntry;
 	LevelScreenInputEvent Event;
 
 	pObjectsBytes = (char*) m_pManagedEntityArray95C;
-	pEntry = pObjectsBytes + (int) (nIndex * 0x4c);
+	pEntry = (CGameObject*) (pObjectsBytes + (int) (nIndex * 0x4c));
 	Event.m_nType00 = 8;
-	Event.m_nReserved08 = (int) *(unsigned short*) (pEntry + 0x2c);
+	Event.m_nReserved08 = (int) *(unsigned short*) ((char*) pEntry + 0x2c);
 	memset(&Event.m_nReserved04, 0, 0x10);
 	m_pInputEventSink974->DispatchLevelScreenInputEvent(&Event);
 	m_nPendingSelectionVariantA4C = 0;
