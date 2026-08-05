@@ -31,6 +31,7 @@ struct LevelScreenManagedEntitySelectionView {
 	void SelectObject(int nIndex);
 	bool InGroupByObjectNo(int nObjectNo);
 	void RemoveFromGroupByObjectNo(int nObjectNo);
+	bool IsInGrouping(int* pObject);
 	void CheckValidFormGroup(void);
 	void FormGroup(void);
 	void AddObjectToGroup(int nObjectNo, int fUpdateCapacity);
@@ -245,4 +246,22 @@ void LevelScreenManagedEntitySelectionView::RemoveFromGroupByObjectNo(int nObjec
 	if (nCount == 0) {
 		m_nPendingSelectionA48 = 0;
 	}
+}
+
+// Macintosh: C2D::IsInGrouping(CGameObject*)
+// FUNCTION: LEMBALL 0x004374E0
+bool LevelScreenManagedEntitySelectionView::IsInGrouping(int* pObject)
+{
+	unsigned short nCount;
+	unsigned short nIndex;
+	unsigned short* pGroup;
+
+	pGroup = (unsigned short*) ((char*) this + 0xa50);
+	nCount = m_nPendingSelectionVariantA4C;
+	for (nIndex = 0; nIndex < nCount; ++nIndex) {
+		if (*(unsigned short*) ((char*) pObject + 0x6a) == pGroup[nIndex]) {
+			return true;
+		}
+	}
+	return false;
 }
