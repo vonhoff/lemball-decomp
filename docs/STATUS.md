@@ -26,9 +26,9 @@ is confirmed so it is never re-triaged. Goal prompt drives *what*, this tracks *
 
 All manager Restart/Initialise/Hit/StepOn/Open done (committed). Remaining: manager Add (Set-thunks), LoadLevel (stream-parse), CDoor::Set/Delete/collision (tile-map 0x4a74b4 heavy).
 
-## C2D batch (71 gaps→63, dominant remaining block — yielding via member-dispatch + group patterns)
+## C2D batch (71 gaps→62, easy tiers DONE; remaining hard tiers)
 
-C2D class spans +0x44→+0x22xx. **BREAKTHROUGH**: single-arg dispatch/group methods reconstruct as thiscall member fns on LevelScreenManagedEntitySelectionView. DONE (8 this turn): SelectLemming(74.6%), SelectObject(65.6%), InGroupByObjectNo(37.9%), RemoveFromGroupByObjectNo(38.8%), CheckValidFormGroup(31.9%), FormGroup(54.9%), **MoveGroup(100%)**, AddObjectToGroup(28.6%). Established patterns: (a) event-dispatch = build LevelScreenInputEvent{type,reserved}, dispatch to sink974[+8], reset a4c/a48, set variant-mode; (b) group array at +0xa50 (+0xa4c count,+0xa4e cap). NEXT: click handlers NoStateLeftClick/GroupingLeftClick/LeftClick/RightClick (type-dispatch table 0x437644+0x437678, 4 args — harder), then isInGrouping/SelectObject, geometry (ScreenToGame/SetMouseShape/ProcessMsg), Draw* batch.
+**DONE (9)**: SelectLemming(74.6%), SelectObject(65.6%), InGroupByObjectNo(37.9%), RemoveFromGroupByObjectNo(38.8%), CheckValidFormGroup(31.9%), FormGroup(54.9%), MoveGroup(100%), AddObjectToGroup(28.6%), IsInGrouping(51.1%). Patterns: (a) event-dispatch to sink974[+8]; (b) group array +0xa50 (+0xa4c count,+0xa4e cap). **REMAINING 62 all hard-tier (no clean pattern)**: remap-palette regs (0x4363C0 RegisterRemaps etc. — global palette tables 0x49e8b8/0x4a2000, array+string allocs), click-handlers (0x437520-0x437930 NoState/Left/RightClick — jump-table type dispatch 0x437644/0x437678, 4 args, call FindGameObject), geometry (0x437970-0x438210 ScreenToGame/SetMouseShape/ProcessMsg/FindGameObject — raster/scan/tile-grid), Draw* (~35, 0x43BCE0+ — rendering). Reconstructing any of these is multi-iteration with uncertain match; weak partials incur accuracy dip.
 
 
 ## Dead-ends (confirmed not source-fixable; don't re-triage)
