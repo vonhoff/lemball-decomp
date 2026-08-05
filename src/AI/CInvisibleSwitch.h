@@ -26,7 +26,16 @@ public:
 	void Load(unsigned char*& pData);
 
 private:
-	unsigned char m_abReserved[0x2b8];
+	unsigned char m_abReserved[0x9c];
+	AICOORD m_WorldPosition9C;            // 0x9c
+	unsigned char m_abReservedA8[0x10];
+	int m_nStateB8;                        // 0xb8
+	unsigned char m_abReservedBC[0x7c];
+	tCoord3d m_RangeStart138;              // 0x138 (x,y,z)
+	tCoord3d m_RangeEnd13E;                // 0x13e (x,y,z)
+	unsigned char m_abReserved144[0x174];
 };
+
+typedef char CInvisibleSwitchSizeCheck[sizeof(CInvisibleSwitch) == 0x2b8 ? 1 : -1];
 
 #endif

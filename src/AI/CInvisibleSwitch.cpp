@@ -83,7 +83,7 @@ void CInvisibleSwitch::Restart(void)
 void CInvisibleSwitch::Initialise(void)
 {
 	char* pObjectBytes = (char*) this;
-	*(int*) (pObjectBytes + 0xb8) = 0x18;
+	m_nStateB8 = 0x18;
 	*(unsigned short*) (pObjectBytes + 0x150) = 0;
 	*(int*) (pObjectBytes + 0x148) = 0;
 	*(int*) (pObjectBytes + 0x254) = 0;
@@ -108,29 +108,29 @@ void CInvisibleSwitch::Set(const tCoord3d& begin, const tCoord3d& end)
 	int nY;
 
 	*(int*) (pObjectBytes + 0x254) = 0;
-	*(tCoord3d*) (pObjectBytes + 0x138) = begin;
-	*(tCoord3d*) (pObjectBytes + 0x13e) = end;
-	if (*(short*) (pObjectBytes + 0x138) > *(short*) (pObjectBytes + 0x13e)) {
-		nSwap = *(short*) (pObjectBytes + 0x138);
-		*(short*) (pObjectBytes + 0x138) = *(short*) (pObjectBytes + 0x13e);
-		*(short*) (pObjectBytes + 0x13e) = nSwap;
+	m_RangeStart138 = begin;
+	m_RangeEnd13E = end;
+	if (m_RangeStart138.x > m_RangeEnd13E.x) {
+		nSwap = m_RangeStart138.x;
+		m_RangeStart138.x = m_RangeEnd13E.x;
+		m_RangeEnd13E.x = nSwap;
 	}
-	if (*(short*) (pObjectBytes + 0x13a) > *(short*) (pObjectBytes + 0x140)) {
-		nSwap = *(short*) (pObjectBytes + 0x13a);
-		*(short*) (pObjectBytes + 0x13a) = *(short*) (pObjectBytes + 0x140);
-		*(short*) (pObjectBytes + 0x140) = nSwap;
+	if (m_RangeStart138.y > m_RangeEnd13E.y) {
+		nSwap = m_RangeStart138.y;
+		m_RangeStart138.y = m_RangeEnd13E.y;
+		m_RangeEnd13E.y = nSwap;
 	}
-	nY = *(short*) (pObjectBytes + 0x13a);
+	nY = m_RangeStart138.y;
 	*(int*) (pObjectBytes + 0x144) = 0;
-	*(int*) (pObjectBytes + 0x9c) = *(short*) (pObjectBytes + 0x138) << 12;
+	m_WorldPosition9C.x = m_RangeStart138.x << 12;
 	*(int*) (pObjectBytes + 0x148) = 0;
-	*(int*) (pObjectBytes + 0xa0) = nY << 12;
-	*(int*) (pObjectBytes + 0xa4) = *(short*) (pObjectBytes + 0x13c) << 12;
+	m_WorldPosition9C.y = nY << 12;
+	m_WorldPosition9C.z = m_RangeStart138.z << 12;
 
-	if (nY <= *(short*) (pObjectBytes + 0x140)) {
+	if (nY <= m_RangeEnd13E.y) {
 		do {
-			nX = *(short*) (pObjectBytes + 0x138);
-			if (nX <= *(short*) (pObjectBytes + 0x13e)) {
+			nX = m_RangeStart138.x;
+			if (nX <= m_RangeEnd13E.x) {
 				do {
 					int nTileX = nX / 16;
 					if (nTileX >= 0) {
@@ -143,10 +143,10 @@ void CInvisibleSwitch::Set(const tCoord3d& begin, const tCoord3d& end)
 						}
 					}
 					nX += 16;
-				} while (nX <= *(short*) (pObjectBytes + 0x13e));
+				} while (nX <= m_RangeEnd13E.x);
 			}
 			nY += 16;
-		} while (nY <= *(short*) (pObjectBytes + 0x140));
+		} while (nY <= m_RangeEnd13E.y);
 	}
 	*(unsigned short*) (pObjectBytes + 0x150) = 0;
 }
@@ -160,8 +160,8 @@ void CInvisibleSwitch::VerifyObjects(void)
 		char* pEntity = *(char**) (pObjectBytes + 0x258 + iEntity * 4);
 		int nX = *(int*) (pEntity + 0x9c) >> 12;
 		int nY = *(int*) (pEntity + 0xa0) >> 12;
-		if (nX < *(short*) (pObjectBytes + 0x138) - 8 || *(short*) (pObjectBytes + 0x13e) + 7 < nX ||
-			nY < *(short*) (pObjectBytes + 0x13a) - 8 || *(short*) (pObjectBytes + 0x140) + 7 < nY) {
+		if (nX < m_RangeStart138.x - 8 || m_RangeEnd13E.x + 7 < nX ||
+			nY < m_RangeStart138.y - 8 || m_RangeEnd13E.y + 7 < nY) {
 			int iMove;
 			*(unsigned short*) (pEntity + 0x120) = 0xffff;
 			for (iMove = iEntity + 1; iMove < *(int*) (pObjectBytes + 0x254); ++iMove) {
@@ -200,8 +200,8 @@ void CInvisibleSwitch::StepOn(const AICOORD& position, CGameObject* pEntity)
 	}
 	nX = position.x >> 12;
 	nY = position.y >> 12;
-	if (nX < *(short*) (pObjectBytes + 0x138) - 8 || *(short*) (pObjectBytes + 0x13e) + 7 < nX ||
-		nY < *(short*) (pObjectBytes + 0x13a) - 8 || *(short*) (pObjectBytes + 0x140) + 7 < nY) {
+	if (nX < m_RangeStart138.x - 8 || m_RangeEnd13E.x + 7 < nX ||
+		nY < m_RangeStart138.y - 8 || m_RangeEnd13E.y + 7 < nY) {
 		return;
 	}
 	*(CGameObject**) (pObjectBytes + 0x5c) = pEntity;
@@ -226,13 +226,13 @@ int CInvisibleSwitch::Process(void)
 
 	VerifyObjects();
 	if (*(int*) (pObjectBytes + 0x114) != 0) {
-		nStateId = *(int*) (pObjectBytes + 0xb8);
+		nStateId = m_nStateB8;
 		if (*(int*) (pObjectBytes + 0x128) != nStateId && nStateId != 0x1a) {
 			return 1;
 		}
 	}
 
-	if (*(int*) (pObjectBytes + 0xb8) == 0x1a) {
+	if (m_nStateB8 == 0x1a) {
 		if (*(int*) (pObjectBytes + 0x144) == 0) {
 			*(int*) (pObjectBytes + 0x148) = 1;
 		}
