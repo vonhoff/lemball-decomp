@@ -51,6 +51,8 @@ no lost baseline addresses):
    m_nCapacity38+Switch/Restart/Open/Initialise; CDoorSlot has reserved38+Id(); LVACTDSP/LVMODESLOT decl-only)
    - consolidate into a shared header with union of fields+methods; then remaining Enmy/Shpg/Plas/Boon.
    DONE: CMoverManager (LEVELSTAT+LEVELVT), CDoorManager (4 variants). 
+   Small identical view/tuple structs (3-int point types) consolidated: LevelPoint3 (3 files), LevelBoundsPoint (2),
+   LevelNodePoint (2). Pattern proven byte-safe: create src/ai/X.h, replace per-TU local 'struct X{..}' with #include.
    LARGE INVENTORY: ~60 struct names are defined in 2-10 files (vs-net transport stack VSNET/VSNETTCP/VSNETFIL,
    Level/LevelManage* view structs). CAUTION: some are LEGITIMATE local views of a shared-header type (e.g.
    VsNetEffStreamCommon is in VSSTRM.H AND local). Only consolidate TRUE ODR dups (divergent local defs of the
