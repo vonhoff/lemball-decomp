@@ -32,7 +32,10 @@ private:
 	int m_nWorldZA4;
 	char m_abReservedA8[0x14];
 	short m_nHeadingBC;
-	char m_abReservedBE[0x7a];
+	char m_abReservedBE[0xa];
+	int m_nNodeStartTickC8;    // 0xc8
+	int m_nNodeEndTickCC;      // 0xcc
+	char m_abReservedD0[0x68];
 	int m_fActive138;
 	char m_abReserved13C[8];
 	int m_nMode144;

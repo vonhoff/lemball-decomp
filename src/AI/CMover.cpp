@@ -199,8 +199,8 @@ void CMover::SetUpNextNode(unsigned long nTime)
 	end.x = point.m_anValues[0] >> 12;
 	end.y = point.m_anValues[1] >> 12;
 	end.z = ((unsigned short) nHeight << 12) >> 12;
-	*(int*) ((char*) this + 0xc8) = nTime;
-	*(int*) ((char*) this + 0xcc) = nTime + Distance2DIntPixels(start.x, start.y, end.x, end.y);
+	m_nNodeStartTickC8 = nTime;
+	m_nNodeEndTickCC = nTime + Distance2DIntPixels(start.x, start.y, end.x, end.y);
 	m_Move14C.Set(start, end, nTime, 1);
 }
 
@@ -219,7 +219,7 @@ void CMover::MoveObjects(int nDeltaX, int nDeltaY, int nDeltaZ)
 // FUNCTION: LEMBALL 0x0042eeb0
 void CMover::Switch(void)
 {
-	*(int*) ((char*) this + 0x148) = 1;
+	m_fSwitch148 = 1;
 }
 
 // FUNCTION: LEMBALL 0x0042eee0
