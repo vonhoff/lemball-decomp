@@ -13,6 +13,7 @@ struct LinkScfTramChunkManagerView {
 	LinkScfTramChunkManagerView* ConstructTramChunkManagerThunk(void* pLevelMode, int nCapacity);
 	void Restart(void);
 	void Initialise(int nCapacity);
+	int Hit(void* pCoord, void* pGameObject);
 };
 
 

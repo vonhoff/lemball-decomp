@@ -1975,6 +1975,26 @@ void LinkScfTramChunkManagerView::Restart(void)
 	}
 }
 
+// MACINTOSH: CTrampolineManager::Hit(AICOORD&, CGameObject*)
+// FUNCTION: LEMBALL 0x0042b550
+int LinkScfTramChunkManagerView::Hit(void* pCoord, void* pGameObject)
+{
+	int nOffset;
+	int i;
+	char* pObject;
+
+	if (*(int*) ((char*) this + 0x34) <= 0) {
+		return 0;
+	}
+	for (i = 0, nOffset = 0; i < *(int*) ((char*) this + 0x34); ++i, nOffset += 0x144) {
+		pObject = *(char**) ((char*) this + 0x38) + nOffset;
+		if (((int(__stdcall*)(void*, void*, void*)) 0x401ee2)(pObject, pCoord, pGameObject) != 0) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
 // MACINTOSH: CTrampolineManager::CTrampolineManager(CAI*, int)
 // FUNCTION: LEMBALL 0x0042af60
 LinkScfTramChunkManagerView* LinkScfTramChunkManagerView::ConstructTramChunkManager(void* pLevelMode, int nCapacity)
