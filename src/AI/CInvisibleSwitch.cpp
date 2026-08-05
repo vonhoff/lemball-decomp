@@ -12,6 +12,13 @@ extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject)
 extern void LEMBALL_FASTCALL ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern void LEMBALL_FASTCALL ResetInvsChunkObjectStateThunk(void* pObject);
 
+struct CInvsTileGrid {
+	char m_abReserved00[0xc];
+	unsigned char* m_pTileData0C;   // 0x0c
+	int m_nWidth10;                  // 0x10
+	int m_nHeight14;                 // 0x14
+};
+
 struct LevelChunkObjectBaseView {
 	void* InitializeLevelChunkObjectBase(int nType, unsigned short nChildType, unsigned short nFlags);
 };
@@ -128,11 +135,11 @@ void CInvisibleSwitch::Set(const tCoord3d& begin, const tCoord3d& end)
 					int nTileX = nX / 16;
 					if (nTileX >= 0) {
 						int nTileY = nY / 16;
-						if (nTileY >= 0 && nTileX < *(int*) ((char*) g_pLevelTileGrid + 0x10) &&
-							nTileY < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
-							char* pGrid = (char*) g_pLevelTileGrid;
-							*(unsigned char*) (*(char**) (pGrid + 0x0c) +
-											   (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 12 + 7) |= 0x80;
+						if (nTileY >= 0) {
+							CInvsTileGrid* pGrid = (CInvsTileGrid*) g_pLevelTileGrid;
+							if (nTileX < pGrid->m_nWidth10 && nTileY < pGrid->m_nHeight14) {
+								pGrid->m_pTileData0C[(nTileY * pGrid->m_nWidth10 + nTileX) * 12 + 7] |= 0x80;
+							}
 						}
 					}
 					nX += 16;
