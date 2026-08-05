@@ -30,6 +30,14 @@ no lost baseline addresses):
   DoButtons, DrawPaused, CheckAgainstCatapults, SetAutoDraw, ReturnFacingDirection,
   4 destructor thunks), ODR-disambiguated.
 
+## Lessons (verify before bulk-rename)
+- A "// FUNCTION: 0xADDR" comment followed by a snake/Thunk NAME is often a CALL/SITE INSIDE a
+  real method (e.g. CGenericGroup::Restart calls ResetManagedEntityRuntimeStateThunk), NOT the
+  function at that address. Always confirm the placeholder is the DEFINITION at the mapped
+  address before renaming (parse the def line: `Ret NAME(args) {`).
+- Same-named methods across classes (7x `Restart`) collide as __fastcall free fns -> prefix with class.
+- reccmp `name` is the ORIGINAL target name, not the source symbol; don't measure rename progress by it.
+
 ## Next concrete steps (priority order)
 1. CBulletManager/CBullet real-member refactor (B): scaffold CBulletManager replacing
    ProjectilePool, CBullet replacing ProjectileObjectProxy; make Process()/Free()/GetFirst/GetNext
