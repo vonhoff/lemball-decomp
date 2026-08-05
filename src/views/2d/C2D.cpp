@@ -1,4 +1,5 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "AI/CGameObject.h"
 
 #include <string.h>
 
@@ -37,7 +38,7 @@ struct LevelScreenManagedEntitySelectionView {
 	void SelectObject(int nIndex);
 	bool InGroupByObjectNo(int nObjectNo);
 	void RemoveFromGroupByObjectNo(int nObjectNo);
-	bool IsInGrouping(int* pObject);
+	bool IsInGrouping(CGameObject* pObject);
 	void CheckValidFormGroup(void);
 	void FormGroup(void);
 	void AddObjectToGroup(int nObjectNo, int fUpdateCapacity);
@@ -250,7 +251,7 @@ void LevelScreenManagedEntitySelectionView::RemoveFromGroupByObjectNo(int nObjec
 
 // Macintosh: C2D::IsInGrouping(CGameObject*)
 // FUNCTION: LEMBALL 0x004374E0
-bool LevelScreenManagedEntitySelectionView::IsInGrouping(int* pObject)
+bool LevelScreenManagedEntitySelectionView::IsInGrouping(CGameObject* pObject)
 {
 	unsigned short nCount;
 	unsigned short nIndex;
@@ -259,7 +260,7 @@ bool LevelScreenManagedEntitySelectionView::IsInGrouping(int* pObject)
 	pGroup = m_aGroupObjectNumbersA50;
 	nCount = m_nPendingSelectionVariantA4C;
 	for (nIndex = 0; nIndex < nCount; ++nIndex) {
-		if (*(unsigned short*) ((char*) pObject + 0x6a) == pGroup[nIndex]) {
+		if (pObject->m_nRegistryIndex6A == pGroup[nIndex]) {
 			return true;
 		}
 	}
