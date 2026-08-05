@@ -64,7 +64,11 @@ no lost baseline addresses):
    PROGRESS: first verified reconstruction LANDED - append_invs_chunk_object_with_bounds -> CInvisibleSwitchManager::
    AddInvsChunkObjectWithBounds (0x40a3e0), 100% byte-identical (impl 2944->2945). SKILL: use
    lemball-function-reconstruction for the byte-fidelity pattern (ILT-callee resolution via reccmp-linker-ilts.csv,
-   register-reuse rule, reject stack-packing thunks). Rejected: append_invs_chunk_object_at_point (stack-packing, 0%, revert).
+   register-reuse rule, reject stack-packing thunks). Rejected: append_invs_chunk_object_at_point (stack-packing, 0%, revert),
+   collect_free_managed_entity_slot_ids 0x4166d0 (multi-counter bitset loop, 46.75% register-codegen, revert),
+   find_counted_level_child_containing_point (unreconstructed ILT callees). MEASURED YIELD: ~1 in 4 reconstructs clean.
+   PRIORITIZE targets shaped like the success: simple `if(count<capacity){ array[idx]->Method(...); count++; }` with
+   ALREADY-reconstructed ILT callees. Mult-counter loops + stack-packing thunks + unresolved-ILT targets = skip.
 1. CBulletManager/CBullet real-member refactor (B) — IN PROGRESS:
    - DONE: renamed ProjectilePool->CBulletManager, ProjectileObjectProxy->CBullet,
      ProjectilePoolOwnerView->CBulletManagerOwnerView (type renames); promoted
