@@ -138,7 +138,7 @@ void CMineManager::Trigger(int nIndex, int nDelay)
 		do {
 			if (nIndex != i) {
 				pMine = (CMine*) ((char*) m_pObjects34 + cbObject);
-				if (*(int*) ((char*) pMine + 0xb8) == 0x18) {
+				if (pMine->m_nStateB8 == 0x18) {
 					pPosition = (MinePosition*) ((char*) m_pPositions38 + cbPosition);
 					dz = pPosition->z - pOrigin->z;
 					dy = pPosition->y - pOrigin->y;
@@ -219,7 +219,7 @@ void CMineManager::Process(void)
 		do {
 			pMine->OnGround();
 			*(int*) ((char*) pMine + 0x124) = 1;
-			if (*(int*) ((char*) pMine + 0x138) != 0) {
+			if (pMine->m_anRuntimeState138[0] != 0) {
 				((MineProcessProc) (*(void***) pMine)[5])(pMine);
 			}
 			pMine = (CMine*) ((char*) pMine + 0x150);

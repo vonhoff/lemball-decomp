@@ -4,6 +4,7 @@
 #include "AI/AICoord.h"
 
 class CGameObject;
+class CMineManager;
 
 typedef int eAction;
 struct AICOORD;
@@ -21,6 +22,8 @@ public:
 	int IsUsable(eAction action);
 	int Process(void);
 	void OnGround(void);
+
+	friend class CMineManager;
 
 private:
 	unsigned char m_abReserved00[0x94];
