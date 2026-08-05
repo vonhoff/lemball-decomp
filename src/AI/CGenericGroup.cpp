@@ -146,7 +146,7 @@ int CGenericGroup::ConfirmElementIsInGroup(unsigned short nId)
 
 	for (i = 0; i < m_nElementCount124; ++i) {
 		pObject = m_apElements128[i];
-		if (pObject != 0 && *(unsigned short*) ((char*) pObject + 0x6a) == nId) {
+		if (pObject != 0 && pObject->m_nRegistryIndex6A == nId) {
 			return 1;
 		}
 	}
