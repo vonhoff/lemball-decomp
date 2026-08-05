@@ -39,12 +39,17 @@ no lost baseline addresses):
 - reccmp `name` is the ORIGINAL target name, not the source symbol; don't measure rename progress by it.
 
 ## Next concrete steps (priority order)
-1. CBulletManager/CBullet real-member refactor (B): scaffold CBulletManager replacing
-   ProjectilePool, CBullet replacing ProjectileObjectProxy; make Process()/Free()/GetFirst/GetNext
-   real members. CONSTRAINT: g_LINKSCF_ProjectilePoolVtable (0x494008) stores raw __fastcall
-   free-body addresses as slots — storing &Class::Process emits a member-pointer thunk, so this
-   regresses vtable bytes (user authorized regression; fix after). ILT 0x00401019 pins Process.
-   5 files: LEVELVT.CPP, Projectile.cpp, LVPRJGEOM.CPP, CGame.cpp, LINKSCF.CPP.
+1. CBulletManager/CBullet real-member refactor (B) — IN PROGRESS:
+   - DONE: renamed ProjectilePool->CBulletManager, ProjectileObjectProxy->CBullet,
+     ProjectilePoolOwnerView->CBulletManagerOwnerView (type renames); promoted
+     CBulletManager::GetFirstBullet/GetNextBullet to real members (100% byte-identical).
+   - NEXT: CBulletManagerProcess(0x418040)->CBulletManager::Process, CBulletFree->CBullet::Free,
+     ResetProjectilePool->CBulletManager::Reset. CAUTION: g_LINKSCF_ProjectilePoolVtable(0x494008)
+     stores raw __fastcall free-body addr as slot2; ILT 0x00401019 pins Process. To keep vtable bytes,
+     keep a thin __fastcall forwarding thunk at the vtable name OR accept member-pointer vtable thunk
+     (regression authorized). ALSO: consolidate duplicate CBulletManagerOwnerView (Projectile.cpp)
+     and CBulletManager (LEVELVT.CPP) — two structs model the same CBulletManager object.
+     Files: LEVELVT.CPP, Projectile.cpp, LVPRJGEOM.CPP, CGame.cpp, LINKSCF.CPP.
 2. Misplaced-class fixes: start with confirmed CArena->CRAMArena, CMBlock->CMRAMBlock
    (blueprint distinguishes base CArena from derived CRAMArena; Windows collapsed them).
    Verify each of the 24 via Ghidra before acting (CNetworkMessage->CBaseSocket trio is false-positive).

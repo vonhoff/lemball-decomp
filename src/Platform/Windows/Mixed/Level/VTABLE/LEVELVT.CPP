@@ -368,6 +368,7 @@ struct CBulletManager {
 	int FindProjectilePositionInRect(const LevelShortRect* pRect, LevelProjectilePosition* pPosition);
 	void* GetFirstBullet(void);
 	void* GetNextBullet(void);
+	void Process(void);
 };
 
 struct CBullet {
@@ -1309,20 +1310,27 @@ void* CBulletManager::GetNextBullet(void)
 }
 
 // FUNCTION: LEMBALL 0x00418040
-void __fastcall CBulletManagerProcess(void* pPool)
+void CBulletManager::Process(void)
 {
 	void* pObj;
 	int fKeep;
 
-	pObj = ((CBulletManager*) pPool)->GetFirstBullet();
+	pObj = GetFirstBullet();
 	while (pObj != NULL) {
 		fKeep = ((CBullet*) pObj)->ServiceProjectile();
 		if (fKeep == 0) {
-			((CBulletManager*) pPool)->RemoveObject(pObj);
+			RemoveObject(pObj);
 		}
-		pObj = ((CBulletManager*) pPool)->GetNextBullet();
+		pObj = GetNextBullet();
 	}
 }
+
+// Vtable/ILT slot 0x00401019 pins the __fastcall free form; forward to the real member.
+void __fastcall CBulletManagerProcess(void* pPool)
+{
+	((CBulletManager*) pPool)->Process();
+}
+
 
 // FUNCTION: LEMBALL 0x00418080
 void CBulletManager::RemoveObject(void* pObject)
