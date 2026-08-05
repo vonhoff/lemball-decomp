@@ -42,6 +42,7 @@ struct LevelScreenManagedEntitySelectionView {
 
 	int FindGameObject(const CVSPoint* pPoint, int* pObjectIndex, unsigned char nMode);
 	void NoStateLeftClick(const CVSPoint* pPoint, const CVSPoint* pMarker, unsigned char nParam3, unsigned char nParam4);
+	void GroupingLeftClick(const CVSPoint* pPoint, const CVSPoint* pMarker, unsigned char nParam3);
 	void SelectLemming(int nIndex);
 	void SelectObject(int nIndex);
 	bool InGroupByObjectNo(int nObjectNo);
@@ -399,4 +400,59 @@ void LevelScreenManagedEntitySelectionView::NoStateLeftClick(const CVSPoint* pPo
 	point.m_nX = (short) nStartX;
 	point.m_nY = (short) nStartY;
 	MoveGroup((int*) &point);
+}
+
+// Macintosh: C2D::GroupingLeftClick(const CVSPoint&, const CVSPoint&, unsigned char)
+// FUNCTION: LEMBALL 0x004376b0
+void LevelScreenManagedEntitySelectionView::GroupingLeftClick(const CVSPoint* pPoint, const CVSPoint* pMarker, unsigned char nParam3)
+{
+	int nIndex;
+
+	if (FindGameObject(pPoint, &nIndex, 0) != 0) {
+		char* pEntity = (char*) m_pManagedEntityArray95C + nIndex * 0x4c;
+		switch (*(int*) (pEntity + 0x28)) {
+		case 2:
+			if (nParam3 == 0) {
+				unsigned short nValue = *(unsigned short*) ((char*) m_pManagedEntityArray95C + nIndex * 0x4c + 0x2c);
+				if (!InGroupByObjectNo(nValue)) {
+					AddObjectToGroup(nValue, 0);
+				}
+				else {
+					RemoveFromGroupByObjectNo(nValue);
+				}
+				((VariantResourceEntryManagerView*) g_pVariantResourceEntryManager)->m_nSelectionMode10 = 3;
+				return;
+			}
+			break;
+		case 4:
+		case 5:
+		case 0xc:
+		case 0x11:
+		case 0x14:
+		case 0x15:
+		case 0x16:
+		case 0x17:
+		case 0x1c:
+		case 0x22:
+		case 0x27:
+		case 0x29:
+		case 0x2b:
+		case 0x2d:
+			if (m_nPendingSelectionVariantA4C != 0) {
+				FormGroup();
+			}
+			SelectObject(nIndex);
+			return;
+		case 0x34:
+			break;
+		default:
+			break;
+		}
+	}
+	if (m_nPendingSelectionVariantA4C != 0) {
+		FormGroup();
+		MoveGroup((int*) pMarker);
+		return;
+	}
+	MoveGroup((int*) pMarker);
 }
