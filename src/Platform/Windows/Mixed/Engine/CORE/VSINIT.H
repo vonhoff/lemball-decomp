@@ -30,7 +30,6 @@ int ParseCommandLineOptionToken(char* pszToken);
 void TokenizeAndFilterCommandLineArgs(char* pszCmdLine);
 void AppendStringToDebugOutFile(const char* pszText);
 void FormatSignedIntToRadixString(int nValue, char* pszBuffer, unsigned int nRadix);
-void AppendPointerToStreamVariant(VsInitFormattedOutputStream* pStream, unsigned int uValue);
 VsInitFormattedOutputStream* AppendUIntHexToStream(VsInitFormattedOutputStream* pStream, unsigned int uValue);
 VsInitFormattedOutputStream* AppendHexUIntToStream(VsInitFormattedOutputStream* pStream, unsigned int uValue);
 // FUNCTION: LEMBALL 0x0045abb0
@@ -171,6 +170,7 @@ struct VsInitFormattedOutputStream {
 	VsInitFormattedOutputStream* AppendSignedIntToStreamVariant(int nValue);
 	VsInitFormattedOutputStream* AppendUIntToStream(unsigned int uValue);
 	VsInitFormattedOutputStream* AppendUnsignedIntToStreamVariant(unsigned int uValue);
+	void AppendPointerToStreamVariant(unsigned int uValue);
 	VsInitFormattedOutputStream* ConstructFormattedOutputStream(VsInitFixedBufferStream* pDownstream,
 																int fConstructTargetState);
 };

@@ -438,7 +438,6 @@ void LEMBALL_FASTCALL DestroyStreamBaseVtable(void* pStream);
 void LEMBALL_FASTCALL ConstructStreamFormatState(VsInitStreamFormatTargetState* pState);
 void LEMBALL_FASTCALL RestoreStreamFormatSubobjectVtable(VsInitStreamFormatTargetState* pState);
 void LEMBALL_FASTCALL ApplyStreamIntegerWidthPadding(VsInitFormattedOutputStream* pStream);
-void AppendPointerToStreamVariant(VsInitFormattedOutputStream* pStream, unsigned int uValue);
 VsInitFormattedOutputStream* AppendUIntHexToStream(VsInitFormattedOutputStream* pStream, unsigned int uValue);
 VsInitFormattedOutputStream* AppendHexUIntToStream(VsInitFormattedOutputStream* pStream, unsigned int uValue);
 void FormatSignedIntToRadixString(int nValue, char* pszBuffer, unsigned int nRadix);
@@ -673,15 +672,15 @@ VsInitFormattedOutputStream* VsInitFormattedOutputStream::AppendIntToStream(unsi
 }
 
 // FUNCTION: LEMBALL 0x00458670
-void AppendPointerToStreamVariant(VsInitFormattedOutputStream* pStream, unsigned int uValue)
+void VsInitFormattedOutputStream::AppendPointerToStreamVariant(unsigned int uValue)
 {
 	if (uValue == 0) {
-		pStream->AppendCStringToStream(g_VSINIT_NullPointerText);
+		AppendCStringToStream("(null)");
 		return;
 	}
-	FormatUnsignedIntToRadixString(uValue, pStream->m_szFormatBuffer, 0x10);
-	ApplyStreamIntegerWidthPadding(pStream);
-	pStream->AppendCStringToStream(g_VSINIT_HexPointerPrefix)->AppendCStringToStream(pStream->m_pszFormattedText);
+	FormatUnsignedIntToRadixString(uValue, m_szFormatBuffer, 0x10);
+	ApplyStreamIntegerWidthPadding(this);
+	AppendCStringToStream("0x")->AppendCStringToStream(m_pszFormattedText);
 }
 
 // FUNCTION: LEMBALL 0x004586d0
