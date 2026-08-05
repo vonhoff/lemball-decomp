@@ -61,6 +61,10 @@ no lost baseline addresses):
 4. RECONSTRUCTION (the core remaining value): the ~317 zero-ratio + ~391 weak uncorrelated game functions
    (construct_*/destroy_*/emit_*/dispatch_*/handle_* families). Migrate them into proper C++ class methods using
    address-range + Mac blueprint correlation (tools/reconstruction_audit.py --zeros). This is the main goal.
+   PROGRESS: first verified reconstruction LANDED - append_invs_chunk_object_with_bounds -> CInvisibleSwitchManager::
+   AddInvsChunkObjectWithBounds (0x40a3e0), 100% byte-identical (impl 2944->2945). SKILL: use
+   lemball-function-reconstruction for the byte-fidelity pattern (ILT-callee resolution via reccmp-linker-ilts.csv,
+   register-reuse rule, reject stack-packing thunks). Rejected: append_invs_chunk_object_at_point (stack-packing, 0%, revert).
 1. CBulletManager/CBullet real-member refactor (B) — IN PROGRESS:
    - DONE: renamed ProjectilePool->CBulletManager, ProjectileObjectProxy->CBullet,
      ProjectilePoolOwnerView->CBulletManagerOwnerView (type renames); promoted
