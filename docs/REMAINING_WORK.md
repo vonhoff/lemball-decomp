@@ -46,10 +46,9 @@ no lost baseline addresses):
    - NEXT: CBulletManagerProcess(0x418040)->CBulletManager::Process DONE, GetFirstBullet/GetNextBullet DONE,
      CBulletFree(0x41ac70)->CBullet::Free DONE, ResetProjectilePool DONE.
      CONSOLIDATION DONE: duplicate CBulletManagerOwnerView (Projectile.cpp) merged into single shared
-     CBulletManager in src/ai/CBulletManager.h (LEVELVT.CPP + Projectile.cpp both include it). All
-     projectile fns byte-faithful. To-do: define CCBullet bodies for ServiceProjectile/EmitProjectileRenderEntry/
-     SetState (currently vtable-virtuals without source bodies); migrate CBullet struct out of LEVELVT.CPP
-     into a shared header too. CAUTION: g_LINKSCF_ProjectilePoolVtable(0x494008)
+     CBulletManager in src/ai/CBulletManager.h; CBullet also migrated to src/ai/CBullet.h (both byte-faithful).
+     To-do: define CBullet::ServiceProjectile/EmitProjectileRenderEntry/SetState bodies (currently
+     vtable-virtuals, no source bodies). CAUTION: g_LINKSCF_ProjectilePoolVtable(0x494008)
  stores raw __fastcall free-body addr as slot2; ILT 0x00401019 pins Process. To keep vtable bytes,
  keep a thin __fastcall forwarding thunk at the vtable name OR accept member-pointer vtable thunk
  (regression authorized). Files: LEVELVT.CPP, Projectile.cpp, LVPRJGEOM.CPP, CGame.cpp, LINKSCF.CPP.
