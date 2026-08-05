@@ -1876,7 +1876,6 @@ void noop_vtable_callback_0042c9a0(void)
 {
 }
 
-// FUNCTION: LEMBALL 0x0042d900 (moved to CIceManager::ResetObjectCount in CIceManager.cpp)
 
 
 extern void* g_LEVELVT_MoveChunkObjectVtable[16];

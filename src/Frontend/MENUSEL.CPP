@@ -1,4 +1,5 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "Frontend/GameMenuActionFramePointSink.h"
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSGDI.H"
@@ -430,18 +431,7 @@ static void* g_MenuSelectorManagerVtable[3] = {(void*) InitializeNonZrleVariantR
 											   (void*) DeleteMenuSelectorManagerThunk,
 											   (void*) HandleMenuSelectorEventThunk};
 
-struct GameMenuActionFramePointSink {
-	void** m_pVtable00;
-	short m_nReserved04;
-	short m_nReserved06;
-	unsigned char m_abReserved08[0x10];
-	int m_iFrame18;
-	int* m_pResource1C;
 
-	void* Delete(unsigned int fDelete);
-	void BindToContext(void* pContext);
-	void DispatchToRenderObject(void* pContext);
-};
 
 class GameResourceGeometryChildView {
 public:
