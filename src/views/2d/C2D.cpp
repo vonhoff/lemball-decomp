@@ -44,6 +44,8 @@ struct LevelScreenManagedEntitySelectionView {
 	void NoStateLeftClick(const CVSPoint* pPoint, const CVSPoint* pMarker, unsigned char nParam3, unsigned char nParam4);
 	void GroupingLeftClick(const CVSPoint* pPoint, const CVSPoint* pMarker, unsigned char nParam3);
 	void LeftClick(const CVSPoint* pPoint, const CVSPoint* pMarker, unsigned char nParam3, unsigned char nParam4);
+	void NoStateRightClick(const CVSPoint* pPoint, const CVSPoint* pMarker);
+	void RightClick(const CVSPoint* pPoint, const CVSPoint* pMarker);
 	void SelectLemming(int nIndex);
 	void SelectObject(int nIndex);
 	bool InGroupByObjectNo(int nObjectNo);
@@ -470,4 +472,44 @@ void LevelScreenManagedEntitySelectionView::LeftClick(const CVSPoint* pPoint, co
 		return;
 	}
 	GroupingLeftClick(pPoint, pMarker, nParam4);
+}
+
+// Macintosh: C2D::NoStateRightClick(const CVSPoint&, const CVSPoint&)
+// FUNCTION: LEMBALL 0x00437890
+void LevelScreenManagedEntitySelectionView::NoStateRightClick(const CVSPoint* pPoint, const CVSPoint* pMarker)
+{
+	LevelScreenInputEvent Event;
+	int nIndex;
+
+	Event.m_nType00 = 4;
+	Event.m_nReserved02 = 0;
+	Event.m_nReserved04 = 0;
+	Event.m_nReserved08 = 0;
+	Event.m_nReserved0C = 0;
+	Event.m_nReserved10 = 0;
+
+	if (FindGameObject(pPoint, &nIndex, 1) != 0 && *(int*) ((char*) m_pManagedEntityArray95C + nIndex * 0x4c + 0x28) == 2) {
+		SelectObject(nIndex);
+		return;
+	}
+	Event.m_nReserved08 = (int) pMarker->m_nX;
+	Event.m_nReserved0C = (int) pMarker->m_nY;
+	m_pInputEventSink974->DispatchLevelScreenInputEvent(&Event);
+	m_nPendingSelectionA48 = 0;
+}
+
+// Macintosh: C2D::RightClick(const CVSPoint&, const CVSPoint&)
+// FUNCTION: LEMBALL 0x00437930
+void LevelScreenManagedEntitySelectionView::RightClick(const CVSPoint* pPoint, const CVSPoint* pMarker)
+{
+	if (m_nPendingSelectionA48 != 0) {
+		if (m_nPendingSelectionA48 != 1) {
+			return;
+		}
+		FormGroup();
+		if (m_nPendingSelectionVariantA4C == 0) {
+			m_nPendingSelectionA48 = 0;
+		}
+	}
+	NoStateRightClick(pPoint, pMarker);
 }
