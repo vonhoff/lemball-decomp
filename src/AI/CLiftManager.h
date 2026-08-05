@@ -6,6 +6,7 @@ class CGameObject;
 class CViewData;
 class CLift;
 struct AICOORD;
+struct tCoord3d;
 typedef int swMessage;
 
 class CLiftManager {
@@ -20,6 +21,7 @@ public:
 	void Switch(swMessage message, int nSlotId, int nRangeEnd, int nUnused4);
 	unsigned short Id(int iObject);
 	void LoadLevel(unsigned char* pData, int cbData, unsigned char nVersion);
+	void AppendLiftChunkObjectBetweenEndpoints(unsigned short nSlotId, const tCoord3d& start, const tCoord3d& end);
 
 private:
 	unsigned char m_abReserved00[0x30];

@@ -288,3 +288,13 @@ void CLiftManager::LoadLevel(unsigned char* pData, int cbData, unsigned char nVe
 	(void) cbData;
 	(void) nVersion;
 }
+
+// FUNCTION: LEMBALL 0x00425ce0
+void CLiftManager::AppendLiftChunkObjectBetweenEndpoints(unsigned short nSlotId, const tCoord3d& start, const tCoord3d& end)
+{
+	if (m_cObjects34 < m_cCapacity38) {
+		((CGameObject*) ((char*) m_pObjects3C + m_cObjects34 * 0x190))->SetId(nSlotId);
+		((CLift*) ((char*) m_pObjects3C + m_cObjects34 * 0x190))->Set((tCoord3d&) start, (tCoord3d&) end, 1, -1, 0x30, (eLiftActivateType) 2, 1);
+		m_cObjects34++;
+	}
+}
