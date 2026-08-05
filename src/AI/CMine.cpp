@@ -133,12 +133,12 @@ void CMine::Set(AICOORD position)
 	int x;
 	int y;
 
-	*(int*) ((char*) this + 0x9c) = position.x;
-	*(int*) ((char*) this + 0xa0) = position.y;
-	*(int*) ((char*) this + 0xa4) = position.z;
-	*(int*) ((char*) this + 0x13c) = 0;
-	*(int*) ((char*) this + 0x138) = 1;
-	*(int*) ((char*) this + 0x140) = 0;
+	m_WorldPosition9C.x = position.x;
+	m_WorldPosition9C.y = position.y;
+	m_WorldPosition9C.z = position.z;
+	m_anRuntimeState138[1] = 0;
+	m_anRuntimeState138[0] = 1;
+	m_anRuntimeState138[2] = 0;
 	x = (position.x >> 12) / 16;
 	y = (position.y >> 12) / 16;
 	if (x >= 0 && y >= 0) {
@@ -152,9 +152,9 @@ void CMine::Set(AICOORD position)
 // FUNCTION: LEMBALL 0x00423d40
 void CMine::Trigger(int nDelay)
 {
-	if (*(int*) ((char*) this + 0x144) == 0 && *(int*) ((char*) this + 0xb8) == 0x18) {
-		*(int*) ((char*) this + 0x144) = 1;
-		*(int*) ((char*) this + 0x148) = nDelay;
+	if (m_anRuntimeState138[3] == 0 && m_nStateB8 == 0x18) {
+		m_anRuntimeState138[3] = 1;
+		m_nDelay148 = nDelay;
 		((ManagedEntityStateView*) this)->RequestManagedEntityStateId(0x1a);
 	}
 }
@@ -162,10 +162,10 @@ void CMine::Trigger(int nDelay)
 // FUNCTION: LEMBALL 0x00423d70
 void CMine::DoActivate(void)
 {
-	*(int*) ((char*) this + 0x13c) = 1;
-	if (*(int*) ((char*) this + 0x144) != 0) {
-		*(int*) ((char*) this + 0x140) = 0;
-		*(int*) ((char*) this + 0xc8) = *(int*) ((char*) this + 0x148) + g_nLevelFrameClockTick;
+	m_anRuntimeState138[1] = 1;
+	if (m_anRuntimeState138[3] != 0) {
+		m_anRuntimeState138[2] = 0;
+		*(int*) ((char*) this + 0xc8) = m_nDelay148 + g_nLevelFrameClockTick;
 		((CMineManager*) *(void**) ((char*) this + 0x60))->Triggered(this);
 		return;
 	}
@@ -266,8 +266,8 @@ void CMine::OnGround(void)
 	int y;
 	short z;
 
-	x = *(int*) ((char*) this + 0x9c) >> 12;
-	y = *(int*) ((char*) this + 0xa0) >> 12;
+	x = m_WorldPosition9C.x >> 12;
+	y = m_WorldPosition9C.y >> 12;
 	pGrid = (char*) g_pLevelTileGrid;
 	if (x < 0 || y < 0 || x / 16 >= *(int*) (pGrid + 0x10) || y / 16 >= *(int*) (pGrid + 0x14)) {
 		z = 0;
@@ -276,7 +276,7 @@ void CMine::OnGround(void)
 		z = ((CGround*) (*(char**) (pGrid + 0x0c) + (y / 16 * *(int*) (pGrid + 0x10) + x / 16) * 12))
 				->GetZ(x & 15, y & 15);
 	}
-	*(int*) ((char*) this + 0xa4) = (unsigned short) z << 12;
+	m_WorldPosition9C.z = (unsigned short) z << 12;
 }
 
 // FUNCTION: LEMBALL 0x00424c60

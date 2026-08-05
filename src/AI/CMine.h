@@ -1,6 +1,8 @@
 #ifndef LEMBALL_CMINE_H
 #define LEMBALL_CMINE_H
 
+#include "AI/AICoord.h"
+
 class CGameObject;
 
 typedef int eAction;
@@ -21,7 +23,14 @@ public:
 	void OnGround(void);
 
 private:
-	unsigned char m_abReserved00[0x150];
+	unsigned char m_abReserved00[0x9c];
+	AICOORD m_WorldPosition9C;            // 0x9c
+	unsigned char m_abReservedA8[0x10];
+	int m_nStateB8;                        // 0xb8
+	unsigned char m_abReservedBC[0x7c];
+	int m_anRuntimeState138[4];            // 0x138..0x147
+	int m_nDelay148;                       // 0x148
+	unsigned char m_abReserved14C[4];      // 0x14c..0x14f
 };
 
 typedef char CMineSizeCheck[sizeof(CMine) == 0x150 ? 1 : -1];
