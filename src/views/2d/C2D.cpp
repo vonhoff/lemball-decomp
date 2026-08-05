@@ -33,6 +33,7 @@ struct LevelScreenManagedEntitySelectionView {
 	void RemoveFromGroupByObjectNo(int nObjectNo);
 	void CheckValidFormGroup(void);
 	void FormGroup(void);
+	void MoveGroup(int* pPosition);
 };
 
 struct VariantResourceEntryManagerView {
@@ -81,6 +82,22 @@ void LevelScreenManagedEntitySelectionView::FormGroup(void)
 		m_nPendingSelectionA48 = 0;
 		((VariantResourceEntryManagerView*) g_pVariantResourceEntryManager)->m_nSelectionMode10 = 3;
 	}
+}
+
+// Macintosh: C2D::MoveGroup(AICOORD&)
+// FUNCTION: LEMBALL 0x004371e0
+void LevelScreenManagedEntitySelectionView::MoveGroup(int* pPosition)
+{
+	LevelScreenInputEvent Event;
+
+	Event.m_nType00 = 2;
+	memset(&Event.m_nReserved04, 0, 0x10);
+	Event.m_nReserved08 = *(short*) pPosition;
+	Event.m_nReserved0C = *(short*) ((char*) pPosition + 2);
+	m_pInputEventSink974->DispatchLevelScreenInputEvent(&Event);
+	m_nPendingSelectionVariantA4C = 0;
+	m_nPendingSelectionA48 = 0;
+	((VariantResourceEntryManagerView*) g_pVariantResourceEntryManager)->m_nSelectionMode10 = 0x25;
 }
 
 // Macintosh: C2D::CancelMoves()
