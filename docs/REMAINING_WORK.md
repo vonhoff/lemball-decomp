@@ -44,16 +44,15 @@ no lost baseline addresses):
      ProjectilePoolOwnerView->CBulletManagerOwnerView (type renames); promoted
      CBulletManager::GetFirstBullet/GetNextBullet to real members (100% byte-identical).
    - NEXT: CBulletManagerProcess(0x418040)->CBulletManager::Process DONE, GetFirstBullet/GetNextBullet DONE,
-     CBulletFree(0x41ac70)->CBullet::Free DONE, ResetProjectilePool(0x417e80)->CBulletManagerOwnerView::Reset DONE.
-     To-do: consolidate duplicate CBulletManagerOwnerView (Projectile.cpp) into CBulletManager (LEVELVT.CPP) via a
-     shared CBulletManager.h header (they model the same object, different files); promote/define
-     CBullet::ServiceProjectile/EmitProjectileRenderEntry/SetState (currently vtable-virtuals without source bodies).
-     CAUTION: g_LINKSCF_ProjectilePoolVtable(0x494008)
-     stores raw __fastcall free-body addr as slot2; ILT 0x00401019 pins Process. To keep vtable bytes,
-     keep a thin __fastcall forwarding thunk at the vtable name OR accept member-pointer vtable thunk
-     (regression authorized). ALSO: consolidate duplicate CBulletManagerOwnerView (Projectile.cpp)
-     and CBulletManager (LEVELVT.CPP) — two structs model the same CBulletManager object.
-     Files: LEVELVT.CPP, Projectile.cpp, LVPRJGEOM.CPP, CGame.cpp, LINKSCF.CPP.
+     CBulletFree(0x41ac70)->CBullet::Free DONE, ResetProjectilePool DONE.
+     CONSOLIDATION DONE: duplicate CBulletManagerOwnerView (Projectile.cpp) merged into single shared
+     CBulletManager in src/ai/CBulletManager.h (LEVELVT.CPP + Projectile.cpp both include it). All
+     projectile fns byte-faithful. To-do: define CCBullet bodies for ServiceProjectile/EmitProjectileRenderEntry/
+     SetState (currently vtable-virtuals without source bodies); migrate CBullet struct out of LEVELVT.CPP
+     into a shared header too. CAUTION: g_LINKSCF_ProjectilePoolVtable(0x494008)
+ stores raw __fastcall free-body addr as slot2; ILT 0x00401019 pins Process. To keep vtable bytes,
+ keep a thin __fastcall forwarding thunk at the vtable name OR accept member-pointer vtable thunk
+ (regression authorized). Files: LEVELVT.CPP, Projectile.cpp, LVPRJGEOM.CPP, CGame.cpp, LINKSCF.CPP.
 2. Misplaced-class fixes: start with confirmed CArena->CRAMArena, CMBlock->CMRAMBlock
    (blueprint distinguishes base CArena from derived CRAMArena; Windows collapsed them).
    Verify each of the 24 via Ghidra before acting (CNetworkMessage->CBaseSocket trio is false-positive).
