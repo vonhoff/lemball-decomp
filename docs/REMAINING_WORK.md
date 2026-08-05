@@ -52,8 +52,12 @@ no lost baseline addresses):
  stores raw __fastcall free-body addr as slot2; ILT 0x00401019 pins Process. To keep vtable bytes,
  keep a thin __fastcall forwarding thunk at the vtable name OR accept member-pointer vtable thunk
  (regression authorized). Files: LEVELVT.CPP, Projectile.cpp, LVPRJGEOM.CPP, CGame.cpp, LINKSCF.CPP.
-2. Misplaced-class fixes: start with confirmed CArena->CRAMArena, CMBlock->CMRAMBlock
-   (blueprint distinguishes base CArena from derived CRAMArena; Windows collapsed them).
-   Verify each of the 24 via Ghidra before acting (CNetworkMessage->CBaseSocket trio is false-positive).
+2. Misplaced-class fixes: 
+   - CArena/CMBlock: Ghidra confirms 0x45a3f0 = CRAMArena::CRAMArena (derived, magic 0x5241524e "RARN") that
+     calls CArena base ctor; source collapsed base+derived into one `CArena`. This is a genuine base/derived
+     class-hierarchy collapse needing a structural CArena/CRAMArena split — HIGH RISK (foundational allocator,
+     every allocation path) -> DEFER unless user wants the deep split. Verification caught several of the 24
+     are heuristic false-positives (CNetworkMessage->CBaseSocket trio). Fix the confirmed-true renames only.
+   - Verify each of the 24 via Ghidra before acting.
 3. Scaffold missing blueprint classes (--missing), migrate zero-ratio functions into them as members.
 4. As legacy .CPP content is migrated, delete the .CPP files and remove MACINTOSH annotations.
