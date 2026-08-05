@@ -33,6 +33,7 @@ struct LevelScreenManagedEntitySelectionView {
 	void RemoveFromGroupByObjectNo(int nObjectNo);
 	void CheckValidFormGroup(void);
 	void FormGroup(void);
+	void AddObjectToGroup(int nObjectNo, int fUpdateCapacity);
 	void MoveGroup(int* pPosition);
 };
 
@@ -64,6 +65,23 @@ void LevelScreenManagedEntitySelectionView::CheckValidFormGroup(void)
 				RemoveFromGroupByObjectNo((int) nObjNo);
 			}
 		}
+	}
+}
+
+// Macintosh: C2D::AddObjectToGroup(int, unsigned char)
+// FUNCTION: LEMBALL 0x00437130
+void LevelScreenManagedEntitySelectionView::AddObjectToGroup(int nObjectNo, int fUpdateCapacity)
+{
+	unsigned short nCount;
+	unsigned short* pGroup;
+
+	pGroup = (unsigned short*) ((char*) this + 0xa50);
+	nCount = m_nPendingSelectionVariantA4C;
+	pGroup[nCount] = (unsigned short) nObjectNo;
+	++nCount;
+	m_nPendingSelectionVariantA4C = nCount;
+	if (fUpdateCapacity != 0) {
+		m_nGroupCapacityA4E = nCount;
 	}
 }
 
