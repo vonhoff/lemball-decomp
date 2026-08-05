@@ -201,11 +201,50 @@ def list_names(class_name: str | None, status: str, symbols: list[dict[str, str]
         print(f"{row['code_file']} {row['name_length_offset']} {row['mangled_name']}{suffix}")
 
 
+RECCMP = ROOT / "build-msvc400/reccmp.json"
+
+
+def implemented_addresses(symbols, correlations) -> set[int]:
+    """Return the set of implemented x86 addresses from the live reccmp report."""
+    if not RECCMP.is_file():
+        return set()
+    try:
+        import json
+
+        report = json.loads(RECCMP.read_text(encoding="utf-8"))
+        return {int(row["address"], 16) for row in report["data"] if row.get("recomp")}
+    except (json.JSONDecodeError, KeyError, TypeError):
+        return {}
+
+
+def coverage(symbols, correlations) -> None:
+    done = implemented_addresses(symbols, correlations)
+    target = [
+        row
+        for row in rows(COVERAGE)
+        if row["portable_scope"] in ("portable", "represented", "duplicate_portable_body")
+        and row["x86_address"]
+    ]
+    n = len(target)
+    if n == 0:
+        print("Macintosh blueprint coverage: no portable-scope symbols with x86 targets")
+        return
+    implemented = [
+        row for row in target if int(row["x86_address"], 16) in done
+    ]
+    pct = 100.0 * len(implemented) / n
+    print(f"Macintosh blueprint portability coverage: {pct:.1f}%")
+    print(f"  reconstructed: {len(implemented)}")
+    print(f"  still gap:     {n - len(implemented)}")
+    print(f"  (live reccmp implementations: {len(done)})")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command")
     sub.add_parser("check", help="validate correlations and coverage")
     sub.add_parser("summary", help="show tracker totals")
+    sub.add_parser("coverage", help="show Macintosh blueprint portability coverage %")
     names_parser = sub.add_parser("names", help="list raw Macintosh names and mapping status")
     names_parser.add_argument("--class", dest="class_name")
     names_parser.add_argument("--status", choices=("all", "mapped", "unmapped"), default="unmapped")
@@ -221,6 +260,9 @@ def main() -> int:
         return 0
     if args.command in (None, "summary"):
         summary(symbols, correlations)
+        return 0
+    if args.command == "coverage":
+        coverage(symbols, correlations)
         return 0
     if args.command == "names":
         list_names(args.class_name, args.status, symbols, correlations)
