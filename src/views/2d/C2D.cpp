@@ -31,12 +31,39 @@ struct LevelScreenManagedEntitySelectionView {
 	void SelectObject(int nIndex);
 	bool InGroupByObjectNo(int nObjectNo);
 	void RemoveFromGroupByObjectNo(int nObjectNo);
+	void CheckValidFormGroup(void);
 };
 
 struct VariantResourceEntryManagerView {
 	unsigned char m_abReserved00[0x10];
 	int m_nSelectionMode10;
 };
+
+// Macintosh: C2D::CheckValidFormGroup()
+// FUNCTION: LEMBALL 0x004369b0
+void LevelScreenManagedEntitySelectionView::CheckValidFormGroup(void)
+{
+	unsigned int nObjNo;
+	unsigned short nIndex;
+	unsigned short nCount;
+	unsigned short* pGroup;
+	void* pObject;
+
+	if (m_nPendingSelectionA48 != 1) {
+		return;
+	}
+	pGroup = (unsigned short*) ((char*) this + 0xa50);
+	nCount = m_nPendingSelectionVariantA4C;
+	if (nCount != 0) {
+		for (nIndex = 0; nIndex < nCount; ++nIndex) {
+			nObjNo = pGroup[nIndex];
+			pObject = *(void**) (nObjNo * 4 + 0x4a6510);
+			if (((int(__fastcall*)(void*)) (*(void***) pObject)[0x70 / sizeof(void*)])(pObject) == 0) {
+				RemoveFromGroupByObjectNo((int) nObjNo);
+			}
+		}
+	}
+}
 
 // Macintosh: C2D::CancelMoves()
 // FUNCTION: LEMBALL 0x00437250
