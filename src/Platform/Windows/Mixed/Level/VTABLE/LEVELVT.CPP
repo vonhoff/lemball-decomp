@@ -383,7 +383,7 @@ int return_two_vtable_callback_0041c430(void);
 int return_true_vtable_callback_0041c5b0(void);
 int return_two_vtable_callback_0041c630(void);
 int return_two_vtable_callback_0041dc40(void);
-int return_zero_vtable_callback_0041f870(void);
+int CheckAgainstCatapults(void);
 int __fastcall is_delayed_move_to_saved_target_armed(void* pObject);
 void __fastcall set_chunk_short_delay_timer(void* pObject);
 int __fastcall get_object_field_0x124(void* pObject);
@@ -1766,7 +1766,7 @@ int return_two_vtable_callback_0041dc40(void)
 }
 
 // FUNCTION: LEMBALL 0x0041f870
-int return_zero_vtable_callback_0041f870(void)
+int CheckAgainstCatapults(void)
 {
 	return 0;
 }

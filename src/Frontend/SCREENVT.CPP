@@ -8,7 +8,7 @@
 
 // Macintosh: C2D::DoButtons()
 // FUNCTION: LEMBALL 0x00436690
-void noop_render_entry_callback_00436690(void)
+void DoButtons(void)
 {
 }
 // FUNCTION: LEMBALL 0x004393a0
@@ -190,7 +190,7 @@ unsigned int return_hresult_80000801_screen_hook(void)
 }
 // Macintosh: DrawPaused__3C2DFv
 // FUNCTION: LEMBALL 0x0043fe70
-void noop_level_screen_related_hook_0043fe70(void)
+void DrawPaused(void)
 {
 }
 

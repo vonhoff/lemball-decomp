@@ -167,7 +167,7 @@ extern void* LEMBALL_FASTCALL ConstructLevelScreenActionPanelResources(void* pOb
 																	   void* pLevelScreen);
 extern void LEMBALL_FASTCALL DestroyLevelScreenActionPanelResources(void* pObject);
 extern void LEMBALL_FASTCALL RelayoutLevelScreenActionPanelThunk(void* pPanel);
-extern void noop_render_entry_callback_00436690(void);
+extern void DoButtons(void);
 void LEMBALL_FASTCALL NoopLevelScreenViewportRefreshThunk(void* pScreen);
 extern void PASCAL noop_render_entry_callback_004393a0(void* pUnused);
 extern void noop_render_entry_callback_004393b0(void);
@@ -437,7 +437,7 @@ void LEMBALL_FASTCALL DispatchWindowOwnerRectInitialization(GamePrimaryContext* 
 															void* pWindowOwner,
 															const char* pszTitle);
 extern void noop_vtable_callback_00407f20(void);
-extern int return_zero_vtable_callback_0041f870(void);
+extern int CheckAgainstCatapults(void);
 static void* g_GAME_PrimaryContextVtableSlots[46] = {
 	(void*) NetworkSafeVtableNoop,
 	0,
@@ -518,8 +518,8 @@ static void* g_GAME_GenericScreenVtableSlots[14] = {
 	(void*) noop_vtable_callback_00407f20,
 	(void*) noop_vtable_callback_00407f20,
 	(void*) noop_vtable_callback_00407f20,
-	(void*) return_zero_vtable_callback_0041f870,
-	(void*) return_zero_vtable_callback_0041f870,
+	(void*) CheckAgainstCatapults,
+	(void*) CheckAgainstCatapults,
 	(void*) NetworkSafeVtableNoop,
 	(void*) noop_vtable_callback_00407f20,
 };
@@ -734,7 +734,7 @@ void* LEMBALL_FASTCALL DeleteMainMenuModeEventClientThunk(void* pObject, int, BY
 int __stdcall IsValidResourceFileThunk(void);
 void LEMBALL_FASTCALL NoopBaseModeThunk(void*);
 extern void noop_vtable_callback_00407f20(void);
-extern int return_zero_vtable_callback_0041f870(void);
+extern int CheckAgainstCatapults(void);
 int PASCAL ComputePowerOfTwoThunk(int nExponent);
 int PASCAL ReturnFalseBaseModeThunk(void*);
 extern int PASCAL return_false_vtable_callback_00407f30(void*);
@@ -2003,7 +2003,7 @@ void* ConstructLevelSelectionModeController(void* pModeObject, GameMainContext* 
 // LINKERILT: LEMBALL 0x00401df7
 void LEMBALL_FASTCALL NoopLevelScreenViewportRefreshThunk(void*)
 {
-	noop_render_entry_callback_00436690();
+	DoButtons();
 }
 // LINKERILT: LEMBALL 0x00401f82
 extern "C" bool LEMBALL_FASTCALL CanRetreatCurrentLevelProgressThunk(void* pProgress)
