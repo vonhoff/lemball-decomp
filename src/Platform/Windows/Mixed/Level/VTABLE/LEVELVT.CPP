@@ -307,9 +307,9 @@ int return_two_callback(void);
 void noop_vtable_callback_0040cf30(void);
 int PASCAL IsDoorChunkIdleOrClosedState(int nState);
 
-int __fastcall IsRequestingFire(void* pObject);
-void __fastcall StartFiring(void* pObject);
-void __fastcall EndFiring(void* pObject);
+int __fastcall CPlayerLemming_IsRequestingFire(void* pObject);
+void __fastcall CPlayerLemming_StartFiring(void* pObject);
+void __fastcall CPlayerLemming_EndFiring(void* pObject);
 void* __fastcall get_level_mode_chunk_loader_context(void* pLevelMode);
 void LEMBALL_FASTCALL MarkObjectField178AndSetTimer3C(void* pObject);
 void* __fastcall get_level_mode_mine_chunk_manager(void* pLevelMode);
@@ -384,8 +384,8 @@ int return_true_vtable_callback_0041c5b0(void);
 int return_two_vtable_callback_0041c630(void);
 int return_two_vtable_callback_0041dc40(void);
 int CheckAgainstCatapults(void);
-int __fastcall is_delayed_move_to_saved_target_armed(void* pObject);
-void __fastcall set_chunk_short_delay_timer(void* pObject);
+int __fastcall CEnemy_IsRequestingFire(void* pObject);
+void __fastcall CEnemy_StartFiring(void* pObject);
 int __fastcall get_object_field_0x124(void* pObject);
 void LEMBALL_FASTCALL CallBallChunkEntryVfuncC8(void* pEntry, void* pUnused, int nUnused);
 void LEMBALL_FASTCALL DispatchVtableSlot34WithValue2(void* pObject, void* pUnused);
@@ -955,23 +955,23 @@ int __fastcall get_level_mode_field_0x17c(void* pLevelMode)
 	return *(int*) ((char*) pLevelMode + 0x17c);
 }
 
-// MACINTOSH: CPlayerLemming::IsRequestingFire()
+// MACINTOSH: CPlayerLemming::CPlayerLemming_IsRequestingFire()
 // FUNCTION: LEMBALL 0x0040f2b0
-int __fastcall IsRequestingFire(void* pObject)
+int __fastcall CPlayerLemming_IsRequestingFire(void* pObject)
 {
 	return *(int*) ((char*) pObject + 0x184) == 1;
 }
 
-// MACINTOSH: CPlayerLemming::StartFiring()
+// MACINTOSH: CPlayerLemming::CPlayerLemming_StartFiring()
 // FUNCTION: LEMBALL 0x0040f410
-void __fastcall StartFiring(void* pObject)
+void __fastcall CPlayerLemming_StartFiring(void* pObject)
 {
 	*(int*) ((char*) pObject + 0xcc) = g_nLevelFrameClockTick + 10;
 }
 
-// MACINTOSH: CPlayerLemming::EndFiring()
+// MACINTOSH: CPlayerLemming::CPlayerLemming_EndFiring()
 // FUNCTION: LEMBALL 0x0040f420
-void __fastcall EndFiring(void* pObject)
+void __fastcall CPlayerLemming_EndFiring(void* pObject)
 {
 	*(int*) ((char*) pObject + 0x184) = 0;
 }
@@ -1771,16 +1771,16 @@ int CheckAgainstCatapults(void)
 	return 0;
 }
 
-// MACINTOSH: CEnemy::IsRequestingFire()
+// MACINTOSH: CEnemy::CEnemy_IsRequestingFire()
 // FUNCTION: LEMBALL 0x004203d0
-int __fastcall is_delayed_move_to_saved_target_armed(void* pObject)
+int __fastcall CEnemy_IsRequestingFire(void* pObject)
 {
 	return *(int*) ((char*) pObject + 0x168) == 1;
 }
 
-// MACINTOSH: CEnemy::StartFiring()
+// MACINTOSH: CEnemy::CEnemy_StartFiring()
 // FUNCTION: LEMBALL 0x004204d0
-void __fastcall set_chunk_short_delay_timer(void* pObject)
+void __fastcall CEnemy_StartFiring(void* pObject)
 {
 	*(int*) ((char*) pObject + 0xcc) = g_nLevelFrameClockTick + 10;
 }

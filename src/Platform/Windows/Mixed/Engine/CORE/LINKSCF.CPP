@@ -105,9 +105,9 @@ extern void noop_vtable_callback_0040aab0(void);
 extern int PASCAL IsManagedEntityState18(int nState);
 extern void LEMBALL_FASTCALL MarkObjectField178AndSetTimer3C(void* pObject);
 extern void* LEMBALL_FASTCALL get_level_mode_chunk_loader_context(void* pLevelMode);
-extern int LEMBALL_FASTCALL IsRequestingFire(void* pObject);
-extern void LEMBALL_FASTCALL StartFiring(void* pObject);
-extern void LEMBALL_FASTCALL EndFiring(void* pObject);
+extern int LEMBALL_FASTCALL CPlayerLemming_IsRequestingFire(void* pObject);
+extern void LEMBALL_FASTCALL CPlayerLemming_StartFiring(void* pObject);
+extern void LEMBALL_FASTCALL CPlayerLemming_EndFiring(void* pObject);
 extern void* LEMBALL_FASTCALL get_object_field_0x30(void* pObject);
 extern void* LEMBALL_FASTCALL get_level_mode_mine_chunk_manager(void* pLevelMode);
 extern void* LEMBALL_FASTCALL get_level_mode_lift_chunk_manager(void* pLevelMode);
@@ -326,12 +326,12 @@ static void* g_LINKSCF_PlasChunkObjectVtable[66] = {
 	(void*) noop_vtable_callback_0040a990,
 	(void*) noop_vtable_callback_0040a990,
 	(void*) noop_vtable_callback_0040a990,
-	(void*) IsRequestingFire,
+	(void*) CPlayerLemming_IsRequestingFire,
 	(void*) noop_vtable_callback_0040a990,
 	(void*) noop_vtable_callback_0040a990,
 	(void*) noop_vtable_callback_0040a990,
-	(void*) StartFiring,
-	(void*) EndFiring,
+	(void*) CPlayerLemming_StartFiring,
+	(void*) CPlayerLemming_EndFiring,
 	(void*) noop_vtable_callback_0040a990,
 	(void*) noop_vtable_callback_0040a990,
 	(void*) noop_vtable_callback_0040a990,
