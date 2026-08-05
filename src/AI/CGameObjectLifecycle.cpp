@@ -9,20 +9,20 @@ void CGameObject::Restart(void)
 	unsigned short* pPendingEntryCount;
 	int nObjectType;
 
-	*(int*) ((char*) this + 0x9c) = *(int*) ((char*) this + 0x40);
-	*(int*) ((char*) this + 0xa4) = *(int*) ((char*) this + 0x48);
+	m_WorldPosition9C.x = m_InitialPosition40.x;
+	m_WorldPosition9C.z = m_InitialPosition40.z;
 	pObjectBytes = (char*) this;
 	*(int*) (pObjectBytes + 0xe4) = 0;
-	*(int*) (pObjectBytes + 0xa0) = *(int*) (pObjectBytes + 0x44);
+	m_WorldPosition9C.y = m_InitialPosition40.y;
 	*(int*) (pObjectBytes + 0xe8) = 0;
 	*(int*) (pObjectBytes + 0xec) = 0;
 	Initialise();
-	*(int*) (pObjectBytes + 0xa4) = 0;
-	*(unsigned short*) (pObjectBytes + 0x120) = 0xffff;
-	*(int*) (pObjectBytes + 0x110) = 0xffff;
-	*(int*) (pObjectBytes + 0xa0) = 0;
-	*(int*) (pObjectBytes + 0x9c) = 0;
-	pPendingEntryCount = *(unsigned short**) (pObjectBytes + 0x70);
+	m_WorldPosition9C.z = 0;
+	m_nRestartValue120 = 0xffff;
+	((int*) m_abReservedD4)[0xf] = 0xffff;
+	m_WorldPosition9C.y = 0;
+	m_WorldPosition9C.x = 0;
+	pPendingEntryCount = (unsigned short*) m_pCommandQueue70;
 	if (pPendingEntryCount != 0) {
 		*pPendingEntryCount = 0;
 	}
