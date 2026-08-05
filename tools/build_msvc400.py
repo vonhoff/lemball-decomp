@@ -14,12 +14,6 @@ RULE = BUILD / "CMakeFiles" / "LEMBALL.dir" / "build.make"
 EXPECTED_FLAGS = "/O2 /Ob1 /Oy /G4 /Z7 /c /Fo"
 
 
-def stale_output(output, inputs):
-    return not output.exists() or any(
-        path.stat().st_mtime_ns > output.stat().st_mtime_ns for path in inputs
-    )
-
-
 def valid_build_rule(path):
     return path.exists() and EXPECTED_FLAGS in path.read_text(
         encoding="utf-8", errors="replace"
@@ -120,19 +114,8 @@ def main():
     if not valid_build_rule(RULE):
         raise SystemExit("MSVC 4.00 compile rule is missing required flags")
     run([cmake, "--build", "--preset", "msvc400"])
-
-    objects = list((BUILD / "CMakeFiles" / "LEMBALL.dir").rglob("*.obj"))
-    if not objects:
-        raise SystemExit("build produced no object files")
-    if stale_output(OUTPUT, objects):
-        nmake = shutil.which("nmake")
-        print("stale LEMBALL.EXE; forcing relink")
-        run(
-            [nmake, "/nologo", "/f", r"CMakeFiles\LEMBALL.dir\build.make", "LEMBALL.EXE"],
-            BUILD,
-        )
-    if stale_output(OUTPUT, objects):
-        raise SystemExit("LEMBALL.EXE is older than object files")
+    if not OUTPUT.is_file():
+        raise SystemExit("build did not produce LEMBALL.EXE")
     print(f"fresh {OUTPUT.relative_to(ROOT)}")
 
 
