@@ -1,4 +1,5 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "AI/CDoorManager.h"
 
 extern int g_GAME_ManagedEntityRegistryTable[1000];
 extern unsigned short g_GAME_ManagedEntityRegistryCount;
@@ -26,10 +27,6 @@ struct LevelModeTripletArrayView {
 	int m_anZB0[4];
 
 	void SetTripletEntry(int nX, int nY, int nZ, int nIndex);
-};
-
-struct CDoorManager {
-	unsigned short Id(int nIndex);
 };
 
 struct LevelModeChunkManagerView {

@@ -1,10 +1,8 @@
 #include "AI/CIceManager.h"
 #include "AI/CLiftManager.h"
+#include "AI/CDoorManager.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
-struct CDoorManager {
-	void Switch(int nAction, unsigned int nSlotId);
-};
 extern void LEMBALL_FASTCALL DispatchMoveChunkObjectActionBySlot(void* pManager,
 																 void* pUnusedEdx,
 																 int nAction,

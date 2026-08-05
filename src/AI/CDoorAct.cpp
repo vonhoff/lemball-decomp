@@ -1,5 +1,6 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
+#include "AI/CDoorManager.h"
 
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
 
@@ -47,20 +48,6 @@ void CDoor::DoActivate(void)
 		RequestManagedEntityStateId(0x20);
 	}
 }
-
-struct CDoorManager {
-private:
-	unsigned char m_abReserved00[0x34];
-	int m_nObjectCount34;
-	int m_nCapacity38;
-	CDoor* m_pObjects3C;
-
-public:
-	void Switch(int nAction, unsigned int nSlot);
-	void Restart(void);
-	int Open(void* pCoord, void* pGameObject);
-	void Initialise(int nCount);
-};
 
 // FUNCTION: LEMBALL 0x0040df90
 void CDoorManager::Restart(void)
