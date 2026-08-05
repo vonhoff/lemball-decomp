@@ -6,8 +6,8 @@ is confirmed so it is never re-triaged. Goal prompt drives *what*, this tracks *
 
 ## CURRENT
 
-- Progress 76.46% | Impl 91.21% (2917/3198) | Accuracy 83.83% | Exact lost vs baseline: `0x417b50`, `0x462990` (pre-existing network-refactor deleters, not a regression)
-- Head: `898da52` — tracker; this round: 3 VSINIT vtable-dispatch wins (AppendCString/AppendCharToStream)
+- Progress 76.47% | Impl 91.21% (2917/3198) | Accuracy 83.83% | Exact lost vs baseline: `0x417b50`, `0x462990` (pre-existing network-refactor deleters, not a regression)
+- Head: `dee079f` — AppendPointerToStreamVariant member+literals (71.7→100%)
 
 ## Genuine gaps (fixable, high-value)
 
@@ -28,3 +28,5 @@ Each is genuinely missing but infrastructure-bound — needs door ctor `0x401eba
 - Register-scheduling quirks (ebp-vs-esi, `lea` operand order, byte-vs-dword param reload, mul/div reg swap) — behaviorally identical, effective-100.
 - Convert flat `__ct__`/`__dt__`/placement/vtable fns to real C++ ctor/dtor breaks codegen (CArena::~CArena→0.0). Keep ABI-anchored.
 - `<OFFSET>` CRT-data (`_pctype`/`__mb_cur_max`) and vtable-store operand diffs — not normalizable via repo compat hook.
+- **Converting a free fn to a member changes EXTERNAL CALLERS' codegen** → regresses them (AppendUIntHex/AppendHexUInt→75%/63% but accuracy 83.83→83.79, reverted). Only safe if the fn has NO external callers (AppendPointerToStreamVariant→100% had none).
+- `VsInitStreamFormatTargetState` subobject-offset divergence (`m_dwFlags`/`m_nRadix` read via `VsInitFORMAT_TARGET` at wrong base) blocks UIntHex/HexUInt exact match — needs struct/base audit.
