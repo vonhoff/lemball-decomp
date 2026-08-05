@@ -273,6 +273,8 @@ struct GameLevelProgressState {
 
 	void Advance(void);
 	bool Retreat(void);
+	void IncSkill(int nDecrement);
+	int NoOfLevelsInSkill(int nSkill);
 	bool IsCurrentLevelAvailable(void);
 	bool CanRetreat(void);
 	GameLevelProgressState* Clear(void);
@@ -3135,6 +3137,29 @@ bool GameLevelProgressState::Retreat(void)
 	}
 	m_anSnapshotPackCaps[m_nCurrentPack] = m_nCurrentLevel;
 	return m_nCurrentLevel != 0;
+}
+// Macintosh: CGameStatus::IncSkill(unsigned char)
+// FUNCTION: LEMBALL 0x00408e60
+void GameLevelProgressState::IncSkill(int nDecrement)
+{
+	switch (m_nCurrentPack) {
+	case 0:
+		m_nCurrentPack = 1;
+		break;
+	case 1:
+		m_nCurrentPack = 2;
+		break;
+	case 2:
+		m_nCurrentPack = 3;
+		break;
+	case 3:
+		if (nDecrement != 0) {
+			m_nCurrentPack = 0;
+		}
+		break;
+	}
+	m_nCurrentLevel = 0;
+	m_anSnapshotPackCaps[m_nCurrentPack] = 0;
 }
 // Macintosh: CGameStatus::NextLevelAvailable()
 // FUNCTION: LEMBALL 0x00408fa0
