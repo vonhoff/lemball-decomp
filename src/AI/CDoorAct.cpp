@@ -25,7 +25,9 @@ struct ManagedEntityStateView {
 };
 
 struct CDoor : public ManagedEntityStateView {
-	unsigned char m_abReserved04[0xb4];
+	unsigned char m_abReserved04[0x5c];
+	void* m_pOwnerManager60;             // 0x60
+	unsigned char m_abReserved64[0x54];
 	int m_nStateB8;
 	unsigned char m_abReservedBC[0x10];
 	int m_nFrameTickCC;
@@ -102,7 +104,7 @@ void CDoorManager::Initialise(int nCount)
 		for (iObject = 0; iObject < m_nCapacity38; ++iObject) {
 			pObject = (CDoor*) ((char*) m_pObjects3C + iObject * 0x14c);
 			((CDoorNoArgVirtualProc) (*(void***) pObject)[0x104 / sizeof(void*)])(pObject);
-			*(int*) ((char*) pObject + 0x60) = (int) this;
+			pObject->m_pOwnerManager60 = this;
 		}
 	}
 }

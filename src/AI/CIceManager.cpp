@@ -82,7 +82,7 @@ void CIceManager::Initialise(int nCount)
 		}
 		for (i = 0; i < m_nCapacity30; ++i) {
 			((IceObjectProc) (*(void***) ((char*) m_pObjects38 + i * sizeof(CIce)))[65])((char*) m_pObjects38 + i * sizeof(CIce));
-			*(int*) ((char*) m_pObjects38 + i * sizeof(CIce) + 0x60) = (int) this;
+			m_pObjects38[i].m_pOwnerManager60 = this;
 		}
 	}
 }
