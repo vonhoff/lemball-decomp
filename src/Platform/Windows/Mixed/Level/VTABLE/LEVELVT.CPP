@@ -1348,23 +1348,27 @@ void CBulletManager::RemoveObject(void* pObject)
 }
 
 // FUNCTION: LEMBALL 0x004180e0
-int LEMBALL_FASTCALL EmitProjectilePoolRenderEntries(void* pPool, void* pUnused, void* pRenderEntry)
+int CBulletManager::EmitProjectileRenderEntries(void* pRenderEntry)
 {
 	void* pObject;
-	void* pOwner;
 	int cEntries;
 
-	(void) pUnused;
 	cEntries = 0;
-	pOwner = pPool;
-	pObject = ((CBulletManager*) pOwner)->GetFirstBullet();
+	pObject = GetFirstBullet();
 	while (pObject != NULL) {
 		((CBullet*) pObject)->EmitProjectileRenderEntry(pRenderEntry);
 		pRenderEntry = (char*) pRenderEntry + 0x4c;
 		cEntries++;
-		pObject = ((CBulletManager*) pOwner)->GetNextBullet();
+		pObject = GetNextBullet();
 	}
 	return cEntries;
+}
+
+// Vtable slot 0x494008 pins the __fastcall free form; forward to the real member.
+int LEMBALL_FASTCALL EmitProjectilePoolRenderEntries(void* pPool, void* pUnused, void* pRenderEntry)
+{
+	(void) pUnused;
+	return ((CBulletManager*) pPool)->EmitProjectileRenderEntries(pRenderEntry);
 }
 
 // FUNCTION: LEMBALL 0x00418120

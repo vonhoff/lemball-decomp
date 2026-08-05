@@ -25,6 +25,7 @@ struct CBulletManager {
 	void Process(void);
 	void* GetFreeProjectilePoolObject(void);
 	void ResetProjectilePool(void);
+	int EmitProjectileRenderEntries(void* pRenderEntry);
 };
 
 #endif
