@@ -1,13 +1,13 @@
 #define LEMBALL_DEFINE_TIMED_EFF_STREAM_SECONDARY_HANDLE_ABI
 
+#include "Control/CGame.h"
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
-#include "Visos/Generic/Memory.h"
-#include "Visos/Windows/VSINVIS.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
 #include "Platform/Windows/Mixed/Engine/NET/VSNET.H"
 #include "Platform/Windows/Mixed/Engine/NET/VSNETFWD.H"
-#include "Control/CGame.h"
+#include "Visos/Generic/Memory.h"
+#include "Visos/Windows/VSINVIS.H"
 
 extern void* g_GAME_EffStreamConstructionVtable[6];
 void* LEMBALL_FASTCALL DeleteSimpleEffTransportRecordSlotAuto(void*, void*, BYTE);
@@ -93,11 +93,11 @@ extern "C" int WINAPI WSAStartup(unsigned short nVersion, void* pData);
 extern "C" int WINAPI WSAGetLastError(void);
 extern "C" int WINAPI WSACleanup(void);
 extern "C" __declspec(dllimport) HANDLE WINAPI CreateThread(LPSECURITY_ATTRIBUTES pThreadAttributes,
-									  DWORD cbStack,
-									  DWORD(WINAPI* pfnStartAddress)(LPVOID),
-									  LPVOID pvThreadParam,
-									  DWORD dwCreationFlags,
-									  LPDWORD pdwThreadId);
+															DWORD cbStack,
+															DWORD(WINAPI* pfnStartAddress)(LPVOID),
+															LPVOID pvThreadParam,
+															DWORD dwCreationFlags,
+															LPDWORD pdwThreadId);
 extern "C" __declspec(dllimport) BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority);
 extern "C" __declspec(dllimport) void WINAPI ExitProcess(UINT uExitCode);
 
@@ -1143,9 +1143,9 @@ void GameNetworkLobbyVsnetRuntimeConnectView::ConfigureActiveEffTransportConnect
 // FUNCTION: LEMBALL 0x0045f360
 void LEMBALL_FASTCALL WriteEffTransportRequestStreamName(void* pObject)
 {
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	pStream->WriteEffStreamCString(*(char**) ((char*) pObject + 0x2c));
 }
 
@@ -1193,9 +1193,9 @@ void* ConstructEffTransportRequestConnectControlStream(void* pObject, char* pszS
 // FUNCTION: LEMBALL 0x0045f430
 void __fastcall LoadEffTransportRequestConnectStream(void* pObject)
 {
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	*(short*) ((char*) pObject + 0x30) = (short) pStream->ReadEffStreamU32BEValue();
 	pStream->ReadEffStreamRangePointer((void**) ((char*) pObject + 0x34), 0x200);
 	pStream->ReadEffStreamCString((char**) ((char*) pObject + 0x38));
@@ -1205,10 +1205,10 @@ void __fastcall LoadEffTransportRequestConnectStream(void* pObject)
 void __fastcall WriteEffTransportRequestPortFields(void* pObject)
 {
 	VsNetRequestConnectControlStream* pControlStream;
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
 	pControlStream = (VsNetRequestConnectControlStream*) pObject;
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	pStream->WriteEffStreamU32BE((unsigned int) pControlStream->m_nBasePort);
 	pStream->WriteEffStreamBytes(pControlStream->m_pPortBinding, 0x200);
 	pStream->WriteEffStreamCString(pControlStream->m_pszHostName);
@@ -1230,11 +1230,11 @@ void* ConstructEffTransportRequestNewPortControlStream(void* pObject, char* pszS
 void LEMBALL_FASTCALL LoadEffTransportRequestNewPortStream(void* pObject)
 {
 	VsNetRequestNewPortControlStream* pControlStream;
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
 	pControlStream = (VsNetRequestNewPortControlStream*) pObject;
 	LoadEffTransportRequestConnectStream(pObject);
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	pControlStream->m_pPeer = (VsNetEffTransportPeer*) pStream->ReadEffStreamU32BEValue();
 }
 
@@ -1242,10 +1242,10 @@ void LEMBALL_FASTCALL LoadEffTransportRequestNewPortStream(void* pObject)
 void LEMBALL_FASTCALL WriteEffTransportRequestNewPortStream(void* pObject)
 {
 	VsNetRequestNewPortControlStream* pControlStream;
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
 	pControlStream = (VsNetRequestNewPortControlStream*) pObject;
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	WriteEffTransportRequestPortFields(pObject);
 	pStream->WriteEffStreamU32BE((unsigned int) pControlStream->m_pPeer);
 }
@@ -1275,9 +1275,9 @@ void* ConstructEffTransportAuthoriseConnectControlStream(void* pObject, char* ps
 // FUNCTION: LEMBALL 0x0045f540
 void __fastcall LoadEffTransportAuthoriseConnectStream(void* pObject)
 {
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	*(unsigned short*) ((char*) pObject + 0x30) = pStream->ReadEffStreamU16BEValue();
 	*(unsigned int*) ((char*) pObject + 0x34) = pStream->ReadEffStreamU32BEValue();
 }
@@ -1286,10 +1286,10 @@ void __fastcall LoadEffTransportAuthoriseConnectStream(void* pObject)
 void LEMBALL_FASTCALL WriteEffTransportAuthoriseConnectStream(void* pObject)
 {
 	VsNetAuthoriseConnectControlStream* pControlStream;
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
 	pControlStream = (VsNetAuthoriseConnectControlStream*) pObject;
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	pStream->WriteEffStreamU16BE(pControlStream->m_nAssignedPort);
 	pStream->WriteEffStreamU32BE((unsigned int) pControlStream->m_pPeer);
 }
@@ -1319,9 +1319,9 @@ void* ConstructEffTransportGoAheadConnectControlStream(void* pObject, char* pszS
 // FUNCTION: LEMBALL 0x0045f5d0
 void __fastcall LoadEffTransportGoAheadConnectStream(void* pObject)
 {
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	*(unsigned short*) ((char*) pObject + 0x30) = pStream->ReadEffStreamU16BEValue();
 	*(unsigned int*) ((char*) pObject + 0x34) = pStream->ReadEffStreamU32BEValue();
 }
@@ -1330,10 +1330,10 @@ void __fastcall LoadEffTransportGoAheadConnectStream(void* pObject)
 void LEMBALL_FASTCALL WriteEffTransportGoAheadConnectStream(void* pObject)
 {
 	VsNetAuthoriseConnectControlStream* pControlStream;
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
 	pControlStream = (VsNetAuthoriseConnectControlStream*) pObject;
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	pStream->WriteEffStreamU16BE(pControlStream->m_nAssignedPort);
 	pStream->WriteEffStreamU32BE((unsigned int) pControlStream->m_pPeer);
 }
@@ -1362,13 +1362,13 @@ void* ConstructEffTransportFailedConnectControlStream(void* pObject, char* pszSt
 // FUNCTION: LEMBALL 0x0045f660
 void LEMBALL_FASTCALL LoadEffTransportFailedConnectStream(void* pObject)
 {
-	((VsNetEffStreamBase*) pObject)->ReadEffStreamCString((char**) ((char*) pObject + 0x30));
+	((CNetworkMessage*) pObject)->ReadEffStreamCString((char**) ((char*) pObject + 0x30));
 }
 
 // FUNCTION: LEMBALL 0x0045f670
 void LEMBALL_FASTCALL WriteEffTransportFailedConnectStream(void* pObject)
 {
-	((VsNetEffStreamBase*) pObject)->WriteEffStreamCString(*(char**) ((char*) pObject + 0x30));
+	((CNetworkMessage*) pObject)->WriteEffStreamCString(*(char**) ((char*) pObject + 0x30));
 }
 
 // FUNCTION: LEMBALL 0x0045fa40
@@ -1505,7 +1505,7 @@ int VsNetPeerPayloadSenderState::SendReliableEffTransportPayload(void* pStream)
 	cbPayload = pPayload->m_nWriteCursor1c - pPayload->m_pPayloadBuffer08;
 
 	pHeader->m_fReliable0e = 1;
-	((VsNetEffStreamBase*) this)->SaveEffStreamToMemoryRange((int) (unsigned long) pvPayload, 0);
+	((CNetworkMessage*) this)->SaveEffStreamToMemoryRange((int) (unsigned long) pvPayload, 0);
 	pRecord =
 		(VsNetSimpleEffTransportRecordSlot*) (unsigned long) ((VsNetSimpleEffTransportRecordSlotTable*)
 																  pSender->m_pRecordTable4c)
@@ -1592,7 +1592,7 @@ int VsNetPeerPayloadSenderState::SendFragmentedEffTransportPayload(void* pStream
 		}
 
 		if (pSender->m_nPendingFragmentIndex5c == 0) {
-			((VsNetEffStreamBase*) this)->SaveEffStreamToMemoryRange((int) (unsigned long) pbPayload, 0);
+			((CNetworkMessage*) this)->SaveEffStreamToMemoryRange((int) (unsigned long) pbPayload, 0);
 			nSendResult = ((VsNetPeerPayloadSender*) pSender)->SendPayload(pbPayload, (int) cbPacket);
 		}
 		else {
@@ -1600,7 +1600,7 @@ int VsNetPeerPayloadSenderState::SendFragmentedEffTransportPayload(void* pStream
 			pSender->m_aFragmentPrefixWords60[1] = *(unsigned int*) (unsigned long) (pbPayload + 4);
 			pSender->m_aFragmentPrefixWords60[2] = *(unsigned int*) (unsigned long) (pbPayload + 8);
 			pSender->m_aFragmentPrefixWords60[3] = *(unsigned int*) (unsigned long) (pbPayload + 12);
-			((VsNetEffStreamBase*) this)->SaveEffStreamToMemoryRange((int) (unsigned long) pbPayload, 0);
+			((CNetworkMessage*) this)->SaveEffStreamToMemoryRange((int) (unsigned long) pbPayload, 0);
 			nSendResult = ((VsNetPeerPayloadSender*) pSender)->SendPayload(pbPayload, (int) cbPacket);
 			*(unsigned int*) (unsigned long) (pbPayload + 0) = pSender->m_aFragmentPrefixWords60[0];
 			*(unsigned int*) (unsigned long) (pbPayload + 4) = pSender->m_aFragmentPrefixWords60[1];
@@ -1667,7 +1667,7 @@ int VsNetPeerPayloadSender::SendEffStreamPayloadWithTransportHeader(int nStream)
 			++pSender->m_wUnreliableSequence32;
 			pHeader->m_wSequence0a = pSender->m_wUnreliableSequence32;
 			pHeader->m_fReliable0e = 0;
-			((VsNetEffStreamBase*) this)->SaveEffStreamToMemoryRange(pPayload->m_pPayloadBuffer08, 0);
+			((CNetworkMessage*) this)->SaveEffStreamToMemoryRange(pPayload->m_pPayloadBuffer08, 0);
 			cbPayload = ((VsNetPeerPayloadSender*) pSender)
 							->SendPayload((void*) (unsigned long) pPayload->m_pPayloadBuffer08, pHeader->m_cbPayload04);
 		}
@@ -1920,7 +1920,7 @@ void VsNetRuntimeChannelStack::DualStreamRet8(int nDispatchType, void* pEvent)
 // FUNCTION: LEMBALL 0x004608f0
 void WINAPI LoadEffStreamFromGlobalRange(void* pStream)
 {
-	((VsNetEffStreamBase*) pStream)
+	((CNetworkMessage*) pStream)
 		->SaveEffStreamToMemoryRange((int) (unsigned long) g_pszEffTransportBroadcastStatusPayload,
 									 g_cbEffTransportBroadcastStatusPayload + 0x11);
 }

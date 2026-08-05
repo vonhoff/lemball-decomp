@@ -54,8 +54,8 @@ struct VsNetFileBackedEffStream : VsNetEffStreamCommon {
 	virtual void ReverseEffStreamPayload(void);
 	virtual void WriteEffStreamTaggedHeader(void);
 
-	void WriteEffStreamU16BE(unsigned short nValue) { ((VsNetEffStreamBase*) this)->WriteEffStreamU16BE(nValue); }
-	void ReadEffStreamU16BE(unsigned char* pbTarget) { ((VsNetEffStreamBase*) this)->ReadEffStreamU16BE(pbTarget); }
+	void WriteEffStreamU16BE(unsigned short nValue) { ((CNetworkMessage*) this)->WriteEffStreamU16BE(nValue); }
+	void ReadEffStreamU16BE(unsigned char* pbTarget) { ((CNetworkMessage*) this)->ReadEffStreamU16BE(pbTarget); }
 
 	unsigned short m_nWord2c;
 	unsigned short m_nWord2e;

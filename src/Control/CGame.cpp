@@ -3770,7 +3770,7 @@ void LEMBALL_FASTCALL DestroyLevelGameMode(void* pModeObject)
 		*((int*) g_pLevelProgressState + 1) = pMode[0x3c];
 	}
 	FreeVSMemBlock((void*) (unsigned long) pMode[0x48]);
-	((VsNetEffStreamBase*) (pMode + 7))->DestroyEffStreamBase();
+	((CNetworkMessage*) (pMode + 7))->DestroyEffStreamBase();
 	*(void***) (pMode + 4) = g_GAME_GenericModeVtableSlots;
 	*(void***) pMode = g_GAME_RenderQueueNodeVtableSlots;
 }

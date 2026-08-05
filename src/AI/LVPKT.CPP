@@ -126,8 +126,8 @@ ManagedEntityPacketStreamView* g_pManagedEntityStateResponseStream = 0;
 // FUNCTION: LEMBALL 0x004168a0
 void ManagedEntityPacketBase::WriteEffStreamTaggedHeader(void)
 {
-	((VsNetEffStreamBase*) this)->WriteEffStreamU16BE(m_nReserved04);
-	((VsNetEffStreamBase*) this)
+	((CNetworkMessage*) this)->WriteEffStreamU16BE(m_nReserved04);
+	((CNetworkMessage*) this)
 		->WriteEffStreamU16BE(GetManagedEntitySlotIdThunk((int) (unsigned long) m_pManagedEntity2c));
 }
 
@@ -140,12 +140,12 @@ void ManagedEntityPacketBase::ReverseEffStreamPayload(void)
 void ManagedEntityPacket23::WriteEffStreamTaggedHeader(void)
 {
 	ManagedEntityPacketBase::WriteEffStreamTaggedHeader();
-	((VsNetEffStreamBase*) this)->WriteEffStreamU32BE(g_nLevelFrameClockTimeMs);
-	((VsNetEffStreamBase*) this)
+	((CNetworkMessage*) this)->WriteEffStreamU32BE(g_nLevelFrameClockTimeMs);
+	((CNetworkMessage*) this)
 		->WriteEffStreamU32BE(((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nRequestedStateIdb8);
-	((VsNetEffStreamBase*) this)
+	((CNetworkMessage*) this)
 		->WriteEffStreamU32BE(((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nStateFrameTime94);
-	((VsNetEffStreamBase*) this)
+	((CNetworkMessage*) this)
 		->WriteEffStreamU16BE(((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nStateVariantbc);
 }
 
@@ -154,7 +154,7 @@ void ManagedEntityPacket23::ReverseEffStreamPayload(void)
 {
 	ManagedEntityStateRequestTargetView* pTarget;
 
-	UpdateNetworkFrameClockFromNetworkTime(((VsNetEffStreamBase*) this)->ReadEffStreamU32BEValue());
+	UpdateNetworkFrameClockFromNetworkTime(((CNetworkMessage*) this)->ReadEffStreamU32BEValue());
 	if (((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_fNetworkStateUpdateActive124 == 0) {
 		((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_fNetworkStateUpdateActive124 = 1;
 		pTarget = (ManagedEntityStateRequestTargetView*) m_pManagedEntity2c;
@@ -162,11 +162,11 @@ void ManagedEntityPacket23::ReverseEffStreamPayload(void)
 		m_pManagedEntity2c = pTarget;
 	}
 	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nRequestedStateIdb8 =
-		((VsNetEffStreamBase*) this)->ReadEffStreamU32BEValue();
+		((CNetworkMessage*) this)->ReadEffStreamU32BEValue();
 	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nStateFrameTime94 =
-		((VsNetEffStreamBase*) this)->ReadEffStreamU32BEValue();
+		((CNetworkMessage*) this)->ReadEffStreamU32BEValue();
 	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nStateVariantbc =
-		((VsNetEffStreamBase*) this)->ReadEffStreamU16BEValue();
+		((CNetworkMessage*) this)->ReadEffStreamU16BEValue();
 	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_fNetworkStateUpdateActive124 = 0;
 	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_fStateRequestAccepted130 = 0;
 	if (((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)
@@ -185,7 +185,7 @@ void ManagedEntityPacket23::ReverseEffStreamPayload(void)
 void ManagedEntityPacket27::WriteEffStreamTaggedHeader(void)
 {
 	ManagedEntityPacketBase::WriteEffStreamTaggedHeader();
-	((VsNetEffStreamBase*) this)
+	((CNetworkMessage*) this)
 		->WriteEffStreamU32BE(((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nSerializedState12c);
 }
 
@@ -194,7 +194,7 @@ void ManagedEntityPacket27::ReverseEffStreamPayload(void)
 {
 	int fAccepted;
 
-	((VsNetEffStreamBase*) this)->ReadEffStreamU32BEValue();
+	((CNetworkMessage*) this)->ReadEffStreamU32BEValue();
 	if (((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_fStateTransitionActive114 == 0 &&
 		((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_fStateUpdatePending8c == 0 &&
 		((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)
@@ -217,7 +217,7 @@ void ManagedEntityPacket27::ReverseEffStreamPayload(void)
 void ManagedEntityPacket28::WriteEffStreamTaggedHeader(void)
 {
 	ManagedEntityPacketBase::WriteEffStreamTaggedHeader();
-	((VsNetEffStreamBase*) this)
+	((CNetworkMessage*) this)
 		->WriteEffStreamU32BE(((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_fStateRequestAccepted130);
 }
 
@@ -225,7 +225,7 @@ void ManagedEntityPacket28::WriteEffStreamTaggedHeader(void)
 void ManagedEntityPacket28::ReverseEffStreamPayload(void)
 {
 	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_fStateRequestAccepted130 =
-		((VsNetEffStreamBase*) this)->ReadEffStreamU32BEValue();
+		((CNetworkMessage*) this)->ReadEffStreamU32BEValue();
 	if (((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_fStateRequestAccepted130 != 0) {
 		((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nRequestedStateIdb8 =
 			((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nSerializedState12c;
@@ -245,13 +245,13 @@ void ManagedEntityPacket28::ReverseEffStreamPayload(void)
 void ManagedEntityPacket24::WriteEffStreamTaggedHeader(void)
 {
 	ManagedEntityPacketBase::WriteEffStreamTaggedHeader();
-	((VsNetEffStreamBase*) this)
+	((CNetworkMessage*) this)
 		->WriteEffStreamU32BE(((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nPositionX9c >> 12);
-	((VsNetEffStreamBase*) this)
+	((CNetworkMessage*) this)
 		->WriteEffStreamU32BE(((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nPositionYa0 >> 12);
-	((VsNetEffStreamBase*) this)
+	((CNetworkMessage*) this)
 		->WriteEffStreamU32BE(((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nPositionZa4 >> 12);
-	((VsNetEffStreamBase*) this)
+	((CNetworkMessage*) this)
 		->WriteEffStreamU32BE(((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nPositionSequence38);
 }
 
@@ -260,27 +260,27 @@ void ManagedEntityPacket24::ReverseEffStreamPayload(void)
 {
 	ManagedEntityPacketPosition position;
 
-	position.m_nX = ((VsNetEffStreamBase*) this)->ReadEffStreamU32BEValue() << 12;
+	position.m_nX = ((CNetworkMessage*) this)->ReadEffStreamU32BEValue() << 12;
 	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nPositionX9c = position.m_nX;
-	position.m_nY = ((VsNetEffStreamBase*) this)->ReadEffStreamU32BEValue() << 12;
+	position.m_nY = ((CNetworkMessage*) this)->ReadEffStreamU32BEValue() << 12;
 	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nPositionYa0 = position.m_nY;
-	position.m_nZ = ((VsNetEffStreamBase*) this)->ReadEffStreamU32BEValue() << 12;
+	position.m_nZ = ((CNetworkMessage*) this)->ReadEffStreamU32BEValue() << 12;
 	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nPositionZa4 = position.m_nZ;
 	((ManagedEntityStateRequestTargetView*) m_pManagedEntity2c)->m_nPositionSequence38 =
-		((VsNetEffStreamBase*) this)->ReadEffStreamU32BEValue();
+		((CNetworkMessage*) this)->ReadEffStreamU32BEValue();
 }
 
 // FUNCTION: LEMBALL 0x00416ca0
 void ManagedEntityPacket25::WriteEffStreamTaggedHeader(void)
 {
 	ManagedEntityPacketBase::WriteEffStreamTaggedHeader();
-	((VsNetEffStreamBase*) this)
+	((CNetworkMessage*) this)
 		->WriteEffStreamU32BE(((ManagedEntityPacketScoreSourceView*) m_pManagedEntity2c)->m_nScore64);
 }
 
 // FUNCTION: LEMBALL 0x00416cc0
 void ManagedEntityPacket25::ReverseEffStreamPayload(void)
 {
-	((VsNetEffStreamBase*) this)->ReadEffStreamU32BEValue();
+	((CNetworkMessage*) this)->ReadEffStreamU32BEValue();
 	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(0x9c4);
 }

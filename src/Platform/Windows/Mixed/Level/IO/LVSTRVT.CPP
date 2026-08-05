@@ -18,7 +18,7 @@ void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStreamThunk(void* pObject)
 void* LEMBALL_FASTCALL DeleteNetworkLevelChunkDeltaStreamThunk(void* pObject, int nUnused, unsigned char fDelete)
 {
 	(void) nUnused;
-	((VsNetEffStreamBase*) pObject)->DestroyEffStreamBase();
+	((CNetworkMessage*) pObject)->DestroyEffStreamBase();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}
@@ -28,12 +28,12 @@ void* LEMBALL_FASTCALL DeleteNetworkLevelChunkDeltaStreamThunk(void* pObject, in
 // LINKERILT: LEMBALL 0x00401ae6
 void LEMBALL_FASTCALL WriteNetworkLevelChunkDeltaStreamThunk(void* pObject)
 {
-	VsNetEffStreamBase* pStream = (VsNetEffStreamBase*) pObject;
+	CNetworkMessage* pStream = (CNetworkMessage*) pObject;
 	char* pOwner = *(char**) ((char*) pObject + 0x2c);
 
 	pStream->WriteEffStreamU16BE(0x2d);
 	pStream->WriteEffStreamU32BE((unsigned int) g_nLevelFrameClockTimeMs);
-	((VsNetEffStreamBase*) (pOwner + 0x1c))->SaveEffStreamToMemoryRange(*(int*) ((char*) pObject + 0x1c), 0);
+	((CNetworkMessage*) (pOwner + 0x1c))->SaveEffStreamToMemoryRange(*(int*) ((char*) pObject + 0x1c), 0);
 	*(int*) ((char*) pObject + 0x1c) += *(int*) (pOwner + 0x38) - *(int*) (pOwner + 0x24);
 	pStream->WriteEffStreamU16BE(0x2f);
 }

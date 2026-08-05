@@ -1380,7 +1380,7 @@ void* LEMBALL_FASTCALL ConstructLevelGameStateStreamThunk(void* pObject)
 // FUNCTION: LEMBALL 0x00410bb0
 void LEMBALL_FASTCALL WriteLevelGameStateStreamPayload(void* pObject)
 {
-	VsNetEffStreamBase* pStream = (VsNetEffStreamBase*) pObject;
+	CNetworkMessage* pStream = (CNetworkMessage*) pObject;
 	pStream->WriteEffStreamU32BE(*(unsigned int*) ((char*) pObject + 0x2c));
 	pStream->WriteEffStreamU32BE(*(unsigned int*) ((char*) pObject + 0x30));
 	pStream->WriteEffStreamU32BE(*(unsigned int*) ((char*) pObject + 0x34));
@@ -1389,10 +1389,10 @@ void LEMBALL_FASTCALL WriteLevelGameStateStreamPayload(void* pObject)
 // FUNCTION: LEMBALL 0x00410be0
 void LEMBALL_FASTCALL LoadLevelGameStateStreamPayload(void* pObject)
 {
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 	unsigned int nValue;
 
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	nValue = pStream->ReadEffStreamU32BEValue();
 	*(unsigned int*) ((char*) pObject + 0x2c) = nValue;
 	nValue = pStream->ReadEffStreamU32BEValue();

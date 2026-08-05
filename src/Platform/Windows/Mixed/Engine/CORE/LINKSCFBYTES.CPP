@@ -30,7 +30,7 @@ struct EffStreamU16FieldView {
 // FUNCTION: LEMBALL 0x00417d30
 void EffStreamU16FieldView::ReadValue(void)
 {
-	m_nValue30 = ((VsNetEffStreamBase*) this)->ReadEffStreamU16BEValue();
+	m_nValue30 = ((CNetworkMessage*) this)->ReadEffStreamU16BEValue();
 }
 
 struct LevelModeValuesView {

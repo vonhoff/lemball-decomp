@@ -7,10 +7,10 @@ extern void UpdateNetworkFrameClockFromNetworkTimeThunk(unsigned int nTimeMs);
 // FUNCTION: LEMBALL 0x00453070
 void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void* pObject)
 {
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 	unsigned int nTag;
 
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	nTag = pStream->ReadEffStreamU16BEValue();
 	while (nTag != 0x2f) {
 		switch (nTag) {

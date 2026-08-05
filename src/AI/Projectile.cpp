@@ -67,7 +67,7 @@ void* LEMBALL_FASTCALL DeleteProjectileObject(void* pObject, void* pUnused, unsi
 {
 	char* pAllocation;
 	char* pCursor;
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
 	(void) pUnused;
 	if ((fDelete & 2) != 0) {
@@ -82,8 +82,8 @@ void* LEMBALL_FASTCALL DeleteProjectileObject(void* pObject, void* pUnused, unsi
 		return pObject;
 	}
 
-	pStream = pObject != NULL ? (VsNetEffStreamBase*) ((char*) pObject + 0x138) : NULL;
-	pStream->VsNetEffStreamBase::~VsNetEffStreamBase();
+	pStream = pObject != NULL ? (CNetworkMessage*) ((char*) pObject + 0x138) : NULL;
+	pStream->CNetworkMessage::~CNetworkMessage();
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
@@ -94,9 +94,9 @@ void* LEMBALL_FASTCALL DeleteProjectileObject(void* pObject, void* pUnused, unsi
 // FUNCTION: LEMBALL 0x004183d0
 void LEMBALL_FASTCALL DestroyProjectileObject(void* pObject)
 {
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
-	pStream = pObject != NULL ? (VsNetEffStreamBase*) ((char*) pObject + 0x138) : NULL;
-	pStream->VsNetEffStreamBase::~VsNetEffStreamBase();
+	pStream = pObject != NULL ? (CNetworkMessage*) ((char*) pObject + 0x138) : NULL;
+	pStream->CNetworkMessage::~CNetworkMessage();
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
 }

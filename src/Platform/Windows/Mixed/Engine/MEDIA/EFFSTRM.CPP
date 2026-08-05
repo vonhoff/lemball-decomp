@@ -457,25 +457,25 @@ GameEffStreamPayloadSize8* GameEffStreamPayloadSize8::ConstructPayloadSize8(void
 // FUNCTION: LEMBALL 0x004453e0
 void GameEffStreamPayloadSize8::WritePayloadSize8(void)
 {
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
-	pStream = (VsNetEffStreamBase*) this;
+	pStream = (CNetworkMessage*) this;
 	pStream->WriteEffStreamU32BE(m_nU32Payload);
 	pStream->WriteEffStreamU32BE(m_nSecondaryU32Payload);
 }
 // FUNCTION: LEMBALL 0x00445400
 void GameEffStreamPayloadSize8::ReadPayloadSize8(void)
 {
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
-	pStream = (VsNetEffStreamBase*) this;
+	pStream = (CNetworkMessage*) this;
 	m_nU32Payload = pStream->ReadEffStreamU32BEValue();
 	m_nSecondaryU32Payload = pStream->ReadEffStreamU32BEValue();
 }
 // FUNCTION: LEMBALL 0x00446f20
 GameEffStreamPayloadSize8* GameEffStreamPayloadSize8::DeletePayloadSize8(unsigned char fDelete)
 {
-	((VsNetEffStreamBase*) this)->VsNetEffStreamBase::~VsNetEffStreamBase();
+	((CNetworkMessage*) this)->CNetworkMessage::~CNetworkMessage();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(this);
 	}
@@ -514,13 +514,13 @@ ConstructNetworkLobbyPeerEntryStream(GameNetworkLobbyPeerEntryStream* pStream)
 // FUNCTION: LEMBALL 0x00452420
 void LEMBALL_FASTCALL WriteNetworkLobbyPeerEntryPayload(void* pObject)
 {
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 	CString HostName;
 	CString LowercaseHostName;
 	const char* pszHostName;
 	char szHostName[21];
 
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	pStream->WriteEffStreamCString(g_pszPendingNetworkLobbyStatusText);
 	pszHostName = g_pszFileBasedNetworkLocalHostName;
 	strncpy(szHostName, pszHostName, 20);
@@ -535,10 +535,10 @@ void LEMBALL_FASTCALL WriteNetworkLobbyPeerEntryPayload(void* pObject)
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryPayload(void* pObject)
 {
 	GameNetworkLobbyPeerEntryStream* pEntry;
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
 	pEntry = (GameNetworkLobbyPeerEntryStream*) pObject;
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	pStream->ReadEffStreamCStringIntoBuffer(pEntry->m_szPlayerName);
 	pStream->ReadEffStreamCStringIntoBuffer(pEntry->m_szHostName);
 	pEntry->m_nPeerEntryState = 1;
@@ -558,17 +558,17 @@ GameEffStream* GameEffStream::ConstructNetworkLobbyU32PayloadStream(int nEventCo
 // FUNCTION: LEMBALL 0x004524f0
 void LEMBALL_FASTCALL WriteNetworkLobbyU32PayloadStream(void* pObject)
 {
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	pStream->WriteEffStreamU32BE(*(unsigned int*) ((char*) pObject + 0x2c));
 }
 // FUNCTION: LEMBALL 0x00452500
 void LEMBALL_FASTCALL ReadNetworkLobbyU32PayloadStream(void* pObject)
 {
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	*(unsigned int*) ((char*) pObject + 0x2c) = pStream->ReadEffStreamU32BEValue();
 }
 // FUNCTION: LEMBALL 0x00452510
@@ -830,24 +830,24 @@ void LEMBALL_FASTCALL ServiceNetworkLobbySelectedPeerUpdates(void* pVsnetRuntime
 // FUNCTION: LEMBALL 0x00452e40
 void LEMBALL_FASTCALL WriteEffStreamU32Field2C(void* pObject)
 {
-	VsNetEffStreamBase* pStream = (VsNetEffStreamBase*) pObject;
+	CNetworkMessage* pStream = (CNetworkMessage*) pObject;
 	pStream->WriteEffStreamU32BE(*(unsigned int*) ((char*) pObject + 0x2c));
 }
 // FUNCTION: LEMBALL 0x00452e50
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void* pObject)
 {
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	*(unsigned int*) ((char*) pObject + 0x2c) = pStream->ReadEffStreamU32BEValue();
 }
 // FUNCTION: LEMBALL 0x00452e60
 void* LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void* pObject, void* pUnused, BYTE fDelete)
 {
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
 	(void) pUnused;
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	pStream->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
@@ -857,10 +857,10 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void* pObject,
 // FUNCTION: LEMBALL 0x00452e90
 void* LEMBALL_FASTCALL DeleteNetworkLobbyU32PayloadStream(void* pObject, void* pUnused, BYTE fDelete)
 {
-	VsNetEffStreamBase* pStream;
+	CNetworkMessage* pStream;
 
 	(void) pUnused;
-	pStream = (VsNetEffStreamBase*) pObject;
+	pStream = (CNetworkMessage*) pObject;
 	pStream->VsNetEffStreamCommon::~VsNetEffStreamCommon();
 	if ((fDelete & 1) != 0) {
 		FreeVSMemBlock(pObject);
@@ -891,13 +891,13 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbyPeerEntryStream(void* pObject, void*, i
 		pEntry = (char*) pObject + cEntries * 0x50;
 		while (0 < cEntries) {
 			pEntry -= 0x50;
-			((VsNetEffStreamBase*) pEntry)->DestroyEffStreamBase();
+			((CNetworkMessage*) pEntry)->DestroyEffStreamBase();
 			--cEntries;
 		}
 		FreeVSMemBlock(pAllocation);
 	}
 	else {
-		((VsNetEffStreamBase*) pObject)->DestroyEffStreamBase();
+		((CNetworkMessage*) pObject)->DestroyEffStreamBase();
 		if ((fDelete & 1) != 0) {
 			FreeVSMemBlock(pObject);
 		}

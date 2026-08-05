@@ -12,7 +12,7 @@ struct VsNetSimpleEffTransportRecordSlotTable {
 	int GetNextEffTransportRecordClaimFlag(unsigned short nSequence);
 };
 
-struct VsNetEffStreamBase {
+struct CNetworkMessage {
 	void* m_pVtable00;
 	int m_nReserved04;
 	int m_pPayloadBuffer08;
@@ -30,11 +30,11 @@ struct VsNetEffStreamBase {
 };
 
 struct LevelChunkStreamWriteView : public GameEffStream {
-	void AppendLevelChunkStreamPayload(VsNetEffStreamBase* pPayload);
+	void AppendLevelChunkStreamPayload(CNetworkMessage* pPayload);
 	void FlushLevelChunkStreamWrite(void);
 };
 
-struct ManagedEntityPacketStreamView : public VsNetEffStreamBase {
+struct ManagedEntityPacketStreamView : public CNetworkMessage {
 	void* m_pManagedEntity2c;
 
 	void BindManagedEntityPacketTarget(void* pEntity);
@@ -61,7 +61,7 @@ ManagedEntityPacketStreamView* g_pManagedEntityPacketBindStream = 0;
 ManagedEntityPacketStreamView* g_pManagedEntityStateRequestStream = 0;
 
 // FUNCTION: LEMBALL 0x0040ad30
-void LevelChunkStreamWriteView::AppendLevelChunkStreamPayload(VsNetEffStreamBase* pPayload)
+void LevelChunkStreamWriteView::AppendLevelChunkStreamPayload(CNetworkMessage* pPayload)
 {
 	typedef void(LEMBALL_FASTCALL * ServiceRuntimeProc)(void*);
 	GameEffStream* pSource = (GameEffStream*) pPayload;
@@ -89,7 +89,7 @@ void LevelChunkStreamWriteView::AppendLevelChunkStreamPayload(VsNetEffStreamBase
 		}
 		if ((unsigned int) ((unsigned char*) pTarget->m_pvWriteCursor - (unsigned char*) pTarget->m_pvOwnedBuffer +
 							pSource->m_cbSerializedLength + 2) <= (unsigned int) pTarget->m_cbSerializedLength) {
-			((VsNetEffStreamBase*) pSource)->SaveEffStreamToMemoryRange(pTarget->m_pvWriteCursor, 0);
+			((CNetworkMessage*) pSource)->SaveEffStreamToMemoryRange(pTarget->m_pvWriteCursor, 0);
 			pTarget->m_pvWriteCursor += pSource->m_pvWriteCursor - pSource->m_pvOwnedBuffer;
 			return;
 		}
@@ -108,7 +108,7 @@ void LevelChunkStreamWriteView::FlushLevelChunkStreamWrite(void)
 	if (pTarget->m_cWriteSessions <= 0 || pTarget->m_fWritePending != 0 || g_nSelectedNetworkLobbyPeerId == 0) {
 		return;
 	}
-	((VsNetEffStreamBase*) pTarget)->WriteEffStreamU16BE(0x2f);
+	((CNetworkMessage*) pTarget)->WriteEffStreamU16BE(0x2f);
 	pRecordOwner = (char*) (unsigned long) g_nSelectedNetworkLobbyPeerId +
 				   *(int*) (*(int*) ((char*) (unsigned long) g_nSelectedNetworkLobbyPeerId + 4) + 8) + 4;
 	if (*(int*) (pRecordOwner + 0x5c) != -1 ||

@@ -320,9 +320,9 @@ void LEMBALL_FASTCALL DispatchType18ChunkStreamCommands(LevelType18ChunkStream* 
 	unsigned short nCommand;
 	unsigned short nSlotId;
 
-	nCommand = ((VsNetEffStreamBase*) pStream)->ReadEffStreamU16BEValue();
+	nCommand = ((CNetworkMessage*) pStream)->ReadEffStreamU16BEValue();
 	while (nCommand != 0x2f) {
-		nSlotId = ((VsNetEffStreamBase*) pStream)->ReadEffStreamU16BEValue();
+		nSlotId = ((CNetworkMessage*) pStream)->ReadEffStreamU16BEValue();
 		pObject = 0;
 		i = 0;
 		if (0 < g_GAME_ManagedEntityRegistryCount) {
@@ -340,7 +340,7 @@ void LEMBALL_FASTCALL DispatchType18ChunkStreamCommands(LevelType18ChunkStream* 
 			((LevelEffChunkStreamVirtualInterface*) pStream)
 				->HandleUnhandledChunkStreamCommand(nCommand, pObject, pStream);
 		}
-		nCommand = ((VsNetEffStreamBase*) pStream)->ReadEffStreamU16BEValue();
+		nCommand = ((CNetworkMessage*) pStream)->ReadEffStreamU16BEValue();
 	}
 }
 
@@ -402,7 +402,7 @@ void LEMBALL_FASTCALL DestroyType18ChunkStream(LevelType18ChunkStream* pStream)
 		++ppObject;
 		--i;
 	} while (i != 0);
-	((VsNetEffStreamBase*) pStream)->DestroyEffStreamBase();
+	((CNetworkMessage*) pStream)->DestroyEffStreamBase();
 }
 
 // FUNCTION: LEMBALL 0x0040c890

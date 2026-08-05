@@ -1068,7 +1068,7 @@ struct VsNetEffTransportPacketProcessor {
 };
 
 // FUNCTION: LEMBALL 0x0045f790
-void VsNetEffStreamBase::WriteEffStreamTaggedHeader(void)
+void CNetworkMessage::WriteEffStreamTaggedHeader(void)
 {
 	WriteEffStreamU32BE(*(unsigned int*) m_pTagBuffer2c);
 	WriteEffStreamU32BE(*(unsigned int*) ((char*) m_pTagBuffer2c + 4));
@@ -1078,7 +1078,7 @@ void VsNetEffStreamBase::WriteEffStreamTaggedHeader(void)
 	WriteEffStreamU8(*((unsigned char*) m_pTagBuffer2c + 0xe));
 }
 // FUNCTION: LEMBALL 0x0045f7f0
-void VsNetEffStreamBase::ReverseEffStreamPayload(void)
+void CNetworkMessage::ReverseEffStreamPayload(void)
 {
 	SwapEffStreamU32BEAndAdvance();
 	SwapEffStreamU32BEAndAdvance();

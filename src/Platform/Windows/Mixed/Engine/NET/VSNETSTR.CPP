@@ -193,7 +193,7 @@ VsNetEffStreamCommon::~VsNetEffStreamCommon()
 }
 
 // FUNCTION: LEMBALL 0x0045ef10
-void VsNetEffStreamBase::WriteEffStreamU32BE(unsigned int nValue)
+void CNetworkMessage::WriteEffStreamU32BE(unsigned int nValue)
 {
 	const unsigned char* pValue;
 
@@ -206,7 +206,7 @@ void VsNetEffStreamBase::WriteEffStreamU32BE(unsigned int nValue)
 }
 
 // FUNCTION: LEMBALL 0x0045ef40
-void VsNetEffStreamBase::WriteEffStreamU16BE(unsigned short nValue)
+void CNetworkMessage::WriteEffStreamU16BE(unsigned short nValue)
 {
 	const unsigned char* pValue;
 
@@ -217,28 +217,28 @@ void VsNetEffStreamBase::WriteEffStreamU16BE(unsigned short nValue)
 }
 
 // FUNCTION: LEMBALL 0x0045ef60
-void VsNetEffStreamBase::WriteEffStreamU8(unsigned char nValue)
+void CNetworkMessage::WriteEffStreamU8(unsigned char nValue)
 {
 	*m_nReserved1c = nValue;
 	++m_nReserved1c;
 }
 
 // FUNCTION: LEMBALL 0x0045ef70
-void VsNetEffStreamBase::WriteEffStreamCString(const char* pszSource)
+void CNetworkMessage::WriteEffStreamCString(const char* pszSource)
 {
 	strcpy((char*) m_nReserved1c, pszSource);
 	m_nReserved1c += (unsigned int) strlen(pszSource) + 1;
 }
 
 // FUNCTION: LEMBALL 0x0045efc0
-void VsNetEffStreamBase::WriteEffStreamBytes(const void* pvSource, unsigned int cbWrite)
+void CNetworkMessage::WriteEffStreamBytes(const void* pvSource, unsigned int cbWrite)
 {
 	memcpy((void*) m_nReserved1c, pvSource, cbWrite);
 	m_nReserved1c += cbWrite;
 }
 
 // FUNCTION: LEMBALL 0x0045eff0
-unsigned int VsNetEffStreamBase::ReadEffStreamU32BEValue(void)
+unsigned int CNetworkMessage::ReadEffStreamU32BEValue(void)
 {
 	unsigned int nValue;
 
@@ -247,7 +247,7 @@ unsigned int VsNetEffStreamBase::ReadEffStreamU32BEValue(void)
 }
 
 // FUNCTION: LEMBALL 0x0045f010
-void VsNetEffStreamBase::ReadEffStreamU32BE(unsigned char* pbTarget)
+void CNetworkMessage::ReadEffStreamU32BE(unsigned char* pbTarget)
 {
 	pbTarget[0] = *(unsigned char*) (m_nReserved20 + 3);
 	pbTarget[1] = *(unsigned char*) (m_nReserved20 + 2);
@@ -257,7 +257,7 @@ void VsNetEffStreamBase::ReadEffStreamU32BE(unsigned char* pbTarget)
 }
 
 // FUNCTION: LEMBALL 0x0045f040
-void VsNetEffStreamBase::SwapEffStreamU32BEAndAdvance(void)
+void CNetworkMessage::SwapEffStreamU32BEAndAdvance(void)
 {
 	unsigned char nByte0;
 	unsigned char nByte1;
@@ -272,7 +272,7 @@ void VsNetEffStreamBase::SwapEffStreamU32BEAndAdvance(void)
 }
 
 // FUNCTION: LEMBALL 0x0045f070
-unsigned short VsNetEffStreamBase::ReadEffStreamU16BEValue(void)
+unsigned short CNetworkMessage::ReadEffStreamU16BEValue(void)
 {
 	unsigned short nValue;
 
@@ -281,7 +281,7 @@ unsigned short VsNetEffStreamBase::ReadEffStreamU16BEValue(void)
 }
 
 // FUNCTION: LEMBALL 0x0045f090
-void VsNetEffStreamBase::ReadEffStreamU16BE(unsigned char* pbTarget)
+void CNetworkMessage::ReadEffStreamU16BE(unsigned char* pbTarget)
 {
 	pbTarget[0] = *(unsigned char*) (m_nReserved20 + 1);
 	pbTarget[1] = *(unsigned char*) m_nReserved20;
@@ -289,7 +289,7 @@ void VsNetEffStreamBase::ReadEffStreamU16BE(unsigned char* pbTarget)
 }
 
 // FUNCTION: LEMBALL 0x0045f0b0
-void VsNetEffStreamBase::SwapEffStreamU16BEAndAdvance(void)
+void CNetworkMessage::SwapEffStreamU16BEAndAdvance(void)
 {
 	unsigned char nByte0;
 	unsigned char nByte1;
@@ -302,7 +302,7 @@ void VsNetEffStreamBase::SwapEffStreamU16BEAndAdvance(void)
 }
 
 // FUNCTION: LEMBALL 0x0045f0d0
-unsigned char VsNetEffStreamBase::ReadEffStreamU8Value(void)
+unsigned char CNetworkMessage::ReadEffStreamU8Value(void)
 {
 	unsigned char nValue;
 
@@ -311,48 +311,48 @@ unsigned char VsNetEffStreamBase::ReadEffStreamU8Value(void)
 }
 
 // FUNCTION: LEMBALL 0x0045f0f0
-void VsNetEffStreamBase::ReadEffStreamU8(unsigned char* pbTarget)
+void CNetworkMessage::ReadEffStreamU8(unsigned char* pbTarget)
 {
 	*pbTarget = *m_nReserved20;
 	++m_nReserved20;
 }
 
 // FUNCTION: LEMBALL 0x0045f110
-void VsNetEffStreamBase::AdvanceEffStreamReadCursorByte(void)
+void CNetworkMessage::AdvanceEffStreamReadCursorByte(void)
 {
 	++m_nReserved20;
 }
 
 // FUNCTION: LEMBALL 0x0045f120
-void VsNetEffStreamBase::ReadEffStreamCString(char** ppszTarget)
+void CNetworkMessage::ReadEffStreamCString(char** ppszTarget)
 {
 	*ppszTarget = (char*) (unsigned long) m_nReserved20;
 	m_nReserved20 += (int) strlen(*ppszTarget) + 1;
 }
 
 // FUNCTION: LEMBALL 0x0045f140
-void VsNetEffStreamBase::ReadEffStreamRangePointer(void** ppvTarget, int cbRead)
+void CNetworkMessage::ReadEffStreamRangePointer(void** ppvTarget, int cbRead)
 {
 	*ppvTarget = m_nReserved20;
 	m_nReserved20 += cbRead;
 }
 
 // FUNCTION: LEMBALL 0x0045f160
-void VsNetEffStreamBase::ReadEffStreamCStringIntoBuffer(char* pszTarget)
+void CNetworkMessage::ReadEffStreamCStringIntoBuffer(char* pszTarget)
 {
 	strcpy(pszTarget, (char*) m_nReserved20);
 	m_nReserved20 += strlen(pszTarget) + 1;
 }
 
 // FUNCTION: LEMBALL 0x0045f1b0
-void VsNetEffStreamBase::ReadEffStreamBytes(void* pvTarget, unsigned int cbRead)
+void CNetworkMessage::ReadEffStreamBytes(void* pvTarget, unsigned int cbRead)
 {
 	memcpy(pvTarget, (void*) m_nReserved20, cbRead);
 	m_nReserved20 += cbRead;
 }
 
 // FUNCTION: LEMBALL 0x0045f250
-int VsNetEffStreamBase::SaveEffStreamToMemoryRange(int nTargetBuffer, int cbRange)
+int CNetworkMessage::SaveEffStreamToMemoryRange(int nTargetBuffer, int cbRange)
 {
 	VsNetEffStreamSerializeVtable* pVtable;
 	int (*pfnWriteBody)(void* pThis);
@@ -406,7 +406,7 @@ void VsNetEffStreamChannelState::SetEffStreamChannelAsyncErrorStatus(int nStatus
 	}
 }
 
-inline void VsNetEffStreamBase::operator delete(void* pObject)
+inline void CNetworkMessage::operator delete(void* pObject)
 {
 	FreeVSMemBlock(pObject);
 }
@@ -427,7 +427,7 @@ inline void VsNetTimedEffStream::operator delete(void* pObject)
 }
 
 // FUNCTION: LEMBALL 0x0045f750
-VsNetEffStreamBase::VsNetEffStreamBase()
+CNetworkMessage::CNetworkMessage()
 {
 	m_nWord34 = 0;
 	m_nBufferEnd18 += 0x10;
@@ -805,15 +805,15 @@ void ReturnVoidVtableCallback(void)
 // FUNCTION: LEMBALL 0x00462b40
 void LEMBALL_FASTCALL WriteEffStreamTwoU16Fields(void* pObject)
 {
-	((VsNetEffStreamBase*) pObject)->WriteEffStreamU16BE(*(unsigned short*) ((char*) pObject + 0x2c));
-	((VsNetEffStreamBase*) pObject)->WriteEffStreamU16BE(*(unsigned short*) ((char*) pObject + 0x2e));
+	((CNetworkMessage*) pObject)->WriteEffStreamU16BE(*(unsigned short*) ((char*) pObject + 0x2c));
+	((CNetworkMessage*) pObject)->WriteEffStreamU16BE(*(unsigned short*) ((char*) pObject + 0x2e));
 }
 
 // FUNCTION: LEMBALL 0x00462b60
 void LEMBALL_FASTCALL ReadEffStreamTwoU16Fields(void* pObject)
 {
-	((VsNetEffStreamBase*) pObject)->ReadEffStreamU16BE((unsigned char*) ((char*) pObject + 0x2c));
-	((VsNetEffStreamBase*) pObject)->ReadEffStreamU16BE((unsigned char*) ((char*) pObject + 0x2e));
+	((CNetworkMessage*) pObject)->ReadEffStreamU16BE((unsigned char*) ((char*) pObject + 0x2c));
+	((CNetworkMessage*) pObject)->ReadEffStreamU16BE((unsigned char*) ((char*) pObject + 0x2e));
 }
 
 // FUNCTION: LEMBALL 0x00462ed0
@@ -823,9 +823,9 @@ int WINAPI InitializeNonZrleVariantRenderEntry(int nValue)
 }
 
 // FUNCTION: LEMBALL 0x0047b860
-void VsNetEffStreamBase::DestroyEffStreamBaseThunk(void)
+void CNetworkMessage::DestroyEffStreamBaseThunk(void)
 {
-	this->VsNetEffStreamBase::~VsNetEffStreamBase();
+	this->CNetworkMessage::~CNetworkMessage();
 }
 
 void* LEMBALL_FASTCALL DeleteEffStreamBaseAuto(void* pObject, void*, BYTE fDelete)

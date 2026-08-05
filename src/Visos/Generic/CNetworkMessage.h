@@ -4,10 +4,12 @@
 // Macintosh: Visos (Generic) — CNetworkMessage
 //
 // CNetworkMessage is the portable serialised network-message class.  Its
-// Windows reconstruction lives in the shared VsNetEffStreamBase hierarchy
-// (see EFFSTRM.H, VSSTRM.H, EFFSTRM.CPP, VSNETSTR.CPP).  All 25 portable
-// Macintosh methods (19 exact) are evidenced across the stream base,
-// read/write, stream-lifecycle, and transport families.
+// Windows reconstruction owns the 25 methods (see EFFSTRM.H, VSSTRM.H,
+// EFFSTRM.CPP, VSNETSTR.CPP) directly on the CNetworkMessage class, matching
+// the /LEMBALL.EXE mangled CNetworkMessage symbols and the Macintosh
+// blueprint.  The physical layout preserves the proven polymorphic stream
+// object; mac-only framing methods (CheckMessage/GetHeader/AddHeader) have no
+// x86 equivalent and remain excluded.
 //
 // This header declares the canonical class identity.  The physical
 // implementation remains in the existing shared-stream translation units

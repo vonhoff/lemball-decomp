@@ -8,7 +8,7 @@
 // Compatibility symbol preserving MSVC 4.20 compiler state.
 // ??_GVsNetEffStreamChannelState@@UAEPAXI@Z
 // Compatibility symbol preserving MSVC 4.20 compiler state.
-// ??_EVsNetEffStreamBase@@UAEPAXI@Z
+// ??_ECNetworkMessage@@UAEPAXI@Z
 // VTABLE: LEMBALL 0x00498f30
 struct VsNetEffStreamChannelState {
 	virtual int ReleaseFileBackedEffMarker(void) = 0; // vtable+0x0
@@ -150,11 +150,11 @@ struct VsNetEffStreamCore {
 /* Tagged and file-backed streams share the 0x2c-byte polymorphic prefix.
  * Tagged streams append the 0x0c-byte serialization tag tail. */
 // VTABLE: LEMBALL 0x00498f40
-struct VsNetEffStreamBase : VsNetEffStreamCommon {
-	VsNetEffStreamBase();
+struct CNetworkMessage : VsNetEffStreamCommon {
+	CNetworkMessage();
 	virtual void ReverseEffStreamPayload(void);    // vtable+0x8
 	virtual void WriteEffStreamTaggedHeader(void); // vtable+0x10
-	inline void DestroyEffStreamBase(void) { this->~VsNetEffStreamBase(); }
+	inline void DestroyEffStreamBase(void) { this->~CNetworkMessage(); }
 #ifdef LEMBALL_DEFINE_EFF_STREAM_BASE_VTABLE
 	static void operator delete(void* pObject);
 #endif
@@ -187,7 +187,7 @@ struct VsNetEffStreamBase : VsNetEffStreamCommon {
 	void DestroyEffStreamBaseThunk(void);
 };
 
-struct VsNetDualHandleEffStreamPrimary : VsNetEffStreamBase {
+struct VsNetDualHandleEffStreamPrimary : CNetworkMessage {
 	char m_abReserved38[0x0c];
 };
 
@@ -218,7 +218,7 @@ struct VsNetDualHandleEffStream : VsNetDualHandleEffStreamPrimary, virtual VsNet
 	void ConfigureEffStreamSecondaryHandleGroup(int nPacketCount, int cbPayload);
 };
 
-struct VsNetTimedEffStreamPrimary : VsNetEffStreamBase {
+struct VsNetTimedEffStreamPrimary : CNetworkMessage {
 	int m_nReserved38;
 	DWORD m_dwLastTick3c;
 	int m_nReserved40;

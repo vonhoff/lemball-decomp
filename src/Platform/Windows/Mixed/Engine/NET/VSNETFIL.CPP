@@ -707,7 +707,7 @@ struct VsNetGlobalStateCompositeInitialVtableData {
 	void* m_pWriteStateWord;
 	void* m_pNoop;
 	void* m_pReadStateWord;
-	void* (VsNetEffStreamBase::*m_pDelete)(BYTE);
+	void* (CNetworkMessage::*m_pDelete)(BYTE);
 };
 
 static VsNetGlobalStateCompositeInitialVtableData g_NETWORK_GlobalStateCompositeInitialVtableData = {
@@ -716,7 +716,7 @@ static VsNetGlobalStateCompositeInitialVtableData g_NETWORK_GlobalStateComposite
 	(void*) WriteEffStreamU16Field2C,
 	(void*) NoopVtableCallbackThunk,
 	(void*) ReadEffStreamU16Field2C,
-	&VsNetEffStreamBase::DeleteEffStreamBaseWrapper,
+	&CNetworkMessage::DeleteEffStreamBaseWrapper,
 };
 static void* g_NETWORK_GlobalStateCompositeInitialVtable = &g_NETWORK_GlobalStateCompositeInitialVtableData;
 /* Raw 0049AA90, 0049AA60, 0049AA38. */
@@ -1923,13 +1923,13 @@ void CHeaderMessage::AddData(void)
 
 	pRecordSlot = (CHeaderMessage*) this;
 	++pRecordSlot->m_wCommittedMarker;
-	((VsNetEffStreamBase*) pRecordSlot)->WriteEffStreamU16BE(pRecordSlot->m_wCommittedMarker);
+	((CNetworkMessage*) pRecordSlot)->WriteEffStreamU16BE(pRecordSlot->m_wCommittedMarker);
 	wCommittedMarker = pRecordSlot->m_wCommittedMarker;
 	cbPayload = pRecordSlot->m_cbPayload;
 	pRecordSlot->m_wObservedMarker = wCommittedMarker;
-	((VsNetEffStreamBase*) pRecordSlot)->WriteEffStreamU32BE(cbPayload);
-	((VsNetEffStreamBase*) pRecordSlot)->WriteEffStreamBytes(pRecordSlot->m_szTargetName, 0x15);
-	((VsNetEffStreamBase*) pRecordSlot)->WriteEffStreamBytes(pRecordSlot->m_szSourceName, 0x15);
+	((CNetworkMessage*) pRecordSlot)->WriteEffStreamU32BE(cbPayload);
+	((CNetworkMessage*) pRecordSlot)->WriteEffStreamBytes(pRecordSlot->m_szTargetName, 0x15);
+	((CNetworkMessage*) pRecordSlot)->WriteEffStreamBytes(pRecordSlot->m_szSourceName, 0x15);
 }
 
 // FUNCTION: LEMBALL 0x004795d0
@@ -1938,11 +1938,11 @@ void CHeaderMessage::GetData(void)
 	CHeaderMessage* pRecordSlot;
 
 	pRecordSlot = (CHeaderMessage*) this;
-	((VsNetEffStreamBase*) pRecordSlot)->ReadEffStreamU16BE((unsigned char*) &pRecordSlot->m_wCommittedMarker);
+	((CNetworkMessage*) pRecordSlot)->ReadEffStreamU16BE((unsigned char*) &pRecordSlot->m_wCommittedMarker);
 	if (pRecordSlot->m_wObservedMarker != pRecordSlot->m_wCommittedMarker) {
-		((VsNetEffStreamBase*) pRecordSlot)->ReadEffStreamU32BE((unsigned char*) &pRecordSlot->m_cbPayload);
-		((VsNetEffStreamBase*) pRecordSlot)->ReadEffStreamBytes(pRecordSlot->m_szTargetName, 0x15);
-		((VsNetEffStreamBase*) pRecordSlot)->ReadEffStreamBytes(pRecordSlot->m_szSourceName, 0x15);
+		((CNetworkMessage*) pRecordSlot)->ReadEffStreamU32BE((unsigned char*) &pRecordSlot->m_cbPayload);
+		((CNetworkMessage*) pRecordSlot)->ReadEffStreamBytes(pRecordSlot->m_szTargetName, 0x15);
+		((CNetworkMessage*) pRecordSlot)->ReadEffStreamBytes(pRecordSlot->m_szSourceName, 0x15);
 		return;
 	}
 	pRecordSlot->m_nReserved20 += 0x2e;
@@ -2164,7 +2164,7 @@ void CHeaders::WriteEffStreamTaggedHeader(void)
 		pSlot = m_pSlots;
 		do {
 			pSlot = (CHeaderMessage*) ((char*) m_pSlots + nSlotOffset);
-			((VsNetEffStreamBase*) pSlot)->SaveEffStreamToMemoryRange(m_nSaveRangeCursor1c, 0);
+			((CNetworkMessage*) pSlot)->SaveEffStreamToMemoryRange(m_nSaveRangeCursor1c, 0);
 			m_nSaveRangeCursor1c += (int) (unsigned long) pSlot->m_nReserved1c - pSlot->m_pPayloadBuffer08;
 			nSlotOffset += 0x60;
 			++i;
@@ -2188,7 +2188,7 @@ void CHeaders::ReverseEffStreamPayload(void)
 
 	pSlot = pTable->m_pSlots;
 	do {
-		if (((VsNetEffStreamBase*) pSlot)->SaveEffStreamToMemoryRange(pTable->m_nLoadSourceCursor20, 0) != 0) {
+		if (((CNetworkMessage*) pSlot)->SaveEffStreamToMemoryRange(pTable->m_nLoadSourceCursor20, 0) != 0) {
 			pTable->m_nLoadSourceCursor20 = pSlot->m_nBufferEnd18;
 		}
 		++i;
@@ -3209,7 +3209,7 @@ void VsNetGlobalStateCompositeDestroyView::DestroyGlobalStateFileBackedEffCompos
 	}
 
 	((VsNetRuntimeChannelStackReleaseFront*) ((char*) this - 0x3c))->Release();
-	((VsNetEffStreamBase*) ((char*) this - 0x3c))->DestroyEffStreamBase();
+	((CNetworkMessage*) ((char*) this - 0x3c))->DestroyEffStreamBase();
 }
 #endif
 
@@ -3761,7 +3761,7 @@ void VsNetDualSlotCompositeDestroyView::DestroyDualSlotTableFileBackedEffComposi
 	}
 
 	RestoreCompositeEffTransportVtables((int) (unsigned long) this - 0x34);
-	((VsNetEffStreamBase*) ((char*) this - 0x34))->DestroyEffStreamBase();
+	((CNetworkMessage*) ((char*) this - 0x34))->DestroyEffStreamBase();
 }
 #endif
 
@@ -4067,7 +4067,7 @@ void* CHeaderMessage::Delete(int fDeleteFlags)
 		pCurrent = pSlot + cSlots;
 		while (--cSlots >= 0) {
 			--pCurrent;
-			((VsNetEffStreamBase*) pCurrent)->DestroyEffStreamBaseThunk();
+			((CNetworkMessage*) pCurrent)->DestroyEffStreamBaseThunk();
 		}
 		FreeVSMemBlock(pAllocation);
 		return this;
@@ -4086,7 +4086,7 @@ void CPortsMessage::Save(void)
 	CPortsMessage* pStateStream;
 
 	pStateStream = (CPortsMessage*) this;
-	((VsNetEffStreamBase*) pStateStream)->WriteEffStreamBytes(pStateStream->m_pbStateBytes2c, 0x200);
+	((CNetworkMessage*) pStateStream)->WriteEffStreamBytes(pStateStream->m_pbStateBytes2c, 0x200);
 }
 
 // FUNCTION: LEMBALL 0x0047b880
@@ -4095,7 +4095,7 @@ void CPortsMessage::Load(void)
 	CPortsMessage* pStateStream;
 
 	pStateStream = (CPortsMessage*) this;
-	((VsNetEffStreamBase*) pStateStream)->ReadEffStreamBytes(pStateStream->m_pbStateBytes2c, 0x200);
+	((CNetworkMessage*) pStateStream)->ReadEffStreamBytes(pStateStream->m_pbStateBytes2c, 0x200);
 }
 
 // FUNCTION: LEMBALL 0x0047b890
@@ -4108,7 +4108,7 @@ void* CPortsMessage::Delete(BYTE fDeleteFlags)
 	pbStateBytes = pStateStream->m_pbStateBytes2c;
 	pStateStream->m_pVtable = (void**) &g_NETWORK_EffStateStreamVtable;
 	FreeVSMemBlock((void*) (unsigned long) pbStateBytes);
-	((VsNetEffStreamBase*) pStateStream)->VsNetEffStreamBase::~VsNetEffStreamBase();
+	((CNetworkMessage*) pStateStream)->CNetworkMessage::~CNetworkMessage();
 	if ((fDeleteFlags & 1) != 0) {
 		FreeVSMemBlock(pStateStream);
 	}
