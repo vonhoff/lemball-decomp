@@ -1,4 +1,5 @@
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
+#include "AI/LevelTileGridCell.h"
 #include "AI/CMoverManager.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
@@ -730,13 +731,6 @@ struct LevelLevelTileCell {
 	void SetCollisionThunk(void);
 };
 
-struct LevelTileGridCell {
-	int m_nType00;
-	short m_nVariant04;
-	unsigned short m_nFlags06;
-	short m_nReserved08;
-	short m_nReserved0A;
-};
 
 struct LevelTileGridView {
 	void* m_pReserved00;

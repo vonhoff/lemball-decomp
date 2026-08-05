@@ -1,4 +1,5 @@
 #include "AI/CMover.h"
+#include "AI/LevelTileGridCell.h"
 #include "AI/LevelNodePoint.h"
 
 #include "AI/CGameObject.h"
@@ -33,13 +34,6 @@ struct CGround {
 	short GetZThunk(int nLocalX, int nLocalY);
 };
 
-struct LevelTileGridCell {
-	int m_nType00;
-	short m_nVariant04;
-	unsigned short m_nFlags06;
-	short m_nReserved08;
-	short m_nReserved0A;
-};
 
 struct MoveChunkTileGridView {
 	char m_abReserved00[0xc];
