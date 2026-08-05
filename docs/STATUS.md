@@ -26,9 +26,9 @@ is confirmed so it is never re-triaged. Goal prompt drives *what*, this tracks *
 
 All manager Restart/Initialise/Hit/StepOn/Open done (committed). Remaining: manager Add (Set-thunks), LoadLevel (stream-parse), CDoor::Set/Delete/collision (tile-map 0x4a74b4 heavy).
 
-## C2D batch (71 gaps, dominant remaining block — HIGH effort)
+## C2D batch (71 gaps→69, dominant remaining block — workable via member-dispatch pattern)
 
-C2D class spans +0x44→+0x22xx; funcs are 100-300B geometry/raster with dispatch tables, globals (0x4a9bf4 cursor, 0x49ce08/0x49ce04 time, 0x4a6408 modal flag, 0x49cb68) + subobjects (0x914 tile-grid {+0xc data,+0x10 w,+0x14 h}, 0x96c/0x974/0x978/0x97c sinks). Need C2D class modeled first. Verified complex: ScreenToGame(0x437970), SetMouseShape(0x437E90), ProcessMsg(0x437B60), SendCursorMsg(0x4380C0), StartMoving. Diffs are register-scheduling; raw-offset view structs (LevelScreenManagedEntitySelectionView) don't cover +0x44-0x22xx. C2D.cpp has 3 small methods done; CGame.cpp has OnZoom/OnSize/Process.
+C2D class spans +0x44→+0x22xx; funcs are 100-300B geometry/raster with dispatch tables, globals (0x4a9bf4 cursor, 0x49ce08/0x49ce04 time, 0x49eb80 variant mgr, 0x4a6408 modal, 0x49cb68) + subobjects (0x914 tile-grid {+0xc data,+0x10 w,+0x14 h}, 0x96c/0x95c arrays, 0x974/0x978/0x97c sinks). **BREAKTHROUGH**: single-arg dispatch methods reconstruct as thiscall member fns on LevelScreenManagedEntitySelectionView (this in ecx, ret 4): SelectLemming(0x437340,74.6%) + SelectObject(0x4373B0,65.6%) DONE. Remaining are event-dispatch-adjacent (NoStateLeftClick/GroupingLeftClick/LeftClick/RightClick/InGroupByObjectNo/RemoveFromGroupByObjectNo) then geometry (ScreenToGame/SetMouseShape/ProcessMsg verified complex) + Draw* batch. C2D.cpp has 5 methods; CGame.cpp has a few.
 
 
 ## Dead-ends (confirmed not source-fixable; don't re-triage)
