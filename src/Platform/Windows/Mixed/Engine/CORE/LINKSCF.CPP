@@ -1944,11 +1944,11 @@ void LinkScfTramChunkManagerView::Restart(void)
 	void** pVtable;
 	char* pObject;
 
-	if (*(char**) ((char*) this + 0x38) == 0) {
+	if (m_pObjectArray38 == 0) {
 		return;
 	}
-	for (i = 0, nOffset = 0; *(int*) ((char*) this + 0x30) > i; ++i, nOffset += 0x144) {
-		pObject = *(char**) ((char*) this + 0x38) + nOffset;
+	for (i = 0, nOffset = 0; m_nCapacity30 > i; ++i, nOffset += 0x144) {
+		pObject = (char*) m_pObjectArray38 + nOffset;
 		pVtable = *(void***) pObject;
 		((void(LEMBALL_FASTCALL*)(void*)) pVtable[0x104 / sizeof(void*)])(pObject);
 	}
@@ -1962,24 +1962,24 @@ void LinkScfTramChunkManagerView::Initialise(int nCapacity)
 	char* pObject;
 	int i;
 
-	*(int*) ((char*) this + 0x30) = nCapacity;
-	*(int*) ((char*) this + 0x34) = 0;
+	m_nCapacity30 = nCapacity;
+	m_nObjectCount34 = 0;
 	if (nCapacity != 0) {
-		if (*(void**) ((char*) this + 0x38) == 0) {
+		if (m_pObjectArray38 == 0) {
 			pBase = (char*) AllocateVSMemBlock((unsigned int) (nCapacity * 0x144 + 4)) + 4;
 			if (pBase != 0) {
 				*(int*) (pBase - 4) = nCapacity;
 				for (i = nCapacity - 1; i >= 0; --i) {
 					((void(__fastcall*)(char*)) 0x403053)(pBase + i * 0x144);
 				}
-				*(void**) ((char*) this + 0x38) = pBase;
+				m_pObjectArray38 = pBase;
 			}
 			else {
-				*(void**) ((char*) this + 0x38) = 0;
+				m_pObjectArray38 = 0;
 			}
 		}
-		for (i = 0; i < *(int*) ((char*) this + 0x30); ++i) {
-			pObject = *(char**) ((char*) this + 0x38) + i * 0x144;
+		for (i = 0; i < m_nCapacity30; ++i) {
+			pObject = (char*) m_pObjectArray38 + i * 0x144;
 			*(int*) (pObject + 0x60) = (int) this;
 			((void(LEMBALL_FASTCALL*)(void*)) (*(void***) pObject)[0x104 / sizeof(void*)])(pObject);
 		}
@@ -2023,11 +2023,11 @@ int LinkScfTramChunkManagerView::Hit(void* pCoord, void* pGameObject)
 	int i;
 	char* pObject;
 
-	if (*(int*) ((char*) this + 0x34) <= 0) {
+	if (m_nObjectCount34 <= 0) {
 		return 0;
 	}
-	for (i = 0, nOffset = 0; i < *(int*) ((char*) this + 0x34); ++i, nOffset += 0x144) {
-		pObject = *(char**) ((char*) this + 0x38) + nOffset;
+	for (i = 0, nOffset = 0; i < m_nObjectCount34; ++i, nOffset += 0x144) {
+		pObject = (char*) m_pObjectArray38 + nOffset;
 		if (((int(__stdcall*)(void*, void*, void*)) 0x401ee2)(pObject, pCoord, pGameObject) != 0) {
 			return 1;
 		}
@@ -2119,24 +2119,24 @@ void LinkScfPgunChunkManagerView::Initialise(int nCapacity)
 	char* pObject;
 	int i;
 
-	*(int*) ((char*) this + 0x30) = nCapacity;
-	*(int*) ((char*) this + 0x34) = 0;
+	m_nCapacity30 = nCapacity;
+	m_nObjectCount34 = 0;
 	if (nCapacity != 0) {
-		if (*(void**) ((char*) this + 0x38) == 0) {
+		if (m_pObjectArray38 == 0) {
 			pBase = (char*) AllocateVSMemBlock((unsigned int) (nCapacity * 0x144 + 4)) + 4;
 			if (pBase != 0) {
 				*(int*) (pBase - 4) = nCapacity;
 				for (i = nCapacity - 1; i >= 0; --i) {
 					((void(__fastcall*)(char*)) 0x401fb9)(pBase + i * 0x144);
 				}
-				*(void**) ((char*) this + 0x38) = pBase;
+				m_pObjectArray38 = pBase;
 			}
 			else {
-				*(void**) ((char*) this + 0x38) = 0;
+				m_pObjectArray38 = 0;
 			}
 		}
-		for (i = 0; i < *(int*) ((char*) this + 0x30); ++i) {
-			pObject = *(char**) ((char*) this + 0x38) + i * 0x144;
+		for (i = 0; i < m_nCapacity30; ++i) {
+			pObject = (char*) m_pObjectArray38 + i * 0x144;
 			*(int*) (pObject + 0x60) = (int) this;
 			((void(LEMBALL_FASTCALL*)(void*)) (*(void***) pObject)[0x104 / sizeof(void*)])(pObject);
 		}

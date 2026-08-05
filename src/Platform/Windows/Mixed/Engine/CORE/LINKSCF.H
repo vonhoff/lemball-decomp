@@ -3,12 +3,18 @@
 
 
 struct LinkScfPgunChunkManagerView {
+	int m_nCapacity30;         // 0x30
+	int m_nObjectCount34;      // 0x34
+	void* m_pObjectArray38;    // 0x38
 	LinkScfPgunChunkManagerView* ConstructPgunChunkManager(void* pLevelMode, int nCapacity);
 	LinkScfPgunChunkManagerView* ConstructPgunChunkManagerThunk(void* pLevelMode, int nCapacity);
 	void Initialise(int nCapacity);
 };
 
 struct LinkScfTramChunkManagerView {
+	int m_nCapacity30;         // 0x30
+	int m_nObjectCount34;      // 0x34
+	void* m_pObjectArray38;    // 0x38
 	LinkScfTramChunkManagerView* ConstructTramChunkManager(void* pLevelMode, int nCapacity);
 	LinkScfTramChunkManagerView* ConstructTramChunkManagerThunk(void* pLevelMode, int nCapacity);
 	void Restart(void);
