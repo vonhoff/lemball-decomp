@@ -250,6 +250,11 @@ THUNK_ILT_REFERENCES = {
         "DeleteNetworkLobbyTransportController",
         "adjustor target 00455eb0",
     ),
+    0x0042F2F0: (
+        0x0040120D,
+        "CMover::IsAt",
+        "CMover IsAt containment/height-sample 0042e700",
+    ),
 }
 
 
