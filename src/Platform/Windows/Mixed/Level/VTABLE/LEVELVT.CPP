@@ -315,15 +315,15 @@ void LEMBALL_FASTCALL MarkObjectField178AndSetTimer3C(void* pObject);
 void* __fastcall get_level_mode_mine_chunk_manager(void* pLevelMode);
 void* __fastcall get_level_mode_lift_chunk_manager(void* pLevelMode);
 void* __fastcall get_object_field_0x30(void* pObject);
-void __fastcall add_level_time_bonus_counter(void* pLevelMode, void* pUnused, int nBonus);
+void __fastcall AddTime(void* pLevelMode, void* pUnused, int nBonus);
 void __fastcall set_level_mode_field_0xf8(void* pLevelMode, void* pUnused, int nValue);
-int __fastcall has_level_plas_history_entries(void* pLevelMode);
+int __fastcall nDead(void* pLevelMode);
 int __fastcall get_managed_entity_group_command_state(void* pEntity);
 void __fastcall set_managed_entity_group_command_state(void* pEntity, void* pUnused, int nState);
 void __fastcall set_entity_field_0x08_if_flags_bit0(void* pEntity);
 
 int return_false_virtual_hook(void);
-void* __fastcall get_first_projectile_pool_object(void* pPool);
+void* __fastcall GetFirstBullet(void* pPool);
 void PASCAL ResetManagedEntityGroupState(void* pEntity);
 void __cdecl ForwardManagedEntityVslot7C(void* pUnused, void* pEntity);
 int __cdecl CallHasPendingManagedEntityCommands(void* pUnused, LevelManagedEntityCommandQueueView* pEntity);
@@ -342,9 +342,9 @@ void __cdecl ForwardManagedEntityVslot88(void* pUnused, void* pEntity);
 void __cdecl ForwardManagedEntityVslot90(void* pUnused, void* pEntity);
 void noop_projectile_geometry_callback(void);
 void* __fastcall initialize_three_dword_point_sentinel(void* pPoint);
-void __fastcall deactivate_projectile_object(void* pObject);
-void* __fastcall get_next_projectile_pool_object(void* pPool);
-void __fastcall update_projectile_pool_real(void* pPool);
+void __fastcall CBulletFree(void* pObject);
+void* __fastcall GetNextBullet(void* pPool);
+void __fastcall CBulletManagerProcess(void* pPool);
 
 struct LevelShortRect {
 	short m_nX;
@@ -413,10 +413,10 @@ void noop_network_lobby_vsnet_runtime_slot_3(void);
 void noop_callback_00456600(void);
 
 // Compatibility shim retained for compiler-generated callers; original ILT slot
-// 0x00401019 targets update_projectile_pool_real directly.
+// 0x00401019 targets CBulletManagerProcess directly.
 void __fastcall update_projectile_pool(void* pPool)
 {
-	update_projectile_pool_real(pPool);
+	CBulletManagerProcess(pPool);
 }
 
 // LINKERILT: LEMBALL 0x00401046
@@ -1064,7 +1064,7 @@ void* __fastcall get_object_field_0x30(void* pObject)
 
 // MACINTOSH: CAI::AddTime(int)
 // FUNCTION: LEMBALL 0x004121e0
-void __fastcall add_level_time_bonus_counter(void* pLevelMode, void* pUnused, int nBonus)
+void __fastcall AddTime(void* pLevelMode, void* pUnused, int nBonus)
 {
 	(void) pUnused;
 	*(int*) ((char*) pLevelMode + 0xe8) += nBonus;
@@ -1078,7 +1078,7 @@ void __fastcall set_level_mode_field_0xf8(void* pLevelMode, void* pUnused, int n
 
 // MACINTOSH: CAI::nDead()
 // FUNCTION: LEMBALL 0x00413370
-int __fastcall has_level_plas_history_entries(void* pLevelMode)
+int __fastcall nDead(void* pLevelMode)
 {
 	void* pPlasManager = *(void**) ((char*) pLevelMode + 0x15c);
 	return *(int*) ((char*) pPlasManager + 0x128);
@@ -1286,14 +1286,14 @@ int return_false_virtual_hook(void)
 }
 
 // FUNCTION: LEMBALL 0x00417f40
-void* __fastcall get_first_projectile_pool_object(void* pPool)
+void* __fastcall GetFirstBullet(void* pPool)
 {
 	*(int*) ((char*) pPool + 0xd8) = 0;
 	return *(void**) ((char*) pPool + 0x34);
 }
 
 // FUNCTION: LEMBALL 0x00417f50
-void* __fastcall get_next_projectile_pool_object(void* pPool)
+void* __fastcall GetNextBullet(void* pPool)
 {
 	int nIndex;
 	int nLimit;
@@ -1309,18 +1309,18 @@ void* __fastcall get_next_projectile_pool_object(void* pPool)
 }
 
 // FUNCTION: LEMBALL 0x00418040
-void __fastcall update_projectile_pool_real(void* pPool)
+void __fastcall CBulletManagerProcess(void* pPool)
 {
 	void* pObj;
 	int fKeep;
 
-	pObj = get_first_projectile_pool_object(pPool);
+	pObj = GetFirstBullet(pPool);
 	while (pObj != NULL) {
 		fKeep = ((ProjectileObjectProxy*) pObj)->ServiceProjectile();
 		if (fKeep == 0) {
 			((ProjectilePool*) pPool)->RemoveObject(pObj);
 		}
-		pObj = get_next_projectile_pool_object(pPool);
+		pObj = GetNextBullet(pPool);
 	}
 }
 
@@ -1344,7 +1344,7 @@ void ProjectilePool::RemoveObject(void* pObject)
 	}
 
 	pEntry = &m_apObjects[i];
-	deactivate_projectile_object(*pEntry);
+	CBulletFree(*pEntry);
 	if (i < 19) {
 		nRemaining = 19;
 		nRemaining -= i;
@@ -1370,12 +1370,12 @@ int LEMBALL_FASTCALL EmitProjectilePoolRenderEntries(void* pPool, void* pUnused,
 	(void) pUnused;
 	cEntries = 0;
 	pOwner = pPool;
-	pObject = get_first_projectile_pool_object(pOwner);
+	pObject = GetFirstBullet(pOwner);
 	while (pObject != NULL) {
 		((ProjectileObjectProxy*) pObject)->EmitProjectileRenderEntry(pRenderEntry);
 		pRenderEntry = (char*) pRenderEntry + 0x4c;
 		cEntries++;
-		pObject = get_next_projectile_pool_object(pOwner);
+		pObject = GetNextBullet(pOwner);
 	}
 	return cEntries;
 }
@@ -1397,7 +1397,7 @@ int ProjectilePool::FindProjectilePositionInRect(const LevelShortRect* pRect, Le
 	nRight = pRect->m_nX + nWidth;
 	nHeight = pRect->m_nHeight;
 	nBottom = pRect->m_nY + nHeight;
-	pProjectile = (ProjectileObjectProxy*) get_first_projectile_pool_object(this);
+	pProjectile = (ProjectileObjectProxy*) GetFirstBullet(this);
 	while (pProjectile != NULL) {
 		nProjectileX = *(int*) ((char*) pProjectile + 0x9c) >> 12;
 		nProjectileY = *(int*) ((char*) pProjectile + 0xa0) >> 12;
@@ -1412,7 +1412,7 @@ int ProjectilePool::FindProjectilePositionInRect(const LevelShortRect* pRect, Le
 			pPosition->m_nZ = *(int*) ((char*) pProjectile + 0xa4);
 			return 1;
 		}
-		pProjectile = (ProjectileObjectProxy*) get_next_projectile_pool_object(this);
+		pProjectile = (ProjectileObjectProxy*) GetNextBullet(this);
 	}
 	return 0;
 }
@@ -1584,7 +1584,7 @@ void __cdecl ForwardManagedEntityVslot90(void* pUnused, void* pEntity)
 
 
 // FUNCTION: LEMBALL 0x0041ac70
-void __fastcall deactivate_projectile_object(void* pObject)
+void __fastcall CBulletFree(void* pObject)
 {
 	*(int*) ((char*) pObject + 0x164) = 0;
 	if (*(int*) ((char*) pObject + 0xb8) != 8) {

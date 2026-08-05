@@ -127,7 +127,7 @@ extern void* LEMBALL_FASTCALL DeleteRockChunkManagerAuto(void* pObject, void* pU
 extern void* LEMBALL_FASTCALL DeletePgunChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
 extern void* LEMBALL_FASTCALL DeleteIceChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
 extern void* LEMBALL_FASTCALL DeleteMoveChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
-extern void LEMBALL_FASTCALL update_projectile_pool_real(void* pPool);
+extern void LEMBALL_FASTCALL CBulletManagerProcess(void* pPool);
 
 void* LEMBALL_FASTCALL DeleteDoorChunkManagerAuto(void* pObject, void* pUnused, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteProjectilePoolAuto(void* pObject, void* pUnused, BYTE fDelete);
@@ -365,7 +365,7 @@ static void* g_LINKSCF_PlasChunkObjectVtable[66] = {
 // GLOBAL: LEMBALL 0x00494008
 static void* g_LINKSCF_ProjectilePoolVtable[10] = LINKSCF_EFF_CHUNK_VTABLE(DeleteProjectilePoolAuto,
 																		   ResetProjectilePool,
-																		   update_projectile_pool_real,
+																		   CBulletManagerProcess,
 																		   ReturnFalseChunkStreamCommandThunk,
 																		   EmitProjectilePoolRenderEntries);
 static void* g_LINKSCF_ManagedEntityQueueCursorVtable[4];

@@ -15,7 +15,7 @@ extern int g_nSelectedNetworkLobbyPeerId;
 extern void* g_pLiftTileGrid;
 extern void* g_pLevelTileGrid;
 extern void* g_pActiveManagedEntityOwner;
-extern int __fastcall has_level_plas_history_entries(void* pLevelMode);
+extern int __fastcall nDead(void* pLevelMode);
 extern CPlayerLemming* LEMBALL_FASTCALL PopLevelPlasHistoryChild(void* pLevelMode);
 
 extern void LEMBALL_FASTCALL destroy_lift_chunk_object(void* pObject);
@@ -738,7 +738,7 @@ int LEMBALL_FASTCALL RequestRockHistoryChildSwapState(void* pObject, void* pUnus
 	char* pEntityBytes = (char*) pEntity;
 
 	(void) pUnused;
-	if (has_level_plas_history_entries(g_pActiveManagedEntityOwner) == 0) {
+	if (nDead(g_pActiveManagedEntityOwner) == 0) {
 		return 0;
 	}
 	if (*(int*) (pEntityBytes + 0x64) != 2 || *(int*) (pObjectBytes + 0xb8) != 0x18) {
