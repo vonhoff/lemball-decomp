@@ -288,6 +288,36 @@ THUNK_ILT_REFERENCES = {
         (0x00402AA9, "CLift::ActivateDeactivate", "lift chunk activation toggle 00425660"),
         (0x004016B3, "CLift::Activate", "lift chunk activation request 00425640"),
     ],
+    0x00416D50: (
+        0x0040209F,
+        "CGameObject::Restart",
+        "game-object restart 004150d0",
+    ),
+    0x004212A0: (
+        0x00403120,
+        "CNode::Position",
+        "node fixed-point position 004213d0",
+    ),
+    0x004212C0: (
+        0x00402FAE,
+        "CNode::CopyTileXY",
+        "node tile-xy copy 004213f0",
+    ),
+    0x00412B60: (
+        0x00402F6D,
+        "CNodeManager::GetNodePosition",
+        "node-manager position by index 004212a0",
+    ),
+    0x00425010: (
+        0x004015AA,
+        "CLift::Set",
+        "lift set-points 00425060",
+    ),
+    0x004232E0: (
+        0x00401118,
+        "LevelTileGridOwnerView::GetWalk",
+        "grid walk query 004305f0",
+    ),
 }
 
 
