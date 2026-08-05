@@ -23,11 +23,16 @@ public:
 	void OnGround(void);
 
 private:
-	unsigned char m_abReserved00[0x9c];
+	unsigned char m_abReserved00[0x94];
+	int m_nFrameTimeMs94;                  // 0x94
+	unsigned char m_abReserved98[4];
 	AICOORD m_WorldPosition9C;            // 0x9c
 	unsigned char m_abReservedA8[0x10];
 	int m_nStateB8;                        // 0xb8
-	unsigned char m_abReservedBC[0x7c];
+	unsigned char m_abReservedBC[0xc];
+	int m_nNextTickC8;                     // 0xc8
+	int m_nEndTickCC;                      // 0xcc
+	unsigned char m_abReservedD0[0x68];
 	int m_anRuntimeState138[4];            // 0x138..0x147
 	int m_nDelay148;                       // 0x148
 	unsigned char m_abReserved14C[4];      // 0x14c..0x14f

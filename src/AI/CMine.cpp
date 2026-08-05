@@ -244,18 +244,18 @@ int CMine::Process(void)
 		m_anRuntimeState138[2] = 0;
 		break;
 	case 0x1a:
-		if ((unsigned int) *(int*) (pObject + 0xc8) < (unsigned int) g_nLevelFrameClockTick) {
+		if ((unsigned int) m_nNextTickC8 < (unsigned int) g_nLevelFrameClockTick) {
 			((CMine*) pObject)->SetTerrain();
-			*(int*) (pObject + 0x94) = g_nLevelFrameClockTimeMs;
-			*(int*) (pObject + 0xcc) = g_nLevelFrameClockTick + 0x14;
+			m_nFrameTimeMs94 = g_nLevelFrameClockTimeMs;
+			m_nEndTickCC = g_nLevelFrameClockTick + 0x14;
 			((MineChunkObjectActionView*) pObject)->SetManagedEntityStateId(0x1b);
 		}
 		break;
 	case 0x1b:
-		if ((unsigned int) *(int*) (pObject + 0xcc) < (unsigned int) g_nLevelFrameClockTick) {
+		if ((unsigned int) m_nEndTickCC < (unsigned int) g_nLevelFrameClockTick) {
 			m_anRuntimeState138[1] = 0;
 			m_anRuntimeState138[0] = 0;
-			*(int*) (pObject + 0xc8) = g_nLevelFrameClockTick + 100;
+			m_nNextTickC8 = g_nLevelFrameClockTick + 100;
 			((MineChunkObjectActionView*) pObject)->SetManagedEntityStateId(8);
 		}
 		break;
