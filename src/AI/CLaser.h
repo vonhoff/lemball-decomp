@@ -5,6 +5,7 @@
 
 class CGameObject;
 class CViewData;
+class CLaserManager;
 
 class CLaser {
 public:
@@ -18,6 +19,8 @@ public:
 	int Activate(void);
 	int StepOn(const AICOORD& position, CGameObject* pObject);
 	int GetViewData(CViewData* pViewData);
+
+	friend class CLaserManager;
 
 private:
 	unsigned char m_abReserved00[0x64];

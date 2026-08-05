@@ -108,16 +108,15 @@ CLaserManager::~CLaserManager(void)
 // FUNCTION: LEMBALL 0x004297f0
 int CLaserManager::StepOn(const AICOORD& position, CGameObject* pObject)
 {
-	char* pLaser;
 	int cbOffset;
 	int i;
 
 	cbOffset = 0;
 	i = 0;
 	while (i < m_cObjects34) {
-		pLaser = (char*) m_pObjects38 + cbOffset;
-		if (*(int*) (pLaser + 0x13c) != 0 && *(int*) (pLaser + 0x140) == 0 && *(int*) (pLaser + 0xb8) == 0x18 &&
-			((CLaser*) pLaser)->StepOn(position, pObject) != 0) {
+		CLaser* pLaser = (CLaser*) ((char*) m_pObjects38 + cbOffset);
+		if (pLaser->m_anRuntimeState138[1] != 0 && pLaser->m_anRuntimeState138[2] == 0 && pLaser->m_nStateB8 == 0x18 &&
+			pLaser->StepOn(position, pObject) != 0) {
 			return 1;
 		}
 		cbOffset += 0x148;
@@ -139,7 +138,7 @@ void CLaserManager::Process(void)
 		do {
 			*(int*) ((char*) m_pObjects38 + cbOffset + 0x124) = 1;
 			pObject = (char*) m_pObjects38 + cbOffset;
-			if (*(int*) (pObject + 0x138) != 0 || *(int*) (pObject + 0x114) != 0) {
+			if (((CLaser*) pObject)->m_anRuntimeState138[0] != 0 || *(int*) (pObject + 0x114) != 0) {
 				((LaserProcessProc) (*(void***) pObject)[5])(pObject);
 			}
 			cbOffset += 0x148;
