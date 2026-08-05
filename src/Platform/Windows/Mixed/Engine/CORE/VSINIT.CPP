@@ -393,8 +393,15 @@ void LEMBALL_FASTCALL AppendCStringToFixedBufferStream(VsInitFixedBufferStream* 
 													   int nUnused,
 													   const char* pszText)
 {
-	while (*pszText != '\0') {
-		AppendCharToFixedBufferStream(pStream, 0, *pszText++);
+	VsInitFixedBufferStream* pTarget;
+	int cchText;
+
+	(void) nUnused;
+	pTarget = pStream;
+	cchText = (int) strlen(pszText);
+	while (cchText != 0) {
+		((void(LEMBALL_FASTCALL*)(VsInitFixedBufferStream*, char)) ((void**) pTarget->m_pVtable)[2])(pTarget, *pszText++);
+		--cchText;
 	}
 }
 
