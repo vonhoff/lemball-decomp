@@ -87,11 +87,11 @@ void CLaser::Set(unsigned short nSlotId, const AICOORD& position, int nObjectTyp
 
 	pObjectBytes = (char*) this;
 	((CGameObject*) this)->SetId(nSlotId);
-	*(int*) (pObjectBytes + 0x9c) = position.x;
+	m_WorldPosition9C.x = position.x;
 	nTileX = (position.x >> 12) / 16;
-	*(int*) (pObjectBytes + 0xa0) = position.y;
-	*(int*) (pObjectBytes + 0xa4) = position.z;
-	*(int*) (pObjectBytes + 0x64) = nObjectType;
+	m_WorldPosition9C.y = position.y;
+	m_WorldPosition9C.z = position.z;
+	m_nEntityType64 = nObjectType;
 	m_anRuntimeState138[1] = 1;
 	nTileY = (position.y >> 12) / 16;
 
@@ -135,7 +135,7 @@ void CLaser::Set(unsigned short nSlotId, const AICOORD& position, int nObjectTyp
 		}
 		break;
 	}
-	*(int*) (pObjectBytes + 0xcc) = g_nLevelFrameClockTick + 0x3c;
+	m_nFrameTickCC = g_nLevelFrameClockTick + 0x3c;
 }
 
 // FUNCTION: LEMBALL 0x00428ab0
@@ -325,7 +325,7 @@ int CLaser::StepOn(const AICOORD& position, CGameObject* pObject)
 	char* pObjectBytes = (char*) pObject;
 	int* pFields = (int*) this;
 
-	if (*(int*) (pObjectBytes + 0x64) == 2 &&
+	if (m_nEntityType64 == 2 &&
 		Distance2DIntPixels(pFields[0x27] >> 12, pFields[0x28] >> 12, position.x >> 12, position.y >> 12) < 0x30) {
 		Activate();
 		*(CGameObject**) ((char*) this + 0x144) = pObject;

@@ -20,11 +20,20 @@ public:
 	int GetViewData(CViewData* pViewData);
 
 private:
-	unsigned char m_abReserved00[0xb8];
+	unsigned char m_abReserved00[0x64];
+	int m_nEntityType64;                   // 0x64
+	unsigned char m_abReserved68[0x34];
+	AICOORD m_WorldPosition9C;            // 0x9c
+	unsigned char m_abReservedA8[0x10];
 	int m_nStateB8;                        // 0xb8
-	unsigned char m_abReservedBC[0x7c];
+	unsigned char m_abReservedBC[0xc];
+	unsigned char m_abReservedC8[4];
+	int m_nFrameTickCC;                    // 0xcc
+	unsigned char m_abReservedD0[0x68];
 	int m_anRuntimeState138[3];            // 0x138..0x143
 	unsigned char m_abReserved144[4];
 };
+
+typedef char CLaserSizeCheck[sizeof(CLaser) == 0x148 ? 1 : -1];
 
 #endif
