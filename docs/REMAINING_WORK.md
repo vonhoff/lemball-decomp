@@ -50,6 +50,11 @@ no lost baseline addresses):
    (LEVELSTAT+LEVELVT, byte-faithful). NEXT: CDoorManager has 4 divergent local variants (CDoorAct has
    m_nCapacity38+Switch/Restart/Open/Initialise; CDoorSlot has reserved38+Id(); LVACTDSP/LVMODESLOT decl-only)
    - consolidate into a shared header with union of fields+methods; then remaining Enmy/Shpg/Plas/Boon.
+   DONE: CMoverManager (LEVELSTAT+LEVELVT), CDoorManager (4 variants). 
+   LARGE INVENTORY: ~60 struct names are defined in 2-10 files (vs-net transport stack VSNET/VSNETTCP/VSNETFIL,
+   Level/LevelManage* view structs). CAUTION: some are LEGITIMATE local views of a shared-header type (e.g.
+   VsNetEffStreamCommon is in VSSTRM.H AND local). Only consolidate TRUE ODR dups (divergent local defs of the
+   same object); verify each per-struct (the CDoorManager/CMoverManager pattern). This is the bulk long-tail work.
 1. CBulletManager/CBullet real-member refactor (B) — IN PROGRESS:
    - DONE: renamed ProjectilePool->CBulletManager, ProjectileObjectProxy->CBullet,
      ProjectilePoolOwnerView->CBulletManagerOwnerView (type renames); promoted
