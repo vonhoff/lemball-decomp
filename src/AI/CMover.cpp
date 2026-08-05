@@ -73,16 +73,14 @@ void CMover::Restart(void)
 // FUNCTION: LEMBALL 0x0042e600
 void CMover::Initialise(void)
 {
-	char* pObject = (char*) this;
-
-	*(int*) (pObject + 0x94) = 0;
-	*(int*) (pObject + 0x138) = 0;
-	*(int*) (pObject + 0x13c) = 0;
-	*(int*) (pObject + 0x144) = 0;
-	*(int*) (pObject + 0x148) = 0;
-	*(int*) (pObject + 0x174) = 0;
-	*(int*) (pObject + 0x140) = 1;
-	*(int*) (pObject + 0xb8) = 0x18;
+	*(int*) ((char*) this + 0x94) = 0;
+	m_fActive138 = 0;
+	*(int*) ((char*) this + 0x13c) = 0;
+	m_nMode144 = 0;
+	m_fSwitch148 = 0;
+	m_cAttachedEntities174 = 0;
+	*(int*) ((char*) this + 0x140) = 1;
+	*(int*) ((char*) this + 0xb8) = 0x18;
 }
 
 // FUNCTION: LEMBALL 0x0042e640
