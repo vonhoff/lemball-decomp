@@ -150,6 +150,12 @@ struct VsNetEffStreamCore {
 /* Tagged and file-backed streams share the 0x2c-byte polymorphic prefix.
  * Tagged streams append the 0x0c-byte serialization tag tail. */
 // VTABLE: LEMBALL 0x00498f40
+// Macintosh blueprint: Visos (Generic) CNetworkMessage (accepted x86
+// correlations 0x45EE80-0x45F2B0; see macintosh-x86-correlations.csv).  The
+// binary's mangled symbols name this class CNetworkMessage; the shared
+// VsNetEffStreamCommon base + derived family model the proven polymorphic
+// stream object.  Mac-only framing methods (CheckMessage/GetHeader/AddHeader)
+// are platform_specific and have no x86 equivalent — do not add.
 struct CNetworkMessage : VsNetEffStreamCommon {
 	CNetworkMessage();
 	virtual void ReverseEffStreamPayload(void);    // vtable+0x8
