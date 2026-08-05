@@ -275,6 +275,11 @@ THUNK_ILT_REFERENCES = {
         "CGameObject::FacingDestination",
         "game-object facing-destination query 00415e20",
     ),
+    0x00428F30: (
+        0x00402829,
+        "CLaser::Activate",
+        "laser activate-at-position 00428ec0",
+    ),
 }
 
 
