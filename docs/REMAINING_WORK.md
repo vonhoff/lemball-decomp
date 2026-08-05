@@ -53,10 +53,14 @@ no lost baseline addresses):
    DONE: CMoverManager (LEVELSTAT+LEVELVT), CDoorManager (4 variants). 
    Small identical view/tuple structs (3-int point types) consolidated: LevelPoint3 (3 files), LevelBoundsPoint (2),
    LevelNodePoint (2). Pattern proven byte-safe: create src/ai/X.h, replace per-TU local 'struct X{..}' with #include.
-   LARGE INVENTORY: ~60 struct names are defined in 2-10 files (vs-net transport stack VSNET/VSNETTCP/VSNETFIL,
-   Level/LevelManage* view structs). CAUTION: some are LEGITIMATE local views of a shared-header type (e.g.
-   VsNetEffStreamCommon is in VSSTRM.H AND local). Only consolidate TRUE ODR dups (divergent local defs of the
-   same object); verify each per-struct (the CDoorManager/CMoverManager pattern). This is the bulk long-tail work.
+   LARGE INVENTORY: the ~48 remaining "struct in >1 file" are mostly (a) LEGITIMATE local views of shared-header
+   types (VsNetEffStreamCommon, LevelChunkObjectBaseView, CGround) — NOT ODR dups, leave; (b) entangled vs-net
+   transport structs with divergent layouts + cross-refs — high risk, low per-struct value. ODR-cleanup of simple
+   identical self-contained dups is essentially DONE (16 consolidated). PIVOT to reconstruction backlog (below)
+   rather than force risky vs-net merges.
+4. RECONSTRUCTION (the core remaining value): the ~317 zero-ratio + ~391 weak uncorrelated game functions
+   (construct_*/destroy_*/emit_*/dispatch_*/handle_* families). Migrate them into proper C++ class methods using
+   address-range + Mac blueprint correlation (tools/reconstruction_audit.py --zeros). This is the main goal.
 1. CBulletManager/CBullet real-member refactor (B) — IN PROGRESS:
    - DONE: renamed ProjectilePool->CBulletManager, ProjectileObjectProxy->CBullet,
      ProjectilePoolOwnerView->CBulletManagerOwnerView (type renames); promoted
