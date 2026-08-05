@@ -650,7 +650,9 @@ VsInitFormattedOutputStream* VsInitFormattedOutputStream::AppendCStringToStream(
 // FUNCTION: LEMBALL 0x004585d0
 VsInitFormattedOutputStream* VsInitFormattedOutputStream::AppendCharToStreamVariant(char ch)
 {
-	AppendCharToFixedBufferStream(VsInitFORMAT_TARGET(this)->m_pDownstream, 0, ch);
+	VsInitFixedBufferStream* pDownstream;
+	pDownstream = VsInitFORMAT_TARGET(this)->m_pDownstream;
+	((void(LEMBALL_FASTCALL*)(VsInitFixedBufferStream*, char)) ((void**) pDownstream->m_pVtable)[2])(pDownstream, ch);
 	return this;
 }
 
