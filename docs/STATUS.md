@@ -23,7 +23,7 @@ is confirmed so it is never re-triaged. Goal prompt drives *what*, this tracks *
 
 ## Unreconstructed `[gap]` family (door/trampoline/paintgun/ice managers)
 
-Each is genuinely missing but infrastructure-bound — needs door ctor `0x401eba`→`0x40d470` ✅ (exists), door vtable Restart `[+0x104]`, and/or global tile-map `0x4a74b4` (`+0xc` tile data, `+0x10` w, `+0x14` h). Not isolated wins — reconstruct as a subsystem. CDoorManager::Initialise (0x40DFC0) is the tractable entry (array-alloc + ctor each 0x14c object + Restart).
+Each is genuinely missing but infrastructure-bound — needs door ctor `0x401eba`→`0x40d470` ✅ (exists), door vtable Restart `[+0x104]`, and/or global tile-map `0x4a74b4` (`+0xc` tile data, `+0x10` w, `+0x14` h). Not isolated wins — reconstruct as a subsystem. CDoorManager::Initialise (0x40DFC0) ✅ DONE (45.5%, array-alloc + ctor + Restart). Next: CDoorManager::Restart/Add/Open/Process (same dispatch), then CDoor::Set/Delete/collision (need tile-map 0x4a74b4).
 
 
 ## Dead-ends (confirmed not source-fixable; don't re-triage)

@@ -55,6 +55,7 @@ private:
 
 public:
 	void Switch(int nAction, unsigned int nSlot);
+	void Restart(void);
 	void Initialise(int nCount);
 };
 
@@ -68,8 +69,7 @@ void CDoorManager::Switch(int nAction, unsigned int nSlot)
 
 	if (m_nObjectCount34 > 0) {
 		nObjectOffset = 0;
-		while (GetManagedEntitySlotIdThunk((int) (unsigned long) ((char*) m_pObjects3C + nObjectOffset)) !=
-			   nSlot) {
+		while (GetManagedEntitySlotIdThunk((int) (unsigned long) ((char*) m_pObjects3C + nObjectOffset)) != nSlot) {
 			nObjectOffset += 0x14c;
 			++iObject;
 			if (m_nObjectCount34 <= iObject) {
@@ -79,6 +79,21 @@ void CDoorManager::Switch(int nAction, unsigned int nSlot)
 		if (nAction == 3) {
 			((CDoor*) ((char*) m_pObjects3C + iObject * 0x14c))->DoActivate();
 		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x0040df90
+void CDoorManager::Restart(void)
+{
+	CDoor* pObject;
+	int iObject;
+
+	if (m_pObjects3C == 0) {
+		return;
+	}
+	for (iObject = 0; iObject < m_nCapacity38; ++iObject) {
+		pObject = (CDoor*) ((char*) m_pObjects3C + iObject * 0x14c);
+		((CDoorNoArgVirtualProc) (*(void***) pObject)[0x104 / sizeof(void*)])(pObject);
 	}
 }
 
