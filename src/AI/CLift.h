@@ -40,8 +40,18 @@ public:
 			 unsigned char nFlags);
 
 private:
-	unsigned char m_abReserved00[0x190];
+	unsigned char m_abReserved00[0x9c];
+	AICOORD m_WorldPosition9C;            // 0x9c
+	unsigned char m_abReservedA8[0x10];
+	int m_nStateB8;                        // 0xb8
+	unsigned char m_abReservedBC[0x7c];
+	unsigned short m_nLiftObjectId138;     // 0x138
+	tCoord3d m_RangeStart13A;              // 0x13a (x,y,z)
+	tCoord3d m_RangeEnd140;                // 0x140 (x,y,z)
+	unsigned char m_abReserved146[0x4a];
 };
+
+typedef char CLiftSizeCheck[sizeof(CLift) == 0x190 ? 1 : -1];
 
 struct LiftVtableLayout {
 	void* m_apSlots00[5];

@@ -40,9 +40,9 @@ void CLift::CalculateCliff(void)
 	int y;
 
 	pObject = (char*) this;
-	nStartX = *(short*) (pObject + 0x13a) / 16;
-	nStartY = *(short*) (pObject + 0x13c) / 16;
-	nEndX = *(short*) (pObject + 0x140) / 16;
+	nStartX = m_RangeStart13A.x / 16;
+	nStartY = m_RangeStart13A.y / 16;
+	nEndX = m_RangeEnd140.x / 16;
 	x = nStartX;
 	if (nStartY > 0) {
 		for (; x <= nEndX; ++x) {
@@ -86,7 +86,7 @@ void CLift::Edit(int nHeight,
 	*(int*) (pObject + 0x168) = nFlags;
 	*(int*) (pObject + 0x14c) = nTargetB;
 	*(int*) (pObject + 0x15c) = activateType;
-	*(int*) (pObject + 0xb8) = 0x18;
+	m_nStateB8 = 0x18;
 	*(int*) (pObject + 0x16c) = 0;
 	for (i = 0; i < 8; ++i) {
 		*(void**) (pObject + 0x170 + i * 4) = 0;
@@ -99,9 +99,9 @@ void CLift::Edit(int nHeight,
 	else if (*(int*) (pObject + 0x14c) == (short) nHeight && *(short*) (pObject + 0x154) == 1) {
 		*(short*) (pObject + 0x154) = -1;
 	}
-	for (x = *(short*) (pObject + 0x13a); x <= *(short*) (pObject + 0x140); x += 16) {
+	for (x = m_RangeStart13A.x; x <= m_RangeEnd140.x; x += 16) {
 		nTileX = x / 16;
-		for (y = *(short*) (pObject + 0x13c); y <= *(short*) (pObject + 0x142); y += 16) {
+		for (y = m_RangeStart13A.y; y <= m_RangeEnd140.y; y += 16) {
 			nTileY = y / 16;
 			switch (activateType) {
 			case 0:
@@ -159,11 +159,11 @@ void CLift::Set(tCoord3d& start,
 {
 	char* pObject;
 	pObject = (char*) this;
-	*(int*) (pObject + 0x9c) = (int) start.x << 12;
-	*(int*) (pObject + 0xa0) = (int) start.y << 12;
-	*(int*) (pObject + 0xa4) = (int) start.z << 12;
-	*(unsigned short*) (pObject + 0x138) = g_nNextLiftObjectId++;
-	*(tCoord3d*) (pObject + 0x13a) = start;
-	*(tCoord3d*) (pObject + 0x140) = end;
-	Edit(*(short*) (pObject + 0x13e), nDirection, nTargetA, nTargetB, activateType, nFlags);
+	m_WorldPosition9C.x = (int) start.x << 12;
+	m_WorldPosition9C.y = (int) start.y << 12;
+	m_WorldPosition9C.z = (int) start.z << 12;
+	m_nLiftObjectId138 = (unsigned short) g_nNextLiftObjectId++;
+	m_RangeStart13A = start;
+	m_RangeEnd140 = end;
+	Edit(m_RangeStart13A.z, nDirection, nTargetA, nTargetB, activateType, nFlags);
 }
