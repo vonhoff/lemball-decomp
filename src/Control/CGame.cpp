@@ -1,4 +1,5 @@
 #include "Control/CGame.h"
+#include "Control/GameNetworkLevelChunkDeltaStream.h"
 
 #include "AI/CInvisibleSwitchManager.h"
 #include "AI/CHandManager.h"
@@ -540,10 +541,6 @@ struct GameEffTransportRuntimeWindow {
 extern void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerClearCloseStream(void* pObject);
 extern void* LEMBALL_FASTCALL ConstructNetworkLobbyPeerDirtyConfirmStream(void* pObject);
 extern void LEMBALL_FASTCALL StopNetworkLobbyTransportSession(void* pController);
-struct GameNetworkLevelChunkDeltaStream {
-	void* ConstructNetworkLevelChunkDeltaStream(int nOwner);
-	void* ConstructNetworkLevelChunkDeltaStreamEntry(int nOwner);
-};
 extern void* ConstructMainGameVariantResourceBundle(void* pBundle, void* pPrimaryContext, unsigned short nVariantMode);
 extern void InitializeManagedEntitySlotTablesEntryThunk(void* pLevelGameMode);
 extern unsigned short g_GAME_ManagedEntityRegistryCount;

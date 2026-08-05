@@ -1,6 +1,7 @@
 #define LEMBALL_DEFINE_MANAGED_ENTITY_PACKET_CLASSES
 
 #include "AI/CFormationManager.h"
+#include "Control/GameNetworkLevelChunkDeltaStream.h"
 #include "AI/LiftChunkManagerSerializationView.h"
 
 inline void* operator new(unsigned int, void* pMemory)
@@ -430,10 +431,6 @@ struct LevelNestedOwnerInterface : public LevelVirtualSlots00Through40 {
 extern int PASCAL ReturnTrueVtableCallbackThunk(void* pObject);
 extern int ReturnTrueVtableCallbackSecondaryThunk(void);
 extern void NoopVtableCallbackThunk(void);
-struct GameNetworkLevelChunkDeltaStream {
-	void* ConstructNetworkLevelChunkDeltaStream(int nOwner);
-	void* ConstructNetworkLevelChunkDeltaStreamEntry(int nOwner);
-};
 void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStream(void* pObject);
 void LEMBALL_FASTCALL LoadLevelGameStateStreamPayload(void* pObject);
 void LEMBALL_FASTCALL ReadNetworkLevelChunkDeltaStreamThunk(void* pObject);
