@@ -171,13 +171,13 @@ void CMine::DoActivate(void)
 	m_anRuntimeState138[1] = 1;
 	if (m_anRuntimeState138[3] != 0) {
 		m_anRuntimeState138[2] = 0;
-		*(int*) ((char*) this + 0xc8) = m_nDelay148 + g_nLevelFrameClockTick;
+		m_nNextTickC8 = m_nDelay148 + g_nLevelFrameClockTick;
 		((CMineManager*) *(void**) ((char*) this + 0x60))->Triggered(this);
 		return;
 	}
 	SetTerrain();
-	*(int*) ((char*) this + 0x94) = g_nLevelFrameClockTimeMs;
-	*(int*) ((char*) this + 0xcc) = g_nLevelFrameClockTick + 0x14;
+	m_nFrameTimeMs94 = g_nLevelFrameClockTimeMs;
+	m_nEndTickCC = g_nLevelFrameClockTick + 0x14;
 }
 
 // FUNCTION: LEMBALL 0x00423dd0
