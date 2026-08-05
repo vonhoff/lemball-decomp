@@ -1,5 +1,6 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "AI/CGameObject.h"
+#include "Visos/Generic/CVSPoint.h"
 
 #include <string.h>
 
@@ -22,9 +23,14 @@ struct LevelScreenInputEventSink {
 };
 
 struct LevelScreenManagedEntitySelectionView {
-	unsigned char m_abReserved000[0x95c];
+	unsigned char m_abReserved000[0x918];
+	int m_nCameraOriginX918;           // 0x918
+	int m_nCameraOriginY91C;           // 0x91c
+	unsigned char m_abReserved920[0x3c];
 	void* m_pManagedEntityArray95C;   // 0x95c
-	unsigned char m_abReserved960[0xc]; // 0x960..0x96b
+	unsigned char m_abReserved960[4]; // 0x960..0x963
+	unsigned short m_nEntityCount964;  // 0x964
+	unsigned char m_abReserved966[6];  // 0x966..0x96b
 	void* m_pLevelMode96C;            // 0x96c
 	unsigned char m_abReserved970[4]; // 0x970..0x973
 	LevelScreenInputEventSink* m_pInputEventSink974;
@@ -34,6 +40,7 @@ struct LevelScreenManagedEntitySelectionView {
 	unsigned short m_nGroupCapacityA4E;
 	unsigned short m_aGroupObjectNumbersA50[0x100]; // 0xa50..0xbb0
 
+	int FindGameObject(const CVSPoint* pPoint, int* pObjectIndex, unsigned char nMode);
 	void SelectLemming(int nIndex);
 	void SelectObject(int nIndex);
 	bool InGroupByObjectNo(int nObjectNo);
@@ -74,6 +81,73 @@ void LevelScreenManagedEntitySelectionView::CheckValidFormGroup(void)
 			}
 		}
 	}
+}
+
+// Macintosh: C2D::FindGameObject(const CVSPoint&, int&, unsigned char)
+// FUNCTION: LEMBALL 0x00436e40
+int LevelScreenManagedEntitySelectionView::FindGameObject(const CVSPoint* pPoint, int* pObjectIndex, unsigned char nMode)
+{
+	int* pEntity = (int*) ((char*) m_pManagedEntityArray95C + 0x28);
+	unsigned int nCount = m_nEntityCount964;
+	int nClickX = (int) pPoint->m_nX - m_nCameraOriginX918;
+	int nClickY = (int) pPoint->m_nY - m_nCameraOriginY91C;
+	int i = 0;
+	int nPrimary = -1;
+	int nSecondary = -1;
+
+	while (i < (int) nCount) {
+		int nType = pEntity[0];
+		int nX = pEntity[-9];
+		int nY = pEntity[-8];
+		int nLeft;
+		int nRight;
+		int nTop;
+		int nBottom;
+		switch (nType) {
+		case 2:  nLeft = nX - 8;   nRight = nY - 0x10; nTop = nX + 8;   nBottom = 8;   break;
+		case 4:  nLeft = nX - 0x1c; nRight = nY - 0x30; nTop = nX + 0x14; nBottom = 8;   break;
+		case 5:  nLeft = nX - 8;   nRight = nY - 0x10; nTop = nX + 8;   nBottom = 2;   break;
+		case 0xc: nLeft = nX - 0xd; nRight = nY - 0x1b; nTop = nX + 0xf; nBottom = 2;  break;
+		case 0x11: nLeft = nX - 8;  nRight = nY - 0xc;  nTop = nX + 8;  nBottom = 4;   break;
+		case 0x14: nLeft = nX - 10; nRight = nY - 0x11; nTop = nX + 8;  nBottom = 2;   break;
+		case 0x15: case 0x16: case 0x17:
+			nLeft = nX - 8; nRight = nY - 0x20; nTop = nX + 8; nBottom = 0x20; break;
+		case 0x1c: nLeft = nX - 10; nRight = nY - 0x25; nTop = nX + 0x24; nBottom = 6; break;
+		case 0x22: nLeft = nX - 0x10; nRight = nY - 0x10; nTop = nX + 0x10; nBottom = -8; break;
+		case 0x27: case 0x29: case 0x2b: case 0x2d:
+			nLeft = nX - 10; nRight = nY - 0x30; nTop = nX + 10; nBottom = 0; break;
+		case 0x34: nLeft = nX - 0x10; nRight = nY - 0x10; nTop = nX + 0xf; nBottom = 8; break;
+		default: goto next;
+		}
+		nBottom += nY;
+		if (nLeft <= nClickX && nClickX < nTop && nRight <= nClickY && nClickY < nBottom) {
+			if (nMode == 0) {
+				if (nType == 2) {
+					if (nBottom > -1) {
+						nSecondary = i;
+					}
+				}
+				else {
+					nPrimary = i;
+				}
+			}
+			else if (nType == 2) {
+				nPrimary = i;
+			}
+		}
+next:
+		pEntity += 0x13;
+		++i;
+	}
+	if (nPrimary != -1) {
+		*pObjectIndex = nPrimary;
+		return 1;
+	}
+	if (nSecondary == -1) {
+		return 0;
+	}
+	*pObjectIndex = nSecondary;
+	return 1;
 }
 
 // Macintosh: C2D::AddObjectToGroup(int, unsigned char)
