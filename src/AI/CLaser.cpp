@@ -16,6 +16,13 @@ extern int g_nSelectedNetworkLobbyPeerId;
 extern int Distance2DIntPixels(int x1, int y1, int x2, int y2);
 extern void LEMBALL_FASTCALL EmitLevelChunkObjectRenderEntry(void* pObject, void* pUnused, void* pRenderEntry);
 
+struct CLaserTileGrid {
+	char m_abReserved00[0xc];
+	unsigned char* m_pTileData0C;   // 0x0c
+	int m_nWidth10;                  // 0x10
+	int m_nHeight14;                 // 0x14
+};
+
 struct LevelChunkObjectBaseView {
 	void* InitializeLevelChunkObjectBase(int nType, unsigned short nChildType, unsigned short nFlags);
 };
@@ -72,7 +79,6 @@ CLaser::~CLaser(void)
 void CLaser::Set(unsigned short nSlotId, const AICOORD& position, int nObjectType)
 {
 	char* pObjectBytes;
-	char* pGrid;
 	int nTileX;
 	int nTileY;
 	int i;
@@ -107,10 +113,9 @@ void CLaser::Set(unsigned short nSlotId, const AICOORD& position, int nObjectTyp
 		for (i = 1; i < 8; ++i) {
 			x = nTileX + i;
 			if (x >= 0 && nTileY >= 0) {
-				pGrid = (char*) g_pLevelTileGrid;
-				if (x < *(int*) (pGrid + 0x10) && nTileY < *(int*) (pGrid + 0x14)) {
-					*(unsigned char*) (*(char**) (pGrid + 0x0c) + (nTileY * *(int*) (pGrid + 0x10) + x) * 12 + 7) |=
-						0x80;
+				CLaserTileGrid* pGrid = (CLaserTileGrid*) g_pLevelTileGrid;
+				if (x < pGrid->m_nWidth10 && nTileY < pGrid->m_nHeight14) {
+					pGrid->m_pTileData0C[(nTileY * pGrid->m_nWidth10 + x) * 12 + 7] |= 0x80;
 				}
 			}
 		}
@@ -122,10 +127,9 @@ void CLaser::Set(unsigned short nSlotId, const AICOORD& position, int nObjectTyp
 		for (i = 1; i < 8; ++i) {
 			y = nTileY + i;
 			if (nTileX >= 0 && y >= 0) {
-				pGrid = (char*) g_pLevelTileGrid;
-				if (nTileX < *(int*) (pGrid + 0x10) && y < *(int*) (pGrid + 0x14)) {
-					*(unsigned char*) (*(char**) (pGrid + 0x0c) + (y * *(int*) (pGrid + 0x10) + nTileX) * 12 + 7) |=
-						0x80;
+				CLaserTileGrid* pGrid = (CLaserTileGrid*) g_pLevelTileGrid;
+				if (nTileX < pGrid->m_nWidth10 && y < pGrid->m_nHeight14) {
+					pGrid->m_pTileData0C[(y * pGrid->m_nWidth10 + nTileX) * 12 + 7] |= 0x80;
 				}
 			}
 		}
@@ -165,19 +169,18 @@ int CLaser::CheckHits(void)
 	}
 
 	for (nSteps = 0; nSteps < 8; ++nSteps) {
-		char* pGrid;
 		char* pOwner;
 		unsigned short nTerrain;
 
 		nX += nStepX;
 		nY += nStepY;
-		pGrid = (char*) g_pLevelTileGrid;
-		if (nX < 0 || nY < 0 || (nX >> 4) >= *(int*) (pGrid + 0x10) || (nY >> 4) >= *(int*) (pGrid + 0x14)) {
+		CLaserTileGrid* pGrid = (CLaserTileGrid*) g_pLevelTileGrid;
+		if (nX < 0 || nY < 0 || (nX >> 4) >= pGrid->m_nWidth10 || (nY >> 4) >= pGrid->m_nHeight14) {
 			nTerrain = 0;
 		}
 		else {
 			CGround* pTile =
-				(CGround*) (*(char**) (pGrid + 0x0c) + (((nY >> 4) * *(int*) (pGrid + 0x10)) + (nX >> 4)) * 12);
+				(CGround*) (pGrid->m_pTileData0C + (((nY >> 4) * pGrid->m_nWidth10) + (nX >> 4)) * 12);
 			nTerrain = (unsigned short) pTile->GetZThunk(nX & 15, nY & 15);
 		}
 		if ((int) nTerrain > nZ) {
@@ -336,7 +339,6 @@ int CLaser::GetViewData(CViewData* pViewData)
 {
 	char* pObject;
 	char* pEntry;
-	char* pGrid;
 	CGround* pTile;
 	unsigned short nTerrain;
 	int nX;
@@ -378,12 +380,12 @@ int CLaser::GetViewData(CViewData* pViewData)
 	nZ = (*(int*) (pObject + 0xa4) >> 12) + 3;
 	pEntry += 0x4c;
 	while (cEntries < 8) {
-		pGrid = (char*) g_pLevelTileGrid;
-		if (nX < 0 || nY < 0 || (nX >> 4) >= *(int*) (pGrid + 0x10) || (nY >> 4) >= *(int*) (pGrid + 0x14)) {
+		CLaserTileGrid* pGrid = (CLaserTileGrid*) g_pLevelTileGrid;
+		if (nX < 0 || nY < 0 || (nX >> 4) >= pGrid->m_nWidth10 || (nY >> 4) >= pGrid->m_nHeight14) {
 			nTerrain = 0;
 		}
 		else {
-			pTile = (CGround*) (*(char**) (pGrid + 0x0c) + (((nY >> 4) * *(int*) (pGrid + 0x10)) + (nX >> 4)) * 12);
+			pTile = (CGround*) (pGrid->m_pTileData0C + (((nY >> 4) * pGrid->m_nWidth10) + (nX >> 4)) * 12);
 			nTerrain = (unsigned short) pTile->GetZThunk(nX & 15, nY & 15);
 		}
 		if (nZ < (int) nTerrain) {
