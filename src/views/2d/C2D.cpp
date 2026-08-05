@@ -20,12 +20,17 @@ struct LevelScreenInputEventSink {
 };
 
 struct LevelScreenManagedEntitySelectionView {
-	unsigned char m_abReserved000[0x974];
+	unsigned char m_abReserved000[0x95c];
+	void* m_pManagedEntityArray95C;   // 0x95c
+	unsigned char m_abReserved960[0xc]; // 0x960..0x96b
+	void* m_pLevelMode96C;            // 0x96c
+	unsigned char m_abReserved970[4]; // 0x970..0x973
 	LevelScreenInputEventSink* m_pInputEventSink974;
 	unsigned char m_abReserved978[0xd0];
 	int m_nPendingSelectionA48;
 	unsigned short m_nPendingSelectionVariantA4C;
 	unsigned short m_nGroupCapacityA4E;
+	unsigned short m_aGroupObjectNumbersA50[0x100]; // 0xa50..0xbb0
 
 	void SelectLemming(int nIndex);
 	void SelectObject(int nIndex);
@@ -56,7 +61,7 @@ void LevelScreenManagedEntitySelectionView::CheckValidFormGroup(void)
 	if (m_nPendingSelectionA48 != 1) {
 		return;
 	}
-	pGroup = (unsigned short*) ((char*) this + 0xa50);
+	pGroup = m_aGroupObjectNumbersA50;
 	nCount = m_nPendingSelectionVariantA4C;
 	if (nCount != 0) {
 		for (nIndex = 0; nIndex < nCount; ++nIndex) {
@@ -73,7 +78,7 @@ void LevelScreenManagedEntitySelectionView::CheckValidFormGroup(void)
 // FUNCTION: LEMBALL 0x00437130
 void LevelScreenManagedEntitySelectionView::AddObjectToGroup(int nObjectNo, int fUpdateCapacity)
 {
-	((unsigned short*) ((char*) this + 0xa50))[m_nPendingSelectionVariantA4C] = (unsigned short) nObjectNo;
+	m_aGroupObjectNumbersA50[m_nPendingSelectionVariantA4C] = (unsigned short) nObjectNo;
 	++m_nPendingSelectionVariantA4C;
 	if (fUpdateCapacity != 0) {
 		m_nGroupCapacityA4E = m_nPendingSelectionVariantA4C;
@@ -160,7 +165,7 @@ void LevelScreenManagedEntitySelectionView::SelectLemming(int nIndex)
 	char* pEntry;
 	LevelScreenInputEvent Event;
 
-	pModeBytes = (char*) *(void**) ((char*) this + 0x96c);
+	pModeBytes = (char*) m_pLevelMode96C;
 	pEntry = *(char**) (pModeBytes + nIndex * 4 + 0x1d0);
 	Event.m_nType00 = 8;
 	Event.m_nReserved08 = (int) *(unsigned short*) (pEntry + 0x6a);
@@ -179,7 +184,7 @@ void LevelScreenManagedEntitySelectionView::SelectObject(int nIndex)
 	char* pEntry;
 	LevelScreenInputEvent Event;
 
-	pObjectsBytes = (char*) *(void**) ((char*) this + 0x95c);
+	pObjectsBytes = (char*) m_pManagedEntityArray95C;
 	pEntry = pObjectsBytes + (int) (nIndex * 0x4c);
 	Event.m_nType00 = 8;
 	Event.m_nReserved08 = (int) *(unsigned short*) (pEntry + 0x2c);
@@ -198,7 +203,7 @@ bool LevelScreenManagedEntitySelectionView::InGroupByObjectNo(int nObjectNo)
 	unsigned short nIndex;
 	unsigned short* pGroup;
 
-	pGroup = (unsigned short*) ((char*) this + 0xa50);
+	pGroup = m_aGroupObjectNumbersA50;
 	nCount = m_nPendingSelectionVariantA4C;
 	if (nCount != 0) {
 		for (nIndex = 0; nIndex < nCount; ++nIndex) {
@@ -219,12 +224,12 @@ void LevelScreenManagedEntitySelectionView::RemoveFromGroupByObjectNo(int nObjec
 	unsigned short* pRead;
 	unsigned short* pWrite;
 
-	pRead = (unsigned short*) ((char*) this + 0xa50);
+	pRead = m_aGroupObjectNumbersA50;
 	nCount = m_nPendingSelectionVariantA4C;
 	if (nCount == 0) {
 		return;
 	}
-	pWrite = (unsigned short*) ((char*) this + 0xa50);
+	pWrite = m_aGroupObjectNumbersA50;
 	for (nIndex = 0; nIndex < nCount; ++nIndex) {
 		if (*pRead != nObjectNo) {
 			*pWrite = *pRead;
@@ -250,7 +255,7 @@ bool LevelScreenManagedEntitySelectionView::IsInGrouping(int* pObject)
 	unsigned short nIndex;
 	unsigned short* pGroup;
 
-	pGroup = (unsigned short*) ((char*) this + 0xa50);
+	pGroup = m_aGroupObjectNumbersA50;
 	nCount = m_nPendingSelectionVariantA4C;
 	for (nIndex = 0; nIndex < nCount; ++nIndex) {
 		if (*(unsigned short*) ((char*) pObject + 0x6a) == pGroup[nIndex]) {
