@@ -1,6 +1,9 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "Visos/Generic/Memory.h"
 
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
+
+typedef void(LEMBALL_FASTCALL* CDoorNoArgVirtualProc)(void* pEntity);
 
 struct ManagedEntityStateView {
 	virtual void Reserved00(void) = 0;
@@ -47,11 +50,12 @@ struct CDoorManager {
 private:
 	unsigned char m_abReserved00[0x34];
 	int m_nObjectCount34;
-	unsigned char m_abReserved38[4];
+	int m_nCapacity38;
 	CDoor* m_pObjects3C;
 
 public:
 	void Switch(int nAction, unsigned int nSlot);
+	void Initialise(int nCount);
 };
 
 // FUNCTION: LEMBALL 0x0040e5a0
@@ -74,6 +78,38 @@ void CDoorManager::Switch(int nAction, unsigned int nSlot)
 		}
 		if (nAction == 3) {
 			((CDoor*) ((char*) m_pObjects3C + iObject * 0x14c))->DoActivate();
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x0040dfc0
+void CDoorManager::Initialise(int nCount)
+{
+	CDoor* pBase;
+	CDoor* pObject;
+	int iObject;
+
+	*(unsigned short*) 0x49cf48 = 0;
+	m_nObjectCount34 = 0;
+	m_nCapacity38 = nCount;
+	if (nCount != 0) {
+		if (m_pObjects3C == 0) {
+			pBase = (CDoor*) ((char*) AllocateVSMemBlock((unsigned int) (nCount * 0x14c + 4)) + 4);
+			if (pBase != 0) {
+				*(int*) ((char*) pBase - 4) = nCount;
+				for (iObject = nCount - 1; iObject >= 0; --iObject) {
+					((void(__fastcall*)(void*)) 0x401eba)((char*) pBase + iObject * 0x14c);
+				}
+				m_pObjects3C = pBase;
+			}
+			else {
+				m_pObjects3C = 0;
+			}
+		}
+		for (iObject = 0; iObject < m_nCapacity38; ++iObject) {
+			pObject = (CDoor*) ((char*) m_pObjects3C + iObject * 0x14c);
+			((CDoorNoArgVirtualProc) (*(void***) pObject)[0x104 / sizeof(void*)])(pObject);
+			*(int*) ((char*) pObject + 0x60) = (int) this;
 		}
 	}
 }
