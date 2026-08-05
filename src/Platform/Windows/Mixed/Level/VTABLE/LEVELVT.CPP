@@ -4,6 +4,7 @@
 #include "AI/CPlayerLemmingGroup.h"
 #include "AI/CGlobalGameObject.h"
 #include "AI/CMover.h"
+#include "AI/CBulletManager.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
 #include "AI/CCatapult.h"
@@ -354,20 +355,6 @@ struct LevelProjectilePosition {
 	int m_nX;
 	int m_nY;
 	int m_nZ;
-};
-
-struct CBulletManager {
-	char m_abReserved00[0x34];
-	void* m_apObjects[20];
-	char m_abReserved84[0x50];
-	int m_nCountD4;
-	int m_nIndexD8;
-
-	void RemoveObject(void* pObject);
-	int FindProjectilePositionInRect(const LevelShortRect* pRect, LevelProjectilePosition* pPosition);
-	void* GetFirstBullet(void);
-	void* GetNextBullet(void);
-	void Process(void);
 };
 
 struct CBullet {

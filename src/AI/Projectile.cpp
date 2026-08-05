@@ -1,21 +1,9 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
+#include "AI/CBulletManager.h"
 
 void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
-
-struct CBulletManagerOwnerView {
-	char m_abReserved00[0x30];
-	char* volatile m_pProjectilePool30;
-	void* m_apActiveProjectiles34[20];
-	char m_abReserved84[0x50];
-	int m_cActiveProjectilesD4;
-	int m_iActiveProjectileD8;
-	volatile int m_iProjectilePoolSearchStartDC;
-
-	void* GetFreeProjectilePoolObject(void);
-	void ResetProjectilePool(void);
-};
 
 typedef void(LEMBALL_FASTCALL* ResetProjectileObjectProc)(void* pObject);
 
@@ -24,7 +12,7 @@ void LEMBALL_FASTCALL DestroyProjectileObject(void* pObject);
 // Split from the original LINKSCF source group to preserve MSVC 4.20 code generation in LINKSCF.CPP.
 
 // FUNCTION: LEMBALL 0x00417e80
-void CBulletManagerOwnerView::ResetProjectilePool(void)
+void CBulletManager::ResetProjectilePool(void)
 {
 	void** ppActiveProjectile;
 	int cbProjectile;
@@ -32,9 +20,9 @@ void CBulletManagerOwnerView::ResetProjectilePool(void)
 	ResetProjectileObjectProc pReset;
 
 	cbProjectile = 0;
-	ppActiveProjectile = m_apActiveProjectiles34;
-	m_iActiveProjectileD8 = 0;
-	m_cActiveProjectilesD4 = 0;
+	ppActiveProjectile = m_apObjects;
+	m_nIndexD8 = 0;
+	m_nCountD4 = 0;
 	do {
 		*ppActiveProjectile = NULL;
 		ppActiveProjectile++;
@@ -48,11 +36,11 @@ void CBulletManagerOwnerView::ResetProjectilePool(void)
 // Vtable slot 0x494008 pins the __fastcall free form; forward to the real member.
 void LEMBALL_FASTCALL ResetProjectilePool(void* pPool)
 {
-	((CBulletManagerOwnerView*) pPool)->ResetProjectilePool();
+	((CBulletManager*) pPool)->ResetProjectilePool();
 }
 
 // FUNCTION: LEMBALL 0x00417ee0
-void* CBulletManagerOwnerView::GetFreeProjectilePoolObject(void)
+void* CBulletManager::GetFreeProjectilePoolObject(void)
 {
 	int iProjectile;
 
