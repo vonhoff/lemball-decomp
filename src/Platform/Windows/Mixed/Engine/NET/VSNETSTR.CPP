@@ -2,12 +2,12 @@
 #define LEMBALL_DEFINE_EFF_STREAM_BASE_VTABLE
 #define LEMBALL_DEFINE_TIMED_EFF_STREAM_SECONDARY_HANDLE_ABI
 
+#include "Control/CGame.h"
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
-#include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
 #include "Platform/Windows/Mixed/Engine/NET/VSNET.H"
-#include "Control/CGame.h"
+#include "Visos/Generic/Memory.h"
 
 #include <string.h>
 
@@ -226,28 +226,14 @@ void VsNetEffStreamBase::WriteEffStreamU8(unsigned char nValue)
 // FUNCTION: LEMBALL 0x0045ef70
 void VsNetEffStreamBase::WriteEffStreamCString(const char* pszSource)
 {
-	WriteEffStreamBytes(pszSource, (unsigned int) strlen(pszSource) + 1);
+	strcpy((char*) m_nReserved1c, pszSource);
+	m_nReserved1c += (unsigned int) strlen(pszSource) + 1;
 }
 
 // FUNCTION: LEMBALL 0x0045efc0
 void VsNetEffStreamBase::WriteEffStreamBytes(const void* pvSource, unsigned int cbWrite)
 {
-	unsigned int i;
-	const unsigned char* pbSource;
-	unsigned char* pbTarget;
-	pbSource = (const unsigned char*) pvSource;
-	pbTarget = (unsigned char*) (unsigned long) m_nReserved1c;
-
-	for (i = cbWrite >> 2; i != 0; --i) {
-		*(unsigned int*) pbTarget = *(const unsigned int*) pbSource;
-		pbSource += 4;
-		pbTarget += 4;
-	}
-
-	for (i = cbWrite & 3; i != 0; --i) {
-		*pbTarget++ = *pbSource++;
-	}
-
+	memcpy((void*) m_nReserved1c, pvSource, cbWrite);
 	m_nReserved1c += cbWrite;
 }
 
@@ -361,22 +347,7 @@ void VsNetEffStreamBase::ReadEffStreamCStringIntoBuffer(char* pszTarget)
 // FUNCTION: LEMBALL 0x0045f1b0
 void VsNetEffStreamBase::ReadEffStreamBytes(void* pvTarget, unsigned int cbRead)
 {
-	unsigned int i;
-	unsigned char* pbTarget;
-	unsigned char* pbSource;
-	pbTarget = (unsigned char*) pvTarget;
-	pbSource = (unsigned char*) (unsigned long) m_nReserved20;
-
-	for (i = cbRead >> 2; i != 0; --i) {
-		*(unsigned int*) pbTarget = *(unsigned int*) pbSource;
-		pbSource += 4;
-		pbTarget += 4;
-	}
-
-	for (i = cbRead & 3; i != 0; --i) {
-		*pbTarget++ = *pbSource++;
-	}
-
+	memcpy(pvTarget, (void*) m_nReserved20, cbRead);
 	m_nReserved20 += cbRead;
 }
 
