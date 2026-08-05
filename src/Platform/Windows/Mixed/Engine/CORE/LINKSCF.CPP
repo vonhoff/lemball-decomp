@@ -2068,6 +2068,38 @@ LinkScfPgunChunkManagerView* LinkScfPgunChunkManagerView::ConstructPgunChunkMana
 	return this;
 }
 
+// MACINTOSH: CPaintGunManager::Initialise(int)
+// FUNCTION: LEMBALL 0x0042c070
+void LinkScfPgunChunkManagerView::Initialise(int nCapacity)
+{
+	char* pBase;
+	char* pObject;
+	int i;
+
+	*(int*) ((char*) this + 0x30) = nCapacity;
+	*(int*) ((char*) this + 0x34) = 0;
+	if (nCapacity != 0) {
+		if (*(void**) ((char*) this + 0x38) == 0) {
+			pBase = (char*) AllocateVSMemBlock((unsigned int) (nCapacity * 0x144 + 4)) + 4;
+			if (pBase != 0) {
+				*(int*) (pBase - 4) = nCapacity;
+				for (i = nCapacity - 1; i >= 0; --i) {
+					((void(__fastcall*)(char*)) 0x401fb9)(pBase + i * 0x144);
+				}
+				*(void**) ((char*) this + 0x38) = pBase;
+			}
+			else {
+				*(void**) ((char*) this + 0x38) = 0;
+			}
+		}
+		for (i = 0; i < *(int*) ((char*) this + 0x30); ++i) {
+			pObject = *(char**) ((char*) this + 0x38) + i * 0x144;
+			*(int*) (pObject + 0x60) = (int) this;
+			((void(LEMBALL_FASTCALL*)(void*)) (*(void***) pObject)[0x104 / sizeof(void*)])(pObject);
+		}
+	}
+}
+
 // MACINTOSH: CPaintGunManager::Restart()
 // FUNCTION: LEMBALL 0x0042c040
 void LEMBALL_FASTCALL ActivatePgunChunkObjects(void* pManager)

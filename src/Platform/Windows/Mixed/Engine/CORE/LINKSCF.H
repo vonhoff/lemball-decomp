@@ -5,6 +5,7 @@
 struct LinkScfPgunChunkManagerView {
 	LinkScfPgunChunkManagerView* ConstructPgunChunkManager(void* pLevelMode, int nCapacity);
 	LinkScfPgunChunkManagerView* ConstructPgunChunkManagerThunk(void* pLevelMode, int nCapacity);
+	void Initialise(int nCapacity);
 };
 
 struct LinkScfTramChunkManagerView {
