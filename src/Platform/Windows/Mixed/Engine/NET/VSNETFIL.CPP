@@ -1,4 +1,5 @@
 #include "Control/CGame.h"
+#include "Visos/VsNetAdjustorThunkHeader.h"
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
@@ -1194,9 +1195,7 @@ struct VsNetGlobalSessionAdjustorFront {
 	void WriteAdjustedEffStreamWithGlobalSession(void);
 };
 
-struct VsNetAdjustorThunkHeader {
-	int m_nThisDelta;
-};
+;
 
 struct VsNetFileBackedMarkerOffsets {
 	void* m_pReserved00;

@@ -3,6 +3,7 @@
 #define LEMBALL_DEFINE_TIMED_EFF_STREAM_SECONDARY_HANDLE_ABI
 
 #include "Control/CGame.h"
+#include "Visos/VsNetAdjustorThunkHeader.h"
 #include "Platform/Windows/Mixed/Engine/CORE/SAFEVT.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H"
@@ -24,9 +25,7 @@ struct VsNetAdjustorSubobject {
 	void* m_pVtable;
 };
 
-struct VsNetAdjustorThunkHeader {
-	int m_nThisDelta;
-};
+;
 
 struct VsNetThunkAdjustorGroup {
 	VsNetConstructionAdjustorVtable* m_pOffsets;
