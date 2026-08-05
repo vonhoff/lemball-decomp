@@ -1,4 +1,5 @@
 #include "AI/CGameObject.h"
+#include "AI/LevelManagedEntityStateIdView.h"
 #include "AI/CGenericGroup.h"
 #include "AI/CIceManager.h"
 #include "AI/CPlayerLemmingGroup.h"
@@ -58,10 +59,7 @@ struct LevelBoundedRenderObjectView {
 	LevelThreeDwordBounds m_Bounds;
 };
 
-struct LevelManagedEntityStateIdView {
-	char m_abReserved00[0xb8];
-	int m_nStateIdB8;
-};
+;
 
 
 class LevelManagedEntityDirtyStateRecoveredView {

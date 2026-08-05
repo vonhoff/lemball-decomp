@@ -1,4 +1,5 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "AI/LevelModeTripletArrayView.h"
 #include "AI/CDoorManager.h"
 
 extern int g_GAME_ManagedEntityRegistryTable[1000];
@@ -20,14 +21,7 @@ struct LevelModePositionOwnerView {
 	void CopyProfilePositionFixed(int* pOutput, int nIndex);
 };
 
-struct LevelModeTripletArrayView {
-	unsigned char m_abReserved00[0x90];
-	int m_anX90[4];
-	int m_anYA0[4];
-	int m_anZB0[4];
-
-	void SetTripletEntry(int nX, int nY, int nZ, int nIndex);
-};
+;
 
 struct LevelModeChunkManagerView {
 	unsigned char m_abReserved00[0x190];

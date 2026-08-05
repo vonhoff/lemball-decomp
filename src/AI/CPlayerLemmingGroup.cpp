@@ -1,4 +1,5 @@
 #include "AI/CPlayerLemmingGroup.h"
+#include "AI/LevelManagedEntityStateIdView.h"
 
 #include "AI/CPlayerLemming.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
@@ -8,10 +9,7 @@ struct LevelManagedEntityTargetView {
 	int m_fActiveTarget8C;
 };
 
-struct LevelManagedEntityStateIdView {
-	char m_abReserved00[0xb8];
-	int m_nStateIdB8;
-};
+;
 
 struct LevelManagedEntityDirtyStateView {
 	int PollStreamDirtyFlagThunk(void);

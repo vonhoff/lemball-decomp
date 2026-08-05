@@ -1,13 +1,7 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
+#include "AI/LevelModeTripletArrayView.h"
 
-struct LevelModeTripletArrayView {
-	unsigned char m_abReserved00[0x90];
-	int m_anX90[4];
-	int m_anYA0[4];
-	int m_anZB0[4];
-
-	void CopyFixedPointTriplet(int* pOutput, int nIndex);
-};
+;
 
 // FUNCTION: LEMBALL 0x004132c0
 void LevelModeTripletArrayView::CopyFixedPointTriplet(int* pOutput, int nIndex)
