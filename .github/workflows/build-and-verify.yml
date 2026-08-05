@@ -94,11 +94,6 @@ jobs:
           cmake --fresh --preset msvc400
           cmake --build --preset msvc400 --clean-first
           if (!(Test-Path build-msvc400\LEMBALL.EXE)) {
-            Push-Location build-msvc400
-            nmake /nologo /f CMakeFiles\LEMBALL.dir\build.make LEMBALL.EXE
-            Pop-Location
-          }
-          if (!(Test-Path build-msvc400\LEMBALL.EXE)) {
             throw 'build did not produce LEMBALL.EXE'
           }
 
