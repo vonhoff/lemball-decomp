@@ -10,7 +10,9 @@ struct CGenericGroupVtable;
 class CGenericGroup {
 public:
 	CGenericGroupVtable* m_pVtable00;
-	char m_abReserved04[0x120];
+	char m_abReserved04[0x6c];
+	CGameObjectCommandQueue* m_pCommandQueue70;   // 0x70
+	char m_abReserved74[0xb0];
 	int m_nElementCount124;
 	CGameObject* m_apElements128[10];
 	int m_nCurrentElement150;

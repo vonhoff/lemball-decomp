@@ -208,7 +208,7 @@ void CGenericGroup::CalculateBoundingBox(int nRadius)
 void CGenericGroup::AddNewWaypoint(AICOORD position, CFormationManager* pFormationManager)
 {
 	g_pGenericGroupFormationManager = pFormationManager;
-	CGameObjectCommandQueue* pQueue = *(CGameObjectCommandQueue**) ((char*) this + 0x70);
+	CGameObjectCommandQueue* pQueue = m_pCommandQueue70;
 	unsigned short nIndex = pQueue->m_cEntries;
 	if (nIndex < pQueue->m_cCapacity) {
 		pQueue->m_cEntries = nIndex + 1;
@@ -258,7 +258,7 @@ void CGenericGroup::ClearExistingWaypoints(void)
 {
 	typedef CGameObject*(LEMBALL_FASTCALL * ElementIteratorProc)(CGenericGroup*);
 	void** pVtable = *(void***) this;
-	*(unsigned short*) *(void**) ((char*) this + 0x70) = 0;
+	m_pCommandQueue70->m_cEntries = 0;
 	CGameObject* pObject = ((ElementIteratorProc) pVtable[0x114 / sizeof(void*)])(this);
 	if (pObject != 0) {
 		ElementIteratorProc pGetNext = (ElementIteratorProc) pVtable[0x118 / sizeof(void*)];
