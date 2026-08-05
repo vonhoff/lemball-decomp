@@ -359,7 +359,7 @@ struct LevelProjectilePosition {
 	int m_nZ;
 };
 
-struct ProjectilePool {
+struct CBulletManager {
 	char m_abReserved00[0x34];
 	void* m_apObjects[20];
 	char m_abReserved84[0x50];
@@ -370,7 +370,7 @@ struct ProjectilePool {
 	int FindProjectilePositionInRect(const LevelShortRect* pRect, LevelProjectilePosition* pPosition);
 };
 
-struct ProjectileObjectProxy {
+struct CBullet {
 	virtual void vf0(void);
 	virtual void vf1(void);
 	virtual void SetState(int nState);
@@ -1316,16 +1316,16 @@ void __fastcall CBulletManagerProcess(void* pPool)
 
 	pObj = GetFirstBullet(pPool);
 	while (pObj != NULL) {
-		fKeep = ((ProjectileObjectProxy*) pObj)->ServiceProjectile();
+		fKeep = ((CBullet*) pObj)->ServiceProjectile();
 		if (fKeep == 0) {
-			((ProjectilePool*) pPool)->RemoveObject(pObj);
+			((CBulletManager*) pPool)->RemoveObject(pObj);
 		}
 		pObj = GetNextBullet(pPool);
 	}
 }
 
 // FUNCTION: LEMBALL 0x00418080
-void ProjectilePool::RemoveObject(void* pObject)
+void CBulletManager::RemoveObject(void* pObject)
 {
 	void* pNext;
 	int nRemaining;
@@ -1372,7 +1372,7 @@ int LEMBALL_FASTCALL EmitProjectilePoolRenderEntries(void* pPool, void* pUnused,
 	pOwner = pPool;
 	pObject = GetFirstBullet(pOwner);
 	while (pObject != NULL) {
-		((ProjectileObjectProxy*) pObject)->EmitProjectileRenderEntry(pRenderEntry);
+		((CBullet*) pObject)->EmitProjectileRenderEntry(pRenderEntry);
 		pRenderEntry = (char*) pRenderEntry + 0x4c;
 		cEntries++;
 		pObject = GetNextBullet(pOwner);
@@ -1381,9 +1381,9 @@ int LEMBALL_FASTCALL EmitProjectilePoolRenderEntries(void* pPool, void* pUnused,
 }
 
 // FUNCTION: LEMBALL 0x00418120
-int ProjectilePool::FindProjectilePositionInRect(const LevelShortRect* pRect, LevelProjectilePosition* pPosition)
+int CBulletManager::FindProjectilePositionInRect(const LevelShortRect* pRect, LevelProjectilePosition* pPosition)
 {
-	ProjectileObjectProxy* pProjectile;
+	CBullet* pProjectile;
 	volatile int nProjectileX;
 	volatile int nProjectileY;
 	int nProjectileRight;
@@ -1397,7 +1397,7 @@ int ProjectilePool::FindProjectilePositionInRect(const LevelShortRect* pRect, Le
 	nRight = pRect->m_nX + nWidth;
 	nHeight = pRect->m_nHeight;
 	nBottom = pRect->m_nY + nHeight;
-	pProjectile = (ProjectileObjectProxy*) GetFirstBullet(this);
+	pProjectile = (CBullet*) GetFirstBullet(this);
 	while (pProjectile != NULL) {
 		nProjectileX = *(int*) ((char*) pProjectile + 0x9c) >> 12;
 		nProjectileY = *(int*) ((char*) pProjectile + 0xa0) >> 12;
@@ -1412,7 +1412,7 @@ int ProjectilePool::FindProjectilePositionInRect(const LevelShortRect* pRect, Le
 			pPosition->m_nZ = *(int*) ((char*) pProjectile + 0xa4);
 			return 1;
 		}
-		pProjectile = (ProjectileObjectProxy*) GetNextBullet(this);
+		pProjectile = (CBullet*) GetNextBullet(this);
 	}
 	return 0;
 }
@@ -1588,7 +1588,7 @@ void __fastcall CBulletFree(void* pObject)
 {
 	*(int*) ((char*) pObject + 0x164) = 0;
 	if (*(int*) ((char*) pObject + 0xb8) != 8) {
-		((ProjectileObjectProxy*) pObject)->SetState(8);
+		((CBullet*) pObject)->SetState(8);
 	}
 	*(int*) ((char*) pObject + 0x114) = 0;
 }

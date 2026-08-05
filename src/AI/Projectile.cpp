@@ -4,7 +4,7 @@
 
 void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 
-struct ProjectilePoolOwnerView {
+struct CBulletManagerOwnerView {
 	char m_abReserved00[0x30];
 	char* volatile m_pProjectilePool30;
 	void* m_apActiveProjectiles34[20];
@@ -31,13 +31,13 @@ void LEMBALL_FASTCALL ResetProjectilePool(void* pPool)
 	ResetProjectileObjectProc pReset;
 
 	cbProjectile = 0;
-	ppActiveProjectile = ((ProjectilePoolOwnerView*) pPool)->m_apActiveProjectiles34;
-	((ProjectilePoolOwnerView*) pPool)->m_iActiveProjectileD8 = 0;
-	((ProjectilePoolOwnerView*) pPool)->m_cActiveProjectilesD4 = 0;
+	ppActiveProjectile = ((CBulletManagerOwnerView*) pPool)->m_apActiveProjectiles34;
+	((CBulletManagerOwnerView*) pPool)->m_iActiveProjectileD8 = 0;
+	((CBulletManagerOwnerView*) pPool)->m_cActiveProjectilesD4 = 0;
 	do {
 		*ppActiveProjectile = NULL;
 		ppActiveProjectile++;
-		pProjectile = ((ProjectilePoolOwnerView*) pPool)->m_pProjectilePool30 + cbProjectile;
+		pProjectile = ((CBulletManagerOwnerView*) pPool)->m_pProjectilePool30 + cbProjectile;
 		cbProjectile += 0x1a4;
 		pReset = (ResetProjectileObjectProc) (*(void***) pProjectile)[65];
 		pReset(pProjectile);
@@ -45,7 +45,7 @@ void LEMBALL_FASTCALL ResetProjectilePool(void* pPool)
 }
 
 // FUNCTION: LEMBALL 0x00417ee0
-void* ProjectilePoolOwnerView::GetFreeProjectilePoolObject(void)
+void* CBulletManagerOwnerView::GetFreeProjectilePoolObject(void)
 {
 	int iProjectile;
 
