@@ -160,11 +160,11 @@ int CLiftManager::GetViewData(CViewData* pViewData)
 			*(short*) (pEntry + 0x2c) = *(short*) (pObject + 0x6a);
 			*(int*) (pEntry + 0x28) = *(int*) (pObject + 0x64);
 			*(short*) (pEntry + 0x2e) = 0;
-			*(int*) (pEntry + 0x04) = *(int*) (pObject + 0x9c) >> 12;
-			*(int*) (pEntry + 0x08) = *(int*) (pObject + 0xa0) >> 12;
-			*(int*) (pEntry + 0x0c) = *(int*) (pObject + 0xa4) >> 12;
+			*(int*) (pEntry + 0x04) = ((CLift*) pObject)->m_WorldPosition9C.x >> 12;
+			*(int*) (pEntry + 0x08) = ((CLift*) pObject)->m_WorldPosition9C.y >> 12;
+			*(int*) (pEntry + 0x0c) = ((CLift*) pObject)->m_WorldPosition9C.z >> 12;
 			*(short*) pEntry = (short) *(int*) (pObject + 0xb4);
-			*(int*) (pEntry + 0x18) = *(int*) (pObject + 0xb8);
+			*(int*) (pEntry + 0x18) = ((CLift*) pObject)->m_nStateB8;
 			*(short*) (pEntry + 0x1c) = (short) *(int*) (pObject + 0xbc);
 			*(int*) (pEntry + 0x20) = *(int*) (pObject + 0x94);
 			*(int*) (pEntry + 0x14) = 0;

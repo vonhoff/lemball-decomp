@@ -39,6 +39,8 @@ public:
 			 eLiftActivateType activateType,
 			 unsigned char nFlags);
 
+	friend class CLiftManager;
+
 private:
 	unsigned char m_abReserved00[0x9c];
 	AICOORD m_WorldPosition9C;            // 0x9c
