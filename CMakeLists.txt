@@ -17,7 +17,7 @@ set(LEMBALL_SOURCES
     src/AI/LV35BOUND.CPP
     src/Control/CGameStatusPasswordBits.cpp
     src/Platform/Windows/Mixed/Level/ENTITY/LVMODESLOT.CPP
-    src/AI/lvtriplet.cpp
+    src/AI/LVTRIPLET.CPP
     src/AI/LVOWNOBJ.CPP
     src/AI/LVDELMOVE.CPP
     src/AI/LVSTREAM.CPP
@@ -166,7 +166,7 @@ set(LEMBALL_SOURCES
     src/AI/LVRANDVT.CPP
     src/AI/LVPREDVT.CPP
     src/AI/LVPRJGEOM.CPP
-    src/AI/lvgmobpt.cpp
+    src/AI/LVGMOBPT.CPP
     src/views/2d/LVRUNEXT.CPP
 )
 
