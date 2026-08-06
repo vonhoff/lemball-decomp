@@ -667,7 +667,7 @@ extern short g_nEffTransportServiceBasePort;
 extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 struct VsNetEffDispatchEvent;
 
-struct VsNetEffTransportRuntimeState {
+struct CBaseNetwork {
 	void DestroyEffTransportRuntimeGlobals(void);
 	int ProcessEffTransportDispatchEvent(VsNetEffDispatchEvent* pEvent);
 	void InitializeTcpipNetworkTransport(void);
@@ -977,17 +977,17 @@ struct VsNetTcpipSocketStackRuntimeRecoveredVtableData {
 	int (VsNetInetAddressEntry::*m_pIsAddressGreaterOrEqual)(const VsNetInetAddressEntry*);
 	void* m_pInitializeRenderEntry;
 	void* m_pDeleteRuntimeWindow;
-	int (VsNetEffTransportRuntimeState::*m_pProcess)(VsNetEffDispatchEvent*);
-	void (VsNetEffTransportRuntimeState::*m_pInitializeTransport)(void);
-	void (VsNetEffTransportRuntimeState::*m_pShutdownTransport)(void);
-	void (VsNetEffTransportRuntimeState::*m_pCleanupRuntimeState)(void);
-	void (VsNetEffTransportRuntimeState::*m_pLoadFileRange)(void);
-	void (VsNetEffTransportRuntimeState::*m_pWriteFileRange)(void);
-	void (VsNetEffTransportRuntimeState::*m_pServiceTransport)(void);
+	int (CBaseNetwork::*m_pProcess)(VsNetEffDispatchEvent*);
+	void (CBaseNetwork::*m_pInitializeTransport)(void);
+	void (CBaseNetwork::*m_pShutdownTransport)(void);
+	void (CBaseNetwork::*m_pCleanupRuntimeState)(void);
+	void (CBaseNetwork::*m_pLoadFileRange)(void);
+	void (CBaseNetwork::*m_pWriteFileRange)(void);
+	void (CBaseNetwork::*m_pServiceTransport)(void);
 	void* (*m_pAllocateComposite)(void);
 	void* (*m_pAllocateRuntimeOwner)(void);
 	void* (*m_pAllocateAddress)(void);
-	void (VsNetEffTransportRuntimeState::*m_pWaitForTransportMessage)(void);
+	void (CBaseNetwork::*m_pWaitForTransportMessage)(void);
 	void* m_pHandleRuntimeWindowMessage;
 };
 
@@ -1005,17 +1005,17 @@ static VsNetTcpipSocketStackRuntimeRecoveredVtableData g_NETWORK_TcpipSocketStac
 	&VsNetInetAddressEntry::IsAddressGreaterOrEqual,
 	(void*) InitializeNonZrleVariantRenderEntry,
 	(void*) DeleteTcpipRuntimeStateWindowAdjustedThunk,
-	&VsNetEffTransportRuntimeState::ProcessEffTransportDispatchEvent,
-	&VsNetEffTransportRuntimeState::InitializeTcpipNetworkTransport,
-	&VsNetEffTransportRuntimeState::ShutdownTcpipNetworkTransport,
-	&VsNetEffTransportRuntimeState::CleanupEffTransportRuntimeState,
-	&VsNetEffTransportRuntimeState::TcpipLoadFileRangeNoop,
-	&VsNetEffTransportRuntimeState::TcpipWriteFileRangeNoop,
-	&VsNetEffTransportRuntimeState::ServiceTcpipNetworkTransport,
+	&CBaseNetwork::ProcessEffTransportDispatchEvent,
+	&CBaseNetwork::InitializeTcpipNetworkTransport,
+	&CBaseNetwork::ShutdownTcpipNetworkTransport,
+	&CBaseNetwork::CleanupEffTransportRuntimeState,
+	&CBaseNetwork::TcpipLoadFileRangeNoop,
+	&CBaseNetwork::TcpipWriteFileRangeNoop,
+	&CBaseNetwork::ServiceTcpipNetworkTransport,
 	AllocateTcpipEffTransportComposite,
 	AllocateTcpipEffTransportRuntimeOwner,
 	AllocateTcpipInetAddressEntry,
-	&VsNetEffTransportRuntimeState::WaitForFileBasedNetworkMessage,
+	&CBaseNetwork::WaitForFileBasedNetworkMessage,
 	(void*) HandleTcpipRuntimeWindowMessage,
 };
 #endif
@@ -2370,10 +2370,10 @@ void* LEMBALL_FASTCALL DeleteTcpipRuntimeStateWindowAdjustedThunk(void* pObject,
 
 {
 	char* pWindowBase;
-	VsNetEffTransportRuntimeState* pRuntimeState;
+	CBaseNetwork* pRuntimeState;
 
 	pWindowBase = (char*) pObject - 0x10;
-	pRuntimeState = pWindowBase != 0 ? (VsNetEffTransportRuntimeState*) pObject : 0;
+	pRuntimeState = pWindowBase != 0 ? (CBaseNetwork*) pObject : 0;
 	pRuntimeState->DestroyEffTransportRuntimeGlobals();
 	DestroyInvisibleMessageWindow((VS_InvisibleWindow*) pWindowBase);
 	if ((fFreeMemory & 1) != 0) {
