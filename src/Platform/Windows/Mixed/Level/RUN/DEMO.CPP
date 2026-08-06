@@ -75,7 +75,7 @@ void CreateFrameTimerController(unsigned int uFrameInterval);
 void DestroyFrameTimerController(void);
 int LoadNextLevelDemoRecordBuffer(void* pPlaybackController);
 void ReadLevelDemoLengthPrefixedRecordThunk(void* pPlaybackController, void* pRecordBuffer, unsigned int* pcbRecord);
-void ServiceLevelDemoPlayback(void* pPlaybackController);
+void LEMBALL_FASTCALL ServiceLevelDemoPlayback(void* pPlaybackController);
 void LEMBALL_FASTCALL ReleaseLevelDemoRecordBuffer(void* pPlaybackController);
 void LEMBALL_FASTCALL StopLevelDemoPlayback(void* pPlaybackController);
 void LEMBALL_FASTCALL StopLevelDemoPlaybackThunk(void* pPlaybackController);
@@ -354,7 +354,7 @@ void DemoLevelDemoPlaybackController::ResetLevelDemoPlaybackCursor(void)
 // FUNCTION: LEMBALL 0x00409600
 void DemoLevelDemoPlaybackController::SetLevelDemoPlaybackEnabled(int fEnabled)
 {
-	*(int*) ((char*) this + 0x4c) = fEnabled;
+	m_nPlaybackEnabled4C = fEnabled;
 	if (fEnabled != 0) {
 		ResetLevelDemoPlaybackCursorThunk();
 		return;
@@ -364,20 +364,22 @@ void DemoLevelDemoPlaybackController::SetLevelDemoPlaybackEnabled(int fEnabled)
 
 // MACINTOSH: CDemo::Process()
 // FUNCTION: LEMBALL 0x00409620
-void ServiceLevelDemoPlayback(void* pPlaybackController)
+void LEMBALL_FASTCALL ServiceLevelDemoPlayback(void* pPlaybackController)
 {
+	DemoLevelDemoPlaybackController* pController;
 	DWORD dwNow;
 	DWORD dwElapsed;
 
-	if (*(int*) ((char*) pPlaybackController + 0x50) == 0 && *(int*) ((char*) pPlaybackController + 0x4c) != 0) {
+	pController = (DemoLevelDemoPlaybackController*) pPlaybackController;
+	if (pController->m_nStopFlag50 == 0 && pController->m_nPlaybackEnabled4C != 0) {
 		dwNow = timeGetTime();
-		dwElapsed = dwNow - *(unsigned int*) ((char*) pPlaybackController + 0x38);
-		if (*(unsigned int*) ((char*) pPlaybackController + 0x3c) != 0 &&
-			*(unsigned int*) ((char*) pPlaybackController + 0x3c) <= dwElapsed) {
-			StopLevelDemoPlayback(pPlaybackController);
+		dwElapsed = dwNow - pController->m_nFrameTimeBase38;
+		if (pController->m_nActiveFrameTick3C != 0 &&
+			pController->m_nActiveFrameTick3C <= dwElapsed) {
+			StopLevelDemoPlaybackThunk(pPlaybackController);
 			return;
 		}
-		++*(int*) ((char*) pPlaybackController + 0x44);
+		++pController->m_nPlaybackFrame44;
 	}
 }
 

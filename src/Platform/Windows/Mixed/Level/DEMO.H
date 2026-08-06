@@ -8,11 +8,13 @@ void DestroyFrameTimerController(void);
 struct DemoLevelDemoPlaybackController {
 	unsigned char m_abData[0x18];
 	int m_nLoadedRecordId18;                 // 0x18  (CDemo::Reset sets to -1)
-	unsigned char m_abReserved1C[0x20];
+	unsigned char m_abReserved1C[0x1c];
+	int m_nFrameTimeBase38;                  // 0x38  (CDemo frame time base)
 	int m_nActiveFrameTick3C;                // 0x3c
 	unsigned char m_abReserved40[0x4];
 	int m_nPlaybackFrame44;                  // 0x44
-	unsigned char m_abReserved48[0x8];
+	unsigned char m_abReserved48[0x4];
+	int m_nPlaybackEnabled4C;                // 0x4c  (CDemo::SetDemoMode)
 	int m_nStopFlag50;                       // 0x50
 
 	DemoLevelDemoPlaybackController* ConstructLevelDemoPlaybackController(unsigned int uFrameInterval);
@@ -24,7 +26,7 @@ struct DemoLevelDemoPlaybackController {
 	void DestroyLevelDemoPlaybackControllerThunk(void);
 };
 void LEMBALL_FASTCALL ReleaseLevelDemoRecordBufferThunk(void* pPlaybackController);
-void ServiceLevelDemoPlayback(void* pPlaybackController);
+void LEMBALL_FASTCALL ServiceLevelDemoPlayback(void* pPlaybackController);
 void LEMBALL_FASTCALL ReleaseLevelDemoRecordBuffer(void* pPlaybackController);
 void LEMBALL_FASTCALL StopLevelDemoPlayback(void* pPlaybackController);
 int FilterLevelDemoPlaybackInputEvent(void* pPlaybackController, unsigned short* pEventId);
