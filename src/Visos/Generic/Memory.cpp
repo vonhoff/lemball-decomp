@@ -834,7 +834,7 @@ void* AllocateVSMemBlockImpl(unsigned int cbBlock)
 		nSmallBlock = ((CSmallMemory*) g_pCSmallMemory)->AllocateFromCSmallMemory(cbBlock, g_pszCBucketAllocTag);
 		pvBlock = (void*) (unsigned long) nSmallBlock;
 		if (nSmallBlock != 0) {
-			g_pszCBucketAllocTag = "Small memory bucket";
+			g_pszCBucketAllocTag = "new";
 			return pvBlock;
 		}
 	}
