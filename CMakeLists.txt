@@ -12,36 +12,36 @@ set(LEMBALL_SOURCES
     src/Frontend/MMRENDCH.CPP
     src/Frontend/MMCONTEXT.CPP
     src/Platform/Windows/Primary.cpp
-    src/AI/TYPE18.cpp
-    src/AI/TYPE18RESET.cpp
-    src/AI/LV35BOUND.cpp
+    src/AI/TYPE18.CPP
+    src/AI/TYPE18RESET.CPP
+    src/AI/LV35BOUND.CPP
     src/Control/CGameStatusPasswordBits.cpp
     src/Platform/Windows/Mixed/Level/ENTITY/LVMODESLOT.CPP
     src/AI/lvtriplet.cpp
-    src/AI/LVOWNOBJ.cpp
-    src/AI/LVDELMOVE.cpp
-    src/AI/LVSTREAM.cpp
+    src/AI/LVOWNOBJ.CPP
+    src/AI/LVDELMOVE.CPP
+    src/AI/LVSTREAM.CPP
     src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
     src/AI/CMaze.cpp
     src/AI/CMineManager.cpp
     src/AI/CMove3d.cpp
     src/AI/CMover.cpp
-    src/AI/LVNODE.cpp
+    src/AI/LVNODE.CPP
     src/Platform/Windows/Mixed/Level/ENTITY/LVTILE.CPP
     src/Platform/Windows/Mixed/Level/IO/LVSTRVT.CPP
     src/Platform/Windows/Mixed/Level/IO/LVSTRWRT.CPP
     src/Platform/Windows/Mixed/Level/IO/LVSTRREAD.CPP
     src/Platform/Windows/Mixed/Level/STATE/LVQUIT.CPP
     src/Platform/Windows/Mixed/Level/RENDER/LVRENDISP.CPP
-    src/AI/LVSTATEVAR.cpp
+    src/AI/LVSTATEVAR.CPP
     src/Platform/Windows/Mixed/Level/ENTITY/LVCHFLAGS.CPP
-    src/AI/LVPOSCOPY.cpp
+    src/AI/LVPOSCOPY.CPP
     src/Visos/Generic/LVSTRFMT.CPP
     src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
     src/AI/AICoord.cpp
-    src/AI/LVVTDEF.cpp
-    src/AI/LVPOSVT.cpp
-    src/AI/LVACTDSP.cpp
+    src/AI/LVVTDEF.CPP
+    src/AI/LVPOSVT.CPP
+    src/AI/LVACTDSP.CPP
     src/AI/CGameObject.cpp
     src/AI/CGameObjectMove.cpp
     src/AI/CGameObjectLifecycle.cpp
@@ -52,9 +52,9 @@ set(LEMBALL_SOURCES
     src/AI/CPlayerLemmingGroup.cpp
     src/AI/CPlayerLemmingGroupManager.cpp
     src/AI/CPlayerLemming.cpp
-    src/AI/LVMOVEVT.cpp
+    src/AI/LVMOVEVT.CPP
     src/Platform/Windows/Mixed/Level/IO/LVNETVT.CPP
-    src/AI/LVPROJVT.cpp
+    src/AI/LVPROJVT.CPP
     src/Frontend/SCREENVT.CPP
     src/Frontend/SCRVTDEF.CPP
     src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
@@ -136,36 +136,36 @@ set(LEMBALL_SOURCES
     src/AI/CIceManager.cpp
     src/AI/CLiftAct.cpp
     src/AI/ChildState.cpp
-    src/AI/LVITER.cpp
+    src/AI/LVITER.CPP
     src/AI/CGameObjectCollision.cpp
-    src/AI/LVPKT.cpp
-    src/AI/LVPKTTH.cpp
-    src/AI/LVRSTTH.cpp
-    src/AI/LVSAVEPOS.cpp
+    src/AI/LVPKT.CPP
+    src/AI/LVPKTTH.CPP
+    src/AI/LVRSTTH.CPP
+    src/AI/LVSAVEPOS.CPP
     src/Platform/Windows/Mixed/Level/STATE/LVPROFILE.CPP
     src/Control/CGameStatusLevel.cpp
     src/AI/CGameObjectId.cpp
-    src/AI/LVBSTH.cpp
+    src/AI/LVBSTH.CPP
     src/AI/CDoorCtor.cpp
     src/AI/PlasChild.cpp
     src/AI/CEnemyGrp.cpp
     src/AI/CMine.cpp
     src/AI/GroupPlas.cpp
-    src/AI/CHUNKOBJVT.cpp
+    src/AI/CHUNKOBJVT.CPP
     src/AI/CLiftRun.cpp
-    src/AI/CHOBJDEL.cpp
-    src/AI/CHOBJRST.cpp
-    src/AI/COLLSCORE.cpp
+    src/AI/CHOBJDEL.CPP
+    src/AI/CHOBJRST.CPP
+    src/AI/COLLSCORE.CPP
     src/Platform/Windows/Mixed/Level/CHUNK/ANIMREC.CPP
-    src/AI/PROJRST.cpp
+    src/AI/PROJRST.CPP
     src/Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
     src/Visos/Generic/TXTCNT.CPP
     src/Visos/Generic/TXTCONST.CPP
     src/Frontend/MMPASSTH.CPP
     src/Frontend/MMPASS.CPP
-    src/AI/LVRANDVT.cpp
-    src/AI/LVPREDVT.cpp
-    src/AI/LVPRJGEOM.cpp
+    src/AI/LVRANDVT.CPP
+    src/AI/LVPREDVT.CPP
+    src/AI/LVPRJGEOM.CPP
     src/AI/lvgmobpt.cpp
     src/views/2d/LVRUNEXT.CPP
 )
