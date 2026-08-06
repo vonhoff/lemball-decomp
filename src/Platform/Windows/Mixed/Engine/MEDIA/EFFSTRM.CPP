@@ -979,23 +979,26 @@ void GameEffStream::ResetStateFields(void)
 // FUNCTION: LEMBALL 0x0045f1e0
 void GameEffStream::BeginEffStreamWriteSession(void)
 {
+	GameEffStreamVtable* pVtable;
 	int cbPayload;
+	int pAlloc;
 
 	cbPayload = m_cWriteSessions;
 	m_cWriteSessions = cbPayload + 1;
 	if (cbPayload == 0) {
 		if (m_fOwnsBuffer == 0) {
-			cbPayload = (int) (unsigned long) AllocateVSMemBlock((unsigned int) (m_cbSerializedLength + 0x10));
+			pAlloc = (int) (unsigned long) AllocateVSMemBlock((unsigned int) (m_cbSerializedLength + 0x10));
 			m_fOwnsBuffer = 1;
-			m_pvOwnedBuffer = cbPayload;
-			m_pvWriteCursor = cbPayload + 0x10;
-			m_pvBufferEnd = m_cbSerializedLength + cbPayload + 0x10;
+			m_pvOwnedBuffer = pAlloc;
+			m_pvWriteCursor = pAlloc + 0x10;
+			m_pvBufferEnd = m_cbSerializedLength + pAlloc + 0x10;
 		}
 		else {
 			m_pvWriteCursor = m_pvOwnedBuffer + 0x10;
 		}
-		m_pVtable->m_pBeginWriteHeader(this);
-		m_pVtable->m_pBeginWriteBody(this);
+		pVtable = m_pVtable;
+		pVtable->m_pBeginWriteHeader(this);
+		pVtable->m_pBeginWriteBody(this);
 	}
 }
 // FUNCTION: LEMBALL 0x0045f240
