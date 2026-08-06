@@ -95,10 +95,10 @@ CPlayerLemming* CPlayerLemmingGroup::GetFirstDeadLemming(void)
 int CPlayerLemmingGroup::HasSFXChanged(void)
 {
 	int fDirty = 0;
-	CGameObject* pObject = (this->*m_pVtable00->m_pGetFirstElement114)();
+	CGameObject* pObject = GetFirstElementInGroup();
 	while (pObject != 0) {
 		fDirty = ((LevelManagedEntityDirtyStateView*) pObject)->PollStreamDirtyFlagThunk() || fDirty;
-		pObject = (this->*m_pVtable00->m_pGetNextElement118)();
+		pObject = GetNextElementInGroup();
 	}
 	return fDirty;
 }
