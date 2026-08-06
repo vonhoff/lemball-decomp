@@ -1905,6 +1905,7 @@ void CMoverManager::ResetObjectCount(void)
 	m_cObjects34 = 0;
 }
 
+// MACINTOSH: CMoverManager::Find(int, int, int&)
 // FUNCTION: LEMBALL 0x0042f2f0
 CMover* CMoverManager::Find(int x, int y, int* pHeight)
 {
