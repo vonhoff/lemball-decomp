@@ -247,6 +247,7 @@ void* LEMBALL_FASTCALL DeleteLevelDemoPlaybackControllerAuto(void* pObject, void
 // FUNCTION: LEMBALL 0x00409460
 int LoadNextLevelDemoRecordBuffer(void* pPlaybackController)
 {
+	DemoLevelDemoPlaybackController* pController;
 	unsigned char bValue;
 	unsigned char* pbCursor;
 	unsigned short wValue;
@@ -259,9 +260,10 @@ int LoadNextLevelDemoRecordBuffer(void* pPlaybackController)
 	unsigned int* pcbRemaining;
 	int nNextResourceId;
 
-	if (*(char**) ((char*) pPlaybackController + 0x20) == 0) {
-		pResourceObject = LoadBinResource(*(int*) ((char*) pPlaybackController + 0x28));
-		*(int**) ((char*) pPlaybackController + 0x24) = pResourceObject;
+	pController = (DemoLevelDemoPlaybackController*) pPlaybackController;
+	if (pController->m_pResourceHandle20 == 0) {
+		pResourceObject = LoadBinResource(pController->m_nResourceId28);
+		pController->m_pResourceObject24 = pResourceObject;
 		if (pResourceObject[4] == 0) {
 			((void (*)()) * (void**) (*pResourceObject + 0x1c))();
 		}
@@ -269,32 +271,32 @@ int LoadNextLevelDemoRecordBuffer(void* pPlaybackController)
 			pResourceObject[9] = 0;
 		}
 		++pResourceObject[2];
-		*(void**) ((char*) pPlaybackController + 0x10) =
-			((void* (*) (void) ) * (void**) (**(int**) ((char*) pPlaybackController + 0x24) + 0x28))();
-		nNextResourceId = *(int*) ((char*) pPlaybackController + 0x28) + 1;
-		*(int*) ((char*) pPlaybackController + 0x18) = *(int*) (*(int*) ((char*) pPlaybackController + 0x24) + 0x28);
-		*(int*) ((char*) pPlaybackController + 0x28) = nNextResourceId;
-		if (*(int*) ((char*) pPlaybackController + 0x30) + *(int*) ((char*) pPlaybackController + 0x2c) <=
+		pController->m_pActiveRecord10 =
+			((void* (*) (void) ) * (void**) (**(int**) pController->m_pResourceObject24 + 0x28))();
+		nNextResourceId = pController->m_nResourceId28 + 1;
+		pController->m_nLoadedRecordId18 = *(int*) (*(int*) pController->m_pResourceObject24 + 0x28);
+		pController->m_nResourceId28 = nNextResourceId;
+		if (pController->m_nResourceTotal30 + pController->m_nResourceCount2C <=
 			nNextResourceId) {
-			*(int*) ((char*) pPlaybackController + 0x28) = *(int*) ((char*) pPlaybackController + 0x2c);
+			pController->m_nResourceId28 = pController->m_nResourceCount2C;
 		}
 	}
 	else {
-		pFile = OpenFileWithMode(*(char**) ((char*) pPlaybackController + 0x20), g_DEMO_OpenReadMode);
+		pFile = OpenFileWithMode(pController->m_pResourceHandle20, g_DEMO_OpenReadMode);
 		if (pFile == 0) {
 			return 0;
 		}
 		cbFile = GetFileLengthPreservingPosition(pFile);
 		pBuffer = AllocateVSMemBlock(cbFile);
-		*(void**) ((char*) pPlaybackController + 0x10) = pBuffer;
+		pController->m_pActiveRecord10 = pBuffer;
 		cbRead = ReadFileBytes(pFile, pBuffer, cbFile);
 		CloseCrtFilePointer(pFile);
-		*(unsigned int*) ((char*) pPlaybackController + 0x18) = cbRead;
+		pController->m_nLoadedRecordId18 = cbRead;
 	}
 
-	pcbRemaining = (unsigned int*) ((char*) pPlaybackController + 0x18);
-	pbCursor = *(unsigned char**) ((char*) pPlaybackController + 0x10);
-	*(unsigned char**) ((char*) pPlaybackController + 0x1c) = pbCursor;
+	pcbRemaining = (unsigned int*) &pController->m_nLoadedRecordId18;
+	pbCursor = (unsigned char*) pController->m_pActiveRecord10;
+	pController->m_pRecordBuffer1C = pbCursor;
 	bValue = *pbCursor;
 	*pcbRemaining = (unsigned int) bValue;
 	wValue = (unsigned short) (pbCursor[1] << 8) | bValue;
@@ -302,7 +304,7 @@ int LoadNextLevelDemoRecordBuffer(void* pPlaybackController)
 	cbLength = ((unsigned int) pbCursor[2] << 0x10) | wValue;
 	*pcbRemaining = cbLength;
 	bValue = pbCursor[3];
-	*(unsigned char**) ((char*) pPlaybackController + 0x1c) = pbCursor + 4;
+	pController->m_pRecordBuffer1C = pbCursor + 4;
 	*pcbRemaining = ((unsigned int) bValue << 0x18) | cbLength;
 	return 1;
 }

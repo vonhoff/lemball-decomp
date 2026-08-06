@@ -11,7 +11,7 @@ struct DemoLevelDemoPlaybackController {
 	int m_nFrameInterval14;                 // 0x14
 	int m_nLoadedRecordId18;                // 0x18  (CDemo::Reset sets to -1)
 	void* m_pRecordBuffer1C;                // 0x1c
-	void* m_pResourceHandle20;              // 0x20
+	char* m_pResourceHandle20;              // 0x20  (demo record file path)
 	void* m_pResourceObject24;              // 0x24
 	int m_nResourceId28;                    // 0x28
 	int m_nResourceCount2C;                 // 0x2c
