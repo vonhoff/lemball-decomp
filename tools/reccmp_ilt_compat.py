@@ -213,6 +213,11 @@ THUNK_ILT_REFERENCES = {
     0x0042E500: (0x00402C4D, "DestroyCIce", "ice chunk object destructor target 0x42caf0"),
     0x00416620: (0x004012DF, "CGameObject::RegisterId", "claim-managed-entity-slot-id thunk -> 0x416740"),
     0x00424560: (0x0040371F, "CMineManager::Trigger", "mine-trigger thunk -> 0x424580"),
+    0x00407950: (
+        (0x00403350, "ServiceLevelDemoPlayback", "demo service thunk -> 0x409620"),
+        (0x00402D92, "UpdateMainGameActiveMode", "update-active-mode thunk -> 0x4077e0"),
+        (0x00403184, "PresentMainGameFrame", "present-frame thunk -> 0x4078f0"),
+    ),
     0x00426710: (
         0x00401E0B,
         "destroy_lift_chunk_object",
