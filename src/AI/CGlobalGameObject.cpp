@@ -49,3 +49,13 @@ void CGlobalGameObject::SendCancel(void)
 {
 	g_pManagedEntityStateResetPacketStream->BindManagedEntityPacketTarget(this);
 }
+
+// FUNCTION: LEMBALL 0x0041d350
+void CGlobalGameObject::AppendGmobChunkType14Action(int nType, unsigned short nParam)
+{
+	if (m_cActionCount15C < 0x20) {
+		m_aActions160[m_cActionCount15C].m_nType = nType;
+		m_aActions160[m_cActionCount15C].m_nParam = nParam;
+		m_cActionCount15C++;
+	}
+}

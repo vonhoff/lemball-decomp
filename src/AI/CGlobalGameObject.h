@@ -10,12 +10,22 @@ public:
 	int m_nSerializedState12C;
 	int m_fResetPending130;
 	int m_nUsableState134;
+	unsigned char m_abReserved138[0x15c - 0x138];
+	unsigned short m_cActionCount15C;
+	unsigned char m_abReserved15E[0x160 - 0x15e];
+
+	struct GModeAction {
+		int m_nType;
+		unsigned short m_nParam;
+	};
+	GModeAction m_aActions160[0x20];
 
 	int UsableState(void);
 	void Restart(void);
 	void CancelRequest(void);
 	void SendRemove(void);
 	void SendCancel(void);
+	void AppendGmobChunkType14Action(int nType, unsigned short nParam);
 };
 
 #endif
