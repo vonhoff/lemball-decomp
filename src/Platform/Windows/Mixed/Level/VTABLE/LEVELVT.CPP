@@ -594,8 +594,9 @@ int return_false_vtable_callback_0040a820(void)
 // FUNCTION: LEMBALL 0x0040a830
 void __fastcall copy_object_fields_0x9c_triplet(void* pObject, void* pUnused, LevelBoundsPoint* pPoint)
 {
-	(void) pUnused;
-	*pPoint = *(LevelBoundsPoint*) ((char*) pObject + 0x9c);
+	pPoint->m_nX = *(int*) ((char*) pObject + 0x9c);
+	pPoint->m_nY = *(int*) ((char*) pObject + 0xa0);
+	pPoint->m_nZ = *(int*) ((char*) pObject + 0xa4);
 }
 
 // FUNCTION: LEMBALL 0x0040a870
