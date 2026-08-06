@@ -6,6 +6,15 @@
 void CreateFrameTimerController(unsigned int uFrameInterval);
 void DestroyFrameTimerController(void);
 struct DemoLevelDemoPlaybackController {
+	unsigned char m_abData[0x18];
+	int m_nLoadedRecordId18;                 // 0x18  (CDemo::Reset sets to -1)
+	unsigned char m_abReserved1C[0x20];
+	int m_nActiveFrameTick3C;                // 0x3c
+	unsigned char m_abReserved40[0x4];
+	int m_nPlaybackFrame44;                  // 0x44
+	unsigned char m_abReserved48[0x8];
+	int m_nStopFlag50;                       // 0x50
+
 	DemoLevelDemoPlaybackController* ConstructLevelDemoPlaybackController(unsigned int uFrameInterval);
 	DemoLevelDemoPlaybackController* ConstructLevelDemoPlaybackControllerThunk(unsigned int uFrameInterval);
 	void ResetLevelDemoPlaybackCursor(void);

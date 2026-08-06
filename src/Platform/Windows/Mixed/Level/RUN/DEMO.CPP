@@ -344,10 +344,10 @@ void ReadLevelDemoLengthPrefixedRecordThunk(void* pPlaybackController, void* pRe
 // FUNCTION: LEMBALL 0x004095e0
 void DemoLevelDemoPlaybackController::ResetLevelDemoPlaybackCursor(void)
 {
-	*(int*) ((char*) this + 0x18) = -1;
-	*(int*) ((char*) this + 0x44) = 0;
-	*(int*) ((char*) this + 0x50) = 0;
-	*(int*) ((char*) this + 0x3c) = 0;
+	m_nLoadedRecordId18 = -1;
+	m_nPlaybackFrame44 = 0;
+	m_nStopFlag50 = 0;
+	m_nActiveFrameTick3C = 0;
 }
 
 // MACINTOSH: CDemo::SetDemoMode(unsigned char)
