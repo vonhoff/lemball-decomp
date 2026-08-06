@@ -23,6 +23,13 @@ private:
 
 class MenuSelectorXorFieldNoArgView {
 public:
+	unsigned char m_abData[0xd0];
+	int m_nXorFieldD0;                     // 0xd0  (XOR operand 1)
+	unsigned char m_abDataD4[0x30];
+	int m_nComputedField104;               // 0x104 (result)
+	unsigned char m_abData108[0x28];
+	int m_nXorField130;                    // 0x130 (XOR operand 2)
+
 	void RecomputeField104FromXor(void);
 };
 
@@ -44,9 +51,9 @@ void MenuSelectorXorFieldNoArgView::RecomputeField104FromXor(void)
 {
 	int nValue;
 
-	nValue = *(volatile int*) ((char*) this + 0xd0);
-	nValue ^= *(volatile int*) ((char*) this + 0x130);
-	*(int*) ((char*) this + 0x104) = nValue;
+	nValue = *(volatile int*) &m_nXorFieldD0;
+	nValue ^= *(volatile int*) &m_nXorField130;
+	m_nComputedField104 = nValue;
 }
 
 // FUNCTION: LEMBALL 0x00443930
