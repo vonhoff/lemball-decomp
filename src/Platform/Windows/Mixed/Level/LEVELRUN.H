@@ -173,6 +173,7 @@ struct CBallManager {
 	CBallManager* ConstructBallChunkManager(void* pLevelMode, int cCapacity);
 	CBallManager* ConstructBallChunkManagerThunk(void* pLevelMode, int cCapacity);
 	void DestroyBallChunkManagerEntries(void);
+	void ResetBallChunkManagerLoadCursor(void);
 };
 
 typedef CBallManager LevelBallChunkManager;

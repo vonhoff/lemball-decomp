@@ -1896,9 +1896,9 @@ void CBallManager::DestroyBallChunkManagerEntries(void)
 
 // WINDOWS: Target-only CBallManager load-cursor reset; no portable Macintosh symbol.
 // FUNCTION: LEMBALL 0x00422050
-void LEMBALL_FASTCALL reset_ball_chunk_manager_load_cursor(void* pManager)
+void CBallManager::ResetBallChunkManagerLoadCursor(void)
 {
-	*(int*) ((char*) pManager + 8) = 0;
+	m_nReserved08 = 0;
 }
 
 // MACINTOSH: CBalloonPost::Restart()

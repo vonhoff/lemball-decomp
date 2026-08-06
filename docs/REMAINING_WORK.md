@@ -29,6 +29,8 @@ no lost baseline addresses):
 - 14/23 name mismatches reconciled (fire methods x2 classes, AddTime, nDead, GetFirst/NextBullet,
   DoButtons, DrawPaused, CheckAgainstCatapults, SetAutoDraw, ReturnFacingDirection,
   4 destructor thunks), ODR-disambiguated.
+- `reset_ball_chunk_manager_load_cursor` -> `CBallManager::ResetBallChunkManagerLoadCursor`
+  (0x422050), migrated free __fastcall fn to real member, 100% byte-identical.
 
 ## Lessons (verify before bulk-rename)
 - A "// FUNCTION: 0xADDR" comment followed by a snake/Thunk NAME is often a CALL/SITE INSIDE a
