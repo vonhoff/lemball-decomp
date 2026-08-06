@@ -767,7 +767,7 @@ void ResetLevelFrameClockThunk(void)
 	g_nLevelFrameClockTick = 0;
 	g_nLevelFrameClockDemoTimeMs = 0;
 	g_nLevelFrameClockTimeBaseMs = (int) timeGetTime();
-	g_nLevelFrameClockTickBase = g_nLevelFrameClockTimeBaseMs / 0x32;
+	g_nLevelFrameClockTickBase = (unsigned int) g_nLevelFrameClockTimeBaseMs / 0x32;
 }
 // MACINTOSH: SetGameTime()
 // FUNCTION: LEMBALL 0x004080d0
