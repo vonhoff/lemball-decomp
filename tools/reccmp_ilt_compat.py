@@ -191,9 +191,10 @@ THUNK_ILT_REFERENCES = {
     ),
     0x0040AC60: (
         0x004016FE,
-        "destroy_invs_chunk_object",
+        "CInvisibleSwitch::~CInvisibleSwitch",
         "INVS chunk object destructor target 00409d10",
     ),
+    0x0042BA40: (0x00402D10, "DestroyCTrampoline", "tram chunk object destructor target 0x42a9d0"),
     0x00426710: (
         0x00401E0B,
         "destroy_lift_chunk_object",
@@ -201,7 +202,7 @@ THUNK_ILT_REFERENCES = {
     ),
     0x00427520: (
         0x00402FD1,
-        "destroy_rock_chunk_object",
+        "DestroyCRocket",
         "ROCK chunk object destructor target 00426830",
     ),
     0x00428800: (
@@ -216,7 +217,7 @@ THUNK_ILT_REFERENCES = {
     ),
     0x0042C9E0: (
         0x00402E96,
-        "destroy_pgun_chunk_object_vtable_thunk",
+        "DestroyCPaintGun",
         "PGUN chunk object destructor target 0042bb20",
     ),
     0x0042FBD0: (
@@ -331,6 +332,7 @@ THUNK_ILT_REFERENCES = {
     ),
     0x00425C80: (0x004026FD, "CLift::Set", "legacy lift set thunk -> 0x425010"),
     0x00425CE0: (0x004015AA, "CLift::Set", "lift set points thunk -> 0x425010"),
+    0x00425D80: (0x004025F4, "CLift::StepOn", "lift step-on thunk -> 0x4254a0"),
 }
 
 
