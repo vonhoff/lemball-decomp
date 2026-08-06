@@ -291,6 +291,7 @@ struct GameLevelProgressState {
 	void Snapshot(void);
 	void SetSelectedLevelNumber(int nLevel);
 	void SetUnlockedPackCap(int nPack, int nCap);
+	void StepFourStateCycleAndClearFlag(int nCondition);
 	void SetUnlockedPackCapThunk(int nPack, int nCap);
 };
 
@@ -3239,6 +3240,32 @@ void GameLevelProgressState::SetUnlockedPackCap(int nPack, int nCap)
 	}
 	m_anUnlockedPackCaps[nPack] = nPackLevelCount;
 }
+// MACINTOSH: CGameStatus::StepFourStateCycleAndClearFlag()
+// FUNCTION: LEMBALL 0x00408ec0
+void GameLevelProgressState::StepFourStateCycleAndClearFlag(int nCondition)
+{
+	switch (m_nCurrentPack) {
+	case 0:
+		if (nCondition != 0) {
+			m_nCurrentPack = 3;
+			m_nCurrentLevel = 0;
+			return;
+		}
+		break;
+	case 1:
+		m_nCurrentPack = 0;
+		m_nCurrentLevel = 0;
+		return;
+	case 2:
+		m_nCurrentPack = 1;
+		m_nCurrentLevel = 0;
+		return;
+	case 3:
+		m_nCurrentPack = 2;
+		break;
+	}
+	m_nCurrentLevel = 0;
+}
 // MACINTOSH: CAI::Restart()
 // FUNCTION: LEMBALL 0x00410d00
 void LevelGameMode::InitializeLevelGameMode(void)
@@ -5994,7 +6021,9 @@ void LEMBALL_FASTCALL QueueRenderStatePopHelper(void* pObject, int, void* pQueue
 
 unsigned int PASCAL ComputeLevelPasswordChecksumAuto(unsigned int uValue)
 {
-	return ((uValue >> 16) + (uValue >> 8) + uValue) & 0x1f;
+	unsigned int nHighBytes = uValue >> 16;
+	unsigned int nMidBytes = uValue >> 8;
+	return (nHighBytes + nMidBytes + uValue) & 0x1f;
 }
 
 // Compatibility shim for original ILT call site.
