@@ -220,6 +220,7 @@ THUNK_ILT_REFERENCES = {
         (0x00403184, "PresentMainGameFrame", "present-frame thunk -> 0x4078f0"),
     ),
     0x004304E0: (0x00402B26, "CMoverManager::Find", "find-move-chunk-containing-point fwd 0x402b26->0x4130d0->0x42f2f0"),
+    0x00419980: (0x00401500, "CGameObject::UpdateCollision", "update-managed-entity-bounds thunk -> 0x4167c0"),
     0x00426710: (
         0x00401E0B,
         "destroy_lift_chunk_object",
