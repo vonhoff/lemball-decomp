@@ -1478,7 +1478,24 @@ void LevelViewRotationTransform::GameToScreen(int* pX, int* pY)
 
 	nTileX = *pX;
 	nTileY = *pY;
-	GameToScreen(nTileX, nTileY, pX, pY);
+	switch (m_nRotation04) {
+	case 0:
+		*pX = nTileX - nTileY + 0x10;
+		*pY = nTileY / 2 + nTileX / 2;
+		break;
+	case 1:
+		*pX = 0x20 - nTileY - nTileX;
+		*pY = nTileX / 2 - nTileY / 2 + 8;
+		break;
+	case 2:
+		*pX = nTileY - nTileX + 0x10;
+		*pY = 0x10 - nTileY / 2 - nTileX / 2;
+		break;
+	case 3:
+		*pX = nTileX + nTileY;
+		*pY = nTileY / 2 - nTileX / 2 + 8;
+		break;
+	}
 }
 // Compatibility shim preserving MSVC 4.20 compiler state.
 void* DeleteQueuedRenderPointSinkWrapper00432350(void* pObject, BYTE fDelete)
