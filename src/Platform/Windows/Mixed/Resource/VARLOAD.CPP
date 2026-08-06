@@ -525,7 +525,30 @@ void LEMBALL_FASTCALL LoadListEntryArraysFromArchive(void* pObject)
 // FUNCTION: LEMBALL 0x0045d4f0
 int LEMBALL_FASTCALL EnsureIntZrleListEntriesLoaded(void* pObject)
 {
-	return ListNeedsAgeIncrement(pObject);
+	typedef int(LEMBALL_FASTCALL* StateProc)(void* pObject);
+	typedef int(LEMBALL_FASTCALL* LoadEntryProc)(void* pObject, unsigned int iEntry);
+	void** pVtable;
+	StateProc pfnCheck;
+	LoadEntryProc pfnLoadEntry;
+	unsigned int cEntries;
+	unsigned int i;
+
+	pVtable = *(void***) pObject;
+	pfnCheck = (StateProc) pVtable[3];
+	if (pfnCheck(pObject) == 0) {
+		cEntries = *(unsigned int*) ((char*) pObject + 0x6c) / *(unsigned int*) (*(int*) ((char*) pObject + 0x48) + 4);
+		if (cEntries != 0) {
+			pfnLoadEntry = (LoadEntryProc) pVtable[15];
+			i = 0;
+			do {
+				if (pfnLoadEntry(pObject, i) == 0) {
+					return 0;
+				}
+				++i;
+			} while (i < cEntries);
+		}
+	}
+	return pfnCheck(pObject);
 }
 
 // FUNCTION: LEMBALL 0x0045d540
