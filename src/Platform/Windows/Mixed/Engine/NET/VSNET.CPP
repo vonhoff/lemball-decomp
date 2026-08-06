@@ -278,7 +278,7 @@ struct VsNetEffTransportHandleGroup {
 	int m_fSecondaryHandlePresent;
 };
 
-struct GameEffTransportHandleGroup {
+struct CBaseCommonSocket {
 	void Reset(void);
 };
 
@@ -1470,7 +1470,7 @@ void CheckEffTransportIdleTimeout(void* pObject)
 		if (dwNow - *(DWORD*) ((char*) pObject + 0x3c) <= 10000) {
 			return;
 		}
-		((GameEffTransportHandleGroup*) pHandleGroup)->Reset();
+		((CBaseCommonSocket*) pHandleGroup)->Reset();
 		pHandleGroup->m_pCallback->m_pVtable->m_pNotifyClosed(1);
 		return;
 	}
@@ -1479,7 +1479,7 @@ void CheckEffTransportIdleTimeout(void* pObject)
 	}
 	dwNow = timeGetTime();
 	if (dwNow - *(DWORD*) ((char*) pObject + 0x3c) > 10000) {
-		((GameEffTransportHandleGroup*) pHandleGroup)->Reset();
+		((CBaseCommonSocket*) pHandleGroup)->Reset();
 		pHandleGroup->m_pCallback->m_pVtable->m_pNotifyClosed(0);
 	}
 }
@@ -1874,7 +1874,7 @@ void VsNetChannelOwnerObject::ReleaseGlobalEffTransportBuffer(void)
 	pChannelOwner = this;
 	pEndpointSlot = (VsNetTransportEndpointSlot*) ((char*) this + m_pOffsets->m_nEndpointStateSlotOffset);
 	pEndpointState = &pEndpointSlot->m_State;
-	((GameEffTransportHandleGroup*) pEndpointState)->Reset();
+	((CBaseCommonSocket*) pEndpointState)->Reset();
 }
 
 // FUNCTION: LEMBALL 0x00460830
@@ -2122,7 +2122,7 @@ void VsNetEffTransportPeer::FreeEffTransportPeerBuffers(void)
 	}
 	nOffsets = *(int*) (pbObject + 4);
 	nGroupDelta = *(int*) (nOffsets + 4);
-	((GameEffTransportHandleGroup*) (pbObject + nGroupDelta + 4))->Reset();
+	((CBaseCommonSocket*) (pbObject + nGroupDelta + 4))->Reset();
 }
 
 // FUNCTION: LEMBALL 0x00460d70
@@ -2270,7 +2270,7 @@ void VsNetEffTransportPeer::Close(void)
 	pEndpointSlot = (VsNetTransportEndpointSlot*) ((char*) this + m_pOffsets->m_nEndpointStateSlotOffset);
 	pEndpointState = &pEndpointSlot->m_State;
 	if (pEndpointState->m_fPrimaryHandleActive != 0 && pEndpointState->m_fSecondaryHandleActive != 0) {
-		((GameEffTransportHandleGroup*) &pEndpointState->m_HandleGroup)->Reset();
+		((CBaseCommonSocket*) &pEndpointState->m_HandleGroup)->Reset();
 		if (m_fConnectComplete != 0) {
 			pEndpointState->m_HandleGroup.m_pCallback->m_pVtable->m_pNotifyClosed(1);
 		}

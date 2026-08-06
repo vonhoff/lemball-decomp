@@ -199,7 +199,7 @@ struct GameEffTransportHandleCallback {
 	GameEffTransportHandleCallbackVtable* m_pVtable;
 };
 
-struct GameEffTransportHandleGroup {
+struct CBaseCommonSocket {
 	GameEffTransportHandleCallback* m_pCallback;
 	int m_nReserved04;
 	int m_nReserved08;
@@ -211,7 +211,7 @@ struct GameEffTransportHandleGroup {
 
 struct GameEffTransportEndpointState {
 	int m_nReserved00;
-	GameEffTransportHandleGroup m_HandleGroup;
+	CBaseCommonSocket m_HandleGroup;
 	int m_fPrimaryHandlePresent;
 	int m_fSecondaryHandlePresent;
 	char m_abUnknown18[0x0c];
@@ -1036,7 +1036,7 @@ void GameEffStream::QueueEffStreamWriteEvent(int nPayload)
 	}
 }
 // FUNCTION: LEMBALL 0x0045f720
-void GameEffTransportHandleGroup::Reset(void)
+void CBaseCommonSocket::Reset(void)
 {
 	int nResult;
 
