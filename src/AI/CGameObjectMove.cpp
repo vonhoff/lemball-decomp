@@ -21,7 +21,6 @@ struct LevelManagedEntityStateFields {
 
 // Split from the original LEVELVT source group to preserve MSVC 4.20 code generation in LEVELVT.CPP.
 
-// Macintosh: CGameObject::StopMoving()
 // FUNCTION: LEMBALL 0x00415780
 void CGameObject::StopMoving(void)
 {
@@ -33,7 +32,6 @@ void CGameObject::StopMoving(void)
 	m_nMotionStartTickC8 = nFrameClockTick;
 }
 
-// Macintosh: CGameObject::TurnToFaceDestination()
 // FUNCTION: LEMBALL 0x00415d90
 void CGameObject::TurnToFaceDestination(void)
 {
@@ -57,7 +55,6 @@ void CGameObject::TurnToFaceDestination(void)
 	m_nNextUpdateTickCC = g_nLevelFrameClockTick + g_LEVEL_ManagedEntityUpdatePeriods[m_nEntityType64] / 50;
 }
 
-// Macintosh: CGameObject::FacingDestination()
 // FUNCTION: LEMBALL 0x00415e20
 int CGameObject::FacingDestination(void)
 {
@@ -72,7 +69,6 @@ int CGameObject::FacingDestination(void)
 	return m_nHeadingOctantB4 == nDirection;
 }
 
-// Macintosh: CGameObject::DeleteFirstEntryFromDestinationList()
 // FUNCTION: LEMBALL 0x00415e80
 void CGameObject::DeleteFirstEntryFromDestinationList(void)
 {
@@ -104,7 +100,6 @@ void CGameObject::DeleteFirstEntryFromDestinationList(void)
 	m_fHasCommands74 = 0 < pQueue->m_cEntries;
 }
 
-// Macintosh: CGameObject::AddDestination(const AICOORD&)
 // FUNCTION: LEMBALL 0x00415ef0
 void CGameObject::AddDestination(const AICOORD& position)
 {
@@ -123,7 +118,6 @@ void CGameObject::AddDestination(const AICOORD& position)
 	}
 }
 
-// Macintosh: CGameObject::GetDestination()
 // FUNCTION: LEMBALL 0x00416000
 AICOORD* CGameObject::GetDestination(AICOORD* pPosition)
 {

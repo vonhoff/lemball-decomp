@@ -1183,7 +1183,6 @@ int ReturnTrueVirtualHookBody(void)
 	return 1;
 }
 
-// MACINTOSH: CGround::GetZ(int, int)
 // FUNCTION: LEMBALL 0x0042ffe0
 short CGround::GetZ(int nLocalX, int nLocalY)
 {
@@ -1224,7 +1223,6 @@ short CGround::GetZ(int nLocalX, int nLocalY)
 	return 0;
 }
 
-// MACINTOSH: CGround::IsHit(int, int, unsigned char)
 // FUNCTION: LEMBALL 0x00430110
 unsigned int CGround::IsHit(int nLocalX, int nLocalY, int fSpecial)
 {

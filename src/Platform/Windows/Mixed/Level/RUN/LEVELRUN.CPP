@@ -2021,7 +2021,6 @@ void CMap::ReleaseLevelTileGridBuffers(void)
 	FreeVSMemBlock(*(void**) (pGrid + 0x48));
 	FreeVSMemBlock(*(void**) (pGrid + 0x0c));
 }
-// MACINTOSH: CMap::ReSize(int, int)
 // FUNCTION: LEMBALL 0x00430440
 void CMap::ReSize(int cColumns, int cRows)
 {
@@ -2049,7 +2048,6 @@ void CMap::ReSize(int cColumns, int cRows)
 	}
 	*(void**) (pGrid + 0x48) = AllocateVSMemBlock((unsigned int) cCells);
 }
-// MACINTOSH: CMap::LoadLevel(tagLoadGroundSurfaceData*, unsigned long, unsigned char)
 // FUNCTION: LEMBALL 0x00430db0
 void CMap::LoadLevel(const unsigned short* pWords, unsigned int, int)
 {
@@ -2077,13 +2075,11 @@ void CMap::LoadLevel(const unsigned short* pWords, unsigned int, int)
 	}
 	CalculateCliffThunk();
 }
-// MACINTOSH: CMap::LoadLevelName(tagLoadGroundName*, unsigned long)
 // FUNCTION: LEMBALL 0x00430e80
 void CMap::LoadLevelName(const char* pszName, unsigned int)
 {
 	SetLevelNameThunk(pszName);
 }
-// MACINTOSH: CMap::LoadDefaultBlox(tagLoadDefaultBlox*, unsigned long)
 // FUNCTION: LEMBALL 0x00430e90
 void CMap::LoadDefaultBlox(const unsigned short* pWords, unsigned int)
 {
@@ -2201,7 +2197,6 @@ int ValidateLevelTileVariantId(int nType, unsigned short* pVariant)
 	return 1;
 }
 
-// MACINTOSH: CMap::SetLevelName(char*)
 // FUNCTION: LEMBALL 0x00431010
 void CMap::SetLevelName(const char* pszName)
 {
@@ -2219,7 +2214,6 @@ void CMap::SetLevelName(const char* pszName)
 	} while (i < 0x20);
 	m_szName24[0x20] = '\0';
 }
-// MACINTOSH: CMap::CalculateCliff()
 // FUNCTION: LEMBALL 0x00431030
 void CMap::CalculateCliff(void)
 {
