@@ -89,6 +89,10 @@ FUNCTION_DATA_REFERENCES = {
         "g_EFF_NetworkLobbyPeerDirtyConfirmVtable",
         "network lobby peer dirty-confirm vtable 004985d8",
     ),
+    0x00459AA0: (
+        (0x004988E0, "g_MemoryArenaBaseStateVtable", "memory arena base-state vtable 004988e0"),
+        (0x004988D8, "g_aMainMemoryArenaLockVtable", "main memory arena lock vtable 004988d8"),
+    ),
     0x0045A480: (
         (0x00498918, "g_MainMemoryArenaVtable", "main memory arena vtable 00498918"),
         (0x00498910, "g_aMainMemoryArenaLockVtable", "main memory arena lock vtable 00498910"),
@@ -153,6 +157,15 @@ FUNCTION_DATA_REFERENCES = {
 # Normalize only the proven relocation in each listed function.
 THUNK_ILT_REFERENCES = {
     # function: (original ILT entry, rebuilt destination, shared identity)
+    0x0042BBE0: (
+        (0x0040161D, "AICOORD::AICOORD", "AICOORD copy target 00410b50"),
+        (0x00402EFF, "PgunProjectileSpawnerView::FireBullet", "projectile spawn target 00412600"),
+    ),
+    0x0042CD70: (
+        (0x00401F0F, "ReleaseIceChunkObjectEntities", "ice switched target 0042d560"),
+        (0x004029A5, "CGround::GetZThunk", "ground height target 0042ffe0"),
+        (0x0040341D, "IceContactDispatcherView::StepOn", "managed entity contact target 00412890"),
+    ),
     0x00416940: (
         0x00403107,
         "UpdateNetworkFrameClockFromNetworkTime",

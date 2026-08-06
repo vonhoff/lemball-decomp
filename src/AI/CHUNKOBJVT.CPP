@@ -1,4 +1,5 @@
 #include "AI/CHand.h"
+#include "AI/AICoord.h"
 #include "AI/LevelPoint3.h"
 #include "AI/CLaser.h"
 #include "AI/CLift.h"
@@ -6,6 +7,8 @@
 #include "AI/CGenericGroup.h"
 #include "AI/CPlayerLemmingGroup.h"
 #include "AI/CPlayerLemming.h"
+#include "AI/CMover.h"
+#include "AI/LevelNodePoint.h"
 #include "Visos/Generic/Memory.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Level/CHUNKOBJVT.H"
@@ -73,7 +76,29 @@ struct RockChunkObjectStateView {
 
 struct CGround {
 	short GetZ(int nLocalX, int nLocalY);
+	short GetZThunk(int nLocalX, int nLocalY);
 };
+
+struct IceContactDispatcherView {
+	void StepOn(LevelPoint3* pPosition, void* pEntity, unsigned short nTileFlags);
+};
+
+struct IceObjectStateView {
+	virtual void ReservedSlot0(int nValue);
+	virtual void ReservedSlot1(int nValue);
+	virtual void SetState(int nState);
+};
+
+struct PgunProjectileSpawnerView {
+	void FireBullet(
+		unsigned short nSlotId, int nZero, int nOne, int nDirection, AICOORD target, AICOORD source);
+};
+
+struct LevelModeNodeView {
+	LevelNodePoint* CopyNodePointByIndex(LevelNodePoint* pOutput, int nIndex);
+};
+
+void LEMBALL_FASTCALL ReleaseIceChunkObjectEntities(void* pObject);
 
 struct GmobChunkType14ActionView {
 	virtual void ReservedSlot0(int nValue);
@@ -664,7 +689,46 @@ int LEMBALL_FASTCALL AdvanceRockChunkObjectStateMachine(void* pObject)
 // FUNCTION: LEMBALL 0x004273f0
 void LEMBALL_FASTCALL EmitRockChunkObjectRenderEntry(void* pObject, void* pUnused, void* pRenderEntry)
 {
-	EmitLevelChunkObjectRenderEntry(pObject, pUnused, pRenderEntry);
+	char* pEntryBytes;
+	char* pObjectBytes;
+	unsigned int nShortValue;
+	int nStateId;
+	int nStateTimeMs;
+	int nFrameClockTimeMs;
+
+	(void) pUnused;
+	pEntryBytes = (char*) pRenderEntry;
+	pObjectBytes = (char*) pObject;
+	*(unsigned short*) (pEntryBytes + 0x2c) = *(unsigned short*) (pObjectBytes + 0x6a);
+	*(int*) (pEntryBytes + 0x28) = *(int*) (pObjectBytes + 0x64);
+	*(unsigned short*) (pEntryBytes + 0x2e) = 0;
+	*(int*) (pEntryBytes + 0x04) = *(int*) (pObjectBytes + 0x9c) >> 12;
+	*(int*) (pEntryBytes + 0x08) = *(int*) (pObjectBytes + 0xa0) >> 12;
+	*(int*) (pEntryBytes + 0x0c) = *(int*) (pObjectBytes + 0xa4) >> 12;
+	nShortValue = *(unsigned short*) (pObjectBytes + 0xb4);
+	*(unsigned short*) pEntryBytes = (unsigned short) nShortValue;
+	nShortValue = *(unsigned short*) (pObjectBytes + 0xbc);
+	nStateTimeMs = *(int*) (pObjectBytes + 0x94);
+	nStateId = *(int*) (pObjectBytes + 0xb8);
+	*(unsigned short*) (pEntryBytes + 0x1c) = (unsigned short) nShortValue;
+	*(int*) (pEntryBytes + 0x18) = nStateId;
+	*(int*) (pEntryBytes + 0x20) = nStateTimeMs;
+	*(int*) (pEntryBytes + 0x14) = 0;
+	*(int*) (pEntryBytes + 0x30) = *(int*) (pObjectBytes + 0xc0);
+	*(int*) (pEntryBytes + 0x38) = *(int*) (pObjectBytes + 0xe4);
+	*(int*) (pEntryBytes + 0x3c) = *(int*) (pObjectBytes + 0xe8);
+	*(int*) (pEntryBytes + 0x40) = *(int*) (pObjectBytes + 0xec);
+	*(int*) (pEntryBytes + 0x44) = *(int*) (pObjectBytes + 0x98);
+	if (*(int*) (pObjectBytes + 0x114) != 0) {
+		nFrameClockTimeMs = g_nNetworkFrameClockTimeMs;
+	}
+	else {
+		nFrameClockTimeMs = g_nLevelFrameClockTimeMs;
+	}
+	*(int*) (pEntryBytes + 0x24) = nFrameClockTimeMs;
+	((RockChunkObjectStateView*) pObject)->SetActionState(0);
+	*(int*) (pEntryBytes + 0x34) = *(int*) (pObjectBytes + 0x10);
+	*(int*) (pObjectBytes + 0x10) = 0;
 }
 
 // FUNCTION: LEMBALL 0x00427520
@@ -773,11 +837,111 @@ int LEMBALL_FASTCALL AdvanceTramChunkObjectStateMachine(void* pObject)
 }
 
 // MACINTOSH: CPaintGun::Process()
-// STUB: LEMBALL 0x0042bbe0
+// FUNCTION: LEMBALL 0x0042bbe0
 int LEMBALL_FASTCALL AdvancePgunChunkObjectStateMachine(void* pObject)
 {
-	(void) pObject;
+	typedef void(LEMBALL_FASTCALL * ObjectSlotProc)(void*, void*, int);
+	int* pFields;
+	int nState;
+	int nFrame;
+	int nCoordinate;
+	AICOORD source;
+	AICOORD target;
+	PgunProjectileSpawnerView* pSpawner;
+
+	pFields = (int*) pObject;
+	if (pFields[0x45] != 0) {
+		if (pFields[0x4a] != pFields[0x2e]) {
+			if (pFields[0x2e] == 3) {
+				((ObjectSlotProc) (*(void***) pObject)[0x34 / sizeof(void*)])(pObject, 0, 7);
+			}
+			pFields[0x4a] = pFields[0x2e];
+		}
+		return 1;
+	}
+	if (g_nSelectedNetworkLobbyPeerId != 0 && *(int*) (g_nSelectedNetworkLobbyPeerId + 0x1c) != 0) {
+		return 1;
+	}
+	if (pFields[0x4e] == 0) {
+		return 1;
+	}
+
+	nState = pFields[0x2e];
+	if (nState == 3) {
+		((IceObjectStateView*) pObject)->SetState(0x1b);
+	}
+	else if (nState == 0x18) {
+		nFrame = pFields[0x50];
+		pFields[0x32] = g_nLevelFrameClockTick + ((0x1c - nFrame) * 1000) / 400;
+		pFields[0x25] = g_nLevelFrameClockTimeMs + (-nFrame * 1000) / 8;
+		pFields[0x33] = g_nLevelFrameClockTick + ((0x3a - nFrame) * 1000) / 400;
+		((IceObjectStateView*) pObject)->SetState(0x1b);
+	}
+	else if (nState == 0x1b) {
+		if ((unsigned int) pFields[0x33] < (unsigned int) g_nLevelFrameClockTick) {
+			pFields[0x25] = g_nLevelFrameClockTimeMs;
+			pFields[0x32] = g_nLevelFrameClockTick + 0x46;
+			pFields[0x33] = g_nLevelFrameClockTick + 0x91;
+			((IceObjectStateView*) pObject)->SetState(0x1b);
+		}
+		else if ((unsigned int) pFields[0x32] < (unsigned int) g_nLevelFrameClockTick) {
+			pSpawner = (PgunProjectileSpawnerView*) g_pActiveManagedEntityOwner;
+			source.x = pFields[0x27] + 0x10000;
+			source.y = pFields[0x28];
+			source.z = pFields[0x29] + 0x8000;
+			nCoordinate = (pFields[0x27] >> 12) + 200;
+			if (0x400 < nCoordinate) {
+				nCoordinate = 0x3ff;
+			}
+			target.x = nCoordinate << 12;
+			target.y = source.y;
+			target.z = source.z;
+			pSpawner->FireBullet(*(unsigned short*) ((char*) pObject + 0x6c), 0, 1, 2, target, source);
+
+			source.x = pFields[0x27] - 0x10000;
+			nCoordinate = (pFields[0x27] >> 12) - 200;
+			if (nCoordinate < 0) {
+				nCoordinate = 0;
+			}
+			target.x = nCoordinate << 12;
+			pSpawner->FireBullet(*(unsigned short*) ((char*) pObject + 0x6c), 0, 1, 6, target, source);
+
+			source.x = pFields[0x27];
+			source.y = pFields[0x28] + 0x10000;
+			target.x = source.x;
+			nCoordinate = (pFields[0x28] >> 12) + 200;
+			if (0x400 < nCoordinate) {
+				nCoordinate = 0x3ff;
+			}
+			target.y = nCoordinate << 12;
+			pSpawner->FireBullet(*(unsigned short*) ((char*) pObject + 0x6c), 0, 1, 8, target, source);
+
+			source.y = pFields[0x28] - 0x10000;
+			nCoordinate = (pFields[0x28] >> 12) - 200;
+			if (nCoordinate < 0) {
+				nCoordinate = 0;
+			}
+			target.y = nCoordinate << 12;
+			pSpawner->FireBullet(*(unsigned short*) ((char*) pObject + 0x6c), 0, 1, 4, target, source);
+
+			((ObjectSlotProc) (*(void***) pObject)[0x34 / sizeof(void*)])(pObject, 0, 7);
+			pFields[0x32] = pFields[0x33];
+			((IceObjectStateView*) pObject)->SetState(3);
+		}
+	}
 	return 1;
+}
+
+// STUB: LEMBALL 0x00412600
+void PgunProjectileSpawnerView::FireBullet(
+	unsigned short nSlotId, int nZero, int nOne, int nDirection, AICOORD target, AICOORD source)
+{
+	(void) nSlotId;
+	(void) nZero;
+	(void) nOne;
+	(void) nDirection;
+	(void) target;
+	(void) source;
 }
 
 // FUNCTION: LEMBALL 0x0042c9e0
@@ -788,11 +952,260 @@ void* LEMBALL_FASTCALL DeletePgunChunkObjectAuto(void* pObject, void* pUnused, u
 }
 
 // MACINTOSH: CIce::Process()
-// STUB: LEMBALL 0x0042cd70
+// FUNCTION: LEMBALL 0x0042cd70
 int LEMBALL_FASTCALL AdvanceIceChunkObjectStateMachine(void* pObject)
 {
-	(void) pObject;
+	typedef void(LEMBALL_FASTCALL * ObjectSlotProc)(void*, void*, int);
+	typedef void(LEMBALL_FASTCALL * ObjectThreeValueSlotProc)(void*, void*, int, int, int);
+	typedef void(LEMBALL_FASTCALL * ObjectVectorSlotProc)(void*, void*, LevelPoint3*, int);
+	int* pFields;
+	int nTickDelta;
+	int nMinX;
+	int nMinY;
+	int nMaxX;
+	int nMaxY;
+	int i;
+	char** ppEntity;
+	char* pEntity;
+	LevelPoint3 position;
+	LevelPoint3 velocity;
+	int nXMotion;
+	int nYMotion;
+	int nXLimit;
+	int nYLimit;
+	int nHeight;
+	int nGroundHeight;
+	int nLocalX;
+	int nLocalY;
+	int nTileX;
+	int nTileY;
+	char* pGrid;
+	CGround* pGround;
+
+	pFields = (int*) pObject;
+	if (pFields[0x45] != 0) {
+		if (pFields[0x4a] != pFields[0x2e]) {
+			if (pFields[0x2e] == 0x1a) {
+				pFields[0x4e] = pFields[0x4e] == 0;
+				ReleaseIceChunkObjectEntities(pObject);
+			}
+			pFields[0x4a] = pFields[0x2e];
+		}
+	}
+	else if (pFields[0x2e] == 0x1a) {
+		pFields[0x4e] = pFields[0x4e] == 0;
+		ReleaseIceChunkObjectEntities(pObject);
+		((IceObjectStateView*) pObject)->SetState(0x18);
+	}
+	if (pFields[0x4e] == 0) {
+		return 1;
+	}
+
+	nTickDelta = g_nLevelFrameClockTick - pFields[0x32];
+	if (nTickDelta == 0) {
+		return 1;
+	}
+	pFields[0x32] = g_nLevelFrameClockTick;
+	nMinX = *(short*) ((char*) pObject + 0x17c) - 8;
+	nMinY = *(short*) ((char*) pObject + 0x17e) - 8;
+	nMaxX = *(short*) ((char*) pObject + 0x182) + 7;
+	nMaxY = *(short*) ((char*) pObject + 0x184) + 7;
+
+	i = 0;
+	if (0 < pFields[0x54]) {
+		ppEntity = (char**) pObject + 0x55;
+		do {
+			pEntity = *ppEntity;
+			position.m_nX = *(int*) (pEntity + 0x9c);
+			position.m_nY = *(int*) (pEntity + 0xa0);
+			position.m_nZ = *(int*) (pEntity + 0xa4);
+			nXMotion = pFields[0x51] * nTickDelta * 0x1000 / 8;
+			nYMotion = pFields[0x52] * nTickDelta * 0x1000 / 8;
+			nXLimit = nXMotion >> 12;
+			if (nXLimit < 0) {
+				nXLimit = -nXLimit;
+			}
+			nYLimit = nYMotion >> 12;
+			if (nYLimit < 0) {
+				nYLimit = -nYLimit;
+			}
+			while (15 < nXLimit || 15 < nYLimit) {
+				nXLimit /= 2;
+				nYLimit /= 2;
+				nXMotion /= 2;
+				nYMotion /= 2;
+			}
+			position.m_nX += nXMotion;
+			position.m_nY += nYMotion;
+
+			pGrid = (char*) g_pLevelTileGrid;
+			nLocalX = position.m_nX >> 12;
+			nLocalY = position.m_nY >> 12;
+			nTileX = nLocalX >> 4;
+			nTileY = nLocalY >> 4;
+			if (nLocalX < 0 || nLocalY < 0 || *(int*) (pGrid + 0x10) <= nTileX ||
+				*(int*) (pGrid + 0x14) <= nTileY) {
+				nGroundHeight = 0;
+			}
+			else {
+				pGround = (CGround*) (*(char**) (pGrid + 0xc) +
+												 (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 0xc);
+				nGroundHeight = (unsigned short) pGround->GetZThunk(nLocalX & 0xf, nLocalY & 0xf);
+			}
+			nHeight = position.m_nZ >> 12;
+			if (nHeight < nGroundHeight) {
+				position.m_nZ = nGroundHeight << 12;
+			}
+			else if (nGroundHeight < nHeight) {
+				nHeight -= nTickDelta * 4;
+				if (nHeight < nGroundHeight) {
+					nHeight = nGroundHeight;
+				}
+				position.m_nZ = nHeight << 12;
+			}
+			if (pFields[0x51] == 0) {
+				nXLimit = (position.m_nX & 0xf000) >> 12;
+				if (nXLimit < 8) {
+					position.m_nX += 0x1000;
+				}
+				else if (8 < nXLimit) {
+					position.m_nX -= 0x1000;
+				}
+			}
+			else if (pFields[0x52] == 0) {
+				nYLimit = (position.m_nY & 0xf000) >> 12;
+				if (nYLimit < 8) {
+					position.m_nY += 0x1000;
+				}
+				else if (8 < nYLimit) {
+					position.m_nY -= 0x1000;
+				}
+			}
+			++i;
+			++ppEntity;
+			*(int*) (pEntity + 0x9c) = position.m_nX;
+			*(int*) (pEntity + 0xa0) = position.m_nY;
+			*(int*) (pEntity + 0xa4) = position.m_nZ;
+		} while (i < pFields[0x54]);
+	}
+
+	i = 0;
+	while (i < pFields[0x54]) {
+		pEntity = *(char**) ((char*) pObject + 0x154 + i * sizeof(void*));
+		position.m_nX = *(int*) (pEntity + 0x9c);
+		position.m_nY = *(int*) (pEntity + 0xa0);
+		position.m_nZ = *(int*) (pEntity + 0xa4);
+		if (position.m_nX >> 12 < nMinX || nMaxX < position.m_nX >> 12 ||
+			position.m_nY >> 12 < nMinY || nMaxY < position.m_nY >> 12) {
+			*(int*) (pEntity + 0xc0) = 0;
+			*(int*) (pEntity + 0xb8) = 0;
+			*(int*) (pEntity + 0xcc) = g_nLevelFrameClockTick;
+			if (*(int*) (pEntity + 0x64) == 2) {
+				((ObjectSlotProc) (*(void***) pEntity)[0x84 / sizeof(void*)])(pEntity, 0, 4000);
+				((ObjectThreeValueSlotProc) (*(void***) pEntity)[0xe8 / sizeof(void*)])(
+					pEntity, 0, 0, 0, 0);
+				pGrid = (char*) g_pLevelTileGrid;
+				nLocalX = position.m_nX >> 12;
+				nLocalY = position.m_nY >> 12;
+				nTileX = nLocalX >> 4;
+				nTileY = nLocalY >> 4;
+				if (nLocalX < 0 || nLocalY < 0 || *(int*) (pGrid + 0x10) <= nTileX ||
+					*(int*) (pGrid + 0x14) <= nTileY) {
+					nGroundHeight = 0;
+				}
+				else {
+					pGround = (CGround*) (*(char**) (pGrid + 0xc) +
+													 (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 0xc);
+					nGroundHeight =
+						(unsigned short) pGround->GetZThunk(nLocalX & 0xf, nLocalY & 0xf);
+				}
+				if (nGroundHeight < position.m_nZ >> 12) {
+					velocity.m_nX = (pFields[0x51] << 12) / 6;
+					velocity.m_nY = (pFields[0x52] << 12) / 6;
+					velocity.m_nZ = 0;
+					((ObjectVectorSlotProc) (*(void***) pEntity)[0x20 / sizeof(void*)])(
+						pEntity, 0, &velocity, 0);
+				}
+			}
+			if (i + 1 < pFields[0x54]) {
+				ppEntity = (char**) pObject + i + 0x55;
+				nXLimit = i + 1;
+				do {
+					*ppEntity = ppEntity[1];
+					++ppEntity;
+					++nXLimit;
+				} while (nXLimit < pFields[0x54]);
+			}
+			--i;
+			--pFields[0x54];
+
+			pGrid = (char*) g_pLevelTileGrid;
+			nLocalX = position.m_nX >> 12;
+			nLocalY = position.m_nY >> 12;
+			nTileX = nLocalX >> 4;
+			nTileY = nLocalY >> 4;
+			if (nLocalX < 0 || nLocalY < 0 || *(int*) (pGrid + 0x10) <= nTileX ||
+				*(int*) (pGrid + 0x14) <= nTileY) {
+				nGroundHeight = 0;
+			}
+			else {
+				pGround = (CGround*) (*(char**) (pGrid + 0xc) +
+												 (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 0xc);
+				nGroundHeight = (unsigned short) pGround->GetZThunk(nLocalX & 0xf, nLocalY & 0xf);
+			}
+			if (position.m_nZ >> 12 <= nGroundHeight) {
+				((IceContactDispatcherView*) g_pActiveManagedEntityOwner)
+					->StepOn(&position, pEntity, *(unsigned short*) (pEntity + 0x68));
+			}
+		}
+		++i;
+	}
+
+	i = 0;
+	if (0 < pFields[0x54]) {
+		ppEntity = (char**) pObject + 0x55;
+		do {
+			pEntity = *ppEntity;
+			position.m_nX = *(int*) (pEntity + 0x9c);
+			position.m_nY = *(int*) (pEntity + 0xa0);
+			position.m_nZ = *(int*) (pEntity + 0xa4);
+			pGrid = (char*) g_pLevelTileGrid;
+			nLocalX = position.m_nX >> 12;
+			nLocalY = position.m_nY >> 12;
+			nTileX = nLocalX >> 4;
+			nTileY = nLocalY >> 4;
+			if (nLocalX < 0 || nLocalY < 0 || *(int*) (pGrid + 0x10) <= nTileX ||
+				*(int*) (pGrid + 0x14) <= nTileY) {
+				nGroundHeight = 0;
+			}
+			else {
+				pGround = (CGround*) (*(char**) (pGrid + 0xc) +
+												 (nTileY * *(int*) (pGrid + 0x10) + nTileX) * 0xc);
+				nGroundHeight = (unsigned short) pGround->GetZThunk(nLocalX & 0xf, nLocalY & 0xf);
+			}
+			if (position.m_nZ >> 12 <= nGroundHeight) {
+				((IceContactDispatcherView*) g_pActiveManagedEntityOwner)
+					->StepOn(&position, pEntity, *(unsigned short*) (pEntity + 0x68));
+			}
+			++ppEntity;
+			++i;
+		} while (i < pFields[0x54]);
+	}
 	return 1;
+}
+
+// STUB: LEMBALL 0x0042d560
+void LEMBALL_FASTCALL ReleaseIceChunkObjectEntities(void* pObject)
+{
+	(void) pObject;
+}
+
+// STUB: LEMBALL 0x00412890
+void IceContactDispatcherView::StepOn(LevelPoint3* pPosition, void* pEntity, unsigned short nTileFlags)
+{
+	(void) pPosition;
+	(void) pEntity;
+	(void) nTileFlags;
 }
 
 // FUNCTION: LEMBALL 0x0042e500
@@ -805,10 +1218,147 @@ void* LEMBALL_FASTCALL DeleteIceChunkObjectAuto(void* pObject, void* pUnused, un
 
 
 // MACINTOSH: CMover::Process()
-// STUB: LEMBALL 0x0042eb00
+// FUNCTION: LEMBALL 0x0042eb00
 int LEMBALL_FASTCALL AdvanceMoveChunkObjectStateMachine(void* pObject)
 {
-	(void) pObject;
+	typedef void(LEMBALL_FASTCALL * ObjectSlotProc)(void*, void*, int);
+	int* pFields = (int*) pObject;
+	CMover* pMover = (CMover*) pObject;
+	unsigned long nTick;
+	int fLocalAuthority;
+	int nState;
+	int nNextNode;
+	int nWidth;
+	unsigned short nHeight;
+	LevelNodePoint point;
+	LevelNodePoint oldPoint;
+	LevelNodePoint* pPoint;
+	CPt3 position;
+	char* pGrid;
+	CGround* pGround;
+
+	if (pFields[0x4e] == 0) {
+		return 1;
+	}
+	if (pFields[0x50] != 0) {
+		pFields[0x50] = 0;
+	}
+
+	nTick = g_nNetworkFrameClockTick;
+	fLocalAuthority = g_nSelectedNetworkLobbyPeerId == 0 ||
+		*(int*) (g_nSelectedNetworkLobbyPeerId + 0x1c) != 0;
+	nState = pFields[0x2e];
+	if (fLocalAuthority) {
+		nTick = g_nLevelFrameClockTick;
+	}
+	else if (pFields[0x4a] != nState) {
+		if (nState == 2) {
+			pMover->StopObjectsMoving();
+			pMover->SetUpNextNode(nTick);
+		}
+		nState = pFields[0x2e];
+		pFields[0x4a] = nState;
+	}
+	else if (nState != 2 && nState != 0x24) {
+		nState = 0x18;
+	}
+
+	pMover->VerifyObjects();
+	switch (nState) {
+	case 0:
+		nNextNode = pFields[0x5c] + 1;
+		if (pFields[0x5b] <= nNextNode) {
+			nNextNode = 0;
+		}
+		oldPoint.m_anValues[0] = pFields[0x27];
+		oldPoint.m_anValues[1] = pFields[0x28];
+		oldPoint.m_anValues[2] = pFields[0x29];
+		pFields[0x5c] = nNextNode;
+		pPoint = ((LevelModeNodeView*) g_pActiveManagedEntityOwner)
+			->CopyNodePointByIndex(&point, pFields[0x5a] + nNextNode);
+		pFields[0x27] = pPoint->m_anValues[0];
+		pFields[0x28] = pPoint->m_anValues[1];
+		pFields[0x29] = pPoint->m_anValues[2];
+
+		pGrid = (char*) g_pLevelTileGrid;
+		if ((pFields[0x27] >> 12) < 0 || (pFields[0x28] >> 12) < 0 ||
+			(pFields[0x27] >> 16) >= *(int*) (pGrid + 0x10) ||
+			(pFields[0x28] >> 16) >= *(int*) (pGrid + 0x14)) {
+			nHeight = 0;
+		}
+		else {
+			nWidth = *(int*) (pGrid + 0x10);
+			pGround = (CGround*) (*(char**) (pGrid + 0x0c) +
+				(((pFields[0x28] >> 16) * nWidth + (pFields[0x27] >> 16)) * 12));
+			nHeight = (unsigned short) pGround->GetZThunk(
+				(pFields[0x27] >> 12) & 15, (pFields[0x28] >> 12) & 15);
+		}
+		pFields[0x29] = (int) nHeight << 12;
+		pMover->MoveObjects(
+			(pFields[0x27] >> 12) - (oldPoint.m_anValues[0] >> 12),
+			(pFields[0x28] >> 12) - (oldPoint.m_anValues[1] >> 12),
+			(pFields[0x29] >> 12) - (oldPoint.m_anValues[2] >> 12));
+		if (pFields[0x51] == 0) {
+			pFields[0x32] = g_nLevelFrameClockTick + 0x14;
+			if (fLocalAuthority) {
+				((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 1);
+			}
+		}
+		else {
+			pFields[0x32] = g_nLevelFrameClockTick;
+			if (fLocalAuthority) {
+				((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x24);
+			}
+		}
+		break;
+	case 1:
+		if (fLocalAuthority) {
+			if ((unsigned int) g_nLevelFrameClockTick < (unsigned int) pFields[0x32]) {
+				return 1;
+			}
+			pMover->StopObjectsMoving();
+			((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 2);
+		}
+		pMover->SetUpNextNode(nTick);
+		break;
+	case 2:
+		pMover->SetPos();
+		if (fLocalAuthority && (unsigned int) pFields[0x33] < (unsigned int) g_nLevelFrameClockTick) {
+			((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 0);
+		}
+		else if ((unsigned int) nTick <= (unsigned int) pFields[0x33]) {
+			position.x = 0;
+			position.y = 0;
+			position.z = 0;
+			((CMove3d*) ((char*) pObject + 0x14c))->Position(position, nTick);
+			pMover->MoveObjects(
+				position.x - (pFields[0x27] >> 12),
+				position.y - (pFields[0x28] >> 12),
+				position.z - (pFields[0x29] >> 12));
+			pFields[0x27] = position.x << 12;
+			pFields[0x28] = position.y << 12;
+			pFields[0x29] = position.z << 12;
+		}
+		break;
+	case 0x14:
+		pMover->SetUpNextNode(nTick);
+		pMover->SetPos();
+		if (fLocalAuthority) {
+			((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 1);
+		}
+		break;
+	case 0x18:
+		if (fLocalAuthority) {
+			((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 0x14);
+		}
+		break;
+	case 0x24:
+		if (pFields[0x52] != 0) {
+			((ObjectSlotProc) (*(void***) pObject)[2])(pObject, 0, 1);
+			pFields[0x52] = 0;
+		}
+		break;
+	}
 	return 1;
 }
 // FUNCTION: LEMBALL 0x0042fbd0

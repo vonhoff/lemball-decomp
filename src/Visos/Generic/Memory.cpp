@@ -200,9 +200,19 @@ void CArena::DeleteLists(void)
 // FUNCTION: LEMBALL 0x00459aa0
 void LEMBALL_FASTCALL DestroyCArena(void* pArena)
 {
-	((CArena*) pArena)->m_pVtable = (void**) &g_MemoryArenaBaseStateVtable;
-	((CArena*) pArena)->m_pLockVtable = g_aMainMemoryArenaLockVtable;
-	DeleteCriticalSection(((CArena*) pArena)->m_abCriticalSection);
+	CArena* pMemoryArena;
+	void*** ppLockVtable;
+	unsigned int nPointerMask;
+	extern void* g_RenderDispatchQueueCriticalSectionHelperVtable[2];
+
+	pMemoryArena = (CArena*) pArena;
+	ppLockVtable = &pMemoryArena->m_pLockVtable;
+	nPointerMask = (unsigned int) pMemoryArena >= 1 ? 0xffffffff : 0;
+	pMemoryArena->m_pVtable = (void**) &g_MemoryArenaBaseStateVtable;
+	pMemoryArena->m_pLockVtable = g_aMainMemoryArenaLockVtable;
+	ppLockVtable = (void***) (nPointerMask & (unsigned int) ppLockVtable);
+	*ppLockVtable = g_RenderDispatchQueueCriticalSectionHelperVtable;
+	DeleteCriticalSection((char*) ppLockVtable + sizeof(void*));
 }
 
 // FUNCTION: LEMBALL 0x00459b10
