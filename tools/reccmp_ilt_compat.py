@@ -212,6 +212,7 @@ THUNK_ILT_REFERENCES = {
     0x0040A370: (0x00402CB6, "CInvisibleSwitch::StepOn", "invs-step-on thunk -> 0x409fa0"),
     0x0042E500: (0x00402C4D, "DestroyCIce", "ice chunk object destructor target 0x42caf0"),
     0x00416620: (0x004012DF, "CGameObject::RegisterId", "claim-managed-entity-slot-id thunk -> 0x416740"),
+    0x00424560: (0x0040371F, "CMineManager::Trigger", "mine-trigger thunk -> 0x424580"),
     0x00426710: (
         0x00401E0B,
         "destroy_lift_chunk_object",
