@@ -11,7 +11,7 @@ extern CFormationManager* g_pGenericGroupFormationManager;
 // FUNCTION: LEMBALL 0x0041de80
 void CGenericGroup::Restart(void)
 {
-	ResetManagedEntityRuntimeStateThunk(this);
+	((CGameObject*) this)->Restart();
 	for (int i = 0; i < 10; ++i) {
 		m_apElements128[i] = 0;
 	}
