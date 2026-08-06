@@ -130,7 +130,7 @@ void LEMBALL_FASTCALL ServiceNetworkLobbySelectedPeerUpdates(void* pVsnetRuntime
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void* pObject);
 void* LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void* pObject, void* pUnused, BYTE fDelete);
 int LEMBALL_FASTCALL HasShiftedRecordSlotPayloadForStream(void* pTransportPeer, void* pUnused, void* pStream);
-void LoadStreamFromShiftedRecordSlotAndClear(void* pTransportPeer, void* pStream);
+void LEMBALL_FASTCALL LoadStreamFromShiftedRecordSlotAndClear(void* pTransportPeer, void* pUnused, void* pStream);
 
 // GLOBAL: LEMBALL 0x004a1e1c
 void* g_pEffTransportDispatchQueue = 0;
@@ -809,7 +809,7 @@ void LEMBALL_FASTCALL ServiceNetworkLobbySelectedPeerUpdates(void* pVsnetRuntime
 												  pSelectedPeer->m_pDescriptor->m_nHandleGroupAdjustorSlotOffset))
 				 ->m_HandleOwner;
 		if (HasShiftedRecordSlotPayloadForStream(pHandleOwner, 0, pRuntime->m_pSelectedPeerStatusStream) != 0) {
-			LoadStreamFromShiftedRecordSlotAndClear(pHandleOwner, pRuntime->m_pSelectedPeerStatusStream);
+			LoadStreamFromShiftedRecordSlotAndClear(pHandleOwner, 0, pRuntime->m_pSelectedPeerStatusStream);
 			nStreamValue = pRuntime->m_pSelectedPeerStatusStream->m_nU32Payload;
 			if (pRuntime->m_nObservedSelectedPeerStatus != nStreamValue) {
 				pRuntime->m_nObservedSelectedPeerStatus = nStreamValue;
@@ -1063,12 +1063,13 @@ int LEMBALL_FASTCALL HasShiftedRecordSlotPayloadForStream(void* pTransportPeer, 
 }
 
 // FUNCTION: LEMBALL 0x0045fc50
-void LoadStreamFromShiftedRecordSlotAndClear(void* pTransportPeer, void* pStream)
+void LEMBALL_FASTCALL LoadStreamFromShiftedRecordSlotAndClear(void* pTransportPeer, void* pUnused, void* pStream)
 {
 	GameEffTransportHandleOwner* pHandleOwner;
 	GameShiftedRecordSlot* pSlot;
 	GameShiftedRecordLockVtable* pLockVtable;
 
+	(void) pUnused;
 	pHandleOwner = (GameEffTransportHandleOwner*) pTransportPeer;
 	pSlot = (GameShiftedRecordSlot*) ((GameRecordSlotTable*) pHandleOwner->m_pShiftedRecordSlotTable)
 				->GetShiftedRecordSlotByPacketId(((GameEffStream*) pStream)->m_nEventCode);
