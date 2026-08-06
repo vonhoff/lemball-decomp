@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Find repeated original-code shapes and cheap unmatched functions."""
+"""Shape-cluster candidate finder + exact-match baseline gate.
+
+Default (no flag): cluster source functions by disassembly shape so an already-exact
+sibling can be used as a reconstruction recipe (e.g. CRocketManager::Add copies
+CHandManager::Add). Modes:
+  --save-baseline   snapshot current 100%-matched addresses to docs/exact-baseline.json
+  --check-baseline  report addresses added/lost vs the baseline; exit 1 if any lost
+"""
 
 import argparse
 import csv
@@ -209,6 +216,7 @@ def main():
         raise SystemExit(check_baseline(addresses))
     if args.save_baseline:
         save_baseline(addresses)
+        return
     image = detect_image(BINARY)
     assembly_parser = ParseAsm(addr_test=image.is_valid_vaddr)
     assembly_parser.number_placeholders = False
