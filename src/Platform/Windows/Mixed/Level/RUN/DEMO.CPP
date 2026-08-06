@@ -387,31 +387,31 @@ void LEMBALL_FASTCALL ServiceLevelDemoPlayback(void* pPlaybackController)
 // FUNCTION: LEMBALL 0x00409660
 void LEMBALL_FASTCALL ReleaseLevelDemoRecordBuffer(void* pPlaybackController)
 {
-	int* pResourceObject;
+	DemoLevelDemoPlaybackController* pController;
 	int* pReferenceCount;
 
-	pResourceObject = *(int**) ((char*) pPlaybackController + 0x24);
-	if (pResourceObject != 0) {
-		pReferenceCount = pResourceObject + 2;
+	pController = (DemoLevelDemoPlaybackController*) pPlaybackController;
+	if (pController->m_pResourceObject24 != 0) {
+		pReferenceCount = (int*) pController->m_pResourceObject24 + 2;
 		--*pReferenceCount;
-		ReleaseTypedResourceObjectReference(*(int**) ((char*) pPlaybackController + 0x24));
-		*(void**) ((char*) pPlaybackController + 0x24) = 0;
-		*(void**) ((char*) pPlaybackController + 0x10) = 0;
-		*(void**) ((char*) pPlaybackController + 0x1c) = 0;
+		ReleaseTypedResourceObjectReference(pController->m_pResourceObject24);
+		pController->m_pResourceObject24 = 0;
+		pController->m_pActiveRecord10 = 0;
+		pController->m_pRecordBuffer1C = 0;
 		return;
 	}
-	if (*(void**) ((char*) pPlaybackController + 0x10) != 0) {
-		FreeVSMemBlock(*(void**) ((char*) pPlaybackController + 0x10));
+	if (pController->m_pActiveRecord10 != 0) {
+		FreeVSMemBlock(pController->m_pActiveRecord10);
 	}
-	*(void**) ((char*) pPlaybackController + 0x10) = 0;
-	*(void**) ((char*) pPlaybackController + 0x1c) = 0;
+	pController->m_pActiveRecord10 = 0;
+	pController->m_pRecordBuffer1C = 0;
 }
 
 // MACINTOSH: CDemo::GameIsOver()
 // FUNCTION: LEMBALL 0x004096a0
 void LEMBALL_FASTCALL StopLevelDemoPlayback(void* pPlaybackController)
 {
-	*(int*) ((char*) pPlaybackController + 0x50) = 1;
+	((DemoLevelDemoPlaybackController*) pPlaybackController)->m_nStopFlag50 = 1;
 	ReleaseLevelDemoRecordBufferThunk(pPlaybackController);
 }
 

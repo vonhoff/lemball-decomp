@@ -6,9 +6,14 @@
 void CreateFrameTimerController(unsigned int uFrameInterval);
 void DestroyFrameTimerController(void);
 struct DemoLevelDemoPlaybackController {
-	unsigned char m_abData[0x18];
+	unsigned char m_abData[0x10];
+	void* m_pActiveRecord10;                // 0x10
+	unsigned char m_abReserved14[0x4];
 	int m_nLoadedRecordId18;                 // 0x18  (CDemo::Reset sets to -1)
-	unsigned char m_abReserved1C[0x1c];
+	void* m_pRecordBuffer1C;                // 0x1c
+	unsigned char m_abReserved20[0x4];
+	void* m_pResourceObject24;              // 0x24
+	unsigned char m_abReserved28[0x10];
 	int m_nFrameTimeBase38;                  // 0x38  (CDemo frame time base)
 	int m_nActiveFrameTick3C;                // 0x3c
 	unsigned char m_abReserved40[0x4];
