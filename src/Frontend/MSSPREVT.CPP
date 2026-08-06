@@ -21,6 +21,14 @@ struct GameSpriteOwnerStateEvent {
 
 class GameSpriteOwnerVariantC {
 public:
+	unsigned char m_abData[0xcc];
+	int m_nStateCC;                          // 0xcc  (event payload)
+	unsigned char m_abReservedD0[0x8];
+	int m_nActiveFrameD8;                    // 0xd8  (set to 1 when inactive)
+	unsigned char m_abReservedDC[0x18];
+	void* m_pEventQueueF4;                   // 0xf4  (event queue, null-checked)
+	int m_nQueueActiveF8;                    // 0xf8  (==0 -> activate)
+
 	int MapSpriteOwnerEventToFrameSlot(int nEvent);
 	void NotifyFrameEventC(int nEvent);
 	void NotifyFrameEventB(int nEvent);
@@ -49,17 +57,17 @@ void GameSpriteOwnerVariantC::NotifyFrameEventC(int nEvent)
 	GameSpriteOwnerStateEvent Event;
 	int nFrame;
 
-	if (*(int*) ((char*) this + 0xf8) == 0) {
-		*(int*) ((char*) this + 0xd8) = 1;
+	if (m_nQueueActiveF8 == 0) {
+		m_nActiveFrameD8 = 1;
 	}
-	if (*(void**) ((char*) this + 0xf4) != 0) {
+	if (m_pEventQueueF4 != 0) {
 		nFrame = MapSpriteOwnerEventToFrameSlot(nEvent);
 		Event.m_dwTimestamp04 = (int) timeGetTime();
-		Event.m_nPayload08 = *(int*) ((char*) this + 0xcc);
+		Event.m_nPayload08 = m_nStateCC;
 		Event.m_nType00 = 0x0c;
 		Event.m_pOwner0C = this;
 		Event.m_nFrame10 = nFrame;
-		((GameSpriteOwnerEventQueueInterface*) *(void**) ((char*) this + 0xf4))->QueueEvent(&Event);
+		((GameSpriteOwnerEventQueueInterface*) m_pEventQueueF4)->QueueEvent(&Event);
 	}
 }
 
@@ -69,17 +77,17 @@ void GameSpriteOwnerVariantC::NotifyFrameEventB(int nEvent)
 	GameSpriteOwnerStateEvent Event;
 	int nFrame;
 
-	if (*(int*) ((char*) this + 0xf8) == 0) {
-		*(int*) ((char*) this + 0xd8) = 1;
+	if (m_nQueueActiveF8 == 0) {
+		m_nActiveFrameD8 = 1;
 	}
-	if (*(void**) ((char*) this + 0xf4) != 0) {
+	if (m_pEventQueueF4 != 0) {
 		nFrame = MapSpriteOwnerEventToFrameSlot(nEvent);
 		Event.m_dwTimestamp04 = (int) timeGetTime();
-		Event.m_nPayload08 = *(int*) ((char*) this + 0xcc);
+		Event.m_nPayload08 = m_nStateCC;
 		Event.m_nType00 = 0x0b;
 		Event.m_pOwner0C = this;
 		Event.m_nFrame10 = nFrame;
-		((GameSpriteOwnerEventQueueInterface*) *(void**) ((char*) this + 0xf4))->QueueEvent(&Event);
+		((GameSpriteOwnerEventQueueInterface*) m_pEventQueueF4)->QueueEvent(&Event);
 	}
 }
 
