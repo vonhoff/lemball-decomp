@@ -10,8 +10,6 @@ A live progress report is available on [decomp.dev](https://decomp.dev/vonhoff/l
 
 The project is developed primarily with the assistance of AI agents, since the scope of the reconstruction exceeds what manual analysis alone could cover in a reasonable timeframe.
 
-**See [`docs/BACKLOG.md`](docs/BACKLOG.md) for the decision framework (map vs Macintosh blueprint vs do-not-implement), naming rules, and the prioritized, evidence-based working backlog.** Its item-1 work-list is regenerated from the Macintosh coverage inventory into `data/unreconstructed-correlations.csv`.
-
 AI-generated output is treated as a hypothesis, not authoritative source code. Every change is validated against binary evidence, recovered symbols, compiler output, and automated comparison results, and implementations are revised or replaced as better evidence emerges.
 
 ## Reference material

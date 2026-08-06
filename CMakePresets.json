@@ -11,7 +11,16 @@
       "displayName": "MSVC 4.00",
       "generator": "NMake Makefiles",
       "binaryDir": "${sourceDir}/build-msvc400",
-      "toolchainFile": "${sourceDir}/cmake/msvc400-toolchain.cmake"
+      "toolchainFile": "${sourceDir}/cmake/msvc400-toolchain.cmake",
+      "environment": {
+        "MSVC400_ROOT": "${sourceDir}/msvc400",
+        "INCLUDE": "${sourceDir}/msvc400/include",
+        "LIB": "${sourceDir}/msvc400/lib",
+        "PATH": "${sourceDir}/msvc400/bin;$penv{PATH}"
+      },
+      "cacheVariables": {
+        "CMAKE_MAKE_PROGRAM": "${sourceDir}/msvc400/bin/nmake.exe"
+      }
     }
   ],
   "buildPresets": [
