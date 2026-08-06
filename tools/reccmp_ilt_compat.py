@@ -274,9 +274,8 @@ THUNK_ILT_REFERENCES = {
         "mine terrain variant selector 00423dd0",
     ),
     0x00415D90: (
-        0x0040336E,
-        "CGameObject::GetDestination",
-        "game-object destination copy 00416000",
+        (0x0040336E, "CGameObject::GetDestination", "game-object destination copy 00416000"),
+        (0x00401532, "ReturnFacingDirection", "compute_direction_octant_between_points thunk -> 0x413e80"),
     ),
     0x00415E20: (
         0x0040336E,
