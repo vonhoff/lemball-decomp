@@ -79,7 +79,7 @@ void LEMBALL_FASTCALL ServiceLevelDemoPlayback(void* pPlaybackController);
 void LEMBALL_FASTCALL ReleaseLevelDemoRecordBuffer(void* pPlaybackController);
 void LEMBALL_FASTCALL StopLevelDemoPlayback(void* pPlaybackController);
 void LEMBALL_FASTCALL StopLevelDemoPlaybackThunk(void* pPlaybackController);
-int FilterLevelDemoPlaybackInputEvent(void* pPlaybackController, unsigned short* pEventId);
+int LEMBALL_FASTCALL FilterLevelDemoPlaybackInputEvent(void* pPlaybackController, int nUnused, unsigned short* pEventId);
 void* LEMBALL_FASTCALL RestoreLevelDemoPlaybackBaseVtable(void* pPlaybackController, void*, unsigned char fDelete);
 int* LoadBinResource(int nResourceId);
 void LEMBALL_FASTCALL SetBinResourceTypeTag(void* pObject);
@@ -147,7 +147,7 @@ DemoLevelDemoPlaybackController* DemoLevelDemoPlaybackController::ConstructLevel
 int LEMBALL_FASTCALL FilterLevelDemoPlaybackInputEventThunk(void* pPlaybackController, int, unsigned short* pEventId)
 
 {
-	return FilterLevelDemoPlaybackInputEvent(pPlaybackController, pEventId);
+	return FilterLevelDemoPlaybackInputEvent(pPlaybackController, 0, pEventId);
 }
 
 // LINKERILT: LEMBALL 0x00401a55
@@ -419,10 +419,11 @@ void LEMBALL_FASTCALL StopLevelDemoPlayback(void* pPlaybackController)
 
 // MACINTOSH: CDemo::ProcessMsg(tagMESSAGE*)
 // FUNCTION: LEMBALL 0x004096b0
-int FilterLevelDemoPlaybackInputEvent(void* pPlaybackController, unsigned short* pEventId)
+int LEMBALL_FASTCALL FilterLevelDemoPlaybackInputEvent(void* pPlaybackController, int nUnused, unsigned short* pEventId)
 {
 	unsigned short wEventId;
 
+	(void) nUnused;
 	if (*(int*) ((char*) pPlaybackController + 0x4c) != 0) {
 		wEventId = *pEventId;
 		if ((wEventId & 0x8000) == 0) {
@@ -430,7 +431,7 @@ int FilterLevelDemoPlaybackInputEvent(void* pPlaybackController, unsigned short*
 			case 1:
 			case 3:
 			case 5:
-				StopLevelDemoPlayback(pPlaybackController);
+				StopLevelDemoPlaybackThunk(pPlaybackController);
 				return 1;
 			default:
 				return 1;

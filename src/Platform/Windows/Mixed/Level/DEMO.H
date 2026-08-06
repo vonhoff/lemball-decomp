@@ -39,7 +39,7 @@ void LEMBALL_FASTCALL ReleaseLevelDemoRecordBufferThunk(void* pPlaybackControlle
 void LEMBALL_FASTCALL ServiceLevelDemoPlayback(void* pPlaybackController);
 void LEMBALL_FASTCALL ReleaseLevelDemoRecordBuffer(void* pPlaybackController);
 void LEMBALL_FASTCALL StopLevelDemoPlayback(void* pPlaybackController);
-int FilterLevelDemoPlaybackInputEvent(void* pPlaybackController, unsigned short* pEventId);
+int LEMBALL_FASTCALL FilterLevelDemoPlaybackInputEvent(void* pPlaybackController, int nUnused, unsigned short* pEventId);
 void* LEMBALL_FASTCALL RestoreLevelDemoPlaybackBaseVtable(void* pPlaybackController, void*, unsigned char fDelete);
 
 extern void* g_pLevelDemoPlaybackController;
