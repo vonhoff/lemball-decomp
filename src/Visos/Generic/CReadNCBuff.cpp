@@ -6,7 +6,7 @@
 // FUNCTION: LEMBALL 0x00461560
 void* ConstructShiftedLockedRecordSlotTable(void* pObject, int cPacketIds, unsigned int cbRecord)
 {
-	((VsNetSimpleEffTransportRecordSlotTable*) pObject)
+	((CWritePacketTable*) pObject)
 		->ConstructLockedEffTransportRecordSlotTable(cPacketIds - 2, cbRecord);
 	*(int*) ((char*) pObject + 0x0c) = cPacketIds - 2;
 	return pObject;

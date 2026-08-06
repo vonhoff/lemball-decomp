@@ -125,7 +125,7 @@ extern void* ConstructRingEffTransportRecordBufferTable(void* pObject,
 														int cRecords,
 														int cbPayload,
 														unsigned int cbRecord);
-struct VsNetSimpleEffTransportRecordSlotTable {
+struct CWritePacketTable {
 	void* ConstructSimpleRecordSlotTableWrapper(int cRecords, unsigned int cbRecord);
 };
 
@@ -642,7 +642,7 @@ void CWriteSocket::ConfigureTimedEffStreamSecondaryHandle(int nPacketCount, int 
 	pHandleArray = AllocateVSMemBlock(0x0c);
 	if (pHandleArray != 0) {
 		m_pSecondaryHandleArray4c =
-			((VsNetSimpleEffTransportRecordSlotTable*) pHandleArray)
+			((CWritePacketTable*) pHandleArray)
 				->ConstructSimpleRecordSlotTableWrapper(nPacketCount, (unsigned int) g_cbEffTransportMaxPacketBytes);
 		return;
 	}

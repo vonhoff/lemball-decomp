@@ -8,7 +8,7 @@ extern void* g_pActiveNetworkRuntimeWindow;
 extern void* g_pNetworkLobbyVsnetRuntime;
 extern void LEMBALL_FASTCALL MarkNetworkLobbySelectedPeerDisconnected(void* pVsnetRuntime);
 
-struct VsNetSimpleEffTransportRecordSlotTable {
+struct CWritePacketTable {
 	int GetNextEffTransportRecordClaimFlag(unsigned short nSequence);
 };
 
@@ -112,14 +112,14 @@ void LevelChunkStreamWriteView::FlushLevelChunkStreamWrite(void)
 	pRecordOwner = (char*) (unsigned long) g_nSelectedNetworkLobbyPeerId +
 				   *(int*) (*(int*) ((char*) (unsigned long) g_nSelectedNetworkLobbyPeerId + 4) + 8) + 4;
 	if (*(int*) (pRecordOwner + 0x5c) != -1 ||
-		((VsNetSimpleEffTransportRecordSlotTable*) *(void**) (pRecordOwner + 0x4c))
+		((CWritePacketTable*) *(void**) (pRecordOwner + 0x4c))
 				->GetNextEffTransportRecordClaimFlag(*(unsigned short*) (pRecordOwner + 0x30)) == 0) {
 		dwStart = timeGetTime();
 		do {
 			pRecordOwner = (char*) (unsigned long) g_nSelectedNetworkLobbyPeerId +
 						   *(int*) (*(int*) ((char*) (unsigned long) g_nSelectedNetworkLobbyPeerId + 4) + 8) + 4;
 			if (*(int*) (pRecordOwner + 0x5c) == -1 &&
-				((VsNetSimpleEffTransportRecordSlotTable*) *(void**) (pRecordOwner + 0x4c))
+				((CWritePacketTable*) *(void**) (pRecordOwner + 0x4c))
 						->GetNextEffTransportRecordClaimFlag(*(unsigned short*) (pRecordOwner + 0x30)) != 0) {
 				break;
 			}
@@ -133,7 +133,7 @@ void LevelChunkStreamWriteView::FlushLevelChunkStreamWrite(void)
 	pRecordOwner = (char*) (unsigned long) g_nSelectedNetworkLobbyPeerId +
 				   *(int*) (*(int*) ((char*) (unsigned long) g_nSelectedNetworkLobbyPeerId + 4) + 8) + 4;
 	if (*(int*) (pRecordOwner + 0x5c) == -1 &&
-		((VsNetSimpleEffTransportRecordSlotTable*) *(void**) (pRecordOwner + 0x4c))
+		((CWritePacketTable*) *(void**) (pRecordOwner + 0x4c))
 				->GetNextEffTransportRecordClaimFlag(*(unsigned short*) (pRecordOwner + 0x30)) != 0) {
 		pTarget->QueueEffStreamWriteEvent(g_nSelectedNetworkLobbyPeerId);
 		pTarget->EndEffStreamWriteSession();

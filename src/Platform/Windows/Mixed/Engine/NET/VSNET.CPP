@@ -325,7 +325,7 @@ struct VsNetHandleGroupAdjustorSlot {
 };
 
 struct VsNetEffTransportPeer;
-struct VsNetSimpleEffTransportRecordSlotTable;
+struct CWritePacketTable;
 
 struct VsNetPeerPayloadSenderStateOffsets {
 	void* m_pReserved00;
@@ -372,7 +372,7 @@ struct VsNetPeerPayloadSenderState {
 	int m_nReserved40;
 	VsNetPeerPayloadSenderStateOffsets* m_pOffsets44;
 	int m_nReserved48;
-	VsNetSimpleEffTransportRecordSlotTable* m_pRecordTable4c;
+	CWritePacketTable* m_pRecordTable4c;
 	int m_nReserved50;
 	void* m_pPendingFragmentedStream54;
 	int m_nPendingFragmentSequence58;
@@ -591,7 +591,7 @@ struct VsNetAckedEffTransportRecordOwner {
 	}
 };
 
-struct VsNetSimpleEffTransportRecordSlot {
+struct CWritePacket {
 	void** m_pVtable;
 	int m_pSerializedStream04;
 	unsigned char m_fAvailable08;
@@ -606,10 +606,10 @@ struct VsNetSimpleEffTransportRecordSlot {
 	void CopyIntoSimpleEffTransportRecordSlot(const void* pvSource, unsigned int cbSource, void* pPayload);
 };
 
-struct VsNetSimpleEffTransportRecordSlotTable {
+struct CWritePacketTable {
 	int m_cRecords;
 	int m_nReserved04;
-	VsNetSimpleEffTransportRecordSlot** m_apRecords08;
+	CWritePacket** m_apRecords08;
 
 	void* ConstructEffTransportRecordSlotTable(int cRecords, unsigned int cbRecord);
 	void* ConstructLockedEffTransportRecordSlotTable(int cRecords, unsigned int cbRecord);
@@ -1489,7 +1489,7 @@ int VsNetPeerPayloadSenderState::SendReliableEffTransportPayload(void* pStream)
 {
 	VsNetEffTransportPacketHeader* pHeader;
 	VsNetEffStreamPayloadState* pPayload;
-	VsNetSimpleEffTransportRecordSlot* pRecord;
+	CWritePacket* pRecord;
 	void* pvPayload;
 	int cbPayload;
 
@@ -1502,7 +1502,7 @@ int VsNetPeerPayloadSenderState::SendReliableEffTransportPayload(void* pStream)
 	pHeader->m_fReliable0e = 1;
 	((CNetworkMessage*) this)->SaveEffStreamToMemoryRange((int) (unsigned long) pvPayload, 0);
 	pRecord =
-		(VsNetSimpleEffTransportRecordSlot*) (unsigned long) ((VsNetSimpleEffTransportRecordSlotTable*)
+		(CWritePacket*) (unsigned long) ((CWritePacketTable*)
 																  pSender->m_pRecordTable4c)
 			->ClaimSimpleRecordSlotForPacketId(pHeader->m_wSequence0a, pvPayload, (unsigned int) cbPayload, pStream);
 	if (pRecord == 0) {
@@ -1524,11 +1524,11 @@ int VsNetPeerPayloadSenderState::SendReliableEffTransportPayload(void* pStream)
 // FUNCTION: LEMBALL 0x0045ff20
 int RetryPendingEffTransportRecord(void* pObject, int nRecord)
 {
-	VsNetSimpleEffTransportRecordSlot* pRecord;
+	CWritePacket* pRecord;
 	VsNetEffTransportPacketHeader* pSerializedHeader;
 	int nSendResult;
 
-	pRecord = (VsNetSimpleEffTransportRecordSlot*) (unsigned long) nRecord;
+	pRecord = (CWritePacket*) (unsigned long) nRecord;
 	pSerializedHeader = (VsNetEffTransportPacketHeader*) (unsigned long) pRecord->m_pSerializedStream04;
 	((GameEffStream*) pObject)->LoadEffStreamFromMemory(pRecord->m_pSerializedStream04);
 	((GameEffStream*) pObject)->LoadEffStreamFromMemory(pRecord->m_pSerializedStream04);
@@ -1736,8 +1736,8 @@ void VsNetPeerPayloadSenderState::ServiceEffTransportRetries(void)
 {
 	VsNetPeerPayloadSenderState* pSender;
 	VsNetPeerPayloadSenderRuntimeStateView* pRuntimeState;
-	VsNetSimpleEffTransportRecordSlotTable* pRecordTable;
-	VsNetSimpleEffTransportRecordSlot* pRecord;
+	CWritePacketTable* pRecordTable;
+	CWritePacket* pRecord;
 	DWORD dwNow;
 	int i;
 	int cRecords;
@@ -2356,7 +2356,7 @@ void CReadPacket::CopyIntoLockedEffTransportRecordSlot(const void* pvSource,
 }
 
 // FUNCTION: LEMBALL 0x00461190
-void* VsNetSimpleEffTransportRecordSlot::ConstructSimpleEffTransportRecordSlot(unsigned int cbRecord)
+void* CWritePacket::ConstructSimpleEffTransportRecordSlot(unsigned int cbRecord)
 
 {
 	m_pVtable = g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable;
@@ -2367,7 +2367,7 @@ void* VsNetSimpleEffTransportRecordSlot::ConstructSimpleEffTransportRecordSlot(u
 }
 
 // FUNCTION: LEMBALL 0x004611c0
-void VsNetSimpleEffTransportRecordSlot::DestroySimpleEffTransportRecordSlot(void)
+void CWritePacket::DestroySimpleEffTransportRecordSlot(void)
 {
 	m_pVtable = (void**) g_NETWORK_DeleteSimpleEffTransportRecordSlotVtable;
 	FreeVSMemBlock((void*) (unsigned long) m_pSerializedStream04);
@@ -2375,7 +2375,7 @@ void VsNetSimpleEffTransportRecordSlot::DestroySimpleEffTransportRecordSlot(void
 }
 
 // FUNCTION: LEMBALL 0x004611e0
-void VsNetSimpleEffTransportRecordSlot::CopyIntoSimpleEffTransportRecordSlot(const void* pvSource,
+void CWritePacket::CopyIntoSimpleEffTransportRecordSlot(const void* pvSource,
 																			 unsigned int cbSource,
 																			 void* pPayload)
 
@@ -2402,13 +2402,13 @@ void VsNetSimpleEffTransportRecordSlot::CopyIntoSimpleEffTransportRecordSlot(con
 }
 
 // FUNCTION: LEMBALL 0x00461210
-void* VsNetSimpleEffTransportRecordSlotTable::ConstructEffTransportRecordSlotTable(int cRecords, unsigned int cbRecord)
+void* CWritePacketTable::ConstructEffTransportRecordSlotTable(int cRecords, unsigned int cbRecord)
 
 {
 	m_nReserved04 = cbRecord & 0xffff;
 	m_cRecords = cRecords;
 	if (cRecords > 0) {
-		m_apRecords08 = (VsNetSimpleEffTransportRecordSlot**) AllocateVSMemBlock((unsigned int) (cRecords << 2));
+		m_apRecords08 = (CWritePacket**) AllocateVSMemBlock((unsigned int) (cRecords << 2));
 	}
 	else {
 		m_apRecords08 = 0;
@@ -2437,16 +2437,16 @@ void VsNetVSMemObjectPointerArray::DestroyVSMemObjectPointerArray(void)
 }
 
 // FUNCTION: LEMBALL 0x00461290
-void* VsNetSimpleEffTransportRecordSlotTable::ConstructLockedEffTransportRecordSlotTable(int cRecords,
+void* CWritePacketTable::ConstructLockedEffTransportRecordSlotTable(int cRecords,
 																						 unsigned int cbRecord)
 
 {
-	VsNetSimpleEffTransportRecordSlotTable* pTable;
+	CWritePacketTable* pTable;
 	void* pSlotStorage;
 	int i;
 	int nOffset;
 
-	pTable = (VsNetSimpleEffTransportRecordSlotTable*) ConstructEffTransportRecordSlotTable(cRecords, cbRecord);
+	pTable = (CWritePacketTable*) ConstructEffTransportRecordSlotTable(cRecords, cbRecord);
 	if (pTable->m_apRecords08 != 0) {
 		nOffset = 0;
 		for (i = 0; i < pTable->m_cRecords; ++i) {
@@ -2472,7 +2472,7 @@ void VsNetGlobalLockedPacketState::CopyGlobalPacketIntoLockedRecordSlot(int nInd
 }
 
 // FUNCTION: LEMBALL 0x00461340
-void* VsNetSimpleEffTransportRecordSlotTable::ConstructSimpleEffTransportRecordSlotTable(int cRecords,
+void* CWritePacketTable::ConstructSimpleEffTransportRecordSlotTable(int cRecords,
 																						 unsigned int cbRecord)
 
 {
@@ -2487,7 +2487,7 @@ void* VsNetSimpleEffTransportRecordSlotTable::ConstructSimpleEffTransportRecordS
 			pSlotStorage = AllocateVSMemBlock(0x18);
 			if (pSlotStorage != 0) {
 				*(void**) (unsigned long) ((int) (unsigned long) m_apRecords08 + nOffset) =
-					((VsNetSimpleEffTransportRecordSlot*) pSlotStorage)
+					((CWritePacket*) pSlotStorage)
 						->ConstructSimpleEffTransportRecordSlot((unsigned int) m_nReserved04);
 			}
 			else {
@@ -2500,7 +2500,7 @@ void* VsNetSimpleEffTransportRecordSlotTable::ConstructSimpleEffTransportRecordS
 }
 
 // FUNCTION: LEMBALL 0x004613a0
-void VsNetSimpleEffTransportRecordSlotTable::CopyPayloadIntoSimpleRecordSlot(int nIndex,
+void CWritePacketTable::CopyPayloadIntoSimpleRecordSlot(int nIndex,
 																			 const void* pvSource,
 																			 unsigned int cbSource,
 																			 void* pPayload)
@@ -2607,7 +2607,7 @@ void* VsNetGlobalPacketRangeState::AppendGlobalPacketToRangeRecordSlot(void)
 // FUNCTION: LEMBALL 0x00461780
 void* ConstructRingLockedRecordSlotTable(void* pObject, int cRecords, unsigned int cbRecord)
 {
-	((VsNetSimpleEffTransportRecordSlotTable*) pObject)->ConstructLockedEffTransportRecordSlotTable(cRecords, cbRecord);
+	((CWritePacketTable*) pObject)->ConstructLockedEffTransportRecordSlotTable(cRecords, cbRecord);
 	*(int*) ((char*) pObject + 0x0c) = 0;
 	*(int*) ((char*) pObject + 0x10) = 0;
 	return pObject;
@@ -2720,7 +2720,7 @@ void* VsNetGlobalPacketAppendRingState::AppendGlobalPacketToRingRecordSlot(void)
 }
 
 // FUNCTION: LEMBALL 0x00461970
-void* VsNetSimpleEffTransportRecordSlotTable::ConstructSimpleRecordSlotTableWrapper(int cRecords, unsigned int cbRecord)
+void* CWritePacketTable::ConstructSimpleRecordSlotTableWrapper(int cRecords, unsigned int cbRecord)
 
 {
 	ConstructSimpleEffTransportRecordSlotTable(cRecords, cbRecord);
@@ -2728,13 +2728,13 @@ void* VsNetSimpleEffTransportRecordSlotTable::ConstructSimpleRecordSlotTableWrap
 }
 
 // FUNCTION: LEMBALL 0x00461990
-void* VsNetSimpleEffTransportRecordSlotTable::ClaimSimpleRecordSlotForPacketId(unsigned int nPacketId,
+void* CWritePacketTable::ClaimSimpleRecordSlotForPacketId(unsigned int nPacketId,
 																			   const void* pvSource,
 																			   unsigned int cbSource,
 																			   void* pPayload)
 
 {
-	VsNetSimpleEffTransportRecordSlot* pSlot;
+	CWritePacket* pSlot;
 	int nIndex;
 
 	nIndex = (int) (nPacketId & 0xffff) % m_cRecords;
@@ -2748,7 +2748,7 @@ void* VsNetSimpleEffTransportRecordSlotTable::ClaimSimpleRecordSlotForPacketId(u
 }
 
 // FUNCTION: LEMBALL 0x004619d0
-int VsNetSimpleEffTransportRecordSlotTable::GetNextEffTransportRecordClaimFlag(unsigned short nSequence)
+int CWritePacketTable::GetNextEffTransportRecordClaimFlag(unsigned short nSequence)
 
 {
 	int nIndex;
@@ -3633,7 +3633,7 @@ void* LEMBALL_FASTCALL DeleteLockedEffTransportRecordSlotWrapper(void* pObject, 
 // Compatibility shim preserving MSVC 4.20 compiler state.
 void* DeleteSimpleEffTransportRecordSlotWrapper(void* pObject, BYTE fFreeMemory)
 {
-	((VsNetSimpleEffTransportRecordSlot*) pObject)->DestroySimpleEffTransportRecordSlot();
+	((CWritePacket*) pObject)->DestroySimpleEffTransportRecordSlot();
 	if ((fFreeMemory & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}
@@ -4287,7 +4287,7 @@ int LEMBALL_FASTCALL InitializeFileNetworkAddress(void*, void*, int nUnused)
 	}
 
 DEFINE_VSNET_NAMED_SCALAR_DELETE(DeleteSimpleEffTransportRecordSlotAuto,
-								 VsNetSimpleEffTransportRecordSlot,
+								 CWritePacket,
 								 DestroySimpleEffTransportRecordSlot)
 DEFINE_VSNET_NAMED_SCALAR_DELETE(DeleteEffTransportRecordBufferAuto,
 								 VsNetEffTransportRecordBuffer,
