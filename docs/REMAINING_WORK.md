@@ -15,10 +15,10 @@ Authoritative data lives in `tools/reconstruction_audit.py`:
   --misplaced : source class != blueprint class at an address — 24 candidates (verify via Ghidra first; some are heuristic false-positives)
 
 ## Audit / naming ground rules
-- Exact-set regression gate: `tools/find_decompilation_candidates.py --check-baseline`
+- Exact-set regression gate: `tools/decomp_gate.py --check-baseline`
   (against `docs/exact-baseline.json`, tracked). Regenerate only on intentional
   improvements: run full `reccmp --json reccmp.json --json-diet`, then
-  `tools/find_decompilation_candidates.py --save-baseline`. Never accept a NEW
+  `tools/decomp_gate.py --save-baseline`. Never accept a NEW
   lost address beyond the tolerated set (0x417b50 / 0x462990).
 - Mac mangle `Func__NNClassName<sig>`: the `C` prefix is REAL (inside the length field).
 - Blueprint (macintosh-x86-correlations.csv) is the naming authority; Windows/AI names are inferred.
