@@ -196,6 +196,7 @@ THUNK_ILT_REFERENCES = {
     ),
     0x0042BA40: (0x00402D10, "DestroyCTrampoline", "tram chunk object destructor target 0x42a9d0"),
     0x0041DE80: (0x0040209F, "CGameObject::Restart", "reset runtime state thunk -> CGameObject::Restart 0x4150d0"),
+    0x004278C0: (0x0040372E, "nDead", "has_level_plas_history_entries thunk -> 0x413370"),
     0x00426710: (
         0x00401E0B,
         "destroy_lift_chunk_object",
