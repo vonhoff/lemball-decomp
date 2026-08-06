@@ -900,8 +900,24 @@ static void VSMEM_NoOpLock(void)
 
 void* LEMBALL_FASTCALL VSMEM_ReportBlockStub(void* pBlock, int nUnused, VsInitFormattedOutputStream* pOutputStream)
 {
-	(void) pBlock;
+	CMBlock* pMemoryBlock;
+	unsigned int cbPayload;
+	const char* pszState;
+
+	VsInitFormattedOutputStream* pOut;
 	(void) nUnused;
+	pMemoryBlock = (CMBlock*) pBlock;
+	cbPayload = pMemoryBlock->m_cbPayload;
+	pOut = pOutputStream;
+	pOut->AppendPointerToStreamVariant((unsigned int) pMemoryBlock->m_pPayload);
+	pOut->AppendCStringToStream("	0x");
+	AppendHexUIntToStream(pOutputStream, cbPayload);
+	if ((pMemoryBlock->m_dwFlags & 1) != 0) {
+		pszState = "	Free\n";
+	} else {
+		pszState = "	New\n";
+	}
+	pOut->AppendCStringToStream(pszState);
 	return pOutputStream;
 }
 
