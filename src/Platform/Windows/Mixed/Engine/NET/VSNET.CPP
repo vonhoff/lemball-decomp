@@ -649,8 +649,8 @@ struct VsNetLockedEffTransportRecordCriticalSection {
 	unsigned char m_abCriticalSection[0x18];
 };
 
-struct VsNetLockedEffTransportRecordSlot {
-	VsNetLockedEffTransportRecordSlot(unsigned int cbPayload);
+struct CReadPacket {
+	CReadPacket(unsigned int cbPayload);
 
 	void CopyIntoLockedEffTransportRecordSlot(const void* pvSource, unsigned int cbSource);
 	void DestroyLockedEffTransportRecordSlot(void);
@@ -1028,7 +1028,7 @@ struct VsNetGlobalPacketRangeState {
 struct VsNetGlobalPacketRingState {
 	int m_cBuffers00;
 	int m_nReserved04;
-	VsNetLockedEffTransportRecordSlot** m_appBuffers08;
+	CReadPacket** m_appBuffers08;
 	int m_nNextSequence0c;
 	int m_fOverflow10;
 
@@ -1047,7 +1047,7 @@ struct VsNetGlobalPacketAppendRingState {
 /* The locked-packet owner stores its record-slot pointer directly at +8. */
 struct VsNetGlobalLockedPacketState {
 	char m_abReserved00[8];
-	VsNetLockedEffTransportRecordSlot** m_appSlots08;
+	CReadPacket** m_appSlots08;
 
 	void CopyGlobalPacketIntoLockedRecordSlot(int nIndex);
 	void* ClaimGlobalPacketLockedRecordSlot(void);
@@ -2322,7 +2322,7 @@ void VsNetCompositeEffTransportStack::ServicePeer(void)
 }
 
 // FUNCTION: LEMBALL 0x00461090
-VsNetLockedEffTransportRecordSlot::VsNetLockedEffTransportRecordSlot(unsigned int cbPayload)
+CReadPacket::CReadPacket(unsigned int cbPayload)
 
 {
 	m_pVtable = g_NETWORK_DeleteLockedEffTransportRecordSlotVtable;
@@ -2335,14 +2335,14 @@ VsNetLockedEffTransportRecordSlot::VsNetLockedEffTransportRecordSlot(unsigned in
 }
 
 // FUNCTION: LEMBALL 0x004610f0
-void VsNetLockedEffTransportRecordSlot::DestroyLockedEffTransportRecordSlot(void)
+void CReadPacket::DestroyLockedEffTransportRecordSlot(void)
 {
 	FreeVSMemBlock(m_pPayload04);
 	DeleteCriticalSection(m_CriticalSection08.m_abCriticalSection);
 }
 
 // FUNCTION: LEMBALL 0x00461140
-void VsNetLockedEffTransportRecordSlot::CopyIntoLockedEffTransportRecordSlot(const void* pvSource,
+void CReadPacket::CopyIntoLockedEffTransportRecordSlot(const void* pvSource,
 																			 unsigned int cbSource)
 
 {
@@ -2456,7 +2456,7 @@ void* VsNetSimpleEffTransportRecordSlotTable::ConstructLockedEffTransportRecordS
 			}
 			else {
 				*(void**) ((char*) pTable->m_apRecords08 + nOffset) =
-					new (pSlotStorage) VsNetLockedEffTransportRecordSlot((unsigned int) pTable->m_nReserved04);
+					new (pSlotStorage) CReadPacket((unsigned int) pTable->m_nReserved04);
 			}
 			nOffset += 4;
 		}
@@ -2616,7 +2616,7 @@ void* ConstructRingLockedRecordSlotTable(void* pObject, int cRecords, unsigned i
 // FUNCTION: LEMBALL 0x004617a0
 void* VsNetGlobalPacketRingState::ClaimOrderedGlobalPacketLockedSlot(void)
 {
-	VsNetLockedEffTransportRecordSlot* pSlot;
+	CReadPacket* pSlot;
 	unsigned int nIndex;
 	unsigned short nSequence;
 
@@ -2641,7 +2641,7 @@ void* VsNetGlobalPacketRingState::ClaimOrderedGlobalPacketLockedSlot(void)
 // FUNCTION: LEMBALL 0x00461810
 void* VsNetGlobalPacketRingState::ClaimNextReadyLockedRecordSlot(void)
 {
-	VsNetLockedEffTransportRecordSlot* pSlot;
+	CReadPacket* pSlot;
 
 	pSlot = m_appBuffers08[(unsigned short) (m_nNextSequence0c % m_cBuffers00)];
 	if (pSlot->m_fPayloadPresent24 != 0 && pSlot->m_fAvailable28 == 0) {
@@ -3623,7 +3623,7 @@ void* LEMBALL_FASTCALL DeleteEffTransportRecordBufferBaseWrapper(VsNetEffTranspo
 // FUNCTION: LEMBALL 0x00462a00
 void* LEMBALL_FASTCALL DeleteLockedEffTransportRecordSlotWrapper(void* pObject, void*, BYTE fFreeMemory)
 {
-	((VsNetLockedEffTransportRecordSlot*) pObject)->DestroyLockedEffTransportRecordSlot();
+	((CReadPacket*) pObject)->DestroyLockedEffTransportRecordSlot();
 	if ((fFreeMemory & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}

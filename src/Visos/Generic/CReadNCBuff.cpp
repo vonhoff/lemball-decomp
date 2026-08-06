@@ -15,7 +15,7 @@ void* ConstructShiftedLockedRecordSlotTable(void* pObject, int cPacketIds, unsig
 // FUNCTION: LEMBALL 0x00461580
 void* VsNetGlobalLockedPacketState::ClaimGlobalPacketLockedRecordSlot(void)
 {
-	VsNetLockedEffTransportRecordSlot* pSlot;
+	CReadPacket* pSlot;
 	unsigned short nPacket;
 	unsigned int nIndex;
 	unsigned short nSequence;
