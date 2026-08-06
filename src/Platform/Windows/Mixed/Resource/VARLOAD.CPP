@@ -836,29 +836,27 @@ void LEMBALL_FASTCALL AllocateTwoArrayListEntryArrays(void* pObject, int, int cE
 int LEMBALL_FASTCALL
 LoadTwoArrayListEntryPairFromBuffers(void* pObject, int, int iEntry, int* pDescriptorCursor, int* pDataCursor)
 {
-	int fFailed;
-
-	fFailed = ((MogLoadTypedResourceObject*) ((char*) *(void**) ((char*) pObject + 0x78) + iEntry * 0x48))
-				  ->LoadTypedResourceObjectFromBufferDescriptor(pDescriptorCursor, pDataCursor, pObject) != 0;
-	if (!fFailed) {
-		fFailed = ((MogLoadTypedResourceObject*) ((char*) *(void**) ((char*) pObject + 0x7c) + iEntry * 0x4c))
-					  ->LoadTypedResourceObjectFromBufferDescriptor(pDescriptorCursor, pDataCursor, pObject) != 0;
+	if (((MogLoadTypedResourceObject*) ((char*) *(void**) ((char*) pObject + 0x78) + iEntry * 0x48))
+			->LoadTypedResourceObjectFromBufferDescriptor(pDescriptorCursor, pDataCursor, pObject) == 0) {
+		if (((MogLoadTypedResourceObject*) ((char*) *(void**) ((char*) pObject + 0x7c) + iEntry * 0x4c))
+				->LoadTypedResourceObjectFromBufferDescriptor(pDescriptorCursor, pDataCursor, pObject) == 0) {
+			return 0;
+		}
 	}
-	return fFailed;
+	return 1;
 }
 
 // FUNCTION: LEMBALL 0x0045e0c0
 int LEMBALL_FASTCALL LoadTwoArrayListEntryPairFromStream(void* pObject, int, int iEntry, int* pDataCursor)
 {
-	int fFailed;
-
-	fFailed = ((MogLoadTypedResourceObject*) ((char*) *(void**) ((char*) pObject + 0x78) + iEntry * 0x48))
-				  ->LoadTypedResourceObjectFromStreamDescriptor(pDataCursor, pObject) != 0;
-	if (!fFailed) {
-		fFailed = ((MogLoadTypedResourceObject*) ((char*) *(void**) ((char*) pObject + 0x7c) + iEntry * 0x4c))
-					  ->LoadTypedResourceObjectFromStreamDescriptor(pDataCursor, pObject) != 0;
+	if (((MogLoadTypedResourceObject*) ((char*) *(void**) ((char*) pObject + 0x78) + iEntry * 0x48))
+			->LoadTypedResourceObjectFromStreamDescriptor(pDataCursor, pObject) == 0) {
+		if (((MogLoadTypedResourceObject*) ((char*) *(void**) ((char*) pObject + 0x7c) + iEntry * 0x4c))
+				->LoadTypedResourceObjectFromStreamDescriptor(pDataCursor, pObject) == 0) {
+			return 0;
+		}
 	}
-	return fFailed;
+	return 1;
 }
 
 // FUNCTION: LEMBALL 0x0045e120
