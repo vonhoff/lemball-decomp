@@ -349,11 +349,13 @@ void CNetworkMessage::ReadEffStreamBytes(void* pvTarget, unsigned int cbRead)
 int CNetworkMessage::SaveEffStreamToMemoryRange(int nTargetBuffer, int cbRange)
 {
 	VsNetEffStreamSerializeVtable* pVtable;
+	int nSum;
 
 	m_pPayloadBuffer08 = nTargetBuffer;
 	pVtable = (VsNetEffStreamSerializeVtable*) *(void***) this;
-	m_nReserved1c = (unsigned char*) (unsigned long) (nTargetBuffer + cbRange);
-	m_fOwnsPayload0c = m_nBufferEnd18 + nTargetBuffer + cbRange;
+	nSum = nTargetBuffer + cbRange;
+	m_nReserved1c = (unsigned char*) nSum;
+	m_fOwnsPayload0c = m_nBufferEnd18 + nSum;
 	(this->*pVtable->m_pBeginWriteHeader)();
 	return (this->*pVtable->m_pBeginWriteBody)();
 }
