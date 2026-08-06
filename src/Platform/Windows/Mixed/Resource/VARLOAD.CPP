@@ -1254,9 +1254,32 @@ void LEMBALL_FASTCALL LoadMainGameVariantTwoArrayListResourceAuto(void* pBundle,
 	++pResourceBundle->m_cTwoArrayListResources;
 }
 
-// Comparison-only compatibility stub.
-void LEMBALL_FASTCALL DestroyIntZrleListResourceAuto(void*)
+// FUNCTION: LEMBALL 0x0045d810
+void LEMBALL_FASTCALL DestroyIntZrleListResourceAuto(void* pObject)
 {
+	typedef void(LEMBALL_STDCALL* ReleaseProc)(int nFlag);
+	ReleaseProc pfnRelease;
+	void** pSubObject;
+	void* pListResource;
+
+	pListResource = pObject;
+	*(void**) pListResource = g_GAME_IntZrleListResourceVtable;
+	pSubObject = (void**) *(unsigned long*)((char*) pListResource + 0x7c);
+	if (pSubObject != 0) {
+		pfnRelease = (ReleaseProc)(unsigned long) *pSubObject;
+		pfnRelease(3);
+	}
+	pSubObject = (void**) *(unsigned long*)((char*) pListResource + 0x80);
+	if (pSubObject != 0) {
+		pfnRelease = (ReleaseProc)(unsigned long) *pSubObject;
+		pfnRelease(3);
+	}
+	pSubObject = (void**) *(unsigned long*)((char*) pListResource + 0x78);
+	if (pSubObject != 0) {
+		pfnRelease = (ReleaseProc)(unsigned long) *pSubObject;
+		pfnRelease(1);
+	}
+	InitializeTypedResourceObjectBaseVtable(pListResource);
 }
 
 void* LEMBALL_FASTCALL DestroyIntZrleListResourceAndFreeAuto(void* pObject, void*, BYTE fDelete)
