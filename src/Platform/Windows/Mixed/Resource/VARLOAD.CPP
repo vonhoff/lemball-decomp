@@ -872,7 +872,7 @@ void* LoadBitmapResource(int nResourceId)
 	int* pResourceObject;
 
 	pResourceObject =
-		(int*) ((MogLoadResourceArchive*) g_pMainResourceArchive)->FindCachedResourceObjectById(nResourceId);
+		(int*) ((MogLoadResourceArchive*) g_pResourceArchive)->FindCachedResourceObjectById(nResourceId);
 	if (pResourceObject != 0) {
 		if ((unsigned int) pResourceObject[0x10] != g_GAME_BitmapResourceTypeTag) {
 			ReleaseTypedResourceObjectReference(pResourceObject);
@@ -885,7 +885,7 @@ void* LoadBitmapResource(int nResourceId)
 	if (pResourceObject != 0) {
 		*(void**) pResourceObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
 		pResourceObject[6] = 0;
-		*(void**) pResourceObject = g_pDestroyGRTSResourceAndFreeThunk;
+		*(void**) pResourceObject = g_MOGLOAD_TypedResourceObjectVtable;
 		*(unsigned short*) ((char*) pResourceObject + 0x4a) = 0;
 		*(unsigned short*) (pResourceObject + 0x12) = 0;
 		*(void**) pResourceObject = g_pBitmapResourceVtable;
@@ -901,7 +901,7 @@ void* LoadZrleResource(int nResourceId)
 	int* pResourceObject;
 
 	pResourceObject =
-		(int*) ((MogLoadResourceArchive*) g_pMainResourceArchive)->FindCachedResourceObjectById(nResourceId);
+		(int*) ((MogLoadResourceArchive*) g_pResourceArchive)->FindCachedResourceObjectById(nResourceId);
 	if (pResourceObject != 0) {
 		if ((unsigned int) pResourceObject[0x10] != g_GAME_ZrleResourceTypeTag) {
 			ReleaseTypedResourceObjectReference(pResourceObject);
@@ -914,7 +914,7 @@ void* LoadZrleResource(int nResourceId)
 	if (pResourceObject != 0) {
 		*(void**) pResourceObject = g_MOGLOAD_CachedResourceObjectBaseVtable;
 		pResourceObject[6] = 0;
-		*(void**) pResourceObject = g_pDestroyGRTSResourceAndFreeThunk;
+		*(void**) pResourceObject = g_MOGLOAD_TypedResourceObjectVtable;
 		*(unsigned short*) ((char*) pResourceObject + 0x4a) = 0;
 		*(unsigned short*) (pResourceObject + 0x12) = 0;
 		*(unsigned short*) ((char*) pResourceObject + 0x4e) = 0;
