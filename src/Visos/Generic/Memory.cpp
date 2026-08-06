@@ -785,13 +785,10 @@ void LEMBALL_FASTCALL RestoreMemoryBlockBaseVtable(void* pBlock)
 }
 
 // FUNCTION: LEMBALL 0x0045a580
-int IsPointerInsideMemoryBlock(void* pBlock, void* pvPointer)
+int CMBlock::IsPointerInside(void* pvPointer)
 {
-	CMBlock* pMemoryBlock;
-
-	pMemoryBlock = (CMBlock*) pBlock;
-	if (pMemoryBlock->m_pPayload <= pvPointer &&
-		pvPointer < (char*) pMemoryBlock->m_pPayload + pMemoryBlock->m_cbPayload) {
+	if (m_pPayload <= pvPointer &&
+		pvPointer < (char*) m_pPayload + m_cbPayload) {
 		return 1;
 	}
 	return 0;
