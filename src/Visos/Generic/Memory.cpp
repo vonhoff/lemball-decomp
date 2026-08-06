@@ -851,11 +851,7 @@ void FreeVSMemBlockImpl(void* pvBlock)
 {
 	int fFreed;
 
-	if (pvBlock == 0) {
-		return;
-	}
-
-	if (g_fCSmallMemoryEnabled != 0 && g_pCSmallMemory != 0) {
+	if (g_fCSmallMemoryEnabled != 0) {
 		fFreed = ((CSmallMemory*) g_pCSmallMemory)->FreeToCSmallMemory(pvBlock);
 		if (fFreed != 0) {
 			return;
