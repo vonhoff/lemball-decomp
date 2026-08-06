@@ -101,7 +101,6 @@ void LEMBALL_FASTCALL CBaseCursorInitialise(int* pRenderClient);
 int LEMBALL_FASTCALL CBaseCursorProcessMsg(void* pRenderClient, int, RenderDispatchQueueEntry* pEntry);
 int InitializeResourceGeometryHelperRuntime(void);
 int ShutdownResourceGeometryHelperRuntime(void);
-int FindFreeSurfaceCGDIDevice(void* pvSlotManager);
 void BuildAndApplyLogPalette(unsigned int* paOutputColors,
 							 void* pPaletteResource,
 							 int,
@@ -506,6 +505,7 @@ struct CGDIDevice {
 	virtual void Flush(void* pTarget);
 
 	int FindSurface(void* pTarget);
+	int FindFreeSurface(void);
 
 	VsGdiResourceGeometryHelperSlot* m_pSlots;
 	int m_nReserved08;
@@ -3239,23 +3239,21 @@ CGDIDevice::~CGDIDevice(void)
 	FreeVSMemBlock(m_pSlots);
 }
 // FUNCTION: LEMBALL 0x0046bce0
-int FindFreeSurfaceCGDIDevice(void* pvSlotManager)
+int CGDIDevice::FindFreeSurface(void)
 {
-	CGDIDevice* pSlotManager;
 	VsGdiResourceGeometryHelperSlot* pSlot;
 	int i;
 
-	pSlotManager = (CGDIDevice*) pvSlotManager;
 	i = 0;
-	if (0 < pSlotManager->m_cSlots) {
-		pSlot = pSlotManager->m_pSlots;
+	if (0 < m_cSlots) {
+		pSlot = m_pSlots;
 		do {
 			if (pSlot->m_fAvailable != 0) {
 				return i;
 			}
 			++pSlot;
 			++i;
-		} while (i < pSlotManager->m_cSlots);
+		} while (i < m_cSlots);
 	}
 	return -1;
 }
@@ -3269,7 +3267,7 @@ void* CGDIDevice::AllocateSurface(short* pRect, void* pWrappedTarget)
 	int i;
 
 	pSlotManager = this;
-	i = FindFreeSurfaceCGDIDevice(pSlotManager);
+	i = FindFreeSurface();
 	if (i < 0) {
 		return 0;
 	}
