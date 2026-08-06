@@ -207,6 +207,8 @@ THUNK_ILT_REFERENCES = {
         (0x0040263A, "CBulletManager::GetNextBullet", "get-next-projectile thunk -> 0x417f50"),
     ),
     0x00418120: (0x00401A0A, "CBulletManager::GetFirstBullet", "get-first-projectile thunk -> 0x417f40"),
+    0x00418080: (0x0040339B, "CBullet::Free", "deactivate-projectile thunk -> 0x41ac70"),
+    0x00413020: (0x00402C5C, "CLiftManager::Id", "lift-slot-id thunk -> 0x425f90"),
     0x00426710: (
         0x00401E0B,
         "destroy_lift_chunk_object",
