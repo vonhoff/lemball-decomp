@@ -16,28 +16,28 @@ set(LEMBALL_SOURCES
     src/AI/TYPE18RESET.cpp
     src/AI/LV35BOUND.cpp
     src/Control/CGameStatusPasswordBits.cpp
-    src/Platform/Windows/Mixed/Level/ENTITY/LVMODESLOT.cpp
+    src/Platform/Windows/Mixed/Level/ENTITY/LVMODESLOT.CPP
     src/AI/lvtriplet.cpp
     src/AI/LVOWNOBJ.cpp
     src/AI/LVDELMOVE.cpp
     src/AI/LVSTREAM.cpp
-    src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.cpp
+    src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
     src/AI/CMaze.cpp
     src/AI/CMineManager.cpp
     src/AI/CMove3d.cpp
     src/AI/CMover.cpp
     src/AI/LVNODE.cpp
-    src/Platform/Windows/Mixed/Level/ENTITY/LVTILE.cpp
-    src/Platform/Windows/Mixed/Level/IO/LVSTRVT.cpp
-    src/Platform/Windows/Mixed/Level/IO/LVSTRWRT.cpp
-    src/Platform/Windows/Mixed/Level/IO/LVSTRREAD.cpp
-    src/Platform/Windows/Mixed/Level/STATE/LVQUIT.cpp
-    src/Platform/Windows/Mixed/Level/RENDER/LVRENDISP.cpp
+    src/Platform/Windows/Mixed/Level/ENTITY/LVTILE.CPP
+    src/Platform/Windows/Mixed/Level/IO/LVSTRVT.CPP
+    src/Platform/Windows/Mixed/Level/IO/LVSTRWRT.CPP
+    src/Platform/Windows/Mixed/Level/IO/LVSTRREAD.CPP
+    src/Platform/Windows/Mixed/Level/STATE/LVQUIT.CPP
+    src/Platform/Windows/Mixed/Level/RENDER/LVRENDISP.CPP
     src/AI/LVSTATEVAR.cpp
-    src/Platform/Windows/Mixed/Level/ENTITY/LVCHFLAGS.cpp
+    src/Platform/Windows/Mixed/Level/ENTITY/LVCHFLAGS.CPP
     src/AI/LVPOSCOPY.cpp
-    src/Visos/Generic/LVSTRFMT.cpp
-    src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.cpp
+    src/Visos/Generic/LVSTRFMT.CPP
+    src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
     src/AI/AICoord.cpp
     src/AI/LVVTDEF.cpp
     src/AI/LVPOSVT.cpp
@@ -53,73 +53,73 @@ set(LEMBALL_SOURCES
     src/AI/CPlayerLemmingGroupManager.cpp
     src/AI/CPlayerLemming.cpp
     src/AI/LVMOVEVT.cpp
-    src/Platform/Windows/Mixed/Level/IO/LVNETVT.cpp
+    src/Platform/Windows/Mixed/Level/IO/LVNETVT.CPP
     src/AI/LVPROJVT.cpp
     src/Frontend/SCREENVT.cpp
     src/Frontend/SCRVTDEF.cpp
-    src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.cpp
-    src/views/2d/LVSTATMODE.cpp
-    src/views/2d/LVSTATUS.cpp
-    src/views/2d/LVSTATRG.cpp
+    src/Platform/Windows/Mixed/Level/STATE/LEVELSTAT.CPP
+    src/views/2d/LVSTATMODE.CPP
+    src/views/2d/LVSTATUS.CPP
+    src/views/2d/LVSTATRG.CPP
     src/Frontend/MENUSEL.cpp
     src/Frontend/MENUSELRECT.cpp
     src/Frontend/MSSPREVT.cpp
     src/Frontend/MSRESCHD.cpp
     src/Frontend/MENUSELSINK.cpp
     src/Frontend/MENUSELPAUSE.cpp
-    src/Platform/Windows/Mixed/Resource/VARLOAD.cpp
-    src/Platform/Windows/Mixed/Resource/VARMGR.cpp
+    src/Platform/Windows/Mixed/Resource/VARLOAD.CPP
+    src/Platform/Windows/Mixed/Resource/VARMGR.CPP
     src/Frontend/LOBBY.cpp
     src/Frontend/CEditString.cpp
     src/Platform/Windows/Entry.cpp
     src/Platform/Windows/ShellUI.cpp
     src/Control/Options.cpp
-    src/Platform/Windows/Mixed/Level/RUN/DEMO.cpp
+    src/Platform/Windows/Mixed/Level/RUN/DEMO.CPP
     src/Visos/Windows/CGDI.cpp
     src/Visos/Windows/CGDISwitch.cpp
     src/Visos/Windows/CGDI240.cpp
     src/Visos/Generic/Memory.cpp
-    src/Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWING.cpp
-    src/Visos/Windows/VSWINGRECT.cpp
-    src/Visos/Windows/VGAIO.cpp
-    src/Platform/Windows/Mixed/Engine/CORE/VSINIT.cpp
-    src/Platform/Windows/Mixed/Engine/CORE/VSFORMAT.cpp
-    src/Platform/Windows/Mixed/Engine/CORE/VSRETURN.cpp
-    src/Visos/Windows/RAWOUT.cpp
-    src/Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOW.cpp
-    src/Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOWMODE.cpp
-    src/Platform/Windows/Mixed/Engine/GDI/RENDER/GEOMETRYVT.cpp
-    src/Platform/Windows/Mixed/Engine/GDI/RENDER/GDISTATUSVT.cpp
+    src/Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWING.CPP
+    src/Visos/Windows/VSWINGRECT.CPP
+    src/Visos/Windows/VGAIO.CPP
+    src/Platform/Windows/Mixed/Engine/CORE/VSINIT.CPP
+    src/Platform/Windows/Mixed/Engine/CORE/VSFORMAT.CPP
+    src/Platform/Windows/Mixed/Engine/CORE/VSRETURN.CPP
+    src/Visos/Windows/RAWOUT.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOW.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/WINDOW/VSWINDOWMODE.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/RENDER/GEOMETRYVT.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/RENDER/GDISTATUSVT.CPP
     src/Visos/Generic/CPVSurface.cpp
-    src/Platform/Windows/Mixed/Engine/GDI/RENDER/GDIRENDERVT.cpp
+    src/Platform/Windows/Mixed/Engine/GDI/RENDER/GDIRENDERVT.CPP
     src/Visos/Generic/CSurface.cpp
-    src/Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.cpp
-    src/Platform/Windows/Mixed/Engine/MEDIA/EFFVT.cpp
-    src/Platform/Windows/Mixed/Engine/GDI/WINDOW/WINDOWSLOT38.cpp
-    src/Platform/Windows/Mixed/Engine/GDI/RENDER/GDIVT.cpp
-    src/Platform/Windows/Mixed/Engine/GDI/WINDOW/VSSPROWN.cpp
-    src/Visos/Windows/Debug/DEBUGVT.cpp
-    src/Visos/Generic/VSSTAT.cpp
-    src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.cpp
-    src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.cpp
-    src/Platform/Windows/Mixed/Engine/NET/VSNET.cpp
-    src/Platform/Windows/Mixed/Engine/NET/VSNETSTR.cpp
-    src/Platform/Windows/Mixed/Engine/NET/NSTRBSTH.cpp
-    src/Platform/Windows/Mixed/Engine/MEDIA/VSSOUND.cpp
+    src/Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.CPP
+    src/Platform/Windows/Mixed/Engine/MEDIA/EFFVT.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/WINDOW/WINDOWSLOT38.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/RENDER/GDIVT.CPP
+    src/Platform/Windows/Mixed/Engine/GDI/WINDOW/VSSPROWN.CPP
+    src/Visos/Windows/Debug/DEBUGVT.CPP
+    src/Visos/Generic/VSSTAT.CPP
+    src/Platform/Windows/Mixed/Engine/NET/VSNETFIL.CPP
+    src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
+    src/Platform/Windows/Mixed/Engine/NET/VSNET.CPP
+    src/Platform/Windows/Mixed/Engine/NET/VSNETSTR.CPP
+    src/Platform/Windows/Mixed/Engine/NET/NSTRBSTH.CPP
+    src/Platform/Windows/Mixed/Engine/MEDIA/VSSOUND.CPP
     src/Visos/Generic/VsMathFixed12Vector2D.cpp
     src/Visos/Generic/SignedTrigTable.cpp
     src/Visos/Generic/CVSMath.cpp
     src/Visos/Generic/CVSPoint.cpp
-    src/Visos/Windows/INVISWIN.cpp
-    src/Visos/Windows/Debug/TEXTWIN.cpp
-    src/Visos/Windows/Debug/TXWININV.cpp
-    src/Visos/Windows/Debug/TEXTLINE.cpp
+    src/Visos/Windows/INVISWIN.CPP
+    src/Visos/Windows/Debug/TEXTWIN.CPP
+    src/Visos/Windows/Debug/TXWININV.CPP
+    src/Visos/Windows/Debug/TEXTLINE.CPP
     src/Visos/Generic/MogLoad.cpp
     src/Visos/Generic/MogPatch.cpp
     src/Visos/Generic/MogConst.cpp
     src/Visos/Generic/MogBst.cpp
-    src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.cpp
-    src/Platform/Windows/Mixed/Engine/CORE/LINKSCFBYTES.cpp
+    src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
+    src/Platform/Windows/Mixed/Engine/CORE/LINKSCFBYTES.CPP
     src/AI/Projectile.cpp
     src/AI/GroupState.cpp
     src/AI/CInvisibleSwitch.cpp
@@ -142,7 +142,7 @@ set(LEMBALL_SOURCES
     src/AI/LVPKTTH.cpp
     src/AI/LVRSTTH.cpp
     src/AI/LVSAVEPOS.cpp
-    src/Platform/Windows/Mixed/Level/STATE/LVPROFILE.cpp
+    src/Platform/Windows/Mixed/Level/STATE/LVPROFILE.CPP
     src/Control/CGameStatusLevel.cpp
     src/AI/CGameObjectId.cpp
     src/AI/LVBSTH.cpp
@@ -156,18 +156,18 @@ set(LEMBALL_SOURCES
     src/AI/CHOBJDEL.cpp
     src/AI/CHOBJRST.cpp
     src/AI/COLLSCORE.cpp
-    src/Platform/Windows/Mixed/Level/CHUNK/ANIMREC.cpp
+    src/Platform/Windows/Mixed/Level/CHUNK/ANIMREC.CPP
     src/AI/PROJRST.cpp
-    src/Platform/Windows/Mixed/Level/IO/DRAWTEXT.cpp
-    src/Visos/Generic/TXTCNT.cpp
-    src/Visos/Generic/TXTCONST.cpp
+    src/Platform/Windows/Mixed/Level/IO/DRAWTEXT.CPP
+    src/Visos/Generic/TXTCNT.CPP
+    src/Visos/Generic/TXTCONST.CPP
     src/Frontend/MMPASSTH.cpp
     src/Frontend/MMPASS.cpp
     src/AI/LVRANDVT.cpp
     src/AI/LVPREDVT.cpp
     src/AI/LVPRJGEOM.cpp
     src/AI/lvgmobpt.cpp
-    src/views/2d/LVRUNEXT.cpp
+    src/views/2d/LVRUNEXT.CPP
 )
 
 set(LEMBALL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/src/LEMBALL.RES")
