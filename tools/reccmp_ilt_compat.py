@@ -329,6 +329,8 @@ THUNK_ILT_REFERENCES = {
         "LevelTileGridOwnerView::GetWalk",
         "grid walk query 004305f0",
     ),
+    0x00425C80: (0x004026FD, "CLift::Set", "legacy lift set thunk -> 0x425010"),
+    0x00425CE0: (0x004015AA, "CLift::Set", "lift set points thunk -> 0x425010"),
 }
 
 
