@@ -278,9 +278,8 @@ THUNK_ILT_REFERENCES = {
         (0x00401532, "ReturnFacingDirection", "compute_direction_octant_between_points thunk -> 0x413e80"),
     ),
     0x00415E20: (
-        0x0040336E,
-        "CGameObject::GetDestination",
-        "game-object destination copy 00416000",
+        (0x0040336E, "CGameObject::GetDestination", "game-object destination copy 00416000"),
+        (0x00401532, "ReturnFacingDirection", "compute_direction_octant_between_points thunk -> 0x413e80"),
     ),
     0x00419C00: (
         0x0040160E,
