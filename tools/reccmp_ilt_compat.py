@@ -199,6 +199,14 @@ THUNK_ILT_REFERENCES = {
     0x004278C0: (0x0040372E, "nDead", "has_level_plas_history_entries thunk -> 0x413370"),
     0x004193F0: (0x00401302, "CPlayerLemmingGroup::HasSFXChanged", "has-stream-dirty-children thunk -> 0x414960"),
     0x00418840: (0x0040268A, "CGenericGroupManager::GetGroupElementIsMemberOf", "find-group-element thunk -> 0x41eb90"),
+    0x00415780: (0x00402351, "CGameObject::DeleteFirstEntryFromDestinationList", "pop-first-move-command thunk -> 0x415e80"),
+    0x00423C30: (0x0040146A, "CMine::Initialise", "reset-mine-runtime-state thunk -> CMine::Initialise 0x423c50"),
+    0x00418040: (
+        (0x00401A0A, "CBulletManager::GetFirstBullet", "get-first-projectile thunk -> 0x417f40"),
+        (0x004012A3, "CBulletManager::RemoveObject", "projectile-pool remove thunk -> 0x418080"),
+        (0x0040263A, "CBulletManager::GetNextBullet", "get-next-projectile thunk -> 0x417f50"),
+    ),
+    0x00418120: (0x00401A0A, "CBulletManager::GetFirstBullet", "get-first-projectile thunk -> 0x417f40"),
     0x00426710: (
         0x00401E0B,
         "destroy_lift_chunk_object",
