@@ -8,19 +8,24 @@ void DestroyFrameTimerController(void);
 struct DemoLevelDemoPlaybackController {
 	unsigned char m_abData[0x10];
 	void* m_pActiveRecord10;                // 0x10
-	unsigned char m_abReserved14[0x4];
-	int m_nLoadedRecordId18;                 // 0x18  (CDemo::Reset sets to -1)
+	int m_nFrameInterval14;                 // 0x14
+	int m_nLoadedRecordId18;                // 0x18  (CDemo::Reset sets to -1)
 	void* m_pRecordBuffer1C;                // 0x1c
-	unsigned char m_abReserved20[0x4];
+	void* m_pResourceHandle20;              // 0x20
 	void* m_pResourceObject24;              // 0x24
-	unsigned char m_abReserved28[0x10];
-	int m_nFrameTimeBase38;                  // 0x38  (CDemo frame time base)
-	int m_nActiveFrameTick3C;                // 0x3c
-	unsigned char m_abReserved40[0x4];
-	int m_nPlaybackFrame44;                  // 0x44
-	unsigned char m_abReserved48[0x4];
-	int m_nPlaybackEnabled4C;                // 0x4c  (CDemo::SetDemoMode)
-	int m_nStopFlag50;                       // 0x50
+	int m_nResourceId28;                    // 0x28
+	int m_nResourceCount2C;                 // 0x2c
+	int m_nResourceTotal30;                 // 0x30
+	void* m_pResourceTable34;              // 0x34
+	int m_nFrameTimeBase38;                 // 0x38  (CDemo frame time base)
+	int m_nActiveFrameTick3C;               // 0x3c
+	unsigned short m_nReserved40;           // 0x40
+	unsigned short m_nReserved42;           // 0x42
+	int m_nPlaybackFrame44;                 // 0x44
+	int m_nReserved48;                      // 0x48
+	int m_nPlaybackEnabled4C;               // 0x4c  (CDemo::SetDemoMode)
+	int m_nStopFlag50;                      // 0x50
+	int m_nReserved54;                      // 0x54
 
 	DemoLevelDemoPlaybackController* ConstructLevelDemoPlaybackController(unsigned int uFrameInterval);
 	DemoLevelDemoPlaybackController* ConstructLevelDemoPlaybackControllerThunk(unsigned int uFrameInterval);

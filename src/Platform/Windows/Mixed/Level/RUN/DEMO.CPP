@@ -195,22 +195,22 @@ DemoLevelDemoPlaybackController* DemoLevelDemoPlaybackController::ConstructLevel
 	unsigned int uFrameInterval)
 {
 	InitializeRenderQueueNodeBase(this);
-	*(short*) ((char*) this + 0x42) = 0;
+	m_nReserved42 = 0;
 	*(void***) this = g_LevelDemoPlaybackControllerVtable;
-	*(short*) ((char*) this + 0x40) = 0;
-	*(unsigned int*) ((char*) this + 0x14) = uFrameInterval;
-	*(void**) ((char*) this + 0x10) = 0;
-	*(void**) ((char*) this + 0x34) = 0;
-	*(int*) ((char*) this + 0x28) = 0;
-	*(int*) ((char*) this + 0x2c) = 0;
-	*(int*) ((char*) this + 0x30) = 0;
-	*(void**) ((char*) this + 0x24) = 0;
-	*(void**) ((char*) this + 0x20) = 0;
-	*(int*) ((char*) this + 0x4c) = 0;
-	*(int*) ((char*) this + 0x48) = 0;
-	*(int*) ((char*) this + 0x50) = 0;
-	*(int*) ((char*) this + 0x18) = -1;
-	*(int*) ((char*) this + 0x54) = 0;
+	m_nReserved40 = 0;
+	m_nFrameInterval14 = uFrameInterval;
+	m_pActiveRecord10 = 0;
+	m_pResourceTable34 = 0;
+	m_nResourceId28 = 0;
+	m_nResourceCount2C = 0;
+	m_nResourceTotal30 = 0;
+	m_pResourceObject24 = 0;
+	m_pResourceHandle20 = 0;
+	m_nPlaybackEnabled4C = 0;
+	m_nReserved48 = 0;
+	m_nStopFlag50 = 0;
+	m_nLoadedRecordId18 = -1;
+	m_nReserved54 = 0;
 	((GameRenderDispatchQueue*) g_pSharedRenderDispatchQueue)->RegisterOrderedRenderDispatchClient(this, -100);
 	ResetLevelDemoPlaybackCursorThunk();
 	return this;
