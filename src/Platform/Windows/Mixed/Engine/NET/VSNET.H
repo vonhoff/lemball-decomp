@@ -73,17 +73,17 @@ struct VsNetTimedFileBackedEffChannel : CFileBaseSocket,
 	int m_nFileBackedMode10;
 };
 
-struct VsNetDualFileBackedEffChannel : CFileBaseSocket,
+struct CFileReadSocket : CFileBaseSocket,
 									   virtual VsNetEffStreamChannelState,
 									   virtual CReadSocket,
 									   virtual VsNetFileBackedFatalFacet {
-	VsNetDualFileBackedEffChannel();
+	CFileReadSocket();
 	virtual void ClearPendingWrite(void* pUnused);
 	int m_nFileBackedMode10;
 };
 
 struct VsNetEmbeddedFileBackedEffChannelStack : virtual VsNetRuntimeChannelCore,
-												virtual VsNetDualFileBackedEffChannel,
+												virtual CFileReadSocket,
 												virtual VsNetTimedFileBackedEffChannel {
 	VsNetEmbeddedFileBackedEffChannelStack();
 	virtual void ClearNestedEffChannelAsyncStatus(void);

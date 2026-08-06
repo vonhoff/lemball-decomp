@@ -1413,7 +1413,7 @@ struct VsNetDualSlotTableFileBackedEffCompositeWrapper {
 	VsNetFileBackedCompositeWrapperView m_Runtime64;
 };
 
-struct VsNetDualFileBackedEffChannelConstructorView {
+struct CFileReadSocketConstructorView {
 	char m_abReserved00[0x18];
 	VsNetEffStreamChannelStateLayout m_ChannelState18;
 	char m_abDualHandleStream44[0x58];
@@ -1569,7 +1569,7 @@ struct VsNetEmbeddedFileBackedStackFront {
 	const VsNetEmbeddedStackFileViewOffsets* m_pTimedFileViewOffsets14c;
 };
 
-struct VsNetDualFileBackedEffChannelFront {
+struct CFileReadSocketFront {
 	char m_abReserved00[0x0c];
 	VsNetFileBackedChannelViewOffsets* m_pThunk0c;
 	int m_nMode10;
@@ -1802,7 +1802,7 @@ static VsNetEffStateStreamVtable g_NETWORK_EffStateStreamVtable = {
 	&CPortsMessage::Delete,
 };
 
-struct VsNetDualFileBackedEffChannelDeleteView {
+struct CFileReadSocketDeleteView {
 	unsigned char m_abReserved00[0x84];
 	void* m_pFatalVtable84;
 	void* m_pSideBuffer88;
@@ -2277,23 +2277,23 @@ BYTE __fastcall CFileCommonSocketSysCloseSocket(void* pObject)
 
 // DISABLED FUNCTION: LEMBALL 0x00479930
 #if 0
-void* VsNetDualFileBackedEffChannelConstructorView::ConstructDualFileBackedEffChannel(int fConstructEmbeddedObjects)
+void* CFileReadSocketConstructorView::ConstructDualFileBackedEffChannel(int fConstructEmbeddedObjects)
 
 {
 	VsNetAdjustorSubobject* pPrimaryThunk;
 	VsNetAdjustorSubobject* pSecondaryThunk;
 	VsNetAdjustorSubobject* pTertiaryThunk;
 	VsNetAdjustorSubobject* pFatalThunk;
-	VsNetDualFileBackedEffChannelFront* pFront;
-	VsNetDualFileBackedEffChannelConstructorView* pConstructed;
+	CFileReadSocketFront* pFront;
+	CFileReadSocketConstructorView* pConstructed;
 	VsNetFileBackedChannelViewOffsets* pChannelOffsets;
 	VsNetFileWrapperThunkOffsets* pWrapperThunkOffsets;
 	char* pbObjectBase;
 	void* pObject;
 
 	pObject = (void*) this;
-	pFront = (VsNetDualFileBackedEffChannelFront*) pObject;
-	pConstructed = (VsNetDualFileBackedEffChannelConstructorView*) pObject;
+	pFront = (CFileReadSocketFront*) pObject;
+	pConstructed = (CFileReadSocketConstructorView*) pObject;
 	pbObjectBase = (char*) pObject;
 	if (fConstructEmbeddedObjects != 0) {
 		pFront->m_pThunk0c = (VsNetFileBackedChannelViewOffsets*) &g_NETWORK_FileBackedDualChannelStateOffsets;
@@ -2338,7 +2338,7 @@ CFileBaseSocket::CFileBaseSocket()
 }
 
 // FUNCTION: LEMBALL 0x00479930
-VsNetDualFileBackedEffChannel::VsNetDualFileBackedEffChannel()
+CFileReadSocket::CFileReadSocket()
 {
 	m_nFileBackedMode10 = -1;
 }
@@ -2871,7 +2871,7 @@ void* VsNetEmbeddedFileBackedEffChannelStackConstructorView::ConstructEmbeddedFi
 		pPrimaryThunk->m_pVtable = (void**) &g_NETWORK_OpenWin32FileWrapperVtable;
 		pSecondaryThunk->m_pVtable = g_NETWORK_MapNestedEffCallbackFailureThunkVtable;
 
-		((VsNetDualFileBackedEffChannelConstructorView*) pConstructed->m_abDualFileChannel12c)
+		((CFileReadSocketConstructorView*) pConstructed->m_abDualFileChannel12c)
 			->ConstructDualFileBackedEffChannel(0);
 		((VsNetTimedFileBackedEffChannelConstructorView*) pConstructed->m_abTimedFileChannel1d0)
 			->ConstructTimedFileBackedEffChannel(0);
@@ -3073,7 +3073,7 @@ void* VsNetGlobalStateCompositeLayout::ConstructGlobalStateFileBackedEffComposit
 		pPrimaryThunk->m_pVtable = (void**) &g_NETWORK_OpenWin32FileWrapperVtable;
 		pSecondaryThunk->m_pVtable = g_NETWORK_MapNestedEffCallbackFailureThunkVtable;
 
-		((VsNetDualFileBackedEffChannelConstructorView*) (pbObjectBase + 0x188))->ConstructDualFileBackedEffChannel(0);
+		((CFileReadSocketConstructorView*) (pbObjectBase + 0x188))->ConstructDualFileBackedEffChannel(0);
 		((VsNetTimedFileBackedEffChannelConstructorView*) (pbObjectBase + 0x19c))
 			->ConstructTimedFileBackedEffChannel(0);
 		((VsNetEmbeddedFileBackedEffChannelStackConstructorView*) (pbObjectBase + 0x1b0))
@@ -3637,7 +3637,7 @@ void* VsNetDualSlotCompositeLayout::ConstructDualSlotTableFileBackedEffComposite
 		pPrimaryThunk->m_pVtable = (void**) &g_NETWORK_OpenWin32FileWrapperVtable;
 		pSecondaryThunk->m_pVtable = g_NETWORK_MapNestedEffCallbackFailureThunkVtable;
 
-		((VsNetDualFileBackedEffChannelConstructorView*) (pbObjectBase + 0x18c))->ConstructDualFileBackedEffChannel(0);
+		((CFileReadSocketConstructorView*) (pbObjectBase + 0x18c))->ConstructDualFileBackedEffChannel(0);
 		((VsNetTimedFileBackedEffChannelConstructorView*) (pbObjectBase + 0x1a0))
 			->ConstructTimedFileBackedEffChannel(0);
 		((VsNetEmbeddedFileBackedEffChannelStackConstructorView*) (pbObjectBase + 0x1b4))
@@ -4336,7 +4336,7 @@ void LEMBALL_FASTCALL AdjustAndClearNestedEffChannelAsyncStatusFromB8(void* pObj
 }
 
 // FUNCTION: LEMBALL 0x0047be10
-void VsNetDualFileBackedEffChannel::ClearPendingWrite(void* pUnused)
+void CFileReadSocket::ClearPendingWrite(void* pUnused)
 {
 	(void) pUnused;
 }
