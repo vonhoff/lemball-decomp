@@ -227,7 +227,14 @@ def main() -> int:
             print("no reccmp.json; run reccmp first")
             return 0
         data = json.loads(RECCMP.read_text(encoding="utf-8"))
-        recomp = {int(r["address"], 16): r.get("name", "") for r in data["data"]}
+        recomp = {}
+        for r in data["data"]:
+            # keep the record so we can skip already-byte-exact functions: those are
+            # correctly implemented and converting e.g. a free-fn vtable slot to a
+            # member would only regress them (vtable-pin trap). Only flag functions
+            # that are NOT byte-exact, so the reconcile list stays actionable.
+            rec = {"name": r.get("name", ""), "matching": r.get("matching", 0), "effective": r.get("effective", False)}
+            recomp[int(r["address"], 16)] = rec
         macname = {}
         with CORR.open(newline="", encoding="utf-8-sig") as f:
             for row in csv.DictReader(f):
@@ -238,9 +245,17 @@ def main() -> int:
             src = recomp.get(a)
             if not src:
                 continue
+            # skip already byte-exact functions: converting a correct free-fn vtable
+            # slot to a member would regress it (vtable-pin trap), so it isn't a
+            # reconcile candidate.
+            if src["matching"] >= 1.0:
+                continue
             mn = macname[a]
             macstem = mn.split("__", 1)[0] if mn else ""
-            srcstem = src.split("(")[0].split("::")[-1]
+            srcstem = src["name"].split("(")[0].split("::")[-1]
+            # skip when the source already carries the blueprint stem (e.g. _RES_Init)
+            if srcstem == macstem:
+                continue
             # flag snake_case names or 0x-suffixed placeholder names that look invented
             if "_" in srcstem or re.search(r"0x[0-9a-f]+$", srcstem):
                 print(f"  0x{a:08X}  src={srcstem!s:48s}  mac={macstem!s:40s}  ({mn})")
