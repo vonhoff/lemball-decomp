@@ -129,7 +129,7 @@ void LEMBALL_FASTCALL MarkNetworkLobbySelectedPeerDisconnected(void* pVsnetRunti
 void LEMBALL_FASTCALL ServiceNetworkLobbySelectedPeerUpdates(void* pVsnetRuntime);
 void LEMBALL_FASTCALL ReadNetworkLobbyPeerEntryStream(void* pObject);
 void* LEMBALL_FASTCALL DeleteNetworkLobbySelectedPeerStatusStream(void* pObject, void* pUnused, BYTE fDelete);
-int HasShiftedRecordSlotPayloadForStream(void* pTransportPeer, void* pStream);
+int LEMBALL_FASTCALL HasShiftedRecordSlotPayloadForStream(void* pTransportPeer, void* pUnused, void* pStream);
 void LoadStreamFromShiftedRecordSlotAndClear(void* pTransportPeer, void* pStream);
 
 // GLOBAL: LEMBALL 0x004a1e1c
@@ -808,7 +808,7 @@ void LEMBALL_FASTCALL ServiceNetworkLobbySelectedPeerUpdates(void* pVsnetRuntime
 			&((GameEffTransportHandleOwnerSlot*) ((char*) pSelectedPeer +
 												  pSelectedPeer->m_pDescriptor->m_nHandleGroupAdjustorSlotOffset))
 				 ->m_HandleOwner;
-		if (HasShiftedRecordSlotPayloadForStream(pHandleOwner, pRuntime->m_pSelectedPeerStatusStream) != 0) {
+		if (HasShiftedRecordSlotPayloadForStream(pHandleOwner, 0, pRuntime->m_pSelectedPeerStatusStream) != 0) {
 			LoadStreamFromShiftedRecordSlotAndClear(pHandleOwner, pRuntime->m_pSelectedPeerStatusStream);
 			nStreamValue = pRuntime->m_pSelectedPeerStatusStream->m_nU32Payload;
 			if (pRuntime->m_nObservedSelectedPeerStatus != nStreamValue) {
@@ -1050,11 +1050,12 @@ void GameEffTransportHandleGroup::Reset(void)
 	}
 }
 // FUNCTION: LEMBALL 0x0045fc30
-int HasShiftedRecordSlotPayloadForStream(void* pTransportPeer, void* pStream)
+int LEMBALL_FASTCALL HasShiftedRecordSlotPayloadForStream(void* pTransportPeer, void* pUnused, void* pStream)
 {
 	GameEffTransportHandleOwner* pHandleOwner;
 	GameShiftedRecordSlot* pSlot;
 
+	(void) pUnused;
 	pHandleOwner = (GameEffTransportHandleOwner*) pTransportPeer;
 	pSlot = (GameShiftedRecordSlot*) ((GameRecordSlotTable*) pHandleOwner->m_pShiftedRecordSlotTable)
 				->GetShiftedRecordSlotByPacketId(((GameEffStream*) pStream)->m_nEventCode);
