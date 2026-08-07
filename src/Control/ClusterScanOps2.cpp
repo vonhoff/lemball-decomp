@@ -1002,6 +1002,19 @@ void __fastcall SetDualChildOverlayPositions(void* pThis, int nUnused, short par
 	}
 }
 
+// MACINTOSH: coalesce_free_memory_block_with_trailing_neighbor(int)
+// FUNCTION: LEMBALL 0x00459b90
+int __fastcall CoalesceFreeMemoryBlockWithTrailingNeighbor(void* pThis, int nUnused, void* param_2)
+{
+	void* piVar1 = *(void**) ((char*) param_2 + 0x14);
+	if (((int(__fastcall*)(void*, void*)) 0x45a0e0)(pThis, piVar1) != 0) {
+		if (((int(__fastcall*)(void*, void*)) 0x45a230)(pThis, piVar1) != 0) {
+			((void(__fastcall*)(void*, void*, void*)) 0x459b10)(pThis, param_2, piVar1);
+		}
+	}
+	return 0;
+}
+
 // MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
 void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
