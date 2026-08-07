@@ -24,7 +24,6 @@ address,name,symbol,type,source
 0x00414F00,DeleteManagedEntityQueueCursorAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00417AD0,DeleteLevelChunkObjectBaseWrapper17AD0,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00417B00,LevelVtSmallFunctionView::SetRectFromBounds,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x00417B50,,??_GManagedEntityPacketBase@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Level/LVPKT.H
 0x00417B80,,??_EManagedEntityPacket23@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Level/LVPKT.H
 0x00417BB0,,??_EManagedEntityPacket27@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Level/LVPKT.H
 0x00417BE0,,??_EManagedEntityPacket28@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Level/LVPKT.H

@@ -5,6 +5,22 @@
 extern int g_nLevelFrameClockTick;
 extern void* g_GAME_RenderQueueNodeVtableSlots[4];
 
+// TU-local view (matches CHandManager.cpp) of the EFF stream common base.
+struct VsNetEffStreamCommon {
+	virtual ~VsNetEffStreamCommon(void);
+};
+
+// MACINTOSH: ManagedEntityPacketBase::~ManagedEntityPacketBase() [scalar deleting]
+// FUNCTION: LEMBALL 0x00417b50
+void* LEMBALL_FASTCALL DestroyManagedEntityPacketBase(void* pObject, int nUnused, unsigned char fDelete)
+{
+	((VsNetEffStreamCommon*) pObject)->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
+
 // MACINTOSH: LevelChunkObjectBase::InitializeLevelChunkObjectBase(int, ushort, ushort)
 // FUNCTION: LEMBALL 0x00416d20
 void CGameObject::InitializeLevelChunkObjectBase(int nEntityType, unsigned short nReserved68, unsigned short nCommandCapacity)
