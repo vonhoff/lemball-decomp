@@ -8,6 +8,7 @@ extern void __fastcall ReleaseTypedResourceObjectIfLoaded(void* pObject, void* p
 extern void* g_pActiveManagedEntityOwner;
 extern int g_nLevelFrameClockTick;
 extern int g_nLevelFrameClockTimeMs;
+extern void* g_pLevelDemoPlaybackController;
 struct PlasChildStateEntityView;
 extern void __cdecl DispatchPlasChildStateTableVariant0(void* pContext, PlasChildStateEntityView* pEntity);
 extern void __cdecl DispatchPlasChildStateTableVariant1(void* pContext, PlasChildStateEntityView* pEntity);
@@ -734,17 +735,30 @@ void __fastcall RemovePointerFromLevelModeList0x120(void* param_1)
 		}
 		}
 
-		// MACINTOSH: dispatch_level_screen_projectile_request_by_index(int)
-		// FUNCTION: LEMBALL 0x00438330
-		void __fastcall DispatchLevelScreenProjectileRequestByIndex(void* pObject, int nUnused, int param_1)
-		{
-		void* pHolder = (void*) (*(int*) ((char*) pObject + 0x96c) + 0x1d0 + param_1 * 4);
-		int iVar2 = ((int(__fastcall*)(void*)) 0x4015d2)(*(void**) pHolder);
-		if (iVar2 != 0xffff && *(int*) (*(int**) pHolder + 0xb8) != 8) {
-			(*( void(**)(int)) (*(void***) *(int**) pHolder + 0x34 / 4))(0x1f);
-			SelectSingleEntityAndDispatchSelection(pObject, nUnused, *(void**) pHolder);
+// MACINTOSH: dispatch_level_screen_projectile_request_by_index(int)
+// FUNCTION: LEMBALL 0x00438330
+void __fastcall DispatchLevelScreenProjectileRequestByIndex(void* pObject, int nUnused, int param_1)
+{
+	void* pHolder = (void*) (*(int*) ((char*) pObject + 0x96c) + 0x1d0 + param_1 * 4);
+	int iVar2 = ((int(__fastcall*)(void*)) 0x4015d2)(*(void**) pHolder);
+	if (iVar2 != 0xffff && *(int*) (*(int**) pHolder + 0xb8) != 8) {
+		(*( void(**)(int)) (*(void***) *(int**) pHolder + 0x34 / 4))(0x1f);
+		SelectSingleEntityAndDispatchSelection(pObject, nUnused, *(void**) pHolder);
+	}
+}
+
+// MACINTOSH: refresh_viewport_anchor()
+// FUNCTION: LEMBALL 0x004381c0
+void __fastcall RefreshViewportAnchor(void* pObject, int nUnused, void* param_2)
+{
+	*(int*) ((char*) pObject + 0x178) = 0;
+	if (*(int*) ((char*) pObject + 0xa68) == 0) {
+		if ((g_pLevelDemoPlaybackController == 0 || *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) && ((int(__fastcall*)(void*)) (*(void***) *(void**) ((char*) pObject + 0x964) + 0x60 / 4))(*(void**) ((char*) pObject + 0x964)) == 0) {
+			return;
 		}
-		}
+		((void(__fastcall*)(void*)) 0x4019ec)((char*) pObject - 0x14);
+	}
+}
 
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
