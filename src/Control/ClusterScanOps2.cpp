@@ -3190,3 +3190,77 @@ void __fastcall CBaseRemapMapRemap(void* pThis, int nUnused, unsigned char* para
 }
 
 
+
+// MACINTOSH: reset_managed_entity_motion_with_4000_tick_delay(void*)
+// FUNCTION: LEMBALL 0x00419dd0
+void __fastcall ResetManagedEntityMotionWith4000TickDelay(void* pThis, int nUnused, void* pObject)
+{
+	int* pVtbl;
+	((void (__fastcall*) (void*)) 0x40207c)(pObject);
+	pVtbl = *(int**) pObject;
+	((void (__fastcall*) (void*, int)) (pVtbl[0x84 / 4]))(pObject, 4000);
+	((void (__fastcall*) (void*)) (pVtbl[0x30 / 4]))(pObject);
+}
+
+// MACINTOSH: find_counted_child_containing_fixed_point(int, int)
+// FUNCTION: LEMBALL 0x0041b9f0
+void* __fastcall FindCountedChildContainingFixedPoint(void* pThis, int nUnused, int x, int y)
+{
+	unsigned int nCount = *(unsigned short*) ((char*) pThis + 0x36);
+	int* pChild = *(int**) ((char*) pThis + 0x3c);
+	for (unsigned int i = 0; i < nCount; i++) {
+		int tx = *(int*) (*pChild + 0x9c) >> 12;
+		int ty = *(int*) (*pChild + 0xa0) >> 12;
+		int rx = x >> 12;
+		int ry = y >> 12;
+		if ((tx - 8 < rx) && (rx < tx) && (ty - 8 < ry) && (ry < ty)) {
+			return *(void**) (*(int*) ((char*) pThis + 0x3c) + i * 4);
+		}
+		pChild++;
+	}
+	return 0;
+}
+
+// MACINTOSH: find_managed_entity_at_tile_by_type(int, int, int, int)
+// FUNCTION: LEMBALL 0x0041ba80
+void* __fastcall FindManagedEntityAtTileByType(void* pThis, int nUnused, int x, int y, int pUnused, int nType)
+{
+	int rx = x >> 12;
+	int ry = y >> 12;
+	unsigned int i = 0;
+	while (true) {
+		unsigned int nCount = *(unsigned short*) ((char*) pThis + 0x36);
+		if (nCount <= i) {
+			return 0;
+		}
+		void* pChild = *(void**) (*(int*) ((char*) pThis + 0x3c) + i * 4);
+		if (*(int*) ((char*) pChild + 0x64) == nType) {
+			int tx = *(int*) ((char*) pChild + 0x9c) >> 12;
+			int ty = *(int*) ((char*) pChild + 0xa0) >> 12;
+			if ((tx - 8 < rx) && (rx < tx) && (ty - 8 < ry) && (ry < ty)) {
+				return *(void**) (*(int*) ((char*) pThis + 0x3c) + i * 4);
+			}
+		}
+		i++;
+	}
+}
+
+// MACINTOSH: load_gmob_chunk_type_0x14_action_list(unsigned short**)
+// FUNCTION: LEMBALL 0x0041d430
+unsigned short* __fastcall LoadGmobChunkType0x14ActionList(void* pThis, int nUnused, unsigned short** ppStream)
+{
+	unsigned short nCount = *(unsigned short*) *ppStream;
+	unsigned int nRemain = (unsigned int) nCount;
+	*ppStream = *ppStream + 1;
+	if (nCount != 0) {
+		do {
+			unsigned short* pEntry = *ppStream;
+			unsigned int second = pEntry[1];
+			unsigned int first = *pEntry;
+			*ppStream = pEntry + 2;
+			((void (__fastcall*) (void*, int, unsigned int, unsigned short)) 0x403161)(pThis, nUnused, second, first);
+			nRemain--;
+		} while (nRemain != 0);
+	}
+	return *ppStream;
+}
