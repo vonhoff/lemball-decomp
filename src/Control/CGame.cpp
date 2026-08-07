@@ -1998,7 +1998,7 @@ void UnLoadFrontendResources(GameMainContext* pMainContext)
 		pMainContext->m_pVariantMode = 0;
 	}
 }
-// LINKERILT: LEMBALL 0x00401d5c
+// FUNCTION: LEMBALL 0x0044a460
 void* ConstructLevelSelectionModeController(void* pModeObject, GameMainContext* pMainContext)
 {
 	GameLevelSelectionModeController* pMode;
