@@ -6173,6 +6173,7 @@ void* LEMBALL_FASTCALL DeleteNetworkLobbyTransportControllerAuto(void* pObject, 
 	return pObject;
 }
 
+// FUNCTION: LEMBALL 0x00455ea0
 void noop_lobby_transport_callback(void)
 {
 }

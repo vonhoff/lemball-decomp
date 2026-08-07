@@ -1,7 +1,6 @@
 # By-name correlations for reconstructed or intentionally stubbed project functions whose definitions cannot carry direct annotations.
 address,name,symbol,type,source
 0x00407EE0,ForwardUpdateNamedStatusEntry,,function,src/Frontend/MAINMENU.CPP
-0x0040A860,noop_vtable_callback_0040a860,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0040E060,DestroyDoorChunkManagerAuto,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00415240,SetLevelChunkObjectMotionVector,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00417EC0,DestroyProjectilePoolAuto,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP

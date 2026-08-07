@@ -5827,6 +5827,7 @@ void LEMBALL_FASTCALL DrawPasswordEntryScreenContents(void* pObject)
 	draw_entered_password_text(pObject);
 }
 
+// FUNCTION: LEMBALL 0x00449000
 void noop_options_screen_frame_draw(void)
 {
 }

@@ -283,10 +283,11 @@ void PASCAL ForwardLevelScreenStatusIndicatorMode(int nMode, int nValue)
 	SetLevelScreenStatusIndicatorModeThunk(nMode, nValue);
 }
 
+// FUNCTION: LEMBALL 0x0044bec0
 void noop_registration_recenter(void)
 {
 }
-
+// FUNCTION: LEMBALL 0x0044c0c0
 void noop_registration_buffer_reset(void)
 {
 }

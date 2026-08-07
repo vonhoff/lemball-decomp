@@ -5593,18 +5593,28 @@ void LEMBALL_FASTCALL QueueAlignedZrleChildDrawEntry(void* pObject)
 	((GameAlignedZrleChildOverlayView*) pObject)->QueueAlignedFrame();
 }
 
+// FUNCTION: LEMBALL 0x0043bcd0
 void noop_level_screen_static_region_callback(void)
 {
 }
-
+// FUNCTION: LEMBALL 0x0043ed10
 void noop_level_screen_view_follow_callback(void)
 {
 }
-
+// FUNCTION: LEMBALL 0x00443350
 void noop_level_screen_action_panel_callback(void)
 {
 }
-
+// FUNCTION: LEMBALL 0x0044b330
 void noop_level_selection_mode_render_hook(void)
 {
 }
+// FUNCTION: LEMBALL 0x00413090
+int LEMBALL_FASTCALL CAI_GetObjectRequired(void* pObject, int nUnused, int nObjectType)
+{
+	(void) pObject;
+	(void) nUnused;
+	(void) nObjectType;
+	return 1;
+}
+
