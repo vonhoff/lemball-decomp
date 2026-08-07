@@ -134,6 +134,8 @@ set(LEMBALL_SOURCES
     src/AI/CHandManager.cpp
     src/AI/CIce.cpp
     src/AI/CIceManager.cpp
+    src/AI/CTrampoline.cpp
+    src/AI/CTrampolineManager.cpp
     src/AI/CLiftAct.cpp
     src/AI/ChildState.cpp
     src/AI/LVITER.CPP
