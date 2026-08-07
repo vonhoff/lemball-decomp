@@ -1959,6 +1959,17 @@ void SetLevelScreenStatusIndicatorModeThunk(int nMode, int nValue)
 {
 	SetLevelScreenStatusIndicatorMode(nMode, nValue);
 }
+
+// MACINTOSH: begin_level_pause_action()
+// FUNCTION: LEMBALL 0x00442280
+void LEMBALL_FASTCALL BeginLevelPauseAction(void* pObject, int nUnused, int param_1)
+{
+	if (param_1 == 0) {
+		*(int*) ((char*) pObject + 0x138) = 1;
+		SetLevelScreenStatusIndicatorMode(1, 1);
+		*(int*) ((char*) g_pVariantResourceEntryManager + 0x10) = 3;
+	}
+}
 // FUNCTION: LEMBALL 0x00455050
 void* ConstructNetworkLobbyTransportController(void* pModeObject, GameMainContext* pMainContext)
 {
