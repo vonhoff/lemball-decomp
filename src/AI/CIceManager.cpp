@@ -1,6 +1,9 @@
+#define LEMBALL_CICE_MANAGER_RECONSTRUCTION
 #include "AI/CIceManager.h"
 
+#include "AI/CGameObject.h"
 #include "AI/CIce.h"
+#include "AI/CInvisibleSwitch.h"
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 #include "Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.H"
 #include "Visos/Generic/Memory.h"
@@ -81,7 +84,8 @@ void CIceManager::Initialise(int nCount)
 			}
 		}
 		for (i = 0; i < m_nCapacity30; ++i) {
-			((IceObjectProc) (*(void***) ((char*) m_pObjects38 + i * sizeof(CIce)))[65])((char*) m_pObjects38 + i * sizeof(CIce));
+			((IceObjectProc) (*(void***) ((char*) m_pObjects38 + i * sizeof(CIce)))[65])((char*) m_pObjects38 +
+																						 i * sizeof(CIce));
 			m_pObjects38[i].m_pOwnerManager60 = this;
 		}
 	}
@@ -140,6 +144,60 @@ int CIceManager::StepOn(void* pCoord, void* pGameObject)
 		}
 	}
 	return 0;
+}
+
+// MACINTOSH: CIceManager::Add(unsigned short, const tCoord3d&, const tCoord3d&, int, int, unsigned char)
+// FUNCTION: LEMBALL 0x0042ddf0
+void CIceManager::Add(unsigned short nSlot,
+					  const tCoord3d& start,
+					  const tCoord3d& end,
+					  int nMoveX,
+					  int nMoveY,
+					  unsigned char fActive)
+{
+	if (m_nObjectCount34 < m_nCapacity30) {
+		m_pObjects38[m_nObjectCount34].Set(nSlot, start, end, nMoveX, nMoveY, fActive);
+		++m_nObjectCount34;
+	}
+}
+
+// MACINTOSH: CIceManager::LoadLevel(unsigned char*, int, unsigned char)
+// FUNCTION: LEMBALL 0x0042dea0
+void CIceManager::LoadLevel(unsigned char* pData, int cbData, unsigned char nVersion)
+{
+	unsigned int cObjects = *(unsigned short*) pData;
+	unsigned short* pRecord = (unsigned short*) (pData + 2);
+	tCoord3d start;
+	tCoord3d end;
+
+	Initialise(cObjects);
+	while (cObjects != 0) {
+		unsigned short nSlot;
+		unsigned short nFormatVersion = *(unsigned short*) ((char*) m_pAI3C + 0x54);
+		if (nFormatVersion < 2) {
+			nSlot = CGameObject::NextId();
+		}
+		else {
+			nSlot = *pRecord;
+			++pRecord;
+		}
+		start.x = pRecord[0];
+		start.y = pRecord[1];
+		start.z = pRecord[2];
+		end.x = pRecord[3];
+		end.y = pRecord[4];
+		end.z = pRecord[5];
+		Add(nSlot,
+			start,
+			end,
+			(short) pRecord[6],
+			(short) pRecord[7],
+			nFormatVersion > 9 ? (unsigned char) pRecord[8] : 1);
+		pRecord += nFormatVersion > 9 ? 9 : 8;
+		--cObjects;
+	}
+	(void) cbData;
+	(void) nVersion;
 }
 
 // FUNCTION: LEMBALL 0x0042dd90

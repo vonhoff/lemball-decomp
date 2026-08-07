@@ -4,6 +4,7 @@
 class CAI;
 class CIce;
 class CViewData;
+struct tCoord3d;
 
 class CIceManager {
 public:
@@ -15,6 +16,15 @@ public:
 	int GetViewData(CViewData* pViewData);
 	void Switch(int nAction, unsigned int nSlot);
 	int StepOn(void* pCoord, void* pGameObject);
+#ifdef LEMBALL_CICE_MANAGER_RECONSTRUCTION
+	void Add(unsigned short nSlot,
+			 const tCoord3d& start,
+			 const tCoord3d& end,
+			 int nMoveX,
+			 int nMoveY,
+			 unsigned char fActive);
+	void LoadLevel(unsigned char* pData, int cbData, unsigned char nVersion);
+#endif
 	void ResetObjectCount(void);
 
 private:

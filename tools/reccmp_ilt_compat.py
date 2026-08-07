@@ -228,6 +228,18 @@ THUNK_ILT_REFERENCES = {
     0x004304E0: (0x00402B26, "CMoverManager::Find", "find-move-chunk-containing-point fwd 0x402b26->0x4130d0->0x42f2f0"),
     0x0042B5A0: (0x00402450, "CTrampoline::Set", "seed-tram-chunk-object-at-point thunk -> CTrampoline::Set 0x42a9e0"),
     0x0042C590: (0x00402973, "CPaintGun::Set", "seed-pgun-chunk-object-at-point thunk -> CPaintGun::Set 0x42bb30"),
+    0x0042CB00: (
+        (0x00402293, "CGameObject::SetId", "managed-entity slot setter -> CGameObject::SetId 0x416620"),
+        (0x004029A5, "CGround::GetZThunk", "ground height target 0x42ffe0"),
+    ),
+    0x0042D380: (0x00402446, "CGameObject::ResetInstructions", "clear pending instructions target 0x415240"),
+    0x0042D4D0: (0x00401794, "CGameObject::GetId", "managed-entity slot getter target 0x416600"),
+    0x0042DDF0: (0x00402A95, "CIce::Set", "initialize ICE chunk object -> CIce::Set 0x42cb00"),
+    0x0042DEA0: (
+        (0x00401E5B, "CIceManager::Initialise", "allocate ICE chunk array -> CIceManager::Initialise 0x42d830"),
+        (0x0040214E, "CGameObject::NextId", "next managed-entity slot id -> CGameObject::NextId 0x4166a0"),
+        (0x00402EFA, "CIceManager::Add", "append ICE chunk object -> CIceManager::Add 0x42ddf0"),
+    ),
     0x00419980: (0x00401500, "CGameObject::UpdateCollision", "update-managed-entity-bounds thunk -> 0x4167c0"),
     0x004071D0: (
         (0x004012A8, "DestroyMainGameVariantResourceMode", "destroy-variant-resource-mode thunk -> 0x447c50"),
