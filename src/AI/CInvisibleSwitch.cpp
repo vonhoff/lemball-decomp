@@ -36,6 +36,11 @@ struct PaletteRemapPointerTableMemberView {
 	void ReleasePaletteRemapVariant(void* pVariant);
 };
 
+// GameEffStream view (mirrors CHandManager.cpp's GameEffStream so ResetStateFields links; 0x0045ee80).
+struct GameEffStream {
+	void ResetStateFields(void);
+};
+
 struct LevelVtSmallFunctionView {
 	void AddLevelScoreClamped(int nValue);
 };
@@ -754,7 +759,7 @@ void* LEMBALL_FASTCALL ConstructProjectileObject(void* pObject)
 	((CGameObject*) pObject)->InitializeLevelChunkObjectBase(3, 0x100, 0);
 	*(void**) ((char*) pObject + 0x138) = (void**) 0x4932c8;
 	*(int*) ((char*) pObject + 0x13c) = 0;
-	((void(__fastcall*)(void*)) 0x45ee80)((char*) pObject + 0x138);
+	((GameEffStream*) ((char*) pObject + 0x138))->ResetStateFields();
 	*(int*) ((char*) pObject + 0x188) = 0;
 	*(int*) ((char*) pObject + 0x174) = 0xaa55aa55;
 	*(int*) ((char*) pObject + 0x178) = 0xaa55aa55;
