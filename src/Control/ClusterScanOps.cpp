@@ -4,6 +4,7 @@
 
 extern int __fastcall FindNetworkLobbyPeerSlotByPeer(void* pObject, int nUnused, int param_1);
 extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
+extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 
 // MACINTOSH: append_static_anim_chunk_record_if_unique(short*)
 // FUNCTION: LEMBALL 0x0040d0c0
@@ -155,6 +156,22 @@ void __fastcall DeactivateManagedEntityGroupChildBySlot(void* pObject, int nUnus
 			}
 		}
 	}
+}
+
+// MACINTOSH: delete_linked_type_0x11_chunk_object(byte) [scalar-dtor]
+// FUNCTION: LEMBALL 0x0041c540
+void* __fastcall DeleteLinkedType11ChunkObject(void* pObject, int nUnused, unsigned char param_1)
+{
+	*(void**) pObject = (void**) 0x4948d0;
+	void* pLinked = *(void**) ((char*) pObject + 0x148);
+	if (pLinked != 0 && *(int*) ((char*) pObject + 0x14c) != 0xffff && pLinked != 0) {
+		(*( void(**)(int)) *(void***) pLinked)(1);
+	}
+	DestroyLevelChunkObjectBaseAutoThunk(pObject);
+	if ((param_1 & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
 }
 
 // MACINTOSH: resolve_variant_render_frame_pointer(int, undefined4*)
