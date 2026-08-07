@@ -1738,3 +1738,32 @@ void __fastcall DestroyNetworkLobbyScreen(void* param_1)
 	*(void**) ((char*) param_1 + 0x3ec) = (void*) 0x496ca8;
 	((void(__fastcall*)(void*)) 0x402081)(param_1);
 }
+
+// MACINTOSH: dispatch_indexed_entry_by_mode(unsigned short*)
+// FUNCTION: LEMBALL 0x0043a2e0
+int __fastcall DispatchIndexedEntryByMode(void* pThis, int nUnused, unsigned short* param_1)
+{
+	unsigned short uVar1 = *param_1;
+	if (uVar1 > 2 && uVar1 < 5 && *(int*) ((char*) pThis + 0x14) > 0) {
+		int* piVar3 = (int*) (*(int*) ((char*) pThis + 0x10) + 4);
+		int iVar4 = 0;
+		while (*piVar3 != *(int*) (param_1 + 4)) {
+			piVar3 += 2;
+			iVar4++;
+			if (*(int*) ((char*) pThis + 0x14) <= iVar4) {
+				return 0;
+			}
+		}
+		int* pEntry = (int*) (*(int*) (*(int*) ((char*) pThis + 0x10) + iVar4 * 8));
+		short pos[2];
+		pos[0] = 0;
+		pos[1] = 0;
+		if (uVar1 == 4) {
+			(*( void(**)(void*, int)) (*(void***) ((char*) pEntry + 0x90) + 4 / 4))(pos, 0);
+		} else {
+			(*( void(**)(void*, int)) (*(void***) ((char*) pEntry + 0x90) + 8 / 4))(pos, 0);
+		}
+		return 1;
+	}
+	return 0;
+}

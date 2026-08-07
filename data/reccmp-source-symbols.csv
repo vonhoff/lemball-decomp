@@ -18,7 +18,6 @@ address,name,symbol,type,source
 0x0042CAB0,ResetIceChunkObjectRuntimeState,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0042F2C0,DestroyMoveChunkManagerAuto,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004364B0,ForwardLevelScreenStatusIndicatorMode,,function,src/Frontend/SCREENVT.CPP
-0x0043A2E0,FUN_0043a2e0,,stub,src/Frontend/SCREENVT.CPP
 0x00448DE0,DestroyOptionsScreenAuto,,stub,src/Frontend/MAINMENU.CPP
 0x004507A0,DestroyPaintballSequenceScreenAuto,,stub,src/Frontend/MAINMENU.CPP
 0x00451610,DrawPasswordEntryScreenContents,,function,src/Frontend/MAINMENU.CPP
