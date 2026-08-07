@@ -170,6 +170,21 @@ void __fastcall GetManagedEntityGeometryFields(void* pObject, int nUnused, int* 
 	*param_7 = *(int*) ((char*) pObject + 0x148);
 }
 
+// MACINTOSH: dispatch_counted_child_slot_0x18_by_id(uint, int)
+// FUNCTION: LEMBALL 0x0041b8a0
+void __fastcall DispatchCountedChildSlot0x18ById(void* pObject, int nUnused, unsigned int param_1, int param_2)
+{
+	int i;
+	if (*(unsigned short*) ((char*) pObject + 0x36) != 0) {
+		for (i = 0; i < (int) *(unsigned short*) ((char*) pObject + 0x36); i++) {
+			void* pChild = *(void**) (*(int*) ((char*) pObject + 0x3c) + i * 4);
+			if (*(unsigned short*) ((char*) pChild + 0x6a) == param_1) {
+				(*( void(**)(int)) (*(void***) pChild + 0x18 / 4))(param_2);
+			}
+		}
+	}
+}
+
 // MACINTOSH: delete_linked_type_0x11_chunk_object(byte) [scalar-dtor]
 // FUNCTION: LEMBALL 0x0041c540
 void* __fastcall DeleteLinkedType11ChunkObject(void* pObject, int nUnused, unsigned char param_1)
