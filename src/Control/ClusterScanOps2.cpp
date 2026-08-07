@@ -1159,6 +1159,17 @@ void __cdecl ResetScheduleAndAdvanceManagedEntity(int param_1, int* param_2)
 	((void(__cdecl*)(int, int*, int)) 0x40385a)(param_1, param_2, 0);
 }
 
+// MACINTOSH: flush_network_lobby_deferred_status()
+// FUNCTION: LEMBALL 0x00454830
+void __fastcall FlushNetworkLobbyDeferredStatus(void* param_1)
+{
+	if (*(int*) ((char*) param_1 + 0x430) == 7 && (((void(__fastcall*)(void*)) 0x402c11)(*(void**) 0x49f140), *(int*) ((char*) param_1 + 0x3b8) == 0)) {
+		return;
+	}
+	((void(__fastcall*)(void*, int, int)) 0x401d61)(param_1, *(int*) ((char*) param_1 + 0x430), 6000);
+	*(int*) ((char*) param_1 + 0x430) = 0;
+}
+
 // MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
 void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
