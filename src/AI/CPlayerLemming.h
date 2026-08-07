@@ -18,6 +18,7 @@ public:
 	CPlayerLemmingGroup* GetGroup(void);
 	void SetGroupLeader(int fLeader);
 	void SetGroup(int fGrouped);
+	void SetBored(int nBaseTime);
 };
 
 typedef char CPlayerLemmingSizeCheck[sizeof(CPlayerLemming) == 0x22c ? 1 : -1];
