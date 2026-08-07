@@ -298,3 +298,30 @@ void __fastcall SetLevelScreenPauseRequestedState(void* pObject, int nUnused, in
 		}
 	}
 }
+
+// MACINTOSH: reset_tile_flag_1c_object()
+// FUNCTION: LEMBALL 0x004275f0
+void __fastcall ResetTileFlag1cObject(void* pObject)
+{
+	ResetManagedEntityRuntimeStateThunk(pObject);
+	*(unsigned short*) ((char*) pObject + 0xbc) = 0;
+	*(int*) ((char*) pObject + 0x94) = 0;
+	*(int*) ((char*) pObject + 0x13c) = 0;
+	*(int*) ((char*) pObject + 0x138) = 0;
+	*(int*) ((char*) pObject + 0xb8) = 0x18;
+	((void(__fastcall*)(void*, void*)) 0x4023e2)(pObject, (char*) pObject + 0x40);
+}
+
+// MACINTOSH: sync_attached_move_chunk_entities_to_current_position()
+// FUNCTION: LEMBALL 0x0042eac0
+void __fastcall SyncAttachedMoveChunkEntitiesToCurrentPosition(void* pObject)
+{
+	int i;
+	if (*(int*) ((char*) pObject + 0x174) > 0) {
+		for (i = 0; i < *(int*) ((char*) pObject + 0x174); i++) {
+			void* pElem = *(void**) ((char*) pObject + 0x178 + i * 4);
+			((void(__fastcall*)(void*, void*)) 0x401d52)(pElem, (char*) pObject + 0x9c);
+			((void(__fastcall*)(void*)) 0x40360c)(pElem);
+		}
+	}
+}
