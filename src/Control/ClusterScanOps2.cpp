@@ -597,6 +597,33 @@ void __fastcall DispatchZrleListEntry(void* pObject, int nUnused, int param_2, i
 	(*( void(**)(int)) (*(void***) (*(int*) ((char*) pObject + 0x7c) + param_2 * 0x54) + 0x24 / 4))(param_3);
 }
 
+// MACINTOSH: initialize_level_screen_hotspot_entry()
+// FUNCTION: LEMBALL 0x00439340
+void* __fastcall InitializeLevelScreenHotspotEntry(void* pObject)
+{
+	*(unsigned short*) ((char*) pObject + 0x2c) = 0xffff;
+	*(int*) ((char*) pObject + 0x38) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x3c) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x40) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x34) = 0;
+	*(int*) ((char*) pObject + 0x30) = 0;
+	*(int*) ((char*) pObject + 0x18) = 0;
+	*(int*) ((char*) pObject + 0x20) = 0;
+	return pObject;
+}
+
+// MACINTOSH: delete_timed_eff_stream_with_channel_state_wrapper(byte) [scalar-dtor]
+// FUNCTION: LEMBALL 0x00462990
+void* __fastcall DeleteTimedEffStreamWithChannelStateWrapper(void* pThis, int nUnused, char param_1)
+{
+	((void(__fastcall*)(void*)) 0x45fd80)(pThis);
+	((void(__fastcall*)(void*)) 0x45f6c0)((char*) pThis + 0x78);
+	if ((param_1 & 1) != 0) {
+		FreeVSMemBlock(pThis);
+	}
+	return pThis;
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
