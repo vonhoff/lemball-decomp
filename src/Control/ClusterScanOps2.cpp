@@ -479,6 +479,20 @@ int __fastcall AppendProjectileRequestCode(void* pObject, int nUnused, int param
 	return 1;
 }
 
+// MACINTOSH: release_linked_gmob_chunk_object()
+// FUNCTION: LEMBALL 0x0041ccc0
+void __fastcall ReleaseLinkedGmobChunkObject(void* pObject)
+{
+	if (*(int*) ((char*) pObject + 0x14c) != 0xffff) {
+		void* pvVar1 = *(void**) ((char*) pObject + 0x148);
+		*(int*) ((char*) pObject + 0x9c) = *(int*) ((char*) pvVar1 + 0x9c);
+		*(int*) ((char*) pObject + 0xa0) = *(int*) ((char*) pvVar1 + 0xa0);
+		*(int*) ((char*) pObject + 0xa4) = *(int*) ((char*) pvVar1 + 0xa4);
+		((void(__fastcall*)(void*, int, void*, int)) 0x402cac)(*(void**) 0x4a74c0, -1, pvVar1, 0);
+		*(int*) ((char*) pObject + 0x14c) = 0xffff;
+	}
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
