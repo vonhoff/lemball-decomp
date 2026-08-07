@@ -113,6 +113,34 @@ void __fastcall FinishPaintballSequenceToLevelSelection(void* pObject)
 	*(int*) ((char*) pObject + 0x374) = 4;
 }
 
+// MACINTOSH: service_type_0x35_chunk_objects()
+// FUNCTION: LEMBALL 0x0040be20
+void __fastcall ServiceType35ChunkObjects(void* pObject)
+{
+	int i;
+	if (*(int*) ((char*) pObject + 0xc) > 0) {
+		for (i = 0; i < *(int*) ((char*) pObject + 0xc); i++) {
+			(*( void(**)(void)) (*(void***) (*(int*) ((char*) pObject + 4) + i * 0x150) + 0x14 / 4))();
+		}
+	}
+}
+
+// MACINTOSH: find_resource_geometry_helper_slot_by_resource_owner(int)
+// FUNCTION: LEMBALL 0x0046bfa0
+int __fastcall FindResourceGeometryHelperSlotByResourceOwner(void* pObject, int nUnused, int param_2)
+{
+	if (*(int*) ((char*) pObject + 0x10) > 0) {
+		int i;
+		for (i = 0; i < *(int*) ((char*) pObject + 0x10); i++) {
+			if (*(int*) (*(int*) ((char*) pObject + 4) + 4 + i * 28) == param_2) {
+				return i;
+			}
+		}
+	}
+	return -1;
+}
+
+
 // MACINTOSH: delete_fixed_buffer_formatted_output_stream(byte) [scalar-dtor]
 // FUNCTION: LEMBALL 0x00407e80
 void* __fastcall DeleteFixedBufferFormattedOutputStream(void* pThis, int nUnused, unsigned char param_1)
