@@ -2516,3 +2516,48 @@ void __fastcall CEnemyRestart(void* pThis, int nUnused)
 	}
 }
 
+// MACINTOSH: CBullet::AddData()
+// FUNCTION: LEMBALL 0x0041aaa0
+void __fastcall CBulletAddData(void* pThis, int nUnused)
+{
+	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(pThis, nUnused, 0x2b);
+	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(pThis, nUnused, *(unsigned short*) ((char*) pThis - 0xcc));
+	((void(__fastcall*) (void*, int, unsigned int)) 0x45ef10)(pThis, nUnused, g_nLevelFrameClockTimeMs);
+	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(pThis, nUnused, *(int*) ((char*) pThis - 0x9c) >> 12);
+	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(pThis, nUnused, *(int*) ((char*) pThis - 0x98) >> 12);
+	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(pThis, nUnused, *(int*) ((char*) pThis - 0x94) >> 12);
+	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(pThis, nUnused, *(int*) ((char*) pThis - 0x90) >> 12);
+	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(pThis, nUnused, *(int*) ((char*) pThis - 0x8c) >> 12);
+	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(pThis, nUnused, *(int*) ((char*) pThis - 0x88) >> 12);
+	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(pThis, nUnused, *(unsigned short*) ((char*) pThis - 0x84));
+	((void(__fastcall*) (void*, int, unsigned int)) 0x45ef10)(pThis, nUnused, *(unsigned int*) ((char*) pThis - 0xa0));
+	((void(__fastcall*) (void*, int, unsigned int)) 0x45ef10)(pThis, nUnused, *(unsigned int*) ((char*) pThis - 0x70));
+	((void(__fastcall*) (void*, int, unsigned int)) 0x45ef10)(pThis, nUnused, *(unsigned int*) ((char*) pThis + 0x30));
+	((void(__fastcall*) (void*, int, unsigned int)) 0x45ef10)(pThis, nUnused, *(unsigned int*) ((char*) pThis + 0x34));
+	((void(__fastcall*) (void*, int, unsigned short)) 0x45ef40)(pThis, nUnused, *(unsigned short*) ((char*) pThis + 0x38));
+}
+
+// MACINTOSH: CBullet::GetData()
+// FUNCTION: LEMBALL 0x0041ab80
+void __fastcall CBulletGetData(void* pThis, int nUnused)
+{
+	((void(__cdecl*) (unsigned int)) 0x403107)(((unsigned int(__fastcall*) (void*)) 0x45eff0)(pThis));
+	*(unsigned int*) ((char*) pThis - 0x9c) = (unsigned int) (unsigned short) (((unsigned short(__fastcall*) (void*)) 0x45f070)(pThis)) << 12;
+	*(unsigned int*) ((char*) pThis - 0x98) = (unsigned int) (unsigned short) (((unsigned short(__fastcall*) (void*)) 0x45f070)(pThis)) << 12;
+	*(unsigned int*) ((char*) pThis - 0x94) = (unsigned int) (unsigned short) (((unsigned short(__fastcall*) (void*)) 0x45f070)(pThis)) << 12;
+	*(unsigned int*) ((char*) pThis - 0x90) = (unsigned int) (unsigned short) (((unsigned short(__fastcall*) (void*)) 0x45f070)(pThis)) << 12;
+	*(unsigned int*) ((char*) pThis - 0x8c) = (unsigned int) (unsigned short) (((unsigned short(__fastcall*) (void*)) 0x45f070)(pThis)) << 12;
+	*(unsigned int*) ((char*) pThis - 0x88) = (unsigned int) (unsigned short) (((unsigned short(__fastcall*) (void*)) 0x45f070)(pThis)) << 12;
+	*(unsigned short*) ((char*) pThis - 0x84) = ((unsigned short(__fastcall*) (void*)) 0x45f070)(pThis);
+	*(unsigned int*) ((char*) pThis - 0xa0) = ((unsigned int(__fastcall*) (void*)) 0x45eff0)(pThis);
+	*(unsigned int*) ((char*) pThis - 0x70) = ((unsigned int(__fastcall*) (void*)) 0x45eff0)(pThis);
+	*(unsigned int*) ((char*) pThis + 0x30) = ((unsigned int(__fastcall*) (void*)) 0x45eff0)(pThis);
+	unsigned int nData = ((unsigned int(__fastcall*) (void*)) 0x45eff0)(pThis);
+	*(unsigned int*) ((char*) pThis + 0x34) = nData;
+	if (nData == 0) {
+		*(unsigned int*) ((char*) pThis + 0x34) = 2;
+	}
+	*(unsigned short*) ((char*) pThis + 0x38) = ((unsigned short(__fastcall*) (void*)) 0x45f070)(pThis);
+	*(int*) ((char*) pThis + 0x2c) = 1;
+	*(int*) ((char*) pThis - 0x24) = 1;
+}
