@@ -5,6 +5,15 @@
 extern int g_nLevelFrameClockTick;
 extern void* g_GAME_RenderQueueNodeVtableSlots[4];
 
+// MACINTOSH: LevelChunkObjectBase::InitializeLevelChunkObjectBase(int, ushort, ushort)
+// FUNCTION: LEMBALL 0x00416d20
+void CGameObject::InitializeLevelChunkObjectBase(int nEntityType, unsigned short nReserved68, unsigned short nCommandCapacity)
+{
+	ConstructCGameObject(nEntityType, nReserved68, nCommandCapacity);
+	*((void**) this) = (void*) 0x493ea0;
+	*((int*) ((char*) this + 0x60)) = 0;
+}
+
 // MACINTOSH: LevelChunkObjectThreeOptionalRecords::~LevelChunkObjectThreeOptionalRecords()
 // FUNCTION: LEMBALL 0x0041fda0
 void LEMBALL_FASTCALL DestroyThreeOptionalRecordChunkObject(void* pObject)

@@ -110,6 +110,7 @@ public:
 	void RegisterId(void);
 	void UpdateCollision(void);
 	void DestroyLevelChunkObjectBase(void);
+	void InitializeLevelChunkObjectBase(int nEntityType, unsigned short nReserved68, unsigned short nCommandCapacity);
 
 	CGameObject* ConstructCGameObject(int nEntityType, unsigned short nReserved68, unsigned short nCommandCapacity);
 };
