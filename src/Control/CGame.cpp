@@ -2035,7 +2035,7 @@ void* LEMBALL_FASTCALL DeleteStartupModeEventClientThunk(void* pObject, int, BYT
 {
 	return DeleteStartupMode((char*) pObject - 0x0c, 0, fDelete);
 }
-// LINKERILT: LEMBALL 0x004022ac
+// FUNCTION: LEMBALL 0x00450c10
 void* ConstructPaintballSequenceModeController(void* pModeObject, GameMainContext* pMainContext, int fSequenceVariant)
 
 {
