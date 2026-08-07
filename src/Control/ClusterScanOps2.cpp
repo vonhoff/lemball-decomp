@@ -2270,3 +2270,36 @@ void __fastcall CPlayerLemmingTurnToFaceCursor(void* pThis, int nUnused)
 			*(int*) ((char*) 0x49d070 + *(int*) ((char*) pThis + 0x64) * 4) / 0x32;
 	}
 }
+
+// MACINTOSH: CSlinky::Move()
+// FUNCTION: LEMBALL 0x0040b670
+void __fastcall CSlinkyMove(void* pThis, int nUnused)
+{
+	int* pState = *(int**) 0x4a1bcc;
+	int v = (*pState * 45 + 31) & 0x7fffff;
+	*pState = v;
+	int heading = v % 4;
+	*(short*) ((char*) pThis + 0xbc) = (short) heading;
+	int dx, dy;
+	switch (heading) {
+	case 0:
+		dx = 0x10; dy = 0;
+		break;
+	case 1:
+		dx = -0x10; dy = 0;
+		break;
+	case 2:
+		dx = 0; dy = 0x10;
+		break;
+	default:
+		dx = 0; dy = -0x10;
+		break;
+	}
+	int i = 0;
+	do {
+		i++;
+		*(int*) ((char*) pThis + 0xa8) = ((*(int*) ((char*) pThis + 0x9c) >> 12) + dx) << 12;
+		*(int*) ((char*) pThis + 0xac) = ((*(int*) ((char*) pThis + 0xa0) >> 12) + dy) << 12;
+		*(int*) ((char*) pThis + 0xb0) = (*(int*) ((char*) pThis + 0xa4) >> 12) << 12;
+	} while (i < 8 && ((int(__fastcall*)(void*, int*)) 0x403229)(pThis, (int*) ((char*) pThis + 0xa8)) == 0);
+}
