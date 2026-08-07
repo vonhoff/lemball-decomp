@@ -894,6 +894,26 @@ void __fastcall SetManagedEntityIceAttachment(void* pThis, int nUnused, int para
 	}
 }
 
+// MACINTOSH: set_text_selection_range_state(int)
+// FUNCTION: LEMBALL 0x004743e0
+void __fastcall SetTextSelectionRangeState(void* pThis, int nUnused, int param_1)
+{
+	(*( void(**)(void*)) (*(void***) pThis + 0 / 4))(pThis);
+	int iVar1 = *(int*) ((char*) pThis + 0x50);
+	if (iVar1 <= *(int*) ((char*) pThis + 0x54)) {
+		int iVar3 = iVar1 * 0xc;
+		int iVar2;
+		do {
+			iVar3 += 0xc;
+			iVar2 = iVar1 + 1;
+			*(int*) (*(int*) (*(int*) ((char*) pThis + 0x24) + 4) + iVar3 - 4) = param_1;
+			((void(__fastcall*)(void*, int, int)) 0x473f80)(pThis, iVar1, 1);
+			iVar1 = iVar2;
+		} while (iVar2 <= *(int*) ((char*) pThis + 0x54));
+	}
+	(*( void(**)(void*)) (*(void***) pThis + 4 / 4))(pThis);
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
