@@ -509,6 +509,21 @@ int __fastcall DispatchProjectilePacketByType(void* pObject, int nUnused, short 
 	return 1;
 }
 
+// MACINTOSH: refresh_aligned_zrle_child_and_queue_if_dirty(int)
+// FUNCTION: LEMBALL 0x00442a40
+void __fastcall RefreshAlignedZrleChildAndQueueIfDirty(void* pObject, int nUnused, void* param_1)
+{
+	if (((int(__fastcall*)(void*)) (*(void***) pObject)[0xb4 / 4])(pObject) != *(int*) ((char*) pObject + 0x16c)) {
+		*(int*) ((char*) pObject + 0xd8) = 1;
+		*(int*) ((char*) pObject + 0x16c) = *(int*) ((char*) pObject + 0x16c) == 0;
+	}
+	if (*(int*) (*(int*) ((char*) pObject + 0x110) + 0x18) != *(int*) ((char*) pObject + 0x170)) {
+		*(int*) ((char*) pObject + 0xd8) = 1;
+		*(int*) ((char*) pObject + 0x170) = *(int*) (*(int*) ((char*) pObject + 0x110) + 0x18);
+	}
+	((void(__fastcall*)(void*, void*)) 0x468360)(pObject, param_1);
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
