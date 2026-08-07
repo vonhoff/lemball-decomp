@@ -1033,6 +1033,31 @@ int __fastcall ServiceCompositeChildrenAndSeekTarget(void* pObject)
 	return 0;
 }
 
+// MACINTOSH: activate_embedded_media_and_restore_music()
+// FUNCTION: LEMBALL 0x00450d30
+void __fastcall ActivateEmbeddedMediaAndRestoreMusic(void* param_1)
+{
+	if (*(int*) 0x4a6284 == 0) {
+		((void(__fastcall*)(void*)) 0x46e300)(param_1);
+	}
+	if (*(int*) ((char*) param_1 + 0xd4) == 0) {
+		((void(__fastcall*)(void*, int)) 0x401762)(*(void**) 0x49eb80, 1);
+		*(int*) ((char*) param_1 + 0xd4) = 1;
+	}
+}
+
+// MACINTOSH: award_150_points_and_emit_object_callback()
+// FUNCTION: LEMBALL 0x0041fad0
+void __fastcall Award150PointsAndEmitObjectCallback(void* pObject)
+{
+	((void(__fastcall*)(void*, int)) 0x402f22)(g_pActiveManagedEntityOwner, 0x96);
+	int vec[3];
+	vec[0] = 0;
+	vec[1] = 0;
+	vec[2] = 0xa000;
+	(*( void(**)(void*, int)) (*(void***) pObject + 0x20 / 4))(vec, 0);
+}
+
 // MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
 void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
