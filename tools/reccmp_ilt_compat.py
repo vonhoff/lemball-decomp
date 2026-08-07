@@ -93,6 +93,11 @@ FUNCTION_DATA_REFERENCES = {
         (0x004988E0, "g_MemoryArenaBaseStateVtable", "memory arena base-state vtable 004988e0"),
         (0x004988D8, "g_aMainMemoryArenaLockVtable", "main memory arena lock vtable 004988d8"),
     ),
+    0x00445420: (
+        (0x00496D48, "g_GAME_FramedScreenBaseVtable", "framed-screen base vtable 00496d48"),
+        (0x00496CE4, "g_MenuSelectorCurrentFrameCallbackVtable", "composite point-rect sink init[7] vtable 00496ce4"),
+        (0x00496D00, "g_MenuSelectorCurrentFrameCallbackVtable", "composite point-rect sink init vtable 00496d00"),
+    ),
     0x0045A480: (
         (0x00498918, "g_MainMemoryArenaVtable", "main memory arena vtable 00498918"),
         (0x00498910, "g_aMainMemoryArenaLockVtable", "main memory arena lock vtable 00498910"),
