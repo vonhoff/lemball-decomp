@@ -55,6 +55,14 @@ public:
 	void DrawBall(CViewData& ViewData);
 	void DrawMine(CViewData& ViewData);
 	void DrawFlag(CViewData& ViewData, int nObjectType);
+	void DrawGrenade(CViewData& ViewData);
+	void DrawRocket(CViewData& ViewData);
+	void DrawBoobyTrap(CViewData& ViewData);
+	void DrawCrusher(CViewData& ViewData);
+	void DrawBurner(CViewData& ViewData);
+	void DrawTeleporter(CViewData& ViewData);
+	void DrawBalloon(CViewData& ViewData);
+	void DrawExit(CViewData& ViewData);
 	void ResetPrimitives(void);
 };
 
