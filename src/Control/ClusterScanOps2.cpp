@@ -1679,3 +1679,38 @@ void __fastcall DestroyPasswordEntryScreen(void* param_1)
 	*(void**) ((char*) param_1 + 0x454) = (void*) 0x496ca8;
 	((void(__fastcall*)(void*)) 0x402081)(param_1);
 }
+
+// MACINTOSH: destroy_network_lobby_screen()
+// FUNCTION: LEMBALL 0x004535c0
+void __fastcall DestroyNetworkLobbyScreen(void* param_1)
+{
+	*(void**) param_1 = (void*) 0x498640;
+	*(void**) ((char*) param_1 + 0x4) = (void*) 0x498630;
+	*(void**) ((char*) param_1 + 0x14) = (void*) 0x49862c;
+	if (*(int*) ((char*) param_1 + 0x374) == 0) {
+		if (*(void**) 0x49f140 != 0) {
+			((void(__fastcall*)(void*)) 0x402cca)(param_1);
+		}
+	} else if (*(void**) 0x49f140 != 0) {
+		((void(__fastcall*)(void*)) 0x402c11)(*(void**) 0x49f140);
+	}
+	int iVar3;
+	for (iVar3 = 0; iVar3 < 0x2a8; iVar3 += 0x44) {
+		((void(__fastcall*)(void*, void*)) 0x46aa00)(*(void**) (*(int*) ((char*) param_1 + 0x84) + 0x1c), (void*) (*(int*) ((char*) param_1 + 0x3cc) + iVar3));
+	}
+	void* pPos = *(void**) ((char*) param_1 + 0x3cc);
+	if (pPos != 0) {
+		(*( void(**)(int)) (*(void***) pPos))(3);
+	}
+	void* uVar1 = *(void**) ((char*) param_1 + 0x398);
+	if (uVar1 != 0) {
+		FreeVSMemBlock(*(void**) ((char*) uVar1 + 0xc));
+		FreeVSMemBlock(uVar1);
+	}
+	((void(__fastcall*)(void*)) 0x401bd6)(param_1);
+	if (*(int*) ((char*) param_1 + 0x9c) != 0) {
+		((void(__fastcall*)(void*)) 0x401221)(param_1);
+	}
+	*(void**) ((char*) param_1 + 0x3ec) = (void*) 0x496ca8;
+	((void(__fastcall*)(void*)) 0x402081)(param_1);
+}
