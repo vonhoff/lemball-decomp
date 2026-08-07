@@ -67,6 +67,9 @@ public:
 	void DrawZBuff_Sprite(int nViewDataIndex, unsigned short nValue);
 	void DrawLemmingJump(unsigned short* pViewData, int nFrameIndex);
 	void DrawLemmingFall(unsigned short* pViewData, int nUnused);
+	void DrawLemmingOnConveyor(CViewData& ViewData, int nUseRemap);
+	void DrawHandHeightSampledOverlayPair(CViewData& ViewData, int nPlayer, int nUseRemap);
+	void DrawItemHandBoundaryPair(CViewData& ViewData, int nPlayer);
 };
 
 typedef char CViewDataSizeCheck[(sizeof(CViewData) == 0x4c) ? 1 : -1];

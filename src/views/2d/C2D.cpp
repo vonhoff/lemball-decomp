@@ -1,6 +1,7 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "AI/CGameObject.h"
 #include "Visos/Generic/CVSPoint.h"
+#include "views/2d/C2DRender.h"
 
 #include <string.h>
 
@@ -583,4 +584,72 @@ void LEMBALL_FASTCALL RegisterLevelScreenResource0x2eByteRemapTable(char* pScree
 		pRemap[i] = nValue;
 	}
 	*(void**) (pScreen + 0x968) = RegisterPaletteRemapVariant(0x2e, pRemap, 0);
+}
+
+extern void EmitLevelScreenVariantEntry(void* pObject,
+										short x,
+										short y,
+										int nResourceId,
+										int nFlags,
+										void* pFrameSelector,
+										int nValue);
+
+// Macintosh: C2D::DrawLemmingOnConveyor(CViewData&, int)
+// FUNCTION: LEMBALL 0x0043c1a0
+void C2D::DrawLemmingOnConveyor(CViewData& ViewData, int nUseRemap)
+{
+	int nFrame;
+	int nRemap = 0;
+
+	nFrame = (((int) ViewData.m_pFrameSelector24 - ViewData.m_nFrame20) * 0x0f) / 1000;
+	if (nFrame < 0) {
+		nFrame = -nFrame;
+	}
+	nFrame &= 7;
+	if (nUseRemap != 0) {
+		nRemap = m_nLemmingRemap0968;
+	}
+	EmitLevelScreenVariantEntry(m_pAnimsManager0A40,
+								(short) (ViewData.m_nX04 - 0x0f),
+								(short) (ViewData.m_nY08 - 0x16),
+								0x3f,
+								nFrame,
+								0,
+								nRemap);
+}
+
+// Macintosh: C2D::DrawItemHandBoundaryPair(CViewData&, int)
+// FUNCTION: LEMBALL 0x0043c940
+void C2D::DrawItemHandBoundaryPair(CViewData& ViewData, int nPlayer)
+{
+	unsigned int uN;
+	int nX;
+	int nRemap;
+	short sX;
+	short sY;
+
+	uN = (((int) ViewData.m_pFrameSelector24 - ViewData.m_nFrame20) & 0x780U) >> 7;
+	sX = (short) uN - 4;
+	nX = (int) uN - 4;
+	if (7 < uN) {
+		sX = 0xc - (short) uN;
+		nX = 0xc - (int) uN;
+	}
+	nRemap = (nPlayer < 4) ? m_anPlayerRemaps0064[nPlayer] : 0;
+	sX = (short) ViewData.m_nX04 + sX;
+	sY = (short) ViewData.m_nY08 + (short) (nX / 4);
+	EmitLevelScreenVariantEntry(m_pAnimsManager0A40,
+								(short) (sX - 0x10),
+								(short) (sY - 0x40),
+								0x94,
+								0,
+								0,
+								nRemap);
+	EmitLevelScreenVariantEntry(m_pAnimsManager0A40,
+								(short) (sX - 9),
+								(short) (sY - 9),
+								0x96,
+								0,
+								0,
+								0);
 }
