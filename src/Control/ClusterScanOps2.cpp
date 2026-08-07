@@ -707,6 +707,33 @@ void __fastcall RefreshLevelSelectionNavigationLocks(void* param_1)
 	((void(__fastcall*)(void*, int)) 0x40329c)(*(void**) ((char*) param_1 + 0x338), 0xacef000f);
 }
 
+// MACINTOSH: remove_pointer_from_level_mode_list_0x120(int)
+// FUNCTION: LEMBALL 0x00410a20
+void __fastcall RemovePointerFromLevelModeList0x120(void* param_1)
+{
+	int* piVar2 = (int*) ((char*) g_pActiveManagedEntityOwner + 0x118);
+	int iVar6 = 0;
+	int iVar4 = *piVar2;
+	if (iVar4 > 0) {
+		int* piVar3 = *(int**) ((char*) g_pActiveManagedEntityOwner + 0x120);
+		while (*piVar3 != (int) param_1) {
+			piVar3++;
+			iVar6++;
+			if (iVar4 <= iVar6) {
+				return;
+			}
+		}
+		*piVar2 = iVar4 - 1;
+		if (iVar6 < iVar4 - 1) {
+			int j;
+			for (j = iVar6; j < *piVar2; j++) {
+				*(int*) (*(int**) ((char*) g_pActiveManagedEntityOwner + 0x120) + j * 4) = *(int*) (*(int**) ((char*) g_pActiveManagedEntityOwner + 0x120) + j * 4 + 1);
+			}
+		}
+		*(int*) (*(int**) ((char*) g_pActiveManagedEntityOwner + 0x120) + *piVar2 * 4) = 0;
+	}
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
