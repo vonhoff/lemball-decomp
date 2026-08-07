@@ -1,5 +1,7 @@
 #include "AI/CInvisibleSwitch.h"
 
+extern int g_nLevelFrameClockTick;
+
 #include "AI/CGameObject.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
@@ -315,4 +317,13 @@ void CInvisibleSwitch::Load(unsigned char*& pData)
 void LEMBALL_FASTCALL HandleShpgChunkObjectProjectileHit(void)
 {
 	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(0x96);
+}
+
+// MACINTOSH: CEnemy::HitBall()
+// FUNCTION: LEMBALL 0x004206f0
+void LEMBALL_FASTCALL HandleEnmyChunkObjectProjectileHit(int pObject)
+{
+	*(int*) ((char*) pObject + 0x124) = 1;
+	*(int*) ((char*) pObject + 0xcc) = g_nLevelFrameClockTick + 0x3c;
+	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(300);
 }
