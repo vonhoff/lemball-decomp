@@ -21,6 +21,27 @@ void* LEMBALL_FASTCALL DestroyManagedEntityPacketBase(void* pObject, int nUnused
 	return pObject;
 }
 
+// MACINTOSH: LevelChunkObjectBase::`vector deleting destructor' (0x150 stride)
+// FUNCTION: LEMBALL 0x0040c1d0
+void* LEMBALL_FASTCALL DestroyLevelChunkObjectBaseArray(void* pObjectArray, int nUnused, unsigned char fDelete)
+{
+	int nCount;
+
+	if ((fDelete & 2) == 0) {
+		((CGameObject*) pObjectArray)->DestroyLevelChunkObjectBase();
+		if ((fDelete & 1) != 0) {
+			FreeVSMemBlock(pObjectArray);
+		}
+		return pObjectArray;
+	}
+	nCount = *(int*) ((char*) pObjectArray - 4);
+	while (--nCount >= 0) {
+		((CGameObject*) ((char*) pObjectArray + nCount * 0x150))->DestroyLevelChunkObjectBase();
+	}
+	FreeVSMemBlock((char*) pObjectArray - 4);
+	return pObjectArray;
+}
+
 // MACINTOSH: LevelChunkObjectBase::InitializeLevelChunkObjectBase(int, ushort, ushort)
 // FUNCTION: LEMBALL 0x00416d20
 void CGameObject::InitializeLevelChunkObjectBase(int nEntityType, unsigned short nReserved68, unsigned short nCommandCapacity)
