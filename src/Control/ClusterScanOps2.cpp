@@ -583,6 +583,39 @@ void __fastcall SetManagedEntityStateIdWithTimestamp(void* pObject, int nUnused,
 	*(int*) ((char*) pObject + 0xb8) = param_1;
 }
 
+// MACINTOSH: activate_first_pending_tram_chunk_object_at_nearby_point(int*, int)
+// FUNCTION: LEMBALL 0x0042b440
+int __fastcall ActivateFirstPendingTramChunkObjectAtNearbyPoint(void* pObject, int nUnused, void* param_2, int param_3)
+{
+	int i;
+	for (i = 0; i < *(int*) ((char*) pObject + 0x34); i++) {
+		void* pElem = (void*) (*(int*) ((char*) pObject + 0x38) + i * 0x144);
+		if (*(int*) ((char*) pElem + 0x13c) != 0 && *(int*) ((char*) pElem + 0x138) == 0) {
+			if (((int(__cdecl*)(void*, void*, int)) 0x403116)(pElem, param_2, param_3) != 0) {
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+// MACINTOSH: deactivate_boon_chunk_object_in_manager(int)
+// FUNCTION: LEMBALL 0x0042a460
+void __fastcall DeactivateBoonChunkObjectInManager(void* param_1, int nUnused, int param_2)
+{
+	unsigned short uVar1;
+	int iVar2;
+	switch (*(int*) ((char*) param_2 + 0x64)) {
+	case 0x28: uVar1 = 0xfffe; iVar2 = 0; break;
+	case 0x2a: uVar1 = 0xfffd; iVar2 = 1; break;
+	case 0x2c: uVar1 = 0xfffb; iVar2 = 2; break;
+	case 0x2e: uVar1 = 0xfff7; iVar2 = 3; break;
+	default: return;
+	}
+	*(unsigned short*) param_1 = *(unsigned short*) param_1 & uVar1;
+	*(int*) (*(int*) ((char*) param_1 + iVar2 * 2 + 0x1a) + 0x124) = 0;
+}
+
 // MACINTOSH: load_list_entry_pair_from_stream(int, int*)
 // FUNCTION: LEMBALL 0x0045d9f0
 int __fastcall LoadListEntryPairFromStream(void* pObject, int nUnused, int param_2, void* param_3)
