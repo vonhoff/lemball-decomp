@@ -2098,3 +2098,95 @@ int __fastcall CTowerProcess(void* pThis)
 	*(unsigned int*) ((char*) pThis + 0xa4) = (z & 0xffff) << 12;
 	return 1;
 }
+
+// MACINTOSH: CSlinky::Set(unsigned short, unsigned short, unsigned short, unsigned short)
+// FUNCTION: LEMBALL 0x0040b4d0
+void __fastcall CSlinkySet(void* pThis, int nUnused, int param_1, int param_2, int param_3, int param_4)
+{
+	*(int*) ((char*) pThis + 0x124) = param_1;
+	*(int*) ((char*) pThis + 0x128) = param_3;
+	*(int*) ((char*) pThis + 0x12c) = param_2;
+	*(int*) ((char*) pThis + 0x130) = param_4;
+	unsigned int z = 0;
+	if (param_1 >= 0 && param_3 >= 0 &&
+	    (param_1 >> 4) < *(int*) ((char*) g_pLevelTileGrid + 0x10) &&
+	    (param_3 >> 4) < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
+		z = ((unsigned int(__fastcall*)(void*, int, int)) 0x4029a5)(
+			(void*) ((((param_3 >> 4) * *(int*) ((char*) g_pLevelTileGrid + 0x10) + (param_1 >> 4)) * 0xc) + *(int*) ((char*) g_pLevelTileGrid + 0xc)),
+			param_1 & 0xf, param_3 & 0xf);
+	}
+	*(unsigned int*) ((char*) pThis + 0xa4) = (z & 0xffff) << 12;
+	*(int*) ((char*) pThis + 0x9c) = *(int*) ((char*) pThis + 0x124) << 12;
+	*(int*) ((char*) pThis + 0xa0) = *(int*) ((char*) pThis + 0x128) << 12;
+	*(int*) ((char*) pThis + 0xcc) = g_nLevelFrameClockTick;
+	*(int*) ((char*) pThis + 0x94) = g_nLevelFrameClockTimeMs;
+	((void(__fastcall*)(void*, int)) (*(void***) pThis)[2])(pThis, 0x18);
+}
+
+// MACINTOSH: CGlobalGameObject::DeleteMessages()
+// FUNCTION: LEMBALL 0x00417150
+void __cdecl CGlobalGameObjectDeleteMessages(void)
+{
+	void* p;
+	p = *(void**) 0x49d130;
+	if (p != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) p)[5])(p, 1);
+	}
+	p = *(void**) 0x49d12c;
+	if (p != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) p)[5])(p, 1);
+	}
+	p = *(void**) 0x49d128;
+	if (p != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) p)[5])(p, 1);
+	}
+	p = *(void**) 0x49d110;
+	if (p != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) p)[5])(p, 1);
+	}
+	p = *(void**) 0x49d114;
+	if (p != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) p)[5])(p, 1);
+	}
+	p = *(void**) 0x49d118;
+	if (p != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) p)[5])(p, 1);
+	}
+	p = *(void**) 0x49d11c;
+	if (p != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) p)[5])(p, 1);
+	}
+	p = *(void**) 0x49d120;
+	if (p != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) p)[5])(p, 1);
+	}
+	p = *(void**) 0x49d124;
+	if (p != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) p)[5])(p, 1);
+	}
+}
+
+// MACINTOSH: CPlayerLemmingGroupManager::~CPlayerLemmingGroupManager()
+// FUNCTION: LEMBALL 0x00418540
+void __fastcall DestroyCPlayerLemmingGroupManager(void* pThis, int nUnused)
+{
+	*(int*) pThis = 0x494038;
+	void* pSub = ((char*) pThis) - 0xb0;
+	*(int*) pSub = 0x494068;
+	for (int i = 0; i < *(int*) ((char*) pThis + 0x78); i++) {
+		void* p = *(void**) ((char*) pThis + 0x7c + i * 4);
+		if (p != 0) {
+			((void(__fastcall*)(void*, int)) *(int*) p)(p, 1);
+		}
+	}
+	if (*(int*) ((char*) pThis + 0x9c) != 0) {
+		for (int i = 0; i < 4; i++) {
+			void* p = *(void**) ((char*) pThis + 0x8c + i * 4);
+			if (p != 0) {
+				((void(__fastcall*)(void*, int)) *(int*) p)(p, 1);
+			}
+		}
+	}
+	((void(__fastcall*)(void*)) 0x45eea0)(((unsigned int) pSub >= 1) ? pThis : 0);
+	((void(__fastcall*)(void*)) 0x402de7)(pSub);
+}
