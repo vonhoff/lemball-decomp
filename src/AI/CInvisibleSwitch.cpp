@@ -615,6 +615,33 @@ void* LEMBALL_FASTCALL ConstructShpgManagedEntityGroupController(void* pObject, 
 	return pObject;
 }
 
+// MACINTOSH: CGenericGroup::CGenericGroup() / construct_managed_entity_group_controller_base
+// FUNCTION: LEMBALL 0x0041dda0
+void* LEMBALL_FASTCALL ConstructManagedEntityGroupControllerBase(void* pObject, int nUnused, void* p1, void* p2, void* p3)
+{
+	int i;
+	((CGameObject*) pObject)->ConstructCGameObject(0x10, 0, 0x14);
+	*(unsigned short*) ((char*) pObject + 0x15a) = 0;
+	(* (void***) pObject) = (void**) 0x494b60;
+	*(unsigned short*) ((char*) pObject + 0x158) = 0;
+	*(unsigned short*) ((char*) pObject + 0x15e) = 0;
+	*(unsigned short*) ((char*) pObject + 0x15c) = 0;
+	*(void**) 0x4a7824 = p1;
+	*(void**) 0x4a7820 = p3;
+	*(void**) 0x4a781c = p2;
+	*(int*) ((char*) pObject + 0x150) = 0;
+	*(int*) ((char*) pObject + 0x124) = 0;
+	*(int*) ((char*) pObject + 0x154) = 0;
+	for (i = 0; i < 10; i++) {
+		*(int*) ((char*) pObject + 0x128 + i * 4) = 0;
+	}
+	*(unsigned short*) ((char*) pObject + 0x15a) = 9999;
+	*(unsigned short*) ((char*) pObject + 0x158) = 9999;
+	*(unsigned short*) ((char*) pObject + 0x15e) = 9999;
+	*(unsigned short*) ((char*) pObject + 0x15c) = 9999;
+	return pObject;
+}
+
 // MACINTOSH: CEnemy::CEnemy() [type-0x1 enemy chunk]
 // FUNCTION: LEMBALL 0x0041fba0
 void* LEMBALL_FASTCALL ConstructEnmyChunkObject(void* pObject, int nUnused, int pLevelMode, int nX, int nY, int nZ, unsigned short pFlags)
