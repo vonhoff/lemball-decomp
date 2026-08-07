@@ -11,6 +11,9 @@ extern int g_nLevelFrameClockTimeMs;
 extern void* g_pLevelDemoPlaybackController;
 extern void* g_pAnimChunkTileGrid;
 extern void* g_pLevelTileGrid;
+extern int g_nSelectedNetworkLobbyPeerId;
+extern void* g_pActiveNetworkRuntimeWindow;
+extern "C" unsigned long __stdcall timeGetTime();
 #include <string.h>
 struct PlasChildStateEntityView;
 extern void __cdecl DispatchPlasChildStateTableVariant0(void* pContext, PlasChildStateEntityView* pEntity);
@@ -2432,5 +2435,49 @@ void __fastcall CGameObjectJump(void* pThis, int nUnused)
 		}
 		((void(__fastcall*) (void*, void*, void*, unsigned short)) 0x40341d)(g_pActiveManagedEntityOwner, (char*) pThis + 0x9c, pThis, *(unsigned short*) ((char*) pThis + 0x68));
 	}
+}
+
+
+// MACINTOSH: CAI::SendGameState(int, int)
+// FUNCTION: LEMBALL 0x00411b70
+void __fastcall CAISendGameState(void* pThis, int nUnused, int param_1, int param_2)
+{
+	if (g_nSelectedNetworkLobbyPeerId == 0) {
+		return;
+	}
+	if (*(int*) (*(int*) ((char*) pThis + 0x74) + 0x28) != 0) {
+		unsigned long start = timeGetTime();
+		while (*(int*) (*(int*) ((char*) pThis + 0x74) + 0x28) != 0 &&
+		       timeGetTime() - start < 2000) {
+			(*(void(**)(void*)) (*(int*) *(int*) g_pActiveNetworkRuntimeWindow + 0x30))(*(void**) g_pActiveNetworkRuntimeWindow);
+		}
+	}
+	if (*(int*) (*(int*) ((char*) pThis + 0x74) + 0x28) == 0) {
+		*(int*) ((char*) pThis + 0x6c) = 1;
+		*(int*) (*(int*) ((char*) pThis + 0x74) + 0x2c) = param_1;
+		*(int*) (*(int*) ((char*) pThis + 0x74) + 0x30) = param_2;
+		*(int*) (*(int*) ((char*) pThis + 0x74) + 0x34) = *(int*) ((char*) pThis + 0xe8);
+		*(int*) (*(int*) ((char*) pThis + 0x74) + 0x38) = *(int*) ((char*) pThis + 0xf0);
+		((void(__fastcall*) (void*, int)) 0x45f2b0)(*(void**) ((char*) pThis + 0x74), g_nSelectedNetworkLobbyPeerId);
+	}
+}
+
+// MACINTOSH: CAI::OpenDoor(int*, int*, unsigned char)
+// FUNCTION: LEMBALL 0x00412ad0
+int __fastcall CAIOpenDoor(void* pThis, int nUnused, int* param_1, int* param_2, unsigned char param_3)
+{
+	int tileX = ((param_1[0] >> 12) + ((param_1[0] >> 12) >> 31 & 0xf)) >> 4;
+	int tileY = ((param_1[1] >> 12) + ((param_1[1] >> 12) >> 31 & 0xf)) >> 4;
+	unsigned short tile = 0x3;
+	if (tileX >= 0 && tileY >= 0) {
+		void* grid = *(void**) ((char*) pThis + 0x110);
+		if (tileX < *(int*) ((char*) grid + 0x10) && tileY < *(int*) ((char*) grid + 0x14)) {
+			tile = *(unsigned short*) (*(int*) ((char*) grid + 0xc) + 6 + (*(int*) ((char*) grid + 0x10) * tileY + tileX) * 0xc);
+		}
+	}
+	if ((tile & 0x8000) && (param_3 & 0x20)) {
+		return ((int(__fastcall*) (void*, int, void*, void*)) 0x401fa5)(*(void**) ((char*) pThis + 0x190), 0, param_1, param_2);
+	}
+	return 0;
 }
 
