@@ -624,6 +624,27 @@ void* __fastcall DeleteTimedEffStreamWithChannelStateWrapper(void* pThis, int nU
 	return pThis;
 }
 
+// MACINTOSH: parse_gami_resource_descriptor()
+// FUNCTION: LEMBALL 0x0045e1e0
+void __fastcall ParseGamiResourceDescriptor(void* pObject)
+{
+	unsigned int* puVar2 = *(unsigned int**) ((char*) pObject + 0x34);
+	unsigned short uVar1 = *(unsigned short*) (puVar2 + 1);
+	*(short*) ((char*) pObject + 0x48) = (short) *puVar2;
+	*(unsigned short*) ((char*) pObject + 0x4a) = uVar1;
+	*(char*) ((char*) pObject + 0x4c) = *(char*) (puVar2 + 2);
+	*(char*) ((char*) pObject + 0x4d) = *(char*) ((char*) puVar2 + 9);
+	*(unsigned int*) ((char*) pObject + 0x50) = puVar2[3];
+}
+
+// MACINTOSH: construct_palette_remap_variant_wrapper(int, byte*, int)
+// FUNCTION: LEMBALL 0x00473610
+void* __fastcall ConstructPaletteRemapVariantWrapper(void* pThis, int nUnused, int param_1, unsigned char* param_2, int param_3)
+{
+	ConstructPaletteRemapVariant(pThis, nUnused, param_1, param_2, param_3);
+	return pThis;
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
