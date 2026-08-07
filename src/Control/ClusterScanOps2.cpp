@@ -1361,6 +1361,38 @@ void __fastcall RefreshActivePgunChunkObjects(void* param_1)
 	}
 }
 
+// MACINTOSH: refresh_active_rock_chunk_objects()
+// FUNCTION: LEMBALL 0x00427010
+void __fastcall RefreshActiveRockChunkObjects(void* param_1)
+{
+	int iVar3 = 0;
+	if (*(int*) ((char*) param_1 + 0x34) > 0) {
+		int iVar2 = 0;
+		do {
+			*(int*) (*(int*) ((char*) param_1 + 0x38) + 0x124 + iVar2) = 1;
+			void* piVar1 = (void*) (*(int*) ((char*) param_1 + 0x38) + iVar2);
+			(*( void(**)(void)) (*(void***) piVar1 + 0x14 / 4))();
+			iVar2 = iVar2 + 0x144;
+			iVar3 = iVar3 + 1;
+		} while (iVar3 < *(int*) ((char*) param_1 + 0x34));
+	}
+}
+
+// MACINTOSH: activate_coll_chunk_objects()
+// FUNCTION: LEMBALL 0x00422420
+void __fastcall ActivateCollChunkObjects(void* param_1)
+{
+	if (*(int*) ((char*) param_1 + 0x34) != 0 && *(int*) ((char*) param_1 + 0x38) > 0) {
+		int i;
+		for (i = 0; i < *(int*) ((char*) param_1 + 0x38); i++) {
+			void* pElem = *(void**) (*(int*) ((char*) param_1 + 0x34) + i * 4);
+			if (pElem != 0) {
+				(*( void(**)(void)) (*(void***) pElem + 0x104 / 4))();
+			}
+		}
+	}
+}
+
 // MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
 void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
