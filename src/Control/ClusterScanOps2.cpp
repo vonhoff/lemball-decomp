@@ -22,6 +22,13 @@ struct PaletteRemapPointerTableMemberView {
 	void ReleasePaletteRemapVariant(void* pVariant);
 };
 
+// Minimal view-of the LEVELSTAT LevelTileGridOwnerView height sampler so Jump can emit a
+// direct `call LevelTileGridOwnerView::GetZ` (matches orig ILT 0x401460). Method mangling
+// depends only on name+signature, so this links to the LEVELSTAT def (same as CGameObjectMove.cpp).
+struct LevelTileGridOwnerView {
+	unsigned short GetZ(int x, int y, void** ppMoveChunk);
+};
+
 // MACINTOSH: append_type_0x18_chunk_object_from_tile_coords(int, int, int, int)
 // FUNCTION: LEMBALL 0x00412eb0
 void __fastcall AppendType18ChunkObjectFromTileCoords(void* pObject, int nUnused, int param_1, int param_2, int param_3, int param_4)
@@ -2343,3 +2350,87 @@ int __fastcall CAIProcessMsg(void* pThis, int nUnused, short* param_1)
 		return 0;
 	}
 }
+
+// MACINTOSH: CPlayerLemming::GetData()
+// FUNCTION: LEMBALL 0x0040f640
+void __fastcall CPlayerLemmingGetData(void* pThis, int nUnused)
+{
+	unsigned short local_e[2];
+	*(unsigned int*) ((char*) pThis - 0x9c) = (unsigned int) (unsigned short) ((unsigned short(__fastcall*) (void*)) 0x45f070)(pThis) << 12;
+	*(unsigned int*) ((char*) pThis - 0x98) = (unsigned int) (unsigned short) ((unsigned short(__fastcall*) (void*)) 0x45f070)(pThis) << 12;
+	*(unsigned int*) ((char*) pThis - 0x94) = (unsigned int) (unsigned short) ((unsigned short(__fastcall*) (void*)) 0x45f070)(pThis) << 12;
+	((void(__fastcall*) (void*, unsigned short*)) 0x45f090)(pThis, local_e);
+	*(unsigned short*) ((char*) pThis - 0x84) = (unsigned short) (local_e[0] & 7);
+	*(unsigned short*) ((char*) pThis - 0x7c) = (unsigned short) ((local_e[0] & 0x38) >> 3);
+	((void(__fastcall*) (void*, unsigned short*)) 0x45f090)(pThis, local_e);
+	*(unsigned int*) ((char*) pThis - 0x80) = (unsigned int) (local_e[0] & 0xff);
+	*(unsigned int*) ((char*) pThis - 0xa0) = (unsigned int) (local_e[0] >> 8);
+	*(unsigned int*) ((char*) pThis - 0xa4) = ((unsigned int(__fastcall*) (void*)) 0x45eff0)(pThis);
+}
+
+// MACINTOSH: CPlayerLemming::AddData()
+// FUNCTION: LEMBALL 0x0040f6f0
+void __fastcall CPlayerLemmingAddData(void* pThis, int nUnused)
+{
+	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(pThis, 0x2c);
+	((void(__fastcall*) (void*, unsigned char)) 0x45ef60)(pThis, *(unsigned short*) ((char*) pThis + 0x30));
+	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(pThis, *(int*) ((char*) pThis - 0x9c) >> 12);
+	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(pThis, *(int*) ((char*) pThis - 0x98) >> 12);
+	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(pThis, *(int*) ((char*) pThis - 0x94) >> 12);
+	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(pThis, (unsigned short) (((*(unsigned short*) ((char*) pThis - 0x7c) & 7) << 3) | (*(unsigned short*) ((char*) pThis - 0x84) & 7)));
+	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(pThis, (unsigned short) ((*(unsigned char*) ((char*) pThis - 0xa0) << 8) | *(unsigned char*) ((char*) pThis - 0x80)));
+	if (*(unsigned int*) ((char*) pThis - 0x5c) > (unsigned int) g_nLevelFrameClockTimeMs) {
+		*(unsigned int*) ((char*) pThis - 0x5c) = g_nLevelFrameClockTimeMs;
+	}
+	((void(__fastcall*) (void*, unsigned int)) 0x45ef10)(pThis, *(unsigned int*) ((char*) pThis - 0x5c));
+	*(unsigned int*) ((char*) pThis + 0x2c) = 0;
+}
+
+// MACINTOSH: CBullet::TriggerBullet()
+// FUNCTION: LEMBALL 0x0041a6d0
+void __fastcall CBulletTriggerBullet(void* pThis, int nUnused)
+{
+	int aPos[3] = {
+		*(int*) ((char*) pThis + 0x9c) >> 12,
+		*(int*) ((char*) pThis + 0xa0) >> 12,
+		*(int*) ((char*) pThis + 0xa4) >> 12
+	};
+	int aDest[3] = {
+		*(int*) ((char*) pThis + 0xa8) >> 12,
+		*(int*) ((char*) pThis + 0xac) >> 12,
+		*(int*) ((char*) pThis + 0xb0) >> 12
+	};
+	((void(__fastcall*) (void*, int*, int*, int, int)) 0x4027de)((char*) pThis + 0x184, aPos, aDest, *(int*) ((char*) pThis + 0xc8), 0xc);
+	*(int*) ((char*) pThis + 0xb8) = 0x1b;
+	*(int*) ((char*) pThis + 0xcc) = *(int*) ((char*) pThis + 0xc8) + 10;
+}
+
+// MACINTOSH: CGameObject::Jump()
+// FUNCTION: LEMBALL 0x00416130
+void __fastcall CGameObjectJump(void* pThis, int nUnused)
+{
+	if (*(unsigned short*) ((char*) pThis + 0xbc) != 0) {
+		return;
+	}
+	void* pMoveChunk = 0;
+	int nTick = g_nLevelFrameClockTick - *(int*) ((char*) pThis + 0xc8);
+	unsigned int nHeight = ((LevelTileGridOwnerView*) g_pLevelTileGrid)->GetZ(
+		*(int*) ((char*) pThis + 0xf4) >> 12, *(int*) ((char*) pThis + 0xf8) >> 12, &pMoveChunk);
+	nHeight &= 0xffff;
+	int nFall = (nTick * 3 + *(int*) ((char*) pThis + 0x100)) << 12;
+	*(int*) ((char*) pThis + 0xa4) = nFall;
+	if ((int) (nHeight << 12) <= nFall) {
+		*(int*) ((char*) pThis + 0xa4) = nHeight << 12;
+		*(int*) ((char*) pThis + 0x9c) = *(int*) ((char*) pThis + 0xf4);
+		*(int*) ((char*) pThis + 0xa0) = *(int*) ((char*) pThis + 0xf8);
+		*(int*) ((char*) pThis + 0x104) = 0;
+		if (*(int*) ((char*) pThis + 0x11c) == 0 && pMoveChunk != 0) {
+			if (((int(__fastcall*) (void*, void*)) 0x4036b1)(pMoveChunk, pThis) == 0) {
+				((void(__fastcall*) (void*, void*, void*, unsigned short)) 0x40341d)(g_pActiveManagedEntityOwner, (char*) pThis + 0x9c, pThis, *(unsigned short*) ((char*) pThis + 0x68));
+				return;
+			}
+		}
+		((void(__fastcall*) (void*, void*, void*, unsigned short)) 0x40341d)(g_pActiveManagedEntityOwner, (char*) pThis + 0x9c, pThis, *(unsigned short*) ((char*) pThis + 0x68));
+	}
+}
+
