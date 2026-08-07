@@ -201,6 +201,19 @@ void* __fastcall DeleteLinkedType11ChunkObject(void* pObject, int nUnused, unsig
 	return pObject;
 }
 
+// MACINTOSH: advance_active_ball_chunk_entries()
+// FUNCTION: LEMBALL 0x00421fc0
+int __fastcall AdvanceActiveBallChunkEntries(void* pObject)
+{
+	int i;
+	if (*(int*) ((char*) pObject + 8) > 0) {
+		for (i = 0; i < *(int*) ((char*) pObject + 8); i++) {
+			(*( void(**)(void)) (*(void***) *(void**) (*(int*) ((char*) pObject + 4) + i * 4) + 0x14 / 4))();
+		}
+	}
+	return 1;
+}
+
 // MACINTOSH: evaluate_managed_entity_probe_condition_code(int)
 // FUNCTION: LEMBALL 0x00420000
 int __fastcall EvaluateManagedEntityProbeConditionCode(void* pObject, int nUnused, int param_1)
