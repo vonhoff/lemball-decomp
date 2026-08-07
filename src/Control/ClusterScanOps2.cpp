@@ -1170,6 +1170,25 @@ void __fastcall FlushNetworkLobbyDeferredStatus(void* param_1)
 	*(int*) ((char*) param_1 + 0x430) = 0;
 }
 
+// MACINTOSH: selection_sort_records_with_comparator(void*, void*, int, void*)
+// FUNCTION: LEMBALL 0x00463ac0
+void __cdecl SelectionSortRecordsWithComparator(char* param_1, char* param_2, int param_3, void* pComparator)
+{
+	char* end = param_2;
+	while (param_1 < end) {
+		char* pMax = param_1;
+		char* pCur = param_1 + param_3;
+		while (pCur <= end) {
+			if (((int(__cdecl*)(void*, void*)) pComparator)(pCur, pMax) > 0) {
+				pMax = pCur;
+			}
+			pCur += param_3;
+		}
+		((void(__cdecl*)(void*, void*, int)) 0x463b20)(pMax, end, param_3);
+		end -= param_3;
+	}
+}
+
 // MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
 void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
