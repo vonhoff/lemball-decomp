@@ -9,6 +9,9 @@ extern void* g_pActiveManagedEntityOwner;
 extern int g_nLevelFrameClockTick;
 extern int g_nLevelFrameClockTimeMs;
 extern void* g_pLevelDemoPlaybackController;
+extern void* g_pAnimChunkTileGrid;
+extern void* g_pLevelTileGrid;
+#include <string.h>
 struct PlasChildStateEntityView;
 extern void __cdecl DispatchPlasChildStateTableVariant0(void* pContext, PlasChildStateEntityView* pEntity);
 extern void __cdecl DispatchPlasChildStateTableVariant1(void* pContext, PlasChildStateEntityView* pEntity);
@@ -1805,4 +1808,48 @@ int __fastcall IsDoorChunkObjectFacingTowardQueueCursor(void* pThis)
 		local_4, local_8);
 	return (int) (short) (*(short*) ((char*) pThis + 0xb4)) - (int) uDir == 1;
 }
+
+// MACINTOSH: get_type_0x18_chunk_object_tile_position(int, int*, int)
+// FUNCTION: LEMBALL 0x0040c950
+int __fastcall GetType18ChunkObjectTilePosition(void* pThis, int nUnused, int* pOut, int nIndex)
+{
+	if (*(int*) ((char*) pThis + 0x50) == 0) {
+		return 0;
+	}
+	int pObj = *(int*) ((char*) pThis + 0x30 + nIndex * 4);
+	int x = *(int*) (pObj + 0x9c);
+	pOut[0] = x;
+	int y = *(int*) (pObj + 0xa0);
+	pOut[1] = y;
+	pOut[2] = *(int*) (pObj + 0xa4);
+	unsigned int z = 0;
+	if (!((x >> 12) < 0 || (y >> 12) < 0 ||
+	      *(int*) ((char*) g_pLevelTileGrid + 0x10) <= (x >> 16) ||
+	      *(int*) ((char*) g_pLevelTileGrid + 0x14) <= (y >> 16))) {
+		z = ((unsigned int(__fastcall*)(void*, int, int)) 0x4029a5)(
+			(void*) ((((y >> 16) * *(int*) ((char*) g_pLevelTileGrid + 0x10) + (x >> 16)) * 0xc) + *(int*) ((char*) g_pLevelTileGrid + 0xc)),
+			x >> 12 & 0xf, y >> 12 & 0xf);
+	}
+	pOut[2] = (z & 0xffff) << 12;
+	return 1;
+}
+
+// MACINTOSH: remove_anim_chunk_records_at_tile(short*)
+// FUNCTION: LEMBALL 0x0040d230
+void __fastcall RemoveAnimChunkRecordsAtTile(void* pThis, int nUnused, short* pTile)
+{
+	int i = 0;
+	while (i < *(int*) ((char*) pThis + 4)) {
+		if (*(short*) ((char*) pThis + 8 + i * 0x18) == pTile[0] &&
+		    *(short*) ((char*) pThis + 8 + i * 0x18 + 2) == pTile[1]) {
+			int k;
+			for (k = i + 1; k < *(int*) ((char*) pThis + 4); k++) {
+				memmove((char*) pThis + (k - 1) * 0x18, (char*) pThis + k * 0x18, 0x18);
+			}
+			*(int*) ((char*) pThis + 4) = *(int*) ((char*) pThis + 4) - 1;
+		}
+		i++;
+	}
+}
+
 
