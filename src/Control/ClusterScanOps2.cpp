@@ -2480,4 +2480,39 @@ int __fastcall CAIOpenDoor(void* pThis, int nUnused, int* param_1, int* param_2,
 	}
 	return 0;
 }
+// Minimal view of the LEVELVT runtime-state resetter so Restart can emit
+// a direct `call LevelChunkObjectRuntimeStateView::ResetRuntimeStateThunk` (orig ILT 0x40209f).
+struct LevelChunkObjectRuntimeStateView {
+	void ResetRuntimeStateThunk(void);
+};
+
+// MACINTOSH: CEnemy::Restart()
+// FUNCTION: LEMBALL 0x0041fcd0
+void __fastcall CEnemyRestart(void* pThis, int nUnused)
+{
+	((LevelChunkObjectRuntimeStateView*) pThis)->ResetRuntimeStateThunk();
+	*(int*) ((char*) pThis + 0x9c) = *(int*) ((char*) pThis + 0x40);
+	*(int*) ((char*) pThis + 0xa0) = *(int*) ((char*) pThis + 0x44);
+	*(int*) ((char*) pThis + 0xa4) = *(int*) ((char*) pThis + 0x48);
+	*(unsigned short*) ((char*) pThis + 0xb4) = *(unsigned short*) ((char*) pThis + 0xb6);
+	*(int*) ((char*) pThis + 0x128) = 0;
+	*(int*) ((char*) pThis + 0x168) = 0;
+	*(int*) ((char*) pThis + 0x124) = 0;
+	*(int*) ((char*) pThis + 0x2c) = 0;
+	void** ppReg = *(void***) ((char*) g_pActiveManagedEntityOwner + 0x120);
+	ppReg[*(int*) ((char*) g_pActiveManagedEntityOwner + 0x118)] = pThis;
+	*(int*) ((char*) g_pActiveManagedEntityOwner + 0x118) += 1;
+	if (*(int*) ((char*) pThis + 0x134) != 0) {
+		*(int*) (*(int*) ((char*) pThis + 0x134) + 0x8) = 0;
+		*(int*) (*(int*) ((char*) pThis + 0x134) + 0xc) = 1;
+	}
+	if (*(int*) ((char*) pThis + 0x140) != 0) {
+		*(int*) (*(int*) ((char*) pThis + 0x140) + 0x8) = 0;
+		*(int*) (*(int*) ((char*) pThis + 0x140) + 0xc) = 1;
+	}
+	if (*(int*) ((char*) pThis + 0x14c) != 0) {
+		*(int*) (*(int*) ((char*) pThis + 0x14c) + 0x8) = 0;
+		*(int*) (*(int*) ((char*) pThis + 0x14c) + 0xc) = 1;
+	}
+}
 
