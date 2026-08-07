@@ -581,6 +581,31 @@ void* LEMBALL_FASTCALL ConstructLinkedType11ChunkObject(void* pObject, int nUnus
 	return pObject;
 }
 
+// MACINTOSH: construct_gmob_chunk_type_0x14_object
+// FUNCTION: LEMBALL 0x0041d040
+void* LEMBALL_FASTCALL ConstructGmobChunkType14Object(void* pObject, int nUnused, void* pPoint, int pLevelMode, int pSlot, int pRenderQueue, int pContext)
+{
+	((CGameObject*) pObject)->InitializeLevelChunkObjectBase(0x14, 0, 0);
+	(* (void***) pObject) = (void**) 0x493580;
+	*(int*) ((char*) pObject + 0x138) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x13c) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x140) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x138) = *(int*) pPoint;
+	*(int*) ((char*) pObject + 0x13c) = *(int*) ((char*) pPoint + 4);
+	*(int*) ((char*) pObject + 0x140) = *(int*) ((char*) pPoint + 8);
+	(* (void***) pObject) = (void**) 0x494a18;
+	*(int*) ((char*) pObject + 0x9c) = *(int*) pPoint;
+	*(int*) ((char*) pObject + 0xa0) = *(int*) ((char*) pPoint + 4);
+	*(int*) ((char*) pObject + 0xa4) = *(int*) ((char*) pPoint + 8);
+	*(int*) ((char*) pObject + 0x14c) = pLevelMode;
+	*(int*) ((char*) pObject + 0x150) = pSlot;
+	*(int*) ((char*) pObject + 0x154) = pRenderQueue;
+	*(int*) ((char*) pObject + 0x158) = pContext;
+	*(short*) ((char*) pObject + 0x148) = *(short*) 0x49e1b8;
+	*(short*) 0x49e1b8 = *(short*) 0x49e1b8 + 1;
+	return pObject;
+}
+
 // MACINTOSH: CTrapDoor::CTrapDoor() [type-0x18 chunk]
 // FUNCTION: LEMBALL 0x0040c2d0
 void* LEMBALL_FASTCALL ConstructType18ChunkObject(void* pObject, int nUnused, void* pPoint, int pContext)
