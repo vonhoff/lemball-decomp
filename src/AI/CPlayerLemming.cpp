@@ -1,6 +1,7 @@
 #include "AI/CPlayerLemming.h"
 
 extern void* g_pSessionRandomState;
+extern int g_nLevelFrameClockTick;
 
 // FUNCTION: LEMBALL 0x0040f0d0
 void CPlayerLemming::SetGroup(CPlayerLemmingGroup* pGroup)
@@ -42,4 +43,34 @@ void CPlayerLemming::SetBored(int nBaseTime)
 	*(unsigned int*) ((char*) this + 0x190) = uRandom;
 	*(unsigned int*) ((char*) this + 0x190) = *(int*) ((char*) this + 0xcc) + uRandom;
 }
+
+// MACINTOSH: CPlayerLemming::RandomAction()
+// FUNCTION: LEMBALL 0x0040fa10
+int CPlayerLemming::RandomAction(void)
+{
+	int nRandom;
+	int nVariant;
+
+	nRandom = *(int*) g_pSessionRandomState * 0x29 + 0x1f & 0x7fffff;
+	*(int*) g_pSessionRandomState = nRandom;
+	nVariant = nRandom % 3;
+	*(short*) ((char*) this + 0xbc) = (short) nVariant;
+	if (nVariant == 0) {
+		nRandom = g_nLevelFrameClockTick + 0x38;
+		*(int*) ((char*) this + 0xcc) = nRandom;
+		return nRandom;
+	}
+	if (nVariant != 1) {
+		if (nVariant != 2) {
+			return nRandom / 3;
+		}
+		nRandom = g_nLevelFrameClockTick + 0x26;
+		*(int*) ((char*) this + 0xcc) = nRandom;
+		return nRandom;
+	}
+	nRandom = g_nLevelFrameClockTick + 0x21;
+	*(int*) ((char*) this + 0xcc) = nRandom;
+	return nRandom;
+}
+
 
