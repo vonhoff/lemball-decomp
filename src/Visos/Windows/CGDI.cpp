@@ -2869,6 +2869,18 @@ void LEMBALL_FASTCALL DispatchAndClearPointerQueue(void* pQueue)
 		InvokeRootHelperTargetPostQueueCallback((int) (unsigned long) pDispatchQueue->m_pHelperTarget);
 	}
 }
+
+// MACINTOSH: dispatch_pause_dialog_callback_and_clear_queue()
+// FUNCTION: LEMBALL 0x00444da0
+void LEMBALL_FASTCALL DispatchPauseDialogCallbackAndClearQueue(int pObject)
+{
+	if (*(void**) ((char*) pObject + 0x154) != 0) {
+		(*( void(__fastcall**)(void)) *(void***) ((char*) pObject + 0x154))();
+	}
+	DispatchAndClearPointerQueue(*(void**) ((char*) pObject - 0x54));
+	*(void**) (*(char**) ((char*) pObject - 0x54) + 4) = 0;
+}
+
 // FUNCTION: LEMBALL 0x0046aec0
 void* LEMBALL_FASTCALL CBaseCursorConstruct(int* pRenderClient)
 {
