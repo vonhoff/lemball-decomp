@@ -543,6 +543,30 @@ void* LEMBALL_FASTCALL ConstructType35ChunkObject(void* pObject)
 	return pObject;
 }
 
+// MACINTOSH: CBullet::CBullet() [type-3 projectile chunk]
+// FUNCTION: LEMBALL 0x0041a510
+void* LEMBALL_FASTCALL ConstructProjectileObject(void* pObject)
+{
+	((CGameObject*) pObject)->InitializeLevelChunkObjectBase(3, 0x100, 0);
+	*(void**) ((char*) pObject + 0x138) = (void**) 0x4932c8;
+	*(int*) ((char*) pObject + 0x13c) = 0;
+	((void(__fastcall*)(void*)) 0x45ee80)((char*) pObject + 0x138);
+	*(int*) ((char*) pObject + 0x188) = 0;
+	*(int*) ((char*) pObject + 0x174) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x178) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x17c) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x180) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x18c) = 0;
+	*(int*) ((char*) pObject + 0x190) = 0;
+	*(int*) ((char*) pObject + 0x194) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x198) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x19c) = 0xaa55aa55;
+	(* (void***) pObject) = (void**) 0x4940f0;
+	*(void**) ((char*) pObject + 0x138) = (void**) 0x4940d0;
+	*(int*) ((char*) pObject + 0x150) = *(int*) ((char*) pObject + 0x150) + 0x28;
+	return pObject;
+}
+
 // MACINTOSH: CPlayerLemmingGroupManager::DeleteGroup()
 // FUNCTION: LEMBALL 0x004187f0
 int LEMBALL_FASTCALL RemoveGroupChildOrSelectPrevious(void* pGroup, int nUnused, void* param_2, int* param_3)
