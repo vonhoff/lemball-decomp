@@ -794,6 +794,45 @@ void __fastcall DestroyManagedEntityPointerArray(void* pObject)
 	*(int*) ((char*) pObject + 0x3c) = 0;
 }
 
+// MACINTOSH: emit_plas_chunk_manager_render_entries(int)
+// FUNCTION: LEMBALL 0x00419490
+int __fastcall EmitPlasChunkManagerRenderEntries(void* pObject, int nUnused, int param_1)
+{
+	int local_4 = 0;
+	if (*(int*) 0x4a011c != 0) {
+		int iVar3 = 4;
+		local_4 = 4;
+		int i;
+		for (i = 0; i < 4; i++) {
+			void* pElem = *(void**) ((char*) pObject + 0x13c + i * 4);
+			(*( void(**)(int)) (*(void***) pElem + 0xc / 4))(param_1);
+			param_1 += 0x4c;
+		}
+	}
+	int iVar2 = ((int(__fastcall*)(void*, int)) 0x401f64)(pObject, param_1);
+	return iVar2 + local_4;
+}
+
+// MACINTOSH: start_level_game_mode_session()
+// FUNCTION: LEMBALL 0x00411b10
+void __fastcall StartLevelGameModeSession(void* param_1)
+{
+	if (*(int*) ((char*) param_1 + 0x64) != 0) {
+		*(int*) ((char*) param_1 + 0x6c) = 1;
+		*(int*) ((char*) param_1 + 0x70) = 0;
+		void* pRuntime = *(void**) 0x4a0120;
+		*(int*) ((char*) pRuntime + 0x48) = 3;
+		*(int*) ((char*) pRuntime + 0x4c) = 0;
+		return;
+	}
+	if (g_pLevelDemoPlaybackController != 0 && *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) != 0) {
+		*(int*) ((char*) g_pLevelDemoPlaybackController + 0x38) = (int) ((unsigned(__fastcall*)()) 0x462e80)();
+		*(int*) ((char*) g_pLevelDemoPlaybackController + 0x3c) = 0;
+	}
+	((void(__fastcall*)(void*, int)) 0x4013ed)(param_1, 2);
+	*(int*) ((char*) param_1 + 0x68) = 1;
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
