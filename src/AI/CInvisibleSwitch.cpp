@@ -487,10 +487,3 @@ int LEMBALL_FASTCALL ScheduleCollRuntimeTimer0xfa(void)
 	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddTime(0x1e);
 	return 1;
 }
-
-// MACINTOSH: add_level_time_bonus_counter(int)
-// FUNCTION: LEMBALL 0x004121e0
-void LevelVtSmallFunctionView::AddTime(int nValue)
-{
-	*(int*) ((char*) this + 0xe8) = *(int*) ((char*) this + 0xe8) + nValue;
-}
