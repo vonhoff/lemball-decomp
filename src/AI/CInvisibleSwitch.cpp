@@ -357,3 +357,41 @@ void LEMBALL_FASTCALL RemoveEnemyAward500(int pObject)
 	}
 	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(500);
 }
+
+// MACINTOSH: CBall::Delete()
+// FUNCTION: LEMBALL 0x00421ab0
+void LEMBALL_FASTCALL RemoveBallChunkEntryFromLevelLists(int pObject)
+{
+	int* pCount;
+	int nIndex;
+	int** ppArray;
+	int nCount;
+	int* pArray;
+
+	nIndex = 0;
+	nCount = *(int*) ((char*) g_pActiveManagedEntityOwner + 0x118);
+	pCount = (int*) ((char*) g_pActiveManagedEntityOwner + 0x118);
+	if (nCount > 0) {
+		pArray = *(int**) ((char*) g_pActiveManagedEntityOwner + 0x120);
+		ppArray = (int**) ((char*) g_pActiveManagedEntityOwner + 0x120);
+		do {
+			if ((void*) *pArray == (void*) pObject) {
+				*pCount = nCount - 1;
+				if (nIndex < nCount - 1) {
+					nCount = nIndex * 4;
+					do {
+						nIndex = nIndex + 1;
+						*(int*) ((char*) *ppArray + nCount) = *(int*) ((char*) *ppArray + nCount + 4);
+						nCount = nCount + 4;
+					} while (nIndex < *pCount);
+				}
+				*(int*) ((char*) *ppArray + *pCount * 4) = 0;
+				break;
+			}
+			pArray = pArray + 1;
+			nIndex = nIndex + 1;
+		} while (nIndex < nCount);
+	}
+	((void(__fastcall*)(void*, int)) 0x40302b)((void*) *(int*) 0x49e1bc, pObject);
+	((CGameObject*) pObject)->SetId(0xffff);
+}
