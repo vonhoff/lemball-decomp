@@ -221,3 +221,27 @@ void* __fastcall DeleteProjectileObjectScalarWrapper(void* pThis, int nUnused, u
 	}
 	return pThis;
 }
+
+// MACINTOSH: get_helper_upload_rect_entry_and_state(int, undefined4*)
+// FUNCTION: LEMBALL 0x00466fd0
+int __fastcall GetHelperUploadRectEntryAndState(void* pObject, int nUnused, int param_2, int* param_3)
+{
+	if (*(int*) ((char*) pObject + 4) == -1) {
+		((void(__fastcall*)(void*)) 0x466ef0)(pObject);
+	}
+	*param_3 = *(int*) (*(int*) ((char*) pObject + 0xc) + 8 + param_2 * 0xc);
+	return param_2 * 0xc + *(int*) ((char*) pObject + 0xc);
+}
+
+// MACINTOSH: is_point_inside_level_screen_action_panel(short*)
+// FUNCTION: LEMBALL 0x00443360
+int __fastcall IsPointInsideLevelScreenActionPanel(void* pObject, int nUnused, short* param_1)
+{
+	if (*(short*) ((char*) pObject + 0x54) <= param_1[0] &&
+		param_1[0] < (*(short*) ((char*) pObject + 0x50) + *(short*) ((char*) pObject + 0x54)) &&
+		*(short*) ((char*) pObject + 0x56) <= param_1[1] &&
+		param_1[1] < (*(short*) ((char*) pObject + 0x56) + *(short*) ((char*) pObject + 0x52))) {
+		return 1;
+	}
+	return 0;
+}
