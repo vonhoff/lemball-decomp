@@ -69,11 +69,3 @@ void __fastcall RemoveQueuedProjectileRequestCode(void* pObject, int nUnused, in
 		*(int*) ((char*) pObject + 0x220) = *(int*) ((char*) pObject + 0x220) - 1;
 	}
 }
-
-// MACINTOSH: destroy_lift_chunk_object()
-// FUNCTION: LEMBALL 0x00424d20
-void __fastcall DestroyLiftChunkObject(void* pObject)
-{
-	*(void**) pObject = (void**) 0x495d60;
-	((void(__fastcall*)(void*)) 0x4021d0)(pObject);
-}
