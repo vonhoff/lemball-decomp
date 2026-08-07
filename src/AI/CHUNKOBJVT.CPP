@@ -421,10 +421,19 @@ void LEMBALL_FASTCALL AdvanceManagedEntityGravityMotion(void* pObject)
 }
 
 // Macintosh: CGameObject::StartRoute()
-// STUB: LEMBALL 0x00415830
+// FUNCTION: LEMBALL 0x00415830
 int LEMBALL_FASTCALL BeginManagedEntityReachablePathSearch(void* pObject)
 {
-	(void) pObject;
+	int* piVar1 = (int*) (*(int*) 0x49cf58 + 8);
+	*(int*) ((char*) pObject + 0xc) = (*piVar1 == 0);
+	*piVar1 = 1;
+	if (*(int*) ((char*) pObject + 0xc) != 0) {
+		((void (__fastcall*)(void*, int, int, int, int, int)) 0x4035e4)(*(void**) 0x49cf58, 0,
+			((*(int*) ((char*) pObject + 0x9c) >> 12) + (*(int*) ((char*) pObject + 0x9c) >> 31 & 0xf)) >> 4,
+			((*(int*) ((char*) pObject + 0xa0) >> 12) + (*(int*) ((char*) pObject + 0xa0) >> 31 & 0xf)) >> 4,
+			((*(int*) ((char*) pObject + 0xa8) >> 12) + (*(int*) ((char*) pObject + 0xa8) >> 31 & 0xf)) >> 4,
+			((*(int*) ((char*) pObject + 0xac) >> 12) + (*(int*) ((char*) pObject + 0xac) >> 31 & 0xf)) >> 4);
+	}
 	return 0;
 }
 
