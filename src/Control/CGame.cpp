@@ -1970,6 +1970,15 @@ void LEMBALL_FASTCALL BeginLevelPauseAction(void* pObject, int nUnused, int para
 		*(int*) ((char*) g_pVariantResourceEntryManager + 0x10) = 3;
 	}
 }
+
+// MACINTOSH: set_level_screen_action_panel_pause_active()
+// FUNCTION: LEMBALL 0x00443270
+void LEMBALL_FASTCALL SetLevelScreenActionPanelPauseActive(void* pObject, int nUnused, int param_1)
+{
+	((void(__fastcall*)(void*, int)) 0x4021a8)(*(char**) ((char*) pObject + 0x10), param_1);
+	*(int*) (*(char**) ((char*) pObject + 0x2c) + 0x130) = *(int*) (*(char**) ((char*) pObject + 0x10) + 0xa7c);
+	*(int*) (*(char**) ((char*) pObject + 0x2c) + 0x104) = *(int*) (*(char**) ((char*) pObject + 0x10) + 0xa7c);
+}
 // FUNCTION: LEMBALL 0x00455050
 void* ConstructNetworkLobbyTransportController(void* pModeObject, GameMainContext* pMainContext)
 {
