@@ -558,6 +558,25 @@ void __fastcall RemoveBallChunkEntryFromActiveList(void* pObject, int nUnused, i
 			}
 		}
 		*(int*) (*(int**) ((char*) pObject + 4) + *(int*) ((char*) pObject + 8) * 4) = param_1;
+		}
+		}
+
+// MACINTOSH: release_network_lobby_palette_remaps()
+// FUNCTION: LEMBALL 0x00454b10
+void __fastcall ReleaseNetworkLobbyPaletteRemaps(void* pObject)
+{
+	int i;
+	for (i = 0; i < 6; i++) {
+		((PaletteRemapPointerTableMemberView*) *(void**) 0x4a2000)->ReleasePaletteRemapVariant((void*) *(int*) ((char*) pObject + 0x414 + i * 4));
+	}
+}
+
+// MACINTOSH: mark_network_lobby_player_entry_dirty(int)
+// FUNCTION: LEMBALL 0x00454b40
+void __fastcall MarkNetworkLobbyPlayerEntryDirty(void* pObject, int nUnused, int param_1)
+{
+	if (param_1 != -1 && param_1 < 10) {
+		*(int*) (*(int*) ((char*) pObject + 0x3cc) + 0x40 + param_1 * 0x44) = 1;
 	}
 }
 
