@@ -1237,6 +1237,54 @@ int __fastcall EmitCollChunkManagerRenderEntries(void* pThis, int nUnused, int p
 	return local_4;
 }
 
+// MACINTOSH: emit_tram_chunk_manager_render_entries(int)
+// FUNCTION: LEMBALL 0x0042b4f0
+int __fastcall EmitTramChunkManagerRenderEntries(void* pThis, int nUnused, int param_1)
+{
+	int local_4 = 0;
+	int iVar2 = 0;
+	if (*(int*) ((char*) pThis + 0x34) > 0) {
+		int iVar3 = 0;
+		do {
+			int* piVar1 = (int*) (*(int*) ((char*) pThis + 0x38) + iVar3);
+			int iVar4 = param_1;
+			if (piVar1[0x4e] != 0) {
+				iVar4 = param_1 + 0x4c;
+				(*( void(**)(int)) (*(void***) *piVar1 + 0xc / 4))(param_1);
+				local_4 = local_4 + 1;
+			}
+			iVar3 = iVar3 + 0x144;
+			iVar2 = iVar2 + 1;
+			param_1 = iVar4;
+		} while (iVar2 < *(int*) ((char*) pThis + 0x34));
+	}
+	return local_4;
+}
+
+// MACINTOSH: emit_active_pgun_chunk_manager_render_entries(int)
+// FUNCTION: LEMBALL 0x0042c520
+int __fastcall EmitActivePgunChunkManagerRenderEntries(void* pThis, int nUnused, int param_1)
+{
+	int local_4 = 0;
+	int iVar2 = 0;
+	if (*(int*) ((char*) pThis + 0x34) > 0) {
+		int iVar3 = 0;
+		do {
+			int* piVar1 = (int*) (*(int*) ((char*) pThis + 0x38) + iVar3);
+			int iVar4 = param_1;
+			if (piVar1[0x4e] != 0) {
+				iVar4 = param_1 + 0x4c;
+				(*( void(**)(int)) (*(void***) *piVar1 + 0xc / 4))(param_1);
+				local_4 = local_4 + 1;
+			}
+			iVar3 = iVar3 + 0x144;
+			iVar2 = iVar2 + 1;
+			param_1 = iVar4;
+		} while (iVar2 < *(int*) ((char*) pThis + 0x34));
+	}
+	return local_4;
+}
+
 // MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
 void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
