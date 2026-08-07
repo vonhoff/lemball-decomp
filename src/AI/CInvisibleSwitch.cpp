@@ -505,3 +505,15 @@ void LEMBALL_FASTCALL CompleteGmobAction29(int* pObject)
 	(*( void(__fastcall**)(int)) (*(char***) pObject + 0x34)) (0x29);
 	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(10);
 }
+
+// MACINTOSH: try_attach_gmob_target()
+// FUNCTION: LEMBALL 0x0041d560
+int LEMBALL_FASTCALL TryAttachGmobTarget(void* pObject, int* pTarget)
+{
+	*(int**) ((char*) pObject + 0x5c) = pTarget;
+	if ((*( int(__fastcall**)(int)) (*(char***) pTarget + 0xb4)) (*(int*) ((char*) pObject + 0x64)) == 0) {
+		((ManagedEntityStateView*) pObject)->RequestManagedEntityStateId(0x1a);
+		return 1;
+	}
+	return 0;
+}
