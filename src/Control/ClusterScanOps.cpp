@@ -201,6 +201,28 @@ void* __fastcall DeleteLinkedType11ChunkObject(void* pObject, int nUnused, unsig
 	return pObject;
 }
 
+// MACINTOSH: get_timed_frame_sequence_index()
+// FUNCTION: LEMBALL 0x0044aa20
+unsigned int __fastcall GetTimedFrameSequenceIndex(void* pObject)
+{
+	if (*(int*) ((char*) pObject + 0x1c) != 0) {
+		return *(unsigned int*) ((char*) pObject + 8);
+	}
+	unsigned int uVar2 = *(unsigned int*) ((char*) pObject + 0x10);
+	unsigned int uVar1 = *(unsigned int*) ((char*) pObject + 0x14) - *(unsigned int*) ((char*) pObject + 0xc);
+	if (uVar2 <= uVar1) {
+		uVar2 = *(unsigned int*) ((char*) pObject + 4) - 1;
+		*(int*) ((char*) pObject + 0x1c) = 1;
+		*(unsigned int*) ((char*) pObject + 8) = uVar2;
+		return uVar2;
+	}
+	uVar2 = ((uVar1 % uVar2) * *(unsigned int*) ((char*) pObject + 4)) / uVar2;
+	if (*(int*) ((char*) pObject + 0x18) != 1) {
+		uVar2 = (*(unsigned int*) ((char*) pObject + 4) - uVar2) - 1;
+	}
+	return uVar2;
+}
+
 // MACINTOSH: resolve_variant_render_frame_pointer(int, undefined4*)
 // FUNCTION: LEMBALL 0x004676a0
 int __fastcall ResolveVariantRenderFramePointer(void* pObject, int nUnused, int param_2, void** param_3)
