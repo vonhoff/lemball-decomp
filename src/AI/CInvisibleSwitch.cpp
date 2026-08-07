@@ -813,5 +813,24 @@ void LEMBALL_FASTCALL RemoveManagedEntityGroupChild(void* pObject, int nUnused, 
 		*(int*) (*(int*) ((char*) pObject + 0x1c) + *(int*) ((char*) param_2 + 0x2c) * 4) = 0xffffffff;
 		*(int*) (*(int*) ((char*) pObject + 0x10) + iVar3 * 4) = 0;
 		*(int*) ((char*) pObject + 0x18) = *(int*) ((char*) pObject + 0x18) - 1;
-	}
-}
+		}
+		}
+
+		// MACINTOSH: append_type_0x18_chunk_object(ushort, int*, int, int)
+		// FUNCTION: LEMBALL 0x0040c810
+		void LEMBALL_FASTCALL AppendType18ChunkObject(void* pStream, int nUnused, unsigned short param_1, void* param_2, int param_3, int param_4)
+		{
+			void* pObj = ((void*(__fastcall*)(unsigned int)) 0x45a780)(0x150);
+			if (pObj == 0) {
+				*(void**) ((char*) pStream + *(int*) ((char*) pStream + 0x50) * 4 + 0x30) = 0;
+			} else {
+				*(void**) ((char*) pStream + *(int*) ((char*) pStream + 0x50) * 4 + 0x30) = ConstructType18ChunkObject(pObj, nUnused, param_2, param_3);
+			}
+			(*( void(**)(void)) (*(void***) *(void**) ((char*) pStream + *(int*) ((char*) pStream + 0x50) * 4 + 0x30) + 0x104 / 4))();
+			((void(__fastcall*)(void*, short)) 0x402293)(*(void**) ((char*) pStream + *(int*) ((char*) pStream + 0x50) * 4 + 0x30), (short) param_1);
+			*(void**) ((char*) *(void**) ((char*) pStream + *(int*) ((char*) pStream + 0x50) * 4 + 0x30) + 0x60) = pStream;
+			if (param_4 != 0) {
+				*(int*) ((char*) *(void**) ((char*) pStream + *(int*) ((char*) pStream + 0x50) * 4 + 0x30) + 0x14c) = param_4;
+			}
+			*(int*) ((char*) pStream + 0x50) = *(int*) ((char*) pStream + 0x50) + 1;
+		}
