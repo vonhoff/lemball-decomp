@@ -545,7 +545,7 @@ if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False)
                 try:
                     destination = _ilt_destination(self, match.orig_addr)
                     if destination is not None:
-                        dest_entity = self.db.get(ImageId.RECOMP, destination)
+                        dest_entity = self.db.get(ImageId.ORIG, destination)
                         if dest_entity is not None and dest_entity.recomp_addr is not None:
                             return EntityCompareResult(
                                 diff=RawDiffOutput(codes=(), orig_inst=(), recomp_inst=()),
