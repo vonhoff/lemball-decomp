@@ -443,3 +443,13 @@ void* LEMBALL_FASTCALL ConstructTileFlagChunkObject(void* pObject, int nUnused, 
 	*(int*) ((char*) pObject + 0x48) = *(int*) ((char*) pOrigin + 8);
 	return pObject;
 }
+
+// MACINTOSH: construct_boon_chunk_object(int, int)
+// FUNCTION: LEMBALL 0x0042a5c0
+void* LEMBALL_FASTCALL ConstructBoonChunkObject(void* pObject, int nEntityType, int nValue)
+{
+	((CGameObject*) pObject)->ConstructCGameObject(nEntityType, 0, 10);
+	(* (void***) pObject) = (void**) 0x496488;
+	*(int*) ((char*) pObject + 0x124) = nValue;
+	return pObject;
+}
