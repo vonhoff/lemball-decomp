@@ -113,6 +113,32 @@ void __fastcall FinishPaintballSequenceToLevelSelection(void* pObject)
 	*(int*) ((char*) pObject + 0x374) = 4;
 }
 
+// MACINTOSH: deactivate_embedded_media_if_active()
+// FUNCTION: LEMBALL 0x00450820
+void __fastcall DeactivateEmbeddedMediaIfActive(void* pObject)
+{
+	if (*(int*) ((char*) pObject + 0x5fc) != 0 && *(int*) ((char*) pObject + 0x524) == 1) {
+		(*( void(**)(void)) (*(void***) *(void**) ((char*) pObject + 0x520) + 0x74 / 4))();
+		*(int*) ((char*) pObject + 0x5fc) = 0;
+		*(int*) ((char*) pObject + 0x5f8) = ((unsigned(*)(void)) 0x462e80)() + 0x28;
+	}
+}
+
+// MACINTOSH: point_in_helper_clip_rect(int, int)
+// FUNCTION: LEMBALL 0x00475f60
+int __fastcall PointInHelperClipRect(void* pObject, int nUnused, int param_1, int param_2)
+{
+	int iVar1 = *(int*) (*(int*) ((char*) pObject + 0x40) + 4);
+	int iVar2 = (int) *(short*) ((char*) pObject + iVar1 + 0x68);
+	if (iVar2 <= param_1 && param_1 <= *(short*) ((char*) pObject + iVar1 + 100) + iVar2 - 1) {
+		iVar2 = (int) *(short*) ((char*) pObject + iVar1 + 0x6a);
+		if (iVar2 <= param_2 && param_2 <= *(short*) ((char*) pObject + iVar1 + 0x66) + iVar2 - 1) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
 // MACINTOSH: destroy_lift_chunk_manager_0x190_stride_array()
 // FUNCTION: LEMBALL 0x00425dc0
 void __fastcall DestroyLiftChunkManager0x190StrideArray(void* pObject)
@@ -163,7 +189,6 @@ int __fastcall FindResourceGeometryHelperSlotByResourceOwner(void* pObject, int 
 	}
 	return -1;
 }
-
 
 // MACINTOSH: delete_fixed_buffer_formatted_output_stream(byte) [scalar-dtor]
 // FUNCTION: LEMBALL 0x00407e80
