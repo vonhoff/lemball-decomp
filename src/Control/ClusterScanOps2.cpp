@@ -470,6 +470,20 @@ int __cdecl CopyNextLevelTitleWordToLine(int param_1, int param_2, int* param_3,
 	return 1;
 }
 
+// MACINTOSH: load_list_entry_pair_from_buffers(int, int*, int*)
+// FUNCTION: LEMBALL 0x0045d990
+int __fastcall LoadListEntryPairFromBuffers(void* pObject, int nUnused, int param_2, void* param_3, void* param_4)
+{
+	int iVar1 = ((int(__cdecl*)(void*, void*, void*, void*)) 0x45cfb0)((void*) (*(int*) ((char*) pObject + 0x80) + param_2 * 0x4c), param_3, param_4, pObject);
+	if (iVar1 == 0) {
+		iVar1 = ((int(__cdecl*)(void*, void*, void*, void*)) 0x45cfb0)((void*) (*(int*) ((char*) pObject + 0x7c) + param_2 * 0x54), param_3, param_4, pObject);
+		if (iVar1 == 0) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
 // MACINTOSH: delete_lobby_player_entries(uint)
 // FUNCTION: LEMBALL 0x00455e10
 void* __fastcall DeleteLobbyPlayerEntries(void* pThis, int nUnused, unsigned int param_1)
@@ -488,4 +502,18 @@ void* __fastcall DeleteLobbyPlayerEntries(void* pThis, int nUnused, unsigned int
 	}
 	FreeVSMemBlock((char*) pThis - 4);
 	return pThis;
+}
+
+// MACINTOSH: load_list_entry_pair_from_stream(int, int*)
+// FUNCTION: LEMBALL 0x0045d9f0
+int __fastcall LoadListEntryPairFromStream(void* pObject, int nUnused, int param_2, void* param_3)
+{
+	int iVar1 = ((int(__cdecl*)(void*, void*, void*)) 0x45cf70)((void*) (*(int*) ((char*) pObject + 0x80) + param_2 * 0x4c), param_3, pObject);
+	if (iVar1 == 0) {
+		iVar1 = ((int(__cdecl*)(void*, void*, void*)) 0x45cf70)((void*) (*(int*) ((char*) pObject + 0x7c) + param_2 * 0x54), param_3, pObject);
+		if (iVar1 == 0) {
+			return 0;
+		}
+	}
+	return 1;
 }
