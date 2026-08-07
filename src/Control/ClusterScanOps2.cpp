@@ -760,6 +760,26 @@ void __fastcall RefreshViewportAnchor(void* pObject, int nUnused, void* param_2)
 	}
 }
 
+// MACINTOSH: load_ball_chunk_entries(ushort*)
+// FUNCTION: LEMBALL 0x00422060
+void __fastcall LoadBallChunkEntries(void* pObject, int nUnused, unsigned short* param_1)
+{
+	unsigned short uVar1 = *param_1;
+	param_1 = param_1 + 1;
+	unsigned int uVar3 = (unsigned int) uVar1;
+	((void(__fastcall*)(void*, unsigned int)) 0x4032f6)(pObject, uVar3);
+	*(unsigned int*) ((char*) pObject + 8) = uVar3;
+	if (uVar3 != 0) {
+		unsigned int iVar4 = 0;
+		int iVar2 = 0;
+		do {
+			iVar4 = iVar4 + 4;
+			iVar2++;
+			((void(__fastcall*)(void*, unsigned short**)) 0x403030)(*(void**) (*(int*) ((char*) pObject + 4) + iVar4 - 4), &param_1);
+		} while (iVar2 < *(int*) ((char*) pObject + 8));
+	}
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
