@@ -1084,6 +1084,31 @@ void __fastcall RebuildLevelScreenPauseDialogLayout(void* param_1)
 	((void(__fastcall*)(void*, short*)) 0x401c85)(param_1, layout);
 }
 
+// MACINTOSH: turn_chunk_opposite_target_facing(int)
+// FUNCTION: LEMBALL 0x00420600
+void __fastcall TurnChunkOppositeTargetFacing(void* pThis, int nUnused, void* param_1)
+{
+	if (*(int*) ((char*) param_1 + 0x16c) != 1) {
+		*(int*) ((char*) pThis + 0x124) = 1;
+		*(int*) ((char*) pThis + 0xcc) = g_nLevelFrameClockTick + 0x3c;
+		short sVar1 = *(short*) ((char*) param_1 + 0xb4);
+		*(int*) ((char*) pThis + 0x2c) = 1;
+		*(unsigned short*) ((char*) pThis + 0xb4) = sVar1 + 4U & 7;
+	}
+}
+
+// MACINTOSH: set_level_screen_viewport_anchor_point(short*)
+// FUNCTION: LEMBALL 0x00438170
+void __fastcall SetLevelScreenViewportAnchorPoint(void* pThis, int nUnused, unsigned short* param_1)
+{
+	if ((g_pLevelDemoPlaybackController == 0 || *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) && ((int(__fastcall*)(void*)) (*(void***) *(void**) ((char*) pThis + 0x964) + 0x60 / 4))(*(void**) ((char*) pThis + 0x964)) == 0) {
+		return;
+	}
+	*(unsigned short*) ((char*) pThis + 0x928) = param_1[0];
+	*(unsigned short*) ((char*) pThis + 0x92a) = param_1[1];
+	((void(__fastcall*)(void*)) 0x4019ec)((char*) pThis - 0x14);
+}
+
 // MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
 void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
