@@ -112,3 +112,18 @@ void __fastcall FinishPaintballSequenceToLevelSelection(void* pObject)
 	*(int*) ((char*) pObject + 0x378) = 1;
 	*(int*) ((char*) pObject + 0x374) = 4;
 }
+
+// MACINTOSH: delete_fixed_buffer_formatted_output_stream(byte) [scalar-dtor]
+// FUNCTION: LEMBALL 0x00407e80
+void* __fastcall DeleteFixedBufferFormattedOutputStream(void* pThis, int nUnused, unsigned char param_1)
+{
+	char* pi = (char*) pThis - 0x20;
+	*(int*) (*(int*) (*(int*) pi + 4) + ((int) pThis - 0x20)) = 0x493020;
+	((void(__fastcall*)(void*)) 0x45adc0)((char*) pThis - 0x1c);
+	((void(__fastcall*)(void*)) 0x4584a0)((char*) pThis + 0x14c);
+	((void(__fastcall*)(void*)) 0x458440)(pThis);
+	if ((param_1 & 1) != 0) {
+		FreeVSMemBlock(pi);
+	}
+	return pi;
+}
