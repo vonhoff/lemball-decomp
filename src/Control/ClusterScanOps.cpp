@@ -138,6 +138,25 @@ void __fastcall DestroyCachedChunkObjectChildren(void* pObject)
 	*(int*) ((char*) pObject + 0xa8) = 0;
 }
 
+// MACINTOSH: deactivate_managed_entity_group_child_by_slot(short)
+// FUNCTION: LEMBALL 0x0041b940
+void __fastcall DeactivateManagedEntityGroupChildBySlot(void* pObject, int nUnused, short param_2)
+{
+	int i;
+	if (*(unsigned short*) ((char*) pObject + 0x36) != 0) {
+		for (i = 0; ; i++) {
+			int iVar1 = *(int*) (*(int*) ((char*) pObject + 0x3c) + i * 4);
+			if (iVar1 != 0 && ((char(__fastcall*)(void*)) 0x401794)((void*) iVar1) == (char) param_2) {
+				((void(__fastcall*)(void*, int)) 0x4024ff)(pObject, i);
+				break;
+			}
+			if ((int) *(unsigned short*) ((char*) pObject + 0x36) <= i + 1) {
+				return;
+			}
+		}
+	}
+}
+
 // MACINTOSH: activate_saved_position_chunk_object()
 // FUNCTION: LEMBALL 0x0041c670
 void __fastcall ActivateSavedPositionChunkObject(void* pObject)
