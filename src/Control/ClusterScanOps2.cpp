@@ -2,6 +2,7 @@
 #include "Visos/Generic/Memory.h"
 
 extern void __fastcall AppendType18ChunkObject(void* pStream, int nUnused, unsigned short param_1, void* param_2, int param_3, int param_4);
+extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void* g_pActiveManagedEntityOwner;
 struct PlasChildStateEntityView;
 extern void __cdecl DispatchPlasChildStateTableVariant0(void* pContext, PlasChildStateEntityView* pEntity);
@@ -203,4 +204,20 @@ void* __fastcall DeleteFixedBufferFormattedOutputStream(void* pThis, int nUnused
 		FreeVSMemBlock(pi);
 	}
 	return pi;
+}
+
+// MACINTOSH: delete_projectile_object_scalar_wrapper(byte) [scalar-dtor]
+// FUNCTION: LEMBALL 0x0041af10
+void* __fastcall DeleteProjectileObjectScalarWrapper(void* pThis, int nUnused, unsigned char param_1)
+{
+	void* pu = ((char*) pThis + 0x138);
+	if (pThis == 0) {
+		pu = 0;
+	}
+	((void(__fastcall*)(void*)) 0x45eea0)(pu);
+	DestroyLevelChunkObjectBaseAutoThunk(pThis);
+	if ((param_1 & 1) != 0) {
+		FreeVSMemBlock(pThis);
+	}
+	return pThis;
 }
