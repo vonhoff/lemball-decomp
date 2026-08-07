@@ -1138,6 +1138,27 @@ unsigned int __fastcall IsSavedTargetWithinProbeBoxesAndDirectionalBand(void* pa
 	return bVar1 & uVar2;
 }
 
+// MACINTOSH: activate_projectile_object()
+// FUNCTION: LEMBALL 0x0041a760
+void __fastcall ActivateProjectileObject(void* param_1)
+{
+	*(int*) ((char*) param_1 + 0xc8) = g_nLevelFrameClockTick;
+	((void(__fastcall*)(void*)) 0x40303a)(param_1);
+	if (*(int*) 0x4a011c != 0) {
+		((void(__fastcall*)(void*, void*)) 0x40126c)(*(void**) ((char*) param_1 + 0x60), param_1 != 0 ? (char*) param_1 + 0x138 : 0);
+	}
+}
+
+// MACINTOSH: reset_schedule_and_advance_managed_entity()
+// FUNCTION: LEMBALL 0x00419d90
+void __cdecl ResetScheduleAndAdvanceManagedEntity(int param_1, int* param_2)
+{
+	int iVar1 = *param_2;
+	(*( void(**)(void*)) (*(void***) iVar1 + 0x94 / 4))(param_2);
+	(*( void(**)(void*, int)) (*(void***) iVar1 + 0x84 / 4))(param_2, 4000);
+	((void(__cdecl*)(int, int*, int)) 0x40385a)(param_1, param_2, 0);
+}
+
 // MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
 void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
