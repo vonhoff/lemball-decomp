@@ -650,6 +650,24 @@ void* LEMBALL_FASTCALL ConstructManagedEntityGroupControllerBase(void* pObject, 
 	return pObject;
 }
 
+// MACINTOSH: CSheep::CSheep() / construct_shpg_chunk_object
+// FUNCTION: LEMBALL 0x0041f990
+void* LEMBALL_FASTCALL ConstructShpgChunkObject(void* pObject, int nUnused, int pLevelMode, int nX, int nY, int nZ, unsigned short pFlags)
+{
+	((CGameObject*) pObject)->ConstructCGameObject(7, 0x108, 0x14);
+	(* (void***) pObject) = (void**) 0x494f80;
+	g_pActiveManagedEntityOwner = (void*) pLevelMode;
+	*(int*) ((char*) pObject + 0x40) = nX << 12;
+	*(unsigned short*) ((char*) pObject + 0xb6) = pFlags;
+	*(int*) ((char*) pObject + 0x44) = nY << 12;
+	*(int*) ((char*) pObject + 0x48) = nZ << 12;
+	{
+		int nSlot = ((int(__fastcall*)()) 0x40227a)();
+		((void(__fastcall*)(void*, short)) 0x402293)(pObject, (short) nSlot);
+	}
+	return pObject;
+}
+
 // MACINTOSH: find_network_lobby_peer_slot_by_peer(int)
 // FUNCTION: LEMBALL 0x00452bf0
 int LEMBALL_FASTCALL FindNetworkLobbyPeerSlotByPeer(void* pObject, int nUnused, int param_1)
