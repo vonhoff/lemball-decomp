@@ -590,6 +590,13 @@ void __fastcall PopFirstManagedEntityMoveCommandAndResetMotion(void* pObject)
 	*(int*) ((char*) pObject + 0xc8) = g_nLevelFrameClockTick;
 }
 
+// MACINTOSH: dispatch_zrle_list_entry(int, int)
+// FUNCTION: LEMBALL 0x0045da90
+void __fastcall DispatchZrleListEntry(void* pObject, int nUnused, int param_2, int param_3)
+{
+	(*( void(**)(int)) (*(void***) (*(int*) ((char*) pObject + 0x7c) + param_2 * 0x54) + 0x24 / 4))(param_3);
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
