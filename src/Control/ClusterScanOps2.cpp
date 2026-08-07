@@ -2789,3 +2789,111 @@ void __fastcall CCollectableManagerLoadLevel(void* pThis, int nUnused, unsigned 
 		} while (nCount != 0);
 	}
 }
+
+// MACINTOSH: CBalloonPost::FindPost()
+// FUNCTION: LEMBALL 0x0042a0b0
+unsigned int __fastcall CBalloonPostFindPost(void* pThis, int nUnused, unsigned int subtype, void** pOut)
+{
+	switch (subtype) {
+	case 0x28:
+		pOut[0] = *(void**) ((char*) pThis + 4);
+		pOut[1] = *(void**) ((char*) pThis + 8);
+		pOut[2] = *(void**) ((char*) pThis + 0xc);
+		return *(unsigned short*) pThis & 1;
+	case 0x2a:
+		pOut[0] = *(void**) ((char*) pThis + 0x10);
+		pOut[1] = *(void**) ((char*) pThis + 0x14);
+		pOut[2] = *(void**) ((char*) pThis + 0x18);
+		return *(unsigned short*) pThis & 2;
+	case 0x2c:
+		pOut[0] = *(void**) ((char*) pThis + 0x1c);
+		pOut[1] = *(void**) ((char*) pThis + 0x20);
+		pOut[2] = *(void**) ((char*) pThis + 0x24);
+		return *(unsigned short*) pThis & 4;
+	case 0x2e:
+		pOut[0] = *(void**) ((char*) pThis + 0x28);
+		pOut[1] = *(void**) ((char*) pThis + 0x2c);
+		pOut[2] = *(void**) ((char*) pThis + 0x30);
+		return *(unsigned short*) pThis & 8;
+	}
+	return 0;
+}
+
+// MACINTOSH: CBalloonPost::LoadLevel()
+// FUNCTION: LEMBALL 0x0042a4e0
+void __fastcall CBalloonPostLoadLevel(void* pThis, int nUnused, unsigned short* pStream, int param_4, int param_5)
+{
+	unsigned short* pData;
+	unsigned int* pDst;
+	void** pObj;
+	int i;
+
+	*(unsigned short*) pThis = *pStream;
+	pData = pStream + 1;
+	pDst = (unsigned int*) ((char*) pThis + 4);
+	pObj = (void**) ((char*) pThis + 0x34);
+	for (i = 0; i < 4; i++) {
+		unsigned int x = (unsigned int) pData[0] << 0xc;
+		unsigned int y = (unsigned int) pData[1] << 0xc;
+		unsigned int z = (unsigned int) pData[2] << 0xc;
+		pData += 3;
+		pDst[0] = x;
+		pDst[1] = y;
+		pDst[2] = z;
+		*(unsigned int*) ((char*) *pObj + 0x9c) = x;
+		*(unsigned int*) ((char*) *pObj + 0xa0) = y;
+		*(unsigned int*) ((char*) *pObj + 0xa4) = z;
+		*(int*) ((char*) *pObj + 0x124) = 0;
+		pDst += 3;
+		pObj++;
+	}
+	if (*(unsigned char*) pThis & 1) *(int*) ((char*) *(void**) ((char*) pThis + 0x34) + 0x124) = 1;
+	if (*(unsigned char*) pThis & 2) *(int*) ((char*) *(void**) ((char*) pThis + 0x38) + 0x124) = 1;
+	if (*(unsigned char*) pThis & 4) *(int*) ((char*) *(void**) ((char*) pThis + 0x3c) + 0x124) = 1;
+	if (*(unsigned char*) pThis & 8) *(int*) ((char*) *(void**) ((char*) pThis + 0x40) + 0x124) = 1;
+}
+
+// MACINTOSH: CMoverManager::LoadLevel()
+// FUNCTION: LEMBALL 0x0042f680
+void __fastcall CMoverManagerLoadLevel(void* pThis, int nUnused, unsigned short* pStream, int param_4, int param_5)
+{
+	unsigned short nCount;
+	unsigned int uSlot;
+	unsigned int uFlags;
+	unsigned int flagOverride;
+	unsigned int routeSel;
+	unsigned int routeCount;
+
+	nCount = *pStream;
+	pStream++;
+	((void(__fastcall*) (void*, int)) 0x401811)(pThis, nCount);
+	*(int*) ((char*) pThis + 0x34) = 0;
+	if (nCount != 0) {
+		do {
+			if (*(unsigned short*) (*(int*) ((char*) pThis + 0x3c) + 0x54) < 2) {
+				uSlot = (unsigned int) ((int(__fastcall*) ()) 0x40214e)();
+			}
+			else {
+				uSlot = *pStream;
+				pStream++;
+			}
+			uFlags = 0;
+			flagOverride = 0;
+			if (*(unsigned short*) (*(int*) ((char*) pThis + 0x3c) + 0x54) > 5) {
+				uFlags = *pStream;
+				pStream++;
+				if ((uFlags & 0x8000) != 0) {
+					flagOverride = 1;
+					uFlags &= 0x7fff;
+				}
+			}
+			routeSel = *pStream;
+			pStream++;
+			routeCount = *pStream;
+			pStream++;
+			((void(__fastcall*) (void*, int, int, int, int, int)) 0x401f55)(pThis, uSlot, uFlags, flagOverride, routeSel, routeCount);
+			nCount--;
+		} while (nCount != 0);
+	}
+}
+
