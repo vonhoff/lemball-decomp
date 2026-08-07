@@ -69,3 +69,15 @@ int __fastcall HasProjectileRequestCodeQueued(void* pObject, int nUnused, int pa
 	}
 	return 0;
 }
+
+// MACINTOSH: forward_queued_zrle_variant_range_point(ushort, ushort)
+// FUNCTION: LEMBALL 0x0044f240
+void __fastcall ForwardQueuedZrleVariantRangePoint(void* pObject, int nUnused, unsigned short param_2, unsigned short param_3)
+{
+	if (*(void**) ((char*) pObject + 0x4c) != 0) {
+		struct Pt { unsigned short x; unsigned short y; } pt;
+		pt.x = param_2;
+		pt.y = param_3;
+		(*( void(**)(void*)) (*(void***) *(void**) ((char*) pObject + 0x4c) + 0x38 / 4))(&pt);
+	}
+}
