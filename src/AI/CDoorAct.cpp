@@ -282,6 +282,41 @@ int CDoorManager::Add(short nSlot, void* pObjectType, unsigned short nDoorType, 
 	return -1;
 }
 
+// MACINTOSH: CDoorManager::LoadLevel(ushort*, int, uchar)
+// FUNCTION: LEMBALL 0x0040e630
+void CDoorManager::LoadLevel(unsigned short* pLevelData, int nLen, unsigned char nFormat)
+{
+	typedef unsigned int(__fastcall* FindFreeSlotProc)(void);
+	unsigned int nCount = (unsigned int) *pLevelData;
+	int nObjectType;
+	int nDoorType;
+	int nX;
+	int nY;
+	int nZ;
+
+	pLevelData = pLevelData + 1;
+	((void(__fastcall*)(void*, unsigned int)) 0x401857)(this, nCount);
+	while (nCount != 0) {
+		unsigned short nSlot2;
+		if (*(unsigned short*) ((char*) m_pLevelMode30 + 0x54) <= 1) {
+			nSlot2 = (unsigned short) ((FindFreeSlotProc) 0x40214e)();
+		}
+		else {
+			nSlot2 = *pLevelData++;
+		}
+		nObjectType = *pLevelData++;
+		nDoorType = 0;
+		if (*(unsigned short*) ((char*) m_pLevelMode30 + 0x54) > 2) {
+			nDoorType = *pLevelData++;
+		}
+		nX = *pLevelData++;
+		nY = *pLevelData++;
+		nZ = *pLevelData++;
+		Add((short) nSlot2, (void*) nObjectType, (unsigned short) nDoorType, nX, nY, nZ);
+		nCount = nCount - 1;
+	}
+}
+
 // FUNCTION: LEMBALL 0x0040df90
 void CDoorManager::Restart(void)
 {

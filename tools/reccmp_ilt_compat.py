@@ -256,6 +256,7 @@ THUNK_ILT_REFERENCES = {
     0x0042B600: (0x00403134, "CTrampolineManager::Add", "append-tram-chunk-object thunk -> CTrampolineManager::Add 0x42b5a0"),
     0x0042C590: (0x00402973, "CPaintGun::Set", "seed-pgun-chunk-object-at-point thunk -> CPaintGun::Set 0x42bb30"),
     0x0042C610: (0x004031B6, "CPaintGunManager::Add", "append-pgun-chunk-object thunk -> CPaintGunManager::Add 0x42c590"),
+    0x0040E630: (0x00402405, "CDoorManager::Add", "append-door-chunk-object thunk -> CDoorManager::Add 0x40e0c0"),
     0x0042CB00: (
         (0x00402293, "CGameObject::SetId", "managed-entity slot setter -> CGameObject::SetId 0x416620"),
         (0x004029A5, "CGround::GetZThunk", "ground height target 0x42ffe0"),
