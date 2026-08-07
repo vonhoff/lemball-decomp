@@ -119,3 +119,16 @@ void __fastcall InitializeEnmyChunkObjectBehaviorFields(void* pObject, int nUnus
 	*(int*) ((char*) pObject + 0x144) = param_5;
 	*(int*) ((char*) pObject + 0x148) = param_6;
 }
+
+// MACINTOSH: activate_saved_position_chunk_object()
+// FUNCTION: LEMBALL 0x0041c670
+void __fastcall ActivateSavedPositionChunkObject(void* pObject)
+{
+	*(int*) ((char*) pObject + 0x9c) = *(int*) ((char*) pObject + 0x138);
+	*(int*) ((char*) pObject + 0xa0) = *(int*) ((char*) pObject + 0x13c);
+	*(int*) ((char*) pObject + 0x38) = 1;
+	*(int*) ((char*) pObject + 0xa4) = *(int*) ((char*) pObject + 0x140);
+	if (*(int*) 0x4a011c != 0) {
+		((void(__fastcall*)(void*, void*)) 0x4032dd)(*(void**) 0x49d128, pObject);
+	}
+}
