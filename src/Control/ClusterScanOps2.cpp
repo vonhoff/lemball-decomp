@@ -30,3 +30,28 @@ void __fastcall StartDoorChunkObjectVerticalMotion(void* pObject)
 	(*( void(**)(void*, int)) (*(void***) pObject + 0x20 / 4))(vec, 0);
 	*(int*) ((char*) pObject + 0x2c) = 1;
 }
+
+// MACINTOSH: has_projectile_request_code_queued(int)
+// FUNCTION: LEMBALL 0x0040f960
+int __fastcall HasProjectileRequestCodeQueued(void* pObject, int nUnused, int param_1)
+{
+	if (param_1 == 5) {
+		if (*(short*) ((char*) pObject + 0x228) == 0x32) {
+			return 1;
+		}
+	} else {
+		int iVar1 = *(int*) ((char*) pObject + 0x220);
+		if (iVar1 != 0xc && iVar1 > 0) {
+			int* piVar3 = (int*) ((char*) pObject + 0x1c0);
+			int iVar2 = 0;
+			do {
+				if (*piVar3 == param_1) {
+					return 1;
+				}
+				piVar3++;
+				iVar2++;
+			} while (iVar2 < iVar1);
+		}
+	}
+	return 0;
+}
