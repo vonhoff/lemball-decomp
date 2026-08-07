@@ -1058,6 +1058,21 @@ void __fastcall Award150PointsAndEmitObjectCallback(void* pObject)
 	(*( void(**)(void*, int)) (*(void***) pObject + 0x20 / 4))(vec, 0);
 }
 
+// MACINTOSH: set_invs_chunk_object_point_bounds(int, int, int)
+// FUNCTION: LEMBALL 0x00409d20
+void __fastcall SetInvsChunkObjectPointBounds(void* pObject, int nUnused, unsigned short param_2, unsigned short param_3, unsigned short param_4)
+{
+	unsigned short p1[3];
+	unsigned short p2[3];
+	p1[0] = param_2;
+	p1[1] = param_3;
+	p1[2] = param_4;
+	p2[0] = param_2;
+	p2[1] = param_3;
+	p2[2] = param_4;
+	((void(__fastcall*)(void*, void*, void*)) 0x40237e)(pObject, p1, p2);
+}
+
 // MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
 void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
