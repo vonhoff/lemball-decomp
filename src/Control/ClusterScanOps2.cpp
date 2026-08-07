@@ -384,3 +384,20 @@ void __fastcall TryApplyTramChunkOverlapImpulse(void* pObject, int nUnused, void
 {
 	((void(__fastcall*)(void*, void*, void*)) 0x402bd5)(*(void**) ((char*) pObject + 0x1b4), param_1, param_2);
 }
+
+// MACINTOSH: find_level_mode_move_chunk_containing_point(int, int, int*)
+// FUNCTION: LEMBALL 0x004130d0
+void __fastcall FindLevelModeMoveChunkContainingPoint(void* pObject, int nUnused, void* param_1, void* param_2, void* param_3)
+{
+	((void(__fastcall*)(void*, void*, void*, void*)) 0x402e55)(*(void**) ((char*) pObject + 0x1c0), param_1, param_2, param_3);
+}
+
+// MACINTOSH: construct_network_lobby_player_entry_child()
+// FUNCTION: LEMBALL 0x00455da0
+void* __fastcall ConstructNetworkLobbyPlayerEntryChild(void* pObject)
+{
+	((void(__fastcall*)(void*)) 0x46a300)(pObject);
+	*(void**) pObject = (void**) 0x4986b0;
+	((void(__fastcall*)(void*)) 0x4014dd)(pObject);
+	return pObject;
+}
