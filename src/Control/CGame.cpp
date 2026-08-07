@@ -1999,6 +1999,17 @@ void LEMBALL_FASTCALL SetLevelScreenPauseActive(void* pObject, int nUnused, int 
 	}
 }
 
+// MACINTOSH: reset_sprite_point_and_clear_status_indicator(short*, int)
+// FUNCTION: LEMBALL 0x00442350
+void LEMBALL_FASTCALL ResetSpritePointAndClearStatusIndicator(void* pObject, int nUnused, short* pPoint, int param_2)
+{
+	((void(__fastcall*)(void*, short*)) 0x468130)(pObject, pPoint);
+	if (param_2 == 0 && *(int*) ((char*) pObject + 0xa8) != 0) {
+		*(int*) ((char*) pObject + 0xa8) = 0;
+		SetLevelScreenStatusIndicatorMode(1, 0);
+	}
+}
+
 // MACINTOSH: set_level_screen_action_panel_pause_active()
 // FUNCTION: LEMBALL 0x00443270
 void LEMBALL_FASTCALL SetLevelScreenActionPanelPauseActive(void* pObject, int nUnused, int param_1)
