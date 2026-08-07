@@ -513,3 +513,74 @@ void LevelScreenManagedEntitySelectionView::RightClick(const CVSPoint* pPoint, c
 	}
 	NoStateRightClick(pPoint, pMarker);
 }
+
+extern void* LoadPalResource(int nResourceId);
+extern void LEMBALL_FASTCALL ReleaseTypedResourceObjectReference(void* pResourceObject);
+extern void* AllocateVSMemBlock(unsigned int nBytes);
+
+// GLOBAL: LEMBALL 0x0049e8b8
+static const int g_C2DRemapSourceIndices[17] = {250, 204, 205, 206, 118, 107, 101, 95, 85, 75, 69, 59, 49, 46, 44, 37, 48};
+// GLOBAL: LEMBALL 0x0049e8fc
+static const int g_C2DRemapTargetIndices[17] = {224, 225, 226, 227, 228, 229, 230, 231, 232, 232, 233, 234, 234, 234, 234, 235, 235};
+// GLOBAL: LEMBALL 0x0049ea28
+static const unsigned char g_C2DRemapSparsePairs[8] = {2, 0xf1, 0x51, 0xa8, 0x6c};
+
+// Macintosh: C2D::RegisterRemaps()
+// FUNCTION: LEMBALL 0x004363c0
+void LEMBALL_FASTCALL RegisterLevelScreenPaletteRemapVariants(char* pScreen)
+{
+	void* pPalette;
+	unsigned int cbPalette;
+	unsigned char* pRemap;
+	int i;
+	int j;
+
+	pPalette = LoadPalResource(0x2e);
+	cbPalette = *(unsigned int*) ((char*) pPalette + 0x48);
+	for (i = 0; i < 4; ++i) {
+		pRemap = (unsigned char*) AllocateVSMemBlock(cbPalette);
+		*(unsigned char**) (pScreen + 0x54 + i * 4) = pRemap;
+		for (j = 0; j < (int) cbPalette; ++j) {
+			pRemap[j] = (unsigned char) j;
+		}
+		for (j = 0; j < 17; ++j) {
+			if (g_C2DRemapTargetIndices[j] != 0) {
+				pRemap[g_C2DRemapSourceIndices[j]] = (unsigned char) g_C2DRemapTargetIndices[j];
+			}
+		}
+		*(void**) (pScreen + 0x64 + i * 4) = RegisterPaletteRemapVariant(0x2e, pRemap, 0);
+	}
+	*(void**) (pScreen + 0x74) = RegisterPaletteRemapVariant(0x2e, (unsigned char*) g_C2DRemapSparsePairs, 2);
+	ReleaseTypedResourceObjectReference(pPalette);
+}
+
+// Macintosh: C2D::SetUpRemapPalettes()
+// FUNCTION: LEMBALL 0x00436760
+void LEMBALL_FASTCALL RegisterLevelScreenResource0x2eByteRemapTable(char* pScreen)
+{
+	unsigned char* pRemap;
+	unsigned char nValue;
+	int i;
+
+	pRemap = (unsigned char*) AllocateVSMemBlock(0x100);
+	for (i = 0; i < 0x100; ++i) {
+		switch (i) {
+		case 0x37:
+			nValue = 0x52;
+			break;
+		case 0x5c:
+		case 0x71:
+		case 0x75:
+			nValue = 0x74;
+			break;
+		case 0x80:
+			nValue = 0x8c;
+			break;
+		default:
+			nValue = (unsigned char) i;
+			break;
+		}
+		pRemap[i] = nValue;
+	}
+	*(void**) (pScreen + 0x968) = RegisterPaletteRemapVariant(0x2e, pRemap, 0);
+}
