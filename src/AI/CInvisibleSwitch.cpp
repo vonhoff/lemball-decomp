@@ -431,3 +431,15 @@ void LEMBALL_FASTCALL HandleDoorChunkObjectTargetTileProjectileResult(int pObjec
 		}
 	}
 }
+
+// MACINTOSH: CDuplicator::CDuplicator() [type-0x1c tile-flag chunk]
+// FUNCTION: LEMBALL 0x004275b0
+void* LEMBALL_FASTCALL ConstructTileFlagChunkObject(void* pObject, int nUnused, void* pOrigin)
+{
+	((CGameObject*) pObject)->InitializeLevelChunkObjectBase(0x1c, 0, 0);
+	(* (void***) pObject) = (void**) 0x496050;
+	*(int*) ((char*) pObject + 0x40) = *(int*) pOrigin;
+	*(int*) ((char*) pObject + 0x44) = *(int*) ((char*) pOrigin + 4);
+	*(int*) ((char*) pObject + 0x48) = *(int*) ((char*) pOrigin + 8);
+	return pObject;
+}
