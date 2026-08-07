@@ -2,8 +2,44 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 extern int g_nLevelFrameClockTick;
+extern void* g_pLevelTileGrid;
 extern void* g_pManagedEntityReachabilityHelper;
 extern unsigned int __cdecl ReturnFacingDirection(int nX1, int nY1, int nX2, int nY2);
+
+// Macintosh: CGameObject::MapCheck(int, int)
+// FUNCTION: LEMBALL 0x004157b0
+int CGameObject::MapCheck(int nX, int nY)
+{
+	int iVar1;
+	int iVar2;
+	int iVar3;
+	int iVar4;
+	unsigned short uVar5;
+	int iVar6;
+
+	iVar1 = (nY + (nY >> 31 & 0xf)) >> 4;
+	iVar2 = nX + (nX >> 31 & 0xf);
+	iVar3 = iVar2 >> 4;
+	iVar4 = (unsigned int) (unsigned short) (iVar2 >> 0x14) << 0x10;
+	iVar2 = iVar3;
+	do {
+		iVar6 = iVar1;
+		if (iVar1 >= 0) {
+			do {
+				if (iVar2 < 0 || iVar6 < 0 || *(int*) ((char*) g_pLevelTileGrid + 0x10) <= iVar2 || *(int*) ((char*) g_pLevelTileGrid + 0x14) <= iVar6) {
+					uVar5 = 3;
+				}
+				else {
+					uVar5 = *(unsigned short*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (*(int*) ((char*) g_pLevelTileGrid + 0x10) * iVar6 + iVar2) * 0xc);
+				}
+				iVar4 = ((unsigned int) (short) (iVar4 >> 0x10) << 0x10) | (unsigned short) (iVar4 | uVar5);
+				iVar6 = iVar6 + 1;
+			} while (iVar6 <= iVar1);
+		}
+		iVar2 = iVar2 + 1;
+	} while (iVar2 <= iVar3);
+	return iVar4;
+}
 
 // GLOBAL: LEMBALL 0x0049d020
 static const int g_LEVEL_HeadingTurnDirections[8] = {0, 1, 1, 1, 1, -1, -1, -1};
@@ -21,8 +57,69 @@ struct LevelManagedEntityStateFields {
 
 // Split from the original LEVELVT source group to preserve MSVC 4.20 code generation in LEVELVT.CPP.
 
-// Macintosh: CGameObject::StopMoving()
-// FUNCTION: LEMBALL 0x00415780
+// Macintosh: CGameObject::StartMoving()
+// FUNCTION: LEMBALL 0x00415580
+void CGameObject::StartMoving(void)
+{
+	void* pMoveChunk = 0;
+	int nHeight;
+	int nDestHeight;
+	int nTickHeight;
+	int nDist;
+	int* pDest;
+	int nSpeedIndex;
+	int nPos[2];
+	int nDest[2];
+
+	if (m_pCommandQueue70 != 0) {
+		nHeight = ((unsigned short) ((int(__fastcall*)(void*, int, int, int*)) 0x401460)(g_pLevelTileGrid, m_WorldPosition9C.x >> 12, m_WorldPosition9C.y >> 12, (int*) &pMoveChunk)) & 0xffff;
+		nDestHeight = m_WorldPosition9C.z >> 12;   /* 0xa4 */
+		if (m_fOnMover11C == 0 && pMoveChunk != 0) {
+			((void(__fastcall*)(void*, void*)) 0x4036b1)(pMoveChunk, this);
+		}
+		if (nDestHeight == nHeight) {
+			pDest = (int*) ((void* (__fastcall*)(CGameObject*, int*)) 0x40336e)(this, &nHeight);
+			nPos[0] = pDest[0];
+			nPos[1] = pDest[1];
+			*(int*) ((char*) this + 0xb0) = pDest[2];
+			nDist = ((int(__fastcall*)(int, int, int, int)) 0x40254a)(m_WorldPosition9C.x >> 12, m_WorldPosition9C.y >> 12, nPos[0] >> 12, nPos[1] >> 12);
+			m_nMotionStartTickC8 = g_nLevelFrameClockTick;
+			nSpeedIndex = *((int*) ((char*) this + 0x64));
+			m_nMotionDuration88 = (*(int*) (0x49d070 + nSpeedIndex * 4) * nDist) / 0x32;
+			if (m_nMotionDuration88 == 0) {
+				m_nMotionDuration88 = 1;
+			}
+			nPos[0] = m_WorldPosition9C.x;
+			nPos[1] = m_WorldPosition9C.y;
+			m_nNextUpdateTickCC = m_nMotionDuration88 + g_nLevelFrameClockTick;
+			nDest[0] = *(int*) ((char*) this + 0xa8);
+			nDest[1] = *(int*) ((char*) this + 0xac);
+			((void(__fastcall*)(int*, int*)) 0x40119a)(nDest, nDest);
+			((void(__fastcall*)(int*, int*)) 0x40119a)(nPos, nPos);
+			((void(__fastcall*)(void*, int, void*, int, int)) 0x40326f)((char*) this + 0x78, 0x4156c1, nDest, nPos[0] >> 12, nPos[1] >> 12);
+			return;
+		}
+		if (*(int*) ((char*) this + 0x30) == 0) {
+			nTickHeight = g_nLevelFrameClockTick;
+			if ((*(unsigned char*) ((char*) this + 0x68) & 4) != 0) {
+				*(int*) ((char*) this + 0x50) = 0;
+				*(int*) ((char*) this + 0x108) = 1;
+				*(int*) ((char*) this + 0x4c) = 0x3000;
+				*(int*) ((char*) this + 0x54) = ((((nDestHeight - nHeight) + ((nDestHeight - nHeight) >> 31 & 7)) >> 3) + 1) * 0x1000;
+				m_nMotionStartTickC8 = g_nLevelFrameClockTick;
+				*(short*) ((char*) this + 0xbc) = 0;
+				*(int*) ((char*) this + 0x100) = nDestHeight;
+				*(int*) ((char*) this + 0xf4) = m_WorldPosition9C.x;
+				*(int*) ((char*) this + 0xf8) = m_WorldPosition9C.y;
+				*(int*) ((char*) this + 0xfc) = nHeight << 12;
+				return;
+			}
+		}
+		else {
+			m_WorldPosition9C.z = nHeight << 12;
+		}
+	}
+}
 void CGameObject::StopMoving(void)
 {
 	int nFrameClockTick;

@@ -85,6 +85,7 @@ public:
 	void Initialise(void);
 	void StartMoving(void);
 	void StopMoving(void);
+	int MapCheck(int nX, int nY);
 	void TurnToFaceDestination(void);
 	int FacingDestination(void);
 	void DeleteFirstEntryFromDestinationList(void);
