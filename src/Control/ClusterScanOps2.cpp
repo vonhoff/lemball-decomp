@@ -1109,6 +1109,35 @@ void __fastcall SetLevelScreenViewportAnchorPoint(void* pThis, int nUnused, unsi
 	((void(__fastcall*)(void*)) 0x4019ec)((char*) pThis - 0x14);
 }
 
+// MACINTOSH: emit_main_game_status_stream_separators()
+// FUNCTION: LEMBALL 0x004079e0
+void __fastcall EmitMainGameStatusStreamSeparators(void* param_1)
+{
+	void** pStatus = *(void***) 0x4a97bc;
+	void* pvVar1 = (void*) (*( void*(**)(void*, int)) **(void***) *(void**) ((char*) param_1 + 0x50))(pStatus, 10);
+	((void(__fastcall*)(void*, char)) 0x4585d0)(pvVar1, (char) pStatus);
+	void** pStatus2 = *(void***) 0x4a97bc;
+	void* pvVar2 = (void*) (*( void*(**)(void*, int)) **(void***) *(void**) ((char*) param_1 + 0x54))(pStatus2, 10);
+	((void(__fastcall*)(void*, char)) 0x4585d0)(pvVar2, (char) pStatus2);
+}
+
+// MACINTOSH: is_saved_target_within_probe_boxes_and_directional_band()
+// FUNCTION: LEMBALL 0x00420090
+unsigned int __fastcall IsSavedTargetWithinProbeBoxesAndDirectionalBand(void* param_1)
+{
+	if (*(int*) ((char*) g_pActiveManagedEntityOwner + 0x58) == 0) {
+		return 0;
+	}
+	unsigned int bVar1 = ((int(__fastcall*)(void*, int)) 0x40358f)(param_1, 0x32);
+	if (bVar1 == 0) {
+		return 0;
+	}
+	int copy[3];
+	((void(__fastcall*)(void*, void*)) 0x40161d)(copy, (char*) param_1 + 0x150);
+	unsigned int uVar2 = ((unsigned int(__fastcall*)(void*, int, int, int)) 0x403346)(param_1, copy[0], copy[1], copy[2]);
+	return bVar1 & uVar2;
+}
+
 // MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
 void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
