@@ -30,7 +30,6 @@ struct LevelChunkObjectBaseView {
 
 struct LevelVtSmallFunctionView {
 	void AddLevelScoreClamped(int nValue);
-	void AddTime(int nValue);
 };
 
 struct InvsChunkObjectSoundState {
@@ -484,6 +483,16 @@ void* LEMBALL_FASTCALL ConstructCollChunkObject(void* pObject, int nUnused, int 
 int LEMBALL_FASTCALL ScheduleCollRuntimeTimer0xfa(void)
 {
 	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(0xfa);
-	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddTime(0x1e);
+	*(int*) ((char*) g_pActiveManagedEntityOwner + 0xe8) = *(int*) ((char*) g_pActiveManagedEntityOwner + 0xe8) + 0x1e;
+	return 1;
+}
+
+// MACINTOSH: notify_coll_contact_target_and_schedule_timer_0x9c4()
+// FUNCTION: LEMBALL 0x00422c00
+int LEMBALL_FASTCALL NotifyCollContactTargetAndScheduleTimer0x9c4(int pObject)
+{
+	(*( void(__fastcall**)(int, int)) (**(char***) ((char*) pObject + 0x5c) + 0xb8)) (*(int*) ((char*) pObject + 0x64), pObject);
+	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(0x9c4);
+	*(int*) ((char*) g_pActiveManagedEntityOwner + 0xfc) = *(int*) ((char*) g_pActiveManagedEntityOwner + 0xfc) - 1;
 	return 1;
 }
