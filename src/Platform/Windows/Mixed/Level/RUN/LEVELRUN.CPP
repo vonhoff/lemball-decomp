@@ -2302,9 +2302,22 @@ void* LEMBALL_FASTCALL DeleteNetworkLevelChunkDeltaStreamAuto(void* pObject, voi
 	return pObject;
 }
 
-// Comparison-only compatibility stub.
-void LEMBALL_FASTCALL DestroyLevelChunkStreamDispatcherAuto(void*)
+// MACINTOSH: destroy_level_chunk_stream_dispatcher()
+// FUNCTION: LEMBALL 0x0040b0d0
+void LEMBALL_FASTCALL DestroyLevelChunkStreamDispatcherAuto(void* pObject)
 {
+	*(void**) pObject = (void*) 0x4932e8;
+	if (*(void**) 0x4a1e18 != 0) {
+		((void (__fastcall*)(void*, void*, void*)) 0x4625b0)(*(void**) 0x4a1e18, 0, 0);
+	}
+	if (*(void**) ((char*) pObject + 0x20) != 0) {
+		((void (__fastcall*)(void*, void*, int)) (*(int*) *(void**) ((char*) pObject + 0x20) + 0x14))(
+			*(void**) ((char*) pObject + 0x20), 0, 1);
+	}
+	((void (__cdecl*)(void)) 0x40344f)();
+	FreeVSMemBlock(*(void**) ((char*) pObject + 0x1c));
+	FreeVSMemBlock(*(void**) ((char*) pObject + 0x10));
+	*(void**) pObject = (void*) 0x493110;
 }
 
 // Compatibility shim for original ILT call site.

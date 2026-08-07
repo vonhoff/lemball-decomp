@@ -154,9 +154,6 @@ struct LinkScfBoonChunkManagerView {
 
 
 
-// STUB: LEMBALL 0x0041ebe0
-// AppendManagedEntityGroupFromIds
-
 
 // MACINTOSH: CCollectableManager::Restart()
 // MACINTOSH: CCollectableManager::Process()
