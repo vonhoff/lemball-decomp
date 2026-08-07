@@ -987,6 +987,21 @@ void __fastcall CancelNetworkLobbyPrompt(void* param_1)
 	*(int*) ((char*) param_1 + 0x39c) = 0;
 }
 
+// MACINTOSH: set_dual_child_overlay_positions(short, short)
+// FUNCTION: LEMBALL 0x0044c5b0
+void __fastcall SetDualChildOverlayPositions(void* pThis, int nUnused, short param_2, short param_3)
+{
+	unsigned short pos[2];
+	pos[0] = (unsigned short) param_2;
+	pos[1] = (unsigned short) param_3;
+	if (*(int**) ((char*) pThis + 0x50) != 0) {
+		(*( void(**)(void*)) (*(void***) *(void**) ((char*) pThis + 0x50) + 0x38 / 4))(pos);
+	}
+	if (*(int**) ((char*) pThis + 0x54) != 0) {
+		(*( void(**)(void*)) (*(void***) *(void**) ((char*) pThis + 0x54) + 0x38 / 4))(pos);
+	}
+}
+
 // MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
 void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
