@@ -113,6 +113,30 @@ void __fastcall FinishPaintballSequenceToLevelSelection(void* pObject)
 	*(int*) ((char*) pObject + 0x374) = 4;
 }
 
+// MACINTOSH: destroy_lift_chunk_manager_0x190_stride_array()
+// FUNCTION: LEMBALL 0x00425dc0
+void __fastcall DestroyLiftChunkManager0x190StrideArray(void* pObject)
+{
+	int i;
+	if (*(int*) ((char*) pObject + 0x34) > 0) {
+		for (i = 0; i < *(int*) ((char*) pObject + 0x34); i++) {
+			((void(__fastcall*)(void*)) 0x402a77)((void*) (*(int*) ((char*) pObject + 0x3c) + i * 0x190));
+		}
+	}
+}
+
+// MACINTOSH: handle_queue_cursor_event(short*)
+// FUNCTION: LEMBALL 0x00414e80
+int __fastcall HandleQueueCursorEvent(void* pObject, int nUnused, short* param_1)
+{
+	if (*param_1 != 1) {
+		*(int*) ((char*) pObject + 0xc) = *(int*) ((char*) pObject + 0xc) + 1;
+		return 0;
+	}
+	((void(__fastcall*)(void*, int, int)) 0x40281f)(pObject, *(int*) ((char*) param_1 + 8), *(int*) ((char*) param_1 + 0xc));
+	return 1;
+}
+
 // MACINTOSH: service_type_0x35_chunk_objects()
 // FUNCTION: LEMBALL 0x0040be20
 void __fastcall ServiceType35ChunkObjects(void* pObject)
