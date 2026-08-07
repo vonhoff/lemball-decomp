@@ -347,3 +347,23 @@ void __fastcall ReleaseListEntryPair(void* pObject, int nUnused, int param_2, in
 	ReleaseTypedResourceObjectIfLoaded((void*) (*(int*) ((char*) pObject + 0x80) + param_2 * 0x4c), 0, param_3);
 	ReleaseTypedResourceObjectIfLoaded((void*) (*(int*) ((char*) pObject + 0x7c) + param_2 * 0x54), 0, param_3);
 }
+
+// MACINTOSH: set_level_mode_profile_range_selector(int)
+// FUNCTION: LEMBALL 0x004131b0
+void __fastcall SetLevelModeProfileRangeSelector(void* pObject, int nUnused, int param_2)
+{
+	*(int*) ((char*) pObject + 0xd0) = param_2;
+	((void(__fastcall*)(void*, int, int, int, int, int)) 0x401d25)(pObject, param_2, *(int*) ((char*) pObject + 0xc0), *(int*) ((char*) pObject + 0xc4), *(int*) ((char*) pObject + 0xc8), *(int*) ((char*) pObject + 0xcc));
+}
+
+// MACINTOSH: select_single_entity_and_dispatch_selection(int*)
+// FUNCTION: LEMBALL 0x00438380
+void __fastcall SelectSingleEntityAndDispatchSelection(void* pObject, int nUnused, void* param_1)
+{
+	if (*(int*) ((char*) param_1 + 0xb8) != 8) {
+		*(unsigned short*) ((char*) pObject + 0xa4c) = 0;
+		((void(__fastcall*)(void*, unsigned short, int)) 0x401474)(pObject, *(unsigned short*) ((char*) param_1 + 0x6a), 0);
+		((void(__fastcall*)(void*)) 0x401776)(pObject);
+		(*( void(**)(void)) (*(void***) param_1 + 0xd4 / 4))();
+	}
+}
