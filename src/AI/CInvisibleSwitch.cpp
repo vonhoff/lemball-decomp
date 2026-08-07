@@ -465,3 +465,15 @@ void* LEMBALL_FASTCALL ConstructBallChunkEntry(void* pObject)
 	*(int*) ((char*) pObject + 0x12c) = 0xaa55aa55;
 	return pObject;
 }
+
+// MACINTOSH: CCollectable::CCollectable() [type-10 coll chunk]
+// FUNCTION: LEMBALL 0x00422870
+void* LEMBALL_FASTCALL ConstructCollChunkObject(void* pObject, int nUnused, int nWorldX, int nWorldY, int nWorldZ, int nEntityType)
+{
+	((CGameObject*) pObject)->InitializeLevelChunkObjectBase(nEntityType, 0, 0);
+	(* (void***) pObject) = (void**) 0x4959c0;
+	*(int*) ((char*) pObject + 0x40) = nWorldX << 12;
+	*(int*) ((char*) pObject + 0x44) = nWorldY << 12;
+	*(int*) ((char*) pObject + 0x48) = nWorldZ << 12;
+	return pObject;
+}
