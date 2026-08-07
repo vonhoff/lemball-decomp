@@ -786,3 +786,32 @@ int LEMBALL_FASTCALL RemoveGroupChildOrSelectPrevious(void* pGroup, int nUnused,
 	}
 	return iResult;
 }
+
+// MACINTOSH: remove_managed_entity_group_child(void*)
+// FUNCTION: LEMBALL 0x0040b180
+void LEMBALL_FASTCALL RemoveManagedEntityGroupChild(void* pObject, int nUnused, void* param_2)
+{
+	int iVar3 = 0;
+	int iVar4 = *(int*) ((char*) pObject + 0x18);
+	if (iVar4 > 0) {
+		int* piVar1 = *(int**) ((char*) pObject + 0x10);
+		while (piVar1[0] != *(int*) param_2) {
+			piVar1++;
+			iVar3++;
+			if (iVar4 <= iVar3) {
+				return;
+			}
+		}
+		if (iVar3 < iVar4 - 1) {
+			iVar4 = iVar3 * 4;
+			do {
+				iVar3++;
+				*(int*) (*(int*) ((char*) pObject + 0x10) + iVar4) = *(int*) (*(int*) ((char*) pObject + 0x10) + iVar4 + 4);
+				iVar4 += 4;
+			} while (iVar3 < *(int*) ((char*) pObject + 0x18) - 1);
+		}
+		*(int*) (*(int*) ((char*) pObject + 0x1c) + *(int*) ((char*) param_2 + 0x2c) * 4) = 0xffffffff;
+		*(int*) (*(int*) ((char*) pObject + 0x10) + iVar3 * 4) = 0;
+		*(int*) ((char*) pObject + 0x18) = *(int*) ((char*) pObject + 0x18) - 1;
+	}
+}
