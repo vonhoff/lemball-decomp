@@ -1189,6 +1189,54 @@ void __cdecl SelectionSortRecordsWithComparator(char* param_1, char* param_2, in
 	}
 }
 
+// MACINTOSH: emit_rock_chunk_manager_render_entries(int)
+// FUNCTION: LEMBALL 0x00427050
+int __fastcall EmitRockChunkManagerRenderEntries(void* pThis, int nUnused, int param_1)
+{
+	int iVar2 = 0;
+	int local_4 = 0;
+	if (*(int*) ((char*) pThis + 0x34) > 0) {
+		int iVar3 = 0;
+		do {
+			int* piVar1 = (int*) (*(int*) ((char*) pThis + 0x38) + iVar3);
+			int iVar4 = param_1;
+			if (piVar1[0x2e] != 0x18) {
+				iVar4 = param_1 + 0x4c;
+				(*( void(**)(int)) (*(void***) *piVar1 + 0xc / 4))(param_1);
+				local_4 = local_4 + 1;
+			}
+			iVar3 = iVar3 + 0x144;
+			iVar2 = iVar2 + 1;
+			param_1 = iVar4;
+		} while (iVar2 < *(int*) ((char*) pThis + 0x34));
+	}
+	return local_4;
+}
+
+// MACINTOSH: emit_coll_chunk_manager_render_entries(int)
+// FUNCTION: LEMBALL 0x00422ef0
+int __fastcall EmitCollChunkManagerRenderEntries(void* pThis, int nUnused, int param_1)
+{
+	int local_4 = 0;
+	int iVar2 = 0;
+	if (*(int*) ((char*) pThis + 0x3c) > 0) {
+		int iVar4 = 0;
+		do {
+			int* iVar1 = *(int**) ((char*) pThis + 0x34);
+			int iVar3 = param_1;
+			if (*(int*) (*(int*) (iVar4 + (int) iVar1) + 0x138) != 0 || *(int*) (*(int*) (iVar4 + (int) iVar1) + 0x98) != 0) {
+				iVar3 = param_1 + 0x4c;
+				local_4 = local_4 + 1;
+				(*( void(**)(int)) (*(void***) **(int**) (iVar4 + (int) *(int**) ((char*) pThis + 0x34)) + 0xc / 4))(param_1);
+			}
+			iVar4 = iVar4 + 4;
+			iVar2 = iVar2 + 1;
+			param_1 = iVar3;
+		} while (iVar2 < *(int*) ((char*) pThis + 0x3c));
+	}
+	return local_4;
+}
+
 // MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
 void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
