@@ -157,6 +157,23 @@ void __fastcall DeactivateManagedEntityGroupChildBySlot(void* pObject, int nUnus
 	}
 }
 
+// MACINTOSH: resolve_variant_render_frame_pointer(int, undefined4*)
+// FUNCTION: LEMBALL 0x004676a0
+int __fastcall ResolveVariantRenderFramePointer(void* pObject, int nUnused, int param_2, void** param_3)
+{
+	int iVar1 = *(int*) (*(int*) ((char*) pObject + 0x24) + *(short*) (*(int*) ((char*) pObject + 0x28) + param_2 * 2) * 4);
+	int iVar2;
+	if (param_3 == 0) {
+		iVar2 = 0;
+	} else {
+		iVar2 = (*( int(**)(void)) *param_3)();
+	}
+	if (*(int*) (iVar1 + 0x40) == 0x5a524c45) {
+		return iVar1;
+	}
+	return *(int*) (iVar1 + 0x78) + iVar2 * 0x54;
+}
+
 // MACINTOSH: activate_saved_position_chunk_object()
 // FUNCTION: LEMBALL 0x0041c670
 void __fastcall ActivateSavedPositionChunkObject(void* pObject)
