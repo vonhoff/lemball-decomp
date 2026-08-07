@@ -1987,6 +1987,17 @@ void ReleaseMainGameVariantResourceMode(GameMainContext* pMainContext)
 		pMainContext->m_pVariantMode = 0;
 	}
 }
+
+// MACINTOSH: CGame::UnLoadFrontendResources()
+// FUNCTION: LEMBALL 0x004073f0
+void UnLoadFrontendResources(GameMainContext* pMainContext)
+{
+	if (pMainContext->m_pVariantMode != 0) {
+		DestroyMainGameVariantResourceMode(pMainContext->m_pVariantMode);
+		FreeVSMemBlock(pMainContext->m_pVariantMode);
+		pMainContext->m_pVariantMode = 0;
+	}
+}
 // LINKERILT: LEMBALL 0x00401d5c
 void* ConstructLevelSelectionModeController(void* pModeObject, GameMainContext* pMainContext)
 {
