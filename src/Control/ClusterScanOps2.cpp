@@ -1073,6 +1073,17 @@ void __fastcall SetInvsChunkObjectPointBounds(void* pObject, int nUnused, unsign
 	((void(__fastcall*)(void*, void*, void*)) 0x40237e)(pObject, p1, p2);
 }
 
+// MACINTOSH: rebuild_level_screen_pause_dialog_layout()
+// FUNCTION: LEMBALL 0x00443d80
+void __fastcall RebuildLevelScreenPauseDialogLayout(void* param_1)
+{
+	short layout[4];
+	((void(__fastcall*)(void*)) 0x403198)(param_1);
+	((void(__fastcall*)(void*)) 0x402603)(param_1);
+	((void(__fastcall*)(void*, short*)) 0x4030fd)(param_1, layout);
+	((void(__fastcall*)(void*, short*)) 0x401c85)(param_1, layout);
+}
+
 // MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
 void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
