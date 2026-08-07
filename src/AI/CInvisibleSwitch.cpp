@@ -309,3 +309,10 @@ void CInvisibleSwitch::Load(unsigned char*& pData)
 		} while (iAction < *(unsigned short*) (pObjectBytes + 0x150));
 	}
 }
+
+// MACINTOSH: CSheep::HitBall()
+// FUNCTION: LEMBALL 0x0041fab0
+void LEMBALL_FASTCALL HandleShpgChunkObjectProjectileHit(void)
+{
+	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(0x96);
+}
