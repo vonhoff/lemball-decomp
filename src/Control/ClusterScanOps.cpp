@@ -361,3 +361,66 @@ int __fastcall DispatchDoorChunkObjectPlasStateTableVariant0or1(void* pObject)
 	}
 	return 0;
 }
+
+// MACINTOSH: CCollectableManager::Initialise(int)
+// FUNCTION: LEMBALL 0x00422460
+void __fastcall CollectableManagerInitialise(void* pObject, int nUnused, int param_1)
+{
+	int i;
+	int* pArr;
+	*(int*) ((char*) pObject + 0x38) = param_1;
+	if (param_1 == 0) {
+		*(int*) ((char*) pObject + 0x34) = 0;
+		return;
+	}
+	if (*(int*) ((char*) pObject + 0x34) == 0) {
+		pArr = (int*) AllocateVSMemBlock(param_1 * 4);
+		*(int**) ((char*) pObject + 0x34) = pArr;
+		if (*(int*) ((char*) pObject + 0x38) > 0) {
+			for (i = 0; i < *(int*) ((char*) pObject + 0x38); i++) {
+				pArr[i] = 0;
+			}
+		}
+	}
+}
+
+// MACINTOSH: register_ui_palette_remap_variant_table() [vs-append]
+// FUNCTION: LEMBALL 0x00454ad0
+void __fastcall RegisterUiPaletteRemapVariantTable(void* pObject)
+{
+	int i;
+	for (i = 0; i < 6; i++) {
+		*(int*) ((char*) pObject + 0x414 + i * 4) = ((int(__cdecl*)(int, unsigned char*, int)) 0x46ad70)(
+			*(int*) (*(int*) ((char*) pObject + 0x84) + 0x54),
+			*(unsigned char**) (0x4a02f0 + i * 4), 0x2);
+	}
+}
+
+// MACINTOSH: CSlinkyManager::Initialise(int)
+// FUNCTION: LEMBALL 0x0040b930
+void __fastcall SlinkyManagerInitialise(void* pObject, int nUnused, int param_1)
+{
+	int i;
+	char* pBase;
+	*(int*) ((char*) pObject + 8) = param_1;
+	*(int*) ((char*) pObject + 0xc) = 0;
+	if (param_1 == 0) {
+		*(int*) ((char*) pObject + 4) = 0;
+		return;
+	}
+	if (*(int*) ((char*) pObject + 4) == 0) {
+		pBase = (char*) AllocateVSMemBlock(param_1 * 0x150 + 4);
+		if (pBase != 0) {
+			*(int*) pBase = param_1;
+			*(int**) ((char*) pObject + 4) = (int*) (pBase + 4);
+			for (i = param_1 - 1; i >= 0; i--) {
+				((void(__fastcall*)(void*)) 0x401285)(pBase + 4 + i * 0x150);
+			}
+		} else {
+			*(int*) ((char*) pObject + 4) = 0;
+		}
+	}
+	for (i = 0; *(int*) ((char*) pObject + 8) > i; i++) {
+		(*( void(**)(void)) (* (void***) (*(int*) ((char*) pObject + 4) + i * 0x150) + 0x104 / 4))();
+	}
+}
