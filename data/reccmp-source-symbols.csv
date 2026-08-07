@@ -22,7 +22,6 @@ address,name,symbol,type,source
 0x00448DE0,DestroyOptionsScreenAuto,,stub,src/Frontend/MAINMENU.CPP
 0x004507A0,DestroyPaintballSequenceScreenAuto,,stub,src/Frontend/MAINMENU.CPP
 0x00451610,DrawPasswordEntryScreenContents,,function,src/Frontend/MAINMENU.CPP
-0x004550C0,DestroyNetworkLobbyTransportControllerRealAuto,,stub,src/Platform/Windows/Mixed/Engine/MEDIA/EFFSTRM.CPP
 0x004664B0,DestroyCPVBackBuffSurfaceCompilerStateShim,,function,src/Visos/Windows/CGDI.cpp
 0x00468DD0,QueueSingleChildOverlayOwnerIfDirtyBody,,function,src/Frontend/MENUSEL.CPP
 0x00468F80,QueueSingleChildOverlayOwnerIfDirty,,function,src/Frontend/MENUSEL.CPP
