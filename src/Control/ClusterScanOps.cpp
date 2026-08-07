@@ -3,6 +3,7 @@
 #include "Visos/Generic/Memory.h"
 
 extern int __fastcall FindNetworkLobbyPeerSlotByPeer(void* pObject, int nUnused, int param_1);
+extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
 
 // MACINTOSH: append_static_anim_chunk_record_if_unique(short*)
 // FUNCTION: LEMBALL 0x0040d0c0
@@ -93,4 +94,16 @@ void* __fastcall GetNetworkLobbyPeerEntryStreamByPeer(void* pObject, int nUnused
 		return 0;
 	}
 	return (void*) (*(int*) ((char*) pObject + 0x14) + iVar1 * 0x50);
+}
+
+// MACINTOSH: activate_coll_chunk_object()
+// FUNCTION: LEMBALL 0x004228b0
+void __fastcall ActivateCollChunkObject(void* pObject)
+{
+	ResetManagedEntityRuntimeStateThunk(pObject);
+	*(int*) ((char*) pObject + 0x9c) = *(int*) ((char*) pObject + 0x40);
+	*(int*) ((char*) pObject + 0xa0) = *(int*) ((char*) pObject + 0x44);
+	*(int*) ((char*) pObject + 0xa4) = *(int*) ((char*) pObject + 0x48);
+	*(int*) ((char*) pObject + 0x138) = 1;
+	*(int*) ((char*) pObject + 0xb8) = 0x18;
 }
