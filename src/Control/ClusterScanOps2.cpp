@@ -689,6 +689,24 @@ void __fastcall DispatchManagedEntityChunkContactsFromCurrentTile(void* param_1)
 	((void(__fastcall*)(void*, void*, void*, unsigned short)) 0x40341d)(g_pActiveManagedEntityOwner, (char*) param_1 + 0x9c, param_1, *(unsigned short*) ((char*) param_1 + 0x68));
 }
 
+// MACINTOSH: refresh_level_selection_navigation_locks()
+// FUNCTION: LEMBALL 0x0044a3e0
+void __fastcall RefreshLevelSelectionNavigationLocks(void* param_1)
+{
+	int bVar1 = ((int(__fastcall*)(void*)) 0x402793)(*(void**) 0x49cb68);
+	int bVar2 = ((int(__fastcall*)(void*)) 0x401f82)(*(void**) 0x49cb68);
+	*(int*) ((char*) param_1 + 0x480) = 0;
+	if (bVar1 != 1) {
+		*(int*) ((char*) param_1 + 0x480) = 1;
+	}
+	*(int*) ((char*) param_1 + 0x484) = 0;
+	if (bVar2 != 1) {
+		*(int*) ((char*) param_1 + 0x484) = 1;
+	}
+	((void(__fastcall*)(void*, int)) 0x40329c)(*(void**) ((char*) param_1 + 0x338), 0xacef000e);
+	((void(__fastcall*)(void*, int)) 0x40329c)(*(void**) ((char*) param_1 + 0x338), 0xacef000f);
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
