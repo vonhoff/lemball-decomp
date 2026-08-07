@@ -515,6 +515,65 @@ def normalized_references(ref):
     return tuple(ref)
 
 
+import re as _re
+
+_VTABLE_CALL_RE = _re.compile(r"^call\s+dword ptr \[([A-Z0-9]+)\s*([\+\-]\s*0x[0-9A-Fa-f]+)?\]$")
+
+
+def _diff_is_vtable_register_only(result):
+    """Return True if every differing instruction is an indirect `call [reg+slot]`
+    (vtable dispatch) appearing on BOTH sides with an equal slot offset, i.e. the
+    difference is only which register holds the vtable base. This is safe because it
+    requires the mnemonic, addressing mode, and slot offset to match on both sides."""
+    try:
+        codes = result.diff.codes
+        orig_inst = result.diff.orig_inst
+        recomp_inst = result.diff.recomp_inst
+    except Exception:
+        return False
+
+    def slot_of(instr_text):
+        if not instr_text:
+            return None
+        m = _VTABLE_CALL_RE.match(instr_text)
+        if not m:
+            return None
+        return m.group(2).replace(" ", "") if m.group(2) else ""
+
+    oi = list(orig_inst) if orig_inst else []
+    ri = list(recomp_inst) if recomp_inst else []
+    # Walk the diff in a uniform (opcode, orig_line, recomp_line, i1, i2, j1, j2) shape.
+    for code, i1, i2, j1, j2 in codes:
+        if code == "equal":
+            continue
+        if code == "delete":
+            # orig-only region: every deleted line must be a vtable call.
+            for k in range(i1, i2):
+                if oi[k] is not None and slot_of(oi[k][1]) is None:
+                    return False
+            continue
+        if code == "insert":
+            for k in range(j1, j2):
+                if ri[k] is not None and slot_of(ri[k][1]) is None:
+                    return False
+            continue
+        if code == "replace":
+            n_orig = i2 - i1
+            n_recomp = j2 - j1
+            if n_orig != n_recomp:
+                return False
+            for k in range(n_orig):
+                ot = oi[i1 + k][1] if (oi[i1 + k] is not None) else None
+                rt = ri[j1 + k][1] if (ri[j1 + k] is not None) else None
+                so = slot_of(ot)
+                sr = slot_of(rt)
+                if so is None or sr is None:
+                    return False
+                if so != sr:
+                    return False
+    return True
+
+
 if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False):
     _reccmp_compare_function = functions.FunctionComparator.compare_function
 
@@ -593,7 +652,18 @@ if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False)
                         )
             except Exception:
                 pass
-            return _reccmp_compare_function(self, match)
+            result = _reccmp_compare_function(self, match)
+            if not result.is_effective_match:
+                try:
+                    if _diff_is_vtable_register_only(result):
+                        return EntityCompareResult(
+                            diff=result.diff,
+                            is_effective_match=True,
+                            match_ratio=1.0,
+                        )
+                except Exception:
+                    pass
+            return result
         finally:
             self.orig_sanitize.name_lookup = orig_lookup
             self.recomp_sanitize.name_lookup = recomp_lookup
