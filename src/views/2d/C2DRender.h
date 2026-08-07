@@ -67,6 +67,7 @@ public:
 	void DrawZBuff_Sprite(int nViewDataIndex, unsigned short nValue);
 	void DrawLemmingJump(unsigned short* pViewData, int nFrameIndex);
 	void DrawLemmingFall(unsigned short* pViewData, int nUnused);
+	void DrawLemmingLanding(unsigned short* pViewData, int nFrameIndex);
 	void DrawLemmingOnConveyor(CViewData& ViewData, int nUseRemap);
 	void DrawHandHeightSampledOverlayPair(CViewData& ViewData, int nPlayer, int nUseRemap);
 	void DrawItemHandBoundaryPair(CViewData& ViewData, int nPlayer);

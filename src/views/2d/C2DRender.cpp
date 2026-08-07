@@ -774,3 +774,29 @@ void C2D::DrawLemmingFall(unsigned short* pViewData, int nUnused)
 {
 	DrawLemmingJump(pViewData, nUnused);
 }
+
+// MACINTOSH: C2D::DrawLemmingLanding(ushort*, int)
+// FUNCTION: LEMBALL 0x0043bfc0
+void C2D::DrawLemmingLanding(unsigned short* pViewData, int nFrameIndex)
+{
+	unsigned int uRotated;
+	short sRotX;
+	short sRotY;
+	int iDelta;
+	int nSize;
+
+	uRotated = (*pViewData + m_nViewRotation090C * 2) & 7;
+	iDelta = uRotated * 4;
+	sRotX = (short) *(int*) (pViewData + 2) - *(short*) (0x497018 + iDelta);
+	sRotY = (short) *(int*) (pViewData + 4) - *(short*) (0x49701a + iDelta);
+	iDelta = (*(int*) (pViewData + 0x12) - *(int*) (pViewData + 0x10)) * 0xf;
+	nSize = ((int) (iDelta + (iDelta >> 0x1f & 0x3ffU)) >> 10) + 7;
+	if (0xc < nSize) {
+		nSize = 0xc;
+	}
+	if (nFrameIndex == 0) {
+		EmitLevelScreenVariantEntry(m_pAnimsManager0A40, sRotX, sRotY, *(int*) (0x49eef8 + uRotated * 4), nSize, 0, 0);
+		return;
+	}
+	EmitLevelScreenVariantEntry(m_pAnimsManager0A40, sRotX, sRotY, *(int*) (0x49eef8 + uRotated * 4), nSize, 0, m_nLemmingRemap0968);
+}
