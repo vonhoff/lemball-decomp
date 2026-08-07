@@ -557,6 +557,32 @@ void __fastcall ActivateDoorChunkObjectTrigger(void* pObject)
 	}
 }
 
+// MACINTOSH: append_rock_chunk_object(ushort, int, int, int)
+// FUNCTION: LEMBALL 0x004270b0
+void __fastcall AppendRockChunkObject(void* pObject, int nUnused, unsigned short param_1, int param_2, int param_3, int param_4)
+{
+	if (*(int*) ((char*) pObject + 0x34) < *(int*) ((char*) pObject + 0x30)) {
+		int vec[3];
+		vec[0] = param_2 << 12;
+		vec[1] = param_3 << 12;
+		vec[2] = param_4 << 12;
+		((void(__cdecl*)(void*, unsigned short, void*)) 0x402707)((void*) (*(int*) ((char*) pObject + 0x38) + *(int*) ((char*) pObject + 0x34) * 0x144), param_1, vec);
+		*(int*) ((char*) pObject + 0x34) = *(int*) ((char*) pObject + 0x34) + 1;
+	}
+}
+
+// MACINTOSH: set_managed_entity_state_id_with_timestamp(int)
+// FUNCTION: LEMBALL 0x00410220
+void __fastcall SetManagedEntityStateIdWithTimestamp(void* pObject, int nUnused, int param_1)
+{
+	*(int*) ((char*) pObject + 0x94) = g_nLevelFrameClockTimeMs;
+	if (param_1 == 8) {
+		((void(__fastcall*)(void*, int)) 0x402cfc)(pObject, 8);
+		return;
+	}
+	*(int*) ((char*) pObject + 0xb8) = param_1;
+}
+
 // MACINTOSH: load_list_entry_pair_from_stream(int, int*)
 // FUNCTION: LEMBALL 0x0045d9f0
 int __fastcall LoadListEntryPairFromStream(void* pObject, int nUnused, int param_2, void* param_3)
