@@ -528,6 +528,21 @@ int LEMBALL_FASTCALL IsSavedTargetWithinProbeBoxes(void)
 	return ((int(__fastcall*)(int)) 0x40358f)(0x32);
 }
 
+// MACINTOSH: CSlinky::CSlinky() [type-0x35 chunk]
+// FUNCTION: LEMBALL 0x0040b480
+void* LEMBALL_FASTCALL ConstructType35ChunkObject(void* pObject)
+{
+	((CGameObject*) pObject)->ConstructCGameObject(0x35, 0, 0);
+	*(int*) ((char*) pObject + 0x138) = 0;
+	*(int*) ((char*) pObject + 0x13c) = 0;
+	*(int*) ((char*) pObject + 0x140) = 0;
+	*(int*) ((char*) pObject + 0x144) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x148) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x14c) = 0xaa55aa55;
+	(* (void***) pObject) = (void**) 0x4932f8;
+	return pObject;
+}
+
 // MACINTOSH: CPlayerLemmingGroupManager::DeleteGroup()
 // FUNCTION: LEMBALL 0x004187f0
 int LEMBALL_FASTCALL RemoveGroupChildOrSelectPrevious(void* pGroup, int nUnused, void* param_2, int* param_3)
