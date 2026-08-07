@@ -164,7 +164,6 @@ address,name,symbol,type,source
 0x004628E0,,??_GVsNetEffStreamChannelState@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462900,,??_ECNetworkMessage@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462940,,??_GCReadSocket@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
-0x00462990,,??_ECWriteSocket@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462A20,DeleteSimpleEffTransportRecordSlotAuto,,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00462A40,DeleteEffTransportRecordBufferAuto,,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNET.CPP
 0x00462AD0,DeleteEffTransportRuntimeGlobalsAuto,,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNET.CPP
