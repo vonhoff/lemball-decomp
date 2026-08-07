@@ -5,6 +5,10 @@
 extern int __fastcall FindNetworkLobbyPeerSlotByPeer(void* pObject, int nUnused, int param_1);
 extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
+extern void* g_pActiveManagedEntityOwner;
+struct PlasChildStateEntityView;
+extern void __cdecl DispatchPlasChildStateTableVariant0(void* pContext, PlasChildStateEntityView* pEntity);
+extern void __cdecl DispatchPlasChildStateTableVariant1(void* pContext, PlasChildStateEntityView* pEntity);
 
 // MACINTOSH: append_static_anim_chunk_record_if_unique(short*)
 // FUNCTION: LEMBALL 0x0040d0c0
@@ -328,4 +332,18 @@ void __fastcall ActivateSavedPositionChunkObject(void* pObject)
 	if (*(int*) 0x4a011c != 0) {
 		((void(__fastcall*)(void*, void*)) 0x4032dd)(*(void**) 0x49d128, pObject);
 	}
+}
+
+// MACINTOSH: dispatch_door_chunk_object_plas_state_table_variant_0_or_1()
+// FUNCTION: LEMBALL 0x0040f120
+int __fastcall DispatchDoorChunkObjectPlasStateTableVariant0or1(void* pObject)
+{
+	if (*(int*) ((char*) pObject + 0x114) == 0) {
+		if (((int(__fastcall*)(void*, void*)) 0x402bb7)(g_pActiveManagedEntityOwner, pObject) != 0) {
+			DispatchPlasChildStateTableVariant0(g_pActiveManagedEntityOwner, (PlasChildStateEntityView*) pObject);
+			return 0;
+		}
+		DispatchPlasChildStateTableVariant1(g_pActiveManagedEntityOwner, (PlasChildStateEntityView*) pObject);
+	}
+	return 0;
 }
