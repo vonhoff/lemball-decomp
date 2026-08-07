@@ -125,6 +125,7 @@ set(LEMBALL_SOURCES
     src/AI/GroupState.cpp
     src/AI/CInvisibleSwitch.cpp
     src/Control/ClusterScanOps.cpp
+    src/Control/ClusterScanOps2.cpp
     src/AI/CInvisibleSwitchManager.cpp
     src/AI/CLaser.cpp
     src/AI/CLaserManager.cpp
