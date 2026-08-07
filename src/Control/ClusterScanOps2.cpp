@@ -2984,3 +2984,91 @@ void __fastcall CMoverFindObjectsOnTopOfMe(void* pThis, int nUnused)
 }
 
 
+// MACINTOSH: CResFONT::AllocateResources(unsigned long)
+// FUNCTION: LEMBALL 0x0045d8b0
+void __fastcall CResFONT_AllocateResources(void* pThis, int nUnused, unsigned int cEntries)
+{
+	unsigned int* pGlyphBase;
+	unsigned int* pIntCodeBase;
+	unsigned int i;
+
+	(void) nUnused;
+	pGlyphBase = (unsigned int*) AllocateVSMemBlock(cEntries * 76u + 4u);
+	if (pGlyphBase != (void*) 0x0) {
+		pGlyphBase[0] = cEntries;
+		for (i = 0; (int) i < (int) cEntries; i++) {
+			((void* (__fastcall*) (void*)) 0x45e8f0)((char*) (pGlyphBase + 1) + i * 76);
+		}
+		*(void**) ((char*) pThis + 0x80) = pGlyphBase + 1;
+	}
+	else {
+		*(void**) ((char*) pThis + 0x80) = (void*) 0x0;
+	}
+	pIntCodeBase = (unsigned int*) AllocateVSMemBlock(cEntries * 84u + 4u);
+	if (pIntCodeBase != (void*) 0x0) {
+		pIntCodeBase[0] = cEntries;
+		for (i = 0; (int) i < (int) cEntries; i++) {
+			((void* (__fastcall*) (void*)) 0x45e7e0)((char*) (pIntCodeBase + 1) + i * 84);
+		}
+		*(void**) ((char*) pThis + 0x7c) = pIntCodeBase + 1;
+	}
+	else {
+		*(void**) ((char*) pThis + 0x7c) = (void*) 0x0;
+	}
+}
+
+// MACINTOSH: CBallManager::Initialise(int)
+// FUNCTION: LEMBALL 0x00421ef0
+void __fastcall CBallManager_Initialise(void* pThis, int nUnused, int nCapacity)
+{
+	void* pBalls;
+	int i;
+	void* pBall;
+
+	(void) nUnused;
+	*(int*) ((char*) pThis + 0xc) = nCapacity;
+	*(int*) ((char*) pThis + 0x8) = 0;
+	if (nCapacity == 0) {
+		*(void**) ((char*) pThis + 0x4) = (void*) 0x0;
+		return;
+	}
+	pBalls = *(void**) ((char*) pThis + 0x4);
+	if (pBalls == (void*) 0x0) {
+		pBalls = AllocateVSMemBlock((unsigned int) nCapacity * 4u);
+		*(void**) ((char*) pThis + 0x4) = pBalls;
+	}
+	if (*(int*) ((char*) pThis + 0xc) > 0) {
+		for (i = 0; i < *(int*) ((char*) pThis + 0xc); i++) {
+			pBall = (void*) ((void* (__cdecl*) (int)) 0x45a780)(0x13c);
+			if (pBall != (void*) 0x0) {
+				pBall = ((void* (__fastcall*) (void*)) 0x4015c8)(pBall);
+				*((void**) pBalls + i) = pBall;
+			}
+			else {
+				*((void**) pBalls + i) = (void*) 0x0;
+			}
+			pBall = *((void**) pBalls + i);
+			((void (__fastcall*) (void*)) (*(void***) pBall + 0x104 / 4))(pBall);
+		}
+	}
+}
+
+// MACINTOSH: CVSOStream::__ls(char)
+// FUNCTION: LEMBALL 0x00458d40
+int __fastcall CVSOStream___ls(void* pThis, int nUnused, unsigned int value)
+{
+	int i;
+	unsigned int uShift;
+	void* pInner;
+	void* pTarget;
+
+	(void) nUnused;
+	uShift = 0x18;
+	pInner = *(void**) (*(char**) pThis + 4);
+	for (i = 0; i < 3; i++) {
+		pTarget = *(void**) ((char*) (int) pInner + (int) pThis + 0x1c);
+		((void (__fastcall*) (void*, int, unsigned int)) (*(void***) pTarget + 2))(pTarget, 0, value >> uShift);
+		uShift -= 8;
+	}
+	return (int) pThis;
+}
