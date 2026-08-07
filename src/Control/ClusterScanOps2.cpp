@@ -493,6 +493,22 @@ void __fastcall ReleaseLinkedGmobChunkObject(void* pObject)
 	}
 }
 
+// MACINTOSH: dispatch_projectile_packet_by_type(short, int)
+// FUNCTION: LEMBALL 0x0041aca0
+int __fastcall DispatchProjectilePacketByType(void* pObject, int nUnused, short param_1, void* param_2)
+{
+	if (param_1 != 0x2b) {
+		return ((int(__fastcall*)(void*, short, void*)) 0x402342)(pObject, param_1, param_2);
+	}
+	int iVar2 = ((int(__fastcall*)(void*, void*)) 0x45f280)((void*) ((char*) pObject + 0x138), *(void**) ((char*) param_2 + 0x20));
+	if (iVar2 != 0) {
+		*(void**) ((char*) param_2 + 0x20) = *(void**) ((char*) pObject + 0x158);
+	}
+	((void(__fastcall*)(void*, void*)) 0x401299)(*(void**) ((char*) pObject + 0x60), pObject);
+	((void(__fastcall*)(void*)) 0x40303a)(pObject);
+	return 1;
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
