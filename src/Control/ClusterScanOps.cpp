@@ -201,6 +201,20 @@ void* __fastcall DeleteLinkedType11ChunkObject(void* pObject, int nUnused, unsig
 	return pObject;
 }
 
+// MACINTOSH: evaluate_managed_entity_probe_condition_code(int)
+// FUNCTION: LEMBALL 0x00420000
+int __fastcall EvaluateManagedEntityProbeConditionCode(void* pObject, int nUnused, int param_1)
+{
+	switch (param_1) {
+	case 0: return 1;
+	case 2: return ((int(__fastcall*)(void*)) 0x4025f9)(pObject);
+	case 3: return ((int(__fastcall*)(void*)) 0x4025f9)(pObject) == 0;
+	case 4: return ((int(__fastcall*)(void*)) 0x4031a2)(pObject);
+	case 5: return ((int(__fastcall*)(void*)) 0x4031a2)(pObject) == 0;
+	default: return 0;
+	}
+}
+
 // MACINTOSH: destroy_managed_entity_group_children()
 // FUNCTION: LEMBALL 0x0041b160
 void __fastcall DestroyManagedEntityGroupChildren(void* pObject)
