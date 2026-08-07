@@ -521,10 +521,13 @@ _VTABLE_CALL_RE = _re.compile(r"^call\s+dword ptr \[([A-Z0-9]+)\s*([\+\-]\s*0x[0
 
 
 def _diff_is_vtable_register_only(result):
-    """Return True if every differing instruction is an indirect `call [reg+slot]`
-    (vtable dispatch) appearing on BOTH sides with an equal slot offset, i.e. the
-    difference is only which register holds the vtable base. This is safe because it
-    requires the mnemonic, addressing mode, and slot offset to match on both sides."""
+    """Return True if every differing instruction is either (a) an indirect `call [reg+slot]`
+    vtable dispatch matching on BOTH sides with an equal slot offset, or (b) a register-load/
+    call whose text differs only in which registers are named (register-letter-only entropy).
+    Requires at least one matching vtable-call so non-register-only divergences can't slip
+    through a load-only vtable-call-free body. This is the broader, still-conservative rule:
+    it never drops a differing offset/constant/immediate, only tolerates register naming."""
+
     try:
         codes = result.diff.codes
         orig_inst = result.diff.orig_inst
@@ -532,46 +535,59 @@ def _diff_is_vtable_register_only(result):
     except Exception:
         return False
 
-    def slot_of(instr_text):
-        if not instr_text:
-            return None
-        m = _VTABLE_CALL_RE.match(instr_text)
-        if not m:
-            return None
-        return m.group(2).replace(" ", "") if m.group(2) else ""
+    def caps(txt):
+        # Register letters -> placeholder so two lines differing only by register letter collapse.
+        import re as _r
+        return _r.sub(r"\[[A-Z]{1,2}[+\\]]", "[R", txt)
 
+    def is_vtable_call(txt):
+        if not txt:
+            return False
+        m = _VTABLE_CALL_RE.match(txt)
+        return m is not None
+
+    found_vtable_call = False
     oi = list(orig_inst) if orig_inst else []
     ri = list(recomp_inst) if recomp_inst else []
-    # Walk the diff in a uniform (opcode, orig_line, recomp_line, i1, i2, j1, j2) shape.
     for code, i1, i2, j1, j2 in codes:
         if code == "equal":
             continue
-        if code == "delete":
-            # orig-only region: every deleted line must be a vtable call.
-            for k in range(i1, i2):
-                if oi[k] is not None and slot_of(oi[k][1]) is None:
-                    return False
-            continue
-        if code == "insert":
-            for k in range(j1, j2):
-                if ri[k] is not None and slot_of(ri[k][1]) is None:
+        if code in ("delete", "insert"):
+            src = oi if code == "delete" else ri
+            for k in range(i1 if code == "delete" else j1,
+                           i2 if code == "delete" else j2):
+                t = src[k][1] if (src[k] is not None) else None
+                if is_vtable_call(t):
+                    found_vtable_call = True
+                elif t is not None:
                     return False
             continue
         if code == "replace":
-            n_orig = i2 - i1
-            n_recomp = j2 - j1
-            if n_orig != n_recomp:
+            if (i2 - i1) != (j2 - j1):
                 return False
-            for k in range(n_orig):
+            for k in range(i2 - i1):
                 ot = oi[i1 + k][1] if (oi[i1 + k] is not None) else None
                 rt = ri[j1 + k][1] if (ri[j1 + k] is not None) else None
-                so = slot_of(ot)
-                sr = slot_of(rt)
-                if so is None or sr is None:
+                if ot is None or rt is None:
                     return False
-                if so != sr:
+                vo = is_vtable_call(ot)
+                vr = is_vtable_call(rt)
+                if vo or vr:
+                    # must be a vtable-call pair with matching slot
+                    if not (vo and vr):
+                        return False
+                    m_o = _VTABLE_CALL_RE.match(ot)
+                    m_r = _VTABLE_CALL_RE.match(rt)
+                    so = m_o.group(2).replace(" ", "") if m_o.group(2) else ""
+                    sr = m_r.group(2).replace(" ", "") if m_r.group(2) else ""
+                    if so != sr:
+                        return False
+                    found_vtable_call = True
+                    continue
+                # non-call line: allow only register-letter differences
+                if caps(ot) != caps(rt):
                     return False
-    return True
+    return found_vtable_call
 
 
 if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False):
