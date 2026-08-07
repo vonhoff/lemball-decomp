@@ -424,3 +424,29 @@ void __fastcall ReleaseLevelScreenPaletteRemapVariants(void* pObject)
 		((PaletteRemapPointerTableMemberView*) *(void**) 0x4a2000)->ReleasePaletteRemapVariant((void*) *(int*) ((char*) pObject + 0x64 + i * 4));
 	}
 }
+
+// MACINTOSH: select_pause_dialog_palette_remap_for_index(int)
+// FUNCTION: LEMBALL 0x00444930
+int __fastcall SelectPauseDialogPaletteRemapForIndex(void* pObject, int nUnused, int param_1)
+{
+	if (*(int*) ((char*) pObject + 0x118) == param_1) {
+		return *(int*) ((char*) pObject + 0x1e8);
+	}
+	if (*(int*) ((char*) pObject + 0x124) <= param_1) {
+		return *(int*) ((char*) pObject + 0x1e0);
+	}
+	if (param_1 <= *(int*) ((char*) pObject + 0x11c) && param_1 > 0) {
+		return *(int*) ((char*) pObject + 0x1ec);
+	}
+	return *(int*) ((char*) pObject + 0x1e4);
+}
+
+// MACINTOSH: refresh_queued_zrle_variant_range_selection()
+// FUNCTION: LEMBALL 0x0044f3d0
+void __fastcall RefreshQueuedZrleVariantRangeSelection(void* pObject)
+{
+	if (*(void**) ((char*) pObject + 0x44) != 0) {
+		*(int*) ((char*) pObject + 0x40) = **(int**) ((char*) pObject + 0x44);
+	}
+	((void(__cdecl*)(void*, int)) 0x4688e0)(*(void**) ((char*) pObject + 0x4c), *(int*) (*(int*) ((char*) pObject + 0x48) + (*(int*) ((char*) pObject + 0x40) - *(int*) ((char*) pObject + 0x3c)) * 4));
+}
