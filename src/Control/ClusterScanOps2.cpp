@@ -580,6 +580,16 @@ void __fastcall MarkNetworkLobbyPlayerEntryDirty(void* pObject, int nUnused, int
 	}
 }
 
+// MACINTOSH: pop_first_managed_entity_move_command_and_reset_motion()
+// FUNCTION: LEMBALL 0x00415780
+void __fastcall PopFirstManagedEntityMoveCommandAndResetMotion(void* pObject)
+{
+	((void(__fastcall*)(void*)) 0x402351)(pObject);
+	*(int*) ((char*) pObject + 0x88) = 0;
+	*(int*) ((char*) pObject + 0xcc) = g_nLevelFrameClockTick;
+	*(int*) ((char*) pObject + 0xc8) = g_nLevelFrameClockTick;
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
