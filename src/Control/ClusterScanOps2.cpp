@@ -2645,3 +2645,147 @@ void __fastcall CRocketDoActivate(void* pObject, int nUnused)
 	}
 }
 
+
+// MACINTOSH: CDuplicator::Set(int*, int, int)
+// FUNCTION: LEMBALL 0x00427630
+void __fastcall CDuplicatorSet(void* pObject, int nUnused, int* pPos)
+{
+	int iVar3 = *pPos;
+	*(int*) ((char*) pObject + 0x9c) = iVar3;
+	int iVar4 = pPos[1];
+	*(int*) ((char*) pObject + 0xa0) = iVar4;
+	int iVar2 = pPos[2];
+	*(int*) ((char*) pObject + 0x138) = 1;
+	*(int*) ((char*) pObject + 0x13c) = 1;
+	*(int*) ((char*) pObject + 0xa4) = iVar2;
+	iVar3 = (iVar3 >> 12) / 16;
+	iVar4 = (iVar4 >> 12) / 16;
+	if (iVar3 > -1) {
+		if (iVar4 > -1 && iVar3 < *(int*) ((char*) g_pLevelTileGrid + 0x10) && iVar4 < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
+			*(unsigned char*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (iVar4 * *(int*) ((char*) g_pLevelTileGrid + 0x10) + iVar3) * 0xc) |= 1;
+		}
+		iVar4--;
+		if (iVar4 > -1) {
+			if (iVar3 < *(int*) ((char*) g_pLevelTileGrid + 0x10) && iVar4 < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
+				*(unsigned char*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (*(int*) ((char*) g_pLevelTileGrid + 0x10) * iVar4 + iVar3) * 0xc) |= 1;
+			}
+		}
+	}
+}
+
+// MACINTOSH: CDuplicator::Delete()
+// FUNCTION: LEMBALL 0x004276f0
+void __fastcall CDuplicatorDelete(void* pObject, int nUnused)
+{
+	int iVar2 = (*(int*) ((char*) pObject + 0x9c) >> 12) / 16;
+	int iVar3 = (*(int*) ((char*) pObject + 0xa0) >> 12) / 16;
+	if (iVar2 > -1) {
+		if (iVar3 > -1 && iVar2 < *(int*) ((char*) g_pLevelTileGrid + 0x10) && iVar3 < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
+			*(unsigned short*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (*(int*) ((char*) g_pLevelTileGrid + 0x10) * iVar3 + iVar2) * 0xc) &= 0xfffe;
+		}
+		iVar3--;
+		if (iVar3 > -1) {
+			if (iVar2 < *(int*) ((char*) g_pLevelTileGrid + 0x10) && iVar3 < *(int*) ((char*) g_pLevelTileGrid + 0x14)) {
+				*(unsigned short*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (*(int*) ((char*) g_pLevelTileGrid + 0x10) * iVar3 + iVar2) * 0xc) &= 0xfffe;
+			}
+		}
+	}
+}
+
+// MACINTOSH: CEnemy::LineOfSight(int, int)
+// FUNCTION: LEMBALL 0x004202a0
+int __fastcall EnemyLineOfSight(void* pObject, int nUnused, int param_1, int param_2)
+{
+	unsigned int local_8 = param_1 - *(int*) ((char*) pObject + 0x9c);
+	unsigned int uVar4 = param_2 - *(int*) ((char*) pObject + 0xa0);
+	unsigned int local_4;
+	unsigned int* puVar1;
+	unsigned int* puVar2;
+	if ((int) local_8 < 0) { local_4 = -(int) local_8; puVar1 = &local_4; }
+	else { puVar1 = &local_8; }
+	if ((int) uVar4 < 0) { puVar2 = &local_4; local_4 = -(int) uVar4; }
+	else { puVar2 = &local_8; local_8 = uVar4; }
+	int iVar3 = (int) *puVar2 >> 12;
+	unsigned int uVar5 = *puVar2 & 0xfff;
+	int iVar5 = (int) ((uVar5 * 0x6a0u) >> 12);
+	if (iVar3 * 0x6a0 + iVar5 < (int) *puVar1 && (int) *puVar1 < iVar5 + (iVar3 * 0x1350 + (int) uVar5) * 2) {
+		return 1;
+	}
+	return 0;
+}
+
+// MACINTOSH: CSlinkyManager::LoadLevel(ushort*)
+// FUNCTION: LEMBALL 0x0040be50
+void __fastcall CSlinkyManagerLoadLevel(void* pThis, int nUnused, unsigned short* pStream)
+{
+	unsigned short nCount = *pStream;
+	pStream++;
+	((void(__fastcall*) (void*, int, int)) 0x403396)(pThis, 0, nCount);
+	if (nCount != 0) {
+		do {
+			unsigned short uSlot;
+			if (*(unsigned short*) (*(int*) ((char*) pThis) + 0x54) < 2) {
+				uSlot = (unsigned short) ((int(__fastcall*) ()) 0x40214e)();
+			}
+			else {
+				uSlot = *pStream;
+				pStream++;
+			}
+			unsigned int word1 = *(pStream);
+			pStream++;
+			unsigned int word2 = *(pStream);
+			pStream++;
+			unsigned int word3 = *(pStream);
+			pStream++;
+			unsigned int word4 = *(pStream);
+			pStream++;
+			((void(__fastcall*) (void*, int, int, int, int, int, int)) 0x402c6b)(pThis, 0, uSlot, word1, word2, word3, word4);
+			nCount--;
+		} while (nCount != 0);
+	}
+}
+
+// MACINTOSH: CCollectableManager::LoadLevel(ushort*, int)
+// FUNCTION: LEMBALL 0x00422790
+void __fastcall CCollectableManagerLoadLevel(void* pThis, int nUnused, unsigned short* pStream, int param_3)
+{
+	unsigned short nCount = *pStream;
+	pStream++;
+	if (param_3 == 0) {
+		((void(__fastcall*) (void*, int, int)) 0x40187f)(pThis, 0, nCount);
+	}
+	if (nCount != 0) {
+		do {
+			unsigned short uSlot;
+			if (*(unsigned short*) (*(int*) ((char*) pThis + 0x30) + 0x54) < 2) {
+				uSlot = (unsigned short) ((int(__fastcall*) ()) 0x40214e)();
+			}
+			else {
+				uSlot = *pStream;
+				pStream++;
+			}
+			unsigned int subtype = *(pStream);
+			pStream++;
+			unsigned int coord2 = *(pStream);
+			pStream++;
+			unsigned int coord3 = *(pStream);
+			pStream++;
+			unsigned int coord4 = *(pStream);
+			pStream++;
+			int appendType = (int) subtype;
+			if (param_3 == 0) {
+				void* pBase = *(void**) ((char*) pThis + 0x30);
+				if ((subtype == 0xc || subtype == 0xb) && *(int*) ((char*) pBase + 0x64) == 1) {
+					if (*(int*) ((char*) pBase + 0x7c) == 1) {
+						if (subtype == 0xc) appendType = 0xc; else appendType = 0xb;
+					}
+					else {
+						if (subtype == 0xc) appendType = 0xb; else appendType = 0xc;
+					}
+				}
+			}
+			((void(__fastcall*) (void*, int, int, int, int, int, int)) 0x401afa)(*(void**) ((char*) pThis + 0x30), 0, uSlot, coord2, coord3, coord4, appendType);
+			nCount--;
+		} while (nCount != 0);
+	}
+}
