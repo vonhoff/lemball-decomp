@@ -2303,3 +2303,43 @@ void __fastcall CSlinkyMove(void* pThis, int nUnused)
 		*(int*) ((char*) pThis + 0xb0) = (*(int*) ((char*) pThis + 0xa4) >> 12) << 12;
 	} while (i < 8 && ((int(__fastcall*)(void*, int*)) 0x403229)(pThis, (int*) ((char*) pThis + 0xa8)) == 0);
 }
+
+// MACINTOSH: CAI::ProcessMsg(short*)
+// FUNCTION: LEMBALL 0x00412660
+int __fastcall CAIProcessMsg(void* pThis, int nUnused, short* param_1)
+{
+	if (param_1[0] == 4) {
+		((void(__fastcall*)(void*, int, int)) 0x402d74)(
+			*(void**) ((char*) pThis + 0x15c), *(int*) (param_1 + 4), *(int*) (param_1 + 6));
+		return 0;
+	}
+	if (*(int*) ((char*) pThis + 0x58) == 0) {
+		return 1;
+	}
+	switch (param_1[0]) {
+	case 2:
+		((void(__fastcall*)(void*, int, int)) 0x40201d)(
+			*(void**) ((char*) pThis + 0x15c), *(int*) (param_1 + 4), *(int*) (param_1 + 6));
+		return 0;
+	case 3:
+		((void(__fastcall*)(void*)) 0x40121c)(*(void**) ((char*) pThis + 0x15c));
+		return 0;
+	case 6:
+		((void(__fastcall*)(void*)) 0x402d47)(*(void**) ((char*) pThis + 0x15c));
+		return 0;
+	case 7:
+		((void(__fastcall*)(void*)) 0x402509)(*(void**) ((char*) pThis + 0x15c));
+		return 0;
+	case 8:
+		((void(__fastcall*)(void*, int)) 0x40378d)(
+			*(void**) ((char*) pThis + 0x15c), *(int*) (param_1 + 4));
+		return 0;
+	case 5:
+		(*( void(**)(void*, int, int)) (*(void***) *(void**) ((char*) pThis + 0x15c) + 0x34 / 4))(
+			*(void**) ((char*) pThis + 0x15c), *(int*) (param_1 + 4), *(int*) (param_1 + 6));
+		return 0;
+	default:
+		*(int*) ((char*) pThis + 0xc) = *(int*) ((char*) pThis + 0xc) + 1;
+		return 0;
+	}
+}
