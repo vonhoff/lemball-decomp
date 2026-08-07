@@ -120,6 +120,24 @@ void __fastcall InitializeEnmyChunkObjectBehaviorFields(void* pObject, int nUnus
 	*(int*) ((char*) pObject + 0x148) = param_6;
 }
 
+// MACINTOSH: destroy_cached_chunk_object_children()
+// FUNCTION: LEMBALL 0x0041e9a0
+void __fastcall DestroyCachedChunkObjectChildren(void* pObject)
+{
+	int i;
+	if (*(int*) ((char*) pObject + 0xa4) > 0) {
+		for (i = 0; i < *(int*) ((char*) pObject + 0xa4); i++) {
+			void* pChild = *(void**) ((char*) pObject + 4 + i * 4);
+			if (pChild != 0) {
+				(*( void(**)(int)) *(void***) pChild)(1);
+			}
+			*(void**) ((char*) pObject + 4 + i * 4) = 0;
+		}
+	}
+	*(int*) ((char*) pObject + 0xa4) = 0;
+	*(int*) ((char*) pObject + 0xa8) = 0;
+}
+
 // MACINTOSH: activate_saved_position_chunk_object()
 // FUNCTION: LEMBALL 0x0041c670
 void __fastcall ActivateSavedPositionChunkObject(void* pObject)
