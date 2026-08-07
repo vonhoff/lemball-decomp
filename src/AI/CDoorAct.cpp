@@ -332,6 +332,26 @@ void CDoorManager::LoadLevel(unsigned short* pLevelData, int nLen, unsigned char
 	}
 }
 
+// MACINTOSH: CDoorManager::Delete(uchar) - array/scalar delete[]
+// FUNCTION: LEMBALL 0x0040ec10
+void LEMBALL_FASTCALL DeleteDoorChunkObjectArray(void* pObjectArray, int nUnused, unsigned char fDelete)
+{
+	int nCount;
+
+	if ((fDelete & 2) == 0) {
+		((CGameObject*) pObjectArray)->DestroyLevelChunkObjectBase();
+		if ((fDelete & 1) != 0) {
+			FreeVSMemBlock(pObjectArray);
+		}
+		return;
+	}
+	nCount = *(int*) ((char*) pObjectArray - 4);
+	while (--nCount >= 0) {
+		((CGameObject*) ((char*) pObjectArray + nCount * 0x14c))->DestroyLevelChunkObjectBase();
+	}
+	FreeVSMemBlock((char*) pObjectArray - 4);
+}
+
 // FUNCTION: LEMBALL 0x0040df90
 void CDoorManager::Restart(void)
 {

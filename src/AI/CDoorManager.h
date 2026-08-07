@@ -21,6 +21,7 @@ struct CDoorManager {
 	void Initialise(int nCount);
 	int Add(short nSlot, void* pObjectType, unsigned short nDoorType, int nWorldX, int nWorldY, int nWorldZ);
 	void LoadLevel(unsigned short* pLevelData, int nLen, unsigned char nFormat);
+	void Delete(unsigned char fDelete);
 };
 
 #endif
