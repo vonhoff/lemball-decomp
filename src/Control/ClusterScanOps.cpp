@@ -2,6 +2,8 @@
 // (avoids disturbing existing translation units' formatting).
 #include "Visos/Generic/Memory.h"
 
+extern int __fastcall FindNetworkLobbyPeerSlotByPeer(void* pObject, int nUnused, int param_1);
+
 // MACINTOSH: append_static_anim_chunk_record_if_unique(short*)
 // FUNCTION: LEMBALL 0x0040d0c0
 void __fastcall AppendStaticAnimChunkRecordIfUnique(void* pObject, int nUnused, short* param_1)
@@ -80,4 +82,15 @@ void* __fastcall DestroyManagedEntityGroup(void* pThis, int nUnused, unsigned ch
 		FreeVSMemBlock((void*) ((char*) pThis - 0xb0));
 	}
 	return (void*) ((char*) pThis - 0xb0);
+}
+
+// MACINTOSH: get_network_lobby_peer_entry_stream_by_peer(int)
+// FUNCTION: LEMBALL 0x00452b90
+void* __fastcall GetNetworkLobbyPeerEntryStreamByPeer(void* pObject, int nUnused, int param_1)
+{
+	int iVar1 = FindNetworkLobbyPeerSlotByPeer(pObject, nUnused, param_1);
+	if (iVar1 == -1) {
+		return 0;
+	}
+	return (void*) (*(int*) ((char*) pObject + 0x14) + iVar1 * 0x50);
 }
