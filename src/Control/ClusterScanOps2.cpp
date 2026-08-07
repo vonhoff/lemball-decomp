@@ -6,6 +6,8 @@ extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern void __fastcall ReleaseTypedResourceObjectIfLoaded(void* pObject, void* pUnusedEdx, int fReleaseMode);
 extern void* g_pActiveManagedEntityOwner;
+extern int g_nLevelFrameClockTick;
+extern int g_nLevelFrameClockTimeMs;
 struct PlasChildStateEntityView;
 extern void __cdecl DispatchPlasChildStateTableVariant0(void* pContext, PlasChildStateEntityView* pEntity);
 extern void __cdecl DispatchPlasChildStateTableVariant1(void* pContext, PlasChildStateEntityView* pEntity);
@@ -523,6 +525,36 @@ int __fastcall RouteLevelChunkStreamPayload(void* pObject, int nUnused, void* pa
 	((void(__cdecl*)(void*, void*)) 0x45f280)(*(void**) (*(int*) ((char*) pObject + 0x10) + *(int*) (*(int*) ((char*) pObject + 0x1c) + (unsigned int) uVar1 * 4 - 0x2c) * 4), (void*) (*(int*) ((char*) param_1 + 4) + 0x10));
 	*(int*) ((char*) param_1 + 0x24) = 0;
 	return 1;
+}
+
+// MACINTOSH: set_type18_chunk_object_position_by_index(int, int, int, int)
+// FUNCTION: LEMBALL 0x0040ca10
+void __fastcall SetType18ChunkObjectPositionByIndex(void* pObject, int nUnused, int param_2, int param_3, int param_4, int param_5)
+{
+	if (param_5 < *(int*) ((char*) pObject + 0x50)) {
+		((void(__cdecl*)(void*, int, int, int)) 0x401cdf)(*(void**) ((char*) pObject + 0x30 + param_5 * 4), param_2, param_3, param_4);
+	}
+}
+
+// MACINTOSH: activate_door_chunk_object_trigger()
+// FUNCTION: LEMBALL 0x0040dec0
+void __fastcall ActivateDoorChunkObjectTrigger(void* pObject)
+{
+	*(int*) ((char*) pObject + 0x144) = 1;
+	*(int*) ((char*) pObject + 0x94) = g_nLevelFrameClockTimeMs;
+	*(int*) ((char*) pObject + 0xcc) = *(int*) ((char*) pObject + 0xcc) + g_nLevelFrameClockTick;
+	if (*(int*) ((char*) pObject + 0xb8) != 0x1c) {
+		unsigned short uVar1 = *(unsigned short*) ((char*) pObject + 0xbc);
+		int iVar2;
+		if (uVar1 == 0x14) {
+			iVar2 = 0x19;
+		} else if (uVar1 < 0x15 || uVar1 > 0x17) {
+			iVar2 = 0x19;
+		} else {
+			iVar2 = 0x4b;
+		}
+		((void(__fastcall*)(void*, int)) 0x402f22)(g_pActiveManagedEntityOwner, iVar2);
+	}
 }
 
 // MACINTOSH: load_list_entry_pair_from_stream(int, int*)
