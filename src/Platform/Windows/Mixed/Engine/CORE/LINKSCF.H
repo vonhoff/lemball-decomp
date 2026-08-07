@@ -168,8 +168,6 @@ struct LinkScfBoonChunkManagerView {
 // MACINTOSH: CCollectableManager::Process()
 // STUB: LEMBALL 0x00422550
 // RefreshActiveCollChunkObjects
-// STUB: LEMBALL 0x00422ef0
-// EmitCollChunkManagerRenderEntries
 
 // RefreshActiveMineChunkObjects
 // EmitMineChunkManagerRenderEntries
@@ -177,8 +175,6 @@ struct LinkScfBoonChunkManagerView {
 
 // STUB: LEMBALL 0x00427010
 // RefreshActiveRockChunkObjects
-// STUB: LEMBALL 0x00427050
-// EmitRockChunkManagerRenderEntries
 // STUB: LEMBALL 0x0042b4f0
 // EmitTramChunkManagerRenderEntries
 // MACINTOSH: CPaintGunManager::Process()
