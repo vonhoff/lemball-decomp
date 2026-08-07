@@ -334,6 +334,20 @@ void __fastcall ActivateSavedPositionChunkObject(void* pObject)
 	}
 }
 
+// MACINTOSH: set_door_chunk_object_target_tile(int, int)
+// FUNCTION: LEMBALL 0x0040f2c0
+void __fastcall SetDoorChunkObjectTargetTile(void* pObject, int nUnused, int param_1, int param_2)
+{
+	if (*(int*) ((char*) pObject + 0x184) == 0) {
+		int iVar1 = *(int*) ((char*) pObject + 0xb8);
+		if (iVar1 == 0 || iVar1 == 2 || iVar1 == 6) {
+			*(int*) ((char*) pObject + 0x184) = 1;
+			*(int*) ((char*) pObject + 0x1b4) = param_1 << 12;
+			*(int*) ((char*) pObject + 0x1b8) = param_2 << 12;
+		}
+	}
+}
+
 // MACINTOSH: dispatch_door_chunk_object_plas_state_table_variant_0_or_1()
 // FUNCTION: LEMBALL 0x0040f120
 int __fastcall DispatchDoorChunkObjectPlasStateTableVariant0or1(void* pObject)
