@@ -450,3 +450,42 @@ void __fastcall RefreshQueuedZrleVariantRangeSelection(void* pObject)
 	}
 	((void(__cdecl*)(void*, int)) 0x4688e0)(*(void**) ((char*) pObject + 0x4c), *(int*) (*(int*) ((char*) pObject + 0x48) + (*(int*) ((char*) pObject + 0x40) - *(int*) ((char*) pObject + 0x3c)) * 4));
 }
+
+// MACINTOSH: copy_next_level_title_word_to_line(int, int, int*, int*)
+// FUNCTION: LEMBALL 0x0044a2d0
+int __cdecl CopyNextLevelTitleWordToLine(int param_1, int param_2, int* param_3, int* param_4)
+{
+	char cVar1 = *(char*) (*param_3 + param_1);
+	while (cVar1 != '\0' && *(char*) (*param_3 + param_1) != ' ') {
+		*(char*) (*param_4 + param_2) = *(char*) (*param_3 + param_1);
+		*param_3 = *param_3 + 1;
+		*param_4 = *param_4 + 1;
+		cVar1 = *(char*) (*param_3 + param_1);
+	}
+	*(char*) (*param_4 + param_2) = 0;
+	if (*(char*) (*param_3 + param_1) != '\0') {
+		*param_3 = *param_3 + 1;
+		return 0;
+	}
+	return 1;
+}
+
+// MACINTOSH: delete_lobby_player_entries(uint)
+// FUNCTION: LEMBALL 0x00455e10
+void* __fastcall DeleteLobbyPlayerEntries(void* pThis, int nUnused, unsigned int param_1)
+{
+	if ((param_1 & 2) == 0) {
+		*(void**) pThis = (void**) 0x496ea0;
+		if ((param_1 & 1) != 0) {
+			FreeVSMemBlock(pThis);
+		}
+		return pThis;
+	}
+	int iCount = *(int*) ((char*) pThis - 4);
+	int i;
+	for (i = iCount - 1; i >= 0; i--) {
+		((void(__fastcall*)(void*)) 0x40338c)((char*) pThis + i * 0x44);
+	}
+	FreeVSMemBlock((char*) pThis - 4);
+	return pThis;
+}
