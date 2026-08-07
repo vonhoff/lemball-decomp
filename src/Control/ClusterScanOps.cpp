@@ -23,3 +23,23 @@ void __fastcall AppendStaticAnimChunkRecordIfUnique(void* pObject, int nUnused, 
 		}
 	}
 }
+
+// MACINTOSH: get_last_queued_projectile_request_code()
+// FUNCTION: LEMBALL 0x0040fbe0
+int __fastcall GetLastQueuedProjectileRequestCode(void* pObject)
+{
+	int i;
+	int count = *(int*) ((char*) pObject + 0x220);
+	if (count == 0) {
+		return 0xffff;
+	}
+	for (i = count - 1; i >= 0; i--) {
+		switch (*(int*) ((char*) pObject + 0x1c0 + i * 4)) {
+		case 0x27: return 0x27;
+		case 0x29: return 0x29;
+		case 0x2b: return 0x2b;
+		case 0x2d: return 0x2d;
+		}
+	}
+	return 0xffff;
+}
