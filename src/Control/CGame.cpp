@@ -1955,7 +1955,7 @@ void SetLevelScreenStatusIndicatorModeThunk(int nMode, int nValue)
 {
 	SetLevelScreenStatusIndicatorMode(nMode, nValue);
 }
-// LINKERILT: LEMBALL 0x00401b90
+// FUNCTION: LEMBALL 0x00455050
 void* ConstructNetworkLobbyTransportController(void* pModeObject, GameMainContext* pMainContext)
 {
 	GameNetworkLobbyTransportController* pMode;
@@ -2133,7 +2133,7 @@ void LEMBALL_FASTCALL RefreshLevelScreenViewportLayoutThunk(void* pScreen)
 {
 	RefreshLevelScreenViewportLayout(pScreen);
 }
-// LINKERILT: LEMBALL 0x00402b8f
+// FUNCTION: LEMBALL 0x00410c10
 void* ConstructLevelGameMode(void* pModeObject, GameMainContext* pMainContext)
 {
 	GameLevelGameMode* pMode;
