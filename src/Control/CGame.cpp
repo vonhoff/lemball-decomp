@@ -1736,6 +1736,8 @@ void VS_WindowOwnerBase::ReservedWindowOwnerSlot37(void)
 {
 }
 
+// MACINTOSH: VS_RootGeometryOwner::AppendQueuedRenderSinkValueNode(void*)
+// FUNCTION: LEMBALL 0x004323d0
 void VS_RootGeometryOwner::AppendQueuedRenderSinkValueNode(void* pValue)
 {
 	VS_QueuedRenderSinkValueNode* pNode;
@@ -1811,6 +1813,8 @@ void VS_WindowOwnerBase::CacheCurrentContextWindow(void)
 	g_pCachedCurrentContextOwner = this;
 }
 
+// MACINTOSH: VS_RootGeometryOwner::RemoveQueuedRenderSinkValueNode(void*)
+// FUNCTION: LEMBALL 0x00432430
 void VS_RootGeometryOwner::RemoveQueuedRenderSinkValueNode(void* pValue)
 {
 	unsigned int* pNode;
