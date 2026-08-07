@@ -44,6 +44,7 @@ struct CDoor : public ManagedEntityStateView {
 	void ResetCollision(void);
 	int Process(void);
 	int Hits(const AICOORD* pCoord, CGameObject* pGameObject);
+	void Set(void* pObjectType, unsigned short nDoorType, int nWorldX, int nWorldY, int nWorldZ);
 };
 
 // Split from the original LINKSCF source group to preserve MSVC 4.20 code generation.
@@ -230,6 +231,55 @@ int CDoor::Hits(const AICOORD* pCoord, CGameObject* pGameObject)
 		}
 	}
 	return 0;
+}
+
+// MACINTOSH: CDoor::Set(eObjectType, unsigned short, int, int, int)
+// FUNCTION: LEMBALL 0x0040d4a0
+void CDoor::Set(void* pObjectType, unsigned short nDoorType, int nWorldX, int nWorldY, int nWorldZ)
+{
+	char* pObjectBytes = (char*) this;
+
+	*(int*) (pObjectBytes + 0x64) = (int) pObjectType;
+	*(int*) (pObjectBytes + 0x40) = nWorldX << 12;
+	*(int*) (pObjectBytes + 0x44) = nWorldY << 12;
+	*(unsigned short*) (pObjectBytes + 0x140) = nDoorType;
+	*(int*) (pObjectBytes + 0x48) = nWorldZ << 12;
+	*(short*) (pObjectBytes + 0x138) = *(short*) 0x49cf48;
+	*(short*) 0x49cf48 = (short) (*(short*) 0x49cf48 + 1);
+	*(int*) (pObjectBytes + 0xb8) = 0x1e;
+	if (*(short*) (pObjectBytes + 0x140) != 0) {
+		*(int*) (pObjectBytes + 0xb8) = 0x1d;
+	}
+	switch (*(short*) (pObjectBytes + 0x140)) {
+	case 0: *(unsigned short*) (pObjectBytes + 0xbc) = 0xffff; break;
+	case 1: *(unsigned short*) (pObjectBytes + 0xbc) = 0x15; break;
+	case 2: *(unsigned short*) (pObjectBytes + 0xbc) = 0x16; break;
+	case 3: *(unsigned short*) (pObjectBytes + 0xbc) = 0x17; break;
+	case 4: *(unsigned short*) (pObjectBytes + 0xbc) = 0x14; break;
+	}
+	*(int*) (pObjectBytes + 0x13c) = g_nLevelFrameClockTick;
+	*(int*) (pObjectBytes + 0x9c) = *(int*) (pObjectBytes + 0x40);
+	*(int*) (pObjectBytes + 0xa0) = *(int*) (pObjectBytes + 0x44);
+	*(int*) (pObjectBytes + 0xa4) = *(int*) (pObjectBytes + 0x48);
+	*(int*) (pObjectBytes + 0x144) = 0;
+}
+
+// MACINTOSH: CDoorManager::Add(short, eObjectType, ushort, int, int, int)
+// FUNCTION: LEMBALL 0x0040e0c0
+int CDoorManager::Add(short nSlot, void* pObjectType, unsigned short nDoorType, int nWorldX, int nWorldY, int nWorldZ)
+{
+	CDoor* pObject;
+
+	if (m_nObjectCount34 < m_nCapacity38) {
+		if (nSlot == -1) {
+			nSlot = (short) ((unsigned int(*)()) 0x40214e)();
+		}
+		pObject = (CDoor*) ((char*) m_pObjects3C + m_nObjectCount34 * 0x14c);
+		((CGameObject*) pObject)->SetId((unsigned short) nSlot);
+		pObject->Set(pObjectType, nDoorType, nWorldX, nWorldY, nWorldZ);
+		return m_nObjectCount34;
+	}
+	return -1;
 }
 
 // FUNCTION: LEMBALL 0x0040df90

@@ -18,6 +18,7 @@ struct CDoorManager {
 	void Restart(void);
 	int Open(void* pCoord, void* pGameObject);
 	void Initialise(int nCount);
+	int Add(short nSlot, void* pObjectType, unsigned short nDoorType, int nWorldX, int nWorldY, int nWorldZ);
 };
 
 #endif
