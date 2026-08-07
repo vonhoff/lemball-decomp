@@ -949,6 +949,18 @@ void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int 
 	}
 }
 
+// MACINTOSH: reset_then_forward_managed_entity_vslot_0x60()
+// FUNCTION: LEMBALL 0x00419ed0
+void __cdecl ResetThenForwardManagedEntityVslot0x60(int param_1, int* param_2)
+{
+	int iVar1 = *param_2;
+	int iVar2 = (*( int(**)(void)) (*(void***) iVar1 + 0xe4 / 4))();
+	if (iVar2 != 0) {
+		(*( void(**)(int, int, int)) (*(void***) iVar1 + 0xe8 / 4))(0, 0, 1);
+	}
+	(*( void(**)(void)) (*(void***) iVar1 + 0x60 / 4))();
+}
+
 // MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
 void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
