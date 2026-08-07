@@ -606,6 +606,15 @@ void* LEMBALL_FASTCALL ConstructGmobChunkType14Object(void* pObject, int nUnused
 	return pObject;
 }
 
+// MACINTOSH: CSheepGroup::CSheepGroup() / construct_shpg_managed_entity_group_controller
+// FUNCTION: LEMBALL 0x0041f500
+void* LEMBALL_FASTCALL ConstructShpgManagedEntityGroupController(void* pObject, int nUnused, void* p1, void* p2, void* p3)
+{
+	((void(__fastcall*)(void*, void*, void*, void*)) 0x402103)(pObject, p1, p2, p3);
+	(* (void***) pObject) = (void**) 0x494dd8;
+	return pObject;
+}
+
 // MACINTOSH: CTrapDoor::CTrapDoor() [type-0x18 chunk]
 // FUNCTION: LEMBALL 0x0040c2d0
 void* LEMBALL_FASTCALL ConstructType18ChunkObject(void* pObject, int nUnused, void* pPoint, int pContext)
