@@ -1779,3 +1779,30 @@ void __fastcall DispatchObjectStateVariantCallback(void* pThis)
 		(*( void(**)(int)) (*(void***) pThis + 8 / 4))(0);
 	}
 }
+
+// MACINTOSH: with_two_dword_queue_cursor_points_toward_target_tile()
+// FUNCTION: LEMBALL 0x0040f4b0
+int __fastcall IsDoorChunkObjectFacingTowardTargetTile(void* pThis)
+{
+	unsigned int uDir = ((unsigned int(__cdecl*)(int, int, int, int)) 0x401532)(
+		(*(int*) ((char*) pThis + 0x9c)) >> 12, (*(int*) ((char*) pThis + 0xa0)) >> 12,
+		(*(int*) ((char*) pThis + 0x1b4)) >> 12, (*(int*) ((char*) pThis + 0x1b8)) >> 12);
+	return (int) (short) (*(short*) ((char*) pThis + 0xb4)) - (int) uDir == 1;
+}
+
+// MACINTOSH: with_two_dword_queue_cursor_direction_in_sync()
+// FUNCTION: LEMBALL 0x0040f430
+int __fastcall IsDoorChunkObjectFacingTowardQueueCursor(void* pThis)
+{
+	if (*(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) != 0) {
+		return 1;
+	}
+	int local_4;
+	int local_8;
+	((void(__fastcall*)(void*, void*, void*)) 0x401e65)(*(void**) ((char*) g_pActiveManagedEntityOwner + 0x160), &local_4, &local_8);
+	unsigned int uDir = ((unsigned int(__cdecl*)(int, int, int, int)) 0x401532)(
+		(*(int*) ((char*) pThis + 0x9c)) >> 12, (*(int*) ((char*) pThis + 0xa0)) >> 12,
+		local_4, local_8);
+	return (int) (short) (*(short*) ((char*) pThis + 0xb4)) - (int) uDir == 1;
+}
+
