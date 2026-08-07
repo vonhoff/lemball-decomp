@@ -483,6 +483,20 @@ void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int 
 	}
 }
 
+// MACINTOSH: award_300_points_mark_flag_and_emit_callback()
+// FUNCTION: LEMBALL 0x004206a0
+void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
+{
+	*(int*) ((char*) pObject + 0x10c) = 1;
+	((void(__fastcall*)(void*, int)) 0x402f22)(g_pActiveManagedEntityOwner, 300);
+	int vec[3];
+	vec[0] = 0;
+	vec[1] = 0;
+	vec[2] = 0xa000;
+	(*( void(**)(void*, int)) (*(void***) pObject + 0x20 / 4))(vec, 0);
+	*(int*) ((char*) pObject + 0x2c) = 1;
+}
+
 // MACINTOSH: copy_next_level_title_word_to_line(int, int, int*, int*)
 // FUNCTION: LEMBALL 0x0044a2d0
 int __cdecl CopyNextLevelTitleWordToLine(int param_1, int param_2, int* param_3, int* param_4)
