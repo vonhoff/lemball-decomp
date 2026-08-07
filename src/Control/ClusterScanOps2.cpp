@@ -274,3 +274,27 @@ void __fastcall ActivateShpgChunkObject(void* pObject)
 	*(int*) (*(int*) ((char*) g_pActiveManagedEntityOwner + 0x120) + *(int*) ((char*) g_pActiveManagedEntityOwner + 0x118) * 4) = (int) pObject;
 	*(int*) ((char*) g_pActiveManagedEntityOwner + 0x118) = *(int*) ((char*) g_pActiveManagedEntityOwner + 0x118) + 1;
 }
+
+// MACINTOSH: append_node_chunk_record_from_level_data(int, int)
+// FUNCTION: LEMBALL 0x00421440
+int __fastcall AppendNodeChunkRecordFromLevelData(void* pObject, int nUnused, int param_2, int param_3)
+{
+	int iVar1 = *(int*) ((char*) pObject + 4);
+	*(int*) ((char*) pObject + 4) = iVar1 + 1;
+	((void(__fastcall*)(void*, int, int, int)) 0x402572)((void*) (iVar1 * 0x14 + *(int*) pObject), param_2, param_3, 0);
+	return iVar1;
+}
+
+// MACINTOSH: set_level_screen_pause_requested_state(int)
+// FUNCTION: LEMBALL 0x00437da0
+void __fastcall SetLevelScreenPauseRequestedState(void* pObject, int nUnused, int param_1)
+{
+	if (param_1 == 0) {
+		((void(__fastcall*)(void*, int)) 0x4021a8)(pObject, 0);
+	} else {
+		int iVar1 = *(int*) (*(int*) ((char*) pObject + 0x96c) + 0x108);
+		if (iVar1 >= 1 && iVar1 <= 2) {
+			((void(__fastcall*)(void*, int)) 0x4013ed)(*(void**) ((char*) pObject + 0x96c), 1);
+		}
+	}
+}
