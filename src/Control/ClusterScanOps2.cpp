@@ -1642,3 +1642,40 @@ void __fastcall AppendManagedEntityGroupFromIds(void* pObject, int nUnused, unsi
 		}
 	}
 }
+
+// MACINTOSH: destroy_level_selection_screen()
+// FUNCTION: LEMBALL 0x004496d0
+void __fastcall DestroyLevelSelectionScreen(void* param_1)
+{
+	*(void**) param_1 = (void*) 0x497bf0;
+	*(void**) ((char*) param_1 + 0x4) = (void*) 0x497be0;
+	*(void**) ((char*) param_1 + 0x14) = (void*) 0x497bdc;
+	FreeVSMemBlock(*(void**) ((char*) param_1 + 0x3c4));
+	FreeVSMemBlock(*(void**) ((char*) param_1 + 0x3c8));
+	FreeVSMemBlock(*(void**) ((char*) param_1 + 0x3c0));
+	((void(__fastcall*)(void*)) 0x401587)(param_1);
+	if (*(int*) ((char*) param_1 + 0x9c) != 0) {
+		((void(__fastcall*)(void*)) 0x402be4)(param_1);
+	}
+	char* pChild = (char*) param_1 + 0x3bc;
+	int i;
+	for (i = 0; i < 2; i++) {
+		pChild -= 0x24;
+		((void(__fastcall*)(void*)) 0x403558)(pChild);
+	}
+	((void(__fastcall*)(void*)) 0x402081)(param_1);
+}
+
+// MACINTOSH: destroy_password_entry_screen()
+// FUNCTION: LEMBALL 0x004515c0
+void __fastcall DestroyPasswordEntryScreen(void* param_1)
+{
+	*(void**) param_1 = (void*) 0x498408;
+	*(void**) ((char*) param_1 + 0x4) = (void*) 0x4983f8;
+	*(void**) ((char*) param_1 + 0x14) = (void*) 0x4983f0;
+	if (*(int*) ((char*) param_1 + 0x9c) != 0) {
+		((void(__fastcall*)(void*)) 0x40244b)(param_1);
+	}
+	*(void**) ((char*) param_1 + 0x454) = (void*) 0x496ca8;
+	((void(__fastcall*)(void*)) 0x402081)(param_1);
+}
