@@ -327,3 +327,33 @@ void LEMBALL_FASTCALL HandleEnmyChunkObjectProjectileHit(int pObject)
 	*(int*) ((char*) pObject + 0xcc) = g_nLevelFrameClockTick + 0x3c;
 	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(300);
 }
+
+// MACINTOSH: CEnemy::GetHit()
+// FUNCTION: LEMBALL 0x00420720
+void LEMBALL_FASTCALL RemoveEnemyAward500(int pObject)
+{
+	int* pCount;
+	int nIndex;
+	int* pArray;
+	int** ppArray;
+
+	pCount = (int*) ((char*) g_pActiveManagedEntityOwner + 0x118);
+	nIndex = 0;
+	if (*pCount > 0) {
+		pArray = *(int**) ((char*) g_pActiveManagedEntityOwner + 0x120);
+		ppArray = (int**) ((char*) g_pActiveManagedEntityOwner + 0x120);
+		do {
+			if (*pArray == pObject) {
+				*pCount = *pCount - 1;
+				while (nIndex < *pCount) {
+					(*ppArray)[nIndex] = (*ppArray)[nIndex + 1];
+					++nIndex;
+				}
+				break;
+			}
+			pArray = pArray + 1;
+			++nIndex;
+		} while (nIndex < *pCount);
+	}
+	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(500);
+}
