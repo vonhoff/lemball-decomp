@@ -642,6 +642,19 @@ void* LEMBALL_FASTCALL ConstructManagedEntityGroupControllerBase(void* pObject, 
 	return pObject;
 }
 
+// MACINTOSH: find_network_lobby_peer_slot_by_peer(int)
+// FUNCTION: LEMBALL 0x00452bf0
+int LEMBALL_FASTCALL FindNetworkLobbyPeerSlotByPeer(void* pObject, int nUnused, int param_1)
+{
+	int i;
+	for (i = 0; i < 10; i++) {
+		if (*(int*) ((char*) pObject + 0x20 + i * 4) == param_1) {
+			break;
+		}
+	}
+	return (i == 10) ? -1 : i;
+}
+
 // MACINTOSH: release_pause_dialog_palette_remaps()
 // FUNCTION: LEMBALL 0x00444900
 void LEMBALL_FASTCALL ReleasePauseDialogPaletteRemaps(void* pObject)
