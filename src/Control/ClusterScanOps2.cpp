@@ -367,3 +367,20 @@ void __fastcall SelectSingleEntityAndDispatchSelection(void* pObject, int nUnuse
 		(*( void(**)(void)) (*(void***) param_1 + 0xd4 / 4))();
 	}
 }
+
+// MACINTOSH: refresh_level_screen_action_panel()
+// FUNCTION: LEMBALL 0x00443250
+void __fastcall RefreshLevelScreenActionPanel(void* pObject)
+{
+	int i;
+	for (i = 0; i < 4; i++) {
+		((void(__fastcall*)(void*)) 0x4032bf)(*(void**) ((char*) pObject + 0x1c + i * 4));
+	}
+}
+
+// MACINTOSH: try_apply_tram_chunk_overlap_impulse(int*, int*)
+// FUNCTION: LEMBALL 0x004125c0
+void __fastcall TryApplyTramChunkOverlapImpulse(void* pObject, int nUnused, void* param_1, void* param_2)
+{
+	((void(__fastcall*)(void*, void*, void*)) 0x402bd5)(*(void**) ((char*) pObject + 0x1b4), param_1, param_2);
+}
