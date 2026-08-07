@@ -1911,3 +1911,129 @@ void __fastcall DestroyCPaintGunManagerObject(void* pThis, int nUnused)
 	}
 	((void(__fastcall*)(void*)) 0x45eea0)(pThis);
 }
+
+// MACINTOSH: reform_altered_groups(CPlayerLemmingGroup*)
+// FUNCTION: LEMBALL 0x00418b20
+void __fastcall ReformAlteredGroups(void* pThis, int nUnused, int* param_1)
+{
+	int* pi;
+	pi = (int*) ((int(__fastcall*)(void*)) 0x401078)(pThis);
+	while (pi != 0) {
+		if (pi != param_1) {
+			((void(__fastcall*)(void*, int)) (*(int*) *pi + 0x154))(pi, *(int*) 0x4a7834);
+		}
+		pi = (int*) ((int(__fastcall*)(void*)) 0x403549)(pThis);
+	}
+}
+
+// MACINTOSH: res_font_force_load_vram(int)
+// FUNCTION: LEMBALL 0x0045dab0
+int __fastcall ResFONTForceLoadVram(void* pThis, int nUnused, int param_2)
+{
+	void* pSlot = *(void**) (*(int*) ((char*) pThis + 0x7c) + param_2 * 0x54);
+	int r = ((int(__fastcall*)(void*)) (*(int*) pSlot + 0xc))(pSlot);
+	if (r != 0) {
+		return 1;
+	}
+	return ((int(__fastcall*)(void*)) (*(int*) pSlot + 0xc))(pSlot);
+}
+
+// MACINTOSH: remove_lemming_from_group(CPlayerLemming*)
+// FUNCTION: LEMBALL 0x004147d0
+int __fastcall RemoveLemmingFromGroup(void* pThis, int nUnused, int param_1)
+{
+	void* pChild;
+	((void(__fastcall*)(void*, int)) 0x402879)(pThis, param_1);
+	pChild = (void*) ((int(__fastcall*)(void*)) 0x40241e)(pThis);
+	if (*(int*) ((char*) pThis + 0x168) == 1 && pChild != 0) {
+		((void(__fastcall*)(void*, int)) 0x402667)(pChild, 1);
+	}
+	*(int*) ((char*) pThis + 0x164) = 1;
+	return 1;
+}
+
+// MACINTOSH: player_lemming_group_emit_child_render_entries(int*)
+// FUNCTION: LEMBALL 0x00414080
+int __fastcall PlayerLemmingGroupEmitChildRenderEntries(void* pThis, int nUnused, int param_1)
+{
+	int nVtbl = *(int*) pThis;
+	int nCount = 0;
+	int* pi = (int*) ((int(__fastcall*)(void*)) (*(int*) (nVtbl + 0x114)))(pThis);
+	if (pi != 0) {
+		void* pGetNext = (void*) *(int*) (nVtbl + 0x118);
+		do {
+			int nOut = param_1;
+			if (pi[0x2e] != 0xc) {
+				nOut = param_1 + 0x4c;
+				nCount++;
+				((void(__fastcall*)(void*, int)) (*(int*) *pi + 0xc))(pi, param_1);
+			}
+			pi = (int*) ((int(__fastcall*)(void*)) pGetNext)(pThis);
+			param_1 = nOut;
+		} while (pi != 0);
+	}
+	return nCount;
+}
+
+// MACINTOSH: enemy_facing_target() [predicate]
+// FUNCTION: LEMBALL 0x00420650
+int __fastcall CEnemyFacingTarget(void* pThis)
+{
+	int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(
+		*(int*) ((char*) pThis + 0x9c) >> 12,
+		*(int*) ((char*) pThis + 0xa0) >> 12,
+		*(int*) ((char*) pThis + 0x15c) >> 12,
+		*(int*) ((char*) pThis + 0x160) >> 12);
+	return (int) *(short*) ((char*) pThis + 0xb4) == nOct;
+}
+
+// MACINTOSH: slinky_manager_add(ushort, int, int, int, int)
+// FUNCTION: LEMBALL 0x0040b9e0
+void __fastcall CSlinkyManagerAdd(void* pThis, int nUnused, unsigned short param_1, int param_2, int param_3, int param_4, int param_5)
+{
+	if (*(int*) ((char*) pThis + 0xc) < *(int*) ((char*) pThis + 8)) {
+		((void(__fastcall*)(void*, unsigned short)) 0x402293)(
+			(void*) (*(int*) ((char*) pThis + 0xc) * 0x150 + *(int*) ((char*) pThis + 4)), param_1);
+		((void(__fastcall*)(void*, int, int, int, int)) 0x402892)(
+			(void*) (*(int*) ((char*) pThis + 0xc) * 0x150 + *(int*) ((char*) pThis + 4)),
+			param_2, param_4, param_3, param_5);
+		*(int*) ((char*) pThis + 0xc) = *(int*) ((char*) pThis + 0xc) + 1;
+	}
+}
+
+// MACINTOSH: clear_existing_waypoints()
+// FUNCTION: LEMBALL 0x004148f0
+void __fastcall ClearExistingWaypoints(void* pThis)
+{
+	int nVtbl = *(int*) pThis;
+	((void(__fastcall*)(void*)) 0x402ab8)(pThis);
+	if (*(int*) ((char*) pThis + 0x170) != 0) {
+		if (((int(__fastcall*)(void*)) (*(int*) (nVtbl + 0x13c)))(pThis) == 3) {
+			int* pGroup = *(int**) ((char*) pThis + 0x170);
+			if (*(int*) ((char*) pGroup + 0x38) != 0 && *(int*) ((char*) pGroup + 0x8c) != 0) {
+				if (*(int*) 0x4a011c != 0) {
+					((void(__fastcall*)(void*)) (*(int*) *pGroup + 0xf8))(pGroup);
+				}
+				*(int*) ((char*) pGroup + 0x8c) = 0;
+			}
+		}
+		*(int*) ((char*) pThis + 0x16c) =
+			((int(__fastcall*)(void*)) (*(int*) (nVtbl + 0x108)))(pThis);
+	}
+}
+
+// MACINTOSH: arena_shrink(int)
+// FUNCTION: LEMBALL 0x0045a180
+void* __fastcall ArenaShrink(void* pThis, int nUnused, int param_1)
+{
+	void* pNode = *(void**) ((char*) pThis + 0x34);
+	while (pNode != 0) {
+		if (((int(__fastcall*)(void*, void*)) 0x45a200)(pThis, pNode) != 0) {
+			if (((int(__fastcall*)(void*, int)) 0x45a580)(pNode, param_1) != 0) {
+				return pNode;
+			}
+		}
+		pNode = *(void**) ((char*) pNode + 0x14);
+	}
+	return 0;
+}
