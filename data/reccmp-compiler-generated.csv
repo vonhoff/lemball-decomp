@@ -22,7 +22,6 @@ address,name,symbol,type,source
 0x00414C80,DeleteLevelChunkObjectChildrenVariant14C80,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00414F00,DeleteManagedEntityQueueCursorAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00417AD0,DeleteLevelChunkObjectBaseWrapper17AD0,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x00417B00,LevelVtSmallFunctionView::SetRectFromBounds,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00417B80,,??_EManagedEntityPacket23@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Level/LVPKT.H
 0x00417BB0,,??_EManagedEntityPacket27@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Level/LVPKT.H
 0x00417BE0,,??_EManagedEntityPacket28@@UAEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Level/LVPKT.H
@@ -34,7 +33,6 @@ address,name,symbol,type,source
 0x00417D00,DeleteLevelChunkObjectBaseWrapper17D00,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00417D50,LinkScfAutoEffDeleteView::Delete17D50,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00418300,DeleteProjectilePoolAuto,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x00419440,LevelManagedEntityActiveGroupView::HasDirtyChildren,,synthetic,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x00419970,PLAS manager render-entry `adjustor thunk' (-0xb0),,synthetic,src/AI/PlasChild.cpp
 0x0041AF50,Projectile deleting-destructor `adjustor thunk' (-0x138),,synthetic,src/AI/Projectile.cpp
 0x0041C330,DeleteCountedChildTableStreamAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
@@ -44,7 +42,6 @@ address,name,symbol,type,source
 0x0041C600,DeleteLevelChunkObjectBaseWrapper1C600,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041C640,DeleteLevelChunkObjectBaseWrapper1C640,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041DD70,DeleteGmobChunkType14ObjectAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x0041DF90,LevelVtSmallFunctionView::SwapObjectChildSlots128,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041E8C0,DeleteCompositeLevelChunkChildrenWrapper1E8C0,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0041F960,DeleteCompositeLevelChunkChildrenWrapper1F960,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0041FB70,DeleteLevelChunkObjectBaseWrapper1FB70,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
@@ -61,7 +58,6 @@ address,name,symbol,type,source
 0x004274F0,DeleteRockChunkManagerAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x00427AA0,DeleteTileFlag1CChunkObjectAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x004287D0,DeleteCaptureTriggerChunkManagerAuto,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x00429E80,LinkScfSmallFunctionView::SetObjectFields18_1c_20,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00429EA0,DeleteLasrChunkManagerAuto,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0042BA10,DeleteTramChunkManagerAuto,,synthetic,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0042C9B0,DeletePgunChunkManagerAuto,,synthetic,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
@@ -171,7 +167,6 @@ address,name,symbol,type,source
 0x00462C80,ClaimRecord virtual-base `vtordisp adjustor' (+0x90),,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462C90,,?DualStreamRet8@VsNetRuntimeChannelStack@@$4PPPPPPPM@A@AEXHPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462CA0,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
-0x00462CB0,VsNetRuntimeChannelCore::`scalar deleting destructor',,function,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462CF0,,?ClearPendingWrite@VsNetRuntimeChannelCore@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462D20,,??_EVsNetRuntimeChannelCore@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
 0x00462D30,VsNetRuntimeChannelCore::WriteGlobalSession `vtordisp adjustor',,synthetic,src/Platform/Windows/Mixed/Engine/MEDIA/VSSTRM.H
@@ -236,7 +231,6 @@ address,name,symbol,type,source
 0x00471CA0,,?DualStreamRet8@VsNetCompositeEffTransportStack@@$4PPPPPPPM@3AEXHPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00471CB0,,?HandleAsyncMessage@VsNetAllocatedTcpipEffTransportComposite@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00471CC0,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
-0x00471CD0,VsNetTcpipSocketChannelStackLayout::`scalar deleting destructor',,function,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00471D20,,?ClearPendingWrite@VsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00471D50,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00471D90,,??_EVsNetTcpipSocketChannelStackLayout@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
@@ -249,7 +243,6 @@ address,name,symbol,type,source
 0x00471E50,,??_EVsNetDualSocketWindowEffChannelBundle@@WCM@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00471E60,,?ReleaseFileBackedEffMarker@VsNetSocketWindowEffChannel@@WPPPPPPDI@AEHXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00471E70,,??_EVsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
-0x00471E80,VsNetTimedSocketEffChannelBundleLayout::`scalar deleting destructor',,function,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00471EC0,,?ClearNestedEffChannelAsyncStatus@VsNetSocketWindowEffChannel@@WPPPPPPDI@AEXXZ,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00471ED0,,?ClearPendingWrite@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00471F00,,??_EVsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
@@ -258,7 +251,6 @@ address,name,symbol,type,source
 0x00471F30,,?SetTimedChannelWord@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEXG@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00471F40,,?HandleAsyncMessage@VsNetTimedSocketEffChannelBundleLayout@@$4PPPPPPPM@A@AEHHPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00471F50,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
-0x00471F60,VsNetTcpipEffTransportComposite::`scalar deleting destructor',,function,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00471FB0,,?ClearPendingWrite@VsNetTcpipEffTransportComposite@@$4PPPPPPPM@A@AEXPAX@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00471FD0,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@DA@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP
 0x00472000,,??_EVsNetTcpipEffTransportComposite@@$4PPPPPPPM@KI@AEPAXI@Z,synthetic,src/Platform/Windows/Mixed/Engine/NET/VSNETTCP.CPP

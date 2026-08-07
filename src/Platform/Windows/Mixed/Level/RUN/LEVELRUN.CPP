@@ -202,17 +202,17 @@ struct LevelManagedEntityOwnerView {
 };
 
 
-// Original body: LEMBALL 0x00419440. Kept beside its required compatibility ILT owner.
+// FUNCTION: LEMBALL 0x00419440
 int LevelManagedEntityActiveGroupView::HasDirtyChildren(void)
 {
-	LevelManagedEntityChildIterator* pEntity;
+	LevelManagedEntityChildIterator* const* ppEntity;
 	int fDirty;
 	int iEntity;
 
 	fDirty = 0;
 	for (iEntity = 0; iEntity < m_cManagedEntitiesA4; ++iEntity) {
-		pEntity = m_apManagedEntities04[iEntity];
-		fDirty = pEntity->HasDirtyChildrenThunk() || fDirty;
+		ppEntity = m_apManagedEntities04 + iEntity;
+		fDirty = (*ppEntity)->HasDirtyChildrenThunk() || fDirty;
 	}
 	return fDirty;
 }

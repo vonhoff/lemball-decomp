@@ -2013,23 +2013,13 @@ void noop_callback_00456600(void)
 }
 
 
+// FUNCTION: LEMBALL 0x00417b00
 void LevelVtSmallFunctionView::SetRectFromBounds(int nLeft, int nTop, int nRight, int nBottom)
 {
-	int nLeftValue;
-	int nTopValue;
-	int nWidth;
-	int nHeight;
-
-	nWidth = *(volatile int*) &nRight;
-	nLeftValue = *(volatile int*) &nLeft;
-	nHeight = *(volatile int*) &nBottom;
-	nWidth -= nLeftValue;
-	*(int*) this = nLeftValue;
-	*(int*) ((char*) this + 8) = nWidth;
-	nTopValue = *(volatile int*) &nTop;
-	nHeight -= nTopValue;
-	*(int*) ((char*) this + 0x0c) = nHeight;
-	*(int*) ((char*) this + 4) = nTopValue;
+	*(int*) this = nLeft;
+	*(int*) ((char*) this + 4) = nTop;
+	*(int*) ((char*) this + 8) = nRight - nLeft;
+	*(int*) ((char*) this + 0xc) = nBottom - nTop;
 }
 
 void* LevelVtSmallFunctionView::GetProjectileGeometryRotatedPair(int nIndex)
@@ -2040,6 +2030,7 @@ void* LevelVtSmallFunctionView::GetProjectileGeometryRotatedPair(int nIndex)
 	return (char*) this + 0xc0 + nIndex * 8;
 }
 
+// FUNCTION: LEMBALL 0x0041df90
 void LevelVtSmallFunctionView::SwapObjectChildSlots128(int iFirst, int iSecond)
 {
 	void** ppFirst;

@@ -2243,15 +2243,11 @@ struct ChunkRuntimeStateView {
 	void ResetRockState(void);
 };
 
+// FUNCTION: LEMBALL 0x00429e80
 void LinkScfSmallFunctionView::SetObjectFields18_1c_20(int nField18, int nField1c, int nField20)
 {
-	int nValue18;
-	int nValue1c;
-
-	nValue18 = *(volatile int*) &nField18;
-	nValue1c = *(volatile int*) &nField1c;
-	*(short*) ((char*) this + 0x1c) = (short) nValue1c;
-	*(int*) ((char*) this + 0x18) = nValue18;
+	*(short*) ((char*) this + 0x1c) = (short) nField1c;
+	*(int*) ((char*) this + 0x18) = nField18;
 	*(int*) ((char*) this + 0x20) = nField20;
 }
 
