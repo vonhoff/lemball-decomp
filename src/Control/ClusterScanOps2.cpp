@@ -3072,3 +3072,85 @@ int __fastcall CVSOStream___ls(void* pThis, int nUnused, unsigned int value)
 	}
 	return (int) pThis;
 }
+
+// Minimal views so the level-mode stream loaders emit direct `call` to the
+// already-reconstructed members (matches orig direct calls to 0x45f250/0x45f280).
+struct CNetworkMessage {
+	int SaveEffStreamToMemoryRange(int nTargetBuffer, int cbRange);
+};
+struct GameEffStream {
+	int LoadEffStreamFromMemory(int nSourceBuffer);
+};
+
+// MACINTOSH: load_level_mode_manager_stream_ranges_0x1b4()
+// FUNCTION: LEMBALL 0x00412b80
+void __fastcall LoadLevelModeManagerStreamRanges0x1b4(void* pThis)
+{
+	int* pMgr = (int*)((char*) pThis + 0x1b4);
+	unsigned int uMask;
+	unsigned int uBase;
+	int count = 4;
+	{
+		unsigned int v = (unsigned int) ((char*) pThis - 0x1c);
+		uMask = v >= 1 ? 0xffffffffu : 0u;
+		uBase = uMask & (unsigned int) pThis;
+	}
+	do {
+		int mgr = *pMgr++;
+		((CNetworkMessage*) (mgr + 0x138))->SaveEffStreamToMemoryRange(*(int*) (uBase + 0x1c), 0);
+		*(int*) (uBase + 0x1c) += *(int*) (mgr + 0x154) - *(int*) (mgr + 0x140);
+	} while (--count != 0);
+}
+
+// MACINTOSH: load_level_mode_manager_streams_0x1c4()
+// FUNCTION: LEMBALL 0x00412be0
+void __fastcall LoadLevelModeManagerStreams0x1c4(void* pThis)
+{
+	int* pMgr = (int*)((char*) pThis + 0x1c4);
+	unsigned int uMask;
+	unsigned int uBase;
+	int count = 4;
+	{
+		unsigned int v = (unsigned int) ((char*) pThis - 0x1c);
+		uMask = v >= 1 ? 0xffffffffu : 0u;
+		uBase = uMask & (unsigned int) pThis;
+	}
+	do {
+		int mgr = *pMgr++;
+		int r = ((GameEffStream*) (mgr + 0x138))->LoadEffStreamFromMemory(*(int*) (uBase + 0x20));
+		if (r != 0) {
+			*(int*) (uBase + 0x20) = *(int*) (mgr + 0x158);
+		}
+	} while (--count != 0);
+}
+
+// MACINTOSH: CRocketManager::LoadLevel(ushort*)
+// FUNCTION: LEMBALL 0x00427110
+void __fastcall CRocketManagerLoadLevel(void* pThis, int nUnused, int uArg1, int uArg2, unsigned short* pStream)
+{
+	unsigned short nCount = *pStream;
+	unsigned int nRemain = (unsigned int) nCount;
+	pStream++;
+	((void(__fastcall*) (void*, int)) 0x403760)(pThis, nCount);
+	if (nCount != 0) {
+		do {
+			unsigned short uSlot;
+			if (*(unsigned short*) (*(int*) ((char*) pThis + 0x3c) + 0x54) < 2) {
+				uSlot = (unsigned short) ((int(__fastcall*) ()) 0x40214e)();
+			}
+			else {
+				uSlot = *pStream;
+				pStream++;
+			}
+			unsigned int x = *(pStream);
+			pStream++;
+			unsigned int y = *(pStream);
+			pStream++;
+			unsigned int z = *(pStream);
+			pStream++;
+			((void(__fastcall*) (void*, unsigned short, int, int, int)) 0x4017b7)(pThis, uSlot, x, y, z);
+			nRemain--;
+		} while (nRemain != 0);
+	}
+}
+
