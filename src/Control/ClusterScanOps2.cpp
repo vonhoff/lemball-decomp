@@ -656,6 +656,24 @@ void __fastcall RefreshResourceSpriteTextOwnerLayout(void* pObject)
 	((void(__cdecl*)(void*, int)) 0x469210)(*(void**) ((char*) pObject + 0x150), 0);
 }
 
+// MACINTOSH: restore_inertial_event_source_sink_vtables()
+// FUNCTION: LEMBALL 0x00432650
+void __fastcall RestoreInertialEventSourceSinkVtables(void* pObject)
+{
+	*(void**) ((char*) pObject + 0x60) = (void**) 0x496ca8;
+	int i;
+	for (i = 0; i < 2; i++) {
+		((void(__fastcall*)(void*)) 0x401307)((char*) pObject + 0x34 - i * 0x10);
+	}
+}
+
+// MACINTOSH: emit_variant_child_slot_render_marker(int, short*)
+// FUNCTION: LEMBALL 0x004327e0
+void __fastcall EmitVariantChildSlotRenderMarker(void* pObject, int nUnused, void* param_2, void* param_3)
+{
+	((void(__fastcall*)(void*, short, short, int, int, int, int)) 0x4016a9)(*(void**) ((char*) pObject + 0x10), *(short*) param_3, *(short*) ((char*) param_3 + 2), 0xfd, 0, 0, 0);
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
