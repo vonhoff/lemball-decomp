@@ -5,6 +5,15 @@ extern int g_nLevelFrameClockTick;
 extern void* g_pLevelTileGrid;
 extern void* g_pManagedEntityReachabilityHelper;
 extern unsigned int __cdecl ReturnFacingDirection(int nX1, int nY1, int nX2, int nY2);
+extern int Distance2DIntPixels(int x1, int y1, int x2, int y2);
+
+// Minimal view-of the LEVELSTAT LevelTileGridOwnerView height sampler, so StartMoving
+// can emit a direct `call LevelTileGridOwnerView::GetZ` (matches the orig ILT 0x401460 ->
+// 0x4304e0). Method mangling depends only on name+signature, so this links to the
+// LEVELSTAT definition at the same address regardless of the omitted field layout.
+struct LevelTileGridOwnerView {
+	unsigned short GetZ(int x, int y, void** ppMoveChunk);
+};
 
 // Macintosh: CGameObject::MapCheck(int, int)
 // FUNCTION: LEMBALL 0x004157b0
@@ -72,7 +81,7 @@ void CGameObject::StartMoving(void)
 	int nDest[2];
 
 	if (m_pCommandQueue70 != 0) {
-		nHeight = ((unsigned short) ((int(__fastcall*)(void*, int, int, int*)) 0x401460)(g_pLevelTileGrid, m_WorldPosition9C.x >> 12, m_WorldPosition9C.y >> 12, (int*) &pMoveChunk)) & 0xffff;
+		nHeight = ((LevelTileGridOwnerView*) g_pLevelTileGrid)->GetZ(m_WorldPosition9C.x >> 12, m_WorldPosition9C.y >> 12, &pMoveChunk) & 0xffff;
 		nDestHeight = m_WorldPosition9C.z >> 12;   /* 0xa4 */
 		if (m_fOnMover11C == 0 && pMoveChunk != 0) {
 			((void(__fastcall*)(void*, void*)) 0x4036b1)(pMoveChunk, this);
@@ -82,7 +91,7 @@ void CGameObject::StartMoving(void)
 			nPos[0] = pDest[0];
 			nPos[1] = pDest[1];
 			*(int*) ((char*) this + 0xb0) = pDest[2];
-			nDist = ((int(__fastcall*)(int, int, int, int)) 0x40254a)(m_WorldPosition9C.x >> 12, m_WorldPosition9C.y >> 12, nPos[0] >> 12, nPos[1] >> 12);
+			nDist = Distance2DIntPixels(m_WorldPosition9C.x >> 12, m_WorldPosition9C.y >> 12, nPos[0] >> 12, nPos[1] >> 12);
 			m_nMotionStartTickC8 = g_nLevelFrameClockTick;
 			nSpeedIndex = *((int*) ((char*) this + 0x64));
 			m_nMotionDuration88 = (*(int*) (0x49d070 + nSpeedIndex * 4) * nDist) / 0x32;
