@@ -496,3 +496,12 @@ int LEMBALL_FASTCALL NotifyCollContactTargetAndScheduleTimer0x9c4(int pObject)
 	*(int*) ((char*) g_pActiveManagedEntityOwner + 0xfc) = *(int*) ((char*) g_pActiveManagedEntityOwner + 0xfc) - 1;
 	return 1;
 }
+
+// MACINTOSH: complete_gmob_action_29()
+// FUNCTION: LEMBALL 0x0041d5a0
+void LEMBALL_FASTCALL CompleteGmobAction29(int* pObject)
+{
+	(*( void(__fastcall**)(int, int*)) (**(char***) ((char*) pObject[0x17]) + 0xb8)) (pObject[0x19], pObject);
+	(*( void(__fastcall**)(int)) (*(char***) pObject + 0x34)) (0x29);
+	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(10);
+}
