@@ -453,6 +453,16 @@ void __fastcall RefreshQueuedZrleVariantRangeSelection(void* pObject)
 	((void(__cdecl*)(void*, int)) 0x4688e0)(*(void**) ((char*) pObject + 0x4c), *(int*) (*(int*) ((char*) pObject + 0x48) + (*(int*) ((char*) pObject + 0x40) - *(int*) ((char*) pObject + 0x3c)) * 4));
 }
 
+// MACINTOSH: append_move_chunk_object(ushort, ushort, int, int, int)
+// FUNCTION: LEMBALL 0x0042f5e0
+void __fastcall AppendMoveChunkObject(void* pObject, int nUnused, unsigned short param_1, unsigned short param_2, void* param_3, int param_4, void* param_5)
+{
+	if (*(int*) ((char*) pObject + 0x34) < *(int*) ((char*) pObject + 0x30)) {
+		((void(__fastcall*)(void*, unsigned short, unsigned short, void*, int, void*)) 0x40128a)((void*) (*(int*) ((char*) pObject + 0x38) + *(int*) ((char*) pObject + 0x34) * 0x1a0), param_1, param_2, param_3, param_4, param_5);
+		*(int*) ((char*) pObject + 0x34) = *(int*) ((char*) pObject + 0x34) + 1;
+	}
+}
+
 // MACINTOSH: append_projectile_request_code(int, int)
 // FUNCTION: LEMBALL 0x0040f9b0
 int __fastcall AppendProjectileRequestCode(void* pObject, int nUnused, int param_1, int param_2)
