@@ -201,6 +201,24 @@ void* __fastcall DeleteLinkedType11ChunkObject(void* pObject, int nUnused, unsig
 	return pObject;
 }
 
+// MACINTOSH: destroy_managed_entity_group_children()
+// FUNCTION: LEMBALL 0x0041b160
+void __fastcall DestroyManagedEntityGroupChildren(void* pObject)
+{
+	int i;
+	if (*(unsigned short*) ((char*) pObject + 0x36) != 0) {
+		for (i = 0; i < (int) *(unsigned short*) ((char*) pObject + 0x36); i++) {
+			void* pChild = *(void**) (*(int*) ((char*) pObject + 0x3c) + i * 4);
+			((void(__fastcall*)(void*, short)) 0x402293)(pChild, 0xffff);
+			if (pChild != 0) {
+				(*( void(**)(int)) *(void***) pChild)(1);
+			}
+		}
+	}
+	*(unsigned short*) ((char*) pObject + 0x36) = 0;
+	*(unsigned short*) ((char*) pObject + 0x38) = 0;
+}
+
 // MACINTOSH: append_debug_text_lines_split_newlines(char*, int)
 // FUNCTION: LEMBALL 0x00473a10
 void __fastcall AppendDebugTextLinesSplitNewlines(void* pObject, int nUnused, char* param_1, int param_2)
