@@ -1,7 +1,19 @@
 #include "AI/CGameObject.h"
 #include "Visos/Generic/Memory.h"
+#include "Control/CGame.h"
 
 extern int g_nLevelFrameClockTick;
+extern void* g_GAME_RenderQueueNodeVtableSlots[4];
+
+// MACINTOSH: ManagedEntityQueueCursor::~ManagedEntityQueueCursor()
+// FUNCTION: LEMBALL 0x00414de0
+void LEMBALL_FASTCALL DestroyManagedEntityQueueCursor(void* pObject)
+{
+	*((void**) pObject) = (void*) 0x493c08;
+	((GameRenderDispatchQueue*) *(void**) ((char*) pObject + 0x24))
+		->UnregisterOrderedRenderDispatchClient(pObject, 0);
+	*((void**) pObject) = (void*) g_GAME_RenderQueueNodeVtableSlots;
+}
 
 // MACINTOSH: LevelChunkObjectBase::~LevelChunkObjectBase()
 // FUNCTION: LEMBALL 0x00415160
