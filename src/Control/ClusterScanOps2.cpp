@@ -3,6 +3,7 @@
 
 extern void __fastcall AppendType18ChunkObject(void* pStream, int nUnused, unsigned short param_1, void* param_2, int param_3, int param_4);
 extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
+extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern void* g_pActiveManagedEntityOwner;
 struct PlasChildStateEntityView;
 extern void __cdecl DispatchPlasChildStateTableVariant0(void* pContext, PlasChildStateEntityView* pEntity);
@@ -244,4 +245,32 @@ int __fastcall IsPointInsideLevelScreenActionPanel(void* pObject, int nUnused, s
 		return 1;
 	}
 	return 0;
+}
+
+// MACINTOSH: activate_shpg_chunk_object()
+// FUNCTION: LEMBALL 0x0041fa00
+void __fastcall ActivateShpgChunkObject(void* pObject)
+{
+	ResetManagedEntityRuntimeStateThunk(pObject);
+	*(int*) ((char*) pObject + 0x9c) = *(int*) ((char*) pObject + 0x40);
+	int iVar1 = *(int*) ((char*) pObject + 0x40) >> 12;
+	*(int*) ((char*) pObject + 0xa0) = *(int*) ((char*) pObject + 0x44);
+	int iVar3 = *(int*) ((char*) pObject + 0x44) >> 12;
+	*(int*) ((char*) pObject + 0xa4) = *(int*) ((char*) pObject + 0x48);
+	int local_18[6];
+	local_18[2] = *(int*) ((char*) pObject + 0x48) >> 12;
+	local_18[0] = iVar1 - 8;
+	local_18[1] = iVar3 - 8;
+	local_18[3] = iVar1 + 7;
+	local_18[4] = iVar3 + 7;
+	local_18[5] = local_18[2] + 15;
+	{
+		int i;
+		for (i = 0; i < 6; i++) {
+			*(int*) ((char*) pObject + 0x14 + i * 4) = local_18[i];
+		}
+	}
+	*(unsigned short*) ((char*) pObject + 0xb4) = *(unsigned short*) ((char*) pObject + 0xb6);
+	*(int*) (*(int*) ((char*) g_pActiveManagedEntityOwner + 0x120) + *(int*) ((char*) g_pActiveManagedEntityOwner + 0x118) * 4) = (int) pObject;
+	*(int*) ((char*) g_pActiveManagedEntityOwner + 0x118) = *(int*) ((char*) g_pActiveManagedEntityOwner + 0x118) + 1;
 }
