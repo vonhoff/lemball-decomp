@@ -85,3 +85,24 @@ int LEMBALL_FASTCALL DispatchShpgChunkObjectPlasStateTableVariant2(PlasChildStat
 	DispatchPlasChildStateTableVariant2(g_pActiveManagedEntityOwner, pEntity);
 	return 0;
 }
+
+// MACINTOSH: dispatch_plas_child_state_table_variant_0(void*, PlasChildStateEntityView*)
+// FUNCTION: LEMBALL 0x00419a30
+void __cdecl DispatchPlasChildStateTableVariant0(void* pContext, PlasChildStateEntityView* pEntity)
+{
+	DispatchPlasChildStateTable((PlasChildStateDispatchEntry**) 0x49dcc8, pContext, pEntity);
+}
+
+// MACINTOSH: dispatch_plas_child_state_table_variant_1(void*, PlasChildStateEntityView*)
+// FUNCTION: LEMBALL 0x00419a50
+void __cdecl DispatchPlasChildStateTableVariant1(void* pContext, PlasChildStateEntityView* pEntity)
+{
+	DispatchPlasChildStateTable((PlasChildStateDispatchEntry**) 0x49dd28, pContext, pEntity);
+}
+
+// MACINTOSH: dispatch_plas_child_state_table_variant_3(void*, PlasChildStateEntityView*)
+// FUNCTION: LEMBALL 0x00419a90
+void __cdecl DispatchPlasChildStateTableVariant3(void* pContext, PlasChildStateEntityView* pEntity)
+{
+	DispatchPlasChildStateTable((PlasChildStateDispatchEntry**) 0x49dde8, pContext, pEntity);
+}
