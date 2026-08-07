@@ -453,3 +453,15 @@ void* LEMBALL_FASTCALL ConstructBoonChunkObject(void* pObject, int nEntityType, 
 	*(int*) ((char*) pObject + 0x124) = nValue;
 	return pObject;
 }
+
+// MACINTOSH: CBall::CBall() [type-9 ball chunk]
+// FUNCTION: LEMBALL 0x00421660
+void* LEMBALL_FASTCALL ConstructBallChunkEntry(void* pObject)
+{
+	((CGameObject*) pObject)->ConstructCGameObject(9, 0, 0);
+	(* (void***) pObject) = (void**) 0x495460;
+	*(int*) ((char*) pObject + 0x124) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x128) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x12c) = 0xaa55aa55;
+	return pObject;
+}
