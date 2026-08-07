@@ -1971,14 +1971,43 @@ void LEMBALL_FASTCALL BeginLevelPauseAction(void* pObject, int nUnused, int para
 	}
 }
 
+// MACINTOSH: C2D::SetPause() / set_level_screen_pause_active(void*, int) - shared helper
+// FUNCTION: LEMBALL 0x00437de0
+void LEMBALL_FASTCALL SetLevelScreenPauseActive(void* pObject, int nUnused, int param_1)
+{
+	*(int*) ((char*) pObject + 0xa80) = (int) (*(int*) (*(char**) ((char*) pObject + 0x96c) + 0x10c) == 0);
+	if (param_1 == 0) {
+		*(int*) ((char*) pObject + 0xa7c) = 0;
+		SetLevelFrameClockPauseFlag(0);
+		*(int*) (*(char**) ((char*) pObject + 0x96c) + 0xd8) = 0;
+		RequestLocalLevelGameStateChange(*(char**) ((char*) pObject + 0x96c), 2);
+		*(int*) ((char*) pObject + 0xa80) = 0;
+		((void(__fastcall*)(void*, int)) 0x402766)(pObject, 5);
+		return;
+	}
+	if (*(int*) (*(char**) ((char*) pObject + 0x96c) + 0x108) > 0 &&
+		*(int*) (*(char**) ((char*) pObject + 0x96c) + 0x108) < 3) {
+		*(int*) ((char*) pObject + 0xa7c) = param_1;
+		SetLevelFrameClockPauseFlag(param_1);
+		*(int*) (*(char**) ((char*) pObject + 0x96c) + 0xd8) = param_1;
+		RequestLocalLevelGameStateChange(*(char**) ((char*) pObject + 0x96c), 1);
+		if (*(int*) ((char*) pObject + 0xa7c) != 0) {
+			((void(__fastcall*)(void*, int)) 0x402766)(pObject, 0);
+			return;
+		}
+		((void(__fastcall*)(void*, int)) 0x402766)(pObject, 5);
+	}
+}
+
 // MACINTOSH: set_level_screen_action_panel_pause_active()
 // FUNCTION: LEMBALL 0x00443270
 void LEMBALL_FASTCALL SetLevelScreenActionPanelPauseActive(void* pObject, int nUnused, int param_1)
 {
-	((void(__fastcall*)(void*, int)) 0x4021a8)(*(char**) ((char*) pObject + 0x10), param_1);
+	SetLevelScreenPauseActive(*(char**) ((char*) pObject + 0x10), 0, param_1);
 	*(int*) (*(char**) ((char*) pObject + 0x2c) + 0x130) = *(int*) (*(char**) ((char*) pObject + 0x10) + 0xa7c);
 	*(int*) (*(char**) ((char*) pObject + 0x2c) + 0x104) = *(int*) (*(char**) ((char*) pObject + 0x10) + 0xa7c);
 }
+
 // FUNCTION: LEMBALL 0x00455050
 void* ConstructNetworkLobbyTransportController(void* pModeObject, GameMainContext* pMainContext)
 {
