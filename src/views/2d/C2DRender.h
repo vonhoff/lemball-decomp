@@ -1,5 +1,5 @@
-#ifndef LEMBALL_C2DF_H
-#define LEMBALL_C2DF_H
+#ifndef LEMBALL_C2D_RENDER_H
+#define LEMBALL_C2D_RENDER_H
 
 struct CViewData {
 	unsigned short m_nDirection00;
@@ -17,7 +17,7 @@ struct CViewData {
 	unsigned char m_abReserved2E[0x1e];
 };
 
-class C2DF {
+class C2D {
 public:
 	unsigned char m_abReserved0000[0x64];
 	int m_anPlayerRemaps0064[4];

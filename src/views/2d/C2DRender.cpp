@@ -1,4 +1,4 @@
-#include "views/2d/C2DF.h"
+#include "views/2d/C2DRender.h"
 
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 
@@ -23,29 +23,29 @@ public:
 };
 
 // GLOBAL: LEMBALL 0x0049ef38
-static const int g_anC2DFBulletResources[8] = {0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x5f};
+static const int g_anC2DBulletResources[8] = {0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x5f};
 // GLOBAL: LEMBALL 0x00497064
-static const short g_anC2DFAmmoOffsets[4] = {8, 0x10, 0x10, 0x10};
+static const short g_anC2DAmmoOffsets[4] = {8, 0x10, 0x10, 0x10};
 // GLOBAL: LEMBALL 0x00497070
-static const short g_anC2DFBulletOffsets[2] = {4, 4};
+static const short g_anC2DBulletOffsets[2] = {4, 4};
 // GLOBAL: LEMBALL 0x00497054
-static const short g_anC2DFKeyOffsets[2] = {8, 0x20};
+static const short g_anC2DKeyOffsets[2] = {8, 0x20};
 // GLOBAL: LEMBALL 0x00497084
-static const short g_anC2DFBonusOffsets[2] = {0x10, 0x10};
+static const short g_anC2DBonusOffsets[2] = {0x10, 0x10};
 // GLOBAL: LEMBALL 0x00497088
-static const short g_anC2DFTimeBonusOffsets[2] = {0x10, 0x12};
+static const short g_anC2DTimeBonusOffsets[2] = {0x10, 0x12};
 // GLOBAL: LEMBALL 0x0049703c
-static const short g_anC2DFCrateOffsets[4] = {8, 0x18, 0x22, 0x32};
+static const short g_anC2DCrateOffsets[4] = {8, 0x18, 0x22, 0x32};
 // GLOBAL: LEMBALL 0x0049704c
-static const short g_anC2DFMineOffsets[4] = {0x1e, 0x23, 2, 2};
+static const short g_anC2DMineOffsets[4] = {0x1e, 0x23, 2, 2};
 // GLOBAL: LEMBALL 0x00497074
-static const short g_anC2DFBallOffsets[4] = {10, 0x0f, 0x0f, 0x11};
+static const short g_anC2DBallOffsets[4] = {10, 0x0f, 0x0f, 0x11};
 // GLOBAL: LEMBALL 0x00497080
-static const short g_anC2DFFlagOffsets[2] = {0x0f, 0x1c};
+static const short g_anC2DFlagOffsets[2] = {0x0f, 0x1c};
 // GLOBAL: LEMBALL 0x00497098
-static const short g_anC2DFTrampolineOffsets[2] = {0x16, 0x16};
+static const short g_anC2DTrampolineOffsets[2] = {0x16, 0x16};
 // GLOBAL: LEMBALL 0x004970a0
-static const short g_anC2DFTrapOffsets[8] = {0x0d, 0x19, 0x1e, 0x20, 0x1d, 0x1a, 0x0e, 0x22};
+static const short g_anC2DTrapOffsets[8] = {0x0d, 0x19, 0x1e, 0x20, 0x1d, 0x1a, 0x0e, 0x22};
 
 extern int g_nLevelScreenTimedVariantResourceId;
 extern int g_nLevelScreenMappedVariantResourceId0x209;
@@ -66,29 +66,29 @@ void CAnimsManagerView::EmitLevelScreenVariantEntry(short x,
 }
 #pragma auto_inline(on)
 
-// MACINTOSH: C2DF::DrawBullet(CViewData&, int)
+// MACINTOSH: C2D::DrawBullet(CViewData&, int)
 // FUNCTION: LEMBALL 0x0043c610
-void C2DF::DrawBullet(CViewData& ViewData, int)
+void C2D::DrawBullet(CViewData& ViewData, int)
 {
 	int nDirection = (ViewData.m_nDirection00 + m_nViewRotation090C * 2) & 7;
 	((CAnimsManagerView*) m_pAnimsManager0A40)
-		->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - g_anC2DFBulletOffsets[0]),
-									  (short) (ViewData.m_nY08 - g_anC2DFBulletOffsets[1]),
-									  g_anC2DFBulletResources[nDirection],
+		->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - g_anC2DBulletOffsets[0]),
+									  (short) (ViewData.m_nY08 - g_anC2DBulletOffsets[1]),
+									  g_anC2DBulletResources[nDirection],
 									  0,
 									  ViewData.m_pFrameSelector24,
 									  0);
 }
 
-// MACINTOSH: C2DF::DrawAmmo(CViewData&, int)
+// MACINTOSH: C2D::DrawAmmo(CViewData&, int)
 // FUNCTION: LEMBALL 0x0043c660
-void C2DF::DrawAmmo(CViewData& ViewData, int)
+void C2D::DrawAmmo(CViewData& ViewData, int)
 {
 	if (ViewData.m_nState18 >= 0x18) {
 		if (ViewData.m_nState18 <= 0x19) {
 			((CAnimsManagerView*) m_pAnimsManager0A40)
-				->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - g_anC2DFAmmoOffsets[0]),
-											  (short) (ViewData.m_nY08 - g_anC2DFAmmoOffsets[1]),
+				->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - g_anC2DAmmoOffsets[0]),
+											  (short) (ViewData.m_nY08 - g_anC2DAmmoOffsets[1]),
 											  0x7c,
 											  0,
 											  ViewData.m_pFrameSelector24,
@@ -99,8 +99,8 @@ void C2DF::DrawAmmo(CViewData& ViewData, int)
 				return;
 			}
 			((CAnimsManagerView*) m_pAnimsManager0A40)
-				->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - g_anC2DFAmmoOffsets[2]),
-											  (short) (ViewData.m_nY08 - g_anC2DFAmmoOffsets[3]),
+				->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - g_anC2DAmmoOffsets[2]),
+											  (short) (ViewData.m_nY08 - g_anC2DAmmoOffsets[3]),
 											  0x82,
 											  ViewData.m_nFrame20,
 											  ViewData.m_pFrameSelector24,
@@ -109,9 +109,9 @@ void C2DF::DrawAmmo(CViewData& ViewData, int)
 	}
 }
 
-// MACINTOSH: C2DF::DrawHand(CViewData&)
+// MACINTOSH: C2D::DrawHand(CViewData&)
 // FUNCTION: LEMBALL 0x0043c7f0
-void C2DF::DrawHand(CViewData& ViewData)
+void C2D::DrawHand(CViewData& ViewData)
 {
 	int nState = ViewData.m_nState18;
 	int nX = ViewData.m_nX04 - 0x31;
@@ -143,9 +143,9 @@ void C2DF::DrawHand(CViewData& ViewData)
 	}
 }
 
-// MACINTOSH: C2DF::DrawBalloonPost(CViewData&, int)
+// MACINTOSH: C2D::DrawBalloonPost(CViewData&, int)
 // FUNCTION: LEMBALL 0x0043c9f0
-void C2DF::DrawBalloonPost(CViewData& ViewData, int nPlayer)
+void C2D::DrawBalloonPost(CViewData& ViewData, int nPlayer)
 {
 	int nRemap;
 	if (nPlayer < 4) {
@@ -163,12 +163,12 @@ void C2DF::DrawBalloonPost(CViewData& ViewData, int nPlayer)
 									  nRemap);
 }
 
-// MACINTOSH: C2DF::DrawTrampoline(CViewData&)
+// MACINTOSH: C2D::DrawTrampoline(CViewData&)
 // FUNCTION: LEMBALL 0x0043ca30
-void C2DF::DrawTrampoline(CViewData& ViewData)
+void C2D::DrawTrampoline(CViewData& ViewData)
 {
-	int nX = ViewData.m_nX04 - g_anC2DFTrampolineOffsets[0];
-	int nY = ViewData.m_nY08 - g_anC2DFTrampolineOffsets[1];
+	int nX = ViewData.m_nX04 - g_anC2DTrampolineOffsets[0];
+	int nY = ViewData.m_nY08 - g_anC2DTrampolineOffsets[1];
 	if (ViewData.m_nState18 == 0x18) {
 		((CAnimsManagerView*) m_pAnimsManager0A40)->EmitLevelScreenVariantEntry((short) nX, (short) nY, 0x97, 0, 0, 0);
 		return;
@@ -183,9 +183,9 @@ void C2DF::DrawTrampoline(CViewData& ViewData)
 	((CAnimsManagerView*) m_pAnimsManager0A40)->EmitLevelScreenVariantEntry((short) nX, (short) nY, 0x97, nFrame, 0, 0);
 }
 
-// MACINTOSH: C2DF::DrawGrenade(CViewData&)
+// MACINTOSH: C2D::DrawGrenade(CViewData&)
 // FUNCTION: LEMBALL 0x0043cad0
-void C2DF::DrawGrenade(CViewData& ViewData)
+void C2D::DrawGrenade(CViewData& ViewData)
 {
 	unsigned short nFrame;
 	switch (*(int*) ((char*) m_pLevelMode096C + 0x60)) {
@@ -223,9 +223,9 @@ void C2DF::DrawGrenade(CViewData& ViewData)
 	}
 }
 
-// MACINTOSH: C2DF::DrawRocket(CViewData&)
+// MACINTOSH: C2D::DrawRocket(CViewData&)
 // FUNCTION: LEMBALL 0x0043cb70
-void C2DF::DrawRocket(CViewData& ViewData)
+void C2D::DrawRocket(CViewData& ViewData)
 {
 	unsigned short nFrame;
 	switch (*(int*) ((char*) m_pLevelMode096C + 0x60)) {
@@ -263,13 +263,13 @@ void C2DF::DrawRocket(CViewData& ViewData)
 	}
 }
 
-// MACINTOSH: C2DF::DrawBoobyTrap(CViewData&)
+// MACINTOSH: C2D::DrawBoobyTrap(CViewData&)
 // FUNCTION: LEMBALL 0x0043cc10
-void C2DF::DrawBoobyTrap(CViewData& ViewData)
+void C2D::DrawBoobyTrap(CViewData& ViewData)
 {
 	unsigned int nVariant = (unsigned short) ViewData.m_nVariant1C;
-	short nX = (short) (ViewData.m_nX04 - g_anC2DFTrapOffsets[nVariant * 2]);
-	short nY = (short) (ViewData.m_nY08 - g_anC2DFTrapOffsets[nVariant * 2 + 1]);
+	short nX = (short) (ViewData.m_nX04 - g_anC2DTrapOffsets[nVariant * 2]);
+	short nY = (short) (ViewData.m_nY08 - g_anC2DTrapOffsets[nVariant * 2 + 1]);
 	int nResource;
 	switch (nVariant) {
 	case 0:
@@ -300,13 +300,13 @@ void C2DF::DrawBoobyTrap(CViewData& ViewData)
 	((CAnimsManagerView*) m_pAnimsManager0A40)->EmitLevelScreenVariantEntry(nX, nY, nResource, nFrame, 0, 0);
 }
 
-// MACINTOSH: C2DF::DrawCrusher(CViewData&)
+// MACINTOSH: C2D::DrawCrusher(CViewData&)
 // FUNCTION: LEMBALL 0x0043ccf0
-void C2DF::DrawCrusher(CViewData& ViewData)
+void C2D::DrawCrusher(CViewData& ViewData)
 {
 	unsigned int nVariant = (unsigned short) ViewData.m_nVariant1C;
-	short nX = (short) (ViewData.m_nX04 - g_anC2DFTrapOffsets[nVariant * 2]);
-	short nY = (short) (ViewData.m_nY08 - g_anC2DFTrapOffsets[nVariant * 2 + 1]);
+	short nX = (short) (ViewData.m_nX04 - g_anC2DTrapOffsets[nVariant * 2]);
+	short nY = (short) (ViewData.m_nY08 - g_anC2DTrapOffsets[nVariant * 2 + 1]);
 	int nResource;
 	switch (nVariant) {
 	case 0:
@@ -337,9 +337,9 @@ void C2DF::DrawCrusher(CViewData& ViewData)
 	((CAnimsManagerView*) m_pAnimsManager0A40)->EmitLevelScreenVariantEntry(nX, nY, nResource, nFrame, 0, 0);
 }
 
-// MACINTOSH: C2DF::DrawBurner(CViewData&)
+// MACINTOSH: C2D::DrawBurner(CViewData&)
 // FUNCTION: LEMBALL 0x0043cd80
-void C2DF::DrawBurner(CViewData& ViewData)
+void C2D::DrawBurner(CViewData& ViewData)
 {
 	short nX = (short) (ViewData.m_nX04 - 0x19);
 	int nY = ViewData.m_nY08 - 0x1b;
@@ -371,9 +371,9 @@ void C2DF::DrawBurner(CViewData& ViewData)
 	}
 }
 
-// MACINTOSH: C2DF::DrawLaserFire(CViewData&)
+// MACINTOSH: C2D::DrawLaserFire(CViewData&)
 // FUNCTION: LEMBALL 0x0043ce30
-void C2DF::DrawLaserFire(CViewData& ViewData)
+void C2D::DrawLaserFire(CViewData& ViewData)
 {
 	if (ViewData.m_nObjectType28 == 0x26) {
 		((CAnimsManagerView*) m_pAnimsManager0A40)
@@ -396,9 +396,9 @@ void C2DF::DrawLaserFire(CViewData& ViewData)
 	}
 }
 
-// MACINTOSH: C2DF::DrawTeleporter(CViewData&)
+// MACINTOSH: C2D::DrawTeleporter(CViewData&)
 // FUNCTION: LEMBALL 0x0043ced0
-void C2DF::DrawTeleporter(CViewData& ViewData)
+void C2D::DrawTeleporter(CViewData& ViewData)
 {
 	int nResource;
 	int nX;
@@ -437,9 +437,9 @@ void C2DF::DrawTeleporter(CViewData& ViewData)
 	}
 }
 
-// MACINTOSH: C2DF::DrawBalloon(CViewData&)
+// MACINTOSH: C2D::DrawBalloon(CViewData&)
 // FUNCTION: LEMBALL 0x0043cfc0
-void C2DF::DrawBalloon(CViewData& ViewData)
+void C2D::DrawBalloon(CViewData& ViewData)
 {
 	int nNow = (int) ViewData.m_pFrameSelector24;
 	int nState = ViewData.m_nState18;
@@ -462,14 +462,14 @@ void C2DF::DrawBalloon(CViewData& ViewData)
 	((CAnimsManagerView*) m_pAnimsManager0A40)->EmitLevelScreenVariantEntry(nX, nY, 0x89, nFrame + 1, 0, nRemap);
 }
 
-// MACINTOSH: C2DF::DrawCrate(CViewData&, int)
+// MACINTOSH: C2D::DrawCrate(CViewData&, int)
 // FUNCTION: LEMBALL 0x0043d070
-void C2DF::DrawCrate(CViewData& ViewData, int)
+void C2D::DrawCrate(CViewData& ViewData, int)
 {
 	if (ViewData.m_nState18 == 0x18) {
 		((CAnimsManagerView*) m_pAnimsManager0A40)
-			->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - g_anC2DFCrateOffsets[0]),
-										  (short) (ViewData.m_nY08 - g_anC2DFCrateOffsets[1]),
+			->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - g_anC2DCrateOffsets[0]),
+										  (short) (ViewData.m_nY08 - g_anC2DCrateOffsets[1]),
 										  0x86,
 										  ViewData.m_nFrame20,
 										  ViewData.m_pFrameSelector24,
@@ -478,8 +478,8 @@ void C2DF::DrawCrate(CViewData& ViewData, int)
 	}
 	if (ViewData.m_nState18 >= 0x19 && ViewData.m_nState18 <= 0x1a) {
 		((CAnimsManagerView*) m_pAnimsManager0A40)
-			->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - g_anC2DFCrateOffsets[2]),
-										  (short) (ViewData.m_nY08 - g_anC2DFCrateOffsets[3]),
+			->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - g_anC2DCrateOffsets[2]),
+										  (short) (ViewData.m_nY08 - g_anC2DCrateOffsets[3]),
 										  0x87,
 										  ViewData.m_nFrame20,
 										  ViewData.m_pFrameSelector24,
@@ -487,22 +487,22 @@ void C2DF::DrawCrate(CViewData& ViewData, int)
 	}
 }
 
-// MACINTOSH: C2DF::DrawTimeBonus(CViewData&)
+// MACINTOSH: C2D::DrawTimeBonus(CViewData&)
 // FUNCTION: LEMBALL 0x0043d0f0
-void C2DF::DrawTimeBonus(CViewData& ViewData)
+void C2D::DrawTimeBonus(CViewData& ViewData)
 {
 	((CAnimsManagerView*) m_pAnimsManager0A40)
-		->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - g_anC2DFTimeBonusOffsets[0]),
-									  (short) (ViewData.m_nY08 - g_anC2DFTimeBonusOffsets[1]),
+		->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - g_anC2DTimeBonusOffsets[0]),
+									  (short) (ViewData.m_nY08 - g_anC2DTimeBonusOffsets[1]),
 									  0x85,
 									  ViewData.m_nFrame20,
 									  ViewData.m_pFrameSelector24,
 									  0);
 }
 
-// MACINTOSH: C2DF::DrawExit(CViewData&)
+// MACINTOSH: C2D::DrawExit(CViewData&)
 // FUNCTION: LEMBALL 0x0043d270
-void C2DF::DrawExit(CViewData& ViewData)
+void C2D::DrawExit(CViewData& ViewData)
 {
 	int nRemap = ViewData.m_nVariant1C != 0 ? m_nLemmingRemap0968 : 0;
 	int nFrame = ViewData.m_nFrame20;
@@ -589,17 +589,17 @@ void C2DF::DrawExit(CViewData& ViewData)
 	}
 }
 
-// MACINTOSH: C2DF::DrawBall(CViewData&)
+// MACINTOSH: C2D::DrawBall(CViewData&)
 // FUNCTION: LEMBALL 0x0043d420
-void C2DF::DrawBall(CViewData& ViewData)
+void C2D::DrawBall(CViewData& ViewData)
 {
 	int nX = ViewData.m_nX04;
 	int nY = ViewData.m_nY08;
 	switch (ViewData.m_nState18) {
 	case 0x25:
 		((CAnimsManagerView*) m_pAnimsManager0A40)
-			->EmitLevelScreenVariantEntry((short) (nX - g_anC2DFBallOffsets[0]),
-										  (short) (nY - g_anC2DFBallOffsets[1]),
+			->EmitLevelScreenVariantEntry((short) (nX - g_anC2DBallOffsets[0]),
+										  (short) (nY - g_anC2DBallOffsets[1]),
 										  0x7d,
 										  0,
 										  ViewData.m_pFrameSelector24,
@@ -615,17 +615,17 @@ void C2DF::DrawBall(CViewData& ViewData)
 		nFrame = 8;
 	}
 	((CAnimsManagerView*) m_pAnimsManager0A40)
-		->EmitLevelScreenVariantEntry((short) (nX - g_anC2DFBallOffsets[2]),
-									  (short) (nY - g_anC2DFBallOffsets[3]),
+		->EmitLevelScreenVariantEntry((short) (nX - g_anC2DBallOffsets[2]),
+									  (short) (nY - g_anC2DBallOffsets[3]),
 									  0x7e,
 									  nFrame,
 									  0,
 									  0);
 }
 
-// MACINTOSH: C2DF::DrawKey(CViewData&, int)
+// MACINTOSH: C2D::DrawKey(CViewData&, int)
 // FUNCTION: LEMBALL 0x0043d4b0
-void C2DF::DrawKey(CViewData& ViewData, int nPlayer)
+void C2D::DrawKey(CViewData& ViewData, int nPlayer)
 {
 	int nRemap;
 	if (nPlayer < 4) {
@@ -635,17 +635,17 @@ void C2DF::DrawKey(CViewData& ViewData, int nPlayer)
 		nRemap = 0;
 	}
 	((CAnimsManagerView*) m_pAnimsManager0A40)
-		->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - g_anC2DFKeyOffsets[0]),
-									  (short) (ViewData.m_nY08 - g_anC2DFKeyOffsets[1]),
+		->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - g_anC2DKeyOffsets[0]),
+									  (short) (ViewData.m_nY08 - g_anC2DKeyOffsets[1]),
 									  0xb2,
 									  0,
 									  0,
 									  nRemap);
 }
 
-// MACINTOSH: C2DF::DrawMine(CViewData&)
+// MACINTOSH: C2D::DrawMine(CViewData&)
 // FUNCTION: LEMBALL 0x0043d500
-void C2DF::DrawMine(CViewData& ViewData)
+void C2D::DrawMine(CViewData& ViewData)
 {
 	int nX = ViewData.m_nX04;
 	int nY = ViewData.m_nY08;
@@ -655,8 +655,8 @@ void C2DF::DrawMine(CViewData& ViewData)
 	}
 	if (ViewData.m_nState18 <= 0x1a) {
 		((CAnimsManagerView*) m_pAnimsManager0A40)
-			->EmitLevelScreenVariantEntry((short) (nX - g_anC2DFMineOffsets[2]),
-										  (short) (nY - g_anC2DFMineOffsets[3]),
+			->EmitLevelScreenVariantEntry((short) (nX - g_anC2DMineOffsets[2]),
+										  (short) (nY - g_anC2DMineOffsets[3]),
 										  0x84,
 										  0,
 										  0,
@@ -665,8 +665,8 @@ void C2DF::DrawMine(CViewData& ViewData)
 	}
 	if (ViewData.m_nState18 == 0x1b) {
 		((CAnimsManagerView*) m_pAnimsManager0A40)
-			->EmitLevelScreenVariantEntry((short) (nX - g_anC2DFMineOffsets[0]),
-										  (short) (nY - g_anC2DFMineOffsets[1]),
+			->EmitLevelScreenVariantEntry((short) (nX - g_anC2DMineOffsets[0]),
+										  (short) (nY - g_anC2DMineOffsets[1]),
 										  0x83,
 										  nFrame,
 										  ViewData.m_pFrameSelector24,
@@ -674,12 +674,12 @@ void C2DF::DrawMine(CViewData& ViewData)
 	}
 }
 
-// MACINTOSH: C2DF::DrawFlag(CViewData&, eObjectType)
+// MACINTOSH: C2D::DrawFlag(CViewData&, eObjectType)
 // FUNCTION: LEMBALL 0x0043d8d0
-void C2DF::DrawFlag(CViewData& ViewData, int nObjectType)
+void C2D::DrawFlag(CViewData& ViewData, int nObjectType)
 {
-	int nX = ViewData.m_nX04 - g_anC2DFFlagOffsets[0];
-	int nY = ViewData.m_nY08 - g_anC2DFFlagOffsets[1];
+	int nX = ViewData.m_nX04 - g_anC2DFlagOffsets[0];
+	int nY = ViewData.m_nY08 - g_anC2DFlagOffsets[1];
 	if (nObjectType == 0x0b) {
 		((CAnimsManagerView*) m_pAnimsManager0A40)
 			->EmitLevelScreenVariantEntry((short) nX,
@@ -701,22 +701,22 @@ void C2DF::DrawFlag(CViewData& ViewData, int nObjectType)
 	}
 }
 
-// MACINTOSH: C2DF::DrawBonus(CViewData&)
+// MACINTOSH: C2D::DrawBonus(CViewData&)
 // FUNCTION: LEMBALL 0x0043d950
-void C2DF::DrawBonus(CViewData& ViewData)
+void C2D::DrawBonus(CViewData& ViewData)
 {
 	((CAnimsManagerView*) m_pAnimsManager0A40)
-		->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - g_anC2DFBonusOffsets[0]),
-									  (short) (ViewData.m_nY08 - g_anC2DFBonusOffsets[1]),
+		->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - g_anC2DBonusOffsets[0]),
+									  (short) (ViewData.m_nY08 - g_anC2DBonusOffsets[1]),
 									  0x81,
 									  0,
 									  ViewData.m_pFrameSelector24,
 									  0);
 }
 
-// MACINTOSH: C2DF::ResetPrimitives()
+// MACINTOSH: C2D::ResetPrimitives()
 // FUNCTION: LEMBALL 0x00440400
-void C2DF::ResetPrimitives(void)
+void C2D::ResetPrimitives(void)
 {
 	typedef int(LEMBALL_FASTCALL * GetUploadStateProc)(void*);
 	void* pContext = *(void**) ((char*) m_pRenderQueue0970 + 0x0c);

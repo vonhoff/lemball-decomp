@@ -6,7 +6,7 @@ set(LEMBALL_SOURCES
     src/Control/CGame.cpp
     src/Frontend/GAMEEVT.CPP
     src/views/2d/C2D.cpp
-    src/views/2d/C2DF.cpp
+    src/views/2d/C2DRender.cpp
     src/Control/CGameHelp.cpp
     src/Control/CGameVT.cpp
     src/Frontend/MAINMENU.CPP

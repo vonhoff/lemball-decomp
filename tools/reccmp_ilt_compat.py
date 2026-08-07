@@ -77,7 +77,7 @@ FUNCTION_DATA_REFERENCES = {
     0x0043C7F0: (
         0x004A7874,
         "g_nLevelScreenTimedVariantResourceId",
-        "C2DF DrawHand timed variant resource 004a7874",
+        "C2D DrawHand timed variant resource 004a7874",
     ),
     0x0044C830: (
         0x00497E30,
