@@ -535,6 +535,32 @@ void __fastcall SyncLevelScreenActionPanelChildValues(void* pObject)
 	}
 }
 
+// MACINTOSH: remove_ball_chunk_entry_from_active_list(int)
+// FUNCTION: LEMBALL 0x00421ff0
+void __fastcall RemoveBallChunkEntryFromActiveList(void* pObject, int nUnused, int param_1)
+{
+	int n = *(int*) ((char*) pObject + 8);
+	int i = 0;
+	if (n > 0) {
+		int* pIdx = *(int**) ((char*) pObject + 4);
+		while (*pIdx != param_1) {
+			pIdx++;
+			i++;
+			if (n <= i) {
+				return;
+			}
+		}
+		*(int*) ((char*) pObject + 8) = n - 1;
+		if (i < n - 1) {
+			int j;
+			for (j = i; j < *(int*) ((char*) pObject + 8); j++) {
+				*(int*) (*(int**) ((char*) pObject + 4) + j * 4) = *(int*) (*(int**) ((char*) pObject + 4) + j * 4 + 1);
+			}
+		}
+		*(int*) (*(int**) ((char*) pObject + 4) + *(int*) ((char*) pObject + 8) * 4) = param_1;
+	}
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
