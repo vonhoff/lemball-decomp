@@ -9,6 +9,12 @@ extern void* g_pActiveManagedEntityOwner;
 struct PlasChildStateEntityView;
 extern void __cdecl DispatchPlasChildStateTableVariant0(void* pContext, PlasChildStateEntityView* pEntity);
 extern void __cdecl DispatchPlasChildStateTableVariant1(void* pContext, PlasChildStateEntityView* pEntity);
+// Palette remap pointer table view (mirrors VSINIT.CPP's PaletteRemapPointerTableMemberView for member-symbol linking).
+struct PaletteRemapPointerTableMemberView {
+	void** m_ppItems;
+	int m_nCursor;
+	void ReleasePaletteRemapVariant(void* pVariant);
+};
 
 // MACINTOSH: append_type_0x18_chunk_object_from_tile_coords(int, int, int, int)
 // FUNCTION: LEMBALL 0x00412eb0
@@ -400,4 +406,21 @@ void* __fastcall ConstructNetworkLobbyPlayerEntryChild(void* pObject)
 	*(void**) pObject = (void**) 0x4986b0;
 	((void(__fastcall*)(void*)) 0x4014dd)(pObject);
 	return pObject;
+}
+
+// MACINTOSH: find_projectile_position_in_rect_from_level_mode(short*, undefined4*)
+// FUNCTION: LEMBALL 0x004127e0
+void __fastcall FindProjectilePositionInRectFromLevelMode(void* pObject, int nUnused, void* param_1, void* param_2)
+{
+	((void(__fastcall*)(void*, void*, void*)) 0x402680)(*(void**) ((char*) pObject + 0x168), param_1, param_2);
+}
+
+// MACINTOSH: release_level_screen_palette_remap_variants()
+// FUNCTION: LEMBALL 0x00436480
+void __fastcall ReleaseLevelScreenPaletteRemapVariants(void* pObject)
+{
+	int i;
+	for (i = 0; i < 5; i++) {
+		((PaletteRemapPointerTableMemberView*) *(void**) 0x4a2000)->ReleasePaletteRemapVariant((void*) *(int*) ((char*) pObject + 0x64 + i * 4));
+	}
 }
