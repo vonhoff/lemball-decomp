@@ -1,6 +1,8 @@
 #include "AI/CGameObject.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
+extern void* g_pActiveManagedEntityOwner;
+
 typedef int(__cdecl* PlasChildStatePredicate)(void* pContext, void* pEntity, int* pScratch);
 typedef void(__cdecl* PlasChildStateAction)(void* pContext, void* pEntity, int* pScratch);
 
@@ -67,4 +69,19 @@ void __cdecl DispatchPlasChildStateTable(PlasChildStateDispatchEntry** ppStateTa
 		pEntity->m_nStateDeadline94 = g_nLevelFrameClockTick * 50;
 		pEntity->SetState(nNextState);
 	}
+}
+
+// MACINTOSH: dispatch_plas_child_state_table_variant_2(void*, PlasChildStateEntityView*)
+// FUNCTION: LEMBALL 0x00419a70
+void __cdecl DispatchPlasChildStateTableVariant2(void* pContext, PlasChildStateEntityView* pEntity)
+{
+	DispatchPlasChildStateTable((PlasChildStateDispatchEntry**) 0x49dd88, pContext, pEntity);
+}
+
+// MACINTOSH: CSheep::Process()
+// FUNCTION: LEMBALL 0x0041fa90
+int LEMBALL_FASTCALL DispatchShpgChunkObjectPlasStateTableVariant2(PlasChildStateEntityView* pEntity)
+{
+	DispatchPlasChildStateTableVariant2(g_pActiveManagedEntityOwner, pEntity);
+	return 0;
 }
