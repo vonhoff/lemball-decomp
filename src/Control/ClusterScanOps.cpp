@@ -1,5 +1,6 @@
 // Cluster reconstruction: clean scan/array operations appended to a fresh TU
 // (avoids disturbing existing translation units' formatting).
+#include "Visos/Generic/Memory.h"
 
 // MACINTOSH: append_static_anim_chunk_record_if_unique(short*)
 // FUNCTION: LEMBALL 0x0040d0c0
@@ -68,4 +69,15 @@ void __fastcall RemoveQueuedProjectileRequestCode(void* pObject, int nUnused, in
 		}
 		*(int*) ((char*) pObject + 0x220) = *(int*) ((char*) pObject + 0x220) - 1;
 	}
+}
+
+// MACINTOSH: destroy_managed_entity_group(byte) [scalar-dtor]
+// FUNCTION: LEMBALL 0x00419930
+void* __fastcall DestroyManagedEntityGroup(void* pThis, int nUnused, unsigned char param_1)
+{
+	((void(__fastcall*)(void*)) 0x402441)(pThis);
+	if ((param_1 & 1) != 0) {
+		FreeVSMemBlock((void*) ((char*) pThis - 0xb0));
+	}
+	return (void*) ((char*) pThis - 0xb0);
 }
