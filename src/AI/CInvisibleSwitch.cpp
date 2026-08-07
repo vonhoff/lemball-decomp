@@ -30,6 +30,7 @@ struct LevelChunkObjectBaseView {
 
 struct LevelVtSmallFunctionView {
 	void AddLevelScoreClamped(int nValue);
+	void AddTime(int nValue);
 };
 
 struct InvsChunkObjectSoundState {
@@ -476,4 +477,20 @@ void* LEMBALL_FASTCALL ConstructCollChunkObject(void* pObject, int nUnused, int 
 	*(int*) ((char*) pObject + 0x44) = nWorldY << 12;
 	*(int*) ((char*) pObject + 0x48) = nWorldZ << 12;
 	return pObject;
+}
+
+// MACINTOSH: schedule_coll_runtime_timer_0xfa_and_request_level_state_0x1e()
+// FUNCTION: LEMBALL 0x00422c80
+int LEMBALL_FASTCALL ScheduleCollRuntimeTimer0xfa(void)
+{
+	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddLevelScoreClamped(0xfa);
+	((LevelVtSmallFunctionView*) g_pActiveManagedEntityOwner)->AddTime(0x1e);
+	return 1;
+}
+
+// MACINTOSH: add_level_time_bonus_counter(int)
+// FUNCTION: LEMBALL 0x004121e0
+void LevelVtSmallFunctionView::AddTime(int nValue)
+{
+	*(int*) ((char*) this + 0xe8) = *(int*) ((char*) this + 0xe8) + nValue;
 }
