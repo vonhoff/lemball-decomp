@@ -150,8 +150,6 @@ struct LinkScfBoonChunkManagerView {
 };
 
 // Referenced real destinations that remain minimally implemented.
-// STUB: LEMBALL 0x0040e550
-// ServiceActiveDoorChunkObjects
 
 
 
@@ -174,8 +172,6 @@ struct LinkScfBoonChunkManagerView {
 // STUB: LEMBALL 0x00427010
 // RefreshActiveRockChunkObjects
 // MACINTOSH: CPaintGunManager::Process()
-// STUB: LEMBALL 0x0042c4d0
-// RefreshActivePgunChunkObjects
 // MACINTOSH: CPaintGunManager::GetViewData(CViewData*)
 // MACINTOSH: CMoverManager::GetViewData(CViewData*)
 

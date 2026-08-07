@@ -1323,6 +1323,44 @@ int __fastcall EmitDoorChunkRenderEntries(void* pThis, int nUnused, int param_1)
 	return *(int*) ((char*) pThis + 0x34);
 }
 
+// MACINTOSH: service_active_door_chunk_objects()
+// FUNCTION: LEMBALL 0x0040e550
+void __fastcall ServiceActiveDoorChunkObjects(void* param_1)
+{
+	int iVar3 = 0;
+	if (*(int*) ((char*) param_1 + 0x34) > 0) {
+		int iVar2 = 0;
+		do {
+			*(int*) (*(int*) ((char*) param_1 + 0x3c) + 0x124 + iVar2) = 1;
+			void* piVar1 = (void*) (*(int*) ((char*) param_1 + 0x3c) + iVar2);
+			if (*(int*) ((char*) piVar1 + 0x51 * 4) != 0 || *(int*) ((char*) piVar1 + 0x45 * 4) != 0) {
+				(*( void(**)(void)) (*(void***) piVar1 + 0x14 / 4))();
+			}
+			iVar2 = iVar2 + 0x14c;
+			iVar3 = iVar3 + 1;
+		} while (iVar3 < *(int*) ((char*) param_1 + 0x34));
+	}
+}
+
+// MACINTOSH: refresh_active_pgun_chunk_objects()
+// FUNCTION: LEMBALL 0x0042c4d0
+void __fastcall RefreshActivePgunChunkObjects(void* param_1)
+{
+	int iVar3 = 0;
+	if (*(int*) ((char*) param_1 + 0x34) > 0) {
+		int iVar2 = 0;
+		do {
+			*(int*) (*(int*) ((char*) param_1 + 0x38) + 0x124 + iVar2) = 1;
+			void* piVar1 = (void*) (*(int*) ((char*) param_1 + 0x38) + iVar2);
+			if (*(int*) ((char*) piVar1 + 0x4e * 4) != 0) {
+				(*( void(**)(void)) (*(void***) piVar1 + 0x14 / 4))();
+			}
+			iVar2 = iVar2 + 0x144;
+			iVar3 = iVar3 + 1;
+		} while (iVar3 < *(int*) ((char*) param_1 + 0x34));
+	}
+}
+
 // MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
 void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
