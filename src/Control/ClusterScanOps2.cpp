@@ -2190,3 +2190,83 @@ void __fastcall DestroyCPlayerLemmingGroupManager(void* pThis, int nUnused)
 	((void(__fastcall*)(void*)) 0x45eea0)(((unsigned int) pSub >= 1) ? pThis : 0);
 	((void(__fastcall*)(void*)) 0x402de7)(pSub);
 }
+
+// MACINTOSH: CAI::SetNetworkTrapDoors(int, int, int, int, int, int)
+// FUNCTION: LEMBALL 0x004131e0
+void __fastcall CAISetNetworkTrapDoors(void* pThis, int nUnused, int param_1, int param_2, int param_3, int param_4, int param_5)
+{
+	*(int*) ((char*) pThis + 0xd0) = param_1;
+	if (param_2 == -1) {
+		*(int*) ((char*) pThis + 0xc0) = *(int*) (0x49cf50 + (param_1 << 4));
+		*(int*) ((char*) pThis + 0xc4) = *(int*) (0x49cf54 + (param_1 << 4));
+		*(int*) ((char*) pThis + 0xc8) = *(int*) (0x49cf58 + (param_1 << 4));
+		*(int*) ((char*) pThis + 0xcc) = *(int*) (0x49cf5c + (param_1 << 4));
+	} else {
+		*(int*) ((char*) pThis + 0xc0) = param_2;
+		*(int*) ((char*) pThis + 0xc4) = param_3;
+		*(int*) ((char*) pThis + 0xc8) = param_4;
+		*(int*) ((char*) pThis + 0xcc) = param_5;
+	}
+	if (param_1 > 0) {
+		int* pi = (int*) ((char*) pThis + 0x90);
+		int v = 0;
+		int count = param_1;
+		do {
+			if (pi[0] > 0x400 || pi[0] < 0) {
+				pi[0] = v;
+			}
+			if (pi[4] > 0x400 || pi[4] < 0) {
+				pi[4] = v;
+			}
+			pi++;
+			v += 0x10;
+		} while (--count != 0);
+	}
+}
+
+// MACINTOSH: CPlayerLemming::TurnToFaceTarget()
+// FUNCTION: LEMBALL 0x0040f220
+void __fastcall CPlayerLemmingTurnToFaceTarget(void* pThis, int nUnused)
+{
+	int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(
+		*(int*) ((char*) pThis + 0x9c) >> 12,
+		*(int*) ((char*) pThis + 0xa0) >> 12,
+		*(int*) ((char*) pThis + 0x1b4) >> 12,
+		*(int*) ((char*) pThis + 0x1b8) >> 12);
+	if (nOct != (int) *(short*) ((char*) pThis + 0xb4)) {
+		if (*(int*) ((char*) 0x49d020 + (nOct - (int) *(short*) ((char*) pThis + 0xb4) & 7) * 4) < 0) {
+			((void(__fastcall*)(void*)) 0x4023e7)(pThis);
+		} else {
+			((void(__fastcall*)(void*)) 0x402068)(pThis);
+		}
+		(*( void(**)(void*, int)) (*(void***) pThis + 0x84 / 4))(pThis, 0xfa0);
+	}
+	*(int*) ((char*) pThis + 0xcc) = g_nLevelFrameClockTick +
+		*(int*) ((char*) 0x49d0b0 + *(int*) ((char*) pThis + 0x64) * 4) / 0x32;
+}
+
+// MACINTOSH: CPlayerLemming::TurnToFaceCursor()
+// FUNCTION: LEMBALL 0x0040f160
+void __fastcall CPlayerLemmingTurnToFaceCursor(void* pThis, int nUnused)
+{
+	if (*(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) {
+		int local_4 = 0;
+		int local_8 = 0;
+		((void(__fastcall*)(void*, int*, int*)) 0x401e65)(
+			*(void**) ((char*) g_pActiveManagedEntityOwner + 0x160), &local_4, &local_8);
+		int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(
+			*(int*) ((char*) pThis + 0x9c) >> 12,
+			*(int*) ((char*) pThis + 0xa0) >> 12,
+			local_4, local_8);
+		if (nOct != (int) *(short*) ((char*) pThis + 0xb4)) {
+			if (*(int*) ((char*) 0x49d020 + (nOct - (int) *(short*) ((char*) pThis + 0xb4) & 7) * 4) < 0) {
+				((void(__fastcall*)(void*)) 0x4023e7)(pThis);
+			} else {
+				((void(__fastcall*)(void*)) 0x402068)(pThis);
+			}
+			(*( void(**)(void*, int)) (*(void***) pThis + 0x84 / 4))(pThis, 0xfa0);
+		}
+		*(int*) ((char*) pThis + 0xcc) = g_nLevelFrameClockTick +
+			*(int*) ((char*) 0x49d070 + *(int*) ((char*) pThis + 0x64) * 4) / 0x32;
+	}
+}
