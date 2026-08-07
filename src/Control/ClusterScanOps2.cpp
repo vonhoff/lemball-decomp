@@ -876,6 +876,24 @@ void* __fastcall PopMoveCommandAndCopyNextPosition(void* param_1, int nUnused, v
 	return param_2;
 }
 
+// MACINTOSH: set_managed_entity_ice_attachment(int, int, int)
+// FUNCTION: LEMBALL 0x00410250
+void __fastcall SetManagedEntityIceAttachment(void* pThis, int nUnused, int param_1, void* param_2, int param_3)
+{
+	if (param_1 == 0 && *(int*) ((char*) pThis + 0x188) != 0 && param_3 != 0) {
+		((void(__fastcall*)(void*, void*)) 0x402c16)(*(void**) ((char*) pThis + 0x18c), pThis);
+	}
+	*(int*) ((char*) pThis + 0x188) = param_1;
+	*(void**) ((char*) pThis + 0x18c) = param_2;
+	if (param_1 != 0) {
+		int iVar1 = ((int(__fastcall*)(void*)) (*(void***) *(void**) ((char*) pThis + 0x224) + 0x108 / 4))(*(void**) ((char*) pThis + 0x224));
+		if (iVar1 > 1) {
+			(*( void(**)(int, void*)) (*(void***) *(void**) ((char*) g_pActiveManagedEntityOwner + 0x15c) + 0x34 / 4))(1, (char*) pThis + 0x6a);
+		}
+		(*( void(**)(void*)) (*(void***) *(void**) ((char*) pThis + 0x224) + 0x150 / 4))(*(void**) ((char*) pThis + 0x224));
+	}
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
