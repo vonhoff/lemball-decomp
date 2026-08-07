@@ -4,6 +4,7 @@
 extern void __fastcall AppendType18ChunkObject(void* pStream, int nUnused, unsigned short param_1, void* param_2, int param_3, int param_4);
 extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
+extern void __fastcall ReleaseTypedResourceObjectIfLoaded(void* pObject, void* pUnusedEdx, int fReleaseMode);
 extern void* g_pActiveManagedEntityOwner;
 struct PlasChildStateEntityView;
 extern void __cdecl DispatchPlasChildStateTableVariant0(void* pContext, PlasChildStateEntityView* pEntity);
@@ -324,4 +325,25 @@ void __fastcall SyncAttachedMoveChunkEntitiesToCurrentPosition(void* pObject)
 			((void(__fastcall*)(void*)) 0x40360c)(pElem);
 		}
 	}
+}
+
+// MACINTOSH: set_selector_manager_action_keyframes(int, int, int)
+// FUNCTION: LEMBALL 0x0044da30
+void __fastcall SetSelectorManagerActionKeyframes(void* pObject, int nUnused, int param_2, int param_3, int param_4)
+{
+	*(int*) ((char*) pObject + 0x88) = param_2;
+	*(int*) ((char*) pObject + 0x8c) = param_3;
+	*(int*) ((char*) pObject + 0x90) = param_3;
+	*(int*) ((char*) pObject + 0x94) = param_4;
+	*(int*) ((char*) pObject + 0x98) = param_2;
+	*(int*) ((char*) pObject + 0x9c) = param_3;
+	*(int*) ((char*) pObject + 0xa0) = param_4;
+}
+
+// MACINTOSH: release_list_entry_pair(int, int)
+// FUNCTION: LEMBALL 0x0045da50
+void __fastcall ReleaseListEntryPair(void* pObject, int nUnused, int param_2, int param_3)
+{
+	ReleaseTypedResourceObjectIfLoaded((void*) (*(int*) ((char*) pObject + 0x80) + param_2 * 0x4c), 0, param_3);
+	ReleaseTypedResourceObjectIfLoaded((void*) (*(int*) ((char*) pObject + 0x7c) + param_2 * 0x54), 0, param_3);
 }
