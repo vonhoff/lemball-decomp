@@ -645,6 +645,17 @@ void* __fastcall ConstructPaletteRemapVariantWrapper(void* pThis, int nUnused, i
 	return pThis;
 }
 
+// MACINTOSH: refresh_resource_sprite_text_owner_layout()
+// FUNCTION: LEMBALL 0x00469690
+void __fastcall RefreshResourceSpriteTextOwnerLayout(void* pObject)
+{
+	if (*(int*) ((char*) pObject + 0x14c) != 0) {
+		((void(__cdecl*)(void*, int)) 0x469210)(*(void**) ((char*) pObject + 0x154), 0);
+		return;
+	}
+	((void(__cdecl*)(void*, int)) 0x469210)(*(void**) ((char*) pObject + 0x150), 0);
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
