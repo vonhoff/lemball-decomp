@@ -1852,4 +1852,62 @@ void __fastcall RemoveAnimChunkRecordsAtTile(void* pThis, int nUnused, short* pT
 	}
 }
 
+// MACINTOSH: destroy_cdoor_manager_object() [dtor]
+// FUNCTION: LEMBALL 0x0040e060
+void __fastcall DestroyCDoorManagerObject(void* pThis, int nUnused)
+{
+	*(int*) pThis = 0x493840;
+	if (*(void**) ((char*) pThis + 0x3c) != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) ((char*) pThis + 0x3c))[0])(
+			*(void**) ((char*) pThis + 0x3c), 3);
+	}
+	((void(__fastcall*)(void*)) 0x45eea0)(pThis);
+}
 
+// MACINTOSH: destroy_cbullet_manager_object() [dtor]
+// FUNCTION: LEMBALL 0x00417ec0
+void __fastcall DestroyCBulletManagerObject(void* pThis, int nUnused)
+{
+	*(int*) pThis = 0x494008;
+	if (*(void**) ((char*) pThis + 0x30) != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) ((char*) pThis + 0x30))[0])(
+			*(void**) ((char*) pThis + 0x30), 3);
+	}
+	((void(__fastcall*)(void*)) 0x45eea0)(pThis);
+}
+
+// MACINTOSH: destroy_crocket_manager_object() [dtor]
+// FUNCTION: LEMBALL 0x00426c00
+void __fastcall DestroyCRocketManagerObject(void* pThis, int nUnused)
+{
+	*(int*) pThis = 0x496020;
+	if (*(void**) ((char*) pThis + 0x38) != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) ((char*) pThis + 0x38))[0])(
+			*(void**) ((char*) pThis + 0x38), 3);
+	}
+	((void(__fastcall*)(void*)) 0x45eea0)(pThis);
+}
+
+// MACINTOSH: destroy_ctrampoline_manager_object() [dtor]
+// FUNCTION: LEMBALL 0x0042b090
+void __fastcall DestroyCTrampolineManagerObject(void* pThis, int nUnused)
+{
+	*(int*) pThis = 0x496710;
+	if (*(void**) ((char*) pThis + 0x38) != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) ((char*) pThis + 0x38))[0])(
+			*(void**) ((char*) pThis + 0x38), 3);
+	}
+	((void(__fastcall*)(void*)) 0x45eea0)(pThis);
+}
+
+// MACINTOSH: destroy_cpaint_gun_manager_object() [dtor]
+// FUNCTION: LEMBALL 0x0042c120
+void __fastcall DestroyCPaintGunManagerObject(void* pThis, int nUnused)
+{
+	*(int*) pThis = 0x496888;
+	if (*(void**) ((char*) pThis + 0x38) != 0) {
+		((void(__fastcall*)(void*, int)) (*(void***) ((char*) pThis + 0x38))[0])(
+			*(void**) ((char*) pThis + 0x38), 3);
+	}
+	((void(__fastcall*)(void*)) 0x45eea0)(pThis);
+}
