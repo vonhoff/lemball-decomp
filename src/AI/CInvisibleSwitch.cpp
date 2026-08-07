@@ -543,6 +543,26 @@ void* LEMBALL_FASTCALL ConstructType35ChunkObject(void* pObject)
 	return pObject;
 }
 
+// MACINTOSH: CTrapDoor::CTrapDoor() [type-0x18 chunk]
+// FUNCTION: LEMBALL 0x0040c2d0
+void* LEMBALL_FASTCALL ConstructType18ChunkObject(void* pObject, int nUnused, void* pPoint, int pContext)
+{
+	((CGameObject*) pObject)->InitializeLevelChunkObjectBase(0x18, 0, 0);
+	(* (void***) pObject) = (void**) 0x493580;
+	*(int*) ((char*) pObject + 0x138) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x13c) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x140) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x138) = *(int*) pPoint;
+	*(int*) ((char*) pObject + 0x13c) = *(int*) ((char*) pPoint + 4);
+	*(int*) ((char*) pObject + 0x140) = *(int*) ((char*) pPoint + 8);
+	(* (void***) pObject) = (void**) 0x493438;
+	*(int*) ((char*) pObject + 0x40) = *(int*) pPoint;
+	*(int*) ((char*) pObject + 0x44) = *(int*) ((char*) pPoint + 4);
+	*(int*) ((char*) pObject + 0x48) = *(int*) ((char*) pPoint + 8);
+	*(int*) ((char*) pObject + 0x144) = pContext;
+	return pObject;
+}
+
 // MACINTOSH: CBullet::CBullet() [type-3 projectile chunk]
 // FUNCTION: LEMBALL 0x0041a510
 void* LEMBALL_FASTCALL ConstructProjectileObject(void* pObject)
