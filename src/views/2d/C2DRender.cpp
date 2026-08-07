@@ -732,3 +732,45 @@ void C2D::DrawZBuff_Sprite(int nViewDataIndex, unsigned short nValue)
 	*(unsigned short*) ((char*) m_pAnimsManager0A40 + 0x68) = nValue;
 	((void(__fastcall*)(void*, unsigned short*)) 0x4033eb)(this, (unsigned short*) ((char*) m_pViewData095C + nViewDataIndex * 0x4c));
 }
+
+// MACINTOSH: C2D::DrawLemmingJump(ushort*, int) - shared directional-timed emit host
+// FUNCTION: LEMBALL 0x0043bee0
+void C2D::DrawLemmingJump(unsigned short* pViewData, int nFrameIndex)
+{
+	unsigned int uRotated;
+	short sRotX;
+	short sRotY;
+	int iDelta;
+	int nSize;
+
+	uRotated = (*pViewData + m_nViewRotation090C * 2) & 7;
+	iDelta = uRotated * 4;
+	sRotX = (short) *(int*) (pViewData + 2) - *(short*) (0x497018 + iDelta);
+	sRotY = (short) *(int*) (pViewData + 4) - *(short*) (0x49701a + iDelta);
+	if (pViewData[0xe] == 0) {
+		iDelta = (*(int*) (pViewData + 0x12) - *(int*) (pViewData + 0x10)) * 0xf;
+		nSize = (int) (iDelta + (iDelta >> 0x1f & 0x3ffU)) >> 10;
+		if (6 < nSize) {
+			nSize = 6;
+		}
+	}
+	else if (pViewData[0xe] == 1) {
+		iDelta = (*(int*) (pViewData + 0x12) - *(int*) (pViewData + 0x10)) * 0xf;
+		nSize = ((int) (iDelta + (iDelta >> 0x1f & 0x3ffU)) >> 10) + 7;
+		if (0xc < nSize) {
+			nSize = 0xc;
+		}
+	}
+	if (nFrameIndex == 0) {
+		EmitLevelScreenVariantEntry(m_pAnimsManager0A40, sRotX, sRotY, *(int*) (0x49eef8 + uRotated * 4), nSize, 0, 0);
+		return;
+	}
+	EmitLevelScreenVariantEntry(m_pAnimsManager0A40, sRotX, sRotY, *(int*) (0x49eef8 + uRotated * 4), nSize, 0, m_nLemmingRemap0968);
+}
+
+// MACINTOSH: C2D::DrawLemmingFall(ushort*, int)
+// FUNCTION: LEMBALL 0x0043c070
+void C2D::DrawLemmingFall(unsigned short* pViewData, int nUnused)
+{
+	DrawLemmingJump(pViewData, nUnused);
+}

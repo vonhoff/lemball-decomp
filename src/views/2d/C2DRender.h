@@ -65,6 +65,8 @@ public:
 	void DrawExit(CViewData& ViewData);
 	void ResetPrimitives(void);
 	void DrawZBuff_Sprite(int nViewDataIndex, unsigned short nValue);
+	void DrawLemmingJump(unsigned short* pViewData, int nFrameIndex);
+	void DrawLemmingFall(unsigned short* pViewData, int nUnused);
 };
 
 typedef char CViewDataSizeCheck[(sizeof(CViewData) == 0x4c) ? 1 : -1];
