@@ -17,3 +17,31 @@ void CTrampolineManager::Add(unsigned short nSlot, int nWorldX, int nWorldY, int
 		m_nObjectCount34 = m_nObjectCount34 + 1;
 	}
 }
+
+// Mac blueprint: CTrampolineManager::LoadLevel(ushort*, int, uchar)
+// FUNCTION: LEMBALL 0x0042b600
+void CTrampolineManager::LoadLevel(unsigned short* pLevelData, int nLen, unsigned char nFormat)
+{
+	typedef unsigned int(__fastcall* FindFreeSlotProc)(void);
+	unsigned int nCount = (unsigned int) *pLevelData;
+	unsigned short nSlot;
+	int nX;
+	int nY;
+	int nZ;
+
+	pLevelData = pLevelData + 1;
+	((void(__fastcall*)(void*, unsigned int)) 0x4019f6)(this, nCount);
+	while (nCount != 0) {
+		if (*(unsigned short*) ((char*) m_pLevelMode3C + 0x54) <= 1) {
+			nSlot = (unsigned short) ((FindFreeSlotProc) 0x40214e)();
+		}
+		else {
+			nSlot = *pLevelData++;
+		}
+		nX = *pLevelData++;
+		nY = *pLevelData++;
+		nZ = *pLevelData++;
+		Add(nSlot, nX, nY, nZ);
+		nCount = nCount - 1;
+	}
+}

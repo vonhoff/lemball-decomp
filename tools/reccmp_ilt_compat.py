@@ -253,6 +253,7 @@ THUNK_ILT_REFERENCES = {
     ),
     0x004304E0: (0x00402B26, "CMoverManager::Find", "find-move-chunk-containing-point fwd 0x402b26->0x4130d0->0x42f2f0"),
     0x0042B5A0: (0x00402450, "CTrampoline::Set", "seed-tram-chunk-object-at-point thunk -> CTrampoline::Set 0x42a9e0"),
+    0x0042B600: (0x00403134, "CTrampolineManager::Add", "append-tram-chunk-object thunk -> CTrampolineManager::Add 0x42b5a0"),
     0x0042C590: (0x00402973, "CPaintGun::Set", "seed-pgun-chunk-object-at-point thunk -> CPaintGun::Set 0x42bb30"),
     0x0042CB00: (
         (0x00402293, "CGameObject::SetId", "managed-entity slot setter -> CGameObject::SetId 0x416620"),
