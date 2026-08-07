@@ -2118,9 +2118,22 @@ DEFINE_LEVELVT_CHUNK_BASE_DELETE(DeleteLevelChunkObjectBaseWrapper1FB70)
 
 #undef DEFINE_LEVELVT_CHUNK_BASE_DELETE
 
-// Comparison-only compatibility stub.
-void LEMBALL_FASTCALL DestroyCompositeLevelChunkChildrenAuto(void*)
+// FUNCTION: LEMBALL 0x0041de40
+// MACINTOSH: CGenericGroup::~CGenericGroup()
+void LEMBALL_FASTCALL DestroyCompositeLevelChunkChildrenAuto(void* pObject)
 {
+	void** pChild = (void**) ((char*) pObject + 0x128);
+	*(int*) pObject = 0x494b60;
+	int nCount = 10;
+	do {
+		void* pItem = *pChild;
+		if (pItem) {
+			(*( void(__fastcall**)(void*, void*, int)) (** (void***) pItem))(pItem, 0, 1);
+		}
+		++pChild;
+		--nCount;
+	} while (nCount != 0);
+	((CGameObject*) pObject)->DestroyLevelChunkObjectBase();
 }
 
 // Compatibility shim for original ILT call site.
