@@ -17,3 +17,16 @@ void __fastcall AppendType18ChunkObjectFromTileCoords(void* pObject, int nUnused
 	int local_4 = param_3 << 12;
 	AppendType18ChunkObject(*(void**) ((char*) pObject + 0x1c4), nUnused, (unsigned short) nSlot, &local_c, 0, param_4);
 }
+
+// MACINTOSH: start_door_chunk_object_vertical_motion()
+// FUNCTION: LEMBALL 0x0040f600
+void __fastcall StartDoorChunkObjectVerticalMotion(void* pObject)
+{
+	int vec[3];
+	vec[0] = 0;
+	vec[1] = 0;
+	*(int*) ((char*) pObject + 0x10c) = 1;
+	vec[2] = 0xa000;
+	(*( void(**)(void*, int)) (*(void***) pObject + 0x20 / 4))(vec, 0);
+	*(int*) ((char*) pObject + 0x2c) = 1;
+}
