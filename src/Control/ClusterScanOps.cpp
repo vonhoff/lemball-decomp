@@ -158,6 +158,18 @@ void __fastcall DeactivateManagedEntityGroupChildBySlot(void* pObject, int nUnus
 	}
 }
 
+// MACINTOSH: get_managed_entity_geometry_fields(undefined4*, undefined4*, undefined4*, undefined4*, undefined4*, undefined4*)
+// FUNCTION: LEMBALL 0x0041fe70
+void __fastcall GetManagedEntityGeometryFields(void* pObject, int nUnused, int* param_2, int* param_3, int* param_4, int* param_5, int* param_6, int* param_7)
+{
+	*param_2 = *(int*) ((char*) pObject + 300);
+	*param_3 = *(int*) ((char*) pObject + 0x130);
+	*param_4 = *(int*) ((char*) pObject + 0x138);
+	*param_5 = *(int*) ((char*) pObject + 0x13c);
+	*param_6 = *(int*) ((char*) pObject + 0x144);
+	*param_7 = *(int*) ((char*) pObject + 0x148);
+}
+
 // MACINTOSH: delete_linked_type_0x11_chunk_object(byte) [scalar-dtor]
 // FUNCTION: LEMBALL 0x0041c540
 void* __fastcall DeleteLinkedType11ChunkObject(void* pObject, int nUnused, unsigned char param_1)
