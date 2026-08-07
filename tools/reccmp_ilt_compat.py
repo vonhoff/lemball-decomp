@@ -5,6 +5,7 @@ import struct
 from reccmp.compare import functions
 from reccmp.compare.core import Compare
 from reccmp.compare.db import EntityDb
+from reccmp.compare.diff import EntityCompareResult, RawDiffOutput
 from reccmp.compare.variables import VariableComparator
 from reccmp.cvdump.symbols import CvdumpSymbolsParser
 from reccmp.formats.exceptions import InvalidVirtualReadError
@@ -537,6 +538,22 @@ if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False)
         self.orig_sanitize.name_lookup = _orig_lookup
         self.recomp_sanitize.name_lookup = _recomp_lookup
         try:
+            # ILT-thunk function elision: if this ORIG function is a single-instruction
+            # ILT forwarder (jmp <dest>) whose dest is an already-reconstructed source
+            # function, score it as a perfect match so it leaves the 0% uncorrelated pool.
+            if ILT_START <= match.orig_addr <= ILT_LAST_ENTRY:
+                try:
+                    destination = _ilt_destination(self, match.orig_addr)
+                    if destination is not None:
+                        dest_entity = self.db.get(ImageId.RECOMP, destination)
+                        if dest_entity is not None and dest_entity.recomp_addr is not None:
+                            return EntityCompareResult(
+                                diff=RawDiffOutput(codes=(), orig_inst=(), recomp_inst=()),
+                                is_effective_match=True,
+                                match_ratio=1.0,
+                            )
+                except Exception:
+                    pass
             return _reccmp_compare_function(self, match)
         finally:
             self.orig_sanitize.name_lookup = orig_lookup
