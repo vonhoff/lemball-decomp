@@ -42,6 +42,15 @@ void* LEMBALL_FASTCALL DestroyLevelChunkObjectBaseArray(void* pObjectArray, int 
 	return pObjectArray;
 }
 
+// MACINTOSH: CBall::Restart()
+// FUNCTION: LEMBALL 0x00421690
+void LEMBALL_FASTCALL ResetBallChunkEntryRuntimeState(int pObject)
+{
+	((CGameObject*) pObject)->Restart();
+	*(int*) ((char*) pObject + 0xb8) = 0x25;
+	*(short*) ((char*) pObject + 0x130) = (short) (*(int*) (0x49d070 + *(int*) ((char*) pObject + 0x64) * 4));
+}
+
 // MACINTOSH: LevelChunkObjectBase::InitializeLevelChunkObjectBase(int, ushort, ushort)
 // FUNCTION: LEMBALL 0x00416d20
 void CGameObject::InitializeLevelChunkObjectBase(int nEntityType, unsigned short nReserved68, unsigned short nCommandCapacity)
