@@ -81,3 +81,34 @@ void __fastcall ForwardQueuedZrleVariantRangePoint(void* pObject, int nUnused, u
 		(*( void(**)(void*)) (*(void***) *(void**) ((char*) pObject + 0x4c) + 0x38 / 4))(&pt);
 	}
 }
+
+// MACINTOSH: construct_palette_remap_variant(int, byte*, int)
+// FUNCTION: LEMBALL 0x0046aa80
+void* __fastcall ConstructPaletteRemapVariant(void* pThis, int nUnused, int param_1, unsigned char* param_2, int param_3)
+{
+	*(void**) ((char*) pThis + 4) = (void*) ((int(__cdecl*)(int)) 0x45dd90)(param_1);
+	if (param_3 == 1) {
+		((void(__fastcall*)(void*)) 0x46ab70)(pThis);
+		return pThis;
+	}
+	if (param_3 != 2) {
+		*(unsigned char**) pThis = param_2;
+		return pThis;
+	}
+	((void(__fastcall*)(void*, unsigned char*)) 0x46aaf0)(pThis, param_2);
+	return pThis;
+}
+
+// MACINTOSH: finish_paintball_sequence_to_level_selection()
+// FUNCTION: LEMBALL 0x00450a10
+void __fastcall FinishPaintballSequenceToLevelSelection(void* pObject)
+{
+	if (*(int*) 0x4a62f8 != 0) {
+		(*( void(**)(int)) *(void***) *(void**) 0x4a1bd0)(*(int*) 0x4a97b8);
+	}
+	if (*(int*) 0x4a62fc != 0) {
+		(*( void(**)(int)) *(void***) *(void**) 0x4aa100)(*(int*) 0x4a97b8);
+	}
+	*(int*) ((char*) pObject + 0x378) = 1;
+	*(int*) ((char*) pObject + 0x374) = 4;
+}
