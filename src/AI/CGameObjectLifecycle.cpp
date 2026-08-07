@@ -5,6 +5,28 @@
 extern int g_nLevelFrameClockTick;
 extern void* g_GAME_RenderQueueNodeVtableSlots[4];
 
+// MACINTOSH: LevelChunkObjectThreeOptionalRecords::~LevelChunkObjectThreeOptionalRecords()
+// FUNCTION: LEMBALL 0x0041fda0
+void LEMBALL_FASTCALL DestroyThreeOptionalRecordChunkObject(void* pObject)
+{
+	char* pBytes = (char*) pObject;
+
+	*((void**) pObject) = (void*) 0x495110;
+	if (*(int*) (pBytes + 0x12c) == 1) {
+		FreeVSMemBlock(*(void**) (*(char**) (pBytes + 0x134) + 0x10));
+		FreeVSMemBlock(*(void**) (pBytes + 0x134));
+	}
+	if (*(int*) (pBytes + 0x138) == 1) {
+		FreeVSMemBlock(*(void**) (*(char**) (pBytes + 0x140) + 0x10));
+		FreeVSMemBlock(*(void**) (pBytes + 0x140));
+	}
+	if (*(int*) (pBytes + 0x144) == 1) {
+		FreeVSMemBlock(*(void**) (*(char**) (pBytes + 0x14c) + 0x10));
+		FreeVSMemBlock(*(void**) (pBytes + 0x14c));
+	}
+	((CGameObject*) pObject)->DestroyLevelChunkObjectBase();
+}
+
 // MACINTOSH: ManagedEntityQueueCursor::~ManagedEntityQueueCursor()
 // FUNCTION: LEMBALL 0x00414de0
 void LEMBALL_FASTCALL DestroyManagedEntityQueueCursor(void* pObject)
