@@ -780,6 +780,20 @@ void __fastcall LoadBallChunkEntries(void* pObject, int nUnused, unsigned short*
 	}
 }
 
+// MACINTOSH: destroy_managed_entity_pointer_array()
+// FUNCTION: LEMBALL 0x00422510
+void __fastcall DestroyManagedEntityPointerArray(void* pObject)
+{
+	int i;
+	for (i = 0; i < *(int*) ((char*) pObject + 0x3c); i++) {
+		void* pElem = *(void**) (*(int*) ((char*) pObject + 0x34) + i * 4);
+		if (pElem != 0) {
+			(*( void(**)(int)) **(void***) pElem)(1);
+		}
+	}
+	*(int*) ((char*) pObject + 0x3c) = 0;
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
