@@ -109,6 +109,7 @@ public:
 	static unsigned short NextLoadingId(void);
 	void RegisterId(void);
 	void UpdateCollision(void);
+	void DestroyLevelChunkObjectBase(void);
 
 	CGameObject* ConstructCGameObject(int nEntityType, unsigned short nReserved68, unsigned short nCommandCapacity);
 };

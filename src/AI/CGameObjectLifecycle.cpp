@@ -1,6 +1,24 @@
 #include "AI/CGameObject.h"
+#include "Visos/Generic/Memory.h"
 
 extern int g_nLevelFrameClockTick;
+
+// MACINTOSH: LevelChunkObjectBase::~LevelChunkObjectBase()
+// FUNCTION: LEMBALL 0x00415160
+void CGameObject::DestroyLevelChunkObjectBase(void)
+{
+	CGameObjectCommandQueue* pQueue;
+
+	m_pVtable00 = (void*) 0x493c40;
+	ReSetId();
+	((int*) 0x4a6510)[m_nRegistryIndex6A] = 0;
+	pQueue = m_pCommandQueue70;
+	if (pQueue != 0) {
+		FreeVSMemBlock(pQueue->m_pEntries);
+		FreeVSMemBlock(pQueue);
+	}
+	m_nRegistryIndex6A = 0xffff;
+}
 
 // FUNCTION: LEMBALL 0x004150d0
 void CGameObject::Restart(void)
