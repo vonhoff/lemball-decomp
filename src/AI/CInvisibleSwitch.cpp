@@ -642,20 +642,6 @@ void* LEMBALL_FASTCALL ConstructManagedEntityGroupControllerBase(void* pObject, 
 	return pObject;
 }
 
-// MACINTOSH: CPlayerLemmingGroupManager::AddNewGroup(ushort) / has_child_slot_id_in_object_table_0x128
-// FUNCTION: LEMBALL 0x0041e100
-int LEMBALL_FASTCALL HasChildSlotIdInObjectTable0x128(void* pObject, int nUnused, short param_1)
-{
-	int i;
-	for (i = 0; i < *(int*) ((char*) pObject + 0x124); i++) {
-		if (*(int*) ((char*) pObject + 0x128 + i * 4) != 0 &&
-		    *(short*) (*(int*) ((char*) pObject + 0x128 + i * 4) + 0x6a) == param_1) {
-			return 1;
-		}
-	}
-	return 0;
-}
-
 // MACINTOSH: CEnemy::CEnemy() [type-0x1 enemy chunk]
 // FUNCTION: LEMBALL 0x0041fba0
 void* LEMBALL_FASTCALL ConstructEnmyChunkObject(void* pObject, int nUnused, int pLevelMode, int nX, int nY, int nZ, unsigned short pFlags)
