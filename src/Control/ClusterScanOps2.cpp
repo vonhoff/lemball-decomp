@@ -914,6 +914,27 @@ void __fastcall SetTextSelectionRangeState(void* pThis, int nUnused, int param_1
 	(*( void(**)(void*)) (*(void***) pThis + 4 / 4))(pThis);
 }
 
+// MACINTOSH: activate_or_queue_managed_entity_for_level_entity_id(uint)
+// FUNCTION: LEMBALL 0x00418ab0
+void __fastcall ActivateOrQueueManagedEntityForLevelEntityId(void* pOwner, int nUnused, unsigned int param_1)
+{
+	void* this_00 = (void*) ((int(__fastcall*)(void*)) 0x4021df)(pOwner);
+	if (this_00 != 0) {
+		void* pvVar1 = (void*) (*(void**) (0x4a6510 + (param_1 & 0xffff) * 4));
+		if (*(int*) ((char*) pvVar1 + 0x64) != 2) {
+			((void(__fastcall*)(void*, unsigned int)) 0x401c62)(this_00, param_1);
+			return;
+		}
+		if (*(int*) ((char*) pvVar1 + 0xb8) != 8) {
+			void* this_01 = (void*) ((int(__fastcall*)(void*)) 0x4037ba)(pvVar1);
+			if (this_01 != this_00) {
+				((void(__fastcall*)(void*, int, void*)) 0x4014bf)(this_00, 0, 0);
+			}
+			((void(__fastcall*)(void*, int, void*)) 0x4014bf)(this_01, 1, pvVar1);
+		}
+	}
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
