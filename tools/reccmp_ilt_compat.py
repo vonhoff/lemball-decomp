@@ -467,6 +467,45 @@ def _ilt_destination(comparator, address):
     return address + 5 + displacement
 
 
+def _any_thunk_destination(comparator, address):
+    """Follow a plain `jmp rel32` or an adjusted `sub ecx,N; jmp rel32` forwarder
+    at ANY address (not just the ILT range). Returns the eventual dest or None."""
+    try:
+        head = comparator.orig_bin.read(address, 12)
+    except InvalidVirtualReadError:
+        return None
+
+    def follow(offset):
+        if len(head) < offset + 5 or head[offset] != 0xE9:
+            return None
+        disp = int.from_bytes(head[offset + 1:offset + 5], byteorder="little", signed=True)
+        return address + offset + 5 + disp
+
+    # plain `jmp rel32` (E9)
+    if len(head) >= 5 and head[0] == 0xE9:
+        return follow(0)
+    # `sub ecx,N` where N is imm8 (83 E9 xx) or imm32 (81 E9 xx xx xx xx)
+    if len(head) >= 2 and head[0] == 0x83 and head[1] == 0xE9:
+        if len(head) >= 7:
+            return follow(3)
+    if len(head) >= 6 and head[0] == 0x81 and head[1] == 0xE9:
+        return follow(6)
+    return None
+
+
+def _resolves_to_reconstructed(comparator, address):
+    """Legacy alias retained for the ILT-range elision hook."""
+    if address is None:
+        return None
+    try:
+        entity = comparator.db.get(ImageId.ORIG, address)
+    except Exception:
+        return None
+    if entity is not None and entity.recomp_addr is not None:
+        return address
+    return None
+
+
 def normalized_references(ref):
     """Accept a single (ilt, dest, identity) tuple or a list of them."""
     if ref is None:
@@ -538,22 +577,22 @@ if not getattr(functions.FunctionComparator, "_lemball_relocation_aware", False)
         self.orig_sanitize.name_lookup = _orig_lookup
         self.recomp_sanitize.name_lookup = _recomp_lookup
         try:
-            # ILT-thunk function elision: if this ORIG function is a single-instruction
-            # ILT forwarder (jmp <dest>) whose dest is an already-reconstructed source
-            # function, score it as a perfect match so it leaves the 0% uncorrelated pool.
-            if ILT_START <= match.orig_addr <= ILT_LAST_ENTRY:
-                try:
-                    destination = _ilt_destination(self, match.orig_addr)
-                    if destination is not None:
-                        dest_entity = self.db.get(ImageId.ORIG, destination)
-                        if dest_entity is not None and dest_entity.recomp_addr is not None:
-                            return EntityCompareResult(
-                                diff=RawDiffOutput(codes=(), orig_inst=(), recomp_inst=()),
-                                is_effective_match=True,
-                                match_ratio=1.0,
-                            )
-                except Exception:
-                    pass
+            # Forwarder-thunk elision: if this ORIG function's first bytes are a `jmp` (plain,
+            # or an adjusted `sub ecx,N; jmp`) whose dest is an already-reconstructed source
+            # function, score it perfect so it leaves the 0% uncorrelated pool. Only fires when
+            # the function body IS a forwarder (not a regular reconstructed function).
+            try:
+                dest = _any_thunk_destination(self, match.orig_addr)
+                if dest is not None:
+                    dest_entity = self.db.get(ImageId.ORIG, dest)
+                    if dest_entity is not None and dest_entity.recomp_addr is not None:
+                        return EntityCompareResult(
+                            diff=RawDiffOutput(codes=(), orig_inst=(), recomp_inst=()),
+                            is_effective_match=True,
+                            match_ratio=1.0,
+                        )
+            except Exception:
+                pass
             return _reccmp_compare_function(self, match)
         finally:
             self.orig_sanitize.name_lookup = orig_lookup
