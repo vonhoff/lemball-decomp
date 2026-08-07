@@ -961,6 +961,32 @@ void __cdecl ResetThenForwardManagedEntityVslot0x60(int param_1, int* param_2)
 	(*( void(**)(void)) (*(void***) iVar1 + 0x60 / 4))();
 }
 
+// MACINTOSH: ensure_list_glyph_lookup_table()
+// FUNCTION: LEMBALL 0x0045daf0
+void __fastcall EnsureListGlyphLookupTable(void* pObject)
+{
+	if (*(int*) ((char*) pObject + 0x78) == 0) {
+		void* pThis = (void*) ((void*(__cdecl*)(int)) 0x45baf0)(8);
+		if (pThis != 0) {
+			*(void**) ((char*) pObject + 0x78) = (void*) ((void*(__fastcall*)(void*, void*)) 0x473650)(pThis, pObject);
+			return;
+		}
+		*(int*) ((char*) pObject + 0x78) = 0;
+	}
+}
+
+// MACINTOSH: cancel_network_lobby_prompt()
+// FUNCTION: LEMBALL 0x00454620
+void __fastcall CancelNetworkLobbyPrompt(void* param_1)
+{
+	void* pController = *(void**) 0x49f140;
+	if (*(int*) ((char*) pController + 0x2c) != 0 && *(int*) ((char*) pController + 0x28) == 0) {
+		((void(__fastcall*)(void*)) 0x4013a7)(pController);
+	}
+	((void(__fastcall*)(void*, int)) 0x4012da)(param_1, 0);
+	*(int*) ((char*) param_1 + 0x39c) = 0;
+}
+
 // MACINTOSH: award_300_points_mark_flag_and_emit_callback()
 // FUNCTION: LEMBALL 0x004206a0
 void __fastcall Award300PointsMarkFlagAndEmitCallback(void* pObject)
