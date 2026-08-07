@@ -719,7 +719,7 @@ void* LEMBALL_FASTCALL DeleteOptionsMode(void* pObject, int nUnusedEdx, BYTE fDe
 void* LEMBALL_FASTCALL DeleteOptionsModeThunk(void* pObject, int nUnusedEdx, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteOptionsModeEventClient(void* pObject, int nUnusedEdx, BYTE fDelete);
 void* LEMBALL_FASTCALL DeleteOptionsModeEventClientThunk(void* pObject, int nUnusedEdx, BYTE fDelete);
-void EnsureMainGameVariantResourceMode(GameMainContext* pMainContext, int nVariantMode);
+void LEMBALL_FASTCALL EnsureMainGameVariantResourceMode(GameMainContext* pMainContext, int nUnused, unsigned short nVariantMode);
 void* ConstructLevelGameMode(void* pModeObject, GameMainContext* pMainContext);
 void* LEMBALL_FASTCALL DeleteLevelModeActiveInterfaceThunk(void* pActiveInterface, int nUnusedEdx, BYTE fDelete);
 void LEMBALL_FASTCALL UpdateLevelModeActiveInterfaceThunk(void* pActiveInterface, int nEdxPassthrough);
@@ -2089,15 +2089,16 @@ void* LEMBALL_FASTCALL DeleteMainMenuModeThunk(void* pObject, int nUnusedEdx, BY
 {
 	return DeleteMainMenuMode(pObject, nUnusedEdx, fDelete);
 }
-// LINKERILT: LEMBALL 0x004027a7
-void EnsureMainGameVariantResourceMode(GameMainContext* pMainContext, int nVariantMode)
+// Mac blueprint: EnsureMainGameVariantResourceMode(ushort)
+// FUNCTION: LEMBALL 0x004073b0
+void LEMBALL_FASTCALL EnsureMainGameVariantResourceMode(GameMainContext* pMainContext, int nUnused, unsigned short nVariantMode)
 {
 	if (pMainContext->m_pVariantMode == 0) {
 		pMainContext->m_pVariantMode = AllocateVSMemBlock(0x58);
 		if (pMainContext->m_pVariantMode != 0) {
 			pMainContext->m_pVariantMode = ConstructMainGameVariantResourceBundle(pMainContext->m_pVariantMode,
-																				  pMainContext->m_pPrimaryContext,
-																				  (unsigned short) nVariantMode);
+																					pMainContext->m_pPrimaryContext,
+																					nVariantMode);
 			return;
 		}
 		pMainContext->m_pVariantMode = 0;
@@ -2766,7 +2767,7 @@ void GameMainContext::SwitchMainGameMode(int nMode)
 	case 2:
 		pMainContext->m_nActiveMode = nMode;
 		((GamePrimaryContext*) pMainContext->m_pPrimaryContext)->DestroyPrimaryContextActiveScreen(nMode);
-		EnsureMainGameVariantResourceMode(pMainContext, 3);
+		EnsureMainGameVariantResourceMode(pMainContext, 0, 3);
 		if (g_fLevelDemoModeEnabled != 0) {
 			g_fLevelDemoModeEnabled = g_nStoredLevelDemoModeEnabled;
 		}
@@ -2837,7 +2838,7 @@ void GameMainContext::SwitchMainGameMode(int nMode)
 	case 0x0f:
 		pMainContext->m_nActiveMode = nMode;
 		((GamePrimaryContext*) pMainContext->m_pPrimaryContext)->DestroyPrimaryContextActiveScreen(nMode);
-		EnsureMainGameVariantResourceMode(pMainContext, 2);
+		EnsureMainGameVariantResourceMode(pMainContext, 0, 2);
 		pModeObject = AllocateVSMemBlock(0x2c);
 		if (pModeObject == 0) {
 			pMainContext->m_pActiveMode = 0;
