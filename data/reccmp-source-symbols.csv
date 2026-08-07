@@ -1,17 +1,10 @@
 # By-name correlations for reconstructed or intentionally stubbed project functions whose definitions cannot carry direct annotations.
 address,name,symbol,type,source
 0x00407EE0,ForwardUpdateNamedStatusEntry,,function,src/Frontend/MAINMENU.CPP
-0x0040E060,DestroyDoorChunkManagerAuto,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x00415240,SetLevelChunkObjectMotionVector,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-0x00417EC0,DestroyProjectilePoolAuto,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0041BEC0,CObjectManager::ConvertVer0ToVer1,?ConvertVer0ToVer1@CObjectManager@@QAEXXZ,function,src/Platform/Windows/Mixed/Level/RUN/LEVELRUN.CPP
 0x004224C0,DestroyCollChunkManagerAuto,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 
-0x00426810,ResetRockChunkObject,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x00426C00,DestroyRockChunkManagerAuto,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
-
-0x0042B090,DestroyTramChunkManagerAuto,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
-0x0042C120,DestroyPgunChunkManagerAuto,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
 0x0042CA90,ResetIceChunkObject,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0042CAB0,ResetIceChunkObjectRuntimeState,,function,src/Platform/Windows/Mixed/Engine/CORE/LINKSCF.CPP
 0x0042F2C0,DestroyMoveChunkManagerAuto,,function,src/Platform/Windows/Mixed/Level/VTABLE/LEVELVT.CPP
