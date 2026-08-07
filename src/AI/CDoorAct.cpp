@@ -1,10 +1,16 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Visos/Generic/Memory.h"
 #include "AI/CDoorManager.h"
+#include "AI/AICoord.h"
+#include "AI/CGameObject.h"
 
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
+extern void* g_pLevelTileGrid;
+extern int g_nLevelFrameClockTick;
+extern int g_nLevelFrameClockTimeMs;
 
 typedef void(LEMBALL_FASTCALL* CDoorNoArgVirtualProc)(void* pEntity);
+typedef int(LEMBALL_FASTCALL* CDoorIntReturnVirtualProc)(void* pEntity);
 
 struct ManagedEntityStateView {
 	virtual void Reserved00(void) = 0;
@@ -34,6 +40,10 @@ struct CDoor : public ManagedEntityStateView {
 	int m_nFrameTickCC;
 
 	void DoActivate(void);
+	void SetCollision(void);
+	void ResetCollision(void);
+	int Process(void);
+	int Hits(const AICOORD* pCoord, CGameObject* pGameObject);
 };
 
 // Split from the original LINKSCF source group to preserve MSVC 4.20 code generation.
@@ -47,6 +57,179 @@ void CDoor::DoActivate(void)
 		SetTrigger(0xb);
 		RequestManagedEntityStateId(0x20);
 	}
+}
+
+// MACINTOSH: CDoor::SetCollision()
+// FUNCTION: LEMBALL 0x0040d910
+void CDoor::SetCollision(void)
+{
+	char* pObjectBytes = (char*) this;
+	int nCellColumns = *(int*) ((char*) g_pLevelTileGrid + 0x10);
+	int nCellRows = *(int*) ((char*) g_pLevelTileGrid + 0x14);
+	unsigned char* pCellFlags;
+	int nTileX;
+	int nTileY;
+
+	nTileX = (*(int*) (pObjectBytes + 0x9c) >> 12);
+	nTileY = (*(int*) (pObjectBytes + 0xa0) >> 12);
+	nTileX = (nTileX + ((nTileX >> 31) & 0xf)) >> 4;
+	nTileY = (nTileY + ((nTileY >> 31) & 0xf)) >> 4;
+	if (*(int*) (pObjectBytes + 0x64) == 0x19) {
+		if (nTileX >= 0) {
+			if (nTileY >= 0 && nTileX < nCellColumns && nTileY < nCellRows) {
+				pCellFlags = (unsigned char*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (nTileY * nCellColumns + nTileX) * 0xc);
+				*pCellFlags = (unsigned char) (*pCellFlags | 1);
+			}
+			if (nTileX >= 0 && (nTileY = nTileY - 1, nTileY >= 0) && nTileX < nCellColumns && nTileY < nCellRows) {
+				pCellFlags = (unsigned char*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (nCellColumns * nTileY + nTileX) * 0xc);
+				*pCellFlags = (unsigned char) (*pCellFlags | 1);
+			}
+		}
+	}
+	else if (*(int*) (pObjectBytes + 0x64) == 0x1a) {
+		if (nTileX >= 0 && nTileY >= 0 && nTileX < nCellColumns && nTileY < nCellRows) {
+			pCellFlags = (unsigned char*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (nTileY * nCellColumns + nTileX) * 0xc);
+			*pCellFlags = (unsigned char) (*pCellFlags | 1);
+		}
+		if (nTileX - 1 >= 0 && nTileY >= 0 && nTileX - 1 < nCellColumns && nTileY < nCellRows) {
+			pCellFlags = (unsigned char*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + -6 + (nTileY * nCellColumns + nTileX) * 0xc);
+			*pCellFlags = (unsigned char) (*pCellFlags | 1);
+		}
+	}
+}
+
+// MACINTOSH: CDoor::ResetCollision()
+// FUNCTION: LEMBALL 0x0040da40
+void CDoor::ResetCollision(void)
+{
+	char* pObjectBytes = (char*) this;
+	int nCellColumns = *(int*) ((char*) g_pLevelTileGrid + 0x10);
+	int nCellRows = *(int*) ((char*) g_pLevelTileGrid + 0x14);
+	unsigned short* pCellFlags;
+	int nTileX;
+	int nTileY;
+
+	nTileX = (*(int*) (pObjectBytes + 0x9c) >> 12);
+	nTileY = (*(int*) (pObjectBytes + 0xa0) >> 12);
+	nTileX = (nTileX + ((nTileX >> 31) & 0xf)) >> 4;
+	nTileY = (nTileY + ((nTileY >> 31) & 0xf)) >> 4;
+	if (*(int*) (pObjectBytes + 0x64) == 0x19) {
+		if (nTileX >= 0) {
+			if (nTileY >= 0 && nTileX < nCellColumns && nTileY < nCellRows) {
+				pCellFlags = (unsigned short*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (nTileY * nCellColumns + nTileX) * 0xc);
+				*pCellFlags = (unsigned short) (*pCellFlags & 0xfffe);
+			}
+			if (nTileX >= 0 && (nTileY = nTileY - 1, nTileY >= 0) && nTileX < nCellColumns && nTileY < nCellRows) {
+				pCellFlags = (unsigned short*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (nCellColumns * nTileY + nTileX) * 0xc);
+				*pCellFlags = (unsigned short) (*pCellFlags & 0xfffe);
+			}
+		}
+	}
+	else if (*(int*) (pObjectBytes + 0x64) == 0x1a) {
+		if (nTileX >= 0 && nTileY >= 0 && nTileX < nCellColumns && nTileY < nCellRows) {
+			pCellFlags = (unsigned short*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + 6 + (nTileY * nCellColumns + nTileX) * 0xc);
+			*pCellFlags = (unsigned short) (*pCellFlags & 0xfffe);
+		}
+		if (nTileX - 1 >= 0 && nTileY >= 0 && nTileX - 1 < nCellColumns && nTileY < nCellRows) {
+			pCellFlags = (unsigned short*) (*(int*) ((char*) g_pLevelTileGrid + 0xc) + -6 + (nTileY * nCellColumns + nTileX) * 0xc);
+			*pCellFlags = (unsigned short) (*pCellFlags & 0xfffe);
+		}
+	}
+}
+
+// MACINTOSH: CDoor::Process()
+// FUNCTION: LEMBALL 0x0040db80
+int CDoor::Process(void)
+{
+	char* pObjectBytes = (char*) this;
+	void** ppVtable = *(void***) pObjectBytes;
+	int nStateId;
+
+	if (*(int*) (pObjectBytes + 0x114) != 0) {
+		nStateId = *(int*) (pObjectBytes + 0xb8);
+		if (*(int*) (pObjectBytes + 0x128) != nStateId) {
+			if (nStateId == 0x20) {
+				((CDoorNoArgVirtualProc) ppVtable[0x34 / sizeof(void*)]) (this);
+				ResetCollision();
+			}
+			else if (nStateId == 0x22) {
+				SetCollision();
+			}
+			*(int*) (pObjectBytes + 0x128) = *(int*) (pObjectBytes + 0xb8);
+		}
+		return 1;
+	}
+	if (*(int*) (pObjectBytes + 0x144) != 0) {
+		if ((unsigned int) *(int*) (pObjectBytes + 0xcc) <= (unsigned int) g_nLevelFrameClockTick) {
+			*(int*) (pObjectBytes + 0x94) = g_nLevelFrameClockTimeMs;
+			switch (*(int*) (pObjectBytes + 0xb8)) {
+			case 0x1c:
+				((CDoorNoArgVirtualProc) ppVtable[8 / sizeof(void*)]) (this);
+				*(int*) (pObjectBytes + 0x144) = 0;
+				return 1;
+			case 0x20:
+				*(int*) (pObjectBytes + 0x94) = g_nLevelFrameClockTimeMs;
+				*(int*) (pObjectBytes + 0xcc) = g_nLevelFrameClockTick + 0x50;
+				ResetCollision();
+				((CDoorNoArgVirtualProc) ppVtable[8 / sizeof(void*)]) (this);
+				return 1;
+			case 0x21:
+				if (*(short*) (pObjectBytes + 0x140) != 0) {
+					*(int*) (pObjectBytes + 0x144) = 0;
+					return 1;
+				}
+				*(int*) (pObjectBytes + 0x94) = g_nLevelFrameClockTimeMs;
+				*(int*) (pObjectBytes + 0xcc) = g_nLevelFrameClockTick + 0x14;
+				SetCollision();
+				((CDoorNoArgVirtualProc) ppVtable[0x34 / sizeof(void*)]) (this);
+				((CDoorNoArgVirtualProc) ppVtable[8 / sizeof(void*)]) (this);
+				return 1;
+			case 0x22:
+				*(int*) (pObjectBytes + 0x144) = 0;
+				((CDoorNoArgVirtualProc) ppVtable[8 / sizeof(void*)]) (this);
+				return 1;
+			}
+		}
+		return 1;
+	}
+	return 1;
+}
+
+// MACINTOSH: CDoor::Hits(const AICOORD&, CGameObject*)
+// FUNCTION: LEMBALL 0x0040dd80
+int CDoor::Hits(const AICOORD* pCoord, CGameObject* pGameObject)
+{
+	char* pObjectBytes = (char*) this;
+	void** ppVtable = *(void***) pObjectBytes;
+	int nTileX;
+	int nTileY;
+
+	nTileX = *(int*) (pObjectBytes + 0x9c) >> 12;
+	nTileY = *(int*) (pObjectBytes + 0xa0) >> 12;
+	if (nTileX - 0x28 <= (pCoord->x >> 12) && (pCoord->x >> 12) <= nTileX + 8 &&
+		nTileY - 8 <= (pCoord->y >> 12) && (pCoord->y >> 12) <= nTileY + 8) {
+		switch (*(int*) (pObjectBytes + 0xb8)) {
+		case 0x1c:
+		case 0x1d:
+			if (((CDoorIntReturnVirtualProc) (*(void***) pGameObject)[0xb4 / sizeof(void*)]) (this) != 0) {
+				*(int*) (pObjectBytes + 0xcc) = 0x14;
+				((CDoorNoArgVirtualProc) ppVtable[0x34 / sizeof(void*)]) (this);
+				RequestManagedEntityStateId(0x20);
+				return 1;
+			}
+			*(int*) (pObjectBytes + 0xcc) = 0x28;
+			RequestManagedEntityStateId(0x1c);
+			return 0;
+		case 0x1e:
+			*(int*) (pObjectBytes + 0xcc) = 0x14;
+			((CDoorNoArgVirtualProc) ppVtable[0x34 / sizeof(void*)]) (this);
+			RequestManagedEntityStateId(0x20);
+			return 1;
+		case 0x21:
+			return 0;
+		}
+	}
+	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0040df90
