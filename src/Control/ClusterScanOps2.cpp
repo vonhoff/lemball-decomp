@@ -524,6 +524,17 @@ void __fastcall RefreshAlignedZrleChildAndQueueIfDirty(void* pObject, int nUnuse
 	((void(__fastcall*)(void*, void*)) 0x468360)(pObject, param_1);
 }
 
+// MACINTOSH: sync_level_screen_action_panel_child_values()
+// FUNCTION: LEMBALL 0x004431c0
+void __fastcall SyncLevelScreenActionPanelChildValues(void* pObject)
+{
+	int i;
+	for (i = 0; i < 4; i++) {
+		void* pChild = *(void**) ((char*) pObject + 0x1c + i * 4);
+		*(int*) ((char*) pChild + 8) = *(int*) (*(int*) ((char*) pObject + 0x18) + 0x1cc + i * 4 + 4);
+	}
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
