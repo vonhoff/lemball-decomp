@@ -2897,3 +2897,90 @@ void __fastcall CMoverManagerLoadLevel(void* pThis, int nUnused, unsigned short*
 	}
 }
 
+// MACINTOSH: C2D::Restart()
+// FUNCTION: LEMBALL 0x00436850
+void __fastcall C2DRestart(void* pThis, int nUnused)
+{
+	*(int*) ((char*) pThis + 0x918) = 0;
+	*(int*) ((char*) pThis + 0x91c) = 0;
+	*(int*) ((char*) pThis + 0x2214) = 1;
+	((void(__fastcall*) (void*, int, int)) 0x402f2c)(*(void**) ((char*) pThis + 0x97c), 0, 0);
+	((void(__fastcall*) (void*)) 0x4021ee)(*(void**) ((char*) pThis + 0x96c));
+	((void(__fastcall*) (void*, int, int)) 0x465aa0)(*(void**) ((char*) pThis + 0x978), 0, 0);
+	*(int*) ((char*) pThis + 0x8f8) = *(int*) 0x49ce04;
+	*(int*) (*(int*) 0x49cb68 + 4) = *(int*) ((char*) pThis + 0x8f4);
+	*(int*) (*(int*) ((char*) pThis + 0x96c) + 0xf0) = *(int*) ((char*) pThis + 0x8f4);
+	((void(__fastcall*) (void*)) 0x4029aa)(*(void**) ((char*) pThis + 0x96c));
+	*(int*) ((char*) pThis + 0x8f0) = *(int*) (*(int*) ((char*) pThis + 0x96c) + 0xf0);
+}
+
+// MACINTOSH: CEnemy::EnemyAction_PATROL()
+// FUNCTION: LEMBALL 0x004200f0
+void __fastcall CEnemyEnemyActionPatrol(void* pThis, int nUnused, void* pDesc)
+{
+	unsigned int local_18 = 0xaa55aa55;
+	unsigned int local_14 = 0xaa55aa55;
+	unsigned int local_10 = 0xaa55aa55;
+	unsigned int local_c[3];
+	unsigned int* pPoint;
+
+	if (((int(__fastcall*) ()) 0x401f37)() != 1) {
+		unsigned int idx = (unsigned int) *(unsigned short*) (*(int*) (*(int**) pDesc + 0x10) + *(int*) (*(int**) pDesc + 8) * 2);
+		pPoint = (unsigned int*) ((unsigned int*(__fastcall*) (void*, unsigned int*, unsigned int)) 0x401410)(*(void**) 0x4a74b0, local_c, idx);
+		local_18 = pPoint[0];
+		local_14 = pPoint[1];
+		local_10 = pPoint[2];
+		*(int*) (*(int**) pDesc + 8) += *(int*) (*(int**) pDesc + 0xc);
+		{
+			int* pBase = *(int**) pDesc;
+			int cur = *(int*) ((char*) pBase + 8);
+			if (*(int*) ((char*) pBase + 4) <= cur || cur < 0) {
+				if (*(int*) pBase == 0) {
+					*(int*) ((char*) pBase + 0xc) = -*(int*) ((char*) pBase + 0xc);
+					*(int*) ((char*) pBase + 8) += *(int*) ((char*) pBase + 0xc);
+				}
+				else if (*(int*) pBase == 1) {
+					*(int*) ((char*) pBase + 8) = 0;
+				}
+			}
+		}
+		((void(__fastcall*) (void*, unsigned int*)) 0x401d52)(pThis, &local_18);
+	}
+}
+
+// MACINTOSH: CMover::FindObjectsOnTopOfMe()
+// FUNCTION: LEMBALL 0x0042e980
+void __fastcall CMoverFindObjectsOnTopOfMe(void* pThis, int nUnused)
+{
+	int minX;
+	int maxX;
+	int minY;
+	int maxY;
+	unsigned int count;
+	unsigned int i;
+	void* pObj;
+
+	minX = (*(int*) ((char*) pThis + 0x9c) >> 0xc) - 8;
+	maxX = minX + 0xf;
+	minY = (*(int*) ((char*) pThis + 0xa0) >> 0xc) - 8;
+	maxY = minY + 0xf;
+	count = (unsigned int) *(unsigned short*) 0x4a74bc;
+	for (i = 0; (int) i < (int) count; i++) {
+		pObj = *(void**) (0x4a6510 + i * 4);
+		if (pObj != (void*) 0x0) {
+			if ((short) ((short(__fastcall*) (void*)) 0x401794)(pObj) != (short) -1) {
+				if ((short) ((short(__fastcall*) (void*)) 0x401794)(pThis) != (short) ((short(__fastcall*) (void*)) 0x401794)(pObj)) {
+					if (*(int*) ((char*) pObj + 0x64) != 7) {
+						int ex = *(int*) ((char*) pObj + 0x9c) >> 0xc;
+						int ey = *(int*) ((char*) pObj + 0xa0) >> 0xc;
+						if (minX <= ex && ex <= maxX && minY <= ey && ey <= maxY) {
+							((void(__fastcall*) (void*, void*)) 0x4036b1)(pThis, pObj);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
