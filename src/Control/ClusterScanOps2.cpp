@@ -484,6 +484,14 @@ int __fastcall LoadListEntryPairFromBuffers(void* pObject, int nUnused, int para
 	return 1;
 }
 
+// MACINTOSH: append_type_0x18_object_with_free_slot(undefined4*, int)
+// FUNCTION: LEMBALL 0x00412e80
+void __fastcall AppendType18ObjectWithFreeSlot(void* pObject, int nUnused, void* param_2, int param_3)
+{
+	int nSlot = ((int(__fastcall*)()) 0x40227a)();
+	AppendType18ChunkObject(*(void**) ((char*) pObject + 0x1c4), nUnused, (unsigned short) nSlot, param_2, 0, param_3);
+}
+
 // MACINTOSH: delete_lobby_player_entries(uint)
 // FUNCTION: LEMBALL 0x00455e10
 void* __fastcall DeleteLobbyPlayerEntries(void* pThis, int nUnused, unsigned int param_1)
@@ -502,6 +510,19 @@ void* __fastcall DeleteLobbyPlayerEntries(void* pThis, int nUnused, unsigned int
 	}
 	FreeVSMemBlock((char*) pThis - 4);
 	return pThis;
+}
+
+// MACINTOSH: route_level_chunk_stream_payload(int)
+// FUNCTION: LEMBALL 0x0040b290
+int __fastcall RouteLevelChunkStreamPayload(void* pObject, int nUnused, void* param_1)
+{
+	unsigned short uVar1 = *(unsigned short*) (*(int*) ((char*) param_1 + 4) + 8);
+	if (uVar1 < 0xb) {
+		return 0;
+	}
+	((void(__cdecl*)(void*, void*)) 0x45f280)(*(void**) (*(int*) ((char*) pObject + 0x10) + *(int*) (*(int*) ((char*) pObject + 0x1c) + (unsigned int) uVar1 * 4 - 0x2c) * 4), (void*) (*(int*) ((char*) param_1 + 4) + 0x10));
+	*(int*) ((char*) param_1 + 0x24) = 0;
+	return 1;
 }
 
 // MACINTOSH: load_list_entry_pair_from_stream(int, int*)
