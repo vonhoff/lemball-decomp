@@ -813,12 +813,5 @@ void LEMBALL_FASTCALL RemoveManagedEntityGroupChild(void* pObject, int nUnused, 
 		*(int*) (*(int*) ((char*) pObject + 0x1c) + *(int*) ((char*) param_2 + 0x2c) * 4) = 0xffffffff;
 		*(int*) (*(int*) ((char*) pObject + 0x10) + iVar3 * 4) = 0;
 		*(int*) ((char*) pObject + 0x18) = *(int*) ((char*) pObject + 0x18) - 1;
-		}
-		}
-
-		// MACINTOSH: get_indexed_level_mode_value_0x110(int)
-		// FUNCTION: LEMBALL 0x00418c90
-		int LEMBALL_FASTCALL GetIndexedLevelModeValue0x110(void* pObject, int nUnused, int param_2)
-		{
-		return *(int*) ((char*) pObject + 0x110 + param_2 * 4);
-		}
+	}
+}
