@@ -453,6 +453,36 @@ void __fastcall RefreshQueuedZrleVariantRangeSelection(void* pObject)
 	((void(__cdecl*)(void*, int)) 0x4688e0)(*(void**) ((char*) pObject + 0x4c), *(int*) (*(int*) ((char*) pObject + 0x48) + (*(int*) ((char*) pObject + 0x40) - *(int*) ((char*) pObject + 0x3c)) * 4));
 }
 
+// MACINTOSH: append_projectile_request_code(int, int)
+// FUNCTION: LEMBALL 0x0040f9b0
+int __fastcall AppendProjectileRequestCode(void* pObject, int nUnused, int param_1, int param_2)
+{
+	if (*(int*) ((char*) pObject + 0x220) == 0xc) {
+		return 0;
+	}
+	if (((int(__fastcall*)(void*, int)) (*(void***) pObject)[0xb4 / 4])(pObject, param_1) != 0) {
+		return 0;
+	}
+	*(int*) ((char*) pObject + *(int*) ((char*) pObject + 0x220) * 4 + 0x1c0) = param_1;
+	*(int*) ((char*) pObject + *(int*) ((char*) pObject + 0x220) * 4 + 0x1f0) = param_2;
+	*(int*) ((char*) pObject + 0x220) = *(int*) ((char*) pObject + 0x220) + 1;
+	return 1;
+}
+
+// MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
+// FUNCTION: LEMBALL 0x00418b60
+void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
+{
+	void* pEntity = (void*) ((int(__fastcall*)(void*)) 0x4021df)(pObject);
+	if (pEntity != 0) {
+		void* pChild = (void*) ((int(__fastcall*)(void*)) 0x40241e)(pEntity);
+		while (pChild != 0) {
+			((void(__fastcall*)(void*, int, int)) 0x401659)(pChild, param_1, param_2);
+			pChild = (void*) ((int(__fastcall*)(void*)) 0x401816)(pEntity);
+		}
+	}
+}
+
 // MACINTOSH: copy_next_level_title_word_to_line(int, int, int*, int*)
 // FUNCTION: LEMBALL 0x0044a2d0
 int __cdecl CopyNextLevelTitleWordToLine(int param_1, int param_2, int* param_3, int* param_4)
