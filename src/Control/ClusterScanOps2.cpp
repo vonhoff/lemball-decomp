@@ -616,6 +616,38 @@ void __fastcall DeactivateBoonChunkObjectInManager(void* param_1, int nUnused, i
 	*(int*) (*(int*) ((char*) param_1 + iVar2 * 2 + 0x1a) + 0x124) = 0;
 }
 
+// MACINTOSH: serialize_lift_chunk_start_points(undefined4*)
+// FUNCTION: LEMBALL 0x004257e0
+int __fastcall SerializeLiftChunkStartPoints(void* pObject, int nUnused, void* param_1)
+{
+	int i;
+	if (*(int*) ((char*) pObject + 0x34) > 0) {
+		for (i = 0; i < *(int*) ((char*) pObject + 0x34); i++) {
+			void* pElem = (void*) (*(int*) ((char*) pObject + 0x3c) + i * 0x190);
+			*(int*) param_1 = *(int*) ((char*) pElem + 0x13a);
+			*(unsigned short*) ((char*) param_1 + 4) = *(unsigned short*) ((char*) pElem + 0x13e);
+			param_1 = (char*) param_1 + 6;
+		}
+	}
+	return *(int*) ((char*) pObject + 0x34);
+}
+
+// MACINTOSH: dispatch_rock_chunk_contacts_for_entity(int*, int)
+// FUNCTION: LEMBALL 0x00426fb0
+int __fastcall DispatchRockChunkContactsForEntity(void* pObject, int nUnused, void* param_1, int param_2)
+{
+	int i;
+	for (i = 0; i < *(int*) ((char*) pObject + 0x34); i++) {
+		void* pElem = (void*) (*(int*) ((char*) pObject + 0x38) + i * 0x144);
+		if (*(int*) ((char*) pElem + 0x13c) != 0 && *(int*) ((char*) pElem + 0xb8) == 0x18 && *(int*) ((char*) pElem + 0x12c) == 0x18) {
+			if (((int(__cdecl*)(void*, void*, int)) 0x401375)(pElem, param_1, param_2) != 0) {
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
 // MACINTOSH: load_list_entry_pair_from_stream(int, int*)
 // FUNCTION: LEMBALL 0x0045d9f0
 int __fastcall LoadListEntryPairFromStream(void* pObject, int nUnused, int param_2, void* param_3)
