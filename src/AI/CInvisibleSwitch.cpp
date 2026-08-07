@@ -1,6 +1,9 @@
 #include "AI/CInvisibleSwitch.h"
 
 extern int g_nLevelFrameClockTick;
+extern void* g_pLevelProgressState;
+extern void* g_pSessionRandomState;
+extern int g_nSelectedNetworkLobbyPeerId;
 
 #include "AI/CGameObject.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
@@ -394,4 +397,37 @@ void LEMBALL_FASTCALL RemoveBallChunkEntryFromLevelLists(int pObject)
 	}
 	((void(__fastcall*)(void*, int)) 0x40302b)((void*) *(int*) 0x49e1bc, pObject);
 	((CGameObject*) pObject)->SetId(0xffff);
+}
+
+// MACINTOSH: CPlayerLemming::HitBullet()
+// FUNCTION: LEMBALL 0x0040f000
+void LEMBALL_FASTCALL HandleDoorChunkObjectTargetTileProjectileResult(int pObject, int pTarget)
+{
+	int iState;
+
+	if (*(int*) ((char*) g_pLevelProgressState + 0x20) == 0) {
+		iState = *(int*) ((char*) pObject + 0xb8);
+		if (iState < 4 || (5 < iState && iState != 0x10)) {
+			if (*(int*) ((char*) pTarget + 0x16c) == 1) {
+				unsigned int uRandom;
+				uRandom = *(int*) g_pSessionRandomState * 0x29 + 0x1f;
+				*(unsigned int*) g_pSessionRandomState = uRandom & 0x7fffff;
+				if ((uRandom & 1) != 0) {
+					return;
+				}
+			}
+			else {
+				if (*(int*) ((char*) pTarget + 0x16c) != 2) {
+					return;
+				}
+				if (g_nSelectedNetworkLobbyPeerId != 0) {
+					((void(__fastcall*)(void*, void*)) 0x402895)((void*) *(int*) 0x49d12c, (void*) pTarget);
+				}
+			}
+			*(int*) ((char*) pObject + 0xc0) = 0;
+			*(int*) ((char*) pObject + 0x178) = 1;
+			*(int*) ((char*) pObject + 0xcc) = g_nLevelFrameClockTick + 0x28;
+			*(unsigned short*) ((char*) pObject + 0xb4) = *(short*) ((char*) pTarget + 0xb4) + 4U & 7;
+		}
+	}
 }
