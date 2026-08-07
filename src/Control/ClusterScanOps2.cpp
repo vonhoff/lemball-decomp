@@ -674,6 +674,21 @@ void __fastcall EmitVariantChildSlotRenderMarker(void* pObject, int nUnused, voi
 	((void(__fastcall*)(void*, short, short, int, int, int, int)) 0x4016a9)(*(void**) ((char*) pObject + 0x10), *(short*) param_3, *(short*) ((char*) param_3 + 2), 0xfd, 0, 0, 0);
 }
 
+// MACINTOSH: configure_level_mode_managed_entity_profiles(int, int, int, int, int)
+// FUNCTION: LEMBALL 0x00413130
+void __fastcall ConfigureLevelModeManagedEntityProfiles(void* pObject, int nUnused, int param_2, int param_3, int param_4, int param_5, int param_6)
+{
+	((void(__fastcall*)(void*, int, int, int, int, int)) 0x402720)(*(void**) ((char*) pObject + 0x15c), param_2, param_3, param_4, param_5, param_6);
+}
+
+// MACINTOSH: dispatch_managed_entity_chunk_contacts_from_current_tile()
+// FUNCTION: LEMBALL 0x00416820
+void __fastcall DispatchManagedEntityChunkContactsFromCurrentTile(void* param_1)
+{
+	*(int*) ((char*) param_1 + 0xcc) = g_nLevelFrameClockTick + 8;
+	((void(__fastcall*)(void*, void*, void*, unsigned short)) 0x40341d)(g_pActiveManagedEntityOwner, (char*) param_1 + 0x9c, param_1, *(unsigned short*) ((char*) param_1 + 0x68));
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
