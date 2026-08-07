@@ -517,3 +517,13 @@ int LEMBALL_FASTCALL TryAttachGmobTarget(void* pObject, int* pTarget)
 	}
 	return 0;
 }
+
+// MACINTOSH: CEnemy::EnemyRule_RADIUS50()
+// FUNCTION: LEMBALL 0x00420070
+int LEMBALL_FASTCALL IsSavedTargetWithinProbeBoxes(void)
+{
+	if (*(int*) ((char*) g_pActiveManagedEntityOwner + 0x58) == 0) {
+		return 0;
+	}
+	return ((int(__fastcall*)(int)) 0x40358f)(0x32);
+}
