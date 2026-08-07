@@ -1767,3 +1767,15 @@ int __fastcall DispatchIndexedEntryByMode(void* pThis, int nUnused, unsigned sho
 	}
 	return 0;
 }
+
+// MACINTOSH: dispatch_object_state_variant_callback()
+// FUNCTION: LEMBALL 0x0040fcd0
+void __fastcall DispatchObjectStateVariantCallback(void* pThis)
+{
+	if (*(unsigned short*) ((char*) pThis + 0xbc) != 0 && *(unsigned short*) ((char*) pThis + 0xbc) < 3) {
+		(*( void(**)(void)) (*(void***) pThis + 0x68 / 4))();
+		(*( void(**)(int)) (*(void***) pThis + 8 / 4))(8);
+	} else {
+		(*( void(**)(int)) (*(void***) pThis + 8 / 4))(0);
+	}
+}
