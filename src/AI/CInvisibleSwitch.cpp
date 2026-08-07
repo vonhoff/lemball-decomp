@@ -28,6 +28,14 @@ struct LevelChunkObjectBaseView {
 	void* InitializeLevelChunkObjectBase(int nType, unsigned short nChildType, unsigned short nFlags);
 };
 
+// Palette remap pointer table (mirrors VSINIT.CPP's PaletteRemapPointerTableMemberView so its
+// member symbol links; see release_palette_remap_variant 0x0046add0).
+struct PaletteRemapPointerTableMemberView {
+	void** m_ppItems;
+	int m_nCursor;
+	void ReleasePaletteRemapVariant(void* pVariant);
+};
+
 struct LevelVtSmallFunctionView {
 	void AddLevelScoreClamped(int nValue);
 };
@@ -661,7 +669,7 @@ void LEMBALL_FASTCALL ReleasePauseDialogPaletteRemaps(void* pObject)
 {
 	int i;
 	for (i = 0; i < 4; i++) {
-		((void(__fastcall*)(void*, int)) 0x46add0)(*(void**) 0x4a2000, *(int*) ((char*) pObject + 0x1e0 + i * 4));
+		((PaletteRemapPointerTableMemberView*) *(void**) 0x4a2000)->ReleasePaletteRemapVariant((void*) *(int*) ((char*) pObject + 0x1e0 + i * 4));
 	}
 }
 
