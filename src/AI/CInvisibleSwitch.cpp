@@ -615,6 +615,42 @@ void* LEMBALL_FASTCALL ConstructShpgManagedEntityGroupController(void* pObject, 
 	return pObject;
 }
 
+// MACINTOSH: CEnemy::CEnemy() [type-0x1 enemy chunk]
+// FUNCTION: LEMBALL 0x0041fba0
+void* LEMBALL_FASTCALL ConstructEnmyChunkObject(void* pObject, int nUnused, int pLevelMode, int nX, int nY, int nZ, unsigned short pFlags)
+{
+	int nHeight;
+	((CGameObject*) pObject)->ConstructCGameObject(1, 0x118, 10);
+	*(int*) ((char*) pObject + 0x150) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x154) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x158) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x15c) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x160) = 0xaa55aa55;
+	*(int*) ((char*) pObject + 0x164) = 0xaa55aa55;
+	(* (void***) pObject) = (void**) 0x495110;
+	g_pActiveManagedEntityOwner = (void*) pLevelMode;
+	*(int*) ((char*) pObject + 0x40) = nX << 12;
+	*(int*) ((char*) pObject + 0x44) = nY << 12;
+	*(int*) ((char*) pObject + 0x48) = nZ << 12;
+	if (nX >= 0 && nY >= 0 && *(int*) ((char*) g_pLevelTileGrid + 0x10) > (nX >> 4) && *(int*) ((char*) g_pLevelTileGrid + 0x14) > (nY >> 4)) {
+		nHeight = ((int(__fastcall*)(void*, int, int)) 0x4029a5)((void*) ((((nY >> 4) * *(int*) ((char*) g_pLevelTileGrid + 0x10) + (nX >> 4)) * 0xc + *(int*) ((char*) g_pLevelTileGrid + 0xc))), nX, nY & 0xf);
+	} else {
+		nHeight = 0;
+	}
+	*(unsigned short*) ((char*) pObject + 0xb6) = pFlags;
+	*(int*) ((char*) pObject + 0x48) = (nHeight & 0xffff) << 12;
+	*(unsigned short*) ((char*) pObject + 0x144) = 0;
+	*(int*) ((char*) pObject + 0x138) = 0;
+	*(int*) ((char*) pObject + 0x12c) = 0;
+	*(int*) ((char*) pObject + 0x148) = 0;
+	*(int*) ((char*) pObject + 0x13c) = 0;
+	*(int*) ((char*) pObject + 0x130) = 0;
+	*(int*) ((char*) pObject + 0x134) = 0;
+	*(int*) ((char*) pObject + 0x140) = 0;
+	*(int*) ((char*) pObject + 0x14c) = 0;
+	return pObject;
+}
+
 // MACINTOSH: CTrapDoor::CTrapDoor() [type-0x18 chunk]
 // FUNCTION: LEMBALL 0x0040c2d0
 void* LEMBALL_FASTCALL ConstructType18ChunkObject(void* pObject, int nUnused, void* pPoint, int pContext)
