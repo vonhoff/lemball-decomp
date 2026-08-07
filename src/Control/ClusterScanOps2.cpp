@@ -274,12 +274,3 @@ void __fastcall ActivateShpgChunkObject(void* pObject)
 	*(int*) (*(int*) ((char*) g_pActiveManagedEntityOwner + 0x120) + *(int*) ((char*) g_pActiveManagedEntityOwner + 0x118) * 4) = (int) pObject;
 	*(int*) ((char*) g_pActiveManagedEntityOwner + 0x118) = *(int*) ((char*) g_pActiveManagedEntityOwner + 0x118) + 1;
 }
-
-// MACINTOSH: reset_projectile_object_to_inactive_state()
-// FUNCTION: LEMBALL 0x0041a5a0
-void __fastcall ResetProjectileObjectToInactiveState(void* pObject)
-{
-	ResetManagedEntityRuntimeStateThunk(pObject);
-	*(int*) ((char*) pObject + 0x164) = 0;
-	*(int*) ((char*) pObject + 0xb8) = 8;
-}

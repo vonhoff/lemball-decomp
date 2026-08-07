@@ -12,7 +12,7 @@ def load_owned():
     owned = {}
     for root, dirs, files in os.walk("src"):
         for fn in files:
-            if not fn.endswith((".cpp", ".h")):
+            if not fn.lower().endswith((".cpp", ".h")):
                 continue
             p = os.path.join(root, fn)
             try:
