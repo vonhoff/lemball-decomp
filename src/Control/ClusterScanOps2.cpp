@@ -31,6 +31,20 @@ void __fastcall StartDoorChunkObjectVerticalMotion(void* pObject)
 	*(int*) ((char*) pObject + 0x2c) = 1;
 }
 
+// MACINTOSH: count_active_network_lobby_peer_streams()
+// FUNCTION: LEMBALL 0x00452bc0
+int __fastcall CountActiveNetworkLobbyPeerStreams(void* pObject)
+{
+	int iVar1 = 0;
+	int i;
+	for (i = 0; i < 10; i++) {
+		if (*(int*) ((char*) pObject + 0x20 + i * 4) != 0 && *(int*) (*(int*) ((char*) pObject + 0x14) + 0x4c + i * 0x50) != 0) {
+			iVar1++;
+		}
+	}
+	return iVar1;
+}
+
 // MACINTOSH: has_projectile_request_code_queued(int)
 // FUNCTION: LEMBALL 0x0040f960
 int __fastcall HasProjectileRequestCodeQueued(void* pObject, int nUnused, int param_1)
