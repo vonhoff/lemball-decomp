@@ -642,6 +642,16 @@ void* LEMBALL_FASTCALL ConstructManagedEntityGroupControllerBase(void* pObject, 
 	return pObject;
 }
 
+// MACINTOSH: release_pause_dialog_palette_remaps()
+// FUNCTION: LEMBALL 0x00444900
+void LEMBALL_FASTCALL ReleasePauseDialogPaletteRemaps(void* pObject)
+{
+	int i;
+	for (i = 0; i < 4; i++) {
+		((void(__fastcall*)(void*, int)) 0x46add0)(*(void**) 0x4a2000, *(int*) ((char*) pObject + 0x1e0 + i * 4));
+	}
+}
+
 // MACINTOSH: CEnemy::CEnemy() [type-0x1 enemy chunk]
 // FUNCTION: LEMBALL 0x0041fba0
 void* LEMBALL_FASTCALL ConstructEnmyChunkObject(void* pObject, int nUnused, int pLevelMode, int nX, int nY, int nZ, unsigned short pFlags)
