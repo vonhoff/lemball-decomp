@@ -833,6 +833,49 @@ void __fastcall StartLevelGameModeSession(void* param_1)
 	*(int*) ((char*) param_1 + 0x68) = 1;
 }
 
+// MACINTOSH: is_managed_entity_within_followup_activation_range(int, int, int, int, int, int)
+// FUNCTION: LEMBALL 0x004140d0
+int __cdecl IsManagedEntityWithinFollowupActivationRange(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6)
+{
+	int iVar3 = (param_1 >> 12) - (param_4 >> 12);
+	int iVar2 = (param_2 >> 12) - (param_5 >> 12);
+	int iVar1 = (param_3 >> 12) - (param_6 >> 12);
+	if (iVar1 < 0) {
+		iVar1 = -iVar1;
+	}
+	if (iVar1 < 0x11 && iVar2 * iVar2 + iVar3 * iVar3 < 100) {
+		return 1;
+	}
+	return 0;
+}
+
+// MACINTOSH: pop_move_command_and_copy_next_position(undefined4*)
+// FUNCTION: LEMBALL 0x00416050
+void* __fastcall PopMoveCommandAndCopyNextPosition(void* param_1, int nUnused, void* param_2)
+{
+	unsigned short* puVar2 = *(unsigned short**) ((char*) param_1 + 0x70);
+	unsigned short uVar1 = *puVar2;
+	int iVar4 = 0;
+	if (uVar1 != 0) {
+		int iVar5 = 0;
+		if (uVar1 != 1 && (int) (uVar1 - 1) >= 0) {
+			do {
+				iVar5++;
+				void* puVar3 = (void*) (*(int*) (puVar2 + 2) + iVar4);
+				iVar4 += 0x14;
+				*(int*) puVar3 = *(int*) ((char*) puVar3 + 0x14);
+				*(int*) ((char*) puVar3 + 4) = *(int*) ((char*) puVar3 + 0x18);
+				*(int*) ((char*) puVar3 + 8) = *(int*) ((char*) puVar3 + 0x1c);
+				*(int*) ((char*) puVar3 + 0xc) = *(int*) ((char*) puVar3 + 0x20);
+				*(unsigned short*) ((char*) puVar3 + 0x10) = *(unsigned short*) ((char*) puVar3 + 0x24);
+			} while (iVar5 < (int) (*puVar2 - 1));
+		}
+		*puVar2 = *puVar2 - 1;
+	}
+	((void(__cdecl*)(void*, void*)) 0x40336e)(param_1, param_2);
+	return param_2;
+}
+
 // MACINTOSH: set_active_managed_entity_children_door_target_tile(int, int)
 // FUNCTION: LEMBALL 0x00418b60
 void __fastcall SetActiveManagedEntityChildrenDoorTargetTile(void* pObject, int nUnused, int param_1, int param_2)
