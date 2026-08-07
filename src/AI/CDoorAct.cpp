@@ -4,6 +4,21 @@
 #include "AI/AICoord.h"
 #include "AI/CGameObject.h"
 
+// TU-local view (matches CHandManager.cpp) of the EFF stream common base.
+struct VsNetEffStreamCommon {
+	virtual ~VsNetEffStreamCommon(void);
+};
+
+// MACINTOSH: CDoor::~CDoor()
+// FUNCTION: LEMBALL 0x0040efd0
+void LEMBALL_FASTCALL DestroyDoorChunkObject(void* pDoor)
+{
+	*((void**) pDoor) = (void*) 0x493890;
+	*((void**) ((char*) pDoor + 0x138)) = (void*) 0x493870;
+	((VsNetEffStreamCommon*) ((char*) pDoor + 0x138))->VsNetEffStreamCommon::~VsNetEffStreamCommon();
+	((CGameObject*) pDoor)->DestroyLevelChunkObjectBase();
+}
+
 extern unsigned short LEMBALL_FASTCALL GetManagedEntitySlotIdThunk(int nManagedEntityObject);
 extern void* g_pLevelTileGrid;
 extern int g_nLevelFrameClockTick;
