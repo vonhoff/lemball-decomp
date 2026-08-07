@@ -20,3 +20,33 @@ void CPaintGunManager::Add(unsigned short nSlot, int nWorldX, int nWorldY, int n
 		m_nObjectCount34 = m_nObjectCount34 + 1;
 	}
 }
+
+// Mac blueprint: CPaintGunManager::LoadLevel(ushort*, int, uchar)
+// FUNCTION: LEMBALL 0x0042c610
+void CPaintGunManager::LoadLevel(unsigned short* pLevelData, int nLen, unsigned char nFormat)
+{
+	typedef unsigned int(__fastcall* FindFreeSlotProc)(void);
+	unsigned int nCount = (unsigned int) *pLevelData;
+	unsigned short nSlot;
+	int nX;
+	int nY;
+	int nZ;
+	int nSubtype;
+
+	pLevelData = pLevelData + 1;
+	((void(__fastcall*)(void*, unsigned int)) 0x4028d3)(this, nCount);
+	while (nCount != 0) {
+		if (*(unsigned short*) ((char*) m_pLevelMode3C + 0x54) <= 1) {
+			nSlot = (unsigned short) ((FindFreeSlotProc) 0x40214e)();
+		}
+		else {
+			nSlot = *pLevelData++;
+		}
+		nX = *pLevelData++;
+		nY = *pLevelData++;
+		nZ = *pLevelData++;
+		nSubtype = *pLevelData++;
+		Add(nSlot, nX, nY, (short) nZ, nSubtype);
+		nCount = nCount - 1;
+	}
+}
