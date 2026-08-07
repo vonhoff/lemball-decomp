@@ -107,3 +107,15 @@ void __fastcall ActivateCollChunkObject(void* pObject)
 	*(int*) ((char*) pObject + 0x138) = 1;
 	*(int*) ((char*) pObject + 0xb8) = 0x18;
 }
+
+// MACINTOSH: initialize_enmy_chunk_object_behavior_fields(int, int, int, int, int, int)
+// FUNCTION: LEMBALL 0x0041fe30
+void __fastcall InitializeEnmyChunkObjectBehaviorFields(void* pObject, int nUnused, int param_1, int param_2, int param_3, int param_4, int param_5, int param_6)
+{
+	*(int*) ((char*) pObject + 300) = param_1;
+	*(int*) ((char*) pObject + 0x130) = param_2;
+	*(int*) ((char*) pObject + 0x138) = param_3;
+	*(int*) ((char*) pObject + 0x13c) = param_4;
+	*(int*) ((char*) pObject + 0x144) = param_5;
+	*(int*) ((char*) pObject + 0x148) = param_6;
+}
