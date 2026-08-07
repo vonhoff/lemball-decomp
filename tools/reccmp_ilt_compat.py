@@ -225,6 +225,7 @@ THUNK_ILT_REFERENCES = {
         (0x004012A8, "DestroyMainGameVariantResourceMode", "destroy-variant-resource-mode thunk -> 0x447c50"),
         (0x00402DB5, "UnregisterNetworkLobbyVsnetRuntimeFromTransport", "unregister-lobby-vsnet thunk -> 0x4527c0"),
     ),
+    0x00445420: (0x004036ED, "ConstructFramedScreenRenderEntryGroup", "framed-screen entry-group ctor thunk -> 0x447030"),
     0x00426710: (
         0x00401E0B,
         "destroy_lift_chunk_object",
