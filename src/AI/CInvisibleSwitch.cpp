@@ -527,3 +527,14 @@ int LEMBALL_FASTCALL IsSavedTargetWithinProbeBoxes(void)
 	}
 	return ((int(__fastcall*)(int)) 0x40358f)(0x32);
 }
+
+// MACINTOSH: CPlayerLemmingGroupManager::DeleteGroup()
+// FUNCTION: LEMBALL 0x004187f0
+int LEMBALL_FASTCALL RemoveGroupChildOrSelectPrevious(void* pGroup, int nUnused, void* param_2, int* param_3)
+{
+	int iResult = ((int(__fastcall*)(void*, void*, int*)) 0x401cbc)(pGroup, param_2, param_3);
+	if (iResult == 0) {
+		((void(__fastcall*)(void*)) 0x402d47)(pGroup);
+	}
+	return iResult;
+}
