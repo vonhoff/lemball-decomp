@@ -724,3 +724,11 @@ void C2D::ResetPrimitives(void)
 	((CRenderQueueClientView*) m_RenderQueueClient0990)->Reset(m_pRenderQueue0970);
 	InitializeHelperUploadStatePending(nUploadState);
 }
+
+// MACINTOSH: C2D::DrawZBuff_Sprite(int, ushort)
+// FUNCTION: LEMBALL 0x00440460
+void C2D::DrawZBuff_Sprite(int nViewDataIndex, unsigned short nValue)
+{
+	*(unsigned short*) ((char*) m_pAnimsManager0A40 + 0x68) = nValue;
+	((void(__fastcall*)(void*, unsigned short*)) 0x4033eb)(this, (unsigned short*) ((char*) m_pViewData095C + nViewDataIndex * 0x4c));
+}

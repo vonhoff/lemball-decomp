@@ -64,6 +64,7 @@ public:
 	void DrawBalloon(CViewData& ViewData);
 	void DrawExit(CViewData& ViewData);
 	void ResetPrimitives(void);
+	void DrawZBuff_Sprite(int nViewDataIndex, unsigned short nValue);
 };
 
 typedef char CViewDataSizeCheck[(sizeof(CViewData) == 0x4c) ? 1 : -1];
