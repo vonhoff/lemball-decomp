@@ -1,4 +1,52 @@
+typedef int eObjectType;
+#define LEMBALL_CCOLLECTABLEMANAGER_ADD
 #include "Platform/Windows/Mixed/Engine/CORE/LINKSCF.H"
+#undef LEMBALL_CCOLLECTABLEMANAGER_ADD
+
+#include "AI/CGameObject.h"
+#include "Visos/Generic/Memory.h"
+
+extern void* LEMBALL_FASTCALL ConstructCollChunkObject(
+	void* pObject, int nUnused, int nWorldX, int nWorldY, int nWorldZ, int nEntityType);
+
+// FUNCTION: LEMBALL 0x00422590
+void CCollectableManager::Add(
+	unsigned short nSlot, int nWorldX, int nWorldY, int nWorldZ, eObjectType nType)
+{
+	if (m_nCurrentObjectCount3c < m_nObjectCount38) {
+		void* pObject;
+		switch (nType) {
+		case 0x0b:
+		case 0x0c:
+			pObject = AllocateVSMemBlock(0x13c);
+			if (pObject != 0) {
+				ConstructCollChunkObject(pObject, 0, nWorldX, nWorldY, nWorldZ, nType);
+				*(void**) pObject = (void*) 0x495720;
+				*(int*) ((char*) pObject + 0x64) = nType;
+			}
+			break;
+		case 0x12:
+			pObject = AllocateVSMemBlock(0x13c);
+			if (pObject != 0) {
+				ConstructCollChunkObject(pObject, 0, nWorldX, nWorldY, nWorldZ, 0x12);
+				*(void**) pObject = (void*) 0x495870;
+			}
+			break;
+		case 0x1b:
+			pObject = AllocateVSMemBlock(0x13c);
+			if (pObject != 0) {
+				ConstructCollChunkObject(pObject, 0, nWorldX, nWorldY, nWorldZ, 0x1b);
+				*(void**) pObject = (void*) 0x4955d0;
+			}
+			break;
+		}
+		((void(__fastcall*)(void*))(*(void***) pObject)[0x104 / sizeof(void*)])(pObject);
+		*(CCollectableManager**) ((char*) pObject + 0x60) = this;
+		((CGameObject*) pObject)->SetId(nSlot);
+		m_apObjects34[m_nCurrentObjectCount3c] = pObject;
+		m_nCurrentObjectCount3c++;
+	}
+}
 
 // FUNCTION: LEMBALL 0x00422420
 void CCollectableManager::Restart(void)

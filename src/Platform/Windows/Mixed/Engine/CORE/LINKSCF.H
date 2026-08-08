@@ -41,13 +41,22 @@ struct LinkScfDoorChunkManagerView {
 
 
 struct CCollectableManager {
+#ifdef LEMBALL_CCOLLECTABLEMANAGER_ADD
+	char m_abReserved00[0x30];
+#endif
 	void* m_pLevelMode30;         // 0x30
 	void** m_apObjects34;         // 0x34
 	int m_nObjectCount38;         // 0x38
+#ifdef LEMBALL_CCOLLECTABLEMANAGER_ADD
+	int m_nCurrentObjectCount3c;  // 0x3c
+#endif
 
 	CCollectableManager* ConstructCollChunkManager(void* pLevelMode, int nCapacity);
 	CCollectableManager* ConstructCollChunkManagerThunk(void* pLevelMode, int nCapacity);
 	void Restart(void);
+#ifdef LEMBALL_CCOLLECTABLEMANAGER_ADD
+	void Add(unsigned short nSlot, int nWorldX, int nWorldY, int nWorldZ, eObjectType nType);
+#endif
 	void LoadLevel(unsigned short* pLevelData, int nFormat);
 };
 

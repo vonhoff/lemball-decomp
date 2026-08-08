@@ -27,6 +27,9 @@ public:
 	void CancelRequest(void);
 	void SendRemove(void);
 	void SendCancel(void);
+#ifdef LEMBALL_CGLOBALGAMEOBJECT_SETMESSAGES
+	void SetMessages(void);
+#endif
 	int Receive(unsigned short nMessage, CNetworkMessage* pMessage);
 	void AppendGmobChunkType14Action(int nType, unsigned short nParam);
 };

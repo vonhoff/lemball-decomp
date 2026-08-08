@@ -1,4 +1,8 @@
+#define LEMBALL_CGLOBALGAMEOBJECT_SETMESSAGES
 #include "AI/CGlobalGameObject.h"
+#undef LEMBALL_CGLOBALGAMEOBJECT_SETMESSAGES
+
+#include "Visos/Generic/Memory.h"
 
 struct GameEffStream {
 	void* m_pVtable00;
@@ -29,6 +33,65 @@ extern ManagedEntityPacketStreamView* g_pManagedEntityStateRequestStream;
 extern ManagedEntityPacketStreamView* g_pManagedEntityStateResponseStream;
 extern ManagedEntityPacketStreamView* g_pManagedEntityPacket2ATargetStream;
 extern ManagedEntityPacketStreamView* g_pManagedEntityStateResetPacketStream;
+
+// FUNCTION: LEMBALL 0x00416fe0
+void CGlobalGameObject::SetMessages(void)
+{
+	void* pPacket = AllocateVSMemBlock(0x34);
+	if (pPacket != 0) {
+		((void(__fastcall*)(void*, int, int)) 0x4018d4)(pPacket, 0, 0);
+		*(void**) pPacket = (void*) 0x493fe8;
+	}
+	*(void**) 0x49d110 = pPacket;
+
+	pPacket = AllocateVSMemBlock(0x30);
+	if (pPacket != 0) {
+		pPacket = ((void*(__fastcall*) (void*) ) 0x401cda)(pPacket);
+	}
+	*(void**) 0x49d114 = pPacket;
+
+	pPacket = AllocateVSMemBlock(0x30);
+	if (pPacket != 0) {
+		pPacket = ((void*(__fastcall*) (void*) ) 0x403684)(pPacket);
+	}
+	*(void**) 0x49d118 = pPacket;
+
+	pPacket = AllocateVSMemBlock(0x30);
+	if (pPacket != 0) {
+		pPacket = ((void*(__fastcall*) (void*) ) 0x40228e)(pPacket);
+	}
+	*(void**) 0x49d11c = pPacket;
+
+	pPacket = AllocateVSMemBlock(0x30);
+	if (pPacket != 0) {
+		pPacket = ((void*(__fastcall*) (void*) ) 0x402d6f)(pPacket);
+	}
+	*(void**) 0x49d120 = pPacket;
+
+	pPacket = AllocateVSMemBlock(0x30);
+	if (pPacket != 0) {
+		pPacket = ((void*(__fastcall*) (void*) ) 0x401d6b)(pPacket);
+	}
+	*(void**) 0x49d124 = pPacket;
+
+	pPacket = AllocateVSMemBlock(0x30);
+	if (pPacket != 0) {
+		pPacket = ((void*(__fastcall*) (void*) ) 0x401b45)(pPacket);
+	}
+	*(void**) 0x49d128 = pPacket;
+
+	pPacket = AllocateVSMemBlock(0x30);
+	if (pPacket != 0) {
+		pPacket = ((void*(__fastcall*) (void*) ) 0x402d4c)(pPacket);
+	}
+	*(void**) 0x49d12c = pPacket;
+
+	pPacket = AllocateVSMemBlock(0x30);
+	if (pPacket != 0) {
+		pPacket = ((void*(__fastcall*) (void*) ) 0x402a04)(pPacket);
+	}
+	*(void**) 0x49d130 = pPacket;
+}
 
 // FUNCTION: LEMBALL 0x00416e90
 int CGlobalGameObject::Receive(unsigned short nMessage, CNetworkMessage* pMessage)
