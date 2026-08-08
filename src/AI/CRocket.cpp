@@ -3,6 +3,7 @@
 
 extern int g_nLevelFrameClockTick;
 extern int g_nLevelFrameClockTimeMs;
+extern int g_nSelectedNetworkLobbyPeerId;
 
 // FUNCTION: LEMBALL 0x00426840
 void CRocket::Set(unsigned short nSlotId, const AICOORD& position)
@@ -44,11 +45,11 @@ void CRocket::DoActivate(void)
 {
 	m_nMotionStartTickC8 += g_nLevelFrameClockTick;
 	m_nFrameTime94 = g_nLevelFrameClockTimeMs;
-	void* pTarget = m_pTarget5C;
-	((void(__fastcall*) (void*, int)) (*(void***) pTarget + 0x8 / 4))(pTarget, 0x15);
-	*(int*) ((char*) pTarget + 0xcc) = g_nLevelFrameClockTick + 0x3c;
-	((void(__fastcall*) (void*, int)) (*(void***) this + 0x34 / 4))(this, 0x12);
-	if (*(int*) 0x4a011c != 0) {
-		((void(__fastcall*) (void*, void*)) 0x4032dd)(*(void**) 0x49d128, this);
+	CGameObject* pTarget = m_pTarget5C;
+	((void(__fastcall*)(void*, int))((void**) pTarget->m_pVtable00)[0x8 / 4])(pTarget, 0x15);
+	pTarget->m_nNextUpdateTickCC = g_nLevelFrameClockTick + 0x3c;
+	((void(__fastcall*)(void*, int))((void**) m_vtable00)[0x34 / 4])(this, 0x12);
+	if (g_nSelectedNetworkLobbyPeerId != 0) {
+		((void(__fastcall*)(void*, void*)) 0x4032dd)(*(void**) 0x49d128, this);
 	}
 }

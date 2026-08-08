@@ -1,5 +1,7 @@
 #include "AI/CDuplicator.h"
 
+#include "AI/CGameObject.h"
+
 extern void* g_pLevelTileGrid;
 extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern int g_nLevelFrameClockTick;
@@ -60,25 +62,23 @@ void CDuplicator::Delete(void)
 	}
 }
 
-
 // FUNCTION: LEMBALL 0x00427910
 void CDuplicator::DoActivate(void)
 {
-	char* pChild;
+	CGameObject* pChild;
 	int nYOffset;
-	int* pChildPos;
 
 	nYOffset = m_yPosWorldA0 - 0x3c000;
 	m_nFrameTime94 = g_nLevelFrameClockTimeMs;
-	pChild = *(char**) ((char*) this + 0x5c);
-	*(int*) ((char*) this + 0xcc) += g_nLevelFrameClockTick;
-	*(void**) ((char*) this + 0x140) = pChild;
-	*(int*) (pChild + 0xc0) = 1;
-	*(int*) (pChild + 0xb8) = 5;
-	pChild = *(char**) ((char*) this + 0x140);
-	*(int*) (pChild + 0x9c) = m_xPosWorld9C;
-	*(int*) (pChild + 0xa0) = nYOffset;
-	*(int*) (pChild + 0xa4) = m_zPosWorldA4;
-	((void (__fastcall*)(void*)) (*(void***) this)[0x34 / 4])(this);
-	((void (__fastcall*)(void*, int, int)) 0x402f22)(g_pActiveManagedEntityOwner, 0, 100);
+	pChild = m_pChild5C;
+	m_nNextUpdateTickCC += g_nLevelFrameClockTick;
+	m_pActivatedChild140 = pChild;
+	pChild->m_nRuntimeFieldC0 = 1;
+	pChild->m_nStateB8 = 5;
+	pChild = m_pActivatedChild140;
+	pChild->m_WorldPosition9C.x = m_xPosWorld9C;
+	pChild->m_WorldPosition9C.y = nYOffset;
+	pChild->m_WorldPosition9C.z = m_zPosWorldA4;
+	((void(__fastcall*)(void*))((void**) m_vtable00)[0x34 / 4])(this);
+	((void(__fastcall*)(void*, int, int)) 0x402f22)(g_pActiveManagedEntityOwner, 0, 100);
 }
