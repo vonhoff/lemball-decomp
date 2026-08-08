@@ -5,6 +5,7 @@
 
 extern int g_nSelectedNetworkLobbyPeerId;
 extern CFormationManager* g_pGenericGroupFormationManager;
+extern int g_GAME_ManagedEntityRegistryTable[1000];
 
 extern void* LEMBALL_FASTCALL ConstructPlasChunkObjectForLevelThunk(void* pObject,
 																	int nUnusedEdx,
@@ -53,6 +54,96 @@ int CPlayerLemmingGroupManager::GetLeaderPos(AICOORD& position)
 // FUNCTION: LEMBALL 0x00418640
 void CPlayerLemmingGroupManager::ProcessDead(void)
 {
+}
+
+// FUNCTION: LEMBALL 0x00418650
+void CPlayerLemmingGroupManager::Process(void)
+{
+	typedef int(__fastcall * GetCountProc)(void* pGroup);
+	CPlayerLemmingGroupManager* pManager;
+	CPlayerLemmingGroup* pGroup;
+	CPlayerLemming* pLemming;
+	GetCountProc pGetCount;
+	int fSelectedGroupRemoved;
+
+	pManager = (CPlayerLemmingGroupManager*) ((char*) this - 0xb0);
+	fSelectedGroupRemoved = 0;
+	pGroup = (CPlayerLemmingGroup*) ((void* (__fastcall*)(void*)) 0x401078)(pManager);
+	while (pGroup != 0) {
+		((void(__fastcall*)(void*)) ((void**) pGroup->m_pVtable00)[0x14 / 4])(pGroup);
+		pGroup = (CPlayerLemmingGroup*) ((void* (__fastcall*)(void*)) 0x403549)(pManager);
+	}
+
+	pGroup = (CPlayerLemmingGroup*) ((void* (__fastcall*)(void*)) 0x401078)(pManager);
+	while (pGroup != 0) {
+		pLemming = (CPlayerLemming*) ((void* (__fastcall*)(void*)) 0x40173f)(pGroup);
+		while (pLemming != 0) {
+			pGetCount = (GetCountProc) ((void**) pGroup->m_pVtable00)[0x108 / 4];
+			((void(__fastcall*)(void*, int, void*)) 0x402590)(pGroup, 0, pLemming);
+			*(CPlayerLemming**) ((char*) this + 0x7c +
+				*(int*) ((char*) this + 0x78) * sizeof(CPlayerLemming*)) = pLemming;
+			++*(int*) ((char*) this + 0x78);
+			if (pGetCount(pGroup) == 0) {
+				if (((void* (__fastcall*)(void*)) 0x4021df)(pManager) == pGroup) {
+					fSelectedGroupRemoved = 1;
+				}
+				((void(__fastcall*)(void*, int, void*)) 0x40281a)(pManager, 0, pGroup);
+				pLemming = 0;
+			}
+			else {
+				pLemming = (CPlayerLemming*) ((void* (__fastcall*)(void*)) 0x40173f)(pGroup);
+			}
+		}
+		pGroup = (CPlayerLemmingGroup*) ((void* (__fastcall*)(void*)) 0x403549)(pManager);
+	}
+	if (fSelectedGroupRemoved != 0) {
+		((void(__fastcall*)(void*)) 0x402d47)(pManager);
+	}
+	((void(__fastcall*)(void*)) 0x4020c2)(pManager);
+}
+
+// FUNCTION: LEMBALL 0x00418730
+void CPlayerLemmingGroupManager::CreateNewGroup(unsigned short cLemmings,
+	unsigned short* pLemmingIds)
+{
+	CPlayerLemmingGroup* pGroup;
+	CPlayerLemming* pLemming;
+	int iGroup;
+	int cAdded;
+	unsigned short i;
+
+	((void(__fastcall*)(void*)) 0x401da7)(this);
+	pGroup = 0;
+	iGroup = 0;
+	if (m_nGroupCountA4 > 0) {
+		do {
+			CPlayerLemmingGroup* pCandidate = (CPlayerLemmingGroup*) m_apGroups04[iGroup];
+			if (((int(__fastcall*)(void*)) ((void**) pCandidate->m_pVtable00)[0x108 / 4])(
+				pCandidate) == 0) {
+				pGroup = (CPlayerLemmingGroup*)
+					((void* (__fastcall*)(void*, int, int)) 0x402eb9)(this, 0, iGroup);
+				break;
+			}
+			++iGroup;
+		} while (iGroup < m_nGroupCountA4);
+	}
+
+	cAdded = 0;
+	for (i = 0; i < cLemmings; ++i) {
+		pLemming = (CPlayerLemming*)
+			(int) g_GAME_ManagedEntityRegistryTable[pLemmingIds[i]];
+		if (((int(__fastcall*)(void*)) ((void**) ((CGameObject*) pLemming)->m_pVtable00)[0x70 / 4])(
+			pLemming) != 0) {
+			((void(__fastcall*)(void*)) 0x402446)(pLemming);
+			((void(__fastcall*)(void*, int, void*, void*)) 0x4024b4)(this, 0, pLemming, pGroup);
+			((void(__fastcall*)(void*)) 0x4011ef)(pLemming);
+			++cAdded;
+		}
+	}
+	if (cAdded > 0) {
+		((void(__fastcall*)(void*, int, void*)) 0x4011f9)(this, 0, pGroup);
+		((void(__fastcall*)(void*, int, void*)) 0x40184d)(this, 0, pGroup);
+	}
 }
 
 // FUNCTION: LEMBALL 0x00418820

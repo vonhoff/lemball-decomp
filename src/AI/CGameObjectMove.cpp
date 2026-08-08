@@ -232,6 +232,61 @@ void CGameObject::AddDestination(const AICOORD& position)
 	}
 }
 
+// FUNCTION: LEMBALL 0x00415f30
+void CGameObject::AlterDestination(const AICOORD& position)
+{
+	CGameObjectCommandQueue* pQueue;
+	CGameObjectCommand* pDestination;
+	CGameObjectCommand* pSource;
+	int iEntry;
+	int nOffset;
+
+	pQueue = m_pCommandQueue70;
+	nOffset = 0;
+	if (pQueue->m_cEntries != 0) {
+		iEntry = 0;
+		if (pQueue->m_cEntries - 1 > 0) {
+			do {
+				pDestination = (CGameObjectCommand*) ((char*) pQueue->m_pEntries + nOffset);
+				++iEntry;
+				nOffset += sizeof(CGameObjectCommand);
+				pSource = pDestination + 1;
+				pDestination->m_nType = pSource->m_nType;
+				pDestination->m_Position.x = pSource->m_Position.x;
+				pDestination->m_Position.y = pSource->m_Position.y;
+				pDestination->m_Position.z = pSource->m_Position.z;
+				pDestination->m_nFlags = pSource->m_nFlags;
+			} while (iEntry < pQueue->m_cEntries - 1);
+		}
+		--pQueue->m_cEntries;
+	}
+
+	pQueue = m_pCommandQueue70;
+	if (pQueue->m_cEntries < pQueue->m_cCapacity) {
+		iEntry = pQueue->m_cEntries;
+		if (iEntry > 0) {
+			nOffset = iEntry * sizeof(CGameObjectCommand);
+			do {
+				pDestination = (CGameObjectCommand*) ((char*) pQueue->m_pEntries + nOffset);
+				nOffset -= sizeof(CGameObjectCommand);
+				pSource = pDestination - 1;
+				pDestination->m_nType = pSource->m_nType;
+				pDestination->m_Position.x = pSource->m_Position.x;
+				pDestination->m_Position.y = pSource->m_Position.y;
+				pDestination->m_Position.z = pSource->m_Position.z;
+				pDestination->m_nFlags = pSource->m_nFlags;
+			} while (nOffset != 0);
+		}
+		++pQueue->m_cEntries;
+		pDestination = pQueue->m_pEntries;
+		pDestination->m_nType = 1;
+		pDestination->m_Position.x = position.x;
+		pDestination->m_Position.y = position.y;
+		pDestination->m_Position.z = position.z;
+	}
+	((void(__fastcall*)(void*)) 0x40360c)(this);
+}
+
 // Macintosh: CGameObject::GetDestination()
 // FUNCTION: LEMBALL 0x00416000
 AICOORD* CGameObject::GetDestination(AICOORD* pPosition)

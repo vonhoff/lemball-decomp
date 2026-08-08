@@ -123,6 +123,7 @@ public:
 	int FacingDestination(void);
 	void DeleteFirstEntryFromDestinationList(void);
 	void AddDestination(const AICOORD& position);
+	void AlterDestination(const AICOORD& position);
 	AICOORD* GetDestination(AICOORD* position);
 	int DestinationExists(void);
 	void EmptyDestinationList(void);

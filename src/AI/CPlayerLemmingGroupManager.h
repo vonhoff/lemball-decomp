@@ -19,6 +19,8 @@ public:
 	CPlayerLemming* GetDead(void);
 	int GetLeaderPos(AICOORD& position);
 	void ProcessDead(void);
+	void Process(void);
+	void CreateNewGroup(unsigned short cLemmings, unsigned short* pLemmingIds);
 	int IsLemmingPlayerControlled(CPlayerLemming* pLemming);
 	int MakeNextGroupPlayerControlled(void);
 	int MakePreviousGroupPlayerControlled(void);
