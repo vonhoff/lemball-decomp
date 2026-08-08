@@ -178,6 +178,7 @@ set(LEMBALL_SOURCES
     src/AI/LVBSTH.CPP
     src/AI/CDoorCtor.cpp
     src/AI/PlasChild.cpp
+    src/AI/CCatapult.cpp
     src/AI/CEnemyGrp.cpp
     src/AI/CMine.cpp
     src/AI/CObjectManager.cpp
