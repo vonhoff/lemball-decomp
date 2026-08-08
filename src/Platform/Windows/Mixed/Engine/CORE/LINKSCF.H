@@ -114,6 +114,7 @@ public:
 	void ConvertVer0ToVer1(void);
 	int GetViewData(CViewData* pViewData);
 	void Process(void);
+	void AddSwitch(unsigned short nSwitchType, int x, int y, int z, int param5, int param6, int param7, int param8);
 };
 
 struct LinkScfMoveChunkManagerView {

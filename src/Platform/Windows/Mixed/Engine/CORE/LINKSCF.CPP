@@ -2483,3 +2483,23 @@ void LEMBALL_FASTCALL ResetLasrChunkObject(void* pObject)
 	ResetManagedEntityRuntimeStateThunk(pObject);
 	ResetLasrChunkObjectRuntimeStateThunk(pObject);
 }
+
+// FUNCTION: LEMBALL 0x0041b740
+void CObjectManager::AddSwitch(unsigned short nSwitchType, int x, int y, int z,
+                               int param5, int param6, int param7, int param8)
+{
+	void* pObject;
+	int nAICoord[3];
+
+	nAICoord[0] = x << 12;
+	nAICoord[1] = y << 12;
+	nAICoord[2] = z << 12;
+	pObject = AllocateVSMemBlock(0x260);
+	if (pObject != 0) {
+		pObject = ((void*(__fastcall*)(void*, void*, void*, int, int, int, int)) 0x402702)(
+			pObject, 0, nAICoord, param5, param6, param7, param8);
+	}
+	((void(__fastcall*)(void*)) (*(void***) pObject)[0x104 / sizeof(void*)])(pObject);
+	((void(__fastcall*)(void*, void*, unsigned short, void*, int)) 0x402cac)(
+		this, 0, nSwitchType, pObject, 1);
+}

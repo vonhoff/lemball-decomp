@@ -899,6 +899,53 @@ void noop_vtable_callback_0040cf30(void)
 {
 }
 
+// FUNCTION: LEMBALL 0x0040cf40
+int LEMBALL_FASTCALL prune_anim_chunk_records_to_supported_special_tile_types(void* param_1)
+{
+	unsigned int* pBase = (unsigned int*) ((char*) param_1 - 0x10);
+	int i = 0;
+
+	if (*(int*) ((char*) param_1 + 4) > 0) {
+		do {
+			int* piVar1 = (int*) ((char*) param_1 + 0x1c + i * 0x18);
+			if (*piVar1 != 0) {
+				switch (**(int**) ((char*) param_1 + i * 0x18 + 0x10)) {
+				case 0x210:
+				case 0x219:
+				case 0x21a:
+					*piVar1 = 1;
+					break;
+				default: {
+					int iVar5 = i + 1;
+					*piVar1 = 0;
+					if (iVar5 < *(int*) ((char*) param_1 + 4)) {
+						unsigned int* puVar2 = (unsigned int*) ((char*) pBase + iVar5 * 0x18);
+						do {
+							iVar5++;
+							puVar2[0] = puVar2[6];
+							puVar2[1] = puVar2[7];
+							puVar2[2] = puVar2[8];
+							puVar2[3] = puVar2[9];
+							puVar2[4] = puVar2[10];
+							puVar2[5] = puVar2[11];
+							puVar2 = puVar2 + 6;
+						} while (iVar5 < *(int*) ((char*) param_1 + 4));
+					}
+					i = i - 1;
+					*(int*) ((char*) param_1 + 4) = *(int*) ((char*) param_1 + 4) - 1;
+				} break;
+				case 0x215:
+				case 0x216:
+					*piVar1 = 0;
+					break;
+				}
+			}
+			i++;
+		} while (i < *(int*) ((char*) param_1 + 4));
+	}
+	return 1;
+}
+
 // MACINTOSH: CDoor::IsUsable(eAction)
 // FUNCTION: LEMBALL 0x0040dd30
 int PASCAL IsDoorChunkIdleOrClosedState(int nState)

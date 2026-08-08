@@ -2338,3 +2338,29 @@ void* LEMBALL_FASTCALL DeleteLevelChunkStreamDispatcherAuto(void* pObject, void*
 void noop_projectile_packet_hook(void)
 {
 }
+
+// FUNCTION: LEMBALL 0x004215e0
+void* LEMBALL_FASTCALL delete_node_chunk_record_array_or_scalar(void* pObject, void* pUnused, unsigned int fDelete)
+{
+	char* pAllocation;
+	char* pCursor;
+
+	(void) pUnused;
+	if ((fDelete & 2) != 0) {
+		pAllocation = (char*) pObject - sizeof(int);
+		fDelete = *(unsigned int*) pAllocation;
+		pCursor = (char*) pObject + fDelete * 0x14;
+		while ((int) --fDelete >= 0) {
+			pCursor -= 0x14;
+			((void(__fastcall*)(void*)) 0x401636)(pCursor);
+		}
+		FreeVSMemBlock(pAllocation);
+		return pObject;
+	}
+
+	((void(__fastcall*)(void*)) 0x401636)(pObject);
+	if ((fDelete & 1) != 0) {
+		FreeVSMemBlock(pObject);
+	}
+	return pObject;
+}
