@@ -668,7 +668,7 @@ extern int WINAPI InitializeNonZrleVariantRenderEntry(int nValue);
 struct VsNetEffDispatchEvent;
 
 struct CBaseNetwork {
-	void DestroyEffTransportRuntimeGlobals(void);
+	~CBaseNetwork(void);
 	int ProcessMsg(VsNetEffDispatchEvent* pEvent);
 	void InitializeTcpipNetworkTransport(void);
 	void ShutdownTcpipNetworkTransport(void);
@@ -2374,7 +2374,7 @@ void* LEMBALL_FASTCALL DeleteTcpipRuntimeStateWindowAdjustedThunk(void* pObject,
 
 	pWindowBase = (char*) pObject - 0x10;
 	pRuntimeState = pWindowBase != 0 ? (CBaseNetwork*) pObject : 0;
-	pRuntimeState->DestroyEffTransportRuntimeGlobals();
+	pRuntimeState->~CBaseNetwork();
 	DestroyInvisibleMessageWindow((VS_InvisibleWindow*) pWindowBase);
 	if ((fFreeMemory & 1) != 0) {
 		FreeVSMemBlock(pWindowBase);

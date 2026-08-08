@@ -730,7 +730,8 @@ struct CBaseNetwork {
 	int m_cbMaxPacketBytes;
 	unsigned int m_nTimerId64;
 
-	void* ConstructEffTransportRuntimeState(void);
+	CBaseNetwork(void);
+	~CBaseNetwork(void);
 	int Initialise(int nRuntimeKey, int cbMaxPacket);
 	void InitializeFileBasedNetworkTransport(void);
 	void ShutdownFileBasedNetworkTransport(void);
@@ -747,7 +748,7 @@ struct CBaseNetwork {
 	int WriteActiveFileRange(void);
 	void* CreateGlobalStateFileBackedComposite(void);
 	void* DeleteEffTransportRuntimeWindow(BYTE fFreeMemory);
-	void DestroyEffTransportRuntimeGlobals(void);
+
 	int DoInitialise(void);
 	int ProcessMsg(VsNetEffDispatchEvent* pEvent);
 	void SetNCBuffers(unsigned long nPrimaryHandleCount, unsigned long nPrimaryHandleStride, int nFlags);
@@ -2759,7 +2760,7 @@ int CWritePacketTable::GetNextEffTransportRecordClaimFlag(unsigned short nSequen
 }
 
 // FUNCTION: LEMBALL 0x004619f0
-void* CBaseNetwork::ConstructEffTransportRuntimeState(void)
+CBaseNetwork::CBaseNetwork(void)
 {
 	CBaseNetwork* pState;
 	void* pQueue;
@@ -2801,8 +2802,6 @@ void* CBaseNetwork::ConstructEffTransportRuntimeState(void)
 	else {
 		g_pEffTransportSecondaryDispatchQueue = ConstructRenderDispatchQueue(pQueue, 0x1e);
 	}
-
-	return this;
 }
 
 // FUNCTION: LEMBALL 0x00461aa0
@@ -3004,7 +3003,7 @@ int CBaseNetwork::DoInitialise(void)
 }
 
 // FUNCTION: LEMBALL 0x00461db0
-void CBaseNetwork::DestroyEffTransportRuntimeGlobals(void)
+CBaseNetwork::~CBaseNetwork(void)
 {
 	*(void**) this = g_NETWORK_RuntimeConstructionStateVtable;
 	DetachMessageQueue();
@@ -3727,7 +3726,7 @@ void CBaseNetwork::WaitForFileBasedNetworkMessage(void)
 // Compatibility shim preserving MSVC 4.20 compiler state.
 void* DeleteEffTransportRuntimeGlobalsWrapper(void* pObject, BYTE fFreeMemory)
 {
-	((CBaseNetwork*) pObject)->DestroyEffTransportRuntimeGlobals();
+	((CBaseNetwork*) pObject)->~CBaseNetwork();
 	if ((fFreeMemory & 1) != 0) {
 		FreeVSMemBlock(pObject);
 	}
@@ -3918,7 +3917,7 @@ void ConfigureFileBasedNetworkPaths(char* pszLocalHost, char* pszBasePath)
 void* VsNetFileBasedRuntimeWindow::ConstructFileBasedNetworkRuntimeWindow(void)
 {
 	((VS_InvisibleWindow*) this)->Construct("File-based Network", &g_fFileBasedRuntimeWindowClassRegistered);
-	m_Base.m_RuntimeState.ConstructEffTransportRuntimeState();
+	m_Base.m_RuntimeState.CBaseNetwork::CBaseNetwork();
 	*(void**) this = (void*) g_NETWORK_FileBasedRuntimeWindowVtable;
 	m_nReserved78 = 0;
 	m_Base.m_RuntimeState.m_RenderQueueNode.m_pVtable = (void**) &g_NETWORK_FileBasedRuntimeStateVtable;
@@ -4075,7 +4074,7 @@ void* CBaseNetwork::DeleteEffTransportRuntimeWindow(BYTE fFreeMemory)
 
 	pWindowBase = (char*) this - 0x10;
 	pRuntimeState = pWindowBase != 0 ? this : 0;
-	pRuntimeState->DestroyEffTransportRuntimeGlobals();
+	pRuntimeState->~CBaseNetwork();
 	DestroyInvisibleMessageWindow((VS_InvisibleWindow*) pWindowBase);
 	if ((fFreeMemory & 1) != 0) {
 		FreeVSMemBlock(pWindowBase);
@@ -4223,7 +4222,7 @@ int StopTcpipNetworkMessageThread(void)
 void* VsNetRuntimeWindowBase::ConstructTcpipNetworkRuntimeWindow(void)
 {
 	((VS_InvisibleWindow*) this)->Construct("TCPIP Network", &g_fTcpipRuntimeWindowClassRegistered);
-	m_RuntimeState.ConstructEffTransportRuntimeState();
+	m_RuntimeState.CBaseNetwork::CBaseNetwork();
 	*(void**) this = (void*) g_NETWORK_TcpipRuntimeWindowVtable;
 	m_RuntimeState.m_RenderQueueNode.m_pVtable = (void**) &g_NETWORK_TcpipRuntimeStateVtable;
 	return this;
@@ -4329,6 +4328,6 @@ DEFINE_VSNET_NAMED_SCALAR_DELETE(DeleteEffTransportRecordBufferAuto,
 								 DestroyEffTransportRecordBuffer)
 DEFINE_VSNET_NAMED_SCALAR_DELETE(DeleteEffTransportRuntimeGlobalsAuto,
 								 CBaseNetwork,
-								 DestroyEffTransportRuntimeGlobals)
+								 ~CBaseNetwork)
 
 #undef DEFINE_VSNET_NAMED_SCALAR_DELETE
