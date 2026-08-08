@@ -6,6 +6,7 @@ extern void __fastcall DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
 extern void __fastcall ResetManagedEntityRuntimeStateThunk(void* pObject);
 extern void __fastcall ReleaseTypedResourceObjectIfLoaded(void* pObject, void* pUnusedEdx, int fReleaseMode);
 extern void* g_pActiveManagedEntityOwner;
+extern void* g_pCachedChunkManagerLevelMode;
 extern int g_nLevelFrameClockTick;
 extern int g_nLevelFrameClockTimeMs;
 extern void* g_pLevelDemoPlaybackController;
@@ -1388,5 +1389,150 @@ void __cdecl invoke_callback_grid(int nBase, int nStride, int nCount, void (__fa
 		pCallback(value);
 		nCount = nCount - 1;
 	}
+}
+
+// FUNCTION: LEMBALL 0x0041f250
+void __fastcall remove_cached_chunk_object_from_level_list_and_destroy(void* pThis, int nUnusedEdx, void* pObject)
+{
+	void* pOwner;
+	void** ppItems;
+	void** ppVtbl;
+	int nCount;
+	int nIndex;
+	int nByte;
+
+	(void) nUnusedEdx;
+	((void (__fastcall*) (void*, int, void*)) (*(void***) pThis)[0x44 / 4])(pThis, 0, pObject);
+	pOwner = g_pCachedChunkManagerLevelMode;
+	nCount = *(int*) ((char*) pOwner + 0x118);
+	nIndex = 0;
+	if (nCount > 0) {
+		ppItems = *(void***) ((char*) pOwner + 0x120);
+		do {
+			if (ppItems[nIndex] == pObject) {
+				nCount = nCount - 1;
+				*(int*) ((char*) pOwner + 0x118) = nCount;
+				if (nIndex < nCount) {
+					nByte = nIndex * 4;
+					while (nIndex < *(int*) ((char*) pOwner + 0x118)) {
+						nIndex = nIndex + 1;
+						*(int*) ((char*) ppItems + nByte) = *(int*) ((char*) ppItems + nByte + 4);
+						nByte = nByte + 4;
+					}
+				}
+				*(void**) ((char*) ppItems + nCount * 4) = 0;
+				break;
+			}
+			nIndex = nIndex + 1;
+		} while (nIndex < nCount);
+	}
+	ppVtbl = *(void***) pObject;
+	((void (__fastcall*) (void*, int)) ppVtbl[0xc8 / 4])(pObject, 0);
+	if (pObject != 0) {
+		((void (__fastcall*) (void*, int, unsigned char)) ppVtbl[0])(pObject, 0, 1);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00420d30
+void __fastcall remove_cached_enmy_chunk_object_and_destroy(void* pThis, int nUnusedEdx, void* pObject)
+{
+	void* pOwner;
+	void** ppItems;
+	void** ppVtbl;
+	int nCount;
+	int nIndex;
+	int nByte;
+
+	(void) nUnusedEdx;
+	pOwner = g_pCachedChunkManagerLevelMode;
+	nCount = *(int*) ((char*) pOwner + 0x118);
+	nIndex = 0;
+	if (nCount > 0) {
+		ppItems = *(void***) ((char*) pOwner + 0x120);
+		do {
+			if (ppItems[nIndex] == pObject) {
+				nCount = nCount - 1;
+				*(int*) ((char*) pOwner + 0x118) = nCount;
+				if (nIndex < nCount) {
+					nByte = nIndex * 4;
+					while (nIndex < *(int*) ((char*) pOwner + 0x118)) {
+						nIndex = nIndex + 1;
+						*(int*) ((char*) ppItems + nByte) = *(int*) ((char*) ppItems + nByte + 4);
+						nByte = nByte + 4;
+					}
+				}
+				*(void**) ((char*) ppItems + nCount * 4) = 0;
+				break;
+			}
+			nIndex = nIndex + 1;
+		} while (nIndex < nCount);
+	}
+	((void (__fastcall*) (void*, int, void*)) (*(void***) pThis)[0x44 / 4])(pThis, 0, pObject);
+	ppVtbl = *(void***) pObject;
+	((void (__fastcall*) (void*, int)) ppVtbl[0xc8 / 4])(pObject, 0);
+	if (pObject != 0) {
+		((void (__fastcall*) (void*, int, unsigned char)) ppVtbl[0])(pObject, 0, 1);
+	}
+}
+
+// FUNCTION: LEMBALL 0x0041d390
+void __fastcall append_gmob_type_0x14_lift_or_door_actions(void* pThis, int nUnusedEdx)
+{
+	int nMode;
+	int nIndex;
+	unsigned short uLiftId;
+	short sDoorId;
+
+	(void) nUnusedEdx;
+	nMode = *(int*) ((char*) pThis + 0x14c);
+	if (nMode == 1) {
+		uLiftId = ((unsigned short (__fastcall*) (void*, int, int)) 0x402126)(g_pActiveManagedEntityOwner, 0, *(int*) ((char*) pThis + 0x150));
+		((void (__fastcall*) (void*, int, int, unsigned short)) 0x403161)(pThis, 0, 1, uLiftId);
+		return;
+	}
+	if (nMode == 2) {
+		nIndex = *(int*) ((char*) pThis + 0x150);
+		if (nIndex < *(int*) ((char*) pThis + 0x154)) {
+			do {
+				uLiftId = ((unsigned short (__fastcall*) (void*, int, int)) 0x402126)(g_pActiveManagedEntityOwner, 0, nIndex);
+				((void (__fastcall*) (void*, int, int, unsigned short)) 0x403161)(pThis, 0, 1, uLiftId);
+				nIndex = nIndex + 1;
+			} while (nIndex < *(int*) ((char*) pThis + 0x154));
+		}
+		return;
+	}
+	if (nMode != 3) {
+		return;
+	}
+	sDoorId = ((short (__fastcall*) (void*, int, int)) 0x40344a)(g_pActiveManagedEntityOwner, 0, *(int*) ((char*) pThis + 0x150));
+	if (sDoorId != -1) {
+		((void (__fastcall*) (void*, int, int, short)) 0x403161)(pThis, 0, 3, sDoorId);
+	}
+}
+
+// FUNCTION: LEMBALL 0x0042a3a0
+void __fastcall activate_boon_chunk_object_by_subtype_at_position(void* pThis, int nUnusedEdx, int posX, int posY, int posZ, int subtype)
+{
+	unsigned short nFlag;
+	int nIndex;
+	void* pBoonObject;
+
+	(void) nUnusedEdx;
+	switch (subtype) {
+	case 0x28: nFlag = 1; nIndex = 0; break;
+	case 0x2a: nFlag = 2; nIndex = 1; break;
+	case 0x2c: nFlag = 4; nIndex = 2; break;
+	case 0x2e: nFlag = 8; nIndex = 3; break;
+	default: return;
+	}
+	*(unsigned short*) pThis = *(unsigned short*) pThis | nFlag;
+	*(int*) ((char*) pThis + nIndex * 12 + 4) = posX << 12;
+	*(int*) ((char*) pThis + nIndex * 12 + 8) = posY << 12;
+	*(int*) ((char*) pThis + nIndex * 12 + 12) = posZ << 12;
+	pBoonObject = *(void**) ((char*) pThis + nIndex * 4 + 0x34);
+	*(int*) ((char*) pBoonObject + 0x9c) = posX << 12;
+	*(int*) ((char*) pBoonObject + 0xa0) = posY << 12;
+	*(int*) ((char*) pBoonObject + 0xa4) = posZ << 12;
+	*(int*) ((char*) pBoonObject + 0x124) = 1;
 }
 
