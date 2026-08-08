@@ -29,6 +29,7 @@ struct LevelChunkObjectBaseView {
 };
 
 extern void LEMBALL_FASTCALL DestroyLevelChunkObjectBaseAutoThunk(void* pObject);
+extern int Distance2DIntPixels(int x1, int y1, int x2, int y2);
 
 struct RockChunkObjectView : LevelChunkObjectBaseView {
 	RockChunkObjectView* ConstructRockChunkObject(void);
@@ -1909,6 +1910,31 @@ void LEMBALL_FASTCALL DestroyCTrampoline(void* pObject)
 {
 	*(void**) pObject = g_LINKSCF_TramChunkObjectVtable;
 	DestroyLevelChunkObjectBaseAutoThunk(pObject);
+}
+
+// FUNCTION: LEMBALL 0x0042aaf0
+int LEMBALL_FASTCALL ActivateTramChunkObjectAtNearbyPoint(void* pObject, int nUnusedEdx, const void* pPoint, void* pOutResult)
+{
+	int nSubtype;
+	int nDistance;
+
+	nSubtype = *(int*) ((char*) pPoint + 0x8);
+	nDistance = Distance2DIntPixels(*(int*) ((char*) pObject + 0x9c) >> 12,
+			*(int*) ((char*) pObject + 0xa0) >> 12,
+			*(int*) ((char*) pPoint) >> 12,
+			*(int*) ((char*) pPoint + 0x4) >> 12);
+	if (nDistance < 0x20) {
+		*(int*) ((char*) pObject + 0x138) = 1;
+		*(int*) ((char*) pObject + 0xc8) = g_nLevelFrameClockTick;
+		*(int*) ((char*) pObject + 0x94) = g_nLevelFrameClockTimeMs;
+		*(int*) ((char*) pObject + 0x9c) = *(int*) ((char*) pPoint) + 0x4000;
+		*(int*) ((char*) pObject + 0xa0) = *(int*) ((char*) pPoint + 0x4) + 0x4000;
+		*(int*) ((char*) pObject + 0xa4) = nSubtype;
+		*(int*) ((char*) pObject + 0x140) = nSubtype >> 12;
+		*(int*) ((char*) pOutResult + 0x2c) = 1;
+		return 1;
+	}
+	return 0;
 }
 
 // MACINTOSH: CTrampolineManager::Initialise(int)

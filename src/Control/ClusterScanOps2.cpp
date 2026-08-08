@@ -33,6 +33,10 @@ struct LevelTileGridOwnerView {
 	unsigned short GetZ(int x, int y, void** ppMoveChunk);
 };
 
+struct CGameObject {
+	void SetId(unsigned short nSlotId);
+};
+
 
 // FUNCTION: LEMBALL 0x00452bc0
 int __fastcall CountActiveNetworkLobbyPeerStreams(void* pObject)
@@ -1559,4 +1563,38 @@ unsigned short collect_free_managed_entity_slot_ids(unsigned short* pOut, int nL
 		}
 	}
 	return (unsigned short) nCount;
+}
+
+// FUNCTION: LEMBALL 0x00422710
+int __fastcall remove_managed_entity_array_entry_and_release(void* pArrayOwner, int nUnusedEdx, void* pElement)
+{
+	typedef void (__fastcall * RefreshProc)(void* pObject);
+	typedef void (__fastcall * DeleteProc)(void* pObject, int nUnusedEdx, unsigned int fDelete);
+	void** pArray;
+	int nCount;
+	int nIndex;
+	int j;
+	void** pVtable;
+
+	nCount = *(int*) ((char*) pArrayOwner + 0x3c);
+	pArray = *(void***) ((char*) pArrayOwner + 0x34);
+	for (nIndex = 0; nIndex < nCount; ++nIndex) {
+		if (pArray[nIndex] == pElement) {
+			pVtable = *(void***) pElement;
+			((RefreshProc) pVtable[0xc8 / sizeof(void*)])(pElement);
+			((CGameObject*) pElement)->SetId(0xffff);
+			if (pElement != 0) {
+				((DeleteProc) pVtable[0])(pElement, 0, 1);
+			}
+			nCount = *(int*) ((char*) pArrayOwner + 0x3c) - 1;
+			*(int*) ((char*) pArrayOwner + 0x3c) = nCount;
+			if (nIndex < nCount) {
+				for (j = nIndex; j < nCount; ++j) {
+					pArray[j] = pArray[j + 1];
+				}
+			}
+			return nIndex;
+		}
+	}
+	return nIndex;
 }
