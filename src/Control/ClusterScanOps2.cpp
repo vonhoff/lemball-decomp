@@ -2055,3 +2055,32 @@ void __fastcall IntegrateInertialCoordinateEventSource(void* pObject, int nUnuse
 	((void(__fastcall*)(void*)) 0x432680)(pObject);
 	*(int*) ((char*) pObject + 0x5c) = 0;
 }
+// FUNCTION: LEMBALL 0x00468b80
+void __fastcall initialize_buffered_geometry_child_storage(void* self)
+{
+	int* block;
+	int* entry;
+	block = (int*)((void* (__cdecl*)(int))0x45a780)(0x14);
+	if (block == 0) {
+		*(int*)((char*)self + 0x10c) = 0;
+	} else {
+		*block = 1;
+		entry = block + 1;
+		((void (__fastcall*)(void*))0x40272f)(entry);
+		*(int**)((char*)self + 0x10c) = entry;
+	}
+	*(int*)((char*)self + 0x50) += 1;
+	block = (int*)((void* (__cdecl*)(int))0x45a780)(0x44);
+	if (block != 0) {
+		*block = 4;
+		entry = block + 1;
+		((void (__fastcall*)(void*))0x401c7b)(entry);
+		((void (__fastcall*)(void*))0x401c7b)(entry + 0x10);
+		((void (__fastcall*)(void*))0x401c7b)(entry + 0x20);
+		((void (__fastcall*)(void*))0x401c7b)(entry + 0x30);
+		*(int**)((char*)self + 0x110) = entry;
+	} else {
+		*(int*)((char*)self + 0x110) = 0;
+	}
+	*(int*)((char*)self + 0x50) += 4;
+}
