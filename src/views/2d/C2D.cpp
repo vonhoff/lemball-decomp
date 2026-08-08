@@ -63,6 +63,34 @@ struct VariantResourceEntryManagerView {
 	int m_nSelectionMode10;
 };
 
+class LevelScreenViewportRectSnapshot {
+public:
+	LevelScreenViewportRectSnapshot()
+	{
+		m_Rect.width = 0;
+		m_Rect.height = 0;
+		m_Rect.x = 0;
+		m_Rect.y = 0;
+	}
+	~LevelScreenViewportRectSnapshot() {}
+
+	CVSRect m_Rect;
+};
+
+// FUNCTION: LEMBALL 0x004368f0
+CVSRect* C2D::BuildViewportRectSnapshot(void)
+{
+	static LevelScreenViewportRectSnapshot Snapshot;
+	CVSRect Rect;
+
+	Rect.width = *(short*) ((char*) this + 0x958);
+	Rect.height = *(short*) ((char*) this + 0x95a);
+	Rect.x = (short) *(int*) ((char*) this + 0x950);
+	Rect.y = (short) *(int*) ((char*) this + 0x954);
+	Snapshot.m_Rect = Rect;
+	return &Snapshot.m_Rect;
+}
+
 // Macintosh: C2D::CheckValidFormGroup()
 // FUNCTION: LEMBALL 0x004369b0
 void LevelScreenManagedEntitySelectionView::CheckValidFormGroup(void)

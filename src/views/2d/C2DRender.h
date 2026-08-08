@@ -17,6 +17,8 @@ struct CViewData {
 	unsigned char m_abReserved2E[0x1e];
 };
 
+struct CVSRect;
+
 class C2D {
 public:
 	unsigned char m_abReserved0000[0x64];
@@ -66,6 +68,7 @@ public:
 	void OnButtonUp(void* pButtonFlags);
 	void Restart(void);
 	void SendCursorMsg(void);
+	CVSRect* BuildViewportRectSnapshot(void);
 	void DrawTrampoline(CViewData& ViewData);
 	void DrawLaserFire(CViewData& ViewData);
 	void DrawCrate(CViewData& ViewData, int nUnused);

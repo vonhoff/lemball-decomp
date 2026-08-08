@@ -1,6 +1,7 @@
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 #include "Frontend/GameMenuActionFramePointSink.h"
 #include "Visos/Generic/Memory.h"
+#include "Visos/Generic/CVSRect.h"
 #include "Platform/Windows/Mixed/Engine/CORE/WIN32.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSGDI.H"
 #include "Platform/Windows/Mixed/Engine/GDI/VSGEOM.H"
@@ -3058,6 +3059,49 @@ void LEMBALL_FASTCALL compute_max_variant_render_frame_extent(void* pView, int n
 	}
 	pOut[0] = sMaxW;
 	pOut[1] = sMaxH;
+}
+
+class CPVGWnd;
+
+class CPVButton {
+public:
+	unsigned char m_abState[0x104];
+
+	CPVButton(const CVSRect& Rect, CPVGWnd* pParent);
+};
+
+typedef char CPVButtonSizeCheck[sizeof(CPVButton) == 0x104 ? 1 : -1];
+
+// FUNCTION: LEMBALL 0x00467c10
+CPVButton::CPVButton(const CVSRect& Rect, CPVGWnd* pParent)
+{
+	VS_XYPair localRect[2];
+	const short* pPosition;
+	char* pEntry;
+	int i;
+
+	((GameWindowOwnerRenderContext*) this)->ConstructWindowOwnerRenderContext();
+	localRect[0].m_x = Rect.width;
+	localRect[0].m_y = Rect.height;
+	localRect[1].m_x = 0;
+	localRect[1].m_y = 0;
+	InitializeGeometryOwnerRect((char*) this + 0x90, 0, localRect);
+	*(short*) ((char*) this + 0xdc) = 0;
+	*(short*) ((char*) this + 0xde) = 0;
+	pEntry = (char*) this + 0xe4;
+	for (i = 0; i >= 0; --i) {
+		InitializeHelperLocalRectUpdateEntry(pEntry);
+		pEntry += 0x10;
+	}
+	*(void***) this = g_ResourceGeometryChildVtable;
+	*(short*) ((char*) this + 0x102) = 0;
+	*(void***) ((char*) this + 0x90) = g_ResourceGeometryChildDeleteVtable;
+	*(short*) ((char*) this + 0x100) = 0;
+	pPosition = (&Rect == 0) ? 0 : ((const short*) &Rect + 2);
+	*(short*) ((char*) this + 0xdc) = pPosition[0];
+	*(short*) ((char*) this + 0xde) = pPosition[1];
+	*(CPVGWnd**) ((char*) this + 0xc8) = pParent;
+	InitializeSharedSpriteOwnerState(this);
 }
 
 // FUNCTION: LEMBALL 0x00467cd0
