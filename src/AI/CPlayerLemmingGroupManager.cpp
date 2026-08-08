@@ -209,8 +209,8 @@ void CPlayerLemmingGroupManager::InitialiseNetwork(void)
 			}
 
 			pLemming = m_apNetworkLemmings13C[i];
-			((RestartProc) (*(void***) pLemming)[0x104 / sizeof(void*)])(pLemming);
-			pChunkStream = this == 0 ? 0 : (char*) this + 0xb0;
+			((RestartProc) ((void**) ((CGameObject*) pLemming)->m_pVtable00)[0x104 / sizeof(void*)])(pLemming);
+			pChunkStream = this == 0 ? 0 : m_abReservedB0;
 			((CGameObject*) pLemming)->m_pOwningChunkStream60 = pChunkStream;
 		}
 		m_fNetworkInitialised14C = 1;
@@ -242,13 +242,13 @@ int CPlayerLemmingGroupManager::HasSFXChanged(void)
 int CPlayerLemmingGroupManager::GetViewData(int pViewData)
 {
 	int local_4 = 0;
-	if (*(int*) 0x4a011c != 0) {
+	if (g_nSelectedNetworkLobbyPeerId != 0) {
 		int iVar3 = 4;
 		local_4 = 4;
 		int i;
 		for (i = 0; i < 4; i++) {
-			void* pElem = *(void**) ((char*) this + 0x13c + i * 4);
-			(*( void(**)(int)) (*(void***) pElem + 0xc / 4))(pViewData);
+			CPlayerLemming* pElem = m_apNetworkLemmings13C[i];
+			((void (**)(int))(void**) ((CGameObject*) pElem)->m_pVtable00)[0xc / 4](pViewData);
 			pViewData += 0x4c;
 		}
 	}
@@ -293,7 +293,7 @@ void CPlayerLemmingGroupManager::ReformAlteredGroups(CPlayerLemmingGroup* pGroup
 	pi = (int*) ((int(__fastcall*)(void*)) 0x401078)(this);
 	while (pi != 0) {
 		if (pi != (int*) pGroup) {
-			((void(__fastcall*)(void*, int)) (*(int*) *pi + 0x154))(pi, *(int*) 0x4a7834);
+			((void(__fastcall*)(void*, int))(*(int*) *pi + 0x154))(pi, *(int*) 0x4a7834);
 		}
 		pi = (int*) ((int(__fastcall*)(void*)) 0x403549)(this);
 	}

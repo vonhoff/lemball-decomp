@@ -1,7 +1,7 @@
 #include "AI/CPlayerLemmingGroup.h"
-#include "AI/LevelManagedEntityStateIdView.h"
 
 #include "AI/CPlayerLemming.h"
+#include "AI/LevelManagedEntityStateIdView.h"
 #include "Platform/Windows/Mixed/Engine/CORE/VSINIT.H"
 
 struct LevelManagedEntityTargetView {
@@ -109,18 +109,18 @@ int CPlayerLemmingGroup::RemoveLemmingFromGroup(CPlayerLemming* pLemming)
 	void* pChild;
 	((void(__fastcall*)(void*, int)) 0x402879)(this, (int) pLemming);
 	pChild = (void*) ((int(__fastcall*)(void*)) 0x40241e)(this);
-	if (*(int*) ((char*) this + 0x168) == 1 && pChild != 0) {
+	if (m_nRuntimeState168 == 1 && pChild != 0) {
 		((void(__fastcall*)(void*, int)) 0x402667)(pChild, 1);
 	}
-	*(int*) ((char*) this + 0x164) = 1;
+	m_nRuntimeState164 = 1;
 	return 1;
 }
 // FUNCTION: LEMBALL 0x00414080
 int CPlayerLemmingGroup::GetViewData(int pViewData)
 {
-	int nVtbl = *(int*) this;
+	int nVtbl = (int) m_pVtable00;
 	int nCount = 0;
-	int* pi = (int*) ((int(__fastcall*)(void*)) (*(int*) (nVtbl + 0x114)))(this);
+	int* pi = (int*) ((int(__fastcall*)(void*))(*(int*) (nVtbl + 0x114)))(this);
 	if (pi != 0) {
 		void* pGetNext = (void*) *(int*) (nVtbl + 0x118);
 		do {
@@ -128,7 +128,7 @@ int CPlayerLemmingGroup::GetViewData(int pViewData)
 			if (pi[0x2e] != 0xc) {
 				nOut = pViewData + 0x4c;
 				nCount++;
-				((void(__fastcall*)(void*, int)) (*(int*) *pi + 0xc))(pi, pViewData);
+				((void(__fastcall*)(void*, int))(*(int*) *pi + 0xc))(pi, pViewData);
 			}
 			pi = (int*) ((int(__fastcall*)(void*)) pGetNext)(this);
 			pViewData = nOut;
@@ -141,7 +141,7 @@ int CPlayerLemmingGroup::GetViewData(int pViewData)
 void CPlayerLemmingGroup::AddUseObject(CGameObject* pObject, int nId)
 {
 	AICOORD dest;
-	((AICOORD *(__fastcall*)(void*, int, AICOORD*)) ((void**) pObject->m_pVtable00)[0x2c / 4])(pObject, 0, &dest);
+	((AICOORD * (__fastcall*) (void*, int, AICOORD*) )((void**) pObject->m_pVtable00)[0x2c / 4])(pObject, 0, &dest);
 	if (m_pCommandQueue70->m_cEntries < m_pCommandQueue70->m_cCapacity) {
 		CGameObjectCommand* pCmd1 = &m_pCommandQueue70->m_pEntries[m_pCommandQueue70->m_cEntries++];
 		pCmd1->m_nType = 1;
