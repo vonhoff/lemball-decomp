@@ -1,3 +1,4 @@
+#define LEMBALL_C2D_LEMMING_FLY
 #include "views/2d/C2DRender.h"
 
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
@@ -14,6 +15,37 @@ extern void LEMBALL_FASTCALL InitializeHelperUploadStatePending(int nUploadState
 class CAnimsManagerView {
 public:
 	void EmitLevelScreenVariantEntry(short x, short y, int nResourceId, int nFlags, void* pFrameSelector, int nValue);
+};
+
+struct CGround {
+	short GetZ(int nLocalX, int nLocalY);
+};
+
+struct LevelViewRotationTransform {
+	void* m_pVtable00;
+	int m_nRotation04;
+	int m_nReserved08;
+	CGround* m_pGround0C;
+	int m_nWidth10;
+	int m_nHeight14;
+
+	void GameToScreen(int* pX, int* pY);
+};
+
+struct CViewDataFlyView {
+	unsigned short m_nDirection00;
+	unsigned short m_nReserved02;
+	int m_nX04;
+	int m_nY08;
+	int m_nGroundHeight0C;
+	unsigned short m_nGroundX10;
+	unsigned short m_nGroundY12;
+	unsigned char m_abReserved14[4];
+	int m_nState18;
+	short m_nVariant1C;
+	unsigned short m_nReserved1E;
+	int m_nFrame20;
+	void* m_pFrameSelector24;
 };
 
 class CRenderQueueClientView {
@@ -236,44 +268,63 @@ void C2D::DrawGrenade(CViewData& ViewData)
 	}
 }
 
-// MACINTOSH: C2D::DrawRocket(CViewData&)
-// FUNCTION: LEMBALL 0x0043cb70
+// FUNCTION: LEMBALL 0x0043c6e0
 void C2D::DrawRocket(CViewData& ViewData)
 {
-	unsigned short nFrame;
-	switch (*(int*) ((char*) m_pLevelMode096C + 0x60)) {
-	case 0:
-		nFrame = 0x50;
-		break;
-	case 1:
-		nFrame = 0x1a;
-		break;
-	case 2:
-		nFrame = 0x52;
-		break;
-	case 3:
-		nFrame = 0x38;
-		break;
+	int nLeadFrame = -1;
+	int nTimer = ((unsigned int) ((int) ViewData.m_pFrameSelector24 - ViewData.m_nFrame20) * 0x0f) / 1000;
+	int nFrame;
+
+	if (nTimer <= 7) {
+		nFrame = nTimer;
+		if (nTimer >= 4) {
+			nFrame = 4;
+		}
 	}
-	if (ViewData.m_nVariant1C == 0) {
+	else if (nTimer >= 8 && nTimer <= 0x0d) {
+		if (nTimer < 0x0b) {
+			nFrame = nTimer - 3;
+		}
+		else {
+			nFrame = 8;
+		}
+	}
+	else if (nTimer >= 0x0e && nTimer <= 0x13) {
+		nFrame = nTimer - 4;
+		nLeadFrame = 9;
+	}
+	else if (nTimer >= 0x14 && nTimer <= 0x1f) {
+		nFrame = (nTimer - 0x14) % 2 + 0x11;
+		nLeadFrame = 0x10;
+	}
+	else if (nTimer >= 0x20 && nTimer <= 0x2a) {
+		nFrame = nTimer - 0x0b;
+		if (nFrame > 0x19) {
+			nLeadFrame = 0x1a;
+			++nFrame;
+		}
+	}
+	else {
+		nFrame = (nTimer & 1) + 0x21;
+		nLeadFrame = 0x20;
+	}
+
+	if (nLeadFrame != -1) {
 		((CAnimsManagerView*) m_pAnimsManager0A40)
-			->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - 0x10),
-										  (short) (ViewData.m_nY08 - 0x1c),
-										  g_nLevelScreenMappedVariantResourceId0x209,
-										  nFrame,
+			->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - 0x0d),
+										  (short) (ViewData.m_nY08 - 0x49),
+										  0x88,
+										  nLeadFrame,
 										  0,
 										  0);
-		return;
 	}
-	if (ViewData.m_nVariant1C == 1) {
-		((CAnimsManagerView*) m_pAnimsManager0A40)
-			->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - 0x11),
-										  (short) (ViewData.m_nY08 - 0x26),
-										  0xa0,
-										  (g_nLevelFrameClockTimeMs / 0x46) & 7,
-										  0,
-										  0);
-	}
+	((CAnimsManagerView*) m_pAnimsManager0A40)
+		->EmitLevelScreenVariantEntry((short) (ViewData.m_nX04 - 0x0d),
+									  (short) (ViewData.m_nY08 - 0x49),
+									  0x88,
+									  nFrame,
+									  0,
+									  0);
 }
 
 // MACINTOSH: C2D::DrawBoobyTrap(CViewData&)
@@ -926,4 +977,39 @@ void C2D::DrawLemmingLanding(unsigned short* pViewData, int nFrameIndex)
 		return;
 	}
 	EmitLevelScreenVariantEntry(m_pAnimsManager0A40, sRotX, sRotY, *(int*) (0x49eef8 + uRotated * 4), nSize, 0, m_nLemmingRemap0968);
+}
+
+// FUNCTION: LEMBALL 0x0043bce0
+int C2D::LemmingFly(CViewData& RawViewData, int& nFrame)
+{
+	CViewDataFlyView& ViewData = *(CViewDataFlyView*) &RawViewData;
+	unsigned int nDirection = (ViewData.m_nDirection00 + m_nViewRotation090C * 2) & 7;
+	int nDelta = (int) ViewData.m_pFrameSelector24 - ViewData.m_nFrame20;
+	nFrame = 0;
+	if (nDelta >= 0) {
+		LevelViewRotationTransform* pLevel = (LevelViewRotationTransform*) m_pLevel0914;
+		int nWorldX = ViewData.m_nGroundX10;
+		int nWorldY = ViewData.m_nGroundY12;
+		unsigned short nHeight = 0;
+		int nTileX = nWorldX >> 4;
+		int nTileY = nWorldY >> 4;
+		if (nWorldX >= 0 && nWorldY >= 0 && nTileX < pLevel->m_nWidth10 && nTileY < pLevel->m_nHeight14) {
+			CGround* pGround = pLevel->m_pGround0C + nTileY * pLevel->m_nWidth10 + nTileX;
+			nHeight = pGround->GetZ(nWorldX & 0x0f, nWorldY & 0x0f);
+		}
+		nDelta *= 0x0f;
+		if ((int) nHeight < ViewData.m_nGroundHeight0C) {
+			nFrame = nDelta / 1000;
+			if (nFrame > 6) {
+				nFrame = 6;
+			}
+		}
+		else {
+			nFrame = nDelta / 1000 + 7;
+			if (nFrame > 0x0c) {
+				nFrame = 0x0c;
+			}
+		}
+	}
+	return *(int*) (0x49eef8 + nDirection * 4);
 }

@@ -179,7 +179,7 @@ THUNK_ILT_REFERENCES = {
     0x0043C7F0: (0x004016A9, "CAnimsManagerView::EmitLevelScreenVariantEntry", "level-screen variant emitter 00433fc0"),
     0x0043CA30: (0x004016A9, "CAnimsManagerView::EmitLevelScreenVariantEntry", "level-screen variant emitter 00433fc0"),
     0x0043CAD0: (0x004016A9, "CAnimsManagerView::EmitLevelScreenVariantEntry", "level-screen variant emitter 00433fc0"),
-    0x0043CB70: (0x004016A9, "CAnimsManagerView::EmitLevelScreenVariantEntry", "level-screen variant emitter 00433fc0"),
+    0x0043C6E0: (0x004016A9, "CAnimsManagerView::EmitLevelScreenVariantEntry", "level-screen variant emitter 00433fc0"),
     0x0043CC10: (0x004016A9, "CAnimsManagerView::EmitLevelScreenVariantEntry", "level-screen variant emitter 00433fc0"),
     0x0043CCF0: (0x004016A9, "CAnimsManagerView::EmitLevelScreenVariantEntry", "level-screen variant emitter 00433fc0"),
     0x0043CD80: (0x004016A9, "CAnimsManagerView::EmitLevelScreenVariantEntry", "level-screen variant emitter 00433fc0"),

@@ -83,6 +83,9 @@ public:
 	void DrawLemmingOnConveyor(CViewData& ViewData, int nUseRemap);
 	void DrawHandHeightSampledOverlayPair(CViewData& ViewData, int nPlayer, int nUseRemap);
 	void DrawItemHandBoundaryPair(CViewData& ViewData, int nPlayer);
+#ifdef LEMBALL_C2D_LEMMING_FLY
+	int LemmingFly(CViewData& ViewData, int& nFrame);
+#endif
 };
 
 typedef char CViewDataSizeCheck[(sizeof(CViewData) == 0x4c) ? 1 : -1];
