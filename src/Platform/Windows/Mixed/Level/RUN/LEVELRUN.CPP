@@ -2339,6 +2339,37 @@ void noop_projectile_packet_hook(void)
 {
 }
 
+// FUNCTION: LEMBALL 0x0040b210
+int LEMBALL_FASTCALL handle_level_chunk_stream_transport_event(void* pThis, int nUnused, void* pEvent)
+{
+	void* pChunk;
+	int nType;
+	int nFlags;
+	char* pSub;
+
+	(void) nUnused;
+	nFlags = *(int*) ((char*) pEvent + 8);
+	nType = *(unsigned short*) pEvent;
+	if (nType == 5) {
+		pChunk = *(void**) ((char*) pEvent + 0x10);
+		if (nFlags == 0) {
+			if (((int(__fastcall*)(void*, int, void*)) 0x4034f9)(pThis, 0, pChunk) != 0) {
+				return 1;
+			}
+			pSub = *(char**) ((char*) pChunk + 4);
+			if (*(unsigned short*) (pSub + 8) == 0xa) {
+				((void(__fastcall*)(void*, int, void*)) 0x45f280)(*(void**) ((char*) pThis + 0x20), 0, pSub + 0x10);
+				*(int*) ((char*) pChunk + 0x24) = 0;
+				((void(__fastcall*)(void*, int, void*)) 0x401802)(*(void**) 0x49cf34, 0, *(void**) ((char*) pThis + 0x20));
+				return 1;
+			}
+			return 0;
+		}
+		return 1;
+	}
+	return 0;
+}
+
 // FUNCTION: LEMBALL 0x004215e0
 void* LEMBALL_FASTCALL delete_node_chunk_record_array_or_scalar(void* pObject, void* pUnused, unsigned int fDelete)
 {

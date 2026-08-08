@@ -4260,6 +4260,33 @@ void* LEMBALL_FASTCALL DeleteFunctionalLevelSelectionScreen(void* pObject, int, 
 	}
 	return pObject;
 }
+
+// FUNCTION: LEMBALL 0x0044a250
+void __stdcall trim_level_title_line_to_previous_word(char* pText, int nDestOffset, int* pWidth, int* pLengthOut)
+{
+	int iCount;
+	unsigned int uLen;
+
+	iCount = 0;
+	*pWidth -= 2;
+	if (strlen(pText) > 0) {
+		while (pText[*pWidth] != ' ') {
+			iCount++;
+			(*pWidth)--;
+			*(char*) (*pLengthOut + nDestOffset) = 0;
+			(*pLengthOut)--;
+			if ((int) strlen(pText) <= iCount) {
+				return;
+			}
+		}
+		*(char*) (*pLengthOut + nDestOffset) = 0;
+		iCount = *pLengthOut;
+		*pLengthOut = iCount - 1;
+		*(char*) (nDestOffset + iCount - 1) = 0;
+		(*pWidth)++;
+	}
+}
+
 // FUNCTION: LEMBALL 0x0044c440
 int ConsumeLevelSelectionChangedFlag(void)
 {
@@ -5486,6 +5513,20 @@ int LEMBALL_FASTCALL HandleNetworkLobbyScreenInput(void* pObject, int, void* pEv
 	}
 	++*(int*) ((char*) pScreen + 0x10);
 	return 0;
+}
+
+// FUNCTION: LEMBALL 0x004545c0
+void LEMBALL_FASTCALL SubmitNetworkLobbyPendingTextThunk(void* pScreen)
+{
+	*(int*) ((char*) pScreen + 0x3b8) = 1;
+	StartNetworkLobbyTransportSession(g_pActiveNetworkLobbyTransportController);
+	if (*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x2c) != 0 &&
+		*(int*) ((char*) g_pActiveNetworkLobbyTransportController + 0x28) == 0) {
+		ConfigureNetworkLobbyTransportHostName(g_pNetworkLobbyVsnetRuntime, g_szNetworkLobbyJoinAddress);
+		SetNetworkLobbyStatus((GameNetworkLobbyScreenView*) pScreen, 4);
+		return;
+	}
+	SetTimedNetworkLobbyStatus((GameNetworkLobbyScreenView*) pScreen, 9, 6000);
 }
 // FUNCTION: LEMBALL 0x00454650
 void SetNetworkLobbyStatus(GameNetworkLobbyScreenView* pScreen, int nStatus)
