@@ -5544,3 +5544,49 @@ void LEMBALL_FASTCALL DestroyCPVBackBuffSurface(void* pvHelperGroup)
 		*(int*) ((char*) (unsigned long) pHelperGroup[-1] + 4) - 0x54;
 	DestroyCPVGDIBitmap(pHelperGroup);
 }
+
+// FUNCTION: LEMBALL 0x00476100
+void LEMBALL_FASTCALL fill_circle_scanline_pair_unclipped(void* pBuffer, int nX, int nY,
+                                                          int nRadius, int nYOffset, BYTE nPixel)
+{
+	char** ppRows;
+	unsigned int width;
+	unsigned int nQuad;
+	unsigned int nRem;
+	unsigned int* pDest;
+	char* pRowLo;
+	char* pRowHi;
+	unsigned int nPixelQuad;
+
+	ppRows = *(char***) ((char*) pBuffer + 4);
+	width = nRadius * 2 + 1;
+	pRowLo = ppRows[nY - nYOffset];
+	pRowHi = ppRows[nY + nYOffset];
+	nPixelQuad = (unsigned int) nPixel * 0x01010101;
+	pDest = (unsigned int*) (pRowHi + (nX - nRadius));
+	nQuad = width >> 2;
+	while (nQuad != 0) {
+		*pDest = nPixelQuad;
+		pDest++;
+		nQuad--;
+	}
+	nRem = width & 3;
+	while (nRem != 0) {
+		*(char*) pDest = (char) nPixel;
+		pDest = (unsigned int*) ((char*) pDest + 1);
+		nRem--;
+	}
+	pDest = (unsigned int*) (pRowLo + (nX - nRadius));
+	nQuad = width >> 2;
+	while (nQuad != 0) {
+		*pDest = nPixelQuad;
+		pDest++;
+		nQuad--;
+	}
+	nRem = width & 3;
+	while (nRem != 0) {
+		*(char*) pDest = (char) nPixel;
+		pDest = (unsigned int*) ((char*) pDest + 1);
+		nRem--;
+	}
+}

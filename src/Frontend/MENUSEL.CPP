@@ -3029,6 +3029,37 @@ int LEMBALL_FASTCALL GetPlayThruAnimFrameNo(GameProgressiveVariantFrameSelector*
 	return (int) iFrame;
 }
 
+
+// FUNCTION: LEMBALL 0x004675d0
+void LEMBALL_FASTCALL compute_max_variant_render_frame_extent(void* pView, int nUnused,
+                                                               short* pOut, int nFrame)
+{
+	int iVariant;
+	int cVariants;
+	short sExtent[2];
+	short sMaxW;
+	short sMaxH;
+
+	(void) nUnused;
+	sMaxW = 0;
+	sMaxH = 0;
+	cVariants = ((int (__fastcall*)(void*, int)) 0x467540)(pView, nFrame);
+	iVariant = 0;
+	while (cVariants > iVariant) {
+		((void (__fastcall*)(void*, int, short*, int, int)) 0x467570)(pView, 0, sExtent, iVariant, nFrame);
+		if (sExtent[0] > sMaxW) {
+			sMaxW = sExtent[0];
+		}
+		if (sExtent[1] > sMaxH) {
+			sMaxH = sExtent[1];
+		}
+		iVariant++;
+		cVariants = ((int (__fastcall*)(void*, int)) 0x467540)(pView, nFrame);
+	}
+	pOut[0] = sMaxW;
+	pOut[1] = sMaxH;
+}
+
 // FUNCTION: LEMBALL 0x00467cd0
 void* LEMBALL_FASTCALL ConstructResourceGeometryChildBase(void* pObject, int nUnusedEdx, void* pRenderOwner)
 {

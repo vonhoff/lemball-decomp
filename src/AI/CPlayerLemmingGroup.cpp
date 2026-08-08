@@ -136,3 +136,21 @@ int CPlayerLemmingGroup::GetViewData(int pViewData)
 	}
 	return nCount;
 }
+
+// FUNCTION: LEMBALL 0x00414730
+void CPlayerLemmingGroup::AddUseObject(CGameObject* pObject, int nId)
+{
+	AICOORD dest;
+	((AICOORD *(__fastcall*)(void*, int, AICOORD*)) ((void**) pObject->m_pVtable00)[0x2c / 4])(pObject, 0, &dest);
+	if (m_pCommandQueue70->m_cEntries < m_pCommandQueue70->m_cCapacity) {
+		CGameObjectCommand* pCmd1 = &m_pCommandQueue70->m_pEntries[m_pCommandQueue70->m_cEntries++];
+		pCmd1->m_nType = 1;
+		pCmd1->m_Position = dest;
+	}
+	if (m_pCommandQueue70->m_cEntries < m_pCommandQueue70->m_cCapacity) {
+		CGameObjectCommand* pCmd2 = &m_pCommandQueue70->m_pEntries[m_pCommandQueue70->m_cEntries++];
+		pCmd2->m_nType = 2;
+		pCmd2->m_Position = dest;
+		pCmd2->m_nFlags = (unsigned short) nId;
+	}
+}

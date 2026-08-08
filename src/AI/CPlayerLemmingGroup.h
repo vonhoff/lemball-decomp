@@ -21,6 +21,7 @@ public:
 	int CheckPlayerControlled(void);
 	CPlayerLemming* GetFirstDeadLemming(void);
 	int HasSFXChanged(void);
+	void AddUseObject(CGameObject* pObject, int nId);
 	int RemoveLemmingFromGroup(CPlayerLemming* pLemming);
 	int GetViewData(int pViewData);
 };
