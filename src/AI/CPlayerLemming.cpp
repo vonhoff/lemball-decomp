@@ -78,30 +78,30 @@ int CPlayerLemming::RandomAction(void)
 
 
 // FUNCTION: LEMBALL 0x0040f600
-void __fastcall CPlayerLemming_HitMine(void* pObject)
+void CPlayerLemming::HitMine(void)
 {
 	int vec[3];
 	vec[0] = 0;
 	vec[1] = 0;
-	*(int*) ((char*) pObject + 0x10c) = 1;
+	*(int*) ((char*) this + 0x10c) = 1;
 	vec[2] = 0xa000;
-	(*( void(**)(void*, int)) (*(void***) pObject + 0x20 / 4))(vec, 0);
-	*(int*) ((char*) pObject + 0x2c) = 1;
+	(*( void(**)(void*, int)) (*(void***) this + 0x20 / 4))(vec, 0);
+	*(int*) ((char*) this + 0x2c) = 1;
 }
 // FUNCTION: LEMBALL 0x0040f960
-int __fastcall CPlayerLemming_HasObject(void* pObject, int nUnused, int param_1)
+int CPlayerLemming::HasObject(int nObjectType)
 {
-	if (param_1 == 5) {
-		if (*(short*) ((char*) pObject + 0x228) == 0x32) {
+	if (nObjectType == 5) {
+		if (*(short*) ((char*) this + 0x228) == 0x32) {
 			return 1;
 		}
 	} else {
-		int iVar1 = *(int*) ((char*) pObject + 0x220);
+		int iVar1 = *(int*) ((char*) this + 0x220);
 		if (iVar1 != 0xc && iVar1 > 0) {
-			int* piVar3 = (int*) ((char*) pObject + 0x1c0);
+			int* piVar3 = (int*) ((char*) this + 0x1c0);
 			int iVar2 = 0;
 			do {
-				if (*piVar3 == param_1) {
+				if (*piVar3 == nObjectType) {
 					return 1;
 				}
 				piVar3++;
@@ -112,65 +112,65 @@ int __fastcall CPlayerLemming_HasObject(void* pObject, int nUnused, int param_1)
 	return 0;
 }
 // FUNCTION: LEMBALL 0x0040f9b0
-int __fastcall CPlayerLemming_AddObject(void* pObject, int nUnused, int param_1, int param_2)
+int CPlayerLemming::AddObject(int nObjectType, int nObject)
 {
-	if (*(int*) ((char*) pObject + 0x220) == 0xc) {
+	if (*(int*) ((char*) this + 0x220) == 0xc) {
 		return 0;
 	}
-	if (((int(__fastcall*)(void*, int)) (*(void***) pObject)[0xb4 / 4])(pObject, param_1) != 0) {
+	if (((int(__fastcall*)(void*, int)) (*(void***) this)[0xb4 / 4])(this, nObjectType) != 0) {
 		return 0;
 	}
-	*(int*) ((char*) pObject + *(int*) ((char*) pObject + 0x220) * 4 + 0x1c0) = param_1;
-	*(int*) ((char*) pObject + *(int*) ((char*) pObject + 0x220) * 4 + 0x1f0) = param_2;
-	*(int*) ((char*) pObject + 0x220) = *(int*) ((char*) pObject + 0x220) + 1;
+	*(int*) ((char*) this + *(int*) ((char*) this + 0x220) * 4 + 0x1c0) = nObjectType;
+	*(int*) ((char*) this + *(int*) ((char*) this + 0x220) * 4 + 0x1f0) = nObject;
+	*(int*) ((char*) this + 0x220) = *(int*) ((char*) this + 0x220) + 1;
 	return 1;
 }
 // FUNCTION: LEMBALL 0x00410250
-void __fastcall CPlayerLemming_OnConveyor(void* pThis, int nUnused, int param_1, void* param_2, int param_3)
+void CPlayerLemming::OnConveyor(int nOnConveyor, void* pIce, int nDetach)
 {
-	if (param_1 == 0 && *(int*) ((char*) pThis + 0x188) != 0 && param_3 != 0) {
-		((void(__fastcall*)(void*, void*)) 0x402c16)(*(void**) ((char*) pThis + 0x18c), pThis);
+	if (nOnConveyor == 0 && *(int*) ((char*) this + 0x188) != 0 && nDetach != 0) {
+		((void(__fastcall*)(void*, void*)) 0x402c16)(*(void**) ((char*) this + 0x18c), this);
 	}
-	*(int*) ((char*) pThis + 0x188) = param_1;
-	*(void**) ((char*) pThis + 0x18c) = param_2;
-	if (param_1 != 0) {
-		int iVar1 = ((int(__fastcall*)(void*)) (*(void***) *(void**) ((char*) pThis + 0x224) + 0x108 / 4))(*(void**) ((char*) pThis + 0x224));
+	*(int*) ((char*) this + 0x188) = nOnConveyor;
+	*(void**) ((char*) this + 0x18c) = pIce;
+	if (nOnConveyor != 0) {
+		int iVar1 = ((int(__fastcall*)(void*)) (*(void***) *(void**) ((char*) this + 0x224) + 0x108 / 4))(*(void**) ((char*) this + 0x224));
 		if (iVar1 > 1) {
-			(*( void(**)(int, void*)) (*(void***) *(void**) ((char*) g_pActiveManagedEntityOwner + 0x15c) + 0x34 / 4))(1, (char*) pThis + 0x6a);
+			(*( void(**)(int, void*)) (*(void***) *(void**) ((char*) g_pActiveManagedEntityOwner + 0x15c) + 0x34 / 4))(1, (char*) this + 0x6a);
 		}
-		(*( void(**)(void*)) (*(void***) *(void**) ((char*) pThis + 0x224) + 0x150 / 4))(*(void**) ((char*) pThis + 0x224));
+		(*( void(**)(void*)) (*(void***) *(void**) ((char*) this + 0x224) + 0x150 / 4))(*(void**) ((char*) this + 0x224));
 	}
 }
 // FUNCTION: LEMBALL 0x00410220
-void __fastcall CPlayerLemming_Action(void* pObject, int nUnused, int param_1)
+void CPlayerLemming::Action(int nAction)
 {
-	*(int*) ((char*) pObject + 0x94) = g_nLevelFrameClockTimeMs;
-	if (param_1 == 8) {
-		((void(__fastcall*)(void*, int)) 0x402cfc)(pObject, 8);
+	*(int*) ((char*) this + 0x94) = g_nLevelFrameClockTimeMs;
+	if (nAction == 8) {
+		((void(__fastcall*)(void*, int)) 0x402cfc)(this, 8);
 		return;
 	}
-	*(int*) ((char*) pObject + 0xb8) = param_1;
+	*(int*) ((char*) this + 0xb8) = nAction;
 }
 // FUNCTION: LEMBALL 0x0040fcd0
-void __fastcall CPlayerLemming_ExternalControlEnd(void* pThis)
+void CPlayerLemming::ExternalControlEnd(void)
 {
-	if (*(unsigned short*) ((char*) pThis + 0xbc) != 0 && *(unsigned short*) ((char*) pThis + 0xbc) < 3) {
-		(*( void(**)(void)) (*(void***) pThis + 0x68 / 4))();
-		(*( void(**)(int)) (*(void***) pThis + 8 / 4))(8);
+	if (*(unsigned short*) ((char*) this + 0xbc) != 0 && *(unsigned short*) ((char*) this + 0xbc) < 3) {
+		(*( void(**)(void)) (*(void***) this + 0x68 / 4))();
+		(*( void(**)(int)) (*(void***) this + 8 / 4))(8);
 	} else {
-		(*( void(**)(int)) (*(void***) pThis + 8 / 4))(0);
+		(*( void(**)(int)) (*(void***) this + 8 / 4))(0);
 	}
 }
 // FUNCTION: LEMBALL 0x0040f4b0
-int __fastcall CPlayerLemming_FacingTarget(void* pThis)
+int CPlayerLemming::FacingTarget(void)
 {
 	unsigned int uDir = ((unsigned int(__cdecl*)(int, int, int, int)) 0x401532)(
-		(*(int*) ((char*) pThis + 0x9c)) >> 12, (*(int*) ((char*) pThis + 0xa0)) >> 12,
-		(*(int*) ((char*) pThis + 0x1b4)) >> 12, (*(int*) ((char*) pThis + 0x1b8)) >> 12);
-	return (int) (short) (*(short*) ((char*) pThis + 0xb4)) - (int) uDir == 1;
+		(*(int*) ((char*) this + 0x9c)) >> 12, (*(int*) ((char*) this + 0xa0)) >> 12,
+		(*(int*) ((char*) this + 0x1b4)) >> 12, (*(int*) ((char*) this + 0x1b8)) >> 12);
+	return (int) (short) (*(short*) ((char*) this + 0xb4)) - (int) uDir == 1;
 }
 // FUNCTION: LEMBALL 0x0040f430
-int __fastcall CPlayerLemming_FacingCursor(void* pThis)
+int CPlayerLemming::FacingCursor(void)
 {
 	if (*(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) != 0) {
 		return 1;
@@ -179,31 +179,31 @@ int __fastcall CPlayerLemming_FacingCursor(void* pThis)
 	int local_8;
 	((void(__fastcall*)(void*, void*, void*)) 0x401e65)(*(void**) ((char*) g_pActiveManagedEntityOwner + 0x160), &local_4, &local_8);
 	unsigned int uDir = ((unsigned int(__cdecl*)(int, int, int, int)) 0x401532)(
-		(*(int*) ((char*) pThis + 0x9c)) >> 12, (*(int*) ((char*) pThis + 0xa0)) >> 12,
+		(*(int*) ((char*) this + 0x9c)) >> 12, (*(int*) ((char*) this + 0xa0)) >> 12,
 		local_4, local_8);
-	return (int) (short) (*(short*) ((char*) pThis + 0xb4)) - (int) uDir == 1;
+	return (int) (short) (*(short*) ((char*) this + 0xb4)) - (int) uDir == 1;
 }
 // FUNCTION: LEMBALL 0x0040f220
-void __fastcall CPlayerLemming_TurnToFaceTarget(void* pThis, int nUnused)
+void CPlayerLemming::TurnToFaceTarget(void)
 {
 	int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(
-		*(int*) ((char*) pThis + 0x9c) >> 12,
-		*(int*) ((char*) pThis + 0xa0) >> 12,
-		*(int*) ((char*) pThis + 0x1b4) >> 12,
-		*(int*) ((char*) pThis + 0x1b8) >> 12);
-	if (nOct != (int) *(short*) ((char*) pThis + 0xb4)) {
-		if (*(int*) ((char*) 0x49d020 + (nOct - (int) *(short*) ((char*) pThis + 0xb4) & 7) * 4) < 0) {
-			((void(__fastcall*)(void*)) 0x4023e7)(pThis);
+		*(int*) ((char*) this + 0x9c) >> 12,
+		*(int*) ((char*) this + 0xa0) >> 12,
+		*(int*) ((char*) this + 0x1b4) >> 12,
+		*(int*) ((char*) this + 0x1b8) >> 12);
+	if (nOct != (int) *(short*) ((char*) this + 0xb4)) {
+		if (*(int*) ((char*) 0x49d020 + (nOct - (int) *(short*) ((char*) this + 0xb4) & 7) * 4) < 0) {
+			((void(__fastcall*)(void*)) 0x4023e7)(this);
 		} else {
-			((void(__fastcall*)(void*)) 0x402068)(pThis);
+			((void(__fastcall*)(void*)) 0x402068)(this);
 		}
-		(*( void(**)(void*, int)) (*(void***) pThis + 0x84 / 4))(pThis, 0xfa0);
+		(*( void(**)(void*, int)) (*(void***) this + 0x84 / 4))(this, 0xfa0);
 	}
-	*(int*) ((char*) pThis + 0xcc) = g_nLevelFrameClockTick +
-		*(int*) ((char*) 0x49d0b0 + *(int*) ((char*) pThis + 0x64) * 4) / 0x32;
+	*(int*) ((char*) this + 0xcc) = g_nLevelFrameClockTick +
+		*(int*) ((char*) 0x49d0b0 + *(int*) ((char*) this + 0x64) * 4) / 0x32;
 }
 // FUNCTION: LEMBALL 0x0040f160
-void __fastcall CPlayerLemming_TurnToFaceCursor(void* pThis, int nUnused)
+void CPlayerLemming::TurnToFaceCursor(void)
 {
 	if (*(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) {
 		int local_4 = 0;
@@ -211,49 +211,49 @@ void __fastcall CPlayerLemming_TurnToFaceCursor(void* pThis, int nUnused)
 		((void(__fastcall*)(void*, int*, int*)) 0x401e65)(
 			*(void**) ((char*) g_pActiveManagedEntityOwner + 0x160), &local_4, &local_8);
 		int nOct = ((int(__cdecl*)(int, int, int, int)) 0x401532)(
-			*(int*) ((char*) pThis + 0x9c) >> 12,
-			*(int*) ((char*) pThis + 0xa0) >> 12,
+			*(int*) ((char*) this + 0x9c) >> 12,
+			*(int*) ((char*) this + 0xa0) >> 12,
 			local_4, local_8);
-		if (nOct != (int) *(short*) ((char*) pThis + 0xb4)) {
-			if (*(int*) ((char*) 0x49d020 + (nOct - (int) *(short*) ((char*) pThis + 0xb4) & 7) * 4) < 0) {
-				((void(__fastcall*)(void*)) 0x4023e7)(pThis);
+		if (nOct != (int) *(short*) ((char*) this + 0xb4)) {
+			if (*(int*) ((char*) 0x49d020 + (nOct - (int) *(short*) ((char*) this + 0xb4) & 7) * 4) < 0) {
+				((void(__fastcall*)(void*)) 0x4023e7)(this);
 			} else {
-				((void(__fastcall*)(void*)) 0x402068)(pThis);
+				((void(__fastcall*)(void*)) 0x402068)(this);
 			}
-			(*( void(**)(void*, int)) (*(void***) pThis + 0x84 / 4))(pThis, 0xfa0);
+			(*( void(**)(void*, int)) (*(void***) this + 0x84 / 4))(this, 0xfa0);
 		}
-		*(int*) ((char*) pThis + 0xcc) = g_nLevelFrameClockTick +
-			*(int*) ((char*) 0x49d070 + *(int*) ((char*) pThis + 0x64) * 4) / 0x32;
+		*(int*) ((char*) this + 0xcc) = g_nLevelFrameClockTick +
+			*(int*) ((char*) 0x49d070 + *(int*) ((char*) this + 0x64) * 4) / 0x32;
 	}
 }
 // FUNCTION: LEMBALL 0x0040f640
-void __fastcall CPlayerLemming_GetData(void* pThis, int nUnused)
+void CPlayerLemming::GetData(void)
 {
 	unsigned short local_e[2];
-	*(unsigned int*) ((char*) pThis - 0x9c) = (unsigned int) (unsigned short) ((unsigned short(__fastcall*) (void*)) 0x45f070)(pThis) << 12;
-	*(unsigned int*) ((char*) pThis - 0x98) = (unsigned int) (unsigned short) ((unsigned short(__fastcall*) (void*)) 0x45f070)(pThis) << 12;
-	*(unsigned int*) ((char*) pThis - 0x94) = (unsigned int) (unsigned short) ((unsigned short(__fastcall*) (void*)) 0x45f070)(pThis) << 12;
-	((void(__fastcall*) (void*, unsigned short*)) 0x45f090)(pThis, local_e);
-	*(unsigned short*) ((char*) pThis - 0x84) = (unsigned short) (local_e[0] & 7);
-	*(unsigned short*) ((char*) pThis - 0x7c) = (unsigned short) ((local_e[0] & 0x38) >> 3);
-	((void(__fastcall*) (void*, unsigned short*)) 0x45f090)(pThis, local_e);
-	*(unsigned int*) ((char*) pThis - 0x80) = (unsigned int) (local_e[0] & 0xff);
-	*(unsigned int*) ((char*) pThis - 0xa0) = (unsigned int) (local_e[0] >> 8);
-	*(unsigned int*) ((char*) pThis - 0xa4) = ((unsigned int(__fastcall*) (void*)) 0x45eff0)(pThis);
+	*(unsigned int*) ((char*) this - 0x9c) = (unsigned int) (unsigned short) ((unsigned short(__fastcall*) (void*)) 0x45f070)(this) << 12;
+	*(unsigned int*) ((char*) this - 0x98) = (unsigned int) (unsigned short) ((unsigned short(__fastcall*) (void*)) 0x45f070)(this) << 12;
+	*(unsigned int*) ((char*) this - 0x94) = (unsigned int) (unsigned short) ((unsigned short(__fastcall*) (void*)) 0x45f070)(this) << 12;
+	((void(__fastcall*) (void*, unsigned short*)) 0x45f090)(this, local_e);
+	*(unsigned short*) ((char*) this - 0x84) = (unsigned short) (local_e[0] & 7);
+	*(unsigned short*) ((char*) this - 0x7c) = (unsigned short) ((local_e[0] & 0x38) >> 3);
+	((void(__fastcall*) (void*, unsigned short*)) 0x45f090)(this, local_e);
+	*(unsigned int*) ((char*) this - 0x80) = (unsigned int) (local_e[0] & 0xff);
+	*(unsigned int*) ((char*) this - 0xa0) = (unsigned int) (local_e[0] >> 8);
+	*(unsigned int*) ((char*) this - 0xa4) = ((unsigned int(__fastcall*) (void*)) 0x45eff0)(this);
 }
 // FUNCTION: LEMBALL 0x0040f6f0
-void __fastcall CPlayerLemming_AddData(void* pThis, int nUnused)
+void CPlayerLemming::AddData(void)
 {
-	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(pThis, 0x2c);
-	((void(__fastcall*) (void*, unsigned char)) 0x45ef60)(pThis, *(unsigned short*) ((char*) pThis + 0x30));
-	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(pThis, *(int*) ((char*) pThis - 0x9c) >> 12);
-	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(pThis, *(int*) ((char*) pThis - 0x98) >> 12);
-	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(pThis, *(int*) ((char*) pThis - 0x94) >> 12);
-	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(pThis, (unsigned short) (((*(unsigned short*) ((char*) pThis - 0x7c) & 7) << 3) | (*(unsigned short*) ((char*) pThis - 0x84) & 7)));
-	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(pThis, (unsigned short) ((*(unsigned char*) ((char*) pThis - 0xa0) << 8) | *(unsigned char*) ((char*) pThis - 0x80)));
-	if (*(unsigned int*) ((char*) pThis - 0x5c) > (unsigned int) g_nLevelFrameClockTimeMs) {
-		*(unsigned int*) ((char*) pThis - 0x5c) = g_nLevelFrameClockTimeMs;
+	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(this, 0x2c);
+	((void(__fastcall*) (void*, unsigned char)) 0x45ef60)(this, *(unsigned short*) ((char*) this + 0x30));
+	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(this, *(int*) ((char*) this - 0x9c) >> 12);
+	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(this, *(int*) ((char*) this - 0x98) >> 12);
+	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(this, *(int*) ((char*) this - 0x94) >> 12);
+	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(this, (unsigned short) (((*(unsigned short*) ((char*) this - 0x7c) & 7) << 3) | (*(unsigned short*) ((char*) this - 0x84) & 7)));
+	((void(__fastcall*) (void*, unsigned short)) 0x45ef40)(this, (unsigned short) ((*(unsigned char*) ((char*) this - 0xa0) << 8) | *(unsigned char*) ((char*) this - 0x80)));
+	if (*(unsigned int*) ((char*) this - 0x5c) > (unsigned int) g_nLevelFrameClockTimeMs) {
+		*(unsigned int*) ((char*) this - 0x5c) = g_nLevelFrameClockTimeMs;
 	}
-	((void(__fastcall*) (void*, unsigned int)) 0x45ef10)(pThis, *(unsigned int*) ((char*) pThis - 0x5c));
-	*(unsigned int*) ((char*) pThis + 0x2c) = 0;
+	((void(__fastcall*) (void*, unsigned int)) 0x45ef10)(this, *(unsigned int*) ((char*) this - 0x5c));
+	*(unsigned int*) ((char*) this + 0x2c) = 0;
 }
