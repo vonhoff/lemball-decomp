@@ -1,6 +1,8 @@
 #ifndef LEMBALL_C2D_RENDER_H
 #define LEMBALL_C2D_RENDER_H
 
+struct CVSPoint;
+
 struct CViewData {
 	unsigned short m_nDirection00;
 	unsigned short m_nReserved02;
@@ -51,6 +53,7 @@ public:
 	void DrawKey(CViewData& ViewData, int nPlayer);
 	void DrawBonus(CViewData& ViewData);
 	void DrawHand(CViewData& ViewData);
+	void DrawLemmingExternal(CViewData& ViewData, int nUseRemap);
 	void DrawLemmingOnBalloon(CViewData& ViewData, int nPlayer, unsigned char fUseRemap);
 	void DrawMover(CViewData& ViewData);
 	void DrawPaintGun(CViewData& ViewData);
@@ -66,6 +69,7 @@ public:
 	void UnRegisterRemaps(void);
 	void OnInside(unsigned short* pPoint);
 	void OnButtonUp(void* pButtonFlags);
+	void OnButtonDown(const CVSPoint& Point, int nButtonFlags);
 	void Restart(void);
 	void SendCursorMsg(void);
 	CVSRect* BuildViewportRectSnapshot(void);

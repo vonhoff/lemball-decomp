@@ -1,5 +1,6 @@
 #define LEMBALL_C2D_LEMMING_FLY
 #include "views/2d/C2DRender.h"
+#include "Visos/Generic/CVSPoint.h"
 
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 #include "Platform/Windows/Mixed/Level/DRAWTEXT.H"
@@ -33,6 +34,7 @@ struct LevelViewRotationTransform {
 	int m_nHeight14;
 
 	void GameToScreen(int* pX, int* pY);
+	void ScreenToGame(int nScreenX, int nScreenY, int* pTileX, int* pTileY);
 };
 
 struct CViewDataFlyView {
@@ -92,6 +94,8 @@ static const short g_anC2DSwitchOffsets[2] = {5, 0x19};
 static const int g_adwC2DSheepResourcesMode2[8] = {0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 0xa7, 0xa8, 0xa1};
 // GLOBAL: LEMBALL 0x0049ef78
 static const int g_adwC2DSheepResourcesMode014[8] = {0xa9, 0xa3, 0xaa, 0xa5, 0xab, 0xa7, 0xac, 0xa1};
+// GLOBAL: LEMBALL 0x0049efa8
+static const int g_anC2DLemmingExternalResources[8] = {0x90, 0x91, 0x91, 0x92, 0x92, 0x93, 0x93, 0x90};
 
 
 extern int g_nLevelScreenTimedVariantResourceId;
@@ -179,6 +183,61 @@ void C2D::SendCursorMsg(void)
 	Message.m_nHeight0C = nHeight;
 	void* pSink = *(void**) (pThis + 0x974);
 	((void(__fastcall*)(void*, int, LevelScreenCursorMessage*)) (*(void***) pSink)[2])(pSink, 0, &Message);
+}
+
+// FUNCTION: LEMBALL 0x0043c090
+void C2D::DrawLemmingExternal(CViewData& ViewData, int nUseRemap)
+{
+	int nFrame;
+	int nRemap;
+	unsigned int nDirection;
+	unsigned int nVariant;
+	short nX;
+	short nY;
+
+	nFrame = ((int) ViewData.m_pFrameSelector24 - ViewData.m_nFrame20) * 0x0f / 1000;
+	if (nFrame < 0) {
+		nFrame = 0;
+	}
+	nRemap = 0;
+	if (nUseRemap != 0) {
+		nRemap = m_nLemmingRemap0968;
+	}
+	nDirection = (ViewData.m_nDirection00 + m_nViewRotation090C * 2) & 7;
+	nVariant = (unsigned short) ViewData.m_nVariant1C;
+	nX = (short) ViewData.m_nX04;
+	nY = (short) ViewData.m_nY08;
+	switch (nVariant) {
+	case 1:
+		((CAnimsManagerView*) m_pAnimsManager0A40)
+			->EmitLevelScreenVariantEntry((short) (nX - 0x0f),
+										  (short) (nY - 0x16),
+										  g_anC2DLemmingExternalResources[nDirection],
+										  nFrame % 4,
+										  0,
+										  nRemap);
+		return;
+	case 2:
+		if (nFrame < 0x0f) {
+			((CAnimsManagerView*) m_pAnimsManager0A40)
+				->EmitLevelScreenVariantEntry((short) (nX - 7),
+											  (short) (nY - 0x1c),
+											  0x76,
+											  nFrame,
+											  0,
+											  nRemap);
+		}
+		return;
+	case 3:
+		((CAnimsManagerView*) m_pAnimsManager0A40)
+			->EmitLevelScreenVariantEntry((short) (nX - 0x0f),
+										  (short) (nY - 0x16),
+										  0x3f,
+										  nFrame % 8,
+										  0,
+										  nRemap);
+		return;
+	}
 }
 
 // MACINTOSH: C2D::DrawBullet(CViewData&, int)
@@ -1229,6 +1288,56 @@ void C2D::OnButtonUp(void* param_2)
 			return;
 		}
 		((void(__fastcall*)(void*)) 0x4019ec)((char*) pObject - 0x14);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00438210
+void C2D::OnButtonDown(const CVSPoint& Point, int nButtonFlags)
+{
+	LevelViewRotationTransform* pTransform;
+	CVSPoint ScreenPoint;
+	CVSPoint TilePoint;
+	void* pInputView;
+	void* pMode;
+	int nScreenX;
+	int nScreenY;
+	int fMaskedCell;
+
+	*(int*) ((char*) this + 0x178) = 1;
+	if (*(int*) ((char*) this + 0xa68) != 0) {
+		return;
+	}
+	pMode = *(void**) ((char*) this + 0x964);
+	if ((g_pLevelDemoPlaybackController == 0 ||
+		 *(int*) ((char*) g_pLevelDemoPlaybackController + 0x4c) == 0) &&
+		((int(__fastcall*)(void*)) (*(void***) pMode)[0x60 / 4])(pMode) == 0) {
+		return;
+	}
+	ScreenPoint.m_nX = (short) (*(int*) ((char*) this + 0x904) + Point.m_nX);
+	ScreenPoint.m_nY = (short) (Point.m_nY + *(short*) ((char*) this + 0x908));
+	nScreenX = ScreenPoint.m_nX;
+	nScreenY = ScreenPoint.m_nY;
+	pInputView = (char*) this - 0x14;
+	fMaskedCell = ((int(__fastcall*)(void*, int, int, int, int*, int*)) 0x00401f5f)(
+		pInputView, 0, nScreenX, nScreenY, (int*) 0x0049ea14, (int*) 0x0049ea18);
+	*(int*) 0x0049ea1c = fMaskedCell;
+	if (fMaskedCell == 0) {
+		pTransform = (LevelViewRotationTransform*) *(void**) ((char*) this + 0x900);
+		pTransform->ScreenToGame(nScreenX, nScreenY, (int*) 0x0049ea14, (int*) 0x0049ea18);
+	}
+	TilePoint.m_nX = (short) *(int*) 0x0049ea14;
+	TilePoint.m_nY = (short) *(int*) 0x0049ea18;
+	switch (nButtonFlags) {
+	case 0:
+	case 3:
+		((void(__fastcall*)(void*, int, CVSPoint*, CVSPoint*, int, int)) 0x00401e42)(
+			pInputView, 0, &ScreenPoint, &TilePoint, 1, 0);
+		return;
+	case 1:
+	case 4:
+		((void(__fastcall*)(void*, int, CVSPoint*, CVSPoint*)) 0x00401fcd)(
+			pInputView, 0, &ScreenPoint, &TilePoint);
+		return;
 	}
 }
 
