@@ -8,6 +8,7 @@ extern void __fastcall ReleaseTypedResourceObjectIfLoaded(void* pObject, void* p
 extern void* g_pActiveManagedEntityOwner;
 extern void* g_pSharedRenderDispatchQueue;
 extern void* g_pVariantResourceEntryManager;
+extern int g_nQueuedVariantChildSlotManagerModeSelectedResourceId;
 extern void SetLevelScreenStatusIndicatorMode(int nMode, int nValue);
 extern void __fastcall ResetTypedResourceObjectState(void* pObject);
 extern void* g_pCachedChunkManagerLevelMode;
@@ -2362,4 +2363,121 @@ void __fastcall initialize_level_selection_palette_remap(void* pThis, int nEdxSl
 	*(unsigned int*)((char*)pThis + 0x3d0) =
 		((unsigned int(__fastcall*)(void*, int, int, void*, int)) 0x46ad70)((void*) 0x4a2000, 0, 0x10a, pMap, 0);
 	((void(__fastcall*)(void*)) 0x45d180)((void*) hPal);
+}
+// FUNCTION: LEMBALL 0x0044f290
+void __fastcall load_queued_zrle_variant_range_resources(void* pThis, int nUnused, int* param_1)
+{
+	void* pArray;
+	void* pOverlay;
+	int* pInner;
+	short pt[2];
+	int i;
+	*(int*) ((char*) pThis + 0x48) = (int) param_1;
+	pArray = ((void*(__cdecl*)(unsigned int)) 0x45a780)((unsigned int) *(int*) ((char*) pThis + 0x34) << 2);
+	*(int*) ((char*) pThis + 0x50) = (int) pArray;
+	for (i = 0; i < *(int*) ((char*) pThis + 0x34); i++) {
+		*(int*) ((char*) pArray + i * 4) =
+			(int) ((void*(__cdecl*)(int)) 0x45d610)(param_1[i]);
+	}
+	pOverlay = ((void*(__cdecl*)(unsigned int)) 0x45a780)(0x130);
+	if (pOverlay == 0) {
+		*(int*) ((char*) pThis + 0x4c) = 0;
+	} else {
+		pt[0] = (short) *(int*) ((char*) pThis + 0x18);
+		pt[1] = (short) *(int*) ((char*) pThis + 0x1c);
+		*(int*) ((char*) pThis + 0x4c) = (int) ((void*(__fastcall*)(void*, int, short*, int, int, int)) 0x468530)(
+			pOverlay, 0, pt, *(int*) ((char*) pThis + 0x24),
+			param_1[*(int*) ((char*) pThis + 0x40) - *(int*) ((char*) pThis + 0x3c)], 3);
+	}
+	pOverlay = (void*) *(int*) ((char*) pThis + 0x4c);
+	pInner = (int*) *(int*) (*(int*) ((char*) pOverlay + 0x4c) + 0xc);
+	((void(__fastcall*)(void*, int, int)) 0x467e40)(pOverlay, 0, 0);
+	*(int*) (*(int*) (*(int*) ((char*) pInner + 0x40) + 4) + 0x70 + (int) pInner) = 0;
+	*(int*) ((char*) pOverlay + 0xf4) = (int) g_pSharedRenderDispatchQueue;
+	*(int*) ((char*) pOverlay + 0xcc) = *(int*) ((char*) pThis + 0x2c);
+}
+
+// FUNCTION: LEMBALL 0x0044fa00
+void __fastcall sample_helper_point_into_owner_and_emit_variant_entry(void* param_1)
+{
+	void* pRenderContext;
+	char* pGeometryOwner;
+	char* pGeometryDispatch;
+	int nPointBias;
+	int nSavedOwner;
+	short pt[2];
+	char auStack_c[12];
+	if (*(int*) ((char*) param_1 + 0x144) != 0) {
+		pRenderContext = *(void**) ((char*) param_1 + 0x12c);
+		nPointBias = *(int*) ((char*) param_1 + 0x130) == 1 ? -1 : -2;
+		pGeometryOwner = *(char**) ((char*) pRenderContext + 0x0c);
+		pGeometryDispatch = pGeometryOwner + 0x40 +
+			*(int*) ((char*) *(void**) (pGeometryOwner + 0x40) + 4);
+		*(short*) ((char*) param_1 + 0x100) = *(short*) (pGeometryDispatch + 0x14);
+		*(short*) ((char*) param_1 + 0x102) = *(short*) (pGeometryDispatch + 0x16);
+		*(short*) ((char*) param_1 + 0x104) = 0;
+		*(short*) ((char*) param_1 + 0x106) = 0;
+		*(int*) ((char*) param_1 + 0x108) = 0x10000;
+		(*(void(__fastcall**)(void*, int, void*)) (*(void***) ((char*) param_1 + 0xfc))[0x4 / 4])
+			((char*) param_1 + 0xfc, 0, pRenderContext);
+		*(int*) ((char*) param_1 + 0x124) = 0;
+		pt[0] = (short) (*(int*) ((char*) param_1 + 0x98) + nPointBias);
+		pt[1] = (short) (*(int*) ((char*) param_1 + 0x9c) + nPointBias);
+		nSavedOwner = *(int*) ((char*) param_1 + 0x2c);
+		*(int*) ((char*) param_1 + 0x2c) = (int) pRenderContext;
+		((int(__fastcall*)(void*, void*, void*, int, int, void*, int)) 0x467730)(
+			(char*) param_1 + 0x10, auStack_c, pt,
+			g_nQueuedVariantChildSlotManagerModeSelectedResourceId, 0,
+			(char*) param_1 + 0x118, 0);
+		*(int*) ((char*) param_1 + 0x2c) = nSavedOwner;
+		((void(__fastcall*)(void*)) 0x4678c0)((char*) param_1 + 0x10);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00418be0
+void __fastcall configure_managed_entity_profile_ranges(void* pThis, int nEdxSlop,
+	int nCount, int nData0, int nData1, int nData2, int nData3)
+{
+	*(int*)((char*)pThis + 0x124) = nCount;
+	if (nData0 == -1) {
+		const int* pData = ((const int*) 0x0049d138) + nCount * 4;
+		*(int*)((char*)pThis + 0x110) = pData[0];
+		*(int*)((char*)pThis + 0x114) = pData[1];
+		*(int*)((char*)pThis + 0x118) = pData[2];
+		*(int*)((char*)pThis + 0x11c) = pData[3];
+	} else {
+		*(int*)((char*)pThis + 0x110) = nData0;
+		*(int*)((char*)pThis + 0x114) = nData1;
+		*(int*)((char*)pThis + 0x118) = nData2;
+		*(int*)((char*)pThis + 0x11c) = nData3;
+	}
+	if (nCount > 0) {
+		int nIndex = 0;
+		int* pLo = (int*)((char*)pThis + 0xe0);
+		int* pHi = pLo + 4;
+		do {
+			if (*pLo > 0x400 || *pLo < 0)
+				*pLo = nIndex;
+			if (*pHi > 0x400 || *pHi < 0)
+				*pHi = nIndex;
+			pLo++;
+			pHi++;
+			nIndex += 0x10;
+			nCount--;
+		} while (nCount != 0);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00419f30
+void __cdecl ClearPlasChildRuntimeFlag_0x30WithOptionalVirtualCleanup(void* pUnused, int* pObject)
+{
+	int (__fastcall* pfnCheck)(void*, int);
+	void* pVtbl;
+	(void) pUnused;
+	pVtbl = *(void**) pObject;
+	pfnCheck = (int (__fastcall*) (void*, int)) *(void**) ((char*) pVtbl + 0xe4);
+	if (pfnCheck(pObject, 0) != 0) {
+		((void (__fastcall*) (void*, int, int, int, int)) *(void**) ((char*) pVtbl + 0xe8))(pObject, 0, 0, 0, 1);
+	}
+	((void (__fastcall*) (void*, int)) *(void**) ((char*) pVtbl + 0xd8))(pObject, 0);
 }
