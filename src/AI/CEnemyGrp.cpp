@@ -47,6 +47,28 @@ void CEnemy::HitBullet(void* pBullet)
 	}
 }
 
+// FUNCTION: LEMBALL 0x0041fec0
+int CEnemy::Process(void)
+{
+	if (m_nStateB8 != 8) {
+		switch (m_nReserved128) {
+		case 0:
+			ProcessAction(m_nAction0Kind130, m_nAction0Rules12C, &m_pDesc134);
+			break;
+		case 1:
+			ProcessAction(m_nAction1Kind13C, m_nAction1Rules138, &m_pDesc140);
+			break;
+		case 2:
+			ProcessAction(m_nAction2Kind148, m_nAction2Rules144, &m_pDesc14C);
+			break;
+		}
+		((void(__cdecl*)(void*, void*)) 0x4032ba)(g_pActiveManagedEntityOwner, this);
+		((void(__cdecl*)(AICOORD*, void*, unsigned short)) 0x40341d)(
+			(AICOORD*) ((char*) this + 0x9c), this, m_nRegistryId68);
+	}
+	return 0;
+}
+
 // FUNCTION: LEMBALL 0x00420430
 void CEnemy::Fire(void)
 {
