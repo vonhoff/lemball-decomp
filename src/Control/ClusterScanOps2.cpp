@@ -1598,3 +1598,20 @@ int __fastcall remove_managed_entity_array_entry_and_release(void* pArrayOwner, 
 	}
 	return nIndex;
 }
+
+// FUNCTION: LEMBALL 0x00457080
+void __stdcall copy_low_bytes_from_dword_stride(unsigned char* pDst, const unsigned char* pSrc, int nCount)
+{
+	while (nCount > 0) {
+		*pDst++ = *pSrc;
+		pSrc += 4;
+		nCount--;
+	}
+}
+
+// FUNCTION: LEMBALL 0x0044b660
+void __cdecl add_fixed12_2d_vectors(int* pOut, const int* pA, const int* pB)
+{
+	pOut[0] = pA[0] + pB[0];
+	pOut[1] = pA[1] + pB[1];
+}
