@@ -55,6 +55,7 @@ struct CDoor : public ManagedEntityStateView {
 	unsigned char m_abReservedBC[0x10];
 	int m_nFrameTickCC;
 
+	void Unlock(void);
 	void DoActivate(void);
 	void SetCollision(void);
 	void ResetCollision(void);
@@ -67,7 +68,7 @@ struct CDoor : public ManagedEntityStateView {
 
 // MACINTOSH: CDoor::Unlock()
 // FUNCTION: LEMBALL 0x0040dd00
-void CDoor::DoActivate(void)
+void CDoor::Unlock(void)
 {
 	if (m_nStateB8 >= 0x1c && m_nStateB8 <= 0x1d) {
 		m_nFrameTickCC = 0x14;
@@ -442,14 +443,15 @@ void CDoorManager::Switch(int nAction, unsigned int nSlot)
 	}
 }
 
+// MACINTOSH: CDoor::DoActivate()
 // FUNCTION: LEMBALL 0x0040dec0
-void __fastcall CDoor_DoActivate(void* pObject)
+void CDoor::DoActivate(void)
 {
-	*(int*) ((char*) pObject + 0x144) = 1;
-	*(int*) ((char*) pObject + 0x94) = g_nLevelFrameClockTimeMs;
-	*(int*) ((char*) pObject + 0xcc) = *(int*) ((char*) pObject + 0xcc) + g_nLevelFrameClockTick;
-	if (*(int*) ((char*) pObject + 0xb8) != 0x1c) {
-		unsigned short uVar1 = *(unsigned short*) ((char*) pObject + 0xbc);
+	*(int*) ((char*) this + 0x144) = 1;
+	*(int*) ((char*) this + 0x94) = g_nLevelFrameClockTimeMs;
+	*(int*) ((char*) this + 0xcc) = m_nFrameTickCC + g_nLevelFrameClockTick;
+	if (m_nStateB8 != 0x1c) {
+		unsigned short uVar1 = *(unsigned short*) ((char*) this + 0xbc);
 		int iVar2;
 		if (uVar1 == 0x14) {
 			iVar2 = 0x19;

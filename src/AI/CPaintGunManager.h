@@ -2,10 +2,14 @@
 #define LEMBALL_CPAINTGUNMANAGER_H
 
 // Mac blueprint: CPaintGunManager owns an array of CPaintGun (stride 0x144).
+class CViewData;
+
 class CPaintGunManager {
 public:
 	void Add(unsigned short nSlot, int nWorldX, int nWorldY, int nWorldZ, int nSubtype);
 	void LoadLevel(unsigned short* pLevelData, int nLen, unsigned char nFormat);
+	void Process(void);
+	int GetViewData(CViewData* pViewData);
 
 private:
 	unsigned char m_abReserved00[0x30];

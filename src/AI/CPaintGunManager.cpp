@@ -51,42 +51,43 @@ void CPaintGunManager::LoadLevel(unsigned short* pLevelData, int nLen, unsigned 
 	}
 }
 
-// FUNCTION: LEMBALL 0x0042c520
-int __fastcall CPaintGunManager_GetViewData(void* pThis, int nUnused, int param_1)
-{
-	int local_4 = 0;
-	int iVar2 = 0;
-	if (*(int*) ((char*) pThis + 0x34) > 0) {
-		int iVar3 = 0;
-		do {
-			int* piVar1 = (int*) (*(int*) ((char*) pThis + 0x38) + iVar3);
-			int iVar4 = param_1;
-			if (piVar1[0x4e] != 0) {
-				iVar4 = param_1 + 0x4c;
-				(*( void(**)(int)) (*(void***) *piVar1 + 0xc / 4))(param_1);
-				local_4 = local_4 + 1;
-			}
-			iVar3 = iVar3 + 0x144;
-			iVar2 = iVar2 + 1;
-			param_1 = iVar4;
-		} while (iVar2 < *(int*) ((char*) pThis + 0x34));
-	}
-	return local_4;
-}
+// Mac blueprint: CPaintGunManager::Process()
 // FUNCTION: LEMBALL 0x0042c4d0
-void __fastcall CPaintGunManager_Process(void* param_1)
+void CPaintGunManager::Process(void)
 {
 	int iVar3 = 0;
-	if (*(int*) ((char*) param_1 + 0x34) > 0) {
+	if (m_nObjectCount34 > 0) {
 		int iVar2 = 0;
 		do {
-			*(int*) (*(int*) ((char*) param_1 + 0x38) + 0x124 + iVar2) = 1;
-			void* piVar1 = (void*) (*(int*) ((char*) param_1 + 0x38) + iVar2);
+			*(int*) ((char*) m_pObjects38 + 0x124 + iVar2) = 1;
+			void* piVar1 = (void*) ((char*) m_pObjects38 + iVar2);
 			if (*(int*) ((char*) piVar1 + 0x4e * 4) != 0) {
 				(*( void(**)(void)) (*(void***) piVar1 + 0x14 / 4))();
 			}
 			iVar2 = iVar2 + 0x144;
 			iVar3 = iVar3 + 1;
-		} while (iVar3 < *(int*) ((char*) param_1 + 0x34));
+		} while (iVar3 < m_nObjectCount34);
 	}
+}
+
+// Mac blueprint: CPaintGunManager::GetViewData(CViewData*)
+// FUNCTION: LEMBALL 0x0042c520
+int CPaintGunManager::GetViewData(CViewData* pViewData)
+{
+	int nCount = 0;
+	int iChild = 0;
+	if (m_nObjectCount34 > 0) {
+		int iVar2 = 0;
+		do {
+			void* pChild = (void*) ((char*) m_pObjects38 + iVar2);
+			if (*(int*) ((char*) pChild + 0x138) != 0) {
+				((void(__fastcall*)(void*, CViewData*)) (*(void***) pChild)[0xc / 4])(pChild, pViewData);
+				nCount = nCount + 1;
+				pViewData = (CViewData*) ((char*) pViewData + 0x4c);
+			}
+			iVar2 = iVar2 + 0x144;
+			iChild = iChild + 1;
+		} while (iChild < m_nObjectCount34);
+	}
+	return nCount;
 }
