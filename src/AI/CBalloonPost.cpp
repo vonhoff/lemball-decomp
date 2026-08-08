@@ -1,15 +1,17 @@
+#include "AI/CBalloonPost.h"
+
 // FUNCTION: LEMBALL 0x0042a4e0
-void __fastcall CBalloonPost_LoadLevel(void* pThis, int nUnused, unsigned short* pStream, int param_4, int param_5)
+void CBalloonPost::LoadLevel(unsigned short* pStream)
 {
 	unsigned short* pData;
 	unsigned int* pDst;
 	void** pObj;
 	int i;
 
-	*(unsigned short*) pThis = *pStream;
+	m_wActiveMask00 = *pStream;
 	pData = pStream + 1;
-	pDst = (unsigned int*) ((char*) pThis + 4);
-	pObj = (void**) ((char*) pThis + 0x34);
+	pDst = (unsigned int*) ((char*) this + 4);
+	pObj = (void**) ((char*) this + 0x34);
 	for (i = 0; i < 4; i++) {
 		unsigned int x = (unsigned int) pData[0] << 0xc;
 		unsigned int y = (unsigned int) pData[1] << 0xc;
@@ -25,8 +27,16 @@ void __fastcall CBalloonPost_LoadLevel(void* pThis, int nUnused, unsigned short*
 		pDst += 3;
 		pObj++;
 	}
-	if (*(unsigned char*) pThis & 1) *(int*) ((char*) *(void**) ((char*) pThis + 0x34) + 0x124) = 1;
-	if (*(unsigned char*) pThis & 2) *(int*) ((char*) *(void**) ((char*) pThis + 0x38) + 0x124) = 1;
-	if (*(unsigned char*) pThis & 4) *(int*) ((char*) *(void**) ((char*) pThis + 0x3c) + 0x124) = 1;
-	if (*(unsigned char*) pThis & 8) *(int*) ((char*) *(void**) ((char*) pThis + 0x40) + 0x124) = 1;
+	if (*(unsigned char*) this & 1) {
+		*(int*) ((char*) *(void**) ((char*) this + 0x34) + 0x124) = 1;
+	}
+	if (*(unsigned char*) this & 2) {
+		*(int*) ((char*) *(void**) ((char*) this + 0x38) + 0x124) = 1;
+	}
+	if (*(unsigned char*) this & 4) {
+		*(int*) ((char*) *(void**) ((char*) this + 0x3c) + 0x124) = 1;
+	}
+	if (*(unsigned char*) this & 8) {
+		*(int*) ((char*) *(void**) ((char*) this + 0x40) + 0x124) = 1;
+	}
 }

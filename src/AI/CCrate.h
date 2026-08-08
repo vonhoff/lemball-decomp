@@ -24,6 +24,7 @@ public:
 	int Activate(void* pTarget);
 	void DoActivate(void);
 	void ActivatePosition(int* pPoint);
+	void TriggerContents(void);
 };
 
 #endif
