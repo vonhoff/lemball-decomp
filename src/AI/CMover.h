@@ -27,18 +27,22 @@ public:
 	void FindObjectsOnTopOfMe(void);
 
 private:
-	char m_abReserved6E[0x2e];
+	char m_abReserved6E[0x26];
+	int m_nField94;                   // 0x94; cleared on Initialise
+	char m_abReserved98[4];
 	int m_nWorldX9C;
 	int m_nWorldYA0;
 	int m_nWorldZA4;
-	char m_abReservedA8[0x14];
+	char m_abReservedA8[0x10];
+	int m_nFieldB8;                   // 0xB8; set to 0x18 on Initialise
 	short m_nHeadingBC;
 	char m_abReservedBE[0xa];
 	int m_nNodeStartTickC8;    // 0xc8
 	int m_nNodeEndTickCC;      // 0xcc
 	char m_abReservedD0[0x68];
 	int m_fActive138;
-	char m_abReserved13C[8];
+	int m_nField13C;                  // 0x13C; cleared on Initialise
+	int m_nField140;                  // 0x140; set to 1 on Initialise
 	int m_nMode144;
 	int m_fSwitch148;
 	CMove3d m_Move14C;

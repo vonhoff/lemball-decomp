@@ -17,9 +17,19 @@ struct CBullet {
 	virtual int ServiceProjectile(void);
 	unsigned char m_abReserved04[0x5c];
 	void* m_pSourceContext60;              // 0x60
-	unsigned char m_abReserved64[0x34];
+	unsigned char m_abReserved64[8];
+	unsigned short m_nSlotId6C;             // 0x6C
+	unsigned char m_abReserved6E[0x2a];
 	int m_nHeading98;                       // 0x98
 	unsigned char m_abReserved9C[0x1c];
+	int m_nWorldX9C;                        // 0x9C
+	int m_nWorldYA0;                        // 0xA0
+	int m_nWorldZA4;                        // 0xA4
+	int m_nDestXA8;                         // 0xA8
+	int m_nDestYAC;                         // 0xAC
+	int m_nDestZB0;                         // 0xB0
+	unsigned short m_nHeadingOctantB4;      // 0xB4
+	unsigned char m_abReservedB6[2];
 	int m_nStateB8;                         // 0xb8
 	unsigned char m_abReservedBC[0xc];
 	int m_nStartTickC8;                     // 0xc8
