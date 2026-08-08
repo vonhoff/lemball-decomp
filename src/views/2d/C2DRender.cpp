@@ -3,6 +3,7 @@
 
 #include "Platform/Windows/Mixed/Engine/CORE/COMMON.H"
 #include "Platform/Windows/Mixed/Level/DRAWTEXT.H"
+#include "Visos/Generic/Memory.h"
 
 extern void EmitLevelScreenVariantEntry(void* pObject,
 										short x,
@@ -112,6 +113,72 @@ void CAnimsManagerView::EmitLevelScreenVariantEntry(short x,
 	::EmitLevelScreenVariantEntry(this, x, y, nResourceId, nFlags, pFrameSelector, nValue);
 }
 #pragma auto_inline(on)
+
+struct LevelScreenCursorMessage {
+	short m_nType00;
+	short m_nReserved02;
+	int m_nReserved04;
+	int m_nPosition08;
+	int m_nHeight0C;
+	int m_nReserved10;
+};
+
+// FUNCTION: LEMBALL 0x00437d00
+void C2D::NewPauseWindow(int nMessage)
+{
+	char* pThis = (char*) this;
+	*(int*) (pThis + 0x98c) = *(int*) (pThis + 0x988);
+	*(int*) (pThis + 0x988) = nMessage;
+	void* pWindow = *(void**) (pThis + 0x980);
+	if (pWindow != 0) {
+		void* pWindowBase = (char*) pWindow + 0x90;
+		((void(__fastcall*)(void*, int, int)) (*(void***) pWindowBase)[1])(pWindowBase, 0, 1);
+		*(void**) (pThis + 0x980) = 0;
+	}
+	if (*(int*) (pThis + 0x988) != 5) {
+		pWindow = AllocateVSMemBlock(0x20c);
+		if (pWindow == 0) {
+			*(void**) (pThis + 0x980) = 0;
+		}
+		else {
+			void* pOwner = pThis + 0x4c;
+			if (this == 0) {
+				pOwner = 0;
+			}
+			*(void**) (pThis + 0x980) =
+				((void*(__fastcall*)(void*, int, void*, void*, int)) 0x402928)(
+					pWindow, 0, pOwner, *(void**) (pThis + 0x978), *(int*) (pThis + 0x988));
+		}
+	}
+	if (*(int*) (pThis + 0x988) == 3) {
+		*(int*) (pThis + 0x984) = *(int*) (pThis + 0x50);
+	}
+}
+
+// FUNCTION: LEMBALL 0x004380c0
+void C2D::SendCursorMsg(void)
+{
+	char* pThis = (char*) this;
+	LevelScreenCursorMessage Message;
+	short Point[2];
+	int nHeight;
+	Message.m_nType00 = 1;
+	Message.m_nReserved04 = 0;
+	Message.m_nPosition08 = 0;
+	Message.m_nHeight0C = 0;
+	Message.m_nReserved10 = 0;
+	Point[0] = (short) (m_nCameraOriginX0918 + *(short*) (pThis + 0x93c));
+	Point[1] = (short) (*(short*) (pThis + 0x93e) + m_nCameraOriginY091C);
+	if (((int(__fastcall*)(void*, int, int, int, short*, int*)) 0x401f5f)(
+			this, 0, Point[0], Point[1], Point, &nHeight) == 0) {
+		((void(__fastcall*)(void*, int, int, int, short*, int*)) 0x4021fd)(
+			m_pLevel0914, 0, Point[0], Point[1], Point, &nHeight);
+	}
+	Message.m_nPosition08 = *(int*) Point;
+	Message.m_nHeight0C = nHeight;
+	void* pSink = *(void**) (pThis + 0x974);
+	((void(__fastcall*)(void*, int, LevelScreenCursorMessage*)) (*(void***) pSink)[2])(pSink, 0, &Message);
+}
 
 // MACINTOSH: C2D::DrawBullet(CViewData&, int)
 // FUNCTION: LEMBALL 0x0043c610
