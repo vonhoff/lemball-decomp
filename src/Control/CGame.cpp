@@ -5374,6 +5374,16 @@ __declspec(naked) void* LEMBALL_FASTCALL DeleteLevelSelectionScreenAdjusted(void
         jmp offset DeleteLevelSelectionScreenAuto
 	}
 }
+// FUNCTION: LEMBALL 0x0044b6a0
+void LEMBALL_FASTCALL sample_signed_sine_table(void* pTable, int nUnused, int* pOut, int nAngle)
+{
+	if (nAngle < 0) {
+		*pOut = -((int*) pTable)[(-nAngle) & 0x1ff];
+	} else {
+		*pOut = ((int*) pTable)[nAngle & 0x1ff];
+	}
+}
+
 // FUNCTION: LEMBALL 0x0044b8f0
 void LEMBALL_FASTCALL DestroyRegistrationInfoScreen(void* pObject)
 {

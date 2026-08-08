@@ -1536,3 +1536,27 @@ void __fastcall activate_boon_chunk_object_by_subtype_at_position(void* pThis, i
 	*(int*) ((char*) pBoonObject + 0x124) = 1;
 }
 
+
+
+// FUNCTION: LEMBALL 0x004166d0
+unsigned short collect_free_managed_entity_slot_ids(unsigned short* pOut, int nLimit)
+{
+	extern unsigned char g_GAME_ManagedEntitySlotBitMasks[8];
+	extern unsigned char g_GAME_ManagedEntitySlotClaimBitset[0x100];
+	int nCount = 0;
+	for (int nSlot = 0; nSlot < 0x100; ++nSlot) {
+		if (g_GAME_ManagedEntitySlotClaimBitset[nSlot] == 0xff) {
+			continue;
+		}
+		for (int nMask = 0; nMask < 8; ++nMask) {
+			if ((g_GAME_ManagedEntitySlotClaimBitset[nSlot] & g_GAME_ManagedEntitySlotBitMasks[nMask]) != 0) {
+				continue;
+			}
+			pOut[nCount++] = (unsigned short) ((nSlot << 3) | nMask);
+			if (nCount == nLimit) {
+				return (unsigned short) nLimit;
+			}
+		}
+	}
+	return (unsigned short) nCount;
+}
