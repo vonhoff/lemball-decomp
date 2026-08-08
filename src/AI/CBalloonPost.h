@@ -10,7 +10,10 @@ public:
 	char m_abReserved02[2];
 	int m_anPostPos04[4][3];     // +0x04 4 posts x (x,y,z) fixed point
 	CBalloon* m_apBalloons34[4]; // +0x34 the 4 child balloon objects
+	void* m_pAI44;
+	void* m_pLevelTileGrid48;
 
+	void Process(void);
 	void LoadLevel(unsigned short* pStream);
 };
 

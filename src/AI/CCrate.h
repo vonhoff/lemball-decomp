@@ -14,7 +14,9 @@ public:
 	char m_abReservedBC[0x14];
 	int m_nPhaseStepD0;
 	int m_nDeadlineD4;
-	char m_abReservedD8[0x50];
+	char m_abReservedD8[0x3c];
+	int m_fNetworkShadow114;
+	char m_abReserved118[0x10];
 	int m_nState128;
 	char m_abReserved12C[0x1c];
 	void* m_pContents148;
@@ -25,6 +27,7 @@ public:
 	void DoActivate(void);
 	void ActivatePosition(int* pPoint);
 	void TriggerContents(void);
+	int Process(void);
 };
 
 #endif

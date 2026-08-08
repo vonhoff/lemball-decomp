@@ -55,6 +55,7 @@ set(LEMBALL_SOURCES
     src/AI/CPlayerLemming.cpp
     src/AI/CAI.cpp
     src/AI/CAICursor.cpp
+    src/AI/CAmmo.cpp
     src/AI/CBall.cpp
     src/AI/CBallManager.cpp
     src/AI/CBalloonPost.cpp

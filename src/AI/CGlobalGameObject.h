@@ -3,6 +3,8 @@
 
 #include "AI/CGameObject.h"
 
+struct CNetworkMessage;
+
 class CGlobalGameObject : public CGameObject {
 public:
 	int m_fNetworkStateUpdateActive124;
@@ -25,6 +27,7 @@ public:
 	void CancelRequest(void);
 	void SendRemove(void);
 	void SendCancel(void);
+	int Receive(unsigned short nMessage, CNetworkMessage* pMessage);
 	void AppendGmobChunkType14Action(int nType, unsigned short nParam);
 };
 

@@ -1,5 +1,39 @@
 #include "AI/CBalloonPost.h"
 
+struct CGround {
+	short GetZThunk(int nLocalX, int nLocalY);
+};
+
+#define UPDATE_BALLOON_POST_HEIGHT(BIT, INDEX) \
+	if ((m_wActiveMask00 & (BIT)) != 0) { \
+		int nX = m_anPostPos04[INDEX][0] >> 12; \
+		int nY = m_anPostPos04[INDEX][1] >> 12; \
+		int nTileX = nX >> 4; \
+		int nTileY = nY >> 4; \
+		unsigned short nHeight = 0; \
+		if (nX >= 0 && nY >= 0 && \
+			nTileX < *(int*) ((char*) m_pLevelTileGrid48 + 0x10) && \
+			nTileY < *(int*) ((char*) m_pLevelTileGrid48 + 0x14)) { \
+			CGround* pGround = (CGround*) \
+				(*(int*) ((char*) m_pLevelTileGrid48 + 0xc) + \
+				 (nTileY * *(int*) ((char*) m_pLevelTileGrid48 + 0x10) + nTileX) * 0xc); \
+			nHeight = pGround->GetZThunk(nX & 0xf, nY & 0xf); \
+		} \
+		m_anPostPos04[INDEX][2] = (unsigned int) nHeight << 12; \
+		*(int*) ((char*) m_apBalloons34[INDEX] + 0xa4) = (unsigned int) nHeight << 12; \
+	}
+
+// FUNCTION: LEMBALL 0x0042a170
+void CBalloonPost::Process(void)
+{
+	UPDATE_BALLOON_POST_HEIGHT(1, 0);
+	UPDATE_BALLOON_POST_HEIGHT(2, 1);
+	UPDATE_BALLOON_POST_HEIGHT(4, 2);
+	UPDATE_BALLOON_POST_HEIGHT(8, 3);
+}
+
+#undef UPDATE_BALLOON_POST_HEIGHT
+
 // FUNCTION: LEMBALL 0x0042a4e0
 void CBalloonPost::LoadLevel(unsigned short* pStream)
 {

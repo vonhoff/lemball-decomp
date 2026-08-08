@@ -19,15 +19,22 @@ public:
 	LevelThreeDwordPosition m_CurrentPosition9C;
 	char m_abReservedA8[0x10];
 	int m_nStateB8;
-	char m_abReservedBC[0x18];
+	char m_abReservedBC[0x10];
+	int m_nCycleDeadlineCC;
+	char m_abReservedD0[4];
 	int m_nDeadlineD4;
-	char m_abReservedD8[0x6c];
+	char m_abReservedD8[0x3c];
+	int m_fNetworkShadow114;
+	char m_abReserved118[0x10];
+	int m_nPreviousState128;
+	char m_abReserved12C[0x18];
 	short m_nLinkedVariant144;
 
 	void Restart(void);
 	int Activate(void* pTarget);
 	void DoActivate(void);
 	LevelThreeDwordPosition* ActivatePosition(LevelThreeDwordPosition* pPoint);
+	int Process(void);
 };
 
 #endif
